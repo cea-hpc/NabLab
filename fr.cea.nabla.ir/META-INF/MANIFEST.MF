@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: fr.cea.nabla.ir
+Bundle-ManifestVersion: 2
+Bundle-Name: fr.cea.nabla.ir
+Bundle-SymbolicName: fr.cea.nabla.ir;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: .,
+ jgrapht/lib/jgraph-5.13.0.0.jar,
+ jgrapht/lib/jgrapht-core-0.9.0.jar
+Bundle-Vendor: CEA
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: fr.cea.nabla.ir,
+ fr.cea.nabla.ir.generator.java,
+ fr.cea.nabla.ir.generator.kmds,
+ fr.cea.nabla.ir.ir,
+ fr.cea.nabla.ir.ir.impl,
+ fr.cea.nabla.ir.ir.util
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.emf.ecore;visibility:=reexport,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtend.lib,
+ org.eclipse.xtend.lib.macro,
+ com.google.inject
+Bundle-ActivationPolicy: lazy
+

@@ -1,0 +1,125 @@
+grammar fr.cea.nabla.Nabla with org.eclipse.xtext.common.Terminals
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+generate nabla "http://www.cea.fr/nabla/Nabla"
+
+NablaModule:
+	'module' name=QualifiedName ';'
+	imports+=Import*
+	blocks+=DeclarationBlock*
+	variables+=(ScalarVarDefinition | VarGroupDeclaration)*
+	jobs+=Job*;
+
+Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';
+
+DeclarationBlock: 
+	{ConnectivityDeclarationBlock} 'connectivities' '{' connectivities+=Connectivity* '}' |
+	{FunctionDeclarationBlock} 'functions' '{' functions+=(Function | Reduction)* '}';
+
+
+/* JOBS **************************************************/
+Job: 
+	{InstructionJob} name=ID ':' instruction=Instruction |
+	{TimeLoopJob} name=ID ':' '\u2200' iterator=TimeIterator ',' initialization=Instruction ',' body=Instruction;
+
+
+/* INSTRUCTIONS ******************************************/
+Instruction: 
+	ScalarVarDefinition |
+	{InstructionBlock} '{' instructions+=Instruction+ '}' |
+	{Affectation} varRef=VarRef op=('='|'+='|'-='|'*='|'/=') expression=Expression ';' |
+	{Loop} '\u2200' iterator=SpaceIterator ',' body=Instruction |
+	{If} 'if' '(' condition=Expression ')' then=Instruction (=>'else' else=Instruction)?;
+
+
+/* ITERATEURS ********************************************/
+TimeIterator: name=ID '\u2208' '\u2115';
+SpaceIterator: name=ID '\u2208' range=SpaceIteratorRange;
+SpaceIteratorRange: connectivity=[Connectivity]  '('(args+=SpaceIteratorRef (',' args+=SpaceIteratorRef)*)?')';
+SpaceIteratorRef: ((prev?='\u25C4'|next?='\u25BA') '(' iterator=[SpaceIterator] ')') | iterator=[SpaceIterator];
+
+/* VARIABLES ********************************************/
+ScalarVarDefinition: (const?='const')? type=BasicType variable=ScalarVar '=' defaultValue=Expression ';';
+VarGroupDeclaration: type=BasicType variables+=Var (',' variables+=Var)* ';';
+Var: ScalarVar | ArrayVar;
+ScalarVar: name=ID;
+ArrayVar: name=ID '[' dimensions+=[Connectivity] (',' dimensions+=[Connectivity])* ']';
+
+/* CONNECTIVITES *****************************************/
+Connectivity: name=ID ':' '(' ((inTypes+=ItemType (',' inTypes+=ItemType)*) | '\u2205') ')' '\u2192' returnType=ItemArgType ';';
+ItemArgType: multiple?='{' type=ItemType '}' | type=ItemType;
+
+/* FONCTIONS / REDUCTIONS ********************************/
+Function: name=ID ':' argGroups+=FunctionArg (',' argGroups+=FunctionArg)* ';';
+FunctionArg: '(' ((inTypes+=BasicType (',' inTypes+=BasicType)*) | '\u2205') ')' '\u2192' returnType=BasicType;
+Reduction: name=ID ':' argGroups+=ReductionArg (',' argGroups+=ReductionArg)* ';';
+ReductionArg:  '(' seed=Expression ',' collectionType=BasicType ')' '\u2192' returnType=BasicType;
+
+/* EXPRESSIONS ******************************************/
+Expression: Or;
+
+Or returns Expression: // on garde l'attribut op pour la validation
+	And ({Or.left=current} op='||' right=And)*;
+
+And returns Expression: // on garde l'attribut op pour la validation
+	Equality ({And.left=current} op='&&' right=Equality)*;
+
+Equality returns Expression:
+	Comparison ({Equality.left=current} op=('=='|'!=') right=Comparison)*;
+
+Comparison returns Expression:
+	PlusOrMinus ({Comparison.left=current} op=('>='|'<='|'>'|'<') right=PlusOrMinus)*;
+
+PlusOrMinus returns Expression: // on garde l'attribut op pour la validation
+	MulOrDiv ( ({Plus.left=current} op='+' | {Minus.left=current} op='-') right=MulOrDiv)*;
+
+MulOrDiv returns Expression:
+	Primary ({MulOrDiv.left=current} op=('*'|'/') right=Primary)*;
+
+Primary returns Expression:
+	{Parenthesis} '(' expression=Expression ')' | {UnaryMinus} '-' expression=Primary | {Not} '!' expression=Primary | Atomic;
+
+Atomic returns Expression:
+	{IntConstant} value=INT |
+	{RealConstant} value=REAL |
+	{Real2Constant} '{' x=REAL ',' y=REAL '}' |
+	{Real3Constant} '{' x=REAL ',' y=REAL ',' z=REAL '}' |
+	{BoolConstant} (value?='true' | 'false') |
+	{RealXCompactConstant} type=BasicType '(' value=REAL ')' |
+	{MinConstant} type=BasicType '.MinValue' |
+	{MaxConstant} type=BasicType '.MaxValue' |
+	{FunctionCall} function=[Function|QualifiedName] '(' (args+=Expression (',' args+=Expression)*)? ')' | 
+	{ReductionCall} reduction=[Reduction|QualifiedName] '{' iterator=SpaceIterator '}' '(' arg=Expression ')' |
+	VarRef;
+
+VarRef: variable=[Var] 
+	('{' spaceIterators+=IteratorRangeOrRef (',' spaceIterators+=IteratorRangeOrRef)* '}')? 
+	('^{' timeIterator=TimeIteratorRef '}')?  
+	('.' fields+=ID)*;
+
+IteratorRangeOrRef: SpaceIteratorRange | SpaceIteratorRef;
+TimeIteratorRef: iterator=[TimeIterator] ((init?='='|next?='+') value=INT)?;
+
+
+/* ENUMS *************************************************/
+enum BasicType: 
+	Int='\u2115' |
+	Real='\u211D' |
+	Real2='\u211D\u00B2' |
+	Real2x2='\u211D\u00B2\u02E3\u00B2' |
+	Real3='\u211D\u00B3' |
+	Real3x3='\u211D\u00B3\u02E3\u00B3' |
+	Bool='\u213E';
+
+enum ItemType: node | cell | face;
+
+
+/* DATA TYPE *********************************************/
+QualifiedName: ID ('.' ID)*;
+QualifiedNameWithWildcard: QualifiedName '.*'?;
+
+
+/* TERMINAUX *********************************************/
+@Override 
+terminal ID: '^'? ('a'..'z'|'A'..'Z'|'\u03B1'..'\u03F2'|'\u220F'..'\u221C'|'_') ('a'..'z'|'A'..'Z'|'\u03B1'..'\u03F2'|'0'..'9'|'\u2211'|'_')*;
+terminal REAL returns ecore::EDouble: ('0'..'9')+ '.' ('0'..'9')+ ('e'('+'|'-')('0'..'9')+)?;

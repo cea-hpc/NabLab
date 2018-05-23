@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension point="org.eclipse.emf.ecore.generated_package">
+		<package 
+			uri = "http://www.cea.fr/nabla/Nabla"
+			class = "fr.cea.nabla.nabla.NablaPackage"
+			genModel = "model/generated/Nabla.genmodel" />
+	</extension>
+</plugin>

@@ -1,0 +1,6 @@
+*/src-gen/*
+*/xtend-gen/*
+/fr.cea.nabla.edit/icons/full/*
+/fr.cea.nabla.ir/jgrapht/*
+*.class
+*/bin/*

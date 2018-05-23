@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: fr.cea.nabla.edit
+Bundle-ManifestVersion: 2
+Bundle-Name: fr.cea.nabla.edit
+Bundle-SymbolicName: fr.cea.nabla.edit;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: .
+Bundle-Vendor: CEA
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: fr.cea.nabla.nabla.provider
+Require-Bundle: org.eclipse.core.runtime,
+ fr.cea.nabla;visibility:=reexport,
+ fr.cea.nabla.edit;visibility:=reexport,
+ org.eclipse.emf.edit;visibility:=reexport
+Bundle-ActivationPolicy: lazy

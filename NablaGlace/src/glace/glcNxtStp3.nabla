@@ -1,0 +1,146 @@
+module glace;
+
+with Math.*;
+
+connectivities {
+	nodes: (∅) → {node};
+	cells: (∅) → {cell}; 
+	outerFaces: (∅) → {face};
+	innerNodes: (∅) → {node};
+	nodesOfCell: (cell) → {node};
+	nodesOfFace: (face) → {node};
+	cellsOfNode: (node) → {cell};
+}
+
+functions {
+	trace: (ℝ³ˣ³) → ℝ;
+	perp: (ℝ³, ℝ³) → ℝ³;
+	matrix3x3Id: (∅) → ℝ³ˣ³;
+	tensProduct: (ℝ³, ℝ³) → ℝ³ˣ³;
+	matVectProduct: (ℝ³ˣ³, ℝ³) → ℝ³;
+	matrixDeterminant: (ℝ³ˣ³) → ℝ;
+	inverseMatrix: (ℝ³ˣ³, ℝ) → ℝ³ˣ³;
+}
+
+// Options obligatoires pour compiler
+const ℝ LENGTH = 1.0;
+const ℕ X_EDGE_ELEMS = 8;
+const ℕ Y_EDGE_ELEMS = 8;
+const ℕ Z_EDGE_ELEMS = 1;
+const ℝ option_stoptime = 0.1;
+const ℕ option_max_iterations = 48;
+  
+// Autres options
+const ℝ γ = 1.4;
+const ℝ option_x_interface = 0.5;
+const ℝ option_δt_ini = 1.0e-5;
+const ℝ option_δt_cfl = 0.15;
+const ℝ option_ρ_ini_zg = 1.0;
+const ℝ option_ρ_ini_zd = 0.125;
+const ℝ option_p_ini_zg = 1.0;
+const ℝ option_p_ini_zd = 0.1;
+ℝ t=0.0;
+ℝ δt=0.0;
+
+ℝ³ X[nodes], coord[nodes], b[nodes], bt[nodes];
+ℝ³ˣ³ M[nodes], Mt[nodes];
+ℝ³ fu[nodes];
+ℝ p_ic[cells], ρ_ic[cells], V_ic[cells];
+ℝ c[cells], m[cells], p[cells], ρ[cells], e[cells], E[cells], V[cells];
+ℝ δtj[cells];
+ℝ³ u[cells], center[cells];
+ℝ C[cells, nodesOfCell];
+ℝ³ C_ic[cells, nodesOfCell], vectC[cells, nodesOfCell], F[cells, nodesOfCell];
+ℝ³ˣ³ A[cells, nodesOfCell];
+
+
+// *************************************************************
+// * Init: X_ic(par le mailleur), ρ_ic, p_ic, V_ic & m
+// *************************************************************
+IniCenter: ∀j∈cells(), center{j} = (1.0/4.0) * ∑{r∈nodesOfCell(j)}(coord{r});
+IniIc: ∀j∈cells(), if (center{j}.x < option_x_interface) {
+  ρ_ic{j}=option_ρ_ini_zg;
+  p_ic{j}=option_p_ini_zg;
+} else {
+  ρ_ic{j}=option_ρ_ini_zd;
+  p_ic{j}=option_p_ini_zd;
+}
+
+ComputeCjrIc: ∀j∈cells(),∀r∈nodesOfCell(j), C_ic{j,r} = 0.5 * perp(coord{◄(r)}, coord{►(r)});
+// pas 0.5 en dimension 3. 1/d
+IniVIc: ∀j∈cells(), V_ic{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C_ic{j,r}, coord{r}));
+IniM: ∀j∈cells(), m{j} = ρ_ic{j}*V_ic{j}; // m est constant
+
+// *************************************************************
+// * Calcul des C{j,r} et des variables qui en découlent
+// *************************************************************
+ComputeVectCjr: ∀j∈cells(),∀r∈nodesOfCell(j), vectC{j,r} = 0.5 * perp(X{◄(r)}, X{►(r)});
+ComputeCjr: ∀j∈cells(),∀r∈nodesOfCell(j), C{j,r} = norm(vectC{j,r});
+Computeδtj: ∀j∈cells(), δtj{j} = 2.0 * V{j} / (c{j} * ∑{r∈nodesOfCell(j)}(C{j,r}));
+
+// *************************************************************
+// * Règles EOS standards: m, ρ, c, p, e
+// *************************************************************
+ComputeDensity: ∀j∈cells(), ρ{j} = m{j}/V{j};
+ComputeEOSp: ∀j∈cells(), p{j} = (γ-1.0)*ρ{j}*e{j};
+ComputeInternalEngergy: ∀j∈cells(), e{j} = E{j} - 0.5 * dot(u{j}, u{j});
+ComputeEOSc: ∀j∈cells(), c{j} = √(γ*p{j}/ρ{j}); 
+
+// *************************************************************
+// * Cell-centered Godunov Scheme for Lagragian gas dynamics
+// *************************************************************
+ComputeAjr: ∀j∈cells(),∀r∈nodesOfCell(j), A{j,r} = ((ρ{j}*c{j})/C{j,r}) * tensProduct(vectC{j,r}, vectC{j,r});
+ComputeFjr: ∀j∈cells(),∀r∈nodesOfCell(j), F{j,r} = p{j}*vectC{j,r} + matVectProduct(A{j,r}, (u{j}-fu{r}));
+//ComputeMr: ∀r∈nodes(), M{r} = ∑{j∈cellsOfNode(r)}(A{j,r});
+ComputeMr: ∀j∈cells(), ∀r∈nodesOfCell(j), M{r} += A{j,r};
+ComputeBr: ∀r∈nodes(), b{r} = ∑{j∈cellsOfNode(r)}(vectC{j,r}*p{j} + matVectProduct(A{j,r}, u{j}));
+ComputeMt: ∀r∈innerNodes(), Mt{r} = M{r};
+ComputeBt: ∀r∈innerNodes(), bt{r} = b{r};
+
+YOuterFacesComputations: ∀k∈outerFaces(), {
+	ℝ Y_MIN = 0.0; 
+	ℝ Y_MAX = LENGTH;
+	ℝ³ˣ³ I = matrix3x3Id();
+	ℝ³ nY = {0.0,1.0,0.0};
+	∀r∈nodesOfFace(k), {
+		if ((X{r}.y == Y_MIN) || (X{r}.y == Y_MAX)) {
+			ℝ sign = 0.0;
+			if (X{r}.y == Y_MIN) sign = -1.0;
+			else sign = 1.0;
+			ℝ³ n = sign * nY;
+      		ℝ³ˣ³ nxn = tensProduct(n,n);
+      		ℝ³ˣ³ IcP = I - nxn;
+			bt{r} = matVectProduct(IcP, b{r});
+			Mt{r} = IcP * (M{r} * IcP) + nxn*trace(Mt{r});
+		}
+	}
+}
+
+XOuterFacesComputations: ∀k∈outerFaces(), {
+	ℝ X_MIN = 0.0;
+	ℝ X_MAX = LENGTH;
+	ℝ³ˣ³ I = matrix3x3Id();
+	∀r∈nodesOfFace(k), {
+		if ((Math.fabs(X{r}.x-X_MIN) < 1.0e-10) || ( (Math.fabs(X{r}.x-X_MAX) < 1.0e-10) )) {
+			Mt{r} = I;
+			bt{r} = {0.0, 0.0, 0.0};
+		}
+  }
+}
+
+ComputeU: ∀r∈nodes(), {
+	ℝ det = matrixDeterminant(Mt{r});
+	fu{r} = matVectProduct(inverseMatrix(Mt{r}, det), bt{r});
+}
+
+ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(vectC{j,r},X{r}));
+
+// *************************************************************
+// * Itérations de la boucle en 'n'
+// * Et calcule du δt pour mise-à-jour du temps de la simulation
+// *************************************************************
+ComputeXn: ∀n∈ℕ, ∀r0∈nodes(), X{r0}^{n=0}=coord{r0}; , ∀r∈nodes(), X{r}^{n+1}=X{r}^{n}+δt^{n}*fu{r}^{n};
+ComputeUn: ∀n∈ℕ, ∀j0∈cells(), u{j0}^{n=0}={0.0,0.0,0.0}; , ∀j∈cells(), u{j}^{n+1}=u{j}^{n}-(δt^{n}/m{j}^{n})*∑{r∈nodesOfCell(j)}(F{j,r}^{n});
+ComputeEn: ∀n∈ℕ, ∀j0∈cells(), E{j0}^{n=0}=p_ic{j0}/((γ-1.0)*ρ_ic{j0}); , ∀j∈cells(), E{j}^{n+1}=E{j}^{n} - (δt^{n} / m{j}^{n}) * ∑{r∈nodesOfCell(j)}(dot(F{j,r}^{n},fu{r}^{n}));
+ComputeDt: ∀n∈ℕ, δt^{n=0}=option_δt_ini;, δt^{n+1}=option_δt_cfl*min{j∈cells()}(δtj{j});
+ComputeTn: ∀n∈ℕ, t^{n=0}=0.0; , t^{n+1}=t^{n}+δt^{n+1};

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<templates>
+  <template autoinsert="true" context="fr.cea.nabla.Nabla.Affectation" deleted="false" description="The delta character" enabled="true" name="delta">
+    δ&#13;
+  </template>
+  <template autoinsert="true" context="fr.cea.nabla.Nabla.Affectation" deleted="false" description="The gamma character" enabled="true" name="gamma">
+    γ&#13;
+  </template>
+</templates>

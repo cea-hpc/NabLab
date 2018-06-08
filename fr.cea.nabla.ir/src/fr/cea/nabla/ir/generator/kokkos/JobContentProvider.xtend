@@ -11,7 +11,6 @@ class JobContentProvider
 {
 	@Inject extension Utils
 	@Inject extension InstructionContentProvider
-	@Inject extension VariableExtensions
 	
 	def getContent(Job it)
 	'''

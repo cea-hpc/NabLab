@@ -10,20 +10,21 @@
 
 using namespace nablalib;
 
-struct ParallelWhiteheatKokkosOptions
-{
-	double LENGTH = 1.0;
-	int X_EDGE_ELEMS = 8;
-	int Y_EDGE_ELEMS = 8;
-	int Z_EDGE_ELEMS = 1;
-	double option_stoptime = 0.1;
-	int option_max_iterations = 48;
-};
-  
 class ParallelWhiteheatKokkos
 {
+public:
+	struct Options
+	{
+		double LENGTH = 1.0;
+		int X_EDGE_ELEMS = 8;
+		int Y_EDGE_ELEMS = 8;
+		int Z_EDGE_ELEMS = 1;
+		double option_stoptime = 0.1;
+		int option_max_iterations = 48;
+	};
+
 private:
-	ParallelWhiteheatKokkosOptions* options;
+	Options* options;
 	NumericMesh2D* mesh;
 	int nbNodes, nbCells, nbFaces, nbNodesOfCell;
 
@@ -42,7 +43,7 @@ private:
 	Kokkos::View<double**> C_ic; // inutile pour whiteheat, juste pour faire une double boucle
 
 public:
-	ParallelWhiteheatKokkos(ParallelWhiteheatKokkosOptions* o, NumericMesh2D* m)
+	ParallelWhiteheatKokkos(Options* o, NumericMesh2D* m)
 	: options(o)
 	, mesh(m)
 	, nbNodes(mesh->getNbNodes())
@@ -312,7 +313,7 @@ public:
 int main(int argc, char* argv[]) 
 {
 	Kokkos::initialize(argc, argv);
-	auto options = new ParallelWhiteheatKokkosOptions();
+	auto options = new ParallelWhiteheatKokkos::Options();
 	auto geometricMesh = CartesianMesh2DGenerator::generate(options->X_EDGE_ELEMS, options->Y_EDGE_ELEMS, options->LENGTH, options->LENGTH);
 	auto numericMesh = new NumericMesh2D(geometricMesh);
 	ParallelWhiteheatKokkos c(options, numericMesh);

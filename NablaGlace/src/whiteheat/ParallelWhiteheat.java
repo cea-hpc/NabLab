@@ -15,7 +15,17 @@ import fr.cea.nabla.javalib.types.Real2;
 @SuppressWarnings("all")
 public final class ParallelWhiteheat
 {
-	private final ParallelWhiteheatOptions options;
+	public final static class Options
+	{
+		double LENGTH = 1.0;
+		int X_EDGE_ELEMS = 8;
+		int Y_EDGE_ELEMS = 8;
+		int Z_EDGE_ELEMS = 1;
+		double option_stoptime = 0.1;
+		int option_max_iterations = 48;
+	}
+	
+	private final Options options;
 	
 	// Mesh
 	private final NumericMesh2D mesh;
@@ -30,7 +40,7 @@ public final class ParallelWhiteheat
 	private double u[], V[], f[], tmp[], surface[], u_n_plus_1[];
 	private double[][] C_ic; // inutile pour whiteheat, juste pour faire une double boucle
 	
-	public ParallelWhiteheat(ParallelWhiteheatOptions o, NumericMesh2D m)
+	public ParallelWhiteheat(Options o, NumericMesh2D m)
 	{
 		options = o;
 		mesh = m;
@@ -321,7 +331,7 @@ public final class ParallelWhiteheat
 	// Main
 	public static void main(String[] args)
 	{
-		ParallelWhiteheatOptions o = new ParallelWhiteheatOptions();
+		ParallelWhiteheat.Options o = new ParallelWhiteheat.Options();		
 		Mesh<Real2> geometricMesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.LENGTH, o.LENGTH);
 		NumericMesh2D numericMesh = new NumericMesh2D(geometricMesh);
 		ParallelWhiteheat i = new ParallelWhiteheat(o, numericMesh);

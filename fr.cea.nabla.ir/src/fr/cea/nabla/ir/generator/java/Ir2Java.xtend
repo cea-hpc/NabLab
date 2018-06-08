@@ -38,11 +38,15 @@ class Ir2Java
 		@SuppressWarnings("all")
 		public final class «className»
 		{
-			// Options
-			«FOR v : variables.filter(ScalarVariable).filter[const]»
-				public final «v.javaType» «v.name» = «v.defaultValue.content»;
-			«ENDFOR»
-		
+			public final static class Options
+			{
+				«FOR v : variables.filter(ScalarVariable).filter[const]»
+					public final «v.javaType» «v.name» = «v.defaultValue.content»;
+				«ENDFOR»
+			}
+			
+			private final Options options;
+
 			// Mesh
 			private final NumericMesh2D mesh;
 			«FOR c : usedConnectivities BEFORE 'private final int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
@@ -67,15 +71,14 @@ class Ir2Java
 			«ENDFOR»
 			«ENDIF»
 			
-			public «className»()
+			public «className»(Options o, NumericMesh2D m)
 			{
-				// Mesh allocation
-				Mesh<Real2> geometricMesh = CartesianMesh2DGenerator.generate(X_EDGE_ELEMS, Y_EDGE_ELEMS, LENGTH, LENGTH);
-				mesh = new NumericMesh2D(geometricMesh);
+				options = o;
+				mesh = m;
 				«FOR c : usedConnectivities»
 				«c.nbElems» = «c.connectivityAccessor»;
 				«ENDFOR»
-				writer = new VtkFileWriter2D("ParallelWhiteHeat", geometricMesh);
+				writer = new VtkFileWriter2D("ParallelWhiteHeat", m.getGeometricMesh());
 
 				// Arrays allocation
 				«FOR a : variables.filter(ArrayVariable)»
@@ -100,7 +103,7 @@ class Ir2Java
 				«ENDFOR»
 				
 				int iteration = 0;
-				while (t < option_stoptime && iteration < option_max_iterations)
+				while (t < options.option_stoptime && iteration < options.option_max_iterations)
 				{
 					System.out.println("t = " + t);
 					iteration++;
@@ -114,7 +117,10 @@ class Ir2Java
 
 			public static void main(String[] args)
 			{
-				«className» i = new «className»();
+				«className».Options o = new «className».Options();
+				Mesh<Real2> geometricMesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.LENGTH, o.LENGTH);
+				NumericMesh2D numericMesh = new NumericMesh2D(geometricMesh);
+				«className» i = new «className»(o, numericMesh);
 				i.simulate();
 			}
 		};

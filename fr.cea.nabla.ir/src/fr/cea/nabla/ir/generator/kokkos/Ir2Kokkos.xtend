@@ -29,17 +29,18 @@ class Ir2Kokkos
 
 	using namespace nablalib;
 
-	struct «className»Options
-	{
-		«FOR v : variables.filter(ScalarVariable).filter[const]»
-			«v.kokkosType» «v.name» = «v.defaultValue.content»;
-		«ENDFOR»
-	};
-	
 	class «className»
 	{
+	public:
+		struct Options
+		{
+			«FOR v : variables.filter(ScalarVariable).filter[const]»
+				«v.kokkosType» «v.name» = «v.defaultValue.content»;
+			«ENDFOR»
+		};
+	
 	private:
-		«className»Options* options;
+		Options* options;
 		NumericMesh2D* mesh;
 		«FOR c : usedConnectivities BEFORE 'int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
 
@@ -58,7 +59,7 @@ class Ir2Kokkos
 		«ENDIF»
 
 	public:
-		«className»(«className»Options* o, NumericMesh2D* m)
+		«className»(Options* o, NumericMesh2D* m)
 		: options(o)
 		, mesh(m)
 		«FOR c : usedConnectivities»
@@ -105,7 +106,7 @@ class Ir2Kokkos
 	int main(int argc, char* argv[]) 
 	{
 		Kokkos::initialize(argc, argv);
-		auto options = new «className»Options();
+		auto options = new «className»::Options();
 		auto geometricMesh = CartesianMesh2DGenerator::generate(options->X_EDGE_ELEMS, options->Y_EDGE_ELEMS, options->LENGTH, options->LENGTH);
 		auto numericMesh = new NumericMesh2D(geometricMesh);
 		«className» c(options, numericMesh);

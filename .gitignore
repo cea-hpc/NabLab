@@ -4,3 +4,5 @@
 /fr.cea.nabla.ir/jgrapht/*
 *.class
 */bin/*
+*.o
+*.a

@@ -12,7 +12,7 @@ connectivities {
 	commonFace: (cell, cell) → face;
 }
 
-// Options obligatoires pour compiler
+// Options lobligatoires pour compier
 const ℝ LENGTH = 1.0;
 const ℕ X_EDGE_ELEMS = 8;
 const ℕ Y_EDGE_ELEMS = 8;
@@ -22,19 +22,13 @@ const ℕ option_max_iterations = 48;
 
 ℝ t; // initialisé dans ComputeTn
 ℝ δt=0.001;
-
 ℝ² X[nodes], center[cells];
 ℝ u[cells], V[cells], f[cells], tmp[cells], surface[faces];
 
 IniF: ∀j∈cells(), f{j} = 0.0;
 IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});  // ne fonctionne que sur des parallélogrammes
-
 ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(det(X{r}, X{►(r)}));
-// Naturellement, sur une arete, on souhaiterait accéder directement aux sommets 0 et 1.
-// Mais pas possible dans la syntaxe. Mais en 3D ça ne marche plus...
 ComputeSurface: ∀f∈faces(), surface{f} = 0.5 * ∑{r∈nodesOfFace(f)}(norm(X{r}-X{►(r)}));
 ComputeTmp: ∀j1∈cells(), tmp{j1} = δt/V{j1} * ∑{j2∈neighbourCells(j1)}( (u{j2}-u{j1}) / (norm(center{j2}-center{j1}) * surface{commonFace(j1,j2)} ));
-
-// remarque de xavier : faire en sorte que u{j} <=> u{j}^{n}
 ComputeUn: ∀n∈ℕ, ∀j0∈cells(), u{j0}^{n=0}=0.0;, ∀j∈cells(), u{j}^{n+1}=f{j}*δt + u{j} + tmp{j};
 ComputeTn: ∀n∈ℕ, t^{n=0}=0.0; , t^{n+1}=t^{n}+δt;

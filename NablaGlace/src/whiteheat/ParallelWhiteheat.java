@@ -15,14 +15,8 @@ import fr.cea.nabla.javalib.types.Real2;
 @SuppressWarnings("all")
 public final class ParallelWhiteheat
 {
-	// Options
-	public final double LENGTH = 1.0;
-	public final int X_EDGE_ELEMS = 8;
-	public final int Y_EDGE_ELEMS = 8;
-	public final int Z_EDGE_ELEMS = 1;
-	public final double option_stoptime = 0.1;
-	public final int option_max_iterations = 48;
-
+	private final ParallelWhiteheatOptions options;
+	
 	// Mesh
 	private final NumericMesh2D mesh;
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell;
@@ -36,16 +30,15 @@ public final class ParallelWhiteheat
 	private double u[], V[], f[], tmp[], surface[], u_n_plus_1[];
 	private double[][] C_ic; // inutile pour whiteheat, juste pour faire une double boucle
 	
-	public ParallelWhiteheat()
+	public ParallelWhiteheat(ParallelWhiteheatOptions o, NumericMesh2D m)
 	{
-		// Mesh allocation
-		Mesh<Real2> geometricMesh = CartesianMesh2DGenerator.generate(X_EDGE_ELEMS, Y_EDGE_ELEMS, LENGTH, LENGTH);
-		mesh = new NumericMesh2D(geometricMesh);
-		nbNodes = mesh.getNbNodes();
-		nbCells = mesh.getNbCells();
-		nbFaces = mesh.getNbFaces();
+		options = o;
+		mesh = m;
+		nbNodes = m.getNbNodes();
+		nbCells = m.getNbCells();
+		nbFaces = m.getNbFaces();
 		nbNodesOfCell = NumericMesh2D.MaxNbNodesOfCell;
-		writer = new VtkFileWriter2D("ParallelWhiteHeat", geometricMesh);
+		writer = new VtkFileWriter2D("ParallelWhiteHeat", m.getGeometricMesh());
 		
 		// Arrays allocation
 		X = new Real2[nbNodes];
@@ -99,7 +92,7 @@ public final class ParallelWhiteheat
 		// int[] cells = mesh.getCells()
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			f[jCells] = 4.0;
+			f[jCells] = 0.0;
 		});
 	}		
 	
@@ -139,7 +132,8 @@ public final class ParallelWhiteheat
 	private void iniCenter() 
 	{
 		// int[] cells = mesh.getCells();
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+//		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).forEach(jCells -> 
 		{
 			int jId = jCells; // cells[jCells]
 			Real2 sum1 = new Real2(0.0, 0.0);
@@ -309,7 +303,7 @@ public final class ParallelWhiteheat
 		init_SumReductionBidonVolume(); // @-1.0
 		
 		int iteration = 0;
-		while (t < option_stoptime && iteration < option_max_iterations)
+		while (t < options.option_stoptime && iteration < options.option_max_iterations)
 		{
 			System.out.println("A t = " + t);
 			iteration++;
@@ -327,7 +321,10 @@ public final class ParallelWhiteheat
 	// Main
 	public static void main(String[] args)
 	{
-		ParallelWhiteheat i = new ParallelWhiteheat();
+		ParallelWhiteheatOptions o = new ParallelWhiteheatOptions();
+		Mesh<Real2> geometricMesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.LENGTH, o.LENGTH);
+		NumericMesh2D numericMesh = new NumericMesh2D(geometricMesh);
+		ParallelWhiteheat i = new ParallelWhiteheat(o, numericMesh);
 		i.simulate();
 	}
 };

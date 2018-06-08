@@ -2,6 +2,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import fr.cea.nabla.Utils
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionArg
@@ -25,6 +26,7 @@ class IrFunctionFactory
 		name = f.name
 		returnType = a.returnType.toIrBasicType
 		inTypes += a.inTypes.map[toIrBasicType]
+		provider = Utils::getNablaModule(f).name
 	}
 
 	def create IrFactory::eINSTANCE.createReduction toIrReduction(Reduction f, ReductionArg a)
@@ -33,5 +35,6 @@ class IrFunctionFactory
 		name = f.name
 		collectionType = a.collectionType.toIrBasicType
 		returnType = a.returnType.toIrBasicType
+		provider = Utils::getNablaModule(f).name
 	}
 }

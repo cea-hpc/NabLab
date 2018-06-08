@@ -3,7 +3,7 @@ Automatic-Module-Name: fr.cea.nabla.sirius
 Bundle-ManifestVersion: 2
 Bundle-Name: fr.cea.nabla.sirius
 Bundle-SymbolicName: fr.cea.nabla.sirius;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: fr.cea.nabla.sirius.Activator
 Require-Bundle: fr.cea.nabla,
  fr.cea.nabla.edit,
@@ -25,4 +25,5 @@ Import-Package: org.eclipse.sirius.common.tools.api.interpreter
 Export-Package: fr.cea.nabla.sirius,
  fr.cea.nabla.sirius.services
 Bundle-ClassPath: .
+Bundle-Vendor: CEA
 

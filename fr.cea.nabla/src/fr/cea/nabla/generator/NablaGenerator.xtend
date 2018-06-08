@@ -5,12 +5,12 @@ package fr.cea.nabla.generator
 
 import com.google.inject.Inject
 import fr.cea.nabla.generator.ir.Nabla2Ir
-import fr.cea.nabla.ir.Ir2IrNoDefaultValue
-import fr.cea.nabla.ir.Ir2IrNoInternalReduction
-import fr.cea.nabla.ir.Ir2IrNoUtf8
 import fr.cea.nabla.ir.JobDependencyBuilder
+import fr.cea.nabla.ir.ReplaceDefaultValueByInitJob
+import fr.cea.nabla.ir.ReplaceInternalReduction
+import fr.cea.nabla.ir.ReplaceUtf8ByAsciiChar
 import fr.cea.nabla.ir.generator.java.Ir2Java
-import fr.cea.nabla.ir.generator.kmds.Ir2Kmds
+import fr.cea.nabla.ir.generator.kokkos.Ir2Kokkos
 import fr.cea.nabla.nabla.NablaModule
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
@@ -35,10 +35,10 @@ class NablaGenerator extends AbstractGenerator
 	@Inject JobDependencyBuilder jobDependencyBuilder
 //	@Inject Ir2N ir2n
 	@Inject Ir2Java ir2java
-	@Inject Ir2Kmds ir2kmds
+	@Inject Ir2Kokkos ir2kmds
 	
 	// IR transformation passes
-	val passes = #[new Ir2IrNoUtf8, new Ir2IrNoInternalReduction, new Ir2IrNoDefaultValue]
+	val passes = #[new ReplaceUtf8ByAsciiChar, new ReplaceInternalReduction, new ReplaceDefaultValueByInitJob]
 
 	override doGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context) 
 	{
@@ -80,11 +80,11 @@ class NablaGenerator extends AbstractGenerator
 			val javaContent = ir2java.getFileContent(irModule, javaClassName)
 			fsa.generateFile(irModule.name + '/' + javaClassName.addExtension('java'), javaContent)	
 
-			// génération du fichier .kmds
-			println('Generating IR --> Kmds (.cc)')
-			val kmdsClassName = javaClassName + 'Kmds'
+			// génération du fichier .kokkos
+			println('Generating IR --> Kokkos (.cc)')
+			val kmdsClassName = javaClassName + 'Kokkos'
 			val kmdsContent = ir2kmds.getFileContent(irModule, kmdsClassName)
-			fsa.generateFile(irModule.name + '/' + kmdsClassName.addExtension('cc'), kmdsContent)	
+			fsa.generateFile(irModule.name + '/' + kmdsClassName.addExtension('cpp'), kmdsContent)	
 		}
 	}
 	

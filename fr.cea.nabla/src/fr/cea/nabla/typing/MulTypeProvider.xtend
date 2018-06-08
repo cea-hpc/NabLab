@@ -33,13 +33,13 @@ class MulTypeProvider implements BinaryOperatorTypeProvider
 			case REAL2X2:
 				switch rightType.base
 				{
-					case INT, case REAL, case REAL2X2: return leftType
+					case INT, case REAL: return leftType
 					default: NablaType::UNDEFINED 
 				}
 			case REAL3X3:
 				switch rightType.base
 				{
-					case INT, case REAL, case REAL3X3: return leftType
+					case INT, case REAL: return leftType
 					default: NablaType::UNDEFINED 
 				}
 			default: NablaType::UNDEFINED  

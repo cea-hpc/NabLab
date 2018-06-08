@@ -76,7 +76,7 @@ class ExpressionContentProvider
 	}
 
 	def dispatch CharSequence getContent(FunctionCall it) 
-	'''«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+	'''«function.provider»Functions.«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
 	def dispatch CharSequence getContent(VarRef it) 
 	'''«variable.name»«iteratorsContent»«FOR f:fields BEFORE '.' SEPARATOR '.'»get«f.toFirstUpper»()«ENDFOR»'''

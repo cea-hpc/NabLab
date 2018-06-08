@@ -1,48 +1,50 @@
 #ifndef MESH_MESH_H_
 #define MESH_MESH_H_
 
-#include <vector.h>
-
-// Kokkos headers
-#include <Kokkos_Core.hpp>
+#include <vector>
+#include <algorithm>
 
 #include "mesh/NodeIdContainer.h"
 
-using namespace Kokkos;
+using namespace std;
 
 namespace nablalib
 {
-	template<class T>
-	class Mesh
+
+template<class T> class Mesh
+{
+public:
+	Mesh(int nbNodes, int nbEdges, int nbQuads, int nbInnerNodes)
+	: m_nodes(nbNodes)
+	, m_edges(nbEdges)
+	, m_quads(nbQuads)
+	, m_innerNodeIds(nbInnerNodes)
+	{}
+
+	const vector<int> getQuadIdsOfNode(const int nodeId)
 	{
-	public:
-		Mesh();
-		virtual ~Mesh();
-
-		void getQuadIdsOfNode(int nodeId)
+		vector<int> candidateQuadIds;
+		for (int quadId = 0; quadId < m_quads.size(); quadId++)
 		{
-			int size = quads.filter[q|q.nodeIds.contains(nodeId)].size
-					val candidateQuadIds = newIntArrayOfSize(size)
-					var int quadId = 0
-					var int candidateQuadId = 0
-					for (q : quads)
-					{
-						if (q.nodeIds.contains(nodeId))
-						{
-							candidateQuadIds.set(candidateQuadId, quadId)
-							candidateQuadId++
-						}
-						quadId++
-					}
-					return candidateQuadIds
+			auto q = m_quads[quadId];
+			auto qNodeIds = q.getNodeIds();
+			if (find(qNodeIds.begin(), qNodeIds.end(), nodeId)
+					!= qNodeIds.end())
+				candidateQuadIds.push_back(quadId);
 		}
+		return candidateQuadIds;
+	}
 
-	private:
-		View<T> m_nodes;
-		vector<Edge> m_edges;
-		m_quads;
-		m_innerNodeIds;
+	vector<Edge>& getEdges() { return m_edges; }
+	vector<int>& getInnerNodeIds() { return m_innerNodeIds; }
+	vector<T>& getNodes() { return m_nodes; }
+	vector<Quad>& getQuads() { return m_quads; }
 
+private:
+	vector<T> m_nodes;
+	vector<Edge> m_edges;
+	vector<Quad> m_quads;
+	vector<int> m_innerNodeIds;
 };
 
 }

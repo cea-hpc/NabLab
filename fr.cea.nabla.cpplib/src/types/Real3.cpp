@@ -2,13 +2,22 @@
 
 namespace nablalib
 {
-  Real3::Real3(double v) { x = y = z = v; }
-  Real3::Real3(double x, double y, double z) { this->x = x; this->y = y; this->z = z; }
-  Real3::Real3(const Real3& v) { x = v.x; y = v.y; z = v.z; }
-  Real3& Real3::operator=(const Real3& v) { x = v.x; y = v.y; z = v.z; return *this; }
-  Real3& Real3::operator+=(const Real3& v) { x += v.x; y += v.y; z += v.z; return *this; }
-  Real3 Real3::operator*(const Real3& v) { return Real3(x*v.x, y*v.y, z*v.z); }
-  Real3 Real3::operator-(const Real3& v) { return Real3(x-v.x, y-v.y, z-v.z); }
-  Real3 Real3::operator+(const Real3& v) { return Real3(x+v.x, y+v.y, z+v.z); }
-  Real3 Real3::operator/(const Real3& v) { return Real3(x/v.x, y/v.y, z/v.z); }
+Real3 operator*(const Real3& a, const int b) { return Real3(a.x*b, a.y*b, a.z*b); }
+Real3 operator*(const int a, const Real3& b) { return Real3(b.x*a, b.y*a, b.z*a); }
+Real3 operator*(const Real3& a, const double b) { return Real3(a.x*b, a.y*b, a.z*b); }
+Real3 operator*(const double a, const Real3& b) { return Real3(b.x*a, b.y*a, b.z*a); }
+
+Real3 operator+(const Real3& a, const int b) { return Real3(a.x+b, a.y+b, a.z+b); }
+Real3 operator+(const int a, const Real3& b) { return Real3(b.x+a, b.y+a, b.z+a); }
+Real3 operator+(const Real3& a, const double b) { return Real3(a.x+b, a.y+b, a.z+b); }
+Real3 operator+(const double a, const Real3& b) { return Real3(b.x+a, b.y+a, b.z+a); }
+Real3 operator+(const Real3& a, const Real3& b) { return Real3(a.x+b.x, a.y+b.y, a.z+b.z); }
+
+Real3 operator-(const Real3& a, const int b) { return Real3(a.x-b, a.y-b, a.z-b); }
+Real3 operator-(const Real3& a, const double b) { return Real3(a.x-b, a.y-b, a.z-b); }
+Real3 operator-(const Real3& a, const Real3& b) { return Real3(a.x-b.x, a.y-b.y, a.z-b.z); }
+
+Real3 operator/(const Real3& a, const int b) { return Real3(a.x/b, a.y/b, a.z/b); }
+Real3 operator/(const Real3& a, const double b) { return Real3(a.x/b, a.y/b, a.z/b); }
+Real3 operator/(const Real3& a, const Real3& b) { return Real3(a.x/b.x, a.y/b.y, a.z/b.z); }
 }

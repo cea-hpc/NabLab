@@ -2,13 +2,12 @@
 
 namespace nablalib
 {
-  Real3x3::Real3x3(double v) : x(v), y(v), z(v) { }
-  Real3x3::Real3x3(Real3 x, Real3 y, Real3 z) : x(x), y(y), z(z) { }
-  Real3x3::Real3x3(const Real3x3& v) : x(v.x), y(v.y), z(v.z) { }
-  Real3x3& Real3x3::operator=(const Real3x3& v) { x = v.x; y = v.y; z = v.z; return *this; }
-  Real3x3& Real3x3::operator+=(const Real3x3& v) { x += v.x; y += v.y; z += v.z; return *this; }
-  Real3x3 Real3x3::operator*(const Real3x3& v) { return Real3x3(x*v.x, y*v.y, z*v.z); }
-  Real3x3 Real3x3::operator-(const Real3x3& v) { return Real3x3(x-v.x, y-v.y, z-v.z); }
-  Real3x3 Real3x3::operator+(const Real3x3& v) { return Real3x3(x+v.x, y+v.y, z+v.z); }
-  Real3x3 Real3x3::operator/(const Real3x3& v) { return Real3x3(x/v.x, y/v.y, z/v.z); }
+Real3x3 operator*(const Real3x3& a, const int b) { return Real3x3(a.x*b, a.y*b, a.z*b); }
+Real3x3 operator*(const int a, const Real3x3& b) { return Real3x3(b.x*a, b.y*a, b.z*a); }
+Real3x3 operator*(const Real3x3& a, const double b) { return Real3x3(a.x*b, a.y*b, a.z*b); }
+Real3x3 operator*(const double a, const Real3x3& b) { return Real3x3(b.x*a, b.y*a, b.z*a); }
+
+Real3x3 operator+(const Real3x3& a, const Real3x3& b) { return Real3x3(a.x+b.x, a.y+b.y, a.z+b.z); }
+
+Real3x3 operator-(const Real3x3& a, const Real3x3& b) { return Real3x3(a.x-b.x, a.y-b.y, a.z-b.z); }
 }

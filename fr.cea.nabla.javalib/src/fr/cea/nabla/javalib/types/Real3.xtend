@@ -36,18 +36,21 @@ class Real3
 		this.z += v.z
 	}
 
-	def Real3 operator_multiply(Real3 v) { new Real3(x*v.x, y*v.y, z*v.z) }
-	def Real3 operator_multiply(double v) { new Real3(x*v, y*v, z*v) }
 	def Real3 operator_multiply(int v) { new Real3(x*v, y*v, z*v) }
-	def Real3 operator_minus(Real3 v) { new Real3(x-v.x, y-v.y, z-v.z) }
-	def Real3 operator_minus(double v) { new Real3(x-v, y-v, z-v) }
-	def Real3 operator_minus(int v) { new Real3(x-v, y-v, z-v) }
-	def Real3 operator_plus(Real3 v) { new Real3(x+v.x, y+v.y, z+v.z) }
-	def Real3 operator_plus(double v) { new Real3(x+v, y+v, z+v) }
+	def Real3 operator_multiply(double v) { new Real3(x*v, y*v, z*v) }
+
 	def Real3 operator_plus(int v) { new Real3(x+v, y+v, z+v) }
-	def Real3 operator_divide(Real3 v) { new Real3(x/v.x, y/v.y, z/v.z) }
-	def Real3 operator_divide(double v) { new Real3(x/v, y/v, z/v) }
+	def Real3 operator_plus(double v) { new Real3(x+v, y+v, z+v) }
+	def Real3 operator_plus(Real3 v) { new Real3(x+v.x, y+v.y, z+v.z) }
+
+	def Real3 operator_minus(int v) { new Real3(x-v, y-v, z-v) }
+	def Real3 operator_minus(double v) { new Real3(x-v, y-v, z-v) }
+	def Real3 operator_minus(Real3 v) { new Real3(x-v.x, y-v.y, z-v.z) }
+
 	def Real3 operator_divide(int v) { new Real3(x/v, y/v, z/v) }
+	def Real3 operator_divide(double v) { new Real3(x/v, y/v, z/v) }
+	def Real3 operator_divide(Real3 v) { new Real3(x/v.x, y/v.y, z/v.z) }
+
 	def Real3 operator_min(Real3 v) { new Real3(Math::min(x,v.x), Math::min(y,v.y), Math::min(z,v.z)) }
 	def Real3 operator_max(Real3 v) { new Real3(Math::max(x,v.x), Math::max(y,v.y), Math::max(z,v.z)) }
 

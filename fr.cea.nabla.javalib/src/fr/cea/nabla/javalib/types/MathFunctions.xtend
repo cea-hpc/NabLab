@@ -31,13 +31,4 @@ class MathFunctions
 	{
 		a.x*b.y - a.y*b.x
 	}
-	
-	
-	// ***** REDUCTIONS ***** 
-	// Note : le code est identique pour l'ensemble des sommes grace a la surcharge d'operateur en Xtend
-	def static double  sum(double  a, double  b) { a + b }
-	def static Real2   sum(Real2   a, Real2   b) { a + b }
-	def static Real3   sum(Real3   a, Real3   b) { a + b }
-	def static Real2x2 sum(Real2x2 a, Real2x2 b) { a + b }
-	def static Real3x3 sum(Real3x3 a, Real3x3 b) { a + b }
 }

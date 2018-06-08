@@ -15,13 +15,15 @@ class  CartesianMesh2DGenerator
 		
 		// node creation
 		val nodes = mesh.nodes
+		val innerNodeIds = mesh.innerNodeIds
 		var nodeId = 0
 		var innerNodeId = 0
 		for (j : 0..nbYQuads)
 			for (i : 0..nbXQuads)
 			{
-				nodes.set(nodeId, new Real2(xSize*i, ySize*j))
-				if (i==0 || j==0 || i==nbXQuads-1 || j==nbYQuads-1) mesh.innerNodeIds.set(innerNodeId++, nodeId)
+				nodes.add(new Real2(xSize*i, ySize*j))
+				if (i==0 || j==0 || i==nbXQuads-1 || j==nbYQuads-1) 
+					innerNodeIds.set(innerNodeId++, nodeId)
 				nodeId++
 			}
 				

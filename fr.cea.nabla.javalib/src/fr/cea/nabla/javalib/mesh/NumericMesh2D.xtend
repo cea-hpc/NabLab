@@ -23,16 +23,13 @@ class NumericMesh2D
 	def getNodesOfCell(int cellId)
 	{
 		val geometricCell = geometricMesh.quads.get(cellId)
-		geometricCell.nodeIds.toList
-		val int[] a = geometricCell.nodeIds.map[intValue]
-		return a
+		geometricCell.nodeIds
 	}
 	
 	def getNodesOfFace(int faceId)
 	{
 		val geometricFace = geometricMesh.edges.get(faceId)
-		val int[] a = geometricFace.nodeIds.map[intValue]
-		return a
+		geometricFace.nodeIds
 	}
 
 	def getNeighbourCells(int cellId)
@@ -76,6 +73,8 @@ class NumericMesh2D
 	{
 		val cell1Faces = getFacesOfCell(cell1)
 		val cell2Faces = getFacesOfCell(cell2)
-		cell1Faces.findFirst[x|cell2Faces.exists[y|y==x]]
+		val result = cell1Faces.findFirst[x|cell2Faces.exists[y|y==x]]
+		if (result === null) -1
+		else result.intValue
 	}
 }

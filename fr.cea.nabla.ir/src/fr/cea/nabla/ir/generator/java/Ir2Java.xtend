@@ -35,9 +35,6 @@ class Ir2Java
 		import fr.cea.nabla.javalib.types.*;
 		import fr.cea.nabla.javalib.mesh.*;
 
-		import static fr.cea.nabla.javalib.types.MathFunctions.*;
-		import static «name».«className»Functions.*;
-
 		@SuppressWarnings("all")
 		public final class «className»
 		{

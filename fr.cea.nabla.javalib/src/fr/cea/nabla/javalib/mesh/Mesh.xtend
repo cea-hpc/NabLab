@@ -6,10 +6,10 @@ import org.eclipse.xtend.lib.annotations.Accessors
 /** T vaut Real2 ou Real3 */
 class Mesh<T> 
 {
-	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val T[] nodes
-	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val Edge[] edges
-	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val Quad[] quads
-	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val int[] innerNodeIds
+	@Accessors val ArrayList<T> nodes
+	@Accessors val Edge[] edges
+	@Accessors val Quad[] quads
+	@Accessors val int[] innerNodeIds
 
 	new(int nbNodes, int nbEdges, int nbQuads, int nbInnerNodes)
 	{

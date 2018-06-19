@@ -6,6 +6,7 @@ import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 
 class Utils 
 {
@@ -28,5 +29,11 @@ class Utils
 		if (eContainer === null) null
 		else if (eContainer instanceof NablaModule) eContainer as NablaModule
 		else eContainer.nablaModule
+	}
+	
+	static def getFileNameWithoutExtension(Resource input)
+	{
+		input.resourceSet.resourceFactoryRegistry.extensionToFactoryMap.put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl)
+		return input.URI.trimFileExtension.lastSegment
 	}
 }

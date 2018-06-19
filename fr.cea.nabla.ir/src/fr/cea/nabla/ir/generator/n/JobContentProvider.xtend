@@ -1,32 +1,61 @@
 package fr.cea.nabla.ir.generator.n
 
+import com.google.inject.Inject
+import fr.cea.nabla.ir.ir.ArrayVariable
+import fr.cea.nabla.ir.ir.Instruction
+import fr.cea.nabla.ir.ir.InstructionBlock
+import fr.cea.nabla.ir.ir.InstructionJob
+import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.Loop
+import fr.cea.nabla.ir.ir.ReductionJob
+import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.ir.TimeIterationCopyJob
+
 class JobContentProvider 
 {
-//	@Inject extension ExpressionContentProvider
-//	@Inject extension InstructionContentProvider
-//	
-//	def dispatch CharSequence getContent(InstructionJob it)
-//	'''
-//		«header»@ «at» {
-//			«FOR i : instructions»
-//				«i.content»
-//			«ENDFOR»
-//		}
-//	'''
-//	
-//	/** Les jobs reduction ne doivent pas comporter de label pour l'instant (donc pas d'appel à la méthode header). */
-//	def dispatch CharSequence getContent(ReductionJob it)
-//	'''
-//		«iterator.iteratorContent»«variable.name» «operator.literal» «expression.content» @ «at»;
-//	'''
-//	
-//	def dispatch CharSequence getContent(TimeIterationCopyJob it)
-//	'''
-//		«header»@ «at» { 
-//			«left.getName» = «right.getName»;
-//		}
-//	'''
-//	
-//	private def getHeader(Job it)
-//	'''«iterator.iteratorContent»«IF !label.nullOrEmpty»«label» «ENDIF»'''
+	@Inject extension Ir2NUtils
+	@Inject extension ExpressionContentProvider
+	@Inject extension InstructionContentProvider
+	
+	def dispatch CharSequence getContent(InstructionJob it)
+	{
+		if (instruction instanceof Loop)
+		{
+			val loop = instruction as Loop
+			getInnerJobContent(loop.body, '''Â«loop.iterator.contentÂ» Â«headerÂ»@ Â«atÂ»''')
+		}
+		else 
+			getInnerJobContent(instruction, '''Â«headerÂ»@ Â«atÂ»''')	
+	}
+
+	def dispatch CharSequence getContent(TimeIterationCopyJob it)
+	'''
+		Â«left.loopHeaderÂ» Â«headerÂ»@ Â«atÂ» { 
+			Â«left.getNameÂ» = Â«right.getNameÂ»;
+		}
+	'''
+
+	/** Les jobs reduction ne doivent pas comporter de label pour l'instant (donc pas d'appel Ã  la mÃ©thode header). */
+	def dispatch CharSequence getContent(ReductionJob it)
+	'''
+		Â«reduction.iterator.contentÂ»Â«variable.variable.nameÂ» Â«reduction.reduction.operatorÂ» Â«reduction.arg.contentÂ» @ Â«atÂ»;
+	'''
+	
+	private def getHeader(Job it)
+	'''Â«IF !name.nullOrEmptyÂ»Â«nameÂ» Â«ENDIFÂ»'''
+	
+	private def dispatch getInnerJobContent(Instruction i, CharSequence header)
+	'''
+		Â«headerÂ» {
+			Â«i.contentÂ»
+		}
+	'''
+
+	private def dispatch getInnerJobContent(InstructionBlock i, CharSequence header)
+	'''
+		Â«headerÂ» Â«i.contentÂ»
+	'''
+	
+	private def dispatch getLoopHeader(ScalarVariable v) ''''''
+	private def dispatch getLoopHeader(ArrayVariable v) { v.dimensions.map[d | '''âˆ€ Â«d.returnType.type.literalÂ»s'''].join(' ') }
 }

@@ -7,7 +7,8 @@ import org.eclipse.xtend.lib.annotations.Accessors
 class NumericMesh2D
 {
 	public static val MaxNbNodesOfCell = 4
-	public static val MaxNbNodesOfFaces = 2
+	public static val MaxNbNodesOfFace = 2
+	public static val MaxNbNeighbourCells = 4
 	
 	@Accessors val Mesh<Real2> geometricMesh
 	
@@ -19,6 +20,11 @@ class NumericMesh2D
 	def getNbNodes() { geometricMesh.nodes.size }
 	def getNbCells() { geometricMesh.quads.size }
 	def getNbFaces() { geometricMesh.edges.size }
+
+	def getNbInnerNodes() { innerNodes.size }
+	def getNbOuterFaces() { outerFaces.size }
+	def getInnerNodes() { geometricMesh.innerNodeIds }
+	def getOuterFaces() { geometricMesh.outerEdgeIds }
 	
 	def getNodesOfCell(int cellId)
 	{

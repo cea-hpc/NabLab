@@ -38,6 +38,7 @@ class Real3
 
 	def Real3 operator_multiply(int v) { new Real3(x*v, y*v, z*v) }
 	def Real3 operator_multiply(double v) { new Real3(x*v, y*v, z*v) }
+	def Real3 operator_multiply(Real3 v) { new Real3(x*v.x, y*v.y, z*v.z) }
 
 	def Real3 operator_plus(int v) { new Real3(x+v, y+v, z+v) }
 	def Real3 operator_plus(double v) { new Real3(x+v, y+v, z+v) }

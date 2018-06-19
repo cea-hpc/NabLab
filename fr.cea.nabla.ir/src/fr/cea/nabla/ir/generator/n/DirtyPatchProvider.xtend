@@ -16,12 +16,5 @@ class DirtyPatchProvider
 		//#define id3 matrix3x3Id();	
 	'''
 	
-	def getBackendImplicitVariables() { #['δt'] }
-	
-	def getCopyCoordinatesJob(double at)
-	'''
-		∀ nodes @ «at» { 
-			X_ic = coord;
-		}	
-	'''
+	def getBackendImplicitVariables() { #['deltat'] }
 }

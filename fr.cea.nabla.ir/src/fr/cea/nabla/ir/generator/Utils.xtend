@@ -20,6 +20,18 @@ class Utils
 	def prev(String s) { 'prev' + s.toFirstUpper }
 	def next(String s) { 'next' + s.toFirstUpper }
 	def getNbElems(Connectivity it) { 'nb' + name.toFirstUpper}
+	
+	def indexToId(Iterator i, String indexName)
+	{
+		if (i.range.connectivity.indexEqualId) indexName
+		else i.connectivityName + '[' + indexName + ']'
+	}
+	
+	def idToIndex(Connectivity c, String idName)
+	{
+		if (c.indexEqualId) idName
+		else c.name + '.indexOf(' + idName + ')'
+	}
 
 	def getComment(Job it)
 	'''
@@ -39,7 +51,7 @@ class Utils
 		// connectivités nécessaires pour les variables
 		val connectivities = variables.filter(ArrayVariable).map[dimensions].flatten.toSet
 		// connectivités utilisées par les itérateurs
-		// jobs.forEach[j | connectivities += j.eAllContents.filter(Iterator).map[range.connectivity].toSet]
+		jobs.forEach[j | connectivities += j.eAllContents.filter(Iterator).map[range.connectivity].toSet]
 
 		return connectivities
 	}

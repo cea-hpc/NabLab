@@ -33,7 +33,11 @@ class Real2x2
 
 	def Real2x2 operator_multiply(int v) { new Real2x2(x*v, y*v) }
 	def Real2x2 operator_multiply(double v) { new Real2x2(x*v, y*v) }
+	def Real2x2 operator_multiply(Real2x2 v) { new Real2x2(x*v.x, y*v.y) }
 	
+	def Real2x2 operator_divide(int v) { new Real2x2(x/v, y/v) }
+	def Real2x2 operator_divide(double v) { new Real2x2(x/v, y/v) }
+
 	def Real2x2 operator_plus(Real2x2 v) { new Real2x2(x+v.x, y+v.y) }
 
 	def Real2x2 operator_minus(Real2x2 v) { new Real2x2(x-v.x, y-v.y) }

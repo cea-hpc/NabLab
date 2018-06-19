@@ -1,7 +1,7 @@
 package fr.cea.nabla.ir.generator.kokkos
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.generator.IteratorExtensions
+import fr.cea.nabla.ir.IteratorExtensions
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.If
@@ -64,11 +64,12 @@ class InstructionContentProvider
 	
 	private def addParallelLoop(Iterator it, Instruction body)
 	'''
+		«IF !range.connectivity.indexEqualId»int[] «connectivityName» = «range.accessor»;«ENDIF»
 		Kokkos::parallel_for(«range.connectivity.nbElems», KOKKOS_LAMBDA(const int «varName»)
 		{
-			«IF needIdFor(body)»int «name»Id = «varName»;«ENDIF»
+			«IF needIdFor(body)»int «name»Id = «indexToId(varName)»;«ENDIF»
 			«FOR c : getRequiredConnectivities(body)»
-			int «name»«c.name.toFirstUpper» = «c.name».indexOf(«name»Id);
+			int «name»«c.name.toFirstUpper» = «idToIndex(c, name+'Id')»;
 			«ENDFOR»
 			«IF body instanceof InstructionBlock»
 			«FOR i : (body as InstructionBlock).instructions»
@@ -89,14 +90,14 @@ class InstructionContentProvider
 			«IF needNext(body)»int «next(varName)» = («varName»+1+«connectivityName».size())%«connectivityName».size();«ENDIF»
 			«IF needIdFor(body)»
 				«val idName = name + 'Id'»
-				int «idName» = «connectivityName»[«varName»];
-				«IF needPrev(body)»int «prev(idName)» = «connectivityName»[«prev(varName)»];«ENDIF»
-				«IF needNext(body)»int «next(idName)» = «connectivityName»[«next(varName)»];«ENDIF»
+				int «idName» = «indexToId(varName)»;
+				«IF needPrev(body)»int «prev(idName)» = «indexToId(prev(varName))»;«ENDIF»
+				«IF needNext(body)»int «next(idName)» = «indexToId(next(varName))»;«ENDIF»
 				«FOR c : getRequiredConnectivities(body)»
 					«val cName = name + c.name.toFirstUpper»
-					int «cName» = «idName»;
-					«IF needPrev(body)»int «prev(cName)» = «prev(idName)»;«ENDIF»
-					«IF needNext(body)»int «next(cName)» = «next(idName)»;«ENDIF»
+					int «cName» = «idToIndex(c, idName)»;
+					«IF needPrev(body)»int «prev(cName)» = «idToIndex(c, prev(idName))»;«ENDIF»
+					«IF needNext(body)»int «next(cName)» = «idToIndex(c, next(idName))»;«ENDIF»
 				«ENDFOR»
 			«ENDIF»
 			«body.content»

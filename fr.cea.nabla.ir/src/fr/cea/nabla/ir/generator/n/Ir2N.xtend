@@ -1,49 +1,63 @@
 package fr.cea.nabla.ir.generator.n
 
-import fr.cea.nabla.ir.ir.IrModule
 import com.google.inject.Inject
+import fr.cea.nabla.ir.ir.ArrayVariable
+import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.ScalarVariable
 
 class Ir2N 
 {
+	@Inject extension Ir2NUtils
 	@Inject extension ExpressionContentProvider
 	@Inject extension JobContentProvider
 	@Inject extension DirtyPatchProvider
 	
 	def getFileContent(IrModule it)
 	'''
-		«fileHeader»
+		Â«fileHeaderÂ»
 		
 		options {
-			«FOR v : options.filter[x|x.defaultValue!==null]»
-				«v.type.literal» «v.name» = «v.defaultValue.content»;
-			«ENDFOR»
+			Â«FOR v : variables.filter(ScalarVariable).filter[const]Â»
+				Â«v.type.NTypeÂ» Â«v.nameÂ» = Â«v.defaultValue.contentÂ»;
+			Â«ENDFORÂ»
 		};
 		
 		global {
-			«val varsByType = globalVariables.filter[x|!backendImplicitVariables.contains(x.name)].groupBy[type]»
-			«FOR type : varsByType.keySet»
-				«type.literal» «FOR v : varsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
-			«ENDFOR»
+			Â«val varsByType = variables.filter(ScalarVariable).filter[!const].filter[x|!backendImplicitVariables.contains(x.name)].groupBy[type]Â»
+			Â«FOR type : varsByType.keySetÂ»
+				Â«type.NTypeÂ» Â«FOR v : varsByType.get(type) SEPARATOR ', 'Â»Â«v.nameÂ»Â«ENDFORÂ»;
+			Â«ENDFORÂ»
 		};
 		
-		«val itemVarsBySupport = itemVariables.groupBy[support]»
-		«FOR support : itemVarsBySupport.keySet SEPARATOR '\n'»
-		«support.literal» {
-			«val itemVarsByType = itemVarsBySupport.get(support).groupBy[type]»
-			«FOR type : itemVarsByType.keySet»
-				«type.literal» «FOR v : itemVarsByType.get(type) SEPARATOR ', '»«v.content»«ENDFOR»;
-			«ENDFOR»
+		Â«FOR support : itemVariables.keySet SEPARATOR '\n'Â»
+		Â«support.literalÂ» {
+			Â«val itemVarsByType = itemVariables.get(support).groupBy[type]Â»
+			Â«FOR type : itemVarsByType.keySetÂ»
+				Â«type.NTypeÂ» Â«FOR v : itemVarsByType.get(type) SEPARATOR ', 'Â»Â«v.nameÂ»Â«ENDFORÂ»;
+			Â«ENDFORÂ»
 		};
-		«ENDFOR»
+		Â«ENDFORÂ»
 		
-		«getCopyCoordinatesJob(jobs.map[at].min - 1)»
-		
-		«FOR j : jobs.sortBy[at]»
-			«j.content»
+		Â«FOR j : jobs.sortBy[at]Â»
+			Â«j.contentÂ»
 			
-		«ENDFOR»
+		Â«ENDFORÂ»
 	'''
 	
-	private def getContent(ItemVariable it)
-	'''«getName»«IF innerSupport!=ItemFamily::NONE»[«innerSupport.literal»]«ENDIF»'''
+	private def getItemVariables(IrModule it)
+	{
+		val msg = "** Unmanaged dimensions of variables: "
+		val unmanagedDimvars = variables.filter(ArrayVariable).filter[dimensions.size>2]
+		if (!unmanagedDimvars.empty) throw new Exception(msg + unmanagedDimvars.map[name].join(', '))
+	
+		val dim1Vars = variables.filter(ArrayVariable).filter[dimensions.size==1]
+		val wrongDim1Vars = dim1Vars.filter[! (dimensions.head.inTypes.empty && dimensions.head.returnType.multiple)]
+		if (!wrongDim1Vars.empty) throw new Exception(msg + wrongDim1Vars.map[name].join(', '))
+
+		val dim2Vars = variables.filter(ArrayVariable).filter[dimensions.size==2]
+		val wrongDim2Vars = dim2Vars.filter[! (dimensions.get(1).inTypes.size==1 && dimensions.get(0).returnType.type==dimensions.get(1).inTypes.head)]
+		if (!wrongDim2Vars.empty) throw new Exception(msg + wrongDim2Vars.map[name].join(', '))
+		
+		variables.filter(ArrayVariable).groupBy[dimensions.head.returnType.type]
+	}
 }

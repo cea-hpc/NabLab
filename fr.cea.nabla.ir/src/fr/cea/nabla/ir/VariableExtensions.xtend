@@ -7,9 +7,15 @@ import java.util.HashSet
 import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
+import fr.cea.nabla.ir.ir.ScalarVariable
 
 class VariableExtensions 
 {
+	static def isScalarConst(Variable it)
+	{
+		(it instanceof ScalarVariable) && (it as ScalarVariable).const
+	}
+	
 	static def getNextJobs(Variable it)
 	{
 		val nextJobs = new HashSet<Job>

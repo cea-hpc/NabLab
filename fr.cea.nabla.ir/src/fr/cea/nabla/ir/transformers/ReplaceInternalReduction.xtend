@@ -1,4 +1,4 @@
-package fr.cea.nabla.ir
+package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.BasicType
 import fr.cea.nabla.ir.ir.Expression
@@ -20,7 +20,7 @@ class ReplaceInternalReduction implements IrTransformationStage
 	
 	override getDescription() 
 	{
-		'Replacing internal reductions by loops'
+		'Replace internal reductions by loops'
 	}
 
 	/**
@@ -105,7 +105,7 @@ class ReplaceInternalReduction implements IrTransformationStage
 				inTypes += r.collectionType
 				inTypes += r.returnType
 				returnType = r.returnType
-				provider = m.name
+				provider = r.provider
 			]
 			m.functions += function
 		}

@@ -2,7 +2,7 @@ KOKKOS_HOME = /home/lelandaisb/gmds_kokkos/kokkos-2.5.00-install
 NABLALIB_HOME = ../../../fr.cea.nabla.cpplib
 INCS = -I. -I$(NABLALIB_HOME)/src
 NABLALIB = -L$(NABLALIB_HOME)/src -lnabla
-TARGET = WhiteheatKokkos.exe
+TARGET = GlaceKokkos.exe
 #CXXFLAGS += --std=c++11
 
 all: $(TARGET)

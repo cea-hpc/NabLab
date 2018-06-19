@@ -20,10 +20,28 @@ import fr.cea.nabla.nabla.VarRef
 import org.eclipse.xtext.validation.Check
 
 import static extension fr.cea.nabla.Utils.*
+import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.VarGroupDeclaration
 
 class BasicValidator  extends AbstractNablaValidator
 {
+	public static val NO_COORD_VARIABLE = "NablaError::NoCoordVariable"
+	
 	@Inject extension VarExtensions
+	
+	@Check
+	def checkCoordVar(NablaModule it)
+	{
+		if (!variables.filter(VarGroupDeclaration).exists[g | g.variables.exists[v|v.name == 'coord']])
+			error("Module must contain a node variable named 'coord' to store node coordinates", NablaPackage.Literals.NABLA_MODULE__NAME, NO_COORD_VARIABLE)
+	}
+	
+	@Check
+	def checkName(NablaModule it)
+	{
+		if (!name.nullOrEmpty && Character::isLowerCase(name.charAt(0)))
+			error('Module name must start with an uppercase', NablaPackage.Literals.NABLA_MODULE__NAME)
+	}
 	
 	@Check
 	def checkUnusedVariables(Var it)

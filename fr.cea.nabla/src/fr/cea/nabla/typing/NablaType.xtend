@@ -21,7 +21,7 @@ class NablaType
 		if (t === UNDEFINED) return 'undefined'
 
 		var tName = t.base.literal
-		for (i : 1..t.dimension) tName += '[]'
+		for (i : 0..<t.dimension) tName += '[]'
 		return tName
 	}
 	

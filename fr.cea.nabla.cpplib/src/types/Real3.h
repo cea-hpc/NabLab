@@ -32,6 +32,7 @@ Real3 operator*(const Real3& a, const int b);
 Real3 operator*(const int a, const Real3& b);
 Real3 operator*(const Real3& a, const double b);
 Real3 operator*(const double a, const Real3& b);
+Real3 operator*(const Real3& a, const Real3& b);
 
 Real3 operator+(const Real3& a, const int b);
 Real3 operator+(const int a, const Real3& b);

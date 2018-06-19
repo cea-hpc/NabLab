@@ -25,9 +25,9 @@ class Ir2Java
 	 * TODO : option de la bibliothèque de maillage pour savoir si les index sont consécutifs
 	 * TODO : parallélisme de taches du graphe en Kokkos et Java.
 	 */
-	def getFileContent(IrModule it, String className)
+	def getFileContent(IrModule it)
 	'''
-		package «name»;
+		package «name.toLowerCase»;
 		
 		import java.util.ArrayList;
 		import java.util.stream.IntStream;
@@ -36,7 +36,7 @@ class Ir2Java
 		import fr.cea.nabla.javalib.mesh.*;
 
 		@SuppressWarnings("all")
-		public final class «className»
+		public final class «name»
 		{
 			public final static class Options
 			{
@@ -71,14 +71,14 @@ class Ir2Java
 			«ENDFOR»
 			«ENDIF»
 			
-			public «className»(Options o, NumericMesh2D m)
+			public «name»(Options aOptions, NumericMesh2D aNumericMesh2D)
 			{
-				options = o;
-				mesh = m;
+				options = aOptions;
+				mesh = aNumericMesh2D;
 				«FOR c : usedConnectivities»
 				«c.nbElems» = «c.connectivityAccessor»;
 				«ENDFOR»
-				writer = new VtkFileWriter2D("ParallelWhiteHeat", m.getGeometricMesh());
+				writer = new VtkFileWriter2D("«name»", mesh.getGeometricMesh());
 
 				// Arrays allocation
 				«FOR a : variables.filter(ArrayVariable)»
@@ -88,7 +88,7 @@ class Ir2Java
 
 				// Copy node coordinates
 				ArrayList<Real2> gNodes = mesh.getGeometricMesh().getNodes();
-				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> X[rNodes] = gNodes.get(rNodes));
+				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> coord[rNodes] = gNodes.get(rNodes));
 			}
 			
 			«FOR j : jobs.sortBy[at] SEPARATOR '\n'»
@@ -117,10 +117,10 @@ class Ir2Java
 
 			public static void main(String[] args)
 			{
-				«className».Options o = new «className».Options();
-				Mesh<Real2> geometricMesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.LENGTH, o.LENGTH);
-				NumericMesh2D numericMesh = new NumericMesh2D(geometricMesh);
-				«className» i = new «className»(o, numericMesh);
+				«name».Options o = new «name».Options();
+				Mesh<Real2> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.LENGTH, o.LENGTH);
+				NumericMesh2D nm = new NumericMesh2D(gm);
+				«name» i = new «name»(o, nm);
 				i.simulate();
 			}
 		};

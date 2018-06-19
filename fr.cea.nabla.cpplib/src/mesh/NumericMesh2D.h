@@ -13,7 +13,8 @@ class NumericMesh2D
 {
 public:
 	static const int MaxNbNodesOfCell = 4;
-	static const int MaxNbNodesOfFaces = 2;
+	static const int MaxNbNodesOfFace = 2;
+	static const int MaxNbNeighbourCells = 2;
 
 	NumericMesh2D(Mesh<Real2>* geometricMesh);
 	Mesh<Real2>* getGeometricMesh() { return m_geometricMesh; }

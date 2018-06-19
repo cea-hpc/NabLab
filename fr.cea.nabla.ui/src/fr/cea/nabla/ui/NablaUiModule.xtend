@@ -5,12 +5,10 @@ package fr.cea.nabla.ui
 
 import com.google.inject.Binder
 import fr.cea.nabla.NablaEncodingProvider
-import fr.cea.nabla.ui.hovers.NablaEObjectDocumentationProvider
 import fr.cea.nabla.ui.hovers.NablaEObjectHoverProvider
 import fr.cea.nabla.ui.syntaxcoloring.NablaHighlightingConfiguration
 import fr.cea.nabla.ui.syntaxcoloring.NablaSemanticHighlightingCalculator
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
-import org.eclipse.xtext.documentation.IEObjectDocumentationProvider
 import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator
 import org.eclipse.xtext.parser.IEncodingProvider
 import org.eclipse.xtext.service.DispatchingProvider
@@ -44,10 +42,12 @@ class NablaUiModule extends AbstractNablaUiModule
 		typeof(NablaEObjectHoverProvider)
 	}
 	
-	def Class<? extends IEObjectDocumentationProvider> bindIEObjectDocumentationProvider()
-	{
-		typeof(NablaEObjectDocumentationProvider)
-	}
+// Avant, des commentaires spéciaux permettaient de mettre une documentation sur l'objet...
+// Faudrait penser à refaire quelques chose pour générer une documentation
+//	def Class<? extends IEObjectDocumentationProvider> bindIEObjectDocumentationProvider()
+//	{
+//		typeof(NablaEObjectDocumentationProvider)
+//	}
 	
 	override configureUiEncodingProvider(Binder binder)
 	{

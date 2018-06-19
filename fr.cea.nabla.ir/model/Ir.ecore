@@ -76,6 +76,9 @@
         eType="#//ItemType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//ItemArgType"
         containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="indexEqualId" lowerBound="1"
+        eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EBoolean"
+        defaultValueLiteral="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ItemArgType" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiple" unique="false"

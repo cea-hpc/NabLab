@@ -1,14 +1,14 @@
-package fr.cea.nabla.ir
+package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ScalarVariable
 
-class ReplaceDefaultValueByInitJob implements IrTransformationStage
+class ReplaceDefaultValue implements IrTransformationStage
 {
 	override getDescription() 
 	{
-		'Replacing global variables default values by initialization jobs'
+		'Replace global variables default values by initialization jobs'
 	}
 	
 	/**

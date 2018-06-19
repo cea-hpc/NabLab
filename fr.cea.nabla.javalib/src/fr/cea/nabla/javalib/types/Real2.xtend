@@ -33,6 +33,7 @@ class Real2
 
 	def Real2 operator_multiply(int v) { new Real2(x*v, y*v) }
 	def Real2 operator_multiply(double v) { new Real2(x*v, y*v) }
+	def Real2 operator_multiply(Real2 v) { new Real2(x*v.x, y*v.y) }
 	
 	def Real2 operator_plus(int v) { new Real2(x+v, y+v) }
 	def Real2 operator_plus(double v) { new Real2(x+v, y+v) }

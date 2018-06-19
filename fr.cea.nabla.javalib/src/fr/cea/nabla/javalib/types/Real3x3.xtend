@@ -38,8 +38,12 @@ class Real3x3
 
 	def Real3x3 operator_multiply(int v) { new Real3x3(x*v, y*v, z*v) }
 	def Real3x3 operator_multiply(double v) { new Real3x3(x*v, y*v, z*v) }
+	def Real3x3 operator_multiply(Real3x3 v) { new Real3x3(x*v.x, y*v.y, z*v.z) }
 
-	def Real3x3 operator_plus(Real3 v) { new Real3x3(x+v.x, y+v.y, z+v.z) }
+	def Real3x3 operator_divide(int v) { new Real3x3(x/v, y/v, z/v) }
+	def Real3x3 operator_divide(double v) { new Real3x3(x/v, y/v, z/v) }
+
+	def Real3x3 operator_plus(Real3x3 v) { new Real3x3(x+v.x, y+v.y, z+v.z) }
 
 	def Real3x3 operator_minus(Real3x3 v) { new Real3x3(x-v.x, y-v.y, z-v.z) }
 

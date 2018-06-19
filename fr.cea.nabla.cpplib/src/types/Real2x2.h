@@ -30,6 +30,10 @@ Real2x2 operator*(const Real2x2& a, const int b);
 Real2x2 operator*(const int a, const Real2x2& b);
 Real2x2 operator*(const Real2x2& a, const double b);
 Real2x2 operator*(const double a, const Real2x2& b);
+Real2x2 operator*(const Real2x2& a, const Real2x2& b);
+
+Real2x2 operator/(const Real2x2& a, const int b);
+Real2x2 operator/(const Real2x2& a, const double b);
 
 Real2x2 operator+(const Real2x2& a, const Real2x2& b);
 

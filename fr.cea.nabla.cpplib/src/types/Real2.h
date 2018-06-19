@@ -31,6 +31,7 @@ Real2 operator*(const Real2& a, const int b);
 Real2 operator*(const int a, const Real2& b);
 Real2 operator*(const Real2& a, const double b);
 Real2 operator*(const double a, const Real2& b);
+Real2 operator*(const Real2& a, const Real2& b);
 
 Real2 operator+(const Real2& a, const int b);
 Real2 operator+(const int a, const Real2& b);

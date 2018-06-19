@@ -20,6 +20,9 @@ import fr.cea.nabla.ir.ir.RealConstant
 import fr.cea.nabla.ir.ir.ScalarVariable
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
+import fr.cea.nabla.ir.ir.Variable
+
+import static extension fr.cea.nabla.ir.VariableExtensions.isScalarConst
 
 class ExpressionContentProvider
 {
@@ -79,8 +82,14 @@ class ExpressionContentProvider
 	'''«function.provider»Functions.«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
 	def dispatch CharSequence getContent(VarRef it) 
-	'''«variable.name»«iteratorsContent»«FOR f:fields BEFORE '.' SEPARATOR '.'»get«f.toFirstUpper»()«ENDFOR»'''
+	'''«variable.codeName»«iteratorsContent»«FOR f:fields BEFORE '.' SEPARATOR '.'»get«f.toFirstUpper»()«ENDFOR»'''
 
+	private def getCodeName(Variable it)
+	{
+		if (scalarConst) 'options.' + name
+		else name
+	}
+	
 	private def getIteratorsContent(VarRef it) 
 	{ 
 		if (iterators.empty || variable instanceof ScalarVariable) return ''

@@ -1,14 +1,14 @@
-package fr.cea.nabla.ir
+package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.ScalarVarDefinition
 
-class ReplaceUtf8ByAsciiChar implements IrTransformationStage 
+class ReplaceUtf8 implements IrTransformationStage 
 {
 	override getDescription() 
 	{
-		'Removing UTF8 characters in function, variable and job names'
+		'Replace UTF8 characters in function, variable and job names by ASCII characters'
 	}
 	
 	override transform(IrModule m) 

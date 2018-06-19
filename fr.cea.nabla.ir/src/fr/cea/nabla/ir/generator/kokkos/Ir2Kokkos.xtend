@@ -15,7 +15,7 @@ class Ir2Kokkos
 	@Inject extension JobContentProvider
 	@Inject extension VariableExtensions
 
-	def getFileContent(IrModule it, String className)
+	def getFileContent(IrModule it)
 	'''
 	#include <iostream>
 
@@ -25,11 +25,11 @@ class Ir2Kokkos
 	// Project headers
 	#include "mesh/NumericMesh2D.h"
 	#include "mesh/CartesianMesh2DGenerator.h"
-	#include "types/MathFunctions.h"
+	#include "types/Types.h"
 
 	using namespace nablalib;
 
-	class «className»
+	class «name»
 	{
 	public:
 		struct Options
@@ -59,9 +59,9 @@ class Ir2Kokkos
 		«ENDIF»
 
 	public:
-		«className»(Options* o, NumericMesh2D* m)
-		: options(o)
-		, mesh(m)
+		«name»(Options* aOptions, NumericMesh2D* aNumericMesh2D)
+		: options(aOptions)
+		, mesh(aNumericMesh2D)
 		«FOR c : usedConnectivities»
 		, «c.nbElems»(«c.connectivityAccessor»)
 		«ENDFOR»
@@ -70,10 +70,10 @@ class Ir2Kokkos
 		«ENDFOR»
 		{
 			// Copy node coordinates
-			auto gNodes = m->getGeometricMesh()->getNodes();
+			auto gNodes = mesh->getGeometricMesh()->getNodes();
 			Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int rNodes)
 			{
-				X(rNodes) = gNodes[rNodes];
+				coord(rNodes) = gNodes[rNodes];
 			});
 		}
 
@@ -106,14 +106,14 @@ class Ir2Kokkos
 	int main(int argc, char* argv[]) 
 	{
 		Kokkos::initialize(argc, argv);
-		auto options = new «className»::Options();
-		auto geometricMesh = CartesianMesh2DGenerator::generate(options->X_EDGE_ELEMS, options->Y_EDGE_ELEMS, options->LENGTH, options->LENGTH);
-		auto numericMesh = new NumericMesh2D(geometricMesh);
-		«className» c(options, numericMesh);
+		auto o = new «name»::Options();
+		auto gm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->LENGTH, o->LENGTH);
+		auto nm = new NumericMesh2D(gm);
+		«name» c(o, nm);
 		c.simulate();
-		delete numericMesh;
-		delete geometricMesh;
-		delete options;
+		delete nm;
+		delete gm;
+		delete o;
 		Kokkos::finalize();
 	}
 	'''

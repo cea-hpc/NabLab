@@ -16,16 +16,16 @@ class IrAnnotationHelper
 	public static val ANNOTATION_OFFSET_DETAIL = 'offset'
 	public static val ANNOTATION_LENGTH_DETAIL = 'length'
 	
-	def dispatch toIrAnnotation(NablaModule file)
+	def dispatch toIrAnnotation(NablaModule it)
 	{
-		val annotation = file.createIrAnnot
-		annotation.details.put(ANNOTATION_URI_DETAIL, file.eResource.URI.toString)
+		val annotation = createIrAnnot
+		annotation.details.put(ANNOTATION_URI_DETAIL, eResource.URI.toString)
 		return annotation
 	}
 	
-	def dispatch toIrAnnotation(EObject nablaElt)
+	def dispatch toIrAnnotation(EObject it)
 	{
-		nablaElt.createIrAnnot
+		createIrAnnot
 	}
 	
 	def getUriDetail(EObject o)

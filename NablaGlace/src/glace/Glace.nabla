@@ -1,15 +1,14 @@
-module glace;
+module Glace;
 
 with Math.*;
 
 connectivities {
 	nodes: (∅) → {node};
-	cells: (∅) → {cell}; 
+	cells: (∅) → {cell};
 	outerFaces: (∅) → {face};
 	innerNodes: (∅) → {node};
 	nodesOfCell: (cell) → {node};
 	nodesOfFace: (face) → {node};
-	cellsOfNode: (node) → {cell};
 }
 
 functions {
@@ -93,7 +92,9 @@ ComputeAjr: ∀j∈cells(),∀r∈nodesOfCell(j), A{j,r} = ((ρ{j}*c{j})/C{j,r})
 ComputeFjr: ∀j∈cells(),∀r∈nodesOfCell(j), F{j,r} = p{j}*vectC{j,r} + matVectProduct(A{j,r}, (u{j}-fu{r}));
 //ComputeMr: ∀r∈nodes(), M{r} = ∑{j∈cellsOfNode(r)}(A{j,r});
 ComputeMr: ∀j∈cells(), ∀r∈nodesOfCell(j), M{r} += A{j,r};
-ComputeBr: ∀r∈nodes(), b{r} = ∑{j∈cellsOfNode(r)}(vectC{j,r}*p{j} + matVectProduct(A{j,r}, u{j}));
+//ComputeBr: ∀r∈nodes(), b{r} = ∑{j∈cellsOfNode(r)}(vectC{j,r}*p{j} + matVectProduct(A{j,r}, u{j}));
+InitBr: ∀r∈nodes(), b{r} = {0.0,0.0,0.0};
+ComputeBr: ∀j∈cells(), ∀r∈nodesOfCell(j), b{r} += vectC{j,r}*p{j} + matVectProduct(A{j,r}, u{j});
 ComputeMt: ∀r∈innerNodes(), Mt{r} = M{r};
 ComputeBt: ∀r∈innerNodes(), bt{r} = b{r};
 
@@ -101,7 +102,7 @@ YOuterFacesComputations: ∀k∈outerFaces(), {
 	ℝ Y_MIN = 0.0; 
 	ℝ Y_MAX = LENGTH;
 	ℝ³ˣ³ I = matrix3x3Id();
-	ℝ³ nY = {0.0,1.0,0.0};
+	ℝ³ nY = {0.0,0.0,0.0};
 	∀r∈nodesOfFace(k), {
 		if ((X{r}.y == Y_MIN) || (X{r}.y == Y_MAX)) {
 			ℝ sign = 0.0;
@@ -123,7 +124,7 @@ XOuterFacesComputations: ∀k∈outerFaces(), {
 	∀r∈nodesOfFace(k), {
 		if ((Math.fabs(X{r}.x-X_MIN) < 1.0e-10) || ( (Math.fabs(X{r}.x-X_MAX) < 1.0e-10) )) {
 			Mt{r} = I;
-			bt{r} = {0.0, 0.0, 0.0};
+			bt{r} = {0.0, 0.0,0.0};
 		}
   }
 }

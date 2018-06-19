@@ -35,6 +35,12 @@ class DivTypeProvider implements BinaryOperatorTypeProvider
 					case INT, case REAL, case REAL3: leftType
 					default: NablaType::UNDEFINED
 				}
+			case REAL2X2, case REAL3X3:
+				switch rightType.base
+				{
+					case INT, case REAL: return leftType
+					default: NablaType::UNDEFINED 
+				}
 			default: NablaType::UNDEFINED 
 		}
 	}

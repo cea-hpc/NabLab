@@ -1,4 +1,4 @@
-package fr.cea.nabla.ir
+package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.IrModule
 

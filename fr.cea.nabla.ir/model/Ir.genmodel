@@ -84,6 +84,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Connectivity/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute Ir.ecore#//Connectivity/inTypes"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Connectivity/returnType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Connectivity/indexEqualId"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ItemArgType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ItemArgType/multiple"/>

@@ -1,5 +1,7 @@
 package fr.cea.nabla
 
+import fr.cea.nabla.ir.ir.Real2x2Constant
+import fr.cea.nabla.ir.ir.Real3x3Constant
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BoolConstant
@@ -75,6 +77,8 @@ class LabelServices
 	static def dispatch String getLabel(RealConstant it) { value.toString }
 	static def dispatch String getLabel(Real2Constant it) { '{' + x + ',' + y + '}' }	
 	static def dispatch String getLabel(Real3Constant it) { '{' + x + ',' + y + ',' + z + '}' }	
+	static def dispatch String getLabel(Real2x2Constant it) { '{' + x.label + ',' + y.label + '}' }	
+	static def dispatch String getLabel(Real3x3Constant it) { '{' + x.label + ',' + y.label + ',' + z.label + '}' }	
 	static def dispatch String getLabel(BoolConstant it) { value.toString }
 	static def dispatch String getLabel(RealXCompactConstant it) { type.literal + '(' + value + ')' }
 	static def dispatch String getLabel(MinConstant it) { '-\u221E' }

@@ -28,6 +28,8 @@ import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
 import java.util.List
+import fr.cea.nabla.nabla.Real2x2Constant
+import fr.cea.nabla.nabla.Real3x3Constant
 
 class ExpressionTypeProvider 
 {
@@ -46,6 +48,8 @@ class ExpressionTypeProvider
 			RealConstant: BasicTypeProvider::REAL
 			Real2Constant: BasicTypeProvider::REAL2
 			Real3Constant: BasicTypeProvider::REAL3
+			Real2x2Constant: BasicTypeProvider::REAL2X2
+			Real3x3Constant: BasicTypeProvider::REAL3X3
 			BoolConstant: BasicTypeProvider::BOOL
 			RealXCompactConstant: e.type.typeFor
 			MinConstant: e.type.typeFor

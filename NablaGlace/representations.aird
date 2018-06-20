@@ -1094,6 +1094,7 @@
     <semanticResources>java:/Objects/fr.cea.nabla.generator.WCResourceWriter</semanticResources>
     <semanticResources>src-gen/whiteheat/Whiteheat.nablair</semanticResources>
     <semanticResources>src-gen/glace/Glace.nablair</semanticResources>
+    <semanticResources>src/glace2D/Glace2D.nabla</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" xmi:id="_IEXXECFIEeiTgaFcTJ5rOw">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/resource/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_R77hIEvREei7br7Ozpir2A" name="Glace  Ir Graph" repPath="#_R2FX0EvREei7br7Ozpir2A">

@@ -20,7 +20,9 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.Real2Constant
+import fr.cea.nabla.nabla.Real2x2Constant
 import fr.cea.nabla.nabla.Real3Constant
+import fr.cea.nabla.nabla.Real3x3Constant
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealXCompactConstant
 import fr.cea.nabla.nabla.ReductionCall
@@ -80,6 +82,8 @@ class LatexLabelServices
 	static def dispatch String getLatex(RealConstant it) { value.toString }
 	static def dispatch String getLatex(Real2Constant it) { '\\{' + x + ',' + y + '\\}' }	
 	static def dispatch String getLatex(Real3Constant it) { '\\{' + x + ',' + y + ',' + z + '\\}' }	
+	static def dispatch String getLatex(Real2x2Constant it) { '\\{' + x.latex + ',' + y.latex + '\\}' }	
+	static def dispatch String getLatex(Real3x3Constant it) { '\\{' + x.latex + ',' + y.latex + ',' + z.latex + '\\}' }	
 	static def dispatch String getLatex(BoolConstant it) { value.toString }
 	static def dispatch String getLatex(RealXCompactConstant it) { type.literal + '(' + value + ')' }
 	static def dispatch String getLatex(MinConstant it) { '-\u221E' }

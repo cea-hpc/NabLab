@@ -175,6 +175,16 @@ public class ComparisonItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.COMPARISON__LEFT,
+				 NablaFactory.eINSTANCE.createReal2Constant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.COMPARISON__LEFT,
+				 NablaFactory.eINSTANCE.createReal3Constant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.COMPARISON__LEFT,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -240,17 +250,17 @@ public class ComparisonItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.COMPARISON__LEFT,
-				 NablaFactory.eINSTANCE.createReal2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.COMPARISON__LEFT,
-				 NablaFactory.eINSTANCE.createReal3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.COMPARISON__LEFT,
 				 NablaFactory.eINSTANCE.createBoolConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.COMPARISON__LEFT,
+				 NablaFactory.eINSTANCE.createReal2x2Constant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.COMPARISON__LEFT,
+				 NablaFactory.eINSTANCE.createReal3x3Constant()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -285,6 +295,16 @@ public class ComparisonItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.COMPARISON__RIGHT,
+				 NablaFactory.eINSTANCE.createReal2Constant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.COMPARISON__RIGHT,
+				 NablaFactory.eINSTANCE.createReal3Constant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.COMPARISON__RIGHT,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -350,17 +370,17 @@ public class ComparisonItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.COMPARISON__RIGHT,
-				 NablaFactory.eINSTANCE.createReal2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.COMPARISON__RIGHT,
-				 NablaFactory.eINSTANCE.createReal3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.COMPARISON__RIGHT,
 				 NablaFactory.eINSTANCE.createBoolConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.COMPARISON__RIGHT,
+				 NablaFactory.eINSTANCE.createReal2x2Constant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.COMPARISON__RIGHT,
+				 NablaFactory.eINSTANCE.createReal3x3Constant()));
 
 		newChildDescriptors.add
 			(createChildParameter

@@ -4,6 +4,8 @@ import com.google.inject.Inject
 import fr.cea.nabla.FunctionCallExtensions
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.Real2Constant
+import fr.cea.nabla.ir.ir.Real3Constant
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BasicType
 import fr.cea.nabla.nabla.BoolConstant
@@ -19,8 +21,8 @@ import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
-import fr.cea.nabla.nabla.Real2Constant
-import fr.cea.nabla.nabla.Real3Constant
+import fr.cea.nabla.nabla.Real2x2Constant
+import fr.cea.nabla.nabla.Real3x3Constant
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealXCompactConstant
 import fr.cea.nabla.nabla.ReductionCall
@@ -81,7 +83,7 @@ class IrExpressionFactory
 		]
 	}
 	
-	def dispatch Expression toIrExpression(Real2Constant e) 
+	def dispatch Expression toIrExpression(fr.cea.nabla.nabla.Real2Constant e) 
 	{ 
 		IrFactory::eINSTANCE.createReal2Constant => 
 		[ 
@@ -92,7 +94,7 @@ class IrExpressionFactory
 		]
 	}
 	
-	def dispatch Expression toIrExpression(Real3Constant e) 
+	def dispatch Expression toIrExpression(fr.cea.nabla.nabla.Real3Constant e) 
 	{ 
 		IrFactory::eINSTANCE.createReal3Constant => 
 		[ 
@@ -101,6 +103,29 @@ class IrExpressionFactory
 			x = e.x 
 			y = e.y
 			z = e.z
+		]
+	}
+	
+	def dispatch Expression toIrExpression(Real2x2Constant e) 
+	{ 
+		IrFactory::eINSTANCE.createReal2x2Constant => 
+		[ 
+			annotations += e.toIrAnnotation
+			type = e.typeFor?.toIrExpressionType
+			x = e.x.toIrExpression as Real2Constant
+			y = e.y.toIrExpression as Real2Constant
+		]
+	}
+	
+	def dispatch Expression toIrExpression(Real3x3Constant e) 
+	{ 
+		IrFactory::eINSTANCE.createReal3x3Constant => 
+		[ 
+			annotations += e.toIrAnnotation
+			type = e.typeFor?.toIrExpressionType
+			x = e.x.toIrExpression as Real3Constant
+			y = e.y.toIrExpression as Real3Constant
+			z = e.z.toIrExpression as Real3Constant
 		]
 	}
 	

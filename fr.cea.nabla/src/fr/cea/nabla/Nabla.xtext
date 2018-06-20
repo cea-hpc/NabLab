@@ -82,9 +82,11 @@ Primary returns Expression:
 Atomic returns Expression:
 	{IntConstant} value=INT |
 	{RealConstant} value=REAL |
-	{Real2Constant} '{' x=REAL ',' y=REAL '}' |
-	{Real3Constant} '{' x=REAL ',' y=REAL ',' z=REAL '}' |
+	Real2Constant |
+	Real3Constant |
 	{BoolConstant} (value?='true' | 'false') |
+	{Real2x2Constant} '{' x=Real2Constant ',' y=Real2Constant '}' |
+	{Real3x3Constant} '{' x=Real3Constant ',' y=Real3Constant ',' z=Real3Constant '}' |
 	{RealXCompactConstant} type=BasicType '(' value=REAL ')' |
 	{MinConstant} type=BasicType '.MinValue' |
 	{MaxConstant} type=BasicType '.MaxValue' |
@@ -92,6 +94,8 @@ Atomic returns Expression:
 	{ReductionCall} reduction=[Reduction|QualifiedName] '{' iterator=SpaceIterator '}' '(' arg=Expression ')' |
 	VarRef;
 
+Real2Constant: '{' x=REAL ',' y=REAL '}';
+Real3Constant: '{' x=REAL ',' y=REAL ',' z=REAL '}';
 VarRef: variable=[Var] 
 	('{' spaceIterators+=IteratorRangeOrRef (',' spaceIterators+=IteratorRangeOrRef)* '}')? 
 	('^{' timeIterator=TimeIteratorRef '}')?  

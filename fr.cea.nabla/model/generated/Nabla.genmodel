@@ -95,6 +95,15 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//ReductionArg/returnType"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Expression"/>
+    <genClasses ecoreClass="Nabla.ecore#//Real2Constant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Real2Constant/x"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Real2Constant/y"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//Real3Constant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Real3Constant/x"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Real3Constant/y"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Real3Constant/z"/>
+    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//VarRef">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarRef/variable"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarRef/spaceIterators"/>
@@ -189,17 +198,17 @@
     <genClasses ecoreClass="Nabla.ecore#//RealConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//RealConstant/value"/>
     </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//Real2Constant">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Real2Constant/x"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Real2Constant/y"/>
-    </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//Real3Constant">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Real3Constant/x"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Real3Constant/y"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Real3Constant/z"/>
-    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//BoolConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//BoolConstant/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//Real2x2Constant">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Real2x2Constant/x"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Real2x2Constant/y"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//Real3x3Constant">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Real3x3Constant/x"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Real3x3Constant/y"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Real3x3Constant/z"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//RealXCompactConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//RealXCompactConstant/type"/>

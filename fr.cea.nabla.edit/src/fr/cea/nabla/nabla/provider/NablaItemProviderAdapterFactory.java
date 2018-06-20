@@ -1154,6 +1154,52 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Real2x2Constant} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected Real2x2ConstantItemProvider real2x2ConstantItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Real2x2Constant}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createReal2x2ConstantAdapter() {
+		if (real2x2ConstantItemProvider == null) {
+			real2x2ConstantItemProvider = new Real2x2ConstantItemProvider(this);
+		}
+
+		return real2x2ConstantItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Real3x3Constant} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected Real3x3ConstantItemProvider real3x3ConstantItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Real3x3Constant}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createReal3x3ConstantAdapter() {
+		if (real3x3ConstantItemProvider == null) {
+			real3x3ConstantItemProvider = new Real3x3ConstantItemProvider(this);
+		}
+
+		return real3x3ConstantItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.RealXCompactConstant} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1388,6 +1434,8 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (reductionItemProvider != null) reductionItemProvider.dispose();
 		if (reductionArgItemProvider != null) reductionArgItemProvider.dispose();
 		if (expressionItemProvider != null) expressionItemProvider.dispose();
+		if (real2ConstantItemProvider != null) real2ConstantItemProvider.dispose();
+		if (real3ConstantItemProvider != null) real3ConstantItemProvider.dispose();
 		if (varRefItemProvider != null) varRefItemProvider.dispose();
 		if (iteratorRangeOrRefItemProvider != null) iteratorRangeOrRefItemProvider.dispose();
 		if (timeIteratorRefItemProvider != null) timeIteratorRefItemProvider.dispose();
@@ -1411,9 +1459,9 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (notItemProvider != null) notItemProvider.dispose();
 		if (intConstantItemProvider != null) intConstantItemProvider.dispose();
 		if (realConstantItemProvider != null) realConstantItemProvider.dispose();
-		if (real2ConstantItemProvider != null) real2ConstantItemProvider.dispose();
-		if (real3ConstantItemProvider != null) real3ConstantItemProvider.dispose();
 		if (boolConstantItemProvider != null) boolConstantItemProvider.dispose();
+		if (real2x2ConstantItemProvider != null) real2x2ConstantItemProvider.dispose();
+		if (real3x3ConstantItemProvider != null) real3x3ConstantItemProvider.dispose();
 		if (realXCompactConstantItemProvider != null) realXCompactConstantItemProvider.dispose();
 		if (minConstantItemProvider != null) minConstantItemProvider.dispose();
 		if (maxConstantItemProvider != null) maxConstantItemProvider.dispose();

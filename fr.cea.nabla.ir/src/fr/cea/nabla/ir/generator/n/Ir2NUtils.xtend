@@ -1,8 +1,7 @@
 package fr.cea.nabla.ir.generator.n
 
-import fr.cea.nabla.ir.ir.Iterator
-import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.BasicType
+import fr.cea.nabla.ir.ir.Iterator
 
 class Ir2NUtils 
 {	
@@ -23,15 +22,4 @@ class Ir2NUtils
 
 	def getContent(Iterator it)
 	'''«IF it!==null»∀ «range.connectivity.returnType.type.literal»s«ENDIF»'''
-
-	def getOperator(Reduction it)
-	{
-		switch name
-		{
-			case 'sum' : '+='
-			case 'min' : '<?='
-			case 'max' : '>?='
-			default : throw new Exception('Unsupported reduction function: ' + name)
-		}
-	}
 }

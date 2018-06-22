@@ -1,21 +1,32 @@
 package fr.cea.nabla.ir.generator.kokkos
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.generator.IrGenerator
 import fr.cea.nabla.ir.generator.Utils
-import fr.cea.nabla.ir.ir.ScalarVariable
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.transformers.FillJobHLTs
+import fr.cea.nabla.ir.transformers.OptimizeConnectivities
+import fr.cea.nabla.ir.transformers.ReplaceInternalReductions
+import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 
-class Ir2Kokkos 
+class Ir2Kokkos implements IrGenerator
 {
+	static val FileExtension = 'cpp'
+	static val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new OptimizeConnectivities, new FillJobHLTs]
+
 	@Inject extension Utils
 	@Inject extension Ir2KokkosUtils
 	@Inject extension ExpressionContentProvider
 	@Inject extension JobContentProvider
 	@Inject extension VariableExtensions
 
-	def getFileContent(IrModule it)
+	override getFileExtension() { FileExtension }
+	override getTransformationSteps() { TransformationSteps }
+
+	override getFileContent(IrModule it)
 	'''
 	#include <iostream>
 

@@ -50,7 +50,7 @@ class IrInstructionFactory
 		[
 			annotations += v.toIrAnnotation
 			left = v.varRef.toIrExpression as VarRef
-			operator = v.op
+			operator = '='
 			right = v.expression.toIrExpression
 		]
 

@@ -10,6 +10,7 @@ import fr.cea.nabla.ir.ir.Variable
 import java.util.HashSet
 
 import static extension fr.cea.nabla.ir.VariableExtensions.*
+import fr.cea.nabla.ir.ir.IrPackage
 
 class JobExtensions 
 {
@@ -18,10 +19,12 @@ class JobExtensions
 		val fromTargetJobs = new HashSet<Job>
 		val irFile = from.eContainer as IrModule
 		val fromOutVars = from.outVars
-		for (to : irFile.jobs.filter[x|x!=from])
+		//for (to : irFile.jobs.filter[x|x != from])
+		for (to : irFile.jobs)
 			for (outVar : fromOutVars)
 				if (to.inVars.exists[x|x === outVar])
 					fromTargetJobs += to
+					
 		return fromTargetJobs
 	}
 	
@@ -42,8 +45,7 @@ class JobExtensions
 
 	static def dispatch Iterable<Variable> getInVars(InstructionJob it)
 	{
-		val allVars = eAllContents.filter(VarRef).map[variable].filter[global].toSet
-		allVars.removeAll(outVars)
+		val allVars = eAllContents.filter(VarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[variable].filter[global].toSet
 		return allVars
 	}
 }

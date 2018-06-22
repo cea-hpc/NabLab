@@ -15,7 +15,7 @@ class InstructionContentProvider
 
 	def dispatch CharSequence getContent(ReductionInstruction it) 
 	{
-		throw new Exception('Les instances de ReductionInstruction doivent être supprimées avant de générer le Java')
+		throw new Exception('Les instances de ReductionInstruction doivent être supprimées avant de générer le Nabla')
 	}
 
 	def dispatch CharSequence getContent(ScalarVarDefinition it) 

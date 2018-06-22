@@ -5,14 +5,7 @@ package fr.cea.nabla.generator
 
 import com.google.inject.Inject
 import fr.cea.nabla.generator.ir.Nabla2Ir
-import fr.cea.nabla.ir.generator.java.Ir2Java
-import fr.cea.nabla.ir.generator.kokkos.Ir2Kokkos
 import fr.cea.nabla.ir.generator.n.Ir2N
-import fr.cea.nabla.ir.transformers.FillJobHLT
-import fr.cea.nabla.ir.transformers.OptimizeConnectivities
-import fr.cea.nabla.ir.transformers.ReplaceDefaultValue
-import fr.cea.nabla.ir.transformers.ReplaceInternalReduction
-import fr.cea.nabla.ir.transformers.ReplaceUtf8
 import fr.cea.nabla.nabla.NablaModule
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
@@ -23,8 +16,13 @@ import org.eclipse.xtext.generator.IGeneratorContext
 
 /**
  * Generates code from your model files on save.
- * 
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#code-generation
+ * 
+ * Attention: avant la génération, le modèle IR subit des modifications par différentes passes.
+ * Il n'est pas possible d'avoir plusieurs générateurs sans cloner l'IR ;  en effet le mécanisme
+ * d'optimisation des créations de Xtend (def create) fait que s'il y a plusieurs appels à toIrModule
+ * (Nabla -> IR), l'IR n'est pas recréée. Par conséquent, lors de la transformation, les passes 
+ * se superposent.
  */
 class NablaGenerator extends AbstractGenerator 
 {
@@ -33,60 +31,47 @@ class NablaGenerator extends AbstractGenerator
 	@Inject GeneratorUtils utils
 	@Inject SmallLatexGenerator latexGenerator
 	@Inject Nabla2Ir nabla2ir
-	@Inject Ir2N ir2n
-	@Inject Ir2Java ir2java
-	@Inject Ir2Kokkos ir2kmds
-	val irTransformationSteps = #[new ReplaceUtf8, new ReplaceInternalReduction, new ReplaceDefaultValue, new FillJobHLT, new OptimizeConnectivities]
+	
+	@Inject Ir2N generator
+//	@Inject Ir2Java generator
+//	@Inject Ir2Kokkos generator
 	
 	override doGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context) 
 	{
 		// 1 seul module par resource par définition (cf .xtext)
 		val module = input.contents.filter(NablaModule).head
-		val fileNameWithoutExtension = module.name.toLowerCase + '/' + module.name
-
+		
 		// ecriture du fichier de modele
 		if (!module.jobs.empty)
 		{
+			val fileNameWithoutExtension = module.name.toLowerCase + '/' + module.name
+			
 			println('Generating Latex document')
-			fsa.generateFile(fileNameWithoutExtension.addExtension('tex'), latexGenerator.getLatexContent(module))
+			fsa.generateFile(fileNameWithoutExtension.addExtensions(#['tex']), latexGenerator.getLatexContent(module))
 			
-			println('Serializing Nabla Intermediate Representation')
+			
+			println('Starting generation chain for ' + generator.shortName + ' (.' + generator.fileExtension + ' file)')
+			println('\tBuilding Nabla Intermediate Representation')
 			val irModule = nabla2ir.toIrModule(module)
-			var i=0
-			
-			for (transformationStep : irTransformationSteps)
+
+			// application des transformation de l'IR (dépendant du langage
+			for (step : generator.transformationSteps)
 			{
-				i++
-				println('IR->IR: ' + transformationStep.description)
-				transformationStep.transform(irModule)
-				//createAndSaveResource(fsa, input.resourceSet, fileNameWithoutExtension.addExtension(i + '.' + IrExtensions), irModule)		
+				println('\tIR -> IR: ' + step.description)
+				createAndSaveResource(fsa, input.resourceSet, fileNameWithoutExtension.addExtensions(#['before' + step.shortName, generator.fileExtension, IrExtension]), irModule)		
+				step.transform(irModule)
 			}
-
-			createAndSaveResource(fsa, input.resourceSet, fileNameWithoutExtension.addExtension(IrExtension), irModule)
-
+			createAndSaveResource(fsa, input.resourceSet, fileNameWithoutExtension.addExtensions(#[generator.fileExtension, IrExtension]), irModule)
+			
 			// génération du fichier .n
-			println('Generating IR --> Nabla V1 (.n)')
-			val nContent = ir2n.getFileContent(irModule)
-			fsa.generateFile(fileNameWithoutExtension.addExtension('n'), nContent)
-	
-			// génération du fichier .java
-			println('Generating IR --> Java (.java)')
-			val javaContent = ir2java.getFileContent(irModule)
-			fsa.generateFile(fileNameWithoutExtension.addExtension('java'), javaContent)	
-
-			// génération du fichier .kokkos
-			println('Generating IR --> Kokkos (.cpp)')
-			val kmdsContent = ir2kmds.getFileContent(irModule)
-			fsa.generateFile((fileNameWithoutExtension + 'Kokkos').addExtension('cpp'), kmdsContent)	
+			println('\tGenerating .' + generator.fileExtension + ' file')
+			val fileContent = generator.getFileContent(irModule)
+			fsa.generateFile(fileNameWithoutExtension.addExtensions(#[generator.fileExtension]), fileContent)
 		}
 	}
 	
-//	private def getFileExtension(int passNumber) { 'pass' + passNumber + '.' + IrExtension }
-	
-	private def addExtension(String fileNameWithoutExtension, String fileExtension)
-	{
-		fileNameWithoutExtension + '.' + fileExtension
-	} 
+	private def getShortName(Object o) { o.class.name.substring(o.class.package.name.length + 1) }
+	private def addExtensions(String fileNameWithoutExtension, String[] extensions) { fileNameWithoutExtension + '.' + extensions.join('.') } 
 		
 	/** Crée et sauve la resource au même endroit que le paramètre baseResource en changeant l'extension par newExtension */
 	private def createAndSaveResource(IFileSystemAccess2 fsa, ResourceSet rSet, String fileName, EObject content)

@@ -47,7 +47,7 @@ class LatexLabelServices
 	static def dispatch String getLabel(ScalarVarDefinition it) { type.literal + ' ' + variable.name.pu + '=' + defaultValue.latex }
 	static def dispatch String getLabel(VarGroupDeclaration it) { type.literal + ' ' + variables.map[x|x.name.pu].join(', ') }
 	static def dispatch String getLatex(InstructionBlock it) { '...' }
-	static def dispatch String getLatex(Affectation it) { varRef?.latex + ' ' + op + ' ' + expression?.latex }
+	static def dispatch String getLatex(Affectation it) { varRef?.latex + ' = ' + expression?.latex }
 	static def dispatch String getLatex(Loop it) { '\\forall {' + iterator.latex + '}, \\ ' + body.latex }
 	static def dispatch String getLatex(If it) { 'if (' + condition.latex + ')'}
 	

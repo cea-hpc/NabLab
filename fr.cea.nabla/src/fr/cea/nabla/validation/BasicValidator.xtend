@@ -8,6 +8,7 @@ import fr.cea.nabla.nabla.ArrayVar
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
@@ -16,12 +17,11 @@ import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRange
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.Var
+import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VarRef
 import org.eclipse.xtext.validation.Check
 
 import static extension fr.cea.nabla.Utils.*
-import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.VarGroupDeclaration
 
 class BasicValidator  extends AbstractNablaValidator
 {
@@ -32,8 +32,8 @@ class BasicValidator  extends AbstractNablaValidator
 	@Check
 	def checkCoordVar(NablaModule it)
 	{
-		if (!variables.filter(VarGroupDeclaration).exists[g | g.variables.exists[v|v.name == 'coord']])
-			error("Module must contain a node variable named 'coord' to store node coordinates", NablaPackage.Literals.NABLA_MODULE__NAME, NO_COORD_VARIABLE)
+		if (!variables.filter(VarGroupDeclaration).exists[g | g.variables.exists[v|v.name == MandatoryOptions::COORD]])
+			error("Module must contain a node variable named '" + MandatoryOptions::COORD + "' to store node coordinates", NablaPackage.Literals.NABLA_MODULE__NAME, NO_COORD_VARIABLE)
 	}
 	
 	@Check

@@ -27,7 +27,7 @@ Job:
 Instruction: 
 	ScalarVarDefinition |
 	{InstructionBlock} '{' instructions+=Instruction+ '}' |
-	{Affectation} varRef=VarRef op=('='|'+='|'-='|'*='|'/=') expression=Expression ';' |
+	{Affectation} varRef=VarRef '=' expression=Expression ';' |
 	{Loop} '\u2200' iterator=SpaceIterator ',' body=Instruction |
 	{If} 'if' '(' condition=Expression ')' then=Instruction (=>'else' else=Instruction)?;
 

@@ -4,7 +4,7 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.ScalarVarDefinition
 
-class ReplaceUtf8 implements IrTransformationStage 
+class ReplaceUtf8Chars implements IrTransformationStep 
 {
 	override getDescription() 
 	{

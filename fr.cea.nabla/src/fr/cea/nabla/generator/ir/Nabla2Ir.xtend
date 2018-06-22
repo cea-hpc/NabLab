@@ -41,15 +41,15 @@ class Nabla2Ir
 			// creation de la reduction IR
 			reductions += rc.reduction.toIrReduction(rc.declaration)
 			
-			if (rc.global)
-			{
-				// La réduction est globale. Il faut :
-				// - créer une variable globale pour stocker le résultat de la réduction
-				// - créer un job d'initialisation de cette variable
-				// - créer le job correspondant à la réduction
-				variables += rc.toIrGlobalVariable
-				rc.populateIrJobs(jobs)
-			}
+//			if (rc.global)
+//			{
+//				// La réduction est globale. Il faut :
+//				// - créer une variable globale pour stocker le résultat de la réduction
+//				// - créer un job d'initialisation de cette variable
+//				// - créer le job correspondant à la réduction
+//				variables += rc.toIrGlobalVariable
+//				rc.populateIrJobs(jobs)
+//			}
 		}
 		
 		// Rien de particulier pour les connectivités qui sont propres à chaque module
@@ -122,5 +122,6 @@ class Nabla2Ir
 		irReductionJob.name = 'Compute_' + irVariable.name
 		irReductionJob.variable = IrFactory::eINSTANCE.createVarRef => [ variable = irVariable ]
 		irReductionJob.reduction = toIrReductionCall
+		irJobs += irReductionJob
 	}
 }

@@ -9,6 +9,7 @@ import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Loop
+import fr.cea.nabla.ir.ir.ReductionCall
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.ScalarVarDefinition
 
@@ -20,10 +21,18 @@ class InstructionContentProvider
 	@Inject extension VariableExtensions
 	@Inject extension IteratorExtensions
 
+	/**
+	 * Les réductions à l'intérieur des boucles ont été remplacées dans l'IR par des boucles.
+	 * Ne restent que les réductions au niveau des jobs => reduction //
+	 */
 	def dispatch CharSequence getContent(ReductionInstruction it) 
-	{
-		throw new Exception('Les instances de ReductionInstruction doivent être supprimées avant de générer le Java')
-	}
+	'''
+		«variable.javaType» «variable.name» = IntStream.range(0, «reduction.iterator.range.connectivity.nbElems»).boxed().parallel().reduce(
+			«variable.defaultValue.content», 
+			(r, «reduction.iterator.varName») -> «reduction.javaName»(r, «reduction.arg.content»),
+			(r1, r2) -> «reduction.javaName»(r1, r2)
+		);
+	'''
 
 	def dispatch CharSequence getContent(ScalarVarDefinition it) 
 	'''
@@ -107,4 +116,6 @@ class InstructionContentProvider
 			«body.content»
 		}
 	'''
+	
+	private def getJavaName(ReductionCall it) '''«reduction.provider»Functions.«reduction.name»'''
 }

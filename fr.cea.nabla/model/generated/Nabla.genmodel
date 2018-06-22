@@ -136,7 +136,6 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Affectation">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Affectation/varRef"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Affectation/op"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Affectation/expression"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Loop">

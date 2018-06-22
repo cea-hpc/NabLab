@@ -49,31 +49,8 @@ public class AffectationItemProvider extends InstructionItemProvider {
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addOpPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the Op feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addOpPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Affectation_op_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Affectation_op_feature", "_UI_Affectation_type"),
-				 NablaPackage.Literals.AFFECTATION__OP,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
 	}
 
 	/**
@@ -126,10 +103,7 @@ public class AffectationItemProvider extends InstructionItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((Affectation)object).getOp();
-		return label == null || label.length() == 0 ?
-			getString("_UI_Affectation_type") :
-			getString("_UI_Affectation_type") + " " + label;
+		return getString("_UI_Affectation_type");
 	}
 	
 
@@ -145,9 +119,6 @@ public class AffectationItemProvider extends InstructionItemProvider {
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Affectation.class)) {
-			case NablaPackage.AFFECTATION__OP:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
 			case NablaPackage.AFFECTATION__VAR_REF:
 			case NablaPackage.AFFECTATION__EXPRESSION:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));

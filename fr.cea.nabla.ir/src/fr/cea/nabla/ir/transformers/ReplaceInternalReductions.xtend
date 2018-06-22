@@ -5,16 +5,18 @@ import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.ExpressionType
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionCall
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.ScalarVarDefinition
 import java.util.List
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.emf.ecore.util.FeatureMapUtil
 
-class ReplaceInternalReduction implements IrTransformationStage
+class ReplaceInternalReductions implements IrTransformationStep
 {
 	static val Operators = #{ 'sum'->'+', 'prod'->'*' }
 	
@@ -30,7 +32,7 @@ class ReplaceInternalReduction implements IrTransformationStage
 	 */
 	override transform(IrModule m)
 	{
-		for (reductionInstr : m.eAllContents.filter(ReductionInstruction).toIterable)
+		for (reductionInstr : m.eAllContents.filter(ReductionInstruction).filter[!reduction.global].toIterable)
 		{
 			// création des fonctions correspondantes
 			// 2 arguments IN : 1 du type de la collection, l'autre du type de retour (appel en chaine)
@@ -124,7 +126,11 @@ class ReplaceInternalReduction implements IrTransformationStage
 		loop.iterator = reductionInstr.reduction.iterator
 		loop.body = IrFactory::eINSTANCE.createAffectation => 
 		[
-			left = IrFactory::eINSTANCE.createVarRef => [ variable = reductionInstr.variable ]
+			left = IrFactory::eINSTANCE.createVarRef => 
+			[ 
+				variable = reductionInstr.variable
+				type = affectationRHS.type.clone
+			]
 			operator = '='
 			right = affectationRHS
 		]
@@ -177,5 +183,14 @@ class ReplaceInternalReduction implements IrTransformationStage
 			basicType = t.basicType
 			dimension = t.dimension
 		]
+	}
+
+	def boolean isGlobal(EObject it)
+	{
+		if (eContainer === null) false
+		else if (eContainer instanceof Loop) false
+		else if (eContainer instanceof ReductionCall) false
+		else if (eContainer instanceof Job) true
+		else eContainer.global	
 	}
 }

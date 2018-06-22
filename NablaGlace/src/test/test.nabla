@@ -1,0 +1,11 @@
+module Test;
+
+with Math.*;
+
+connectivities {
+	cells: (∅) → {cell};
+}
+
+ℝ Y[cells], X, Z, coord;
+
+MyJob: X = reduceMin{j∈cells()}(Y{j} + 4);

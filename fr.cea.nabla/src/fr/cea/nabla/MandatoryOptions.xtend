@@ -5,6 +5,7 @@ import fr.cea.nabla.nabla.NablaFactory
 
 class MandatoryOptions 
 {
+	public static val COORD = 'coord'
 	public static val LENGTH = 'LENGTH'
 	public static val X_EDGE_ELEMS = 'X_EDGE_ELEMS'
 	public static val Y_EDGE_ELEMS = 'Y_EDGE_ELEMS'

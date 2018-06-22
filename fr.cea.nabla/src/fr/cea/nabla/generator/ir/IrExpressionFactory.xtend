@@ -179,7 +179,8 @@ class IrExpressionFactory
 	
 	def dispatch Expression toIrExpression(ReductionCall e) 
 	{
-		val irVariable = if (e.global) e.toIrGlobalVariable else e.toIrLocalVariable
+		// val irVariable = if (e.global) e.toIrGlobalVariable else e.toIrLocalVariable
+		val irVariable = e.toIrLocalVariable
 		IrFactory::eINSTANCE.createVarRef => 
 		[ 
 			annotations += e.toIrAnnotation

@@ -12,7 +12,7 @@ import org.jgrapht.graph.DirectedWeightedPseudograph
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
 
-class FillJobHLT implements IrTransformationStage
+class FillJobHLTs implements IrTransformationStep
 {
 	static val TimeLoopSourceNodeLabel = 'TimeLoopSourceNode'
 	static val GlobalSourceNodeLabel = 'GlobalSourceNode'

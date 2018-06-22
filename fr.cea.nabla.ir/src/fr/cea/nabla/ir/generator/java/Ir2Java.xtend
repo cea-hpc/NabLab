@@ -1,21 +1,32 @@
 package fr.cea.nabla.ir.generator.java
 
 import com.google.inject.Inject
+import fr.cea.nabla.ir.generator.IrGenerator
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.transformers.FillJobHLTs
+import fr.cea.nabla.ir.transformers.OptimizeConnectivities
+import fr.cea.nabla.ir.transformers.ReplaceInternalReductions
+import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import java.util.ArrayList
 import java.util.List
 
-class Ir2Java 
+class Ir2Java implements IrGenerator
 {
+	static val FileExtension = 'java'
+	static val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new OptimizeConnectivities, new FillJobHLTs]
+
 	@Inject extension Utils
 	@Inject extension Ir2JavaUtils
 	@Inject extension ExpressionContentProvider
 	@Inject extension JobContentProvider
 	@Inject extension VariableExtensions
+
+	override getFileExtension() { FileExtension }
+	override getTransformationSteps() { TransformationSteps }
 	
 	/**
 	 * TODO reporter les annotations en infos de debug. Comment ?
@@ -25,7 +36,7 @@ class Ir2Java
 	 * TODO : option de la bibliothèque de maillage pour savoir si les index sont consécutifs
 	 * TODO : parallélisme de taches du graphe en Kokkos et Java.
 	 */
-	def getFileContent(IrModule it)
+	override getFileContent(IrModule it)
 	'''
 		package «name.toLowerCase»;
 		

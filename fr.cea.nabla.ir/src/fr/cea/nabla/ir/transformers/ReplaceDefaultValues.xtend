@@ -4,7 +4,7 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ScalarVariable
 
-class ReplaceDefaultValue implements IrTransformationStage
+class ReplaceDefaultValues implements IrTransformationStep
 {
 	override getDescription() 
 	{

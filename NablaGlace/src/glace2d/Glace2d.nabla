@@ -1,4 +1,4 @@
-module Glace;
+module Glace2d;
 
 with Math.*;
 
@@ -8,17 +8,18 @@ connectivities {
 	outerFaces: (∅) → {face};
 	innerNodes: (∅) → {node};
 	nodesOfCell: (cell) → {node};
+//	cellsOfNode: (node) → {cell};
 	nodesOfFace: (face) → {node};
 }
 
 functions {
-	trace: (ℝ³ˣ³) → ℝ;
-	perp: (ℝ³, ℝ³) → ℝ³;
-	matrix3x3Id: (∅) → ℝ³ˣ³;
-	tensProduct: (ℝ³, ℝ³) → ℝ³ˣ³;
-	matVectProduct: (ℝ³ˣ³, ℝ³) → ℝ³;
-	matrixDeterminant: (ℝ³ˣ³) → ℝ;
-	inverseMatrix: (ℝ³ˣ³, ℝ) → ℝ³ˣ³;
+	trace: (ℝ²ˣ²) → ℝ;
+	perp: (ℝ², ℝ²) → ℝ²;
+	matrix3x3Id: (∅) → ℝ²ˣ²;
+	tensProduct: (ℝ², ℝ²) → ℝ²ˣ²;
+	matVectProduct: (ℝ²ˣ², ℝ²) → ℝ²;
+	matrixDeterminant: (ℝ²ˣ²) → ℝ;
+	inverseMatrix: (ℝ²ˣ², ℝ) → ℝ²ˣ²;
 }
 
 // Options obligatoires pour générer
@@ -41,16 +42,16 @@ const ℝ option_p_ini_zd = 0.1;
 ℝ t=0.0;
 ℝ δt=0.0;
 
-ℝ³ X[nodes], coord[nodes], b[nodes], bt[nodes];
-ℝ³ˣ³ M[nodes], Mt[nodes];
-ℝ³ fu[nodes];
+ℝ² X[nodes], coord[nodes], b[nodes], bt[nodes];
+ℝ²ˣ² M[nodes], Mt[nodes];
+ℝ² fu[nodes];
 ℝ p_ic[cells], ρ_ic[cells], V_ic[cells];
 ℝ c[cells], m[cells], p[cells], ρ[cells], e[cells], E[cells], V[cells];
 ℝ δtj[cells];
-ℝ³ u[cells], center[cells];
+ℝ² u[cells], center[cells];
 ℝ C[cells, nodesOfCell];
-ℝ³ C_ic[cells, nodesOfCell], vectC[cells, nodesOfCell], F[cells, nodesOfCell];
-ℝ³ˣ³ A[cells, nodesOfCell];
+ℝ² C_ic[cells, nodesOfCell], vectC[cells, nodesOfCell], F[cells, nodesOfCell];
+ℝ²ˣ² A[cells, nodesOfCell];
 
 
 // *************************************************************
@@ -91,27 +92,32 @@ ComputeEOSc: ∀j∈cells(), c{j} = √(γ*p{j}/ρ{j});
 ComputeAjr: ∀j∈cells(),∀r∈nodesOfCell(j), A{j,r} = ((ρ{j}*c{j})/C{j,r}) * tensProduct(vectC{j,r}, vectC{j,r});
 ComputeFjr: ∀j∈cells(),∀r∈nodesOfCell(j), F{j,r} = p{j}*vectC{j,r} + matVectProduct(A{j,r}, (u{j}-fu{r}));
 //ComputeMr: ∀r∈nodes(), M{r} = ∑{j∈cellsOfNode(r)}(A{j,r});
-InitMr: ∀r∈nodes(), M{r} = {{0.0,0.0,0.0}, {0.0,0.0,0.0}, {0.0,0.0,0.0}};
-ComputeMr: ∀j∈cells(), ∀r∈nodesOfCell(j), M{r} += A{j,r};
+InitMr: ∀r∈nodes(), M{r} = {{0.0,0.0}, {0.0,0.0}};
+ComputeMr: ∀j∈cells(), ∀r∈nodesOfCell(j), M{r} = M{r} + A{j,r};
+ComputeMr2: ∀j∈cells(), {
+	∀r1∈nodesOfCell(j), M{r1} = {{0.0,0.0}, {0.0,0.0}};
+	∀r2∈nodesOfCell(j), M{r2} = M{r2} + A{j,r2};
+}
+
 //ComputeBr: ∀r∈nodes(), b{r} = ∑{j∈cellsOfNode(r)}(vectC{j,r}*p{j} + matVectProduct(A{j,r}, u{j}));
-InitBr: ∀r∈nodes(), b{r} = {0.0,0.0,0.0};
-ComputeBr: ∀j∈cells(), ∀r∈nodesOfCell(j), b{r} += vectC{j,r}*p{j} + matVectProduct(A{j,r}, u{j});
+InitBr: ∀r∈nodes(), b{r} = {0.0,0.0};
+ComputeBr: ∀j∈cells(), ∀r∈nodesOfCell(j), b{r} = b{r} + vectC{j,r}*p{j} + matVectProduct(A{j,r}, u{j});
 ComputeMt: ∀r∈innerNodes(), Mt{r} = M{r};
 ComputeBt: ∀r∈innerNodes(), bt{r} = b{r};
 
 YOuterFacesComputations: ∀k∈outerFaces(), {
 	ℝ Y_MIN = 0.0; 
 	ℝ Y_MAX = LENGTH;
-	ℝ³ˣ³ I = matrix3x3Id();
-	ℝ³ nY = {0.0,0.0,0.0};
+	ℝ²ˣ² I = matrix3x3Id();
+	ℝ² nY = {0.0,0.0};
 	∀r∈nodesOfFace(k), {
 		if ((X{r}.y == Y_MIN) || (X{r}.y == Y_MAX)) {
 			ℝ sign = 0.0;
 			if (X{r}.y == Y_MIN) sign = -1.0;
 			else sign = 1.0;
-			ℝ³ n = sign * nY;
-      		ℝ³ˣ³ nxn = tensProduct(n,n);
-      		ℝ³ˣ³ IcP = I - nxn;
+			ℝ² n = sign * nY;
+      		ℝ²ˣ² nxn = tensProduct(n,n);
+      		ℝ²ˣ² IcP = I - nxn;
 			bt{r} = matVectProduct(IcP, b{r});
 			Mt{r} = IcP * (M{r} * IcP) + nxn*trace(Mt{r});
 		}
@@ -121,11 +127,11 @@ YOuterFacesComputations: ∀k∈outerFaces(), {
 XOuterFacesComputations: ∀k∈outerFaces(), {
 	ℝ X_MIN = 0.0;
 	ℝ X_MAX = LENGTH;
-	ℝ³ˣ³ I = matrix3x3Id();
+	ℝ²ˣ² I = matrix3x3Id();
 	∀r∈nodesOfFace(k), {
 		if ((Math.fabs(X{r}.x-X_MIN) < 1.0e-10) || ( (Math.fabs(X{r}.x-X_MAX) < 1.0e-10) )) {
 			Mt{r} = I;
-			bt{r} = {0.0, 0.0,0.0};
+			bt{r} = {0.0, 0.0};
 		}
   }
 }
@@ -142,7 +148,7 @@ ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(vectC{j,r},X{
 // * Et calcule du δt pour mise-à-jour du temps de la simulation
 // *************************************************************
 ComputeXn: ∀n∈ℕ, ∀r0∈nodes(), X{r0}^{n=0}=coord{r0}; , ∀r∈nodes(), X{r}^{n+1}=X{r}^{n}+δt^{n}*fu{r}^{n};
-ComputeUn: ∀n∈ℕ, ∀j0∈cells(), u{j0}^{n=0}={0.0,0.0,0.0}; , ∀j∈cells(), u{j}^{n+1}=u{j}^{n}-(δt^{n}/m{j}^{n})*∑{r∈nodesOfCell(j)}(F{j,r}^{n});
+ComputeUn: ∀n∈ℕ, ∀j0∈cells(), u{j0}^{n=0}={0.0,0.0}; , ∀j∈cells(), u{j}^{n+1}=u{j}^{n}-(δt^{n}/m{j}^{n})*∑{r∈nodesOfCell(j)}(F{j,r}^{n});
 ComputeEn: ∀n∈ℕ, ∀j0∈cells(), E{j0}^{n=0}=p_ic{j0}/((γ-1.0)*ρ_ic{j0}); , ∀j∈cells(), E{j}^{n+1}=E{j}^{n} - (δt^{n} / m{j}^{n}) * ∑{r∈nodesOfCell(j)}(dot(F{j,r}^{n},fu{r}^{n}));
 ComputeDt: ∀n∈ℕ, δt^{n=0}=option_δt_ini;, δt^{n+1}=option_δt_cfl*reduceMin{j∈cells()}(δtj{j});
 ComputeTn: ∀n∈ℕ, t^{n=0}=0.0; , t^{n+1}=t^{n}+δt^{n+1};

@@ -2,7 +2,7 @@ package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.IrModule
 
-class OptimizeConnectivities implements IrTransformationStage 
+class OptimizeConnectivities implements IrTransformationStep 
 {
 	static val ConnectivitiesToOptimize = #['cells', 'nodes', 'faces']
 	

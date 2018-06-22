@@ -47,7 +47,7 @@ class LabelServices
 	static def dispatch String getLabel(ScalarVarDefinition it) { type.literal + ' ' + variable.name + '=' + defaultValue.label }
 	static def dispatch String getLabel(VarGroupDeclaration it) { type.literal + ' ' + variables.map[x|x.name].join(', ') }
 	static def dispatch String getLabel(InstructionBlock it) { '...' }
-	static def dispatch String getLabel(Affectation it) { varRef?.label + ' ' + op + ' ' + expression?.label }
+	static def dispatch String getLabel(Affectation it) { varRef?.label + ' = ' + expression?.label }
 	static def dispatch String getLabel(Loop it) { '\u2200' + iterator.label + ', ' + body.label }
 	static def dispatch String getLabel(If it) { 'if ' + condition.label }
 

@@ -2,21 +2,18 @@ package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.BasicType
 import fr.cea.nabla.ir.ir.Expression
-import fr.cea.nabla.ir.ir.ExpressionType
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionCall
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.ScalarVarDefinition
 import java.util.List
-import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.emf.ecore.util.FeatureMapUtil
 
-class ReplaceInternalReductions implements IrTransformationStep
+class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTransformationStep
 {
 	static val Operators = #{ 'sum'->'+', 'prod'->'*' }
 	
@@ -40,7 +37,7 @@ class ReplaceInternalReductions implements IrTransformationStep
 						
 			// transformation de la reduction
 			val loopExpression = createAffectationRHS(m, reductionInstr)
-			val loop = reductionInstr.createReductionLoop(loopExpression)
+			val loop = createReductionLoop(reductionInstr.reduction.iterator, reductionInstr.variable, loopExpression, '=')
 			val variableDefinition = IrFactory::eINSTANCE.createScalarVarDefinition => [ variables += reductionInstr.variable ]
 			replace(reductionInstr, variableDefinition, loop)			
 
@@ -116,28 +113,6 @@ class ReplaceInternalReductions implements IrTransformationStep
 	}
 	
 	/**
-	 * Création de la boucle de la réduction.
-	 * L'itérateur de la boucle est celui de la réduction.
-	 * La réduction est transformée en une fonction de même nom.
-	 */
-	private def createReductionLoop(ReductionInstruction reductionInstr, Expression affectationRHS)
-	{
-		val loop = IrFactory::eINSTANCE.createLoop
-		loop.iterator = reductionInstr.reduction.iterator
-		loop.body = IrFactory::eINSTANCE.createAffectation => 
-		[
-			left = IrFactory::eINSTANCE.createVarRef => 
-			[ 
-				variable = reductionInstr.variable
-				type = affectationRHS.type.clone
-			]
-			operator = '='
-			right = affectationRHS
-		]
-		return loop
-	}
-	
-	/**
 	 * Extension de la méthode EcoreUtil::replace pour une liste d'objet.
 	 * Si le eContainmentFeature est de cardinalité 1, un block est créé,
 	 * sinon les instructions sont ajoutées une à une à l'emplacement de la réduction.
@@ -174,23 +149,5 @@ class ReplaceInternalReductions implements IrTransformationStep
 			basicType = t
 			dimension = 0
 		]
-	}
-
-	private def clone(ExpressionType t)
-	{
-		IrFactory::eINSTANCE.createExpressionType => 
-		[
-			basicType = t.basicType
-			dimension = t.dimension
-		]
-	}
-
-	def boolean isGlobal(EObject it)
-	{
-		if (eContainer === null) false
-		else if (eContainer instanceof Loop) false
-		else if (eContainer instanceof ReductionCall) false
-		else if (eContainer instanceof Job) true
-		else eContainer.global	
 	}
 }

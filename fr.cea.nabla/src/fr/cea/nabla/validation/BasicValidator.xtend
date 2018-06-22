@@ -30,10 +30,17 @@ class BasicValidator  extends AbstractNablaValidator
 	@Inject extension VarExtensions
 	
 	@Check
+	def checkNoInnerReductionCall(ReductionCall it)
+	{
+		if (arg instanceof ReductionCall || arg.eAllContents.exists[x|x instanceof ReductionCall])
+			error('Reduction must not contains reduction', NablaPackage.Literals.REDUCTION_CALL__ARG)
+	}
+	
+	@Check
 	def checkCoordVar(NablaModule it)
 	{
 		if (!variables.filter(VarGroupDeclaration).exists[g | g.variables.exists[v|v.name == MandatoryOptions::COORD]])
-			error("Module must contain a node variable named '" + MandatoryOptions::COORD + "' to store node coordinates", NablaPackage.Literals.NABLA_MODULE__NAME, NO_COORD_VARIABLE)
+			warning("Module must contain a node variable named '" + MandatoryOptions::COORD + "' to store node coordinates", NablaPackage.Literals.NABLA_MODULE__NAME, NO_COORD_VARIABLE)
 	}
 	
 	@Check

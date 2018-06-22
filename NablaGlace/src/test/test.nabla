@@ -6,6 +6,6 @@ connectivities {
 	cells: (∅) → {cell};
 }
 
-ℝ Y[cells], X, Z, coord;
+ℝ Y[cells], X, Z;
 
-MyJob: X = reduceMin{j∈cells()}(Y{j} + 4);
+MyJob: X = reduceMin{j∈cells()}(Y{j} + 4) + Z;

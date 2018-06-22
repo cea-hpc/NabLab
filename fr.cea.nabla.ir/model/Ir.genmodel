@@ -103,10 +103,6 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeIterationCopyJob/right"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//TimeIterationCopyJob/timeIteratorName"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//ReductionJob">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionJob/variable"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionJob/reduction"/>
-    </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ReductionCall">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionCall/reduction"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionCall/iterator"/>
@@ -116,7 +112,6 @@
     <genClasses ecoreClass="Ir.ecore#//ReductionInstruction">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/variable"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/reduction"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/innerReductions"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ScalarVarDefinition">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ScalarVarDefinition/variables"/>

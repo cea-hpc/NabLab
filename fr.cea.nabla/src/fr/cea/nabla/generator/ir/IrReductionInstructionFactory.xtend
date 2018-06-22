@@ -60,7 +60,6 @@ class IrReductionInstructionFactory
 		irInstruction.annotations += toIrAnnotation
 		irInstruction.variable = toIrLocalVariable
 		irInstruction.reduction = toIrReductionCall
-		irInstruction.innerReductions += arg.toIrReductions
 		return #[irInstruction]
 	}
 	

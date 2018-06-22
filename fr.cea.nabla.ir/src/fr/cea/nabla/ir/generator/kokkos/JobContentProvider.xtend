@@ -4,7 +4,6 @@ import com.google.inject.Inject
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.ReductionJob
 import fr.cea.nabla.ir.ir.TimeIterationCopyJob
 
 class JobContentProvider 
@@ -31,10 +30,5 @@ class JobContentProvider
 		auto tmpSwitch = «left.name»;
 		«left.name» = «right.name»;
 		«right.name» = tmpSwitch;
-	'''
-	
-	private def dispatch CharSequence getInnerContent(ReductionJob it)
-	'''
-
 	'''
 }

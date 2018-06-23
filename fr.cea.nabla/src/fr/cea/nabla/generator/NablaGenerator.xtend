@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import fr.cea.nabla.ir.generator.java.Ir2Java
 
 /**
  * Generates code from your model files on save.

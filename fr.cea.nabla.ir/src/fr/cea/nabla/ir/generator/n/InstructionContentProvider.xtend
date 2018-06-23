@@ -34,15 +34,18 @@ class InstructionContentProvider
 		}'''
 
 	def dispatch CharSequence getContent(Affectation it) 
-	'''«left.content» «operator» «right.content»;'''
+	'''«reductionContent»;'''
 	
+	def CharSequence getReductionContent(Affectation it) 
+	'''«left.content» «operator» «right.content»'''
+
 	def dispatch CharSequence getContent(Loop it) 
 	'''
 		«iterator.content» {
 			«body.content»
 		}
 	'''
-	
+		
 	def dispatch CharSequence getContent(If it) 
 	'''
 		if («condition.content»)

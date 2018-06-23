@@ -4,7 +4,6 @@ import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionCall
 import fr.cea.nabla.ir.ir.ReductionInstruction
@@ -13,6 +12,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 
 class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTransformationStep
 {
+	public static val ReductionOperators = #{'sum'->'+?=', 'reduceMin'->'<?=', 'reduceMax'->'>?='}
+	
 	override getDescription() 
 	{
 		'Replace external reductions by loops and affectations with nabla operator (the reduction variable becomes global)'
@@ -31,35 +32,33 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 	 */
 	override transform(IrModule m)
 	{
-		for (reductionInstr : m.eAllContents.filter(ReductionInstruction).filter[reduction.global].toIterable)
+		for (reductionInstr : m.eAllContents.filter(ReductionInstruction).filter[reduction.external].toList)
 		{
 			// création des fonctions correspondantes
 			// 2 arguments IN : 1 du type de la collection, l'autre du type de retour (appel en chaine)
 			val reduc = reductionInstr.reduction.reduction
-			
+
 			// Vérification du pattern attendu : une réduction et une affectation dans un bloc
 			if (! (reductionInstr.eContainer instanceof InstructionBlock)
-				|| ((reductionInstr.eContainer as InstructionBlock).instructions.length != 2)
 				|| !((reductionInstr.eContainer as InstructionBlock).instructions.last instanceof Affectation))
 				throw new Exception("Unexpected IR pattern for reduction")
 				
-			val reducBlock = reductionInstr.eContainer as InstructionBlock
-			val reducFinalAffectation = reducBlock.instructions.last as Affectation
-			val oldReducJob = reducBlock.eContainer as Job
-			
-			val reducOperatorRhs = handleReductionArg(m, oldReducJob.name, reductionInstr)
-			val reducOperatorLhs = handleAffectation(m, oldReducJob.name, reductionInstr, reducFinalAffectation)
+			// creation du job de reduction avec l'operateur nabla
+			val reducOperatorRhs = handleReductionArg(m, reductionInstr)
+			val reducOperatorLhs = reductionInstr.variable
 			m.jobs += IrFactory::eINSTANCE.createInstructionJob =>
 			[
-				name = oldReducJob.name + 'ReductionOperator'
+				name = 'Reduce_' + reductionInstr.variable.name
 				instruction = createReductionLoop(reductionInstr.reduction.iterator, reducOperatorLhs, reducOperatorRhs, reduc.operator)
 			] 
-			
-			EcoreUtil::delete(oldReducJob, true)
 
-			// si la réduction n'est pas référencée, on l'efface
+			// la variable de reduction doit devenir globale pour etre utilisée dans le job final
+			m.variables += reductionInstr.variable
+			
+			// nettoyage
+			EcoreUtil::delete(reductionInstr)			
 			if (!m.eAllContents.filter(ReductionCall).exists[x | x.reduction == reduc])
-				EcoreUtil::delete(reduc, true)
+					EcoreUtil::delete(reduc, true)
 		}
 	}
 	
@@ -70,7 +69,7 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 	 * Ex 1 : X = sum(j E cells)(Yj + 4) + Z, retourne une variable aux mailles avec valeur de Yj+4.
 	 * Ex 2 : X = sum(j E cells)(Yj) + Z retourne Yj
 	 */
-	private def handleReductionArg(IrModule m, String jobBaseName, ReductionInstruction reductionInstr)
+	private def handleReductionArg(IrModule m, ReductionInstruction reductionInstr)
 	{
 		if (reductionInstr.reduction.arg instanceof VarRef) 
 			return reductionInstr.reduction.arg as VarRef
@@ -89,53 +88,24 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 			val argValueRef = IrFactory::eINSTANCE.createVarRef => 
 			[ 
 				variable = argValue
-				type = reduc.arg.type.clone
+				type = EcoreUtil::copy(reduc.arg.type)
 			]
 			
 			val argJob = IrFactory::eINSTANCE.createInstructionJob =>
 			[
-				name = jobBaseName + 'ReductionArgValue'
-				instruction = createReductionLoop(reduc.iterator, argValue, reduc.arg, '=')
+				name = 'Compute_' + reductionInstr.variable.name + '_arg'
+				instruction = createReductionLoop(EcoreUtil::copy(reduc.iterator), argValue, reduc.arg, '=')
 			]
 			m.jobs += argJob
 			
 			return argValueRef
 		}
 	}
-	
-	/**
-	 * Si le rhs de l'affectation est une VarRef, retourne le lhs
-	 * sinon crée un job avec l'affectation et retourne une la variable de reduction (qui doit devenir globale).
-	 * Ex 1 : X = sum(j E cells)(Yj + 4) + Z, retourne Yj.
-	 * Ex 2 : X = sum(j E cells)(Yj + 4) retourne X
-	 */
-	private def handleAffectation(IrModule m, String jobBaseName, ReductionInstruction reductionInstr, Affectation affectation)
-	{
-		// Attention, la variable doit devenir globale car la reduction disparait
-		val globalVariable = reductionInstr.variable
-		m.variables += globalVariable
-		
-		if (affectation.right instanceof VarRef) 
-			return affectation.left.variable
-		else
-		{
-			m.jobs += IrFactory::eINSTANCE.createInstructionJob =>
-			[
-				name = jobBaseName + 'FinalAffectation'
-				instruction = affectation
-			]
-			return globalVariable
-		}
-	}
 
 	private def getOperator(Reduction it)
 	{
-		switch name
-		{
-			case 'sum' : '+?='
-			case 'reduceMin' : '<?='
-			case 'reduceMax' : '>?='
-			default : throw new Exception('Unsupported reduction function: ' + name)
-		}
+		val op = ReductionOperators.get(name)
+		if (op === null) throw new Exception('Unsupported reduction function: ' + name)
+		else op
 	}
 }

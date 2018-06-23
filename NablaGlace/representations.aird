@@ -1120,6 +1120,16 @@
     <semanticResources>src-gen/test/Test.beforeFillJobHLTs.n.nablair</semanticResources>
     <semanticResources>src-gen/test/Test.beforeOptimizeConnectivities.n.nablair</semanticResources>
     <semanticResources>src-gen/test/Test.beforeReplaceDefaultValues.n.nablair</semanticResources>
+    <semanticResources>src-gen/glace2d/Glace2d.beforeFillJobHLTs.java.nablair</semanticResources>
+    <semanticResources>src-gen/glace2d/Glace2d.beforeOptimizeConnectivities.java.nablair</semanticResources>
+    <semanticResources>src-gen/glace2d/Glace2d.beforeReplaceInternalReductions.java.nablair</semanticResources>
+    <semanticResources>src-gen/glace2d/Glace2d.beforeReplaceUtf8Chars.java.nablair</semanticResources>
+    <semanticResources>src-gen/glace2d/Glace2d.java.nablair</semanticResources>
+    <semanticResources>src-gen/test/Test.beforeFillJobHLTs.java.nablair</semanticResources>
+    <semanticResources>src-gen/test/Test.beforeOptimizeConnectivities.java.nablair</semanticResources>
+    <semanticResources>src-gen/test/Test.beforeReplaceInternalReductions.java.nablair</semanticResources>
+    <semanticResources>src-gen/test/Test.beforeReplaceUtf8Chars.java.nablair</semanticResources>
+    <semanticResources>src-gen/test/Test.java.nablair</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" xmi:id="_IEXXECFIEeiTgaFcTJ5rOw">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/resource/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_R77hIEvREei7br7Ozpir2A" name="Glace  Ir Graph" repPath="#_R2FX0EvREei7br7Ozpir2A">

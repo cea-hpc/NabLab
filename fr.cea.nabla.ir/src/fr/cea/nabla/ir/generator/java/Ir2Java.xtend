@@ -29,11 +29,10 @@ class Ir2Java implements IrGenerator
 	override getTransformationSteps() { TransformationSteps }
 	
 	/**
+	 * TODO améliorer le scope des itérateurs de reduction
 	 * TODO reporter les annotations en infos de debug. Comment ?
-	 * TODO : faire un mailleur 3D
 	 * TODO : filtrer les propositions de complétion pour l'itérateur en fonction du type
 	 * TODO bug : operator multiply (1 / 4) -> appel multiply (int avec v=0) au lieu de multiply(double)
-	 * TODO : option de la bibliothèque de maillage pour savoir si les index sont consécutifs
 	 * TODO : parallélisme de taches du graphe en Kokkos et Java.
 	 */
 	override getFileContent(IrModule it)
@@ -97,9 +96,11 @@ class Ir2Java implements IrGenerator
 					«IF !a.type.javaBasicType»«allocate(a.dimensions, a.name, 'new ' + a.type.javaType + '(0.0)', new ArrayList<String>)»«ENDIF»
 				«ENDFOR»
 
+				«IF variables.exists[x | x.name == 'coord']»
 				// Copy node coordinates
 				ArrayList<Real2> gNodes = mesh.getGeometricMesh().getNodes();
 				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> coord[rNodes] = gNodes.get(rNodes));
+				«ENDIF»
 			}
 			
 			«FOR j : jobs.sortBy[at] SEPARATOR '\n'»
@@ -112,6 +113,7 @@ class Ir2Java implements IrGenerator
 				«FOR j : jobs.filter[x | x.at < 0].sortBy[at]»
 					«j.name.toFirstLower»(); // @«j.at»
 				«ENDFOR»
+				«IF jobs.exists[at > 0]»
 				
 				int iteration = 0;
 				while (t < options.option_stoptime && iteration < options.option_max_iterations)
@@ -123,6 +125,7 @@ class Ir2Java implements IrGenerator
 					«ENDFOR»
 					writer.writeFile(iteration);
 				}
+				«ENDIF»
 				System.out.println("Fin de l'exécution du module «name»");
 			}
 

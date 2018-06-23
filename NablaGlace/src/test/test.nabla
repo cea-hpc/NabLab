@@ -6,6 +6,11 @@ connectivities {
 	cells: (∅) → {cell};
 }
 
+const ℝ LENGTH = 1.0;
+const ℕ X_EDGE_ELEMS = 8;
+const ℕ Y_EDGE_ELEMS = 8;
+const ℕ Z_EDGE_ELEMS = 1;
+
 ℝ Y[cells], X, Z;
 
-MyJob: X = reduceMin{j∈cells()}(Y{j} + 4) + Z;
+MyJob: X = reduceMin{j1∈cells()}(Y{j1} + 4) + reduceMin{j2∈cells()}(Y{j2} + 8) + Z;

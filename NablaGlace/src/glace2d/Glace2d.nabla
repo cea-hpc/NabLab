@@ -8,7 +8,7 @@ connectivities {
 	outerFaces: (∅) → {face};
 	innerNodes: (∅) → {node};
 	nodesOfCell: (cell) → {node};
-//	cellsOfNode: (node) → {cell};
+	cellsOfNode: (node) → {cell};
 	nodesOfFace: (face) → {node};
 }
 
@@ -91,13 +91,13 @@ ComputeEOSc: ∀j∈cells(), c{j} = √(γ*p{j}/ρ{j});
 // *************************************************************
 ComputeAjr: ∀j∈cells(),∀r∈nodesOfCell(j), A{j,r} = ((ρ{j}*c{j})/C{j,r}) * tensProduct(vectC{j,r}, vectC{j,r});
 ComputeFjr: ∀j∈cells(),∀r∈nodesOfCell(j), F{j,r} = p{j}*vectC{j,r} + matVectProduct(A{j,r}, (u{j}-fu{r}));
-//ComputeMr: ∀r∈nodes(), M{r} = ∑{j∈cellsOfNode(r)}(A{j,r});
-InitMr: ∀r∈nodes(), M{r} = {{0.0,0.0}, {0.0,0.0}};
-ComputeMr: ∀j∈cells(), ∀r∈nodesOfCell(j), M{r} = M{r} + A{j,r};
-ComputeMr2: ∀j∈cells(), {
-	∀r1∈nodesOfCell(j), M{r1} = {{0.0,0.0}, {0.0,0.0}};
-	∀r2∈nodesOfCell(j), M{r2} = M{r2} + A{j,r2};
-}
+ComputeMr: ∀r∈nodes(), M{r} = ∑{j∈cellsOfNode(r)}(A{j,r});
+//InitMr: ∀r∈nodes(), M{r} = {{0.0,0.0}, {0.0,0.0}};
+//ComputeMr: ∀j∈cells(), ∀r∈nodesOfCell(j), M{r} = M{r} + A{j,r};
+//ComputeMr2: ∀j∈cells(), {
+//	∀r1∈nodesOfCell(j), M{r1} = {{0.0,0.0}, {0.0,0.0}};
+//	∀r2∈nodesOfCell(j), M{r2} = M{r2} + A{j,r2};
+//}
 
 //ComputeBr: ∀r∈nodes(), b{r} = ∑{j∈cellsOfNode(r)}(vectC{j,r}*p{j} + matVectProduct(A{j,r}, u{j}));
 InitBr: ∀r∈nodes(), b{r} = {0.0,0.0};

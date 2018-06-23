@@ -1,6 +1,7 @@
 package fr.cea.nabla.ir.generator.n
 
 import com.google.inject.Inject
+import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -9,6 +10,7 @@ import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ScalarVariable
 import fr.cea.nabla.ir.ir.TimeIterationCopyJob
+import fr.cea.nabla.ir.transformers.ReplaceExternalReductions
 
 class JobContentProvider 
 {
@@ -20,7 +22,9 @@ class JobContentProvider
 		val i = instruction
 		switch i
 		{
-			Loop: getInnerJobContent(i.body, '''«i.iterator.content» «header»@ «at» ''')
+			Loop: 
+				if (i.reduction) '''«i.iterator.content» «(i.body as Affectation).reductionContent» @ «at»;'''
+				else getInnerJobContent(i.body, '''«i.iterator.content» «header»@ «at» ''')
 			default: getInnerJobContent(i, '''«header»@ «at» ''')
 		}
 	}
@@ -49,4 +53,10 @@ class JobContentProvider
 	
 	private def dispatch getLoopHeader(ScalarVariable v) ''''''
 	private def dispatch getLoopHeader(ArrayVariable v) { v.dimensions.map[d | '''∀ «d.returnType.type.literal»s'''].join(' ') }
+
+	private def isReduction(Loop it) 
+	{ 
+		body instanceof Affectation && 
+		ReplaceExternalReductions::ReductionOperators.values.contains((body as Affectation).operator)
+	}
 }

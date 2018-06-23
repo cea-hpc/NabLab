@@ -127,14 +127,14 @@ class BasicValidator  extends AbstractNablaValidator
 							val actualT = si.iterator.range.connectivity.returnType.type
 							if (actualT != expectedT)
 								error('Wrong iterator type: Expected ' + expectedT.literal + ', but was ' + actualT.literal, NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, i)
-							else
-							{	
-								val actualC = si.iterator.range.connectivity
-								if (actualC !== expectedC && !expectedC.inTypes.empty)
-									// Les connectivités sont différentes (ex: cells, cellsOfNode).
-									// Celle de la variable doit être globale, i.e. sans inTypes (ex: cells)
-									error('Wrong iterator type: ' + actualC.name + ' is not a subset of ' + expectedC.name, NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, i)
-							}
+//							else
+//							{	
+//								val actualC = si.iterator.range.connectivity
+//								if (actualC !== expectedC && !expectedC.inTypes.empty)
+//									// Les connectivités sont différentes (ex: cells, cellsOfNode).
+//									// Celle de la variable doit être globale, i.e. sans inTypes (ex: cells)
+//									error('Wrong iterator type: ' + actualC.name + ' is not a subset of ' + expectedC.name, NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, i)
+//							}
 						}
 					}
 				}

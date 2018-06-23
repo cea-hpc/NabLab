@@ -29,7 +29,7 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 	 */
 	override transform(IrModule m)
 	{
-		for (reductionInstr : m.eAllContents.filter(ReductionInstruction).filter[!reduction.global].toIterable)
+		for (reductionInstr : m.eAllContents.filter(ReductionInstruction).filter[!reduction.external].toIterable)
 		{
 			// création des fonctions correspondantes
 			// 2 arguments IN : 1 du type de la collection, l'autre du type de retour (appel en chaine)
@@ -66,7 +66,7 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 				right = IrFactory::eINSTANCE.createParenthesis => 
 				[ 
 					expression = reductionInstr.reduction.arg
-					type = expression.type.clone
+					type = EcoreUtil::copy(expression.type)
 				]
 			]
 		}

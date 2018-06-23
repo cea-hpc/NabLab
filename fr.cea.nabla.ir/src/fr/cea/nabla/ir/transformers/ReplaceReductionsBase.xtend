@@ -1,14 +1,14 @@
 package fr.cea.nabla.ir.transformers
 
-import fr.cea.nabla.ir.ir.Iterator
-import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrFactory
-import org.eclipse.emf.ecore.EObject
-import fr.cea.nabla.ir.ir.ExpressionType
+import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionCall
-import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.Variable
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.util.EcoreUtil
 
 abstract class ReplaceReductionsBase 
 {
@@ -21,29 +21,20 @@ abstract class ReplaceReductionsBase
 			left = IrFactory::eINSTANCE.createVarRef => 
 			[ 
 				variable = affectationLHS
-				type = affectationRHS.type.clone
+				type = EcoreUtil::copy(affectationRHS.type)
 			]
 			operator = op
 			right = affectationRHS
 		]
 		return loop
 	}	
-	
-	protected def clone(ExpressionType t)
-	{
-		IrFactory::eINSTANCE.createExpressionType => 
-		[
-			basicType = t.basicType
-			dimension = t.dimension
-		]
-	}
 
-	protected def boolean isGlobal(EObject it)
+	protected def boolean isExternal(EObject it)
 	{
 		if (eContainer === null) false
 		else if (eContainer instanceof Loop) false
 		else if (eContainer instanceof ReductionCall) false
 		else if (eContainer instanceof Job) true
-		else eContainer.global	
+		else eContainer.external	
 	}
 }

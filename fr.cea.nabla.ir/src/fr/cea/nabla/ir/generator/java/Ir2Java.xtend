@@ -39,6 +39,7 @@ class Ir2Java implements IrGenerator
 	'''
 		package «name.toLowerCase»;
 		
+		import java.util.Arrays;
 		import java.util.ArrayList;
 		import java.util.stream.IntStream;
 

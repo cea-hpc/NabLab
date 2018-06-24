@@ -21,14 +21,14 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 
 	/**
 	 * Transforme le module m pour qu'il n'est plus d'instance de ReductionInstruction 'externes',
-	 * c'est à dire non intégrées à une boucle. Le pattern rechercher est le job qui contient le block
-	 * avec la réduction et l'affectation. Ce job est remplacé par, au plus, 3 jobs. 
+	 * c'est à dire non intégrées à une boucle. Chaque ReductionInstruction est remplacée par
+	 * 2 jobs. 
 	 * Pour X = sum(j E cells)(Yj + 4) + Z, on a :
 	 *   - un job avec une boucle cells qui calcule l'argument de la réduction tmpSumXXX = Yj+4
 	 *   - un job avec une boucle cells qui fait la réduction sumXXX +?= tmpSumXXX
-	 *   - un job sans boucle qui fait l'affectation X = sumXXX + Z
 	 * Si l'argument est une VarRef, le premier job est inutile (=> remplacer tmpSumXXX par Y dans le 2e).
-	 * Si l'expression finale est une VarRef, le dernier job est inutile (=> remplacer sumXXX par X dans le 2e).
+	 * Si l'expression finale est une VarRef, le dernier job est inutile mais aucune optimisation
+	 * n'a été faite pour le moment.
 	 */
 	override transform(IrModule m)
 	{

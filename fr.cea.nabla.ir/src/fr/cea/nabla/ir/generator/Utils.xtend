@@ -13,25 +13,11 @@ import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class Utils 
 {
-	def getDimension() { 2 }
 	def getVarName(Iterator it) { name + connectivityName.toFirstUpper }
 	def getConnectivityName(Iterator it) { range.connectivity.name }
-	def getItemType(Iterator it) { range.connectivity.returnType.type }
 	def prev(String s) { 'prev' + s.toFirstUpper }
 	def next(String s) { 'next' + s.toFirstUpper }
 	def getNbElems(Connectivity it) { 'nb' + name.toFirstUpper}
-	
-	def indexToId(Iterator i, String indexName)
-	{
-		if (i.range.connectivity.indexEqualId) indexName
-		else i.connectivityName + '[' + indexName + ']'
-	}
-	
-	def idToIndex(Connectivity c, String idName)
-	{
-		if (c.indexEqualId) idName
-		else c.name + '.indexOf(' + idName + ')'
-	}
 
 	def getComment(Job it)
 	'''
@@ -66,8 +52,8 @@ class Utils
 	
 	def prefix(IteratorRef it, String name)
 	{
-		if (prev) 'prev' + name.toFirstUpper
-		else if (next) 'next' + name.toFirstUpper
+		if (prev) name.prev 
+		else if (next) name.next
 		else name
 	}
 }

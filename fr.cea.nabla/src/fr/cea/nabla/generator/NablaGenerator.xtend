@@ -5,6 +5,8 @@ package fr.cea.nabla.generator
 
 import com.google.inject.Inject
 import fr.cea.nabla.generator.ir.Nabla2Ir
+import fr.cea.nabla.ir.generator.java.Ir2Java
+import fr.cea.nabla.ir.generator.kokkos.Ir2Kokkos
 import fr.cea.nabla.ir.generator.n.Ir2N
 import fr.cea.nabla.nabla.NablaModule
 import org.eclipse.emf.ecore.EObject
@@ -13,7 +15,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-import fr.cea.nabla.ir.generator.java.Ir2Java
 
 /**
  * Generates code from your model files on save.
@@ -33,14 +34,15 @@ class NablaGenerator extends AbstractGenerator
 	@Inject SmallLatexGenerator latexGenerator
 	@Inject Nabla2Ir nabla2ir
 	
-	@Inject Ir2N generator
-//	@Inject Ir2Java generator
-//	@Inject Ir2Kokkos generator
+	@Inject Ir2N ir2N
+	@Inject Ir2Java ir2Java
+	@Inject Ir2Kokkos ir2Kokkos
 	
 	override doGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context) 
 	{
 		// 1 seul module par resource par définition (cf .xtext)
 		val module = input.contents.filter(NablaModule).head
+		val generator = ir2Java
 		
 		// ecriture du fichier de modele
 		if (!module.jobs.empty)

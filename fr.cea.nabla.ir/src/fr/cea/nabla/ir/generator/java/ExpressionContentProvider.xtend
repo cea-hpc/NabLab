@@ -1,6 +1,7 @@
 package fr.cea.nabla.ir.generator.java
 
 import com.google.inject.Inject
+import fr.cea.nabla.ir.generator.IndexHelper.IndexFactory
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.BinaryExpression
@@ -102,14 +103,13 @@ class ExpressionContentProvider
 			switch iter
 			{
 				IteratorRange: content += '[' + iter.accessor + ']'
-				IteratorRef: content += '[' + iter.getVarRefName(array, i) + ']'
+				IteratorRef: 
+				{
+					val index = IndexFactory::createIndex(iter.iterator, i, array.dimensions, iterators)
+					content += '[' + prefix(iter, index.label) + ']'					
+				}
 			}
 		}
 		return content
 	}
-
-	private def getVarRefName(IteratorRef i, ArrayVariable v, int iteratorIndex)
-	{
-		prefix(i, i.iterator.name + v.dimensions.get(iteratorIndex).name.toFirstUpper)
-	}	
 }

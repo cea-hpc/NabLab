@@ -44,8 +44,8 @@ class LatexLabelServices
 	static def dispatch String getLatex(TimeLoopJob it) { '\\texttt{' + name.pu + '} : \\forall {' + iterator.latex + '}, \\ '+ body.latex }
 	
 	// INSTRUCTIONS	
-	static def dispatch String getLabel(ScalarVarDefinition it) { type.literal + ' ' + variable.name.pu + '=' + defaultValue.latex }
-	static def dispatch String getLabel(VarGroupDeclaration it) { type.literal + ' ' + variables.map[x|x.name.pu].join(', ') }
+	static def dispatch String getLatex(ScalarVarDefinition it) { type.literal + ' ' + variable.name.pu + '=' + defaultValue.latex }
+	static def dispatch String getLatex(VarGroupDeclaration it) { type.literal + ' ' + variables.map[x|x.name.pu].join(', ') }
 	static def dispatch String getLatex(InstructionBlock it) { '...' }
 	static def dispatch String getLatex(Affectation it) { varRef?.latex + ' = ' + expression?.latex }
 	static def dispatch String getLatex(Loop it) { '\\forall {' + iterator.latex + '}, \\ ' + body.latex }

@@ -1,7 +1,7 @@
 package fr.cea.nabla.ir.generator.kokkos
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.LoopIndexHelper
+import fr.cea.nabla.ir.generator.LoopIndexHelper
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.If

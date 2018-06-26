@@ -1,7 +1,8 @@
 package fr.cea.nabla.ir.generator.java
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.LoopIndexHelper
+import fr.cea.nabla.ir.generator.IndexHelper
+import fr.cea.nabla.ir.generator.IndexHelper.IndexFactory
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.If
@@ -18,7 +19,7 @@ class InstructionContentProvider
 	@Inject extension Ir2JavaUtils
 	@Inject extension ExpressionContentProvider
 	@Inject extension VariableExtensions
-	@Inject extension LoopIndexHelper
+	@Inject extension IndexHelper
 
 	/**
 	 * Les réductions à l'intérieur des boucles ont été remplacées dans l'IR par des boucles.
@@ -28,7 +29,7 @@ class InstructionContentProvider
 	'''
 		«variable.javaType» «variable.name» = IntStream.range(0, «reduction.iterator.range.connectivity.nbElems»).boxed().parallel().reduce(
 			«variable.defaultValue.content», 
-			(r, «reduction.iterator.varName») -> «reduction.javaName»(r, «reduction.arg.content»),
+			(r, «IndexFactory::createIndex(reduction.iterator).label») -> «reduction.javaName»(r, «reduction.arg.content»),
 			(r1, r2) -> «reduction.javaName»(r1, r2)
 		);
 	'''
@@ -76,12 +77,13 @@ class InstructionContentProvider
 	
 	private def addParallelLoop(Iterator it, Loop l)
 	'''
-		«IF !range.connectivity.indexEqualId»int[] «connectivityName» = «range.accessor»;«ENDIF»
-		IntStream.range(0, «range.connectivity.nbElems»).parallel().forEach(«varName» -> 
+		«val itIndex = IndexFactory::createIndex(it)»
+		«IF !range.connectivity.indexEqualId»int[] «itIndex.containerName» = «range.accessor»;«ENDIF»
+		IntStream.range(0, «range.connectivity.nbElems»).parallel().forEach(«itIndex.label» -> 
 		{
-			«IF needIdFor(l)»int «name»Id = «indexToId(varName)»;«ENDIF»
+			«IF needIdFor(l)»int «name»Id = «indexToId(itIndex)»;«ENDIF»
 			«FOR index : getRequiredIndexes(l)»
-			int «index.iterator.name»«index.connectivity.name.toFirstUpper» = «idToIndex(index.connectivity, name+'Id')»;
+			int «index.iterator.name»«index.connectivity.name.toFirstUpper» = «idToIndex(index, name+'Id')»;
 			«ENDFOR»
 			«IF l.body instanceof InstructionBlock»
 			«FOR i : (l.body as InstructionBlock).instructions»
@@ -95,23 +97,23 @@ class InstructionContentProvider
 
 	private def addSequentialLoop(Iterator it, Loop l)
 	'''
-		int[] «connectivityName» = «range.accessor»;
-		for (int «varName»=0; «varName»<«connectivityName».length; «varName»++)
+		«val itIndex = IndexFactory::createIndex(it)»
+		int[] «itIndex.containerName» = «range.accessor»;
+		for (int «itIndex.label»=0; «itIndex.label»<«itIndex.containerName».length; «itIndex.label»++)
 		{
-			«IF needPrev(l)»int «prev(varName)» = («varName»-1+«connectivityName».length)%«connectivityName».length;«ENDIF»
-			«IF needNext(l)»int «next(varName)» = («varName»+1+«connectivityName».length)%«connectivityName».length;«ENDIF»
+			«IF needPrev(l)»int «prev(itIndex.label)» = («itIndex.label»-1+«itIndex.containerName».length)%«itIndex.containerName».length;«ENDIF»
+			«IF needNext(l)»int «next(itIndex.label)» = («itIndex.label»+1+«itIndex.containerName».length)%«itIndex.containerName».length;«ENDIF»
 			«IF needIdFor(l)»
 				«val idName = name + 'Id'»
-				int «idName» = «indexToId(varName)»;
-				«IF needPrev(l)»int «prev(idName)» = «indexToId(prev(varName))»;«ENDIF»
-				«IF needNext(l)»int «next(idName)» = «indexToId(next(varName))»;«ENDIF»
+				int «idName» = «indexToId(itIndex)»;
+				«IF needPrev(l)»int «prev(idName)» = «indexToId(itIndex, 'prev')»;«ENDIF»
+				«IF needNext(l)»int «next(idName)» = «indexToId(itIndex, 'next')»;«ENDIF»
 				«FOR index : getRequiredIndexes(l)»
-					«val cName = index.iterator.name + index.connectivity.name.toFirstUpper»
 					«val cIdName = index.iterator.name + 'Id'»
 					«IF !(index.connectivity.indexEqualId)»«index.idToIndexArray»«ENDIF»
-					int «cName» = «idToIndex(index.connectivity, cIdName)»;
-					«IF needPrev(l)»int «prev(cName)» = «idToIndex(index.connectivity, prev(cIdName))»;«ENDIF»
-					«IF needNext(l)»int «next(cName)» = «idToIndex(index.connectivity, next(cIdName))»;«ENDIF»
+					int «index.label» = «idToIndex(index, cIdName)»;
+					«IF needPrev(l)»int «prev(index.label)» = «idToIndex(index, prev(cIdName))»;«ENDIF»
+					«IF needNext(l)»int «next(index.label)» = «idToIndex(index, next(cIdName))»;«ENDIF»
 				«ENDFOR»
 			«ENDIF»
 			«l.body.content»

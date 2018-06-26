@@ -13,8 +13,6 @@ import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class Utils 
 {
-	def getVarName(Iterator it) { name + connectivityName.toFirstUpper }
-	def getConnectivityName(Iterator it) { range.connectivity.name }
 	def prev(String s) { 'prev' + s.toFirstUpper }
 	def next(String s) { 'next' + s.toFirstUpper }
 	def getNbElems(Connectivity it) { 'nb' + name.toFirstUpper}

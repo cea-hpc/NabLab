@@ -1,10 +1,11 @@
-package fr.cea.nabla.ir
+package fr.cea.nabla.ir.generator
 
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRange
+import fr.cea.nabla.ir.ir.IteratorRangeOrRef
 import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.VarRef
@@ -14,7 +15,7 @@ import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Data
 
-class LoopIndexHelper 
+class IndexHelper 
 {
 	@Data
 	static class Index
@@ -23,26 +24,49 @@ class LoopIndexHelper
 		Connectivity connectivity
 		String connectivityArgIterator
 
-		new(Iterator i, Connectivity c, String arg)	
+		def getContainerName()
 		{
-			iterator = i
-			connectivity = c
-			connectivityArgIterator = arg
+			if (connectivityArgIterator.nullOrEmpty)
+				connectivity.name
+			else
+				connectivity.name + connectivityArgIterator.toFirstUpper
 		}
-
-		new(Iterator i, Connectivity c)	{ this(i, c, '') }
 		
-		def getLabel() { '(' + iterator.name + ', ' + connectivity.name + ')' }
+		def getLabel() 
+		{ 
+			iterator.name + containerName.toFirstUpper
+		}
 		
 		override equals(Object o)
 		{
 			if (o instanceof Index)
 			{
 				val i = o as Index
-				return (i.iterator === iterator && i.connectivity === connectivity)
+				return (i.iterator === iterator 
+						&& i.connectivity === connectivity
+						&& i.connectivityArgIterator == connectivityArgIterator)
 			}
 			return false
 		}
+	}
+	
+	static class IndexFactory
+	{
+		static def createIndex(Iterator i)
+		{
+			val arg = if (i.range.args.empty) '' else i.range.args.head.argName
+			new Index(i, i.range.connectivity, arg)
+		}
+		
+		static def createIndex(Iterator i, int iIndex, List<Connectivity> connectivities, List<IteratorRangeOrRef> args)
+		{
+			val c = connectivities.get(iIndex)
+			val arg = if (c.inTypes.empty || iIndex==0) '' else args.get(iIndex-1).argName
+			new Index(i, c, arg)
+		}
+		
+		private static def dispatch getArgName(IteratorRef it) { iterator.name }
+		private static def dispatch getArgName(IteratorRange it) { 'range' + it.hashCode.toString }
 	}
 	
 	def getRequiredIndexes(Loop context)
@@ -74,20 +98,22 @@ class LoopIndexHelper
 		context.eAllContents.filter(IteratorRef).filter[x|x.iterator===it].exists[x|x.prev]
 	}	
 		
-	def indexToId(Iterator i, String indexName)
+	def indexToId(Index it) { indexToId('') }
+	def indexToId(Index it, String prefix)
 	{
-		if (i.range.connectivity.indexEqualId) indexName
-		else i.range.connectivity.name + '[' + indexName + ']'
+		val realLabel = if (prefix.nullOrEmpty) label else prefix + label.toFirstUpper
+		if (connectivity.indexEqualId) realLabel
+		else containerName + '[' + realLabel + ']'
 	}
 	
-	def idToIndex(Connectivity c, String idName)
+	def idToIndex(Index it, String idName)
 	{
-		if (c.indexEqualId) idName
-		else 'Arrays.asList(' + c.name + ').indexOf(' + idName + ')'
+		if (connectivity.indexEqualId) idName
+		else 'Arrays.asList(' + containerName + ').indexOf(' + idName + ')'
 	}
 
 	def idToIndexArray(Index it)
-	'''int[] «connectivity.name» = mesh.get«connectivity.name.toFirstUpper()»(«connectivityArgIterator»Id);'''
+	'''int[] «containerName» = mesh.get«connectivity.name.toFirstUpper()»(«connectivityArgIterator»Id);'''
 	
 	/**
 	 * Retourne vrai si un IteratorRange utilise l'iterateur 'iterator'
@@ -105,11 +131,11 @@ class LoopIndexHelper
 	{		
 		val indexes = new HashSet<Index>
 		// l'iterateur definit pour la boucle context est disponible
-		indexes += new Index(context.iterator, context.iterator.range.connectivity)
+		indexes += IndexFactory::createIndex(context.iterator)
 		for (outerLoop : context.eContainer.outerLoops)
 		{
 			// l'iterateur de toutes les outer boucles sont disponibles
-			indexes += new Index(outerLoop.iterator, outerLoop.iterator.range.connectivity)
+			indexes += IndexFactory::createIndex(outerLoop.iterator)
 			// les index nécessaires dans les outer loops sont disponibles egalement
 			indexes += outerLoop.neededIndexes
 		}
@@ -132,17 +158,13 @@ class LoopIndexHelper
 				if (vRefIter instanceof IteratorRef)
 				{
 					val vrIterator = (vRefIter as IteratorRef).iterator
-					val vrConnectivity = (vRef.variable as ArrayVariable).dimensions.get(i)
-					val vrArg = if (vrConnectivity.inTypes.empty) '' else vRef.iterators.get(i-1).argName
-					indexes += new Index(vrIterator, vrConnectivity, vrArg)
+					val vrConnectivities = (vRef.variable as ArrayVariable).dimensions
+					indexes += IndexFactory::createIndex(vrIterator, i, vrConnectivities, vRef.iterators)
 				}
 			} 
 		}
 		return indexes
 	}
-	
-	private def dispatch getArgName(IteratorRef it) { iterator.name }
-	private def dispatch getArgName(IteratorRange it) { throw new Exception("Not implemented yet") }
 	
 	private def Loop getNearestLoop(EObject o)
 	{

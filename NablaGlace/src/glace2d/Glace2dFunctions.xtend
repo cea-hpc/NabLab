@@ -19,11 +19,16 @@ class Glace2dFunctions
 	
 	def static double matrixDeterminant(Real2x2 m)
 	{
-		return 0.0;
+		0.0
 	}
 	
 	def static Real2x2 inverseMatrix(Real2x2 m, double d)
 	{
-		return new Real2x2(0.0);
+		new Real2x2(0.0)
+  	}
+  	
+  	def static Real2 perp(Real2 a, Real2 b)
+  	{
+		new Real2(0.0)
   	}
 }

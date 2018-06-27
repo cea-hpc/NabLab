@@ -1,8 +1,11 @@
 Manifest-Version: 1.0
+Automatic-Module-Name: NablaTest
 Bundle-ManifestVersion: 2
 Bundle-Name: NablaTest
 Bundle-SymbolicName: NablaTest
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: CEA
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: test
-Require-Bundle: fr.cea.nabla.javalib;bundle-version="1.0.0",
- fr.cea.nabla;bundle-version="1.0.0"
+Require-Bundle: fr.cea.nabla.javalib,
+ fr.cea.nabla

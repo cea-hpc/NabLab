@@ -109,7 +109,7 @@ YOuterFacesComputations: ∀k∈outerFaces(), {
       		ℝ²ˣ² nxn = tensProduct(n,n);
       		ℝ²ˣ² IcP = I - nxn;
 			bt{r} = matVectProduct(IcP, b{r});
-			Mt{r} = IcP * (M{r} * IcP) + nxn*trace(Mt{r});
+			Mt{r} = IcP * (M{r} * IcP); // + nxn*trace(Mt{r});
 		}
 	}
 }

@@ -20,7 +20,7 @@ class FillJobHLTs implements IrTransformationStep
 	
 	override getDescription() 
 	{
-		'Compute hierarchical logical time of each jobs'
+		'Compute Hierarchical Logical Time (HLT) of each jobs'
 	}
 	
 	/**
@@ -38,7 +38,13 @@ class FillJobHLTs implements IrTransformationStep
 		
 		// calcul des @
 		val cycles = g.findCycle
-		if (cycles === null)
+		val hasCycles = (cycles !== null)
+		if (hasCycles)
+		{
+			println('*** HLT calculation impossible: graph contains cycles.')
+			println('*** ' + cycles.map[name].join(' -> '))
+		}
+		else
 		{
 			val jalgo = new FloydWarshallShortestPaths<Job, DefaultWeightedEdge>(g)	
 			
@@ -62,6 +68,7 @@ class FillJobHLTs implements IrTransformationStep
 			val minWeight = weightByJobs.values.min
 			for (j : weightByJobs.keySet) j.at = minWeight - weightByJobs.get(j) - 1
 		}
+		return !hasCycles
 	}
 	
 	/** 

@@ -60,6 +60,7 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 			if (!m.eAllContents.filter(ReductionCall).exists[x | x.reduction == reduc])
 					EcoreUtil::delete(reduc, true)
 		}
+		return true
 	}
 	
 	/**

@@ -18,5 +18,6 @@ class ConfigureNablaConnectivities implements IrTransformationStep
 	override transform(IrModule m) 
 	{
 		m.connectivities.forEach[c | c.name = NablaConnectivities.getOrDefault(c.name, c.name)]
+		return true
 	}
 }

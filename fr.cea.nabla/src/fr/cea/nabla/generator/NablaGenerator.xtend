@@ -59,18 +59,24 @@ class NablaGenerator extends AbstractGenerator
 			val irModule = nabla2ir.toIrModule(module)
 
 			// application des transformation de l'IR (dépendant du langage
-			for (step : generator.transformationSteps)
+			var transformOK = true
+			val stepIt = generator.transformationSteps.iterator
+			while (stepIt.hasNext && transformOK)
 			{
+				val step = stepIt.next
 				println('\tIR -> IR: ' + step.description)
-				createAndSaveResource(fsa, input.resourceSet, fileNameWithoutExtension.addExtensions(#['before' + step.shortName, generator.fileExtension, IrExtension]), irModule)		
-				step.transform(irModule)
+				//createAndSaveResource(fsa, input.resourceSet, fileNameWithoutExtension.addExtensions(#['before' + step.shortName, generator.fileExtension, IrExtension]), irModule)		
+				transformOK = step.transform(irModule)
 			}
 			createAndSaveResource(fsa, input.resourceSet, fileNameWithoutExtension.addExtensions(#[generator.fileExtension, IrExtension]), irModule)
 			
 			// génération du fichier .n
-			println('\tGenerating .' + generator.fileExtension + ' file')
-			val fileContent = generator.getFileContent(irModule)
-			fsa.generateFile(fileNameWithoutExtension.addExtensions(#[generator.fileExtension]), fileContent)
+			if (transformOK)
+			{
+				println('\tGenerating .' + generator.fileExtension + ' file')
+				val fileContent = generator.getFileContent(irModule)
+				fsa.generateFile(fileNameWithoutExtension.addExtensions(#[generator.fileExtension]), fileContent)	
+			}
 		}
 	}
 	

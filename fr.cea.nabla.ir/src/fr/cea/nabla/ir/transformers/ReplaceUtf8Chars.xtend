@@ -21,6 +21,7 @@ class ReplaceUtf8Chars implements IrTransformationStep
 		m.functions.forEach[x | x.name = x.name.noUtf8]
 		m.reductions.forEach[x | x.name = x.name.noUtf8]
 		m.jobs.forEach[x | x.name = x.name.noUtf8]
+		return true
 	}
 	
 	private def getNoUtf8(String name)

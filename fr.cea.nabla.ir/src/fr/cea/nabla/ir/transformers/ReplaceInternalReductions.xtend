@@ -45,6 +45,7 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 			if (!m.eAllContents.filter(ReductionCall).exists[x | x.reduction == reduc])
 				EcoreUtil::delete(reduc, true)
 		}
+		return true
 	}
 	
 	private def Expression createAffectationRHS(IrModule m, ReductionInstruction reductionInstr)

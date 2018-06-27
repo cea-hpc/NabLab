@@ -14,5 +14,6 @@ class OptimizeConnectivities implements IrTransformationStep
 	override transform(IrModule m) 
 	{
 		m.connectivities.forEach[c | if (ConnectivitiesToOptimize.contains(c.name)) c.indexEqualId = true]
+		return true
 	}
 }

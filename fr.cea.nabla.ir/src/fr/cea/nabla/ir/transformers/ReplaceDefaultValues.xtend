@@ -31,5 +31,6 @@ class ReplaceDefaultValues implements IrTransformationStep
 				]
 			]
 		}
+		return true
 	}	
 }

@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: NablaTest
+Bundle-SymbolicName: NablaTest
+Bundle-Version: 1.0.0.qualifier
+Export-Package: test
+Require-Bundle: fr.cea.nabla.javalib;bundle-version="1.0.0",
+ fr.cea.nabla;bundle-version="1.0.0"

@@ -42,7 +42,8 @@ class NablaGenerator extends AbstractGenerator
 	{
 		// 1 seul module par resource par définition (cf .xtext)
 		val module = input.contents.filter(NablaModule).head
-		val generator = ir2Java
+		//val generator = ir2Java
+		val generator = ir2N
 		
 		// ecriture du fichier de modele
 		if (!module.jobs.empty)

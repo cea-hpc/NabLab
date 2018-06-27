@@ -21,5 +21,5 @@ class Ir2NUtils
 	}
 
 	def getContent(Iterator it)
-	'''«IF it!==null»∀ «range.connectivity.returnType.type.literal»s«ENDIF»'''
+	'''«IF it!==null»∀ «range.connectivity.name»«ENDIF»'''
 }

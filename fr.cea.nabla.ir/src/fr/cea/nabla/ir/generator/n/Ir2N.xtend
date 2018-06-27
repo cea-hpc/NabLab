@@ -5,8 +5,8 @@ import fr.cea.nabla.ir.generator.IrGenerator
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.transformers.ConfigureNablaConnectivities
 import fr.cea.nabla.ir.transformers.FillJobHLTs
-import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceDefaultValues
 import fr.cea.nabla.ir.transformers.ReplaceExternalReductions
 import fr.cea.nabla.ir.transformers.ReplaceInternalReductions
@@ -15,7 +15,7 @@ import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 class Ir2N implements IrGenerator
 {
 	static val FileExtension = 'n'
-	static val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new ReplaceExternalReductions, new ReplaceDefaultValues, new OptimizeConnectivities, new FillJobHLTs]
+	static val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new ReplaceExternalReductions, new ReplaceDefaultValues, new ConfigureNablaConnectivities, new FillJobHLTs]
 
 	@Inject extension Ir2NUtils
 	@Inject extension ExpressionContentProvider

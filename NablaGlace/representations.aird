@@ -1129,6 +1129,7 @@
     <semanticResources>src-gen/glace/Glace.beforeReplaceUtf8Chars.java.nablair</semanticResources>
     <semanticResources>src-gen/glace/Glace.java.nablair</semanticResources>
     <semanticResources>src-gen/glace2d/Glace2d.n.nablair</semanticResources>
+    <semanticResources>src-gen/glace2d/Glace2d.beforeConfigureNablaConnectivities.n.nablair</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" xmi:id="_IEXXECFIEeiTgaFcTJ5rOw">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/resource/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_R77hIEvREei7br7Ozpir2A" name="Glace  Ir Graph" repPath="#_R2FX0EvREei7br7Ozpir2A">

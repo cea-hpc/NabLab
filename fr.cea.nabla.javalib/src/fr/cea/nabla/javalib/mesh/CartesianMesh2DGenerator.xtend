@@ -22,7 +22,7 @@ class  CartesianMesh2DGenerator
 			for (i : 0..nbXQuads)
 			{
 				nodes.add(new Real2(xSize*i, ySize*j))
-				if (i==0 || j==0 || i==nbXQuads-1 || j==nbYQuads-1) 
+				if (i!=0 && j!=0 && i!=nbXQuads && j!=nbYQuads) 
 					innerNodeIds.set(innerNodeId++, nodeId)
 				nodeId++
 			}

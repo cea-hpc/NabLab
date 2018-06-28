@@ -2,6 +2,7 @@ package fr.cea.nabla.javalib.types
 
 import org.eclipse.xtend.lib.annotations.Accessors
 
+/** Stockage par ligne (1 Real2 par ligne) */
 class Real2 
 {
 	@Accessors var double x

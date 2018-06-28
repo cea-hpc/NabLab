@@ -24,6 +24,7 @@ Require-Bundle: com.google.guava,
  org.hamcrest.core,
  org.opentest4j,
  org.apiguardian
-Export-Package: fr.cea.nabla.javalib.mesh,
+Export-Package: fr.cea.nabla.javalib,
+ fr.cea.nabla.javalib.mesh,
  fr.cea.nabla.javalib.types
 

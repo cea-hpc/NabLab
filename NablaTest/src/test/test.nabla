@@ -17,4 +17,4 @@ const ℕ Z_EDGE_ELEMS = 1;
 ℝ Y[cells], Cjr[cells, nodesOfCell], Z[nodes];
 
 MyJob: ∀j∈cells(), Y{j} = ∑{r∈nodesOfCell(j)}(Cjr{j,r} * Z{r});
-//MyJob2: ∀r∈nodes(), Z{r} = ∑{j∈cellsOfNode(r)}(Cjr{j,r} * 4);
+MyJob2: ∀r∈nodes(), Z{r} = ∑{j∈cellsOfNode(r)}(Cjr{j,r} * 4);

@@ -109,7 +109,7 @@ class IndexHelper
 	def idToIndex(Index it, String idName)
 	{
 		if (connectivity.indexEqualId) idName
-		else 'Arrays.asList(' + containerName + ').indexOf(' + idName + ')'
+		else 'Utils.indexOf(' + containerName + ',' + idName + ')'
 	}
 
 	def idToIndexArray(Index it)

@@ -66,5 +66,6 @@ class Mesh<T>
 		println('  nodes : ' + nodes.map[toString].join(','))	
 		println('  edges : ' + edges.map[toString].join(','))	
 		println('  quads : ' + quads.map[toString].join(','))
+		println('  outer edges : ' + outerEdgeIds.map[toString].join(','))
 	}
 }

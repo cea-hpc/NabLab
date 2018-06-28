@@ -43,6 +43,7 @@ class Ir2Java implements IrGenerator
 		import java.util.ArrayList;
 		import java.util.stream.IntStream;
 
+		import fr.cea.nabla.javalib.Utils;
 		import fr.cea.nabla.javalib.types.*;
 		import fr.cea.nabla.javalib.mesh.*;
 
@@ -89,7 +90,7 @@ class Ir2Java implements IrGenerator
 				«FOR c : usedConnectivities»
 				«c.nbElems» = «c.connectivityAccessor»;
 				«ENDFOR»
-				writer = new VtkFileWriter2D("«name»", mesh.getGeometricMesh());
+				writer = new VtkFileWriter2D("«name»");
 
 				// Arrays allocation
 				«FOR a : variables.filter(ArrayVariable)»
@@ -124,7 +125,6 @@ class Ir2Java implements IrGenerator
 					«FOR j : jobs.filter[x | x.at > 0].sortBy[at]»
 						«j.name.toFirstLower»(); // @«j.at»
 					«ENDFOR»
-					writer.writeFile(iteration);
 				}
 				«ENDIF»
 				System.out.println("Fin de l'exécution du module «name»");

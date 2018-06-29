@@ -6,6 +6,7 @@ import fr.cea.nabla.ir.generator.IndexHelper.IndexFactory
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.If
+import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Loop
@@ -21,6 +22,14 @@ class InstructionContentProvider
 	@Inject extension VariableExtensions
 	@Inject extension IndexHelper
 
+	def dispatch getInnerContent(Instruction it) { content }
+	def dispatch getInnerContent(InstructionBlock it)
+	'''
+		«FOR i : instructions»
+		«i.content»
+		«ENDFOR»
+	'''
+	
 	/**
 	 * Les réductions à l'intérieur des boucles ont été remplacées dans l'IR par des boucles.
 	 * Ne restent que les réductions au niveau des jobs => reduction //
@@ -68,10 +77,10 @@ class InstructionContentProvider
 	def dispatch CharSequence getContent(If it) 
 	'''
 		if («condition.content») 
-			«thenInstruction.content»
+		«IF !(thenInstruction instanceof InstructionBlock)»	«ENDIF»«thenInstruction.content»
 		«IF (elseInstruction !== null)»
 		else 
-			«elseInstruction.content»
+		«IF !(elseInstruction instanceof InstructionBlock)»	«ENDIF»«elseInstruction.content»
 		«ENDIF»
 	'''
 	
@@ -85,13 +94,7 @@ class InstructionContentProvider
 			«FOR index : getRequiredIndexes(l)»
 			int «index.iterator.name»«index.connectivity.name.toFirstUpper» = «idToIndex(index, name+'Id')»;
 			«ENDFOR»
-			«IF l.body instanceof InstructionBlock»
-			«FOR i : (l.body as InstructionBlock).instructions»
-			«i.content»
-			«ENDFOR»
-			«ELSE»
-			«l.body.content»
-			«ENDIF»
+			«l.body.innerContent»
 		});
 	'''
 
@@ -116,7 +119,7 @@ class InstructionContentProvider
 					«IF needNext(l)»int «next(index.label)» = «idToIndex(index, next(cIdName))»;«ENDIF»
 				«ENDFOR»
 			«ENDIF»
-			«l.body.content»
+			«l.body.innerContent»
 		}
 	'''
 	

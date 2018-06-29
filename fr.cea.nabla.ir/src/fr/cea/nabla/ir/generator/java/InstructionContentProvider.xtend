@@ -92,7 +92,7 @@ class InstructionContentProvider
 		{
 			«IF needIdFor(l)»int «name»Id = «indexToId(itIndex)»;«ENDIF»
 			«FOR index : getRequiredIndexes(l)»
-			int «index.iterator.name»«index.connectivity.name.toFirstUpper» = «idToIndex(index, name+'Id')»;
+			int «index.label» = «idToIndex(index, name+'Id')»;
 			«ENDFOR»
 			«l.body.innerContent»
 		});

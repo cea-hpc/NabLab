@@ -23,7 +23,7 @@ class JobContentProvider
 	
 	private def dispatch CharSequence getInnerContent(InstructionJob it)
 	'''
-		«instruction.content»
+		«instruction.innerContent»
 	'''
 	
 	private def dispatch CharSequence getInnerContent(TimeIterationCopyJob it)

@@ -21,7 +21,7 @@ class NablaProposalProvider extends AbstractNablaProposalProvider
 	@Inject extension ExpressionTypeProvider
 	
 	// alpha, beta, gamma, delta, epsilon, lambda, rho, omega
-	static val GreekLetters = #['\u03B1', '\u03B2', '\u03B3', '\u03B4', '\u03F5', '\u03BB', '\u03C1', '\u2126']
+	static val GreekLetters = #['\u03B1', '\u03B2', '\u03B3', '\u03B4', '\u03F5', '\u03BB', '\u03C1', '\u2126', '\u03A9']
 	
 	override completeScalarVar_Name(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor)
 	{

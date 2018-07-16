@@ -65,7 +65,8 @@ IniIc: ∀j∈cells(), if (center{j}.x < option_x_interface) {
   p_ic{j}=option_p_ini_zd;
 }
 
-ComputeCjrIc: ∀j∈cells(), ∀r∈nodesOfCell(j), C_ic{j,r} = 0.5 * perp(coord{►(r)} - coord{◄(r)});
+ComputeCjrIc: ∀j∈cells(), ∀r∈nodesOfCell(j), 
+	C_ic{j,r} = 0.5 * perp(coord{►(r)} - coord{◄(r)});
 IniVIc: ∀j∈cells(), V_ic{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C_ic{j,r}, coord{r}));
 IniM: ∀j∈cells(), m{j} = ρ_ic{j} * V_ic{j}; // m est constant
 

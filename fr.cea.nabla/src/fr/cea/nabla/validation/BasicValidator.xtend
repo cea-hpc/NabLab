@@ -106,7 +106,7 @@ class BasicValidator  extends AbstractNablaValidator
 	@Check
 	def checkConstVar(Affectation it)
 	{
-		if (varRef.variable.isConst)
+		if (varRef.variable.isConst && (varRef.variable.eContainer instanceof NablaModule))
 			error('Affectation to const variable', NablaPackage.Literals::AFFECTATION__VAR_REF)
 	}
 	

@@ -1,0 +1,49 @@
+# Notices for NabLab
+
+This content is produced and maintained by Commissariat à l'Energie Atomique - CEA.
+
+ * Project home: https://github.com/cea-hpc/nablab
+
+## Copyright
+
+All content is the property of the respective authors or their employers.
+For more information regarding authorship of content, please consult the
+listed source code repository logs.
+
+## Declared Project Licenses
+
+This program and the accompanying materials are made available under the terms
+of the Eclipse Public License v. 2.0 which is available at
+https://www.eclipse.org/legal/epl-v20.html.
+
+SPDX-License-Identifier: EPL-2.0
+
+## Source Code
+
+The project maintains the following source code repository : https://github.com/cea-hpc/nablab
+
+## Third-party Content
+
+Xtext (2.12)
+
+ * License: EPL-1.0
+ * Project: http://projects.eclipse.org/projects/modeling.tmf.xtext
+
+Sirius (6.0.0)
+
+ * License: EPL-1.0
+ * Project: http://projects.eclipse.org/projects/modeling.sirius
+
+JGraphT (1.2.0)
+
+ * License: LGP, EPL-1.0
+ * Project: http://jgrapht.org
+ * Source: http://prdownloads.sourceforge.net/jgrapht/jgrapht-1.2.0.tar.gz?download
+
+JLatexMath (1.0.3)
+
+ * License: GPL 2.0
+ * Project: http://www.scilab.org/projects/thirdparty_project/jlatexmath
+ * Source: http://forge.scilab.org/index.php/p/jlatexmath
+
+

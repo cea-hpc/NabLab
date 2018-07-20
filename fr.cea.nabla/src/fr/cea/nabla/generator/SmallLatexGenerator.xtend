@@ -1,3 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2018 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * 	Benoit Lelandais - initial implementation
+ * 	Marie-Pierre Oudot - initial implementation
+ * 	Jean-Sylvan Camier - Nabla generation support
+ *******************************************************************************/
 package fr.cea.nabla.generator
 
 import fr.cea.nabla.nabla.NablaModule
@@ -10,8 +23,34 @@ class SmallLatexGenerator
 	'''
 		\documentclass[11pt]{article}
 		
-		\usepackage{fontspec}
-		\usepackage{geometry}
+		\use/*******************************************************************************
+ * Copyright (c) 2018 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * 	Benoit Lelandais - initial implementation
+ * 	Marie-Pierre Oudot - initial implementation
+ * 	Jean-Sylvan Camier - Nabla generation support
+ *******************************************************************************/
+package{fontspec}
+		\use/*******************************************************************************
+ * Copyright (c) 2018 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * 	Benoit Lelandais - initial implementation
+ * 	Marie-Pierre Oudot - initial implementation
+ * 	Jean-Sylvan Camier - Nabla generation support
+ *******************************************************************************/
+package{geometry}
 		\geometry{landscape}
 		
 		\title{Nabla Module «m.name»}

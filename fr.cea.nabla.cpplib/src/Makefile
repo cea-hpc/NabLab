@@ -2,7 +2,8 @@ PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 OBJS = Real2.o Real3.o Real2x2.o Real3x3.o MathFunctions.o NumericMesh2D.o CartesianMesh2DGenerator.o
 INCS = -I.
-CXXFLAGS += --std=c++11
+CXX = /cea/home/necdev/necdev/install/gcc-6.3/bin/g++
+CXXFLAGS = -L/cea/home/necdev/necdev/install/gcc-6.3/lib64 --std=c++11
 TARGET = libnabla.a
 
 #ifeq ($(BUILD_MODE),debug)

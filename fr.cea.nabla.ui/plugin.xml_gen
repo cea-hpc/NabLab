@@ -204,15 +204,6 @@
 			</activeWhen>
 		</handler>
 	</extension>
-	<extension point="org.eclipse.core.contenttype.contentTypes">
-		<content-type
-			base-type="org.eclipse.core.runtime.text"
-			file-extensions="nabla"
-			id="fr.cea.nabla.Nabla.contenttype"
-			name="Nabla File"
-			priority="normal">
-		</content-type>
-	</extension>
 	<!-- adding resource factories -->
 	<extension
 		point="org.eclipse.emf.ecore.extension_parser">
@@ -248,15 +239,6 @@
 			point="org.eclipse.core.resources.markers">
 		<super type="org.eclipse.xtext.ui.check.expensive"/>
 		<persistent value="true"/>
-	</extension>
-	<extension point="org.eclipse.ui.preferencePages">
-		<page
-			category="fr.cea.nabla.Nabla"
-			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.validation.ValidatorPreferencePage"
-			id="fr.cea.nabla.Nabla.validator.preferencePage"
-			name="Errors/Warnings">
-			<keywordReference id="fr.cea.nabla.ui.keyword_Nabla"/>
-		</page>
 	</extension>
 	<extension point="org.eclipse.xtext.builder.participant">
 		<participant
@@ -406,18 +388,12 @@
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
 			extensions="nabla">
 		</viewer>
-		<contentTypeBinding
-			contentTypeId="fr.cea.nabla.Nabla.contenttype"
-			contentViewerId="fr.cea.nabla.Nabla.compare.contentViewers" />
 	</extension>
 	<extension point="org.eclipse.compare.contentMergeViewers">
 		<viewer id="fr.cea.nabla.Nabla.compare.contentMergeViewers"
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
 			extensions="nabla" label="Nabla Compare">
 		</viewer>
-		<contentTypeBinding
-			contentTypeId="fr.cea.nabla.Nabla.contenttype"
-			contentMergeViewerId="fr.cea.nabla.Nabla.compare.contentMergeViewers" />
 	</extension>
 	<extension point="org.eclipse.ui.editors.documentProviders">
 		<provider id="fr.cea.nabla.Nabla.editors.documentProviders"

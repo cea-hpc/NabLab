@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src-gen"/>
-	<classpathentry exported="true" kind="lib" path="jgrapht/lib/jgraph-5.13.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="jgrapht/lib/jgrapht-core-0.9.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="jgrapht-1.2.0/lib/jgrapht-core-1.2.0.jar" sourcepath="jgrapht-1.2.0/source/jgrapht-core/src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>

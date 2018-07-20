@@ -5,8 +5,8 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.TimeIterationCopyJob
 import java.util.HashMap
-import org.jgrapht.alg.CycleDetector
-import org.jgrapht.alg.FloydWarshallShortestPaths
+import org.jgrapht.alg.cycle.CycleDetector
+import org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths
 import org.jgrapht.graph.DefaultWeightedEdge
 import org.jgrapht.graph.DirectedWeightedPseudograph
 
@@ -54,7 +54,7 @@ class FillJobHLTs implements IrTransformationStep
 			g.edgeSet.forEach[e | g.setEdgeWeight(e, -1)]
 			for (v : g.vertexSet.filter[v | v!=timeLoopSourceNode])
 			{
-				val graphPath = jalgo.getShortestPath(timeLoopSourceNode, v)
+				val graphPath = jalgo.getPath(timeLoopSourceNode, v)
 				if (graphPath!==null) graphPath.endVertex.at = Math::abs(graphPath.weight)
 			}
 			
@@ -62,7 +62,7 @@ class FillJobHLTs implements IrTransformationStep
 			val weightByJobs = new HashMap<Job, Double>
 			for (v : g.vertexSet.filter[v | v!=globalSourceNode && (v.at as int)==0])
 			{
-				val graphPath = jalgo.getShortestPath(globalSourceNode, v)
+				val graphPath = jalgo.getPath(globalSourceNode, v)
 				if (graphPath!==null) weightByJobs.put(graphPath.endVertex, graphPath.weight)
 			}
 			val minWeight = weightByJobs.values.min

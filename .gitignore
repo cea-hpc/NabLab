@@ -6,3 +6,4 @@
 */bin/*
 *.o
 *.a
+/.metadata/

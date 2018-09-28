@@ -23,7 +23,7 @@ import org.scilab.forge.jlatexmath.TeXFormula
 
 class LatexImageServices 
 {
-	/** Extrait les formules Latex (entourées de '$') de la documentation et les remplaces par des images */
+	/** Extrait les formules Latex (entourÃ©es de '$') de la documentation et les remplaces par des images */
 	static def String interpretLatexInsertions(String documentation)
 	{
 		var transformedDoc = documentation
@@ -40,7 +40,7 @@ class LatexImageServices
 		return transformedDoc	
 	}
 	
-	/** Retourne une image HTML à partir d'une formule Latex (sans les '$') */
+	/** Retourne une image HTML Ã  partir d'une formule Latex (sans les '$') */
 	static def String createHtmlBase64Image(String texFormula)
 	{
 		val output = new ByteArrayOutputStream
@@ -48,7 +48,7 @@ class LatexImageServices
 		DatatypeConverter.printBase64Binary(output.toByteArray).addHtmlTags
 	}
 	
-	/** Fabrique une image png à partir d'une formule Latex */
+	/** Fabrique une image png Ã  partir d'une formule Latex */
 	static def byte[] createPngImage(String texFormula, float size)
 	{
 		val output = new ByteArrayOutputStream
@@ -56,7 +56,7 @@ class LatexImageServices
 		output.toByteArray
 	}
 	
-	/** Enlève les '$' autour d'une formule Latex */
+	/** EnlÃ¨ve les '$' autour d'une formule Latex */
 	private static def String removeDollars(String texFormulaWithDollars)
 	{
 		val l = texFormulaWithDollars.length
@@ -64,7 +64,7 @@ class LatexImageServices
 			texFormulaWithDollars.substring(1, l-1)
 	}
 	
-	/** Retourne une instance de BufferedImage à partir d'une formule Latex (sans les '$') */
+	/** Retourne une instance de BufferedImage Ã  partir d'une formule Latex (sans les '$') */
 	private static def BufferedImage createImage(String texFormula, float size)
 	{
 		val formula = new TeXFormula(texFormula)
@@ -75,5 +75,5 @@ class LatexImageServices
 	}
 	
 	private static def String addHtmlTags(String base64Encoding)
-	'''<img src="data:image/png;base64,«base64Encoding»"/>'''
+	'''<img src="data:image/png;base64,Â«base64EncodingÂ»"/>'''
 }

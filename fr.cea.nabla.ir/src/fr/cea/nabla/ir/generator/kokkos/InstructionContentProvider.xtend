@@ -37,33 +37,33 @@ class InstructionContentProvider
 	def dispatch getInnerContent(Instruction it) { content }
 	def dispatch getInnerContent(InstructionBlock it)
 	'''
-		«FOR i : instructions»
-		«i.content»
-		«ENDFOR»
+		Â«FOR i : instructionsÂ»
+		Â«i.contentÂ»
+		Â«ENDFORÂ»
 	'''
 
 	def dispatch CharSequence getContent(ReductionInstruction it) 
 	{
-		throw new Exception('Les instances de ReductionInstruction doivent être supprimées avant de générer le C++ Kokkos')
+		throw new Exception('Les instances de ReductionInstruction doivent Ãªtre supprimÃ©es avant de gÃ©nÃ©rer le C++ Kokkos')
 	}
 
 	def dispatch CharSequence getContent(ScalarVarDefinition it) 
 	'''
-		«FOR v : variables»
-		«v.kokkosType» «v.name»«IF v.defaultValue !== null» = «v.defaultValue.content»«ENDIF»;
-		«ENDFOR»
+		Â«FOR v : variablesÂ»
+		Â«v.kokkosTypeÂ» Â«v.nameÂ»Â«IF v.defaultValue !== nullÂ» = Â«v.defaultValue.contentÂ»Â«ENDIFÂ»;
+		Â«ENDFORÂ»
 	'''
 	
 	def dispatch CharSequence getContent(InstructionBlock it) 
 	'''
 		{
-			«FOR i : instructions»
-			«i.content»
-			«ENDFOR»
+			Â«FOR i : instructionsÂ»
+			Â«i.contentÂ»
+			Â«ENDFORÂ»
 		}'''
 	
 	def dispatch CharSequence getContent(Affectation it) 
-	'''«left.content» «operator» «right.content»;'''
+	'''Â«left.contentÂ» Â«operatorÂ» Â«right.contentÂ»;'''
 
 	def dispatch CharSequence getContent(Loop it) 
 	{
@@ -75,50 +75,50 @@ class InstructionContentProvider
 	
 	def dispatch CharSequence getContent(If it) 
 	'''
-		if («condition.content») 
-		«IF !(thenInstruction instanceof InstructionBlock)»	«ENDIF»«thenInstruction.content»
-		«IF (elseInstruction !== null)»
+		if (Â«condition.contentÂ») 
+		Â«IF !(thenInstruction instanceof InstructionBlock)Â»	Â«ENDIFÂ»Â«thenInstruction.contentÂ»
+		Â«IF (elseInstruction !== null)Â»
 		else 
-		«IF !(elseInstruction instanceof InstructionBlock)»	«ENDIF»«elseInstruction.content»
-		«ENDIF»
+		Â«IF !(elseInstruction instanceof InstructionBlock)Â»	Â«ENDIFÂ»Â«elseInstruction.contentÂ»
+		Â«ENDIFÂ»
 	'''
 	
 	private def addParallelLoop(Iterator it, Loop l)
 	'''
-		«val itIndex = IndexFactory::createIndex(it)»
-		«IF !range.connectivity.indexEqualId»int[] «itIndex.containerName» = «range.accessor»;«ENDIF»
-		Kokkos::parallel_for(«range.connectivity.nbElems», KOKKOS_LAMBDA(const int «itIndex.label»)
+		Â«val itIndex = IndexFactory::createIndex(it)Â»
+		Â«IF !range.connectivity.indexEqualIdÂ»int[] Â«itIndex.containerNameÂ» = Â«range.accessorÂ»;Â«ENDIFÂ»
+		Kokkos::parallel_for(Â«range.connectivity.nbElemsÂ», KOKKOS_LAMBDA(const int Â«itIndex.labelÂ»)
 		{
-			«IF needIdFor(l)»int «name»Id = «indexToId(itIndex)»;«ENDIF»
-			«FOR index : getRequiredIndexes(l)»
-			int «index.label» = «idToIndex(index, name+'Id')»;
-			«ENDFOR»
-			«l.body.innerContent»
+			Â«IF needIdFor(l)Â»int Â«nameÂ»Id = Â«indexToId(itIndex)Â»;Â«ENDIFÂ»
+			Â«FOR index : getRequiredIndexes(l)Â»
+			int Â«index.labelÂ» = Â«idToIndex(index, name+'Id')Â»;
+			Â«ENDFORÂ»
+			Â«l.body.innerContentÂ»
 		});
 	'''
 
 	private def addSequentialLoop(Iterator it, Loop l)
 	'''
-		«val itIndex = IndexFactory::createIndex(it)»
-		auto «itIndex.containerName» = «range.accessor»;
-		for (int «itIndex.label»=0; «itIndex.label»<«itIndex.containerName».size(); «itIndex.label»++)
+		Â«val itIndex = IndexFactory::createIndex(it)Â»
+		auto Â«itIndex.containerNameÂ» = Â«range.accessorÂ»;
+		for (int Â«itIndex.labelÂ»=0; Â«itIndex.labelÂ»<Â«itIndex.containerNameÂ».size(); Â«itIndex.labelÂ»++)
 		{
-			«IF needPrev(l)»int «prev(itIndex.label)» = («itIndex.label»-1+«itIndex.containerName».size())%«itIndex.containerName».size();«ENDIF»
-			«IF needNext(l)»int «next(itIndex.label)» = («itIndex.label»+1+«itIndex.containerName».size())%«itIndex.containerName».size();«ENDIF»
-			«IF needIdFor(l)»
-				«val idName = name + 'Id'»
-				int «idName» = «indexToId(itIndex)»;
-				«IF needPrev(l)»int «prev(idName)» = «indexToId(itIndex, 'prev')»;«ENDIF»
-				«IF needNext(l)»int «next(idName)» = «indexToId(itIndex, 'next')»;«ENDIF»
-				«FOR index : getRequiredIndexes(l)»
-					«val cIdName = index.iterator.name + 'Id'»
-					«IF !(index.connectivity.indexEqualId)»«index.idToIndexArray»«ENDIF»
-					int «index.label» = «idToIndex(index, cIdName)»;
-					«IF needPrev(l)»int «prev(index.label)» = «idToIndex(index, prev(cIdName))»;«ENDIF»
-					«IF needNext(l)»int «next(index.label)» = «idToIndex(index, next(cIdName))»;«ENDIF»
-				«ENDFOR»
-			«ENDIF»
-			«l.body.innerContent»
+			Â«IF needPrev(l)Â»int Â«prev(itIndex.label)Â» = (Â«itIndex.labelÂ»-1+Â«itIndex.containerNameÂ».size())%Â«itIndex.containerNameÂ».size();Â«ENDIFÂ»
+			Â«IF needNext(l)Â»int Â«next(itIndex.label)Â» = (Â«itIndex.labelÂ»+1+Â«itIndex.containerNameÂ».size())%Â«itIndex.containerNameÂ».size();Â«ENDIFÂ»
+			Â«IF needIdFor(l)Â»
+				Â«val idName = name + 'Id'Â»
+				int Â«idNameÂ» = Â«indexToId(itIndex)Â»;
+				Â«IF needPrev(l)Â»int Â«prev(idName)Â» = Â«indexToId(itIndex, 'prev')Â»;Â«ENDIFÂ»
+				Â«IF needNext(l)Â»int Â«next(idName)Â» = Â«indexToId(itIndex, 'next')Â»;Â«ENDIFÂ»
+				Â«FOR index : getRequiredIndexes(l)Â»
+					Â«val cIdName = index.iterator.name + 'Id'Â»
+					Â«IF !(index.connectivity.indexEqualId)Â»Â«index.idToIndexArrayÂ»Â«ENDIFÂ»
+					int Â«index.labelÂ» = Â«idToIndex(index, cIdName)Â»;
+					Â«IF needPrev(l)Â»int Â«prev(index.label)Â» = Â«idToIndex(index, prev(cIdName))Â»;Â«ENDIFÂ»
+					Â«IF needNext(l)Â»int Â«next(index.label)Â» = Â«idToIndex(index, next(cIdName))Â»;Â«ENDIFÂ»
+				Â«ENDFORÂ»
+			Â«ENDIFÂ»
+			Â«l.body.innerContentÂ»
 		}
 	'''
 }

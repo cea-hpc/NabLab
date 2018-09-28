@@ -23,8 +23,8 @@ import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionArg
 
 /**
- * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
- * Si elle n'est pas singleton, plusieurs instances d'un même objet seront créées lors
+ * Attention : cette classe doit Ãªtre un singleton car elle utilise des mÃ©thodes create.
+ * Si elle n'est pas singleton, plusieurs instances d'un mÃªme objet seront crÃ©Ã©es lors
  * deu parcours du graphe d'origine (voir la documentation Xtext).
  */
 @Singleton

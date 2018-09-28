@@ -231,7 +231,7 @@ class IrExpressionFactory
 		expression = e.toIrExpression
 	}
 	
-	// Attention, pas de fonction create mais une creation systématique
+	// Attention, pas de fonction create mais une creation systÃ©matique
 	private def toIrExpressionType(NablaType t)
 	{
 		IrFactory::eINSTANCE.createExpressionType => 

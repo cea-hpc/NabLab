@@ -41,17 +41,17 @@ class Nabla2Ir
 		name = m.name
 		m.imports.forEach[x | imports += x.toIrImport]
 		
-		// Pour les fonctions, il ne faut pas parcourir les déclarations du bloc car
-		// il peut également y avoir des fonctions externes. Il faut donc regarder tous les appels
+		// Pour les fonctions, il ne faut pas parcourir les dÃ©clarations du bloc car
+		// il peut Ã©galement y avoir des fonctions externes. Il faut donc regarder tous les appels
 		m.eAllContents.filter(FunctionCall).forEach[x | functions += x.function.toIrFunction(x.declaration)]
-		// Même remarque pour les réductions que pour les fonctions
+		// MÃªme remarque pour les rÃ©ductions que pour les fonctions
 		m.eAllContents.filter(ReductionCall).forEach[x | reductions += x.reduction.toIrReduction(x.declaration)]
 		
-		// Rien de particulier pour les connectivités qui sont propres à chaque module
+		// Rien de particulier pour les connectivitÃ©s qui sont propres Ã  chaque module
 		for (block : m.blocks.filter(ConnectivityDeclarationBlock))
 			block.connectivities.forEach[x | connectivities += x.toIrConnectivity]
 
-		// Création de l'ensemble des variables globales
+		// CrÃ©ation de l'ensemble des variables globales
 		for (vDecl : m.variables)
 			switch vDecl
 			{
@@ -65,10 +65,10 @@ class Nabla2Ir
 				VarGroupDeclaration: vDecl.variables.forEach[x | variables += x.toIrVariable]
 			}
 		
-		// en IR, les variables globales doivent être initialisées par un job
+		// en IR, les variables globales doivent Ãªtre initialisÃ©es par un job
 		//m.variables.filter(GlobalVariableDeclarationBlock).forEach[x | x.populateIrJobs(jobs)]
 				
-		// il faut créer les variables au temps n+1 et les jobs de copie de Xn+1 <- Xn
+		// il faut crÃ©er les variables au temps n+1 et les jobs de copie de Xn+1 <- Xn
 		m.jobs.filter(TimeLoopJob).forEach[x | x.populateIrVariablesAndJobs(variables, jobs)]
 	
 		m.jobs.forEach[x | x.populateIrJobs(jobs)]

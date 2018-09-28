@@ -126,7 +126,7 @@ class IndexHelper
 	}
 
 	def idToIndexArray(Index it)
-	'''int[] «containerName» = mesh.get«connectivity.name.toFirstUpper()»(«connectivityArgIterator»Id);'''
+	'''int[] Â«containerNameÂ» = mesh.getÂ«connectivity.name.toFirstUpper()Â»(Â«connectivityArgIteratorÂ»Id);'''
 	
 	/**
 	 * Retourne vrai si un IteratorRange utilise l'iterateur 'iterator'
@@ -149,16 +149,16 @@ class IndexHelper
 		{
 			// l'iterateur de toutes les outer boucles sont disponibles
 			indexes += IndexFactory::createIndex(outerLoop.iterator)
-			// les index nécessaires dans les outer loops sont disponibles egalement
+			// les index nÃ©cessaires dans les outer loops sont disponibles egalement
 			indexes += outerLoop.neededIndexes
 		}
 		return indexes
 	}
 	
 	/**
-	 * Retourne, pour le contexte 'context', l'ensemble des itérateurs 
-	 * nécessaires sous forme d'une liste de paires <Iterator, Connectivity>,
-	 * correspondant à la liste des déréférecement effectués par les variables. 
+	 * Retourne, pour le contexte 'context', l'ensemble des itÃ©rateurs 
+	 * nÃ©cessaires sous forme d'une liste de paires <Iterator, Connectivity>,
+	 * correspondant Ã  la liste des dÃ©rÃ©fÃ©recement effectuÃ©s par les variables. 
 	 */
 	private def getNeededIndexes(Loop context)
 	{

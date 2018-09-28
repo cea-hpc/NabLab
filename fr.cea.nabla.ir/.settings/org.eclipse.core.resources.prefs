@@ -1,6 +1,0 @@
-eclipse.preferences.version=1
-encoding//src/fr/cea/nabla/ir/generator/n/DirtyPatchProvider.xtend=UTF-8
-encoding//src/fr/cea/nabla/ir/generator/n/InstructionContentProvider.xtend=UTF-8
-encoding//src/fr/cea/nabla/ir/generator/n/Ir2N.xtend=UTF-8
-encoding//src/fr/cea/nabla/ir/generator/n/Ir2NUtils.xtend=UTF-8
-encoding//src/fr/cea/nabla/ir/generator/n/JobContentProvider.xtend=UTF-8

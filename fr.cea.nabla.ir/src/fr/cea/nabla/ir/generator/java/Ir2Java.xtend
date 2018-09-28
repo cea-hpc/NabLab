@@ -42,11 +42,11 @@ class Ir2Java implements IrGenerator
 	override getTransformationSteps() { TransformationSteps }
 	
 	/**
-	 * TODO améliorer le scope des itérateurs de reduction
+	 * TODO amÃ©liorer le scope des itÃ©rateurs de reduction
 	 * TODO reporter les annotations en infos de debug. Comment ?
-	 * TODO : filtrer les propositions de complétion pour l'itérateur en fonction du type
+	 * TODO : filtrer les propositions de complÃ©tion pour l'itÃ©rateur en fonction du type
 	 * TODO bug : operator multiply (1 / 4) -> appel multiply (int avec v=0) au lieu de multiply(double)
-	 * TODO : parallélisme de taches du graphe en Kokkos et Java.
+	 * TODO : parallÃ©lisme de taches du graphe en Kokkos et Java.
 	 */
 	override getFileContent(IrModule it)
 	'''
@@ -63,7 +63,7 @@ class Ir2Java implements IrGenerator
  * 	Marie-Pierre Oudot - initial implementation
  * 	Jean-Sylvan Camier - Nabla generation support
  *******************************************************************************/
-package «name.toLowerCase»;
+package Â«name.toLowerCaseÂ»;
 		
 		import java.util.Arrays;
 		import java.util.ArrayList;
@@ -74,94 +74,94 @@ package «name.toLowerCase»;
 		import fr.cea.nabla.javalib.mesh.*;
 
 		@SuppressWarnings("all")
-		public final class «name»
+		public final class Â«nameÂ»
 		{
 			public final static class Options
 			{
-				«FOR v : variables.filter(ScalarVariable).filter[const]»
-					public final «v.javaType» «v.name» = «v.defaultValue.content»;
-				«ENDFOR»
+				Â«FOR v : variables.filter(ScalarVariable).filter[const]Â»
+					public final Â«v.javaTypeÂ» Â«v.nameÂ» = Â«v.defaultValue.contentÂ»;
+				Â«ENDFORÂ»
 			}
 			
 			private final Options options;
 
 			// Mesh
 			private final NumericMesh2D mesh;
-			«FOR c : usedConnectivities BEFORE 'private final int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
+			Â«FOR c : usedConnectivities BEFORE 'private final int ' SEPARATOR ', 'Â»Â«c.nbElemsÂ»Â«ENDFORÂ»;
 			private final VtkFileWriter2D writer;
 
 			// Global Variables
-			«val globals = variables.filter(ScalarVariable).filter[!const]»
-			«val initializedGlobals = globals.filter[x|x.defaultValue!==null]»
-			«FOR uv : initializedGlobals»
-			private «uv.type.javaType» «uv.name» = «uv.defaultValue.content»;
-			«ENDFOR»
-			«val uninitializedGlobals = globals.filter[x|x.defaultValue===null].groupBy[type]»
-			«FOR type : uninitializedGlobals.keySet»
-			private «type.javaType» «FOR v : uninitializedGlobals.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
-			«ENDFOR»
+			Â«val globals = variables.filter(ScalarVariable).filter[!const]Â»
+			Â«val initializedGlobals = globals.filter[x|x.defaultValue!==null]Â»
+			Â«FOR uv : initializedGlobalsÂ»
+			private Â«uv.type.javaTypeÂ» Â«uv.nameÂ» = Â«uv.defaultValue.contentÂ»;
+			Â«ENDFORÂ»
+			Â«val uninitializedGlobals = globals.filter[x|x.defaultValue===null].groupBy[type]Â»
+			Â«FOR type : uninitializedGlobals.keySetÂ»
+			private Â«type.javaTypeÂ» Â«FOR v : uninitializedGlobals.get(type) SEPARATOR ', 'Â»Â«v.nameÂ»Â«ENDFORÂ»;
+			Â«ENDFORÂ»
 
-			«val arrays = variables.filter(ArrayVariable).groupBy[type]»
-			«IF !arrays.empty»
+			Â«val arrays = variables.filter(ArrayVariable).groupBy[type]Â»
+			Â«IF !arrays.emptyÂ»
 			// Array Variables
-			«FOR type : arrays.keySet»
-			private «type.javaType» «FOR v : arrays.get(type) SEPARATOR ', '»«v.name»«FOR i : 1..v.dimensions.length»[]«ENDFOR»«ENDFOR»;
-			«ENDFOR»
-			«ENDIF»
+			Â«FOR type : arrays.keySetÂ»
+			private Â«type.javaTypeÂ» Â«FOR v : arrays.get(type) SEPARATOR ', 'Â»Â«v.nameÂ»Â«FOR i : 1..v.dimensions.lengthÂ»[]Â«ENDFORÂ»Â«ENDFORÂ»;
+			Â«ENDFORÂ»
+			Â«ENDIFÂ»
 			
-			public «name»(Options aOptions, NumericMesh2D aNumericMesh2D)
+			public Â«nameÂ»(Options aOptions, NumericMesh2D aNumericMesh2D)
 			{
 				options = aOptions;
 				mesh = aNumericMesh2D;
-				«FOR c : usedConnectivities»
-				«c.nbElems» = «c.connectivityAccessor»;
-				«ENDFOR»
-				writer = new VtkFileWriter2D("«name»");
+				Â«FOR c : usedConnectivitiesÂ»
+				Â«c.nbElemsÂ» = Â«c.connectivityAccessorÂ»;
+				Â«ENDFORÂ»
+				writer = new VtkFileWriter2D("Â«nameÂ»");
 
 				// Arrays allocation
-				«FOR a : variables.filter(ArrayVariable)»
-					«a.name» = new «a.type.javaType»«FOR d : a.dimensions»[«d.nbElems»]«ENDFOR»;
-					«IF !a.type.javaBasicType»«allocate(a.dimensions, a.name, 'new ' + a.type.javaType + '(0.0)', new ArrayList<String>)»«ENDIF»
-				«ENDFOR»
+				Â«FOR a : variables.filter(ArrayVariable)Â»
+					Â«a.nameÂ» = new Â«a.type.javaTypeÂ»Â«FOR d : a.dimensionsÂ»[Â«d.nbElemsÂ»]Â«ENDFORÂ»;
+					Â«IF !a.type.javaBasicTypeÂ»Â«allocate(a.dimensions, a.name, 'new ' + a.type.javaType + '(0.0)', new ArrayList<String>)Â»Â«ENDIFÂ»
+				Â«ENDFORÂ»
 
-				«IF variables.exists[x | x.name == 'coord']»
+				Â«IF variables.exists[x | x.name == 'coord']Â»
 				// Copy node coordinates
 				ArrayList<Real2> gNodes = mesh.getGeometricMesh().getNodes();
 				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> coord[rNodes] = gNodes.get(rNodes));
-				«ENDIF»
+				Â«ENDIFÂ»
 			}
 			
-			«FOR j : jobs.sortBy[at] SEPARATOR '\n'»
-				«j.content»
-			«ENDFOR»			
+			Â«FOR j : jobs.sortBy[at] SEPARATOR '\n'Â»
+				Â«j.contentÂ»
+			Â«ENDFORÂ»			
 
 			public void simulate()
 			{
-				System.out.println("Début de l'exécution du module «name»");
-				«FOR j : jobs.filter[x | x.at < 0].sortBy[at]»
-					«j.name.toFirstLower»(); // @«j.at»
-				«ENDFOR»
-				«IF jobs.exists[at > 0]»
+				System.out.println("DÃ©but de l'exÃ©cution du module Â«nameÂ»");
+				Â«FOR j : jobs.filter[x | x.at < 0].sortBy[at]Â»
+					Â«j.name.toFirstLowerÂ»(); // @Â«j.atÂ»
+				Â«ENDFORÂ»
+				Â«IF jobs.exists[at > 0]Â»
 				
 				int iteration = 0;
 				while (t < options.option_stoptime && iteration < options.option_max_iterations)
 				{
 					System.out.println("t = " + t);
 					iteration++;
-					«FOR j : jobs.filter[x | x.at > 0].sortBy[at]»
-						«j.name.toFirstLower»(); // @«j.at»
-					«ENDFOR»
+					Â«FOR j : jobs.filter[x | x.at > 0].sortBy[at]Â»
+						Â«j.name.toFirstLowerÂ»(); // @Â«j.atÂ»
+					Â«ENDFORÂ»
 				}
-				«ENDIF»
-				System.out.println("Fin de l'exécution du module «name»");
+				Â«ENDIFÂ»
+				System.out.println("Fin de l'exÃ©cution du module Â«nameÂ»");
 			}
 
 			public static void main(String[] args)
 			{
-				«name».Options o = new «name».Options();
+				Â«nameÂ».Options o = new Â«nameÂ».Options();
 				Mesh<Real2> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.LENGTH, o.LENGTH);
 				NumericMesh2D nm = new NumericMesh2D(gm);
-				«name» i = new «name»(o, nm);
+				Â«nameÂ» i = new Â«nameÂ»(o, nm);
 				i.simulate();
 			}
 		};
@@ -170,22 +170,22 @@ package «name.toLowerCase»;
 	private def getConnectivityAccessor(Connectivity c)
 	{
 		if (c.inTypes.empty)
-			'''mesh.getNb«c.name.toFirstUpper»()'''
+			'''mesh.getNbÂ«c.name.toFirstUpperÂ»()'''
 		else
-			'''NumericMesh2D.MaxNb«c.name.toFirstUpper»'''
+			'''NumericMesh2D.MaxNbÂ«c.name.toFirstUpperÂ»'''
 	}
 	
 	private def CharSequence allocate(Iterable<Connectivity> connectivities, String varName, String allocation, List<String> indexes)
 	{
-		if (connectivities.empty) '''«varName»«FOR i:indexes»[«i»]«ENDFOR» = «allocation»;'''
+		if (connectivities.empty) '''Â«varNameÂ»Â«FOR i:indexesÂ»[Â«iÂ»]Â«ENDFORÂ» = Â«allocationÂ»;'''
 		else 
 		{
 			val c = connectivities.head
 			indexes.add(c.indexName)
 			'''
-				IntStream.range(0, «c.nbElems»).parallel().forEach(«c.indexName» -> 
+				IntStream.range(0, Â«c.nbElemsÂ»).parallel().forEach(Â«c.indexNameÂ» -> 
 				{
-					«connectivities.tail.allocate(varName, allocation, indexes)»
+					Â«connectivities.tail.allocate(varName, allocation, indexes)Â»
 				});
 			'''
 		}

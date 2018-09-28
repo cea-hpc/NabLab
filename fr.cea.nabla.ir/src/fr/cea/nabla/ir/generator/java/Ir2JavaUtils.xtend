@@ -57,12 +57,12 @@ class Ir2JavaUtils
 			case '/': 'operator_divide'
 			case '+=': 'operator_add'
 			case '=': 'operator_set'
-			default: throw new RuntimeException("Pas d'équivalent Java pour l'opérateur : " + op)
+			default: throw new RuntimeException("Pas d'Ã©quivalent Java pour l'opÃ©rateur : " + op)
 		} 
 	}
 	
 	def CharSequence getAccessor(IteratorRange it) 
-	'''mesh.get«connectivity.name.toFirstUpper»(«args.map[rangeArgName].join(',')»)'''
+	'''mesh.getÂ«connectivity.name.toFirstUpperÂ»(Â«args.map[rangeArgName].join(',')Â»)'''
 	
 	private def dispatch getRangeArgName(IteratorRange it) { accessor }
 	private def dispatch getRangeArgName(IteratorRef it) { prefix(iterator.name + 'Id') }

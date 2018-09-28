@@ -37,14 +37,14 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 
 	/**
 	 * Transforme le module m pour qu'il n'est plus d'instance de ReductionInstruction.
-	 * Les réductions sont remplacées par des opérateurs ou des fonctions traditionnelles.
+	 * Les rÃ©ductions sont remplacÃ©es par des opÃ©rateurs ou des fonctions traditionnelles.
 	 * Le choix se fait en fonction de la liste Operators.
 	 */
 	override transform(IrModule m)
 	{
 		for (reductionInstr : m.eAllContents.filter(ReductionInstruction).filter[!reduction.external].toIterable)
 		{
-			// création des fonctions correspondantes
+			// crÃ©ation des fonctions correspondantes
 			// 2 arguments IN : 1 du type de la collection, l'autre du type de retour (appel en chaine)
 			val reduc = reductionInstr.reduction.reduction
 						
@@ -54,7 +54,7 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 			val variableDefinition = IrFactory::eINSTANCE.createScalarVarDefinition => [ variables += reductionInstr.variable ]
 			replace(reductionInstr, variableDefinition, loop)			
 
-			// si la réduction n'est pas référencée, on l'efface
+			// si la rÃ©duction n'est pas rÃ©fÃ©rencÃ©e, on l'efface
 			if (!m.eAllContents.filter(ReductionCall).exists[x | x.reduction == reduc])
 				EcoreUtil::delete(reduc, true)
 		}
@@ -127,9 +127,9 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 	}
 	
 	/**
-	 * Extension de la méthode EcoreUtil::replace pour une liste d'objet.
-	 * Si le eContainmentFeature est de cardinalité 1, un block est créé,
-	 * sinon les instructions sont ajoutées une à une à l'emplacement de la réduction.
+	 * Extension de la mÃ©thode EcoreUtil::replace pour une liste d'objet.
+	 * Si le eContainmentFeature est de cardinalitÃ© 1, un block est crÃ©Ã©,
+	 * sinon les instructions sont ajoutÃ©es une Ã  une Ã  l'emplacement de la rÃ©duction.
 	 */
 	private def replace(ReductionInstruction reduction, ScalarVarDefinition replacementI1, Loop replacementI2)
 	{

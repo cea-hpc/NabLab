@@ -38,45 +38,45 @@ class InstructionContentProvider
 	def dispatch getInnerContent(Instruction it) { content }
 	def dispatch getInnerContent(InstructionBlock it)
 	'''
-		«FOR i : instructions»
-		«i.content»
-		«ENDFOR»
+		Â«FOR i : instructionsÂ»
+		Â«i.contentÂ»
+		Â«ENDFORÂ»
 	'''
 	
 	/**
-	 * Les réductions à l'intérieur des boucles ont été remplacées dans l'IR par des boucles.
-	 * Ne restent que les réductions au niveau des jobs => reduction //
+	 * Les rÃ©ductions Ã  l'intÃ©rieur des boucles ont Ã©tÃ© remplacÃ©es dans l'IR par des boucles.
+	 * Ne restent que les rÃ©ductions au niveau des jobs => reduction //
 	 */
 	def dispatch CharSequence getContent(ReductionInstruction it) 
 	'''
-		«variable.javaType» «variable.name» = IntStream.range(0, «reduction.iterator.range.connectivity.nbElems»).boxed().parallel().reduce(
-			«variable.defaultValue.content», 
-			(r, «IndexFactory::createIndex(reduction.iterator).label») -> «reduction.javaName»(r, «reduction.arg.content»),
-			(r1, r2) -> «reduction.javaName»(r1, r2)
+		Â«variable.javaTypeÂ» Â«variable.nameÂ» = IntStream.range(0, Â«reduction.iterator.range.connectivity.nbElemsÂ»).boxed().parallel().reduce(
+			Â«variable.defaultValue.contentÂ», 
+			(r, Â«IndexFactory::createIndex(reduction.iterator).labelÂ») -> Â«reduction.javaNameÂ»(r, Â«reduction.arg.contentÂ»),
+			(r1, r2) -> Â«reduction.javaNameÂ»(r1, r2)
 		);
 	'''
 
 	def dispatch CharSequence getContent(ScalarVarDefinition it) 
 	'''
-		«FOR v : variables»
-		«v.javaType» «v.name»«IF v.defaultValue !== null» = «v.defaultValue.content»«ENDIF»;
-		«ENDFOR»
+		Â«FOR v : variablesÂ»
+		Â«v.javaTypeÂ» Â«v.nameÂ»Â«IF v.defaultValue !== nullÂ» = Â«v.defaultValue.contentÂ»Â«ENDIFÂ»;
+		Â«ENDFORÂ»
 	'''
 	
 	def dispatch CharSequence getContent(InstructionBlock it) 
 	'''
 		{
-			«FOR i : instructions»
-			«i.content»
-			«ENDFOR»
+			Â«FOR i : instructionsÂ»
+			Â«i.contentÂ»
+			Â«ENDFORÂ»
 		}'''
 	
 	def dispatch CharSequence getContent(Affectation it) 
 	{
 		if (left.variable.type.javaBasicType) 
-			'''«left.content» «operator» «right.content»;'''
+			'''Â«left.contentÂ» Â«operatorÂ» Â«right.contentÂ»;'''
 		else 
-			'''«left.content».«operator.javaOperator»(«right.content»);'''
+			'''Â«left.contentÂ».Â«operator.javaOperatorÂ»(Â«right.contentÂ»);'''
 	}
 
 	def dispatch CharSequence getContent(Loop it) 
@@ -89,52 +89,52 @@ class InstructionContentProvider
 	
 	def dispatch CharSequence getContent(If it) 
 	'''
-		if («condition.content») 
-		«IF !(thenInstruction instanceof InstructionBlock)»	«ENDIF»«thenInstruction.content»
-		«IF (elseInstruction !== null)»
+		if (Â«condition.contentÂ») 
+		Â«IF !(thenInstruction instanceof InstructionBlock)Â»	Â«ENDIFÂ»Â«thenInstruction.contentÂ»
+		Â«IF (elseInstruction !== null)Â»
 		else 
-		«IF !(elseInstruction instanceof InstructionBlock)»	«ENDIF»«elseInstruction.content»
-		«ENDIF»
+		Â«IF !(elseInstruction instanceof InstructionBlock)Â»	Â«ENDIFÂ»Â«elseInstruction.contentÂ»
+		Â«ENDIFÂ»
 	'''
 	
 	private def addParallelLoop(Iterator it, Loop l)
 	'''
-		«val itIndex = IndexFactory::createIndex(it)»
-		«IF !range.connectivity.indexEqualId»int[] «itIndex.containerName» = «range.accessor»;«ENDIF»
-		IntStream.range(0, «range.connectivity.nbElems»).parallel().forEach(«itIndex.label» -> 
+		Â«val itIndex = IndexFactory::createIndex(it)Â»
+		Â«IF !range.connectivity.indexEqualIdÂ»int[] Â«itIndex.containerNameÂ» = Â«range.accessorÂ»;Â«ENDIFÂ»
+		IntStream.range(0, Â«range.connectivity.nbElemsÂ»).parallel().forEach(Â«itIndex.labelÂ» -> 
 		{
-			«IF needIdFor(l)»int «name»Id = «indexToId(itIndex)»;«ENDIF»
-			«FOR index : getRequiredIndexes(l)»
-			int «index.label» = «idToIndex(index, name+'Id')»;
-			«ENDFOR»
-			«l.body.innerContent»
+			Â«IF needIdFor(l)Â»int Â«nameÂ»Id = Â«indexToId(itIndex)Â»;Â«ENDIFÂ»
+			Â«FOR index : getRequiredIndexes(l)Â»
+			int Â«index.labelÂ» = Â«idToIndex(index, name+'Id')Â»;
+			Â«ENDFORÂ»
+			Â«l.body.innerContentÂ»
 		});
 	'''
 
 	private def addSequentialLoop(Iterator it, Loop l)
 	'''
-		«val itIndex = IndexFactory::createIndex(it)»
-		int[] «itIndex.containerName» = «range.accessor»;
-		for (int «itIndex.label»=0; «itIndex.label»<«itIndex.containerName».length; «itIndex.label»++)
+		Â«val itIndex = IndexFactory::createIndex(it)Â»
+		int[] Â«itIndex.containerNameÂ» = Â«range.accessorÂ»;
+		for (int Â«itIndex.labelÂ»=0; Â«itIndex.labelÂ»<Â«itIndex.containerNameÂ».length; Â«itIndex.labelÂ»++)
 		{
-			«IF needPrev(l)»int «prev(itIndex.label)» = («itIndex.label»-1+«itIndex.containerName».length)%«itIndex.containerName».length;«ENDIF»
-			«IF needNext(l)»int «next(itIndex.label)» = («itIndex.label»+1+«itIndex.containerName».length)%«itIndex.containerName».length;«ENDIF»
-			«IF needIdFor(l)»
-				«val idName = name + 'Id'»
-				int «idName» = «indexToId(itIndex)»;
-				«IF needPrev(l)»int «prev(idName)» = «indexToId(itIndex, 'prev')»;«ENDIF»
-				«IF needNext(l)»int «next(idName)» = «indexToId(itIndex, 'next')»;«ENDIF»
-				«FOR index : getRequiredIndexes(l)»
-					«val cIdName = index.iterator.name + 'Id'»
-					«IF !(index.connectivity.indexEqualId)»«index.idToIndexArray»«ENDIF»
-					int «index.label» = «idToIndex(index, cIdName)»;
-					«IF needPrev(l)»int «prev(index.label)» = «idToIndex(index, prev(cIdName))»;«ENDIF»
-					«IF needNext(l)»int «next(index.label)» = «idToIndex(index, next(cIdName))»;«ENDIF»
-				«ENDFOR»
-			«ENDIF»
-			«l.body.innerContent»
+			Â«IF needPrev(l)Â»int Â«prev(itIndex.label)Â» = (Â«itIndex.labelÂ»-1+Â«itIndex.containerNameÂ».length)%Â«itIndex.containerNameÂ».length;Â«ENDIFÂ»
+			Â«IF needNext(l)Â»int Â«next(itIndex.label)Â» = (Â«itIndex.labelÂ»+1+Â«itIndex.containerNameÂ».length)%Â«itIndex.containerNameÂ».length;Â«ENDIFÂ»
+			Â«IF needIdFor(l)Â»
+				Â«val idName = name + 'Id'Â»
+				int Â«idNameÂ» = Â«indexToId(itIndex)Â»;
+				Â«IF needPrev(l)Â»int Â«prev(idName)Â» = Â«indexToId(itIndex, 'prev')Â»;Â«ENDIFÂ»
+				Â«IF needNext(l)Â»int Â«next(idName)Â» = Â«indexToId(itIndex, 'next')Â»;Â«ENDIFÂ»
+				Â«FOR index : getRequiredIndexes(l)Â»
+					Â«val cIdName = index.iterator.name + 'Id'Â»
+					Â«IF !(index.connectivity.indexEqualId)Â»Â«index.idToIndexArrayÂ»Â«ENDIFÂ»
+					int Â«index.labelÂ» = Â«idToIndex(index, cIdName)Â»;
+					Â«IF needPrev(l)Â»int Â«prev(index.label)Â» = Â«idToIndex(index, prev(cIdName))Â»;Â«ENDIFÂ»
+					Â«IF needNext(l)Â»int Â«next(index.label)Â» = Â«idToIndex(index, next(cIdName))Â»;Â«ENDIFÂ»
+				Â«ENDFORÂ»
+			Â«ENDIFÂ»
+			Â«l.body.innerContentÂ»
 		}
 	'''
 	
-	private def getJavaName(ReductionCall it) '''«reduction.provider»Functions.«reduction.name»'''
+	private def getJavaName(ReductionCall it) '''Â«reduction.providerÂ»Functions.Â«reduction.nameÂ»'''
 }

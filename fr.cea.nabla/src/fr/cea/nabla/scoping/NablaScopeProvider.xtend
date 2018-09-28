@@ -41,7 +41,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 {
 	enum IteratorType { Space, Time }
 	
-	/*** Scope des itérateurs pour les variables ***************************************/
+	/*** Scope des itÃ©rateurs pour les variables ***************************************/
 	def scope_SpaceIteratorRef_iterator(Expression context, EReference r) 
 	{
 		//printDebug('\nscope_SpaceIteratorRef_iterator : ' + context, 0)
@@ -103,7 +103,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	}
 	
 
-	/*** Scope des itérateurs pour les itérateurs **************************************/
+	/*** Scope des itÃ©rateurs pour les itÃ©rateurs **************************************/
 	def scope_SpaceIteratorRange_args(Expression context, EReference r) 
 	{
 		//printDebug('\nscope_SpaceIteratorRange_args : ' + context, 0)
@@ -153,7 +153,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		return vars1 + vars2
 	}
 	
-	/*** Méthodes de debug et utilitaires **********************************************/
+	/*** MÃ©thodes de debug et utilitaires **********************************************/
 //	def private printDebug(String s, int depth) 
 //	{ 
 //		for (i : 0..<depth) print('\t')

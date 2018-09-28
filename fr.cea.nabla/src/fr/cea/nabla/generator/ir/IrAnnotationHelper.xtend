@@ -58,7 +58,7 @@ class IrAnnotationHelper
 	private def createIrAnnot(EObject nablaElt)
 	{
 		val region = locationProvider.getFullTextRegion(nablaElt)
-		if (region === null) throw new Exception('Ooops : impossible de créer une annotation pour : ' + nablaElt)
+		if (region === null) throw new Exception('Ooops : impossible de crÃ©er une annotation pour : ' + nablaElt)
 		
 		IrFactory::eINSTANCE.createIrAnnotation => 
 		[

@@ -25,8 +25,8 @@ class ReplaceDefaultValues implements IrTransformationStep
 	}
 	
 	/**
-	 * Transforme le module m pour qu'il n'y ait plus de variable avec des valeurs par défaut.
-	 * Les variables sont initialisées dans des jobs d'initialisation.
+	 * Transforme le module m pour qu'il n'y ait plus de variable avec des valeurs par dÃ©faut.
+	 * Les variables sont initialisÃ©es dans des jobs d'initialisation.
 	 */
 	override transform(IrModule m)
 	{

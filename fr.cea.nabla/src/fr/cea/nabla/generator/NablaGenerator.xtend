@@ -30,10 +30,10 @@ import org.eclipse.xtext.generator.IGeneratorContext
  * Generates code from your model files on save.
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#code-generation
  * 
- * Attention: avant la génération, le modèle IR subit des modifications par différentes passes.
- * Il n'est pas possible d'avoir plusieurs générateurs sans cloner l'IR ;  en effet le mécanisme
- * d'optimisation des créations de Xtend (def create) fait que s'il y a plusieurs appels à toIrModule
- * (Nabla -> IR), l'IR n'est pas recréée. Par conséquent, lors de la transformation, les passes 
+ * Attention: avant la gÃ©nÃ©ration, le modÃ¨le IR subit des modifications par diffÃ©rentes passes.
+ * Il n'est pas possible d'avoir plusieurs gÃ©nÃ©rateurs sans cloner l'IR ;  en effet le mÃ©canisme
+ * d'optimisation des crÃ©ations de Xtend (def create) fait que s'il y a plusieurs appels Ã  toIrModule
+ * (Nabla -> IR), l'IR n'est pas recrÃ©Ã©e. Par consÃ©quent, lors de la transformation, les passes 
  * se superposent.
  */
 class NablaGenerator extends AbstractGenerator 
@@ -50,7 +50,7 @@ class NablaGenerator extends AbstractGenerator
 	
 	override doGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context) 
 	{
-		// 1 seul module par resource par définition (cf .xtext)
+		// 1 seul module par resource par dÃ©finition (cf .xtext)
 		val module = input.contents.filter(NablaModule).head
 		val generator = ir2Java
 		//val generator = ir2N
@@ -68,7 +68,7 @@ class NablaGenerator extends AbstractGenerator
 			println('\tBuilding Nabla Intermediate Representation')
 			val irModule = nabla2ir.toIrModule(module)
 
-			// application des transformation de l'IR (dépendant du langage
+			// application des transformation de l'IR (dÃ©pendant du langage
 			var transformOK = true
 			val stepIt = generator.transformationSteps.iterator
 			while (stepIt.hasNext && transformOK)
@@ -80,7 +80,7 @@ class NablaGenerator extends AbstractGenerator
 			}
 			createAndSaveResource(fsa, input.resourceSet, fileNameWithoutExtension.addExtensions(#[generator.fileExtension, IrExtension]), irModule)
 			
-			// génération du fichier .n
+			// gÃ©nÃ©ration du fichier .n
 			if (transformOK)
 			{
 				println('\tGenerating .' + generator.fileExtension + ' file')
@@ -106,7 +106,7 @@ class NablaGenerator extends AbstractGenerator
 package.name.length + 1) }
 	private def addExtensions(String fileNameWithoutExtension, String[] extensions) { fileNameWithoutExtension + '.' + extensions.join('.') } 
 		
-	/** Crée et sauve la resource au même endroit que le paramètre baseResource en changeant l'extension par newExtension */
+	/** CrÃ©e et sauve la resource au mÃªme endroit que le paramÃ¨tre baseResource en changeant l'extension par newExtension */
 	private def createAndSaveResource(IFileSystemAccess2 fsa, ResourceSet rSet, String fileName, EObject content)
 	{
 		val uri = fsa.getURI(fileName)

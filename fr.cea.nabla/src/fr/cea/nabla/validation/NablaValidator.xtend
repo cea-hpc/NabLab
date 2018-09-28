@@ -21,6 +21,6 @@ package fr.cea.nabla.validation
  */
 class NablaValidator extends TypeValidator 
 {
-	// Attention l'ordre d'héritage a son importance.
-	// TypeValidator hérite de BasicValidator car les règles de BasicValidator doivent s'exécuter avant.
+	// Attention l'ordre d'hÃ©ritage a son importance.
+	// TypeValidator hÃ©rite de BasicValidator car les rÃ¨gles de BasicValidator doivent s'exÃ©cuter avant.
 }

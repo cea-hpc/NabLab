@@ -48,27 +48,27 @@ class ExpressionContentProvider
 		val lContent = left.content
 		val rContent = right.content
 
-		if (!left.getType().basicType.javaBasicType) '''«lContent».«operator.javaOperator»(«rContent»)'''
-		// si on arrive ici sans erreur de compilation, l'opérateur est commutatif
-		else if (!right.getType().basicType.javaBasicType) '''«rContent».«operator.javaOperator»(«lContent»)'''
-		else '''«lContent» «operator» «rContent»'''
+		if (!left.getType().basicType.javaBasicType) '''Â«lContentÂ».Â«operator.javaOperatorÂ»(Â«rContentÂ»)'''
+		// si on arrive ici sans erreur de compilation, l'opÃ©rateur est commutatif
+		else if (!right.getType().basicType.javaBasicType) '''Â«rContentÂ».Â«operator.javaOperatorÂ»(Â«lContentÂ»)'''
+		else '''Â«lContentÂ» Â«operatorÂ» Â«rContentÂ»'''
 	}
 
 	def dispatch CharSequence getContent(UnaryExpression it) 
 	{
 		val content = expression.content
-		if (expression.getType().basicType.javaBasicType) '''«operator»«content»'''
-		else '''«content».«operator.javaOperator»()'''
+		if (expression.getType().basicType.javaBasicType) '''Â«operatorÂ»Â«contentÂ»'''
+		else '''Â«contentÂ».Â«operator.javaOperatorÂ»()'''
 	}
 
-	def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
-	def dispatch CharSequence getContent(IntConstant it) '''«value»'''
-	def dispatch CharSequence getContent(RealConstant it) '''«value»'''
-	def dispatch CharSequence getContent(Real2Constant it) '''new Real2(«x», «y»)'''
-	def dispatch CharSequence getContent(Real3Constant it) '''new Real3(«x», «y», «z»)'''
-	def dispatch CharSequence getContent(Real2x2Constant it) '''new Real2x2(«x.content», «y.content»)'''
-	def dispatch CharSequence getContent(Real3x3Constant it) '''new Real3x3(«x.content», «y.content», «z.content»)'''
-	def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
+	def dispatch CharSequence getContent(Parenthesis it) '''(Â«expression.contentÂ»)'''
+	def dispatch CharSequence getContent(IntConstant it) '''Â«valueÂ»'''
+	def dispatch CharSequence getContent(RealConstant it) '''Â«valueÂ»'''
+	def dispatch CharSequence getContent(Real2Constant it) '''new Real2(Â«xÂ», Â«yÂ»)'''
+	def dispatch CharSequence getContent(Real3Constant it) '''new Real3(Â«xÂ», Â«yÂ», Â«zÂ»)'''
+	def dispatch CharSequence getContent(Real2x2Constant it) '''new Real2x2(Â«x.contentÂ», Â«y.contentÂ»)'''
+	def dispatch CharSequence getContent(Real3x3Constant it) '''new Real3x3(Â«x.contentÂ», Â«y.contentÂ», Â«z.contentÂ»)'''
+	def dispatch CharSequence getContent(BoolConstant it) '''Â«valueÂ»'''
 	
 	def dispatch CharSequence getContent(MinConstant it) 
 	{
@@ -76,7 +76,7 @@ class ExpressionContentProvider
 		{
 			case INT  : '''Integer.MIN_VALUE'''
 			case REAL : '''Double.MIN_VALUE'''
-			case REAL2, case REAL2X2, case REAL3, case REAL3X3: '''new «getType().basicType»(Double.MIN_VALUE)'''
+			case REAL2, case REAL2X2, case REAL3, case REAL3X3: '''new Â«getType().basicTypeÂ»(Double.MIN_VALUE)'''
 			default: throw new Exception('Invalid expression Min for type: ' + getType().basicType)
 		}
 	}
@@ -87,16 +87,16 @@ class ExpressionContentProvider
 		{
 			case INT  : '''Integer.MAX_VALUE'''
 			case REAL : '''Double.MAX_VALUE'''
-			case REAL2, case REAL2X2, case REAL3, case REAL3X3: '''new «getType().basicType»(Double.MAX_VALUE)'''
+			case REAL2, case REAL2X2, case REAL3, case REAL3X3: '''new Â«getType().basicTypeÂ»(Double.MAX_VALUE)'''
 			default: throw new Exception('Invalid expression Max for type: ' + getType().basicType)
 		}
 	}
 
 	def dispatch CharSequence getContent(FunctionCall it) 
-	'''«function.provider»Functions.«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+	'''Â«function.providerÂ»Functions.Â«function.nameÂ»(Â«FOR a:args SEPARATOR ', 'Â»Â«a.contentÂ»Â«ENDFORÂ»)'''
 	
 	def dispatch CharSequence getContent(VarRef it) 
-	'''«variable.codeName»«iteratorsContent»«FOR f:fields BEFORE '.' SEPARATOR '.'»get«f.toFirstUpper»()«ENDFOR»'''
+	'''Â«variable.codeNameÂ»Â«iteratorsContentÂ»Â«FOR f:fields BEFORE '.' SEPARATOR '.'Â»getÂ«f.toFirstUpperÂ»()Â«ENDFORÂ»'''
 
 	private def getCodeName(Variable it)
 	{

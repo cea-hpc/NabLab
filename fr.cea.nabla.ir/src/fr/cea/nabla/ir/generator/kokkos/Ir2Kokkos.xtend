@@ -53,45 +53,45 @@ class Ir2Kokkos implements IrGenerator
 
 	using namespace nablalib;
 
-	class «name»
+	class Â«nameÂ»
 	{
 	public:
 		struct Options
 		{
-			«FOR v : variables.filter(ScalarVariable).filter[const]»
-				«v.kokkosType» «v.name» = «v.defaultValue.content»;
-			«ENDFOR»
+			Â«FOR v : variables.filter(ScalarVariable).filter[const]Â»
+				Â«v.kokkosTypeÂ» Â«v.nameÂ» = Â«v.defaultValue.contentÂ»;
+			Â«ENDFORÂ»
 		};
 	
 	private:
 		Options* options;
 		NumericMesh2D* mesh;
-		«FOR c : usedConnectivities BEFORE 'int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
+		Â«FOR c : usedConnectivities BEFORE 'int ' SEPARATOR ', 'Â»Â«c.nbElemsÂ»Â«ENDFORÂ»;
 
 		// Global Variables
-		«val globals = variables.filter(ScalarVariable).filter[!const].groupBy[type]»
-		«FOR type : globals.keySet»
-		«type.kokkosType» «FOR v : globals.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
-		«ENDFOR»
+		Â«val globals = variables.filter(ScalarVariable).filter[!const].groupBy[type]Â»
+		Â«FOR type : globals.keySetÂ»
+		Â«type.kokkosTypeÂ» Â«FOR v : globals.get(type) SEPARATOR ', 'Â»Â«v.nameÂ»Â«ENDFORÂ»;
+		Â«ENDFORÂ»
 
-		«val arrays = variables.filter(ArrayVariable)»
-		«IF !arrays.empty»
+		Â«val arrays = variables.filter(ArrayVariable)Â»
+		Â«IF !arrays.emptyÂ»
 		// Array Variables
-		«FOR a : arrays»
-		Kokkos::View<«a.type.kokkosType»«a.dimensions.map['*'].join»> «a.name»;
-		«ENDFOR»
-		«ENDIF»
+		Â«FOR a : arraysÂ»
+		Kokkos::View<Â«a.type.kokkosTypeÂ»Â«a.dimensions.map['*'].joinÂ»> Â«a.nameÂ»;
+		Â«ENDFORÂ»
+		Â«ENDIFÂ»
 
 	public:
-		«name»(Options* aOptions, NumericMesh2D* aNumericMesh2D)
+		Â«nameÂ»(Options* aOptions, NumericMesh2D* aNumericMesh2D)
 		: options(aOptions)
 		, mesh(aNumericMesh2D)
-		«FOR c : usedConnectivities»
-		, «c.nbElems»(«c.connectivityAccessor»)
-		«ENDFOR»
-		«FOR a : arrays»
-		, «a.name»("«a.name»", «FOR d : a.dimensions SEPARATOR ', '»«d.nbElems»«ENDFOR»)
-		«ENDFOR»
+		Â«FOR c : usedConnectivitiesÂ»
+		, Â«c.nbElemsÂ»(Â«c.connectivityAccessorÂ»)
+		Â«ENDFORÂ»
+		Â«FOR a : arraysÂ»
+		, Â«a.nameÂ»("Â«a.nameÂ»", Â«FOR d : a.dimensions SEPARATOR ', 'Â»Â«d.nbElemsÂ»Â«ENDFORÂ»)
+		Â«ENDFORÂ»
 		{
 			// Copy node coordinates
 			auto gNodes = mesh->getGeometricMesh()->getNodes();
@@ -102,38 +102,38 @@ class Ir2Kokkos implements IrGenerator
 		}
 
 	private:
-		«FOR j : jobs.sortBy[at] SEPARATOR '\n'»
-			«j.content»
-		«ENDFOR»			
+		Â«FOR j : jobs.sortBy[at] SEPARATOR '\n'Â»
+			Â«j.contentÂ»
+		Â«ENDFORÂ»			
 
 	public:
 		void simulate()
 		{
-			std::cout << "Début de l'exécution du module «name»" << std::endl;
-			«FOR j : jobs.filter[x | x.at < 0].sortBy[at]»
-				«j.name.toFirstLower»(); // @«j.at»
-			«ENDFOR»
+			std::cout << "DÃ©but de l'exÃ©cution du module Â«nameÂ»" << std::endl;
+			Â«FOR j : jobs.filter[x | x.at < 0].sortBy[at]Â»
+				Â«j.name.toFirstLowerÂ»(); // @Â«j.atÂ»
+			Â«ENDFORÂ»
 	
 			int iteration = 0;
 			while (t < options->option_stoptime && iteration < options->option_max_iterations)
 			{
 				std::cout << "A t = " << t << std::endl;
 				iteration++;
-				«FOR j : jobs.filter[x | x.at > 0].sortBy[at]»
-					«j.name.toFirstLower»(); // @«j.at»
-				«ENDFOR»
+				Â«FOR j : jobs.filter[x | x.at > 0].sortBy[at]Â»
+					Â«j.name.toFirstLowerÂ»(); // @Â«j.atÂ»
+				Â«ENDFORÂ»
 			}
-			std::cout << "Fin de l'exécution du module «name»" << std::endl;
+			std::cout << "Fin de l'exÃ©cution du module Â«nameÂ»" << std::endl;
 		}	
 	};
 	
 	int main(int argc, char* argv[]) 
 	{
 		Kokkos::initialize(argc, argv);
-		auto o = new «name»::Options();
+		auto o = new Â«nameÂ»::Options();
 		auto gm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->LENGTH, o->LENGTH);
 		auto nm = new NumericMesh2D(gm);
-		«name» c(o, nm);
+		Â«nameÂ» c(o, nm);
 		c.simulate();
 		delete nm;
 		delete gm;
@@ -145,8 +145,8 @@ class Ir2Kokkos implements IrGenerator
 	private def getConnectivityAccessor(Connectivity c)
 	{
 		if (c.inTypes.empty)
-			'''mesh->getNb«c.name.toFirstUpper»()'''
+			'''mesh->getNbÂ«c.name.toFirstUpperÂ»()'''
 		else
-			'''NumericMesh2D::MaxNb«c.name.toFirstUpper»'''
+			'''NumericMesh2D::MaxNbÂ«c.name.toFirstUpperÂ»'''
 	}
 }

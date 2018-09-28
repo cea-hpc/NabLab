@@ -104,11 +104,11 @@ class TypeValidator extends BasicValidator
 		}
 	}
 
-	// Il ne faut pas vérifier le type de la variable : checkType(VarAffectationDeclaration) le fait
+	// Il ne faut pas vÃ©rifier le type de la variable : checkType(VarAffectationDeclaration) le fait
 	@Check
 	def checkType(VarRef it)
 	{
-		// vérification du type après les itérateurs
+		// vÃ©rification du type aprÃ¨s les itÃ©rateurs
 		val t = typeForWithoutFields
 		if (t==NablaType::UNDEFINED)
 		{
@@ -171,7 +171,7 @@ class TypeValidator extends BasicValidator
 
 	private def void checkExpectedType(NablaType actualType, NablaType expectedType, EReference reference) 
 	{
-		// si un des 2 types est indéfini, il ne faut rien vérifier pour éviter les erreurs multiples due à la récursion
+		// si un des 2 types est indÃ©fini, il ne faut rien vÃ©rifier pour Ã©viter les erreurs multiples due Ã  la rÃ©cursion
 		if (! (actualType==NablaType::UNDEFINED || expectedType==NablaType::UNDEFINED || actualType.match(expectedType)))
 			error("Expected " + expectedType.label + " type, but was " + actualType.label, reference)
 	}	
@@ -181,7 +181,7 @@ class TypeValidator extends BasicValidator
 		val leftType = left?.typeFor
 		val rightType = right?.typeFor
 		
-		// si un des 2 types est indéfini, il ne faut rien vérifier pour éviter les erreurs multiples due à la récursion
+		// si un des 2 types est indÃ©fini, il ne faut rien vÃ©rifier pour Ã©viter les erreurs multiples due Ã  la rÃ©cursion
 		if (! (leftType==NablaType::UNDEFINED || rightType==NablaType::UNDEFINED))
 			if (provider.typeFor(leftType, rightType) == NablaType::UNDEFINED)
 				error('Binary operator ' + op + ' undefined on types ' + leftType.label + ' and ' + rightType.label, operator)

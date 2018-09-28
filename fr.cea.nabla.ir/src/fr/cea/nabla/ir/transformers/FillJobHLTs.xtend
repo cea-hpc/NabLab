@@ -37,10 +37,10 @@ class FillJobHLTs implements IrTransformationStep
 	}
 	
 	/**
-	 * Prend en paramètre une instance de IrModule et renseigne l'attribut @ des jobs
-	 * en utilisant des fonctionnalités de la bibliothèque de graphe jgrapht.
+	 * Prend en paramÃ¨tre une instance de IrModule et renseigne l'attribut @ des jobs
+	 * en utilisant des fonctionnalitÃ©s de la bibliothÃ¨que de graphe jgrapht.
 	 * Retourne faux si le graphe a des cycles et que le calcul des @ est impossible, vrai sinon.
-	 * Si le graphe a des cycles, les noeuds impliqués ont leur attribut onCycle à vrai.
+	 * Si le graphe a des cycles, les noeuds impliquÃ©s ont leur attribut onCycle Ã  vrai.
 	 */
 	override transform(IrModule m)
 	{
@@ -61,9 +61,9 @@ class FillJobHLTs implements IrTransformationStep
 		{
 			val jalgo = new FloydWarshallShortestPaths<Job, DefaultWeightedEdge>(g)	
 			
-			// Calcul des at des noeuds de boucle en temps à partir de timeLoopSourceNode
+			// Calcul des at des noeuds de boucle en temps Ã  partir de timeLoopSourceNode
 			// Les at correspondent au plus long chemin. L'algo recherche le plus court. Il faut travailler avec l'inverse.
-			// On initialise donc les arcs à -1
+			// On initialise donc les arcs Ã  -1
 			g.edgeSet.forEach[e | g.setEdgeWeight(e, -1)]
 			for (v : g.vertexSet.filter[v | v!=timeLoopSourceNode])
 			{
@@ -71,7 +71,7 @@ class FillJobHLTs implements IrTransformationStep
 				if (graphPath!==null) graphPath.endVertex.at = Math::abs(graphPath.weight)
 			}
 			
-			// Calcul des at des noeuds d'init qui sont les noeuds restants (ceux avec at inchangé ; à 0).
+			// Calcul des at des noeuds d'init qui sont les noeuds restants (ceux avec at inchangÃ© ; Ã  0).
 			val weightByJobs = new HashMap<Job, Double>
 			for (v : g.vertexSet.filter[v | v!=globalSourceNode && (v.at as int)==0])
 			{
@@ -85,10 +85,10 @@ class FillJobHLTs implements IrTransformationStep
 	}
 	
 	/** 
-	 * Création d'un graphe comrrespondant à l'IR. 
-	 * 2 noeuds sources sont ajoutés : 1 correspondant à un noeud source global 
-	 * et l'autre à l'entrée de la boucle en temps. Notons que les arcs sortants
-	 * des jobs de type TimeIterationCopyJob ne sont pas construits pour éviter les cycles.
+	 * CrÃ©ation d'un graphe comrrespondant Ã  l'IR. 
+	 * 2 noeuds sources sont ajoutÃ©s : 1 correspondant Ã  un noeud source global 
+	 * et l'autre Ã  l'entrÃ©e de la boucle en temps. Notons que les arcs sortants
+	 * des jobs de type TimeIterationCopyJob ne sont pas construits pour Ã©viter les cycles.
 	 */
 	private def createGraph(IrModule it, Job globalSourceNode, Job timeLoopSourceNode)
 	{	
@@ -120,7 +120,7 @@ class FillJobHLTs implements IrTransformationStep
 //		g.edgeSet.forEach[x|println('  ' + g.getEdgeSource(x).name + ' -> ' + g.getEdgeTarget(x).name)]
 //	}
 	
-	/** Retourne la liste des noeuds du graphe impliqués dans au moins un cycle, null si pas de cycle */
+	/** Retourne la liste des noeuds du graphe impliquÃ©s dans au moins un cycle, null si pas de cycle */
 	private def findCycle(DirectedWeightedPseudograph<Job, DefaultWeightedEdge> g)
 	{
 		val cycleDetector = new CycleDetector<Job, DefaultWeightedEdge>(g)

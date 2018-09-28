@@ -33,21 +33,21 @@ class Utils
 	def getComment(Job it)
 	'''
 		/**
-		 * Job «name» @«at»
-		 * In variables: «FOR v : inVars SEPARATOR ', '»«v.getName»«ENDFOR»
-		 * Out variables: «FOR v : outVars SEPARATOR ', '»«v.getName»«ENDFOR»
+		 * Job Â«nameÂ» @Â«atÂ»
+		 * In variables: Â«FOR v : inVars SEPARATOR ', 'Â»Â«v.getNameÂ»Â«ENDFORÂ»
+		 * Out variables: Â«FOR v : outVars SEPARATOR ', 'Â»Â«v.getNameÂ»Â«ENDFORÂ»
 		 */
 	'''	
 
 	/**
-	 * Retourne la liste des connectivités utilisées par le module,
-	 * lors de la déclaration des variables ou des itérateurs.
+	 * Retourne la liste des connectivitÃ©s utilisÃ©es par le module,
+	 * lors de la dÃ©claration des variables ou des itÃ©rateurs.
 	 */
 	def getUsedConnectivities(IrModule it)
 	{
-		// connectivités nécessaires pour les variables
+		// connectivitÃ©s nÃ©cessaires pour les variables
 		val connectivities = variables.filter(ArrayVariable).map[dimensions].flatten.toSet
-		// connectivités utilisées par les itérateurs
+		// connectivitÃ©s utilisÃ©es par les itÃ©rateurs
 		jobs.forEach[j | connectivities += j.eAllContents.filter(Iterator).map[range.connectivity].toSet]
 
 		return connectivities

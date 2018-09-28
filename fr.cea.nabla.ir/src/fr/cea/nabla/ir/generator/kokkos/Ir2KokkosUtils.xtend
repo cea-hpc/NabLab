@@ -39,7 +39,7 @@ class Ir2KokkosUtils
 	}	
 
 	def CharSequence getAccessor(IteratorRange it) 
-	'''mesh->get«connectivity.name.toFirstUpper»(«args.map[rangeArgName].join(',')»)'''
+	'''mesh->getÂ«connectivity.name.toFirstUpperÂ»(Â«args.map[rangeArgName].join(',')Â»)'''
 
 	private def dispatch getRangeArgName(IteratorRange it) { accessor }
 	private def dispatch getRangeArgName(IteratorRef it) { prefix(iterator.name + 'Id') }

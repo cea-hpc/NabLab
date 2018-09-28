@@ -26,22 +26,22 @@ class JobContentProvider
 	
 	def getContent(Job it)
 	'''
-		«comment»
-		void «name.toFirstLower»()
+		Â«commentÂ»
+		void Â«name.toFirstLowerÂ»()
 		{
-			«innerContent»
+			Â«innerContentÂ»
 		}
 	'''
 	
 	private def dispatch CharSequence getInnerContent(InstructionJob it)
 	'''
-		«instruction.innerContent»
+		Â«instruction.innerContentÂ»
 	'''
 	
 	private def dispatch CharSequence getInnerContent(TimeIterationCopyJob it)
 	'''
-		auto tmpSwitch = «left.name»;
-		«left.name» = «right.name»;
-		«right.name» = tmpSwitch;
+		auto tmpSwitch = Â«left.nameÂ»;
+		Â«left.nameÂ» = Â«right.nameÂ»;
+		Â«right.nameÂ» = tmpSwitch;
 	'''
 }

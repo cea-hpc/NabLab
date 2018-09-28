@@ -43,16 +43,16 @@ class ExpressionContentProvider
 	@Inject extension Utils
 	@Inject extension Ir2KokkosUtils
 	
-	def dispatch CharSequence getContent(BinaryExpression it) '''«left.content» «operator» «right.content»'''
-	def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
-	def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
-	def dispatch CharSequence getContent(IntConstant it) '''«value»'''
-	def dispatch CharSequence getContent(RealConstant it) '''«value»'''
-	def dispatch CharSequence getContent(Real2Constant it) '''Real2(«x», «y»)'''
-	def dispatch CharSequence getContent(Real3Constant it) '''Real3(«x», «y», «z»)'''
-	def dispatch CharSequence getContent(Real2x2Constant it) '''Real2x2(«x.content», «y.content»)'''
-	def dispatch CharSequence getContent(Real3x3Constant it) '''Real3x3(«x.content», «y.content», «z.content»)'''
-	def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
+	def dispatch CharSequence getContent(BinaryExpression it) '''Â«left.contentÂ» Â«operatorÂ» Â«right.contentÂ»'''
+	def dispatch CharSequence getContent(UnaryExpression it) '''Â«operatorÂ»Â«expression.contentÂ»'''
+	def dispatch CharSequence getContent(Parenthesis it) '''(Â«expression.contentÂ»)'''
+	def dispatch CharSequence getContent(IntConstant it) '''Â«valueÂ»'''
+	def dispatch CharSequence getContent(RealConstant it) '''Â«valueÂ»'''
+	def dispatch CharSequence getContent(Real2Constant it) '''Real2(Â«xÂ», Â«yÂ»)'''
+	def dispatch CharSequence getContent(Real3Constant it) '''Real3(Â«xÂ», Â«yÂ», Â«zÂ»)'''
+	def dispatch CharSequence getContent(Real2x2Constant it) '''Real2x2(Â«x.contentÂ», Â«y.contentÂ»)'''
+	def dispatch CharSequence getContent(Real3x3Constant it) '''Real3x3(Â«x.contentÂ», Â«y.contentÂ», Â«z.contentÂ»)'''
+	def dispatch CharSequence getContent(BoolConstant it) '''Â«valueÂ»'''
 	
 	def dispatch CharSequence getContent(MinConstant it) 
 	{
@@ -60,7 +60,7 @@ class ExpressionContentProvider
 		{
 			case INT  : '''Integer.MIN_VALUE'''
 			case REAL : '''Double.MIN_VALUE'''
-			case REAL2, case REAL2X2, case REAL3, case REAL3X3: '''new «getType().basicType»(Double.MIN_VALUE)'''
+			case REAL2, case REAL2X2, case REAL3, case REAL3X3: '''new Â«getType().basicTypeÂ»(Double.MIN_VALUE)'''
 			default: throw new Exception('Invalid expression Min for type: ' + getType().basicType)
 		}
 	}
@@ -71,16 +71,16 @@ class ExpressionContentProvider
 		{
 			case INT  : '''Integer.MAX_VALUE'''
 			case REAL : '''Double.MAX_VALUE'''
-			case REAL2, case REAL2X2, case REAL3, case REAL3X3: '''new «getType().basicType»(Double.MAX_VALUE)'''
+			case REAL2, case REAL2X2, case REAL3, case REAL3X3: '''new Â«getType().basicTypeÂ»(Double.MAX_VALUE)'''
 			default: throw new Exception('Invalid expression Max for type: ' + getType().basicType)
 		}
 	}
 
 	def dispatch CharSequence getContent(FunctionCall it) 
-	'''«function.provider»Functions::«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+	'''Â«function.providerÂ»Functions::Â«function.nameÂ»(Â«FOR a:args SEPARATOR ', 'Â»Â«a.contentÂ»Â«ENDFORÂ»)'''
 	
 	def dispatch CharSequence getContent(VarRef it) 
-	'''«variable.codeName»«iteratorsContent»«FOR f:fields BEFORE '.' SEPARATOR '.'»«f»«ENDFOR»'''
+	'''Â«variable.codeNameÂ»Â«iteratorsContentÂ»Â«FOR f:fields BEFORE '.' SEPARATOR '.'Â»Â«fÂ»Â«ENDFORÂ»'''
 
 	private def getCodeName(Variable it)
 	{

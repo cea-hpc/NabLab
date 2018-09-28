@@ -26,8 +26,8 @@ import fr.cea.nabla.ir.ir.ScalarVariable
 import fr.cea.nabla.ir.ir.ArrayVariable
 
 /**
- * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
- * Si elle n'est pas singleton, plusieurs instances d'un même objet seront créées lors
+ * Attention : cette classe doit Ãªtre un singleton car elle utilise des mÃ©thodes create.
+ * Si elle n'est pas singleton, plusieurs instances d'un mÃªme objet seront crÃ©Ã©es lors
  * deu parcours du graphe d'origine (voir la documentation Xtext).
  */
 @Singleton
@@ -40,10 +40,10 @@ class IrVariableFactory
 	@Inject extension IrConnectivityFactory
 
 	/**
-	 * Cette méthode permet de construire une variable IR depuis
-	 * une variable Nabla. C'est utile à partir d'une instance de VarRef.
+	 * Cette mÃ©thode permet de construire une variable IR depuis
+	 * une variable Nabla. C'est utile Ã  partir d'une instance de VarRef.
 	 * A une variable Nabla peut correspondre plusieurs variables IR,
-	 * en fonction de l'itérateur en temps.
+	 * en fonction de l'itÃ©rateur en temps.
 	 */	
 	def Variable toIrVariable(Var v, TimeIteratorRef tr)
 	{
@@ -55,11 +55,11 @@ class IrVariableFactory
 		}
 	}
 
-	// fonctions générales retournent des Var
+	// fonctions gÃ©nÃ©rales retournent des Var
 	def dispatch Variable toIrVariable(ScalarVar v) { toIrScalarVariable(v, v.name) }
 	def dispatch Variable toIrVariable(ArrayVar v) { toIrArrayVariable(v, v.name) }
 
-	// fonctions avec type de retour précis
+	// fonctions avec type de retour prÃ©cis
 	def ScalarVariable toIrScalarVariable(ScalarVar v) { toIrScalarVariable(v, v.name) }
 	def ArrayVariable toIrArrayVariable(ArrayVar v) { toIrArrayVariable(v, v.name) }
 	

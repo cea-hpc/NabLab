@@ -34,24 +34,24 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 
 	/**
 	 * Transforme le module m pour qu'il n'est plus d'instance de ReductionInstruction 'externes',
-	 * c'est à dire non intégrées à une boucle. Chaque ReductionInstruction est remplacée par
+	 * c'est Ã  dire non intÃ©grÃ©es Ã  une boucle. Chaque ReductionInstruction est remplacÃ©e par
 	 * 2 jobs. 
 	 * Pour X = sum(j E cells)(Yj + 4) + Z, on a :
-	 *   - un job avec une boucle cells qui calcule l'argument de la réduction tmpSumXXX = Yj+4
-	 *   - un job avec une boucle cells qui fait la réduction sumXXX +?= tmpSumXXX
+	 *   - un job avec une boucle cells qui calcule l'argument de la rÃ©duction tmpSumXXX = Yj+4
+	 *   - un job avec une boucle cells qui fait la rÃ©duction sumXXX +?= tmpSumXXX
 	 * Si l'argument est une VarRef, le premier job est inutile (=> remplacer tmpSumXXX par Y dans le 2e).
 	 * Si l'expression finale est une VarRef, le dernier job est inutile mais aucune optimisation
-	 * n'a été faite pour le moment.
+	 * n'a Ã©tÃ© faite pour le moment.
 	 */
 	override transform(IrModule m)
 	{
 		for (reductionInstr : m.eAllContents.filter(ReductionInstruction).filter[reduction.external].toList)
 		{
-			// création des fonctions correspondantes
+			// crÃ©ation des fonctions correspondantes
 			// 2 arguments IN : 1 du type de la collection, l'autre du type de retour (appel en chaine)
 			val reduc = reductionInstr.reduction.reduction
 
-			// Vérification du pattern attendu : une réduction et une affectation dans un bloc
+			// VÃ©rification du pattern attendu : une rÃ©duction et une affectation dans un bloc
 			if (! (reductionInstr.eContainer instanceof InstructionBlock)
 				|| !((reductionInstr.eContainer as InstructionBlock).instructions.last instanceof Affectation))
 				throw new Exception("Unexpected IR pattern for reduction")
@@ -65,7 +65,7 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 				instruction = createReductionLoop(reductionInstr.reduction.iterator, reducOperatorLhs, reducOperatorRhs, reduc.operator)
 			] 
 
-			// la variable de reduction doit devenir globale pour etre utilisée dans le job final
+			// la variable de reduction doit devenir globale pour etre utilisÃ©e dans le job final
 			m.variables += reductionInstr.variable
 			
 			// nettoyage
@@ -77,9 +77,9 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 	}
 	
 	/**
-	 * Si l'argument de la réduction est une VarRef, retourne cette VarRef
-	 * sinon crée un job pour calculer l'expression, une variable por stocker le
-	 * résultat et retourne cette variable.
+	 * Si l'argument de la rÃ©duction est une VarRef, retourne cette VarRef
+	 * sinon crÃ©e un job pour calculer l'expression, une variable por stocker le
+	 * rÃ©sultat et retourne cette variable.
 	 * Ex 1 : X = sum(j E cells)(Yj + 4) + Z, retourne une variable aux mailles avec valeur de Yj+4.
 	 * Ex 2 : X = sum(j E cells)(Yj) + Z retourne Yj
 	 */

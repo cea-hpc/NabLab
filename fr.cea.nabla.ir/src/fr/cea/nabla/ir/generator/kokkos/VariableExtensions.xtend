@@ -33,5 +33,5 @@ class VariableExtensions
 	}
 
 	def getKokkosAllocation(ArrayVariable it)
-	'''//mesh.createVariable<«kokkosType»>(kmds::KMDS_CELL, "«name»")'''
+	'''//mesh.createVariable<Â«kokkosTypeÂ»>(kmds::KMDS_CELL, "Â«nameÂ»")'''
 }

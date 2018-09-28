@@ -8,7 +8,7 @@ Bundle-ClassPath: .
 Bundle-Activator: fr.cea.nabla.nabla.presentation.NablaEditorPlugin$Implementation
 Bundle-Vendor: CEA
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-10
 Export-Package: fr.cea.nabla.nabla.presentation
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;visibility:=reexport,

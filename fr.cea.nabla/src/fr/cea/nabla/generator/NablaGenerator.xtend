@@ -9,7 +9,7 @@
  * Contributors:
  * 	Benoit Lelandais - initial implementation
  * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvan Camier - Nabla generation support
+ * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
 package fr.cea.nabla.generator
 
@@ -101,7 +101,7 @@ class NablaGenerator extends AbstractGenerator
  * Contributors:
  * 	Benoit Lelandais - initial implementation
  * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvan Camier - Nabla generation support
+ * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
 package.name.length + 1) }
 	private def addExtensions(String fileNameWithoutExtension, String[] extensions) { fileNameWithoutExtension + '.' + extensions.join('.') } 

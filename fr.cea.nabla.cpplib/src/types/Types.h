@@ -9,7 +9,7 @@
  * Contributors:
  * 	Benoit Lelandais - initial implementation
  * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvan Camier - Nabla generation support
+ * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
 #ifndef TYPES_H_
 #define TYPES_H_

@@ -9,7 +9,7 @@
  * Contributors:
  * 	Benoit Lelandais - initial implementation
  * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvan Camier - Nabla generation support
+ * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
 package fr.cea.nabla.generator
 
@@ -34,7 +34,7 @@ class SmallLatexGenerator
  * Contributors:
  * 	Benoit Lelandais - initial implementation
  * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvan Camier - Nabla generation support
+ * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
 package{fontspec}
 		\use/*******************************************************************************
@@ -48,7 +48,7 @@ package{fontspec}
  * Contributors:
  * 	Benoit Lelandais - initial implementation
  * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvan Camier - Nabla generation support
+ * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
 package{geometry}
 		\geometry{landscape}

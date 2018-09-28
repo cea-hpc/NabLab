@@ -9,7 +9,7 @@
  * Contributors:
  * 	Benoit Lelandais - initial implementation
  * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvan Camier - Nabla generation support
+ * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
 #ifndef MESH_NODEIDCONTAINER_H_
 #define MESH_NODEIDCONTAINER_H_

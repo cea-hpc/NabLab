@@ -10,7 +10,7 @@
     Contributors:
     	Benoit Lelandais - initial implementation
     	Marie-Pierre Oudot - initial implementation
-    	Jean-Sylvan Camier - Nabla generation support
+    	Jean-Sylvain Camier - Nabla generation support
  -->
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="ir" nsURI="http://www.cea.fr/nabla/ir" nsPrefix="ir">

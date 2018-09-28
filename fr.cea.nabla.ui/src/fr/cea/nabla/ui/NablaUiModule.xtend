@@ -9,7 +9,7 @@
  * Contributors:
  * 	Benoit Lelandais - initial implementation
  * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvan Camier - Nabla generation support
+ * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
 package fr.cea.nabla.ui
 
@@ -52,8 +52,8 @@ class NablaUiModule extends AbstractNablaUiModule
 		typeof(NablaEObjectHoverProvider)
 	}
 	
-// Avant, des commentaires spéciaux permettaient de mettre une documentation sur l'objet...
-// Faudrait penser à refaire quelques chose pour générer une documentation
+// Avant, des commentaires spï¿½ciaux permettaient de mettre une documentation sur l'objet...
+// Faudrait penser ï¿½ refaire quelques chose pour gï¿½nï¿½rer une documentation
 //	def Class<? extends IEObjectDocumentationProvider> bindIEObjectDocumentationProvider()
 //	{
 //		typeof(NablaEObjectDocumentationProvider)

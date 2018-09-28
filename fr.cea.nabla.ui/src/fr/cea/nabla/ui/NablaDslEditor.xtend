@@ -9,7 +9,7 @@
  * Contributors:
  * 	Benoit Lelandais - initial implementation
  * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvan Camier - Nabla generation support
+ * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
 package fr.cea.nabla.ui
 
@@ -64,8 +64,8 @@ class NablaDslEditor extends XtextEditor
 //	}
 //
 //	/** 
-//	 * Cette méthode ne doit pas ouvrir un nouvel éditeur ; cette action est laissée au double clic.
-//	 * L'objectif est juste de sélectionner l'EObject paramètre s'il se trouve dans le fichier.
+//	 * Cette mï¿½thode ne doit pas ouvrir un nouvel ï¿½diteur ; cette action est laissï¿½e au double clic.
+//	 * L'objectif est juste de sï¿½lectionner l'EObject paramï¿½tre s'il se trouve dans le fichier.
 //	 */
 //	private def void openInDslEditor(EObject any) 
 //	{
@@ -74,7 +74,7 @@ class NablaDslEditor extends XtextEditor
 //		if (any !== null && anyUri == editorResourceUri)
 //		{
 //			val region = locationProvider.getFullTextRegion(any)
-//			// On préfère ne pas sélectionner l'objet mais seulement se mettre au début.
+//			// On prï¿½fï¿½re ne pas sï¿½lectionner l'objet mais seulement se mettre au dï¿½but.
 //			//editor.selectAndReveal(region.offset, region.length)	
 //			editor.selectAndReveal(region.offset, 0)	
 //		}

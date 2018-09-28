@@ -9,7 +9,7 @@
  * Contributors:
  * 	Benoit Lelandais - initial implementation
  * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvan Camier - Nabla generation support
+ * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.n
 
@@ -35,16 +35,16 @@ class ExpressionContentProvider
 {
 	@Inject extension Ir2NUtils
 
-	def dispatch CharSequence getContent(BinaryExpression it) '''«left.content» «operator» «right.content»'''
-	def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
-	def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
-	def dispatch CharSequence getContent(IntConstant it) '''«value»'''
-	def dispatch CharSequence getContent(RealConstant it) '''«value»'''
-	def dispatch CharSequence getContent(Real2Constant it) '''«BasicType::REAL2.NType»(«x», «y»)'''
-	def dispatch CharSequence getContent(Real3Constant it) '''«BasicType::REAL3.NType»(«x», «y», «z»)'''
-	def dispatch CharSequence getContent(Real2x2Constant it) '''«BasicType::REAL2.NType»(«x», «y»)''' // Real2x2 init avec Real2 en Nabla
-	def dispatch CharSequence getContent(Real3x3Constant it) '''«BasicType::REAL3.NType»(«x», «y», «z»)''' // même remarque sur Real3x3
-	def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
+	def dispatch CharSequence getContent(BinaryExpression it) '''ï¿½left.contentï¿½ ï¿½operatorï¿½ ï¿½right.contentï¿½'''
+	def dispatch CharSequence getContent(UnaryExpression it) '''ï¿½operatorï¿½ï¿½expression.contentï¿½'''
+	def dispatch CharSequence getContent(Parenthesis it) '''(ï¿½expression.contentï¿½)'''
+	def dispatch CharSequence getContent(IntConstant it) '''ï¿½valueï¿½'''
+	def dispatch CharSequence getContent(RealConstant it) '''ï¿½valueï¿½'''
+	def dispatch CharSequence getContent(Real2Constant it) '''ï¿½BasicType::REAL2.NTypeï¿½(ï¿½xï¿½, ï¿½yï¿½)'''
+	def dispatch CharSequence getContent(Real3Constant it) '''ï¿½BasicType::REAL3.NTypeï¿½(ï¿½xï¿½, ï¿½yï¿½, ï¿½zï¿½)'''
+	def dispatch CharSequence getContent(Real2x2Constant it) '''ï¿½BasicType::REAL2.NTypeï¿½(ï¿½xï¿½, ï¿½yï¿½)''' // Real2x2 init avec Real2 en Nabla
+	def dispatch CharSequence getContent(Real3x3Constant it) '''ï¿½BasicType::REAL3.NTypeï¿½(ï¿½xï¿½, ï¿½yï¿½, ï¿½zï¿½)''' // mï¿½me remarque sur Real3x3
+	def dispatch CharSequence getContent(BoolConstant it) '''ï¿½valueï¿½'''
 	
 	def dispatch CharSequence getContent(MinConstant it) 
 	{
@@ -69,10 +69,10 @@ class ExpressionContentProvider
 	}
 
 	def dispatch CharSequence getContent(FunctionCall it) 
-	'''«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+	'''ï¿½function.nameï¿½(ï¿½FOR a:args SEPARATOR ', 'ï¿½ï¿½a.contentï¿½ï¿½ENDFORï¿½)'''
 	
 	def dispatch CharSequence getContent(VarRef it) 
-	'''«variable.name»«suffix»«FOR f:fields BEFORE '.' SEPARATOR '.'»«f»«ENDFOR»'''
+	'''ï¿½variable.nameï¿½ï¿½suffixï¿½ï¿½FOR f:fields BEFORE '.' SEPARATOR '.'ï¿½ï¿½fï¿½ï¿½ENDFORï¿½'''
 	
 	private def getSuffix(VarRef it) 
 	{ 

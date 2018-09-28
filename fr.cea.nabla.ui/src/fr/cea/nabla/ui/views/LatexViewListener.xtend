@@ -9,7 +9,7 @@
  * Contributors:
  * 	Benoit Lelandais - initial implementation
  * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvan Camier - Nabla generation support
+ * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
 package fr.cea.nabla.ui.views
 
@@ -49,7 +49,7 @@ class LatexViewListener implements ISelectionListener
 	/**
 	 * Si la selection a lieu dans l'editeur Nabla, on recupere le modele associe
 	 * et on l'affecte au viewer de la vue si ce modele est de type Diagram
-	 * et que ce n'est pas deja  le diagramme affichee dans la vue.
+	 * et que ce n'est pas dejaï¿½ le diagramme affichee dans la vue.
 	 * Attention : on compare les noms des diagrammes et pas les objets car Xtext
 	 * peut recreer les objets avec la compilation et il faut eviter de recreer 
 	 * la vue graphique.

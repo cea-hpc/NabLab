@@ -9,7 +9,7 @@
  * Contributors:
  * 	Benoit Lelandais - initial implementation
  * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvan Camier - Nabla generation support
+ * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
 package fr.cea.nabla.ui.outline
 
@@ -45,15 +45,15 @@ class NablaOutlineTreeProvider extends DefaultOutlineTreeProvider
 	}
 	
 	/** 
-	 * Des essais int été réalisés pour afficher une image SWT de la formule 
+	 * Des essais int ï¿½tï¿½ rï¿½alisï¿½s pour afficher une image SWT de la formule 
 	 * Latex mais le rendu dans l'outline n'est pas satisfaisant.
 	 */
 	def _image(Instruction it) { null }
 	def _image(Job it) { null }
 	
 	/** 
-	 * La police de l'outline a des problèmes d'affichage.
-	 * Des essais ont été réalisés avec des TextStyle. Aucun effet...
+	 * La police de l'outline a des problï¿½mes d'affichage.
+	 * Des essais ont ï¿½tï¿½ rï¿½alisï¿½s avec des TextStyle. Aucun effet...
 	 */
 	def _text(Instruction it) 
 	{ 

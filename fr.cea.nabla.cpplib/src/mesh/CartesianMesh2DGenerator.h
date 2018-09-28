@@ -9,7 +9,7 @@
  * Contributors:
  * 	Benoit Lelandais - initial implementation
  * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvan Camier - Nabla generation support
+ * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
 #ifndef CARTESIAN_MESH_2D_GENERATOR_H_
 #define CARTESIAN_MESH_2D_GENERATOR_H_

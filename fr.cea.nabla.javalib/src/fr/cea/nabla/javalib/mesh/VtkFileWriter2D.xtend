@@ -14,10 +14,11 @@
 package fr.cea.nabla.javalib.mesh
 
 import fr.cea.nabla.javalib.types.Real2
+import java.io.File
 import java.io.FileNotFoundException
 import java.io.PrintWriter
 import java.io.UnsupportedEncodingException
-import java.io.File
+import java.util.Map
 
 class VtkFileWriter2D
 {
@@ -33,7 +34,7 @@ class VtkFileWriter2D
 			outputDir.mkdir
 	}
 	
-	def writeFile(int iteration, Real2[] nodes, Quad[] cells, Iterable<Pair<String, double[]>> cellVariables, Iterable<Pair<String, double[]>> nodeVariables)
+	def writeFile(int iteration, Real2[] nodes, Quad[] cells, Map<String, double[]> cellVariables, Map<String, double[]> nodeVariables)
 	{
 		try {
 			
@@ -53,11 +54,11 @@ class VtkFileWriter2D
 			if (! (nodeVariables === null || nodeVariables.empty))
 			{
 				writer.println('\nDATA_DATA ' + nodes.size)
-				for (nodeVariable : nodeVariables)
+				for (nodeVariableName : nodeVariables.keySet)
 				{
-					writer.println('SCALARS ' + nodeVariable.key + ' float 1')
+					writer.println('SCALARS ' + nodeVariableName + ' float 1')
 					writer.println('LOOKUP_TABLE default')
-					nodeVariable.value.forEach[x | writer.println(x)]
+					nodeVariables.get(nodeVariableName).forEach[x | writer.println(x)]
 				}
 			}
 
@@ -65,11 +66,11 @@ class VtkFileWriter2D
 			if (! (cellVariables === null || cellVariables.empty))
 			{
 				writer.println('\nCELL_DATA ' + cells.size)
-				for (cellVariable : cellVariables)
+				for (cellVariableName : cellVariables.keySet)
 				{
-					writer.println('SCALARS ' + cellVariable.key + ' float 1')
+					writer.println('SCALARS ' + cellVariableName + ' float 1')
 					writer.println('LOOKUP_TABLE default')
-					cellVariable.value.forEach[x | writer.println(x)]
+					cellVariables.get(cellVariableName).forEach[x | writer.println(x)]
 				}
 			}
 			

@@ -50,21 +50,9 @@ class Ir2Java implements IrGenerator
 	 */
 	override getFileContent(IrModule it)
 	'''
-		/*******************************************************************************
- * Copyright (c) 2018 CEA
- * This program and the accompanying materials are made available under the 
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * 	Benoit Lelandais - initial implementation
- * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvain Camier - Nabla generation support
- *******************************************************************************/
-package «name.toLowerCase»;
+		package «name.toLowerCase»;
 		
+		import java.util.HashMap;
 		import java.util.Arrays;
 		import java.util.ArrayList;
 		import java.util.stream.IntStream;
@@ -143,6 +131,8 @@ package «name.toLowerCase»;
 				«ENDFOR»
 				«IF jobs.exists[at > 0]»
 				
+				HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+				cellVariables.put("Density", rho);
 				int iteration = 0;
 				while (t < options.option_stoptime && iteration < options.option_max_iterations)
 				{
@@ -151,6 +141,7 @@ package «name.toLowerCase»;
 					«FOR j : jobs.filter[x | x.at > 0].sortBy[at]»
 						«j.name.toFirstLower»(); // @«j.at»
 					«ENDFOR»
+					writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, null);
 				}
 				«ENDIF»
 				System.out.println("Fin de l'exécution du module «name»");

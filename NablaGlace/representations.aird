@@ -733,7 +733,6 @@
     <semanticResources>java:/Objects/fr.cea.nabla.javalib.types.Real2x2</semanticResources>
     <semanticResources>src/whiteheat/Whiteheat.nabla</semanticResources>
     <semanticResources>src-gen/glace/Glace.java.nablair</semanticResources>
-    <semanticResources>src-gen/glace2d/Glace2d.java.nablair</semanticResources>
     <semanticResources>src-gen/whiteheat/Whiteheat.java.nablair</semanticResources>
     <semanticResources>java:/Objects/org.eclipse.xtext.xbase.lib.ArrayLiterals</semanticResources>
     <semanticResources>java:/Objects/org.eclipse.xtext.xbase.lib.CollectionLiterals</semanticResources>
@@ -847,6 +846,7 @@
     <semanticResources>java:/Objects/org.eclipse.xtext.xbase.lib.ShortExtensions</semanticResources>
     <semanticResources>java:/Objects/java.lang.Short</semanticResources>
     <semanticResources>java:/Objects/org.eclipse.xtext.xbase.lib.StringExtensions</semanticResources>
+    <semanticResources>src-gen/glace2d/Glace2d.java.nablair</semanticResources>
     <semanticResources>src-gen/glace2d/Glace2d.n.nablair</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" xmi:id="_7Uq5cML6EeikH8SxBDpvOQ">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']"/>

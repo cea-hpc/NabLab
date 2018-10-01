@@ -40,10 +40,10 @@ class ExpressionContentProvider
 	def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
 	def dispatch CharSequence getContent(IntConstant it) '''«value»'''
 	def dispatch CharSequence getContent(RealConstant it) '''«value»'''
-	def dispatch CharSequence getContent(Real2Constant it) '''«BasicType::REAL2.NType»(«x», «y»)'''
+	def dispatch CharSequence getContent(Real2Constant it) '''«BasicType::REAL3.NType»(«x», «y», 0.0)'''
 	def dispatch CharSequence getContent(Real3Constant it) '''«BasicType::REAL3.NType»(«x», «y», «z»)'''
-	def dispatch CharSequence getContent(Real2x2Constant it) '''«BasicType::REAL2.NType»(«x», «y»)''' // Real2x2 init avec Real2 en Nabla
-	def dispatch CharSequence getContent(Real3x3Constant it) '''«BasicType::REAL3.NType»(«x», «y», «z»)''' // même remarque sur Real3x3
+	def dispatch CharSequence getContent(Real2x2Constant it) '''«BasicType::REAL2X2.NType»(«x.content», «y.content», «BasicType::REAL3.NType»(0.0, 0.0, 1.0))'''
+	def dispatch CharSequence getContent(Real3x3Constant it) '''«BasicType::REAL3X3.NType»(«x.content», «y.content», «z.content»)'''
 	def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
 	
 	def dispatch CharSequence getContent(MinConstant it) 

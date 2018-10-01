@@ -16,7 +16,6 @@ package fr.cea.nabla.generator
 import com.google.inject.Inject
 import fr.cea.nabla.generator.ir.Nabla2Ir
 import fr.cea.nabla.ir.generator.java.Ir2Java
-import fr.cea.nabla.ir.generator.kokkos.Ir2Kokkos
 import fr.cea.nabla.ir.generator.n.Ir2N
 import fr.cea.nabla.nabla.NablaModule
 import org.eclipse.emf.ecore.EObject
@@ -25,6 +24,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import org.eclipse.emf.ecore.util.EcoreUtil
 
 /**
  * Generates code from your model files on save.
@@ -46,14 +46,13 @@ class NablaGenerator extends AbstractGenerator
 	
 	@Inject Ir2N ir2N
 	@Inject Ir2Java ir2Java
-	@Inject Ir2Kokkos ir2Kokkos
+	//@Inject Ir2Kokkos ir2Kokkos
 	
 	override doGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context) 
 	{
 		// 1 seul module par resource par définition (cf .xtext)
 		val module = input.contents.filter(NablaModule).head
-		//val generator = ir2Java
-		val generator = ir2N
+		val generators = #[ir2Java, ir2N]
 		
 		// ecriture du fichier de modele
 		if (!module.jobs.empty)
@@ -62,30 +61,33 @@ class NablaGenerator extends AbstractGenerator
 			
 			println('Generating Latex document')
 			fsa.generateFile(fileNameWithoutExtension.addExtensions(#['tex']), latexGenerator.getLatexContent(module))
+			val irModuleRef = nabla2ir.toIrModule(module)
 			
-			
-			println('Starting generation chain for ' + generator.shortName + ' (.' + generator.fileExtension + ' file)')
-			println('\tBuilding Nabla Intermediate Representation')
-			val irModule = nabla2ir.toIrModule(module)
-
-			// application des transformation de l'IR (dépendant du langage
-			var transformOK = true
-			val stepIt = generator.transformationSteps.iterator
-			while (stepIt.hasNext && transformOK)
+			for (generator : generators)
 			{
-				val step = stepIt.next
-				println('\tIR -> IR: ' + step.description)
-				//createAndSaveResource(fsa, input.resourceSet, fileNameWithoutExtension.addExtensions(#['before' + step.shortName, generator.fileExtension, IrExtension]), irModule)		
-				transformOK = step.transform(irModule)
-			}
-			createAndSaveResource(fsa, input.resourceSet, fileNameWithoutExtension.addExtensions(#[generator.fileExtension, IrExtension]), irModule)
+				val irModule = EcoreUtil::copy(irModuleRef)
+				println('Starting generation chain for ' + generator.shortName + ' (.' + generator.fileExtension + ' file)')
+				println('\tBuilding Nabla Intermediate Representation')
+	
+				// application des transformation de l'IR (dépendant du langage
+				var transformOK = true
+				val stepIt = generator.transformationSteps.iterator
+				while (stepIt.hasNext && transformOK)
+				{
+					val step = stepIt.next
+					println('\tIR -> IR: ' + step.description)
+					//createAndSaveResource(fsa, input.resourceSet, fileNameWithoutExtension.addExtensions(#['before' + step.shortName, generator.fileExtension, IrExtension]), irModule)		
+					transformOK = step.transform(irModule)
+				}
+				createAndSaveResource(fsa, input.resourceSet, fileNameWithoutExtension.addExtensions(#[generator.fileExtension, IrExtension]), irModule)
 			
-			// génération du fichier .n
-			if (transformOK)
-			{
-				println('\tGenerating .' + generator.fileExtension + ' file')
-				val fileContent = generator.getFileContent(irModule)
-				fsa.generateFile(fileNameWithoutExtension.addExtensions(#[generator.fileExtension]), fileContent)	
+				// génération du fichier source
+				if (transformOK)
+				{
+					println('\tGenerating .' + generator.fileExtension + ' file')
+					val fileContent = generator.getFileContent(irModule)
+					fsa.generateFile(fileNameWithoutExtension.addExtensions(#[generator.fileExtension]), fileContent)	
+				}	
 			}
 		}
 	}

@@ -26,10 +26,11 @@ class Ir2NUtils
 			case BOOL: '\u213E'
 			case INT: '\u2115'
 			case REAL: '\u211D'
-			case REAL2: '\u211D\u00B2'
-			case REAL2X2: '\u211D\u00B2\u02E3\u00B2'
-			case REAL3: '\u211D\u00B3'
-			case REAL3X3: '\u211D\u00B3\u02E3\u00B3'
+			case REAL2, case REAL3: '\u211D\u00B3'
+			case REAL2X2, case REAL3X3: '\u211D\u00B3\u02E3\u00B3'
+			// ca devrait être ça mais R2x2 pas implémenté en Nabla pour l'instant
+			//case REAL2: '\u211D\u00B2' 
+			//case REAL2X2: '\u211D\u00B2\u02E3\u00B2'
 		}
 	}
 

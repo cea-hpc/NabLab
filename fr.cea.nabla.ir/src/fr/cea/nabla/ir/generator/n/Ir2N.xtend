@@ -49,14 +49,14 @@ class Ir2N implements IrGenerator
 		};
 		
 		global {
-			«val varsByType = variables.filter(ScalarVariable).filter[!const].filter[x|!backendImplicitVariables.contains(x.name)].groupBy[type]»
+			«val varsByType = variables.filter(ScalarVariable).filter[!const].groupBy[type]»
 			«FOR type : varsByType.keySet»
 				«type.NType» «FOR v : varsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 			«ENDFOR»
 		};
 		
 		«FOR support : itemVariables.keySet SEPARATOR '\n'»
-		«support.literal» {
+		«support.literal»s {
 			«val itemVarsByType = itemVariables.get(support).groupBy[type]»
 			«FOR type : itemVarsByType.keySet»
 				«type.NType» «FOR v : itemVarsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
@@ -64,6 +64,8 @@ class Ir2N implements IrGenerator
 		};
 		«ENDFOR»
 		
+		computeLoop @ 0.0 { printf("t = %f", t); }
+
 		«FOR j : jobs.sortBy[at]»
 			«j.content»
 			

@@ -25,7 +25,7 @@ class DirtyPatchProvider
 		ℝ trace(ℝ³ˣ³ M){return M.x.x+M.y.y+M.z.z;}
 		ℝ³ˣ³ inverse(ℝ³ˣ³ M) { 
 			ℝ det = matrixDeterminant(M);
-			assert(det!=0.0);
+			//assert(det!=0.0);
 			return inverseMatrix(M,det);
 		}
 

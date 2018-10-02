@@ -59,12 +59,12 @@ class Ir2N implements IrGenerator
 		«support.literal»s {
 			«val itemVarsByType = itemVariables.get(support).groupBy[type]»
 			«FOR type : itemVarsByType.keySet»
-				«type.NType» «FOR v : itemVarsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
+				«type.NType» «FOR v : itemVarsByType.get(type).filter[x|x.name!='coord'] SEPARATOR ', '»«v.name»«ENDFOR»;
 			«ENDFOR»
 		};
 		«ENDFOR»
 		
-		computeLoop @ 0.0 { printf("t = %f", t); }
+		computeLoop @ 0.0 { printf("t = %f\n", t); }
 
 		«FOR j : jobs.sortBy[at]»
 			«j.content»

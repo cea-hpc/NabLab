@@ -1,0 +1,154 @@
+/*******************************************************************************
+ * Copyright (c) 2018 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * 	Benoit Lelandais - initial implementation
+ * 	Marie-Pierre Oudot - initial implementation
+ * 	Jean-Sylvain Camier - Nabla generation support
+ *******************************************************************************/
+module Glace2d;
+
+with Math.*;
+
+connectivities {
+	nodes: (∅) → {node};
+	cells: (∅) → {cell};
+	outerFaces: (∅) → {face};
+	innerNodes: (∅) → {node};
+	nodesOfCell: (cell) → {node};
+	cellsOfNode: (node) → {cell};
+	nodesOfFace: (face) → {node};
+}
+
+functions {
+	trace: (ℝ²ˣ²) → ℝ;
+	perp: (ℝ²) → ℝ²;
+	tensProduct: (ℝ², ℝ²) → ℝ²ˣ²;
+	matVectProduct: (ℝ²ˣ², ℝ²) → ℝ²;
+	inverse: (ℝ²ˣ²) → ℝ²ˣ²;
+}
+
+// Options obligatoires pour générer
+const ℝ LENGTH = 0.01;
+const ℕ X_EDGE_ELEMS = 100;
+const ℕ Y_EDGE_ELEMS = 10;
+const ℕ Z_EDGE_ELEMS = 1;
+const ℝ option_stoptime = 0.2;
+const ℕ option_max_iterations = 20000;
+  
+// Autres options
+const ℝ γ = 1.4;
+const ℝ option_x_interface = 0.5;
+const ℝ option_δt_ini = 1.0e-5;
+const ℝ option_δt_cfl = 0.4;
+const ℝ option_ρ_ini_zg = 1.0;
+const ℝ option_ρ_ini_zd = 0.125;
+const ℝ option_p_ini_zg = 1.0;
+const ℝ option_p_ini_zd = 0.1;
+
+ℝ t=0.0;
+ℝ δt=0.0;
+
+ℝ² coord[nodes], X[nodes], b[nodes], bt[nodes];
+ℝ²ˣ² Ar[nodes], Mt[nodes];
+ℝ² ur[nodes];
+ℝ p_ic[cells], ρ_ic[cells], V_ic[cells];
+ℝ c[cells], m[cells], p[cells], ρ[cells], e[cells], E[cells], V[cells];
+ℝ δtj[cells];
+ℝ² uj[cells], center[cells];
+ℝ l[cells, nodesOfCell];
+ℝ² C_ic[cells, nodesOfCell], C[cells, nodesOfCell], F[cells, nodesOfCell];
+ℝ²ˣ² Ajr[cells, nodesOfCell];
+
+
+// *************************************************************
+// * Init: X_ic(par le mailleur), ρ_ic, p_ic, V_ic & m
+// *************************************************************
+IniCenter: ∀j∈cells(), center{j} = (1.0/4.0) * ∑{r∈nodesOfCell(j)}(coord{r});
+IniIc: ∀j∈cells(), if (center{j}.x < option_x_interface) {
+  ρ_ic{j}=option_ρ_ini_zg;
+  p_ic{j}=option_p_ini_zg;
+} else {
+  ρ_ic{j}=option_ρ_ini_zd;
+  p_ic{j}=option_p_ini_zd;
+}
+
+ComputeCjrIc: ∀j∈cells(), ∀r∈nodesOfCell(j), 
+	C_ic{j,r} = 0.5 * perp(coord{►(r)} - coord{◄(r)});
+IniVIc: ∀j∈cells(), V_ic{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C_ic{j,r}, coord{r}));
+IniM: ∀j∈cells(), m{j} = ρ_ic{j} * V_ic{j}; // m est constant
+
+// *************************************************************
+// * Calcul des C{j,r} et des variables qui en découlent
+// *************************************************************
+ComputeCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), C{j,r} = 0.5 * perp(X{►(r)} - X{◄(r)});
+ComputeLjr: ∀j∈cells(), ∀r∈nodesOfCell(j), l{j,r} = norm(C{j,r});
+Computeδtj: ∀j∈cells(), δtj{j} = 2.0 * V{j} / (c{j} * ∑{r∈nodesOfCell(j)}(l{j,r}));
+
+// *************************************************************
+// * Règles EOS standards: m, ρ, c, p, e
+// *************************************************************
+ComputeDensity: ∀j∈cells(), ρ{j} = m{j} / V{j};
+ComputeEOSp: ∀j∈cells(), p{j} = (γ-1.0) * ρ{j} * e{j};
+ComputeInternalEngergy: ∀j∈cells(), e{j} = E{j} - 0.5 * dot(uj{j}, uj{j});
+ComputeEOSc: ∀j∈cells(), c{j} = √(γ*p{j}/ρ{j}); 
+
+// *************************************************************
+// * Cell-centered Godunov Scheme for Lagragian gas dynamics
+// *************************************************************
+ComputeAjr: ∀j∈cells(), ∀r∈nodesOfCell(j), Ajr{j,r} = ((ρ{j}*c{j})/l{j,r}) * tensProduct(C{j,r}, C{j,r});
+ComputeFjr: ∀j∈cells(), ∀r∈nodesOfCell(j), F{j,r} = p{j}*C{j,r} + matVectProduct(Ajr{j,r}, (uj{j}-ur{r}));
+ComputeAr: ∀r∈nodes(), Ar{r} = ∑{j∈cellsOfNode(r)}(Ajr{j,r});
+ComputeBr: ∀r∈nodes(), b{r} = ∑{j∈cellsOfNode(r)}(p{j}*C{j,r} + matVectProduct(Ajr{j,r}, uj{j}));
+ComputeMt: ∀r∈innerNodes(), Mt{r} = Ar{r};
+ComputeBt: ∀r∈innerNodes(), bt{r} = b{r};
+
+OuterFacesComputations: ∀k∈outerFaces(), {
+	const ℝ epsilon = 1.0e-10;
+	ℝ²ˣ² I = {{1.0,0.0},{0.0,1.0}};
+
+	ℝ X_MIN = 0.0;
+	ℝ X_MAX = X_EDGE_ELEMS * LENGTH;
+	ℝ Y_MIN = 0.0; 
+	ℝ Y_MAX = Y_EDGE_ELEMS * LENGTH;
+	ℝ² nY = {0.0,1.0};
+	
+	∀r∈nodesOfFace(k), {
+		// Y boundary conditions (must be done before X)
+		if ((X{r}.y-Y_MIN < epsilon) || (X{r}.y-Y_MAX < epsilon)) {
+			ℝ sign = 0.0;
+			if (X{r}.y-Y_MIN < epsilon) sign = -1.0;
+			else sign = 1.0;
+			ℝ² n = sign * nY;
+      		ℝ²ˣ² nxn = tensProduct(n,n);
+      		ℝ²ˣ² IcP = I - nxn;
+			bt{r} = matVectProduct(IcP, b{r});
+			Mt{r} = IcP * (Ar{r} * IcP) + nxn*trace(Ar{r});
+		}
+
+		// X boundary conditions
+		if ((Math.fabs(X{r}.x-X_MIN) < epsilon) || ( (Math.fabs(X{r}.x-X_MAX) < epsilon) )) {
+			Mt{r} = I;
+			bt{r} = {0.0, 0.0};
+		}
+	}
+}
+
+
+ComputeU: ∀r∈nodes(), ur{r} = matVectProduct(inverse(Mt{r}), bt{r});
+ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C{j,r},X{r}));
+
+// *************************************************************
+// * Itérations de la boucle en 'n'
+// * Et calcule du δt pour mise-à-jour du temps de la simulation
+// *************************************************************
+ComputeXn: ∀n∈ℕ, ∀r0∈nodes(), X{r0}^{n=0}=coord{r0}; , ∀r∈nodes(), X{r}^{n+1}=X{r}^{n}+δt^{n}*ur{r};
+ComputeUn: ∀n∈ℕ, ∀j0∈cells(), uj{j0}^{n=0}={0.0,0.0}; , ∀j∈cells(), uj{j}^{n+1}=uj{j}^{n}-(δt^{n}/m{j})*∑{r∈nodesOfCell(j)}(F{j,r});
+ComputeEn: ∀n∈ℕ, ∀j0∈cells(), E{j0}^{n=0}=p_ic{j0}/((γ-1.0)*ρ_ic{j0}); , ∀j∈cells(), E{j}^{n+1}=E{j}^{n} - (δt^{n} / m{j}) * ∑{r∈nodesOfCell(j)}(dot(F{j,r},ur{r}));
+ComputeDt: ∀n∈ℕ, δt^{n=0}=option_δt_ini;, δt^{n+1}=option_δt_cfl*reduceMin{j∈cells()}(δtj{j});
+ComputeTn: ∀n∈ℕ, t^{n=0}=0.0; , t^{n+1}=t^{n}+δt^{n+1};

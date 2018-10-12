@@ -19,8 +19,8 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
  org.eclipse.core.resources,
  fr.cea.nabla.ir,
- org.eclipse.emf.mwe2.launch;bundle-version="2.9.1"
-Bundle-RequiredExecutionEnvironment: JavaSE-10
+ org.eclipse.emf.mwe2.launch
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: fr.cea.nabla,
  fr.cea.nabla.generator,
  fr.cea.nabla.generator.ir,

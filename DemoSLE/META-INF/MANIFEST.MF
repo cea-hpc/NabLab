@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
+Automatic-Module-Name: DemoSLE
 Bundle-ManifestVersion: 2
 Bundle-Name: DemoSLE
 Bundle-SymbolicName: DemoSLE
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: CEA
-Automatic-Module-Name: DemoSLE
-Bundle-RequiredExecutionEnvironment: JavaSE-10
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: com.google.guava,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtend.lib,

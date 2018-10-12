@@ -26,7 +26,7 @@ Require-Bundle: fr.cea.nabla,
  org.eclipse.sirius.diagram,
  org.eclipse.sirius.diagram.ui
 Import-Package: org.apache.log4j
-Bundle-RequiredExecutionEnvironment: JavaSE-10
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: fr.cea.nabla.ui.contentassist,
  fr.cea.nabla.ui.quickfix,
  fr.cea.nabla.ui.internal

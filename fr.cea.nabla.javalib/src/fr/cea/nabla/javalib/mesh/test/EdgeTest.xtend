@@ -14,9 +14,9 @@
 package fr.cea.nabla.javalib.mesh.test
 
 import fr.cea.nabla.javalib.mesh.Edge
-import org.junit.jupiter.api.Test
+import org.junit.Test
 
-import static org.junit.jupiter.api.Assertions.*
+import static org.junit.Assert.*
 
 class EdgeTest 
 {

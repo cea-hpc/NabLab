@@ -14,9 +14,9 @@
 package fr.cea.nabla.javalib.mesh.test
 
 import fr.cea.nabla.javalib.mesh.CartesianMesh2DGenerator
-import org.junit.jupiter.api.Test
+import org.junit.Test
 
-import static org.junit.jupiter.api.Assertions.*
+import static org.junit.Assert.*
 
 class CartesianMesh2DGeneratorTest 
 {
@@ -50,8 +50,8 @@ class CartesianMesh2DGeneratorTest
 			{
 				val currentQuad = mesh.quads.get(quadIndex)
 				val upperLeftNode = mesh.nodes.get(currentQuad.nodeIds.get(0))
-				assertEquals(xUpperLeftNode, upperLeftNode.x)
-				assertEquals(yUpperLeftNode, upperLeftNode.y)
+				assertEquals(xUpperLeftNode, upperLeftNode.x, 0.0)
+				assertEquals(yUpperLeftNode, upperLeftNode.y, 0.0)
 				xUpperLeftNode += xSize
 				quadIndex++
 			}

@@ -448,7 +448,6 @@
           class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.views.LatexView"
           icon="icons/Nabla.gif"
           id="fr.cea.nabla.ui.views.NablaLatexView"
-          inject="true"
           name="Latex View">
     </view>
  </extension>

@@ -14,8 +14,8 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
+import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.nabla.NablaModule
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.resource.ILocationInFileProvider
@@ -43,22 +43,15 @@ class IrAnnotationHelper
 	
 	def getUriDetail(EObject o)
 	{
-		val irFile = o.nablaIrModule
+		val irFile = Utils::getIrModule(o)
 		if (irFile === null) null
 		else irFile.annotations.head.details.get(ANNOTATION_URI_DETAIL)
-	}
-	
-	private def IrModule getNablaIrModule(EObject o)
-	{
-		if (o === null) null
-		else if (o instanceof IrModule) o as IrModule
-		else o.eContainer.nablaIrModule
 	}
 	
 	private def createIrAnnot(EObject nablaElt)
 	{
 		val region = locationProvider.getFullTextRegion(nablaElt)
-		if (region === null) throw new Exception('Ooops : impossible de créer une annotation pour : ' + nablaElt)
+		if (region === null) throw new RuntimeException('Ooops : impossible de créer une annotation pour : ' + nablaElt)
 		
 		IrFactory::eINSTANCE.createIrAnnotation => 
 		[

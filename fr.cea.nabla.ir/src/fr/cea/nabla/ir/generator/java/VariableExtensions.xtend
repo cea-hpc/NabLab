@@ -32,12 +32,4 @@ class VariableExtensions
 		for (d : dimensions) t += '[]'
 		return t
 	}
-
-	def getJavaAllocation(ArrayVariable it)
-	{
-		throw new Exception("Not yet implemented")
-//		var alloc = 'new ' + getType.javaType + '[nb' + support.literal.toFirstUpper + 's]'
-//		if (innerSupport != ItemType::NONE) alloc = alloc + '[' + getInnerMaxAccessor(support, innerSupport) + ']'
-//		return alloc
-	}
 }

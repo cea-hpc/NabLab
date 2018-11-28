@@ -37,11 +37,11 @@ class Utils
 		return null
 	}	
 	
-	static def NablaModule getNablaModule(EObject it)
+	static def NablaModule getNablaModule(EObject o)
 	{
-		if (eContainer === null) null
-		else if (eContainer instanceof NablaModule) eContainer as NablaModule
-		else eContainer.nablaModule
+		if (o === null) null
+		else if (o instanceof NablaModule) o as NablaModule
+		else o.eContainer.nablaModule
 	}
 	
 	static def getFileNameWithoutExtension(Resource input)

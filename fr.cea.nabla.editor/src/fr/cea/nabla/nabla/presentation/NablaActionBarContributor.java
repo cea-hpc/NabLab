@@ -164,6 +164,7 @@ public class NablaActionBarContributor
 	 */
 	@Override
 	public void contributeToToolBar(IToolBarManager toolBarManager) {
+		super.contributeToToolBar(toolBarManager);
 		toolBarManager.add(new Separator("nabla-settings"));
 		toolBarManager.add(new Separator("nabla-additions"));
 	}

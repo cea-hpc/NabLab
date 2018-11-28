@@ -30,13 +30,14 @@ import java.util.List
 class Ir2Java implements IrGenerator
 {
 	static val FileExtension = 'java'
-	static val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new OptimizeConnectivities, new FillJobHLTs]
 
 	@Inject extension Utils
 	@Inject extension Ir2JavaUtils
 	@Inject extension ExpressionContentProvider
 	@Inject extension JobContentProvider
 	@Inject extension VariableExtensions
+
+	val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new OptimizeConnectivities, new FillJobHLTs]
 
 	override getFileExtension() { FileExtension }
 	override getTransformationSteps() { TransformationSteps }
@@ -67,7 +68,7 @@ class Ir2Java implements IrGenerator
 			public final static class Options
 			{
 				«FOR v : variables.filter(ScalarVariable).filter[const]»
-					public final «v.javaType» «v.name» = «v.defaultValue.content»;
+				public final «v.javaType» «v.name» = «v.defaultValue.content»;
 				«ENDFOR»
 			}
 			
@@ -130,9 +131,15 @@ class Ir2Java implements IrGenerator
 					«j.name.toFirstLower»(); // @«j.at»
 				«ENDFOR»
 				«IF jobs.exists[at > 0]»
-				
+
+				«val variablesToPersist = persistentArrayVariables»
+				«IF !variablesToPersist.empty»
 				HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-				cellVariables.put("Density", rho);
+				HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+				«FOR v : variablesToPersist»
+				«v.dimensions.head.returnType.type.literal»Variables.put("«v.persistenceName»", «v.name»);
+				«ENDFOR»
+				«ENDIF»
 				int iteration = 0;
 				while (t < options.option_stoptime && iteration < options.option_max_iterations)
 				{
@@ -141,7 +148,9 @@ class Ir2Java implements IrGenerator
 					«FOR j : jobs.filter[x | x.at > 0].sortBy[at]»
 						«j.name.toFirstLower»(); // @«j.at»
 					«ENDFOR»
-					writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, null);
+					«IF !variablesToPersist.empty»
+					writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+					«ENDIF»
 				}
 				«ENDIF»
 				System.out.println("Fin de l'exécution du module «name»");
@@ -183,4 +192,5 @@ class Ir2Java implements IrGenerator
 	}
 	
 	private def getIndexName(Connectivity c) { 'i' + c.name.toFirstUpper }
+	private def getPersistentArrayVariables(IrModule it) { variables.filter(ArrayVariable).filter[x|x.persist && x.dimensions.size==1] }
 }

@@ -60,6 +60,8 @@
     <genClasses image="false" ecoreClass="Ir.ecore#//Variable">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/persist"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/persistenceName"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ScalarVariable">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ScalarVariable/defaultValue"/>

@@ -17,14 +17,20 @@ import com.google.inject.Inject
 import fr.cea.nabla.generator.ir.Nabla2Ir
 import fr.cea.nabla.ir.generator.java.Ir2Java
 import fr.cea.nabla.ir.generator.n.Ir2N
+import fr.cea.nabla.ir.transformers.TagPersistentVariables
 import fr.cea.nabla.nabla.NablaModule
+import java.io.IOException
+import java.net.URL
+import java.util.Properties
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.resource.ResourceSet
+import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-import org.eclipse.emf.ecore.util.EcoreUtil
+import java.nio.charset.Charset
+import java.io.InputStreamReader
 
 /**
  * Generates code from your model files on save.
@@ -39,6 +45,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 class NablaGenerator extends AbstractGenerator 
 {
 	static val IrExtension = 'nablair'
+	static val PropertiesExtension = 'properties'
 	
 	@Inject GeneratorUtils utils
 	@Inject SmallLatexGenerator latexGenerator
@@ -52,6 +59,7 @@ class NablaGenerator extends AbstractGenerator
 	{
 		// 1 seul module par resource par définition (cf .xtext)
 		val module = input.contents.filter(NablaModule).head
+		println("Model size (eAllContents.size): " + module.eAllContents.size)
 		val generators = #[ir2Java, ir2N]
 		
 		// ecriture du fichier de modele
@@ -61,7 +69,27 @@ class NablaGenerator extends AbstractGenerator
 			
 			println('Generating Latex document')
 			fsa.generateFile(fileNameWithoutExtension.addExtensions(#['tex']), latexGenerator.getLatexContent(module))
+			
+			println('Generating initial Ir')			
 			val irModuleRef = nabla2ir.toIrModule(module)
+			
+			print('Looking for a properties file...')
+			val uri = input.URI.trimFileExtension.toString.addExtensions(#[PropertiesExtension])
+			val url = new URL(uri)
+			try 
+			{
+				val inputStream = url.openConnection().getInputStream()
+				val props = new Properties
+				props.load(new InputStreamReader(inputStream, Charset.forName('UTF-8')))
+				println(' ok file found: ' + uri)
+				val tagVariableStep = new TagPersistentVariables(props)
+				tagVariableStep.transform(irModuleRef)				
+				inputStream.close		
+			}
+			catch (IOException e)
+			{
+				println('  no file: ' + uri)
+			}
 			
 			for (generator : generators)
 			{

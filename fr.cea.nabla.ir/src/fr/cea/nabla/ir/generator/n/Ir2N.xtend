@@ -25,7 +25,7 @@ import fr.cea.nabla.ir.transformers.ReplaceExternalReductions
 import fr.cea.nabla.ir.transformers.ReplaceInternalReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 
-class Ir2N implements IrGenerator
+class Ir2N extends IrGenerator
 {
 	static val FileExtension = 'n'
 	static val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new ReplaceExternalReductions, new ReplaceDefaultValues, new ConfigureNablaConnectivities, new FillJobHLTs]
@@ -35,8 +35,7 @@ class Ir2N implements IrGenerator
 	@Inject extension JobContentProvider
 	@Inject extension DirtyPatchProvider
 	
-	override getFileExtension() { FileExtension }
-	override getTransformationSteps() { TransformationSteps }
+	new() { super(FileExtension, TransformationSteps) }
 
 	override getFileContent(IrModule it)
 	'''

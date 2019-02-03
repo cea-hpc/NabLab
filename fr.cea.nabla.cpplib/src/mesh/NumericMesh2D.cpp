@@ -36,16 +36,11 @@ NumericMesh2D::getNodesOfFace(int faceId) const
 }
 
 const vector<int>
-NumericMesh2D::getFacesOfCell(int cellId) const
+NumericMesh2D::getCellsOfNode(int nodeId) const
 {
-	auto geometricCell = m_geometricMesh->getQuads()[cellId];
-	vector<int> cellEdgeIds;
-	auto edges = m_geometricMesh->getEdges();
-	for (int edgeId=0; edgeId<edges.size(); ++edgeId)
-		if (getNbCommonIds(edges[edgeId].getNodeIds(), geometricCell.getNodeIds()) == 2)
-			cellEdgeIds.push_back(edgeId);
-	return cellEdgeIds;
+	return m_geometricMesh->getQuadIdsOfNode(nodeId);
 }
+
 
 const vector<int>
 NumericMesh2D::getNeighbourCells(int cellId) const
@@ -67,6 +62,18 @@ NumericMesh2D::getNeighbourCells(int cellId) const
 		}
 	}
 	return neighbours;
+}
+
+const vector<int>
+NumericMesh2D::getFacesOfCell(int cellId) const
+{
+	auto geometricCell = m_geometricMesh->getQuads()[cellId];
+	vector<int> cellEdgeIds;
+	auto edges = m_geometricMesh->getEdges();
+	for (int edgeId=0; edgeId<edges.size(); ++edgeId)
+		if (getNbCommonIds(edges[edgeId].getNodeIds(), geometricCell.getNodeIds()) == 2)
+			cellEdgeIds.push_back(edgeId);
+	return cellEdgeIds;
 }
 
 const int

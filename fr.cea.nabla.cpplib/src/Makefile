@@ -1,18 +1,11 @@
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-OBJS = Real2.o Real3.o Real2x2.o Real3x3.o MathFunctions.o NumericMesh2D.o CartesianMesh2DGenerator.o
-INCS = -I.
-CXX = /cea/home/necdev/necdev/install/gcc-6.3/bin/g++
-CXXFLAGS = -L/cea/home/necdev/necdev/install/gcc-6.3/lib64 --std=c++11
-TARGET = libnabla.a
+Kokkos_HOME = /home/lelandaisb/kokkos/
 
-#ifeq ($(BUILD_MODE),debug)
-#	CFLAGS += -g
-#else ifeq ($(BUILD_MODE),run)
-#	CFLAGS += -O2
-#else
-#	$(error Build mode $(BUILD_MODE) not supported by this Makefile)
-#endif
+OBJS = Real2.o Real3.o Real2x2.o Real3x3.o MathFunctions.o NumericMesh2D.o CartesianMesh2DGenerator.o VtkFileWriter2D.o
+INCS = -I. -I${Kokkos_HOME}/kokkos/core/src -I${Kokkos_HOME}/kokkos-build
+CXXFLAGS = --std=c++17
+TARGET = libnabla.a
 
 all: $(TARGET)
 

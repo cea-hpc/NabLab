@@ -7,3 +7,8 @@
 *.o
 *.a
 /.metadata/
+output
+*.nablair
+NablaGlaceKokkos/build
+.settings
+

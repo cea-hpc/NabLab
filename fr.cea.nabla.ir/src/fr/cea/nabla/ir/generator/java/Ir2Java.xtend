@@ -27,9 +27,10 @@ import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import java.util.ArrayList
 import java.util.List
 
-class Ir2Java implements IrGenerator
+class Ir2Java extends IrGenerator
 {
 	static val FileExtension = 'java'
+	static val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new OptimizeConnectivities, new FillJobHLTs]
 
 	@Inject extension Utils
 	@Inject extension Ir2JavaUtils
@@ -37,10 +38,7 @@ class Ir2Java implements IrGenerator
 	@Inject extension JobContentProvider
 	@Inject extension VariableExtensions
 
-	val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new OptimizeConnectivities, new FillJobHLTs]
-
-	override getFileExtension() { FileExtension }
-	override getTransformationSteps() { TransformationSteps }
+	new() { super(FileExtension, TransformationSteps) }
 	
 	/**
 	 * TODO améliorer le scope des itérateurs de reduction
@@ -143,8 +141,8 @@ class Ir2Java implements IrGenerator
 				int iteration = 0;
 				while (t < options.option_stoptime && iteration < options.option_max_iterations)
 				{
-					System.out.println("t = " + t);
 					iteration++;
+					System.out.println("[" + iteration + "] t = " + t);
 					«FOR j : jobs.filter[x | x.at > 0].sortBy[at]»
 						«j.name.toFirstLower»(); // @«j.at»
 					«ENDFOR»

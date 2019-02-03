@@ -1,4 +1,5 @@
 /*******************************************************************************
+	private def getJavaName(ReductionCall it) '''«reduction.provider»Functions.«reduction.name»'''
  * Copyright (c) 2018 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
@@ -15,6 +16,7 @@ package fr.cea.nabla.ir.generator.kokkos
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.generator.IndexHelper
+import fr.cea.nabla.ir.generator.IndexHelper.Index
 import fr.cea.nabla.ir.generator.IndexHelper.IndexFactory
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.Affectation
@@ -23,6 +25,7 @@ import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Loop
+import fr.cea.nabla.ir.ir.ReductionCall
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.ScalarVarDefinition
 
@@ -42,10 +45,22 @@ class InstructionContentProvider
 		«ENDFOR»
 	'''
 
+	/**
+	 * Les réductions à l'intérieur des boucles ont été remplacées dans l'IR par des boucles.
+	 * Ne restent que les réductions au niveau des jobs => reduction //
+	 */
 	def dispatch CharSequence getContent(ReductionInstruction it) 
-	{
-		throw new Exception('Les instances de ReductionInstruction doivent être supprimées avant de générer le C++ Kokkos')
-	}
+	'''
+		«val iter = reduction.iterator»
+		«val itIndex = IndexFactory::createIndex(iter)»
+		«IF !iter.range.connectivity.indexEqualId»int[] «itIndex.containerName» = «iter.range.accessor»;«ENDIF»
+		«variable.kokkosType» «variable.name» = «variable.defaultValue.content»;
+		Kokkos::«reduction.kokkosName»<«variable.kokkosType»> reducer(«variable.name»);
+		Kokkos::parallel_reduce("Reduction«variable.name»", «iter.range.connectivity.nbElems», KOKKOS_LAMBDA(const int& «itIndex.label», «variable.kokkosType»& x)
+		{
+			reducer.join(x, «reduction.arg.content»);
+		}, reducer);
+	'''
 
 	def dispatch CharSequence getContent(ScalarVarDefinition it) 
 	'''
@@ -86,7 +101,7 @@ class InstructionContentProvider
 	private def addParallelLoop(Iterator it, Loop l)
 	'''
 		«val itIndex = IndexFactory::createIndex(it)»
-		«IF !range.connectivity.indexEqualId»int[] «itIndex.containerName» = «range.accessor»;«ENDIF»
+		«IF !range.connectivity.indexEqualId»auto «itIndex.containerName» = «range.accessor»;«ENDIF»
 		Kokkos::parallel_for(«range.connectivity.nbElems», KOKKOS_LAMBDA(const int «itIndex.label»)
 		{
 			«IF needIdFor(l)»int «name»Id = «indexToId(itIndex)»;«ENDIF»
@@ -121,4 +136,10 @@ class InstructionContentProvider
 			«l.body.innerContent»
 		}
 	'''
+	
+	def idToIndexArray(Index it)
+	'''auto «containerName» = mesh->get«connectivity.name.toFirstUpper()»(«connectivityArgIterator»Id);'''
+	
+	private def getKokkosName(ReductionCall it) '''«reduction.name.replaceFirst("reduce", "")»'''
+	private def idToIndex(Index i, String idName) { idToIndex(i, idName, '::') }	
 }

@@ -31,13 +31,11 @@ CartesianMesh2DGenerator::generate(int nbXQuads, int nbYQuads, double xSize, dou
 	auto& innerNodeIds = mesh->getInnerNodeIds();
 	int nodeId = 0;
 	int innerNodeId = 0;
-	cout << "creation des noeuds "<< endl;
 	for (int j=0; j<=nbYQuads; ++j)
 		for (int i=0; i<=nbXQuads; ++i)
 		{
 			nodes[nodeId] = Real2(xSize*i, ySize*j);
-			cout << "noeud " << nodeId << " = " << nodes[nodeId] <<endl;
-			if (i==0 || j==0 || i==nbXQuads-1 || j==nbYQuads-1)
+			if (i!=0 && j!=0 && i!=nbXQuads && j!=nbYQuads)
 				innerNodeIds[innerNodeId++] = nodeId;
 			nodeId++;
 		}

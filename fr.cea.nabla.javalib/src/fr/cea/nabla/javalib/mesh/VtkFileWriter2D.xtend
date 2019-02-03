@@ -22,12 +22,13 @@ import java.util.Map
 
 class VtkFileWriter2D
 {
+	static val OutputDir = 'output'
 	val String moduleName
 
 	new(String moduleName) 
 	{ 
 		this.moduleName = moduleName
-		val outputDir = new File('output')
+		val outputDir = new File(OutputDir)
 		if (outputDir.exists)
 			outputDir.listFiles.forEach[x | x.delete]
 		else
@@ -38,14 +39,14 @@ class VtkFileWriter2D
 	{
 		try {
 			
-			val writer = new PrintWriter('output/' + moduleName + '.' + iteration + '.vtk', 'UTF-8')
+			val writer = new PrintWriter(OutputDir + '/' + moduleName + '.' + iteration + '.vtk', 'UTF-8')
 			writer.println('# vtk DataFile Version 2.0')
 			writer.println(moduleName + ' at iteration ' + iteration)
 			writer.println('ASCII')
 			writer.println('DATASET POLYDATA')
 			
-			writer.println('POINTS ' + nodes.length + ' float')
-			for (node : nodes) writer.println(node.x + "\t" + node.y + "\t" + 0.0)
+			writer.println('POINTS ' + nodes.size + ' float')
+			nodes.forEach[writer.println(x + "\t" + y + "\t" + 0.0)]
 
 			writer.println('POLYGONS ' + cells.size + ' ' + cells.size * 5)
 			cells.forEach[writer.println('4\t' + nodeIds.join('\t'))]

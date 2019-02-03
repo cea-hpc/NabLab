@@ -119,15 +119,12 @@ class IndexHelper
 		else containerName + '[' + realLabel + ']'
 	}
 	
-	def idToIndex(Index it, String idName)
+	def idToIndex(Index it, String idName, String separator)
 	{
 		if (connectivity.indexEqualId) idName
-		else 'Utils.indexOf(' + containerName + ',' + idName + ')'
+		else 'Utils' + separator + 'indexOf(' + containerName + ',' + idName + ')'
 	}
 
-	def idToIndexArray(Index it)
-	'''int[] «containerName» = mesh.get«connectivity.name.toFirstUpper()»(«connectivityArgIterator»Id);'''
-	
 	/**
 	 * Retourne vrai si un IteratorRange utilise l'iterateur 'iterator'
 	 * dans un de ses arguments pour le contexte 'context'.

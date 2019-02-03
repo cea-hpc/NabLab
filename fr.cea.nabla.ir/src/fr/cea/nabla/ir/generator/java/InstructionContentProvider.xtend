@@ -15,6 +15,7 @@ package fr.cea.nabla.ir.generator.java
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.generator.IndexHelper
+import fr.cea.nabla.ir.generator.IndexHelper.Index
 import fr.cea.nabla.ir.generator.IndexHelper.IndexFactory
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.Affectation
@@ -136,5 +137,9 @@ class InstructionContentProvider
 		}
 	'''
 	
+	private def idToIndexArray(Index it)
+	'''int[] «containerName» = mesh.get«connectivity.name.toFirstUpper()»(«connectivityArgIterator»Id);'''
+	
 	private def getJavaName(ReductionCall it) '''«reduction.provider»Functions.«reduction.name»'''
+	private def idToIndex(Index i, String idName) { idToIndex(i, idName, '.') }	
 }

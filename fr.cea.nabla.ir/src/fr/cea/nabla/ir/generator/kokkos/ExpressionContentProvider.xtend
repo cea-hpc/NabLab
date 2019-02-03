@@ -14,6 +14,7 @@
 package fr.cea.nabla.ir.generator.kokkos
 
 import com.google.inject.Inject
+import fr.cea.nabla.ir.generator.IndexHelper.IndexFactory
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.BinaryExpression
@@ -58,9 +59,9 @@ class ExpressionContentProvider
 	{
 		switch getType().basicType
 		{
-			case INT  : '''Integer.MIN_VALUE'''
-			case REAL : '''Double.MIN_VALUE'''
-			case REAL2, case REAL2X2, case REAL3, case REAL3X3: '''new «getType().basicType»(Double.MIN_VALUE)'''
+			case INT  : '''numeric_limits<int>::min()'''
+			case REAL : '''numeric_limits<double>::min()'''
+			case REAL2, case REAL2X2, case REAL3, case REAL3X3: '''«getType().basicType»(numeric_limits<double>::min())'''
 			default: throw new Exception('Invalid expression Min for type: ' + getType().basicType)
 		}
 	}
@@ -69,9 +70,9 @@ class ExpressionContentProvider
 	{
 		switch getType().basicType
 		{
-			case INT  : '''Integer.MAX_VALUE'''
-			case REAL : '''Double.MAX_VALUE'''
-			case REAL2, case REAL2X2, case REAL3, case REAL3X3: '''new «getType().basicType»(Double.MAX_VALUE)'''
+			case INT  : '''numeric_limits<int>::max()'''
+			case REAL : '''numeric_limits<double>::max()'''
+			case REAL2, case REAL2X2, case REAL3, case REAL3X3: '''«getType().basicType»(numeric_limits<double>::max())'''
 			default: throw new Exception('Invalid expression Max for type: ' + getType().basicType)
 		}
 	}
@@ -100,14 +101,13 @@ class ExpressionContentProvider
 			switch iter
 			{
 				IteratorRange: content += iter.accessor
-				IteratorRef: content += iter.getVarRefName(array, i)
+				IteratorRef: 
+				{
+					val index = IndexFactory::createIndex(iter.iterator, i, array.dimensions, iterators)
+					content += prefix(iter, index.label)					
+				}
 			}
 		}
 		return '(' + content.join(',') + ')'
 	}
-
-	private def getVarRefName(IteratorRef i, ArrayVariable v, int iteratorIndex)
-	{
-		prefix(i, i.iterator.name + v.dimensions.get(iteratorIndex).name.toFirstUpper)
-	}	
 }

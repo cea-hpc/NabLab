@@ -34,7 +34,8 @@ class  CartesianMesh2DGenerator
 		for (j : 0..nbYQuads)
 			for (i : 0..nbXQuads)
 			{
-				nodes.add(new Real2(xSize*i, ySize*j))
+				val coord = new Real2(xSize*i, ySize*j)
+				nodes.add(coord)
 				if (i!=0 && j!=0 && i!=nbXQuads && j!=nbYQuads) 
 					innerNodeIds.set(innerNodeId++, nodeId)
 				nodeId++

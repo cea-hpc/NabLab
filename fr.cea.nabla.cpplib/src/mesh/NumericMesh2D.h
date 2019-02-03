@@ -27,6 +27,7 @@ class NumericMesh2D
 public:
 	static const int MaxNbNodesOfCell = 4;
 	static const int MaxNbNodesOfFace = 2;
+	static const int MaxNbCellsOfNode = 4;
 	static const int MaxNbNeighbourCells = 2;
 
 	NumericMesh2D(Mesh<Real2>* geometricMesh);
@@ -36,10 +37,16 @@ public:
 	int getNbCells() const { return m_geometricMesh->getQuads().size(); }
 	int getNbFaces() const { return m_geometricMesh->getEdges().size(); }
 
+	int getNbInnerNodes() const { return getInnerNodes().size(); }
+	int getNbOuterFaces() const { return getOuterFaces().size(); }
+	const vector<int> getInnerNodes() const { return m_geometricMesh->getInnerNodeIds(); }
+	const vector<int> getOuterFaces() const { return m_geometricMesh->getOuterEdgeIds(); }
+
 	const vector<int> getNodesOfCell(int cellId) const;
 	const vector<int> getNodesOfFace(int faceId) const;
-	const vector<int> getFacesOfCell(int cellId) const;
+	const vector<int> getCellsOfNode(int nodeId) const;
 	const vector<int> getNeighbourCells(int cellId) const;
+	const vector<int> getFacesOfCell(int cellId) const;
 	const int getCommonFace(const int cellId1, const int cellId2) const;
 
 private:

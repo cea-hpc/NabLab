@@ -139,7 +139,6 @@ OuterFacesComputations: ∀k∈outerFaces(), {
 	}
 }
 
-
 ComputeU: ∀r∈nodes(), ur{r} = matVectProduct(inverse(Mt{r}), bt{r});
 ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C{j,r},X{r}));
 

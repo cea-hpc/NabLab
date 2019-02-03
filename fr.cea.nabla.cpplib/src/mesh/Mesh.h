@@ -34,24 +34,41 @@ public:
 	, m_innerNodeIds(nbInnerNodes)
 	{}
 
-	const vector<int> getQuadIdsOfNode(const int nodeId)
+	vector<Edge>& getEdges() { return m_edges; }
+	vector<int>& getInnerNodeIds() { return m_innerNodeIds; }
+	vector<T>& getNodes() { return m_nodes; }
+	vector<Quad>& getQuads() { return m_quads; }
+
+	const vector<int> getQuadIdsOfNode(const int nodeId) const
 	{
 		vector<int> candidateQuadIds;
 		for (int quadId = 0; quadId < m_quads.size(); quadId++)
 		{
 			auto q = m_quads[quadId];
 			auto qNodeIds = q.getNodeIds();
-			if (find(qNodeIds.begin(), qNodeIds.end(), nodeId)
-					!= qNodeIds.end())
+			if (find(qNodeIds.begin(), qNodeIds.end(), nodeId) != qNodeIds.end())
 				candidateQuadIds.push_back(quadId);
 		}
 		return candidateQuadIds;
 	}
 
-	vector<Edge>& getEdges() { return m_edges; }
-	vector<int>& getInnerNodeIds() { return m_innerNodeIds; }
-	vector<T>& getNodes() { return m_nodes; }
-	vector<Quad>& getQuads() { return m_quads; }
+	const vector<int> getOuterEdgeIds() const
+	{
+		vector<int> candidateEdgeIds;
+		for (int edgeId = 0; edgeId < m_edges.size(); edgeId++)
+		{
+			auto edge = m_edges[edgeId];
+			if (!isInnerEdge(edge))
+				candidateEdgeIds.push_back(edgeId);
+		}
+		return candidateEdgeIds;
+	}
+
+	const bool isInnerEdge(const Edge e) const
+	{
+		return (find(m_innerNodeIds.begin(), m_innerNodeIds.end(), e.getNodeIds()[0]) != m_innerNodeIds.end())
+		|| (find(m_innerNodeIds.begin(), m_innerNodeIds.end(), e.getNodeIds()[1]) != m_innerNodeIds.end());
+	}
 
 private:
 	vector<T> m_nodes;

@@ -13,6 +13,11 @@
  *******************************************************************************/
 package fr.cea.nabla.generator
 
+import java.io.IOException
+import java.io.InputStreamReader
+import java.net.URL
+import java.nio.charset.Charset
+import java.util.Properties
 import org.eclipse.emf.ecore.xmi.XMLResource
 import org.eclipse.xtext.resource.SaveOptions
 
@@ -25,5 +30,22 @@ class GeneratorUtils
 		val so = builder.options.toOptionsMap
 		so.put(XMLResource::OPTION_LINE_WIDTH, 160)
 		return so
+	}
+	
+	def getProperties(String uri)
+	{
+		val props = new Properties
+		val url = new URL(uri)
+		try 
+		{
+			val inputStream = url.openConnection().getInputStream()
+			props.load(new InputStreamReader(inputStream, Charset.forName('UTF-8')))
+			inputStream.close		
+		}
+		catch (IOException e)
+		{
+			// pas de fichier => rien à faire
+		}
+		return props		
 	}
 }

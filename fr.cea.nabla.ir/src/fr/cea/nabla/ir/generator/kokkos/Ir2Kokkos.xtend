@@ -25,7 +25,7 @@ import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceInternalReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 
-class Ir2Kokkos implements IrGenerator
+class Ir2Kokkos extends IrGenerator
 {
 	static val FileExtension = 'cpp'
 	static val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new OptimizeConnectivities, new FillJobHLTs]
@@ -36,12 +36,12 @@ class Ir2Kokkos implements IrGenerator
 	@Inject extension JobContentProvider
 	@Inject extension VariableExtensions
 
-	override getFileExtension() { FileExtension }
-	override getTransformationSteps() { TransformationSteps }
+	new() { super(FileExtension, TransformationSteps) }
 
 	override getFileContent(IrModule it)
 	'''
 	#include <iostream>
+	#include <limits>
 
 	// Kokkos headers
 	#include <Kokkos_Core.hpp>
@@ -49,7 +49,11 @@ class Ir2Kokkos implements IrGenerator
 	// Project headers
 	#include "mesh/NumericMesh2D.h"
 	#include "mesh/CartesianMesh2DGenerator.h"
+	#include "mesh/VtkFileWriter2D.h"
+	#include "Utils.h"
 	#include "types/Types.h"
+	#include "types/MathFunctions.h"
+	«IF functions.exists[f | f.provider == name]»#include "«name.toLowerCase»/«name»Functions.h"«ENDIF»
 
 	using namespace nablalib;
 
@@ -66,6 +70,7 @@ class Ir2Kokkos implements IrGenerator
 	private:
 		Options* options;
 		NumericMesh2D* mesh;
+		VtkFileWriter2D writer;
 		«FOR c : usedConnectivities BEFORE 'int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
 
 		// Global Variables
@@ -86,6 +91,7 @@ class Ir2Kokkos implements IrGenerator
 		«name»(Options* aOptions, NumericMesh2D* aNumericMesh2D)
 		: options(aOptions)
 		, mesh(aNumericMesh2D)
+		, writer("«name»")
 		«FOR c : usedConnectivities»
 		, «c.nbElems»(«c.connectivityAccessor»)
 		«ENDFOR»
@@ -114,31 +120,45 @@ class Ir2Kokkos implements IrGenerator
 				«j.name.toFirstLower»(); // @«j.at»
 			«ENDFOR»
 	
+			«val variablesToPersist = persistentArrayVariables»
+			«IF !variablesToPersist.empty»
+			map<string, Kokkos::View<double*>> cellVariables;
+			map<string, Kokkos::View<double*>> nodeVariables;
+			«FOR v : variablesToPersist»
+			«v.dimensions.head.returnType.type.literal»Variables.insert(pair<string,Kokkos::View<double*>>("«v.persistenceName»", «v.name»));
+			«ENDFOR»
+			«ENDIF»
 			int iteration = 0;
 			while (t < options->option_stoptime && iteration < options->option_max_iterations)
 			{
-				std::cout << "A t = " << t << std::endl;
 				iteration++;
+				std::cout << "[" << iteration << "] t = " << t << std::endl;
 				«FOR j : jobs.filter[x | x.at > 0].sortBy[at]»
 					«j.name.toFirstLower»(); // @«j.at»
 				«ENDFOR»
+				«IF !variablesToPersist.empty»
+				auto quads = mesh->getGeometricMesh()->getQuads();
+				writer.writeFile(iteration, X, quads, cellVariables, nodeVariables);
+				«ENDIF»
 			}
 			std::cout << "Fin de l'exécution du module «name»" << std::endl;
 		}	
-	};
-	
+	};	
+
 	int main(int argc, char* argv[]) 
 	{
 		Kokkos::initialize(argc, argv);
 		auto o = new «name»::Options();
 		auto gm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->LENGTH, o->LENGTH);
 		auto nm = new NumericMesh2D(gm);
-		«name» c(o, nm);
-		c.simulate();
+		auto c = new «name»(o, nm);
+		c->simulate();
+		delete c;
 		delete nm;
 		delete gm;
 		delete o;
 		Kokkos::finalize();
+		return 0;
 	}
 	'''
 	
@@ -149,4 +169,6 @@ class Ir2Kokkos implements IrGenerator
 		else
 			'''NumericMesh2D::MaxNb«c.name.toFirstUpper»'''
 	}
+
+	private def getPersistentArrayVariables(IrModule it) { variables.filter(ArrayVariable).filter[x|x.persist && x.dimensions.size==1] }
 }

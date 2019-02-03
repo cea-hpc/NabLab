@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: NablaGlaceJava
+Bundle-SymbolicName: NablaGlaceJava
+Bundle-Version: 1.0.0.qualifier
+Export-Package: glace2d
+Require-Bundle: NablaGlace;bundle-version="1.0.0",
+ fr.cea.nabla.javalib;bundle-version="1.0.0"

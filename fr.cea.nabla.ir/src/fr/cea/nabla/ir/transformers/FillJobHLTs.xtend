@@ -29,7 +29,6 @@ class FillJobHLTs implements IrTransformationStep
 {
 	static val TimeLoopSourceNodeLabel = 'TimeLoopSourceNode'
 	static val GlobalSourceNodeLabel = 'GlobalSourceNode'
-
 	
 	override getDescription() 
 	{

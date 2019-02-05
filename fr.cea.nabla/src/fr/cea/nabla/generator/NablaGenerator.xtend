@@ -83,35 +83,35 @@ class NablaGenerator extends AbstractGenerator
 				
 				val tagVariableStep = new TagPersistentVariables(properties)
 				tagVariableStep.transform(irModuleRef)				
-			}
 			
-			for (generator : generators.filter[x | !x.generationDir.nullOrEmpty])
-			{
-				val languageFileNameWithoutExtensions = generator.generationDir + '/' + fileNameWithoutExtension
+				for (generator : generators.filter[x | !x.generationDir.nullOrEmpty])
+				{
+					val languageFileNameWithoutExtensions = generator.generationDir + '/' + fileNameWithoutExtension
+					
+					val irModule = EcoreUtil::copy(irModuleRef)
+					println('Starting generation chain for ' + generator.shortName + ' (.' + generator.fileExtension + ' file)')
+					println('\tBuilding Nabla Intermediate Representation')
+		
+					// application des transformation de l'IR (dépendant du langage
+					var transformOK = true
+					val stepIt = generator.transformationSteps.iterator
+					while (stepIt.hasNext && transformOK)
+					{
+						val step = stepIt.next
+						println('\tIR -> IR: ' + step.description)
+						createAndSaveResource(fsa, input.resourceSet, languageFileNameWithoutExtensions.addExtensions(#['before' + step.shortName, generator.fileExtension, IrExtension]), irModule)		
+						transformOK = step.transform(irModule)
+					}
+					createAndSaveResource(fsa, input.resourceSet, languageFileNameWithoutExtensions.addExtensions(#[generator.fileExtension, IrExtension]), irModule)
 				
-				val irModule = EcoreUtil::copy(irModuleRef)
-				println('Starting generation chain for ' + generator.shortName + ' (.' + generator.fileExtension + ' file)')
-				println('\tBuilding Nabla Intermediate Representation')
-	
-				// application des transformation de l'IR (dépendant du langage
-				var transformOK = true
-				val stepIt = generator.transformationSteps.iterator
-				while (stepIt.hasNext && transformOK)
-				{
-					val step = stepIt.next
-					println('\tIR -> IR: ' + step.description)
-					createAndSaveResource(fsa, input.resourceSet, languageFileNameWithoutExtensions.addExtensions(#['before' + step.shortName, generator.fileExtension, IrExtension]), irModule)		
-					transformOK = step.transform(irModule)
+					// génération du fichier source
+					if (transformOK)
+					{
+						println('\tGenerating .' + generator.fileExtension + ' file')
+						val fileContent = generator.getFileContent(irModule)
+						fsa.generateFile(languageFileNameWithoutExtensions.addExtensions(#[generator.fileExtension]), fileContent)	
+					}	
 				}
-				createAndSaveResource(fsa, input.resourceSet, languageFileNameWithoutExtensions.addExtensions(#[generator.fileExtension, IrExtension]), irModule)
-			
-				// génération du fichier source
-				if (transformOK)
-				{
-					println('\tGenerating .' + generator.fileExtension + ' file')
-					val fileContent = generator.getFileContent(irModule)
-					fsa.generateFile(languageFileNameWithoutExtensions.addExtensions(#[generator.fileExtension]), fileContent)	
-				}	
 			}
 		}
 	}

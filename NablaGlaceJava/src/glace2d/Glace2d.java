@@ -178,15 +178,15 @@ public final class Glace2d
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			Real2 sum570884594 = new Real2(0.0, 0.0);
+			Real2 sum1698800593 = new Real2(0.0, 0.0);
 			int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
 			{
 				int rId = nodesOfCellJ[rNodesOfCellJ];
 				int rNodes = rId;
-				sum570884594.operator_set(sum570884594.operator_plus((coord[rNodes])));
+				sum1698800593.operator_set(sum1698800593.operator_plus((coord[rNodes])));
 			}
-			center[jCells].operator_set(sum570884594.operator_multiply((1.0 / 4.0)));
+			center[jCells].operator_set(sum1698800593.operator_multiply((1.0 / 4.0)));
 		});
 	}		
 	
@@ -294,15 +294,15 @@ public final class Glace2d
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double sum730417067 = 0.0;
+			double sum1045418107 = 0.0;
 			int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
 			{
 				int rId = nodesOfCellJ[rNodesOfCellJ];
 				int rNodes = rId;
-				sum730417067 = sum730417067 + (MathFunctions.dot(C_ic[jCells][rNodesOfCellJ], coord[rNodes]));
+				sum1045418107 = sum1045418107 + (MathFunctions.dot(C_ic[jCells][rNodesOfCellJ], coord[rNodes]));
 			}
-			V_ic[jCells] = 0.5 * sum730417067;
+			V_ic[jCells] = 0.5 * sum1045418107;
 		});
 	}		
 	
@@ -399,15 +399,15 @@ public final class Glace2d
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double sum1370057571 = 0.0;
+			double sum706739880 = 0.0;
 			int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
 			{
 				int rId = nodesOfCellJ[rNodesOfCellJ];
 				int rNodes = rId;
-				sum1370057571 = sum1370057571 + (MathFunctions.dot(C[jCells][rNodesOfCellJ], X[rNodes]));
+				sum706739880 = sum706739880 + (MathFunctions.dot(C[jCells][rNodesOfCellJ], X[rNodes]));
 			}
-			V[jCells] = 0.5 * sum1370057571;
+			V[jCells] = 0.5 * sum706739880;
 		});
 	}		
 	
@@ -460,13 +460,13 @@ public final class Glace2d
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double sum1900858826 = 0.0;
+			double sum2037846497 = 0.0;
 			int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
 			{
-				sum1900858826 = sum1900858826 + (l[jCells][rNodesOfCellJ]);
+				sum2037846497 = sum2037846497 + (l[jCells][rNodesOfCellJ]);
 			}
-			deltatj[jCells] = 2.0 * V[jCells] / (c[jCells] * sum1900858826);
+			deltatj[jCells] = 2.0 * V[jCells] / (c[jCells] * sum2037846497);
 		});
 	}		
 	
@@ -498,7 +498,7 @@ public final class Glace2d
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
 			int rId = rNodes;
-			Real2x2 sum331692952 = new Real2x2(new Real2(0.0, 0.0), new Real2(0.0, 0.0));
+			Real2x2 sum2084851897 = new Real2x2(new Real2(0.0, 0.0), new Real2(0.0, 0.0));
 			int[] cellsOfNodeR = mesh.getCellsOfNode(rId);
 			for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.length; jCellsOfNodeR++)
 			{
@@ -506,9 +506,9 @@ public final class Glace2d
 				int jCells = jId;
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				int rNodesOfCellJ = Utils.indexOf(nodesOfCellJ,rId);
-				sum331692952.operator_set(sum331692952.operator_plus((Ajr[jCells][rNodesOfCellJ])));
+				sum2084851897.operator_set(sum2084851897.operator_plus((Ajr[jCells][rNodesOfCellJ])));
 			}
-			Ar[rNodes].operator_set(sum331692952);
+			Ar[rNodes].operator_set(sum2084851897);
 		});
 	}		
 	
@@ -522,7 +522,7 @@ public final class Glace2d
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
 			int rId = rNodes;
-			Real2 sum1051686717 = new Real2(0.0, 0.0);
+			Real2 sum1485205998 = new Real2(0.0, 0.0);
 			int[] cellsOfNodeR = mesh.getCellsOfNode(rId);
 			for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.length; jCellsOfNodeR++)
 			{
@@ -530,9 +530,9 @@ public final class Glace2d
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				int rNodesOfCellJ = Utils.indexOf(nodesOfCellJ,rId);
 				int jCells = jId;
-				sum1051686717.operator_set(sum1051686717.operator_plus((C[jCells][rNodesOfCellJ].operator_multiply(p[jCells]).operator_plus(Glace2dFunctions.matVectProduct(Ajr[jCells][rNodesOfCellJ], uj[jCells])))));
+				sum1485205998.operator_set(sum1485205998.operator_plus((C[jCells][rNodesOfCellJ].operator_multiply(p[jCells]).operator_plus(Glace2dFunctions.matVectProduct(Ajr[jCells][rNodesOfCellJ], uj[jCells])))));
 			}
-			b[rNodes].operator_set(sum1051686717);
+			b[rNodes].operator_set(sum1485205998);
 		});
 	}		
 	
@@ -543,12 +543,12 @@ public final class Glace2d
 	 */
 	private void compute_ComputeDt() 
 	{
-		double reduceMin520059721 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+		double reduceMin1745044035 = IntStream.range(0, nbCells).boxed().parallel().reduce(
 			Double.MAX_VALUE, 
 			(r, jCells) -> MathFunctions.reduceMin(r, deltatj[jCells]),
 			(r1, r2) -> MathFunctions.reduceMin(r1, r2)
 		);
-		deltat_n_plus_1 = options.option_deltat_cfl * reduceMin520059721;
+		deltat_n_plus_1 = options.option_deltat_cfl * reduceMin1745044035;
 	}		
 	
 	/**
@@ -730,13 +730,13 @@ public final class Glace2d
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			Real2 sum1291830906 = new Real2(0.0, 0.0);
+			Real2 sum17480999 = new Real2(0.0, 0.0);
 			int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
 			{
-				sum1291830906.operator_set(sum1291830906.operator_plus((F[jCells][rNodesOfCellJ])));
+				sum17480999.operator_set(sum17480999.operator_plus((F[jCells][rNodesOfCellJ])));
 			}
-			uj_n_plus_1[jCells].operator_set(uj[jCells].operator_minus(sum1291830906.operator_multiply((deltat / m[jCells]))));
+			uj_n_plus_1[jCells].operator_set(uj[jCells].operator_minus(sum17480999.operator_multiply((deltat / m[jCells]))));
 		});
 	}		
 	
@@ -750,15 +750,15 @@ public final class Glace2d
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double sum690651983 = 0.0;
+			double sum493919534 = 0.0;
 			int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
 			{
 				int rId = nodesOfCellJ[rNodesOfCellJ];
 				int rNodes = rId;
-				sum690651983 = sum690651983 + (MathFunctions.dot(F[jCells][rNodesOfCellJ], ur[rNodes]));
+				sum493919534 = sum493919534 + (MathFunctions.dot(F[jCells][rNodesOfCellJ], ur[rNodes]));
 			}
-			E_n_plus_1[jCells] = E[jCells] - (deltat / m[jCells]) * sum690651983;
+			E_n_plus_1[jCells] = E[jCells] - (deltat / m[jCells]) * sum493919534;
 		});
 	}		
 	

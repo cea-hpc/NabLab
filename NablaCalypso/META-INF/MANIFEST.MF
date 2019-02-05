@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: NablaCalypso
+Bundle-SymbolicName: NablaCalypso
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: CEA
+Automatic-Module-Name: NablaCalypso
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

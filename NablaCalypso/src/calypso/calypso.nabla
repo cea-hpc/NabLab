@@ -58,6 +58,7 @@ const ℾ option_arcane			= false;
 // ***************************************************************************
 // * Globals
 // ***************************************************************************
+ℝ δt=0.0;
 ℝ inv_dx,inv_dy;
 ℝ xmin,xmax;
 ℝ ymin,ymax;
@@ -107,16 +108,15 @@ SpaceSchemeInitCoriolis: ∀j∈cells(), {
 }
 
 TimeSchemeCfl: {
-	const ℝ cgmax = √(GZ*(dmax+hmax0));
-	const ℝ cumax = fmax(fabs(umax),fabs(umin))+cgmax;
-	const ℝ cvmax = fmax(fabs(vmax),fabs(vmin))+cgmax;
-  inv_dx_max = 1.0/dxmax;
-  inv_dy_max = 1.0/dymax;
-  δt=option_time_step;
-  cfl = fmax(δt*cumax*inv_dx_max, δt*cvmax*inv_dy_max);
-  info()<< "[33m[time_scheme_cfl] cfl="<<cfl<<"[m";
-  /*if (!option_arcane)*/ assert(δt<cfl);
-  dxy_min = 1.0/fmax(inv_dx_max,inv_dy_max);
+	ℝ cgmax = √(GZ*(dmax+hmax0));
+	ℝ cumax = max(fabs(umax),fabs(umin))+cgmax;
+	ℝ cvmax = max(fabs(vmax),fabs(vmin))+cgmax;
+	inv_dx_max = 1.0/dxmax;
+	inv_dy_max = 1.0/dymax;
+	δt = option_time_step;
+	cfl = max(δt*cumax*inv_dx_max, δt*cvmax*inv_dy_max);
+	info()<< "[33m[time_scheme_cfl] cfl="<<cfl<<"[m";
+	dxy_min = 1.0 / max(inv_dx_max,inv_dy_max);
 }
 
 

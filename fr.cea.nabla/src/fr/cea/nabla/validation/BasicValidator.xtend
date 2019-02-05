@@ -110,9 +110,9 @@ class BasicValidator  extends AbstractNablaValidator
 		for (i : 1..<dimensions.length)
 		{
 			if (dimensions.get(i).inTypes.length != 1)
-				error('Dimension 2..N must be on connectivities with 1 argument', NablaPackage.Literals::ARRAY_VAR__DIMENSIONS)
+				error('Dimension 2..N must be on connectivities with 1 argument', NablaPackage.Literals::ARRAY_VAR__DIMENSIONS, i)
 			else if (dimensions.get(i).inTypes.head != dimensions.get(i-1).returnType.type)
-				error('Dimension ' + (i+1) + ' argument must have same type as dimension ' + i + ' return type', NablaPackage.Literals::ARRAY_VAR__DIMENSIONS)
+				error('Dimension ' + (i+1) + ' argument must have same type as dimension ' + i + ' return type', NablaPackage.Literals::ARRAY_VAR__DIMENSIONS, i)
 		}
 	}
 

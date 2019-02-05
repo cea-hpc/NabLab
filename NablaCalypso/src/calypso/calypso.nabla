@@ -19,6 +19,12 @@ connectivities {
 	cells: (∅) → {cell};
 }
 
+functions {
+	deg_to_rad: (ℝ) → ℝ;
+	lon_to_m: (ℝ, ℝ) → ℝ;
+	lat_to_m: (ℝ) → ℝ;
+}
+
 // ****************************************************************************
 // * Physical Constants
 // ****************************************************************************
@@ -39,7 +45,7 @@ const ℝ option_epsd				= 1.0e-9;
 const ℝ option_time_step		= 0.0025;
 const ℝ option_cfl_max			= 0.25;
 const ℾ option_fill				= false;
-const ℾ option_debug				= false;
+const ℾ option_debug			= false;
 const ℾ option_arcane			= false;
 
 // ****************************************************************************
@@ -99,12 +105,12 @@ IniInvDy: ∀j∈cells(), inv_dy = 1.0 / dy{j};
 IniCoefGradxH: ∀j∈cells(), coef_gradx_h{j} = option_time_step * GZ / dx{j};
 IniCoefGradyH: ∀j∈cells(), coef_grady_h{j} = option_time_step * GZ / dy{j};
 
-SpaceSchemeInitCoriolis: ∀j∈cells(), {
+SpaceSchemeInitCoriolis: {
 	const ℝ PI = acos(-1.0);
 	const ℝ T_SIDEREAL = 86164.1;
 	const ℝ ΩT = 2.0*PI/T_SIDEREAL;
 	const ℝ dΩt = 2.0*ΩT;
-	fc = dΩt * sin(deg_to_rad(y{j}));
+	∀j∈cells(), fc{j} = dΩt * sin(deg_to_rad(y{j}));
 }
 
 TimeSchemeCfl: {
@@ -115,7 +121,7 @@ TimeSchemeCfl: {
 	inv_dy_max = 1.0/dymax;
 	δt = option_time_step;
 	cfl = max(δt*cumax*inv_dx_max, δt*cvmax*inv_dy_max);
-	info()<< "[33m[time_scheme_cfl] cfl="<<cfl<<"[m";
+//	info()<< "[33m[time_scheme_cfl] cfl="<<cfl<<"[m";
 	dxy_min = 1.0 / max(inv_dx_max,inv_dy_max);
 }
 
@@ -124,9 +130,6 @@ TimeSchemeCfl: {
 // * Compute loop
 // ***************************************************************************
 
-model_iterate @ 0.0 if (!(iteration%1024)) {
-  printf("\n[1;35m[ %d ] t=%.5fs, hmax = %0.11f[m",iteration,time,hmax);
-}
-
-
-// ***************************************************************************
+//model_iterate @ 0.0 if (!(iteration%1024)) {
+//  printf("\n[1;35m[ %d ] t=%.5fs, hmax = %0.11f[m",iteration,time,hmax);
+//}

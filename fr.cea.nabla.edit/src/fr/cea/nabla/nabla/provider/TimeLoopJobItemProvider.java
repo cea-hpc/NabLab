@@ -159,6 +159,11 @@ public class TimeLoopJobItemProvider extends JobItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.TIME_LOOP_JOB__INITIALIZATION,
+				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.TIME_LOOP_JOB__INITIALIZATION,
 				 NablaFactory.eINSTANCE.createInstructionBlock()));
 
 		newChildDescriptors.add
@@ -185,6 +190,11 @@ public class TimeLoopJobItemProvider extends JobItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.TIME_LOOP_JOB__BODY,
 				 NablaFactory.eINSTANCE.createScalarVarDefinition()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.TIME_LOOP_JOB__BODY,
+				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
 
 		newChildDescriptors.add
 			(createChildParameter

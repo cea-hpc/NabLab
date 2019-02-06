@@ -150,6 +150,11 @@ public class InstructionJobItemProvider extends JobItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.INSTRUCTION_JOB__INSTRUCTION,
+				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.INSTRUCTION_JOB__INSTRUCTION,
 				 NablaFactory.eINSTANCE.createInstructionBlock()));
 
 		newChildDescriptors.add

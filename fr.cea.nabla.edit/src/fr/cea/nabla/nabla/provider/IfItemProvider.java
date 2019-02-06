@@ -271,6 +271,11 @@ public class IfItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.IF__THEN,
+				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__THEN,
 				 NablaFactory.eINSTANCE.createInstructionBlock()));
 
 		newChildDescriptors.add
@@ -297,6 +302,11 @@ public class IfItemProvider extends InstructionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.IF__ELSE,
 				 NablaFactory.eINSTANCE.createScalarVarDefinition()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__ELSE,
+				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
 
 		newChildDescriptors.add
 			(createChildParameter

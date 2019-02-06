@@ -131,6 +131,14 @@ class BasicValidator  extends AbstractNablaValidator
 	}
 	
 	@Check
+	def checkOnlyScalarVarInInstructions(ArrayVar it)
+	{
+		val varGroupDeclaration = eContainer
+		if (varGroupDeclaration !== null && !(varGroupDeclaration.eContainer instanceof NablaModule))
+			error('Local variables can only be scalar (no array).', NablaPackage.Literals::VAR__NAME)
+	}
+
+	@Check
 	def checkIteratorRange(VarRef it)
 	{
 		if (variable instanceof ArrayVar)

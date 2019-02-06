@@ -110,13 +110,16 @@ class ExpressionTypeProvider
 	def NablaType getTypeForWithoutFields(VarRef it)
 	{
 		// type de la variable
-		val varType = variable.typeFor
-		
-		// s'il y a plus d'iterateur que le type n'a de dimension ==> UNDEFINED
-		if (varType===NablaType::UNDEFINED || (varType.dimension - spaceIterators.length) < 0)  
-			NablaType::UNDEFINED
+		if (variable === null) NablaType::UNDEFINED
 		else
-			new NablaType(varType.base, varType.dimension - spaceIterators.length)
+		{
+			val varType = variable.typeFor
+			// s'il y a plus d'iterateur que le type n'a de dimension ==> UNDEFINED
+			if (varType===NablaType::UNDEFINED || (varType.dimension - spaceIterators.length) < 0)  
+				NablaType::UNDEFINED
+			else
+				new NablaType(varType.base, varType.dimension - spaceIterators.length)		
+		}
 	}
 	
 	private def typeAfterFields(NablaType t, List<String> fields)

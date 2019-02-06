@@ -39,6 +39,7 @@ Job:
 /* INSTRUCTIONS ******************************************/
 Instruction: 
 	ScalarVarDefinition |
+	VarGroupDeclaration | // only scalar variables (ScalarVar type
 	{InstructionBlock} '{' instructions+=Instruction+ '}' |
 	{Affectation} varRef=VarRef '=' expression=Expression ';' |
 	{Loop} '\u2200' iterator=SpaceIterator ',' body=Instruction |

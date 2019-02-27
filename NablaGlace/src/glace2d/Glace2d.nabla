@@ -65,7 +65,6 @@ const ℝ option_p_ini_zd = 0.1;
 ℝ² C_ic[cells, nodesOfCell], C[cells, nodesOfCell], F[cells, nodesOfCell];
 ℝ²ˣ² Ajr[cells, nodesOfCell];
 
-
 // *************************************************************
 // * Init: X_ic(par le mailleur), ρ_ic, p_ic, V_ic & m
 // *************************************************************

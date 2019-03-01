@@ -1,0 +1,39 @@
+/*******************************************************************************
+ * Copyright (c) 2018 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * 	Benoit Lelandais - initial implementation
+ * 	Marie-Pierre Oudot - initial implementation
+ * 	Jean-Sylvain Camier - Nabla generation support
+ *******************************************************************************/
+module Depth;
+
+with Math.*;
+
+connectivities {
+	cells: (∅) → {cell};
+	outerSouthCells: (∅) → {cell};
+	outerNorthCells: (∅) → {cell};
+	outerEastCells: (∅) → {cell};
+	outerWestCells: (∅) → {cell};
+	upCell: (cell) → cell;
+	downCell: (cell) → cell;
+	leftCell: (cell) → cell;
+	rightCell: (cell) → cell;
+}
+
+ℝ hn[cells], d_hn[cells];
+ℝ d[cells];	// Already in calypso
+ℝ dmax;		// Already in calypso
+
+ComputeDmax: dmax = reduceMax{j∈cells()}(d{j});
+IniOuterSouthDepth: ∀j∈outerSouthCells(), d{j} = d{upCell(j)};
+IniOuterNorthDepth: ∀j∈outerNorthCells(), d{j} = d{downCell(j)};
+IniOuterEastDepth:  ∀j∈outerEastCells(),  d{j} = d{leftCell(j)};
+IniOuterWestDepth:  ∀j∈outerWestCells(),  d{j} = d{rightCell(j)};
+IniDhn: ∀j∈cells(), d_hn{j} = d{j} + hn{j};

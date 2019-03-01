@@ -1,0 +1,129 @@
+/*******************************************************************************
+ * Copyright (c) 2018 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * 	Benoit Lelandais - initial implementation
+ * 	Marie-Pierre Oudot - initial implementation
+ * 	Jean-Sylvain Camier - Nabla generation support
+ *******************************************************************************/
+module Chk;
+
+const ℕ option_max_iterations	= 8;
+const ℾ option_fill				= false;
+const ℝ option_time_step		= 0.0025;	// Already in calypso
+const ℕ NX						= 64;		// Already in calypso
+const ℕ NY						= 48;		// Already in calypso
+
+ℕ iteration;
+ℕ chkH,chkU,chkV;
+
+// ***************************************************************************
+// * Verification Checksum for Un & Vn with the 64x48 test case
+// ***************************************************************************
+chkIni: if (iteration == (option_max_iterations-1)) { 
+	chkU=0; chkV=0; chkH=0;
+}
+
+chk64x48x8: if (iteration == (option_max_iterations-1) 
+	&& NX==64 
+	&& NY==48 
+	&& option_max_iterations == 8 
+	&& option_time_step == 0.0025
+	&& option_fill==true) {
+  assert((unsigned ℕ)chkU==0xD5C2A03C &&
+         (unsigned ℕ)chkV==0x843E3C00 &&
+         (unsigned ℕ)chkH==0x1E01DE90);
+  printf("\n[1;32m[checked] (0x%X,0x%X,0x%X) ![m",chkU,chkV,chkH);
+}
+
+chk64x48x8192 @ 11.2 if (iteration==(option_max_iterations-1) &&
+                         NX==64 && NY==48 && option_max_iterations==8192 &&
+                         option_time_step==0.0025 && option_fill==false) {
+  assert((unsigned ℕ)chkU==0xA7B040F3 &&
+         (unsigned ℕ)chkV==0x45A24469 &&
+         (unsigned ℕ)chkH==0xE8DD076B);
+  printf("\n[1;32m[checked] (0x%X,0x%X,0x%X) ![m",chkU,chkV,chkH);
+}
+
+
+// ***************************************************************************
+// * Checksum on height
+// ***************************************************************************
+∀ cells @ 11.1 if (iteration==(option_max_iterations-1)) {
+  const ℝ vhn = hn;
+  const long int hnhl = *(long int*)&vhn;
+  const int hnh=(int)(hnhl>>32);
+  const int hnl=(int)(hnhl&((1l<<32)-1));
+  chkH = chkH^hnh;
+  chkH = chkH^hnl;
+}
+
+// ***************************************************************************
+// * Checksum on U velocity
+// ***************************************************************************
+∀ inner cells @ 11.1 if (iteration==(option_max_iterations-1)) {
+  const ℝ vun = un;
+  const long int unhl = *(long int*)&vun;
+  const int unh=(unhl>>32);
+  const int unl=(unhl&((1l<<32)-1));
+  chkU = chkU^unh;
+  chkU = chkU^unl;
+}
+
+// ***************************************************************************
+// * Checksum on V velocity
+// ***************************************************************************
+∀ inner cells @ 11.1 if (iteration==(option_max_iterations-1)) {
+  const ℝ vvn = vn;
+  const long int vnhl=*(long int*)&vvn;
+  const int vnh=(int)(vnhl>>32);
+  const int vnl=(int)(vnhl&((1l<<32)-1));
+  chkV = chkV^vnh;
+  chkV = chkV^vnl;
+}
+
+// ***************************************************************************
+// * Fill
+// ***************************************************************************
+void fill(ℝ *m) {
+  //printf("\n[1;37m[fill][m[37m:");
+  for(ℕ j=1;j<=Y_EDGE_ELEMS;j+=1){
+    //printf("\nj=%d: ",j-1);
+    for(ℕ i=1;i<=X_EDGE_ELEMS;i+=1){
+      ℝ data = 0.0;
+      data =  i/1.e1+i/1.e2+i/1.e3+i/1.e10+i/1.e11+i/1.e12;
+      data += j/1.e4+j/1.e5+j/1.e6+j/1.e7+j/1.e8+j/1.e9;
+      //data = -data;
+      //printf(" %d",i-1);
+      m[(j-1)*X_EDGE_ELEMS+i-1]=data;
+    }
+  }
+  printf("[m");
+}
+
+// ***************************************************************************
+// * Dump
+// ***************************************************************************
+void dumpIJ(const ℝ *data, const ℕ im, const ℕ iMax, const ℕ jm, const ℕ jMax){
+  printf("\n[33m");
+  for(ℕ j=jm;j<jMax;j+=1){
+    printf("[");
+    for(ℕ i=im;i<iMax;i+=1){
+      const ℝ value=data[j*X_EDGE_ELEMS+i];
+      if (value>=0.0)
+        printf(" %.12f",value);
+      else
+        printf("-%.12f",-value);
+    }
+    printf("]%c",j!=(jMax-1)?'\n':' ');
+  }
+  printf("[m");
+}
+
+void      dump(const ℝ *data) {dumpIJ(data,0,X_EDGE_ELEMS,0,Y_EDGE_ELEMS);}
+void innerDump(const ℝ *data) {dumpIJ(data,1,X_EDGE_ELEMS-1,1,Y_EDGE_ELEMS-1);}

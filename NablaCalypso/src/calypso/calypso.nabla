@@ -39,12 +39,10 @@ const ℝ LENGTH					= 1.0;
 const ℕ X_EDGE_ELEMS			= NX + 2;    // Inner + Fictitious X cells
 const ℕ Y_EDGE_ELEMS			= NY + 2;    // Inner + Fictitious Y cells
 const ℝ option_stoptime			= 60.0;
-const ℕ option_max_iterations	= 8;
 const ℝ option_eps_fp			= 1.0 / ℝ.MaxValue;
 const ℝ option_epsd				= 1.0e-9;
 const ℝ option_time_step		= 0.0025;
 const ℝ option_cfl_max			= 0.25;
-const ℾ option_fill				= false;
 const ℾ option_debug			= false;
 const ℾ option_arcane			= false;
 
@@ -53,8 +51,7 @@ const ℾ option_arcane			= false;
 // ****************************************************************************
 ℝ x[cells], dx[cells];
 ℝ y[cells], dy[cells];
-ℝ z[cells], d[cells], d_hn[cells];	// depth
-ℝ h[cells], hn[cells], hnp[cells];	// height
+ℝ z[cells], d[cells];				// depth
 ℝ un[cells], unp[cells];			// velocity X
 ℝ vn[cells], vnp[cells];   			// velocity Y
 ℝ deqh[cells], deqh_dx[cells], deqh_dy[cells];
@@ -74,7 +71,6 @@ const ℾ option_arcane			= false;
 ℝ cfl;
 ℝ dx_lon, dy_lat;
 ℝ dxy_min;
-ℕ chkH,chkU,chkV;
 
 
 // ***************************************************************************

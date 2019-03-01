@@ -18,6 +18,22 @@ with Calypso.*;
 
 connectivities {
 	cells: (∅) → {cell};
+	innerCells: (∅) → {cell};
+	outerCells: (∅) → {cell};
+	innerNorthCells: (∅) → {cell};
+	innerSouthCells: (∅) → {cell};
+	outerNorthCells: (∅) → {cell};
+	outerSouthCells: (∅) → {cell};
+	outerWestFaces: (cell) → {face};
+	outerEastFaces: (cell) → {face};
+	left: (cell) → cell;
+	right: (cell) → cell;
+	up: (cell) → cell;
+	down: (cell) → cell;
+}
+
+functions {
+	refill: (ℕ) → ℝ;
 }
 
 // ****************************************************************************
@@ -34,12 +50,17 @@ const ℾ option_fill				= false;
 ℝ h[cells], hn[cells], hnp[cells];	// height
 ℝ un[cells], unp[cells];			// velocity X
 ℝ vn[cells], vnp[cells];   			// velocity Y
+ℕ uid[cells];						// SEMBLE IMPLICITE EN NABLA
 
 //iniVnFill6 @ -8.8 if (option_fill) { fill(vn); }
-IniVnFill: ∀j∈cells(), if (option_fill) { vn=refill(uid); }
 
-∀ outer cells @ -8.7 { ∀ outer west faces vn=vn[→]; }
-∀ outer cells @ -8.7 { ∀ outer east faces vn=vn[←]; }
+// A L'ORIGINE
+//∀ outer cells @ -8.7 { ∀ outer west faces vn=vn[→]; }
+//∀ outer cells @ -8.7 { ∀ outer east faces vn=vn[←]; }
+// MAIS COMPREND PAS POURQUOI LES FACES
+IniVnFill: ∀j∈cells(), if (option_fill) { vn{j} = refill(uid{j}); }
+IniWestVn: ∀j∈outerCells(), ∀f∈outerWestFaces(j), vn{j} = vn{right(j)};
+∀ outerCells(), ∀ outerEastFaces vn=vn[←]; }
 
 ∀ outer south cells @ -8.7 { vn=0.0; }
 ∀ outer north cells @ -8.7 { vn=0.0; }

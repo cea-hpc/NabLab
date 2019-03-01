@@ -26,13 +26,16 @@ import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
+import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.MulOrDiv
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.Real2Constant
+import fr.cea.nabla.nabla.Real2x2Constant
 import fr.cea.nabla.nabla.Real3Constant
+import fr.cea.nabla.nabla.Real3x3Constant
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealXCompactConstant
 import fr.cea.nabla.nabla.ReductionCall
@@ -41,8 +44,6 @@ import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
 import java.util.List
-import fr.cea.nabla.nabla.Real2x2Constant
-import fr.cea.nabla.nabla.Real3x3Constant
 
 class ExpressionTypeProvider 
 {
@@ -73,6 +74,7 @@ class ExpressionTypeProvider
 			Plus: ptp.typeFor(e.left?.typeFor, e.right?.typeFor)
 			Minus: mtp.typeFor(e.left?.typeFor, e.right?.typeFor)
 			MulOrDiv: e.op.typeProvider.typeFor(e.left?.typeFor, e?.right.typeFor)
+			Modulo: BasicTypeProvider::INT
 			UnaryMinus: e.expression?.typeFor
 			Parenthesis: e.expression?.typeFor
 			

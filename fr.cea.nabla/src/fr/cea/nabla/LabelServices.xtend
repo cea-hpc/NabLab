@@ -48,7 +48,7 @@ import fr.cea.nabla.nabla.TimeIteratorRef
 import fr.cea.nabla.nabla.TimeLoopJob
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
-import fr.cea.nabla.nabla.VarRef
+import fr.cea.nabla.nabla.VarRefimport fr.cea.nabla.nabla.Modulo
 
 class LabelServices 
 {
@@ -83,6 +83,7 @@ class LabelServices
 	static def dispatch String getLabel(Plus it) { left.label + ' + ' + right.label }
 	static def dispatch String getLabel(Minus it) { left.label + ' - ' + right.label }
 	static def dispatch String getLabel(MulOrDiv it) { left.label + ' ' + op + ' ' + right.label }
+	static def dispatch String getLabel(Modulo it) { left.label + ' ' + op + ' ' + right.label }
 	static def dispatch String getLabel(Parenthesis it) { '(' + expression.label + ')' }
 	static def dispatch String getLabel(UnaryMinus it) { '-' + expression.label }
 	static def dispatch String getLabel(Not it) { '!' + expression.label }

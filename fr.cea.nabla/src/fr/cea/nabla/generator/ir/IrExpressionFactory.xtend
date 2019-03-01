@@ -29,6 +29,7 @@ import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
+import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.MulOrDiv
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
@@ -62,6 +63,7 @@ class IrExpressionFactory
 	def dispatch Expression toIrExpression(Plus e) { e.toIrBinaryExpr(e.left, e.right, e.op) }
 	def dispatch Expression toIrExpression(Minus e) { e.toIrBinaryExpr(e.left, e.right, e.op) }
 	def dispatch Expression toIrExpression(MulOrDiv e) { e.toIrBinaryExpr(e.left, e.right, e.op) }
+	def dispatch Expression toIrExpression(Modulo e) { e.toIrBinaryExpr(e.left, e.right, e.op) }
 	
 	def dispatch Expression toIrExpression(Parenthesis e) 
 	{ 

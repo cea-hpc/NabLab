@@ -88,7 +88,10 @@ PlusOrMinus returns Expression: // on garde l'attribut op pour la validation
 	MulOrDiv ( ({Plus.left=current} op='+' | {Minus.left=current} op='-') right=MulOrDiv)*;
 
 MulOrDiv returns Expression:
-	Primary ({MulOrDiv.left=current} op=('*'|'/') right=Primary)*;
+	Modulo ({MulOrDiv.left=current} op=('*'|'/') right=Modulo)*;
+
+Modulo returns Expression:
+	Primary ({Modulo.left=current} op=('%') right=Primary)*;
 
 Primary returns Expression:
 	{Parenthesis} '(' expression=Expression ')' | {UnaryMinus} '-' expression=Primary | {Not} '!' expression=Primary | Atomic;

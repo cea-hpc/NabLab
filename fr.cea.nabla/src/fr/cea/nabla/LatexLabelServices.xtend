@@ -27,6 +27,7 @@ import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
+import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.MulOrDiv
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
@@ -87,7 +88,7 @@ class LatexLabelServices
 		if (op == '/')  '\\frac{' + left.latex + '}{' + right.latex + '}'
 		else left.latex + ' \\cdot ' + right.latex
 	}
-	
+	static def dispatch String getLatex(Modulo it) { left.latex + ' % ' + right.latex }	
 	static def dispatch String getLatex(Parenthesis it) { '(' + expression.latex + ')' }
 	static def dispatch String getLatex(UnaryMinus it) { '-' + expression.latex }
 	static def dispatch String getLatex(Not it) { '\\neg {' + expression.latex + '}' }

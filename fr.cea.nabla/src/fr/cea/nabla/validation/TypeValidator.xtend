@@ -22,6 +22,7 @@ import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.Minus
+import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.MulOrDiv
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.Not
@@ -155,6 +156,12 @@ class TypeValidator extends BasicValidator
 	@Check def checkType(Minus it) { checkBinaryOp(left, right, minusTypeProvider, np.minus_Op, op) }
 	@Check def checkType(Comparison it) { checkBinaryOp(left, right, comparisonAndEqualityTypeProvider, np.comparison_Op, op) }
 	@Check def checkType(Equality it) { checkBinaryOp(left, right, comparisonAndEqualityTypeProvider, np.comparison_Op, op) }
+
+	@Check def checkType(Modulo it) 
+	{ 
+		checkExpectedType(left?.typeFor, BasicTypeProvider::INT, np.and_Left)
+		checkExpectedType(right?.typeFor, BasicTypeProvider::INT, np.and_Right)
+	}
 
 	@Check def checkType(And it) 
 	{ 

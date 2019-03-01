@@ -182,6 +182,11 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//MulOrDiv/op"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//MulOrDiv/right"/>
     </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//Modulo">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Modulo/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Modulo/op"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Modulo/right"/>
+    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Parenthesis">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Parenthesis/expression"/>
     </genClasses>

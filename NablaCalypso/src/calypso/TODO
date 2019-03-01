@@ -1,8 +1,0 @@
-1. Certaines options sont utilisées dans plusieurs fichiers
-	- je regroupe les fichiers ?
-	- je déclare plusieurs fois les options et on fusionne
-	- je peux utiliser des options définies ailleurs
-	
-2. Problème de inlet => Tableaux
-
-3. Traces. Au moins un modèle simple.

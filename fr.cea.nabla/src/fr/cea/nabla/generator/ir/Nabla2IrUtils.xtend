@@ -39,12 +39,10 @@ class Nabla2IrUtils extends GeneratorUtils
 		return type
 	}	
 	
-	def toIrItemType(ItemType t)
+	def create IrFactory::eINSTANCE.createItemType toIrItemType(ItemType i)
 	{
-		val type = fr.cea.nabla.ir.ir.ItemType::get(t.value + 1) // le premier literal est none en IR
-		if (type === null) throw new RuntimeException('Conversion Nabla --> IR impossible : type inconnu ' + t.literal)
-		return type
-	}	
+		name = i.name
+	}
 	
 	def create IrFactory::eINSTANCE.createItemArgType toIrItemArgType(ItemArgType i)
 	{

@@ -152,7 +152,7 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 		ScalarVarDefinition scalarVarDefinition = (ScalarVarDefinition)object;
 		return getString("_UI_ScalarVarDefinition_type") + " " + scalarVarDefinition.isConst();
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
@@ -248,6 +248,11 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter

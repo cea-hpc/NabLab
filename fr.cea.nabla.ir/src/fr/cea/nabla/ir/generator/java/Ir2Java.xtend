@@ -135,7 +135,7 @@ class Ir2Java extends IrGenerator
 				HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 				HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
 				«FOR v : variablesToPersist»
-				«v.dimensions.head.returnType.type.literal»Variables.put("«v.persistenceName»", «v.name»);
+				«v.dimensions.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»);
 				«ENDFOR»
 				«ENDIF»
 				int iteration = 0;

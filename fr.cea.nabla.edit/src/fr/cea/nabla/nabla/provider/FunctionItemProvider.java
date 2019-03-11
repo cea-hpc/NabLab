@@ -145,7 +145,7 @@ public class FunctionItemProvider
 			getString("_UI_Function_type") :
 			getString("_UI_Function_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

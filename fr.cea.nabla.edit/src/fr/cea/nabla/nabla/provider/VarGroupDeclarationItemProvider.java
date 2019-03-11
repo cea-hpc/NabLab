@@ -4,21 +4,23 @@
 package fr.cea.nabla.nabla.provider;
 
 
+import fr.cea.nabla.nabla.BasicType;
+import fr.cea.nabla.nabla.NablaFactory;
+import fr.cea.nabla.nabla.NablaPackage;
+import fr.cea.nabla.nabla.VarGroupDeclaration;
+
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.ecore.EStructuralFeature;
+
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-
-import fr.cea.nabla.nabla.BasicType;
-import fr.cea.nabla.nabla.NablaFactory;
-import fr.cea.nabla.nabla.NablaPackage;
-import fr.cea.nabla.nabla.VarGroupDeclaration;
 
 /**
  * This is the item provider adapter for a {@link fr.cea.nabla.nabla.VarGroupDeclaration} object.
@@ -26,8 +28,7 @@ import fr.cea.nabla.nabla.VarGroupDeclaration;
  * <!-- end-user-doc -->
  * @generated
  */
-public class VarGroupDeclarationItemProvider 
-	extends InstructionItemProvider {
+public class VarGroupDeclarationItemProvider extends InstructionItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
@@ -131,7 +132,7 @@ public class VarGroupDeclarationItemProvider
 			getString("_UI_VarGroupDeclaration_type") :
 			getString("_UI_VarGroupDeclaration_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

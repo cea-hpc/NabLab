@@ -126,7 +126,7 @@ public class FunctionCallItemProvider extends ExpressionItemProvider {
 	public String getText(Object object) {
 		return getString("_UI_FunctionCall_type");
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
@@ -212,6 +212,11 @@ public class FunctionCallItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.FUNCTION_CALL__ARGS,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.FUNCTION_CALL__ARGS,
+				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter

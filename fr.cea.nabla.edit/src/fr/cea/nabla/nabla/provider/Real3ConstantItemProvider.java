@@ -141,7 +141,7 @@ public class Real3ConstantItemProvider extends ExpressionItemProvider {
 		Real3Constant real3Constant = (Real3Constant)object;
 		return getString("_UI_Real3Constant_type") + " " + real3Constant.getX();
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

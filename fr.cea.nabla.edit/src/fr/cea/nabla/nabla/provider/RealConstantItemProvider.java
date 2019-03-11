@@ -95,7 +95,7 @@ public class RealConstantItemProvider extends ExpressionItemProvider {
 		RealConstant realConstant = (RealConstant)object;
 		return getString("_UI_RealConstant_type") + " " + realConstant.getValue();
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

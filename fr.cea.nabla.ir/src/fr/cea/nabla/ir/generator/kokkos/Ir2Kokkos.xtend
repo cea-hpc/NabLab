@@ -125,7 +125,7 @@ class Ir2Kokkos extends IrGenerator
 			map<string, Kokkos::View<double*>> cellVariables;
 			map<string, Kokkos::View<double*>> nodeVariables;
 			«FOR v : variablesToPersist»
-			«v.dimensions.head.returnType.type.literal»Variables.insert(pair<string,Kokkos::View<double*>>("«v.persistenceName»", «v.name»));
+			«v.dimensions.head.returnType.type.name»Variables.insert(pair<string,Kokkos::View<double*>>("«v.persistenceName»", «v.name»));
 			«ENDFOR»
 			«ENDIF»
 			int iteration = 0;

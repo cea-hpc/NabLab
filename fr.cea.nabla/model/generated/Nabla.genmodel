@@ -15,22 +15,21 @@
       <genEnumLiterals ecoreEnumLiteral="Nabla.ecore#//BasicType/Real3x3"/>
       <genEnumLiterals ecoreEnumLiteral="Nabla.ecore#//BasicType/Bool"/>
     </genEnums>
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Nabla.ecore#//ItemType">
-      <genEnumLiterals ecoreEnumLiteral="Nabla.ecore#//ItemType/node"/>
-      <genEnumLiterals ecoreEnumLiteral="Nabla.ecore#//ItemType/cell"/>
-      <genEnumLiterals ecoreEnumLiteral="Nabla.ecore#//ItemType/face"/>
-    </genEnums>
     <genClasses ecoreClass="Nabla.ecore#//NablaModule">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//NablaModule/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/imports"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/blocks"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/items"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/connectivities"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/functions"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/variables"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/jobs"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Import">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Import/importedNamespace"/>
     </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//DeclarationBlock"/>
+    <genClasses ecoreClass="Nabla.ecore#//ItemType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//ItemType/name"/>
+    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Job">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Job/name"/>
     </genClasses>
@@ -70,12 +69,12 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Connectivity">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Connectivity/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Connectivity/inTypes"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//Connectivity/inTypes"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Connectivity/returnType"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//ItemArgType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//ItemArgType/multiple"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//ItemArgType/type"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//ItemArgType/type"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Function">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Function/name"/>
@@ -116,12 +115,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//TimeIteratorRef/init"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//TimeIteratorRef/next"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//TimeIteratorRef/value"/>
-    </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//ConnectivityDeclarationBlock">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ConnectivityDeclarationBlock/connectivities"/>
-    </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//FunctionDeclarationBlock">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//FunctionDeclarationBlock/functions"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//InstructionJob">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//InstructionJob/instruction"/>

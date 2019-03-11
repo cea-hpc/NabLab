@@ -145,7 +145,7 @@ public class SpaceIteratorItemProvider
 			getString("_UI_SpaceIterator_type") :
 			getString("_UI_SpaceIterator_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

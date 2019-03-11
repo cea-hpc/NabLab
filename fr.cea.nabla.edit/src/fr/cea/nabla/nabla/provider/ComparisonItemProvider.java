@@ -131,7 +131,7 @@ public class ComparisonItemProvider extends ExpressionItemProvider {
 			getString("_UI_Comparison_type") :
 			getString("_UI_Comparison_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
@@ -221,6 +221,11 @@ public class ComparisonItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.COMPARISON__LEFT,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.COMPARISON__LEFT,
+				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -341,6 +346,11 @@ public class ComparisonItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.COMPARISON__RIGHT,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.COMPARISON__RIGHT,
+				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter

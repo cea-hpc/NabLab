@@ -122,7 +122,7 @@ public class RealXCompactConstantItemProvider extends ExpressionItemProvider {
 			getString("_UI_RealXCompactConstant_type") :
 			getString("_UI_RealXCompactConstant_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

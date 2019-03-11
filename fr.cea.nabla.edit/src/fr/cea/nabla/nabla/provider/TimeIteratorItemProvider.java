@@ -112,7 +112,7 @@ public class TimeIteratorItemProvider
 			getString("_UI_TimeIterator_type") :
 			getString("_UI_TimeIterator_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

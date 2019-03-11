@@ -107,7 +107,7 @@ public class TimeLoopJobItemProvider extends JobItemProvider {
 			getString("_UI_TimeLoopJob_type") :
 			getString("_UI_TimeLoopJob_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

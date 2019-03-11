@@ -80,7 +80,7 @@ public class InstructionItemProvider
 	public String getText(Object object) {
 		return getString("_UI_Instruction_type");
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

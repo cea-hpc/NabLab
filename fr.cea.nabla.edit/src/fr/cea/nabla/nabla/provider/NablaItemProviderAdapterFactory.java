@@ -119,26 +119,26 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.DeclarationBlock} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.ItemType} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected DeclarationBlockItemProvider declarationBlockItemProvider;
+	protected ItemTypeItemProvider itemTypeItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.DeclarationBlock}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.ItemType}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createDeclarationBlockAdapter() {
-		if (declarationBlockItemProvider == null) {
-			declarationBlockItemProvider = new DeclarationBlockItemProvider(this);
+	public Adapter createItemTypeAdapter() {
+		if (itemTypeItemProvider == null) {
+			itemTypeItemProvider = new ItemTypeItemProvider(this);
 		}
 
-		return declarationBlockItemProvider;
+		return itemTypeItemProvider;
 	}
 
 	/**
@@ -671,52 +671,6 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.ConnectivityDeclarationBlock} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ConnectivityDeclarationBlockItemProvider connectivityDeclarationBlockItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.ConnectivityDeclarationBlock}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createConnectivityDeclarationBlockAdapter() {
-		if (connectivityDeclarationBlockItemProvider == null) {
-			connectivityDeclarationBlockItemProvider = new ConnectivityDeclarationBlockItemProvider(this);
-		}
-
-		return connectivityDeclarationBlockItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.FunctionDeclarationBlock} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected FunctionDeclarationBlockItemProvider functionDeclarationBlockItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.FunctionDeclarationBlock}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createFunctionDeclarationBlockAdapter() {
-		if (functionDeclarationBlockItemProvider == null) {
-			functionDeclarationBlockItemProvider = new FunctionDeclarationBlockItemProvider(this);
-		}
-
-		return functionDeclarationBlockItemProvider;
-	}
-
-	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.InstructionJob} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1013,6 +967,29 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		}
 
 		return mulOrDivItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Modulo} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ModuloItemProvider moduloItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Modulo}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createModuloAdapter() {
+		if (moduloItemProvider == null) {
+			moduloItemProvider = new ModuloItemProvider(this);
+		}
+
+		return moduloItemProvider;
 	}
 
 	/**
@@ -1415,7 +1392,7 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	public void dispose() {
 		if (nablaModuleItemProvider != null) nablaModuleItemProvider.dispose();
 		if (importItemProvider != null) importItemProvider.dispose();
-		if (declarationBlockItemProvider != null) declarationBlockItemProvider.dispose();
+		if (itemTypeItemProvider != null) itemTypeItemProvider.dispose();
 		if (jobItemProvider != null) jobItemProvider.dispose();
 		if (instructionItemProvider != null) instructionItemProvider.dispose();
 		if (timeIteratorItemProvider != null) timeIteratorItemProvider.dispose();
@@ -1439,8 +1416,6 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (varRefItemProvider != null) varRefItemProvider.dispose();
 		if (iteratorRangeOrRefItemProvider != null) iteratorRangeOrRefItemProvider.dispose();
 		if (timeIteratorRefItemProvider != null) timeIteratorRefItemProvider.dispose();
-		if (connectivityDeclarationBlockItemProvider != null) connectivityDeclarationBlockItemProvider.dispose();
-		if (functionDeclarationBlockItemProvider != null) functionDeclarationBlockItemProvider.dispose();
 		if (instructionJobItemProvider != null) instructionJobItemProvider.dispose();
 		if (timeLoopJobItemProvider != null) timeLoopJobItemProvider.dispose();
 		if (instructionBlockItemProvider != null) instructionBlockItemProvider.dispose();
@@ -1454,6 +1429,7 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (plusItemProvider != null) plusItemProvider.dispose();
 		if (minusItemProvider != null) minusItemProvider.dispose();
 		if (mulOrDivItemProvider != null) mulOrDivItemProvider.dispose();
+		if (moduloItemProvider != null) moduloItemProvider.dispose();
 		if (parenthesisItemProvider != null) parenthesisItemProvider.dispose();
 		if (unaryMinusItemProvider != null) unaryMinusItemProvider.dispose();
 		if (notItemProvider != null) notItemProvider.dispose();

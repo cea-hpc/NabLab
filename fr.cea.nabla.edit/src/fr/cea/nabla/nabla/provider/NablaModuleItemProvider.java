@@ -104,7 +104,9 @@ public class NablaModuleItemProvider
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(NablaPackage.Literals.NABLA_MODULE__IMPORTS);
-			childrenFeatures.add(NablaPackage.Literals.NABLA_MODULE__BLOCKS);
+			childrenFeatures.add(NablaPackage.Literals.NABLA_MODULE__ITEMS);
+			childrenFeatures.add(NablaPackage.Literals.NABLA_MODULE__CONNECTIVITIES);
+			childrenFeatures.add(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS);
 			childrenFeatures.add(NablaPackage.Literals.NABLA_MODULE__VARIABLES);
 			childrenFeatures.add(NablaPackage.Literals.NABLA_MODULE__JOBS);
 		}
@@ -148,7 +150,7 @@ public class NablaModuleItemProvider
 			getString("_UI_NablaModule_type") :
 			getString("_UI_NablaModule_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
@@ -166,7 +168,9 @@ public class NablaModuleItemProvider
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case NablaPackage.NABLA_MODULE__IMPORTS:
-			case NablaPackage.NABLA_MODULE__BLOCKS:
+			case NablaPackage.NABLA_MODULE__ITEMS:
+			case NablaPackage.NABLA_MODULE__CONNECTIVITIES:
+			case NablaPackage.NABLA_MODULE__FUNCTIONS:
 			case NablaPackage.NABLA_MODULE__VARIABLES:
 			case NablaPackage.NABLA_MODULE__JOBS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
@@ -193,18 +197,278 @@ public class NablaModuleItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.NABLA_MODULE__BLOCKS,
-				 NablaFactory.eINSTANCE.createDeclarationBlock()));
+				(NablaPackage.Literals.NABLA_MODULE__ITEMS,
+				 NablaFactory.eINSTANCE.createItemType()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.NABLA_MODULE__BLOCKS,
-				 NablaFactory.eINSTANCE.createConnectivityDeclarationBlock()));
+				(NablaPackage.Literals.NABLA_MODULE__CONNECTIVITIES,
+				 NablaFactory.eINSTANCE.createConnectivity()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.NABLA_MODULE__BLOCKS,
-				 NablaFactory.eINSTANCE.createFunctionDeclarationBlock()));
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createNablaModule()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createImport()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createItemType()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createJob()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createInstruction()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createTimeIterator()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createSpaceIterator()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createIteratorRangeOrRef()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createSpaceIteratorRange()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createSpaceIteratorRef()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createScalarVarDefinition()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createVar()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createScalarVar()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createArrayVar()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createConnectivity()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createItemArgType()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createFunction()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createFunctionArg()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createReduction()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createReductionArg()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createExpression()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createReal2Constant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createReal3Constant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createVarRef()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createTimeIteratorRef()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createInstructionJob()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createTimeLoopJob()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createInstructionBlock()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createAffectation()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createLoop()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createIf()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createOr()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createAnd()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createEquality()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createComparison()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createPlus()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createMinus()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createModulo()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createParenthesis()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createUnaryMinus()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createNot()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createIntConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createRealConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createBoolConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createReal2x2Constant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createReal3x3Constant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createRealXCompactConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createMinConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createMaxConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createFunctionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -255,6 +519,33 @@ public class NablaModuleItemProvider
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__JOBS,
 				 NablaFactory.eINSTANCE.createTimeLoopJob()));
+	}
+
+	/**
+	 * This returns the label text for {@link org.eclipse.emf.edit.command.CreateChildCommand}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection) {
+		Object childFeature = feature;
+		Object childObject = child;
+
+		boolean qualify =
+			childFeature == NablaPackage.Literals.NABLA_MODULE__IMPORTS ||
+			childFeature == NablaPackage.Literals.NABLA_MODULE__FUNCTIONS ||
+			childFeature == NablaPackage.Literals.NABLA_MODULE__ITEMS ||
+			childFeature == NablaPackage.Literals.NABLA_MODULE__CONNECTIVITIES ||
+			childFeature == NablaPackage.Literals.NABLA_MODULE__JOBS ||
+			childFeature == NablaPackage.Literals.NABLA_MODULE__VARIABLES;
+
+		if (qualify) {
+			return getString
+				("_UI_CreateChild_text2",
+				 new Object[] { getTypeText(childObject), getFeatureText(childFeature), getTypeText(owner) });
+		}
+		return super.getCreateChildText(owner, feature, child, selection);
 	}
 
 	/**

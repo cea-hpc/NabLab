@@ -99,7 +99,7 @@ public class MinConstantItemProvider extends ExpressionItemProvider {
 			getString("_UI_MinConstant_type") :
 			getString("_UI_MinConstant_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

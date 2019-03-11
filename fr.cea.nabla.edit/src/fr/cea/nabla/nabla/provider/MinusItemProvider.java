@@ -131,7 +131,7 @@ public class MinusItemProvider extends ExpressionItemProvider {
 			getString("_UI_Minus_type") :
 			getString("_UI_Minus_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
@@ -221,6 +221,11 @@ public class MinusItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.MINUS__LEFT,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MINUS__LEFT,
+				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -341,6 +346,11 @@ public class MinusItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.MINUS__RIGHT,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MINUS__RIGHT,
+				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter

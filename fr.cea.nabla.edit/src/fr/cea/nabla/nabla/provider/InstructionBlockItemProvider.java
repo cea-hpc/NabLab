@@ -102,7 +102,7 @@ public class InstructionBlockItemProvider extends InstructionItemProvider {
 	public String getText(Object object) {
 		return getString("_UI_InstructionBlock_type");
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

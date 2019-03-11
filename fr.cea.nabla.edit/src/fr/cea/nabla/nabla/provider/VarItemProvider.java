@@ -112,7 +112,7 @@ public class VarItemProvider
 			getString("_UI_Var_type") :
 			getString("_UI_Var_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

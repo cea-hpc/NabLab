@@ -22,12 +22,6 @@
   <modelPluginVariables>org.eclipse.emf.ecore.xcore.lib</modelPluginVariables>
   <genPackages prefix="Ir" basePackage="fr.cea.nabla.ir" disposableProviderFactory="true"
       fileExtensions="nablair" ecorePackage="Ir.ecore#/">
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Ir.ecore#//ItemType">
-      <genEnumLiterals ecoreEnumLiteral="Ir.ecore#//ItemType/none"/>
-      <genEnumLiterals ecoreEnumLiteral="Ir.ecore#//ItemType/node"/>
-      <genEnumLiterals ecoreEnumLiteral="Ir.ecore#//ItemType/cell"/>
-      <genEnumLiterals ecoreEnumLiteral="Ir.ecore#//ItemType/face"/>
-    </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="Ir.ecore#//BasicType">
       <genEnumLiterals ecoreEnumLiteral="Ir.ecore#//BasicType/Void"/>
       <genEnumLiterals ecoreEnumLiteral="Ir.ecore#//BasicType/Int"/>
@@ -48,6 +42,7 @@
     <genClasses ecoreClass="Ir.ecore#//IrModule">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IrModule/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/imports"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/items"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/functions"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/reductions"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/connectivities"/>
@@ -84,13 +79,13 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Connectivity">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Connectivity/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute Ir.ecore#//Connectivity/inTypes"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Connectivity/inTypes"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Connectivity/returnType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Connectivity/indexEqualId"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ItemArgType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ItemArgType/multiple"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ItemArgType/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//ItemArgType/type"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//Job">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Job/name"/>
@@ -205,6 +200,9 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IteratorRef/iterator"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IteratorRef/prev"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IteratorRef/next"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//ItemType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ItemType/name"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

@@ -4,6 +4,9 @@
 package fr.cea.nabla.nabla.provider;
 
 
+import fr.cea.nabla.nabla.ItemType;
+import fr.cea.nabla.nabla.NablaPackage;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -12,21 +15,24 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
 
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
+import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link fr.cea.nabla.nabla.DeclarationBlock} object.
+ * This is the item provider adapter for a {@link fr.cea.nabla.nabla.ItemType} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class DeclarationBlockItemProvider 
+public class ItemTypeItemProvider 
 	extends ItemProviderAdapter
 	implements
 		IEditingDomainItemProvider,
@@ -40,7 +46,7 @@ public class DeclarationBlockItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DeclarationBlockItemProvider(AdapterFactory adapterFactory) {
+	public ItemTypeItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -55,19 +61,42 @@ public class DeclarationBlockItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
+			addNamePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This returns DeclarationBlock.gif.
+	 * This adds a property descriptor for the Name feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addNamePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ItemType_name_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ItemType_name_feature", "_UI_ItemType_type"),
+				 NablaPackage.Literals.ITEM_TYPE__NAME,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This returns ItemType.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/DeclarationBlock"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/ItemType"));
 	}
 
 	/**
@@ -78,9 +107,12 @@ public class DeclarationBlockItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_DeclarationBlock_type");
+		String label = ((ItemType)object).getName();
+		return label == null || label.length() == 0 ?
+			getString("_UI_ItemType_type") :
+			getString("_UI_ItemType_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
@@ -92,6 +124,12 @@ public class DeclarationBlockItemProvider
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
+
+		switch (notification.getFeatureID(ItemType.class)) {
+			case NablaPackage.ITEM_TYPE__NAME:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
+		}
 		super.notifyChanged(notification);
 	}
 

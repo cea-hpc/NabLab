@@ -105,7 +105,7 @@ public class InstructionJobItemProvider extends JobItemProvider {
 			getString("_UI_InstructionJob_type") :
 			getString("_UI_InstructionJob_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

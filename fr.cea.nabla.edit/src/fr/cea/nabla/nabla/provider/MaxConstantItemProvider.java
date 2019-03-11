@@ -99,7 +99,7 @@ public class MaxConstantItemProvider extends ExpressionItemProvider {
 			getString("_UI_MaxConstant_type") :
 			getString("_UI_MaxConstant_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

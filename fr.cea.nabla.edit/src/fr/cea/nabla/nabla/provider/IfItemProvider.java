@@ -104,7 +104,7 @@ public class IfItemProvider extends InstructionItemProvider {
 	public String getText(Object object) {
 		return getString("_UI_If_type");
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
@@ -192,6 +192,11 @@ public class IfItemProvider extends InstructionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.IF__CONDITION,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__CONDITION,
+				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter

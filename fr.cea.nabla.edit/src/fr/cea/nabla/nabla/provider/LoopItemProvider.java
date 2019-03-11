@@ -103,7 +103,7 @@ public class LoopItemProvider extends InstructionItemProvider {
 	public String getText(Object object) {
 		return getString("_UI_Loop_type");
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

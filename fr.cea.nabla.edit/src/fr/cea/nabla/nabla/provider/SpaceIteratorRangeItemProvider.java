@@ -126,7 +126,7 @@ public class SpaceIteratorRangeItemProvider extends IteratorRangeOrRefItemProvid
 	public String getText(Object object) {
 		return getString("_UI_SpaceIteratorRange_type");
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

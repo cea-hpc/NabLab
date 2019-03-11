@@ -127,7 +127,7 @@ public class ReductionCallItemProvider extends ExpressionItemProvider {
 	public String getText(Object object) {
 		return getString("_UI_ReductionCall_type");
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
@@ -219,6 +219,11 @@ public class ReductionCallItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_CALL__ARG,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION_CALL__ARG,
+				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter

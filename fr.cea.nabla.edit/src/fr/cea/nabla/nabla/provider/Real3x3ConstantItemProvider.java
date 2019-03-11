@@ -104,7 +104,7 @@ public class Real3x3ConstantItemProvider extends ExpressionItemProvider {
 	public String getText(Object object) {
 		return getString("_UI_Real3x3Constant_type");
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

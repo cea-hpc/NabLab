@@ -95,7 +95,7 @@ public class IntConstantItemProvider extends ExpressionItemProvider {
 		IntConstant intConstant = (IntConstant)object;
 		return getString("_UI_IntConstant_type") + " " + intConstant.getValue();
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

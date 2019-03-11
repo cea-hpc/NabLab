@@ -145,7 +145,7 @@ public class ReductionItemProvider
 			getString("_UI_Reduction_type") :
 			getString("_UI_Reduction_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

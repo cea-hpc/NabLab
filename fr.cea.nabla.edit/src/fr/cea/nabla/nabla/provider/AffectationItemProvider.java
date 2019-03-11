@@ -103,7 +103,7 @@ public class AffectationItemProvider extends InstructionItemProvider {
 	public String getText(Object object) {
 		return getString("_UI_Affectation_type");
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
@@ -195,6 +195,11 @@ public class AffectationItemProvider extends InstructionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter

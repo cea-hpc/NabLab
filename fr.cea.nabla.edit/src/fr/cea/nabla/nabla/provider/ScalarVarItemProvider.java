@@ -70,7 +70,7 @@ public class ScalarVarItemProvider extends VarItemProvider {
 			getString("_UI_ScalarVar_type") :
 			getString("_UI_ScalarVar_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

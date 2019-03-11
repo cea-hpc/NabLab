@@ -112,7 +112,7 @@ public class ImportItemProvider
 			getString("_UI_Import_type") :
 			getString("_UI_Import_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

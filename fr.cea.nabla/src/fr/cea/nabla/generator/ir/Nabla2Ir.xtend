@@ -16,7 +16,6 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import fr.cea.nabla.FunctionCallExtensions
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.nabla.ConnectivityDeclarationBlock
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.ReductionCall
@@ -40,6 +39,8 @@ class Nabla2Ir
 		annotations += m.toIrAnnotation
 		name = m.name
 		m.imports.forEach[x | imports += x.toIrImport]
+		m.items.forEach[x | items += x.toIrItemType]
+		m.connectivities.forEach[x | connectivities += x.toIrConnectivity]
 		
 		// Pour les fonctions, il ne faut pas parcourir les déclarations du bloc car
 		// il peut également y avoir des fonctions externes. Il faut donc regarder tous les appels
@@ -47,10 +48,6 @@ class Nabla2Ir
 		// Même remarque pour les réductions que pour les fonctions
 		m.eAllContents.filter(ReductionCall).forEach[x | reductions += x.reduction.toIrReduction(x.declaration)]
 		
-		// Rien de particulier pour les connectivités qui sont propres à chaque module
-		for (block : m.blocks.filter(ConnectivityDeclarationBlock))
-			block.connectivities.forEach[x | connectivities += x.toIrConnectivity]
-
 		// Création de l'ensemble des variables globales
 		for (vDecl : m.variables)
 			switch vDecl

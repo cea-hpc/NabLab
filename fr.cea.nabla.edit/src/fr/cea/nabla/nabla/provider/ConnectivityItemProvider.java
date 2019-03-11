@@ -108,8 +108,8 @@ public class ConnectivityItemProvider
 				 NablaPackage.Literals.CONNECTIVITY__IN_TYPES,
 				 true,
 				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 true,
+				 null,
 				 null,
 				 null));
 	}
@@ -168,7 +168,7 @@ public class ConnectivityItemProvider
 			getString("_UI_Connectivity_type") :
 			getString("_UI_Connectivity_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
@@ -183,7 +183,6 @@ public class ConnectivityItemProvider
 
 		switch (notification.getFeatureID(Connectivity.class)) {
 			case NablaPackage.CONNECTIVITY__NAME:
-			case NablaPackage.CONNECTIVITY__IN_TYPES:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case NablaPackage.CONNECTIVITY__RETURN_TYPE:

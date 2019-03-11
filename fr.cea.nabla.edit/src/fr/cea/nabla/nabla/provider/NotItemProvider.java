@@ -102,7 +102,7 @@ public class NotItemProvider extends ExpressionItemProvider {
 	public String getText(Object object) {
 		return getString("_UI_Not_type");
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
@@ -188,6 +188,11 @@ public class NotItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.NOT__EXPRESSION,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NOT__EXPRESSION,
+				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter

@@ -80,7 +80,7 @@ public class IteratorRangeOrRefItemProvider
 	public String getText(Object object) {
 		return getString("_UI_IteratorRangeOrRef_type");
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

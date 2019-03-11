@@ -5,8 +5,12 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="imports" upperBound="-1"
         eType="#//Import" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="blocks" upperBound="-1"
-        eType="#//DeclarationBlock" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="items" upperBound="-1"
+        eType="#//ItemType" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connectivities" upperBound="-1"
+        eType="#//Connectivity" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="functions" upperBound="-1"
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//Instruction" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="jobs" upperBound="-1" eType="#//Job"
@@ -15,7 +19,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="Import">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importedNamespace" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DeclarationBlock"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ItemType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Job">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
@@ -61,14 +67,14 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Connectivity">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="inTypes" unique="false"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inTypes" unique="false"
         upperBound="-1" eType="#//ItemType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//ItemArgType"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ItemArgType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiple" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//ItemType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//ItemType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Function">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -125,19 +131,6 @@
     <eLiterals name="Real3" value="4" literal="ℝ³"/>
     <eLiterals name="Real3x3" value="5" literal="ℝ³ˣ³"/>
     <eLiterals name="Bool" value="6" literal="ℾ"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="ItemType">
-    <eLiterals name="node" literal="node"/>
-    <eLiterals name="cell" value="1" literal="cell"/>
-    <eLiterals name="face" value="2" literal="face"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ConnectivityDeclarationBlock" eSuperTypes="#//DeclarationBlock">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="connectivities" upperBound="-1"
-        eType="#//Connectivity" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FunctionDeclarationBlock" eSuperTypes="#//DeclarationBlock">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="functions" upperBound="-1"
-        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InstructionJob" eSuperTypes="#//Job">
     <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" eType="#//Instruction"

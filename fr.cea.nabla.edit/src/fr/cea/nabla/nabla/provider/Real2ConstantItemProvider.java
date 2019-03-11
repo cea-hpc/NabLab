@@ -118,7 +118,7 @@ public class Real2ConstantItemProvider extends ExpressionItemProvider {
 		Real2Constant real2Constant = (Real2Constant)object;
 		return getString("_UI_Real2Constant_type") + " " + real2Constant.getX();
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

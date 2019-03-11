@@ -19,16 +19,17 @@ generate nabla "http://www.cea.fr/nabla/Nabla"
 NablaModule:
 	'module' name=QualifiedName ';'
 	imports+=Import*
-	blocks+=DeclarationBlock*
+	('items' '{' items+=ItemType (',' items+=ItemType)* '}'
+	'connectivities' '{' connectivities+=Connectivity* '}')?
+	('functions' '{' functions+=(Function | Reduction)* '}')?
 	variables+=(ScalarVarDefinition | VarGroupDeclaration)*
 	jobs+=Job*;
 
 Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';
 
-DeclarationBlock: 
-	{ConnectivityDeclarationBlock} 'connectivities' '{' connectivities+=Connectivity* '}' |
-	{FunctionDeclarationBlock} 'functions' '{' functions+=(Function | Reduction)* '}';
-
+/* ITEMS *************************************************/
+ItemType:
+	name=ID;
 
 /* JOBS **************************************************/
 Job: 
@@ -60,8 +61,8 @@ ScalarVar: name=ID;
 ArrayVar: name=ID '[' dimensions+=[Connectivity] (',' dimensions+=[Connectivity])* ']';
 
 /* CONNECTIVITES *****************************************/
-Connectivity: name=ID ':' '(' ((inTypes+=ItemType (',' inTypes+=ItemType)*) | '\u2205') ')' '\u2192' returnType=ItemArgType ';';
-ItemArgType: multiple?='{' type=ItemType '}' | type=ItemType;
+Connectivity: name=ID ':' '(' ((inTypes+=[ItemType] (',' inTypes+=[ItemType])*) | '\u2205') ')' '\u2192' returnType=ItemArgType ';';
+ItemArgType: multiple?='{' type=[ItemType] '}' | type=[ItemType];
 
 /* FONCTIONS / REDUCTIONS ********************************/
 Function: name=ID ':' argGroups+=FunctionArg (',' argGroups+=FunctionArg)* ';';
@@ -131,9 +132,6 @@ enum BasicType:
 	Real3='\u211D\u00B3' |
 	Real3x3='\u211D\u00B3\u02E3\u00B3' |
 	Bool='\u213E';
-
-enum ItemType: node | cell | face;
-
 
 /* DATA TYPE *********************************************/
 QualifiedName: ID ('.' ID)*;

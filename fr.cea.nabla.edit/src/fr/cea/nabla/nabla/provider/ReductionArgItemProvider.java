@@ -170,7 +170,7 @@ public class ReductionArgItemProvider
 			getString("_UI_ReductionArg_type") :
 			getString("_UI_ReductionArg_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
@@ -260,6 +260,11 @@ public class ReductionArgItemProvider
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_ARG__SEED,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION_ARG__SEED,
+				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter

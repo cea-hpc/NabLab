@@ -95,7 +95,7 @@ public class ArrayVarItemProvider extends VarItemProvider {
 			getString("_UI_ArrayVar_type") :
 			getString("_UI_ArrayVar_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

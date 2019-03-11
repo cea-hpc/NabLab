@@ -23,6 +23,8 @@
         eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="imports" upperBound="-1"
         eType="#//Import" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="items" upperBound="-1"
+        eType="#//ItemType" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="functions" upperBound="-1"
         eType="#//Function" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="reductions" upperBound="-1"
@@ -75,7 +77,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Connectivity" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="inTypes" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inTypes" upperBound="-1"
         eType="#//ItemType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//ItemArgType"
         containment="true" resolveProxies="false"/>
@@ -86,8 +88,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="ItemArgType" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiple" unique="false"
         lowerBound="1" eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" unique="false" lowerBound="1"
-        eType="#//ItemType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//ItemType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Job" abstract="true" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
@@ -256,11 +257,9 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="prev" unique="false" eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="next" unique="false" eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EBoolean"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="ItemType">
-    <eLiterals name="none"/>
-    <eLiterals name="node" value="1"/>
-    <eLiterals name="cell" value="2"/>
-    <eLiterals name="face" value="3"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ItemType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
+        eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="BasicType">
     <eLiterals name="Void"/>

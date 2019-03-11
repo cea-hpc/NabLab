@@ -105,8 +105,8 @@ public class ItemArgTypeItemProvider
 				 NablaPackage.Literals.ITEM_ARG_TYPE__TYPE,
 				 true,
 				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 true,
+				 null,
 				 null,
 				 null));
 	}
@@ -133,7 +133,7 @@ public class ItemArgTypeItemProvider
 		ItemArgType itemArgType = (ItemArgType)object;
 		return getString("_UI_ItemArgType_type") + " " + itemArgType.isMultiple();
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
@@ -148,7 +148,6 @@ public class ItemArgTypeItemProvider
 
 		switch (notification.getFeatureID(ItemArgType.class)) {
 			case NablaPackage.ITEM_ARG_TYPE__MULTIPLE:
-			case NablaPackage.ITEM_ARG_TYPE__TYPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}

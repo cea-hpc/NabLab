@@ -55,7 +55,7 @@ class Ir2N extends IrGenerator
 		};
 		
 		«FOR support : itemVariables.keySet SEPARATOR '\n'»
-		«support.literal»s {
+		«support.name»s {
 			«val itemVarsByType = itemVariables.get(support).groupBy[type]»
 			«FOR type : itemVarsByType.keySet»
 				«type.NType» «FOR v : itemVarsByType.get(type).filter[x|x.name!='coord'] SEPARATOR ', '»«v.name»«ENDFOR»;

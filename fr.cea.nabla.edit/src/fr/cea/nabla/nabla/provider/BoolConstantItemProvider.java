@@ -95,7 +95,7 @@ public class BoolConstantItemProvider extends ExpressionItemProvider {
 		BoolConstant boolConstant = (BoolConstant)object;
 		return getString("_UI_BoolConstant_type") + " " + boolConstant.isValue();
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

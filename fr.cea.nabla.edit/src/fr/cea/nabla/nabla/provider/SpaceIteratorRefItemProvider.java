@@ -141,7 +141,7 @@ public class SpaceIteratorRefItemProvider extends IteratorRangeOrRefItemProvider
 		SpaceIteratorRef spaceIteratorRef = (SpaceIteratorRef)object;
 		return getString("_UI_SpaceIteratorRef_type") + " " + spaceIteratorRef.isPrev();
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

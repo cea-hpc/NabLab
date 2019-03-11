@@ -102,7 +102,7 @@ public class ParenthesisItemProvider extends ExpressionItemProvider {
 	public String getText(Object object) {
 		return getString("_UI_Parenthesis_type");
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
@@ -188,6 +188,11 @@ public class ParenthesisItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
+				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter

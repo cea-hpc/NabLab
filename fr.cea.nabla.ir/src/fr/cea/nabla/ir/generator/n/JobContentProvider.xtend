@@ -65,7 +65,7 @@ class JobContentProvider
 	'''
 	
 	private def dispatch getLoopHeader(ScalarVariable v) ''''''
-	private def dispatch getLoopHeader(ArrayVariable v) { v.dimensions.map[d | '''∀ «d.returnType.type.literal»s'''].join(' ') }
+	private def dispatch getLoopHeader(ArrayVariable v) { v.dimensions.map[d | '''∀ «d.returnType.type.name»s'''].join(' ') }
 
 	private def isReduction(Loop it) 
 	{ 

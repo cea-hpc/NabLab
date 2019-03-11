@@ -161,13 +161,13 @@ class BasicValidator  extends AbstractNablaValidator
 							if (rt.multiple) 
 								error('Connectivity return type must be a singleton', NablaPackage.Literals::VAR_REF__SPACE_ITERATORS)
 							else if (rt.type != expectedT)
-								error('Wrong iterator type: Expected ' + expectedT.literal + ', but was ' + rt.type.literal, NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, i)
+								error('Wrong iterator type: Expected ' + expectedT.name + ', but was ' + rt.type.name, NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, i)
 						}
 						SpaceIteratorRef:
 						{
 							val actualT = si.iterator.range.connectivity.returnType.type
 							if (actualT != expectedT)
-								error('Wrong iterator type: Expected ' + expectedT.literal + ', but was ' + actualT.literal, NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, i)
+								error('Wrong iterator type: Expected ' + expectedT.name + ', but was ' + actualT.name, NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, i)
 //							else
 //							{	
 //								val actualC = si.iterator.range.connectivity
@@ -202,7 +202,7 @@ class BasicValidator  extends AbstractNablaValidator
 				val actualT = args.get(i).iterator.range.connectivity.returnType.type
 				val expectedT = connectivity.inTypes.get(i)
 				if (actualT != expectedT)
-					error('Wrong arguments: Expected ' + expectedT.literal + ', but was ' + actualT.literal, NablaPackage.Literals::SPACE_ITERATOR_RANGE__ARGS, i)
+					error('Wrong arguments: Expected ' + expectedT.name + ', but was ' + actualT.name, NablaPackage.Literals::SPACE_ITERATOR_RANGE__ARGS, i)
 			}
 		}
 	}

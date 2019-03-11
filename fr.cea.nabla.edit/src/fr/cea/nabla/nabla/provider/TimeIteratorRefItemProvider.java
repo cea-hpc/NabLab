@@ -179,7 +179,7 @@ public class TimeIteratorRefItemProvider
 		TimeIteratorRef timeIteratorRef = (TimeIteratorRef)object;
 		return getString("_UI_TimeIteratorRef_type") + " " + timeIteratorRef.isInit();
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

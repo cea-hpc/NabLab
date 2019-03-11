@@ -131,7 +131,7 @@ public class PlusItemProvider extends ExpressionItemProvider {
 			getString("_UI_Plus_type") :
 			getString("_UI_Plus_type") + " " + label;
 	}
-	
+
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached
@@ -221,6 +221,11 @@ public class PlusItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.PLUS__LEFT,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.PLUS__LEFT,
+				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -341,6 +346,11 @@ public class PlusItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.PLUS__RIGHT,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.PLUS__RIGHT,
+				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter

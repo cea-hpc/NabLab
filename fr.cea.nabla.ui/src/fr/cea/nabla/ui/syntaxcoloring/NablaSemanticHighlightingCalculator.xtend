@@ -83,10 +83,8 @@ class NablaSemanticHighlightingCalculator implements ISemanticHighlightingCalcul
 				switch elt.name
 				{
 					case 'SpaceIteratorRange' : colorizeIteratorArgs(a, n, NablaHighlightingConfiguration::ITERATOR_ID)
-					case 'SpaceIterator',  
-					case 'TimeIterator' : colorizeIteratorName(a, n, NablaHighlightingConfiguration::ITERATOR_ID) 
-					case 'SpaceIteratorRef', 
-					case 'TimeIteratorRef' : colorizeNode(a, n, NablaHighlightingConfiguration::ITERATOR_ID)
+					case 'VarRef' : colorizeTimeIterator(a, n, NablaHighlightingConfiguration::ITERATOR_ID)
+					case 'SpaceIteratorRef' : colorizeNode(a, n, NablaHighlightingConfiguration::ITERATOR_ID)
 				}
 			}
 			Keyword: {}
@@ -99,16 +97,6 @@ class NablaSemanticHighlightingCalculator implements ISemanticHighlightingCalcul
 		acceptor.addPosition(node.offset, node.length, colorId)
 	}
 	
-	private def colorizeIteratorName(IHighlightedPositionAcceptor acceptor, INode node, String colorId)
-	{
-		val s = node.text.trim
-		//println('node info - text:' + s + ', offset:' + node.offset + ', length:' + node.length)
-		
-		val lastIndex = s.indexOf('\u2208')
-		if (lastIndex != -1)
-			acceptor.addPosition(node.offset, lastIndex, colorId)
-	}
-
 	private def colorizeIteratorArgs(IHighlightedPositionAcceptor acceptor, INode node, String colorId)
 	{
 		val s = node.text.trim
@@ -116,6 +104,18 @@ class NablaSemanticHighlightingCalculator implements ISemanticHighlightingCalcul
 		
 		val offset = s.indexOf('(')
 		val lastIndex = s.indexOf(')')
+		val length = lastIndex-offset-1
+		if (offset != -1 && lastIndex != -1 && length > 0)
+			acceptor.addPosition(node.offset+offset+1, length, colorId)
+	}
+	
+	private def colorizeTimeIterator(IHighlightedPositionAcceptor acceptor, INode node, String colorId)
+	{
+		val s = node.text.trim
+		//println('node info - text:' + s + ', offset:' + node.offset + ', length:' + node.length)
+		
+		val offset = s.indexOf('^{')
+		val lastIndex = s.lastIndexOf('}')
 		val length = lastIndex-offset-1
 		if (offset != -1 && lastIndex != -1 && length > 0)
 			acceptor.addPosition(node.offset+offset+1, length, colorId)

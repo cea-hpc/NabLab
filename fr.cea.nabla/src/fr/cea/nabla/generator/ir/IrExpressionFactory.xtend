@@ -15,6 +15,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import fr.cea.nabla.FunctionCallExtensions
+import fr.cea.nabla.VarRefExtensions
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.Real2Constant
@@ -55,6 +56,7 @@ class IrExpressionFactory
 	@Inject extension IrIteratorFactory
 	@Inject extension ExpressionTypeProvider
 	@Inject extension ReductionCallExtensions
+	@Inject extension VarRefExtensions
 	
 	def dispatch Expression toIrExpression(Or e) { e.toIrBinaryExpr(e.left, e.right, e.op) }
 	def dispatch Expression toIrExpression(And e) { e.toIrBinaryExpr(e.left, e.right, e.op) }
@@ -210,7 +212,7 @@ class IrExpressionFactory
 		[ 
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrExpressionType
-			variable = e.variable.toIrVariable(e.timeIterator)
+			variable = e.variable.toIrVariable(e.timeSuffix)
 			e.spaceIterators.forEach[x | iterators += x.toIrIteratorRangeOrRef]
 			e.fields.forEach[x | fields += x]
 		]

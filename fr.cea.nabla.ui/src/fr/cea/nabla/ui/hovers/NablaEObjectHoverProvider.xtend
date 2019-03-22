@@ -38,7 +38,7 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 		else
 		{
 			val expression = resolvedContainedObject.expression
-			if (expression === null) super.getFirstLine(o)
+			if (expression === null || expression.eIsProxy) super.getFirstLine(o)
 			else 
 			{
 				val eType = expression.typeFor

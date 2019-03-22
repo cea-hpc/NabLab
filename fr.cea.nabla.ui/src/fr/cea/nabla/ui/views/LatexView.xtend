@@ -46,13 +46,16 @@ class LatexView extends ViewPart
 	
 	private def getLatexImage(EObject element)
 	{
-		val latexLabel = LatexLabelServices.getLatex(element)
-		if (latexLabel !== null) 
+		if (element !== null && !element.eIsProxy)
 		{
-			val image = LatexImageServices.createPngImage(latexLabel, 25)
-			val swtImage = new Image(Display.^default, new ByteArrayInputStream(image))
-			return swtImage
+			val latexLabel = LatexLabelServices.getLatex(element)
+			if (latexLabel !== null) 
+			{
+				val image = LatexImageServices.createPngImage(latexLabel, 25)
+				val swtImage = new Image(Display.^default, new ByteArrayInputStream(image))
+				return swtImage
+			}	
 		}
-		else return null
+		return null
 	}
 }

@@ -32,10 +32,7 @@ ItemType:
 	name=ID;
 
 /* JOBS **************************************************/
-Job: 
-	{InstructionJob} name=ID ':' instruction=Instruction |
-	{TimeLoopJob} name=ID ':' '\u2200' iterator=TimeIterator ',' initialization=Instruction ',' body=Instruction;
-
+Job: name=ID ':' instruction=Instruction;
 
 /* INSTRUCTIONS ******************************************/
 Instruction: 
@@ -48,7 +45,6 @@ Instruction:
 
 
 /* ITERATEURS ********************************************/
-TimeIterator: name=ID '\u2208' '\u2115';
 SpaceIterator: name=ID '\u2208' range=SpaceIteratorRange;
 SpaceIteratorRange: connectivity=[Connectivity]  '('(args+=SpaceIteratorRef (',' args+=SpaceIteratorRef)*)?')';
 SpaceIteratorRef: ((prev?='\u25C4'|next?='\u25BA') '(' iterator=[SpaceIterator] ')') | iterator=[SpaceIterator];
@@ -116,11 +112,10 @@ Real2Constant: '{' x=REAL ',' y=REAL '}';
 Real3Constant: '{' x=REAL ',' y=REAL ',' z=REAL '}';
 VarRef: variable=[Var] 
 	('{' spaceIterators+=IteratorRangeOrRef (',' spaceIterators+=IteratorRangeOrRef)* '}')? 
-	('^{' timeIterator=TimeIteratorRef '}')?  
+	('^{' hasTimeIterator?='n+1' ('/' timeIteratorDiv=INT)? '}')?  
 	('.' fields+=ID)*;
 
 IteratorRangeOrRef: SpaceIteratorRange | SpaceIteratorRef;
-TimeIteratorRef: iterator=[TimeIterator] ((init?='='|next?='+') value=INT)?;
 
 
 /* ENUMS *************************************************/

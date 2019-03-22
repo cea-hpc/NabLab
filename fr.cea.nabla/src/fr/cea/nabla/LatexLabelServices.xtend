@@ -21,8 +21,8 @@ import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InstructionBlock
-import fr.cea.nabla.nabla.InstructionJob
 import fr.cea.nabla.nabla.IntConstant
+import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
@@ -44,9 +44,6 @@ import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRange
 import fr.cea.nabla.nabla.SpaceIteratorRef
-import fr.cea.nabla.nabla.TimeIterator
-import fr.cea.nabla.nabla.TimeIteratorRef
-import fr.cea.nabla.nabla.TimeLoopJob
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VarRef
@@ -54,8 +51,7 @@ import fr.cea.nabla.nabla.VarRef
 class LatexLabelServices 
 {
 	// JOBS
-	static def dispatch String getLatex(InstructionJob it) { '\\texttt{' + name.pu + '} : '+ instruction.latex }
-	static def dispatch String getLatex(TimeLoopJob it) { '\\texttt{' + name.pu + '} : \\forall {' + iterator.latex + '}, \\ '+ body.latex }
+	static def dispatch String getLatex(Job it) { '\\texttt{' + name.pu + '} : '+ instruction.latex }
 	
 	// INSTRUCTIONS	
 	static def dispatch String getLatex(ScalarVarDefinition it) { type.literal + ' ' + variable.name.pu + '=' + defaultValue.latex }
@@ -66,7 +62,6 @@ class LatexLabelServices
 	static def dispatch String getLatex(If it) { 'if (' + condition.latex + ')'}
 	
 	// ITERATEURS
-	static def dispatch String getLatex(TimeIterator it) { name.pu + '\\in \u2115' }
 	static def dispatch String getLatex(SpaceIterator it) { name.pu + '\\in ' + range.latex }
 	static def dispatch String getLatex(SpaceIteratorRange it) { connectivity.name.pu + '(' + args.map[latex].join(',') + ')' }
 	static def dispatch String getLatex(SpaceIteratorRef it) 
@@ -108,18 +103,17 @@ class LatexLabelServices
 	{
 		var label = variable.name.pu
 		if (!spaceIterators.empty) label += '_{' + spaceIterators.map[x | x.latex].join(',') + '}'
-		if (timeIterator !== null) label += ' ^{' + timeIterator.latex + '}'
+		if (hasTimeIterator) label += ' ^{n+1' + timeIteratorDiv.timeIteratorDivLabel + '}'
 		for (f : fields) label += '.' + f
 		return label
 	}
 	
-	static def dispatch String getLatex(TimeIteratorRef it) 
+	private static def String getTimeIteratorDivLabel(int timeIteratorDiv) 
 	{ 
-		if (init) iterator.name.pu + "=" + value
-		else if (next) iterator.name.pu + "+" + value
-		else iterator.name.pu
+		if (timeIteratorDiv == 0) ''
+		else '/' + timeIteratorDiv
 	}
-	
+		
 	// PRESERVE UNDERSCORES
 	private static def String pu(String it) { if (!nullOrEmpty) replaceAll('_', '\\\\_') else '' }
 }

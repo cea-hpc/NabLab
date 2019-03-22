@@ -81,6 +81,8 @@ class ExpressionTypeProvider
 			FunctionCall: e.typeFor
 			ReductionCall: e.typeFor
 			VarRef: e.typeFor
+			
+			default: NablaType::UNDEFINED
 		}
 	}
 	

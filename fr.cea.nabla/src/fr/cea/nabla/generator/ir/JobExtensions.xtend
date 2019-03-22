@@ -14,11 +14,10 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
+import fr.cea.nabla.VarRefExtensions
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Variable
-import fr.cea.nabla.nabla.InstructionJob
-import fr.cea.nabla.nabla.TimeLoopJob
+import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.VarRef
 import org.eclipse.emf.common.util.EList
 
@@ -27,8 +26,9 @@ class JobExtensions
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrInstructionFactory
 	@Inject extension IrVariableFactory
+	@Inject extension VarRefExtensions
 	
-	def dispatch void populateIrJobs(InstructionJob j, EList<Job> irJobs)
+	def void populateIrJobs(Job j, EList<fr.cea.nabla.ir.ir.Job> irJobs)
 	{
 		irJobs += IrFactory::eINSTANCE.createInstructionJob =>
 		[
@@ -39,42 +39,23 @@ class JobExtensions
 		]
 	}
 	
-	def dispatch void populateIrJobs(TimeLoopJob j, EList<Job> irJobs)
+	def void populateIrVariablesAndJobs(Job j, EList<Variable> irVariables, EList<fr.cea.nabla.ir.ir.Job> irJobs)
 	{
-		irJobs += IrFactory::eINSTANCE.createInstructionJob =>
-		[
-			annotations += j.toIrAnnotation
-			name = 'Init_' + j.name
-			onCycle = false
-			instruction = j.initialization.toIrInstruction
-		]
-		
-		irJobs += IrFactory::eINSTANCE.createInstructionJob =>
-		[
-			annotations += j.toIrAnnotation
-			name = 'Compute_' + j.name
-			onCycle = false
-			instruction = j.body.toIrInstruction	
-		]
-	}
-
-	def void populateIrVariablesAndJobs(TimeLoopJob j, EList<Variable> irVariables, EList<Job> irJobs)
-	{
-		for (r : j.body.eAllContents.filter(VarRef).toIterable)
-			if (r.timeIterator!==null && r.timeIterator.next)
+		for (r : j.eAllContents.filter(VarRef).toIterable)
+			if (r.hasTimeIterator)
 			{
-				val vCurrent = r.variable.toIrVariable(null)
-				val vNext = r.variable.toIrVariable(r.timeIterator)
+				val vCurrent = r.variable.toIrVariable('')
+				val vNext = r.variable.toIrVariable(r.timeSuffix)
 				irVariables += vNext
-				irJobs += toIrCopyJob(vCurrent, vNext, r.timeIterator.iterator.name) 
+				if (r.timeIteratorDiv == 0) irJobs += toIrCopyJob(vCurrent, vNext) 
 			}
 	}
 	
-	private def create IrFactory::eINSTANCE.createTimeIterationCopyJob toIrCopyJob(Variable current, Variable next, String tiName)
+	private def create IrFactory::eINSTANCE.createTimeIterationCopyJob toIrCopyJob(Variable current, Variable next)
 	{
 		name = 'Copy_' + next.name + '_to_' + current.name
 		left = current
 		right = next
-		timeIteratorName = tiName
+		timeIteratorName = 'n'
 	}
 }

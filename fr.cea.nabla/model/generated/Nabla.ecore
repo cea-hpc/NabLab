@@ -24,11 +24,10 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Job">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" eType="#//Instruction"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Instruction"/>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeIterator">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SpaceIterator">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="range" eType="#//SpaceIteratorRange"
@@ -111,18 +110,12 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//Var"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="spaceIterators" upperBound="-1"
         eType="#//IteratorRangeOrRef" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="timeIterator" eType="#//TimeIteratorRef"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hasTimeIterator" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeIteratorDiv" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="fields" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IteratorRangeOrRef"/>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeIteratorRef">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="iterator" eType="#//TimeIterator"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="init" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="next" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="BasicType">
     <eLiterals name="Int" literal="ℕ"/>
     <eLiterals name="Real" value="1" literal="ℝ"/>
@@ -131,18 +124,6 @@
     <eLiterals name="Real3" value="4" literal="ℝ³"/>
     <eLiterals name="Real3x3" value="5" literal="ℝ³ˣ³"/>
     <eLiterals name="Bool" value="6" literal="ℾ"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="InstructionJob" eSuperTypes="#//Job">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" eType="#//Instruction"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeLoopJob" eSuperTypes="#//Job">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="iterator" eType="#//TimeIterator"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="initialization" eType="#//Instruction"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//Instruction"
-        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InstructionBlock" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="instructions" upperBound="-1"

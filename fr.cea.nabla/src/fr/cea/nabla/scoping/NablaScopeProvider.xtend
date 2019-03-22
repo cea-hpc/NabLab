@@ -16,13 +16,12 @@ package fr.cea.nabla.scoping
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
-import fr.cea.nabla.nabla.InstructionJob
+import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.SpaceIterator
-import fr.cea.nabla.nabla.TimeLoopJob
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.List
 import org.eclipse.emf.ecore.EObject
@@ -39,87 +38,73 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
  */
 class NablaScopeProvider extends AbstractDeclarativeScopeProvider 
 {
-	enum IteratorType { Space, Time }
-	
 	/*** Scope des itérateurs pour les variables ***************************************/
 	def scope_SpaceIteratorRef_iterator(Expression context, EReference r) 
 	{
 		//printDebug('\nscope_SpaceIteratorRef_iterator : ' + context, 0)
-		context.eContainer.iteratorsDefinedBefore(IteratorType::Space, 0)
+		context.eContainer.iteratorsDefinedBefore(0)
 	}
 
 	def scope_TimeIteratorRef_iterator(Expression context, EReference r) 
 	{
 		//printDebug('\nscope_TimeIteratorRef_iterator : ' + context, 0)
-		context.eContainer.iteratorsDefinedBefore(IteratorType::Time, 0)
+		context.eContainer.iteratorsDefinedBefore(0)
 	}
 
-	private def dispatch IScope iteratorsDefinedBefore(EObject context, IteratorType itType, int depth) 
+	private def dispatch IScope iteratorsDefinedBefore(EObject context, int depth) 
 	{
 		//printDebug('iteratorsDefinedBefore - EObject (' + itType.name + ') : ' + context, depth)
-		context.eContainer.iteratorsDefinedBefore(itType, depth + 1)
+		context.eContainer.iteratorsDefinedBefore(depth + 1)
 	}
 
-	private def dispatch IScope iteratorsDefinedBefore(Loop context, IteratorType itType, int depth) 
+	private def dispatch IScope iteratorsDefinedBefore(Loop context, int depth) 
 	{
 		//printDebug('iteratorsDefinedBefore - Loop (' + itType.name + ') : ' + context, depth)
-		iteratorsForLoopOrReduction(context.iterator, context.eContainer, itType, depth)
+		iteratorsForLoopOrReduction(context.iterator, context.eContainer, depth)
 	}
 
-	private def dispatch IScope iteratorsDefinedBefore(ReductionCall context, IteratorType itType, int depth) 
+	private def dispatch IScope iteratorsDefinedBefore(ReductionCall context, int depth) 
 	{
 		//printDebug('iteratorsDefinedBefore - ReductionFunctionCall (' + itType.name + ') : ' + context, depth)
-		iteratorsForLoopOrReduction(context.iterator, context.eContainer, itType, depth)
+		iteratorsForLoopOrReduction(context.iterator, context.eContainer, depth)
 	}
 
-	private def dispatch IScope iteratorsDefinedBefore(TimeLoopJob context, IteratorType itType, int depth)
-	{
-		//printDebug('iteratorsDefinedBefore - TimeLoopJob (' + itType.name + ') : ' + context, depth)
-		if (itType==IteratorType::Time) Scopes::scopeFor(#[context.iterator])
-		else IScope::NULLSCOPE
-	}
-	
-	private def dispatch IScope iteratorsDefinedBefore(InstructionJob context, IteratorType itType, int depth)
+	private def dispatch IScope iteratorsDefinedBefore(Job context, int depth)
 	{
 		//printDebug('iteratorsDefinedBefore - InstructionJob (' + itType.name + ') : ' + context, depth)
 		IScope::NULLSCOPE 
 	}
 	
-	private def dispatch IScope iteratorsDefinedBefore(NablaModule context, IteratorType itType, int depth)
+	private def dispatch IScope iteratorsDefinedBefore(NablaModule context,  int depth)
 	{
 		//printDebug('iteratorsDefinedBefore - NablaModule (' + itType.name + ') : ' + context, depth)
 		IScope::NULLSCOPE 
 	}
 
-	private def IScope iteratorsForLoopOrReduction(SpaceIterator contextIterator, EObject contextContainer, IteratorType itType, int depth) 
+	private def IScope iteratorsForLoopOrReduction(SpaceIterator contextIterator, EObject contextContainer, int depth) 
 	{
-		if (itType==IteratorType::Space) 
-		{
-			//printDebug('iterators', depth, #[contextIterator])
-			Scopes::scopeFor(#[contextIterator], contextContainer.iteratorsDefinedBefore(itType, depth + 1))
-		}
-		else				
-			contextContainer.iteratorsDefinedBefore(itType, depth + 1) 
+		//printDebug('iterators', depth, #[contextIterator])
+		Scopes::scopeFor(#[contextIterator], contextContainer.iteratorsDefinedBefore(depth + 1))
 	}
 	
 
 	/*** Scope des itérateurs pour les itérateurs **************************************/
 	def scope_SpaceIteratorRange_args(Expression context, EReference r) 
 	{
-		//printDebug('\nscope_SpaceIteratorRange_args : ' + context, 0)
-		context.eContainer.iteratorsDefinedBefore(IteratorType::Space, 0)
+		printDebug('\nscope_SpaceIteratorRange_args : ' + context, 0)
+		context.eContainer.iteratorsDefinedBefore(0)
 	}
 
 	def scope_SpaceIteratorRange_args(Loop context, EReference r) 
 	{
-		//printDebug('\nscope_SpaceIteratorRange_args : ' + context, 0)
-		context.eContainer.iteratorsDefinedBefore(IteratorType::Space, 0)
+		printDebug('\nscope_SpaceIteratorRange_args : ' + context, 0)
+		context.eContainer.iteratorsDefinedBefore(0)
 	}
 
 	def scope_SpaceIteratorRange_args(ReductionCall context, EReference r) 
 	{
-		//printDebug('\nscope_SpaceIteratorRange_args : ' + context, 0)
-		context.eContainer.iteratorsDefinedBefore(IteratorType::Space, 0)
+		printDebug('\nscope_SpaceIteratorRange_args : ' + context, 0)
+		context.eContainer.iteratorsDefinedBefore(0)
 	}
 
 	/*** Scope des variables ***********************************************************/
@@ -154,12 +139,12 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	}
 	
 	/*** Méthodes de debug et utilitaires **********************************************/
-//	def private printDebug(String s, int depth) 
-//	{ 
-//		for (i : 0..<depth) print('\t')
-//		println(s)		
-//	}
-//
+	def private printDebug(String s, int depth) 
+	{ 
+		for (i : 0..<depth) print('\t')
+		println(s)		
+	}
+
 //	def private printDebug(String s, int depth, Iterable<? extends Object> l) 
 //	{ 
 //		if (l.nullOrEmpty)

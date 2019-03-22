@@ -188,29 +188,6 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.TimeIterator} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected TimeIteratorItemProvider timeIteratorItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.TimeIterator}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createTimeIteratorAdapter() {
-		if (timeIteratorItemProvider == null) {
-			timeIteratorItemProvider = new TimeIteratorItemProvider(this);
-		}
-
-		return timeIteratorItemProvider;
-	}
-
-	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.SpaceIterator} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -645,75 +622,6 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		}
 
 		return iteratorRangeOrRefItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.TimeIteratorRef} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected TimeIteratorRefItemProvider timeIteratorRefItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.TimeIteratorRef}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createTimeIteratorRefAdapter() {
-		if (timeIteratorRefItemProvider == null) {
-			timeIteratorRefItemProvider = new TimeIteratorRefItemProvider(this);
-		}
-
-		return timeIteratorRefItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.InstructionJob} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected InstructionJobItemProvider instructionJobItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.InstructionJob}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createInstructionJobAdapter() {
-		if (instructionJobItemProvider == null) {
-			instructionJobItemProvider = new InstructionJobItemProvider(this);
-		}
-
-		return instructionJobItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.TimeLoopJob} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected TimeLoopJobItemProvider timeLoopJobItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.TimeLoopJob}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createTimeLoopJobAdapter() {
-		if (timeLoopJobItemProvider == null) {
-			timeLoopJobItemProvider = new TimeLoopJobItemProvider(this);
-		}
-
-		return timeLoopJobItemProvider;
 	}
 
 	/**
@@ -1395,7 +1303,6 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (itemTypeItemProvider != null) itemTypeItemProvider.dispose();
 		if (jobItemProvider != null) jobItemProvider.dispose();
 		if (instructionItemProvider != null) instructionItemProvider.dispose();
-		if (timeIteratorItemProvider != null) timeIteratorItemProvider.dispose();
 		if (spaceIteratorItemProvider != null) spaceIteratorItemProvider.dispose();
 		if (spaceIteratorRangeItemProvider != null) spaceIteratorRangeItemProvider.dispose();
 		if (spaceIteratorRefItemProvider != null) spaceIteratorRefItemProvider.dispose();
@@ -1415,9 +1322,6 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (real3ConstantItemProvider != null) real3ConstantItemProvider.dispose();
 		if (varRefItemProvider != null) varRefItemProvider.dispose();
 		if (iteratorRangeOrRefItemProvider != null) iteratorRangeOrRefItemProvider.dispose();
-		if (timeIteratorRefItemProvider != null) timeIteratorRefItemProvider.dispose();
-		if (instructionJobItemProvider != null) instructionJobItemProvider.dispose();
-		if (timeLoopJobItemProvider != null) timeLoopJobItemProvider.dispose();
 		if (instructionBlockItemProvider != null) instructionBlockItemProvider.dispose();
 		if (affectationItemProvider != null) affectationItemProvider.dispose();
 		if (loopItemProvider != null) loopItemProvider.dispose();

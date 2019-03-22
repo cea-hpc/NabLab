@@ -21,12 +21,13 @@ import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InstructionBlock
-import fr.cea.nabla.nabla.InstructionJob
 import fr.cea.nabla.nabla.IntConstant
+import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
+import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.MulOrDiv
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
@@ -43,18 +44,14 @@ import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRange
 import fr.cea.nabla.nabla.SpaceIteratorRef
-import fr.cea.nabla.nabla.TimeIterator
-import fr.cea.nabla.nabla.TimeIteratorRef
-import fr.cea.nabla.nabla.TimeLoopJob
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
-import fr.cea.nabla.nabla.VarRefimport fr.cea.nabla.nabla.Modulo
+import fr.cea.nabla.nabla.VarRef
 
 class LabelServices 
 {
 	// JOBS
-	static def dispatch String getLabel(InstructionJob it) { name + ' : ' + instruction.label }
-	static def dispatch String getLabel(TimeLoopJob it) { name + ' : \u2200' + iterator.label + ', '+ body.label }	
+	static def dispatch String getLabel(Job it) { name + ' : ' + instruction.label }
 	
 	// INSTRUCTIONS	
 	static def dispatch String getLabel(ScalarVarDefinition it) { type.literal + ' ' + variable.name + '=' + defaultValue.label }
@@ -65,7 +62,6 @@ class LabelServices
 	static def dispatch String getLabel(If it) { 'if ' + condition.label }
 
 	// ITERATEURS
-	static def dispatch String getLabel(TimeIterator it) { name + '\u2208 \u2115' }
 	static def dispatch String getLabel(SpaceIterator it) { name + '\u2208 ' + range.label }
 	static def dispatch String getLabel(SpaceIteratorRange it) { connectivity.name + '(' + args.map[label].join(',') + ')' }
 	static def dispatch String getLabel(SpaceIteratorRef it) 
@@ -103,15 +99,14 @@ class LabelServices
 	{
 		var label = variable.name
 		if (!spaceIterators.empty) label += '{' + spaceIterators.map[x | x.label].join(',') + '}'
-		if (timeIterator !== null) label += '^{' + timeIterator.label + '}'
+		if (hasTimeIterator) label += '^{n+1' + timeIteratorDiv.timeIteratorDivLabel + '}'
 		for (f : fields) label += '.' + f
 		return label
 	}
 
-	static def dispatch String getLabel(TimeIteratorRef it) 
+	private static def String getTimeIteratorDivLabel(int timeIteratorDiv) 
 	{ 
-		if (init) iterator.name + "=" + value
-		else if (next) iterator.name + "+" + value
-		else iterator.name
+		if (timeIteratorDiv == 0) ''
+		else '/' + timeIteratorDiv
 	}	
 }

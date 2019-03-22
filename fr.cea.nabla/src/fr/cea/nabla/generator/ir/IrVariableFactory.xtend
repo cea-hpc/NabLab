@@ -16,14 +16,13 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.VarExtensions
+import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.ScalarVariable
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.ArrayVar
 import fr.cea.nabla.nabla.ScalarVar
-import fr.cea.nabla.nabla.TimeIteratorRef
 import fr.cea.nabla.nabla.Var
-import fr.cea.nabla.ir.ir.ScalarVariable
-import fr.cea.nabla.ir.ir.ArrayVariable
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -45,9 +44,9 @@ class IrVariableFactory
 	 * A une variable Nabla peut correspondre plusieurs variables IR,
 	 * en fonction de l'itérateur en temps.
 	 */	
-	def Variable toIrVariable(Var v, TimeIteratorRef tr)
+	def Variable toIrVariable(Var v, String timeSuffix)
 	{
-		val varName = v.buildVarName(tr)
+		val varName = v.name + timeSuffix
 		switch v
 		{
 			ScalarVar : v.toIrScalarVariable(varName)
@@ -78,11 +77,5 @@ class IrVariableFactory
 		name = varName
 		type = v.basicType.toIrBasicType
 		v.dimensions.forEach[x | dimensions += x.toIrConnectivity]
-	}
-	
-	private def buildVarName(Var v, TimeIteratorRef i)
-	{
-		if (i !== null && i.next) v.name + '_' + i.iterator.name + '_plus_' + i.value
-		else v.name
 	}
 }

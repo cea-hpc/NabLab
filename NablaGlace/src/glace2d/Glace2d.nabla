@@ -147,8 +147,13 @@ ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C{j,r},X{r}))
 // * Itérations de la boucle en 'n'
 // * Et calcule du δt pour mise-à-jour du temps de la simulation
 // *************************************************************
-ComputeXn: ∀n∈ℕ, ∀r0∈nodes(), X{r0}^{n=0}=coord{r0}; , ∀r∈nodes(), X{r}^{n+1}=X{r}^{n}+δt^{n}*ur{r};
-ComputeUn: ∀n∈ℕ, ∀j0∈cells(), uj{j0}^{n=0}={0.0,0.0}; , ∀j∈cells(), uj{j}^{n+1}=uj{j}^{n}-(δt^{n}/m{j})*∑{r∈nodesOfCell(j)}(F{j,r});
-ComputeEn: ∀n∈ℕ, ∀j0∈cells(), E{j0}^{n=0}=p_ic{j0}/((γ-1.0)*ρ_ic{j0}); , ∀j∈cells(), E{j}^{n+1}=E{j}^{n} - (δt^{n} / m{j}) * ∑{r∈nodesOfCell(j)}(dot(F{j,r},ur{r}));
-ComputeDt: ∀n∈ℕ, δt^{n=0}=option_δt_ini;, δt^{n+1}=option_δt_cfl*reduceMin{j∈cells()}(δtj{j});
-ComputeTn: ∀n∈ℕ, t^{n=0}=0.0; , t^{n+1}=t^{n}+δt^{n+1};
+ComputeXn0: ∀r∈nodes(), X{r}=coord{r};
+ComputeXn: ∀r∈nodes(), X{r}^{n+1}=X{r}+δt*ur{r};
+ComputeUn0: ∀j∈cells(), uj{j}={0.0,0.0};
+ComputeUn: ∀j∈cells(), uj{j}^{n+1}=uj{j}-(δt/m{j})*∑{r∈nodesOfCell(j)}(F{j,r});
+ComputeEn0: ∀j∈cells(), E{j}=p_ic{j}/((γ-1.0)*ρ_ic{j});
+ComputeEn: ∀j∈cells(), E{j}^{n+1}=E{j} - (δt / m{j}) * ∑{r∈nodesOfCell(j)}(dot(F{j,r},ur{r}));
+ComputeDt0: δt=option_δt_ini;
+ComputeDt: δt^{n+1}=option_δt_cfl*reduceMin{j∈cells()}(δtj{j});
+ComputeTn0: t=0.0;
+ComputeTn: t^{n+1}=t+δt^{n+1};

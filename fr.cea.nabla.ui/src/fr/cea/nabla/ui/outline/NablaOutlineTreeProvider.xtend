@@ -19,7 +19,6 @@ import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.TimeLoopJob
 import java.util.List
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
@@ -78,13 +77,6 @@ class NablaOutlineTreeProvider extends DefaultOutlineTreeProvider
 		findChildren.forEach[x | createNode(parentNode, x)]
 	}
 	
-	// Evite d'avoir le n qui s'affiche...
-	def _createChildren(IOutlineNode parentNode, TimeLoopJob it) 
-	{
-		createNode(parentNode, initialization)
-		createNode(parentNode, body)
-	}
-
 	private def List<Instruction> findChildren(Instruction it)
 	{
 		switch(it)

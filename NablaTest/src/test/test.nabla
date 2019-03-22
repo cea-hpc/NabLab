@@ -15,6 +15,8 @@ module Test;
 
 with Math.*;
 
+items { cell, node }
+
 connectivities {
 	cells: (∅) → {cell};
 	nodes: (∅) → {node};
@@ -29,5 +31,11 @@ const ℕ Z_EDGE_ELEMS = 1;
 
 ℝ Y[cells], Cjr[cells, nodesOfCell], Z[nodes];
 
-MyJob: ∀j∈cells(), Y{j} = ∑{r∈nodesOfCell(j)}(Cjr{j,r} * Z{r});
-MyJob2: ∀r∈nodes(), Z{r} = ∑{j∈cellsOfNode(r)}(Cjr{j,r} * 4);
+//MyJob: ∀j∈cells(), Y{j} = ∑{r∈nodesOfCell(j)}(Cjr{j,r} * Z{r});
+//MyJob2: ∀r∈nodes(), Z{r} = ∑{j∈cellsOfNode(r)}(Cjr{j,r} * 4);
+
+MyJobAgain: ∀j∈cells(), {
+	∀r∈nodes(), Z{r} = 0.0;
+	∀r1∈nodesOfCell(j), Z{r1} = ∑{r2∈nodes()}(Z{r2});
+	Y{j} = 0.0;
+}

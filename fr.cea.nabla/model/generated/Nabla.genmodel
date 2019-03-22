@@ -32,11 +32,9 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Job">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Job/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Job/instruction"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Instruction"/>
-    <genClasses ecoreClass="Nabla.ecore#//TimeIterator">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//TimeIterator/name"/>
-    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//SpaceIterator">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SpaceIterator/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SpaceIterator/range"/>
@@ -106,24 +104,11 @@
     <genClasses ecoreClass="Nabla.ecore#//VarRef">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarRef/variable"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarRef/spaceIterators"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarRef/timeIterator"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//VarRef/hasTimeIterator"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//VarRef/timeIteratorDiv"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//VarRef/fields"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//IteratorRangeOrRef"/>
-    <genClasses ecoreClass="Nabla.ecore#//TimeIteratorRef">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeIteratorRef/iterator"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//TimeIteratorRef/init"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//TimeIteratorRef/next"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//TimeIteratorRef/value"/>
-    </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//InstructionJob">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//InstructionJob/instruction"/>
-    </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//TimeLoopJob">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeLoopJob/iterator"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeLoopJob/initialization"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeLoopJob/body"/>
-    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//InstructionBlock">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//InstructionBlock/instructions"/>
     </genClasses>

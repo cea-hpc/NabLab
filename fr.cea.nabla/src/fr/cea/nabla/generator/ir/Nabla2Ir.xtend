@@ -17,10 +17,10 @@ import com.google.inject.Inject
 import fr.cea.nabla.FunctionCallExtensions
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
-import fr.cea.nabla.nabla.TimeLoopJob
 import fr.cea.nabla.nabla.VarGroupDeclaration
 
 class Nabla2Ir
@@ -66,7 +66,7 @@ class Nabla2Ir
 		//m.variables.filter(GlobalVariableDeclarationBlock).forEach[x | x.populateIrJobs(jobs)]
 				
 		// il faut créer les variables au temps n+1 et les jobs de copie de Xn+1 <- Xn
-		m.jobs.filter(TimeLoopJob).forEach[x | x.populateIrVariablesAndJobs(variables, jobs)]
+		m.jobs.filter(Job).forEach[x | x.populateIrVariablesAndJobs(variables, jobs)]
 	
 		m.jobs.forEach[x | x.populateIrJobs(jobs)]
 	}

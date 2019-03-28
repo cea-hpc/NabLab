@@ -11,7 +11,7 @@
  * 	Marie-Pierre Oudot - initial implementation
  * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
-module Glace2d; 
+module Glace2d;
 
 with Math.*;
 

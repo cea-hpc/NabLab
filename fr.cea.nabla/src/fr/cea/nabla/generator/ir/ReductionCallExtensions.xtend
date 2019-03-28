@@ -16,6 +16,7 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.FunctionCallExtensions
+import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.ReductionCall
 
@@ -35,7 +36,7 @@ class ReductionCallExtensions
 	
 	def create IrFactory::eINSTANCE.createScalarVariable toIrLocalVariable(ReductionCall rc)
 	{
-		name = rc.reduction.name + rc.hashCode
+		name = rc.reduction.name + Utils::hashString(rc)
 		type = rc.declaration.returnType.toIrBasicType
 		defaultValue = rc.declaration.seed.toIrExpression
 	}

@@ -79,7 +79,7 @@ class IndexHelper
 		}
 		
 		private static def dispatch getArgName(IteratorRef it) { iterator.name }
-		private static def dispatch getArgName(IteratorRange it) { 'range' + it.hashCode.toString }
+		private static def dispatch getArgName(IteratorRange it) { 'range' + fr.cea.nabla.ir.Utils::hashString(it) }
 	}
 	
 	def getRequiredIndexes(Loop context)

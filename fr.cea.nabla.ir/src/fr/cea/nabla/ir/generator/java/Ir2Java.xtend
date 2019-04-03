@@ -40,13 +40,6 @@ class Ir2Java extends IrGenerator
 
 	new() { super(FileExtension, TransformationSteps) }
 	
-	/**
-	 * TODO améliorer le scope des itérateurs de reduction
-	 * TODO reporter les annotations en infos de debug. Comment ?
-	 * TODO : filtrer les propositions de complétion pour l'itérateur en fonction du type
-	 * TODO bug : operator multiply (1 / 4) -> appel multiply (int avec v=0) au lieu de multiply(double)
-	 * TODO : parallélisme de taches du graphe en Kokkos et Java.
-	 */
 	override getFileContent(IrModule it)
 	'''
 		package «name.toLowerCase»;

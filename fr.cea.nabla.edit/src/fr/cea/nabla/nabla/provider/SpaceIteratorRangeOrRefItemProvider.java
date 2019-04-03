@@ -21,12 +21,12 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 
 /**
- * This is the item provider adapter for a {@link fr.cea.nabla.nabla.IteratorRangeOrRef} object.
+ * This is the item provider adapter for a {@link fr.cea.nabla.nabla.SpaceIteratorRangeOrRef} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class IteratorRangeOrRefItemProvider 
+public class SpaceIteratorRangeOrRefItemProvider 
 	extends ItemProviderAdapter
 	implements
 		IEditingDomainItemProvider,
@@ -40,7 +40,7 @@ public class IteratorRangeOrRefItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public IteratorRangeOrRefItemProvider(AdapterFactory adapterFactory) {
+	public SpaceIteratorRangeOrRefItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -60,14 +60,14 @@ public class IteratorRangeOrRefItemProvider
 	}
 
 	/**
-	 * This returns IteratorRangeOrRef.gif.
+	 * This returns SpaceIteratorRangeOrRef.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/IteratorRangeOrRef"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/SpaceIteratorRangeOrRef"));
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class IteratorRangeOrRefItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_IteratorRangeOrRef_type");
+		return getString("_UI_SpaceIteratorRangeOrRef_type");
 	}
 
 

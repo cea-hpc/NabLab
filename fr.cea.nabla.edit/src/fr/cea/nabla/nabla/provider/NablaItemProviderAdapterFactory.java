@@ -211,6 +211,29 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.SpaceIteratorRangeOrRef} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected SpaceIteratorRangeOrRefItemProvider spaceIteratorRangeOrRefItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.SpaceIteratorRangeOrRef}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createSpaceIteratorRangeOrRefAdapter() {
+		if (spaceIteratorRangeOrRefItemProvider == null) {
+			spaceIteratorRangeOrRefItemProvider = new SpaceIteratorRangeOrRefItemProvider(this);
+		}
+
+		return spaceIteratorRangeOrRefItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.SpaceIteratorRange} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -599,29 +622,6 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		}
 
 		return varRefItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.IteratorRangeOrRef} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected IteratorRangeOrRefItemProvider iteratorRangeOrRefItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.IteratorRangeOrRef}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createIteratorRangeOrRefAdapter() {
-		if (iteratorRangeOrRefItemProvider == null) {
-			iteratorRangeOrRefItemProvider = new IteratorRangeOrRefItemProvider(this);
-		}
-
-		return iteratorRangeOrRefItemProvider;
 	}
 
 	/**
@@ -1304,6 +1304,7 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (jobItemProvider != null) jobItemProvider.dispose();
 		if (instructionItemProvider != null) instructionItemProvider.dispose();
 		if (spaceIteratorItemProvider != null) spaceIteratorItemProvider.dispose();
+		if (spaceIteratorRangeOrRefItemProvider != null) spaceIteratorRangeOrRefItemProvider.dispose();
 		if (spaceIteratorRangeItemProvider != null) spaceIteratorRangeItemProvider.dispose();
 		if (spaceIteratorRefItemProvider != null) spaceIteratorRefItemProvider.dispose();
 		if (scalarVarDefinitionItemProvider != null) scalarVarDefinitionItemProvider.dispose();
@@ -1321,7 +1322,6 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (real2ConstantItemProvider != null) real2ConstantItemProvider.dispose();
 		if (real3ConstantItemProvider != null) real3ConstantItemProvider.dispose();
 		if (varRefItemProvider != null) varRefItemProvider.dispose();
-		if (iteratorRangeOrRefItemProvider != null) iteratorRangeOrRefItemProvider.dispose();
 		if (instructionBlockItemProvider != null) instructionBlockItemProvider.dispose();
 		if (affectationItemProvider != null) affectationItemProvider.dispose();
 		if (loopItemProvider != null) loopItemProvider.dispose();

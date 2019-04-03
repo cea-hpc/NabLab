@@ -460,9 +460,9 @@ private:
 			for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.size(); jCellsOfNodeR++)
 			{
 				int jId = cellsOfNodeR[jCellsOfNodeR];
+				int jCells = jId;
 				auto nodesOfCellJ = mesh->getNodesOfCell(jId);
 				int rNodesOfCellJ = Utils::indexOf(nodesOfCellJ,rId);
-				int jCells = jId;
 				sum307004776 = sum307004776 + (Ajr(jCells,rNodesOfCellJ));
 			}
 			Ar(rNodes) = sum307004776;

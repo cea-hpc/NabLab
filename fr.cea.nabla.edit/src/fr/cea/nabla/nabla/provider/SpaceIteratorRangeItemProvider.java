@@ -26,7 +26,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * <!-- end-user-doc -->
  * @generated
  */
-public class SpaceIteratorRangeItemProvider extends IteratorRangeOrRefItemProvider {
+public class SpaceIteratorRangeItemProvider extends SpaceIteratorRangeOrRefItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
@@ -157,6 +157,16 @@ public class SpaceIteratorRangeItemProvider extends IteratorRangeOrRefItemProvid
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.SPACE_ITERATOR_RANGE__ARGS,
+				 NablaFactory.eINSTANCE.createSpaceIteratorRangeOrRef()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.SPACE_ITERATOR_RANGE__ARGS,
+				 NablaFactory.eINSTANCE.createSpaceIteratorRange()));
 
 		newChildDescriptors.add
 			(createChildParameter

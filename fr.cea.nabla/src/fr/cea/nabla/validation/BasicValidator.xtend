@@ -199,10 +199,23 @@ class BasicValidator  extends AbstractNablaValidator
 		{
 			for (i : 0..<args.length)
 			{
-				val actualT = args.get(i).iterator.range.connectivity.returnType.type
+				val si = args.get(i)
 				val expectedT = connectivity.inTypes.get(i)
-				if (actualT != expectedT)
-					error('Wrong arguments: Expected ' + expectedT.name + ', but was ' + actualT.name, NablaPackage.Literals::SPACE_ITERATOR_RANGE__ARGS, i)
+				switch si
+				{
+					SpaceIteratorRange: 
+					{
+						val actualT = si.connectivity.returnType.type
+						if (actualT != expectedT)
+							error('Wrong arguments: Expected ' + expectedT.name + ', but was ' + actualT.name, NablaPackage.Literals::SPACE_ITERATOR_RANGE__ARGS, i)
+					}
+					SpaceIteratorRef:
+					{
+						val actualT = si.iterator.range.connectivity.returnType.type
+						if (actualT != expectedT)
+							error('Wrong arguments: Expected ' + expectedT.name + ', but was ' + actualT.name, NablaPackage.Literals::SPACE_ITERATOR_RANGE__ARGS, i)
+					}
+				}
 			}
 		}
 	}

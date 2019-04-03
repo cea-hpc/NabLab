@@ -248,7 +248,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="IteratorRange" eSuperTypes="#//IteratorRangeOrRef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="connectivity" lowerBound="1"
         eType="#//Connectivity"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="args" upperBound="-1" eType="#//IteratorRef"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="args" upperBound="-1" eType="#//IteratorRangeOrRef"
         containment="true" resolveProxies="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IteratorRef" eSuperTypes="#//IteratorRangeOrRef">

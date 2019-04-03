@@ -46,7 +46,8 @@ Instruction:
 
 /* ITERATEURS ********************************************/
 SpaceIterator: name=ID '\u2208' range=SpaceIteratorRange;
-SpaceIteratorRange: connectivity=[Connectivity]  '('(args+=SpaceIteratorRef (',' args+=SpaceIteratorRef)*)?')';
+SpaceIteratorRangeOrRef: SpaceIteratorRange | SpaceIteratorRef;
+SpaceIteratorRange: connectivity=[Connectivity]  '('(args+=SpaceIteratorRangeOrRef (',' args+=SpaceIteratorRangeOrRef)*)?')';
 SpaceIteratorRef: ((prev?='\u25C4'|next?='\u25BA') '(' iterator=[SpaceIterator] ')') | iterator=[SpaceIterator];
 
 /* VARIABLES ********************************************/
@@ -111,11 +112,9 @@ Atomic returns Expression:
 Real2Constant: '{' x=REAL ',' y=REAL '}';
 Real3Constant: '{' x=REAL ',' y=REAL ',' z=REAL '}';
 VarRef: variable=[Var] 
-	('{' spaceIterators+=IteratorRangeOrRef (',' spaceIterators+=IteratorRangeOrRef)* '}')? 
+	('{' spaceIterators+=SpaceIteratorRangeOrRef (',' spaceIterators+=SpaceIteratorRangeOrRef)* '}')? 
 	('^{' hasTimeIterator?='n+1' ('/' timeIteratorDiv=INT)? '}')?  
 	('.' fields+=ID)*;
-
-IteratorRangeOrRef: SpaceIteratorRange | SpaceIteratorRef;
 
 
 /* ENUMS *************************************************/

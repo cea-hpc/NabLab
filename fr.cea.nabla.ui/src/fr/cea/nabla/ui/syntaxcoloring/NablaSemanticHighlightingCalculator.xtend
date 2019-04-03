@@ -102,7 +102,7 @@ class NablaSemanticHighlightingCalculator implements ISemanticHighlightingCalcul
 		val s = node.text.trim
 		//println('node info - text:' + s + ', offset:' + node.offset + ', length:' + node.length)
 		
-		val offset = s.indexOf('(')
+		val offset = s.lastIndexOf('(')
 		val lastIndex = s.indexOf(')')
 		val length = lastIndex-offset-1
 		if (offset != -1 && lastIndex != -1 && length > 0)

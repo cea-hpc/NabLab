@@ -33,12 +33,13 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="range" eType="#//SpaceIteratorRange"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SpaceIteratorRange" eSuperTypes="#//IteratorRangeOrRef">
+  <eClassifiers xsi:type="ecore:EClass" name="SpaceIteratorRangeOrRef"/>
+  <eClassifiers xsi:type="ecore:EClass" name="SpaceIteratorRange" eSuperTypes="#//SpaceIteratorRangeOrRef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="connectivity" eType="#//Connectivity"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="args" upperBound="-1" eType="#//SpaceIteratorRef"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="args" upperBound="-1" eType="#//SpaceIteratorRangeOrRef"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SpaceIteratorRef" eSuperTypes="#//IteratorRangeOrRef">
+  <eClassifiers xsi:type="ecore:EClass" name="SpaceIteratorRef" eSuperTypes="#//SpaceIteratorRangeOrRef">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="prev" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="next" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterator" eType="#//SpaceIterator"/>
@@ -109,13 +110,12 @@
   <eClassifiers xsi:type="ecore:EClass" name="VarRef" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//Var"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="spaceIterators" upperBound="-1"
-        eType="#//IteratorRangeOrRef" containment="true"/>
+        eType="#//SpaceIteratorRangeOrRef" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="hasTimeIterator" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeIteratorDiv" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="fields" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="IteratorRangeOrRef"/>
   <eClassifiers xsi:type="ecore:EEnum" name="BasicType">
     <eLiterals name="Int" literal="ℕ"/>
     <eLiterals name="Real" value="1" literal="ℝ"/>

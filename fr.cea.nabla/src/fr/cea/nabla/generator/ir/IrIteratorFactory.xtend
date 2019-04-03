@@ -43,7 +43,7 @@ class IrIteratorFactory
 	{
 		annotations += range.toIrAnnotation
 		connectivity = range.connectivity.toIrConnectivity
-		range.args.forEach[x | args += x.toIrIteratorRef]
+		range.args.forEach[x | args += x.toIrIteratorRangeOrRef]
 	}
 
 	def create IrFactory::eINSTANCE.createIteratorRef toIrIteratorRef(SpaceIteratorRef ref)

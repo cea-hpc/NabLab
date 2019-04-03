@@ -39,6 +39,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SpaceIterator/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SpaceIterator/range"/>
     </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//SpaceIteratorRangeOrRef"/>
     <genClasses ecoreClass="Nabla.ecore#//SpaceIteratorRange">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//SpaceIteratorRange/connectivity"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SpaceIteratorRange/args"/>
@@ -108,7 +109,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//VarRef/timeIteratorDiv"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//VarRef/fields"/>
     </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//IteratorRangeOrRef"/>
     <genClasses ecoreClass="Nabla.ecore#//InstructionBlock">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//InstructionBlock/instructions"/>
     </genClasses>

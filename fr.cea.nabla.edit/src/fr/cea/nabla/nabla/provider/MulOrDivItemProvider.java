@@ -190,6 +190,11 @@ public class MulOrDivItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.MUL_OR_DIV__LEFT,
+				 NablaFactory.eINSTANCE.createContractedIf()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MUL_OR_DIV__LEFT,
 				 NablaFactory.eINSTANCE.createOr()));
 
 		newChildDescriptors.add
@@ -311,6 +316,11 @@ public class MulOrDivItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.MUL_OR_DIV__RIGHT,
 				 NablaFactory.eINSTANCE.createVarRef()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MUL_OR_DIV__RIGHT,
+				 NablaFactory.eINSTANCE.createContractedIf()));
 
 		newChildDescriptors.add
 			(createChildParameter

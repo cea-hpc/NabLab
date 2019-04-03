@@ -18,6 +18,7 @@ import fr.cea.nabla.FunctionCallExtensions
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
+import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
@@ -58,6 +59,7 @@ class ExpressionTypeProvider
 	{
 		switch (e) 
 		{
+			ContractedIf: e.then?.typeFor // then.typeFor == else.typeFor
 			IntConstant: BasicTypeProvider::INT
 			RealConstant: BasicTypeProvider::REAL
 			Real2Constant: BasicTypeProvider::REAL2
@@ -114,9 +116,10 @@ class ExpressionTypeProvider
 	def NablaType getTypeForWithoutFields(VarRef it)
 	{
 		// type de la variable
-		if (variable === null) NablaType::UNDEFINED
+		if (variable === null || variable.eIsProxy) NablaType::UNDEFINED
 		else
 		{
+			println('VARTYPE : ' + variable.name + ' -' + variable.eIsProxy)
 			val varType = variable.typeFor
 			// s'il y a plus d'iterateur que le type n'a de dimension ==> UNDEFINED
 			if (varType===NablaType::UNDEFINED || (varType.dimension - spaceIterators.length) < 0)  

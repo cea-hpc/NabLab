@@ -190,6 +190,11 @@ public class ComparisonItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.COMPARISON__LEFT,
+				 NablaFactory.eINSTANCE.createContractedIf()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.COMPARISON__LEFT,
 				 NablaFactory.eINSTANCE.createOr()));
 
 		newChildDescriptors.add
@@ -311,6 +316,11 @@ public class ComparisonItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.COMPARISON__RIGHT,
 				 NablaFactory.eINSTANCE.createVarRef()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.COMPARISON__RIGHT,
+				 NablaFactory.eINSTANCE.createContractedIf()));
 
 		newChildDescriptors.add
 			(createChildParameter

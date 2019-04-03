@@ -4,7 +4,7 @@
 package fr.cea.nabla.nabla.provider;
 
 
-import fr.cea.nabla.nabla.Equality;
+import fr.cea.nabla.nabla.ContractedIf;
 import fr.cea.nabla.nabla.NablaFactory;
 import fr.cea.nabla.nabla.NablaPackage;
 
@@ -16,25 +16,23 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
-import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link fr.cea.nabla.nabla.Equality} object.
+ * This is the item provider adapter for a {@link fr.cea.nabla.nabla.ContractedIf} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class EqualityItemProvider extends ExpressionItemProvider {
+public class ContractedIfItemProvider extends ExpressionItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EqualityItemProvider(AdapterFactory adapterFactory) {
+	public ContractedIfItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -49,31 +47,8 @@ public class EqualityItemProvider extends ExpressionItemProvider {
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addOpPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the Op feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addOpPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Equality_op_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Equality_op_feature", "_UI_Equality_type"),
-				 NablaPackage.Literals.EQUALITY__OP,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
 	}
 
 	/**
@@ -88,8 +63,9 @@ public class EqualityItemProvider extends ExpressionItemProvider {
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(NablaPackage.Literals.EQUALITY__LEFT);
-			childrenFeatures.add(NablaPackage.Literals.EQUALITY__RIGHT);
+			childrenFeatures.add(NablaPackage.Literals.CONTRACTED_IF__CONDITION);
+			childrenFeatures.add(NablaPackage.Literals.CONTRACTED_IF__THEN);
+			childrenFeatures.add(NablaPackage.Literals.CONTRACTED_IF__ELSE);
 		}
 		return childrenFeatures;
 	}
@@ -108,14 +84,14 @@ public class EqualityItemProvider extends ExpressionItemProvider {
 	}
 
 	/**
-	 * This returns Equality.gif.
+	 * This returns ContractedIf.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Equality"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/ContractedIf"));
 	}
 
 	/**
@@ -126,10 +102,7 @@ public class EqualityItemProvider extends ExpressionItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((Equality)object).getOp();
-		return label == null || label.length() == 0 ?
-			getString("_UI_Equality_type") :
-			getString("_UI_Equality_type") + " " + label;
+		return getString("_UI_ContractedIf_type");
 	}
 
 
@@ -144,12 +117,10 @@ public class EqualityItemProvider extends ExpressionItemProvider {
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(Equality.class)) {
-			case NablaPackage.EQUALITY__OP:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
-			case NablaPackage.EQUALITY__LEFT:
-			case NablaPackage.EQUALITY__RIGHT:
+		switch (notification.getFeatureID(ContractedIf.class)) {
+			case NablaPackage.CONTRACTED_IF__CONDITION:
+			case NablaPackage.CONTRACTED_IF__THEN:
+			case NablaPackage.CONTRACTED_IF__ELSE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -169,262 +140,392 @@ public class EqualityItemProvider extends ExpressionItemProvider {
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createExpression()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createReal2Constant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createReal3Constant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createContractedIf()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createOr()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createAnd()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createEquality()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createComparison()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createPlus()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createMinus()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createParenthesis()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createUnaryMinus()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createNot()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createIntConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createRealConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createBoolConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createReal2x2Constant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createReal3x3Constant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createRealXCompactConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createMinConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createMaxConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createFunctionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
+				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createExpression()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createReal2Constant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createReal3Constant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createContractedIf()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createOr()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createAnd()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createEquality()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createComparison()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createPlus()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createMinus()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createParenthesis()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createUnaryMinus()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createNot()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createIntConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createRealConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createBoolConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createReal2x2Constant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createReal3x3Constant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createRealXCompactConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createMinConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createMaxConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createFunctionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
+				(NablaPackage.Literals.CONTRACTED_IF__THEN,
+				 NablaFactory.eINSTANCE.createReductionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createExpression()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createReal2Constant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createReal3Constant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createVarRef()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createContractedIf()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createOr()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createAnd()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createEquality()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createComparison()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createPlus()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createMinus()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createModulo()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createParenthesis()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createUnaryMinus()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createNot()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createIntConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createRealConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createBoolConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createReal2x2Constant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createReal3x3Constant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createRealXCompactConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createMinConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createMaxConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
+				 NablaFactory.eINSTANCE.createFunctionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 	}
 
@@ -440,8 +541,9 @@ public class EqualityItemProvider extends ExpressionItemProvider {
 		Object childObject = child;
 
 		boolean qualify =
-			childFeature == NablaPackage.Literals.EQUALITY__LEFT ||
-			childFeature == NablaPackage.Literals.EQUALITY__RIGHT;
+			childFeature == NablaPackage.Literals.CONTRACTED_IF__CONDITION ||
+			childFeature == NablaPackage.Literals.CONTRACTED_IF__THEN ||
+			childFeature == NablaPackage.Literals.CONTRACTED_IF__ELSE;
 
 		if (qualify) {
 			return getString

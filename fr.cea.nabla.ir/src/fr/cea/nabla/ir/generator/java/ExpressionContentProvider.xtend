@@ -36,12 +36,15 @@ import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
 import fr.cea.nabla.ir.ir.Variable
 
-import static extension fr.cea.nabla.ir.VariableExtensions.isScalarConst
+import static extension fr.cea.nabla.ir.VariableExtensions.isScalarConstimport fr.cea.nabla.ir.ir.ContractedIf
 
 class ExpressionContentProvider
 {
 	@Inject extension Utils
 	@Inject extension Ir2JavaUtils
+	
+	def dispatch CharSequence getContent(ContractedIf it) 
+	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
 	
 	def dispatch CharSequence getContent(BinaryExpression it) 
 	{

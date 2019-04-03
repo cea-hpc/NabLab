@@ -190,6 +190,11 @@ public class ModuloItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.MODULO__LEFT,
+				 NablaFactory.eINSTANCE.createContractedIf()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MODULO__LEFT,
 				 NablaFactory.eINSTANCE.createOr()));
 
 		newChildDescriptors.add
@@ -311,6 +316,11 @@ public class ModuloItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.MODULO__RIGHT,
 				 NablaFactory.eINSTANCE.createVarRef()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MODULO__RIGHT,
+				 NablaFactory.eINSTANCE.createContractedIf()));
 
 		newChildDescriptors.add
 			(createChildParameter

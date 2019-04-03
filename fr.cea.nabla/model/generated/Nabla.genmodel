@@ -125,6 +125,11 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//If/then"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//If/else"/>
     </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//ContractedIf">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ContractedIf/condition"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ContractedIf/then"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ContractedIf/else"/>
+    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Or">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Or/left"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Or/op"/>

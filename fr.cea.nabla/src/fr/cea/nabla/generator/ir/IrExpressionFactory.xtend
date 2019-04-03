@@ -24,6 +24,7 @@ import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BasicType
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
+import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.IntConstant
@@ -57,6 +58,18 @@ class IrExpressionFactory
 	@Inject extension ExpressionTypeProvider
 	@Inject extension ReductionCallExtensions
 	@Inject extension VarRefExtensions
+	
+	def dispatch Expression toIrExpression(ContractedIf e) 
+	{ 
+		IrFactory::eINSTANCE.createContractedIf =>
+		[
+			annotations += e.toIrAnnotation
+			type = e.typeFor?.toIrExpressionType
+			condition = e.condition.toIrExpression
+			thenExpression = e.then.toIrExpression
+			elseExpression = e.^else.toIrExpression
+		]
+	}
 	
 	def dispatch Expression toIrExpression(Or e) { e.toIrBinaryExpr(e.left, e.right, e.op) }
 	def dispatch Expression toIrExpression(And e) { e.toIrBinaryExpr(e.left, e.right, e.op) }

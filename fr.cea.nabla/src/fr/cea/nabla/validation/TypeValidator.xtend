@@ -17,6 +17,7 @@ import com.google.inject.Inject
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.Comparison
+import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
@@ -147,6 +148,15 @@ class TypeValidator extends BasicValidator
 		}
 	}
 	
+	
+	@Check def checkType(ContractedIf it) 
+	{ 
+		val condType = condition.typeFor
+		val thenType = then.typeFor
+		val elseType = ^else.typeFor
+		checkExpectedType(condType, BasicTypeProvider::BOOL, np.contractedIf_Condition)
+		checkExpectedType(thenType, elseType, np.contractedIf_Else)
+	}
 	
 	@Check def checkType(Not it) { checkExpectedType(expression?.typeFor, BasicTypeProvider::BOOL, np.not_Expression) }
 	// UnaryMinus fonctionne avec tous les types

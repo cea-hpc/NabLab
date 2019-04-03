@@ -17,6 +17,7 @@ import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
+import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
@@ -72,6 +73,7 @@ class LabelServices
 	}
 
 	// EXPRESSIONS
+	static def dispatch String getLabel(ContractedIf it) { condition.label + ' ? ' + then.label + ' : ' + ^else.label }
 	static def dispatch String getLabel(Or it) { left.label + ' || ' + right.label }
 	static def dispatch String getLabel(And it) { left.label + ' && ' + right.label }
 	static def dispatch String getLabel(Equality it) { left.label + ' == ' + right.label }

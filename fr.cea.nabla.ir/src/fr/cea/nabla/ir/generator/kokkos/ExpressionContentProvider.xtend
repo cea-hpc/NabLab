@@ -19,6 +19,7 @@ import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
+import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.IteratorRange
@@ -44,6 +45,9 @@ class ExpressionContentProvider
 	@Inject extension Utils
 	@Inject extension Ir2KokkosUtils
 	
+	def dispatch CharSequence getContent(ContractedIf it) 
+	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
+
 	def dispatch CharSequence getContent(BinaryExpression it) '''«left.content» «operator» «right.content»'''
 	def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
 	def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''

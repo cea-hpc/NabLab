@@ -17,6 +17,7 @@ import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.BasicType
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
+import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.IteratorRef
@@ -34,6 +35,9 @@ import fr.cea.nabla.ir.ir.VarRef
 class ExpressionContentProvider
 {
 	@Inject extension Ir2NUtils
+
+	def dispatch CharSequence getContent(ContractedIf it) 
+	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
 
 	def dispatch CharSequence getContent(BinaryExpression it) '''«left.content» «operator» «right.content»'''
 	def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''

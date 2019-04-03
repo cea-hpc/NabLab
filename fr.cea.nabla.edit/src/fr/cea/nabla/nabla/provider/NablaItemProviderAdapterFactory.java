@@ -717,6 +717,29 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.ContractedIf} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ContractedIfItemProvider contractedIfItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.ContractedIf}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createContractedIfAdapter() {
+		if (contractedIfItemProvider == null) {
+			contractedIfItemProvider = new ContractedIfItemProvider(this);
+		}
+
+		return contractedIfItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Or} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1326,6 +1349,7 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (affectationItemProvider != null) affectationItemProvider.dispose();
 		if (loopItemProvider != null) loopItemProvider.dispose();
 		if (ifItemProvider != null) ifItemProvider.dispose();
+		if (contractedIfItemProvider != null) contractedIfItemProvider.dispose();
 		if (orItemProvider != null) orItemProvider.dispose();
 		if (andItemProvider != null) andItemProvider.dispose();
 		if (equalityItemProvider != null) equalityItemProvider.dispose();

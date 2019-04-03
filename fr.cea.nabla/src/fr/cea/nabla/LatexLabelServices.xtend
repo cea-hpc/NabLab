@@ -17,6 +17,7 @@ import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
+import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
@@ -72,6 +73,7 @@ class LatexLabelServices
 	}
 
 	// EXPRESSIONS
+	static def dispatch String getLatex(ContractedIf it) { condition.latex + ' ? ' + then.latex + ' : ' + ^else.latex }
 	static def dispatch String getLatex(Or it) { left.latex + ' or ' + right.latex }
 	static def dispatch String getLatex(And it) { left.latex + ' and ' + right.latex }
 	static def dispatch String getLatex(Equality it) { left.latex + ' == ' + right.latex }

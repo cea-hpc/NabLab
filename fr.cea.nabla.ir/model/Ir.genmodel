@@ -137,6 +137,11 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExpressionType/basicType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExpressionType/dimension"/>
     </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//ContractedIf">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ContractedIf/condition"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ContractedIf/thenExpression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ContractedIf/elseExpression"/>
+    </genClasses>
     <genClasses ecoreClass="Ir.ecore#//BinaryExpression">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//BinaryExpression/operator"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//BinaryExpression/left"/>

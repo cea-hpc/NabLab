@@ -68,7 +68,10 @@ Reduction: name=ID ':' argGroups+=ReductionArg (',' argGroups+=ReductionArg)* ';
 ReductionArg:  '(' seed=Expression ',' collectionType=BasicType ')' '\u2192' returnType=BasicType;
 
 /* EXPRESSIONS ******************************************/
-Expression: Or;
+Expression: ContractedIf;
+
+ContractedIf returns Expression:
+	Or ({ContractedIf.condition=current} '?' then=Or ':' else=Or)*;
 
 Or returns Expression: // on garde l'attribut op pour la validation
 	And ({Or.left=current} op='||' right=And)*;
@@ -92,7 +95,10 @@ Modulo returns Expression:
 	Primary ({Modulo.left=current} op=('%') right=Primary)*;
 
 Primary returns Expression:
-	{Parenthesis} '(' expression=Expression ')' | {UnaryMinus} '-' expression=Primary | {Not} '!' expression=Primary | Atomic;
+	{Parenthesis} '(' expression=Expression ')' | 
+	{UnaryMinus} '-' expression=Primary | 
+	{Not} '!' expression=Primary | 
+	Atomic;
 
 Atomic returns Expression:
 	{IntConstant} value=INT |

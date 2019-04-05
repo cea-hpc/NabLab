@@ -16,9 +16,8 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.IteratorRangeOrRef
+import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.SpaceIterator
-import fr.cea.nabla.nabla.SpaceIteratorRange
 import fr.cea.nabla.nabla.SpaceIteratorRef
 
 /**
@@ -36,24 +35,21 @@ class IrIteratorFactory
 	{
 		annotations += si.toIrAnnotation
 		name = si.name
-		range = si.range.toIrIteratorRange
+		call = si.call.toIrConnectivityCall
 	}
 	
-	def create IrFactory::eINSTANCE.createIteratorRange toIrIteratorRange(SpaceIteratorRange range)
+	def create IrFactory::eINSTANCE.createConnectivityCall toIrConnectivityCall(ConnectivityCall range)
 	{
 		annotations += range.toIrAnnotation
 		connectivity = range.connectivity.toIrConnectivity
-		range.args.forEach[x | args += x.toIrIteratorRangeOrRef]
+		range.args.forEach[x | args += x.toIrIteratorRef]
 	}
 
 	def create IrFactory::eINSTANCE.createIteratorRef toIrIteratorRef(SpaceIteratorRef ref)
 	{
 		annotations += ref.toIrAnnotation
-		iterator = ref.iterator.toIrIterator
+		target = ref.target.toIrIterator
 		prev = ref.prev
 		next = ref.next
 	}
-	
-	def dispatch IteratorRangeOrRef toIrIteratorRangeOrRef(SpaceIteratorRange r) { r.toIrIteratorRange }
-	def dispatch IteratorRangeOrRef toIrIteratorRangeOrRef(SpaceIteratorRef r) { r.toIrIteratorRef }
 }

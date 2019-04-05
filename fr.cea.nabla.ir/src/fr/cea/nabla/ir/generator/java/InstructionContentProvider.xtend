@@ -50,7 +50,7 @@ class InstructionContentProvider
 	 */
 	def dispatch CharSequence getContent(ReductionInstruction it) 
 	'''
-		«variable.javaType» «variable.name» = IntStream.range(0, «reduction.iterator.range.connectivity.nbElems»).boxed().parallel().reduce(
+		«variable.javaType» «variable.name» = IntStream.range(0, «reduction.iterator.call.connectivity.nbElems»).boxed().parallel().reduce(
 			«variable.defaultValue.content», 
 			(r, «IndexFactory::createIndex(reduction.iterator).label») -> «reduction.javaName»(r, «reduction.arg.content»),
 			(r1, r2) -> «reduction.javaName»(r1, r2)
@@ -101,8 +101,8 @@ class InstructionContentProvider
 	private def addParallelLoop(Iterator it, Loop l)
 	'''
 		«val itIndex = IndexFactory::createIndex(it)»
-		«IF !range.connectivity.indexEqualId»int[] «itIndex.containerName» = «range.accessor»;«ENDIF»
-		IntStream.range(0, «range.connectivity.nbElems»).parallel().forEach(«itIndex.label» -> 
+		«IF !call.connectivity.indexEqualId»int[] «itIndex.containerName» = «call.accessor»;«ENDIF»
+		IntStream.range(0, «call.connectivity.nbElems»).parallel().forEach(«itIndex.label» -> 
 		{
 			«IF needIdFor(l)»int «name»Id = «indexToId(itIndex)»;«ENDIF»
 			«FOR index : getRequiredIndexes(l)»
@@ -115,7 +115,7 @@ class InstructionContentProvider
 	private def addSequentialLoop(Iterator it, Loop l)
 	'''
 		«val itIndex = IndexFactory::createIndex(it)»
-		int[] «itIndex.containerName» = «range.accessor»;
+		int[] «itIndex.containerName» = «call.accessor»;
 		for (int «itIndex.label»=0; «itIndex.label»<«itIndex.containerName».length; «itIndex.label»++)
 		{
 			«IF needPrev(l)»int «prev(itIndex.label)» = («itIndex.label»-1+«itIndex.containerName».length)%«itIndex.containerName».length;«ENDIF»

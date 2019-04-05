@@ -23,7 +23,6 @@ import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.IntConstant
-import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
@@ -40,8 +39,6 @@ import fr.cea.nabla.nabla.Real3x3Constant
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealXCompactConstant
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.nabla.SpaceIteratorRange
-import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
 import java.util.List
@@ -119,7 +116,6 @@ class ExpressionTypeProvider
 		if (variable === null || variable.eIsProxy) NablaType::UNDEFINED
 		else
 		{
-			println('VARTYPE : ' + variable.name + ' -' + variable.eIsProxy)
 			val varType = variable.typeFor
 			// s'il y a plus d'iterateur que le type n'a de dimension ==> UNDEFINED
 			if (varType===NablaType::UNDEFINED || (varType.dimension - spaceIterators.length) < 0)  
@@ -184,14 +180,5 @@ class ExpressionTypeProvider
 			default : NablaType::UNDEFINED
 		}
 	}
-	
-	private def dispatch ItemType getItemType(SpaceIteratorRange it) 
-	{
-		connectivity.returnType.type
-	}
-	
-	private def dispatch ItemType getItemType(SpaceIteratorRef it) 
-	{
-		iterator.range.itemType
-	}
+
 }

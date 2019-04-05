@@ -17,6 +17,7 @@ import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
+import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
@@ -34,6 +35,7 @@ import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
+import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.Real2Constant
 import fr.cea.nabla.nabla.Real2x2Constant
 import fr.cea.nabla.nabla.Real3Constant
@@ -42,8 +44,7 @@ import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealXCompactConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
-import fr.cea.nabla.nabla.SpaceIterator
-import fr.cea.nabla.nabla.SpaceIteratorRange
+import fr.cea.nabla.nabla.SingleSpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -63,13 +64,14 @@ class LabelServices
 	static def dispatch String getLabel(If it) { 'if ' + condition.label }
 
 	// ITERATEURS
-	static def dispatch String getLabel(SpaceIterator it) { name + '\u2208 ' + range.label }
-	static def dispatch String getLabel(SpaceIteratorRange it) { connectivity.name + '(' + args.map[label].join(',') + ')' }
+	static def dispatch String getLabel(RangeSpaceIterator it) { name + '\u2208 ' + call.label }
+	static def dispatch String getLabel(SingleSpaceIterator it) { name + '=' + call.label }
+	static def dispatch String getLabel(ConnectivityCall it) { connectivity.name + '(' + args.map[label].join(',') + ')' }
 	static def dispatch String getLabel(SpaceIteratorRef it) 
 	{ 
-		if (next) iterator.name + '+1'
-		else if (prev) iterator.name + '-1'
-		else iterator.name
+		if (next) target.name + '+1'
+		else if (prev) target.name + '-1'
+		else target.name
 	}
 
 	// EXPRESSIONS

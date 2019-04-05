@@ -22,8 +22,6 @@ import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
-import fr.cea.nabla.ir.ir.IteratorRange
-import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
@@ -43,7 +41,6 @@ import static extension fr.cea.nabla.ir.VariableExtensions.isScalarConst
 class ExpressionContentProvider
 {
 	@Inject extension Utils
-	@Inject extension Ir2KokkosUtils
 	
 	def dispatch CharSequence getContent(ContractedIf it) 
 	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
@@ -102,15 +99,8 @@ class ExpressionContentProvider
 		for (i : 0..<iterators.size)
 		{
 			val iter = iterators.get(i);
-			switch iter
-			{
-				IteratorRange: content += iter.accessor
-				IteratorRef: 
-				{
-					val index = IndexFactory::createIndex(iter.iterator, i, array.dimensions, iterators)
-					content += prefix(iter, index.label)					
-				}
-			}
+			val index = IndexFactory::createIndex(i, array.dimensions, iterators)
+			content += prefix(iter, index.label)					
 		}
 		return '(' + content.join(',') + ')'
 	}

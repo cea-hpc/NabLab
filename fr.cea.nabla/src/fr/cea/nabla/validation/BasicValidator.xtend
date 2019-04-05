@@ -15,19 +15,21 @@ package fr.cea.nabla.validation
 
 import com.google.inject.Inject
 import fr.cea.nabla.MandatoryOptions
+import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.ArrayVar
 import fr.cea.nabla.nabla.Connectivity
+import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
+import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
-import fr.cea.nabla.nabla.SpaceIterator
-import fr.cea.nabla.nabla.SpaceIteratorRange
+import fr.cea.nabla.nabla.SingleSpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -41,6 +43,7 @@ class BasicValidator  extends AbstractNablaValidator
 	public static val NO_COORD_VARIABLE = "NablaError::NoCoordVariable"
 	
 	@Inject extension VarExtensions
+	@Inject extension SpaceIteratorExtensions
 	
 	@Check
 	def checkNoInnerReductionCall(ReductionCall it)
@@ -90,7 +93,7 @@ class BasicValidator  extends AbstractNablaValidator
 	@Check
 	def checkUnusedConnectivities(Connectivity it)
 	{
-		val referenced = nablaModule.eAllContents.filter(SpaceIteratorRange).exists[x|x.connectivity===it]
+		val referenced = nablaModule.eAllContents.filter(ConnectivityCall).exists[x|x.connectivity===it]
 			|| nablaModule.eAllContents.filter(ArrayVar).exists[x|x.dimensions.contains(it)]
 		if (!referenced)
 			warning('Unused connectivity', NablaPackage.Literals::CONNECTIVITY__NAME)
@@ -139,6 +142,27 @@ class BasicValidator  extends AbstractNablaValidator
 	}
 
 	@Check
+	def checkArgs(RangeSpaceIterator it)
+	{
+		if (!call.connectivity.returnType.multiple)
+			error('Connectivity return type must be a collection', NablaPackage.Literals::SPACE_ITERATOR__CALL)
+	}
+
+	@Check
+	def checkArgs(SingleSpaceIterator it)
+	{
+		if (call.connectivity.returnType.multiple)
+			error('Connectivity return type must be a singleton', NablaPackage.Literals::SPACE_ITERATOR__CALL)
+	}
+
+	@Check
+	def checkPrevAndNextValidity(SpaceIteratorRef it)
+	{
+		if ((prev || next) && target !== null && !(target instanceof RangeSpaceIterator))
+			error('\u25C4 and \u25BA are valid only on a range', NablaPackage.Literals::SPACE_ITERATOR_REF__TARGET)
+	}
+
+	@Check
 	def checkIteratorRange(VarRef it)
 	{
 		if (variable instanceof ArrayVar)
@@ -150,72 +174,30 @@ class BasicValidator  extends AbstractNablaValidator
 			{
 				for (i : 0..<spaceIterators.length)
 				{
-					val si = spaceIterators.get(i)
-					val expectedC = dimensions.get(i)
-					val expectedT = expectedC.returnType.type
-					switch si
-					{
-						SpaceIteratorRange: 
-						{
-							val rt = si.connectivity.returnType
-							if (rt.multiple) 
-								error('Connectivity return type must be a singleton', NablaPackage.Literals::VAR_REF__SPACE_ITERATORS)
-							else if (rt.type != expectedT)
-								error('Wrong iterator type: Expected ' + expectedT.name + ', but was ' + rt.type.name, NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, i)
-						}
-						SpaceIteratorRef:
-						{
-							val actualT = si.iterator.range.connectivity.returnType.type
-							if (actualT != expectedT)
-								error('Wrong iterator type: Expected ' + expectedT.name + ', but was ' + actualT.name, NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, i)
-//							else
-//							{	
-//								val actualC = si.iterator.range.connectivity
-//								if (actualC !== expectedC && !expectedC.inTypes.empty)
-//									// Les connectivités sont différentes (ex: cells, cellsOfNode).
-//									// Celle de la variable doit être globale, i.e. sans inTypes (ex: cells)
-//									error('Wrong iterator type: ' + actualC.name + ' is not a subset of ' + expectedC.name, NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, i)
-//							}
-						}
-					}
+					val spaceIteratorRefI = spaceIterators.get(i)
+					val dimensionI = dimensions.get(i)
+					val actualT = spaceIteratorRefI.target.type
+					val expectedT = dimensionI.returnType.type
+					if (actualT != expectedT)
+						error('Wrong iterator type: Expected ' + expectedT.name + ', but was ' + actualT.name, NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, i)
 				}
 			}
 		}
 	}
 	
 	@Check
-	def checkArgs(SpaceIterator it)
-	{
-		if (!range.connectivity.returnType.multiple)
-			error('Range of iteration must not be a singleton', NablaPackage.Literals::SPACE_ITERATOR__RANGE)
-	}
-
-	@Check
-	def checkArgs(SpaceIteratorRange it)
+	def checkArgs(ConnectivityCall it)
 	{
 		if (args.length != connectivity.inTypes.length)
-			error('Invalid number of arguments: Expected ' + connectivity.inTypes.length + ', but was ' + args.length, NablaPackage.Literals::SPACE_ITERATOR_RANGE__ARGS)
+			error('Invalid number of arguments: Expected ' + connectivity.inTypes.length + ', but was ' + args.length, NablaPackage.Literals::CONNECTIVITY_CALL__ARGS)
 		else
 		{
 			for (i : 0..<args.length)
 			{
-				val si = args.get(i)
+				val actualT = args.get(i).target.type
 				val expectedT = connectivity.inTypes.get(i)
-				switch si
-				{
-					SpaceIteratorRange: 
-					{
-						val actualT = si.connectivity.returnType.type
-						if (actualT != expectedT)
-							error('Wrong arguments: Expected ' + expectedT.name + ', but was ' + actualT.name, NablaPackage.Literals::SPACE_ITERATOR_RANGE__ARGS, i)
-					}
-					SpaceIteratorRef:
-					{
-						val actualT = si.iterator.range.connectivity.returnType.type
-						if (actualT != expectedT)
-							error('Wrong arguments: Expected ' + expectedT.name + ', but was ' + actualT.name, NablaPackage.Literals::SPACE_ITERATOR_RANGE__ARGS, i)
-					}
-				}
+				if (actualT != expectedT)
+					error('Wrong arguments: Expected ' + expectedT.name + ', but was ' + actualT.name, NablaPackage.Literals::CONNECTIVITY_CALL__ARGS, i)
 			}
 		}
 	}

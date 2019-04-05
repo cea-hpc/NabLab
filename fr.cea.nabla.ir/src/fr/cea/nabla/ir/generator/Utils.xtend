@@ -15,8 +15,8 @@ package fr.cea.nabla.ir.generator
 
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
@@ -47,8 +47,8 @@ class Utils
 	{
 		// connectivités nécessaires pour les variables
 		val connectivities = variables.filter(ArrayVariable).map[dimensions].flatten.toSet
-		// connectivités utilisées par les itérateurs
-		jobs.forEach[j | connectivities += j.eAllContents.filter(Iterator).map[range.connectivity].toSet]
+		// connectivités utilisées dans le code
+		jobs.forEach[j | connectivities += j.eAllContents.filter(ConnectivityCall).map[connectivity].toSet]
 
 		return connectivities
 	}

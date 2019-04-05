@@ -237,16 +237,6 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.VAR_REF__SPACE_ITERATORS,
-				 NablaFactory.eINSTANCE.createSpaceIteratorRangeOrRef()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__SPACE_ITERATORS,
-				 NablaFactory.eINSTANCE.createSpaceIteratorRange()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__SPACE_ITERATORS,
 				 NablaFactory.eINSTANCE.createSpaceIteratorRef()));
 	}
 

@@ -4,9 +4,9 @@
 package fr.cea.nabla.nabla.provider;
 
 
+import fr.cea.nabla.nabla.ConnectivityCall;
 import fr.cea.nabla.nabla.NablaFactory;
 import fr.cea.nabla.nabla.NablaPackage;
-import fr.cea.nabla.nabla.SpaceIteratorRange;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,26 +14,41 @@ import java.util.List;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.util.ResourceLocator;
+
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
+import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
+import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.IItemPropertySource;
+import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
+import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link fr.cea.nabla.nabla.SpaceIteratorRange} object.
+ * This is the item provider adapter for a {@link fr.cea.nabla.nabla.ConnectivityCall} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class SpaceIteratorRangeItemProvider extends SpaceIteratorRangeOrRefItemProvider {
+public class ConnectivityCallItemProvider 
+	extends ItemProviderAdapter
+	implements
+		IEditingDomainItemProvider,
+		IStructuredItemContentProvider,
+		ITreeItemContentProvider,
+		IItemLabelProvider,
+		IItemPropertySource {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SpaceIteratorRangeItemProvider(AdapterFactory adapterFactory) {
+	public ConnectivityCallItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -64,9 +79,9 @@ public class SpaceIteratorRangeItemProvider extends SpaceIteratorRangeOrRefItemP
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_SpaceIteratorRange_connectivity_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_SpaceIteratorRange_connectivity_feature", "_UI_SpaceIteratorRange_type"),
-				 NablaPackage.Literals.SPACE_ITERATOR_RANGE__CONNECTIVITY,
+				 getString("_UI_ConnectivityCall_connectivity_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ConnectivityCall_connectivity_feature", "_UI_ConnectivityCall_type"),
+				 NablaPackage.Literals.CONNECTIVITY_CALL__CONNECTIVITY,
 				 true,
 				 false,
 				 true,
@@ -87,7 +102,7 @@ public class SpaceIteratorRangeItemProvider extends SpaceIteratorRangeOrRefItemP
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(NablaPackage.Literals.SPACE_ITERATOR_RANGE__ARGS);
+			childrenFeatures.add(NablaPackage.Literals.CONNECTIVITY_CALL__ARGS);
 		}
 		return childrenFeatures;
 	}
@@ -106,14 +121,14 @@ public class SpaceIteratorRangeItemProvider extends SpaceIteratorRangeOrRefItemP
 	}
 
 	/**
-	 * This returns SpaceIteratorRange.gif.
+	 * This returns ConnectivityCall.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/SpaceIteratorRange"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/ConnectivityCall"));
 	}
 
 	/**
@@ -124,7 +139,7 @@ public class SpaceIteratorRangeItemProvider extends SpaceIteratorRangeOrRefItemP
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_SpaceIteratorRange_type");
+		return getString("_UI_ConnectivityCall_type");
 	}
 
 
@@ -139,8 +154,8 @@ public class SpaceIteratorRangeItemProvider extends SpaceIteratorRangeOrRefItemP
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(SpaceIteratorRange.class)) {
-			case NablaPackage.SPACE_ITERATOR_RANGE__ARGS:
+		switch (notification.getFeatureID(ConnectivityCall.class)) {
+			case NablaPackage.CONNECTIVITY_CALL__ARGS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -160,18 +175,19 @@ public class SpaceIteratorRangeItemProvider extends SpaceIteratorRangeOrRefItemP
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SPACE_ITERATOR_RANGE__ARGS,
-				 NablaFactory.eINSTANCE.createSpaceIteratorRangeOrRef()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.SPACE_ITERATOR_RANGE__ARGS,
-				 NablaFactory.eINSTANCE.createSpaceIteratorRange()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.SPACE_ITERATOR_RANGE__ARGS,
+				(NablaPackage.Literals.CONNECTIVITY_CALL__ARGS,
 				 NablaFactory.eINSTANCE.createSpaceIteratorRef()));
+	}
+
+	/**
+	 * Return the resource locator for this item provider's resources.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ResourceLocator getResourceLocator() {
+		return NablaEditPlugin.INSTANCE;
 	}
 
 }

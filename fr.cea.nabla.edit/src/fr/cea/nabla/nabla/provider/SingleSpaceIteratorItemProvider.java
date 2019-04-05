@@ -4,43 +4,30 @@
 package fr.cea.nabla.nabla.provider;
 
 
+import fr.cea.nabla.nabla.SingleSpaceIterator;
+
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.common.util.ResourceLocator;
-
-import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
-import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.IItemPropertySource;
-import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
-import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 
 /**
- * This is the item provider adapter for a {@link fr.cea.nabla.nabla.SpaceIteratorRangeOrRef} object.
+ * This is the item provider adapter for a {@link fr.cea.nabla.nabla.SingleSpaceIterator} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class SpaceIteratorRangeOrRefItemProvider 
-	extends ItemProviderAdapter
-	implements
-		IEditingDomainItemProvider,
-		IStructuredItemContentProvider,
-		ITreeItemContentProvider,
-		IItemLabelProvider,
-		IItemPropertySource {
+public class SingleSpaceIteratorItemProvider extends SpaceIteratorItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SpaceIteratorRangeOrRefItemProvider(AdapterFactory adapterFactory) {
+	public SingleSpaceIteratorItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -60,14 +47,14 @@ public class SpaceIteratorRangeOrRefItemProvider
 	}
 
 	/**
-	 * This returns SpaceIteratorRangeOrRef.gif.
+	 * This returns SingleSpaceIterator.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/SpaceIteratorRangeOrRef"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/SingleSpaceIterator"));
 	}
 
 	/**
@@ -78,7 +65,10 @@ public class SpaceIteratorRangeOrRefItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_SpaceIteratorRangeOrRef_type");
+		String label = ((SingleSpaceIterator)object).getName();
+		return label == null || label.length() == 0 ?
+			getString("_UI_SingleSpaceIterator_type") :
+			getString("_UI_SingleSpaceIterator_type") + " " + label;
 	}
 
 
@@ -105,17 +95,6 @@ public class SpaceIteratorRangeOrRefItemProvider
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-	}
-
-	/**
-	 * Return the resource locator for this item provider's resources.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public ResourceLocator getResourceLocator() {
-		return NablaEditPlugin.INSTANCE;
 	}
 
 }

@@ -238,12 +238,17 @@ public class NablaModuleItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createSpaceIteratorRangeOrRef()));
+				 NablaFactory.eINSTANCE.createRangeSpaceIterator()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createSpaceIteratorRange()));
+				 NablaFactory.eINSTANCE.createSingleSpaceIterator()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createConnectivityCall()));
 
 		newChildDescriptors.add
 			(createChildParameter

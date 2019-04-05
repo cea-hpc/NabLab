@@ -211,49 +211,72 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.SpaceIteratorRangeOrRef} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.RangeSpaceIterator} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected SpaceIteratorRangeOrRefItemProvider spaceIteratorRangeOrRefItemProvider;
+	protected RangeSpaceIteratorItemProvider rangeSpaceIteratorItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.SpaceIteratorRangeOrRef}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.RangeSpaceIterator}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createSpaceIteratorRangeOrRefAdapter() {
-		if (spaceIteratorRangeOrRefItemProvider == null) {
-			spaceIteratorRangeOrRefItemProvider = new SpaceIteratorRangeOrRefItemProvider(this);
+	public Adapter createRangeSpaceIteratorAdapter() {
+		if (rangeSpaceIteratorItemProvider == null) {
+			rangeSpaceIteratorItemProvider = new RangeSpaceIteratorItemProvider(this);
 		}
 
-		return spaceIteratorRangeOrRefItemProvider;
+		return rangeSpaceIteratorItemProvider;
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.SpaceIteratorRange} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.SingleSpaceIterator} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected SpaceIteratorRangeItemProvider spaceIteratorRangeItemProvider;
+	protected SingleSpaceIteratorItemProvider singleSpaceIteratorItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.SpaceIteratorRange}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.SingleSpaceIterator}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createSpaceIteratorRangeAdapter() {
-		if (spaceIteratorRangeItemProvider == null) {
-			spaceIteratorRangeItemProvider = new SpaceIteratorRangeItemProvider(this);
+	public Adapter createSingleSpaceIteratorAdapter() {
+		if (singleSpaceIteratorItemProvider == null) {
+			singleSpaceIteratorItemProvider = new SingleSpaceIteratorItemProvider(this);
 		}
 
-		return spaceIteratorRangeItemProvider;
+		return singleSpaceIteratorItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.ConnectivityCall} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ConnectivityCallItemProvider connectivityCallItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.ConnectivityCall}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createConnectivityCallAdapter() {
+		if (connectivityCallItemProvider == null) {
+			connectivityCallItemProvider = new ConnectivityCallItemProvider(this);
+		}
+
+		return connectivityCallItemProvider;
 	}
 
 	/**
@@ -1327,8 +1350,9 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (jobItemProvider != null) jobItemProvider.dispose();
 		if (instructionItemProvider != null) instructionItemProvider.dispose();
 		if (spaceIteratorItemProvider != null) spaceIteratorItemProvider.dispose();
-		if (spaceIteratorRangeOrRefItemProvider != null) spaceIteratorRangeOrRefItemProvider.dispose();
-		if (spaceIteratorRangeItemProvider != null) spaceIteratorRangeItemProvider.dispose();
+		if (rangeSpaceIteratorItemProvider != null) rangeSpaceIteratorItemProvider.dispose();
+		if (singleSpaceIteratorItemProvider != null) singleSpaceIteratorItemProvider.dispose();
+		if (connectivityCallItemProvider != null) connectivityCallItemProvider.dispose();
 		if (spaceIteratorRefItemProvider != null) spaceIteratorRefItemProvider.dispose();
 		if (scalarVarDefinitionItemProvider != null) scalarVarDefinitionItemProvider.dispose();
 		if (varGroupDeclarationItemProvider != null) varGroupDeclarationItemProvider.dispose();

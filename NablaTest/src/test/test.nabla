@@ -20,6 +20,7 @@ items { cell, node }
 connectivities {
 	cells: (∅) → {cell};
 	nodes: (∅) → {node};
+	mapnn: (node) → node;
 	nodesOfCell: (cell) → {node};
 	cellsOfNode: (node) → {cell};
 }
@@ -35,7 +36,8 @@ const ℕ Z_EDGE_ELEMS = 1;
 //MyJob2: ∀r∈nodes(), Z{r} = ∑{j∈cellsOfNode(r)}(Cjr{j,r} * 4);
 
 MyJobAgain: ∀j∈cells(), {
-	∀r∈nodes(), Z{r} = 0.0;
-	∀r1∈nodesOfCell(j), Z{r1} = ∑{r2∈nodes()}(Z{r2});
+	∀r1∈nodes(), Z{r1} = 0.0;
+	∀r2∈nodesOfCell(j), d=mapnn(r2), d2=mapnn(d), Z{r2} = ∑{r3∈nodes()}(Z{r3});
 	Y{j} = 0.0;
 }
+

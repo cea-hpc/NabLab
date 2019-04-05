@@ -88,6 +88,7 @@ public class ReductionCallItemProvider extends ExpressionItemProvider {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(NablaPackage.Literals.REDUCTION_CALL__ITERATOR);
+			childrenFeatures.add(NablaPackage.Literals.REDUCTION_CALL__DEPENDANT_ITERATORS);
 			childrenFeatures.add(NablaPackage.Literals.REDUCTION_CALL__ARG);
 		}
 		return childrenFeatures;
@@ -142,6 +143,7 @@ public class ReductionCallItemProvider extends ExpressionItemProvider {
 
 		switch (notification.getFeatureID(ReductionCall.class)) {
 			case NablaPackage.REDUCTION_CALL__ITERATOR:
+			case NablaPackage.REDUCTION_CALL__DEPENDANT_ITERATORS:
 			case NablaPackage.REDUCTION_CALL__ARG:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
@@ -163,7 +165,12 @@ public class ReductionCallItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_CALL__ITERATOR,
-				 NablaFactory.eINSTANCE.createSpaceIterator()));
+				 NablaFactory.eINSTANCE.createRangeSpaceIterator()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION_CALL__DEPENDANT_ITERATORS,
+				 NablaFactory.eINSTANCE.createSingleSpaceIterator()));
 
 		newChildDescriptors.add
 			(createChildParameter

@@ -35,5 +35,5 @@ class Ir2NUtils
 	}
 
 	def getContent(Iterator it)
-	'''«IF it!==null»∀ «range.connectivity.name»«ENDIF»'''
+	'''«IF it!==null»∀ «call.connectivity.name»«ENDIF»'''
 }

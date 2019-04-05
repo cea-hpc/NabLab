@@ -82,7 +82,6 @@ class NablaSemanticHighlightingCalculator implements ISemanticHighlightingCalcul
 			{
 				switch elt.name
 				{
-					case 'SpaceIteratorRange' : colorizeIteratorArgs(a, n, NablaHighlightingConfiguration::ITERATOR_ID)
 					case 'VarRef' : colorizeTimeIterator(a, n, NablaHighlightingConfiguration::ITERATOR_ID)
 					case 'SpaceIteratorRef' : colorizeNode(a, n, NablaHighlightingConfiguration::ITERATOR_ID)
 				}
@@ -95,18 +94,6 @@ class NablaSemanticHighlightingCalculator implements ISemanticHighlightingCalcul
 	private def colorizeNode(IHighlightedPositionAcceptor acceptor, INode node, String colorId)
 	{
 		acceptor.addPosition(node.offset, node.length, colorId)
-	}
-	
-	private def colorizeIteratorArgs(IHighlightedPositionAcceptor acceptor, INode node, String colorId)
-	{
-		val s = node.text.trim
-		//println('node info - text:' + s + ', offset:' + node.offset + ', length:' + node.length)
-		
-		val offset = s.lastIndexOf('(')
-		val lastIndex = s.indexOf(')')
-		val length = lastIndex-offset-1
-		if (offset != -1 && lastIndex != -1 && length > 0)
-			acceptor.addPosition(node.offset+offset+1, length, colorId)
 	}
 	
 	private def colorizeTimeIterator(IHighlightedPositionAcceptor acceptor, INode node, String colorId)

@@ -17,6 +17,7 @@ import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
+import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
@@ -34,6 +35,7 @@ import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
+import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.Real2Constant
 import fr.cea.nabla.nabla.Real2x2Constant
 import fr.cea.nabla.nabla.Real3Constant
@@ -42,8 +44,7 @@ import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealXCompactConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
-import fr.cea.nabla.nabla.SpaceIterator
-import fr.cea.nabla.nabla.SpaceIteratorRange
+import fr.cea.nabla.nabla.SingleSpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -63,14 +64,17 @@ class LatexLabelServices
 	static def dispatch String getLatex(If it) { 'if (' + condition.latex + ')'}
 	
 	// ITERATEURS
-	static def dispatch String getLatex(SpaceIterator it) { name.pu + '\\in ' + range.latex }
-	static def dispatch String getLatex(SpaceIteratorRange it) { connectivity.name.pu + '(' + args.map[latex].join(',') + ')' }
+	static def dispatch String getLatex(RangeSpaceIterator it) { name.pu + '\\in ' + call.latex }
+	static def dispatch String getLatex(SingleSpaceIterator it) { name.pu + '=' + call.latex }
+	static def dispatch String getLatex(ConnectivityCall it) { connectivity.name.pu + '(' + args.map[latex].join(',') + ')' }
 	static def dispatch String getLatex(SpaceIteratorRef it) 
 	{ 
-		if (next) iterator.name.pu + '+1'
-		else if (prev) iterator.name.pu + '-1'
-		else iterator.name.pu
+		if (next) target.displayName.pu + '+1'
+		else if (prev) target.displayName.pu + '-1'
+		else target.displayName.pu
 	}
+	static private def dispatch getDisplayName(RangeSpaceIterator it) { name }
+	static private def dispatch getDisplayName(SingleSpaceIterator it) { call.latex }
 
 	// EXPRESSIONS
 	static def dispatch String getLatex(ContractedIf it) { condition.latex + ' ? ' + then.latex + ' : ' + ^else.latex }

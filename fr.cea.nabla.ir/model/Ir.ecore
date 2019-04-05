@@ -241,26 +241,24 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
         eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterators" upperBound="-1"
-        eType="#//IteratorRangeOrRef" containment="true" resolveProxies="false"/>
+        eType="#//IteratorRef" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="fields" unique="false"
         upperBound="-1" eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Iterator" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
         eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="range" lowerBound="1" eType="#//IteratorRange"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="call" lowerBound="1" eType="#//ConnectivityCall"
         containment="true" resolveProxies="false"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="IteratorRangeOrRef" abstract="true"
-      eSuperTypes="#//IrAnnotable"/>
-  <eClassifiers xsi:type="ecore:EClass" name="IteratorRange" eSuperTypes="#//IteratorRangeOrRef">
+  <eClassifiers xsi:type="ecore:EClass" name="ConnectivityCall" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="connectivity" lowerBound="1"
         eType="#//Connectivity"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="args" upperBound="-1" eType="#//IteratorRangeOrRef"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="args" upperBound="-1" eType="#//IteratorRef"
         containment="true" resolveProxies="false"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="IteratorRef" eSuperTypes="#//IteratorRangeOrRef">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="iterator" lowerBound="1"
+  <eClassifiers xsi:type="ecore:EClass" name="IteratorRef" eSuperTypes="#//IrAnnotable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
         eType="#//Iterator"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="prev" unique="false" eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="next" unique="false" eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EBoolean"/>

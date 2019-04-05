@@ -13,7 +13,7 @@
  *******************************************************************************/
 package fr.cea.nabla.scoping
 
-import fr.cea.nabla.nabla.Expression
+import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Job
@@ -21,8 +21,9 @@ import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
-import fr.cea.nabla.nabla.SpaceIterator
+import fr.cea.nabla.nabla.SingleSpaceIterator
 import fr.cea.nabla.nabla.VarGroupDeclaration
+import fr.cea.nabla.nabla.VarRef
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
@@ -38,123 +39,84 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
  */
 class NablaScopeProvider extends AbstractDeclarativeScopeProvider 
 {
-	/*** Scope des itérateurs pour les variables ***************************************/
-	def scope_SpaceIteratorRef_iterator(Expression context, EReference r) 
+	/*** Scope des itérateurs **********************************************************/
+	def scope_SpaceIteratorRef_target(ConnectivityCall context, EReference r)
 	{
-		//printDebug('\nscope_SpaceIteratorRef_iterator : ' + context, 0)
-		context.eContainer.iteratorsDefinedBefore(0)
+		val s = context.eContainer.iteratorsDefinedBefore(context)
+		//println("scope for connectivity call " + context.connectivity.name + " : " + s)
+		return s
 	}
 
-	def scope_TimeIteratorRef_iterator(Expression context, EReference r) 
+	def scope_SpaceIteratorRef_target(VarRef context, EReference r)
 	{
-		//printDebug('\nscope_TimeIteratorRef_iterator : ' + context, 0)
-		context.eContainer.iteratorsDefinedBefore(0)
+		val s = context.eContainer.iteratorsDefinedBefore(null)
+		//println("scope for variable " + context.variable.name + " : " + s)
+		return s
 	}
 
-	private def dispatch IScope iteratorsDefinedBefore(EObject context, int depth) 
-	{
-		//printDebug('iteratorsDefinedBefore - EObject (' + itType.name + ') : ' + context, depth)
-		context.eContainer.iteratorsDefinedBefore(depth + 1)
-	}
-
-	private def dispatch IScope iteratorsDefinedBefore(Loop context, int depth) 
-	{
-		//printDebug('iteratorsDefinedBefore - Loop (' + itType.name + ') : ' + context, depth)
-		iteratorsForLoopOrReduction(context.iterator, context.eContainer, depth)
-	}
-
-	private def dispatch IScope iteratorsDefinedBefore(ReductionCall context, int depth) 
-	{
-		//printDebug('iteratorsDefinedBefore - ReductionFunctionCall (' + itType.name + ') : ' + context, depth)
-		iteratorsForLoopOrReduction(context.iterator, context.eContainer, depth)
-	}
-
-	private def dispatch IScope iteratorsDefinedBefore(Job context, int depth)
-	{
-		//printDebug('iteratorsDefinedBefore - InstructionJob (' + itType.name + ') : ' + context, depth)
-		IScope::NULLSCOPE 
+	private def dispatch IScope iteratorsDefinedBefore(EObject context, ConnectivityCall c) 
+	{ 
+		context.eContainer.iteratorsDefinedBefore(c)
 	}
 	
-	private def dispatch IScope iteratorsDefinedBefore(NablaModule context,  int depth)
-	{
-		//printDebug('iteratorsDefinedBefore - NablaModule (' + itType.name + ') : ' + context, depth)
-		IScope::NULLSCOPE 
-	}
-
-	private def IScope iteratorsForLoopOrReduction(SpaceIterator contextIterator, EObject contextContainer, int depth) 
-	{
-		//printDebug('iterators', depth, #[contextIterator])
-		Scopes::scopeFor(#[contextIterator], contextContainer.iteratorsDefinedBefore(depth + 1))
+	private def dispatch IScope iteratorsDefinedBefore(Job context, ConnectivityCall c) 
+	{ 
+		IScope::NULLSCOPE
 	}
 	
-
-	/*** Scope des itérateurs pour les itérateurs **************************************/
-	def scope_SpaceIteratorRange_args(Expression context, EReference r) 
-	{
-		printDebug('\nscope_SpaceIteratorRange_args : ' + context, 0)
-		context.eContainer.iteratorsDefinedBefore(0)
+	private def dispatch IScope iteratorsDefinedBefore(Loop context, ConnectivityCall c) 
+	{ 
+		val previousIterators = iteratorsDeclaredBefore(c, context.dependantIterators)
+		if (context.iterator.call === c)
+			Scopes::scopeFor(previousIterators, context.eContainer.iteratorsDefinedBefore(c))
+		else
+			Scopes::scopeFor(#[context.iterator] + previousIterators, context.eContainer.iteratorsDefinedBefore(c))
+	}
+	
+	private def dispatch IScope iteratorsDefinedBefore(ReductionCall context, ConnectivityCall c) 
+	{ 
+		val previousIterators = iteratorsDeclaredBefore(c, context.dependantIterators)
+		if (context.iterator.call === c)
+			Scopes::scopeFor(previousIterators, context.eContainer.iteratorsDefinedBefore(c))
+		else
+			Scopes::scopeFor(#[context.iterator] + previousIterators, context.eContainer.iteratorsDefinedBefore(c))
 	}
 
-	def scope_SpaceIteratorRange_args(Loop context, EReference r) 
+	private def iteratorsDeclaredBefore(ConnectivityCall c, List<SingleSpaceIterator> list) 
 	{
-		printDebug('\nscope_SpaceIteratorRange_args : ' + context, 0)
-		context.eContainer.iteratorsDefinedBefore(0)
-	}
-
-	def scope_SpaceIteratorRange_args(ReductionCall context, EReference r) 
-	{
-		printDebug('\nscope_SpaceIteratorRange_args : ' + context, 0)
-		context.eContainer.iteratorsDefinedBefore(0)
+		if (c !== null && !list.empty) 
+		{
+			val index = list.map[call].indexOf(c)
+			if (index != -1) return list.subList(0, index)	
+		}
+		return #[]
 	}
 
 	/*** Scope des variables ***********************************************************/
 	def scope_VarRef_variable(Instruction context, EReference r) 
 	{
-		//printDebug('\nscope_VarRef_variable : ' + context + ', ' + r.name, 0)
-		context.eContainer.variablesDefinedBefore(context, 0)
+		context.eContainer.variablesDefinedBefore(context)
 	}
 
-	private def dispatch IScope variablesDefinedBefore(EObject context, EObject o, int depth) 
+	private def dispatch IScope variablesDefinedBefore(EObject context, EObject o) 
 	{
-		//printDebug('variablesDefinedBefore - eobject : ' + context, depth)
-		context.eContainer.variablesDefinedBefore(o.eContainer, depth + 1)
+		context.eContainer.variablesDefinedBefore(o.eContainer)
 	}
 
-	private def dispatch IScope variablesDefinedBefore(NablaModule context, EObject o, int depth) 
+	private def dispatch IScope variablesDefinedBefore(NablaModule context, EObject o) 
 	{
-		Scopes::scopeFor(context.variables.variablesDeclaredBefore(o, depth))
+		Scopes::scopeFor(context.variables.variablesDeclaredBefore(o))
 	}
 		
-	private def dispatch IScope variablesDefinedBefore(InstructionBlock context, EObject o, int depth) 
+	private def dispatch IScope variablesDefinedBefore(InstructionBlock context, EObject o) 
 	{
-		//printDebug('variablesDefinedBefore - InstructionBlock : ' + context, depth)
-		Scopes::scopeFor(context.instructions.variablesDeclaredBefore(o, depth), context.eContainer.variablesDefinedBefore(o.eContainer, depth + 1))
+		Scopes::scopeFor(context.instructions.variablesDeclaredBefore(o), context.eContainer.variablesDefinedBefore(o.eContainer))
 	}
 	
-	private def variablesDeclaredBefore(List<? extends EObject> list, EObject o, int depth) 
+	private def variablesDeclaredBefore(List<? extends EObject> list, EObject o) 
 	{
 		val vars1 = list.subList(0, list.indexOf(o)).filter(VarGroupDeclaration).map[variables].flatten
 		val vars2 = list.subList(0, list.indexOf(o)).filter(ScalarVarDefinition).map[variable]
 		return vars1 + vars2
 	}
-	
-	/*** Méthodes de debug et utilitaires **********************************************/
-	def private printDebug(String s, int depth) 
-	{ 
-		for (i : 0..<depth) print('\t')
-		println(s)		
-	}
-
-//	def private printDebug(String s, int depth, Iterable<? extends Object> l) 
-//	{ 
-//		if (l.nullOrEmpty)
-//		{
-//			printDebug(s + ' (liste vide)', depth)
-//		}
-//		else
-//		{
-//			printDebug(s + ' (' + l.size + ') : ', depth)
-//			l.forEach(e | printDebug('- ' + e, depth) )	
-//		}
-//	}
 }

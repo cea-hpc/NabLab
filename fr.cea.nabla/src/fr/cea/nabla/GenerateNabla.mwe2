@@ -48,7 +48,8 @@ Workflow {
 			serializer = {
 				generateStub = false
 			}
-			
+
+			// A commenter pour permettre 2 iterateurs de même nom...			
 			validator = {
 				composedCheck = "org.eclipse.xtext.validation.NamesAreUniqueValidator"
 			}

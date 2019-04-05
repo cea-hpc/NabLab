@@ -16,8 +16,7 @@ package fr.cea.nabla.ir.generator.java
 import com.google.inject.Inject
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BasicType
-import fr.cea.nabla.ir.ir.IteratorRange
-import fr.cea.nabla.ir.ir.IteratorRef
+import fr.cea.nabla.ir.ir.ConnectivityCall
 
 class Ir2JavaUtils 
 {
@@ -61,9 +60,6 @@ class Ir2JavaUtils
 		} 
 	}
 	
-	def CharSequence getAccessor(IteratorRange it) 
-	'''mesh.get«connectivity.name.toFirstUpper»(«args.map[rangeArgName].join(',')»)'''
-	
-	private def dispatch getRangeArgName(IteratorRange it) { accessor }
-	private def dispatch getRangeArgName(IteratorRef it) { prefix(iterator.name + 'Id') }
+	def CharSequence getAccessor(ConnectivityCall it) 
+	'''mesh.get«connectivity.name.toFirstUpper»(«args.map[prefix(target.name + 'Id')].join(',')»)'''
 }

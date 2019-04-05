@@ -13,9 +13,17 @@ import java.util.List;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.util.ResourceLocator;
+
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
+import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
+import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.IItemPropertySource;
+import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
+import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
@@ -24,7 +32,14 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * <!-- end-user-doc -->
  * @generated
  */
-public class SpaceIteratorRefItemProvider extends SpaceIteratorRangeOrRefItemProvider {
+public class SpaceIteratorRefItemProvider 
+	extends ItemProviderAdapter
+	implements
+		IEditingDomainItemProvider,
+		IStructuredItemContentProvider,
+		ITreeItemContentProvider,
+		IItemLabelProvider,
+		IItemPropertySource {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
@@ -48,7 +63,7 @@ public class SpaceIteratorRefItemProvider extends SpaceIteratorRangeOrRefItemPro
 
 			addPrevPropertyDescriptor(object);
 			addNextPropertyDescriptor(object);
-			addIteratorPropertyDescriptor(object);
+			addTargetPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -98,19 +113,19 @@ public class SpaceIteratorRefItemProvider extends SpaceIteratorRangeOrRefItemPro
 	}
 
 	/**
-	 * This adds a property descriptor for the Iterator feature.
+	 * This adds a property descriptor for the Target feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addIteratorPropertyDescriptor(Object object) {
+	protected void addTargetPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_SpaceIteratorRef_iterator_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_SpaceIteratorRef_iterator_feature", "_UI_SpaceIteratorRef_type"),
-				 NablaPackage.Literals.SPACE_ITERATOR_REF__ITERATOR,
+				 getString("_UI_SpaceIteratorRef_target_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_SpaceIteratorRef_target_feature", "_UI_SpaceIteratorRef_type"),
+				 NablaPackage.Literals.SPACE_ITERATOR_REF__TARGET,
 				 true,
 				 false,
 				 true,
@@ -173,6 +188,17 @@ public class SpaceIteratorRefItemProvider extends SpaceIteratorRangeOrRefItemPro
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+	}
+
+	/**
+	 * Return the resource locator for this item provider's resources.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ResourceLocator getResourceLocator() {
+		return NablaEditPlugin.INSTANCE;
 	}
 
 }

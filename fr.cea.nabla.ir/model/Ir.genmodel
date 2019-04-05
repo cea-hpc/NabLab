@@ -194,15 +194,14 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Iterator">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Iterator/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Iterator/range"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Iterator/call"/>
     </genClasses>
-    <genClasses image="false" ecoreClass="Ir.ecore#//IteratorRangeOrRef"/>
-    <genClasses ecoreClass="Ir.ecore#//IteratorRange">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IteratorRange/connectivity"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IteratorRange/args"/>
+    <genClasses ecoreClass="Ir.ecore#//ConnectivityCall">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityCall/connectivity"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityCall/args"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//IteratorRef">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IteratorRef/iterator"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IteratorRef/target"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IteratorRef/prev"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IteratorRef/next"/>
     </genClasses>

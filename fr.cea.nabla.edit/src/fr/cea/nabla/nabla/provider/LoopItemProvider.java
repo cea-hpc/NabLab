@@ -64,6 +64,7 @@ public class LoopItemProvider extends InstructionItemProvider {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(NablaPackage.Literals.LOOP__ITERATOR);
+			childrenFeatures.add(NablaPackage.Literals.LOOP__DEPENDANT_ITERATORS);
 			childrenFeatures.add(NablaPackage.Literals.LOOP__BODY);
 		}
 		return childrenFeatures;
@@ -118,6 +119,7 @@ public class LoopItemProvider extends InstructionItemProvider {
 
 		switch (notification.getFeatureID(Loop.class)) {
 			case NablaPackage.LOOP__ITERATOR:
+			case NablaPackage.LOOP__DEPENDANT_ITERATORS:
 			case NablaPackage.LOOP__BODY:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
@@ -139,7 +141,12 @@ public class LoopItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.LOOP__ITERATOR,
-				 NablaFactory.eINSTANCE.createSpaceIterator()));
+				 NablaFactory.eINSTANCE.createRangeSpaceIterator()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.LOOP__DEPENDANT_ITERATORS,
+				 NablaFactory.eINSTANCE.createSingleSpaceIterator()));
 
 		newChildDescriptors.add
 			(createChildParameter

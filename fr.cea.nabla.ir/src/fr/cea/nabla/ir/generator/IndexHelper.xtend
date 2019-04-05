@@ -15,10 +15,9 @@ package fr.cea.nabla.ir.generator
 
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.Iterator
-import fr.cea.nabla.ir.ir.IteratorRange
-import fr.cea.nabla.ir.ir.IteratorRangeOrRef
 import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.VarRef
@@ -67,19 +66,17 @@ class IndexHelper
 	{
 		static def createIndex(Iterator i)
 		{
-			val arg = if (i.range.args.empty) '' else i.range.args.head.argName
-			new Index(i, i.range.connectivity, arg)
+			val arg = if (i.call.args.empty) '' else i.call.args.head.target.name
+			new Index(i, i.call.connectivity, arg)
 		}
 		
-		static def createIndex(Iterator i, int iIndex, List<Connectivity> connectivities, List<IteratorRangeOrRef> args)
+		static def createIndex(int index, List<Connectivity> connectivities, List<IteratorRef> iterators)
 		{
-			val c = connectivities.get(iIndex)
-			val arg = if (c.inTypes.empty || iIndex==0) '' else args.get(iIndex-1).argName
+			val i = iterators.get(index).target
+			val c = connectivities.get(index)
+			val arg = if (c.inTypes.empty || index==0) '' else iterators.get(index-1).target.name
 			new Index(i, c, arg)
 		}
-		
-		private static def dispatch getArgName(IteratorRef it) { iterator.name }
-		private static def dispatch getArgName(IteratorRange it) { 'range' + fr.cea.nabla.ir.Utils::hashString(it) }
 	}
 	
 	def getRequiredIndexes(Loop context)
@@ -98,17 +95,17 @@ class IndexHelper
 
 	def needIdFor(Iterator it, Loop context)
 	{
-		!getRequiredIndexes(context).empty || isIteratorUsedAsRangeArg(context)
+		!getRequiredIndexes(context).empty || isIteratorIsReferenced(context)
 	}
 	
 	def needNext(Iterator it, Loop context)
 	{
-		context.eAllContents.filter(IteratorRef).filter[x|x.iterator===it].exists[x|x.next]
+		context.eAllContents.filter(IteratorRef).filter[x|x.target===it].exists[x|x.next]
 	}
 
 	def needPrev(Iterator it, Loop context)
 	{
-		context.eAllContents.filter(IteratorRef).filter[x|x.iterator===it].exists[x|x.prev]
+		context.eAllContents.filter(IteratorRef).filter[x|x.target===it].exists[x|x.prev]
 	}	
 		
 	def indexToId(Index it) { indexToId('') }
@@ -126,14 +123,12 @@ class IndexHelper
 	}
 
 	/**
-	 * Retourne vrai si un IteratorRange utilise l'iterateur 'iterator'
-	 * dans un de ses arguments pour le contexte 'context'.
+	 * Retourne vrai si un itérateur est utilisé en argument d'un appel de fonction de connectivité.
 	 */
-	private def isIteratorUsedAsRangeArg(Iterator it, Instruction context)
+	private def isIteratorIsReferenced(Iterator it, Instruction context)
 	{
-		for (range : context.eAllContents.filter(IteratorRange).toIterable)
-			for (ref : range.args.filter(IteratorRef))
-				if (ref.iterator === it) return true
+		for (call : context.eAllContents.filter(ConnectivityCall).toIterable)
+			if (call.args.exists[x | x.target === it]) return true
 		return false
 	}
 	
@@ -160,17 +155,12 @@ class IndexHelper
 	private def getNeededIndexes(Loop context)
 	{
 		val indexes = new HashSet<Index>
-		for (vRef : context.eAllContents.filter(VarRef).filter[x|x.nearestLoop===context].toIterable)
+		for (vRef : context.eAllContents.filter(VarRef).filter[x|x.variable instanceof ArrayVariable && x.nearestLoop===context].toIterable)
 		{
 			for (i : 0..<vRef.iterators.length)
 			{
-				val vRefIter = vRef.iterators.get(i)
-				if (vRefIter instanceof IteratorRef)
-				{
-					val vrIterator = (vRefIter as IteratorRef).iterator
-					val vrConnectivities = (vRef.variable as ArrayVariable).dimensions
-					indexes += IndexFactory::createIndex(vrIterator, i, vrConnectivities, vRef.iterators)
-				}
+				val vrConnectivities = (vRef.variable as ArrayVariable).dimensions
+				indexes += IndexFactory::createIndex(i, vrConnectivities, vRef.iterators)
 			} 
 		}
 		return indexes

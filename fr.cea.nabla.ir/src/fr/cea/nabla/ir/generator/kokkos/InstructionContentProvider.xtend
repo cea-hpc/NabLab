@@ -53,10 +53,10 @@ class InstructionContentProvider
 	'''
 		«val iter = reduction.iterator»
 		«val itIndex = IndexFactory::createIndex(iter)»
-		«IF !iter.range.connectivity.indexEqualId»int[] «itIndex.containerName» = «iter.range.accessor»;«ENDIF»
+		«IF !iter.call.connectivity.indexEqualId»int[] «itIndex.containerName» = «iter.call.accessor»;«ENDIF»
 		«variable.kokkosType» «variable.name» = «variable.defaultValue.content»;
 		Kokkos::«reduction.kokkosName»<«variable.kokkosType»> reducer(«variable.name»);
-		Kokkos::parallel_reduce("Reduction«variable.name»", «iter.range.connectivity.nbElems», KOKKOS_LAMBDA(const int& «itIndex.label», «variable.kokkosType»& x)
+		Kokkos::parallel_reduce("Reduction«variable.name»", «iter.call.connectivity.nbElems», KOKKOS_LAMBDA(const int& «itIndex.label», «variable.kokkosType»& x)
 		{
 			reducer.join(x, «reduction.arg.content»);
 		}, reducer);
@@ -101,8 +101,8 @@ class InstructionContentProvider
 	private def addParallelLoop(Iterator it, Loop l)
 	'''
 		«val itIndex = IndexFactory::createIndex(it)»
-		«IF !range.connectivity.indexEqualId»auto «itIndex.containerName» = «range.accessor»;«ENDIF»
-		Kokkos::parallel_for(«range.connectivity.nbElems», KOKKOS_LAMBDA(const int «itIndex.label»)
+		«IF !call.connectivity.indexEqualId»auto «itIndex.containerName» = «call.accessor»;«ENDIF»
+		Kokkos::parallel_for(«call.connectivity.nbElems», KOKKOS_LAMBDA(const int «itIndex.label»)
 		{
 			«IF needIdFor(l)»int «name»Id = «indexToId(itIndex)»;«ENDIF»
 			«FOR index : getRequiredIndexes(l)»
@@ -115,7 +115,7 @@ class InstructionContentProvider
 	private def addSequentialLoop(Iterator it, Loop l)
 	'''
 		«val itIndex = IndexFactory::createIndex(it)»
-		auto «itIndex.containerName» = «range.accessor»;
+		auto «itIndex.containerName» = «call.accessor»;
 		for (int «itIndex.label»=0; «itIndex.label»<«itIndex.containerName».size(); «itIndex.label»++)
 		{
 			«IF needPrev(l)»int «prev(itIndex.label)» = («itIndex.label»-1+«itIndex.containerName».size())%«itIndex.containerName».size();«ENDIF»

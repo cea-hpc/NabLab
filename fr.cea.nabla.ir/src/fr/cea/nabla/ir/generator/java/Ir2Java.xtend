@@ -104,11 +104,9 @@ class Ir2Java extends IrGenerator
 					«IF !a.type.javaBasicType»«allocate(a.dimensions, a.name, 'new ' + a.type.javaType + '(0.0)', new ArrayList<String>)»«ENDIF»
 				«ENDFOR»
 
-				«IF variables.exists[x | x.name == 'coord']»
 				// Copy node coordinates
 				ArrayList<Real2> gNodes = mesh.getGeometricMesh().getNodes();
 				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> coord[rNodes] = gNodes.get(rNodes));
-				«ENDIF»
 			}
 			
 			«FOR j : jobs.sortBy[at] SEPARATOR '\n'»

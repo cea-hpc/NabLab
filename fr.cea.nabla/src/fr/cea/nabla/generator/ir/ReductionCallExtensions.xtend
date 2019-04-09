@@ -46,6 +46,7 @@ class ReductionCallExtensions
 		annotations += rc.toIrAnnotation
 		reduction = rc.reduction.toIrReduction(rc.declaration)
 		iterator = rc.iterator.toIrIterator
+		rc.dependantIterators.forEach[x | dependantIterators += x.toIrIterator]
 		arg = rc.arg.toIrExpression		
 	}
 }

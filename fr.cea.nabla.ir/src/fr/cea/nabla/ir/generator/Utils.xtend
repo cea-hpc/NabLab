@@ -50,7 +50,7 @@ class Utils
 		// connectivités utilisées dans le code
 		jobs.forEach[j | connectivities += j.eAllContents.filter(ConnectivityCall).map[connectivity].toSet]
 
-		return connectivities
+		return connectivities.filter[c | c.returnType.multiple]
 	}
 	
 	def boolean isTopLevelLoop(EObject it)

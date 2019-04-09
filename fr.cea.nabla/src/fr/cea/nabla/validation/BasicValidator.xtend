@@ -30,6 +30,7 @@ import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.SingleSpaceIterator
+import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -97,6 +98,14 @@ class BasicValidator  extends AbstractNablaValidator
 			|| nablaModule.eAllContents.filter(ArrayVar).exists[x|x.dimensions.contains(it)]
 		if (!referenced)
 			warning('Unused connectivity', NablaPackage.Literals::CONNECTIVITY__NAME)
+	}	
+
+	@Check
+	def checkUnusedIterators(SpaceIterator it)
+	{
+		val referenced = eContainer.eAllContents.filter(SpaceIteratorRef).exists[x|x.target===it]
+		if (!referenced)
+			warning('Unused iterator', NablaPackage.Literals::SPACE_ITERATOR__NAME)
 	}	
 
 	@Check

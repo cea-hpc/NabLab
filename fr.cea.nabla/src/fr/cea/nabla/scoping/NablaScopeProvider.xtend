@@ -89,7 +89,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 			val index = list.map[call].indexOf(c)
 			if (index != -1) return list.subList(0, index)	
 		}
-		return #[]
+		return list
 	}
 
 	/*** Scope des variables ***********************************************************/

@@ -113,6 +113,8 @@
         eType="#//Reduction"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterator" lowerBound="1"
         eType="#//Iterator" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dependantIterators" upperBound="-1"
+        eType="#//Iterator" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="arg" lowerBound="1" eType="#//Expression"
         containment="true" resolveProxies="false"/>
   </eClassifiers>
@@ -144,6 +146,8 @@
         eType="#//Iterator" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="body" lowerBound="1" eType="#//Instruction"
         containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dependantIterators" upperBound="-1"
+        eType="#//Iterator" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="If" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"

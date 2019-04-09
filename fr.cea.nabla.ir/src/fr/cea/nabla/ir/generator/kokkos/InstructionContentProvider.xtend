@@ -28,6 +28,7 @@ import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionCall
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.ScalarVarDefinition
+import java.util.List
 
 class InstructionContentProvider 
 {
@@ -123,6 +124,7 @@ class InstructionContentProvider
 			«IF needIdFor(l)»
 				«val idName = name + 'Id'»
 				int «idName» = «indexToId(itIndex)»;
+				«l.dependantIterators.dependantIteratorsContent»
 				«IF needPrev(l)»int «prev(idName)» = «indexToId(itIndex, 'prev')»;«ENDIF»
 				«IF needNext(l)»int «next(idName)» = «indexToId(itIndex, 'next')»;«ENDIF»
 				«FOR index : getRequiredIndexes(l)»
@@ -142,4 +144,11 @@ class InstructionContentProvider
 	
 	private def getKokkosName(ReductionCall it) '''«reduction.name.replaceFirst("reduce", "")»'''
 	private def idToIndex(Index i, String idName) { idToIndex(i, idName, '::') }	
+
+	private def getDependantIteratorsContent(List<Iterator> iterators)
+	'''
+	«FOR i : iterators»
+	int «i.name»Id = «i.call.accessor»;
+	«ENDFOR»
+	'''
 }

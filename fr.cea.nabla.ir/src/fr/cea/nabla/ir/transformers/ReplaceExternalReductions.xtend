@@ -17,10 +17,12 @@ import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionCall
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.VarRef
+import java.util.ArrayList
 import org.eclipse.emf.ecore.util.EcoreUtil
 
 class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTransformationStep
@@ -62,7 +64,7 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 			m.jobs += IrFactory::eINSTANCE.createInstructionJob =>
 			[
 				name = 'Reduce_' + reductionInstr.variable.name
-				instruction = createReductionLoop(reductionInstr.reduction.iterator, reducOperatorLhs, reducOperatorRhs, reduc.operator)
+				instruction = createReductionLoop(reductionInstr.reduction.iterator, reductionInstr.reduction.dependantIterators, reducOperatorLhs, reducOperatorRhs, reduc.operator)
 			] 
 
 			// la variable de reduction doit devenir globale pour etre utilisée dans le job final
@@ -108,7 +110,9 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 			val argJob = IrFactory::eINSTANCE.createInstructionJob =>
 			[
 				name = 'Compute_' + reductionInstr.variable.name + '_arg'
-				instruction = createReductionLoop(EcoreUtil::copy(reduc.iterator), argValue, reduc.arg, '=')
+				val dependantIterators = new ArrayList<Iterator>
+				reduc.dependantIterators.forEach[x | dependantIterators += EcoreUtil::copy(x)]
+				instruction = createReductionLoop(EcoreUtil::copy(reduc.iterator), dependantIterators, argValue, reduc.arg, '=')
 			]
 			m.jobs += argJob
 			

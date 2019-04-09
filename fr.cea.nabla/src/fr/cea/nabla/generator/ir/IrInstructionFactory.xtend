@@ -87,6 +87,7 @@ class IrInstructionFactory
 	{
 		annotations += v.toIrAnnotation
 		iterator = v.iterator.toIrIterator
+		v.dependantIterators.forEach[x | dependantIterators += x.toIrIterator]
 		body = v.body.toIrInstruction
 	}
 	

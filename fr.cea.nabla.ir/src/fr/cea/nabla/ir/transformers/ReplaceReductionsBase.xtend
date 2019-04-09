@@ -20,15 +20,17 @@ import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionCall
 import fr.cea.nabla.ir.ir.Variable
+import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
 
 abstract class ReplaceReductionsBase 
 {
-	protected def createReductionLoop(Iterator iterator, Variable affectationLHS, Expression affectationRHS, String op)
+	protected def createReductionLoop(Iterator iterator, List<Iterator> dependantIterators, Variable affectationLHS, Expression affectationRHS, String op)
 	{
 		val loop = IrFactory::eINSTANCE.createLoop
 		loop.iterator = iterator
+		loop.dependantIterators.addAll(dependantIterators)
 		loop.body = IrFactory::eINSTANCE.createAffectation => 
 		[
 			left = IrFactory::eINSTANCE.createVarRef => 

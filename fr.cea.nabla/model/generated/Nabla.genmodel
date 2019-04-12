@@ -106,10 +106,10 @@
     <genClasses ecoreClass="Nabla.ecore#//VarRef">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarRef/variable"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarRef/spaceIterators"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//VarRef/hasTimeIterator"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//VarRef/timeIteratorDiv"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarRef/timeIterator"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//VarRef/fields"/>
     </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//TimeIterator"/>
     <genClasses ecoreClass="Nabla.ecore#//InstructionBlock">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//InstructionBlock/instructions"/>
     </genClasses>
@@ -218,6 +218,11 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/iterator"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/dependantIterators"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/arg"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//InitTimeIterator"/>
+    <genClasses ecoreClass="Nabla.ecore#//NextTimeIterator">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//NextTimeIterator/hasDiv"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//NextTimeIterator/div"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

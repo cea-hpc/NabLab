@@ -48,6 +48,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/connectivities"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/variables"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/jobs"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/nodeCoordVariable"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Import">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Import/importedNamespace"/>
@@ -100,6 +101,8 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeIterationCopyJob/right"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//TimeIterationCopyJob/timeIteratorName"/>
     </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//EndOfTimeLoopJob"/>
+    <genClasses ecoreClass="Ir.ecore#//EndOfInitJob"/>
     <genClasses ecoreClass="Ir.ecore#//ReductionCall">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionCall/reduction"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionCall/iterator"/>

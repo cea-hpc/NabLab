@@ -103,8 +103,8 @@ class NablaSemanticHighlightingCalculator implements ISemanticHighlightingCalcul
 		
 		val offset = s.indexOf('^{')
 		val lastIndex = s.lastIndexOf('}')
-		val length = lastIndex-offset-1
+		val length = lastIndex-offset-2
 		if (offset != -1 && lastIndex != -1 && length > 0)
-			acceptor.addPosition(node.offset+offset+1, length, colorId)
+			acceptor.addPosition(node.offset+offset+2, length, colorId)
 	}
 }

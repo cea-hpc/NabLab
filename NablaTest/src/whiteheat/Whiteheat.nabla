@@ -37,10 +37,9 @@ const ℕ option_max_iterations = 48;
 
 ℝ t=0.0; 
 ℝ δt=0.001;
-ℝ² coord[nodes], X[nodes], center[cells];
+ℝ² X[nodes], center[cells];
 ℝ u[cells], V[cells], f[cells], tmp[cells], surface[faces];
 
-IniX: ∀r∈nodes(), X{r} = coord{r};
 IniF: ∀j∈cells(), f{j} = 0.0;
 IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});  // ne fonctionne que sur des parallélogrammes
 IniUn: ∀j∈cells(), u{j}=0.0;

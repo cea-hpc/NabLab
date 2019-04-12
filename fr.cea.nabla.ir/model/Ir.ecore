@@ -35,6 +35,8 @@
         eType="#//Variable" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="jobs" upperBound="-1" eType="#//Job"
         containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nodeCoordVariable" lowerBound="1"
+        eType="#//Variable"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Import" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importedNamespace" unique="false"
@@ -102,12 +104,15 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" lowerBound="1"
         eType="#//Instruction" containment="true" resolveProxies="false"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeIterationCopyJob" eSuperTypes="#//Job">
+  <eClassifiers xsi:type="ecore:EClass" name="TimeIterationCopyJob" abstract="true"
+      eSuperTypes="#//Job">
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeIteratorName" unique="false"
         lowerBound="1" eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EndOfTimeLoopJob" eSuperTypes="#//TimeIterationCopyJob"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EndOfInitJob" eSuperTypes="#//TimeIterationCopyJob"/>
   <eClassifiers xsi:type="ecore:EClass" name="ReductionCall" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="reduction" lowerBound="1"
         eType="#//Reduction"/>

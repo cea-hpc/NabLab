@@ -43,7 +43,6 @@ Instruction:
 	{Loop} '\u2200' iterator=RangeSpaceIterator (',' dependantIterators+=SingleSpaceIterator)* ',' body=Instruction |
 	{If} 'if' '(' condition=Expression ')' then=Instruction (=>'else' else=Instruction)?;
 
-
 /* ITERATEURS ********************************************/
 SpaceIterator: RangeSpaceIterator | SingleSpaceIterator;
 RangeSpaceIterator: name=ID '\u2208' call=ConnectivityCall; // must return a collection
@@ -52,7 +51,6 @@ ConnectivityCall: connectivity=[Connectivity]  '('(args+=SpaceIteratorRef (',' a
 SpaceIteratorRef: 
 	((prev?='\u25C4'|next?='\u25BA') '(' target=[SpaceIterator] ')') | // only valid on a range
 	target=[SpaceIterator];
-
 
 /* VARIABLES ********************************************/
 ScalarVarDefinition: (const?='const')? type=BasicType variable=ScalarVar '=' defaultValue=Expression ';';
@@ -123,9 +121,12 @@ Real2Constant: '{' x=REAL ',' y=REAL '}';
 Real3Constant: '{' x=REAL ',' y=REAL ',' z=REAL '}';
 VarRef: variable=[Var] 
 	('{' spaceIterators+=SpaceIteratorRef (',' spaceIterators+=SpaceIteratorRef)* '}')? 
-	('^{' hasTimeIterator?='n+1' ('/' timeIteratorDiv=INT)? '}')?  
+	('^{' timeIterator=TimeIterator '}')?  
 	('.' fields+=ID)*;
 
+TimeIterator: 
+	{InitTimeIterator} 'n=0' | 
+	{NextTimeIterator} 'n+1' (hasDiv?='/' div=INT)?;
 
 /* ENUMS *************************************************/
 enum BasicType: 

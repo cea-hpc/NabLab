@@ -50,8 +50,6 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 			super.getPropertyDescriptors(object);
 
 			addVariablePropertyDescriptor(object);
-			addHasTimeIteratorPropertyDescriptor(object);
-			addTimeIteratorDivPropertyDescriptor(object);
 			addFieldsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -75,50 +73,6 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 				 false,
 				 true,
 				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Has Time Iterator feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addHasTimeIteratorPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_VarRef_hasTimeIterator_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_VarRef_hasTimeIterator_feature", "_UI_VarRef_type"),
-				 NablaPackage.Literals.VAR_REF__HAS_TIME_ITERATOR,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Time Iterator Div feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addTimeIteratorDivPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_VarRef_timeIteratorDiv_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_VarRef_timeIteratorDiv_feature", "_UI_VarRef_type"),
-				 NablaPackage.Literals.VAR_REF__TIME_ITERATOR_DIV,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
 				 null,
 				 null));
 	}
@@ -158,6 +112,7 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(NablaPackage.Literals.VAR_REF__SPACE_ITERATORS);
+			childrenFeatures.add(NablaPackage.Literals.VAR_REF__TIME_ITERATOR);
 		}
 		return childrenFeatures;
 	}
@@ -194,8 +149,7 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		VarRef varRef = (VarRef)object;
-		return getString("_UI_VarRef_type") + " " + varRef.isHasTimeIterator();
+		return getString("_UI_VarRef_type");
 	}
 
 
@@ -211,12 +165,11 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(VarRef.class)) {
-			case NablaPackage.VAR_REF__HAS_TIME_ITERATOR:
-			case NablaPackage.VAR_REF__TIME_ITERATOR_DIV:
 			case NablaPackage.VAR_REF__FIELDS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case NablaPackage.VAR_REF__SPACE_ITERATORS:
+			case NablaPackage.VAR_REF__TIME_ITERATOR:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -238,6 +191,21 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.VAR_REF__SPACE_ITERATORS,
 				 NablaFactory.eINSTANCE.createSpaceIteratorRef()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.VAR_REF__TIME_ITERATOR,
+				 NablaFactory.eINSTANCE.createTimeIterator()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.VAR_REF__TIME_ITERATOR,
+				 NablaFactory.eINSTANCE.createInitTimeIterator()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.VAR_REF__TIME_ITERATOR,
+				 NablaFactory.eINSTANCE.createNextTimeIterator()));
 	}
 
 }

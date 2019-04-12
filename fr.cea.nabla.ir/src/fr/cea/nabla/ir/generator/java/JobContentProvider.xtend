@@ -15,9 +15,10 @@ package fr.cea.nabla.ir.generator.java
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.ir.EndOfInitJob
+import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.TimeIterationCopyJob
 
 class JobContentProvider 
 {
@@ -39,10 +40,15 @@ class JobContentProvider
 		«instruction.innerContent»
 	'''
 	
-	private def dispatch CharSequence getInnerContent(TimeIterationCopyJob it)
+	private def dispatch CharSequence getInnerContent(EndOfTimeLoopJob it)
 	'''
 		«left.javaType» tmpSwitch = «left.name»;
 		«left.name» = «right.name»;
 		«right.name» = tmpSwitch;
+	'''
+
+	private def dispatch CharSequence getInnerContent(EndOfInitJob it)
+	'''
+		IntStream.range(0, «left.name».length).parallel().forEach(i -> «left.name»[i] = «right.name»[i]);
 	'''
 }

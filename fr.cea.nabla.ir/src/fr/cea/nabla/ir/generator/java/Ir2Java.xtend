@@ -29,7 +29,6 @@ import java.util.List
 
 class Ir2Java extends IrGenerator
 {
-	static val FileExtension = 'java'
 	static val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new OptimizeConnectivities, new FillJobHLTs]
 
 	@Inject extension Utils
@@ -38,7 +37,7 @@ class Ir2Java extends IrGenerator
 	@Inject extension JobContentProvider
 	@Inject extension VariableExtensions
 
-	new() { super(FileExtension, TransformationSteps) }
+	new() { super('java', 'java', TransformationSteps) }
 	
 	override getFileContent(IrModule it)
 	'''
@@ -72,13 +71,9 @@ class Ir2Java extends IrGenerator
 
 			// Global Variables
 			«val globals = variables.filter(ScalarVariable).filter[!const]»
-			«val initializedGlobals = globals.filter[x|x.defaultValue!==null]»
-			«FOR uv : initializedGlobals»
-			private «uv.type.javaType» «uv.name» = «uv.defaultValue.content»;
-			«ENDFOR»
-			«val uninitializedGlobals = globals.filter[x|x.defaultValue===null].groupBy[type]»
-			«FOR type : uninitializedGlobals.keySet»
-			private «type.javaType» «FOR v : uninitializedGlobals.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
+			«val globalsByType = globals.groupBy[type]»
+			«FOR type : globalsByType.keySet»
+			private «type.javaType» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 			«ENDFOR»
 
 			«val arrays = variables.filter(ArrayVariable).groupBy[type]»
@@ -93,10 +88,15 @@ class Ir2Java extends IrGenerator
 			{
 				options = aOptions;
 				mesh = aNumericMesh2D;
+				writer = new VtkFileWriter2D("«name»");
+
 				«FOR c : usedConnectivities»
 				«c.nbElems» = «c.connectivityAccessor»;
 				«ENDFOR»
-				writer = new VtkFileWriter2D("«name»");
+
+				«FOR uv : globals.filter[x|x.defaultValue!==null]»
+				«uv.name» = «uv.defaultValue.content»;
+				«ENDFOR»
 
 				// Arrays allocation
 				«FOR a : variables.filter(ArrayVariable)»
@@ -104,9 +104,11 @@ class Ir2Java extends IrGenerator
 					«IF !a.type.javaBasicType»«allocate(a.dimensions, a.name, 'new ' + a.type.javaType + '(0.0)', new ArrayList<String>)»«ENDIF»
 				«ENDFOR»
 
+				«IF nodeCoordVariable !== null»
 				// Copy node coordinates
 				ArrayList<Real2> gNodes = mesh.getGeometricMesh().getNodes();
-				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> coord[rNodes] = gNodes.get(rNodes));
+				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> «nodeCoordVariable.name»[rNodes] = gNodes.get(rNodes));
+				«ENDIF»
 			}
 			
 			«FOR j : jobs.sortBy[at] SEPARATOR '\n'»

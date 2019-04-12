@@ -648,6 +648,29 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.TimeIterator} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected TimeIteratorItemProvider timeIteratorItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.TimeIterator}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createTimeIteratorAdapter() {
+		if (timeIteratorItemProvider == null) {
+			timeIteratorItemProvider = new TimeIteratorItemProvider(this);
+		}
+
+		return timeIteratorItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.InstructionBlock} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1246,6 +1269,52 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.InitTimeIterator} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected InitTimeIteratorItemProvider initTimeIteratorItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.InitTimeIterator}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createInitTimeIteratorAdapter() {
+		if (initTimeIteratorItemProvider == null) {
+			initTimeIteratorItemProvider = new InitTimeIteratorItemProvider(this);
+		}
+
+		return initTimeIteratorItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.NextTimeIterator} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected NextTimeIteratorItemProvider nextTimeIteratorItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.NextTimeIterator}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createNextTimeIteratorAdapter() {
+		if (nextTimeIteratorItemProvider == null) {
+			nextTimeIteratorItemProvider = new NextTimeIteratorItemProvider(this);
+		}
+
+		return nextTimeIteratorItemProvider;
+	}
+
+	/**
 	 * This returns the root adapter factory that contains this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1369,6 +1438,7 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (real2ConstantItemProvider != null) real2ConstantItemProvider.dispose();
 		if (real3ConstantItemProvider != null) real3ConstantItemProvider.dispose();
 		if (varRefItemProvider != null) varRefItemProvider.dispose();
+		if (timeIteratorItemProvider != null) timeIteratorItemProvider.dispose();
 		if (instructionBlockItemProvider != null) instructionBlockItemProvider.dispose();
 		if (affectationItemProvider != null) affectationItemProvider.dispose();
 		if (loopItemProvider != null) loopItemProvider.dispose();
@@ -1395,6 +1465,8 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (maxConstantItemProvider != null) maxConstantItemProvider.dispose();
 		if (functionCallItemProvider != null) functionCallItemProvider.dispose();
 		if (reductionCallItemProvider != null) reductionCallItemProvider.dispose();
+		if (initTimeIteratorItemProvider != null) initTimeIteratorItemProvider.dispose();
+		if (nextTimeIteratorItemProvider != null) nextTimeIteratorItemProvider.dispose();
 	}
 
 }

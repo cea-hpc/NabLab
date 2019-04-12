@@ -14,48 +14,32 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
-import fr.cea.nabla.VarRefExtensions
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.TimeIterationCopyJob
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.Job
-import fr.cea.nabla.nabla.VarRef
-import org.eclipse.emf.common.util.EList
 
-class JobExtensions 
+class JobFactory 
 {
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrInstructionFactory
-	@Inject extension IrVariableFactory
-	@Inject extension VarRefExtensions
 	
-	def void populateIrJobs(Job j, EList<fr.cea.nabla.ir.ir.Job> irJobs)
+	def create IrFactory::eINSTANCE.createInstructionJob toIrInstructionJob(Job j)
 	{
-		irJobs += IrFactory::eINSTANCE.createInstructionJob =>
-		[
-			annotations += j.toIrAnnotation
-			name = j.name
-			onCycle = false
-			instruction = j.instruction.toIrInstruction	
-		]
+		annotations += j.toIrAnnotation
+		name = j.name
+		onCycle = false
+		instruction = j.instruction.toIrInstruction	
 	}
 	
-	def void populateIrVariablesAndJobs(Job j, EList<Variable> irVariables, EList<fr.cea.nabla.ir.ir.Job> irJobs)
+	def create IrFactory::eINSTANCE.createEndOfInitJob toEndOfInitJob(Variable vAtN0, Variable vAtN)  { init(vAtN, vAtN0) }
+	def create IrFactory::eINSTANCE.createEndOfTimeLoopJob toEndOfLoopJob(Variable vAtN, Variable vAtNplus1) { init(vAtN, vAtNplus1) }
+
+	private def init(TimeIterationCopyJob it, Variable vLeft, Variable vRight)
 	{
-		for (r : j.eAllContents.filter(VarRef).toIterable)
-			if (r.hasTimeIterator)
-			{
-				val vCurrent = r.variable.toIrVariable('')
-				val vNext = r.variable.toIrVariable(r.timeSuffix)
-				irVariables += vNext
-				if (r.timeIteratorDiv == 0) irJobs += toIrCopyJob(vCurrent, vNext) 
-			}
-	}
-	
-	private def create IrFactory::eINSTANCE.createTimeIterationCopyJob toIrCopyJob(Variable current, Variable next)
-	{
-		name = 'Copy_' + next.name + '_to_' + current.name
-		left = current
-		right = next
+		name = 'Copy_' + vRight.name + '_to_' + vLeft.name
+		left = vLeft
+		right = vRight
 		timeIteratorName = 'n'
 	}
 }

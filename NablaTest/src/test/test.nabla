@@ -19,10 +19,7 @@ items { cell, node }
 
 connectivities {
 	cells: (∅) → {cell};
-	nodes: (∅) → {node};
-	mapnn: (node) → node;
-	nodesOfCell: (cell) → {node};
-	cellsOfNode: (node) → {cell};
+	nodes: (∅) → {cell};
 }
 
 const ℝ LENGTH = 1.0;
@@ -30,14 +27,10 @@ const ℕ X_EDGE_ELEMS = 8;
 const ℕ Y_EDGE_ELEMS = 8;
 const ℕ Z_EDGE_ELEMS = 1;
 
-ℝ Y[cells], Cjr[cells, nodesOfCell], Z[nodes];
+ℝ² X[nodes], XX[nodes];
 
-//MyJob: ∀j∈cells(), Y{j} = ∑{r∈nodesOfCell(j)}(Cjr{j,r} * Z{r});
-//MyJob2: ∀r∈nodes(), Z{r} = ∑{j∈cellsOfNode(r)}(Cjr{j,r} * 4);
-
-MyJobAgain: ∀j∈cells(), {
-	∀r1∈nodes(), Z{r1} = 0.0;
-	∀r2∈nodesOfCell(j), d=mapnn(r2), d2=mapnn(d), Z{r2} = ∑{r3∈nodes()}(Z{r3});
-	Y{j} = 0.0;
-}
+A: ∀j∈cells(), X{j}^{n=0} = {0.0, 0.0};
+B: ∀j∈cells(), X{j}^{n+1/2} = X{j} + 1.0;
+C: ∀j∈cells(), X{j}^{n+1} = X{j} + 1.0;
+D: ∀j∈cells(), XX{j} = X{j}^{n+1} + 1.0;
 

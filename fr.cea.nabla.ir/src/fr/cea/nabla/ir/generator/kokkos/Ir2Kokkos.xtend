@@ -27,7 +27,6 @@ import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 
 class Ir2Kokkos extends IrGenerator
 {
-	static val FileExtension = 'cpp'
 	static val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new OptimizeConnectivities, new FillJobHLTs]
 
 	@Inject extension Utils
@@ -36,7 +35,7 @@ class Ir2Kokkos extends IrGenerator
 	@Inject extension JobContentProvider
 	@Inject extension VariableExtensions
 
-	new() { super(FileExtension, TransformationSteps) }
+	new() { super('kokkos', 'cpp', TransformationSteps) }
 
 	override getFileContent(IrModule it)
 	'''

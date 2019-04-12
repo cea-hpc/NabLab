@@ -15,24 +15,29 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import fr.cea.nabla.FunctionCallExtensions
+import fr.cea.nabla.MandatoryOptions
+import fr.cea.nabla.VarRefExtensions
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.FunctionCall
-import fr.cea.nabla.nabla.Job
+import fr.cea.nabla.nabla.InitTimeIterator
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.NextTimeIterator
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
+import fr.cea.nabla.nabla.VarRef
 
 class Nabla2Ir
 {
 	@Inject extension Nabla2IrUtils
-	@Inject extension JobExtensions
+	@Inject extension JobFactory
 	@Inject extension IrFunctionFactory
 	@Inject extension IrVariableFactory
 	@Inject extension IrConnectivityFactory
 	@Inject extension IrExpressionFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension FunctionCallExtensions
+	@Inject extension VarRefExtensions
 	
 	def create IrFactory::eINSTANCE.createIrModule toIrModule(NablaModule m)
 	{
@@ -50,6 +55,7 @@ class Nabla2Ir
 		
 		// Création de l'ensemble des variables globales
 		for (vDecl : m.variables)
+		{
 			switch vDecl
 			{
 				ScalarVarDefinition: 
@@ -61,13 +67,44 @@ class Nabla2Ir
 				}
 				VarGroupDeclaration: vDecl.variables.forEach[x | variables += x.toIrVariable]
 			}
+		}
 		
-		// en IR, les variables globales doivent être initialisées par un job
-		//m.variables.filter(GlobalVariableDeclarationBlock).forEach[x | x.populateIrJobs(jobs)]
-				
 		// il faut créer les variables au temps n+1 et les jobs de copie de Xn+1 <- Xn
-		m.jobs.filter(Job).forEach[x | x.populateIrVariablesAndJobs(variables, jobs)]
-	
-		m.jobs.forEach[x | x.populateIrJobs(jobs)]
+		val timeIteratorVarRefsByVariable = m.eAllContents.filter(VarRef).filter[timeIterator !== null].groupBy[variable]
+		for (v : timeIteratorVarRefsByVariable.keySet)
+		{
+			val timeIteratorVarRefs = timeIteratorVarRefsByVariable.get(v)
+			for (r : timeIteratorVarRefs)
+			{
+				val vAtN = r.variable.toIrVariable('')
+				// No duplicates thanks to r.timeSuffix and Xtend create methods
+				val vAtR = r.variable.toIrVariable(r.timeSuffix)
+				// No duplicates thanks to unique attribute on IrModule::variables
+				variables += vAtR
+				val timeIterator = r.timeIterator
+				switch timeIterator
+				{
+					InitTimeIterator: 
+					{
+						val vAt0 = vAtR
+						jobs += toEndOfInitJob(vAt0, vAtN)
+						if (v.name == MandatoryOptions::COORD) nodeCoordVariable = vAt0
+					}
+					// Copy Xn+1 to Xn at the end of time loop.
+					// Xn+1 => NextTimeIterator::div == 0
+					NextTimeIterator case timeIterator.div==0: 
+					{
+						val vAtNplus1 = vAtR
+						jobs += toEndOfLoopJob(vAtN, vAtNplus1)
+					}
+					// No job to create for instances of NextTimeIterator with div !== 1						
+				}
+			}
+		}
+		
+		if (nodeCoordVariable === null)
+			nodeCoordVariable = variables.findFirst[x | x.name == MandatoryOptions::COORD]
+		
+		m.jobs.forEach[x | jobs += x.toIrInstructionJob]
 	}
 }

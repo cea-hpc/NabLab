@@ -22,6 +22,7 @@ import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
+import fr.cea.nabla.nabla.InitTimeIterator
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.Job
@@ -31,6 +32,7 @@ import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.MulOrDiv
+import fr.cea.nabla.nabla.NextTimeIterator
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
@@ -109,16 +111,13 @@ class LatexLabelServices
 	{
 		var label = variable.name.pu
 		if (!spaceIterators.empty) label += '_{' + spaceIterators.map[x | x.latex].join(',') + '}'
-		if (hasTimeIterator) label += ' ^{n+1' + timeIteratorDiv.timeIteratorDivLabel + '}'
+		if (timeIterator !== null) label += '^{' + timeIterator.timeIteratorLabel + '}'
 		for (f : fields) label += '.' + f
 		return label
 	}
 	
-	private static def String getTimeIteratorDivLabel(int timeIteratorDiv) 
-	{ 
-		if (timeIteratorDiv == 0) ''
-		else '/' + timeIteratorDiv
-	}
+	private static def dispatch getTimeIteratorLabel(InitTimeIterator it) '''n=0''' 
+	private static def dispatch getTimeIteratorLabel(NextTimeIterator it) '''n+1«IF hasDiv»/«div»«ENDIF»''' 
 		
 	// PRESERVE UNDERSCORES
 	private static def String pu(String it) { if (!nullOrEmpty) replaceAll('_', '\\\\_') else '' }

@@ -13,10 +13,10 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.transformers
 
+import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.TimeIterationCopyJob
 import java.util.HashMap
 import org.jgrapht.alg.cycle.CycleDetector
 import org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths
@@ -84,10 +84,10 @@ class FillJobHLTs implements IrTransformationStep
 	}
 	
 	/** 
-	 * Création d'un graphe comrrespondant à l'IR. 
+	 * Création d'un graphe correspondant à l'IR. 
 	 * 2 noeuds sources sont ajoutés : 1 correspondant à un noeud source global 
 	 * et l'autre à l'entrée de la boucle en temps. Notons que les arcs sortants
-	 * des jobs de type TimeIterationCopyJob ne sont pas construits pour éviter les cycles.
+	 * des jobs de type EndOfTimeLoopJob ne sont pas construits pour éviter les cycles.
 	 */
 	private def createGraph(IrModule it, Job globalSourceNode, Job timeLoopSourceNode)
 	{	
@@ -96,7 +96,7 @@ class FillJobHLTs implements IrTransformationStep
 		g.addVertex(timeLoopSourceNode)
 		for (from : jobs)
 			for (to : from.nextJobs)
-				if (from instanceof TimeIterationCopyJob)
+				if (from instanceof EndOfTimeLoopJob)
 					g.addEdge(timeLoopSourceNode, to)
 				else
 					g.addEdge(from, to)	

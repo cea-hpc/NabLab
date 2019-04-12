@@ -98,12 +98,14 @@ class Ir2Kokkos extends IrGenerator
 		, «a.name»("«a.name»", «FOR d : a.dimensions SEPARATOR ', '»«d.nbElems»«ENDFOR»)
 		«ENDFOR»
 		{
+			«IF nodeCoordVariable !== null»
 			// Copy node coordinates
 			auto gNodes = mesh->getGeometricMesh()->getNodes();
 			Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int rNodes)
 			{
-				coord(rNodes) = gNodes[rNodes];
+				«nodeCoordVariable.name»(rNodes) = gNodes[rNodes];
 			});
+			«ENDIF»
 		}
 
 	private:

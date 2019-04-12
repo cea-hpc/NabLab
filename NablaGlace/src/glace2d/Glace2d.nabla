@@ -54,9 +54,9 @@ const ℝ option_p_ini_zg = 1.0;
 const ℝ option_p_ini_zd = 0.1;
 
 ℝ t=0.0;
-ℝ δt=0.0;
+ℝ δt=option_δt_ini;
 
-ℝ² coord[nodes], X[nodes], b[nodes], bt[nodes];
+ℝ² X[nodes], b[nodes], bt[nodes];
 ℝ²ˣ² Ar[nodes], Mt[nodes];
 ℝ² ur[nodes];
 ℝ p_ic[cells], ρ_ic[cells], V_ic[cells];
@@ -70,7 +70,7 @@ const ℝ option_p_ini_zd = 0.1;
 // *************************************************************
 // * Init: X_ic(par le mailleur), ρ_ic, p_ic, V_ic & m
 // *************************************************************
-IniCenter: ∀j∈cells(), center{j} = (1.0/4.0) * ∑{r∈nodesOfCell(j)}(coord{r});
+IniCenter: ∀j∈cells(), center{j} = (1.0/4.0) * ∑{r∈nodesOfCell(j)}(X{r}^{n=0});
 IniIc: ∀j∈cells(), if (center{j}.x < option_x_interface) {
   ρ_ic{j}=option_ρ_ini_zg;
   p_ic{j}=option_p_ini_zg;
@@ -80,8 +80,8 @@ IniIc: ∀j∈cells(), if (center{j}.x < option_x_interface) {
 }
 
 ComputeCjrIc: ∀j∈cells(), ∀r∈nodesOfCell(j), 
-	C_ic{j,r} = 0.5 * perp(coord{►(r)} - coord{◄(r)});
-IniVIc: ∀j∈cells(), V_ic{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C_ic{j,r}, coord{r}));
+	C_ic{j,r} = 0.5 * perp(X{►(r)}^{n=0} - X{◄(r)}^{n=0});
+IniVIc: ∀j∈cells(), V_ic{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C_ic{j,r}, X{r}^{n=0}));
 IniM: ∀j∈cells(), m{j} = ρ_ic{j} * V_ic{j}; // m est constant
 
 // *************************************************************
@@ -147,13 +147,10 @@ ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C{j,r},X{r}))
 // * Itérations de la boucle en 'n'
 // * Et calcule du δt pour mise-à-jour du temps de la simulation
 // *************************************************************
-ComputeXn0: ∀r∈nodes(), X{r}=coord{r};
 ComputeXn: ∀r∈nodes(), X{r}^{n+1}=X{r}+δt*ur{r};
-ComputeUn0: ∀j∈cells(), uj{j}={0.0,0.0};
+IniUn: ∀j∈cells(), uj{j}={0.0,0.0};
 ComputeUn: ∀j∈cells(), uj{j}^{n+1}=uj{j}-(δt/m{j})*∑{r∈nodesOfCell(j)}(F{j,r});
-ComputeEn0: ∀j∈cells(), E{j}=p_ic{j}/((γ-1.0)*ρ_ic{j});
+IniEn: ∀j∈cells(), E{j}=p_ic{j}/((γ-1.0)*ρ_ic{j});
 ComputeEn: ∀j∈cells(), E{j}^{n+1}=E{j} - (δt / m{j}) * ∑{r∈nodesOfCell(j)}(dot(F{j,r},ur{r}));
-ComputeDt0: δt=option_δt_ini;
 ComputeDt: δt^{n+1}=option_δt_cfl*reduceMin{j∈cells()}(δtj{j});
-ComputeTn0: t=0.0;
 ComputeTn: t^{n+1}=t+δt^{n+1};

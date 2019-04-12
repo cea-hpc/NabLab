@@ -15,9 +15,10 @@ package fr.cea.nabla.ir.generator.kokkos
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.ir.EndOfInitJob
+import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.TimeIterationCopyJob
 
 class JobContentProvider 
 {
@@ -38,10 +39,18 @@ class JobContentProvider
 		«instruction.innerContent»
 	'''
 	
-	private def dispatch CharSequence getInnerContent(TimeIterationCopyJob it)
+	private def dispatch CharSequence getInnerContent(EndOfTimeLoopJob it)
 	'''
 		auto tmpSwitch = «left.name»;
 		«left.name» = «right.name»;
 		«right.name» = tmpSwitch;
+	'''
+
+	private def dispatch CharSequence getInnerContent(EndOfInitJob it)
+	'''
+		Kokkos::parallel_for(«left.name».dimension_0(), KOKKOS_LAMBDA(const int i)
+		{
+			«left.name»(i) = «right.name»(i);
+		});
 	'''
 }

@@ -20,13 +20,13 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 abstract class IrGenerator 
 {
-	@Accessors(PUBLIC_GETTER, PUBLIC_SETTER) String generationDir
+	@Accessors val String name
 	@Accessors val String fileExtension
 	@Accessors val List<? extends IrTransformationStep> transformationSteps
 
-	new(String fileExtension, List<? extends IrTransformationStep> transformationSteps)
+	new(String name, String fileExtension, List<? extends IrTransformationStep> transformationSteps)
 	{
-		this.generationDir = null
+		this.name = name
 		this.fileExtension = fileExtension
 		this.transformationSteps = transformationSteps
 	}

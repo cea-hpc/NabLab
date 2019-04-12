@@ -17,7 +17,6 @@ import com.google.inject.Inject
 import fr.cea.nabla.generator.ir.Nabla2Ir
 import fr.cea.nabla.ir.generator.java.Ir2Java
 import fr.cea.nabla.ir.generator.kokkos.Ir2Kokkos
-import fr.cea.nabla.ir.generator.n.Ir2N
 import fr.cea.nabla.ir.transformers.TagPersistentVariables
 import fr.cea.nabla.nabla.NablaModule
 import org.eclipse.emf.ecore.EObject
@@ -47,7 +46,6 @@ class NablaGenerator extends AbstractGenerator
 	@Inject SmallLatexGenerator latexGenerator
 	@Inject Nabla2Ir nabla2ir
 	
-	@Inject Ir2N ir2N
 	@Inject Ir2Java ir2Java
 	@Inject Ir2Kokkos ir2Kokkos
 	
@@ -71,46 +69,50 @@ class NablaGenerator extends AbstractGenerator
 			print('Looking for a properties file... ')
 			val uri = input.URI.trimFileExtension.toString.addExtensions(#[PropertiesExtension])
 			val properties = utils.getProperties(uri)
-			val generators = #[ir2N, ir2Java, ir2Kokkos]	
+			val generators = #[ir2Java, ir2Kokkos]	
 			if (properties.empty) println('no file')
 			else
 			{
 				println('ok file found')
 				
-				ir2Java.generationDir = properties.getProperty('javaGenerationDir', null)
-				ir2Kokkos.generationDir = properties.getProperty('kokkosGenerationDir', null) 
-				ir2N.generationDir = properties.getProperty('nGenerationDir', null) 
-				
 				val tagVariableStep = new TagPersistentVariables(properties)
 				tagVariableStep.transform(irModuleRef)				
 			
-				for (generator : generators.filter[x | !x.generationDir.nullOrEmpty])
+				for (generator : generators)
 				{
-					val languageFileNameWithoutExtensions = generator.generationDir + '/' + fileNameWithoutExtension
+					val generationDir = properties.getProperty(generator.name + 'GenerationDir', null)
+					if (generationDir !== null)
+					{
+						val languageFileNameWithoutExtensions = generationDir + '/' + fileNameWithoutExtension
+						
+						val irModule = EcoreUtil::copy(irModuleRef)
+						println('Starting generation chain for ' + generator.shortName + ' (.' + generator.fileExtension + ' file)')
+						println('\tBuilding Nabla Intermediate Representation')
+			
+						// application des transformation de l'IR (dépendant du langage
+						var transformOK = true
+						val stepIt = generator.transformationSteps.iterator
+						val originModuleName = module.name
+						while (stepIt.hasNext && transformOK)
+						{
+							val step = stepIt.next
+							println('\tIR -> IR: ' + step.description)
+							val suffix = 'before' + step.shortName
+							irModule.name = originModuleName + '_' + suffix
+							createAndSaveResource(fsa, input.resourceSet, languageFileNameWithoutExtensions.addExtensions(#[suffix, generator.fileExtension, IrExtension]), irModule)		
+							transformOK = step.transform(irModule)
+						}
+						irModule.name = originModuleName
+						createAndSaveResource(fsa, input.resourceSet, languageFileNameWithoutExtensions.addExtensions(#[generator.fileExtension, IrExtension]), irModule)
 					
-					val irModule = EcoreUtil::copy(irModuleRef)
-					println('Starting generation chain for ' + generator.shortName + ' (.' + generator.fileExtension + ' file)')
-					println('\tBuilding Nabla Intermediate Representation')
-		
-					// application des transformation de l'IR (dépendant du langage
-					var transformOK = true
-					val stepIt = generator.transformationSteps.iterator
-					while (stepIt.hasNext && transformOK)
-					{
-						val step = stepIt.next
-						println('\tIR -> IR: ' + step.description)
-						createAndSaveResource(fsa, input.resourceSet, languageFileNameWithoutExtensions.addExtensions(#['before' + step.shortName, generator.fileExtension, IrExtension]), irModule)		
-						transformOK = step.transform(irModule)
+						// génération du fichier source
+						if (transformOK)
+						{
+							println('\tGenerating .' + generator.fileExtension + ' file')
+							val fileContent = generator.getFileContent(irModule)
+							fsa.generateFile(languageFileNameWithoutExtensions.addExtensions(#[generator.fileExtension]), fileContent)	
+						}	
 					}
-					createAndSaveResource(fsa, input.resourceSet, languageFileNameWithoutExtensions.addExtensions(#[generator.fileExtension, IrExtension]), irModule)
-				
-					// génération du fichier source
-					if (transformOK)
-					{
-						println('\tGenerating .' + generator.fileExtension + ' file')
-						val fileContent = generator.getFileContent(irModule)
-						fsa.generateFile(languageFileNameWithoutExtensions.addExtensions(#[generator.fileExtension]), fileContent)	
-					}	
 				}
 			}
 		}

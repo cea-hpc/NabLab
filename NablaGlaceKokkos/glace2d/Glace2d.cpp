@@ -496,9 +496,7 @@ private:
 	 */
 	void copy_deltat_nplus1_to_deltat()
 	{
-		auto tmpSwitch = deltat;
-		deltat = deltat_nplus1;
-		deltat_nplus1 = tmpSwitch;
+		swap(deltat_nplus1, deltat);
 	}
 	
 	/**
@@ -595,9 +593,7 @@ private:
 	 */
 	void copy_t_nplus1_to_t()
 	{
-		auto tmpSwitch = t;
-		t = t_nplus1;
-		t_nplus1 = tmpSwitch;
+		swap(t_nplus1, t);
 	}
 	
 	/**
@@ -653,9 +649,7 @@ private:
 	 */
 	void copy_X_nplus1_to_X()
 	{
-		auto tmpSwitch = X;
-		X = X_nplus1;
-		X_nplus1 = tmpSwitch;
+		swap(X_nplus1, X);
 	}
 	
 	/**
@@ -707,9 +701,7 @@ private:
 	 */
 	void copy_uj_nplus1_to_uj()
 	{
-		auto tmpSwitch = uj;
-		uj = uj_nplus1;
-		uj_nplus1 = tmpSwitch;
+		swap(uj_nplus1, uj);
 	}
 	
 	/**
@@ -719,9 +711,7 @@ private:
 	 */
 	void copy_E_nplus1_to_E()
 	{
-		auto tmpSwitch = E;
-		E = E_nplus1;
-		E_nplus1 = tmpSwitch;
+		swap(E_nplus1, E);
 	}
 
 public:

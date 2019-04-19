@@ -41,9 +41,7 @@ class JobContentProvider
 	
 	private def dispatch CharSequence getInnerContent(EndOfTimeLoopJob it)
 	'''
-		auto tmpSwitch = «left.name»;
-		«left.name» = «right.name»;
-		«right.name» = tmpSwitch;
+		swap(«right.name», «left.name»);
 	'''
 
 	private def dispatch CharSequence getInnerContent(EndOfInitJob it)

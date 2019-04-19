@@ -28,6 +28,7 @@ class JobContentProvider
 	def getContent(Job it)
 	'''
 		«comment»
+		KOKKOS_INLINE_FUNCTION
 		void «name.toFirstLower»()
 		{
 			«innerContent»

@@ -483,9 +483,9 @@ public final class Glace2d
 			for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.length; jCellsOfNodeR++)
 			{
 				int jId = cellsOfNodeR[jCellsOfNodeR];
-				int jCells = jId;
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				int rNodesOfCellJ = Utils.indexOf(nodesOfCellJ,rId);
+				int jCells = jId;
 				sum_1190060678.operator_set(sum_1190060678.operator_plus((Ajr[jCells][rNodesOfCellJ])));
 			}
 			Ar[rNodes].operator_set(sum_1190060678);

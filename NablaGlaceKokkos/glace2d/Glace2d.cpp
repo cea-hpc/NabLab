@@ -130,6 +130,7 @@ private:
 	 * In variables: X_n0
 	 * Out variables: X
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void copy_X_n0_to_X()
 	{
 		Kokkos::parallel_for(X.dimension_0(), KOKKOS_LAMBDA(const int i)
@@ -143,6 +144,7 @@ private:
 	 * In variables: X_n0
 	 * Out variables: center
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void iniCenter()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -165,6 +167,7 @@ private:
 	 * In variables: X_n0
 	 * Out variables: C_ic
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeCjrIc()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -191,6 +194,7 @@ private:
 	 * In variables: 
 	 * Out variables: uj
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void iniUn()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -204,6 +208,7 @@ private:
 	 * In variables: center, option_x_interface, option_rho_ini_zg, option_p_ini_zg, option_rho_ini_zd, option_p_ini_zd
 	 * Out variables: rho_ic, p_ic
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void iniIc()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -226,6 +231,7 @@ private:
 	 * In variables: C_ic, X_n0
 	 * Out variables: V_ic
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void iniVIc()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -248,6 +254,7 @@ private:
 	 * In variables: rho_ic, V_ic
 	 * Out variables: m
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void iniM()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -261,6 +268,7 @@ private:
 	 * In variables: p_ic, gammma, rho_ic
 	 * Out variables: E
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void iniEn()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -274,6 +282,7 @@ private:
 	 * In variables: X
 	 * Out variables: C
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeCjr()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -300,6 +309,7 @@ private:
 	 * In variables: E, uj
 	 * Out variables: e
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeInternalEngergy()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -313,6 +323,7 @@ private:
 	 * In variables: C
 	 * Out variables: l
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeLjr()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -331,6 +342,7 @@ private:
 	 * In variables: C, X
 	 * Out variables: V
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeV()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -353,6 +365,7 @@ private:
 	 * In variables: m, V
 	 * Out variables: rho
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeDensity()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -366,6 +379,7 @@ private:
 	 * In variables: gammma, rho, e
 	 * Out variables: p
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeEOSp()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -379,6 +393,7 @@ private:
 	 * In variables: gammma, p, rho
 	 * Out variables: c
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeEOSc()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -392,6 +407,7 @@ private:
 	 * In variables: l, V, c
 	 * Out variables: deltatj
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computedeltatj()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -412,6 +428,7 @@ private:
 	 * In variables: rho, c, l, C
 	 * Out variables: Ajr
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeAjr()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -430,6 +447,7 @@ private:
 	 * In variables: Ajr
 	 * Out variables: Ar
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeAr()
 	{
 		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int rNodes)
@@ -454,6 +472,7 @@ private:
 	 * In variables: p, C, Ajr, uj
 	 * Out variables: b
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeBr()
 	{
 		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int rNodes)
@@ -464,9 +483,9 @@ private:
 			for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.size(); jCellsOfNodeR++)
 			{
 				int jId = cellsOfNodeR[jCellsOfNodeR];
-				int jCells = jId;
 				auto nodesOfCellJ = mesh->getNodesOfCell(jId);
 				int rNodesOfCellJ = Utils::indexOf(nodesOfCellJ,rId);
+				int jCells = jId;
 				sum942617414 = sum942617414 + (p(jCells) * C(jCells,rNodesOfCellJ) + Glace2dFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), uj(jCells)));
 			}
 			b(rNodes) = sum942617414;
@@ -478,6 +497,7 @@ private:
 	 * In variables: deltatj, option_deltat_cfl
 	 * Out variables: deltat_nplus1
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeDt()
 	{
 		double reduceMin276725735 = numeric_limits<double>::max();
@@ -494,6 +514,7 @@ private:
 	 * In variables: deltat_nplus1
 	 * Out variables: deltat
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void copy_deltat_nplus1_to_deltat()
 	{
 		swap(deltat_nplus1, deltat);
@@ -504,6 +525,7 @@ private:
 	 * In variables: Ar
 	 * Out variables: Mt
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeMt()
 	{
 		auto innerNodes = mesh->getInnerNodes();
@@ -520,6 +542,7 @@ private:
 	 * In variables: b
 	 * Out variables: bt
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeBt()
 	{
 		auto innerNodes = mesh->getInnerNodes();
@@ -536,6 +559,7 @@ private:
 	 * In variables: X_EDGE_ELEMS, LENGTH, Y_EDGE_ELEMS, X, b, Ar
 	 * Out variables: bt, Mt
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void outerFacesComputations()
 	{
 		auto outerFaces = mesh->getOuterFaces();
@@ -581,6 +605,7 @@ private:
 	 * In variables: t, deltat_nplus1
 	 * Out variables: t_nplus1
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeTn()
 	{
 		t_nplus1 = t + deltat_nplus1;
@@ -591,6 +616,7 @@ private:
 	 * In variables: t_nplus1
 	 * Out variables: t
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void copy_t_nplus1_to_t()
 	{
 		swap(t_nplus1, t);
@@ -601,6 +627,7 @@ private:
 	 * In variables: Mt, bt
 	 * Out variables: ur
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeU()
 	{
 		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int rNodes)
@@ -614,6 +641,7 @@ private:
 	 * In variables: p, C, Ajr, uj, ur
 	 * Out variables: F
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeFjr()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -634,6 +662,7 @@ private:
 	 * In variables: X, deltat, ur
 	 * Out variables: X_nplus1
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeXn()
 	{
 		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int rNodes)
@@ -647,6 +676,7 @@ private:
 	 * In variables: X_nplus1
 	 * Out variables: X
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void copy_X_nplus1_to_X()
 	{
 		swap(X_nplus1, X);
@@ -657,6 +687,7 @@ private:
 	 * In variables: F, uj, deltat, m
 	 * Out variables: uj_nplus1
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeUn()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -677,6 +708,7 @@ private:
 	 * In variables: F, ur, E, deltat, m
 	 * Out variables: E_nplus1
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void computeEn()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -699,6 +731,7 @@ private:
 	 * In variables: uj_nplus1
 	 * Out variables: uj
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void copy_uj_nplus1_to_uj()
 	{
 		swap(uj_nplus1, uj);
@@ -709,6 +742,7 @@ private:
 	 * In variables: E_nplus1
 	 * Out variables: E
 	 */
+	KOKKOS_INLINE_FUNCTION
 	void copy_E_nplus1_to_E()
 	{
 		swap(E_nplus1, E);

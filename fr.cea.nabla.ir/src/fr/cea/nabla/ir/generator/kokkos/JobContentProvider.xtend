@@ -29,7 +29,7 @@ class JobContentProvider
 	'''
 		«comment»
 		KOKKOS_INLINE_FUNCTION
-		void «name.toFirstLower»()
+		void «name.toFirstLower»() noexcept
 		{
 			«innerContent»
 		}

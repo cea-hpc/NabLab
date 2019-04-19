@@ -14,38 +14,29 @@
 package fr.cea.nabla.ir.generator.kokkos
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.EndOfInitJob
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
 
-class JobContentProvider 
+abstract class JobContentProvider 
 {
-	@Inject extension Utils
 	@Inject extension InstructionContentProvider
 	
-	def getContent(Job it)
-	'''
-		«comment»
-		KOKKOS_INLINE_FUNCTION
-		void «name.toFirstLower»() noexcept
-		{
-			«innerContent»
-		}
-	'''
+	abstract def CharSequence getJobCallsContent(Iterable<Job> jobs)
+	abstract def CharSequence getContent(Job it)
 	
-	private def dispatch CharSequence getInnerContent(InstructionJob it)
+	protected def dispatch CharSequence getInnerContent(InstructionJob it)
 	'''
 		«instruction.innerContent»
 	'''
 	
-	private def dispatch CharSequence getInnerContent(EndOfTimeLoopJob it)
+	protected def dispatch CharSequence getInnerContent(EndOfTimeLoopJob it)
 	'''
-		swap(«right.name», «left.name»);
+		std::swap(«right.name», «left.name»);
 	'''
 
-	private def dispatch CharSequence getInnerContent(EndOfInitJob it)
+	protected def dispatch CharSequence getInnerContent(EndOfInitJob it)
 	'''
 		Kokkos::parallel_for(«left.name».dimension_0(), KOKKOS_LAMBDA(const int i)
 		{

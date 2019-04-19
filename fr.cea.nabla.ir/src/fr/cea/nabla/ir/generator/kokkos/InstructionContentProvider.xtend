@@ -30,13 +30,16 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.ScalarVarDefinition
 import java.util.List
 
-class InstructionContentProvider 
+abstract class InstructionContentProvider 
 {
 	@Inject extension Utils
 	@Inject extension Ir2KokkosUtils
 	@Inject extension ExpressionContentProvider
 	@Inject extension VariableExtensions
 	@Inject extension IndexHelper
+
+	protected def idToIndex(Index i, String idName) { idToIndex(i, idName, '::') }	
+	protected abstract def CharSequence addParallelLoop(Iterator it, Loop l)
 
 	def dispatch getInnerContent(Instruction it) { content }
 	def dispatch getInnerContent(InstructionBlock it)
@@ -99,24 +102,10 @@ class InstructionContentProvider
 		«ENDIF»
 	'''
 	
-	private def addParallelLoop(Iterator it, Loop l)
-	'''
-		«val itIndex = IndexFactory::createIndex(it)»
-		«IF !call.connectivity.indexEqualId»auto «itIndex.containerName» = «call.accessor»;«ENDIF»
-		Kokkos::parallel_for(«call.connectivity.nbElems», KOKKOS_LAMBDA(const int «itIndex.label»)
-		{
-			«IF needIdFor(l)»int «name»Id = «indexToId(itIndex)»;«ENDIF»
-			«FOR index : getRequiredIndexes(l)»
-			int «index.label» = «idToIndex(index, name+'Id')»;
-			«ENDFOR»
-			«l.body.innerContent»
-		});
-	'''
-
 	private def addSequentialLoop(Iterator it, Loop l)
 	'''
 		«val itIndex = IndexFactory::createIndex(it)»
-		auto «itIndex.containerName» = «call.accessor»;
+		const auto& «itIndex.containerName»(«call.accessor»);
 		for (int «itIndex.label»=0; «itIndex.label»<«itIndex.containerName».size(); «itIndex.label»++)
 		{
 			«IF needPrev(l)»int «prev(itIndex.label)» = («itIndex.label»-1+«itIndex.containerName».size())%«itIndex.containerName».size();«ENDIF»
@@ -143,7 +132,6 @@ class InstructionContentProvider
 	'''auto «containerName» = mesh->get«connectivity.name.toFirstUpper()»(«connectivityArgIterator»Id);'''
 	
 	private def getKokkosName(ReductionCall it) '''«reduction.name.replaceFirst("reduce", "")»'''
-	private def idToIndex(Index i, String idName) { idToIndex(i, idName, '::') }	
 
 	private def getDependantIteratorsContent(List<Iterator> iterators)
 	'''

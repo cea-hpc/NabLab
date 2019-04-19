@@ -40,10 +40,17 @@ class Ir2Kokkos extends IrGenerator
 	override getFileContent(IrModule it)
 	'''
 	#include <iostream>
+	#include <iomanip>
+	#include <type_traits>
 	#include <limits>
+	#include <utility>
+	#include <cmath>
+	#include <cfenv>
+	#pragma STDC FENV_ACCESS ON
 
 	// Kokkos headers
 	#include <Kokkos_Core.hpp>
+	#include <Kokkos_hwloc.hpp>
 
 	// Project headers
 	#include "mesh/NumericMesh2D.h"
@@ -85,6 +92,9 @@ class Ir2Kokkos extends IrGenerator
 		Kokkos::View<«a.type.kokkosType»«a.dimensions.map['*'].join»> «a.name»;
 		«ENDFOR»
 		«ENDIF»
+		
+		// alias
+		typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 	public:
 		«name»(Options* aOptions, NumericMesh2D* aNumericMesh2D)
@@ -109,6 +119,12 @@ class Ir2Kokkos extends IrGenerator
 		}
 
 	private:
+		// TODO : importer la version
+		const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const int& nb_elmt) noexcept
+		{
+			return std::pair<size_t, size_t>(0, 0);
+		}
+		
 		«FOR j : jobs.sortBy[at] SEPARATOR '\n'»
 			«j.content»
 		«ENDFOR»			
@@ -116,10 +132,12 @@ class Ir2Kokkos extends IrGenerator
 	public:
 		void simulate()
 		{
+			auto team_policy(Kokkos::TeamPolicy<>(
+				Kokkos::hwloc::get_available_numa_count(),
+				Kokkos::hwloc::get_available_cores_per_numa() * Kokkos::hwloc::get_available_threads_per_core()));
+			
 			std::cout << "Début de l'exécution du module «name»" << std::endl;
-			«FOR j : jobs.filter[x | x.at < 0].sortBy[at]»
-				«j.name.toFirstLower»(); // @«j.at»
-			«ENDFOR»
+			«jobs.filter[x | x.at < 0].jobCallsContent»
 	
 			«val variablesToPersist = persistentArrayVariables»
 			«IF !variablesToPersist.empty»
@@ -134,9 +152,7 @@ class Ir2Kokkos extends IrGenerator
 			{
 				iteration++;
 				std::cout << "[" << iteration << "] t = " << t << std::endl;
-				«FOR j : jobs.filter[x | x.at > 0].sortBy[at]»
-					«j.name.toFirstLower»(); // @«j.at»
-				«ENDFOR»
+				«jobs.filter[x | x.at > 0].jobCallsContent»
 				«IF !variablesToPersist.empty»
 				auto quads = mesh->getGeometricMesh()->getQuads();
 				writer.writeFile(iteration, X, quads, cellVariables, nodeVariables);

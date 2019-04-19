@@ -23,7 +23,6 @@ import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Loop
-import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVar
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -106,14 +105,13 @@ class IrInstructionFactory
 	
 	private def Instruction transformReductions(Instruction i, Expression e)
 	{
-		if (e instanceof ReductionCall || e.eAllContents.exists(x | x instanceof ReductionCall))
-			return IrFactory::eINSTANCE.createInstructionBlock =>
-			[
-				annotations += e.toIrAnnotation
-				instructions += e.toIrReductions
-				instructions += i
-			]
-		else
-			return i
+		val listOfReductionInstructions = e.toIrReductions
+		if (listOfReductionInstructions.empty) i
+		else IrFactory::eINSTANCE.createInstructionBlock =>
+		[
+			annotations += e.toIrAnnotation
+			instructions += listOfReductionInstructions
+			instructions += i
+		]
 	}
 }

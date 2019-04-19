@@ -129,6 +129,8 @@
         eType="#//ScalarVariable" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="reduction" lowerBound="1"
         eType="#//ReductionCall" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="innerReductions" upperBound="-1"
+        eType="#//Instruction" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ScalarVarDefinition" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" lowerBound="1"

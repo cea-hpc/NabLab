@@ -113,6 +113,7 @@
     <genClasses ecoreClass="Ir.ecore#//ReductionInstruction">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/variable"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/reduction"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/innerReductions"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ScalarVarDefinition">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ScalarVarDefinition/variables"/>

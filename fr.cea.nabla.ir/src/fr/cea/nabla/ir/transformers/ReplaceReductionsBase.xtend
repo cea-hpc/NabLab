@@ -18,7 +18,7 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
-import fr.cea.nabla.ir.ir.ReductionCall
+import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Variable
 import java.util.List
 import org.eclipse.emf.ecore.EObject
@@ -48,7 +48,7 @@ abstract class ReplaceReductionsBase
 	{
 		if (eContainer === null) false
 		else if (eContainer instanceof Loop) false
-		else if (eContainer instanceof ReductionCall) false
+		else if (eContainer instanceof ReductionInstruction) false
 		else if (eContainer instanceof Job) true
 		else eContainer.external	
 	}

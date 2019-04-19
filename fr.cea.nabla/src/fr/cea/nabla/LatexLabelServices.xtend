@@ -105,8 +105,20 @@ class LatexLabelServices
 	static def dispatch String getLatex(RealXCompactConstant it) { type.literal + '(' + value + ')' }
 	static def dispatch String getLatex(MinConstant it) { '-\u221E' }
 	static def dispatch String getLatex(MaxConstant it) { '\u221E' }
-	static def dispatch String getLatex(FunctionCall it) { function.name.pu + '(' + args.map[latex].join(',') + ')' }	
-	static def dispatch String getLatex(ReductionCall it) { reduction.name.pu + '_{' + iterator.latex + '}' + '(' + arg.latex + ')' }
+	static def dispatch String getLatex(FunctionCall it) 
+	{ 
+		if (function.name == 'norm')
+			'\\|' + args.map[latex].join(',') + '\\|'
+		else
+			function.name.pu + '\\left(' + args.map[latex].join(',') + '\\right)' 
+	}	
+	static def dispatch String getLatex(ReductionCall it) 
+	{ 
+		if (arg instanceof ReductionCall || arg instanceof FunctionCall)
+			reduction.name.pu + '_{' + iterator.latex + '}' + arg.latex
+		else
+			reduction.name.pu + '_{' + iterator.latex + '}' + '\\left(' + arg.latex + '\\right)'
+	}
 	static def dispatch String getLatex(VarRef it)
 	{
 		var label = variable.name.pu

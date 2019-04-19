@@ -19,7 +19,8 @@ items { cell, node }
 
 connectivities {
 	cells: (∅) → {cell};
-	nodes: (∅) → {cell};
+	nodes: (∅) → {node};
+	nodesOfCell: (cell) → {node};
 }
 
 const ℝ LENGTH = 1.0;
@@ -27,10 +28,16 @@ const ℕ X_EDGE_ELEMS = 8;
 const ℕ Y_EDGE_ELEMS = 8;
 const ℕ Z_EDGE_ELEMS = 1;
 
-ℝ² X[nodes], XX[nodes];
+ℝ² X[nodes];
+ℝ u[cells], Cjr[cells,nodesOfCell];
+ℝ total;
 
-A: ∀j∈cells(), X{j}^{n=0} = {0.0, 0.0};
-B: ∀j∈cells(), X{j}^{n+1/2} = X{j} + 1.0;
-C: ∀j∈cells(), X{j}^{n+1} = X{j} + 1.0;
-D: ∀j∈cells(), XX{j} = X{j}^{n+1} + 1.0;
+//
+
+//A: total = reduceMin{j∈cells()} ( u{j}  + 4.0) + 3.0;
+B: total = reduceMin{j∈cells()} ( reduceMin{r∈nodesOfCell(j)}(Cjr{j,r} +2.0) + 4.0) + 3.0;
+//C: ∀j∈cells(), u{j}=reduceMin{r∈nodesOfCell(j)}(Cjr{j,r} +2.0);
+//B: ∀j∈cells(), X{j}^{n+1/2} = X{j} + 1.0;
+//C: ∀j∈cells(), X{j}^{n+1} = X{j} + 1.0;
+//D: ∀j∈cells(), XX{j} = X{j}^{n+1} + 1.0;
 

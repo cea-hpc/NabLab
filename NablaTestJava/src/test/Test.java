@@ -24,13 +24,15 @@ public final class Test
 
 	// Mesh
 	private final NumericMesh2D mesh;
-	private final int nbNodes, nbCells;
+	private final int nbNodes, nbCells, nbNodesOfCell;
 	private final VtkFileWriter2D writer;
 
 	// Global Variables
+	private double total;
 
 	// Array Variables
-	private Real2 X[], XX[], X_n0[], X_nplus1_2[], X_nplus1[];
+	private Real2 X[];
+	private double u[], Cjr[][];
 	
 	public Test(Options aOptions, NumericMesh2D aNumericMesh2D)
 	{
@@ -40,6 +42,7 @@ public final class Test
 
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
+		nbNodesOfCell = NumericMesh2D.MaxNbNodesOfCell;
 
 
 		// Arrays allocation
@@ -48,130 +51,33 @@ public final class Test
 		{
 			X[iNodes] = new Real2(0.0);
 		});
-		XX = new Real2[nbNodes];
-		IntStream.range(0, nbNodes).parallel().forEach(iNodes -> 
-		{
-			XX[iNodes] = new Real2(0.0);
-		});
-		X_n0 = new Real2[nbNodes];
-		IntStream.range(0, nbNodes).parallel().forEach(iNodes -> 
-		{
-			X_n0[iNodes] = new Real2(0.0);
-		});
-		X_nplus1_2 = new Real2[nbNodes];
-		IntStream.range(0, nbNodes).parallel().forEach(iNodes -> 
-		{
-			X_nplus1_2[iNodes] = new Real2(0.0);
-		});
-		X_nplus1 = new Real2[nbNodes];
-		IntStream.range(0, nbNodes).parallel().forEach(iNodes -> 
-		{
-			X_nplus1[iNodes] = new Real2(0.0);
-		});
+		u = new double[nbCells];
+		Cjr = new double[nbCells][nbNodesOfCell];
 
 		// Copy node coordinates
 		ArrayList<Real2> gNodes = mesh.getGeometricMesh().getNodes();
-		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> X_n0[rNodes] = gNodes.get(rNodes));
+		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> X[rNodes] = gNodes.get(rNodes));
 	}
 	
 	/**
-	 * Job A @-2.0
-	 * In variables: 
-	 * Out variables: X_n0
-	 */
-	private void a() 
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			int jId = jCells;
-			int jNodes = jId;
-			X_n0[jNodes].operator_set(new Real2(0.0, 0.0));
-		});
-	}		
-	
-	/**
-	 * Job Copy_X_n0_to_X @-1.0
-	 * In variables: X_n0
-	 * Out variables: X
-	 */
-	private void copy_X_n0_to_X() 
-	{
-		IntStream.range(0, X.length).parallel().forEach(i -> X[i] = X_n0[i]);
-	}		
-	
-	/**
-	 * Job B @1.0
-	 * In variables: X
-	 * Out variables: X_nplus1_2
+	 * Job B @-1.0
+	 * In variables: Cjr
+	 * Out variables: total
 	 */
 	private void b() 
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			int jId = jCells;
-			int jNodes = jId;
-			X_nplus1_2[jNodes].operator_set(X[jNodes].operator_plus(1.0));
-		});
-	}		
-	
-	/**
-	 * Job C @1.0
-	 * In variables: X
-	 * Out variables: X_nplus1
-	 */
-	private void c() 
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			int jId = jCells;
-			int jNodes = jId;
-			X_nplus1[jNodes].operator_set(X[jNodes].operator_plus(1.0));
-		});
-	}		
-	
-	/**
-	 * Job Copy_X_nplus1_to_X @2.0
-	 * In variables: X_nplus1
-	 * Out variables: X
-	 */
-	private void copy_X_nplus1_to_X() 
-	{
-		Real2[] tmpSwitch = X;
-		X = X_nplus1;
-		X_nplus1 = tmpSwitch;
-	}		
-	
-	/**
-	 * Job D @2.0
-	 * In variables: X_nplus1
-	 * Out variables: XX
-	 */
-	private void d() 
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			int jId = jCells;
-			int jNodes = jId;
-			XX[jNodes].operator_set(X_nplus1[jNodes].operator_plus(1.0));
-		});
+		double reduceMin_2033191997 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+			Double.MAX_VALUE, 
+			(r, jCells) -> MathFunctions.reduceMin(r, reduceMin77640739 + 4.0),
+			(r1, r2) -> MathFunctions.reduceMin(r1, r2)
+		);
+		total = reduceMin_2033191997 + 3.0;
 	}		
 
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module Test");
-		a(); // @-2.0
-		copy_X_n0_to_X(); // @-1.0
-
-		int iteration = 0;
-		while (t < options.option_stoptime && iteration < options.option_max_iterations)
-		{
-			iteration++;
-			System.out.println("[" + iteration + "] t = " + t);
-			b(); // @1.0
-			c(); // @1.0
-			copy_X_nplus1_to_X(); // @2.0
-			d(); // @2.0
-		}
+		b(); // @-1.0
 		System.out.println("Fin de l'exécution du module Test");
 	}
 

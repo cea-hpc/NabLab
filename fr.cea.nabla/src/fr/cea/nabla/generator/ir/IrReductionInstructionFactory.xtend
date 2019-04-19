@@ -31,7 +31,9 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.Real2Constant
+import fr.cea.nabla.nabla.Real2x2Constant
 import fr.cea.nabla.nabla.Real3Constant
+import fr.cea.nabla.nabla.Real3x3Constant
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealXCompactConstant
 import fr.cea.nabla.nabla.ReductionCall
@@ -58,6 +60,8 @@ class IrReductionInstructionFactory
 	def dispatch Iterable<ReductionInstruction> toIrReductions(Real2Constant it) { #[] }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(Real3Constant it) { #[] }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(BoolConstant it) { #[] }
+	def dispatch Iterable<ReductionInstruction> toIrReductions(Real2x2Constant it) { #[] }
+	def dispatch Iterable<ReductionInstruction> toIrReductions(Real3x3Constant it) { #[] }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(RealXCompactConstant it) { #[] }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(MinConstant it) { #[] }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(MaxConstant it) { #[] }
@@ -73,6 +77,7 @@ class IrReductionInstructionFactory
 		irInstruction.annotations += toIrAnnotation
 		irInstruction.variable = toIrLocalVariable
 		irInstruction.reduction = toIrReductionCall
+		irInstruction.innerReductions += arg.toIrReductions
 		return #[irInstruction]
 	}
 	

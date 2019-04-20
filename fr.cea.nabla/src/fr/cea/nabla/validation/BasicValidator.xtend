@@ -46,12 +46,12 @@ class BasicValidator  extends AbstractNablaValidator
 	@Inject extension VarExtensions
 	@Inject extension SpaceIteratorExtensions
 	
-	@Check
-	def checkNoInnerReductionCall(ReductionCall it)
-	{
-		if (arg instanceof ReductionCall || arg.eAllContents.exists[x|x instanceof ReductionCall])
-			error('Reduction must not contains reduction', NablaPackage.Literals.REDUCTION_CALL__ARG)
-	}
+//	@Check
+//	def checkNoInnerReductionCall(ReductionCall it)
+//	{
+//		if (arg instanceof ReductionCall || arg.eAllContents.exists[x|x instanceof ReductionCall])
+//			error('Reduction must not contains reduction', NablaPackage.Literals.REDUCTION_CALL__ARG)
+//	}
 	
 	@Check
 	def checkCoordVar(NablaModule it)

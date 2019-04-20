@@ -120,7 +120,8 @@ class Ir2Kokkos extends IrGenerator
 			«FOR j : jobs.filter[x | x.at < 0].sortBy[at]»
 				«j.name.toFirstLower»(); // @«j.at»
 			«ENDFOR»
-	
+			«IF jobs.exists[at > 0]»
+
 			«val variablesToPersist = persistentArrayVariables»
 			«IF !variablesToPersist.empty»
 			map<string, Kokkos::View<double*>> cellVariables;
@@ -142,6 +143,7 @@ class Ir2Kokkos extends IrGenerator
 				writer.writeFile(iteration, X, quads, cellVariables, nodeVariables);
 				«ENDIF»
 			}
+			«ENDIF»
 			std::cout << "Fin de l'exécution du module «name»" << std::endl;
 		}	
 	};	

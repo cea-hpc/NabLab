@@ -28,6 +28,7 @@ import fr.cea.nabla.ir.ir.ReductionCall
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.ScalarVarDefinition
 import java.util.List
+import org.eclipse.emf.ecore.EObject
 
 class InstructionContentProvider 
 {
@@ -51,10 +52,22 @@ class InstructionContentProvider
 	 */
 	def dispatch CharSequence getContent(ReductionInstruction it) 
 	'''
+		«val itIndex = IndexFactory::createIndex(reduction.iterator)»
 		«variable.javaType» «variable.name» = IntStream.range(0, «reduction.iterator.call.connectivity.nbElems»).boxed().parallel().reduce(
 			«variable.defaultValue.content», 
-			(r, «IndexFactory::createIndex(reduction.iterator).label») -> «reduction.javaName»(r, «reduction.arg.content»),
+			«IF innerReductions.empty»
+			(r, «itIndex.label») -> «reduction.javaName»(r, «reduction.arg.content»),
 			(r1, r2) -> «reduction.javaName»(r1, r2)
+			«ELSE»
+			(r, «itIndex.label») -> {
+				«defineIndexes(itIndex, it)»
+				«FOR innerReduction : innerReductions»
+				«innerReduction.content»
+				«ENDFOR»
+				return «reduction.javaName»(r, «reduction.arg.content»);
+			},
+			(r1, r2) -> «reduction.javaName»(r1, r2)
+			«ENDIF»
 		);
 	'''
 
@@ -83,7 +96,8 @@ class InstructionContentProvider
 
 	def dispatch CharSequence getContent(Loop it) 
 	{
-		if (isTopLevelLoop(it)) 
+		println("getContent pour la loop " + it.iterator.name + ' - ' + topLevelLoop)
+		if (topLevelLoop) 
 			iterator.addParallelLoop(it)
 		else
 			iterator.addSequentialLoop(it)
@@ -105,10 +119,7 @@ class InstructionContentProvider
 		«IF !call.connectivity.indexEqualId»int[] «itIndex.containerName» = «call.accessor»;«ENDIF»
 		IntStream.range(0, «call.connectivity.nbElems»).parallel().forEach(«itIndex.label» -> 
 		{
-			«IF needIdFor(l)»int «name»Id = «indexToId(itIndex)»;«ENDIF»
-			«FOR index : getRequiredIndexes(l)»
-			int «index.label» = «idToIndex(index, name+'Id')»;
-			«ENDFOR»
+			«defineIndexes(itIndex, l)»
 			«l.body.innerContent»
 		});
 	'''
@@ -119,24 +130,30 @@ class InstructionContentProvider
 		int[] «itIndex.containerName» = «call.accessor»;
 		for (int «itIndex.label»=0; «itIndex.label»<«itIndex.containerName».length; «itIndex.label»++)
 		{
-			«IF needPrev(l)»int «prev(itIndex.label)» = («itIndex.label»-1+«itIndex.containerName».length)%«itIndex.containerName».length;«ENDIF»
-			«IF needNext(l)»int «next(itIndex.label)» = («itIndex.label»+1+«itIndex.containerName».length)%«itIndex.containerName».length;«ENDIF»
-			«IF needIdFor(l)»
-				«val idName = name + 'Id'»
-				int «idName» = «indexToId(itIndex)»;
-				«l.dependantIterators.dependantIteratorsContent»
-				«IF needPrev(l)»int «prev(idName)» = «indexToId(itIndex, 'prev')»;«ENDIF»
-				«IF needNext(l)»int «next(idName)» = «indexToId(itIndex, 'next')»;«ENDIF»
-				«FOR index : getRequiredIndexes(l)»
-					«val cIdName = index.iterator.name + 'Id'»
-					«IF !(index.connectivity.indexEqualId)»«index.idToIndexArray»«ENDIF»
-					int «index.label» = «idToIndex(index, cIdName)»;
-					«IF needPrev(l)»int «prev(index.label)» = «idToIndex(index, prev(cIdName))»;«ENDIF»
-					«IF needNext(l)»int «next(index.label)» = «idToIndex(index, next(cIdName))»;«ENDIF»
-				«ENDFOR»
-			«ENDIF»
+			«defineIndexes(itIndex, l)»
 			«l.body.innerContent»
 		}
+	'''
+	
+	/** Define all needed indices and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
+	private def defineIndexes(Index it, EObject context)
+	'''
+		«IF iterator.needPrev(context)»int «prev(label)» = («label»-1+«containerName».length)%«containerName».length;«ENDIF»
+		«IF iterator.needNext(context)»int «next(label)» = («label»+1+«containerName».length)%«containerName».length;«ENDIF»
+		«IF iterator.needIdFor(context)»
+			«val idName = iterator.name + 'Id'»
+			int «idName» = «indexToId»;
+			«IF context instanceof Loop»«context.dependantIterators.dependantIteratorsContent»«ENDIF»
+			«IF iterator.needPrev(context)»int «prev(idName)» = «indexToId('prev')»;«ENDIF»
+			«IF iterator.needNext(context)»int «next(idName)» = «indexToId('next')»;«ENDIF»
+			«FOR index : iterator.getRequiredIndexes(context)»
+				«val cIdName = index.iterator.name + 'Id'»
+				«IF !(index.connectivity.indexEqualId)»«index.idToIndexArray»«ENDIF»
+				int «index.label» = «idToIndex(index, cIdName)»;
+				«IF iterator.needPrev(context)»int «prev(index.label)» = «idToIndex(index, prev(cIdName))»;«ENDIF»
+				«IF iterator.needNext(context)»int «next(index.label)» = «idToIndex(index, next(cIdName))»;«ENDIF»
+			«ENDFOR»
+		«ENDIF»
 	'''
 	
 	private def idToIndexArray(Index it)

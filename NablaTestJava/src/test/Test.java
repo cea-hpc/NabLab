@@ -15,8 +15,8 @@ public final class Test
 	public final static class Options
 	{
 		public final double LENGTH = 1.0;
-		public final int X_EDGE_ELEMS = 8;
-		public final int Y_EDGE_ELEMS = 8;
+		public final int X_EDGE_ELEMS = 10;
+		public final int Y_EDGE_ELEMS = 10;
 		public final int Z_EDGE_ELEMS = 1;
 	}
 	
@@ -60,23 +60,51 @@ public final class Test
 	}
 	
 	/**
+	 * Job IniCjr @-2.0
+	 * In variables: 
+	 * Out variables: Cjr
+	 */
+	private void iniCjr() 
+	{
+		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		{
+			int jId = jCells;
+			int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
+			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
+			{
+				Cjr[jCells][rNodesOfCellJ] = 1.0;
+			}
+		});
+	}		
+	
+	/**
 	 * Job B @-1.0
 	 * In variables: Cjr
 	 * Out variables: total
 	 */
 	private void b() 
 	{
-		double reduceMin_2033191997 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+		double reduceMin_1206914109 = IntStream.range(0, nbCells).boxed().parallel().reduce(
 			Double.MAX_VALUE, 
-			(r, jCells) -> MathFunctions.reduceMin(r, reduceMin77640739 + 4.0),
+			(r, jCells) -> {
+				int jId = jCells;
+				double reduceMin1893774371 = Double.MAX_VALUE;
+				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
+				{
+					reduceMin1893774371 = MathFunctions.reduceMin(reduceMin1893774371, Cjr[jCells][rNodesOfCellJ] + 1.0);
+				}
+				return MathFunctions.reduceMin(r, reduceMin1893774371 + 2.0);
+			},
 			(r1, r2) -> MathFunctions.reduceMin(r1, r2)
 		);
-		total = reduceMin_2033191997 + 3.0;
+		total = reduceMin_1206914109 + 3.0;
 	}		
 
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module Test");
+		iniCjr(); // @-2.0
 		b(); // @-1.0
 		System.out.println("Fin de l'exécution du module Test");
 	}

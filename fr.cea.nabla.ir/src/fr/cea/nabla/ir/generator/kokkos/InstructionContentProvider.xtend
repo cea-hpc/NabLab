@@ -29,6 +29,7 @@ import fr.cea.nabla.ir.ir.ReductionCall
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.ScalarVarDefinition
 import java.util.List
+import org.eclipse.emf.ecore.EObject
 
 class InstructionContentProvider 
 {
@@ -59,6 +60,10 @@ class InstructionContentProvider
 		Kokkos::«reduction.kokkosName»<«variable.kokkosType»> reducer(«variable.name»);
 		Kokkos::parallel_reduce("Reduction«variable.name»", «iter.call.connectivity.nbElems», KOKKOS_LAMBDA(const int& «itIndex.label», «variable.kokkosType»& x)
 		{
+			«defineIndexes(itIndex, it)»
+			«FOR innerReduction : innerReductions»
+			«innerReduction.content»
+			«ENDFOR»
 			reducer.join(x, «reduction.arg.content»);
 		}, reducer);
 	'''
@@ -105,10 +110,7 @@ class InstructionContentProvider
 		«IF !call.connectivity.indexEqualId»auto «itIndex.containerName» = «call.accessor»;«ENDIF»
 		Kokkos::parallel_for(«call.connectivity.nbElems», KOKKOS_LAMBDA(const int «itIndex.label»)
 		{
-			«IF needIdFor(l)»int «name»Id = «indexToId(itIndex)»;«ENDIF»
-			«FOR index : getRequiredIndexes(l)»
-			int «index.label» = «idToIndex(index, name+'Id')»;
-			«ENDFOR»
+			«defineIndexes(itIndex, l)»
 			«l.body.innerContent»
 		});
 	'''
@@ -119,26 +121,32 @@ class InstructionContentProvider
 		auto «itIndex.containerName» = «call.accessor»;
 		for (int «itIndex.label»=0; «itIndex.label»<«itIndex.containerName».size(); «itIndex.label»++)
 		{
-			«IF needPrev(l)»int «prev(itIndex.label)» = («itIndex.label»-1+«itIndex.containerName».size())%«itIndex.containerName».size();«ENDIF»
-			«IF needNext(l)»int «next(itIndex.label)» = («itIndex.label»+1+«itIndex.containerName».size())%«itIndex.containerName».size();«ENDIF»
-			«IF needIdFor(l)»
-				«val idName = name + 'Id'»
-				int «idName» = «indexToId(itIndex)»;
-				«l.dependantIterators.dependantIteratorsContent»
-				«IF needPrev(l)»int «prev(idName)» = «indexToId(itIndex, 'prev')»;«ENDIF»
-				«IF needNext(l)»int «next(idName)» = «indexToId(itIndex, 'next')»;«ENDIF»
-				«FOR index : getRequiredIndexes(l)»
-					«val cIdName = index.iterator.name + 'Id'»
-					«IF !(index.connectivity.indexEqualId)»«index.idToIndexArray»«ENDIF»
-					int «index.label» = «idToIndex(index, cIdName)»;
-					«IF needPrev(l)»int «prev(index.label)» = «idToIndex(index, prev(cIdName))»;«ENDIF»
-					«IF needNext(l)»int «next(index.label)» = «idToIndex(index, next(cIdName))»;«ENDIF»
-				«ENDFOR»
-			«ENDIF»
+			«defineIndexes(itIndex, l)»
 			«l.body.innerContent»
 		}
 	'''
 	
+	/** Define all needed indices and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
+	private def defineIndexes(Index it, EObject context)
+	'''
+		«IF iterator.needPrev(context)»int «prev(label)» = («label»-1+«containerName».size())%«containerName».size();«ENDIF»
+		«IF iterator.needNext(context)»int «next(label)» = («label»+1+«containerName».size())%«containerName».size();«ENDIF»
+		«IF iterator.needIdFor(context)»
+			«val idName = iterator.name + 'Id'»
+			int «idName» = «indexToId»;
+			«IF context instanceof Loop»«context.dependantIterators.dependantIteratorsContent»«ENDIF»
+			«IF iterator.needPrev(context)»int «prev(idName)» = «indexToId('prev')»;«ENDIF»
+			«IF iterator.needNext(context)»int «next(idName)» = «indexToId('next')»;«ENDIF»
+			«FOR index : iterator.getRequiredIndexes(context)»
+				«val cIdName = index.iterator.name + 'Id'»
+				«IF !(index.connectivity.indexEqualId)»«index.idToIndexArray»«ENDIF»
+				int «index.label» = «idToIndex(index, cIdName)»;
+				«IF iterator.needPrev(context)»int «prev(index.label)» = «idToIndex(index, prev(cIdName))»;«ENDIF»
+				«IF iterator.needNext(context)»int «next(index.label)» = «idToIndex(index, next(cIdName))»;«ENDIF»
+			«ENDFOR»
+		«ENDIF»
+	'''
+
 	def idToIndexArray(Index it)
 	'''auto «containerName» = mesh->get«connectivity.name.toFirstUpper()»(«connectivityArgIterator»Id);'''
 	

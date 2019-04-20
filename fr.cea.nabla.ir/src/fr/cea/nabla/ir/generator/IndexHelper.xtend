@@ -16,12 +16,11 @@ package fr.cea.nabla.ir.generator
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityCall
-import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Loop
+import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.VarRef
-import java.util.ArrayList
 import java.util.HashSet
 import java.util.List
 import org.eclipse.emf.ecore.EObject
@@ -79,12 +78,12 @@ class IndexHelper
 		}
 	}
 	
-	def getRequiredIndexes(Loop context)
+	def getRequiredIndexes(Iterator iterator, EObject context)
 	{
 		val needed = context.neededIndexes
 		//println('\nneeded ' + context.iterator.name)
 		//needed.forEach[x|println('   ' + x.label)]
-		val available = context.availableIndexes
+		val available = context.getAvailableIndexes(iterator)
 		//println('available ' + context.iterator.name)
 		//available.forEach[x|println('   ' + x.label)]
 		val required = needed.reject[x | available.exists[y | y == x]]
@@ -93,17 +92,17 @@ class IndexHelper
 		return required
 	}
 
-	def needIdFor(Iterator it, Loop context)
+	def needIdFor(Iterator it, EObject context)
 	{
 		!getRequiredIndexes(context).empty || isIteratorIsReferenced(context)
 	}
 	
-	def needNext(Iterator it, Loop context)
+	def needNext(Iterator it, EObject context)
 	{
 		context.eAllContents.filter(IteratorRef).filter[x|x.target===it].exists[x|x.next]
 	}
 
-	def needPrev(Iterator it, Loop context)
+	def needPrev(Iterator it, EObject context)
 	{
 		context.eAllContents.filter(IteratorRef).filter[x|x.target===it].exists[x|x.prev]
 	}	
@@ -125,25 +124,17 @@ class IndexHelper
 	/**
 	 * Retourne vrai si un itérateur est utilisé en argument d'un appel de fonction de connectivité.
 	 */
-	private def isIteratorIsReferenced(Iterator it, Instruction context)
+	private def isIteratorIsReferenced(Iterator it, EObject context)
 	{
 		for (call : context.eAllContents.filter(ConnectivityCall).toIterable)
 			if (call.args.exists[x | x.target === it]) return true
 		return false
 	}
 	
-	private def getAvailableIndexes(Loop context)
+	private def getAvailableIndexes(EObject context, Iterator iterator)
 	{		
-		val indexes = new HashSet<Index>
-		// l'iterateur definit pour la boucle context est disponible
-		indexes += IndexFactory::createIndex(context.iterator)
-		for (outerLoop : context.eContainer.outerLoops)
-		{
-			// l'iterateur de toutes les outer boucles sont disponibles
-			indexes += IndexFactory::createIndex(outerLoop.iterator)
-			// les index nécessaires dans les outer loops sont disponibles egalement
-			indexes += outerLoop.neededIndexes
-		}
+		val indexes = context.eContainer.outerScopeIndexes
+		indexes += IndexFactory::createIndex(iterator)
 		return indexes
 	}
 	
@@ -152,10 +143,10 @@ class IndexHelper
 	 * nécessaires sous forme d'une liste de paires <Iterator, Connectivity>,
 	 * correspondant à la liste des déréférecement effectués par les variables. 
 	 */
-	private def getNeededIndexes(Loop context)
+	private def getNeededIndexes(EObject context)
 	{
 		val indexes = new HashSet<Index>
-		for (vRef : context.eAllContents.filter(VarRef).filter[x|x.variable instanceof ArrayVariable && x.nearestLoop===context].toIterable)
+		for (vRef : context.eAllContents.filter(VarRef).filter[x|x.variable instanceof ArrayVariable && x.nearestLoopOrReduction===context].toIterable)
 		{
 			for (i : 0..<vRef.iterators.length)
 			{
@@ -166,22 +157,34 @@ class IndexHelper
 		return indexes
 	}
 	
-	private def Loop getNearestLoop(EObject o)
+	private def EObject getNearestLoopOrReduction(EObject o)
 	{
-		if (o instanceof Loop) o as Loop
+		if (o instanceof Loop || o instanceof ReductionInstruction) o
 		else if (o.eContainer === null) null
-		else o.eContainer.nearestLoop
+		else o.eContainer.nearestLoopOrReduction
 	}
 	
-	private def List<Loop> getOuterLoops(EObject o)
+	/** Find all available indexes in the outer scope of the context */
+	private def HashSet<Index> getOuterScopeIndexes(EObject context)
 	{
-		if (o instanceof Loop) 
+		switch context
 		{
-			val l = o.eContainer.outerLoops
-			l += o as Loop
-			return l
+			Loop: 
+			{
+				val indexes = context.eContainer.outerScopeIndexes
+				indexes += IndexFactory::createIndex(context.iterator);
+				indexes += context.neededIndexes
+				return indexes
+			}
+			ReductionInstruction: 
+			{
+				val indexes = context.eContainer.outerScopeIndexes
+				indexes += IndexFactory::createIndex(context.reduction.iterator);
+				indexes += context.neededIndexes
+				return indexes
+			}
+			case (context.eContainer === null): new HashSet<Index>
+			default: context.eContainer.outerScopeIndexes
 		}
-		else if (o.eContainer === null) new ArrayList<Loop>
-		else o.eContainer.outerLoops
-	}
+	} 
 }

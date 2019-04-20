@@ -24,8 +24,8 @@ connectivities {
 }
 
 const ℝ LENGTH = 1.0;
-const ℕ X_EDGE_ELEMS = 8;
-const ℕ Y_EDGE_ELEMS = 8;
+const ℕ X_EDGE_ELEMS = 10;
+const ℕ Y_EDGE_ELEMS = 10;
 const ℕ Z_EDGE_ELEMS = 1;
 
 ℝ² X[nodes];
@@ -35,7 +35,9 @@ const ℕ Z_EDGE_ELEMS = 1;
 //
 
 //A: total = reduceMin{j∈cells()} ( u{j}  + 4.0) + 3.0;
-B: total = reduceMin{j∈cells()} ( reduceMin{r∈nodesOfCell(j)}(Cjr{j,r} +2.0) + 4.0) + 3.0;
+IniCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), Cjr{j,r} = 1.0;
+//B: total = ∑{j∈cells()} ( ∑{r∈nodesOfCell(j)}(Cjr{j,r} + 1.0) + 2.0) + 3.0;
+B: total = reduceMin{j∈cells()} ( reduceMin{r∈nodesOfCell(j)}(Cjr{j,r} + 1.0) + 2.0) + 3.0;
 //C: ∀j∈cells(), u{j}=reduceMin{r∈nodesOfCell(j)}(Cjr{j,r} +2.0);
 //B: ∀j∈cells(), X{j}^{n+1/2} = X{j} + 1.0;
 //C: ∀j∈cells(), X{j}^{n+1} = X{j} + 1.0;

@@ -23,6 +23,7 @@ import fr.cea.nabla.ir.ir.Loop
 import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
+import fr.cea.nabla.ir.ir.ReductionInstruction
 
 class Utils 
 {
@@ -56,9 +57,13 @@ class Utils
 	def boolean isTopLevelLoop(EObject it)
 	{
 		if (eContainer === null) false
-		else if (eContainer instanceof Loop) false
-		else if (eContainer instanceof Job) true
-		else eContainer.topLevelLoop	
+		else switch eContainer
+		{
+			Loop : false
+			ReductionInstruction : false
+			Job : true
+			default : eContainer.topLevelLoop
+		}
 	}
 	
 	def prefix(IteratorRef it, String name)

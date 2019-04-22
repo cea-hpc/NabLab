@@ -26,8 +26,8 @@ struct MathFunctions
 	static double sqrt(double v);
 	static double min(double a, double b);
 	static double max(double a, double b);
-//	static double reduceMin(double a, double b);
-//	static double reduceMax(double a, double b);
+	static double reduceMin(double a, double b);
+	static double reduceMax(double a, double b);
 	static double dot(Real2 a, Real2 b);
 	static double dot(Real3 a, Real3 b);
 	static double norm(Real2 a);

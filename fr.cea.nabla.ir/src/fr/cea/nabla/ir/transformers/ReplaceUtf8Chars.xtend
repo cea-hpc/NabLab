@@ -29,7 +29,7 @@ class ReplaceUtf8Chars implements IrTransformationStep
 		m.variables.forEach[x | x.name = x.name.noUtf8]
 		for (svd : m.eAllContents.filter(ScalarVarDefinition).toIterable)
 			svd.variables.forEach[x | x.name = x.name.noUtf8]
-		m.eAllContents.filter(ReductionInstruction).forEach[x | x.variable.name = x.variable.name.noUtf8]
+		m.eAllContents.filter(ReductionInstruction).forEach[x | x.result.name = x.result.name.noUtf8]
 		m.connectivities.forEach[x | x.name = x.name.noUtf8]
 		m.functions.forEach[x | x.name = x.name.noUtf8]
 		m.reductions.forEach[x | x.name = x.name.noUtf8]

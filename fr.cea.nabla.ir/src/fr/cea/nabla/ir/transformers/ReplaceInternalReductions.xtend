@@ -19,7 +19,6 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Reduction
-import fr.cea.nabla.ir.ir.ReductionCall
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.ScalarVarDefinition
 import java.util.List
@@ -46,16 +45,16 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 		{
 			// création des fonctions correspondantes
 			// 2 arguments IN : 1 du type de la collection, l'autre du type de retour (appel en chaine)
-			val reduc = reductionInstr.reduction.reduction
-						
+			val reduc = reductionInstr.reduction
+									
 			// transformation de la reduction
 			val loopExpression = createAffectationRHS(m, reductionInstr)
-			val loop = createReductionLoop(reductionInstr.reduction.iterator, reductionInstr.reduction.dependantIterators, reductionInstr.variable, loopExpression, '=')
-			val variableDefinition = IrFactory::eINSTANCE.createScalarVarDefinition => [ variables += reductionInstr.variable ]
+			val loop = createReductionLoop(reductionInstr.iterator, reductionInstr.dependantIterators, reductionInstr.result, loopExpression, '=')
+			val variableDefinition = IrFactory::eINSTANCE.createScalarVarDefinition => [ variables += reductionInstr.result ]
 			replace(reductionInstr, variableDefinition, loop)			
 
 			// si la réduction n'est pas référencée, on l'efface
-			if (!m.eAllContents.filter(ReductionCall).exists[x | x.reduction == reduc])
+			if (!m.eAllContents.filter(ReductionInstruction).exists[x | x.reduction == reduc])
 				EcoreUtil::delete(reduc, true)
 		}
 		return true
@@ -63,10 +62,10 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 	
 	private def Expression createAffectationRHS(IrModule m, ReductionInstruction reductionInstr)
 	{
-		val reduction = reductionInstr.reduction.reduction
+		val reduction = reductionInstr.reduction
 		val varRef = IrFactory::eINSTANCE.createVarRef => 
 		[ 
-			variable = reductionInstr.variable
+			variable = reductionInstr.result
 			type = createExpressionType(variable.type)
 		]
 		
@@ -79,7 +78,7 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 				left = varRef
 				right = IrFactory::eINSTANCE.createParenthesis => 
 				[ 
-					expression = reductionInstr.reduction.arg
+					expression = reductionInstr.arg
 					type = EcoreUtil::copy(expression.type)
 				]
 			]
@@ -94,7 +93,7 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 				type = createExpressionType(f.returnType)
 				function = f
 				args += varRef
-				args += reductionInstr.reduction.arg
+				args += reductionInstr.arg
 			] 
 		}
 	}

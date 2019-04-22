@@ -24,7 +24,7 @@ import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Loop
-import fr.cea.nabla.ir.ir.ReductionCall
+import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.ScalarVarDefinition
 import java.util.List
@@ -52,11 +52,11 @@ class InstructionContentProvider
 	 */
 	def dispatch CharSequence getContent(ReductionInstruction it) 
 	'''
-		«val itIndex = IndexFactory::createIndex(reduction.iterator)»
-		«variable.javaType» «variable.name» = IntStream.range(0, «reduction.iterator.call.connectivity.nbElems»).boxed().parallel().reduce(
-			«variable.defaultValue.content», 
+		«val itIndex = IndexFactory::createIndex(iterator)»
+		«result.javaType» «result.name» = IntStream.range(0, «iterator.call.connectivity.nbElems»).boxed().parallel().reduce(
+			«result.defaultValue.content», 
 			«IF innerReductions.empty»
-			(r, «itIndex.label») -> «reduction.javaName»(r, «reduction.arg.content»),
+			(r, «itIndex.label») -> «reduction.javaName»(r, «arg.content»),
 			(r1, r2) -> «reduction.javaName»(r1, r2)
 			«ELSE»
 			(r, «itIndex.label») -> {
@@ -64,7 +64,7 @@ class InstructionContentProvider
 				«FOR innerReduction : innerReductions»
 				«innerReduction.content»
 				«ENDFOR»
-				return «reduction.javaName»(r, «reduction.arg.content»);
+				return «reduction.javaName»(r, «arg.content»);
 			},
 			(r1, r2) -> «reduction.javaName»(r1, r2)
 			«ENDIF»
@@ -159,7 +159,7 @@ class InstructionContentProvider
 	private def idToIndexArray(Index it)
 	'''int[] «containerName» = mesh.get«connectivity.name.toFirstUpper()»(«connectivityArgIterator»Id);'''
 	
-	private def getJavaName(ReductionCall it) '''«reduction.provider»Functions.«reduction.name»'''
+	private def getJavaName(Reduction it) '''«provider»Functions.«name»'''
 	private def idToIndex(Index i, String idName) { idToIndex(i, idName, '.') }	
 	
 	private def getDependantIteratorsContent(List<Iterator> iterators)

@@ -30,23 +30,11 @@ class ReductionCallExtensions
 	@Inject extension FunctionCallExtensions
 	@Inject extension Nabla2IrUtils
 	@Inject extension IrExpressionFactory
-	@Inject extension IrAnnotationHelper
-	@Inject extension IrFunctionFactory
-	@Inject extension IrIteratorFactory
 	
 	def create IrFactory::eINSTANCE.createScalarVariable toIrLocalVariable(ReductionCall rc)
 	{
 		name = rc.reduction.name + Utils::hashString(rc)
 		type = rc.declaration.returnType.toIrBasicType
 		defaultValue = rc.declaration.seed.toIrExpression
-	}
-
-	def create IrFactory::eINSTANCE.createReductionCall toIrReductionCall(ReductionCall rc)
-	{
-		annotations += rc.toIrAnnotation
-		reduction = rc.reduction.toIrReduction(rc.declaration)
-		iterator = rc.iterator.toIrIterator
-		rc.dependantIterators.forEach[x | dependantIterators += x.toIrIterator]
-		arg = rc.arg.toIrExpression		
 	}
 }

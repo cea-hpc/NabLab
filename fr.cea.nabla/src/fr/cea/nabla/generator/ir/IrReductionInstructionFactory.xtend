@@ -39,11 +39,16 @@ import fr.cea.nabla.nabla.RealXCompactConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
+import fr.cea.nabla.FunctionCallExtensions
 
 class IrReductionInstructionFactory 
 {
 	@Inject extension ReductionCallExtensions
 	@Inject extension IrAnnotationHelper
+	@Inject extension IrFunctionFactory
+	@Inject extension FunctionCallExtensions
+	@Inject extension IrIteratorFactory
+	@Inject extension IrExpressionFactory
 	
 	def dispatch Iterable<ReductionInstruction> toIrReductions(Or it) { left.toIrReductions + right.toIrReductions }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(And it) { left.toIrReductions + right.toIrReductions }
@@ -75,9 +80,12 @@ class IrReductionInstructionFactory
 	{
 		val irInstruction = IrFactory::eINSTANCE.createReductionInstruction
 		irInstruction.annotations += toIrAnnotation
-		irInstruction.variable = toIrLocalVariable
-		irInstruction.reduction = toIrReductionCall
 		irInstruction.innerReductions += arg.toIrReductions
+		irInstruction.reduction = reduction.toIrReduction(declaration)
+		irInstruction.iterator = iterator.toIrIterator
+		dependantIterators.forEach[x | irInstruction.dependantIterators += x.toIrIterator]
+		irInstruction.arg = arg.toIrExpression		
+		irInstruction.result = toIrLocalVariable
 		return #[irInstruction]
 	}
 	

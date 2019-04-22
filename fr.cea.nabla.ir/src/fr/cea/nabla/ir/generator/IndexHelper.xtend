@@ -179,7 +179,7 @@ class IndexHelper
 			ReductionInstruction: 
 			{
 				val indexes = context.eContainer.outerScopeIndexes
-				indexes += IndexFactory::createIndex(context.reduction.iterator);
+				indexes += IndexFactory::createIndex(context.iterator);
 				indexes += context.neededIndexes
 				return indexes
 			}

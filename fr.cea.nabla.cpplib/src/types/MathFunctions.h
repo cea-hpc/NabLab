@@ -28,6 +28,10 @@ struct MathFunctions
 	static double max(double a, double b);
 	static double reduceMin(double a, double b);
 	static double reduceMax(double a, double b);
+	static double sin(double v);
+	static double cos(double v);
+	static double asin(double v);
+	static double acos(double v);
 	static double dot(Real2 a, Real2 b);
 	static double dot(Real3 a, Real3 b);
 	static double norm(Real2 a);

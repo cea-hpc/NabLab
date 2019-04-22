@@ -84,21 +84,22 @@ public final class Test
 	 */
 	private void b() 
 	{
-		double reduceMin_1206914109 = IntStream.range(0, nbCells).boxed().parallel().reduce(
-			Double.MAX_VALUE, 
+		double sum_126485630 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+			0.0, 
 			(r, jCells) -> {
 				int jId = jCells;
-				double reduceMin1893774371 = Double.MAX_VALUE;
+				double sum864150878 = 0.0;
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
 				{
-					reduceMin1893774371 = MathFunctions.reduceMin(reduceMin1893774371, Cjr[jCells][rNodesOfCellJ] + 1.0);
+					sum864150878 = sum864150878 + (Cjr[jCells][rNodesOfCellJ] + 1.0);
 				}
-				return MathFunctions.reduceMin(r, reduceMin1893774371 + 2.0);
+				return MathFunctions.sum(r, sum864150878 + 2.0);
 			},
-			(r1, r2) -> MathFunctions.reduceMin(r1, r2)
+			(r1, r2) -> MathFunctions.sum(r1, r2)
 		);
-		total = reduceMin_1206914109 + 3.0;
+		total = sum_126485630 + 3.0;
+		System.out.println(total);
 	}		
 
 	public void simulate()

@@ -25,7 +25,7 @@ import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Loop
-import fr.cea.nabla.ir.ir.ReductionCall
+import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.ScalarVarDefinition
 import java.util.List
@@ -53,18 +53,18 @@ class InstructionContentProvider
 	 */
 	def dispatch CharSequence getContent(ReductionInstruction it) 
 	'''
-		«val iter = reduction.iterator»
+		«val iter = iterator»
 		«val itIndex = IndexFactory::createIndex(iter)»
 		«IF !iter.call.connectivity.indexEqualId»int[] «itIndex.containerName» = «iter.call.accessor»;«ENDIF»
-		«variable.kokkosType» «variable.name» = «variable.defaultValue.content»;
-		Kokkos::«reduction.kokkosName»<«variable.kokkosType»> reducer(«variable.name»);
-		Kokkos::parallel_reduce("Reduction«variable.name»", «iter.call.connectivity.nbElems», KOKKOS_LAMBDA(const int& «itIndex.label», «variable.kokkosType»& x)
+		«result.kokkosType» «result.name» = «result.defaultValue.content»;
+		Kokkos::«reduction.kokkosName»<«result.kokkosType»> reducer(«result.name»);
+		Kokkos::parallel_reduce("Reduction«result.name»", «iter.call.connectivity.nbElems», KOKKOS_LAMBDA(const int& «itIndex.label», «result.kokkosType»& x)
 		{
 			«defineIndexes(itIndex, it)»
 			«FOR innerReduction : innerReductions»
 			«innerReduction.content»
 			«ENDFOR»
-			reducer.join(x, «reduction.arg.content»);
+			reducer.join(x, «arg.content»);
 		}, reducer);
 	'''
 
@@ -150,7 +150,7 @@ class InstructionContentProvider
 	def idToIndexArray(Index it)
 	'''auto «containerName» = mesh->get«connectivity.name.toFirstUpper()»(«connectivityArgIterator»Id);'''
 	
-	private def getKokkosName(ReductionCall it) '''«reduction.name.replaceFirst("reduce", "")»'''
+	private def getKokkosName(Reduction it) '''«name.replaceFirst("reduce", "")»'''
 	private def idToIndex(Index i, String idName) { idToIndex(i, idName, '::') }	
 
 	private def getDependantIteratorsContent(List<Iterator> iterators)

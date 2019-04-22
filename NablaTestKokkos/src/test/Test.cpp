@@ -85,20 +85,20 @@ private:
 	 */
 	void b()
 	{
-		double reduceMin_1206914109 = numeric_limits<double>::max();
-		Kokkos::Min<double> reducer(reduceMin_1206914109);
-		Kokkos::parallel_reduce("ReductionreduceMin_1206914109", nbCells, KOKKOS_LAMBDA(const int& jCells, double& x)
+		double sum_126485630 = 0.0;
+		Kokkos::sum<double> reducer(sum_126485630);
+		Kokkos::parallel_reduce("Reductionsum_126485630", nbCells, KOKKOS_LAMBDA(const int& jCells, double& x)
 		{
 			int jId = jCells;
-			double reduceMin1893774371 = numeric_limits<double>::max();
+			double sum864150878 = 0.0;
 			auto nodesOfCellJ = mesh->getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 			{
-				reduceMin1893774371 = MathFunctions::reduceMin(reduceMin1893774371, Cjr(jCells,rNodesOfCellJ) + 1.0);
+				sum864150878 = sum864150878 + (Cjr(jCells,rNodesOfCellJ) + 1.0);
 			}
-			reducer.join(x, reduceMin1893774371 + 2.0);
+			reducer.join(x, sum864150878 + 2.0);
 		}, reducer);
-		total = reduceMin_1206914109 + 3.0;
+		total = sum_126485630 + 3.0;
 	}
 
 public:

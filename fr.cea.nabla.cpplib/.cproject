@@ -45,7 +45,7 @@
                             							
                             <targetPlatform id="cdt.managedbuild.target.gnu.platform.lib.release.1288331312" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.lib.release"/>
                             							
-                            <builder buildPath="/fr.cea.nabla.cpplib/lib/Release" id="de.marw.cdt.cmake.core.genscriptbuilder.2022329800" parallelBuildOn="false" superClass="de.marw.cdt.cmake.core.genscriptbuilder"/>
+                            <builder buildPath="/fr.cea.nabla.cpplib/build" id="de.marw.cdt.cmake.core.genscriptbuilder.2022329800" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CMake Builder (portable)" parallelBuildOn="false" superClass="de.marw.cdt.cmake.core.genscriptbuilder"/>
                             							
                             <tool id="cdt.managedbuild.tool.gnu.archiver.lib.release.600725774" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.lib.release"/>
                             							
@@ -95,9 +95,13 @@
             			
             <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
             			
-            <storageModule buildDir="lib/${ConfigName}" moduleId="de.marw.cdt.cmake.core.settings">
+            <storageModule buildDir="lib" moduleId="de.marw.cdt.cmake.core.settings">
                 				
                 <options/>
+                				
+                <defs/>
+                				
+                <undefs/>
                 			
             </storageModule>
             		

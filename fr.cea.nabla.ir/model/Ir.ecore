@@ -113,7 +113,10 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EndOfTimeLoopJob" eSuperTypes="#//TimeIterationCopyJob"/>
   <eClassifiers xsi:type="ecore:EClass" name="EndOfInitJob" eSuperTypes="#//TimeIterationCopyJob"/>
-  <eClassifiers xsi:type="ecore:EClass" name="ReductionCall" eSuperTypes="#//IrAnnotable">
+  <eClassifiers xsi:type="ecore:EClass" name="Instruction" abstract="true" eSuperTypes="#//IrAnnotable"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ReductionInstruction" eSuperTypes="#//Instruction">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="innerReductions" upperBound="-1"
+        eType="#//Instruction" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="reduction" lowerBound="1"
         eType="#//Reduction"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterator" lowerBound="1"
@@ -122,15 +125,8 @@
         eType="#//Iterator" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="arg" lowerBound="1" eType="#//Expression"
         containment="true" resolveProxies="false"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Instruction" abstract="true" eSuperTypes="#//IrAnnotable"/>
-  <eClassifiers xsi:type="ecore:EClass" name="ReductionInstruction" eSuperTypes="#//Instruction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="result" lowerBound="1"
         eType="#//ScalarVariable" containment="true" resolveProxies="false"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="reduction" lowerBound="1"
-        eType="#//ReductionCall" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="innerReductions" upperBound="-1"
-        eType="#//Instruction" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ScalarVarDefinition" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" lowerBound="1"

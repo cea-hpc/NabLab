@@ -21,7 +21,7 @@ import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
-import fr.cea.nabla.nabla.SingleSpaceIterator
+import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VarRef
 import java.util.List
@@ -66,27 +66,27 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	
 	private def dispatch IScope iteratorsDefinedBefore(Loop context, ConnectivityCall c) 
 	{ 
-		val previousIterators = iteratorsDeclaredBefore(c, context.dependantIterators)
-		if (context.iterator.call === c)
+		val previousIterators = iteratorsDeclaredBefore(c, context.singletons)
+		if (context.range.container === c)
 			Scopes::scopeFor(previousIterators, context.eContainer.iteratorsDefinedBefore(c))
 		else
-			Scopes::scopeFor(#[context.iterator] + previousIterators, context.eContainer.iteratorsDefinedBefore(c))
+			Scopes::scopeFor(#[context.range] + previousIterators, context.eContainer.iteratorsDefinedBefore(c))
 	}
 	
 	private def dispatch IScope iteratorsDefinedBefore(ReductionCall context, ConnectivityCall c) 
 	{ 
-		val previousIterators = iteratorsDeclaredBefore(c, context.dependantIterators)
-		if (context.iterator.call === c)
+		val previousIterators = iteratorsDeclaredBefore(c, context.singletons)
+		if (context.range.container === c)
 			Scopes::scopeFor(previousIterators, context.eContainer.iteratorsDefinedBefore(c))
 		else
-			Scopes::scopeFor(#[context.iterator] + previousIterators, context.eContainer.iteratorsDefinedBefore(c))
+			Scopes::scopeFor(#[context.range] + previousIterators, context.eContainer.iteratorsDefinedBefore(c))
 	}
 
-	private def iteratorsDeclaredBefore(ConnectivityCall c, List<SingleSpaceIterator> list) 
+	private def iteratorsDeclaredBefore(ConnectivityCall c, List<SingletonSpaceIterator> list) 
 	{
 		if (c !== null && !list.empty) 
 		{
-			val index = list.map[call].indexOf(c)
+			val index = list.map[container].indexOf(c)
 			if (index != -1) return list.subList(0, index)	
 		}
 		return list

@@ -46,7 +46,7 @@ import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealXCompactConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
-import fr.cea.nabla.nabla.SingleSpaceIterator
+import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -62,17 +62,17 @@ class LabelServices
 	static def dispatch String getLabel(VarGroupDeclaration it) { type.literal + ' ' + variables.map[x|x.name].join(', ') }
 	static def dispatch String getLabel(InstructionBlock it) { '...' }
 	static def dispatch String getLabel(Affectation it) { varRef?.label + ' = ' + expression?.label }
-	static def dispatch String getLabel(Loop it) { '\u2200' + iterator.label + ', ' + body.label }
+	static def dispatch String getLabel(Loop it) { '\u2200' + range.label + ', ' + body.label }
 	static def dispatch String getLabel(If it) { 'if ' + condition.label }
 
 	// ITERATEURS
-	static def dispatch String getLabel(RangeSpaceIterator it) { name + '\u2208 ' + call.label }
-	static def dispatch String getLabel(SingleSpaceIterator it) { name + '=' + call.label }
+	static def dispatch String getLabel(RangeSpaceIterator it) { name + '\u2208 ' + container.label }
+	static def dispatch String getLabel(SingletonSpaceIterator it) { name + '=' + container.label }
 	static def dispatch String getLabel(ConnectivityCall it) { connectivity.name + '(' + args.map[label].join(',') + ')' }
 	static def dispatch String getLabel(SpaceIteratorRef it) 
 	{ 
-		if (next) target.name + '+1'
-		else if (prev) target.name + '-1'
+		if (inc > 0) target.name + '+' + inc
+		else if (dec > 0) target.name + dec
 		else target.name
 	}
 
@@ -100,7 +100,7 @@ class LabelServices
 	static def dispatch String getLabel(MinConstant it) { '-\u221E' }
 	static def dispatch String getLabel(MaxConstant it) { '-\u221E' }
 	static def dispatch String getLabel(FunctionCall it) { function.name + '(' + args.map[label].join(',') + ')' }
-	static def dispatch String getLabel(ReductionCall it) { reduction.name + '{' + iterator.label + '}(' + arg.label + ')' }
+	static def dispatch String getLabel(ReductionCall it) { reduction.name + '{' + range.label + '}(' + arg.label + ')' }
 	static def dispatch String getLabel(VarRef it)
 	{
 		var label = variable.name

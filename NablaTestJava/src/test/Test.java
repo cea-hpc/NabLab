@@ -24,7 +24,7 @@ public final class Test
 
 	// Mesh
 	private final NumericMesh2D mesh;
-	private final int nbNodes, nbCells, nbNodesOfCell;
+	private final int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode;
 	private final VtkFileWriter2D writer;
 
 	// Global Variables
@@ -43,6 +43,7 @@ public final class Test
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbNodesOfCell = NumericMesh2D.MaxNbNodesOfCell;
+		nbCellsOfNode = NumericMesh2D.MaxNbCellsOfNode;
 
 
 		// Arrays allocation
@@ -60,53 +61,31 @@ public final class Test
 	}
 	
 	/**
-	 * Job IniCjr @-2.0
+	 * Job IniCjrBad @-1.0
 	 * In variables: 
 	 * Out variables: Cjr
 	 */
-	private void iniCjr() 
+	private void iniCjrBad() 
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
-			int jId = jCells;
-			int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
+			int rId = rNodes;		
+			int rPlus1Id = rNodes;		
+			int[] cellsOfNodeRPlus1 = mesh.getCellsOfNode(rPlus1Id);
+			for (int jCellsOfNodeRPlus1=0; jCellsOfNodeRPlus1<cellsOfNodeRPlus1.length; jCellsOfNodeRPlus1++)
 			{
-				Cjr[jCells][rNodesOfCellJ] = 1.0;
+				int jId = cellsOfNodeRPlus1[jCellsOfNodeRPlus1];		
+				int jCells = jId;
+				int rNodesOfCellJCells = Utils.indexOf(mesh.getNodesOfCell(jId), rId);
+				Cjr[jCells][rNodesOfCellJCells] = 1.0;
 			}
 		});
-	}		
-	
-	/**
-	 * Job B @-1.0
-	 * In variables: Cjr
-	 * Out variables: total
-	 */
-	private void b() 
-	{
-		double sum_126485630 = IntStream.range(0, nbCells).boxed().parallel().reduce(
-			0.0, 
-			(r, jCells) -> {
-				int jId = jCells;
-				double sum864150878 = 0.0;
-				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
-				{
-					sum864150878 = sum864150878 + (Cjr[jCells][rNodesOfCellJ] + 1.0);
-				}
-				return MathFunctions.sum(r, sum864150878 + 2.0);
-			},
-			(r1, r2) -> MathFunctions.sum(r1, r2)
-		);
-		total = sum_126485630 + 3.0;
-		System.out.println(total);
 	}		
 
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module Test");
-		iniCjr(); // @-2.0
-		b(); // @-1.0
+		iniCjrBad(); // @-1.0
 		System.out.println("Fin de l'exécution du module Test");
 	}
 

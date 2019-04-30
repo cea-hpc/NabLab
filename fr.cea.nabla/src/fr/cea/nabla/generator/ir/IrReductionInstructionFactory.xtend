@@ -14,6 +14,7 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
+import fr.cea.nabla.FunctionCallExtensions
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.nabla.And
@@ -39,7 +40,6 @@ import fr.cea.nabla.nabla.RealXCompactConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
-import fr.cea.nabla.FunctionCallExtensions
 
 class IrReductionInstructionFactory 
 {
@@ -82,8 +82,8 @@ class IrReductionInstructionFactory
 		irInstruction.annotations += toIrAnnotation
 		irInstruction.innerReductions += arg.toIrReductions
 		irInstruction.reduction = reduction.toIrReduction(declaration)
-		irInstruction.iterator = iterator.toIrIterator
-		dependantIterators.forEach[x | irInstruction.dependantIterators += x.toIrIterator]
+		irInstruction.range = range.toIrIterator
+		singletons.forEach[x | irInstruction.singletons += x.toIrIterator]
 		irInstruction.arg = arg.toIrExpression		
 		irInstruction.result = toIrLocalVariable
 		return #[irInstruction]

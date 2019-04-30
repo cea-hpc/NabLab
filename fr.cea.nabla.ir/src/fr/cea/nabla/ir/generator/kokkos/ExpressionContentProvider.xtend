@@ -14,8 +14,7 @@
 package fr.cea.nabla.ir.generator.kokkos
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.generator.IndexHelper.IndexFactory
-import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.generator.IteratorRefExtensions
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
@@ -40,7 +39,7 @@ import static extension fr.cea.nabla.ir.VariableExtensions.isScalarConst
 
 class ExpressionContentProvider
 {
-	@Inject extension Utils
+	@Inject extension IteratorRefExtensions
 	
 	def dispatch CharSequence getContent(ContractedIf it) 
 	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
@@ -96,12 +95,8 @@ class ExpressionContentProvider
 		val array = variable as ArrayVariable
 		if (array.dimensions.size < iterators.size) return ''
 		var content = new ArrayList<CharSequence>
-		for (i : 0..<iterators.size)
-		{
-			val iter = iterators.get(i);
-			val index = IndexFactory::createIndex(i, array.dimensions, iterators)
-			content += prefix(iter, index.label)					
-		}
+		for (r : iterators)
+			content += r.indexName				
 		return '(' + content.join(',') + ')'
 	}
 }

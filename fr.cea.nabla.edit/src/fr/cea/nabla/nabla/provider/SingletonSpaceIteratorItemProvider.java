@@ -4,7 +4,7 @@
 package fr.cea.nabla.nabla.provider;
 
 
-import fr.cea.nabla.nabla.SingleSpaceIterator;
+import fr.cea.nabla.nabla.SingletonSpaceIterator;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,19 +15,19 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 
 /**
- * This is the item provider adapter for a {@link fr.cea.nabla.nabla.SingleSpaceIterator} object.
+ * This is the item provider adapter for a {@link fr.cea.nabla.nabla.SingletonSpaceIterator} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class SingleSpaceIteratorItemProvider extends SpaceIteratorItemProvider {
+public class SingletonSpaceIteratorItemProvider extends SpaceIteratorItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SingleSpaceIteratorItemProvider(AdapterFactory adapterFactory) {
+	public SingletonSpaceIteratorItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -47,14 +47,14 @@ public class SingleSpaceIteratorItemProvider extends SpaceIteratorItemProvider {
 	}
 
 	/**
-	 * This returns SingleSpaceIterator.gif.
+	 * This returns SingletonSpaceIterator.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/SingleSpaceIterator"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/SingletonSpaceIterator"));
 	}
 
 	/**
@@ -65,10 +65,10 @@ public class SingleSpaceIteratorItemProvider extends SpaceIteratorItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((SingleSpaceIterator)object).getName();
+		String label = ((SingletonSpaceIterator)object).getName();
 		return label == null || label.length() == 0 ?
-			getString("_UI_SingleSpaceIterator_type") :
-			getString("_UI_SingleSpaceIterator_type") + " " + label;
+			getString("_UI_SingletonSpaceIterator_type") :
+			getString("_UI_SingletonSpaceIterator_type") + " " + label;
 	}
 
 

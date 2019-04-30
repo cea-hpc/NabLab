@@ -26,11 +26,11 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 
 abstract class ReplaceReductionsBase 
 {
-	protected def createReductionLoop(Iterator iterator, List<Iterator> dependantIterators, Variable affectationLHS, Expression affectationRHS, String op)
+	protected def createReductionLoop(Iterator range, List<Iterator> singletons, Variable affectationLHS, Expression affectationRHS, String op)
 	{
 		val loop = IrFactory::eINSTANCE.createLoop
-		loop.iterator = iterator
-		loop.dependantIterators.addAll(dependantIterators)
+		loop.range = range
+		loop.singletons.addAll(singletons)
 		loop.body = IrFactory::eINSTANCE.createAffectation => 
 		[
 			left = IrFactory::eINSTANCE.createVarRef => 

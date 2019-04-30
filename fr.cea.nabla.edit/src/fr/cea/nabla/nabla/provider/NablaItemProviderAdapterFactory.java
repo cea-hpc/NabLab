@@ -234,26 +234,26 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.SingleSpaceIterator} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.SingletonSpaceIterator} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected SingleSpaceIteratorItemProvider singleSpaceIteratorItemProvider;
+	protected SingletonSpaceIteratorItemProvider singletonSpaceIteratorItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.SingleSpaceIterator}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.SingletonSpaceIterator}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createSingleSpaceIteratorAdapter() {
-		if (singleSpaceIteratorItemProvider == null) {
-			singleSpaceIteratorItemProvider = new SingleSpaceIteratorItemProvider(this);
+	public Adapter createSingletonSpaceIteratorAdapter() {
+		if (singletonSpaceIteratorItemProvider == null) {
+			singletonSpaceIteratorItemProvider = new SingletonSpaceIteratorItemProvider(this);
 		}
 
-		return singleSpaceIteratorItemProvider;
+		return singletonSpaceIteratorItemProvider;
 	}
 
 	/**
@@ -1420,7 +1420,7 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (instructionItemProvider != null) instructionItemProvider.dispose();
 		if (spaceIteratorItemProvider != null) spaceIteratorItemProvider.dispose();
 		if (rangeSpaceIteratorItemProvider != null) rangeSpaceIteratorItemProvider.dispose();
-		if (singleSpaceIteratorItemProvider != null) singleSpaceIteratorItemProvider.dispose();
+		if (singletonSpaceIteratorItemProvider != null) singletonSpaceIteratorItemProvider.dispose();
 		if (connectivityCallItemProvider != null) connectivityCallItemProvider.dispose();
 		if (spaceIteratorRefItemProvider != null) spaceIteratorRefItemProvider.dispose();
 		if (scalarVarDefinitionItemProvider != null) scalarVarDefinitionItemProvider.dispose();

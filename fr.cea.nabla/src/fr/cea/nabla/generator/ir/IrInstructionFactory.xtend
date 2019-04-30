@@ -85,8 +85,8 @@ class IrInstructionFactory
 	def dispatch create IrFactory::eINSTANCE.createLoop toIrInstruction(Loop v)
 	{
 		annotations += v.toIrAnnotation
-		iterator = v.iterator.toIrIterator
-		v.dependantIterators.forEach[x | dependantIterators += x.toIrIterator]
+		range = v.range.toIrIterator
+		v.singletons.forEach[x | singletons += x.toIrIterator]
 		body = v.body.toIrInstruction
 	}
 	

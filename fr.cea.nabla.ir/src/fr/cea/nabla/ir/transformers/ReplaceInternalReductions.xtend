@@ -49,7 +49,7 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 									
 			// transformation de la reduction
 			val loopExpression = createAffectationRHS(m, reductionInstr)
-			val loop = createReductionLoop(reductionInstr.iterator, reductionInstr.dependantIterators, reductionInstr.result, loopExpression, '=')
+			val loop = createReductionLoop(reductionInstr.range, reductionInstr.singletons, reductionInstr.result, loopExpression, '=')
 			val variableDefinition = IrFactory::eINSTANCE.createScalarVarDefinition => [ variables += reductionInstr.result ]
 			replace(reductionInstr, variableDefinition, loop)			
 

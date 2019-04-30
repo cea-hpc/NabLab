@@ -61,55 +61,11 @@ public class SpaceIteratorRefItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addPrevPropertyDescriptor(object);
-			addNextPropertyDescriptor(object);
 			addTargetPropertyDescriptor(object);
+			addIncPropertyDescriptor(object);
+			addDecPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the Prev feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addPrevPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_SpaceIteratorRef_prev_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_SpaceIteratorRef_prev_feature", "_UI_SpaceIteratorRef_type"),
-				 NablaPackage.Literals.SPACE_ITERATOR_REF__PREV,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Next feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addNextPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_SpaceIteratorRef_next_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_SpaceIteratorRef_next_feature", "_UI_SpaceIteratorRef_type"),
-				 NablaPackage.Literals.SPACE_ITERATOR_REF__NEXT,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
 	}
 
 	/**
@@ -135,6 +91,50 @@ public class SpaceIteratorRefItemProvider
 	}
 
 	/**
+	 * This adds a property descriptor for the Inc feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addIncPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_SpaceIteratorRef_inc_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_SpaceIteratorRef_inc_feature", "_UI_SpaceIteratorRef_type"),
+				 NablaPackage.Literals.SPACE_ITERATOR_REF__INC,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Dec feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addDecPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_SpaceIteratorRef_dec_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_SpaceIteratorRef_dec_feature", "_UI_SpaceIteratorRef_type"),
+				 NablaPackage.Literals.SPACE_ITERATOR_REF__DEC,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
 	 * This returns SpaceIteratorRef.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -154,7 +154,7 @@ public class SpaceIteratorRefItemProvider
 	@Override
 	public String getText(Object object) {
 		SpaceIteratorRef spaceIteratorRef = (SpaceIteratorRef)object;
-		return getString("_UI_SpaceIteratorRef_type") + " " + spaceIteratorRef.isPrev();
+		return getString("_UI_SpaceIteratorRef_type") + " " + spaceIteratorRef.getInc();
 	}
 
 
@@ -170,8 +170,8 @@ public class SpaceIteratorRefItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(SpaceIteratorRef.class)) {
-			case NablaPackage.SPACE_ITERATOR_REF__PREV:
-			case NablaPackage.SPACE_ITERATOR_REF__NEXT:
+			case NablaPackage.SPACE_ITERATOR_REF__INC:
+			case NablaPackage.SPACE_ITERATOR_REF__DEC:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}

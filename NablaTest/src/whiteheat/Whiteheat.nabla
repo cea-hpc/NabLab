@@ -45,8 +45,8 @@ const ℝ k = 1.0;
 IniF: ∀j∈cells(), f{j} = 0.0;
 IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});  // ne fonctionne que sur des parallélogrammes
 IniUn: ∀j∈cells(), u{j} = Math.cos(2*PI*k*center{j}.x);
-ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(det(X{r}, X{►(r)}));
-ComputeSurface: ∀f∈faces(), surface{f} = 0.5 * ∑{r∈nodesOfFace(f)}(norm(X{r}-X{►(r)}));
+ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(det(X{r}, X{r+1}));
+ComputeSurface: ∀f∈faces(), surface{f} = 0.5 * ∑{r∈nodesOfFace(f)}(norm(X{r}-X{r+1}));
 ComputeOutgoingFlux: ∀j1∈cells(), outgoingFlux{j1} = δt/V{j1} * ∑{j2∈neighbourCells(j1), cf=commonFace(j1,j2)}( (u{j2}-u{j1}) / norm(center{j2}-center{j1}) * surface{cf});
 ComputeUn: ∀j∈cells(), u{j}^{n+1}=f{j}*δt + u{j} + outgoingFlux{j};
 ComputeTn: t^{n+1}=t+δt;

@@ -16,7 +16,9 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.nabla.ConnectivityCall
+import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 
@@ -35,21 +37,33 @@ class IrIteratorFactory
 	{
 		annotations += si.toIrAnnotation
 		name = si.name
-		call = si.call.toIrConnectivityCall
+		container = si.container.toIrConnectivityCall
+		singleton = (si instanceof SingletonSpaceIterator)
 	}
 	
 	def create IrFactory::eINSTANCE.createConnectivityCall toIrConnectivityCall(ConnectivityCall range)
 	{
 		annotations += range.toIrAnnotation
 		connectivity = range.connectivity.toIrConnectivity
-		range.args.forEach[x | args += x.toIrIteratorRef]
+		range.args.forEach[x | args += x.toIrConnectivityCallIteratorRef]
 	}
 
-	def create IrFactory::eINSTANCE.createIteratorRef toIrIteratorRef(SpaceIteratorRef ref)
+	def create IrFactory::eINSTANCE.createVarRefIteratorRef toIrVarRefIteratorRef(SpaceIteratorRef ref, int index)
+	{
+		initIteratorRef(ref)
+		indexInReferencerList = index
+	}
+
+	def create IrFactory::eINSTANCE.createConnectivityCallIteratorRef toIrConnectivityCallIteratorRef(SpaceIteratorRef ref)
+	{
+		initIteratorRef(ref)
+	}
+	
+	private def initIteratorRef(IteratorRef it, SpaceIteratorRef ref)
 	{
 		annotations += ref.toIrAnnotation
 		target = ref.target.toIrIterator
-		prev = ref.prev
-		next = ref.next
+		if (ref.dec > 0) shift = -ref.dec
+		else shift = ref.inc
 	}
 }

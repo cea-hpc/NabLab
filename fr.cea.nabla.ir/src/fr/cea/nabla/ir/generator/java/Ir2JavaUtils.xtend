@@ -13,15 +13,10 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import com.google.inject.Inject
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BasicType
-import fr.cea.nabla.ir.ir.ConnectivityCall
 
 class Ir2JavaUtils 
 {
-	@Inject extension Utils
-	
 	def getJavaType(BasicType t)
 	{
 		switch t
@@ -59,7 +54,4 @@ class Ir2JavaUtils
 			default: throw new RuntimeException("Pas d'équivalent Java pour l'opérateur : " + op)
 		} 
 	}
-	
-	def CharSequence getAccessor(ConnectivityCall it) 
-	'''mesh.get«connectivity.name.toFirstUpper»(«args.map[prefix(target.name + 'Id')].join(',')»)'''
 }

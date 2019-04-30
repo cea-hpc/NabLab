@@ -63,7 +63,7 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 			m.jobs += IrFactory::eINSTANCE.createInstructionJob =>
 			[
 				name = 'Reduce_' + reductionInstr.result.name
-				instruction = createReductionLoop(reductionInstr.iterator, reductionInstr.dependantIterators, reducOperatorLhs, reducOperatorRhs, reduc.operator)
+				instruction = createReductionLoop(reductionInstr.range, reductionInstr.singletons, reducOperatorLhs, reducOperatorRhs, reduc.operator)
 			] 
 
 			// la variable de reduction doit devenir globale pour etre utilisée dans le job final
@@ -96,7 +96,7 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 			[
 				name = reductionInstr.result.name + 'ArgValue'
 				type = reductionInstr.result.type
-				dimensions += reductionInstr.iterator.call.connectivity
+				dimensions += reductionInstr.range.container.connectivity
 			]
 			m.variables += argValue
 			
@@ -109,9 +109,9 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 			val argJob = IrFactory::eINSTANCE.createInstructionJob =>
 			[
 				name = 'Compute_' + reductionInstr.result.name + '_arg'
-				val dependantIterators = new ArrayList<Iterator>
-				dependantIterators.forEach[x | dependantIterators += EcoreUtil::copy(x)]
-				instruction = createReductionLoop(EcoreUtil::copy(reduc.iterator), dependantIterators, argValue, reduc.arg, '=')
+				val singletons = new ArrayList<Iterator>
+				singletons.forEach[x | singletons += EcoreUtil::copy(x)]
+				instruction = createReductionLoop(EcoreUtil::copy(reduc.range), singletons, argValue, reduc.arg, '=')
 			]
 			m.jobs += argJob
 			

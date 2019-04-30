@@ -63,8 +63,8 @@ public class LoopItemProvider extends InstructionItemProvider {
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(NablaPackage.Literals.LOOP__ITERATOR);
-			childrenFeatures.add(NablaPackage.Literals.LOOP__DEPENDANT_ITERATORS);
+			childrenFeatures.add(NablaPackage.Literals.LOOP__RANGE);
+			childrenFeatures.add(NablaPackage.Literals.LOOP__SINGLETONS);
 			childrenFeatures.add(NablaPackage.Literals.LOOP__BODY);
 		}
 		return childrenFeatures;
@@ -118,8 +118,8 @@ public class LoopItemProvider extends InstructionItemProvider {
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Loop.class)) {
-			case NablaPackage.LOOP__ITERATOR:
-			case NablaPackage.LOOP__DEPENDANT_ITERATORS:
+			case NablaPackage.LOOP__RANGE:
+			case NablaPackage.LOOP__SINGLETONS:
 			case NablaPackage.LOOP__BODY:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
@@ -140,13 +140,13 @@ public class LoopItemProvider extends InstructionItemProvider {
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.LOOP__ITERATOR,
+				(NablaPackage.Literals.LOOP__RANGE,
 				 NablaFactory.eINSTANCE.createRangeSpaceIterator()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.LOOP__DEPENDANT_ITERATORS,
-				 NablaFactory.eINSTANCE.createSingleSpaceIterator()));
+				(NablaPackage.Literals.LOOP__SINGLETONS,
+				 NablaFactory.eINSTANCE.createSingletonSpaceIterator()));
 
 		newChildDescriptors.add
 			(createChildParameter

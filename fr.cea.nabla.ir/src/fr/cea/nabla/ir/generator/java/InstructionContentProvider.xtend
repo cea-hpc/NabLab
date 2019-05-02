@@ -130,7 +130,7 @@ class InstructionContentProvider
 		}
 	'''
 	
-	/** Define all needed indices and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
+	/** Define all needed ids and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
 	private def defineIndices(IterableInstruction it)
 	'''
 		«FOR neededId : range.neededIds»

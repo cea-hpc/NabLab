@@ -58,7 +58,7 @@ class InstructionContentProvider
 		Kokkos::«reduction.kokkosName»<«result.kokkosType»> reducer(«result.name»);
 		Kokkos::parallel_reduce("Reduction«result.name»", «range.container.connectivity.nbElems», KOKKOS_LAMBDA(const int& «range.indexName», «result.kokkosType»& x)
 		{
-			«defineIndexes»
+			«defineIndices»
 			«FOR innerReduction : innerReductions»
 			«innerReduction.content»
 			«ENDFOR»
@@ -105,7 +105,7 @@ class InstructionContentProvider
 		«IF !range.container.connectivity.indexEqualId»auto «range.containerName» = «range.accessor»;«ENDIF»
 		Kokkos::parallel_for(«range.container.connectivity.nbElems», KOKKOS_LAMBDA(const int «range.indexName»)
 		{
-			«defineIndexes»
+			«defineIndices»
 			«body.innerContent»
 		});
 	'''
@@ -115,13 +115,13 @@ class InstructionContentProvider
 		auto «range.containerName» = «range.accessor»;
 		for (int «range.indexName»=0; «range.indexName»<«range.containerName».size(); «range.indexName»++)
 		{
-			«defineIndexes»
+			«defineIndices»
 			«body.innerContent»
 		}
 	'''
 	
 	/** Define all needed indices and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
-	private def defineIndexes(IterableInstruction it)
+	private def defineIndices(IterableInstruction it)
 	'''
 		«FOR neededId : range.neededIds»
 			int «neededId.id» = «neededId.indexToId»;

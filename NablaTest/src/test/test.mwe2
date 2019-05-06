@@ -1,0 +1,50 @@
+module Test
+
+import fr.cea.nabla.generator.*
+
+var u = TagPersistentVariablesWorkflowComponent.OutputVar { nabla = "u" output = "Vitesse"}
+var inputDir = "src/test"  
+var outputDir = "src-gen/test"  
+  
+Workflow 
+{
+	component = Nabla2IrWorkflowComponent : nabla2Ir
+	{ 
+		nablaModelPath = "${inputDir}/test.nabla"
+		outputFilePath = "${outputDir}/test.1.nablair"
+	}
+  
+	component = TagPersistentVariablesWorkflowComponent : tagPersistentVariables
+	{
+		previous = nabla2Ir
+		outputVar = u
+	}
+	
+	component = ReplaceUtf8CharsWorkflowComponent : replaceUtf8Chars
+	{
+		previous = tagPersistentVariables
+	}	
+	
+	component = ReplaceInternalReductionsWorkflowComponent : replaceInternalReductions
+	{
+		previous = replaceUtf8Chars
+	}	
+	
+	component = OptimizeConnectivitiesWorkflowComponent : optimizeConnectivities
+	{
+		previous = replaceInternalReductions
+	}	
+	
+	component = FillJobHLTsWorkflowComponent : fillJobHLTs
+	{
+		previous = optimizeConnectivities
+		outputFilePath = "${outputDir}/test.final.nablair"  	  
+	}
+	
+	component = Ir2JavaWorkflowComponent 
+	{
+		previous = fillJobHLTs
+		outputFilePath = "${outputDir}/test.java"
+	}		
+			
+}

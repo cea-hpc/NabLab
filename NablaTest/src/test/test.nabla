@@ -34,7 +34,7 @@ const ℕ Z_EDGE_ELEMS = 1;
 ℝ total;
 
 //A: total = reduceMin{j∈cells()} ( u{j}  + 4.0) + 3.0;
-//IniCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), Cjr{j,r} = 1.0 + X{r+2}.x + X{r}.y;
+IniCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), Cjr{j,r} = 1.0 + X{r}.y;
 IniCjrBad: ∀r∈nodes(), ∀j∈cellsOfNode(r+1), Cjr{j,r} = 1.0;
 //B: total = ∑{j∈cells()} ( ∑{r∈nodesOfCell(j)}(Cjr{j,r} + 1.0) + 2.0) + 3.0;
 //B: total = reduceMin{j∈cells()} ( reduceMin{r∈nodesOfCell(j)}(Cjr{j,r} + 1.0) + 2.0) + 3.0;

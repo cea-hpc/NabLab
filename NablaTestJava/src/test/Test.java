@@ -61,6 +61,26 @@ public final class Test
 	}
 	
 	/**
+	 * Job IniCjr @-1.0
+	 * In variables: X
+	 * Out variables: Cjr
+	 */
+	private void iniCjr() 
+	{
+		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		{
+			int jId = jCells;
+			int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
+			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
+			{
+				int rId = nodesOfCellJ[rNodesOfCellJ];
+				int rNodes = rId;
+				Cjr[jCells][rNodesOfCellJ] = 1.0 + X[rNodes].getY();
+			}
+		});
+	}		
+	
+	/**
 	 * Job IniCjrBad @-1.0
 	 * In variables: 
 	 * Out variables: Cjr
@@ -69,15 +89,15 @@ public final class Test
 	{
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
-			int rId = rNodes;		
-			int rPlus1Id = rNodes;		
+			int rId = rNodes;
+			int rPlus1Id = (rNodes+1+nbNodes)%nbNodes;
 			int[] cellsOfNodeRPlus1 = mesh.getCellsOfNode(rPlus1Id);
 			for (int jCellsOfNodeRPlus1=0; jCellsOfNodeRPlus1<cellsOfNodeRPlus1.length; jCellsOfNodeRPlus1++)
 			{
-				int jId = cellsOfNodeRPlus1[jCellsOfNodeRPlus1];		
+				int jId = cellsOfNodeRPlus1[jCellsOfNodeRPlus1];
 				int jCells = jId;
-				int rNodesOfCellJCells = Utils.indexOf(mesh.getNodesOfCell(jId), rId);
-				Cjr[jCells][rNodesOfCellJCells] = 1.0;
+				int rNodesOfCellJ = Utils.indexOf(mesh.getNodesOfCell(jId), rId);
+				Cjr[jCells][rNodesOfCellJ] = 1.0;
 			}
 		});
 	}		
@@ -85,6 +105,7 @@ public final class Test
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module Test");
+		iniCjr(); // @-1.0
 		iniCjrBad(); // @-1.0
 		System.out.println("Fin de l'exécution du module Test");
 	}

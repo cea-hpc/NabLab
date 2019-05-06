@@ -50,4 +50,3 @@ ComputeSurface: ∀f∈faces(), surface{f} = 0.5 * ∑{r∈nodesOfFace(f)}(norm(
 ComputeOutgoingFlux: ∀j1∈cells(), outgoingFlux{j1} = δt/V{j1} * ∑{j2∈neighbourCells(j1), cf=commonFace(j1,j2)}( (u{j2}-u{j1}) / norm(center{j2}-center{j1}) * surface{cf});
 ComputeUn: ∀j∈cells(), u{j}^{n+1}=f{j}*δt + u{j} + outgoingFlux{j};
 ComputeTn: t^{n+1}=t+δt;
-

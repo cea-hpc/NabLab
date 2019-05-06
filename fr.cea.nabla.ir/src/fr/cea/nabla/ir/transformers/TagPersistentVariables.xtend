@@ -1,7 +1,7 @@
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.IrModule
-import java.util.Properties
+import java.util.HashMap
 
 /**
  * Attend des propriétés de type <nom_de_variable> = <nom_de_persistence>.
@@ -10,9 +10,9 @@ import java.util.Properties
  */
 class TagPersistentVariables implements IrTransformationStep 
 {
-	val Properties variables
+	val HashMap<String, String> variables
 	
-	new(Properties variables)
+	new(HashMap<String, String> variables)
 	{
 		this.variables = variables
 	}
@@ -24,14 +24,15 @@ class TagPersistentVariables implements IrTransformationStep
 	
 	override transform(IrModule m) 
 	{
-		for (key : variables.stringPropertyNames)
+		for (key : variables.keySet)
 		{
 			val v = m.variables.findFirst[x | x.name == key]
 			if (v !== null) 
 			{
 				v.persist = true
-				v.persistenceName = variables.getProperty(key)
+				v.persistenceName = variables.get(key)
 			}
 		}
+		return true
 	}
 }

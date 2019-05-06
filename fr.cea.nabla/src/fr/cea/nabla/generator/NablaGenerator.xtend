@@ -19,13 +19,20 @@ import fr.cea.nabla.ir.generator.java.Ir2Java
 import fr.cea.nabla.ir.generator.kokkos.Ir2Kokkos
 import fr.cea.nabla.ir.transformers.TagPersistentVariables
 import fr.cea.nabla.nabla.NablaModule
+import java.io.IOException
+import java.io.InputStreamReader
+import java.net.URL
+import java.nio.charset.Charset
+import java.util.Properties
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.emf.ecore.util.EcoreUtil
+import org.eclipse.emf.ecore.xmi.XMLResource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import org.eclipse.xtext.resource.SaveOptions
 
 /**
  * Generates code from your model files on save.
@@ -42,7 +49,6 @@ class NablaGenerator extends AbstractGenerator
 	static val IrExtension = 'nablair'
 	static val PropertiesExtension = 'properties'
 	
-	@Inject GeneratorUtils utils
 	@Inject SmallLatexGenerator latexGenerator
 	@Inject Nabla2Ir nabla2ir
 	
@@ -68,15 +74,15 @@ class NablaGenerator extends AbstractGenerator
 			
 			print('Looking for a properties file... ')
 			val uri = input.URI.trimFileExtension.toString.addExtensions(#[PropertiesExtension])
-			val properties = utils.getProperties(uri)
+			val properties = uri.properties
 			val generators = #[ir2Java, ir2Kokkos]	
 			if (properties.empty) println('no file')
 			else
 			{
 				println('ok file found')
 				
-				val tagVariableStep = new TagPersistentVariables(properties)
-				tagVariableStep.transform(irModuleRef)				
+//				val tagVariableStep = new TagPersistentVariables(properties)
+//				tagVariableStep.transform(irModuleRef)				
 			
 				for (generator : generators)
 				{
@@ -127,6 +133,32 @@ class NablaGenerator extends AbstractGenerator
 		val uri = fsa.getURI(fileName)
 		val resource = rSet.createResource(uri)
 		resource.contents += content
-		resource.save(utils.xmlSaveOptions)
+		resource.save(xmlSaveOptions)
+	}
+	
+	private	def getXmlSaveOptions()
+	{
+		val builder = SaveOptions::newBuilder 
+		builder.format
+		val so = builder.options.toOptionsMap
+		so.put(XMLResource::OPTION_LINE_WIDTH, 160)
+		return so
+	}
+	
+	private	def getProperties(String uri)
+	{
+		val props = new Properties
+		val url = new URL(uri)
+		try 
+		{
+			val inputStream = url.openConnection().getInputStream()
+			props.load(new InputStreamReader(inputStream, Charset.forName('UTF-8')))
+			inputStream.close		
+		}
+		catch (IOException e)
+		{
+			// pas de fichier => rien à faire
+		}
+		return props		
 	}
 }

@@ -15,7 +15,6 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import fr.cea.nabla.generator.GeneratorUtils
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.BasicType
 import fr.cea.nabla.nabla.Import
@@ -28,7 +27,7 @@ import fr.cea.nabla.nabla.ItemType
  * deu parcours du graphe d'origine (voir la documentation Xtext).
  */
 @Singleton
-class Nabla2IrUtils extends GeneratorUtils
+class Nabla2IrUtils
 {
 	@Inject extension IrAnnotationHelper 
 	

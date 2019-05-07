@@ -1,5 +1,6 @@
 package fr.cea.nabla.generator
 
+import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.IrTransformationStep
 import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceInternalReductions
@@ -7,8 +8,7 @@ import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import fr.cea.nabla.ir.transformers.TagPersistentVariables
 import java.util.HashMap
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext
-import org.eclipse.xtend.lib.annotations.Accessors
-import fr.cea.nabla.ir.transformers.FillJobHLTs
+import java.util.ArrayList
 
 abstract class Ir2IrWorkflowComponent extends NablaWorkflowComponent  
 {
@@ -26,17 +26,11 @@ abstract class Ir2IrWorkflowComponent extends NablaWorkflowComponent
 
 class TagPersistentVariablesWorkflowComponent extends Ir2IrWorkflowComponent
 {
-	static class OutputVar
-	{
-		@Accessors String nabla
-		@Accessors String output		
-	}
-
-	val outputVars = new HashMap<String, String>
+	val outVars = new HashMap<String, String>
 	
-	override getStep() { new TagPersistentVariables(outputVars) }
+	override getStep() { new TagPersistentVariables(outVars) }
 	
-	def addOutputVar(OutputVar it) { outputVars.put(nabla, output) }
+	def addOutputVar(OutVar it) { outVars.put(nabla, output) }
 }
 
 class ReplaceUtf8CharsWorkflowComponent extends Ir2IrWorkflowComponent
@@ -51,7 +45,11 @@ class ReplaceInternalReductionsWorkflowComponent extends Ir2IrWorkflowComponent
 
 class OptimizeConnectivitiesWorkflowComponent extends Ir2IrWorkflowComponent
 {
+	val connectivities = new ArrayList<String>
+
 	override getStep() { new OptimizeConnectivities }
+
+	def addConnectivity(String value) { connectivities += value }
 }
 
 class FillJobHLTsWorkflowComponent extends Ir2IrWorkflowComponent

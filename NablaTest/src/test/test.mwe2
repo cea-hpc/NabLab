@@ -2,7 +2,7 @@ module Test
 
 import fr.cea.nabla.generator.*
 
-var u = TagPersistentVariablesWorkflowComponent.OutputVar { nabla = "u" output = "Vitesse"}
+var u = OutVar { nabla = "u" output = "Vitesse"}
 var inputDir = "src/test"  
 var outputDir = "src-gen/test"  
   
@@ -33,6 +33,9 @@ Workflow
 	component = OptimizeConnectivitiesWorkflowComponent : optimizeConnectivities
 	{
 		previous = replaceInternalReductions
+		connectivity = "cells"
+		connectivity = "nodes"
+		connectivity = "faces"
 	}	
 	
 	component = FillJobHLTsWorkflowComponent : fillJobHLTs

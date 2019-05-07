@@ -14,11 +14,24 @@
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.IrModule
+import java.util.List
 
 class OptimizeConnectivities implements IrTransformationStep 
 {
-	static val ConnectivitiesToOptimize = #['cells', 'nodes', 'faces']
+	static val DefaultConnectivities = #['cells', 'nodes', 'faces']
+
+	val List<String> connectivities
+
+	new()
+	{
+		connectivities = DefaultConnectivities
+	}
 	
+	new(List<String> connectivities)
+	{
+		this.connectivities = connectivities
+	}
+
 	override getDescription() 
 	{
 		'Annotate connectivities when Id and Index are equals (ex: cells)'
@@ -26,7 +39,7 @@ class OptimizeConnectivities implements IrTransformationStep
 	
 	override transform(IrModule m) 
 	{
-		m.connectivities.forEach[c | if (ConnectivitiesToOptimize.contains(c.name)) c.indexEqualId = true]
+		m.connectivities.forEach[c | if (connectivities.contains(c.name)) c.indexEqualId = true]
 		return true
 	}
 }

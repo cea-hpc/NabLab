@@ -41,7 +41,7 @@ class ReplaceUtf8Chars implements IrTransformationStep
 	{
 		name.replace('\u03B1', 'alpha')
 		.replace('\u03B2', 'beta')
-		.replace('\u03B3', 'gammma') // ce n'est pa une erreur ! le gamma a l'air réservé en Nabla !
+		.replace('\u03B3', 'gamma') 
 		.replace('\u03B4', 'delta')
 		.replace('\u03F5', 'epsilon')
 		.replace('\u03BB', 'lambda')

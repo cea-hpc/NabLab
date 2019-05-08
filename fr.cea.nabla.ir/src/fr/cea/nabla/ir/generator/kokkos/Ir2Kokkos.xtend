@@ -124,10 +124,10 @@ class Ir2Kokkos extends IrGenerator
 
 			«val variablesToPersist = persistentArrayVariables»
 			«IF !variablesToPersist.empty»
-			map<string, Kokkos::View<double*>> cellVariables;
-			map<string, Kokkos::View<double*>> nodeVariables;
+			std::map<string, double*> cellVariables;
+			std::map<string, double*> nodeVariables;
 			«FOR v : variablesToPersist»
-			«v.dimensions.head.returnType.type.name»Variables.insert(pair<string,Kokkos::View<double*>>("«v.persistenceName»", «v.name»));
+			«v.dimensions.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
 			«ENDFOR»
 			«ENDIF»
 			int iteration = 0;
@@ -140,7 +140,7 @@ class Ir2Kokkos extends IrGenerator
 				«ENDFOR»
 				«IF !variablesToPersist.empty»
 				auto quads = mesh->getGeometricMesh()->getQuads();
-				writer.writeFile(iteration, X, quads, cellVariables, nodeVariables);
+				writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
 				«ENDIF»
 			}
 			«ENDIF»

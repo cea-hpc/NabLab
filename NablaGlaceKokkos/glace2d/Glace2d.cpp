@@ -727,9 +727,9 @@ public:
 		iniM(); // @-1.0
 		iniEn(); // @-1.0
 
-		map<string, Kokkos::View<double*>> cellVariables;
-		map<string, Kokkos::View<double*>> nodeVariables;
-		cellVariables.insert(pair<string,Kokkos::View<double*>>("Density", rho));
+		std::map<string, double*> cellVariables;
+		std::map<string, double*> nodeVariables;
+		cellVariables.insert(pair<string,double*>("Density", rho.data()));
 		int iteration = 0;
 		while (t < options->option_stoptime && iteration < options->option_max_iterations)
 		{
@@ -762,7 +762,7 @@ public:
 			copy_uj_nplus1_to_uj(); // @12.0
 			copy_E_nplus1_to_E(); // @12.0
 			auto quads = mesh->getGeometricMesh()->getQuads();
-			writer.writeFile(iteration, X, quads, cellVariables, nodeVariables);
+			writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
 		}
 		std::cout << "Fin de l'exécution du module Glace2d" << std::endl;
 	}	

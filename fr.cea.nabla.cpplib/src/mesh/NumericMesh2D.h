@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2018 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -25,34 +25,43 @@ namespace nablalib
 class NumericMesh2D
 {
 public:
-	static const int MaxNbNodesOfCell = 4;
-	static const int MaxNbNodesOfFace = 2;
-	static const int MaxNbCellsOfNode = 4;
-	static const int MaxNbNeighbourCells = 2;
+	static constexpr int MaxNbNodesOfCell = 4;
+	static constexpr int MaxNbNodesOfFace = 2;
+	static constexpr int MaxNbCellsOfNode = 4;
+	static constexpr int MaxNbNeighbourCells = 2;
 
 	NumericMesh2D(Mesh<Real2>* geometricMesh);
-	Mesh<Real2>* getGeometricMesh() { return m_geometricMesh; }
+	Mesh<Real2>* getGeometricMesh() noexcept { return m_geometricMesh; }
 
-	int getNbNodes() const { return m_geometricMesh->getNodes().size(); }
-	int getNbCells() const { return m_geometricMesh->getQuads().size(); }
-	int getNbFaces() const { return m_geometricMesh->getEdges().size(); }
+	size_t getNbNodes() const noexcept { return m_geometricMesh->getNodes().size(); }
+	size_t getNbCells() const noexcept { return m_geometricMesh->getQuads().size(); }
+	size_t getNbFaces() const noexcept { return m_geometricMesh->getEdges().size(); }
 
-	int getNbInnerNodes() const { return getInnerNodes().size(); }
-	int getNbOuterFaces() const { return getOuterFaces().size(); }
-	const vector<int> getInnerNodes() const { return m_geometricMesh->getInnerNodeIds(); }
-	const vector<int> getOuterFaces() const { return m_geometricMesh->getOuterEdgeIds(); }
+	size_t getNbInnerNodes() const noexcept { return getInnerNodes().size(); }
+	size_t getNbOuterFaces() const noexcept { return getOuterFaces().size(); }
+	const vector<int>& getInnerNodes() const noexcept { return m_geometricMesh->getInnerNodeIds(); }
+	vector<int> getOuterFaces() const noexcept { return m_geometricMesh->getOuterEdgeIds(); }
 
-	const vector<int> getNodesOfCell(int cellId) const;
-	const vector<int> getNodesOfFace(int faceId) const;
-	const vector<int> getCellsOfNode(int nodeId) const;
-	const vector<int> getNeighbourCells(int cellId) const;
-	const vector<int> getFacesOfCell(int cellId) const;
-	const int getCommonFace(const int cellId1, const int cellId2) const;
+	const array<int, 4>& getNodesOfCell(const int& cellId) const noexcept;
+	const array<int, 2>& getNodesOfFace(const int& faceId) const noexcept;
+	vector<int> getCellsOfNode(const int& nodeId) const noexcept;
+	vector<int> getNeighbourCells(const int& cellId) const;
+	vector<int> getFacesOfCell(const int& cellId) const;
+	int getCommonFace(const int& cellId1, const int& cellId2) const noexcept;
 
 private:
 	Mesh<Real2>* m_geometricMesh;
 
-	const int getNbCommonIds(const vector<int>& a, const vector<int>& b) const;
+	int getNbCommonIds(const vector<int>& a, const vector<int>& b) const noexcept;
+	template <std::size_t T, std::size_t U>
+	int	getNbCommonIds(const std::array<int, T>& as, const std::array<int, U>& bs) const noexcept
+	{
+	  int nbCommonIds(0);
+	  for (const auto& a : as)
+	    if (find(bs.begin(), bs.end(), a) != as.end())
+        ++nbCommonIds;
+	  return nbCommonIds;
+	}
 };
 
 }

@@ -17,38 +17,38 @@
 using namespace nablalib;
 
 Real2x2
-Glace2dFunctions::tensProduct(const Real2& a, const Real2& b)
+Glace2dFunctions::tensProduct(const Real2& a, const Real2& b) noexcept
 {
 	return Real2x2(b*a.x, b*a.y);
 }
 
 Real2
-Glace2dFunctions::matVectProduct(const Real2x2& a, const Real2& b)
+Glace2dFunctions::matVectProduct(const Real2x2& a, const Real2& b) noexcept
 {
 	return Real2(MathFunctions::dot(a.x, b), MathFunctions::dot(a.y, b));
 }
 
 double
-Glace2dFunctions::det(const Real2x2& a)
+Glace2dFunctions::det(const Real2x2& a) noexcept
 {
 	return a.x.x * a.y.y - a.x.y * a.y.x;
 }
 
 double
-Glace2dFunctions::trace(const Real2x2& a)
+Glace2dFunctions::trace(const Real2x2& a) noexcept
 {
 	return a.x.x + a.y.y;
 }
 
 Real2x2
-Glace2dFunctions::inverse(const Real2x2& m)
+Glace2dFunctions::inverse(const Real2x2& m) noexcept
 {
 	Real2x2 r(Real2(m.y.y, -m.x.y), Real2(-m.y.x, m.x.x));
-	return r * (1.0/det(m));
+	return r * (1.0 / det(m));
 }
 
 Real2
-Glace2dFunctions::perp(const Real2& a)
+Glace2dFunctions::perp(const Real2& a) noexcept
 {
 	return Real2(a.y, -a.x);
 }

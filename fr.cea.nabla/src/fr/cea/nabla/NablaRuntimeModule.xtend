@@ -14,8 +14,6 @@
 package fr.cea.nabla
 
 import com.google.inject.Binder
-import fr.cea.nabla.ir.generator.kokkos.InstructionContentProvider
-import fr.cea.nabla.ir.generator.kokkos.JobContentProvider
 import org.eclipse.xtext.parser.IEncodingProvider
 import org.eclipse.xtext.service.DispatchingProvider
 
@@ -29,13 +27,5 @@ class NablaRuntimeModule extends AbstractNablaRuntimeModule
 		binder.bind(typeof(IEncodingProvider))
 		.annotatedWith(typeof(DispatchingProvider.Runtime))
 		.to(typeof(NablaEncodingProvider))
-	}
-
-	def Class<? extends InstructionContentProvider> bindInstructionContentProvider() {
-	 typeof(fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.InstructionContentProvider)
-	}
-
-	def Class<? extends JobContentProvider> bindJobContentProvider() {
-	 typeof(fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.JobContentProvider)
 	}
 }

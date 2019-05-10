@@ -7,7 +7,8 @@ Bundle-Localization: plugin
 Bundle-Version: 1.0.0.qualifier
 Bundle-SymbolicName: fr.cea.nabla;singleton:=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.xtext,
+Require-Bundle: fr.cea.nabla.ir,
+ org.eclipse.xtext,
  org.eclipse.xtext.xbase,
  org.eclipse.equinox.common,
  org.eclipse.core.runtime,
@@ -17,8 +18,7 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.xtend.lib;bundle-version="2.14.0",
  org.eclipse.emf.common,
  org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
- org.eclipse.core.resources,
- fr.cea.nabla.ir
+ org.eclipse.core.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: fr.cea.nabla,
  fr.cea.nabla.generator,
@@ -33,7 +33,10 @@ Export-Package: fr.cea.nabla,
  fr.cea.nabla.services,
  fr.cea.nabla.typing,
  fr.cea.nabla.validation,
- nablalib
+ nablalib,
+ fr.cea.nabla.naw,
+ fr.cea.nabla.naw.util,
+ fr.cea.nabla.naw.impl
 Import-Package: com.google.inject,
  org.apache.log4j
 Bundle-ClassPath: jlatexmath-1.0.3.jar,.

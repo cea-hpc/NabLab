@@ -29,7 +29,7 @@ private:
 	Options* options;
 	NumericMesh2D* mesh;
 	VtkFileWriter2D writer;
-	int nbNodes, nbCells, nbNodesOfCell;
+	int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode;
 
 	// Global Variables
 	double total;
@@ -47,6 +47,7 @@ public:
 	, nbNodes(mesh->getNbNodes())
 	, nbCells(mesh->getNbCells())
 	, nbNodesOfCell(NumericMesh2D::MaxNbNodesOfCell)
+	, nbCellsOfNode(NumericMesh2D::MaxNbCellsOfNode)
 	, X("X", nbNodes)
 	, u("u", nbCells)
 	, Cjr("Cjr", nbCells, nbNodesOfCell)
@@ -61,8 +62,8 @@ public:
 
 private:
 	/**
-	 * Job IniCjr @-2.0
-	 * In variables: 
+	 * Job IniCjr @-1.0
+	 * In variables: X
 	 * Out variables: Cjr
 	 */
 	void iniCjr()
@@ -73,40 +74,41 @@ private:
 			auto nodesOfCellJ = mesh->getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 			{
-				Cjr(jCells,rNodesOfCellJ) = 1.0;
+				int rId = nodesOfCellJ[rNodesOfCellJ];
+				int rNodes = rId;
+				Cjr(jCells,rNodesOfCellJ) = 1.0 + X(rNodes).y;
 			}
 		});
 	}
 	
 	/**
-	 * Job B @-1.0
-	 * In variables: Cjr
-	 * Out variables: total
+	 * Job IniCjrBad @-1.0
+	 * In variables: 
+	 * Out variables: Cjr
 	 */
-	void b()
+	void iniCjrBad()
 	{
-		double sum_126485630 = 0.0;
-		Kokkos::sum<double> reducer(sum_126485630);
-		Kokkos::parallel_reduce("Reductionsum_126485630", nbCells, KOKKOS_LAMBDA(const int& jCells, double& x)
+		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int rNodes)
 		{
-			int jId = jCells;
-			double sum864150878 = 0.0;
-			auto nodesOfCellJ = mesh->getNodesOfCell(jId);
-			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+			int rId = rNodes;
+			int rPlus1Id = (rNodes+1+nbNodes)%nbNodes;
+			auto cellsOfNodeRPlus1 = mesh->getCellsOfNode(rPlus1Id);
+			for (int jCellsOfNodeRPlus1=0; jCellsOfNodeRPlus1<cellsOfNodeRPlus1.size(); jCellsOfNodeRPlus1++)
 			{
-				sum864150878 = sum864150878 + (Cjr(jCells,rNodesOfCellJ) + 1.0);
+				int jId = cellsOfNodeRPlus1[jCellsOfNodeRPlus1];
+				int jCells = jId;
+				int rNodesOfCellJ = Utils::indexOf(mesh->getNodesOfCell(jId),rId);
+				Cjr(jCells,rNodesOfCellJ) = 1.0;
 			}
-			reducer.join(x, sum864150878 + 2.0);
-		}, reducer);
-		total = sum_126485630 + 3.0;
+		});
 	}
 
 public:
 	void simulate()
 	{
 		std::cout << "Début de l'exécution du module Test" << std::endl;
-		iniCjr(); // @-2.0
-		b(); // @-1.0
+		iniCjr(); // @-1.0
+		iniCjrBad(); // @-1.0
 		std::cout << "Fin de l'exécution du module Test" << std::endl;
 	}	
 };	

@@ -6,34 +6,25 @@ import com.google.inject.Provider
 import fr.cea.nabla.NablaStandaloneSetup
 import fr.cea.nabla.ir.ir.IrModule
 import java.util.ArrayList
-import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.ResourceSet
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.emf.ecore.xmi.XMLResource
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowComponent
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.generator.IOutputConfigurationProvider
 import org.eclipse.xtext.generator.JavaIoFileSystemAccess
 import org.eclipse.xtext.generator.OutputConfiguration
-import org.eclipse.xtext.resource.SaveOptions
 
 import static com.google.common.collect.Maps.*
 
 abstract class NablaWorkflowComponent implements IWorkflowComponent
 {
-	static val IrExtension = 'nablair'
-	
 	protected val Injector injector
-	protected val ResourceSet rSet
 	protected IrModule model
 	protected val nexts = new ArrayList<NablaWorkflowComponent>
 	
 	protected Provider<ResourceSet> resourceSetProvider
 	
-	@Accessors String outputFilePath
 	@Accessors boolean active = true
 	
 	def setPrevious(NablaWorkflowComponent p)
@@ -55,8 +46,6 @@ abstract class NablaWorkflowComponent implements IWorkflowComponent
 	{
 		val setup = new NablaStandaloneSetup
 		injector = setup.createInjectorAndDoEMFRegistration
-		rSet = new ResourceSetImpl
-		rSet.resourceFactoryRegistry.extensionToFactoryMap.put(IrExtension, new XMIResourceFactoryImpl)
 	}
 		
 	protected def getConfiguredFileSystemAccess() 
@@ -75,28 +64,7 @@ abstract class NablaWorkflowComponent implements IWorkflowComponent
 			override apply(OutputConfiguration from) { return from.name }
 		})
 	}
-	
-	protected def createAndSaveResource()
-	{
-		if (!outputFilePath.nullOrEmpty)
-		{
-			//val uri = configuredFileSystemAccess.getURI(outputFileName)
-			val uri = URI::createURI(outputFilePath, true)
-			val resource = rSet.createResource(uri)
-			resource.contents += model
-			resource.save(xmlSaveOptions)
-		}
-	}
-	
-	private	def getXmlSaveOptions()
-	{
-		val builder = SaveOptions::newBuilder 
-		builder.format
-		val so = builder.options.toOptionsMap
-		so.put(XMLResource::OPTION_LINE_WIDTH, 160)
-		return so
-	}
-	
+		
 	protected def fireModel()
 	{
 		if (!nexts.empty)

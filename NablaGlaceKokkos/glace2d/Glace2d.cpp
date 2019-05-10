@@ -26,7 +26,7 @@ public:
 		int Z_EDGE_ELEMS = 1;
 		double option_stoptime = 0.2;
 		int option_max_iterations = 20000;
-		double gammma = 1.4;
+		double gamma = 1.4;
 		double option_x_interface = 0.5;
 		double option_deltat_ini = 1.0E-5;
 		double option_deltat_cfl = 0.4;
@@ -148,15 +148,15 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
 		{
 			int jId = jCells;
-			Real2 sum25050050 = Real2(0.0, 0.0);
+			Real2 sum27570419 = Real2(0.0, 0.0);
 			auto nodesOfCellJ = mesh->getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 			{
 				int rId = nodesOfCellJ[rNodesOfCellJ];
 				int rNodes = rId;
-				sum25050050 = sum25050050 + (X_n0(rNodes));
+				sum27570419 = sum27570419 + (X_n0(rNodes));
 			}
-			center(jCells) = (1.0 / 4.0) * sum25050050;
+			center(jCells) = (1.0 / 4.0) * sum27570419;
 		});
 	}
 	
@@ -227,15 +227,15 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
 		{
 			int jId = jCells;
-			double sum_194658110 = 0.0;
+			double sum383879719 = 0.0;
 			auto nodesOfCellJ = mesh->getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 			{
 				int rId = nodesOfCellJ[rNodesOfCellJ];
 				int rNodes = rId;
-				sum_194658110 = sum_194658110 + (MathFunctions::dot(C_ic(jCells,rNodesOfCellJ), X_n0(rNodes)));
+				sum383879719 = sum383879719 + (MathFunctions::dot(C_ic(jCells,rNodesOfCellJ), X_n0(rNodes)));
 			}
-			V_ic(jCells) = 0.5 * sum_194658110;
+			V_ic(jCells) = 0.5 * sum383879719;
 		});
 	}
 	
@@ -254,14 +254,14 @@ private:
 	
 	/**
 	 * Job IniEn @-1.0
-	 * In variables: p_ic, gammma, rho_ic
+	 * In variables: p_ic, gamma, rho_ic
 	 * Out variables: E
 	 */
 	void iniEn()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
 		{
-			E(jCells) = p_ic(jCells) / ((options->gammma - 1.0) * rho_ic(jCells));
+			E(jCells) = p_ic(jCells) / ((options->gamma - 1.0) * rho_ic(jCells));
 		});
 	}
 	
@@ -328,15 +328,15 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
 		{
 			int jId = jCells;
-			double sum_1499973774 = 0.0;
+			double sum_921435945 = 0.0;
 			auto nodesOfCellJ = mesh->getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 			{
 				int rId = nodesOfCellJ[rNodesOfCellJ];
 				int rNodes = rId;
-				sum_1499973774 = sum_1499973774 + (MathFunctions::dot(C(jCells,rNodesOfCellJ), X(rNodes)));
+				sum_921435945 = sum_921435945 + (MathFunctions::dot(C(jCells,rNodesOfCellJ), X(rNodes)));
 			}
-			V(jCells) = 0.5 * sum_1499973774;
+			V(jCells) = 0.5 * sum_921435945;
 		});
 	}
 	
@@ -355,27 +355,27 @@ private:
 	
 	/**
 	 * Job ComputeEOSp @4.0
-	 * In variables: gammma, rho, e
+	 * In variables: gamma, rho, e
 	 * Out variables: p
 	 */
 	void computeEOSp()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
 		{
-			p(jCells) = (options->gammma - 1.0) * rho(jCells) * e(jCells);
+			p(jCells) = (options->gamma - 1.0) * rho(jCells) * e(jCells);
 		});
 	}
 	
 	/**
 	 * Job ComputeEOSc @5.0
-	 * In variables: gammma, p, rho
+	 * In variables: gamma, p, rho
 	 * Out variables: c
 	 */
 	void computeEOSc()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
 		{
-			c(jCells) = MathFunctions::sqrt(options->gammma * p(jCells) / rho(jCells));
+			c(jCells) = MathFunctions::sqrt(options->gamma * p(jCells) / rho(jCells));
 		});
 	}
 	
@@ -389,13 +389,13 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
 		{
 			int jId = jCells;
-			double sum_1996771990 = 0.0;
+			double sum_1994251621 = 0.0;
 			auto nodesOfCellJ = mesh->getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 			{
-				sum_1996771990 = sum_1996771990 + (l(jCells,rNodesOfCellJ));
+				sum_1994251621 = sum_1994251621 + (l(jCells,rNodesOfCellJ));
 			}
-			deltatj(jCells) = 2.0 * V(jCells) / (c(jCells) * sum_1996771990);
+			deltatj(jCells) = 2.0 * V(jCells) / (c(jCells) * sum_1994251621);
 		});
 	}
 	
@@ -427,16 +427,16 @@ private:
 		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int rNodes)
 		{
 			int rId = rNodes;
-			Real2x2 sum2072109202 = Real2x2(Real2(0.0, 0.0), Real2(0.0, 0.0));
+			Real2x2 sum2074629571 = Real2x2(Real2(0.0, 0.0), Real2(0.0, 0.0));
 			auto cellsOfNodeR = mesh->getCellsOfNode(rId);
 			for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.size(); jCellsOfNodeR++)
 			{
 				int jId = cellsOfNodeR[jCellsOfNodeR];
 				int jCells = jId;
 				int rNodesOfCellJ = Utils::indexOf(mesh->getNodesOfCell(jId),rId);
-				sum2072109202 = sum2072109202 + (Ajr(jCells,rNodesOfCellJ));
+				sum2074629571 = sum2074629571 + (Ajr(jCells,rNodesOfCellJ));
 			}
-			Ar(rNodes) = sum2072109202;
+			Ar(rNodes) = sum2074629571;
 		});
 	}
 	
@@ -450,16 +450,16 @@ private:
 		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int rNodes)
 		{
 			int rId = rNodes;
-			Real2 sum390423926 = Real2(0.0, 0.0);
+			Real2 sum392944295 = Real2(0.0, 0.0);
 			auto cellsOfNodeR = mesh->getCellsOfNode(rId);
 			for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.size(); jCellsOfNodeR++)
 			{
 				int jId = cellsOfNodeR[jCellsOfNodeR];
 				int jCells = jId;
 				int rNodesOfCellJ = Utils::indexOf(mesh->getNodesOfCell(jId),rId);
-				sum390423926 = sum390423926 + (p(jCells) * C(jCells,rNodesOfCellJ) + Glace2dFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), uj(jCells)));
+				sum392944295 = sum392944295 + (p(jCells) * C(jCells,rNodesOfCellJ) + Glace2dFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), uj(jCells)));
 			}
-			b(rNodes) = sum390423926;
+			b(rNodes) = sum392944295;
 		});
 	}
 	
@@ -470,13 +470,13 @@ private:
 	 */
 	void computeDt()
 	{
-		double reduceMin_857127761 = numeric_limits<double>::max();
-		Kokkos::Min<double> reducer(reduceMin_857127761);
-		Kokkos::parallel_reduce("ReductionreduceMin_857127761", nbCells, KOKKOS_LAMBDA(const int& jCells, double& x)
+		double reduceMin_546501 = numeric_limits<double>::max();
+		Kokkos::Min<double> reducer(reduceMin_546501);
+		Kokkos::parallel_reduce("ReductionreduceMin_546501", nbCells, KOKKOS_LAMBDA(const int& jCells, double& x)
 		{
 			reducer.join(x, deltatj(jCells));
 		}, reducer);
-		deltat_nplus1 = options->option_deltat_cfl * reduceMin_857127761;
+		deltat_nplus1 = options->option_deltat_cfl * reduceMin_546501;
 	}
 	
 	/**
@@ -658,13 +658,13 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
 		{
 			int jId = jCells;
-			Real2 sum_2005118310 = Real2(0.0, 0.0);
+			Real2 sum_2002597941 = Real2(0.0, 0.0);
 			auto nodesOfCellJ = mesh->getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 			{
-				sum_2005118310 = sum_2005118310 + (F(jCells,rNodesOfCellJ));
+				sum_2002597941 = sum_2002597941 + (F(jCells,rNodesOfCellJ));
 			}
-			uj_nplus1(jCells) = uj(jCells) - (deltat / m(jCells)) * sum_2005118310;
+			uj_nplus1(jCells) = uj(jCells) - (deltat / m(jCells)) * sum_2002597941;
 		});
 	}
 	
@@ -678,15 +678,15 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
 		{
 			int jId = jCells;
-			double sum_255159678 = 0.0;
+			double sum323378151 = 0.0;
 			auto nodesOfCellJ = mesh->getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 			{
 				int rId = nodesOfCellJ[rNodesOfCellJ];
 				int rNodes = rId;
-				sum_255159678 = sum_255159678 + (MathFunctions::dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
+				sum323378151 = sum323378151 + (MathFunctions::dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
 			}
-			E_nplus1(jCells) = E(jCells) - (deltat / m(jCells)) * sum_255159678;
+			E_nplus1(jCells) = E(jCells) - (deltat / m(jCells)) * sum323378151;
 		});
 	}
 	
@@ -727,9 +727,6 @@ public:
 		iniM(); // @-1.0
 		iniEn(); // @-1.0
 
-		map<string, Kokkos::View<double*>> cellVariables;
-		map<string, Kokkos::View<double*>> nodeVariables;
-		cellVariables.insert(pair<string,Kokkos::View<double*>>("Density", rho));
 		int iteration = 0;
 		while (t < options->option_stoptime && iteration < options->option_max_iterations)
 		{
@@ -761,8 +758,6 @@ public:
 			computeEn(); // @11.0
 			copy_uj_nplus1_to_uj(); // @12.0
 			copy_E_nplus1_to_E(); // @12.0
-			auto quads = mesh->getGeometricMesh()->getQuads();
-			writer.writeFile(iteration, X, quads, cellVariables, nodeVariables);
 		}
 		std::cout << "Fin de l'exécution du module Glace2d" << std::endl;
 	}	

@@ -6,15 +6,18 @@ import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceInternalReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import fr.cea.nabla.ir.transformers.TagPersistentVariables
-import java.util.HashMap
-import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext
 import java.util.ArrayList
+import java.util.HashMap
+import org.apache.log4j.Logger
+import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext
 
-abstract class Ir2IrWorkflowComponent extends NablaWorkflowComponent  
+abstract class Ir2IrWorkflowComponent extends IRWriterComponent  
 {
+	static val logger = Logger.getLogger(Ir2CodeWorkflowComponent);
+
 	override internalInvoke(IWorkflowContext ctx) 
 	{
-		println('\tIR -> IR: ' + step.description)
+		logger.info('IR -> IR: ' + step.description)
 		val ok = step.transform(model)
 		createAndSaveResource
 		if (!ok) 
@@ -30,7 +33,7 @@ class TagPersistentVariablesWorkflowComponent extends Ir2IrWorkflowComponent
 	
 	override getStep() { new TagPersistentVariables(outVars) }
 	
-	def addOutputVar(OutVar it) { outVars.put(nabla, output) }
+	def addOutVar(OutVar it) { outVars.put(nabla, output) }
 }
 
 class ReplaceUtf8CharsWorkflowComponent extends Ir2IrWorkflowComponent

@@ -6,11 +6,6 @@
     <semanticResources>src/whiteheat/Whiteheat.beforeReplaceInternalReductions.java.nablair</semanticResources>
     <semanticResources>src/whiteheat/Whiteheat.beforeReplaceUtf8Chars.java.nablair</semanticResources>
     <semanticResources>src/whiteheat/Whiteheat.java.nablair</semanticResources>
-    <semanticResources>src/test/Test.beforeFillJobHLTs.java.nablair</semanticResources>
-    <semanticResources>src/test/Test.beforeOptimizeConnectivities.java.nablair</semanticResources>
-    <semanticResources>src/test/Test.beforeReplaceInternalReductions.java.nablair</semanticResources>
-    <semanticResources>src/test/Test.beforeReplaceUtf8Chars.java.nablair</semanticResources>
-    <semanticResources>src/test/Test.java.nablair</semanticResources>
     <semanticResources>src/test/test.mwe2</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_ltfvkFn-EemMiuROhtI41A">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']"/>

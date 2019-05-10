@@ -20,4 +20,10 @@
 	       name="nabla">
     </component>
   </extension>
+  <extension
+        point="org.eclipse.sirius.resourceStrategy">
+     <resourceStrategy
+           class="fr.cea.nabla.sirius.NablaResourceStrategy">
+     </resourceStrategy>
+  </extension>
 </plugin>

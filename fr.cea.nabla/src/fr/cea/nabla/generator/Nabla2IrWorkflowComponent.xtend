@@ -8,7 +8,7 @@ import org.eclipse.emf.mwe2.runtime.Mandatory
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext
 import org.eclipse.xtend.lib.annotations.Accessors
 
-class Nabla2IrWorkflowComponent extends NablaWorkflowComponent  
+class Nabla2IrWorkflowComponent extends IRWriterComponent  
 {
 	@Accessors(PUBLIC_GETTER) String nablaModelPath
 	val nabla2ir = injector.getInstance(Nabla2Ir)

@@ -20,7 +20,7 @@ public final class Glace2d
 		public final int Z_EDGE_ELEMS = 1;
 		public final double option_stoptime = 0.2;
 		public final int option_max_iterations = 20000;
-		public final double gammma = 1.4;
+		public final double gamma = 1.4;
 		public final double option_x_interface = 0.5;
 		public final double option_deltat_ini = 1.0E-5;
 		public final double option_deltat_cfl = 0.4;
@@ -297,14 +297,14 @@ public final class Glace2d
 	
 	/**
 	 * Job IniEn @-1.0
-	 * In variables: p_ic, gammma, rho_ic
+	 * In variables: p_ic, gamma, rho_ic
 	 * Out variables: E
 	 */
 	private void iniEn() 
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			E[jCells] = p_ic[jCells] / ((options.gammma - 1.0) * rho_ic[jCells]);
+			E[jCells] = p_ic[jCells] / ((options.gamma - 1.0) * rho_ic[jCells]);
 		});
 	}		
 	
@@ -398,27 +398,27 @@ public final class Glace2d
 	
 	/**
 	 * Job ComputeEOSp @4.0
-	 * In variables: gammma, rho, e
+	 * In variables: gamma, rho, e
 	 * Out variables: p
 	 */
 	private void computeEOSp() 
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			p[jCells] = (options.gammma - 1.0) * rho[jCells] * e[jCells];
+			p[jCells] = (options.gamma - 1.0) * rho[jCells] * e[jCells];
 		});
 	}		
 	
 	/**
 	 * Job ComputeEOSc @5.0
-	 * In variables: gammma, p, rho
+	 * In variables: gamma, p, rho
 	 * Out variables: c
 	 */
 	private void computeEOSc() 
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			c[jCells] = MathFunctions.sqrt(options.gammma * p[jCells] / rho[jCells]);
+			c[jCells] = MathFunctions.sqrt(options.gamma * p[jCells] / rho[jCells]);
 		});
 	}		
 	
@@ -768,9 +768,6 @@ public final class Glace2d
 		iniM(); // @-1.0
 		iniEn(); // @-1.0
 
-		HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-		HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-		cellVariables.put("Density", rho);
 		int iteration = 0;
 		while (t < options.option_stoptime && iteration < options.option_max_iterations)
 		{
@@ -802,7 +799,6 @@ public final class Glace2d
 			computeEn(); // @11.0
 			copy_uj_nplus1_to_uj(); // @12.0
 			copy_E_nplus1_to_E(); // @12.0
-			writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
 		}
 		System.out.println("Fin de l'exécution du module Glace2d");
 	}

@@ -7,4 +7,10 @@
 			class = "fr.cea.nabla.nabla.NablaPackage"
 			genModel = "model/generated/Nabla.genmodel" />
 	</extension>
+	<extension point="org.eclipse.emf.ecore.generated_package">
+		<package 
+			uri = "http://www.cea.fr/nabla/Naw"
+			class = "fr.cea.nabla.naw.NawPackage"
+			genModel = "model/generated/Naw.genmodel" />
+	</extension>
 </plugin>

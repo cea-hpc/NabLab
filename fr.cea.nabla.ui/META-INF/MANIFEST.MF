@@ -24,11 +24,14 @@ Require-Bundle: fr.cea.nabla,
  org.eclipse.core.runtime,
  org.eclipse.sirius,
  org.eclipse.sirius.diagram,
- org.eclipse.sirius.diagram.ui
+ org.eclipse.sirius.diagram.ui,
+ org.eclipse.emf.mwe2.language
 Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: fr.cea.nabla.ui.contentassist,
+Export-Package: fr.cea.nabla.ui,
+ fr.cea.nabla.ui.contentassist,
+ fr.cea.nabla.ui.internal,
  fr.cea.nabla.ui.quickfix,
- fr.cea.nabla.ui.internal
+ fr.cea.nabla.ui.views
 Bundle-Activator: fr.cea.nabla.ui.internal.NablaActivator
 Bundle-ClassPath: .

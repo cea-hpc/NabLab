@@ -79,15 +79,15 @@ IniIc: ∀j∈cells(), if (center{j}.x < option_x_interface) {
   p_ic{j}=option_p_ini_zd;
 }
 
-ComputeCjrIc: ∀j∈cells(), ∀r∈nodesOfCell(j),
-	C_ic{j,r} = 0.5 * perp(X{►(r)}^{n=0} - X{◄(r)}^{n=0});
+ComputeCjrIc: ∀j∈cells(), ∀r∈nodesOfCell(j), 
+	C_ic{j,r} = 0.5 * perp(X{r+1}^{n=0} - X{r-1}^{n=0});
 IniVIc: ∀j∈cells(), V_ic{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C_ic{j,r}, X{r}^{n=0}));
 IniM: ∀j∈cells(), m{j} = ρ_ic{j} * V_ic{j}; // m est constant
 
 // *************************************************************
 // * Calcul des C{j,r} et des variables qui en découlent
 // *************************************************************
-ComputeCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), C{j,r} = 0.5 * perp(X{►(r)} - X{◄(r)});
+ComputeCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), C{j,r} = 0.5 * perp(X{r+1} - X{r-1});
 ComputeLjr: ∀j∈cells(), ∀r∈nodesOfCell(j), l{j,r} = norm(C{j,r});
 Computeδtj: ∀j∈cells(), δtj{j} = 2.0 * V{j} / (c{j} * ∑{r∈nodesOfCell(j)}(l{j,r}));
 

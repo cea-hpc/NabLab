@@ -46,7 +46,7 @@ import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealXCompactConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
-import fr.cea.nabla.nabla.SingleSpaceIterator
+import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -62,21 +62,19 @@ class LatexLabelServices
 	static def dispatch String getLatex(VarGroupDeclaration it) { type.literal + ' ' + variables.map[x|x.name.pu].join(', ') }
 	static def dispatch String getLatex(InstructionBlock it) { '...' }
 	static def dispatch String getLatex(Affectation it) { varRef?.latex + ' = ' + expression?.latex }
-	static def dispatch String getLatex(Loop it) { '\\forall {' + iterator.latex + '}, \\ ' + body.latex }
+	static def dispatch String getLatex(Loop it) { '\\forall {' + range.latex + '}, \\ ' + body.latex }
 	static def dispatch String getLatex(If it) { 'if (' + condition.latex + ')'}
 	
 	// ITERATEURS
-	static def dispatch String getLatex(RangeSpaceIterator it) { name.pu + '\\in ' + call.latex }
-	static def dispatch String getLatex(SingleSpaceIterator it) { name.pu + '=' + call.latex }
+	static def dispatch String getLatex(RangeSpaceIterator it) { name.pu + '\\in ' + container.latex }
+	static def dispatch String getLatex(SingletonSpaceIterator it) { name.pu + '=' + container.latex }
 	static def dispatch String getLatex(ConnectivityCall it) { connectivity.name.pu + '(' + args.map[latex].join(',') + ')' }
 	static def dispatch String getLatex(SpaceIteratorRef it) 
 	{ 
-		if (next) target.displayName.pu + '+1'
-		else if (prev) target.displayName.pu + '-1'
-		else target.displayName.pu
+		if (inc > 0) target.name.pu + '+' + inc
+		else if (dec > 0) target.name.pu + dec
+		else target.name.pu
 	}
-	static private def dispatch getDisplayName(RangeSpaceIterator it) { name }
-	static private def dispatch getDisplayName(SingleSpaceIterator it) { call.latex }
 
 	// EXPRESSIONS
 	static def dispatch String getLatex(ContractedIf it) { condition.latex + ' ? ' + then.latex + ' : ' + ^else.latex }
@@ -105,25 +103,29 @@ class LatexLabelServices
 	static def dispatch String getLatex(RealXCompactConstant it) { type.literal + '(' + value + ')' }
 	static def dispatch String getLatex(MinConstant it) { '-\u221E' }
 	static def dispatch String getLatex(MaxConstant it) { '\u221E' }
+	
 	static def dispatch String getLatex(FunctionCall it) 
 	{ 
 		if (function.name == 'norm')
 			'\\|' + args.map[latex].join(',') + '\\|'
 		else
 			function.name.pu + '\\left(' + args.map[latex].join(',') + '\\right)' 
-	}	
+	}
+		
 	static def dispatch String getLatex(ReductionCall it) 
 	{ 
 		if (arg instanceof ReductionCall || arg instanceof FunctionCall)
-			reduction.name.pu + '_{' + iterator.latex + '}' + arg.latex
+			reduction.name.pu + '_{' + range.latex + '}' + arg.latex
 		else
-			reduction.name.pu + '_{' + iterator.latex + '}' + '\\left(' + arg.latex + '\\right)'
+			reduction.name.pu + '_{' + range.latex + '}' + '\\left(' + arg.latex + '\\right)'
 	}
+	
 	static def dispatch String getLatex(VarRef it)
 	{
 		var label = variable.name.pu
 		if (!spaceIterators.empty) label += '_{' + spaceIterators.map[x | x.latex].join(',') + '}'
 		if (timeIterator !== null) label += '^{' + timeIterator.timeIteratorLabel + '}'
+		else label += '^{n}'
 		for (f : fields) label += '.' + f
 		return label
 	}

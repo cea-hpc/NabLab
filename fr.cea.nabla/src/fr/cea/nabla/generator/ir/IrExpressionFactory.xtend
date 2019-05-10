@@ -226,7 +226,8 @@ class IrExpressionFactory
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrExpressionType
 			variable = e.variable.toIrVariable(e.timeSuffix)
-			e.spaceIterators.forEach[x | iterators += x.toIrIteratorRef]
+			for (i : 0..<e.spaceIterators.size)
+				iterators += e.spaceIterators.get(i).toIrVarRefIteratorRef(i)
 			e.fields.forEach[x | fields += x]
 		]
 	}

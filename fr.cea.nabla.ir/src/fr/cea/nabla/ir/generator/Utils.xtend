@@ -17,17 +17,15 @@ import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
+import fr.cea.nabla.ir.ir.ReductionInstruction
 import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class Utils 
 {
-	def prev(String s) { 'prev' + s.toFirstUpper }
-	def next(String s) { 'next' + s.toFirstUpper }
 	def getNbElems(Connectivity it) { 'nb' + name.toFirstUpper}
 
 	def getComment(Job it)
@@ -56,15 +54,12 @@ class Utils
 	def boolean isTopLevelLoop(EObject it)
 	{
 		if (eContainer === null) false
-		else if (eContainer instanceof Loop) false
-		else if (eContainer instanceof Job) true
-		else eContainer.topLevelLoop	
-	}
-	
-	def prefix(IteratorRef it, String name)
-	{
-		if (prev) name.prev 
-		else if (next) name.next
-		else name
+		else switch eContainer
+		{
+			Loop : false
+			ReductionInstruction : false
+			Job : true
+			default : eContainer.topLevelLoop
+		}
 	}
 }

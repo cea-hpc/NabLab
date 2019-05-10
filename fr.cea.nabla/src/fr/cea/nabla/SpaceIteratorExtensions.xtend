@@ -6,6 +6,6 @@ class SpaceIteratorExtensions
 {
 	def getType(SpaceIterator it)
 	{
-		call.connectivity.returnType.type
+		container.connectivity.returnType.type
 	}
 }

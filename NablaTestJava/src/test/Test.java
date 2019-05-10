@@ -15,8 +15,8 @@ public final class Test
 	public final static class Options
 	{
 		public final double LENGTH = 1.0;
-		public final int X_EDGE_ELEMS = 8;
-		public final int Y_EDGE_ELEMS = 8;
+		public final int X_EDGE_ELEMS = 10;
+		public final int Y_EDGE_ELEMS = 10;
 		public final int Z_EDGE_ELEMS = 1;
 	}
 	
@@ -24,7 +24,7 @@ public final class Test
 
 	// Mesh
 	private final NumericMesh2D mesh;
-	private final int nbNodes, nbCells, nbNodesOfCell;
+	private final int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode;
 	private final VtkFileWriter2D writer;
 
 	// Global Variables
@@ -43,6 +43,7 @@ public final class Test
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbNodesOfCell = NumericMesh2D.MaxNbNodesOfCell;
+		nbCellsOfNode = NumericMesh2D.MaxNbCellsOfNode;
 
 
 		// Arrays allocation
@@ -60,24 +61,31 @@ public final class Test
 	}
 	
 	/**
-	 * Job B @-1.0
-	 * In variables: Cjr
-	 * Out variables: total
+	 * Job IniCjrBad @-1.0
+	 * In variables: 
+	 * Out variables: Cjr
 	 */
-	private void b() 
+	private void iniCjrBad() 
 	{
-		double reduceMin_2033191997 = IntStream.range(0, nbCells).boxed().parallel().reduce(
-			Double.MAX_VALUE, 
-			(r, jCells) -> MathFunctions.reduceMin(r, reduceMin77640739 + 4.0),
-			(r1, r2) -> MathFunctions.reduceMin(r1, r2)
-		);
-		total = reduceMin_2033191997 + 3.0;
+		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
+		{
+			int rId = rNodes;		
+			int rPlus1Id = rNodes;		
+			int[] cellsOfNodeRPlus1 = mesh.getCellsOfNode(rPlus1Id);
+			for (int jCellsOfNodeRPlus1=0; jCellsOfNodeRPlus1<cellsOfNodeRPlus1.length; jCellsOfNodeRPlus1++)
+			{
+				int jId = cellsOfNodeRPlus1[jCellsOfNodeRPlus1];		
+				int jCells = jId;
+				int rNodesOfCellJCells = Utils.indexOf(mesh.getNodesOfCell(jId), rId);
+				Cjr[jCells][rNodesOfCellJCells] = 1.0;
+			}
+		});
 	}		
 
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module Test");
-		b(); // @-1.0
+		iniCjrBad(); // @-1.0
 		System.out.println("Fin de l'exécution du module Test");
 	}
 

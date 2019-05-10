@@ -29,7 +29,7 @@ import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
-import fr.cea.nabla.nabla.SingleSpaceIterator
+import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.Var
@@ -45,13 +45,6 @@ class BasicValidator  extends AbstractNablaValidator
 	
 	@Inject extension VarExtensions
 	@Inject extension SpaceIteratorExtensions
-	
-	@Check
-	def checkNoInnerReductionCall(ReductionCall it)
-	{
-		if (arg instanceof ReductionCall || arg.eAllContents.exists[x|x instanceof ReductionCall])
-			error('Reduction must not contains reduction', NablaPackage.Literals.REDUCTION_CALL__ARG)
-	}
 	
 	@Check
 	def checkCoordVar(NablaModule it)
@@ -153,22 +146,22 @@ class BasicValidator  extends AbstractNablaValidator
 	@Check
 	def checkArgs(RangeSpaceIterator it)
 	{
-		if (!call.connectivity.returnType.multiple)
-			error('Connectivity return type must be a collection', NablaPackage.Literals::SPACE_ITERATOR__CALL)
+		if (!container.connectivity.returnType.multiple)
+			error('Connectivity return type must be a collection', NablaPackage.Literals::SPACE_ITERATOR__CONTAINER)
 	}
 
 	@Check
-	def checkArgs(SingleSpaceIterator it)
+	def checkArgs(SingletonSpaceIterator it)
 	{
-		if (call.connectivity.returnType.multiple)
-			error('Connectivity return type must be a singleton', NablaPackage.Literals::SPACE_ITERATOR__CALL)
+		if (container.connectivity.returnType.multiple)
+			error('Connectivity return type must be a singleton', NablaPackage.Literals::SPACE_ITERATOR__CONTAINER)
 	}
 
 	@Check
-	def checkPrevAndNextValidity(SpaceIteratorRef it)
+	def checkIncAndDecValidity(SpaceIteratorRef it)
 	{
-		if ((prev || next) && target !== null && !(target instanceof RangeSpaceIterator))
-			error('\u25C4 and \u25BA are valid only on a range', NablaPackage.Literals::SPACE_ITERATOR_REF__TARGET)
+		if ((inc>0 || dec>0) && target !== null && target instanceof SingletonSpaceIterator)
+			error('Shift only valid on a range', NablaPackage.Literals::SPACE_ITERATOR_REF__TARGET)
 	}
 
 	@Check

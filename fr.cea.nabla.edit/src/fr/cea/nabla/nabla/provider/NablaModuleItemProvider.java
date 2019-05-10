@@ -243,7 +243,7 @@ public class NablaModuleItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createSingleSpaceIterator()));
+				 NablaFactory.eINSTANCE.createSingletonSpaceIterator()));
 
 		newChildDescriptors.add
 			(createChildParameter

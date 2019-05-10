@@ -158,8 +158,9 @@ class Ir2Kokkos extends IrGenerator
 				Kokkos::hwloc::get_available_cores_per_numa() * Kokkos::hwloc::get_available_threads_per_core()));
 			
 			std::cout << "Début de l'exécution du module «name»" << std::endl;
-			«jobs.filter[x | x.at < 0].jobCallsContent»
-	
+			«jobs.filter[x | x.at < 0].jobCallsContent»	
+			«IF jobs.exists[at > 0]»
+
 			«val variablesToPersist = persistentArrayVariables»
 			«IF !variablesToPersist.empty»
 			map<string, Kokkos::View<double*>> cellVariables;
@@ -179,6 +180,7 @@ class Ir2Kokkos extends IrGenerator
 				writer.writeFile(iteration, X, quads, cellVariables, nodeVariables);
 				«ENDIF»
 			}
+			«ENDIF»
 			std::cout << "Fin de l'exécution du module «name»" << std::endl;
 		}	
 	};	

@@ -14,20 +14,21 @@
 package fr.cea.nabla.ir.generator.java
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.generator.IndexHelper
-import fr.cea.nabla.ir.generator.IndexHelper.Index
-import fr.cea.nabla.ir.generator.IndexHelper.IndexFactory
+import fr.cea.nabla.ir.generator.IteratorExtensions
+import fr.cea.nabla.ir.generator.IteratorRefExtensions
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
+import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Loop
-import fr.cea.nabla.ir.ir.ReductionCall
+import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.ScalarVarDefinition
-import java.util.List
+import fr.cea.nabla.ir.ir.VarRefIteratorRef
 
 class InstructionContentProvider 
 {
@@ -35,8 +36,9 @@ class InstructionContentProvider
 	@Inject extension Ir2JavaUtils
 	@Inject extension ExpressionContentProvider
 	@Inject extension VariableExtensions
-	@Inject extension IndexHelper
-
+	@Inject extension IteratorExtensions
+	@Inject extension IteratorRefExtensions
+	
 	def dispatch getInnerContent(Instruction it) { content }
 	def dispatch getInnerContent(InstructionBlock it)
 	'''
@@ -51,10 +53,21 @@ class InstructionContentProvider
 	 */
 	def dispatch CharSequence getContent(ReductionInstruction it) 
 	'''
-		«variable.javaType» «variable.name» = IntStream.range(0, «reduction.iterator.call.connectivity.nbElems»).boxed().parallel().reduce(
-			«variable.defaultValue.content», 
-			(r, «IndexFactory::createIndex(reduction.iterator).label») -> «reduction.javaName»(r, «reduction.arg.content»),
+		«result.javaType» «result.name» = IntStream.range(0, «range.container.connectivity.nbElems»).boxed().parallel().reduce(
+			«result.defaultValue.content», 
+			«IF innerReductions.empty»
+			(r, «range.indexName») -> «reduction.javaName»(r, «arg.content»),
 			(r1, r2) -> «reduction.javaName»(r1, r2)
+			«ELSE»
+			(r, «range.indexName») -> {
+				«defineIndices»
+				«FOR innerReduction : innerReductions»
+				«innerReduction.content»
+				«ENDFOR»
+				return «reduction.javaName»(r, «arg.content»);
+			},
+			(r1, r2) -> «reduction.javaName»(r1, r2)
+			«ENDIF»
 		);
 	'''
 
@@ -83,10 +96,8 @@ class InstructionContentProvider
 
 	def dispatch CharSequence getContent(Loop it) 
 	{
-		if (isTopLevelLoop(it)) 
-			iterator.addParallelLoop(it)
-		else
-			iterator.addSequentialLoop(it)
+		if (topLevelLoop) parallelContent
+		else sequentialContent
 	}
 	
 	def dispatch CharSequence getContent(If it) 
@@ -99,56 +110,57 @@ class InstructionContentProvider
 		«ENDIF»
 	'''
 	
-	private def addParallelLoop(Iterator it, Loop l)
+	private def getParallelContent(Loop it)
 	'''
-		«val itIndex = IndexFactory::createIndex(it)»
-		«IF !call.connectivity.indexEqualId»int[] «itIndex.containerName» = «call.accessor»;«ENDIF»
-		IntStream.range(0, «call.connectivity.nbElems»).parallel().forEach(«itIndex.label» -> 
+		«IF !range.container.connectivity.indexEqualId»int[] «range.containerName» = «range.accessor»;«ENDIF»
+		IntStream.range(0, «range.container.connectivity.nbElems»).parallel().forEach(«range.indexName» -> 
 		{
-			«IF needIdFor(l)»int «name»Id = «indexToId(itIndex)»;«ENDIF»
-			«FOR index : getRequiredIndexes(l)»
-			int «index.label» = «idToIndex(index, name+'Id')»;
-			«ENDFOR»
-			«l.body.innerContent»
+			«defineIndices»
+			«body.innerContent»
 		});
 	'''
 
-	private def addSequentialLoop(Iterator it, Loop l)
+	private def getSequentialContent(Loop it)
 	'''
-		«val itIndex = IndexFactory::createIndex(it)»
-		int[] «itIndex.containerName» = «call.accessor»;
-		for (int «itIndex.label»=0; «itIndex.label»<«itIndex.containerName».length; «itIndex.label»++)
+		int[] «range.containerName» = «range.accessor»;
+		for (int «range.indexName»=0; «range.indexName»<«range.containerName».length; «range.indexName»++)
 		{
-			«IF needPrev(l)»int «prev(itIndex.label)» = («itIndex.label»-1+«itIndex.containerName».length)%«itIndex.containerName».length;«ENDIF»
-			«IF needNext(l)»int «next(itIndex.label)» = («itIndex.label»+1+«itIndex.containerName».length)%«itIndex.containerName».length;«ENDIF»
-			«IF needIdFor(l)»
-				«val idName = name + 'Id'»
-				int «idName» = «indexToId(itIndex)»;
-				«l.dependantIterators.dependantIteratorsContent»
-				«IF needPrev(l)»int «prev(idName)» = «indexToId(itIndex, 'prev')»;«ENDIF»
-				«IF needNext(l)»int «next(idName)» = «indexToId(itIndex, 'next')»;«ENDIF»
-				«FOR index : getRequiredIndexes(l)»
-					«val cIdName = index.iterator.name + 'Id'»
-					«IF !(index.connectivity.indexEqualId)»«index.idToIndexArray»«ENDIF»
-					int «index.label» = «idToIndex(index, cIdName)»;
-					«IF needPrev(l)»int «prev(index.label)» = «idToIndex(index, prev(cIdName))»;«ENDIF»
-					«IF needNext(l)»int «next(index.label)» = «idToIndex(index, next(cIdName))»;«ENDIF»
-				«ENDFOR»
-			«ENDIF»
-			«l.body.innerContent»
+			«defineIndices»
+			«body.innerContent»
 		}
 	'''
 	
-	private def idToIndexArray(Index it)
-	'''int[] «containerName» = mesh.get«connectivity.name.toFirstUpper()»(«connectivityArgIterator»Id);'''
-	
-	private def getJavaName(ReductionCall it) '''«reduction.provider»Functions.«reduction.name»'''
-	private def idToIndex(Index i, String idName) { idToIndex(i, idName, '.') }	
-	
-	private def getDependantIteratorsContent(List<Iterator> iterators)
+	/** Define all needed ids and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
+	private def defineIndices(IterableInstruction it)
 	'''
-	«FOR i : iterators»
-	int «i.name»Id = «i.call.accessor»;
-	«ENDFOR»
+		«FOR neededId : range.neededIds»
+			int «neededId.id» = «neededId.indexToId»;
+		«ENDFOR»
+		«FOR neededIndex : range.indicesToDefined»
+			int «neededIndex.indexName» = «neededIndex.idToIndex»;
+		«ENDFOR»
+		«FOR singleton : singletons»
+			int «singleton.id» = «singleton.accessor»;
+			«FOR neededIndex : singleton.indicesToDefined»
+				int «neededIndex.indexName» = «neededIndex.idToIndex»;
+			«ENDFOR»
+		«ENDFOR»
 	'''
+	
+	private	def getIndexToId(IteratorRef it)
+	{
+		if (target.container.connectivity.indexEqualId || target.singleton) indexValue
+		else target.containerName + '[' + indexValue + ']'		
+	}
+	
+	private def getIdToIndex(VarRefIteratorRef it)
+	{
+		if (indexEqualId) id
+		else 'Utils.indexOf(' + accessor + ', ' + id + ')'
+	}
+	
+	def getAccessor(VarRefIteratorRef it) '''mesh.get«connectivity.name.toFirstUpper»(«connectivityArgs.map[id].join(', ')»)'''
+	def getAccessor(Iterator it)  '''mesh.get«container.connectivity.name.toFirstUpper»(«container.args.map[id].join(', ')»)'''
+
+	private def getJavaName(Reduction it) '''«provider»Functions.«name»'''
 }

@@ -37,18 +37,18 @@
     <genClasses ecoreClass="Nabla.ecore#//Instruction"/>
     <genClasses ecoreClass="Nabla.ecore#//SpaceIterator">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SpaceIterator/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SpaceIterator/call"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SpaceIterator/container"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//RangeSpaceIterator"/>
-    <genClasses ecoreClass="Nabla.ecore#//SingleSpaceIterator"/>
+    <genClasses ecoreClass="Nabla.ecore#//SingletonSpaceIterator"/>
     <genClasses ecoreClass="Nabla.ecore#//ConnectivityCall">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//ConnectivityCall/connectivity"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ConnectivityCall/args"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//SpaceIteratorRef">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SpaceIteratorRef/prev"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SpaceIteratorRef/next"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//SpaceIteratorRef/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SpaceIteratorRef/inc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SpaceIteratorRef/dec"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//ScalarVarDefinition">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//ScalarVarDefinition/const"/>
@@ -118,8 +118,8 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Affectation/expression"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Loop">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Loop/iterator"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Loop/dependantIterators"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Loop/range"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Loop/singletons"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Loop/body"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//If">
@@ -215,8 +215,8 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//ReductionCall">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/reduction"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/iterator"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/dependantIterators"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/range"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/singletons"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/arg"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//InitTimeIterator"/>

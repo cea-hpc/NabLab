@@ -40,17 +40,15 @@ Instruction:
 	VarGroupDeclaration | // only scalar variables (ScalarVar type)
 	{InstructionBlock} '{' instructions+=Instruction+ '}' |
 	{Affectation} varRef=VarRef '=' expression=Expression ';' |
-	{Loop} '\u2200' iterator=RangeSpaceIterator (',' dependantIterators+=SingleSpaceIterator)* ',' body=Instruction |
+	{Loop} '\u2200' range=RangeSpaceIterator (',' singletons+=SingletonSpaceIterator)* ',' body=Instruction |
 	{If} 'if' '(' condition=Expression ')' then=Instruction (=>'else' else=Instruction)?;
 
 /* ITERATEURS ********************************************/
-SpaceIterator: RangeSpaceIterator | SingleSpaceIterator;
-RangeSpaceIterator: name=ID '\u2208' call=ConnectivityCall; // must return a collection
-SingleSpaceIterator: name=ID '=' call=ConnectivityCall; // must return a singleton
+SpaceIterator: RangeSpaceIterator | SingletonSpaceIterator;
+RangeSpaceIterator: name=ID '\u2208' container=ConnectivityCall; // must return a collection
+SingletonSpaceIterator: name=ID '=' container=ConnectivityCall; // must return a singleton
 ConnectivityCall: connectivity=[Connectivity]  '('(args+=SpaceIteratorRef (',' args+=SpaceIteratorRef)*)?')';
-SpaceIteratorRef: 
-	((prev?='\u25C4'|next?='\u25BA') '(' target=[SpaceIterator] ')') | // only valid on a range
-	target=[SpaceIterator];
+SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?; // inc/dec only valid on a range
 
 /* VARIABLES ********************************************/
 ScalarVarDefinition: (const?='const')? type=BasicType variable=ScalarVar '=' defaultValue=Expression ';';
@@ -114,7 +112,7 @@ Atomic returns Expression:
 	{MinConstant} type=BasicType '.MinValue' |
 	{MaxConstant} type=BasicType '.MaxValue' |
 	{FunctionCall} function=[Function|QualifiedName] '(' (args+=Expression (',' args+=Expression)*)? ')' | 
-	{ReductionCall} reduction=[Reduction|QualifiedName] '{' iterator=RangeSpaceIterator (',' dependantIterators+=SingleSpaceIterator)* '}' '(' arg=Expression ')' |
+	{ReductionCall} reduction=[Reduction|QualifiedName] '{' range=RangeSpaceIterator (',' singletons+=SingletonSpaceIterator)* '}' '(' arg=Expression ')' |
 	VarRef;
 
 Real2Constant: '{' x=REAL ',' y=REAL '}';

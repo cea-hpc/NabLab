@@ -103,7 +103,7 @@ public class SpaceIteratorItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(NablaPackage.Literals.SPACE_ITERATOR__CALL);
+			childrenFeatures.add(NablaPackage.Literals.SPACE_ITERATOR__CONTAINER);
 		}
 		return childrenFeatures;
 	}
@@ -162,7 +162,7 @@ public class SpaceIteratorItemProvider
 			case NablaPackage.SPACE_ITERATOR__NAME:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
-			case NablaPackage.SPACE_ITERATOR__CALL:
+			case NablaPackage.SPACE_ITERATOR__CONTAINER:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -182,7 +182,7 @@ public class SpaceIteratorItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SPACE_ITERATOR__CALL,
+				(NablaPackage.Literals.SPACE_ITERATOR__CONTAINER,
 				 NablaFactory.eINSTANCE.createConnectivityCall()));
 	}
 

@@ -19,7 +19,6 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Reduction
-import fr.cea.nabla.ir.ir.ReductionCall
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.VarRef
 import java.util.ArrayList
@@ -51,7 +50,7 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 		{
 			// création des fonctions correspondantes
 			// 2 arguments IN : 1 du type de la collection, l'autre du type de retour (appel en chaine)
-			val reduc = reductionInstr.reduction.reduction
+			val reduc = reductionInstr.reduction
 
 			// Vérification du pattern attendu : une réduction et une affectation dans un bloc
 			if (! (reductionInstr.eContainer instanceof InstructionBlock)
@@ -60,19 +59,19 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 				
 			// creation du job de reduction avec l'operateur nabla
 			val reducOperatorRhs = handleReductionArg(m, reductionInstr)
-			val reducOperatorLhs = reductionInstr.variable
+			val reducOperatorLhs = reductionInstr.result
 			m.jobs += IrFactory::eINSTANCE.createInstructionJob =>
 			[
-				name = 'Reduce_' + reductionInstr.variable.name
-				instruction = createReductionLoop(reductionInstr.reduction.iterator, reductionInstr.reduction.dependantIterators, reducOperatorLhs, reducOperatorRhs, reduc.operator)
+				name = 'Reduce_' + reductionInstr.result.name
+				instruction = createReductionLoop(reductionInstr.range, reductionInstr.singletons, reducOperatorLhs, reducOperatorRhs, reduc.operator)
 			] 
 
 			// la variable de reduction doit devenir globale pour etre utilisée dans le job final
-			m.variables += reductionInstr.variable
+			m.variables += reductionInstr.result
 			
 			// nettoyage
 			EcoreUtil::delete(reductionInstr)			
-			if (!m.eAllContents.filter(ReductionCall).exists[x | x.reduction == reduc])
+			if (!m.eAllContents.filter(ReductionInstruction).exists[x | x.reduction == reduc])
 					EcoreUtil::delete(reduc, true)
 		}
 		return true
@@ -87,17 +86,17 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 	 */
 	private def handleReductionArg(IrModule m, ReductionInstruction reductionInstr)
 	{
-		if (reductionInstr.reduction.arg instanceof VarRef) 
-			return reductionInstr.reduction.arg as VarRef
+		if (reductionInstr.arg instanceof VarRef) 
+			return reductionInstr.arg as VarRef
 		else
 		{
-			val reduc = reductionInstr.reduction
-			
+			val reduc = reductionInstr
+					
 			val argValue = IrFactory::eINSTANCE.createArrayVariable =>
 			[
-				name = reductionInstr.variable.name + 'ArgValue'
-				type = reductionInstr.variable.type
-				dimensions += reductionInstr.reduction.iterator.call.connectivity
+				name = reductionInstr.result.name + 'ArgValue'
+				type = reductionInstr.result.type
+				dimensions += reductionInstr.range.container.connectivity
 			]
 			m.variables += argValue
 			
@@ -109,10 +108,10 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 			
 			val argJob = IrFactory::eINSTANCE.createInstructionJob =>
 			[
-				name = 'Compute_' + reductionInstr.variable.name + '_arg'
-				val dependantIterators = new ArrayList<Iterator>
-				reduc.dependantIterators.forEach[x | dependantIterators += EcoreUtil::copy(x)]
-				instruction = createReductionLoop(EcoreUtil::copy(reduc.iterator), dependantIterators, argValue, reduc.arg, '=')
+				name = 'Compute_' + reductionInstr.result.name + '_arg'
+				val singletons = new ArrayList<Iterator>
+				singletons.forEach[x | singletons += EcoreUtil::copy(x)]
+				instruction = createReductionLoop(EcoreUtil::copy(reduc.range), singletons, argValue, reduc.arg, '=')
 			]
 			m.jobs += argJob
 			

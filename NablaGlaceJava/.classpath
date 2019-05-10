@@ -10,6 +10,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.xtend.XTEND_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="lib/libjavanabla.jar"/>
+	<classpathentry kind="lib" path="/home/lelandaisb/workspaces/NabLab/fr.cea.nabla.javalib/lib/libjavanabla.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

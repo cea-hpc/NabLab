@@ -15,12 +15,11 @@
 package fr.cea.nabla.ir.generator.kokkos.defaultparallelism
 
 import fr.cea.nabla.ir.generator.kokkos.InstructionContentProvider
-import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Loop
 
 class DefaultInstructionContentProvider extends InstructionContentProvider
 {
-	override protected addParallelLoop(Iterator it, Loop l) 
+	override protected getParallelContent(Loop it) 
 	{
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}

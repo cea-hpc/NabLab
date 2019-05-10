@@ -14,11 +14,13 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
+import com.google.inject.ImplementedBy
 import com.google.inject.Inject
 import fr.cea.nabla.ir.generator.IndexHelper
 import fr.cea.nabla.ir.generator.IndexHelper.Index
 import fr.cea.nabla.ir.generator.IndexHelper.IndexFactory
 import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalInstructionContentProvider
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
@@ -30,6 +32,7 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.ScalarVarDefinition
 import java.util.List
 
+@ImplementedBy(HierarchicalInstructionContentProvider)
 abstract class InstructionContentProvider 
 {
 	@Inject extension Utils
@@ -57,8 +60,8 @@ abstract class InstructionContentProvider
 	'''
 		«val iter = reduction.iterator»
 		«val itIndex = IndexFactory::createIndex(iter)»
-		«IF !iter.call.connectivity.indexEqualId»int[] «itIndex.containerName» = «iter.call.accessor»;«ENDIF»
-		«variable.kokkosType» «variable.name» = «variable.defaultValue.content»;
+		«IF !iter.call.connectivity.indexEqualId»int[] «itIndex.containerName»(«iter.call.accessor»);«ENDIF»
+		«variable.kokkosType» «variable.name»(«variable.defaultValue.content»);
 		Kokkos::«reduction.kokkosName»<«variable.kokkosType»> reducer(«variable.name»);
 		Kokkos::parallel_reduce("Reduction«variable.name»", «iter.call.connectivity.nbElems», KOKKOS_LAMBDA(const int& «itIndex.label», «variable.kokkosType»& x)
 		{
@@ -69,7 +72,7 @@ abstract class InstructionContentProvider
 	def dispatch CharSequence getContent(ScalarVarDefinition it) 
 	'''
 		«FOR v : variables»
-		«v.kokkosType» «v.name»«IF v.defaultValue !== null» = «v.defaultValue.content»«ENDIF»;
+		«v.kokkosType» «v.name»«IF v.defaultValue !== null»(«v.defaultValue.content»)«ENDIF»;
 		«ENDFOR»
 	'''
 	
@@ -112,16 +115,16 @@ abstract class InstructionContentProvider
 			«IF needNext(l)»int «next(itIndex.label)» = («itIndex.label»+1+«itIndex.containerName».size())%«itIndex.containerName».size();«ENDIF»
 			«IF needIdFor(l)»
 				«val idName = name + 'Id'»
-				int «idName» = «indexToId(itIndex)»;
+				int «idName»(«indexToId(itIndex)»);
 				«l.dependantIterators.dependantIteratorsContent»
-				«IF needPrev(l)»int «prev(idName)» = «indexToId(itIndex, 'prev')»;«ENDIF»
-				«IF needNext(l)»int «next(idName)» = «indexToId(itIndex, 'next')»;«ENDIF»
+				«IF needPrev(l)»int «prev(idName)»(«indexToId(itIndex, 'prev')»);«ENDIF»
+				«IF needNext(l)»int «next(idName)»(«indexToId(itIndex, 'next')»);«ENDIF»
 				«FOR index : getRequiredIndexes(l)»
 					«val cIdName = index.iterator.name + 'Id'»
 					«IF !(index.connectivity.indexEqualId)»«index.idToIndexArray»«ENDIF»
-					int «index.label» = «idToIndex(index, cIdName)»;
-					«IF needPrev(l)»int «prev(index.label)» = «idToIndex(index, prev(cIdName))»;«ENDIF»
-					«IF needNext(l)»int «next(index.label)» = «idToIndex(index, next(cIdName))»;«ENDIF»
+					int «index.label»(«idToIndex(index, cIdName)»);
+					«IF needPrev(l)»int «prev(index.label)»(«idToIndex(index, prev(cIdName))»);«ENDIF»
+					«IF needNext(l)»int «next(index.label)»(«idToIndex(index, next(cIdName))»);«ENDIF»
 				«ENDFOR»
 			«ENDIF»
 			«l.body.innerContent»

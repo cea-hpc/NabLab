@@ -11,23 +11,20 @@
  * 	Marie-Pierre Oudot - initial implementation
  * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.kokkos
+package fr.cea.nabla.ir.generator.kokkos.defaultparallelism
 
-import com.google.inject.Inject
-import fr.cea.nabla.ir.ir.ArrayVariable
-import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.generator.kokkos.JobContentProvider
+import fr.cea.nabla.ir.ir.Job
 
-class VariableExtensions 
+class DefaultJobContentProvider extends JobContentProvider 
 {
-	@Inject extension Ir2KokkosUtils
-
-	def dispatch getKokkosType(ScalarVariable it) 
-	{ 
-		type.kokkosType
+	override getJobCallsContent(Iterable<Job> jobs) 
+	{
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
-	def dispatch getKokkosType(ArrayVariable it)
+	override getContent(Job it) 
 	{
-		getType.kokkosType + dimensions.map['*'].join
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 }

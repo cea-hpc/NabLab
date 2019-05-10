@@ -86,7 +86,7 @@ class ExpressionContentProvider
 
 	private def getCodeName(Variable it)
 	{
-		if (scalarConst) 'options->' + name
+		if (scalarConst) 'as_const(options->' + name + ')'
 		else name
 	}
 

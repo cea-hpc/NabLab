@@ -35,7 +35,10 @@ class Ir2Kokkos extends IrGenerator
 	@Inject extension JobContentProvider
 	@Inject extension VariableExtensions
 
-	new() { super('kokkos', 'cpp', TransformationSteps) }
+	new() 
+	{ 
+		super('kokkos', 'cc', TransformationSteps)
+	}
 
 	override getFileContent(IrModule it)
 	'''
@@ -56,7 +59,8 @@ class Ir2Kokkos extends IrGenerator
 	#include "mesh/NumericMesh2D.h"
 	#include "mesh/CartesianMesh2DGenerator.h"
 	#include "mesh/VtkFileWriter2D.h"
-	#include "Utils.h"
+	#include "utils/Utils.h"
+	#include "utils/Timer.h"
 	#include "types/Types.h"
 	#include "types/MathFunctions.h"
 	«IF functions.exists[f | f.provider == name]»#include "«name.toLowerCase»/«name»Functions.h"«ENDIF»
@@ -72,9 +76,9 @@ class Ir2Kokkos extends IrGenerator
 				«v.kokkosType» «v.name» = «v.defaultValue.content»;
 			«ENDFOR»
 		};
+		Options* options;
 	
 	private:
-		Options* options;
 		NumericMesh2D* mesh;
 		VtkFileWriter2D writer;
 		«FOR c : usedConnectivities BEFORE 'int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
@@ -89,18 +93,18 @@ class Ir2Kokkos extends IrGenerator
 		«IF !arrays.empty»
 		// Array Variables
 		«FOR a : arrays»
-		Kokkos::View<«a.type.kokkosType»«a.dimensions.map['*'].join»> «a.name»;
+		Kokkos::View<«a.kokkosType»> «a.name»;
 		«ENDFOR»
 		«ENDIF»
 		
-		// alias
 		typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
+		const size_t maxHardThread = Kokkos::DefaultExecutionSpace::max_hardware_threads();
 
 	public:
-		«name»(Options* aOptions, NumericMesh2D* aNumericMesh2D)
+		«name»(Options* aOptions, NumericMesh2D* aNumericMesh2D, string output)
 		: options(aOptions)
 		, mesh(aNumericMesh2D)
-		, writer("«name»")
+		, writer("«name»", output)
 		«FOR c : usedConnectivities»
 		, «c.nbElems»(«c.connectivityAccessor»)
 		«ENDFOR»
@@ -110,8 +114,8 @@ class Ir2Kokkos extends IrGenerator
 		{
 			«IF nodeCoordVariable !== null»
 			// Copy node coordinates
-			auto gNodes = mesh->getGeometricMesh()->getNodes();
-			Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int rNodes)
+			const auto& gNodes = mesh->getGeometricMesh()->getNodes();
+			Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 			{
 				«nodeCoordVariable.name»(rNodes) = gNodes[rNodes];
 			});
@@ -119,12 +123,29 @@ class Ir2Kokkos extends IrGenerator
 		}
 
 	private:
-		// TODO : importer la version
-		const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const int& nb_elmt) noexcept
-		{
-			return std::pair<size_t, size_t>(0, 0);
+		/**
+		 * Utility function to get work load for each team of threads
+		 * In : thread and number of element to use for computation
+		 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
+		 */
+		const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const int& nb_elmt) noexcept {
+	//	  if (nb_elmt % thread.team_size()) {
+	//	    std::cerr << "[ERROR] nb of elmt (" << nb_elmt << ") not multiple of nb of thread per team ("
+	//	              << thread.team_size() << ")" << std::endl;
+	//	    std::terminate();
+	//	  }
+		  // Size
+	    size_t team_chunk(std::floor(nb_elmt / thread.league_size()));
+	    // Offset
+	    const size_t team_offset(thread.league_rank() * team_chunk);
+	    // Last team get remaining work
+	    if (thread.league_rank() == thread.league_size() - 1) {
+	      size_t left_over(nb_elmt - (team_chunk * thread.league_size()));
+	      team_chunk += left_over;
+	    }
+	    return std::pair<size_t, size_t>(team_offset, team_chunk);
 		}
-		
+
 		«FOR j : jobs.sortBy[at] SEPARATOR '\n'»
 			«j.content»
 		«ENDFOR»			

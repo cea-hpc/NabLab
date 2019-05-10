@@ -18,7 +18,10 @@ import fr.cea.nabla.ir.ir.EndOfInitJob
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
+import com.google.inject.ImplementedBy
+import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalJobContentProvider
 
+@ImplementedBy(HierarchicalJobContentProvider)
 abstract class JobContentProvider 
 {
 	@Inject extension InstructionContentProvider
@@ -38,7 +41,7 @@ abstract class JobContentProvider
 
 	protected def dispatch CharSequence getInnerContent(EndOfInitJob it)
 	'''
-		Kokkos::parallel_for(«left.name».dimension_0(), KOKKOS_LAMBDA(const int i)
+		Kokkos::parallel_for(«left.name».dimension_0(), KOKKOS_LAMBDA(const int& i)
 		{
 			«left.name»(i) = «right.name»(i);
 		});

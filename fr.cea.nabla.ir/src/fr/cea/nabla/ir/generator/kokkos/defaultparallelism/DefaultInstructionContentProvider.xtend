@@ -1,4 +1,5 @@
 /*******************************************************************************
+	private def getJavaName(ReductionCall it) '''«reduction.provider»Functions.«reduction.name»'''
  * Copyright (c) 2018 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
@@ -11,23 +12,16 @@
  * 	Marie-Pierre Oudot - initial implementation
  * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.kokkos
+package fr.cea.nabla.ir.generator.kokkos.defaultparallelism
 
-import com.google.inject.Inject
-import fr.cea.nabla.ir.ir.ArrayVariable
-import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.generator.kokkos.InstructionContentProvider
+import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.Loop
 
-class VariableExtensions 
+class DefaultInstructionContentProvider extends InstructionContentProvider
 {
-	@Inject extension Ir2KokkosUtils
-
-	def dispatch getKokkosType(ScalarVariable it) 
-	{ 
-		type.kokkosType
-	}
-	
-	def dispatch getKokkosType(ArrayVariable it)
+	override protected addParallelLoop(Iterator it, Loop l) 
 	{
-		getType.kokkosType + dimensions.map['*'].join
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 }

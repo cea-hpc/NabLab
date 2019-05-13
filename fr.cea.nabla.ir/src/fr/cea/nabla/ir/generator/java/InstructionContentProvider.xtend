@@ -60,7 +60,7 @@ class InstructionContentProvider
 			(r1, r2) -> «reduction.javaName»(r1, r2)
 			«ELSE»
 			(r, «range.indexName») -> {
-				«defineIndexes»
+				«defineIndices»
 				«FOR innerReduction : innerReductions»
 				«innerReduction.content»
 				«ENDFOR»
@@ -115,7 +115,7 @@ class InstructionContentProvider
 		«IF !range.container.connectivity.indexEqualId»int[] «range.containerName» = «range.accessor»;«ENDIF»
 		IntStream.range(0, «range.container.connectivity.nbElems»).parallel().forEach(«range.indexName» -> 
 		{
-			«defineIndexes»
+			«defineIndices»
 			«body.innerContent»
 		});
 	'''
@@ -125,13 +125,13 @@ class InstructionContentProvider
 		int[] «range.containerName» = «range.accessor»;
 		for (int «range.indexName»=0; «range.indexName»<«range.containerName».length; «range.indexName»++)
 		{
-			«defineIndexes»
+			«defineIndices»
 			«body.innerContent»
 		}
 	'''
 	
-	/** Define all needed indices and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
-	private def defineIndexes(IterableInstruction it)
+	/** Define all needed ids and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
+	private def defineIndices(IterableInstruction it)
 	'''
 		«FOR neededId : range.neededIds»
 			int «neededId.id» = «neededId.indexToId»;

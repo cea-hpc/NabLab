@@ -12,7 +12,7 @@
  * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
 #include "VtkFileWriter2D.h"
-#include <filesystem>
+#include <experimental/filesystem>
 #include <fstream>
 
 using namespace std;
@@ -25,10 +25,10 @@ VtkFileWriter2D::VtkFileWriter2D(const string& moduleName)
 : m_moduleName(moduleName)
 {
 	const string outputDirName (OutputDir);
-	if (filesystem::exists(outputDirName))
-		filesystem::remove_all(outputDirName);
+	if (experimental::filesystem::exists(outputDirName))
+		experimental::filesystem::remove_all(outputDirName);
 	else
-		filesystem::create_directory(outputDirName);
+		experimental::filesystem::create_directory(outputDirName);
 }
 
 VtkFileWriter2D::~VtkFileWriter2D() {}

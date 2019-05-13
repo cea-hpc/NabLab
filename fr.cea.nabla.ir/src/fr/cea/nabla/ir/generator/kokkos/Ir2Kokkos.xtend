@@ -73,9 +73,10 @@ class Ir2Kokkos extends IrGenerator
 		«FOR c : usedConnectivities BEFORE 'int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
 
 		// Global Variables
-		«val globals = variables.filter(ScalarVariable).filter[!const].groupBy[type]»
-		«FOR type : globals.keySet»
-		«type.kokkosType» «FOR v : globals.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
+		«val globals = variables.filter(ScalarVariable).filter[!const]»
+		«val globalsByType = globals.groupBy[type]»
+		«FOR type : globalsByType.keySet»
+		«type.kokkosType» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 		«ENDFOR»
 
 		«val arrays = variables.filter(ArrayVariable)»
@@ -93,6 +94,9 @@ class Ir2Kokkos extends IrGenerator
 		, writer("«name»")
 		«FOR c : usedConnectivities»
 		, «c.nbElems»(«c.connectivityAccessor»)
+		«ENDFOR»
+		«FOR uv : globals.filter[x|x.defaultValue!==null]»
+		, «uv.name»(«uv.defaultValue.content»)
 		«ENDFOR»
 		«FOR a : arrays»
 		, «a.name»("«a.name»", «FOR d : a.dimensions SEPARATOR ', '»«d.nbElems»«ENDFOR»)

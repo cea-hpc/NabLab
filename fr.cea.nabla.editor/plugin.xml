@@ -43,4 +43,31 @@
       </editor>
    </extension>
 
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated Nablagen -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="fr.cea.nabla.nablagen.presentation.NablagenModelWizardID"
+            name="%_UI_NablagenModelWizard_label"
+            class="fr.cea.nabla.nablagen.presentation.NablagenModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/NablagenModelFile.gif">
+         <description>%_UI_NablagenModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated Nablagen -->
+      <editor
+            id="fr.cea.nabla.nablagen.presentation.NablagenEditorID"
+            name="%_UI_NablagenEditor_label"
+            icon="icons/full/obj16/NablagenModelFile.gif"
+            extensions="nablagen"
+            class="fr.cea.nabla.nablagen.presentation.NablagenEditor"
+            contributorClass="fr.cea.nabla.nablagen.presentation.NablagenActionBarContributor">
+      </editor>
+   </extension>
 </plugin>

@@ -8,7 +8,8 @@ Bundle-ClassPath: .
 Bundle-Vendor: CEA
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: fr.cea.nabla.nabla.provider
+Export-Package: fr.cea.nabla.nabla.provider,
+ fr.cea.nabla.nablagen.provider
 Require-Bundle: org.eclipse.core.runtime,
  fr.cea.nabla;visibility:=reexport,
  fr.cea.nabla.edit;visibility:=reexport,

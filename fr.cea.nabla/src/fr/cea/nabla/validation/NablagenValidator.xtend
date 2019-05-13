@@ -9,7 +9,7 @@ package fr.cea.nabla.validation
  *
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
-class NawValidator extends AbstractNawValidator {
+class NablagenValidator extends AbstractNablagenValidator {
 	
 //	public static val INVALID_NAME = 'invalidName'
 //
@@ -17,7 +17,7 @@ class NawValidator extends AbstractNawValidator {
 //	def checkGreetingStartsWithCapital(Greeting greeting) {
 //		if (!Character.isUpperCase(greeting.name.charAt(0))) {
 //			warning('Name should start with a capital', 
-//					NawPackage.Literals.GREETING__NAME,
+//					NablagenPackage.Literals.GREETING__NAME,
 //					INVALID_NAME)
 //		}
 //	}

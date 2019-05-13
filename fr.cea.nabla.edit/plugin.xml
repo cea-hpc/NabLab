@@ -27,11 +27,12 @@
                org.eclipse.emf.edit.provider.IItemLabelProvider
                org.eclipse.emf.edit.provider.IItemPropertySource"/>
    </extension>
+
    <extension point="org.eclipse.emf.edit.itemProviderAdapterFactories">
-      <!-- @generated Naw -->
+      <!-- @generated Nablagen -->
       <factory
-            uri="http://www.cea.fr/nabla/Naw"
-            class="fr.cea.nabla.naw.provider.NawItemProviderAdapterFactory"
+            uri="http://www.cea.fr/nabla/Nablagen"
+            class="fr.cea.nabla.nablagen.provider.NablagenItemProviderAdapterFactory"
             supportedTypes=
               "org.eclipse.emf.edit.provider.IEditingDomainItemProvider
                org.eclipse.emf.edit.provider.IStructuredItemContentProvider

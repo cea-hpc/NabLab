@@ -9,8 +9,8 @@
 	</extension>
 	<extension point="org.eclipse.emf.ecore.generated_package">
 		<package 
-			uri = "http://www.cea.fr/nabla/Naw"
-			class = "fr.cea.nabla.naw.NawPackage"
-			genModel = "model/generated/Naw.genmodel" />
+			uri = "http://www.cea.fr/nabla/Nablagen"
+			class = "fr.cea.nabla.nablagen.NablagenPackage"
+			genModel = "model/generated/Nablagen.genmodel" />
 	</extension>
 </plugin>

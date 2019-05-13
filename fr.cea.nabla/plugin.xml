@@ -20,5 +20,10 @@
 			uri = "http://www.cea.fr/nabla/Nabla"
 			class = "fr.cea.nabla.nabla.NablaPackage"
 			genModel = "model/generated/Nabla.genmodel" />
+  <package
+        class="fr.cea.nabla.nablagen.NablagenPackage"
+        genModel="model/generated/Nablagen.genmodel"
+        uri="http://www.cea.fr/nabla/Nablagen">
+  </package>
 	</extension>
 </plugin>

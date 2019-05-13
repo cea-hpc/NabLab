@@ -425,48 +425,48 @@
 	<extension
 		point="org.eclipse.ui.editors">
 		<editor
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
-			extensions="naw"
-			id="fr.cea.nabla.Naw"
-			name="Naw Editor">
+			extensions="nablagen"
+			id="fr.cea.nabla.Nablagen"
+			name="Nablagen Editor">
 		</editor>
 	</extension>
 	<extension
 		point="org.eclipse.ui.handlers">
 		<handler
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.editor.hyperlinking.OpenDeclarationHandler"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.hyperlinking.OpenDeclarationHandler"
 			commandId="org.eclipse.xtext.ui.editor.hyperlinking.OpenDeclaration">
 			<activeWhen>
 				<reference
-					definitionId="fr.cea.nabla.Naw.Editor.opened">
+					definitionId="fr.cea.nabla.Nablagen.Editor.opened">
 				</reference>
 			</activeWhen>
 		</handler>
 		<handler
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.editor.handler.ValidateActionHandler"
-			commandId="fr.cea.nabla.Naw.validate">
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.handler.ValidateActionHandler"
+			commandId="fr.cea.nabla.Nablagen.validate">
 		<activeWhen>
 			<reference
-					definitionId="fr.cea.nabla.Naw.Editor.opened">
+					definitionId="fr.cea.nabla.Nablagen.Editor.opened">
 			</reference>
 		</activeWhen>
 		</handler>
 		<!-- copy qualified name -->
 		<handler
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedNameHandler"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedNameHandler"
 			commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName">
 			<activeWhen>
-				<reference definitionId="fr.cea.nabla.Naw.Editor.opened" />
+				<reference definitionId="fr.cea.nabla.Nablagen.Editor.opened" />
 			</activeWhen>
 		</handler>
 		<handler
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedNameHandler"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedNameHandler"
 			commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedName">
 			<activeWhen>
 				<and>
-					<reference definitionId="fr.cea.nabla.Naw.XtextEditor.opened" />
+					<reference definitionId="fr.cea.nabla.Nablagen.XtextEditor.opened" />
 					<iterate>
 						<adapt type="org.eclipse.xtext.ui.editor.outline.IOutlineNode" />
 					</iterate>
@@ -475,22 +475,22 @@
 		</handler>
 	</extension>
 	<extension point="org.eclipse.core.expressions.definitions">
-		<definition id="fr.cea.nabla.Naw.Editor.opened">
+		<definition id="fr.cea.nabla.Nablagen.Editor.opened">
 			<and>
 				<reference definitionId="isActiveEditorAnInstanceOfXtextEditor"/>
 				<with variable="activeEditor">
 					<test property="org.eclipse.xtext.ui.editor.XtextEditor.languageName"
-						value="fr.cea.nabla.Naw"
+						value="fr.cea.nabla.Nablagen"
 						forcePluginActivation="true"/>
 				</with>
 			</and>
 		</definition>
-		<definition id="fr.cea.nabla.Naw.XtextEditor.opened">
+		<definition id="fr.cea.nabla.Nablagen.XtextEditor.opened">
 			<and>
 				<reference definitionId="isXtextEditorActive"/>
 				<with variable="activeEditor">
 					<test property="org.eclipse.xtext.ui.editor.XtextEditor.languageName"
-						value="fr.cea.nabla.Naw"
+						value="fr.cea.nabla.Nablagen"
 						forcePluginActivation="true"/>
 				</with>
 			</and>
@@ -499,33 +499,33 @@
 	<extension
 			point="org.eclipse.ui.preferencePages">
 		<page
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
-			id="fr.cea.nabla.Naw"
-			name="Naw">
-			<keywordReference id="fr.cea.nabla.ui.keyword_Naw"/>
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
+			id="fr.cea.nabla.Nablagen"
+			name="Nablagen">
+			<keywordReference id="fr.cea.nabla.ui.keyword_Nablagen"/>
 		</page>
 		<page
-			category="fr.cea.nabla.Naw"
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.editor.syntaxcoloring.SyntaxColoringPreferencePage"
-			id="fr.cea.nabla.Naw.coloring"
+			category="fr.cea.nabla.Nablagen"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.syntaxcoloring.SyntaxColoringPreferencePage"
+			id="fr.cea.nabla.Nablagen.coloring"
 			name="Syntax Coloring">
-			<keywordReference id="fr.cea.nabla.ui.keyword_Naw"/>
+			<keywordReference id="fr.cea.nabla.ui.keyword_Nablagen"/>
 		</page>
 		<page
-			category="fr.cea.nabla.Naw"
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.editor.templates.XtextTemplatePreferencePage"
-			id="fr.cea.nabla.Naw.templates"
+			category="fr.cea.nabla.Nablagen"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.templates.XtextTemplatePreferencePage"
+			id="fr.cea.nabla.Nablagen.templates"
 			name="Templates">
-			<keywordReference id="fr.cea.nabla.ui.keyword_Naw"/>
+			<keywordReference id="fr.cea.nabla.ui.keyword_Nablagen"/>
 		</page>
 	</extension>
 	<extension
 			point="org.eclipse.ui.propertyPages">
 		<page
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
-			id="fr.cea.nabla.Naw"
-			name="Naw">
-			<keywordReference id="fr.cea.nabla.ui.keyword_Naw"/>
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
+			id="fr.cea.nabla.Nablagen"
+			name="Nablagen">
+			<keywordReference id="fr.cea.nabla.ui.keyword_Nablagen"/>
 			<enabledWhen>
 				<adapt type="org.eclipse.core.resources.IProject"/>
 			</enabledWhen>
@@ -535,14 +535,14 @@
 	<extension
 		point="org.eclipse.ui.keywords">
 		<keyword
-			id="fr.cea.nabla.ui.keyword_Naw"
-			label="Naw"/>
+			id="fr.cea.nabla.ui.keyword_Nablagen"
+			label="Nablagen"/>
 	</extension>
 	<extension
 		point="org.eclipse.ui.commands">
 	<command
 			description="Trigger expensive validation"
-			id="fr.cea.nabla.Naw.validate"
+			id="fr.cea.nabla.Nablagen.validate"
 			name="Validate">
 	</command>
 	<!-- copy qualified name -->
@@ -563,12 +563,12 @@
 		<menuContribution
 			locationURI="popup:#TextEditorContext?after=group.edit">
 			 <command
-				 commandId="fr.cea.nabla.Naw.validate"
+				 commandId="fr.cea.nabla.Nablagen.validate"
 				 style="push"
 				 tooltip="Trigger expensive validation">
 			<visibleWhen checkEnabled="false">
 				<reference
-					definitionId="fr.cea.nabla.Naw.Editor.opened">
+					definitionId="fr.cea.nabla.Nablagen.Editor.opened">
 				</reference>
 			</visibleWhen>
 		</command>
@@ -578,7 +578,7 @@
 			<command commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName"
 				style="push" tooltip="Copy Qualified Name">
 				<visibleWhen checkEnabled="false">
-					<reference definitionId="fr.cea.nabla.Naw.Editor.opened" />
+					<reference definitionId="fr.cea.nabla.Nablagen.Editor.opened" />
 				</visibleWhen>
 			</command>
 		</menuContribution>
@@ -586,7 +586,7 @@
 			<command commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName"
 				style="push" tooltip="Copy Qualified Name">
 				<visibleWhen checkEnabled="false">
-					<reference definitionId="fr.cea.nabla.Naw.Editor.opened" />
+					<reference definitionId="fr.cea.nabla.Nablagen.Editor.opened" />
 				</visibleWhen>
 			</command>
 		</menuContribution>
@@ -595,7 +595,7 @@
 				style="push" tooltip="Copy Qualified Name">
 				<visibleWhen checkEnabled="false">
 					<and>
-						<reference definitionId="fr.cea.nabla.Naw.XtextEditor.opened" />
+						<reference definitionId="fr.cea.nabla.Nablagen.XtextEditor.opened" />
 						<iterate>
 							<adapt type="org.eclipse.xtext.ui.editor.outline.IOutlineNode" />
 						</iterate>
@@ -608,7 +608,7 @@
 		<menuContribution locationURI="popup:#TextEditorContext?endof=group.find">
 			<command commandId="org.eclipse.xtext.ui.editor.FindReferences">
 				<visibleWhen checkEnabled="false">
-					<reference definitionId="fr.cea.nabla.Naw.Editor.opened">
+					<reference definitionId="fr.cea.nabla.Nablagen.Editor.opened">
 					</reference>
 				</visibleWhen>
 			</command>
@@ -616,11 +616,11 @@
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.editor.findrefs.FindReferencesHandler"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.findrefs.FindReferencesHandler"
 			commandId="org.eclipse.xtext.ui.editor.FindReferences">
 			<activeWhen>
 				<reference
-					definitionId="fr.cea.nabla.Naw.Editor.opened">
+					definitionId="fr.cea.nabla.Nablagen.Editor.opened">
 				</reference>
 			</activeWhen>
 		</handler>
@@ -628,9 +628,9 @@
 	<extension point="org.eclipse.core.contenttype.contentTypes">
 		<content-type
 			base-type="org.eclipse.core.runtime.text"
-			file-extensions="naw"
-			id="fr.cea.nabla.Naw.contenttype"
-			name="Naw File"
+			file-extensions="nablagen"
+			id="fr.cea.nabla.Nablagen.contenttype"
+			name="Nablagen File"
 			priority="normal">
 		</content-type>
 	</extension>
@@ -638,59 +638,59 @@
 	<extension
 		point="org.eclipse.emf.ecore.extension_parser">
 		<parser
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
-			type="naw">
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
+			type="nablagen">
 		</parser>
 	</extension>
 	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
 		<resourceServiceProvider
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
-			uriExtension="naw">
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
+			uriExtension="nablagen">
 		</resourceServiceProvider>
 	</extension>
-	<!-- marker definitions for fr.cea.nabla.Naw -->
+	<!-- marker definitions for fr.cea.nabla.Nablagen -->
 	<extension
-			id="naw.check.fast"
-			name="Naw Problem"
+			id="nablagen.check.fast"
+			name="Nablagen Problem"
 			point="org.eclipse.core.resources.markers">
 		<super type="org.eclipse.xtext.ui.check.fast"/>
 		<persistent value="true"/>
 	</extension>
 	<extension
-			id="naw.check.normal"
-			name="Naw Problem"
+			id="nablagen.check.normal"
+			name="Nablagen Problem"
 			point="org.eclipse.core.resources.markers">
 		<super type="org.eclipse.xtext.ui.check.normal"/>
 		<persistent value="true"/>
 	</extension>
 	<extension
-			id="naw.check.expensive"
-			name="Naw Problem"
+			id="nablagen.check.expensive"
+			name="Nablagen Problem"
 			point="org.eclipse.core.resources.markers">
 		<super type="org.eclipse.xtext.ui.check.expensive"/>
 		<persistent value="true"/>
 	</extension>
 	<extension point="org.eclipse.xtext.builder.participant">
 		<participant
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
-			fileExtensions="naw"/>
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
+			fileExtensions="nablagen"/>
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
-			category="fr.cea.nabla.Naw"
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-			id="fr.cea.nabla.Naw.compiler.preferencePage"
+			category="fr.cea.nabla.Nablagen"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
+			id="fr.cea.nabla.Nablagen.compiler.preferencePage"
 			name="Compiler">
-			<keywordReference id="fr.cea.nabla.ui.keyword_Naw"/>
+			<keywordReference id="fr.cea.nabla.ui.keyword_Nablagen"/>
 		</page>
 	</extension>
 	<extension point="org.eclipse.ui.propertyPages">
 		<page
-			category="fr.cea.nabla.Naw"
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-			id="fr.cea.nabla.Naw.compiler.propertyPage"
+			category="fr.cea.nabla.Nablagen"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
+			id="fr.cea.nabla.Nablagen.compiler.propertyPage"
 			name="Compiler">
-			<keywordReference id="fr.cea.nabla.ui.keyword_Naw"/>
+			<keywordReference id="fr.cea.nabla.ui.keyword_Nablagen"/>
 			<enabledWhen>
 				<adapt type="org.eclipse.core.resources.IProject"/>
 			</enabledWhen>
@@ -701,20 +701,20 @@
 		<menuContribution locationURI="popup:#TextEditorContext?after=xtext.ui.openDeclaration">
 			<command
 				commandId="org.eclipse.xtext.ui.OpenGeneratedFileCommand"
-				id="fr.cea.nabla.Naw.OpenGeneratedCode"
+				id="fr.cea.nabla.Nablagen.OpenGeneratedCode"
 				style="push">
 				<visibleWhen checkEnabled="false">
-					<reference definitionId="fr.cea.nabla.Naw.Editor.opened" />
+					<reference definitionId="fr.cea.nabla.Nablagen.Editor.opened" />
 				</visibleWhen>
 			</command>
 		</menuContribution>
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.generator.trace.OpenGeneratedFileHandler"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.generator.trace.OpenGeneratedFileHandler"
 			commandId="org.eclipse.xtext.ui.OpenGeneratedFileCommand">
 			<activeWhen>
-				<reference definitionId="fr.cea.nabla.Naw.Editor.opened" />
+				<reference definitionId="fr.cea.nabla.Nablagen.Editor.opened" />
 			</activeWhen>
 		</handler>
 	</extension>
@@ -722,11 +722,11 @@
 	<extension
 		point="org.eclipse.ui.handlers">
 		<handler 
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.editor.outline.quickoutline.ShowQuickOutlineActionHandler"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.outline.quickoutline.ShowQuickOutlineActionHandler"
 			commandId="org.eclipse.xtext.ui.editor.outline.QuickOutline">
 			<activeWhen>
 				<reference
-					definitionId="fr.cea.nabla.Naw.Editor.opened">
+					definitionId="fr.cea.nabla.Nablagen.Editor.opened">
 				</reference>
 			</activeWhen>
 		</handler>
@@ -746,33 +746,33 @@
 				style="push"
 				tooltip="Open Quick Outline">
 				<visibleWhen checkEnabled="false">
-					<reference definitionId="fr.cea.nabla.Naw.Editor.opened"/>
+					<reference definitionId="fr.cea.nabla.Nablagen.Editor.opened"/>
 				</visibleWhen>
 			</command>
 		</menuContribution>
 	</extension>
-	<!-- quickfix marker resolution generator for fr.cea.nabla.Naw -->
+	<!-- quickfix marker resolution generator for fr.cea.nabla.Nablagen -->
 	<extension
 			point="org.eclipse.ui.ide.markerResolution">
 		<markerResolutionGenerator
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
-			markerType="fr.cea.nabla.ui.naw.check.fast">
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+			markerType="fr.cea.nabla.ui.nablagen.check.fast">
 			<attribute
 				name="FIXABLE_KEY"
 				value="true">
 			</attribute>
 		</markerResolutionGenerator>
 		<markerResolutionGenerator
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
-			markerType="fr.cea.nabla.ui.naw.check.normal">
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+			markerType="fr.cea.nabla.ui.nablagen.check.normal">
 			<attribute
 				name="FIXABLE_KEY"
 				value="true">
 			</attribute>
 		</markerResolutionGenerator>
 		<markerResolutionGenerator
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
-			markerType="fr.cea.nabla.ui.naw.check.expensive">
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+			markerType="fr.cea.nabla.ui.nablagen.check.expensive">
 			<attribute
 				name="FIXABLE_KEY"
 				value="true">
@@ -782,11 +782,11 @@
 	<!-- Rename Refactoring -->
 	<extension point="org.eclipse.ui.handlers">
 		<handler 
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.DefaultRenameElementHandler"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.DefaultRenameElementHandler"
 			commandId="org.eclipse.xtext.ui.refactoring.RenameElement">
 			<activeWhen>
 				<reference
-					definitionId="fr.cea.nabla.Naw.Editor.opened">
+					definitionId="fr.cea.nabla.Nablagen.Editor.opened">
 				</reference>
 			</activeWhen>
 		</handler>
@@ -798,7 +798,7 @@
 				style="push">
 				<visibleWhen checkEnabled="false">
 					<reference
-						definitionId="fr.cea.nabla.Naw.Editor.opened">
+						definitionId="fr.cea.nabla.Nablagen.Editor.opened">
 					</reference>
 				</visibleWhen>
 			</command>
@@ -806,40 +806,40 @@
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
-			category="fr.cea.nabla.Naw"
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.RefactoringPreferencePage"
-			id="fr.cea.nabla.Naw.refactoring"
+			category="fr.cea.nabla.Nablagen"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.RefactoringPreferencePage"
+			id="fr.cea.nabla.Nablagen.refactoring"
 			name="Refactoring">
-			<keywordReference id="fr.cea.nabla.ui.keyword_Naw"/>
+			<keywordReference id="fr.cea.nabla.ui.keyword_Nablagen"/>
 		</page>
 	</extension>
 	<extension point="org.eclipse.compare.contentViewers">
-		<viewer id="fr.cea.nabla.Naw.compare.contentViewers"
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-			extensions="naw">
+		<viewer id="fr.cea.nabla.Nablagen.compare.contentViewers"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
+			extensions="nablagen">
 		</viewer>
 		<contentTypeBinding
-			contentTypeId="fr.cea.nabla.Naw.contenttype"
-			contentViewerId="fr.cea.nabla.Naw.compare.contentViewers" />
+			contentTypeId="fr.cea.nabla.Nablagen.contenttype"
+			contentViewerId="fr.cea.nabla.Nablagen.compare.contentViewers" />
 	</extension>
 	<extension point="org.eclipse.compare.contentMergeViewers">
-		<viewer id="fr.cea.nabla.Naw.compare.contentMergeViewers"
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-			extensions="naw" label="Naw Compare">
+		<viewer id="fr.cea.nabla.Nablagen.compare.contentMergeViewers"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
+			extensions="nablagen" label="Nablagen Compare">
 		</viewer>
 		<contentTypeBinding
-			contentTypeId="fr.cea.nabla.Naw.contenttype"
-			contentMergeViewerId="fr.cea.nabla.Naw.compare.contentMergeViewers" />
+			contentTypeId="fr.cea.nabla.Nablagen.contenttype"
+			contentMergeViewerId="fr.cea.nabla.Nablagen.compare.contentMergeViewers" />
 	</extension>
 	<extension point="org.eclipse.ui.editors.documentProviders">
-		<provider id="fr.cea.nabla.Naw.editors.documentProviders"
-			class="fr.cea.nabla.ui.NawExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
-			extensions="naw">
+		<provider id="fr.cea.nabla.Nablagen.editors.documentProviders"
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
+			extensions="nablagen">
 		</provider>
 	</extension>
 	<extension point="org.eclipse.team.core.fileTypes">
 		<fileTypes
-			extension="naw"
+			extension="nablagen"
 			type="text">
 		</fileTypes>
 	</extension>

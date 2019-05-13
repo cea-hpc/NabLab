@@ -1,0 +1,42 @@
+with Test.*;
+
+workflow Default transforms Test
+{
+	Nabla2Ir nabla2ir
+	{
+	}
+	
+	TagPersistentVariables tagPersistentVariables follows nabla2ir 
+	{ 
+		variables = u as "Vitesse";
+	}
+	
+	ReplaceUtf replaceUtf follows tagPersistentVariables
+	{
+	}
+	
+	ReplaceInternalReductions replaceReductions follows replaceUtf
+	{
+	}
+	
+	OptimizeConnectivities optimizeConnectivities follows replaceReductions
+	{
+		connectivities = cells, nodes;
+		disabled;
+	}
+	
+	FillHLTs fillHLTs follows optimizeConnectivities
+	{
+		dumpIr;
+	}
+	
+	Ir2Java ir2Java follows fillHLTs
+	{
+		outputDir = "../../NablaTestJava/src";
+	}
+
+	Ir2Kokkos ir2Kokkos follows fillHLTs
+	{
+		outputDir = "../../NablaTestKokkos/src";
+	}
+}

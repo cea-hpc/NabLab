@@ -4,17 +4,17 @@
 package fr.cea.nabla.ide
 
 import com.google.inject.Guice
-import fr.cea.nabla.NawRuntimeModule
-import fr.cea.nabla.NawStandaloneSetup
+import fr.cea.nabla.NablagenRuntimeModule
+import fr.cea.nabla.NablagenStandaloneSetup
 import org.eclipse.xtext.util.Modules2
 
 /**
  * Initialization support for running Xtext languages as language servers.
  */
-class NawIdeSetup extends NawStandaloneSetup {
+class NablagenIdeSetup extends NablagenStandaloneSetup {
 
 	override createInjector() {
-		Guice.createInjector(Modules2.mixin(new NawRuntimeModule, new NawIdeModule))
+		Guice.createInjector(Modules2.mixin(new NablagenRuntimeModule, new NablagenIdeModule))
 	}
 	
 }

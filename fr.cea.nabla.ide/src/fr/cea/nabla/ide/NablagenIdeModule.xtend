@@ -7,5 +7,5 @@ package fr.cea.nabla.ide
 /**
  * Use this class to register ide components.
  */
-class NawIdeModule extends AbstractNawIdeModule {
+class NablagenIdeModule extends AbstractNablagenIdeModule {
 }

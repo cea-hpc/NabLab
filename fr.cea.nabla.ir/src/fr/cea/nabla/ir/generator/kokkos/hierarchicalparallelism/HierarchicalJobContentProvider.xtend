@@ -45,7 +45,7 @@ class HierarchicalJobContentProvider extends JobContentProvider
 						«j.name.toFirstLower»(thread);
 					«ENDIF»
 				«ENDFOR»
-			}
+			});
 			«ENDIF»
 			
 		«ENDFOR»

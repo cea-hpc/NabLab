@@ -34,7 +34,7 @@ class HierarchicalInstructionContentProvider extends InstructionContentProvider
 		«IF !range.container.connectivity.indexEqualId»auto «range.containerName»(«range.accessor»);«ENDIF»
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& «range.indexName»Team)
 		{
-			int «range.indexName»(jTeamCells + team_work.first);
+			int «range.indexName»(«range.indexName»Team + team_work.first);
 			«defineIndices»
 			«body.innerContent»
 		});

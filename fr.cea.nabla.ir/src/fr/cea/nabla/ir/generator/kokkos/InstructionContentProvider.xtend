@@ -149,7 +149,7 @@ abstract class InstructionContentProvider
 	private def getIdToIndex(VarRefIteratorRef it)
 	{
 		if (indexEqualId) id
-		else 'Utils::indexOf(' + accessor + ',' + id + ')'
+		else 'utils::indexOf(' + accessor + ',' + id + ')'
 	}
 
 	def getAccessor(VarRefIteratorRef it) '''mesh->get«connectivity.name.toFirstUpper»(«connectivityArgs.map[id].join(', ')»)'''

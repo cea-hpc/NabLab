@@ -43,7 +43,7 @@ class IrInstructionFactory
 	
 	def dispatch Instruction toIrInstruction(ScalarVarDefinition v)
 	{
-		val irInstr = IrFactory::eINSTANCE.createScalarVarDefinition =>
+		val irInstr = IrFactory::eINSTANCE.createVarDefinition =>
 		[
 			annotations += v.toIrAnnotation
 			variables += v.variable.toIrScalarVariable
@@ -52,7 +52,7 @@ class IrInstructionFactory
 		return irInstr.transformReductions(v.defaultValue)
 	}
 	
-	def dispatch create IrFactory::eINSTANCE.createScalarVarDefinition toIrInstruction(VarGroupDeclaration v)
+	def dispatch create IrFactory::eINSTANCE.createVarDefinition toIrInstruction(VarGroupDeclaration v)
 	{
 		// Il n'y a que des ScalarVar quand VarGroupDeclaration est une instruction.
 		// Les ArrayVar ne sont que dans les variables du module (variables globales)

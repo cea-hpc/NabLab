@@ -14,15 +14,15 @@
 package fr.cea.nabla.ir.generator.java
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.EndOfInitJob
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
 
+import static extension fr.cea.nabla.ir.generator.Utils.*
+
 class JobContentProvider 
 {
-	@Inject extension Utils
 	@Inject extension InstructionContentProvider
 	@Inject extension VariableExtensions
 	

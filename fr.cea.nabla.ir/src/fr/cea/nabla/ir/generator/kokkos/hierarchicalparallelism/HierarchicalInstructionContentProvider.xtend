@@ -16,20 +16,13 @@ package fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.generator.IteratorExtensions
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.generator.kokkos.InstructionContentProvider
-import fr.cea.nabla.ir.generator.kokkos.VariableExtensions
-import fr.cea.nabla.ir.ir.ArrayVariable
-import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
-import org.eclipse.emf.ecore.EObject
 
-import static extension fr.cea.nabla.ir.JobExtensions.*
+import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class HierarchicalInstructionContentProvider extends InstructionContentProvider
 {
-	@Inject extension Utils
-	@Inject extension VariableExtensions
 	@Inject extension IteratorExtensions
 
 	override protected getParallelContent(Loop it) 
@@ -37,23 +30,13 @@ class HierarchicalInstructionContentProvider extends InstructionContentProvider
 		const auto team_work(computeTeamWorkRange(team_member, «range.container.connectivity.nbElems»));
 		if (!team_work.second)
 			return;
-
-		«FOR inVar : job.inVars.filter(ArrayVariable)»
-		const Kokkos::View<const «inVar.kokkosType»> const_«inVar.name» = «inVar.name»;
-		«ENDFOR»
 		
 		«IF !range.container.connectivity.indexEqualId»auto «range.containerName»(«range.accessor»);«ENDIF»
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& «range.indexName»Team)
 		{
+			int «range.indexName»(jTeamCells + team_work.first);
 			«defineIndices»
 			«body.innerContent»
 		});
 	'''
-
-	private def Job getJob(EObject o)
-	{
-		if (o === null) null
-		else if (o instanceof Job) o as Job
-		else o.eContainer.job
-	}
 }

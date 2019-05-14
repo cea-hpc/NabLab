@@ -13,27 +13,47 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism
 
-import com.google.inject.Inject
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.generator.kokkos.JobContentProvider
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.Loop
-import fr.cea.nabla.ir.ir.ReductionInstruction
+
+import static extension fr.cea.nabla.ir.JobExtensions.*
+import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class HierarchicalJobContentProvider extends JobContentProvider 
 {
-	@Inject extension Utils
-	
 	override getJobCallsContent(Iterable<Job> jobs) 
 	'''
-		«FOR j : jobs.sortBy[at]»
-			«j.name.toFirstLower»(); // @«j.at»
+		«val jobsByAt = jobs.groupBy[at]»
+		«FOR at : jobsByAt.keySet.sort»
+			«val atJobs = jobsByAt.get(at)»
+			// @«at»
+			«IF (atJobs.forall[!hasIterable])»
+				«FOR j : atJobs»
+				«j.name.toFirstLower»();
+				«ENDFOR»
+			«ELSE»			
+			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread) {
+				«FOR j : atJobs»
+					«IF !j.hasLoop»
+					if (thread.league_rank() == 0)
+						«IF !j.hasIterable /* Only simple instruction jobs */»
+							Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){«j.name.toFirstLower»();});
+						«ELSE /* Only for jobs containing ReductionInstruction */»
+							«j.name.toFirstLower»(thread);
+						«ENDIF»
+					«ELSE»
+						«j.name.toFirstLower»(thread);
+					«ENDIF»
+				«ENDFOR»
+			}
+			«ENDIF»
+			
 		«ENDFOR»
 	'''
 	
 	override getContent(Job it)
 	{
-		if (eAllContents.exists[i | i instanceof Loop || i instanceof ReductionInstruction])
+		if (hasIterable)
 			parallelHeader
 		else
 			sequentialHeader
@@ -53,7 +73,7 @@ class HierarchicalJobContentProvider extends JobContentProvider
 	'''
 		«comment»
 		KOKKOS_INLINE_FUNCTION
-		void «name.toFirstLower»(const member_type& team_member) noexcept
+		void «name.toFirstLower»() noexcept
 		{
 			«innerContent»
 		}

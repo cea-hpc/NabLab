@@ -15,21 +15,22 @@ package fr.cea.nabla.ir.generator.kokkos
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.generator.IrGenerator
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.transformers.DeclareConstVariables
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceInternalReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 
+import static extension fr.cea.nabla.ir.generator.Utils.*
+
 class Ir2Kokkos extends IrGenerator
 {
-	static val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new OptimizeConnectivities, new FillJobHLTs]
+	static val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new OptimizeConnectivities, new FillJobHLTs, new DeclareConstVariables]
 
-	@Inject extension Utils
 	@Inject extension Ir2KokkosUtils
 	@Inject extension ExpressionContentProvider
 	@Inject extension JobContentProvider
@@ -163,7 +164,7 @@ class Ir2Kokkos extends IrGenerator
 
 			«val variablesToPersist = persistentArrayVariables»
 			«IF !variablesToPersist.empty»
-			map<string, Kokkos::View<double*>> cellVariables;
+			map<string, Kokkos::View<double*>> cellVariables;type filter text
 			map<string, Kokkos::View<double*>> nodeVariables;
 			«FOR v : variablesToPersist»
 			«v.dimensions.head.returnType.type.name»Variables.insert(pair<string,Kokkos::View<double*>>("«v.persistenceName»", «v.name»));

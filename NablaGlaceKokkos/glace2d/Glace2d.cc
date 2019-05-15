@@ -173,10 +173,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void copy_X_n0_to_X() noexcept
 	{
-		Kokkos::parallel_for(X.dimension_0(), KOKKOS_LAMBDA(const int& i)
-		{
-			X(i) = X_n0(i);
-		});
+		deep_copy(X, X_n0);
 	}
 	
 	/**
@@ -657,7 +654,7 @@ private:
 		{
 			double reduceMin_857127761(numeric_limits<double>::max());
 			Kokkos::Min<double> reducer(reduceMin_857127761);
-			Kokkos::parallel_reduce("ReductionreduceMin_857127761", nbCells, KOKKOS_LAMBDA(const int& jCells, double& x)
+			Kokkos::parallel_reduce(Kokkos::TeamThreadRange(team_member, nbCells), KOKKOS_LAMBDA(const int& jCells, double& x)
 			{
 				reducer.join(x, const_deltatj(jCells));
 			}, reducer);
@@ -1033,6 +1030,13 @@ public:
 
 			// @1.0
 			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread) {
+				if (iteration==1 && thread.league_rank() == 0)
+					Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){
+						std::cout << "[" << __GREEN__ << "RUNTIME" << __RESET__ << "]   Using " << __BOLD__ << setw(3) << thread.league_size() << __RESET__ << " team(s) of "
+							<< __BOLD__ << setw(3) << thread.team_size() << __RESET__<< " thread(s)" << std::endl;
+						std::cout << __YELLOW__ << "\tInit done, starting compute loop..." << __RESET__ << std::endl;
+						std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << iteration << __RESET__ "] t = " << __BOLD__
+							<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t << __RESET__;});
 				computeCjr(thread);
 				computeInternalEngergy(thread);
 			});

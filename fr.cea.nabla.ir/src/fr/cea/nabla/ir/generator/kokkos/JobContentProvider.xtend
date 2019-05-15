@@ -41,9 +41,6 @@ abstract class JobContentProvider
 
 	protected def dispatch CharSequence getInnerContent(EndOfInitJob it)
 	'''
-		Kokkos::parallel_for(«left.name».dimension_0(), KOKKOS_LAMBDA(const int& i)
-		{
-			«left.name»(i) = «right.name»(i);
-		});
+		deep_copy(«left.name», «right.name»);
 	'''
 }

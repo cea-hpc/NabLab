@@ -61,7 +61,7 @@ abstract class InstructionContentProvider
 		«IF !range.container.connectivity.indexEqualId»int[] «range.containerName»(«range.accessor»);«ENDIF»
 		«result.kokkosType» «result.name»(«result.defaultValue.content»);
 		Kokkos::«reduction.kokkosName»<«result.kokkosType»> reducer(«result.name»);
-		Kokkos::parallel_reduce("Reduction«result.name»", «range.container.connectivity.nbElems», KOKKOS_LAMBDA(const int& «range.indexName», «result.kokkosType»& x)
+		«header»
 		{
 			«defineIndices»
 			«FOR innerReduction : innerReductions»
@@ -70,6 +70,10 @@ abstract class InstructionContentProvider
 			reducer.join(x, «arg.content»);
 		}, reducer);
 	'''
+
+	protected abstract def CharSequence getHeader(ReductionInstruction it)
+
+	// par defaut le header vaudra: Kokkos::parallel_reduce("Reduction«result.name»", «range.container.connectivity.nbElems», KOKKOS_LAMBDA(const int& «range.indexName», «result.kokkosType»& x)
 
 	def dispatch CharSequence getContent(VarDefinition it) 
 	'''

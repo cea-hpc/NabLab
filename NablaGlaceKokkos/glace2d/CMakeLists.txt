@@ -10,5 +10,5 @@ include_directories("${CMAKE_SOURCE_DIR};${Kokkos_HOME}/include;${Nablab_HOME}/s
 
 link_directories(${Kokkos_HOME}/lib ${Nablab_HOME}/lib/Release)
 add_executable(glace2d Glace2dFunctions.cc Glace2d.cc)
-target_link_libraries(glace2d kokkos cppnabla dl stdc++fs)
+target_link_libraries(glace2d kokkos cppnabla dl stdc++fs hwloc)
 

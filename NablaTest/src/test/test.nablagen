@@ -1,6 +1,6 @@
 with Test.*;
 
-workflow Default transforms Test
+workflow DefaultGenerationChain transforms Test
 {
 	Nabla2Ir nabla2ir
 	{
@@ -25,17 +25,17 @@ workflow Default transforms Test
 		disabled;
 	}
 	
-	FillHLTs fillHLTs follows optimizeConnectivities
+	FillHLTs fillHlts follows optimizeConnectivities
 	{
 		dumpIr;
 	}
 	
-	Ir2Java ir2Java follows fillHLTs
+	Ir2Java javaGenerator follows fillHlts
 	{
 		outputDir = "../../NablaTestJava/src";
 	}
 
-	Ir2Kokkos ir2Kokkos follows fillHLTs
+	Ir2Kokkos kokkosGenerator follows fillHlts
 	{
 		outputDir = "../../NablaTestKokkos/src";
 	}

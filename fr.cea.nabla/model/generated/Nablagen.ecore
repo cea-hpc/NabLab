@@ -16,51 +16,34 @@
   <eClassifiers xsi:type="ecore:EClass" name="WorkflowComponent">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Ir2CodeComponent" eSuperTypes="#//WorkflowComponent">
+  <eClassifiers xsi:type="ecore:EClass" name="ChildComponent" eSuperTypes="#//WorkflowComponent">
     <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//WorkflowComponent"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="disabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Ir2CodeComponent" eSuperTypes="#//ChildComponent">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputDir" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="IrWriterComponent" eSuperTypes="#//WorkflowComponent"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Nabla2IrComponent" eSuperTypes="#//IrWriterComponent"/>
-  <eClassifiers xsi:type="ecore:EClass" name="TagPersistentVariablesComponent" eSuperTypes="#//IrWriterComponent">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//WorkflowComponent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Ir2IRComponent" eSuperTypes="#//ChildComponent #//IrWriterComponent">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dumpIr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IrWriterComponent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Nabla2IrComponent" eSuperTypes="#//WorkflowComponent #//IrWriterComponent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="TagPersistentVariablesComponent" eSuperTypes="#//Ir2IRComponent">
     <eStructuralFeatures xsi:type="ecore:EReference" name="vars" upperBound="-1" eType="#//PersistentVar"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="disabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dumpIr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PersistentVar">
     <eStructuralFeatures xsi:type="ecore:EReference" name="varRef" eType="ecore:EClass Nabla.ecore#//ArrayVar"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="varName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ReplaceUtfComponent" eSuperTypes="#//IrWriterComponent">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//WorkflowComponent"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="disabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dumpIr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReplaceUtfComponent" eSuperTypes="#//Ir2IRComponent"/>
   <eClassifiers xsi:type="ecore:EClass" name="ReplaceInternalReductionsComponent"
-      eSuperTypes="#//IrWriterComponent">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//WorkflowComponent"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="disabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dumpIr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="OptimizeConnectivitiesComponent" eSuperTypes="#//IrWriterComponent">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//WorkflowComponent"/>
+      eSuperTypes="#//Ir2IRComponent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="OptimizeConnectivitiesComponent" eSuperTypes="#//Ir2IRComponent">
     <eStructuralFeatures xsi:type="ecore:EReference" name="connectivities" unique="false"
         upperBound="-1" eType="ecore:EClass Nabla.ecore#//Connectivity"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="disabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dumpIr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FillHLTsComponent" eSuperTypes="#//IrWriterComponent">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//WorkflowComponent"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="disabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dumpIr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FillHLTsComponent" eSuperTypes="#//Ir2IRComponent"/>
   <eClassifiers xsi:type="ecore:EClass" name="Ir2JavaComponent" eSuperTypes="#//Ir2CodeComponent"/>
   <eClassifiers xsi:type="ecore:EClass" name="Ir2KokkosComponent" eSuperTypes="#//Ir2CodeComponent"/>
-  <eClassifiers xsi:type="ecore:EClass" name="SubWorkflow" eSuperTypes="#//WorkflowComponent">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//WorkflowComponent"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="child" eType="#//Workflow"/>
-  </eClassifiers>
 </ecore:EPackage>

@@ -234,12 +234,20 @@
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
 			type="nabla">
 		</parser>
+  <parser
+        class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
+        type="nablagen">
+  </parser>
 	</extension>
 	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
 	    <resourceServiceProvider
 	        class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
 	        uriExtension="nabla">
 	    </resourceServiceProvider>
+     <resourceServiceProvider
+           class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
+           uriExtension="nablagen">
+     </resourceServiceProvider>
 	</extension>
 	<!-- marker definitions for fr.cea.nabla.Nabla -->
 	<extension

@@ -24,7 +24,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * <!-- end-user-doc -->
  * @generated
  */
-public class Ir2CodeComponentItemProvider extends WorkflowComponentItemProvider {
+public class Ir2CodeComponentItemProvider extends ChildComponentItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
@@ -46,55 +46,9 @@ public class Ir2CodeComponentItemProvider extends WorkflowComponentItemProvider 
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addParentPropertyDescriptor(object);
-			addDisabledPropertyDescriptor(object);
 			addOutputDirPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the Parent feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addParentPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Ir2CodeComponent_parent_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Ir2CodeComponent_parent_feature", "_UI_Ir2CodeComponent_type"),
-				 NablagenPackage.Literals.IR2_CODE_COMPONENT__PARENT,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Disabled feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addDisabledPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Ir2CodeComponent_disabled_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Ir2CodeComponent_disabled_feature", "_UI_Ir2CodeComponent_type"),
-				 NablagenPackage.Literals.IR2_CODE_COMPONENT__DISABLED,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
 	}
 
 	/**
@@ -157,7 +111,6 @@ public class Ir2CodeComponentItemProvider extends WorkflowComponentItemProvider 
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Ir2CodeComponent.class)) {
-			case NablagenPackage.IR2_CODE_COMPONENT__DISABLED:
 			case NablagenPackage.IR2_CODE_COMPONENT__OUTPUT_DIR:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;

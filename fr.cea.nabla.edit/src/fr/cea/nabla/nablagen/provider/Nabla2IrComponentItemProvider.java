@@ -20,7 +20,7 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
  * <!-- end-user-doc -->
  * @generated
  */
-public class Nabla2IrComponentItemProvider extends IrWriterComponentItemProvider {
+public class Nabla2IrComponentItemProvider extends WorkflowComponentItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->

@@ -4,8 +4,8 @@
 package fr.cea.nabla.nablagen.provider;
 
 
+import fr.cea.nabla.nablagen.Ir2IRComponent;
 import fr.cea.nabla.nablagen.NablagenPackage;
-import fr.cea.nabla.nablagen.SubWorkflow;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,21 +15,23 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link fr.cea.nabla.nablagen.SubWorkflow} object.
+ * This is the item provider adapter for a {@link fr.cea.nabla.nablagen.Ir2IRComponent} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class SubWorkflowItemProvider extends WorkflowComponentItemProvider {
+public class Ir2IRComponentItemProvider extends ChildComponentItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SubWorkflowItemProvider(AdapterFactory adapterFactory) {
+	public Ir2IRComponentItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -44,65 +46,42 @@ public class SubWorkflowItemProvider extends WorkflowComponentItemProvider {
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addParentPropertyDescriptor(object);
-			addChildPropertyDescriptor(object);
+			addDumpIrPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This adds a property descriptor for the Parent feature.
+	 * This adds a property descriptor for the Dump Ir feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addParentPropertyDescriptor(Object object) {
+	protected void addDumpIrPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_SubWorkflow_parent_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_SubWorkflow_parent_feature", "_UI_SubWorkflow_type"),
-				 NablagenPackage.Literals.SUB_WORKFLOW__PARENT,
+				 getString("_UI_Ir2IRComponent_dumpIr_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Ir2IRComponent_dumpIr_feature", "_UI_Ir2IRComponent_type"),
+				 NablagenPackage.Literals.IR2_IR_COMPONENT__DUMP_IR,
 				 true,
 				 false,
-				 true,
-				 null,
+				 false,
+				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
 				 null,
 				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Child feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addChildPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_SubWorkflow_child_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_SubWorkflow_child_feature", "_UI_SubWorkflow_type"),
-				 NablagenPackage.Literals.SUB_WORKFLOW__CHILD,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This returns SubWorkflow.gif.
+	 * This returns Ir2IRComponent.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/SubWorkflow"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/Ir2IRComponent"));
 	}
 
 	/**
@@ -113,10 +92,10 @@ public class SubWorkflowItemProvider extends WorkflowComponentItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((SubWorkflow)object).getName();
+		String label = ((Ir2IRComponent)object).getName();
 		return label == null || label.length() == 0 ?
-			getString("_UI_SubWorkflow_type") :
-			getString("_UI_SubWorkflow_type") + " " + label;
+			getString("_UI_Ir2IRComponent_type") :
+			getString("_UI_Ir2IRComponent_type") + " " + label;
 	}
 
 
@@ -130,6 +109,12 @@ public class SubWorkflowItemProvider extends WorkflowComponentItemProvider {
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
+
+		switch (notification.getFeatureID(Ir2IRComponent.class)) {
+			case NablagenPackage.IR2_IR_COMPONENT__DUMP_IR:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
+		}
 		super.notifyChanged(notification);
 	}
 

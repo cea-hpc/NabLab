@@ -2,7 +2,7 @@
 <description:Group xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:filter="http://www.eclipse.org/sirius/diagram/description/filter/1.1.0" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" name="i1" version="12.0.0.2017041100">
   <ownedViewpoints name="InstructionViewpoint" modelFileExtension="nablair">
     <ownedRepresentations xsi:type="description_1:DiagramDescription" name="NablaIrDiagram" titleExpression="aql:self.name.toUpperFirst() + '  Ir Graph'" domainClass="ir.IrModule" enablePopupBars="true">
-      <metamodel href="file:/D:/ReposGit/Nabla/fr.cea.nabla.ir/model/Ir.ecore#/"/>
+      <metamodel href="http://www.cea.fr/nabla/ir#/"/>
       <filters xsi:type="filter:CompositeFilterDescription" name="FilterCopyNodes" label="Filter Copy Nodes">
         <filters xsi:type="filter:MappingFilter" mappings="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" semanticConditionExpression="aql:not self.oclIsKindOf(ir::TimeIterationCopyJob)"/>
       </filters>
@@ -165,46 +165,42 @@
         </containerMappings>
       </defaultLayer>
     </ownedRepresentations>
-    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.services.TraceServices"/>
+    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.TraceServices"/>
     <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.ir.JobExtensions"/>
     <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.ir.VariableExtensions"/>
-    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.services.PresentationServices"/>
+    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.ir.PresentationServices"/>
+    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.PresentationServices"/>
   </ownedViewpoints>
-  <ownedViewpoints name="Mwe2Viewpoint" modelFileExtension="mwe2">
-    <ownedRepresentations xsi:type="description_1:DiagramDescription" name="Mwe2Diagram" titleExpression="aql:self.canonicalName + 'Diagram'" domainClass="mwe2::Module" enablePopupBars="true">
-      <metamodel href="http://www.eclipse.org/xtext/common/mwe2/Mwe2#/"/>
+  <ownedViewpoints name="NablagenViewpoint" modelFileExtension="nablagen">
+    <ownedRepresentations xsi:type="description_1:DiagramDescription" name="WorflowDiagram" titleExpression="aql:self.name + 'Diagram'" domainClass="nablagen::Workflow" enablePopupBars="true">
+      <metamodel href="http://www.cea.fr/nabla/Nablagen#/"/>
       <defaultLayer name="Default">
-        <nodeMappings name="MD.Component" semanticCandidatesExpression="aql:self.getComponents()" domainClass="mwe2::Component">
-          <style xsi:type="style:SquareDescription" labelSize="12" showIcon="false" labelExpression="aql:self.getLabel()" tooltipExpression="aql:self.name " labelPosition="node" resizeKind="NSEW" width="20" height="5">
-            <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+        <nodeMappings name="WD.Component" semanticCandidatesExpression="aql:self.components" domainClass="nablagen::WorkflowComponent">
+          <style xsi:type="style:SquareDescription" labelSize="12" labelExpression="aql:self.name.replaceUpperCaseWithSpace()" labelPosition="node" resizeKind="NSEW" width="20" height="5">
+            <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
             <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
-            <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='gray']"/>
+            <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
           </style>
         </nodeMappings>
-        <edgeMappings name="MD.Ref1" preconditionExpression="aql:false" sourceMapping="//@ownedViewpoints[name='Mwe2Viewpoint']/@ownedRepresentations[name='Mwe2Diagram']/@defaultLayer/@nodeMappings[name='MD.Component']" targetMapping="//@ownedViewpoints[name='Mwe2Viewpoint']/@ownedRepresentations[name='Mwe2Diagram']/@defaultLayer/@nodeMappings[name='MD.Component']" targetFinderExpression="aql:self.referable" sourceFinderExpression="aql:self.eContainer().eContainer()" domainClass="mwe2::Reference" useDomainElement="true">
-          <style sourceArrow="InputArrow" targetArrow="NoDecoration" sizeComputationExpression="2">
-            <strokeColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='gray']"/>
+        <edgeMappings name="WD.Parent" sourceMapping="//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']" targetMapping="//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']" targetFinderExpression="aql:self.oclAsType(nablagen::ChildComponent).parent">
+          <style sourceArrow="InputArrow" targetArrow="NoDecoration">
+            <strokeColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
             <centerLabelStyleDescription labelSize="12">
-              <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
-            </centerLabelStyleDescription>
-          </style>
-        </edgeMappings>
-        <edgeMappings name="MD.Ref2" sourceMapping="//@ownedViewpoints[name='Mwe2Viewpoint']/@ownedRepresentations[name='Mwe2Diagram']/@defaultLayer/@nodeMappings[name='MD.Component']" targetMapping="//@ownedViewpoints[name='Mwe2Viewpoint']/@ownedRepresentations[name='Mwe2Diagram']/@defaultLayer/@nodeMappings[name='MD.Component']" targetFinderExpression="aql:self.getPrevious()">
-          <style sourceArrow="InputArrow" targetArrow="NoDecoration" sizeComputationExpression="2">
-            <strokeColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='gray']"/>
-            <centerLabelStyleDescription labelSize="12">
-              <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+              <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='gray']"/>
             </centerLabelStyleDescription>
           </style>
         </edgeMappings>
         <customization>
-          <vsmElementCustomizations xsi:type="description:VSMElementCustomization">
-            <featureCustomizations xsi:type="description:EAttributeCustomization" appliedOn="//@ownedViewpoints[name='Mwe2Viewpoint']/@ownedRepresentations[name='Mwe2Diagram']/@defaultLayer/@nodeMappings[name='MD.Component']/@style" attributeName="color" value="aql:&quot;red&quot;"/>
+          <vsmElementCustomizations xsi:type="description:VSMElementCustomization" predicateExpression="aql:self.oclAsType(nablagen::ChildComponent).disabled">
+            <featureCustomizations xsi:type="description:EReferenceCustomization" appliedOn="//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']/@style" referenceName="labelColor">
+              <value href="environment:/viewpoint#//@systemColors/@entries[name='light_gray']"/>
+            </featureCustomizations>
           </vsmElementCustomizations>
         </customization>
       </defaultLayer>
     </ownedRepresentations>
-    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.services.mwe.ModuleExtensions"/>
-    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.services.mwe.ComponentExtensions"/>
+    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.nablagen.PresentationServices"/>
+    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.PresentationServices"/>
+    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.TraceServices"/>
   </ownedViewpoints>
 </description:Group>

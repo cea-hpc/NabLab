@@ -29,13 +29,17 @@ Workflow:
 		components+=WorkflowComponent*
 	'}';
 	
-WorkflowComponent: SubWorkflow | IrWriterComponent | Ir2CodeComponent;
+WorkflowComponent: Nabla2IrComponent | ChildComponent;
 
+ChildComponent: Ir2CodeComponent | Ir2IRComponent;
+					
 Ir2CodeComponent: Ir2JavaComponent | Ir2KokkosComponent;
 
-IrWriterComponent: TagPersistentVariablesComponent | ReplaceUtfComponent | 
-					ReplaceInternalReductionsComponent | OptimizeConnectivitiesComponent |
-					FillHLTsComponent | Nabla2IrComponent;
+Ir2IRComponent: TagPersistentVariablesComponent | ReplaceUtfComponent | 
+				ReplaceInternalReductionsComponent | OptimizeConnectivitiesComponent |
+				FillHLTsComponent;
+					
+IrWriterComponent: Ir2IRComponent | Nabla2IrComponent;
 
 Nabla2IrComponent:
 	'Nabla2Ir' name=ID 
@@ -95,7 +99,3 @@ Ir2KokkosComponent:
 		(disabled?='disabled' ';')?
 		'outputDir' '=' outputDir=STRING ';' 
 	'}';
-	
-SubWorkflow:
-	'SubWorkflow' name=ID 'follows' parent=[WorkflowComponent]
-	'{' 'child' '=' child=[Workflow] ';' '}';

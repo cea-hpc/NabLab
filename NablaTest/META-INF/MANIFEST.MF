@@ -8,10 +8,4 @@ Bundle-Vendor: CEA
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: test
 Require-Bundle: fr.cea.nabla,
- fr.cea.nabla.ir,
- org.eclipse.emf.mwe.core,
- org.eclipse.emf.mwe2.launch,
- org.eclipse.emf.mwe2.lib,
- org.apache.log4j,
- org.eclipse.equinox.common,
- org.eclipse.xtext.xbase.lib
+ fr.cea.nabla.ir

@@ -11,7 +11,7 @@
  * 	Marie-Pierre Oudot - initial implementation
  * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
-package fr.cea.nabla.sirius.services
+package fr.cea.nabla.sirius
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.sirius.business.api.session.SessionManager

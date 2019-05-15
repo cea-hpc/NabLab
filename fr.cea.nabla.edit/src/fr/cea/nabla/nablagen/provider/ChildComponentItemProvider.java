@@ -4,9 +4,8 @@
 package fr.cea.nabla.nablagen.provider;
 
 
-import fr.cea.nabla.nablagen.NablagenFactory;
+import fr.cea.nabla.nablagen.ChildComponent;
 import fr.cea.nabla.nablagen.NablagenPackage;
-import fr.cea.nabla.nablagen.TagPersistentVariablesComponent;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,25 +13,25 @@ import java.util.List;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.ecore.EStructuralFeature;
-
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link fr.cea.nabla.nablagen.TagPersistentVariablesComponent} object.
+ * This is the item provider adapter for a {@link fr.cea.nabla.nablagen.ChildComponent} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class TagPersistentVariablesComponentItemProvider extends Ir2IRComponentItemProvider {
+public class ChildComponentItemProvider extends WorkflowComponentItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public TagPersistentVariablesComponentItemProvider(AdapterFactory adapterFactory) {
+	public ChildComponentItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -47,49 +46,65 @@ public class TagPersistentVariablesComponentItemProvider extends Ir2IRComponentI
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
+			addParentPropertyDescriptor(object);
+			addDisabledPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
-	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
+	 * This adds a property descriptor for the Parent feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
-		if (childrenFeatures == null) {
-			super.getChildrenFeatures(object);
-			childrenFeatures.add(NablagenPackage.Literals.TAG_PERSISTENT_VARIABLES_COMPONENT__VARS);
-		}
-		return childrenFeatures;
+	protected void addParentPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ChildComponent_parent_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ChildComponent_parent_feature", "_UI_ChildComponent_type"),
+				 NablagenPackage.Literals.CHILD_COMPONENT__PARENT,
+				 true,
+				 false,
+				 true,
+				 null,
+				 null,
+				 null));
 	}
 
 	/**
+	 * This adds a property descriptor for the Disabled feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	protected EStructuralFeature getChildFeature(Object object, Object child) {
-		// Check the type of the specified child object and return the proper feature to use for
-		// adding (see {@link AddCommand}) it as a child.
-
-		return super.getChildFeature(object, child);
+	protected void addDisabledPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ChildComponent_disabled_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ChildComponent_disabled_feature", "_UI_ChildComponent_type"),
+				 NablagenPackage.Literals.CHILD_COMPONENT__DISABLED,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This returns TagPersistentVariablesComponent.gif.
+	 * This returns ChildComponent.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/TagPersistentVariablesComponent"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/ChildComponent"));
 	}
 
 	/**
@@ -100,10 +115,10 @@ public class TagPersistentVariablesComponentItemProvider extends Ir2IRComponentI
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((TagPersistentVariablesComponent)object).getName();
+		String label = ((ChildComponent)object).getName();
 		return label == null || label.length() == 0 ?
-			getString("_UI_TagPersistentVariablesComponent_type") :
-			getString("_UI_TagPersistentVariablesComponent_type") + " " + label;
+			getString("_UI_ChildComponent_type") :
+			getString("_UI_ChildComponent_type") + " " + label;
 	}
 
 
@@ -118,9 +133,9 @@ public class TagPersistentVariablesComponentItemProvider extends Ir2IRComponentI
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(TagPersistentVariablesComponent.class)) {
-			case NablagenPackage.TAG_PERSISTENT_VARIABLES_COMPONENT__VARS:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+		switch (notification.getFeatureID(ChildComponent.class)) {
+			case NablagenPackage.CHILD_COMPONENT__DISABLED:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}
 		super.notifyChanged(notification);
@@ -136,11 +151,6 @@ public class TagPersistentVariablesComponentItemProvider extends Ir2IRComponentI
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablagenPackage.Literals.TAG_PERSISTENT_VARIABLES_COMPONENT__VARS,
-				 NablagenFactory.eINSTANCE.createPersistentVar()));
 	}
 
 }

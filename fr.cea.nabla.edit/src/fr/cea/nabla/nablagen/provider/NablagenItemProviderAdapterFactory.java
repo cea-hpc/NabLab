@@ -142,6 +142,29 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.ChildComponent} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ChildComponentItemProvider childComponentItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.ChildComponent}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createChildComponentAdapter() {
+		if (childComponentItemProvider == null) {
+			childComponentItemProvider = new ChildComponentItemProvider(this);
+		}
+
+		return childComponentItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.Ir2CodeComponent} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -162,6 +185,29 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 		}
 
 		return ir2CodeComponentItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.Ir2IRComponent} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected Ir2IRComponentItemProvider ir2IRComponentItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.Ir2IRComponent}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createIr2IRComponentAdapter() {
+		if (ir2IRComponentItemProvider == null) {
+			ir2IRComponentItemProvider = new Ir2IRComponentItemProvider(this);
+		}
+
+		return ir2IRComponentItemProvider;
 	}
 
 	/**
@@ -395,29 +441,6 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.SubWorkflow} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected SubWorkflowItemProvider subWorkflowItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.SubWorkflow}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createSubWorkflowAdapter() {
-		if (subWorkflowItemProvider == null) {
-			subWorkflowItemProvider = new SubWorkflowItemProvider(this);
-		}
-
-		return subWorkflowItemProvider;
-	}
-
-	/**
 	 * This returns the root adapter factory that contains this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -519,7 +542,9 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 		if (nablagenModuleItemProvider != null) nablagenModuleItemProvider.dispose();
 		if (workflowItemProvider != null) workflowItemProvider.dispose();
 		if (workflowComponentItemProvider != null) workflowComponentItemProvider.dispose();
+		if (childComponentItemProvider != null) childComponentItemProvider.dispose();
 		if (ir2CodeComponentItemProvider != null) ir2CodeComponentItemProvider.dispose();
+		if (ir2IRComponentItemProvider != null) ir2IRComponentItemProvider.dispose();
 		if (irWriterComponentItemProvider != null) irWriterComponentItemProvider.dispose();
 		if (nabla2IrComponentItemProvider != null) nabla2IrComponentItemProvider.dispose();
 		if (tagPersistentVariablesComponentItemProvider != null) tagPersistentVariablesComponentItemProvider.dispose();
@@ -530,7 +555,6 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 		if (fillHLTsComponentItemProvider != null) fillHLTsComponentItemProvider.dispose();
 		if (ir2JavaComponentItemProvider != null) ir2JavaComponentItemProvider.dispose();
 		if (ir2KokkosComponentItemProvider != null) ir2KokkosComponentItemProvider.dispose();
-		if (subWorkflowItemProvider != null) subWorkflowItemProvider.dispose();
 	}
 
 }

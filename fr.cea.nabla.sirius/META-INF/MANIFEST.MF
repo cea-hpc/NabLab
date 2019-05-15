@@ -18,14 +18,13 @@ Require-Bundle: fr.cea.nabla,
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.macro,
  org.eclipse.xtext,
- org.eclipse.sirius.diagram,
- org.eclipse.emf.mwe2.language
+ org.eclipse.sirius.diagram
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.sirius.common.tools.api.interpreter
 Export-Package: fr.cea.nabla.sirius,
- fr.cea.nabla.sirius.services,
- fr.cea.nabla.sirius.services.mwe
+ fr.cea.nabla.sirius.ir,
+ fr.cea.nabla.sirius.nablagen
 Bundle-ClassPath: .
 Bundle-Vendor: CEA
 

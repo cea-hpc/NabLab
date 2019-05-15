@@ -15,8 +15,6 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
  * This is the item provider adapter for a {@link fr.cea.nabla.nablagen.OptimizeConnectivitiesComponent} object.
@@ -24,7 +22,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * <!-- end-user-doc -->
  * @generated
  */
-public class OptimizeConnectivitiesComponentItemProvider extends IrWriterComponentItemProvider {
+public class OptimizeConnectivitiesComponentItemProvider extends Ir2IRComponentItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
@@ -46,34 +44,9 @@ public class OptimizeConnectivitiesComponentItemProvider extends IrWriterCompone
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addParentPropertyDescriptor(object);
 			addConnectivitiesPropertyDescriptor(object);
-			addDisabledPropertyDescriptor(object);
-			addDumpIrPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the Parent feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addParentPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_OptimizeConnectivitiesComponent_parent_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_OptimizeConnectivitiesComponent_parent_feature", "_UI_OptimizeConnectivitiesComponent_type"),
-				 NablagenPackage.Literals.OPTIMIZE_CONNECTIVITIES_COMPONENT__PARENT,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
 	}
 
 	/**
@@ -94,50 +67,6 @@ public class OptimizeConnectivitiesComponentItemProvider extends IrWriterCompone
 				 false,
 				 true,
 				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Disabled feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addDisabledPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_OptimizeConnectivitiesComponent_disabled_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_OptimizeConnectivitiesComponent_disabled_feature", "_UI_OptimizeConnectivitiesComponent_type"),
-				 NablagenPackage.Literals.OPTIMIZE_CONNECTIVITIES_COMPONENT__DISABLED,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Dump Ir feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addDumpIrPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_OptimizeConnectivitiesComponent_dumpIr_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_OptimizeConnectivitiesComponent_dumpIr_feature", "_UI_OptimizeConnectivitiesComponent_type"),
-				 NablagenPackage.Literals.OPTIMIZE_CONNECTIVITIES_COMPONENT__DUMP_IR,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
 				 null,
 				 null));
 	}
@@ -178,13 +107,6 @@ public class OptimizeConnectivitiesComponentItemProvider extends IrWriterCompone
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
-
-		switch (notification.getFeatureID(OptimizeConnectivitiesComponent.class)) {
-			case NablagenPackage.OPTIMIZE_CONNECTIVITIES_COMPONENT__DISABLED:
-			case NablagenPackage.OPTIMIZE_CONNECTIVITIES_COMPONENT__DUMP_IR:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
-		}
 		super.notifyChanged(notification);
 	}
 

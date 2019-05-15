@@ -16,17 +16,29 @@ package fr.cea.nabla.ir
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrPackage
+import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.TimeIterationCopyJob
 import fr.cea.nabla.ir.ir.VarRef
 import fr.cea.nabla.ir.ir.Variable
 import java.util.HashSet
 
 import static extension fr.cea.nabla.ir.VariableExtensions.*
-import fr.cea.nabla.ir.ir.IrPackage
 
 class JobExtensions 
 {
+	static def hasIterable(Job it)
+	{
+		!eAllContents.filter(IterableInstruction).empty
+	}
+	
+	static def hasLoop(Job it)
+	{
+		!eAllContents.filter(Loop).empty
+	}
+
 	static def getNextJobs(Job from)
 	{
 		val fromTargetJobs = new HashSet<Job>

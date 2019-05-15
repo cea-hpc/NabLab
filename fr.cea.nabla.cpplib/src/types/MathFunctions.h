@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2018 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -22,21 +22,15 @@ namespace nablalib
 
 struct MathFunctions
 {
-	static double fabs(double v);
-	static double sqrt(double v);
-	static double min(double a, double b);
-	static double max(double a, double b);
-	static double reduceMin(double a, double b);
-	static double reduceMax(double a, double b);
-	static double sin(double v);
-	static double cos(double v);
-	static double asin(double v);
-	static double acos(double v);
-	static double dot(Real2 a, Real2 b);
-	static double dot(Real3 a, Real3 b);
-	static double norm(Real2 a);
-	static double norm(Real3 a);
-	static double det(Real2 a, Real2 b);
+	static double fabs(const double& v) noexcept;
+	static double sqrt(const double& v) noexcept;
+	static double min(const double& a, const double& b) noexcept;
+	static double max(const double& a, const double& b) noexcept;
+	static double dot(const Real2& a, const Real2& b) noexcept;
+	static double dot(const Real3& a, const Real3& b) noexcept;
+	static double norm(const Real2& a) noexcept;
+	static double norm(const Real3& a) noexcept;
+	static double det(const Real2& a, const Real2& b) noexcept;
 };
 }
 

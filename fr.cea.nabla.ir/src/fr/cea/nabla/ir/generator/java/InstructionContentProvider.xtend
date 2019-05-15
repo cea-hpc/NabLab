@@ -16,8 +16,8 @@ package fr.cea.nabla.ir.generator.java
 import com.google.inject.Inject
 import fr.cea.nabla.ir.generator.IteratorExtensions
 import fr.cea.nabla.ir.generator.IteratorRefExtensions
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -27,12 +27,14 @@ import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionInstruction
-import fr.cea.nabla.ir.ir.ScalarVarDefinition
+import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.ir.VarDefinition
 import fr.cea.nabla.ir.ir.VarRefIteratorRef
+
+import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class InstructionContentProvider 
 {
-	@Inject extension Utils
 	@Inject extension Ir2JavaUtils
 	@Inject extension ExpressionContentProvider
 	@Inject extension VariableExtensions
@@ -60,7 +62,7 @@ class InstructionContentProvider
 			(r1, r2) -> «reduction.javaName»(r1, r2)
 			«ELSE»
 			(r, «range.indexName») -> {
-				«defineIndexes»
+				«defineIndices»
 				«FOR innerReduction : innerReductions»
 				«innerReduction.content»
 				«ENDFOR»
@@ -71,13 +73,19 @@ class InstructionContentProvider
 		);
 	'''
 
-	def dispatch CharSequence getContent(ScalarVarDefinition it) 
+	def dispatch CharSequence getContent(VarDefinition it) 
 	'''
 		«FOR v : variables»
-		«v.javaType» «v.name»«IF v.defaultValue !== null» = «v.defaultValue.content»«ENDIF»;
+		«IF v.const»const «ENDIF»«v.varContent»
 		«ENDFOR»
 	'''
 	
+	private def dispatch getVarContent(ScalarVariable it)
+	'''«javaType» «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
+	
+	private def dispatch getVarContent(ArrayVariable it)
+	'''«javaType» «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
+
 	def dispatch CharSequence getContent(InstructionBlock it) 
 	'''
 		{
@@ -115,7 +123,7 @@ class InstructionContentProvider
 		«IF !range.container.connectivity.indexEqualId»int[] «range.containerName» = «range.accessor»;«ENDIF»
 		IntStream.range(0, «range.container.connectivity.nbElems»).parallel().forEach(«range.indexName» -> 
 		{
-			«defineIndexes»
+			«defineIndices»
 			«body.innerContent»
 		});
 	'''
@@ -125,13 +133,13 @@ class InstructionContentProvider
 		int[] «range.containerName» = «range.accessor»;
 		for (int «range.indexName»=0; «range.indexName»<«range.containerName».length; «range.indexName»++)
 		{
-			«defineIndexes»
+			«defineIndices»
 			«body.innerContent»
 		}
 	'''
 	
-	/** Define all needed indices and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
-	private def defineIndexes(IterableInstruction it)
+	/** Define all needed ids and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
+	private def defineIndices(IterableInstruction it)
 	'''
 		«FOR neededId : range.neededIds»
 			int «neededId.id» = «neededId.indexToId»;

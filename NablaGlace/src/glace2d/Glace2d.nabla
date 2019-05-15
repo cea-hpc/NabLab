@@ -70,7 +70,7 @@ const ℝ option_p_ini_zd = 0.1;
 // *************************************************************
 // * Init: X_ic(par le mailleur), ρ_ic, p_ic, V_ic & m
 // *************************************************************
-IniCenter: ∀j∈cells(), center{j} = (1.0/4.0) * ∑{r∈nodesOfCell(j)}(X{r}^{n=0});
+IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r}^{n=0});
 IniIc: ∀j∈cells(), if (center{j}.x < option_x_interface) {
   ρ_ic{j}=option_ρ_ini_zg;
   p_ic{j}=option_p_ini_zg;

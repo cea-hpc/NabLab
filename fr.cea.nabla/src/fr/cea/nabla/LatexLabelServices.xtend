@@ -125,6 +125,7 @@ class LatexLabelServices
 		var label = variable.name.pu
 		if (!spaceIterators.empty) label += '_{' + spaceIterators.map[x | x.latex].join(',') + '}'
 		if (timeIterator !== null) label += '^{' + timeIterator.timeIteratorLabel + '}'
+		else label += '^{n}'
 		for (f : fields) label += '.' + f
 		return label
 	}

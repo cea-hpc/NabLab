@@ -21,14 +21,21 @@ namespace nablalib
 {
 const string VtkFileWriter2D::OutputDir = "output";
 
-VtkFileWriter2D::VtkFileWriter2D(const string& moduleName)
-: m_moduleName(moduleName)
+VtkFileWriter2D::VtkFileWriter2D(const string& moduleName, const string& baseDirName)
+: m_moduleName(moduleName), m_disabled(false)
 {
-	const string outputDirName (OutputDir);
-	if (experimental::filesystem::exists(outputDirName))
-		experimental::filesystem::remove_all(outputDirName);
-	else
-		experimental::filesystem::create_directory(outputDirName);
+  if (baseDirName.empty())
+    m_directoryName = OutputDir;
+  else if (baseDirName == "none" || baseDirName == "NONE")
+    m_disabled = true;
+  else
+    m_directoryName = baseDirName + "/" + OutputDir;
+
+  if (!m_disabled) {
+    if (experimental::filesystem::exists(m_directoryName))
+    	experimental::filesystem::remove_all(m_directoryName);
+    experimental::filesystem::create_directory(m_directoryName);
+  }
 }
 
 VtkFileWriter2D::~VtkFileWriter2D() {}
@@ -43,8 +50,11 @@ VtkFileWriter2D::writeFile(
 					const map<string, double*> cellVariables,
 					const map<string, double*> nodeVariables)
 {
+  if (m_disabled)
+    return;
+
 	ofstream writer;
-	writer.open(OutputDir + "/" + m_moduleName + "." + to_string(iteration) + ".vtk");
+	writer.open(m_directoryName + "/" + m_moduleName + "." + to_string(iteration) + ".vtk");
 
 	writer << "# vtk DataFile Version 2.0" << endl;
 	writer << m_moduleName << " at iteration " << iteration << endl;

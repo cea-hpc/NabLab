@@ -26,9 +26,9 @@ import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class Utils 
 {
-	def getNbElems(Connectivity it) { 'nb' + name.toFirstUpper}
+	static def getNbElems(Connectivity it) { 'nb' + name.toFirstUpper}
 
-	def getComment(Job it)
+	static def getComment(Job it)
 	'''
 		/**
 		 * Job «name» @«at»
@@ -41,7 +41,7 @@ class Utils
 	 * Retourne la liste des connectivités utilisées par le module,
 	 * lors de la déclaration des variables ou des itérateurs.
 	 */
-	def getUsedConnectivities(IrModule it)
+	static def getUsedConnectivities(IrModule it)
 	{
 		// connectivités nécessaires pour les variables
 		val connectivities = variables.filter(ArrayVariable).map[dimensions].flatten.toSet
@@ -51,7 +51,7 @@ class Utils
 		return connectivities.filter[c | c.returnType.multiple]
 	}
 	
-	def boolean isTopLevelLoop(EObject it)
+	static def boolean isTopLevelLoop(EObject it)
 	{
 		if (eContainer === null) false
 		else switch eContainer

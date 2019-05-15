@@ -11,23 +11,29 @@
  * 	Marie-Pierre Oudot - initial implementation
  * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.kokkos
+package fr.cea.nabla.ir.generator.kokkos.defaultparallelism
 
-import com.google.inject.Inject
-import fr.cea.nabla.ir.ir.ArrayVariable
-import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.generator.kokkos.JobContentProvider
+import fr.cea.nabla.ir.ir.Job
 
-class VariableExtensions 
+import static extension fr.cea.nabla.ir.generator.Utils.*
+
+class DefaultJobContentProvider extends JobContentProvider 
 {
-	@Inject extension Ir2KokkosUtils
-
-	def dispatch getKokkosType(ScalarVariable it) 
-	{ 
-		type.kokkosType
-	}
+	override getJobCallsContent(Iterable<Job> jobs)
+	'''
+		«FOR j : jobs.sortBy[at]»
+		«j.name.toFirstLower»(); // @«j.at»
+		«ENDFOR»
+	'''
 	
-	def dispatch getKokkosType(ArrayVariable it)
-	{
-		getType.kokkosType + dimensions.map['*'].join
-	}
+	override getContent(Job it)
+	'''
+		«comment»
+		KOKKOS_INLINE_FUNCTION
+		void «name.toFirstLower»() noexcept
+		{
+			«innerContent»
+		}
+	'''
 }

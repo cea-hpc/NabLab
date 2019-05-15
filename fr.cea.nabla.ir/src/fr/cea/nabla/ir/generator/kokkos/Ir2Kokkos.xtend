@@ -101,8 +101,11 @@ class Ir2Kokkos extends IrGenerator
 		«ENDFOR»
 		«ENDIF»
 		
+		«IF (jcp instanceof HierarchicalJobContentProvider)»
 		typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
+		«ELSE»
 		const size_t maxHardThread = Kokkos::DefaultExecutionSpace::max_hardware_threads();
+		«ENDIF»
 
 	public:
 		«name»(Options* aOptions, NumericMesh2D* aNumericMesh2D, string output)

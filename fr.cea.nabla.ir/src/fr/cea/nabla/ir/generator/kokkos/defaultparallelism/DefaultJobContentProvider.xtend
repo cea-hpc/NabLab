@@ -16,15 +16,24 @@ package fr.cea.nabla.ir.generator.kokkos.defaultparallelism
 import fr.cea.nabla.ir.generator.kokkos.JobContentProvider
 import fr.cea.nabla.ir.ir.Job
 
+import static extension fr.cea.nabla.ir.generator.Utils.*
+
 class DefaultJobContentProvider extends JobContentProvider 
 {
-	override getJobCallsContent(Iterable<Job> jobs) 
-	{
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
+	override getJobCallsContent(Iterable<Job> jobs)
+	'''
+		«FOR j : jobs.sortBy[at]»
+		«j.name.toFirstLower»(); // @«j.at»
+		«ENDFOR»
+	'''
 	
-	override getContent(Job it) 
-	{
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
+	override getContent(Job it)
+	'''
+		«comment»
+		KOKKOS_INLINE_FUNCTION
+		void «name.toFirstLower»() noexcept
+		{
+			«innerContent»
+		}
+	'''
 }

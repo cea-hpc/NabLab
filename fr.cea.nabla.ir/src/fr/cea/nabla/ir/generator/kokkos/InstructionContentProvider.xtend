@@ -18,7 +18,7 @@ import com.google.inject.ImplementedBy
 import com.google.inject.Inject
 import fr.cea.nabla.ir.generator.IteratorExtensions
 import fr.cea.nabla.ir.generator.IteratorRefExtensions
-import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalInstructionContentProvider
+import fr.cea.nabla.ir.generator.kokkos.defaultparallelism.DefaultInstructionContentProvider
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.If
@@ -36,7 +36,7 @@ import fr.cea.nabla.ir.ir.VarRefIteratorRef
 
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
-@ImplementedBy(HierarchicalInstructionContentProvider)
+@ImplementedBy(DefaultInstructionContentProvider)
 abstract class InstructionContentProvider 
 {
 	@Inject extension ExpressionContentProvider
@@ -72,8 +72,6 @@ abstract class InstructionContentProvider
 	'''
 
 	protected abstract def CharSequence getHeader(ReductionInstruction it)
-
-	// par defaut le header vaudra: Kokkos::parallel_reduce("Reduction«result.name»", «range.container.connectivity.nbElems», KOKKOS_LAMBDA(const int& «range.indexName», «result.kokkosType»& x)
 
 	def dispatch CharSequence getContent(VarDefinition it) 
 	'''

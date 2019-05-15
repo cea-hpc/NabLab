@@ -13,15 +13,15 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
+import com.google.inject.ImplementedBy
 import com.google.inject.Inject
+import fr.cea.nabla.ir.generator.kokkos.defaultparallelism.DefaultJobContentProvider
 import fr.cea.nabla.ir.ir.EndOfInitJob
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
-import com.google.inject.ImplementedBy
-import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalJobContentProvider
 
-@ImplementedBy(HierarchicalJobContentProvider)
+@ImplementedBy(DefaultJobContentProvider)
 abstract class JobContentProvider 
 {
 	@Inject extension InstructionContentProvider

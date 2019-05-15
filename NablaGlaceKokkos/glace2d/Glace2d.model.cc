@@ -46,7 +46,7 @@ public:
 	};
 	Options* options;
 
- private:
+private:
 	NumericMesh2D* mesh;
 	VtkFileWriter2D writer;
 	int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;

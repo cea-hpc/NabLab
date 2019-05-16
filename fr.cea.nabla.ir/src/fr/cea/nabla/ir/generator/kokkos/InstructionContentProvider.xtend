@@ -14,11 +14,13 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
+import com.google.inject.ImplementedBy
 import com.google.inject.Inject
 import fr.cea.nabla.ir.generator.IteratorExtensions
 import fr.cea.nabla.ir.generator.IteratorRefExtensions
-import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.generator.kokkos.defaultparallelism.DefaultInstructionContentProvider
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -28,12 +30,15 @@ import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionInstruction
-import fr.cea.nabla.ir.ir.ScalarVarDefinition
+import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.ir.VarDefinition
 import fr.cea.nabla.ir.ir.VarRefIteratorRef
 
-class InstructionContentProvider 
+import static extension fr.cea.nabla.ir.generator.Utils.*
+
+@ImplementedBy(DefaultInstructionContentProvider)
+abstract class InstructionContentProvider 
 {
-	@Inject extension Utils
 	@Inject extension ExpressionContentProvider
 	@Inject extension VariableExtensions
 	@Inject extension IteratorExtensions
@@ -53,10 +58,10 @@ class InstructionContentProvider
 	 */
 	def dispatch CharSequence getContent(ReductionInstruction it) 
 	'''
-		«IF !range.container.connectivity.indexEqualId»int[] «range.containerName» = «range.accessor»;«ENDIF»
-		«result.kokkosType» «result.name» = «result.defaultValue.content»;
+		«IF !range.container.connectivity.indexEqualId»int[] «range.containerName»(«range.accessor»);«ENDIF»
+		«result.kokkosType» «result.name»(«result.defaultValue.content»);
 		Kokkos::«reduction.kokkosName»<«result.kokkosType»> reducer(«result.name»);
-		Kokkos::parallel_reduce("Reduction«result.name»", «range.container.connectivity.nbElems», KOKKOS_LAMBDA(const int& «range.indexName», «result.kokkosType»& x)
+		«header»
 		{
 			«defineIndices»
 			«FOR innerReduction : innerReductions»
@@ -66,13 +71,21 @@ class InstructionContentProvider
 		}, reducer);
 	'''
 
-	def dispatch CharSequence getContent(ScalarVarDefinition it) 
+	protected abstract def CharSequence getHeader(ReductionInstruction it)
+
+	def dispatch CharSequence getContent(VarDefinition it) 
 	'''
 		«FOR v : variables»
-		«v.kokkosType» «v.name»«IF v.defaultValue !== null» = «v.defaultValue.content»«ENDIF»;
+		«IF v.const»const «ENDIF»«v.varContent»
 		«ENDFOR»
 	'''
 	
+	private def dispatch getVarContent(ScalarVariable it)
+	'''«kokkosType» «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
+	
+	private def dispatch getVarContent(ArrayVariable it)
+	'''Kokkos::View<«kokkosType»> «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
+
 	def dispatch CharSequence getContent(InstructionBlock it) 
 	'''
 		{
@@ -100,19 +113,11 @@ class InstructionContentProvider
 		«ENDIF»
 	'''
 	
-	private def getParallelContent(Loop it)
-	'''
-		«IF !range.container.connectivity.indexEqualId»auto «range.containerName» = «range.accessor»;«ENDIF»
-		Kokkos::parallel_for(«range.container.connectivity.nbElems», KOKKOS_LAMBDA(const int «range.indexName»)
-		{
-			«defineIndices»
-			«body.innerContent»
-		});
-	'''
+	protected abstract def CharSequence getParallelContent(Loop it)
 
 	private def getSequentialContent(Loop it)
 	'''
-		auto «range.containerName» = «range.accessor»;
+		auto «range.containerName»(«range.accessor»);
 		for (int «range.indexName»=0; «range.indexName»<«range.containerName».size(); «range.indexName»++)
 		{
 			«defineIndices»
@@ -121,18 +126,18 @@ class InstructionContentProvider
 	'''
 	
 	/** Define all needed ids and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
-	private def defineIndices(IterableInstruction it)
+	protected def defineIndices(IterableInstruction it)
 	'''
 		«FOR neededId : range.neededIds»
-			int «neededId.id» = «neededId.indexToId»;
+			int «neededId.id»(«neededId.indexToId»);
 		«ENDFOR»
 		«FOR neededIndex : range.indicesToDefined»
-			int «neededIndex.indexName» = «neededIndex.idToIndex»;
+			int «neededIndex.indexName»(«neededIndex.idToIndex»);
 		«ENDFOR»
 		«FOR singleton : singletons»
-			int «singleton.id» = «singleton.accessor»;
+			int «singleton.id»(«singleton.accessor»);
 			«FOR neededIndex : singleton.indicesToDefined»
-				int «neededIndex.indexName» = «neededIndex.idToIndex»;
+				int «neededIndex.indexName»(«neededIndex.idToIndex»);
 			«ENDFOR»
 		«ENDFOR»
 	'''
@@ -146,7 +151,7 @@ class InstructionContentProvider
 	private def getIdToIndex(VarRefIteratorRef it)
 	{
 		if (indexEqualId) id
-		else 'Utils::indexOf(' + accessor + ',' + id + ')'
+		else 'utils::indexOf(' + accessor + ',' + id + ')'
 	}
 
 	def getAccessor(VarRefIteratorRef it) '''mesh->get«connectivity.name.toFirstUpper»(«connectivityArgs.map[id].join(', ')»)'''

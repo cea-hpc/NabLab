@@ -17,7 +17,6 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <Kokkos_Core.hpp>
 
 #include "types/Types.h"
 #include "mesh/NodeIdContainer.h"
@@ -30,19 +29,26 @@ namespace nablalib
 class VtkFileWriter2D
 {
 public:
-	VtkFileWriter2D(const string& moduleName);
+	VtkFileWriter2D(const string& moduleName, const string& baseDirName = string());
 	~VtkFileWriter2D();
 
 	void writeFile(
 			const int& iteration,
-			const Kokkos::View<Real2*>& nodes,
-			const vector<Quad>& cells,
-			const map<string, Kokkos::View<double*>>& cellVariables,
-			const map<string, Kokkos::View<double*>>& nodeVariables);
+			const int& nbNodes,
+			const Real2* nodes,
+			const int& nbCells,
+			const Quad* cells,
+			const map<string, double*> cellVariables,
+			const map<string, double*> nodeVariables);
+
+	bool isDisabled() { return m_disabled; }
+	const std::string& outputDirectory() { return m_directoryName; }
 
 private:
 	static const string OutputDir;
 	string m_moduleName;
+	string m_directoryName;
+	bool m_disabled;
 };
 
 }

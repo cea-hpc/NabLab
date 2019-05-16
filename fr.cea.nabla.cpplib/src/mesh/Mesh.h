@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2018 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -18,56 +18,51 @@
 #include <algorithm>
 
 #include "mesh/NodeIdContainer.h"
+#include "mesh/CartesianMesh2DGenerator.h"
 
 using namespace std;
 
 namespace nablalib
 {
 
-template<class T> class Mesh
+template<class T>
+class Mesh
 {
-public:
-	Mesh(int nbNodes, int nbEdges, int nbQuads, int nbInnerNodes)
-	: m_nodes(nbNodes)
-	, m_edges(nbEdges)
-	, m_quads(nbQuads)
-	, m_innerNodeIds(nbInnerNodes)
-	{}
+  friend class CartesianMesh2DGenerator;
 
-	vector<Edge>& getEdges() { return m_edges; }
-	vector<int>& getInnerNodeIds() { return m_innerNodeIds; }
-	vector<T>& getNodes() { return m_nodes; }
-	vector<Quad>& getQuads() { return m_quads; }
+ public:
+  Mesh(int nbNodes, int nbEdges, int nbQuads, int nbInnerNodes)
+	  : m_nodes(nbNodes), m_edges(nbEdges), m_quads(nbQuads) , m_innerNodeIds(nbInnerNodes) { }
 
-	const vector<int> getQuadIdsOfNode(const int nodeId) const
+	const vector<Edge>& getEdges() noexcept { return m_edges; }
+	const vector<int>& getInnerNodeIds() noexcept { return m_innerNodeIds; }
+	const vector<T>& getNodes() noexcept { return m_nodes; }
+	const vector<Quad>& getQuads() noexcept { return m_quads; }
+
+	vector<int> getQuadIdsOfNode(const int& nodeId) const
 	{
 		vector<int> candidateQuadIds;
-		for (int quadId = 0; quadId < m_quads.size(); quadId++)
-		{
-			auto q = m_quads[quadId];
-			auto qNodeIds = q.getNodeIds();
-			if (find(qNodeIds.begin(), qNodeIds.end(), nodeId) != qNodeIds.end())
-				candidateQuadIds.push_back(quadId);
+		for (int quadId(0); quadId < m_quads.size(); ++quadId) {
+			if (find(m_quads[quadId].getNodeIds().begin(), m_quads[quadId].getNodeIds().end(),
+			         nodeId) != m_quads[quadId].getNodeIds().end())
+				candidateQuadIds.emplace_back(quadId);
 		}
 		return candidateQuadIds;
 	}
 
-	const vector<int> getOuterEdgeIds() const
+	vector<int> getOuterEdgeIds() const
 	{
 		vector<int> candidateEdgeIds;
-		for (int edgeId = 0; edgeId < m_edges.size(); edgeId++)
-		{
-			auto edge = m_edges[edgeId];
-			if (!isInnerEdge(edge))
-				candidateEdgeIds.push_back(edgeId);
-		}
+		for (int edgeId(0); edgeId < m_edges.size(); ++edgeId)
+			if (!isInnerEdge(m_edges[edgeId]))
+				candidateEdgeIds.emplace_back(edgeId);
 		return candidateEdgeIds;
 	}
 
-	const bool isInnerEdge(const Edge e) const
+	bool isInnerEdge(const Edge& e) const noexcept
 	{
-		return (find(m_innerNodeIds.begin(), m_innerNodeIds.end(), e.getNodeIds()[0]) != m_innerNodeIds.end())
-		|| (find(m_innerNodeIds.begin(), m_innerNodeIds.end(), e.getNodeIds()[1]) != m_innerNodeIds.end());
+		return (find(m_innerNodeIds.begin(), m_innerNodeIds.end(), e.getNodeIds()[0]) != m_innerNodeIds.end()) ||
+		       (find(m_innerNodeIds.begin(), m_innerNodeIds.end(), e.getNodeIds()[1]) != m_innerNodeIds.end());
 	}
 
 private:

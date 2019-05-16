@@ -38,9 +38,9 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 	 * c'est à dire non intégrées à une boucle. Chaque ReductionInstruction est remplacée par
 	 * 2 jobs. 
 	 * Pour X = sum(j E cells)(Yj + 4) + Z, on a :
-	 *   - un job avec une boucle cells qui calcule l'argument de la réduction tmpSumXXX = Yj+4
-	 *   - un job avec une boucle cells qui fait la réduction sumXXX +?= tmpSumXXX
-	 * Si l'argument est une VarRef, le premier job est inutile (=> remplacer tmpSumXXX par Y dans le 2e).
+	 *   - un job avec une boucle cells qui calcule l'argument de la réduction tmpSum<Id> = Yj+4
+	 *   - un job avec une boucle cells qui fait la réduction sum<Id> +?= tmpSum<Id>
+	 * Si l'argument est une VarRef, le premier job est inutile (=> remplacer tmpSum<Id> par Y dans le 2e).
 	 * Si l'expression finale est une VarRef, le dernier job est inutile mais aucune optimisation
 	 * n'a été faite pour le moment.
 	 */

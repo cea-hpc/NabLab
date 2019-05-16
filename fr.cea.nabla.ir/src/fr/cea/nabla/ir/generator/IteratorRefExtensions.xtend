@@ -6,9 +6,10 @@ import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.VarRefIteratorRef
 import java.util.Comparator
 
+import static extension fr.cea.nabla.ir.generator.Utils.*
+
 class IteratorRefExtensions 
 {
-	@Inject extension Utils
 	@Inject extension IteratorExtensions
 	
 	private def getInternalIndexName(IteratorRef it)

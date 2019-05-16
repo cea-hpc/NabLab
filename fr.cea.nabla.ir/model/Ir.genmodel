@@ -58,13 +58,14 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/persist"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/persistenceName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/const"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ScalarVariable">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ScalarVariable/defaultValue"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ScalarVariable/const"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ArrayVariable">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ArrayVariable/dimensions"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ArrayVariable/defaultValue"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Function">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/name"/>
@@ -104,8 +105,8 @@
     <genClasses ecoreClass="Ir.ecore#//EndOfTimeLoopJob"/>
     <genClasses ecoreClass="Ir.ecore#//EndOfInitJob"/>
     <genClasses image="false" ecoreClass="Ir.ecore#//Instruction"/>
-    <genClasses ecoreClass="Ir.ecore#//ScalarVarDefinition">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ScalarVarDefinition/variables"/>
+    <genClasses ecoreClass="Ir.ecore#//VarDefinition">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//VarDefinition/variables"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//InstructionBlock">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InstructionBlock/instructions"/>

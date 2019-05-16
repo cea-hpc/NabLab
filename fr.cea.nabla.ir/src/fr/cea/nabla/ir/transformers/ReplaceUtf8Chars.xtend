@@ -15,7 +15,7 @@ package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ReductionInstruction
-import fr.cea.nabla.ir.ir.ScalarVarDefinition
+import fr.cea.nabla.ir.ir.VarDefinition
 
 class ReplaceUtf8Chars implements IrTransformationStep 
 {
@@ -27,7 +27,7 @@ class ReplaceUtf8Chars implements IrTransformationStep
 	override transform(IrModule m) 
 	{
 		m.variables.forEach[x | x.name = x.name.noUtf8]
-		for (svd : m.eAllContents.filter(ScalarVarDefinition).toIterable)
+		for (svd : m.eAllContents.filter(VarDefinition).toIterable)
 			svd.variables.forEach[x | x.name = x.name.noUtf8]
 		m.eAllContents.filter(ReductionInstruction).forEach[x | x.result.name = x.result.name.noUtf8]
 		m.connectivities.forEach[x | x.name = x.name.noUtf8]

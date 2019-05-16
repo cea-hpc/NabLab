@@ -15,7 +15,6 @@ package fr.cea.nabla.ir.generator.java
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.generator.IrGenerator
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.IrModule
@@ -27,11 +26,12 @@ import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import java.util.ArrayList
 import java.util.List
 
+import static extension fr.cea.nabla.ir.generator.Utils.*
+
 class Ir2Java extends IrGenerator
 {
 	static val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new OptimizeConnectivities, new FillJobHLTs]
 
-	@Inject extension Utils
 	@Inject extension Ir2JavaUtils
 	@Inject extension ExpressionContentProvider
 	@Inject extension JobContentProvider

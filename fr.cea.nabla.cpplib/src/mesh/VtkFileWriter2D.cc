@@ -21,43 +21,55 @@ namespace nablalib
 {
 const string VtkFileWriter2D::OutputDir = "output";
 
-VtkFileWriter2D::VtkFileWriter2D(const string& moduleName)
-: m_moduleName(moduleName)
+VtkFileWriter2D::VtkFileWriter2D(const string& moduleName, const string& baseDirName)
+: m_moduleName(moduleName), m_disabled(false)
 {
-	const string outputDirName (OutputDir);
-	if (experimental::filesystem::exists(outputDirName))
-		experimental::filesystem::remove_all(outputDirName);
-	else
-		experimental::filesystem::create_directory(outputDirName);
+  if (baseDirName.empty())
+    m_directoryName = OutputDir;
+  else if (baseDirName == "none" || baseDirName == "NONE")
+    m_disabled = true;
+  else
+    m_directoryName = baseDirName + "/" + OutputDir;
+
+  if (!m_disabled) {
+    if (experimental::filesystem::exists(m_directoryName))
+    	experimental::filesystem::remove_all(m_directoryName);
+    experimental::filesystem::create_directory(m_directoryName);
+  }
 }
 
 VtkFileWriter2D::~VtkFileWriter2D() {}
 
 void
 VtkFileWriter2D::writeFile(
-		const int& iteration,
-		const Kokkos::View<Real2*>& nodes,
-		const vector<Quad>& cells,
-		const map<string, Kokkos::View<double*>>& cellVariables,
-		const map<string, Kokkos::View<double*>>& nodeVariables)
+					const int& iteration,
+					const int& nbNodes,
+					const Real2* nodes,
+					const int& nbCells,
+					const Quad* cells,
+					const map<string, double*> cellVariables,
+					const map<string, double*> nodeVariables)
 {
+  if (m_disabled)
+    return;
+
 	ofstream writer;
-	writer.open(OutputDir + "/" + m_moduleName + "." + to_string(iteration) + ".vtk");
+	writer.open(m_directoryName + "/" + m_moduleName + "." + to_string(iteration) + ".vtk");
 
 	writer << "# vtk DataFile Version 2.0" << endl;
 	writer << m_moduleName << " at iteration " << iteration << endl;
 	writer << "ASCII" << endl;
 	writer << "DATASET POLYDATA" << endl;
 
-	writer << "POINTS " << nodes.size() << " float" << endl;
-	for (int r=0 ; r<nodes.size() ; ++r)
-		writer << nodes(r).x << "\t" << nodes(r).y << "\t" << 0.0 << endl;
+	writer << "POINTS " << nbNodes << " float" << endl;
+	for (int r=0 ; r<nbNodes ; ++r)
+		writer << nodes[r].x << "\t" << nodes[r].y << "\t" << 0.0 << endl;
 
-	writer << "POLYGONS " << cells.size() << " " << cells.size() * 5 << endl;
-	for (auto cell : cells)
+	writer << "POLYGONS " << nbCells << " " << nbCells * 5 << endl;
+	for (int j=0 ; j<nbCells ; ++j)
 	{
 		writer << "4";
-		for (auto nodeId : cell.getNodeIds())
+		for (auto nodeId : cells[j].getNodeIds())
 			writer << "\t" << nodeId;
 		writer << endl;
 	}
@@ -65,24 +77,24 @@ VtkFileWriter2D::writeFile(
 	// POINT DATA
 	if (!nodeVariables.empty())
 	{
-		writer << "\nDATA_DATA " << nodes.size() << endl;
+		writer << "\nDATA_DATA " << nbNodes << endl;
 		for (auto itr = nodeVariables.begin() ; itr != nodeVariables.end() ; itr++)
 		{
 			writer << "SCALARS " << itr->first << " float 1" << endl;
 			writer << "LOOKUP_TABLE default" << endl;
-			for (int r=0 ; r<nodes.size() ; ++r) writer << itr->second(r) << endl;
+			for (int r=0 ; r<nbNodes ; ++r) writer << itr->second[r] << endl;
 		}
 	}
 
 	// CELL DATA
 	if (!cellVariables.empty())
 	{
-		writer << "\nCELL_DATA " << cells.size() << endl;
+		writer << "\nCELL_DATA " << nbCells << endl;
 		for (auto itr = cellVariables.begin() ; itr != cellVariables.end() ; itr++)
 		{
 			writer << "SCALARS " << itr->first << " float 1" << endl;
 			writer << "LOOKUP_TABLE default" << endl;
-			for (int j=0 ; j<cells.size() ; ++j) writer << itr->second(j) << endl;
+			for (int j=0 ; j<nbCells ; ++j) writer << itr->second[j] << endl;
 		}
 	}
 

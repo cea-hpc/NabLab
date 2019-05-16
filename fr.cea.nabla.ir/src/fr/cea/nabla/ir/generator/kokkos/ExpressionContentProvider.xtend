@@ -21,6 +21,7 @@ import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
+import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
@@ -34,7 +35,9 @@ import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
+import org.eclipse.emf.ecore.EObject
 
+import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.VariableExtensions.isScalarConst
 
 class ExpressionContentProvider
@@ -81,12 +84,33 @@ class ExpressionContentProvider
 	'''«function.provider»Functions::«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
 	def dispatch CharSequence getContent(VarRef it) 
-	'''«variable.codeName»«iteratorsContent»«FOR f:fields BEFORE '.' SEPARATOR '.'»«f»«ENDFOR»'''
+	'''«codeName»«iteratorsContent»«FOR f:fields BEFORE '.' SEPARATOR '.'»«f»«ENDFOR»'''
 
+	private def getCodeName(VarRef it)
+	{
+		if (constRef) '''as_const(«variable.codeName»)'''
+		else '''«variable.codeName»'''
+	}
+	
+	private def isConstRef(VarRef it)
+	{
+		val j = getJob(it)
+		val scalar = variable instanceof ScalarVariable
+		if (j === null) scalar
+		else scalar && j.inVars.exists[x | x == variable]
+	}
+	
 	private def getCodeName(Variable it)
 	{
 		if (scalarConst) 'options->' + name
 		else name
+	}
+
+	private def Job getJob(EObject o)
+	{
+		if (o === null) null
+		else if (o instanceof Job) o as Job
+		else o.eContainer.job
 	}
 
 	private def getIteratorsContent(VarRef it) 

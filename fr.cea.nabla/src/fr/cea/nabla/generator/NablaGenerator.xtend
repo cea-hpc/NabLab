@@ -13,48 +13,16 @@
  *******************************************************************************/
 package fr.cea.nabla.generator
 
-import com.google.inject.Inject
-import fr.cea.nabla.generator.ir.Nabla2Ir
-import fr.cea.nabla.ir.generator.java.Ir2Java
-import fr.cea.nabla.ir.generator.kokkos.Ir2Kokkos
-import fr.cea.nabla.ir.transformers.TagPersistentVariables
 import fr.cea.nabla.nabla.NablaModule
-import java.io.IOException
-import java.io.InputStreamReader
-import java.net.URL
-import java.nio.charset.Charset
-import java.util.Properties
-import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.emf.ecore.resource.ResourceSet
-import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.emf.ecore.xmi.XMLResource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-import org.eclipse.xtext.resource.SaveOptions
 
-/**
- * Generates code from your model files on save.
- * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#code-generation
- * 
- * Attention: avant la génération, le modèle IR subit des modifications par différentes passes.
- * Il n'est pas possible d'avoir plusieurs générateurs sans cloner l'IR ;  en effet le mécanisme
- * d'optimisation des créations de Xtend (def create) fait que s'il y a plusieurs appels à toIrModule
- * (Nabla -> IR), l'IR n'est pas recréée. Par conséquent, lors de la transformation, les passes 
- * se superposent.
- */
+import static extension fr.cea.nabla.LatexLabelServices.*
+
 class NablaGenerator extends AbstractGenerator 
 {
-	static val IrExtension = 'nablair'
-	static val PropertiesExtension = 'properties'
-	
-	@Inject SmallLatexGenerator latexGenerator
-	@Inject Nabla2Ir nabla2ir
-	
-	@Inject Ir2Java ir2Java
-	@Inject Ir2Kokkos ir2Kokkos
-	
 	override doGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context) 
 	{
 		// 1 seul module par resource par définition (cf .xtext)
@@ -64,101 +32,35 @@ class NablaGenerator extends AbstractGenerator
 		// ecriture du fichier de modele
 		if (!module.jobs.empty)
 		{
-			val fileNameWithoutExtension = module.name.toLowerCase + '/' + module.name
+			val fileName = module.name.toLowerCase + '/' + module.name + '.tex'
 			
 			println('Generating Latex document')
-			fsa.generateFile(fileNameWithoutExtension.addExtensions(#['tex']), latexGenerator.getLatexContent(module))
-			
-			println('Generating initial Ir')			
-			val irModuleRef = nabla2ir.toIrModule(module)
-			
-			print('Looking for a properties file... ')
-			val uri = input.URI.trimFileExtension.toString.addExtensions(#[PropertiesExtension])
-			val properties = uri.properties
-			val generators = #[ir2Java, ir2Kokkos]	
-			if (properties.empty) println('no file')
-			else
-			{
-				println('ok file found')
-				
-//				val tagVariableStep = new TagPersistentVariables(properties)
-//				tagVariableStep.transform(irModuleRef)				
-			
-				for (generator : generators)
-				{
-					val generationDir = properties.getProperty(generator.name + 'GenerationDir', null)
-					if (generationDir !== null)
-					{
-						val languageFileNameWithoutExtensions = generationDir + '/' + fileNameWithoutExtension
-						
-						val irModule = EcoreUtil::copy(irModuleRef)
-						println('Starting generation chain for ' + generator.shortName + ' (.' + generator.fileExtension + ' file)')
-						println('\tBuilding Nabla Intermediate Representation')
-			
-						// application des transformation de l'IR (dépendant du langage
-						var transformOK = true
-						val stepIt = generator.transformationSteps.iterator
-						val originModuleName = module.name
-						while (stepIt.hasNext && transformOK)
-						{
-							val step = stepIt.next
-							println('\tIR -> IR: ' + step.description)
-							val suffix = 'before' + step.shortName
-							irModule.name = originModuleName + '_' + suffix
-							createAndSaveResource(fsa, input.resourceSet, languageFileNameWithoutExtensions.addExtensions(#[suffix, generator.fileExtension, IrExtension]), irModule)		
-							transformOK = step.transform(irModule)
-						}
-						irModule.name = originModuleName
-						createAndSaveResource(fsa, input.resourceSet, languageFileNameWithoutExtensions.addExtensions(#[generator.fileExtension, IrExtension]), irModule)
-					
-						// génération du fichier source
-						if (transformOK)
-						{
-							println('\tGenerating .' + generator.fileExtension + ' file')
-							val fileContent = generator.getFileContent(irModule)
-							fsa.generateFile(languageFileNameWithoutExtensions.addExtensions(#[generator.fileExtension]), fileContent)	
-						}	
-					}
-				}
-			}
+			fsa.generateFile(fileName, module.latexContent)
 		}
 	}
 	
-	private def getShortName(Object o) { o.class.name.substring(o.class.package.name.length + 1) }
-	private def addExtensions(String fileNameWithoutExtension, String[] extensions) { fileNameWithoutExtension + '.' + extensions.join('.') } 
+	private	def getLatexContent(NablaModule m) 
+	'''
+		\documentclass[11pt]{article}
 		
-	/** Crée et sauve la resource au même endroit que le paramètre baseResource en changeant l'extension par newExtension */
-	private def createAndSaveResource(IFileSystemAccess2 fsa, ResourceSet rSet, String fileName, EObject content)
-	{
-		val uri = fsa.getURI(fileName)
-		val resource = rSet.createResource(uri)
-		resource.contents += content
-		resource.save(xmlSaveOptions)
-	}
-	
-	private	def getXmlSaveOptions()
-	{
-		val builder = SaveOptions::newBuilder 
-		builder.format
-		val so = builder.options.toOptionsMap
-		so.put(XMLResource::OPTION_LINE_WIDTH, 160)
-		return so
-	}
-	
-	private	def getProperties(String uri)
-	{
-		val props = new Properties
-		val url = new URL(uri)
-		try 
-		{
-			val inputStream = url.openConnection().getInputStream()
-			props.load(new InputStreamReader(inputStream, Charset.forName('UTF-8')))
-			inputStream.close		
-		}
-		catch (IOException e)
-		{
-			// pas de fichier => rien à faire
-		}
-		return props		
-	}
+		\use package{fontspec}
+		\use package{geometry}
+		\geometry{landscape}
+		
+		\title{Nabla Module «m.name»}
+		\author{Generated by the NabLab environment}
+		
+		\begin{document}
+		\maketitle
+
+		«FOR j : m.jobs»
+		«val latexContent = j.latex»
+		«IF !latexContent.nullOrEmpty»
+		
+		\section{«j.name»}
+		$«latexContent»$
+
+		«ENDIF»
+		«ENDFOR»
+		\end{document}	'''
 }

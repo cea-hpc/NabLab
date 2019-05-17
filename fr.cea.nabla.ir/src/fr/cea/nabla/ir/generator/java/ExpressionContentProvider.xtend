@@ -13,8 +13,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import com.google.inject.Inject
-import fr.cea.nabla.ir.generator.IteratorRefExtensions
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
@@ -35,16 +33,15 @@ import fr.cea.nabla.ir.ir.VarRef
 import fr.cea.nabla.ir.ir.Variable
 
 import static extension fr.cea.nabla.ir.VariableExtensions.isScalarConst
+import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
+import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 
 class ExpressionContentProvider
 {
-	@Inject extension IteratorRefExtensions
-	@Inject extension Ir2JavaUtils
-	
-	def dispatch CharSequence getContent(ContractedIf it) 
+	static def dispatch CharSequence getContent(ContractedIf it) 
 	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
 	
-	def dispatch CharSequence getContent(BinaryExpression it) 
+	static def dispatch CharSequence getContent(BinaryExpression it) 
 	{
 		val lContent = left.content
 		val rContent = right.content
@@ -55,23 +52,23 @@ class ExpressionContentProvider
 		else '''«lContent» «operator» «rContent»'''
 	}
 
-	def dispatch CharSequence getContent(UnaryExpression it) 
+	static def dispatch CharSequence getContent(UnaryExpression it) 
 	{
 		val content = expression.content
 		if (expression.getType().basicType.javaBasicType) '''«operator»«content»'''
 		else '''«content».«operator.javaOperator»()'''
 	}
 
-	def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
-	def dispatch CharSequence getContent(IntConstant it) '''«value»'''
-	def dispatch CharSequence getContent(RealConstant it) '''«value»'''
-	def dispatch CharSequence getContent(Real2Constant it) '''new Real2(«x», «y»)'''
-	def dispatch CharSequence getContent(Real3Constant it) '''new Real3(«x», «y», «z»)'''
-	def dispatch CharSequence getContent(Real2x2Constant it) '''new Real2x2(«x.content», «y.content»)'''
-	def dispatch CharSequence getContent(Real3x3Constant it) '''new Real3x3(«x.content», «y.content», «z.content»)'''
-	def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
+	static def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
+	static def dispatch CharSequence getContent(IntConstant it) '''«value»'''
+	static def dispatch CharSequence getContent(RealConstant it) '''«value»'''
+	static def dispatch CharSequence getContent(Real2Constant it) '''new Real2(«x», «y»)'''
+	static def dispatch CharSequence getContent(Real3Constant it) '''new Real3(«x», «y», «z»)'''
+	static def dispatch CharSequence getContent(Real2x2Constant it) '''new Real2x2(«x.content», «y.content»)'''
+	static def dispatch CharSequence getContent(Real3x3Constant it) '''new Real3x3(«x.content», «y.content», «z.content»)'''
+	static def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
 	
-	def dispatch CharSequence getContent(MinConstant it) 
+	static def dispatch CharSequence getContent(MinConstant it) 
 	{
 		switch getType().basicType
 		{
@@ -82,7 +79,7 @@ class ExpressionContentProvider
 		}
 	}
 
-	def dispatch CharSequence getContent(MaxConstant it) 
+	static def dispatch CharSequence getContent(MaxConstant it) 
 	{
 		switch getType().basicType
 		{
@@ -93,19 +90,19 @@ class ExpressionContentProvider
 		}
 	}
 
-	def dispatch CharSequence getContent(FunctionCall it) 
+	static def dispatch CharSequence getContent(FunctionCall it) 
 	'''«function.provider»Functions.«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
-	def dispatch CharSequence getContent(VarRef it) 
+	static def dispatch CharSequence getContent(VarRef it) 
 	'''«variable.codeName»«iteratorsContent»«FOR f:fields BEFORE '.' SEPARATOR '.'»get«f.toFirstUpper»()«ENDFOR»'''
 
-	private def getCodeName(Variable it)
+	private static def getCodeName(Variable it)
 	{
 		if (scalarConst) 'options.' + name
 		else name
 	}
 	
-	private def getIteratorsContent(VarRef it) 
+	private static def getIteratorsContent(VarRef it) 
 	{ 
 		if (iterators.empty || variable instanceof ScalarVariable) return ''
 		val array = variable as ArrayVariable

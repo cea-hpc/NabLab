@@ -276,6 +276,13 @@
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
 			fileExtensions="nabla"/>
 	</extension>
+ <extension
+       point="org.eclipse.xtext.builder.participant">
+    <participant
+          class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
+          fileExtensions="nablagen">
+    </participant>
+ </extension>
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
 			category="fr.cea.nabla.Nabla"
@@ -467,26 +474,30 @@
           name="Latex View">
     </view>
  </extension>
+ <!-- Shortcut pour lancer la génération sur fichier nablagen -->
  <extension
-       id="fr.cea.nabla.ui.NablacBuilder"
-       name="Nablac Builder"
-       point="org.eclipse.core.resources.builders">
-    <builder
-          hasNature="false"
-          isConfigurable="true">
-       <run
-             class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.NablacBuilder">
-          <parameter
-                name="nablacPath"
-                value="toto">
-          </parameter>
-       </run></builder>
+       point="org.eclipse.debug.ui.launchShortcuts">
+    <shortcut
+          class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:fr.cea.nabla.ui.NablagenShortcut"
+          icon="icons/Nabla.gif"
+          id="fr.cea.nabla.ui.NablagenShortcut"
+          label="Launch Generation"
+          modes="run">
+          <contextualLaunch>
+          	<enablement>
+          		<with variable="selection">
+          			<count value="1"/>
+          			<iterate>
+          				<adapt type="org.eclipse.core.resources.IResource">
+          					<and>
+          						<test property="org.eclipse.core.resources.extension" value="nablagen">
+          						</test>
+          					</and>
+          				</adapt>
+          			</iterate>
+          		</with>
+          	</enablement>
+          </contextualLaunch>
+    </shortcut>
  </extension>
- <extension
-       point="org.eclipse.xtext.builder.participant">
-    <participant
-          class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.NablacBuilderParticipant"
-          fileExtensions="n">
-    </participant>
- </extension>	
 </plugin>

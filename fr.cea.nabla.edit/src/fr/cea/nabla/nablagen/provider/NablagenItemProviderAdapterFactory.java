@@ -165,72 +165,26 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.Ir2CodeComponent} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.Ir2IrComponent} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected Ir2CodeComponentItemProvider ir2CodeComponentItemProvider;
+	protected Ir2IrComponentItemProvider ir2IrComponentItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.Ir2CodeComponent}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.Ir2IrComponent}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createIr2CodeComponentAdapter() {
-		if (ir2CodeComponentItemProvider == null) {
-			ir2CodeComponentItemProvider = new Ir2CodeComponentItemProvider(this);
+	public Adapter createIr2IrComponentAdapter() {
+		if (ir2IrComponentItemProvider == null) {
+			ir2IrComponentItemProvider = new Ir2IrComponentItemProvider(this);
 		}
 
-		return ir2CodeComponentItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.Ir2IRComponent} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected Ir2IRComponentItemProvider ir2IRComponentItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.Ir2IRComponent}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createIr2IRComponentAdapter() {
-		if (ir2IRComponentItemProvider == null) {
-			ir2IRComponentItemProvider = new Ir2IRComponentItemProvider(this);
-		}
-
-		return ir2IRComponentItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.IrWriterComponent} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected IrWriterComponentItemProvider irWriterComponentItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.IrWriterComponent}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createIrWriterComponentAdapter() {
-		if (irWriterComponentItemProvider == null) {
-			irWriterComponentItemProvider = new IrWriterComponentItemProvider(this);
-		}
-
-		return irWriterComponentItemProvider;
+		return ir2IrComponentItemProvider;
 	}
 
 	/**
@@ -395,49 +349,26 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.Ir2JavaComponent} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.Ir2CodeComponent} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected Ir2JavaComponentItemProvider ir2JavaComponentItemProvider;
+	protected Ir2CodeComponentItemProvider ir2CodeComponentItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.Ir2JavaComponent}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.Ir2CodeComponent}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createIr2JavaComponentAdapter() {
-		if (ir2JavaComponentItemProvider == null) {
-			ir2JavaComponentItemProvider = new Ir2JavaComponentItemProvider(this);
+	public Adapter createIr2CodeComponentAdapter() {
+		if (ir2CodeComponentItemProvider == null) {
+			ir2CodeComponentItemProvider = new Ir2CodeComponentItemProvider(this);
 		}
 
-		return ir2JavaComponentItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.Ir2KokkosComponent} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected Ir2KokkosComponentItemProvider ir2KokkosComponentItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.Ir2KokkosComponent}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createIr2KokkosComponentAdapter() {
-		if (ir2KokkosComponentItemProvider == null) {
-			ir2KokkosComponentItemProvider = new Ir2KokkosComponentItemProvider(this);
-		}
-
-		return ir2KokkosComponentItemProvider;
+		return ir2CodeComponentItemProvider;
 	}
 
 	/**
@@ -543,9 +474,7 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 		if (workflowItemProvider != null) workflowItemProvider.dispose();
 		if (workflowComponentItemProvider != null) workflowComponentItemProvider.dispose();
 		if (childComponentItemProvider != null) childComponentItemProvider.dispose();
-		if (ir2CodeComponentItemProvider != null) ir2CodeComponentItemProvider.dispose();
-		if (ir2IRComponentItemProvider != null) ir2IRComponentItemProvider.dispose();
-		if (irWriterComponentItemProvider != null) irWriterComponentItemProvider.dispose();
+		if (ir2IrComponentItemProvider != null) ir2IrComponentItemProvider.dispose();
 		if (nabla2IrComponentItemProvider != null) nabla2IrComponentItemProvider.dispose();
 		if (tagPersistentVariablesComponentItemProvider != null) tagPersistentVariablesComponentItemProvider.dispose();
 		if (persistentVarItemProvider != null) persistentVarItemProvider.dispose();
@@ -553,8 +482,7 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 		if (replaceInternalReductionsComponentItemProvider != null) replaceInternalReductionsComponentItemProvider.dispose();
 		if (optimizeConnectivitiesComponentItemProvider != null) optimizeConnectivitiesComponentItemProvider.dispose();
 		if (fillHLTsComponentItemProvider != null) fillHLTsComponentItemProvider.dispose();
-		if (ir2JavaComponentItemProvider != null) ir2JavaComponentItemProvider.dispose();
-		if (ir2KokkosComponentItemProvider != null) ir2KokkosComponentItemProvider.dispose();
+		if (ir2CodeComponentItemProvider != null) ir2CodeComponentItemProvider.dispose();
 	}
 
 }

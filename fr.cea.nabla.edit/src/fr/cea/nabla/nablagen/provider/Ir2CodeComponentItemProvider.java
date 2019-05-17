@@ -46,9 +46,32 @@ public class Ir2CodeComponentItemProvider extends ChildComponentItemProvider {
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
+			addLanguagePropertyDescriptor(object);
 			addOutputDirPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
+	}
+
+	/**
+	 * This adds a property descriptor for the Language feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addLanguagePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Ir2CodeComponent_language_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Ir2CodeComponent_language_feature", "_UI_Ir2CodeComponent_type"),
+				 NablagenPackage.Literals.IR2_CODE_COMPONENT__LANGUAGE,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -111,6 +134,7 @@ public class Ir2CodeComponentItemProvider extends ChildComponentItemProvider {
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Ir2CodeComponent.class)) {
+			case NablagenPackage.IR2_CODE_COMPONENT__LANGUAGE:
 			case NablagenPackage.IR2_CODE_COMPONENT__OUTPUT_DIR:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;

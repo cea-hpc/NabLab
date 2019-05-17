@@ -1,19 +1,19 @@
 package fr.cea.nabla.ir.generator
 
-import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.VarRefIteratorRef
 import java.util.TreeSet
 
+import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
+
 class IteratorExtensions 
 {
-	@Inject extension IteratorRefExtensions
-	@Inject SortById sortById
-	@Inject SortByIndexName sortByIndexName
+	static val sortById = new SortById
+	static val sortByIndexName = new SortByIndexName
 	
-	def getContainerName(Iterator it)
+	static def getContainerName(Iterator it)
 	{
 		if (container.args.empty)
 			container.connectivity.name
@@ -21,12 +21,12 @@ class IteratorExtensions
 			container.connectivity.name + container.args.map[indexName.toString.toFirstUpper].join('')
 	}
 	
-	def getIndexName(Iterator it)
+	static def getIndexName(Iterator it)
 	{
 		name + containerName.toFirstUpper
 	}
 	
-	def getId(Iterator it)
+	static def getId(Iterator it)
 	{
 		name + 'Id'
 	}
@@ -39,7 +39,7 @@ class IteratorExtensions
 	 *   is then used to go from the iterator index to the variable index 
 	 * Because two identical ids represent the same object, only one IteratorRef by id is kept.
 	 */
-	def getNeededIds(Iterator it)
+	static def getNeededIds(Iterator it)
 	{
 		val neededIds = new TreeSet<IteratorRef>(sortById)
 		for (referencer : referencers)
@@ -65,7 +65,7 @@ class IteratorExtensions
 	 * - directly via the 'target' feature reference 
 	 * - indirectly via the return of indirectIteratorReferences operation.
 	 */
-	def getIndicesToDefined(Iterator it)
+	static def getIndicesToDefined(Iterator it)
 	{
 		//println('getIndicesToDefined for: ' + name + ' - ' + indexName)
 		

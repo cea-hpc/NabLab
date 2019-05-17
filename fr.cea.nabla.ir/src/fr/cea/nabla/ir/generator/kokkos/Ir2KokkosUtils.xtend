@@ -17,7 +17,7 @@ import fr.cea.nabla.ir.ir.BasicType
 
 class Ir2KokkosUtils 
 {
-	def getKokkosType(BasicType t)
+	static def getKokkosType(BasicType t)
 	{
 		switch t
 		{

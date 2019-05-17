@@ -14,11 +14,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
-import com.google.inject.ImplementedBy
-import com.google.inject.Inject
-import fr.cea.nabla.ir.generator.IteratorExtensions
-import fr.cea.nabla.ir.generator.IteratorRefExtensions
-import fr.cea.nabla.ir.generator.kokkos.defaultparallelism.DefaultInstructionContentProvider
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.If
@@ -34,16 +29,14 @@ import fr.cea.nabla.ir.ir.ScalarVariable
 import fr.cea.nabla.ir.ir.VarDefinition
 import fr.cea.nabla.ir.ir.VarRefIteratorRef
 
+import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
+import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.kokkos.VariableExtensions.*
 
-@ImplementedBy(DefaultInstructionContentProvider)
 abstract class InstructionContentProvider 
 {
-	@Inject extension ExpressionContentProvider
-	@Inject extension VariableExtensions
-	@Inject extension IteratorExtensions
-	@Inject extension IteratorRefExtensions
-
 	def dispatch getInnerContent(Instruction it) { content }
 	def dispatch getInnerContent(InstructionBlock it)
 	'''

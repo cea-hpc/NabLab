@@ -87,8 +87,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//ItemArgType"
         containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="indexEqualId" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-        defaultValueLiteral="false"/>
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ItemArgType" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiple" unique="false"
@@ -260,8 +259,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="container" lowerBound="1"
         eType="#//ConnectivityCall" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="singleton" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-        defaultValueLiteral="false"/>
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="referencers" upperBound="-1"
         eType="#//IteratorRef" eOpposite="#//IteratorRef/target"/>
   </eClassifiers>
@@ -302,4 +300,3 @@
     <eLiterals name="Bool" value="7"/>
   </eClassifiers>
 </ecore:EPackage>
-

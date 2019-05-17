@@ -13,8 +13,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
-import com.google.inject.Inject
-import fr.cea.nabla.ir.generator.IteratorRefExtensions
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
@@ -39,26 +37,25 @@ import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.VariableExtensions.isScalarConst
+import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 
 class ExpressionContentProvider
 {
-	@Inject extension IteratorRefExtensions
-	
-	def dispatch CharSequence getContent(ContractedIf it) 
+	static def dispatch CharSequence getContent(ContractedIf it) 
 	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
 
-	def dispatch CharSequence getContent(BinaryExpression it) '''«left.content» «operator» «right.content»'''
-	def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
-	def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
-	def dispatch CharSequence getContent(IntConstant it) '''«value»'''
-	def dispatch CharSequence getContent(RealConstant it) '''«value»'''
-	def dispatch CharSequence getContent(Real2Constant it) '''Real2(«x», «y»)'''
-	def dispatch CharSequence getContent(Real3Constant it) '''Real3(«x», «y», «z»)'''
-	def dispatch CharSequence getContent(Real2x2Constant it) '''Real2x2(«x.content», «y.content»)'''
-	def dispatch CharSequence getContent(Real3x3Constant it) '''Real3x3(«x.content», «y.content», «z.content»)'''
-	def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
+	static def dispatch CharSequence getContent(BinaryExpression it) '''«left.content» «operator» «right.content»'''
+	static def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
+	static def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
+	static def dispatch CharSequence getContent(IntConstant it) '''«value»'''
+	static def dispatch CharSequence getContent(RealConstant it) '''«value»'''
+	static def dispatch CharSequence getContent(Real2Constant it) '''Real2(«x», «y»)'''
+	static def dispatch CharSequence getContent(Real3Constant it) '''Real3(«x», «y», «z»)'''
+	static def dispatch CharSequence getContent(Real2x2Constant it) '''Real2x2(«x.content», «y.content»)'''
+	static def dispatch CharSequence getContent(Real3x3Constant it) '''Real3x3(«x.content», «y.content», «z.content»)'''
+	static def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
 	
-	def dispatch CharSequence getContent(MinConstant it) 
+	static def dispatch CharSequence getContent(MinConstant it) 
 	{
 		switch getType().basicType
 		{
@@ -69,7 +66,7 @@ class ExpressionContentProvider
 		}
 	}
 
-	def dispatch CharSequence getContent(MaxConstant it) 
+	static def dispatch CharSequence getContent(MaxConstant it) 
 	{
 		switch getType().basicType
 		{
@@ -80,19 +77,19 @@ class ExpressionContentProvider
 		}
 	}
 
-	def dispatch CharSequence getContent(FunctionCall it) 
+	static def dispatch CharSequence getContent(FunctionCall it) 
 	'''«function.provider»Functions::«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
-	def dispatch CharSequence getContent(VarRef it) 
+	static def dispatch CharSequence getContent(VarRef it) 
 	'''«codeName»«iteratorsContent»«FOR f:fields BEFORE '.' SEPARATOR '.'»«f»«ENDFOR»'''
 
-	private def getCodeName(VarRef it)
+	private static def getCodeName(VarRef it)
 	{
 		if (constRef) '''as_const(«variable.codeName»)'''
 		else '''«variable.codeName»'''
 	}
 	
-	private def isConstRef(VarRef it)
+	private static def isConstRef(VarRef it)
 	{
 		val j = getJob(it)
 		val scalar = variable instanceof ScalarVariable
@@ -100,20 +97,20 @@ class ExpressionContentProvider
 		else scalar && j.inVars.exists[x | x == variable]
 	}
 	
-	private def getCodeName(Variable it)
+	private static def getCodeName(Variable it)
 	{
 		if (scalarConst) 'options->' + name
 		else name
 	}
 
-	private def Job getJob(EObject o)
+	private static def Job getJob(EObject o)
 	{
 		if (o === null) null
 		else if (o instanceof Job) o as Job
 		else o.eContainer.job
 	}
 
-	private def getIteratorsContent(VarRef it) 
+	private static def getIteratorsContent(VarRef it) 
 	{ 
 		if (iterators.empty || variable instanceof ScalarVariable) return ''
 		val array = variable as ArrayVariable

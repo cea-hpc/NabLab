@@ -216,12 +216,7 @@ public class WorkflowItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablagenPackage.Literals.WORKFLOW__COMPONENTS,
-				 NablagenFactory.eINSTANCE.createIr2CodeComponent()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablagenPackage.Literals.WORKFLOW__COMPONENTS,
-				 NablagenFactory.eINSTANCE.createIr2IRComponent()));
+				 NablagenFactory.eINSTANCE.createIr2IrComponent()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -256,12 +251,7 @@ public class WorkflowItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablagenPackage.Literals.WORKFLOW__COMPONENTS,
-				 NablagenFactory.eINSTANCE.createIr2JavaComponent()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablagenPackage.Literals.WORKFLOW__COMPONENTS,
-				 NablagenFactory.eINSTANCE.createIr2KokkosComponent()));
+				 NablagenFactory.eINSTANCE.createIr2CodeComponent()));
 	}
 
 	/**

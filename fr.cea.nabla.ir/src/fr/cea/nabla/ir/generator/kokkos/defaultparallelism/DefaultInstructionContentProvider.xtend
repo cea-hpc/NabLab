@@ -14,20 +14,16 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos.defaultparallelism
 
-import com.google.inject.Inject
-import fr.cea.nabla.ir.generator.IteratorExtensions
 import fr.cea.nabla.ir.generator.kokkos.InstructionContentProvider
-import fr.cea.nabla.ir.generator.kokkos.VariableExtensions
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 
+import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.kokkos.VariableExtensions.*
 
 class DefaultInstructionContentProvider extends InstructionContentProvider
 {
-	@Inject extension IteratorExtensions
-	@Inject extension VariableExtensions
-
 	override protected getParallelContent(Loop it) 
 	'''
 		«IF !range.container.connectivity.indexEqualId»auto «range.containerName»(«range.accessor»);«ENDIF»

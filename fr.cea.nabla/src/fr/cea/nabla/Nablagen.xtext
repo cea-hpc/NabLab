@@ -31,19 +31,17 @@ Workflow:
 	
 WorkflowComponent: Nabla2IrComponent | ChildComponent;
 
-ChildComponent: Ir2CodeComponent | Ir2IRComponent;
+ChildComponent: Ir2CodeComponent | Ir2IrComponent;
 					
-Ir2CodeComponent: Ir2JavaComponent | Ir2KokkosComponent;
-
-Ir2IRComponent: TagPersistentVariablesComponent | ReplaceUtfComponent | 
+Ir2IrComponent: TagPersistentVariablesComponent | ReplaceUtfComponent | 
 				ReplaceInternalReductionsComponent | OptimizeConnectivitiesComponent |
 				FillHLTsComponent;
 					
-IrWriterComponent: Ir2IRComponent | Nabla2IrComponent;
-
 Nabla2IrComponent:
 	'Nabla2Ir' name=ID 
-	'{' '}';
+	'{' 
+		(dumpIr?='dumpIr' ';')?	
+	'}';
 	
 TagPersistentVariablesComponent:
 	'TagPersistentVariables' name=ID 'follows' parent=[WorkflowComponent] 
@@ -86,16 +84,14 @@ FillHLTsComponent:
 		(dumpIr?='dumpIr' ';')? 
 	'}';
 	
-Ir2JavaComponent:
-	'Ir2Java' name=ID 'follows' parent=[WorkflowComponent]
+Ir2CodeComponent:
+	'Ir2Code' name=ID 'follows' parent=[WorkflowComponent]
 	'{' 
+		'language' '=' language=Language
 		(disabled?='disabled' ';')?
 		'outputDir' '=' outputDir=STRING ';' 
 	'}';
-
-Ir2KokkosComponent:
-	'Ir2Kokkos' name=ID 'follows' parent=[WorkflowComponent]
-	'{' 
-		(disabled?='disabled' ';')?
-		'outputDir' '=' outputDir=STRING ';' 
-	'}';
+	
+enum Language:
+	Java | Kokkos | KokkosHierarchicalParallelism;
+	

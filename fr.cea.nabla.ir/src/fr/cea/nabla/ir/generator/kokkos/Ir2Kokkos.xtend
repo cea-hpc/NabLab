@@ -13,34 +13,27 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
-import com.google.inject.Inject
-import fr.cea.nabla.ir.generator.IrGenerator
 import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalJobContentProvider
 import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalParallelismUtils
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ScalarVariable
-import fr.cea.nabla.ir.transformers.DeclareConstVariables
-import fr.cea.nabla.ir.transformers.FillJobHLTs
-import fr.cea.nabla.ir.transformers.OptimizeConnectivities
-import fr.cea.nabla.ir.transformers.ReplaceInternalReductions
-import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
+import static extension fr.cea.nabla.ir.generator.kokkos.VariableExtensions.*
+import fr.cea.nabla.ir.generator.CodeGenerator
 
-class Ir2Kokkos extends IrGenerator
+class Ir2Kokkos extends CodeGenerator
 {
-	static val TransformationSteps = #[new ReplaceUtf8Chars, new ReplaceInternalReductions, new OptimizeConnectivities, new FillJobHLTs, new DeclareConstVariables]
+	extension JobContentProvider jcp
 
-	@Inject extension JobContentProvider jcp
-	@Inject extension ExpressionContentProvider 
-	@Inject extension Ir2KokkosUtils
-	@Inject extension VariableExtensions
-
-	new() 
+	new(JobContentProvider jcp) 
 	{ 
-		super('kokkos', 'cc', TransformationSteps)
+		super('kokkos', 'cc')
+		this.jcp = jcp
 	}
 
 	override getFileContent(IrModule it)

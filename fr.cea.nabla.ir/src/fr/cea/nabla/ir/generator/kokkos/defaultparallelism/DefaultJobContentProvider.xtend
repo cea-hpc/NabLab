@@ -20,6 +20,8 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class DefaultJobContentProvider extends JobContentProvider 
 {
+	new() { super(new DefaultInstructionContentProvider) }
+	
 	override getJobCallsContent(Iterable<Job> jobs)
 	'''
 		«FOR j : jobs.sortBy[at]»

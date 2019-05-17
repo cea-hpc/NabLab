@@ -6,6 +6,11 @@
     copyrightFields="false" runtimeVersion="2.14" usedGenPackages="Nabla.genmodel#//nabla">
   <genPackages prefix="Nablagen" basePackage="fr.cea.nabla" disposableProviderFactory="true"
       fileExtensions="nablagen" ecorePackage="Nablagen.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Nablagen.ecore#//Language">
+      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//Language/Java"/>
+      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//Language/Kokkos"/>
+      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//Language/KokkosHierarchicalParallelism"/>
+    </genEnums>
     <genClasses ecoreClass="Nablagen.ecore#//NablagenModule">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenModule/imports"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenModule/workflow"/>
@@ -22,14 +27,12 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//ChildComponent/parent"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//ChildComponent/disabled"/>
     </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//Ir2CodeComponent">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Ir2CodeComponent/outputDir"/>
+    <genClasses ecoreClass="Nablagen.ecore#//Ir2IrComponent">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Ir2IrComponent/dumpIr"/>
     </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//Ir2IRComponent">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Ir2IRComponent/dumpIr"/>
+    <genClasses ecoreClass="Nablagen.ecore#//Nabla2IrComponent">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Nabla2IrComponent/dumpIr"/>
     </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//IrWriterComponent"/>
-    <genClasses ecoreClass="Nablagen.ecore#//Nabla2IrComponent"/>
     <genClasses ecoreClass="Nablagen.ecore#//TagPersistentVariablesComponent">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//TagPersistentVariablesComponent/vars"/>
     </genClasses>
@@ -43,7 +46,9 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//OptimizeConnectivitiesComponent/connectivities"/>
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//FillHLTsComponent"/>
-    <genClasses ecoreClass="Nablagen.ecore#//Ir2JavaComponent"/>
-    <genClasses ecoreClass="Nablagen.ecore#//Ir2KokkosComponent"/>
+    <genClasses ecoreClass="Nablagen.ecore#//Ir2CodeComponent">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Ir2CodeComponent/language"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Ir2CodeComponent/outputDir"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>

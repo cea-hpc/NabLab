@@ -21,6 +21,8 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class HierarchicalJobContentProvider extends JobContentProvider 
 {
+	new() { super(new HierarchicalInstructionContentProvider) }
+	
 	override getJobCallsContent(Iterable<Job> jobs) 
 	'''
 		«var nbTimes = 0»

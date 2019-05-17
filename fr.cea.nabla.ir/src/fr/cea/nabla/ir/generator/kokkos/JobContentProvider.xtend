@@ -13,18 +13,16 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
-import com.google.inject.ImplementedBy
-import com.google.inject.Inject
-import fr.cea.nabla.ir.generator.kokkos.defaultparallelism.DefaultJobContentProvider
 import fr.cea.nabla.ir.ir.EndOfInitJob
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
 
-@ImplementedBy(DefaultJobContentProvider)
 abstract class JobContentProvider 
 {
-	@Inject extension InstructionContentProvider
+	extension InstructionContentProvider icp
+	
+	new(InstructionContentProvider icp) { this.icp = icp }
 	
 	abstract def CharSequence getJobCallsContent(Iterable<Job> jobs)
 	abstract def CharSequence getContent(Job it)

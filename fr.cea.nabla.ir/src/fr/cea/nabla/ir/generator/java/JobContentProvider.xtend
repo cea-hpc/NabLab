@@ -13,20 +13,18 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.EndOfInitJob
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
 
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.java.InstructionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.java.VariableExtensions.*
 
 class JobContentProvider 
 {
-	@Inject extension InstructionContentProvider
-	@Inject extension VariableExtensions
-	
-	def getContent(Job it)
+	static def getContent(Job it)
 	'''
 		«comment»
 		private void «name.toFirstLower»() 
@@ -35,19 +33,19 @@ class JobContentProvider
 		}		
 	'''
 	
-	private def dispatch CharSequence getInnerContent(InstructionJob it)
+	private static def dispatch CharSequence getInnerContent(InstructionJob it)
 	'''
 		«instruction.innerContent»
 	'''
 	
-	private def dispatch CharSequence getInnerContent(EndOfTimeLoopJob it)
+	private static def dispatch CharSequence getInnerContent(EndOfTimeLoopJob it)
 	'''
 		«left.javaType» tmpSwitch = «left.name»;
 		«left.name» = «right.name»;
 		«right.name» = tmpSwitch;
 	'''
 
-	private def dispatch CharSequence getInnerContent(EndOfInitJob it)
+	private static def dispatch CharSequence getInnerContent(EndOfInitJob it)
 	'''
 		IntStream.range(0, «left.name».length).parallel().forEach(i -> «left.name»[i] = «right.name»[i]);
 	'''

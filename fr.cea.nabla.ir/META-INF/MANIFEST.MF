@@ -24,7 +24,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.macro,
- com.google.inject,
  org.apache.commons.lang3
 Bundle-ActivationPolicy: lazy
 

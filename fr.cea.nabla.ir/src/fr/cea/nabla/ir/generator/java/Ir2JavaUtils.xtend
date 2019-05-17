@@ -17,7 +17,7 @@ import fr.cea.nabla.ir.ir.BasicType
 
 class Ir2JavaUtils 
 {
-	def getJavaType(BasicType t)
+	static def getJavaType(BasicType t)
 	{
 		switch t
 		{
@@ -32,7 +32,7 @@ class Ir2JavaUtils
 		}
 	}
 
-	def isJavaBasicType(BasicType t)
+	static def isJavaBasicType(BasicType t)
 	{
 		switch t
 		{
@@ -41,7 +41,7 @@ class Ir2JavaUtils
 		}
 	}
 
-	def getJavaOperator(String op) 
+	static def getJavaOperator(String op) 
 	{
 		switch op
 		{

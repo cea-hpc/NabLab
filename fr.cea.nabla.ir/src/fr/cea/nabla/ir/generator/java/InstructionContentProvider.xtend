@@ -13,9 +13,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import com.google.inject.Inject
-import fr.cea.nabla.ir.generator.IteratorExtensions
-import fr.cea.nabla.ir.generator.IteratorRefExtensions
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.If
@@ -31,18 +28,17 @@ import fr.cea.nabla.ir.ir.ScalarVariable
 import fr.cea.nabla.ir.ir.VarDefinition
 import fr.cea.nabla.ir.ir.VarRefIteratorRef
 
+import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
+import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
+import static extension fr.cea.nabla.ir.generator.java.VariableExtensions.*
 
 class InstructionContentProvider 
 {
-	@Inject extension Ir2JavaUtils
-	@Inject extension ExpressionContentProvider
-	@Inject extension VariableExtensions
-	@Inject extension IteratorExtensions
-	@Inject extension IteratorRefExtensions
-	
-	def dispatch getInnerContent(Instruction it) { content }
-	def dispatch getInnerContent(InstructionBlock it)
+	static def dispatch getInnerContent(Instruction it) { content }
+	static def dispatch getInnerContent(InstructionBlock it)
 	'''
 		«FOR i : instructions»
 		«i.content»
@@ -53,7 +49,7 @@ class InstructionContentProvider
 	 * Les réductions à l'intérieur des boucles ont été remplacées dans l'IR par des boucles.
 	 * Ne restent que les réductions au niveau des jobs => reduction //
 	 */
-	def dispatch CharSequence getContent(ReductionInstruction it) 
+	static def dispatch CharSequence getContent(ReductionInstruction it) 
 	'''
 		«result.javaType» «result.name» = IntStream.range(0, «range.container.connectivity.nbElems»).boxed().parallel().reduce(
 			«result.defaultValue.content», 
@@ -73,20 +69,20 @@ class InstructionContentProvider
 		);
 	'''
 
-	def dispatch CharSequence getContent(VarDefinition it) 
+	static def dispatch CharSequence getContent(VarDefinition it) 
 	'''
 		«FOR v : variables»
 		«IF v.const»const «ENDIF»«v.varContent»
 		«ENDFOR»
 	'''
 	
-	private def dispatch getVarContent(ScalarVariable it)
+	private static def dispatch getVarContent(ScalarVariable it)
 	'''«javaType» «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
 	
-	private def dispatch getVarContent(ArrayVariable it)
+	private static def dispatch getVarContent(ArrayVariable it)
 	'''«javaType» «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
 
-	def dispatch CharSequence getContent(InstructionBlock it) 
+	static def dispatch CharSequence getContent(InstructionBlock it) 
 	'''
 		{
 			«FOR i : instructions»
@@ -94,7 +90,7 @@ class InstructionContentProvider
 			«ENDFOR»
 		}'''
 	
-	def dispatch CharSequence getContent(Affectation it) 
+	static def dispatch CharSequence getContent(Affectation it) 
 	{
 		if (left.variable.type.javaBasicType) 
 			'''«left.content» «operator» «right.content»;'''
@@ -102,13 +98,13 @@ class InstructionContentProvider
 			'''«left.content».«operator.javaOperator»(«right.content»);'''
 	}
 
-	def dispatch CharSequence getContent(Loop it) 
+	static def dispatch CharSequence getContent(Loop it) 
 	{
 		if (topLevelLoop) parallelContent
 		else sequentialContent
 	}
 	
-	def dispatch CharSequence getContent(If it) 
+	static def dispatch CharSequence getContent(If it) 
 	'''
 		if («condition.content») 
 		«IF !(thenInstruction instanceof InstructionBlock)»	«ENDIF»«thenInstruction.content»
@@ -118,7 +114,7 @@ class InstructionContentProvider
 		«ENDIF»
 	'''
 	
-	private def getParallelContent(Loop it)
+	private static def getParallelContent(Loop it)
 	'''
 		«IF !range.container.connectivity.indexEqualId»int[] «range.containerName» = «range.accessor»;«ENDIF»
 		IntStream.range(0, «range.container.connectivity.nbElems»).parallel().forEach(«range.indexName» -> 
@@ -128,7 +124,7 @@ class InstructionContentProvider
 		});
 	'''
 
-	private def getSequentialContent(Loop it)
+	private static def getSequentialContent(Loop it)
 	'''
 		int[] «range.containerName» = «range.accessor»;
 		for (int «range.indexName»=0; «range.indexName»<«range.containerName».length; «range.indexName»++)
@@ -139,7 +135,7 @@ class InstructionContentProvider
 	'''
 	
 	/** Define all needed ids and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
-	private def defineIndices(IterableInstruction it)
+	private static def defineIndices(IterableInstruction it)
 	'''
 		«FOR neededId : range.neededIds»
 			int «neededId.id» = «neededId.indexToId»;
@@ -155,20 +151,20 @@ class InstructionContentProvider
 		«ENDFOR»
 	'''
 	
-	private	def getIndexToId(IteratorRef it)
+	private	static def getIndexToId(IteratorRef it)
 	{
 		if (target.container.connectivity.indexEqualId || target.singleton) indexValue
 		else target.containerName + '[' + indexValue + ']'		
 	}
 	
-	private def getIdToIndex(VarRefIteratorRef it)
+	private static def getIdToIndex(VarRefIteratorRef it)
 	{
 		if (indexEqualId) id
 		else 'Utils.indexOf(' + accessor + ', ' + id + ')'
 	}
 	
-	def getAccessor(VarRefIteratorRef it) '''mesh.get«connectivity.name.toFirstUpper»(«connectivityArgs.map[id].join(', ')»)'''
-	def getAccessor(Iterator it)  '''mesh.get«container.connectivity.name.toFirstUpper»(«container.args.map[id].join(', ')»)'''
+	static def getAccessor(VarRefIteratorRef it) '''mesh.get«connectivity.name.toFirstUpper»(«connectivityArgs.map[id].join(', ')»)'''
+	static def getAccessor(Iterator it)  '''mesh.get«container.connectivity.name.toFirstUpper»(«container.args.map[id].join(', ')»)'''
 
-	private def getJavaName(Reduction it) '''«provider»Functions.«name»'''
+	private static def getJavaName(Reduction it) '''«provider»Functions.«name»'''
 }

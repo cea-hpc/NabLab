@@ -26,6 +26,9 @@ Export-Package: fr.cea.nabla,
  fr.cea.nabla.nabla,
  fr.cea.nabla.nabla.impl,
  fr.cea.nabla.nabla.util,
+ fr.cea.nabla.nablagen,
+ fr.cea.nabla.nablagen.impl,
+ fr.cea.nabla.nablagen.util,
  fr.cea.nabla.parser.antlr,
  fr.cea.nabla.parser.antlr.internal,
  fr.cea.nabla.scoping,
@@ -33,10 +36,8 @@ Export-Package: fr.cea.nabla,
  fr.cea.nabla.services,
  fr.cea.nabla.typing,
  fr.cea.nabla.validation,
- nablalib,
- fr.cea.nabla.nablagen,
- fr.cea.nabla.nablagen.impl,
- fr.cea.nabla.nablagen.util
+ fr.cea.nabla.workflow,
+ nablalib
 Import-Package: com.google.inject,
  org.apache.log4j
 Bundle-ClassPath: jlatexmath-1.0.3.jar,.

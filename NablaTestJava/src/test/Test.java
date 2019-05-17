@@ -67,14 +67,15 @@ public final class Test
 	 */
 	private void iniCjr() 
 	{
+		int[] cells = mesh.getCells();
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			int jId = jCells;
+			int jId = cells[jCells];
 			int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
 			{
 				int rId = nodesOfCellJ[rNodesOfCellJ];
-				int rNodes = rId;
+				int rNodes = Utils.indexOf(mesh.getNodes(), rId);
 				Cjr[jCells][rNodesOfCellJ] = 1.0 + X[rNodes].getY();
 			}
 		});
@@ -87,15 +88,16 @@ public final class Test
 	 */
 	private void iniCjrBad() 
 	{
+		int[] nodes = mesh.getNodes();
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
-			int rId = rNodes;
-			int rPlus1Id = (rNodes+1+nbNodes)%nbNodes;
+			int rId = nodes[rNodes];
+			int rPlus1Id = nodes[(rNodes+1+nbNodes)%nbNodes];
 			int[] cellsOfNodeRPlus1 = mesh.getCellsOfNode(rPlus1Id);
 			for (int jCellsOfNodeRPlus1=0; jCellsOfNodeRPlus1<cellsOfNodeRPlus1.length; jCellsOfNodeRPlus1++)
 			{
 				int jId = cellsOfNodeRPlus1[jCellsOfNodeRPlus1];
-				int jCells = jId;
+				int jCells = Utils.indexOf(mesh.getCells(), jId);
 				int rNodesOfCellJ = Utils.indexOf(mesh.getNodesOfCell(jId), rId);
 				Cjr[jCells][rNodesOfCellJ] = 1.0;
 			}

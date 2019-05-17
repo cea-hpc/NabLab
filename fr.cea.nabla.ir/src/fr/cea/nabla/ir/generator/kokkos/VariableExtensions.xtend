@@ -13,20 +13,19 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
-import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.ScalarVariable
 
+import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
+
 class VariableExtensions 
 {
-	@Inject extension Ir2KokkosUtils
-
-	def dispatch getKokkosType(ScalarVariable it) 
+	static def dispatch getKokkosType(ScalarVariable it) 
 	{ 
 		type.kokkosType
 	}
 	
-	def dispatch getKokkosType(ArrayVariable it)
+	static def dispatch getKokkosType(ArrayVariable it)
 	{
 		getType.kokkosType + dimensions.map['*'].join
 	}

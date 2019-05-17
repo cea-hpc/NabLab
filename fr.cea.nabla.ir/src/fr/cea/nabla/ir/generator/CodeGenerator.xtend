@@ -14,21 +14,17 @@
 package fr.cea.nabla.ir.generator
 
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.transformers.IrTransformationStep
-import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 
-abstract class IrGenerator 
+abstract class CodeGenerator 
 {
 	@Accessors val String name
 	@Accessors val String fileExtension
-	@Accessors val List<? extends IrTransformationStep> transformationSteps
 
-	new(String name, String fileExtension, List<? extends IrTransformationStep> transformationSteps)
+	new(String name, String fileExtension)
 	{
 		this.name = name
 		this.fileExtension = fileExtension
-		this.transformationSteps = transformationSteps
 	}
 	
 	abstract def CharSequence getFileContent(IrModule it)	

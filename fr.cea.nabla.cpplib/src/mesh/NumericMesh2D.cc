@@ -47,15 +47,11 @@ NumericMesh2D::getNeighbourCells(const int& cellId) const
 	const auto& nodes(getNodesOfCell(cellId));
 	for (auto nodeId : nodes)
 	{
-		auto adjacentCells{m_geometricMesh->getQuadIdsOfNode(nodeId)};
+		auto adjacentCells(m_geometricMesh->getQuadIdsOfNode(nodeId));
 		for (int quadId : adjacentCells)
-		 {
 			if (quadId != cellId)
-			{
 				if (getNbCommonIds(nodes, m_geometricMesh->getQuads()[quadId].getNodeIds()) == 2)
 					neighbours.emplace_back(quadId);
-			}
-		}
 	}
 	return neighbours;
 }

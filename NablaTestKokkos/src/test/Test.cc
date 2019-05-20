@@ -37,7 +37,7 @@ public:
 private:
 	NumericMesh2D* mesh;
 	VtkFileWriter2D writer;
-	int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode;
+	int nbNodes, nbCells, nbNodesOfCell;
 
 	// Global Variables
 	double total;
@@ -57,7 +57,6 @@ public:
 	, nbNodes(mesh->getNbNodes())
 	, nbCells(mesh->getNbCells())
 	, nbNodesOfCell(NumericMesh2D::MaxNbNodesOfCell)
-	, nbCellsOfNode(NumericMesh2D::MaxNbCellsOfNode)
 	, X("X", nbNodes)
 	, u("u", nbCells)
 	, Cjr("Cjr", nbCells, nbNodesOfCell)
@@ -72,48 +71,24 @@ public:
 
 private:
 	/**
-	 * Job IniCjr @-1.0
-	 * In variables: X
-	 * Out variables: Cjr
+	 * Job TestFunctionCall @-1.0
+	 * In variables: Cjr
+	 * Out variables: u
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void iniCjr() noexcept
+	void testFunctionCall() noexcept
 	{
 		auto cells(mesh->getCells());
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(cells[jCells]);
+			double sum1007414498 = 0.0;
 			auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 			{
-				int rId(nodesOfCellJ[rNodesOfCellJ]);
-				int rNodes(utils::indexOf(mesh->getNodes(),rId));
-				Cjr(jCells,rNodesOfCellJ) = 1.0 + X(rNodes).y;
+				sum1007414498 = sum1007414498 + (Cjr(jCells,rNodesOfCellJ));
 			}
-		});
-	}
-	
-	/**
-	 * Job IniCjrBad @-1.0
-	 * In variables: 
-	 * Out variables: Cjr
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void iniCjrBad() noexcept
-	{
-		auto nodes(mesh->getNodes());
-		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
-		{
-			int rId(nodes[rNodes]);
-			int rPlus1Id(nodes[(rNodes+1+nbNodes)%nbNodes]);
-			auto cellsOfNodeRPlus1(mesh->getCellsOfNode(rPlus1Id));
-			for (int jCellsOfNodeRPlus1=0; jCellsOfNodeRPlus1<cellsOfNodeRPlus1.size(); jCellsOfNodeRPlus1++)
-			{
-				int jId(cellsOfNodeRPlus1[jCellsOfNodeRPlus1]);
-				int jCells(utils::indexOf(mesh->getCells(),jId));
-				int rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId),rId));
-				Cjr(jCells,rNodesOfCellJ) = 1.0;
-			}
+			u(jCells) = sum1007414498;
 		});
 	}
 
@@ -143,8 +118,7 @@ public:
 
 		utils::Timer timer(true);
 
-		iniCjr(); // @-1.0
-		iniCjrBad(); // @-1.0
+		testFunctionCall(); // @-1.0
 		timer.stop();
 	}
 };	

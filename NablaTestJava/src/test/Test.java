@@ -24,7 +24,7 @@ public final class Test
 
 	// Mesh
 	private final NumericMesh2D mesh;
-	private final int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode;
+	private final int nbNodes, nbCells, nbNodesOfCell;
 	private final VtkFileWriter2D writer;
 
 	// Global Variables
@@ -43,7 +43,6 @@ public final class Test
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbNodesOfCell = NumericMesh2D.MaxNbNodesOfCell;
-		nbCellsOfNode = NumericMesh2D.MaxNbCellsOfNode;
 
 
 		// Arrays allocation
@@ -61,54 +60,30 @@ public final class Test
 	}
 	
 	/**
-	 * Job IniCjr @-1.0
-	 * In variables: X
-	 * Out variables: Cjr
+	 * Job TestFunctionCall @-1.0
+	 * In variables: Cjr
+	 * Out variables: u
 	 */
-	private void iniCjr() 
+	private void testFunctionCall() 
 	{
 		int[] cells = mesh.getCells();
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = cells[jCells];
+			double sum1007414498 = 0.0;
 			int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
 			{
-				int rId = nodesOfCellJ[rNodesOfCellJ];
-				int rNodes = Utils.indexOf(mesh.getNodes(), rId);
-				Cjr[jCells][rNodesOfCellJ] = 1.0 + X[rNodes].getY();
+				sum1007414498 = sum1007414498 + (Cjr[jCells][rNodesOfCellJ]);
 			}
-		});
-	}		
-	
-	/**
-	 * Job IniCjrBad @-1.0
-	 * In variables: 
-	 * Out variables: Cjr
-	 */
-	private void iniCjrBad() 
-	{
-		int[] nodes = mesh.getNodes();
-		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
-		{
-			int rId = nodes[rNodes];
-			int rPlus1Id = nodes[(rNodes+1+nbNodes)%nbNodes];
-			int[] cellsOfNodeRPlus1 = mesh.getCellsOfNode(rPlus1Id);
-			for (int jCellsOfNodeRPlus1=0; jCellsOfNodeRPlus1<cellsOfNodeRPlus1.length; jCellsOfNodeRPlus1++)
-			{
-				int jId = cellsOfNodeRPlus1[jCellsOfNodeRPlus1];
-				int jCells = Utils.indexOf(mesh.getCells(), jId);
-				int rNodesOfCellJ = Utils.indexOf(mesh.getNodesOfCell(jId), rId);
-				Cjr[jCells][rNodesOfCellJ] = 1.0;
-			}
+			u[jCells] = sum1007414498;
 		});
 	}		
 
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module Test");
-		iniCjr(); // @-1.0
-		iniCjrBad(); // @-1.0
+		testFunctionCall(); // @-1.0
 		System.out.println("Fin de l'exécution du module Test");
 	}
 

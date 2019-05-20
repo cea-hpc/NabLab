@@ -137,7 +137,7 @@ class Ir2Kokkos extends CodeGenerator
 	public:
 		void simulate()
 		{
-			std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting Glace2d ..." << __RESET__ << "\n\n";
+			std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting «name» ..." << __RESET__ << "\n\n";
 
 			std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
 				<< __RESET__ << ", length=" << __BOLD__ << options->LENGTH << __RESET__ << std::endl;

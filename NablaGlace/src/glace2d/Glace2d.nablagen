@@ -1,6 +1,6 @@
-with Test.*;
+with Glace2d.*;
 
-workflow TestDefaultGenerationChain transforms Test
+workflow Glace2dDefaultGenerationChain transforms Glace2d
 {
 	Nabla2Ir nabla2ir
 	{
@@ -8,7 +8,7 @@ workflow TestDefaultGenerationChain transforms Test
 
 	TagPersistentVariables tagPersistentVariables follows nabla2ir 
 	{ 
-		variables = u as "Vitesse";
+		variables = ρ as "Density";
 	}
 	
 	ReplaceUtf replaceUtf follows tagPersistentVariables
@@ -17,29 +17,26 @@ workflow TestDefaultGenerationChain transforms Test
 	
 	ReplaceInternalReductions replaceReductions follows replaceUtf
 	{
-		dumpIr;
 	}
 	
 	OptimizeConnectivities optimizeConnectivities follows replaceReductions
 	{
 		connectivities = cells, nodes;
-		disabled;
 	}
 	
 	FillHLTs fillHlts follows optimizeConnectivities
 	{
-		dumpIr;
 	}
 	
 	Ir2Code javaGenerator follows fillHlts
 	{
 		language = Java
-		outputDir = "/NablaTestJava/src";
+		outputDir = "/NablaGlaceJava/src";
 	}
 
 	Ir2Code kokkosGenerator follows fillHlts
 	{
 		language = Kokkos
-		outputDir = "/NablaTestKokkos/src";
+		outputDir = "/NablaGlaceKokkos";
 	}
 }

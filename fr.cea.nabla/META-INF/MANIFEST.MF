@@ -15,9 +15,9 @@ Require-Bundle: fr.cea.nabla.ir,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.xtext.util,
  org.antlr.runtime;bundle-version="[3.2.0,3.2.1)",
- org.eclipse.xtend.lib;bundle-version="2.14.0",
+ org.eclipse.xtend.lib,
  org.eclipse.emf.common,
- org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
+ org.eclipse.xtext.xbase.lib,
  org.eclipse.core.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: fr.cea.nabla,

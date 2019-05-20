@@ -1,6 +1,6 @@
-with Test.*;
+with Whiteheat.*;
 
-workflow TestDefaultGenerationChain transforms Test
+workflow WhiteheatDefaultGenerationChain transforms Whiteheat
 {
 	Nabla2Ir nabla2ir
 	{
@@ -8,7 +8,7 @@ workflow TestDefaultGenerationChain transforms Test
 
 	TagPersistentVariables tagPersistentVariables follows nabla2ir 
 	{ 
-		variables = u as "Vitesse";
+		variables = u as "Temperature";
 	}
 	
 	ReplaceUtf replaceUtf follows tagPersistentVariables
@@ -17,18 +17,15 @@ workflow TestDefaultGenerationChain transforms Test
 	
 	ReplaceInternalReductions replaceReductions follows replaceUtf
 	{
-		dumpIr;
 	}
 	
 	OptimizeConnectivities optimizeConnectivities follows replaceReductions
 	{
-		connectivities = cells, nodes;
-		disabled;
+		connectivities = cells, nodes, faces;
 	}
 	
 	FillHLTs fillHlts follows optimizeConnectivities
 	{
-		dumpIr;
 	}
 	
 	Ir2Code javaGenerator follows fillHlts

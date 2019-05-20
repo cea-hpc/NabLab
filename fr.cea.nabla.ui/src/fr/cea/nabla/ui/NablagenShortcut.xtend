@@ -12,12 +12,24 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.jface.viewers.ISelection
 import org.eclipse.jface.viewers.TreeSelection
 import org.eclipse.ui.IEditorPart
+import org.eclipse.ui.console.ConsolePlugin
+import org.eclipse.ui.console.MessageConsole
+import org.eclipse.ui.console.MessageConsoleStream
 import org.eclipse.xtext.ui.editor.XtextEditor
 
 class NablagenShortcut implements ILaunchShortcut 
 {
+	val MessageConsoleStream stream
 	@Inject Provider<ResourceSet> resourceSetProvider
-	@Inject WorkflowInterpretor interpretor
+	@Inject Provider<WorkflowInterpretor> interpretorProvider
+	
+	new()
+	{
+		val console = new MessageConsole("Nabla Console", UiUtils::getImageDescriptor('icons/Nabla.gif'))
+		console.activate
+		ConsolePlugin.^default.consoleManager.addConsoles(#[console])
+		stream = console.newMessageStream		
+	}
 	
 	override launch(ISelection selection, String mode) 
 	{
@@ -43,13 +55,19 @@ class NablagenShortcut implements ILaunchShortcut
 	{
 		val plaftormUri = URI::createPlatformResourceURI(eclipseResource.project.name + '/' + eclipseResource.projectRelativePath, true)
 		val resourceSet = resourceSetProvider.get
+		val uriMap = resourceSet.URIConverter.URIMap
+		uriMap.put(URI::createURI('platform:/resource/fr.cea.nabla/'), URI::createURI('platform:/plugin/fr.cea.nabla/'))
 		val emfResource = resourceSet.createResource(plaftormUri)
 		EcoreUtil::resolveAll(resourceSet)
 		emfResource.load(null)
 		for (module : emfResource.contents.filter(NablagenModule))
 		{
 			if (module.workflow !== null)
+			{
+				val interpretor = interpretorProvider.get
+				interpretor.addWorkflowTraceLister([msg | stream.print(msg)])
 				interpretor.launch(module.workflow)
+			}
 		}	
 	}
 }

@@ -56,11 +56,11 @@ private:
 	template <std::size_t T, std::size_t U>
 	int	getNbCommonIds(const std::array<int, T>& as, const std::array<int, U>& bs) const noexcept
 	{
-	  int nbCommonIds(0);
-	  for (const auto& a : as)
-	    if (find(bs.begin(), bs.end(), a) != as.end())
-        ++nbCommonIds;
-	  return nbCommonIds;
+		int nbCommonIds(0);
+		for (const auto& a : as)
+			if (find(bs.begin(), bs.end(), a) != bs.end())
+				++nbCommonIds;
+		return nbCommonIds;
 	}
 };
 

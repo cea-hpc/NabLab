@@ -12,8 +12,9 @@ import fr.cea.nabla.nablagen.Nabla2IrComponent
 import fr.cea.nabla.nablagen.Workflow
 import fr.cea.nabla.nablagen.WorkflowComponent
 import java.net.URI
+import java.util.ArrayList
 import org.apache.log4j.Logger
-import org.eclipse.core.resources.IFolder
+import org.eclipse.core.resources.IContainer
 import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
@@ -33,40 +34,63 @@ import static extension fr.cea.nabla.workflow.WorkflowExtensions.*
 class WorkflowInterpretor 
 {
 	static val IrExtension = 'nablair'
-	static val logger = Logger.getLogger(WorkflowInterpretor);
+	static val logger = Logger.getLogger(WorkflowInterpretor)
+	val traceListeners = new ArrayList<IWorkflowTraceListener>
 	@Inject Provider<JavaIoFileSystemAccess> fsaProvider
-	@Inject Provider<Nabla2Ir> nabla2IrProvider
+	@Inject Nabla2Ir nabla2Ir
 	@Inject IOutputConfigurationProvider outputConfigurationProvider
 	
 	def launch(Workflow workflow)
-	{		
+	{	
 		workflow.roots.forEach[c | launch(c, workflow.nablaModule)]
+	}
+	
+	def addWorkflowTraceLister(IWorkflowTraceListener listener)
+	{
+		traceListeners += listener
 	}
 	
 	private def dispatch void launch(Nabla2IrComponent c, NablaModule nablaModule)
 	{
 		if (!nablaModule.jobs.empty)
 		{
-			logger.info('Nabla -> IR - ' + c.name)	
-			val nabla2ir = nabla2IrProvider.get
-			val irModule = nabla2ir.toIrModule(nablaModule)
+			val msg = 'Nabla -> IR - ' + c.name
+			logger.info(msg)
+			traceListeners.forEach[write(msg)]
+			val irModule = nabla2Ir.toIrModule(nablaModule)
 			if (c.dumpIr)
 				createAndSaveResource(irModule, c.eclipseProject, c.name)
+			val msgEnd = "... ok\n"
+			logger.info(msgEnd)
+			traceListeners.forEach[write(msgEnd)]
 			fireModel(c, irModule)			
 		}
 	}
-		
+
 	private def dispatch void launch(Ir2IrComponent c, IrModule irModule)
 	{
 		if (!c.disabled)
 		{
-			logger.info('IR -> IR - ' + c.name + ': ' )
 			val step = IrTransformationStepProvider::get(c)
+			val msg = 'IR -> IR - ' + c.name + ': ' + step.description
+			logger.info(msg)
+			traceListeners.forEach[write(msg)]
 			val ok = step.transform(irModule)
 			if (c.dumpIr)
 				createAndSaveResource(irModule, c.eclipseProject, c.name)
-			if (!ok)
-				throw new RuntimeException("Error in IR transformation step")			
+			if (ok)
+			{
+				val msgEnd = "... ok\n"
+				logger.info(msgEnd)
+				traceListeners.forEach[write(msgEnd)]
+			}
+			else
+			{
+				val exceptionMsg = '   ** Error in IR transformation step\n'
+				logger.info(exceptionMsg)
+				traceListeners.forEach[write(exceptionMsg)]
+				throw new RuntimeException(exceptionMsg)
+			}
 		}
 		fireModel(c, irModule)
 	}
@@ -77,14 +101,27 @@ class WorkflowInterpretor
 		{
 			val g = CodeGeneratorProvider::get(c)
 			val fileName = irModule.name.toLowerCase + '/' + irModule.name + '.' + g.fileExtension
-			logger.info("Generating '" + fileName + "' file")
+			val msg = "Generating '" + fileName + "' file"
+			logger.info(msg)
+			traceListeners.forEach[write(msg)]
 			val fileContent = g.getFileContent(irModule)
 			val outputFolder = c.eclipseProject.workspace.root.findMember(c.outputDir) 
-			if (outputFolder === null || !(outputFolder instanceof IFolder) || !outputFolder.exists)
-				throw new RuntimeException("Invalid outputDir " + c.outputDir)
-			val fsa = getConfiguredFileSystemAccess(outputFolder.rawLocation.toString, false)
-			fsa.generateFile(fileName, fileContent)
-			(outputFolder as IFolder).refreshLocal(IResource::DEPTH_INFINITE, null)
+			if (outputFolder === null || !(outputFolder instanceof IContainer) || !outputFolder.exists)
+			{
+				val exceptionMsg = '   ** Invalid outputDir: ' + c.outputDir + '\n'
+				logger.info(exceptionMsg)
+				traceListeners.forEach[write(exceptionMsg)]
+				throw new RuntimeException(exceptionMsg)
+			}
+			else
+			{
+				val fsa = getConfiguredFileSystemAccess(outputFolder.rawLocation.toString, false)
+				fsa.generateFile(fileName, fileContent)
+				outputFolder.refreshLocal(IResource::DEPTH_INFINITE, null)
+				val msgEnd = "... ok\n"
+				logger.info(msgEnd)
+				traceListeners.forEach[write(msgEnd)]	
+			}
 		}
 	}
 		
@@ -157,4 +194,9 @@ class WorkflowInterpretor
 				nextComponents.get(i).launch(EcoreUtil::copy(model))
 		}
 	}
+}
+
+interface IWorkflowTraceListener 
+{
+	def void write(String message)
 }

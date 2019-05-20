@@ -5,6 +5,9 @@
     <semanticResources>src/test/test.nablagen</semanticResources>
     <semanticResources>src/whiteheat/Whiteheat.nabla</semanticResources>
     <semanticResources>platform:/resource/fr.cea.nabla/mathfunctions.nabla</semanticResources>
+    <semanticResources>src-gen/test/Test.replaceReductions.nablair</semanticResources>
+    <semanticResources>src-gen/test/Test.fillHlts.nablair</semanticResources>
+    <semanticResources>src/whiteheat/Whiteheat.nablagen</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_GnHgUHbwEemCYsSVd3ddRA">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_OZsVsHb5Eemzg5Bhh9ZzPA" name="DefaultGenerationChainDiagram" repPath="#_OZdsMHb5Eemzg5Bhh9ZzPA">
@@ -275,20 +278,20 @@
       <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DNode" uid="_OZjy0Hb5Eemzg5Bhh9ZzPA" name="Java Generator" outgoingEdges="_OZmPEHb5Eemzg5Bhh9ZzPA" width="20" height="5" resizeKind="NSEW">
-      <target xmi:type="nablagen:Ir2JavaComponent" href="src/test/test.nablagen#//@workflow/@components.6"/>
-      <semanticElements xmi:type="nablagen:Ir2JavaComponent" href="src/test/test.nablagen#//@workflow/@components.6"/>
       <ownedStyle xmi:type="diagram:Square" uid="_OZjy0Xb5Eemzg5Bhh9ZzPA" labelSize="12" borderColor="255,255,255" labelPosition="node" width="20" height="5" color="255,255,255">
         <description xmi:type="style:SquareDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']/@style"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']"/>
+      <target xmi:type="nablagen:Ir2JavaComponent" href="src/test/test.nablagen#//@workflow/@components.6"/>
+      <semanticElements xmi:type="nablagen:Ir2JavaComponent" href="src/test/test.nablagen#//@workflow/@components.6"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DNode" uid="_OZjy03b5Eemzg5Bhh9ZzPA" name="Kokkos Generator" outgoingEdges="_OZmPFXb5Eemzg5Bhh9ZzPA" width="20" height="5" resizeKind="NSEW">
-      <target xmi:type="nablagen:Ir2KokkosComponent" href="src/test/test.nablagen#//@workflow/@components.7"/>
-      <semanticElements xmi:type="nablagen:Ir2KokkosComponent" href="src/test/test.nablagen#//@workflow/@components.7"/>
       <ownedStyle xmi:type="diagram:Square" uid="_OZjy1Hb5Eemzg5Bhh9ZzPA" labelSize="12" borderColor="255,255,255" labelPosition="node" width="20" height="5" color="255,255,255">
         <description xmi:type="style:SquareDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']/@style"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']"/>
+      <target xmi:type="nablagen:Ir2KokkosComponent" href="src/test/test.nablagen#//@workflow/@components.7"/>
+      <semanticElements xmi:type="nablagen:Ir2KokkosComponent" href="src/test/test.nablagen#//@workflow/@components.7"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_OZlA8Hb5Eemzg5Bhh9ZzPA" sourceNode="_OZhWknb5Eemzg5Bhh9ZzPA" targetNode="_OZfhYHb5Eemzg5Bhh9ZzPA">
       <target xmi:type="nablagen:TagPersistentVariablesComponent" href="src/test/test.nablagen#//@workflow/@components.1"/>
@@ -331,20 +334,20 @@
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_OZmPEHb5Eemzg5Bhh9ZzPA" sourceNode="_OZjy0Hb5Eemzg5Bhh9ZzPA" targetNode="_OZjLwnb5Eemzg5Bhh9ZzPA">
-      <target xmi:type="nablagen:Ir2JavaComponent" href="src/test/test.nablagen#//@workflow/@components.6"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" uid="_OZmPEXb5Eemzg5Bhh9ZzPA" sourceArrow="InputArrow" targetArrow="NoDecoration" strokeColor="0,0,0">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_OZmPEnb5Eemzg5Bhh9ZzPA" labelSize="12" labelColor="136,136,136"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']"/>
+      <target xmi:type="nablagen:Ir2JavaComponent" href="src/test/test.nablagen#//@workflow/@components.6"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_OZmPFXb5Eemzg5Bhh9ZzPA" sourceNode="_OZjy03b5Eemzg5Bhh9ZzPA" targetNode="_OZjLwnb5Eemzg5Bhh9ZzPA">
-      <target xmi:type="nablagen:Ir2KokkosComponent" href="src/test/test.nablagen#//@workflow/@components.7"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" uid="_OZmPFnb5Eemzg5Bhh9ZzPA" sourceArrow="InputArrow" targetArrow="NoDecoration" strokeColor="0,0,0">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_OZmPF3b5Eemzg5Bhh9ZzPA" labelSize="12" labelColor="136,136,136"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']"/>
+      <target xmi:type="nablagen:Ir2KokkosComponent" href="src/test/test.nablagen#//@workflow/@components.7"/>
     </ownedDiagramElements>
     <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']"/>
     <filterVariableHistory xmi:type="diagram:FilterVariableHistory" uid="_OZeTQHb5Eemzg5Bhh9ZzPA"/>
@@ -352,4 +355,3 @@
     <target xmi:type="nablagen:Workflow" href="src/test/test.nablagen#//@workflow"/>
   </diagram:DSemanticDiagram>
 </xmi:XMI>
-

@@ -31,6 +31,10 @@ struct MathFunctions
 	static double norm(const Real2& a) noexcept;
 	static double norm(const Real3& a) noexcept;
 	static double det(const Real2& a, const Real2& b) noexcept;
+	static double sin(const double& v) noexcept;
+	static double cos(const double& v) noexcept;
+	static double asin(const double& v) noexcept;
+	static double acos(const double& v) noexcept;
 };
 }
 

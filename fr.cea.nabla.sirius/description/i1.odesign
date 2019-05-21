@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<description:Group xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:filter="http://www.eclipse.org/sirius/diagram/description/filter/1.1.0" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" name="i1" version="12.0.0.2017041100">
+<description:Group xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:filter="http://www.eclipse.org/sirius/diagram/description/filter/1.1.0" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" xmlns:tool="http://www.eclipse.org/sirius/description/tool/1.1.0" name="i1" version="12.0.0.2017041100">
   <ownedViewpoints name="InstructionViewpoint" modelFileExtension="nablair">
     <ownedRepresentations xsi:type="description_1:DiagramDescription" name="NablaIrDiagram" titleExpression="aql:self.name.toUpperFirst() + '  Ir Graph'" domainClass="ir.IrModule" enablePopupBars="true">
       <metamodel href="http://www.cea.fr/nabla/ir#/"/>
@@ -186,15 +186,37 @@
           <style sourceArrow="InputArrow" targetArrow="NoDecoration">
             <strokeColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
             <centerLabelStyleDescription labelSize="12">
-              <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='gray']"/>
+              <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='blue']"/>
             </centerLabelStyleDescription>
           </style>
         </edgeMappings>
+        <toolSections>
+          <ownedTools xsi:type="tool:ToolDescription" name="Disable" label="Disable Branch" precondition="aql:self.oclIsKindOf(nablagen::ChildComponent) and not self.disabled" iconPath="/fr.cea.nabla.sirius/icons/disablebranch.png">
+            <element name="element"/>
+            <elementView name="elementView"/>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool:ChangeContext" browseExpression="aql:self.disableBranch()"/>
+            </initialOperation>
+          </ownedTools>
+          <ownedTools xsi:type="tool:ToolDescription" name="Enable" label="Enable Branch" precondition="aql:self.oclIsKindOf(nablagen::ChildComponent) and self.disabled" iconPath="/fr.cea.nabla.sirius/icons/enablebranch.png">
+            <element name="element"/>
+            <elementView name="elementView"/>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool:ChangeContext" browseExpression="aql:self.enableBranch()"/>
+            </initialOperation>
+          </ownedTools>
+        </toolSections>
         <customization>
           <vsmElementCustomizations xsi:type="description:VSMElementCustomization" predicateExpression="aql:self.oclAsType(nablagen::ChildComponent).disabled">
             <featureCustomizations xsi:type="description:EReferenceCustomization" appliedOn="//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']/@style" referenceName="labelColor">
               <value href="environment:/viewpoint#//@systemColors/@entries[name='light_gray']"/>
             </featureCustomizations>
+          </vsmElementCustomizations>
+          <vsmElementCustomizations xsi:type="description:VSMElementCustomization" predicateExpression="aql:self.oclIsKindOf(nablagen::Ir2CodeComponent) and (self.oclAsType(nablagen::Ir2CodeComponent).language ==  nablagen::Language::Kokkos or self.oclAsType(nablagen::Ir2CodeComponent).language ==  nablagen::Language::KokkosHierarchicalParallelism)">
+            <featureCustomizations xsi:type="description:EAttributeCustomization" appliedOn="//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']/@style" attributeName="iconPath" value="/fr.cea.nabla.sirius/icons/kokkos.png"/>
+          </vsmElementCustomizations>
+          <vsmElementCustomizations xsi:type="description:VSMElementCustomization" predicateExpression="aql:self.oclIsKindOf(nablagen::Ir2CodeComponent) and self.oclAsType(nablagen::Ir2CodeComponent).language ==  nablagen::Language::Java">
+            <featureCustomizations xsi:type="description:EAttributeCustomization" appliedOn="//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']/@style" attributeName="iconPath" value="/fr.cea.nabla.sirius/icons/java.png"/>
           </vsmElementCustomizations>
         </customization>
       </defaultLayer>

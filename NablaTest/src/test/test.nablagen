@@ -23,8 +23,7 @@ workflow TestDefaultGenerationChain transforms Test
 	OptimizeConnectivities optimizeConnectivities follows replaceReductions
 	{
 		connectivities = cells, nodes;
-		disabled;
-	}
+		dumpIr ; }
 	
 	FillHLTs fillHlts follows optimizeConnectivities
 	{

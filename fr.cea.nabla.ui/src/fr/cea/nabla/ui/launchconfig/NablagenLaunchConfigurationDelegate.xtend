@@ -14,7 +14,6 @@ class NablagenLaunchConfigurationDelegate implements ILaunchConfigurationDelegat
 	override launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException 
 	{
 		val file = NablagenLaunchConstants::getSourceFile(configuration)
-		println("runner = " + runner)
 		if (file !== null)
 			runner.launch(file)
 	}

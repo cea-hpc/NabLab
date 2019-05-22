@@ -1,0 +1,52 @@
+/*******************************************************************************
+ * Copyright (c) 2018 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * 	Benoit Lelandais - initial implementation
+ * 	Marie-Pierre Oudot - initial implementation
+ * 	Jean-Sylvain Camier - Nabla generation support
+ *******************************************************************************/
+module HeatEquation;
+
+with Math.*;
+
+items { node, cell, face }
+
+connectivities {
+	nodes: (∅) → {node};
+	cells: (∅) → {cell};
+	faces: (∅) → {face};
+	neighbourCells: (cell) → {cell};
+	nodesOfFace: (face) → {node};
+	nodesOfCell: (cell) → {node};
+	commonFace: (cell, cell) → face;
+}
+
+// Options obligatoires pour compiler
+const ℝ LENGTH = 0.1;
+const ℕ X_EDGE_ELEMS = 20;
+const ℕ Y_EDGE_ELEMS = 20;
+const ℕ Z_EDGE_ELEMS = 1;
+const ℝ option_stoptime = 0.1;
+const ℕ option_max_iterations = 500;
+const ℝ PI = 3.1415926;
+const ℝ k = 1.0;
+
+ℝ t=0.0; 
+ℝ δt=0.001;
+ℝ² X[nodes], center[cells];
+ℝ u[cells], V[cells], f[cells], outgoingFlux[cells], surface[faces];
+
+IniF: ∀j∈cells(), f{j} = 0.0;
+IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});  // ne fonctionne que sur des parallélogrammes
+IniUn: ∀j∈cells(), u{j} = cos(2*PI*k*center{j}.x);
+ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(det(X{r}, X{r+1}));
+ComputeSurface: ∀f∈faces(), surface{f} = 0.5 * ∑{r∈nodesOfFace(f)}(norm(X{r}-X{r+1}));
+ComputeOutgoingFlux: ∀j1∈cells(), outgoingFlux{j1} = δt/V{j1} * ∑{j2∈neighbourCells(j1), cf=commonFace(j1,j2)}( (u{j2}-u{j1}) / norm(center{j2}-center{j1}) * surface{cf});
+ComputeUn: ∀j∈cells(), u{j}^{n+1}=f{j}*δt + u{j} + outgoingFlux{j};
+ComputeTn: t^{n+1}=t+δt;

@@ -16,7 +16,7 @@
 					<folderInfo id="cdt.managedbuild.toolchain.gnu.base.1332103878.1819136505" name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.base.1631255109" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.base">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.GNU_ELF" id="cdt.managedbuild.target.gnu.platform.base.307054271" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
-							<builder buildPath="/NablaTestKokkos/build" id="de.marw.cdt.cmake.core.genscriptbuilder.603269132" keepEnvironmentInBuildfile="false" name="CMake Builder (portable)" parallelBuildOn="false" superClass="de.marw.cdt.cmake.core.genscriptbuilder"/>
+							<builder buildPath="/NablaTestKokkos/build" id="de.marw.cdt.cmake.core.genscriptbuilder.603269132" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="CMake Builder (portable)" parallelBuildOn="false" superClass="de.marw.cdt.cmake.core.genscriptbuilder"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.1367684530" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1946387845" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.998104648" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -41,6 +41,8 @@
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 			<storageModule buildDir="build" moduleId="de.marw.cdt.cmake.core.settings">
 				<options/>
+				<defs/>
+				<undefs/>
 			</storageModule>
 		</cconfiguration>
 	</storageModule>

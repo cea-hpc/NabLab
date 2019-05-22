@@ -3,12 +3,9 @@
   <viewpoint:DAnalysis uid="_eEvd0HbvEemCYsSVd3ddRA" selectedViews="_GnHgUHbwEemCYsSVd3ddRA" version="14.1.0.201810161215">
     <semanticResources>src/test/test.nabla</semanticResources>
     <semanticResources>src/test/test.nablagen</semanticResources>
-    <semanticResources>src/whiteheat/Whiteheat.nabla</semanticResources>
     <semanticResources>platform:/resource/fr.cea.nabla/mathfunctions.nabla</semanticResources>
-    <semanticResources>src-gen/test/Test.replaceReductions.nablair</semanticResources>
-    <semanticResources>src-gen/test/Test.fillHlts.nablair</semanticResources>
-    <semanticResources>src/whiteheat/Whiteheat.nablagen</semanticResources>
     <semanticResources>src-gen/test/Test.optimizeConnectivities.nablair</semanticResources>
+    <semanticResources>src-gen/test/Test.fillHlts.nablair</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_GnHgUHbwEemCYsSVd3ddRA">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_pWBMgHvLEemMCNDPcpRLqg" name="TestDefaultGenerationChainDiagram" repPath="#_pVwGwHvLEemMCNDPcpRLqg">

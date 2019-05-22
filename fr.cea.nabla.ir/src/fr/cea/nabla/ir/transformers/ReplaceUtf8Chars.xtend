@@ -49,6 +49,6 @@ class ReplaceUtf8Chars implements IrTransformationStep
 		.replace('\u2126', 'omega')
 		.replace('\u221A', 'sqrt')
 		.replace('\u2211', 'reduceSum')
-		.replace('\u03C0', 'reduceProd')		
+		.replace('\u220F', 'reduceProd')		
 	}
 }

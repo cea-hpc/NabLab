@@ -92,13 +92,13 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void testFunctionCall() noexcept
 	{
-		double reduceProd420234885(1.0);
-		Kokkos::Prod<double> reducer(reduceProd420234885);
-		Kokkos::parallel_reduce("ReductionreduceProd420234885", nbCells, KOKKOS_LAMBDA(const int& jCells, double& x)
+		double reduceProd503201872(1.0);
+		Kokkos::Prod<double> reducer(reduceProd503201872);
+		Kokkos::parallel_reduce("ReductionreduceProd503201872", nbCells, KOKKOS_LAMBDA(const int& jCells, double& x)
 		{
 			reducer.join(x, u(jCells));
 		}, reducer);
-		total = reduceProd420234885;
+		total = reduceProd503201872;
 	}
 
 public:
@@ -129,7 +129,6 @@ public:
 
 		iniU(); // @-2.0
 		testFunctionCall(); // @-1.0
-		std::cout << total << std::endl;
 		timer.stop();
 	}
 };	

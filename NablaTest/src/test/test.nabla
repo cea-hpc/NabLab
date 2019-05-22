@@ -35,7 +35,7 @@ const ℕ Z_EDGE_ELEMS = 1;
 
 //A: total = reduceMin{j∈cells()} ( u{j}  + 4.0) + 3.0;
 IniU: ∀j∈cells(), u{j} = 3.0;
-TestFunctionCall: total = π{j∈cells()}(u{j});
+TestFunctionCall: total = ∏{j∈cells()}(u{j});
 //IniCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), Cjr{j,r} = 3.0;
 //IniCjrBad: ∀r∈nodes(), ∀j∈cellsOfNode(r+1), Cjr{j,r} = 1.0;
 //B: total = ∑{j∈cells()} ( ∑{r∈nodesOfCell(j)}(Cjr{j,r} + 1.0) + 2.0) + 3.0;

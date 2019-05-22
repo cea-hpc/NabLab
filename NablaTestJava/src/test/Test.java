@@ -79,12 +79,12 @@ public final class Test
 	 */
 	private void testFunctionCall() 
 	{
-		double reduceProd420234885 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+		double reduceProd503201872 = IntStream.range(0, nbCells).boxed().parallel().reduce(
 			1.0, 
 			(r, jCells) -> MathFunctions.reduceProd(r, u[jCells]),
 			(r1, r2) -> MathFunctions.reduceProd(r1, r2)
 		);
-		total = reduceProd420234885;
+		total = reduceProd503201872;
 	}		
 
 	public void simulate()
@@ -92,7 +92,6 @@ public final class Test
 		System.out.println("Début de l'exécution du module Test");
 		iniU(); // @-2.0
 		testFunctionCall(); // @-1.0
-		System.out.println(total);
 		System.out.println("Fin de l'exécution du module Test");
 	}
 

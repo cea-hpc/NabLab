@@ -20,6 +20,7 @@ import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
+import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InitTimeIterator
@@ -114,10 +115,15 @@ class LatexLabelServices
 		
 	static def dispatch String getLatex(ReductionCall it) 
 	{ 
-		if (arg instanceof ReductionCall || arg instanceof FunctionCall)
-			reduction.name.pu + '_{' + range.latex + '}' + arg.latex
+			reduction.name.pu + '_{' + range.latex + '}' + arg.latexArg
+	}
+	
+	private static def getLatexArg(Expression it)
+	{
+		if (it instanceof ReductionCall || it instanceof FunctionCall)
+			latex
 		else
-			reduction.name.pu + '_{' + range.latex + '}' + '\\left(' + arg.latex + '\\right)'
+			'\\left(' + latex + '\\right)'		
 	}
 	
 	static def dispatch String getLatex(VarRef it)

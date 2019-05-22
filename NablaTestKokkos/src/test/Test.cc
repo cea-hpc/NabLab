@@ -28,8 +28,8 @@ public:
 	struct Options
 	{
 		double LENGTH = 1.0;
-		int X_EDGE_ELEMS = 10;
-		int Y_EDGE_ELEMS = 10;
+		int X_EDGE_ELEMS = 2;
+		int Y_EDGE_ELEMS = 2;
 		int Z_EDGE_ELEMS = 1;
 	};
 	Options* options;
@@ -71,31 +71,40 @@ public:
 
 private:
 	/**
-	 * Job TestFunctionCall @-1.0
-	 * In variables: Cjr
+	 * Job IniU @-2.0
+	 * In variables: 
 	 * Out variables: u
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void iniU() noexcept
+	{
+		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		{
+			u(jCells) = 3.0;
+		});
+	}
+	
+	/**
+	 * Job TestFunctionCall @-1.0
+	 * In variables: u
+	 * Out variables: total
 	 */
 	KOKKOS_INLINE_FUNCTION
 	void testFunctionCall() noexcept
 	{
-		auto cells(mesh->getCells());
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		double reduceProd420234885(1.0);
+		Kokkos::Prod<double> reducer(reduceProd420234885);
+		Kokkos::parallel_reduce("ReductionreduceProd420234885", nbCells, KOKKOS_LAMBDA(const int& jCells, double& x)
 		{
-			int jId(cells[jCells]);
-			double sum1007414498 = 0.0;
-			auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
-			{
-				sum1007414498 = sum1007414498 + (Cjr(jCells,rNodesOfCellJ));
-			}
-			u(jCells) = sum1007414498;
-		});
+			reducer.join(x, u(jCells));
+		}, reducer);
+		total = reduceProd420234885;
 	}
 
 public:
 	void simulate()
 	{
-		std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting Glace2d ..." << __RESET__ << "\n\n";
+		std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting Test ..." << __RESET__ << "\n\n";
 
 		std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
 			<< __RESET__ << ", length=" << __BOLD__ << options->LENGTH << __RESET__ << std::endl;
@@ -118,7 +127,9 @@ public:
 
 		utils::Timer timer(true);
 
+		iniU(); // @-2.0
 		testFunctionCall(); // @-1.0
+		std::cout << total << std::endl;
 		timer.stop();
 	}
 };	

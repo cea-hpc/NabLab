@@ -15,8 +15,8 @@ public final class Test
 	public final static class Options
 	{
 		public final double LENGTH = 1.0;
-		public final int X_EDGE_ELEMS = 10;
-		public final int Y_EDGE_ELEMS = 10;
+		public final int X_EDGE_ELEMS = 2;
+		public final int Y_EDGE_ELEMS = 2;
 		public final int Z_EDGE_ELEMS = 1;
 	}
 	
@@ -60,30 +60,39 @@ public final class Test
 	}
 	
 	/**
-	 * Job TestFunctionCall @-1.0
-	 * In variables: Cjr
+	 * Job IniU @-2.0
+	 * In variables: 
 	 * Out variables: u
+	 */
+	private void iniU() 
+	{
+		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		{
+			u[jCells] = 3.0;
+		});
+	}		
+	
+	/**
+	 * Job TestFunctionCall @-1.0
+	 * In variables: u
+	 * Out variables: total
 	 */
 	private void testFunctionCall() 
 	{
-		int[] cells = mesh.getCells();
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			int jId = cells[jCells];
-			double sum1007414498 = 0.0;
-			int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
-			{
-				sum1007414498 = sum1007414498 + (Cjr[jCells][rNodesOfCellJ]);
-			}
-			u[jCells] = sum1007414498;
-		});
+		double reduceProd420234885 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+			1.0, 
+			(r, jCells) -> MathFunctions.reduceProd(r, u[jCells]),
+			(r1, r2) -> MathFunctions.reduceProd(r1, r2)
+		);
+		total = reduceProd420234885;
 	}		
 
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module Test");
+		iniU(); // @-2.0
 		testFunctionCall(); // @-1.0
+		System.out.println(total);
 		System.out.println("Fin de l'exécution du module Test");
 	}
 

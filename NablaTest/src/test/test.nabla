@@ -25,8 +25,8 @@ connectivities {
 }
 
 const ℝ LENGTH = 1.0;
-const ℕ X_EDGE_ELEMS = 10;
-const ℕ Y_EDGE_ELEMS = 10;
+const ℕ X_EDGE_ELEMS = 2;
+const ℕ Y_EDGE_ELEMS = 2;
 const ℕ Z_EDGE_ELEMS = 1;
 
 ℝ² X[nodes];
@@ -34,8 +34,9 @@ const ℕ Z_EDGE_ELEMS = 1;
 ℝ total;
 
 //A: total = reduceMin{j∈cells()} ( u{j}  + 4.0) + 3.0;
-TestFunctionCall: ∀j∈cells(), u{j} = ∑{r∈nodesOfCell(j)}(Cjr{j,r});
-//IniCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), Cjr{j,r} = 1.0 + X{r}.y;
+IniU: ∀j∈cells(), u{j} = 3.0;
+TestFunctionCall: total = π{j∈cells()}(u{j});
+//IniCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), Cjr{j,r} = 3.0;
 //IniCjrBad: ∀r∈nodes(), ∀j∈cellsOfNode(r+1), Cjr{j,r} = 1.0;
 //B: total = ∑{j∈cells()} ( ∑{r∈nodesOfCell(j)}(Cjr{j,r} + 1.0) + 2.0) + 3.0;
 //B: total = reduceMin{j∈cells()} ( reduceMin{r∈nodesOfCell(j)}(Cjr{j,r} + 1.0) + 2.0) + 3.0;

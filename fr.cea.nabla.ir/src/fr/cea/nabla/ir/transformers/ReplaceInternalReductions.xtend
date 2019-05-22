@@ -25,7 +25,7 @@ import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
 
 class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTransformationStep
 {
-	static val Operators = #{ 'sum'->'+', 'prod'->'*' }
+	static val Operators = #{ 'reduceSum'->'+', 'reduceProd'->'*' }
 	
 	override getDescription() 
 	{
@@ -66,7 +66,7 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 			variable = reductionInstr.result
 			type = createExpressionType(variable.type)
 		]
-		
+
 		if (Operators.keySet.contains(reduction.name))
 		{
 			return IrFactory::eINSTANCE.createBinaryExpression =>
@@ -100,7 +100,7 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 	{
 		var function = m.functions.findFirst
 		[   
-			name == r.name && 
+			name == r.functionName && 
 			inTypes.length == 2 && 
 			inTypes.get(0) == r.collectionType && 
 			inTypes.get(1) == r.returnType && 
@@ -111,7 +111,7 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 		{ 
 			function = IrFactory::eINSTANCE.createFunction =>
 			[
-				name = r.name
+				name = r.functionName
 				inTypes += r.collectionType
 				inTypes += r.returnType
 				returnType = r.returnType
@@ -130,5 +130,12 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 			basicType = t
 			dimension = 0
 		]
+	}
+	
+	private def getFunctionName(Reduction r)
+	{
+		val prefix = 'reduce'
+		if (r.name.startsWith(prefix)) r.name.replaceFirst(prefix, '')
+		else r.name
 	}
 }

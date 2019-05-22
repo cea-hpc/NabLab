@@ -19,9 +19,19 @@ class MathFunctions
 	def static double sqrt(double v) { Math::sqrt(v) }
 	def static double min(double a, double b) { Math::min(a, b) }
 	def static double max(double a, double b) { Math::max(a, b) }
-	def static double sum(double a, double b) { a + b }
-	def static Real2 sum(Real2 a, Real2 b) { a + b }
-	def static Real3 sum(Real3 a, Real3 b) { a + b }
+
+	def static double reduceSum(double a, double b) { a + b }
+	def static Real2 reduceSum(Real2 a, Real2 b) { a + b }
+	def static Real2x2 reduceSum(Real2x2 a, Real2x2 b) { a + b }
+	def static Real3 reduceSum(Real3 a, Real3 b) { a + b }
+	def static Real3x3 reduceSum(Real3x3 a, Real3x3 b) { a + b }
+
+	def static double reduceProd(double a, double b) { a * b }
+	def static Real2 reduceProd(Real2 a, Real2 b) { a * b }
+	def static Real2x2 reduceProd(Real2x2 a, Real2x2 b) { a * b }
+	def static Real3 reduceProd(Real3 a, Real3 b) { a * b }
+	def static Real3x3 reduceProd(Real3x3 a, Real3x3 b) { a * b }
+
 	def static double reduceMin(double a, double b) { Math::min(a, b) }
 	def static double reduceMax(double a, double b) { Math::max(a, b) }
 	def static double sin(double v) { Math::sin(v) }

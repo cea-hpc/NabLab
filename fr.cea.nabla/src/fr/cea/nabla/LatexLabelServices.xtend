@@ -115,7 +115,12 @@ class LatexLabelServices
 		
 	static def dispatch String getLatex(ReductionCall it) 
 	{ 
-			reduction.name.pu + '_{' + range.latex + '}' + arg.latexArg
+		switch (reduction.name)
+		{
+			case '\u2211': { '\\sum_{' + range.latex + '}' + arg.latexArg }
+			case '\u220F': { '\\prod_{' + range.latex + '}' + arg.latexArg }
+			default: reduction.name.pu + '_{' + range.latex + '}' + arg.latexArg
+		}
 	}
 	
 	private static def getLatexArg(Expression it)

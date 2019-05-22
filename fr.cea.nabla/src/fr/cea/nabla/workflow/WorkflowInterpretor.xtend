@@ -42,6 +42,9 @@ class WorkflowInterpretor
 	
 	def launch(Workflow workflow)
 	{	
+		val msg = 'STARTING ' + workflow.name + '\n'
+		logger.info(msg)
+		traceListeners.forEach[write(msg)]
 		workflow.roots.forEach[c | launch(c, workflow.nablaModule)]
 	}
 	
@@ -54,7 +57,7 @@ class WorkflowInterpretor
 	{
 		if (!nablaModule.jobs.empty)
 		{
-			val msg = 'Nabla -> IR - ' + c.name
+			val msg = '  Nabla -> IR - ' + c.name
 			logger.info(msg)
 			traceListeners.forEach[write(msg)]
 			val irModule = nabla2Ir.toIrModule(nablaModule)
@@ -72,7 +75,7 @@ class WorkflowInterpretor
 		if (!c.disabled)
 		{
 			val step = IrTransformationStepProvider::get(c)
-			val msg = 'IR -> IR - ' + c.name + ': ' + step.description
+			val msg = '  IR -> IR - ' + c.name + ': ' + step.description
 			logger.info(msg)
 			traceListeners.forEach[write(msg)]
 			val ok = step.transform(irModule)
@@ -102,7 +105,7 @@ class WorkflowInterpretor
 		{
 			val g = CodeGeneratorProvider::get(c)
 			val fileName = irModule.name.toLowerCase + '/' + irModule.name + '.' + g.fileExtension
-			val msg = "Generating '" + fileName + "' file"
+			val msg = "  Generating '" + fileName + "' file"
 			logger.info(msg)
 			traceListeners.forEach[write(msg)]
 			val fileContent = g.getFileContent(irModule)

@@ -478,9 +478,9 @@
  <extension
        point="org.eclipse.debug.ui.launchShortcuts">
     <shortcut
-          class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:fr.cea.nabla.ui.NablagenShortcut"
+          class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:fr.cea.nabla.ui.launchconfig.NablagenShortcut"
           icon="icons/Nabla.gif"
-          id="fr.cea.nabla.ui.NablagenShortcut"
+          id="fr.cea.nabla.ui.launchconfig.NablagenShortcut"
           label="Launch Generation"
           modes="run">
           <contextualLaunch>
@@ -498,6 +498,26 @@
           		</with>
           	</enablement>
           </contextualLaunch>
+          <configurationType
+                id="fr.cea.nabla.ui.launchconfig.NablagenLaunchConfigurationType">
+          </configurationType>
     </shortcut>
+ </extension>
+ <extension
+       point="org.eclipse.debug.core.launchConfigurationTypes">
+    <launchConfigurationType
+          delegate="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:fr.cea.nabla.ui.launchconfig.NablagenLaunchConfigurationDelegate"
+          id="fr.cea.nabla.ui.launchconfig.NablagenLaunchConfigurationType"
+          modes="run, debug"
+          name="Nabla Launch">
+    </launchConfigurationType>
+ </extension>
+ <extension
+       point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+    <launchConfigurationTabGroup
+          class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:fr.cea.nabla.ui.launchconfig.NablagenLaunchConfigurationTabGroup"
+          id="fr.cea.nabla.ui.launchconfig.NablagenLaunchConfigurationTabGroup"
+          type="fr.cea.nabla.ui.launchconfig.NablagenLaunchConfigurationType">
+    </launchConfigurationTabGroup>
  </extension>
 </plugin>

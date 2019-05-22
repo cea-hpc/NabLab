@@ -89,7 +89,8 @@ class WorkflowInterpretor
 				val exceptionMsg = '   ** Error in IR transformation step\n'
 				logger.info(exceptionMsg)
 				traceListeners.forEach[write(exceptionMsg)]
-				throw new RuntimeException(exceptionMsg)
+				//throw new RuntimeException(exceptionMsg)
+				return
 			}
 		}
 		fireModel(c, irModule)
@@ -111,7 +112,8 @@ class WorkflowInterpretor
 				val exceptionMsg = '   ** Invalid outputDir: ' + c.outputDir + '\n'
 				logger.info(exceptionMsg)
 				traceListeners.forEach[write(exceptionMsg)]
-				throw new RuntimeException(exceptionMsg)
+				//throw new RuntimeException(exceptionMsg)
+				return
 			}
 			else
 			{

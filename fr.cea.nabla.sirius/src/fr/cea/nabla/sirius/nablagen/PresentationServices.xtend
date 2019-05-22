@@ -1,6 +1,9 @@
 package fr.cea.nabla.sirius.nablagen
 
 import fr.cea.nabla.nablagen.ChildComponent
+import fr.cea.nabla.nablagen.Workflow
+import fr.cea.nabla.ui.launchconfig.NablagenRunner
+import fr.cea.nabla.ui.internal.NablaActivator
 
 import static extension fr.cea.nabla.workflow.WorkflowComponentExtensions.*
 
@@ -27,5 +30,12 @@ class PresentationServices
 	{
 		disabled = false
 		nexts.forEach[enableBranch]
+	}
+	
+	def void execute(Workflow w)
+	{
+		val injector = NablaActivator::instance.getInjector(NablaActivator::FR_CEA_NABLA_NABLAGEN)
+		val runner = injector.getInstance(NablagenRunner)
+		runner.launch(w)
 	}
 }

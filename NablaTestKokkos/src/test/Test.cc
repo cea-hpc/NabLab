@@ -44,6 +44,7 @@ private:
 
 	// Array Variables
 	Kokkos::View<Real2*> X;
+	Kokkos::View<double*> v;
 	Kokkos::View<double*> u;
 	Kokkos::View<double**> Cjr;
 	
@@ -58,6 +59,7 @@ public:
 	, nbCells(mesh->getNbCells())
 	, nbNodesOfCell(NumericMesh2D::MaxNbNodesOfCell)
 	, X("X", nbNodes)
+	, v("v", nbNodes)
 	, u("u", nbCells)
 	, Cjr("Cjr", nbCells, nbNodesOfCell)
 	{
@@ -71,7 +73,7 @@ public:
 
 private:
 	/**
-	 * Job IniU @-2.0
+	 * Job IniU @-3.0
 	 * In variables: 
 	 * Out variables: u
 	 */
@@ -80,25 +82,121 @@ private:
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
-			u(jCells) = 3.0;
+			u(jCells) = 2.0;
 		});
 	}
 	
 	/**
-	 * Job TestFunctionCall @-1.0
+	 * Job IniV @-3.0
+	 * In variables: 
+	 * Out variables: v
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void iniV() noexcept
+	{
+		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
+		{
+			v(rNodes) = 3.0;
+		});
+	}
+	
+	/**
+	 * Job TestInternal @-2.0
+	 * In variables: v
+	 * Out variables: u
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void testInternal() noexcept
+	{
+		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		{
+			int jId(jCells);
+			double reduceProd1025701828 = 1.0;
+			{
+				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+				for (int r1NodesOfCellJ=0; r1NodesOfCellJ<nodesOfCellJ.size(); r1NodesOfCellJ++)
+				{
+					int r1Id(nodesOfCellJ[r1NodesOfCellJ]);
+					int r1Nodes(r1Id);
+					reduceProd1025701828 = reduceProd1025701828 * (v(r1Nodes));
+				}
+			}
+			double reduceSum_981480406 = 0.0;
+			{
+				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+				for (int r2NodesOfCellJ=0; r2NodesOfCellJ<nodesOfCellJ.size(); r2NodesOfCellJ++)
+				{
+					int r2Id(nodesOfCellJ[r2NodesOfCellJ]);
+					int r2Nodes(r2Id);
+					reduceSum_981480406 = reduceSum_981480406 + (v(r2Nodes));
+				}
+			}
+			u(jCells) = reduceProd1025701828 + reduceSum_981480406;
+		});
+	}
+	
+	/**
+	 * Job TestInternal2 @-2.0
+	 * In variables: v
+	 * Out variables: u
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void testInternal2() noexcept
+	{
+		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		{
+			int jId(jCells);
+			double reduceProd1025701828 = 1.0;
+			{
+				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+				for (int r1NodesOfCellJ=0; r1NodesOfCellJ<nodesOfCellJ.size(); r1NodesOfCellJ++)
+				{
+					int r1Id(nodesOfCellJ[r1NodesOfCellJ]);
+					int r1Nodes(r1Id);
+					reduceProd1025701828 = reduceProd1025701828 * (v(r1Nodes));
+				}
+			}
+			double a = reduceProd1025701828;
+			double reduceSum_981480406 = 0.0;
+			{
+				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+				for (int r2NodesOfCellJ=0; r2NodesOfCellJ<nodesOfCellJ.size(); r2NodesOfCellJ++)
+				{
+					int r2Id(nodesOfCellJ[r2NodesOfCellJ]);
+					int r2Nodes(r2Id);
+					reduceSum_981480406 = reduceSum_981480406 + (v(r2Nodes));
+				}
+			}
+			double b = reduceSum_981480406;
+			u(jCells) = a + b;
+		});
+	}
+	
+	/**
+	 * Job TestExternal @-1.0
 	 * In variables: u
 	 * Out variables: total
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void testFunctionCall() noexcept
+	void testExternal() noexcept
 	{
-		double reduceProd503201872(1.0);
-		Kokkos::Prod<double> reducer(reduceProd503201872);
-		Kokkos::parallel_reduce("ReductionreduceProd503201872", nbCells, KOKKOS_LAMBDA(const int& jCells, double& x)
+		double reduceProd106920220(1.0);
 		{
-			reducer.join(x, u(jCells));
-		}, reducer);
-		total = reduceProd503201872;
+			Kokkos::Prod<double> reducer(reduceProd106920220);
+			Kokkos::parallel_reduce("ReductionreduceProd106920220", nbCells, KOKKOS_LAMBDA(const int& j1Cells, double& x)
+			{
+				reducer.join(x, u(j1Cells));
+			}, reducer);
+		}
+		double reduceSum_1900262014(0.0);
+		{
+			Kokkos::Sum<double> reducer(reduceSum_1900262014);
+			Kokkos::parallel_reduce("ReductionreduceSum_1900262014", nbCells, KOKKOS_LAMBDA(const int& j2Cells, double& x)
+			{
+				reducer.join(x, u(j2Cells));
+			}, reducer);
+		}
+		total = reduceProd106920220 + reduceSum_1900262014;
 	}
 
 public:
@@ -127,8 +225,11 @@ public:
 
 		utils::Timer timer(true);
 
-		iniU(); // @-2.0
-		testFunctionCall(); // @-1.0
+		iniU(); // @-3.0
+		iniV(); // @-3.0
+		testInternal(); // @-2.0
+		testInternal2(); // @-2.0
+		testExternal(); // @-1.0
 		timer.stop();
 	}
 };	

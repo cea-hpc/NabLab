@@ -26,6 +26,8 @@ import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.ScalarVar
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
+import java.util.ArrayList
+import java.util.List
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -41,7 +43,14 @@ class IrInstructionFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrReductionInstructionFactory
 	
-	def dispatch Instruction toIrInstruction(ScalarVarDefinition v)
+	def Instruction toIrInstruction(fr.cea.nabla.nabla.Instruction nablaInstruction)
+	{
+		val irInstructions = nablaInstruction.toIrInstructions
+		if (irInstructions.size == 1) irInstructions.head
+		else IrFactory::eINSTANCE.createInstructionBlock => [ instructions.addAll(irInstructions) ]
+	}
+
+	private def dispatch List<Instruction> toIrInstructions(ScalarVarDefinition v)
 	{
 		val irInstr = IrFactory::eINSTANCE.createVarDefinition =>
 		[
@@ -52,24 +61,44 @@ class IrInstructionFactory
 		return irInstr.transformReductions(v.defaultValue)
 	}
 	
-	def dispatch create IrFactory::eINSTANCE.createVarDefinition toIrInstruction(VarGroupDeclaration v)
+	private def dispatch List<Instruction> toIrInstructions(VarGroupDeclaration v)
 	{
-		// Il n'y a que des ScalarVar quand VarGroupDeclaration est une instruction.
-		// Les ArrayVar ne sont que dans les variables du module (variables globales)
-		for (scalarVar : v.variables.filter(ScalarVar))
-		{
+		val irInstr = IrFactory::eINSTANCE.createVarDefinition =>
+		[
+			// Il n'y a que des ScalarVar quand VarGroupDeclaration est une instruction.
+			// Les ArrayVar ne sont que dans les variables du module (variables globales)
+			for (scalarVar : v.variables.filter(ScalarVar))
+			{
+				annotations += v.toIrAnnotation
+				variables += scalarVar.toIrScalarVariable
+			}
+		]
+		#[irInstr]
+	}
+	
+	private def dispatch List<Instruction> toIrInstructions(InstructionBlock v)
+	{
+		val irInstr = IrFactory::eINSTANCE.createInstructionBlock =>
+		[
 			annotations += v.toIrAnnotation
-			variables += scalarVar.toIrScalarVariable
-		}
+			v.instructions.forEach[x | instructions += x.toIrInstructions]
+		]
+		#[irInstr]
 	}
 
-	def dispatch create IrFactory::eINSTANCE.createInstructionBlock toIrInstruction(InstructionBlock v)
+	private def dispatch List<Instruction> toIrInstructions(Loop v)
 	{
-		annotations += v.toIrAnnotation
-		v.instructions.forEach[x | instructions += x.toIrInstruction]
+		val irInstr = IrFactory::eINSTANCE.createLoop =>
+		[
+			annotations += v.toIrAnnotation
+			range = v.range.toIrIterator
+			v.singletons.forEach[x | singletons += x.toIrIterator]
+			body = v.body.toIrInstruction
+		]
+		#[irInstr]
 	}
 
-	def dispatch Instruction toIrInstruction(Affectation v)
+	private def dispatch List<Instruction> toIrInstructions(Affectation v)
 	{
 		val irInstr = IrFactory::eINSTANCE.createAffectation =>
 		[
@@ -82,15 +111,7 @@ class IrInstructionFactory
 		return irInstr.transformReductions(v.expression)
 	}
 	
-	def dispatch create IrFactory::eINSTANCE.createLoop toIrInstruction(Loop v)
-	{
-		annotations += v.toIrAnnotation
-		range = v.range.toIrIterator
-		v.singletons.forEach[x | singletons += x.toIrIterator]
-		body = v.body.toIrInstruction
-	}
-	
-	def dispatch Instruction toIrInstruction(If v)
+	private def dispatch List<Instruction> toIrInstructions(If v)
 	{
 		val irInstr = IrFactory::eINSTANCE.createIf =>
 		[
@@ -103,15 +124,12 @@ class IrInstructionFactory
 		return irInstr.transformReductions(v.condition)
 	}
 	
-	private def Instruction transformReductions(Instruction i, Expression e)
+	private def List<Instruction> transformReductions(Instruction i, Expression e)
 	{
-		val listOfReductionInstructions = e.toIrReductions
-		if (listOfReductionInstructions.empty) i
-		else IrFactory::eINSTANCE.createInstructionBlock =>
-		[
-			annotations += e.toIrAnnotation
-			instructions += listOfReductionInstructions
-			instructions += i
-		]
+		val reductionInstructions = e.toIrReductions
+		val instructions = new ArrayList<Instruction>
+		instructions.addAll(reductionInstructions)
+		instructions += i
+		return instructions
 	}
 }

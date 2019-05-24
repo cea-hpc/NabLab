@@ -126,11 +126,13 @@ class InstructionContentProvider
 
 	private static def getSequentialContent(Loop it)
 	'''
-		int[] «range.containerName» = «range.accessor»;
-		for (int «range.indexName»=0; «range.indexName»<«range.containerName».length; «range.indexName»++)
 		{
-			«defineIndices»
-			«body.innerContent»
+			int[] «range.containerName» = «range.accessor»;
+			for (int «range.indexName»=0; «range.indexName»<«range.containerName».length; «range.indexName»++)
+			{
+				«defineIndices»
+				«body.innerContent»
+			}
 		}
 	'''
 	

@@ -1,0 +1,43 @@
+with ExplicitHeatEquation.*;
+
+workflow TestDefaultGenerationChain transforms ExplicitHeatEquation
+{
+	Nabla2Ir nabla2ir
+	{
+	}
+
+	TagPersistentVariables tagPersistentVariables follows nabla2ir 
+	{ 
+		variables = u as "Vitesse";
+	}
+	
+	ReplaceUtf replaceUtf follows tagPersistentVariables
+	{
+	}
+	
+	ReplaceInternalReductions replaceReductions follows replaceUtf
+	{
+	}
+	
+	OptimizeConnectivities optimizeConnectivities follows replaceReductions
+	{
+		connectivities = cells, nodes, faces;
+	}
+	
+	FillHLTs fillHlts follows optimizeConnectivities
+	{
+		dumpIr;
+	}
+	
+	Ir2Code javaGenerator follows fillHlts
+	{
+		language = Java
+		outputDir = "/NablaTestJava/src";
+	}
+
+	Ir2Code kokkosGenerator follows fillHlts
+	{
+		language = Kokkos
+		outputDir = "/NablaTestKokkos/src";
+	}
+}

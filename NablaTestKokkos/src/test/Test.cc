@@ -92,13 +92,13 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void testFunctionCall() noexcept
 	{
-		double reduceProd503201872(1.0);
-		Kokkos::Prod<double> reducer(reduceProd503201872);
-		Kokkos::parallel_reduce("ReductionreduceProd503201872", nbCells, KOKKOS_LAMBDA(const int& jCells, double& x)
+		double reduceProd505721663(1.0);
+		Kokkos::Prod<double> reducer(reduceProd505721663);
+		Kokkos::parallel_reduce("ReductionreduceProd505721663", nbCells, KOKKOS_LAMBDA(const int& jCells, double& x)
 		{
 			reducer.join(x, u(jCells));
 		}, reducer);
-		total = reduceProd503201872;
+		total = reduceProd505721663;
 	}
 
 public:

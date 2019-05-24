@@ -28,6 +28,7 @@ public:
 	static constexpr int MaxNbNodesOfCell = 4;
 	static constexpr int MaxNbNodesOfFace = 2;
 	static constexpr int MaxNbCellsOfNode = 4;
+	static constexpr int MaxNbCellsOfFace = 2;
 	static constexpr int MaxNbNeighbourCells = 2;
 
 	NumericMesh2D(Mesh<Real2>* geometricMesh);
@@ -45,6 +46,7 @@ public:
 	const array<int, 4>& getNodesOfCell(const int& cellId) const noexcept;
 	const array<int, 2>& getNodesOfFace(const int& faceId) const noexcept;
 	vector<int> getCellsOfNode(const int& nodeId) const noexcept;
+	vector<int> getCellsOfFace(const int& faceId) const;
 	vector<int> getNeighbourCells(const int& cellId) const;
 	vector<int> getFacesOfCell(const int& cellId) const;
 	int getCommonFace(const int& cellId1, const int& cellId2) const noexcept;

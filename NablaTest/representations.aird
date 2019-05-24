@@ -6,9 +6,16 @@
     <semanticResources>platform:/resource/fr.cea.nabla/mathfunctions.nabla</semanticResources>
     <semanticResources>src-gen/test/Test.optimizeConnectivities.nablair</semanticResources>
     <semanticResources>src-gen/test/Test.fillHlts.nablair</semanticResources>
+    <semanticResources>src/test/ExplicitHeatEquation.nabla</semanticResources>
+    <semanticResources>src/test/ExplicitHeatEquation.nablagen</semanticResources>
+    <semanticResources>src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_GnHgUHbwEemCYsSVd3ddRA">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_pWBMgHvLEemMCNDPcpRLqg" name="TestDefaultGenerationChainDiagram" repPath="#_pVwGwHvLEemMCNDPcpRLqg">
+        <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']"/>
+        <target xmi:type="nablagen:Workflow" href="src/test/test.nablagen#//@workflow"/>
+      </ownedRepresentationDescriptors>
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_tvs0EH3wEem7jaM8QIHNxQ" name="TestDefaultGenerationChainDiagram" repPath="#_ttJ2YH3wEem7jaM8QIHNxQ">
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']"/>
         <target xmi:type="nablagen:Workflow" href="src/test/test.nablagen#//@workflow"/>
       </ownedRepresentationDescriptors>
@@ -371,6 +378,366 @@
     </ownedDiagramElements>
     <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']"/>
     <filterVariableHistory xmi:type="diagram:FilterVariableHistory" uid="_pVwGwXvLEemMCNDPcpRLqg"/>
+    <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer"/>
+    <target xmi:type="nablagen:Workflow" href="src/test/test.nablagen#//@workflow"/>
+  </diagram:DSemanticDiagram>
+  <diagram:DSemanticDiagram uid="_ttJ2YH3wEem7jaM8QIHNxQ" name="TestDefaultGenerationChainDiagram">
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_tvSkYH3wEem7jaM8QIHNxQ" source="DANNOTATION_CUSTOMIZATION_KEY">
+      <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_tvSkYX3wEem7jaM8QIHNxQ">
+        <computedStyleDescriptions xmi:type="style:SquareDescription" xmi:id="_1ugdsH3wEem7jaM8QIHNxQ" labelSize="12" labelExpression="aql:self.name.replaceUpperCaseWithSpace()" iconPath="/fr.cea.nabla.sirius/icons/kokkos.png" labelPosition="node" resizeKind="NSEW" width="20" height="5">
+          <borderColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
+          <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+          <color xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
+        </computedStyleDescriptions>
+        <computedStyleDescriptions xmi:type="style:SquareDescription" xmi:id="_5EUi8n3wEem7jaM8QIHNxQ" labelSize="12" labelExpression="aql:self.name.replaceUpperCaseWithSpace()" iconPath="/fr.cea.nabla.sirius/icons/java.png" labelPosition="node" resizeKind="NSEW" width="20" height="5">
+          <borderColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
+          <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+          <color xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
+        </computedStyleDescriptions>
+      </data>
+    </ownedAnnotationEntries>
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_twPmoH3wEem7jaM8QIHNxQ" source="GMF_DIAGRAMS">
+      <data xmi:type="notation:Diagram" xmi:id="_twPmoX3wEem7jaM8QIHNxQ" type="Sirius" element="_ttJ2YH3wEem7jaM8QIHNxQ" measurementUnit="Pixel">
+        <children xmi:type="notation:Node" xmi:id="_twpPQH3wEem7jaM8QIHNxQ" type="2001" element="_tucP0H3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_tw3RsH3wEem7jaM8QIHNxQ" type="5002">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_tw3RsX3wEem7jaM8QIHNxQ" y="5"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_txlqcH3wEem7jaM8QIHNxQ" type="3003" element="_tvEh8H3wEem7jaM8QIHNxQ">
+            <styles xmi:type="notation:ShapeStyle" xmi:id="_txlqcX3wEem7jaM8QIHNxQ" fontName="Ubuntu"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_txlqcn3wEem7jaM8QIHNxQ"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_twpPQX3wEem7jaM8QIHNxQ" fontName="Ubuntu" fontHeight="12"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_twpPQn3wEem7jaM8QIHNxQ" x="200" width="200" height="50"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_txN3AH3wEem7jaM8QIHNxQ" type="2001" element="_tvMdwH3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_txOeEH3wEem7jaM8QIHNxQ" type="5002">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_txOeEX3wEem7jaM8QIHNxQ" y="5"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_txm4kH3wEem7jaM8QIHNxQ" type="3003" element="_tvNE0H3wEem7jaM8QIHNxQ">
+            <styles xmi:type="notation:ShapeStyle" xmi:id="_txm4kX3wEem7jaM8QIHNxQ" fontName="Ubuntu"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_txm4kn3wEem7jaM8QIHNxQ"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_txN3AX3wEem7jaM8QIHNxQ" fontName="Ubuntu" fontHeight="12"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_txN3An3wEem7jaM8QIHNxQ" x="200" y="120" width="200" height="50"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_txPFIH3wEem7jaM8QIHNxQ" type="2001" element="_tvNE0n3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_txPFI33wEem7jaM8QIHNxQ" type="5002">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_txPFJH3wEem7jaM8QIHNxQ" y="5"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_txnfoH3wEem7jaM8QIHNxQ" type="3003" element="_tvNr4H3wEem7jaM8QIHNxQ">
+            <styles xmi:type="notation:ShapeStyle" xmi:id="_txnfoX3wEem7jaM8QIHNxQ" fontName="Ubuntu"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_txnfon3wEem7jaM8QIHNxQ"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_txPFIX3wEem7jaM8QIHNxQ" fontName="Ubuntu" fontHeight="12"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_txPFIn3wEem7jaM8QIHNxQ" x="200" y="220" width="200" height="50"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_txPsMH3wEem7jaM8QIHNxQ" type="2001" element="_tvNr4n3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_txPsM33wEem7jaM8QIHNxQ" type="5002">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_txPsNH3wEem7jaM8QIHNxQ" y="5"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_3N9eQH3wEem7jaM8QIHNxQ" type="3003" element="_3N1icn3wEem7jaM8QIHNxQ">
+            <styles xmi:type="notation:ShapeStyle" xmi:id="_3N9eQX3wEem7jaM8QIHNxQ" fontName="Ubuntu"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_3N9eQn3wEem7jaM8QIHNxQ"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_txPsMX3wEem7jaM8QIHNxQ" fontName="Ubuntu" fontHeight="12"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_txPsMn3wEem7jaM8QIHNxQ" x="200" y="320" width="200" height="50"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_txQTQH3wEem7jaM8QIHNxQ" type="2001" element="_tvO6AH3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_txQTQ33wEem7jaM8QIHNxQ" type="5002">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_txQTRH3wEem7jaM8QIHNxQ" y="5"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_1ulWMH3wEem7jaM8QIHNxQ" type="3003" element="_1ueogH3wEem7jaM8QIHNxQ">
+            <styles xmi:type="notation:ShapeStyle" xmi:id="_1ulWMX3wEem7jaM8QIHNxQ" fontName="Ubuntu"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_1ulWMn3wEem7jaM8QIHNxQ"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_txQTQX3wEem7jaM8QIHNxQ" fontName="Ubuntu" fontHeight="12"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_txQTQn3wEem7jaM8QIHNxQ" x="200" y="440" width="200" height="50"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_txQ6UH3wEem7jaM8QIHNxQ" type="2001" element="_tvPhEX3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_txQ6U33wEem7jaM8QIHNxQ" type="5002">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_txQ6VH3wEem7jaM8QIHNxQ" y="5"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_1ul9QH3wEem7jaM8QIHNxQ" type="3003" element="_1ufPkX3wEem7jaM8QIHNxQ">
+            <styles xmi:type="notation:ShapeStyle" xmi:id="_1ul9QX3wEem7jaM8QIHNxQ" fontName="Ubuntu"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_1ul9Qn3wEem7jaM8QIHNxQ"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_txQ6UX3wEem7jaM8QIHNxQ" fontName="Ubuntu" fontHeight="12"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_txQ6Un3wEem7jaM8QIHNxQ" x="200" y="560" width="200" height="50"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_txRhYH3wEem7jaM8QIHNxQ" type="2001" element="_tvQIIX3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_txSIcH3wEem7jaM8QIHNxQ" type="5002">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_txSIcX3wEem7jaM8QIHNxQ" y="5"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_5EapkH3wEem7jaM8QIHNxQ" type="3003" element="_5EVKAX3wEem7jaM8QIHNxQ">
+            <styles xmi:type="notation:ShapeStyle" xmi:id="_5EbQoH3wEem7jaM8QIHNxQ" fontName="Ubuntu"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5EbQoX3wEem7jaM8QIHNxQ"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_txRhYX3wEem7jaM8QIHNxQ" fontName="Ubuntu" fontHeight="12"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_txRhYn3wEem7jaM8QIHNxQ" x="340" y="660" width="200" height="50"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_txSvgH3wEem7jaM8QIHNxQ" type="2001" element="_tvTLcn3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_txTWkH3wEem7jaM8QIHNxQ" type="5002">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_txTWkX3wEem7jaM8QIHNxQ" y="5"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_1unLYH3wEem7jaM8QIHNxQ" type="3003" element="_1uhEwH3wEem7jaM8QIHNxQ">
+            <styles xmi:type="notation:ShapeStyle" xmi:id="_1unLYX3wEem7jaM8QIHNxQ" fontName="Ubuntu"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_1unLYn3wEem7jaM8QIHNxQ"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_txSvgX3wEem7jaM8QIHNxQ" fontName="Ubuntu" fontHeight="12"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_txSvgn3wEem7jaM8QIHNxQ" x="40" y="660" width="200" height="50"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_txT9oH3wEem7jaM8QIHNxQ" type="2001" element="_tvVAoH3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_txT9o33wEem7jaM8QIHNxQ" type="5002">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_txT9pH3wEem7jaM8QIHNxQ" y="5"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_txrxEH3wEem7jaM8QIHNxQ" type="3005" element="_tvVAoX3wEem7jaM8QIHNxQ">
+            <styles xmi:type="notation:ShapeStyle" xmi:id="_txrxEX3wEem7jaM8QIHNxQ" fontName="Ubuntu"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_txrxEn3wEem7jaM8QIHNxQ"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_txT9oX3wEem7jaM8QIHNxQ" fontName="Ubuntu" fontHeight="12"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_txT9on3wEem7jaM8QIHNxQ" width="16" height="16"/>
+        </children>
+        <styles xmi:type="notation:DiagramStyle" xmi:id="_twPmon3wEem7jaM8QIHNxQ"/>
+        <edges xmi:type="notation:Edge" xmi:id="_tyH18H3wEem7jaM8QIHNxQ" type="4001" element="_tvc8cH3wEem7jaM8QIHNxQ" source="_txN3AH3wEem7jaM8QIHNxQ" target="_twpPQH3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_tyJrIH3wEem7jaM8QIHNxQ" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tyJrIX3wEem7jaM8QIHNxQ" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_tyK5QH3wEem7jaM8QIHNxQ" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tyK5QX3wEem7jaM8QIHNxQ" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_tyMHYH3wEem7jaM8QIHNxQ" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tyMHYX3wEem7jaM8QIHNxQ" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_tyH18X3wEem7jaM8QIHNxQ"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_tyH18n3wEem7jaM8QIHNxQ" fontColor="13606770" fontName="Ubuntu" fontHeight="12"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_tyH1833wEem7jaM8QIHNxQ" points="[0, 0, 0, 60]$[0, -60, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_tyfCUH3wEem7jaM8QIHNxQ" id="(0.5,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_tyfpYH3wEem7jaM8QIHNxQ" id="(0.5,1.0)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_tygQcH3wEem7jaM8QIHNxQ" type="4001" element="_tvexoH3wEem7jaM8QIHNxQ" source="_txPFIH3wEem7jaM8QIHNxQ" target="_txN3AH3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_tygQdH3wEem7jaM8QIHNxQ" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tygQdX3wEem7jaM8QIHNxQ" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_tyg3gH3wEem7jaM8QIHNxQ" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tyg3gX3wEem7jaM8QIHNxQ" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_tyg3gn3wEem7jaM8QIHNxQ" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tyg3g33wEem7jaM8QIHNxQ" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_tygQcX3wEem7jaM8QIHNxQ"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_tygQcn3wEem7jaM8QIHNxQ" fontColor="13606770" fontName="Ubuntu" fontHeight="12"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_tygQc33wEem7jaM8QIHNxQ" points="[0, 0, 0, 60]$[0, -60, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_tyhekH3wEem7jaM8QIHNxQ" id="(0.5,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_tyhekX3wEem7jaM8QIHNxQ" id="(0.5,1.0)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_tyhekn3wEem7jaM8QIHNxQ" type="4001" element="_tvicAH3wEem7jaM8QIHNxQ" source="_txPsMH3wEem7jaM8QIHNxQ" target="_txPFIH3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_tyiFoH3wEem7jaM8QIHNxQ" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tyiFoX3wEem7jaM8QIHNxQ" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_tyiFon3wEem7jaM8QIHNxQ" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tyiFo33wEem7jaM8QIHNxQ" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_tyiFpH3wEem7jaM8QIHNxQ" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tyiFpX3wEem7jaM8QIHNxQ" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_tyhek33wEem7jaM8QIHNxQ"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_tyhelH3wEem7jaM8QIHNxQ" fontColor="13606770" fontName="Ubuntu" fontHeight="12"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_tyhelX3wEem7jaM8QIHNxQ" points="[0, 0, 0, 60]$[0, -60, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_tyissH3wEem7jaM8QIHNxQ" id="(0.5,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_tyissX3wEem7jaM8QIHNxQ" id="(0.5,1.0)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_tyissn3wEem7jaM8QIHNxQ" type="4001" element="_tvjDEH3wEem7jaM8QIHNxQ" source="_txQTQH3wEem7jaM8QIHNxQ" target="_txPsMH3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_tyjTw33wEem7jaM8QIHNxQ" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tyjTxH3wEem7jaM8QIHNxQ" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_tyjTxX3wEem7jaM8QIHNxQ" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tyjTxn3wEem7jaM8QIHNxQ" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_tyj60H3wEem7jaM8QIHNxQ" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tyj60X3wEem7jaM8QIHNxQ" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_tyjTwH3wEem7jaM8QIHNxQ"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_tyjTwX3wEem7jaM8QIHNxQ" fontColor="13606770" fontName="Ubuntu" fontHeight="12"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_tyjTwn3wEem7jaM8QIHNxQ" points="[0, 0, 0, 60]$[0, -60, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_tykh4H3wEem7jaM8QIHNxQ" id="(0.5,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_tykh4X3wEem7jaM8QIHNxQ" id="(0.5,1.0)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_tykh4n3wEem7jaM8QIHNxQ" type="4001" element="_tvjDFX3wEem7jaM8QIHNxQ" source="_txQ6UH3wEem7jaM8QIHNxQ" target="_txQTQH3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_tykh5n3wEem7jaM8QIHNxQ" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tykh533wEem7jaM8QIHNxQ" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_tylI8H3wEem7jaM8QIHNxQ" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tylI8X3wEem7jaM8QIHNxQ" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_tylI8n3wEem7jaM8QIHNxQ" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tylI833wEem7jaM8QIHNxQ" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_tykh433wEem7jaM8QIHNxQ"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_tykh5H3wEem7jaM8QIHNxQ" fontColor="13606770" fontName="Ubuntu" fontHeight="12"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_tykh5X3wEem7jaM8QIHNxQ" points="[0, 0, 0, 60]$[0, -60, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_tylwAH3wEem7jaM8QIHNxQ" id="(0.5,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_tylwAX3wEem7jaM8QIHNxQ" id="(0.5,1.0)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_tylwAn3wEem7jaM8QIHNxQ" type="4001" element="_tvjqJH3wEem7jaM8QIHNxQ" source="_txRhYH3wEem7jaM8QIHNxQ" target="_txQ6UH3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_tymXEH3wEem7jaM8QIHNxQ" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tymXEX3wEem7jaM8QIHNxQ" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_tymXEn3wEem7jaM8QIHNxQ" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tymXE33wEem7jaM8QIHNxQ" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_tymXFH3wEem7jaM8QIHNxQ" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tymXFX3wEem7jaM8QIHNxQ" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_tylwA33wEem7jaM8QIHNxQ"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_tylwBH3wEem7jaM8QIHNxQ" fontColor="13606770" fontName="Ubuntu" fontHeight="12"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_tylwBX3wEem7jaM8QIHNxQ" points="[0, 0, 130, 60]$[-130, -60, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_tym-IH3wEem7jaM8QIHNxQ" id="(0.5,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_tym-IX3wEem7jaM8QIHNxQ" id="(0.5,1.0)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_tym-In3wEem7jaM8QIHNxQ" type="4001" element="_tvkRMn3wEem7jaM8QIHNxQ" source="_txSvgH3wEem7jaM8QIHNxQ" target="_txQ6UH3wEem7jaM8QIHNxQ">
+          <children xmi:type="notation:Node" xmi:id="_tynlMH3wEem7jaM8QIHNxQ" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tynlMX3wEem7jaM8QIHNxQ" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_tynlMn3wEem7jaM8QIHNxQ" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tynlM33wEem7jaM8QIHNxQ" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_tynlNH3wEem7jaM8QIHNxQ" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tynlNX3wEem7jaM8QIHNxQ" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_tym-I33wEem7jaM8QIHNxQ"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_tym-JH3wEem7jaM8QIHNxQ" fontColor="13606770" fontName="Ubuntu" fontHeight="12"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_tym-JX3wEem7jaM8QIHNxQ" points="[0, 0, -130, 60]$[130, -60, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_tyoMQH3wEem7jaM8QIHNxQ" id="(0.5,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_tyoMQX3wEem7jaM8QIHNxQ" id="(0.5,1.0)"/>
+        </edges>
+      </data>
+    </ownedAnnotationEntries>
+    <ownedDiagramElements xmi:type="diagram:DNode" uid="_tucP0H3wEem7jaM8QIHNxQ" name="Nabla2ir" incomingEdges="_tvc8cH3wEem7jaM8QIHNxQ" width="20" height="5" resizeKind="NSEW">
+      <target xmi:type="nablagen:Nabla2IrComponent" href="src/test/test.nablagen#//@workflow/@components.0"/>
+      <semanticElements xmi:type="nablagen:Nabla2IrComponent" href="src/test/test.nablagen#//@workflow/@components.0"/>
+      <ownedStyle xmi:type="diagram:Square" uid="_tvEh8H3wEem7jaM8QIHNxQ" labelSize="12" borderColor="255,255,255" labelPosition="node" width="20" height="5" color="255,255,255">
+        <description xmi:type="style:SquareDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNode" uid="_tvMdwH3wEem7jaM8QIHNxQ" name="Tag Persistent Variables" outgoingEdges="_tvc8cH3wEem7jaM8QIHNxQ" incomingEdges="_tvexoH3wEem7jaM8QIHNxQ" width="20" height="5" resizeKind="NSEW">
+      <target xmi:type="nablagen:TagPersistentVariablesComponent" href="src/test/test.nablagen#//@workflow/@components.1"/>
+      <semanticElements xmi:type="nablagen:TagPersistentVariablesComponent" href="src/test/test.nablagen#//@workflow/@components.1"/>
+      <ownedStyle xmi:type="diagram:Square" uid="_tvNE0H3wEem7jaM8QIHNxQ" labelSize="12" borderColor="255,255,255" labelPosition="node" width="20" height="5" color="255,255,255">
+        <description xmi:type="style:SquareDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNode" uid="_tvNE0n3wEem7jaM8QIHNxQ" name="Replace Utf" outgoingEdges="_tvexoH3wEem7jaM8QIHNxQ" incomingEdges="_tvicAH3wEem7jaM8QIHNxQ" width="20" height="5" resizeKind="NSEW">
+      <target xmi:type="nablagen:ReplaceUtfComponent" href="src/test/test.nablagen#//@workflow/@components.2"/>
+      <semanticElements xmi:type="nablagen:ReplaceUtfComponent" href="src/test/test.nablagen#//@workflow/@components.2"/>
+      <ownedStyle xmi:type="diagram:Square" uid="_tvNr4H3wEem7jaM8QIHNxQ" labelSize="12" borderColor="255,255,255" labelPosition="node" width="20" height="5" color="255,255,255">
+        <description xmi:type="style:SquareDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNode" uid="_tvNr4n3wEem7jaM8QIHNxQ" name="Replace Reductions" outgoingEdges="_tvicAH3wEem7jaM8QIHNxQ" incomingEdges="_tvjDEH3wEem7jaM8QIHNxQ" width="20" height="5" resizeKind="NSEW">
+      <target xmi:type="nablagen:ReplaceInternalReductionsComponent" href="src/test/test.nablagen#//@workflow/@components.3"/>
+      <semanticElements xmi:type="nablagen:ReplaceInternalReductionsComponent" href="src/test/test.nablagen#//@workflow/@components.3"/>
+      <ownedStyle xmi:type="diagram:Square" uid="_3N1icn3wEem7jaM8QIHNxQ" labelSize="12" borderColor="255,255,255" labelPosition="node" width="20" height="5" color="255,255,255">
+        <description xmi:type="style:SquareDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNode" uid="_tvO6AH3wEem7jaM8QIHNxQ" name="Optimize Connectivities" outgoingEdges="_tvjDEH3wEem7jaM8QIHNxQ" incomingEdges="_tvjDFX3wEem7jaM8QIHNxQ" width="20" height="5" resizeKind="NSEW">
+      <target xmi:type="nablagen:OptimizeConnectivitiesComponent" href="src/test/test.nablagen#//@workflow/@components.4"/>
+      <semanticElements xmi:type="nablagen:OptimizeConnectivitiesComponent" href="src/test/test.nablagen#//@workflow/@components.4"/>
+      <ownedStyle xmi:type="diagram:Square" uid="_1ueogH3wEem7jaM8QIHNxQ" labelSize="12" borderColor="255,255,255" labelPosition="node" width="20" height="5" color="255,255,255">
+        <description xmi:type="style:SquareDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNode" uid="_tvPhEX3wEem7jaM8QIHNxQ" name="Fill Hlts" outgoingEdges="_tvjDFX3wEem7jaM8QIHNxQ" incomingEdges="_tvjqJH3wEem7jaM8QIHNxQ _tvkRMn3wEem7jaM8QIHNxQ" width="20" height="5" resizeKind="NSEW">
+      <target xmi:type="nablagen:FillHLTsComponent" href="src/test/test.nablagen#//@workflow/@components.5"/>
+      <semanticElements xmi:type="nablagen:FillHLTsComponent" href="src/test/test.nablagen#//@workflow/@components.5"/>
+      <ownedStyle xmi:type="diagram:Square" uid="_1ufPkX3wEem7jaM8QIHNxQ" labelSize="12" borderColor="255,255,255" labelPosition="node" width="20" height="5" color="255,255,255">
+        <description xmi:type="style:SquareDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNode" uid="_tvQIIX3wEem7jaM8QIHNxQ" name="Java Generator" outgoingEdges="_tvjqJH3wEem7jaM8QIHNxQ" width="20" height="5" resizeKind="NSEW">
+      <target xmi:type="nablagen:Ir2CodeComponent" href="src/test/test.nablagen#//@workflow/@components.6"/>
+      <semanticElements xmi:type="nablagen:Ir2CodeComponent" href="src/test/test.nablagen#//@workflow/@components.6"/>
+      <ownedStyle xmi:type="diagram:Square" uid="_5EVKAX3wEem7jaM8QIHNxQ" labelSize="12" iconPath="/fr.cea.nabla.sirius/icons/java.png" description="_5EUi8n3wEem7jaM8QIHNxQ" borderColor="255,255,255" labelPosition="node" width="20" height="5" color="255,255,255"/>
+      <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNode" uid="_tvTLcn3wEem7jaM8QIHNxQ" name="Kokkos Generator" outgoingEdges="_tvkRMn3wEem7jaM8QIHNxQ" width="20" height="5" resizeKind="NSEW">
+      <target xmi:type="nablagen:Ir2CodeComponent" href="src/test/test.nablagen#//@workflow/@components.7"/>
+      <semanticElements xmi:type="nablagen:Ir2CodeComponent" href="src/test/test.nablagen#//@workflow/@components.7"/>
+      <ownedStyle xmi:type="diagram:Square" uid="_1uhEwH3wEem7jaM8QIHNxQ" labelSize="12" iconPath="/fr.cea.nabla.sirius/icons/kokkos.png" description="_1ugdsH3wEem7jaM8QIHNxQ" borderColor="255,255,255" labelPosition="node" width="20" height="5" color="255,255,255"/>
+      <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNode" uid="_tvVAoH3wEem7jaM8QIHNxQ" name="TestDefaultGenerationChain" width="-1" height="-1" resizeKind="NSEW">
+      <target xmi:type="nablagen:Workflow" href="src/test/test.nablagen#//@workflow"/>
+      <semanticElements xmi:type="nablagen:Workflow" href="src/test/test.nablagen#//@workflow"/>
+      <ownedStyle xmi:type="diagram:WorkspaceImage" uid="_tvVAoX3wEem7jaM8QIHNxQ" labelSize="12" labelPosition="node" workspacePath="/fr.cea.nabla.sirius/icons/execute.png">
+        <description xmi:type="style:WorkspaceImageDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Launch']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Launch']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" uid="_tvc8cH3wEem7jaM8QIHNxQ" sourceNode="_tvMdwH3wEem7jaM8QIHNxQ" targetNode="_tucP0H3wEem7jaM8QIHNxQ">
+      <target xmi:type="nablagen:TagPersistentVariablesComponent" href="src/test/test.nablagen#//@workflow/@components.1"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_tvdjgH3wEem7jaM8QIHNxQ" sourceArrow="InputArrow" targetArrow="NoDecoration" strokeColor="0,0,0">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_tvdjgX3wEem7jaM8QIHNxQ" labelSize="12" labelColor="114,159,207"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" uid="_tvexoH3wEem7jaM8QIHNxQ" sourceNode="_tvNE0n3wEem7jaM8QIHNxQ" targetNode="_tvMdwH3wEem7jaM8QIHNxQ">
+      <target xmi:type="nablagen:ReplaceUtfComponent" href="src/test/test.nablagen#//@workflow/@components.2"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_tvexoX3wEem7jaM8QIHNxQ" sourceArrow="InputArrow" targetArrow="NoDecoration" strokeColor="0,0,0">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_tvexon3wEem7jaM8QIHNxQ" labelSize="12" labelColor="114,159,207"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" uid="_tvicAH3wEem7jaM8QIHNxQ" sourceNode="_tvNr4n3wEem7jaM8QIHNxQ" targetNode="_tvNE0n3wEem7jaM8QIHNxQ">
+      <target xmi:type="nablagen:ReplaceInternalReductionsComponent" href="src/test/test.nablagen#//@workflow/@components.3"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_tvicAX3wEem7jaM8QIHNxQ" sourceArrow="InputArrow" targetArrow="NoDecoration" strokeColor="0,0,0">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_tvicAn3wEem7jaM8QIHNxQ" labelSize="12" labelColor="114,159,207"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" uid="_tvjDEH3wEem7jaM8QIHNxQ" sourceNode="_tvO6AH3wEem7jaM8QIHNxQ" targetNode="_tvNr4n3wEem7jaM8QIHNxQ">
+      <target xmi:type="nablagen:OptimizeConnectivitiesComponent" href="src/test/test.nablagen#//@workflow/@components.4"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_tvjDEX3wEem7jaM8QIHNxQ" sourceArrow="InputArrow" targetArrow="NoDecoration" strokeColor="0,0,0">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_tvjDEn3wEem7jaM8QIHNxQ" labelSize="12" labelColor="114,159,207"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" uid="_tvjDFX3wEem7jaM8QIHNxQ" sourceNode="_tvPhEX3wEem7jaM8QIHNxQ" targetNode="_tvO6AH3wEem7jaM8QIHNxQ">
+      <target xmi:type="nablagen:FillHLTsComponent" href="src/test/test.nablagen#//@workflow/@components.5"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_tvjqIH3wEem7jaM8QIHNxQ" sourceArrow="InputArrow" targetArrow="NoDecoration" strokeColor="0,0,0">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_tvjqIX3wEem7jaM8QIHNxQ" labelSize="12" labelColor="114,159,207"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" uid="_tvjqJH3wEem7jaM8QIHNxQ" sourceNode="_tvQIIX3wEem7jaM8QIHNxQ" targetNode="_tvPhEX3wEem7jaM8QIHNxQ">
+      <target xmi:type="nablagen:Ir2CodeComponent" href="src/test/test.nablagen#//@workflow/@components.6"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_tvjqJX3wEem7jaM8QIHNxQ" sourceArrow="InputArrow" targetArrow="NoDecoration" strokeColor="0,0,0">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_tvjqJn3wEem7jaM8QIHNxQ" labelSize="12" labelColor="114,159,207"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" uid="_tvkRMn3wEem7jaM8QIHNxQ" sourceNode="_tvTLcn3wEem7jaM8QIHNxQ" targetNode="_tvPhEX3wEem7jaM8QIHNxQ">
+      <target xmi:type="nablagen:Ir2CodeComponent" href="src/test/test.nablagen#//@workflow/@components.7"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_tvkRM33wEem7jaM8QIHNxQ" sourceArrow="InputArrow" targetArrow="NoDecoration" strokeColor="0,0,0">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_tvkRNH3wEem7jaM8QIHNxQ" labelSize="12" labelColor="114,159,207"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@edgeMappings[name='WD.Parent']"/>
+    </ownedDiagramElements>
+    <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']"/>
+    <filterVariableHistory xmi:type="diagram:FilterVariableHistory" uid="_ttlUMH3wEem7jaM8QIHNxQ"/>
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer"/>
     <target xmi:type="nablagen:Workflow" href="src/test/test.nablagen#//@workflow"/>
   </diagram:DSemanticDiagram>

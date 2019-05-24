@@ -79,12 +79,12 @@ public final class Test
 	 */
 	private void testFunctionCall() 
 	{
-		double reduceProd503201872 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+		double reduceProd505721663 = IntStream.range(0, nbCells).boxed().parallel().reduce(
 			1.0, 
 			(r, jCells) -> MathFunctions.reduceProd(r, u[jCells]),
 			(r1, r2) -> MathFunctions.reduceProd(r1, r2)
 		);
-		total = reduceProd503201872;
+		total = reduceProd505721663;
 	}		
 
 	public void simulate()

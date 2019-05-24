@@ -1,0 +1,112 @@
+/*******************************************************************************
+ * Copyright (c) 2018 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * 	Benoit Lelandais - initial implementation
+ * 	Marie-Pierre Oudot - initial implementation
+ * 	Jean-Sylvain Camier - Nabla generation support
+ *******************************************************************************/
+module ExplicitHeatEquation;
+
+with Math.*;
+
+items { node, cell, face }
+
+connectivities {
+	nodes: (∅) → {node};
+	cells: (∅) → {cell};
+	faces: (∅) → {face};
+	neighbourCells: (cell) → {cell};
+	nodesOfFace: (face) → {node};
+	cellsOfFace: (face) → {cell};
+	nodesOfCell: (cell) → {node};
+	commonFace: (cell, cell) → face;
+}
+
+// Options obligatoires pour compiler
+const ℝ LENGTH = 0.05;
+const ℕ X_EDGE_ELEMS = 40;
+const ℕ Y_EDGE_ELEMS = 40;
+const ℕ Z_EDGE_ELEMS = 1;
+const ℝ option_stoptime = 1.0;
+const ℕ option_max_iterations = 500000000;
+/* @Remark
+ * La définition du maillage est problématique :
+ *    - On ne peut pas choisir une longueur de maille différentes pour x et y
+ *    - On a plutôt envie de se donner une longueur physique
+ *           (éventuellement différente en x et y) et un nombre de mailles en x et y
+ *    Car en général on se donne un cas test particulier (donc une longueur physique donnée) et on fait varier le pas d'espace
+ * */
+
+const ℝ u0 = 1.0;
+const ℝ² vectOne = {1.0, 1.0};
+
+ℝ t=0.0; 
+ℝ δt=0.001;
+ℝ² X[nodes], Xc[cells]; // Position of nodes and cells center of gravity 
+ℝ xc[cells], yc[cells]; // Abscissa and ordinate of cells center of gravity so they can be plotted in vtk file
+ℝ u[cells]; // Temperature
+ℝ V[cells]; // Volume of cells
+ℝ D[cells]; // Cell centered conductivity
+ℝ faceLength[faces], faceConductivity[faces];
+ℝ α[cells, neighbourCells]; 
+/* @Remark
+ * C'est vraiment super d'avoir ce type de structure
+ * Par contre dans mon cas, j'ai besoin de définir quelque chose du type
+ * ∀c∈cells(), α{c, c} 
+ * ce qui n'est pas possible je pense
+ * Du coup j'ai filouté avec le α_self mais ce serait mieux de pouvoir écrire directement α{c, c}
+ *   Si on le voit en terme de matrice en math, c'est un élement α_ii
+ * */
+ℝ α_self[cells];
+
+
+
+InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // ne fonctionne que sur des parallélogrammes
+/* @Remark
+ *  Pourquoi la syntaxe {} pour accéder aux valeurs ? 
+ * A ma connaissance elle n'est standard ni en math ni en info
+ * Si on veut se conformer à latex, on peut noter Xc_c (ou Xc_{c})
+ */
+InitXcAndYc: ∀c∈cells(), {xc{c}=Xc{c}.x; yc{c}=Xc{c}.y;} // 
+InitU: ∀c∈cells(), if (norm(Xc{c} - vectOne) < 0.5) u{c} = u0; else u{c} = 0.0; // Initial circle in the center with value u0
+InitD: ∀c∈cells(), D{c} = 1.0; // 
+
+// Computing time step with cfl = 0.96
+computeDeltaTn: δt = reduceMin{c∈cells()}(LENGTH*LENGTH/D{c}) * 0.24;
+
+ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{p∈nodesOfCell(j)}(det(X{p}, X{p+1}));
+ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p}-X{p+1}));
+
+ComputeFaceConductivity: ∀f∈faces(), {
+	ℝ numerator = 2.0;
+	ℝ denominator = 0.0;
+	∀c∈cellsOfFace(f), {
+		numerator = numerator * D{c};
+	/* @Remark
+	 * L'opérateur produit ∏ aurait été parfait :-)
+	 */
+		denominator =  denominator + D{c};
+	}
+	faceConductivity{f} = numerator / denominator;
+	/* @Remark
+	 * Problème à la compil du java, à voir ensemble je pense  --> je remplace par un truc plus simple
+	 */
+	 //faceConductivity{f} = 1.0;
+}
+
+/* Assembling of the diffusion matrix */
+// Extra diagonal terms 
+computeAlphaCoeff: ∀c∈cells(), ∀d∈neighbourCells(c), f=commonFace(c,d),
+	α{c, d} = δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c}-Xc{d});
+// Diagonal terms		
+computeOwnAlphaCoeff:  ∀c∈cells(), α_self{c} = 1 - ∑{d∈neighbourCells(c)}(α{c, d});
+
+UpdateU: ∀c∈cells(), u{c}^{n+1} = α_self{c} * u{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u{d});
+
+ComputeTn: t^{n+1}=t+δt;

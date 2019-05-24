@@ -39,6 +39,22 @@ NumericMesh2D::getCellsOfNode(const int& nodeId) const noexcept
 	return m_geometricMesh->getQuadIdsOfNode(nodeId);
 }
 
+vector<int>
+NumericMesh2D::getCellsOfFace(const int& faceId) const
+{
+	std::vector<int> cellsOfFace;
+	const auto& nodes(getNodesOfFace(faceId));
+	for (auto nodeId : nodes)
+	{
+		auto adjacentCells(m_geometricMesh->getQuadIdsOfNode(nodeId));
+		for (int quadId : adjacentCells)
+			if (getNbCommonIds(nodes, m_geometricMesh->getQuads()[quadId].getNodeIds()) == 2)
+				cellsOfFace.emplace_back(quadId);
+	}
+	std::sort(cellsOfFace.begin(), cellsOfFace.end());
+	cellsOfFace.erase(std::unique(cellsOfFace.begin(), cellsOfFace.end()), cellsOfFace.end());
+	return cellsOfFace;
+}
 
 vector<int>
 NumericMesh2D::getNeighbourCells(const int& cellId) const
@@ -53,6 +69,8 @@ NumericMesh2D::getNeighbourCells(const int& cellId) const
 				if (getNbCommonIds(nodes, m_geometricMesh->getQuads()[quadId].getNodeIds()) == 2)
 					neighbours.emplace_back(quadId);
 	}
+	std::sort(neighbours.begin(), neighbours.end());
+	neighbours.erase(std::unique(neighbours.begin(), neighbours.end()), neighbours.end());
 	return neighbours;
 }
 

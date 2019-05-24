@@ -30,7 +30,7 @@ const ℕ Y_EDGE_ELEMS = 2;
 const ℕ Z_EDGE_ELEMS = 1;
 
 ℝ² X[nodes];
-ℝ u[cells], Cjr[cells,nodesOfCell];
+ℝ u[cells], f[cells,cells], Cjr[cells,nodesOfCell];
 ℝ total;
 
 //A: total = reduceMin{j∈cells()} ( u{j}  + 4.0) + 3.0;

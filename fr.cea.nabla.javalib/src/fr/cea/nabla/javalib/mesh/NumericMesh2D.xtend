@@ -22,6 +22,7 @@ class NumericMesh2D
 	public static val MaxNbNodesOfCell = 4
 	public static val MaxNbNodesOfFace = 2
 	public static val MaxNbCellsOfNode = 4
+	public static val MaxNbCellsOfFace = 2
 	public static val MaxNbNeighbourCells = 4
 	
 	@Accessors val Mesh<Real2> geometricMesh
@@ -55,6 +56,23 @@ class NumericMesh2D
 	def getCellsOfNode(int nodeId)
 	{
 		geometricMesh.getQuadIdsOfNode(nodeId)
+	}
+
+	def getCellsOfFace(int faceId)
+	{
+		val cellsOfFace = new HashSet<Integer>
+		val nodes = getNodesOfFace(faceId)
+		for (nodeId : nodes)
+		{
+			for (quadId : geometricMesh.getQuadIdsOfNode(nodeId))
+			{
+				val adjacentQuad = geometricMesh.quads.get(quadId)
+				if (adjacentQuad.nodeIds.filter(n | nodes.contains(n)).size == 2)
+					cellsOfFace.add(quadId)
+			}
+		}
+		val int[] a = cellsOfFace.map[intValue]
+		return a		
 	}
 
 	def getNeighbourCells(int cellId)

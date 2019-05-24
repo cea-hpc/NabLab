@@ -50,7 +50,7 @@ class Ir2Java extends CodeGenerator
 			public final static class Options
 			{
 				«FOR v : variables.filter(ScalarVariable).filter[const]»
-				public final «v.javaType» «v.name» = «v.defaultValue.content»;
+				public final «v.javaType» «v.name» = «v.defaultValue.content.toString.replaceAll('options.', '')»;
 				«ENDFOR»
 			}
 			
@@ -142,7 +142,7 @@ class Ir2Java extends CodeGenerator
 			public static void main(String[] args)
 			{
 				«name».Options o = new «name».Options();
-				Mesh<Real2> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.LENGTH, o.LENGTH);
+				Mesh<Real2> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
 				NumericMesh2D nm = new NumericMesh2D(gm);
 				«name» i = new «name»(o, nm);
 				i.simulate();

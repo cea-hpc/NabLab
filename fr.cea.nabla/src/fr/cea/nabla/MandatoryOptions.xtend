@@ -19,18 +19,20 @@ import fr.cea.nabla.nabla.NablaFactory
 class MandatoryOptions 
 {
 	public static val COORD = 'X'
-	public static val LENGTH = 'LENGTH'
+	public static val X_EDGE_LENGTH = 'X_EDGE_LENGTH'
+	public static val Y_EDGE_LENGTH = 'Y_EDGE_LENGTH'
 	public static val X_EDGE_ELEMS = 'X_EDGE_ELEMS'
 	public static val Y_EDGE_ELEMS = 'Y_EDGE_ELEMS'
 	public static val Z_EDGE_ELEMS = 'Z_EDGE_ELEMS'
 	public static val STOP_TIME = 'option_stoptime'
 	public static val MAX_ITERATIONS = 'option_max_iterations'
 	
-	public static val OPTION_NAMES = #[LENGTH, X_EDGE_ELEMS, Y_EDGE_ELEMS, Z_EDGE_ELEMS, STOP_TIME, MAX_ITERATIONS]
+	public static val OPTION_NAMES = #[X_EDGE_LENGTH, Y_EDGE_LENGTH, X_EDGE_ELEMS, Y_EDGE_ELEMS, Z_EDGE_ELEMS, STOP_TIME, MAX_ITERATIONS]
 
-	def getOptions() { #[length, XEdgeElem, YEdgeElem, ZEdgeElem, stopTime, maxIterations] }
+	def getOptions() { #[XEdgeLength, YEdgeLength, XEdgeElem, YEdgeElem, ZEdgeElem, stopTime, maxIterations] }
 	
-	def getLength() { getRealOption(LENGTH, 1.0) }
+	def getXEdgeLength() { getRealOption(X_EDGE_LENGTH, 1.0) }
+	def getYEdgeLength() { getRealOption(Y_EDGE_LENGTH, 1.0) }
 	def getStopTime() { getRealOption(STOP_TIME, 0.1) }
 	def getMaxIterations() { getIntOption(MAX_ITERATIONS, 48) }
 

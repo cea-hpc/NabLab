@@ -14,12 +14,15 @@ public final class ExplicitHeatEquation
 {
 	public final static class Options
 	{
-		public final double LENGTH = 0.05;
-		public final int X_EDGE_ELEMS = 4;
-		public final int Y_EDGE_ELEMS = 4;
+		public final double X_LENGTH = 2.0;
+		public final double Y_LENGTH = 2.0;
+		public final int X_EDGE_ELEMS = 40;
+		public final int Y_EDGE_ELEMS = 40;
 		public final int Z_EDGE_ELEMS = 1;
+		public final double X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
+		public final double Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 		public final double option_stoptime = 1.0;
-		public final int option_max_iterations = 5;
+		public final int option_max_iterations = 500000000;
 		public final double u0 = 1.0;
 		public final Real2 vectOne = new Real2(1.0, 1.0);
 	}
@@ -198,17 +201,17 @@ public final class ExplicitHeatEquation
 	
 	/**
 	 * Job computeDeltaTn @-3.0
-	 * In variables: LENGTH, D
+	 * In variables: X_EDGE_LENGTH, Y_EDGE_LENGTH, D
 	 * Out variables: deltat
 	 */
 	private void computeDeltaTn() 
 	{
-		double reduceMin_1210628069 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+		double reduceMin_208148189 = IntStream.range(0, nbCells).boxed().parallel().reduce(
 			Double.MAX_VALUE, 
-			(r, cCells) -> MathFunctions.reduceMin(r, options.LENGTH * options.LENGTH / D[cCells]),
+			(r, cCells) -> MathFunctions.reduceMin(r, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]),
 			(r1, r2) -> MathFunctions.reduceMin(r1, r2)
 		);
-		deltat = reduceMin_1210628069 * 0.24;
+		deltat = reduceMin_208148189 * 0.24;
 	}		
 	
 	/**
@@ -218,24 +221,33 @@ public final class ExplicitHeatEquation
 	 */
 	private void computeFaceConductivity() 
 	{
-		//IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
-		for (int fFaces=0 ; fFaces<nbFaces ; fFaces++)
+		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			int fId = fFaces;
-			double numerator = 2.0;
-			double denominator = 0.0;
-			int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
-			for (int cCellsOfFaceF=0; cCellsOfFaceF<cellsOfFaceF.length; cCellsOfFaceF++)
 			{
-				int cId = cellsOfFaceF[cCellsOfFaceF];
-				System.out.println(" Pour face " + fId + " : cell " + cId);
-				int cCells = cId;
-				numerator = numerator * D[cCells];
-				denominator = denominator + D[cCells];
+				double reduceProd_784902332 = 1.0;
+				int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
+				for (int c1CellsOfFaceF=0; c1CellsOfFaceF<cellsOfFaceF.length; c1CellsOfFaceF++)
+				{
+					int c1Id = cellsOfFaceF[c1CellsOfFaceF];
+					int c1Cells = c1Id;
+					reduceProd_784902332 = reduceProd_784902332 * (D[c1Cells]);
+				}
+				double numerator = 2.0 * reduceProd_784902332;
+			}
+			{
+				double reduceSum1502882730 = 0.0;
+				int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
+				for (int c2CellsOfFaceF=0; c2CellsOfFaceF<cellsOfFaceF.length; c2CellsOfFaceF++)
+				{
+					int c2Id = cellsOfFaceF[c2CellsOfFaceF];
+					int c2Cells = c2Id;
+					reduceSum1502882730 = reduceSum1502882730 + (D[c2Cells]);
+				}
+				double denominator = reduceSum1502882730;
 			}
 			faceConductivity[fFaces] = numerator / denominator;
-		//});
-		}
+		});
 	}		
 	
 	/**
@@ -370,7 +382,7 @@ public final class ExplicitHeatEquation
 	public static void main(String[] args)
 	{
 		ExplicitHeatEquation.Options o = new ExplicitHeatEquation.Options();
-		Mesh<Real2> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.LENGTH, o.LENGTH);
+		Mesh<Real2> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
 		NumericMesh2D nm = new NumericMesh2D(gm);
 		ExplicitHeatEquation i = new ExplicitHeatEquation(o, nm);
 		i.simulate();

@@ -42,6 +42,7 @@ import static extension fr.cea.nabla.Utils.*
 class BasicValidator  extends AbstractNablaValidator
 {
 	public static val NO_COORD_VARIABLE = "NablaError::NoCoordVariable"
+	public static val MISSING_MANDATORY_OPTION = "NablaError::MissingMandatoryOption"
 	
 	@Inject extension VarExtensions
 	@Inject extension SpaceIteratorExtensions
@@ -51,6 +52,15 @@ class BasicValidator  extends AbstractNablaValidator
 	{
 		if (!variables.filter(VarGroupDeclaration).exists[g | g.variables.exists[v|v.name == MandatoryOptions::COORD]])
 			warning("Module must contain a node variable named '" + MandatoryOptions::COORD + "' to store node coordinates", NablaPackage.Literals.NABLA_MODULE__NAME, NO_COORD_VARIABLE)
+	}
+	
+	@Check
+	def checkMandatoryOptions(NablaModule it)
+	{
+		val scalarConsts = variables.filter(ScalarVarDefinition).filter[const].map[variable.name].toList
+		val missingConsts = MandatoryOptions::OPTION_NAMES.filter[x | !scalarConsts.contains(x)]
+		if (missingConsts.size > 0)
+			error('Missing mandatory option(s): ' + missingConsts.join(', '), NablaPackage.Literals.NABLA_MODULE__VARIABLES, MISSING_MANDATORY_OPTION)			
 	}
 	
 	@Check

@@ -36,7 +36,8 @@ functions {
 }
 
 // Options obligatoires pour générer
-const ℝ LENGTH = 0.01;
+const ℝ X_EDGE_LENGTH = 0.01;
+const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
 const ℕ X_EDGE_ELEMS = 100;
 const ℕ Y_EDGE_ELEMS = 10;
 const ℕ Z_EDGE_ELEMS = 1;
@@ -114,9 +115,9 @@ OuterFacesComputations: ∀k∈outerFaces(), {
 	ℝ²ˣ² I = {{1.0,0.0},{0.0,1.0}};
 
 	ℝ X_MIN = 0.0;
-	ℝ X_MAX = X_EDGE_ELEMS * LENGTH;
+	ℝ X_MAX = X_EDGE_ELEMS * X_EDGE_LENGTH;
 	ℝ Y_MIN = 0.0; 
-	ℝ Y_MAX = Y_EDGE_ELEMS * LENGTH;
+	ℝ Y_MAX = Y_EDGE_ELEMS * Y_EDGE_LENGTH;
 	ℝ² nY = {0.0,1.0};
 	
 	∀r∈nodesOfFace(k), {

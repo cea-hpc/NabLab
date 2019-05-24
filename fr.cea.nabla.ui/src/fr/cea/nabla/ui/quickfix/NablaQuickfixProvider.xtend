@@ -14,6 +14,11 @@
 package fr.cea.nabla.ui.quickfix
 
 import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider
+import org.eclipse.xtext.validation.Issue
+import fr.cea.nabla.validation.NablaValidator
+import org.eclipse.xtext.ui.editor.quickfix.Fix
+import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor
+import fr.cea.nabla.nabla.NablaModule
 
 /**
  * Custom quickfixes.
@@ -29,6 +34,14 @@ class NablaQuickfixProvider extends DefaultQuickfixProvider {
 //			val xtextDocument = context.xtextDocument
 //			val firstLetter = xtextDocument.get(issue.offset, 1)
 //			xtextDocument.replace(issue.offset, 1, firstLetter.toUpperCase)
+//		]
+//	}
+
+// todo : A finir
+//	@Fix(NablaValidator.MISSING_MANDATORY_OPTION)
+//	def addMandatoryOptions(Issue issue, IssueResolutionAcceptor acceptor) {
+//		acceptor.accept(issue, 'Add mandatory options', 'Add mandatory options.', null) 
+//		[element, context |		
 //		]
 //	}
 }

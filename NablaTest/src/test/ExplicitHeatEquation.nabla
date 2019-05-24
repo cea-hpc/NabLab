@@ -29,10 +29,13 @@ connectivities {
 }
 
 // Options obligatoires pour compiler
-const ℝ LENGTH = 0.05;
+const ℝ X_LENGTH = 2.0;
+const ℝ Y_LENGTH = 2.0;
 const ℕ X_EDGE_ELEMS = 40;
 const ℕ Y_EDGE_ELEMS = 40;
 const ℕ Z_EDGE_ELEMS = 1;
+const ℝ X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
+const ℝ Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 const ℝ option_stoptime = 1.0;
 const ℕ option_max_iterations = 500000000;
 /* @Remark
@@ -78,26 +81,28 @@ InitU: ∀c∈cells(), if (norm(Xc{c} - vectOne) < 0.5) u{c} = u0; else u{c} = 0
 InitD: ∀c∈cells(), D{c} = 1.0; // 
 
 // Computing time step with cfl = 0.96
-computeDeltaTn: δt = reduceMin{c∈cells()}(LENGTH*LENGTH/D{c}) * 0.24;
+computeDeltaTn: δt = reduceMin{c∈cells()}(X_EDGE_LENGTH*Y_EDGE_LENGTH/D{c}) * 0.24;
 
 ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{p∈nodesOfCell(j)}(det(X{p}, X{p+1}));
 ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p}-X{p+1}));
 
 ComputeFaceConductivity: ∀f∈faces(), {
-	ℝ numerator = 2.0;
-	ℝ denominator = 0.0;
-	∀c∈cellsOfFace(f), {
-		numerator = numerator * D{c};
-	/* @Remark
-	 * L'opérateur produit ∏ aurait été parfait :-)
-	 */
-		denominator =  denominator + D{c};
-	}
-	faceConductivity{f} = numerator / denominator;
-	/* @Remark
-	 * Problème à la compil du java, à voir ensemble je pense  --> je remplace par un truc plus simple
-	 */
-	 //faceConductivity{f} = 1.0;
+//	ℝ numerator = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1});
+//	ℝ denominator = ∑{c2∈cellsOfFace(f)}(D{c2});
+	faceConductivity{f} = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1}) / ∑{c2∈cellsOfFace(f)}(D{c2});
+	
+//	∀c∈cellsOfFace(f), {
+//		numerator = numerator * D{c};
+//	/* @Remark
+//	 * L'opérateur produit ∏ aurait été parfait :-)
+//	 */
+//		denominator =  denominator + D{c};
+//	}
+//	faceConductivity{f} = numerator / denominator;
+//	/* @Remark
+//	 * Problème à la compil du java, à voir ensemble je pense  --> je remplace par un truc plus simple
+//	 */
+//	 //faceConductivity{f} = 1.0;
 }
 
 /* Assembling of the diffusion matrix */

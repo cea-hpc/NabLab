@@ -32,7 +32,7 @@ import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
 import fr.cea.nabla.ir.ir.Variable
 
-import static extension fr.cea.nabla.ir.VariableExtensions.isScalarConst
+import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 
@@ -93,7 +93,7 @@ class ExpressionContentProvider
 	static def dispatch CharSequence getContent(FunctionCall it) 
 	'''«function.provider»Functions.«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
-	static def dispatch CharSequence getContent(VarRef it) 
+	static def dispatch CharSequence getContent(VarRef it)
 	'''«variable.codeName»«iteratorsContent»«FOR f:fields BEFORE '.' SEPARATOR '.'»get«f.toFirstUpper»()«ENDFOR»'''
 
 	private static def getCodeName(Variable it)

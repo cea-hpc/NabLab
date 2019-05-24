@@ -24,13 +24,16 @@ connectivities {
 	cellsOfNode: (node) → {cell};
 }
 
-const ℝ LENGTH = 1.0;
+const ℝ X_EDGE_LENGTH = 1.0;
+const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
 const ℕ X_EDGE_ELEMS = 2;
 const ℕ Y_EDGE_ELEMS = 2;
 const ℕ Z_EDGE_ELEMS = 1;
+const ℝ option_stoptime = 0.1;
+const ℕ option_max_iterations = 500;
 
 ℝ² X[nodes];
-ℝ u[cells], f[cells,cells], Cjr[cells,nodesOfCell];
+ℝ u[cells], f[cells], Cjr[cells,nodesOfCell];
 ℝ total;
 
 //A: total = reduceMin{j∈cells()} ( u{j}  + 4.0) + 3.0;

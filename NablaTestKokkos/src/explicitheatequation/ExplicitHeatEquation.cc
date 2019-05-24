@@ -27,12 +27,15 @@ class ExplicitHeatEquation
 public:
 	struct Options
 	{
-		double LENGTH = 0.05;
-		int X_EDGE_ELEMS = 4;
-		int Y_EDGE_ELEMS = 4;
+		double X_LENGTH = 2.0;
+		double Y_LENGTH = 2.0;
+		int X_EDGE_ELEMS = 40;
+		int Y_EDGE_ELEMS = 40;
 		int Z_EDGE_ELEMS = 1;
+		double X_EDGE_LENGTH = as_const(X_LENGTH) / as_const(X_EDGE_ELEMS);
+		double Y_EDGE_LENGTH = as_const(Y_LENGTH) / as_const(Y_EDGE_ELEMS);
 		double option_stoptime = 1.0;
-		int option_max_iterations = 50;
+		int option_max_iterations = 500000000;
 		double u0 = 1.0;
 		Real2 vectOne = Real2(1.0, 1.0);
 	};
@@ -220,19 +223,19 @@ private:
 	
 	/**
 	 * Job computeDeltaTn @-3.0
-	 * In variables: LENGTH, D
+	 * In variables: X_EDGE_LENGTH, Y_EDGE_LENGTH, D
 	 * Out variables: deltat
 	 */
 	KOKKOS_INLINE_FUNCTION
 	void computeDeltaTn() noexcept
 	{
-		double reduceMin_1210628069(numeric_limits<double>::max());
-		Kokkos::Min<double> reducer(reduceMin_1210628069);
-		Kokkos::parallel_reduce("ReductionreduceMin_1210628069", nbCells, KOKKOS_LAMBDA(const int& cCells, double& x)
+		double reduceMin_208148189(numeric_limits<double>::max());
+		Kokkos::Min<double> reducer(reduceMin_208148189);
+		Kokkos::parallel_reduce("ReductionreduceMin_208148189", nbCells, KOKKOS_LAMBDA(const int& cCells, double& x)
 		{
-			reducer.join(x, as_const(options->LENGTH) * as_const(options->LENGTH) / D(cCells));
+			reducer.join(x, as_const(options->X_EDGE_LENGTH) * as_const(options->Y_EDGE_LENGTH) / D(cCells));
 		}, reducer);
-		deltat = reduceMin_1210628069 * 0.24;
+		deltat = reduceMin_208148189 * 0.24;
 	}
 	
 	/**
@@ -243,24 +246,33 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeFaceConductivity() noexcept
 	{
-		//Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const int& fFaces)
-		for (int fFaces=0 ; fFaces<nbFaces ; fFaces++)
+		Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const int& fFaces)
 		{
 			int fId(fFaces);
-			double numerator = 2.0;
-			double denominator = 0.0;
-			auto cellsOfFaceF(mesh->getCellsOfFace(fId));
-			for (int cCellsOfFaceF=0; cCellsOfFaceF<cellsOfFaceF.size(); cCellsOfFaceF++)
 			{
-				int cId(cellsOfFaceF[cCellsOfFaceF]);
-				std::cout << " Pour face " << fFaces << " : cell " << cId << std::endl;
-				int cCells(cId);
-				numerator = numerator * D(cCells);
-				denominator = denominator + D(cCells);
+				double reduceProd_784902332 = 1.0;
+				auto cellsOfFaceF(mesh->getCellsOfFace(fId));
+				for (int c1CellsOfFaceF=0; c1CellsOfFaceF<cellsOfFaceF.size(); c1CellsOfFaceF++)
+				{
+					int c1Id(cellsOfFaceF[c1CellsOfFaceF]);
+					int c1Cells(c1Id);
+					reduceProd_784902332 = reduceProd_784902332 * (D(c1Cells));
+				}
+				double numerator = 2.0 * reduceProd_784902332;
+			}
+			{
+				double reduceSum1502882730 = 0.0;
+				auto cellsOfFaceF(mesh->getCellsOfFace(fId));
+				for (int c2CellsOfFaceF=0; c2CellsOfFaceF<cellsOfFaceF.size(); c2CellsOfFaceF++)
+				{
+					int c2Id(cellsOfFaceF[c2CellsOfFaceF]);
+					int c2Cells(c2Id);
+					reduceSum1502882730 = reduceSum1502882730 + (D(c2Cells));
+				}
+				double denominator = reduceSum1502882730;
 			}
 			faceConductivity(fFaces) = numerator / denominator;
-		//});
-		}
+		});
 	}
 	
 	/**
@@ -369,7 +381,7 @@ public:
 		std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting ExplicitHeatEquation ..." << __RESET__ << "\n\n";
 
 		std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
-			<< __RESET__ << ", length=" << __BOLD__ << options->LENGTH << __RESET__ << std::endl;
+			<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
 
 
 		if (Kokkos::hwloc::available()) {
@@ -446,20 +458,22 @@ int main(int argc, char* argv[])
 	Kokkos::initialize(argc, argv);
 	auto o = new ExplicitHeatEquation::Options();
 	string output;
-	if (argc == 4) {
+	if (argc == 5) {
 		o->X_EDGE_ELEMS = std::atoi(argv[1]);
 		o->Y_EDGE_ELEMS = std::atoi(argv[2]);
-		o->LENGTH = std::atof(argv[3]);
-	} else if (argc == 5) {
+		o->X_EDGE_LENGTH = std::atof(argv[3]);
+		o->Y_EDGE_LENGTH = std::atof(argv[4]);
+	} else if (argc == 6) {
 		o->X_EDGE_ELEMS = std::atoi(argv[1]);
 		o->Y_EDGE_ELEMS = std::atoi(argv[2]);
-		o->LENGTH = std::atof(argv[3]);
-		output = argv[4];
+		o->X_EDGE_LENGTH = std::atof(argv[3]);
+		o->Y_EDGE_LENGTH = std::atof(argv[4]);
+		output = argv[5];
 	} else if (argc != 1) {
-		std::cerr << "[ERROR] Wrong number of arguments. Expecting 3 or 4 args: X Y length (output)." << std::endl;
-		std::cerr << "(X=100, Y=10, length=0.01 output=current directory with no args)" << std::endl;
+		std::cerr << "[ERROR] Wrong number of arguments. Expecting 4 or 5 args: X Y Xlength Ylength (output)." << std::endl;
+		std::cerr << "(X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
 	}
-	auto gm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->LENGTH, o->LENGTH);
+	auto gm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
 	auto nm = new NumericMesh2D(gm);
 	auto c = new ExplicitHeatEquation(o, nm, output);
 	c->simulate();

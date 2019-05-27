@@ -6,8 +6,8 @@
     <semanticResources>platform:/resource/fr.cea.nabla/mathfunctions.nabla</semanticResources>
     <semanticResources>src-gen/test/Test.optimizeConnectivities.nablair</semanticResources>
     <semanticResources>src-gen/test/Test.fillHlts.nablair</semanticResources>
-    <semanticResources>src/test/ExplicitHeatEquation.nabla</semanticResources>
-    <semanticResources>src/test/ExplicitHeatEquation.nablagen</semanticResources>
+    <semanticResources>src/explicitheatequation/ExplicitHeatEquation.nabla</semanticResources>
+    <semanticResources>src/explicitheatequation/ExplicitHeatEquation.nablagen</semanticResources>
     <semanticResources>src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_GnHgUHbwEemCYsSVd3ddRA">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']"/>

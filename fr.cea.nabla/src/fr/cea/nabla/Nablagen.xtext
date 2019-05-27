@@ -87,7 +87,7 @@ FillHLTsComponent:
 Ir2CodeComponent:
 	'Ir2Code' name=ID 'follows' parent=[WorkflowComponent]
 	'{' 
-		'language' '=' language=Language
+		'language' '=' language=Language ';'
 		(disabled?='disabled' ';')?
 		'outputDir' '=' outputDir=STRING ';' 
 	'}';

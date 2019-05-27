@@ -6,7 +6,6 @@
     <semanticResources>src/glace2d/Glace2d.nablagen</semanticResources>
     <semanticResources>src/heatequation/HeatEquation.nabla</semanticResources>
     <semanticResources>src/heatequation/HeatEquation.nablagen</semanticResources>
-    <semanticResources>src-gen/glace2d/Glace2d.fillHlts.nablair</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_0cshwHyWEemzO5AWw6pKdw">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_8KKjwHyWEemzO5AWw6pKdw" name="Glace2dDefaultGenerationChainDiagram" repPath="#_8JXSgHyWEemzO5AWw6pKdw">
@@ -3212,8 +3211,8 @@
       <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@nodeMappings[name='NID.VariableBaseNode']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DNode" uid="_2O6GQHyWEemzO5AWw6pKdw" name="X" outgoingEdges="_2TOlknyWEemzO5AWw6pKdw _2TRo4HyWEemzO5AWw6pKdw _2TTeEHyWEemzO5AWw6pKdw _2TVTQHyWEemzO5AWw6pKdw" incomingEdges="_2Uyr0HyWEemzO5AWw6pKdw _2UzS5HyWEemzO5AWw6pKdw" width="13" height="5" resizeKind="NSEW">
-      <target xmi:type="ir:ArrayVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.16"/>
-      <semanticElements xmi:type="ir:ArrayVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.16"/>
+      <target xmi:type="ir:ScalarVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.16"/>
+      <semanticElements xmi:type="ir:ScalarVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.16"/>
       <ownedStyle xmi:type="diagram:Square" uid="_2PAM4HyWEemzO5AWw6pKdw" iconPath="/fr.cea.nabla.sirius/icons/startloop.png" labelPosition="node" width="13" height="5" color="255,245,181">
         <description xmi:type="style:SquareDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@nodeMappings[name='NID.VariableBaseNode']/@conditionnalStyles.3/@style"/>
       </ownedStyle>
@@ -3457,8 +3456,8 @@
       <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@nodeMappings[name='NID.VariableBaseNode']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DNode" uid="_2RA_EnyWEemzO5AWw6pKdw" name="deltat_nplus1" outgoingEdges="_2UtzVHyWEemzO5AWw6pKdw _2UtzWXyWEemzO5AWw6pKdw" incomingEdges="_2U9q8HyWEemzO5AWw6pKdw" width="13" height="5" resizeKind="NSEW">
-      <target xmi:type="ir:ScalarVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.44"/>
-      <semanticElements xmi:type="ir:ScalarVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.44"/>
+      <target xmi:type="ir:ArrayVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.44"/>
+      <semanticElements xmi:type="ir:ArrayVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.44"/>
       <ownedStyle xmi:type="diagram:Square" uid="_2REpcHyWEemzO5AWw6pKdw" iconPath="/fr.cea.nabla.sirius/icons/endloop.png" labelPosition="node" width="13" height="5" color="194,239,255">
         <description xmi:type="style:SquareDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@nodeMappings[name='NID.VariableBaseNode']/@conditionnalStyles.4/@style"/>
       </ownedStyle>
@@ -4219,7 +4218,7 @@
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_2TOlknyWEemzO5AWw6pKdw" sourceNode="_2O6GQHyWEemzO5AWw6pKdw" targetNode="_2Rcc43yWEemzO5AWw6pKdw">
-      <target xmi:type="ir:ArrayVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.16"/>
+      <target xmi:type="ir:ScalarVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.16"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" uid="_2TRB0HyWEemzO5AWw6pKdw" size="2">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_2TRB0XyWEemzO5AWw6pKdw"/>
@@ -4227,7 +4226,7 @@
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_2TRo4HyWEemzO5AWw6pKdw" sourceNode="_2O6GQHyWEemzO5AWw6pKdw" targetNode="_2RW9UHyWEemzO5AWw6pKdw">
-      <target xmi:type="ir:ArrayVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.16"/>
+      <target xmi:type="ir:ScalarVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.16"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" uid="_2TS3AHyWEemzO5AWw6pKdw" size="2">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_2TS3AXyWEemzO5AWw6pKdw"/>
@@ -4235,7 +4234,7 @@
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_2TTeEHyWEemzO5AWw6pKdw" sourceNode="_2O6GQHyWEemzO5AWw6pKdw" targetNode="_2ReSEHyWEemzO5AWw6pKdw">
-      <target xmi:type="ir:ArrayVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.16"/>
+      <target xmi:type="ir:ScalarVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.16"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" uid="_2TUsMHyWEemzO5AWw6pKdw" size="2">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_2TUsMXyWEemzO5AWw6pKdw"/>
@@ -4243,7 +4242,7 @@
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_2TVTQHyWEemzO5AWw6pKdw" sourceNode="_2O6GQHyWEemzO5AWw6pKdw" targetNode="_2RdrAXyWEemzO5AWw6pKdw">
-      <target xmi:type="ir:ArrayVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.16"/>
+      <target xmi:type="ir:ScalarVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.16"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" uid="_2TWhYHyWEemzO5AWw6pKdw" size="2">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_2TWhYXyWEemzO5AWw6pKdw"/>
@@ -4691,7 +4690,7 @@
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_2UtzVHyWEemzO5AWw6pKdw" visible="false" sourceNode="_2RA_EnyWEemzO5AWw6pKdw" targetNode="_2RTS9HyWEemzO5AWw6pKdw">
-      <target xmi:type="ir:ScalarVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.44"/>
+      <target xmi:type="ir:ArrayVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.44"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" uid="_2UtzVXyWEemzO5AWw6pKdw" lineStyle="dash" size="2">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']/@conditionnalStyles.0/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_2UtzVnyWEemzO5AWw6pKdw"/>
@@ -4699,7 +4698,7 @@
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_2UtzWXyWEemzO5AWw6pKdw" sourceNode="_2RA_EnyWEemzO5AWw6pKdw" targetNode="_2RguUHyWEemzO5AWw6pKdw">
-      <target xmi:type="ir:ScalarVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.44"/>
+      <target xmi:type="ir:ArrayVariable" href="src-gen/glace2d/Glace2d.fillHlts.nablair#//@variables.44"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" uid="_2UvogHyWEemzO5AWw6pKdw" size="2">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_2UvogXyWEemzO5AWw6pKdw"/>

@@ -26,18 +26,20 @@ workflow Glace2dDefaultGenerationChain transforms Glace2d
 	
 	FillHLTs fillHlts follows optimizeConnectivities
 	{
-		dumpIr;
+		//dumpIr;
 	}
 	
 	Ir2Code javaGenerator follows fillHlts
 	{
-		language = Java
+		language = Java;
+		//disabled;
 		outputDir = "/NablaExamplesJava/src";
 	}
 
 	Ir2Code kokkosGenerator follows fillHlts
 	{
-		language = Kokkos
+		language = Kokkos;
+		//disabled;
 		outputDir = "/NablaExamplesKokkos/src";
 	}
 }

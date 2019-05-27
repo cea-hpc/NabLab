@@ -27,7 +27,8 @@ class HeatEquation
 public:
 	struct Options
 	{
-		double LENGTH = 0.1;
+		double X_EDGE_LENGTH = 0.1;
+		double Y_EDGE_LENGTH = as_const(X_EDGE_LENGTH);
 		int X_EDGE_ELEMS = 20;
 		int Y_EDGE_ELEMS = 20;
 		int Z_EDGE_ELEMS = 1;
@@ -116,12 +117,14 @@ private:
 		{
 			int jId(jCells);
 			Real2 reduceSum_1732707118 = Real2(0.0, 0.0);
-			auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 			{
-				int rId(nodesOfCellJ[rNodesOfCellJ]);
-				int rNodes(rId);
-				reduceSum_1732707118 = reduceSum_1732707118 + (X(rNodes));
+				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+				{
+					int rId(nodesOfCellJ[rNodesOfCellJ]);
+					int rNodes(rId);
+					reduceSum_1732707118 = reduceSum_1732707118 + (X(rNodes));
+				}
 			}
 			center(jCells) = 0.25 * reduceSum_1732707118;
 		});
@@ -139,14 +142,16 @@ private:
 		{
 			int jId(jCells);
 			double reduceSum553685578 = 0.0;
-			auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-			for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 			{
-				int rId(nodesOfCellJ[rNodesOfCellJ]);
-				int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
-				int rNodes(rId);
-				int rPlus1Nodes(rPlus1Id);
-				reduceSum553685578 = reduceSum553685578 + (MathFunctions::det(X(rNodes), X(rPlus1Nodes)));
+				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+				{
+					int rId(nodesOfCellJ[rNodesOfCellJ]);
+					int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
+					int rNodes(rId);
+					int rPlus1Nodes(rPlus1Id);
+					reduceSum553685578 = reduceSum553685578 + (MathFunctions::det(X(rNodes), X(rPlus1Nodes)));
+				}
 			}
 			V(jCells) = 0.5 * reduceSum553685578;
 		});
@@ -164,14 +169,16 @@ private:
 		{
 			int fId(fFaces);
 			double reduceSum_447949530 = 0.0;
-			auto nodesOfFaceF(mesh->getNodesOfFace(fId));
-			for (int rNodesOfFaceF=0; rNodesOfFaceF<nodesOfFaceF.size(); rNodesOfFaceF++)
 			{
-				int rId(nodesOfFaceF[rNodesOfFaceF]);
-				int rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
-				int rNodes(rId);
-				int rPlus1Nodes(rPlus1Id);
-				reduceSum_447949530 = reduceSum_447949530 + (MathFunctions::norm(X(rNodes) - X(rPlus1Nodes)));
+				auto nodesOfFaceF(mesh->getNodesOfFace(fId));
+				for (int rNodesOfFaceF=0; rNodesOfFaceF<nodesOfFaceF.size(); rNodesOfFaceF++)
+				{
+					int rId(nodesOfFaceF[rNodesOfFaceF]);
+					int rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
+					int rNodes(rId);
+					int rPlus1Nodes(rPlus1Id);
+					reduceSum_447949530 = reduceSum_447949530 + (MathFunctions::norm(X(rNodes) - X(rPlus1Nodes)));
+				}
 			}
 			surface(fFaces) = 0.5 * reduceSum_447949530;
 		});
@@ -203,14 +210,16 @@ private:
 		{
 			int j1Id(j1Cells);
 			double reduceSum2004443072 = 0.0;
-			auto neighbourCellsJ1(mesh->getNeighbourCells(j1Id));
-			for (int j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<neighbourCellsJ1.size(); j2NeighbourCellsJ1++)
 			{
-				int j2Id(neighbourCellsJ1[j2NeighbourCellsJ1]);
-				int j2Cells(j2Id);
-				int cfId(mesh->getCommonFace(j1Id, j2Id));
-				int cfFaces(cfId);
-				reduceSum2004443072 = reduceSum2004443072 + ((u(j2Cells) - u(j1Cells)) / MathFunctions::norm(center(j2Cells) - center(j1Cells)) * surface(cfFaces));
+				auto neighbourCellsJ1(mesh->getNeighbourCells(j1Id));
+				for (int j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<neighbourCellsJ1.size(); j2NeighbourCellsJ1++)
+				{
+					int j2Id(neighbourCellsJ1[j2NeighbourCellsJ1]);
+					int j2Cells(j2Id);
+					int cfId(mesh->getCommonFace(j1Id, j2Id));
+					int cfFaces(cfId);
+					reduceSum2004443072 = reduceSum2004443072 + ((u(j2Cells) - u(j1Cells)) / MathFunctions::norm(center(j2Cells) - center(j1Cells)) * surface(cfFaces));
+				}
 			}
 			outgoingFlux(j1Cells) = as_const(deltat) / V(j1Cells) * reduceSum2004443072;
 		});
@@ -269,7 +278,7 @@ public:
 		std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting HeatEquation ..." << __RESET__ << "\n\n";
 
 		std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
-			<< __RESET__ << ", length=" << __BOLD__ << options->LENGTH << __RESET__ << std::endl;
+			<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
 
 
 		if (Kokkos::hwloc::available()) {
@@ -342,20 +351,22 @@ int main(int argc, char* argv[])
 	Kokkos::initialize(argc, argv);
 	auto o = new HeatEquation::Options();
 	string output;
-	if (argc == 4) {
+	if (argc == 5) {
 		o->X_EDGE_ELEMS = std::atoi(argv[1]);
 		o->Y_EDGE_ELEMS = std::atoi(argv[2]);
-		o->LENGTH = std::atof(argv[3]);
-	} else if (argc == 5) {
+		o->X_EDGE_LENGTH = std::atof(argv[3]);
+		o->Y_EDGE_LENGTH = std::atof(argv[4]);
+	} else if (argc == 6) {
 		o->X_EDGE_ELEMS = std::atoi(argv[1]);
 		o->Y_EDGE_ELEMS = std::atoi(argv[2]);
-		o->LENGTH = std::atof(argv[3]);
-		output = argv[4];
+		o->X_EDGE_LENGTH = std::atof(argv[3]);
+		o->Y_EDGE_LENGTH = std::atof(argv[4]);
+		output = argv[5];
 	} else if (argc != 1) {
-		std::cerr << "[ERROR] Wrong number of arguments. Expecting 3 or 4 args: X Y length (output)." << std::endl;
-		std::cerr << "(X=100, Y=10, length=0.01 output=current directory with no args)" << std::endl;
+		std::cerr << "[ERROR] Wrong number of arguments. Expecting 4 or 5 args: X Y Xlength Ylength (output)." << std::endl;
+		std::cerr << "(X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
 	}
-	auto gm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->LENGTH, o->LENGTH);
+	auto gm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
 	auto nm = new NumericMesh2D(gm);
 	auto c = new HeatEquation(o, nm, output);
 	c->simulate();

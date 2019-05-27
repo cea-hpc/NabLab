@@ -87,8 +87,6 @@ ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{p∈nodesOfCell(j)}(det(X{p}, X{p+1})
 ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p}-X{p+1}));
 
 ComputeFaceConductivity: ∀f∈faces(), {
-//	ℝ numerator = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1});
-//	ℝ denominator = ∑{c2∈cellsOfFace(f)}(D{c2});
 	faceConductivity{f} = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1}) / ∑{c2∈cellsOfFace(f)}(D{c2});
 	
 //	∀c∈cellsOfFace(f), {

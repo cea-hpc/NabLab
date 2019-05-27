@@ -114,12 +114,14 @@ private:
 		{
 			int cId(cCells);
 			Real2 reduceSum_2061046 = Real2(0.0, 0.0);
-			auto nodesOfCellC(mesh->getNodesOfCell(cId));
-			for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.size(); pNodesOfCellC++)
 			{
-				int pId(nodesOfCellC[pNodesOfCellC]);
-				int pNodes(pId);
-				reduceSum_2061046 = reduceSum_2061046 + (X(pNodes));
+				auto nodesOfCellC(mesh->getNodesOfCell(cId));
+				for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.size(); pNodesOfCellC++)
+				{
+					int pId(nodesOfCellC[pNodesOfCellC]);
+					int pNodes(pId);
+					reduceSum_2061046 = reduceSum_2061046 + (X(pNodes));
+				}
 			}
 			Xc(cCells) = 0.25 * reduceSum_2061046;
 		});
@@ -151,14 +153,16 @@ private:
 		{
 			int jId(jCells);
 			double reduceSum269008882 = 0.0;
-			auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-			for (int pNodesOfCellJ=0; pNodesOfCellJ<nodesOfCellJ.size(); pNodesOfCellJ++)
 			{
-				int pId(nodesOfCellJ[pNodesOfCellJ]);
-				int pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
-				int pNodes(pId);
-				int pPlus1Nodes(pPlus1Id);
-				reduceSum269008882 = reduceSum269008882 + (MathFunctions::det(X(pNodes), X(pPlus1Nodes)));
+				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+				for (int pNodesOfCellJ=0; pNodesOfCellJ<nodesOfCellJ.size(); pNodesOfCellJ++)
+				{
+					int pId(nodesOfCellJ[pNodesOfCellJ]);
+					int pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
+					int pNodes(pId);
+					int pPlus1Nodes(pPlus1Id);
+					reduceSum269008882 = reduceSum269008882 + (MathFunctions::det(X(pNodes), X(pPlus1Nodes)));
+				}
 			}
 			V(jCells) = 0.5 * reduceSum269008882;
 		});
@@ -176,14 +180,16 @@ private:
 		{
 			int fId(fFaces);
 			double reduceSum_1276767410 = 0.0;
-			auto nodesOfFaceF(mesh->getNodesOfFace(fId));
-			for (int pNodesOfFaceF=0; pNodesOfFaceF<nodesOfFaceF.size(); pNodesOfFaceF++)
 			{
-				int pId(nodesOfFaceF[pNodesOfFaceF]);
-				int pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
-				int pNodes(pId);
-				int pPlus1Nodes(pPlus1Id);
-				reduceSum_1276767410 = reduceSum_1276767410 + (MathFunctions::norm(X(pNodes) - X(pPlus1Nodes)));
+				auto nodesOfFaceF(mesh->getNodesOfFace(fId));
+				for (int pNodesOfFaceF=0; pNodesOfFaceF<nodesOfFaceF.size(); pNodesOfFaceF++)
+				{
+					int pId(nodesOfFaceF[pNodesOfFaceF]);
+					int pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
+					int pNodes(pId);
+					int pPlus1Nodes(pPlus1Id);
+					reduceSum_1276767410 = reduceSum_1276767410 + (MathFunctions::norm(X(pNodes) - X(pPlus1Nodes)));
+				}
 			}
 			faceLength(fFaces) = 0.5 * reduceSum_1276767410;
 		});
@@ -230,11 +236,13 @@ private:
 	void computeDeltaTn() noexcept
 	{
 		double reduceMin_208148189(numeric_limits<double>::max());
-		Kokkos::Min<double> reducer(reduceMin_208148189);
-		Kokkos::parallel_reduce("ReductionreduceMin_208148189", nbCells, KOKKOS_LAMBDA(const int& cCells, double& x)
 		{
-			reducer.join(x, as_const(options->X_EDGE_LENGTH) * as_const(options->Y_EDGE_LENGTH) / D(cCells));
-		}, reducer);
+			Kokkos::Min<double> reducer(reduceMin_208148189);
+			Kokkos::parallel_reduce("ReductionreduceMin_208148189", nbCells, KOKKOS_LAMBDA(const int& cCells, double& x)
+			{
+				reducer.join(x, as_const(options->X_EDGE_LENGTH) * as_const(options->Y_EDGE_LENGTH) / D(cCells));
+			}, reducer);
+		}
 		deltat = reduceMin_208148189 * 0.24;
 	}
 	
@@ -249,8 +257,8 @@ private:
 		Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const int& fFaces)
 		{
 			int fId(fFaces);
+			double reduceProd_784902332 = 1.0;
 			{
-				double reduceProd_784902332 = 1.0;
 				auto cellsOfFaceF(mesh->getCellsOfFace(fId));
 				for (int c1CellsOfFaceF=0; c1CellsOfFaceF<cellsOfFaceF.size(); c1CellsOfFaceF++)
 				{
@@ -258,10 +266,9 @@ private:
 					int c1Cells(c1Id);
 					reduceProd_784902332 = reduceProd_784902332 * (D(c1Cells));
 				}
-				double numerator = 2.0 * reduceProd_784902332;
 			}
+			double reduceSum1502882730 = 0.0;
 			{
-				double reduceSum1502882730 = 0.0;
 				auto cellsOfFaceF(mesh->getCellsOfFace(fId));
 				for (int c2CellsOfFaceF=0; c2CellsOfFaceF<cellsOfFaceF.size(); c2CellsOfFaceF++)
 				{
@@ -269,9 +276,8 @@ private:
 					int c2Cells(c2Id);
 					reduceSum1502882730 = reduceSum1502882730 + (D(c2Cells));
 				}
-				double denominator = reduceSum1502882730;
 			}
-			faceConductivity(fFaces) = numerator / denominator;
+			faceConductivity(fFaces) = 2.0 * reduceProd_784902332 / reduceSum1502882730;
 		});
 	}
 	
@@ -286,14 +292,16 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& cCells)
 		{
 			int cId(cCells);
-			auto neighbourCellsC(mesh->getNeighbourCells(cId));
-			for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.size(); dNeighbourCellsC++)
 			{
-				int dId(neighbourCellsC[dNeighbourCellsC]);
-				int dCells(dId);
-				int fId(mesh->getCommonFace(cId, dId));
-				int fFaces(fId);
-				alpha(cCells,dNeighbourCellsC) = as_const(deltat) / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / MathFunctions::norm(Xc(cCells) - Xc(dCells));
+				auto neighbourCellsC(mesh->getNeighbourCells(cId));
+				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.size(); dNeighbourCellsC++)
+				{
+					int dId(neighbourCellsC[dNeighbourCellsC]);
+					int dCells(dId);
+					int fId(mesh->getCommonFace(cId, dId));
+					int fFaces(fId);
+					alpha(cCells,dNeighbourCellsC) = as_const(deltat) / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / MathFunctions::norm(Xc(cCells) - Xc(dCells));
+				}
 			}
 		});
 	}
@@ -310,10 +318,12 @@ private:
 		{
 			int cId(cCells);
 			double reduceSum_502085502 = 0.0;
-			auto neighbourCellsC(mesh->getNeighbourCells(cId));
-			for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.size(); dNeighbourCellsC++)
 			{
-				reduceSum_502085502 = reduceSum_502085502 + (alpha(cCells,dNeighbourCellsC));
+				auto neighbourCellsC(mesh->getNeighbourCells(cId));
+				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.size(); dNeighbourCellsC++)
+				{
+					reduceSum_502085502 = reduceSum_502085502 + (alpha(cCells,dNeighbourCellsC));
+				}
 			}
 			alpha_self(cCells) = 1 - reduceSum_502085502;
 		});
@@ -331,12 +341,14 @@ private:
 		{
 			int cId(cCells);
 			double reduceSum_1460062710 = 0.0;
-			auto neighbourCellsC(mesh->getNeighbourCells(cId));
-			for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.size(); dNeighbourCellsC++)
 			{
-				int dId(neighbourCellsC[dNeighbourCellsC]);
-				int dCells(dId);
-				reduceSum_1460062710 = reduceSum_1460062710 + (alpha(cCells,dNeighbourCellsC) * u(dCells));
+				auto neighbourCellsC(mesh->getNeighbourCells(cId));
+				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.size(); dNeighbourCellsC++)
+				{
+					int dId(neighbourCellsC[dNeighbourCellsC]);
+					int dCells(dId);
+					reduceSum_1460062710 = reduceSum_1460062710 + (alpha(cCells,dNeighbourCellsC) * u(dCells));
+				}
 			}
 			u_nplus1(cCells) = alpha_self(cCells) * u(cCells) + reduceSum_1460062710;
 		});

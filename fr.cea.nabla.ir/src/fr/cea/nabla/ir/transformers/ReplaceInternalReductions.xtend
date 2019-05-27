@@ -39,12 +39,12 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 	 */
 	override transform(IrModule m)
 	{
-		for (reductionInstr : m.eAllContents.filter(ReductionInstruction).filter[!external].toIterable)
+		val reductions = m.eAllContents.filter(ReductionInstruction).filter[!external].toList
+		for (reductionInstr : reductions)
 		{
 			// création des fonctions correspondantes
 			// 2 arguments IN : 1 du type de la collection, l'autre du type de retour (appel en chaine)
 			val reduc = reductionInstr.reduction
-									
 			// transformation de la reduction
 			val loopExpression = createAffectationRHS(m, reductionInstr)
 			val loop = createReductionLoop(reductionInstr.range, reductionInstr.singletons, reductionInstr.result, loopExpression, '=')

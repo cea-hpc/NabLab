@@ -29,7 +29,7 @@ class JobFactory
 		annotations += j.toIrAnnotation
 		name = j.name
 		onCycle = false
-		instruction = j.instruction.toIrInstruction	
+		instruction = j.instruction.toIrInstruction
 	}
 	
 	def create IrFactory::eINSTANCE.createEndOfInitJob toEndOfInitJob(Variable vAtN0, Variable vAtN)  { init(vAtN, vAtN0) }

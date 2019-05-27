@@ -53,15 +53,17 @@ abstract class InstructionContentProvider
 	'''
 		«IF !range.container.connectivity.indexEqualId»int[] «range.containerName»(«range.accessor»);«ENDIF»
 		«result.kokkosType» «result.name»(«result.defaultValue.content»);
-		Kokkos::«reduction.kokkosName»<«result.kokkosType»> reducer(«result.name»);
-		«header»
 		{
-			«defineIndices»
-			«FOR innerReduction : innerReductions»
-			«innerReduction.content»
-			«ENDFOR»
-			reducer.join(x, «arg.content»);
-		}, reducer);
+			Kokkos::«reduction.kokkosName»<«result.kokkosType»> reducer(«result.name»);
+			«header»
+			{
+				«defineIndices»
+				«FOR innerReduction : innerReductions»
+				«innerReduction.content»
+				«ENDFOR»
+				reducer.join(x, «arg.content»);
+			}, reducer);
+		}
 	'''
 
 	protected abstract def CharSequence getHeader(ReductionInstruction it)
@@ -110,11 +112,13 @@ abstract class InstructionContentProvider
 
 	private def getSequentialContent(Loop it)
 	'''
-		auto «range.containerName»(«range.accessor»);
-		for (int «range.indexName»=0; «range.indexName»<«range.containerName».size(); «range.indexName»++)
 		{
-			«defineIndices»
-			«body.innerContent»
+			auto «range.containerName»(«range.accessor»);
+			for (int «range.indexName»=0; «range.indexName»<«range.containerName».size(); «range.indexName»++)
+			{
+				«defineIndices»
+				«body.innerContent»
+			}
 		}
 	'''
 	

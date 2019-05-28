@@ -26,7 +26,7 @@ workflow Glace2dDefaultGenerationChain transforms Glace2d
 	
 	FillHLTs fillHlts follows optimizeConnectivities
 	{
-		//dumpIr;
+		dumpIr;
 	}
 	
 	Ir2Code javaGenerator follows fillHlts

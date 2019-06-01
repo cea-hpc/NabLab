@@ -34,13 +34,9 @@ import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.VarRef
 import fr.cea.nabla.typing.BasicTypeProvider
-import fr.cea.nabla.typing.BinaryOperatorTypeProvider
-import fr.cea.nabla.typing.ComparisonAndEqualityTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.typing.MinusTypeProvider
-import fr.cea.nabla.typing.MulOrDivTypeProvider
 import fr.cea.nabla.typing.NablaType
-import fr.cea.nabla.typing.PlusTypeProvider
+import fr.cea.nabla.typing.OperationTypeProvider
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.validation.Check
@@ -54,10 +50,7 @@ class TypeValidator extends BasicValidator
 	val np = NablaPackage::eINSTANCE	
 	@Inject extension ExpressionTypeProvider
 	@Inject extension BasicTypeProvider
-	@Inject extension MulOrDivTypeProvider
-	@Inject PlusTypeProvider plusTypeProvider
-	@Inject MinusTypeProvider minusTypeProvider
-	@Inject ComparisonAndEqualityTypeProvider comparisonAndEqualityTypeProvider
+	@Inject extension OperationTypeProvider
 
 	// *** LES INSTRUCTIONS
 	@Check def checkType(ScalarVarDefinition it)
@@ -161,11 +154,11 @@ class TypeValidator extends BasicValidator
 	@Check def checkType(Not it) { checkExpectedType(expression?.typeFor, BasicTypeProvider::BOOL, np.not_Expression) }
 	// UnaryMinus fonctionne avec tous les types
 	
-	@Check def checkType(MulOrDiv it) { checkBinaryOp(left, right, op.typeProvider, np.mulOrDiv_Op, op) }
-	@Check def checkType(Plus it) { checkBinaryOp(left, right, plusTypeProvider, np.plus_Op, op) }
-	@Check def checkType(Minus it) { checkBinaryOp(left, right, minusTypeProvider, np.minus_Op, op) }
-	@Check def checkType(Comparison it) { checkBinaryOp(left, right, comparisonAndEqualityTypeProvider, np.comparison_Op, op) }
-	@Check def checkType(Equality it) { checkBinaryOp(left, right, comparisonAndEqualityTypeProvider, np.comparison_Op, op) }
+	@Check def checkType(MulOrDiv it) { checkBinaryOp(left, right, op, np.mulOrDiv_Op) }
+	@Check def checkType(Plus it) { checkBinaryOp(left, right, op, np.plus_Op) }
+	@Check def checkType(Minus it) { checkBinaryOp(left, right, op, np.minus_Op) }
+	@Check def checkType(Comparison it) { checkBinaryOp(left, right, op, np.comparison_Op) }
+	@Check def checkType(Equality it) { checkBinaryOp(left, right, op, np.comparison_Op) }
 
 	@Check def checkType(Modulo it) 
 	{ 
@@ -193,14 +186,14 @@ class TypeValidator extends BasicValidator
 			error("Expected " + expectedType.label + " type, but was " + actualType.label, reference)
 	}	
 
-	private def void checkBinaryOp(Expression left, Expression right, BinaryOperatorTypeProvider provider, EAttribute operator, String op)
+	private def void checkBinaryOp(Expression left, Expression right, String op, EAttribute operator)
 	{
 		val leftType = left?.typeFor
 		val rightType = right?.typeFor
 		
 		// si un des 2 types est indéfini, il ne faut rien vérifier pour éviter les erreurs multiples due à la récursion
 		if (! (leftType==NablaType::UNDEFINED || rightType==NablaType::UNDEFINED))
-			if (provider.typeFor(leftType, rightType) == NablaType::UNDEFINED)
+			if (getTypeFor(op, leftType, rightType) == NablaType::UNDEFINED)
 				error('Binary operator ' + op + ' undefined on types ' + leftType.label + ' and ' + rightType.label, operator)
 	}
 	

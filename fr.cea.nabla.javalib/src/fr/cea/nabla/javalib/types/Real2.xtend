@@ -56,6 +56,7 @@ class Real2
 	def Real2 operator_minus(int v) { new Real2(x-v, y-v) }
 	def Real2 operator_minus(double v) { new Real2(x-v, y-v) }
 	def Real2 operator_minus(Real2 v) { new Real2(x-v.x, y-v.y) }
+	def Real2 operator_minus() { new Real2(0-x, 0-y) }
 	
 	def Real2 operator_divide(int v) { new Real2(x/v, y/v) }
 	def Real2 operator_divide(double v) { new Real2(x/v, y/v) }

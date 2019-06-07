@@ -11,8 +11,12 @@ class OperationTypeProvider
 
 	new()
 	{
+		// BOOL
+		addTypeFor(#['==', '!='], BasicType::BOOL, BasicType::BOOL, BasicType::BOOL)
+		
 		// INT
 		addTypeFor(#['==', '!=', '>=', '<=', '>', '<'], BasicType::INT, BasicType::INT, BasicType::BOOL)
+		addTypeFor(#['==', '!=', '>=', '<=', '>', '<'], BasicType::INT, BasicType::REAL, BasicType::BOOL)
 		addTypeFor(#['+', '-', '*', '/'], BasicType::INT, BasicType::INT, BasicType::INT)
 		addTypeFor(#['+', '-', '*', '/'], BasicType::INT, BasicType::REAL, BasicType::REAL)
 		addTypeFor(#['+', '*'], BasicType::INT, BasicType::REAL2, BasicType::REAL2)
@@ -21,6 +25,7 @@ class OperationTypeProvider
 		addTypeFor(#['*'], BasicType::INT, BasicType::REAL3X3, BasicType::REAL3X3)
 
 		// REAL
+		addTypeFor(#['==', '!=', '>=', '<=', '>', '<'], BasicType::REAL, BasicType::INT, BasicType::BOOL)
 		addTypeFor(#['==', '!=', '>=', '<=', '>', '<'], BasicType::REAL, BasicType::REAL, BasicType::BOOL)
 		addTypeFor(#['+', '-', '*', '/'], BasicType::REAL, BasicType::INT, BasicType::REAL)
 		addTypeFor(#['+', '-', '*', '/'], BasicType::REAL, BasicType::REAL, BasicType::REAL)

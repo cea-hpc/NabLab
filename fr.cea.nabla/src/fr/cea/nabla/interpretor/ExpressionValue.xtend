@@ -25,6 +25,7 @@ class UnexpectedTypeException extends RuntimeException
 abstract class ExpressionValue 
 {
 	abstract def String getTypeName()
+	abstract def Object getBoxedValue()
 
 	def boolean asBool()
 	{
@@ -43,6 +44,7 @@ abstract class ExpressionValue
 class BoolValue extends ExpressionValue
 {
 	override getTypeName() { BasicType::BOOL.literal }
+	override getBoxedValue() { value }
 	val boolean value
 }
 
@@ -50,6 +52,7 @@ class BoolValue extends ExpressionValue
 class IntValue extends ExpressionValue
 {
 	override getTypeName() { BasicType::INT.literal }
+	override getBoxedValue() { value }
 	val int value
 }
 
@@ -57,6 +60,7 @@ class IntValue extends ExpressionValue
 class RealValue extends ExpressionValue
 {
 	override getTypeName() { BasicType::REAL.literal }
+	override getBoxedValue() { value }
 	val double value
 }
 
@@ -64,6 +68,7 @@ class RealValue extends ExpressionValue
 class Real2Value extends ExpressionValue
 {
 	override getTypeName() { BasicType::REAL2.literal }
+	override getBoxedValue() { value }
 	val Real2 value
 }
 
@@ -71,6 +76,7 @@ class Real2Value extends ExpressionValue
 class Real3Value extends ExpressionValue
 {
 	override getTypeName() { BasicType::REAL3.literal }
+	override getBoxedValue() { value }
 	val Real3 value
 }
 
@@ -78,6 +84,7 @@ class Real3Value extends ExpressionValue
 class Real2x2Value extends ExpressionValue
 {
 	override getTypeName() { BasicType::REAL2X2.literal }
+	override getBoxedValue() { value }
 	val Real2x2 value
 }
 
@@ -85,5 +92,6 @@ class Real2x2Value extends ExpressionValue
 class Real3x3Value extends ExpressionValue
 {
 	override getTypeName() { BasicType::REAL3X3.literal }
+	override getBoxedValue() { value }
 	val Real3x3 value
 }

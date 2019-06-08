@@ -10,6 +10,8 @@ import org.eclipse.emf.ecore.EReference
 
 class Utils 
 {
+	public static val FunctionAndReductionproviderSuffix = 'Functions'
+	
 	static def IrModule getIrModule(EObject o)
 	{
 		if (o === null) null

@@ -34,6 +34,7 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 import static extension fr.cea.nabla.ir.generator.java.VariableExtensions.*
+import fr.cea.nabla.ir.Utils
 
 class InstructionContentProvider 
 {
@@ -168,5 +169,5 @@ class InstructionContentProvider
 	static def getAccessor(VarRefIteratorRef it) '''mesh.get«connectivity.name.toFirstUpper»(«connectivityArgs.map[id].join(', ')»)'''
 	static def getAccessor(Iterator it)  '''mesh.get«container.connectivity.name.toFirstUpper»(«container.args.map[id].join(', ')»)'''
 
-	private static def getJavaName(Reduction it) '''«provider»Functions.«name»'''
+	private static def getJavaName(Reduction it) '''«provider»«Utils::FunctionAndReductionproviderSuffix»«name»'''
 }

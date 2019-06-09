@@ -34,21 +34,24 @@ const ℕ option_max_iterations = 500;
 
 ℝ² X[nodes];
 ℝ v[nodes];
-ℝ u[cells], Cjr[cells,nodesOfCell];
+ℝ u[cells], Cjr[cells,nodesOfCell], M[cells,cells];
 ℝ total;
 
-IniU: ∀j∈cells(), u{j} = 2.0;
-TestExternal: total = ∏{j1∈cells()}(u{j1}) + ∑{j2∈cells()}(u{j2});
-	
-IniV: ∀r∈nodes(), v{r} = 3.0;
-TestInternal: ∀j∈cells(), {
-	u{j} = ∏{r1∈nodesOfCell(j)}(v{r1}) + ∑{r2∈nodesOfCell(j)}(v{r2});	
-}
-TestInternal2: ∀j∈cells(), {
-	ℝ a = ∏{r1∈nodesOfCell(j)}(v{r1});	
-	ℝ b = ∑{r2∈nodesOfCell(j)}(v{r2});	
-	u{j} = a + b;	
-}
+TestMatrix: ∀j∈cells(), M{j,j} = 0.0;
+
+//IniU: ∀j∈cells(), u{j} = 2.0;
+//TestExternal: total = ∏{j1∈cells()}(u{j1}) + ∑{j2∈cells()}(u{j2});
+//	
+//IniV: ∀r∈nodes(), v{r} = 3.0;
+//TestInternal: ∀j∈cells(), {
+//	u{j} = ∏{r1∈nodesOfCell(j)}(v{r1}) + ∑{r2∈nodesOfCell(j)}(v{r2});	
+//}
+//TestInternal2: ∀j∈cells(), {
+//	ℝ a = ∏{r1∈nodesOfCell(j)}(v{r1});	
+//	ℝ b = ∑{r2∈nodesOfCell(j)}(v{r2});	
+//	u{j} = a + b;	
+//}
+
 //IniCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), Cjr{j,r} = 3.0;
 //IniCjrBad: ∀r∈nodes(), ∀j∈cellsOfNode(r+1), Cjr{j,r} = 1.0;
 //B: total = ∑{j∈cells()} ( ∑{r∈nodesOfCell(j)}(Cjr{j,r} + 1.0) + 2.0) + 3.0;

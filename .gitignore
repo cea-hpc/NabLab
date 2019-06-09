@@ -1,4 +1,4 @@
-*/src-gen/*
+# DO NOT IGNORE src-gen DIRECTORIES FOR ALL PROJECTS
 */xtend-gen/*
 /fr.cea.nabla.ir/jgrapht/*
 *.class

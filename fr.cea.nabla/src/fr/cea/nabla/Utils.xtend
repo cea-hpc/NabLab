@@ -43,7 +43,7 @@ class Utils
 		else if (o instanceof NablaModule) o as NablaModule
 		else o.eContainer.nablaModule
 	}
-	
+
 	static def getFileNameWithoutExtension(Resource input)
 	{
 		input.resourceSet.resourceFactoryRegistry.extensionToFactoryMap.put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl)

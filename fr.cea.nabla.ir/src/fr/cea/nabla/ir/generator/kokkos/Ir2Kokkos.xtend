@@ -25,6 +25,7 @@ import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvid
 import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.VariableExtensions.*
 import fr.cea.nabla.ir.generator.CodeGenerator
+import fr.cea.nabla.ir.Utils
 
 class Ir2Kokkos extends CodeGenerator
 {
@@ -59,7 +60,7 @@ class Ir2Kokkos extends CodeGenerator
 	#include "utils/Timer.h"
 	#include "types/Types.h"
 	#include "types/MathFunctions.h"
-	«IF functions.exists[f | f.provider == name]»#include "«name.toLowerCase»/«name»Functions.h"«ENDIF»
+	«IF functions.exists[f | f.provider == name]»#include "«name.toLowerCase»/«name»«Utils::FunctionAndReductionproviderSuffix».h"«ENDIF»
 
 	using namespace nablalib;
 

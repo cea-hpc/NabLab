@@ -47,14 +47,16 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ScalarVarDefinition" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="const" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//BasicType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//ScalarVar"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValue" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VarGroupDeclaration" eSuperTypes="#//Instruction">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//BasicType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//Var" containment="true"/>
   </eClassifiers>
@@ -83,9 +85,10 @@
         eType="#//FunctionArg" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionArg">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="inTypes" unique="false"
-        upperBound="-1" eType="#//BasicType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="returnType" eType="#//BasicType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inTypes" upperBound="-1"
+        eType="#//BaseType" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//BaseType"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Reduction">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -95,37 +98,32 @@
   <eClassifiers xsi:type="ecore:EClass" name="ReductionArg">
     <eStructuralFeatures xsi:type="ecore:EReference" name="seed" eType="#//Expression"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="collectionType" eType="#//BasicType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="returnType" eType="#//BasicType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="collectionType" eType="#//BaseType"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//BaseType"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Expression"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Real2Constant" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="x" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="y" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Real3Constant" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="x" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="y" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="z" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VarRef" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//Var"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="spaceIterators" upperBound="-1"
         eType="#//SpaceIteratorRef" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="arrayTypeIndices" unique="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeIterator" eType="#//TimeIterator"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fields" unique="false"
-        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeIterator"/>
-  <eClassifiers xsi:type="ecore:EEnum" name="BasicType">
+  <eClassifiers xsi:type="ecore:EClass" name="BaseType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="root" eType="#//PrimitiveType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="array" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dimSizes" unique="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="PrimitiveType">
     <eLiterals name="Int" literal="ℕ"/>
     <eLiterals name="Real" value="1" literal="ℝ"/>
-    <eLiterals name="Real2" value="2" literal="ℝ²"/>
-    <eLiterals name="Real2x2" value="3" literal="ℝ²ˣ²"/>
-    <eLiterals name="Real3" value="4" literal="ℝ³"/>
-    <eLiterals name="Real3x3" value="5" literal="ℝ³ˣ³"/>
-    <eLiterals name="Bool" value="6" literal="ℾ"/>
+    <eLiterals name="Bool" value="2" literal="ℾ"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InstructionBlock" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="instructions" upperBound="-1"
@@ -238,29 +236,17 @@
   <eClassifiers xsi:type="ecore:EClass" name="BoolConstant" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Real2x2Constant" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="x" eType="#//Real2Constant"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="y" eType="#//Real2Constant"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Real3x3Constant" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="x" eType="#//Real3Constant"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="y" eType="#//Real3Constant"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="z" eType="#//Real3Constant"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RealXCompactConstant" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//BasicType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+  <eClassifiers xsi:type="ecore:EClass" name="RealVectorConstant" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="values" unique="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MinConstant" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//BasicType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MaxConstant" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//BasicType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionCall" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="function" eType="#//Function"/>

@@ -38,12 +38,8 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RangeSpaceIterator
-import fr.cea.nabla.nabla.Real2Constant
-import fr.cea.nabla.nabla.Real2x2Constant
-import fr.cea.nabla.nabla.Real3Constant
-import fr.cea.nabla.nabla.Real3x3Constant
 import fr.cea.nabla.nabla.RealConstant
-import fr.cea.nabla.nabla.RealXCompactConstant
+import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
@@ -58,8 +54,8 @@ class LabelServices
 	static def dispatch String getLabel(Job it) { name + ' : ' + instruction.label }
 	
 	// INSTRUCTIONS	
-	static def dispatch String getLabel(ScalarVarDefinition it) { type.literal + ' ' + variable.name + '=' + defaultValue.label }
-	static def dispatch String getLabel(VarGroupDeclaration it) { type.literal + ' ' + variables.map[x|x.name].join(', ') }
+	static def dispatch String getLabel(ScalarVarDefinition it) { type.label + ' ' + variable.name + '=' + defaultValue.label }
+	static def dispatch String getLabel(VarGroupDeclaration it) { type.label + ' ' + variables.map[x|x.name].join(', ') }
 	static def dispatch String getLabel(InstructionBlock it) { '...' }
 	static def dispatch String getLabel(Affectation it) { varRef?.label + ' = ' + expression?.label }
 	static def dispatch String getLabel(Loop it) { '\u2200' + range.label + ', ' + body.label }
@@ -91,12 +87,8 @@ class LabelServices
 	static def dispatch String getLabel(Not it) { '!' + expression.label }
 	static def dispatch String getLabel(IntConstant it) { value.toString }
 	static def dispatch String getLabel(RealConstant it) { value.toString }
-	static def dispatch String getLabel(Real2Constant it) { '{' + x + ',' + y + '}' }	
-	static def dispatch String getLabel(Real3Constant it) { '{' + x + ',' + y + ',' + z + '}' }	
-	static def dispatch String getLabel(Real2x2Constant it) { '{' + x.label + ',' + y.label + '}' }	
-	static def dispatch String getLabel(Real3x3Constant it) { '{' + x.label + ',' + y.label + ',' + z.label + '}' }	
 	static def dispatch String getLabel(BoolConstant it) { value.toString }
-	static def dispatch String getLabel(RealXCompactConstant it) { type.literal + '(' + value + ')' }
+	static def dispatch String getLabel(RealVectorConstant it) { '{' + values.join(',') + '}' }
 	static def dispatch String getLabel(MinConstant it) { '-\u221E' }
 	static def dispatch String getLabel(MaxConstant it) { '-\u221E' }
 	static def dispatch String getLabel(FunctionCall it) { function.name + '(' + args.map[label].join(',') + ')' }
@@ -105,8 +97,8 @@ class LabelServices
 	{
 		var label = variable.name
 		if (!spaceIterators.empty) label += '{' + spaceIterators.map[x | x.label].join(',') + '}'
+		if (!arrayTypeIndices.empty) label += '[' + arrayTypeIndices.join(',') + ']'
 		if (timeIterator !== null) label += '^{' + timeIterator.timeIteratorLabel + '}'
-		for (f : fields) label += '.' + f
 		return label
 	}
 

@@ -51,11 +51,11 @@ ConnectivityCall: connectivity=[Connectivity]  '('(args+=SpaceIteratorRef (',' a
 SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?; // inc/dec only valid on a range
 
 /* VARIABLES ********************************************/
-ScalarVarDefinition: (const?='const')? type=BasicType variable=ScalarVar '=' defaultValue=Expression ';';
-VarGroupDeclaration: type=BasicType variables+=Var (',' variables+=Var)* ';';
+ScalarVarDefinition: (const?='const')? type=BaseType variable=ScalarVar '=' defaultValue=Expression ';';
+VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
 Var: ScalarVar | ArrayVar;
 ScalarVar: name=ID;
-ArrayVar: name=ID '[' dimensions+=[Connectivity] (',' dimensions+=[Connectivity])* ']';
+ArrayVar: name=ID '{' dimensions+=[Connectivity] (',' dimensions+=[Connectivity])* '}';
 
 /* CONNECTIVITES *****************************************/
 Connectivity: name=ID ':' '(' ((inTypes+=[ItemType] (',' inTypes+=[ItemType])*) | '\u2205') ')' '\u2192' returnType=ItemArgType ';';
@@ -63,9 +63,9 @@ ItemArgType: multiple?='{' type=[ItemType] '}' | type=[ItemType];
 
 /* FONCTIONS / REDUCTIONS ********************************/
 Function: name=ID ':' argGroups+=FunctionArg (',' argGroups+=FunctionArg)* ';';
-FunctionArg: '(' ((inTypes+=BasicType (',' inTypes+=BasicType)*) | '\u2205') ')' '\u2192' returnType=BasicType;
+FunctionArg: '(' ((inTypes+=BaseType (',' inTypes+=BaseType)*) | '\u2205') ')' '\u2192' returnType=BaseType;
 Reduction: name=ID ':' argGroups+=ReductionArg (',' argGroups+=ReductionArg)* ';';
-ReductionArg:  '(' seed=Expression ',' collectionType=BasicType ')' '\u2192' returnType=BasicType;
+ReductionArg:  '(' seed=Expression ',' collectionType=BaseType ')' '\u2192' returnType=BaseType;
 
 /* EXPRESSIONS ******************************************/
 Expression: ContractedIf;
@@ -103,38 +103,26 @@ Primary returns Expression:
 Atomic returns Expression:
 	{IntConstant} value=INT |
 	{RealConstant} value=REAL |
-	Real2Constant |
-	Real3Constant |
 	{BoolConstant} (value?='true' | 'false') |
-	{Real2x2Constant} '{' x=Real2Constant ',' y=Real2Constant '}' |
-	{Real3x3Constant} '{' x=Real3Constant ',' y=Real3Constant ',' z=Real3Constant '}' |
-	{RealXCompactConstant} type=BasicType '(' value=REAL ')' |
-	{MinConstant} type=BasicType '.MinValue' |
-	{MaxConstant} type=BasicType '.MaxValue' |
+	{RealVectorConstant} '{' values+=REAL (',' values+=REAL)* '}' |
+	{MinConstant} type=BaseType '.MinValue' |
+	{MaxConstant} type=BaseType '.MaxValue' |
 	{FunctionCall} function=[Function|QualifiedName] '(' (args+=Expression (',' args+=Expression)*)? ')' | 
 	{ReductionCall} reduction=[Reduction|QualifiedName] '{' range=RangeSpaceIterator (',' singletons+=SingletonSpaceIterator)* '}' '(' arg=Expression ')' |
 	VarRef;
 
-Real2Constant: '{' x=REAL ',' y=REAL '}';
-Real3Constant: '{' x=REAL ',' y=REAL ',' z=REAL '}';
 VarRef: variable=[Var] 
 	('{' spaceIterators+=SpaceIteratorRef (',' spaceIterators+=SpaceIteratorRef)* '}')? 
-	('^{' timeIterator=TimeIterator '}')?  
-	('.' fields+=ID)*;
+	('[' arrayTypeIndices+=INT (',' arrayTypeIndices+=INT)* ']')?
+	('^{' timeIterator=TimeIterator '}')?;
 
 TimeIterator: 
 	{InitTimeIterator} 'n=0' | 
 	{NextTimeIterator} 'n+1' (hasDiv?='/' div=INT)?;
 
-/* ENUMS *************************************************/
-enum BasicType: 
-	Int='\u2115' |
-	Real='\u211D' |
-	Real2='\u211D\u00B2' |
-	Real2x2='\u211D\u00B2\u02E3\u00B2' |
-	Real3='\u211D\u00B3' |
-	Real3x3='\u211D\u00B3\u02E3\u00B3' |
-	Bool='\u213E';
+/* TYPES *************************************************/
+BaseType: root=PrimitiveType array?='[' dimSizes+=INT (',' dimSizes+=INT)* ']';
+enum PrimitiveType: Int='\u2115' | Real='\u211D' | Bool='\u213E';
 
 /* DATA TYPE *********************************************/
 QualifiedName: ID ('.' ID)*;
@@ -145,3 +133,4 @@ QualifiedNameWithWildcard: QualifiedName '.*'?;
 @Override 
 terminal ID: '^'? ('a'..'z'|'A'..'Z'|'\u0394'..'\u03F2'|'\u220F'..'\u221A'|'_') ('a'..'z'|'A'..'Z'|'\u0394'..'\u03F2'|'0'..'9'|'\u221A'|'_')*;
 terminal REAL returns ecore::EDouble: ('0'..'9')+ '.' ('0'..'9')+ ('e'('+'|'-')('0'..'9')+)?;
+//terminal DIM returns ecore::EChar: '\u00B2'..'\u00B3' | '\u2074'..'\u2079';

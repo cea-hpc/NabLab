@@ -39,12 +39,8 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RangeSpaceIterator
-import fr.cea.nabla.nabla.Real2Constant
-import fr.cea.nabla.nabla.Real2x2Constant
-import fr.cea.nabla.nabla.Real3Constant
-import fr.cea.nabla.nabla.Real3x3Constant
 import fr.cea.nabla.nabla.RealConstant
-import fr.cea.nabla.nabla.RealXCompactConstant
+import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
@@ -53,14 +49,16 @@ import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VarRef
 
+import static extension fr.cea.nabla.BaseTypeExtensions.*
+
 class LatexLabelServices 
 {
 	// JOBS
 	static def dispatch String getLatex(Job it) { '\\texttt{' + name.pu + '} : '+ instruction.latex }
 	
 	// INSTRUCTIONS	
-	static def dispatch String getLatex(ScalarVarDefinition it) { type.literal + ' ' + variable.name.pu + '=' + defaultValue.latex }
-	static def dispatch String getLatex(VarGroupDeclaration it) { type.literal + ' ' + variables.map[x|x.name.pu].join(', ') }
+	static def dispatch String getLatex(ScalarVarDefinition it) { type.label + ' ' + variable.name.pu + '=' + defaultValue.latex }
+	static def dispatch String getLatex(VarGroupDeclaration it) { type.label + ' ' + variables.map[x|x.name.pu].join(', ') }
 	static def dispatch String getLatex(InstructionBlock it) { '...' }
 	static def dispatch String getLatex(Affectation it) { varRef?.latex + ' = ' + expression?.latex }
 	static def dispatch String getLatex(Loop it) { '\\forall {' + range.latex + '}, \\ ' + body.latex }
@@ -96,12 +94,8 @@ class LatexLabelServices
 	static def dispatch String getLatex(Not it) { '\\neg {' + expression.latex + '}' }
 	static def dispatch String getLatex(IntConstant it) { value.toString }
 	static def dispatch String getLatex(RealConstant it) { value.toString }
-	static def dispatch String getLatex(Real2Constant it) { '\\{' + x + ',' + y + '\\}' }	
-	static def dispatch String getLatex(Real3Constant it) { '\\{' + x + ',' + y + ',' + z + '\\}' }	
-	static def dispatch String getLatex(Real2x2Constant it) { '\\{' + x.latex + ',' + y.latex + '\\}' }	
-	static def dispatch String getLatex(Real3x3Constant it) { '\\{' + x.latex + ',' + y.latex + ',' + z.latex + '\\}' }	
 	static def dispatch String getLatex(BoolConstant it) { value.toString }
-	static def dispatch String getLatex(RealXCompactConstant it) { type.literal + '(' + value + ')' }
+	static def dispatch String getLatex(RealVectorConstant it) { '{' + values.join(',') + '}' }
 	static def dispatch String getLatex(MinConstant it) { '-\u221E' }
 	static def dispatch String getLatex(MaxConstant it) { '\u221E' }
 	
@@ -134,16 +128,16 @@ class LatexLabelServices
 	static def dispatch String getLatex(VarRef it)
 	{
 		var label = variable.name.pu
-		if (!spaceIterators.empty) label += '_{' + spaceIterators.map[x | x.latex].join(',') + '}'
+		if (!spaceIterators.empty) label += '_{' + spaceIterators.map[x | x.latex].join('') + '}'
 		if (timeIterator !== null) label += '^{' + timeIterator.timeIteratorLabel + '}'
+		if (!arrayTypeIndices.empty) label += '[' + arrayTypeIndices.join(',') + ']'
 		else label += '^{n}'
-		for (f : fields) label += '.' + f
 		return label
 	}
 	
 	private static def dispatch getTimeIteratorLabel(InitTimeIterator it) '''n=0''' 
 	private static def dispatch getTimeIteratorLabel(NextTimeIterator it) '''n+1«IF hasDiv»/«div»«ENDIF»''' 
-		
+
 	// PRESERVE UNDERSCORES
 	private static def String pu(String it) { if (!nullOrEmpty) replaceAll('_', '\\\\_') else '' }
 }

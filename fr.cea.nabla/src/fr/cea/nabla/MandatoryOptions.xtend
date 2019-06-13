@@ -13,8 +13,8 @@
  *******************************************************************************/
 package fr.cea.nabla
 
-import fr.cea.nabla.nabla.BasicType
 import fr.cea.nabla.nabla.NablaFactory
+import fr.cea.nabla.nabla.PrimitiveType
 
 class MandatoryOptions 
 {
@@ -45,7 +45,7 @@ class MandatoryOptions
 		val f = NablaFactory::eINSTANCE
 		val edgeElem = f.createScalarVarDefinition
 		edgeElem.variable = f.createScalarVar => [ name=optionName ]
-		edgeElem.type = BasicType::INT
+		edgeElem.type = f.createBaseType => [ root=PrimitiveType::INT ]
 		edgeElem.defaultValue = f.createIntConstant => [ value=optionValue ]
 		return edgeElem
 	}
@@ -55,8 +55,8 @@ class MandatoryOptions
 		val f = NablaFactory::eINSTANCE
 		val length = f.createScalarVarDefinition
 		length.variable = f.createScalarVar => [ name=optionName ]
-		length.type = BasicType::REAL
-		length.defaultValue = f.createRealXCompactConstant => [ type=BasicType::REAL value=optionValue ]
+		length.type = f.createBaseType => [ root=PrimitiveType::REAL ]
+		length.defaultValue = f.createRealVectorConstant => [ values+=optionValue ]
 		return length
 	}
 }

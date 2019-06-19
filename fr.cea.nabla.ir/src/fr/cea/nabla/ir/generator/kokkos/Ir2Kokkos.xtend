@@ -13,19 +13,19 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
+import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalJobContentProvider
 import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalParallelismUtils
-import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.VariableExtensions.*
-import fr.cea.nabla.ir.generator.CodeGenerator
-import fr.cea.nabla.ir.Utils
 
 class Ir2Kokkos extends CodeGenerator
 {
@@ -69,7 +69,7 @@ class Ir2Kokkos extends CodeGenerator
 	public:
 		struct Options
 		{
-			«FOR v : variables.filter(ScalarVariable).filter[const]»
+			«FOR v : variables.filter(SimpleVariable).filter[const]»
 				«v.kokkosType» «v.name» = «v.defaultValue.content.toString.replaceAll('options->', '')»;
 			«ENDFOR»
 		};
@@ -81,13 +81,13 @@ class Ir2Kokkos extends CodeGenerator
 		«FOR c : usedConnectivities BEFORE 'int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
 
 		// Global Variables
-		«val globals = variables.filter(ScalarVariable).filter[!const]»
+		«val globals = variables.filter(SimpleVariable).filter[!const]»
 		«val globalsByType = globals.groupBy[type]»
 		«FOR type : globalsByType.keySet»
 		«type.kokkosType» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 		«ENDFOR»
 
-		«val arrays = variables.filter(ArrayVariable)»
+		«val arrays = variables.filter(ConnectivityVariable)»
 		«IF !arrays.empty»
 		// Array Variables
 		«FOR a : arrays»
@@ -167,7 +167,7 @@ class Ir2Kokkos extends CodeGenerator
 			«ENDIF»			
 			«jobs.filter[x | x.at < 0].jobCallsContent»	
 			«IF jobs.exists[at > 0]»
-			«val variablesToPersist = persistentArrayVariables»
+			«val variablesToPersist = persistentVariables»
 			«IF !variablesToPersist.empty»
 			std::map<string, double*> cellVariables;
 			std::map<string, double*> nodeVariables;
@@ -257,5 +257,5 @@ class Ir2Kokkos extends CodeGenerator
 			'''NumericMesh2D::MaxNb«c.name.toFirstUpper»'''
 	}
 
-	private def getPersistentArrayVariables(IrModule it) { variables.filter(ArrayVariable).filter[x|x.persist && x.dimensions.size==1] }
+	private def getPersistentVariables(IrModule it) { variables.filter(ConnectivityVariable).filter[x|x.persist && x.dimensions.size==1] }
 }

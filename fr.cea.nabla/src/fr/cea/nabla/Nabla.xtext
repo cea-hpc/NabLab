@@ -51,11 +51,11 @@ ConnectivityCall: connectivity=[Connectivity]  '('(args+=SpaceIteratorRef (',' a
 SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?; // inc/dec only valid on a range
 
 /* VARIABLES ********************************************/
-ScalarVarDefinition: (const?='const')? type=BaseType variable=ScalarVar '=' defaultValue=Expression ';';
+ScalarVarDefinition: (const?='const')? type=BaseType variable=SimpleVar '=' defaultValue=Expression ';';
 VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
-Var: ScalarVar | ArrayVar;
-ScalarVar: name=ID;
-ArrayVar: name=ID '{' dimensions+=[Connectivity] (',' dimensions+=[Connectivity])* '}';
+Var: SimpleVar | ConnectivityVar;
+SimpleVar: name=ID;
+ConnectivityVar: name=ID '{' dimensions+=[Connectivity] (',' dimensions+=[Connectivity])* '}';
 
 /* CONNECTIVITES *****************************************/
 Connectivity: name=ID ':' '(' ((inTypes+=[ItemType] (',' inTypes+=[ItemType])*) | '\u2205') ')' '\u2192' returnType=ItemArgType ';';
@@ -105,15 +105,15 @@ Atomic returns Expression:
 	{RealConstant} value=REAL |
 	{BoolConstant} (value?='true' | 'false') |
 	{RealVectorConstant} '{' values+=REAL (',' values+=REAL)* '}' |
-	{MinConstant} type=BaseType '.MinValue' |
-	{MaxConstant} type=BaseType '.MaxValue' |
+	{MinConstant} type=PrimitiveType '.MinValue' |
+	{MaxConstant} type=PrimitiveType '.MaxValue' |
 	{FunctionCall} function=[Function|QualifiedName] '(' (args+=Expression (',' args+=Expression)*)? ')' | 
 	{ReductionCall} reduction=[Reduction|QualifiedName] '{' range=RangeSpaceIterator (',' singletons+=SingletonSpaceIterator)* '}' '(' arg=Expression ')' |
 	VarRef;
 
 VarRef: variable=[Var] 
 	('{' spaceIterators+=SpaceIteratorRef (',' spaceIterators+=SpaceIteratorRef)* '}')? 
-	('[' arrayTypeIndices+=INT (',' arrayTypeIndices+=INT)* ']')?
+	('[' arrayTypeIndices+=INT (',' arrayTypeIndices+=INT) ']')?
 	('^{' timeIterator=TimeIterator '}')?;
 
 TimeIterator: 
@@ -121,7 +121,7 @@ TimeIterator:
 	{NextTimeIterator} 'n+1' (hasDiv?='/' div=INT)?;
 
 /* TYPES *************************************************/
-BaseType: root=PrimitiveType array?='[' dimSizes+=INT (',' dimSizes+=INT)* ']';
+BaseType: root=PrimitiveType '[' dimSizes+=INT (',' dimSizes+=INT) ']';
 enum PrimitiveType: Int='\u2115' | Real='\u211D' | Bool='\u213E';
 
 /* DATA TYPE *********************************************/

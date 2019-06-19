@@ -1,9 +1,18 @@
 package fr.cea.nabla
 
 import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.PrimitiveType
+
+import static extension fr.cea.nabla.ir.Utils.*
 
 class BaseTypeExtensions 
 {
+	static def isScalar(BaseType it) { dimSizes.empty }
+	static def isInt(BaseType it) { scalar && root==PrimitiveType::INT }
+	static def isReal(BaseType it) { scalar && root==PrimitiveType::REAL }
+	static def isIntArray(BaseType it) { !scalar && root==PrimitiveType::INT }
+	static def isRealArray(BaseType it) { !scalar && root==PrimitiveType::REAL }
+	
 	static def areEquals(BaseType a, BaseType b)
 	{
 		if (a.root != b.root || a.dimSizes.size != b.dimSizes.size)
@@ -19,18 +28,5 @@ class BaseTypeExtensions
 	static def getLabel(BaseType it)
 	{
 		root.literal + dimSizes.map[utfExponent].join('\\u02E3')
-	}
-	
-	private static def getUtfExponent(int x)
-	{
-		val xstring = x.toString
-		var utfExponent = ''
-		for (xchar : xstring.toCharArray)
-		{
-			val xValue = Character.getNumericValue(xchar)
-			if (xValue < 3) utfExponent += '\\u00B' + xchar
-			else utfExponent += '\\u207' + xchar
-		}
-		return utfExponent
 	}
 }

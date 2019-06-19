@@ -273,12 +273,12 @@ public class NablaModuleItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createScalarVar()));
+				 NablaFactory.eINSTANCE.createSimpleVar()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createArrayVar()));
+				 NablaFactory.eINSTANCE.createConnectivityVar()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -318,22 +318,17 @@ public class NablaModuleItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createReal2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createReal3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
 				 NablaFactory.eINSTANCE.createTimeIterator()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createBaseType()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -433,17 +428,7 @@ public class NablaModuleItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createReal2x2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createReal3x3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createRealXCompactConstant()));
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter

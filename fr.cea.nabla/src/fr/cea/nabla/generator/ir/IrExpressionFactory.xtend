@@ -18,10 +18,8 @@ import fr.cea.nabla.FunctionCallExtensions
 import fr.cea.nabla.VarRefExtensions
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.Real2Constant
-import fr.cea.nabla.ir.ir.Real3Constant
+import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.nabla.And
-import fr.cea.nabla.nabla.BasicType
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ContractedIf
@@ -37,21 +35,25 @@ import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
-import fr.cea.nabla.nabla.Real2x2Constant
-import fr.cea.nabla.nabla.Real3x3Constant
 import fr.cea.nabla.nabla.RealConstant
-import fr.cea.nabla.nabla.RealXCompactConstant
+import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
+import fr.cea.nabla.typing.BoolArrayType
+import fr.cea.nabla.typing.BoolType
+import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.typing.NablaType
+import fr.cea.nabla.typing.IntArrayType
+import fr.cea.nabla.typing.IntType
+import fr.cea.nabla.typing.RealArrayType
+import fr.cea.nabla.typing.RealType
+import fr.cea.nabla.typing.UndefinedType
 
 class IrExpressionFactory 
 {
 	@Inject extension FunctionCallExtensions
 	@Inject extension IrAnnotationHelper
-	@Inject extension Nabla2IrUtils
 	@Inject extension IrFunctionFactory
 	@Inject extension IrVariableFactory
 	@Inject extension IrIteratorFactory
@@ -64,7 +66,7 @@ class IrExpressionFactory
 		IrFactory::eINSTANCE.createContractedIf =>
 		[
 			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
+			type = e.typeFor?.toIrBaseType
 			condition = e.condition.toIrExpression
 			thenExpression = e.then.toIrExpression
 			elseExpression = e.^else.toIrExpression
@@ -85,7 +87,7 @@ class IrExpressionFactory
 		IrFactory::eINSTANCE.createParenthesis =>
 		[
 			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
+			type = e.typeFor?.toIrBaseType
 			expression = e.expression.toIrExpression
 		]
 	}
@@ -98,7 +100,7 @@ class IrExpressionFactory
 		IrFactory::eINSTANCE.createIntConstant => 
 		[
 			annotations += e.toIrAnnotation 
-			type = e.typeFor?.toIrExpressionType
+			type = e.typeFor?.toIrBaseType
 			value = e.value 
 		]
 	}
@@ -108,54 +110,8 @@ class IrExpressionFactory
 		IrFactory::eINSTANCE.createRealConstant => 
 		[ 
 			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
+			type = e.typeFor?.toIrBaseType
 			value = e.value 
-		]
-	}
-	
-	def dispatch Expression toIrExpression(fr.cea.nabla.nabla.Real2Constant e) 
-	{ 
-		IrFactory::eINSTANCE.createReal2Constant => 
-		[ 
-			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
-			x = e.x
-			y = e.y
-		]
-	}
-	
-	def dispatch Expression toIrExpression(fr.cea.nabla.nabla.Real3Constant e) 
-	{ 
-		IrFactory::eINSTANCE.createReal3Constant => 
-		[ 
-			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
-			x = e.x 
-			y = e.y
-			z = e.z
-		]
-	}
-	
-	def dispatch Expression toIrExpression(Real2x2Constant e) 
-	{ 
-		IrFactory::eINSTANCE.createReal2x2Constant => 
-		[ 
-			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
-			x = e.x.toIrExpression as Real2Constant
-			y = e.y.toIrExpression as Real2Constant
-		]
-	}
-	
-	def dispatch Expression toIrExpression(Real3x3Constant e) 
-	{ 
-		IrFactory::eINSTANCE.createReal3x3Constant => 
-		[ 
-			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
-			x = e.x.toIrExpression as Real3Constant
-			y = e.y.toIrExpression as Real3Constant
-			z = e.z.toIrExpression as Real3Constant
 		]
 	}
 	
@@ -164,17 +120,18 @@ class IrExpressionFactory
 		IrFactory::eINSTANCE.createBoolConstant => 
 		[ 
 			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
+			type = e.typeFor?.toIrBaseType
 			value = e.value
 		]
 	}
 	
-	def dispatch Expression toIrExpression(RealXCompactConstant e) 
+	def dispatch Expression toIrExpression(RealVectorConstant e) 
 	{
-		toIrRealExpression(e.type, e.value) =>
+		IrFactory::eINSTANCE.createRealVectorConstant =>
 		[
 			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
+			type = e.typeFor?.toIrBaseType
+			values.addAll(e.values)
 		]
 	}
 
@@ -183,7 +140,7 @@ class IrExpressionFactory
 		IrFactory::eINSTANCE.createMinConstant => 
 		[ 
 			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
+			type = e.typeFor?.toIrBaseType
 		]
 	}
 
@@ -192,7 +149,7 @@ class IrExpressionFactory
 		IrFactory::eINSTANCE.createMaxConstant => 
 		[ 
 			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
+			type = e.typeFor?.toIrBaseType
 		]
 	}
 
@@ -201,7 +158,7 @@ class IrExpressionFactory
 		IrFactory::eINSTANCE.createFunctionCall =>
 		[
 			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
+			type = e.typeFor?.toIrBaseType
 			function = e.function.toIrFunction(e.declaration)
 			args += e.args.map[toIrExpression]
 		]
@@ -214,7 +171,7 @@ class IrExpressionFactory
 		IrFactory::eINSTANCE.createVarRef => 
 		[ 
 			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
+			type = e.typeFor?.toIrBaseType
 			variable = irVariable
 		]
 	}
@@ -224,18 +181,18 @@ class IrExpressionFactory
 		IrFactory::eINSTANCE.createVarRef => 
 		[ 
 			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
+			type = e.typeFor?.toIrBaseType
 			variable = e.variable.toIrVariable(e.timeSuffix)
+			arrayTypeIndices.addAll(e.arrayTypeIndices)
 			for (i : 0..<e.spaceIterators.size)
 				iterators += e.spaceIterators.get(i).toIrVarRefIteratorRef(i)
-			e.fields.forEach[x | fields += x]
 		]
 	}
 	
 	private def create IrFactory::eINSTANCE.createBinaryExpression toIrBinaryExpr(fr.cea.nabla.nabla.Expression container, fr.cea.nabla.nabla.Expression l, fr.cea.nabla.nabla.Expression r, String op)
 	{
 		annotations += container.toIrAnnotation
-		type = container.typeFor?.toIrExpressionType
+		type = container.typeFor?.toIrBaseType
 		operator = op
 		left = l.toIrExpression
 		right = r.toIrExpression
@@ -244,40 +201,38 @@ class IrExpressionFactory
 	private def create IrFactory::eINSTANCE.createUnaryExpression toIrUnaryExpr(fr.cea.nabla.nabla.Expression container, fr.cea.nabla.nabla.Expression e, String op)
 	{
 		annotations += container.toIrAnnotation
-		type = container.typeFor?.toIrExpressionType
+		type = container.typeFor?.toIrBaseType
 		operator = op
 		expression = e.toIrExpression
 	}
 	
 	// Attention, pas de fonction create mais une creation systématique
-	private def toIrExpressionType(NablaType t)
+	private def toIrBaseType(ExpressionType t)
 	{
-		IrFactory::eINSTANCE.createExpressionType => 
+		IrFactory::eINSTANCE.createBaseType =>
 		[
-			basicType = t.base.toIrBasicType
-			dimension = t.dimension
+			switch t
+			{
+				UndefinedType: root = PrimitiveType::VOID
+				IntType: root = PrimitiveType::INT
+				RealType: root = PrimitiveType::REAL
+				BoolType: root = PrimitiveType::BOOL
+				IntArrayType: 
+				{
+					root = PrimitiveType::INT
+					dimSizes.addAll(t.dimSizes)
+				}
+				RealArrayType:
+				{
+					root = PrimitiveType::REAL
+					dimSizes.addAll(t.dimSizes)
+				}
+				BoolArrayType:
+				{
+					root = PrimitiveType::BOOL
+					dimSizes.addAll(t.dimSizes)
+				}
+			}
 		]
-	}
-	
-	private def toIrRealExpression(BasicType type, double v)
-	{
-		switch type
-		{
-			case REAL: IrFactory::eINSTANCE.createRealConstant => [ value=v ]
-			case REAL2: IrFactory::eINSTANCE.createReal2Constant => [ x=v y=v ]
-			case REAL3: IrFactory::eINSTANCE.createReal3Constant => [ x=v y=v z=v ]
-			case REAL2X2: IrFactory::eINSTANCE.createReal2x2Constant => 
-			[ 
-				x=IrFactory::eINSTANCE.createReal2Constant => [ x=v y=v ]
-				y=IrFactory::eINSTANCE.createReal2Constant => [ x=v y=v ]
-			]
-			case REAL3X3: IrFactory::eINSTANCE.createReal3x3Constant => 
-			[ 
-				x=IrFactory::eINSTANCE.createReal3Constant => [ x=v y=v z=v ]
-				y=IrFactory::eINSTANCE.createReal3Constant => [ x=v y=v z=v ]
-				z=IrFactory::eINSTANCE.createReal3Constant => [ x=v y=v z=v ]
-			]
-			default: throw new RuntimeException("Type inattendu dans une constante : " + type.literal)
-		}
 	}
 }

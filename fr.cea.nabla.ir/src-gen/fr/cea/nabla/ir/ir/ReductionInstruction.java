@@ -101,12 +101,12 @@ public interface ReductionInstruction extends IterableInstruction {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Result</em>' containment reference.
-	 * @see #setResult(ScalarVariable)
+	 * @see #setResult(SimpleVariable)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getReductionInstruction_Result()
 	 * @model containment="true" required="true"
 	 * @generated
 	 */
-	ScalarVariable getResult();
+	SimpleVariable getResult();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ReductionInstruction#getResult <em>Result</em>}' containment reference.
@@ -116,6 +116,6 @@ public interface ReductionInstruction extends IterableInstruction {
 	 * @see #getResult()
 	 * @generated
 	 */
-	void setResult(ScalarVariable value);
+	void setResult(SimpleVariable value);
 
 } // ReductionInstruction

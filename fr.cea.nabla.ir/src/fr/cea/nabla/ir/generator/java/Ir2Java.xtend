@@ -13,19 +13,18 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import fr.cea.nabla.ir.ir.ArrayVariable
+import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.ScalarVariable
-import java.util.ArrayList
-import java.util.List
+import fr.cea.nabla.ir.ir.SimpleVariable
 
+import static extension fr.cea.nabla.ir.BaseTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.VariableExtensions.*
-import fr.cea.nabla.ir.generator.CodeGenerator
 
 class Ir2Java extends CodeGenerator
 {
@@ -49,7 +48,7 @@ class Ir2Java extends CodeGenerator
 		{
 			public final static class Options
 			{
-				«FOR v : variables.filter(ScalarVariable).filter[const]»
+				«FOR v : variables.filter(SimpleVariable).filter[const]»
 				public final «v.javaType» «v.name» = «v.defaultValue.content.toString.replaceAll('options.', '')»;
 				«ENDFOR»
 			}
@@ -62,13 +61,13 @@ class Ir2Java extends CodeGenerator
 			private final VtkFileWriter2D writer;
 
 			// Global Variables
-			«val globals = variables.filter(ScalarVariable).filter[!const]»
+			«val globals = variables.filter(SimpleVariable).filter[!const]»
 			«val globalsByType = globals.groupBy[type]»
 			«FOR type : globalsByType.keySet»
 			private «type.javaType» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 			«ENDFOR»
 
-			«val arrays = variables.filter(ArrayVariable).groupBy[type]»
+			«val arrays = variables.filter(ConnectivityVariable).groupBy[type]»
 			«IF !arrays.empty»
 			// Array Variables
 			«FOR type : arrays.keySet»
@@ -91,9 +90,12 @@ class Ir2Java extends CodeGenerator
 				«ENDFOR»
 
 				// Arrays allocation
-				«FOR a : variables.filter(ArrayVariable)»
-					«a.name» = new «a.type.javaType»«FOR d : a.dimensions»[«d.nbElems»]«ENDFOR»;
-					«IF !a.type.javaBasicType»«allocate(a.dimensions, a.name, 'new ' + a.type.javaType + '(0.0)', new ArrayList<String>)»«ENDIF»
+				«FOR a : variables»
+					«IF a instanceof ConnectivityVariable»
+						«a.name» = new «a.type.javaType»«FOR d : a.dimensions»[«d.nbElems»]«ENDFOR»«FOR d : a.type.dimSizes»[«d»]«ENDFOR»;
+					«ELSEIF a instanceof SimpleVariable && !a.type.scalar»
+						«a.name» = new «a.type.javaType»«FOR d : a.type.dimSizes»[«d»]«ENDFOR»;
+					«ENDIF»
 				«ENDFOR»
 
 				«IF nodeCoordVariable !== null»
@@ -115,7 +117,7 @@ class Ir2Java extends CodeGenerator
 				«ENDFOR»
 				«IF jobs.exists[at > 0]»
 
-				«val variablesToPersist = persistentArrayVariables»
+				«val variablesToPersist = persistentVariables»
 				«IF !variablesToPersist.empty»
 				HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 				HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
@@ -158,22 +160,5 @@ class Ir2Java extends CodeGenerator
 			'''NumericMesh2D.MaxNb«c.name.toFirstUpper»'''
 	}
 	
-	private def CharSequence allocate(Iterable<Connectivity> connectivities, String varName, String allocation, List<String> indexes)
-	{
-		if (connectivities.empty) '''«varName»«FOR i:indexes»[«i»]«ENDFOR» = «allocation»;'''
-		else 
-		{
-			val c = connectivities.head
-			indexes.add(c.indexName)
-			'''
-				IntStream.range(0, «c.nbElems»).parallel().forEach(«c.indexName» -> 
-				{
-					«connectivities.tail.allocate(varName, allocation, indexes)»
-				});
-			'''
-		}
-	}
-	
-	private def getIndexName(Connectivity c) { 'i' + c.name.toFirstUpper }
-	private def getPersistentArrayVariables(IrModule it) { variables.filter(ArrayVariable).filter[x|x.persist && x.dimensions.size==1] }
+	private def getPersistentVariables(IrModule it) { variables.filter(ConnectivityVariable).filter[x|x.persist && x.dimensions.size==1] }
 }

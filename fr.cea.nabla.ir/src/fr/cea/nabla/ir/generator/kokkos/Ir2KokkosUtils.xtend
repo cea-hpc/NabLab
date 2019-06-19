@@ -13,22 +13,19 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
-import fr.cea.nabla.ir.ir.BasicType
+import fr.cea.nabla.ir.ir.BaseType
 
 class Ir2KokkosUtils 
 {
-	static def getKokkosType(BasicType t)
+	static def getKokkosType(BaseType t)
 	{
-		switch t
+		val rootType = switch t.root
 		{
 			case VOID : 'void'
 			case BOOL: 'bool'
 			case INT: 'int'
 			case REAL: 'double'
-			case REAL2: 'Real2'
-			case REAL2X2: 'Real2x2'
-			case REAL3: 'Real3'
-			case REAL3X3: 'Real3x3'
 		}
-	}	
+		return rootType + t.dimSizes.map[x | '[' + x + ']'].join
+ 	}	
 }

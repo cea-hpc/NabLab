@@ -49,7 +49,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="const" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//ScalarVar"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//SimpleVar"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValue" eType="#//Expression"
         containment="true"/>
@@ -63,8 +63,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="Var">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ScalarVar" eSuperTypes="#//Var"/>
-  <eClassifiers xsi:type="ecore:EClass" name="ArrayVar" eSuperTypes="#//Var">
+  <eClassifiers xsi:type="ecore:EClass" name="SimpleVar" eSuperTypes="#//Var"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ConnectivityVar" eSuperTypes="#//Var">
     <eStructuralFeatures xsi:type="ecore:EReference" name="dimensions" unique="false"
         upperBound="-1" eType="#//Connectivity"/>
   </eClassifiers>
@@ -116,7 +116,6 @@
   <eClassifiers xsi:type="ecore:EClass" name="TimeIterator"/>
   <eClassifiers xsi:type="ecore:EClass" name="BaseType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="root" eType="#//PrimitiveType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="array" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="dimSizes" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
@@ -241,12 +240,10 @@
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MinConstant" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//PrimitiveType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MaxConstant" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//PrimitiveType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionCall" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="function" eType="#//Function"/>

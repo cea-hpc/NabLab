@@ -60,7 +60,7 @@ class Nabla2Ir
 			{
 				ScalarVarDefinition: 
 				{
-					val irVar = vDecl.variable.toIrScalarVariable
+					val irVar = vDecl.variable.toIrSimpleVariable
 					irVar.defaultValue = vDecl.defaultValue.toIrExpression
 					irVar.const = vDecl.const
 					variables += irVar

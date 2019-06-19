@@ -15,7 +15,7 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.VarRef#getVariable <em>Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.VarRef#getIterators <em>Iterators</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.VarRef#getFields <em>Fields</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.VarRef#getArrayTypeIndices <em>Array Type Indices</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getVarRef()
@@ -68,19 +68,19 @@ public interface VarRef extends Expression {
 	EList<VarRefIteratorRef> getIterators();
 
 	/**
-	 * Returns the value of the '<em><b>Fields</b></em>' attribute list.
-	 * The list contents are of type {@link java.lang.String}.
+	 * Returns the value of the '<em><b>Array Type Indices</b></em>' attribute list.
+	 * The list contents are of type {@link java.lang.Integer}.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Fields</em>' attribute list isn't clear,
+	 * If the meaning of the '<em>Array Type Indices</em>' attribute list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Fields</em>' attribute list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getVarRef_Fields()
-	 * @model unique="false"
+	 * @return the value of the '<em>Array Type Indices</em>' attribute list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getVarRef_ArrayTypeIndices()
+	 * @model
 	 * @generated
 	 */
-	EList<String> getFields();
+	EList<Integer> getArrayTypeIndices();
 
 } // VarRef

@@ -15,9 +15,12 @@ package fr.cea.nabla.typing
 
 import com.google.inject.Inject
 import fr.cea.nabla.FunctionCallExtensions
+import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.And
+import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
+import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
@@ -32,150 +35,99 @@ import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
-import fr.cea.nabla.nabla.Real2Constant
-import fr.cea.nabla.nabla.Real2x2Constant
-import fr.cea.nabla.nabla.Real3Constant
-import fr.cea.nabla.nabla.Real3x3Constant
+import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.RealConstant
-import fr.cea.nabla.nabla.RealXCompactConstant
+import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
-import java.util.List
 
 class ExpressionTypeProvider 
 {
 	@Inject extension FunctionCallExtensions
-	@Inject extension BasicTypeProvider
-	@Inject extension OperationTypeProvider
-	@Inject extension VarTypeProvider
+	@Inject extension BinaryOperationsTypeProvider
+	@Inject extension VarExtensions
 
-	def dispatch NablaType getTypeFor(Expression e) 
+	def dispatch ExpressionType getTypeFor(ContractedIf it) { new BoolType }
+	
+	def dispatch ExpressionType getTypeFor(Or it) { new BoolType }	
+	def dispatch ExpressionType getTypeFor(And it) { new BoolType }
+	def dispatch ExpressionType getTypeFor(Equality it) { new BoolType }
+	def dispatch ExpressionType getTypeFor(Comparison it) { new BoolType }
+	def dispatch ExpressionType getTypeFor(Plus it) { eval(left, right ,op) }
+	def dispatch ExpressionType getTypeFor(Minus it) { eval(left, right ,op) }
+	def dispatch ExpressionType getTypeFor(MulOrDiv it)  { eval(left, right ,op) }
+	def dispatch ExpressionType getTypeFor(Modulo it)  { new IntType }
+	private def eval(Expression a, Expression b, String op) { getTypeFor(a.getTypeFor, b.getTypeFor, op) }
+
+	def dispatch ExpressionType getTypeFor(Parenthesis it) { expression.typeFor }
+	def dispatch ExpressionType getTypeFor(UnaryMinus it) { expression.typeFor }
+	def dispatch ExpressionType getTypeFor(Not it) { expression.typeFor }
+
+	def dispatch ExpressionType getTypeFor(IntConstant it) { new IntType }
+	def dispatch ExpressionType getTypeFor(RealConstant it) { new RealType }
+	def dispatch ExpressionType getTypeFor(BoolConstant it)  { new BoolType }
+	def dispatch ExpressionType getTypeFor(RealVectorConstant it) { new RealArrayType(#[values.size]) }
+
+	def dispatch ExpressionType getTypeFor(MinConstant it) { type.typeFor }
+	def dispatch ExpressionType getTypeFor(MaxConstant it) { type.typeFor }
+	
+	def dispatch ExpressionType getTypeFor(FunctionCall it)
 	{
-		switch (e) 
+		val decl = declaration
+		if (decl === null) new UndefinedType
+		else decl.returnType.typeFor
+	}
+	
+	def dispatch ExpressionType getTypeFor(ReductionCall it)
+	{
+		val decl = declaration
+		if (decl === null) new UndefinedType
+		else decl.returnType.typeFor
+	}
+	
+	def dispatch ExpressionType getTypeFor(VarRef it)
+	{
+		val varBaseType = variable.baseType
+		val dimensions = if (variable instanceof ConnectivityVar) (variable as ConnectivityVar).dimensions.length else 0
+		val dimSizes = varBaseType.dimSizes
+		if (dimensions == spaceIterators.size && dimSizes.size >= arrayTypeIndices.size)
 		{
-			ContractedIf: e.then?.typeFor // then.typeFor == else.typeFor
-			IntConstant: BasicTypeProvider::INT
-			RealConstant: BasicTypeProvider::REAL
-			Real2Constant: BasicTypeProvider::REAL2
-			Real3Constant: BasicTypeProvider::REAL3
-			Real2x2Constant: BasicTypeProvider::REAL2X2
-			Real3x3Constant: BasicTypeProvider::REAL3X3
-			BoolConstant: BasicTypeProvider::BOOL
-			RealXCompactConstant: e.type.typeFor
-			MinConstant: e.type.typeFor
-			MaxConstant: e.type.typeFor
-			
-			Or, And, Not, Equality, Comparison: BasicTypeProvider::BOOL
-
-			Plus: getTypeFor(e.op, e.left?.typeFor, e.right?.typeFor)
-			Minus: getTypeFor(e.op, e.left?.typeFor, e.right?.typeFor)
-			MulOrDiv: getTypeFor(e.op, e.left?.typeFor, e?.right.typeFor)
-			Modulo: BasicTypeProvider::INT
-			UnaryMinus: e.expression?.typeFor
-			Parenthesis: e.expression?.typeFor
-			
-			FunctionCall: e.typeFor
-			ReductionCall: e.typeFor
-			VarRef: e.typeFor
-			
-			default: NablaType::UNDEFINED
-		}
-	}
-	
-	def dispatch NablaType getTypeFor(FunctionCall it)
-	{
-		val decl = declaration
-		if (decl === null) NablaType::UNDEFINED
-		else decl.returnType.typeFor
-	}
-	
-	def dispatch NablaType getTypeFor(ReductionCall it)
-	{
-		val decl = declaration
-		if (decl === null) NablaType::UNDEFINED
-		else decl.returnType.typeFor
-	}
-	
-	def dispatch NablaType getTypeFor(VarRef it)
-	{
-		// type apres application de l'iterateur
-		val varRefTypeWithoutFields = typeForWithoutFields
-		if (varRefTypeWithoutFields === NablaType::UNDEFINED)
-			NablaType::UNDEFINED
+			switch arrayTypeIndices.size
+			{
+				case 0: varBaseType.typeFor
+				case dimSizes.size: varBaseType.root.typeFor
+				default:
+				{
+					val newDimSizes = newIntArrayOfSize(dimSizes.size- arrayTypeIndices.size)
+					for (i : 0..<newDimSizes.size) newDimSizes.set(i, dimSizes.get(i))
+					getTypeFor(varBaseType.root, newDimSizes)				
+				}
+			}
+		} 
 		else 
-			typeAfterFields(varRefTypeWithoutFields, fields)
+			new UndefinedType
 	}
-	
-	// utile pour la completion...
-	def NablaType getTypeForWithoutFields(VarRef it)
+
+	def dispatch ExpressionType getTypeFor(PrimitiveType it)
 	{
-		// type de la variable
-		if (variable === null || variable.eIsProxy) NablaType::UNDEFINED
-		else
+		switch it
 		{
-			val varType = variable.typeFor
-			// s'il y a plus d'iterateur que le type n'a de dimension ==> UNDEFINED
-			if (varType===NablaType::UNDEFINED || (varType.dimension - spaceIterators.length) < 0)  
-				NablaType::UNDEFINED
-			else
-				new NablaType(varType.base, varType.dimension - spaceIterators.length)		
-		}
-	}
-	
-	private def typeAfterFields(NablaType t, List<String> fields)
-	{
-		if (fields.empty) t
-		else if (t.dimension > 0) NablaType::UNDEFINED
-		else switch t.base
-		{
-			case REAL2: fields.convertReal2
-			case REAL3: fields.convertReal3
-			case REAL2X2: fields.convertReal2x2
-			case REAL3X3: fields.convertReal3x3
-			default: NablaType::UNDEFINED
-		}
-	}
-	
-	private def convertReal2(List<String> fields)
-	{
-		switch fields.length
-		{
-			case 0 : BasicTypeProvider::REAL2
-			case 1 : BasicTypeProvider::REAL
-			default : NablaType::UNDEFINED
-		}
-	}
-	
-	private def convertReal3(List<String> fields)
-	{
-		switch fields.length
-		{
-			case 0 : BasicTypeProvider::REAL3
-			case 1 : BasicTypeProvider::REAL
-			default : NablaType::UNDEFINED
+			case BOOL: new UndefinedType
+			case INT: new IntType
+			case REAL: new RealType
 		}
 	}
 
-	private def convertReal2x2(List<String> fields)
+	def dispatch ExpressionType getTypeFor(BaseType it) { getTypeFor(root, dimSizes) }
+
+	private def ExpressionType getTypeFor(PrimitiveType t, int[] dimSizes)
 	{
-		switch fields.length
+		switch t
 		{
-			case 0 : BasicTypeProvider::REAL2X2
-			case 1 : BasicTypeProvider::REAL2
-			case 2 : BasicTypeProvider::REAL
-			default : NablaType::UNDEFINED
-		}
-	}
-	
-	private def convertReal3x3(List<String> fields)
-	{
-		switch fields.length
-		{
-			case 0 : BasicTypeProvider::REAL3X3
-			case 1 : BasicTypeProvider::REAL3
-			case 2 : BasicTypeProvider::REAL
-			default : NablaType::UNDEFINED
+			case BOOL: if (dimSizes.empty) new BoolType else new BoolArrayType(dimSizes)
+			case INT: if (dimSizes.empty) new IntType else new IntArrayType(dimSizes)
+			case REAL: if (dimSizes.empty) new RealType else new RealArrayType(dimSizes)
 		}
 	}
 

@@ -31,10 +31,10 @@ class ReductionCallExtensions
 	@Inject extension Nabla2IrUtils
 	@Inject extension IrExpressionFactory
 	
-	def create IrFactory::eINSTANCE.createScalarVariable toIrLocalVariable(ReductionCall rc)
+	def create IrFactory::eINSTANCE.createSimpleVariable toIrLocalVariable(ReductionCall rc)
 	{
 		name = rc.reduction.name + Utils::hashString(rc)
-		type = rc.declaration.returnType.toIrBasicType
+		type = rc.declaration.returnType.toIrBaseType
 		defaultValue = rc.declaration.seed.toIrExpression
 	}
 }

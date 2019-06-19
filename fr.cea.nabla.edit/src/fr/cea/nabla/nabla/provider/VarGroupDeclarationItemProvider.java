@@ -4,7 +4,6 @@
 package fr.cea.nabla.nabla.provider;
 
 
-import fr.cea.nabla.nabla.BasicType;
 import fr.cea.nabla.nabla.NablaFactory;
 import fr.cea.nabla.nabla.NablaPackage;
 import fr.cea.nabla.nabla.VarGroupDeclaration;
@@ -17,9 +16,7 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
-import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
@@ -50,31 +47,8 @@ public class VarGroupDeclarationItemProvider extends InstructionItemProvider {
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addTypePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the Type feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_VarGroupDeclaration_type_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_VarGroupDeclaration_type_feature", "_UI_VarGroupDeclaration_type"),
-				 NablaPackage.Literals.VAR_GROUP_DECLARATION__TYPE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
 	}
 
 	/**
@@ -89,6 +63,7 @@ public class VarGroupDeclarationItemProvider extends InstructionItemProvider {
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
+			childrenFeatures.add(NablaPackage.Literals.VAR_GROUP_DECLARATION__TYPE);
 			childrenFeatures.add(NablaPackage.Literals.VAR_GROUP_DECLARATION__VARIABLES);
 		}
 		return childrenFeatures;
@@ -126,11 +101,7 @@ public class VarGroupDeclarationItemProvider extends InstructionItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		BasicType labelValue = ((VarGroupDeclaration)object).getType();
-		String label = labelValue == null ? null : labelValue.toString();
-		return label == null || label.length() == 0 ?
-			getString("_UI_VarGroupDeclaration_type") :
-			getString("_UI_VarGroupDeclaration_type") + " " + label;
+		return getString("_UI_VarGroupDeclaration_type");
 	}
 
 
@@ -147,8 +118,6 @@ public class VarGroupDeclarationItemProvider extends InstructionItemProvider {
 
 		switch (notification.getFeatureID(VarGroupDeclaration.class)) {
 			case NablaPackage.VAR_GROUP_DECLARATION__TYPE:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
 			case NablaPackage.VAR_GROUP_DECLARATION__VARIABLES:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
@@ -169,18 +138,23 @@ public class VarGroupDeclarationItemProvider extends InstructionItemProvider {
 
 		newChildDescriptors.add
 			(createChildParameter
+				(NablaPackage.Literals.VAR_GROUP_DECLARATION__TYPE,
+				 NablaFactory.eINSTANCE.createBaseType()));
+
+		newChildDescriptors.add
+			(createChildParameter
 				(NablaPackage.Literals.VAR_GROUP_DECLARATION__VARIABLES,
 				 NablaFactory.eINSTANCE.createVar()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.VAR_GROUP_DECLARATION__VARIABLES,
-				 NablaFactory.eINSTANCE.createScalarVar()));
+				 NablaFactory.eINSTANCE.createSimpleVar()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.VAR_GROUP_DECLARATION__VARIABLES,
-				 NablaFactory.eINSTANCE.createArrayVar()));
+				 NablaFactory.eINSTANCE.createConnectivityVar()));
 	}
 
 }

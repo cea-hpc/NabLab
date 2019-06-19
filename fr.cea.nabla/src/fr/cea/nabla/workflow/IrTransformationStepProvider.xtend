@@ -1,17 +1,17 @@
 package fr.cea.nabla.workflow
 
-import fr.cea.nabla.nablagen.TagPersistentVariablesComponent
-import fr.cea.nabla.nablagen.ReplaceUtfComponent
-import fr.cea.nabla.nablagen.ReplaceInternalReductionsComponent
-import fr.cea.nabla.nablagen.OptimizeConnectivitiesComponent
-import fr.cea.nabla.nablagen.FillHLTsComponent
-import java.util.HashMap
-import fr.cea.nabla.ir.transformers.TagPersistentVariables
-import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
-import fr.cea.nabla.ir.transformers.ReplaceInternalReductions
-import java.util.ArrayList
-import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.FillJobHLTs
+import fr.cea.nabla.ir.transformers.OptimizeConnectivities
+import fr.cea.nabla.ir.transformers.ReplaceInternalReductions
+import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
+import fr.cea.nabla.ir.transformers.TagPersistentVariables
+import fr.cea.nabla.nablagen.FillHLTsComponent
+import fr.cea.nabla.nablagen.OptimizeConnectivitiesComponent
+import fr.cea.nabla.nablagen.ReplaceInternalReductionsComponent
+import fr.cea.nabla.nablagen.ReplaceUtfComponent
+import fr.cea.nabla.nablagen.TagPersistentVariablesComponent
+import java.util.ArrayList
+import java.util.HashMap
 
 class IrTransformationStepProvider 
 {

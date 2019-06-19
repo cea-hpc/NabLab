@@ -13,9 +13,9 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator
 
-import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityCall
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
@@ -44,7 +44,7 @@ class Utils
 	static def getUsedConnectivities(IrModule it)
 	{
 		// connectivités nécessaires pour les variables
-		val connectivities = variables.filter(ArrayVariable).map[dimensions].flatten.toSet
+		val connectivities = variables.filter(ConnectivityVariable).map[dimensions].flatten.toSet
 		// connectivités utilisées dans le code
 		jobs.forEach[j | connectivities += j.eAllContents.filter(ConnectivityCall).map[connectivity].toSet]
 

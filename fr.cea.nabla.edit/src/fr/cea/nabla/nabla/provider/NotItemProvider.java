@@ -142,16 +142,6 @@ public class NotItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NOT__EXPRESSION,
-				 NablaFactory.eINSTANCE.createReal2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.NOT__EXPRESSION,
-				 NablaFactory.eINSTANCE.createReal3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.NOT__EXPRESSION,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -232,17 +222,7 @@ public class NotItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NOT__EXPRESSION,
-				 NablaFactory.eINSTANCE.createReal2x2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.NOT__EXPRESSION,
-				 NablaFactory.eINSTANCE.createReal3x3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.NOT__EXPRESSION,
-				 NablaFactory.eINSTANCE.createRealXCompactConstant()));
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter

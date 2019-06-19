@@ -372,49 +372,49 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.ScalarVar} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.SimpleVar} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ScalarVarItemProvider scalarVarItemProvider;
+	protected SimpleVarItemProvider simpleVarItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.ScalarVar}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.SimpleVar}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createScalarVarAdapter() {
-		if (scalarVarItemProvider == null) {
-			scalarVarItemProvider = new ScalarVarItemProvider(this);
+	public Adapter createSimpleVarAdapter() {
+		if (simpleVarItemProvider == null) {
+			simpleVarItemProvider = new SimpleVarItemProvider(this);
 		}
 
-		return scalarVarItemProvider;
+		return simpleVarItemProvider;
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.ArrayVar} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.ConnectivityVar} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ArrayVarItemProvider arrayVarItemProvider;
+	protected ConnectivityVarItemProvider connectivityVarItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.ArrayVar}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.ConnectivityVar}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createArrayVarAdapter() {
-		if (arrayVarItemProvider == null) {
-			arrayVarItemProvider = new ArrayVarItemProvider(this);
+	public Adapter createConnectivityVarAdapter() {
+		if (connectivityVarItemProvider == null) {
+			connectivityVarItemProvider = new ConnectivityVarItemProvider(this);
 		}
 
-		return arrayVarItemProvider;
+		return connectivityVarItemProvider;
 	}
 
 	/**
@@ -579,52 +579,6 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Real2Constant} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected Real2ConstantItemProvider real2ConstantItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Real2Constant}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createReal2ConstantAdapter() {
-		if (real2ConstantItemProvider == null) {
-			real2ConstantItemProvider = new Real2ConstantItemProvider(this);
-		}
-
-		return real2ConstantItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Real3Constant} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected Real3ConstantItemProvider real3ConstantItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Real3Constant}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createReal3ConstantAdapter() {
-		if (real3ConstantItemProvider == null) {
-			real3ConstantItemProvider = new Real3ConstantItemProvider(this);
-		}
-
-		return real3ConstantItemProvider;
-	}
-
-	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.VarRef} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -668,6 +622,29 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		}
 
 		return timeIteratorItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.BaseType} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected BaseTypeItemProvider baseTypeItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.BaseType}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createBaseTypeAdapter() {
+		if (baseTypeItemProvider == null) {
+			baseTypeItemProvider = new BaseTypeItemProvider(this);
+		}
+
+		return baseTypeItemProvider;
 	}
 
 	/**
@@ -1108,72 +1085,26 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Real2x2Constant} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.RealVectorConstant} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected Real2x2ConstantItemProvider real2x2ConstantItemProvider;
+	protected RealVectorConstantItemProvider realVectorConstantItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Real2x2Constant}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.RealVectorConstant}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createReal2x2ConstantAdapter() {
-		if (real2x2ConstantItemProvider == null) {
-			real2x2ConstantItemProvider = new Real2x2ConstantItemProvider(this);
+	public Adapter createRealVectorConstantAdapter() {
+		if (realVectorConstantItemProvider == null) {
+			realVectorConstantItemProvider = new RealVectorConstantItemProvider(this);
 		}
 
-		return real2x2ConstantItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Real3x3Constant} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected Real3x3ConstantItemProvider real3x3ConstantItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Real3x3Constant}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createReal3x3ConstantAdapter() {
-		if (real3x3ConstantItemProvider == null) {
-			real3x3ConstantItemProvider = new Real3x3ConstantItemProvider(this);
-		}
-
-		return real3x3ConstantItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.RealXCompactConstant} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected RealXCompactConstantItemProvider realXCompactConstantItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.RealXCompactConstant}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createRealXCompactConstantAdapter() {
-		if (realXCompactConstantItemProvider == null) {
-			realXCompactConstantItemProvider = new RealXCompactConstantItemProvider(this);
-		}
-
-		return realXCompactConstantItemProvider;
+		return realVectorConstantItemProvider;
 	}
 
 	/**
@@ -1426,8 +1357,8 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (scalarVarDefinitionItemProvider != null) scalarVarDefinitionItemProvider.dispose();
 		if (varGroupDeclarationItemProvider != null) varGroupDeclarationItemProvider.dispose();
 		if (varItemProvider != null) varItemProvider.dispose();
-		if (scalarVarItemProvider != null) scalarVarItemProvider.dispose();
-		if (arrayVarItemProvider != null) arrayVarItemProvider.dispose();
+		if (simpleVarItemProvider != null) simpleVarItemProvider.dispose();
+		if (connectivityVarItemProvider != null) connectivityVarItemProvider.dispose();
 		if (connectivityItemProvider != null) connectivityItemProvider.dispose();
 		if (itemArgTypeItemProvider != null) itemArgTypeItemProvider.dispose();
 		if (functionItemProvider != null) functionItemProvider.dispose();
@@ -1435,10 +1366,9 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (reductionItemProvider != null) reductionItemProvider.dispose();
 		if (reductionArgItemProvider != null) reductionArgItemProvider.dispose();
 		if (expressionItemProvider != null) expressionItemProvider.dispose();
-		if (real2ConstantItemProvider != null) real2ConstantItemProvider.dispose();
-		if (real3ConstantItemProvider != null) real3ConstantItemProvider.dispose();
 		if (varRefItemProvider != null) varRefItemProvider.dispose();
 		if (timeIteratorItemProvider != null) timeIteratorItemProvider.dispose();
+		if (baseTypeItemProvider != null) baseTypeItemProvider.dispose();
 		if (instructionBlockItemProvider != null) instructionBlockItemProvider.dispose();
 		if (affectationItemProvider != null) affectationItemProvider.dispose();
 		if (loopItemProvider != null) loopItemProvider.dispose();
@@ -1458,9 +1388,7 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (intConstantItemProvider != null) intConstantItemProvider.dispose();
 		if (realConstantItemProvider != null) realConstantItemProvider.dispose();
 		if (boolConstantItemProvider != null) boolConstantItemProvider.dispose();
-		if (real2x2ConstantItemProvider != null) real2x2ConstantItemProvider.dispose();
-		if (real3x3ConstantItemProvider != null) real3x3ConstantItemProvider.dispose();
-		if (realXCompactConstantItemProvider != null) realXCompactConstantItemProvider.dispose();
+		if (realVectorConstantItemProvider != null) realVectorConstantItemProvider.dispose();
 		if (minConstantItemProvider != null) minConstantItemProvider.dispose();
 		if (maxConstantItemProvider != null) maxConstantItemProvider.dispose();
 		if (functionCallItemProvider != null) functionCallItemProvider.dispose();

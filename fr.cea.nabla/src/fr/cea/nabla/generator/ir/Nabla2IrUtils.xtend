@@ -16,10 +16,11 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.nabla.BasicType
 import fr.cea.nabla.nabla.Import
 import fr.cea.nabla.nabla.ItemArgType
 import fr.cea.nabla.nabla.ItemType
+import fr.cea.nabla.nabla.PrimitiveType
+import fr.cea.nabla.nabla.BaseType
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -31,9 +32,9 @@ class Nabla2IrUtils
 {
 	@Inject extension IrAnnotationHelper 
 	
-	def toIrBasicType(BasicType t)
+	def toIrPrimitiveType(PrimitiveType t)
 	{
-		val type = fr.cea.nabla.ir.ir.BasicType::get(t.value + 1) // le premier literal est void en IR
+		val type = fr.cea.nabla.ir.ir.PrimitiveType::get(t.value + 1) // le premier literal est void en IR
 		if (type === null) throw new RuntimeException('Conversion Nabla --> IR impossible : type inconnu ' + t.literal)
 		return type
 	}	
@@ -53,5 +54,11 @@ class Nabla2IrUtils
 	{
 		importedNamespace = i.importedNamespace
 		annotations += i.toIrAnnotation
+	}
+	
+	def create IrFactory::eINSTANCE.createBaseType toIrBaseType(BaseType i)
+	{
+		root = i.root.toIrPrimitiveType
+		dimSizes.addAll(i.dimSizes)
 	}
 }

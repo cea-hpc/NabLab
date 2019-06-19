@@ -35,7 +35,7 @@ public interface Function extends IrAnnotable {
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_Name()
-	 * @model unique="false"
+	 * @model unique="false" required="true"
 	 * @generated
 	 */
 	String getName();
@@ -51,51 +51,46 @@ public interface Function extends IrAnnotable {
 	void setName(String value);
 
 	/**
-	 * Returns the value of the '<em><b>In Types</b></em>' attribute list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.BasicType}.
-	 * The literals are from the enumeration {@link fr.cea.nabla.ir.ir.BasicType}.
+	 * Returns the value of the '<em><b>In Types</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.BaseType}.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>In Types</em>' attribute list isn't clear,
+	 * If the meaning of the '<em>In Types</em>' containment reference list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>In Types</em>' attribute list.
-	 * @see fr.cea.nabla.ir.ir.BasicType
+	 * @return the value of the '<em>In Types</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_InTypes()
-	 * @model unique="false"
+	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	EList<BasicType> getInTypes();
+	EList<BaseType> getInTypes();
 
 	/**
-	 * Returns the value of the '<em><b>Return Type</b></em>' attribute.
-	 * The literals are from the enumeration {@link fr.cea.nabla.ir.ir.BasicType}.
+	 * Returns the value of the '<em><b>Return Type</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Return Type</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Return Type</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Return Type</em>' attribute.
-	 * @see fr.cea.nabla.ir.ir.BasicType
-	 * @see #setReturnType(BasicType)
+	 * @return the value of the '<em>Return Type</em>' containment reference.
+	 * @see #setReturnType(BaseType)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_ReturnType()
-	 * @model unique="false" required="true"
+	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	BasicType getReturnType();
+	BaseType getReturnType();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Function#getReturnType <em>Return Type</em>}' attribute.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Function#getReturnType <em>Return Type</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Return Type</em>' attribute.
-	 * @see fr.cea.nabla.ir.ir.BasicType
+	 * @param value the new value of the '<em>Return Type</em>' containment reference.
 	 * @see #getReturnType()
 	 * @generated
 	 */
-	void setReturnType(BasicType value);
+	void setReturnType(BaseType value);
 
 	/**
 	 * Returns the value of the '<em><b>Provider</b></em>' attribute.

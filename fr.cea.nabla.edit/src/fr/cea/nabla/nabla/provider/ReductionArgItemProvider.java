@@ -4,7 +4,6 @@
 package fr.cea.nabla.nabla.provider;
 
 
-import fr.cea.nabla.nabla.BasicType;
 import fr.cea.nabla.nabla.NablaFactory;
 import fr.cea.nabla.nabla.NablaPackage;
 import fr.cea.nabla.nabla.ReductionArg;
@@ -19,14 +18,12 @@ import org.eclipse.emf.common.util.ResourceLocator;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
-import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
@@ -65,54 +62,8 @@ public class ReductionArgItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addCollectionTypePropertyDescriptor(object);
-			addReturnTypePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the Collection Type feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addCollectionTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_ReductionArg_collectionType_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ReductionArg_collectionType_feature", "_UI_ReductionArg_type"),
-				 NablaPackage.Literals.REDUCTION_ARG__COLLECTION_TYPE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Return Type feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addReturnTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_ReductionArg_returnType_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ReductionArg_returnType_feature", "_UI_ReductionArg_type"),
-				 NablaPackage.Literals.REDUCTION_ARG__RETURN_TYPE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
 	}
 
 	/**
@@ -128,6 +79,8 @@ public class ReductionArgItemProvider
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(NablaPackage.Literals.REDUCTION_ARG__SEED);
+			childrenFeatures.add(NablaPackage.Literals.REDUCTION_ARG__COLLECTION_TYPE);
+			childrenFeatures.add(NablaPackage.Literals.REDUCTION_ARG__RETURN_TYPE);
 		}
 		return childrenFeatures;
 	}
@@ -164,11 +117,7 @@ public class ReductionArgItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		BasicType labelValue = ((ReductionArg)object).getCollectionType();
-		String label = labelValue == null ? null : labelValue.toString();
-		return label == null || label.length() == 0 ?
-			getString("_UI_ReductionArg_type") :
-			getString("_UI_ReductionArg_type") + " " + label;
+		return getString("_UI_ReductionArg_type");
 	}
 
 
@@ -184,11 +133,9 @@ public class ReductionArgItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(ReductionArg.class)) {
+			case NablaPackage.REDUCTION_ARG__SEED:
 			case NablaPackage.REDUCTION_ARG__COLLECTION_TYPE:
 			case NablaPackage.REDUCTION_ARG__RETURN_TYPE:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
-			case NablaPackage.REDUCTION_ARG__SEED:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -210,16 +157,6 @@ public class ReductionArgItemProvider
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_ARG__SEED,
 				 NablaFactory.eINSTANCE.createExpression()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.REDUCTION_ARG__SEED,
-				 NablaFactory.eINSTANCE.createReal2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.REDUCTION_ARG__SEED,
-				 NablaFactory.eINSTANCE.createReal3Constant()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -304,17 +241,7 @@ public class ReductionArgItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_ARG__SEED,
-				 NablaFactory.eINSTANCE.createReal2x2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.REDUCTION_ARG__SEED,
-				 NablaFactory.eINSTANCE.createReal3x3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.REDUCTION_ARG__SEED,
-				 NablaFactory.eINSTANCE.createRealXCompactConstant()));
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -335,6 +262,39 @@ public class ReductionArgItemProvider
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_ARG__SEED,
 				 NablaFactory.eINSTANCE.createReductionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION_ARG__COLLECTION_TYPE,
+				 NablaFactory.eINSTANCE.createBaseType()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION_ARG__RETURN_TYPE,
+				 NablaFactory.eINSTANCE.createBaseType()));
+	}
+
+	/**
+	 * This returns the label text for {@link org.eclipse.emf.edit.command.CreateChildCommand}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection) {
+		Object childFeature = feature;
+		Object childObject = child;
+
+		boolean qualify =
+			childFeature == NablaPackage.Literals.REDUCTION_ARG__COLLECTION_TYPE ||
+			childFeature == NablaPackage.Literals.REDUCTION_ARG__RETURN_TYPE;
+
+		if (qualify) {
+			return getString
+				("_UI_CreateChild_text2",
+				 new Object[] { getTypeText(childObject), getFeatureText(childFeature), getTypeText(owner) });
+		}
+		return super.getCreateChildText(owner, feature, child, selection);
 	}
 
 	/**

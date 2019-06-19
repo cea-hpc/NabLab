@@ -23,8 +23,8 @@ import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Loop
-import fr.cea.nabla.nabla.ScalarVar
 import fr.cea.nabla.nabla.ScalarVarDefinition
+import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
 import java.util.List
@@ -55,7 +55,7 @@ class IrInstructionFactory
 		val irInstr = IrFactory::eINSTANCE.createVarDefinition =>
 		[
 			annotations += v.toIrAnnotation
-			variables += v.variable.toIrScalarVariable
+			variables += v.variable.toIrSimpleVariable
 		]
 
 		return irInstr.transformReductions(v.defaultValue)
@@ -67,10 +67,10 @@ class IrInstructionFactory
 		[
 			// Il n'y a que des ScalarVar quand VarGroupDeclaration est une instruction.
 			// Les ArrayVar ne sont que dans les variables du module (variables globales)
-			for (scalarVar : v.variables.filter(ScalarVar))
+			for (scalarVar : v.variables.filter(SimpleVar))
 			{
 				annotations += v.toIrAnnotation
-				variables += scalarVar.toIrScalarVariable
+				variables += scalarVar.toIrSimpleVariable
 			}
 		]
 		#[irInstr]

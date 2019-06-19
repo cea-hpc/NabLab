@@ -13,19 +13,19 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
-import fr.cea.nabla.ir.ir.ArrayVariable
-import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
 
 class VariableExtensions 
 {
-	static def dispatch getKokkosType(ScalarVariable it) 
+	static def dispatch getKokkosType(SimpleVariable it) 
 	{ 
 		type.kokkosType
 	}
 	
-	static def dispatch getKokkosType(ArrayVariable it)
+	static def dispatch getKokkosType(ConnectivityVariable it)
 	{
 		getType.kokkosType + dimensions.map['*'].join
 	}

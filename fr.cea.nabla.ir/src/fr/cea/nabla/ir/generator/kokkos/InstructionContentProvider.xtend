@@ -14,7 +14,7 @@
 package fr.cea.nabla.ir.generator.kokkos
 
 import fr.cea.nabla.ir.ir.Affectation
-import fr.cea.nabla.ir.ir.ArrayVariable
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -24,7 +24,7 @@ import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionInstruction
-import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.VarDefinition
 import fr.cea.nabla.ir.ir.VarRefIteratorRef
 
@@ -74,10 +74,10 @@ abstract class InstructionContentProvider
 		«ENDFOR»
 	'''
 	
-	private def dispatch getVarContent(ScalarVariable it)
+	private def dispatch getVarContent(SimpleVariable it)
 	'''«kokkosType» «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
 	
-	private def dispatch getVarContent(ArrayVariable it)
+	private def dispatch getVarContent(ConnectivityVariable it)
 	'''Kokkos::View<«kokkosType»> «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
 
 	def dispatch CharSequence getContent(InstructionBlock it) 

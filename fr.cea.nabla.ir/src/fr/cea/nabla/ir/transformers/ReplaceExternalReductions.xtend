@@ -92,7 +92,7 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 		{
 			val reduc = reductionInstr
 					
-			val argValue = IrFactory::eINSTANCE.createArrayVariable =>
+			val argValue = IrFactory::eINSTANCE.createConnectivityVariable =>
 			[
 				name = reductionInstr.result.name + 'ArgValue'
 				type = reductionInstr.result.type

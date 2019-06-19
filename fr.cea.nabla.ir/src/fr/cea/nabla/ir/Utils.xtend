@@ -27,7 +27,20 @@ class Utils
 		else
 			return hash.toString	
 	}
-	
+		
+	static def getUtfExponent(int x)
+	{
+		val xstring = x.toString
+		var utfExponent = ''
+		for (xchar : xstring.toCharArray)
+		{
+			val xValue = Character.getNumericValue(xchar)
+			if (xValue < 3) utfExponent += '\\u00B' + xchar
+			else utfExponent += '\\u207' + xchar
+		}
+		return utfExponent
+	}
+
 	private static def dispatch int hash(EObject object)
 	{
 		if (object === null)

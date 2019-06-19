@@ -1,6 +1,6 @@
 package fr.cea.nabla.ir.generator
 
-import fr.cea.nabla.ir.ir.ArrayVariable
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.VarRefIteratorRef
 import java.util.Comparator
@@ -53,7 +53,7 @@ class IteratorRefExtensions
 	
 	static def getConnectivity(VarRefIteratorRef it)
 	{
-		(referencedBy.variable as ArrayVariable).dimensions.get(indexInReferencerList)
+		(referencedBy.variable as ConnectivityVariable).dimensions.get(indexInReferencerList)
 	}
 	
 	static def getConnectivityArgs(VarRefIteratorRef it)
@@ -82,7 +82,7 @@ class IteratorRefExtensions
 
 	static def isIndexEqualId(VarRefIteratorRef it)
 	{
-		val refConnectivity = (referencedBy.variable as ArrayVariable).dimensions.get(indexInReferencerList)
+		val refConnectivity = (referencedBy.variable as ConnectivityVariable).dimensions.get(indexInReferencerList)
 		refConnectivity.indexEqualId
 	}
 	

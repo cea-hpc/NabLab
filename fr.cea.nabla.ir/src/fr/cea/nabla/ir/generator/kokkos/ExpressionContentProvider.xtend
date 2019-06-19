@@ -13,9 +13,9 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
-import fr.cea.nabla.ir.ir.ArrayVariable
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
@@ -23,18 +23,16 @@ import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
-import fr.cea.nabla.ir.ir.Real2Constant
-import fr.cea.nabla.ir.ir.Real2x2Constant
-import fr.cea.nabla.ir.ir.Real3Constant
-import fr.cea.nabla.ir.ir.Real3x3Constant
 import fr.cea.nabla.ir.ir.RealConstant
-import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.ir.RealVectorConstant
+import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 
+import static extension fr.cea.nabla.ir.BaseTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.VariableExtensions.isScalarConst
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
@@ -49,31 +47,26 @@ class ExpressionContentProvider
 	static def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
 	static def dispatch CharSequence getContent(IntConstant it) '''«value»'''
 	static def dispatch CharSequence getContent(RealConstant it) '''«value»'''
-	static def dispatch CharSequence getContent(Real2Constant it) '''Real2(«x», «y»)'''
-	static def dispatch CharSequence getContent(Real3Constant it) '''Real3(«x», «y», «z»)'''
-	static def dispatch CharSequence getContent(Real2x2Constant it) '''Real2x2(«x.content», «y.content»)'''
-	static def dispatch CharSequence getContent(Real3x3Constant it) '''Real3x3(«x.content», «y.content», «z.content»)'''
 	static def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
+	static def dispatch CharSequence getContent(RealVectorConstant it) '''TODO TODO'''
 	
 	static def dispatch CharSequence getContent(MinConstant it) 
 	{
-		switch getType().basicType
+		switch getType().root
 		{
 			case INT  : '''numeric_limits<int>::min()'''
 			case REAL : '''numeric_limits<double>::min()'''
-			case REAL2, case REAL2X2, case REAL3, case REAL3X3: '''«getType().basicType»(numeric_limits<double>::min())'''
-			default: throw new Exception('Invalid expression Min for type: ' + getType().basicType)
+			default: throw new Exception('Invalid expression Min for type: ' + getType().label)
 		}
 	}
 
 	static def dispatch CharSequence getContent(MaxConstant it) 
 	{
-		switch getType().basicType
+		switch getType().root
 		{
 			case INT  : '''numeric_limits<int>::max()'''
 			case REAL : '''numeric_limits<double>::max()'''
-			case REAL2, case REAL2X2, case REAL3, case REAL3X3: '''«getType().basicType»(numeric_limits<double>::max())'''
-			default: throw new Exception('Invalid expression Max for type: ' + getType().basicType)
+			default: throw new Exception('Invalid expression Max for type: ' + getType().label)
 		}
 	}
 
@@ -81,7 +74,7 @@ class ExpressionContentProvider
 	'''«function.provider»Functions::«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
 	static def dispatch CharSequence getContent(VarRef it) 
-	'''«codeName»«iteratorsContent»«FOR f:fields BEFORE '.' SEPARATOR '.'»«f»«ENDFOR»'''
+	'''«codeName»«iteratorsContent»«FOR d:variable.type.dimSizes BEFORE '('  SEPARATOR ',' AFTER ')'»«d»«ENDFOR»'''
 
 	private static def getCodeName(VarRef it)
 	{
@@ -92,7 +85,7 @@ class ExpressionContentProvider
 	private static def isConstRef(VarRef it)
 	{
 		val j = getJob(it)
-		val scalar = variable instanceof ScalarVariable
+		val scalar = variable instanceof SimpleVariable
 		if (j === null) scalar
 		else scalar && j.inVars.exists[x | x == variable]
 	}
@@ -112,8 +105,8 @@ class ExpressionContentProvider
 
 	private static def getIteratorsContent(VarRef it) 
 	{ 
-		if (iterators.empty || variable instanceof ScalarVariable) return ''
-		val array = variable as ArrayVariable
+		if (iterators.empty || variable instanceof SimpleVariable) return ''
+		val array = variable as ConnectivityVariable
 		if (array.dimensions.size < iterators.size) return ''
 		var content = new ArrayList<CharSequence>
 		for (r : iterators)

@@ -59,9 +59,9 @@
     <genClasses ecoreClass="Nabla.ecore#//Var">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Var/name"/>
     </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//ScalarVar"/>
-    <genClasses ecoreClass="Nabla.ecore#//ArrayVar">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//ArrayVar/dimensions"/>
+    <genClasses ecoreClass="Nabla.ecore#//SimpleVar"/>
+    <genClasses ecoreClass="Nabla.ecore#//ConnectivityVar">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//ConnectivityVar/dimensions"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Connectivity">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Connectivity/name"/>
@@ -99,7 +99,6 @@
     <genClasses ecoreClass="Nabla.ecore#//TimeIterator"/>
     <genClasses ecoreClass="Nabla.ecore#//BaseType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//BaseType/root"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//BaseType/array"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//BaseType/dimSizes"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//InstructionBlock">
@@ -186,10 +185,10 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//RealVectorConstant/values"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//MinConstant">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//MinConstant/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//MinConstant/type"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//MaxConstant">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//MaxConstant/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//MaxConstant/type"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//FunctionCall">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//FunctionCall/function"/>

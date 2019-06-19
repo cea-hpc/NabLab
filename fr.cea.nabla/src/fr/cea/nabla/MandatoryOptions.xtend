@@ -44,7 +44,7 @@ class MandatoryOptions
 	{
 		val f = NablaFactory::eINSTANCE
 		val edgeElem = f.createScalarVarDefinition
-		edgeElem.variable = f.createScalarVar => [ name=optionName ]
+		edgeElem.variable = f.createSimpleVar => [ name=optionName ]
 		edgeElem.type = f.createBaseType => [ root=PrimitiveType::INT ]
 		edgeElem.defaultValue = f.createIntConstant => [ value=optionValue ]
 		return edgeElem
@@ -54,7 +54,7 @@ class MandatoryOptions
 	{
 		val f = NablaFactory::eINSTANCE
 		val length = f.createScalarVarDefinition
-		length.variable = f.createScalarVar => [ name=optionName ]
+		length.variable = f.createSimpleVar => [ name=optionName ]
 		length.type = f.createBaseType => [ root=PrimitiveType::REAL ]
 		length.defaultValue = f.createRealVectorConstant => [ values+=optionValue ]
 		return length

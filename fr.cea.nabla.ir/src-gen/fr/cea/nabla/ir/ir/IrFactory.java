@@ -49,22 +49,22 @@ public interface IrFactory extends EFactory {
 	Import createImport();
 
 	/**
-	 * Returns a new object of class '<em>Scalar Variable</em>'.
+	 * Returns a new object of class '<em>Simple Variable</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Scalar Variable</em>'.
+	 * @return a new object of class '<em>Simple Variable</em>'.
 	 * @generated
 	 */
-	ScalarVariable createScalarVariable();
+	SimpleVariable createSimpleVariable();
 
 	/**
-	 * Returns a new object of class '<em>Array Variable</em>'.
+	 * Returns a new object of class '<em>Connectivity Variable</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Array Variable</em>'.
+	 * @return a new object of class '<em>Connectivity Variable</em>'.
 	 * @generated
 	 */
-	ArrayVariable createArrayVariable();
+	ConnectivityVariable createConnectivityVariable();
 
 	/**
 	 * Returns a new object of class '<em>Function</em>'.
@@ -184,15 +184,6 @@ public interface IrFactory extends EFactory {
 	If createIf();
 
 	/**
-	 * Returns a new object of class '<em>Expression Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Expression Type</em>'.
-	 * @generated
-	 */
-	ExpressionType createExpressionType();
-
-	/**
 	 * Returns a new object of class '<em>Contracted If</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -247,49 +238,22 @@ public interface IrFactory extends EFactory {
 	RealConstant createRealConstant();
 
 	/**
-	 * Returns a new object of class '<em>Real2 Constant</em>'.
+	 * Returns a new object of class '<em>Bool Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Real2 Constant</em>'.
+	 * @return a new object of class '<em>Bool Constant</em>'.
 	 * @generated
 	 */
-	Real2Constant createReal2Constant();
+	BoolConstant createBoolConstant();
 
 	/**
-	 * Returns a new object of class '<em>Real3 Constant</em>'.
+	 * Returns a new object of class '<em>Real Vector Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Real3 Constant</em>'.
+	 * @return a new object of class '<em>Real Vector Constant</em>'.
 	 * @generated
 	 */
-	Real3Constant createReal3Constant();
-
-	/**
-	 * Returns a new object of class '<em>Real2x2 Constant</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Real2x2 Constant</em>'.
-	 * @generated
-	 */
-	Real2x2Constant createReal2x2Constant();
-
-	/**
-	 * Returns a new object of class '<em>Real3x3 Constant</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Real3x3 Constant</em>'.
-	 * @generated
-	 */
-	Real3x3Constant createReal3x3Constant();
-
-	/**
-	 * Returns a new object of class '<em>Max Constant</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Max Constant</em>'.
-	 * @generated
-	 */
-	MaxConstant createMaxConstant();
+	RealVectorConstant createRealVectorConstant();
 
 	/**
 	 * Returns a new object of class '<em>Min Constant</em>'.
@@ -301,13 +265,13 @@ public interface IrFactory extends EFactory {
 	MinConstant createMinConstant();
 
 	/**
-	 * Returns a new object of class '<em>Bool Constant</em>'.
+	 * Returns a new object of class '<em>Max Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Bool Constant</em>'.
+	 * @return a new object of class '<em>Max Constant</em>'.
 	 * @generated
 	 */
-	BoolConstant createBoolConstant();
+	MaxConstant createMaxConstant();
 
 	/**
 	 * Returns a new object of class '<em>Function Call</em>'.
@@ -371,6 +335,15 @@ public interface IrFactory extends EFactory {
 	 * @generated
 	 */
 	ItemType createItemType();
+
+	/**
+	 * Returns a new object of class '<em>Base Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Base Type</em>'.
+	 * @generated
+	 */
+	BaseType createBaseType();
 
 	/**
 	 * Returns the package supported by this factory.

@@ -60,8 +60,8 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.IR_ANNOTATION: return createIrAnnotation();
 			case IrPackage.IR_MODULE: return createIrModule();
 			case IrPackage.IMPORT: return createImport();
-			case IrPackage.SCALAR_VARIABLE: return createScalarVariable();
-			case IrPackage.ARRAY_VARIABLE: return createArrayVariable();
+			case IrPackage.SIMPLE_VARIABLE: return createSimpleVariable();
+			case IrPackage.CONNECTIVITY_VARIABLE: return createConnectivityVariable();
 			case IrPackage.FUNCTION: return createFunction();
 			case IrPackage.REDUCTION: return createReduction();
 			case IrPackage.CONNECTIVITY: return createConnectivity();
@@ -75,20 +75,16 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.REDUCTION_INSTRUCTION: return createReductionInstruction();
 			case IrPackage.LOOP: return createLoop();
 			case IrPackage.IF: return createIf();
-			case IrPackage.EXPRESSION_TYPE: return createExpressionType();
 			case IrPackage.CONTRACTED_IF: return createContractedIf();
 			case IrPackage.BINARY_EXPRESSION: return createBinaryExpression();
 			case IrPackage.UNARY_EXPRESSION: return createUnaryExpression();
 			case IrPackage.PARENTHESIS: return createParenthesis();
 			case IrPackage.INT_CONSTANT: return createIntConstant();
 			case IrPackage.REAL_CONSTANT: return createRealConstant();
-			case IrPackage.REAL2_CONSTANT: return createReal2Constant();
-			case IrPackage.REAL3_CONSTANT: return createReal3Constant();
-			case IrPackage.REAL2X2_CONSTANT: return createReal2x2Constant();
-			case IrPackage.REAL3X3_CONSTANT: return createReal3x3Constant();
-			case IrPackage.MAX_CONSTANT: return createMaxConstant();
-			case IrPackage.MIN_CONSTANT: return createMinConstant();
 			case IrPackage.BOOL_CONSTANT: return createBoolConstant();
+			case IrPackage.REAL_VECTOR_CONSTANT: return createRealVectorConstant();
+			case IrPackage.MIN_CONSTANT: return createMinConstant();
+			case IrPackage.MAX_CONSTANT: return createMaxConstant();
 			case IrPackage.FUNCTION_CALL: return createFunctionCall();
 			case IrPackage.VAR_REF: return createVarRef();
 			case IrPackage.ITERATOR: return createIterator();
@@ -96,6 +92,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.CONNECTIVITY_CALL_ITERATOR_REF: return createConnectivityCallIteratorRef();
 			case IrPackage.VAR_REF_ITERATOR_REF: return createVarRefIteratorRef();
 			case IrPackage.ITEM_TYPE: return createItemType();
+			case IrPackage.BASE_TYPE: return createBaseType();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -109,8 +106,8 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	@Override
 	public Object createFromString(EDataType eDataType, String initialValue) {
 		switch (eDataType.getClassifierID()) {
-			case IrPackage.BASIC_TYPE:
-				return createBasicTypeFromString(eDataType, initialValue);
+			case IrPackage.PRIMITIVE_TYPE:
+				return createPrimitiveTypeFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -124,8 +121,8 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue) {
 		switch (eDataType.getClassifierID()) {
-			case IrPackage.BASIC_TYPE:
-				return convertBasicTypeToString(eDataType, instanceValue);
+			case IrPackage.PRIMITIVE_TYPE:
+				return convertPrimitiveTypeToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -166,9 +163,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ScalarVariable createScalarVariable() {
-		ScalarVariableImpl scalarVariable = new ScalarVariableImpl();
-		return scalarVariable;
+	public SimpleVariable createSimpleVariable() {
+		SimpleVariableImpl simpleVariable = new SimpleVariableImpl();
+		return simpleVariable;
 	}
 
 	/**
@@ -176,9 +173,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ArrayVariable createArrayVariable() {
-		ArrayVariableImpl arrayVariable = new ArrayVariableImpl();
-		return arrayVariable;
+	public ConnectivityVariable createConnectivityVariable() {
+		ConnectivityVariableImpl connectivityVariable = new ConnectivityVariableImpl();
+		return connectivityVariable;
 	}
 
 	/**
@@ -316,16 +313,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ExpressionType createExpressionType() {
-		ExpressionTypeImpl expressionType = new ExpressionTypeImpl();
-		return expressionType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public ContractedIf createContractedIf() {
 		ContractedIfImpl contractedIf = new ContractedIfImpl();
 		return contractedIf;
@@ -386,46 +373,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Real2Constant createReal2Constant() {
-		Real2ConstantImpl real2Constant = new Real2ConstantImpl();
-		return real2Constant;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Real3Constant createReal3Constant() {
-		Real3ConstantImpl real3Constant = new Real3ConstantImpl();
-		return real3Constant;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Real2x2Constant createReal2x2Constant() {
-		Real2x2ConstantImpl real2x2Constant = new Real2x2ConstantImpl();
-		return real2x2Constant;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Real3x3Constant createReal3x3Constant() {
-		Real3x3ConstantImpl real3x3Constant = new Real3x3ConstantImpl();
-		return real3x3Constant;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public MaxConstant createMaxConstant() {
 		MaxConstantImpl maxConstant = new MaxConstantImpl();
 		return maxConstant;
@@ -449,6 +396,16 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public BoolConstant createBoolConstant() {
 		BoolConstantImpl boolConstant = new BoolConstantImpl();
 		return boolConstant;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public RealVectorConstant createRealVectorConstant() {
+		RealVectorConstantImpl realVectorConstant = new RealVectorConstantImpl();
+		return realVectorConstant;
 	}
 
 	/**
@@ -526,8 +483,18 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BasicType createBasicTypeFromString(EDataType eDataType, String initialValue) {
-		BasicType result = BasicType.get(initialValue);
+	public BaseType createBaseType() {
+		BaseTypeImpl baseType = new BaseTypeImpl();
+		return baseType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public PrimitiveType createPrimitiveTypeFromString(EDataType eDataType, String initialValue) {
+		PrimitiveType result = PrimitiveType.get(initialValue);
 		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
 	}
@@ -537,7 +504,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertBasicTypeToString(EDataType eDataType, Object instanceValue) {
+	public String convertPrimitiveTypeToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
 	}
 

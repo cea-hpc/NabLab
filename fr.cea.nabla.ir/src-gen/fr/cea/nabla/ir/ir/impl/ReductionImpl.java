@@ -2,14 +2,16 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.BasicType;
+import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Reduction;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
@@ -50,44 +52,24 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getCollectionType() <em>Collection Type</em>}' attribute.
+	 * The cached value of the '{@link #getCollectionType() <em>Collection Type</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getCollectionType()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final BasicType COLLECTION_TYPE_EDEFAULT = BasicType.VOID;
+	protected BaseType collectionType;
 
 	/**
-	 * The cached value of the '{@link #getCollectionType() <em>Collection Type</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getCollectionType()
-	 * @generated
-	 * @ordered
-	 */
-	protected BasicType collectionType = COLLECTION_TYPE_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getReturnType() <em>Return Type</em>}' attribute.
+	 * The cached value of the '{@link #getReturnType() <em>Return Type</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getReturnType()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final BasicType RETURN_TYPE_EDEFAULT = BasicType.VOID;
-
-	/**
-	 * The cached value of the '{@link #getReturnType() <em>Return Type</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getReturnType()
-	 * @generated
-	 * @ordered
-	 */
-	protected BasicType returnType = RETURN_TYPE_EDEFAULT;
+	protected BaseType returnType;
 
 	/**
 	 * The default value of the '{@link #getProvider() <em>Provider</em>}' attribute.
@@ -154,7 +136,21 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BasicType getCollectionType() {
+	public BaseType getCollectionType() {
+		if (collectionType != null && collectionType.eIsProxy()) {
+			InternalEObject oldCollectionType = (InternalEObject)collectionType;
+			collectionType = (BaseType)eResolveProxy(oldCollectionType);
+			if (collectionType != oldCollectionType) {
+				InternalEObject newCollectionType = (InternalEObject)collectionType;
+				NotificationChain msgs = oldCollectionType.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.REDUCTION__COLLECTION_TYPE, null, null);
+				if (newCollectionType.eInternalContainer() == null) {
+					msgs = newCollectionType.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.REDUCTION__COLLECTION_TYPE, null, msgs);
+				}
+				if (msgs != null) msgs.dispatch();
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.REDUCTION__COLLECTION_TYPE, oldCollectionType, collectionType));
+			}
+		}
 		return collectionType;
 	}
 
@@ -163,11 +159,8 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setCollectionType(BasicType newCollectionType) {
-		BasicType oldCollectionType = collectionType;
-		collectionType = newCollectionType == null ? COLLECTION_TYPE_EDEFAULT : newCollectionType;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION__COLLECTION_TYPE, oldCollectionType, collectionType));
+	public BaseType basicGetCollectionType() {
+		return collectionType;
 	}
 
 	/**
@@ -175,7 +168,55 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BasicType getReturnType() {
+	public NotificationChain basicSetCollectionType(BaseType newCollectionType, NotificationChain msgs) {
+		BaseType oldCollectionType = collectionType;
+		collectionType = newCollectionType;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION__COLLECTION_TYPE, oldCollectionType, newCollectionType);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setCollectionType(BaseType newCollectionType) {
+		if (newCollectionType != collectionType) {
+			NotificationChain msgs = null;
+			if (collectionType != null)
+				msgs = ((InternalEObject)collectionType).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.REDUCTION__COLLECTION_TYPE, null, msgs);
+			if (newCollectionType != null)
+				msgs = ((InternalEObject)newCollectionType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.REDUCTION__COLLECTION_TYPE, null, msgs);
+			msgs = basicSetCollectionType(newCollectionType, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION__COLLECTION_TYPE, newCollectionType, newCollectionType));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public BaseType getReturnType() {
+		if (returnType != null && returnType.eIsProxy()) {
+			InternalEObject oldReturnType = (InternalEObject)returnType;
+			returnType = (BaseType)eResolveProxy(oldReturnType);
+			if (returnType != oldReturnType) {
+				InternalEObject newReturnType = (InternalEObject)returnType;
+				NotificationChain msgs = oldReturnType.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.REDUCTION__RETURN_TYPE, null, null);
+				if (newReturnType.eInternalContainer() == null) {
+					msgs = newReturnType.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.REDUCTION__RETURN_TYPE, null, msgs);
+				}
+				if (msgs != null) msgs.dispatch();
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.REDUCTION__RETURN_TYPE, oldReturnType, returnType));
+			}
+		}
 		return returnType;
 	}
 
@@ -184,11 +225,42 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setReturnType(BasicType newReturnType) {
-		BasicType oldReturnType = returnType;
-		returnType = newReturnType == null ? RETURN_TYPE_EDEFAULT : newReturnType;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION__RETURN_TYPE, oldReturnType, returnType));
+	public BaseType basicGetReturnType() {
+		return returnType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetReturnType(BaseType newReturnType, NotificationChain msgs) {
+		BaseType oldReturnType = returnType;
+		returnType = newReturnType;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION__RETURN_TYPE, oldReturnType, newReturnType);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setReturnType(BaseType newReturnType) {
+		if (newReturnType != returnType) {
+			NotificationChain msgs = null;
+			if (returnType != null)
+				msgs = ((InternalEObject)returnType).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.REDUCTION__RETURN_TYPE, null, msgs);
+			if (newReturnType != null)
+				msgs = ((InternalEObject)newReturnType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.REDUCTION__RETURN_TYPE, null, msgs);
+			msgs = basicSetReturnType(newReturnType, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION__RETURN_TYPE, newReturnType, newReturnType));
 	}
 
 	/**
@@ -218,14 +290,32 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case IrPackage.REDUCTION__COLLECTION_TYPE:
+				return basicSetCollectionType(null, msgs);
+			case IrPackage.REDUCTION__RETURN_TYPE:
+				return basicSetReturnType(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case IrPackage.REDUCTION__NAME:
 				return getName();
 			case IrPackage.REDUCTION__COLLECTION_TYPE:
-				return getCollectionType();
+				if (resolve) return getCollectionType();
+				return basicGetCollectionType();
 			case IrPackage.REDUCTION__RETURN_TYPE:
-				return getReturnType();
+				if (resolve) return getReturnType();
+				return basicGetReturnType();
 			case IrPackage.REDUCTION__PROVIDER:
 				return getProvider();
 		}
@@ -244,10 +334,10 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 				setName((String)newValue);
 				return;
 			case IrPackage.REDUCTION__COLLECTION_TYPE:
-				setCollectionType((BasicType)newValue);
+				setCollectionType((BaseType)newValue);
 				return;
 			case IrPackage.REDUCTION__RETURN_TYPE:
-				setReturnType((BasicType)newValue);
+				setReturnType((BaseType)newValue);
 				return;
 			case IrPackage.REDUCTION__PROVIDER:
 				setProvider((String)newValue);
@@ -268,10 +358,10 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 				setName(NAME_EDEFAULT);
 				return;
 			case IrPackage.REDUCTION__COLLECTION_TYPE:
-				setCollectionType(COLLECTION_TYPE_EDEFAULT);
+				setCollectionType((BaseType)null);
 				return;
 			case IrPackage.REDUCTION__RETURN_TYPE:
-				setReturnType(RETURN_TYPE_EDEFAULT);
+				setReturnType((BaseType)null);
 				return;
 			case IrPackage.REDUCTION__PROVIDER:
 				setProvider(PROVIDER_EDEFAULT);
@@ -291,9 +381,9 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 			case IrPackage.REDUCTION__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case IrPackage.REDUCTION__COLLECTION_TYPE:
-				return collectionType != COLLECTION_TYPE_EDEFAULT;
+				return collectionType != null;
 			case IrPackage.REDUCTION__RETURN_TYPE:
-				return returnType != RETURN_TYPE_EDEFAULT;
+				return returnType != null;
 			case IrPackage.REDUCTION__PROVIDER:
 				return PROVIDER_EDEFAULT == null ? provider != null : !PROVIDER_EDEFAULT.equals(provider);
 		}
@@ -312,10 +402,6 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (name: ");
 		result.append(name);
-		result.append(", collectionType: ");
-		result.append(collectionType);
-		result.append(", returnType: ");
-		result.append(returnType);
 		result.append(", provider: ");
 		result.append(provider);
 		result.append(')');

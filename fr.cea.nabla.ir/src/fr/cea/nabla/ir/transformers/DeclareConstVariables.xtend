@@ -1,6 +1,6 @@
 package fr.cea.nabla.ir.transformers
 
-import fr.cea.nabla.ir.ir.ArrayVariable
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
@@ -25,7 +25,7 @@ class DeclareConstVariables implements IrTransformationStep
 			if (!jobInVars.empty)
 			{
 				val varDefinition = IrFactory::eINSTANCE.createVarDefinition
-				for (jobInvar : jobInVars.filter(ArrayVariable))
+				for (jobInvar : jobInVars.filter(ConnectivityVariable))
 				{
 					val newConstVar = jobInvar.newVariable
 					varDefinition.variables += newConstVar
@@ -50,9 +50,9 @@ class DeclareConstVariables implements IrTransformationStep
 //	}
 
 //	private def dispatch newVariable(ArrayVariable v)
-	private def newVariable(ArrayVariable v)
+	private def newVariable(ConnectivityVariable v)
 	{
-		IrFactory::eINSTANCE.createArrayVariable =>
+		IrFactory::eINSTANCE.createConnectivityVariable =>
 		[
 			const = true
 			name = 'const_' + v.name

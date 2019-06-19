@@ -20,7 +20,7 @@ import fr.cea.nabla.nabla.VarGroupDeclaration
 
 class VarExtensions 
 {
-	def getBasicType(Var it) 
+	def getBaseType(Var it) 
 	{ 
 		val decl = eContainer
 		switch decl

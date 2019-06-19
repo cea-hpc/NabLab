@@ -31,7 +31,7 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PersistentVar">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="varRef" eType="ecore:EClass Nabla.ecore#//ArrayVar"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="varRef" eType="ecore:EClass Nabla.ecore#//ConnectivityVar"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="varName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReplaceUtfComponent" eSuperTypes="#//Ir2IrComponent"/>

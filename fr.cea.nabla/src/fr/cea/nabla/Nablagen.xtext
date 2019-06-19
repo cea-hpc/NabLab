@@ -52,7 +52,7 @@ TagPersistentVariablesComponent:
 	'}';
 	
 PersistentVar:
-	varRef=[nabla::ArrayVar]
+	varRef=[nabla::ConnectivityVar]
 	'as' varName=STRING;
 
 ReplaceUtfComponent:

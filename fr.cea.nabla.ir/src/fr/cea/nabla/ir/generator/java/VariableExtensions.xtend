@@ -13,19 +13,19 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import fr.cea.nabla.ir.ir.ArrayVariable
-import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 
 class VariableExtensions 
 {
-	static def dispatch getJavaType(ScalarVariable it) 
+	static def dispatch getJavaType(SimpleVariable it) 
 	{ 
 		type.javaType
 	}
 	
-	static def dispatch getJavaType(ArrayVariable it)
+	static def dispatch getJavaType(ConnectivityVariable it)
 	{
 		var t = getType.javaType 
 		for (d : dimensions) t += '[]'

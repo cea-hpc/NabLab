@@ -16,12 +16,12 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.VarExtensions
-import fr.cea.nabla.ir.ir.ArrayVariable
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
-import fr.cea.nabla.nabla.ArrayVar
-import fr.cea.nabla.nabla.ScalarVar
+import fr.cea.nabla.nabla.ConnectivityVar
+import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.Var
 
 /**
@@ -49,33 +49,33 @@ class IrVariableFactory
 		val varName = v.name + timeSuffix
 		switch v
 		{
-			ScalarVar : v.toIrScalarVariable(varName)
-			ArrayVar : v.toIrArrayVariable(varName)
+			SimpleVar : v.toIrSimpleVariable(varName)
+			ConnectivityVar : v.toIrConnectivityVariable(varName)
 		}
 	}
 
 	// fonctions générales retournent des Var
-	def dispatch Variable toIrVariable(ScalarVar v) { toIrScalarVariable(v, v.name) }
-	def dispatch Variable toIrVariable(ArrayVar v) { toIrArrayVariable(v, v.name) }
+	def dispatch Variable toIrVariable(SimpleVar v) { toIrSimpleVariable(v, v.name) }
+	def dispatch Variable toIrVariable(ConnectivityVar v) { toIrConnectivityVariable(v, v.name) }
 
 	// fonctions avec type de retour précis
-	def ScalarVariable toIrScalarVariable(ScalarVar v) { toIrScalarVariable(v, v.name) }
-	def ArrayVariable toIrArrayVariable(ArrayVar v) { toIrArrayVariable(v, v.name) }
+	def SimpleVariable toIrSimpleVariable(SimpleVar v) { toIrSimpleVariable(v, v.name) }
+	def ConnectivityVariable toIrConnectivityVariable(ConnectivityVar v) { toIrConnectivityVariable(v, v.name) }
 	
-	def create IrFactory::eINSTANCE.createScalarVariable toIrScalarVariable(ScalarVar v, String varName)
+	def create IrFactory::eINSTANCE.createSimpleVariable toIrSimpleVariable(SimpleVar v, String varName)
 	{
 		annotations += v.toIrAnnotation
 		name = varName
-		type = v.basicType.toIrBasicType
+		type = v.baseType.toIrBaseType
 		val value = v.defaultValue
 		if (value !== null) defaultValue = value.toIrExpression
 	}
 
-	def create IrFactory::eINSTANCE.createArrayVariable toIrArrayVariable(ArrayVar v, String varName)
+	def create IrFactory::eINSTANCE.createConnectivityVariable toIrConnectivityVariable(ConnectivityVar v, String varName)
 	{
 		annotations += v.toIrAnnotation
 		name = varName
-		type = v.basicType.toIrBasicType
+		type = v.baseType.toIrBaseType
 		v.dimensions.forEach[x | dimensions += x.toIrConnectivity]
 	}
 }

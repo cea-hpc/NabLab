@@ -17,7 +17,6 @@ import com.google.inject.Inject
 import fr.cea.nabla.LabelServices
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.typing.NablaType
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.jface.text.IRegion
 import org.eclipse.jface.text.ITextViewer
@@ -42,7 +41,7 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 			else 
 			{
 				val eType = expression.typeFor
-				'Expression <b>' + LabelServices.getLabel(expression) + '</b> of type <b>' + NablaType::getLabel(eType) + '</b>'
+				'Expression <b>' + LabelServices.getLabel(expression) + '</b> of type <b>' + eType.label + '</b>'
 			}
 		}
 	}

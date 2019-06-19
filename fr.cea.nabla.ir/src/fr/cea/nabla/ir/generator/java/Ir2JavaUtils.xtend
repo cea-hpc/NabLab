@@ -13,45 +13,19 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import fr.cea.nabla.ir.ir.BasicType
+import fr.cea.nabla.ir.ir.BaseType
 
 class Ir2JavaUtils 
 {
-	static def getJavaType(BasicType t)
+	static def getJavaType(BaseType t)
 	{
-		switch t
+		val rootType = switch t.root
 		{
 			case VOID : 'void'
 			case BOOL: 'boolean'
 			case INT: 'int'
 			case REAL: 'double'
-			case REAL2: 'Real2'
-			case REAL2X2: 'Real2x2'
-			case REAL3: 'Real3'
-			case REAL3X3: 'Real3x3'
 		}
-	}
-
-	static def isJavaBasicType(BasicType t)
-	{
-		switch t
-		{
-			case BOOL, case INT, case REAL: true
-			default: false
-		}
-	}
-
-	static def getJavaOperator(String op) 
-	{
-		switch op
-		{
-			case '+': 'operator_plus'
-			case '-': 'operator_minus'
-			case '*': 'operator_multiply'
-			case '/': 'operator_divide'
-			case '+=': 'operator_add'
-			case '=': 'operator_set'
-			default: throw new RuntimeException("Pas d'équivalent Java pour l'opérateur : " + op)
-		} 
+		return rootType + t.dimSizes.map['[]'].join('')
 	}
 }

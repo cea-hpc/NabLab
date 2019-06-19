@@ -50,7 +50,7 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 			super.getPropertyDescriptors(object);
 
 			addVariablePropertyDescriptor(object);
-			addFieldsPropertyDescriptor(object);
+			addArrayTypeIndicesPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -78,23 +78,23 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 	}
 
 	/**
-	 * This adds a property descriptor for the Fields feature.
+	 * This adds a property descriptor for the Array Type Indices feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addFieldsPropertyDescriptor(Object object) {
+	protected void addArrayTypeIndicesPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_VarRef_fields_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_VarRef_fields_feature", "_UI_VarRef_type"),
-				 NablaPackage.Literals.VAR_REF__FIELDS,
+				 getString("_UI_VarRef_arrayTypeIndices_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_VarRef_arrayTypeIndices_feature", "_UI_VarRef_type"),
+				 NablaPackage.Literals.VAR_REF__ARRAY_TYPE_INDICES,
 				 true,
 				 false,
 				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
 				 null,
 				 null));
 	}
@@ -165,7 +165,7 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(VarRef.class)) {
-			case NablaPackage.VAR_REF__FIELDS:
+			case NablaPackage.VAR_REF__ARRAY_TYPE_INDICES:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case NablaPackage.VAR_REF__SPACE_ITERATORS:

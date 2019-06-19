@@ -13,7 +13,7 @@ class IteratorExtensions
 	static val sortById = new SortById
 	static val sortByIndexName = new SortByIndexName
 	
-	static def getContainerName(Iterator it)
+	static def String getContainerName(Iterator it)
 	{
 		if (container.args.empty)
 			container.connectivity.name

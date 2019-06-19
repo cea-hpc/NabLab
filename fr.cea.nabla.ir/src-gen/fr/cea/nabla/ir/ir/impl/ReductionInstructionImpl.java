@@ -7,8 +7,7 @@ import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Reduction;
 import fr.cea.nabla.ir.ir.ReductionInstruction;
-import fr.cea.nabla.ir.ir.ScalarVariable;
-
+import fr.cea.nabla.ir.ir.SimpleVariable;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -79,7 +78,7 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * @generated
 	 * @ordered
 	 */
-	protected ScalarVariable result;
+	protected SimpleVariable result;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -198,7 +197,7 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ScalarVariable getResult() {
+	public SimpleVariable getResult() {
 		return result;
 	}
 
@@ -207,8 +206,8 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetResult(ScalarVariable newResult, NotificationChain msgs) {
-		ScalarVariable oldResult = result;
+	public NotificationChain basicSetResult(SimpleVariable newResult, NotificationChain msgs) {
+		SimpleVariable oldResult = result;
 		result = newResult;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION_INSTRUCTION__RESULT, oldResult, newResult);
@@ -222,7 +221,7 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setResult(ScalarVariable newResult) {
+	public void setResult(SimpleVariable newResult) {
 		if (newResult != result) {
 			NotificationChain msgs = null;
 			if (result != null)
@@ -295,7 +294,7 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 				setArg((Expression)newValue);
 				return;
 			case IrPackage.REDUCTION_INSTRUCTION__RESULT:
-				setResult((ScalarVariable)newValue);
+				setResult((SimpleVariable)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -319,7 +318,7 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 				setArg((Expression)null);
 				return;
 			case IrPackage.REDUCTION_INSTRUCTION__RESULT:
-				setResult((ScalarVariable)null);
+				setResult((SimpleVariable)null);
 				return;
 		}
 		super.eUnset(featureID);

@@ -4,9 +4,9 @@
 package fr.cea.nabla.nabla.provider;
 
 
-import fr.cea.nabla.nabla.BasicType;
 import fr.cea.nabla.nabla.MaxConstant;
 import fr.cea.nabla.nabla.NablaPackage;
+import fr.cea.nabla.nabla.PrimitiveType;
 
 import java.util.Collection;
 import java.util.List;
@@ -93,7 +93,7 @@ public class MaxConstantItemProvider extends ExpressionItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		BasicType labelValue = ((MaxConstant)object).getType();
+		PrimitiveType labelValue = ((MaxConstant)object).getType();
 		String label = labelValue == null ? null : labelValue.toString();
 		return label == null || label.length() == 0 ?
 			getString("_UI_MaxConstant_type") :

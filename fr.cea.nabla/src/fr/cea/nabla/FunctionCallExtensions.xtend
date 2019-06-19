@@ -23,8 +23,6 @@ import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import java.util.List
 
-import static fr.cea.nabla.BaseTypeExtensions.*
-
 class FunctionCallExtensions 
 {
 	@Inject extension ExpressionTypeProvider
@@ -49,7 +47,6 @@ class FunctionCallExtensions
 	
 	private def boolean match(BaseType a, Expression b)
 	{
-		val bType = b.typeFor
-		return (bType.baseType && areEquals(a, bType.base))
+		a.typeFor == b.typeFor
 	}
 }

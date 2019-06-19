@@ -15,7 +15,7 @@ package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.ir.SimpleVariable
 
 class ReplaceDefaultValues implements IrTransformationStep
 {
@@ -30,7 +30,7 @@ class ReplaceDefaultValues implements IrTransformationStep
 	 */
 	override transform(IrModule m)
 	{
-		for (v : m.variables.filter(ScalarVariable).filter[x|!x.const && x.defaultValue!==null])
+		for (v : m.variables.filter(SimpleVariable).filter[x|!x.const && x.defaultValue!==null])
 		{
 			m.jobs += IrFactory::eINSTANCE.createInstructionJob =>
 			[

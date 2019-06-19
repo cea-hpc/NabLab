@@ -37,8 +37,8 @@ class IrFunctionFactory
 	{
 		annotations += a.toIrAnnotation
 		name = f.name
-		returnType = a.returnType.toIrBasicType
-		inTypes += a.inTypes.map[toIrBasicType]
+		returnType = a.returnType.toIrBaseType
+		inTypes += a.inTypes.map[toIrBaseType]
 		provider = Utils::getNablaModule(f).name
 	}
 
@@ -46,8 +46,8 @@ class IrFunctionFactory
 	{
 		annotations += a.toIrAnnotation
 		name = f.name
-		collectionType = a.collectionType.toIrBasicType
-		returnType = a.returnType.toIrBasicType
+		collectionType = a.collectionType.toIrBaseType
+		returnType = a.returnType.toIrBaseType
 		provider = Utils::getNablaModule(f).name
 	}
 }

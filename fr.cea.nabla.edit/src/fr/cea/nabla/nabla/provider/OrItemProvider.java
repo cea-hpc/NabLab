@@ -175,16 +175,6 @@ public class OrItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.OR__LEFT,
-				 NablaFactory.eINSTANCE.createReal2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.OR__LEFT,
-				 NablaFactory.eINSTANCE.createReal3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.OR__LEFT,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -265,17 +255,7 @@ public class OrItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.OR__LEFT,
-				 NablaFactory.eINSTANCE.createReal2x2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.OR__LEFT,
-				 NablaFactory.eINSTANCE.createReal3x3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.OR__LEFT,
-				 NablaFactory.eINSTANCE.createRealXCompactConstant()));
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -305,16 +285,6 @@ public class OrItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.OR__RIGHT,
-				 NablaFactory.eINSTANCE.createReal2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.OR__RIGHT,
-				 NablaFactory.eINSTANCE.createReal3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.OR__RIGHT,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -395,17 +365,7 @@ public class OrItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.OR__RIGHT,
-				 NablaFactory.eINSTANCE.createReal2x2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.OR__RIGHT,
-				 NablaFactory.eINSTANCE.createReal3x3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.OR__RIGHT,
-				 NablaFactory.eINSTANCE.createRealXCompactConstant()));
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter

@@ -50,7 +50,6 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 			super.getPropertyDescriptors(object);
 
 			addConstPropertyDescriptor(object);
-			addTypePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -78,28 +77,6 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 	}
 
 	/**
-	 * This adds a property descriptor for the Type feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_ScalarVarDefinition_type_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ScalarVarDefinition_type_feature", "_UI_ScalarVarDefinition_type"),
-				 NablaPackage.Literals.SCALAR_VAR_DEFINITION__TYPE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
 	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
 	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
 	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
@@ -111,6 +88,7 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
+			childrenFeatures.add(NablaPackage.Literals.SCALAR_VAR_DEFINITION__TYPE);
 			childrenFeatures.add(NablaPackage.Literals.SCALAR_VAR_DEFINITION__VARIABLE);
 			childrenFeatures.add(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE);
 		}
@@ -167,9 +145,9 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 
 		switch (notification.getFeatureID(ScalarVarDefinition.class)) {
 			case NablaPackage.SCALAR_VAR_DEFINITION__CONST:
-			case NablaPackage.SCALAR_VAR_DEFINITION__TYPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
+			case NablaPackage.SCALAR_VAR_DEFINITION__TYPE:
 			case NablaPackage.SCALAR_VAR_DEFINITION__VARIABLE:
 			case NablaPackage.SCALAR_VAR_DEFINITION__DEFAULT_VALUE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
@@ -191,23 +169,18 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 
 		newChildDescriptors.add
 			(createChildParameter
+				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__TYPE,
+				 NablaFactory.eINSTANCE.createBaseType()));
+
+		newChildDescriptors.add
+			(createChildParameter
 				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__VARIABLE,
-				 NablaFactory.eINSTANCE.createScalarVar()));
+				 NablaFactory.eINSTANCE.createSimpleVar()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createExpression()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
-				 NablaFactory.eINSTANCE.createReal2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
-				 NablaFactory.eINSTANCE.createReal3Constant()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -292,17 +265,7 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
-				 NablaFactory.eINSTANCE.createReal2x2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
-				 NablaFactory.eINSTANCE.createReal3x3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
-				 NablaFactory.eINSTANCE.createRealXCompactConstant()));
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter

@@ -15,18 +15,18 @@ package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 import java.util.HashSet
 import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
-import fr.cea.nabla.ir.ir.ScalarVariable
 
 class VariableExtensions 
 {
 	static def isScalarConst(Variable it)
 	{
-		(it instanceof ScalarVariable) && (it as ScalarVariable).const
+		(it instanceof SimpleVariable) && (it as SimpleVariable).const
 	}
 	
 	static def getNextJobs(Variable it)

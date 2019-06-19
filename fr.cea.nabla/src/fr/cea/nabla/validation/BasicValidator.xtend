@@ -18,9 +18,9 @@ import fr.cea.nabla.MandatoryOptions
 import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.Affectation
-import fr.cea.nabla.nabla.ArrayVar
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
+import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.NablaModule
@@ -98,7 +98,7 @@ class BasicValidator  extends AbstractNablaValidator
 	def checkUnusedConnectivities(Connectivity it)
 	{
 		val referenced = nablaModule.eAllContents.filter(ConnectivityCall).exists[x|x.connectivity===it]
-			|| nablaModule.eAllContents.filter(ArrayVar).exists[x|x.dimensions.contains(it)]
+			|| nablaModule.eAllContents.filter(ConnectivityVar).exists[x|x.dimensions.contains(it)]
 		if (!referenced)
 			warning('Unused connectivity', NablaPackage.Literals::CONNECTIVITY__NAME)
 	}	
@@ -112,15 +112,15 @@ class BasicValidator  extends AbstractNablaValidator
 	}	
 
 	@Check
-	def checkDimensions(ArrayVar it)
+	def checkDimensions(ConnectivityVar it)
 	{
 		if (dimensions.empty) return;
 
 		if (!dimensions.exists[d | d.returnType.multiple])
-				error('All dimensions must be on connectivities which return a set of items', NablaPackage.Literals::ARRAY_VAR__DIMENSIONS)
+				error('All dimensions must be on connectivities which return a set of items', NablaPackage.Literals::CONNECTIVITY_VAR__DIMENSIONS)
 
 		if (!dimensions.head.inTypes.empty)
-			error('Dimension 1 must be on connectivities with 0 argument', NablaPackage.Literals::ARRAY_VAR__DIMENSIONS)
+			error('Dimension 1 must be on connectivities with 0 argument', NablaPackage.Literals::CONNECTIVITY_VAR__DIMENSIONS)
 		
 //		for (i : 1..<dimensions.length)
 //		{
@@ -146,7 +146,7 @@ class BasicValidator  extends AbstractNablaValidator
 	}
 	
 	@Check
-	def checkOnlyScalarVarInInstructions(ArrayVar it)
+	def checkOnlyScalarVarInInstructions(ConnectivityVar it)
 	{
 		val varGroupDeclaration = eContainer
 		if (varGroupDeclaration !== null && !(varGroupDeclaration.eContainer instanceof NablaModule))
@@ -177,9 +177,9 @@ class BasicValidator  extends AbstractNablaValidator
 	@Check
 	def checkIteratorRange(VarRef it)
 	{
-		if (variable instanceof ArrayVar)
+		if (variable instanceof ConnectivityVar)
 		{
-			val dimensions = (variable as ArrayVar).dimensions
+			val dimensions = (variable as ConnectivityVar).dimensions
 			if (dimensions.length < spaceIterators.length)
 				error('Too many indices: ' + spaceIterators.length + '(variable dimension is ' + dimensions.length + ')', NablaPackage.Literals::VAR_REF__SPACE_ITERATORS)
 			else

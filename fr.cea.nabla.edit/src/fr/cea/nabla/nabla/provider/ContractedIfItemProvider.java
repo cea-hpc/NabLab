@@ -146,16 +146,6 @@ public class ContractedIfItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
-				 NablaFactory.eINSTANCE.createReal2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
-				 NablaFactory.eINSTANCE.createReal3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -236,17 +226,7 @@ public class ContractedIfItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
-				 NablaFactory.eINSTANCE.createReal2x2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
-				 NablaFactory.eINSTANCE.createReal3x3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.CONTRACTED_IF__CONDITION,
-				 NablaFactory.eINSTANCE.createRealXCompactConstant()));
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -276,16 +256,6 @@ public class ContractedIfItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.CONTRACTED_IF__THEN,
-				 NablaFactory.eINSTANCE.createReal2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.CONTRACTED_IF__THEN,
-				 NablaFactory.eINSTANCE.createReal3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.CONTRACTED_IF__THEN,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -366,17 +336,7 @@ public class ContractedIfItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.CONTRACTED_IF__THEN,
-				 NablaFactory.eINSTANCE.createReal2x2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.CONTRACTED_IF__THEN,
-				 NablaFactory.eINSTANCE.createReal3x3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.CONTRACTED_IF__THEN,
-				 NablaFactory.eINSTANCE.createRealXCompactConstant()));
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -406,16 +366,6 @@ public class ContractedIfItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
-				 NablaFactory.eINSTANCE.createReal2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
-				 NablaFactory.eINSTANCE.createReal3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -496,17 +446,7 @@ public class ContractedIfItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
-				 NablaFactory.eINSTANCE.createReal2x2Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
-				 NablaFactory.eINSTANCE.createReal3x3Constant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.CONTRACTED_IF__ELSE,
-				 NablaFactory.eINSTANCE.createRealXCompactConstant()));
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter

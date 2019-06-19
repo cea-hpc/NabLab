@@ -18,8 +18,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
-import org.eclipse.emf.ecore.util.EDataTypeEList;
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -33,7 +32,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VarRefImpl#getVariable <em>Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VarRefImpl#getIterators <em>Iterators</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.VarRefImpl#getFields <em>Fields</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.VarRefImpl#getArrayTypeIndices <em>Array Type Indices</em>}</li>
  * </ul>
  *
  * @generated
@@ -60,14 +59,14 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 	protected EList<VarRefIteratorRef> iterators;
 
 	/**
-	 * The cached value of the '{@link #getFields() <em>Fields</em>}' attribute list.
+	 * The cached value of the '{@link #getArrayTypeIndices() <em>Array Type Indices</em>}' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getFields()
+	 * @see #getArrayTypeIndices()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<String> fields;
+	protected EList<Integer> arrayTypeIndices;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -143,11 +142,11 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<String> getFields() {
-		if (fields == null) {
-			fields = new EDataTypeEList<String>(String.class, this, IrPackage.VAR_REF__FIELDS);
+	public EList<Integer> getArrayTypeIndices() {
+		if (arrayTypeIndices == null) {
+			arrayTypeIndices = new EDataTypeUniqueEList<Integer>(Integer.class, this, IrPackage.VAR_REF__ARRAY_TYPE_INDICES);
 		}
-		return fields;
+		return arrayTypeIndices;
 	}
 
 	/**
@@ -192,8 +191,8 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 				return basicGetVariable();
 			case IrPackage.VAR_REF__ITERATORS:
 				return getIterators();
-			case IrPackage.VAR_REF__FIELDS:
-				return getFields();
+			case IrPackage.VAR_REF__ARRAY_TYPE_INDICES:
+				return getArrayTypeIndices();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -214,9 +213,9 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 				getIterators().clear();
 				getIterators().addAll((Collection<? extends VarRefIteratorRef>)newValue);
 				return;
-			case IrPackage.VAR_REF__FIELDS:
-				getFields().clear();
-				getFields().addAll((Collection<? extends String>)newValue);
+			case IrPackage.VAR_REF__ARRAY_TYPE_INDICES:
+				getArrayTypeIndices().clear();
+				getArrayTypeIndices().addAll((Collection<? extends Integer>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -236,8 +235,8 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 			case IrPackage.VAR_REF__ITERATORS:
 				getIterators().clear();
 				return;
-			case IrPackage.VAR_REF__FIELDS:
-				getFields().clear();
+			case IrPackage.VAR_REF__ARRAY_TYPE_INDICES:
+				getArrayTypeIndices().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -255,8 +254,8 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 				return variable != null;
 			case IrPackage.VAR_REF__ITERATORS:
 				return iterators != null && !iterators.isEmpty();
-			case IrPackage.VAR_REF__FIELDS:
-				return fields != null && !fields.isEmpty();
+			case IrPackage.VAR_REF__ARRAY_TYPE_INDICES:
+				return arrayTypeIndices != null && !arrayTypeIndices.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -271,8 +270,8 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 		if (eIsProxy()) return super.toString();
 
 		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (fields: ");
-		result.append(fields);
+		result.append(" (arrayTypeIndices: ");
+		result.append(arrayTypeIndices);
 		result.append(')');
 		return result.toString();
 	}

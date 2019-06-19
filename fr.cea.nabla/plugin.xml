@@ -26,4 +26,12 @@
         uri="http://www.cea.fr/nabla/Nablagen">
   </package>
 	</extension>
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated Nablagen -->
+      <package
+            uri="http://www.cea.fr/nabla/Nablagen"
+            class="fr.cea.nabla.nablagen.NablagenPackage"
+            genModel="model/generated/Nablagen.genmodel"/>
+   </extension>
+
 </plugin>

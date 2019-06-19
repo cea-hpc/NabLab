@@ -13,8 +13,9 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
+import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.Affectation
-import fr.cea.nabla.ir.ir.ArrayVariable
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -24,7 +25,7 @@ import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionInstruction
-import fr.cea.nabla.ir.ir.ScalarVariable
+import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.VarDefinition
 import fr.cea.nabla.ir.ir.VarRefIteratorRef
 
@@ -32,9 +33,7 @@ import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 import static extension fr.cea.nabla.ir.generator.java.VariableExtensions.*
-import fr.cea.nabla.ir.Utils
 
 class InstructionContentProvider 
 {
@@ -77,10 +76,10 @@ class InstructionContentProvider
 		«ENDFOR»
 	'''
 	
-	private static def dispatch getVarContent(ScalarVariable it)
+	private static def dispatch getVarContent(SimpleVariable it)
 	'''«javaType» «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
 	
-	private static def dispatch getVarContent(ArrayVariable it)
+	private static def dispatch getVarContent(ConnectivityVariable it)
 	'''«javaType» «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
 
 	static def dispatch CharSequence getContent(InstructionBlock it) 
@@ -93,10 +92,7 @@ class InstructionContentProvider
 	
 	static def dispatch CharSequence getContent(Affectation it) 
 	{
-		if (left.variable.type.javaBasicType) 
-			'''«left.content» «operator» «right.content»;'''
-		else 
-			'''«left.content».«operator.javaOperator»(«right.content»);'''
+		generateLoop(left.type.dimSizes, 0)
 	}
 
 	static def dispatch CharSequence getContent(Loop it) 
@@ -170,4 +166,14 @@ class InstructionContentProvider
 	static def getAccessor(Iterator it)  '''mesh.get«container.connectivity.name.toFirstUpper»(«container.args.map[id].join(', ')»)'''
 
 	private static def getJavaName(Reduction it) '''«provider»«Utils::FunctionAndReductionproviderSuffix»«name»'''
+
+	private static def CharSequence generateLoop(Affectation a, Iterable<Integer> dimSizes, int loopCount)
+	'''
+		«IF dimSizes.empty»
+			«getAccessor(a.left, loopCount)» «a.operator» «getAccessor(a.right, loopCount)»
+		«ELSE»
+			for(int i«loopCount»=0 ; i<«dimSizes.head» ; ++i)
+				«generateLoop(a, dimSizes.tail, loopCount+1)»
+		«ENDIF»
+	'''
 }

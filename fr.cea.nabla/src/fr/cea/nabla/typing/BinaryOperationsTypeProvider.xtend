@@ -7,11 +7,23 @@ class BinaryOperationsTypeProvider
 		new UndefinedType
 	}	
 	
+	// BOOL: useful for type validator (unused by type provider)
+	def dispatch ExpressionType getTypeFor(BoolType a, BoolType b, String op)
+	{
+		switch op
+		{
+			case '||', case '&&', case '==', case '!=', case '>=', case '<=', case '>', case'<': b
+			default: new UndefinedType
+		}
+	}
+
 	// INT
 	def dispatch ExpressionType getTypeFor(IntType a, IntType b, String op)
 	{
 		switch op
 		{
+			// useful for type validator (unused by type provider)
+			case '==', case '!=', case '>=', case '<=', case '>', case'<': new BoolType
 			case '+', case '-', case '*', case ' ', case '%': b
 			default: new UndefinedType
 		}
@@ -21,6 +33,8 @@ class BinaryOperationsTypeProvider
 	{
 		switch op
 		{
+			// useful for type validator (unused by type provider)
+			case '==', case '!=', case '>=', case '<=', case '>', case'<': new BoolType
 			case '+', case '-', case '*', case '/': b
 			default: new UndefinedType
 		}
@@ -54,6 +68,8 @@ class BinaryOperationsTypeProvider
 	{
 		switch op
 		{
+			// useful for type validator (unused by type provider)
+			case '==', case '!=', case '>=', case '<=', case '>', case'<': new BoolType
 			case '+', case '-', case '*', case '/': b
 			default: new UndefinedType
 		}
@@ -107,6 +123,7 @@ class BinaryOperationsTypeProvider
 	{
 		switch op
 		{
+			case '', 
 			case '+', case '-', case '*', case '/': a
 			default: new UndefinedType
 		}

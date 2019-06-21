@@ -150,17 +150,8 @@
     <genClasses ecoreClass="Ir.ecore#//Parenthesis">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Parenthesis/expression"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//IntConstant">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IntConstant/value"/>
-    </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//RealConstant">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//RealConstant/value"/>
-    </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//BoolConstant">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//BoolConstant/value"/>
-    </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//RealVectorConstant">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//RealVectorConstant/values"/>
+    <genClasses ecoreClass="Ir.ecore#//Constant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Constant/values"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//MinConstant"/>
     <genClasses ecoreClass="Ir.ecore#//MaxConstant"/>

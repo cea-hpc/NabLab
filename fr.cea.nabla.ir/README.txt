@@ -1,4 +1,5 @@
 The content of the folder src-gen must not be deleted.
+
 The file fr.cea.nabla.ir.ir.impl.ArrayVariableImpl overrides the method getDimensions to bypass
 an EMF bug that not allows duplicated elements even if the ecore unique attribute is set to false.
 
@@ -17,4 +18,4 @@ an EMF bug that not allows duplicated elements even if the ecore unique attribut
 		}
 		return dimensions;
 	}
- 
+

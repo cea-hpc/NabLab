@@ -91,9 +91,7 @@ class InstructionContentProvider
 		}'''
 	
 	static def dispatch CharSequence getContent(Affectation it) 
-	{
-		generateLoop(left.type.dimSizes, 0)
-	}
+	'''«left.content» «operator» «right.content»;'''
 
 	static def dispatch CharSequence getContent(Loop it) 
 	{
@@ -165,15 +163,5 @@ class InstructionContentProvider
 	static def getAccessor(VarRefIteratorRef it) '''mesh.get«connectivity.name.toFirstUpper»(«connectivityArgs.map[id].join(', ')»)'''
 	static def getAccessor(Iterator it)  '''mesh.get«container.connectivity.name.toFirstUpper»(«container.args.map[id].join(', ')»)'''
 
-	private static def getJavaName(Reduction it) '''«provider»«Utils::FunctionAndReductionproviderSuffix»«name»'''
-
-	private static def CharSequence generateLoop(Affectation a, Iterable<Integer> dimSizes, int loopCount)
-	'''
-		«IF dimSizes.empty»
-			«getAccessor(a.left, loopCount)» «a.operator» «getAccessor(a.right, loopCount)»
-		«ELSE»
-			for(int i«loopCount»=0 ; i<«dimSizes.head» ; ++i)
-				«generateLoop(a, dimSizes.tail, loopCount+1)»
-		«ENDIF»
-	'''
+	private static def getJavaName(Reduction it) '''«provider»«Utils::FunctionAndReductionproviderSuffix».«name»'''
 }

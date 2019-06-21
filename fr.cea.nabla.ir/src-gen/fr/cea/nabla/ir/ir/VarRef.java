@@ -78,7 +78,7 @@ public interface VarRef extends Expression {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Array Type Indices</em>' attribute list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getVarRef_ArrayTypeIndices()
-	 * @model
+	 * @model unique="false"
 	 * @generated
 	 */
 	EList<Integer> getArrayTypeIndices();

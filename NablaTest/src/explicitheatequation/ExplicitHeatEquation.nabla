@@ -47,17 +47,17 @@ const ℕ option_max_iterations = 500000000;
  * */
 
 const ℝ u0 = 1.0;
-const ℝ² vectOne = {1.0, 1.0};
+const ℝ[2] vectOne = {1.0, 1.0};
 
 ℝ t=0.0; 
 ℝ δt=0.001;
-ℝ² X[nodes], Xc[cells]; // Position of nodes and cells center of gravity 
-ℝ xc[cells], yc[cells]; // Abscissa and ordinate of cells center of gravity so they can be plotted in vtk file
-ℝ u[cells]; // Temperature
-ℝ V[cells]; // Volume of cells
-ℝ D[cells]; // Cell centered conductivity
-ℝ faceLength[faces], faceConductivity[faces];
-ℝ α[cells, neighbourCells]; 
+ℝ[2] X{nodes}, Xc{cells}; // Position of nodes and cells center of gravity 
+ℝ xc{cells}, yc{cells}; // Abscissa and ordinate of cells center of gravity so they can be plotted in vtk file
+ℝ u{cells}; // Temperature
+ℝ V{cells}; // Volume of cells
+ℝ D{cells}; // Cell centered conductivity
+ℝ faceLength{faces}, faceConductivity{faces};
+ℝ α{cells, neighbourCells}; 
 /* @Remark
  * C'est vraiment super d'avoir ce type de structure
  * Par contre dans mon cas, j'ai besoin de définir quelque chose du type
@@ -66,18 +66,21 @@ const ℝ² vectOne = {1.0, 1.0};
  * Du coup j'ai filouté avec le α_self mais ce serait mieux de pouvoir écrire directement α{c, c}
  *   Si on le voit en terme de matrice en math, c'est un élement α_ii
  * */
-ℝ α_self[cells];
-
-
+ℝ α_self{cells};
 
 InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // ne fonctionne que sur des parallélogrammes
-/* @Remark
- *  Pourquoi la syntaxe {} pour accéder aux valeurs ? 
- * A ma connaissance elle n'est standard ni en math ni en info
- * Si on veut se conformer à latex, on peut noter Xc_c (ou Xc_{c})
- */
-InitXcAndYc: ∀c∈cells(), {xc{c}=Xc{c}.x; yc{c}=Xc{c}.y;} // 
-InitU: ∀c∈cells(), if (norm(Xc{c} - vectOne) < 0.5) u{c} = u0; else u{c} = 0.0; // Initial circle in the center with value u0
+
+InitXcAndYc: ∀c∈cells(), {
+	xc{c} = Xc{c}[0]; 
+	yc{c} = Xc{c}[1];
+}
+
+InitU: ∀c∈cells(), 
+	if (norm(Xc{c} - vectOne) < 0.5)
+		u{c} = u0; 
+	else 
+		u{c} = 0.0; // Initial circle in the center with value u0
+
 InitD: ∀c∈cells(), D{c} = 1.0; // 
 
 // Computing time step with cfl = 0.96

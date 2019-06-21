@@ -56,9 +56,13 @@ class Nabla2IrUtils
 		annotations += i.toIrAnnotation
 	}
 	
-	def create IrFactory::eINSTANCE.createBaseType toIrBaseType(BaseType i)
+	// No create method to ensure a new instance every time (for n+1 time variables)
+	def toIrBaseType(BaseType i)
 	{
-		root = i.root.toIrPrimitiveType
-		dimSizes.addAll(i.dimSizes)
+		IrFactory::eINSTANCE.createBaseType => 
+		[
+			root = i.root.toIrPrimitiveType
+			dimSizes.addAll(i.dimSizes)
+		]
 	}
 }

@@ -184,20 +184,8 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createParenthesisAdapter();
 			}
 			@Override
-			public Adapter caseIntConstant(IntConstant object) {
-				return createIntConstantAdapter();
-			}
-			@Override
-			public Adapter caseRealConstant(RealConstant object) {
-				return createRealConstantAdapter();
-			}
-			@Override
-			public Adapter caseBoolConstant(BoolConstant object) {
-				return createBoolConstantAdapter();
-			}
-			@Override
-			public Adapter caseRealVectorConstant(RealVectorConstant object) {
-				return createRealVectorConstantAdapter();
+			public Adapter caseConstant(Constant object) {
+				return createConstantAdapter();
 			}
 			@Override
 			public Adapter caseMinConstant(MinConstant object) {
@@ -670,30 +658,16 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IntConstant <em>Int Constant</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Constant <em>Constant</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.IntConstant
+	 * @see fr.cea.nabla.ir.ir.Constant
 	 * @generated
 	 */
-	public Adapter createIntConstantAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.RealConstant <em>Real Constant</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.RealConstant
-	 * @generated
-	 */
-	public Adapter createRealConstantAdapter() {
+	public Adapter createConstantAdapter() {
 		return null;
 	}
 
@@ -722,34 +696,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createMinConstantAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.BoolConstant <em>Bool Constant</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.BoolConstant
-	 * @generated
-	 */
-	public Adapter createBoolConstantAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.RealVectorConstant <em>Real Vector Constant</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.RealVectorConstant
-	 * @generated
-	 */
-	public Adapter createRealVectorConstantAdapter() {
 		return null;
 	}
 

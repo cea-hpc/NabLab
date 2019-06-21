@@ -35,8 +35,18 @@ class Utils
 		for (xchar : xstring.toCharArray)
 		{
 			val xValue = Character.getNumericValue(xchar)
-			if (xValue < 3) utfExponent += '\\u00B' + xchar
-			else utfExponent += '\\u207' + xchar
+			utfExponent += switch xValue
+			{
+				case 2: '\u00B2'
+				case 3: '\u00B3'
+				case 4: '\u2074'
+				case 5: '\u2075'
+				case 6: '\u2076'
+				case 7: '\u2077'
+				case 8: '\u2078'
+				case 9: '\u2079'
+				default: ''
+			}
 		}
 		return utfExponent
 	}

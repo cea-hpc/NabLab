@@ -38,6 +38,7 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RangeSpaceIterator
+import fr.cea.nabla.nabla.RealBaseTypeConstant
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
@@ -89,6 +90,7 @@ class LabelServices
 	static def dispatch String getLabel(RealConstant it) { value.toString }
 	static def dispatch String getLabel(BoolConstant it) { value.toString }
 	static def dispatch String getLabel(RealVectorConstant it) { '{' + values.join(',') + '}' }
+	static def dispatch String getLabel(RealBaseTypeConstant it) { type.label + '(' + value + ')' }
 	static def dispatch String getLabel(MinConstant it) { '-\u221E' }
 	static def dispatch String getLabel(MaxConstant it) { '-\u221E' }
 	static def dispatch String getLabel(FunctionCall it) { function.name + '(' + args.map[label].join(',') + ')' }

@@ -13,7 +13,6 @@
  *******************************************************************************/
 package fr.cea.nabla.javalib.mesh
 
-import fr.cea.nabla.javalib.types.Real2
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.PrintWriter
@@ -35,7 +34,7 @@ class VtkFileWriter2D
 			outputDir.mkdir
 	}
 	
-	def writeFile(int iteration, Real2[] nodes, Quad[] cells, Map<String, double[]> cellVariables, Map<String, double[]> nodeVariables)
+	def writeFile(int iteration, double[][] nodes, Quad[] cells, Map<String, double[]> cellVariables, Map<String, double[]> nodeVariables)
 	{
 		try {
 			
@@ -46,7 +45,7 @@ class VtkFileWriter2D
 			writer.println('DATASET POLYDATA')
 			
 			writer.println('POINTS ' + nodes.size + ' float')
-			nodes.forEach[writer.println(x + "\t" + y + "\t" + 0.0)]
+			nodes.forEach[n | writer.println(n.get(0) + "\t" + n.get(1) + "\t" + 0.0)]
 
 			writer.println('POLYGONS ' + cells.size + ' ' + cells.size * 5)
 			cells.forEach[writer.println('4\t' + nodeIds.join('\t'))]

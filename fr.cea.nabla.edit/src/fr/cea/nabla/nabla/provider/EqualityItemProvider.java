@@ -260,6 +260,11 @@ public class EqualityItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.EQUALITY__LEFT,
+				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.EQUALITY__LEFT,
 				 NablaFactory.eINSTANCE.createMinConstant()));
 
 		newChildDescriptors.add
@@ -366,6 +371,11 @@ public class EqualityItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.EQUALITY__RIGHT,
 				 NablaFactory.eINSTANCE.createRealVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.EQUALITY__RIGHT,
+				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter

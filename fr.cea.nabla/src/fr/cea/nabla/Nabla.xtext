@@ -105,6 +105,7 @@ Atomic returns Expression:
 	{RealConstant} value=REAL |
 	{BoolConstant} (value?='true' | 'false') |
 	{RealVectorConstant} '{' values+=REAL (',' values+=REAL)* '}' |
+	{RealBaseTypeConstant} type=BaseType '(' value=REAL ')' |
 	{MinConstant} type=PrimitiveType '.MinValue' |
 	{MaxConstant} type=PrimitiveType '.MaxValue' |
 	{FunctionCall} function=[Function|QualifiedName] '(' (args+=Expression (',' args+=Expression)*)? ')' | 
@@ -113,7 +114,7 @@ Atomic returns Expression:
 
 VarRef: variable=[Var] 
 	('{' spaceIterators+=SpaceIteratorRef (',' spaceIterators+=SpaceIteratorRef)* '}')? 
-	('[' arrayTypeIndices+=INT (',' arrayTypeIndices+=INT) ']')?
+	('[' arrayTypeIndices+=INT (',' arrayTypeIndices+=INT)? ']')?
 	('^{' timeIterator=TimeIterator '}')?;
 
 TimeIterator: 
@@ -121,7 +122,7 @@ TimeIterator:
 	{NextTimeIterator} 'n+1' (hasDiv?='/' div=INT)?;
 
 /* TYPES *************************************************/
-BaseType: root=PrimitiveType '[' dimSizes+=INT (',' dimSizes+=INT) ']';
+BaseType: root=PrimitiveType ('[' dimSizes+=INT (',' dimSizes+=INT)? ']')?;
 enum PrimitiveType: Int='\u2115' | Real='\u211D' | Bool='\u213E';
 
 /* DATA TYPE *********************************************/

@@ -1108,6 +1108,29 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.RealBaseTypeConstant} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected RealBaseTypeConstantItemProvider realBaseTypeConstantItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.RealBaseTypeConstant}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createRealBaseTypeConstantAdapter() {
+		if (realBaseTypeConstantItemProvider == null) {
+			realBaseTypeConstantItemProvider = new RealBaseTypeConstantItemProvider(this);
+		}
+
+		return realBaseTypeConstantItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.MinConstant} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1389,6 +1412,7 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (realConstantItemProvider != null) realConstantItemProvider.dispose();
 		if (boolConstantItemProvider != null) boolConstantItemProvider.dispose();
 		if (realVectorConstantItemProvider != null) realVectorConstantItemProvider.dispose();
+		if (realBaseTypeConstantItemProvider != null) realBaseTypeConstantItemProvider.dispose();
 		if (minConstantItemProvider != null) minConstantItemProvider.dispose();
 		if (maxConstantItemProvider != null) maxConstantItemProvider.dispose();
 		if (functionCallItemProvider != null) functionCallItemProvider.dispose();

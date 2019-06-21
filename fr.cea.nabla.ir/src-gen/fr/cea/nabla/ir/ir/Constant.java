@@ -6,24 +6,24 @@ import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Real Vector Constant</b></em>'.
+ * A representation of the model object '<em><b>Constant</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.RealVectorConstant#getValues <em>Values</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Constant#getValues <em>Values</em>}</li>
  * </ul>
  *
- * @see fr.cea.nabla.ir.ir.IrPackage#getRealVectorConstant()
+ * @see fr.cea.nabla.ir.ir.IrPackage#getConstant()
  * @model
  * @generated
  */
-public interface RealVectorConstant extends Expression {
+public interface Constant extends Expression {
 	/**
 	 * Returns the value of the '<em><b>Values</b></em>' attribute list.
-	 * The list contents are of type {@link java.lang.Double}.
+	 * The list contents are of type {@link java.lang.String}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Values</em>' attribute list isn't clear,
@@ -31,10 +31,10 @@ public interface RealVectorConstant extends Expression {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Values</em>' attribute list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getRealVectorConstant_Values()
-	 * @model
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getConstant_Values()
+	 * @model unique="false" required="true"
 	 * @generated
 	 */
-	EList<Double> getValues();
+	EList<String> getValues();
 
-} // RealVectorConstant
+} // Constant

@@ -18,6 +18,7 @@ import fr.cea.nabla.MandatoryOptions
 import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.Affectation
+import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
@@ -25,7 +26,9 @@ import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
+import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.RangeSpaceIterator
+import fr.cea.nabla.nabla.RealBaseTypeConstant
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
@@ -70,6 +73,20 @@ class BasicValidator  extends AbstractNablaValidator
 			error('Module name must start with an uppercase', NablaPackage.Literals.NABLA_MODULE__NAME)
 	}
 	
+	@Check
+	def checkConformance(BaseType it)
+	{
+		if (!dimSizes.empty && dimSizes.exists[x | x<2])
+			error('Dimensions must be greater or equal than 2', NablaPackage.Literals.BASE_TYPE__DIM_SIZES)
+	}
+
+	@Check
+	def checkConformance(RealBaseTypeConstant it)
+	{
+		if (type.root!=PrimitiveType::REAL)
+			error('Initialization only available for ' + PrimitiveType::REAL.literal, NablaPackage.Literals.REAL_BASE_TYPE_CONSTANT__TYPE)
+	}
+
 	@Check
 	def checkUnusedVariables(Var it)
 	{

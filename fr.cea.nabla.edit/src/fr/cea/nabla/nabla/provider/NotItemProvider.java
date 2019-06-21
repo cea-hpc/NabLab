@@ -227,6 +227,11 @@ public class NotItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NOT__EXPRESSION,
+				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NOT__EXPRESSION,
 				 NablaFactory.eINSTANCE.createMinConstant()));
 
 		newChildDescriptors.add

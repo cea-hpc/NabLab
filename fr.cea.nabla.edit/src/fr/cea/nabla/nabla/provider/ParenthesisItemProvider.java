@@ -227,6 +227,11 @@ public class ParenthesisItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
+				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
 				 NablaFactory.eINSTANCE.createMinConstant()));
 
 		newChildDescriptors.add

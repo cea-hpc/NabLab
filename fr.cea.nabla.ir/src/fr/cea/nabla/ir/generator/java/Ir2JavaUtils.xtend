@@ -14,18 +14,35 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.PrimitiveType
 
 class Ir2JavaUtils 
 {
 	static def getJavaType(BaseType t)
 	{
-		val rootType = switch t.root
+		val rootType = t.root.javaType
+		return rootType + t.dimSizes.map['[]'].join('')
+	}
+	
+	static def getJavaType(PrimitiveType t)
+	{
+		switch t
 		{
 			case VOID : 'void'
 			case BOOL: 'boolean'
 			case INT: 'int'
 			case REAL: 'double'
 		}
-		return rootType + t.dimSizes.map['[]'].join('')
+	}
+	
+	static def getOperatorName(String op)
+	{
+		switch op
+		{
+			case '/': 'divide'
+			case '-': 'minus'
+			case '*': 'multiply'
+			case '+': 'plus'
+		}
 	}
 }

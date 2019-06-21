@@ -246,6 +246,11 @@ public class ReductionArgItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_ARG__SEED,
+				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION_ARG__SEED,
 				 NablaFactory.eINSTANCE.createMinConstant()));
 
 		newChildDescriptors.add

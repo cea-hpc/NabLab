@@ -38,20 +38,20 @@ class RealType extends ExpressionType
 @Data
 class BoolArrayType extends ExpressionType
 {
-	override getLabel() { PrimitiveType::BOOL.literal + dimSizes.map[utfExponent].join('\\u02E3') }
+	override getLabel() { PrimitiveType::BOOL.literal + dimSizes.map[utfExponent].join('\u02E3') }
 	int[] dimSizes
 }
 
 @Data
 class IntArrayType extends ExpressionType
 {
-	override getLabel() { PrimitiveType::INT.literal + dimSizes.map[utfExponent].join('\\u02E3') }
+	override getLabel() { PrimitiveType::INT.literal + dimSizes.map[utfExponent].join('\u02E3') }
 	int[] dimSizes
 }
 
 @Data
 class RealArrayType extends ExpressionType
 {
-	override getLabel() { PrimitiveType::REAL.literal + dimSizes.map[utfExponent].join('\\u02E3') }
+	override getLabel() { PrimitiveType::REAL.literal + dimSizes.map[utfExponent].join('\u02E3') }
 	int[] dimSizes
 }

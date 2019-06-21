@@ -265,6 +265,11 @@ public class ReductionCallItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_CALL__ARG,
+				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION_CALL__ARG,
 				 NablaFactory.eINSTANCE.createMinConstant()));
 
 		newChildDescriptors.add

@@ -260,6 +260,11 @@ public class MinusItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.MINUS__LEFT,
+				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MINUS__LEFT,
 				 NablaFactory.eINSTANCE.createMinConstant()));
 
 		newChildDescriptors.add
@@ -366,6 +371,11 @@ public class MinusItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.MINUS__RIGHT,
 				 NablaFactory.eINSTANCE.createRealVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MINUS__RIGHT,
+				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter

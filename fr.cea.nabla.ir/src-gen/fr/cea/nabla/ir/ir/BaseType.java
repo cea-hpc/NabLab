@@ -64,7 +64,7 @@ public interface BaseType extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Dim Sizes</em>' attribute list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getBaseType_DimSizes()
-	 * @model
+	 * @model unique="false"
 	 * @generated
 	 */
 	EList<Integer> getDimSizes();

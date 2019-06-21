@@ -22,11 +22,13 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.PrimitiveType
+import fr.cea.nabla.nabla.RealBaseTypeConstant
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
+import java.util.Arrays
 
 import static extension fr.cea.nabla.BaseTypeExtensions.*
 
@@ -80,6 +82,19 @@ class ExpressionInterpreter
 	def dispatch ExpressionValue interprete(RealConstant it) { new RealValue(value) }
 	def dispatch ExpressionValue interprete(BoolConstant it)  { new BoolValue(value) }
 	def dispatch ExpressionValue interprete(RealVectorConstant it) { new RealArrayValue(#[values.size], values) }
+	def dispatch ExpressionValue interprete(RealBaseTypeConstant it) 
+	{ 
+		if (type.scalar)
+			new RealValue(value)
+		else
+		{
+			var totalSize = 1
+			for (dimSize : type.dimSizes) totalSize *= dimSize
+			val values = newDoubleArrayOfSize(totalSize)
+			Arrays::fill(values, value)
+			new RealArrayValue(type.dimSizes, values)
+		}
+	}
 	
 	def dispatch ExpressionValue interprete(MinConstant it)
 	{

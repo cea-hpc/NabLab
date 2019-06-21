@@ -49,6 +49,7 @@ import fr.cea.nabla.typing.IntType
 import fr.cea.nabla.typing.RealArrayType
 import fr.cea.nabla.typing.RealType
 import fr.cea.nabla.typing.UndefinedType
+import fr.cea.nabla.nabla.RealBaseTypeConstant
 
 class IrExpressionFactory 
 {
@@ -97,41 +98,51 @@ class IrExpressionFactory
 	
 	def dispatch Expression toIrExpression(IntConstant e) 
 	{ 
-		IrFactory::eINSTANCE.createIntConstant => 
+		IrFactory::eINSTANCE.createConstant => 
 		[
 			annotations += e.toIrAnnotation 
 			type = e.typeFor?.toIrBaseType
-			value = e.value 
+			values.add(e.value.toString)
 		]
 	}
 	
 	def dispatch Expression toIrExpression(RealConstant e) 
 	{ 
-		IrFactory::eINSTANCE.createRealConstant => 
+		IrFactory::eINSTANCE.createConstant => 
 		[ 
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrBaseType
-			value = e.value 
+			values.add(e.value.toString)
 		]
 	}
 	
 	def dispatch Expression toIrExpression(BoolConstant e) 
 	{ 
-		IrFactory::eINSTANCE.createBoolConstant => 
+		IrFactory::eINSTANCE.createConstant => 
 		[ 
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrBaseType
-			value = e.value
+			values.add(e.value.toString)
 		]
 	}
 	
 	def dispatch Expression toIrExpression(RealVectorConstant e) 
 	{
-		IrFactory::eINSTANCE.createRealVectorConstant =>
+		IrFactory::eINSTANCE.createConstant =>
 		[
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrBaseType
-			values.addAll(e.values)
+			for (v : e.values) values.add(v.toString)
+		]
+	}
+
+	def dispatch Expression toIrExpression(RealBaseTypeConstant e) 
+	{
+		IrFactory::eINSTANCE.createConstant =>
+		[
+			annotations += e.toIrAnnotation
+			type = e.typeFor?.toIrBaseType
+			values.add(e.value.toString)
 		]
 	}
 

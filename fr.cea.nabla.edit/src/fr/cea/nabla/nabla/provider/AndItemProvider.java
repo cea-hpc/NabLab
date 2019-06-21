@@ -260,6 +260,11 @@ public class AndItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.AND__LEFT,
+				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.AND__LEFT,
 				 NablaFactory.eINSTANCE.createMinConstant()));
 
 		newChildDescriptors.add
@@ -366,6 +371,11 @@ public class AndItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.AND__RIGHT,
 				 NablaFactory.eINSTANCE.createRealVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.AND__RIGHT,
+				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter

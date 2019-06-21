@@ -79,10 +79,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.BINARY_EXPRESSION: return createBinaryExpression();
 			case IrPackage.UNARY_EXPRESSION: return createUnaryExpression();
 			case IrPackage.PARENTHESIS: return createParenthesis();
-			case IrPackage.INT_CONSTANT: return createIntConstant();
-			case IrPackage.REAL_CONSTANT: return createRealConstant();
-			case IrPackage.BOOL_CONSTANT: return createBoolConstant();
-			case IrPackage.REAL_VECTOR_CONSTANT: return createRealVectorConstant();
+			case IrPackage.CONSTANT: return createConstant();
 			case IrPackage.MIN_CONSTANT: return createMinConstant();
 			case IrPackage.MAX_CONSTANT: return createMaxConstant();
 			case IrPackage.FUNCTION_CALL: return createFunctionCall();
@@ -353,19 +350,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public IntConstant createIntConstant() {
-		IntConstantImpl intConstant = new IntConstantImpl();
-		return intConstant;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public RealConstant createRealConstant() {
-		RealConstantImpl realConstant = new RealConstantImpl();
-		return realConstant;
+	public Constant createConstant() {
+		ConstantImpl constant = new ConstantImpl();
+		return constant;
 	}
 
 	/**
@@ -386,26 +373,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public MinConstant createMinConstant() {
 		MinConstantImpl minConstant = new MinConstantImpl();
 		return minConstant;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public BoolConstant createBoolConstant() {
-		BoolConstantImpl boolConstant = new BoolConstantImpl();
-		return boolConstant;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public RealVectorConstant createRealVectorConstant() {
-		RealVectorConstantImpl realVectorConstant = new RealVectorConstantImpl();
-		return realVectorConstant;
 	}
 
 	/**

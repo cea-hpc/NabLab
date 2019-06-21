@@ -15,38 +15,47 @@ package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.BinaryExpression
-import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.Constant
 import fr.cea.nabla.ir.ir.ContractedIf
-import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.FunctionCall
-import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
-import fr.cea.nabla.ir.ir.RealConstant
-import fr.cea.nabla.ir.ir.RealVectorConstant
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
 import fr.cea.nabla.ir.ir.Variable
+import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.BaseTypeExtensions.*
 import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
+import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 
 class ExpressionContentProvider
 {
 	static def dispatch CharSequence getContent(ContractedIf it) 
 	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
 	
-	static def dispatch CharSequence getContent(BinaryExpression it) { generateLoop(type.dimSizes, 0) }
-	static def dispatch CharSequence getContent(UnaryExpression it)  { generateLoop(type.dimSizes, 0) }
+	static def dispatch CharSequence getContent(BinaryExpression it) 
+	{
+		val lContent = left.content
+		val rContent = right.content
+
+		if (left.type.scalar && right.type.scalar) 
+			'''«lContent» «operator» «rContent»'''
+		else 
+			'''OperatorExtensions.operator_«operator.operatorName»(«lContent», «rContent»)'''
+	}
+
+	static def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
 	static def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
-	static def dispatch CharSequence getContent(IntConstant it) '''«value»'''
-	static def dispatch CharSequence getContent(RealConstant it) '''«value»'''
-	static def dispatch CharSequence getContent(RealVectorConstant it) '''{«values.join(",")»}'''
-	static def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
+	static def dispatch CharSequence getContent(Constant it)
+	{
+		if (values.size==1) initConstant(type.dimSizes, values.head)
+		else '''new double[]{«values.join(",")»}'''
+	}
 	
 	static def dispatch CharSequence getContent(MinConstant it) 
 	{
@@ -72,7 +81,7 @@ class ExpressionContentProvider
 	'''«function.provider»«Utils::FunctionAndReductionproviderSuffix».«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
 	static def dispatch CharSequence getContent(VarRef it)
-	'''«variable.codeName»«iteratorsContent»«FOR d:variable.type.dimSizes»[«d»]«ENDFOR»'''
+	'''«variable.codeName»«iteratorsContent»«FOR d:arrayTypeIndices»[«d»]«ENDFOR»'''
 
 	private static def getCodeName(Variable it)
 	{
@@ -91,31 +100,16 @@ class ExpressionContentProvider
 		return content
 	}
 	
-	private static def CharSequence generateLoop(BinaryExpression exp, Iterable<Integer> dimSizes, int loopCount)
-	'''
-		«IF dimSizes.empty»
-			«getAccessor(exp.left, loopCount)» «exp.operator» «getAccessor(exp.right, loopCount)»
-		«ELSE»
-			for(int i«loopCount»=0 ; i<«dimSizes.head» ; ++i)
-				«generateLoop(exp, dimSizes.tail, loopCount+1)»
-		«ENDIF»
-	'''
-	
-	private static def CharSequence generateLoop(UnaryExpression exp, Iterable<Integer> dimSizes, int loopCount)
-	'''
-		«IF dimSizes.empty»
-			«exp.operator» «getAccessor(exp.expression, loopCount)»
-		«ELSE»
-			for(int i«loopCount»=0 ; i<«dimSizes.head» ; ++i)
-				«generateLoop(exp, dimSizes.tail, loopCount+1)»
-		«ENDIF»
-	'''
-
-	static def getAccessor(Expression e, int loopCount)
+	private static def String initConstant(int[] dimSizes, String value)
 	{
-		var eContent = e.content
-		for (i : 0..<loopCount) 
-			eContent = '''«eContent»[i«i»]'''
-		return eContent
+		if (dimSizes.empty) value
+		else 
+		{
+			val dim = dimSizes.head
+			val t = dimSizes.tail
+			val values = new ArrayList<String>
+			for (i : 0..<dim) values += initConstant(t, value)
+			'{' + values.join(',') + '}'
+		}
 	}
 }

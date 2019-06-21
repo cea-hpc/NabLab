@@ -39,6 +39,7 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RangeSpaceIterator
+import fr.cea.nabla.nabla.RealBaseTypeConstant
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
@@ -96,6 +97,7 @@ class LatexLabelServices
 	static def dispatch String getLatex(RealConstant it) { value.toString }
 	static def dispatch String getLatex(BoolConstant it) { value.toString }
 	static def dispatch String getLatex(RealVectorConstant it) { '{' + values.join(',') + '}' }
+	static def dispatch String getLatex(RealBaseTypeConstant it) { type.latex + '(' + value + ')' }
 	static def dispatch String getLatex(MinConstant it) { '-\u221E' }
 	static def dispatch String getLatex(MaxConstant it) { '\u221E' }
 	

@@ -13,7 +13,6 @@
  *******************************************************************************/
 package fr.cea.nabla.javalib.mesh
 
-import fr.cea.nabla.javalib.types.Real2
 import java.util.HashSet
 import org.eclipse.xtend.lib.annotations.Accessors
 
@@ -25,9 +24,9 @@ class NumericMesh2D
 	public static val MaxNbCellsOfFace = 2
 	public static val MaxNbNeighbourCells = 4
 	
-	@Accessors val Mesh<Real2> geometricMesh
+	@Accessors val Mesh<double[]> geometricMesh
 	
-	new(Mesh<Real2> geometricMesh)
+	new(Mesh<double[]> geometricMesh)
 	{
 		this.geometricMesh = geometricMesh
 	}

@@ -5,11 +5,11 @@ package fr.cea.nabla.ir.ir.impl;
 import fr.cea.nabla.ir.ir.Affectation;
 import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.BinaryExpression;
-import fr.cea.nabla.ir.ir.BoolConstant;
 import fr.cea.nabla.ir.ir.Connectivity;
 import fr.cea.nabla.ir.ir.ConnectivityCall;
 import fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef;
 import fr.cea.nabla.ir.ir.ConnectivityVariable;
+import fr.cea.nabla.ir.ir.Constant;
 import fr.cea.nabla.ir.ir.ContractedIf;
 import fr.cea.nabla.ir.ir.EndOfInitJob;
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob;
@@ -21,7 +21,6 @@ import fr.cea.nabla.ir.ir.Import;
 import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.InstructionBlock;
 import fr.cea.nabla.ir.ir.InstructionJob;
-import fr.cea.nabla.ir.ir.IntConstant;
 import fr.cea.nabla.ir.ir.IrAnnotable;
 import fr.cea.nabla.ir.ir.IrAnnotation;
 import fr.cea.nabla.ir.ir.IrFactory;
@@ -38,8 +37,6 @@ import fr.cea.nabla.ir.ir.MaxConstant;
 import fr.cea.nabla.ir.ir.MinConstant;
 import fr.cea.nabla.ir.ir.Parenthesis;
 import fr.cea.nabla.ir.ir.PrimitiveType;
-import fr.cea.nabla.ir.ir.RealConstant;
-import fr.cea.nabla.ir.ir.RealVectorConstant;
 import fr.cea.nabla.ir.ir.Reduction;
 import fr.cea.nabla.ir.ir.ReductionInstruction;
 import fr.cea.nabla.ir.ir.SimpleVariable;
@@ -273,14 +270,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass intConstantEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass realConstantEClass = null;
+	private EClass constantEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -295,20 +285,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass minConstantEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass boolConstantEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass realVectorConstantEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -1310,8 +1286,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getIntConstant() {
-		return intConstantEClass;
+	public EClass getConstant() {
+		return constantEClass;
 	}
 
 	/**
@@ -1319,26 +1295,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getIntConstant_Value() {
-		return (EAttribute)intConstantEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getRealConstant() {
-		return realConstantEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getRealConstant_Value() {
-		return (EAttribute)realConstantEClass.getEStructuralFeatures().get(0);
+	public EAttribute getConstant_Values() {
+		return (EAttribute)constantEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1357,42 +1315,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 */
 	public EClass getMinConstant() {
 		return minConstantEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getBoolConstant() {
-		return boolConstantEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getBoolConstant_Value() {
-		return (EAttribute)boolConstantEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getRealVectorConstant() {
-		return realVectorConstantEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getRealVectorConstant_Values() {
-		return (EAttribute)realVectorConstantEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1809,17 +1731,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		parenthesisEClass = createEClass(PARENTHESIS);
 		createEReference(parenthesisEClass, PARENTHESIS__EXPRESSION);
 
-		intConstantEClass = createEClass(INT_CONSTANT);
-		createEAttribute(intConstantEClass, INT_CONSTANT__VALUE);
-
-		realConstantEClass = createEClass(REAL_CONSTANT);
-		createEAttribute(realConstantEClass, REAL_CONSTANT__VALUE);
-
-		boolConstantEClass = createEClass(BOOL_CONSTANT);
-		createEAttribute(boolConstantEClass, BOOL_CONSTANT__VALUE);
-
-		realVectorConstantEClass = createEClass(REAL_VECTOR_CONSTANT);
-		createEAttribute(realVectorConstantEClass, REAL_VECTOR_CONSTANT__VALUES);
+		constantEClass = createEClass(CONSTANT);
+		createEAttribute(constantEClass, CONSTANT__VALUES);
 
 		minConstantEClass = createEClass(MIN_CONSTANT);
 
@@ -1921,10 +1834,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		binaryExpressionEClass.getESuperTypes().add(this.getExpression());
 		unaryExpressionEClass.getESuperTypes().add(this.getExpression());
 		parenthesisEClass.getESuperTypes().add(this.getExpression());
-		intConstantEClass.getESuperTypes().add(this.getExpression());
-		realConstantEClass.getESuperTypes().add(this.getExpression());
-		boolConstantEClass.getESuperTypes().add(this.getExpression());
-		realVectorConstantEClass.getESuperTypes().add(this.getExpression());
+		constantEClass.getESuperTypes().add(this.getExpression());
 		minConstantEClass.getESuperTypes().add(this.getExpression());
 		maxConstantEClass.getESuperTypes().add(this.getExpression());
 		functionCallEClass.getESuperTypes().add(this.getExpression());
@@ -2061,17 +1971,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(parenthesisEClass, Parenthesis.class, "Parenthesis", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getParenthesis_Expression(), this.getExpression(), null, "expression", null, 1, 1, Parenthesis.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(intConstantEClass, IntConstant.class, "IntConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getIntConstant_Value(), ecorePackage.getEInt(), "value", null, 1, 1, IntConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(realConstantEClass, RealConstant.class, "RealConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getRealConstant_Value(), ecorePackage.getEDouble(), "value", null, 1, 1, RealConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(boolConstantEClass, BoolConstant.class, "BoolConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getBoolConstant_Value(), ecorePackage.getEBoolean(), "value", null, 1, 1, BoolConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(realVectorConstantEClass, RealVectorConstant.class, "RealVectorConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getRealVectorConstant_Values(), ecorePackage.getEDouble(), "values", null, 0, -1, RealVectorConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(constantEClass, Constant.class, "Constant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getConstant_Values(), ecorePackage.getEString(), "values", null, 1, -1, Constant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(minConstantEClass, MinConstant.class, "MinConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -2084,7 +1985,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(varRefEClass, VarRef.class, "VarRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getVarRef_Variable(), this.getVariable(), null, "variable", null, 1, 1, VarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getVarRef_Iterators(), this.getVarRefIteratorRef(), this.getVarRefIteratorRef_ReferencedBy(), "iterators", null, 0, -1, VarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getVarRef_ArrayTypeIndices(), ecorePackage.getEInt(), "arrayTypeIndices", null, 0, -1, VarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getVarRef_ArrayTypeIndices(), ecorePackage.getEInt(), "arrayTypeIndices", null, 0, -1, VarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(iteratorEClass, Iterator.class, "Iterator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getIterator_Name(), ecorePackage.getEString(), "name", null, 1, 1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2112,7 +2013,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(baseTypeEClass, BaseType.class, "BaseType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getBaseType_Root(), this.getPrimitiveType(), "root", null, 1, 1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getBaseType_DimSizes(), ecorePackage.getEInt(), "dimSizes", null, 0, -1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getBaseType_DimSizes(), ecorePackage.getEInt(), "dimSizes", null, 0, -1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(primitiveTypeEEnum, PrimitiveType.class, "PrimitiveType");

@@ -44,8 +44,6 @@ import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.validation.Check
 
-import static extension fr.cea.nabla.BaseTypeExtensions.*
-
 class TypeValidator extends BasicValidator
 {
 	static val BOOL = new BoolType
@@ -113,8 +111,8 @@ class TypeValidator extends BasicValidator
 		val dimSizes = varBaseType.dimSizes
 		if (dimensions != spaceIterators.size) 
 			error('Number of iterators and variable dimension must be equal' + dimSizes.size, NablaPackage.Literals::VAR_REF__SPACE_ITERATORS)
-		if (dimSizes.size != arrayTypeIndices.size)
-			error('Number of indices and variable type must be compatible: ' + arrayTypeIndices.size + ' indices ' + ' for ' + varBaseType.label, NablaPackage.Literals::VAR_REF__ARRAY_TYPE_INDICES)
+//		if (dimSizes.size != arrayTypeIndices.size)
+//			error('Number of indices and variable type must be compatible: ' + arrayTypeIndices.size + ' indices ' + ' for ' + varBaseType.label, NablaPackage.Literals::VAR_REF__ARRAY_TYPE_INDICES)
 		if (it.typeFor.undefined)
 			error('Undefined type', NablaPackage.Literals::VAR_REF__VARIABLE)
 	}

@@ -184,6 +184,10 @@
     <genClasses ecoreClass="Nabla.ecore#//RealVectorConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//RealVectorConstant/values"/>
     </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//RealBaseTypeConstant">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//RealBaseTypeConstant/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//RealBaseTypeConstant/value"/>
+    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//MinConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//MinConstant/type"/>
     </genClasses>

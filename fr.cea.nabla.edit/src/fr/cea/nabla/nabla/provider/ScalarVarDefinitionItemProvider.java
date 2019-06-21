@@ -270,6 +270,11 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createMinConstant()));
 
 		newChildDescriptors.add

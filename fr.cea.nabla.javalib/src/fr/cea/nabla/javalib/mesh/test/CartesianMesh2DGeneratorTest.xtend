@@ -50,8 +50,8 @@ class CartesianMesh2DGeneratorTest
 			{
 				val currentQuad = mesh.quads.get(quadIndex)
 				val upperLeftNode = mesh.nodes.get(currentQuad.nodeIds.get(0))
-				assertEquals(xUpperLeftNode, upperLeftNode.x, 0.0)
-				assertEquals(yUpperLeftNode, upperLeftNode.y, 0.0)
+				assertEquals(xUpperLeftNode, upperLeftNode.get(0), 0.0)
+				assertEquals(yUpperLeftNode, upperLeftNode.get(1), 0.0)
 				xUpperLeftNode += xSize
 				quadIndex++
 			}

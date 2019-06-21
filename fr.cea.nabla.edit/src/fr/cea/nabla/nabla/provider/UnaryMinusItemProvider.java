@@ -227,6 +227,11 @@ public class UnaryMinusItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.UNARY_MINUS__EXPRESSION,
+				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.UNARY_MINUS__EXPRESSION,
 				 NablaFactory.eINSTANCE.createMinConstant()));
 
 		newChildDescriptors.add

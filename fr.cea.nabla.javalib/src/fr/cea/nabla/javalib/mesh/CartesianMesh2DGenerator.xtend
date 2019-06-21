@@ -13,11 +13,9 @@
  *******************************************************************************/
 package fr.cea.nabla.javalib.mesh
 
-import fr.cea.nabla.javalib.types.Real2
-
 class  CartesianMesh2DGenerator
 {
-	static def Mesh<Real2> generate(int nbXQuads, int nbYQuads, double xSize, double ySize)
+	static def Mesh<double[]> generate(int nbXQuads, int nbYQuads, double xSize, double ySize)
 	{
 		val nbNodes = (nbXQuads + 1) * (nbYQuads + 1)
 		val nbQuads = nbXQuads * nbYQuads
@@ -34,7 +32,7 @@ class  CartesianMesh2DGenerator
 		for (j : 0..nbYQuads)
 			for (i : 0..nbXQuads)
 			{
-				val coord = new Real2(xSize*i, ySize*j)
+				val coord = #[xSize*i, ySize*j]
 				nodes.add(coord)
 				if (i!=0 && j!=0 && i!=nbXQuads && j!=nbYQuads) 
 					innerNodeIds.set(innerNodeId++, nodeId)

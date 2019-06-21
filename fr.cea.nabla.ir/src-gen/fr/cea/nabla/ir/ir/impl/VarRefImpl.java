@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
+import org.eclipse.emf.ecore.util.EDataTypeEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -144,7 +144,7 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 	 */
 	public EList<Integer> getArrayTypeIndices() {
 		if (arrayTypeIndices == null) {
-			arrayTypeIndices = new EDataTypeUniqueEList<Integer>(Integer.class, this, IrPackage.VAR_REF__ARRAY_TYPE_INDICES);
+			arrayTypeIndices = new EDataTypeEList<Integer>(Integer.class, this, IrPackage.VAR_REF__ARRAY_TYPE_INDICES);
 		}
 		return arrayTypeIndices;
 	}

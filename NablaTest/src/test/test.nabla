@@ -32,9 +32,9 @@ const ℕ Z_EDGE_ELEMS = 1;
 const ℝ option_stoptime = 0.1;
 const ℕ option_max_iterations = 500;
 
-ℝ² X[nodes];
-ℝ v[nodes];
-ℝ u[cells], Cjr[cells,nodesOfCell], M[cells,cells];
+ℝ[2] X{nodes};
+ℝ v{nodes};
+ℝ u{cells}, Cjr{cells,nodesOfCell}, M{cells,cells};
 ℝ total;
 
 TestMatrix: ∀j∈cells(), M{j,j} = 0.0;

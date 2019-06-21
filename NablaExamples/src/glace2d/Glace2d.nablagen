@@ -39,7 +39,7 @@ workflow Glace2dDefaultGenerationChain transforms Glace2d
 	Ir2Code kokkosGenerator follows fillHlts
 	{
 		language = Kokkos;
-		//disabled;
+		disabled;
 		outputDir = "/NablaExamplesKokkos/src";
 	}
 }

@@ -62,9 +62,9 @@ class Ir2Java extends CodeGenerator
 
 			// Global Variables
 			«val globals = variables.filter(SimpleVariable).filter[!const]»
-			«val globalsByType = globals.groupBy[type]»
+			«val globalsByType = globals.groupBy[type.javaType]»
 			«FOR type : globalsByType.keySet»
-			private «type.javaType» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
+			private «type» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 			«ENDFOR»
 
 			«val arrays = variables.filter(ConnectivityVariable).groupBy[type]»
@@ -92,15 +92,15 @@ class Ir2Java extends CodeGenerator
 				// Arrays allocation
 				«FOR a : variables»
 					«IF a instanceof ConnectivityVariable»
-						«a.name» = new «a.type.javaType»«FOR d : a.dimensions»[«d.nbElems»]«ENDFOR»«FOR d : a.type.dimSizes»[«d»]«ENDFOR»;
+						«a.name» = new «a.type.root.javaType»«FOR d : a.dimensions»[«d.nbElems»]«ENDFOR»«FOR d : a.type.dimSizes»[«d»]«ENDFOR»;
 					«ELSEIF a instanceof SimpleVariable && !a.type.scalar»
-						«a.name» = new «a.type.javaType»«FOR d : a.type.dimSizes»[«d»]«ENDFOR»;
+						«a.name» = new «a.type.root.javaType»«FOR d : a.type.dimSizes»[«d»]«ENDFOR»;
 					«ENDIF»
 				«ENDFOR»
 
 				«IF nodeCoordVariable !== null»
 				// Copy node coordinates
-				ArrayList<Real2> gNodes = mesh.getGeometricMesh().getNodes();
+				ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
 				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> «nodeCoordVariable.name»[rNodes] = gNodes.get(rNodes));
 				«ENDIF»
 			}
@@ -144,7 +144,7 @@ class Ir2Java extends CodeGenerator
 			public static void main(String[] args)
 			{
 				«name».Options o = new «name».Options();
-				Mesh<Real2> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
+				Mesh<double[]> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
 				NumericMesh2D nm = new NumericMesh2D(gm);
 				«name» i = new «name»(o, nm);
 				i.simulate();

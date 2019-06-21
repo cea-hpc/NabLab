@@ -288,35 +288,11 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.INT_CONSTANT: {
-				IntConstant intConstant = (IntConstant)theEObject;
-				T result = caseIntConstant(intConstant);
-				if (result == null) result = caseExpression(intConstant);
-				if (result == null) result = caseIrAnnotable(intConstant);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.REAL_CONSTANT: {
-				RealConstant realConstant = (RealConstant)theEObject;
-				T result = caseRealConstant(realConstant);
-				if (result == null) result = caseExpression(realConstant);
-				if (result == null) result = caseIrAnnotable(realConstant);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.BOOL_CONSTANT: {
-				BoolConstant boolConstant = (BoolConstant)theEObject;
-				T result = caseBoolConstant(boolConstant);
-				if (result == null) result = caseExpression(boolConstant);
-				if (result == null) result = caseIrAnnotable(boolConstant);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.REAL_VECTOR_CONSTANT: {
-				RealVectorConstant realVectorConstant = (RealVectorConstant)theEObject;
-				T result = caseRealVectorConstant(realVectorConstant);
-				if (result == null) result = caseExpression(realVectorConstant);
-				if (result == null) result = caseIrAnnotable(realVectorConstant);
+			case IrPackage.CONSTANT: {
+				Constant constant = (Constant)theEObject;
+				T result = caseConstant(constant);
+				if (result == null) result = caseExpression(constant);
+				if (result == null) result = caseIrAnnotable(constant);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -841,32 +817,17 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Int Constant</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Int Constant</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Constant</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseIntConstant(IntConstant object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Real Constant</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Real Constant</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseRealConstant(RealConstant object) {
+	public T caseConstant(Constant object) {
 		return null;
 	}
 
@@ -897,36 +858,6 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseMinConstant(MinConstant object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Bool Constant</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Bool Constant</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseBoolConstant(BoolConstant object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Real Vector Constant</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Real Vector Constant</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseRealVectorConstant(RealVectorConstant object) {
 		return null;
 	}
 

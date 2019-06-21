@@ -220,40 +220,13 @@ public interface IrFactory extends EFactory {
 	Parenthesis createParenthesis();
 
 	/**
-	 * Returns a new object of class '<em>Int Constant</em>'.
+	 * Returns a new object of class '<em>Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Int Constant</em>'.
+	 * @return a new object of class '<em>Constant</em>'.
 	 * @generated
 	 */
-	IntConstant createIntConstant();
-
-	/**
-	 * Returns a new object of class '<em>Real Constant</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Real Constant</em>'.
-	 * @generated
-	 */
-	RealConstant createRealConstant();
-
-	/**
-	 * Returns a new object of class '<em>Bool Constant</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Bool Constant</em>'.
-	 * @generated
-	 */
-	BoolConstant createBoolConstant();
-
-	/**
-	 * Returns a new object of class '<em>Real Vector Constant</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Real Vector Constant</em>'.
-	 * @generated
-	 */
-	RealVectorConstant createRealVectorConstant();
+	Constant createConstant();
 
 	/**
 	 * Returns a new object of class '<em>Min Constant</em>'.

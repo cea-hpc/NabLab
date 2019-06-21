@@ -14,17 +14,14 @@
 package fr.cea.nabla.ir.generator.kokkos
 
 import fr.cea.nabla.ir.ir.BinaryExpression
-import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.Constant
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.FunctionCall
-import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
-import fr.cea.nabla.ir.ir.RealConstant
-import fr.cea.nabla.ir.ir.RealVectorConstant
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
@@ -45,10 +42,11 @@ class ExpressionContentProvider
 	static def dispatch CharSequence getContent(BinaryExpression it) '''«left.content» «operator» «right.content»'''
 	static def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
 	static def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
-	static def dispatch CharSequence getContent(IntConstant it) '''«value»'''
-	static def dispatch CharSequence getContent(RealConstant it) '''«value»'''
-	static def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
-	static def dispatch CharSequence getContent(RealVectorConstant it) '''TODO TODO'''
+	static def dispatch CharSequence getContent(Constant it) 
+	{
+		if (values.size==1) '''«values.head»''' 
+		else '''{«values.join(",")»}'''
+	}
 	
 	static def dispatch CharSequence getContent(MinConstant it) 
 	{
@@ -74,7 +72,7 @@ class ExpressionContentProvider
 	'''«function.provider»Functions::«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
 	static def dispatch CharSequence getContent(VarRef it) 
-	'''«codeName»«iteratorsContent»«FOR d:variable.type.dimSizes BEFORE '('  SEPARATOR ',' AFTER ')'»«d»«ENDFOR»'''
+	'''«codeName»«iteratorsContent»«FOR d:arrayTypeIndices BEFORE '('  SEPARATOR ',' AFTER ')'»«d»«ENDFOR»'''
 
 	private static def getCodeName(VarRef it)
 	{

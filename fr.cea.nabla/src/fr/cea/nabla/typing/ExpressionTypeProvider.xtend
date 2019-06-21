@@ -41,6 +41,7 @@ import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
+import fr.cea.nabla.nabla.RealBaseTypeConstant
 
 class ExpressionTypeProvider 
 {
@@ -68,6 +69,7 @@ class ExpressionTypeProvider
 	def dispatch ExpressionType getTypeFor(RealConstant it) { new RealType }
 	def dispatch ExpressionType getTypeFor(BoolConstant it)  { new BoolType }
 	def dispatch ExpressionType getTypeFor(RealVectorConstant it) { new RealArrayType(#[values.size]) }
+	def dispatch ExpressionType getTypeFor(RealBaseTypeConstant it) { type.typeFor }
 
 	def dispatch ExpressionType getTypeFor(MinConstant it) { type.typeFor }
 	def dispatch ExpressionType getTypeFor(MaxConstant it) { type.typeFor }
@@ -130,5 +132,4 @@ class ExpressionTypeProvider
 			case REAL: if (dimSizes.empty) new RealType else new RealArrayType(dimSizes)
 		}
 	}
-
 }

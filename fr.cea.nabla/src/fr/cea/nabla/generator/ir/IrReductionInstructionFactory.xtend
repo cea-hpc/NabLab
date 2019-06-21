@@ -31,6 +31,7 @@ import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
+import fr.cea.nabla.nabla.RealBaseTypeConstant
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
@@ -60,6 +61,7 @@ class IrReductionInstructionFactory
 	def dispatch Iterable<ReductionInstruction> toIrReductions(RealConstant it) { #[] }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(BoolConstant it) { #[] }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(RealVectorConstant it) { #[] }
+	def dispatch Iterable<ReductionInstruction> toIrReductions(RealBaseTypeConstant it) { #[] }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(MinConstant it) { #[] }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(MaxConstant it) { #[] }
 

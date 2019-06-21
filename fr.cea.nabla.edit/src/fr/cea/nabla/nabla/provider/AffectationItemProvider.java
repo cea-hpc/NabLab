@@ -234,6 +234,11 @@ public class AffectationItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
 				 NablaFactory.eINSTANCE.createMinConstant()));
 
 		newChildDescriptors.add

@@ -24,7 +24,6 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.VariableExtensions.*
 
 class Ir2Kokkos extends CodeGenerator
@@ -82,9 +81,9 @@ class Ir2Kokkos extends CodeGenerator
 
 		// Global Variables
 		«val globals = variables.filter(SimpleVariable).filter[!const]»
-		«val globalsByType = globals.groupBy[type]»
+		«val globalsByType = globals.groupBy[kokkosType]»
 		«FOR type : globalsByType.keySet»
-		«type.kokkosType» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
+		«type» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 		«ENDFOR»
 
 		«val arrays = variables.filter(ConnectivityVariable)»

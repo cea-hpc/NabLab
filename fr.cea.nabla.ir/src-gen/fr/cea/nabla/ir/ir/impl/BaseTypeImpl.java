@@ -2,22 +2,17 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.BaseType;
-import fr.cea.nabla.ir.ir.IrPackage;
-import fr.cea.nabla.ir.ir.PrimitiveType;
-
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
-import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
+import org.eclipse.emf.ecore.util.EDataTypeEList;
+import fr.cea.nabla.ir.ir.BaseType;
+import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.PrimitiveType;
 
 /**
  * <!-- begin-user-doc -->
@@ -111,7 +106,7 @@ public class BaseTypeImpl extends MinimalEObjectImpl.Container implements BaseTy
 	 */
 	public EList<Integer> getDimSizes() {
 		if (dimSizes == null) {
-			dimSizes = new EDataTypeUniqueEList<Integer>(Integer.class, this, IrPackage.BASE_TYPE__DIM_SIZES);
+			dimSizes = new EDataTypeEList<Integer>(Integer.class, this, IrPackage.BASE_TYPE__DIM_SIZES);
 		}
 		return dimSizes;
 	}
@@ -203,5 +198,4 @@ public class BaseTypeImpl extends MinimalEObjectImpl.Container implements BaseTy
 		result.append(')');
 		return result.toString();
 	}
-
 } //BaseTypeImpl

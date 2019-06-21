@@ -251,6 +251,11 @@ public class FunctionCallItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.FUNCTION_CALL__ARGS,
+				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.FUNCTION_CALL__ARGS,
 				 NablaFactory.eINSTANCE.createMinConstant()));
 
 		newChildDescriptors.add

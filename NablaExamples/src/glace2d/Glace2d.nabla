@@ -97,7 +97,7 @@ Computeδtj: ∀j∈cells(), δtj{j} = 2.0 * V{j} / (c{j} * ∑{r∈nodesOfCell(
 // *************************************************************
 ComputeDensity: ∀j∈cells(), ρ{j} = m{j} / V{j};
 ComputeEOSp: ∀j∈cells(), p{j} = (γ-1.0) * ρ{j} * e{j};
-ComputeInternalEngergy: ∀j∈cells(), e{j} = E{j} - 0.5 * dot(uj{j}, uj{j});
+ComputeInternalEnergy: ∀j∈cells(), e{j} = E{j} - 0.5 * dot(uj{j}, uj{j});
 ComputeEOSc: ∀j∈cells(), c{j} = √(γ*p{j}/ρ{j}); 
 
 // *************************************************************

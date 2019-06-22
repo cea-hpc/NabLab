@@ -293,11 +293,11 @@ public final class Glace2d
 	}		
 	
 	/**
-	 * Job ComputeInternalEngergy @1.0
+	 * Job ComputeInternalEnergy @1.0
 	 * In variables: E, uj
 	 * Out variables: e
 	 */
-	private void computeInternalEngergy() 
+	private void computeInternalEnergy() 
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -761,7 +761,7 @@ public final class Glace2d
 			iteration++;
 			System.out.println("[" + iteration + "] t = " + t);
 			computeCjr(); // @1.0
-			computeInternalEngergy(); // @1.0
+			computeInternalEnergy(); // @1.0
 			computeLjr(); // @2.0
 			computeV(); // @2.0
 			computeDensity(); // @3.0

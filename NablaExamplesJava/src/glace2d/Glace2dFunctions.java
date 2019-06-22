@@ -43,7 +43,7 @@ public class Glace2dFunctions
 		result[0][0] = m[1][1] * alpha;
 		result[0][1] = -m[0][1] * alpha;
 		result[1][0] = -m[1][0] * alpha;
-		result[1][1] = -m[0][0] * alpha;
+		result[1][1] = m[0][0] * alpha;
 		return result;
  	}
 

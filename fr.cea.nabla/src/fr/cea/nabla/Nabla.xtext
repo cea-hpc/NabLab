@@ -58,12 +58,12 @@ ScalarVar: name=ID;
 ArrayVar: name=ID '[' dimensions+=[Connectivity] (',' dimensions+=[Connectivity])* ']';
 
 /* CONNECTIVITES *****************************************/
-Connectivity: name=ID ':' '(' ((inTypes+=[ItemType] (',' inTypes+=[ItemType])*) | '\u2205') ')' '\u2192' returnType=ItemArgType ';';
+Connectivity: name=ID ':' (inTypes+=[ItemType] ('\u00D7' inTypes+=[ItemType])*)?  '\u2192' returnType=ItemArgType ';';
 ItemArgType: multiple?='{' type=[ItemType] '}' | type=[ItemType];
 
 /* FONCTIONS / REDUCTIONS ********************************/
 Function: name=ID ':' argGroups+=FunctionArg (',' argGroups+=FunctionArg)* ';';
-FunctionArg: '(' ((inTypes+=BasicType (',' inTypes+=BasicType)*) | '\u2205') ')' '\u2192' returnType=BasicType;
+FunctionArg: (inTypes+=BasicType ('\u00D7' inTypes+=BasicType)*)? '\u2192' returnType=BasicType;
 Reduction: name=ID ':' argGroups+=ReductionArg (',' argGroups+=ReductionArg)* ';';
 ReductionArg:  '(' seed=Expression ',' collectionType=BasicType ')' '\u2192' returnType=BasicType;
 

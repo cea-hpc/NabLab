@@ -18,10 +18,10 @@ with Math.*;
 items { cell, node }
 
 connectivities {
-	cells: (∅) → {cell};
-	nodes: (∅) → {node};
-	nodesOfCell: (cell) → {node};
-	cellsOfNode: (node) → {cell};
+	cells: → {cell};
+	nodes: → {node};
+	nodesOfCell: cell → {node};
+	cellsOfNode: node → {cell};
 }
 
 const ℝ X_EDGE_LENGTH = 1.0;

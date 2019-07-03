@@ -15,18 +15,18 @@ module Math;
 
 functions 
 {
-	fabs: (ℝ)→ℝ;
-	√: (ℝ)→ℝ;
-	norm: (ℝ[2])→ℝ, (ℝ[3])→ℝ;
-	min: (ℝ, ℝ)→ℝ;
-	max: (ℝ, ℝ)→ℝ;
-	sin: (ℝ)→ℝ;
-	cos: (ℝ)→ℝ;
-	asin: (ℝ)→ℝ;
-	acos: (ℝ)→ℝ;
+	fabs: ℝ → ℝ;
+	√: ℝ → ℝ;
+	norm: ℝ[2]) → ℝ, ℝ[3] → ℝ;
+	min: ℝ × ℝ → ℝ;
+	max: ℝ × ℝ → ℝ;
+	sin: ℝ → ℝ;
+	cos: ℝ → ℝ;
+	asin: ℝ → ℝ;
+	acos: ℝ → ℝ;
 	
-	dot: (ℝ[2], ℝ[2])→ℝ, (ℝ[3], ℝ[3])→ℝ;	// produit scalaire
-	det: (ℝ[2], ℝ[2])→ℝ;					// determinant = produit vectoriel en 2D
+	dot: ℝ[2] × ℝ[2] → ℝ, ℝ[3] × ℝ[3] → ℝ;	// produit scalaire
+	det: ℝ[2] × ℝ[2] → ℝ;					// determinant = produit vectoriel en 2D
 
 	// ***** REDUCTIONS *****
 	∑: (0.0, ℝ)→ℝ, (ℝ[2](0.0), ℝ[2])→ℝ[2], (ℝ[3](0.0), ℝ[3])→ℝ[3], (ℝ[2,2](0.0), ℝ[2,2])→ℝ[2,2], (ℝ[3,3](0.0), ℝ[3,3])→ℝ[3,3];

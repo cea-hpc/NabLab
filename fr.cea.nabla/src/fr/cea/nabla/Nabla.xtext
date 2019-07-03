@@ -58,12 +58,12 @@ SimpleVar: name=ID;
 ConnectivityVar: name=ID '{' dimensions+=[Connectivity] (',' dimensions+=[Connectivity])* '}';
 
 /* CONNECTIVITES *****************************************/
-Connectivity: name=ID ':' '(' ((inTypes+=[ItemType] (',' inTypes+=[ItemType])*) | '\u2205') ')' '\u2192' returnType=ItemArgType ';';
+Connectivity: name=ID ':' (inTypes+=[ItemType] ('\u00D7' inTypes+=[ItemType])*)?  '\u2192' returnType=ItemArgType ';';
 ItemArgType: multiple?='{' type=[ItemType] '}' | type=[ItemType];
 
 /* FONCTIONS / REDUCTIONS ********************************/
 Function: name=ID ':' argGroups+=FunctionArg (',' argGroups+=FunctionArg)* ';';
-FunctionArg: '(' ((inTypes+=BaseType (',' inTypes+=BaseType)*) | '\u2205') ')' '\u2192' returnType=BaseType;
+FunctionArg: (inTypes+=BaseType ('\u00D7' inTypes+=BaseType)*)? '\u2192' returnType=BaseType;
 Reduction: name=ID ':' argGroups+=ReductionArg (',' argGroups+=ReductionArg)* ';';
 ReductionArg:  '(' seed=Expression ',' collectionType=BaseType ')' '\u2192' returnType=BaseType;
 

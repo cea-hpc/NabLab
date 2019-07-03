@@ -18,13 +18,13 @@ with Math.*;
 items { node, cell, face }
 
 connectivities {
-	nodes: (∅) → {node};
-	cells: (∅) → {cell};
-	faces: (∅) → {face};
-	neighbourCells: (cell) → {cell};
-	nodesOfFace: (face) → {node};
-	nodesOfCell: (cell) → {node};
-	commonFace: (cell, cell) → face;
+	nodes: → {node};
+	cells: → {cell};
+	faces: → {face};
+	neighbourCells: cell → {cell};
+	nodesOfFace: face → {node};
+	nodesOfCell: cell → {node};
+	commonFace: cell × cell → face;
 }
 
 // Options obligatoires pour compiler

@@ -18,21 +18,21 @@ with Math.*;
 items { node, cell, face }
 
 connectivities {
-	nodes: (∅) → {node};
-	cells: (∅) → {cell};
-	outerFaces: (∅) → {face};
-	innerNodes: (∅) → {node};
-	nodesOfCell: (cell) → {node};
-	cellsOfNode: (node) → {cell};
-	nodesOfFace: (face) → {node};
+	nodes: → {node};
+	cells: → {cell};
+	outerFaces: → {face};
+	innerNodes: → {node};
+	nodesOfCell: cell → {node};
+	cellsOfNode: node → {cell};
+	nodesOfFace: face → {node};
 }
 
 functions {
-	trace: (ℝ[2,2]) → ℝ;
-	perp: (ℝ[2]) → ℝ[2];
-	tensProduct: (ℝ[2], ℝ[2]) → ℝ[2,2];
-	matVectProduct: (ℝ[2,2], ℝ[2]) → ℝ[2];
-	inverse: (ℝ[2,2]) → ℝ[2,2];
+	trace: ℝ[2,2] → ℝ;
+	perp: ℝ[2] → ℝ[2];
+	tensProduct: ℝ[2] × ℝ[2] → ℝ[2,2];
+	matVectProduct: ℝ[2,2] × ℝ[2] → ℝ[2];
+	inverse: ℝ[2,2] → ℝ[2,2];
 }
 
 // Options obligatoires pour générer

@@ -47,10 +47,8 @@ class ExpressionTypeProvider
 {
 	@Inject extension FunctionCallExtensions
 	@Inject extension BasicTypeProvider
+	@Inject extension OperationTypeProvider
 	@Inject extension VarTypeProvider
-	@Inject extension MulOrDivTypeProvider
-	@Inject PlusTypeProvider ptp
-	@Inject MinusTypeProvider mtp
 
 	def dispatch NablaType getTypeFor(Expression e) 
 	{
@@ -70,9 +68,9 @@ class ExpressionTypeProvider
 			
 			Or, And, Not, Equality, Comparison: BasicTypeProvider::BOOL
 
-			Plus: ptp.typeFor(e.left?.typeFor, e.right?.typeFor)
-			Minus: mtp.typeFor(e.left?.typeFor, e.right?.typeFor)
-			MulOrDiv: e.op.typeProvider.typeFor(e.left?.typeFor, e?.right.typeFor)
+			Plus: getTypeFor(e.op, e.left?.typeFor, e.right?.typeFor)
+			Minus: getTypeFor(e.op, e.left?.typeFor, e.right?.typeFor)
+			MulOrDiv: getTypeFor(e.op, e.left?.typeFor, e?.right.typeFor)
 			Modulo: BasicTypeProvider::INT
 			UnaryMinus: e.expression?.typeFor
 			Parenthesis: e.expression?.typeFor

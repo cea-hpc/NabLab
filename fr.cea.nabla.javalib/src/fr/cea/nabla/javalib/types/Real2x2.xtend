@@ -54,6 +54,7 @@ class Real2x2
 	def Real2x2 operator_plus(Real2x2 v) { new Real2x2(x+v.x, y+v.y) }
 
 	def Real2x2 operator_minus(Real2x2 v) { new Real2x2(x-v.x, y-v.y) }
+	def Real2x2 operator_minus() { new Real2x2(-x, -y) }
 
 	def Real2x2 operator_min(Real2x2 v) { new Real2x2(x.operator_min(v.x), y.operator_min(v.y)) }
 	def Real2x2 operator_max(Real2x2 v) { new Real2x2(x.operator_max(v.x), y.operator_max(v.y)) }

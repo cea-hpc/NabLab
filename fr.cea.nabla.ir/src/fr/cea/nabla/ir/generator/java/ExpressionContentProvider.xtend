@@ -35,6 +35,7 @@ import fr.cea.nabla.ir.ir.Variable
 import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
+import fr.cea.nabla.ir.Utils
 
 class ExpressionContentProvider
 {
@@ -91,7 +92,7 @@ class ExpressionContentProvider
 	}
 
 	static def dispatch CharSequence getContent(FunctionCall it) 
-	'''«function.provider»Functions.«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+	'''«function.provider»«Utils::FunctionAndReductionproviderSuffix».«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
 	static def dispatch CharSequence getContent(VarRef it)
 	'''«variable.codeName»«iteratorsContent»«FOR f:fields BEFORE '.' SEPARATOR '.'»get«f.toFirstUpper»()«ENDFOR»'''

@@ -60,6 +60,7 @@ class Real3
 	def Real3 operator_minus(int v) { new Real3(x-v, y-v, z-v) }
 	def Real3 operator_minus(double v) { new Real3(x-v, y-v, z-v) }
 	def Real3 operator_minus(Real3 v) { new Real3(x-v.x, y-v.y, z-v.z) }
+	def Real3 operator_minus() { new Real3(0-x, 0-y, 0-z) }
 
 	def Real3 operator_divide(int v) { new Real3(x/v, y/v, z/v) }
 	def Real3 operator_divide(double v) { new Real3(x/v, y/v, z/v) }

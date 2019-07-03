@@ -59,6 +59,7 @@ class Real3x3
 	def Real3x3 operator_plus(Real3x3 v) { new Real3x3(x+v.x, y+v.y, z+v.z) }
 
 	def Real3x3 operator_minus(Real3x3 v) { new Real3x3(x-v.x, y-v.y, z-v.z) }
+	def Real3x3 operator_minus() { new Real3x3(-x, -y, -z) }
 
 	def Real3x3 operator_min(Real3x3 v) { new Real3x3(x.operator_min(v.x), y.operator_min(v.y), z.operator_min(v.z)) }
 	def Real3x3 operator_max(Real3x3 v) { new Real3x3(x.operator_max(v.x), y.operator_max(v.y), z.operator_max(v.z)) }

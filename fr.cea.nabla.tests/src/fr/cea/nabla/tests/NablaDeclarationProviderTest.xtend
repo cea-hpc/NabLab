@@ -15,13 +15,13 @@ import fr.cea.nabla.nabla.PrimitiveType
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
-class DeclarationProviderTest 
+class NablaDeclarationProviderTest 
 {
 	@Inject ParseHelper<NablaModule> parseHelper
 	@Inject extension DeclarationProvider
 	
 	@Test
-	def void loadModel() 
+	def void test() 
 	{
 		val module = parseHelper.parse(
 		'''
@@ -67,8 +67,7 @@ class DeclarationProviderTest
 		
 		Assert.assertNotNull(module)
 		val errors = module.eResource.errors
-		for (e : errors)
-			println(e.message)
+		errors.forEach[x | println(x.message)]
 		Assert.assertTrue(errors.isEmpty)
 		
 		val f = module.functions.filter(Function).get(0)		

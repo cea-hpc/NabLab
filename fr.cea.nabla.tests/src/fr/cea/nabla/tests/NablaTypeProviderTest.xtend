@@ -28,9 +28,9 @@ import org.junit.runner.RunWith
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
-class ExpressionTypeProviderTest 
+class NablaTypeProviderTest 
 {
-	@Inject ParseHelper<NablaModule> parseHelper;
+	@Inject ParseHelper<NablaModule> parseHelper
 	@Inject extension ExpressionTypeProvider
 	
 	@Test 

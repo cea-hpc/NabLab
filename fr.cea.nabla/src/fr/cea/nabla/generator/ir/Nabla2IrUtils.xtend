@@ -16,11 +16,11 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Import
 import fr.cea.nabla.nabla.ItemArgType
 import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.PrimitiveType
-import fr.cea.nabla.nabla.BaseType
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -62,7 +62,8 @@ class Nabla2IrUtils
 		IrFactory::eINSTANCE.createBaseType => 
 		[
 			root = i.root.toIrPrimitiveType
-			dimSizes.addAll(i.dimSizes)
+			dimSizes.addAll(i.sizes)
 		]
 	}
+
 }

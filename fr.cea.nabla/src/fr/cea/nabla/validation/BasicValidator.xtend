@@ -29,6 +29,7 @@ import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.RealBaseTypeConstant
+import fr.cea.nabla.nabla.RealMatrixConstant
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
@@ -76,8 +77,8 @@ class BasicValidator  extends AbstractNablaValidator
 	@Check
 	def checkConformance(BaseType it)
 	{
-		if (!dimSizes.empty && dimSizes.exists[x | x<2])
-			error('Dimensions must be greater or equal than 2', NablaPackage.Literals.BASE_TYPE__DIM_SIZES)
+		if (!sizes.empty && sizes.exists[x | x<2])
+			error('Dimensions must be greater or equal than 2', NablaPackage.Literals.BASE_TYPE__SIZES)
 	}
 
 	@Check
@@ -85,6 +86,14 @@ class BasicValidator  extends AbstractNablaValidator
 	{
 		if (type.root!=PrimitiveType::REAL)
 			error('Initialization only available for ' + PrimitiveType::REAL.literal, NablaPackage.Literals.REAL_BASE_TYPE_CONSTANT__TYPE)
+	}
+
+	@Check
+	def checkConformance(RealMatrixConstant it)
+	{
+		val vectorSize = values.head.values.size
+		if (values.exists[ x | x.values.size != vectorSize])
+			error('All vector sizes must be equal', NablaPackage.Literals.REAL_MATRIX_CONSTANT__VALUES)
 	}
 
 	@Check

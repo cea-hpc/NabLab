@@ -24,6 +24,10 @@ connectivities {
 	cellsOfNode: node → {cell};
 }
 
+functions {
+	f: a, b | ℝ[a] × ℝ[b] → ℝ[a+b];
+	g: x, y | ℝ[x] → ℝ;
+}
 const ℝ X_EDGE_LENGTH = 1.0;
 const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
 const ℕ X_EDGE_ELEMS = 2;

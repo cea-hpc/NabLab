@@ -14,7 +14,7 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
-import fr.cea.nabla.FunctionCallExtensions
+import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.VarRefExtensions
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrFactory
@@ -35,25 +35,23 @@ import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
+import fr.cea.nabla.nabla.RealBaseTypeConstant
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
-import fr.cea.nabla.typing.BoolArrayType
 import fr.cea.nabla.typing.BoolType
 import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.typing.IntArrayType
 import fr.cea.nabla.typing.IntType
 import fr.cea.nabla.typing.RealArrayType
 import fr.cea.nabla.typing.RealType
 import fr.cea.nabla.typing.UndefinedType
-import fr.cea.nabla.nabla.RealBaseTypeConstant
 
 class IrExpressionFactory 
 {
-	@Inject extension FunctionCallExtensions
+	@Inject extension DeclarationProvider
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrFunctionFactory
 	@Inject extension IrVariableFactory
@@ -194,7 +192,7 @@ class IrExpressionFactory
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrBaseType
 			variable = e.variable.toIrVariable(e.timeSuffix)
-			arrayTypeIndices.addAll(e.arrayTypeIndices)
+			arrayTypeIndices.addAll(e.indices)
 			for (i : 0..<e.spaceIterators.size)
 				iterators += e.spaceIterators.get(i).toIrVarRefIteratorRef(i)
 		]
@@ -228,20 +226,10 @@ class IrExpressionFactory
 				IntType: root = PrimitiveType::INT
 				RealType: root = PrimitiveType::REAL
 				BoolType: root = PrimitiveType::BOOL
-				IntArrayType: 
-				{
-					root = PrimitiveType::INT
-					dimSizes.addAll(t.dimSizes)
-				}
 				RealArrayType:
 				{
 					root = PrimitiveType::REAL
-					dimSizes.addAll(t.dimSizes)
-				}
-				BoolArrayType:
-				{
-					root = PrimitiveType::BOOL
-					dimSizes.addAll(t.dimSizes)
+					dimSizes.addAll(t.sizes)
 				}
 			}
 		]

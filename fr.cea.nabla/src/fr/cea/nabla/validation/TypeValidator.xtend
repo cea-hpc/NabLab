@@ -108,7 +108,7 @@ class TypeValidator extends BasicValidator
 	{
 		val varBaseType = variable.baseType
 		val dimensions = if (variable instanceof ConnectivityVar) (variable as ConnectivityVar).dimensions.length else 0
-		val dimSizes = varBaseType.dimSizes
+		val dimSizes = varBaseType.sizes
 		if (dimensions != spaceIterators.size) 
 			error('Number of iterators and variable dimension must be equal' + dimSizes.size, NablaPackage.Literals::VAR_REF__SPACE_ITERATORS)
 //		if (dimSizes.size != arrayTypeIndices.size)

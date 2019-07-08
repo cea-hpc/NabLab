@@ -14,7 +14,7 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
-import fr.cea.nabla.FunctionCallExtensions
+import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.nabla.And
@@ -43,7 +43,7 @@ class IrReductionInstructionFactory
 	@Inject extension ReductionCallExtensions
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrFunctionFactory
-	@Inject extension FunctionCallExtensions
+	@Inject extension DeclarationProvider
 	@Inject extension IrIteratorFactory
 	@Inject extension IrExpressionFactory
 	

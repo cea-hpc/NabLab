@@ -78,6 +78,7 @@ public class FunctionArgItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
+			childrenFeatures.add(NablaPackage.Literals.FUNCTION_ARG__DIM_VARS);
 			childrenFeatures.add(NablaPackage.Literals.FUNCTION_ARG__IN_TYPES);
 			childrenFeatures.add(NablaPackage.Literals.FUNCTION_ARG__RETURN_TYPE);
 		}
@@ -132,6 +133,7 @@ public class FunctionArgItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(FunctionArg.class)) {
+			case NablaPackage.FUNCTION_ARG__DIM_VARS:
 			case NablaPackage.FUNCTION_ARG__IN_TYPES:
 			case NablaPackage.FUNCTION_ARG__RETURN_TYPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
@@ -153,13 +155,18 @@ public class FunctionArgItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
+				(NablaPackage.Literals.FUNCTION_ARG__DIM_VARS,
+				 NablaFactory.eINSTANCE.createDimensionVar()));
+
+		newChildDescriptors.add
+			(createChildParameter
 				(NablaPackage.Literals.FUNCTION_ARG__IN_TYPES,
-				 NablaFactory.eINSTANCE.createBaseType()));
+				 NablaFactory.eINSTANCE.createArgType()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.FUNCTION_ARG__RETURN_TYPE,
-				 NablaFactory.eINSTANCE.createBaseType()));
+				 NablaFactory.eINSTANCE.createArgType()));
 	}
 
 	/**

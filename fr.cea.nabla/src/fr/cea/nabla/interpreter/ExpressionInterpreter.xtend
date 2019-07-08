@@ -1,7 +1,7 @@
 package fr.cea.nabla.interpreter
 
 import com.google.inject.Inject
-import fr.cea.nabla.FunctionCallExtensions
+import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.Utils
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BaseType
@@ -30,12 +30,10 @@ import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
 import java.util.Arrays
 
-import static extension fr.cea.nabla.BaseTypeExtensions.*
-
 class ExpressionInterpreter 
 {
 	@Inject extension BinaryOperationsInterpreter
-	@Inject extension FunctionCallExtensions
+	@Inject extension DeclarationProvider
 	
 	def dispatch ExpressionValue interprete(ContractedIf it)
 	{
@@ -84,15 +82,15 @@ class ExpressionInterpreter
 	def dispatch ExpressionValue interprete(RealVectorConstant it) { new RealArrayValue(#[values.size], values) }
 	def dispatch ExpressionValue interprete(RealBaseTypeConstant it) 
 	{ 
-		if (type.scalar)
+		if (type.sizes.empty)
 			new RealValue(value)
 		else
 		{
 			var totalSize = 1
-			for (dimSize : type.dimSizes) totalSize *= dimSize
+			for (s : type.sizes) totalSize *= s
 			val values = newDoubleArrayOfSize(totalSize)
 			Arrays::fill(values, value)
-			new RealArrayValue(type.dimSizes, values)
+			new RealArrayValue(type.sizes, values)
 		}
 	}
 	
@@ -132,9 +130,10 @@ class ExpressionInterpreter
 	{
 		val providerClassName = Utils::getNablaModule(reduction).name + fr.cea.nabla.ir.Utils::FunctionAndReductionproviderSuffix
 		val providerClass = Class.forName(providerClassName)
-		val type = declaration.collectionType.javaType
+		val d = declaration
+		val type = d.collectionType.javaType
 		val method = providerClass.getMethod(reduction.name, type)
-		var reductionValue = declaration.seed.interprete
+		var reductionValue = d.model.seed.interprete
 		// comment gérer les itérateurs ?
 		// PB : remplacement des UTF8
 		return null
@@ -145,16 +144,27 @@ class ExpressionInterpreter
 		// TODO
 	}
 	
-	private def getJavaType(BaseType it)
+	private def getJavaType(BaseType t)
 	{
-		switch root
+		switch (t.sizes)
 		{
-			case BOOL: if (scalar) typeof(boolean) else typeof(boolean[])
-			case INT: if (scalar) typeof(int) else typeof(int[])
-			case REAL: if (scalar) typeof(double) else typeof(double[])
+			case 0: t.root.javaType
+			case 1: typeof(double[])
+			case 2: typeof(double[][])
+			default: throw new RuntimeException('Invalid type')
 		}
 	}
-
+	
+	private def getJavaType(PrimitiveType t)
+	{
+		switch t
+		{
+			case BOOL: typeof(boolean)
+			case INT: typeof(int)
+			case REAL: typeof(double)
+		}
+	}
+	
 	private def getExpressionValue(Object o)
 	{
 		switch o

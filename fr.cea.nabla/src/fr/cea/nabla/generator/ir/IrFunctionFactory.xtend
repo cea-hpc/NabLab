@@ -15,12 +15,12 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import fr.cea.nabla.FunctionDeclaration
+import fr.cea.nabla.ReductionDeclaration
 import fr.cea.nabla.Utils
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.Function
-import fr.cea.nabla.nabla.FunctionArg
 import fr.cea.nabla.nabla.Reduction
-import fr.cea.nabla.nabla.ReductionArg
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -33,18 +33,18 @@ class IrFunctionFactory
 	@Inject extension Nabla2IrUtils
 	@Inject extension IrAnnotationHelper
 
-	def create IrFactory::eINSTANCE.createFunction toIrFunction(Function f, FunctionArg a)
+	def create IrFactory::eINSTANCE.createFunction toIrFunction(Function f, FunctionDeclaration a)
 	{
-		annotations += a.toIrAnnotation
+		annotations += a.model.toIrAnnotation
 		name = f.name
 		returnType = a.returnType.toIrBaseType
 		inTypes += a.inTypes.map[toIrBaseType]
 		provider = Utils::getNablaModule(f).name
 	}
 
-	def create IrFactory::eINSTANCE.createReduction toIrReduction(Reduction f, ReductionArg a)
+	def create IrFactory::eINSTANCE.createReduction toIrReduction(Reduction f, ReductionDeclaration a)
 	{
-		annotations += a.toIrAnnotation
+		annotations += a.model.toIrAnnotation
 		name = f.name
 		collectionType = a.collectionType.toIrBaseType
 		returnType = a.returnType.toIrBaseType

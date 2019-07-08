@@ -63,7 +63,7 @@ public class BaseTypeItemProvider
 			super.getPropertyDescriptors(object);
 
 			addRootPropertyDescriptor(object);
-			addDimSizesPropertyDescriptor(object);
+			addSizesPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -91,19 +91,19 @@ public class BaseTypeItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Dim Sizes feature.
+	 * This adds a property descriptor for the Sizes feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addDimSizesPropertyDescriptor(Object object) {
+	protected void addSizesPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_BaseType_dimSizes_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_BaseType_dimSizes_feature", "_UI_BaseType_type"),
-				 NablaPackage.Literals.BASE_TYPE__DIM_SIZES,
+				 getString("_UI_BaseType_sizes_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_BaseType_sizes_feature", "_UI_BaseType_type"),
+				 NablaPackage.Literals.BASE_TYPE__SIZES,
 				 true,
 				 false,
 				 false,
@@ -152,7 +152,7 @@ public class BaseTypeItemProvider
 
 		switch (notification.getFeatureID(BaseType.class)) {
 			case NablaPackage.BASE_TYPE__ROOT:
-			case NablaPackage.BASE_TYPE__DIM_SIZES:
+			case NablaPackage.BASE_TYPE__SIZES:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}

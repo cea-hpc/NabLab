@@ -14,7 +14,7 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
-import fr.cea.nabla.FunctionCallExtensions
+import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.MandatoryOptions
 import fr.cea.nabla.VarRefExtensions
 import fr.cea.nabla.ir.ir.IrFactory
@@ -36,7 +36,7 @@ class Nabla2Ir
 	@Inject extension IrConnectivityFactory
 	@Inject extension IrExpressionFactory
 	@Inject extension IrAnnotationHelper
-	@Inject extension FunctionCallExtensions
+	@Inject extension DeclarationProvider
 	@Inject extension VarRefExtensions
 	
 	def create IrFactory::eINSTANCE.createIrModule toIrModule(NablaModule m)

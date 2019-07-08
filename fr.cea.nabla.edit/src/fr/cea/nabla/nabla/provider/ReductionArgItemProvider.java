@@ -78,6 +78,7 @@ public class ReductionArgItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
+			childrenFeatures.add(NablaPackage.Literals.REDUCTION_ARG__DIM_VARS);
 			childrenFeatures.add(NablaPackage.Literals.REDUCTION_ARG__SEED);
 			childrenFeatures.add(NablaPackage.Literals.REDUCTION_ARG__COLLECTION_TYPE);
 			childrenFeatures.add(NablaPackage.Literals.REDUCTION_ARG__RETURN_TYPE);
@@ -133,6 +134,7 @@ public class ReductionArgItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(ReductionArg.class)) {
+			case NablaPackage.REDUCTION_ARG__DIM_VARS:
 			case NablaPackage.REDUCTION_ARG__SEED:
 			case NablaPackage.REDUCTION_ARG__COLLECTION_TYPE:
 			case NablaPackage.REDUCTION_ARG__RETURN_TYPE:
@@ -155,8 +157,18 @@ public class ReductionArgItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
+				(NablaPackage.Literals.REDUCTION_ARG__DIM_VARS,
+				 NablaFactory.eINSTANCE.createDimensionVar()));
+
+		newChildDescriptors.add
+			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_ARG__SEED,
 				 NablaFactory.eINSTANCE.createExpression()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION_ARG__SEED,
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -241,7 +253,7 @@ public class ReductionArgItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_ARG__SEED,
-				 NablaFactory.eINSTANCE.createRealVectorConstant()));
+				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -271,12 +283,12 @@ public class ReductionArgItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_ARG__COLLECTION_TYPE,
-				 NablaFactory.eINSTANCE.createBaseType()));
+				 NablaFactory.eINSTANCE.createArgType()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_ARG__RETURN_TYPE,
-				 NablaFactory.eINSTANCE.createBaseType()));
+				 NablaFactory.eINSTANCE.createArgType()));
 	}
 
 	/**

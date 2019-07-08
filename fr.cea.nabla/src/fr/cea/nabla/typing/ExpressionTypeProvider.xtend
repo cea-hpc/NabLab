@@ -14,7 +14,7 @@
 package fr.cea.nabla.typing
 
 import com.google.inject.Inject
-import fr.cea.nabla.FunctionCallExtensions
+import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BaseType
@@ -36,16 +36,16 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.PrimitiveType
+import fr.cea.nabla.nabla.RealBaseTypeConstant
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
-import fr.cea.nabla.nabla.RealBaseTypeConstant
 
 class ExpressionTypeProvider 
 {
-	@Inject extension FunctionCallExtensions
+	@Inject extension DeclarationProvider
 	@Inject extension BinaryOperationsTypeProvider
 	@Inject extension VarExtensions
 
@@ -92,16 +92,16 @@ class ExpressionTypeProvider
 	{
 		val varBaseType = variable.baseType
 		val dimensions = if (variable instanceof ConnectivityVar) (variable as ConnectivityVar).dimensions.length else 0
-		val dimSizes = varBaseType.dimSizes
-		if (dimensions == spaceIterators.size && dimSizes.size >= arrayTypeIndices.size)
+		val dimSizes = varBaseType.sizes
+		if (dimensions == spaceIterators.size && dimSizes.size >= indices.size)
 		{
-			switch arrayTypeIndices.size
+			switch indices.size
 			{
 				case 0: varBaseType.typeFor
 				case dimSizes.size: varBaseType.root.typeFor
 				default:
 				{
-					val newDimSizes = newIntArrayOfSize(dimSizes.size- arrayTypeIndices.size)
+					val newDimSizes = newIntArrayOfSize(dimSizes.size- indices.size)
 					for (i : 0..<newDimSizes.size) newDimSizes.set(i, dimSizes.get(i))
 					getTypeFor(varBaseType.root, newDimSizes)				
 				}
@@ -115,20 +115,20 @@ class ExpressionTypeProvider
 	{
 		switch it
 		{
-			case BOOL: new UndefinedType
 			case INT: new IntType
 			case REAL: new RealType
+			case BOOL: new BoolType
 		}
 	}
 
-	def dispatch ExpressionType getTypeFor(BaseType it) { getTypeFor(root, dimSizes) }
+	def dispatch ExpressionType getTypeFor(BaseType it) { getTypeFor(root, sizes) }
 
-	private def ExpressionType getTypeFor(PrimitiveType t, int[] dimSizes)
+	def ExpressionType getTypeFor(PrimitiveType t, int[] dimSizes)
 	{
 		switch t
 		{
-			case BOOL: if (dimSizes.empty) new BoolType else new BoolArrayType(dimSizes)
-			case INT: if (dimSizes.empty) new IntType else new IntArrayType(dimSizes)
+			case BOOL: if (dimSizes.empty) new BoolType else new UndefinedType
+			case INT: if (dimSizes.empty) new IntType else new UndefinedType
 			case REAL: if (dimSizes.empty) new RealType else new RealArrayType(dimSizes)
 		}
 	}

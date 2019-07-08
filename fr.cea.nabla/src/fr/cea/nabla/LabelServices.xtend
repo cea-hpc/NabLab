@@ -15,6 +15,7 @@ package fr.cea.nabla
 
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
+import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ConnectivityCall
@@ -48,6 +49,8 @@ import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VarRef
+
+import static extension fr.cea.nabla.ir.Utils.*
 
 class LabelServices 
 {
@@ -98,10 +101,15 @@ class LabelServices
 	static def dispatch String getLabel(VarRef it)
 	{
 		var label = variable.name
-		if (!spaceIterators.empty) label += '{' + spaceIterators.map[x | x.label].join(',') + '}'
-		if (!arrayTypeIndices.empty) label += '[' + arrayTypeIndices.join(',') + ']'
 		if (timeIterator !== null) label += '^{' + timeIterator.timeIteratorLabel + '}'
+		if (!spaceIterators.empty) label += '{' + spaceIterators.map[x | x.label].join(',') + '}'
+		if (!indices.empty) label += '[' + indices.join(',') + ']'
 		return label
+	}
+
+	static def dispatch getLabel(BaseType it)
+	{
+		root.literal + sizes.map[utfExponent].join('\\u02E3')
 	}
 
 	private static def dispatch getTimeIteratorLabel(InitTimeIterator it) '''n=0''' 

@@ -15,7 +15,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import fr.cea.nabla.FunctionCallExtensions
+import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.ReductionCall
@@ -27,7 +27,7 @@ import fr.cea.nabla.nabla.ReductionCall
 @Singleton
 class ReductionCallExtensions 
 {
-	@Inject extension FunctionCallExtensions
+	@Inject extension DeclarationProvider
 	@Inject extension Nabla2IrUtils
 	@Inject extension IrExpressionFactory
 	
@@ -35,6 +35,6 @@ class ReductionCallExtensions
 	{
 		name = rc.reduction.name + Utils::hashString(rc)
 		type = rc.declaration.returnType.toIrBaseType
-		defaultValue = rc.declaration.seed.toIrExpression
+		defaultValue = rc.declaration.model.seed.toIrExpression
 	}
 }

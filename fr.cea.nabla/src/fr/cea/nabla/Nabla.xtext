@@ -63,9 +63,18 @@ ItemArgType: multiple?='{' type=[ItemType] '}' | type=[ItemType];
 
 /* FONCTIONS / REDUCTIONS ********************************/
 Function: name=ID ':' argGroups+=FunctionArg (',' argGroups+=FunctionArg)* ';';
-FunctionArg: (inTypes+=BaseType ('\u00D7' inTypes+=BaseType)*)? '\u2192' returnType=BaseType;
+FunctionArg: (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? (inTypes+=ArgType ('\u00D7' inTypes+=ArgType)*)? '\u2192' returnType=ArgType;
 Reduction: name=ID ':' argGroups+=ReductionArg (',' argGroups+=ReductionArg)* ';';
-ReductionArg:  '(' seed=Expression ',' collectionType=BaseType ')' '\u2192' returnType=BaseType;
+ReductionArg:  (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? '(' seed=Expression ',' collectionType=ArgType ')' '\u2192' returnType=ArgType;
+
+ArgType: root=PrimitiveType ('[' dimensions+=Dimension (',' dimensions+=Dimension)* ']')?;
+DimensionVar: name=ID;
+Dimension: DimensionOperation;
+DimensionOperation returns Dimension:
+	DimensionAtomic ({DimensionOperation.left=current} op=('*'|'+') right=DimensionAtomic)*;
+DimensionAtomic returns Dimension: 
+	{DimensionInt} value=INT |
+	{DimensionVarReference} target=[DimensionVar];
 
 /* EXPRESSIONS ******************************************/
 Expression: ContractedIf;
@@ -104,7 +113,8 @@ Atomic returns Expression:
 	{IntConstant} value=INT |
 	{RealConstant} value=REAL |
 	{BoolConstant} (value?='true' | 'false') |
-	{RealVectorConstant} '{' values+=REAL (',' values+=REAL)* '}' |
+	RealVectorConstant |
+	{RealMatrixConstant} '[' values+=RealVectorConstant (',' values+=RealVectorConstant)+ ']' |
 	{RealBaseTypeConstant} type=BaseType '(' value=REAL ')' |
 	{MinConstant} type=PrimitiveType '.MinValue' |
 	{MaxConstant} type=PrimitiveType '.MaxValue' |
@@ -112,17 +122,19 @@ Atomic returns Expression:
 	{ReductionCall} reduction=[Reduction|QualifiedName] '{' range=RangeSpaceIterator (',' singletons+=SingletonSpaceIterator)* '}' '(' arg=Expression ')' |
 	VarRef;
 
+RealVectorConstant: '[' values+=REAL (',' values+=REAL)* ']';
+
 VarRef: variable=[Var] 
+	('^{' timeIterator=TimeIterator '}')?
 	('{' spaceIterators+=SpaceIteratorRef (',' spaceIterators+=SpaceIteratorRef)* '}')? 
-	('[' arrayTypeIndices+=INT (',' arrayTypeIndices+=INT)? ']')?
-	('^{' timeIterator=TimeIterator '}')?;
+	('[' indices+=INT (',' indices+=INT)? ']')?;
 
 TimeIterator: 
 	{InitTimeIterator} 'n=0' | 
 	{NextTimeIterator} 'n+1' (hasDiv?='/' div=INT)?;
 
 /* TYPES *************************************************/
-BaseType: root=PrimitiveType ('[' dimSizes+=INT (',' dimSizes+=INT)? ']')?;
+BaseType: root=PrimitiveType ('[' sizes+=INT (',' sizes+=INT)? ']')?;
 enum PrimitiveType: Int='\u2115' | Real='\u211D' | Bool='\u213E';
 
 /* DATA TYPE *********************************************/

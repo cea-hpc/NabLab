@@ -15,13 +15,10 @@ package fr.cea.nabla.tests
 
 import com.google.inject.Inject
 import fr.cea.nabla.nabla.Affectation
-import fr.cea.nabla.nabla.GlobalVariableDeclarationBlock
 import fr.cea.nabla.nabla.InstructionBlock
-import fr.cea.nabla.nabla.InstructionJob
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
-import fr.cea.nabla.nabla.ReductionFunctionCall
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.scoping.IScopeProvider

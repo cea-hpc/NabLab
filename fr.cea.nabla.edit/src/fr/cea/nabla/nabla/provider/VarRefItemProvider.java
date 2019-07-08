@@ -50,7 +50,7 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 			super.getPropertyDescriptors(object);
 
 			addVariablePropertyDescriptor(object);
-			addArrayTypeIndicesPropertyDescriptor(object);
+			addIndicesPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -78,19 +78,19 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 	}
 
 	/**
-	 * This adds a property descriptor for the Array Type Indices feature.
+	 * This adds a property descriptor for the Indices feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addArrayTypeIndicesPropertyDescriptor(Object object) {
+	protected void addIndicesPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_VarRef_arrayTypeIndices_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_VarRef_arrayTypeIndices_feature", "_UI_VarRef_type"),
-				 NablaPackage.Literals.VAR_REF__ARRAY_TYPE_INDICES,
+				 getString("_UI_VarRef_indices_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_VarRef_indices_feature", "_UI_VarRef_type"),
+				 NablaPackage.Literals.VAR_REF__INDICES,
 				 true,
 				 false,
 				 false,
@@ -111,8 +111,8 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(NablaPackage.Literals.VAR_REF__SPACE_ITERATORS);
 			childrenFeatures.add(NablaPackage.Literals.VAR_REF__TIME_ITERATOR);
+			childrenFeatures.add(NablaPackage.Literals.VAR_REF__SPACE_ITERATORS);
 		}
 		return childrenFeatures;
 	}
@@ -165,11 +165,11 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(VarRef.class)) {
-			case NablaPackage.VAR_REF__ARRAY_TYPE_INDICES:
+			case NablaPackage.VAR_REF__INDICES:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
-			case NablaPackage.VAR_REF__SPACE_ITERATORS:
 			case NablaPackage.VAR_REF__TIME_ITERATOR:
+			case NablaPackage.VAR_REF__SPACE_ITERATORS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -189,11 +189,6 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__SPACE_ITERATORS,
-				 NablaFactory.eINSTANCE.createSpaceIteratorRef()));
-
-		newChildDescriptors.add
-			(createChildParameter
 				(NablaPackage.Literals.VAR_REF__TIME_ITERATOR,
 				 NablaFactory.eINSTANCE.createTimeIterator()));
 
@@ -206,6 +201,11 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.VAR_REF__TIME_ITERATOR,
 				 NablaFactory.eINSTANCE.createNextTimeIterator()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.VAR_REF__SPACE_ITERATORS,
+				 NablaFactory.eINSTANCE.createSpaceIteratorRef()));
 	}
 
 }

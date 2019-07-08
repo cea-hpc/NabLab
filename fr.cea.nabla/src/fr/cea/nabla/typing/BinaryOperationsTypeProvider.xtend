@@ -40,15 +40,6 @@ class BinaryOperationsTypeProvider
 		}
 	}
 
-	def dispatch ExpressionType getTypeFor(IntType a, IntArrayType b, String op)
-	{
-		switch op
-		{
-			case '+', case '*': b
-			default: new UndefinedType
-		}
-	}
-
 	def dispatch ExpressionType getTypeFor(IntType a, RealArrayType b, String op)
 	{
 		switch op
@@ -83,35 +74,6 @@ class BinaryOperationsTypeProvider
 			default: new UndefinedType
 		}
 	}
-
-	// INT ARRAY
-	def dispatch ExpressionType getTypeFor(IntArrayType a, IntType b, String op)
-	{
-		switch op
-		{
-			case '+', case '-', case '*', case '/': a
-			default: new UndefinedType
-		}
-	}
-
-	def dispatch ExpressionType getTypeFor(IntArrayType a, RealType b, String op)
-	{
-		switch op
-		{
-			case '+', case '-', case '*', case '/': new RealArrayType(a.dimSizes)
-			default: new UndefinedType
-		}
-	}
-
-	def dispatch ExpressionType getTypeFor(IntArrayType a, IntArrayType b, String op)
-	{
-		switch op
-		{
-			case !haveSameDimensions(a.dimSizes, b.dimSizes): new UndefinedType
-			case '+', case '-', case '*', case '/': b 
-			default: new UndefinedType
-		}
-	}
 	
 	// REAL ARRAY
 	def dispatch ExpressionType getTypeFor(RealArrayType a, IntType b, String op)
@@ -133,7 +95,7 @@ class BinaryOperationsTypeProvider
 	{
 		switch op
 		{
-			case !haveSameDimensions(a.dimSizes, b.dimSizes): new UndefinedType
+			case !haveSameDimensions(a.sizes, b.sizes): new UndefinedType
 			case '+', case '-', case '*', case '/': b
 			default: new UndefinedType
 		}

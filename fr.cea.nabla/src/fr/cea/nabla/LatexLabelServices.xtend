@@ -15,6 +15,7 @@ package fr.cea.nabla
 
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
+import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ConnectivityCall
@@ -50,16 +51,14 @@ import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VarRef
 
-import static extension fr.cea.nabla.BaseTypeExtensions.*
-
 class LatexLabelServices 
 {
 	// JOBS
 	static def dispatch String getLatex(Job it) { '\\texttt{' + name.pu + '} : '+ instruction.latex }
 	
 	// INSTRUCTIONS	
-	static def dispatch String getLatex(ScalarVarDefinition it) { type.label + ' ' + variable.name.pu + '=' + defaultValue.latex }
-	static def dispatch String getLatex(VarGroupDeclaration it) { type.label + ' ' + variables.map[x|x.name.pu].join(', ') }
+	static def dispatch String getLatex(ScalarVarDefinition it) { type.latex + ' ' + variable.name.pu + '=' + defaultValue.latex }
+	static def dispatch String getLatex(VarGroupDeclaration it) { type.latex + ' ' + variables.map[x|x.name.pu].join(', ') }
 	static def dispatch String getLatex(InstructionBlock it) { '...' }
 	static def dispatch String getLatex(Affectation it) { varRef?.latex + ' = ' + expression?.latex }
 	static def dispatch String getLatex(Loop it) { '\\forall {' + range.latex + '}, \\ ' + body.latex }
@@ -130,13 +129,20 @@ class LatexLabelServices
 	static def dispatch String getLatex(VarRef it)
 	{
 		var label = variable.name.pu
+		if (timeIterator === null) label += '^{n}'
+		else label += '^{' + timeIterator.timeIteratorLabel + '}'
 		if (!spaceIterators.empty) label += '_{' + spaceIterators.map[x | x.latex].join('') + '}'
-		if (timeIterator !== null) label += '^{' + timeIterator.timeIteratorLabel + '}'
-		if (!arrayTypeIndices.empty) label += '[' + arrayTypeIndices.join(',') + ']'
-		else label += '^{n}'
+		if (!indices.empty) label += '[' + indices.join(',') + ']'
 		return label
 	}
+
 	
+	static def dispatch getLatex(BaseType it)
+	{
+		if (sizes.empty) root.literal 
+		else root.literal + '^{' + sizes.map[toString].join('x') + '}'
+	}
+
 	private static def dispatch getTimeIteratorLabel(InitTimeIterator it) '''n=0''' 
 	private static def dispatch getTimeIteratorLabel(NextTimeIterator it) '''n+1«IF hasDiv»/«div»«ENDIF»''' 
 

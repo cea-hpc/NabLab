@@ -104,7 +104,7 @@ class BasicValidator  extends AbstractNablaValidator
 	@Check
 	def checkOnlyRealArray(BaseType it)
 	{
-		if (root != PrimitiveType::REAL)
+		if (root != PrimitiveType::REAL && !sizes.empty)
 			error(getOnlyRealArrayMsg(), NablaPackage.Literals::BASE_TYPE__ROOT, ONLY_REAL_ARRAY)
 	}
 
@@ -134,12 +134,14 @@ class BasicValidator  extends AbstractNablaValidator
 
 	// ===== Variables : Var & VarRef =====	
 	public static val UNUSED_VARIABLE = "Variables::UnusedVariable"
-	public static val ITERATOR_INDEX = "Variables::IteratorIndex"
+	public static val ITERATOR_NUMBER = "Variables::IteratorNumber"
 	public static val ITERATOR_TYPE = "Variables::IteratorType"
+	public static val INDICES_NUMBER = "Variables::IndicesNumber"
 	
 	static def getUnusedVariableMsg() { "Unused variable" }
-	static def getIteratorIndexMsg(int expectedSize, int actualSize) { "Too many indices: Expected " + expectedSize + ", but was " + actualSize }
+	static def getIteratorNumberMsg(int expectedSize, int actualSize) { "Wrong number of iterators: Expected " + expectedSize + ", but was " + actualSize }
 	static def getIteratorTypeMsg(String expectedTypeName, String actualTypeName) { "Wrong iterator type: Expected " + expectedTypeName + ", but was " + actualTypeName }
+	static def getIndicesNumberMsg(int expectedSize, int actualSize) { "Wrong number of indices: Expected " + expectedSize + ", but was " + actualSize }
 
 	@Check
 	def checkUnusedVariable(Var it)
@@ -150,13 +152,26 @@ class BasicValidator  extends AbstractNablaValidator
 	}
 
 	@Check
-	def checkIteratorIndexAndType(VarRef it)
+	def checkIndicesNumber(VarRef it)
+	{
+		val vTypeSizes = variable.baseType.sizes
+		if (indices.size > 0 && indices.size != spaceIterators.size)
+			error(getIndicesNumberMsg(vTypeSizes.size, indices.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, INDICES_NUMBER)
+	}
+	
+	@Check
+	def checkIteratorNumberAndType(VarRef it)
 	{
 		if (variable instanceof ConnectivityVar)
 		{
 			val dimensions = (variable as ConnectivityVar).dimensions
-			if (dimensions.size < spaceIterators.size)
-				error(getIteratorIndexMsg(dimensions.size, spaceIterators.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, ITERATOR_INDEX)
+			
+			if (dimensions.size > 0 && spaceIterators.empty)
+				if (indices.size > 0)
+					error(getIndicesNumberMsg(0, indices.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, INDICES_NUMBER)
+
+			if (spaceIterators.size > 0 && dimensions.size != spaceIterators.size)
+				error(getIteratorNumberMsg(dimensions.size, spaceIterators.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, ITERATOR_NUMBER)
 			else
 			{
 				for (i : 0..<spaceIterators.length)

@@ -47,7 +47,7 @@ const ℕ option_max_iterations = 500000000;
  * */
 
 const ℝ u0 = 1.0;
-const ℝ[2] vectOne = {1.0, 1.0};
+const ℝ[2] vectOne = [1.0, 1.0];
 
 ℝ t=0.0; 
 ℝ δt=0.001;
@@ -113,6 +113,6 @@ computeAlphaCoeff: ∀c∈cells(), ∀d∈neighbourCells(c), f=commonFace(c,d),
 // Diagonal terms		
 computeOwnAlphaCoeff:  ∀c∈cells(), α_self{c} = 1 - ∑{d∈neighbourCells(c)}(α{c, d});
 
-UpdateU: ∀c∈cells(), u{c}^{n+1} = α_self{c} * u{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u{d});
+UpdateU: ∀c∈cells(), u^{n+1}{c} = α_self{c} * u{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u{d});
 
 ComputeTn: t^{n+1}=t+δt;

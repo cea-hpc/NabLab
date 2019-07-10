@@ -20,6 +20,7 @@ import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
+import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
@@ -38,6 +39,7 @@ import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.RealBaseTypeConstant
 import fr.cea.nabla.nabla.RealConstant
+import fr.cea.nabla.nabla.RealMatrixConstant
 import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
@@ -49,26 +51,26 @@ class ExpressionTypeProvider
 	@Inject extension BinaryOperationsTypeProvider
 	@Inject extension VarExtensions
 
-	def dispatch ExpressionType getTypeFor(ContractedIf it) { new BoolType }
+	def dispatch ExpressionType getTypeFor(ContractedIf it) { new BoolType(#[]) }
 	
-	def dispatch ExpressionType getTypeFor(Or it) { new BoolType }	
-	def dispatch ExpressionType getTypeFor(And it) { new BoolType }
-	def dispatch ExpressionType getTypeFor(Equality it) { new BoolType }
-	def dispatch ExpressionType getTypeFor(Comparison it) { new BoolType }
+	def dispatch ExpressionType getTypeFor(Or it) { new BoolType(#[]) }	
+	def dispatch ExpressionType getTypeFor(And it) { new BoolType(#[]) }
+	def dispatch ExpressionType getTypeFor(Equality it) { new BoolType(#[]) }
+	def dispatch ExpressionType getTypeFor(Comparison it) { new BoolType(#[]) }
 	def dispatch ExpressionType getTypeFor(Plus it) { eval(left, right ,op) }
 	def dispatch ExpressionType getTypeFor(Minus it) { eval(left, right ,op) }
 	def dispatch ExpressionType getTypeFor(MulOrDiv it)  { eval(left, right ,op) }
-	def dispatch ExpressionType getTypeFor(Modulo it)  { new IntType }
-	private def eval(Expression a, Expression b, String op) { getTypeFor(a.getTypeFor, b.getTypeFor, op) }
+	def dispatch ExpressionType getTypeFor(Modulo it)  { new IntType(#[]) }
 
 	def dispatch ExpressionType getTypeFor(Parenthesis it) { expression.typeFor }
 	def dispatch ExpressionType getTypeFor(UnaryMinus it) { expression.typeFor }
 	def dispatch ExpressionType getTypeFor(Not it) { expression.typeFor }
 
-	def dispatch ExpressionType getTypeFor(IntConstant it) { new IntType }
-	def dispatch ExpressionType getTypeFor(RealConstant it) { new RealType }
-	def dispatch ExpressionType getTypeFor(BoolConstant it)  { new BoolType }
-	def dispatch ExpressionType getTypeFor(RealVectorConstant it) { new RealArrayType(#[values.size]) }
+	def dispatch ExpressionType getTypeFor(IntConstant it) { new IntType(#[]) }
+	def dispatch ExpressionType getTypeFor(RealConstant it) { new RealType(#[]) }
+	def dispatch ExpressionType getTypeFor(BoolConstant it)  { new BoolType(#[]) }
+	def dispatch ExpressionType getTypeFor(RealVectorConstant it) { new RealArrayType(#[], #[values.size]) }
+	def dispatch ExpressionType getTypeFor(RealMatrixConstant it) { new RealArrayType(#[], #[values.size, values.head.values.size]) }
 	def dispatch ExpressionType getTypeFor(RealBaseTypeConstant it) { type.typeFor }
 
 	def dispatch ExpressionType getTypeFor(MinConstant it) { type.typeFor }
@@ -78,58 +80,65 @@ class ExpressionTypeProvider
 	{
 		val decl = declaration
 		if (decl === null) new UndefinedType
-		else decl.returnType.typeFor
+		else decl.returnType
 	}
 	
 	def dispatch ExpressionType getTypeFor(ReductionCall it)
 	{
 		val decl = declaration
 		if (decl === null) new UndefinedType
-		else decl.returnType.typeFor
+		else decl.returnType
 	}
 	
 	def dispatch ExpressionType getTypeFor(VarRef it)
 	{
 		val varBaseType = variable.baseType
-		val dimensions = if (variable instanceof ConnectivityVar) (variable as ConnectivityVar).dimensions.length else 0
-		val dimSizes = varBaseType.sizes
-		if (dimensions == spaceIterators.size && dimSizes.size >= indices.size)
+		val newRootType = varBaseType.root
+		// indices == 0 || indices == varBaseType.size (cf. validator)
+		val newBaseTypeSizes = if (indices.empty) varBaseType.sizes else #[]
+		
+		var Connectivity[] newDimensions = #[] 
+		if (variable instanceof ConnectivityVar)
 		{
-			switch indices.size
-			{
-				case 0: varBaseType.typeFor
-				case dimSizes.size: varBaseType.root.typeFor
-				default:
-				{
-					val newDimSizes = newIntArrayOfSize(dimSizes.size- indices.size)
-					for (i : 0..<newDimSizes.size) newDimSizes.set(i, dimSizes.get(i))
-					getTypeFor(varBaseType.root, newDimSizes)				
-				}
-			}
-		} 
-		else 
-			new UndefinedType
+			val dimensions = (variable as ConnectivityVar).dimensions
+			// iterators.size == 0 || iterators.size == dimensions.size (cf. validator)
+			if (spaceIterators.empty) 
+				newDimensions = dimensions
+		}
+		
+		getTypeFor(newRootType, newDimensions, newBaseTypeSizes)
 	}
 
 	def dispatch ExpressionType getTypeFor(PrimitiveType it)
 	{
 		switch it
 		{
-			case INT: new IntType
-			case REAL: new RealType
-			case BOOL: new BoolType
+			case INT: new IntType(#[])
+			case REAL: new RealType(#[])
+			case BOOL: new BoolType(#[])
 		}
 	}
 
-	def dispatch ExpressionType getTypeFor(BaseType it) { getTypeFor(root, sizes) }
+	def dispatch ExpressionType getTypeFor(BaseType it) { getTypeFor(root, #[], sizes) }
 
-	def ExpressionType getTypeFor(PrimitiveType t, int[] dimSizes)
+	def ExpressionType getTypeFor(PrimitiveType t, Connectivity[] connectivities, int[] baseTypeSizes)
 	{
 		switch t
 		{
-			case BOOL: if (dimSizes.empty) new BoolType else new UndefinedType
-			case INT: if (dimSizes.empty) new IntType else new UndefinedType
-			case REAL: if (dimSizes.empty) new RealType else new RealArrayType(dimSizes)
+			case BOOL: if (baseTypeSizes.empty && connectivities.empty) new BoolType(connectivities) else new UndefinedType
+			case INT: if (baseTypeSizes.empty && connectivities.empty) new IntType(connectivities) else new UndefinedType
+			case REAL: if (baseTypeSizes.empty && connectivities.empty) new RealType(connectivities) else new RealArrayType(connectivities, baseTypeSizes)
 		}
+	}
+
+	private def eval(Expression a, Expression b, String op) 
+	{ 
+		val atype = a.getTypeFor
+		val btype = b.typeFor
+		if (atype instanceof DefinedType && b instanceof DefinedType 
+			&& (atype as DefinedType).connectivities.empty && (btype as DefinedType).connectivities.empty)
+			getTypeFor(atype, btype, op)
+		else 
+			new UndefinedType
 	}
 }

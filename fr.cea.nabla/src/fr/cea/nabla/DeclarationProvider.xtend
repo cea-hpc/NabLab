@@ -15,7 +15,7 @@ package fr.cea.nabla
 
 import com.google.inject.Inject
 import fr.cea.nabla.nabla.ArgType
-import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.Dimension
 import fr.cea.nabla.nabla.DimensionInt
 import fr.cea.nabla.nabla.DimensionOperation
@@ -23,37 +23,54 @@ import fr.cea.nabla.nabla.DimensionVar
 import fr.cea.nabla.nabla.DimensionVarReference
 import fr.cea.nabla.nabla.FunctionArg
 import fr.cea.nabla.nabla.FunctionCall
-import fr.cea.nabla.nabla.NablaFactory
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.ReductionArg
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.typing.BoolType
+import fr.cea.nabla.typing.DefinedType
 import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.typing.IntType
 import fr.cea.nabla.typing.RealArrayType
-import fr.cea.nabla.typing.RealType
+import fr.cea.nabla.typing.UndefinedType
+import java.util.ArrayList
 import java.util.HashMap
 import java.util.List
 import java.util.Map
 import org.eclipse.xtend.lib.annotations.Data
 
 @Data
+class DimensionValue 
+{ 
+	public static val Undefined = new DimensionValue(null)
+	
+	Object value // Integer or Connectivity (constant like nbCells)
+	
+	new(int value) { this.value = value }
+	new(Connectivity value) { this.value = value }
+
+	def isUndefined() { value === null }
+	def isConnectivity() { value instanceof Connectivity }
+	def isInt() { value instanceof Integer }
+
+	def getConnectivityValue() { value as Connectivity }
+	def getIntValue() { value as Integer }
+}
+
+@Data
 class FunctionDeclaration
 {
 	val FunctionArg model
-	val Map<DimensionVar, Integer> dimensionVarValues
-	val BaseType[] inTypes
-	val BaseType returnType
+	val Map<DimensionVar, DimensionValue> dimensionVarValues
+	val ExpressionType[] inTypes
+	val ExpressionType returnType
 }
 
 @Data
 class ReductionDeclaration
 {
 	val ReductionArg model
-	val Map<DimensionVar, Integer> dimensionVarValues
-	val BaseType collectionType
-	val BaseType returnType
+	val Map<DimensionVar, DimensionValue> dimensionVarValues
+	val ExpressionType collectionType
+	val ExpressionType returnType
 }
 
 class DeclarationProvider 
@@ -62,64 +79,56 @@ class DeclarationProvider
 	
 	def FunctionDeclaration getDeclaration(FunctionCall it)
 	{
-		val dimensionVarValues = new HashMap<DimensionVar, Integer>
+		val dimensionVarValues = new HashMap<DimensionVar, DimensionValue>
 
 		val f = function.argGroups.findFirst[x | 
 			if (x.inTypes.size != args.size) return false
 			for (i : 0..<x.inTypes.size)
-				if (!computeDimensionVars(dimensionVarValues, x.inTypes.get(i), args.get(i).typeFor)) return false
+				if (!match(x.inTypes.get(i), args.get(i).typeFor, dimensionVarValues)) return false
 			return true
 		]
 		
 		if (f === null) return null
 
-		val inTypes = f.inTypes.map[x | computeBaseType(dimensionVarValues, x)]
-		val returnType = computeBaseType(dimensionVarValues, f.returnType)
+		val inTypes = f.inTypes.map[x | x.computeExpressionType(dimensionVarValues)]
+		val returnType = f.returnType.computeExpressionType(dimensionVarValues)
 		return new FunctionDeclaration(f, dimensionVarValues, inTypes, returnType)
 	}
 
 	def ReductionDeclaration getDeclaration(ReductionCall it)
 	{
-		val dimensionVarValues = new HashMap<DimensionVar, Integer>
+		val dimensionVarValues = new HashMap<DimensionVar, DimensionValue>
 
 		val r = reduction.argGroups.findFirst[x | 
-			val dimVarValues = new HashMap<DimensionVar, Integer>
-			computeDimensionVars(dimVarValues, x.collectionType, arg.typeFor)
+			match(x.collectionType, arg.typeFor, dimensionVarValues)
 		]
 		
 		if (r === null) return null
 
-		val collectionType = computeBaseType(dimensionVarValues, r.collectionType)
-		val returnType = computeBaseType(dimensionVarValues, r.returnType)
+		val collectionType = r.collectionType.computeExpressionType(dimensionVarValues)
+		val returnType = r.returnType.computeExpressionType(dimensionVarValues)
 		return new ReductionDeclaration(r, dimensionVarValues, collectionType, returnType)
 	}
 	
-	private def dispatch boolean computeDimensionVars(Map<DimensionVar, Integer> dimVarValues, ArgType a, ExpressionType b) 
+	private def dispatch boolean match(ArgType a, UndefinedType b, Map<DimensionVar, DimensionValue> dimVarValues) 
 	{ 
 		false
 	}
 	
-	private def dispatch boolean computeDimensionVars(Map<DimensionVar, Integer> dimVarValues, ArgType a, BoolType b) 
+	private def dispatch boolean match(ArgType a, DefinedType b, Map<DimensionVar, DimensionValue> dimVarValues) 
 	{ 
-		a.root == PrimitiveType::BOOL && a.dimensions.empty
+		a.root == b.root && valuesMatch(dimVarValues, a.dimensions, b.connectivities.map[x | new DimensionValue(x)])
 	}
 	
-	private def dispatch boolean computeDimensionVars(Map<DimensionVar, Integer> dimVarValues, ArgType a, IntType b) 
+	private def dispatch boolean match(ArgType a, RealArrayType b, Map<DimensionVar, DimensionValue> dimVarValues) 
 	{ 
-		a.root == PrimitiveType::INT && a.dimensions.empty
+		val dimensionValues = new ArrayList<DimensionValue>
+		b.sizes.forEach[x | dimensionValues += new DimensionValue(x)]
+		b.connectivities.forEach[x | dimensionValues += new DimensionValue(x)]
+		a.root == PrimitiveType::REAL && valuesMatch(dimVarValues, a.dimensions, dimensionValues)
 	}
 	
-	private def dispatch boolean computeDimensionVars(Map<DimensionVar, Integer> dimVarValues, ArgType a, RealType b) 
-	{ 
-		a.root == PrimitiveType::REAL && a.dimensions.empty
-	}
-	
-	private def dispatch boolean computeDimensionVars(Map<DimensionVar, Integer> dimVarValues, ArgType a, RealArrayType b) 
-	{ 
-		a.root == PrimitiveType::REAL && compute(dimVarValues, a.dimensions, b.sizes)
-	}
-	
-	private def boolean compute(Map<DimensionVar, Integer> dimVarValues, List<Dimension> dimensions, int[] sizes)
+	private def boolean valuesMatch(Map<DimensionVar, DimensionValue> dimVarValues, List<Dimension> dimensions, DimensionValue[] sizes)
 	{
 		if (dimensions.size != sizes.size) return false
 		
@@ -130,7 +139,7 @@ class DeclarationProvider
 			switch expectedType
 			{
 				DimensionOperation: computeValue(expectedType, dimVarValues)
-				DimensionInt case (expectedType.value != actualType): return false
+				DimensionInt case (!actualType.int || expectedType.value != actualType.intValue): return false
 				DimensionVarReference :
 				{
 					val dimVarValue = dimVarValues.get(expectedType.target)
@@ -152,33 +161,62 @@ class DeclarationProvider
 		return true
 	}
 	
-	private def dispatch int computeValue(DimensionOperation it, Map<DimensionVar, Integer> values)
+	private def dispatch DimensionValue computeValue(DimensionOperation it, Map<DimensionVar, DimensionValue> values)
 	{
 		switch op
 		{
 			case '+': computeValue(left, values) + computeValue(right, values)
 			case '*': computeValue(left, values) * computeValue(right, values)
-			default: -1
+			default: DimensionValue::Undefined
 		}
 	}
 
-	private def dispatch int computeValue(DimensionInt it, Map<DimensionVar, Integer> values)
+	private def dispatch DimensionValue computeValue(DimensionInt it, Map<DimensionVar, DimensionValue> values)
 	{
-		value
+		new DimensionValue(value)
 	}
 	
-	private def dispatch int computeValue(DimensionVarReference it, Map<DimensionVar, Integer> values)
+	private def dispatch DimensionValue computeValue(DimensionVarReference it, Map<DimensionVar, DimensionValue> values)
 	{
-		values.getOrDefault(target, -1)
+		values.getOrDefault(target, DimensionValue::Undefined)
 	}
 	
-	private def BaseType computeBaseType(Map<DimensionVar, Integer> values, ArgType argType)
+	private def ExpressionType computeExpressionType(ArgType argType, Map<DimensionVar, DimensionValue> values)
 	{
-		val returnSizes = argType.dimensions.map[x | computeValue(x, values)]
-		return NablaFactory::eINSTANCE.createBaseType => 
-		[ 
-			root = argType.root 
-			sizes += returnSizes	
-		]
+		var ExpressionType returnType = new UndefinedType
+		if (argType.dimensions.empty)
+			returnType = getTypeFor(argType.root, #[], #[])
+		else
+		{
+			val argTypeDimensionValues = argType.dimensions.map[x | computeValue(x, values)]
+			val firstElement = argTypeDimensionValues.head
+			val allValuesSameType = argTypeDimensionValues.tail.forall[x | x.value.class == firstElement.value.class]
+			if (allValuesSameType)
+			{
+				switch firstElement
+				{
+					case firstElement.int: returnType = getTypeFor(argType.root, #[], argTypeDimensionValues.map[x|x.intValue])
+					case firstElement.connectivity: returnType = getTypeFor(argType.root, argTypeDimensionValues.map[x|x.connectivityValue], #[])
+					// default => firstElement is undefined then returnType stays undefined
+				}
+			}	
+		}
+		return returnType
+	}
+	
+	private def DimensionValue operator_plus(DimensionValue a, DimensionValue b)
+	{
+		if (a.int && b.int)
+			new DimensionValue(a.intValue + b.intValue)
+		else 
+			DimensionValue::Undefined // no operation on connectivities
+	}
+
+	private def DimensionValue operator_multiply(DimensionValue a, DimensionValue b)
+	{
+		if (a.int && b.int)
+			new DimensionValue(a.intValue * b.intValue)
+		else 
+			DimensionValue::Undefined // no operation on connectivities
 	}
 }

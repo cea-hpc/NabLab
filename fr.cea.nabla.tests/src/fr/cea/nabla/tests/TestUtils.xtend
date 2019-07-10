@@ -14,12 +14,11 @@
 package fr.cea.nabla.tests
 
 import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.PrimitiveType
-import fr.cea.nabla.typing.BoolType
+import fr.cea.nabla.typing.DefinedType
 import fr.cea.nabla.typing.ExpressionType
-import fr.cea.nabla.typing.IntType
 import fr.cea.nabla.typing.RealArrayType
-import fr.cea.nabla.typing.RealType
 import org.junit.Assert
 
 class TestUtils 
@@ -30,29 +29,21 @@ class TestUtils
 		Assert.assertArrayEquals(expectedSizes, actual.sizes)
 	}
 
-	static def void assertEquals(PrimitiveType expectedRoot, int[] expectedSizes, ExpressionType actual)
+	static def void assertEquals(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, ExpressionType actual)
 	{
 		switch actual
 		{
-			IntType: 
-			{
-				Assert.assertEquals(expectedRoot, PrimitiveType::INT)
-				Assert.assertArrayEquals(expectedSizes, #[])				
-			}
-			RealType:
-			{
-				Assert.assertEquals(expectedRoot, PrimitiveType::REAL)
-				Assert.assertArrayEquals(expectedSizes, #[])				
-			}
-			BoolType: 
-			{
-				Assert.assertEquals(expectedRoot, PrimitiveType::BOOL)
-				Assert.assertArrayEquals(expectedSizes, #[])				
-			}
 			RealArrayType:
 			{
 				Assert.assertEquals(expectedRoot, PrimitiveType::REAL)
 				Assert.assertArrayEquals(expectedSizes, actual.sizes)				
+				Assert.assertArrayEquals(expectedConnectivities, actual.connectivities)				
+			}
+			DefinedType: 
+			{
+				Assert.assertEquals(expectedRoot, actual.root)
+				Assert.assertArrayEquals(expectedSizes, #[])				
+				Assert.assertArrayEquals(expectedConnectivities, actual.connectivities)				
 			}
 			default: Assert.fail
 		}

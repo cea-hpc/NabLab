@@ -23,7 +23,7 @@ class BinaryOperationsTypeProvider
 		switch op
 		{
 			// useful for type validator (unused by type provider)
-			case '==', case '!=', case '>=', case '<=', case '>', case'<': new BoolType
+			case '==', case '!=', case '>=', case '<=', case '>', case'<': new BoolType(#[])
 			case '+', case '-', case '*', case ' ', case '%': b
 			default: new UndefinedType
 		}
@@ -34,7 +34,7 @@ class BinaryOperationsTypeProvider
 		switch op
 		{
 			// useful for type validator (unused by type provider)
-			case '==', case '!=', case '>=', case '<=', case '>', case'<': new BoolType
+			case '==', case '!=', case '>=', case '<=', case '>', case'<': new BoolType(#[])
 			case '+', case '-', case '*', case '/': b
 			default: new UndefinedType
 		}
@@ -52,7 +52,7 @@ class BinaryOperationsTypeProvider
 	// REAL
 	def dispatch ExpressionType getTypeFor(RealType a, IntType b, String op)
 	{
-		getTypeFor(a, new RealType, op)
+		getTypeFor(a, new RealType(#[]), op)
 	}
 
 	def dispatch ExpressionType getTypeFor(RealType a, RealType b, String op)
@@ -60,7 +60,7 @@ class BinaryOperationsTypeProvider
 		switch op
 		{
 			// useful for type validator (unused by type provider)
-			case '==', case '!=', case '>=', case '<=', case '>', case'<': new BoolType
+			case '==', case '!=', case '>=', case '<=', case '>', case'<': new BoolType(#[])
 			case '+', case '-', case '*', case '/': b
 			default: new UndefinedType
 		}
@@ -78,7 +78,7 @@ class BinaryOperationsTypeProvider
 	// REAL ARRAY
 	def dispatch ExpressionType getTypeFor(RealArrayType a, IntType b, String op)
 	{
-		getTypeFor(a, new RealType, op)
+		getTypeFor(a, new RealType(#[]), op)
 	}
 
 	def dispatch ExpressionType getTypeFor(RealArrayType a, RealType b, String op)

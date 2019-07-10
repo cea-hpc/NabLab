@@ -14,11 +14,9 @@
 package fr.cea.nabla.validation
 
 import com.google.inject.Inject
-import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.Comparison
-import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
@@ -40,19 +38,20 @@ import fr.cea.nabla.typing.BoolType
 import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.IntType
+import fr.cea.nabla.typing.RealArrayType
+import fr.cea.nabla.typing.UndefinedType
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.validation.Check
 
 class TypeValidator extends BasicValidator
 {
-	static val BOOL = new BoolType
-	static val INT = new IntType
+	static val BOOL = new BoolType(#[])
+	static val INT = new IntType(#[])
 	
 	val np = NablaPackage::eINSTANCE	
 	@Inject extension ExpressionTypeProvider
 	@Inject extension BinaryOperationsTypeProvider
-	@Inject extension VarExtensions
 
 	// *** LES INSTRUCTIONS
 	@Check def checkType(ScalarVarDefinition it)
@@ -71,12 +70,21 @@ class TypeValidator extends BasicValidator
 	@Check
 	def checkSeedAndReturnTypes(ReductionArg it)
 	{
-		val seedType = seed.typeFor
-		val rType = returnType.typeFor
-		if (!seedType.undefined && seedType == rType)
+		val seedType = seed?.typeFor
+		val rType = returnType.root
+		
+		if (! (seedType === null || seedType instanceof UndefinedType))
 		{
-			var msg = 'Seed type and return types must be identical: ' + seedType.label + '!=' + rType.label
-			error(msg, NablaPackage.Literals::REDUCTION_ARG__SEED)
+			if (seedType instanceof RealArrayType)
+			{
+				var msg = 'Seed type must be scalar'
+				error(msg, NablaPackage.Literals::REDUCTION_ARG__SEED)
+			}
+			else if (seedType.label != rType.literal)
+			{
+				var msg = 'Seed type and return primitive type must be identical: ' + seedType.label + '!=' + rType.literal
+				error(msg, NablaPackage.Literals::REDUCTION_ARG__SEED)
+			}	
 		}
 	}
 
@@ -102,21 +110,12 @@ class TypeValidator extends BasicValidator
 		}
 	}
 
-	// Il ne faut pas vérifier le type de la variable : checkType(VarAffectationDeclaration) le fait
 	@Check
 	def checkType(VarRef it)
 	{
-		val varBaseType = variable.baseType
-		val dimensions = if (variable instanceof ConnectivityVar) (variable as ConnectivityVar).dimensions.length else 0
-		val dimSizes = varBaseType.sizes
-		if (dimensions != spaceIterators.size) 
-			error('Number of iterators and variable dimension must be equal' + dimSizes.size, NablaPackage.Literals::VAR_REF__SPACE_ITERATORS)
-//		if (dimSizes.size != arrayTypeIndices.size)
-//			error('Number of indices and variable type must be compatible: ' + arrayTypeIndices.size + ' indices ' + ' for ' + varBaseType.label, NablaPackage.Literals::VAR_REF__ARRAY_TYPE_INDICES)
 		if (it.typeFor.undefined)
 			error('Undefined type', NablaPackage.Literals::VAR_REF__VARIABLE)
-	}
-	
+	}	
 	
 	@Check def checkType(ContractedIf it) 
 	{ 

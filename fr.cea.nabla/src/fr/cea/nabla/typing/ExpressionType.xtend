@@ -1,5 +1,6 @@
 package fr.cea.nabla.typing
 
+import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.PrimitiveType
 import org.eclipse.xtend.lib.annotations.Data
 
@@ -18,26 +19,43 @@ class UndefinedType extends ExpressionType
 }
 
 @Data
-class BoolType extends ExpressionType
+abstract class DefinedType extends ExpressionType
 {
-	override getLabel() { PrimitiveType::BOOL.literal }
+	Connectivity[] connectivities
+	abstract def PrimitiveType getRoot();
 }
 
 @Data
-class IntType extends ExpressionType
+class BoolType extends DefinedType
 {
-	override getLabel() { PrimitiveType::INT.literal }
+	override getRoot() { PrimitiveType::BOOL }
+	override getLabel() { root.literal }	
 }
 
 @Data
-class RealType extends ExpressionType
+class IntType extends DefinedType
 {
-	override getLabel() { PrimitiveType::REAL.literal }
+	override getRoot() { PrimitiveType::INT }
+	override getLabel() { root.literal }
 }
 
 @Data
-class RealArrayType extends ExpressionType
+class RealType extends DefinedType
 {
-	override getLabel() { PrimitiveType::REAL.literal + sizes.map[utfExponent].join('\u02E3') }
+	override getRoot() { PrimitiveType::REAL }
+	override getLabel() { root.literal }
+}
+
+@Data
+class RealArrayType extends DefinedType
+{
+	override getRoot() { PrimitiveType::REAL }
+	override getLabel() 
+	{ 
+		val l = PrimitiveType::REAL.literal + sizes.map[utfExponent].join('\u02E3')
+		if (connectivities.empty) l
+		else l + '{' + connectivities.map[name].join(',') + '}'
+	}
+	
 	int[] sizes
 }

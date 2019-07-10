@@ -1,4 +1,3 @@
 eclipse.preferences.version=1
-encoding//src/fr/cea/nabla/tests/NablaIndexTest.xtend=UTF-8
+encoding//src/fr/cea/nabla/tests/ExpressionTypeProviderTest.xtend=UTF-8
 encoding//src/fr/cea/nabla/tests/NablaScopeProviderTest.xtend=UTF-8
-encoding//src/fr/cea/nabla/tests/NablaTypeProviderTest.xtend=UTF-8

@@ -15,7 +15,7 @@ import fr.cea.nabla.validation.BasicValidator
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
-class NablaValidatorTest 
+class BasicValidatorTest 
 {
 	@Inject ParseHelper<NablaModule> parseHelper
 	@Inject extension ValidationTestHelper

@@ -68,16 +68,16 @@ class NablaScopeProviderTest
 		val eref = NablaPackage::eINSTANCE.varRef_Variable
 
 
-		testPrint("initialisation de variable globale")
+		println("initialisation de variable globale")
 		val oDeclaration = result.declarationBlocks.filter(GlobalVariableDeclarationBlock).head.declarations.head
 		oDeclaration.assertScope(eref, "")		
 		
-		testPrint("job sur maille avant la déclaration d'une variable locale")
+		println("job sur maille avant la déclaration d'une variable locale")
 		val instructions = (result.getLoopBodyOfJob(0) as InstructionBlock).instructions
 		val affectation1 = instructions.head
 		affectation1.assertScope(eref, "o, b, a1, a2")
 
-		testPrint("job sur maille après la déclaration d'une variable locale")
+		println("job sur maille après la déclaration d'une variable locale")
 		val affectation2 = instructions.last
 		affectation2.assertScope(eref, "c, o, b, a1, a2")
 	}

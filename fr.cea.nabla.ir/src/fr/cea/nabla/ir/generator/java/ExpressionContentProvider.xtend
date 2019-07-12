@@ -14,6 +14,7 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Constant
@@ -22,6 +23,8 @@ import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
+import fr.cea.nabla.ir.ir.RealMatrixConstant
+import fr.cea.nabla.ir.ir.RealVectorConstant
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
@@ -51,11 +54,7 @@ class ExpressionContentProvider
 
 	static def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
 	static def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
-	static def dispatch CharSequence getContent(Constant it)
-	{
-		if (values.size==1) initConstant(type.dimSizes, values.head)
-		else '''new double[]{«values.join(",")»}'''
-	}
+	static def dispatch CharSequence getContent(Constant it) '''«value»'''
 	
 	static def dispatch CharSequence getContent(MinConstant it) 
 	{
@@ -77,11 +76,22 @@ class ExpressionContentProvider
 		}
 	}
 
+	static def dispatch CharSequence getContent(RealVectorConstant it) 
+	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v»«ENDFOR»'''
+	
+	static def dispatch CharSequence getContent(RealMatrixConstant it) 
+	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
+	
+	static def dispatch CharSequence getContent(BaseTypeConstant it) 
+	{
+		initConstant(type.sizes, value.content.toString)
+	}
+	
 	static def dispatch CharSequence getContent(FunctionCall it) 
 	'''«function.provider»«Utils::FunctionAndReductionproviderSuffix».«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
 	static def dispatch CharSequence getContent(VarRef it)
-	'''«variable.codeName»«iteratorsContent»«FOR d:arrayTypeIndices»[«d»]«ENDFOR»'''
+	'''«variable.codeName»«iteratorsContent»«FOR d:indices»[«d»]«ENDFOR»'''
 
 	private static def getCodeName(Variable it)
 	{

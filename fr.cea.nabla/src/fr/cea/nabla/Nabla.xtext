@@ -51,7 +51,7 @@ ConnectivityCall: connectivity=[Connectivity]  '('(args+=SpaceIteratorRef (',' a
 SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?; // inc/dec only valid on a range
 
 /* VARIABLES ********************************************/
-ScalarVarDefinition: (const?='const')? type=BaseType variable=SimpleVar '=' defaultValue=Expression ';';
+ScalarVarDefinition: (const?='const')? type=BaseType variable=SimpleVar '=' defaultValue=InitializationExpression ';';
 VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
 Var: SimpleVar | ConnectivityVar;
 SimpleVar: name=ID;
@@ -113,21 +113,24 @@ Atomic returns Expression:
 	{IntConstant} value=INT |
 	{RealConstant} value=REAL |
 	{BoolConstant} (value?='true' | 'false') |
-	RealVectorConstant |
-	{RealMatrixConstant} '[' values+=RealVectorConstant (',' values+=RealVectorConstant)+ ']' |
-	{RealBaseTypeConstant} type=BaseType '(' value=REAL ')' |
 	{MinConstant} type=PrimitiveType '.MinValue' |
-	{MaxConstant} type=PrimitiveType '.MaxValue' |
+	{MaxConstant} type=PrimitiveType '.MaxValue'|
 	{FunctionCall} function=[Function|QualifiedName] '(' (args+=Expression (',' args+=Expression)*)? ')' | 
 	{ReductionCall} reduction=[Reduction|QualifiedName] '{' range=RangeSpaceIterator (',' singletons+=SingletonSpaceIterator)* '}' '(' arg=Expression ')' |
 	VarRef;
-
-RealVectorConstant: '[' values+=REAL (',' values+=REAL)* ']';
 
 VarRef: variable=[Var] 
 	('^{' timeIterator=TimeIterator '}')?
 	('{' spaceIterators+=SpaceIteratorRef (',' spaceIterators+=SpaceIteratorRef)* '}')? 
 	('[' indices+=INT (',' indices+=INT)? ']')?;
+
+InitializationExpression:
+	Expression |
+	RealVectorConstant |
+	{RealMatrixConstant} '[' values+=RealVectorConstant (',' values+=RealVectorConstant)+ ']' |
+	{BaseTypeConstant} type=BaseType '(' value=Expression ')'; // Expression Type is Real because there are only Real arrays for the moment but it will become expression
+
+RealVectorConstant: '[' values+=REAL (',' values+=REAL)* ']';
 
 TimeIterator: 
 	{InitTimeIterator} 'n=0' | 

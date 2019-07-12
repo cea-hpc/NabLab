@@ -21,7 +21,7 @@ class Ir2JavaUtils
 	static def getJavaType(BaseType t)
 	{
 		val rootType = t.root.javaType
-		return rootType + t.dimSizes.map['[]'].join('')
+		return rootType + t.sizes.map['[]'].join('')
 	}
 	
 	static def getJavaType(PrimitiveType t)

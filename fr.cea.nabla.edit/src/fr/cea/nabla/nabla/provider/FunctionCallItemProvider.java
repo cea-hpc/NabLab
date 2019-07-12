@@ -166,11 +166,6 @@ public class FunctionCallItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.FUNCTION_CALL__ARGS,
-				 NablaFactory.eINSTANCE.createRealVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.FUNCTION_CALL__ARGS,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -247,16 +242,6 @@ public class FunctionCallItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.FUNCTION_CALL__ARGS,
 				 NablaFactory.eINSTANCE.createBoolConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.FUNCTION_CALL__ARGS,
-				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.FUNCTION_CALL__ARGS,
-				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter

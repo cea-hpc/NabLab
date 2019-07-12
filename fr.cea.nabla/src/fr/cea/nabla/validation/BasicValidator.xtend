@@ -19,6 +19,7 @@ import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
@@ -32,8 +33,6 @@ import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.RangeSpaceIterator
-import fr.cea.nabla.nabla.RealBaseTypeConstant
-import fr.cea.nabla.nabla.RealMatrixConstant
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionArg
 import fr.cea.nabla.nabla.ReductionCall
@@ -111,24 +110,14 @@ class BasicValidator  extends AbstractNablaValidator
 
 	// ===== Constant expressions =====	
 	public static val ONLY_REAL_ARRAY_CONST = "Constant::OnlyRealArrayConst"
-	public static val VECTOR_SIZES = "Constant::VectorSizes"
 	
 	static def getOnlyRealArrayConstMsg() { "This initialization is only possible on real arrays" }
-	static def getVectorSizesMsg() { "Vectors must have the same sizes" }
 	
 	@Check
-	def checkOnlyRealArrayConst(RealBaseTypeConstant it)
+	def checkOnlyRealArrayConst(BaseTypeConstant it)
 	{
 		if (type.root != PrimitiveType::REAL || type.sizes.empty)
-			error(getOnlyRealArrayConstMsg(), NablaPackage.Literals.REAL_BASE_TYPE_CONSTANT__TYPE, ONLY_REAL_ARRAY_CONST)
-	}
-
-	@Check
-	def checkConformance(RealMatrixConstant it)
-	{
-		val vectorSize = values.head.values.size
-		if (values.exists[ x | x.values.size != vectorSize])
-			error(getVectorSizesMsg(), NablaPackage.Literals.REAL_MATRIX_CONSTANT__VALUES, VECTOR_SIZES)
+			error(getOnlyRealArrayConstMsg(), NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE, ONLY_REAL_ARRAY_CONST)
 	}
 
 
@@ -155,7 +144,7 @@ class BasicValidator  extends AbstractNablaValidator
 	def checkIndicesNumber(VarRef it)
 	{
 		val vTypeSizes = variable.baseType.sizes
-		if (indices.size > 0 && indices.size != spaceIterators.size)
+		if (indices.size > 0 && indices.size != vTypeSizes.size)
 			error(getIndicesNumberMsg(vTypeSizes.size, indices.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, INDICES_NUMBER)
 	}
 	
@@ -190,18 +179,22 @@ class BasicValidator  extends AbstractNablaValidator
 	// ===== Functions (Reductions, Dimension) =====	
 	public static val UNUSED_FUNCTION = "Functions::UnusedFunction"
 	public static val UNUSED_REDUCTION = "Functions::UnusedReduction"
-	public static val FUNCTION_IN_TYPES = "Functions::FunctionInTypes"
+	public static val FUNCTION_IN_TYPES_OPERATION = "Functions::FunctionInTypesOperation"
+	public static val FUNCTION_INCOMPATIBLE_IN_TYPES = "Functions::FunctionIncompatibleInTypes"
 	public static val FUNCTION_RETURN_TYPE = "Functions::FunctionReturnType"
-	public static val REDUCTION_COLLECTION_TYPE = "Functions::ReductionCollectionType"
+	public static val REDUCTION_COLLECTION_TYPE_OPERATION = "Functions::ReductionCollectionTypeOperation"
+	public static val REDUCTION_INCOMPATIBLE_COLLECTION_TYPE = "Functions::ReductionIncompatibleCollectionType"
 	public static val REDUCTION_RETURN_TYPE = "Functions::ReductionReturnType"
 	public static val DIMENSION_VAR_NAME = "Functions::DimensionVarName"
 	public static val UNUSED_DIMENSION_VAR = "Functions::UnusedDimensionVar"
 
 	static def getUnusedFunctionMsg() { "Unused function" }
 	static def getUnusedReductionMsg() { "Unused reduction" }
-	static def getFunctionInTypesMsg() { "In types must not contain operations" }
+	static def getFunctionInTypesOperationMsg() { "In types must not contain operations" }
+	static def getFunctionIncompatibleInTypesMsg() { "Declaration conflicts" }
 	static def getFunctionReturnTypeMsg(String variableName) { "Only input type variables can be used for return types. Invalid variable: " + variableName }
-	static def getReductionCollectionTypeMsg() { "Collection type must not contain operations" }
+	static def getReductionCollectionTypeOperationMsg() { "Collection type must not contain operations" }
+	static def getReductionIncompatibleCollectionTypeMsg() { "Declaration conflicts" }
 	static def getReductionReturnTypeMsg(String variableName) { "Only collection type variables can be used for return types. Invalid variable: " + variableName }
 	static def getDimensionVarNameMsg() { "Invalid name (reserved for time step)" }
 	static def getUnusedDimensionVar() { "Unused variable" }
@@ -227,9 +220,34 @@ class BasicValidator  extends AbstractNablaValidator
 	{
 		for (inType : inTypes)
 			if (inType.dimensions.filter(DimensionOperation).size > 0)
-				error(getFunctionInTypesMsg(), NablaPackage.Literals::FUNCTION_ARG__IN_TYPES, FUNCTION_IN_TYPES)
+				error(getFunctionInTypesOperationMsg(), NablaPackage.Literals::FUNCTION_ARG__IN_TYPES, FUNCTION_IN_TYPES_OPERATION)
+				
+		val otherFunctionArgs = eContainer.eAllContents.filter(FunctionArg).filter[x | x !== it]
+		val conflictingFunctionArg = otherFunctionArgs.findFirst[x | !areCompatible(x, it)]
+		if (conflictingFunctionArg !== null)
+			error(getFunctionIncompatibleInTypesMsg(), NablaPackage.Literals::FUNCTION_ARG__IN_TYPES, FUNCTION_INCOMPATIBLE_IN_TYPES)
 	}
 
+	/** 
+	 * Returns true if a and b can be declared together, false otherwise. 
+	 * For example, false for R[2]->R and R[n]->R
+	 */
+	private def areCompatible(FunctionArg a, FunctionArg b)
+	{
+		if (a.inTypes.size != b.inTypes.size) 
+			return true
+			
+		for (i : 0..<a.inTypes.size)
+		{
+			val ai = a.inTypes.get(i)
+			val bi = b.inTypes.get(i)
+			if (ai.root != bi.root || ai.dimensions.size != bi.dimensions.size) 
+				return true
+		}
+		
+		return false
+	}
+	
 	@Check
 	def checkFunctionReturnType(FunctionArg it)
 	{
@@ -251,9 +269,19 @@ class BasicValidator  extends AbstractNablaValidator
 	def checkReductionCollectionType(ReductionArg it)
 	{
 		if (collectionType.dimensions.filter(DimensionOperation).size > 0)
-			error(getReductionCollectionTypeMsg(), NablaPackage.Literals::REDUCTION_ARG__COLLECTION_TYPE, REDUCTION_COLLECTION_TYPE)
+			error(getReductionCollectionTypeOperationMsg(), NablaPackage.Literals::REDUCTION_ARG__COLLECTION_TYPE, REDUCTION_COLLECTION_TYPE_OPERATION)
+
+		val otherReductionArgs = eContainer.eAllContents.filter(ReductionArg).filter[x | x !== it]
+		val conflictingReductionArg = otherReductionArgs.findFirst[x | !areCompatible(x, it)]
+		if (conflictingReductionArg !== null)
+			error(getReductionIncompatibleCollectionTypeMsg(), NablaPackage.Literals::REDUCTION_ARG__COLLECTION_TYPE, REDUCTION_INCOMPATIBLE_COLLECTION_TYPE)
 	}
 	
+	private def areCompatible(ReductionArg a, ReductionArg b)
+	{
+		(a.collectionType.root != b.collectionType.root || a.collectionType.dimensions.size != b.collectionType.dimensions.size) 
+	}
+
 	@Check
 	def checkReductionReturnType(ReductionArg it)
 	{	

@@ -90,11 +90,11 @@ class Ir2Java extends CodeGenerator
 				«ENDFOR»
 
 				// Arrays allocation
-				«FOR a : variables»
+				«FOR a : variables.filter[!const]»
 					«IF a instanceof ConnectivityVariable»
-						«a.name» = new «a.type.root.javaType»«FOR d : a.dimensions»[«d.nbElems»]«ENDFOR»«FOR d : a.type.dimSizes»[«d»]«ENDFOR»;
+						«a.name» = new «a.type.root.javaType»«FOR d : a.dimensions»[«d.nbElems»]«ENDFOR»«FOR d : a.type.sizes»[«d»]«ENDFOR»;
 					«ELSEIF a instanceof SimpleVariable && !a.type.scalar»
-						«a.name» = new «a.type.root.javaType»«FOR d : a.type.dimSizes»[«d»]«ENDFOR»;
+						«a.name» = new «a.type.root.javaType»«FOR d : a.type.sizes»[«d»]«ENDFOR»;
 					«ENDIF»
 				«ENDFOR»
 

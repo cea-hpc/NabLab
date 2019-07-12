@@ -8,7 +8,6 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EDataTypeEList;
 import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.IrPackage;
@@ -23,12 +22,12 @@ import fr.cea.nabla.ir.ir.PrimitiveType;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.BaseTypeImpl#getRoot <em>Root</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.BaseTypeImpl#getDimSizes <em>Dim Sizes</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.BaseTypeImpl#getSizes <em>Sizes</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class BaseTypeImpl extends MinimalEObjectImpl.Container implements BaseType {
+public class BaseTypeImpl extends IrAnnotableImpl implements BaseType {
 	/**
 	 * The default value of the '{@link #getRoot() <em>Root</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -50,14 +49,14 @@ public class BaseTypeImpl extends MinimalEObjectImpl.Container implements BaseTy
 	protected PrimitiveType root = ROOT_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getDimSizes() <em>Dim Sizes</em>}' attribute list.
+	 * The cached value of the '{@link #getSizes() <em>Sizes</em>}' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getDimSizes()
+	 * @see #getSizes()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Integer> dimSizes;
+	protected EList<Integer> sizes;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -104,11 +103,11 @@ public class BaseTypeImpl extends MinimalEObjectImpl.Container implements BaseTy
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Integer> getDimSizes() {
-		if (dimSizes == null) {
-			dimSizes = new EDataTypeEList<Integer>(Integer.class, this, IrPackage.BASE_TYPE__DIM_SIZES);
+	public EList<Integer> getSizes() {
+		if (sizes == null) {
+			sizes = new EDataTypeEList<Integer>(Integer.class, this, IrPackage.BASE_TYPE__SIZES);
 		}
-		return dimSizes;
+		return sizes;
 	}
 
 	/**
@@ -121,8 +120,8 @@ public class BaseTypeImpl extends MinimalEObjectImpl.Container implements BaseTy
 		switch (featureID) {
 			case IrPackage.BASE_TYPE__ROOT:
 				return getRoot();
-			case IrPackage.BASE_TYPE__DIM_SIZES:
-				return getDimSizes();
+			case IrPackage.BASE_TYPE__SIZES:
+				return getSizes();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -139,9 +138,9 @@ public class BaseTypeImpl extends MinimalEObjectImpl.Container implements BaseTy
 			case IrPackage.BASE_TYPE__ROOT:
 				setRoot((PrimitiveType)newValue);
 				return;
-			case IrPackage.BASE_TYPE__DIM_SIZES:
-				getDimSizes().clear();
-				getDimSizes().addAll((Collection<? extends Integer>)newValue);
+			case IrPackage.BASE_TYPE__SIZES:
+				getSizes().clear();
+				getSizes().addAll((Collection<? extends Integer>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -158,8 +157,8 @@ public class BaseTypeImpl extends MinimalEObjectImpl.Container implements BaseTy
 			case IrPackage.BASE_TYPE__ROOT:
 				setRoot(ROOT_EDEFAULT);
 				return;
-			case IrPackage.BASE_TYPE__DIM_SIZES:
-				getDimSizes().clear();
+			case IrPackage.BASE_TYPE__SIZES:
+				getSizes().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -175,8 +174,8 @@ public class BaseTypeImpl extends MinimalEObjectImpl.Container implements BaseTy
 		switch (featureID) {
 			case IrPackage.BASE_TYPE__ROOT:
 				return root != ROOT_EDEFAULT;
-			case IrPackage.BASE_TYPE__DIM_SIZES:
-				return dimSizes != null && !dimSizes.isEmpty();
+			case IrPackage.BASE_TYPE__SIZES:
+				return sizes != null && !sizes.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -193,8 +192,8 @@ public class BaseTypeImpl extends MinimalEObjectImpl.Container implements BaseTy
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (root: ");
 		result.append(root);
-		result.append(", dimSizes: ");
-		result.append(dimSizes);
+		result.append(", sizes: ");
+		result.append(sizes);
 		result.append(')');
 		return result.toString();
 	}

@@ -247,6 +247,33 @@ public interface IrFactory extends EFactory {
 	MaxConstant createMaxConstant();
 
 	/**
+	 * Returns a new object of class '<em>Base Type Constant</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Base Type Constant</em>'.
+	 * @generated
+	 */
+	BaseTypeConstant createBaseTypeConstant();
+
+	/**
+	 * Returns a new object of class '<em>Real Vector Constant</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Real Vector Constant</em>'.
+	 * @generated
+	 */
+	RealVectorConstant createRealVectorConstant();
+
+	/**
+	 * Returns a new object of class '<em>Real Matrix Constant</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Real Matrix Constant</em>'.
+	 * @generated
+	 */
+	RealMatrixConstant createRealMatrixConstant();
+
+	/**
 	 * Returns a new object of class '<em>Function Call</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -317,6 +344,24 @@ public interface IrFactory extends EFactory {
 	 * @generated
 	 */
 	BaseType createBaseType();
+
+	/**
+	 * Returns a new object of class '<em>Expression Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Expression Type</em>'.
+	 * @generated
+	 */
+	ExpressionType createExpressionType();
+
+	/**
+	 * Returns a new object of class '<em>Arg Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Arg Type</em>'.
+	 * @generated
+	 */
+	ArgType createArgType();
 
 	/**
 	 * Returns the package supported by this factory.

@@ -62,7 +62,7 @@ class Nabla2IrUtils
 		IrFactory::eINSTANCE.createBaseType => 
 		[
 			root = i.root.toIrPrimitiveType
-			dimSizes.addAll(i.sizes)
+			sizes.addAll(i.sizes)
 		]
 	}
 

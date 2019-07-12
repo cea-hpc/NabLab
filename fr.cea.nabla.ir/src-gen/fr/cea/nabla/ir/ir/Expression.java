@@ -29,12 +29,12 @@ public interface Expression extends IrAnnotable {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Type</em>' containment reference.
-	 * @see #setType(BaseType)
+	 * @see #setType(ExpressionType)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getExpression_Type()
 	 * @model containment="true" required="true"
 	 * @generated
 	 */
-	BaseType getType();
+	ExpressionType getType();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Expression#getType <em>Type</em>}' containment reference.
@@ -44,6 +44,6 @@ public interface Expression extends IrAnnotable {
 	 * @see #getType()
 	 * @generated
 	 */
-	void setType(BaseType value);
+	void setType(ExpressionType value);
 
 } // Expression

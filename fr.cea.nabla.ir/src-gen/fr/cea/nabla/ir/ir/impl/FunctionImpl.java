@@ -2,7 +2,7 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.BaseType;
+import fr.cea.nabla.ir.ir.ArgType;
 import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.IrPackage;
 
@@ -65,7 +65,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<BaseType> inTypes;
+	protected EList<ArgType> inTypes;
 
 	/**
 	 * The cached value of the '{@link #getReturnType() <em>Return Type</em>}' containment reference.
@@ -75,7 +75,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @generated
 	 * @ordered
 	 */
-	protected BaseType returnType;
+	protected ArgType returnType;
 
 	/**
 	 * The default value of the '{@link #getProvider() <em>Provider</em>}' attribute.
@@ -142,9 +142,9 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<BaseType> getInTypes() {
+	public EList<ArgType> getInTypes() {
 		if (inTypes == null) {
-			inTypes = new EObjectContainmentEList.Resolving<BaseType>(BaseType.class, this, IrPackage.FUNCTION__IN_TYPES);
+			inTypes = new EObjectContainmentEList.Resolving<ArgType>(ArgType.class, this, IrPackage.FUNCTION__IN_TYPES);
 		}
 		return inTypes;
 	}
@@ -154,10 +154,10 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BaseType getReturnType() {
+	public ArgType getReturnType() {
 		if (returnType != null && returnType.eIsProxy()) {
 			InternalEObject oldReturnType = (InternalEObject)returnType;
-			returnType = (BaseType)eResolveProxy(oldReturnType);
+			returnType = (ArgType)eResolveProxy(oldReturnType);
 			if (returnType != oldReturnType) {
 				InternalEObject newReturnType = (InternalEObject)returnType;
 				NotificationChain msgs = oldReturnType.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.FUNCTION__RETURN_TYPE, null, null);
@@ -177,7 +177,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BaseType basicGetReturnType() {
+	public ArgType basicGetReturnType() {
 		return returnType;
 	}
 
@@ -186,8 +186,8 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetReturnType(BaseType newReturnType, NotificationChain msgs) {
-		BaseType oldReturnType = returnType;
+	public NotificationChain basicSetReturnType(ArgType newReturnType, NotificationChain msgs) {
+		ArgType oldReturnType = returnType;
 		returnType = newReturnType;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.FUNCTION__RETURN_TYPE, oldReturnType, newReturnType);
@@ -201,7 +201,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setReturnType(BaseType newReturnType) {
+	public void setReturnType(ArgType newReturnType) {
 		if (newReturnType != returnType) {
 			NotificationChain msgs = null;
 			if (returnType != null)
@@ -287,10 +287,10 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 				return;
 			case IrPackage.FUNCTION__IN_TYPES:
 				getInTypes().clear();
-				getInTypes().addAll((Collection<? extends BaseType>)newValue);
+				getInTypes().addAll((Collection<? extends ArgType>)newValue);
 				return;
 			case IrPackage.FUNCTION__RETURN_TYPE:
-				setReturnType((BaseType)newValue);
+				setReturnType((ArgType)newValue);
 				return;
 			case IrPackage.FUNCTION__PROVIDER:
 				setProvider((String)newValue);
@@ -314,7 +314,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 				getInTypes().clear();
 				return;
 			case IrPackage.FUNCTION__RETURN_TYPE:
-				setReturnType((BaseType)null);
+				setReturnType((ArgType)null);
 				return;
 			case IrPackage.FUNCTION__PROVIDER:
 				setProvider(PROVIDER_EDEFAULT);

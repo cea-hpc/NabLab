@@ -19,8 +19,8 @@ import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.VarRef
 import fr.cea.nabla.nabla.Affectation
-import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.If
+import fr.cea.nabla.nabla.InitializationExpression
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.ScalarVarDefinition
@@ -124,7 +124,7 @@ class IrInstructionFactory
 		return irInstr.transformReductions(v.condition)
 	}
 	
-	private def List<Instruction> transformReductions(Instruction i, Expression e)
+	private def List<Instruction> transformReductions(Instruction i, InitializationExpression e)
 	{
 		val reductionInstructions = e.toIrReductions
 		val instructions = new ArrayList<Instruction>

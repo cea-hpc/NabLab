@@ -18,6 +18,7 @@ import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.Connectivity
@@ -37,7 +38,6 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.PrimitiveType
-import fr.cea.nabla.nabla.RealBaseTypeConstant
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealMatrixConstant
 import fr.cea.nabla.nabla.RealVectorConstant
@@ -69,9 +69,6 @@ class ExpressionTypeProvider
 	def dispatch ExpressionType getTypeFor(IntConstant it) { new IntType(#[]) }
 	def dispatch ExpressionType getTypeFor(RealConstant it) { new RealType(#[]) }
 	def dispatch ExpressionType getTypeFor(BoolConstant it)  { new BoolType(#[]) }
-	def dispatch ExpressionType getTypeFor(RealVectorConstant it) { new RealArrayType(#[], #[values.size]) }
-	def dispatch ExpressionType getTypeFor(RealMatrixConstant it) { new RealArrayType(#[], #[values.size, values.head.values.size]) }
-	def dispatch ExpressionType getTypeFor(RealBaseTypeConstant it) { type.typeFor }
 
 	def dispatch ExpressionType getTypeFor(MinConstant it) { type.typeFor }
 	def dispatch ExpressionType getTypeFor(MaxConstant it) { type.typeFor }
@@ -109,6 +106,10 @@ class ExpressionTypeProvider
 		getTypeFor(newRootType, newDimensions, newBaseTypeSizes)
 	}
 
+	def dispatch ExpressionType getTypeFor(RealVectorConstant it) { new RealArrayType(#[], #[values.size]) }
+	def dispatch ExpressionType getTypeFor(RealMatrixConstant it) { new RealArrayType(#[], values.map[x | x.values.size]) }
+	def dispatch ExpressionType getTypeFor(BaseTypeConstant it) { type.typeFor }
+
 	def dispatch ExpressionType getTypeFor(PrimitiveType it)
 	{
 		switch it
@@ -133,12 +134,12 @@ class ExpressionTypeProvider
 
 	private def eval(Expression a, Expression b, String op) 
 	{ 
-		val atype = a.getTypeFor
+		val atype = a.typeFor
 		val btype = b.typeFor
-		if (atype instanceof DefinedType && b instanceof DefinedType 
+		if (atype instanceof DefinedType && btype instanceof DefinedType 
 			&& (atype as DefinedType).connectivities.empty && (btype as DefinedType).connectivities.empty)
 			getTypeFor(atype, btype, op)
 		else 
-			new UndefinedType
+			new UndefinedType			
 	}
 }

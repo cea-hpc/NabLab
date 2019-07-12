@@ -18,25 +18,18 @@ import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.nabla.And
-import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
-import fr.cea.nabla.nabla.IntConstant
-import fr.cea.nabla.nabla.MaxConstant
-import fr.cea.nabla.nabla.MinConstant
+import fr.cea.nabla.nabla.InitializationExpression
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.MulOrDiv
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
-import fr.cea.nabla.nabla.RealBaseTypeConstant
-import fr.cea.nabla.nabla.RealConstant
-import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
-import fr.cea.nabla.nabla.VarRef
 
 class IrReductionInstructionFactory 
 {
@@ -46,7 +39,8 @@ class IrReductionInstructionFactory
 	@Inject extension DeclarationProvider
 	@Inject extension IrIteratorFactory
 	@Inject extension IrExpressionFactory
-	
+
+	def dispatch Iterable<ReductionInstruction> toIrReductions(InitializationExpression it) { #[] }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(Or it) { left.toIrReductions + right.toIrReductions }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(And it) { left.toIrReductions + right.toIrReductions }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(Equality it) { left.toIrReductions + right.toIrReductions }
@@ -57,13 +51,6 @@ class IrReductionInstructionFactory
 	def dispatch Iterable<ReductionInstruction> toIrReductions(Parenthesis it) { expression.toIrReductions }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(UnaryMinus it) { expression.toIrReductions }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(Not it) { expression.toIrReductions }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(IntConstant it) { #[] }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(RealConstant it) { #[] }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(BoolConstant it) { #[] }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(RealVectorConstant it) { #[] }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(RealBaseTypeConstant it) { #[] }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(MinConstant it) { #[] }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(MaxConstant it) { #[] }
 
 	def dispatch Iterable<ReductionInstruction> toIrReductions(FunctionCall it) 
 	{ 
@@ -82,6 +69,4 @@ class IrReductionInstructionFactory
 		irInstruction.result = toIrLocalVariable
 		return #[irInstruction]
 	}
-	
-	def dispatch Iterable<ReductionInstruction> toIrReductions(VarRef e)  { #[] }
 }

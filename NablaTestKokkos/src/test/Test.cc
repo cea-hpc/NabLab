@@ -44,11 +44,13 @@ private:
 
 	// Global Variables
 	double total;
+	double[2] a, b;
 
 	// Array Variables
-	Kokkos::View<Real2*> X;
+	Kokkos::View<double[2]*> X;
 	Kokkos::View<double*> v;
 	Kokkos::View<double*> u;
+	Kokkos::View<double*> r;
 	Kokkos::View<double**> Cjr;
 	Kokkos::View<double**> M;
 	
@@ -65,6 +67,7 @@ public:
 	, X("X", nbNodes)
 	, v("v", nbNodes)
 	, u("u", nbCells)
+	, r("r", nbCells)
 	, Cjr("Cjr", nbCells, nbNodesOfCell)
 	, M("M", nbCells, nbCells)
 	{
@@ -79,16 +82,13 @@ public:
 private:
 	/**
 	 * Job TestMatrix @-1.0
-	 * In variables: 
-	 * Out variables: M
+	 * In variables: M, u
+	 * Out variables: r
 	 */
 	KOKKOS_INLINE_FUNCTION
 	void testMatrix() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
-		{
-			M(jCells,jCells) = 0.0;
-		});
+		r = LinearAlgebraFunctions::solveLinearSystem(M, u);
 	}
 
 public:

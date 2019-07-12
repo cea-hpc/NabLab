@@ -82,6 +82,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.CONSTANT: return createConstant();
 			case IrPackage.MIN_CONSTANT: return createMinConstant();
 			case IrPackage.MAX_CONSTANT: return createMaxConstant();
+			case IrPackage.BASE_TYPE_CONSTANT: return createBaseTypeConstant();
+			case IrPackage.REAL_VECTOR_CONSTANT: return createRealVectorConstant();
+			case IrPackage.REAL_MATRIX_CONSTANT: return createRealMatrixConstant();
 			case IrPackage.FUNCTION_CALL: return createFunctionCall();
 			case IrPackage.VAR_REF: return createVarRef();
 			case IrPackage.ITERATOR: return createIterator();
@@ -90,6 +93,8 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.VAR_REF_ITERATOR_REF: return createVarRefIteratorRef();
 			case IrPackage.ITEM_TYPE: return createItemType();
 			case IrPackage.BASE_TYPE: return createBaseType();
+			case IrPackage.EXPRESSION_TYPE: return createExpressionType();
+			case IrPackage.ARG_TYPE: return createArgType();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -370,6 +375,36 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public BaseTypeConstant createBaseTypeConstant() {
+		BaseTypeConstantImpl baseTypeConstant = new BaseTypeConstantImpl();
+		return baseTypeConstant;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public RealVectorConstant createRealVectorConstant() {
+		RealVectorConstantImpl realVectorConstant = new RealVectorConstantImpl();
+		return realVectorConstant;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public RealMatrixConstant createRealMatrixConstant() {
+		RealMatrixConstantImpl realMatrixConstant = new RealMatrixConstantImpl();
+		return realMatrixConstant;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public MinConstant createMinConstant() {
 		MinConstantImpl minConstant = new MinConstantImpl();
 		return minConstant;
@@ -453,6 +488,26 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public BaseType createBaseType() {
 		BaseTypeImpl baseType = new BaseTypeImpl();
 		return baseType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ExpressionType createExpressionType() {
+		ExpressionTypeImpl expressionType = new ExpressionTypeImpl();
+		return expressionType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ArgType createArgType() {
+		ArgTypeImpl argType = new ArgTypeImpl();
+		return argType;
 	}
 
 	/**

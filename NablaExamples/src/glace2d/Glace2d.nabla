@@ -28,10 +28,10 @@ connectivities {
 }
 
 functions {
-	trace: ℝ[2,2] → ℝ;
+	trace: x | ℝ[x,x] → ℝ;
 	perp: ℝ[2] → ℝ[2];
-	tensProduct: ℝ[2] × ℝ[2] → ℝ[2,2];
-	matVectProduct: ℝ[2,2] × ℝ[2] → ℝ[2];
+	tensProduct: x | ℝ[x] × ℝ[x] → ℝ[x,x];
+	matVectProduct: x, y  |ℝ[x,y] × ℝ[y] → ℝ[x];
 	inverse: ℝ[2,2] → ℝ[2,2];
 }
 
@@ -112,10 +112,7 @@ ComputeBt: ∀r∈innerNodes(), bt{r} = b{r};
 
 OuterFacesComputations: ∀k∈outerFaces(), {
 	const ℝ epsilon = 1.0e-10;
-	ℝ[2,2] I = ℝ[2,2](0.0); // {{1.0,0.0},{0.0,1.0}};
-	I[0,0] = 1.0;
-	I[1,1] = 1.0;
-	
+	ℝ[2,2] I = [ [1.0, 0.0], [0.0, 1.0] ];
 	ℝ X_MIN = 0.0;
 	ℝ X_MAX = X_EDGE_ELEMS * X_EDGE_LENGTH;
 	ℝ Y_MIN = 0.0; 
@@ -138,7 +135,8 @@ OuterFacesComputations: ∀k∈outerFaces(), {
 		// X boundary conditions
 		if ((Math.fabs(X{r}[0]-X_MIN) < epsilon) || ( (Math.fabs(X{r}[0]-X_MAX) < epsilon) )) {
 			Mt{r} = I;
-			bt{r} = [0.0, 0.0];
+			bt{r}[0] = 0.0;
+			bt{r}[1] = 0.0;
 		}
 	}
 }
@@ -151,7 +149,7 @@ ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C{j,r},X{r}))
 // * Et calcule du δt pour mise-à-jour du temps de la simulation
 // *************************************************************
 ComputeXn: ∀r∈nodes(), X^{n+1}{r} = X{r}+δt*ur{r};
-IniUn: ∀j∈cells(), uj{j} = [0.0, 0.0];
+IniUn: ∀j∈cells(), { uj{j}[0] = 0.0; uj{j}[1] = 0.0; }
 ComputeUn: ∀j∈cells(), uj^{n+1}{j} = uj{j} - (δt/m{j}) * ∑{r∈nodesOfCell(j)}(F{j,r});
 IniEn: ∀j∈cells(), E{j} = p_ic{j} / ((γ-1.0) * ρ_ic{j});
 ComputeEn: ∀j∈cells(), E^{n+1}{j} = E{j} - (δt / m{j}) * ∑{r∈nodesOfCell(j)}(dot(F{j,r}, ur{r}));

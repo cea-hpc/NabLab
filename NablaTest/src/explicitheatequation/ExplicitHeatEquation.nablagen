@@ -26,7 +26,7 @@ workflow TestDefaultGenerationChain transforms ExplicitHeatEquation
 	
 	FillHLTs fillHlts follows optimizeConnectivities
 	{
-		//dumpIr;
+		dumpIr;
 	}
 	
 	Ir2Code javaGenerator follows fillHlts

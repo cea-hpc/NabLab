@@ -2,8 +2,8 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.Expression;
+import fr.cea.nabla.ir.ir.ExpressionType;
 import fr.cea.nabla.ir.ir.IrPackage;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -36,7 +36,7 @@ public abstract class ExpressionImpl extends IrAnnotableImpl implements Expressi
 	 * @generated
 	 * @ordered
 	 */
-	protected BaseType type;
+	protected ExpressionType type;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -62,7 +62,7 @@ public abstract class ExpressionImpl extends IrAnnotableImpl implements Expressi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BaseType getType() {
+	public ExpressionType getType() {
 		return type;
 	}
 
@@ -71,8 +71,8 @@ public abstract class ExpressionImpl extends IrAnnotableImpl implements Expressi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetType(BaseType newType, NotificationChain msgs) {
-		BaseType oldType = type;
+	public NotificationChain basicSetType(ExpressionType newType, NotificationChain msgs) {
+		ExpressionType oldType = type;
 		type = newType;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.EXPRESSION__TYPE, oldType, newType);
@@ -86,7 +86,7 @@ public abstract class ExpressionImpl extends IrAnnotableImpl implements Expressi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setType(BaseType newType) {
+	public void setType(ExpressionType newType) {
 		if (newType != type) {
 			NotificationChain msgs = null;
 			if (type != null)
@@ -137,7 +137,7 @@ public abstract class ExpressionImpl extends IrAnnotableImpl implements Expressi
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case IrPackage.EXPRESSION__TYPE:
-				setType((BaseType)newValue);
+				setType((ExpressionType)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -152,7 +152,7 @@ public abstract class ExpressionImpl extends IrAnnotableImpl implements Expressi
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case IrPackage.EXPRESSION__TYPE:
-				setType((BaseType)null);
+				setType((ExpressionType)null);
 				return;
 		}
 		super.eUnset(featureID);

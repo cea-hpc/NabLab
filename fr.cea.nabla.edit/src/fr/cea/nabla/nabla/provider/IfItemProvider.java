@@ -146,11 +146,6 @@ public class IfItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.IF__CONDITION,
-				 NablaFactory.eINSTANCE.createRealVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.IF__CONDITION,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -227,16 +222,6 @@ public class IfItemProvider extends InstructionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.IF__CONDITION,
 				 NablaFactory.eINSTANCE.createBoolConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.IF__CONDITION,
-				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.IF__CONDITION,
-				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter

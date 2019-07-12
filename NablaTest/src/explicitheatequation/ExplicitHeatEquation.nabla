@@ -47,7 +47,7 @@ const ℕ option_max_iterations = 500000000;
  * */
 
 const ℝ u0 = 1.0;
-const ℝ[2] vectOne = [1.0, 1.0];
+const ℝ[2] vectOne = ℝ[2](1.0);
 
 ℝ t=0.0; 
 ℝ δt=0.001;
@@ -75,9 +75,9 @@ InitXcAndYc: ∀c∈cells(), {
 	yc{c} = Xc{c}[1];
 }
 
-InitU: ∀c∈cells(), 
+InitU: ∀c∈cells(),
 	if (norm(Xc{c} - vectOne) < 0.5)
-		u{c} = u0; 
+		u{c} = u0;
 	else 
 		u{c} = 0.0; // Initial circle in the center with value u0
 

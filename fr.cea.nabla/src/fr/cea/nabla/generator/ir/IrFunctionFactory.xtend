@@ -19,8 +19,13 @@ import fr.cea.nabla.FunctionDeclaration
 import fr.cea.nabla.ReductionDeclaration
 import fr.cea.nabla.Utils
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.Reduction
+import fr.cea.nabla.typing.DefinedType
+import fr.cea.nabla.typing.ExpressionType
+import fr.cea.nabla.typing.RealArrayType
+import fr.cea.nabla.typing.UndefinedType
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -37,8 +42,8 @@ class IrFunctionFactory
 	{
 		annotations += a.model.toIrAnnotation
 		name = f.name
-		returnType = a.returnType.toIrBaseType
-		inTypes += a.inTypes.map[toIrBaseType]
+		returnType = a.returnType.toIrArgType
+		inTypes += a.inTypes.map[toIrArgType]
 		provider = Utils::getNablaModule(f).name
 	}
 
@@ -46,8 +51,24 @@ class IrFunctionFactory
 	{
 		annotations += a.model.toIrAnnotation
 		name = f.name
-		collectionType = a.collectionType.toIrBaseType
-		returnType = a.returnType.toIrBaseType
+		collectionType = a.collectionType.toIrArgType
+		returnType = a.returnType.toIrArgType
 		provider = Utils::getNablaModule(f).name
 	}
-}
+	
+	private def toIrArgType(ExpressionType t)
+	{
+		switch t
+		{
+			UndefinedType: null
+			RealArrayType: IrFactory::eINSTANCE.createArgType =>
+			[
+				root = PrimitiveType::REAL
+				arrayDimension = t.sizes.size
+			]
+			DefinedType: IrFactory::eINSTANCE.createArgType =>
+			[
+				root = t.root.toIrPrimitiveType
+			]
+		}
+	}}

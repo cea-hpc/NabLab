@@ -175,11 +175,6 @@ public class PlusItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.PLUS__LEFT,
-				 NablaFactory.eINSTANCE.createRealVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.PLUS__LEFT,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -256,16 +251,6 @@ public class PlusItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.PLUS__LEFT,
 				 NablaFactory.eINSTANCE.createBoolConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.PLUS__LEFT,
-				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.PLUS__LEFT,
-				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -295,11 +280,6 @@ public class PlusItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.PLUS__RIGHT,
-				 NablaFactory.eINSTANCE.createRealVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.PLUS__RIGHT,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -376,16 +356,6 @@ public class PlusItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.PLUS__RIGHT,
 				 NablaFactory.eINSTANCE.createBoolConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.PLUS__RIGHT,
-				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.PLUS__RIGHT,
-				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter

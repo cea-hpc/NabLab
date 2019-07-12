@@ -32,7 +32,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VarRefImpl#getVariable <em>Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VarRefImpl#getIterators <em>Iterators</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.VarRefImpl#getArrayTypeIndices <em>Array Type Indices</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.VarRefImpl#getIndices <em>Indices</em>}</li>
  * </ul>
  *
  * @generated
@@ -59,14 +59,14 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 	protected EList<VarRefIteratorRef> iterators;
 
 	/**
-	 * The cached value of the '{@link #getArrayTypeIndices() <em>Array Type Indices</em>}' attribute list.
+	 * The cached value of the '{@link #getIndices() <em>Indices</em>}' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getArrayTypeIndices()
+	 * @see #getIndices()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Integer> arrayTypeIndices;
+	protected EList<Integer> indices;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -142,11 +142,11 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Integer> getArrayTypeIndices() {
-		if (arrayTypeIndices == null) {
-			arrayTypeIndices = new EDataTypeEList<Integer>(Integer.class, this, IrPackage.VAR_REF__ARRAY_TYPE_INDICES);
+	public EList<Integer> getIndices() {
+		if (indices == null) {
+			indices = new EDataTypeEList<Integer>(Integer.class, this, IrPackage.VAR_REF__INDICES);
 		}
-		return arrayTypeIndices;
+		return indices;
 	}
 
 	/**
@@ -191,8 +191,8 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 				return basicGetVariable();
 			case IrPackage.VAR_REF__ITERATORS:
 				return getIterators();
-			case IrPackage.VAR_REF__ARRAY_TYPE_INDICES:
-				return getArrayTypeIndices();
+			case IrPackage.VAR_REF__INDICES:
+				return getIndices();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -213,9 +213,9 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 				getIterators().clear();
 				getIterators().addAll((Collection<? extends VarRefIteratorRef>)newValue);
 				return;
-			case IrPackage.VAR_REF__ARRAY_TYPE_INDICES:
-				getArrayTypeIndices().clear();
-				getArrayTypeIndices().addAll((Collection<? extends Integer>)newValue);
+			case IrPackage.VAR_REF__INDICES:
+				getIndices().clear();
+				getIndices().addAll((Collection<? extends Integer>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -235,8 +235,8 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 			case IrPackage.VAR_REF__ITERATORS:
 				getIterators().clear();
 				return;
-			case IrPackage.VAR_REF__ARRAY_TYPE_INDICES:
-				getArrayTypeIndices().clear();
+			case IrPackage.VAR_REF__INDICES:
+				getIndices().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -254,8 +254,8 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 				return variable != null;
 			case IrPackage.VAR_REF__ITERATORS:
 				return iterators != null && !iterators.isEmpty();
-			case IrPackage.VAR_REF__ARRAY_TYPE_INDICES:
-				return arrayTypeIndices != null && !arrayTypeIndices.isEmpty();
+			case IrPackage.VAR_REF__INDICES:
+				return indices != null && !indices.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -270,8 +270,8 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 		if (eIsProxy()) return super.toString();
 
 		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (arrayTypeIndices: ");
-		result.append(arrayTypeIndices);
+		result.append(" (indices: ");
+		result.append(indices);
 		result.append(')');
 		return result.toString();
 	}

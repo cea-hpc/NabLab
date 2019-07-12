@@ -32,10 +32,15 @@ public final class Test
 
 	// Global Variables
 	private double total;
+	private double[] a, b;
 
 	// Array Variables
-	private Real2 X[];
-	private double v[], u[], Cjr[][], M[][];
+	private double[] X[];
+	private double v[];
+	private double u[];
+	private double r[];
+	private double Cjr[][];
+	private double M[][];
 	
 	public Test(Options aOptions, NumericMesh2D aNumericMesh2D)
 	{
@@ -49,32 +54,28 @@ public final class Test
 
 
 		// Arrays allocation
-		X = new Real2[nbNodes];
-		IntStream.range(0, nbNodes).parallel().forEach(iNodes -> 
-		{
-			X[iNodes] = new Real2(0.0);
-		});
+		X = new double[nbNodes][2];
 		v = new double[nbNodes];
 		u = new double[nbCells];
+		r = new double[nbCells];
 		Cjr = new double[nbCells][nbNodesOfCell];
 		M = new double[nbCells][nbCells];
+		a = new double[2];
+		b = new double[2];
 
 		// Copy node coordinates
-		ArrayList<Real2> gNodes = mesh.getGeometricMesh().getNodes();
+		ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> X[rNodes] = gNodes.get(rNodes));
 	}
 	
 	/**
 	 * Job TestMatrix @-1.0
-	 * In variables: 
-	 * Out variables: M
+	 * In variables: M, u
+	 * Out variables: r
 	 */
 	private void testMatrix() 
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			M[jCells][jCells] = 0.0;
-		});
+		r = LinearAlgebraFunctions.solveLinearSystem(M, u);
 	}		
 
 	public void simulate()
@@ -87,7 +88,7 @@ public final class Test
 	public static void main(String[] args)
 	{
 		Test.Options o = new Test.Options();
-		Mesh<Real2> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
+		Mesh<double[]> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
 		NumericMesh2D nm = new NumericMesh2D(gm);
 		Test i = new Test(o, nm);
 		i.simulate();

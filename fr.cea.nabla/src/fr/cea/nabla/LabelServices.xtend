@@ -16,6 +16,7 @@ package fr.cea.nabla
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ConnectivityCall
@@ -39,8 +40,8 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RangeSpaceIterator
-import fr.cea.nabla.nabla.RealBaseTypeConstant
 import fr.cea.nabla.nabla.RealConstant
+import fr.cea.nabla.nabla.RealMatrixConstant
 import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
@@ -92,8 +93,6 @@ class LabelServices
 	static def dispatch String getLabel(IntConstant it) { value.toString }
 	static def dispatch String getLabel(RealConstant it) { value.toString }
 	static def dispatch String getLabel(BoolConstant it) { value.toString }
-	static def dispatch String getLabel(RealVectorConstant it) { '{' + values.join(',') + '}' }
-	static def dispatch String getLabel(RealBaseTypeConstant it) { type.label + '(' + value + ')' }
 	static def dispatch String getLabel(MinConstant it) { '-\u221E' }
 	static def dispatch String getLabel(MaxConstant it) { '-\u221E' }
 	static def dispatch String getLabel(FunctionCall it) { function.name + '(' + args.map[label].join(',') + ')' }
@@ -107,9 +106,13 @@ class LabelServices
 		return label
 	}
 
+	static def dispatch String getLabel(RealVectorConstant it) { '[' + values.join(',') + ']' }
+	static def dispatch String getLabel(RealMatrixConstant it) { '[' + values.map[label].join(',') + ']' }
+	static def dispatch String getLabel(BaseTypeConstant it) { type.label + '(' + value.label + ')' }
+
 	static def dispatch getLabel(BaseType it)
 	{
-		root.literal + sizes.map[utfExponent].join('\\u02E3')
+		root.literal + sizes.map[utfExponent].join('\u02E3')
 	}
 
 	private static def dispatch getTimeIteratorLabel(InitTimeIterator it) '''n=0''' 

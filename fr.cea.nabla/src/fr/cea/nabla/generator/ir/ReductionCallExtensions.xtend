@@ -18,7 +18,12 @@ import com.google.inject.Singleton
 import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.typing.DefinedType
+import fr.cea.nabla.typing.ExpressionType
+import fr.cea.nabla.typing.RealArrayType
+import fr.cea.nabla.typing.UndefinedType
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -34,7 +39,35 @@ class ReductionCallExtensions
 	def create IrFactory::eINSTANCE.createSimpleVariable toIrLocalVariable(ReductionCall rc)
 	{
 		name = rc.reduction.name + Utils::hashString(rc)
-		type = rc.declaration.returnType.toIrBaseType
-		defaultValue = rc.declaration.model.seed.toIrExpression
+		val d = rc.declaration
+		type = d.returnType.toIrBaseType
+		
+		val seedExpression = d.model.seed.toIrExpression
+		if (type.sizes.empty)
+			defaultValue = seedExpression
+		else
+			defaultValue = IrFactory::eINSTANCE.createBaseTypeConstant =>
+			[
+				type = d.returnType.toIrExpressionType
+				value = seedExpression
+			]	
+	}
+
+	// no connectivies on the ExpressionType for the Reduction
+	private def toIrBaseType(ExpressionType t)
+	{
+		switch t
+		{
+			UndefinedType: null
+			RealArrayType: IrFactory::eINSTANCE.createBaseType =>
+			[
+				root = PrimitiveType::REAL
+				sizes.addAll(t.sizes)
+			]
+			DefinedType: IrFactory::eINSTANCE.createBaseType =>
+			[
+				root = t.root.toIrPrimitiveType
+			]
+		}
 	}
 }

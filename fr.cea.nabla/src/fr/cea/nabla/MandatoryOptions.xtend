@@ -56,7 +56,7 @@ class MandatoryOptions
 		val length = f.createScalarVarDefinition
 		length.variable = f.createSimpleVar => [ name=optionName ]
 		length.type = f.createBaseType => [ root=PrimitiveType::REAL ]
-		length.defaultValue = f.createRealVectorConstant => [ values+=optionValue ]
+		length.defaultValue = f.createRealConstant => [ value=optionValue ]
 		return length
 	}
 }

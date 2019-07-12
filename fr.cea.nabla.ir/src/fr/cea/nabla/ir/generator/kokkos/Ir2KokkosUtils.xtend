@@ -26,6 +26,6 @@ class Ir2KokkosUtils
 			case INT: 'int'
 			case REAL: 'double'
 		}
-		return rootType + t.dimSizes.map[x | '[' + x + ']'].join
+		return rootType + t.sizes.map[x | '[' + x + ']'].join
  	}	
 }

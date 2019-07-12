@@ -196,6 +196,18 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createMaxConstantAdapter();
 			}
 			@Override
+			public Adapter caseBaseTypeConstant(BaseTypeConstant object) {
+				return createBaseTypeConstantAdapter();
+			}
+			@Override
+			public Adapter caseRealVectorConstant(RealVectorConstant object) {
+				return createRealVectorConstantAdapter();
+			}
+			@Override
+			public Adapter caseRealMatrixConstant(RealMatrixConstant object) {
+				return createRealMatrixConstantAdapter();
+			}
+			@Override
 			public Adapter caseFunctionCall(FunctionCall object) {
 				return createFunctionCallAdapter();
 			}
@@ -230,6 +242,14 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseBaseType(BaseType object) {
 				return createBaseTypeAdapter();
+			}
+			@Override
+			public Adapter caseExpressionType(ExpressionType object) {
+				return createExpressionTypeAdapter();
+			}
+			@Override
+			public Adapter caseArgType(ArgType object) {
+				return createArgTypeAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -686,6 +706,48 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.BaseTypeConstant <em>Base Type Constant</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.BaseTypeConstant
+	 * @generated
+	 */
+	public Adapter createBaseTypeConstantAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.RealVectorConstant <em>Real Vector Constant</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.RealVectorConstant
+	 * @generated
+	 */
+	public Adapter createRealVectorConstantAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.RealMatrixConstant <em>Real Matrix Constant</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.RealMatrixConstant
+	 * @generated
+	 */
+	public Adapter createRealMatrixConstantAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.MinConstant <em>Min Constant</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -822,6 +884,34 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createBaseTypeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ExpressionType <em>Expression Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.ExpressionType
+	 * @generated
+	 */
+	public Adapter createExpressionTypeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ArgType <em>Arg Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.ArgType
+	 * @generated
+	 */
+	public Adapter createArgTypeAdapter() {
 		return null;
 	}
 

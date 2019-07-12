@@ -90,7 +90,7 @@ class InstructionContentProvider
 			«ENDFOR»
 		}'''
 	
-	static def dispatch CharSequence getContent(Affectation it) 
+	static def dispatch CharSequence getContent(Affectation it)
 	'''«left.content» «operator» «right.content»;'''
 
 	static def dispatch CharSequence getContent(Loop it) 

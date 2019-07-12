@@ -5,7 +5,6 @@ package fr.cea.nabla.ir.ir.impl;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.VarDefinition;
 import fr.cea.nabla.ir.ir.Variable;
-
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.NotificationChain;

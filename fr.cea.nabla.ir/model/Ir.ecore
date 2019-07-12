@@ -67,8 +67,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="inTypes" upperBound="-1"
-        eType="#//BaseType" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//BaseType"
+        eType="#//ArgType" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//ArgType"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="provider" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -76,9 +76,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="Reduction" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="collectionType" lowerBound="1"
-        eType="#//BaseType" containment="true"/>
+        eType="#//ArgType" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" lowerBound="1"
-        eType="#//BaseType" containment="true"/>
+        eType="#//ArgType" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="provider" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
@@ -164,7 +164,7 @@
         containment="true" resolveProxies="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Expression" abstract="true" eSuperTypes="#//IrAnnotable">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//BaseType"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//ExpressionType"
         containment="true" resolveProxies="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ContractedIf" eSuperTypes="#//Expression">
@@ -194,11 +194,23 @@
         eType="#//Expression" containment="true" resolveProxies="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Constant" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="values" unique="false"
-        lowerBound="1" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" unique="false" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MinConstant" eSuperTypes="#//Expression"/>
   <eClassifiers xsi:type="ecore:EClass" name="MaxConstant" eSuperTypes="#//Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BaseTypeConstant" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="#//Expression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RealVectorConstant" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="values" unique="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RealMatrixConstant" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
+        eType="#//RealVectorConstant" containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionCall" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="function" lowerBound="1"
         eType="#//Function"/>
@@ -210,7 +222,7 @@
         eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterators" upperBound="-1"
         eType="#//VarRefIteratorRef" containment="true" resolveProxies="false" eOpposite="#//VarRefIteratorRef/referencedBy"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="arrayTypeIndices" unique="false"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="indices" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Iterator" eSuperTypes="#//IrAnnotable">
@@ -249,10 +261,19 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="BaseType">
+  <eClassifiers xsi:type="ecore:EClass" name="BaseType" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="root" lowerBound="1" eType="#//PrimitiveType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dimSizes" unique="false"
-        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sizes" unique="false" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ExpressionType" eSuperTypes="#//BaseType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connectivities" unique="false"
+        upperBound="-1" eType="#//Connectivity"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ArgType" eSuperTypes="#//IrAnnotable">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="root" lowerBound="1" eType="#//PrimitiveType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="arrayDimension" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="PrimitiveType">
     <eLiterals name="Void"/>

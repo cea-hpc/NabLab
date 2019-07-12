@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.Utils
 import fr.cea.nabla.nabla.And
-import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ContractedIf
@@ -22,12 +22,16 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.PrimitiveType
-import fr.cea.nabla.nabla.RealBaseTypeConstant
 import fr.cea.nabla.nabla.RealConstant
+import fr.cea.nabla.nabla.RealMatrixConstant
 import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
+import fr.cea.nabla.typing.DefinedType
+import fr.cea.nabla.typing.ExpressionType
+import fr.cea.nabla.typing.RealArrayType
+import fr.cea.nabla.typing.UndefinedType
 import java.util.Arrays
 
 class ExpressionInterpreter 
@@ -79,21 +83,6 @@ class ExpressionInterpreter
 	def dispatch ExpressionValue interprete(IntConstant it) { new IntValue(value) }
 	def dispatch ExpressionValue interprete(RealConstant it) { new RealValue(value) }
 	def dispatch ExpressionValue interprete(BoolConstant it)  { new BoolValue(value) }
-	def dispatch ExpressionValue interprete(RealVectorConstant it) { new RealArrayValue(#[values.size], values) }
-	def dispatch ExpressionValue interprete(RealBaseTypeConstant it) 
-	{ 
-		if (type.sizes.empty)
-			new RealValue(value)
-		else
-		{
-			var totalSize = 1
-			for (s : type.sizes) totalSize *= s
-			val values = newDoubleArrayOfSize(totalSize)
-			Arrays::fill(values, value)
-			new RealArrayValue(type.sizes, values)
-		}
-	}
-	
 	def dispatch ExpressionValue interprete(MinConstant it)
 	{
 		switch type
@@ -114,6 +103,32 @@ class ExpressionInterpreter
 		}
 	}
 	
+	def dispatch ExpressionValue interprete(RealVectorConstant it) 
+	{
+		new RealArrayValue(#[values.size], values)
+	}
+	
+	def dispatch ExpressionValue interprete(RealMatrixConstant it) 
+	{
+		// TODO
+	}
+	
+	def dispatch ExpressionValue interprete(BaseTypeConstant it) 
+	{ 
+		val initValue = value.interprete as RealValue
+		if (type.sizes.empty)
+			initValue
+		else
+		{
+			var totalSize = 1
+			for (s : type.sizes) totalSize *= s
+			val values = newDoubleArrayOfSize(totalSize)
+			Arrays::fill(values, initValue.value)
+			new RealArrayValue(type.sizes, values)
+		}
+	}
+	
+
 	// PB: remplacement des utf8
 	def dispatch ExpressionValue interprete(FunctionCall it)
 	{
@@ -128,12 +143,12 @@ class ExpressionInterpreter
 
 	def dispatch ExpressionValue interprete(ReductionCall it)
 	{
-		val providerClassName = Utils::getNablaModule(reduction).name + fr.cea.nabla.ir.Utils::FunctionAndReductionproviderSuffix
-		val providerClass = Class.forName(providerClassName)
-		val d = declaration
-		val type = d.collectionType.javaType
-		val method = providerClass.getMethod(reduction.name, type)
-		var reductionValue = d.model.seed.interprete
+//		val providerClassName = Utils::getNablaModule(reduction).name + fr.cea.nabla.ir.Utils::FunctionAndReductionproviderSuffix
+//		val providerClass = Class.forName(providerClassName)
+//		val d = declaration
+//		val type = d.collectionType.javaType
+//		val method = providerClass.getMethod(reduction.name, type)
+//		var reductionValue = d.model.seed.interprete
 		// comment gérer les itérateurs ?
 		// PB : remplacement des UTF8
 		return null
@@ -144,14 +159,25 @@ class ExpressionInterpreter
 		// TODO
 	}
 	
-	private def getJavaType(BaseType t)
+//	private def getJavaType(BaseType t)
+//	{
+//		switch t.sizes
+//		{
+//			case 0: t.root.javaType
+//			case 1: typeof(double[])
+//			case 2: typeof(double[][])
+//			default: throw new RuntimeException('Invalid type')
+//		}
+//	}
+
+	private def getJavaType(ExpressionType t)
 	{
-		switch (t.sizes)
+		switch t
 		{
-			case 0: t.root.javaType
-			case 1: typeof(double[])
-			case 2: typeof(double[][])
-			default: throw new RuntimeException('Invalid type')
+			UndefinedType: throw new RuntimeException('Invalid type')
+			RealArrayType case t.sizes==1: typeof(double[])
+			RealArrayType case t.sizes==2: typeof(double[][])
+			DefinedType: t.root.javaType
 		}
 	}
 	

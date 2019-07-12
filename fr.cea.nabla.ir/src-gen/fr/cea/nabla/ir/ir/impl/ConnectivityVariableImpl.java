@@ -78,11 +78,15 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * @generated NOT FIXME workaround BUG 89325
 	 */
+	@SuppressWarnings("serial")
 	public EList<Connectivity> getDimensions() {
 		if (dimensions == null) {
-			dimensions = new EObjectResolvingEList<Connectivity>(Connectivity.class, this, IrPackage.CONNECTIVITY_VARIABLE__DIMENSIONS);
+			dimensions = new EObjectResolvingEList<Connectivity>(Connectivity.class, this, IrPackage.CONNECTIVITY_VARIABLE__DIMENSIONS) {
+				@Override
+	    		protected boolean isUnique() { return false; }
+			};
 		}
 		return dimensions;
 	}

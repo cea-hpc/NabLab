@@ -100,14 +100,15 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Dimension"/>
     <genClasses ecoreClass="Nabla.ecore#//Expression"/>
-    <genClasses ecoreClass="Nabla.ecore#//RealVectorConstant">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//RealVectorConstant/values"/>
-    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//VarRef">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarRef/variable"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarRef/timeIterator"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarRef/spaceIterators"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//VarRef/indices"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//InitializationExpression"/>
+    <genClasses ecoreClass="Nabla.ecore#//RealVectorConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//RealVectorConstant/values"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//TimeIterator"/>
     <genClasses ecoreClass="Nabla.ecore#//BaseType">
@@ -205,13 +206,6 @@
     <genClasses ecoreClass="Nabla.ecore#//BoolConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//BoolConstant/value"/>
     </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//RealMatrixConstant">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//RealMatrixConstant/values"/>
-    </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//RealBaseTypeConstant">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//RealBaseTypeConstant/type"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//RealBaseTypeConstant/value"/>
-    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//MinConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//MinConstant/type"/>
     </genClasses>
@@ -227,6 +221,13 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/range"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/singletons"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/arg"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//RealMatrixConstant">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//RealMatrixConstant/values"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//BaseTypeConstant">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//BaseTypeConstant/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//BaseTypeConstant/value"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//InitTimeIterator"/>
     <genClasses ecoreClass="Nabla.ecore#//NextTimeIterator">

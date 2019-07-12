@@ -312,6 +312,30 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.BASE_TYPE_CONSTANT: {
+				BaseTypeConstant baseTypeConstant = (BaseTypeConstant)theEObject;
+				T result = caseBaseTypeConstant(baseTypeConstant);
+				if (result == null) result = caseExpression(baseTypeConstant);
+				if (result == null) result = caseIrAnnotable(baseTypeConstant);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.REAL_VECTOR_CONSTANT: {
+				RealVectorConstant realVectorConstant = (RealVectorConstant)theEObject;
+				T result = caseRealVectorConstant(realVectorConstant);
+				if (result == null) result = caseExpression(realVectorConstant);
+				if (result == null) result = caseIrAnnotable(realVectorConstant);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.REAL_MATRIX_CONSTANT: {
+				RealMatrixConstant realMatrixConstant = (RealMatrixConstant)theEObject;
+				T result = caseRealMatrixConstant(realMatrixConstant);
+				if (result == null) result = caseExpression(realMatrixConstant);
+				if (result == null) result = caseIrAnnotable(realMatrixConstant);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.FUNCTION_CALL: {
 				FunctionCall functionCall = (FunctionCall)theEObject;
 				T result = caseFunctionCall(functionCall);
@@ -374,6 +398,22 @@ public class IrSwitch<T> extends Switch<T> {
 			case IrPackage.BASE_TYPE: {
 				BaseType baseType = (BaseType)theEObject;
 				T result = caseBaseType(baseType);
+				if (result == null) result = caseIrAnnotable(baseType);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.EXPRESSION_TYPE: {
+				ExpressionType expressionType = (ExpressionType)theEObject;
+				T result = caseExpressionType(expressionType);
+				if (result == null) result = caseBaseType(expressionType);
+				if (result == null) result = caseIrAnnotable(expressionType);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.ARG_TYPE: {
+				ArgType argType = (ArgType)theEObject;
+				T result = caseArgType(argType);
+				if (result == null) result = caseIrAnnotable(argType);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -847,6 +887,51 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Base Type Constant</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Base Type Constant</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseBaseTypeConstant(BaseTypeConstant object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Real Vector Constant</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Real Vector Constant</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseRealVectorConstant(RealVectorConstant object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Real Matrix Constant</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Real Matrix Constant</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseRealMatrixConstant(RealMatrixConstant object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Min Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -993,6 +1078,36 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseBaseType(BaseType object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Expression Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Expression Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseExpressionType(ExpressionType object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Arg Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Arg Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseArgType(ArgType object) {
 		return null;
 	}
 

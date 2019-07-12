@@ -16,6 +16,7 @@ package fr.cea.nabla
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ConnectivityCall
@@ -40,8 +41,8 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RangeSpaceIterator
-import fr.cea.nabla.nabla.RealBaseTypeConstant
 import fr.cea.nabla.nabla.RealConstant
+import fr.cea.nabla.nabla.RealMatrixConstant
 import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
@@ -95,8 +96,6 @@ class LatexLabelServices
 	static def dispatch String getLatex(IntConstant it) { value.toString }
 	static def dispatch String getLatex(RealConstant it) { value.toString }
 	static def dispatch String getLatex(BoolConstant it) { value.toString }
-	static def dispatch String getLatex(RealVectorConstant it) { '{' + values.join(',') + '}' }
-	static def dispatch String getLatex(RealBaseTypeConstant it) { type.latex + '(' + value + ')' }
 	static def dispatch String getLatex(MinConstant it) { '-\u221E' }
 	static def dispatch String getLatex(MaxConstant it) { '\u221E' }
 	
@@ -118,14 +117,6 @@ class LatexLabelServices
 		}
 	}
 	
-	private static def getLatexArg(Expression it)
-	{
-		if (it instanceof ReductionCall || it instanceof FunctionCall)
-			latex
-		else
-			'\\left(' + latex + '\\right)'		
-	}
-	
 	static def dispatch String getLatex(VarRef it)
 	{
 		var label = variable.name.pu
@@ -136,6 +127,9 @@ class LatexLabelServices
 		return label
 	}
 
+	static def dispatch String getLabel(RealVectorConstant it) { '[' + values.join(',') + ']' }
+	static def dispatch String getLabel(RealMatrixConstant it) { '[' + values.map[latex].join(',') + ']' }
+	static def dispatch String getLatex(BaseTypeConstant it) { type.latex + '(' + value.latex + ')' }
 	
 	static def dispatch getLatex(BaseType it)
 	{
@@ -146,6 +140,14 @@ class LatexLabelServices
 	private static def dispatch getTimeIteratorLabel(InitTimeIterator it) '''n=0''' 
 	private static def dispatch getTimeIteratorLabel(NextTimeIterator it) '''n+1«IF hasDiv»/«div»«ENDIF»''' 
 
+	private static def getLatexArg(Expression it)
+	{
+		if (it instanceof ReductionCall || it instanceof FunctionCall)
+			latex
+		else
+			'\\left(' + latex + '\\right)'		
+	}
+	
 	// PRESERVE UNDERSCORES
 	private static def String pu(String it) { if (!nullOrEmpty) replaceAll('_', '\\\\_') else '' }
 }

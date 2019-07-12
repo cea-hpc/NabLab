@@ -42,11 +42,7 @@ class ExpressionContentProvider
 	static def dispatch CharSequence getContent(BinaryExpression it) '''«left.content» «operator» «right.content»'''
 	static def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
 	static def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
-	static def dispatch CharSequence getContent(Constant it) 
-	{
-		if (values.size==1) '''«values.head»''' 
-		else '''{«values.join(",")»}'''
-	}
+	static def dispatch CharSequence getContent(Constant it) '''«value»'''
 	
 	static def dispatch CharSequence getContent(MinConstant it) 
 	{
@@ -72,7 +68,7 @@ class ExpressionContentProvider
 	'''«function.provider»Functions::«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
 	static def dispatch CharSequence getContent(VarRef it) 
-	'''«codeName»«iteratorsContent»«FOR d:arrayTypeIndices BEFORE '('  SEPARATOR ',' AFTER ')'»«d»«ENDFOR»'''
+	'''«codeName»«iteratorsContent»«FOR d:indices BEFORE '('  SEPARATOR ',' AFTER ')'»«d»«ENDFOR»'''
 
 	private static def getCodeName(VarRef it)
 	{

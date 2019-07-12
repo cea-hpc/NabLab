@@ -16,6 +16,7 @@ package fr.cea.nabla.validation
 import com.google.inject.Inject
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
+import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
@@ -29,6 +30,7 @@ import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Plus
+import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.ReductionArg
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
@@ -39,6 +41,7 @@ import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.IntType
 import fr.cea.nabla.typing.RealArrayType
+import fr.cea.nabla.typing.RealType
 import fr.cea.nabla.typing.UndefinedType
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EReference
@@ -67,6 +70,17 @@ class TypeValidator extends BasicValidator
 	@Check def checkType(If it) { checkExpectedType(condition?.typeFor, BOOL, np.if_Condition) }
 		
 	// *** LES EXPRESSIONS
+	@Check
+	def checkValuetype(BaseTypeConstant it)
+	{
+		val vType = value.typeFor
+		if (vType !== null && !(vType instanceof RealType))
+		{
+			var msg = 'initialization value type must be ' + PrimitiveType::REAL.literal
+			error(msg, NablaPackage.Literals::BASE_TYPE_CONSTANT__VALUE)
+		}
+	}
+	
 	@Check
 	def checkSeedAndReturnTypes(ReductionArg it)
 	{
@@ -102,10 +116,16 @@ class TypeValidator extends BasicValidator
 	@Check
 	def checkArgs(ReductionCall it)
 	{
-		if (typeFor.undefined)
+		val inT = arg.typeFor
+		
+		if (inT instanceof RealArrayType && !(inT as RealArrayType).connectivities.empty)
 		{
-			val inType = arg.typeFor.label
-			var msg = 'Wrong arguments : ' + inType
+			var msg = 'No reduction on connectivities variable'
+			error(msg, NablaPackage.Literals::REDUCTION_CALL__REDUCTION)
+		}
+		else if (typeFor.undefined)
+		{
+			var msg = 'Wrong arguments : ' + inT.label
 			error(msg, NablaPackage.Literals::REDUCTION_CALL__REDUCTION)
 		}
 	}

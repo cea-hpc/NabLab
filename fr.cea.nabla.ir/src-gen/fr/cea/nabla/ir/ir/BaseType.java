@@ -4,8 +4,6 @@ package fr.cea.nabla.ir.ir;
 
 import org.eclipse.emf.common.util.EList;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Base Type</b></em>'.
@@ -16,14 +14,14 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.BaseType#getRoot <em>Root</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.BaseType#getDimSizes <em>Dim Sizes</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.BaseType#getSizes <em>Sizes</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getBaseType()
  * @model
  * @generated
  */
-public interface BaseType extends EObject {
+public interface BaseType extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Root</b></em>' attribute.
 	 * The literals are from the enumeration {@link fr.cea.nabla.ir.ir.PrimitiveType}.
@@ -54,19 +52,19 @@ public interface BaseType extends EObject {
 	void setRoot(PrimitiveType value);
 
 	/**
-	 * Returns the value of the '<em><b>Dim Sizes</b></em>' attribute list.
+	 * Returns the value of the '<em><b>Sizes</b></em>' attribute list.
 	 * The list contents are of type {@link java.lang.Integer}.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Dim Sizes</em>' attribute list isn't clear,
+	 * If the meaning of the '<em>Sizes</em>' attribute list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Dim Sizes</em>' attribute list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getBaseType_DimSizes()
+	 * @return the value of the '<em>Sizes</em>' attribute list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getBaseType_Sizes()
 	 * @model unique="false"
 	 * @generated
 	 */
-	EList<Integer> getDimSizes();
+	EList<Integer> getSizes();
 
 } // BaseType

@@ -2,8 +2,6 @@
  */
 package fr.cea.nabla.ir.ir;
 
-import org.eclipse.emf.common.util.EList;
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Constant</b></em>'.
@@ -13,7 +11,7 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.Constant#getValues <em>Values</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Constant#getValue <em>Value</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getConstant()
@@ -22,19 +20,29 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface Constant extends Expression {
 	/**
-	 * Returns the value of the '<em><b>Values</b></em>' attribute list.
-	 * The list contents are of type {@link java.lang.String}.
+	 * Returns the value of the '<em><b>Value</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Values</em>' attribute list isn't clear,
+	 * If the meaning of the '<em>Value</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Values</em>' attribute list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getConstant_Values()
+	 * @return the value of the '<em>Value</em>' attribute.
+	 * @see #setValue(String)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getConstant_Value()
 	 * @model unique="false" required="true"
 	 * @generated
 	 */
-	EList<String> getValues();
+	String getValue();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Constant#getValue <em>Value</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Value</em>' attribute.
+	 * @see #getValue()
+	 * @generated
+	 */
+	void setValue(String value);
 
 } // Constant

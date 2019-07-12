@@ -142,11 +142,6 @@ public class ParenthesisItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
-				 NablaFactory.eINSTANCE.createRealVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -223,16 +218,6 @@ public class ParenthesisItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
 				 NablaFactory.eINSTANCE.createBoolConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
-				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
-				 NablaFactory.eINSTANCE.createRealBaseTypeConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter

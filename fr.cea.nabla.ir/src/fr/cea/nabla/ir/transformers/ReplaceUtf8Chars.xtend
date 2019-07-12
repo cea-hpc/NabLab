@@ -51,4 +51,9 @@ class ReplaceUtf8Chars implements IrTransformationStep
 		.replace('\u2211', 'reduceSum')
 		.replace('\u220F', 'reduceProd')		
 	}
+	
+	override getOutputTraces() 
+	{
+		#[]
+	}
 }

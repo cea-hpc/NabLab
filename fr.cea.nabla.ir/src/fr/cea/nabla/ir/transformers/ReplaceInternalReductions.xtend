@@ -58,6 +58,11 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 		return true
 	}
 	
+	override getOutputTraces() 
+	{
+		#[]
+	}
+
 	private def Expression createAffectationRHS(IrModule m, ReductionInstruction reductionInstr)
 	{
 		val reduction = reductionInstr.reduction

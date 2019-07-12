@@ -42,4 +42,9 @@ class OptimizeConnectivities implements IrTransformationStep
 		m.connectivities.forEach[c | if (connectivities.contains(c.name)) c.indexEqualId = true]
 		return true
 	}
+	
+	override getOutputTraces() 
+	{
+		#[]
+	}
 }

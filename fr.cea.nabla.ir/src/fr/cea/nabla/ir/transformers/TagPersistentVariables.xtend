@@ -35,4 +35,9 @@ class TagPersistentVariables implements IrTransformationStep
 		}
 		return true
 	}
+	
+	override getOutputTraces() 
+	{
+		#[]
+	}
 }

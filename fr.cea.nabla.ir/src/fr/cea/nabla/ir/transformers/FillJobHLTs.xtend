@@ -24,11 +24,13 @@ import org.jgrapht.graph.DefaultWeightedEdge
 import org.jgrapht.graph.DirectedWeightedPseudograph
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
+import java.util.ArrayList
 
 class FillJobHLTs implements IrTransformationStep
 {
 	static val TimeLoopSourceNodeLabel = 'TimeLoopSourceNode'
 	static val GlobalSourceNodeLabel = 'GlobalSourceNode'
+	val outputTraces = new ArrayList<String>
 	
 	override getDescription() 
 	{
@@ -53,8 +55,8 @@ class FillJobHLTs implements IrTransformationStep
 		val hasCycles = (cycles !== null)
 		if (hasCycles)
 		{
-			println('*** HLT calculation impossible: graph contains cycles.')
-			println('*** ' + cycles.map[name].join(' -> '))
+			outputTraces += '*** HLT calculation impossible: graph contains cycles.'
+			outputTraces += '*** ' + cycles.map[name].join(' -> ')
 		}
 		else
 		{
@@ -82,7 +84,12 @@ class FillJobHLTs implements IrTransformationStep
 		}
 		return !hasCycles
 	}
-	
+		
+	override getOutputTraces() 
+	{
+		outputTraces
+	}
+
 	/** 
 	 * Création d'un graphe correspondant à l'IR. 
 	 * 2 noeuds sources sont ajoutés : 1 correspondant à un noeud source global 

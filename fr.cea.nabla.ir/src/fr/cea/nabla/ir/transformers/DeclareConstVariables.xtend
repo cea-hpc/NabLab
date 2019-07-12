@@ -37,7 +37,11 @@ class DeclareConstVariables implements IrTransformationStep
 		}
 		return true
 	}
-
+	
+	override getOutputTraces() 
+	{
+		#[]
+	}
 //	private def dispatch newVariable(ScalarVariable v)
 //	{
 //		IrFactory::eINSTANCE.createScalarVariable =>

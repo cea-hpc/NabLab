@@ -33,4 +33,9 @@ class ConfigureNablaConnectivities implements IrTransformationStep
 		m.connectivities.forEach[c | c.name = NablaConnectivities.getOrDefault(c.name, c.name)]
 		return true
 	}
+	
+	override getOutputTraces() 
+	{
+		#[]
+	}
 }

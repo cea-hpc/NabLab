@@ -77,6 +77,11 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 		return true
 	}
 	
+	override getOutputTraces() 
+	{
+		#[]
+	}
+
 	/**
 	 * Si l'argument de la réduction est une VarRef, retourne cette VarRef
 	 * sinon crée un job pour calculer l'expression, une variable por stocker le

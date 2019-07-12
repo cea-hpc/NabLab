@@ -89,10 +89,14 @@ class WorkflowInterpretor
 			}
 			else
 			{
-				val exceptionMsg = '   ** Error in IR transformation step\n'
+				val exceptionMsg = '... ko\n*** Error in IR transformation step\n'
 				logger.info(exceptionMsg)
 				traceListeners.forEach[write(exceptionMsg)]
-				//throw new RuntimeException(exceptionMsg)
+				for (trace : step.outputTraces)
+				{
+					logger.info(trace + '\n')
+					traceListeners.forEach[write(trace + '\n')]
+				}
 				return
 			}
 		}

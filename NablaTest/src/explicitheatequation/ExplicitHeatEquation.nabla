@@ -14,6 +14,7 @@
 module ExplicitHeatEquation;
 
 with Math.*;
+with LinearAlgebra.*;
 
 items { node, cell, face }
 
@@ -28,9 +29,12 @@ connectivities {
 	commonFace: cell × cell → face;
 }
 
-// Options obligatoires pour compiler
 const ℝ X_LENGTH = 2.0;
 const ℝ Y_LENGTH = 2.0;
+const ℝ u0 = 1.0;
+const ℝ[2] vectOne = ℝ[2](1.0);
+
+// NabLab Mandatory Options
 const ℕ X_EDGE_ELEMS = 40;
 const ℕ Y_EDGE_ELEMS = 40;
 const ℕ Z_EDGE_ELEMS = 1;
@@ -38,16 +42,6 @@ const ℝ X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
 const ℝ Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 const ℝ option_stoptime = 1.0;
 const ℕ option_max_iterations = 500000000;
-/* @Remark
- * La définition du maillage est problématique :
- *    - On ne peut pas choisir une longueur de maille différentes pour x et y
- *    - On a plutôt envie de se donner une longueur physique
- *           (éventuellement différente en x et y) et un nombre de mailles en x et y
- *    Car en général on se donne un cas test particulier (donc une longueur physique donnée) et on fait varier le pas d'espace
- * */
-
-const ℝ u0 = 1.0;
-const ℝ[2] vectOne = ℝ[2](1.0);
 
 ℝ t=0.0; 
 ℝ δt=0.001;
@@ -57,17 +51,9 @@ const ℝ[2] vectOne = ℝ[2](1.0);
 ℝ V{cells}; // Volume of cells
 ℝ D{cells}; // Cell centered conductivity
 ℝ faceLength{faces}, faceConductivity{faces};
-ℝ α{cells, neighbourCells}; 
-/* @Remark
- * C'est vraiment super d'avoir ce type de structure
- * Par contre dans mon cas, j'ai besoin de définir quelque chose du type
- * ∀c∈cells(), α{c, c} 
- * ce qui n'est pas possible je pense
- * Du coup j'ai filouté avec le α_self mais ce serait mieux de pouvoir écrire directement α{c, c}
- *   Si on le voit en terme de matrice en math, c'est un élement α_ii
- * */
-ℝ α_self{cells};
-
+//ℝ α{cells, neighbourCells}; 
+//ℝ α_self{cells};
+ℝ α{cells, cells}; 
 InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // ne fonctionne que sur des parallélogrammes
 
 InitXcAndYc: ∀c∈cells(), {
@@ -88,31 +74,29 @@ computeDeltaTn: δt = reduceMin{c∈cells()}(X_EDGE_LENGTH*Y_EDGE_LENGTH/D{c}) *
 
 ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{p∈nodesOfCell(j)}(det(X{p}, X{p+1}));
 ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p}-X{p+1}));
+ComputeFaceConductivity: ∀f∈faces(), faceConductivity{f} = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1}) / ∑{c2∈cellsOfFace(f)}(D{c2});
 
-ComputeFaceConductivity: ∀f∈faces(), {
-	faceConductivity{f} = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1}) / ∑{c2∈cellsOfFace(f)}(D{c2});
-	
-//	∀c∈cellsOfFace(f), {
-//		numerator = numerator * D{c};
-//	/* @Remark
-//	 * L'opérateur produit ∏ aurait été parfait :-)
-//	 */
-//		denominator =  denominator + D{c};
-//	}
-//	faceConductivity{f} = numerator / denominator;
-//	/* @Remark
-//	 * Problème à la compil du java, à voir ensemble je pense  --> je remplace par un truc plus simple
-//	 */
-//	 //faceConductivity{f} = 1.0;
-}
+///* Assembling of the diffusion matrix */
+//// Extra diagonal terms 
+//computeAlphaCoeff: ∀c∈cells(), ∀d∈neighbourCells(c), f=commonFace(c,d),
+//	α{c, d} = δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c}-Xc{d});
+//// Diagonal terms		
+//computeOwnAlphaCoeff:  ∀c∈cells(), α_self{c} = 1 - ∑{d∈neighbourCells(c)}(α{c, d});
+//UpdateU: ∀c∈cells(), u^{n+1}{c} = α_self{c} * u{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u{d});
+
 
 /* Assembling of the diffusion matrix */
-// Extra diagonal terms 
-computeAlphaCoeff: ∀c∈cells(), ∀d∈neighbourCells(c), f=commonFace(c,d),
-	α{c, d} = δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c}-Xc{d});
-// Diagonal terms		
-computeOwnAlphaCoeff:  ∀c∈cells(), α_self{c} = 1 - ∑{d∈neighbourCells(c)}(α{c, d});
-
-UpdateU: ∀c∈cells(), u^{n+1}{c} = α_self{c} * u{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u{d});
+computeAlphaCoeff: ∀c∈cells(), {
+	ℝ αDiag = 0.0;
+	∀d∈neighbourCells(c), f=commonFace(c,d), {
+		ℝ αExtraDiag = δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c}-Xc{d});
+		α{c, d} = αExtraDiag;
+		αDiag = αDiag + αExtraDiag;
+	}
+	α{c, c} = 1 - αDiag;
+}
+	
+//UpdateU: ∀c∈cells(), u^{n+1}{c} = α{c, c} * u{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u{d});
+UpdateU: u^{n+1} = solveLinearSystem(α, u);
 
 ComputeTn: t^{n+1}=t+δt;

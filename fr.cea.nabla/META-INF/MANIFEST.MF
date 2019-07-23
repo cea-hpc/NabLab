@@ -41,5 +41,4 @@ Export-Package: fr.cea.nabla,
 Import-Package: com.google.inject,
  org.apache.log4j
 Bundle-ClassPath: jlatexmath-1.0.3.jar,
- .,
- lib/libjavanabla.jar
+ .

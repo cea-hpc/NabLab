@@ -39,7 +39,7 @@ workflow TestDefaultGenerationChain transforms Test
 	Ir2Code kokkosGenerator follows fillHlts
 	{
 		language = Kokkos;
-		//disabled;
+		disabled;
 		outputDir = "/NablaTestKokkos/src";
 	}
 }

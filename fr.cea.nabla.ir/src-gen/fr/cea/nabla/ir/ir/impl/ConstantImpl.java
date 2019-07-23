@@ -2,12 +2,14 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import fr.cea.nabla.ir.ir.Constant;
 import fr.cea.nabla.ir.ir.IrPackage;
+
+import org.eclipse.emf.common.notify.Notification;
+
+import org.eclipse.emf.ecore.EClass;
+
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -32,6 +34,7 @@ public class ConstantImpl extends ExpressionImpl implements Constant {
 	 * @ordered
 	 */
 	protected static final String VALUE_EDEFAULT = null;
+
 	/**
 	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -41,6 +44,7 @@ public class ConstantImpl extends ExpressionImpl implements Constant {
 	 * @ordered
 	 */
 	protected String value = VALUE_EDEFAULT;
+
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

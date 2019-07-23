@@ -75,7 +75,7 @@ public final class Test
 	 */
 	private void testMatrix() 
 	{
-		r = LinearAlgebraFunctions.solveLinearSystem(M, u);
+		r = LinearAlgebraFunctions.solveLinearSystem(M, u, u);
 	}		
 
 	public void simulate()

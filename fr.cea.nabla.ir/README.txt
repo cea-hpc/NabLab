@@ -11,7 +11,7 @@ an EMF bug that not allows duplicated elements even if the ecore unique attribut
 	@SuppressWarnings("serial")
 	public EList<Connectivity> getDimensions() {
 		if (dimensions == null) {
-			dimensions = new EObjectResolvingEList<Connectivity>(Connectivity.class, this, IrPackage.ARRAY_VARIABLE__DIMENSIONS) {
+			dimensions = new EObjectResolvingEList<Connectivity>(Connectivity.class, this, IrPackage.CONNECTIVITY_VARIABLE__DIMENSIONS) {
 				@Override
 	    		protected boolean isUnique() { return false; }
 			};

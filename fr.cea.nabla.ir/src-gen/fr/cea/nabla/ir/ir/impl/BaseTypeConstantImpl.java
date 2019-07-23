@@ -37,6 +37,7 @@ public class BaseTypeConstantImpl extends ExpressionImpl implements BaseTypeCons
 	 * @ordered
 	 */
 	protected Expression value;
+
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

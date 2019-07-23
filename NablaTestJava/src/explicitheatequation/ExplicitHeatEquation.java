@@ -2,6 +2,7 @@ package explicitheatequation;
 
 import java.util.HashMap;
 import java.util.Arrays;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.stream.IntStream;
 
@@ -16,22 +17,22 @@ public final class ExplicitHeatEquation
 	{
 		public final double X_LENGTH = 2.0;
 		public final double Y_LENGTH = 2.0;
-		public final int X_EDGE_ELEMS = 40;
-		public final int Y_EDGE_ELEMS = 40;
+		public final double u0 = 1.0;
+		public final double[] vectOne = {1.0,1.0};
+		public final int X_EDGE_ELEMS = 5;
+		public final int Y_EDGE_ELEMS = 5;
 		public final int Z_EDGE_ELEMS = 1;
 		public final double X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
 		public final double Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 		public final double option_stoptime = 1.0;
 		public final int option_max_iterations = 500000000;
-		public final double u0 = 1.0;
-		public final double[] vectOne = {1.0,1.0};
 	}
 	
 	private final Options options;
 
 	// Mesh
 	private final NumericMesh2D mesh;
-	private final int nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace;
+	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 	private final VtkFileWriter2D writer;
 
 	// Global Variables
@@ -48,7 +49,6 @@ public final class ExplicitHeatEquation
 	private double faceLength[];
 	private double faceConductivity[];
 	private double alpha[][];
-	private double alpha_self[];
 	private double u_nplus1[];
 	
 	public ExplicitHeatEquation(Options aOptions, NumericMesh2D aNumericMesh2D)
@@ -60,10 +60,10 @@ public final class ExplicitHeatEquation
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
-		nbNeighbourCells = NumericMesh2D.MaxNbNeighbourCells;
 		nbNodesOfCell = NumericMesh2D.MaxNbNodesOfCell;
 		nbNodesOfFace = NumericMesh2D.MaxNbNodesOfFace;
 		nbCellsOfFace = NumericMesh2D.MaxNbCellsOfFace;
+		nbNeighbourCells = NumericMesh2D.MaxNbNeighbourCells;
 
 		t = 0.0;
 		deltat = 0.001;
@@ -79,8 +79,7 @@ public final class ExplicitHeatEquation
 		D = new double[nbCells];
 		faceLength = new double[nbFaces];
 		faceConductivity = new double[nbFaces];
-		alpha = new double[nbCells][nbNeighbourCells];
-		alpha_self = new double[nbCells];
+		alpha = new double[nbCells][nbCells];
 		u_nplus1 = new double[nbCells];
 
 		// Copy node coordinates
@@ -89,7 +88,7 @@ public final class ExplicitHeatEquation
 	}
 	
 	/**
-	 * Job InitXc @-4.0
+	 * Job InitXc @-3.0
 	 * In variables: X
 	 * Out variables: Xc
 	 */
@@ -113,7 +112,7 @@ public final class ExplicitHeatEquation
 	}		
 	
 	/**
-	 * Job InitD @-4.0
+	 * Job InitD @-3.0
 	 * In variables: 
 	 * Out variables: D
 	 */
@@ -126,7 +125,7 @@ public final class ExplicitHeatEquation
 	}		
 	
 	/**
-	 * Job ComputeV @-4.0
+	 * Job ComputeV @-3.0
 	 * In variables: X
 	 * Out variables: V
 	 */
@@ -152,7 +151,7 @@ public final class ExplicitHeatEquation
 	}		
 	
 	/**
-	 * Job ComputeFaceLength @-4.0
+	 * Job ComputeFaceLength @-3.0
 	 * In variables: X
 	 * Out variables: faceLength
 	 */
@@ -178,7 +177,7 @@ public final class ExplicitHeatEquation
 	}		
 	
 	/**
-	 * Job InitXcAndYc @-3.0
+	 * Job InitXcAndYc @-2.0
 	 * In variables: Xc
 	 * Out variables: xc, yc
 	 */
@@ -192,7 +191,7 @@ public final class ExplicitHeatEquation
 	}		
 	
 	/**
-	 * Job InitU @-3.0
+	 * Job InitU @-2.0
 	 * In variables: Xc, vectOne, u0
 	 * Out variables: u
 	 */
@@ -208,7 +207,7 @@ public final class ExplicitHeatEquation
 	}		
 	
 	/**
-	 * Job computeDeltaTn @-3.0
+	 * Job computeDeltaTn @-2.0
 	 * In variables: X_EDGE_LENGTH, Y_EDGE_LENGTH, D
 	 * Out variables: deltat
 	 */
@@ -223,7 +222,7 @@ public final class ExplicitHeatEquation
 	}		
 	
 	/**
-	 * Job ComputeFaceConductivity @-3.0
+	 * Job ComputeFaceConductivity @-2.0
 	 * In variables: D
 	 * Out variables: faceConductivity
 	 */
@@ -257,7 +256,7 @@ public final class ExplicitHeatEquation
 	}		
 	
 	/**
-	 * Job computeAlphaCoeff @-2.0
+	 * Job computeAlphaCoeff @-1.0
 	 * In variables: deltat, V, faceLength, faceConductivity, Xc
 	 * Out variables: alpha
 	 */
@@ -266,6 +265,7 @@ public final class ExplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			int cId = cCells;
+			double alphaDiag = 0.0;
 			{
 				int[] neighbourCellsC = mesh.getNeighbourCells(cId);
 				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.length; dNeighbourCellsC++)
@@ -274,56 +274,29 @@ public final class ExplicitHeatEquation
 					int dCells = dId;
 					int fId = mesh.getCommonFace(cId, dId);
 					int fFaces = fId;
-					alpha[cCells][dNeighbourCellsC] = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions.norm(OperatorExtensions.operator_minus(Xc[cCells], Xc[dCells]));
+					double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions.norm(OperatorExtensions.operator_minus(Xc[cCells], Xc[dCells]));
+					alpha[cCells][dCells] = alphaExtraDiag;
+					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
 			}
-		});
-	}		
-	
-	/**
-	 * Job computeOwnAlphaCoeff @-1.0
-	 * In variables: alpha
-	 * Out variables: alpha_self
-	 */
-	private void computeOwnAlphaCoeff() 
-	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
-		{
-			int cId = cCells;
-			double reduceSum325107813 = 0.0;
-			{
-				int[] neighbourCellsC = mesh.getNeighbourCells(cId);
-				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.length; dNeighbourCellsC++)
-				{
-					reduceSum325107813 = reduceSum325107813 + (alpha[cCells][dNeighbourCellsC]);
-				}
-			}
-			alpha_self[cCells] = 1 - reduceSum325107813;
+			alpha[cCells][cCells] = 1 - alphaDiag;
 		});
 	}		
 	
 	/**
 	 * Job UpdateU @1.0
-	 * In variables: alpha, u, alpha_self
+	 * In variables: alpha, u
 	 * Out variables: u_nplus1
 	 */
 	private void updateU() 
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
-		{
-			int cId = cCells;
-			double reduceSum2004499497 = 0.0;
-			{
-				int[] neighbourCellsC = mesh.getNeighbourCells(cId);
-				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.length; dNeighbourCellsC++)
-				{
-					int dId = neighbourCellsC[dNeighbourCellsC];
-					int dCells = dId;
-					reduceSum2004499497 = reduceSum2004499497 + (alpha[cCells][dNeighbourCellsC] * u[dCells]);
-				}
-			}
-			u_nplus1[cCells] = alpha_self[cCells] * u[cCells] + reduceSum2004499497;
-		});
+		DecimalFormat df = new DecimalFormat("#0.00");
+		System.out.println("ALPHA");
+		LinearAlgebraFunctions.print(alpha, df);
+		System.out.println("U");
+		LinearAlgebraFunctions.print(u, df);
+		
+		u_nplus1 = LinearAlgebraFunctions.solveLinearSystem(alpha, u);
 	}		
 	
 	/**
@@ -363,16 +336,15 @@ public final class ExplicitHeatEquation
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module ExplicitHeatEquation");
-		initXc(); // @-4.0
-		initD(); // @-4.0
-		computeV(); // @-4.0
-		computeFaceLength(); // @-4.0
-		initXcAndYc(); // @-3.0
-		initU(); // @-3.0
-		computeDeltaTn(); // @-3.0
-		computeFaceConductivity(); // @-3.0
-		computeAlphaCoeff(); // @-2.0
-		computeOwnAlphaCoeff(); // @-1.0
+		initXc(); // @-3.0
+		initD(); // @-3.0
+		computeV(); // @-3.0
+		computeFaceLength(); // @-3.0
+		initXcAndYc(); // @-2.0
+		initU(); // @-2.0
+		computeDeltaTn(); // @-2.0
+		computeFaceConductivity(); // @-2.0
+		computeAlphaCoeff(); // @-1.0
 
 		HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 		HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();

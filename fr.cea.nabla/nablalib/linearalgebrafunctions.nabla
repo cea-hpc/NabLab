@@ -16,4 +16,11 @@ module LinearAlgebra;
 functions 
 {
 	solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x];
+
+	/*
+	 * It would be better to use the solveInPlace method to avoid
+	 * a new allocation of the solution. 
+	 * solveLinearSystem: x | ℝ[x, x] × ℝ[x] × ℝ[x] → ℝ[x];
+	 * Problem: no way to call a function without an affectation instruction.
+	 */
 }

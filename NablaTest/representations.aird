@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:diagram="http://www.eclipse.org/sirius/diagram/1.1.0" xmlns:nablagen="http://www.cea.fr/nabla/Nablagen" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" xmlns:viewpoint="http://www.eclipse.org/sirius/1.1.0" xsi:schemaLocation="http://www.eclipse.org/sirius/description/1.1.0 http://www.eclipse.org/sirius/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/style/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description/style">
-  <viewpoint:DAnalysis uid="_eEvd0HbvEemCYsSVd3ddRA" selectedViews="_GnHgUHbwEemCYsSVd3ddRA" version="14.1.0.201810161215">
+  <viewpoint:DAnalysis uid="_eEvd0HbvEemCYsSVd3ddRA" selectedViews="_GnHgUHbwEemCYsSVd3ddRA _wHPK8K1KEemS-K7Fov5Tgw" version="14.1.0.201810161215">
     <semanticResources>src/test/test.nabla</semanticResources>
     <semanticResources>src/test/test.nablagen</semanticResources>
     <semanticResources>platform:/resource/fr.cea.nabla/mathfunctions.nabla</semanticResources>
@@ -8,7 +8,11 @@
     <semanticResources>src-gen/test/Test.fillHlts.nablair</semanticResources>
     <semanticResources>src/explicitheatequation/ExplicitHeatEquation.nabla</semanticResources>
     <semanticResources>src/explicitheatequation/ExplicitHeatEquation.nablagen</semanticResources>
+    <semanticResources>platform:/resource/fr.cea.nabla/linearalgebrafunctions.nabla</semanticResources>
     <semanticResources>src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair</semanticResources>
+    <semanticResources>src/implicitheatequation/ImplicitHeatEquation.nabla</semanticResources>
+    <semanticResources>src/implicitheatequation/ImplicitHeatEquation.nablagen</semanticResources>
+    <semanticResources>src-gen/implicitheatequation/ImplicitHeatEquation.fillHlts.nablair</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_GnHgUHbwEemCYsSVd3ddRA">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_pWBMgHvLEemMCNDPcpRLqg" name="TestDefaultGenerationChainDiagram" repPath="#_pVwGwHvLEemMCNDPcpRLqg">
@@ -19,6 +23,9 @@
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']"/>
         <target xmi:type="nablagen:Workflow" href="src/test/test.nablagen#//@workflow"/>
       </ownedRepresentationDescriptors>
+    </ownedViews>
+    <ownedViews xmi:type="viewpoint:DView" uid="_wHPK8K1KEemS-K7Fov5Tgw">
+      <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']"/>
     </ownedViews>
   </viewpoint:DAnalysis>
   <diagram:DSemanticDiagram uid="_pVwGwHvLEemMCNDPcpRLqg" name="TestDefaultGenerationChainDiagram">

@@ -1,4 +1,4 @@
-package explicitheatequation;
+package implicitheatequation;
 
 import java.util.HashMap;
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import fr.cea.nabla.javalib.types.*;
 import fr.cea.nabla.javalib.mesh.*;
 
 @SuppressWarnings("all")
-public final class ExplicitHeatEquation
+public final class ImplicitHeatEquation
 {
 	public final static class Options
 	{
@@ -50,11 +50,11 @@ public final class ExplicitHeatEquation
 	private double alpha[][];
 	private double u_nplus1[];
 	
-	public ExplicitHeatEquation(Options aOptions, NumericMesh2D aNumericMesh2D)
+	public ImplicitHeatEquation(Options aOptions, NumericMesh2D aNumericMesh2D)
 	{
 		options = aOptions;
 		mesh = aNumericMesh2D;
-		writer = new VtkFileWriter2D("ExplicitHeatEquation");
+		writer = new VtkFileWriter2D("ImplicitHeatEquation");
 
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
@@ -88,7 +88,7 @@ public final class ExplicitHeatEquation
 
 	public void simulate()
 	{
-		System.out.println("Début de l'exécution du module ExplicitHeatEquation");
+		System.out.println("Début de l'exécution du module ImplicitHeatEquation");
 		initXc(); // @-3.0
 		initD(); // @-3.0
 		computeV(); // @-3.0
@@ -104,33 +104,23 @@ public final class ExplicitHeatEquation
 		{
 			iteration++;
 			System.out.println("[" + iteration + "] t = " + t);
-			dumpVariables(iteration);
 			updateU(); // @1.0
 			computeTn(); // @1.0
 			copy_u_nplus1_to_u(); // @2.0
 			copy_t_nplus1_to_t(); // @2.0
 		}
-		dumpVariables(iteration);
-		System.out.println("Fin de l'exécution du module ExplicitHeatEquation");
+		System.out.println("Fin de l'exécution du module ImplicitHeatEquation");
 	}
 
 	public static void main(String[] args)
 	{
-		ExplicitHeatEquation.Options o = new ExplicitHeatEquation.Options();
+		ImplicitHeatEquation.Options o = new ImplicitHeatEquation.Options();
 		Mesh<double[]> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
 		NumericMesh2D nm = new NumericMesh2D(gm);
-		ExplicitHeatEquation i = new ExplicitHeatEquation(o, nm);
+		ImplicitHeatEquation i = new ImplicitHeatEquation(o, nm);
 		i.simulate();
 	}
 	
-	private void dumpVariables(int iteration)
-	{
-		HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-		HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-		cellVariables.put("Temperature", u);
-		writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
-	}
-
 	/**
 	 * Job InitXc @-3.0
 	 * In variables: X
@@ -318,7 +308,7 @@ public final class ExplicitHeatEquation
 					int dCells = dId;
 					int fId = mesh.getCommonFace(cId, dId);
 					int fFaces = fId;
-					double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions.norm(OperatorExtensions.operator_minus(Xc[cCells], Xc[dCells]));
+					double alphaExtraDiag = -deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions.norm(OperatorExtensions.operator_minus(Xc[cCells], Xc[dCells]));
 					alpha[cCells][dCells] = alphaExtraDiag;
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
@@ -334,21 +324,7 @@ public final class ExplicitHeatEquation
 	 */
 	private void updateU() 
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
-		{
-			int cId = cCells;
-			double reduceSum_745417239 = 0.0;
-			{
-				int[] neighbourCellsC = mesh.getNeighbourCells(cId);
-				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.length; dNeighbourCellsC++)
-				{
-					int dId = neighbourCellsC[dNeighbourCellsC];
-					int dCells = dId;
-					reduceSum_745417239 = reduceSum_745417239 + (alpha[cCells][dCells] * u[dCells]);
-				}
-			}
-			u_nplus1[cCells] = alpha[cCells][cCells] * u[cCells] + reduceSum_745417239;
-		});
+		u_nplus1 = LinearAlgebraFunctions.solveLinearSystem(alpha, u);
 	}		
 	
 	/**

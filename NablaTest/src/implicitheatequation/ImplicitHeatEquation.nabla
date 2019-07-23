@@ -11,9 +11,10 @@
  * 	Marie-Pierre Oudot - initial implementation
  * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
-module ExplicitHeatEquation;
+module ImplicitHeatEquation;
 
 with Math.*;
+with LinearAlgebra.*;
 
 items { node, cell, face }
 
@@ -50,8 +51,6 @@ const ℕ option_max_iterations = 500000000;
 ℝ V{cells}; // Volume of cells
 ℝ D{cells}; // Cell centered conductivity
 ℝ faceLength{faces}, faceConductivity{faces};
-//ℝ α{cells, neighbourCells}; 
-//ℝ α_self{cells};
 ℝ α{cells, cells}; 
 InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // ne fonctionne que sur des parallélogrammes
 
@@ -75,25 +74,16 @@ ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{p∈nodesOfCell(j)}(det(X{p}, X{p+1})
 ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p}-X{p+1}));
 ComputeFaceConductivity: ∀f∈faces(), faceConductivity{f} = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1}) / ∑{c2∈cellsOfFace(f)}(D{c2});
 
-///* Assembling of the diffusion matrix */
-//// Extra diagonal terms 
-//computeAlphaCoeff: ∀c∈cells(), ∀d∈neighbourCells(c), f=commonFace(c,d),
-//	α{c, d} = δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c}-Xc{d});
-//// Diagonal terms		
-//computeOwnAlphaCoeff:  ∀c∈cells(), α_self{c} = 1 - ∑{d∈neighbourCells(c)}(α{c, d});
-//UpdateU: ∀c∈cells(), u^{n+1}{c} = α_self{c} * u{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u{d});
-
 /* Assembling of the diffusion matrix */
 computeAlphaCoeff: ∀c∈cells(), {
 	ℝ αDiag = 0.0;
 	∀d∈neighbourCells(c), f=commonFace(c,d), {
-		ℝ αExtraDiag = δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c}-Xc{d});
+		ℝ αExtraDiag = - δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c}-Xc{d});
 		α{c, d} = αExtraDiag;
 		αDiag = αDiag + αExtraDiag;
 	}
 	α{c, c} = 1 - αDiag;
 }
-UpdateU: ∀c∈cells(), u^{n+1}{c} = α{c, c} * u{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u{d});
-
+UpdateU: u^{n+1} = solveLinearSystem(α, u);
 
 ComputeTn: t^{n+1}=t+δt;

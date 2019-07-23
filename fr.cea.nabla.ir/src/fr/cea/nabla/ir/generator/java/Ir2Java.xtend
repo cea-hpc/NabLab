@@ -104,11 +104,8 @@ class Ir2Java extends CodeGenerator
 				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> «nodeCoordVariable.name»[rNodes] = gNodes.get(rNodes));
 				«ENDIF»
 			}
-			
-			«FOR j : jobs.sortBy[at] SEPARATOR '\n'»
-				«j.content»
-			«ENDFOR»			
 
+			«val variablesToPersist = persistentVariables»
 			public void simulate()
 			{
 				System.out.println("Début de l'exécution du module «name»");
@@ -117,26 +114,21 @@ class Ir2Java extends CodeGenerator
 				«ENDFOR»
 				«IF jobs.exists[at > 0]»
 
-				«val variablesToPersist = persistentVariables»
-				«IF !variablesToPersist.empty»
-				HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-				HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-				«FOR v : variablesToPersist»
-				«v.dimensions.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»);
-				«ENDFOR»
-				«ENDIF»
 				int iteration = 0;
 				while (t < options.option_stoptime && iteration < options.option_max_iterations)
 				{
 					iteration++;
 					System.out.println("[" + iteration + "] t = " + t);
+					«IF !variablesToPersist.empty»
+					dumpVariables(iteration);
+					«ENDIF»
 					«FOR j : jobs.filter[x | x.at > 0].sortBy[at]»
 						«j.name.toFirstLower»(); // @«j.at»
 					«ENDFOR»
-					«IF !variablesToPersist.empty»
-					writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
-					«ENDIF»
 				}
+				«IF !variablesToPersist.empty»
+				dumpVariables(iteration);
+				«ENDIF»
 				«ENDIF»
 				System.out.println("Fin de l'exécution du module «name»");
 			}
@@ -149,6 +141,22 @@ class Ir2Java extends CodeGenerator
 				«name» i = new «name»(o, nm);
 				i.simulate();
 			}
+			
+			«IF !variablesToPersist.empty»
+			private void dumpVariables(int iteration)
+			{
+				HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+				HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+				«FOR v : variablesToPersist»
+				«v.dimensions.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»);
+				«ENDFOR»
+				writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			}
+
+			«ENDIF»
+			«FOR j : jobs.sortBy[at] SEPARATOR '\n'»
+				«j.content»
+			«ENDFOR»			
 		};
 	'''
 	

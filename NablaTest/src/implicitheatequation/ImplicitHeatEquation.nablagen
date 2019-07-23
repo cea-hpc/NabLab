@@ -1,6 +1,6 @@
-with ExplicitHeatEquation.*;
+with ImplicitHeatEquation.*;
 
-workflow TestDefaultGenerationChain transforms ExplicitHeatEquation
+workflow TestDefaultGenerationChain transforms ImplicitHeatEquation
 {
 	Nabla2Ir nabla2ir
 	{

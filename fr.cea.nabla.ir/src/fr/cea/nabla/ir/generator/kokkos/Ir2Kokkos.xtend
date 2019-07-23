@@ -134,6 +134,21 @@ class Ir2Kokkos extends CodeGenerator
 			«j.content»
 		«ENDFOR»			
 
+		«val variablesToPersist = persistentVariables»
+		«IF !variablesToPersist.empty»
+		void dumpVariables(const int iteration)
+		{
+			std::map<string, double*> cellVariables;
+			std::map<string, double*> nodeVariables;
+			«FOR v : variablesToPersist»
+			«v.dimensions.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
+			«ENDFOR»
+			auto quads = mesh->getGeometricMesh()->getQuads();
+			writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+		}
+
+		«ENDIF»
+
 	public:
 		void simulate()
 		{
@@ -166,15 +181,6 @@ class Ir2Kokkos extends CodeGenerator
 			«ENDIF»			
 			«jobs.filter[x | x.at < 0].jobCallsContent»	
 			«IF jobs.exists[at > 0]»
-			«val variablesToPersist = persistentVariables»
-			«IF !variablesToPersist.empty»
-			std::map<string, double*> cellVariables;
-			std::map<string, double*> nodeVariables;
-			«FOR v : variablesToPersist»
-			«v.dimensions.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
-			«ENDFOR»
-			
-			«ENDIF»
 			timer.stop();
 			int iteration = 0;
 			while (t < options->option_stoptime && iteration < options->option_max_iterations)
@@ -192,8 +198,7 @@ class Ir2Kokkos extends CodeGenerator
 				«IF !variablesToPersist.empty»
 				if (!writer.isDisabled()) {
 					utils::Timer io_timer(true);
-					auto quads = mesh->getGeometricMesh()->getQuads();
-					writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+					dumpVariables(iteration);
 					io_timer.stop();
 					std::cout << " {CPU: " << __BLUE__ << compute_timer.print(true) << __RESET__ ", IO: " << __BLUE__ << io_timer.print(true) << __RESET__ "} ";
 				} else {
@@ -208,6 +213,9 @@ class Ir2Kokkos extends CodeGenerator
 					<< __RESET__ << "\r";
 				std::cout.flush();
 			}
+			«IF !variablesToPersist.empty»
+			dumpVariables(iteration);
+			«ENDIF»
 			std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << timer.print() << __RESET__ << std::endl;
 			«ELSE /* no jobs with at > 0 */»
 			timer.stop();

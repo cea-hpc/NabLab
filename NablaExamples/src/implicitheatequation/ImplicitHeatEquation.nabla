@@ -52,7 +52,7 @@ const ℕ option_max_iterations = 500000000;
 ℝ D{cells}; // Cell centered conductivity
 ℝ faceLength{faces}, faceConductivity{faces};
 ℝ α{cells, cells}; 
-InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // ne fonctionne que sur des parallélogrammes
+InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
 
 InitXcAndYc: ∀c∈cells(), {
 	xc{c} = Xc{c}[0]; 

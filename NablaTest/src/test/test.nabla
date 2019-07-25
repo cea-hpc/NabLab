@@ -25,7 +25,7 @@ connectivities {
 	cellsOfNode: node → {cell};
 }
 
-const ℝ X_EDGE_LENGTH = 1.0;
+const ℝ X_EDGE_LENGTH = 1.;
 const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
 const ℕ X_EDGE_ELEMS = 2;
 const ℕ Y_EDGE_ELEMS = 2;
@@ -39,7 +39,7 @@ const ℕ option_max_iterations = 500;
 ℝ total;
 ℝ[2] a, b;
 
-TestMatrix: r = solveLinearSystem(M, u, u);
+TestMatrix: r = solveLinearSystem(M, u);
 
 //IniU: ∀j∈cells(), u{j} = cos(2.0);
 //TestExternal: total = ∏{j1∈cells()}(u{j1}) + ∑{j2∈cells()}(u{j2});

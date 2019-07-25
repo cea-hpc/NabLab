@@ -9,6 +9,7 @@ import org.apache.commons.math3.linear.IterativeLinearSolver;
 import org.apache.commons.math3.linear.RealLinearOperator;
 import org.apache.commons.math3.linear.RealVector;
 
+/** TODO Integrated Newton algorithm */
 public class LinearAlgebraFunctions 
 {
 	public static double[] solveLinearSystem(double[][] a, double[] b)

@@ -1,6 +1,6 @@
-with ExplicitHeatEquation.*;
+with ImplicitHeatEquation.*;
 
-workflow TestDefaultGenerationChain transforms ExplicitHeatEquation
+workflow TestDefaultGenerationChain transforms ImplicitHeatEquation
 {
 	Nabla2Ir nabla2ir
 	{
@@ -32,14 +32,13 @@ workflow TestDefaultGenerationChain transforms ExplicitHeatEquation
 	Ir2Code javaGenerator follows fillHlts
 	{
 		language = Java;
-		//disabled;
-		outputDir = "/NablaTestJava/src";
+		outputDir = "/NablaExamplesJava/src";
 	}
 
 	Ir2Code kokkosGenerator follows fillHlts
 	{
 		language = Kokkos;
 		disabled;
-		outputDir = "/NablaTestKokkos/src";
+		outputDir = "/NablaExamplesKokkos/src";
 	}
 }

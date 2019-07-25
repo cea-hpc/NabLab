@@ -88,10 +88,8 @@ class BasicValidator  extends AbstractNablaValidator
 
 	// ===== BaseType =====	
 	public static val TYPE_DIMENSION = "BaseType::TypeDimension"
-	public static val ONLY_REAL_ARRAY = "BaseType::OnlyRealArray"
 
 	static def getTypeDimensionMsg() { "Dimensions must be greater or equal than 2" }
-	static def getOnlyRealArrayMsg() { "Vector and matrix only available for " +  PrimitiveType::REAL.literal }
 	
 	@Check
 	def checkTypeDimension(BaseType it)
@@ -99,14 +97,6 @@ class BasicValidator  extends AbstractNablaValidator
 		if (!sizes.empty && sizes.exists[x | x<2])
 			error(getTypeDimensionMsg(), NablaPackage.Literals.BASE_TYPE__SIZES, TYPE_DIMENSION)
 	}
-
-	@Check
-	def checkOnlyRealArray(BaseType it)
-	{
-		if (root != PrimitiveType::REAL && !sizes.empty)
-			error(getOnlyRealArrayMsg(), NablaPackage.Literals::BASE_TYPE__ROOT, ONLY_REAL_ARRAY)
-	}
-
 
 	// ===== Constant expressions =====	
 	public static val ONLY_REAL_ARRAY_CONST = "Constant::OnlyRealArrayConst"
@@ -322,6 +312,7 @@ class BasicValidator  extends AbstractNablaValidator
 	public static val NOT_IN_INSTRUCTIONS = "Connectivities::NotInInstructions"
 	public static val DIMENSION_MULTIPLE = "Connectivities::DimensionMultiple"
 	public static val DIMENSION_ARG = "Connectivities::DimensionArg"
+	public static val ONLY_REAL_ARRAY = "BaseType::OnlyRealArray"
 	
 	static def getUnusedConnectivityMsg() { "Unused connectivity" }
 	static def getConnectivityCallIndexMsg(int expectedSize, int actualSize) { "Invalid number of arguments: Expected " + expectedSize + ", but was " + actualSize }
@@ -329,6 +320,7 @@ class BasicValidator  extends AbstractNablaValidator
 	static def getNotInInstructionsMsg() { "Local variables can only be scalar (no connectivity arrays)" }
 	static def getDimensionMultipleMsg() { "Dimension must be on connectivities returning a set of items" }
 	static def getDimensionArgMsg() { "Dimension 1 must be on connectivities taking no argument" }
+	static def getOnlyRealArrayMsg() { "Vector and matrix only available for " +  PrimitiveType::REAL.literal }
 	
 	@Check
 	def checkUnusedConnectivities(Connectivity it)
@@ -382,6 +374,13 @@ class BasicValidator  extends AbstractNablaValidator
 //			else if (dimensions.get(i).inTypes.head != dimensions.get(i-1).returnType.type)
 //				error('Dimension ' + (i+1) + ' argument must have same type as dimension ' + i + ' return type', NablaPackage.Literals::ARRAY_VAR__DIMENSIONS, i)
 //		}
+	}
+
+	@Check
+	def checkOnlyRealArray(ConnectivityVar it)
+	{
+		if (baseType.root != PrimitiveType::REAL && connectivityMatrix)
+			error(getOnlyRealArrayMsg(), NablaPackage.Literals::VAR__NAME, ONLY_REAL_ARRAY)
 	}
 
 

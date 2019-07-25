@@ -104,11 +104,13 @@ public final class ImplicitHeatEquation
 		{
 			iteration++;
 			System.out.println("[" + iteration + "] t = " + t);
+			dumpVariables(iteration);
 			updateU(); // @1.0
 			computeTn(); // @1.0
 			copy_u_nplus1_to_u(); // @2.0
 			copy_t_nplus1_to_t(); // @2.0
 		}
+		dumpVariables(iteration);
 		System.out.println("Fin de l'exécution du module ImplicitHeatEquation");
 	}
 
@@ -121,6 +123,14 @@ public final class ImplicitHeatEquation
 		i.simulate();
 	}
 	
+	private void dumpVariables(int iteration)
+	{
+		HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+		HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+		cellVariables.put("Temperature", u);
+		writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+	}
+
 	/**
 	 * Job InitXc @-3.0
 	 * In variables: X

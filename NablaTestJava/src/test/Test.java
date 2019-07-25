@@ -67,21 +67,13 @@ public final class Test
 		ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> X[rNodes] = gNodes.get(rNodes));
 	}
-	
-	/**
-	 * Job TestMatrix @-1.0
-	 * In variables: M, u
-	 * Out variables: r
-	 */
-	private void testMatrix() 
-	{
-		r = LinearAlgebraFunctions.solveLinearSystem(M, u, u);
-	}		
 
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module Test");
-		testMatrix(); // @-1.0
+		a(); // @-2.0
+		b(); // @-2.0
+		c(); // @-1.0
 		System.out.println("Fin de l'exécution du module Test");
 	}
 
@@ -93,4 +85,45 @@ public final class Test
 		Test i = new Test(o, nm);
 		i.simulate();
 	}
+	
+	private void dumpVariables(int iteration)
+	{
+		HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+		HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+		cellVariables.put("Vitesse", u);
+		writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+	}
+
+	/**
+	 * Job A @-2.0
+	 * In variables: 
+	 * Out variables: a
+	 */
+	private void a() 
+	{
+		a[0] = 1.0;
+	}		
+	
+	/**
+	 * Job B @-2.0
+	 * In variables: 
+	 * Out variables: a
+	 */
+	private void b() 
+	{
+		a[1] = 1.0;
+	}		
+	
+	/**
+	 * Job C @-1.0
+	 * In variables: a
+	 * Out variables: total
+	 */
+	private void c() 
+	{
+		if (a[0] == a[1]) 
+			total = 1.1;
+		else 
+			total = 1.2;
+	}		
 };

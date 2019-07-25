@@ -13,6 +13,7 @@
  *******************************************************************************/
 package fr.cea.nabla
 
+import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.Var
@@ -53,5 +54,18 @@ class VarExtensions
 			ScalarVarDefinition : decl.defaultValue
 			VarGroupDeclaration : null
 		}
+	}
+	
+	/**
+	 * Returns true if the variable has at least 2 connectivities which takes no argument, false otherwise.
+	 * For example, X{cells, nodesOfCell} returns false but X{cells, cells} or X{cells, nodes} returns true.
+	 */
+	def isConnectivityMatrix(ConnectivityVar it)
+	{
+		println('Connectivity Var : ' + name)
+		println('  ' + dimensions.map[name].join(', '))
+		val fullConnectivities = dimensions.filter[x | x.inTypes.empty]
+		println('  ' + fullConnectivities.map[name].join(', '))
+		return (fullConnectivities.size > 1)
 	}
 }

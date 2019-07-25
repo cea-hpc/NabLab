@@ -11,6 +11,13 @@
  * 	Marie-Pierre Oudot - initial implementation
  * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
+
+/** 
+ * TODO Create of a default nablagen file from a nabla file (wizard ?)
+ * TODO Add steps dedicated to the debug (jobs, variables...)
+ * TODO Add step to specify sparse matrices
+ * TODO Add step to set solver algorithm & parameters
+ */
 grammar fr.cea.nabla.Nablagen 
 with fr.cea.nabla.Nabla 
 

@@ -124,7 +124,7 @@ class WorkflowInterpretor
 			}
 			else
 			{
-				val fsa = getConfiguredFileSystemAccess(outputFolder.rawLocation.toString, false)
+				val fsa = getConfiguredFileSystemAccess(outputFolder.location.toString, false)
 				fsa.generateFile(fileName, fileContent)
 				outputFolder.refreshLocal(IResource::DEPTH_INFINITE, null)
 				val msgEnd = "... ok\n"
@@ -137,7 +137,7 @@ class WorkflowInterpretor
 	private def createAndSaveResource(IrModule irModule, IProject project, String fileExtensionPart)
 	{
 		val fileName = irModule.name.toLowerCase + '/' + irModule.name + '.' +  fileExtensionPart + '.' + IrExtension
-		val fsa = getConfiguredFileSystemAccess(project.rawLocation.toString, true)
+		val fsa = getConfiguredFileSystemAccess(project.location.toString, true)
 		
 		val uri =  fsa.getURI(fileName)		
 		val rSet = new ResourceSetImpl

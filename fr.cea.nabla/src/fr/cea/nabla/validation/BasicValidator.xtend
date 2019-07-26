@@ -379,7 +379,8 @@ class BasicValidator  extends AbstractNablaValidator
 	@Check
 	def checkOnlyRealArray(ConnectivityVar it)
 	{
-		if (baseType.root != PrimitiveType::REAL && connectivityMatrix)
+		val bt = baseType
+		if ((bt.root != PrimitiveType::REAL || !bt.sizes.empty) && connectivityMatrix)
 			error(getOnlyRealArrayMsg(), NablaPackage.Literals::VAR__NAME, ONLY_REAL_ARRAY)
 	}
 

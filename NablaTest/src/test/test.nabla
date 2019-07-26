@@ -37,6 +37,7 @@ const ℕ option_max_iterations = 500;
 ℝ v{nodes};
 ℝ u{cells}, r{cells}, Cjr{cells,nodesOfCell}, M{cells,cells};
 ℝ total;
+ℝ ff{cells,nodes};
 ℝ[2] a, b;
 
 TestMatrix: r = solveLinearSystem(M, u);

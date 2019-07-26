@@ -52,7 +52,6 @@
     <genClasses image="false" ecoreClass="Ir.ecore#//Variable">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//Variable/type"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/persist"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/persistenceName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/const"/>
     </genClasses>
@@ -62,6 +61,8 @@
     <genClasses ecoreClass="Ir.ecore#//ConnectivityVariable">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityVariable/dimensions"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityVariable/defaultValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ConnectivityVariable/persist"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ConnectivityVariable/sparseMatrix"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Function">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/name"/>

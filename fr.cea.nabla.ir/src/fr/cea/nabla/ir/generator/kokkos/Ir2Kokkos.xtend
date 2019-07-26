@@ -86,10 +86,10 @@ class Ir2Kokkos extends CodeGenerator
 		«type» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 		«ENDFOR»
 
-		«val arrays = variables.filter(ConnectivityVariable)»
-		«IF !arrays.empty»
-		// Array Variables
-		«FOR a : arrays»
+		«val connectivityVars = variables.filter(ConnectivityVariable)»
+		«IF !connectivityVars.empty»
+		// Connectivity Variables
+		«FOR a : connectivityVars»
 		Kokkos::View<«a.kokkosType»> «a.name»;
 		«ENDFOR»
 		«ENDIF»
@@ -111,7 +111,7 @@ class Ir2Kokkos extends CodeGenerator
 		«FOR uv : globals.filter[x|x.defaultValue!==null]»
 		, «uv.name»(«uv.defaultValue.content»)
 		«ENDFOR»
-		«FOR a : arrays»
+		«FOR a : connectivityVars»
 		, «a.name»("«a.name»", «FOR d : a.dimensions SEPARATOR ', '»«d.nbElems»«ENDFOR»)
 		«ENDFOR»
 		{

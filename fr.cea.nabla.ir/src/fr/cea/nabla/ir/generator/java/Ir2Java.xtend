@@ -20,6 +20,7 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.BaseTypeExtensions.*
+import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
@@ -43,6 +44,11 @@ class Ir2Java extends CodeGenerator
 		import fr.cea.nabla.javalib.types.*;
 		import fr.cea.nabla.javalib.mesh.*;
 
+		«val matrices = variables.filter(ConnectivityVariable).filter[connectivityMatrix] /* no groupBy, only real matrices */»
+		«IF !matrices.empty»
+		import org.apache.commons.math3.linear.*;
+		
+		«ENDIF»
 		@SuppressWarnings("all")
 		public final class «name»
 		{
@@ -66,13 +72,18 @@ class Ir2Java extends CodeGenerator
 			«FOR type : globalsByType.keySet»
 			private «type» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 			«ENDFOR»
-
-			«val arrays = variables.filter(ConnectivityVariable).groupBy[type]»
-			«IF !arrays.empty»
-			// Array Variables
-			«FOR type : arrays.keySet»
-			private «type.javaType» «FOR v : arrays.get(type) SEPARATOR ', '»«v.name»«FOR i : 1..v.dimensions.length»[]«ENDFOR»«ENDFOR»;
+			«val connectivityVars = variables.filter(ConnectivityVariable).filter[!connectivityMatrix].groupBy[type]»
+			«IF !connectivityVars.empty»
+			
+			// Connectivity Variables
+			«FOR type : connectivityVars.keySet»
+			private «type.javaType» «FOR v : connectivityVars.get(type) SEPARATOR ', '»«v.name»«FOR i : 1..v.dimensions.length»[]«ENDFOR»«ENDFOR»;
 			«ENDFOR»
+			«ENDIF»
+			«IF !matrices.empty»
+			
+			// Matrices
+			private RealMatrix «FOR m : matrices SEPARATOR ', '»«m.name»«ENDFOR»;
 			«ENDIF»
 			
 			public «name»(Options aOptions, NumericMesh2D aNumericMesh2D)
@@ -92,7 +103,13 @@ class Ir2Java extends CodeGenerator
 				// Arrays allocation
 				«FOR a : variables.filter[!const]»
 					«IF a instanceof ConnectivityVariable»
-						«a.name» = new «a.type.root.javaType»«FOR d : a.dimensions»[«d.nbElems»]«ENDFOR»«FOR d : a.type.sizes»[«d»]«ENDFOR»;
+						«IF a.connectivityMatrix»
+							«IF a.sparseMatrix»
+								«a.name» = new OpenMapRealMatrix(«a.dimensions.get(0).nbElems», «a.dimensions.get(1).nbElems»);
+							«ELSE»
+								«a.name» = new Array2DRowRealMatrix(«a.dimensions.get(0).nbElems», «a.dimensions.get(1).nbElems»);
+							«ENDIF»
+						«ENDIF»
 					«ELSEIF a instanceof SimpleVariable && !a.type.scalar»
 						«a.name» = new «a.type.root.javaType»«FOR d : a.type.sizes»[«d»]«ENDFOR»;
 					«ENDIF»

@@ -343,22 +343,13 @@ public interface IrPackage extends EPackage {
 	int VARIABLE__TYPE = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Persist</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int VARIABLE__PERSIST = IR_ANNOTABLE_FEATURE_COUNT + 2;
-
-	/**
 	 * The feature id for the '<em><b>Persistence Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE__PERSISTENCE_NAME = IR_ANNOTABLE_FEATURE_COUNT + 3;
+	int VARIABLE__PERSISTENCE_NAME = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Const</b></em>' attribute.
@@ -367,7 +358,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE__CONST = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int VARIABLE__CONST = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>Variable</em>' class.
@@ -376,7 +367,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 5;
+	int VARIABLE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of operations of the '<em>Variable</em>' class.
@@ -423,15 +414,6 @@ public interface IrPackage extends EPackage {
 	 * @ordered
 	 */
 	int SIMPLE_VARIABLE__TYPE = VARIABLE__TYPE;
-
-	/**
-	 * The feature id for the '<em><b>Persist</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIMPLE_VARIABLE__PERSIST = VARIABLE__PERSIST;
 
 	/**
 	 * The feature id for the '<em><b>Persistence Name</b></em>' attribute.
@@ -516,15 +498,6 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY_VARIABLE__TYPE = VARIABLE__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Persist</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_VARIABLE__PERSIST = VARIABLE__PERSIST;
-
-	/**
 	 * The feature id for the '<em><b>Persistence Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -561,13 +534,31 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY_VARIABLE__DEFAULT_VALUE = VARIABLE_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Persist</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTIVITY_VARIABLE__PERSIST = VARIABLE_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Sparse Matrix</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTIVITY_VARIABLE__SPARSE_MATRIX = VARIABLE_FEATURE_COUNT + 3;
+
+	/**
 	 * The number of structural features of the '<em>Connectivity Variable</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 2;
+	int CONNECTIVITY_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of operations of the '<em>Connectivity Variable</em>' class.
@@ -3247,17 +3238,6 @@ public interface IrPackage extends EPackage {
 	EReference getVariable_Type();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Variable#isPersist <em>Persist</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Persist</em>'.
-	 * @see fr.cea.nabla.ir.ir.Variable#isPersist()
-	 * @see #getVariable()
-	 * @generated
-	 */
-	EAttribute getVariable_Persist();
-
-	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Variable#getPersistenceName <em>Persistence Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3331,6 +3311,28 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getConnectivityVariable_DefaultValue();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ConnectivityVariable#isPersist <em>Persist</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Persist</em>'.
+	 * @see fr.cea.nabla.ir.ir.ConnectivityVariable#isPersist()
+	 * @see #getConnectivityVariable()
+	 * @generated
+	 */
+	EAttribute getConnectivityVariable_Persist();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ConnectivityVariable#isSparseMatrix <em>Sparse Matrix</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Sparse Matrix</em>'.
+	 * @see fr.cea.nabla.ir.ir.ConnectivityVariable#isSparseMatrix()
+	 * @see #getConnectivityVariable()
+	 * @generated
+	 */
+	EAttribute getConnectivityVariable_SparseMatrix();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Function <em>Function</em>}'.
@@ -4718,14 +4720,6 @@ public interface IrPackage extends EPackage {
 		EReference VARIABLE__TYPE = eINSTANCE.getVariable_Type();
 
 		/**
-		 * The meta object literal for the '<em><b>Persist</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute VARIABLE__PERSIST = eINSTANCE.getVariable_Persist();
-
-		/**
 		 * The meta object literal for the '<em><b>Persistence Name</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -4784,6 +4778,22 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference CONNECTIVITY_VARIABLE__DEFAULT_VALUE = eINSTANCE.getConnectivityVariable_DefaultValue();
+
+		/**
+		 * The meta object literal for the '<em><b>Persist</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONNECTIVITY_VARIABLE__PERSIST = eINSTANCE.getConnectivityVariable_Persist();
+
+		/**
+		 * The meta object literal for the '<em><b>Sparse Matrix</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONNECTIVITY_VARIABLE__SPARSE_MATRIX = eINSTANCE.getConnectivityVariable_SparseMatrix();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.FunctionImpl <em>Function</em>}' class.

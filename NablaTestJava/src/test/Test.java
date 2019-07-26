@@ -9,6 +9,8 @@ import fr.cea.nabla.javalib.Utils;
 import fr.cea.nabla.javalib.types.*;
 import fr.cea.nabla.javalib.mesh.*;
 
+import org.apache.commons.math3.linear.*;
+
 @SuppressWarnings("all")
 public final class Test
 {
@@ -33,14 +35,16 @@ public final class Test
 	// Global Variables
 	private double total;
 	private double[] a, b;
-
-	// Array Variables
+	
+	// Connectivity Variables
 	private double[] X[];
 	private double v[];
 	private double u[];
 	private double r[];
 	private double Cjr[][];
-	private double M[][];
+	
+	// Matrices
+	private RealMatrix M, ff;
 	
 	public Test(Options aOptions, NumericMesh2D aNumericMesh2D)
 	{
@@ -54,12 +58,8 @@ public final class Test
 
 
 		// Arrays allocation
-		X = new double[nbNodes][2];
-		v = new double[nbNodes];
-		u = new double[nbCells];
-		r = new double[nbCells];
-		Cjr = new double[nbCells][nbNodesOfCell];
-		M = new double[nbCells][nbCells];
+		M = new Array2DRowRealMatrix(nbCells, nbCells);
+		ff = new OpenMapRealMatrix(nbCells, nbNodes);
 		a = new double[2];
 		b = new double[2];
 
@@ -71,9 +71,7 @@ public final class Test
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module Test");
-		a(); // @-2.0
-		b(); // @-2.0
-		c(); // @-1.0
+		testMatrix(); // @-1.0
 		System.out.println("Fin de l'exécution du module Test");
 	}
 
@@ -95,35 +93,12 @@ public final class Test
 	}
 
 	/**
-	 * Job A @-2.0
-	 * In variables: 
-	 * Out variables: a
+	 * Job TestMatrix @-1.0
+	 * In variables: M, u
+	 * Out variables: r
 	 */
-	private void a() 
+	private void testMatrix() 
 	{
-		a[0] = 1.0;
-	}		
-	
-	/**
-	 * Job B @-2.0
-	 * In variables: 
-	 * Out variables: a
-	 */
-	private void b() 
-	{
-		a[1] = 1.0;
-	}		
-	
-	/**
-	 * Job C @-1.0
-	 * In variables: a
-	 * Out variables: total
-	 */
-	private void c() 
-	{
-		if (a[0] == a[1]) 
-			total = 1.1;
-		else 
-			total = 1.2;
+		r = LinearAlgebraFunctions.solveLinearSystem(M, u);
 	}		
 };

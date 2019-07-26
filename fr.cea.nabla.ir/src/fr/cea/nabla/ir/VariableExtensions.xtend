@@ -13,6 +13,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.SimpleVariable
@@ -50,6 +51,16 @@ class VariableExtensions
 	static def isGlobal(Variable it) 
 	{ 
 		eContainer instanceof IrModule
+	}
+
+	/**
+	 * Returns true if the variable has at least 2 connectivities which takes no argument, false otherwise.
+	 * For example, X{cells, nodesOfCell} returns false but X{cells, cells} or X{cells, nodes} returns true.
+	 */
+	static def isConnectivityMatrix(ConnectivityVariable it)
+	{
+		val fullConnectivities = dimensions.filter[x | x.inTypes.empty]
+		return (fullConnectivities.size > 1)
 	}
 
 	private static def IrModule getIrModule(EObject it)

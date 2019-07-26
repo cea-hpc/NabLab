@@ -1,5 +1,6 @@
 package fr.cea.nabla.ir.transformers
 
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
 import java.util.HashMap
 
@@ -24,9 +25,10 @@ class TagPersistentVariables implements IrTransformationStep
 	
 	override transform(IrModule m) 
 	{
+		val candidates = m.variables.filter(ConnectivityVariable)
 		for (key : variables.keySet)
 		{
-			val v = m.variables.findFirst[x | x.name == key]
+			val v = candidates.findFirst[x | x.name == key]
 			if (v !== null) 
 			{
 				v.persist = true

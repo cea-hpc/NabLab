@@ -15,6 +15,8 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.ConnectivityVariable#getDimensions <em>Dimensions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ConnectivityVariable#getDefaultValue <em>Default Value</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.ConnectivityVariable#isPersist <em>Persist</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.ConnectivityVariable#isSparseMatrix <em>Sparse Matrix</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivityVariable()
@@ -63,5 +65,59 @@ public interface ConnectivityVariable extends Variable {
 	 * @generated
 	 */
 	void setDefaultValue(VarRef value);
+
+	/**
+	 * Returns the value of the '<em><b>Persist</b></em>' attribute.
+	 * The default value is <code>"false"</code>.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Persist</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Persist</em>' attribute.
+	 * @see #setPersist(boolean)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivityVariable_Persist()
+	 * @model default="false" required="true"
+	 * @generated
+	 */
+	boolean isPersist();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ConnectivityVariable#isPersist <em>Persist</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Persist</em>' attribute.
+	 * @see #isPersist()
+	 * @generated
+	 */
+	void setPersist(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Sparse Matrix</b></em>' attribute.
+	 * The default value is <code>"false"</code>.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Sparse Matrix</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Sparse Matrix</em>' attribute.
+	 * @see #setSparseMatrix(boolean)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivityVariable_SparseMatrix()
+	 * @model default="false" required="true"
+	 * @generated
+	 */
+	boolean isSparseMatrix();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ConnectivityVariable#isSparseMatrix <em>Sparse Matrix</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Sparse Matrix</em>' attribute.
+	 * @see #isSparseMatrix()
+	 * @generated
+	 */
+	void setSparseMatrix(boolean value);
 
 } // ConnectivityVariable

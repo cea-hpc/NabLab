@@ -231,6 +231,11 @@ public class WorkflowItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablagenPackage.Literals.WORKFLOW__COMPONENTS,
+				 NablagenFactory.eINSTANCE.createTagSparseMatricesComponent()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablagenPackage.Literals.WORKFLOW__COMPONENTS,
 				 NablagenFactory.eINSTANCE.createReplaceUtfComponent()));
 
 		newChildDescriptors.add

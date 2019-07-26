@@ -24,7 +24,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getType <em>Type</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#isPersist <em>Persist</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getPersistenceName <em>Persistence Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#isConst <em>Const</em>}</li>
  * </ul>
@@ -61,26 +60,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 	 * @ordered
 	 */
 	protected BaseType type;
-
-	/**
-	 * The default value of the '{@link #isPersist() <em>Persist</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isPersist()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean PERSIST_EDEFAULT = false;
-
-	/**
-	 * The cached value of the '{@link #isPersist() <em>Persist</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isPersist()
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean persist = PERSIST_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getPersistenceName() <em>Persistence Name</em>}' attribute.
@@ -233,27 +212,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isPersist() {
-		return persist;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setPersist(boolean newPersist) {
-		boolean oldPersist = persist;
-		persist = newPersist;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.VARIABLE__PERSIST, oldPersist, persist));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public String getPersistenceName() {
 		return persistenceName;
 	}
@@ -318,8 +276,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 			case IrPackage.VARIABLE__TYPE:
 				if (resolve) return getType();
 				return basicGetType();
-			case IrPackage.VARIABLE__PERSIST:
-				return isPersist();
 			case IrPackage.VARIABLE__PERSISTENCE_NAME:
 				return getPersistenceName();
 			case IrPackage.VARIABLE__CONST:
@@ -341,9 +297,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 				return;
 			case IrPackage.VARIABLE__TYPE:
 				setType((BaseType)newValue);
-				return;
-			case IrPackage.VARIABLE__PERSIST:
-				setPersist((Boolean)newValue);
 				return;
 			case IrPackage.VARIABLE__PERSISTENCE_NAME:
 				setPersistenceName((String)newValue);
@@ -369,9 +322,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 			case IrPackage.VARIABLE__TYPE:
 				setType((BaseType)null);
 				return;
-			case IrPackage.VARIABLE__PERSIST:
-				setPersist(PERSIST_EDEFAULT);
-				return;
 			case IrPackage.VARIABLE__PERSISTENCE_NAME:
 				setPersistenceName(PERSISTENCE_NAME_EDEFAULT);
 				return;
@@ -394,8 +344,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case IrPackage.VARIABLE__TYPE:
 				return type != null;
-			case IrPackage.VARIABLE__PERSIST:
-				return persist != PERSIST_EDEFAULT;
 			case IrPackage.VARIABLE__PERSISTENCE_NAME:
 				return PERSISTENCE_NAME_EDEFAULT == null ? persistenceName != null : !PERSISTENCE_NAME_EDEFAULT.equals(persistenceName);
 			case IrPackage.VARIABLE__CONST:
@@ -416,8 +364,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (name: ");
 		result.append(name);
-		result.append(", persist: ");
-		result.append(persist);
 		result.append(", persistenceName: ");
 		result.append(persistenceName);
 		result.append(", const: ");

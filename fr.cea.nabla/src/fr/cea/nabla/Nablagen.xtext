@@ -17,6 +17,7 @@
  * TODO Add steps dedicated to the debug (jobs, variables...)
  * TODO Add step to specify sparse matrices
  * TODO Add step to set solver algorithm & parameters
+ * TODO Suppress contributors from files header (separate files)
  */
 grammar fr.cea.nabla.Nablagen 
 with fr.cea.nabla.Nabla 
@@ -40,7 +41,7 @@ WorkflowComponent: Nabla2IrComponent | ChildComponent;
 
 ChildComponent: Ir2CodeComponent | Ir2IrComponent;
 					
-Ir2IrComponent: TagPersistentVariablesComponent | ReplaceUtfComponent | 
+Ir2IrComponent: TagPersistentVariablesComponent | TagSparseMatricesComponent | ReplaceUtfComponent | 
 				ReplaceInternalReductionsComponent | OptimizeConnectivitiesComponent |
 				FillHLTsComponent;
 					
@@ -58,6 +59,14 @@ TagPersistentVariablesComponent:
 		(dumpIr?='dumpIr' ';')?
 	'}';
 	
+TagSparseMatricesComponent:
+	'TagSparseMatrices' name=ID 'follows' parent=[WorkflowComponent] 
+	'{' 
+		'sparseMatrices' '=' vars+=[nabla::ConnectivityVar] (',' vars+=[nabla::ConnectivityVar])* ';'
+		(disabled?='disabled' ';')?
+		(dumpIr?='dumpIr' ';')?
+	'}';
+
 PersistentVar:
 	varRef=[nabla::ConnectivityVar]
 	'as' varName=STRING;

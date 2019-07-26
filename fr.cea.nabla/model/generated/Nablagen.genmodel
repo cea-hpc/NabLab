@@ -36,6 +36,9 @@
     <genClasses ecoreClass="Nablagen.ecore#//TagPersistentVariablesComponent">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//TagPersistentVariablesComponent/vars"/>
     </genClasses>
+    <genClasses ecoreClass="Nablagen.ecore#//TagSparseMatricesComponent">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//TagSparseMatricesComponent/vars"/>
+    </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//PersistentVar">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//PersistentVar/varRef"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//PersistentVar/varName"/>

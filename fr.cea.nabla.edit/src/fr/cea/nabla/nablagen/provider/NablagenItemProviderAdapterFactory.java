@@ -234,6 +234,29 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.TagSparseMatricesComponent} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected TagSparseMatricesComponentItemProvider tagSparseMatricesComponentItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.TagSparseMatricesComponent}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createTagSparseMatricesComponentAdapter() {
+		if (tagSparseMatricesComponentItemProvider == null) {
+			tagSparseMatricesComponentItemProvider = new TagSparseMatricesComponentItemProvider(this);
+		}
+
+		return tagSparseMatricesComponentItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.PersistentVar} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -477,6 +500,7 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 		if (ir2IrComponentItemProvider != null) ir2IrComponentItemProvider.dispose();
 		if (nabla2IrComponentItemProvider != null) nabla2IrComponentItemProvider.dispose();
 		if (tagPersistentVariablesComponentItemProvider != null) tagPersistentVariablesComponentItemProvider.dispose();
+		if (tagSparseMatricesComponentItemProvider != null) tagSparseMatricesComponentItemProvider.dispose();
 		if (persistentVarItemProvider != null) persistentVarItemProvider.dispose();
 		if (replaceUtfComponentItemProvider != null) replaceUtfComponentItemProvider.dispose();
 		if (replaceInternalReductionsComponentItemProvider != null) replaceInternalReductionsComponentItemProvider.dispose();

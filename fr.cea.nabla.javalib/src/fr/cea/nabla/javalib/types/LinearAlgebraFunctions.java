@@ -14,23 +14,17 @@ public class LinearAlgebraFunctions
 {
 	public static double[] solveLinearSystem(double[][] a, double[] b)
 	{
-		final int maxIterations = 100;
 		final RealLinearOperator m_a = new Array2DRowRealMatrix(a);
-		final IterativeLinearSolver m_solver = new ConjugateGradient(maxIterations, 1E-10, true);
 	    final RealVector m_b = new ArrayRealVector(b);
-	    final RealVector m_x = m_solver.solve(m_a, m_b);
+	    final RealVector m_x = solveLinearSystem(m_a, m_b);
 	    return m_x.toArray();
 	}
 	
-	public static double[] solveLinearSystem(double[][] a, double[] x, double[] b)
+	public static RealVector solveLinearSystem(RealLinearOperator a, RealVector b)
 	{
 		final int maxIterations = 100;
-		final RealLinearOperator m_a = new Array2DRowRealMatrix(a);
 		final IterativeLinearSolver m_solver = new ConjugateGradient(maxIterations, 1E-10, true);
-	    final RealVector m_b = new ArrayRealVector(b);
-	    final RealVector m_x = new ArrayRealVector(x);
-	    m_solver.solveInPlace(m_a, m_b, m_x);
-	    return m_x.toArray();
+	    return m_solver.solve(a, b);
 	}
 
 	public static void print(double[] x, DecimalFormat df)

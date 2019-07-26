@@ -3,23 +3,33 @@
  */
 package fr.cea.nabla.validation
 
+import com.google.inject.Inject
+import fr.cea.nabla.VarExtensions
+import fr.cea.nabla.nablagen.NablagenPackage
+import fr.cea.nabla.nablagen.TagSparseMatricesComponent
+import org.eclipse.xtext.validation.Check
 
 /**
  * This class contains custom validation rules. 
  *
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
-class NablagenValidator extends AbstractNablagenValidator {
+class NablagenValidator extends AbstractNablagenValidator 
+{
+	@Inject extension VarExtensions
+		
+	// ===== Sparse Matrices =====	
+	public static val NOT_A_MATRIX = "NotAMatrix"
 	
-//	public static val INVALID_NAME = 'invalidName'
-//
-//	@Check
-//	def checkGreetingStartsWithCapital(Greeting greeting) {
-//		if (!Character.isUpperCase(greeting.name.charAt(0))) {
-//			warning('Name should start with a capital', 
-//					NablagenPackage.Literals.GREETING__NAME,
-//					INVALID_NAME)
-//		}
-//	}
+	static def getNotAMatrixMsg() { "This variable is not a matrix" }
 	
+	@Check
+	def checkOnlyRealArrayConst(TagSparseMatricesComponent it)
+	{
+		for (i : 0..<vars.size)
+		{
+			if (!vars.get(i).connectivityMatrix)
+				error(getNotAMatrixMsg(), NablagenPackage.Literals.TAG_SPARSE_MATRICES_COMPONENT__VARS, i, NOT_A_MATRIX)
+		}
+	}
 }

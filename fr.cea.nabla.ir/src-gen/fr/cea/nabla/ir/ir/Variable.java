@@ -14,7 +14,6 @@ package fr.cea.nabla.ir.ir;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getType <em>Type</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Variable#isPersist <em>Persist</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getPersistenceName <em>Persistence Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#isConst <em>Const</em>}</li>
  * </ul>
@@ -75,33 +74,6 @@ public interface Variable extends IrAnnotable {
 	 * @generated
 	 */
 	void setType(BaseType value);
-
-	/**
-	 * Returns the value of the '<em><b>Persist</b></em>' attribute.
-	 * The default value is <code>"false"</code>.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Persist</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Persist</em>' attribute.
-	 * @see #setPersist(boolean)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getVariable_Persist()
-	 * @model default="false"
-	 * @generated
-	 */
-	boolean isPersist();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Variable#isPersist <em>Persist</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Persist</em>' attribute.
-	 * @see #isPersist()
-	 * @generated
-	 */
-	void setPersist(boolean value);
 
 	/**
 	 * Returns the value of the '<em><b>Persistence Name</b></em>' attribute.

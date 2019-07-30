@@ -671,6 +671,29 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.RealVectorConstant} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected RealVectorConstantItemProvider realVectorConstantItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.RealVectorConstant}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createRealVectorConstantAdapter() {
+		if (realVectorConstantItemProvider == null) {
+			realVectorConstantItemProvider = new RealVectorConstantItemProvider(this);
+		}
+
+		return realVectorConstantItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.VarRef} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1361,6 +1384,29 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.RealMatrixConstant} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected RealMatrixConstantItemProvider realMatrixConstantItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.RealMatrixConstant}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createRealMatrixConstantAdapter() {
+		if (realMatrixConstantItemProvider == null) {
+			realMatrixConstantItemProvider = new RealMatrixConstantItemProvider(this);
+		}
+
+		return realMatrixConstantItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.InitTimeIterator} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1530,8 +1576,9 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (dimensionVarItemProvider != null) dimensionVarItemProvider.dispose();
 		if (dimensionItemProvider != null) dimensionItemProvider.dispose();
 		if (expressionItemProvider != null) expressionItemProvider.dispose();
-		if (initializationExpressionItemProvider != null) initializationExpressionItemProvider.dispose();
 		if (varRefItemProvider != null) varRefItemProvider.dispose();
+		if (initializationExpressionItemProvider != null) initializationExpressionItemProvider.dispose();
+		if (realVectorConstantItemProvider != null) realVectorConstantItemProvider.dispose();
 		if (timeIteratorItemProvider != null) timeIteratorItemProvider.dispose();
 		if (baseTypeItemProvider != null) baseTypeItemProvider.dispose();
 		if (instructionBlockItemProvider != null) instructionBlockItemProvider.dispose();
@@ -1560,6 +1607,7 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (maxConstantItemProvider != null) maxConstantItemProvider.dispose();
 		if (functionCallItemProvider != null) functionCallItemProvider.dispose();
 		if (reductionCallItemProvider != null) reductionCallItemProvider.dispose();
+		if (realMatrixConstantItemProvider != null) realMatrixConstantItemProvider.dispose();
 		if (baseTypeConstantItemProvider != null) baseTypeConstantItemProvider.dispose();
 		if (initTimeIteratorItemProvider != null) initTimeIteratorItemProvider.dispose();
 		if (nextTimeIteratorItemProvider != null) nextTimeIteratorItemProvider.dispose();

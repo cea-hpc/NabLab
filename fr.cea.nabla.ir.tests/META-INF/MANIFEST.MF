@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: fr.cea.nabla.ir.tests;singleton:=true
+Automatic-Module-Name: fr.cea.nabla.ir.tests
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: fr.cea.nabla.ir.tests.jar
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: fr.cea.nabla.ir.ir.tests
+Require-Bundle: org.eclipse.core.runtime,
+ fr.cea.nabla.ir;visibility:=reexport,
+ org.eclipse.emf.ecore.xmi;visibility:=reexport,
+ org.junit;visibility:=reexport
+Bundle-ActivationPolicy: lazy

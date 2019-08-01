@@ -14,6 +14,7 @@ import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
+import fr.cea.nabla.nabla.SimpleVar
 
 class VarExtensions 
 {
@@ -50,6 +51,15 @@ class VarExtensions
 			ScalarVarDefinition : decl.defaultValue
 			VarGroupDeclaration : null
 		}
+	}
+	
+	def getDimensions(Var it)
+	{
+		switch it 
+		{
+			SimpleVar : #[]
+			ConnectivityVar : dimensions
+		}		
 	}
 	
 	/**

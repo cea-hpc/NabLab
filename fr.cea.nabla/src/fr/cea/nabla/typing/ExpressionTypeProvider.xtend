@@ -40,6 +40,7 @@ import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
+import fr.cea.nabla.nabla.Var
 
 class ExpressionTypeProvider 
 {
@@ -81,6 +82,12 @@ class ExpressionTypeProvider
 		val decl = declaration
 		if (decl === null) new UndefinedType
 		else decl.returnType
+	}
+	
+	//TODO Test d'ajout de typeFor(Var)
+	def dispatch ExpressionType getTypeFor(Var it)
+	{
+		getTypeFor(baseType.root, dimensions, baseType.sizes)
 	}
 	
 	def dispatch ExpressionType getTypeFor(VarRef it)

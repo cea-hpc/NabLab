@@ -96,13 +96,12 @@ class ExpressionTypeProviderTest
 	ℝ[2] w{cells, nodesOfCell};
 	ℝ x{cells, nodesOfCell};
 	
-		
 	j1: ∀ j∈cells(), {
 		ℝ e = 1.0;
 		u{j} = e * 4; 
 		∀r∈nodesOfCell(j), x{j,r} = norm(w{j,r});
 	}
-	
+
 	ComputeX: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r});
 	'''
 	
@@ -147,14 +146,12 @@ class ExpressionTypeProviderTest
 		assertTypesFor(PrimitiveType::REAL, #[2,2], #[], module, "g")
 		//TODO Bug à corriger
 		//assertTypesFor(PrimitiveType::REAL, #[], #[], module, "h")
-		//TODO Pourquoi ne type ne renvoit-il pas les connectivités
-		//assertTypesFor(PrimitiveType::REAL, #[], #[cells], module, "u")
-		//assertTypesFor(PrimitiveType::REAL, #[], #[cells], module, "v")
-		//assertTypesFor(PrimitiveType::REAL, #[2], #[cells, nodesOfCell], module, "w")
-		//assertTypesFor(PrimitiveType::REAL, #[], #[cells, nodesOfCell], module, "x")
+		assertTypesFor(PrimitiveType::REAL, #[], #[cells], module, "u")
+		assertTypesFor(PrimitiveType::REAL, #[], #[cells], module, "v")
+		assertTypesFor(PrimitiveType::REAL, #[2], #[cells, nodesOfCell], module, "w")
+		assertTypesFor(PrimitiveType::REAL, #[], #[cells, nodesOfCell], module, "x")
 				
 		assertTypesFor(PrimitiveType::REAL, #[], #[], j1Loop, "e")
-		//TODO Est-ce normal ?
 		assertTypesFor(PrimitiveType::REAL, #[], #[], j1Loop, "u")
 		assertTypesFor(PrimitiveType::REAL, #[], #[], j1Loop, "v")
 		assertTypesFor(PrimitiveType::REAL, #[2], #[], j1Loop, "w")
@@ -181,8 +178,7 @@ class ExpressionTypeProviderTest
 	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, Var variable)	
 	{
 		// We test both variable type and default value type
-		println("Var " + variable.name + " - baseType = " + variable.baseType.root + variable.baseType.sizes.toString + " -> " + variable.baseType.typeFor.label)
-		TestUtils.assertEquals(expectedRoot, expectedSizes, expectedConnectivities, variable.baseType.typeFor)
+		TestUtils.assertEquals(expectedRoot, expectedSizes, expectedConnectivities, variable.typeFor)
 		if (variable.defaultValue !== null)
 			TestUtils.assertEquals(expectedRoot, expectedSizes, expectedConnectivities, variable.defaultValue.typeFor)
 	}

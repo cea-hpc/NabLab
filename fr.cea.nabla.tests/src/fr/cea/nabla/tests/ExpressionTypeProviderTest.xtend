@@ -24,6 +24,7 @@ import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -55,6 +56,7 @@ class ExpressionTypeProviderTest
 		perp: ℝ[2] → ℝ[2];
 		norm: x | ℝ[x] → ℝ;
 		reduceMin: (ℝ.MaxValue, ℝ)→ℝ;
+		solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x];
 	}
 	
 	const ℝ X_EDGE_LENGTH = 1.;
@@ -95,14 +97,19 @@ class ExpressionTypeProviderTest
 	ℝ u{cells}, v{cells};
 	ℝ[2] w{cells, nodesOfCell};
 	ℝ x{cells, nodesOfCell};
+	ℝ α{cells, cells}; 
 	
-	j1: ∀ j∈cells(), {
+	ComputeU: u^{n+1} = u + c1;
+	
+	UpdateU: u^{n+1} = solveLinearSystem(α, u);
+	
+	ComputeV: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r});
+
+	ComputeX: ∀ j∈cells(), {
 		ℝ e = 1.0;
 		u{j} = e * 4; 
 		∀r∈nodesOfCell(j), x{j,r} = norm(w{j,r});
 	}
-
-	ComputeX: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r});
 	'''
 	
 	@Test 
@@ -117,7 +124,10 @@ class ExpressionTypeProviderTest
  		val module = model.parse
  		val cells = module.getConnectivityByName("cells")
  		val nodesOfCell = module.getConnectivityByName("nodesOfCell")
-		val j1Loop = module.getJobByName("j1")
+		val computeU = module.getJobByName("ComputeU")
+		val updateU = module.getJobByName("UpdateU")
+		val computeV = module.getJobByName("ComputeV")
+		val computeX = module.getJobByName("ComputeX")
 
 		assertTypesFor(PrimitiveType::INT, #[], #[], module, "a1")
 		assertTypesFor(PrimitiveType::INT, #[], #[], module, "a2")
@@ -148,17 +158,24 @@ class ExpressionTypeProviderTest
 		assertTypesFor(PrimitiveType::REAL, #[], #[cells], module, "v")
 		assertTypesFor(PrimitiveType::REAL, #[2], #[cells, nodesOfCell], module, "w")
 		assertTypesFor(PrimitiveType::REAL, #[], #[cells, nodesOfCell], module, "x")
+		assertTypesFor(PrimitiveType::REAL, #[], #[cells, cells], module, "α")
+
+		//TODO u + c1 -> UndefinedType 
+		//assertTypesFor(PrimitiveType::REAL, #[], #[cells], computeU, "u")
+
+		assertTypesFor(PrimitiveType::REAL, #[], #[cells], updateU, "u")
+
+		assertTypesFor(PrimitiveType::REAL, #[], #[], computeV, "v")
 				
-		assertTypesFor(PrimitiveType::REAL, #[], #[], j1Loop, "e")
-		assertTypesFor(PrimitiveType::REAL, #[], #[], j1Loop, "u")
-		assertTypesFor(PrimitiveType::REAL, #[], #[], j1Loop, "v")
-		assertTypesFor(PrimitiveType::REAL, #[2], #[], j1Loop, "w")
-		assertTypesFor(PrimitiveType::REAL, #[], #[], j1Loop, "x")
+		assertTypesFor(PrimitiveType::REAL, #[], #[], computeX, "e")
+		assertTypesFor(PrimitiveType::REAL, #[], #[], computeX, "u")
+		assertTypesFor(PrimitiveType::REAL, #[], #[], computeX, "x")
 	}
 					
 	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, NablaModule it, String varName)	
 	{
 		val variable = allVars.findFirst[v | v.name == varName]
+		Assert.assertNotNull(variable)
 		if (variable !== null)
 			assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, variable)
 	}
@@ -166,11 +183,12 @@ class ExpressionTypeProviderTest
 	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, Job it, String varName)	
 	{
 		val variable = allVars.findFirst[v | v.name == varName]
+		val affectation =  allAffectations.findFirst[a | a.varRef.variable.name == varName]
+		Assert.assertTrue(variable !== null || affectation !== null)
 		if (variable !== null)
 			assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, variable)
-		val affectation =  allAffectations.findFirst[a | a.varRef.variable.name == varName]
 		if (affectation !== null)
-			assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, affectation)			
+			assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, affectation)							
 	}
 
 	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, Var variable)	

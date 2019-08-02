@@ -23,7 +23,7 @@ class InstructionExtensions
 		return _allVars
 	}
 	def dispatch List<Var> getAllVars(Affectation it) { return #[] }
-	def dispatch List<Var> getAllVars(Loop it) { return #[] }
+	def dispatch List<Var> getAllVars(Loop it) { return body.allVars }
 	def dispatch List<Var> getAllVars(If it) { return #[]}
 	
 	//allAffectations

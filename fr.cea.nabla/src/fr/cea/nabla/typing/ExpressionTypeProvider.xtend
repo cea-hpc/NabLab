@@ -48,7 +48,7 @@ class ExpressionTypeProvider
 	@Inject extension BinaryOperationsTypeProvider
 	@Inject extension VarExtensions
 
-	def dispatch ExpressionType getTypeFor(ContractedIf it) { new BoolType(#[]) }
+	def dispatch ExpressionType getTypeFor(ContractedIf it) { then.typeFor }
 	
 	def dispatch ExpressionType getTypeFor(Or it) { new BoolType(#[]) }	
 	def dispatch ExpressionType getTypeFor(And it) { new BoolType(#[]) }
@@ -83,13 +83,7 @@ class ExpressionTypeProvider
 		if (decl === null) new UndefinedType
 		else decl.returnType
 	}
-	
-	//TODO Test d'ajout de typeFor(Var)
-	def dispatch ExpressionType getTypeFor(Var it)
-	{
-		getTypeFor(baseType.root, dimensions, baseType.sizes)
-	}
-	
+		
 	def dispatch ExpressionType getTypeFor(VarRef it)
 	{
 		val varBaseType = variable.baseType
@@ -124,6 +118,12 @@ class ExpressionTypeProvider
 	}
 
 	def dispatch ExpressionType getTypeFor(BaseType it) { getTypeFor(root, #[], sizes) }
+	
+	//TODO Test d'ajout de typeFor(Var)
+	def dispatch ExpressionType getTypeFor(Var it)
+	{
+		getTypeFor(baseType.root, dimensions, baseType.sizes)
+	}
 
 	def ExpressionType getTypeFor(PrimitiveType t, Connectivity[] connectivities, int[] baseTypeSizes)
 	{

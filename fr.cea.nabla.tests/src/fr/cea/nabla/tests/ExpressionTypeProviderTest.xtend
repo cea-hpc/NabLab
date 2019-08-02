@@ -144,8 +144,6 @@ class ExpressionTypeProviderTest
 		assertTypesFor(PrimitiveType::REAL, #[3], #[], module, "e")
 		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "f")		
 		assertTypesFor(PrimitiveType::REAL, #[2,2], #[], module, "g")
-		//TODO Bug à corriger
-		//assertTypesFor(PrimitiveType::REAL, #[], #[], module, "h")
 		assertTypesFor(PrimitiveType::REAL, #[], #[cells], module, "u")
 		assertTypesFor(PrimitiveType::REAL, #[], #[cells], module, "v")
 		assertTypesFor(PrimitiveType::REAL, #[2], #[cells, nodesOfCell], module, "w")
@@ -188,15 +186,5 @@ class ExpressionTypeProviderTest
 		// We test both variable type and expression type
 		TestUtils.assertEquals(expectedRoot, expectedSizes, expectedConnectivities, affectation.varRef.typeFor)
 		TestUtils.assertEquals(expectedRoot, expectedSizes, expectedConnectivities, affectation.expression.typeFor)
-	}
-
-	private def getJobByName(NablaModule it, String jobName)
-	{
-		jobs.findFirst[j | j.name == jobName]
-	}
-	
-	private def getConnectivityByName(NablaModule it, String connectivityName)
-	{
-		connectivities.findFirst[c | c.name == connectivityName]
 	}
 }

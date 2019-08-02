@@ -12,9 +12,9 @@ package fr.cea.nabla
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.ScalarVarDefinition
+import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
-import fr.cea.nabla.nabla.SimpleVar
 
 class VarExtensions 
 {

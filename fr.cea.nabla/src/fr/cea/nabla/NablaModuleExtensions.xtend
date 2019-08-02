@@ -1,5 +1,6 @@
 package fr.cea.nabla
 
+import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.Var
@@ -15,4 +16,19 @@ class NablaModuleExtensions
 		variables.filter(VarGroupDeclaration).forEach[g | allVars.addAll(g.variables)]
 		return allVars
 	}	
+	
+	def getFunctionByName(NablaModule it, String funcName)
+	{
+		return functions.filter(Function).findFirst[f | f.name == funcName]
+	}
+	
+	def getJobByName(NablaModule it, String jobName)
+	{
+		jobs.findFirst[j | j.name == jobName]
+	}
+	
+	def getConnectivityByName(NablaModule it, String connectivityName)
+	{
+		connectivities.findFirst[c | c.name == connectivityName]
+	}
 }

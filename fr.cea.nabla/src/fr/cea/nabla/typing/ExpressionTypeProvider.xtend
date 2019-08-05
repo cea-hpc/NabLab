@@ -147,6 +147,6 @@ class ExpressionTypeProvider
 			&& (atype as DefinedType).connectivities.empty && (btype as DefinedType).connectivities.empty)
 			getTypeFor(atype, btype, op)
 		else 
-			new UndefinedType			
+			new UndefinedType
 	}
 }

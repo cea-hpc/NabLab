@@ -15,7 +15,6 @@ import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.BaseType
-import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
@@ -95,16 +94,16 @@ class BasicValidator  extends AbstractNablaValidator
 	}
 
 	// ===== Constant expressions =====	
-	public static val ONLY_REAL_ARRAY_CONST = "Constant::OnlyRealArrayConst"
-	
-	static def getOnlyRealArrayConstMsg() { "This initialization is only possible on real arrays" }
-	
-	@Check
-	def checkOnlyRealArrayConst(BaseTypeConstant it)
-	{
-		if (type.root != PrimitiveType::REAL || type.sizes.empty)
-			error(getOnlyRealArrayConstMsg(), NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE, ONLY_REAL_ARRAY_CONST)
-	}
+//	public static val ONLY_REAL_ARRAY_CONST = "Constant::OnlyRealArrayConst"
+//	
+//	static def getOnlyRealArrayConstMsg() { "This initialization is only possible on real arrays" }
+//	
+//	@Check
+//	def checkOnlyRealArrayConst(BaseTypeConstant it)
+//	{
+//		if (type.root != PrimitiveType::REAL || type.sizes.empty)
+//			error(getOnlyRealArrayConstMsg(), NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE, ONLY_REAL_ARRAY_CONST)
+//	}
 
 
 	// ===== Variables : Var & VarRef =====	

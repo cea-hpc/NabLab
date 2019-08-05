@@ -26,7 +26,6 @@ import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Plus
-import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.ReductionArg
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
@@ -34,10 +33,10 @@ import fr.cea.nabla.nabla.VarRef
 import fr.cea.nabla.typing.ArrayType
 import fr.cea.nabla.typing.BinaryOperationsTypeProvider
 import fr.cea.nabla.typing.BoolType
+import fr.cea.nabla.typing.DefinedType
 import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.IntType
-import fr.cea.nabla.typing.RealType
 import fr.cea.nabla.typing.UndefinedType
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EReference
@@ -70,9 +69,9 @@ class TypeValidator extends BasicValidator
 	def checkValuetype(BaseTypeConstant it)
 	{
 		val vType = value.typeFor
-		if (vType !== null && !(vType instanceof RealType))
+		if (vType !== null && (vType as DefinedType).root !== type.root)
 		{
-			var msg = 'initialization value type must be ' + PrimitiveType::REAL.literal
+			var msg = 'Initialization value type must be ' + type.root.literal
 			error(msg, NablaPackage.Literals::BASE_TYPE_CONSTANT__VALUE)
 		}
 	}

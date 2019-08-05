@@ -33,6 +33,7 @@ import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.RealArrayType
 import fr.cea.nabla.typing.UndefinedType
 import java.util.Arrays
+import fr.cea.nabla.typing.IntArrayType
 
 class ExpressionInterpreter 
 {
@@ -177,6 +178,8 @@ class ExpressionInterpreter
 			UndefinedType: throw new RuntimeException('Invalid type')
 			RealArrayType case t.sizes==1: typeof(double[])
 			RealArrayType case t.sizes==2: typeof(double[][])
+			IntArrayType case t.sizes==1: typeof(int[])
+			IntArrayType case t.sizes==2: typeof(int[][])
 			DefinedType: t.root.javaType
 		}
 	}

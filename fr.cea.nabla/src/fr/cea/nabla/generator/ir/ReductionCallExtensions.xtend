@@ -14,11 +14,10 @@ import com.google.inject.Singleton
 import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.typing.ArrayType
 import fr.cea.nabla.typing.DefinedType
 import fr.cea.nabla.typing.ExpressionType
-import fr.cea.nabla.typing.RealArrayType
 import fr.cea.nabla.typing.UndefinedType
 
 /**
@@ -55,9 +54,9 @@ class ReductionCallExtensions
 		switch t
 		{
 			UndefinedType: null
-			RealArrayType: IrFactory::eINSTANCE.createBaseType =>
+			ArrayType: IrFactory::eINSTANCE.createBaseType =>
 			[
-				root = PrimitiveType::REAL
+				root = t.root.toIrPrimitiveType
 				sizes.addAll(t.sizes)
 			]
 			DefinedType: IrFactory::eINSTANCE.createBaseType =>

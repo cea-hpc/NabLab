@@ -14,7 +14,6 @@ import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.VarRefExtensions
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
@@ -33,16 +32,16 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RealConstant
+import fr.cea.nabla.nabla.RealMatrixConstant
+import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
+import fr.cea.nabla.typing.ArrayType
 import fr.cea.nabla.typing.DefinedType
 import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.typing.RealArrayType
 import fr.cea.nabla.typing.UndefinedType
-import fr.cea.nabla.nabla.RealVectorConstant
-import fr.cea.nabla.nabla.RealMatrixConstant
 
 class IrExpressionFactory 
 {
@@ -217,9 +216,9 @@ class IrExpressionFactory
 		switch t
 		{
 			UndefinedType: null
-			RealArrayType: IrFactory::eINSTANCE.createExpressionType =>
+			ArrayType: IrFactory::eINSTANCE.createExpressionType =>
 			[
-				root = PrimitiveType::REAL
+				root = t.root.toIrPrimitiveType
 				sizes.addAll(t.sizes)
 				t.connectivities.forEach[x | connectivities += x.toIrConnectivity]
 			]

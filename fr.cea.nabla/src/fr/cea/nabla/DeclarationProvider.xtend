@@ -19,13 +19,12 @@ import fr.cea.nabla.nabla.DimensionVar
 import fr.cea.nabla.nabla.DimensionVarReference
 import fr.cea.nabla.nabla.FunctionArg
 import fr.cea.nabla.nabla.FunctionCall
-import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.ReductionArg
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.typing.ArrayType
 import fr.cea.nabla.typing.DefinedType
 import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.typing.RealArrayType
 import fr.cea.nabla.typing.UndefinedType
 import java.util.ArrayList
 import java.util.HashMap
@@ -116,14 +115,14 @@ class DeclarationProvider
 		a.root == b.root && valuesMatch(dimVarValues, a.dimensions, b.connectivities.map[x | new DimensionValue(x)])
 	}
 	
-	private def dispatch boolean match(ArgType a, RealArrayType b, Map<DimensionVar, DimensionValue> dimVarValues) 
+	private def dispatch boolean match(ArgType a, ArrayType b, Map<DimensionVar, DimensionValue> dimVarValues) 
 	{ 
 		val dimensionValues = new ArrayList<DimensionValue>
 		b.sizes.forEach[x | dimensionValues += new DimensionValue(x)]
 		b.connectivities.forEach[x | dimensionValues += new DimensionValue(x)]
-		a.root == PrimitiveType::REAL && valuesMatch(dimVarValues, a.dimensions, dimensionValues)
+		a.root == b.root && valuesMatch(dimVarValues, a.dimensions, dimensionValues)
 	}
-	
+		
 	private def boolean valuesMatch(Map<DimensionVar, DimensionValue> dimVarValues, List<Dimension> dimensions, DimensionValue[] sizes)
 	{
 		if (dimensions.size != sizes.size) return false

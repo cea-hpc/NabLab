@@ -31,12 +31,12 @@ import fr.cea.nabla.nabla.ReductionArg
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.VarRef
+import fr.cea.nabla.typing.ArrayType
 import fr.cea.nabla.typing.BinaryOperationsTypeProvider
 import fr.cea.nabla.typing.BoolType
 import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.IntType
-import fr.cea.nabla.typing.RealArrayType
 import fr.cea.nabla.typing.RealType
 import fr.cea.nabla.typing.UndefinedType
 import org.eclipse.emf.ecore.EAttribute
@@ -85,7 +85,7 @@ class TypeValidator extends BasicValidator
 		
 		if (! (seedType === null || seedType instanceof UndefinedType))
 		{
-			if (seedType instanceof RealArrayType)
+			if (seedType instanceof ArrayType)
 			{
 				var msg = 'Seed type must be scalar'
 				error(msg, NablaPackage.Literals::REDUCTION_ARG__SEED)
@@ -114,7 +114,7 @@ class TypeValidator extends BasicValidator
 	{
 		val inT = arg.typeFor
 		
-		if (inT instanceof RealArrayType && !(inT as RealArrayType).connectivities.empty)
+		if (inT instanceof ArrayType && !(inT as ArrayType).connectivities.empty)
 		{
 			var msg = 'No reduction on connectivities variable'
 			error(msg, NablaPackage.Literals::REDUCTION_CALL__REDUCTION)

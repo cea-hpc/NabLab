@@ -41,6 +41,8 @@ import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
 import fr.cea.nabla.nabla.Var
+import fr.cea.nabla.nabla.IntVectorConstant
+import fr.cea.nabla.nabla.IntMatrixConstant
 
 class ExpressionTypeProvider 
 {
@@ -103,7 +105,9 @@ class ExpressionTypeProvider
 		getTypeFor(newRootType, newDimensions, newBaseTypeSizes)
 	}
 
+	def dispatch ExpressionType getTypeFor(IntVectorConstant it) { new IntArrayType(#[], #[values.size]) }
 	def dispatch ExpressionType getTypeFor(RealVectorConstant it) { new RealArrayType(#[], #[values.size]) }
+	def dispatch ExpressionType getTypeFor(IntMatrixConstant it) { new IntArrayType(#[], values.map[x | x.values.size]) }
 	def dispatch ExpressionType getTypeFor(RealMatrixConstant it) { new RealArrayType(#[], values.map[x | x.values.size]) }
 	def dispatch ExpressionType getTypeFor(BaseTypeConstant it) { type.typeFor }
 
@@ -119,7 +123,7 @@ class ExpressionTypeProvider
 
 	def dispatch ExpressionType getTypeFor(BaseType it) { getTypeFor(root, #[], sizes) }
 	
-	//TODO Test d'ajout de typeFor(Var)
+	//TODO Test add typeFor(Var)
 	def dispatch ExpressionType getTypeFor(Var it)
 	{
 		getTypeFor(baseType.root, dimensions, baseType.sizes)
@@ -128,9 +132,9 @@ class ExpressionTypeProvider
 	def ExpressionType getTypeFor(PrimitiveType t, Connectivity[] connectivities, int[] baseTypeSizes)
 	{
 		switch t
-		{
+		{	
 			case BOOL: if (baseTypeSizes.empty && connectivities.empty) new BoolType(connectivities) else new UndefinedType
-			case INT: if (baseTypeSizes.empty && connectivities.empty) new IntType(connectivities) else new UndefinedType
+			case INT: if (baseTypeSizes.empty && connectivities.empty) new IntType(connectivities) else new IntArrayType(connectivities, baseTypeSizes)
 			case REAL: if (baseTypeSizes.empty && connectivities.empty) new RealType(connectivities) else new RealArrayType(connectivities, baseTypeSizes)
 		}
 	}

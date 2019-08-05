@@ -122,10 +122,13 @@ VarRef: variable=[Var]
 
 InitializationExpression:
 	Expression |
+	IntVectorConstant |
 	RealVectorConstant |
+	{IntMatrixConstant} '[' values+=IntVectorConstant (',' values+=IntVectorConstant)+ ']' |
 	{RealMatrixConstant} '[' values+=RealVectorConstant (',' values+=RealVectorConstant)+ ']' |
 	{BaseTypeConstant} type=BaseType '(' value=Expression ')'; // Expression Type is Real because there are only Real arrays for the moment but it will become expression
 
+IntVectorConstant: '[' values+=INT (',' values+=INT)* ']';
 RealVectorConstant: '[' values+=REAL (',' values+=REAL)* ']';
 
 TimeIterator: 

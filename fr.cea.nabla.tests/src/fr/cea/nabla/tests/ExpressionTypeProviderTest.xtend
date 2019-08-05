@@ -71,6 +71,8 @@ class ExpressionTypeProviderTest
 	ℕ a2 = 9 % 4;
 	ℕ a3 = ℕ.MinValue;
 	ℕ a4;
+	ℕ[2] a5;
+	ℕ[2] a6 = [1,1];
 	ℾ b1 = true;
 	ℾ b2 = false || true;
 	ℾ b3 = false && true;
@@ -89,11 +91,13 @@ class ExpressionTypeProviderTest
 	ℝ c6 = ℝ.MaxValue;		
 	ℝ[2] d1 = [1.0, 2.0];
 	ℝ[2] d2 = perp(d1);
+	//ℝ[2] d3 = ℝ[2](0);
 	ℝ[3] e = [1.0, 2.0, 3.0];
 	const ℝ f = 1.0e-10;
 	ℝ[2,2] g = [ [1.0, 0.0], [0.0, 1.0] ];
-	//ℝ h = (a1 == 1 ? 0.0 : 1.0);
+	ℝ h = (a1 == 1 ? 0.0 : 1.0);
 	
+	ℕ t{cells};
 	ℝ u{cells}, v{cells};
 	ℝ[2] w{cells, nodesOfCell};
 	ℝ x{cells, nodesOfCell};
@@ -133,6 +137,8 @@ class ExpressionTypeProviderTest
 		assertTypesFor(PrimitiveType::INT, #[], #[], module, "a2")
 		assertTypesFor(PrimitiveType::INT, #[], #[], module, "a3")
 		assertTypesFor(PrimitiveType::INT, #[], #[], module, "a4")
+		assertTypesFor(PrimitiveType::INT, #[2], #[], module, "a5")
+		assertTypesFor(PrimitiveType::INT, #[2], #[], module, "a6")
 		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b1")
 		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b2")
 		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b3")
@@ -151,16 +157,20 @@ class ExpressionTypeProviderTest
 		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "c6")
 		assertTypesFor(PrimitiveType::REAL, #[2], #[], module, "d1")
 		assertTypesFor(PrimitiveType::REAL, #[2], #[], module, "d2")
+		//TODO ℝ[2] d3 = ℝ[2](0); -> initialization value type must be ℝ
+		//assertTypesFor(PrimitiveType::REAL, #[2], #[], module, "d3")
 		assertTypesFor(PrimitiveType::REAL, #[3], #[], module, "e")
 		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "f")		
 		assertTypesFor(PrimitiveType::REAL, #[2,2], #[], module, "g")
+		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "h")
+		assertTypesFor(PrimitiveType::INT, #[], #[cells], module, "t")
 		assertTypesFor(PrimitiveType::REAL, #[], #[cells], module, "u")
 		assertTypesFor(PrimitiveType::REAL, #[], #[cells], module, "v")
 		assertTypesFor(PrimitiveType::REAL, #[2], #[cells, nodesOfCell], module, "w")
 		assertTypesFor(PrimitiveType::REAL, #[], #[cells, nodesOfCell], module, "x")
 		assertTypesFor(PrimitiveType::REAL, #[], #[cells, cells], module, "α")
 
-		//TODO u + c1 -> UndefinedType 
+		//TODO u + c1 -> UndefinedType ?
 		//assertTypesFor(PrimitiveType::REAL, #[], #[cells], computeU, "u")
 
 		assertTypesFor(PrimitiveType::REAL, #[], #[cells], updateU, "u")
@@ -176,8 +186,7 @@ class ExpressionTypeProviderTest
 	{
 		val variable = allVars.findFirst[v | v.name == varName]
 		Assert.assertNotNull(variable)
-		if (variable !== null)
-			assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, variable)
+		assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, variable)
 	}
 
 	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, Job it, String varName)	

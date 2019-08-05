@@ -68,10 +68,7 @@ class VarExtensions
 	 */
 	def isConnectivityMatrix(ConnectivityVar it)
 	{
-		println('Connectivity Var : ' + name)
-		println('  ' + dimensions.map[name].join(', '))
 		val fullConnectivities = dimensions.filter[x | x.inTypes.empty]
-		println('  ' + fullConnectivities.map[name].join(', '))
 		return (fullConnectivities.size > 1)
 	}
 }

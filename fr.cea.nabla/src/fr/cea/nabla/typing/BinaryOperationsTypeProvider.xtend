@@ -1,5 +1,7 @@
 package fr.cea.nabla.typing
 
+import fr.cea.nabla.nabla.Connectivity
+
 class BinaryOperationsTypeProvider 
 {
 	def dispatch ExpressionType getTypeFor(ExpressionType a, ExpressionType b, String op)
@@ -40,7 +42,7 @@ class BinaryOperationsTypeProvider
 		}
 	}
 
-	def dispatch ExpressionType getTypeFor(IntType a, RealArrayType b, String op)
+	def dispatch ExpressionType getTypeFor(IntType a, ArrayType b, String op)
 	{
 		switch op
 		{
@@ -66,16 +68,17 @@ class BinaryOperationsTypeProvider
 		}
 	}
 
-	def dispatch ExpressionType getTypeFor(RealType a, RealArrayType b, String op)
+	def dispatch ExpressionType getTypeFor(RealType a, ArrayType b, String op)
 	{
 		switch op
 		{
-			case '+', case '*': b
+			// Real + RealArray -> RealArray , Real + IntArray -> RealArray
+			case '+', case '*': new RealArrayType(b.connectivities, b.sizes)
 			default: new UndefinedType
 		}
 	}
-	
-	// REAL ARRAY
+		
+	// REAL ARRAYS
 	def dispatch ExpressionType getTypeFor(RealArrayType a, IntType b, String op)
 	{
 		getTypeFor(a, new RealType(#[]), op)
@@ -85,18 +88,46 @@ class BinaryOperationsTypeProvider
 	{
 		switch op
 		{
-			case '', 
+			case '', case '+', case '-', case '*', case '/': a
+			default: new UndefinedType
+		}
+	}
+
+	def dispatch ExpressionType getTypeFor(RealArrayType a, ArrayType b, String op)
+	{
+		switch op
+		{
+			case !haveSameDimensions(a.sizes, b.sizes) || !haveSameConnectivities(a.connectivities, b.connectivities): new UndefinedType
 			case '+', case '-', case '*', case '/': a
 			default: new UndefinedType
 		}
 	}
 
-	def dispatch ExpressionType getTypeFor(RealArrayType a, RealArrayType b, String op)
+	// REAL ARRAYS
+	def dispatch ExpressionType getTypeFor(IntArrayType a, IntType b, String op)
 	{
 		switch op
 		{
-			case !haveSameDimensions(a.sizes, b.sizes): new UndefinedType
-			case '+', case '-', case '*', case '/': b
+			case '', case '+', case '-', case '*', case '/': a
+			default: new UndefinedType
+		}
+	}
+
+	def dispatch ExpressionType getTypeFor(IntArrayType a, RealType b, String op)
+	{
+		switch op
+		{
+			case '', case '+', case '-', case '*', case '/': new RealArrayType(a.connectivities, a.sizes)
+			default: new UndefinedType
+		}
+	}
+
+	def dispatch ExpressionType getTypeFor(IntArrayType a, ArrayType b, String op)
+	{
+		switch op
+		{
+			case !haveSameDimensions(a.sizes, b.sizes) || !haveSameConnectivities(a.connectivities, b.connectivities): new UndefinedType
+			case '+', case '-', case '*', case '/': b // IntArray + IntArray -> IntArray , IntArray + RealArray -> RealArray
 			default: new UndefinedType
 		}
 	}
@@ -107,6 +138,17 @@ class BinaryOperationsTypeProvider
 		
 		for (i : 0..<aDimSizes.size)
 			if (aDimSizes.get(i) != bDimSizes.get(i)) 
+				return false
+				
+		return true
+	}
+	
+	private def haveSameConnectivities(Connectivity[] aConnectivities, Connectivity[] bConnectivities)
+	{
+		if (aConnectivities.size != bConnectivities.size) return false
+		
+		for (i : 0..<aConnectivities.size)
+			if (aConnectivities.get(i) != bConnectivities.get(i)) 
 				return false
 				
 		return true

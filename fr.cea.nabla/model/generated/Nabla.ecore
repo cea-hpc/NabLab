@@ -127,6 +127,10 @@
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InitializationExpression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="IntVectorConstant" eSuperTypes="#//InitializationExpression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="values" unique="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RealVectorConstant" eSuperTypes="#//InitializationExpression">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="values" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
@@ -285,6 +289,10 @@
         eType="#//SingletonSpaceIterator" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="arg" eType="#//Expression"
         containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IntMatrixConstant" eSuperTypes="#//InitializationExpression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
+        eType="#//IntVectorConstant" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RealMatrixConstant" eSuperTypes="#//InitializationExpression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"

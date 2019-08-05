@@ -47,15 +47,26 @@ class RealType extends DefinedType
 }
 
 @Data
-class RealArrayType extends DefinedType
+abstract class ArrayType extends DefinedType
 {
-	override getRoot() { PrimitiveType::REAL }
+	int[] sizes
+	
 	override getLabel() 
 	{ 
-		val l = PrimitiveType::REAL.literal + sizes.map[utfExponent].join('\u02E3')
+		val l = getRoot.literal + sizes.map[utfExponent].join('\u02E3')
 		if (connectivities.empty) l
 		else l + '{' + connectivities.map[name].join(',') + '}'
 	}
-	
-	int[] sizes
+}
+
+@Data
+class RealArrayType extends ArrayType
+{
+	override getRoot() { PrimitiveType::REAL }
+}
+
+@Data
+class IntArrayType extends ArrayType
+{
+	override getRoot() { PrimitiveType::INT }
 }

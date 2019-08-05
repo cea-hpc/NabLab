@@ -12,9 +12,9 @@ package fr.cea.nabla.tests
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.PrimitiveType
+import fr.cea.nabla.typing.ArrayType
 import fr.cea.nabla.typing.DefinedType
 import fr.cea.nabla.typing.ExpressionType
-import fr.cea.nabla.typing.RealArrayType
 import org.junit.Assert
 
 class TestUtils 
@@ -29,9 +29,9 @@ class TestUtils
 	{
 		switch actual
 		{
-			RealArrayType:
+			ArrayType:
 			{
-				Assert.assertEquals(expectedRoot, PrimitiveType::REAL)
+				Assert.assertEquals(expectedRoot, actual.root)
 				Assert.assertArrayEquals(expectedSizes, actual.sizes)				
 				Assert.assertArrayEquals(expectedConnectivities, actual.connectivities)				
 			}

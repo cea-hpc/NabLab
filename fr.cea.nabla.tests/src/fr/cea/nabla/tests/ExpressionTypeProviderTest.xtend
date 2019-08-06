@@ -74,6 +74,9 @@ class ExpressionTypeProviderTest
 	ℕ[2] a5;
 	ℕ[2] a6 = [1,1];
 	ℕ[2] a7 = ℕ[2](1);
+	ℕ[2,2] a8;
+	ℕ a9 = a8[0,2];
+	
 	ℾ b1 = true;
 	ℾ b2 = false || true;
 	ℾ b3 = false && true;
@@ -84,17 +87,22 @@ class ExpressionTypeProviderTest
 	ℾ b8 = (a1 <= 2);
 	ℾ b9 = (a1 < 2);
 	ℾ b10 = !(a1 < 2);	
+	
 	ℝ c1 = 2.0 + 1.0;
 	ℝ c2 = 2.0 - 1.0;
 	ℝ c3 = 2.0 * 1.0;
 	ℝ c4 = 2.0 / 1.0;		
 	ℝ c5 = -c1;		
 	ℝ c6 = ℝ.MaxValue;		
+	const ℝ c7 = 1.0e-10;
+	
 	ℝ[2] d1 = [1.0, 2.0];
 	ℝ[2] d2 = perp(d1);
-	ℝ[2] d3 = ℝ[2](0);
+	ℝ[2] d3 = ℝ[2](0.);
+	
 	ℝ[3] e = [1.0, 2.0, 3.0];
-	const ℝ f = 1.0e-10;
+	
+	
 	ℝ[2,2] g = [ [1.0, 0.0], [0.0, 1.0] ];
 	ℝ h = (a1 == 1 ? 0.0 : 1.0);
 	
@@ -141,6 +149,9 @@ class ExpressionTypeProviderTest
 		assertTypesFor(PrimitiveType::INT, #[2], #[], module, "a5")
 		assertTypesFor(PrimitiveType::INT, #[2], #[], module, "a6")
 		assertTypesFor(PrimitiveType::INT, #[2], #[], module, "a7")
+		assertTypesFor(PrimitiveType::INT, #[2,2], #[], module, "a8")
+		assertTypesFor(PrimitiveType::INT, #[], #[], module, "a9")
+
 		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b1")
 		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b2")
 		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b3")
@@ -151,17 +162,21 @@ class ExpressionTypeProviderTest
 		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b8")
 		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b9")
 		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b10")		
+
 		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "c1")
 		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "c2")
 		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "c3")
 		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "c4")
 		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "c5")
 		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "c6")
+		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "c7")		
+
 		assertTypesFor(PrimitiveType::REAL, #[2], #[], module, "d1")
 		assertTypesFor(PrimitiveType::REAL, #[2], #[], module, "d2")
 		assertTypesFor(PrimitiveType::REAL, #[2], #[], module, "d3")
+
 		assertTypesFor(PrimitiveType::REAL, #[3], #[], module, "e")
-		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "f")		
+
 		assertTypesFor(PrimitiveType::REAL, #[2,2], #[], module, "g")
 		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "h")
 		assertTypesFor(PrimitiveType::INT, #[], #[cells], module, "t")

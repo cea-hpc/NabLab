@@ -31,4 +31,9 @@ class NablaModuleExtensions
 	{
 		connectivities.findFirst[c | c.name == connectivityName]
 	}
+	
+	def getItemTypeByName(NablaModule it, String itemTypeName)
+	{
+		items.findFirst[i | i.name == itemTypeName]
+	}
 }

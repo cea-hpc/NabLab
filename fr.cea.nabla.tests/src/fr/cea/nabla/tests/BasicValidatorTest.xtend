@@ -95,6 +95,12 @@ class BasicValidatorTest
 		//new SerializedModule(null, null, mandatoryOptions, null).addFunction()
 	}
 
+	private def getTestModuleWithCustomConnectivities(CharSequence connectivities)
+	{
+		emptyTestModule + connectivities + mandatoryOptions
+		//new SerializedModule(null, null, mandatoryOptions, null).addFunction()
+	}
+
 	private def getTestModuleWithCoordVariable()
 	{
 		emptyTestModule + nodesConnectivity + coordVariable + mandatoryOptions + iniX
@@ -681,6 +687,144 @@ class BasicValidatorTest
 			'''
 			IniX1: ∀j∈cells(), ∀r∈nodes(), X{r} = orig; 
 			IniX2: ∀j∈cells(), ∀r∈nodesOfCell(j), X{r} = orig; 
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+	
+	@Test
+	def void testCheckNotInInstructions() 
+	{		
+		val moduleKo = parseHelper.parse(testModuleWithCoordVariable
+			+
+			'''
+			UpdateX: 
+			{
+				ℝ[2] a{nodes};
+				∀r∈nodes(), X{r} = a{r};
+			}
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+		
+		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar, 
+			BasicValidator::NOT_IN_INSTRUCTIONS, 
+			BasicValidator::getNotInInstructionsMsg)		
+
+		val moduleOk =  parseHelper.parse(testModuleWithCoordVariable
+			+
+			'''
+			UpdateX: 
+			{
+				ℝ[2] a;
+				∀r∈nodes(), X{r} = a;
+			}
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+	
+	@Test
+	def void testCheckDimensionMultipleAndArg() 
+	{		
+		val moduleKo = parseHelper.parse(
+			getTestModuleWithCustomConnectivities(
+				'''
+				items { node, cell }
+				connectivities 
+				{
+					nodes: → {node};
+					cells: → {cell};
+					prevNode: node → node;
+					neigboursCells: cell → {cell};
+				}
+				''')
+				+
+				'''
+				ℝ[2] U{prevNode};
+				ℝ[2] V{neigboursCells};
+				'''
+		)
+		Assert.assertNotNull(moduleKo)
+		
+		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar, 
+			BasicValidator::DIMENSION_MULTIPLE, 
+			BasicValidator::getDimensionMultipleMsg)		
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar, 
+			BasicValidator::DIMENSION_ARG, 
+			BasicValidator::getDimensionArgMsg)		
+
+		val moduleOk =  parseHelper.parse(
+			getTestModuleWithCustomConnectivities(
+				'''
+				items { node, cell }
+				connectivities 
+				{
+					nodes: → {node};
+					cells: → {cell};
+					prevNode: node → node;
+					neigboursCells: cell → {cell};
+				}
+				''')
+				+
+				'''
+				ℝ[2] U{nodes};
+				ℝ[2] V{cells, neigboursCells};
+				'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+	
+	@Test
+	def void testCheckOnlyRealArray() 
+	{		
+		val moduleKo = parseHelper.parse(testModule
+			+
+			'''
+			ℕ[2] U{cells, cells};
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+		
+		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar, 
+			BasicValidator::ONLY_REAL_ARRAY, 
+			BasicValidator::getOnlyRealArrayMsg)		
+
+		val moduleOk =  parseHelper.parse(testModule
+			+
+			'''
+			ℝ[2] U{cells, cells};
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+	
+	// ===== Instructions =====
+
+	@Test
+	def void testCheckAffectationVar() 
+	{		
+		val moduleKo = parseHelper.parse(testModule
+			+
+			'''
+			computeX : X_EDGE_LENGTH = Y_EDGE_LENGTH;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+		
+		moduleKo.assertError(NablaPackage.eINSTANCE.affectation, 
+			BasicValidator::AFFECTATION_VAR, 
+			BasicValidator::getAffectationVarMsg)		
+
+		val moduleOk =  parseHelper.parse(testModule
+			+
+			'''
+			computeX : ℝ X = Y_EDGE_LENGTH;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

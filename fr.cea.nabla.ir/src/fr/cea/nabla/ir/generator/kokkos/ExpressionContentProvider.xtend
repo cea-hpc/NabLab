@@ -29,9 +29,16 @@ import static extension fr.cea.nabla.ir.BaseTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.VariableExtensions.isScalarConst
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
+import fr.cea.nabla.ir.ir.BaseTypeConstant
 
 class ExpressionContentProvider
 {
+	//TODO A valider Correction MPO
+	static def dispatch CharSequence getContent(BaseTypeConstant it)
+	{
+		value.content
+	}
+	
 	static def dispatch CharSequence getContent(ContractedIf it) 
 	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
 

@@ -5,7 +5,11 @@
  * http://www.eclipse.org/legal/epl-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0
- * Contributors: see AUTHORS file
+ *
+ * Contributors:
+ * 	Benoit Lelandais - initial implementation
+ * 	Marie-Pierre Oudot - initial implementation
+ * 	Jean-Sylvain Camier - Nabla generation support
  *******************************************************************************/
 #include "glace2d/Glace2dFunctions.h"
 #include "types/MathFunctions.h"

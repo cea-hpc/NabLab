@@ -22,105 +22,6 @@ class BasicValidatorTest
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
 
-	private def String getEmptyTestModule()
-	{
-		'''
-			module Test;
-		'''
-	}
-
-	private def String getMandatoryOptions()
-	{
-		'''
-		// Options obligatoires pour générer
-		const ℝ X_EDGE_LENGTH = 0.01;
-		const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-		const ℕ X_EDGE_ELEMS = 100;
-		const ℕ Y_EDGE_ELEMS = 10;
-		const ℕ Z_EDGE_ELEMS = 1;
-		const ℝ option_stoptime = 0.2;
-		const ℕ option_max_iterations = 20000;
-		'''
-	}
-	
-	private def String getConnectivities()
-	{
-		'''
-		items { node, cell }
-		
-		connectivities {
-			nodes: → {node};
-			cells: → {cell};
-			nodesOfCell: cell → {node};
-		}
-		'''
-	}
-
-	private def String getNodesConnectivity()
-	{
-		'''
-		items { node }
-		
-		connectivities 
-		{
-			nodes: → {node};
-		}
-		'''
-	}
-
-	private def String getCoordVariable()
-	{
-		'''
-		ℝ[2] X{nodes};
-		ℝ[2] orig = [0.0 , 0.0] ;
-		'''
-	}
-	
-	private def String getIniX()
-	{
-		'''
-		IniX: ∀r∈nodes(), X{r} = orig;
-		'''
-	}
-	
-	private def CharSequence getTestModule()
-	{
-		emptyTestModule + connectivities + mandatoryOptions
-		//new SerializedModule(connectivities, null, mandatoryOptions, null)
-	}
-	
-	private def getTestModuleWithCustomFunctions(CharSequence functions)
-	{
-		emptyTestModule + functions + mandatoryOptions
-		//new SerializedModule(null, null, mandatoryOptions, null).addFunction()
-	}
-
-	private def getTestModuleWithCustomConnectivities(CharSequence connectivities)
-	{
-		emptyTestModule + connectivities + mandatoryOptions
-		//new SerializedModule(null, null, mandatoryOptions, null).addFunction()
-	}
-
-	private def getTestModuleWithCoordVariable()
-	{
-		emptyTestModule + nodesConnectivity + coordVariable + mandatoryOptions + iniX
-	}	
-
-	private def getTestModuleWithCoordVariableWithCustomVars(CharSequence variables)
-	{
-		emptyTestModule + nodesConnectivity + coordVariable + mandatoryOptions + variables + iniX
-	}
-
-	private def getTestModuleWithCoordVariableWithCustomFunctions(CharSequence functions)
-	{
-		emptyTestModule + nodesConnectivity + functions + coordVariable + mandatoryOptions + iniX
-	}
-
-	private def getTestModuleWithCoordVariableWithCustomConnectivities(CharSequence connectivities)
-	{
-		emptyTestModule + connectivities + coordVariable + mandatoryOptions + iniX
-	}
-
 	// ===== NablaModule =====	
 	
 	@Test
@@ -829,5 +730,285 @@ class BasicValidatorTest
 		)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
+	}
+	
+	@Test
+	def void testCheckScalarVarDefaultValue() 
+	{		
+		val moduleKo = parseHelper.parse(testModule
+			+
+			'''
+			ℕ coef = 2;
+			const ℝ DOUBLE_LENGTH = X_EDGE_LENGTH * coef;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+		
+		moduleKo.assertError(NablaPackage.eINSTANCE.scalarVarDefinition, 
+			BasicValidator::SCALAR_VAR_DEFAULT_VALUE, 
+			BasicValidator::getScalarVarDefaultValueMsg)		
+
+		val moduleOk =  parseHelper.parse(testModule
+			+
+			'''
+			constℕ coef = 2;
+			const ℝ DOUBLE_LENGTH = X_EDGE_LENGTH * coef;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+	
+	// ===== Iterators =====
+	
+	
+		@Test
+	def void testCheckUnusedIterator() 
+	{
+		val moduleKo = parseHelper.parse(getTestModuleWithCoordVariable
+			+
+			'''
+			UpdateX: ∀r1∈nodes(), ∀r2∈nodes(), X{r1} = X{r1} + 1;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+		
+		moduleKo.assertWarning(NablaPackage.eINSTANCE.spaceIterator, 
+			BasicValidator::UNUSED_ITERATOR, 
+			BasicValidator::getUnusedIteratorMsg())		
+
+		val moduleOk = parseHelper.parse(getTestModuleWithCoordVariable
+			+
+			'''
+			UpdateX: ∀r1∈nodes(), X{r1} = X{r1} + 1;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoIssues
+	}
+	
+	@Test
+	def void testCheckRangeReturnType() 
+	{		
+		val moduleKo = parseHelper.parse(getTestModuleWithCoordVariableWithCustomConnectivities(
+			'''
+			items { node }
+			connectivities 
+			{
+				nodes: → {node};
+				leftNode: node → node;
+			}
+			''')
+			+
+			'''
+			UpdateX: ∀r1∈nodes(), ∀r2∈leftNode(r1), X{r2} = X{r1} - 1;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+		
+		moduleKo.assertError(NablaPackage.eINSTANCE.rangeSpaceIterator, 
+			BasicValidator::RANGE_RETURN_TYPE, 
+			BasicValidator::getRangeReturnTypeMsg)		
+
+		val moduleOk =  parseHelper.parse(getTestModuleWithCoordVariableWithCustomConnectivities(
+			'''
+			items { node }
+			connectivities 
+			{
+				nodes: → {node};
+				leftNodes: node → {node};
+			}
+			''')
+			+
+			'''
+			UpdateX: ∀r1∈nodes(), ∀r2∈leftNodes(r1), X{r2} = X{r1} - 1;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void testCheckSingletonReturnType() 
+	{		
+		val moduleKo = parseHelper.parse(getTestModuleWithCoordVariableWithCustomConnectivities(
+			'''
+			items { node }
+			connectivities 
+			{
+				nodes: → {node};
+				leftNode: node → {node};
+			}
+			''')
+			+
+			'''
+			UpdateX: ∀r1∈nodes(), r2 = leftNode(r1), X{r2} = X{r1} - 1;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+		
+		moduleKo.assertError(NablaPackage.eINSTANCE.singletonSpaceIterator, 
+			BasicValidator::SINGLETON_RETURN_TYPE, 
+			BasicValidator::getSingletonReturnTypeMsg)		
+
+		val moduleOk =  parseHelper.parse(getTestModuleWithCoordVariableWithCustomConnectivities(
+			'''
+			items { node }
+			connectivities 
+			{
+				nodes: → {node};
+				leftNode: node → node;
+			}
+			''')
+			+
+			'''
+			UpdateX: ∀r1∈nodes(), r2 = leftNode(r1), X{r2} = X{r1} - 1;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+	
+	@Test
+	def void testCheckIncAndDecValidity() 
+	{		
+		val moduleKo = parseHelper.parse(getTestModuleWithCoordVariableWithCustomConnectivities(
+			'''
+			items { node }
+			connectivities 
+			{
+				nodes: → {node};
+				leftNode: node → node;
+			}
+			''')
+			+
+			'''
+			UpdateX: ∀r1∈nodes(), r2 = leftNode(r1), X{r2} = X{r2-1} - 1;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+		
+		moduleKo.assertError(NablaPackage.eINSTANCE.spaceIteratorRef, 
+			BasicValidator::SHIFT_VALIDITY, 
+			BasicValidator::getShiftValidityMsg)		
+
+		val moduleOk =  parseHelper.parse(getTestModuleWithCoordVariableWithCustomConnectivities(
+			'''
+			items { node }
+			connectivities 
+			{
+				nodes: → {node};
+				leftNode: node → node;
+			}
+			''')
+			+
+			'''
+			UpdateX: ∀r1∈nodes(), r2 = leftNode(r1), X{r2} = X{r1-1} - 1;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+	
+	// ===== CharSequence utils =====
+
+	private def String getEmptyTestModule()
+	{
+		'''
+			module Test;
+		'''
+	}
+
+	private def String getMandatoryOptions()
+	{
+		'''
+		// Options obligatoires pour générer
+		const ℝ X_EDGE_LENGTH = 0.01;
+		const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+		const ℕ X_EDGE_ELEMS = 100;
+		const ℕ Y_EDGE_ELEMS = 10;
+		const ℕ Z_EDGE_ELEMS = 1;
+		const ℝ option_stoptime = 0.2;
+		const ℕ option_max_iterations = 20000;
+		'''
+	}
+	
+	private def String getConnectivities()
+	{
+		'''
+		items { node, cell }
+		
+		connectivities {
+			nodes: → {node};
+			cells: → {cell};
+			nodesOfCell: cell → {node};
+		}
+		'''
+	}
+
+	private def String getNodesConnectivity()
+	{
+		'''
+		items { node }
+		
+		connectivities 
+		{
+			nodes: → {node};
+		}
+		'''
+	}
+
+	private def String getCoordVariable()
+	{
+		'''
+		ℝ[2] X{nodes};
+		ℝ[2] orig = [0.0 , 0.0] ;
+		'''
+	}
+	
+	private def String getIniX()
+	{
+		'''
+		IniX: ∀r∈nodes(), X{r} = orig;
+		'''
+	}
+	
+	private def CharSequence getTestModule()
+	{
+		emptyTestModule + connectivities + mandatoryOptions
+	}
+	
+	private def getTestModuleWithCustomFunctions(CharSequence functions)
+	{
+		emptyTestModule + functions + mandatoryOptions
+	}
+
+	private def getTestModuleWithCustomConnectivities(CharSequence connectivities)
+	{
+		emptyTestModule + connectivities + mandatoryOptions
+	}
+
+	//Useful to prevent warnings
+	private def getTestModuleWithCoordVariable()
+	{
+		emptyTestModule + nodesConnectivity + coordVariable + mandatoryOptions + iniX
+	}	
+
+	//Useful to prevent warnings
+	private def getTestModuleWithCoordVariableWithCustomVars(CharSequence variables)
+	{
+		emptyTestModule + nodesConnectivity + coordVariable + mandatoryOptions + variables + iniX
+	}
+
+	//Useful to prevent warnings
+	private def getTestModuleWithCoordVariableWithCustomFunctions(CharSequence functions)
+	{
+		emptyTestModule + nodesConnectivity + functions + coordVariable + mandatoryOptions + iniX
+	}
+
+	//Useful to prevent warnings
+	private def getTestModuleWithCoordVariableWithCustomConnectivities(CharSequence connectivities)
+	{
+		emptyTestModule + connectivities + coordVariable + mandatoryOptions + iniX
 	}
 }

@@ -200,15 +200,15 @@ class ExpressionTypeProviderTest
 					
 	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, NablaModule it, String varName)	
 	{
-		val variable = allVars.findFirst[v | v.name == varName]
+		val variable = getVariableByName(varName)
 		Assert.assertNotNull(variable)
 		assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, variable)
 	}
 
 	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, Job it, String varName)	
 	{
-		val variable = allVars.findFirst[v | v.name == varName]
-		val affectation =  allAffectations.findFirst[a | a.varRef.variable.name == varName]
+		val variable = getVariableByName(varName)
+		val affectation = getVarAffectationByName(varName) 
 		Assert.assertTrue(variable !== null || affectation !== null)
 		if (variable !== null)
 			assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, variable)

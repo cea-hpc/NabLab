@@ -44,4 +44,106 @@ class TestUtils
 			default: Assert.fail
 		}
 	}
+	
+	// ===== CharSequence utils =====
+
+	static def String getEmptyTestModule()
+	{
+		'''
+			module Test;
+		'''
+	}
+
+	static def String getMandatoryOptions()
+	{
+		'''
+		// Options obligatoires pour générer
+		const ℝ X_EDGE_LENGTH = 0.01;
+		const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+		const ℕ X_EDGE_ELEMS = 100;
+		const ℕ Y_EDGE_ELEMS = 10;
+		const ℕ Z_EDGE_ELEMS = 1;
+		const ℝ option_stoptime = 0.2;
+		const ℕ option_max_iterations = 20000;
+		'''
+	}
+	
+	static def String getConnectivities()
+	{
+		'''
+		items { node, cell }
+		
+		connectivities {
+			nodes: → {node};
+			cells: → {cell};
+			nodesOfCell: cell → {node};
+		}
+		'''
+	}
+
+	static def String getNodesConnectivity()
+	{
+		'''
+		items { node }
+		
+		connectivities 
+		{
+			nodes: → {node};
+		}
+		'''
+	}
+
+	static def String getCoordVariable()
+	{
+		'''
+		ℝ[2] X{nodes};
+		ℝ[2] orig = [0.0 , 0.0] ;
+		'''
+	}
+	
+	static def String getIniX()
+	{
+		'''
+		IniX: ∀r∈nodes(), X{r} = orig;
+		'''
+	}
+	
+	static def CharSequence getTestModule()
+	{
+		emptyTestModule + connectivities + mandatoryOptions
+	}
+	
+	static def getTestModuleWithCustomFunctions(CharSequence functions)
+	{
+		emptyTestModule + connectivities + functions + mandatoryOptions
+	}
+
+	static def getTestModuleWithCustomConnectivities(CharSequence connectivities)
+	{
+		emptyTestModule + connectivities + mandatoryOptions
+	}
+
+	//Useful to prevent warnings
+	static def getTestModuleWithCoordVariable()
+	{
+		emptyTestModule + nodesConnectivity + coordVariable + mandatoryOptions + iniX
+	}	
+
+	//Useful to prevent warnings
+	static def getTestModuleWithCoordVariableWithCustomVars(CharSequence variables)
+	{
+		emptyTestModule + nodesConnectivity + coordVariable + mandatoryOptions + variables + iniX
+	}
+
+	//Useful to prevent warnings
+	static def getTestModuleWithCoordVariableWithCustomFunctions(CharSequence functions)
+	{
+		emptyTestModule + nodesConnectivity + functions + coordVariable + mandatoryOptions + iniX
+	}
+
+	//Useful to prevent warnings
+	static def getTestModuleWithCoordVariableWithCustomConnectivities(CharSequence connectivities)
+	{
+		emptyTestModule + connectivities + coordVariable + mandatoryOptions + iniX
+	}
 }

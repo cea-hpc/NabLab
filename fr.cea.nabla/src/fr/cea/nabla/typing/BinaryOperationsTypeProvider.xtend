@@ -63,7 +63,7 @@ class BinaryOperationsTypeProvider
 		{
 			// useful for type validator (unused by type provider)
 			case '==', case '!=', case '>=', case '<=', case '>', case'<': new BoolType(#[])
-			case '+', case '-', case '*', case '/': b
+			case '+', case '-', case '*', case '/', case ':': b
 			default: new UndefinedType
 		}
 	}

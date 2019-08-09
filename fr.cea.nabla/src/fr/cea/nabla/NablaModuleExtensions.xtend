@@ -36,4 +36,9 @@ class NablaModuleExtensions
 	{
 		items.findFirst[i | i.name == itemTypeName]
 	}
+	
+	def getVariableByName(NablaModule it, String variableName)
+	{
+		allVars.findFirst[v | v.name == variableName]
+	}
 }

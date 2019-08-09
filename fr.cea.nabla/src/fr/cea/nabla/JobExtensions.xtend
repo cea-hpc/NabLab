@@ -16,4 +16,14 @@ class JobExtensions
 	{
 		instruction.allAffectations
 	}
+	
+	def getVariableByName(Job it, String variableName)
+	{
+		allVars.findFirst[v | v.name == variableName]
+	}
+	
+	def getVarAffectationByName(Job it, String variableName)
+	{
+		allAffectations.findFirst[a | a.varRef.variable.name == variableName]
+	}
 }

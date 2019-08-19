@@ -143,7 +143,6 @@ enum PrimitiveType: Int='\u2115' | Real='\u211D' | Bool='\u213E';
 QualifiedName: ID ('.' ID)*;
 QualifiedNameWithWildcard: QualifiedName '.*'?;
 
-
 /* TERMINAUX *********************************************/
 @Override 
 terminal ID: '^'? ('a'..'z'|'A'..'Z'|'\u0394'..'\u03F2'|'\u220F'..'\u221A'|'_') ('a'..'z'|'A'..'Z'|'\u0394'..'\u03F2'|'0'..'9'|'\u221A'|'_')*;

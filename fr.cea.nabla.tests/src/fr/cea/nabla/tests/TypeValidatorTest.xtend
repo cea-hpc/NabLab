@@ -284,4 +284,132 @@ class TypeValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}		
+	
+	@Test
+	def void testCheckMulOrDivType() 
+	{
+		val moduleKo = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℾ a; 
+			ℝ b;
+			ℝ c = a * b;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+				
+		moduleKo.assertError(NablaPackage.eINSTANCE.mulOrDiv, 
+			TypeValidator::MUL_OR_DIV_TYPE, 
+			TypeValidator::getMulOrDivTypeMsg("*", 
+				PrimitiveType::BOOL.literal, 
+				PrimitiveType::REAL.literal
+			))		
+
+		val moduleOk = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℝ a; 
+			ℝ b;
+			ℝ c = a * b;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}			
+
+	@Test
+	def void testCheckPlusType() 
+	{
+		val moduleKo = parseHelper.parse(TestUtils::testModule			+
+			'''		
+			ℾ a; 
+			ℕ b;
+			ℝ c = a + b;
+			'''
+		
+		)
+		Assert.assertNotNull(moduleKo)
+				
+		moduleKo.assertError(NablaPackage.eINSTANCE.plus, 
+			TypeValidator::PLUS_TYPE, 
+			TypeValidator::getPlusTypeMsg("+", 
+				PrimitiveType::BOOL.literal, 
+				PrimitiveType::INT.literal
+			))		
+
+		val moduleOk = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℝ a; 
+			ℕ b;
+			ℝ c = a + b;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}			
+	
+	@Test
+	def void testCheckMinusType() 
+	{
+		val moduleKo = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℝ[2] a; 
+			ℝ[3] b;
+			ℝ[2] c = a - b;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+				
+		moduleKo.assertError(NablaPackage.eINSTANCE.minus, 
+			TypeValidator::MINUS_TYPE, 
+			TypeValidator::getMinusTypeMsg("-", 
+				new RealArrayType(#[],#[2]).label, 
+				new RealArrayType(#[],#[3]).label
+			))		
+
+		val moduleOk = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℝ[2] a; 
+			ℝ[2] b;
+			ℝ[2] c = a - b;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}			
+	
+	@Test
+	def void testCheckComparisonType() 
+	{
+		val moduleKo = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℝ a; 
+			ℝ[2] b;
+			ℾ c = a > b;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+				
+		moduleKo.assertError(NablaPackage.eINSTANCE.comparison, 
+			TypeValidator::COMPARISON_TYPE, 
+			TypeValidator::getComparisonTypeMsg(">", 
+				PrimitiveType::REAL.literal, 
+				new RealArrayType(#[],#[2]).label
+			))		
+
+		val moduleOk = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℝ a; 
+			ℝ b;
+			ℾ c = a > b;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}			
 }

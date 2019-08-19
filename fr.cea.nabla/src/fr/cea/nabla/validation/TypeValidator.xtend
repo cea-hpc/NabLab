@@ -219,53 +219,53 @@ class TypeValidator extends BasicValidator
 	def checkPlusType(Plus it)
 	{ 
 		if (!checkBinaryOp(left, right, op))
-			error(getPlusTypeMsg(op, left.typeFor.label, right.typeFor.label), NablaPackage.Literals.MUL_OR_DIV__OP, MUL_OR_DIV_TYPE)			
+			error(getPlusTypeMsg(op, left.typeFor.label, right.typeFor.label), NablaPackage.Literals.PLUS__OP, PLUS_TYPE)			
 	}
 	
 	@Check 
 	def checkMinusType(Minus it) 
 	{
 		if (!checkBinaryOp(left, right, op))
-			error(getMinusTypeMsg(op, left.typeFor.label, right.typeFor.label), NablaPackage.Literals.MINUS__OP)
+			error(getMinusTypeMsg(op, left.typeFor.label, right.typeFor.label), NablaPackage.Literals.MINUS__OP, MINUS_TYPE)
 	}
 	
 	@Check 
 	def checkComparisonType(Comparison it) 
 	{ 
 		if (!checkBinaryOp(left, right, op))
-			error(getComparisonTypeMsg(op, left.typeFor.label, right.typeFor.label), NablaPackage.Literals.COMPARISON__OP)
+			error(getComparisonTypeMsg(op, left.typeFor.label, right.typeFor.label), NablaPackage.Literals.COMPARISON__OP, COMPARISON_TYPE)
 	}
 	
 	@Check 
 	def checkEqualityType(Equality it)
 	{ 
 		if (!checkBinaryOp(left, right, op))
-			error(getEqualityTypeMsg(op, left.typeFor.label, right.typeFor.label), NablaPackage.Literals.EQUALITY__OP)
+			error(getEqualityTypeMsg(op, left.typeFor.label, right.typeFor.label), NablaPackage.Literals.EQUALITY__OP, EQUALITY_TYPE)
 	}
 
 	@Check def checkModuloType(Modulo it) 
 	{ 
 		if (!checkExpectedType(left?.typeFor, INT))
-			error(getModuloTypeMsg(left?.typeFor.label), NablaPackage.Literals.MODULO__LEFT)
+			error(getModuloTypeMsg(left?.typeFor.label), NablaPackage.Literals.MODULO__LEFT, MODULO_TYPE)
 		if (!checkExpectedType(right?.typeFor, INT))
-			error(getModuloTypeMsg(right?.typeFor.label), NablaPackage.Literals.MODULO__RIGHT)
+			error(getModuloTypeMsg(right?.typeFor.label), NablaPackage.Literals.MODULO__RIGHT, MODULO_TYPE)
 	}
 
 	@Check def checkAndType(And it) 
 	{ 
 		if (!checkExpectedType(left?.typeFor, BOOL))
-			error(getAndTypeMsg(left?.typeFor.label), NablaPackage.Literals.AND__LEFT)
+			error(getAndTypeMsg(left?.typeFor.label), NablaPackage.Literals.AND__LEFT, AND_TYPE)
 		if (!checkExpectedType(right?.typeFor, BOOL))
-			error(getAndTypeMsg(right?.typeFor.label), NablaPackage.Literals.AND__RIGHT)
+			error(getAndTypeMsg(right?.typeFor.label), NablaPackage.Literals.AND__RIGHT, AND_TYPE)
 	}
 
 	@Check
 	def checkOrType(Or it) 
 	{
 		if (!checkExpectedType(left?.typeFor, BOOL))
-			error(getAndTypeMsg(left?.typeFor.label), NablaPackage.Literals.OR__LEFT)
+			error(getAndTypeMsg(left?.typeFor.label), NablaPackage.Literals.OR__LEFT, OR_TYPE)
 		if (!checkExpectedType(right?.typeFor, BOOL))
-			error(getAndTypeMsg(right?.typeFor.label), NablaPackage.Literals.OR__RIGHT)
+			error(getAndTypeMsg(right?.typeFor.label), NablaPackage.Literals.OR__RIGHT, OR_TYPE)
 	}
 
 	private def checkExpectedType(ExpressionType actualType, ExpressionType expectedType) 

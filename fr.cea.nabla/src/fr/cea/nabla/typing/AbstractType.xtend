@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2018 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.typing
 
 import fr.cea.nabla.nabla.Connectivity
@@ -6,20 +15,20 @@ import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.Utils.*
 
-abstract class ExpressionType 
+abstract class AbstractType 
 {
 	def isUndefined() { this instanceof UndefinedType }
 	abstract def String getLabel();
 }
 
 @Data
-class UndefinedType extends ExpressionType
+class UndefinedType extends AbstractType
 {
 	override getLabel() { 'Undefined' }
 }
 
 @Data
-abstract class DefinedType extends ExpressionType
+abstract class DefinedType extends AbstractType
 {
 	Connectivity[] connectivities
 	abstract def PrimitiveType getRoot();

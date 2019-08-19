@@ -29,11 +29,11 @@ import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
 import fr.cea.nabla.typing.DefinedType
-import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.RealArrayType
 import fr.cea.nabla.typing.UndefinedType
 import java.util.Arrays
 import fr.cea.nabla.typing.IntArrayType
+import fr.cea.nabla.typing.AbstractType
 
 class ExpressionInterpreter 
 {
@@ -171,7 +171,7 @@ class ExpressionInterpreter
 //		}
 //	}
 
-	private def getJavaType(ExpressionType t)
+	private def getJavaType(AbstractType t)
 	{
 		switch t
 		{

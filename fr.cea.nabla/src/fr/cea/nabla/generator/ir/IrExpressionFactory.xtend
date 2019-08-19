@@ -39,9 +39,9 @@ import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
 import fr.cea.nabla.typing.ArrayType
 import fr.cea.nabla.typing.DefinedType
-import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.UndefinedType
+import fr.cea.nabla.typing.AbstractType
 
 class IrExpressionFactory 
 {
@@ -211,7 +211,7 @@ class IrExpressionFactory
 	}
 
 	// Attention, pas de fonction create mais une creation systématique
-	def toIrExpressionType(ExpressionType t)
+	def toIrExpressionType(AbstractType t)
 	{
 		switch t
 		{

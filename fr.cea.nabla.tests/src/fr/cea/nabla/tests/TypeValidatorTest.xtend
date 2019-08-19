@@ -1,9 +1,11 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
+import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.PrimitiveType
+import fr.cea.nabla.typing.MiscTypeProvider
 import fr.cea.nabla.typing.RealArrayType
 import fr.cea.nabla.validation.TypeValidator
 import org.eclipse.xtext.testing.InjectWith
@@ -13,8 +15,6 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import fr.cea.nabla.NablaModuleExtensions
-import fr.cea.nabla.typing.ExpressionTypeProvider
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
@@ -23,7 +23,7 @@ class TypeValidatorTest
 	@Inject ParseHelper<NablaModule> parseHelper
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
-	@Inject extension ExpressionTypeProvider
+	@Inject extension MiscTypeProvider
 
 	// ===== Expressions =====	
 	

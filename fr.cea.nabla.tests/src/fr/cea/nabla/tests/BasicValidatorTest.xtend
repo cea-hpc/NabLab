@@ -35,7 +35,6 @@ class BasicValidatorTest
 			BasicValidator::getCoordVariableMsg())		
 
 		val moduleOk = parseHelper.parse(TestUtils::testModuleWithCoordVariable)
-		// We have to put IniX job, to avoid Unused variable warning
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoIssues
 	}
@@ -67,7 +66,7 @@ class BasicValidatorTest
 
 		val moduleOk = parseHelper.parse(TestUtils::testModule)
 		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors		
+		moduleOk.assertNoErrors
 	}
 
 	// ===== BaseType =====	
@@ -96,35 +95,7 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors		
 	}
-	
-	// ===== Constant expressions =====	
-	
-	//TODO : CheckOnlyRealArrayConst ?
-//	def void testCheckOnlyRealArrayConst() 
-//	{	
-//		val moduleKo = parseHelper.parse(TestUtils::testModule
-//			+
-//			'''
-//			ℝ c = ℝ(0)
-//			'''
-//		)
-//		Assert.assertNotNull(moduleKo)
-//		
-//		moduleKo.assertError(NablaPackage.eINSTANCE.baseTypeConstant, 
-//			BasicValidator::ONLY_REAL_ARRAY_CONST, 
-//			BasicValidator::getOnlyRealArrayConstMsg())		
-//
-//
-//		val moduleOk = parseHelper.parse(TestUtils::testModule
-//			+
-//			'''
-//			ℝ[2] c = ℝ[2](0);
-//			'''
-//		)
-//		Assert.assertNotNull(moduleOk)
-//		moduleOk.assertNoErrors		
-//	}
-	
+		
 	// ===== Variables : Var & VarRef =====	
 	
 	@Test
@@ -328,7 +299,6 @@ class BasicValidatorTest
 			BasicValidator::FUNCTION_INCOMPATIBLE_IN_TYPES, 
 			BasicValidator::getFunctionIncompatibleInTypesMsg())
 
-		//TODO : syntax error on 	f: x | ℝ[x] → ℝ[x-1];
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
@@ -369,12 +339,14 @@ class BasicValidatorTest
 				functions 
 				{
 					f: x | ℝ[x] → ℝ[x];
+					g: y | ℝ[y] → ℝ[x, y];
 				}
 				'''
 			)
 		)
 		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
+		moduleOk.assertNoErrors(NablaPackage.eINSTANCE.functionArg, 
+			BasicValidator::FUNCTION_RETURN_TYPE)
 	}
 	
 	@Test
@@ -386,7 +358,6 @@ class BasicValidatorTest
 				functions 
 				{
 					reduce1: x,y | (ℝ.MaxValue , ℝ[x+y])→ℝ[x+y];
-					//reduce2: x,y | (ℝ.MaxValue , ℝ[x])→ℝ[y];
 					reduce2: (ℝ.MaxValue, ℝ[2])→ℝ ,  x | (ℝ.MaxValue , ℝ[x])→ℝ;
 				}
 				'''
@@ -407,8 +378,7 @@ class BasicValidatorTest
 				'''
 				functions 
 				{
-					reduce1: x,y | (ℝ.MaxValue , ℝ[x])→ℝ[x+y];
-					//reduce2: x,y | (ℝ.MaxValue , ℝ[x])→ℝ[x,x+y];
+					reduce1: x | (ℝ.MaxValue , ℝ[x])→ℝ[x];
 					reduce2: (ℝ.MaxValue, ℝ)→ℝ ,  x | (ℝ.MaxValue , ℝ[x])→ℝ;
 				}
 				'''
@@ -437,13 +407,28 @@ class BasicValidatorTest
 			BasicValidator::REDUCTION_RETURN_TYPE, 
 			BasicValidator::getReductionReturnTypeMsg("y"))
 
-		//TODO reduce: x,y | (ℝ.MaxValue , ℝ[x])→ℝ[x+y]; KO or OK ?
-		val moduleOk = parseHelper.parse(
+		val modulekO2 = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
 				functions 
 				{
 					reduce: x,y | (ℝ.MaxValue , ℝ[x])→ℝ[x+y];
+				}
+				'''
+			)
+		)
+		Assert.assertNotNull(modulekO2)
+		
+		modulekO2.assertError(NablaPackage.eINSTANCE.reductionArg, 
+			BasicValidator::REDUCTION_RETURN_TYPE, 
+			BasicValidator::getReductionReturnTypeMsg("y"))
+
+		val moduleOk = parseHelper.parse(
+			TestUtils::getTestModuleWithCustomFunctions(
+				'''
+				functions 
+				{
+					reduce: x | (ℝ.MaxValue , ℝ[x])→ℝ[x];
 				}
 				'''
 			)
@@ -722,10 +707,23 @@ class BasicValidatorTest
 			BasicValidator::AFFECTATION_VAR, 
 			BasicValidator::getAffectationVarMsg)		
 
+		val moduleKo2 = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			initXXX: { const ℝ xxx=0.0; xxx = 0.01; }
+			'''
+		)
+		Assert.assertNotNull(moduleKo2)
+		
+		moduleKo2.assertError(NablaPackage.eINSTANCE.affectation, 
+			BasicValidator::AFFECTATION_VAR, 
+			BasicValidator::getAffectationVarMsg)		
+
 		val moduleOk =  parseHelper.parse(TestUtils::testModule
 			+
 			'''
 			computeX : ℝ X = Y_EDGE_LENGTH;
+			initYYY: { const ℝ xxx=0.0; ℝ yyy = xxx; }
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

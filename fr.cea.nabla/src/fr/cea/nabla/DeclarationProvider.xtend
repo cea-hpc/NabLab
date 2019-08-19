@@ -21,10 +21,11 @@ import fr.cea.nabla.nabla.FunctionArg
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.ReductionArg
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.typing.AbstractType
 import fr.cea.nabla.typing.ArrayType
 import fr.cea.nabla.typing.DefinedType
-import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.ExpressionTypeProvider
+import fr.cea.nabla.typing.MiscTypeProvider
 import fr.cea.nabla.typing.UndefinedType
 import java.util.ArrayList
 import java.util.HashMap
@@ -55,8 +56,8 @@ class FunctionDeclaration
 {
 	val FunctionArg model
 	val Map<DimensionVar, DimensionValue> dimensionVarValues
-	val ExpressionType[] inTypes
-	val ExpressionType returnType
+	val AbstractType[] inTypes
+	val AbstractType returnType
 }
 
 @Data
@@ -64,13 +65,14 @@ class ReductionDeclaration
 {
 	val ReductionArg model
 	val Map<DimensionVar, DimensionValue> dimensionVarValues
-	val ExpressionType collectionType
-	val ExpressionType returnType
+	val AbstractType collectionType
+	val AbstractType returnType
 }
 
 class DeclarationProvider 
 {
 	@Inject extension ExpressionTypeProvider
+	@Inject extension MiscTypeProvider
 	
 	def FunctionDeclaration getDeclaration(FunctionCall it)
 	{
@@ -176,9 +178,9 @@ class DeclarationProvider
 		values.getOrDefault(target, DimensionValue::Undefined)
 	}
 	
-	private def ExpressionType computeExpressionType(ArgType argType, Map<DimensionVar, DimensionValue> values)
+	private def AbstractType computeExpressionType(ArgType argType, Map<DimensionVar, DimensionValue> values)
 	{
-		var ExpressionType returnType = new UndefinedType
+		var AbstractType returnType = new UndefinedType
 		if (argType.dimensions.empty)
 			returnType = getTypeFor(argType.root, #[], #[])
 		else

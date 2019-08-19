@@ -17,8 +17,8 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.typing.ArrayType
 import fr.cea.nabla.typing.DefinedType
-import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.UndefinedType
+import fr.cea.nabla.typing.AbstractType
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -49,7 +49,7 @@ class ReductionCallExtensions
 	}
 
 	// no connectivies on the ExpressionType for the Reduction
-	private def toIrBaseType(ExpressionType t)
+	private def toIrBaseType(AbstractType t)
 	{
 		switch t
 		{

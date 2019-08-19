@@ -30,13 +30,14 @@ import fr.cea.nabla.nabla.ReductionArg
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.VarRef
+import fr.cea.nabla.typing.AbstractType
 import fr.cea.nabla.typing.ArrayType
 import fr.cea.nabla.typing.BinaryOperationsTypeProvider
 import fr.cea.nabla.typing.BoolType
 import fr.cea.nabla.typing.DefinedType
-import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.IntType
+import fr.cea.nabla.typing.MiscTypeProvider
 import fr.cea.nabla.typing.UndefinedType
 import java.util.List
 import org.eclipse.xtext.validation.Check
@@ -48,6 +49,7 @@ class TypeValidator extends BasicValidator
 	
 	@Inject extension ExpressionTypeProvider
 	@Inject extension BinaryOperationsTypeProvider
+	@Inject extension MiscTypeProvider
 
 	// ===== Instructions =====	
 	
@@ -268,7 +270,7 @@ class TypeValidator extends BasicValidator
 			error(getAndTypeMsg(right?.typeFor.label), NablaPackage.Literals.OR__RIGHT, OR_TYPE)
 	}
 
-	private def checkExpectedType(ExpressionType actualType, ExpressionType expectedType) 
+	private def checkExpectedType(AbstractType actualType, AbstractType expectedType) 
 	{
 		// si un des 2 types est indéfini, il ne faut rien vérifier pour éviter les erreurs multiples due à la récursion
 		return (actualType.undefined || expectedType.undefined || actualType == expectedType)

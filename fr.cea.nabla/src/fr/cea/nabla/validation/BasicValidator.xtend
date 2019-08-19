@@ -93,20 +93,6 @@ class BasicValidator  extends AbstractNablaValidator
 			error(getTypeDimensionMsg(), NablaPackage.Literals.BASE_TYPE__SIZES, TYPE_DIMENSION)
 	}
 
-	// ===== Constant expressions =====	
-//	public static val ONLY_REAL_ARRAY_CONST = "Constant::OnlyRealArrayConst"
-//	
-//	static def getOnlyRealArrayConstMsg() { "This initialization is only possible on real arrays" }
-//	
-	//TODO : CheckOnlyRealArrayConst ?
-//	@Check
-//	def checkOnlyRealArrayConst(BaseTypeConstant it)
-//	{
-//		if (type.root != PrimitiveType::REAL || type.sizes.empty)
-//			error(getOnlyRealArrayConstMsg(), NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE, ONLY_REAL_ARRAY_CONST)
-//	}
-
-
 	// ===== Variables : Var & VarRef =====	
 	public static val UNUSED_VARIABLE = "Variables::UnusedVariable"
 	public static val INDICES_NUMBER = "Variables::IndicesNumber"
@@ -239,15 +225,16 @@ class BasicValidator  extends AbstractNablaValidator
 	{
 		val inTypeVars = new HashSet<DimensionVar>
 		for (inType : inTypes)
-			for (dim : inType.dimensions.filter(DimensionVarReference))
-				inTypeVars += dim.target
+			for (dim : inType.eAllContents.filter(DimensionVarReference).toIterable)
+				if (dim.target !== null && !dim.target.eIsProxy)
+					inTypeVars += dim.target
 
 		val returnTypeVars = new HashSet<DimensionVar>		
-		for (dim : returnType.dimensions.filter(DimensionVarReference))
-			returnTypeVars += dim.target
+		for (dim : returnType.eAllContents.filter(DimensionVarReference).toIterable)
+			if (dim.target !== null && !dim.target.eIsProxy)
+				returnTypeVars += dim.target
 		
 		val x = returnTypeVars.findFirst[x | !inTypeVars.contains(x)]
-		//TODO When x is not declared (x instance of eProxy) -> x.name = null
 		if (x !== null)
 			error(getFunctionReturnTypeMsg(x.name), NablaPackage.Literals::FUNCTION_ARG__RETURN_TYPE, FUNCTION_RETURN_TYPE)
 	}
@@ -274,12 +261,14 @@ class BasicValidator  extends AbstractNablaValidator
 	{	
 		// return type should reference only known variables
 		val inTypeVars = new HashSet<DimensionVar>
-		for (dim : collectionType.dimensions.filter(DimensionVarReference))
-			inTypeVars += dim.target
+		for (dim : collectionType.eAllContents.filter(DimensionVarReference).toIterable)
+			if (dim.target !== null && !dim.target.eIsProxy)
+				inTypeVars += dim.target
 
 		val returnTypeVars = new HashSet<DimensionVar>		
-		for (dim : returnType.dimensions.filter(DimensionVarReference))
-			returnTypeVars += dim.target
+		for (dim : returnType.eAllContents.filter(DimensionVarReference).toIterable)
+			if (dim.target !== null && !dim.target.eIsProxy)
+				returnTypeVars += dim.target
 		
 		val x = returnTypeVars.findFirst[x | !inTypeVars.contains(x)]
 		if (x !== null)
@@ -391,9 +380,7 @@ class BasicValidator  extends AbstractNablaValidator
 	@Check
 	def checkAffectationVar(Affectation it)
 	{
-		//TODO Why test eContainer ?
-		//if (varRef.variable.isConst && (varRef.variable.eContainer instanceof NablaModule))
-		if (varRef.variable.isConst && (varRef.variable.eContainer.eContainer instanceof NablaModule))
+		if (varRef.variable.isConst)
 			error(getAffectationVarMsg(), NablaPackage.Literals::AFFECTATION__VAR_REF, AFFECTATION_VAR)
 	}
 	
@@ -403,7 +390,6 @@ class BasicValidator  extends AbstractNablaValidator
 		if (isConst && defaultValue!==null && defaultValue.eAllContents.filter(VarRef).exists[x|!x.variable.isConst])
 			error(getScalarVarDefaultValueMsg(), NablaPackage.Literals::SCALAR_VAR_DEFINITION__DEFAULT_VALUE, SCALAR_VAR_DEFAULT_VALUE)
 	}
-	
 
 	// ===== Iterators =====
 	public static val UNUSED_ITERATOR = "Iterators::UnusedIterator"

@@ -20,6 +20,7 @@ import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ExpressionTypeProvider
+import fr.cea.nabla.typing.MiscTypeProvider
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -35,6 +36,7 @@ class ExpressionTypeProviderTest
 	@Inject extension ParseHelper<NablaModule>
 	@Inject extension ValidationTestHelper
 	@Inject extension ExpressionTypeProvider
+	@Inject extension MiscTypeProvider
 	@Inject extension VarExtensions
 	@Inject extension NablaModuleExtensions
 	@Inject extension JobExtensions
@@ -112,8 +114,6 @@ class ExpressionTypeProviderTest
 	ℝ x{cells, nodesOfCell};
 	ℝ α{cells, cells}; 
 	
-	ComputeU: u^{n+1} = u + c1;
-	
 	UpdateU: u^{n+1} = solveLinearSystem(α, u);
 	
 	ComputeV: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r} + t{j});
@@ -124,7 +124,7 @@ class ExpressionTypeProviderTest
 		∀r∈nodesOfCell(j), x{j,r} = norm(w{j,r});
 	}
 	'''
-	
+
 	@Test 
 	def testCorrectParsing()
 	{
@@ -137,7 +137,6 @@ class ExpressionTypeProviderTest
  		val module = model.parse
  		val cells = module.getConnectivityByName("cells")
  		val nodesOfCell = module.getConnectivityByName("nodesOfCell")
-		val computeU = module.getJobByName("ComputeU")
 		val updateU = module.getJobByName("UpdateU")
 		val computeV = module.getJobByName("ComputeV")
 		val computeX = module.getJobByName("ComputeX")
@@ -185,9 +184,6 @@ class ExpressionTypeProviderTest
 		assertTypesFor(PrimitiveType::REAL, #[2], #[cells, nodesOfCell], module, "w")
 		assertTypesFor(PrimitiveType::REAL, #[], #[cells, nodesOfCell], module, "x")
 		assertTypesFor(PrimitiveType::REAL, #[], #[cells, cells], module, "α")
-
-		//TODO u + c1 -> UndefinedType ?
-		//assertTypesFor(PrimitiveType::REAL, #[], #[cells], computeU, "u")
 
 		assertTypesFor(PrimitiveType::REAL, #[], #[cells], updateU, "u")
 

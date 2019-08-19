@@ -13,7 +13,6 @@ import com.google.inject.Inject
 import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.And
-import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
@@ -24,6 +23,8 @@ import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.IntConstant
+import fr.cea.nabla.nabla.IntMatrixConstant
+import fr.cea.nabla.nabla.IntVectorConstant
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
@@ -33,60 +34,57 @@ import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
-import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealMatrixConstant
 import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
-import fr.cea.nabla.nabla.Var
-import fr.cea.nabla.nabla.IntVectorConstant
-import fr.cea.nabla.nabla.IntMatrixConstant
 
 class ExpressionTypeProvider 
 {
 	@Inject extension DeclarationProvider
 	@Inject extension BinaryOperationsTypeProvider
 	@Inject extension VarExtensions
+	@Inject extension MiscTypeProvider
 
-	def dispatch ExpressionType getTypeFor(ContractedIf it) { then.typeFor }
+	def dispatch AbstractType getTypeFor(ContractedIf it) { then.typeFor }
 	
-	def dispatch ExpressionType getTypeFor(Or it) { new BoolType(#[]) }	
-	def dispatch ExpressionType getTypeFor(And it) { new BoolType(#[]) }
-	def dispatch ExpressionType getTypeFor(Equality it) { new BoolType(#[]) }
-	def dispatch ExpressionType getTypeFor(Comparison it) { new BoolType(#[]) }
-	def dispatch ExpressionType getTypeFor(Plus it) { eval(left, right ,op) }
-	def dispatch ExpressionType getTypeFor(Minus it) { eval(left, right ,op) }
-	def dispatch ExpressionType getTypeFor(MulOrDiv it)  { eval(left, right ,op) }
-	def dispatch ExpressionType getTypeFor(Modulo it)  { new IntType(#[]) }
+	def dispatch AbstractType getTypeFor(Or it) { new BoolType(#[]) }	
+	def dispatch AbstractType getTypeFor(And it) { new BoolType(#[]) }
+	def dispatch AbstractType getTypeFor(Equality it) { new BoolType(#[]) }
+	def dispatch AbstractType getTypeFor(Comparison it) { new BoolType(#[]) }
+	def dispatch AbstractType getTypeFor(Plus it) { eval(left, right ,op) }
+	def dispatch AbstractType getTypeFor(Minus it) { eval(left, right ,op) }
+	def dispatch AbstractType getTypeFor(MulOrDiv it)  { eval(left, right ,op) }
+	def dispatch AbstractType getTypeFor(Modulo it)  { new IntType(#[]) }
 
-	def dispatch ExpressionType getTypeFor(Parenthesis it) { expression.typeFor }
-	def dispatch ExpressionType getTypeFor(UnaryMinus it) { expression.typeFor }
-	def dispatch ExpressionType getTypeFor(Not it) { expression.typeFor }
+	def dispatch AbstractType getTypeFor(Parenthesis it) { expression.typeFor }
+	def dispatch AbstractType getTypeFor(UnaryMinus it) { expression.typeFor }
+	def dispatch AbstractType getTypeFor(Not it) { expression.typeFor }
 
-	def dispatch ExpressionType getTypeFor(IntConstant it) { new IntType(#[]) }
-	def dispatch ExpressionType getTypeFor(RealConstant it) { new RealType(#[]) }
-	def dispatch ExpressionType getTypeFor(BoolConstant it)  { new BoolType(#[]) }
+	def dispatch AbstractType getTypeFor(IntConstant it) { new IntType(#[]) }
+	def dispatch AbstractType getTypeFor(RealConstant it) { new RealType(#[]) }
+	def dispatch AbstractType getTypeFor(BoolConstant it)  { new BoolType(#[]) }
 
-	def dispatch ExpressionType getTypeFor(MinConstant it) { type.typeFor }
-	def dispatch ExpressionType getTypeFor(MaxConstant it) { type.typeFor }
+	def dispatch AbstractType getTypeFor(MinConstant it) { type.typeFor }
+	def dispatch AbstractType getTypeFor(MaxConstant it) { type.typeFor }
 	
-	def dispatch ExpressionType getTypeFor(FunctionCall it)
+	def dispatch AbstractType getTypeFor(FunctionCall it)
 	{
 		val decl = declaration
 		if (decl === null) new UndefinedType
 		else decl.returnType
 	}
 	
-	def dispatch ExpressionType getTypeFor(ReductionCall it)
+	def dispatch AbstractType getTypeFor(ReductionCall it)
 	{
 		val decl = declaration
 		if (decl === null) new UndefinedType
 		else decl.returnType
 	}
 		
-	def dispatch ExpressionType getTypeFor(VarRef it)
+	def dispatch AbstractType getTypeFor(VarRef it)
 	{
 		val varBaseType = variable.baseType
 		val newRootType = varBaseType.root
@@ -105,39 +103,12 @@ class ExpressionTypeProvider
 		getTypeFor(newRootType, newDimensions, newBaseTypeSizes)
 	}
 
-	def dispatch ExpressionType getTypeFor(IntVectorConstant it) { new IntArrayType(#[], #[values.size]) }
-	def dispatch ExpressionType getTypeFor(RealVectorConstant it) { new RealArrayType(#[], #[values.size]) }
-	def dispatch ExpressionType getTypeFor(IntMatrixConstant it) { new IntArrayType(#[], values.map[x | x.values.size]) }
-	def dispatch ExpressionType getTypeFor(RealMatrixConstant it) { new RealArrayType(#[], values.map[x | x.values.size]) }
-	def dispatch ExpressionType getTypeFor(BaseTypeConstant it) { type.typeFor }
-
-	def dispatch ExpressionType getTypeFor(PrimitiveType it)
-	{
-		switch it
-		{
-			case INT: new IntType(#[])
-			case REAL: new RealType(#[])
-			case BOOL: new BoolType(#[])
-		}
-	}
-
-	def dispatch ExpressionType getTypeFor(BaseType it) { getTypeFor(root, #[], sizes) }
+	def dispatch AbstractType getTypeFor(IntVectorConstant it) { new IntArrayType(#[], #[values.size]) }
+	def dispatch AbstractType getTypeFor(RealVectorConstant it) { new RealArrayType(#[], #[values.size]) }
+	def dispatch AbstractType getTypeFor(IntMatrixConstant it) { new IntArrayType(#[], values.map[x | x.values.size]) }
+	def dispatch AbstractType getTypeFor(RealMatrixConstant it) { new RealArrayType(#[], values.map[x | x.values.size]) }
+	def dispatch AbstractType getTypeFor(BaseTypeConstant it) { type.typeFor }
 	
-	//TODO Test add typeFor(Var)
-	def dispatch ExpressionType getTypeFor(Var it)
-	{
-		getTypeFor(baseType.root, dimensions, baseType.sizes)
-	}
-
-	def ExpressionType getTypeFor(PrimitiveType t, Connectivity[] connectivities, int[] baseTypeSizes)
-	{
-		switch t
-		{	
-			case BOOL: if (baseTypeSizes.empty && connectivities.empty) new BoolType(connectivities) else new UndefinedType
-			case INT: if (baseTypeSizes.empty && connectivities.empty) new IntType(connectivities) else new IntArrayType(connectivities, baseTypeSizes)
-			case REAL: if (baseTypeSizes.empty && connectivities.empty) new RealType(connectivities) else new RealArrayType(connectivities, baseTypeSizes)
-		}
-	}
 
 	private def eval(Expression a, Expression b, String op) 
 	{ 

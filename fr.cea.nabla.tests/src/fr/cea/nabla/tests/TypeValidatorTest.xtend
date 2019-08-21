@@ -71,15 +71,12 @@ class TypeValidatorTest
 			(
 				'''
 				functions {
-					reduce1: (orig, ℝ)→ℝ;
+					f: → ℝ[2];
+					reduce1: (f(), ℝ)→ℝ;
 					reduce2: (ℝ.MinValue, ℝ)→ℕ;	
 				}
 				'''
 			)
-			+
-			'''
-			const ℝ[2] orig = [0.0 , 0.0];
-			'''
 		)
 		Assert.assertNotNull(moduleKo)
 		
@@ -95,15 +92,12 @@ class TypeValidatorTest
 			(
 				'''
 				functions {
-					reduce1: (orig, ℝ)→ℝ;
-					reduce2: (ℝ.MinValue, ℝ)→ℝ;	
+					f: → ℝ;
+					reduce1: (f(), ℝ)→ℝ;
+					reduce2: (ℕ.MinValue, ℝ)→ℕ;	
 				}
 				'''
 			)
-			+
-			'''
-			const ℝ orig = 0.0;
-			'''
 		)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -157,7 +151,6 @@ class TypeValidatorTest
 	@Test
 	def void testCheckReductionArgs() 
 	{
-		Assert.fail("Not yet Correctly Implemented")
 		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
 			(
 				'''
@@ -169,7 +162,9 @@ class TypeValidatorTest
 			+
 			'''
 			ℝ D{cells}; 
-			computeT: ℝ t = reduceMin{c∈cells()}(X_EDGE_LENGTH*Y_EDGE_LENGTH/D{c}) * 0.24;
+			ℝ[2] E{cells}; 
+			computeT: ℝ t = reduceMin{c∈cells()}(D);
+			computeV: ℝ v = reduceMin{c∈cells()}(E{c});
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -180,45 +175,28 @@ class TypeValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.reductionCall, 
 			TypeValidator::REDUCTION_ARGS, 
-			TypeValidator::getReductionArgsMsg(""))		
-
-		val moduleOk = parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomFunctions
+			TypeValidator::getReductionArgsMsg(new RealArrayType(#[],#[2]).label))		
+			
+		val moduleOk = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
 			(
 				'''
 				functions {
-					reduceMin: (ℝ.MaxValue, ℝ)→ℝ;
+					reduceMin: (ℝ.MaxValue, ℝ)→ℝ, (ℝ.MaxValue, ℝ[2])→ℝ;
 				}
 				'''
 			)
 			+
 			'''
 			ℝ D{cells}; 
-			computeT: ℝ t = reduceMin{c∈cells()}(X_EDGE_LENGTH*Y_EDGE_LENGTH/D{c}) * 0.24;
+			ℝ[2] E{cells}; 
+			computeT: ℝ t = reduceMin{c∈cells()}(D{c});
+			computeV: ℝ v = reduceMin{c∈cells()}(E{c});
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}	
 	
-	@Test
-	def void testCheckVarRefType() 
-	{
-		Assert.fail("Not yet Correctly Implemented")
-
-		val moduleKo = parseHelper.parse(TestUtils::testModule
-		)
-		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertError(NablaPackage.eINSTANCE.varRef, 
-			TypeValidator::VAR_REF_TYPE, 
-			TypeValidator::getVarRefTypeMsg())		
-
-		val moduleOk = parseHelper.parse(TestUtils::testModule
-		)
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}	
-
 	@Test
 	def void testCheckContractedIfType() 
 	{
@@ -320,13 +298,12 @@ class TypeValidatorTest
 	@Test
 	def void testCheckPlusType() 
 	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule			+
+		val moduleKo = parseHelper.parse(TestUtils::testModule +
 			'''		
 			ℾ a; 
 			ℕ b;
 			ℝ c = a + b;
 			'''
-		
 		)
 		Assert.assertNotNull(moduleKo)
 				

@@ -123,15 +123,15 @@ class BasicValidator  extends AbstractNablaValidator
 	@Check
 	def checkIteratorNumberAndType(VarRef it)
 	{
+		val baseType = variable.baseType
+		if (indices.size > 0 && indices.size != baseType.sizes.size)
+			error(getIndicesNumberMsg(baseType.sizes.size, indices.size), NablaPackage.Literals::VAR_REF__INDICES, INDICES_NUMBER)
+		
 		if (variable instanceof ConnectivityVar)
 		{
 			val dimensions = (variable as ConnectivityVar).dimensions
-			
-			if (dimensions.size > 0 && spaceIterators.empty)
-				if (indices.size > 0)
-					error(getIndicesNumberMsg(0, indices.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, INDICES_NUMBER)
 
-			if (spaceIterators.size > 0 && dimensions.size != spaceIterators.size)
+			if (spaceIterators.size >  0 && spaceIterators.size != dimensions.size)
 				error(getIteratorNumberMsg(dimensions.size, spaceIterators.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, ITERATOR_NUMBER)
 			else
 			{
@@ -146,6 +146,9 @@ class BasicValidator  extends AbstractNablaValidator
 				}
 			}
 		}
+		else
+			if (!spaceIterators.empty)
+				error(getIteratorNumberMsg(0, spaceIterators.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, ITERATOR_NUMBER)
 	}	
 
 	// ===== Functions (Reductions, Dimension) =====	

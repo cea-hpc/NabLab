@@ -29,7 +29,6 @@ import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.ReductionArg
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
-import fr.cea.nabla.nabla.VarRef
 import fr.cea.nabla.typing.AbstractType
 import fr.cea.nabla.typing.ArrayType
 import fr.cea.nabla.typing.BinaryOperationsTypeProvider
@@ -90,7 +89,7 @@ class TypeValidator extends BasicValidator
 	public static val FUNCTION_ARGS = "Expressions::FunctionArgs"
 	public static val REDUCTION_ON_CONNECTIVITIES_VARIABLE = "Expressions::ReductionOnConnectivitiesVariable"
 	public static val REDUCTION_ARGS = "Expressions::ReductionArgs"
-	public static val VAR_REF_TYPE = "Expressions::VarRefType"
+	//public static val VAR_REF_TYPE = "Expressions::VarRefType"
 	public static val CONTRACTED_IF_CONDITION_TYPE = "Expressions::ContractedIfConditionType"
 	public static val CONTRACTED_IF_ELSE_TYPE = "Expressions::ContractedIfElseType"
 	public static val NOT_EXPRESSION_TYPE = "Expressions::NotExpressionType"
@@ -109,7 +108,7 @@ class TypeValidator extends BasicValidator
 	static def getFunctionArgsMsg(List<String> inTypes) { "Wrong arguments : " + inTypes.join(', ') }
 	static def getReductionOnConnectivitiesVariableMsg() { "No reduction on connectivities variable" }	
 	static def getReductionArgsMsg(String inType) { "Wrong arguments : " + inType }	
-	static def getVarRefTypeMsg() { "Undefined type" }
+	//static def getVarRefTypeMsg() { "Undefined type" }
 	static def getContractedIfConditionTypeMsg(String actualType) { "Expected " + BOOL.label + " type, but was " + actualType }
 	static def getContractedIfElseTypeMsg(String actualType, String expectedType) { "Expected " + expectedType + " type, but was " + actualType }
 	static def getNotExpressionTypeMsg(String actualType) { "Expected " + BOOL.label + " type, but was " + actualType }	
@@ -135,7 +134,9 @@ class TypeValidator extends BasicValidator
 	{
 		val seedType = seed?.typeFor
 		val rType = returnType.root
-		
+		// Seed must be scalar and Seed rootType must be the same as Return rootType
+		// If Return type is Array, the reduction Seed will be used as many times as Array size
+		// Ex (ℕ.MaxValue, ℝ])→ℕ[2]; -> we will use (ℕ.MaxValue, ℕ.MaxValue) as reduction seed
 		if (! (seedType === null || seedType instanceof UndefinedType))
 		{
 			if (seedType instanceof ArrayType)
@@ -160,33 +161,18 @@ class TypeValidator extends BasicValidator
 	{
 		val inT = arg.typeFor
 		
-		//TODO if inT is not instanceof ArrayType -> no error
-		// example : 
-		// 	functions {
-		//		reduceMin: (ℝ.MaxValue, ℝ)→ℝ;
-		//	}
-		//	ℝ D; 
-		// 	computeT: ℝ t = reduceMin{c∈cells()}(X_EDGE_LENGTH*Y_EDGE_LENGTH/D{c}) * 0.24;
-
-		//TODO also no error on :
-//			functions {
-//				reduceMin: (ℝ.MaxValue, ℝ)→ℝ;
-//			}
-//			ℕ D{cells}; 
-//			computeT: ℝ t = reduceMin{c∈cells()}(X_EDGE_LENGTH*Y_EDGE_LENGTH/D{c}) * 0.24;
-				
-		if (inT instanceof ArrayType && !(inT as ArrayType).connectivities.empty)
+		if (inT instanceof DefinedType && !(inT as DefinedType).connectivities.empty)
 			error(getReductionOnConnectivitiesVariableMsg, NablaPackage.Literals::REDUCTION_CALL__REDUCTION, REDUCTION_ON_CONNECTIVITIES_VARIABLE)
 		else if (typeFor.undefined)
 			error(getReductionArgsMsg(inT.label), NablaPackage.Literals::REDUCTION_CALL__REDUCTION, REDUCTION_ARGS)
 	}
 
-	@Check
-	def checkVarRefType(VarRef it)
-	{
-		if (it.typeFor.undefined)
-			error(getVarRefTypeMsg(), NablaPackage.Literals::VAR_REF__VARIABLE, VAR_REF_TYPE)
-	}	
+//	@Check
+//	def checkVarRefType(VarRef it)
+//	{
+//		if (it.typeFor.undefined)
+//			error(getVarRefTypeMsg(), NablaPackage.Literals::VAR_REF__VARIABLE, VAR_REF_TYPE)
+//	}	
 
 	@Check 
 	def checkContractedIfType(ContractedIf it) 

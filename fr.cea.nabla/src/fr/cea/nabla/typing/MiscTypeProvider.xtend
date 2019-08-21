@@ -41,9 +41,9 @@ class MiscTypeProvider
 	{
 		switch t
 		{	
-			case BOOL: if (baseTypeSizes.empty && connectivities.empty) new BoolType(connectivities) else new UndefinedType
-			case INT: if (baseTypeSizes.empty && connectivities.empty) new IntType(connectivities) else new IntArrayType(connectivities, baseTypeSizes)
-			case REAL: if (baseTypeSizes.empty && connectivities.empty) new RealType(connectivities) else new RealArrayType(connectivities, baseTypeSizes)
+			case BOOL: if (baseTypeSizes.empty) new BoolType(connectivities) else new UndefinedType
+			case INT: if (baseTypeSizes.empty) new IntType(connectivities) else new IntArrayType(connectivities, baseTypeSizes)
+			case REAL: if (baseTypeSizes.empty) new RealType(connectivities) else new RealArrayType(connectivities, baseTypeSizes)
 		}
 	}
 }

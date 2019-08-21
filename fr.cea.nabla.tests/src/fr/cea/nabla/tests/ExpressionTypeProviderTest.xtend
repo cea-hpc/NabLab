@@ -28,6 +28,7 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import fr.cea.nabla.typing.UndefinedType
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -194,23 +195,33 @@ class ExpressionTypeProviderTest
 		assertTypesFor(PrimitiveType::REAL, #[], #[], computeX, "x")
 	}
 					
-	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, NablaModule it, String varName)	
+	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, NablaModule module, String varName)	
 	{
-		val variable = getVariableByName(varName)
+		val variable = module.getVariableByName(varName)
 		Assert.assertNotNull(variable)
 		assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, variable)
 	}
 
-	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, Job it, String varName)	
+	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, Job job, String varName, boolean affectationRHSDefined)	
 	{
-		val variable = getVariableByName(varName)
-		val affectation = getVarAffectationByName(varName) 
+		val variable = job.getVariableByName(varName)
+		val affectation = job.getVarAffectationByName(varName) 
 		Assert.assertTrue(variable !== null || affectation !== null)
 		if (variable !== null)
 			assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, variable)
 		if (affectation !== null)
-			assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, affectation)							
+		{
+			if (affectationRHSDefined)
+				assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, affectation)						
+			else
+				Assert.assertTrue(affectation.expression.typeFor instanceof UndefinedType)
+		}	
 	}
+
+	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, Job job, String varName)
+	{
+		assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, job, varName, true)
+	}	
 
 	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, Var variable)	
 	{

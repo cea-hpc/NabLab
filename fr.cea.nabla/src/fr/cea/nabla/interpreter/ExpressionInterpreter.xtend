@@ -29,10 +29,11 @@ import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
 import fr.cea.nabla.typing.DefinedType
-import fr.cea.nabla.typing.ExpressionType
 import fr.cea.nabla.typing.RealArrayType
 import fr.cea.nabla.typing.UndefinedType
 import java.util.Arrays
+import fr.cea.nabla.typing.IntArrayType
+import fr.cea.nabla.typing.AbstractType
 
 class ExpressionInterpreter 
 {
@@ -170,13 +171,15 @@ class ExpressionInterpreter
 //		}
 //	}
 
-	private def getJavaType(ExpressionType t)
+	private def getJavaType(AbstractType t)
 	{
 		switch t
 		{
 			UndefinedType: throw new RuntimeException('Invalid type')
 			RealArrayType case t.sizes==1: typeof(double[])
 			RealArrayType case t.sizes==2: typeof(double[][])
+			IntArrayType case t.sizes==1: typeof(int[])
+			IntArrayType case t.sizes==2: typeof(int[][])
 			DefinedType: t.root.javaType
 		}
 	}

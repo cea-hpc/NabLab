@@ -5,11 +5,7 @@
  * http://www.eclipse.org/legal/epl-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * 	Benoit Lelandais - initial implementation
- * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvain Camier - Nabla generation support
+ * Contributors: see AUTHORS file
  *******************************************************************************/
 #ifndef CARTESIAN_MESH_2D_GENERATOR_H_
 #define CARTESIAN_MESH_2D_GENERATOR_H_

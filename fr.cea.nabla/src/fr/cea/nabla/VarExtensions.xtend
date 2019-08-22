@@ -5,17 +5,14 @@
  * http://www.eclipse.org/legal/epl-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * 	Benoit Lelandais - initial implementation
- * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvain Camier - Nabla generation support
+ * Contributors: see AUTHORS file
  *******************************************************************************/
 package fr.cea.nabla
 
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.ScalarVarDefinition
+import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 
@@ -54,6 +51,15 @@ class VarExtensions
 			ScalarVarDefinition : decl.defaultValue
 			VarGroupDeclaration : null
 		}
+	}
+	
+	def getDimensions(Var it)
+	{
+		switch it 
+		{
+			SimpleVar : #[]
+			ConnectivityVar : dimensions
+		}		
 	}
 	
 	/**

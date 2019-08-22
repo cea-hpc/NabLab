@@ -5,20 +5,18 @@
  * http://www.eclipse.org/legal/epl-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * 	Benoit Lelandais - initial implementation
- * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvain Camier - Nabla generation support
+ * Contributors: see AUTHORS file
  *******************************************************************************/
 package fr.cea.nabla.scoping
 
 import fr.cea.nabla.nabla.ConnectivityCall
+import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
@@ -98,22 +96,32 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		context.eContainer.variablesDefinedBefore(context)
 	}
 
-	private def dispatch IScope variablesDefinedBefore(EObject context, EObject o) 
+	def scope_VarRef_variable(Reduction context, EReference r) 
 	{
-		context.eContainer.variablesDefinedBefore(o.eContainer)
+		IScope::NULLSCOPE
 	}
 
-	private def dispatch IScope variablesDefinedBefore(NablaModule context, EObject o) 
+	def scope_VarRef_variable(Function context, EReference r) 
+	{
+		IScope::NULLSCOPE
+	}
+
+	private def dispatch IScope variablesDefinedBefore(EObject context, Instruction o) 
+	{
+		context.eContainer.variablesDefinedBefore(o)
+	}
+	
+	private def dispatch IScope variablesDefinedBefore(NablaModule context, Instruction o) 
 	{
 		Scopes::scopeFor(context.variables.variablesDeclaredBefore(o))
 	}
 		
-	private def dispatch IScope variablesDefinedBefore(InstructionBlock context, EObject o) 
+	private def dispatch IScope variablesDefinedBefore(InstructionBlock context, Instruction o) 
 	{
-		Scopes::scopeFor(context.instructions.variablesDeclaredBefore(o), context.eContainer.variablesDefinedBefore(o.eContainer))
+		Scopes::scopeFor(context.instructions.variablesDeclaredBefore(o), context.eContainer.variablesDefinedBefore(context))
 	}
 	
-	private def variablesDeclaredBefore(List<? extends EObject> list, EObject o) 
+	private def variablesDeclaredBefore(List<? extends Instruction> list, Instruction o) 
 	{
 		val vars1 = list.subList(0, list.indexOf(o)).filter(VarGroupDeclaration).map[variables].flatten
 		val vars2 = list.subList(0, list.indexOf(o)).filter(ScalarVarDefinition).map[variable]

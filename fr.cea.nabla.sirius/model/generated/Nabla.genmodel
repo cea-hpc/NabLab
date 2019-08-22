@@ -107,6 +107,9 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//VarRef/indices"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//InitializationExpression"/>
+    <genClasses ecoreClass="Nabla.ecore#//IntVectorConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//IntVectorConstant/values"/>
+    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//RealVectorConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//RealVectorConstant/values"/>
     </genClasses>
@@ -221,6 +224,9 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/range"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/singletons"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/arg"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//IntMatrixConstant">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//IntMatrixConstant/values"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//RealMatrixConstant">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//RealMatrixConstant/values"/>

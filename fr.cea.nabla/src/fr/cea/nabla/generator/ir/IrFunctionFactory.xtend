@@ -5,11 +5,7 @@
  * http://www.eclipse.org/legal/epl-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * 	Benoit Lelandais - initial implementation
- * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvain Camier - Nabla generation support
+ * Contributors: see AUTHORS file
  *******************************************************************************/
 package fr.cea.nabla.generator.ir
 
@@ -19,13 +15,12 @@ import fr.cea.nabla.FunctionDeclaration
 import fr.cea.nabla.ReductionDeclaration
 import fr.cea.nabla.Utils
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.Reduction
+import fr.cea.nabla.typing.ArrayType
 import fr.cea.nabla.typing.DefinedType
-import fr.cea.nabla.typing.ExpressionType
-import fr.cea.nabla.typing.RealArrayType
 import fr.cea.nabla.typing.UndefinedType
+import fr.cea.nabla.typing.AbstractType
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -56,14 +51,14 @@ class IrFunctionFactory
 		provider = Utils::getNablaModule(f).name
 	}
 	
-	private def toIrArgType(ExpressionType t)
+	private def toIrArgType(AbstractType t)
 	{
 		switch t
 		{
 			UndefinedType: null
-			RealArrayType: IrFactory::eINSTANCE.createArgType =>
+			ArrayType: IrFactory::eINSTANCE.createArgType =>
 			[
-				root = PrimitiveType::REAL
+				root = t.root.toIrPrimitiveType
 				arrayDimension = t.sizes.size
 			]
 			DefinedType: IrFactory::eINSTANCE.createArgType =>

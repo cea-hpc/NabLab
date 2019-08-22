@@ -5,11 +5,7 @@
  * http://www.eclipse.org/legal/epl-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * 	Benoit Lelandais - initial implementation
- * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvain Camier - Nabla generation support
+ * Contributors: see AUTHORS file
  *******************************************************************************/
 package fr.cea.nabla.validation
 
@@ -19,7 +15,6 @@ import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.BaseType
-import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
@@ -98,29 +93,16 @@ class BasicValidator  extends AbstractNablaValidator
 			error(getTypeDimensionMsg(), NablaPackage.Literals.BASE_TYPE__SIZES, TYPE_DIMENSION)
 	}
 
-	// ===== Constant expressions =====	
-	public static val ONLY_REAL_ARRAY_CONST = "Constant::OnlyRealArrayConst"
-	
-	static def getOnlyRealArrayConstMsg() { "This initialization is only possible on real arrays" }
-	
-	@Check
-	def checkOnlyRealArrayConst(BaseTypeConstant it)
-	{
-		if (type.root != PrimitiveType::REAL || type.sizes.empty)
-			error(getOnlyRealArrayConstMsg(), NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE, ONLY_REAL_ARRAY_CONST)
-	}
-
-
 	// ===== Variables : Var & VarRef =====	
 	public static val UNUSED_VARIABLE = "Variables::UnusedVariable"
+	public static val INDICES_NUMBER = "Variables::IndicesNumber"
 	public static val ITERATOR_NUMBER = "Variables::IteratorNumber"
 	public static val ITERATOR_TYPE = "Variables::IteratorType"
-	public static val INDICES_NUMBER = "Variables::IndicesNumber"
 	
 	static def getUnusedVariableMsg() { "Unused variable" }
+	static def getIndicesNumberMsg(int expectedSize, int actualSize) { "Wrong number of indices: Expected " + expectedSize + ", but was " + actualSize }
 	static def getIteratorNumberMsg(int expectedSize, int actualSize) { "Wrong number of iterators: Expected " + expectedSize + ", but was " + actualSize }
 	static def getIteratorTypeMsg(String expectedTypeName, String actualTypeName) { "Wrong iterator type: Expected " + expectedTypeName + ", but was " + actualTypeName }
-	static def getIndicesNumberMsg(int expectedSize, int actualSize) { "Wrong number of indices: Expected " + expectedSize + ", but was " + actualSize }
 
 	@Check
 	def checkUnusedVariable(Var it)
@@ -141,15 +123,15 @@ class BasicValidator  extends AbstractNablaValidator
 	@Check
 	def checkIteratorNumberAndType(VarRef it)
 	{
+		val baseType = variable.baseType
+		if (indices.size > 0 && indices.size != baseType.sizes.size)
+			error(getIndicesNumberMsg(baseType.sizes.size, indices.size), NablaPackage.Literals::VAR_REF__INDICES, INDICES_NUMBER)
+		
 		if (variable instanceof ConnectivityVar)
 		{
 			val dimensions = (variable as ConnectivityVar).dimensions
-			
-			if (dimensions.size > 0 && spaceIterators.empty)
-				if (indices.size > 0)
-					error(getIndicesNumberMsg(0, indices.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, INDICES_NUMBER)
 
-			if (spaceIterators.size > 0 && dimensions.size != spaceIterators.size)
+			if (spaceIterators.size >  0 && spaceIterators.size != dimensions.size)
 				error(getIteratorNumberMsg(dimensions.size, spaceIterators.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, ITERATOR_NUMBER)
 			else
 			{
@@ -164,6 +146,9 @@ class BasicValidator  extends AbstractNablaValidator
 				}
 			}
 		}
+		else
+			if (!spaceIterators.empty)
+				error(getIteratorNumberMsg(0, spaceIterators.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, ITERATOR_NUMBER)
 	}	
 
 	// ===== Functions (Reductions, Dimension) =====	
@@ -243,12 +228,14 @@ class BasicValidator  extends AbstractNablaValidator
 	{
 		val inTypeVars = new HashSet<DimensionVar>
 		for (inType : inTypes)
-			for (dim : inType.dimensions.filter(DimensionVarReference))
-				inTypeVars += dim.target
+			for (dim : inType.eAllContents.filter(DimensionVarReference).toIterable)
+				if (dim.target !== null && !dim.target.eIsProxy)
+					inTypeVars += dim.target
 
 		val returnTypeVars = new HashSet<DimensionVar>		
-		for (dim : returnType.dimensions.filter(DimensionVarReference))
-			returnTypeVars += dim.target
+		for (dim : returnType.eAllContents.filter(DimensionVarReference).toIterable)
+			if (dim.target !== null && !dim.target.eIsProxy)
+				returnTypeVars += dim.target
 		
 		val x = returnTypeVars.findFirst[x | !inTypeVars.contains(x)]
 		if (x !== null)
@@ -277,12 +264,14 @@ class BasicValidator  extends AbstractNablaValidator
 	{	
 		// return type should reference only known variables
 		val inTypeVars = new HashSet<DimensionVar>
-		for (dim : collectionType.dimensions.filter(DimensionVarReference))
-			inTypeVars += dim.target
+		for (dim : collectionType.eAllContents.filter(DimensionVarReference).toIterable)
+			if (dim.target !== null && !dim.target.eIsProxy)
+				inTypeVars += dim.target
 
 		val returnTypeVars = new HashSet<DimensionVar>		
-		for (dim : returnType.dimensions.filter(DimensionVarReference))
-			returnTypeVars += dim.target
+		for (dim : returnType.eAllContents.filter(DimensionVarReference).toIterable)
+			if (dim.target !== null && !dim.target.eIsProxy)
+				returnTypeVars += dim.target
 		
 		val x = returnTypeVars.findFirst[x | !inTypeVars.contains(x)]
 		if (x !== null)
@@ -315,7 +304,7 @@ class BasicValidator  extends AbstractNablaValidator
 	public static val ONLY_REAL_ARRAY = "BaseType::OnlyRealArray"
 	
 	static def getUnusedConnectivityMsg() { "Unused connectivity" }
-	static def getConnectivityCallIndexMsg(int expectedSize, int actualSize) { "Invalid number of arguments: Expected " + expectedSize + ", but was " + actualSize }
+	static def getConnectivityCallIndexMsg(int expectedSize, int actualSize) { "Wrong number of arguments: Expected " + expectedSize + ", but was " + actualSize }
 	static def getConnectivityCallTypeMsg(String expectedType, String actualType) { "Wrong argument type: Expected " + expectedType + ', but was ' + actualType }
 	static def getNotInInstructionsMsg() { "Local variables can only be scalar (no connectivity arrays)" }
 	static def getDimensionMultipleMsg() { "Dimension must be on connectivities returning a set of items" }
@@ -323,7 +312,7 @@ class BasicValidator  extends AbstractNablaValidator
 	static def getOnlyRealArrayMsg() { "Vector and matrix only available for " +  PrimitiveType::REAL.literal }
 	
 	@Check
-	def checkUnusedConnectivities(Connectivity it)
+	def checkUnusedConnectivity(Connectivity it)
 	{
 		val referenced = nablaModule.eAllContents.filter(ConnectivityCall).exists[x|x.connectivity===it]
 			|| nablaModule.eAllContents.filter(ConnectivityVar).exists[x|x.dimensions.contains(it)]
@@ -395,7 +384,7 @@ class BasicValidator  extends AbstractNablaValidator
 	@Check
 	def checkAffectationVar(Affectation it)
 	{
-		if (varRef.variable.isConst && (varRef.variable.eContainer instanceof NablaModule))
+		if (varRef.variable.isConst)
 			error(getAffectationVarMsg(), NablaPackage.Literals::AFFECTATION__VAR_REF, AFFECTATION_VAR)
 	}
 	
@@ -405,7 +394,6 @@ class BasicValidator  extends AbstractNablaValidator
 		if (isConst && defaultValue!==null && defaultValue.eAllContents.filter(VarRef).exists[x|!x.variable.isConst])
 			error(getScalarVarDefaultValueMsg(), NablaPackage.Literals::SCALAR_VAR_DEFINITION__DEFAULT_VALUE, SCALAR_VAR_DEFAULT_VALUE)
 	}
-	
 
 	// ===== Iterators =====
 	public static val UNUSED_ITERATOR = "Iterators::UnusedIterator"

@@ -195,6 +195,16 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				 NablaFactory.eINSTANCE.createIntVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createContractedIf()));
 
 		newChildDescriptors.add
@@ -286,6 +296,16 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createReductionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter

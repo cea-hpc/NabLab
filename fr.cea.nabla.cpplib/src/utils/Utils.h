@@ -5,11 +5,7 @@
  * http://www.eclipse.org/legal/epl-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * 	Benoit Lelandais - initial implementation
- * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvain Camier - Nabla generation support
+ * Contributors: see AUTHORS file
  *******************************************************************************/
 #ifndef UTILS_UTILS_H_
 #define UTILS_UTILS_H_
@@ -70,7 +66,7 @@ namespace utils
                                         const double& delta_t, const utils::Timer& timer) noexcept;
   // Simulation progress
   const std::string progress_bar(const int& it, const int& max_it, const double& t, const double& max_t,
-                                 const size_t& width) noexcept;
+                                 const size_t& width = 25) noexcept;
 }  // utils
 
 }  // nablalib

@@ -5,11 +5,7 @@
  * http://www.eclipse.org/legal/epl-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * 	Benoit Lelandais - initial implementation
- * 	Marie-Pierre Oudot - initial implementation
- * 	Jean-Sylvain Camier - Nabla generation support
+ * Contributors: see AUTHORS file
  *******************************************************************************/
 package fr.cea.nabla.generator.ir
 
@@ -18,12 +14,11 @@ import com.google.inject.Singleton
 import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.typing.ArrayType
 import fr.cea.nabla.typing.DefinedType
-import fr.cea.nabla.typing.ExpressionType
-import fr.cea.nabla.typing.RealArrayType
 import fr.cea.nabla.typing.UndefinedType
+import fr.cea.nabla.typing.AbstractType
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -54,14 +49,14 @@ class ReductionCallExtensions
 	}
 
 	// no connectivies on the ExpressionType for the Reduction
-	private def toIrBaseType(ExpressionType t)
+	private def toIrBaseType(AbstractType t)
 	{
 		switch t
 		{
 			UndefinedType: null
-			RealArrayType: IrFactory::eINSTANCE.createBaseType =>
+			ArrayType: IrFactory::eINSTANCE.createBaseType =>
 			[
-				root = PrimitiveType::REAL
+				root = t.root.toIrPrimitiveType
 				sizes.addAll(t.sizes)
 			]
 			DefinedType: IrFactory::eINSTANCE.createBaseType =>

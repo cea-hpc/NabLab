@@ -147,7 +147,7 @@ class TypeValidator extends BasicValidator
 	}
 
 	@Check
-	def checkFunctionArgs(FunctionCall it)
+	def checkFunctionCallArgs(FunctionCall it)
 	{
 		if (typeFor.undefined)
 		{

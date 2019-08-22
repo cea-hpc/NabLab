@@ -25,6 +25,100 @@ class TypeValidatorTest
 	@Inject extension NablaModuleExtensions
 	@Inject extension MiscTypeProvider
 
+	// ===== Instructions =====	
+
+	@Test
+	def void testCheckScalarVarDefinitionType() 
+	{
+		val moduleKo = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℝ d = ℝ[2](0.);
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+		
+		moduleKo.assertError(NablaPackage.eINSTANCE.scalarVarDefinition, 
+			TypeValidator::SCALAR_VAR_DEFAULT_VALUE_TYPE, 
+			TypeValidator::getScalarDefinitionTypeMsg(new RealArrayType(#[],#[2]).label,
+				PrimitiveType::REAL.literal
+			))		
+
+		val moduleOk = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℝ[2] d = ℝ[2](0.);
+			'''
+			
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void testChecAffectationType() 
+	{
+		val moduleKo = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℕ X{cells}; 
+			ComputeX: ∀ j∈cells(), 	{
+					ℝ e = 1.0;
+					X{j} = e * 4; 
+			}
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+		
+		moduleKo.assertError(NablaPackage.eINSTANCE.affectation, 
+			TypeValidator::AFFECTATION_TYPE, 
+			TypeValidator::getAffectationTypeMsg(PrimitiveType::REAL.literal,
+				PrimitiveType::INT.literal
+			))		
+
+		val moduleOk = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℝ X{cells}; 
+			ComputeX: ∀ j∈cells(), 	{
+					ℝ e = 1.0;
+					X{j} = e * 4; 
+			}
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void testChecIfType() 
+	{
+		val moduleKo = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℕ cond;
+			ℕ a;
+			jobIf: if (cond) { a = a + 1 ; } else { a = a -1 ; }
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+		
+		moduleKo.assertError(NablaPackage.eINSTANCE.^if, 
+			TypeValidator::IF_CONDITION_BOOL, 
+			TypeValidator::getIfConditionBoolMsg(PrimitiveType::INT.literal))		
+
+		val moduleOk = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℾ cond;
+			ℕ a;
+			jobIf: if (cond) { a = a + 1 ; } else { a = a -1 ; }
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+	
 	// ===== Expressions =====	
 	
 	@Test
@@ -388,5 +482,136 @@ class TypeValidatorTest
 		)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
-	}			
+	}
+	
+	@Test
+	def void testCheckEqualityType() 
+	{
+		val moduleKo = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℝ a; 
+			ℝ[2] b;
+			ℾ c = a == b;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+				
+		moduleKo.assertError(NablaPackage.eINSTANCE.equality, 
+			TypeValidator::EQUALITY_TYPE, 
+			TypeValidator::getEqualityTypeMsg("==", 
+				PrimitiveType::REAL.literal, 
+				new RealArrayType(#[],#[2]).label
+			))		
+
+		val moduleOk = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℝ a; 
+			ℝ b;
+			ℾ c = a == b;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+	
+	@Test
+	def void testCheckModuloType() 
+	{
+		val moduleKo = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℝ a;
+			ℝ[2] b; 
+			ℕ c = a % b;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+				
+		moduleKo.assertError(NablaPackage.eINSTANCE.modulo, 
+			TypeValidator::MODULO_TYPE, 
+			TypeValidator::getModuloTypeMsg(PrimitiveType::REAL.literal))		
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.modulo, 
+			TypeValidator::MODULO_TYPE, 
+			TypeValidator::getModuloTypeMsg(new RealArrayType(#[],#[2]).label))		
+			
+		val moduleOk = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℕ a;
+			ℕ b; 
+			ℕ c = a % b;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+	
+	@Test
+	def void testCheckAndType() 
+	{
+		val moduleKo = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℕ a;
+			ℝ b; 
+			ℾ c = a && b;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+				
+		moduleKo.assertError(NablaPackage.eINSTANCE.and, 
+			TypeValidator::AND_TYPE, 
+			TypeValidator::getAndTypeMsg(PrimitiveType::REAL.literal))		
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.and, 
+			TypeValidator::AND_TYPE, 
+			TypeValidator::getAndTypeMsg(PrimitiveType::INT.literal))		
+			
+		val moduleOk = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℾ a;
+			ℾ b; 
+			ℾ c = a && b;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+	
+		@Test
+	def void testCheckOrType() 
+	{
+		val moduleKo = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℕ a;
+			ℝ b; 
+			ℾ c = a || b;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+				
+		moduleKo.assertError(NablaPackage.eINSTANCE.or, 
+			TypeValidator::OR_TYPE, 
+			TypeValidator::getOrTypeMsg(PrimitiveType::REAL.literal))		
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.or, 
+			TypeValidator::OR_TYPE, 
+			TypeValidator::getOrTypeMsg(PrimitiveType::INT.literal))		
+			
+		val moduleOk = parseHelper.parse(TestUtils::testModule
+			+
+			'''
+			ℾ a;
+			ℾ b; 
+			ℾ c = a || b;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
 }

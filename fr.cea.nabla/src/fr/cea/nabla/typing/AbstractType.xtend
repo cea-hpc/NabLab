@@ -32,27 +32,30 @@ abstract class DefinedType extends AbstractType
 {
 	Connectivity[] connectivities
 	abstract def PrimitiveType getRoot();
+
+	override getLabel() 
+	{ 
+		if (connectivities.empty) root.literal
+		else root.literal + '{' + connectivities.map[name].join(',') + '}'
+	}
 }
 
 @Data
 class BoolType extends DefinedType
 {
 	override getRoot() { PrimitiveType::BOOL }
-	override getLabel() { root.literal }	
 }
 
 @Data
 class IntType extends DefinedType
 {
 	override getRoot() { PrimitiveType::INT }
-	override getLabel() { root.literal }
 }
 
 @Data
 class RealType extends DefinedType
 {
 	override getRoot() { PrimitiveType::REAL }
-	override getLabel() { root.literal }
 }
 
 @Data
@@ -62,7 +65,7 @@ abstract class ArrayType extends DefinedType
 	
 	override getLabel() 
 	{ 
-		val l = getRoot.literal + sizes.map[utfExponent].join('\u02E3')
+		val l = root.literal + sizes.map[utfExponent].join('\u02E3')
 		if (connectivities.empty) l
 		else l + '{' + connectivities.map[name].join(',') + '}'
 	}

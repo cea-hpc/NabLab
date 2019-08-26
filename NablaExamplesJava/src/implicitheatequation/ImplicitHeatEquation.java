@@ -9,6 +9,8 @@ import fr.cea.nabla.javalib.Utils;
 import fr.cea.nabla.javalib.types.*;
 import fr.cea.nabla.javalib.mesh.*;
 
+import org.apache.commons.math3.linear.*;
+
 @SuppressWarnings("all")
 public final class ImplicitHeatEquation
 {
@@ -36,19 +38,21 @@ public final class ImplicitHeatEquation
 
 	// Global Variables
 	private double t, deltat, t_nplus1;
-
-	// Array Variables
+	
+	// Connectivity Variables
 	private double[] X[];
 	private double[] Xc[];
 	private double xc[];
 	private double yc[];
-	private double u[];
 	private double V[];
 	private double D[];
 	private double faceLength[];
 	private double faceConductivity[];
-	private double alpha[][];
-	private double u_nplus1[];
+	
+	// Linear Algebra Variables
+	private Vector u;
+	private Matrix alpha;
+	private Vector u_nplus1;
 	
 	public ImplicitHeatEquation(Options aOptions, NumericMesh2D aNumericMesh2D)
 	{
@@ -73,13 +77,13 @@ public final class ImplicitHeatEquation
 		Xc = new double[nbCells][2];
 		xc = new double[nbCells];
 		yc = new double[nbCells];
-		u = new double[nbCells];
+		u = Vector.createSparseVector(nbCells);
 		V = new double[nbCells];
 		D = new double[nbCells];
 		faceLength = new double[nbFaces];
 		faceConductivity = new double[nbFaces];
-		alpha = new double[nbCells][nbCells];
-		u_nplus1 = new double[nbCells];
+		alpha = Matrix.createSparseMatrix(nbCells, nbCells);
+		u_nplus1 = Vector.createSparseVector(nbCells);
 
 		// Copy node coordinates
 		ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
@@ -127,7 +131,7 @@ public final class ImplicitHeatEquation
 	{
 		HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 		HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-		cellVariables.put("Temperature", u);
+		cellVariables.put("Temperature", u.toArray());
 		writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
 	}
 
@@ -141,17 +145,17 @@ public final class ImplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			int cId = cCells;
-			double[] reduceSum9574393 = {0.0,0.0};
+			double[] reduceSum_1663357000 = {0.0,0.0};
 			{
 				int[] nodesOfCellC = mesh.getNodesOfCell(cId);
 				for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.length; pNodesOfCellC++)
 				{
 					int pId = nodesOfCellC[pNodesOfCellC];
 					int pNodes = pId;
-					reduceSum9574393 = OperatorExtensions.operator_plus(reduceSum9574393, (X[pNodes]));
+					reduceSum_1663357000 = OperatorExtensions.operator_plus(reduceSum_1663357000, (X[pNodes]));
 				}
 			}
-			Xc[cCells] = OperatorExtensions.operator_multiply(0.25, reduceSum9574393);
+			Xc[cCells] = OperatorExtensions.operator_multiply(0.25, reduceSum_1663357000);
 		});
 	}		
 	
@@ -178,7 +182,7 @@ public final class ImplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double reduceSum_236982947 = 0.0;
+			double reduceSum_1596822968 = 0.0;
 			{
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int pNodesOfCellJ=0; pNodesOfCellJ<nodesOfCellJ.length; pNodesOfCellJ++)
@@ -187,10 +191,10 @@ public final class ImplicitHeatEquation
 					int pPlus1Id = nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					int pNodes = pId;
 					int pPlus1Nodes = pPlus1Id;
-					reduceSum_236982947 = reduceSum_236982947 + (MathFunctions.det(X[pNodes], X[pPlus1Nodes]));
+					reduceSum_1596822968 = reduceSum_1596822968 + (MathFunctions.det(X[pNodes], X[pPlus1Nodes]));
 				}
 			}
-			V[jCells] = 0.5 * reduceSum_236982947;
+			V[jCells] = 0.5 * reduceSum_1596822968;
 		});
 	}		
 	
@@ -204,7 +208,7 @@ public final class ImplicitHeatEquation
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			int fId = fFaces;
-			double reduceSum505189429 = 0.0;
+			double reduceSum1345975896 = 0.0;
 			{
 				int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
 				for (int pNodesOfFaceF=0; pNodesOfFaceF<nodesOfFaceF.length; pNodesOfFaceF++)
@@ -213,10 +217,10 @@ public final class ImplicitHeatEquation
 					int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
 					int pNodes = pId;
 					int pPlus1Nodes = pPlus1Id;
-					reduceSum505189429 = reduceSum505189429 + (MathFunctions.norm(OperatorExtensions.operator_minus(X[pNodes], X[pPlus1Nodes])));
+					reduceSum1345975896 = reduceSum1345975896 + (MathFunctions.norm(OperatorExtensions.operator_minus(X[pNodes], X[pPlus1Nodes])));
 				}
 			}
-			faceLength[fFaces] = 0.5 * reduceSum505189429;
+			faceLength[fFaces] = 0.5 * reduceSum1345975896;
 		});
 	}		
 	
@@ -244,9 +248,9 @@ public final class ImplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			if (MathFunctions.norm(OperatorExtensions.operator_minus(Xc[cCells], options.vectOne)) < 0.5) 
-				u[cCells] = options.u0;
+				u.set(cCells, options.u0);
 			else 
-				u[cCells] = 0.0;
+				u.set(cCells, 0.0);
 		});
 	}		
 	
@@ -257,12 +261,12 @@ public final class ImplicitHeatEquation
 	 */
 	private void computeDeltaTn() 
 	{
-		double reduceMin_1282422837 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+		double reduceMin1793844182 = IntStream.range(0, nbCells).boxed().parallel().reduce(
 			Double.MAX_VALUE, 
 			(r, cCells) -> MathFunctions.reduceMin(r, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]),
 			(r1, r2) -> MathFunctions.reduceMin(r1, r2)
 		);
-		deltat = reduceMin_1282422837 * 0.24;
+		deltat = reduceMin1793844182 * 0.24;
 	}		
 	
 	/**
@@ -275,27 +279,27 @@ public final class ImplicitHeatEquation
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			int fId = fFaces;
-			double reduceProd_1688659495 = 1.0;
+			double reduceProd933376408 = 1.0;
 			{
 				int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				for (int c1CellsOfFaceF=0; c1CellsOfFaceF<cellsOfFaceF.length; c1CellsOfFaceF++)
 				{
 					int c1Id = cellsOfFaceF[c1CellsOfFaceF];
 					int c1Cells = c1Id;
-					reduceProd_1688659495 = reduceProd_1688659495 * (D[c1Cells]);
+					reduceProd933376408 = reduceProd933376408 * (D[c1Cells]);
 				}
 			}
-			double reduceSum1410943609 = 0.0;
+			double reduceSum_261987784 = 0.0;
 			{
 				int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				for (int c2CellsOfFaceF=0; c2CellsOfFaceF<cellsOfFaceF.length; c2CellsOfFaceF++)
 				{
 					int c2Id = cellsOfFaceF[c2CellsOfFaceF];
 					int c2Cells = c2Id;
-					reduceSum1410943609 = reduceSum1410943609 + (D[c2Cells]);
+					reduceSum_261987784 = reduceSum_261987784 + (D[c2Cells]);
 				}
 			}
-			faceConductivity[fFaces] = 2.0 * reduceProd_1688659495 / reduceSum1410943609;
+			faceConductivity[fFaces] = 2.0 * reduceProd933376408 / reduceSum_261987784;
 		});
 	}		
 	
@@ -319,11 +323,11 @@ public final class ImplicitHeatEquation
 					int fId = mesh.getCommonFace(cId, dId);
 					int fFaces = fId;
 					double alphaExtraDiag = -deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions.norm(OperatorExtensions.operator_minus(Xc[cCells], Xc[dCells]));
-					alpha[cCells][dCells] = alphaExtraDiag;
+					alpha.set(cCells, dCells, alphaExtraDiag);
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
 			}
-			alpha[cCells][cCells] = 1 - alphaDiag;
+			alpha.set(cCells, cCells, 1 - alphaDiag);
 		});
 	}		
 	
@@ -354,7 +358,7 @@ public final class ImplicitHeatEquation
 	 */
 	private void copy_u_nplus1_to_u() 
 	{
-		double[] tmpSwitch = u;
+		Vector tmpSwitch = u;
 		u = u_nplus1;
 		u_nplus1 = tmpSwitch;
 	}		

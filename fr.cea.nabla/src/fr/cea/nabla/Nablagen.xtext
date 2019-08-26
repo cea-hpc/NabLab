@@ -37,7 +37,7 @@ WorkflowComponent: Nabla2IrComponent | ChildComponent;
 
 ChildComponent: Ir2CodeComponent | Ir2IrComponent;
 					
-Ir2IrComponent: TagPersistentVariablesComponent | TagSparseMatricesComponent | ReplaceUtfComponent | 
+Ir2IrComponent: TagPersistentVariablesComponent | ReplaceUtfComponent | 
 				ReplaceInternalReductionsComponent | OptimizeConnectivitiesComponent |
 				FillHLTsComponent;
 					
@@ -55,14 +55,6 @@ TagPersistentVariablesComponent:
 		(dumpIr?='dumpIr' ';')?
 	'}';
 	
-TagSparseMatricesComponent:
-	'TagSparseMatrices' name=ID 'follows' parent=[WorkflowComponent] 
-	'{' 
-		'sparseMatrices' '=' vars+=[nabla::ConnectivityVar] (',' vars+=[nabla::ConnectivityVar])* ';'
-		(disabled?='disabled' ';')?
-		(dumpIr?='dumpIr' ';')?
-	'}';
-
 PersistentVar:
 	varRef=[nabla::ConnectivityVar]
 	'as' varName=STRING;

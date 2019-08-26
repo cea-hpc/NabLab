@@ -665,31 +665,6 @@ class BasicValidatorTest
 		moduleOk.assertNoErrors
 	}
 	
-	@Test
-	def void testCheckOnlyRealArray() 
-	{		
-		val moduleKo = parseHelper.parse(TestUtils::testModule
-			+
-			'''
-			ℕ[2] U{cells, cells};
-			'''
-		)
-		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar, 
-			BasicValidator::ONLY_REAL_ARRAY, 
-			BasicValidator::getOnlyRealArrayMsg)		
-
-		val moduleOk =  parseHelper.parse(TestUtils::testModule
-			+
-			'''
-			ℝ[2] U{cells, cells};
-			'''
-		)
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-	
 	// ===== Instructions =====
 
 	@Test

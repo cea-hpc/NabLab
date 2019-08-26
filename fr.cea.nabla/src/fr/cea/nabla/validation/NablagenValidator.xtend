@@ -3,12 +3,6 @@
  */
 package fr.cea.nabla.validation
 
-import com.google.inject.Inject
-import fr.cea.nabla.VarExtensions
-import fr.cea.nabla.nablagen.NablagenPackage
-import fr.cea.nabla.nablagen.TagSparseMatricesComponent
-import org.eclipse.xtext.validation.Check
-
 /**
  * This class contains custom validation rules. 
  *
@@ -16,20 +10,4 @@ import org.eclipse.xtext.validation.Check
  */
 class NablagenValidator extends AbstractNablagenValidator 
 {
-	@Inject extension VarExtensions
-		
-	// ===== Sparse Matrices =====	
-	public static val NOT_A_MATRIX = "NotAMatrix"
-	
-	static def getNotAMatrixMsg() { "This variable is not a matrix" }
-	
-	@Check
-	def checkOnlyRealArrayConst(TagSparseMatricesComponent it)
-	{
-		for (i : 0..<vars.size)
-		{
-			if (!vars.get(i).connectivityMatrix)
-				error(getNotAMatrixMsg(), NablagenPackage.Literals.TAG_SPARSE_MATRICES_COMPONENT__VARS, i, NOT_A_MATRIX)
-		}
-	}
 }

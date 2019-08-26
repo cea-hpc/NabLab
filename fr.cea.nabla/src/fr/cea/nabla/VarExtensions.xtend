@@ -61,14 +61,4 @@ class VarExtensions
 			ConnectivityVar : dimensions
 		}		
 	}
-	
-	/**
-	 * Returns true if the variable has at least 2 connectivities which takes no argument, false otherwise.
-	 * For example, X{cells, nodesOfCell} returns false but X{cells, cells} or X{cells, nodes} returns true.
-	 */
-	def isConnectivityMatrix(ConnectivityVar it)
-	{
-		val fullConnectivities = dimensions.filter[x | x.inTypes.empty]
-		return (fullConnectivities.size > 1)
-	}
 }

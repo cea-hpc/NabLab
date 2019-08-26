@@ -40,8 +40,8 @@ class Ir2Java extends CodeGenerator
 		import fr.cea.nabla.javalib.types.*;
 		import fr.cea.nabla.javalib.mesh.*;
 
-		«val matrices = variables.filter(ConnectivityVariable).filter[connectivityMatrix] /* no groupBy, only real matrices */»
-		«IF !matrices.empty»
+		«val linearAlgebraVars = variables.filter(ConnectivityVariable).filter[linearAlgebra]»
+		«IF !linearAlgebraVars.empty»
 		import org.apache.commons.math3.linear.*;
 		
 		«ENDIF»
@@ -68,7 +68,7 @@ class Ir2Java extends CodeGenerator
 			«FOR type : globalsByType.keySet»
 			private «type» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 			«ENDFOR»
-			«val connectivityVars = variables.filter(ConnectivityVariable).filter[!connectivityMatrix].groupBy[type]»
+			«val connectivityVars = variables.filter(ConnectivityVariable).filter[!linearAlgebra].groupBy[type]»
 			«IF !connectivityVars.empty»
 			
 			// Connectivity Variables
@@ -76,10 +76,12 @@ class Ir2Java extends CodeGenerator
 			private «type.javaType» «FOR v : connectivityVars.get(type) SEPARATOR ', '»«v.name»«FOR i : 1..v.dimensions.length»[]«ENDFOR»«ENDFOR»;
 			«ENDFOR»
 			«ENDIF»
-			«IF !matrices.empty»
+			«IF !linearAlgebraVars.empty»
 			
-			// Matrices
-			private RealMatrix «FOR m : matrices SEPARATOR ', '»«m.name»«ENDFOR»;
+			// Linear Algebra Variables
+			«FOR m : linearAlgebraVars»
+			private «m.javaType» «m.name»;
+			«ENDFOR»
 			«ENDIF»
 			
 			public «name»(Options aOptions, NumericMesh2D aNumericMesh2D)
@@ -99,12 +101,10 @@ class Ir2Java extends CodeGenerator
 				// Arrays allocation
 				«FOR a : variables.filter[!const]»
 					«IF a instanceof ConnectivityVariable»
-						«IF a.connectivityMatrix»
-							«IF a.sparseMatrix»
-								«a.name» = new OpenMapRealMatrix(«a.dimensions.get(0).nbElems», «a.dimensions.get(1).nbElems»);
-							«ELSE»
-								«a.name» = new Array2DRowRealMatrix(«a.dimensions.get(0).nbElems», «a.dimensions.get(1).nbElems»);
-							«ENDIF»
+						«IF a.linearAlgebra»
+							«a.name» = «a.linearAlgebraDefinition»;
+						«ELSE»
+							«a.name» = new «a.type.root.javaType»«FOR d : a.dimensions»[«d.nbElems»]«ENDFOR»«FOR d : a.type.sizes»[«d»]«ENDFOR»;
 						«ENDIF»
 					«ELSEIF a instanceof SimpleVariable && !a.type.scalar»
 						«a.name» = new «a.type.root.javaType»«FOR d : a.type.sizes»[«d»]«ENDFOR»;
@@ -161,7 +161,7 @@ class Ir2Java extends CodeGenerator
 				HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 				HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
 				«FOR v : variablesToPersist»
-				«v.dimensions.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»);
+				«v.dimensions.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 				«ENDFOR»
 				writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
 			}
@@ -182,4 +182,14 @@ class Ir2Java extends CodeGenerator
 	}
 	
 	private def getPersistentVariables(IrModule it) { variables.filter(ConnectivityVariable).filter[x|x.persist && x.dimensions.size==1] }
+	
+	private def getLinearAlgebraDefinition(ConnectivityVariable v)
+	{
+		switch v.dimensions.size
+		{
+			case 1: 'Vector.createSparseVector(' + v.dimensions.get(0).nbElems + ')'
+			case 2: 'Matrix.createSparseMatrix(' + v.dimensions.map[nbElems].join(', ') + ')'
+			default: throw new RuntimeException("Not implemented exception")
+		}
+	}
 }

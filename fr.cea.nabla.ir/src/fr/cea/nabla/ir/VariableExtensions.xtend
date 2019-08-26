@@ -9,15 +9,18 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.VarRef
 import fr.cea.nabla.ir.ir.Variable
 import java.util.HashSet
 import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
+import static extension fr.cea.nabla.ir.Utils.*
 
 class VariableExtensions 
 {
@@ -49,20 +52,30 @@ class VariableExtensions
 		eContainer instanceof IrModule
 	}
 
-	/**
-	 * Returns true if the variable has at least 2 connectivities which takes no argument, false otherwise.
-	 * For example, X{cells, nodesOfCell} returns false but X{cells, cells} or X{cells, nodes} returns true.
-	 */
-	static def isConnectivityMatrix(ConnectivityVariable it)
+	static def getCodeName(Variable it)
 	{
-		val fullConnectivities = dimensions.filter[x | x.inTypes.empty]
-		return (fullConnectivities.size > 1)
+		if (scalarConst) 'options.' + name
+		else name
+	}
+	
+	static def isLinearAlgebra(Variable it)
+	{
+		val references = irModule.eAllContents.filter(VarRef).filter[x | x.variable == it]
+		references.exists[x | x.eContainer.containsLinearAlgebra]
 	}
 
-	private static def IrModule getIrModule(EObject it)
+	private static dispatch def boolean containsLinearAlgebra(EObject it)
 	{
-		if (eContainer === null) null
-		else if (eContainer instanceof IrModule) eContainer as IrModule
-		else eContainer.irModule
+		false
+	}
+
+	private static dispatch def boolean containsLinearAlgebra(Affectation it)
+	{
+		right.containsLinearAlgebra
+	}
+	
+	private static dispatch def boolean containsLinearAlgebra(FunctionCall it)
+	{
+		function.provider == 'LinearAlgebra'
 	}
 }

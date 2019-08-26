@@ -26,7 +26,6 @@ import fr.cea.nabla.nabla.FunctionArg
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
-import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionArg
@@ -301,7 +300,6 @@ class BasicValidator  extends AbstractNablaValidator
 	public static val NOT_IN_INSTRUCTIONS = "Connectivities::NotInInstructions"
 	public static val DIMENSION_MULTIPLE = "Connectivities::DimensionMultiple"
 	public static val DIMENSION_ARG = "Connectivities::DimensionArg"
-	public static val ONLY_REAL_ARRAY = "BaseType::OnlyRealArray"
 	
 	static def getUnusedConnectivityMsg() { "Unused connectivity" }
 	static def getConnectivityCallIndexMsg(int expectedSize, int actualSize) { "Wrong number of arguments: Expected " + expectedSize + ", but was " + actualSize }
@@ -309,7 +307,6 @@ class BasicValidator  extends AbstractNablaValidator
 	static def getNotInInstructionsMsg() { "Local variables can only be scalar (no connectivity arrays)" }
 	static def getDimensionMultipleMsg() { "Dimension must be on connectivities returning a set of items" }
 	static def getDimensionArgMsg() { "Dimension 1 must be on connectivities taking no argument" }
-	static def getOnlyRealArrayMsg() { "Vector and matrix only available for " +  PrimitiveType::REAL.literal }
 	
 	@Check
 	def checkUnusedConnectivity(Connectivity it)
@@ -363,14 +360,6 @@ class BasicValidator  extends AbstractNablaValidator
 //			else if (dimensions.get(i).inTypes.head != dimensions.get(i-1).returnType.type)
 //				error('Dimension ' + (i+1) + ' argument must have same type as dimension ' + i + ' return type', NablaPackage.Literals::ARRAY_VAR__DIMENSIONS, i)
 //		}
-	}
-
-	@Check
-	def checkOnlyRealArray(ConnectivityVar it)
-	{
-		val bt = baseType
-		if ((bt.root != PrimitiveType::REAL || !bt.sizes.empty) && connectivityMatrix)
-			error(getOnlyRealArrayMsg(), NablaPackage.Literals::VAR__NAME, ONLY_REAL_ARRAY)
 	}
 
 

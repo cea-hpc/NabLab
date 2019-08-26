@@ -12,6 +12,7 @@ package fr.cea.nabla.ir.generator.java
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.SimpleVariable
 
+import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 
 class VariableExtensions 
@@ -23,8 +24,20 @@ class VariableExtensions
 	
 	static def dispatch getJavaType(ConnectivityVariable it)
 	{
-		var t = getType.javaType 
-		for (d : dimensions) t += '[]'
-		return t
+		if (linearAlgebra)
+		{
+			switch dimensions.size
+			{
+				case 1: return 'Vector'
+				case 2: return 'Matrix'
+				default: throw new RuntimeException("Not implemented exception")
+			}
+		}
+		else
+		{
+			var t = getType.javaType 
+			for (d : dimensions) t += '[]'
+			return t	
+		}
 	}
 }

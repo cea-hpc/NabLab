@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.generator.java
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Constant
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.FunctionCall
@@ -21,10 +20,8 @@ import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.RealMatrixConstant
 import fr.cea.nabla.ir.ir.RealVectorConstant
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
-import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.BaseTypeExtensions.*
@@ -87,25 +84,8 @@ class ExpressionContentProvider
 	'''«function.provider»«Utils::FunctionAndReductionproviderSuffix».«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
 	static def dispatch CharSequence getContent(VarRef it)
-	'''«variable.codeName»«iteratorsContent»«FOR d:indices»[«d»]«ENDFOR»'''
+	'''«variable.codeName»«FOR r : iterators BEFORE '[' SEPARATOR '][' AFTER ']'»«r.indexName»«ENDFOR»«FOR d:indices»[«d»]«ENDFOR»'''
 
-	private static def getCodeName(Variable it)
-	{
-		if (scalarConst) 'options.' + name
-		else name
-	}
-	
-	private static def getIteratorsContent(VarRef it) 
-	{ 
-		if (iterators.empty || variable instanceof SimpleVariable) return ''
-		val array = variable as ConnectivityVariable
-		if (array.dimensions.size < iterators.size) return ''
-		var content = ''
-		for (r : iterators)
-			content += '[' + r.indexName + ']'					
-		return content
-	}
-	
 	private static def String initConstant(int[] dimSizes, String value)
 	{
 		if (dimSizes.empty) value

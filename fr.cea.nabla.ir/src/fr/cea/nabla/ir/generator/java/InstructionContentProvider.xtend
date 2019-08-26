@@ -25,6 +25,7 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.VarDefinition
 import fr.cea.nabla.ir.ir.VarRefIteratorRef
 
+import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
@@ -87,7 +88,13 @@ class InstructionContentProvider
 		}'''
 	
 	static def dispatch CharSequence getContent(Affectation it)
-	'''«left.content» «operator» «right.content»;'''
+	'''
+		«IF left.variable.linearAlgebra && !(left.iterators.empty && left.indices.empty)»
+			«left.variable.codeName».set(«FOR r : left.iterators SEPARATOR ', ' AFTER ', '»«r.indexName»«ENDFOR»«FOR d : left.indices SEPARATOR ', ' AFTER ', '»«d»«ENDFOR»«right.content»);
+		«ELSE»
+			«left.content» = «right.content»;
+		«ENDIF»
+	'''
 
 	static def dispatch CharSequence getContent(Loop it) 
 	{

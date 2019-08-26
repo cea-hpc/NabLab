@@ -32,7 +32,6 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityVariableImpl#getDimensions <em>Dimensions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityVariableImpl#getDefaultValue <em>Default Value</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityVariableImpl#isPersist <em>Persist</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityVariableImpl#isSparseMatrix <em>Sparse Matrix</em>}</li>
  * </ul>
  *
  * @generated
@@ -77,26 +76,6 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	 * @ordered
 	 */
 	protected boolean persist = PERSIST_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #isSparseMatrix() <em>Sparse Matrix</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isSparseMatrix()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean SPARSE_MATRIX_EDEFAULT = false;
-
-	/**
-	 * The cached value of the '{@link #isSparseMatrix() <em>Sparse Matrix</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isSparseMatrix()
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean sparseMatrix = SPARSE_MATRIX_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -225,27 +204,6 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isSparseMatrix() {
-		return sparseMatrix;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setSparseMatrix(boolean newSparseMatrix) {
-		boolean oldSparseMatrix = sparseMatrix;
-		sparseMatrix = newSparseMatrix;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.CONNECTIVITY_VARIABLE__SPARSE_MATRIX, oldSparseMatrix, sparseMatrix));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -270,8 +228,6 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 				return basicGetDefaultValue();
 			case IrPackage.CONNECTIVITY_VARIABLE__PERSIST:
 				return isPersist();
-			case IrPackage.CONNECTIVITY_VARIABLE__SPARSE_MATRIX:
-				return isSparseMatrix();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -295,9 +251,6 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 			case IrPackage.CONNECTIVITY_VARIABLE__PERSIST:
 				setPersist((Boolean)newValue);
 				return;
-			case IrPackage.CONNECTIVITY_VARIABLE__SPARSE_MATRIX:
-				setSparseMatrix((Boolean)newValue);
-				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -319,9 +272,6 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 			case IrPackage.CONNECTIVITY_VARIABLE__PERSIST:
 				setPersist(PERSIST_EDEFAULT);
 				return;
-			case IrPackage.CONNECTIVITY_VARIABLE__SPARSE_MATRIX:
-				setSparseMatrix(SPARSE_MATRIX_EDEFAULT);
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -340,8 +290,6 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 				return defaultValue != null;
 			case IrPackage.CONNECTIVITY_VARIABLE__PERSIST:
 				return persist != PERSIST_EDEFAULT;
-			case IrPackage.CONNECTIVITY_VARIABLE__SPARSE_MATRIX:
-				return sparseMatrix != SPARSE_MATRIX_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -358,8 +306,6 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (persist: ");
 		result.append(persist);
-		result.append(", sparseMatrix: ");
-		result.append(sparseMatrix);
 		result.append(')');
 		return result.toString();
 	}

@@ -39,12 +39,13 @@ public final class Test
 	// Connectivity Variables
 	private double[] X[];
 	private double v[];
-	private double u[];
-	private double r[];
 	private double Cjr[][];
+	private double ff[][];
 	
-	// Matrices
-	private RealMatrix M, ff;
+	// Linear Algebra Variables
+	private Vector u;
+	private Vector r;
+	private Matrix M;
 	
 	public Test(Options aOptions, NumericMesh2D aNumericMesh2D)
 	{
@@ -58,8 +59,9 @@ public final class Test
 
 
 		// Arrays allocation
-		M = new Array2DRowRealMatrix(nbCells, nbCells);
-		ff = new OpenMapRealMatrix(nbCells, nbNodes);
+		u = Vector.createSparseVector(nbCells);
+		r = Vector.createSparseVector(nbCells);
+		M = Matrix.createSparseMatrix(nbCells, nbCells);
 		a = new double[2];
 		b = new double[2];
 
@@ -88,7 +90,7 @@ public final class Test
 	{
 		HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 		HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-		cellVariables.put("Vitesse", u);
+		cellVariables.put("Vitesse", u.toArray());
 		writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
 	}
 

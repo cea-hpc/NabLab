@@ -543,22 +543,13 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY_VARIABLE__PERSIST = VARIABLE_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Sparse Matrix</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_VARIABLE__SPARSE_MATRIX = VARIABLE_FEATURE_COUNT + 3;
-
-	/**
 	 * The number of structural features of the '<em>Connectivity Variable</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 4;
+	int CONNECTIVITY_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of operations of the '<em>Connectivity Variable</em>' class.
@@ -3324,17 +3315,6 @@ public interface IrPackage extends EPackage {
 	EAttribute getConnectivityVariable_Persist();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ConnectivityVariable#isSparseMatrix <em>Sparse Matrix</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Sparse Matrix</em>'.
-	 * @see fr.cea.nabla.ir.ir.ConnectivityVariable#isSparseMatrix()
-	 * @see #getConnectivityVariable()
-	 * @generated
-	 */
-	EAttribute getConnectivityVariable_SparseMatrix();
-
-	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Function <em>Function</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4786,14 +4766,6 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute CONNECTIVITY_VARIABLE__PERSIST = eINSTANCE.getConnectivityVariable_Persist();
-
-		/**
-		 * The meta object literal for the '<em><b>Sparse Matrix</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CONNECTIVITY_VARIABLE__SPARSE_MATRIX = eINSTANCE.getConnectivityVariable_SparseMatrix();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.FunctionImpl <em>Function</em>}' class.

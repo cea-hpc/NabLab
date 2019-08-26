@@ -11,12 +11,7 @@ workflow TestDefaultGenerationChain transforms Test
 		variables = u as "Vitesse";
 	}
 	
-	TagSparseMatrices tagSparseMatrices follows tagPersistentVariables 
-	{ 
-		sparseMatrices = ff;
-	}
-
-	ReplaceUtf replaceUtf follows tagSparseMatrices
+	ReplaceUtf replaceUtf follows tagPersistentVariables
 	{
 	}
 	

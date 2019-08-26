@@ -34,9 +34,13 @@ class TypeValidatorTest
 			+
 			'''
 			ℝ d = ℝ[2](0.);
+			ℝ u {cells};
+			j: ℝ a = u;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
+		
+		val cells = moduleKo.getConnectivityByName("cells")
 		
 		moduleKo.assertError(NablaPackage.eINSTANCE.scalarVarDefinition, 
 			TypeValidator::SCALAR_VAR_DEFAULT_VALUE_TYPE, 
@@ -44,12 +48,19 @@ class TypeValidatorTest
 				PrimitiveType::REAL.literal
 			))		
 
+		moduleKo.assertError(NablaPackage.eINSTANCE.scalarVarDefinition, 
+			TypeValidator::SCALAR_VAR_DEFAULT_VALUE_TYPE, 
+			TypeValidator::getScalarDefinitionTypeMsg(new RealArrayType(#[cells],#[]).label,
+				PrimitiveType::REAL.literal
+			))		
+
 		val moduleOk = parseHelper.parse(TestUtils::testModule
 			+
 			'''
 			ℝ[2] d = ℝ[2](0.);
+			ℝ u{cells}, a{cells};
+			j: a = u;
 			'''
-			
 		)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -61,11 +72,13 @@ class TypeValidatorTest
 		val moduleKo = parseHelper.parse(TestUtils::testModule
 			+
 			'''
-			ℕ X{cells}; 
+			ℕ X{cells};
+			ℕ Y{nodes};
 			ComputeX: ∀ j∈cells(), 	{
 					ℝ e = 1.0;
 					X{j} = e * 4; 
 			}
+			ComputeY: Y = X;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -76,14 +89,20 @@ class TypeValidatorTest
 				PrimitiveType::INT.literal
 			))		
 
-		val moduleOk = parseHelper.parse(TestUtils::testModule
+		moduleKo.assertError(NablaPackage.eINSTANCE.affectation, 
+			TypeValidator::AFFECTATION_TYPE, 
+			TypeValidator::getAffectationTypeMsg("ℕ{cells}", "ℕ{nodes}"))		
+
+			val moduleOk = parseHelper.parse(TestUtils::testModule
 			+
 			'''
-			ℝ X{cells}; 
+			ℕ X{cells}; 
+			ℕ Y{cells};
 			ComputeX: ∀ j∈cells(), 	{
-					ℝ e = 1.0;
+					ℕ e = 1;
 					X{j} = e * 4; 
 			}
+			ComputeY: Y = X;			
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

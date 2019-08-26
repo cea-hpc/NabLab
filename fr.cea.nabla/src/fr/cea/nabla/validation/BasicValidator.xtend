@@ -48,7 +48,8 @@ class BasicValidator  extends AbstractNablaValidator
 	@Inject extension VarExtensions
 	@Inject extension SpaceIteratorExtensions
 
-	// ===== NablaModule =====	
+	// ===== NablaModule =====
+	
 	public static val COORD_VARIABLE = "NablaModule::CoordVariable"
 	public static val MANDATORY_OPTION = "NablaModule::MandatoryOption"
 	public static val MODULE_NAME = "NablaModule::ModuleName"
@@ -81,7 +82,8 @@ class BasicValidator  extends AbstractNablaValidator
 	}
 
 
-	// ===== BaseType =====	
+	// ===== BaseType =====
+	
 	public static val TYPE_DIMENSION = "BaseType::TypeDimension"
 
 	static def getTypeDimensionMsg() { "Dimensions must be greater or equal than 2" }
@@ -151,7 +153,8 @@ class BasicValidator  extends AbstractNablaValidator
 				error(getIteratorNumberMsg(0, spaceIterators.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, ITERATOR_NUMBER)
 	}	
 
-	// ===== Functions (Reductions, Dimension) =====	
+	// ===== Functions (Reductions, Dimension) =====
+		
 	public static val UNUSED_FUNCTION = "Functions::UnusedFunction"
 	public static val UNUSED_REDUCTION = "Functions::UnusedReduction"
 	public static val FUNCTION_IN_TYPES_OPERATION = "Functions::FunctionInTypesOperation"
@@ -294,7 +297,8 @@ class BasicValidator  extends AbstractNablaValidator
 	}
 
 
-	// ===== Connectivities =====	
+	// ===== Connectivities =====
+	
 	public static val UNUSED_CONNECTIVITY = "Connectivities::UnusedConnectivity"
 	public static val CONNECTIVITY_CALL_INDEX = "Connectivities::ConnectivityCallIndex"
 	public static val CONNECTIVITY_CALL_TYPE = "Connectivities::ConnectivityCallType"
@@ -372,8 +376,8 @@ class BasicValidator  extends AbstractNablaValidator
 			error(getOnlyRealArrayMsg(), NablaPackage.Literals::VAR__NAME, ONLY_REAL_ARRAY)
 	}
 
-
 	// ===== Instructions =====
+	
 	public static val AFFECTATION_VAR = "Instructions::AffectationVar"
 	public static val SCALAR_VAR_DEFAULT_VALUE = "Instructions::ScalarVarDefaultValue"
 	

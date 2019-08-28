@@ -46,13 +46,14 @@ private:
 	double total;
 	double[2] a, b;
 
-	// Array Variables
+	// Connectivity Variables
 	Kokkos::View<double[2]*> X;
 	Kokkos::View<double*> v;
 	Kokkos::View<double*> u;
 	Kokkos::View<double*> r;
 	Kokkos::View<double**> Cjr;
 	Kokkos::View<double**> M;
+	Kokkos::View<double**> ff;
 	
 	const size_t maxHardThread = Kokkos::DefaultExecutionSpace::max_hardware_threads();
 
@@ -70,6 +71,7 @@ public:
 	, r("r", nbCells)
 	, Cjr("Cjr", nbCells, nbNodesOfCell)
 	, M("M", nbCells, nbCells)
+	, ff("ff", nbCells, nbNodes)
 	{
 		// Copy node coordinates
 		const auto& gNodes = mesh->getGeometricMesh()->getNodes();
@@ -90,6 +92,16 @@ private:
 	{
 		r = LinearAlgebraFunctions::solveLinearSystem(M, u);
 	}
+
+	void dumpVariables(const int iteration)
+	{
+		std::map<string, double*> cellVariables;
+		std::map<string, double*> nodeVariables;
+		cellVariables.insert(pair<string,double*>("Vitesse", u.data()));
+		auto quads = mesh->getGeometricMesh()->getQuads();
+		writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+	}
+
 
 public:
 	void simulate()

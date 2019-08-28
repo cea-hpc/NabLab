@@ -11,4 +11,3 @@ include_directories("${CMAKE_SOURCE_DIR};${Kokkos_HOME}/include;${Nablab_HOME}/s
 link_directories(${Kokkos_HOME}/lib ${Nablab_HOME}/lib)
 
 add_subdirectory(test)
-add_subdirectory(explicitheatequation)

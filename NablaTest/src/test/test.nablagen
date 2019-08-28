@@ -32,14 +32,14 @@ workflow TestDefaultGenerationChain transforms Test
 	Ir2Code javaGenerator follows fillHlts
 	{
 		language = Java;
-		//disabled;
+		disabled;
 		outputDir = "/NablaTestJava/src";
 	}
 
 	Ir2Code kokkosGenerator follows fillHlts
 	{
 		language = Kokkos;
-		disabled;
+		//disabled;
 		outputDir = "/NablaTestKokkos/src";
 	}
 }

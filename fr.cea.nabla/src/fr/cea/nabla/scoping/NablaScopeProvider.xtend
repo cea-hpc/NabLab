@@ -20,16 +20,16 @@ import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
+import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VarRef
+import java.util.ArrayList
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
-import java.util.ArrayList
-import fr.cea.nabla.nabla.Var
 
 /**
  * This class contains custom scoping description.
@@ -95,50 +95,64 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	/*** Scope for variables ***********************************************************/
 	def scope_VarRef_variable(Instruction context, EReference r) 
 	{
-		context.eContainer.variablesDefinedBefore(context)
+		println('scope_VarRef_variable(' + context.class.simpleName + ', ' + r.name + ')')
+		context.eContainer.variablesDefinedBefore(context, '\t')
 	}
 
 	def scope_VarRef_variable(Reduction context, EReference r) 
 	{
+		println('scope_VarRef_variable(' + context.class.simpleName + ', ' + r.name + ')')
 		IScope::NULLSCOPE
 	}
 
 	def scope_VarRef_variable(Function context, EReference r) 
 	{
+		println('scope_VarRef_variable(' + context.class.simpleName + ', ' + r.name + ')')
 		IScope::NULLSCOPE
 	}
 
-	private def dispatch IScope variablesDefinedBefore(EObject context, Instruction o) 
+	private def dispatch IScope variablesDefinedBefore(EObject context, Instruction o, String prefix) 
 	{
-		context.eContainer.variablesDefinedBefore(o)
-	}
-	
-	private def dispatch IScope variablesDefinedBefore(NablaModule context, Instruction o) 
-	{
-		if (o instanceof ScalarVarDefinition || o instanceof VarGroupDeclaration)
-			Scopes::scopeFor(context.variables.variablesDeclaredBefore(o))
-		else
+		println(prefix + '[EObject] variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
+		switch (context)
 		{
-			val globalVariables = new ArrayList<Var>
-			for (v : context.variables)
-				switch v
-				{
-					VarGroupDeclaration : globalVariables += v.variables
-					ScalarVarDefinition : globalVariables += v.variable
-				}	
-			Scopes::scopeFor(globalVariables)	
+			Instruction: context.eContainer.variablesDefinedBefore(context, prefix + '\t')
+			Job: Scopes::scopeFor((context.eContainer as NablaModule).variables.allVariables)
+			default: throw new RuntimeException('Wrong path...')
 		}
 	}
-		
-	private def dispatch IScope variablesDefinedBefore(InstructionBlock context, Instruction o) 
+	
+	private def dispatch IScope variablesDefinedBefore(NablaModule context, Instruction o, String prefix) 
 	{
-		Scopes::scopeFor(context.instructions.variablesDeclaredBefore(o), context.eContainer.variablesDefinedBefore(context))
+		println(prefix + '[NablaModule] variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
+		if (o instanceof ScalarVarDefinition || o instanceof VarGroupDeclaration)
+			Scopes::scopeFor(context.variables.variablesDeclaredBefore(o, prefix + '\t'))
+		else
+			Scopes::scopeFor(context.variables.allVariables)	
+	}
+		
+	private def dispatch IScope variablesDefinedBefore(InstructionBlock context, Instruction o, String prefix) 
+	{
+		println(prefix + '[InstructionBlock] variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
+		Scopes::scopeFor(context.instructions.variablesDeclaredBefore(o, prefix + '\t'), context.eContainer.variablesDefinedBefore(context, prefix + '\t'))
 	}
 	
-	private def variablesDeclaredBefore(List<? extends Instruction> list, Instruction o) 
+	private def variablesDeclaredBefore(List<? extends Instruction> list, Instruction o, String prefix) 
 	{
-		val vars1 = list.subList(0, list.indexOf(o)).filter(VarGroupDeclaration).map[variables].flatten
-		val vars2 = list.subList(0, list.indexOf(o)).filter(ScalarVarDefinition).map[variable]
-		return vars1 + vars2
+		val variables = list.subList(0, list.indexOf(o)).allVariables
+		println(prefix + 'variablesDeclaredBefore(' + o.class.simpleName + ') : ' + variables.map[name].join(', '))
+		return variables
+	}
+	
+	private def getAllVariables(List<? extends Instruction> instructions)
+	{
+		val variables = new ArrayList<Var>
+		for (i : instructions)
+			switch i
+			{
+				VarGroupDeclaration : variables += i.variables
+				ScalarVarDefinition : variables += i.variable
+			}				
+		return variables
 	}
 }

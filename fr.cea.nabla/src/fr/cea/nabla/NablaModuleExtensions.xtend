@@ -2,6 +2,7 @@ package fr.cea.nabla
 
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -22,6 +23,11 @@ class NablaModuleExtensions
 		return functions.filter(Function).findFirst[f | f.name == funcName]
 	}
 	
+	def getReductionByName(NablaModule it, String reducName)
+	{
+		return functions.filter(Reduction).findFirst[f | f.name == reducName]
+	}
+
 	def getJobByName(NablaModule it, String jobName)
 	{
 		jobs.findFirst[j | j.name == jobName]

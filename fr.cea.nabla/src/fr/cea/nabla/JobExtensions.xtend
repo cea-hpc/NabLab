@@ -1,22 +1,31 @@
 package fr.cea.nabla
 
-import com.google.inject.Inject
+import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.Job
+import fr.cea.nabla.nabla.ScalarVarDefinition
+import fr.cea.nabla.nabla.Var
+import fr.cea.nabla.nabla.VarGroupDeclaration
+import java.util.ArrayList
 
 class JobExtensions 
 {
-	@Inject extension InstructionExtensions
-		
 	def getAllVars(Job it)
 	{
-		instruction.allVars
+		val allVariables = new ArrayList<Var>
+		for (i : eAllContents.toIterable)
+			switch i
+			{
+				VarGroupDeclaration : allVariables += i.variables
+				ScalarVarDefinition : allVariables += i.variable
+			}				
+		return allVariables
 	}	
 	
 	def getAllAffectations(Job it)
 	{
-		instruction.allAffectations
+		eAllContents.filter(Affectation)
 	}
 	
 	def getVariableByName(Job it, String variableName)

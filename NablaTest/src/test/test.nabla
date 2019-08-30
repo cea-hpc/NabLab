@@ -33,14 +33,22 @@ const ℕ Z_EDGE_ELEMS = 1;
 const ℝ option_stoptime = 0.1;
 const ℕ option_max_iterations = 500;
 
-ℝ[2] X{nodes};
-ℝ v{nodes};
-ℝ u{cells}, r{cells}, Cjr{cells,nodesOfCell}, M{cells,cells};
-ℝ total;
-ℝ ff{cells,nodes};
-ℝ[2] a, b;
+//ℝ[2] X{nodes};
+//ℝ v{nodes};
+//ℝ u{cells}, r{cells}, Cjr{cells,nodesOfCell}, M{cells,cells};
+//ℝ total;
+//ℝ ff{cells,nodes};
+//ℝ[2] a, b;
 
-TestMatrix: r = solveLinearSystem(M, u);
+A: ∀j∈cells(), {
+		ℝ toto = 0.0;
+	∀r∈nodes(), {
+		ℝ tmp = 0.0;
+		tmp = 1.0;
+	}
+}
+
+// TestMatrix: r = solveLinearSystem(M, u);
 
 //IniU: ∀j∈cells(), u{j} = cos(2.0);
 //TestExternal: total = ∏{j1∈cells()}(u{j1}) + ∑{j2∈cells()}(u{j2});

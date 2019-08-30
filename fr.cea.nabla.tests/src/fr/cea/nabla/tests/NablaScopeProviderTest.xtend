@@ -157,6 +157,11 @@ class NablaScopeProviderTest
 			c1{j} = a * 2;
 			ℝ d = 6.0;
 			c2{j} = 2 * d;
+			∀ r∈nodesOfCells(j), {
+				ℝ e = 3.3;
+				ℝ f;
+				f = e + 1.0;
+			}
 		}
 		''')
 		Assert.assertNotNull(module)
@@ -178,6 +183,10 @@ class NablaScopeProviderTest
 
 		val affectationc2 = j1.getVarAffectationByName("c2")
 		affectationc2.assertScope(eref, "d, "+ defaultOptionsScope + ", a, b1, b2, c1, c2")
+
+		val affectationf = j1.getVarAffectationByName("f")
+		println("affectation f " + affectationf)
+		affectationf.assertScope(eref, "e, f, d, "+ defaultOptionsScope + ", a, b1, b2, c1, c2")
 	}
 	
 	@Test 
@@ -195,7 +204,7 @@ class NablaScopeProviderTest
 
 		val eref = NablaPackage::eINSTANCE.varRef_Variable
 
-		val reduction = module.getFunctionByName("reduceMin")
+		val reduction = module.getReductionByName("reduceMin")
 		Assert.assertNotNull(reduction)
 		reduction.assertScope(eref, "")
 	}

@@ -11,6 +11,7 @@
     <semanticResources>src/implicitheatequation/ImplicitHeatEquation.nabla</semanticResources>
     <semanticResources>platform:/resource/fr.cea.nabla/linearalgebrafunctions.nabla</semanticResources>
     <semanticResources>src/implicitheatequation/ImplicitHeatEquation.nablagen</semanticResources>
+    <semanticResources>src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_mRvOsIBWEemS0rMnoZr-Bw">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_WFDOgIEjEemq4pB9a4y5nA" name="Glace2dDefaultGenerationChainDiagram" repPath="#_WE75wIEjEemq4pB9a4y5nA">

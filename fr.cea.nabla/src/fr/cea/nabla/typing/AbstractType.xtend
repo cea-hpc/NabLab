@@ -32,11 +32,11 @@ abstract class DefinedType extends AbstractType
 {
 	Connectivity[] connectivities
 	abstract def PrimitiveType getRoot();
-
-	override getLabel() 
-	{ 
-		if (connectivities.empty) root.literal
-		else root.literal + '{' + connectivities.map[name].join(',') + '}'
+	override getLabel()
+	{
+		val l = root.literal
+		if (connectivities.empty) l
+		else l + '{' + connectivities.map[name].join(',') + '}'
 	}
 }
 

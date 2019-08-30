@@ -28,6 +28,8 @@ import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
+import java.util.ArrayList
+import fr.cea.nabla.nabla.Var
 
 /**
  * This class contains custom scoping description.
@@ -37,7 +39,7 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
  */
 class NablaScopeProvider extends AbstractDeclarativeScopeProvider 
 {
-	/*** Scope des itérateurs **********************************************************/
+	/*** Scope for iterators **********************************************************/
 	def scope_SpaceIteratorRef_target(ConnectivityCall context, EReference r)
 	{
 		val s = context.eContainer.iteratorsDefinedBefore(context)
@@ -90,7 +92,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		return list
 	}
 
-	/*** Scope des variables ***********************************************************/
+	/*** Scope for variables ***********************************************************/
 	def scope_VarRef_variable(Instruction context, EReference r) 
 	{
 		context.eContainer.variablesDefinedBefore(context)
@@ -113,7 +115,19 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	
 	private def dispatch IScope variablesDefinedBefore(NablaModule context, Instruction o) 
 	{
-		Scopes::scopeFor(context.variables.variablesDeclaredBefore(o))
+		if (o instanceof ScalarVarDefinition || o instanceof VarGroupDeclaration)
+			Scopes::scopeFor(context.variables.variablesDeclaredBefore(o))
+		else
+		{
+			val globalVariables = new ArrayList<Var>
+			for (v : context.variables)
+				switch v
+				{
+					VarGroupDeclaration : globalVariables += v.variables
+					ScalarVarDefinition : globalVariables += v.variable
+				}	
+			Scopes::scopeFor(globalVariables)	
+		}
 	}
 		
 	private def dispatch IScope variablesDefinedBefore(InstructionBlock context, Instruction o) 

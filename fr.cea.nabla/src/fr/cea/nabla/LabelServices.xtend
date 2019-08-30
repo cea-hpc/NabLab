@@ -68,9 +68,9 @@ class LabelServices
 	static def dispatch String getLabel(ConnectivityCall it) { connectivity.name + '(' + args.map[label].join(',') + ')' }
 	static def dispatch String getLabel(SpaceIteratorRef it) 
 	{ 
-		if (inc > 0) target.name + '+' + inc
-		else if (dec > 0) target.name + dec
-		else target.name
+		if (inc > 0) target?.name + '+' + inc
+		else if (dec > 0) target?.name + dec
+		else target?.name
 	}
 
 	// EXPRESSIONS

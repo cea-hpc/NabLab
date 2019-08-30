@@ -63,6 +63,7 @@ class IrVariableFactory
 		annotations += v.toIrAnnotation
 		name = varName
 		type = v.baseType.toIrBaseType
+		const = v.const
 		val value = v.defaultValue
 		if (value !== null) defaultValue = value.toIrExpression
 	}
@@ -72,6 +73,7 @@ class IrVariableFactory
 		annotations += v.toIrAnnotation
 		name = varName
 		type = v.baseType.toIrBaseType
+		const = v.const
 		v.dimensions.forEach[x | dimensions += x.toIrConnectivity]
 	}
 }

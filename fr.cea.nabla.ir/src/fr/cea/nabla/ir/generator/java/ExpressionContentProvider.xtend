@@ -10,7 +10,6 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.Utils
-import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.Constant
 import fr.cea.nabla.ir.ir.ContractedIf
@@ -18,16 +17,18 @@ import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
-import fr.cea.nabla.ir.ir.RealMatrixConstant
-import fr.cea.nabla.ir.ir.RealVectorConstant
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
-import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.BaseTypeExtensions.*
 import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
-import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
+import static extension fr.cea.nabla.ir.generator.Utils.*
+import fr.cea.nabla.ir.ir.RealVectorConstant
+import fr.cea.nabla.ir.ir.RealMatrixConstant
+import fr.cea.nabla.ir.ir.BaseTypeConstant
+import fr.cea.nabla.ir.ir.IntVectorConstant
+import fr.cea.nabla.ir.ir.IntMatrixConstant
 
 class ExpressionContentProvider
 {
@@ -42,7 +43,7 @@ class ExpressionContentProvider
 		if (left.type.scalar && right.type.scalar) 
 			'''«lContent» «operator» «rContent»'''
 		else 
-			'''OperatorExtensions.operator_«operator.operatorName»(«lContent», «rContent»)'''
+			'''ArrayOperations.«operator.operatorName»(«lContent», «rContent»)'''
 	}
 
 	static def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
@@ -69,33 +70,26 @@ class ExpressionContentProvider
 		}
 	}
 
+	static def dispatch CharSequence getContent(BaseTypeConstant it) 
+	{
+		initConstant(type.sizes, value.content.toString)
+	}
+	
+	static def dispatch CharSequence getContent(IntVectorConstant it) 
+	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v»«ENDFOR»'''
+	
+	static def dispatch CharSequence getContent(IntMatrixConstant it) 
+	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
+	
 	static def dispatch CharSequence getContent(RealVectorConstant it) 
 	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v»«ENDFOR»'''
 	
 	static def dispatch CharSequence getContent(RealMatrixConstant it) 
 	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
 	
-	static def dispatch CharSequence getContent(BaseTypeConstant it) 
-	{
-		initConstant(type.sizes, value.content.toString)
-	}
-	
 	static def dispatch CharSequence getContent(FunctionCall it) 
 	'''«function.provider»«Utils::FunctionAndReductionproviderSuffix».«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
 	static def dispatch CharSequence getContent(VarRef it)
 	'''«variable.codeName»«FOR r : iterators BEFORE '[' SEPARATOR '][' AFTER ']'»«r.indexName»«ENDFOR»«FOR d:indices»[«d»]«ENDFOR»'''
-
-	private static def String initConstant(int[] dimSizes, String value)
-	{
-		if (dimSizes.empty) value
-		else 
-		{
-			val dim = dimSizes.head
-			val t = dimSizes.tail
-			val values = new ArrayList<String>
-			for (i : 0..<dim) values += initConstant(t, value)
-			'{' + values.join(',') + '}'
-		}
-	}
 }

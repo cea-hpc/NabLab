@@ -22,6 +22,8 @@ import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.IntConstant
+import fr.cea.nabla.nabla.IntMatrixConstant
+import fr.cea.nabla.nabla.IntVectorConstant
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
@@ -37,11 +39,11 @@ import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
+import fr.cea.nabla.typing.AbstractType
 import fr.cea.nabla.typing.ArrayType
 import fr.cea.nabla.typing.DefinedType
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.UndefinedType
-import fr.cea.nabla.typing.AbstractType
 
 class IrExpressionFactory 
 {
@@ -138,6 +140,68 @@ class IrExpressionFactory
 		]
 	}
 
+	def dispatch Expression toIrExpression(BaseTypeConstant e) 
+	{
+		IrFactory::eINSTANCE.createBaseTypeConstant => 
+		[ 
+			annotations += e.toIrAnnotation
+			type = e.typeFor?.toIrExpressionType
+			value = e.value.toIrExpression
+		]
+	}
+
+	def dispatch Expression toIrExpression(IntVectorConstant e) 
+	{
+		IrFactory::eINSTANCE.createIntVectorConstant => 
+		[ 
+			annotations += e.toIrAnnotation
+			type = e.typeFor?.toIrExpressionType
+			values += e.values
+		]
+	}
+	
+	def dispatch Expression toIrExpression(IntMatrixConstant e) 
+	{
+		IrFactory::eINSTANCE.createIntMatrixConstant => 
+		[ 
+			annotations += e.toIrAnnotation
+			type = e.typeFor?.toIrExpressionType
+			for (ev : e.values)
+				values += IrFactory::eINSTANCE.createIntVectorConstant => 
+				[ 
+					annotations += e.toIrAnnotation
+					type = e.typeFor?.toIrExpressionType
+					values += ev.values
+				]
+		]
+	}
+
+	def dispatch Expression toIrExpression(RealVectorConstant e) 
+	{
+		IrFactory::eINSTANCE.createRealVectorConstant => 
+		[ 
+			annotations += e.toIrAnnotation
+			type = e.typeFor?.toIrExpressionType
+			values += e.values
+		]
+	}
+	
+	def dispatch Expression toIrExpression(RealMatrixConstant e) 
+	{
+		IrFactory::eINSTANCE.createRealMatrixConstant => 
+		[ 
+			annotations += e.toIrAnnotation
+			type = e.typeFor?.toIrExpressionType
+			for (ev : e.values)
+				values += IrFactory::eINSTANCE.createRealVectorConstant => 
+				[ 
+					annotations += e.toIrAnnotation
+					type = e.typeFor?.toIrExpressionType
+					values += ev.values
+				]
+		]
+	}
+
 	def dispatch Expression toIrExpression(FunctionCall e) 
 	{ 
 		IrFactory::eINSTANCE.createFunctionCall =>
@@ -171,42 +235,6 @@ class IrExpressionFactory
 			indices.addAll(e.indices)
 			for (i : 0..<e.spaceIterators.size)
 				iterators += e.spaceIterators.get(i).toIrVarRefIteratorRef(i)
-		]
-	}
-
-	def dispatch Expression toIrExpression(RealVectorConstant e) 
-	{
-		IrFactory::eINSTANCE.createRealVectorConstant => 
-		[ 
-			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
-			values += e.values
-		]
-	}
-	
-	def dispatch Expression toIrExpression(RealMatrixConstant e) 
-	{
-		IrFactory::eINSTANCE.createRealMatrixConstant => 
-		[ 
-			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
-			for (ev : e.values)
-				values += IrFactory::eINSTANCE.createRealVectorConstant => 
-				[ 
-					annotations += e.toIrAnnotation
-					type = e.typeFor?.toIrExpressionType
-					values += ev.values
-				]
-		]
-	}
-
-	def dispatch Expression toIrExpression(BaseTypeConstant e) 
-	{
-		IrFactory::eINSTANCE.createBaseTypeConstant => 
-		[ 
-			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrExpressionType
-			value = e.value.toIrExpression
 		]
 	}
 

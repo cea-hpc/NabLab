@@ -40,14 +40,8 @@ public final class ImplicitHeatEquation
 	private double t, deltat, t_nplus1;
 	
 	// Connectivity Variables
-	private double[] X[];
-	private double[] Xc[];
-	private double xc[];
-	private double yc[];
-	private double V[];
-	private double D[];
-	private double faceLength[];
-	private double faceConductivity[];
+	private double[][] X, Xc;
+	private double[] xc, yc, V, D, faceLength, faceConductivity;
 	
 	// Linear Algebra Variables
 	private Vector u;
@@ -77,13 +71,13 @@ public final class ImplicitHeatEquation
 		Xc = new double[nbCells][2];
 		xc = new double[nbCells];
 		yc = new double[nbCells];
-		u = Vector.createSparseVector(nbCells);
+		u = Vector.createDenseVector(nbCells);
 		V = new double[nbCells];
 		D = new double[nbCells];
 		faceLength = new double[nbFaces];
 		faceConductivity = new double[nbFaces];
-		alpha = Matrix.createSparseMatrix(nbCells, nbCells);
-		u_nplus1 = Vector.createSparseVector(nbCells);
+		alpha = Matrix.createDenseMatrix(nbCells, nbCells);
+		u_nplus1 = Vector.createDenseVector(nbCells);
 
 		// Copy node coordinates
 		ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
@@ -145,17 +139,17 @@ public final class ImplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			int cId = cCells;
-			double[] reduceSum_1663357000 = {0.0,0.0};
+			double[] reduceSum958678903 = {0.0,0.0};
 			{
 				int[] nodesOfCellC = mesh.getNodesOfCell(cId);
 				for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.length; pNodesOfCellC++)
 				{
 					int pId = nodesOfCellC[pNodesOfCellC];
 					int pNodes = pId;
-					reduceSum_1663357000 = OperatorExtensions.operator_plus(reduceSum_1663357000, (X[pNodes]));
+					reduceSum958678903 = ArrayOperations.plus(reduceSum958678903, (X[pNodes]));
 				}
 			}
-			Xc[cCells] = OperatorExtensions.operator_multiply(0.25, reduceSum_1663357000);
+			Xc[cCells] = ArrayOperations.multiply(0.25, reduceSum958678903);
 		});
 	}		
 	
@@ -182,7 +176,7 @@ public final class ImplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double reduceSum_1596822968 = 0.0;
+			double reduceSum1338304307 = 0.0;
 			{
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int pNodesOfCellJ=0; pNodesOfCellJ<nodesOfCellJ.length; pNodesOfCellJ++)
@@ -191,10 +185,10 @@ public final class ImplicitHeatEquation
 					int pPlus1Id = nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					int pNodes = pId;
 					int pPlus1Nodes = pPlus1Id;
-					reduceSum_1596822968 = reduceSum_1596822968 + (MathFunctions.det(X[pNodes], X[pPlus1Nodes]));
+					reduceSum1338304307 = reduceSum1338304307 + (MathFunctions.det(X[pNodes], X[pPlus1Nodes]));
 				}
 			}
-			V[jCells] = 0.5 * reduceSum_1596822968;
+			V[jCells] = 0.5 * reduceSum1338304307;
 		});
 	}		
 	
@@ -208,7 +202,7 @@ public final class ImplicitHeatEquation
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			int fId = fFaces;
-			double reduceSum1345975896 = 0.0;
+			double reduceSum_2108204933 = 0.0;
 			{
 				int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
 				for (int pNodesOfFaceF=0; pNodesOfFaceF<nodesOfFaceF.length; pNodesOfFaceF++)
@@ -217,10 +211,10 @@ public final class ImplicitHeatEquation
 					int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
 					int pNodes = pId;
 					int pPlus1Nodes = pPlus1Id;
-					reduceSum1345975896 = reduceSum1345975896 + (MathFunctions.norm(OperatorExtensions.operator_minus(X[pNodes], X[pPlus1Nodes])));
+					reduceSum_2108204933 = reduceSum_2108204933 + (MathFunctions.norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
 				}
 			}
-			faceLength[fFaces] = 0.5 * reduceSum1345975896;
+			faceLength[fFaces] = 0.5 * reduceSum_2108204933;
 		});
 	}		
 	
@@ -247,7 +241,7 @@ public final class ImplicitHeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			if (MathFunctions.norm(OperatorExtensions.operator_minus(Xc[cCells], options.vectOne)) < 0.5) 
+			if (MathFunctions.norm(ArrayOperations.minus(Xc[cCells], options.vectOne)) < 0.5) 
 				u.set(cCells, options.u0);
 			else 
 				u.set(cCells, 0.0);
@@ -261,12 +255,12 @@ public final class ImplicitHeatEquation
 	 */
 	private void computeDeltaTn() 
 	{
-		double reduceMin1793844182 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+		double reduceMin575417865 = IntStream.range(0, nbCells).boxed().parallel().reduce(
 			Double.MAX_VALUE, 
 			(r, cCells) -> MathFunctions.reduceMin(r, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]),
 			(r1, r2) -> MathFunctions.reduceMin(r1, r2)
 		);
-		deltat = reduceMin1793844182 * 0.24;
+		deltat = reduceMin575417865 * 0.24;
 	}		
 	
 	/**
@@ -279,27 +273,27 @@ public final class ImplicitHeatEquation
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			int fId = fFaces;
-			double reduceProd933376408 = 1.0;
+			double reduceProd_739554985 = 1.0;
 			{
 				int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				for (int c1CellsOfFaceF=0; c1CellsOfFaceF<cellsOfFaceF.length; c1CellsOfFaceF++)
 				{
 					int c1Id = cellsOfFaceF[c1CellsOfFaceF];
 					int c1Cells = c1Id;
-					reduceProd933376408 = reduceProd933376408 * (D[c1Cells]);
+					reduceProd_739554985 = reduceProd_739554985 * (D[c1Cells]);
 				}
 			}
-			double reduceSum_261987784 = 0.0;
+			double reduceSum_1934919177 = 0.0;
 			{
 				int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				for (int c2CellsOfFaceF=0; c2CellsOfFaceF<cellsOfFaceF.length; c2CellsOfFaceF++)
 				{
 					int c2Id = cellsOfFaceF[c2CellsOfFaceF];
 					int c2Cells = c2Id;
-					reduceSum_261987784 = reduceSum_261987784 + (D[c2Cells]);
+					reduceSum_1934919177 = reduceSum_1934919177 + (D[c2Cells]);
 				}
 			}
-			faceConductivity[fFaces] = 2.0 * reduceProd933376408 / reduceSum_261987784;
+			faceConductivity[fFaces] = 2.0 * reduceProd_739554985 / reduceSum_1934919177;
 		});
 	}		
 	
@@ -322,7 +316,7 @@ public final class ImplicitHeatEquation
 					int dCells = dId;
 					int fId = mesh.getCommonFace(cId, dId);
 					int fFaces = fId;
-					double alphaExtraDiag = -deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions.norm(OperatorExtensions.operator_minus(Xc[cCells], Xc[dCells]));
+					double alphaExtraDiag = -deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions.norm(ArrayOperations.minus(Xc[cCells], Xc[dCells]));
 					alpha.set(cCells, dCells, alphaExtraDiag);
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}

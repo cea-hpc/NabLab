@@ -59,7 +59,7 @@ VtkFileWriter2D::writeFile(
 
 	writer << "POINTS " << nbNodes << " float" << endl;
 	for (int r=0 ; r<nbNodes ; ++r)
-		writer << nodes[r].x << "\t" << nodes[r].y << "\t" << 0.0 << endl;
+		writer << nodes[r][0] << "\t" << nodes[r][1] << "\t" << 0.0 << endl;
 
 	writer << "POLYGONS " << nbCells << " " << nbCells * 5 << endl;
 	for (int j=0 ; j<nbCells ; ++j)

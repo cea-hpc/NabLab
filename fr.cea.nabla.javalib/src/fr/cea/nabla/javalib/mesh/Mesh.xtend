@@ -12,7 +12,6 @@ package fr.cea.nabla.javalib.mesh
 import java.util.ArrayList
 import org.eclipse.xtend.lib.annotations.Accessors
 
-/** T vaut Real2 ou Real3 */
 class Mesh<T> 
 {
 	@Accessors val ArrayList<T> nodes

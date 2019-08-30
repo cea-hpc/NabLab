@@ -2225,6 +2225,116 @@ public interface IrPackage extends EPackage {
 	int BASE_TYPE_CONSTANT_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
 	/**
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.IntVectorConstantImpl <em>Int Vector Constant</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.cea.nabla.ir.ir.impl.IntVectorConstantImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIntVectorConstant()
+	 * @generated
+	 */
+	int INT_VECTOR_CONSTANT = 33;
+
+	/**
+	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INT_VECTOR_CONSTANT__ANNOTATIONS = EXPRESSION__ANNOTATIONS;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INT_VECTOR_CONSTANT__TYPE = EXPRESSION__TYPE;
+
+	/**
+	 * The feature id for the '<em><b>Values</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INT_VECTOR_CONSTANT__VALUES = EXPRESSION_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Int Vector Constant</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INT_VECTOR_CONSTANT_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Int Vector Constant</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INT_VECTOR_CONSTANT_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.IntMatrixConstantImpl <em>Int Matrix Constant</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.cea.nabla.ir.ir.impl.IntMatrixConstantImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIntMatrixConstant()
+	 * @generated
+	 */
+	int INT_MATRIX_CONSTANT = 34;
+
+	/**
+	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INT_MATRIX_CONSTANT__ANNOTATIONS = EXPRESSION__ANNOTATIONS;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INT_MATRIX_CONSTANT__TYPE = EXPRESSION__TYPE;
+
+	/**
+	 * The feature id for the '<em><b>Values</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INT_MATRIX_CONSTANT__VALUES = EXPRESSION_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Int Matrix Constant</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INT_MATRIX_CONSTANT_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Int Matrix Constant</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INT_MATRIX_CONSTANT_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.RealVectorConstantImpl <em>Real Vector Constant</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2232,7 +2342,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getRealVectorConstant()
 	 * @generated
 	 */
-	int REAL_VECTOR_CONSTANT = 33;
+	int REAL_VECTOR_CONSTANT = 35;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2287,7 +2397,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getRealMatrixConstant()
 	 * @generated
 	 */
-	int REAL_MATRIX_CONSTANT = 34;
+	int REAL_MATRIX_CONSTANT = 36;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2342,7 +2452,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getFunctionCall()
 	 * @generated
 	 */
-	int FUNCTION_CALL = 35;
+	int FUNCTION_CALL = 37;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2406,7 +2516,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getVarRef()
 	 * @generated
 	 */
-	int VAR_REF = 36;
+	int VAR_REF = 38;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2479,7 +2589,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIterator()
 	 * @generated
 	 */
-	int ITERATOR = 37;
+	int ITERATOR = 39;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2552,7 +2662,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getConnectivityCall()
 	 * @generated
 	 */
-	int CONNECTIVITY_CALL = 38;
+	int CONNECTIVITY_CALL = 40;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2607,7 +2717,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIteratorRef()
 	 * @generated
 	 */
-	int ITERATOR_REF = 39;
+	int ITERATOR_REF = 41;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2662,7 +2772,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getConnectivityCallIteratorRef()
 	 * @generated
 	 */
-	int CONNECTIVITY_CALL_ITERATOR_REF = 40;
+	int CONNECTIVITY_CALL_ITERATOR_REF = 42;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2726,7 +2836,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getVarRefIteratorRef()
 	 * @generated
 	 */
-	int VAR_REF_ITERATOR_REF = 41;
+	int VAR_REF_ITERATOR_REF = 43;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2799,7 +2909,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemType()
 	 * @generated
 	 */
-	int ITEM_TYPE = 42;
+	int ITEM_TYPE = 44;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2836,7 +2946,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getBaseType()
 	 * @generated
 	 */
-	int BASE_TYPE = 43;
+	int BASE_TYPE = 45;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2891,7 +3001,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getExpressionType()
 	 * @generated
 	 */
-	int EXPRESSION_TYPE = 44;
+	int EXPRESSION_TYPE = 46;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2955,7 +3065,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getArgType()
 	 * @generated
 	 */
-	int ARG_TYPE = 45;
+	int ARG_TYPE = 47;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3010,7 +3120,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getPrimitiveType()
 	 * @generated
 	 */
-	int PRIMITIVE_TYPE = 46;
+	int PRIMITIVE_TYPE = 48;
 
 
 	/**
@@ -4101,6 +4211,48 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getBaseTypeConstant_Value();
+
+	/**
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.IntVectorConstant <em>Int Vector Constant</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Int Vector Constant</em>'.
+	 * @see fr.cea.nabla.ir.ir.IntVectorConstant
+	 * @generated
+	 */
+	EClass getIntVectorConstant();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link fr.cea.nabla.ir.ir.IntVectorConstant#getValues <em>Values</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Values</em>'.
+	 * @see fr.cea.nabla.ir.ir.IntVectorConstant#getValues()
+	 * @see #getIntVectorConstant()
+	 * @generated
+	 */
+	EAttribute getIntVectorConstant_Values();
+
+	/**
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.IntMatrixConstant <em>Int Matrix Constant</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Int Matrix Constant</em>'.
+	 * @see fr.cea.nabla.ir.ir.IntMatrixConstant
+	 * @generated
+	 */
+	EClass getIntMatrixConstant();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.IntMatrixConstant#getValues <em>Values</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Values</em>'.
+	 * @see fr.cea.nabla.ir.ir.IntMatrixConstant#getValues()
+	 * @see #getIntMatrixConstant()
+	 * @generated
+	 */
+	EReference getIntMatrixConstant_Values();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.RealVectorConstant <em>Real Vector Constant</em>}'.
@@ -5410,6 +5562,42 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference BASE_TYPE_CONSTANT__VALUE = eINSTANCE.getBaseTypeConstant_Value();
+
+		/**
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.IntVectorConstantImpl <em>Int Vector Constant</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.cea.nabla.ir.ir.impl.IntVectorConstantImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIntVectorConstant()
+		 * @generated
+		 */
+		EClass INT_VECTOR_CONSTANT = eINSTANCE.getIntVectorConstant();
+
+		/**
+		 * The meta object literal for the '<em><b>Values</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute INT_VECTOR_CONSTANT__VALUES = eINSTANCE.getIntVectorConstant_Values();
+
+		/**
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.IntMatrixConstantImpl <em>Int Matrix Constant</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.cea.nabla.ir.ir.impl.IntMatrixConstantImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIntMatrixConstant()
+		 * @generated
+		 */
+		EClass INT_MATRIX_CONSTANT = eINSTANCE.getIntMatrixConstant();
+
+		/**
+		 * The meta object literal for the '<em><b>Values</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference INT_MATRIX_CONSTANT__VALUES = eINSTANCE.getIntMatrixConstant_Values();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.RealVectorConstantImpl <em>Real Vector Constant</em>}' class.

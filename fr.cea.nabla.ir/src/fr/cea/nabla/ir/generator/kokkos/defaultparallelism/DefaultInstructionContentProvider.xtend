@@ -31,6 +31,6 @@ class DefaultInstructionContentProvider extends InstructionContentProvider
 	
 	override protected getHeader(ReductionInstruction it)
 	'''
-		Kokkos::parallel_reduce("Reduction«result.name»", «range.container.connectivity.nbElems», KOKKOS_LAMBDA(const int& «range.indexName», «result.kokkosType»& x)
+		Kokkos::parallel_reduce("Reduction«result.name»", «range.container.connectivity.nbElems», KOKKOS_LAMBDA(const int& «range.indexName», «result.cppType»& x)
 	'''
 }

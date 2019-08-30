@@ -36,6 +36,6 @@ class HierarchicalInstructionContentProvider extends InstructionContentProvider
 	
 	override protected getHeader(ReductionInstruction it) 
 	'''
-		Kokkos::parallel_reduce(Kokkos::TeamThreadRange(team_member, «range.container.connectivity.nbElems»), KOKKOS_LAMBDA(const int& «range.indexName», «result.kokkosType»& x)
+		Kokkos::parallel_reduce(Kokkos::TeamThreadRange(team_member, «range.container.connectivity.nbElems»), KOKKOS_LAMBDA(const int& «range.indexName», «result.cppType»& x)
 	'''
 }

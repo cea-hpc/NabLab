@@ -19,7 +19,9 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.VariableExtensions.*
 
 class Ir2Kokkos extends CodeGenerator
@@ -55,7 +57,12 @@ class Ir2Kokkos extends CodeGenerator
 	#include "utils/Timer.h"
 	#include "types/Types.h"
 	#include "types/MathFunctions.h"
+	#include "types/ArrayOperations.h"
 	«IF functions.exists[f | f.provider == name]»#include "«name.toLowerCase»/«name»«Utils::FunctionAndReductionproviderSuffix».h"«ENDIF»
+	«val linearAlgebraVars = variables.filter(ConnectivityVariable).filter[linearAlgebra]»
+	«IF !linearAlgebraVars.empty»
+	#include "types/LinearAlgebraFunctions.h"
+	«ENDIF»
 
 	using namespace nablalib;
 
@@ -64,8 +71,9 @@ class Ir2Kokkos extends CodeGenerator
 	public:
 		struct Options
 		{
+			// Should be const but usefull to set them from main args
 			«FOR v : variables.filter(SimpleVariable).filter[const]»
-				«v.kokkosType» «v.name» = «v.defaultValue.content.toString.replaceAll('options->', '')»;
+				«v.cppType» «v.name» = «v.defaultValue.content.toString.replaceAll('options->', '')»;
 			«ENDFOR»
 		};
 		Options* options;
@@ -77,16 +85,23 @@ class Ir2Kokkos extends CodeGenerator
 
 		// Global Variables
 		«val globals = variables.filter(SimpleVariable).filter[!const]»
-		«val globalsByType = globals.groupBy[kokkosType]»
+		«val globalsByType = globals.groupBy[type.root.cppType]»
 		«FOR type : globalsByType.keySet»
 		«type» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 		«ENDFOR»
 
-		«val connectivityVars = variables.filter(ConnectivityVariable)»
+		«val connectivityVars = variables.filter(ConnectivityVariable).filter[!linearAlgebra]»
 		«IF !connectivityVars.empty»
 		// Connectivity Variables
 		«FOR a : connectivityVars»
-		Kokkos::View<«a.kokkosType»> «a.name»;
+		«a.cppType» «a.name»;
+		«ENDFOR»
+		«ENDIF»
+		«IF !linearAlgebraVars.empty»
+		
+		// Linear Algebra Variables
+		«FOR m : linearAlgebraVars»
+		«m.cppType» «m.name»;
 		«ENDFOR»
 		«ENDIF»
 		
@@ -108,6 +123,9 @@ class Ir2Kokkos extends CodeGenerator
 		, «uv.name»(«uv.defaultValue.content»)
 		«ENDFOR»
 		«FOR a : connectivityVars»
+		, «a.name»("«a.name»", «FOR d : a.dimensions SEPARATOR ', '»«d.nbElems»«ENDFOR»)
+		«ENDFOR»
+		«FOR a : linearAlgebraVars»
 		, «a.name»("«a.name»", «FOR d : a.dimensions SEPARATOR ', '»«d.nbElems»«ENDFOR»)
 		«ENDFOR»
 		{

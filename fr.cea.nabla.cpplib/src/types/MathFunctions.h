@@ -10,27 +10,41 @@
 #ifndef TYPES_MATHFUNCTIONS_H_
 #define TYPES_MATHFUNCTIONS_H_
 
-#include "types/Real2.h"
-#include "types/Real3.h"
+#include "types/Types.h"
 
 namespace nablalib
 {
 
 namespace MathFunctions
 {
-	double fabs(const double& v) noexcept;
-	double sqrt(const double& v) noexcept;
-	double min(const double& a, const double& b) noexcept;
-	double max(const double& a, const double& b) noexcept;
-	double dot(const Real2& a, const Real2& b) noexcept;
-	double dot(const Real3& a, const Real3& b) noexcept;
-	double norm(const Real2& a) noexcept;
-	double norm(const Real3& a) noexcept;
-	double det(const Real2& a, const Real2& b) noexcept;
-	double sin(const double& v) noexcept;
-	double cos(const double& v) noexcept;
-	double asin(const double& v) noexcept;
-	double acos(const double& v) noexcept;
+	double fabs(const double& v) noexcept { return std::fabs(v); }
+	double sqrt(const double& v) noexcept { return std::sqrt(v); }
+	double min(const double& a, const double& b) noexcept { return std::min(a, b); }
+	double max(const double& a, const double& b) noexcept { return std::max(a, b); }
+	double sin(const double& v) noexcept { return std::sin(v); }
+	double cos(const double& v) noexcept { return std::cos(v); }
+	double asin(const double& v) noexcept { return std::asin(v); }
+	double acos(const double& v) noexcept { return std::acos(v); }
+
+	template<size_t N>
+	double dot(const RealArray1D<N>& a, const RealArray1D<N>& b) noexcept
+	{
+		double result = 0.0;
+		for (int i=0 ; i<N ; ++i)
+			result += a[i]*b[i];
+		return result;
+	}
+
+	double det(const Real2& a, const Real2& b) noexcept
+	{
+		return a[0]*b[1] - a[1]*b[0];
+	}
+
+	template<size_t N>
+	double norm(const RealArray1D<N>& a) noexcept
+	{
+		return sqrt(dot(a,a));
+	}
 }
 }
 

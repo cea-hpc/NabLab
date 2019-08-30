@@ -1,46 +1,46 @@
 package fr.cea.nabla.javalib.types;
 
-public class OperatorExtensions 
+public class ArrayOperations 
 {
 	// INT
-	public static int[] operator_plus(int a, int[] b)
+	public static int[] plus(int a, int[] b)
 	{
-		return operator_plus(b, a);
+		return plus(b, a);
 	}
 
-	public static int[] operator_multiply(int a, int[] b)
+	public static int[] multiply(int a, int[] b)
 	{
-		return operator_multiply(b, a);
+		return multiply(b, a);
 	}
 
-	public static double[] operator_multiply(int a, double[] b)
+	public static double[] multiply(int a, double[] b)
 	{
-		return operator_multiply(b, a);
+		return multiply(b, a);
 	}
 
-	public static double[][] operator_multiply(int a, double[][] b)
+	public static double[][] multiply(int a, double[][] b)
 	{
-		return operator_multiply(b, a);
+		return multiply(b, a);
 	}
 
 	// REAL
-	public static double[] operator_plus(double a, double[] b)
+	public static double[] plus(double a, double[] b)
 	{
-		return operator_plus(b, a);
+		return plus(b, a);
 	}
 
-	public static double[] operator_multiply(double a, double[] b)
+	public static double[] multiply(double a, double[] b)
 	{
-		return operator_multiply(b, a);
+		return multiply(b, a);
 	}
 	
-	public static double[][] operator_multiply(double a, double[][] b)
+	public static double[][] multiply(double a, double[][] b)
 	{
-		return operator_multiply(b, a);
+		return multiply(b, a);
 	}
 
 	// INT ARRAY
-	public static int[] operator_plus(int[] a, int b) 
+	public static int[] plus(int[] a, int b) 
 	{
 		int[] result = new int[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -48,7 +48,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static int[] operator_minus(int[] a, int b) 
+	public static int[] minus(int[] a, int b) 
 	{
 		int[] result = new int[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -56,7 +56,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static int[] operator_multiply(int[] a, int b) 
+	public static int[] multiply(int[] a, int b) 
 	{
 		int[] result = new int[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -64,7 +64,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static int[] operator_divide(int[] a, int b) 
+	public static int[] divide(int[] a, int b) 
 	{
 		int[] result = new int[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -72,7 +72,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static double[] operator_plus(int[] a, double b) 
+	public static double[] plus(int[] a, double b) 
 	{
 		double[] result = new double[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -80,7 +80,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static double[] operator_minus(int[] a, double b) 
+	public static double[] minus(int[] a, double b) 
 	{
 		double[] result = new double[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -88,7 +88,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static double[] operator_multiply(int[] a, double b) 
+	public static double[] multiply(int[] a, double b) 
 	{
 		double[] result = new double[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -96,7 +96,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static double[] operator_divide(int[] a, double b) 
+	public static double[] divide(int[] a, double b) 
 	{
 		double[] result = new double[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -104,7 +104,7 @@ public class OperatorExtensions
 		return result;
 	}
 	
-	public static int[] operator_plus(int[] a, int[] b) 
+	public static int[] plus(int[] a, int[] b) 
 	{
 		int[] result = new int[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -112,7 +112,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static int[] operator_minus(int[] a, int[] b) 
+	public static int[] minus(int[] a, int[] b) 
 	{
 		int[] result = new int[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -120,7 +120,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static int[] operator_multiply(int[] a, int[] b) 
+	public static int[] multiply(int[] a, int[] b) 
 	{
 		int[] result = new int[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -128,7 +128,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static int[] operator_divide(int[] a, int[] b) 
+	public static int[] divide(int[] a, int[] b) 
 	{
 		int[] result = new int[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -137,27 +137,27 @@ public class OperatorExtensions
 	}
 	
 	// REAL ARRAY
-	public static double[] operator_plus(double[] a, int b) 
+	public static double[] plus(double[] a, int b) 
 	{
-		return operator_plus(a, (double)b);
+		return plus(a, (double)b);
 	}
 
-	public static double[] operator_minus(double[] a, int b) 
+	public static double[] minus(double[] a, int b) 
 	{
-		return operator_minus(a, (double)b);
+		return minus(a, (double)b);
 	}
 
-	public static double[] operator_multiply(double[] a, int b) 
+	public static double[] multiply(double[] a, int b) 
 	{
-		return operator_multiply(a, (double)b);
+		return multiply(a, (double)b);
 	}
 
-	public static double[] operator_divide(double[] a, int b) 
+	public static double[] divide(double[] a, int b) 
 	{
-		return operator_divide(a, (double)b);
+		return divide(a, (double)b);
 	}
 	
-	public static double[] operator_plus(double[] a, double b) 
+	public static double[] plus(double[] a, double b) 
 	{
 		double[] result = new double[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -165,7 +165,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static double[] operator_minus(double[] a, double b) 
+	public static double[] minus(double[] a, double b) 
 	{
 		double[] result = new double[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -173,7 +173,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static double[] operator_multiply(double[] a, double b) 
+	public static double[] multiply(double[] a, double b) 
 	{
 		double[] result = new double[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -181,7 +181,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static double[] operator_divide(double[] a, double b) 
+	public static double[] divide(double[] a, double b) 
 	{
 		double[] result = new double[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -189,7 +189,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static double[] operator_plus(double[] a, double[] b) 
+	public static double[] plus(double[] a, double[] b) 
 	{
 		double[] result = new double[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -197,7 +197,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static double[] operator_minus(double[] a, double[] b) 
+	public static double[] minus(double[] a, double[] b) 
 	{
 		double[] result = new double[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -205,7 +205,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static double[] operator_multiply(double[] a, double[] b) 
+	public static double[] multiply(double[] a, double[] b) 
 	{
 		double[] result = new double[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -213,7 +213,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static double[] operator_divide(double[] a, double[] b) 
+	public static double[] divide(double[] a, double[] b) 
 	{
 		double[] result = new double[a.length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -222,21 +222,21 @@ public class OperatorExtensions
 	}
 	
 	// REAL MATRIX
-	public static double[][] operator_multiply(double[][] a, int v) 
+	public static double[][] multiply(double[][] a, int b) 
 	{ 
-		return operator_multiply(a, (double)v);
+		return multiply(a, (double)b);
 	}
 	
-	public static double[][] operator_multiply(double[][] a, double v) 
+	public static double[][] multiply(double[][] a, double b) 
 	{ 
 		double[][] result = new double[a.length][a[0].length];
 		for (int i=0 ; i<a.length ; ++i)
 			for (int j=0 ; j<a[0].length ; ++j)
-				result[i][j] = a[i][j] * v;
+				result[i][j] = a[i][j] * b;
 		return result;
 	}
 	
-	public static double[][] operator_multiply(double[][] a, double[][] b) 
+	public static double[][] multiply(double[][] a, double[][] b) 
 	{ 
 		double[][] result = new double[a.length][a[0].length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -245,12 +245,12 @@ public class OperatorExtensions
 		return result;
 	}
 	
-	public static double[][] operator_divide(double[][] a, int v) 
+	public static double[][] divide(double[][] a, int v) 
 	{ 
-		return operator_divide(a, (double)v);
+		return divide(a, (double)v);
 	}
 	
-	public static double[][] operator_divide(double[][] a, double v) 
+	public static double[][] divide(double[][] a, double v) 
 	{ 
 		double[][] result = new double[a.length][a[0].length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -259,7 +259,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static double[][] operator_plus(double[][] a, double[][] b) 
+	public static double[][] plus(double[][] a, double[][] b) 
 	{ 
 		double[][] result = new double[a.length][a[0].length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -268,7 +268,7 @@ public class OperatorExtensions
 		return result;
 	}
 
-	public static double[][] operator_minus(double[][] a, double[][] b) 
+	public static double[][] minus(double[][] a, double[][] b) 
 	{ 
 		double[][] result = new double[a.length][a[0].length];
 		for (int i=0 ; i<a.length ; ++i)
@@ -277,7 +277,7 @@ public class OperatorExtensions
 		return result;
 	}
 	
-	public static double[][] operator_minus(double[][] a) 
+	public static double[][] minus(double[][] a) 
 	{ 
 		double[][] result = new double[a.length][a[0].length];
 		for (int i=0 ; i<a.length ; ++i)

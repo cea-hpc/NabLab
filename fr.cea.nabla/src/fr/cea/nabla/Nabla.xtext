@@ -120,8 +120,9 @@ VarRef: variable=[Var]
 	('{' spaceIterators+=SpaceIteratorRef (',' spaceIterators+=SpaceIteratorRef)* '}')? 
 	('[' indices+=INT (',' indices+=INT)? ']')?;
 
-InitializationExpression:
-	Expression |
+InitializationExpression: Expression | StrictInitializationExpression;
+
+StrictInitializationExpression:	
 	IntVectorConstant |
 	RealVectorConstant |
 	{IntMatrixConstant} '[' values+=IntVectorConstant (',' values+=IntVectorConstant)+ ']' |

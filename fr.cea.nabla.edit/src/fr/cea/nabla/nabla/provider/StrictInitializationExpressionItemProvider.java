@@ -4,34 +4,28 @@
 package fr.cea.nabla.nabla.provider;
 
 
-import fr.cea.nabla.nabla.NablaPackage;
-import fr.cea.nabla.nabla.RealVectorConstant;
-
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link fr.cea.nabla.nabla.RealVectorConstant} object.
+ * This is the item provider adapter for a {@link fr.cea.nabla.nabla.StrictInitializationExpression} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class RealVectorConstantItemProvider extends StrictInitializationExpressionItemProvider {
+public class StrictInitializationExpressionItemProvider extends InitializationExpressionItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public RealVectorConstantItemProvider(AdapterFactory adapterFactory) {
+	public StrictInitializationExpressionItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -46,42 +40,19 @@ public class RealVectorConstantItemProvider extends StrictInitializationExpressi
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addValuesPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This adds a property descriptor for the Values feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addValuesPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_RealVectorConstant_values_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_RealVectorConstant_values_feature", "_UI_RealVectorConstant_type"),
-				 NablaPackage.Literals.REAL_VECTOR_CONSTANT__VALUES,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.REAL_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This returns RealVectorConstant.gif.
+	 * This returns StrictInitializationExpression.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/RealVectorConstant"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/StrictInitializationExpression"));
 	}
 
 	/**
@@ -92,7 +63,7 @@ public class RealVectorConstantItemProvider extends StrictInitializationExpressi
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_RealVectorConstant_type");
+		return getString("_UI_StrictInitializationExpression_type");
 	}
 
 
@@ -106,12 +77,6 @@ public class RealVectorConstantItemProvider extends StrictInitializationExpressi
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
-
-		switch (notification.getFeatureID(RealVectorConstant.class)) {
-			case NablaPackage.REAL_VECTOR_CONSTANT__VALUES:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
-		}
 		super.notifyChanged(notification);
 	}
 

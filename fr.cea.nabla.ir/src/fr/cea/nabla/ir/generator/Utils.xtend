@@ -16,6 +16,7 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
+import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
@@ -56,6 +57,30 @@ class Utils
 			ReductionInstruction : false
 			Job : true
 			default : eContainer.topLevelLoop
+		}
+	}
+	
+	static def getOperatorName(String op)
+	{
+		switch op
+		{
+			case '/': 'divide'
+			case '-': 'minus'
+			case '*': 'multiply'
+			case '+': 'plus'
+		}
+	}
+
+	static def String initConstant(int[] dimSizes, String value)
+	{
+		if (dimSizes.empty) value
+		else 
+		{
+			val dim = dimSizes.head
+			val t = dimSizes.tail
+			val values = new ArrayList<String>
+			for (i : 0..<dim) values += initConstant(t, value)
+			'{' + values.join(',') + '}'
 		}
 	}
 }

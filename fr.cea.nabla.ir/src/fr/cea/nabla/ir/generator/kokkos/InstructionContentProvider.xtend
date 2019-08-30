@@ -47,9 +47,9 @@ abstract class InstructionContentProvider
 	def dispatch CharSequence getContent(ReductionInstruction it) 
 	'''
 		«IF !range.container.connectivity.indexEqualId»int[] «range.containerName»(«range.accessor»);«ENDIF»
-		«result.kokkosType» «result.name»(«result.defaultValue.content»);
+		«result.cppType» «result.name»(«result.defaultValue.content»);
 		{
-			Kokkos::«reduction.kokkosName»<«result.kokkosType»> reducer(«result.name»);
+			Kokkos::«reduction.kokkosName»<«result.cppType»> reducer(«result.name»);
 			«header»
 			{
 				«defineIndices»
@@ -71,10 +71,10 @@ abstract class InstructionContentProvider
 	'''
 	
 	private def dispatch getVarContent(SimpleVariable it)
-	'''«kokkosType» «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
+	'''«cppType» «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
 	
 	private def dispatch getVarContent(ConnectivityVariable it)
-	'''Kokkos::View<«kokkosType»> «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
+	'''«cppType» «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
 
 	def dispatch CharSequence getContent(InstructionBlock it) 
 	'''
@@ -133,7 +133,7 @@ abstract class InstructionContentProvider
 			«ENDFOR»
 		«ENDFOR»
 	'''
-
+	
 	private	def getIndexToId(IteratorRef it)
 	{
 		if (target.container.connectivity.indexEqualId || target.singleton) indexValue

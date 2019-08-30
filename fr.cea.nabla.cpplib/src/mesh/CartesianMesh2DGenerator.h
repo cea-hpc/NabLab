@@ -10,7 +10,7 @@
 #ifndef CARTESIAN_MESH_2D_GENERATOR_H_
 #define CARTESIAN_MESH_2D_GENERATOR_H_
 
-#include "types/Real2.h"
+#include "types/Types.h"
 
 namespace nablalib
 {

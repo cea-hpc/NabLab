@@ -14,15 +14,23 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
 
+import static extension fr.cea.nabla.ir.VariableExtensions.*
+
 class VariableExtensions 
 {
-	static def dispatch getKokkosType(SimpleVariable it) 
-	{ 
-		type.kokkosType
-	}
+	static def dispatch getCppType(SimpleVariable it) 
+	'''«type.cppType»'''
 	
-	static def dispatch getKokkosType(ConnectivityVariable it)
+	static def dispatch getCppType(ConnectivityVariable it)
 	{
-		getType.kokkosType + dimensions.map['*'].join
+		if (linearAlgebra)
+			switch dimensions.size
+			{
+				case 1: return 'VectorType'
+				case 2: return 'NablaSparseMatrix'
+				default: throw new RuntimeException("Not implemented exception")
+			}
+		else
+			'''Kokkos::View<«type.cppType»«FOR d : dimensions»*«ENDFOR»>'''
 	}
 }

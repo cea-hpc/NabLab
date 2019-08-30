@@ -15,7 +15,7 @@ import fr.cea.nabla.ir.ir.TimeIterationCopyJob
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.Job
 
-class JobFactory 
+class IrJobFactory 
 {
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrInstructionFactory

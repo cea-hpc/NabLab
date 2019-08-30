@@ -127,11 +127,12 @@
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InitializationExpression"/>
-  <eClassifiers xsi:type="ecore:EClass" name="IntVectorConstant" eSuperTypes="#//InitializationExpression">
+  <eClassifiers xsi:type="ecore:EClass" name="StrictInitializationExpression" eSuperTypes="#//InitializationExpression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="IntVectorConstant" eSuperTypes="#//StrictInitializationExpression">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="values" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RealVectorConstant" eSuperTypes="#//InitializationExpression">
+  <eClassifiers xsi:type="ecore:EClass" name="RealVectorConstant" eSuperTypes="#//StrictInitializationExpression">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="values" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
   </eClassifiers>
@@ -290,15 +291,15 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="arg" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="IntMatrixConstant" eSuperTypes="#//InitializationExpression">
+  <eClassifiers xsi:type="ecore:EClass" name="IntMatrixConstant" eSuperTypes="#//StrictInitializationExpression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
         eType="#//IntVectorConstant" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RealMatrixConstant" eSuperTypes="#//InitializationExpression">
+  <eClassifiers xsi:type="ecore:EClass" name="RealMatrixConstant" eSuperTypes="#//StrictInitializationExpression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
         eType="#//RealVectorConstant" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="BaseTypeConstant" eSuperTypes="#//InitializationExpression">
+  <eClassifiers xsi:type="ecore:EClass" name="BaseTypeConstant" eSuperTypes="#//StrictInitializationExpression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//Expression"

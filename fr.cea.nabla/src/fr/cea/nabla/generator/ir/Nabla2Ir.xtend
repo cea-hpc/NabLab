@@ -26,11 +26,10 @@ import fr.cea.nabla.nabla.VarRef
 class Nabla2Ir
 {
 	@Inject extension Nabla2IrUtils
-	@Inject extension JobFactory
+	@Inject extension IrJobFactory
 	@Inject extension IrFunctionFactory
 	@Inject extension IrVariableFactory
 	@Inject extension IrConnectivityFactory
-	@Inject extension IrExpressionFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension DeclarationProvider
 	@Inject extension VarRefExtensions
@@ -43,29 +42,25 @@ class Nabla2Ir
 		m.items.forEach[x | items += x.toIrItemType]
 		m.connectivities.forEach[x | connectivities += x.toIrConnectivity]
 		
-		// Pour les fonctions, il ne faut pas parcourir les déclarations du bloc car
-		// il peut également y avoir des fonctions externes. Il faut donc regarder tous les appels
+		/* 
+		 * To create functions, do not iterate on declarations to prevent creating external functions.
+		 * Look for FunctionCall instead to link to the external function object properly.
+		 * Same method fir reductions.
+		 */
 		m.eAllContents.filter(FunctionCall).forEach[x | functions += x.function.toIrFunction(x.declaration)]
-		// Même remarque pour les réductions que pour les fonctions
 		m.eAllContents.filter(ReductionCall).forEach[x | reductions += x.reduction.toIrReduction(x.declaration)]
 		
-		// Création de l'ensemble des variables globales
+		// Global variables creation
 		for (vDecl : m.variables)
 		{
 			switch vDecl
 			{
-				ScalarVarDefinition: 
-				{
-					val irVar = vDecl.variable.toIrSimpleVariable
-					irVar.defaultValue = vDecl.defaultValue.toIrExpression
-					irVar.const = vDecl.const
-					variables += irVar
-				}
+				ScalarVarDefinition: variables += vDecl.variable.toIrSimpleVariable
 				VarGroupDeclaration: vDecl.variables.forEach[x | variables += x.toIrVariable]
 			}
 		}
 		
-		// il faut créer les variables au temps n+1 et les jobs de copie de Xn+1 <- Xn
+		// Time n+1 variables and EndOfInitJob creation 
 		val timeIteratorVarRefsByVariable = m.eAllContents.filter(VarRef).filter[timeIterator !== null].groupBy[variable]
 		for (v : timeIteratorVarRefsByVariable.keySet)
 		{

@@ -24,6 +24,8 @@ import fr.cea.nabla.ir.ir.Import;
 import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.InstructionBlock;
 import fr.cea.nabla.ir.ir.InstructionJob;
+import fr.cea.nabla.ir.ir.IntMatrixConstant;
+import fr.cea.nabla.ir.ir.IntVectorConstant;
 import fr.cea.nabla.ir.ir.IrAnnotable;
 import fr.cea.nabla.ir.ir.IrAnnotation;
 import fr.cea.nabla.ir.ir.IrFactory;
@@ -290,6 +292,20 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass baseTypeConstantEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass intVectorConstantEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass intMatrixConstantEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -1371,6 +1387,42 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getIntVectorConstant() {
+		return intVectorConstantEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getIntVectorConstant_Values() {
+		return (EAttribute)intVectorConstantEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getIntMatrixConstant() {
+		return intMatrixConstantEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getIntMatrixConstant_Values() {
+		return (EReference)intMatrixConstantEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getRealVectorConstant() {
 		return realVectorConstantEClass;
 	}
@@ -1880,6 +1932,12 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		baseTypeConstantEClass = createEClass(BASE_TYPE_CONSTANT);
 		createEReference(baseTypeConstantEClass, BASE_TYPE_CONSTANT__VALUE);
 
+		intVectorConstantEClass = createEClass(INT_VECTOR_CONSTANT);
+		createEAttribute(intVectorConstantEClass, INT_VECTOR_CONSTANT__VALUES);
+
+		intMatrixConstantEClass = createEClass(INT_MATRIX_CONSTANT);
+		createEReference(intMatrixConstantEClass, INT_MATRIX_CONSTANT__VALUES);
+
 		realVectorConstantEClass = createEClass(REAL_VECTOR_CONSTANT);
 		createEAttribute(realVectorConstantEClass, REAL_VECTOR_CONSTANT__VALUES);
 
@@ -1993,6 +2051,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		minConstantEClass.getESuperTypes().add(this.getExpression());
 		maxConstantEClass.getESuperTypes().add(this.getExpression());
 		baseTypeConstantEClass.getESuperTypes().add(this.getExpression());
+		intVectorConstantEClass.getESuperTypes().add(this.getExpression());
+		intMatrixConstantEClass.getESuperTypes().add(this.getExpression());
 		realVectorConstantEClass.getESuperTypes().add(this.getExpression());
 		realMatrixConstantEClass.getESuperTypes().add(this.getExpression());
 		functionCallEClass.getESuperTypes().add(this.getExpression());
@@ -2141,6 +2201,12 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(baseTypeConstantEClass, BaseTypeConstant.class, "BaseTypeConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getBaseTypeConstant_Value(), this.getExpression(), null, "value", null, 1, 1, BaseTypeConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(intVectorConstantEClass, IntVectorConstant.class, "IntVectorConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getIntVectorConstant_Values(), ecorePackage.getEInt(), "values", null, 0, -1, IntVectorConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(intMatrixConstantEClass, IntMatrixConstant.class, "IntMatrixConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getIntMatrixConstant_Values(), this.getIntVectorConstant(), null, "values", null, 0, -1, IntMatrixConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(realVectorConstantEClass, RealVectorConstant.class, "RealVectorConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getRealVectorConstant_Values(), ecorePackage.getEDouble(), "values", null, 0, -1, RealVectorConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

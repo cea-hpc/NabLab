@@ -671,6 +671,29 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.StrictInitializationExpression} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected StrictInitializationExpressionItemProvider strictInitializationExpressionItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.StrictInitializationExpression}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createStrictInitializationExpressionAdapter() {
+		if (strictInitializationExpressionItemProvider == null) {
+			strictInitializationExpressionItemProvider = new StrictInitializationExpressionItemProvider(this);
+		}
+
+		return strictInitializationExpressionItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.IntVectorConstant} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1624,6 +1647,7 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (expressionItemProvider != null) expressionItemProvider.dispose();
 		if (varRefItemProvider != null) varRefItemProvider.dispose();
 		if (initializationExpressionItemProvider != null) initializationExpressionItemProvider.dispose();
+		if (strictInitializationExpressionItemProvider != null) strictInitializationExpressionItemProvider.dispose();
 		if (intVectorConstantItemProvider != null) intVectorConstantItemProvider.dispose();
 		if (realVectorConstantItemProvider != null) realVectorConstantItemProvider.dispose();
 		if (timeIteratorItemProvider != null) timeIteratorItemProvider.dispose();

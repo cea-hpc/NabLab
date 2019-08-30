@@ -200,6 +200,14 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createBaseTypeConstantAdapter();
 			}
 			@Override
+			public Adapter caseIntVectorConstant(IntVectorConstant object) {
+				return createIntVectorConstantAdapter();
+			}
+			@Override
+			public Adapter caseIntMatrixConstant(IntMatrixConstant object) {
+				return createIntMatrixConstantAdapter();
+			}
+			@Override
 			public Adapter caseRealVectorConstant(RealVectorConstant object) {
 				return createRealVectorConstantAdapter();
 			}
@@ -716,6 +724,34 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createBaseTypeConstantAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IntVectorConstant <em>Int Vector Constant</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.IntVectorConstant
+	 * @generated
+	 */
+	public Adapter createIntVectorConstantAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IntMatrixConstant <em>Int Matrix Constant</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.IntMatrixConstant
+	 * @generated
+	 */
+	public Adapter createIntMatrixConstantAdapter() {
 		return null;
 	}
 

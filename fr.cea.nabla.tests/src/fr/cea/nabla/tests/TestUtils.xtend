@@ -52,7 +52,7 @@ class TestUtils
 		module Test;
 	'''
 
-	//TODO : These options should be filled in nablagen
+	//TODO These options should be filled in nablagen
 	static def String getMandatoryOptions()
 	'''
 	// Options obligatoires pour générer

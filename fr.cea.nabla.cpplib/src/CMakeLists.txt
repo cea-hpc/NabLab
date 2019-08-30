@@ -7,5 +7,5 @@ SET(Kokkos_HOME "~/kokkos/kokkos-install")
 include_directories("${CMAKE_SOURCE_DIR};${Kokkos_HOME}/include")
 link_directories("${Kokkos_HOME}/lib;/usr/lib/x86_64-linux-gnu")
 
-add_library(cppnabla types/ArrayOperations.cc types/Real3.cc types/Real3x3.cc types/MathFunctions.cc types/LinearAlgebraFunctions.cc types/Matrix.cc mesh/NumericMesh2D.cc mesh/CartesianMesh2DGenerator.cc mesh/VtkFileWriter2D.cc utils/Utils.cc utils/Timer.cc)
+add_library(cppnabla types/LinearAlgebraFunctions.cc types/Matrix.cc mesh/NumericMesh2D.cc mesh/CartesianMesh2DGenerator.cc mesh/VtkFileWriter2D.cc utils/Utils.cc utils/Timer.cc)
 

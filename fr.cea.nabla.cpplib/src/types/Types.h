@@ -9,9 +9,16 @@
  *******************************************************************************/
 #ifndef TYPES_H_
 #define TYPES_H_
-#include "types/Real2.h"
-#include "types/Real3.h"
-#include "types/Real2x2.h"
-#include "types/Real3x3.h"
-#include "types/MathFunctions.h"
+
+#include <array>
+
+using namespace std;
+
+template<size_t N> using IntArray1D = array<int, N>;
+template<size_t N, size_t M> using IntArray2D = array<IntArray1D<M>, N>;
+template<size_t N> using  RealArray1D = array<double, N>;
+template<size_t N, size_t M> using RealArray2D = array<RealArray1D<M>, N>;
+
+using Real2 = RealArray1D<2>;
+
 #endif

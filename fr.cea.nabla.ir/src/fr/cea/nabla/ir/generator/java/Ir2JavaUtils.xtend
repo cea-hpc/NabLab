@@ -30,15 +30,4 @@ class Ir2JavaUtils
 			case REAL: 'double'
 		}
 	}
-	
-	static def getOperatorName(String op)
-	{
-		switch op
-		{
-			case '/': 'divide'
-			case '-': 'minus'
-			case '*': 'multiply'
-			case '+': 'plus'
-		}
-	}
 }

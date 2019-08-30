@@ -10,8 +10,8 @@
 #ifndef MESH_NUMERICMESH2D_H_
 #define MESH_NUMERICMESH2D_H_
 
+#include "types/Types.h"
 #include "mesh/Mesh.h"
-#include "types/Real2.h"
 
 using namespace std;
 

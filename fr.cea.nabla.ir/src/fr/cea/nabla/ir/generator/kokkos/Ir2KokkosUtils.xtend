@@ -10,18 +10,38 @@
 package fr.cea.nabla.ir.generator.kokkos
 
 import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.PrimitiveType
 
 class Ir2KokkosUtils 
 {
-	static def getKokkosType(BaseType t)
+	static def getCppType(BaseType t)
 	{
-		val rootType = switch t.root
+		val rootType = t.root.cppType
+		if (t.sizes.empty) 
+			rootType
+		else
+			t.root.arrayPrimitiveType + 'Array' + t.sizes.size + 'D<' + t.sizes.join(',') + '>'
+	}
+
+	static def getCppType(PrimitiveType t)
+	{
+		switch t
 		{
 			case VOID : 'void'
 			case BOOL: 'bool'
 			case INT: 'int'
 			case REAL: 'double'
 		}
-		return rootType + t.sizes.map[x | '[' + x + ']'].join
+ 	}	
+
+	private static def getArrayPrimitiveType(PrimitiveType t)
+	{
+		switch t
+		{
+			case VOID : throw new RuntimeException('Not implemented')
+			case BOOL: throw new RuntimeException('Not implemented')
+			case INT: 'Int'
+			case REAL: 'Real'
+		}
  	}	
 }

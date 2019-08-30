@@ -256,6 +256,24 @@ public interface IrFactory extends EFactory {
 	BaseTypeConstant createBaseTypeConstant();
 
 	/**
+	 * Returns a new object of class '<em>Int Vector Constant</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Int Vector Constant</em>'.
+	 * @generated
+	 */
+	IntVectorConstant createIntVectorConstant();
+
+	/**
+	 * Returns a new object of class '<em>Int Matrix Constant</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Int Matrix Constant</em>'.
+	 * @generated
+	 */
+	IntMatrixConstant createIntMatrixConstant();
+
+	/**
 	 * Returns a new object of class '<em>Real Vector Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

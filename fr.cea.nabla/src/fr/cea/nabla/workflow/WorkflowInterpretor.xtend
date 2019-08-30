@@ -42,10 +42,27 @@ class WorkflowInterpretor
 	
 	def launch(Workflow workflow)
 	{	
-		val msg = 'STARTING ' + workflow.name + '\n'
-		logger.info(msg)
-		traceListeners.forEach[write(msg)]
-		workflow.roots.forEach[c | launch(c, workflow.nablaModule)]
+		try
+		{
+			val msg = 'STARTING ' + workflow.name + '\n'
+			logger.info(msg)
+			traceListeners.forEach[write(msg)]
+			workflow.roots.forEach[c | launch(c, workflow.nablaModule)]	
+		}
+		catch(Exception e)
+		{
+			val msgheader = '\n***' + e.class.name + ': ' + e.message + '\n'
+			logger.info(msgheader)
+			traceListeners.forEach[write(msgheader)]
+			if (e.stackTrace !== null && !e.stackTrace.empty)
+			{
+				val stack = e.stackTrace.head
+				val msg = 'at ' + stack.className + '.' + stack.methodName + '(' + stack.fileName + ':' + stack.lineNumber + ')\n'
+				logger.info(msg)
+				traceListeners.forEach[write(msg)]
+			}
+			throw(e)
+		}
 	}
 	
 	def addWorkflowTraceLister(IWorkflowTraceListener listener)

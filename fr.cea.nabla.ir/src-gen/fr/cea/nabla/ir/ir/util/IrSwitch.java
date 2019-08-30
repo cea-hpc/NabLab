@@ -320,6 +320,22 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.INT_VECTOR_CONSTANT: {
+				IntVectorConstant intVectorConstant = (IntVectorConstant)theEObject;
+				T result = caseIntVectorConstant(intVectorConstant);
+				if (result == null) result = caseExpression(intVectorConstant);
+				if (result == null) result = caseIrAnnotable(intVectorConstant);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.INT_MATRIX_CONSTANT: {
+				IntMatrixConstant intMatrixConstant = (IntMatrixConstant)theEObject;
+				T result = caseIntMatrixConstant(intMatrixConstant);
+				if (result == null) result = caseExpression(intMatrixConstant);
+				if (result == null) result = caseIrAnnotable(intMatrixConstant);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.REAL_VECTOR_CONSTANT: {
 				RealVectorConstant realVectorConstant = (RealVectorConstant)theEObject;
 				T result = caseRealVectorConstant(realVectorConstant);
@@ -898,6 +914,36 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseBaseTypeConstant(BaseTypeConstant object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Int Vector Constant</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Int Vector Constant</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIntVectorConstant(IntVectorConstant object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Int Matrix Constant</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Int Matrix Constant</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIntMatrixConstant(IntMatrixConstant object) {
 		return null;
 	}
 

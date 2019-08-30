@@ -11,6 +11,7 @@
 #define TYPES_ARRAYOPERATIONS_H_
 
 #include <iostream>
+#include "types/Types.h"
 
 // Kokkos headers
 #include "Kokkos_Core.hpp"
@@ -19,54 +20,335 @@ namespace nablalib
 {
 namespace ArrayOperations
 {
+	using namespace std;
+
 	// INT
-	Kokkos::View<int*> plus(int a, Kokkos::View<int*> b);
-	Kokkos::View<int*> multiply(int a, Kokkos::View<int*> b);
-	Kokkos::View<double*> multiply(int a, Kokkos::View<double*> b);
-	Kokkos::View<double**> multiply(int a, Kokkos::View<double**> b);
+	template<size_t N> IntArray1D<N> plus(int a, IntArray1D<N> b)
+	{
+		IntArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = b[i] + a;
+		return result;
+	}
+
+	template<size_t N> IntArray1D<N>  multiply(int a, IntArray1D<N> b)
+	{
+		IntArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = b[i] * a;
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> multiply(int a, RealArray1D<N> b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = b[i] * a;
+		return result;
+	}
+
+	template<size_t N, size_t M> RealArray2D<N, M> multiply(int a, RealArray2D<N, M> b)
+	{
+		RealArray2D<N, M> result;
+		for (size_t i=0 ; i<N ; ++i)
+			for (size_t j=0 ; j<M ; ++j)
+				result[i][j] = b[i][j] * a;
+		return result;
+	}
+
 
 	// REAL
-	Kokkos::View<double*> plus(double a, Kokkos::View<double*> b);
-	Kokkos::View<double*> multiply(double a, Kokkos::View<double*> b);
-	Kokkos::View<double**> multiply(double a, Kokkos::View<double**> b);
+	template<size_t N> RealArray1D<N> plus(double a, RealArray1D<N> b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = b[i] + a;
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> multiply(double a, RealArray1D<N> b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = b[i] * a;
+		return result;
+	}
+
+	template<size_t N, size_t M> RealArray2D<N, M> multiply(double a, RealArray2D<N, M> b)
+	{
+		RealArray2D<N, M> result;
+		for (size_t i=0 ; i<N ; ++i)
+			for (size_t j=0 ; j<M ; ++j)
+				result[i][j] = b[i][j] * a;
+		return result;
+	}
 
 	// INT ARRAY
-	Kokkos::View<int*> plus(Kokkos::View<int*> a, int b);
-	Kokkos::View<int*> minus(Kokkos::View<int*> a, int b);
-	Kokkos::View<int*> multiply(Kokkos::View<int*> a, int b);
-	Kokkos::View<int*> divide(Kokkos::View<int*> a, int b);
-	Kokkos::View<double*> plus(Kokkos::View<int*> a, double b);
-	Kokkos::View<double*> minus(Kokkos::View<int*> a, double b);
-	Kokkos::View<double*> multiply(Kokkos::View<int*> a, double b);
-	Kokkos::View<double*> divide(Kokkos::View<int*> a, double b);
-	Kokkos::View<int*> plus(Kokkos::View<int*> a, Kokkos::View<int*> b);
-	Kokkos::View<int*> minus(Kokkos::View<int*> a, Kokkos::View<int*> b);
-	Kokkos::View<int*> multiply(Kokkos::View<int*> a, Kokkos::View<int*> b);
-	Kokkos::View<int*> divide(Kokkos::View<int*> a, Kokkos::View<int*> b);
+	template<size_t N> IntArray1D<N> plus(IntArray1D<N> a, int b)
+	{
+		IntArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] + b;
+		return result;
+	}
+
+	template<size_t N> IntArray1D<N> minus(IntArray1D<N> a, int b)
+	{
+		IntArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] - b;
+		return result;
+	}
+
+	template<size_t N> IntArray1D<N> multiply(IntArray1D<N> a, int b)
+	{
+		IntArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] * b;
+		return result;
+	}
+
+	template<size_t N> IntArray1D<N> divide(IntArray1D<N> a, int b)
+	{
+		IntArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] / b;
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> plus(IntArray1D<N> a, double b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] + b;
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> minus(IntArray1D<N> a, double b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] - b;
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> multiply(IntArray1D<N> a, double b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] * b;
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> divide(IntArray1D<N> a, double b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] / b;
+		return result;
+	}
+
+	template<size_t N> IntArray1D<N> plus(IntArray1D<N> a, IntArray1D<N> b)
+	{
+		IntArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] + b[i];
+		return result;
+	}
+
+	template<size_t N> IntArray1D<N> minus(IntArray1D<N> a, IntArray1D<N> b)
+	{
+		IntArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] - b[i];
+		return result;
+	}
+
+	template<size_t N> IntArray1D<N> multiply(IntArray1D<N> a, IntArray1D<N> b)
+	{
+		IntArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] * b[i];
+		return result;
+	}
+
+	template<size_t N> IntArray1D<N> divide(IntArray1D<N> a, IntArray1D<N> b)
+	{
+		IntArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] / b[i];
+		return result;
+	}
 
 	// REAL ARRAY
-	Kokkos::View<double*> plus(Kokkos::View<double*> a, int b);
-	Kokkos::View<double*> minus(Kokkos::View<double*> a, int b);
-	Kokkos::View<double*> multiply(Kokkos::View<double*> a, int b);
-	Kokkos::View<double*> divide(Kokkos::View<double*> a, int b);
-	Kokkos::View<double*> plus(Kokkos::View<double*> a, double b);
-	Kokkos::View<double*> minus(Kokkos::View<double*> a, double b);
-	Kokkos::View<double*> multiply(Kokkos::View<double*> a, double b);
-	Kokkos::View<double*> divide(Kokkos::View<double*> a, double b);
-	Kokkos::View<double*> plus(Kokkos::View<double*> a, Kokkos::View<double*> b);
-	Kokkos::View<double*> minus(Kokkos::View<double*> a, Kokkos::View<double*> b);
-	Kokkos::View<double*> multiply(Kokkos::View<double*> a, Kokkos::View<double*> b);
-	Kokkos::View<double*> divide(Kokkos::View<double*> a, Kokkos::View<double*> b);
+	template<size_t N> RealArray1D<N> plus(RealArray1D<N> a, int b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] + b;
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> minus(RealArray1D<N> a, int b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] - b;
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> multiply(RealArray1D<N> a, int b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] * b;
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> divide(RealArray1D<N> a, int b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] / b;
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> plus(RealArray1D<N> a, double b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] + b;
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> minus(RealArray1D<N> a, double b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] - b;
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> multiply(RealArray1D<N> a, double b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] * b;
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> divide(RealArray1D<N> a, double b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] / b;
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> plus(RealArray1D<N> a, RealArray1D<N> b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] + b[i];
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> minus(RealArray1D<N> a, RealArray1D<N> b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] - b[i];
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> multiply(RealArray1D<N> a, RealArray1D<N> b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] * b[i];
+		return result;
+	}
+
+	template<size_t N> RealArray1D<N> divide(RealArray1D<N> a, RealArray1D<N> b)
+	{
+		RealArray1D<N> result;
+		for (size_t i=0 ; i<N ; ++i)
+			result[i] = a[i] / b[i];
+		return result;
+	}
 
 	// REAL MATRIX
-	Kokkos::View<double**> multiply(Kokkos::View<double**> a, int b);
-	Kokkos::View<double**> multiply(Kokkos::View<double**> a, double b);
-	Kokkos::View<double**> multiply(Kokkos::View<double**> a, Kokkos::View<double**> b);
-	Kokkos::View<double**> divide(Kokkos::View<double**> a, int b);
-	Kokkos::View<double**> divide(Kokkos::View<double**> a, double b);
-	Kokkos::View<double**> plus(Kokkos::View<double**> a, Kokkos::View<double**> b);
-	Kokkos::View<double**> minus(Kokkos::View<double**> a, Kokkos::View<double**> b);
-	Kokkos::View<double**> minus(Kokkos::View<double**> a);
+	template<size_t N, size_t M> RealArray2D<N, M> multiply(RealArray2D<N, M> a, int b)
+	{
+		RealArray2D<N, M> result;
+		for (size_t i=0 ; i<N ; ++i)
+			for (size_t j=0 ; j<M ; ++j)
+				result[i][j] = a[i][j] * b;
+		return result;
+	}
+
+	template<size_t N, size_t M> RealArray2D<N, M> multiply(RealArray2D<N, M> a, double b)
+	{
+		RealArray2D<N, M> result;
+		for (size_t i=0 ; i<N ; ++i)
+			for (size_t j=0 ; j<M ; ++j)
+				result[i][j] = a[i][j] * b;
+		return result;
+	}
+
+	template<size_t N, size_t M> RealArray2D<N, M> multiply(RealArray2D<N, M> a, RealArray2D<N, M> b)
+	{
+		RealArray2D<N, M> result;
+		for (size_t i=0 ; i<N ; ++i)
+			for (size_t j=0 ; j<M ; ++j)
+				result[i][j] = a[i][j] * b[i][j];
+		return result;
+	}
+
+	template<size_t N, size_t M> RealArray2D<N, M> divide(RealArray2D<N, M> a, int b)
+	{
+		RealArray2D<N, M> result;
+		for (size_t i=0 ; i<N ; ++i)
+			for (size_t j=0 ; j<M ; ++j)
+				result[i][j] = a[i][j] / b;
+		return result;
+	}
+
+	template<size_t N, size_t M> RealArray2D<N, M> divide(RealArray2D<N, M> a, double b)
+	{
+		RealArray2D<N, M> result;
+		for (size_t i=0 ; i<N ; ++i)
+			for (size_t j=0 ; j<M ; ++j)
+				result[i][j] = a[i][j] / b;
+		return result;
+	}
+
+	template<size_t N, size_t M> RealArray2D<N, M> plus(RealArray2D<N, M> a, RealArray2D<N, M> b)
+	{
+		RealArray2D<N, M> result;
+		for (size_t i=0 ; i<N ; ++i)
+			for (size_t j=0 ; j<M ; ++j)
+				result[i][j] = a[i][j] + b[i][j];
+		return result;
+	}
+
+	template<size_t N, size_t M> RealArray2D<N, M> minus(RealArray2D<N, M> a, RealArray2D<N, M> b)
+	{
+		RealArray2D<N, M> result;
+		for (size_t i=0 ; i<N ; ++i)
+			for (size_t j=0 ; j<M ; ++j)
+				result[i][j] = a[i][j] - b[i][j];
+		return result;
+	}
+
+	template<size_t N, size_t M> RealArray2D<N, M> minus(RealArray2D<N, M> a)
+	{
+		RealArray2D<N, M> result;
+		for (size_t i=0 ; i<N ; ++i)
+			for (size_t j=0 ; j<M ; ++j)
+				result[i][j] = -a[i][j];
+		return result;
+	}
 }
 }
 

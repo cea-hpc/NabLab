@@ -38,7 +38,6 @@ workflow TestDefaultGenerationChain transforms ImplicitHeatEquation
 	Ir2Code kokkosGenerator follows fillHlts
 	{
 		language = Kokkos;
-		disabled;
 		outputDir = "/NablaExamplesKokkos/src";
 	}
 }

@@ -2,7 +2,6 @@ package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.BaseType
-import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.Constant
 import fr.cea.nabla.ir.ir.ContractedIf
@@ -12,11 +11,8 @@ import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.PrimitiveType
-import fr.cea.nabla.ir.ir.RealMatrixConstant
-import fr.cea.nabla.ir.ir.RealVectorConstant
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
-import java.util.Arrays
 
 class ExpressionInterpreter 
 {
@@ -80,38 +76,6 @@ class ExpressionInterpreter
 			case REAL: new RealValue(Double.MAX_VALUE)
 			default: throw new UnexpectedTypeException(#["Int", "Real"], type.root.literal)
 		}
-	}
-	
-	static def dispatch ExpressionValue interprete(BaseTypeConstant it) 
-	{ 
-		val initValue = value.interprete as RealValue
-		if (type.sizes.empty)
-			initValue
-		else
-		{
-			var totalSize = 1
-			for (s : type.sizes) totalSize *= s
-			val values = newDoubleArrayOfSize(totalSize)
-			Arrays::fill(values, initValue.value)
-			new RealArrayValue(type.sizes, values)
-		}
-	}
-
-	static def dispatch ExpressionValue interprete(RealVectorConstant it) 
-	{
-		new RealArrayValue(#[values.size], values)
-	}
-	
-	static def dispatch ExpressionValue interprete(RealMatrixConstant it) 
-	{
-		val nbRows = values.size
-		val nbCols = values.head.values.size
-		val flattenValues = newDoubleArrayOfSize(nbRows * nbCols)
-		var i = 0
-		for (row : values)
-			for (col : row.values)
-				flattenValues.set(i++, col)
-		new RealArrayValue(#[nbRows, nbCols], flattenValues)
 	}
 
 	static def dispatch ExpressionValue interprete(FunctionCall it)

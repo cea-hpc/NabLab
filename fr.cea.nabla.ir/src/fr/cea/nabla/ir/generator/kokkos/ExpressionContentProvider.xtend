@@ -29,20 +29,29 @@ import static extension fr.cea.nabla.ir.BaseTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.VariableExtensions.isScalarConst
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
+import static extension fr.cea.nabla.ir.generator.Utils.*
 import fr.cea.nabla.ir.ir.BaseTypeConstant
+import fr.cea.nabla.ir.ir.IntVectorConstant
+import fr.cea.nabla.ir.ir.IntMatrixConstant
+import fr.cea.nabla.ir.ir.RealVectorConstant
+import fr.cea.nabla.ir.ir.RealMatrixConstant
 
 class ExpressionContentProvider
 {
-	//TODO A valider Correction MPO
-	static def dispatch CharSequence getContent(BaseTypeConstant it)
-	{
-		value.content
-	}
-	
 	static def dispatch CharSequence getContent(ContractedIf it) 
 	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
 
-	static def dispatch CharSequence getContent(BinaryExpression it) '''«left.content» «operator» «right.content»'''
+	static def dispatch CharSequence getContent(BinaryExpression it) 
+	{
+		val lContent = left.content
+		val rContent = right.content
+
+		if (left.type.scalar && right.type.scalar) 
+			'''«lContent» «operator» «rContent»'''
+		else 
+			'''ArrayOperations::«operator.operatorName»(«lContent», «rContent»)'''
+	}
+	
 	static def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
 	static def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
 	static def dispatch CharSequence getContent(Constant it) '''«value»'''
@@ -66,12 +75,29 @@ class ExpressionContentProvider
 			default: throw new Exception('Invalid expression Max for type: ' + getType().label)
 		}
 	}
+	
+	static def dispatch CharSequence getContent(BaseTypeConstant it) 
+	{
+		initConstant(type.sizes, value.content.toString)
+	}
+	
+	static def dispatch CharSequence getContent(IntVectorConstant it) 
+	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v»«ENDFOR»'''
+	
+	static def dispatch CharSequence getContent(IntMatrixConstant it) 
+	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
+	
+	static def dispatch CharSequence getContent(RealVectorConstant it) 
+	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v»«ENDFOR»'''
+	
+	static def dispatch CharSequence getContent(RealMatrixConstant it) 
+	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
 
 	static def dispatch CharSequence getContent(FunctionCall it) 
 	'''«function.provider»Functions::«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
 	static def dispatch CharSequence getContent(VarRef it) 
-	'''«codeName»«iteratorsContent»«FOR d:indices BEFORE '('  SEPARATOR ',' AFTER ')'»«d»«ENDFOR»'''
+	'''«codeName»«iteratorsContent»«FOR d:indices BEFORE '['  SEPARATOR '][' AFTER ']'»«d»«ENDFOR»'''
 
 	private static def getCodeName(VarRef it)
 	{

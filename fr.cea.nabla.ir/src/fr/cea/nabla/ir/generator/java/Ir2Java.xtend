@@ -64,16 +64,16 @@ class Ir2Java extends CodeGenerator
 
 			// Global Variables
 			«val globals = variables.filter(SimpleVariable).filter[!const]»
-			«val globalsByType = globals.groupBy[type.javaType]»
+			«val globalsByType = globals.groupBy[javaType]»
 			«FOR type : globalsByType.keySet»
 			private «type» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 			«ENDFOR»
-			«val connectivityVars = variables.filter(ConnectivityVariable).filter[!linearAlgebra].groupBy[type]»
+			«val connectivityVars = variables.filter(ConnectivityVariable).filter[!linearAlgebra].groupBy[javaType]»
 			«IF !connectivityVars.empty»
 			
 			// Connectivity Variables
 			«FOR type : connectivityVars.keySet»
-			private «type.javaType» «FOR v : connectivityVars.get(type) SEPARATOR ', '»«v.name»«FOR i : 1..v.dimensions.length»[]«ENDFOR»«ENDFOR»;
+			private «type» «FOR v : connectivityVars.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 			«ENDFOR»
 			«ENDIF»
 			«IF !linearAlgebraVars.empty»
@@ -187,8 +187,8 @@ class Ir2Java extends CodeGenerator
 	{
 		switch v.dimensions.size
 		{
-			case 1: 'Vector.createSparseVector(' + v.dimensions.get(0).nbElems + ')'
-			case 2: 'Matrix.createSparseMatrix(' + v.dimensions.map[nbElems].join(', ') + ')'
+			case 1: 'Vector.createDenseVector(' + v.dimensions.get(0).nbElems + ')'
+			case 2: 'Matrix.createDenseMatrix(' + v.dimensions.map[nbElems].join(', ') + ')'
 			default: throw new RuntimeException("Not implemented exception")
 		}
 	}

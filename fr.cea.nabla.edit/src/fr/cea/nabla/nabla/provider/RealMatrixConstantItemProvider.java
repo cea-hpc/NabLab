@@ -25,7 +25,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * <!-- end-user-doc -->
  * @generated
  */
-public class RealMatrixConstantItemProvider extends InitializationExpressionItemProvider {
+public class RealMatrixConstantItemProvider extends StrictInitializationExpressionItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->

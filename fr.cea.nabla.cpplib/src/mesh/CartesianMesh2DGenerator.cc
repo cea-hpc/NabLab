@@ -28,7 +28,8 @@ CartesianMesh2DGenerator::generate(int nbXQuads, int nbYQuads, double xSize, dou
 	int inner_node_id_(0);
 	for (int j(0); j <= nbYQuads; ++j) {
 		for (int i(0); i <= nbXQuads; ++i) {
-		  mesh->m_nodes[node_id_] = move(Real2(xSize * i, ySize * j));
+			Real2 tmp = { xSize * i, ySize * j };
+			mesh->m_nodes[node_id_] = move(tmp);
 			if (i!=0 && j!=0 && i!=nbXQuads && j!=nbYQuads)
 				mesh->m_innerNodeIds[inner_node_id_++] = node_id_;
 			++node_id_;

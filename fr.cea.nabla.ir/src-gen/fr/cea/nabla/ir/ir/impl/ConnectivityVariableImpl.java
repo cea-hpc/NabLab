@@ -31,7 +31,6 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityVariableImpl#getDimensions <em>Dimensions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityVariableImpl#getDefaultValue <em>Default Value</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityVariableImpl#isPersist <em>Persist</em>}</li>
  * </ul>
  *
  * @generated
@@ -56,26 +55,6 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	 * @ordered
 	 */
 	protected VarRef defaultValue;
-
-	/**
-	 * The default value of the '{@link #isPersist() <em>Persist</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isPersist()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean PERSIST_EDEFAULT = false;
-
-	/**
-	 * The cached value of the '{@link #isPersist() <em>Persist</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isPersist()
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean persist = PERSIST_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -183,27 +162,6 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isPersist() {
-		return persist;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setPersist(boolean newPersist) {
-		boolean oldPersist = persist;
-		persist = newPersist;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.CONNECTIVITY_VARIABLE__PERSIST, oldPersist, persist));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -226,8 +184,6 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 			case IrPackage.CONNECTIVITY_VARIABLE__DEFAULT_VALUE:
 				if (resolve) return getDefaultValue();
 				return basicGetDefaultValue();
-			case IrPackage.CONNECTIVITY_VARIABLE__PERSIST:
-				return isPersist();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -248,9 +204,6 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 			case IrPackage.CONNECTIVITY_VARIABLE__DEFAULT_VALUE:
 				setDefaultValue((VarRef)newValue);
 				return;
-			case IrPackage.CONNECTIVITY_VARIABLE__PERSIST:
-				setPersist((Boolean)newValue);
-				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -269,9 +222,6 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 			case IrPackage.CONNECTIVITY_VARIABLE__DEFAULT_VALUE:
 				setDefaultValue((VarRef)null);
 				return;
-			case IrPackage.CONNECTIVITY_VARIABLE__PERSIST:
-				setPersist(PERSIST_EDEFAULT);
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -288,26 +238,8 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 				return dimensions != null && !dimensions.isEmpty();
 			case IrPackage.CONNECTIVITY_VARIABLE__DEFAULT_VALUE:
 				return defaultValue != null;
-			case IrPackage.CONNECTIVITY_VARIABLE__PERSIST:
-				return persist != PERSIST_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (persist: ");
-		result.append(persist);
-		result.append(')');
-		return result.toString();
 	}
 
 } //ConnectivityVariableImpl

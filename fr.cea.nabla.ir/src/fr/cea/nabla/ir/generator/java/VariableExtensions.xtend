@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.Variable
 
 import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
@@ -40,4 +41,10 @@ class VariableExtensions
 			return t	
 		}
 	}
+	
+	static def getCodeName(Variable it)
+	{
+		if (scalarConst && global) 'options.' + name
+		else name
+	}	
 }

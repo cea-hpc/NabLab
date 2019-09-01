@@ -30,6 +30,7 @@ public final class ImplicitHeatEquation
 	}
 	
 	private final Options options;
+	private int iteration;
 
 	// Mesh
 	private final NumericMesh2D mesh;
@@ -97,18 +98,17 @@ public final class ImplicitHeatEquation
 		computeFaceConductivity(); // @-2.0
 		computeAlphaCoeff(); // @-1.0
 
-		int iteration = 0;
+		iteration = 0;
 		while (t < options.option_stoptime && iteration < options.option_max_iterations)
 		{
 			iteration++;
 			System.out.println("[" + iteration + "] t = " + t);
-			dumpVariables(iteration);
 			updateU(); // @1.0
 			computeTn(); // @1.0
+			dumpVariables(); // @1.0
 			copy_u_nplus1_to_u(); // @2.0
 			copy_t_nplus1_to_t(); // @2.0
 		}
-		dumpVariables(iteration);
 		System.out.println("Fin de l'exécution du module ImplicitHeatEquation");
 	}
 
@@ -121,14 +121,6 @@ public final class ImplicitHeatEquation
 		i.simulate();
 	}
 	
-	private void dumpVariables(int iteration)
-	{
-		HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-		HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-		cellVariables.put("Temperature", u.toArray());
-		writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
-	}
-
 	/**
 	 * Job InitXc @-3.0
 	 * In variables: X
@@ -343,6 +335,19 @@ public final class ImplicitHeatEquation
 	private void computeTn() 
 	{
 		t_nplus1 = t + deltat;
+	}		
+	
+	/**
+	 * Job dumpVariables @1.0
+	 * In variables: u
+	 * Out variables: 
+	 */
+	private void dumpVariables() 
+	{
+		HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+		HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+		cellVariables.put("Temperature", u.toArray());
+		writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
 	}		
 	
 	/**

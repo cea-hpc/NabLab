@@ -18,8 +18,8 @@ import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
 
-import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.VariableExtensions.*
+import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.VariableExtensions.*
@@ -79,6 +79,7 @@ class Ir2Kokkos extends CodeGenerator
 		Options* options;
 	
 	private:
+		int iteration;
 		NumericMesh2D* mesh;
 		VtkFileWriter2D writer;
 		«FOR c : usedConnectivities BEFORE 'int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
@@ -148,21 +149,6 @@ class Ir2Kokkos extends CodeGenerator
 			«j.content»
 		«ENDFOR»			
 
-		«val variablesToPersist = persistentVariables»
-		«IF !variablesToPersist.empty»
-		void dumpVariables(const int iteration)
-		{
-			std::map<string, double*> cellVariables;
-			std::map<string, double*> nodeVariables;
-			«FOR v : variablesToPersist»
-			«v.dimensions.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
-			«ENDFOR»
-			auto quads = mesh->getGeometricMesh()->getQuads();
-			writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
-		}
-
-		«ENDIF»
-
 	public:
 		void simulate()
 		{
@@ -194,9 +180,10 @@ class Ir2Kokkos extends CodeGenerator
 
 			«ENDIF»			
 			«jobs.filter[x | x.at < 0].jobCallsContent»	
-			«IF jobs.exists[at > 0]»
 			timer.stop();
-			int iteration = 0;
+
+			«IF jobs.exists[at > 0]»
+			iteration = 0;
 			while (t < options->option_stoptime && iteration < options->option_max_iterations)
 			{
 				timer.start();
@@ -209,16 +196,6 @@ class Ir2Kokkos extends CodeGenerator
 				«jobs.filter[x | x.at > 0].jobCallsContent»
 				compute_timer.stop();
 
-				«IF !variablesToPersist.empty»
-				if (!writer.isDisabled()) {
-					utils::Timer io_timer(true);
-					dumpVariables(iteration);
-					io_timer.stop();
-					std::cout << " {CPU: " << __BLUE__ << compute_timer.print(true) << __RESET__ ", IO: " << __BLUE__ << io_timer.print(true) << __RESET__ "} ";
-				} else {
-					std::cout << " {CPU: " << __BLUE__ << compute_timer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
-				}
-				«ENDIF»
 				// Progress
 				std::cout << utils::progress_bar(iteration, options->option_max_iterations, t, options->option_stoptime, 30);
 				timer.stop();
@@ -227,9 +204,6 @@ class Ir2Kokkos extends CodeGenerator
 					<< __RESET__ << "\r";
 				std::cout.flush();
 			}
-			«IF !variablesToPersist.empty»
-			dumpVariables(iteration);
-			«ENDIF»
 			std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << timer.print() << __RESET__ << std::endl;
 			«ELSE /* no jobs with at > 0 */»
 			timer.stop();
@@ -277,6 +251,4 @@ class Ir2Kokkos extends CodeGenerator
 		else
 			'''NumericMesh2D::MaxNb«c.name.toFirstUpper»'''
 	}
-
-	private def getPersistentVariables(IrModule it) { variables.filter(ConnectivityVariable).filter[x|x.persist && x.dimensions.size==1] }
 }

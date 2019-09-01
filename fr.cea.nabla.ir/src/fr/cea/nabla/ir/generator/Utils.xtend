@@ -83,4 +83,9 @@ class Utils
 			'{' + values.join(',') + '}'
 		}
 	}
+	
+	static def getPersistentVariables(IrModule it) 
+	{ 
+		variables.filter(ConnectivityVariable).filter[x|x.persistenceName !== null && x.dimensions.size==1]
+	}
 }

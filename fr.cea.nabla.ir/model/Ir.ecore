@@ -60,8 +60,6 @@
         lowerBound="1" upperBound="-1" eType="#//Connectivity"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValue" eType="#//VarRef"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="persist" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Function" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
@@ -107,6 +105,10 @@
   <eClassifiers xsi:type="ecore:EClass" name="InstructionJob" eSuperTypes="#//Job">
     <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" lowerBound="1"
         eType="#//Instruction" containment="true" resolveProxies="false"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InSituJob" eSuperTypes="#//Job">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
+        eType="#//Variable"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeIterationCopyJob" abstract="true"
       eSuperTypes="#//Job">

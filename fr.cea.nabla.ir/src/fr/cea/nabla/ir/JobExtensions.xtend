@@ -22,6 +22,7 @@ import fr.cea.nabla.ir.ir.Variable
 import java.util.HashSet
 
 import static extension fr.cea.nabla.ir.VariableExtensions.*
+import fr.cea.nabla.ir.ir.InSituJob
 
 class JobExtensions 
 {
@@ -59,6 +60,11 @@ class JobExtensions
 		eAllContents.filter(Affectation).map[left.variable].filter[global].toSet
 	}
 	
+	static def dispatch Iterable<Variable> getOutVars(InSituJob it)
+	{
+		#[]
+	}
+
 	static def dispatch Iterable<Variable> getInVars(TimeIterationCopyJob it)
 	{
 		#[right].toSet
@@ -68,5 +74,10 @@ class JobExtensions
 	{
 		val allVars = eAllContents.filter(VarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[variable].filter[global].toSet
 		return allVars
+	}
+
+	static def dispatch Iterable<Variable> getInVars(InSituJob it)
+	{
+		return variables
 	}
 }

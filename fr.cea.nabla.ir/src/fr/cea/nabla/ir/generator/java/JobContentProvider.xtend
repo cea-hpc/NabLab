@@ -9,11 +9,14 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.EndOfInitJob
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
+import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
 
+import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.InstructionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.VariableExtensions.*
@@ -34,6 +37,16 @@ class JobContentProvider
 		«instruction.innerContent»
 	'''
 	
+	private static def dispatch CharSequence getInnerContent(InSituJob it)
+	'''
+		HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+		HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+		«FOR v : variables.filter(ConnectivityVariable)»
+		«v.dimensions.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
+		«ENDFOR»
+		writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+	'''
+
 	private static def dispatch CharSequence getInnerContent(EndOfTimeLoopJob it)
 	'''
 		«left.javaType» tmpSwitch = «left.name»;

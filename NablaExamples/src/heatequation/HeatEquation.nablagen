@@ -32,14 +32,12 @@ workflow WhiteheatDefaultGenerationChain transforms HeatEquation
 	Ir2Code javaGenerator follows fillHlts
 	{
 		language = Java;
-		//disabled;
 		outputDir = "/NablaExamplesJava/src";
 	}
 
 	Ir2Code kokkosGenerator follows fillHlts
 	{
 		language = Kokkos;
-		disabled;
 		outputDir = "/NablaExamplesKokkos/src";
 	}
 }

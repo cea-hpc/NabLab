@@ -10,25 +10,25 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.Constant
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.FunctionCall
+import fr.cea.nabla.ir.ir.IntMatrixConstant
+import fr.cea.nabla.ir.ir.IntVectorConstant
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
+import fr.cea.nabla.ir.ir.RealMatrixConstant
+import fr.cea.nabla.ir.ir.RealVectorConstant
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
 
 import static extension fr.cea.nabla.ir.BaseTypeExtensions.*
-import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import fr.cea.nabla.ir.ir.RealVectorConstant
-import fr.cea.nabla.ir.ir.RealMatrixConstant
-import fr.cea.nabla.ir.ir.BaseTypeConstant
-import fr.cea.nabla.ir.ir.IntVectorConstant
-import fr.cea.nabla.ir.ir.IntMatrixConstant
+import static extension fr.cea.nabla.ir.generator.java.VariableExtensions.*
 
 class ExpressionContentProvider
 {

@@ -44,6 +44,7 @@ public:
 	Options* options;
 
 private:
+	int iteration;
 	NumericMesh2D* mesh;
 	VtkFileWriter2D writer;
 	int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
@@ -347,6 +348,23 @@ private:
 	}
 	
 	/**
+	 * Job dumpVariables @1.0
+	 * In variables: u
+	 * Out variables: 
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void dumpVariables() noexcept
+	{
+		if (!writer.isDisabled()) {
+			std::map<string, double*> cellVariables;
+			std::map<string, double*> nodeVariables;
+			cellVariables.insert(pair<string,double*>("Temperature", u.data()));
+			auto quads = mesh->getGeometricMesh()->getQuads();
+			writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+		}
+	}
+	
+	/**
 	 * Job Copy_u_nplus1_to_u @2.0
 	 * In variables: u_nplus1
 	 * Out variables: u
@@ -367,16 +385,6 @@ private:
 	{
 		std::swap(t_nplus1, t);
 	}
-
-	void dumpVariables(const int iteration)
-	{
-		std::map<string, double*> cellVariables;
-		std::map<string, double*> nodeVariables;
-		cellVariables.insert(pair<string,double*>("Temperature", u.data()));
-		auto quads = mesh->getGeometricMesh()->getQuads();
-		writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
-	}
-
 
 public:
 	void simulate()
@@ -414,7 +422,8 @@ public:
 		computeFaceConductivity(); // @-2.0
 		computeAlphaCoeff(); // @-1.0
 		timer.stop();
-		int iteration = 0;
+
+		iteration = 0;
 		while (t < options->option_stoptime && iteration < options->option_max_iterations)
 		{
 			timer.start();
@@ -426,18 +435,11 @@ public:
 
 			updateU(); // @1.0
 			computeTn(); // @1.0
+			dumpVariables(); // @1.0
 			copy_u_nplus1_to_u(); // @2.0
 			copy_t_nplus1_to_t(); // @2.0
 			compute_timer.stop();
 
-			if (!writer.isDisabled()) {
-				utils::Timer io_timer(true);
-				dumpVariables(iteration);
-				io_timer.stop();
-				std::cout << " {CPU: " << __BLUE__ << compute_timer.print(true) << __RESET__ ", IO: " << __BLUE__ << io_timer.print(true) << __RESET__ "} ";
-			} else {
-				std::cout << " {CPU: " << __BLUE__ << compute_timer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
-			}
 			// Progress
 			std::cout << utils::progress_bar(iteration, options->option_max_iterations, t, options->option_stoptime, 30);
 			timer.stop();
@@ -446,7 +448,6 @@ public:
 				<< __RESET__ << "\r";
 			std::cout.flush();
 		}
-		dumpVariables(iteration);
 		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << timer.print() << __RESET__ << std::endl;
 	}
 };	

@@ -89,8 +89,13 @@ abstract class InstructionContentProvider
 
 	def dispatch CharSequence getContent(Loop it) 
 	{
-		if (topLevelLoop) parallelContent
-		else sequentialContent
+		if (topLevelLoop) 
+			if (multithreadable)
+				parallelContent
+			else
+				topLevelSequentialContent
+		else 
+			sequentialContent
 	}
 	
 	def dispatch CharSequence getContent(If it) 
@@ -104,6 +109,15 @@ abstract class InstructionContentProvider
 	'''
 	
 	protected abstract def CharSequence getParallelContent(Loop it)
+
+	private def getTopLevelSequentialContent(Loop it)
+	'''
+		for (int «range.indexName»=0; «range.indexName»<«range.container.connectivity.nbElems»; «range.indexName»++)
+		{
+			«defineIndices»
+			«body.innerContent»
+		}
+	'''
 
 	private def getSequentialContent(Loop it)
 	'''
@@ -150,4 +164,17 @@ abstract class InstructionContentProvider
 	def getAccessor(Iterator it)  '''mesh->get«container.connectivity.name.toFirstUpper»(«container.args.map[id].join(', ')»)'''
 
 	private def getKokkosName(Reduction it) '''«name.replaceFirst("reduce", "")»'''
+	
+	/**
+	 * No multithread loop if there is a SparseMatrix affectation because it is not thread safe.
+	 * No std::mutex use when threads are Kokkos threads.
+	 */
+	private def isMultithreadable(Loop it)
+	{
+		val affectations = eAllContents.filter(Affectation)
+		for (a : affectations.toIterable)
+			if (a.left.variable.cppType == MatrixType)
+				return false
+		return true
+	}
 }

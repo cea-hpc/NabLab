@@ -158,6 +158,14 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.IN_SITU_JOB: {
+				InSituJob inSituJob = (InSituJob)theEObject;
+				T result = caseInSituJob(inSituJob);
+				if (result == null) result = caseJob(inSituJob);
+				if (result == null) result = caseIrAnnotable(inSituJob);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.TIME_ITERATION_COPY_JOB: {
 				TimeIterationCopyJob timeIterationCopyJob = (TimeIterationCopyJob)theEObject;
 				T result = caseTimeIterationCopyJob(timeIterationCopyJob);
@@ -629,6 +637,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseInstructionJob(InstructionJob object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>In Situ Job</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>In Situ Job</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseInSituJob(InSituJob object) {
 		return null;
 	}
 

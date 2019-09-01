@@ -21,6 +21,7 @@ import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.FunctionCall;
 import fr.cea.nabla.ir.ir.If;
 import fr.cea.nabla.ir.ir.Import;
+import fr.cea.nabla.ir.ir.InSituJob;
 import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.InstructionBlock;
 import fr.cea.nabla.ir.ir.InstructionJob;
@@ -159,6 +160,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass instructionJobEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass inSituJobEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -721,15 +729,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getConnectivityVariable_Persist() {
-		return (EAttribute)connectivityVariableEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getFunction() {
 		return functionEClass;
 	}
@@ -939,6 +938,24 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 */
 	public EReference getInstructionJob_Instruction() {
 		return (EReference)instructionJobEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getInSituJob() {
+		return inSituJobEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getInSituJob_Variables() {
+		return (EReference)inSituJobEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1830,7 +1847,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		connectivityVariableEClass = createEClass(CONNECTIVITY_VARIABLE);
 		createEReference(connectivityVariableEClass, CONNECTIVITY_VARIABLE__DIMENSIONS);
 		createEReference(connectivityVariableEClass, CONNECTIVITY_VARIABLE__DEFAULT_VALUE);
-		createEAttribute(connectivityVariableEClass, CONNECTIVITY_VARIABLE__PERSIST);
 
 		functionEClass = createEClass(FUNCTION);
 		createEAttribute(functionEClass, FUNCTION__NAME);
@@ -1861,6 +1877,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		instructionJobEClass = createEClass(INSTRUCTION_JOB);
 		createEReference(instructionJobEClass, INSTRUCTION_JOB__INSTRUCTION);
+
+		inSituJobEClass = createEClass(IN_SITU_JOB);
+		createEReference(inSituJobEClass, IN_SITU_JOB__VARIABLES);
 
 		timeIterationCopyJobEClass = createEClass(TIME_ITERATION_COPY_JOB);
 		createEReference(timeIterationCopyJobEClass, TIME_ITERATION_COPY_JOB__LEFT);
@@ -2031,6 +2050,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		itemArgTypeEClass.getESuperTypes().add(this.getIrAnnotable());
 		jobEClass.getESuperTypes().add(this.getIrAnnotable());
 		instructionJobEClass.getESuperTypes().add(this.getJob());
+		inSituJobEClass.getESuperTypes().add(this.getJob());
 		timeIterationCopyJobEClass.getESuperTypes().add(this.getJob());
 		endOfTimeLoopJobEClass.getESuperTypes().add(this.getTimeIterationCopyJob());
 		endOfInitJobEClass.getESuperTypes().add(this.getTimeIterationCopyJob());
@@ -2100,7 +2120,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(connectivityVariableEClass, ConnectivityVariable.class, "ConnectivityVariable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConnectivityVariable_Dimensions(), this.getConnectivity(), null, "dimensions", null, 1, -1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getConnectivityVariable_DefaultValue(), this.getVarRef(), null, "defaultValue", null, 0, 1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getConnectivityVariable_Persist(), ecorePackage.getEBoolean(), "persist", "false", 1, 1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionEClass, Function.class, "Function", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFunction_Name(), ecorePackage.getEString(), "name", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2131,6 +2150,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(instructionJobEClass, InstructionJob.class, "InstructionJob", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInstructionJob_Instruction(), this.getInstruction(), null, "instruction", null, 1, 1, InstructionJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(inSituJobEClass, InSituJob.class, "InSituJob", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getInSituJob_Variables(), this.getVariable(), null, "variables", null, 0, -1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(timeIterationCopyJobEClass, TimeIterationCopyJob.class, "TimeIterationCopyJob", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getTimeIterationCopyJob_Left(), this.getVariable(), null, "left", null, 1, 1, TimeIterationCopyJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

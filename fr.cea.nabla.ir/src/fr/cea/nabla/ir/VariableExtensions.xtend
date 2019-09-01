@@ -52,12 +52,6 @@ class VariableExtensions
 		eContainer instanceof IrModule
 	}
 
-	static def getCodeName(Variable it)
-	{
-		if (scalarConst) 'options.' + name
-		else name
-	}
-	
 	static def isLinearAlgebra(Variable it)
 	{
 		val references = irModule.eAllContents.filter(VarRef).filter[x | x.variable == it]

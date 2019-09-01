@@ -11,13 +11,15 @@ package fr.cea.nabla.ir.generator.kokkos
 
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.SimpleVariable
-
-import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
+import fr.cea.nabla.ir.ir.Variable
 
 import static extension fr.cea.nabla.ir.VariableExtensions.*
+import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
 
 class VariableExtensions 
 {
+	public static val MatrixType = 'NablaSparseMatrix'
+	
 	static def dispatch getCppType(SimpleVariable it) 
 	'''«type.cppType»'''
 	
@@ -27,10 +29,16 @@ class VariableExtensions
 			switch dimensions.size
 			{
 				case 1: return 'VectorType'
-				case 2: return 'NablaSparseMatrix'
+				case 2: return MatrixType
 				default: throw new RuntimeException("Not implemented exception")
 			}
 		else
 			'''Kokkos::View<«type.cppType»«FOR d : dimensions»*«ENDFOR»>'''
+	}
+
+	static def getCodeName(Variable it)
+	{
+		if (scalarConst && global) 'options->' + name
+		else name
 	}
 }

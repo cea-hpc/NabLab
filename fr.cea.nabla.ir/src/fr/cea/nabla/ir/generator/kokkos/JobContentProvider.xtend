@@ -9,8 +9,10 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.EndOfInitJob
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
+import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
 
@@ -28,6 +30,19 @@ abstract class JobContentProvider
 		«instruction.innerContent»
 	'''
 	
+	protected def dispatch CharSequence getInnerContent(InSituJob it)
+	'''
+		if (!writer.isDisabled()) {
+			std::map<string, double*> cellVariables;
+			std::map<string, double*> nodeVariables;
+			«FOR v : variables.filter(ConnectivityVariable)»
+			«v.dimensions.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
+			«ENDFOR»
+			auto quads = mesh->getGeometricMesh()->getQuads();
+			writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+		}
+	'''
+
 	protected def dispatch CharSequence getInnerContent(EndOfTimeLoopJob it)
 	'''
 		std::swap(«right.name», «left.name»);

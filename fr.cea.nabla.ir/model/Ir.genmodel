@@ -62,7 +62,6 @@
     <genClasses ecoreClass="Ir.ecore#//ConnectivityVariable">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityVariable/dimensions"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityVariable/defaultValue"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ConnectivityVariable/persist"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Function">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/name"/>
@@ -93,6 +92,9 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//InstructionJob">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InstructionJob/instruction"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//InSituJob">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//InSituJob/variables"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//TimeIterationCopyJob">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeIterationCopyJob/left"/>

@@ -56,6 +56,7 @@ class Ir2Java extends CodeGenerator
 			}
 			
 			private final Options options;
+			private int iteration;
 
 			// Mesh
 			private final NumericMesh2D mesh;
@@ -118,7 +119,6 @@ class Ir2Java extends CodeGenerator
 				«ENDIF»
 			}
 
-			«val variablesToPersist = persistentVariables»
 			public void simulate()
 			{
 				System.out.println("Début de l'exécution du module «name»");
@@ -127,21 +127,15 @@ class Ir2Java extends CodeGenerator
 				«ENDFOR»
 				«IF jobs.exists[at > 0]»
 
-				int iteration = 0;
+				iteration = 0;
 				while (t < options.option_stoptime && iteration < options.option_max_iterations)
 				{
 					iteration++;
 					System.out.println("[" + iteration + "] t = " + t);
-					«IF !variablesToPersist.empty»
-					dumpVariables(iteration);
-					«ENDIF»
 					«FOR j : jobs.filter[x | x.at > 0].sortBy[at]»
 						«j.name.toFirstLower»(); // @«j.at»
 					«ENDFOR»
 				}
-				«IF !variablesToPersist.empty»
-				dumpVariables(iteration);
-				«ENDIF»
 				«ENDIF»
 				System.out.println("Fin de l'exécution du module «name»");
 			}
@@ -155,18 +149,6 @@ class Ir2Java extends CodeGenerator
 				i.simulate();
 			}
 			
-			«IF !variablesToPersist.empty»
-			private void dumpVariables(int iteration)
-			{
-				HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-				HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-				«FOR v : variablesToPersist»
-				«v.dimensions.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
-				«ENDFOR»
-				writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
-			}
-
-			«ENDIF»
 			«FOR j : jobs.sortBy[at] SEPARATOR '\n'»
 				«j.content»
 			«ENDFOR»			
@@ -180,8 +162,6 @@ class Ir2Java extends CodeGenerator
 		else
 			'''NumericMesh2D.MaxNb«c.name.toFirstUpper»'''
 	}
-	
-	private def getPersistentVariables(IrModule it) { variables.filter(ConnectivityVariable).filter[x|x.persist && x.dimensions.size==1] }
 	
 	private def getLinearAlgebraDefinition(ConnectivityVariable v)
 	{

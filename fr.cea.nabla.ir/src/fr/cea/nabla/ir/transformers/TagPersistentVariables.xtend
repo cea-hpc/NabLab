@@ -3,6 +3,7 @@ package fr.cea.nabla.ir.transformers
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
 import java.util.HashMap
+import fr.cea.nabla.ir.ir.IrFactory
 
 /**
  * Attend des propriétés de type <nom_de_variable> = <nom_de_persistence>.
@@ -26,15 +27,17 @@ class TagPersistentVariables implements IrTransformationStep
 	override transform(IrModule m) 
 	{
 		val candidates = m.variables.filter(ConnectivityVariable)
+		val inSituJob = IrFactory.eINSTANCE.createInSituJob => [ name = 'dumpVariables' ]
 		for (key : variables.keySet)
 		{
 			val v = candidates.findFirst[x | x.name == key]
 			if (v !== null) 
 			{
-				v.persist = true
 				v.persistenceName = variables.get(key)
+				inSituJob.variables += v	
 			}
 		}
+		m.jobs += inSituJob
 		return true
 	}
 	

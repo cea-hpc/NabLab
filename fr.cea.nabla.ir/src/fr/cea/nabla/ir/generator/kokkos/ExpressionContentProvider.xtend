@@ -9,32 +9,31 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
+import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Constant
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.FunctionCall
+import fr.cea.nabla.ir.ir.IntMatrixConstant
+import fr.cea.nabla.ir.ir.IntVectorConstant
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
+import fr.cea.nabla.ir.ir.RealMatrixConstant
+import fr.cea.nabla.ir.ir.RealVectorConstant
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
-import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.BaseTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
-import static extension fr.cea.nabla.ir.VariableExtensions.isScalarConst
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import fr.cea.nabla.ir.ir.BaseTypeConstant
-import fr.cea.nabla.ir.ir.IntVectorConstant
-import fr.cea.nabla.ir.ir.IntMatrixConstant
-import fr.cea.nabla.ir.ir.RealVectorConstant
-import fr.cea.nabla.ir.ir.RealMatrixConstant
+import static extension fr.cea.nabla.ir.generator.kokkos.VariableExtensions.*
 
 class ExpressionContentProvider
 {
@@ -78,20 +77,25 @@ class ExpressionContentProvider
 	
 	static def dispatch CharSequence getContent(BaseTypeConstant it) 
 	{
-		initConstant(type.sizes, value.content.toString)
+		val value = initConstant(type.sizes, value.content.toString)
+		if (type.sizes.size > 1)
+			'''{«value»}'''	// One additional bracket for matrix... Magic C++ !
+		else
+			'''«value»'''
+		
 	}
 	
 	static def dispatch CharSequence getContent(IntVectorConstant it) 
 	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v»«ENDFOR»'''
 	
 	static def dispatch CharSequence getContent(IntMatrixConstant it) 
-	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
+	'''«FOR v : values BEFORE '{{' SEPARATOR ', ' AFTER '}}'»«v.content»«ENDFOR»'''
 	
 	static def dispatch CharSequence getContent(RealVectorConstant it) 
 	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v»«ENDFOR»'''
 	
 	static def dispatch CharSequence getContent(RealMatrixConstant it) 
-	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
+	'''«FOR v : values BEFORE '{{' SEPARATOR ', ' AFTER '}}'»«v.content»«ENDFOR»'''
 
 	static def dispatch CharSequence getContent(FunctionCall it) 
 	'''«function.provider»Functions::«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
@@ -113,12 +117,6 @@ class ExpressionContentProvider
 		else scalar && j.inVars.exists[x | x == variable]
 	}
 	
-	private static def getCodeName(Variable it)
-	{
-		if (scalarConst) 'options->' + name
-		else name
-	}
-
 	private static def Job getJob(EObject o)
 	{
 		if (o === null) null

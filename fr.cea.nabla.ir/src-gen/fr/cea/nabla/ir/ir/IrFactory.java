@@ -112,6 +112,15 @@ public interface IrFactory extends EFactory {
 	InstructionJob createInstructionJob();
 
 	/**
+	 * Returns a new object of class '<em>In Situ Job</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>In Situ Job</em>'.
+	 * @generated
+	 */
+	InSituJob createInSituJob();
+
+	/**
 	 * Returns a new object of class '<em>End Of Time Loop Job</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -19,6 +19,7 @@
 #include "utils/Timer.h"
 #include "types/Types.h"
 #include "types/MathFunctions.h"
+#include "types/ArrayOperations.h"
 
 using namespace nablalib;
 
@@ -27,6 +28,7 @@ class HeatEquation
 public:
 	struct Options
 	{
+		// Should be const but usefull to set them from main args
 		double X_EDGE_LENGTH = 0.1;
 		double Y_EDGE_LENGTH = as_const(X_EDGE_LENGTH);
 		int X_EDGE_ELEMS = 20;
@@ -40,6 +42,7 @@ public:
 	Options* options;
 
 private:
+	int iteration;
 	NumericMesh2D* mesh;
 	VtkFileWriter2D writer;
 	int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
@@ -47,9 +50,9 @@ private:
 	// Global Variables
 	double t, deltat, t_nplus1;
 
-	// Array Variables
-	Kokkos::View<Real2*> X;
-	Kokkos::View<Real2*> center;
+	// Connectivity Variables
+	Kokkos::View<RealArray1D<2>*> X;
+	Kokkos::View<RealArray1D<2>*> center;
 	Kokkos::View<double*> u;
 	Kokkos::View<double*> V;
 	Kokkos::View<double*> f;
@@ -116,17 +119,17 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
-			Real2 reduceSum_1732707118 = Real2(0.0, 0.0);
+			RealArray1D<2> reduceSum_893022641 = {0.0,0.0};
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					int rId(nodesOfCellJ[rNodesOfCellJ]);
 					int rNodes(rId);
-					reduceSum_1732707118 = reduceSum_1732707118 + (X(rNodes));
+					reduceSum_893022641 = ArrayOperations::plus(reduceSum_893022641, (X(rNodes)));
 				}
 			}
-			center(jCells) = 0.25 * reduceSum_1732707118;
+			center(jCells) = ArrayOperations::multiply(0.25, reduceSum_893022641);
 		});
 	}
 	
@@ -141,7 +144,7 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
-			double reduceSum553685578 = 0.0;
+			double reduceSum1638795083 = 0.0;
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
@@ -150,10 +153,10 @@ private:
 					int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 					int rNodes(rId);
 					int rPlus1Nodes(rPlus1Id);
-					reduceSum553685578 = reduceSum553685578 + (MathFunctions::det(X(rNodes), X(rPlus1Nodes)));
+					reduceSum1638795083 = reduceSum1638795083 + (MathFunctions::det(X(rNodes), X(rPlus1Nodes)));
 				}
 			}
-			V(jCells) = 0.5 * reduceSum553685578;
+			V(jCells) = 0.5 * reduceSum1638795083;
 		});
 	}
 	
@@ -168,7 +171,7 @@ private:
 		Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const int& fFaces)
 		{
 			int fId(fFaces);
-			double reduceSum_447949530 = 0.0;
+			double reduceSum_994733613 = 0.0;
 			{
 				auto nodesOfFaceF(mesh->getNodesOfFace(fId));
 				for (int rNodesOfFaceF=0; rNodesOfFaceF<nodesOfFaceF.size(); rNodesOfFaceF++)
@@ -177,10 +180,10 @@ private:
 					int rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 					int rNodes(rId);
 					int rPlus1Nodes(rPlus1Id);
-					reduceSum_447949530 = reduceSum_447949530 + (MathFunctions::norm(X(rNodes) - X(rPlus1Nodes)));
+					reduceSum_994733613 = reduceSum_994733613 + (MathFunctions::norm(ArrayOperations::minus(X(rNodes), X(rPlus1Nodes))));
 				}
 			}
-			surface(fFaces) = 0.5 * reduceSum_447949530;
+			surface(fFaces) = 0.5 * reduceSum_994733613;
 		});
 	}
 	
@@ -194,7 +197,7 @@ private:
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
-			u(jCells) = MathFunctions::cos(2 * as_const(options->PI) * as_const(options->k) * center(jCells).x);
+			u(jCells) = MathFunctions::cos(2 * as_const(options->PI) * as_const(options->k) * center(jCells)[0]);
 		});
 	}
 	
@@ -209,7 +212,7 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& j1Cells)
 		{
 			int j1Id(j1Cells);
-			double reduceSum2004443072 = 0.0;
+			double reduceSum_837824871 = 0.0;
 			{
 				auto neighbourCellsJ1(mesh->getNeighbourCells(j1Id));
 				for (int j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<neighbourCellsJ1.size(); j2NeighbourCellsJ1++)
@@ -218,10 +221,10 @@ private:
 					int j2Cells(j2Id);
 					int cfId(mesh->getCommonFace(j1Id, j2Id));
 					int cfFaces(cfId);
-					reduceSum2004443072 = reduceSum2004443072 + ((u(j2Cells) - u(j1Cells)) / MathFunctions::norm(center(j2Cells) - center(j1Cells)) * surface(cfFaces));
+					reduceSum_837824871 = reduceSum_837824871 + ((u(j2Cells) - u(j1Cells)) / MathFunctions::norm(ArrayOperations::minus(center(j2Cells), center(j1Cells))) * surface(cfFaces));
 				}
 			}
-			outgoingFlux(j1Cells) = as_const(deltat) / V(j1Cells) * reduceSum2004443072;
+			outgoingFlux(j1Cells) = as_const(deltat) / V(j1Cells) * reduceSum_837824871;
 		});
 	}
 	
@@ -234,6 +237,23 @@ private:
 	void computeTn() noexcept
 	{
 		t_nplus1 = as_const(t) + as_const(deltat);
+	}
+	
+	/**
+	 * Job dumpVariables @1.0
+	 * In variables: u
+	 * Out variables: 
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void dumpVariables() noexcept
+	{
+		if (!writer.isDisabled()) {
+			std::map<string, double*> cellVariables;
+			std::map<string, double*> nodeVariables;
+			cellVariables.insert(pair<string,double*>("Temperature", u.data()));
+			auto quads = mesh->getGeometricMesh()->getQuads();
+			writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+		}
 	}
 	
 	/**
@@ -303,12 +323,9 @@ public:
 		computeV(); // @-2.0
 		computeSurface(); // @-2.0
 		iniUn(); // @-1.0
-		std::map<string, double*> cellVariables;
-		std::map<string, double*> nodeVariables;
-		cellVariables.insert(pair<string,double*>("Temperature", u.data()));
-		
 		timer.stop();
-		int iteration = 0;
+
+		iteration = 0;
 		while (t < options->option_stoptime && iteration < options->option_max_iterations)
 		{
 			timer.start();
@@ -320,22 +337,14 @@ public:
 
 			computeOutgoingFlux(); // @1.0
 			computeTn(); // @1.0
+			dumpVariables(); // @1.0
 			copy_t_nplus1_to_t(); // @2.0
 			computeUn(); // @2.0
 			copy_u_nplus1_to_u(); // @3.0
 			compute_timer.stop();
 
-			if (!writer.isDisabled()) {
-				utils::Timer io_timer(true);
-				auto quads = mesh->getGeometricMesh()->getQuads();
-				writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
-				io_timer.stop();
-				std::cout << " {CPU: " << __BLUE__ << compute_timer.print(true) << __RESET__ ", IO: " << __BLUE__ << io_timer.print(true) << __RESET__ "} ";
-			} else {
-				std::cout << " {CPU: " << __BLUE__ << compute_timer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
-			}
 			// Progress
-			std::cout << utils::progress_bar(iteration, options->option_max_iterations, t, options->option_stoptime);
+			std::cout << utils::progress_bar(iteration, options->option_max_iterations, t, options->option_stoptime, 30);
 			timer.stop();
 			std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
 				utils::eta(iteration, options->option_max_iterations, t, options->option_stoptime, deltat, timer), true)

@@ -69,7 +69,7 @@ class InstructionContentProvider
 	static def dispatch CharSequence getContent(VarDefinition it) 
 	'''
 		«FOR v : variables»
-		«IF v.const»const «ENDIF»«v.varContent»
+		«IF v.const»final «ENDIF»«v.varContent»
 		«ENDFOR»
 	'''
 	

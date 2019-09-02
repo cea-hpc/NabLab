@@ -133,7 +133,7 @@ class ExpressionTypeProviderTest
 	}
 	
 	@Test 
-	def void testGetTypeForExpression() 
+	def void testGetTypeFor() 
 	{
  		val module = model.parse
  		val cells = module.getConnectivityByName("cells")

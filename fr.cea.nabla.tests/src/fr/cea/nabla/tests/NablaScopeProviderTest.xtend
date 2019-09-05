@@ -136,7 +136,6 @@ class NablaScopeProviderTest
 	def private assertScope(EObject context, EReference reference, CharSequence expected) 
 	{
 		val elementNames = context.getScope(reference).allElements.map[name].join(", ")
-		println('elementNames : ' + elementNames)
 		Assert.assertEquals(expected.toString, elementNames)
 	}
 	
@@ -185,7 +184,6 @@ class NablaScopeProviderTest
 		affectationc2.assertScope(eref, "d, "+ defaultOptionsScope + ", a, b1, b2, c1, c2")
 
 		val affectationf = j1.getVarAffectationByName("f")
-		println("affectation f " + affectationf)
 		affectationf.assertScope(eref, "e, f, d, "+ defaultOptionsScope + ", a, b1, b2, c1, c2")
 	}
 	

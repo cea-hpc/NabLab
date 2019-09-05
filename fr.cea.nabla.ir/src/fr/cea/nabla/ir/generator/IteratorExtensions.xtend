@@ -65,7 +65,7 @@ class IteratorExtensions
 	 * - directly via the 'target' feature reference 
 	 * - indirectly via the return of indirectIteratorReferences operation.
 	 */
-	static def getIndicesToDefined(Iterator it)
+	static def getIndicesToDefine(Iterator it)
 	{
 		//println('getIndicesToDefined for: ' + name + ' - ' + indexName)
 		

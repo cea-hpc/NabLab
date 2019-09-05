@@ -137,12 +137,12 @@ abstract class InstructionContentProvider
 		«FOR neededId : range.neededIds»
 			int «neededId.id»(«neededId.indexToId»);
 		«ENDFOR»
-		«FOR neededIndex : range.indicesToDefined»
+		«FOR neededIndex : range.indicesToDefine»
 			int «neededIndex.indexName»(«neededIndex.idToIndex»);
 		«ENDFOR»
 		«FOR singleton : singletons»
 			int «singleton.id»(«singleton.accessor»);
-			«FOR neededIndex : singleton.indicesToDefined»
+			«FOR neededIndex : singleton.indicesToDefine»
 				int «neededIndex.indexName»(«neededIndex.idToIndex»);
 			«ENDFOR»
 		«ENDFOR»

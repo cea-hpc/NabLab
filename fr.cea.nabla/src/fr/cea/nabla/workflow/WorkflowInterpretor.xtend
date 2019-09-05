@@ -36,6 +36,7 @@ class WorkflowInterpretor
 	static val IrExtension = 'nablair'
 	static val logger = Logger.getLogger(WorkflowInterpretor)
 	val traceListeners = new ArrayList<IWorkflowTraceListener>
+	val modelChangedListeners = new ArrayList<IWorkflowModelChangedListener>
 	@Inject Provider<JavaIoFileSystemAccess> fsaProvider
 	@Inject Nabla2Ir nabla2Ir
 	@Inject IOutputConfigurationProvider outputConfigurationProvider
@@ -69,6 +70,11 @@ class WorkflowInterpretor
 	{
 		traceListeners += listener
 	}
+
+	def addWorkflowModelChangedLister(IWorkflowModelChangedListener listener)
+	{
+		modelChangedListeners += listener
+	}
 	
 	private def dispatch void launch(Nabla2IrComponent c, NablaModule nablaModule)
 	{
@@ -83,6 +89,7 @@ class WorkflowInterpretor
 			val msgEnd = "... ok\n"
 			logger.info(msgEnd)
 			traceListeners.forEach[write(msgEnd)]
+			modelChangedListeners.forEach[modelChanged(irModule)]
 			fireModel(c, irModule)			
 		}
 	}
@@ -103,6 +110,7 @@ class WorkflowInterpretor
 				val msgEnd = "... ok\n"
 				logger.info(msgEnd)
 				traceListeners.forEach[write(msgEnd)]
+				modelChangedListeners.forEach[modelChanged(irModule)]
 			}
 			else
 			{
@@ -225,4 +233,9 @@ class WorkflowInterpretor
 interface IWorkflowTraceListener 
 {
 	def void write(String message)
+}
+
+interface IWorkflowModelChangedListener
+{
+	def void modelChanged(IrModule module)
 }

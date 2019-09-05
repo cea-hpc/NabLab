@@ -43,14 +43,14 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	def scope_SpaceIteratorRef_target(ConnectivityCall context, EReference r)
 	{
 		val s = context.eContainer.iteratorsDefinedBefore(context)
-		//println("scope for connectivity call " + context.connectivity.name + " : " + s)
+//		println("scope for connectivity call " + context.connectivity.name + " : " + s)
 		return s
 	}
 
 	def scope_SpaceIteratorRef_target(VarRef context, EReference r)
 	{
 		val s = context.eContainer.iteratorsDefinedBefore(null)
-		//println("scope for variable " + context.variable.name + " : " + s)
+//		println("scope for variable " + context.variable.name + " : " + s)
 		return s
 	}
 
@@ -95,25 +95,25 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	/*** Scope for variables ***********************************************************/
 	def scope_VarRef_variable(Instruction context, EReference r) 
 	{
-		println('scope_VarRef_variable(' + context.class.simpleName + ', ' + r.name + ')')
+//		println('scope_VarRef_variable(' + context.class.simpleName + ', ' + r.name + ')')
 		context.eContainer.variablesDefinedBefore(context, '\t')
 	}
 
 	def scope_VarRef_variable(Reduction context, EReference r) 
 	{
-		println('scope_VarRef_variable(' + context.class.simpleName + ', ' + r.name + ')')
+//		println('scope_VarRef_variable(' + context.class.simpleName + ', ' + r.name + ')')
 		IScope::NULLSCOPE
 	}
 
 	def scope_VarRef_variable(Function context, EReference r) 
 	{
-		println('scope_VarRef_variable(' + context.class.simpleName + ', ' + r.name + ')')
+//		println('scope_VarRef_variable(' + context.class.simpleName + ', ' + r.name + ')')
 		IScope::NULLSCOPE
 	}
 
 	private def dispatch IScope variablesDefinedBefore(EObject context, Instruction o, String prefix) 
 	{
-		println(prefix + '[EObject] variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
+//		println(prefix + '[EObject] variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
 		switch (context)
 		{
 			Instruction: context.eContainer.variablesDefinedBefore(context, prefix + '\t')
@@ -124,7 +124,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	
 	private def dispatch IScope variablesDefinedBefore(NablaModule context, Instruction o, String prefix) 
 	{
-		println(prefix + '[NablaModule] variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
+//		println(prefix + '[NablaModule] variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
 		if (o instanceof ScalarVarDefinition || o instanceof VarGroupDeclaration)
 			Scopes::scopeFor(context.variables.variablesDeclaredBefore(o, prefix + '\t'))
 		else
@@ -133,14 +133,14 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		
 	private def dispatch IScope variablesDefinedBefore(InstructionBlock context, Instruction o, String prefix) 
 	{
-		println(prefix + '[InstructionBlock] variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
+//		println(prefix + '[InstructionBlock] variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
 		Scopes::scopeFor(context.instructions.variablesDeclaredBefore(o, prefix + '\t'), context.eContainer.variablesDefinedBefore(context, prefix + '\t'))
 	}
 	
 	private def variablesDeclaredBefore(List<? extends Instruction> list, Instruction o, String prefix) 
 	{
 		val variables = list.subList(0, list.indexOf(o)).allVariables
-		println(prefix + 'variablesDeclaredBefore(' + o.class.simpleName + ') : ' + variables.map[name].join(', '))
+//		println(prefix + 'variablesDeclaredBefore(' + o.class.simpleName + ') : ' + variables.map[name].join(', '))
 		return variables
 	}
 	

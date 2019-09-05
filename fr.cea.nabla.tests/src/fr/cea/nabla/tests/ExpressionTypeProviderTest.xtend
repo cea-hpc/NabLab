@@ -21,6 +21,7 @@ import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.MiscTypeProvider
+import fr.cea.nabla.typing.UndefinedType
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -28,7 +29,6 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import fr.cea.nabla.typing.UndefinedType
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)

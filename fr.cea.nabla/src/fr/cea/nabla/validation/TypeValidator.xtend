@@ -125,7 +125,7 @@ class TypeValidator extends BasicValidator
 	def checkValueType(BaseTypeConstant it)
 	{
 		val vType = value.typeFor
-		if (vType !== null && (vType as DefinedType).root !== type.root)
+		if (vType !== null && ((vType as DefinedType).root !== type.root || vType instanceof ArrayType))
 			error(getValueTypeMsg(type.root.literal), NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE, VALUE_TYPE)	
 	}
 	

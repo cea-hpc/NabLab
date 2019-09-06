@@ -2,17 +2,25 @@ package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.Constant
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.ExpressionType
 import fr.cea.nabla.ir.ir.FunctionCall
+import fr.cea.nabla.ir.ir.IntMatrixConstant
+import fr.cea.nabla.ir.ir.IntVectorConstant
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.PrimitiveType
+import fr.cea.nabla.ir.ir.RealMatrixConstant
+import fr.cea.nabla.ir.ir.RealVectorConstant
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
+import java.util.Arrays
+
+import static extension fr.cea.nabla.ir.interpreter.Utils.*
 
 class ExpressionInterpreter 
 {
@@ -78,6 +86,52 @@ class ExpressionInterpreter
 		}
 	}
 
+	static def dispatch ExpressionValue interprete(BaseTypeConstant it)
+	{
+		val expressionValue = value.interprete
+		buildArrayValue(type.sizes, expressionValue)
+	}
+	
+	static def dispatch ExpressionValue interprete(IntVectorConstant it)
+	{
+		val sizes = newIntArrayOfSize(1)
+		sizes.set(0, values.size)
+		new IntArrayValue(sizes, values)
+	}
+
+	static def dispatch ExpressionValue interprete(IntMatrixConstant it)
+	{
+		val sizes = newIntArrayOfSize(2)
+		sizes.set(0, values.size)
+		sizes.set(1, values.get(0).values.size)
+		val flatValues = newIntArrayOfSize(sizes.totalSize)
+		var i = 0
+		for (row : values)
+			for(col : row.values)
+				flatValues.set(i++, col)
+		new IntArrayValue(sizes, flatValues)
+	}
+
+	static def dispatch ExpressionValue interprete(RealVectorConstant it)
+	{
+		val sizes = newIntArrayOfSize(1)
+		sizes.set(0, values.size)
+		new RealArrayValue(sizes, values)
+	}
+
+	static def dispatch ExpressionValue interprete(RealMatrixConstant it)
+	{
+		val sizes = newIntArrayOfSize(2)
+		sizes.set(0, values.size)
+		sizes.set(1, values.get(0).values.size)
+		val flatValues = newDoubleArrayOfSize(sizes.totalSize)
+		var i = 0
+		for (row : values)
+			for(col : row.values)
+				flatValues.set(i++, col)
+		new RealArrayValue(sizes, flatValues)
+	}
+
 	static def dispatch ExpressionValue interprete(FunctionCall it)
 	{
 		val providerClassName = function.provider + Utils::FunctionAndReductionproviderSuffix
@@ -92,6 +146,7 @@ class ExpressionInterpreter
 	static def dispatch ExpressionValue interprete(VarRef it)
 	{
 		// TODO
+		throw new RuntimeException('Not yet implemented')	
 	}
 	
 	private static def dispatch Class<?> getJavaType(BaseType it)
@@ -139,5 +194,44 @@ class ExpressionInterpreter
 			Double: new RealValue(o as double)
 			default: throw new UnexpectedTypeException(#[boolean, int, double], o.class)
 		}
-	}	
+	}
+	
+	private static def dispatch ExpressionValue buildArrayValue(int[] sizes, BoolValue value)
+	{
+		val totalSize = sizes.totalSize
+		if (totalSize == 0) 
+			return value
+		else 
+		{
+			val values = newBooleanArrayOfSize(totalSize)
+			Arrays.fill(values, value.value)
+			return new BoolArrayValue(sizes, values)
+		}
+	}
+	
+	private static def dispatch ExpressionValue buildArrayValue(int[] sizes, IntValue value)
+	{
+		val totalSize = sizes.totalSize
+		if (totalSize == 0) 
+			return value
+		else 
+		{
+			val values = newIntArrayOfSize(totalSize)
+			Arrays.fill(values, value.value)
+			return new IntArrayValue(sizes, values)
+		}
+	}
+
+	private static def dispatch ExpressionValue buildArrayValue(int[] sizes, RealValue value)
+	{
+		val totalSize = sizes.totalSize
+		if (totalSize == 0) 
+			return value
+		else 
+		{
+			val values = newDoubleArrayOfSize(totalSize)
+			Arrays.fill(values, value.value)
+			return new RealArrayValue(sizes, values)
+		}
+	}
 }

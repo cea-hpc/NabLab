@@ -1,48 +1,53 @@
-/*******************************************************************************
- * Copyright (c) 2018 CEA
- * This program and the accompanying materials are made available under the 
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
- * Contributors: see AUTHORS file
- *******************************************************************************/
 module Test;
 
-items { cell, node, face }
+items { cell }
 
 connectivities {
 	cells: → {cell};
-	nodes: → {node};
 }
 
 functions
 {
-	fabs: ℝ → ℝ;
-	g:	a | ℝ[a] → ℝ[a],
-		a, b | ℝ[a, b] → ℝ[a*b],
-		a, b | ℝ[a] × ℝ[b] → ℝ[a+b];
-	g2:	a | ℝ[a] → ℝ[a];
+	f:	→ ℕ, ℕ → ℕ, ℝ → ℝ, ℝ[2] → ℝ[2];
+	g:	a | ℝ[a] → ℝ[a], a, b | ℝ[a, b] → ℝ[a*b], a, b | ℝ[a] × ℝ[b] → ℝ[a+b];
 }
-
-const ℝ X_EDGE_LENGTH = 1.;
-const ℝ Y_EDGE_LENGTH = 1.;
-const ℕ X_EDGE_ELEMS = 2;
-const ℕ Y_EDGE_ELEMS = 2;
+// Options obligatoires pour générer
+const ℝ X_EDGE_LENGTH = 0.01;
+const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+const ℕ X_EDGE_ELEMS = 100;
+const ℕ Y_EDGE_ELEMS = 10;
 const ℕ Z_EDGE_ELEMS = 1;
-const ℝ option_stoptime = 0.1;
-const ℕ option_max_iterations = 500;
-
+const ℝ option_stoptime = 0.2;
+const ℕ option_max_iterations = 20000;
+	
+ℝ a{cells};
 ℝ x{cells};
-ℝ X{nodes};
-ℝ coucou;
+ℝ[2] x2{cells};
 
-toto: ∀j∈cells(), ∀j∈cells(), 
-{
-	ℝ bobby;
-	x{j} = 0.0;
+// --- TEST DE F ---
+J0: { ℕ x = f(); }
+J1: { ℕ x = f(2); }
+J2: { ℝ x = f(3.0); }
+J3: {
+		ℝ[2] a = [1.1, 2.2];
+		ℝ[2] x = f(a);
 }
-titi: {
-	∀j∈cells(), x{j} = 0.0;
-	∀j∈cells(), x{j} = 0.0;
+J4: { ℝ x = f(3.0, true); }
+
+// --- TEST DE G ---
+J5: {
+		ℝ[2] a = [1.1, 2.2];
+		ℝ[2] x = g(a);
 }
+J6: {
+		ℝ[2, 3] a = [[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]];
+		ℝ[6] x = g(a);
+}
+J7: {
+		ℝ[2] a = [1.1, 2.2];
+		ℝ[3] b = [3.3, 4.4, 5.5];
+		ℝ[5] x = g(a, b);
+}
+J8: { a = g(x); }
+J9: { a = g(x, x); }
+J10: { a = g(x2); }

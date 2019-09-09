@@ -105,8 +105,8 @@ class ExpressionTypeProvider
 
 	def dispatch AbstractType getTypeFor(IntVectorConstant it) { new IntArrayType(#[], #[values.size]) }
 	def dispatch AbstractType getTypeFor(RealVectorConstant it) { new RealArrayType(#[], #[values.size]) }
-	def dispatch AbstractType getTypeFor(IntMatrixConstant it) { new IntArrayType(#[], values.map[x | x.values.size]) }
-	def dispatch AbstractType getTypeFor(RealMatrixConstant it) { new RealArrayType(#[], values.map[x | x.values.size]) }
+	def dispatch AbstractType getTypeFor(IntMatrixConstant it) { new IntArrayType(#[], #[values.size, values.head.values.size]) }
+	def dispatch AbstractType getTypeFor(RealMatrixConstant it) { new RealArrayType(#[], #[values.size, values.head.values.size]) }
 	def dispatch AbstractType getTypeFor(BaseTypeConstant it) { type.typeFor }
 	
 

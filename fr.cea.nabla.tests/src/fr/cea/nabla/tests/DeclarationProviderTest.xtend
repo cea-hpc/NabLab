@@ -2,13 +2,18 @@ package fr.cea.nabla.tests
 
 import com.google.inject.Inject
 import fr.cea.nabla.DeclarationProvider
+import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.typing.RealArrayType
 import fr.cea.nabla.typing.UndefinedType
+import fr.cea.nabla.validation.TypeValidator
+import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -24,7 +29,8 @@ class DeclarationProviderTest
 	@Inject extension ParseHelper<NablaModule>
 	@Inject extension DeclarationProvider
 	@Inject extension ValidationTestHelper
-	
+	@Inject extension NablaModuleExtensions
+
 	@Test
 	def void testFunctions() 
 	{
@@ -59,7 +65,7 @@ class DeclarationProviderTest
 				ℝ[2] a = [1.1, 2.2];
 				ℝ[2] x = f(a);
 		}
-		J4: { ℝ x = f(3.0, true); }
+		J4: { ℝ x = f(3.0, true); } // Wrong arguments : ℝ, ℾ
 
 		// --- TEST DE G ---
 		J5: {
@@ -76,18 +82,25 @@ class DeclarationProviderTest
 				ℝ[5] x = g(a, b);
 		}
 		J8: { a = g(x); }
-		J9: { a = g(x, x); }
-		J10: { a = g(x2); }
+		J9: { a = g(x, x); } // Wrong arguments : ℝ{cells}, ℝ{cells}
+		J10: { a = g(x2); } // Wrong arguments : ℝ²{cells}
 		'''
 
 		val module = model.parse
 		Assert.assertNotNull(module)
-		// TODO Tester qu'il n'y a qu'une seule erreur, pas de declaration f(N)
-		//module.assertNoErrors
+		Assert.assertEquals(3, module.validate.filter(i | i.severity == Severity.ERROR).size)
+		module.assertError(NablaPackage.eINSTANCE.functionCall,
+		TypeValidator::FUNCTION_ARGS,
+		TypeValidator::getFunctionArgsMsg(#[PrimitiveType::REAL.literal, PrimitiveType::BOOL.literal]))
+		val cells = module.getConnectivityByName("cells")
+		module.assertError(NablaPackage.eINSTANCE.functionCall,
+		TypeValidator::FUNCTION_ARGS,
+		TypeValidator::getFunctionArgsMsg(#[new RealArrayType(#[cells],#[2]).label]))
+		module.assertError(NablaPackage.eINSTANCE.functionCall,
+		TypeValidator::FUNCTION_ARGS,
+		TypeValidator::getFunctionArgsMsg(#[new RealArrayType(#[cells], #[]).label, new RealArrayType(#[cells],#[]).label]))
 		
 		val f = module.functions.filter(Function).get(0)
-		val cells = module.connectivities.get(0)
-
 		val j0Fdecl = getFunctionDeclarationOfJob(module, 0)
 		Assert.assertEquals(f.argGroups.get(0), j0Fdecl.model)
 		val j1Fdecl = getFunctionDeclarationOfJob(module, 1)
@@ -99,7 +112,7 @@ class DeclarationProviderTest
 		val j4Fdecl = getFunctionDeclarationOfJob(module, 4)
 		Assert.assertNull(j4Fdecl)
 		
-		val g = module.functions.filter(Function).get(1)		
+		val g = module.functions.filter(Function).get(1)
 		val j5Gdecl = getFunctionDeclarationOfJob(module, 5)
 		Assert.assertEquals(g.argGroups.get(0), j5Gdecl.model)
 		TestUtils.assertEquals(PrimitiveType::REAL, #[2], #[], j5Gdecl.returnType)
@@ -145,13 +158,15 @@ class DeclarationProviderTest
 		// --- TEST DE F ---
 		J0: { ℝ x = f{j ∈ cells()}(u{j}); }
 		J1: { ℝ[2] x = f{j ∈ cells()}(u2{j}); }
-		J2: { ℝ x = f{j ∈ cells()}(bidon{j}); }
+		J2: { ℝ x = f{j ∈ cells()}(bidon{j}); } // Wrong arguments : ℕ
 		'''
 
 		val module = model.parse
 		Assert.assertNotNull(module)
-		// TODO Tester qu'il n'y a qu'une seule erreur, pas de declaration f(N)
-		//module.assertNoErrors
+		Assert.assertEquals(1, module.validate.filter(i | i.severity == Severity.ERROR).size)
+		module.assertError(NablaPackage.eINSTANCE.reductionCall,
+		TypeValidator::REDUCTION_ARGS,
+		TypeValidator::getReductionArgsMsg(PrimitiveType::INT.literal))
 		
 		val f = module.functions.filter(Reduction).get(0)
 		val j0Fdecl = getReductionDeclarationOfJob(module, 0)

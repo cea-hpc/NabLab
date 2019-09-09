@@ -21,7 +21,9 @@ class NablagenParsingTest {
 	@Test
 	def void loadModel() {
 		val result = parseHelper.parse('''
-			Hello Xtext!
+			workflow TestDefaultGenerationChain transforms Test
+				{
+				}
 		''')
 		Assert.assertNotNull(result)
 		val errors = result.eResource.errors

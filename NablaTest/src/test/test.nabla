@@ -9,66 +9,40 @@
  *******************************************************************************/
 module Test;
 
-with Math.*;
-with LinearAlgebra.*;
-
-items { cell, node }
+items { cell, node, face }
 
 connectivities {
 	cells: → {cell};
 	nodes: → {node};
-	nodesOfCell: cell → {node};
-	cellsOfNode: node → {cell};
 }
 
-functions {
-	f: x | ℝ[x] → ℝ[x];
+functions
+{
+	fabs: ℝ → ℝ;
+	g:	a | ℝ[a] → ℝ[a],
+		a, b | ℝ[a, b] → ℝ[a*b],
+		a, b | ℝ[a] × ℝ[b] → ℝ[a+b];
+	g2:	a | ℝ[a] → ℝ[a];
 }
 
 const ℝ X_EDGE_LENGTH = 1.;
-const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+const ℝ Y_EDGE_LENGTH = 1.;
 const ℕ X_EDGE_ELEMS = 2;
 const ℕ Y_EDGE_ELEMS = 2;
 const ℕ Z_EDGE_ELEMS = 1;
 const ℝ option_stoptime = 0.1;
 const ℕ option_max_iterations = 500;
 
-//ℝ[2] X{nodes};
-//ℝ v{nodes};
-//ℝ u{cells}, r{cells}, Cjr{cells,nodesOfCell}, M{cells,cells};
-//ℝ total;
-//ℝ ff{cells,nodes};
-//ℝ[2] a, b;
+ℝ x{cells};
+ℝ X{nodes};
+ℝ coucou;
 
-A: ∀j∈cells(), {
-		ℝ toto = 0.0;
-	∀r∈nodes(), {
-		ℝ tmp = 0.0;
-		tmp = 1.0;
-	}
+toto: ∀j∈cells(), ∀j∈cells(), 
+{
+	ℝ bobby;
+	x{j} = 0.0;
 }
-
-// TestMatrix: r = solveLinearSystem(M, u);
-
-//IniU: ∀j∈cells(), u{j} = cos(2.0);
-//TestExternal: total = ∏{j1∈cells()}(u{j1}) + ∑{j2∈cells()}(u{j2});
-//	
-//IniV: ∀r∈nodes(), v{r} = 3.0;
-//TestInternal: ∀j∈cells(), {
-//	u{j} = ∏{r1∈nodesOfCell(j)}(v{r1}) + ∑{r2∈nodesOfCell(j)}(v{r2});	
-//}
-//TestInternal2: ∀j∈cells(), {
-//	ℝ a = ∏{r1∈nodesOfCell(j)}(v{r1});	
-//	ℝ b = ∑{r2∈nodesOfCell(j)}(v{r2});	
-//	u{j} = a + b;	
-//}
-
-//IniCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), Cjr{j,r} = 3.0;
-//IniCjrBad: ∀r∈nodes(), ∀j∈cellsOfNode(r+1), Cjr{j,r} = 1.0;
-//B: total = ∑{j∈cells()} ( ∑{r∈nodesOfCell(j)}(Cjr{j,r} + 1.0) + 2.0) + 3.0;
-//B: total = reduceMin{j∈cells()} ( reduceMin{r∈nodesOfCell(j)}(Cjr{j,r} + 1.0) + 2.0) + 3.0;
-//C: ∀j∈cells(), u{j}=reduceMin{r∈nodesOfCell(j)}(Cjr{j,r} +2.0);
-//B: ∀j∈cells(), X{j}^{n+1/2} = X{j} + 1.0;
-//C: ∀j∈cells(), X{j}^{n+1} = X{j} + 1.0;
-//D: ∀j∈cells(), XX{j} = X{j}^{n+1} + 1.0;
-
+titi: {
+	∀j∈cells(), x{j} = 0.0;
+	∀j∈cells(), x{j} = 0.0;
+}

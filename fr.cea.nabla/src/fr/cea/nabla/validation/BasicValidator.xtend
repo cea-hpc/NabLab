@@ -42,7 +42,7 @@ import org.eclipse.xtext.validation.Check
 
 import static extension fr.cea.nabla.Utils.*
 
-class BasicValidator  extends AbstractNablaValidator
+class BasicValidator extends AbstractNablaValidator
 {
 	@Inject extension VarExtensions
 	@Inject extension SpaceIteratorExtensions

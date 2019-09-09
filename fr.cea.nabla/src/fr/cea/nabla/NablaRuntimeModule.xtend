@@ -10,6 +10,7 @@
 package fr.cea.nabla
 
 import com.google.inject.Binder
+import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.eclipse.xtext.parser.IEncodingProvider
 import org.eclipse.xtext.service.DispatchingProvider
 
@@ -23,5 +24,10 @@ class NablaRuntimeModule extends AbstractNablaRuntimeModule
 		binder.bind(typeof(IEncodingProvider))
 		.annotatedWith(typeof(DispatchingProvider.Runtime))
 		.to(typeof(NablaEncodingProvider))
+	}
+	
+	override Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() 
+	{
+		return NablaQualifiedNameProvider
 	}
 }

@@ -30,6 +30,10 @@ import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
+import fr.cea.nabla.nabla.FunctionArg
+import fr.cea.nabla.nabla.ReductionArg
+import fr.cea.nabla.nabla.DimensionVarReference
+import fr.cea.nabla.nabla.DimensionVar
 
 /**
  * This class contains custom scoping description.
@@ -154,5 +158,24 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 				ScalarVarDefinition : variables += i.variable
 			}				
 		return variables
+	}
+
+	/*** Scope for dimension variables of functions **********************************/
+	def scope_DimensionVarReference_target(DimensionVarReference context, EReference r)
+	{
+		val variables = context.dimensionVariables
+		if (variables.empty) IScope::NULLSCOPE
+		else Scopes.scopeFor(variables)
+	}
+	
+	private def List<DimensionVar> getDimensionVariables(EObject o)
+	{
+		if (o === null) #[]
+		else switch o
+		{
+			FunctionArg: o.dimVars
+			ReductionArg: o.dimVars
+			default: o.eContainer.dimensionVariables
+		}
 	}
 }

@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrPackage
@@ -22,7 +23,7 @@ import fr.cea.nabla.ir.ir.Variable
 import java.util.HashSet
 
 import static extension fr.cea.nabla.ir.VariableExtensions.*
-import fr.cea.nabla.ir.ir.InSituJob
+import fr.cea.nabla.ir.ir.Iterator
 
 class JobExtensions 
 {
@@ -79,5 +80,11 @@ class JobExtensions
 	static def dispatch Iterable<Variable> getInVars(InSituJob it)
 	{
 		return variables
+	}
+	
+	static def getIteratorByName(Job it, String name)
+	{
+		var iterators = eAllContents.filter(Iterator).toList
+		return iterators.findFirst[i | i.name == name]
 	}
 }

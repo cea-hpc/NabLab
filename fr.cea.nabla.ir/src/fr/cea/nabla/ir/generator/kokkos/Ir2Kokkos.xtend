@@ -86,7 +86,7 @@ class Ir2Kokkos extends CodeGenerator
 
 		// Global Variables
 		«val globals = variables.filter(SimpleVariable).filter[!const]»
-		«val globalsByType = globals.groupBy[type.root.cppType]»
+		«val globalsByType = globals.groupBy[type.primitive.cppType]»
 		«FOR type : globalsByType.keySet»
 		«type» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 		«ENDFOR»
@@ -124,10 +124,10 @@ class Ir2Kokkos extends CodeGenerator
 		, «uv.name»(«uv.defaultValue.content»)
 		«ENDFOR»
 		«FOR a : connectivityVars»
-		, «a.name»("«a.name»", «FOR d : a.dimensions SEPARATOR ', '»«d.nbElems»«ENDFOR»)
+		, «a.name»("«a.name»", «FOR d : a.supports SEPARATOR ', '»«d.nbElems»«ENDFOR»)
 		«ENDFOR»
 		«FOR a : linearAlgebraVars»
-		, «a.name»("«a.name»", «FOR d : a.dimensions SEPARATOR ', '»«d.nbElems»«ENDFOR»)
+		, «a.name»("«a.name»", «FOR d : a.supports SEPARATOR ', '»«d.nbElems»«ENDFOR»)
 		«ENDFOR»
 		{
 			«IF nodeCoordVariable !== null»

@@ -6,7 +6,7 @@ package fr.cea.nabla.nabla.provider;
 
 import fr.cea.nabla.nabla.NablaFactory;
 import fr.cea.nabla.nabla.NablaPackage;
-import fr.cea.nabla.nabla.ScalarVarDefinition;
+import fr.cea.nabla.nabla.SimpleVarDefinition;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,19 +22,19 @@ import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link fr.cea.nabla.nabla.ScalarVarDefinition} object.
+ * This is the item provider adapter for a {@link fr.cea.nabla.nabla.SimpleVarDefinition} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
+public class SimpleVarDefinitionItemProvider extends InstructionItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ScalarVarDefinitionItemProvider(AdapterFactory adapterFactory) {
+	public SimpleVarDefinitionItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -65,9 +65,9 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_ScalarVarDefinition_const_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ScalarVarDefinition_const_feature", "_UI_ScalarVarDefinition_type"),
-				 NablaPackage.Literals.SCALAR_VAR_DEFINITION__CONST,
+				 getString("_UI_SimpleVarDefinition_const_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_SimpleVarDefinition_const_feature", "_UI_SimpleVarDefinition_type"),
+				 NablaPackage.Literals.SIMPLE_VAR_DEFINITION__CONST,
 				 true,
 				 false,
 				 false,
@@ -88,9 +88,9 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(NablaPackage.Literals.SCALAR_VAR_DEFINITION__TYPE);
-			childrenFeatures.add(NablaPackage.Literals.SCALAR_VAR_DEFINITION__VARIABLE);
-			childrenFeatures.add(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE);
+			childrenFeatures.add(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__TYPE);
+			childrenFeatures.add(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__VARIABLE);
+			childrenFeatures.add(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE);
 		}
 		return childrenFeatures;
 	}
@@ -109,14 +109,14 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 	}
 
 	/**
-	 * This returns ScalarVarDefinition.gif.
+	 * This returns SimpleVarDefinition.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/ScalarVarDefinition"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/SimpleVarDefinition"));
 	}
 
 	/**
@@ -127,8 +127,8 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		ScalarVarDefinition scalarVarDefinition = (ScalarVarDefinition)object;
-		return getString("_UI_ScalarVarDefinition_type") + " " + scalarVarDefinition.isConst();
+		SimpleVarDefinition simpleVarDefinition = (SimpleVarDefinition)object;
+		return getString("_UI_SimpleVarDefinition_type") + " " + simpleVarDefinition.isConst();
 	}
 
 
@@ -143,13 +143,13 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(ScalarVarDefinition.class)) {
-			case NablaPackage.SCALAR_VAR_DEFINITION__CONST:
+		switch (notification.getFeatureID(SimpleVarDefinition.class)) {
+			case NablaPackage.SIMPLE_VAR_DEFINITION__CONST:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
-			case NablaPackage.SCALAR_VAR_DEFINITION__TYPE:
-			case NablaPackage.SCALAR_VAR_DEFINITION__VARIABLE:
-			case NablaPackage.SCALAR_VAR_DEFINITION__DEFAULT_VALUE:
+			case NablaPackage.SIMPLE_VAR_DEFINITION__TYPE:
+			case NablaPackage.SIMPLE_VAR_DEFINITION__VARIABLE:
+			case NablaPackage.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -169,152 +169,167 @@ public class ScalarVarDefinitionItemProvider extends InstructionItemProvider {
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__TYPE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__TYPE,
 				 NablaFactory.eINSTANCE.createBaseType()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__VARIABLE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__TYPE,
+				 NablaFactory.eINSTANCE.createScalar()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__TYPE,
+				 NablaFactory.eINSTANCE.createArray1D()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__TYPE,
+				 NablaFactory.eINSTANCE.createArray2D()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__VARIABLE,
 				 NablaFactory.eINSTANCE.createSimpleVar()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createInitializationExpression()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createExpression()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createStrictInitializationExpression()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createIntVectorConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createRealVectorConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createContractedIf()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createOr()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createAnd()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createEquality()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createComparison()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createPlus()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createMinus()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createParenthesis()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createUnaryMinus()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createNot()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createIntConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createRealConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createBoolConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createMinConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createMaxConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createFunctionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE,
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createBaseTypeConstant()));
 	}
 

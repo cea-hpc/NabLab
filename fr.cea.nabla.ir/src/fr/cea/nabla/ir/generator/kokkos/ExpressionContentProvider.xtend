@@ -9,6 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
+import fr.cea.nabla.ir.ir.Array1D
+import fr.cea.nabla.ir.ir.Array2D
 import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.ConnectivityVariable
@@ -21,15 +23,17 @@ import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
+import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.RealMatrixConstant
 import fr.cea.nabla.ir.ir.RealVectorConstant
+import fr.cea.nabla.ir.ir.Scalar
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
 import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 
-import static extension fr.cea.nabla.ir.BaseTypeExtensions.*
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
@@ -45,7 +49,7 @@ class ExpressionContentProvider
 		val lContent = left.content
 		val rContent = right.content
 
-		if (left.type.scalar && right.type.scalar) 
+		if (left.type instanceof Scalar && right.type instanceof Scalar) 
 			'''«lContent» «operator» «rContent»'''
 		else 
 			'''ArrayOperations::«operator.operatorName»(«lContent», «rContent»)'''
@@ -57,32 +61,35 @@ class ExpressionContentProvider
 	
 	static def dispatch CharSequence getContent(MinConstant it) 
 	{
-		switch getType().root
+		val t = type
+		switch t
 		{
-			case INT  : '''numeric_limits<int>::min()'''
-			case REAL : '''numeric_limits<double>::min()'''
-			default: throw new Exception('Invalid expression Min for type: ' + getType().label)
+			Scalar case (t.primitive == PrimitiveType::INT): '''numeric_limits<int>::min()'''
+			Scalar case (t.primitive == PrimitiveType::REAL): '''numeric_limits<double>::min()'''
+			default: throw new Exception('Invalid expression Min for type: ' + t.label)
 		}
 	}
 
 	static def dispatch CharSequence getContent(MaxConstant it) 
 	{
-		switch getType().root
+		val t = type
+		switch t
 		{
-			case INT  : '''numeric_limits<int>::max()'''
-			case REAL : '''numeric_limits<double>::max()'''
-			default: throw new Exception('Invalid expression Max for type: ' + getType().label)
+			Scalar case (t.primitive == PrimitiveType::INT): '''numeric_limits<int>::max()'''
+			Scalar case (t.primitive == PrimitiveType::REAL): '''numeric_limits<double>::max()'''
+			default: throw new Exception('Invalid expression Max for type: ' + t.label)
 		}
 	}
 	
 	static def dispatch CharSequence getContent(BaseTypeConstant it) 
 	{
-		val value = initConstant(type.sizes, value.content.toString)
-		if (type.sizes.size > 1)
-			'''{«value»}'''	// One additional bracket for matrix... Magic C++ !
-		else
-			'''«value»'''
-		
+		val t = type
+		switch t
+		{
+			Array1D: initConstant(t, value.content)
+			Array2D: '''{«initConstant(t, value.content)»}''' // One additional bracket for matrix... Magic C++ !
+			default: throw new Exception('Invalid path...')
+		}
 	}
 	
 	static def dispatch CharSequence getContent(IntVectorConstant it) 
@@ -128,7 +135,7 @@ class ExpressionContentProvider
 	{ 
 		if (iterators.empty || variable instanceof SimpleVariable) return ''
 		val array = variable as ConnectivityVariable
-		if (array.dimensions.size < iterators.size) return ''
+		if (array.supports.size < iterators.size) return ''
 		var content = new ArrayList<CharSequence>
 		for (r : iterators)
 			content += r.indexName				

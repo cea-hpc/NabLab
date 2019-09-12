@@ -95,9 +95,11 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.CONNECTIVITY_CALL_ITERATOR_REF: return createConnectivityCallIteratorRef();
 			case IrPackage.VAR_REF_ITERATOR_REF: return createVarRefIteratorRef();
 			case IrPackage.ITEM_TYPE: return createItemType();
-			case IrPackage.BASE_TYPE: return createBaseType();
-			case IrPackage.EXPRESSION_TYPE: return createExpressionType();
-			case IrPackage.ARG_TYPE: return createArgType();
+			case IrPackage.SCALAR: return createScalar();
+			case IrPackage.ARRAY1_D: return createArray1D();
+			case IrPackage.ARRAY2_D: return createArray2D();
+			case IrPackage.IR_TYPE: return createIrType();
+			case IrPackage.CONNECTIVITY_TYPE: return createConnectivityType();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -518,9 +520,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BaseType createBaseType() {
-		BaseTypeImpl baseType = new BaseTypeImpl();
-		return baseType;
+	public Scalar createScalar() {
+		ScalarImpl scalar = new ScalarImpl();
+		return scalar;
 	}
 
 	/**
@@ -528,9 +530,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ExpressionType createExpressionType() {
-		ExpressionTypeImpl expressionType = new ExpressionTypeImpl();
-		return expressionType;
+	public Array1D createArray1D() {
+		Array1DImpl array1D = new Array1DImpl();
+		return array1D;
 	}
 
 	/**
@@ -538,9 +540,29 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ArgType createArgType() {
-		ArgTypeImpl argType = new ArgTypeImpl();
-		return argType;
+	public Array2D createArray2D() {
+		Array2DImpl array2D = new Array2DImpl();
+		return array2D;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public IrType createIrType() {
+		IrTypeImpl irType = new IrTypeImpl();
+		return irType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ConnectivityType createConnectivityType() {
+		ConnectivityTypeImpl connectivityType = new ConnectivityTypeImpl();
+		return connectivityType;
 	}
 
 	/**

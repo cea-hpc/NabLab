@@ -18,7 +18,7 @@ NablaModule:
 	('items' '{' items+=ItemType (',' items+=ItemType)* '}'
 	'connectivities' '{' connectivities+=Connectivity* '}')?
 	('functions' '{' functions+=(Function | Reduction)* '}')?
-	variables+=(ScalarVarDefinition | VarGroupDeclaration)*
+	variables+=(SimpleVarDefinition | VarGroupDeclaration)*
 	jobs+=Job*;
 
 Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';
@@ -32,7 +32,7 @@ Job: name=ID ':' instruction=Instruction;
 
 /* INSTRUCTIONS ******************************************/
 Instruction: 
-	ScalarVarDefinition |
+	SimpleVarDefinition |
 	VarGroupDeclaration | // only scalar variables (ScalarVar type)
 	{InstructionBlock} '{' instructions+=Instruction+ '}' |
 	{Affectation} varRef=VarRef '=' expression=Expression ';' |
@@ -47,11 +47,11 @@ ConnectivityCall: connectivity=[Connectivity]  '('(args+=SpaceIteratorRef (',' a
 SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?; // inc/dec only valid on a range
 
 /* VARIABLES ********************************************/
-ScalarVarDefinition: (const?='const')? type=BaseType variable=SimpleVar '=' defaultValue=InitializationExpression ';';
+SimpleVarDefinition: (const?='const')? type=BaseType variable=SimpleVar '=' defaultValue=InitializationExpression ';';
 VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
 Var: SimpleVar | ConnectivityVar;
 SimpleVar: name=ID;
-ConnectivityVar: name=ID '{' dimensions+=[Connectivity] (',' dimensions+=[Connectivity])* '}';
+ConnectivityVar: name=ID '{' supports+=[Connectivity] (',' supports+=[Connectivity])* '}';
 
 /* CONNECTIVITES *****************************************/
 Connectivity: name=ID ':' (inTypes+=[ItemType] ('\u00D7' inTypes+=[ItemType])*)?  '\u2192' returnType=ItemArgType ';';
@@ -63,7 +63,7 @@ FunctionArg: (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? (inTypes+
 Reduction: name=ID ':' argGroups+=ReductionArg (',' argGroups+=ReductionArg)* ';';
 ReductionArg:  (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? '(' seed=Expression ',' collectionType=ArgType ')' '\u2192' returnType=ArgType;
 
-ArgType: root=PrimitiveType ('[' dimensions+=Dimension (',' dimensions+=Dimension)* ']')?;
+ArgType: primitive=PrimitiveType ('[' indices+=Dimension (',' indices+=Dimension)* ']')?;
 DimensionVar: name=ID;
 Dimension: DimensionOperation;
 DimensionOperation returns Dimension:
@@ -137,7 +137,11 @@ TimeIterator:
 	{NextTimeIterator} 'n+1' (hasDiv?='/' div=INT)?;
 
 /* TYPES *************************************************/
-BaseType: root=PrimitiveType ('[' sizes+=INT (',' sizes+=INT)? ']')?;
+BaseType: 
+	{Scalar} primitive=PrimitiveType |
+	{Array1D} primitive=PrimitiveType '[' size=INT ']' |
+	{Array2D} primitive=PrimitiveType '[' nbRows=INT ',' nbCols=INT ']'; 
+
 enum PrimitiveType: Int='\u2115' | Real='\u211D' | Bool='\u213E';
 
 /* DATA TYPE *********************************************/

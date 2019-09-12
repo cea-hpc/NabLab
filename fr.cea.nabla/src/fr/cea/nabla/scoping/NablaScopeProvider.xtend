@@ -10,15 +10,19 @@
 package fr.cea.nabla.scoping
 
 import fr.cea.nabla.nabla.ConnectivityCall
+import fr.cea.nabla.nabla.DimensionVar
+import fr.cea.nabla.nabla.DimensionVarReference
 import fr.cea.nabla.nabla.Function
+import fr.cea.nabla.nabla.FunctionArg
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Reduction
+import fr.cea.nabla.nabla.ReductionArg
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.nabla.ScalarVarDefinition
+import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -30,10 +34,6 @@ import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
-import fr.cea.nabla.nabla.FunctionArg
-import fr.cea.nabla.nabla.ReductionArg
-import fr.cea.nabla.nabla.DimensionVarReference
-import fr.cea.nabla.nabla.DimensionVar
 
 /**
  * This class contains custom scoping description.
@@ -129,7 +129,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	private def dispatch IScope variablesDefinedBefore(NablaModule context, Instruction o, String prefix) 
 	{
 //		println(prefix + '[NablaModule] variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
-		if (o instanceof ScalarVarDefinition || o instanceof VarGroupDeclaration)
+		if (o instanceof SimpleVarDefinition || o instanceof VarGroupDeclaration)
 			Scopes::scopeFor(context.variables.variablesDeclaredBefore(o, prefix + '\t'))
 		else
 			Scopes::scopeFor(context.variables.allVariables)	
@@ -155,7 +155,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 			switch i
 			{
 				VarGroupDeclaration : variables += i.variables
-				ScalarVarDefinition : variables += i.variable
+				SimpleVarDefinition : variables += i.variable
 			}				
 		return variables
 	}

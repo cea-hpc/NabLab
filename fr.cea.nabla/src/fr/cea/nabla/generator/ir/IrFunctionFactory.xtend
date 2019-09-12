@@ -11,16 +11,16 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import fr.cea.nabla.FunctionDeclaration
-import fr.cea.nabla.ReductionDeclaration
 import fr.cea.nabla.Utils
+import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.nabla.ArgType
+import fr.cea.nabla.nabla.Dimension
+import fr.cea.nabla.nabla.DimensionInt
 import fr.cea.nabla.nabla.Function
+import fr.cea.nabla.nabla.FunctionArg
 import fr.cea.nabla.nabla.Reduction
-import fr.cea.nabla.typing.ArrayType
-import fr.cea.nabla.typing.DefinedType
-import fr.cea.nabla.typing.UndefinedType
-import fr.cea.nabla.typing.AbstractType
+import fr.cea.nabla.nabla.ReductionArg
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -33,37 +33,59 @@ class IrFunctionFactory
 	@Inject extension Nabla2IrUtils
 	@Inject extension IrAnnotationHelper
 
-	def create IrFactory::eINSTANCE.createFunction toIrFunction(Function f, FunctionDeclaration a)
+	def create IrFactory::eINSTANCE.createFunction toIrFunction(Function f, FunctionArg a)
 	{
-		annotations += a.model.toIrAnnotation
+		annotations += a.toIrAnnotation
 		name = f.name
-		returnType = a.returnType.toIrArgType
-		inTypes += a.inTypes.map[toIrArgType]
+		returnType = a.returnType.toIrBaseType
+		inTypes += a.inTypes.map[toIrBaseType]
 		provider = Utils::getNablaModule(f).name
 	}
 
-	def create IrFactory::eINSTANCE.createReduction toIrReduction(Reduction f, ReductionDeclaration a)
+	def create IrFactory::eINSTANCE.createReduction toIrReduction(Reduction f, ReductionArg a)
 	{
-		annotations += a.model.toIrAnnotation
+		annotations += a.toIrAnnotation
 		name = f.name
-		collectionType = a.collectionType.toIrArgType
-		returnType = a.returnType.toIrArgType
+		collectionType = a.collectionType.toIrBaseType
+		returnType = a.returnType.toIrBaseType
 		provider = Utils::getNablaModule(f).name
 	}
 	
-	private def toIrArgType(AbstractType t)
+	/**
+	 * No create method but a nested create to get a new instance at each call
+	 */
+	private def BaseType toIrBaseType(ArgType a)
 	{
-		switch t
+		if (a === null) null
+		else switch a.indices.size
 		{
-			UndefinedType: null
-			ArrayType: IrFactory::eINSTANCE.createArgType =>
-			[
-				root = t.root.toIrPrimitiveType
-				arrayDimension = t.sizes.size
+			case 0: IrFactory.eINSTANCE.createScalar => 
+			[ 
+				primitive = a.primitive.toIrPrimitiveType
 			]
-			DefinedType: IrFactory::eINSTANCE.createArgType =>
-			[
-				root = t.root.toIrPrimitiveType
+			case 1: IrFactory.eINSTANCE.createArray1D => 
+			[ 
+				primitive = a.primitive.toIrPrimitiveType
+				size = a.indices.get(0).value
+			]
+			case 2: IrFactory.eINSTANCE.createArray2D => 
+			[ 
+				primitive = a.primitive.toIrPrimitiveType
+				nbRows = a.indices.get(0).value
+				nbCols = a.indices.get(1).value
 			]
 		}
-	}}
+	}
+	
+	/**
+	 * Return the value of the dimension if it is fixed (for example, det function only available on R[2]),
+	 * or -1 if the dimension is undefined (for example R[x]).
+	 */
+	private def getValue(Dimension x)
+	{
+		if (x instanceof DimensionInt)
+			x.value
+		else
+			-1
+	}
+}

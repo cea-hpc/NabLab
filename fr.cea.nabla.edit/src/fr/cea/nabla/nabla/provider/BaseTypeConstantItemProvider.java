@@ -143,6 +143,21 @@ public class BaseTypeConstantItemProvider extends StrictInitializationExpression
 
 		newChildDescriptors.add
 			(createChildParameter
+				(NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE,
+				 NablaFactory.eINSTANCE.createScalar()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE,
+				 NablaFactory.eINSTANCE.createArray1D()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE,
+				 NablaFactory.eINSTANCE.createArray2D()));
+
+		newChildDescriptors.add
+			(createChildParameter
 				(NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE,
 				 NablaFactory.eINSTANCE.createExpression()));
 

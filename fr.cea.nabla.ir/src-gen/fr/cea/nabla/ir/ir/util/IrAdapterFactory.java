@@ -256,12 +256,24 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createBaseTypeAdapter();
 			}
 			@Override
-			public Adapter caseExpressionType(ExpressionType object) {
-				return createExpressionTypeAdapter();
+			public Adapter caseScalar(Scalar object) {
+				return createScalarAdapter();
 			}
 			@Override
-			public Adapter caseArgType(ArgType object) {
-				return createArgTypeAdapter();
+			public Adapter caseArray1D(Array1D object) {
+				return createArray1DAdapter();
+			}
+			@Override
+			public Adapter caseArray2D(Array2D object) {
+				return createArray2DAdapter();
+			}
+			@Override
+			public Adapter caseIrType(IrType object) {
+				return createIrTypeAdapter();
+			}
+			@Override
+			public Adapter caseConnectivityType(ConnectivityType object) {
+				return createConnectivityTypeAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -942,30 +954,72 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ExpressionType <em>Expression Type</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Scalar <em>Scalar</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.ExpressionType
+	 * @see fr.cea.nabla.ir.ir.Scalar
 	 * @generated
 	 */
-	public Adapter createExpressionTypeAdapter() {
+	public Adapter createScalarAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ArgType <em>Arg Type</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Array1D <em>Array1 D</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.ArgType
+	 * @see fr.cea.nabla.ir.ir.Array1D
 	 * @generated
 	 */
-	public Adapter createArgTypeAdapter() {
+	public Adapter createArray1DAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Array2D <em>Array2 D</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.Array2D
+	 * @generated
+	 */
+	public Adapter createArray2DAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IrType <em>Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.IrType
+	 * @generated
+	 */
+	public Adapter createIrTypeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ConnectivityType <em>Connectivity Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.ConnectivityType
+	 * @generated
+	 */
+	public Adapter createConnectivityTypeAdapter() {
 		return null;
 	}
 

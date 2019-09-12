@@ -19,8 +19,8 @@ import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InitializationExpression
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Loop
-import fr.cea.nabla.nabla.ScalarVarDefinition
 import fr.cea.nabla.nabla.SimpleVar
+import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
 import java.util.List
@@ -46,7 +46,7 @@ class IrInstructionFactory
 		else IrFactory::eINSTANCE.createInstructionBlock => [ instructions.addAll(irInstructions) ]
 	}
 
-	private def dispatch List<Instruction> toIrInstructions(ScalarVarDefinition v)
+	private def dispatch List<Instruction> toIrInstructions(SimpleVarDefinition v)
 	{
 		val irInstr = IrFactory::eINSTANCE.createVarDefinition =>
 		[

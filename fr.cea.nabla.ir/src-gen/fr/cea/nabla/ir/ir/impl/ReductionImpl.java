@@ -2,7 +2,7 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.ArgType;
+import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Reduction;
 
@@ -59,7 +59,7 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * @generated
 	 * @ordered
 	 */
-	protected ArgType collectionType;
+	protected BaseType collectionType;
 
 	/**
 	 * The cached value of the '{@link #getReturnType() <em>Return Type</em>}' containment reference.
@@ -69,7 +69,7 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * @generated
 	 * @ordered
 	 */
-	protected ArgType returnType;
+	protected BaseType returnType;
 
 	/**
 	 * The default value of the '{@link #getProvider() <em>Provider</em>}' attribute.
@@ -136,10 +136,10 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ArgType getCollectionType() {
+	public BaseType getCollectionType() {
 		if (collectionType != null && collectionType.eIsProxy()) {
 			InternalEObject oldCollectionType = (InternalEObject)collectionType;
-			collectionType = (ArgType)eResolveProxy(oldCollectionType);
+			collectionType = (BaseType)eResolveProxy(oldCollectionType);
 			if (collectionType != oldCollectionType) {
 				InternalEObject newCollectionType = (InternalEObject)collectionType;
 				NotificationChain msgs = oldCollectionType.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.REDUCTION__COLLECTION_TYPE, null, null);
@@ -159,7 +159,7 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ArgType basicGetCollectionType() {
+	public BaseType basicGetCollectionType() {
 		return collectionType;
 	}
 
@@ -168,8 +168,8 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetCollectionType(ArgType newCollectionType, NotificationChain msgs) {
-		ArgType oldCollectionType = collectionType;
+	public NotificationChain basicSetCollectionType(BaseType newCollectionType, NotificationChain msgs) {
+		BaseType oldCollectionType = collectionType;
 		collectionType = newCollectionType;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION__COLLECTION_TYPE, oldCollectionType, newCollectionType);
@@ -183,7 +183,7 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setCollectionType(ArgType newCollectionType) {
+	public void setCollectionType(BaseType newCollectionType) {
 		if (newCollectionType != collectionType) {
 			NotificationChain msgs = null;
 			if (collectionType != null)
@@ -202,10 +202,10 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ArgType getReturnType() {
+	public BaseType getReturnType() {
 		if (returnType != null && returnType.eIsProxy()) {
 			InternalEObject oldReturnType = (InternalEObject)returnType;
-			returnType = (ArgType)eResolveProxy(oldReturnType);
+			returnType = (BaseType)eResolveProxy(oldReturnType);
 			if (returnType != oldReturnType) {
 				InternalEObject newReturnType = (InternalEObject)returnType;
 				NotificationChain msgs = oldReturnType.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.REDUCTION__RETURN_TYPE, null, null);
@@ -225,7 +225,7 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ArgType basicGetReturnType() {
+	public BaseType basicGetReturnType() {
 		return returnType;
 	}
 
@@ -234,8 +234,8 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetReturnType(ArgType newReturnType, NotificationChain msgs) {
-		ArgType oldReturnType = returnType;
+	public NotificationChain basicSetReturnType(BaseType newReturnType, NotificationChain msgs) {
+		BaseType oldReturnType = returnType;
 		returnType = newReturnType;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION__RETURN_TYPE, oldReturnType, newReturnType);
@@ -249,7 +249,7 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setReturnType(ArgType newReturnType) {
+	public void setReturnType(BaseType newReturnType) {
 		if (newReturnType != returnType) {
 			NotificationChain msgs = null;
 			if (returnType != null)
@@ -334,10 +334,10 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 				setName((String)newValue);
 				return;
 			case IrPackage.REDUCTION__COLLECTION_TYPE:
-				setCollectionType((ArgType)newValue);
+				setCollectionType((BaseType)newValue);
 				return;
 			case IrPackage.REDUCTION__RETURN_TYPE:
-				setReturnType((ArgType)newValue);
+				setReturnType((BaseType)newValue);
 				return;
 			case IrPackage.REDUCTION__PROVIDER:
 				setProvider((String)newValue);
@@ -358,10 +358,10 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 				setName(NAME_EDEFAULT);
 				return;
 			case IrPackage.REDUCTION__COLLECTION_TYPE:
-				setCollectionType((ArgType)null);
+				setCollectionType((BaseType)null);
 				return;
 			case IrPackage.REDUCTION__RETURN_TYPE:
-				setReturnType((ArgType)null);
+				setReturnType((BaseType)null);
 				return;
 			case IrPackage.REDUCTION__PROVIDER:
 				setProvider(PROVIDER_EDEFAULT);

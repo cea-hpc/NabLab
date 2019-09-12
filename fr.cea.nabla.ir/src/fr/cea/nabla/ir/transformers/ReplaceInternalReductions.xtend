@@ -9,9 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.transformers
 
-import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Expression
-import fr.cea.nabla.ir.ir.ExpressionType
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Reduction
@@ -66,14 +64,14 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 		val varRef = IrFactory::eINSTANCE.createVarRef => 
 		[ 
 			variable = reductionInstr.result
-			type = createType(variable.type)
+			type = EcoreUtil::copy(variable.type)
 		]
 
 		if (Operators.keySet.contains(reduction.name))
 		{
 			return IrFactory::eINSTANCE.createBinaryExpression =>
 			[
-				type = createType(reductionInstr.result.type)
+				type = EcoreUtil::copy(reductionInstr.result.type)
 				operator = Operators.get(reduction.name)
 				left = varRef
 				right = IrFactory::eINSTANCE.createParenthesis => 
@@ -90,7 +88,7 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 			// transformation de la reduction
 			return IrFactory::eINSTANCE.createFunctionCall =>
 			[
-				type = createType(reductionInstr.result.type)
+				type = EcoreUtil::copy(reductionInstr.result.type)
 				function = f
 				args += varRef
 				args += reductionInstr.arg
@@ -123,15 +121,6 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 		}
 		
 		return function
-	}
-	
-	private def ExpressionType createType(BaseType t) 
-	{ 
-		IrFactory::eINSTANCE.createExpressionType =>
-		[
-			root = t.root
-			sizes += t.sizes
-		]
 	}
 
 	private def getFunctionName(Reduction r)

@@ -422,22 +422,50 @@ public class IrSwitch<T> extends Switch<T> {
 			case IrPackage.BASE_TYPE: {
 				BaseType baseType = (BaseType)theEObject;
 				T result = caseBaseType(baseType);
+				if (result == null) result = caseIrType(baseType);
 				if (result == null) result = caseIrAnnotable(baseType);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.EXPRESSION_TYPE: {
-				ExpressionType expressionType = (ExpressionType)theEObject;
-				T result = caseExpressionType(expressionType);
-				if (result == null) result = caseBaseType(expressionType);
-				if (result == null) result = caseIrAnnotable(expressionType);
+			case IrPackage.SCALAR: {
+				Scalar scalar = (Scalar)theEObject;
+				T result = caseScalar(scalar);
+				if (result == null) result = caseBaseType(scalar);
+				if (result == null) result = caseIrType(scalar);
+				if (result == null) result = caseIrAnnotable(scalar);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.ARG_TYPE: {
-				ArgType argType = (ArgType)theEObject;
-				T result = caseArgType(argType);
-				if (result == null) result = caseIrAnnotable(argType);
+			case IrPackage.ARRAY1_D: {
+				Array1D array1D = (Array1D)theEObject;
+				T result = caseArray1D(array1D);
+				if (result == null) result = caseBaseType(array1D);
+				if (result == null) result = caseIrType(array1D);
+				if (result == null) result = caseIrAnnotable(array1D);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.ARRAY2_D: {
+				Array2D array2D = (Array2D)theEObject;
+				T result = caseArray2D(array2D);
+				if (result == null) result = caseBaseType(array2D);
+				if (result == null) result = caseIrType(array2D);
+				if (result == null) result = caseIrAnnotable(array2D);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.IR_TYPE: {
+				IrType irType = (IrType)theEObject;
+				T result = caseIrType(irType);
+				if (result == null) result = caseIrAnnotable(irType);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.CONNECTIVITY_TYPE: {
+				ConnectivityType connectivityType = (ConnectivityType)theEObject;
+				T result = caseConnectivityType(connectivityType);
+				if (result == null) result = caseIrType(connectivityType);
+				if (result == null) result = caseIrAnnotable(connectivityType);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -1151,32 +1179,77 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Expression Type</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Scalar</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Expression Type</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Scalar</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseExpressionType(ExpressionType object) {
+	public T caseScalar(Scalar object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Arg Type</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Array1 D</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Arg Type</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Array1 D</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseArgType(ArgType object) {
+	public T caseArray1D(Array1D object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Array2 D</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Array2 D</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseArray2D(Array2D object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIrType(IrType object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Connectivity Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Connectivity Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseConnectivityType(ConnectivityType object) {
 		return null;
 	}
 

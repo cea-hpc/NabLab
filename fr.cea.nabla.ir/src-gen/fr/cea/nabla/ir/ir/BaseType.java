@@ -2,8 +2,6 @@
  */
 package fr.cea.nabla.ir.ir;
 
-import org.eclipse.emf.common.util.EList;
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Base Type</b></em>'.
@@ -13,58 +11,41 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.BaseType#getRoot <em>Root</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.BaseType#getSizes <em>Sizes</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.BaseType#getPrimitive <em>Primitive</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getBaseType()
- * @model
+ * @model abstract="true"
  * @generated
  */
-public interface BaseType extends IrAnnotable {
+public interface BaseType extends IrType {
 	/**
-	 * Returns the value of the '<em><b>Root</b></em>' attribute.
+	 * Returns the value of the '<em><b>Primitive</b></em>' attribute.
 	 * The literals are from the enumeration {@link fr.cea.nabla.ir.ir.PrimitiveType}.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Root</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Primitive</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Root</em>' attribute.
+	 * @return the value of the '<em>Primitive</em>' attribute.
 	 * @see fr.cea.nabla.ir.ir.PrimitiveType
-	 * @see #setRoot(PrimitiveType)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getBaseType_Root()
+	 * @see #setPrimitive(PrimitiveType)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getBaseType_Primitive()
 	 * @model required="true"
 	 * @generated
 	 */
-	PrimitiveType getRoot();
+	PrimitiveType getPrimitive();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.BaseType#getRoot <em>Root</em>}' attribute.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.BaseType#getPrimitive <em>Primitive</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Root</em>' attribute.
+	 * @param value the new value of the '<em>Primitive</em>' attribute.
 	 * @see fr.cea.nabla.ir.ir.PrimitiveType
-	 * @see #getRoot()
+	 * @see #getPrimitive()
 	 * @generated
 	 */
-	void setRoot(PrimitiveType value);
-
-	/**
-	 * Returns the value of the '<em><b>Sizes</b></em>' attribute list.
-	 * The list contents are of type {@link java.lang.Integer}.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Sizes</em>' attribute list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Sizes</em>' attribute list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getBaseType_Sizes()
-	 * @model unique="false"
-	 * @generated
-	 */
-	EList<Integer> getSizes();
+	void setPrimitive(PrimitiveType value);
 
 } // BaseType

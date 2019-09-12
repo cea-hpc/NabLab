@@ -9,10 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla
 
-import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.ScalarVarDefinition
-import fr.cea.nabla.nabla.SimpleVar
+import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 
@@ -23,7 +21,7 @@ class VarExtensions
 		val decl = eContainer
 		switch decl
 		{
-			ScalarVarDefinition : decl.type
+			SimpleVarDefinition : decl.type
 			VarGroupDeclaration : decl.type
 		}
 	}
@@ -33,7 +31,7 @@ class VarExtensions
 		val decl = eContainer
 		switch decl
 		{
-			ScalarVarDefinition : decl.const
+			SimpleVarDefinition : decl.const
 			default : false
 		}
 	}
@@ -48,17 +46,8 @@ class VarExtensions
 		val decl = eContainer
 		switch decl
 		{
-			ScalarVarDefinition : decl.defaultValue
+			SimpleVarDefinition : decl.defaultValue
 			VarGroupDeclaration : null
 		}
-	}
-	
-	def getDimensions(Var it)
-	{
-		switch it 
-		{
-			SimpleVar : #[]
-			ConnectivityVar : dimensions
-		}		
 	}
 }

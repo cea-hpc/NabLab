@@ -15,7 +15,7 @@ import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.nabla.ScalarVarDefinition
+import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VarRef
 import org.eclipse.emf.ecore.EObject
@@ -167,13 +167,13 @@ class NablaScopeProviderTest
 
 		val eref = NablaPackage::eINSTANCE.varRef_Variable
 
-		val aDeclaration = module.getVariableByName("a").eContainer as ScalarVarDefinition
+		val aDeclaration = module.getVariableByName("a").eContainer as SimpleVarDefinition
 		aDeclaration.assertScope(eref, defaultOptionsScope)		
 
 		val b1Declaration = module.getVariableByName("b1").eContainer as VarGroupDeclaration
 		b1Declaration.assertScope(eref, defaultOptionsScope + ", a")		
 
-		val b2Declaration = module.getVariableByName("b2").eContainer as ScalarVarDefinition
+		val b2Declaration = module.getVariableByName("b2").eContainer as SimpleVarDefinition
 		b2Declaration.assertScope(eref, defaultOptionsScope + ", a, b1")	// ????	
 		
 		val j1 = module.getJobByName("j1")

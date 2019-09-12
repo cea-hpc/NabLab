@@ -56,7 +56,7 @@
         containment="true" resolveProxies="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConnectivityVariable" eSuperTypes="#//Variable">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dimensions" unique="false"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="supports" unique="false"
         lowerBound="1" upperBound="-1" eType="#//Connectivity"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValue" eType="#//VarRef"
         containment="true"/>
@@ -65,8 +65,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="inTypes" upperBound="-1"
-        eType="#//ArgType" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//ArgType"
+        eType="#//BaseType" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//BaseType"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="provider" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -74,9 +74,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="Reduction" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="collectionType" lowerBound="1"
-        eType="#//ArgType" containment="true"/>
+        eType="#//BaseType" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" lowerBound="1"
-        eType="#//ArgType" containment="true"/>
+        eType="#//BaseType" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="provider" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
@@ -166,7 +166,7 @@
         containment="true" resolveProxies="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Expression" abstract="true" eSuperTypes="#//IrAnnotable">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//ExpressionType"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//IrType"
         containment="true" resolveProxies="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ContractedIf" eSuperTypes="#//Expression">
@@ -271,24 +271,30 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="BaseType" eSuperTypes="#//IrAnnotable">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="root" lowerBound="1" eType="#//PrimitiveType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sizes" unique="false" upperBound="-1"
+  <eClassifiers xsi:type="ecore:EClass" name="BaseType" abstract="true" eSuperTypes="#//IrType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="primitive" lowerBound="1"
+        eType="#//PrimitiveType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Scalar" eSuperTypes="#//BaseType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Array1D" eSuperTypes="#//BaseType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="size" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Array2D" eSuperTypes="#//BaseType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nbRows" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nbCols" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ExpressionType" eSuperTypes="#//BaseType">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="connectivities" unique="false"
-        upperBound="-1" eType="#//Connectivity"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ArgType" eSuperTypes="#//IrAnnotable">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="root" lowerBound="1" eType="#//PrimitiveType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="arrayDimension" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IrType" eSuperTypes="#//IrAnnotable"/>
   <eClassifiers xsi:type="ecore:EEnum" name="PrimitiveType">
-    <eLiterals name="Void"/>
     <eLiterals name="Int" value="1"/>
     <eLiterals name="Real" value="2"/>
     <eLiterals name="Bool" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConnectivityType" eSuperTypes="#//IrType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connectivities" unique="false"
+        upperBound="-1" eType="#//Connectivity"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="base" lowerBound="1" eType="#//BaseType"
+        containment="true"/>
   </eClassifiers>
 </ecore:EPackage>

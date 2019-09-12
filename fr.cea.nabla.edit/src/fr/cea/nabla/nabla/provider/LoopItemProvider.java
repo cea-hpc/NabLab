@@ -156,7 +156,7 @@ public class LoopItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.LOOP__BODY,
-				 NablaFactory.eINSTANCE.createScalarVarDefinition()));
+				 NablaFactory.eINSTANCE.createSimpleVarDefinition()));
 
 		newChildDescriptors.add
 			(createChildParameter

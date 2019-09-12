@@ -65,25 +65,25 @@ public class ArgTypeItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addRootPropertyDescriptor(object);
+			addPrimitivePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This adds a property descriptor for the Root feature.
+	 * This adds a property descriptor for the Primitive feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addRootPropertyDescriptor(Object object) {
+	protected void addPrimitivePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_ArgType_root_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ArgType_root_feature", "_UI_ArgType_type"),
-				 NablaPackage.Literals.ARG_TYPE__ROOT,
+				 getString("_UI_ArgType_primitive_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ArgType_primitive_feature", "_UI_ArgType_type"),
+				 NablaPackage.Literals.ARG_TYPE__PRIMITIVE,
 				 true,
 				 false,
 				 false,
@@ -104,7 +104,7 @@ public class ArgTypeItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(NablaPackage.Literals.ARG_TYPE__DIMENSIONS);
+			childrenFeatures.add(NablaPackage.Literals.ARG_TYPE__INDICES);
 		}
 		return childrenFeatures;
 	}
@@ -141,7 +141,7 @@ public class ArgTypeItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		PrimitiveType labelValue = ((ArgType)object).getRoot();
+		PrimitiveType labelValue = ((ArgType)object).getPrimitive();
 		String label = labelValue == null ? null : labelValue.toString();
 		return label == null || label.length() == 0 ?
 			getString("_UI_ArgType_type") :
@@ -161,10 +161,10 @@ public class ArgTypeItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(ArgType.class)) {
-			case NablaPackage.ARG_TYPE__ROOT:
+			case NablaPackage.ARG_TYPE__PRIMITIVE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
-			case NablaPackage.ARG_TYPE__DIMENSIONS:
+			case NablaPackage.ARG_TYPE__INDICES:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -184,22 +184,22 @@ public class ArgTypeItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.ARG_TYPE__DIMENSIONS,
+				(NablaPackage.Literals.ARG_TYPE__INDICES,
 				 NablaFactory.eINSTANCE.createDimension()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.ARG_TYPE__DIMENSIONS,
+				(NablaPackage.Literals.ARG_TYPE__INDICES,
 				 NablaFactory.eINSTANCE.createDimensionOperation()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.ARG_TYPE__DIMENSIONS,
+				(NablaPackage.Literals.ARG_TYPE__INDICES,
 				 NablaFactory.eINSTANCE.createDimensionInt()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.ARG_TYPE__DIMENSIONS,
+				(NablaPackage.Literals.ARG_TYPE__INDICES,
 				 NablaFactory.eINSTANCE.createDimensionVarReference()));
 	}
 

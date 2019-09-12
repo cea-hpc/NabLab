@@ -9,41 +9,33 @@
  *******************************************************************************/
 package fr.cea.nabla.tests
 
-import fr.cea.nabla.nabla.BaseType
-import fr.cea.nabla.nabla.Connectivity
-import fr.cea.nabla.nabla.PrimitiveType
-import fr.cea.nabla.typing.ArrayType
-import fr.cea.nabla.typing.DefinedType
-import org.junit.Assert
-import fr.cea.nabla.typing.AbstractType
-
 class TestUtils 
 {
-	static def void assertEquals(PrimitiveType expectedRoot, int[] expectedSizes, BaseType actual)
-	{
-		Assert.assertEquals(expectedRoot, actual.root)
-		Assert.assertArrayEquals(expectedSizes, actual.sizes)
-	}
-
-	static def void assertEquals(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, AbstractType actual)
-	{
-		switch actual
-		{
-			ArrayType:
-			{
-				Assert.assertEquals(expectedRoot, actual.root)
-				Assert.assertArrayEquals(expectedSizes, actual.sizes)				
-				Assert.assertArrayEquals(expectedConnectivities, actual.connectivities)				
-			}
-			DefinedType: 
-			{
-				Assert.assertEquals(expectedRoot, actual.root)
-				Assert.assertArrayEquals(expectedSizes, #[])				
-				Assert.assertArrayEquals(expectedConnectivities, actual.connectivities)				
-			}
-			default: Assert.fail
-		}
-	}
+//	static def void assertEquals(PrimitiveType expectedPrimitive, int[] expectedSizes, BaseType actual)
+//	{
+//		Assert.assertEquals(expectedPrimitive, actual.primitive)
+//		Assert.assertArrayEquals(expectedSizes, actual.sizes)
+//	}
+//
+//	static def void assertEquals(PrimitiveType expectedPrimitive, int[] expectedSizes, Connectivity[] expectedConnectivities, NablaType actual)
+//	{
+//		switch actual
+//		{
+//			ArrayType:
+//			{
+//				Assert.assertEquals(expectedPrimitive, actual.primitive)
+//				Assert.assertArrayEquals(expectedSizes, actual.sizes)				
+//				Assert.assertArrayEquals(expectedConnectivities, actual.connectivities)				
+//			}
+//			DefinedType: 
+//			{
+//				Assert.assertEquals(expectedPrimitive, actual.primitive)
+//				Assert.assertArrayEquals(expectedSizes, #[])				
+//				Assert.assertArrayEquals(expectedConnectivities, actual.connectivities)				
+//			}
+//			default: Assert.fail
+//		}
+//	}
 	
 	// ===== CharSequence utils =====
 

@@ -188,7 +188,7 @@ public class JobItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.JOB__INSTRUCTION,
-				 NablaFactory.eINSTANCE.createScalarVarDefinition()));
+				 NablaFactory.eINSTANCE.createSimpleVarDefinition()));
 
 		newChildDescriptors.add
 			(createChildParameter

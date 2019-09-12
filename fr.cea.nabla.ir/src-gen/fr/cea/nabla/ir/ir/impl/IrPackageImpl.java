@@ -3,20 +3,21 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Affectation;
-import fr.cea.nabla.ir.ir.ArgType;
+import fr.cea.nabla.ir.ir.Array1D;
+import fr.cea.nabla.ir.ir.Array2D;
 import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.BaseTypeConstant;
 import fr.cea.nabla.ir.ir.BinaryExpression;
 import fr.cea.nabla.ir.ir.Connectivity;
 import fr.cea.nabla.ir.ir.ConnectivityCall;
 import fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef;
+import fr.cea.nabla.ir.ir.ConnectivityType;
 import fr.cea.nabla.ir.ir.ConnectivityVariable;
 import fr.cea.nabla.ir.ir.Constant;
 import fr.cea.nabla.ir.ir.ContractedIf;
 import fr.cea.nabla.ir.ir.EndOfInitJob;
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob;
 import fr.cea.nabla.ir.ir.Expression;
-import fr.cea.nabla.ir.ir.ExpressionType;
 import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.FunctionCall;
 import fr.cea.nabla.ir.ir.If;
@@ -32,6 +33,7 @@ import fr.cea.nabla.ir.ir.IrAnnotation;
 import fr.cea.nabla.ir.ir.IrFactory;
 import fr.cea.nabla.ir.ir.IrModule;
 import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.IrType;
 import fr.cea.nabla.ir.ir.ItemArgType;
 import fr.cea.nabla.ir.ir.ItemType;
 import fr.cea.nabla.ir.ir.IterableInstruction;
@@ -47,6 +49,7 @@ import fr.cea.nabla.ir.ir.RealMatrixConstant;
 import fr.cea.nabla.ir.ir.RealVectorConstant;
 import fr.cea.nabla.ir.ir.Reduction;
 import fr.cea.nabla.ir.ir.ReductionInstruction;
+import fr.cea.nabla.ir.ir.Scalar;
 import fr.cea.nabla.ir.ir.SimpleVariable;
 import fr.cea.nabla.ir.ir.TimeIterationCopyJob;
 import fr.cea.nabla.ir.ir.UnaryExpression;
@@ -404,14 +407,35 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass expressionTypeEClass = null;
+	private EClass scalarEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass argTypeEClass = null;
+	private EClass array1DEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass array2DEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass irTypeEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass connectivityTypeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -711,7 +735,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getConnectivityVariable_Dimensions() {
+	public EReference getConnectivityVariable_Supports() {
 		return (EReference)connectivityVariableEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -1719,7 +1743,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getBaseType_Root() {
+	public EAttribute getBaseType_Primitive() {
 		return (EAttribute)baseTypeEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -1728,8 +1752,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getBaseType_Sizes() {
-		return (EAttribute)baseTypeEClass.getEStructuralFeatures().get(1);
+	public EClass getScalar() {
+		return scalarEClass;
 	}
 
 	/**
@@ -1737,8 +1761,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getExpressionType() {
-		return expressionTypeEClass;
+	public EClass getArray1D() {
+		return array1DEClass;
 	}
 
 	/**
@@ -1746,8 +1770,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getExpressionType_Connectivities() {
-		return (EReference)expressionTypeEClass.getEStructuralFeatures().get(0);
+	public EAttribute getArray1D_Size() {
+		return (EAttribute)array1DEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1755,8 +1779,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getArgType() {
-		return argTypeEClass;
+	public EClass getArray2D() {
+		return array2DEClass;
 	}
 
 	/**
@@ -1764,8 +1788,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getArgType_Root() {
-		return (EAttribute)argTypeEClass.getEStructuralFeatures().get(0);
+	public EAttribute getArray2D_NbRows() {
+		return (EAttribute)array2DEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1773,8 +1797,44 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getArgType_ArrayDimension() {
-		return (EAttribute)argTypeEClass.getEStructuralFeatures().get(1);
+	public EAttribute getArray2D_NbCols() {
+		return (EAttribute)array2DEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getIrType() {
+		return irTypeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getConnectivityType() {
+		return connectivityTypeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getConnectivityType_Connectivities() {
+		return (EReference)connectivityTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getConnectivityType_Base() {
+		return (EReference)connectivityTypeEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1845,7 +1905,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(simpleVariableEClass, SIMPLE_VARIABLE__DEFAULT_VALUE);
 
 		connectivityVariableEClass = createEClass(CONNECTIVITY_VARIABLE);
-		createEReference(connectivityVariableEClass, CONNECTIVITY_VARIABLE__DIMENSIONS);
+		createEReference(connectivityVariableEClass, CONNECTIVITY_VARIABLE__SUPPORTS);
 		createEReference(connectivityVariableEClass, CONNECTIVITY_VARIABLE__DEFAULT_VALUE);
 
 		functionEClass = createEClass(FUNCTION);
@@ -1997,15 +2057,22 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEAttribute(itemTypeEClass, ITEM_TYPE__NAME);
 
 		baseTypeEClass = createEClass(BASE_TYPE);
-		createEAttribute(baseTypeEClass, BASE_TYPE__ROOT);
-		createEAttribute(baseTypeEClass, BASE_TYPE__SIZES);
+		createEAttribute(baseTypeEClass, BASE_TYPE__PRIMITIVE);
 
-		expressionTypeEClass = createEClass(EXPRESSION_TYPE);
-		createEReference(expressionTypeEClass, EXPRESSION_TYPE__CONNECTIVITIES);
+		scalarEClass = createEClass(SCALAR);
 
-		argTypeEClass = createEClass(ARG_TYPE);
-		createEAttribute(argTypeEClass, ARG_TYPE__ROOT);
-		createEAttribute(argTypeEClass, ARG_TYPE__ARRAY_DIMENSION);
+		array1DEClass = createEClass(ARRAY1_D);
+		createEAttribute(array1DEClass, ARRAY1_D__SIZE);
+
+		array2DEClass = createEClass(ARRAY2_D);
+		createEAttribute(array2DEClass, ARRAY2_D__NB_ROWS);
+		createEAttribute(array2DEClass, ARRAY2_D__NB_COLS);
+
+		irTypeEClass = createEClass(IR_TYPE);
+
+		connectivityTypeEClass = createEClass(CONNECTIVITY_TYPE);
+		createEReference(connectivityTypeEClass, CONNECTIVITY_TYPE__CONNECTIVITIES);
+		createEReference(connectivityTypeEClass, CONNECTIVITY_TYPE__BASE);
 
 		// Create enums
 		primitiveTypeEEnum = createEEnum(PRIMITIVE_TYPE);
@@ -2082,9 +2149,12 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		iteratorRefEClass.getESuperTypes().add(this.getIrAnnotable());
 		connectivityCallIteratorRefEClass.getESuperTypes().add(this.getIteratorRef());
 		varRefIteratorRefEClass.getESuperTypes().add(this.getIteratorRef());
-		baseTypeEClass.getESuperTypes().add(this.getIrAnnotable());
-		expressionTypeEClass.getESuperTypes().add(this.getBaseType());
-		argTypeEClass.getESuperTypes().add(this.getIrAnnotable());
+		baseTypeEClass.getESuperTypes().add(this.getIrType());
+		scalarEClass.getESuperTypes().add(this.getBaseType());
+		array1DEClass.getESuperTypes().add(this.getBaseType());
+		array2DEClass.getESuperTypes().add(this.getBaseType());
+		irTypeEClass.getESuperTypes().add(this.getIrAnnotable());
+		connectivityTypeEClass.getESuperTypes().add(this.getIrType());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(irAnnotableEClass, IrAnnotable.class, "IrAnnotable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -2118,19 +2188,19 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getSimpleVariable_DefaultValue(), this.getExpression(), null, "defaultValue", null, 0, 1, SimpleVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(connectivityVariableEClass, ConnectivityVariable.class, "ConnectivityVariable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getConnectivityVariable_Dimensions(), this.getConnectivity(), null, "dimensions", null, 1, -1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getConnectivityVariable_Supports(), this.getConnectivity(), null, "supports", null, 1, -1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getConnectivityVariable_DefaultValue(), this.getVarRef(), null, "defaultValue", null, 0, 1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionEClass, Function.class, "Function", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFunction_Name(), ecorePackage.getEString(), "name", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getFunction_InTypes(), this.getArgType(), null, "inTypes", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getFunction_ReturnType(), this.getArgType(), null, "returnType", null, 0, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getFunction_InTypes(), this.getBaseType(), null, "inTypes", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getFunction_ReturnType(), this.getBaseType(), null, "returnType", null, 0, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getFunction_Provider(), ecorePackage.getEString(), "provider", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(reductionEClass, Reduction.class, "Reduction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getReduction_Name(), ecorePackage.getEString(), "name", null, 0, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getReduction_CollectionType(), this.getArgType(), null, "collectionType", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getReduction_ReturnType(), this.getArgType(), null, "returnType", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getReduction_CollectionType(), this.getBaseType(), null, "collectionType", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getReduction_ReturnType(), this.getBaseType(), null, "returnType", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getReduction_Provider(), ecorePackage.getEString(), "provider", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(connectivityEClass, Connectivity.class, "Connectivity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -2195,7 +2265,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getIf_ElseInstruction(), this.getInstruction(), null, "elseInstruction", null, 0, 1, If.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(expressionEClass, Expression.class, "Expression", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getExpression_Type(), this.getExpressionType(), null, "type", null, 1, 1, Expression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getExpression_Type(), this.getIrType(), null, "type", null, 1, 1, Expression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(contractedIfEClass, ContractedIf.class, "ContractedIf", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getContractedIf_Condition(), this.getExpression(), null, "condition", null, 1, 1, ContractedIf.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2269,20 +2339,26 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(itemTypeEClass, ItemType.class, "ItemType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getItemType_Name(), ecorePackage.getEString(), "name", null, 1, 1, ItemType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(baseTypeEClass, BaseType.class, "BaseType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getBaseType_Root(), this.getPrimitiveType(), "root", null, 1, 1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getBaseType_Sizes(), ecorePackage.getEInt(), "sizes", null, 0, -1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(baseTypeEClass, BaseType.class, "BaseType", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getBaseType_Primitive(), this.getPrimitiveType(), "primitive", null, 1, 1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(expressionTypeEClass, ExpressionType.class, "ExpressionType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getExpressionType_Connectivities(), this.getConnectivity(), null, "connectivities", null, 0, -1, ExpressionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(scalarEClass, Scalar.class, "Scalar", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(argTypeEClass, ArgType.class, "ArgType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getArgType_Root(), this.getPrimitiveType(), "root", null, 1, 1, ArgType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getArgType_ArrayDimension(), ecorePackage.getEInt(), "arrayDimension", null, 1, 1, ArgType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(array1DEClass, Array1D.class, "Array1D", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getArray1D_Size(), ecorePackage.getEInt(), "size", null, 1, 1, Array1D.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(array2DEClass, Array2D.class, "Array2D", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getArray2D_NbRows(), ecorePackage.getEInt(), "nbRows", null, 1, 1, Array2D.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getArray2D_NbCols(), ecorePackage.getEInt(), "nbCols", null, 1, 1, Array2D.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(irTypeEClass, IrType.class, "IrType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(connectivityTypeEClass, ConnectivityType.class, "ConnectivityType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getConnectivityType_Connectivities(), this.getConnectivity(), null, "connectivities", null, 0, -1, ConnectivityType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getConnectivityType_Base(), this.getBaseType(), null, "base", null, 1, 1, ConnectivityType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(primitiveTypeEEnum, PrimitiveType.class, "PrimitiveType");
-		addEEnumLiteral(primitiveTypeEEnum, PrimitiveType.VOID);
 		addEEnumLiteral(primitiveTypeEEnum, PrimitiveType.INT);
 		addEEnumLiteral(primitiveTypeEEnum, PrimitiveType.REAL);
 		addEEnumLiteral(primitiveTypeEEnum, PrimitiveType.BOOL);

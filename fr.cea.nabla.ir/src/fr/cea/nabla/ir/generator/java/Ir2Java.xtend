@@ -10,12 +10,14 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.generator.CodeGenerator
+import fr.cea.nabla.ir.ir.Array1D
+import fr.cea.nabla.ir.ir.Array2D
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.Scalar
 import fr.cea.nabla.ir.ir.SimpleVariable
 
-import static extension fr.cea.nabla.ir.BaseTypeExtensions.*
 import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
@@ -105,10 +107,10 @@ class Ir2Java extends CodeGenerator
 						«IF a.linearAlgebra»
 							«a.name» = «a.linearAlgebraDefinition»;
 						«ELSE»
-							«a.name» = new «a.type.root.javaType»«FOR d : a.dimensions»[«d.nbElems»]«ENDFOR»«FOR d : a.type.sizes»[«d»]«ENDFOR»;
+							«a.name» = new «a.type.primitive.javaType»«FOR d : a.supports»[«d.nbElems»]«ENDFOR»«a.type.dimensionContent»;
 						«ENDIF»
-					«ELSEIF a instanceof SimpleVariable && !a.type.scalar»
-						«a.name» = new «a.type.root.javaType»«FOR d : a.type.sizes»[«d»]«ENDFOR»;
+					«ELSEIF a instanceof SimpleVariable && !(a.type instanceof Scalar)»
+						«a.name» = new «a.type.primitive.javaType»«a.type.dimensionContent»;
 					«ENDIF»
 				«ENDFOR»
 
@@ -165,11 +167,14 @@ class Ir2Java extends CodeGenerator
 	
 	private def getLinearAlgebraDefinition(ConnectivityVariable v)
 	{
-		switch v.dimensions.size
+		switch v.supports.size
 		{
-			case 1: 'Vector.createDenseVector(' + v.dimensions.get(0).nbElems + ')'
-			case 2: 'Matrix.createDenseMatrix(' + v.dimensions.map[nbElems].join(', ') + ')'
+			case 1: 'Vector.createDenseVector(' + v.supports.get(0).nbElems + ')'
+			case 2: 'Matrix.createDenseMatrix(' + v.supports.map[nbElems].join(', ') + ')'
 			default: throw new RuntimeException("Not implemented exception")
 		}
 	}
+
+	private def dispatch String getDimensionContent(Array1D it) { '[' + size + ']' }
+	private def dispatch String getDimensionContent(Array2D it) { '[' + nbRows + ', ' + nbCols + ']' }
 }

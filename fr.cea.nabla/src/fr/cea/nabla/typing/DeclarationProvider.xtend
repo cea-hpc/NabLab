@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla
+package fr.cea.nabla.typing
 
 import com.google.inject.Inject
 import fr.cea.nabla.nabla.ArgType
@@ -17,16 +17,26 @@ import fr.cea.nabla.nabla.DimensionInt
 import fr.cea.nabla.nabla.DimensionOperation
 import fr.cea.nabla.nabla.DimensionVar
 import fr.cea.nabla.nabla.DimensionVarReference
+import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionArg
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.ReductionArg
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.typing.AbstractType
-import fr.cea.nabla.typing.ArrayType
-import fr.cea.nabla.typing.DefinedType
 import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.typing.MiscTypeProvider
-import fr.cea.nabla.typing.UndefinedType
+import fr.cea.nabla.typing.NTArray1D
+import fr.cea.nabla.typing.NTArray2D
+import fr.cea.nabla.typing.NTBoolArray1D
+import fr.cea.nabla.typing.NTBoolArray2D
+import fr.cea.nabla.typing.NTConnectivityType
+import fr.cea.nabla.typing.NTIntArray1D
+import fr.cea.nabla.typing.NTIntArray2D
+import fr.cea.nabla.typing.NTRealArray1D
+import fr.cea.nabla.typing.NTRealArray2D
+import fr.cea.nabla.typing.NTScalar
+import fr.cea.nabla.typing.NTSimpleType
+import fr.cea.nabla.typing.NablaType
+import fr.cea.nabla.typing.PrimitiveTypeTypeProvider
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.List
@@ -56,8 +66,8 @@ class FunctionDeclaration
 {
 	val FunctionArg model
 	val Map<DimensionVar, DimensionValue> dimensionVarValues
-	val AbstractType[] inTypes
-	val AbstractType returnType
+	val NablaType[] inTypes
+	val NablaType returnType
 }
 
 @Data
@@ -65,14 +75,14 @@ class ReductionDeclaration
 {
 	val ReductionArg model
 	val Map<DimensionVar, DimensionValue> dimensionVarValues
-	val AbstractType collectionType
-	val AbstractType returnType
+	val NTSimpleType collectionType // no reduction on ConnectivityVar => SimpleType only
+	val NTSimpleType returnType
 }
 
 class DeclarationProvider 
 {
 	@Inject extension ExpressionTypeProvider
-	@Inject extension MiscTypeProvider
+	@Inject extension PrimitiveTypeTypeProvider
 	
 	def FunctionDeclaration getDeclaration(FunctionCall it)
 	{
@@ -81,7 +91,7 @@ class DeclarationProvider
 		val f = function.argGroups.findFirst[x | 
 			if (x.inTypes.size != args.size) return false
 			for (i : 0..<x.inTypes.size)
-				if (!match(x.inTypes.get(i), args.get(i).typeFor, dimensionVarValues)) return false
+				if (!match(x.inTypes.get(i), args.get(i), dimensionVarValues)) return false
 			return true
 		]
 		
@@ -97,32 +107,34 @@ class DeclarationProvider
 		val dimensionVarValues = new HashMap<DimensionVar, DimensionValue>
 
 		val r = reduction.argGroups.findFirst[x | 
-			match(x.collectionType, arg.typeFor, dimensionVarValues)
+			match(x.collectionType, arg, dimensionVarValues)
 		]
 		
 		if (r === null) return null
 
 		val collectionType = r.collectionType.computeExpressionType(dimensionVarValues)
 		val returnType = r.returnType.computeExpressionType(dimensionVarValues)
-		return new ReductionDeclaration(r, dimensionVarValues, collectionType, returnType)
+		return new ReductionDeclaration(r, dimensionVarValues, collectionType as NTSimpleType, returnType as NTSimpleType)
 	}
 	
-	private def dispatch boolean match(ArgType a, UndefinedType b, Map<DimensionVar, DimensionValue> dimVarValues) 
+	private def boolean match(ArgType a, Expression b, Map<DimensionVar, DimensionValue> dimVarValues) 
 	{ 
-		false
+		val btype = b.typeFor
+		if (btype === null)
+			false // undefined type
+		else
+			a.primitive == btype.primitive && valuesMatch(dimVarValues, a.indices, btype.dimensionValues)
 	}
 	
-	private def dispatch boolean match(ArgType a, DefinedType b, Map<DimensionVar, DimensionValue> dimVarValues) 
-	{ 
-		a.root == b.root && valuesMatch(dimVarValues, a.dimensions, b.connectivities.map[x | new DimensionValue(x)])
-	}
-	
-	private def dispatch boolean match(ArgType a, ArrayType b, Map<DimensionVar, DimensionValue> dimVarValues) 
+	private def dispatch List<DimensionValue> getDimensionValues(NTScalar it) { #[] }
+	private def dispatch List<DimensionValue> getDimensionValues(NTArray1D it) { #[new DimensionValue(size)] }
+	private def dispatch List<DimensionValue> getDimensionValues(NTArray2D it) { #[new DimensionValue(nbRows), new DimensionValue(nbCols)] }
+	private def dispatch List<DimensionValue> getDimensionValues(NTConnectivityType it) 
 	{ 
 		val dimensionValues = new ArrayList<DimensionValue>
-		b.sizes.forEach[x | dimensionValues += new DimensionValue(x)]
-		b.connectivities.forEach[x | dimensionValues += new DimensionValue(x)]
-		a.root == b.root && valuesMatch(dimVarValues, a.dimensions, dimensionValues)
+		dimensionValues.addAll(simple.dimensionValues)
+		supports.forEach[x | dimensionValues += new DimensionValue(x)]
+		return dimensionValues
 	}
 		
 	private def boolean valuesMatch(Map<DimensionVar, DimensionValue> dimVarValues, List<Dimension> dimensions, DimensionValue[] sizes)
@@ -178,27 +190,53 @@ class DeclarationProvider
 		values.getOrDefault(target, DimensionValue::Undefined)
 	}
 	
-	private def AbstractType computeExpressionType(ArgType argType, Map<DimensionVar, DimensionValue> values)
+	private def NablaType computeExpressionType(ArgType argType, Map<DimensionVar, DimensionValue> values)
 	{
-		var AbstractType returnType = new UndefinedType
-		if (argType.dimensions.empty)
-			returnType = getTypeFor(argType.root, #[], #[])
+		var NablaType returnType = null
+		if (argType.indices.empty)
+			returnType = argType.primitive.typeFor
 		else
 		{
-			val argTypeDimensionValues = argType.dimensions.map[x | computeValue(x, values)]
+			val argTypeDimensionValues = argType.indices.map[x | computeValue(x, values)]
 			val firstElement = argTypeDimensionValues.head
 			val allValuesSameType = argTypeDimensionValues.tail.forall[x | x.value.class == firstElement.value.class]
 			if (allValuesSameType)
 			{
-				switch firstElement
+				returnType = switch firstElement
 				{
-					case firstElement.int: returnType = getTypeFor(argType.root, #[], argTypeDimensionValues.map[x|x.intValue])
-					case firstElement.connectivity: returnType = getTypeFor(argType.root, argTypeDimensionValues.map[x|x.connectivityValue], #[])
+					case firstElement.int && argTypeDimensionValues.size == 1: 
+						createArray1D(argTypeDimensionValues.get(0).intValue, argType.primitive)
+					case firstElement.int && argTypeDimensionValues.size == 2: 
+						createArray2D(argTypeDimensionValues.get(0).intValue, argTypeDimensionValues.get(1).intValue, argType.primitive)	
+					case firstElement.connectivity: 
+						new NTConnectivityType(argTypeDimensionValues.map[x|x.connectivityValue], argType.primitive.typeFor)
 					// default => firstElement is undefined then returnType stays undefined
+					default:
+						null
 				}
 			}	
 		}
 		return returnType
+	}
+	
+	private def NTArray1D createArray1D(int size, PrimitiveType primitive) 
+	{ 
+		switch primitive
+		{
+			case INT: new NTIntArray1D(size)
+			case REAL: new NTRealArray1D(size)
+			case BOOL: new NTBoolArray1D(size)
+		}
+	}
+	
+	private def NTArray2D createArray2D(int nbRows, int nbCols, PrimitiveType primitive) 
+	{ 
+		switch primitive
+		{
+			case INT: new NTIntArray2D(nbRows, nbCols)
+			case REAL: new NTRealArray2D(nbRows, nbCols)
+			case BOOL: new NTBoolArray2D(nbRows, nbCols)
+		}
 	}
 	
 	private def DimensionValue operator_plus(DimensionValue a, DimensionValue b)

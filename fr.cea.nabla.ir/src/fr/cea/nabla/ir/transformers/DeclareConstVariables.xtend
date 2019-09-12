@@ -61,7 +61,7 @@ class DeclareConstVariables implements IrTransformationStep
 			const = true
 			name = 'const_' + v.name
 			type = v.type
-			v.dimensions.forEach[x | dimensions += x]
+			v.supports.forEach[x | supports += x]
 			defaultValue = IrFactory::eINSTANCE.createVarRef => [ variable = v ]
 		]
 	}

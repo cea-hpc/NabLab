@@ -24,7 +24,6 @@
   <genPackages prefix="Ir" basePackage="fr.cea.nabla.ir" disposableProviderFactory="true"
       fileExtensions="nablair" ecorePackage="Ir.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="Ir.ecore#//PrimitiveType">
-      <genEnumLiterals ecoreEnumLiteral="Ir.ecore#//PrimitiveType/Void"/>
       <genEnumLiterals ecoreEnumLiteral="Ir.ecore#//PrimitiveType/Int"/>
       <genEnumLiterals ecoreEnumLiteral="Ir.ecore#//PrimitiveType/Real"/>
       <genEnumLiterals ecoreEnumLiteral="Ir.ecore#//PrimitiveType/Bool"/>
@@ -60,7 +59,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SimpleVariable/defaultValue"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ConnectivityVariable">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityVariable/dimensions"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityVariable/supports"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityVariable/defaultValue"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Function">
@@ -207,15 +206,20 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ItemType/name"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//BaseType">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//BaseType/root"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//BaseType/sizes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//BaseType/primitive"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//ExpressionType">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ExpressionType/connectivities"/>
+    <genClasses ecoreClass="Ir.ecore#//Scalar"/>
+    <genClasses ecoreClass="Ir.ecore#//Array1D">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Array1D/size"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//ArgType">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ArgType/root"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ArgType/arrayDimension"/>
+    <genClasses ecoreClass="Ir.ecore#//Array2D">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Array2D/nbRows"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Array2D/nbCols"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//IrType"/>
+    <genClasses ecoreClass="Ir.ecore#//ConnectivityType">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityType/connectivities"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityType/base"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

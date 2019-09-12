@@ -26,14 +26,14 @@ class VariableExtensions
 	static def dispatch getCppType(ConnectivityVariable it)
 	{
 		if (linearAlgebra)
-			switch dimensions.size
+			switch supports.size
 			{
 				case 1: return 'VectorType'
 				case 2: return MatrixType
 				default: throw new RuntimeException("Not implemented exception")
 			}
 		else
-			'''Kokkos::View<«type.cppType»«FOR d : dimensions»*«ENDFOR»>'''
+			'''Kokkos::View<«type.cppType»«FOR d : supports»*«ENDFOR»>'''
 	}
 
 	static def getCodeName(Variable it)

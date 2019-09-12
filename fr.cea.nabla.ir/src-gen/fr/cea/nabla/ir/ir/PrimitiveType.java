@@ -19,16 +19,6 @@ import org.eclipse.emf.common.util.Enumerator;
  */
 public enum PrimitiveType implements Enumerator {
 	/**
-	 * The '<em><b>Void</b></em>' literal object.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #VOID_VALUE
-	 * @generated
-	 * @ordered
-	 */
-	VOID(0, "Void", "Void"),
-
-	/**
 	 * The '<em><b>Int</b></em>' literal object.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -57,21 +47,6 @@ public enum PrimitiveType implements Enumerator {
 	 * @ordered
 	 */
 	BOOL(3, "Bool", "Bool");
-
-	/**
-	 * The '<em><b>Void</b></em>' literal value.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of '<em><b>Void</b></em>' literal object isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @see #VOID
-	 * @model name="Void"
-	 * @generated
-	 * @ordered
-	 */
-	public static final int VOID_VALUE = 0;
 
 	/**
 	 * The '<em><b>Int</b></em>' literal value.
@@ -126,7 +101,6 @@ public enum PrimitiveType implements Enumerator {
 	 */
 	private static final PrimitiveType[] VALUES_ARRAY =
 		new PrimitiveType[] {
-			VOID,
 			INT,
 			REAL,
 			BOOL,
@@ -186,7 +160,6 @@ public enum PrimitiveType implements Enumerator {
 	 */
 	public static PrimitiveType get(int value) {
 		switch (value) {
-			case VOID_VALUE: return VOID;
 			case INT_VALUE: return INT;
 			case REAL_VALUE: return REAL;
 			case BOOL_VALUE: return BOOL;

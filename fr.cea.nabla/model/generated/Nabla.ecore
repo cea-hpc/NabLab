@@ -45,7 +45,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="inc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="dec" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ScalarVarDefinition" eSuperTypes="#//Instruction">
+  <eClassifiers xsi:type="ecore:EClass" name="SimpleVarDefinition" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="const" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
         containment="true"/>
@@ -65,7 +65,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SimpleVar" eSuperTypes="#//Var"/>
   <eClassifiers xsi:type="ecore:EClass" name="ConnectivityVar" eSuperTypes="#//Var">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dimensions" unique="false"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="supports" unique="false"
         upperBound="-1" eType="#//Connectivity"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Connectivity">
@@ -108,8 +108,8 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ArgType">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="root" eType="#//PrimitiveType"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dimensions" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="primitive" eType="#//PrimitiveType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="indices" upperBound="-1"
         eType="#//Dimension" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DimensionVar">
@@ -138,9 +138,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeIterator"/>
   <eClassifiers xsi:type="ecore:EClass" name="BaseType">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="root" eType="#//PrimitiveType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sizes" unique="false" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="primitive" eType="#//PrimitiveType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="PrimitiveType">
     <eLiterals name="Int" literal="ℕ"/>
@@ -309,5 +307,13 @@
   <eClassifiers xsi:type="ecore:EClass" name="NextTimeIterator" eSuperTypes="#//TimeIterator">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="hasDiv" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="div" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Scalar" eSuperTypes="#//BaseType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Array1D" eSuperTypes="#//BaseType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="size" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Array2D" eSuperTypes="#//BaseType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nbRows" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nbCols" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
 </ecore:EPackage>

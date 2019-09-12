@@ -39,9 +39,9 @@ class MandatoryOptions
 	private def getIntOption(String optionName, int optionValue)
 	{
 		val f = NablaFactory::eINSTANCE
-		val edgeElem = f.createScalarVarDefinition
+		val edgeElem = f.createSimpleVarDefinition
 		edgeElem.variable = f.createSimpleVar => [ name=optionName ]
-		edgeElem.type = f.createBaseType => [ root=PrimitiveType::INT ]
+		edgeElem.type = f.createBaseType => [ primitive=PrimitiveType::INT ]
 		edgeElem.defaultValue = f.createIntConstant => [ value=optionValue ]
 		return edgeElem
 	}
@@ -49,9 +49,9 @@ class MandatoryOptions
 	private def getRealOption(String optionName, double optionValue)
 	{
 		val f = NablaFactory::eINSTANCE
-		val length = f.createScalarVarDefinition
+		val length = f.createSimpleVarDefinition
 		length.variable = f.createSimpleVar => [ name=optionName ]
-		length.type = f.createBaseType => [ root=PrimitiveType::REAL ]
+		length.type = f.createBaseType => [ primitive=PrimitiveType::REAL ]
 		length.defaultValue = f.createRealConstant => [ value=optionValue ]
 		return length
 	}

@@ -11,7 +11,8 @@ package fr.cea.nabla
 
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
-import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.Array1D
+import fr.cea.nabla.nabla.Array2D
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
@@ -40,7 +41,8 @@ import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.RealMatrixConstant
 import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.nabla.ScalarVarDefinition
+import fr.cea.nabla.nabla.Scalar
+import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
@@ -55,7 +57,7 @@ class LabelServices
 	static def dispatch String getLabel(Job it) { name + ' : ' + instruction.label }
 	
 	// INSTRUCTIONS	
-	static def dispatch String getLabel(ScalarVarDefinition it) { type.label + ' ' + variable.name + '=' + defaultValue.label }
+	static def dispatch String getLabel(SimpleVarDefinition it) { type.label + ' ' + variable.name + '=' + defaultValue.label }
 	static def dispatch String getLabel(VarGroupDeclaration it) { type.label + ' ' + variables.map[x|x.name].join(', ') }
 	static def dispatch String getLabel(InstructionBlock it) { '...' }
 	static def dispatch String getLabel(Affectation it) { varRef?.label + ' = ' + expression?.label }
@@ -106,10 +108,9 @@ class LabelServices
 	static def dispatch String getLabel(RealMatrixConstant it) { '[' + values.map[label].join(',') + ']' }
 	static def dispatch String getLabel(BaseTypeConstant it) { type.label + '(' + value.label + ')' }
 
-	static def dispatch getLabel(BaseType it)
-	{
-		root.literal + sizes.map[utfExponent].join('\u02E3')
-	}
+	static def dispatch getLabel(Scalar it) { primitive.literal }
+	static def dispatch getLabel(Array1D it) { primitive.literal + size.utfExponent }
+	static def dispatch getLabel(Array2D it) { primitive.literal + nbRows.utfExponent + '\u02E3' + nbCols.utfExponent }
 
 	private static def dispatch getTimeIteratorLabel(InitTimeIterator it) '''n=0''' 
 	private static def dispatch getTimeIteratorLabel(NextTimeIterator it) '''n+1«IF hasDiv»/«div»«ENDIF»''' 

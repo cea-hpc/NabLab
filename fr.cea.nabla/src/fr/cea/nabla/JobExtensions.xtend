@@ -4,7 +4,7 @@ import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.Job
-import fr.cea.nabla.nabla.ScalarVarDefinition
+import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
@@ -18,7 +18,7 @@ class JobExtensions
 			switch i
 			{
 				VarGroupDeclaration : allVariables += i.variables
-				ScalarVarDefinition : allVariables += i.variable
+				SimpleVarDefinition : allVariables += i.variable
 			}				
 		return allVariables
 	}	

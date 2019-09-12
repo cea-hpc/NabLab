@@ -9,22 +9,22 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.Array1D
+import fr.cea.nabla.ir.ir.Array2D
 import fr.cea.nabla.ir.ir.PrimitiveType
+import fr.cea.nabla.ir.ir.Scalar
 
 class Ir2JavaUtils 
 {
-	static def getJavaType(BaseType t)
-	{
-		val rootType = t.root.javaType
-		return rootType + t.sizes.map['[]'].join('')
-	}
-	
-	static def getJavaType(PrimitiveType t)
+	static def dispatch String getJavaType(Scalar it) { primitive.javaType }
+	static def dispatch String getJavaType(Array1D it) { primitive.javaType + '[]' }
+	static def dispatch String getJavaType(Array2D it) { primitive.javaType + '[][]' }
+
+	static def dispatch String getJavaType(PrimitiveType t)
 	{
 		switch t
 		{
-			case VOID : 'void'
+			case null: 'void'
 			case BOOL: 'boolean'
 			case INT: 'int'
 			case REAL: 'double'

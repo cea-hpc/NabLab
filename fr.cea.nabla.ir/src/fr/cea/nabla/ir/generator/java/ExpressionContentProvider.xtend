@@ -10,6 +10,8 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.ir.Array1D
+import fr.cea.nabla.ir.ir.Array2D
 import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.Constant
@@ -20,12 +22,14 @@ import fr.cea.nabla.ir.ir.IntVectorConstant
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
+import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.RealMatrixConstant
 import fr.cea.nabla.ir.ir.RealVectorConstant
+import fr.cea.nabla.ir.ir.Scalar
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
 
-import static extension fr.cea.nabla.ir.BaseTypeExtensions.*
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.VariableExtensions.*
@@ -40,7 +44,7 @@ class ExpressionContentProvider
 		val lContent = left.content
 		val rContent = right.content
 
-		if (left.type.scalar && right.type.scalar) 
+		if (left.type instanceof Scalar && right.type instanceof Scalar) 
 			'''«lContent» «operator» «rContent»'''
 		else 
 			'''ArrayOperations.«operator.operatorName»(«lContent», «rContent»)'''
@@ -52,27 +56,35 @@ class ExpressionContentProvider
 	
 	static def dispatch CharSequence getContent(MinConstant it) 
 	{
-		switch getType().root
+		val t = type
+		switch t
 		{
-			case INT  : '''Integer.MIN_VALUE'''
-			case REAL : '''Double.MIN_VALUE'''
-			default: throw new Exception('Invalid expression Min for type: ' + getType().label)
+			Scalar case (t.primitive == PrimitiveType::INT): '''Integer.MIN_VALUE'''
+			Scalar case (t.primitive == PrimitiveType::REAL): '''Double.MIN_VALUE'''
+			default: throw new Exception('Invalid expression Min for type: ' + t.label)
 		}
 	}
 
 	static def dispatch CharSequence getContent(MaxConstant it) 
 	{
-		switch getType().root
+		val t = type
+		switch t
 		{
-			case INT  : '''Integer.MAX_VALUE'''
-			case REAL : '''Double.MAX_VALUE'''
-			default: throw new Exception('Invalid expression Max for type: ' + getType().label)
+			Scalar case (t.primitive == PrimitiveType::INT): '''Integer.MAX_VALUE'''
+			Scalar case (t.primitive == PrimitiveType::REAL): '''Double.MAX_VALUE'''
+			default: throw new Exception('Invalid expression Max for type: ' + t.label)
 		}
 	}
 
 	static def dispatch CharSequence getContent(BaseTypeConstant it) 
 	{
-		initConstant(type.sizes, value.content.toString)
+		val t = type
+		switch t
+		{
+			Array1D: initConstant(t, value.content)
+			Array2D: initConstant(t, value.content)
+			default: throw new Exception('Invalid path...')
+		}
 	}
 	
 	static def dispatch CharSequence getContent(IntVectorConstant it) 

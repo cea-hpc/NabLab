@@ -74,6 +74,6 @@ class IrVariableFactory
 		name = varName
 		type = v.baseType.toIrBaseType
 		const = v.const
-		v.dimensions.forEach[x | dimensions += x.toIrConnectivity]
+		v.supports.forEach[x | supports += x.toIrConnectivity]
 	}
 }

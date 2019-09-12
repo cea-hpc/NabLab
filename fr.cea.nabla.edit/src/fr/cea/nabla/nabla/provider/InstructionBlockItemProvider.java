@@ -142,7 +142,7 @@ public class InstructionBlockItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.INSTRUCTION_BLOCK__INSTRUCTIONS,
-				 NablaFactory.eINSTANCE.createScalarVarDefinition()));
+				 NablaFactory.eINSTANCE.createSimpleVarDefinition()));
 
 		newChildDescriptors.add
 			(createChildParameter

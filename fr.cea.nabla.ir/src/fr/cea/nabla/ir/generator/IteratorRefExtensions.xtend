@@ -53,7 +53,7 @@ class IteratorRefExtensions
 	
 	static def getConnectivity(VarRefIteratorRef it)
 	{
-		(referencedBy.variable as ConnectivityVariable).dimensions.get(indexInReferencerList)
+		(referencedBy.variable as ConnectivityVariable).supports.get(indexInReferencerList)
 	}
 	
 	static def getConnectivityArgs(VarRefIteratorRef it)
@@ -82,7 +82,7 @@ class IteratorRefExtensions
 
 	static def isIndexEqualId(VarRefIteratorRef it)
 	{
-		val refConnectivity = (referencedBy.variable as ConnectivityVariable).dimensions.get(indexInReferencerList)
+		val refConnectivity = (referencedBy.variable as ConnectivityVariable).supports.get(indexInReferencerList)
 		refConnectivity.indexEqualId
 	}
 	

@@ -9,37 +9,33 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
-import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.Array1D
+import fr.cea.nabla.ir.ir.Array2D
 import fr.cea.nabla.ir.ir.PrimitiveType
+import fr.cea.nabla.ir.ir.Scalar
 
 class Ir2KokkosUtils 
 {
-	static def getCppType(BaseType t)
-	{
-		val rootType = t.root.cppType
-		if (t.sizes.empty) 
-			rootType
-		else
-			t.root.arrayPrimitiveType + 'Array' + t.sizes.size + 'D<' + t.sizes.join(',') + '>'
-	}
+	static def dispatch String getCppType(Scalar it) { primitive.cppType }
+	static def dispatch String getCppType(Array1D it) { primitive.cppArrayType + 'Array1D<' + size + '>' }
+	static def dispatch String getCppType(Array2D it) { primitive.cppArrayType + 'Array2D<' + nbRows + ', ' + nbCols + '>' }
 
-	static def getCppType(PrimitiveType t)
+	static def dispatch getCppType(PrimitiveType t)
 	{
 		switch t
 		{
-			case VOID : 'void'
+			case null : 'void'
 			case BOOL: 'bool'
 			case INT: 'int'
 			case REAL: 'double'
 		}
  	}	
 
-	private static def getArrayPrimitiveType(PrimitiveType t)
+	private static def getCppArrayType(PrimitiveType t)
 	{
 		switch t
 		{
-			case VOID : throw new RuntimeException('Not implemented')
-			case BOOL: throw new RuntimeException('Not implemented')
+			case null, case BOOL : throw new RuntimeException('Not implemented')
 			case INT: 'Int'
 			case REAL: 'Real'
 		}

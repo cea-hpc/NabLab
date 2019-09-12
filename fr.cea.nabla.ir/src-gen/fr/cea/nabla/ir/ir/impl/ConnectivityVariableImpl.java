@@ -29,7 +29,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityVariableImpl#getDimensions <em>Dimensions</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityVariableImpl#getSupports <em>Supports</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityVariableImpl#getDefaultValue <em>Default Value</em>}</li>
  * </ul>
  *
@@ -37,14 +37,14 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  */
 public class ConnectivityVariableImpl extends VariableImpl implements ConnectivityVariable {
 	/**
-	 * The cached value of the '{@link #getDimensions() <em>Dimensions</em>}' reference list.
+	 * The cached value of the '{@link #getSupports() <em>Supports</em>}' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getDimensions()
+	 * @see #getSupports()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Connectivity> dimensions;
+	protected EList<Connectivity> supports;
 
 	/**
 	 * The cached value of the '{@link #getDefaultValue() <em>Default Value</em>}' containment reference.
@@ -81,14 +81,14 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	 * @generated NOT FIXME workaround BUG 89325
 	 */
 	@SuppressWarnings("serial")
-	public EList<Connectivity> getDimensions() {
-		if (dimensions == null) {
-			dimensions = new EObjectResolvingEList<Connectivity>(Connectivity.class, this, IrPackage.CONNECTIVITY_VARIABLE__DIMENSIONS) {
+	public EList<Connectivity> getSupports() {
+		if (supports == null) {
+			supports = new EObjectResolvingEList<Connectivity>(Connectivity.class, this, IrPackage.CONNECTIVITY_VARIABLE__SUPPORTS) {
 				@Override
 	    		protected boolean isUnique() { return false; }
 			};
 		}
-		return dimensions;
+		return supports;
 	}
 
 	/**
@@ -179,8 +179,8 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.CONNECTIVITY_VARIABLE__DIMENSIONS:
-				return getDimensions();
+			case IrPackage.CONNECTIVITY_VARIABLE__SUPPORTS:
+				return getSupports();
 			case IrPackage.CONNECTIVITY_VARIABLE__DEFAULT_VALUE:
 				if (resolve) return getDefaultValue();
 				return basicGetDefaultValue();
@@ -197,9 +197,9 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.CONNECTIVITY_VARIABLE__DIMENSIONS:
-				getDimensions().clear();
-				getDimensions().addAll((Collection<? extends Connectivity>)newValue);
+			case IrPackage.CONNECTIVITY_VARIABLE__SUPPORTS:
+				getSupports().clear();
+				getSupports().addAll((Collection<? extends Connectivity>)newValue);
 				return;
 			case IrPackage.CONNECTIVITY_VARIABLE__DEFAULT_VALUE:
 				setDefaultValue((VarRef)newValue);
@@ -216,8 +216,8 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.CONNECTIVITY_VARIABLE__DIMENSIONS:
-				getDimensions().clear();
+			case IrPackage.CONNECTIVITY_VARIABLE__SUPPORTS:
+				getSupports().clear();
 				return;
 			case IrPackage.CONNECTIVITY_VARIABLE__DEFAULT_VALUE:
 				setDefaultValue((VarRef)null);
@@ -234,8 +234,8 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.CONNECTIVITY_VARIABLE__DIMENSIONS:
-				return dimensions != null && !dimensions.isEmpty();
+			case IrPackage.CONNECTIVITY_VARIABLE__SUPPORTS:
+				return supports != null && !supports.isEmpty();
 			case IrPackage.CONNECTIVITY_VARIABLE__DEFAULT_VALUE:
 				return defaultValue != null;
 		}

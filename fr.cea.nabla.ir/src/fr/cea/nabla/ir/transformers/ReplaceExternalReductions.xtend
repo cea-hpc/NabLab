@@ -97,7 +97,7 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 			[
 				name = reductionInstr.result.name + 'ArgValue'
 				type = reductionInstr.result.type
-				dimensions += reductionInstr.range.container.connectivity
+				supports += reductionInstr.range.container.connectivity
 			]
 			m.variables += argValue
 			

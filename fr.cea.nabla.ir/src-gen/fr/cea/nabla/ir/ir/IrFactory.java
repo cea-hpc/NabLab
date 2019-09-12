@@ -364,31 +364,49 @@ public interface IrFactory extends EFactory {
 	ItemType createItemType();
 
 	/**
-	 * Returns a new object of class '<em>Base Type</em>'.
+	 * Returns a new object of class '<em>Scalar</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Base Type</em>'.
+	 * @return a new object of class '<em>Scalar</em>'.
 	 * @generated
 	 */
-	BaseType createBaseType();
+	Scalar createScalar();
 
 	/**
-	 * Returns a new object of class '<em>Expression Type</em>'.
+	 * Returns a new object of class '<em>Array1 D</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Expression Type</em>'.
+	 * @return a new object of class '<em>Array1 D</em>'.
 	 * @generated
 	 */
-	ExpressionType createExpressionType();
+	Array1D createArray1D();
 
 	/**
-	 * Returns a new object of class '<em>Arg Type</em>'.
+	 * Returns a new object of class '<em>Array2 D</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Arg Type</em>'.
+	 * @return a new object of class '<em>Array2 D</em>'.
 	 * @generated
 	 */
-	ArgType createArgType();
+	Array2D createArray2D();
+
+	/**
+	 * Returns a new object of class '<em>Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Type</em>'.
+	 * @generated
+	 */
+	IrType createIrType();
+
+	/**
+	 * Returns a new object of class '<em>Connectivity Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Connectivity Type</em>'.
+	 * @generated
+	 */
+	ConnectivityType createConnectivityType();
 
 	/**
 	 * Returns the package supported by this factory.

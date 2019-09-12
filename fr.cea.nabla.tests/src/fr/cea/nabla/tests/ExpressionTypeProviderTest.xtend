@@ -14,14 +14,20 @@ import fr.cea.nabla.JobExtensions
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.Affectation
-import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.typing.MiscTypeProvider
-import fr.cea.nabla.typing.UndefinedType
+import fr.cea.nabla.typing.NTBoolScalar
+import fr.cea.nabla.typing.NTConnectivityType
+import fr.cea.nabla.typing.NTIntArray1D
+import fr.cea.nabla.typing.NTIntArray2D
+import fr.cea.nabla.typing.NTIntScalar
+import fr.cea.nabla.typing.NTRealArray1D
+import fr.cea.nabla.typing.NTRealArray2D
+import fr.cea.nabla.typing.NTRealScalar
+import fr.cea.nabla.typing.NablaType
+import fr.cea.nabla.typing.VarTypeProvider
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -37,7 +43,7 @@ class ExpressionTypeProviderTest
 	@Inject extension ParseHelper<NablaModule>
 	@Inject extension ValidationTestHelper
 	@Inject extension ExpressionTypeProvider
-	@Inject extension MiscTypeProvider
+	@Inject extension VarTypeProvider
 	@Inject extension VarExtensions
 	@Inject extension NablaModuleExtensions
 	@Inject extension JobExtensions
@@ -131,7 +137,8 @@ class ExpressionTypeProviderTest
 	{
 		model.parse.assertNoErrors
 	}
-	
+		
+	//TODO : Ajouter un BinaryOperationsTypeProviderTest pour tester tous les cas
 	@Test 
 	def void testGetTypeFor() 
 	{
@@ -142,99 +149,100 @@ class ExpressionTypeProviderTest
 		val computeV = module.getJobByName("ComputeV")
 		val computeX = module.getJobByName("ComputeX")
 
-		assertTypesFor(PrimitiveType::INT, #[], #[], module, "a1")
-		assertTypesFor(PrimitiveType::INT, #[], #[], module, "a2")
-		assertTypesFor(PrimitiveType::INT, #[], #[], module, "a3")
-		assertTypesFor(PrimitiveType::INT, #[], #[], module, "a4")
-		assertTypesFor(PrimitiveType::INT, #[2], #[], module, "a5")
-		assertTypesFor(PrimitiveType::INT, #[2], #[], module, "a6")
-		assertTypesFor(PrimitiveType::INT, #[2], #[], module, "a7")
-		assertTypesFor(PrimitiveType::INT, #[2,2], #[], module, "a8")
-		assertTypesFor(PrimitiveType::INT, #[], #[], module, "a9")
+		assertTypesFor(new NTIntScalar, module, "a1")
+		assertTypesFor(new NTIntScalar, module, "a2")
+		assertTypesFor(new NTIntScalar, module, "a3")
+		assertTypesFor(new NTIntScalar, module, "a4")
+		assertTypesFor(new NTIntArray1D(2), module, "a5")
+		assertTypesFor(new NTIntArray1D(2), module, "a6")
+		assertTypesFor(new NTIntArray1D(2), module, "a7")
+		assertTypesFor(new NTIntArray2D(2,2), module, "a8")
+		assertTypesFor(new NTIntScalar, module, "a9")
 
-		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b1")
-		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b2")
-		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b3")
-		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b4")
-		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b5")
-		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b6")
-		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b7")
-		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b8")
-		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b9")
-		assertTypesFor(PrimitiveType::BOOL, #[], #[], module, "b10")		
+		assertTypesFor(new NTBoolScalar, module, "b1")
+		assertTypesFor(new NTBoolScalar, module, "b2")
+		assertTypesFor(new NTBoolScalar, module, "b3")
+		assertTypesFor(new NTBoolScalar, module, "b4")
+		assertTypesFor(new NTBoolScalar, module, "b5")
+		assertTypesFor(new NTBoolScalar, module, "b6")
+		assertTypesFor(new NTBoolScalar, module, "b7")
+		assertTypesFor(new NTBoolScalar, module, "b8")
+		assertTypesFor(new NTBoolScalar, module, "b9")
+		assertTypesFor(new NTBoolScalar, module, "b10")		
 
-		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "c1")
-		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "c2")
-		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "c3")
-		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "c4")
-		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "c5")
-		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "c6")
-		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "c7")		
+		assertTypesFor(new NTRealScalar, module, "c1")
+		assertTypesFor(new NTRealScalar, module, "c2")
+		assertTypesFor(new NTRealScalar, module, "c3")
+		assertTypesFor(new NTRealScalar, module, "c4")
+		assertTypesFor(new NTRealScalar, module, "c5")
+		assertTypesFor(new NTRealScalar, module, "c6")
+		assertTypesFor(new NTRealScalar, module, "c7")		
 
-		assertTypesFor(PrimitiveType::REAL, #[2], #[], module, "d1")
-		assertTypesFor(PrimitiveType::REAL, #[2], #[], module, "d2")
-		assertTypesFor(PrimitiveType::REAL, #[2], #[], module, "d3")
+		assertTypesFor(new NTRealArray1D(2), module, "d1")
+		assertTypesFor(new NTRealArray1D(2), module, "d2")
+		assertTypesFor(new NTRealArray1D(2), module, "d3")
 
-		assertTypesFor(PrimitiveType::REAL, #[3], #[], module, "e")
+		assertTypesFor(new NTRealArray1D(3), module, "e")
 
-		assertTypesFor(PrimitiveType::REAL, #[2,2], #[], module, "g")
-		assertTypesFor(PrimitiveType::REAL, #[], #[], module, "h")
-		assertTypesFor(PrimitiveType::INT, #[], #[cells], module, "t")
-		assertTypesFor(PrimitiveType::REAL, #[], #[cells], module, "u")
-		assertTypesFor(PrimitiveType::REAL, #[], #[cells], module, "v")
-		assertTypesFor(PrimitiveType::REAL, #[2], #[cells, nodesOfCell], module, "w")
-		assertTypesFor(PrimitiveType::REAL, #[], #[cells, nodesOfCell], module, "x")
-		assertTypesFor(PrimitiveType::REAL, #[], #[cells, cells], module, "α")
-
-		assertTypesFor(PrimitiveType::REAL, #[], #[cells], updateU, "u")
-
-		assertTypesFor(PrimitiveType::REAL, #[], #[], computeV, "v")
+		assertTypesFor(new NTRealArray2D(2,2), module, "g")
+		assertTypesFor(new NTRealScalar, module, "h")
 				
-		assertTypesFor(PrimitiveType::REAL, #[], #[], computeX, "e")
-		assertTypesFor(PrimitiveType::REAL, #[], #[], computeX, "u")
-		assertTypesFor(PrimitiveType::REAL, #[], #[], computeX, "x")
+		assertTypesFor(new NTConnectivityType(#[cells], new NTIntScalar), module, "t")
+		assertTypesFor(new NTConnectivityType(#[cells], new NTRealScalar), module, "u")
+		assertTypesFor(new NTConnectivityType(#[cells], new NTRealScalar), module, "v")
+		assertTypesFor(new NTConnectivityType(#[cells, nodesOfCell], new NTRealArray1D(2)), module, "w")
+		assertTypesFor(new NTConnectivityType(#[cells, nodesOfCell], new NTRealScalar), module, "x")
+		assertTypesFor(new NTConnectivityType(#[cells, cells], new NTRealScalar), module, "α")
+
+		assertTypesFor(new NTConnectivityType(#[cells], new NTRealScalar), updateU, "u")
+
+		assertTypesFor(new NTRealScalar, computeV, "v")
+				
+		assertTypesFor(new NTRealScalar, computeX, "e")
+		assertTypesFor(new NTRealScalar, computeX, "u")
+		assertTypesFor(new NTRealScalar, computeX, "x")
 	}
 					
-	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, NablaModule module, String varName)	
+	private def assertTypesFor(NablaType expectedType, NablaModule module, String varName)	
 	{
 		val variable = module.getVariableByName(varName)
 		Assert.assertNotNull(variable)
-		assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, variable)
+		assertTypesFor(expectedType, variable)
 	}
 
-	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, Job job, String varName, boolean affectationRHSDefined)	
+	private def assertTypesFor(NablaType expectedType, Job job, String varName, boolean affectationRHSDefined)	
 	{
 		val variable = job.getVariableByName(varName)
 		val affectation = job.getVarAffectationByName(varName) 
 		Assert.assertTrue(variable !== null || affectation !== null)
 		if (variable !== null)
-			assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, variable)
+			assertTypesFor(expectedType, variable)
 		if (affectation !== null)
 		{
 			if (affectationRHSDefined)
-				assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, affectation)						
+				assertTypesFor(expectedType, affectation)						
 			else
-				Assert.assertTrue(affectation.expression.typeFor instanceof UndefinedType)
+				Assert.assertNull(affectation.expression.typeFor)
 		}	
 	}
 
-	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, Job job, String varName)
+	private def assertTypesFor(NablaType expectedType, Job job, String varName)
 	{
-		assertTypesFor(expectedRoot, expectedSizes, expectedConnectivities, job, varName, true)
+		assertTypesFor(expectedType, job, varName, true)
 	}	
 
-	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, Var variable)	
+	private def assertTypesFor(NablaType expectedType, Var variable)	
 	{
 		// We test both variable type and default value type
-		TestUtils.assertEquals(expectedRoot, expectedSizes, expectedConnectivities, variable.typeFor)
+		Assert.assertEquals(expectedType, variable.typeFor)
 		if (variable.defaultValue !== null)
-			TestUtils.assertEquals(expectedRoot, expectedSizes, expectedConnectivities, variable.defaultValue.typeFor)
+			Assert.assertEquals(expectedType, variable.defaultValue.typeFor)
 	}
 
-	private def assertTypesFor(PrimitiveType expectedRoot, int[] expectedSizes, Connectivity[] expectedConnectivities, Affectation affectation)	
+	private def assertTypesFor(NablaType expectedType, Affectation affectation)	
 	{
 		// We test both variable type and expression type
-		TestUtils.assertEquals(expectedRoot, expectedSizes, expectedConnectivities, affectation.varRef.typeFor)
-		TestUtils.assertEquals(expectedRoot, expectedSizes, expectedConnectivities, affectation.expression.typeFor)
+		Assert.assertEquals(expectedType, affectation.varRef.typeFor)
+		Assert.assertEquals(expectedType, affectation.expression.typeFor)
 	}
 }

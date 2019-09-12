@@ -28,27 +28,24 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.ReductionArg
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.nabla.ScalarVarDefinition
-import fr.cea.nabla.typing.AbstractType
-import fr.cea.nabla.typing.ArrayType
-import fr.cea.nabla.typing.BinaryOperationsTypeProvider
-import fr.cea.nabla.typing.BoolType
-import fr.cea.nabla.typing.DefinedType
+import fr.cea.nabla.nabla.SimpleVarDefinition
+import fr.cea.nabla.typing.BaseTypeTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.typing.IntType
-import fr.cea.nabla.typing.MiscTypeProvider
-import fr.cea.nabla.typing.UndefinedType
+import fr.cea.nabla.typing.NTBoolScalar
+import fr.cea.nabla.typing.NTConnectivityType
+import fr.cea.nabla.typing.NTIntScalar
+import fr.cea.nabla.typing.NTScalar
+import fr.cea.nabla.typing.NablaType
 import java.util.List
 import org.eclipse.xtext.validation.Check
 
 class TypeValidator extends BasicValidator
 {
-	static val BOOL = new BoolType(#[])
-	static val INT = new IntType(#[])
+	static val BOOL = new NTBoolScalar
+	static val INT = new NTIntScalar
 	
 	@Inject extension ExpressionTypeProvider
-	@Inject extension BinaryOperationsTypeProvider
-	@Inject extension MiscTypeProvider
+	@Inject extension BaseTypeTypeProvider
 
 	// ===== Instructions =====	
 	
@@ -61,10 +58,10 @@ class TypeValidator extends BasicValidator
 	static def getIfConditionBoolMsg(String actualTypeName) { "Wrong type: Expected " + BOOL.label + ", but was " + actualTypeName }
 		
 	@Check 
-	def checkType(ScalarVarDefinition it)
+	def checkType(SimpleVarDefinition it)
 	{
 		if (!checkExpectedType(defaultValue?.typeFor, type.typeFor))
-			error(getScalarDefinitionTypeMsg(defaultValue?.typeFor.label, type.typeFor.label), NablaPackage.Literals.SCALAR_VAR_DEFINITION__DEFAULT_VALUE, SCALAR_VAR_DEFAULT_VALUE_TYPE)			
+			error(getScalarDefinitionTypeMsg(defaultValue?.typeFor.label, type.typeFor.label), NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE, SCALAR_VAR_DEFAULT_VALUE_TYPE)			
 	}
 	
 	@Check 
@@ -125,21 +122,21 @@ class TypeValidator extends BasicValidator
 	def checkValueType(BaseTypeConstant it)
 	{
 		val vType = value.typeFor
-		if (vType !== null && ((vType as DefinedType).root !== type.root || vType instanceof ArrayType))
-			error(getValueTypeMsg(type.root.literal), NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE, VALUE_TYPE)	
+		if (vType !== null && !(vType instanceof NTScalar && vType.primitive == type.primitive))
+			error(getValueTypeMsg(type.primitive.literal), NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE, VALUE_TYPE)	
 	}
 	
 	@Check
 	def checkSeedAndReturnTypes(ReductionArg it)
 	{
 		val seedType = seed?.typeFor
-		val rType = returnType.root
 		// Seed must be scalar and Seed rootType must be the same as Return rootType
 		// If Return type is Array, the reduction Seed will be used as many times as Array size
 		// Ex (ℕ.MaxValue, ℝ])→ℕ[2]; -> we will use (ℕ.MaxValue, ℕ.MaxValue) as reduction seed
-		if (! (seedType === null || seedType instanceof UndefinedType))
+		if (seedType !== null)
 		{
-			if (seedType instanceof ArrayType)
+			val rType = returnType.primitive
+			if (!(seedType instanceof NTScalar))
 				error(getSeedTypeMsg(), NablaPackage.Literals.REDUCTION_ARG__SEED, SEED_TYPE)
 			else if (seedType.label != rType.literal)
 				error(getSeedAndReturnTypesMsg(seedType.label, rType.literal), NablaPackage.Literals.REDUCTION_ARG__SEED, SEED_AND_RETURN_TYPES)
@@ -149,7 +146,7 @@ class TypeValidator extends BasicValidator
 	@Check
 	def checkFunctionCallArgs(FunctionCall it)
 	{
-		if (typeFor.undefined)
+		if (typeFor === null)
 		{
 			val inTypes = args.map[x | x.typeFor.label]
 			error(getFunctionArgsMsg(inTypes), NablaPackage.Literals::FUNCTION_CALL__FUNCTION, FUNCTION_ARGS)
@@ -161,9 +158,9 @@ class TypeValidator extends BasicValidator
 	{
 		val inT = arg.typeFor
 		
-		if (inT instanceof DefinedType && !(inT as DefinedType).connectivities.empty)
+		if (inT !== null && inT instanceof NTConnectivityType)
 			error(getReductionOnConnectivitiesVariableMsg, NablaPackage.Literals::REDUCTION_CALL__REDUCTION, REDUCTION_ON_CONNECTIVITIES_VARIABLE)
-		else if (typeFor.undefined)
+		else if (typeFor === null)
 			error(getReductionArgsMsg(inT.label), NablaPackage.Literals::REDUCTION_CALL__REDUCTION, REDUCTION_ARGS)
 	}
 
@@ -256,18 +253,14 @@ class TypeValidator extends BasicValidator
 			error(getAndTypeMsg(right?.typeFor.label), NablaPackage.Literals.OR__RIGHT, OR_TYPE)
 	}
 
-	private def checkExpectedType(AbstractType actualType, AbstractType expectedType) 
+	private def checkExpectedType(NablaType actualType, NablaType expectedType) 
 	{
 		// si un des 2 types est indéfini, il ne faut rien vérifier pour éviter les erreurs multiples due à la récursion
-		return (actualType.undefined || expectedType.undefined || actualType == expectedType)
+		return (actualType === null || expectedType === null || actualType == expectedType)
 	}	
 
 	private def checkBinaryOp(Expression left, Expression right, String op)
 	{
-		val leftType = left?.typeFor
-		val rightType = right?.typeFor
-
-		// si un des 2 types est indéfini, il ne faut rien vérifier pour éviter les erreurs multiples due à la récursion
-		return (leftType.undefined || rightType.undefined || !getTypeFor(leftType, rightType, op).undefined) 
+		getTypeFor(left, right, op) !== null
 	}
 }

@@ -62,52 +62,29 @@ public class BaseTypeItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addRootPropertyDescriptor(object);
-			addSizesPropertyDescriptor(object);
+			addPrimitivePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This adds a property descriptor for the Root feature.
+	 * This adds a property descriptor for the Primitive feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addRootPropertyDescriptor(Object object) {
+	protected void addPrimitivePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_BaseType_root_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_BaseType_root_feature", "_UI_BaseType_type"),
-				 NablaPackage.Literals.BASE_TYPE__ROOT,
+				 getString("_UI_BaseType_primitive_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_BaseType_primitive_feature", "_UI_BaseType_type"),
+				 NablaPackage.Literals.BASE_TYPE__PRIMITIVE,
 				 true,
 				 false,
 				 false,
 				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Sizes feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addSizesPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_BaseType_sizes_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_BaseType_sizes_feature", "_UI_BaseType_type"),
-				 NablaPackage.Literals.BASE_TYPE__SIZES,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
 				 null,
 				 null));
 	}
@@ -131,7 +108,7 @@ public class BaseTypeItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		PrimitiveType labelValue = ((BaseType)object).getRoot();
+		PrimitiveType labelValue = ((BaseType)object).getPrimitive();
 		String label = labelValue == null ? null : labelValue.toString();
 		return label == null || label.length() == 0 ?
 			getString("_UI_BaseType_type") :
@@ -151,8 +128,7 @@ public class BaseTypeItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(BaseType.class)) {
-			case NablaPackage.BASE_TYPE__ROOT:
-			case NablaPackage.BASE_TYPE__SIZES:
+			case NablaPackage.BASE_TYPE__PRIMITIVE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}

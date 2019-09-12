@@ -10,7 +10,6 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
-import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.nabla.And
@@ -26,6 +25,7 @@ import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
+import fr.cea.nabla.typing.DeclarationProvider
 
 class IrReductionInstructionFactory 
 {
@@ -58,7 +58,7 @@ class IrReductionInstructionFactory
 		val irInstruction = IrFactory::eINSTANCE.createReductionInstruction
 		irInstruction.annotations += toIrAnnotation
 		irInstruction.innerReductions += arg.toIrReductions
-		irInstruction.reduction = reduction.toIrReduction(declaration)
+		irInstruction.reduction = reduction.toIrReduction(declaration.model)
 		irInstruction.range = range.toIrIterator
 		singletons.forEach[x | irInstruction.singletons += x.toIrIterator]
 		irInstruction.arg = arg.toIrExpression		

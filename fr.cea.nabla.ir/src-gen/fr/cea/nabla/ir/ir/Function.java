@@ -52,7 +52,7 @@ public interface Function extends IrAnnotable {
 
 	/**
 	 * Returns the value of the '<em><b>In Types</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ArgType}.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.BaseType}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>In Types</em>' containment reference list isn't clear,
@@ -64,7 +64,7 @@ public interface Function extends IrAnnotable {
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	EList<ArgType> getInTypes();
+	EList<BaseType> getInTypes();
 
 	/**
 	 * Returns the value of the '<em><b>Return Type</b></em>' containment reference.
@@ -75,12 +75,12 @@ public interface Function extends IrAnnotable {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Return Type</em>' containment reference.
-	 * @see #setReturnType(ArgType)
+	 * @see #setReturnType(BaseType)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_ReturnType()
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	ArgType getReturnType();
+	BaseType getReturnType();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Function#getReturnType <em>Return Type</em>}' containment reference.
@@ -90,7 +90,7 @@ public interface Function extends IrAnnotable {
 	 * @see #getReturnType()
 	 * @generated
 	 */
-	void setReturnType(ArgType value);
+	void setReturnType(BaseType value);
 
 	/**
 	 * Returns the value of the '<em><b>Provider</b></em>' attribute.

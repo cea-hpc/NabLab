@@ -1,12 +1,13 @@
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.ir.Array1D
+import fr.cea.nabla.ir.ir.Array2D
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.Constant
 import fr.cea.nabla.ir.ir.ContractedIf
-import fr.cea.nabla.ir.ir.ExpressionType
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntMatrixConstant
 import fr.cea.nabla.ir.ir.IntVectorConstant
@@ -16,10 +17,12 @@ import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.RealMatrixConstant
 import fr.cea.nabla.ir.ir.RealVectorConstant
+import fr.cea.nabla.ir.ir.Scalar
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
 import java.util.Arrays
 
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.Utils.*
 
 class ExpressionInterpreter 
@@ -57,39 +60,48 @@ class ExpressionInterpreter
 
 	static def dispatch ExpressionValue interprete(Constant it) 
 	{ 
-		switch type.root
+		val t = type
+		switch t
 		{
-			case INT: new IntValue(Integer.parseInt(value)) 
-			case REAL: new RealValue(Double.parseDouble(value))
-			case BOOL: new BoolValue(Boolean.parseBoolean(value))
-			default: throw new UnexpectedTypeException(#["Int", "Real", "Bool"], type.root.literal)
+			Scalar case t.primitive == PrimitiveType::INT: new IntValue(Integer.parseInt(value)) 
+			Scalar case t.primitive == PrimitiveType::REAL: new RealValue(Double.parseDouble(value))
+			Scalar case t.primitive == PrimitiveType::BOOL: new BoolValue(Boolean.parseBoolean(value))
+			default: throw new UnexpectedTypeException(#["Int", "Real", "Bool"], t.label)
 		}
 	}
 	
 	static def dispatch ExpressionValue interprete(MinConstant it)
 	{
-		switch type.root
+		val t = type
+		switch t
 		{
-			case INT: new IntValue(Integer.MIN_VALUE)
-			case REAL: new RealValue(Double.MIN_VALUE)
-			default: throw new UnexpectedTypeException(#["Int", "Real"], type.root.literal)
+			Scalar case t.primitive == PrimitiveType::INT: new IntValue(Integer.MIN_VALUE)
+			Scalar case t.primitive == PrimitiveType::REAL: new RealValue(Double.MIN_VALUE)
+			default: throw new UnexpectedTypeException(#["Int", "Real"], t.label)
 		}
 	}
 	
 	static def dispatch ExpressionValue interprete(MaxConstant it)
 	{
-		switch type.root
+		val t = type
+		switch t
 		{
-			case INT: new IntValue(Integer.MAX_VALUE)
-			case REAL: new RealValue(Double.MAX_VALUE)
-			default: throw new UnexpectedTypeException(#["Int", "Real"], type.root.literal)
+			Scalar case t.primitive == PrimitiveType::INT: new IntValue(Integer.MAX_VALUE)
+			Scalar case t.primitive == PrimitiveType::REAL: new RealValue(Double.MAX_VALUE)
+			default: throw new UnexpectedTypeException(#["Int", "Real"], t.label)
 		}
 	}
 
 	static def dispatch ExpressionValue interprete(BaseTypeConstant it)
 	{
 		val expressionValue = value.interprete
-		buildArrayValue(type.sizes, expressionValue)
+		val t = type
+		switch t
+		{
+			Array1D : buildArrayValue(#[t.size], expressionValue)
+			Array2D : buildArrayValue(#[t.nbRows, t.nbCols], expressionValue)
+			default: throw new RuntimeException('Wrong path...')
+		}
 	}
 	
 	static def dispatch ExpressionValue interprete(IntVectorConstant it)
@@ -134,7 +146,7 @@ class ExpressionInterpreter
 
 	static def dispatch ExpressionValue interprete(FunctionCall it)
 	{
-		val providerClassName = function.provider + Utils::FunctionAndReductionproviderSuffix
+		val providerClassName = function.provider + fr.cea.nabla.ir.Utils::FunctionAndReductionproviderSuffix
 		val providerClass = Class.forName(providerClassName)
 		val types = args.map[x | x.type.javaType]
 		val method = providerClass.getMethod(function.name, types)
@@ -149,23 +161,32 @@ class ExpressionInterpreter
 		throw new RuntimeException('Not yet implemented')	
 	}
 	
-	private static def dispatch Class<?> getJavaType(BaseType it)
+	private static def dispatch Class<?> getJavaType(PrimitiveType t) { getJavaType(t, 0) }
+	private static def dispatch Class<?> getJavaType(BaseType t) { getJavaType(t.primitive, t.nbDimensions) }
+	private static def dispatch Class<?> getJavaType(ConnectivityType t) { getJavaType(t.base.primitive, t.nbDimensions) }
+
+	private static def dispatch int getNbDimensions(PrimitiveType t) { 0 }
+	private static def dispatch int getNbDimensions(Scalar t) { 0 }
+	private static def dispatch int getNbDimensions(Array1D t) { 1 }
+	private static def dispatch int getNbDimensions(Array2D t) { 2 }
+	private static def dispatch int getNbDimensions(ConnectivityType t) { t.base.nbDimensions + t.connectivities.size }
+
+	private static def Class<?> getJavaType(PrimitiveType t, int nbDimensions)
 	{
-		switch sizes.size
+		switch t
 		{
-			case 0: root.javaType
-			case 1: typeof(double[])
-			case 2: typeof(double[][])
-			default: throw new RuntimeException('Invalid type')
+			case null: typeof(void)
+			case BOOL: getBoolType(nbDimensions)
+			case INT: getIntType(nbDimensions)
+			case REAL: getRealType(nbDimensions)
 		}
 	}
-
-	private static def dispatch Class<?> getJavaType(ExpressionType it)
+	
+	private static def Class<?> getRealType(int nbDimensions)
 	{
-		val fullSizes = sizes.size + connectivities.size
-		switch fullSizes
+		switch nbDimensions
 		{
-			case 0: root.javaType
+			case 0: double
 			case 1: typeof(double[])
 			case 2: typeof(double[][])
 			case 3: typeof(double[][][])
@@ -173,18 +194,33 @@ class ExpressionInterpreter
 			default: throw new RuntimeException('Invalid type')
 		}
 	}
-	
-	private static def dispatch Class<?> getJavaType(PrimitiveType t)
+
+	private static def Class<?> getIntType(int nbDimensions)
 	{
-		switch t
+		switch nbDimensions
 		{
-			case BOOL: typeof(boolean)
-			case INT: typeof(int)
-			case REAL: typeof(double)
+			case 0: int
+			case 1: typeof(int[])
+			case 2: typeof(int[][])
+			case 3: typeof(int[][][])
+			case 4: typeof(int[][][][])
 			default: throw new RuntimeException('Invalid type')
 		}
 	}
-	
+
+	private static def Class<?> getBoolType(int nbDimensions)
+	{
+		switch nbDimensions
+		{
+			case 0: boolean
+			case 1: typeof(boolean[])
+			case 2: typeof(boolean[][])
+			case 3: typeof(boolean[][][])
+			case 4: typeof(boolean[][][][])
+			default: throw new RuntimeException('Invalid type')
+		}
+	}
+
 	private static def getExpressionValue(Object o)
 	{
 		switch o

@@ -516,13 +516,13 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY_VARIABLE__CONST = VARIABLE__CONST;
 
 	/**
-	 * The feature id for the '<em><b>Dimensions</b></em>' reference list.
+	 * The feature id for the '<em><b>Supports</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY_VARIABLE__DIMENSIONS = VARIABLE_FEATURE_COUNT + 0;
+	int CONNECTIVITY_VARIABLE__SUPPORTS = VARIABLE_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Default Value</b></em>' containment reference.
@@ -3003,6 +3003,43 @@ public interface IrPackage extends EPackage {
 	int ITEM_TYPE_OPERATION_COUNT = 0;
 
 	/**
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.IrTypeImpl <em>Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.cea.nabla.ir.ir.impl.IrTypeImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIrType()
+	 * @generated
+	 */
+	int IR_TYPE = 50;
+
+	/**
+	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_TYPE__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
+
+	/**
+	 * The number of structural features of the '<em>Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_TYPE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of operations of the '<em>Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_TYPE_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
+
+	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.BaseTypeImpl <em>Base Type</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3019,25 +3056,16 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BASE_TYPE__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
+	int BASE_TYPE__ANNOTATIONS = IR_TYPE__ANNOTATIONS;
 
 	/**
-	 * The feature id for the '<em><b>Root</b></em>' attribute.
+	 * The feature id for the '<em><b>Primitive</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BASE_TYPE__ROOT = IR_ANNOTABLE_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Sizes</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BASE_TYPE__SIZES = IR_ANNOTABLE_FEATURE_COUNT + 1;
+	int BASE_TYPE__PRIMITIVE = IR_TYPE_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Base Type</em>' class.
@@ -3046,7 +3074,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BASE_TYPE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 2;
+	int BASE_TYPE_FEATURE_COUNT = IR_TYPE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Base Type</em>' class.
@@ -3055,17 +3083,17 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BASE_TYPE_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
+	int BASE_TYPE_OPERATION_COUNT = IR_TYPE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ExpressionTypeImpl <em>Expression Type</em>}' class.
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ScalarImpl <em>Scalar</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.ExpressionTypeImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getExpressionType()
+	 * @see fr.cea.nabla.ir.ir.impl.ScalarImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getScalar()
 	 * @generated
 	 */
-	int EXPRESSION_TYPE = 47;
+	int SCALAR = 47;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3074,25 +3102,172 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXPRESSION_TYPE__ANNOTATIONS = BASE_TYPE__ANNOTATIONS;
+	int SCALAR__ANNOTATIONS = BASE_TYPE__ANNOTATIONS;
 
 	/**
-	 * The feature id for the '<em><b>Root</b></em>' attribute.
+	 * The feature id for the '<em><b>Primitive</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXPRESSION_TYPE__ROOT = BASE_TYPE__ROOT;
+	int SCALAR__PRIMITIVE = BASE_TYPE__PRIMITIVE;
 
 	/**
-	 * The feature id for the '<em><b>Sizes</b></em>' attribute list.
+	 * The number of structural features of the '<em>Scalar</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXPRESSION_TYPE__SIZES = BASE_TYPE__SIZES;
+	int SCALAR_FEATURE_COUNT = BASE_TYPE_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of operations of the '<em>Scalar</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SCALAR_OPERATION_COUNT = BASE_TYPE_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.Array1DImpl <em>Array1 D</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.cea.nabla.ir.ir.impl.Array1DImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getArray1D()
+	 * @generated
+	 */
+	int ARRAY1_D = 48;
+
+	/**
+	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY1_D__ANNOTATIONS = BASE_TYPE__ANNOTATIONS;
+
+	/**
+	 * The feature id for the '<em><b>Primitive</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY1_D__PRIMITIVE = BASE_TYPE__PRIMITIVE;
+
+	/**
+	 * The feature id for the '<em><b>Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY1_D__SIZE = BASE_TYPE_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Array1 D</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY1_D_FEATURE_COUNT = BASE_TYPE_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Array1 D</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY1_D_OPERATION_COUNT = BASE_TYPE_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.Array2DImpl <em>Array2 D</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.cea.nabla.ir.ir.impl.Array2DImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getArray2D()
+	 * @generated
+	 */
+	int ARRAY2_D = 49;
+
+	/**
+	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY2_D__ANNOTATIONS = BASE_TYPE__ANNOTATIONS;
+
+	/**
+	 * The feature id for the '<em><b>Primitive</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY2_D__PRIMITIVE = BASE_TYPE__PRIMITIVE;
+
+	/**
+	 * The feature id for the '<em><b>Nb Rows</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY2_D__NB_ROWS = BASE_TYPE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Nb Cols</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY2_D__NB_COLS = BASE_TYPE_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of structural features of the '<em>Array2 D</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY2_D_FEATURE_COUNT = BASE_TYPE_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of operations of the '<em>Array2 D</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY2_D_OPERATION_COUNT = BASE_TYPE_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ConnectivityTypeImpl <em>Connectivity Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.cea.nabla.ir.ir.impl.ConnectivityTypeImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getConnectivityType()
+	 * @generated
+	 */
+	int CONNECTIVITY_TYPE = 51;
+
+	/**
+	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTIVITY_TYPE__ANNOTATIONS = IR_TYPE__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Connectivities</b></em>' reference list.
@@ -3101,80 +3276,34 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXPRESSION_TYPE__CONNECTIVITIES = BASE_TYPE_FEATURE_COUNT + 0;
+	int CONNECTIVITY_TYPE__CONNECTIVITIES = IR_TYPE_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Expression Type</em>' class.
+	 * The feature id for the '<em><b>Base</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXPRESSION_TYPE_FEATURE_COUNT = BASE_TYPE_FEATURE_COUNT + 1;
+	int CONNECTIVITY_TYPE__BASE = IR_TYPE_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of operations of the '<em>Expression Type</em>' class.
+	 * The number of structural features of the '<em>Connectivity Type</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXPRESSION_TYPE_OPERATION_COUNT = BASE_TYPE_OPERATION_COUNT + 0;
+	int CONNECTIVITY_TYPE_FEATURE_COUNT = IR_TYPE_FEATURE_COUNT + 2;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ArgTypeImpl <em>Arg Type</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.ArgTypeImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getArgType()
-	 * @generated
-	 */
-	int ARG_TYPE = 48;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
+	 * The number of operations of the '<em>Connectivity Type</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ARG_TYPE__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Root</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARG_TYPE__ROOT = IR_ANNOTABLE_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Array Dimension</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARG_TYPE__ARRAY_DIMENSION = IR_ANNOTABLE_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of structural features of the '<em>Arg Type</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARG_TYPE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 2;
-
-	/**
-	 * The number of operations of the '<em>Arg Type</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARG_TYPE_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
+	int CONNECTIVITY_TYPE_OPERATION_COUNT = IR_TYPE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.PrimitiveType <em>Primitive Type</em>}' enum.
@@ -3184,7 +3313,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getPrimitiveType()
 	 * @generated
 	 */
-	int PRIMITIVE_TYPE = 49;
+	int PRIMITIVE_TYPE = 52;
 
 
 	/**
@@ -3456,15 +3585,15 @@ public interface IrPackage extends EPackage {
 	EClass getConnectivityVariable();
 
 	/**
-	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.ConnectivityVariable#getDimensions <em>Dimensions</em>}'.
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.ConnectivityVariable#getSupports <em>Supports</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Dimensions</em>'.
-	 * @see fr.cea.nabla.ir.ir.ConnectivityVariable#getDimensions()
+	 * @return the meta object for the reference list '<em>Supports</em>'.
+	 * @see fr.cea.nabla.ir.ir.ConnectivityVariable#getSupports()
 	 * @see #getConnectivityVariable()
 	 * @generated
 	 */
-	EReference getConnectivityVariable_Dimensions();
+	EReference getConnectivityVariable_Supports();
 
 	/**
 	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.ConnectivityVariable#getDefaultValue <em>Default Value</em>}'.
@@ -4648,79 +4777,120 @@ public interface IrPackage extends EPackage {
 	EClass getBaseType();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.BaseType#getRoot <em>Root</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.BaseType#getPrimitive <em>Primitive</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Root</em>'.
-	 * @see fr.cea.nabla.ir.ir.BaseType#getRoot()
+	 * @return the meta object for the attribute '<em>Primitive</em>'.
+	 * @see fr.cea.nabla.ir.ir.BaseType#getPrimitive()
 	 * @see #getBaseType()
 	 * @generated
 	 */
-	EAttribute getBaseType_Root();
+	EAttribute getBaseType_Primitive();
 
 	/**
-	 * Returns the meta object for the attribute list '{@link fr.cea.nabla.ir.ir.BaseType#getSizes <em>Sizes</em>}'.
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Scalar <em>Scalar</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Sizes</em>'.
-	 * @see fr.cea.nabla.ir.ir.BaseType#getSizes()
-	 * @see #getBaseType()
+	 * @return the meta object for class '<em>Scalar</em>'.
+	 * @see fr.cea.nabla.ir.ir.Scalar
 	 * @generated
 	 */
-	EAttribute getBaseType_Sizes();
+	EClass getScalar();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ExpressionType <em>Expression Type</em>}'.
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Array1D <em>Array1 D</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Expression Type</em>'.
-	 * @see fr.cea.nabla.ir.ir.ExpressionType
+	 * @return the meta object for class '<em>Array1 D</em>'.
+	 * @see fr.cea.nabla.ir.ir.Array1D
 	 * @generated
 	 */
-	EClass getExpressionType();
+	EClass getArray1D();
 
 	/**
-	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.ExpressionType#getConnectivities <em>Connectivities</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Array1D#getSize <em>Size</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Size</em>'.
+	 * @see fr.cea.nabla.ir.ir.Array1D#getSize()
+	 * @see #getArray1D()
+	 * @generated
+	 */
+	EAttribute getArray1D_Size();
+
+	/**
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Array2D <em>Array2 D</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Array2 D</em>'.
+	 * @see fr.cea.nabla.ir.ir.Array2D
+	 * @generated
+	 */
+	EClass getArray2D();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Array2D#getNbRows <em>Nb Rows</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Nb Rows</em>'.
+	 * @see fr.cea.nabla.ir.ir.Array2D#getNbRows()
+	 * @see #getArray2D()
+	 * @generated
+	 */
+	EAttribute getArray2D_NbRows();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Array2D#getNbCols <em>Nb Cols</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Nb Cols</em>'.
+	 * @see fr.cea.nabla.ir.ir.Array2D#getNbCols()
+	 * @see #getArray2D()
+	 * @generated
+	 */
+	EAttribute getArray2D_NbCols();
+
+	/**
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.IrType <em>Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Type</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrType
+	 * @generated
+	 */
+	EClass getIrType();
+
+	/**
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ConnectivityType <em>Connectivity Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Connectivity Type</em>'.
+	 * @see fr.cea.nabla.ir.ir.ConnectivityType
+	 * @generated
+	 */
+	EClass getConnectivityType();
+
+	/**
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.ConnectivityType#getConnectivities <em>Connectivities</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference list '<em>Connectivities</em>'.
-	 * @see fr.cea.nabla.ir.ir.ExpressionType#getConnectivities()
-	 * @see #getExpressionType()
+	 * @see fr.cea.nabla.ir.ir.ConnectivityType#getConnectivities()
+	 * @see #getConnectivityType()
 	 * @generated
 	 */
-	EReference getExpressionType_Connectivities();
+	EReference getConnectivityType_Connectivities();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ArgType <em>Arg Type</em>}'.
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.ConnectivityType#getBase <em>Base</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Arg Type</em>'.
-	 * @see fr.cea.nabla.ir.ir.ArgType
+	 * @return the meta object for the containment reference '<em>Base</em>'.
+	 * @see fr.cea.nabla.ir.ir.ConnectivityType#getBase()
+	 * @see #getConnectivityType()
 	 * @generated
 	 */
-	EClass getArgType();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ArgType#getRoot <em>Root</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Root</em>'.
-	 * @see fr.cea.nabla.ir.ir.ArgType#getRoot()
-	 * @see #getArgType()
-	 * @generated
-	 */
-	EAttribute getArgType_Root();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ArgType#getArrayDimension <em>Array Dimension</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Array Dimension</em>'.
-	 * @see fr.cea.nabla.ir.ir.ArgType#getArrayDimension()
-	 * @see #getArgType()
-	 * @generated
-	 */
-	EAttribute getArgType_ArrayDimension();
+	EReference getConnectivityType_Base();
 
 	/**
 	 * Returns the meta object for enum '{@link fr.cea.nabla.ir.ir.PrimitiveType <em>Primitive Type</em>}'.
@@ -4970,12 +5140,12 @@ public interface IrPackage extends EPackage {
 		EClass CONNECTIVITY_VARIABLE = eINSTANCE.getConnectivityVariable();
 
 		/**
-		 * The meta object literal for the '<em><b>Dimensions</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Supports</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference CONNECTIVITY_VARIABLE__DIMENSIONS = eINSTANCE.getConnectivityVariable_Dimensions();
+		EReference CONNECTIVITY_VARIABLE__SUPPORTS = eINSTANCE.getConnectivityVariable_Supports();
 
 		/**
 		 * The meta object literal for the '<em><b>Default Value</b></em>' containment reference feature.
@@ -5946,30 +6116,86 @@ public interface IrPackage extends EPackage {
 		EClass BASE_TYPE = eINSTANCE.getBaseType();
 
 		/**
-		 * The meta object literal for the '<em><b>Root</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Primitive</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute BASE_TYPE__ROOT = eINSTANCE.getBaseType_Root();
+		EAttribute BASE_TYPE__PRIMITIVE = eINSTANCE.getBaseType_Primitive();
 
 		/**
-		 * The meta object literal for the '<em><b>Sizes</b></em>' attribute list feature.
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ScalarImpl <em>Scalar</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
+		 * @see fr.cea.nabla.ir.ir.impl.ScalarImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getScalar()
 		 * @generated
 		 */
-		EAttribute BASE_TYPE__SIZES = eINSTANCE.getBaseType_Sizes();
+		EClass SCALAR = eINSTANCE.getScalar();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ExpressionTypeImpl <em>Expression Type</em>}' class.
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.Array1DImpl <em>Array1 D</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.ExpressionTypeImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getExpressionType()
+		 * @see fr.cea.nabla.ir.ir.impl.Array1DImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getArray1D()
 		 * @generated
 		 */
-		EClass EXPRESSION_TYPE = eINSTANCE.getExpressionType();
+		EClass ARRAY1_D = eINSTANCE.getArray1D();
+
+		/**
+		 * The meta object literal for the '<em><b>Size</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ARRAY1_D__SIZE = eINSTANCE.getArray1D_Size();
+
+		/**
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.Array2DImpl <em>Array2 D</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.cea.nabla.ir.ir.impl.Array2DImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getArray2D()
+		 * @generated
+		 */
+		EClass ARRAY2_D = eINSTANCE.getArray2D();
+
+		/**
+		 * The meta object literal for the '<em><b>Nb Rows</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ARRAY2_D__NB_ROWS = eINSTANCE.getArray2D_NbRows();
+
+		/**
+		 * The meta object literal for the '<em><b>Nb Cols</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ARRAY2_D__NB_COLS = eINSTANCE.getArray2D_NbCols();
+
+		/**
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.IrTypeImpl <em>Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.cea.nabla.ir.ir.impl.IrTypeImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIrType()
+		 * @generated
+		 */
+		EClass IR_TYPE = eINSTANCE.getIrType();
+
+		/**
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ConnectivityTypeImpl <em>Connectivity Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.cea.nabla.ir.ir.impl.ConnectivityTypeImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getConnectivityType()
+		 * @generated
+		 */
+		EClass CONNECTIVITY_TYPE = eINSTANCE.getConnectivityType();
 
 		/**
 		 * The meta object literal for the '<em><b>Connectivities</b></em>' reference list feature.
@@ -5977,33 +6203,15 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference EXPRESSION_TYPE__CONNECTIVITIES = eINSTANCE.getExpressionType_Connectivities();
+		EReference CONNECTIVITY_TYPE__CONNECTIVITIES = eINSTANCE.getConnectivityType_Connectivities();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ArgTypeImpl <em>Arg Type</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.ArgTypeImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getArgType()
-		 * @generated
-		 */
-		EClass ARG_TYPE = eINSTANCE.getArgType();
-
-		/**
-		 * The meta object literal for the '<em><b>Root</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Base</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute ARG_TYPE__ROOT = eINSTANCE.getArgType_Root();
-
-		/**
-		 * The meta object literal for the '<em><b>Array Dimension</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute ARG_TYPE__ARRAY_DIMENSION = eINSTANCE.getArgType_ArrayDimension();
+		EReference CONNECTIVITY_TYPE__BASE = eINSTANCE.getConnectivityType_Base();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.PrimitiveType <em>Primitive Type</em>}' enum.

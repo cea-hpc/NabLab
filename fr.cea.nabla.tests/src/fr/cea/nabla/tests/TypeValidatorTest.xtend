@@ -5,8 +5,10 @@ import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.PrimitiveType
-import fr.cea.nabla.typing.MiscTypeProvider
-import fr.cea.nabla.typing.RealArrayType
+import fr.cea.nabla.typing.NTConnectivityType
+import fr.cea.nabla.typing.NTRealArray1D
+import fr.cea.nabla.typing.NTRealScalar
+import fr.cea.nabla.typing.VarTypeProvider
 import fr.cea.nabla.validation.TypeValidator
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
@@ -23,7 +25,7 @@ class TypeValidatorTest
 	@Inject ParseHelper<NablaModule> parseHelper
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
-	@Inject extension MiscTypeProvider
+	@Inject extension VarTypeProvider
 
 	// ===== Instructions =====	
 
@@ -42,15 +44,15 @@ class TypeValidatorTest
 		
 		val cells = moduleKo.getConnectivityByName("cells")
 		
-		moduleKo.assertError(NablaPackage.eINSTANCE.scalarVarDefinition, 
+		moduleKo.assertError(NablaPackage.eINSTANCE.simpleVarDefinition, 
 			TypeValidator::SCALAR_VAR_DEFAULT_VALUE_TYPE, 
-			TypeValidator::getScalarDefinitionTypeMsg(new RealArrayType(#[],#[2]).label,
+			TypeValidator::getScalarDefinitionTypeMsg(new NTRealArray1D(2).label,
 				PrimitiveType::REAL.literal
 			))		
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.scalarVarDefinition, 
+		moduleKo.assertError(NablaPackage.eINSTANCE.simpleVarDefinition, 
 			TypeValidator::SCALAR_VAR_DEFAULT_VALUE_TYPE, 
-			TypeValidator::getScalarDefinitionTypeMsg(new RealArrayType(#[cells],#[]).label,
+			TypeValidator::getScalarDefinitionTypeMsg(new NTConnectivityType(#[cells], new NTRealScalar).label,
 				PrimitiveType::REAL.literal
 			))		
 
@@ -146,9 +148,11 @@ class TypeValidatorTest
 		val moduleKo = parseHelper.parse(TestUtils::testModule
 			+
 			'''
+			const ℝ[2] one = [1.0, 1.0];
 			const ℕ int = ℕ(1.2);
 			const ℾ bool = ℾ(1);
 			const ℝ real = ℝ(true);
+			const ℝ[2] realOne = ℝ[2](one);
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -171,6 +175,7 @@ class TypeValidatorTest
 			const ℕ int = ℕ(1);
 			const ℾ bool = ℾ(true);
 			const ℝ real = ℝ(1.2);
+			const ℝ[2] realOne = ℝ[2](1.0);
 			'''		
 		)
 		Assert.assertNotNull(moduleOk)
@@ -240,7 +245,7 @@ class TypeValidatorTest
 			TypeValidator::getFunctionArgsMsg(
 				#[PrimitiveType::BOOL.literal,
 				PrimitiveType::INT.literal,
-				new RealArrayType(#[],#[2]).label]
+				new NTRealArray1D(2).label]
 		))		
 
 		val moduleOk = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
@@ -288,7 +293,7 @@ class TypeValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.reductionCall, 
 			TypeValidator::REDUCTION_ARGS, 
-			TypeValidator::getReductionArgsMsg(new RealArrayType(#[],#[2]).label))		
+			TypeValidator::getReductionArgsMsg(new NTRealArray1D(2).label))		
 			
 		val moduleOk = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
 			(
@@ -455,8 +460,8 @@ class TypeValidatorTest
 		moduleKo.assertError(NablaPackage.eINSTANCE.minus, 
 			TypeValidator::MINUS_TYPE, 
 			TypeValidator::getMinusTypeMsg("-", 
-				new RealArrayType(#[],#[2]).label, 
-				new RealArrayType(#[],#[3]).label
+				new NTRealArray1D(2).label, 
+				new NTRealArray1D(3).label
 			))		
 
 		val moduleOk = parseHelper.parse(TestUtils::testModule
@@ -488,7 +493,7 @@ class TypeValidatorTest
 			TypeValidator::COMPARISON_TYPE, 
 			TypeValidator::getComparisonTypeMsg(">", 
 				PrimitiveType::REAL.literal, 
-				new RealArrayType(#[],#[2]).label
+				new NTRealArray1D(2).label
 			))		
 
 		val moduleOk = parseHelper.parse(TestUtils::testModule
@@ -520,7 +525,7 @@ class TypeValidatorTest
 			TypeValidator::EQUALITY_TYPE, 
 			TypeValidator::getEqualityTypeMsg("==", 
 				PrimitiveType::REAL.literal, 
-				new RealArrayType(#[],#[2]).label
+				new NTRealArray1D(2).label
 			))		
 
 		val moduleOk = parseHelper.parse(TestUtils::testModule
@@ -554,7 +559,7 @@ class TypeValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.modulo, 
 			TypeValidator::MODULO_TYPE, 
-			TypeValidator::getModuloTypeMsg(new RealArrayType(#[],#[2]).label))		
+			TypeValidator::getModuloTypeMsg(new NTRealArray1D(2).label))		
 			
 		val moduleOk = parseHelper.parse(TestUtils::testModule
 			+

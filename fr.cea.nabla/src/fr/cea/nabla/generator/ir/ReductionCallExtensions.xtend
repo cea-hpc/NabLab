@@ -11,14 +11,11 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.Scalar
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.typing.ArrayType
-import fr.cea.nabla.typing.DefinedType
-import fr.cea.nabla.typing.UndefinedType
-import fr.cea.nabla.typing.AbstractType
+import fr.cea.nabla.typing.DeclarationProvider
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -28,41 +25,24 @@ import fr.cea.nabla.typing.AbstractType
 class ReductionCallExtensions 
 {
 	@Inject extension DeclarationProvider
-	@Inject extension Nabla2IrUtils
+	@Inject extension IrTypeFactory
 	@Inject extension IrExpressionFactory
 	
 	def create IrFactory::eINSTANCE.createSimpleVariable toIrLocalVariable(ReductionCall rc)
 	{
 		name = rc.reduction.name + Utils::hashString(rc)
 		val d = rc.declaration
-		type = d.returnType.toIrBaseType
+		val vType = d.returnType.toIrBaseType
+		type = vType
 		
 		val seedExpression = d.model.seed.toIrExpression
-		if (type.sizes.empty)
+		if (vType instanceof Scalar)
 			defaultValue = seedExpression
 		else
 			defaultValue = IrFactory::eINSTANCE.createBaseTypeConstant =>
 			[
-				type = d.returnType.toIrExpressionType
+				type = vType
 				value = seedExpression
 			]	
-	}
-
-	// no connectivies on the ExpressionType for the Reduction
-	private def toIrBaseType(AbstractType t)
-	{
-		switch t
-		{
-			UndefinedType: null
-			ArrayType: IrFactory::eINSTANCE.createBaseType =>
-			[
-				root = t.root.toIrPrimitiveType
-				sizes.addAll(t.sizes)
-			]
-			DefinedType: IrFactory::eINSTANCE.createBaseType =>
-			[
-				root = t.root.toIrPrimitiveType
-			]
-		}
 	}
 }

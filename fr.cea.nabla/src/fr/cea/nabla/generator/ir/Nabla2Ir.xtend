@@ -10,7 +10,6 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
-import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.MandatoryOptions
 import fr.cea.nabla.VarRefExtensions
 import fr.cea.nabla.ir.ir.IrFactory
@@ -19,9 +18,10 @@ import fr.cea.nabla.nabla.InitTimeIterator
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NextTimeIterator
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.nabla.ScalarVarDefinition
+import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VarRef
+import fr.cea.nabla.typing.DeclarationProvider
 
 class Nabla2Ir
 {
@@ -47,15 +47,15 @@ class Nabla2Ir
 		 * Look for FunctionCall instead to link to the external function object properly.
 		 * Same method fir reductions.
 		 */
-		m.eAllContents.filter(FunctionCall).forEach[x | functions += x.function.toIrFunction(x.declaration)]
-		m.eAllContents.filter(ReductionCall).forEach[x | reductions += x.reduction.toIrReduction(x.declaration)]
+		m.eAllContents.filter(FunctionCall).forEach[x | functions += x.function.toIrFunction(x.declaration.model)]
+		m.eAllContents.filter(ReductionCall).forEach[x | reductions += x.reduction.toIrReduction(x.declaration.model)]
 		
 		// Global variables creation
 		for (vDecl : m.variables)
 		{
 			switch vDecl
 			{
-				ScalarVarDefinition: variables += vDecl.variable.toIrSimpleVariable
+				SimpleVarDefinition: variables += vDecl.variable.toIrSimpleVariable
 				VarGroupDeclaration: vDecl.variables.forEach[x | variables += x.toIrVariable]
 			}
 		}

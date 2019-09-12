@@ -44,25 +44,25 @@ public class ConnectivityVarItemProvider extends VarItemProvider {
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addDimensionsPropertyDescriptor(object);
+			addSupportsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This adds a property descriptor for the Dimensions feature.
+	 * This adds a property descriptor for the Supports feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addDimensionsPropertyDescriptor(Object object) {
+	protected void addSupportsPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_ConnectivityVar_dimensions_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ConnectivityVar_dimensions_feature", "_UI_ConnectivityVar_type"),
-				 NablaPackage.Literals.CONNECTIVITY_VAR__DIMENSIONS,
+				 getString("_UI_ConnectivityVar_supports_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ConnectivityVar_supports_feature", "_UI_ConnectivityVar_type"),
+				 NablaPackage.Literals.CONNECTIVITY_VAR__SUPPORTS,
 				 true,
 				 false,
 				 true,

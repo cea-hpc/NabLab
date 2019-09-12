@@ -1,7 +1,6 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
-import fr.cea.nabla.DeclarationProvider
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
@@ -10,8 +9,10 @@ import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.typing.RealArrayType
-import fr.cea.nabla.typing.UndefinedType
+import fr.cea.nabla.typing.DeclarationProvider
+import fr.cea.nabla.typing.NTConnectivityType
+import fr.cea.nabla.typing.NTRealArray1D
+import fr.cea.nabla.typing.NTRealScalar
 import fr.cea.nabla.validation.TypeValidator
 import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.testing.InjectWith
@@ -95,10 +96,10 @@ class DeclarationProviderTest
 		val cells = module.getConnectivityByName("cells")
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		TypeValidator::FUNCTION_ARGS,
-		TypeValidator::getFunctionArgsMsg(#[new RealArrayType(#[cells],#[2]).label]))
+		TypeValidator::getFunctionArgsMsg(#[new NTConnectivityType(#[cells], new NTRealArray1D(2)).label]))
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		TypeValidator::FUNCTION_ARGS,
-		TypeValidator::getFunctionArgsMsg(#[new RealArrayType(#[cells], #[]).label, new RealArrayType(#[cells],#[]).label]))
+		TypeValidator::getFunctionArgsMsg(#[new NTConnectivityType(#[cells], new NTRealScalar).label, new NTConnectivityType(#[cells], new NTRealScalar).label]))
 		
 		val f = module.functions.filter(Function).get(0)
 		val j0Fdecl = getFunctionDeclarationOfJob(module, 0)
@@ -115,22 +116,23 @@ class DeclarationProviderTest
 		val g = module.functions.filter(Function).get(1)
 		val j5Gdecl = getFunctionDeclarationOfJob(module, 5)
 		Assert.assertEquals(g.argGroups.get(0), j5Gdecl.model)
-		TestUtils.assertEquals(PrimitiveType::REAL, #[2], #[], j5Gdecl.returnType)
+		Assert.assertEquals(new NTRealArray1D(2), j5Gdecl.returnType)	
+		
 		val j6Gdecl = getFunctionDeclarationOfJob(module, 6)
 		Assert.assertEquals(g.argGroups.get(1), j6Gdecl.model)
-		TestUtils.assertEquals(PrimitiveType::REAL, #[6], #[], j6Gdecl.returnType)
+		Assert.assertEquals(new NTRealArray1D(6), j6Gdecl.returnType)
 		val j7Gdecl = getFunctionDeclarationOfJob(module, 7)
 		Assert.assertEquals(g.argGroups.get(2), j7Gdecl.model)
-		TestUtils.assertEquals(PrimitiveType::REAL, #[5], #[], j7Gdecl.returnType)
+		Assert.assertEquals(new NTRealArray1D(5), j7Gdecl.returnType)
 		val j8Gdecl = getFunctionDeclarationOfJob(module, 8)
 		Assert.assertEquals(g.argGroups.get(0), j8Gdecl.model)
-		TestUtils.assertEquals(PrimitiveType::REAL, #[], #[cells], j8Gdecl.returnType)
+		Assert.assertEquals(new NTConnectivityType(#[cells], new NTRealScalar), j8Gdecl.returnType)
 		val j9Gdecl = getFunctionDeclarationOfJob(module, 9)
 		Assert.assertEquals(g.argGroups.get(2), j9Gdecl.model)
-		Assert.assertTrue(j9Gdecl.returnType instanceof UndefinedType)
+		Assert.assertNull(j9Gdecl.returnType)
 		val j10Gdecl = getFunctionDeclarationOfJob(module, 10)
 		Assert.assertEquals(g.argGroups.get(1), j10Gdecl.model)
-		Assert.assertTrue(j10Gdecl.returnType instanceof UndefinedType)
+		Assert.assertNull(j10Gdecl.returnType)
 	}
 	
 	@Test
@@ -173,7 +175,7 @@ class DeclarationProviderTest
 		Assert.assertEquals(f.argGroups.get(0), j0Fdecl.model)
 		val j1Fdecl = getReductionDeclarationOfJob(module, 1)
 		Assert.assertEquals(f.argGroups.get(1), j1Fdecl.model)
-		TestUtils.assertEquals(PrimitiveType::REAL, #[2], #[], j1Fdecl.returnType)
+		Assert.assertEquals(new NTRealArray1D(2), j1Fdecl.returnType)
 		val j2Fdecl = getReductionDeclarationOfJob(module, 2)
 		Assert.assertNull(j2Fdecl)
 	}

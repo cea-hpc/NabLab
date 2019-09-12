@@ -303,26 +303,26 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.ScalarVarDefinition} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.SimpleVarDefinition} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ScalarVarDefinitionItemProvider scalarVarDefinitionItemProvider;
+	protected SimpleVarDefinitionItemProvider simpleVarDefinitionItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.ScalarVarDefinition}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.SimpleVarDefinition}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createScalarVarDefinitionAdapter() {
-		if (scalarVarDefinitionItemProvider == null) {
-			scalarVarDefinitionItemProvider = new ScalarVarDefinitionItemProvider(this);
+	public Adapter createSimpleVarDefinitionAdapter() {
+		if (simpleVarDefinitionItemProvider == null) {
+			simpleVarDefinitionItemProvider = new SimpleVarDefinitionItemProvider(this);
 		}
 
-		return scalarVarDefinitionItemProvider;
+		return simpleVarDefinitionItemProvider;
 	}
 
 	/**
@@ -1522,6 +1522,75 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Scalar} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ScalarItemProvider scalarItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Scalar}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createScalarAdapter() {
+		if (scalarItemProvider == null) {
+			scalarItemProvider = new ScalarItemProvider(this);
+		}
+
+		return scalarItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Array1D} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected Array1DItemProvider array1DItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Array1D}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createArray1DAdapter() {
+		if (array1DItemProvider == null) {
+			array1DItemProvider = new Array1DItemProvider(this);
+		}
+
+		return array1DItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Array2D} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected Array2DItemProvider array2DItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Array2D}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createArray2DAdapter() {
+		if (array2DItemProvider == null) {
+			array2DItemProvider = new Array2DItemProvider(this);
+		}
+
+		return array2DItemProvider;
+	}
+
+	/**
 	 * This returns the root adapter factory that contains this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1630,7 +1699,7 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (singletonSpaceIteratorItemProvider != null) singletonSpaceIteratorItemProvider.dispose();
 		if (connectivityCallItemProvider != null) connectivityCallItemProvider.dispose();
 		if (spaceIteratorRefItemProvider != null) spaceIteratorRefItemProvider.dispose();
-		if (scalarVarDefinitionItemProvider != null) scalarVarDefinitionItemProvider.dispose();
+		if (simpleVarDefinitionItemProvider != null) simpleVarDefinitionItemProvider.dispose();
 		if (varGroupDeclarationItemProvider != null) varGroupDeclarationItemProvider.dispose();
 		if (varItemProvider != null) varItemProvider.dispose();
 		if (simpleVarItemProvider != null) simpleVarItemProvider.dispose();
@@ -1683,6 +1752,9 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (baseTypeConstantItemProvider != null) baseTypeConstantItemProvider.dispose();
 		if (initTimeIteratorItemProvider != null) initTimeIteratorItemProvider.dispose();
 		if (nextTimeIteratorItemProvider != null) nextTimeIteratorItemProvider.dispose();
+		if (scalarItemProvider != null) scalarItemProvider.dispose();
+		if (array1DItemProvider != null) array1DItemProvider.dispose();
+		if (array2DItemProvider != null) array2DItemProvider.dispose();
 	}
 
 }

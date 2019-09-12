@@ -14,7 +14,8 @@ import fr.cea.nabla.MandatoryOptions
 import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.Affectation
-import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.Array1D
+import fr.cea.nabla.nabla.Array2D
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
@@ -30,7 +31,8 @@ import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionArg
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.nabla.ScalarVarDefinition
+import fr.cea.nabla.nabla.Scalar
+import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
@@ -67,7 +69,7 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkMandatoryOptions(NablaModule it)
 	{
-		val scalarConsts = variables.filter(ScalarVarDefinition).filter[const].map[variable.name].toList
+		val scalarConsts = variables.filter(SimpleVarDefinition).filter[const].map[variable.name].toList
 		val missingConsts = MandatoryOptions::OPTION_NAMES.filter[x | !scalarConsts.contains(x)]
 		if (missingConsts.size > 0)
 			error(getMandatoryOption(missingConsts), NablaPackage.Literals.NABLA_MODULE__VARIABLES, MANDATORY_OPTION)			
@@ -83,15 +85,24 @@ class BasicValidator extends AbstractNablaValidator
 
 	// ===== BaseType =====
 	
-	public static val TYPE_DIMENSION = "BaseType::TypeDimension"
+	public static val ARRAY_SIZE = "BaseType::ArraySize"
 
-	static def getTypeDimensionMsg() { "Dimensions must be greater or equal than 2" }
+	static def getArraySizeMsg() { "Must be greater or equal than 2" }
 	
 	@Check
-	def checkTypeDimension(BaseType it)
+	def checkArraySize(Array1D it)
 	{
-		if (!sizes.empty && sizes.exists[x | x<2])
-			error(getTypeDimensionMsg(), NablaPackage.Literals.BASE_TYPE__SIZES, TYPE_DIMENSION)
+		if (size < 2)
+			error(getArraySizeMsg(), NablaPackage.Literals.ARRAY1_D__SIZE, ARRAY_SIZE)
+	}
+
+	@Check
+	def checkArraySize(Array2D it)
+	{
+		if (nbRows < 2)
+			error(getArraySizeMsg(), NablaPackage.Literals.ARRAY2_D__NB_ROWS, ARRAY_SIZE)
+		if (nbCols < 2)
+			error(getArraySizeMsg(), NablaPackage.Literals.ARRAY2_D__NB_COLS, ARRAY_SIZE)
 	}
 
 	// ===== Variables : Var & VarRef =====	
@@ -115,22 +126,24 @@ class BasicValidator extends AbstractNablaValidator
 
 	@Check
 	def checkIndicesNumber(VarRef it)
-	{
-		val vTypeSizes = variable.baseType.sizes
-		if (indices.size > 0 && indices.size != vTypeSizes.size)
-			error(getIndicesNumberMsg(vTypeSizes.size, indices.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, INDICES_NUMBER)
+	{  
+		val btype = variable.baseType
+		val vTypeSize = switch btype
+		{
+			Scalar: 0
+			Array1D: 1
+			Array2D: 2
+		}
+		if (indices.size > 0 && indices.size != vTypeSize)
+			error(getIndicesNumberMsg(vTypeSize, indices.size), NablaPackage.Literals::VAR_REF__INDICES, INDICES_NUMBER)
 	}
 	
 	@Check
 	def checkIteratorNumberAndType(VarRef it)
 	{
-		val baseType = variable.baseType
-		if (indices.size > 0 && indices.size != baseType.sizes.size)
-			error(getIndicesNumberMsg(baseType.sizes.size, indices.size), NablaPackage.Literals::VAR_REF__INDICES, INDICES_NUMBER)
-		
 		if (variable instanceof ConnectivityVar)
 		{
-			val dimensions = (variable as ConnectivityVar).dimensions
+			val dimensions = (variable as ConnectivityVar).supports
 
 			if (spaceIterators.size >  0 && spaceIterators.size != dimensions.size)
 				error(getIteratorNumberMsg(dimensions.size, spaceIterators.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, ITERATOR_NUMBER)
@@ -196,7 +209,7 @@ class BasicValidator extends AbstractNablaValidator
 	def checkFunctionInTypes(FunctionArg it)
 	{
 		for (inType : inTypes)
-			if (inType.dimensions.filter(DimensionOperation).size > 0)
+			if (inType.indices.filter(DimensionOperation).size > 0)
 				error(getFunctionInTypesOperationMsg(), NablaPackage.Literals::FUNCTION_ARG__IN_TYPES, FUNCTION_IN_TYPES_OPERATION)
 				
 		val otherFunctionArgs = eContainer.eAllContents.filter(FunctionArg).filter[x | x !== it]
@@ -218,7 +231,7 @@ class BasicValidator extends AbstractNablaValidator
 		{
 			val ai = a.inTypes.get(i)
 			val bi = b.inTypes.get(i)
-			if (ai.root != bi.root || ai.dimensions.size != bi.dimensions.size) 
+			if (ai.primitive != bi.primitive || ai.indices.size != bi.indices.size) 
 				return true
 		}
 		
@@ -247,7 +260,7 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkReductionCollectionType(ReductionArg it)
 	{
-		if (collectionType.dimensions.filter(DimensionOperation).size > 0)
+		if (collectionType.indices.filter(DimensionOperation).size > 0)
 			error(getReductionCollectionTypeOperationMsg(), NablaPackage.Literals::REDUCTION_ARG__COLLECTION_TYPE, REDUCTION_COLLECTION_TYPE_OPERATION)
 
 		val otherReductionArgs = eContainer.eAllContents.filter(ReductionArg).filter[x | x !== it]
@@ -258,7 +271,7 @@ class BasicValidator extends AbstractNablaValidator
 	
 	private def areCompatible(ReductionArg a, ReductionArg b)
 	{
-		(a.collectionType.root != b.collectionType.root || a.collectionType.dimensions.size != b.collectionType.dimensions.size) 
+		(a.collectionType.primitive != b.collectionType.primitive || a.collectionType.indices.size != b.collectionType.indices.size) 
 	}
 
 	@Check
@@ -316,7 +329,7 @@ class BasicValidator extends AbstractNablaValidator
 	def checkUnusedConnectivity(Connectivity it)
 	{
 		val referenced = nablaModule.eAllContents.filter(ConnectivityCall).exists[x|x.connectivity===it]
-			|| nablaModule.eAllContents.filter(ConnectivityVar).exists[x|x.dimensions.contains(it)]
+			|| nablaModule.eAllContents.filter(ConnectivityVar).exists[x|x.supports.contains(it)]
 		if (!referenced)
 			warning(getUnusedConnectivityMsg(), NablaPackage.Literals::CONNECTIVITY__NAME, UNUSED_CONNECTIVITY)
 	}	
@@ -349,13 +362,13 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkDimensionMultipleAndArg(ConnectivityVar it)
 	{
-		if (dimensions.empty) return;
+		if (supports.empty) return;
 
-		if (!dimensions.exists[d | d.returnType.multiple])
-				error(getDimensionMultipleMsg(), NablaPackage.Literals::CONNECTIVITY_VAR__DIMENSIONS, DIMENSION_MULTIPLE)
+		if (!supports.exists[d | d.returnType.multiple])
+				error(getDimensionMultipleMsg(), NablaPackage.Literals::CONNECTIVITY_VAR__SUPPORTS, DIMENSION_MULTIPLE)
 
-		if (!dimensions.head.inTypes.empty)
-			error(getDimensionArgMsg(), NablaPackage.Literals::CONNECTIVITY_VAR__DIMENSIONS, DIMENSION_ARG)
+		if (!supports.head.inTypes.empty)
+			error(getDimensionArgMsg(), NablaPackage.Literals::CONNECTIVITY_VAR__SUPPORTS, DIMENSION_ARG)
 		
 //		for (i : 1..<dimensions.length)
 //		{
@@ -382,10 +395,10 @@ class BasicValidator extends AbstractNablaValidator
 	}
 	
 	@Check
-	def checkScalarVarDefaultValue(ScalarVarDefinition it)
+	def checkScalarVarDefaultValue(SimpleVarDefinition it)
 	{
 		if (isConst && defaultValue!==null && defaultValue.eAllContents.filter(VarRef).exists[x|!x.variable.isConst])
-			error(getScalarVarDefaultValueMsg(), NablaPackage.Literals::SCALAR_VAR_DEFINITION__DEFAULT_VALUE, SCALAR_VAR_DEFAULT_VALUE)
+			error(getScalarVarDefaultValueMsg(), NablaPackage.Literals::SIMPLE_VAR_DEFINITION__DEFAULT_VALUE, SCALAR_VAR_DEFAULT_VALUE)
 	}
 
 	// ===== Iterators =====

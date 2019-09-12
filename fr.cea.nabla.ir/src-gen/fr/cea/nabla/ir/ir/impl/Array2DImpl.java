@@ -2,9 +2,8 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.ArgType;
+import fr.cea.nabla.ir.ir.Array2D;
 import fr.cea.nabla.ir.ir.IrPackage;
-import fr.cea.nabla.ir.ir.PrimitiveType;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -14,65 +13,65 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Arg Type</b></em>'.
+ * An implementation of the model object '<em><b>Array2 D</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ArgTypeImpl#getRoot <em>Root</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ArgTypeImpl#getArrayDimension <em>Array Dimension</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.Array2DImpl#getNbRows <em>Nb Rows</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.Array2DImpl#getNbCols <em>Nb Cols</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class ArgTypeImpl extends IrAnnotableImpl implements ArgType {
+public class Array2DImpl extends BaseTypeImpl implements Array2D {
 	/**
-	 * The default value of the '{@link #getRoot() <em>Root</em>}' attribute.
+	 * The default value of the '{@link #getNbRows() <em>Nb Rows</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getRoot()
+	 * @see #getNbRows()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final PrimitiveType ROOT_EDEFAULT = PrimitiveType.VOID;
+	protected static final int NB_ROWS_EDEFAULT = 0;
 
 	/**
-	 * The cached value of the '{@link #getRoot() <em>Root</em>}' attribute.
+	 * The cached value of the '{@link #getNbRows() <em>Nb Rows</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getRoot()
+	 * @see #getNbRows()
 	 * @generated
 	 * @ordered
 	 */
-	protected PrimitiveType root = ROOT_EDEFAULT;
+	protected int nbRows = NB_ROWS_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getArrayDimension() <em>Array Dimension</em>}' attribute.
+	 * The default value of the '{@link #getNbCols() <em>Nb Cols</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getArrayDimension()
+	 * @see #getNbCols()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int ARRAY_DIMENSION_EDEFAULT = 0;
+	protected static final int NB_COLS_EDEFAULT = 0;
 
 	/**
-	 * The cached value of the '{@link #getArrayDimension() <em>Array Dimension</em>}' attribute.
+	 * The cached value of the '{@link #getNbCols() <em>Nb Cols</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getArrayDimension()
+	 * @see #getNbCols()
 	 * @generated
 	 * @ordered
 	 */
-	protected int arrayDimension = ARRAY_DIMENSION_EDEFAULT;
+	protected int nbCols = NB_COLS_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ArgTypeImpl() {
+	protected Array2DImpl() {
 		super();
 	}
 
@@ -83,7 +82,7 @@ public class ArgTypeImpl extends IrAnnotableImpl implements ArgType {
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return IrPackage.Literals.ARG_TYPE;
+		return IrPackage.Literals.ARRAY2_D;
 	}
 
 	/**
@@ -91,8 +90,8 @@ public class ArgTypeImpl extends IrAnnotableImpl implements ArgType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PrimitiveType getRoot() {
-		return root;
+	public int getNbRows() {
+		return nbRows;
 	}
 
 	/**
@@ -100,11 +99,11 @@ public class ArgTypeImpl extends IrAnnotableImpl implements ArgType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setRoot(PrimitiveType newRoot) {
-		PrimitiveType oldRoot = root;
-		root = newRoot == null ? ROOT_EDEFAULT : newRoot;
+	public void setNbRows(int newNbRows) {
+		int oldNbRows = nbRows;
+		nbRows = newNbRows;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.ARG_TYPE__ROOT, oldRoot, root));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.ARRAY2_D__NB_ROWS, oldNbRows, nbRows));
 	}
 
 	/**
@@ -112,8 +111,8 @@ public class ArgTypeImpl extends IrAnnotableImpl implements ArgType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getArrayDimension() {
-		return arrayDimension;
+	public int getNbCols() {
+		return nbCols;
 	}
 
 	/**
@@ -121,11 +120,11 @@ public class ArgTypeImpl extends IrAnnotableImpl implements ArgType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setArrayDimension(int newArrayDimension) {
-		int oldArrayDimension = arrayDimension;
-		arrayDimension = newArrayDimension;
+	public void setNbCols(int newNbCols) {
+		int oldNbCols = nbCols;
+		nbCols = newNbCols;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.ARG_TYPE__ARRAY_DIMENSION, oldArrayDimension, arrayDimension));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.ARRAY2_D__NB_COLS, oldNbCols, nbCols));
 	}
 
 	/**
@@ -136,10 +135,10 @@ public class ArgTypeImpl extends IrAnnotableImpl implements ArgType {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.ARG_TYPE__ROOT:
-				return getRoot();
-			case IrPackage.ARG_TYPE__ARRAY_DIMENSION:
-				return getArrayDimension();
+			case IrPackage.ARRAY2_D__NB_ROWS:
+				return getNbRows();
+			case IrPackage.ARRAY2_D__NB_COLS:
+				return getNbCols();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -152,11 +151,11 @@ public class ArgTypeImpl extends IrAnnotableImpl implements ArgType {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.ARG_TYPE__ROOT:
-				setRoot((PrimitiveType)newValue);
+			case IrPackage.ARRAY2_D__NB_ROWS:
+				setNbRows((Integer)newValue);
 				return;
-			case IrPackage.ARG_TYPE__ARRAY_DIMENSION:
-				setArrayDimension((Integer)newValue);
+			case IrPackage.ARRAY2_D__NB_COLS:
+				setNbCols((Integer)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -170,11 +169,11 @@ public class ArgTypeImpl extends IrAnnotableImpl implements ArgType {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.ARG_TYPE__ROOT:
-				setRoot(ROOT_EDEFAULT);
+			case IrPackage.ARRAY2_D__NB_ROWS:
+				setNbRows(NB_ROWS_EDEFAULT);
 				return;
-			case IrPackage.ARG_TYPE__ARRAY_DIMENSION:
-				setArrayDimension(ARRAY_DIMENSION_EDEFAULT);
+			case IrPackage.ARRAY2_D__NB_COLS:
+				setNbCols(NB_COLS_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -188,10 +187,10 @@ public class ArgTypeImpl extends IrAnnotableImpl implements ArgType {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.ARG_TYPE__ROOT:
-				return root != ROOT_EDEFAULT;
-			case IrPackage.ARG_TYPE__ARRAY_DIMENSION:
-				return arrayDimension != ARRAY_DIMENSION_EDEFAULT;
+			case IrPackage.ARRAY2_D__NB_ROWS:
+				return nbRows != NB_ROWS_EDEFAULT;
+			case IrPackage.ARRAY2_D__NB_COLS:
+				return nbCols != NB_COLS_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -206,12 +205,12 @@ public class ArgTypeImpl extends IrAnnotableImpl implements ArgType {
 		if (eIsProxy()) return super.toString();
 
 		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (root: ");
-		result.append(root);
-		result.append(", arrayDimension: ");
-		result.append(arrayDimension);
+		result.append(" (nbRows: ");
+		result.append(nbRows);
+		result.append(", nbCols: ");
+		result.append(nbCols);
 		result.append(')');
 		return result.toString();
 	}
 
-} //ArgTypeImpl
+} //Array2DImpl

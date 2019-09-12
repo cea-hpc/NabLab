@@ -58,12 +58,12 @@ public interface Reduction extends IrAnnotable {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Collection Type</em>' containment reference.
-	 * @see #setCollectionType(ArgType)
+	 * @see #setCollectionType(BaseType)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getReduction_CollectionType()
 	 * @model containment="true" resolveProxies="true" required="true"
 	 * @generated
 	 */
-	ArgType getCollectionType();
+	BaseType getCollectionType();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Reduction#getCollectionType <em>Collection Type</em>}' containment reference.
@@ -73,7 +73,7 @@ public interface Reduction extends IrAnnotable {
 	 * @see #getCollectionType()
 	 * @generated
 	 */
-	void setCollectionType(ArgType value);
+	void setCollectionType(BaseType value);
 
 	/**
 	 * Returns the value of the '<em><b>Return Type</b></em>' containment reference.
@@ -84,12 +84,12 @@ public interface Reduction extends IrAnnotable {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Return Type</em>' containment reference.
-	 * @see #setReturnType(ArgType)
+	 * @see #setReturnType(BaseType)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getReduction_ReturnType()
 	 * @model containment="true" resolveProxies="true" required="true"
 	 * @generated
 	 */
-	ArgType getReturnType();
+	BaseType getReturnType();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Reduction#getReturnType <em>Return Type</em>}' containment reference.
@@ -99,7 +99,7 @@ public interface Reduction extends IrAnnotable {
 	 * @see #getReturnType()
 	 * @generated
 	 */
-	void setReturnType(ArgType value);
+	void setReturnType(BaseType value);
 
 	/**
 	 * Returns the value of the '<em><b>Provider</b></em>' attribute.

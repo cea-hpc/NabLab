@@ -72,24 +72,32 @@ class BasicValidatorTest
 	// ===== BaseType =====	
 
 	@Test
-	def void testCheckTypeDimension() 
+	def void testCheckArraySize() 
 	{
 		val moduleKo = parseHelper.parse(TestUtils::testModule
 			+
 			'''
-			ℝ[1] d;
+			ℝ[1] a;
+			ℕ[1,3] b;
+			ℕ[2,1] c;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
 		
-		moduleKo.assertError(NablaPackage.eINSTANCE.baseType, 
-			BasicValidator::TYPE_DIMENSION, 
-			BasicValidator::getTypeDimensionMsg())		
+		moduleKo.assertError(NablaPackage.eINSTANCE.array1D, 
+			BasicValidator::ARRAY_SIZE, 
+			BasicValidator::getArraySizeMsg())
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.array2D, 
+			BasicValidator::ARRAY_SIZE, 
+			BasicValidator::getArraySizeMsg())
 
 		val moduleOk = parseHelper.parse(TestUtils::testModule
 			+
 			'''
-			ℝ[2] d;
+			ℝ[2] a;
+			ℕ[3,3] b;
+			ℕ[2,3] c;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -717,7 +725,7 @@ class BasicValidatorTest
 		)
 		Assert.assertNotNull(moduleKo)
 		
-		moduleKo.assertError(NablaPackage.eINSTANCE.scalarVarDefinition, 
+		moduleKo.assertError(NablaPackage.eINSTANCE.simpleVarDefinition, 
 			BasicValidator::SCALAR_VAR_DEFAULT_VALUE, 
 			BasicValidator::getScalarVarDefaultValueMsg)		
 

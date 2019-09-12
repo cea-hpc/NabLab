@@ -2,21 +2,13 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
 import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.PrimitiveType;
-
-import java.util.Collection;
-
-import org.eclipse.emf.common.notify.Notification;
-
-import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EClass;
-
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
-import org.eclipse.emf.ecore.util.EDataTypeEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -26,42 +18,31 @@ import org.eclipse.emf.ecore.util.EDataTypeEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.BaseTypeImpl#getRoot <em>Root</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.BaseTypeImpl#getSizes <em>Sizes</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.BaseTypeImpl#getPrimitive <em>Primitive</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class BaseTypeImpl extends IrAnnotableImpl implements BaseType {
+public abstract class BaseTypeImpl extends IrTypeImpl implements BaseType {
 	/**
-	 * The default value of the '{@link #getRoot() <em>Root</em>}' attribute.
+	 * The default value of the '{@link #getPrimitive() <em>Primitive</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getRoot()
+	 * @see #getPrimitive()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final PrimitiveType ROOT_EDEFAULT = PrimitiveType.VOID;
+	protected static final PrimitiveType PRIMITIVE_EDEFAULT = PrimitiveType.INT;
 
 	/**
-	 * The cached value of the '{@link #getRoot() <em>Root</em>}' attribute.
+	 * The cached value of the '{@link #getPrimitive() <em>Primitive</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getRoot()
+	 * @see #getPrimitive()
 	 * @generated
 	 * @ordered
 	 */
-	protected PrimitiveType root = ROOT_EDEFAULT;
-
-	/**
-	 * The cached value of the '{@link #getSizes() <em>Sizes</em>}' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getSizes()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Integer> sizes;
+	protected PrimitiveType primitive = PRIMITIVE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -87,8 +68,8 @@ public class BaseTypeImpl extends IrAnnotableImpl implements BaseType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PrimitiveType getRoot() {
-		return root;
+	public PrimitiveType getPrimitive() {
+		return primitive;
 	}
 
 	/**
@@ -96,23 +77,11 @@ public class BaseTypeImpl extends IrAnnotableImpl implements BaseType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setRoot(PrimitiveType newRoot) {
-		PrimitiveType oldRoot = root;
-		root = newRoot == null ? ROOT_EDEFAULT : newRoot;
+	public void setPrimitive(PrimitiveType newPrimitive) {
+		PrimitiveType oldPrimitive = primitive;
+		primitive = newPrimitive == null ? PRIMITIVE_EDEFAULT : newPrimitive;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.BASE_TYPE__ROOT, oldRoot, root));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EList<Integer> getSizes() {
-		if (sizes == null) {
-			sizes = new EDataTypeEList<Integer>(Integer.class, this, IrPackage.BASE_TYPE__SIZES);
-		}
-		return sizes;
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.BASE_TYPE__PRIMITIVE, oldPrimitive, primitive));
 	}
 
 	/**
@@ -123,10 +92,8 @@ public class BaseTypeImpl extends IrAnnotableImpl implements BaseType {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.BASE_TYPE__ROOT:
-				return getRoot();
-			case IrPackage.BASE_TYPE__SIZES:
-				return getSizes();
+			case IrPackage.BASE_TYPE__PRIMITIVE:
+				return getPrimitive();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -136,16 +103,11 @@ public class BaseTypeImpl extends IrAnnotableImpl implements BaseType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.BASE_TYPE__ROOT:
-				setRoot((PrimitiveType)newValue);
-				return;
-			case IrPackage.BASE_TYPE__SIZES:
-				getSizes().clear();
-				getSizes().addAll((Collection<? extends Integer>)newValue);
+			case IrPackage.BASE_TYPE__PRIMITIVE:
+				setPrimitive((PrimitiveType)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -159,11 +121,8 @@ public class BaseTypeImpl extends IrAnnotableImpl implements BaseType {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.BASE_TYPE__ROOT:
-				setRoot(ROOT_EDEFAULT);
-				return;
-			case IrPackage.BASE_TYPE__SIZES:
-				getSizes().clear();
+			case IrPackage.BASE_TYPE__PRIMITIVE:
+				setPrimitive(PRIMITIVE_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -177,10 +136,8 @@ public class BaseTypeImpl extends IrAnnotableImpl implements BaseType {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.BASE_TYPE__ROOT:
-				return root != ROOT_EDEFAULT;
-			case IrPackage.BASE_TYPE__SIZES:
-				return sizes != null && !sizes.isEmpty();
+			case IrPackage.BASE_TYPE__PRIMITIVE:
+				return primitive != PRIMITIVE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -195,10 +152,8 @@ public class BaseTypeImpl extends IrAnnotableImpl implements BaseType {
 		if (eIsProxy()) return super.toString();
 
 		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (root: ");
-		result.append(root);
-		result.append(", sizes: ");
-		result.append(sizes);
+		result.append(" (primitive: ");
+		result.append(primitive);
 		result.append(')');
 		return result.toString();
 	}

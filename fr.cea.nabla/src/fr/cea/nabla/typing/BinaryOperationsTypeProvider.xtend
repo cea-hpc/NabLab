@@ -100,7 +100,7 @@ class BinaryOperationsTypeProvider
 	{
 		switch op
 		{
-			case '', case '+', case '-', case '*', case '/': a
+			case '+', case '-', case '*', case '/': a
 			default: null
 		}
 	}
@@ -109,7 +109,7 @@ class BinaryOperationsTypeProvider
 	{
 		switch op
 		{
-			case '', case '+', case '-', case '*', case '/': new NTRealArray1D(a.size)
+			case '+', case '-', case '*', case '/': new NTRealArray1D(a.size)
 			default: null
 		}
 	}
@@ -134,7 +134,7 @@ class BinaryOperationsTypeProvider
 	{
 		switch op
 		{
-			case '', case '+', case '-', case '*', case '/': a
+			case '+', case '-', case '*', case '/': a
 			default: null
 		}
 	}
@@ -154,7 +154,7 @@ class BinaryOperationsTypeProvider
 	{
 		switch op
 		{
-			case '', case '+', case '-', case '*', case '/': a
+			case '+', case '-', case '*', case '/': a
 			default: null
 		}
 	}
@@ -163,7 +163,7 @@ class BinaryOperationsTypeProvider
 	{
 		switch op
 		{
-			case '', case '+', case '-', case '*', case '/': new NTRealArray2D(a.nbRows, a.nbCols)
+			case '+', case '-', case '*', case '/': new NTRealArray2D(a.nbRows, a.nbCols)
 			default: null
 		}
 	}
@@ -180,12 +180,19 @@ class BinaryOperationsTypeProvider
 	{
 		switch op
 		{
-			case '', case '+', case '-', case '*', case '/': a
+			case '+', case '-', case '*', case '/': a
 			default: null
 		}
 	}
 
-	// No operations for Array2D op Array2D for the moment
+	def dispatch NTSimpleType getTypeFor(NTRealArray2D a, NTRealArray2D b, String op)
+	{
+		switch op
+		{
+			case '+', case '-', case '*': a
+			default: null
+		}
+	}
 	
 	private def haveSameDimensions(NTArray1D a, NTArray1D b) { a.size == b.size }
 	//private def haveSameDimensions(Array2D a, Array2D b) { a.nbRows == b.nbRows && a.nbCols == b.nbCols }

@@ -39,7 +39,7 @@ public class ArrayOperations
 		return multiply(b, a);
 	}
 
-	// INT ARRAY
+	// INT ARRAY1D
 	public static int[] plus(int[] a, int b) 
 	{
 		int[] result = new int[a.length];
@@ -136,7 +136,7 @@ public class ArrayOperations
 		return result;
 	}
 	
-	// REAL ARRAY
+	// REAL ARRAY1D
 	public static double[] plus(double[] a, int b) 
 	{
 		return plus(a, (double)b);
@@ -221,7 +221,7 @@ public class ArrayOperations
 		return result;
 	}
 	
-	// REAL MATRIX
+	// REAL ARAY2D
 	public static double[][] multiply(double[][] a, int b) 
 	{ 
 		return multiply(a, (double)b);

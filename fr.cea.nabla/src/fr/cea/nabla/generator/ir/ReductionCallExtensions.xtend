@@ -16,6 +16,7 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.Scalar
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.typing.DeclarationProvider
+import org.eclipse.emf.ecore.util.EcoreUtil
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -41,7 +42,7 @@ class ReductionCallExtensions
 		else
 			defaultValue = IrFactory::eINSTANCE.createBaseTypeConstant =>
 			[
-				type = vType
+				type = EcoreUtil::copy(vType)
 				value = seedExpression
 			]	
 	}

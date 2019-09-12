@@ -175,6 +175,7 @@ class Ir2Java extends CodeGenerator
 		}
 	}
 
+	private def dispatch String getDimensionContent(Scalar it) { '' }
 	private def dispatch String getDimensionContent(Array1D it) { '[' + size + ']' }
-	private def dispatch String getDimensionContent(Array2D it) { '[' + nbRows + ', ' + nbCols + ']' }
+	private def dispatch String getDimensionContent(Array2D it) { '[' + nbRows + '][' + nbCols + ']' }
 }

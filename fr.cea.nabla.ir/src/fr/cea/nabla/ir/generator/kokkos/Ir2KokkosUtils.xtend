@@ -18,7 +18,7 @@ class Ir2KokkosUtils
 {
 	static def dispatch String getCppType(Scalar it) { primitive.cppType }
 	static def dispatch String getCppType(Array1D it) { primitive.cppArrayType + 'Array1D<' + size + '>' }
-	static def dispatch String getCppType(Array2D it) { primitive.cppArrayType + 'Array2D<' + nbRows + ', ' + nbCols + '>' }
+	static def dispatch String getCppType(Array2D it) { primitive.cppArrayType + 'Array2D<' + nbRows + ',' + nbCols + '>' }
 
 	static def dispatch getCppType(PrimitiveType t)
 	{

@@ -1,53 +1,80 @@
 module Test;
 
-items { cell }
+items { node, cell }
 
-connectivities {
-	cells: → {cell};
-}
-
-functions
+connectivities 
 {
-	f:	→ ℕ, ℕ → ℕ, ℝ → ℝ, ℝ[2] → ℝ[2];
-	g:	a | ℝ[a] → ℝ[a], a, b | ℝ[a, b] → ℝ[a*b], a, b | ℝ[a] × ℝ[b] → ℝ[a+b];
+	cells: → {cell};
+	nodesOfCell: cell → {node};
 }
-// Options obligatoires pour générer
-const ℝ X_EDGE_LENGTH = 0.01;
+
+functions 
+{
+	perp: ℝ[2] → ℝ[2];
+	norm: x | ℝ[x] → ℝ;
+	reduceMin: (ℝ.MaxValue, ℝ)→ℝ;
+	solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x];
+}
+
+const ℝ X_EDGE_LENGTH = 1.;
 const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-const ℕ X_EDGE_ELEMS = 100;
-const ℕ Y_EDGE_ELEMS = 10;
+const ℕ X_EDGE_ELEMS = 2;
+const ℕ Y_EDGE_ELEMS = 2;
 const ℕ Z_EDGE_ELEMS = 1;
-const ℝ option_stoptime = 0.2;
-const ℕ option_max_iterations = 20000;
-	
-ℝ a{cells};
-ℝ x{cells};
-ℝ[2] x2{cells};
+const ℝ option_stoptime = 0.1;
+const ℕ option_max_iterations = 500;
 
-// --- TEST DE F ---
-J0: { ℕ x = f(); }
-J1: { ℕ x = f(2); }
-J2: { ℝ x = f(3.0); }
-J3: {
-		ℝ[2] a = [1.1, 2.2];
-		ℝ[2] x = f(a);
-}
-J4: { ℝ x = f(3.0, true); }
+ℕ a1 = 1;
+ℕ a2 = 9 % 4;
+ℕ a3 = ℕ.MinValue;
+ℕ a4;
+ℕ[2] a5;
+ℕ[2] a6 = [1,1];
+ℕ[2] a7 = ℕ[2](1);
+ℕ[2,2] a8;
+ℕ a9 = a8[0,2];
 
-// --- TEST DE G ---
-J5: {
-		ℝ[2] a = [1.1, 2.2];
-		ℝ[2] x = g(a);
+ℾ b1 = true;
+ℾ b2 = false || true;
+ℾ b3 = false && true;
+ℾ b4 = (a1 == 2);
+ℾ b5 = (a1 != 2);
+ℾ b6 = (a1 > 2);
+ℾ b7 = (a1 >= 2);
+ℾ b8 = (a1 <= 2);
+ℾ b9 = (a1 < 2);
+ℾ b10 = !(a1 < 2);	
+
+ℝ c1 = 2.0 + 1.0;
+ℝ c2 = 2.0 - 1.0;
+ℝ c3 = 2.0 * 1.0;
+ℝ c4 = 2.0 / 1.0;		
+ℝ c5 = -c1;		
+ℝ c6 = ℝ.MaxValue;		
+const ℝ c7 = 1.0e-10;
+
+ℝ[2] d1 = [1.0, 2.0];
+ℝ[2] d2 = perp(d1);
+ℝ[2] d3 = ℝ[2](0.);
+
+ℝ[3] e = [1.0, 2.0, 3.0];
+
+
+ℝ[2,2] g = [ [1.0, 0.0], [0.0, 1.0] ];
+ℝ h = (a1 == 1 ? 0.0 : 1.0);
+
+ℕ t{cells};
+ℝ u{cells}, v{cells};
+ℝ[2] w{cells, nodesOfCell};
+ℝ x{cells, nodesOfCell};
+ℝ α{cells, cells}; 
+
+UpdateU: u^{n+1} = solveLinearSystem(α, u);
+
+ComputeV: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r} + t{j});
+
+ComputeX: ∀ j∈cells(), {
+	ℝ e = 1.0;
+	u{j} = e * 4; 
+	∀r∈nodesOfCell(j), x{j,r} = norm(w{j,r});
 }
-J6: {
-		ℝ[2, 3] a = [[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]];
-		ℝ[6] x = g(a);
-}
-J7: {
-		ℝ[2] a = [1.1, 2.2];
-		ℝ[3] b = [3.3, 4.4, 5.5];
-		ℝ[5] x = g(a, b);
-}
-J8: { a = g(x); }
-J9: { a = g(x, x); }
-J10: { a = g(x2); }

@@ -31,18 +31,18 @@ import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.typing.BaseTypeTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.typing.NTBoolScalar
-import fr.cea.nabla.typing.NTConnectivityType
-import fr.cea.nabla.typing.NTIntScalar
-import fr.cea.nabla.typing.NTScalar
 import fr.cea.nabla.typing.NablaType
 import java.util.List
 import org.eclipse.xtext.validation.Check
+import fr.cea.nabla.typing.NablaConnectivityType
+import fr.cea.nabla.typing.NSTScalar
+import fr.cea.nabla.typing.NSTBoolScalar
+import fr.cea.nabla.typing.NSTIntScalar
 
 class TypeValidator extends BasicValidator
 {
-	static val BOOL = new NTBoolScalar
-	static val INT = new NTIntScalar
+	static val BOOL = new NSTBoolScalar
+	static val INT = new NSTIntScalar
 	
 	@Inject extension ExpressionTypeProvider
 	@Inject extension BaseTypeTypeProvider
@@ -122,7 +122,7 @@ class TypeValidator extends BasicValidator
 	def checkValueType(BaseTypeConstant it)
 	{
 		val vType = value.typeFor
-		if (vType !== null && !(vType instanceof NTScalar && vType.primitive == type.primitive))
+		if (vType !== null && !(vType instanceof NSTScalar && vType.primitive == type.primitive))
 			error(getValueTypeMsg(type.primitive.literal), NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE, VALUE_TYPE)	
 	}
 	
@@ -136,7 +136,7 @@ class TypeValidator extends BasicValidator
 		if (seedType !== null)
 		{
 			val rType = returnType.primitive
-			if (!(seedType instanceof NTScalar))
+			if (!(seedType instanceof NSTScalar))
 				error(getSeedTypeMsg(), NablaPackage.Literals.REDUCTION_ARG__SEED, SEED_TYPE)
 			else if (seedType.label != rType.literal)
 				error(getSeedAndReturnTypesMsg(seedType.label, rType.literal), NablaPackage.Literals.REDUCTION_ARG__SEED, SEED_AND_RETURN_TYPES)
@@ -158,7 +158,7 @@ class TypeValidator extends BasicValidator
 	{
 		val inT = arg.typeFor
 		
-		if (inT !== null && inT instanceof NTConnectivityType)
+		if (inT !== null && inT instanceof NablaConnectivityType)
 			error(getReductionOnConnectivitiesVariableMsg, NablaPackage.Literals::REDUCTION_CALL__REDUCTION, REDUCTION_ON_CONNECTIVITIES_VARIABLE)
 		else if (typeFor === null)
 			error(getReductionArgsMsg(inT.label), NablaPackage.Literals::REDUCTION_CALL__REDUCTION, REDUCTION_ARGS)

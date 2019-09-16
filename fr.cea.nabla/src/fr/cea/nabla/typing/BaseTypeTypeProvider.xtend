@@ -18,28 +18,28 @@ class BaseTypeTypeProvider
 {
 	@Inject extension PrimitiveTypeTypeProvider
 	
-	def dispatch NTSimpleType getTypeFor(Scalar it) 
+	def dispatch NablaSimpleType getTypeFor(Scalar it) 
 	{ 
 		primitive.typeFor
 	}
 	
-	def dispatch NTSimpleType getTypeFor(Array1D it) 
+	def dispatch NablaSimpleType getTypeFor(Array1D it) 
 	{ 
 		switch primitive
 		{
-			case INT: new NTIntArray1D(size)
-			case REAL: new NTRealArray1D(size)
-			case BOOL: new NTBoolArray1D(size)
+			case INT: new NSTIntArray1D(size)
+			case REAL: new NSTRealArray1D(size)
+			case BOOL: new NSTBoolArray1D(size)
 		}
 	}
 	
-	def dispatch NTSimpleType getTypeFor(Array2D it) 
+	def dispatch NablaSimpleType getTypeFor(Array2D it) 
 	{ 
 		switch primitive
 		{
-			case INT: new NTIntArray2D(nbRows, nbCols)
-			case REAL: new NTRealArray2D(nbRows, nbCols)
-			case BOOL: new NTBoolArray2D(nbRows, nbCols)
+			case INT: new NSTIntArray2D(nbRows, nbCols)
+			case REAL: new NSTRealArray2D(nbRows, nbCols)
+			case BOOL: new NSTBoolArray2D(nbRows, nbCols)
 		}
 	}
 }

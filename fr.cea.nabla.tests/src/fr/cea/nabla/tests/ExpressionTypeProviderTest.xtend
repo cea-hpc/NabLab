@@ -18,14 +18,6 @@ import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.typing.NTBoolScalar
-import fr.cea.nabla.typing.NTConnectivityType
-import fr.cea.nabla.typing.NTIntArray1D
-import fr.cea.nabla.typing.NTIntArray2D
-import fr.cea.nabla.typing.NTIntScalar
-import fr.cea.nabla.typing.NTRealArray1D
-import fr.cea.nabla.typing.NTRealArray2D
-import fr.cea.nabla.typing.NTRealScalar
 import fr.cea.nabla.typing.NablaType
 import fr.cea.nabla.typing.VarTypeProvider
 import org.eclipse.xtext.testing.InjectWith
@@ -35,6 +27,14 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import fr.cea.nabla.typing.NablaConnectivityType
+import fr.cea.nabla.typing.NSTBoolScalar
+import fr.cea.nabla.typing.NSTIntScalar
+import fr.cea.nabla.typing.NSTIntArray1D
+import fr.cea.nabla.typing.NSTIntArray2D
+import fr.cea.nabla.typing.NSTRealScalar
+import fr.cea.nabla.typing.NSTRealArray1D
+import fr.cea.nabla.typing.NSTRealArray2D
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -149,58 +149,58 @@ class ExpressionTypeProviderTest
 		val computeV = module.getJobByName("ComputeV")
 		val computeX = module.getJobByName("ComputeX")
 
-		assertTypesFor(new NTIntScalar, module, "a1")
-		assertTypesFor(new NTIntScalar, module, "a2")
-		assertTypesFor(new NTIntScalar, module, "a3")
-		assertTypesFor(new NTIntScalar, module, "a4")
-		assertTypesFor(new NTIntArray1D(2), module, "a5")
-		assertTypesFor(new NTIntArray1D(2), module, "a6")
-		assertTypesFor(new NTIntArray1D(2), module, "a7")
-		assertTypesFor(new NTIntArray2D(2,2), module, "a8")
-		assertTypesFor(new NTIntScalar, module, "a9")
+		assertTypesFor(new NSTIntScalar, module, "a1")
+		assertTypesFor(new NSTIntScalar, module, "a2")
+		assertTypesFor(new NSTIntScalar, module, "a3")
+		assertTypesFor(new NSTIntScalar, module, "a4")
+		assertTypesFor(new NSTIntArray1D(2), module, "a5")
+		assertTypesFor(new NSTIntArray1D(2), module, "a6")
+		assertTypesFor(new NSTIntArray1D(2), module, "a7")
+		assertTypesFor(new NSTIntArray2D(2,2), module, "a8")
+		assertTypesFor(new NSTIntScalar, module, "a9")
 
-		assertTypesFor(new NTBoolScalar, module, "b1")
-		assertTypesFor(new NTBoolScalar, module, "b2")
-		assertTypesFor(new NTBoolScalar, module, "b3")
-		assertTypesFor(new NTBoolScalar, module, "b4")
-		assertTypesFor(new NTBoolScalar, module, "b5")
-		assertTypesFor(new NTBoolScalar, module, "b6")
-		assertTypesFor(new NTBoolScalar, module, "b7")
-		assertTypesFor(new NTBoolScalar, module, "b8")
-		assertTypesFor(new NTBoolScalar, module, "b9")
-		assertTypesFor(new NTBoolScalar, module, "b10")		
+		assertTypesFor(new NSTBoolScalar, module, "b1")
+		assertTypesFor(new NSTBoolScalar, module, "b2")
+		assertTypesFor(new NSTBoolScalar, module, "b3")
+		assertTypesFor(new NSTBoolScalar, module, "b4")
+		assertTypesFor(new NSTBoolScalar, module, "b5")
+		assertTypesFor(new NSTBoolScalar, module, "b6")
+		assertTypesFor(new NSTBoolScalar, module, "b7")
+		assertTypesFor(new NSTBoolScalar, module, "b8")
+		assertTypesFor(new NSTBoolScalar, module, "b9")
+		assertTypesFor(new NSTBoolScalar, module, "b10")		
 
-		assertTypesFor(new NTRealScalar, module, "c1")
-		assertTypesFor(new NTRealScalar, module, "c2")
-		assertTypesFor(new NTRealScalar, module, "c3")
-		assertTypesFor(new NTRealScalar, module, "c4")
-		assertTypesFor(new NTRealScalar, module, "c5")
-		assertTypesFor(new NTRealScalar, module, "c6")
-		assertTypesFor(new NTRealScalar, module, "c7")		
+		assertTypesFor(new NSTRealScalar, module, "c1")
+		assertTypesFor(new NSTRealScalar, module, "c2")
+		assertTypesFor(new NSTRealScalar, module, "c3")
+		assertTypesFor(new NSTRealScalar, module, "c4")
+		assertTypesFor(new NSTRealScalar, module, "c5")
+		assertTypesFor(new NSTRealScalar, module, "c6")
+		assertTypesFor(new NSTRealScalar, module, "c7")		
 
-		assertTypesFor(new NTRealArray1D(2), module, "d1")
-		assertTypesFor(new NTRealArray1D(2), module, "d2")
-		assertTypesFor(new NTRealArray1D(2), module, "d3")
+		assertTypesFor(new NSTRealArray1D(2), module, "d1")
+		assertTypesFor(new NSTRealArray1D(2), module, "d2")
+		assertTypesFor(new NSTRealArray1D(2), module, "d3")
 
-		assertTypesFor(new NTRealArray1D(3), module, "e")
+		assertTypesFor(new NSTRealArray1D(3), module, "e")
 
-		assertTypesFor(new NTRealArray2D(2,2), module, "g")
-		assertTypesFor(new NTRealScalar, module, "h")
+		assertTypesFor(new NSTRealArray2D(2,2), module, "g")
+		assertTypesFor(new NSTRealScalar, module, "h")
 				
-		assertTypesFor(new NTConnectivityType(#[cells], new NTIntScalar), module, "t")
-		assertTypesFor(new NTConnectivityType(#[cells], new NTRealScalar), module, "u")
-		assertTypesFor(new NTConnectivityType(#[cells], new NTRealScalar), module, "v")
-		assertTypesFor(new NTConnectivityType(#[cells, nodesOfCell], new NTRealArray1D(2)), module, "w")
-		assertTypesFor(new NTConnectivityType(#[cells, nodesOfCell], new NTRealScalar), module, "x")
-		assertTypesFor(new NTConnectivityType(#[cells, cells], new NTRealScalar), module, "α")
+		assertTypesFor(new NablaConnectivityType(#[cells], new NSTIntScalar), module, "t")
+		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), module, "u")
+		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), module, "v")
+		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealArray1D(2)), module, "w")
+		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealScalar), module, "x")
+		assertTypesFor(new NablaConnectivityType(#[cells, cells], new NSTRealScalar), module, "α")
 
-		assertTypesFor(new NTConnectivityType(#[cells], new NTRealScalar), updateU, "u")
+		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), updateU, "u")
 
-		assertTypesFor(new NTRealScalar, computeV, "v")
+		assertTypesFor(new NSTRealScalar, computeV, "v")
 				
-		assertTypesFor(new NTRealScalar, computeX, "e")
-		assertTypesFor(new NTRealScalar, computeX, "u")
-		assertTypesFor(new NTRealScalar, computeX, "x")
+		assertTypesFor(new NSTRealScalar, computeX, "e")
+		assertTypesFor(new NSTRealScalar, computeX, "u")
+		assertTypesFor(new NSTRealScalar, computeX, "x")
 	}
 					
 	private def assertTypesFor(NablaType expectedType, NablaModule module, String varName)	

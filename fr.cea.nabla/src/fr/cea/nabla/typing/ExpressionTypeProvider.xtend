@@ -53,22 +53,22 @@ class ExpressionTypeProvider
 
 	def dispatch NablaType getTypeFor(ContractedIf it) { then.typeFor }
 	
-	def dispatch NablaType getTypeFor(Or it) { new NTBoolScalar }	
-	def dispatch NablaType getTypeFor(And it) { new NTBoolScalar }
-	def dispatch NablaType getTypeFor(Equality it) { new NTBoolScalar }
-	def dispatch NablaType getTypeFor(Comparison it) { new NTBoolScalar }
+	def dispatch NablaType getTypeFor(Or it) { new NSTBoolScalar }	
+	def dispatch NablaType getTypeFor(And it) { new NSTBoolScalar }
+	def dispatch NablaType getTypeFor(Equality it) { new NSTBoolScalar }
+	def dispatch NablaType getTypeFor(Comparison it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(Plus it) { getTypeFor(left, right, op) }
 	def dispatch NablaType getTypeFor(Minus it) { getTypeFor(left, right, op) }
 	def dispatch NablaType getTypeFor(MulOrDiv it)  { getTypeFor(left, right, op) }
-	def dispatch NablaType getTypeFor(Modulo it)  { new NTIntScalar }
+	def dispatch NablaType getTypeFor(Modulo it)  { new NSTIntScalar }
 
 	def dispatch NablaType getTypeFor(Parenthesis it) { expression.typeFor }
 	def dispatch NablaType getTypeFor(UnaryMinus it) { expression.typeFor }
 	def dispatch NablaType getTypeFor(Not it) { expression.typeFor }
 
-	def dispatch NablaType getTypeFor(IntConstant it) { new NTIntScalar }
-	def dispatch NablaType getTypeFor(RealConstant it) { new NTRealScalar }
-	def dispatch NablaType getTypeFor(BoolConstant it)  { new NTBoolScalar }
+	def dispatch NablaType getTypeFor(IntConstant it) { new NSTIntScalar }
+	def dispatch NablaType getTypeFor(RealConstant it) { new NSTRealScalar }
+	def dispatch NablaType getTypeFor(BoolConstant it)  { new NSTBoolScalar }
 
 	def dispatch NablaType getTypeFor(MinConstant it) { type.typeFor }
 	def dispatch NablaType getTypeFor(MaxConstant it) { type.typeFor }
@@ -116,29 +116,29 @@ class ExpressionTypeProvider
 		}
 	}
 
-	private def NablaType getTypeForVar(NTSimpleType t, int[] indices)
+	private def NablaType getTypeForVar(NablaSimpleType t, int[] indices)
 	{
 		switch t
 		{
 			case indices.size == 0 : t
-			NTArray1D case indices.size == 1 : t.primitive.typeFor 
-			NTArray2D case indices.size == 2 : t.primitive.typeFor
+			NSTArray1D case indices.size == 1 : t.primitive.typeFor 
+			NSTArray2D case indices.size == 2 : t.primitive.typeFor
 			default : null 
 		}
 	}
 		
-	def dispatch NablaType getTypeFor(IntVectorConstant it) { new NTIntArray1D(values.size) }
-	def dispatch NablaType getTypeFor(RealVectorConstant it) { new NTRealArray1D(values.size) }
-	def dispatch NablaType getTypeFor(IntMatrixConstant it) { new NTIntArray2D(values.size, values.head.values.size) }
-	def dispatch NablaType getTypeFor(RealMatrixConstant it) { new NTRealArray2D(values.size, values.head.values.size) }
+	def dispatch NablaType getTypeFor(IntVectorConstant it) { new NSTIntArray1D(values.size) }
+	def dispatch NablaType getTypeFor(RealVectorConstant it) { new NSTRealArray1D(values.size) }
+	def dispatch NablaType getTypeFor(IntMatrixConstant it) { new NSTIntArray2D(values.size, values.head.values.size) }
+	def dispatch NablaType getTypeFor(RealMatrixConstant it) { new NSTRealArray2D(values.size, values.head.values.size) }
 	def dispatch NablaType getTypeFor(BaseTypeConstant it) { type.typeFor }
 	
-	def NTSimpleType getTypeFor(Expression a, Expression b, String op) 
+	def NablaSimpleType getTypeFor(Expression a, Expression b, String op) 
 	{ 
 		val atype = a.typeFor
 		val btype = b.typeFor
-		if (atype !== null && btype !== null && atype instanceof NTSimpleType && btype instanceof NTSimpleType)
-			getTypeFor(atype as NTSimpleType, btype as NTSimpleType, op)
+		if (atype !== null && btype !== null && atype instanceof NablaSimpleType && btype instanceof NablaSimpleType)
+			getTypeFor(atype as NablaSimpleType, btype as NablaSimpleType, op)
 		else 
 			null
 	}

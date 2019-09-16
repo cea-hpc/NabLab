@@ -24,17 +24,6 @@ import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.ReductionArg
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.typing.NTArray1D
-import fr.cea.nabla.typing.NTArray2D
-import fr.cea.nabla.typing.NTBoolArray1D
-import fr.cea.nabla.typing.NTBoolArray2D
-import fr.cea.nabla.typing.NTConnectivityType
-import fr.cea.nabla.typing.NTIntArray1D
-import fr.cea.nabla.typing.NTIntArray2D
-import fr.cea.nabla.typing.NTRealArray1D
-import fr.cea.nabla.typing.NTRealArray2D
-import fr.cea.nabla.typing.NTScalar
-import fr.cea.nabla.typing.NTSimpleType
 import fr.cea.nabla.typing.NablaType
 import fr.cea.nabla.typing.PrimitiveTypeTypeProvider
 import java.util.ArrayList
@@ -75,8 +64,8 @@ class ReductionDeclaration
 {
 	val ReductionArg model
 	val Map<DimensionVar, DimensionValue> dimensionVarValues
-	val NTSimpleType collectionType // no reduction on ConnectivityVar => SimpleType only
-	val NTSimpleType returnType
+	val NablaSimpleType collectionType // no reduction on ConnectivityVar => SimpleType only
+	val NablaSimpleType returnType
 }
 
 class DeclarationProvider 
@@ -114,7 +103,7 @@ class DeclarationProvider
 
 		val collectionType = r.collectionType.computeExpressionType(dimensionVarValues)
 		val returnType = r.returnType.computeExpressionType(dimensionVarValues)
-		return new ReductionDeclaration(r, dimensionVarValues, collectionType as NTSimpleType, returnType as NTSimpleType)
+		return new ReductionDeclaration(r, dimensionVarValues, collectionType as NablaSimpleType, returnType as NablaSimpleType)
 	}
 	
 	private def boolean match(ArgType a, Expression b, Map<DimensionVar, DimensionValue> dimVarValues) 
@@ -126,10 +115,10 @@ class DeclarationProvider
 			a.primitive == btype.primitive && valuesMatch(dimVarValues, a.indices, btype.dimensionValues)
 	}
 	
-	private def dispatch List<DimensionValue> getDimensionValues(NTScalar it) { #[] }
-	private def dispatch List<DimensionValue> getDimensionValues(NTArray1D it) { #[new DimensionValue(size)] }
-	private def dispatch List<DimensionValue> getDimensionValues(NTArray2D it) { #[new DimensionValue(nbRows), new DimensionValue(nbCols)] }
-	private def dispatch List<DimensionValue> getDimensionValues(NTConnectivityType it) 
+	private def dispatch List<DimensionValue> getDimensionValues(NSTScalar it) { #[] }
+	private def dispatch List<DimensionValue> getDimensionValues(NSTArray1D it) { #[new DimensionValue(size)] }
+	private def dispatch List<DimensionValue> getDimensionValues(NSTArray2D it) { #[new DimensionValue(nbRows), new DimensionValue(nbCols)] }
+	private def dispatch List<DimensionValue> getDimensionValues(NablaConnectivityType it) 
 	{ 
 		val dimensionValues = new ArrayList<DimensionValue>
 		dimensionValues.addAll(simple.dimensionValues)
@@ -209,7 +198,7 @@ class DeclarationProvider
 					case firstElement.int && argTypeDimensionValues.size == 2: 
 						createArray2D(argTypeDimensionValues.get(0).intValue, argTypeDimensionValues.get(1).intValue, argType.primitive)	
 					case firstElement.connectivity: 
-						new NTConnectivityType(argTypeDimensionValues.map[x|x.connectivityValue], argType.primitive.typeFor)
+						new NablaConnectivityType(argTypeDimensionValues.map[x|x.connectivityValue], argType.primitive.typeFor)
 					// default => firstElement is undefined then returnType stays undefined
 					default:
 						null
@@ -219,23 +208,23 @@ class DeclarationProvider
 		return returnType
 	}
 	
-	private def NTArray1D createArray1D(int size, PrimitiveType primitive) 
+	private def NSTArray1D createArray1D(int size, PrimitiveType primitive) 
 	{ 
 		switch primitive
 		{
-			case INT: new NTIntArray1D(size)
-			case REAL: new NTRealArray1D(size)
-			case BOOL: new NTBoolArray1D(size)
+			case INT: new NSTIntArray1D(size)
+			case REAL: new NSTRealArray1D(size)
+			case BOOL: new NSTBoolArray1D(size)
 		}
 	}
 	
-	private def NTArray2D createArray2D(int nbRows, int nbCols, PrimitiveType primitive) 
+	private def NSTArray2D createArray2D(int nbRows, int nbCols, PrimitiveType primitive) 
 	{ 
 		switch primitive
 		{
-			case INT: new NTIntArray2D(nbRows, nbCols)
-			case REAL: new NTRealArray2D(nbRows, nbCols)
-			case BOOL: new NTBoolArray2D(nbRows, nbCols)
+			case INT: new NSTIntArray2D(nbRows, nbCols)
+			case REAL: new NSTRealArray2D(nbRows, nbCols)
+			case BOOL: new NSTBoolArray2D(nbRows, nbCols)
 		}
 	}
 	

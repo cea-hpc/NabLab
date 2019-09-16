@@ -23,10 +23,10 @@ abstract class NablaType
 }
 
 @Data
-class NTConnectivityType extends NablaType
+class NablaConnectivityType extends NablaType
 {
 	val Connectivity[] supports
-	val NTSimpleType simple
+	val NablaSimpleType simple
 	override getPrimitive() { simple.primitive }
 	override getLabel()
 	{
@@ -37,25 +37,25 @@ class NTConnectivityType extends NablaType
 }
 
 @Data
-abstract class NTSimpleType extends NablaType
+abstract class NablaSimpleType extends NablaType
 {
 }
 
 @Data
-abstract class NTScalar extends NTSimpleType
+abstract class NSTScalar extends NablaSimpleType
 {
 	override getLabel() { primitive.literal }
 }
 
 @Data
-abstract class NTArray1D extends NTSimpleType
+abstract class NSTArray1D extends NablaSimpleType
 {
 	val int size
 	override getLabel() { primitive.literal + size.utfExponent }
 }
 
 @Data
-abstract class NTArray2D extends NTSimpleType 
+abstract class NSTArray2D extends NablaSimpleType 
 {
 	val int nbRows
 	val int nbCols
@@ -63,54 +63,55 @@ abstract class NTArray2D extends NTSimpleType
 }
 
 @Data
-class NTBoolScalar extends NTScalar
+class NSTBoolScalar extends NSTScalar
 {
 	override getPrimitive() { PrimitiveType::BOOL}
 }
 
 @Data
-class NTBoolArray1D extends NTArray1D
+class NSTBoolArray1D extends NSTArray1D
 {
 	override getPrimitive() { PrimitiveType::BOOL}
 }
 
 @Data
-class NTBoolArray2D extends NTArray2D
+class NSTBoolArray2D extends NSTArray2D
 {
 	override getPrimitive() { PrimitiveType::BOOL}
 }
 
 @Data
-class NTIntScalar extends NTScalar
+class NSTIntScalar extends NSTScalar
 {
 	override getPrimitive() { PrimitiveType::INT}
 }
 
 @Data
-class NTIntArray1D extends NTArray1D
+class NSTIntArray1D extends NSTArray1D
 {
 	override getPrimitive() { PrimitiveType::INT}
 }
 
 @Data
-class NTIntArray2D extends NTArray2D
+class NSTIntArray2D extends NSTArray2D
 {
 	override getPrimitive() { PrimitiveType::INT}
 }
+
 @Data
-class NTRealScalar extends NTScalar
+class NSTRealScalar extends NSTScalar
 {
 	override getPrimitive() { PrimitiveType::REAL}
 }
 
 @Data
-class NTRealArray1D extends NTArray1D
+class NSTRealArray1D extends NSTArray1D
 {
 	override getPrimitive() { PrimitiveType::REAL}
 }
 
 @Data
-class NTRealArray2D extends NTArray2D
+class NSTRealArray2D extends NSTArray2D
 {
 	override getPrimitive() { PrimitiveType::REAL}
 }

@@ -17,6 +17,6 @@ class VarTypeProvider
 	
 	def dispatch NablaType getTypeFor(ConnectivityVar it)
 	{
-		new NTConnectivityType(supports, baseType.typeFor)
+		new NablaConnectivityType(supports, baseType.typeFor)
 	}
 }

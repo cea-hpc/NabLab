@@ -5,12 +5,12 @@ import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrType
-import fr.cea.nabla.typing.NTArray1D
-import fr.cea.nabla.typing.NTArray2D
-import fr.cea.nabla.typing.NTConnectivityType
-import fr.cea.nabla.typing.NTScalar
-import fr.cea.nabla.typing.NTSimpleType
 import fr.cea.nabla.typing.NablaType
+import fr.cea.nabla.typing.NablaConnectivityType
+import fr.cea.nabla.typing.NablaSimpleType
+import fr.cea.nabla.typing.NSTScalar
+import fr.cea.nabla.typing.NSTArray1D
+import fr.cea.nabla.typing.NSTArray2D
 
 class IrTypeFactory 
 {
@@ -22,12 +22,12 @@ class IrTypeFactory
 		switch t
 		{
 			case null: null // Undefined type
-			NTSimpleType: t.toIrBaseType
-			NTConnectivityType: t.toIrConnectivityType
+			NablaSimpleType: t.toIrBaseType
+			NablaConnectivityType: t.toIrConnectivityType
 		}
 	}
 
-	def dispatch BaseType toIrBaseType(NTScalar t)
+	def dispatch BaseType toIrBaseType(NSTScalar t)
 	{
 		IrFactory.eINSTANCE.createScalar =>
 		[
@@ -35,7 +35,7 @@ class IrTypeFactory
 		]
 	}
 	
-	def dispatch BaseType toIrBaseType(NTArray1D t)
+	def dispatch BaseType toIrBaseType(NSTArray1D t)
 	{
 		IrFactory.eINSTANCE.createArray1D =>
 		[
@@ -44,7 +44,7 @@ class IrTypeFactory
 		]
 	}
 	
-	def dispatch BaseType toIrBaseType(NTArray2D t)
+	def dispatch BaseType toIrBaseType(NSTArray2D t)
 	{
 		IrFactory.eINSTANCE.createArray2D =>
 		[
@@ -54,7 +54,7 @@ class IrTypeFactory
 		]
 	}
 
-	private def ConnectivityType toIrConnectivityType(NTConnectivityType t)
+	private def ConnectivityType toIrConnectivityType(NablaConnectivityType t)
 	{
 		IrFactory.eINSTANCE.createConnectivityType =>
 		[

@@ -13,13 +13,13 @@ import fr.cea.nabla.nabla.PrimitiveType
 
 class PrimitiveTypeTypeProvider
 {
- 	def NTSimpleType getTypeFor(PrimitiveType it)
+ 	def NablaSimpleType getTypeFor(PrimitiveType it)
 	{
 		switch it
 		{
-			case INT: new NTIntScalar
-			case REAL: new NTRealScalar
-			case BOOL: new NTBoolScalar
+			case INT: new NSTIntScalar
+			case REAL: new NSTRealScalar
+			case BOOL: new NSTBoolScalar
 		}
 	}
 }

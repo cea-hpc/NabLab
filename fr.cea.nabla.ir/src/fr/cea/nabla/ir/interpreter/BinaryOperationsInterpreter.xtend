@@ -1,243 +1,369 @@
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.ir.PrimitiveType
-
-class UnsupportedOperationException extends RuntimeException
-{
-	new(String operationName, ExpressionValue[] arguments)
-	{
-		super("Unsupported operation " + operationName + " on types: " + arguments.map[class.simpleName].join(', '))
-	}
-
-	new(String operationName, PrimitiveType[] arguments)
-	{
-		super("Unsupported operation " + operationName + " on types: " + arguments.map[literal].join(', '))
-	}
-
-	new(String operationName, int[] sizes)
-	{
-		super("Unsupported operation " + operationName + " on arrays with different sizes: " + sizes.join(', '))
-	}
-}
-
 class BinaryOperationsInterpreter 
 {
-	static def dispatch ExpressionValue interprete(ExpressionValue a, ExpressionValue b, String op)
+	static def dispatch NablaSimpleValue getValueOf(NablaSimpleValue a, NablaSimpleValue b, String op)
 	{
-		throw new UnsupportedOperationException(op, #[a, b])
+		null
 	}	
 	
-	// BOOL
-	static def dispatch ExpressionValue interprete(BoolValue a, BoolValue b, String op)
+	// BOOL: useful for type validator (unused by type provider)
+	static def dispatch NablaSimpleValue getValueOf(NSVBoolScalar a, NSVBoolScalar b, String op)
 	{
 		switch op
 		{
-			case '||': new BoolValue(a.value || b.value)
-			case '&&': new BoolValue(a.value && b.value)
-			case '==': new BoolValue(a.value == b.value)
-			case '!=': new BoolValue(a.value != b.value)
-			default: throw new UnsupportedOperationException(op, #[a, b])
+			case '||', case '&&', case '==', case '!=', case '>=', case '<=', case '>', case'<': b
+			default: null
+		}
+	}
+
+	// INT
+	static def dispatch NablaSimpleValue getValueOf(NSVIntScalar a, NSVIntScalar b, String op)
+	{
+		switch op
+		{
+			case '==': new NSVBoolScalar(a.value == b.value)
+			case '!=': new NSVBoolScalar(a.value != b.value)
+			case '>=': new NSVBoolScalar(a.value >= b.value)
+			case '<=': new NSVBoolScalar(a.value <= b.value)
+			case '>':  new NSVBoolScalar(a.value > b.value)
+			case '<':  new NSVBoolScalar(a.value < b.value) 
+			case '+':  new NSVIntScalar(a.value + b.value)
+			case '-':  new NSVIntScalar(a.value - b.value)
+			case '*':  new NSVIntScalar(a.value * b.value)
+			case '/':  new NSVIntScalar(a.value / b.value)
+			case '%':  new NSVIntScalar(a.value % b.value)
+			default: null
+		}
+	}
+
+	static def dispatch NablaSimpleValue getValueOf(NSVIntScalar a, NSVRealScalar b, String op)
+	{
+		getValueOf(new NSVRealScalar(a.value as double), b, op)
+	}
+
+	static def dispatch NablaSimpleValue getValueOf(NSVIntScalar a, NSVIntArray1D b, String op)
+	{
+		switch op
+		{
+			case '+', case '*': getValueOf(b, a, op) // Commutative operations
+			default: null
 		}
 	}
 	
-	// INT
-	static def dispatch ExpressionValue interprete(IntValue a, IntValue b, String op)
+	static def dispatch NablaSimpleValue getValueOf(NSVIntScalar a, NSVRealArray1D b, String op)
+	{
+		getValueOf(new NSVRealScalar(a.value as double), b , op)
+	}
+		
+	static def dispatch NablaSimpleValue getValueOf(NSVIntScalar a, NSVIntArray2D b, String op)
 	{
 		switch op
 		{
-			case '==': new BoolValue(a.value == b.value)
-			case '!=': new BoolValue(a.value != b.value)
-			case '>=': new BoolValue(a.value >= b.value)
-			case '<=': new BoolValue(a.value <= b.value)
-			case '>':  new BoolValue(a.value > b.value)
-			case '<':  new BoolValue(a.value < b.value)
-			case '+': new IntValue(a.value + b.value)
-			case '-': new IntValue(a.value - b.value)
-			case '*': new IntValue(a.value * b.value)
-			case '/': new IntValue(a.value / b.value)
-			case '%': new IntValue(a.value % b.value)
-			default: throw new UnsupportedOperationException(op, #[a, b])
+			case '+', case '*': getValueOf(b, a, op) // Commutative operations
+			default: null
 		}
 	}
 
-	static def dispatch ExpressionValue interprete(IntValue a, RealValue b, String op)
+	static def dispatch NablaSimpleValue getValueOf(NSVIntScalar a, NSVRealArray2D b, String op)
 	{
-		switch op
-		{
-			case '==': new BoolValue(a.value == b.value)
-			case '!=': new BoolValue(a.value != b.value)
-			case '>=': new BoolValue(a.value >= b.value)
-			case '<=': new BoolValue(a.value <= b.value)
-			case '>':  new BoolValue(a.value > b.value)
-			case '<':  new BoolValue(a.value < b.value)
-			case '+': new RealValue(a.value + b.value)
-			case '-': new RealValue(a.value - b.value)
-			case '*': new RealValue(a.value * b.value)
-			case '/': new RealValue(a.value / b.value)
-			default: throw new UnsupportedOperationException(op, #[a, b])
-		}
-	}
-
-	static def dispatch ExpressionValue interprete(IntValue a, IntArrayValue b, String op)
-	{
-		switch op
-		{
-			case '+': new IntArrayValue(b.dimSizes, b.value.map[x | a.value + x])
-			case '*': new IntArrayValue(b.dimSizes, b.value.map[x | a.value * x])
-			default: throw new UnsupportedOperationException(op, #[a, b])
-		}
-	}
-
-	static def dispatch ExpressionValue interprete(IntValue a, RealArrayValue b, String op)
-	{
-		switch op
-		{
-			case '+': new RealArrayValue(b.dimSizes, b.value.map[x | a.value + x])
-			case '*': new RealArrayValue(b.dimSizes, b.value.map[x | a.value * x])
-			default: throw new UnsupportedOperationException(op, #[a, b])
-		}
+		getValueOf(new NSVRealScalar(a.value as double), b , op)
 	}
 
 	// REAL
-	static def dispatch ExpressionValue interprete(RealValue a, IntValue b, String op)
+	static def dispatch NablaSimpleValue getValueOf(NSVRealScalar a, NSVIntScalar b, String op)
 	{
-		interprete(a, new RealValue(b.value as double), op)
+		getValueOf(a, new NSVRealScalar(b.value as double), op)
 	}
 
-	static def dispatch ExpressionValue interprete(RealValue a, RealValue b, String op)
+	static def dispatch NablaSimpleValue getValueOf(NSVRealScalar a, NSVRealScalar b, String op)
 	{
 		switch op
 		{
-			case '==': new BoolValue(a.value == b.value)
-			case '!=': new BoolValue(a.value != b.value)
-			case '>=': new BoolValue(a.value >= b.value)
-			case '<=': new BoolValue(a.value <= b.value)
-			case '>':  new BoolValue(a.value > b.value)
-			case '<':  new BoolValue(a.value < b.value)
-			case '+': new RealValue(a.value + b.value)
-			case '-': new RealValue(a.value - b.value)
-			case '*': new RealValue(a.value * b.value)
-			case '/': new RealValue(a.value / b.value)
-			default: throw new UnsupportedOperationException(op, #[a, b])
+			case '==': new NSVBoolScalar(a.value == b.value)
+			case '!=': new NSVBoolScalar(a.value != b.value)
+			case '>=': new NSVBoolScalar(a.value >= b.value)
+			case '<=': new NSVBoolScalar(a.value <= b.value)
+			case '>':  new NSVBoolScalar(a.value > b.value)
+			case '<':  new NSVBoolScalar(a.value < b.value) 
+			case '+':  new NSVRealScalar(a.value + b.value)
+			case '-':  new NSVRealScalar(a.value - b.value)
+			case '*':  new NSVRealScalar(a.value * b.value)
+			case '/':  new NSVRealScalar(a.value / b.value)
+			case '%':  new NSVRealScalar(a.value % b.value)
+			default: null
 		}
 	}
 
-	static def dispatch ExpressionValue interprete(RealValue a, RealArrayValue b, String op)
+	static def dispatch NablaSimpleValue getValueOf(NSVRealScalar a, NSVIntArray1D b, String op)
 	{
 		switch op
 		{
-			case '+': new RealArrayValue(b.dimSizes, b.value.map[x | a.value + x])
-			case '*': new RealArrayValue(b.dimSizes, b.value.map[x | a.value * x])
-			default: throw new UnsupportedOperationException(op, #[a, b])
+			case '+', case '*': getValueOf(b, a, op) // Commutative operations 
+			default: null
 		}
 	}
 
-	// INT ARRAY
-	static def dispatch ExpressionValue interprete(IntArrayValue a, IntValue b, String op)
+	static def dispatch NablaSimpleValue getValueOf(NSVRealScalar a, NSVRealArray1D b, String op)
 	{
 		switch op
 		{
-			case '+': new IntArrayValue(a.dimSizes, a.value.map[x | x + b.value])
-			case '-': new IntArrayValue(a.dimSizes, a.value.map[x | x - b.value])
-			case '*': new IntArrayValue(a.dimSizes, a.value.map[x | x * b.value])
-			case '/': new IntArrayValue(a.dimSizes, a.value.map[x | x / b.value])
-			default: throw new UnsupportedOperationException(op, #[a, b])
+			case '+': new NSVRealArray1D(b.values.map[x | x + a.value]) 
+			case '*': new NSVRealArray1D(b.values.map[x | x * a.value]) 
+			default: null
 		}
 	}
 
-	static def dispatch ExpressionValue interprete(IntArrayValue a, RealValue b, String op)
+	static def dispatch NablaSimpleValue getValueOf(NSVRealScalar a, NSVIntArray2D b, String op)
 	{
 		switch op
 		{
-			case '+': new RealArrayValue(a.dimSizes, a.value.map[x | x + b.value])
-			case '-': new RealArrayValue(a.dimSizes, a.value.map[x | x - b.value])
-			case '*': new RealArrayValue(a.dimSizes, a.value.map[x | x * b.value])
-			case '/': new RealArrayValue(a.dimSizes, a.value.map[x | x / b.value])
-			default: throw new UnsupportedOperationException(op, #[a, b])
+			case '+', case '*': getValueOf(b, a, op) // Commutative operations 
+			default: null
 		}
 	}
 
-	static def dispatch ExpressionValue interprete(IntArrayValue a, IntArrayValue b, String op)
+	static def dispatch NablaSimpleValue getValueOf(NSVRealScalar a, NSVRealArray2D b, String op)
 	{
 		switch op
 		{
-			case a.value.size != b.value.size: throw new UnsupportedOperationException(op, #[a, b])
-			case '+': 
-			{
-				val values = newIntArrayOfSize(a.value.size)
-				for (i : 0..<a.value.size) values.set(i, a.value.get(i) + b.value.get(i))
-				new IntArrayValue(a.dimSizes, values)
-			}
-			case '-': 
-			{
-				val values = newIntArrayOfSize(a.value.size)
-				for (i : 0..<a.value.size) values.set(i, a.value.get(i) - b.value.get(i))
-				new IntArrayValue(a.dimSizes, values)
-			}
-			case '*': 
-			{
-				val values = newIntArrayOfSize(a.value.size)
-				for (i : 0..<a.value.size) values.set(i, a.value.get(i) * b.value.get(i))
-				new IntArrayValue(a.dimSizes, values)
-			}
-			case '/': 
-			{
-				val values = newIntArrayOfSize(a.value.size)
-				for (i : 0..<a.value.size) values.set(i, a.value.get(i) / b.value.get(i))
-				new IntArrayValue(a.dimSizes, values)
-			}
-			default: throw new UnsupportedOperationException(op, #[a, b])
+			case '+', case '*': getValueOf(b, a, op) // Commutative operations 
+			default: null
+		}
+	}
+
+	// INT ARRAYS 1D
+	static def dispatch NablaSimpleValue getValueOf(NSVIntArray1D a, NSVIntScalar b, String op)
+	{
+		switch op
+		{
+			case '+': new NSVIntArray1D(a.values.map[x | x + b.value]) 
+			case '-': new NSVIntArray1D(a.values.map[x | x - b.value]) 
+			case '*': new NSVIntArray1D(a.values.map[x | x * b.value]) 
+			case '/': new NSVIntArray1D(a.values.map[x | x / b.value]) 			
+			default: null
+		}
+	}
+
+	static def dispatch NablaSimpleValue getValueOf(NSVIntArray1D a, NSVRealScalar b, String op)
+	{
+		switch op
+		{
+			case '+': new NSVRealArray1D(a.values.map[x | x + b.value]) 
+			case '-': new NSVRealArray1D(a.values.map[x | x - b.value])
+			case '*': new NSVRealArray1D(a.values.map[x | x * b.value])
+			case '/': new NSVRealArray1D(a.values.map[x | x / b.value])
+			default: null
+		}
+	}
+
+	static def dispatch NablaSimpleValue getValueOf(NSVIntArray1D a, NSVIntArray1D b, String op)
+	{
+		switch op
+		{
+			case !haveSameDimensions(a, b) : null
+			case '+': computeValueOf(a, b, [x, y | x + y])
+			case '-': computeValueOf(a, b, [x, y | x - y])
+			case '*': computeValueOf(a, b, [x, y | x * y])
+			case '/': computeValueOf(a, b, [x, y | x / y])
+			default: null
 		}
 	}
 	
-	// REAL ARRAY
-	static def dispatch ExpressionValue interprete(RealArrayValue a, IntValue b, String op)
+	private static def computeValueOf(NSVIntArray1D a, NSVIntArray1D b, (int, int)=>int f)
 	{
-		interprete(a, new RealValue(b.value as double), op)
+		val res = newIntArrayOfSize(a.size)
+		for (i : 0..<a.size)
+			res.set(i, f.apply(a.values.get(i), b.values.get(i)))
+		return new NSVIntArray1D(res)		
 	}
-
-	static def dispatch ExpressionValue interprete(RealArrayValue a, RealValue b, String op)
-	{
-		switch op
-		{
-			case '+': new RealArrayValue(a.dimSizes, a.value.map[x | x + b.value])
-			case '-': new RealArrayValue(a.dimSizes, a.value.map[x | x - b.value])
-			case '*': new RealArrayValue(a.dimSizes, a.value.map[x | x * b.value])
-			case '/': new RealArrayValue(a.dimSizes, a.value.map[x | x / b.value])
-			default: throw new UnsupportedOperationException(op, #[a, b])
-		}
-	}
-
-	static def dispatch ExpressionValue interprete(RealArrayValue a, RealArrayValue b, String op)
+	
+	static def dispatch NablaSimpleValue getValueOf(NSVIntArray1D a, NSVRealArray1D b, String op)
 	{
 		switch op
 		{
-			case a.value.size != b.value.size: throw new UnsupportedOperationException(op, #[a, b])
-			case '+': 
-			{
-				val values = newDoubleArrayOfSize(a.value.size)
-				for (i : 0..<a.value.size) values.set(i, a.value.get(i) + b.value.get(i))
-				new RealArrayValue(a.dimSizes, values)
-			}
-			case '-': 
-			{
-				val values = newDoubleArrayOfSize(a.value.size)
-				for (i : 0..<a.value.size) values.set(i, a.value.get(i) - b.value.get(i))
-				new RealArrayValue(a.dimSizes, values)
-			}
-			case '*': 
-			{
-				val values = newDoubleArrayOfSize(a.value.size)
-				for (i : 0..<a.value.size) values.set(i, a.value.get(i) * b.value.get(i))
-				new RealArrayValue(a.dimSizes, values)
-			}
-			case '/': 
-			{
-				val values = newDoubleArrayOfSize(a.value.size)
-				for (i : 0..<a.value.size) values.set(i, a.value.get(i) / b.value.get(i))
-				new RealArrayValue(a.dimSizes, values)
-			}
-			default: throw new UnsupportedOperationException(op, #[a, b])
+			case !haveSameDimensions(a, b) : null
+			case '+': computeValueOf(a, b, [x, y | x + y])
+			case '-': computeValueOf(a, b, [x, y | x - y])
+			case '*': computeValueOf(a, b, [x, y | x * y])
+			case '/': computeValueOf(a, b, [x, y | x / y])
+			default: null
 		}
 	}
+	
+	private static def computeValueOf(NSVIntArray1D a, NSVRealArray1D b, (int, double)=>double f)
+	{
+		val res = newDoubleArrayOfSize(a.size)
+		for (i : 0..<a.size)
+			res.set(i, f.apply(a.values.get(i), b.values.get(i)))
+		return new NSVRealArray1D(res)		
+	}
+		
+	// REAL ARRAYS 1D
+	static def dispatch NablaSimpleValue getValueOf(NSVRealArray1D a, NSVIntScalar b, String op)
+	{
+		getValueOf(a, new NSVRealScalar(b.value as double), op)
+	}
+
+	static def dispatch NablaSimpleValue getValueOf(NSVRealArray1D a, NSVRealScalar b, String op)
+	{
+		switch op
+		{
+			case '+': new NSVRealArray1D(a.values.map[x | x + b.value]) 
+			case '-': new NSVRealArray1D(a.values.map[x | x - b.value])
+			case '*': new NSVRealArray1D(a.values.map[x | x * b.value])
+			case '/': new NSVRealArray1D(a.values.map[x | x / b.value])
+			default: null
+		}
+	}
+
+	static def dispatch NablaSimpleValue getValueOf(NSVRealArray1D a, NSVIntArray1D b, String op)
+	{
+		switch op
+		{
+			// !! Parameters have been switched to reuse private method defined before
+			case !haveSameDimensions(a, b) : null
+			case '+': computeValueOf(b, a, [x, y | y + x])
+			case '-': computeValueOf(b, a, [x, y | y - x])
+			case '*': computeValueOf(b, a, [x, y | y * x])
+			case '/': computeValueOf(b, a, [x, y | y / x])
+			default: null
+		}
+	}
+	
+	static def dispatch NablaSimpleValue getValueOf(NSVRealArray1D a, NSVRealArray1D b, String op)
+	{
+		switch op
+		{
+			case !haveSameDimensions(a, b) : null
+			case '+': computeValueOf(a, b, [x, y | x + y])
+			case '-': computeValueOf(a, b, [x, y | x - y])
+			case '*': computeValueOf(a, b, [x, y | x * y])
+			case '/': computeValueOf(a, b, [x, y | x / y])
+			default: null
+		}
+	}
+	
+	private static def computeValueOf(NSVRealArray1D a, NSVRealArray1D b, (double, double)=>double f)
+	{
+		val res = newDoubleArrayOfSize(a.size)
+		for (i : 0..<a.size)
+			res.set(i, f.apply(a.values.get(i), b.values.get(i)))
+		return new NSVRealArray1D(res)		
+	}
+	
+	// INT ARRAYS 2D
+	static def dispatch NablaSimpleValue getValueOf(NSVIntArray2D a, NSVIntScalar b, String op)
+	{
+		switch op
+		{
+			case '+': computeValueOf(a, b, [x, y | x + y])
+			case '-': computeValueOf(a, b, [x, y | x - y])
+			case '*': computeValueOf(a, b, [x, y | x * y])
+			case '/': computeValueOf(a, b, [x, y | x / y])
+			default: null
+		}
+	}
+
+	private static def computeValueOf(NSVIntArray2D a, NSVIntScalar b, (int, int)=>int f)
+	{
+		val res = newArrayOfSize(a.nbRows).map[x | newIntArrayOfSize(a.nbCols)]
+		for (i : 0..<a.nbRows)
+			for (j : 0..<a.nbCols)
+				res.get(i).set(j, f.apply(a.values.get(i).get(j), b.value))
+		return new NSVIntArray2D(res)		
+	}
+
+	static def dispatch NablaSimpleValue getValueOf(NSVIntArray2D a, NSVRealScalar b, String op)
+	{
+		switch op
+		{
+			case '+': computeValueOf(a, b, [x, y | x + y])
+			case '-': computeValueOf(a, b, [x, y | x - y])
+			case '*': computeValueOf(a, b, [x, y | x * y])
+			case '/': computeValueOf(a, b, [x, y | x / y])
+			default: null
+		}
+	}
+
+	private static def computeValueOf(NSVIntArray2D a, NSVRealScalar b, (int, double)=>double f)
+	{
+		val res = newArrayOfSize(a.nbRows).map[x | newDoubleArrayOfSize(a.nbCols)]
+		for (i : 0..<a.nbRows)
+			for (j : 0..<a.nbCols)
+				res.get(i).set(j, f.apply(a.values.get(i).get(j), b.value))
+		return new NSVRealArray2D(res)		
+	}
+	
+	static def dispatch NablaSimpleValue getValueOf(NSVIntArray2D a, NSVIntArray2D b, String op)
+	{
+		switch op
+		{
+			case !haveSameDimensions(a, b) : null
+			case '+': computeValueOf(a, b, [x, y | x + y])
+			case '-': computeValueOf(a, b, [x, y | x - y])
+			case '*': computeValueOf(a, b, [x, y | x * y])
+			default: null
+		}
+	}
+	
+	private static def computeValueOf(NSVIntArray2D a, NSVIntArray2D b, (int, int)=>int f)
+	{
+		val res = newArrayOfSize(a.nbRows).map[x | newIntArrayOfSize(a.nbCols)]
+		for (i : 0..<a.nbRows)
+			for (j : 0..<a.nbCols)
+				res.get(i).set(j, f.apply(a.values.get(i).get(j), b.values.get(i).get(j)))
+		return new NSVIntArray2D(res)		
+	}
+			
+	// REAL ARRAYS 2D
+	static def dispatch NablaSimpleValue getValueOf(NSVRealArray2D a, NSVIntScalar b, String op)
+	{
+		getValueOf(a, new NSVRealScalar(b.value as double), op)
+	}
+
+	static def dispatch NablaSimpleValue getValueOf(NSVRealArray2D a, NSVRealScalar b, String op)
+	{
+		switch op
+		{
+			case '+': computeValueOf(a, b, [x, y | x + y])
+			case '-': computeValueOf(a, b, [x, y | x - y])
+			case '*': computeValueOf(a, b, [x, y | x * y])
+			case '/': computeValueOf(a, b, [x, y | x / y])
+			default: null
+		}
+	}
+
+	private static def computeValueOf(NSVRealArray2D a, NSVRealScalar b, (double, double)=>double f)
+	{
+		val res = newArrayOfSize(a.nbRows).map[x | newDoubleArrayOfSize(a.nbCols)]
+		for (i : 0..<a.nbRows)
+			for (j : 0..<a.nbCols)
+				res.get(i).set(j, f.apply(a.values.get(i).get(j), b.value))
+		return new NSVRealArray2D(res)		
+	}
+
+	static def dispatch NablaSimpleValue getValueOf(NSVRealArray2D a, NSVRealArray2D b, String op)
+	{
+		switch op
+		{
+			case !haveSameDimensions(a, b) : null
+			case '+': computeValueOf(a, b, [x, y | x + y])
+			case '-': computeValueOf(a, b, [x, y | x - y])
+			case '*': computeValueOf(a, b, [x, y | x * y])
+			default: null
+		}
+	}
+	
+	private static def computeValueOf(NSVRealArray2D a, NSVRealArray2D b, (double, double)=>double f)
+	{
+		val res = newArrayOfSize(a.nbRows).map[x | newDoubleArrayOfSize(a.nbCols)]
+		for (i : 0..<a.nbRows)
+			for (j : 0..<a.nbCols)
+				res.get(i).set(j, f.apply(a.values.get(i).get(j), b.values.get(i).get(j)))
+		return new NSVRealArray2D(res)		
+	}
+	
+	private static def haveSameDimensions(NSVArray1D a, NSVArray1D b) { a.size == b.size }
+	private static def haveSameDimensions(NSVArray2D a, NSVArray2D b) { a.nbRows == b.nbRows && a.nbCols == b.nbCols }
 }

@@ -24,38 +24,42 @@ class BinaryOperationsTypeProvider
 		{
 			// useful for type validator (unused by type provider)
 			case '==', case '!=', case '>=', case '<=', case '>', case'<': new NSTBoolScalar
-			case '+', case '-', case '*', case ' ', case '%': b
+			case '+', case '-', case '*', case '/', case '%': b
 			default: null
 		}
 	}
 
 	def dispatch NablaSimpleType getTypeFor(NSTIntScalar a, NSTRealScalar b, String op)
 	{
+		getTypeFor(new NSTRealScalar, b, op)
+	}
+
+	def dispatch NablaSimpleType getTypeFor(NSTIntScalar a, NSTIntArray1D b, String op)
+	{
 		switch op
 		{
-			// useful for type validator (unused by type provider)
-			case '==', case '!=', case '>=', case '<=', case '>', case'<': new NSTBoolScalar
-			case '+', case '-', case '*', case '/': b
+			case '+', case '*': getTypeFor(b, a, op)  // Commutative operations
 			default: null
 		}
 	}
 
-	def dispatch NablaSimpleType getTypeFor(NSTIntScalar a, NSTArray1D b, String op)
+	def dispatch NablaSimpleType getTypeFor(NSTIntScalar a, NSTRealArray1D b, String op)
+	{
+		getTypeFor(new NSTRealScalar, b, op)
+	}
+	
+	def dispatch NablaSimpleType getTypeFor(NSTIntScalar a, NSTIntArray2D b, String op)
 	{
 		switch op
 		{
-			case '+', case '*': b
+			case '+', case '*': getTypeFor(b, a, op)  // Commutative operations
 			default: null
 		}
 	}
-	
-	def dispatch NablaSimpleType getTypeFor(NSTIntScalar a, NSTArray2D b, String op)
+
+	def dispatch NablaSimpleType getTypeFor(NSTIntScalar a, NSTRealArray2D b, String op)
 	{
-		switch op
-		{
-			case '+', case '*': b
-			default: null
-		}
+		getTypeFor(new NSTRealScalar, b, op)
 	}
 
 	// REAL
@@ -75,22 +79,38 @@ class BinaryOperationsTypeProvider
 		}
 	}
 
-	def dispatch NablaSimpleType getTypeFor(NSTRealScalar a, NSTArray1D b, String op)
+	def dispatch NablaSimpleType getTypeFor(NSTRealScalar a, NSTIntArray1D b, String op)
 	{
 		switch op
 		{
-			// RealScalar + RealArray1D -> RealArray1D , RealScalar + IntArray1D -> RealArray1D
+			case '+', case '*': getTypeFor(b, a, op) // Commutative operations
+			default: null
+		}
+	}
+
+	def dispatch NablaSimpleType getTypeFor(NSTRealScalar a, NSTRealArray1D b, String op)
+	{
+		switch op
+		{
 			case '+', case '*': new NSTRealArray1D(b.size)
 			default: null
 		}
 	}
 
-	def dispatch NablaSimpleType getTypeFor(NSTRealScalar a, NSTArray2D b, String op)
+	def dispatch NablaSimpleType getTypeFor(NSTRealScalar a, NSTIntArray2D b, String op)
 	{
 		switch op
 		{
-			// RealScalar + RealArray2D -> RealArray2D , RealScalar + IntArray2D -> RealArray2D
-			case '+', case '*': new NSTRealArray2D(b.nbRows, b.nbCols)
+			case '+', case '*': getTypeFor(b, a, op) // Commutative operations
+			default: null
+		}
+	}
+	
+	def dispatch NablaSimpleType getTypeFor(NSTRealScalar a, NSTRealArray2D b, String op)
+	{
+		switch op
+		{
+			case '+', case '*': getTypeFor(b, a, op) // Commutative operations
 			default: null
 		}
 	}
@@ -114,12 +134,22 @@ class BinaryOperationsTypeProvider
 		}
 	}
 
-	def dispatch NablaSimpleType getTypeFor(NSTIntArray1D a, NSTArray1D b, String op)
+	def dispatch NablaSimpleType getTypeFor(NSTIntArray1D a, NSTIntArray1D b, String op)
 	{
 		switch op
 		{
 			case !haveSameDimensions(a, b) : null
-			case '+', case '-', case '*', case '/': b // IntArray1D + IntArray1D -> IntArray1D , IntArray1D + RealArray1D -> RealArray1D
+			case '+', case '-', case '*', case '/': b
+			default: null
+		}
+	}
+	
+	def dispatch NablaSimpleType getTypeFor(NSTIntArray1D a, NSTRealArray1D b, String op)
+	{
+		switch op
+		{
+			case !haveSameDimensions(a, b) : null
+			case '+', case '-', case '*', case '/': b
 			default: null
 		}
 	}
@@ -139,7 +169,17 @@ class BinaryOperationsTypeProvider
 		}
 	}
 
-	def dispatch NablaSimpleType getTypeFor(NSTRealArray1D a, NSTArray1D b, String op)
+	def dispatch NablaSimpleType getTypeFor(NSTRealArray1D a, NSTIntArray1D b, String op)
+	{
+		switch op
+		{
+			case !haveSameDimensions(a, b) :  null
+			case '+', case '-', case '*', case '/': a
+			default: null
+		}
+	}
+
+	def dispatch NablaSimpleType getTypeFor(NSTRealArray1D a, NSTRealArray1D b, String op)
 	{
 		switch op
 		{
@@ -168,8 +208,16 @@ class BinaryOperationsTypeProvider
 		}
 	}
 	
-	// No operations for Array2D op Array2D for the moment
-		
+	def dispatch NablaSimpleType getTypeFor(NSTIntArray2D a, NSTIntArray2D b, String op)
+	{
+		switch op
+		{
+			case !haveSameDimensions(a, b) :  null
+			case '+', case '-', case '*': a
+			default: null
+		}
+	}
+	
 	// REAL ARRAYS 2D
 	def dispatch NablaSimpleType getTypeFor(NSTRealArray2D a, NSTIntScalar b, String op)
 	{
@@ -189,11 +237,12 @@ class BinaryOperationsTypeProvider
 	{
 		switch op
 		{
+			case !haveSameDimensions(a, b) :  null
 			case '+', case '-', case '*': a
 			default: null
 		}
 	}
 	
 	private def haveSameDimensions(NSTArray1D a, NSTArray1D b) { a.size == b.size }
-	//private def haveSameDimensions(Array2D a, Array2D b) { a.nbRows == b.nbRows && a.nbCols == b.nbCols }
+	private def haveSameDimensions(NSTArray2D a, NSTArray2D b) { a.nbRows == b.nbRows && a.nbCols == b.nbCols }
 }

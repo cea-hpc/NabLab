@@ -11,7 +11,7 @@ class InstructionInterpreter
 	static def dispatch void interprete(VarDefinition it, Context context)
 	{ 
 		for (v : variables)
-			context.variables.put(v.name, (buildValue(v, context)))
+			context.variableValues.put(v, (buildValue(v, context)))
 	}
 	
 	static def dispatch void interprete(InstructionBlock it, Context context)
@@ -25,56 +25,48 @@ class InstructionInterpreter
 		
 	}
 	
-	private static def dispatch VariableValue buildValue(SimpleVariable it, Context context)
+	private static def dispatch NablaValue buildValue(SimpleVariable it, Context context)
 	{
 		if (defaultValue === null)
 		{
-//			val totalSize = type.sizes.totalSize
-//			switch (type.root)
-//			{
-//				case INT: new IntVariableValue(type.sizes, newIntArrayOfSize(totalSize))
-//				case REAL: new RealVariableValue(type.sizes, newDoubleArrayOfSize(totalSize))
-//				case BOOL: new BoolVariableValue(type.sizes, newBooleanArrayOfSize(totalSize))
-//				default: throw new RuntimeException("Invalid variable root type")
-//			}
-//		}
-//		else
-//		{
-//			val v = defaultValue.interprete
-//			switch (type.root)
-//			{
-//				case INT: v as IntVariableValue
-//				case REAL: v as RealVariableValue
-//				case BOOL: v as BoolVariableValue
-//				default: throw new RuntimeException("Invalid variable root type")
-//			}
+			type
+			val totalSize = type.sizes.totalSize
+			switch (type.root)
+			{
+				case INT: new IntVariableValue(type.sizes, newIntArrayOfSize(totalSize))
+				case REAL: new RealVariableValue(type.sizes, newDoubleArrayOfSize(totalSize))
+				case BOOL: new BoolVariableValue(type.sizes, newBooleanArrayOfSize(totalSize))
+				default: throw new RuntimeException("Invalid variable root type")
+			}
 		}
+		else
+			defaultValue.interprete
 	}
 	
-	private static def dispatch VariableValue buildValue(ConnectivityVariable it, Context context)
+	private static def dispatch NablaValue buildValue(ConnectivityVariable it, Context context)
 	{
 		if (defaultValue === null)
 		{
-//			var totalSize = type.sizes.totalSize;
-//			for (d : dimensions) totalSize *= context.connectivitySizes.get(d.name)
-//			switch (type.root)
-//			{
-//				case INT: new IntVariableValue(type.sizes, newIntArrayOfSize(totalSize))
-//				case REAL: new RealVariableValue(type.sizes, newDoubleArrayOfSize(totalSize))
-//				case BOOL: new BoolVariableValue(type.sizes, newBooleanArrayOfSize(totalSize))
-//				default: throw new RuntimeException("Invalid variable root type")
-//			}
-//		}
-//		else
-//		{
-//			val v = defaultValue.interprete
-//			switch (type.root)
-//			{
-//				case INT: v as IntVariableValue
-//				case REAL: v as RealVariableValue
-//				case BOOL: v as BoolVariableValue
-//				default: throw new RuntimeException("Invalid variable root type")
-//			}
+			var totalSize = type.sizes.totalSize;
+			for (d : dimensions) totalSize *= context.connectivitySizes.get(d.name)
+			switch (type.root)
+			{
+				case INT: new IntVariableValue(type.sizes, newIntArrayOfSize(totalSize))
+				case REAL: new RealVariableValue(type.sizes, newDoubleArrayOfSize(totalSize))
+				case BOOL: new BoolVariableValue(type.sizes, newBooleanArrayOfSize(totalSize))
+				default: throw new RuntimeException("Invalid variable root type")
+			}
+		}
+		else
+		{
+			val v = defaultValue.interprete
+			switch (type.root)
+			{
+				case INT: v as IntVariableValue
+				case REAL: v as RealVariableValue
+				case BOOL: v as BoolVariableValue
+				default: throw new RuntimeException("Invalid variable root type")
+			}
 		}
 	}
 }

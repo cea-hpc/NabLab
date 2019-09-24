@@ -27,188 +27,139 @@ import static extension fr.cea.nabla.ir.interpreter.Utils.*
 
 class ExpressionInterpreter 
 {
-	static def dispatch ExpressionValue interprete(ContractedIf it)
+	static def dispatch NablaValue interprete(ContractedIf it)
 	{
-		val condContext = condition.interprete
-		if (condContext.asBool) thenExpression.interprete
+		val condValue = condition.interprete
+		if ((condValue as NSVBoolScalar).value) thenExpression.interprete
 		else elseExpression.interprete 
 	}
 	
-	static def dispatch ExpressionValue interprete(BinaryExpression it)	
+	static def dispatch NablaValue interprete(BinaryExpression it)	
 	{
-		BinaryOperationsInterpreter::interprete(left.interprete, right.interprete, operator)
+		val lValue = left.interprete as NablaSimpleValue
+		val rValue = left.interprete as NablaSimpleValue
+		BinaryOperationsInterpreter::getValueOf(lValue, rValue, operator)
 	}
 	
-	static def dispatch ExpressionValue interprete(UnaryExpression it)
+	static def dispatch NablaValue interprete(UnaryExpression it)
 	{
-		val context = expression.interprete
-		switch context
+		val eValue = expression.interprete as NablaSimpleValue
+		switch eValue
 		{
-			BoolValue case operator == '!': new BoolValue(!context.value)
-			IntValue case operator == '-': new IntValue(-context.value)
-			RealValue case operator == '-': new RealValue(-context.value)
-			IntArrayValue case operator == '-': new IntArrayValue(context.dimSizes, context.value.map[x|-x])
-			RealArrayValue case operator == '-': new RealArrayValue(context.dimSizes, context.value.map[x|-x])
-			default: throw new UnsupportedOperationException(operator, #[context])
+			NSVBoolScalar case operator == '!': new NSVBoolScalar(!eValue.value)
+			NSVIntScalar case operator == '-': new NSVIntScalar(-eValue.value)
+			NSVRealScalar case operator == '-': new NSVRealScalar(-eValue.value)
+			NSVIntArray1D case operator == '-': new NSVIntArray1D(eValue.values.map[x|-x])
+			NSVRealArray1D case operator == '-': new NSVRealArray1D(eValue.values.map[x|-x])
+			NSVIntArray2D case operator == '-': computeUnaryMinus(eValue)
+			NSVRealArray2D case operator == '-': computeUnaryMinus(eValue)
+			default: throw new UnsupportedOperationException(operator, #[eValue])
 		}
 	}
+	
+	private static def computeUnaryMinus(NSVIntArray2D a)
+	{
+		val res = newArrayOfSize(a.nbRows).map[x | newIntArrayOfSize(a.nbCols)]
+		for (i : 0..<a.nbRows)
+			for (j : 0..<a.nbCols)
+				res.get(i).set(j, -a.values.get(i).get(j))
+		return new NSVIntArray2D(res)		
+	}
 
-	static def dispatch ExpressionValue interprete(Parenthesis it)
+	private static def computeUnaryMinus(NSVRealArray2D a)
+	{
+		val res = newArrayOfSize(a.nbRows).map[x | newDoubleArrayOfSize(a.nbCols)]
+		for (i : 0..<a.nbRows)
+			for (j : 0..<a.nbCols)
+				res.get(i).set(j, -a.values.get(i).get(j))
+		return new NSVRealArray2D(res)		
+	}
+
+	static def dispatch NablaValue interprete(Parenthesis it)
 	{
 		expression.interprete
 	}
 
-	static def dispatch ExpressionValue interprete(Constant it) 
+	static def dispatch NablaValue interprete(Constant it) 
 	{ 
-		val t = type
-		switch t
+		val t = type as Scalar
+		switch t.primitive
 		{
-			Scalar case t.primitive == PrimitiveType::INT: new IntValue(Integer.parseInt(value)) 
-			Scalar case t.primitive == PrimitiveType::REAL: new RealValue(Double.parseDouble(value))
-			Scalar case t.primitive == PrimitiveType::BOOL: new BoolValue(Boolean.parseBoolean(value))
+			case BOOL: new NSVBoolScalar(Boolean.parseBoolean(value))
+			case INT: new NSVIntScalar(Integer.parseInt(value))
+			case REAL: new NSVRealScalar(Double.parseDouble(value))
 			default: throw new UnexpectedTypeException(#["Int", "Real", "Bool"], t.label)
 		}
 	}
 	
-	static def dispatch ExpressionValue interprete(MinConstant it)
+	static def dispatch NablaValue interprete(MinConstant it)
 	{
-		val t = type
-		switch t
+		val t = type as Scalar
+		switch t.primitive
 		{
-			Scalar case t.primitive == PrimitiveType::INT: new IntValue(Integer.MIN_VALUE)
-			Scalar case t.primitive == PrimitiveType::REAL: new RealValue(Double.MIN_VALUE)
+			case INT: new NSVIntScalar(Integer.MIN_VALUE)
+			case REAL: new NSVRealScalar(Double.MIN_VALUE)
 			default: throw new UnexpectedTypeException(#["Int", "Real"], t.label)
 		}
 	}
 	
-	static def dispatch ExpressionValue interprete(MaxConstant it)
+	static def dispatch NablaValue interprete(MaxConstant it)
 	{
-		val t = type
-		switch t
+		val t = type as Scalar
+		switch t.primitive
 		{
-			Scalar case t.primitive == PrimitiveType::INT: new IntValue(Integer.MAX_VALUE)
-			Scalar case t.primitive == PrimitiveType::REAL: new RealValue(Double.MAX_VALUE)
+			case INT: new NSVIntScalar(Integer.MAX_VALUE)
+			case REAL: new NSVRealScalar(Double.MAX_VALUE)
 			default: throw new UnexpectedTypeException(#["Int", "Real"], t.label)
 		}
 	}
 
-	static def dispatch ExpressionValue interprete(BaseTypeConstant it)
+	static def dispatch NablaValue interprete(BaseTypeConstant it)
 	{
-		val expressionValue = value.interprete
+		val expressionValue = value.interprete as NSVScalar
 		val t = type
 		switch t
 		{
-			Array1D : buildArrayValue(#[t.size], expressionValue)
-			Array2D : buildArrayValue(#[t.nbRows, t.nbCols], expressionValue)
+			Array1D : buildArrayValue(t.size, expressionValue)
+			Array2D : buildArrayValue(t.nbRows, t.nbCols, expressionValue)
 			default: throw new RuntimeException('Wrong path...')
 		}
 	}
 	
-	static def dispatch ExpressionValue interprete(IntVectorConstant it)
-	{
-		val sizes = newIntArrayOfSize(1)
-		sizes.set(0, values.size)
-		new IntArrayValue(sizes, values)
-	}
+	static def dispatch NablaValue interprete(IntVectorConstant it) { new NSVIntArray1D(values) }
+	static def dispatch NablaValue interprete(IntMatrixConstant it) { new NSVIntArray2D(toArray) }
+	static def dispatch NablaValue interprete(RealVectorConstant it) { new NSVRealArray1D(values) }
+	static def dispatch NablaValue interprete(RealMatrixConstant it) { new NSVRealArray2D(toArray) }
 
-	static def dispatch ExpressionValue interprete(IntMatrixConstant it)
-	{
-		val sizes = newIntArrayOfSize(2)
-		sizes.set(0, values.size)
-		sizes.set(1, values.get(0).values.size)
-		val flatValues = newIntArrayOfSize(sizes.totalSize)
-		var i = 0
-		for (row : values)
-			for(col : row.values)
-				flatValues.set(i++, col)
-		new IntArrayValue(sizes, flatValues)
-	}
-
-	static def dispatch ExpressionValue interprete(RealVectorConstant it)
-	{
-		val sizes = newIntArrayOfSize(1)
-		sizes.set(0, values.size)
-		new RealArrayValue(sizes, values)
-	}
-
-	static def dispatch ExpressionValue interprete(RealMatrixConstant it)
-	{
-		val sizes = newIntArrayOfSize(2)
-		sizes.set(0, values.size)
-		sizes.set(1, values.get(0).values.size)
-		val flatValues = newDoubleArrayOfSize(sizes.totalSize)
-		var i = 0
-		for (row : values)
-			for(col : row.values)
-				flatValues.set(i++, col)
-		new RealArrayValue(sizes, flatValues)
-	}
-
-	static def dispatch ExpressionValue interprete(FunctionCall it)
+	static def dispatch NablaValue interprete(FunctionCall it)
 	{
 		val providerClassName = function.provider + fr.cea.nabla.ir.Utils::FunctionAndReductionproviderSuffix
 		val providerClass = Class.forName(providerClassName)
 		val types = args.map[x | x.type.javaType]
 		val method = providerClass.getMethod(function.name, types)
-		val argValues = args.map[x|x.interprete.boxedValue]
+		val argValues = args.map[x|x.interprete]
 		val result = method.invoke(providerClass, argValues)
 		return result.expressionValue
 	}
 
-	static def dispatch ExpressionValue interprete(VarRef it)
+	static def dispatch NablaValue interprete(VarRef it)
 	{
 		// TODO
 		throw new RuntimeException('Not yet implemented')	
 	}
 	
-	private static def dispatch Class<?> getJavaType(PrimitiveType t) { getJavaType(t, 0) }
-	private static def dispatch Class<?> getJavaType(BaseType t) { getJavaType(t.primitive, t.nbDimensions) }
-	private static def dispatch Class<?> getJavaType(ConnectivityType t) { getJavaType(t.base.primitive, t.nbDimensions) }
-
-	private static def dispatch int getNbDimensions(PrimitiveType t) { 0 }
-	private static def dispatch int getNbDimensions(Scalar t) { 0 }
-	private static def dispatch int getNbDimensions(Array1D t) { 1 }
-	private static def dispatch int getNbDimensions(Array2D t) { 2 }
-	private static def dispatch int getNbDimensions(ConnectivityType t) { t.base.nbDimensions + t.connectivities.size }
-
-	private static def Class<?> getJavaType(PrimitiveType t, int nbDimensions)
-	{
-		switch t
-		{
-			case null: typeof(void)
-			case BOOL: getBoolType(nbDimensions)
-			case INT: getIntType(nbDimensions)
-			case REAL: getRealType(nbDimensions)
-		}
-	}
+	private static def dispatch Class<?> getJavaType(NSVBoolScalar it, int inc) { getJavaBoolType(inc) }
+	private static def dispatch Class<?> getJavaType(NSVIntScalar it, int inc) { getJavaIntType(inc) }
+	private static def dispatch Class<?> getJavaType(NSVRealScalar it, int inc) { getJavaRealType(inc) }
+	private static def dispatch Class<?> getJavaType(NSVBoolArray1D it, int inc) { getJavaBoolType(1 + inc) }
+	private static def dispatch Class<?> getJavaType(NSVIntArray1D it, int inc) { getJavaIntType(1 + inc) }
+	private static def dispatch Class<?> getJavaType(NSVRealArray1D it, int inc) { getJavaRealType(1 + inc) }
+	private static def dispatch Class<?> getJavaType(NSVBoolArray2D it, int inc) { getJavaBoolType(2 + inc) }
+	private static def dispatch Class<?> getJavaType(NSVIntArray2D it, int inc) { getJavaIntType(2 + inc) }
+	private static def dispatch Class<?> getJavaType(NSVRealArray2D it, int inc) { getJavaRealType(2 + inc) }
+	private static def dispatch Class<?> getJavaType(NablaConnectivityValue it) { values.get(0).getJavaType(values.size) }
 	
-	private static def Class<?> getRealType(int nbDimensions)
-	{
-		switch nbDimensions
-		{
-			case 0: double
-			case 1: typeof(double[])
-			case 2: typeof(double[][])
-			case 3: typeof(double[][][])
-			case 4: typeof(double[][][][])
-			default: throw new RuntimeException('Invalid type')
-		}
-	}
-
-	private static def Class<?> getIntType(int nbDimensions)
-	{
-		switch nbDimensions
-		{
-			case 0: int
-			case 1: typeof(int[])
-			case 2: typeof(int[][])
-			case 3: typeof(int[][][])
-			case 4: typeof(int[][][][])
-			default: throw new RuntimeException('Invalid type')
-		}
-	}
-
-	private static def Class<?> getBoolType(int nbDimensions)
+	private static def Class<?> getJavaBoolType(int nbDimensions)
 	{
 		switch nbDimensions
 		{
@@ -221,7 +172,33 @@ class ExpressionInterpreter
 		}
 	}
 
-	private static def getExpressionValue(Object o)
+	private static def Class<?> getJavaIntType(int nbDimensions)
+	{
+		switch nbDimensions
+		{
+			case 0: int
+			case 1: typeof(int[])
+			case 2: typeof(int[][])
+			case 3: typeof(int[][][])
+			case 4: typeof(int[][][][])
+			default: throw new RuntimeException('Invalid type')
+		}
+	}
+
+	private static def Class<?> getJavaRealType(int nbDimensions)
+	{
+		switch nbDimensions
+		{
+			case 0: double
+			case 1: typeof(double[])
+			case 2: typeof(double[][])
+			case 3: typeof(double[][][])
+			case 4: typeof(double[][][][])
+			default: throw new RuntimeException('Invalid type')
+		}
+	}
+
+	private static def getNablaValue(Object o)
 	{
 		switch o
 		{
@@ -232,42 +209,71 @@ class ExpressionInterpreter
 		}
 	}
 	
-	private static def dispatch ExpressionValue buildArrayValue(int[] sizes, BoolValue value)
+	private static def dispatch NablaValue buildArrayValue(int size, NSVBoolScalar value)
 	{
-		val totalSize = sizes.totalSize
-		if (totalSize == 0) 
-			return value
-		else 
-		{
-			val values = newBooleanArrayOfSize(totalSize)
-			Arrays.fill(values, value.value)
-			return new BoolArrayValue(sizes, values)
-		}
+		val values = newBooleanArrayOfSize(size)
+		Arrays.fill(values, value.value)
+		return new NSVBoolArray1D(values)
 	}
 	
-	private static def dispatch ExpressionValue buildArrayValue(int[] sizes, IntValue value)
+	private static def dispatch NablaValue buildArrayValue(int size, NSVIntScalar value)
 	{
-		val totalSize = sizes.totalSize
-		if (totalSize == 0) 
-			return value
-		else 
-		{
-			val values = newIntArrayOfSize(totalSize)
-			Arrays.fill(values, value.value)
-			return new IntArrayValue(sizes, values)
-		}
+		val values = newIntArrayOfSize(size)
+		Arrays.fill(values, value.value)
+		return new NSVIntArray1D(values)
 	}
 
-	private static def dispatch ExpressionValue buildArrayValue(int[] sizes, RealValue value)
+	private static def dispatch NablaValue buildArrayValue(int size, NSVRealScalar value)
 	{
-		val totalSize = sizes.totalSize
-		if (totalSize == 0) 
-			return value
-		else 
+		val values = newDoubleArrayOfSize(size)
+		Arrays.fill(values, value.value)
+		return new NSVRealArray1D(values)
+	}
+	
+	private static def dispatch NablaValue buildArrayValue(int nbRows, int nbCols, NSVBoolScalar value)
+	{
+		val values = newArrayOfSize(nbRows).map[newBooleanArrayOfSize(nbCols)]
+		values.forEach[x | Arrays.fill(x, value.value)]
+		return new NSVBoolArray2D(values)
+	}
+
+	private static def dispatch NablaValue buildArrayValue(int nbRows, int nbCols, NSVIntScalar value)
+	{
+		val values = newArrayOfSize(nbRows).map[newIntArrayOfSize(nbCols)]
+		values.forEach[x | Arrays.fill(x, value.value)]
+		return new NSVIntArray2D(values)
+	}
+
+	private static def dispatch NablaValue buildArrayValue(int nbRows, int nbCols, NSVRealScalar value)
+	{
+		val values = newArrayOfSize(nbRows).map[newDoubleArrayOfSize(nbCols)]
+		values.forEach[x | Arrays.fill(x, value.value)]
+		return new NSVRealArray2D(values)
+	}
+	
+	private static def int[][] toArray(IntMatrixConstant it)
+	{
+		val newRows = newArrayOfSize(values.size)
+		for (i : 0..<newRows.size) 
 		{
-			val values = newDoubleArrayOfSize(totalSize)
-			Arrays.fill(values, value.value)
-			return new RealArrayValue(sizes, values)
+			val row = values.get(i)
+			val newCols = newIntArrayOfSize(row.values.size)
+			for (j: 0..<newCols.size) newCols.set(j, row.values.get(j))
+			newRows.set(i, newCols)
 		}
+		return newRows
+	}
+
+	private static def double[][] toArray(RealMatrixConstant it)
+	{
+		val newRows = newArrayOfSize(values.size)
+		for (i : 0..<newRows.size) 
+		{
+			val row = values.get(i)
+			val newCols = newDoubleArrayOfSize(row.values.size)
+			for (j: 0..<newCols.size) newCols.set(j, row.values.get(j))
+			newRows.set(i, newCols)
+		}
+		return newRows
 	}
 }

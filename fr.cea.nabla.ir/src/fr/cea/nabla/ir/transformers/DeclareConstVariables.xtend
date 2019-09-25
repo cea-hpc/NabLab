@@ -5,6 +5,7 @@ import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.VarRef
+import org.eclipse.emf.ecore.util.EcoreUtil
 
 import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
 
@@ -60,8 +61,7 @@ class DeclareConstVariables implements IrTransformationStep
 		[
 			const = true
 			name = 'const_' + v.name
-			type = v.type
-			v.supports.forEach[x | supports += x]
+			type = EcoreUtil::copy(type)
 			defaultValue = IrFactory::eINSTANCE.createVarRef => [ variable = v ]
 		]
 	}

@@ -1,101 +1,30 @@
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.ir.Connectivity
 import org.eclipse.xtend.lib.annotations.Data
 
-abstract class NablaValue 
-{
-}
+interface NablaValue { }
 
-@Data
-abstract class NablaSimpleValue extends NablaValue
-{
-}
+@Data class NV0Bool implements NablaValue { boolean data }
+@Data class NV0Int implements NablaValue { int data }
+@Data class NV0Real implements NablaValue { double data }
 
-@Data
-abstract class NSVScalar extends NablaSimpleValue
-{
-}
+@Data class NV1Bool implements NablaValue { boolean[] data }
+@Data class NV1Int implements NablaValue { int[] data }
+@Data class NV1Real implements NablaValue { double[] data }
 
-@Data
-abstract class NSVArray1D extends NablaSimpleValue
-{
-	abstract def int getSize()
-}
+@Data class NV2Bool implements NablaValue { boolean[][] data }
+@Data class NV2Int implements NablaValue { int[][] data }
+@Data class NV2Real implements NablaValue { double[][] data }
 
-@Data
-abstract class NSVArray2D extends NablaSimpleValue 
-{
-	abstract def int getNbRows()
-	abstract def int getNbCols()
-}
+@Data class NV3Bool implements NablaValue { boolean[][][] data }
+@Data class NV3Int implements NablaValue { int[][][] data }
+@Data class NV3Real implements NablaValue { double[][][] data }
 
-@Data
-class NSVBoolScalar extends NSVScalar
-{
-	boolean value
-}
-
-@Data
-class NSVBoolArray1D extends NSVArray1D
-{
-	val boolean[] values
-	override getSize() { values.size }
-}
-
-@Data
-class NSVBoolArray2D extends NSVArray2D
-{
-	val boolean[][] values
-	override getNbRows() { values.size }
-	override getNbCols() { values.get(0).size }
-}
-
-@Data
-class NSVIntScalar extends NSVScalar
-{
-	int value
-}
-
-@Data
-class NSVIntArray1D extends NSVArray1D
-{
-	val int[] values
-	override getSize() { values.size }
-}
-
-@Data
-class NSVIntArray2D extends NSVArray2D
-{
-	val int[][] values
-	override getNbRows() { values.size }
-	override getNbCols() { values.get(0).size }
-}
-
-@Data
-class NSVRealScalar extends NSVScalar
-{
-	double value
-}
-
-@Data
-class NSVRealArray1D extends NSVArray1D
-{
-	val double[] values
-	override getSize() { values.size }
-}
-
-@Data
-class NSVRealArray2D extends NSVArray2D
-{
-	val double[][] values
-	override getNbRows() { values.size }
-	override getNbCols() { values.get(0).size }
-}
-
-@Data
-class NablaConnectivityValue extends NablaValue
-{
-	val Connectivity[] connectivities
-	val NablaSimpleValue[] values
-}
+/*
+ * Should test it... 
+@Data class NV0<T> implements NablaValue { T data }
+@Data class NV1<T> implements NablaValue { T[] data }
+@Data class NV2<T> implements NablaValue { T[][] data }
+@Data class NV3<T> implements NablaValue { T[][][] data }
+* 
+*/

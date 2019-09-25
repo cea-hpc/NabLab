@@ -42,7 +42,7 @@ class JobContentProvider
 		HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 		HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
 		«FOR v : variables.filter(ConnectivityVariable)»
-		«v.supports.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
+		«v.type.connectivities.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 		«ENDFOR»
 		writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
 	'''

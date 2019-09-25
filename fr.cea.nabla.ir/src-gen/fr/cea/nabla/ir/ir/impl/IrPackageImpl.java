@@ -681,17 +681,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getVariable_Type() {
-		return (EReference)variableEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EAttribute getVariable_PersistenceName() {
-		return (EAttribute)variableEClass.getEStructuralFeatures().get(2);
+		return (EAttribute)variableEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -700,7 +691,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	public EAttribute getVariable_Const() {
-		return (EAttribute)variableEClass.getEStructuralFeatures().get(3);
+		return (EAttribute)variableEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -717,8 +708,17 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getSimpleVariable_DefaultValue() {
+	public EReference getSimpleVariable_Type() {
 		return (EReference)simpleVariableEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getSimpleVariable_DefaultValue() {
+		return (EReference)simpleVariableEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -735,7 +735,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getConnectivityVariable_Supports() {
+	public EReference getConnectivityVariable_Type() {
 		return (EReference)connectivityVariableEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -1897,15 +1897,15 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		variableEClass = createEClass(VARIABLE);
 		createEAttribute(variableEClass, VARIABLE__NAME);
-		createEReference(variableEClass, VARIABLE__TYPE);
 		createEAttribute(variableEClass, VARIABLE__PERSISTENCE_NAME);
 		createEAttribute(variableEClass, VARIABLE__CONST);
 
 		simpleVariableEClass = createEClass(SIMPLE_VARIABLE);
+		createEReference(simpleVariableEClass, SIMPLE_VARIABLE__TYPE);
 		createEReference(simpleVariableEClass, SIMPLE_VARIABLE__DEFAULT_VALUE);
 
 		connectivityVariableEClass = createEClass(CONNECTIVITY_VARIABLE);
-		createEReference(connectivityVariableEClass, CONNECTIVITY_VARIABLE__SUPPORTS);
+		createEReference(connectivityVariableEClass, CONNECTIVITY_VARIABLE__TYPE);
 		createEReference(connectivityVariableEClass, CONNECTIVITY_VARIABLE__DEFAULT_VALUE);
 
 		functionEClass = createEClass(FUNCTION);
@@ -2180,15 +2180,15 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(variableEClass, Variable.class, "Variable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getVariable_Name(), ecorePackage.getEString(), "name", null, 1, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getVariable_Type(), this.getBaseType(), null, "type", null, 1, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getVariable_PersistenceName(), ecorePackage.getEString(), "persistenceName", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getVariable_Const(), ecorePackage.getEBoolean(), "const", "false", 1, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(simpleVariableEClass, SimpleVariable.class, "SimpleVariable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getSimpleVariable_Type(), this.getBaseType(), null, "type", null, 1, 1, SimpleVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getSimpleVariable_DefaultValue(), this.getExpression(), null, "defaultValue", null, 0, 1, SimpleVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(connectivityVariableEClass, ConnectivityVariable.class, "ConnectivityVariable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getConnectivityVariable_Supports(), this.getConnectivity(), null, "supports", null, 1, -1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getConnectivityVariable_Type(), this.getConnectivityType(), null, "type", null, 1, 1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getConnectivityVariable_DefaultValue(), this.getVarRef(), null, "defaultValue", null, 0, 1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionEClass, Function.class, "Function", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

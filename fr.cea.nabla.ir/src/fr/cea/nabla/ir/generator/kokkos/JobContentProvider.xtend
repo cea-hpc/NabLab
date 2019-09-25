@@ -36,7 +36,7 @@ abstract class JobContentProvider
 			std::map<string, double*> cellVariables;
 			std::map<string, double*> nodeVariables;
 			«FOR v : variables.filter(ConnectivityVariable)»
-			«v.supports.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
+			«v.type.connectivities.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
 			«ENDFOR»
 			auto quads = mesh->getGeometricMesh()->getQuads();
 			writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);

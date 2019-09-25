@@ -42,7 +42,7 @@ class Utils
 	static def getUsedConnectivities(IrModule it)
 	{
 		// connectivités nécessaires pour les variables
-		val connectivities = variables.filter(ConnectivityVariable).map[supports].flatten.toSet
+		val connectivities = variables.filter(ConnectivityVariable).map[type.connectivities].flatten.toSet
 		// connectivités utilisées dans le code
 		jobs.forEach[j | connectivities += j.eAllContents.filter(ConnectivityCall).map[connectivity].toSet]
 
@@ -80,6 +80,6 @@ class Utils
 	
 	static def getPersistentVariables(IrModule it) 
 	{ 
-		variables.filter(ConnectivityVariable).filter[x|x.persistenceName !== null && x.supports.size==1]
+		variables.filter(ConnectivityVariable).filter[x|x.persistenceName !== null && x.type.connectivities.size==1]
 	}
 }

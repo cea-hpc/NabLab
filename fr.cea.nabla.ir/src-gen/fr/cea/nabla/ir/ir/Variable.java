@@ -13,7 +13,6 @@ package fr.cea.nabla.ir.ir;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getName <em>Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Variable#getType <em>Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getPersistenceName <em>Persistence Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#isConst <em>Const</em>}</li>
  * </ul>
@@ -48,32 +47,6 @@ public interface Variable extends IrAnnotable {
 	 * @generated
 	 */
 	void setName(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Type</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Type</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Type</em>' containment reference.
-	 * @see #setType(BaseType)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getVariable_Type()
-	 * @model containment="true" resolveProxies="true" required="true"
-	 * @generated
-	 */
-	BaseType getType();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Variable#getType <em>Type</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Type</em>' containment reference.
-	 * @see #getType()
-	 * @generated
-	 */
-	void setType(BaseType value);
 
 	/**
 	 * Returns the value of the '<em><b>Persistence Name</b></em>' attribute.

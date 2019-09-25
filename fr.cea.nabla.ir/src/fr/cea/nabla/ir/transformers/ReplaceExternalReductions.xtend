@@ -80,7 +80,7 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 
 	/**
 	 * Si l'argument de la réduction est une VarRef, retourne cette VarRef
-	 * sinon crée un job pour calculer l'expression, une variable por stocker le
+	 * sinon crée un job pour calculer l'expression, une variable pour stocker le
 	 * résultat et retourne cette variable.
 	 * Ex 1 : X = sum(j E cells)(Yj + 4) + Z, retourne une variable aux mailles avec valeur de Yj+4.
 	 * Ex 2 : X = sum(j E cells)(Yj) + Z retourne Yj
@@ -96,8 +96,11 @@ class ReplaceExternalReductions extends ReplaceReductionsBase implements IrTrans
 			val argValue = IrFactory::eINSTANCE.createConnectivityVariable =>
 			[
 				name = reductionInstr.result.name + 'ArgValue'
-				type = reductionInstr.result.type
-				supports += reductionInstr.range.container.connectivity
+				type = IrFactory::eINSTANCE.createConnectivityType =>
+				[
+					base = reductionInstr.result.type
+					connectivities += reductionInstr.range.container.connectivity
+				]
 			]
 			m.variables += argValue
 			

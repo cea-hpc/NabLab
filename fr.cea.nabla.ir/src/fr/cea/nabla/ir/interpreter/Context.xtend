@@ -9,4 +9,7 @@ class Context
 {
 	@Accessors val connectivitySizes = new HashMap<Connectivity, Integer>
 	@Accessors val variableValues = new HashMap<Variable, NablaValue>
+	
+	// if multi-thread interpreter, must be placed into an inner context
+	@Accessors val iteratorRefValues = new HashMap<String, Integer>
 }

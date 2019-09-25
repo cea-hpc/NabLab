@@ -10,8 +10,10 @@
 package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.VarRef
@@ -24,6 +26,15 @@ import static extension fr.cea.nabla.ir.Utils.*
 
 class VariableExtensions 
 {
+	static def IrType getType(Variable it)
+	{
+		switch it
+		{
+			SimpleVariable: type
+			ConnectivityVariable: type
+		}
+	}
+	
 	static def isScalarConst(Variable it)
 	{
 		(it instanceof SimpleVariable) && (it as SimpleVariable).const

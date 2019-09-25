@@ -27,7 +27,7 @@ class VariableExtensions
 	{
 		if (linearAlgebra)
 		{
-			switch supports.size
+			switch type.connectivities.size
 			{
 				case 1: return 'Vector'
 				case 2: return 'Matrix'
@@ -37,7 +37,7 @@ class VariableExtensions
 		else
 		{
 			var t = getType.javaType 
-			for (d : supports) t += '[]'
+			for (d : type.connectivities) t += '[]'
 			return t	
 		}
 	}

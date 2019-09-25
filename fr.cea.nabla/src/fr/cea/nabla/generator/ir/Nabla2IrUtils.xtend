@@ -12,13 +12,10 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.nabla.Array1D
-import fr.cea.nabla.nabla.Array2D
 import fr.cea.nabla.nabla.Import
 import fr.cea.nabla.nabla.ItemArgType
 import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.PrimitiveType
-import fr.cea.nabla.nabla.Scalar
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -52,33 +49,5 @@ class Nabla2IrUtils
 	{
 		importedNamespace = i.importedNamespace
 		annotations += i.toIrAnnotation
-	}
-	
-	// No create method to ensure a new instance every time (for n+1 time variables)
-	def dispatch toIrBaseType(Scalar i)
-	{
-		IrFactory::eINSTANCE.createScalar => 
-		[
-			primitive = i.primitive.toIrPrimitiveType
-		]
-	}
-
-	def dispatch toIrBaseType(Array1D i)
-	{
-		IrFactory::eINSTANCE.createArray1D => 
-		[
-			primitive = i.primitive.toIrPrimitiveType
-			size = i.size
-		]
-	}
-
-	def dispatch toIrBaseType(Array2D i)
-	{
-		IrFactory::eINSTANCE.createArray2D => 
-		[
-			primitive = i.primitive.toIrPrimitiveType
-			nbRows = i.nbRows
-			nbCols = i.nbCols
-		]
 	}
 }

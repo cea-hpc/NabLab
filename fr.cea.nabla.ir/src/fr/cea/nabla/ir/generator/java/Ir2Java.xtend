@@ -13,11 +13,13 @@ import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Array1D
 import fr.cea.nabla.ir.ir.Array2D
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Scalar
 import fr.cea.nabla.ir.ir.SimpleVariable
 
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
@@ -107,7 +109,7 @@ class Ir2Java extends CodeGenerator
 						«IF a.linearAlgebra»
 							«a.name» = «a.linearAlgebraDefinition»;
 						«ELSE»
-							«a.name» = new «a.type.primitive.javaType»«FOR d : a.supports»[«d.nbElems»]«ENDFOR»«a.type.dimensionContent»;
+							«a.name» = new «a.type.primitive.javaType»«a.type.dimensionContent»;
 						«ENDIF»
 					«ELSEIF a instanceof SimpleVariable && !(a.type instanceof Scalar)»
 						«a.name» = new «a.type.primitive.javaType»«a.type.dimensionContent»;
@@ -167,15 +169,16 @@ class Ir2Java extends CodeGenerator
 	
 	private def getLinearAlgebraDefinition(ConnectivityVariable v)
 	{
-		switch v.supports.size
+		switch v.type.connectivities.size
 		{
-			case 1: 'Vector.createDenseVector(' + v.supports.get(0).nbElems + ')'
-			case 2: 'Matrix.createDenseMatrix(' + v.supports.map[nbElems].join(', ') + ')'
+			case 1: 'Vector.createDenseVector(' + v.type.connectivities.get(0).nbElems + ')'
+			case 2: 'Matrix.createDenseMatrix(' + v.type.connectivities.map[nbElems].join(', ') + ')'
 			default: throw new RuntimeException("Not implemented exception")
 		}
 	}
 
-	private def dispatch String getDimensionContent(Scalar it) { '' }
-	private def dispatch String getDimensionContent(Array1D it) { '[' + size + ']' }
-	private def dispatch String getDimensionContent(Array2D it) { '[' + nbRows + '][' + nbCols + ']' }
+	private def dispatch String getDimensionContent(Scalar it) ''''''
+	private def dispatch String getDimensionContent(Array1D it) '''[«size»]'''
+	private def dispatch String getDimensionContent(Array2D it) '''[«nbRows»][«nbCols»]'''
+	private def dispatch String getDimensionContent(ConnectivityType it) '''«FOR c : connectivities»[«c.nbElems»]«ENDFOR»«base.dimensionContent»'''
 }

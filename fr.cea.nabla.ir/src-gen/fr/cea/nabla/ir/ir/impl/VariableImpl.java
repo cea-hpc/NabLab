@@ -2,16 +2,11 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Variable;
 
 import org.eclipse.emf.common.notify.Notification;
-
-import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
-
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
@@ -23,7 +18,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getName <em>Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getType <em>Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getPersistenceName <em>Persistence Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#isConst <em>Const</em>}</li>
  * </ul>
@@ -50,16 +44,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 	 * @ordered
 	 */
 	protected String name = NAME_EDEFAULT;
-
-	/**
-	 * The cached value of the '{@link #getType() <em>Type</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getType()
-	 * @generated
-	 * @ordered
-	 */
-	protected BaseType type;
 
 	/**
 	 * The default value of the '{@link #getPersistenceName() <em>Persistence Name</em>}' attribute.
@@ -146,72 +130,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BaseType getType() {
-		if (type != null && type.eIsProxy()) {
-			InternalEObject oldType = (InternalEObject)type;
-			type = (BaseType)eResolveProxy(oldType);
-			if (type != oldType) {
-				InternalEObject newType = (InternalEObject)type;
-				NotificationChain msgs = oldType.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.VARIABLE__TYPE, null, null);
-				if (newType.eInternalContainer() == null) {
-					msgs = newType.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.VARIABLE__TYPE, null, msgs);
-				}
-				if (msgs != null) msgs.dispatch();
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.VARIABLE__TYPE, oldType, type));
-			}
-		}
-		return type;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public BaseType basicGetType() {
-		return type;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetType(BaseType newType, NotificationChain msgs) {
-		BaseType oldType = type;
-		type = newType;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.VARIABLE__TYPE, oldType, newType);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setType(BaseType newType) {
-		if (newType != type) {
-			NotificationChain msgs = null;
-			if (type != null)
-				msgs = ((InternalEObject)type).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.VARIABLE__TYPE, null, msgs);
-			if (newType != null)
-				msgs = ((InternalEObject)newType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.VARIABLE__TYPE, null, msgs);
-			msgs = basicSetType(newType, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.VARIABLE__TYPE, newType, newType));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public String getPersistenceName() {
 		return persistenceName;
 	}
@@ -255,27 +173,10 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case IrPackage.VARIABLE__TYPE:
-				return basicSetType(null, msgs);
-		}
-		return super.eInverseRemove(otherEnd, featureID, msgs);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case IrPackage.VARIABLE__NAME:
 				return getName();
-			case IrPackage.VARIABLE__TYPE:
-				if (resolve) return getType();
-				return basicGetType();
 			case IrPackage.VARIABLE__PERSISTENCE_NAME:
 				return getPersistenceName();
 			case IrPackage.VARIABLE__CONST:
@@ -294,9 +195,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 		switch (featureID) {
 			case IrPackage.VARIABLE__NAME:
 				setName((String)newValue);
-				return;
-			case IrPackage.VARIABLE__TYPE:
-				setType((BaseType)newValue);
 				return;
 			case IrPackage.VARIABLE__PERSISTENCE_NAME:
 				setPersistenceName((String)newValue);
@@ -319,9 +217,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 			case IrPackage.VARIABLE__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case IrPackage.VARIABLE__TYPE:
-				setType((BaseType)null);
-				return;
 			case IrPackage.VARIABLE__PERSISTENCE_NAME:
 				setPersistenceName(PERSISTENCE_NAME_EDEFAULT);
 				return;
@@ -342,8 +237,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 		switch (featureID) {
 			case IrPackage.VARIABLE__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case IrPackage.VARIABLE__TYPE:
-				return type != null;
 			case IrPackage.VARIABLE__PERSISTENCE_NAME:
 				return PERSISTENCE_NAME_EDEFAULT == null ? persistenceName != null : !PERSISTENCE_NAME_EDEFAULT.equals(persistenceName);
 			case IrPackage.VARIABLE__CONST:

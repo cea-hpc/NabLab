@@ -135,7 +135,7 @@ class ExpressionContentProvider
 	{ 
 		if (iterators.empty || variable instanceof SimpleVariable) return ''
 		val array = variable as ConnectivityVariable
-		if (array.supports.size < iterators.size) return ''
+		if (array.type.connectivities.size < iterators.size) return ''
 		var content = new ArrayList<CharSequence>
 		for (r : iterators)
 			content += r.indexName				

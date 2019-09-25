@@ -26,7 +26,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 class ReductionCallExtensions 
 {
 	@Inject extension DeclarationProvider
-	@Inject extension IrTypeFactory
+	@Inject extension NablaType2IrType
 	@Inject extension IrExpressionFactory
 	
 	def create IrFactory::eINSTANCE.createSimpleVariable toIrLocalVariable(ReductionCall rc)

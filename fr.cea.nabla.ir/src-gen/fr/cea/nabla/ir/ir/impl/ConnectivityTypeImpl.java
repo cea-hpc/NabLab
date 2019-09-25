@@ -78,15 +78,19 @@ public class ConnectivityTypeImpl extends IrTypeImpl implements ConnectivityType
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * @generated NOT FIXME workaround BUG 89325
 	 */
+	@SuppressWarnings("serial")
 	public EList<Connectivity> getConnectivities() {
 		if (connectivities == null) {
-			connectivities = new EObjectResolvingEList<Connectivity>(Connectivity.class, this, IrPackage.CONNECTIVITY_TYPE__CONNECTIVITIES);
+			connectivities = new EObjectResolvingEList<Connectivity>(Connectivity.class, this, IrPackage.CONNECTIVITY_TYPE__CONNECTIVITIES) {
+				@Override
+	    		protected boolean isUnique() { return false; }
+			};
 		}
 		return connectivities;
 	}
-
+	
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

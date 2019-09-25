@@ -30,9 +30,8 @@ class IrVariableFactory
 {
 	@Inject extension VarExtensions
 	@Inject extension IrExpressionFactory
-	@Inject extension Nabla2IrUtils
+	@Inject extension BaseType2IrType
 	@Inject extension IrAnnotationHelper
-	@Inject extension IrConnectivityFactory
 
 	/**
 	 * Cette méthode permet de construire une variable IR depuis
@@ -72,8 +71,7 @@ class IrVariableFactory
 	{
 		annotations += v.toIrAnnotation
 		name = varName
-		type = v.baseType.toIrBaseType
+		type = toIrConnectivityType(v.baseType, v.supports)
 		const = v.const
-		v.supports.forEach[x | supports += x.toIrConnectivity]
 	}
 }

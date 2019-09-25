@@ -334,22 +334,13 @@ public interface IrPackage extends EPackage {
 	int VARIABLE__NAME = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Type</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int VARIABLE__TYPE = IR_ANNOTABLE_FEATURE_COUNT + 1;
-
-	/**
 	 * The feature id for the '<em><b>Persistence Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE__PERSISTENCE_NAME = IR_ANNOTABLE_FEATURE_COUNT + 2;
+	int VARIABLE__PERSISTENCE_NAME = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Const</b></em>' attribute.
@@ -358,7 +349,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE__CONST = IR_ANNOTABLE_FEATURE_COUNT + 3;
+	int VARIABLE__CONST = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Variable</em>' class.
@@ -367,7 +358,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int VARIABLE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of operations of the '<em>Variable</em>' class.
@@ -407,15 +398,6 @@ public interface IrPackage extends EPackage {
 	int SIMPLE_VARIABLE__NAME = VARIABLE__NAME;
 
 	/**
-	 * The feature id for the '<em><b>Type</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIMPLE_VARIABLE__TYPE = VARIABLE__TYPE;
-
-	/**
 	 * The feature id for the '<em><b>Persistence Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -434,13 +416,22 @@ public interface IrPackage extends EPackage {
 	int SIMPLE_VARIABLE__CONST = VARIABLE__CONST;
 
 	/**
+	 * The feature id for the '<em><b>Type</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SIMPLE_VARIABLE__TYPE = VARIABLE_FEATURE_COUNT + 0;
+
+	/**
 	 * The feature id for the '<em><b>Default Value</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SIMPLE_VARIABLE__DEFAULT_VALUE = VARIABLE_FEATURE_COUNT + 0;
+	int SIMPLE_VARIABLE__DEFAULT_VALUE = VARIABLE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Simple Variable</em>' class.
@@ -449,7 +440,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SIMPLE_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 1;
+	int SIMPLE_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Simple Variable</em>' class.
@@ -489,15 +480,6 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY_VARIABLE__NAME = VARIABLE__NAME;
 
 	/**
-	 * The feature id for the '<em><b>Type</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_VARIABLE__TYPE = VARIABLE__TYPE;
-
-	/**
 	 * The feature id for the '<em><b>Persistence Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -516,13 +498,13 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY_VARIABLE__CONST = VARIABLE__CONST;
 
 	/**
-	 * The feature id for the '<em><b>Supports</b></em>' reference list.
+	 * The feature id for the '<em><b>Type</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY_VARIABLE__SUPPORTS = VARIABLE_FEATURE_COUNT + 0;
+	int CONNECTIVITY_VARIABLE__TYPE = VARIABLE_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Default Value</b></em>' containment reference.
@@ -3521,17 +3503,6 @@ public interface IrPackage extends EPackage {
 	EAttribute getVariable_Name();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.Variable#getType <em>Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Type</em>'.
-	 * @see fr.cea.nabla.ir.ir.Variable#getType()
-	 * @see #getVariable()
-	 * @generated
-	 */
-	EReference getVariable_Type();
-
-	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Variable#getPersistenceName <em>Persistence Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3564,6 +3535,17 @@ public interface IrPackage extends EPackage {
 	EClass getSimpleVariable();
 
 	/**
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.SimpleVariable#getType <em>Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Type</em>'.
+	 * @see fr.cea.nabla.ir.ir.SimpleVariable#getType()
+	 * @see #getSimpleVariable()
+	 * @generated
+	 */
+	EReference getSimpleVariable_Type();
+
+	/**
 	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.SimpleVariable#getDefaultValue <em>Default Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3585,15 +3567,15 @@ public interface IrPackage extends EPackage {
 	EClass getConnectivityVariable();
 
 	/**
-	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.ConnectivityVariable#getSupports <em>Supports</em>}'.
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.ConnectivityVariable#getType <em>Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Supports</em>'.
-	 * @see fr.cea.nabla.ir.ir.ConnectivityVariable#getSupports()
+	 * @return the meta object for the containment reference '<em>Type</em>'.
+	 * @see fr.cea.nabla.ir.ir.ConnectivityVariable#getType()
 	 * @see #getConnectivityVariable()
 	 * @generated
 	 */
-	EReference getConnectivityVariable_Supports();
+	EReference getConnectivityVariable_Type();
 
 	/**
 	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.ConnectivityVariable#getDefaultValue <em>Default Value</em>}'.
@@ -5088,14 +5070,6 @@ public interface IrPackage extends EPackage {
 		EAttribute VARIABLE__NAME = eINSTANCE.getVariable_Name();
 
 		/**
-		 * The meta object literal for the '<em><b>Type</b></em>' containment reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference VARIABLE__TYPE = eINSTANCE.getVariable_Type();
-
-		/**
 		 * The meta object literal for the '<em><b>Persistence Name</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -5122,6 +5096,14 @@ public interface IrPackage extends EPackage {
 		EClass SIMPLE_VARIABLE = eINSTANCE.getSimpleVariable();
 
 		/**
+		 * The meta object literal for the '<em><b>Type</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference SIMPLE_VARIABLE__TYPE = eINSTANCE.getSimpleVariable_Type();
+
+		/**
 		 * The meta object literal for the '<em><b>Default Value</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -5140,12 +5122,12 @@ public interface IrPackage extends EPackage {
 		EClass CONNECTIVITY_VARIABLE = eINSTANCE.getConnectivityVariable();
 
 		/**
-		 * The meta object literal for the '<em><b>Supports</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Type</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference CONNECTIVITY_VARIABLE__SUPPORTS = eINSTANCE.getConnectivityVariable_Supports();
+		EReference CONNECTIVITY_VARIABLE__TYPE = eINSTANCE.getConnectivityVariable_Type();
 
 		/**
 		 * The meta object literal for the '<em><b>Default Value</b></em>' containment reference feature.

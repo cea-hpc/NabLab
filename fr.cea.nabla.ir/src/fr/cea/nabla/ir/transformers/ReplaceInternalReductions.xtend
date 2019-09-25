@@ -18,6 +18,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 
 import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
 
+import static extension fr.cea.nabla.ir.VariableExtensions.*
+
 class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTransformationStep
 {
 	static val Operators = #{ 'reduceSum'->'+', 'reduceProd'->'*' }

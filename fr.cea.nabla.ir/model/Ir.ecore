@@ -45,19 +45,19 @@
   <eClassifiers xsi:type="ecore:EClass" name="Variable" abstract="true" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//BaseType"
-        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="persistenceName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="const" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         defaultValueLiteral="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SimpleVariable" eSuperTypes="#//Variable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//BaseType"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValue" eType="#//Expression"
         containment="true" resolveProxies="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConnectivityVariable" eSuperTypes="#//Variable">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="supports" unique="false"
-        lowerBound="1" upperBound="-1" eType="#//Connectivity"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//ConnectivityType"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValue" eType="#//VarRef"
         containment="true"/>
   </eClassifiers>

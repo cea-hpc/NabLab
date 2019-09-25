@@ -124,10 +124,10 @@ class Ir2Kokkos extends CodeGenerator
 		, «uv.name»(«uv.defaultValue.content»)
 		«ENDFOR»
 		«FOR a : connectivityVars»
-		, «a.name»("«a.name»", «FOR d : a.supports SEPARATOR ', '»«d.nbElems»«ENDFOR»)
+		, «a.name»("«a.name»", «FOR d : a.type.connectivities SEPARATOR ', '»«d.nbElems»«ENDFOR»)
 		«ENDFOR»
 		«FOR a : linearAlgebraVars»
-		, «a.name»("«a.name»", «FOR d : a.supports SEPARATOR ', '»«d.nbElems»«ENDFOR»)
+		, «a.name»("«a.name»", «FOR d : a.type.connectivities SEPARATOR ', '»«d.nbElems»«ENDFOR»)
 		«ENDFOR»
 		{
 			«IF nodeCoordVariable !== null»

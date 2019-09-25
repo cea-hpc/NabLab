@@ -4,6 +4,7 @@ import fr.cea.nabla.ir.ir.Array1D
 import fr.cea.nabla.ir.ir.Array2D
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
+import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.Scalar
 
 import static extension fr.cea.nabla.ir.Utils.*
@@ -29,6 +30,15 @@ class IrTypeExtensions
 			Scalar: primitive.literal
 			Array1D: primitive.literal + size.utfExponent
 			Array2D: primitive.literal + nbRows.utfExponent + '\\u02E3' + nbCols.utfExponent
+		}
+	}
+	
+	static def getPrimitive(IrType t)
+	{
+		switch t
+		{
+			ConnectivityType: t.base.primitive
+			BaseType: t.primitive
 		}
 	}
 }

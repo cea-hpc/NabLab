@@ -51,7 +51,7 @@ class IrExpressionFactory
 	@Inject extension ExpressionTypeProvider
 	@Inject extension ReductionCallExtensions
 	@Inject extension VarRefExtensions
-	@Inject extension IrTypeFactory
+	@Inject extension NablaType2IrType
 	
 	def dispatch Expression toIrExpression(ContractedIf e) 
 	{ 

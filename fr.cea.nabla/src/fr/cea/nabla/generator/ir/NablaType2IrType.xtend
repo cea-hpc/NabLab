@@ -12,7 +12,7 @@ import fr.cea.nabla.typing.NSTScalar
 import fr.cea.nabla.typing.NSTArray1D
 import fr.cea.nabla.typing.NSTArray2D
 
-class IrTypeFactory 
+class NablaType2IrType 
 {
 	@Inject extension Nabla2IrUtils
 	@Inject extension IrConnectivityFactory

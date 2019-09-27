@@ -78,7 +78,8 @@ public class ConnectivityTypeImpl extends IrTypeImpl implements ConnectivityType
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated NOT FIXME workaround BUG 89325
+	 * @generated NOT 
+	 * FIXME workaround BUG 89325
 	 */
 	@SuppressWarnings("serial")
 	public EList<Connectivity> getConnectivities() {

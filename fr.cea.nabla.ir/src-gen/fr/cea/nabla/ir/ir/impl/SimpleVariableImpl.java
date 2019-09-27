@@ -39,6 +39,7 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	 * @ordered
 	 */
 	protected BaseType type;
+
 	/**
 	 * The cached value of the '{@link #getDefaultValue() <em>Default Value</em>}' containment reference.
 	 * <!-- begin-user-doc -->

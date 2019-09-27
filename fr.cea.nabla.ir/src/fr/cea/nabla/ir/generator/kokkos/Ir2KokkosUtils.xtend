@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.generator.kokkos
 
 import fr.cea.nabla.ir.ir.Array1D
 import fr.cea.nabla.ir.ir.Array2D
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.Scalar
 
@@ -19,6 +20,10 @@ class Ir2KokkosUtils
 	static def dispatch String getCppType(Scalar it) { primitive.cppType }
 	static def dispatch String getCppType(Array1D it) { primitive.cppArrayType + 'Array1D<' + size + '>' }
 	static def dispatch String getCppType(Array2D it) { primitive.cppArrayType + 'Array2D<' + nbRows + ',' + nbCols + '>' }
+	static def dispatch String getCppType(ConnectivityType it) 
+	{ 
+		'Kokkos::View<' + base.cppType + connectivities.map['*'].join + '>'
+	}
 
 	static def dispatch getCppType(PrimitiveType t)
 	{

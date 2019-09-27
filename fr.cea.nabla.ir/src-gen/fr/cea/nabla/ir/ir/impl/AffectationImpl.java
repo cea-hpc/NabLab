@@ -24,7 +24,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.AffectationImpl#getLeft <em>Left</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.AffectationImpl#getOperator <em>Operator</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.AffectationImpl#getRight <em>Right</em>}</li>
  * </ul>
  *
@@ -40,26 +39,6 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 	 * @ordered
 	 */
 	protected VarRef left;
-
-	/**
-	 * The default value of the '{@link #getOperator() <em>Operator</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getOperator()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String OPERATOR_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getOperator() <em>Operator</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getOperator()
-	 * @generated
-	 * @ordered
-	 */
-	protected String operator = OPERATOR_EDEFAULT;
 
 	/**
 	 * The cached value of the '{@link #getRight() <em>Right</em>}' containment reference.
@@ -138,27 +117,6 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getOperator() {
-		return operator;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setOperator(String newOperator) {
-		String oldOperator = operator;
-		operator = newOperator;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.AFFECTATION__OPERATOR, oldOperator, operator));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public Expression getRight() {
 		return right;
 	}
@@ -223,8 +181,6 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 		switch (featureID) {
 			case IrPackage.AFFECTATION__LEFT:
 				return getLeft();
-			case IrPackage.AFFECTATION__OPERATOR:
-				return getOperator();
 			case IrPackage.AFFECTATION__RIGHT:
 				return getRight();
 		}
@@ -241,9 +197,6 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 		switch (featureID) {
 			case IrPackage.AFFECTATION__LEFT:
 				setLeft((VarRef)newValue);
-				return;
-			case IrPackage.AFFECTATION__OPERATOR:
-				setOperator((String)newValue);
 				return;
 			case IrPackage.AFFECTATION__RIGHT:
 				setRight((Expression)newValue);
@@ -263,9 +216,6 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 			case IrPackage.AFFECTATION__LEFT:
 				setLeft((VarRef)null);
 				return;
-			case IrPackage.AFFECTATION__OPERATOR:
-				setOperator(OPERATOR_EDEFAULT);
-				return;
 			case IrPackage.AFFECTATION__RIGHT:
 				setRight((Expression)null);
 				return;
@@ -283,28 +233,10 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 		switch (featureID) {
 			case IrPackage.AFFECTATION__LEFT:
 				return left != null;
-			case IrPackage.AFFECTATION__OPERATOR:
-				return OPERATOR_EDEFAULT == null ? operator != null : !OPERATOR_EDEFAULT.equals(operator);
 			case IrPackage.AFFECTATION__RIGHT:
 				return right != null;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (operator: ");
-		result.append(operator);
-		result.append(')');
-		return result.toString();
 	}
 
 } //AffectationImpl

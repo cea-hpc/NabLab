@@ -5,6 +5,11 @@ import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.VarDefinition
 
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
+import fr.cea.nabla.ir.ir.If
+import fr.cea.nabla.ir.ir.Loop
+import fr.cea.nabla.ir.ir.ReductionInstruction
+
+import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 
 class InstructionInterpreter 
 {
@@ -21,6 +26,23 @@ class InstructionInterpreter
 	}
 	
 	static def dispatch void interprete(Affectation it, Context context)
+	{
+		val rightValue = interprete(right, context)
+		
+		
+	}
+
+	static def dispatch void interprete(ReductionInstruction it, Context context)
+	{
+		
+	}
+
+	static def dispatch void interprete(Loop it, Context context)
+	{
+		
+	}
+
+	static def dispatch void interprete(If it, Context context)
 	{
 		
 	}

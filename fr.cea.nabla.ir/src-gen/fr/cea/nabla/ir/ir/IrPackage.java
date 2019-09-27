@@ -1448,22 +1448,13 @@ public interface IrPackage extends EPackage {
 	int AFFECTATION__LEFT = INSTRUCTION_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Operator</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int AFFECTATION__OPERATOR = INSTRUCTION_FEATURE_COUNT + 1;
-
-	/**
 	 * The feature id for the '<em><b>Right</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int AFFECTATION__RIGHT = INSTRUCTION_FEATURE_COUNT + 2;
+	int AFFECTATION__RIGHT = INSTRUCTION_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Affectation</em>' class.
@@ -1472,7 +1463,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int AFFECTATION_FEATURE_COUNT = INSTRUCTION_FEATURE_COUNT + 3;
+	int AFFECTATION_FEATURE_COUNT = INSTRUCTION_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Affectation</em>' class.
@@ -4004,17 +3995,6 @@ public interface IrPackage extends EPackage {
 	EReference getAffectation_Left();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Affectation#getOperator <em>Operator</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Operator</em>'.
-	 * @see fr.cea.nabla.ir.ir.Affectation#getOperator()
-	 * @see #getAffectation()
-	 * @generated
-	 */
-	EAttribute getAffectation_Operator();
-
-	/**
 	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.Affectation#getRight <em>Right</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -5476,14 +5456,6 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference AFFECTATION__LEFT = eINSTANCE.getAffectation_Left();
-
-		/**
-		 * The meta object literal for the '<em><b>Operator</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute AFFECTATION__OPERATOR = eINSTANCE.getAffectation_Operator();
 
 		/**
 		 * The meta object literal for the '<em><b>Right</b></em>' containment reference feature.

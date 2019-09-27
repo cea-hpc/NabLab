@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.Array1D
 import fr.cea.nabla.ir.ir.Array2D
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.Scalar
 
@@ -19,6 +20,10 @@ class Ir2JavaUtils
 	static def dispatch String getJavaType(Scalar it) { primitive.javaType }
 	static def dispatch String getJavaType(Array1D it) { primitive.javaType + '[]' }
 	static def dispatch String getJavaType(Array2D it) { primitive.javaType + '[][]' }
+	static def dispatch String getJavaType(ConnectivityType it) 
+	{ 
+		base.javaType + connectivities.map['[]'].join
+	}
 
 	static def dispatch String getJavaType(PrimitiveType t)
 	{

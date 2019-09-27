@@ -35,11 +35,7 @@ class VariableExtensions
 			}
 		}
 		else
-		{
-			var t = getType.javaType 
-			for (d : type.connectivities) t += '[]'
-			return t	
-		}
+			type.javaType
 	}
 	
 	static def getCodeName(Variable it)

@@ -2,7 +2,7 @@ package fr.cea.nabla.ir.interpreter
 
 import java.util.List
 
-class NablaValueAccessor 
+class NablaValueGetter 
 {
 	static def dispatch getValue(NablaValue it, List<Integer> indices)
 	{

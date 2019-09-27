@@ -20,7 +20,7 @@ import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VarRef
 import java.util.Arrays
 
-import static fr.cea.nabla.ir.interpreter.NablaValueAccessor.*
+import static fr.cea.nabla.ir.interpreter.NablaValueGetter.*
 
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
@@ -138,7 +138,7 @@ class ExpressionInterpreter
 		val javaTypes = argValues.map[x | FunctionCallHelper.getJavaType(x) ]
 		val method = providerClass.getMethod(function.name, javaTypes)
 		val javaValues = argValues.map[x | FunctionCallHelper.getJavaValue(x) ]
-		val result = method.invoke(providerClass, javaValues)
+		val result = method.invoke(null, javaValues)
 		return FunctionCallHelper.createNablaValue(result)
 	}
 

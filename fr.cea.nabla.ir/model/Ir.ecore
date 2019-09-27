@@ -131,8 +131,6 @@
   <eClassifiers xsi:type="ecore:EClass" name="Affectation" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="#//VarRef"
         containment="true" resolveProxies="false"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" unique="false"
-        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="#//Expression"
         containment="true" resolveProxies="false"/>
   </eClassifiers>

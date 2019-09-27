@@ -21,7 +21,9 @@ class VariableExtensions
 	public static val MatrixType = 'NablaSparseMatrix'
 	
 	static def dispatch getCppType(SimpleVariable it) 
-	'''«type.cppType»'''
+	{
+		type.cppType
+	}
 	
 	static def dispatch getCppType(ConnectivityVariable it)
 	{
@@ -33,7 +35,7 @@ class VariableExtensions
 				default: throw new RuntimeException("Not implemented exception")
 			}
 		else
-			'''Kokkos::View<«type.cppType»«FOR d : type.connectivities»*«ENDFOR»>'''
+			type.cppType
 	}
 
 	static def getCodeName(Variable it)

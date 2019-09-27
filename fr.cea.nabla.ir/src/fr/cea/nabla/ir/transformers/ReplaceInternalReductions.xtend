@@ -12,15 +12,21 @@ package fr.cea.nabla.ir.transformers
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionInstruction
+import fr.cea.nabla.ir.ir.Variable
+import java.util.List
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
 
 import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
 
 import static extension fr.cea.nabla.ir.VariableExtensions.*
 
-class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTransformationStep
+class ReplaceInternalReductions implements IrTransformationStep
 {
 	static val Operators = #{ 'reduceSum'->'+', 'reduceProd'->'*' }
 	
@@ -44,7 +50,7 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 			val reduc = reductionInstr.reduction
 			// transformation de la reduction
 			val loopExpression = createAffectationRHS(m, reductionInstr)
-			val loop = createReductionLoop(reductionInstr.range, reductionInstr.singletons, reductionInstr.result, loopExpression, '=')
+			val loop = createReductionLoop(reductionInstr.range, reductionInstr.singletons, reductionInstr.result, loopExpression)
 			val variableDefinition = IrFactory::eINSTANCE.createVarDefinition => [ variables += reductionInstr.result ]
 			replace(reductionInstr, #[variableDefinition, loop])			
 
@@ -130,5 +136,31 @@ class ReplaceInternalReductions extends ReplaceReductionsBase implements IrTrans
 		val prefix = 'reduce'
 		if (r.name.startsWith(prefix)) r.name.replaceFirst(prefix, '')
 		else r.name
+	}
+	
+	private def createReductionLoop(Iterator range, List<Iterator> singletons, Variable affectationLHS, Expression affectationRHS)
+	{
+		val loop = IrFactory::eINSTANCE.createLoop
+		loop.range = range
+		loop.singletons.addAll(singletons)
+		loop.body = IrFactory::eINSTANCE.createAffectation => 
+		[
+			left = IrFactory::eINSTANCE.createVarRef => 
+			[ 
+				variable = affectationLHS
+				type = EcoreUtil::copy(affectationRHS.type)
+			]
+			right = affectationRHS
+		]
+		return loop
+	}	
+
+	private def boolean isExternal(EObject it)
+	{
+		if (eContainer === null) false
+		else if (eContainer instanceof Loop) false
+		else if (eContainer instanceof ReductionInstruction) false
+		else if (eContainer instanceof Job) true
+		else eContainer.external	
 	}
 }

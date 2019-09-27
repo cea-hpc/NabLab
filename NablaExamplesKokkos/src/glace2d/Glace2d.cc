@@ -61,8 +61,8 @@ private:
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> b;
 	Kokkos::View<RealArray1D<2>*> bt;
-	Kokkos::View<RealArray2D<2, 2>*> Ar;
-	Kokkos::View<RealArray2D<2, 2>*> Mt;
+	Kokkos::View<RealArray2D<2,2>*> Ar;
+	Kokkos::View<RealArray2D<2,2>*> Mt;
 	Kokkos::View<RealArray1D<2>*> ur;
 	Kokkos::View<double*> p_ic;
 	Kokkos::View<double*> rho_ic;
@@ -81,7 +81,7 @@ private:
 	Kokkos::View<RealArray1D<2>**> C_ic;
 	Kokkos::View<RealArray1D<2>**> C;
 	Kokkos::View<RealArray1D<2>**> F;
-	Kokkos::View<RealArray2D<2, 2>**> Ajr;
+	Kokkos::View<RealArray2D<2,2>**> Ajr;
 	Kokkos::View<RealArray1D<2>*> X_n0;
 	Kokkos::View<RealArray1D<2>*> X_nplus1;
 	Kokkos::View<RealArray1D<2>*> uj_nplus1;
@@ -494,7 +494,7 @@ private:
 		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 		{
 			int rId(rNodes);
-			RealArray2D<2, 2> reduceSum830860026 = {{{0.0, 0.0}, {0.0, 0.0}}};
+			RealArray2D<2,2> reduceSum830860026 = {{{0.0, 0.0}, {0.0, 0.0}}};
 			{
 				auto cellsOfNodeR(mesh->getCellsOfNode(rId));
 				for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.size(); jCellsOfNodeR++)
@@ -612,7 +612,7 @@ private:
 		{
 			int kId(outerFaces[kOuterFaces]);
 			const double epsilon = 1.0E-10;
-			RealArray2D<2, 2> I = {{{1.0, 0.0}, {0.0, 1.0}}};
+			RealArray2D<2,2> I = {{{1.0, 0.0}, {0.0, 1.0}}};
 			double X_MIN = 0.0;
 			double X_MAX = as_const(options->X_EDGE_ELEMS) * as_const(options->X_EDGE_LENGTH);
 			double Y_MIN = 0.0;
@@ -632,8 +632,8 @@ private:
 						else 
 							sign = 1.0;
 						RealArray1D<2> n = ArrayOperations::multiply(sign, nY);
-						RealArray2D<2, 2> nxn = Glace2dFunctions::tensProduct(n, n);
-						RealArray2D<2, 2> IcP = ArrayOperations::minus(I, nxn);
+						RealArray2D<2,2> nxn = Glace2dFunctions::tensProduct(n, n);
+						RealArray2D<2,2> IcP = ArrayOperations::minus(I, nxn);
 						bt(rNodes) = Glace2dFunctions::matVectProduct(IcP, b(rNodes));
 						Mt(rNodes) = ArrayOperations::plus(ArrayOperations::multiply(IcP, (ArrayOperations::multiply(Ar(rNodes), IcP))), ArrayOperations::multiply(nxn, Glace2dFunctions::trace(Ar(rNodes))));
 					}

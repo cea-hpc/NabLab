@@ -1104,17 +1104,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getAffectation_Operator() {
-		return (EAttribute)affectationEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getAffectation_Right() {
-		return (EReference)affectationEClass.getEStructuralFeatures().get(2);
+		return (EReference)affectationEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1960,7 +1951,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		affectationEClass = createEClass(AFFECTATION);
 		createEReference(affectationEClass, AFFECTATION__LEFT);
-		createEAttribute(affectationEClass, AFFECTATION__OPERATOR);
 		createEReference(affectationEClass, AFFECTATION__RIGHT);
 
 		iterableInstructionEClass = createEClass(ITERABLE_INSTRUCTION);
@@ -2243,7 +2233,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(affectationEClass, Affectation.class, "Affectation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getAffectation_Left(), this.getVarRef(), null, "left", null, 1, 1, Affectation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAffectation_Operator(), ecorePackage.getEString(), "operator", null, 1, 1, Affectation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getAffectation_Right(), this.getExpression(), null, "right", null, 1, 1, Affectation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(iterableInstructionEClass, IterableInstruction.class, "IterableInstruction", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

@@ -85,7 +85,7 @@ abstract class InstructionContentProvider
 		}'''
 	
 	def dispatch CharSequence getContent(Affectation it) 
-	'''«left.content» «operator» «right.content»;'''
+	'''«left.content» = «right.content»;'''
 
 	def dispatch CharSequence getContent(Loop it) 
 	{

@@ -1,12 +1,27 @@
 package fr.cea.nabla.ir.interpreter
 
 import org.eclipse.xtend.lib.annotations.Data
+import org.eclipse.xtend.lib.annotations.Accessors
 
 interface NablaValue { }
 
-@Data class NV0Bool implements NablaValue { boolean data }
-@Data class NV0Int implements NablaValue { int data }
-@Data class NV0Real implements NablaValue { double data }
+class NV0Bool implements NablaValue 
+{  
+	@Accessors boolean data 
+	new(boolean data) { this.data = data }
+}
+
+class NV0Int implements NablaValue
+{  
+	@Accessors int data 
+	new(int data) { this.data = data }
+}
+
+class NV0Real implements NablaValue
+{  
+	@Accessors double data 
+	new(double data) { this.data = data }
+}
 
 @Data class NV1Bool implements NablaValue { boolean[] data }
 @Data class NV1Int implements NablaValue { int[] data }

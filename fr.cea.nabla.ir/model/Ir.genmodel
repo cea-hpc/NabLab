@@ -111,7 +111,6 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Affectation">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Affectation/left"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Affectation/operator"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Affectation/right"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//IterableInstruction">

@@ -22,7 +22,6 @@ import java.util.Arrays
 
 import static fr.cea.nabla.ir.interpreter.NablaValueGetter.*
 
-import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class ExpressionInterpreter 
@@ -144,8 +143,8 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(VarRef it, Context context)
 	{
-		val value = context.variableValues.get(variable)
-		val allIndices = iterators.map[x | context.iteratorRefValues.get(x.indexName)] + indices
+		val value = context.getVariableValue(variable)
+		val allIndices = iterators.map[x | context.getIndexValue(x)] + indices
 		getValue(value, allIndices.toList)
 	}
 	

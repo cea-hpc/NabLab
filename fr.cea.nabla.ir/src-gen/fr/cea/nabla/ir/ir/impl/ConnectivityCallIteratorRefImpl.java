@@ -8,10 +8,12 @@ import fr.cea.nabla.ir.ir.IrPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -27,16 +29,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * @generated
  */
 public class ConnectivityCallIteratorRefImpl extends IteratorRefImpl implements ConnectivityCallIteratorRef {
-	/**
-	 * The cached value of the '{@link #getReferencedBy() <em>Referenced By</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getReferencedBy()
-	 * @generated
-	 * @ordered
-	 */
-	protected ConnectivityCall referencedBy;
-
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -62,15 +54,8 @@ public class ConnectivityCallIteratorRefImpl extends IteratorRefImpl implements 
 	 * @generated
 	 */
 	public ConnectivityCall getReferencedBy() {
-		if (referencedBy != null && referencedBy.eIsProxy()) {
-			InternalEObject oldReferencedBy = (InternalEObject)referencedBy;
-			referencedBy = (ConnectivityCall)eResolveProxy(oldReferencedBy);
-			if (referencedBy != oldReferencedBy) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY, oldReferencedBy, referencedBy));
-			}
-		}
-		return referencedBy;
+		if (eContainerFeatureID() != IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY) return null;
+		return (ConnectivityCall)eContainer();
 	}
 
 	/**
@@ -79,7 +64,18 @@ public class ConnectivityCallIteratorRefImpl extends IteratorRefImpl implements 
 	 * @generated
 	 */
 	public ConnectivityCall basicGetReferencedBy() {
-		return referencedBy;
+		if (eContainerFeatureID() != IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY) return null;
+		return (ConnectivityCall)eInternalContainer();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetReferencedBy(ConnectivityCall newReferencedBy, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject)newReferencedBy, IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY, msgs);
+		return msgs;
 	}
 
 	/**
@@ -88,10 +84,63 @@ public class ConnectivityCallIteratorRefImpl extends IteratorRefImpl implements 
 	 * @generated
 	 */
 	public void setReferencedBy(ConnectivityCall newReferencedBy) {
-		ConnectivityCall oldReferencedBy = referencedBy;
-		referencedBy = newReferencedBy;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY, oldReferencedBy, referencedBy));
+		if (newReferencedBy != eInternalContainer() || (eContainerFeatureID() != IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY && newReferencedBy != null)) {
+			if (EcoreUtil.isAncestor(this, newReferencedBy))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+			NotificationChain msgs = null;
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
+			if (newReferencedBy != null)
+				msgs = ((InternalEObject)newReferencedBy).eInverseAdd(this, IrPackage.CONNECTIVITY_CALL__ARGS, ConnectivityCall.class, msgs);
+			msgs = basicSetReferencedBy(newReferencedBy, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY, newReferencedBy, newReferencedBy));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY:
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
+				return basicSetReferencedBy((ConnectivityCall)otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY:
+				return basicSetReferencedBy(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY:
+				return eInternalContainer().eInverseRemove(this, IrPackage.CONNECTIVITY_CALL__ARGS, ConnectivityCall.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
 
 	/**
@@ -148,7 +197,7 @@ public class ConnectivityCallIteratorRefImpl extends IteratorRefImpl implements 
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY:
-				return referencedBy != null;
+				return basicGetReferencedBy() != null;
 		}
 		return super.eIsSet(featureID);
 	}

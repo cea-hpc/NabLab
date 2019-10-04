@@ -2784,13 +2784,22 @@ public interface IrPackage extends EPackage {
 	int ITERATOR_REF__SHIFT = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Index In Referencer List</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ITERATOR_REF__INDEX_IN_REFERENCER_LIST = IR_ANNOTABLE_FEATURE_COUNT + 2;
+
+	/**
 	 * The number of structural features of the '<em>Iterator Ref</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ITERATOR_REF_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 2;
+	int ITERATOR_REF_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of operations of the '<em>Iterator Ref</em>' class.
@@ -2839,7 +2848,16 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY_CALL_ITERATOR_REF__SHIFT = ITERATOR_REF__SHIFT;
 
 	/**
-	 * The feature id for the '<em><b>Referenced By</b></em>' reference.
+	 * The feature id for the '<em><b>Index In Referencer List</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTIVITY_CALL_ITERATOR_REF__INDEX_IN_REFERENCER_LIST = ITERATOR_REF__INDEX_IN_REFERENCER_LIST;
+
+	/**
+	 * The feature id for the '<em><b>Referenced By</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2903,6 +2921,15 @@ public interface IrPackage extends EPackage {
 	int VAR_REF_ITERATOR_REF__SHIFT = ITERATOR_REF__SHIFT;
 
 	/**
+	 * The feature id for the '<em><b>Index In Referencer List</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int VAR_REF_ITERATOR_REF__INDEX_IN_REFERENCER_LIST = ITERATOR_REF__INDEX_IN_REFERENCER_LIST;
+
+	/**
 	 * The feature id for the '<em><b>Referenced By</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2912,22 +2939,13 @@ public interface IrPackage extends EPackage {
 	int VAR_REF_ITERATOR_REF__REFERENCED_BY = ITERATOR_REF_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Index In Referencer List</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int VAR_REF_ITERATOR_REF__INDEX_IN_REFERENCER_LIST = ITERATOR_REF_FEATURE_COUNT + 1;
-
-	/**
 	 * The number of structural features of the '<em>Var Ref Iterator Ref</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int VAR_REF_ITERATOR_REF_FEATURE_COUNT = ITERATOR_REF_FEATURE_COUNT + 2;
+	int VAR_REF_ITERATOR_REF_FEATURE_COUNT = ITERATOR_REF_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Var Ref Iterator Ref</em>' class.
@@ -4655,6 +4673,17 @@ public interface IrPackage extends EPackage {
 	EAttribute getIteratorRef_Shift();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.IteratorRef#getIndexInReferencerList <em>Index In Referencer List</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Index In Referencer List</em>'.
+	 * @see fr.cea.nabla.ir.ir.IteratorRef#getIndexInReferencerList()
+	 * @see #getIteratorRef()
+	 * @generated
+	 */
+	EAttribute getIteratorRef_IndexInReferencerList();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef <em>Connectivity Call Iterator Ref</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4665,10 +4694,10 @@ public interface IrPackage extends EPackage {
 	EClass getConnectivityCallIteratorRef();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef#getReferencedBy <em>Referenced By</em>}'.
+	 * Returns the meta object for the container reference '{@link fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef#getReferencedBy <em>Referenced By</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Referenced By</em>'.
+	 * @return the meta object for the container reference '<em>Referenced By</em>'.
 	 * @see fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef#getReferencedBy()
 	 * @see #getConnectivityCallIteratorRef()
 	 * @generated
@@ -4695,17 +4724,6 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getVarRefIteratorRef_ReferencedBy();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.VarRefIteratorRef#getIndexInReferencerList <em>Index In Referencer List</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Index In Referencer List</em>'.
-	 * @see fr.cea.nabla.ir.ir.VarRefIteratorRef#getIndexInReferencerList()
-	 * @see #getVarRefIteratorRef()
-	 * @generated
-	 */
-	EAttribute getVarRefIteratorRef_IndexInReferencerList();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ItemType <em>Item Type</em>}'.
@@ -5998,6 +6016,14 @@ public interface IrPackage extends EPackage {
 		EAttribute ITERATOR_REF__SHIFT = eINSTANCE.getIteratorRef_Shift();
 
 		/**
+		 * The meta object literal for the '<em><b>Index In Referencer List</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ITERATOR_REF__INDEX_IN_REFERENCER_LIST = eINSTANCE.getIteratorRef_IndexInReferencerList();
+
+		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallIteratorRefImpl <em>Connectivity Call Iterator Ref</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6008,7 +6034,7 @@ public interface IrPackage extends EPackage {
 		EClass CONNECTIVITY_CALL_ITERATOR_REF = eINSTANCE.getConnectivityCallIteratorRef();
 
 		/**
-		 * The meta object literal for the '<em><b>Referenced By</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Referenced By</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -6032,14 +6058,6 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference VAR_REF_ITERATOR_REF__REFERENCED_BY = eINSTANCE.getVarRefIteratorRef_ReferencedBy();
-
-		/**
-		 * The meta object literal for the '<em><b>Index In Referencer List</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute VAR_REF_ITERATOR_REF__INDEX_IN_REFERENCER_LIST = eINSTANCE.getVarRefIteratorRef_IndexInReferencerList();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ItemTypeImpl <em>Item Type</em>}' class.

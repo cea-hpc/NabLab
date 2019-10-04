@@ -25,32 +25,11 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VarRefIteratorRefImpl#getReferencedBy <em>Referenced By</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.VarRefIteratorRefImpl#getIndexInReferencerList <em>Index In Referencer List</em>}</li>
  * </ul>
  *
  * @generated
  */
 public class VarRefIteratorRefImpl extends IteratorRefImpl implements VarRefIteratorRef {
-	/**
-	 * The default value of the '{@link #getIndexInReferencerList() <em>Index In Referencer List</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getIndexInReferencerList()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final int INDEX_IN_REFERENCER_LIST_EDEFAULT = 0;
-
-	/**
-	 * The cached value of the '{@link #getIndexInReferencerList() <em>Index In Referencer List</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getIndexInReferencerList()
-	 * @generated
-	 * @ordered
-	 */
-	protected int indexInReferencerList = INDEX_IN_REFERENCER_LIST_EDEFAULT;
-
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -126,27 +105,6 @@ public class VarRefIteratorRefImpl extends IteratorRefImpl implements VarRefIter
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getIndexInReferencerList() {
-		return indexInReferencerList;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setIndexInReferencerList(int newIndexInReferencerList) {
-		int oldIndexInReferencerList = indexInReferencerList;
-		indexInReferencerList = newIndexInReferencerList;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.VAR_REF_ITERATOR_REF__INDEX_IN_REFERENCER_LIST, oldIndexInReferencerList, indexInReferencerList));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -197,8 +155,6 @@ public class VarRefIteratorRefImpl extends IteratorRefImpl implements VarRefIter
 			case IrPackage.VAR_REF_ITERATOR_REF__REFERENCED_BY:
 				if (resolve) return getReferencedBy();
 				return basicGetReferencedBy();
-			case IrPackage.VAR_REF_ITERATOR_REF__INDEX_IN_REFERENCER_LIST:
-				return getIndexInReferencerList();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -213,9 +169,6 @@ public class VarRefIteratorRefImpl extends IteratorRefImpl implements VarRefIter
 		switch (featureID) {
 			case IrPackage.VAR_REF_ITERATOR_REF__REFERENCED_BY:
 				setReferencedBy((VarRef)newValue);
-				return;
-			case IrPackage.VAR_REF_ITERATOR_REF__INDEX_IN_REFERENCER_LIST:
-				setIndexInReferencerList((Integer)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -232,9 +185,6 @@ public class VarRefIteratorRefImpl extends IteratorRefImpl implements VarRefIter
 			case IrPackage.VAR_REF_ITERATOR_REF__REFERENCED_BY:
 				setReferencedBy((VarRef)null);
 				return;
-			case IrPackage.VAR_REF_ITERATOR_REF__INDEX_IN_REFERENCER_LIST:
-				setIndexInReferencerList(INDEX_IN_REFERENCER_LIST_EDEFAULT);
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -249,26 +199,8 @@ public class VarRefIteratorRefImpl extends IteratorRefImpl implements VarRefIter
 		switch (featureID) {
 			case IrPackage.VAR_REF_ITERATOR_REF__REFERENCED_BY:
 				return basicGetReferencedBy() != null;
-			case IrPackage.VAR_REF_ITERATOR_REF__INDEX_IN_REFERENCER_LIST:
-				return indexInReferencerList != INDEX_IN_REFERENCER_LIST_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (indexInReferencerList: ");
-		result.append(indexInReferencerList);
-		result.append(')');
-		return result.toString();
 	}
 
 } //VarRefIteratorRefImpl

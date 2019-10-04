@@ -21,26 +21,28 @@ package fr.cea.nabla.ir.ir;
  */
 public interface ConnectivityCallIteratorRef extends IteratorRef {
 	/**
-	 * Returns the value of the '<em><b>Referenced By</b></em>' reference.
+	 * Returns the value of the '<em><b>Referenced By</b></em>' container reference.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.ConnectivityCall#getArgs <em>Args</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Referenced By</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Referenced By</em>' reference.
+	 * @return the value of the '<em>Referenced By</em>' container reference.
 	 * @see #setReferencedBy(ConnectivityCall)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivityCallIteratorRef_ReferencedBy()
-	 * @model required="true"
+	 * @see fr.cea.nabla.ir.ir.ConnectivityCall#getArgs
+	 * @model opposite="args" required="true" transient="false"
 	 * @generated
 	 */
 	ConnectivityCall getReferencedBy();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef#getReferencedBy <em>Referenced By</em>}' reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef#getReferencedBy <em>Referenced By</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Referenced By</em>' reference.
+	 * @param value the new value of the '<em>Referenced By</em>' container reference.
 	 * @see #getReferencedBy()
 	 * @generated
 	 */

@@ -1662,6 +1662,15 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getIteratorRef_IndexInReferencerList() {
+		return (EAttribute)iteratorRefEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getConnectivityCallIteratorRef() {
 		return connectivityCallIteratorRefEClass;
 	}
@@ -1691,15 +1700,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 */
 	public EReference getVarRefIteratorRef_ReferencedBy() {
 		return (EReference)varRefIteratorRefEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getVarRefIteratorRef_IndexInReferencerList() {
-		return (EAttribute)varRefIteratorRefEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -2035,13 +2035,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		iteratorRefEClass = createEClass(ITERATOR_REF);
 		createEReference(iteratorRefEClass, ITERATOR_REF__TARGET);
 		createEAttribute(iteratorRefEClass, ITERATOR_REF__SHIFT);
+		createEAttribute(iteratorRefEClass, ITERATOR_REF__INDEX_IN_REFERENCER_LIST);
 
 		connectivityCallIteratorRefEClass = createEClass(CONNECTIVITY_CALL_ITERATOR_REF);
 		createEReference(connectivityCallIteratorRefEClass, CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY);
 
 		varRefIteratorRefEClass = createEClass(VAR_REF_ITERATOR_REF);
 		createEReference(varRefIteratorRefEClass, VAR_REF_ITERATOR_REF__REFERENCED_BY);
-		createEAttribute(varRefIteratorRefEClass, VAR_REF_ITERATOR_REF__INDEX_IN_REFERENCER_LIST);
 
 		itemTypeEClass = createEClass(ITEM_TYPE);
 		createEAttribute(itemTypeEClass, ITEM_TYPE__NAME);
@@ -2312,18 +2312,18 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(connectivityCallEClass, ConnectivityCall.class, "ConnectivityCall", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConnectivityCall_Connectivity(), this.getConnectivity(), null, "connectivity", null, 1, 1, ConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getConnectivityCall_Args(), this.getConnectivityCallIteratorRef(), null, "args", null, 0, -1, ConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getConnectivityCall_Args(), this.getConnectivityCallIteratorRef(), this.getConnectivityCallIteratorRef_ReferencedBy(), "args", null, 0, -1, ConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(iteratorRefEClass, IteratorRef.class, "IteratorRef", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getIteratorRef_Target(), this.getIterator(), this.getIterator_Referencers(), "target", null, 1, 1, IteratorRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getIteratorRef_Shift(), ecorePackage.getEInt(), "shift", "0", 1, 1, IteratorRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIteratorRef_IndexInReferencerList(), ecorePackage.getEInt(), "indexInReferencerList", null, 1, 1, IteratorRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(connectivityCallIteratorRefEClass, ConnectivityCallIteratorRef.class, "ConnectivityCallIteratorRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getConnectivityCallIteratorRef_ReferencedBy(), this.getConnectivityCall(), null, "referencedBy", null, 1, 1, ConnectivityCallIteratorRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getConnectivityCallIteratorRef_ReferencedBy(), this.getConnectivityCall(), this.getConnectivityCall_Args(), "referencedBy", null, 1, 1, ConnectivityCallIteratorRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(varRefIteratorRefEClass, VarRefIteratorRef.class, "VarRefIteratorRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getVarRefIteratorRef_ReferencedBy(), this.getVarRef(), this.getVarRef_Iterators(), "referencedBy", null, 1, 1, VarRefIteratorRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getVarRefIteratorRef_IndexInReferencerList(), ecorePackage.getEInt(), "indexInReferencerList", null, 1, 1, VarRefIteratorRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(itemTypeEClass, ItemType.class, "ItemType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getItemType_Name(), ecorePackage.getEString(), "name", null, 1, 1, ItemType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

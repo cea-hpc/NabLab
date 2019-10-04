@@ -18,8 +18,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -121,9 +120,24 @@ public class ConnectivityCallImpl extends IrAnnotableImpl implements Connectivit
 	 */
 	public EList<ConnectivityCallIteratorRef> getArgs() {
 		if (args == null) {
-			args = new EObjectContainmentEList<ConnectivityCallIteratorRef>(ConnectivityCallIteratorRef.class, this, IrPackage.CONNECTIVITY_CALL__ARGS);
+			args = new EObjectContainmentWithInverseEList<ConnectivityCallIteratorRef>(ConnectivityCallIteratorRef.class, this, IrPackage.CONNECTIVITY_CALL__ARGS, IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY);
 		}
 		return args;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case IrPackage.CONNECTIVITY_CALL__ARGS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getArgs()).basicAdd(otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
 
 	/**

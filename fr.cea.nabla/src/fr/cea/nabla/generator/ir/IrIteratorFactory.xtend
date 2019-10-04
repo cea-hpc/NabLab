@@ -41,25 +41,26 @@ class IrIteratorFactory
 	{
 		annotations += range.toIrAnnotation
 		connectivity = range.connectivity.toIrConnectivity
-		range.args.forEach[x | args += x.toIrConnectivityCallIteratorRef]
+		for (i : 0..<range.args.size)
+			args += range.args.get(i).toIrConnectivityCallIteratorRef(i)
 	}
 
 	def create IrFactory::eINSTANCE.createVarRefIteratorRef toIrVarRefIteratorRef(SpaceIteratorRef ref, int index)
 	{
-		initIteratorRef(ref)
-		indexInReferencerList = index
+		initIteratorRef(ref, index)
 	}
 
-	def create IrFactory::eINSTANCE.createConnectivityCallIteratorRef toIrConnectivityCallIteratorRef(SpaceIteratorRef ref)
+	def create IrFactory::eINSTANCE.createConnectivityCallIteratorRef toIrConnectivityCallIteratorRef(SpaceIteratorRef ref, int index)
 	{
-		initIteratorRef(ref)
+		initIteratorRef(ref, index)
 	}
 	
-	private def initIteratorRef(IteratorRef it, SpaceIteratorRef ref)
+	private def initIteratorRef(IteratorRef it, SpaceIteratorRef ref, int index)
 	{
 		annotations += ref.toIrAnnotation
 		target = ref.target.toIrIterator
 		if (ref.dec > 0) shift = -ref.dec
 		else shift = ref.inc
+		indexInReferencerList = index
 	}
 }

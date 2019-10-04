@@ -51,6 +51,7 @@ public interface ConnectivityCall extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Args</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef}.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef#getReferencedBy <em>Referenced By</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Args</em>' containment reference list isn't clear,
@@ -59,7 +60,8 @@ public interface ConnectivityCall extends IrAnnotable {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Args</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivityCall_Args()
-	 * @model containment="true"
+	 * @see fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef#getReferencedBy
+	 * @model opposite="referencedBy" containment="true"
 	 * @generated
 	 */
 	EList<ConnectivityCallIteratorRef> getArgs();

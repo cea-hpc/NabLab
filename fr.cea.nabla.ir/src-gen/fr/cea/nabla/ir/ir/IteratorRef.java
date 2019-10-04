@@ -14,6 +14,7 @@ package fr.cea.nabla.ir.ir;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.IteratorRef#getTarget <em>Target</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IteratorRef#getShift <em>Shift</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IteratorRef#getIndexInReferencerList <em>Index In Referencer List</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getIteratorRef()
@@ -75,5 +76,31 @@ public interface IteratorRef extends IrAnnotable {
 	 * @generated
 	 */
 	void setShift(int value);
+
+	/**
+	 * Returns the value of the '<em><b>Index In Referencer List</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Index In Referencer List</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Index In Referencer List</em>' attribute.
+	 * @see #setIndexInReferencerList(int)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIteratorRef_IndexInReferencerList()
+	 * @model required="true"
+	 * @generated
+	 */
+	int getIndexInReferencerList();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IteratorRef#getIndexInReferencerList <em>Index In Referencer List</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Index In Referencer List</em>' attribute.
+	 * @see #getIndexInReferencerList()
+	 * @generated
+	 */
+	void setIndexInReferencerList(int value);
 
 } // IteratorRef

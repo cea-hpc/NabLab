@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorRefImpl#getTarget <em>Target</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorRefImpl#getShift <em>Shift</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorRefImpl#getIndexInReferencerList <em>Index In Referencer List</em>}</li>
  * </ul>
  *
  * @generated
@@ -58,6 +59,26 @@ public abstract class IteratorRefImpl extends IrAnnotableImpl implements Iterato
 	 * @ordered
 	 */
 	protected int shift = SHIFT_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getIndexInReferencerList() <em>Index In Referencer List</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getIndexInReferencerList()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int INDEX_IN_REFERENCER_LIST_EDEFAULT = 0;
+
+	/**
+	 * The cached value of the '{@link #getIndexInReferencerList() <em>Index In Referencer List</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getIndexInReferencerList()
+	 * @generated
+	 * @ordered
+	 */
+	protected int indexInReferencerList = INDEX_IN_REFERENCER_LIST_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -164,6 +185,27 @@ public abstract class IteratorRefImpl extends IrAnnotableImpl implements Iterato
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public int getIndexInReferencerList() {
+		return indexInReferencerList;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setIndexInReferencerList(int newIndexInReferencerList) {
+		int oldIndexInReferencerList = indexInReferencerList;
+		indexInReferencerList = newIndexInReferencerList;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.ITERATOR_REF__INDEX_IN_REFERENCER_LIST, oldIndexInReferencerList, indexInReferencerList));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -202,6 +244,8 @@ public abstract class IteratorRefImpl extends IrAnnotableImpl implements Iterato
 				return basicGetTarget();
 			case IrPackage.ITERATOR_REF__SHIFT:
 				return getShift();
+			case IrPackage.ITERATOR_REF__INDEX_IN_REFERENCER_LIST:
+				return getIndexInReferencerList();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -219,6 +263,9 @@ public abstract class IteratorRefImpl extends IrAnnotableImpl implements Iterato
 				return;
 			case IrPackage.ITERATOR_REF__SHIFT:
 				setShift((Integer)newValue);
+				return;
+			case IrPackage.ITERATOR_REF__INDEX_IN_REFERENCER_LIST:
+				setIndexInReferencerList((Integer)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -238,6 +285,9 @@ public abstract class IteratorRefImpl extends IrAnnotableImpl implements Iterato
 			case IrPackage.ITERATOR_REF__SHIFT:
 				setShift(SHIFT_EDEFAULT);
 				return;
+			case IrPackage.ITERATOR_REF__INDEX_IN_REFERENCER_LIST:
+				setIndexInReferencerList(INDEX_IN_REFERENCER_LIST_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -254,6 +304,8 @@ public abstract class IteratorRefImpl extends IrAnnotableImpl implements Iterato
 				return target != null;
 			case IrPackage.ITERATOR_REF__SHIFT:
 				return shift != SHIFT_EDEFAULT;
+			case IrPackage.ITERATOR_REF__INDEX_IN_REFERENCER_LIST:
+				return indexInReferencerList != INDEX_IN_REFERENCER_LIST_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -270,6 +322,8 @@ public abstract class IteratorRefImpl extends IrAnnotableImpl implements Iterato
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (shift: ");
 		result.append(shift);
+		result.append(", indexInReferencerList: ");
+		result.append(indexInReferencerList);
 		result.append(')');
 		return result.toString();
 	}

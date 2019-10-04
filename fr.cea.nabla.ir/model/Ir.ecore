@@ -247,23 +247,23 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="connectivity" lowerBound="1"
         eType="#//Connectivity"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="args" upperBound="-1" eType="#//ConnectivityCallIteratorRef"
-        containment="true" resolveProxies="false"/>
+        containment="true" resolveProxies="false" eOpposite="#//ConnectivityCallIteratorRef/referencedBy"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IteratorRef" abstract="true" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
         eType="#//Iterator" eOpposite="#//Iterator/referencers"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="shift" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
         defaultValueLiteral="0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="indexInReferencerList"
+        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConnectivityCallIteratorRef" eSuperTypes="#//IteratorRef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="referencedBy" lowerBound="1"
-        eType="#//ConnectivityCall"/>
+        eType="#//ConnectivityCall" eOpposite="#//ConnectivityCall/args"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VarRefIteratorRef" eSuperTypes="#//IteratorRef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="referencedBy" lowerBound="1"
         eType="#//VarRef" eOpposite="#//VarRef/iterators"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="indexInReferencerList"
-        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ItemType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"

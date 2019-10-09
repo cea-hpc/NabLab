@@ -66,12 +66,12 @@ class InstructionInterpreter
 		// Ids first because we may need them
 		for (neededId : range.neededIds)
 			context.setIdValue(neededId, getIndexToId(neededId, context))
-		for (neededIndex : range.indicesToDefine)
+		for (neededIndex : range.neededIndices)
 			context.setIndexValue(neededIndex, getIdToIndex(neededIndex, context))
 		for (singleton : singletons)
 		{
 			context.setIdValue(singleton, context.getSingleton(singleton))
-			for (neededIndex : singleton.indicesToDefine)
+			for (neededIndex : singleton.neededIndices)
 				context.setIndexValue(neededIndex, getIdToIndex(neededIndex, context))		
 		}
 	}
@@ -89,7 +89,7 @@ class InstructionInterpreter
 	private static def getIdToIndex(VarRefIteratorRef it, Context context)
 	{
 		val indexValue = context.getIdValue(it)
-		if (indexEqualId) indexValue
+		if (varContainer.indexEqualId) indexValue
 		else context.getIndexOf(it.target, indexValue)
 	}
 	

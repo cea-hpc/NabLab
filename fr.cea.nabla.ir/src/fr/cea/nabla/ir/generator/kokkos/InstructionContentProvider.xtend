@@ -29,6 +29,7 @@ import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.kokkos.VariableExtensions.*
+import fr.cea.nabla.ir.ir.Connectivity
 
 abstract class InstructionContentProvider 
 {
@@ -134,17 +135,20 @@ abstract class InstructionContentProvider
 	/** Define all needed ids and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
 	protected def defineIndices(IterableInstruction it)
 	'''
-		«FOR neededId : range.neededIds»
-			int «neededId.id»(«neededId.indexToId»);
+		«range.defineIndices»
+		«FOR s : singletons»
+			int «s.indexName»(«s.accessor»);
+			«s.defineIndices»
 		«ENDFOR»
-		«FOR neededIndex : range.indicesToDefine»
+	'''
+
+	private def defineIndices(Iterator it)
+	'''
+		«FOR neededId : neededIds»
+			int «neededId.idName»(«neededId.indexToId»);
+		«ENDFOR»
+		«FOR neededIndex : neededIndices»
 			int «neededIndex.indexName»(«neededIndex.idToIndex»);
-		«ENDFOR»
-		«FOR singleton : singletons»
-			int «singleton.id»(«singleton.accessor»);
-			«FOR neededIndex : singleton.indicesToDefine»
-				int «neededIndex.indexName»(«neededIndex.idToIndex»);
-			«ENDFOR»
 		«ENDFOR»
 	'''
 	
@@ -156,13 +160,15 @@ abstract class InstructionContentProvider
 	
 	private def getIdToIndex(VarRefIteratorRef it)
 	{
-		if (indexEqualId) id
-		else 'utils::indexOf(' + accessor + ',' + id + ')'
+		if (varContainer.indexEqualId) idName
+		else 'utils::indexOf(' + accessor + ',' + idName + ')'
 	}
 
-	def getAccessor(VarRefIteratorRef it) '''mesh->get«connectivity.name.toFirstUpper»(«connectivityArgs.map[id].join(', ')»)'''
-	def getAccessor(Iterator it)  '''mesh->get«container.connectivity.name.toFirstUpper»(«container.args.map[id].join(', ')»)'''
-
+	protected def getAccessor(VarRefIteratorRef it) { getAccessor(varContainer, varArgs) }
+	protected def getAccessor(Iterator it)  { getAccessor(container.connectivity, container.args) }
+	private def getAccessor(Connectivity c, Iterable<? extends IteratorRef> args)  
+	'''mesh->get«c.name.toFirstUpper»(«args.map[idName].join(', ')»)'''
+	
 	private def getKokkosName(Reduction it) '''«name.replaceFirst("reduce", "")»'''
 	
 	/**

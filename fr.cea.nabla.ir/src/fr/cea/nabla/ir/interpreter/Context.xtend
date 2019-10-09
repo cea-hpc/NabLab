@@ -53,10 +53,10 @@ class Context
 		indexValues.get(indexName) ?: outerContext.getIndexValue(indexName)
 	}
 
-	def int getIdValue(IteratorRef it) { getIdValue(id) }
-	def int getIdValue(Iterator it) { getIdValue(id) }
-	def void setIdValue(IteratorRef it, int value) { idValues.put(id, value) }
-	def void setIdValue(Iterator it, int value) { idValues.put(id, value) }
+	def int getIdValue(IteratorRef it) { getIdValue(idName) }
+	def int getIdValue(Iterator it) { getIdValue(getIdName) }
+	def void setIdValue(IteratorRef it, int value) { idValues.put(idName, value) }
+	def void setIdValue(Iterator it, int value) { idValues.put(getIdName, value) }
 
 	private def int getIdValue(String id)
 	{
@@ -72,6 +72,6 @@ class Context
 	def int getSingleton(Iterator iterator)
 	{
 		val methodName = "get" + iterator.container.connectivity.name.toFirstUpper
-		meshWrapper.invokeSingleton(methodName, iterator.container.args.map[getIdValue(id)])
+		meshWrapper.invokeSingleton(methodName, iterator.container.args.map[getIdValue(idName)])
 	}
 }

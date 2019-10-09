@@ -10,15 +10,12 @@ import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 
 class IteratorExtensions 
 {
-	static val sortById = new SortById
+	static val sortByIdName = new SortByIdName
 	static val sortByIndexName = new SortByIndexName
 	
 	static def String getContainerName(Iterator it)
 	{
-		if (container.args.empty)
-			container.connectivity.name
-		else
-			container.connectivity.name + container.args.map[indexName.toString.toFirstUpper].join('')
+		container.connectivity.name + container.args.map[x | x.name.toFirstUpper].join('')
 	}
 	
 	static def getIndexName(Iterator it)
@@ -26,11 +23,6 @@ class IteratorExtensions
 		name + containerName.toFirstUpper
 	}
 	
-	static def getId(Iterator it)
-	{
-		name + 'Id'
-	}
-
 	/**
 	 * Return the list of IteratorRef that need ids (and not indices) in the scope of 'it':
 	 * - either the args feature of ConnectivityCall: a ConnectivityCall arg is 
@@ -41,7 +33,7 @@ class IteratorExtensions
 	 */
 	static def getNeededIds(Iterator it)
 	{
-		val neededIds = new TreeSet<IteratorRef>(sortById)
+		val neededIds = new TreeSet<IteratorRef>(sortByIdName)
 		for (referencer : referencers)
 		{
 			switch referencer
@@ -65,12 +57,12 @@ class IteratorExtensions
 	 * - directly via the 'target' feature reference 
 	 * - indirectly via the return of indirectIteratorReferences operation.
 	 */
-	static def getIndicesToDefine(Iterator it)
+	static def getNeededIndices(Iterator it)
 	{
 		//println('getIndicesToDefined for: ' + name + ' - ' + indexName)
 		
 		// Only one instance with the same index name.
-		val indexToDefined = new TreeSet<VarRefIteratorRef>(sortByIndexName)
+		val neededIndices = new TreeSet<VarRefIteratorRef>(sortByIndexName)
 		
 		// get all variable indices of the context
 		val allIndices = new TreeSet<VarRefIteratorRef>(sortByIndexName)
@@ -90,19 +82,19 @@ class IteratorExtensions
 				val directReference = index.target
 				//println('    directReference: ' + directReference.name)
 
-				val indexIndirectReferences = index.indirectIteratorReferences
+				val indexIndirectReferences = index.varArgs.map[target]
 				//println('    indexIndirectReferences: ' + indexIndirectReferences.map[name].join(', '))
 				
 				// if the iterator 'it' is referenced by the index
 				if (directReference===it || indexIndirectReferences.contains(it))
 					// if all iterators are defined
 					if (! (innerIterators.contains(directReference) || indexIndirectReferences.exists[x | innerIterators.contains(x)]))
-						indexToDefined += index
+						neededIndices += index
 			}
 		}
 		
 		//println('  indexToDefined: ' + indexToDefined.map[indexName].join(', '))
-		return indexToDefined
+		return neededIndices
 	}
 }
 

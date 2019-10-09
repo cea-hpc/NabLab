@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
@@ -137,20 +138,23 @@ class InstructionContentProvider
 	/** Define all needed ids and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
 	private static def defineIndices(IterableInstruction it)
 	'''
-		«FOR neededId : range.neededIds»
-			int «neededId.id» = «neededId.indexToId»;
-		«ENDFOR»
-		«FOR neededIndex : range.indicesToDefine»
-			int «neededIndex.indexName» = «neededIndex.idToIndex»;
-		«ENDFOR»
-		«FOR singleton : singletons»
-			int «singleton.id» = «singleton.accessor»;
-			«FOR neededIndex : singleton.indicesToDefine»
-				int «neededIndex.indexName» = «neededIndex.idToIndex»;
-			«ENDFOR»
+		«range.defineIndices»
+		«FOR s : singletons»
+			int «s.indexName» = «s.accessor»;
+			«s.defineIndices»
 		«ENDFOR»
 	'''
 	
+	private static def defineIndices(Iterator it)
+	'''
+		«FOR neededId : neededIds»
+			int «neededId.idName» = «neededId.indexToId»;
+		«ENDFOR»
+		«FOR neededIndex : neededIndices»
+			int «neededIndex.indexName» = «neededIndex.idToIndex»;
+		«ENDFOR»
+	'''
+
 	private	static def getIndexToId(IteratorRef it)
 	{
 		if (target.container.connectivity.indexEqualId || target.singleton) indexValue
@@ -159,12 +163,14 @@ class InstructionContentProvider
 	
 	private static def getIdToIndex(VarRefIteratorRef it)
 	{
-		if (indexEqualId) id
-		else 'Utils.indexOf(' + accessor + ', ' + id + ')'
+		if (varContainer.indexEqualId) idName
+		else 'Utils.indexOf(' + accessor + ', ' + idName + ')'
 	}
 	
-	static def getAccessor(VarRefIteratorRef it) '''mesh.get«connectivity.name.toFirstUpper»(«connectivityArgs.map[id].join(', ')»)'''
-	static def getAccessor(Iterator it)  '''mesh.get«container.connectivity.name.toFirstUpper»(«container.args.map[id].join(', ')»)'''
+	private static def getAccessor(VarRefIteratorRef it) { getAccessor(varContainer, varArgs) }
+	private static def getAccessor(Iterator it)  { getAccessor(container.connectivity, container.args) }
+	private static def getAccessor(Connectivity c, Iterable<? extends IteratorRef> args)  
+	'''mesh.get«c.name.toFirstUpper»(«args.map[idName].join(', ')»)'''
 
 	private static def getJavaName(Reduction it) '''«provider»«Utils::FunctionAndReductionproviderSuffix».«name»'''
 }

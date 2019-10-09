@@ -160,60 +160,41 @@ class IteratorExtensionsTest
 	}
 
 	@Test
-	def void testGetId()
-	{
-		Assert.assertEquals("jId", j1_j.id)
-
-		Assert.assertEquals("jId", j2_j.id)
-		Assert.assertEquals("rId", j2_r.id)
-
-		Assert.assertEquals("rId", j3_r.id)
-		Assert.assertEquals("jId", j3_j.id)
-
-		Assert.assertEquals("jId", j4_j.id)
-		Assert.assertEquals("rId", j4_r.id)
-
-		Assert.assertEquals("j1Id", j5_j1.id)
-		Assert.assertEquals("j2Id", j5_j2.id)
-		Assert.assertEquals("cfId", j5_cf.id)
-	}
-
-	@Test
 	def void testGetNeededIds()
 	{
-		Assert.assertArrayEquals(#[], j1_j.neededIds.map[id])
+		Assert.assertArrayEquals(#[], j1_j.neededIds.map[idName])
 
-		Assert.assertArrayEquals(#["jId"], j2_j.neededIds.map[id])
-		Assert.assertArrayEquals(#[], j2_r.neededIds.map[id])
+		Assert.assertArrayEquals(#["jId"], j2_j.neededIds.map[idName])
+		Assert.assertArrayEquals(#[], j2_r.neededIds.map[idName])
 
-		Assert.assertArrayEquals(#["jId"], j3_j.neededIds.map[id])
-		Assert.assertArrayEquals(#["rId"], j3_r.neededIds.map[id])
+		Assert.assertArrayEquals(#["jId"], j3_j.neededIds.map[idName])
+		Assert.assertArrayEquals(#["rId"], j3_r.neededIds.map[idName])
 
-		Assert.assertArrayEquals(#["jId"], j4_j.neededIds.map[id])
-		Assert.assertArrayEquals(#["rId", "rPlus1Id"], j4_r.neededIds.map[id])
+		Assert.assertArrayEquals(#["jId"], j4_j.neededIds.map[idName])
+		Assert.assertArrayEquals(#["rId", "rPlus1Id"], j4_r.neededIds.map[idName])
 
-		Assert.assertArrayEquals(#["j1Id"], j5_j1.neededIds.map[id])
-		Assert.assertArrayEquals(#["j2Id"], j5_j2.neededIds.map[id])
-		Assert.assertArrayEquals(#["cfId"], j5_cf.neededIds.map[id])
+		Assert.assertArrayEquals(#["j1Id"], j5_j1.neededIds.map[idName])
+		Assert.assertArrayEquals(#["j2Id"], j5_j2.neededIds.map[idName])
+		Assert.assertArrayEquals(#["cfId"], j5_cf.neededIds.map[idName])
 	}
 
 	@Test
-	def void testGetIndicesToDefine()
+	def void testGetNeededIndices()
 	{
-		Assert.assertArrayEquals(#[], j1_j.indicesToDefine.map[indexName])
+		Assert.assertArrayEquals(#[], j1_j.neededIndices.map[indexName])
 
-		Assert.assertArrayEquals(#[], j2_j.indicesToDefine.map[indexName])
-		Assert.assertArrayEquals(#[], j2_r.indicesToDefine.map[indexName])
+		Assert.assertArrayEquals(#[], j2_j.neededIndices.map[indexName])
+		Assert.assertArrayEquals(#[], j2_r.neededIndices.map[indexName])
 
-		Assert.assertArrayEquals(#[], j3_r.indicesToDefine.map[indexName])
-		Assert.assertArrayEquals(#["jCells", "rNodesOfCellJ"], j3_j.indicesToDefine.map[indexName])
+		Assert.assertArrayEquals(#[], j3_r.neededIndices.map[indexName])
+		Assert.assertArrayEquals(#["jCells", "rNodesOfCellJ"], j3_j.neededIndices.map[indexName])
 
-		Assert.assertArrayEquals(#[], j4_j.indicesToDefine.map[indexName])
-		Assert.assertArrayEquals(#["rNodes", "rPlus1Nodes"], j4_r.indicesToDefine.map[indexName])
+		Assert.assertArrayEquals(#[], j4_j.neededIndices.map[indexName])
+		Assert.assertArrayEquals(#["rNodes", "rPlus1Nodes"], j4_r.neededIndices.map[indexName])
 
-		Assert.assertArrayEquals(#[], j5_j1.indicesToDefine.map[indexName])
-		Assert.assertArrayEquals(#["j2Cells"], j5_j2.indicesToDefine.map[indexName])
-		Assert.assertArrayEquals(#["cfFaces"], j5_cf.indicesToDefine.map[indexName])
+		Assert.assertArrayEquals(#[], j5_j1.neededIndices.map[indexName])
+		Assert.assertArrayEquals(#["j2Cells"], j5_j2.neededIndices.map[indexName])
+		Assert.assertArrayEquals(#["cfFaces"], j5_cf.neededIndices.map[indexName])
 	}
 
 	private def getNablaModule()

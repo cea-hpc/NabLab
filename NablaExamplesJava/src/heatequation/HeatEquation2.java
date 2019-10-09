@@ -10,7 +10,7 @@ import fr.cea.nabla.javalib.types.*;
 import fr.cea.nabla.javalib.mesh.*;
 
 @SuppressWarnings("all")
-public final class HeatEquation
+public final class HeatEquation2
 {
 	public final static class Options
 	{
@@ -40,7 +40,7 @@ public final class HeatEquation
 	private double[][] X, center;
 	private double[] u, V, f, outgoingFlux, surface, u_nplus1;
 	
-	public HeatEquation(Options aOptions, NumericMesh2D aNumericMesh2D)
+	public HeatEquation2(Options aOptions, NumericMesh2D aNumericMesh2D)
 	{
 		options = aOptions;
 		mesh = aNumericMesh2D;
@@ -98,10 +98,10 @@ public final class HeatEquation
 
 	public static void main(String[] args)
 	{
-		HeatEquation.Options o = new HeatEquation.Options();
+		HeatEquation2.Options o = new HeatEquation2.Options();
 		Mesh<double[]> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
 		NumericMesh2D nm = new NumericMesh2D(gm);
-		HeatEquation i = new HeatEquation(o, nm);
+		HeatEquation2 i = new HeatEquation2(o, nm);
 		i.simulate();
 	}
 	
@@ -224,8 +224,7 @@ public final class HeatEquation
 				{
 					int j2Id = neighbourCellsJ1[j2NeighbourCellsJ1];
 					int j2Cells = j2Id;
-					int cfCommonFaceJ1J2 = mesh.getCommonFace(j1Id, j2Id);
-					int cfId = cfCommonFaceJ1J2;
+					int cfId = mesh.getCommonFace(j1Id, j2Id);
 					int cfFaces = cfId;
 					reduceSum1795706568 = reduceSum1795706568 + ((u[j2Cells] - u[j1Cells]) / MathFunctions.norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
 				}

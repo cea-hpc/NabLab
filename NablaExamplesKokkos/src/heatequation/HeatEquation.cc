@@ -219,7 +219,8 @@ private:
 				{
 					int j2Id(neighbourCellsJ1[j2NeighbourCellsJ1]);
 					int j2Cells(j2Id);
-					int cfId(mesh->getCommonFace(j1Id, j2Id));
+					int cfCommonFaceJ1J2(mesh->getCommonFace(j1Id, j2Id));
+					int cfId(cfCommonFaceJ1J2);
 					int cfFaces(cfId);
 					reduceSum1795706568 = reduceSum1795706568 + ((u(j2Cells) - u(j1Cells)) / MathFunctions::norm(ArrayOperations::minus(center(j2Cells), center(j1Cells))) * surface(cfFaces));
 				}

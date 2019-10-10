@@ -9,6 +9,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
+import fr.cea.nabla.ir.ir.VarRefIteratorRef
 
 class Context
 {
@@ -43,9 +44,9 @@ class Context
 		variableValues.put(variable, value)
 	}
 
-	def int getIndexValue(IteratorRef it) { getIndexValue(indexName) }
+	def int getIndexValue(VarRefIteratorRef it) { getIndexValue(indexName) }
 	def int getIndexValue(Iterator it) { getIndexValue(indexName) }
-	def void setIndexValue(IteratorRef it, int value) { indexValues.put(indexName, value) }
+	def void setIndexValue(VarRefIteratorRef it, int value) { indexValues.put(indexName, value) }
 	def void setIndexValue(Iterator it, int value) { indexValues.put(indexName, value) }
 
 	private def int getIndexValue(String indexName)
@@ -54,9 +55,9 @@ class Context
 	}
 
 	def int getIdValue(IteratorRef it) { getIdValue(idName) }
-	def int getIdValue(Iterator it) { getIdValue(getIdName) }
+//	def int getIdValue(Iterator it) { getIdValue(getIdName) }
 	def void setIdValue(IteratorRef it, int value) { idValues.put(idName, value) }
-	def void setIdValue(Iterator it, int value) { idValues.put(getIdName, value) }
+//	def void setIdValue(Iterator it, int value) { idValues.put(getIdName, value) }
 
 	private def int getIdValue(String id)
 	{

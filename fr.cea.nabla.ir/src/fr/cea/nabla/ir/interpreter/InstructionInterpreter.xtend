@@ -4,6 +4,7 @@ import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.IterableInstruction
+import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
@@ -63,17 +64,17 @@ class InstructionInterpreter
 	
  	private static def void defineIndices(IterableInstruction it, Context context)
 	{
-		// Ids first because we may need them
-		for (neededId : range.neededIds)
+		defineIndices(range, context)
+		for (s : singletons)
+			defineIndices(s, context)
+	}
+	
+	private static def void defineIndices(Iterator it, Context context)
+	{
+		for (neededId : neededIds)
 			context.setIdValue(neededId, getIndexToId(neededId, context))
-		for (neededIndex : range.neededIndices)
+		for (neededIndex : neededIndices)
 			context.setIndexValue(neededIndex, getIdToIndex(neededIndex, context))
-		for (singleton : singletons)
-		{
-			context.setIdValue(singleton, context.getSingleton(singleton))
-			for (neededIndex : singleton.neededIndices)
-				context.setIndexValue(neededIndex, getIdToIndex(neededIndex, context))		
-		}
 	}
 	
 	private	static def getIndexToId(IteratorRef it, Context context)

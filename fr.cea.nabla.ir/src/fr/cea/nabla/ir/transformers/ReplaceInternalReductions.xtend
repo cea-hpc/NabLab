@@ -120,9 +120,9 @@ class ReplaceInternalReductions implements IrTransformationStep
 			function = IrFactory::eINSTANCE.createFunction =>
 			[
 				name = r.functionName
-				inTypes += r.collectionType
-				inTypes += r.returnType
-				returnType = r.returnType
+				inTypes += EcoreUtil.copy(r.collectionType)
+				inTypes += EcoreUtil.copy(r.returnType)
+				returnType = EcoreUtil.copy(r.returnType)
 				provider = r.provider
 			]
 			m.functions += function

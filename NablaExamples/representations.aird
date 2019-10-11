@@ -14,6 +14,9 @@
     <semanticResources>src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair</semanticResources>
     <semanticResources>src-gen/glace2d/Glace2d.fillHlts.nablair</semanticResources>
     <semanticResources>src-gen/heatequation/HeatEquation.fillHlts.nablair</semanticResources>
+    <semanticResources>src/EUCCLHYD/EUCCLHYD.nabla</semanticResources>
+    <semanticResources>src/EUCCLHYD/EUCCLHYD.nablagen</semanticResources>
+    <semanticResources>src-gen/eucclhyd/EUCCLHYD.fillHlts.nablair</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_mRvOsIBWEemS0rMnoZr-Bw">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_WFDOgIEjEemq4pB9a4y5nA" name="Glace2dDefaultGenerationChainDiagram" repPath="#_WE75wIEjEemq4pB9a4y5nA">
@@ -40,12 +43,12 @@
   <diagram:DSemanticDiagram uid="_WE75wIEjEemq4pB9a4y5nA" name="Glace2dDefaultGenerationChainDiagram">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_WE75wYEjEemq4pB9a4y5nA" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_WE75woEjEemq4pB9a4y5nA">
-        <computedStyleDescriptions xmi:type="style:SquareDescription" xmi:id="_hwrUYI6mEemjmKWy25M4Sg" labelSize="12" labelExpression="aql:self.name.replaceUpperCaseWithSpace()" iconPath="/fr.cea.nabla.sirius/icons/java.png" labelPosition="node" resizeKind="NSEW" width="20" height="5">
+        <computedStyleDescriptions xmi:type="style:SquareDescription" xmi:id="_hwtwoI6mEemjmKWy25M4Sg" labelSize="12" labelExpression="aql:self.name.replaceUpperCaseWithSpace()" iconPath="/fr.cea.nabla.sirius/icons/kokkos.png" labelPosition="node" resizeKind="NSEW" width="20" height="5">
           <borderColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
           <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
           <color xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
         </computedStyleDescriptions>
-        <computedStyleDescriptions xmi:type="style:SquareDescription" xmi:id="_hwtwoI6mEemjmKWy25M4Sg" labelSize="12" labelExpression="aql:self.name.replaceUpperCaseWithSpace()" iconPath="/fr.cea.nabla.sirius/icons/kokkos.png" labelPosition="node" resizeKind="NSEW" width="20" height="5">
+        <computedStyleDescriptions xmi:type="style:SquareDescription" xmi:id="_kLiUcOtEEemhLv0RS33pjg" labelSize="12" labelExpression="aql:self.name.replaceUpperCaseWithSpace()" iconPath="/fr.cea.nabla.sirius/icons/java.png" labelPosition="node" resizeKind="NSEW" width="20" height="5">
           <borderColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
           <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
           <color xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
@@ -124,9 +127,9 @@
           <children xmi:type="notation:Node" xmi:id="_WHgsoIEjEemq4pB9a4y5nA" type="5002">
             <layoutConstraint xmi:type="notation:Location" xmi:id="_WHgsoYEjEemq4pB9a4y5nA" y="5"/>
           </children>
-          <children xmi:type="notation:Node" xmi:id="_hxHZQI6mEemjmKWy25M4Sg" type="3003" element="_hwr7cI6mEemjmKWy25M4Sg">
-            <styles xmi:type="notation:ShapeStyle" xmi:id="_hxHZQY6mEemjmKWy25M4Sg" fontName="Ubuntu"/>
-            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_hxHZQo6mEemjmKWy25M4Sg"/>
+          <children xmi:type="notation:Node" xmi:id="_kLobEOtEEemhLv0RS33pjg" type="3003" element="_kLiUcutEEemhLv0RS33pjg">
+            <styles xmi:type="notation:ShapeStyle" xmi:id="_kLobEetEEemhLv0RS33pjg" fontName="Ubuntu"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_kLobEutEEemhLv0RS33pjg"/>
           </children>
           <styles xmi:type="notation:ShapeStyle" xmi:id="_WHgFk4EjEemq4pB9a4y5nA" fontName="Ubuntu" fontHeight="12"/>
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_WHgFlIEjEemq4pB9a4y5nA" x="40" y="660" width="200" height="50"/>
@@ -319,7 +322,7 @@
     <ownedDiagramElements xmi:type="diagram:DNode" uid="_WE8g3IEjEemq4pB9a4y5nA" name="Java Generator" outgoingEdges="_WE8g8YEjEemq4pB9a4y5nA" width="20" height="5" resizeKind="NSEW">
       <target xmi:type="nablagen:Ir2CodeComponent" href="src/glace2d/Glace2d.nablagen#//@workflow/@components.6"/>
       <semanticElements xmi:type="nablagen:Ir2CodeComponent" href="src/glace2d/Glace2d.nablagen#//@workflow/@components.6"/>
-      <ownedStyle xmi:type="diagram:Square" uid="_hwr7cI6mEemjmKWy25M4Sg" labelSize="12" iconPath="/fr.cea.nabla.sirius/icons/java.png" description="_hwrUYI6mEemjmKWy25M4Sg" borderColor="255,255,255" labelPosition="node" width="20" height="5" color="255,255,255"/>
+      <ownedStyle xmi:type="diagram:Square" uid="_kLiUcutEEemhLv0RS33pjg" labelSize="12" iconPath="/fr.cea.nabla.sirius/icons/java.png" description="_kLiUcOtEEemhLv0RS33pjg" borderColor="255,255,255" labelPosition="node" width="20" height="5" color="255,255,255"/>
       <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DNode" uid="_WE8g3oEjEemq4pB9a4y5nA" name="Kokkos Generator" outgoingEdges="_WE8g9IEjEemq4pB9a4y5nA" width="20" height="5" resizeKind="NSEW">

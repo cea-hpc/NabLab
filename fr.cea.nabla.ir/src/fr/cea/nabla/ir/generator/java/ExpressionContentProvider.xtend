@@ -32,12 +32,13 @@ import fr.cea.nabla.ir.ir.VarRef
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 import static extension fr.cea.nabla.ir.generator.java.VariableExtensions.*
 
 class ExpressionContentProvider
 {
 	static def dispatch CharSequence getContent(ContractedIf it) 
-	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
+	'''(«condition.content» ? «thenExpression.content» : «elseExpression.content»)'''
 	
 	static def dispatch CharSequence getContent(BinaryExpression it) 
 	{
@@ -81,23 +82,23 @@ class ExpressionContentProvider
 		val t = type
 		switch t
 		{
-			Array1D: initConstant(t, value.content)
-			Array2D: initConstant(t, value.content)
+			Array1D: '''new «type.primitive.javaType»[] «initConstant(t, value.content)»'''
+			Array2D: '''new «type.primitive.javaType»[][] «initConstant(t, value.content)»'''
 			default: throw new Exception('Invalid path...')
 		}
 	}
 	
 	static def dispatch CharSequence getContent(IntVectorConstant it) 
-	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v»«ENDFOR»'''
+	'''new int[] «FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v»«ENDFOR»'''
 	
 	static def dispatch CharSequence getContent(IntMatrixConstant it) 
-	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
+	'''new int[][] «FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
 	
 	static def dispatch CharSequence getContent(RealVectorConstant it) 
-	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v»«ENDFOR»'''
+	'''new double[] «FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v»«ENDFOR»'''
 	
 	static def dispatch CharSequence getContent(RealMatrixConstant it) 
-	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
+	'''new double[][] «FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
 	
 	static def dispatch CharSequence getContent(FunctionCall it) 
 	'''«function.provider»«Utils::FunctionAndReductionproviderSuffix».«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''

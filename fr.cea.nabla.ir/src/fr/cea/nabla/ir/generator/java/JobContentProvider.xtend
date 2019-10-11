@@ -39,14 +39,18 @@ class JobContentProvider
 	
 	private static def dispatch CharSequence getInnerContent(InSituJob it)
 	'''
-		HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-		HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-		«FOR v : variables.filter(ConnectivityVariable)»
-		«v.type.connectivities.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
-		«ENDFOR»
-		writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+		if «condition»
+		{
+			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+			«FOR v : variables.filter(ConnectivityVariable)»
+			«v.type.connectivities.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
+			«ENDFOR»
+			writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			«IF timeStep>0»lastWriteTime += «timeStep»;«ENDIF»
+		}
 	'''
-
+	
 	private static def dispatch CharSequence getInnerContent(EndOfTimeLoopJob it)
 	'''
 		«left.javaType» tmpSwitch = «left.name»;

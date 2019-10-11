@@ -416,7 +416,8 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void dumpVariables() noexcept
 	{
-		if (!writer.isDisabled()) {
+		if (!writer.isDisabled() && (iteration % 1 == 0)) 
+		{
 			std::map<string, double*> cellVariables;
 			std::map<string, double*> nodeVariables;
 			cellVariables.insert(pair<string,double*>("Density", rho.data()));

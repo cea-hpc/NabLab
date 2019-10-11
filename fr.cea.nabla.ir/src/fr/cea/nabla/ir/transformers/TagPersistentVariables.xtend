@@ -4,6 +4,10 @@ import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
 import java.util.HashMap
 import fr.cea.nabla.ir.ir.IrFactory
+import org.eclipse.xtend.lib.annotations.Accessors
+import fr.cea.nabla.ir.ir.PrimitiveType
+import fr.cea.nabla.ir.ir.SimpleVariable
+import org.eclipse.emf.ecore.util.EcoreUtil
 
 /**
  * Attend des propriétés de type <nom_de_variable> = <nom_de_persistence>.
@@ -13,6 +17,8 @@ import fr.cea.nabla.ir.ir.IrFactory
 class TagPersistentVariables implements IrTransformationStep 
 {
 	val HashMap<String, String> variables
+	@Accessors int iterationPeriod = -1;
+	@Accessors double timeStep = -1;
 	
 	new(HashMap<String, String> variables)
 	{
@@ -27,17 +33,44 @@ class TagPersistentVariables implements IrTransformationStep
 	override transform(IrModule m) 
 	{
 		val candidates = m.variables.filter(ConnectivityVariable)
-		val inSituJob = IrFactory.eINSTANCE.createInSituJob => [ name = 'dumpVariables' ]
+		
+		// Create InSituJob
+		val inSituJob = IrFactory.eINSTANCE.createInSituJob
+		inSituJob.name = 'dumpVariables'
+		inSituJob.iterationPeriod = iterationPeriod
+		inSituJob.timeStep = timeStep
 		for (key : variables.keySet)
 		{
 			val v = candidates.findFirst[x | x.name == key]
 			if (v !== null) 
 			{
 				v.persistenceName = variables.get(key)
-				inSituJob.variables += v	
+				inSituJob.variables += v
 			}
 		}
 		m.jobs += inSituJob
+		
+		if (timeStep > 0)
+		{
+			// Create a variable to store the last write time
+			val tVariable = m.variables.filter(SimpleVariable).findFirst[x | x.name == 't']
+			if (tVariable !== null)
+			{
+				val realType = IrFactory.eINSTANCE.createScalar => [ primitive = PrimitiveType::REAL ]
+				val twriter = IrFactory.eINSTANCE.createSimpleVariable =>
+				[
+					name = 'lastWriteTime'
+					type = realType
+					defaultValue = IrFactory.eINSTANCE.createVarRef =>
+					[
+						variable = tVariable
+						type = EcoreUtil.copy(realType)
+					]
+				]
+				m.variables += twriter
+			}
+		}
+
 		return true
 	}
 	

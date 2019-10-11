@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.ir.Array2D
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
@@ -81,5 +82,11 @@ class Utils
 	static def getPersistentVariables(IrModule it) 
 	{ 
 		variables.filter(ConnectivityVariable).filter[x|x.persistenceName !== null && x.type.connectivities.size==1]
+	}
+
+	static def getCondition(InSituJob it)
+	{
+		if (iterationPeriod > 0) '''(iteration % «iterationPeriod» == 0)'''
+		else if (timeStep > 0) '''(t + deltat > lastWriteTime)'''
 	}
 }

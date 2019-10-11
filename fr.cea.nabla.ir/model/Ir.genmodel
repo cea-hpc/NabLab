@@ -94,6 +94,8 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//InSituJob">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//InSituJob/variables"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//InSituJob/iterationPeriod"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//InSituJob/timeStep"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//TimeIterationCopyJob">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeIterationCopyJob/left"/>

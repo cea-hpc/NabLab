@@ -16,6 +16,8 @@ import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
 
+import static extension fr.cea.nabla.ir.generator.Utils.*
+
 abstract class JobContentProvider 
 {
 	extension InstructionContentProvider icp
@@ -32,7 +34,8 @@ abstract class JobContentProvider
 	
 	protected def dispatch CharSequence getInnerContent(InSituJob it)
 	'''
-		if (!writer.isDisabled()) {
+		if (!writer.isDisabled() && «condition») 
+		{
 			std::map<string, double*> cellVariables;
 			std::map<string, double*> nodeVariables;
 			«FOR v : variables.filter(ConnectivityVariable)»
@@ -40,6 +43,7 @@ abstract class JobContentProvider
 			«ENDFOR»
 			auto quads = mesh->getGeometricMesh()->getQuads();
 			writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+			«IF timeStep>0»lastWriteTime += «timeStep»;«ENDIF»
 		}
 	'''
 

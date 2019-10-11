@@ -9,6 +9,7 @@ workflow WhiteheatDefaultGenerationChain transforms HeatEquation
 	TagPersistentVariables tagPersistentVariables follows nabla2ir 
 	{ 
 		variables = u as "Temperature";
+		iterationPeriod = 1;
 	}
 	
 	ReplaceUtf replaceUtf follows tagPersistentVariables

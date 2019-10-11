@@ -1000,13 +1000,31 @@ public interface IrPackage extends EPackage {
 	int IN_SITU_JOB__VARIABLES = JOB_FEATURE_COUNT + 0;
 
 	/**
+	 * The feature id for the '<em><b>Iteration Period</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IN_SITU_JOB__ITERATION_PERIOD = JOB_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Time Step</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IN_SITU_JOB__TIME_STEP = JOB_FEATURE_COUNT + 2;
+
+	/**
 	 * The number of structural features of the '<em>In Situ Job</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IN_SITU_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 1;
+	int IN_SITU_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of operations of the '<em>In Situ Job</em>' class.
@@ -3877,6 +3895,28 @@ public interface IrPackage extends EPackage {
 	EReference getInSituJob_Variables();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.InSituJob#getIterationPeriod <em>Iteration Period</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Iteration Period</em>'.
+	 * @see fr.cea.nabla.ir.ir.InSituJob#getIterationPeriod()
+	 * @see #getInSituJob()
+	 * @generated
+	 */
+	EAttribute getInSituJob_IterationPeriod();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.InSituJob#getTimeStep <em>Time Step</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Time Step</em>'.
+	 * @see fr.cea.nabla.ir.ir.InSituJob#getTimeStep()
+	 * @see #getInSituJob()
+	 * @generated
+	 */
+	EAttribute getInSituJob_TimeStep();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.TimeIterationCopyJob <em>Time Iteration Copy Job</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -5356,6 +5396,22 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference IN_SITU_JOB__VARIABLES = eINSTANCE.getInSituJob_Variables();
+
+		/**
+		 * The meta object literal for the '<em><b>Iteration Period</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IN_SITU_JOB__ITERATION_PERIOD = eINSTANCE.getInSituJob_IterationPeriod();
+
+		/**
+		 * The meta object literal for the '<em><b>Time Step</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IN_SITU_JOB__TIME_STEP = eINSTANCE.getInSituJob_TimeStep();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.TimeIterationCopyJobImpl <em>Time Iteration Copy Job</em>}' class.

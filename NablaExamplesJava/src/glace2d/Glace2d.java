@@ -179,7 +179,7 @@ public final class Glace2d
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double[] reduceSum1267915030 = {0.0, 0.0};
+			double[] reduceSum1267915030 = new double[] {0.0, 0.0};
 			{
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
@@ -417,10 +417,13 @@ public final class Glace2d
 	 */
 	private void dumpVariables() 
 	{
-		HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-		HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-		cellVariables.put("Density", rho);
-		writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+		if (iteration % 1 == 0)
+		{
+			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+			cellVariables.put("Density", rho);
+			writer.writeFile(iteration, t, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+		}
 	}		
 	
 	/**
@@ -488,7 +491,7 @@ public final class Glace2d
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
 			int rId = rNodes;
-			double[][] reduceSum830860026 = {{0.0, 0.0}, {0.0, 0.0}};
+			double[][] reduceSum830860026 = new double[][] {{0.0, 0.0}, {0.0, 0.0}};
 			{
 				int[] cellsOfNodeR = mesh.getCellsOfNode(rId);
 				for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.length; jCellsOfNodeR++)
@@ -513,7 +516,7 @@ public final class Glace2d
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
 			int rId = rNodes;
-			double[] reduceSum81916262 = {0.0, 0.0};
+			double[] reduceSum81916262 = new double[] {0.0, 0.0};
 			{
 				int[] cellsOfNodeR = mesh.getCellsOfNode(rId);
 				for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.length; jCellsOfNodeR++)
@@ -599,12 +602,12 @@ public final class Glace2d
 		{
 			int kId = outerFaces[kOuterFaces];
 			final double epsilon = 1.0E-10;
-			double[][] I = {{1.0, 0.0}, {0.0, 1.0}};
+			double[][] I = new double[][] {new double[] {1.0, 0.0}, new double[] {0.0, 1.0}};
 			double X_MIN = 0.0;
 			double X_MAX = options.X_EDGE_ELEMS * options.X_EDGE_LENGTH;
 			double Y_MIN = 0.0;
 			double Y_MAX = options.Y_EDGE_ELEMS * options.Y_EDGE_LENGTH;
-			double[] nY = {0.0, 1.0};
+			double[] nY = new double[] {0.0, 1.0};
 			{
 				int[] nodesOfFaceK = mesh.getNodesOfFace(kId);
 				for (int rNodesOfFaceK=0; rNodesOfFaceK<nodesOfFaceK.length; rNodesOfFaceK++)
@@ -727,7 +730,7 @@ public final class Glace2d
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double[] reduceSum_1888723758 = {0.0, 0.0};
+			double[] reduceSum_1888723758 = new double[] {0.0, 0.0};
 			{
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)

@@ -29,11 +29,14 @@
   <eClassifiers xsi:type="ecore:EClass" name="TagPersistentVariablesComponent" eSuperTypes="#//Ir2IrComponent">
     <eStructuralFeatures xsi:type="ecore:EReference" name="vars" upperBound="-1" eType="#//PersistentVar"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="period" eType="#//PersistencePeriod"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PersistentVar">
     <eStructuralFeatures xsi:type="ecore:EReference" name="varRef" eType="ecore:EClass Nabla.ecore#//ConnectivityVar"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="varName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PersistencePeriod"/>
   <eClassifiers xsi:type="ecore:EClass" name="ReplaceUtfComponent" eSuperTypes="#//Ir2IrComponent"/>
   <eClassifiers xsi:type="ecore:EClass" name="ReplaceInternalReductionsComponent"
       eSuperTypes="#//Ir2IrComponent"/>
@@ -50,5 +53,11 @@
     <eLiterals name="Java" literal="Java"/>
     <eLiterals name="Kokkos" value="1" literal="Kokkos"/>
     <eLiterals name="KokkosHierarchicalParallelism" value="2" literal="KokkosHierarchicalParallelism"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Iteration" eSuperTypes="#//PersistencePeriod">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeStep" eSuperTypes="#//PersistencePeriod">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
   </eClassifiers>
 </ecore:EPackage>

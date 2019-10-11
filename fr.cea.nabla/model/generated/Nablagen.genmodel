@@ -35,11 +35,13 @@
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//TagPersistentVariablesComponent">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//TagPersistentVariablesComponent/vars"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//TagPersistentVariablesComponent/period"/>
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//PersistentVar">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//PersistentVar/varRef"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//PersistentVar/varName"/>
     </genClasses>
+    <genClasses ecoreClass="Nablagen.ecore#//PersistencePeriod"/>
     <genClasses ecoreClass="Nablagen.ecore#//ReplaceUtfComponent"/>
     <genClasses ecoreClass="Nablagen.ecore#//ReplaceInternalReductionsComponent"/>
     <genClasses ecoreClass="Nablagen.ecore#//OptimizeConnectivitiesComponent">
@@ -49,6 +51,12 @@
     <genClasses ecoreClass="Nablagen.ecore#//Ir2CodeComponent">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Ir2CodeComponent/language"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Ir2CodeComponent/outputDir"/>
+    </genClasses>
+    <genClasses ecoreClass="Nablagen.ecore#//Iteration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Iteration/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Nablagen.ecore#//TimeStep">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//TimeStep/value"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

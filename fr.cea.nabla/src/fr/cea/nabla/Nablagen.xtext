@@ -51,13 +51,18 @@ TagPersistentVariablesComponent:
 	'TagPersistentVariables' name=ID 'follows' parent=[WorkflowComponent] 
 	'{' 
 		'variables' '=' vars+=PersistentVar (',' vars+=PersistentVar)* ';'
+		period=PersistencePeriod ';'
 		(disabled?='disabled' ';')?
 		(dumpIr?='dumpIr' ';')?
 	'}';
-	
+
 PersistentVar:
 	varRef=[nabla::ConnectivityVar]
 	'as' varName=STRING;
+
+PersistencePeriod:
+	{Iteration} 'iterationPeriod' '=' value=INT |
+	{TimeStep} 'timeStep' '=' value=REAL;
 
 ReplaceUtfComponent:
 	'ReplaceUtf' name=ID 'follows' parent=[WorkflowComponent] 

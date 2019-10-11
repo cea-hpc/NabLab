@@ -257,6 +257,29 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.PersistencePeriod} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected PersistencePeriodItemProvider persistencePeriodItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.PersistencePeriod}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createPersistencePeriodAdapter() {
+		if (persistencePeriodItemProvider == null) {
+			persistencePeriodItemProvider = new PersistencePeriodItemProvider(this);
+		}
+
+		return persistencePeriodItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.ReplaceUtfComponent} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -372,6 +395,52 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.Iteration} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected IterationItemProvider iterationItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.Iteration}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createIterationAdapter() {
+		if (iterationItemProvider == null) {
+			iterationItemProvider = new IterationItemProvider(this);
+		}
+
+		return iterationItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.TimeStep} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected TimeStepItemProvider timeStepItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.TimeStep}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createTimeStepAdapter() {
+		if (timeStepItemProvider == null) {
+			timeStepItemProvider = new TimeStepItemProvider(this);
+		}
+
+		return timeStepItemProvider;
+	}
+
+	/**
 	 * This returns the root adapter factory that contains this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -478,11 +547,14 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 		if (nabla2IrComponentItemProvider != null) nabla2IrComponentItemProvider.dispose();
 		if (tagPersistentVariablesComponentItemProvider != null) tagPersistentVariablesComponentItemProvider.dispose();
 		if (persistentVarItemProvider != null) persistentVarItemProvider.dispose();
+		if (persistencePeriodItemProvider != null) persistencePeriodItemProvider.dispose();
 		if (replaceUtfComponentItemProvider != null) replaceUtfComponentItemProvider.dispose();
 		if (replaceInternalReductionsComponentItemProvider != null) replaceInternalReductionsComponentItemProvider.dispose();
 		if (optimizeConnectivitiesComponentItemProvider != null) optimizeConnectivitiesComponentItemProvider.dispose();
 		if (fillHLTsComponentItemProvider != null) fillHLTsComponentItemProvider.dispose();
 		if (ir2CodeComponentItemProvider != null) ir2CodeComponentItemProvider.dispose();
+		if (iterationItemProvider != null) iterationItemProvider.dispose();
+		if (timeStepItemProvider != null) timeStepItemProvider.dispose();
 	}
 
 }

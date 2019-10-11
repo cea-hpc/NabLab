@@ -64,6 +64,7 @@ public class TagPersistentVariablesComponentItemProvider extends Ir2IrComponentI
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(NablagenPackage.Literals.TAG_PERSISTENT_VARIABLES_COMPONENT__VARS);
+			childrenFeatures.add(NablagenPackage.Literals.TAG_PERSISTENT_VARIABLES_COMPONENT__PERIOD);
 		}
 		return childrenFeatures;
 	}
@@ -120,6 +121,7 @@ public class TagPersistentVariablesComponentItemProvider extends Ir2IrComponentI
 
 		switch (notification.getFeatureID(TagPersistentVariablesComponent.class)) {
 			case NablagenPackage.TAG_PERSISTENT_VARIABLES_COMPONENT__VARS:
+			case NablagenPackage.TAG_PERSISTENT_VARIABLES_COMPONENT__PERIOD:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -141,6 +143,21 @@ public class TagPersistentVariablesComponentItemProvider extends Ir2IrComponentI
 			(createChildParameter
 				(NablagenPackage.Literals.TAG_PERSISTENT_VARIABLES_COMPONENT__VARS,
 				 NablagenFactory.eINSTANCE.createPersistentVar()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablagenPackage.Literals.TAG_PERSISTENT_VARIABLES_COMPONENT__PERIOD,
+				 NablagenFactory.eINSTANCE.createPersistencePeriod()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablagenPackage.Literals.TAG_PERSISTENT_VARIABLES_COMPONENT__PERIOD,
+				 NablagenFactory.eINSTANCE.createIteration()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablagenPackage.Literals.TAG_PERSISTENT_VARIABLES_COMPONENT__PERIOD,
+				 NablagenFactory.eINSTANCE.createTimeStep()));
 	}
 
 }

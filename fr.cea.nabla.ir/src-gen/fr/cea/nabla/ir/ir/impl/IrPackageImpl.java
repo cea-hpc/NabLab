@@ -987,6 +987,24 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getInSituJob_IterationPeriod() {
+		return (EAttribute)inSituJobEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getInSituJob_TimeStep() {
+		return (EAttribute)inSituJobEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getTimeIterationCopyJob() {
 		return timeIterationCopyJobEClass;
 	}
@@ -1931,6 +1949,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		inSituJobEClass = createEClass(IN_SITU_JOB);
 		createEReference(inSituJobEClass, IN_SITU_JOB__VARIABLES);
+		createEAttribute(inSituJobEClass, IN_SITU_JOB__ITERATION_PERIOD);
+		createEAttribute(inSituJobEClass, IN_SITU_JOB__TIME_STEP);
 
 		timeIterationCopyJobEClass = createEClass(TIME_ITERATION_COPY_JOB);
 		createEReference(timeIterationCopyJobEClass, TIME_ITERATION_COPY_JOB__LEFT);
@@ -2213,6 +2233,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(inSituJobEClass, InSituJob.class, "InSituJob", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInSituJob_Variables(), this.getVariable(), null, "variables", null, 0, -1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInSituJob_IterationPeriod(), ecorePackage.getEInt(), "iterationPeriod", "-1", 1, 1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInSituJob_TimeStep(), ecorePackage.getEDouble(), "timeStep", "-1.0", 1, 1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(timeIterationCopyJobEClass, TimeIterationCopyJob.class, "TimeIterationCopyJob", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getTimeIterationCopyJob_Left(), this.getVariable(), null, "left", null, 1, 1, TimeIterationCopyJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

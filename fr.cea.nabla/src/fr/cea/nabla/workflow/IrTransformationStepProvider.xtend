@@ -12,6 +12,8 @@ import fr.cea.nabla.nablagen.ReplaceUtfComponent
 import fr.cea.nabla.nablagen.TagPersistentVariablesComponent
 import java.util.ArrayList
 import java.util.HashMap
+import fr.cea.nabla.nablagen.Iteration
+import fr.cea.nabla.nablagen.TimeStep
 
 class IrTransformationStepProvider 
 {
@@ -20,7 +22,14 @@ class IrTransformationStepProvider
 	{
 		val outVars = new HashMap<String, String>
 		vars.forEach[outVars.put(varRef.name, varName)]
-		new TagPersistentVariables(outVars)
+		val tpv = new TagPersistentVariables(outVars)
+		val p = period
+		switch p
+		{
+			Iteration : tpv.iterationPeriod = p.value
+			TimeStep : tpv.timeStep = p.value
+		}
+		return tpv
 	} 
 		
 	static def dispatch get(ReplaceUtfComponent it)

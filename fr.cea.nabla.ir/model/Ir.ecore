@@ -109,6 +109,10 @@
   <eClassifiers xsi:type="ecore:EClass" name="InSituJob" eSuperTypes="#//Job">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="iterationPeriod" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt" defaultValueLiteral="-1"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeStep" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" defaultValueLiteral="-1.0"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeIterationCopyJob" abstract="true"
       eSuperTypes="#//Job">

@@ -37,7 +37,7 @@ public final class Glace2d
 	// Mesh
 	private final NumericMesh2D mesh;
 	private final int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
-	private final VtkFileWriter2D writer;
+	private final FileWriter writer;
 
 	// Global Variables
 	private double t, deltat, deltat_nplus1, t_nplus1;
@@ -52,7 +52,7 @@ public final class Glace2d
 	{
 		options = aOptions;
 		mesh = aNumericMesh2D;
-		writer = new VtkFileWriter2D("Glace2d");
+		writer = new PvdFileWriter2D("Glace2d");
 
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();

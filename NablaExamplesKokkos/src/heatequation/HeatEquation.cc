@@ -14,7 +14,7 @@
 // Project headers
 #include "mesh/NumericMesh2D.h"
 #include "mesh/CartesianMesh2DGenerator.h"
-#include "mesh/VtkFileWriter2D.h"
+#include "mesh/PvdFileWriter2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
@@ -44,7 +44,7 @@ public:
 private:
 	int iteration;
 	NumericMesh2D* mesh;
-	VtkFileWriter2D writer;
+	PvdFileWriter2D writer;
 	int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
 
 	// Global Variables
@@ -66,7 +66,7 @@ public:
 	HeatEquation(Options* aOptions, NumericMesh2D* aNumericMesh2D, string output)
 	: options(aOptions)
 	, mesh(aNumericMesh2D)
-	, writer("HeatEquation", output)
+	, writer("HeatEquation")
 	, nbNodes(mesh->getNbNodes())
 	, nbCells(mesh->getNbCells())
 	, nbFaces(mesh->getNbFaces())
@@ -248,12 +248,13 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void dumpVariables() noexcept
 	{
-		if (!writer.isDisabled()) {
+		if (!writer.isDisabled() && (iteration % 1 == 0)) 
+		{
 			std::map<string, double*> cellVariables;
 			std::map<string, double*> nodeVariables;
 			cellVariables.insert(pair<string,double*>("Temperature", u.data()));
 			auto quads = mesh->getGeometricMesh()->getQuads();
-			writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+			writer.writeFile(iteration, t, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
 		}
 	}
 	

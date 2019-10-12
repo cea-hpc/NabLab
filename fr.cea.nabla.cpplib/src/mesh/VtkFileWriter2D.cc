@@ -15,23 +15,9 @@ using namespace std;
 
 namespace nablalib
 {
-const string VtkFileWriter2D::OutputDir = "output";
-
 VtkFileWriter2D::VtkFileWriter2D(const string& moduleName, const string& baseDirName)
-: m_moduleName(moduleName), m_disabled(false)
+: FileWriter(moduleName, baseDirName)
 {
-  if (baseDirName.empty())
-    m_directoryName = OutputDir;
-  else if (baseDirName == "none" || baseDirName == "NONE")
-    m_disabled = true;
-  else
-    m_directoryName = baseDirName + "/" + OutputDir;
-
-  if (!m_disabled) {
-    if (experimental::filesystem::exists(m_directoryName))
-    	experimental::filesystem::remove_all(m_directoryName);
-    experimental::filesystem::create_directory(m_directoryName);
-  }
 }
 
 VtkFileWriter2D::~VtkFileWriter2D() {}
@@ -39,6 +25,7 @@ VtkFileWriter2D::~VtkFileWriter2D() {}
 void
 VtkFileWriter2D::writeFile(
 					const int& iteration,
+					const double& time,
 					const int& nbNodes,
 					const Real2* nodes,
 					const int& nbCells,
@@ -50,12 +37,16 @@ VtkFileWriter2D::writeFile(
     return;
 
 	ofstream writer;
-	writer.open(m_directoryName + "/" + m_moduleName + "." + to_string(iteration) + ".vtk");
+	writer.open(m_directory_name + "/" + m_module_name + "." + to_string(iteration) + ".vtk");
 
 	writer << "# vtk DataFile Version 2.0" << endl;
-	writer << m_moduleName << " at iteration " << iteration << endl;
+	writer << m_module_name << " at iteration " << iteration << endl;
 	writer << "ASCII" << endl;
 	writer << "DATASET POLYDATA" << endl;
+
+	writer << "FIELD FieldData 1" << endl;
+	writer << "TIME 1 1 double" << endl;
+	writer << "time" << endl;
 
 	writer << "POINTS " << nbNodes << " float" << endl;
 	for (int r=0 ; r<nbNodes ; ++r)

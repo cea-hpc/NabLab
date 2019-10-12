@@ -65,7 +65,7 @@ class Ir2Java extends CodeGenerator
 			// Mesh
 			private final NumericMesh2D mesh;
 			«FOR c : usedConnectivities BEFORE 'private final int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
-			private final VtkFileWriter2D writer;
+			private final FileWriter writer;
 
 			// Global Variables
 			«val globals = variables.filter(SimpleVariable).filter[!const]»
@@ -93,7 +93,7 @@ class Ir2Java extends CodeGenerator
 			{
 				options = aOptions;
 				mesh = aNumericMesh2D;
-				writer = new VtkFileWriter2D("«name»");
+				writer = new PvdFileWriter2D("«name»");
 
 				«FOR c : usedConnectivities»
 				«c.nbElems» = «c.connectivityAccessor»;

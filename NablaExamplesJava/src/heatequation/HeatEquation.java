@@ -31,7 +31,7 @@ public final class HeatEquation
 	// Mesh
 	private final NumericMesh2D mesh;
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
-	private final VtkFileWriter2D writer;
+	private final FileWriter writer;
 
 	// Global Variables
 	private double t, deltat, t_nplus1;
@@ -44,7 +44,7 @@ public final class HeatEquation
 	{
 		options = aOptions;
 		mesh = aNumericMesh2D;
-		writer = new VtkFileWriter2D("HeatEquation");
+		writer = new PvdFileWriter2D("HeatEquation");
 
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
@@ -128,7 +128,7 @@ public final class HeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double[] reduceSum_906155090 = {0.0, 0.0};
+			double[] reduceSum_906155090 = new double[] {0.0, 0.0};
 			{
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
@@ -251,10 +251,13 @@ public final class HeatEquation
 	 */
 	private void dumpVariables() 
 	{
-		HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-		HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-		cellVariables.put("Temperature", u);
-		writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+		if (iteration % 1 == 0)
+		{
+			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+			cellVariables.put("Temperature", u);
+			writer.writeFile(iteration, t, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+		}
 	}		
 	
 	/**

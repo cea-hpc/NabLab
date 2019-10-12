@@ -17,7 +17,7 @@ public final class ExplicitHeatEquation
 		public final double X_LENGTH = 2.0;
 		public final double Y_LENGTH = 2.0;
 		public final double u0 = 1.0;
-		public final double[] vectOne = {1.0, 1.0};
+		public final double[] vectOne = new double[] {1.0, 1.0};
 		public final int X_EDGE_ELEMS = 40;
 		public final int Y_EDGE_ELEMS = 40;
 		public final int Z_EDGE_ELEMS = 1;
@@ -33,7 +33,7 @@ public final class ExplicitHeatEquation
 	// Mesh
 	private final NumericMesh2D mesh;
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
-	private final VtkFileWriter2D writer;
+	private final FileWriter writer;
 
 	// Global Variables
 	private double t, deltat, t_nplus1;
@@ -46,7 +46,7 @@ public final class ExplicitHeatEquation
 	{
 		options = aOptions;
 		mesh = aNumericMesh2D;
-		writer = new VtkFileWriter2D("ExplicitHeatEquation");
+		writer = new PvdFileWriter2D("ExplicitHeatEquation");
 
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
@@ -124,7 +124,7 @@ public final class ExplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			int cId = cCells;
-			double[] reduceSum945546454 = {0.0, 0.0};
+			double[] reduceSum945546454 = new double[] {0.0, 0.0};
 			{
 				int[] nodesOfCellC = mesh.getNodesOfCell(cId);
 				for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.length; pNodesOfCellC++)
@@ -352,10 +352,13 @@ public final class ExplicitHeatEquation
 	 */
 	private void dumpVariables() 
 	{
-		HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-		HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-		cellVariables.put("Temperature", u);
-		writer.writeFile(iteration, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+		if (iteration % 1 == 0)
+		{
+			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+			cellVariables.put("Temperature", u);
+			writer.writeFile(iteration, t, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+		}
 	}		
 	
 	/**

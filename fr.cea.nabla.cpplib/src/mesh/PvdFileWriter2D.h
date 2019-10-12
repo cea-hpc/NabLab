@@ -7,8 +7,8 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-#ifndef MESH_VTKFILEWRITER2D_H_
-#define MESH_VTKFILEWRITER2D_H_
+#ifndef MESH_PVDFILEWRITER2D_H_
+#define MESH_PVDFILEWRITER2D_H_
 
 #include <string>
 #include <vector>
@@ -23,11 +23,11 @@ using namespace std;
 namespace nablalib
 {
 
-class VtkFileWriter2D : public FileWriter
+class PvdFileWriter2D : public FileWriter
 {
 public:
-	VtkFileWriter2D(const string& moduleName, const string& baseDirName = string());
-	~VtkFileWriter2D();
+	PvdFileWriter2D(const string& moduleName, const string& baseDirName = string());
+	~PvdFileWriter2D();
 
 	void writeFile(
 			const int& iteration,
@@ -38,6 +38,8 @@ public:
 			const Quad* cells,
 			const map<string, double*> cellVariables,
 			const map<string, double*> nodeVariables) override;
+private:
+	map<double, string> m_file_name_by_times;
 };
 }
-#endif /* MESH_VTKFILEWRITER2D_H_ */
+#endif /* MESH_PVDFILEWRITER2D_H_ */

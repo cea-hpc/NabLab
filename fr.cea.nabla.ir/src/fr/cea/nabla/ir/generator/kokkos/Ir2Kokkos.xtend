@@ -52,7 +52,7 @@ class Ir2Kokkos extends CodeGenerator
 	// Project headers
 	#include "mesh/NumericMesh2D.h"
 	#include "mesh/CartesianMesh2DGenerator.h"
-	#include "mesh/VtkFileWriter2D.h"
+	#include "mesh/PvdFileWriter2D.h"
 	#include "utils/Utils.h"
 	#include "utils/Timer.h"
 	#include "types/Types.h"
@@ -81,7 +81,7 @@ class Ir2Kokkos extends CodeGenerator
 	private:
 		int iteration;
 		NumericMesh2D* mesh;
-		VtkFileWriter2D writer;
+		PvdFileWriter2D writer;
 		«FOR c : usedConnectivities BEFORE 'int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
 
 		// Global Variables
@@ -116,7 +116,7 @@ class Ir2Kokkos extends CodeGenerator
 		«name»(Options* aOptions, NumericMesh2D* aNumericMesh2D, string output)
 		: options(aOptions)
 		, mesh(aNumericMesh2D)
-		, writer("«name»", output)
+		, writer("«name»")
 		«FOR c : usedConnectivities»
 		, «c.nbElems»(«c.connectivityAccessor»)
 		«ENDFOR»

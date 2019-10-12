@@ -9,36 +9,32 @@
  *******************************************************************************/
 package fr.cea.nabla.javalib.mesh
 
-import java.io.File
 import java.io.FileNotFoundException
 import java.io.PrintWriter
 import java.io.UnsupportedEncodingException
 import java.util.Map
 
-class VtkFileWriter2D
+class VtkFileWriter2D extends FileWriter
 {
-	static val OutputDir = 'output'
-	val String moduleName
-
 	new(String moduleName) 
-	{ 
-		this.moduleName = moduleName
-		val outputDir = new File(OutputDir)
-		if (outputDir.exists)
-			outputDir.listFiles.forEach[x | x.delete]
-		else
-			outputDir.mkdir
+	{
+		super(moduleName) 
 	}
 	
-	def writeFile(int iteration, double[][] nodes, Quad[] cells, Map<String, double[]> cellVariables, Map<String, double[]> nodeVariables)
+	override writeFile(int iteration, double time, double[][] nodes, Quad[] cells, Map<String, double[]> cellVariables, Map<String, double[]> nodeVariables)
 	{
 		try {
 			
 			val writer = new PrintWriter(OutputDir + '/' + moduleName + '.' + iteration + '.vtk', 'UTF-8')
+			
 			writer.println('# vtk DataFile Version 2.0')
 			writer.println(moduleName + ' at iteration ' + iteration)
 			writer.println('ASCII')
 			writer.println('DATASET POLYDATA')
+			
+			writer.println('FIELD FieldData 1')
+			writer.println('TIME 1 1 double')
+			writer.println(time)
 			
 			writer.println('POINTS ' + nodes.size + ' float')
 			nodes.forEach[n | writer.println(n.get(0) + "\t" + n.get(1) + "\t" + 0.0)]

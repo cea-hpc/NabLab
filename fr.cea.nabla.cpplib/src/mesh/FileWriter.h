@@ -7,8 +7,8 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-#ifndef MESH_VTKFILEWRITER2D_H_
-#define MESH_VTKFILEWRITER2D_H_
+#ifndef MESH_FILEWRITER_H_
+#define MESH_FILEWRITER_H_
 
 #include <string>
 #include <vector>
@@ -16,20 +16,20 @@
 
 #include "types/Types.h"
 #include "mesh/NodeIdContainer.h"
-#include "mesh/FileWriter.h"
 
 using namespace std;
 
 namespace nablalib
 {
 
-class VtkFileWriter2D : public FileWriter
+class FileWriter
 {
-public:
-	VtkFileWriter2D(const string& moduleName, const string& baseDirName = string());
-	~VtkFileWriter2D();
+protected:
+	FileWriter(const string& moduleName, const string& baseDirName);
+	virtual ~FileWriter();
 
-	void writeFile(
+public:
+	virtual void writeFile(
 			const int& iteration,
 			const double& time,
 			const int& nbNodes,
@@ -37,7 +37,17 @@ public:
 			const int& nbCells,
 			const Quad* cells,
 			const map<string, double*> cellVariables,
-			const map<string, double*> nodeVariables) override;
+			const map<string, double*> nodeVariables)=0;
+
+	bool isDisabled() { return m_disabled; }
+	const std::string& outputDirectory() { return m_directory_name; }
+
+protected:
+	static const string OutputDir;
+	string m_module_name;
+	string m_directory_name;
+	bool m_disabled;
 };
+
 }
-#endif /* MESH_VTKFILEWRITER2D_H_ */
+#endif /* MESH_FILEWRITER_H_ */

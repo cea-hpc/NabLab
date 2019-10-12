@@ -14,7 +14,7 @@
 // Project headers
 #include "mesh/NumericMesh2D.h"
 #include "mesh/CartesianMesh2DGenerator.h"
-#include "mesh/VtkFileWriter2D.h"
+#include "mesh/PvdFileWriter2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
@@ -51,7 +51,7 @@ public:
 private:
 	int iteration;
 	NumericMesh2D* mesh;
-	VtkFileWriter2D writer;
+	PvdFileWriter2D writer;
 	int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
 
 	// Global Variables
@@ -93,7 +93,7 @@ public:
 	Glace2d(Options* aOptions, NumericMesh2D* aNumericMesh2D, string output)
 	: options(aOptions)
 	, mesh(aNumericMesh2D)
-	, writer("Glace2d", output)
+	, writer("Glace2d")
 	, nbNodes(mesh->getNbNodes())
 	, nbCells(mesh->getNbCells())
 	, nbNodesOfCell(NumericMesh2D::MaxNbNodesOfCell)
@@ -422,7 +422,7 @@ private:
 			std::map<string, double*> nodeVariables;
 			cellVariables.insert(pair<string,double*>("Density", rho.data()));
 			auto quads = mesh->getGeometricMesh()->getQuads();
-			writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+			writer.writeFile(iteration, t, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
 		}
 	}
 	

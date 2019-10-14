@@ -31,7 +31,7 @@ class ReductionCallExtensions
 	
 	def create IrFactory::eINSTANCE.createSimpleVariable toIrLocalVariable(ReductionCall rc)
 	{
-		name = rc.reduction.name + Utils::hashString(rc)
+		name = 'reduction' + Utils::hashString(rc)
 		val d = rc.declaration
 		val vType = d.returnType.toIrBaseType
 		type = vType

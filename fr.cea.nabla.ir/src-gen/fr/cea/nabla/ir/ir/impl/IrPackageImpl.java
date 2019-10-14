@@ -843,6 +843,15 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getReduction_Operator() {
+		return (EAttribute)reductionEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getConnectivity() {
 		return connectivityEClass;
 	}
@@ -1928,6 +1937,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(reductionEClass, REDUCTION__COLLECTION_TYPE);
 		createEReference(reductionEClass, REDUCTION__RETURN_TYPE);
 		createEAttribute(reductionEClass, REDUCTION__PROVIDER);
+		createEAttribute(reductionEClass, REDUCTION__OPERATOR);
 
 		connectivityEClass = createEClass(CONNECTIVITY);
 		createEAttribute(connectivityEClass, CONNECTIVITY__NAME);
@@ -2212,6 +2222,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getReduction_CollectionType(), this.getBaseType(), null, "collectionType", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getReduction_ReturnType(), this.getBaseType(), null, "returnType", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getReduction_Provider(), ecorePackage.getEString(), "provider", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getReduction_Operator(), ecorePackage.getEBoolean(), "operator", "false", 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(connectivityEClass, Connectivity.class, "Connectivity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getConnectivity_Name(), ecorePackage.getEString(), "name", null, 0, 1, Connectivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

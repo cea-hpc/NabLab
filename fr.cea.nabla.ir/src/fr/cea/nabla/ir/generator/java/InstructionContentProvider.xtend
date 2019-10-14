@@ -52,20 +52,26 @@ class InstructionContentProvider
 		«result.javaType» «result.name» = IntStream.range(0, «range.container.connectivity.nbElems»).boxed().parallel().reduce(
 			«result.defaultValue.content», 
 			«IF innerReductions.empty»
-			(r, «range.indexName») -> «reduction.javaName»(r, «arg.content»),
-			(r1, r2) -> «reduction.javaName»(r1, r2)
+			(r, «range.indexName») -> «getCall(reduction, 'r', arg.content.toString)»,
+			(r1, r2) -> «getCall(reduction, 'r1', 'r2')»
 			«ELSE»
 			(r, «range.indexName») -> {
 				«defineIndices»
 				«FOR innerReduction : innerReductions»
 				«innerReduction.content»
 				«ENDFOR»
-				return «reduction.javaName»(r, «arg.content»);
+				return «getCall(reduction, 'r', arg.content.toString)»;
 			},
-			(r1, r2) -> «reduction.javaName»(r1, r2)
+			(r1, r2) -> «getCall(reduction, 'r1', 'r2')»
 			«ENDIF»
 		);
 	'''
+
+	private static def getCall(Reduction it, String a, String b)
+	{
+		if (operator) a + ' ' + name + ' ' + b
+		else javaName + '(' + a + ', ' + b + ')'
+	}
 
 	static def dispatch CharSequence getContent(VarDefinition it) 
 	'''

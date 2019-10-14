@@ -33,6 +33,8 @@ class IrFunctionFactory
 	@Inject extension Nabla2IrUtils
 	@Inject extension IrAnnotationHelper
 
+	static val Reductions = #{ '\u2211'->'+', '\u220F'->'*' }
+
 	def create IrFactory::eINSTANCE.createFunction toIrFunction(Function f, FunctionArg a)
 	{
 		annotations += a.toIrAnnotation
@@ -45,7 +47,9 @@ class IrFunctionFactory
 	def create IrFactory::eINSTANCE.createReduction toIrReduction(Reduction f, ReductionArg a)
 	{
 		annotations += a.toIrAnnotation
-		name = f.name
+		val op = Reductions.get(f.name)
+		name = op ?: f.name.replaceFirst("reduce", "").toFirstLower
+		operator = (op !== null)
 		collectionType = a.collectionType.toIrBaseType
 		returnType = a.returnType.toIrBaseType
 		provider = Utils::getNablaModule(f).name

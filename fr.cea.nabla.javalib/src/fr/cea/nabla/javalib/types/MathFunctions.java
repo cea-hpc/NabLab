@@ -26,9 +26,4 @@ public class MathFunctions
 	{
 		return (a[0]*b[1] - a[1]*b[0]);
 	}
-
-	public static double reduceSum(double a, double b) { return (a + b); }
-	public static double reduceProd(double a, double b) { return (a * b); }
-	public static double reduceMin(double a, double b) { return Math.min(a, b); }
-	public static double reduceMax(double a, double b) { return Math.max(a, b); }
 }

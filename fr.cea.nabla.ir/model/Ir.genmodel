@@ -73,6 +73,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//Reduction/collectionType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//Reduction/returnType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Reduction/provider"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Reduction/operator"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Connectivity">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Connectivity/name"/>

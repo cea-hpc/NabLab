@@ -662,13 +662,22 @@ public interface IrPackage extends EPackage {
 	int REDUCTION__PROVIDER = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
+	 * The feature id for the '<em><b>Operator</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REDUCTION__OPERATOR = IR_ANNOTABLE_FEATURE_COUNT + 4;
+
+	/**
 	 * The number of structural features of the '<em>Reduction</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int REDUCTION_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int REDUCTION_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of operations of the '<em>Reduction</em>' class.
@@ -3724,6 +3733,17 @@ public interface IrPackage extends EPackage {
 	EAttribute getReduction_Provider();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Reduction#isOperator <em>Operator</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Operator</em>'.
+	 * @see fr.cea.nabla.ir.ir.Reduction#isOperator()
+	 * @see #getReduction()
+	 * @generated
+	 */
+	EAttribute getReduction_Operator();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Connectivity <em>Connectivity</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -5258,6 +5278,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute REDUCTION__PROVIDER = eINSTANCE.getReduction_Provider();
+
+		/**
+		 * The meta object literal for the '<em><b>Operator</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute REDUCTION__OPERATOR = eINSTANCE.getReduction_Operator();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ConnectivityImpl <em>Connectivity</em>}' class.

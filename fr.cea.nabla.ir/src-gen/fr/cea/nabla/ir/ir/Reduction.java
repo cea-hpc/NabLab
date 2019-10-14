@@ -16,6 +16,7 @@ package fr.cea.nabla.ir.ir;
  *   <li>{@link fr.cea.nabla.ir.ir.Reduction#getCollectionType <em>Collection Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Reduction#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Reduction#getProvider <em>Provider</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Reduction#isOperator <em>Operator</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getReduction()
@@ -126,5 +127,32 @@ public interface Reduction extends IrAnnotable {
 	 * @generated
 	 */
 	void setProvider(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Operator</b></em>' attribute.
+	 * The default value is <code>"false"</code>.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Operator</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Operator</em>' attribute.
+	 * @see #setOperator(boolean)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getReduction_Operator()
+	 * @model default="false" required="true"
+	 * @generated
+	 */
+	boolean isOperator();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Reduction#isOperator <em>Operator</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Operator</em>' attribute.
+	 * @see #isOperator()
+	 * @generated
+	 */
+	void setOperator(boolean value);
 
 } // Reduction

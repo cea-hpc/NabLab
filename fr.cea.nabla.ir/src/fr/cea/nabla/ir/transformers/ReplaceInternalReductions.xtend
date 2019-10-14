@@ -28,17 +28,13 @@ import static extension fr.cea.nabla.ir.VariableExtensions.*
 
 class ReplaceInternalReductions implements IrTransformationStep
 {
-	static val Operators = #{ 'reduceSum'->'+', 'reduceProd'->'*' }
-	
 	override getDescription() 
 	{
 		'Replace internal reductions by loops'
 	}
 
 	/**
-	 * Transforme le module m pour qu'il n'est plus d'instance de ReductionInstruction.
-	 * Les réductions sont remplacées par des opérateurs ou des fonctions traditionnelles.
-	 * Le choix se fait en fonction de la liste Operators.
+	 * Replace inner reductions by a Loop + a Variable.
 	 */
 	override transform(IrModule m)
 	{
@@ -75,12 +71,12 @@ class ReplaceInternalReductions implements IrTransformationStep
 			type = EcoreUtil::copy(variable.type)
 		]
 
-		if (Operators.keySet.contains(reduction.name))
+		if (reduction.isOperator)
 		{
 			return IrFactory::eINSTANCE.createBinaryExpression =>
 			[
 				type = EcoreUtil::copy(reductionInstr.result.type)
-				operator = Operators.get(reduction.name)
+				operator = reduction.name
 				left = varRef
 				right = IrFactory::eINSTANCE.createParenthesis => 
 				[ 

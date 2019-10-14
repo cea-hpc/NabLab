@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionImpl#getCollectionType <em>Collection Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionImpl#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionImpl#getProvider <em>Provider</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionImpl#isOperator <em>Operator</em>}</li>
  * </ul>
  *
  * @generated
@@ -90,6 +91,26 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * @ordered
 	 */
 	protected String provider = PROVIDER_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isOperator() <em>Operator</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isOperator()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean OPERATOR_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isOperator() <em>Operator</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isOperator()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean operator = OPERATOR_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -289,6 +310,27 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public boolean isOperator() {
+		return operator;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setOperator(boolean newOperator) {
+		boolean oldOperator = operator;
+		operator = newOperator;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION__OPERATOR, oldOperator, operator));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -318,6 +360,8 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 				return basicGetReturnType();
 			case IrPackage.REDUCTION__PROVIDER:
 				return getProvider();
+			case IrPackage.REDUCTION__OPERATOR:
+				return isOperator();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -341,6 +385,9 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 				return;
 			case IrPackage.REDUCTION__PROVIDER:
 				setProvider((String)newValue);
+				return;
+			case IrPackage.REDUCTION__OPERATOR:
+				setOperator((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -366,6 +413,9 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 			case IrPackage.REDUCTION__PROVIDER:
 				setProvider(PROVIDER_EDEFAULT);
 				return;
+			case IrPackage.REDUCTION__OPERATOR:
+				setOperator(OPERATOR_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -386,6 +436,8 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 				return returnType != null;
 			case IrPackage.REDUCTION__PROVIDER:
 				return PROVIDER_EDEFAULT == null ? provider != null : !PROVIDER_EDEFAULT.equals(provider);
+			case IrPackage.REDUCTION__OPERATOR:
+				return operator != OPERATOR_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -404,6 +456,8 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 		result.append(name);
 		result.append(", provider: ");
 		result.append(provider);
+		result.append(", operator: ");
+		result.append(operator);
 		result.append(')');
 		return result.toString();
 	}

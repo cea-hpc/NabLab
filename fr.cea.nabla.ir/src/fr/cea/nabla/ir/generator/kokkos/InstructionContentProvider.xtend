@@ -169,7 +169,15 @@ abstract class InstructionContentProvider
 	private def getAccessor(Connectivity c, Iterable<? extends IteratorRef> args)  
 	'''mesh->get«c.name.toFirstUpper»(«args.map[idName].join(', ')»)'''
 	
-	private def getKokkosName(Reduction it) '''«name.replaceFirst("reduce", "")»'''
+	private def getKokkosName(Reduction it)
+	{
+		switch name
+		{
+			case '+' : 'Sum'
+			case '*' : 'Prod'
+			default : name.toFirstUpper
+		}
+	}
 	
 	/**
 	 * No multithread loop if there is a SparseMatrix affectation because it is not thread safe.

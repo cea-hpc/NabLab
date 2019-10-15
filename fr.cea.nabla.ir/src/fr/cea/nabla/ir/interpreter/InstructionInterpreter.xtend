@@ -53,13 +53,12 @@ class InstructionInterpreter
 
 	static def dispatch void interprete(Loop it, Context context)
 	{
-		val innerContext = new Context(context)
-		val container = innerContext.meshWrapper.getContainer(range)
+		val container = context.meshWrapper.getContainer(range)
 		for (loopIteratorValue : 0..<container.size)
 		{
-			innerContext.setIndexValue(range, loopIteratorValue)
-			defineIndices(it, innerContext)
-			body.interprete(innerContext)
+			context.setIndexValue(range, loopIteratorValue)
+			defineIndices(it, context)
+			body.interprete(context)
 		}	
 	}
 	

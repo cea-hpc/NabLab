@@ -21,13 +21,16 @@ import fr.cea.nabla.ir.ir.Variable
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
+import org.eclipse.xtend.lib.annotations.Accessors
 
 import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
 
 import static extension fr.cea.nabla.ir.VariableExtensions.*
 
-class ReplaceInternalReductions implements IrTransformationStep
+class ReplaceReductions implements IrTransformationStep
 {
+	@Accessors boolean onlyInternalReduction = true;
+
 	override getDescription() 
 	{
 		'Replace internal reductions by loops'
@@ -38,8 +41,10 @@ class ReplaceInternalReductions implements IrTransformationStep
 	 */
 	override transform(IrModule m)
 	{
-		val reductions = m.eAllContents.filter(ReductionInstruction).filter[!external].toList
-		for (reductionInstr : reductions)
+		var reductions = m.eAllContents.filter(ReductionInstruction)
+		if (onlyInternalReduction) reductions = reductions.filter[!external]
+
+		for (reductionInstr : reductions.toList)
 		{
 			// création des fonctions correspondantes
 			// 2 arguments IN : 1 du type de la collection, l'autre du type de retour (appel en chaine)

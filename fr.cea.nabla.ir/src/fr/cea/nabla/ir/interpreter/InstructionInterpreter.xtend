@@ -47,17 +47,8 @@ class InstructionInterpreter
 
 	static def dispatch void interprete(ReductionInstruction it, Context context)
 	{
-		val innerContext = new Context(context)
-		val container = innerContext.meshWrapper.getContainer(range)
-		for (loopIteratorValue : 0..<container.size)
-		{
-			innerContext.setIndexValue(range, loopIteratorValue)
-			defineIndices(it, innerContext)
-			innerReductions.forEach[x | interprete(x, innerContext)]
-			interprete(arg, innerContext)
-			
-			body.interprete(innerContext)
-		}	
+		// All reductionInstruction have been replaced by specific Ir Transformation Step
+		throw new RuntimeException('Wrong path...')
 	}
 
 	static def dispatch void interprete(Loop it, Context context)
@@ -72,13 +63,20 @@ class InstructionInterpreter
 		}	
 	}
 	
+	static def dispatch void interprete(If it, Context context)
+	{
+		val cond = interprete(condition, context) as NV0Bool
+		if (cond.data) interprete(thenInstruction, context)
+		else interprete(elseInstruction, context)
+	}
+
  	private static def void defineIndices(IterableInstruction it, Context context)
 	{
 		defineIndices(range, context)
 		for (s : singletons)
 			defineIndices(s, context)
 	}
-	
+
 	private static def void defineIndices(Iterator it, Context context)
 	{
 		for (neededId : neededIds)
@@ -86,7 +84,7 @@ class InstructionInterpreter
 		for (neededIndex : neededIndices)
 			context.setIndexValue(neededIndex, getIdToIndex(neededIndex, context))
 	}
-	
+
 	private	static def getIndexToId(IteratorRef it, Context context)
 	{
 		val indexValue = getIndexValue(it, context)
@@ -114,10 +112,5 @@ class InstructionInterpreter
 			val nbElems = context.connectivitySizes.get(target.container.connectivity)
 			return (iteratorRefIndex + shift + nbElems)%nbElems
 		}
-	}
-	
-	static def dispatch void interprete(If it, Context context)
-	{
-		
 	}
 }

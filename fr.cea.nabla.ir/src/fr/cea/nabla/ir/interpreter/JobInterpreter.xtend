@@ -18,7 +18,7 @@ class JobInterpreter
 
 	static def dispatch interprete(InSituJob it, Context context)
 	{
-		// Not yet implemented
+		throw new RuntimeException('Wrong path...')
 	}
 
 	static def dispatch interprete(EndOfTimeLoopJob it, Context context)

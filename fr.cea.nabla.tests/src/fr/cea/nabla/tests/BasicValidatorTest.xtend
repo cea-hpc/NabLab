@@ -1,8 +1,9 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
-import fr.cea.nabla.MandatoryOptions
 import fr.cea.nabla.NablaModuleExtensions
+import fr.cea.nabla.ir.MandatoryOptions
+import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.validation.BasicValidator
@@ -23,37 +24,37 @@ class BasicValidatorTest
 	@Inject extension NablaModuleExtensions
 
 	// ===== NablaModule =====	
-	
-	@Test
-	def void testCheckCoordVariable() 
-	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule)
-		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertWarning(NablaPackage.eINSTANCE.nablaModule, 
-			BasicValidator::COORD_VARIABLE, 
-			BasicValidator::getCoordVariableMsg())		
-
-		val moduleOk = parseHelper.parse(TestUtils::testModuleWithCoordVariable)
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoIssues
-	}
 
 	@Test
-	def void testCheckMandatoryOptions() 
+	def void testCheckMandatoryVariables()
 	{
 		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule)
 		Assert.assertNotNull(moduleKo)
 		
-		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule, 
-			BasicValidator::MANDATORY_OPTION, 
-			BasicValidator::getMandatoryOption(MandatoryOptions::OPTION_NAMES))		
+		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
+			BasicValidator::MANDATORY_VARIABLE,
+			BasicValidator::getMandatoryVariablesMsg(MandatoryVariables::NAMES))
 
 		val moduleOk = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::mandatoryOptions)
 		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors		
+		moduleOk.assertNoErrors
 	}
-	
+
+	@Test
+	def void testCheckMandatoryOptions()
+	{
+		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule)
+		Assert.assertNotNull(moduleKo)
+		
+		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
+			BasicValidator::MANDATORY_OPTION,
+			BasicValidator::getMandatoryOptionsMsg(MandatoryOptions::NAMES))
+
+		val moduleOk = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::mandatoryOptions)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors	
+	}
+
 	@Test
 	def void testCheckName() 
 	{

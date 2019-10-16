@@ -3,13 +3,13 @@ package fr.cea.nabla.ir.interpreter
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRef
+import fr.cea.nabla.ir.ir.VarRefIteratorRef
 import fr.cea.nabla.ir.ir.Variable
 import java.util.HashMap
 import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
-import fr.cea.nabla.ir.ir.VarRefIteratorRef
 
 class Context
 {
@@ -18,13 +18,13 @@ class Context
 	val idValues = new HashMap<String, Integer>
 	val variableValues = new HashMap<Variable, NablaValue>
 	@Accessors val HashMap<Connectivity, Integer> connectivitySizes
-	@Accessors val MeshWrapper meshWrapper
+	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) MeshWrapper meshWrapper
 
 	new()
 	{
 		this.outerContext = null
 		this.connectivitySizes = new HashMap<Connectivity, Integer>
-		meshWrapper = new MeshWrapper
+		meshWrapper = null
 	}
 
 	new(Context outerContext)
@@ -34,6 +34,11 @@ class Context
 		meshWrapper = outerContext.meshWrapper
 	}
 
+	def initMesh(int nbXQuads, int nbYQuads, double xSize, double ySize)
+	{
+		meshWrapper = new MeshWrapper(nbXQuads, nbYQuads, xSize, ySize)
+	}
+	
 	def NablaValue getVariableValue(Variable variable)
 	{
 		variableValues.get(variable) ?: outerContext.getVariableValue(variable)
@@ -55,9 +60,7 @@ class Context
 	}
 
 	def int getIdValue(IteratorRef it) { getIdValue(idName) }
-//	def int getIdValue(Iterator it) { getIdValue(getIdName) }
 	def void setIdValue(IteratorRef it, int value) { idValues.put(idName, value) }
-//	def void setIdValue(Iterator it, int value) { idValues.put(getIdName, value) }
 
 	private def int getIdValue(String id)
 	{
@@ -73,6 +76,6 @@ class Context
 	def int getSingleton(Iterator iterator)
 	{
 		val methodName = "get" + iterator.container.connectivity.name.toFirstUpper
-		meshWrapper.invokeSingleton(methodName, iterator.container.args.map[getIdValue(idName)])
+		meshWrapper.invokeSingleton(methodName, iterator.container.args.map[getIndexValue(idName)])
 	}
 }

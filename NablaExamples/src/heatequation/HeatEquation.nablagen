@@ -1,6 +1,6 @@
 with HeatEquation.*;
 
-workflow WhiteheatDefaultGenerationChain transforms HeatEquation
+workflow HeatEquationGenerationChain transforms HeatEquation
 {
 	Nabla2Ir nabla2ir
 	{

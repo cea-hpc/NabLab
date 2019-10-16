@@ -1,6 +1,6 @@
 with ExplicitHeatEquation.*;
 
-workflow TestDefaultGenerationChain transforms ExplicitHeatEquation
+workflow ExplicitHeatEquationGenerationChain transforms ExplicitHeatEquation
 {
 	Nabla2Ir nabla2ir
 	{

@@ -9,6 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
+import fr.cea.nabla.ir.MandatoryOptions
+import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Array1D
 import fr.cea.nabla.ir.ir.Array2D
@@ -19,6 +21,7 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Scalar
 import fr.cea.nabla.ir.ir.SimpleVariable
 
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
@@ -103,7 +106,7 @@ class Ir2Java extends CodeGenerator
 				«uv.name» = «uv.defaultValue.content»;
 				«ENDFOR»
 
-				// Arrays allocation
+				// Allocate arrays
 				«FOR a : variables.filter[!const]»
 					«IF a instanceof ConnectivityVariable»
 						«IF a.linearAlgebra»
@@ -115,12 +118,10 @@ class Ir2Java extends CodeGenerator
 						«a.name» = new «a.type.primitive.javaType»«a.type.dimensionContent»;
 					«ENDIF»
 				«ENDFOR»
-
-				«IF nodeCoordVariable !== null»
+		
 				// Copy node coordinates
 				ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
-				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> «nodeCoordVariable.name»[rNodes] = gNodes.get(rNodes));
-				«ENDIF»
+				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> «initCoordVariable.name»[rNodes] = gNodes.get(rNodes));
 			}
 
 			public void simulate()
@@ -132,10 +133,10 @@ class Ir2Java extends CodeGenerator
 				«IF jobs.exists[at > 0]»
 
 				iteration = 0;
-				while (t < options.option_stoptime && iteration < options.option_max_iterations)
+				while («MandatoryVariables::TIME» < options.«MandatoryOptions::STOP_TIME» && iteration < options.«MandatoryOptions::MAX_ITERATIONS»)
 				{
 					iteration++;
-					System.out.println("[" + iteration + "] t = " + t);
+					System.out.println("[" + iteration + "] t = " + «MandatoryVariables::TIME»);
 					«FOR j : jobs.filter[x | x.at > 0].sortBy[at]»
 						«j.name.toFirstLower»(); // @«j.at»
 					«ENDFOR»
@@ -147,7 +148,7 @@ class Ir2Java extends CodeGenerator
 			public static void main(String[] args)
 			{
 				«name».Options o = new «name».Options();
-				Mesh<double[]> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
+				Mesh<double[]> gm = CartesianMesh2DGenerator.generate(o.«MandatoryOptions::X_EDGE_ELEMS», o.«MandatoryOptions::Y_EDGE_ELEMS», o.«MandatoryOptions::X_EDGE_LENGTH», o.«MandatoryOptions::Y_EDGE_LENGTH»);
 				NumericMesh2D nm = new NumericMesh2D(gm);
 				«name» i = new «name»(o, nm);
 				i.simulate();

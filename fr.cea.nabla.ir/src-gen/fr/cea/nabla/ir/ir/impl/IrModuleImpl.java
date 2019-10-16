@@ -42,8 +42,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getReductions <em>Reductions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getConnectivities <em>Connectivities</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getVariables <em>Variables</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getInitCoordVariable <em>Init Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getJobs <em>Jobs</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
  * </ul>
  *
  * @generated
@@ -130,6 +130,16 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	protected EList<Variable> variables;
 
 	/**
+	 * The cached value of the '{@link #getInitCoordVariable() <em>Init Coord Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getInitCoordVariable()
+	 * @generated
+	 * @ordered
+	 */
+	protected Variable initCoordVariable;
+
+	/**
 	 * The cached value of the '{@link #getJobs() <em>Jobs</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -138,16 +148,6 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * @ordered
 	 */
 	protected EList<Job> jobs;
-
-	/**
-	 * The cached value of the '{@link #getNodeCoordVariable() <em>Node Coord Variable</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getNodeCoordVariable()
-	 * @generated
-	 * @ordered
-	 */
-	protected Variable nodeCoordVariable;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -266,49 +266,49 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public Variable getInitCoordVariable() {
+		if (initCoordVariable != null && initCoordVariable.eIsProxy()) {
+			InternalEObject oldInitCoordVariable = (InternalEObject)initCoordVariable;
+			initCoordVariable = (Variable)eResolveProxy(oldInitCoordVariable);
+			if (initCoordVariable != oldInitCoordVariable) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_MODULE__INIT_COORD_VARIABLE, oldInitCoordVariable, initCoordVariable));
+			}
+		}
+		return initCoordVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Variable basicGetInitCoordVariable() {
+		return initCoordVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setInitCoordVariable(Variable newInitCoordVariable) {
+		Variable oldInitCoordVariable = initCoordVariable;
+		initCoordVariable = newInitCoordVariable;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__INIT_COORD_VARIABLE, oldInitCoordVariable, initCoordVariable));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EList<Job> getJobs() {
 		if (jobs == null) {
 			jobs = new EObjectContainmentEList<Job>(Job.class, this, IrPackage.IR_MODULE__JOBS);
 		}
 		return jobs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Variable getNodeCoordVariable() {
-		if (nodeCoordVariable != null && nodeCoordVariable.eIsProxy()) {
-			InternalEObject oldNodeCoordVariable = (InternalEObject)nodeCoordVariable;
-			nodeCoordVariable = (Variable)eResolveProxy(oldNodeCoordVariable);
-			if (nodeCoordVariable != oldNodeCoordVariable) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_MODULE__NODE_COORD_VARIABLE, oldNodeCoordVariable, nodeCoordVariable));
-			}
-		}
-		return nodeCoordVariable;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Variable basicGetNodeCoordVariable() {
-		return nodeCoordVariable;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setNodeCoordVariable(Variable newNodeCoordVariable) {
-		Variable oldNodeCoordVariable = nodeCoordVariable;
-		nodeCoordVariable = newNodeCoordVariable;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__NODE_COORD_VARIABLE, oldNodeCoordVariable, nodeCoordVariable));
 	}
 
 	/**
@@ -359,11 +359,11 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 				return getConnectivities();
 			case IrPackage.IR_MODULE__VARIABLES:
 				return getVariables();
+			case IrPackage.IR_MODULE__INIT_COORD_VARIABLE:
+				if (resolve) return getInitCoordVariable();
+				return basicGetInitCoordVariable();
 			case IrPackage.IR_MODULE__JOBS:
 				return getJobs();
-			case IrPackage.IR_MODULE__NODE_COORD_VARIABLE:
-				if (resolve) return getNodeCoordVariable();
-				return basicGetNodeCoordVariable();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -404,12 +404,12 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 				getVariables().clear();
 				getVariables().addAll((Collection<? extends Variable>)newValue);
 				return;
+			case IrPackage.IR_MODULE__INIT_COORD_VARIABLE:
+				setInitCoordVariable((Variable)newValue);
+				return;
 			case IrPackage.IR_MODULE__JOBS:
 				getJobs().clear();
 				getJobs().addAll((Collection<? extends Job>)newValue);
-				return;
-			case IrPackage.IR_MODULE__NODE_COORD_VARIABLE:
-				setNodeCoordVariable((Variable)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -444,11 +444,11 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 			case IrPackage.IR_MODULE__VARIABLES:
 				getVariables().clear();
 				return;
+			case IrPackage.IR_MODULE__INIT_COORD_VARIABLE:
+				setInitCoordVariable((Variable)null);
+				return;
 			case IrPackage.IR_MODULE__JOBS:
 				getJobs().clear();
-				return;
-			case IrPackage.IR_MODULE__NODE_COORD_VARIABLE:
-				setNodeCoordVariable((Variable)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -476,10 +476,10 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 				return connectivities != null && !connectivities.isEmpty();
 			case IrPackage.IR_MODULE__VARIABLES:
 				return variables != null && !variables.isEmpty();
+			case IrPackage.IR_MODULE__INIT_COORD_VARIABLE:
+				return initCoordVariable != null;
 			case IrPackage.IR_MODULE__JOBS:
 				return jobs != null && !jobs.isEmpty();
-			case IrPackage.IR_MODULE__NODE_COORD_VARIABLE:
-				return nodeCoordVariable != null;
 		}
 		return super.eIsSet(featureID);
 	}

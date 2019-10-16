@@ -10,7 +10,6 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
-import fr.cea.nabla.MandatoryOptions
 import fr.cea.nabla.VarRefExtensions
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.FunctionCall
@@ -22,6 +21,7 @@ import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VarRef
 import fr.cea.nabla.typing.DeclarationProvider
+import fr.cea.nabla.ir.MandatoryVariables
 
 class Nabla2Ir
 {
@@ -79,7 +79,7 @@ class Nabla2Ir
 					{
 						val vAt0 = vAtR
 						jobs += toEndOfInitJob(vAt0, vAtN)
-						if (v.name == MandatoryOptions::COORD) nodeCoordVariable = vAt0
+						if (v.name == MandatoryVariables::COORD) initCoordVariable = vAt0
 					}
 					// Copy Xn+1 to Xn at the end of time loop.
 					// Xn+1 => NextTimeIterator::div == 0
@@ -93,8 +93,8 @@ class Nabla2Ir
 			}
 		}
 		
-		if (nodeCoordVariable === null)
-			nodeCoordVariable = variables.findFirst[x | x.name == MandatoryOptions::COORD]
+		if (initCoordVariable === null)
+			initCoordVariable = variables.findFirst[x | x.name == MandatoryVariables::COORD]
 		
 		m.jobs.forEach[x | jobs += x.toIrInstructionJob]
 	}

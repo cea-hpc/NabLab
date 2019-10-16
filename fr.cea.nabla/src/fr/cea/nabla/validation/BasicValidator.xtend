@@ -10,9 +10,10 @@
 package fr.cea.nabla.validation
 
 import com.google.inject.Inject
-import fr.cea.nabla.MandatoryOptions
 import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.VarExtensions
+import fr.cea.nabla.ir.MandatoryOptions
+import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Array1D
 import fr.cea.nabla.nabla.Array2D
@@ -37,7 +38,6 @@ import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.Var
-import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VarRef
 import java.util.HashSet
 import org.eclipse.xtext.validation.Check
@@ -51,28 +51,30 @@ class BasicValidator extends AbstractNablaValidator
 
 	// ===== NablaModule =====
 	
-	public static val COORD_VARIABLE = "NablaModule::CoordVariable"
+	public static val MANDATORY_VARIABLE = "NablaModule::MandatoryVariable"
 	public static val MANDATORY_OPTION = "NablaModule::MandatoryOption"
 	public static val MODULE_NAME = "NablaModule::ModuleName"
 
-	static def getCoordVariableMsg() { "Module must contain a node variable named '" + MandatoryOptions::COORD + "' to store node coordinates" }
-	static def getMandatoryOption(String[] missingOptions) { "Missing mandatory option(s): " + missingOptions.join(", ") }
+	static def getMandatoryVariablesMsg(String[] missingVariables) { "Missing mandatory variable(s): " + missingVariables.join(", ") }
+	static def getMandatoryOptionsMsg(String[] missingOptions) { "Missing mandatory option(s): " + missingOptions.join(", ") }
 	static def getModuleNameMsg() { "Module name must start with an upper case" }
 	
 	@Check
-	def checkCoordVariable(NablaModule it)
+	def checkMandatoryVariable(NablaModule it)
 	{
-		if (!variables.filter(VarGroupDeclaration).exists[g | g.variables.exists[v|v.name == MandatoryOptions::COORD]])
-			warning(getCoordVariableMsg(), NablaPackage.Literals.NABLA_MODULE__NAME, COORD_VARIABLE)
+		val vars = eAllContents.filter(Var).map[name].toList
+		val missingVars = MandatoryVariables::NAMES.filter[x | !vars.contains(x)]
+		if (missingVars.size > 0)
+			error(getMandatoryVariablesMsg(missingVars), NablaPackage.Literals.NABLA_MODULE__VARIABLES, MANDATORY_VARIABLE)			
 	}
 	
 	@Check
 	def checkMandatoryOptions(NablaModule it)
 	{
 		val scalarConsts = variables.filter(SimpleVarDefinition).filter[const].map[variable.name].toList
-		val missingConsts = MandatoryOptions::OPTION_NAMES.filter[x | !scalarConsts.contains(x)]
+		val missingConsts = MandatoryOptions::NAMES.filter[x | !scalarConsts.contains(x)]
 		if (missingConsts.size > 0)
-			error(getMandatoryOption(missingConsts), NablaPackage.Literals.NABLA_MODULE__VARIABLES, MANDATORY_OPTION)			
+			error(getMandatoryOptionsMsg(missingConsts), NablaPackage.Literals.NABLA_MODULE__VARIABLES, MANDATORY_OPTION)			
 	}
 
 	@Check
@@ -119,7 +121,7 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkUnusedVariable(Var it)
 	{
-		val referenced = MandatoryOptions::OPTION_NAMES.contains(name) || nablaModule.eAllContents.filter(VarRef).exists[x|x.variable===it]
+		val referenced = MandatoryOptions::NAMES.contains(name) || nablaModule.eAllContents.filter(VarRef).exists[x|x.variable===it]
 		if (!referenced)
 			warning(getUnusedVariableMsg(), NablaPackage.Literals::VAR__NAME, UNUSED_VARIABLE)
 	}

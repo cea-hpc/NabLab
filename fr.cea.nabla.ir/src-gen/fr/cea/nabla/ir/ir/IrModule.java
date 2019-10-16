@@ -20,8 +20,8 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getReductions <em>Reductions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getConnectivities <em>Connectivities</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getVariables <em>Variables</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getInitCoordVariable <em>Init Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getJobs <em>Jobs</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule()
@@ -152,6 +152,32 @@ public interface IrModule extends IrAnnotable {
 	EList<Variable> getVariables();
 
 	/**
+	 * Returns the value of the '<em><b>Init Coord Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Init Coord Variable</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Init Coord Variable</em>' reference.
+	 * @see #setInitCoordVariable(Variable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_InitCoordVariable()
+	 * @model required="true"
+	 * @generated
+	 */
+	Variable getInitCoordVariable();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getInitCoordVariable <em>Init Coord Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Init Coord Variable</em>' reference.
+	 * @see #getInitCoordVariable()
+	 * @generated
+	 */
+	void setInitCoordVariable(Variable value);
+
+	/**
 	 * Returns the value of the '<em><b>Jobs</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Job}.
 	 * <!-- begin-user-doc -->
@@ -166,31 +192,5 @@ public interface IrModule extends IrAnnotable {
 	 * @generated
 	 */
 	EList<Job> getJobs();
-
-	/**
-	 * Returns the value of the '<em><b>Node Coord Variable</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Node Coord Variable</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Node Coord Variable</em>' reference.
-	 * @see #setNodeCoordVariable(Variable)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_NodeCoordVariable()
-	 * @model required="true"
-	 * @generated
-	 */
-	Variable getNodeCoordVariable();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getNodeCoordVariable <em>Node Coord Variable</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Node Coord Variable</em>' reference.
-	 * @see #getNodeCoordVariable()
-	 * @generated
-	 */
-	void setNodeCoordVariable(Variable value);
 
 } // IrModule

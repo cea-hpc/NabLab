@@ -67,7 +67,7 @@ public final class Glace2d
 		deltat_nplus1 = options.option_deltat_ini;
 		t_nplus1 = 0.0;
 
-		// Arrays allocation
+		// Allocate arrays
 		X = new double[nbNodes][2];
 		b = new double[nbNodes][2];
 		bt = new double[nbNodes][2];

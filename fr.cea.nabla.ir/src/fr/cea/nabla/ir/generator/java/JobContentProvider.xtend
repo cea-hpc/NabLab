@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
+import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.EndOfInitJob
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
@@ -46,7 +47,7 @@ class JobContentProvider
 			«FOR v : variables.filter(ConnectivityVariable)»
 			«v.type.connectivities.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 			«ENDFOR»
-			writer.writeFile(iteration, t, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			writer.writeFile(iteration, «MandatoryVariables::TIME», «MandatoryVariables::COORD», mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
 			«IF timeStep>0»lastWriteTime += «timeStep»;«ENDIF»
 		}
 	'''

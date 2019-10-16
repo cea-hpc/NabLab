@@ -224,22 +224,22 @@ public interface IrPackage extends EPackage {
 	int IR_MODULE__VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 6;
 
 	/**
+	 * The feature id for the '<em><b>Init Coord Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_MODULE__INIT_COORD_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 7;
+
+	/**
 	 * The feature id for the '<em><b>Jobs</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__JOBS = IR_ANNOTABLE_FEATURE_COUNT + 7;
-
-	/**
-	 * The feature id for the '<em><b>Node Coord Variable</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int IR_MODULE__NODE_COORD_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 8;
+	int IR_MODULE__JOBS = IR_ANNOTABLE_FEATURE_COUNT + 8;
 
 	/**
 	 * The number of structural features of the '<em>Module</em>' class.
@@ -3475,6 +3475,17 @@ public interface IrPackage extends EPackage {
 	EReference getIrModule_Variables();
 
 	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrModule#getInitCoordVariable <em>Init Coord Variable</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Init Coord Variable</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrModule#getInitCoordVariable()
+	 * @see #getIrModule()
+	 * @generated
+	 */
+	EReference getIrModule_InitCoordVariable();
+
+	/**
 	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.IrModule#getJobs <em>Jobs</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3484,17 +3495,6 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getIrModule_Jobs();
-
-	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrModule#getNodeCoordVariable <em>Node Coord Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Node Coord Variable</em>'.
-	 * @see fr.cea.nabla.ir.ir.IrModule#getNodeCoordVariable()
-	 * @see #getIrModule()
-	 * @generated
-	 */
-	EReference getIrModule_NodeCoordVariable();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Import <em>Import</em>}'.
@@ -5076,20 +5076,20 @@ public interface IrPackage extends EPackage {
 		EReference IR_MODULE__VARIABLES = eINSTANCE.getIrModule_Variables();
 
 		/**
+		 * The meta object literal for the '<em><b>Init Coord Variable</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference IR_MODULE__INIT_COORD_VARIABLE = eINSTANCE.getIrModule_InitCoordVariable();
+
+		/**
 		 * The meta object literal for the '<em><b>Jobs</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EReference IR_MODULE__JOBS = eINSTANCE.getIrModule_Jobs();
-
-		/**
-		 * The meta object literal for the '<em><b>Node Coord Variable</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference IR_MODULE__NODE_COORD_VARIABLE = eINSTANCE.getIrModule_NodeCoordVariable();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ImportImpl <em>Import</em>}' class.

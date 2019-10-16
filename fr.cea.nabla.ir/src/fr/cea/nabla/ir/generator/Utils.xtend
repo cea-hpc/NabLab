@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.generator
 import fr.cea.nabla.ir.ir.Array1D
 import fr.cea.nabla.ir.ir.Array2D
 import fr.cea.nabla.ir.ir.Connectivity
-import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.IrModule
@@ -35,20 +34,6 @@ class Utils
 		 * Out variables: «FOR v : outVars SEPARATOR ', '»«v.getName»«ENDFOR»
 		 */
 	'''	
-
-	/**
-	 * Retourne la liste des connectivités utilisées par le module,
-	 * lors de la déclaration des variables ou des itérateurs.
-	 */
-	static def getUsedConnectivities(IrModule it)
-	{
-		// connectivités nécessaires pour les variables
-		val connectivities = variables.filter(ConnectivityVariable).map[type.connectivities].flatten.toSet
-		// connectivités utilisées dans le code
-		jobs.forEach[j | connectivities += j.eAllContents.filter(ConnectivityCall).map[connectivity].toSet]
-
-		return connectivities.filter[c | c.returnType.multiple]
-	}
 	
 	static def boolean isTopLevelLoop(EObject it)
 	{

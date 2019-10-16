@@ -1,6 +1,6 @@
 with Glace2d.*;
 
-workflow Glace2dDefaultGenerationChain transforms Glace2d
+workflow Glace2dGenerationChain transforms Glace2d
 {
 	Nabla2Ir nabla2ir
 	{

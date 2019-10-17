@@ -58,6 +58,7 @@ class ExpressionTypeProviderTest
 	{
 		cells: → {cell};
 		nodesOfCell: cell → {node};
+		nodes: → {node};
 	}
 	
 	functions 
@@ -75,6 +76,9 @@ class ExpressionTypeProviderTest
 	const ℕ Z_EDGE_ELEMS = 1;
 	const ℝ option_stoptime = 0.1;
 	const ℕ option_max_iterations = 500;
+	
+	ℝ t;
+	ℝ[2] X{nodes};
 	
 	ℕ a1 = 1;
 	ℕ a2 = 9 % 4;
@@ -115,7 +119,7 @@ class ExpressionTypeProviderTest
 	ℝ[2,2] g = [ [1.0, 0.0], [0.0, 1.0] ];
 	ℝ h = (a1 == 1 ? 0.0 : 1.0);
 	
-	ℕ t{cells};
+	ℕ s{cells};
 	ℝ u{cells}, v{cells};
 	ℝ[2] w{cells, nodesOfCell};
 	ℝ x{cells, nodesOfCell};
@@ -123,7 +127,7 @@ class ExpressionTypeProviderTest
 	
 	UpdateU: u^{n+1} = solveLinearSystem(α, u);
 	
-	ComputeV: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r} + t{j});
+	ComputeV: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r} + s{j});
 
 	ComputeX: ∀ j∈cells(), {
 		ℝ e = 1.0;
@@ -187,7 +191,7 @@ class ExpressionTypeProviderTest
 		assertTypesFor(new NSTRealArray2D(2,2), module, "g")
 		assertTypesFor(new NSTRealScalar, module, "h")
 				
-		assertTypesFor(new NablaConnectivityType(#[cells], new NSTIntScalar), module, "t")
+		assertTypesFor(new NablaConnectivityType(#[cells], new NSTIntScalar), module, "s")
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), module, "u")
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), module, "v")
 		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealArray1D(2)), module, "w")

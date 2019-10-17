@@ -121,7 +121,7 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkUnusedVariable(Var it)
 	{
-		val referenced = MandatoryOptions::NAMES.contains(name) || nablaModule.eAllContents.filter(VarRef).exists[x|x.variable===it]
+		val referenced = MandatoryVariables::NAMES.contains(name) || MandatoryOptions::NAMES.contains(name) || nablaModule.eAllContents.filter(VarRef).exists[x|x.variable===it]
 		if (!referenced)
 			warning(getUnusedVariableMsg(), NablaPackage.Literals::VAR__NAME, UNUSED_VARIABLE)
 	}

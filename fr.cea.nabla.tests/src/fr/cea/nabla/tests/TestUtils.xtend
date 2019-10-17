@@ -78,53 +78,48 @@ class TestUtils
 	}
 	'''
 
-	static def String getCoordVariable()
+	static def String getMandatoryVariables()
 	'''
+	ℝ t;
 	ℝ[2] X{nodes};
-	ℝ[2] orig = [0.0 , 0.0] ;
 	'''
-	
-	static def String getIniX()
-	'''
-	IniX: ∀r∈nodes(), X{r} = orig;
-	'''
-	
+		
 	static def CharSequence getTestModule()
 	{
-		emptyTestModule + connectivities + mandatoryOptions
+		emptyTestModule + connectivities + mandatoryOptions + mandatoryVariables
 	}
 	
 	static def getTestModuleWithCustomFunctions(CharSequence functions)
 	{
-		emptyTestModule + connectivities + functions + mandatoryOptions
+		emptyTestModule + connectivities + functions + mandatoryOptions + mandatoryVariables
 	}
 
 	static def getTestModuleWithCustomConnectivities(CharSequence connectivities)
 	{
-		emptyTestModule + connectivities + mandatoryOptions
+		emptyTestModule + connectivities + mandatoryOptions + mandatoryVariables
 	}
 
 	//Useful to prevent warnings
 	static def getTestModuleWithCoordVariable()
 	{
-		emptyTestModule + nodesConnectivity + coordVariable + mandatoryOptions + iniX
+		emptyTestModule + nodesConnectivity + mandatoryOptions + mandatoryVariables
 	}	
 
 	//Useful to prevent warnings
 	static def getTestModuleWithCoordVariableWithCustomVars(CharSequence variables)
 	{
-		emptyTestModule + nodesConnectivity + coordVariable + mandatoryOptions + variables + iniX
+		emptyTestModule + nodesConnectivity + mandatoryOptions + mandatoryVariables + variables
 	}
 
 	//Useful to prevent warnings
 	static def getTestModuleWithCoordVariableWithCustomFunctions(CharSequence functions)
 	{
-		emptyTestModule + nodesConnectivity + functions + coordVariable + mandatoryOptions + iniX
+		emptyTestModule + nodesConnectivity + functions + mandatoryOptions + mandatoryVariables
 	}
 
 	//Useful to prevent warnings
 	static def getTestModuleWithCoordVariableWithCustomConnectivities(CharSequence connectivities)
 	{
-		emptyTestModule + connectivities + coordVariable + mandatoryOptions + iniX
+		emptyTestModule + connectivities + mandatoryOptions + mandatoryVariables
 	}
 }

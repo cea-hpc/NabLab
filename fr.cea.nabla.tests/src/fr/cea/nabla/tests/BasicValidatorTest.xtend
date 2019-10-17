@@ -28,14 +28,14 @@ class BasicValidatorTest
 	@Test
 	def void testCheckMandatoryVariables()
 	{
-		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule)
+		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::mandatoryOptions)
 		Assert.assertNotNull(moduleKo)
 		
 		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
 			BasicValidator::MANDATORY_VARIABLE,
 			BasicValidator::getMandatoryVariablesMsg(MandatoryVariables::NAMES))
 
-		val moduleOk = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::mandatoryOptions)
+		val moduleOk = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::connectivities + TestUtils::mandatoryOptions + TestUtils::mandatoryVariables)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -43,16 +43,16 @@ class BasicValidatorTest
 	@Test
 	def void testCheckMandatoryOptions()
 	{
-		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule)
+		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::mandatoryVariables)
 		Assert.assertNotNull(moduleKo)
 		
 		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
 			BasicValidator::MANDATORY_OPTION,
 			BasicValidator::getMandatoryOptionsMsg(MandatoryOptions::NAMES))
 
-		val moduleOk = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::mandatoryOptions)
+		val moduleOk = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::getConnectivities + TestUtils::mandatoryOptions +  TestUtils::mandatoryVariables)
 		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors	
+		moduleOk.assertNoErrors
 	}
 
 	@Test
@@ -122,6 +122,7 @@ class BasicValidatorTest
 			BasicValidator::UNUSED_VARIABLE, 
 			BasicValidator::getUnusedVariableMsg())		
 
+println()
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomVars(
 			'''
@@ -220,7 +221,9 @@ class BasicValidatorTest
 			{
 				f:	x | ℝ[x] → ℝ;
 			}
-			''')
+			''' 
+			+ 
+			'''ℝ[2] orig = [0.0 , 0.0] ;''')
 		)
 		Assert.assertNotNull(moduleKo)
 			
@@ -238,6 +241,7 @@ class BasicValidatorTest
 			''')
 			+
 			'''
+			ℝ[2] orig = [0.0 , 0.0] ;
 			ComputeT: 
 			{ 
 				ℝ t = f(orig);
@@ -260,6 +264,10 @@ class BasicValidatorTest
 				reduceMin: (ℝ.MaxValue, ℝ[2])→ℝ[2];
 			}
 			''')
+			+
+			'''
+			ℝ[2] orig = [0.0 , 0.0] ;
+			'''
 		)
 		Assert.assertNotNull(moduleKo)
 			
@@ -277,6 +285,7 @@ class BasicValidatorTest
 			''')
 			+
 			'''
+			ℝ[2] orig = [0.0 , 0.0] ;
 			ComputeU: orig = reduceMin{r∈nodes()}(X{r});
 			'''
 		)
@@ -488,7 +497,12 @@ class BasicValidatorTest
 			{
 				f: x,y | ℝ[x] → ℝ[2];
 			}
-			''')
+			'''
+			+
+			'''
+			ℝ[2] orig = [0.0 , 0.0] ;
+			'''
+			)
 		)
 		Assert.assertNotNull(moduleKo)
 			
@@ -506,6 +520,7 @@ class BasicValidatorTest
 			''')
 			+
 			'''
+			ℝ[2] orig = [0.0 , 0.0] ;
 			ComputeOrig: orig = f(orig);
 			'''
 		)
@@ -560,6 +575,7 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(TestUtils::connectivities)
 			+
 			'''
+			ℝ[2] orig = [0.0 , 0.0] ;
 			IniX1: ∀j∈cells(), ∀r∈nodes(j), X{r} = orig; 
 			IniX2: ∀r∈nodes(), ∀j∈nodesOfCell(r), X{r} = orig; 
 			'''
@@ -580,6 +596,7 @@ class BasicValidatorTest
 		val moduleOk =  parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(TestUtils::connectivities)
 			+
 			'''
+			ℝ[2] orig = [0.0 , 0.0] ;
 			IniX1: ∀j∈cells(), ∀r∈nodes(), X{r} = orig; 
 			IniX2: ∀j∈cells(), ∀r∈nodesOfCell(j), X{r} = orig; 
 			'''

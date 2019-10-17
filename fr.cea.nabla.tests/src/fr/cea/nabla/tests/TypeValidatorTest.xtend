@@ -74,13 +74,13 @@ class TypeValidatorTest
 		val moduleKo = parseHelper.parse(TestUtils::testModule
 			+
 			'''
-			ℕ X{cells};
-			ℕ Y{nodes};
-			ComputeX: ∀ j∈cells(), 	{
+			ℕ U{cells};
+			ℕ V{nodes};
+			ComputeU: ∀ j∈cells(), 	{
 					ℝ e = 1.0;
-					X{j} = e * 4; 
+					U{j} = e * 4; 
 			}
-			ComputeY: Y = X;
+			ComputeV: V = U;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -98,13 +98,13 @@ class TypeValidatorTest
 			val moduleOk = parseHelper.parse(TestUtils::testModule
 			+
 			'''
-			ℕ X{cells}; 
-			ℕ Y{cells};
-			ComputeX: ∀ j∈cells(), 	{
+			ℕ U{cells}; 
+			ℕ V{cells};
+			ComputeU: ∀ j∈cells(), 	{
 					ℕ e = 1;
-					X{j} = e * 4; 
+					U{j} = e * 4; 
 			}
-			ComputeY: Y = X;			
+			ComputeV: V = U;			
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

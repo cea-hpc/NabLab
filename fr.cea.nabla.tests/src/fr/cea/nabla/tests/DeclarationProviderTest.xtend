@@ -39,10 +39,11 @@ class DeclarationProviderTest
 		'''
 		module Test;
 
-		items { cell }
+		items { cell, node }
 
 		connectivities {
 			cells: → {cell};
+			nodes: → {node};
 		}
 
 		functions
@@ -51,7 +52,7 @@ class DeclarationProviderTest
 			g:	a | ℝ[a] → ℝ[a], a, b | ℝ[a, b] → ℝ[a*b], a, b | ℝ[a] × ℝ[b] → ℝ[a+b];
 		}
 		'''
-		+ TestUtils::mandatoryOptions +
+		+ TestUtils::mandatoryOptions + TestUtils::mandatoryVariables +
 		'''
 			
 		ℝ a{cells};
@@ -142,16 +143,16 @@ class DeclarationProviderTest
 		'''
 		module Test;
 
-		items { cell }
+		items { cell, node }
 
-		connectivities { cells: → {cell}; }
+		connectivities { cells: → {cell}; nodes: → {node};}
 			
 		functions
 		{
 			f: (0.0, ℝ) → ℝ, x | (0.0, ℝ[x]) → ℝ[x];
 		}
 		'''
-		+ TestUtils::mandatoryOptions +
+		+ TestUtils::mandatoryOptions + TestUtils::mandatoryVariables +
 		'''
 		ℝ u{cells};
 		ℝ[2] u2{cells};

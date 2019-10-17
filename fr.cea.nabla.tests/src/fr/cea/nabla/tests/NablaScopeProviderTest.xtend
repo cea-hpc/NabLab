@@ -168,7 +168,7 @@ class NablaScopeProviderTest
 		val eref = NablaPackage::eINSTANCE.varRef_Variable
 
 		val aDeclaration = module.getVariableByName("a").eContainer as SimpleVarDefinition
-		aDeclaration.assertScope(eref, defaultOptionsScope)		
+		aDeclaration.assertScope(eref, defaultOptionsScope)
 
 		val b1Declaration = module.getVariableByName("b1").eContainer as VarGroupDeclaration
 		b1Declaration.assertScope(eref, defaultOptionsScope + ", a")		
@@ -229,6 +229,6 @@ class NablaScopeProviderTest
 		
 	private def defaultOptionsScope()
 	{
-		return "X_EDGE_LENGTH, Y_EDGE_LENGTH, X_EDGE_ELEMS, Y_EDGE_ELEMS, Z_EDGE_ELEMS, option_stoptime, option_max_iterations"	
+		return "X_EDGE_LENGTH, Y_EDGE_LENGTH, X_EDGE_ELEMS, Y_EDGE_ELEMS, Z_EDGE_ELEMS, option_stoptime, option_max_iterations, t, X"	
 	}
 }

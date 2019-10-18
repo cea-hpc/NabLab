@@ -37,6 +37,9 @@ class ExpressionInterpreter
 	{
 		val lValue = left.interprete(context)
 		val rValue = left.interprete(context)
+		if (lValue instanceof NV0Bool && rValue instanceof NV0Bool)
+			println("Dans BinaryExpression " + (lValue as NV0Bool).data + " " + operator + " " + (rValue as NV0Bool).data)
+			
 		BinaryOperationsInterpreter::getValueOf(lValue, rValue, operator)
 	}
 	

@@ -1,7 +1,7 @@
 package fr.cea.nabla.ir.interpreter
 
-import org.eclipse.xtend.lib.annotations.Data
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtend.lib.annotations.Data
 
 interface NablaValue { }
 

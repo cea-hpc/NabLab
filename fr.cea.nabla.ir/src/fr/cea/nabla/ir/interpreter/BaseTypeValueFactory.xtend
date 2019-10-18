@@ -13,11 +13,9 @@ import fr.cea.nabla.ir.ir.Array1D
 import fr.cea.nabla.ir.ir.Array2D
 import fr.cea.nabla.ir.ir.Scalar
 
-import static fr.cea.nabla.ir.interpreter.NablaValueFactory.*
-
 class BaseTypeValueFactory
 {
-	static def dispatch NablaValue createValue(Scalar t) { createValue(t) }
-	static def dispatch NablaValue createValue(Array1D t) { createValue(t, t.size)}
-	static def dispatch NablaValue createValue(Array2D t) { createValue(t, t.nbRows, t.nbCols) }
+	static def dispatch NablaValue createValue(Scalar t) { NablaValueFactory::createValue(t) }
+	static def dispatch NablaValue createValue(Array1D t) { NablaValueFactory::createValue(t, t.size)}
+	static def dispatch NablaValue createValue(Array2D t) { NablaValueFactory::createValue(t, t.nbRows, t.nbCols) }
 }

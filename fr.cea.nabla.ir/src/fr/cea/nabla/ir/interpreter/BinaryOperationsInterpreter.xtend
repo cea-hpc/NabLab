@@ -14,7 +14,18 @@ class BinaryOperationsInterpreter
 	{
 		switch op
 		{
-			case '||', case '&&', case '==', case '!=', case '>=', case '<=', case '>', case'<': b
+			case '||': new NV0Bool(a.data || b.data)
+			case '&&': { print("dans && on calcule " + a.data + " && " + b.data + " = ")
+				println(a.data && b.data
+				)
+				new NV0Bool(a.data && b.data)
+				}
+			case '==': new NV0Bool(a.data == b.data)
+			case '!=': new NV0Bool(a.data != b.data)
+			case '>=': new NV0Bool(a.data >= b.data)
+			case '<=': new NV0Bool(a.data <= b.data)
+			case '>': new NV0Bool(a.data > b.data)
+			case'<': new NV0Bool(a.data < b.data)
 			default: null
 		}
 	}
@@ -33,7 +44,7 @@ class BinaryOperationsInterpreter
 			case '+':  new NV0Int(a.data + b.data)
 			case '-':  new NV0Int(a.data - b.data)
 			case '*':  new NV0Int(a.data * b.data)
-			case '/':  new NV0Int(a.data / b.data)
+			case '/':  new NV0Int(a.data / b.data) //TODO -> WRONG
 			case '%':  new NV0Int(a.data % b.data)
 			default: null
 		}

@@ -122,4 +122,18 @@ class TestUtils
 	{
 		emptyTestModule + connectivities + mandatoryOptions + mandatoryVariables
 	}
+	
+	static def getTestGenModel()
+	{
+		'''
+		with Test.*;
+
+		workflow TestDefaultGenerationChain transforms Test
+		{
+			Nabla2Ir nabla2ir
+			{
+			}
+		}
+		'''
+	}
 }

@@ -24,4 +24,9 @@ class IrModuleExtensions
 
 		return connectivities.filter[c | c.returnType.multiple]
 	}
+	
+	def getVariableByName(IrModule it, String varName)
+	{
+		variables.findFirst[j | j.name == varName]
+	}
 }

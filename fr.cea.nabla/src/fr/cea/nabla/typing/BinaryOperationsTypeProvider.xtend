@@ -24,7 +24,7 @@ class BinaryOperationsTypeProvider
 		{
 			// useful for type validator (unused by type provider)
 			case '==', case '!=', case '>=', case '<=', case '>', case'<': new NSTBoolScalar
-			case '+', case '-', case '*', case '/', case '%': b
+			case '+', case '-', case '*', case '/', case '%': b //TODO -> MORE COMPLEX THAN THAT FOR 7/3 -> return REAL
 			default: null
 		}
 	}

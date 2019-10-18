@@ -35,6 +35,7 @@ class InstructionInterpreter
 	
 	static def dispatch void interprete(Affectation it, Context context)
 	{
+		println("Dans interprete de affectation")
 		val rightValue = interprete(right, context)
 		if (left.indices.empty && left.iterators.empty)
 			context.setVariableValue(left.variable, rightValue)

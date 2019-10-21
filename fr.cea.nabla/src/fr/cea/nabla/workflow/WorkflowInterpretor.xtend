@@ -78,20 +78,17 @@ class WorkflowInterpretor
 	
 	private def dispatch void launch(Nabla2IrComponent c, NablaModule nablaModule)
 	{
-		if (!nablaModule.jobs.empty)
-		{
-			val msg = '  Nabla -> IR - ' + c.name
-			logger.info(msg)
-			traceListeners.forEach[write(msg)]
-			val irModule = nabla2Ir.toIrModule(nablaModule)
-			if (c.dumpIr)
-				createAndSaveResource(irModule, c.eclipseProject, c.name)
-			val msgEnd = "... ok\n"
-			logger.info(msgEnd)
-			traceListeners.forEach[write(msgEnd)]
-			modelChangedListeners.forEach[modelChanged(irModule)]
-			fireModel(c, irModule)			
-		}
+		val msg = '  Nabla -> IR - ' + c.name
+		logger.info(msg)
+		traceListeners.forEach[write(msg)]
+		val irModule = nabla2Ir.toIrModule(nablaModule)
+		if (c.dumpIr)
+			createAndSaveResource(irModule, c.eclipseProject, c.name)
+		val msgEnd = "... ok\n"
+		logger.info(msgEnd)
+		traceListeners.forEach[write(msgEnd)]
+		modelChangedListeners.forEach[modelChanged(irModule)]
+		fireModel(c, irModule)
 	}
 
 	private def dispatch void launch(Ir2IrComponent c, IrModule irModule)

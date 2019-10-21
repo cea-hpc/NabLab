@@ -41,6 +41,8 @@ class FillJobHLTs implements IrTransformationStep
 	 */
 	override transform(IrModule m)
 	{
+		if (m.jobs.empty) return true
+
 		// creation du graphe
 		val globalSourceNode = IrFactory::eINSTANCE.createInstructionJob => [ name = GlobalSourceNodeLabel ]
 		val timeLoopSourceNode = IrFactory::eINSTANCE.createInstructionJob => [ name = TimeLoopSourceNodeLabel ]

@@ -298,17 +298,12 @@ public class NablaModuleItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createFunctionArg()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
 				 NablaFactory.eINSTANCE.createReduction()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createReductionArg()));
+				 NablaFactory.eINSTANCE.createArg()));
 
 		newChildDescriptors.add
 			(createChildParameter

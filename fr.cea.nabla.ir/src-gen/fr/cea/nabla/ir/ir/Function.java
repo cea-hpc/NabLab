@@ -14,7 +14,7 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getName <em>Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Function#getInTypes <em>In Types</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Function#getInArgs <em>In Args</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getProvider <em>Provider</em>}</li>
  * </ul>
@@ -51,20 +51,20 @@ public interface Function extends IrAnnotable {
 	void setName(String value);
 
 	/**
-	 * Returns the value of the '<em><b>In Types</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.BaseType}.
+	 * Returns the value of the '<em><b>In Args</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Arg}.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>In Types</em>' containment reference list isn't clear,
+	 * If the meaning of the '<em>In Args</em>' containment reference list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>In Types</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_InTypes()
+	 * @return the value of the '<em>In Args</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_InArgs()
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	EList<BaseType> getInTypes();
+	EList<Arg> getInArgs();
 
 	/**
 	 * Returns the value of the '<em><b>Return Type</b></em>' containment reference.

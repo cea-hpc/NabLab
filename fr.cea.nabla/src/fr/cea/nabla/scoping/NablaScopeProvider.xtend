@@ -13,14 +13,12 @@ import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.DimensionVar
 import fr.cea.nabla.nabla.DimensionVarReference
 import fr.cea.nabla.nabla.Function
-import fr.cea.nabla.nabla.FunctionArg
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Reduction
-import fr.cea.nabla.nabla.ReductionArg
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
@@ -173,8 +171,8 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		if (o === null) #[]
 		else switch o
 		{
-			FunctionArg: o.dimVars
-			ReductionArg: o.dimVars
+			Function: o.dimVars
+			Reduction: o.dimVars
 			default: o.eContainer.dimensionVariables
 		}
 	}

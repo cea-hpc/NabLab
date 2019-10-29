@@ -81,23 +81,15 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Function">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="argGroups" upperBound="-1"
-        eType="#//FunctionArg" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FunctionArg">
     <eStructuralFeatures xsi:type="ecore:EReference" name="dimVars" upperBound="-1"
         eType="#//DimensionVar" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="inTypes" upperBound="-1"
-        eType="#//ArgType" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inArgs" upperBound="-1"
+        eType="#//Arg" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//ArgType"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Reduction">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="argGroups" upperBound="-1"
-        eType="#//ReductionArg" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ReductionArg">
     <eStructuralFeatures xsi:type="ecore:EReference" name="dimVars" upperBound="-1"
         eType="#//DimensionVar" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="seed" eType="#//Expression"
@@ -106,6 +98,11 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//ArgType"
         containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Arg">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//ArgType"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ArgType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="primitive" eType="#//PrimitiveType"/>

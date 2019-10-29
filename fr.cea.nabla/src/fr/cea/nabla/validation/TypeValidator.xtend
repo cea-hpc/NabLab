@@ -26,18 +26,18 @@ import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Plus
-import fr.cea.nabla.nabla.ReductionArg
+import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.typing.BaseTypeTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
+import fr.cea.nabla.typing.NSTBoolScalar
+import fr.cea.nabla.typing.NSTIntScalar
+import fr.cea.nabla.typing.NSTScalar
+import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.typing.NablaType
 import java.util.List
 import org.eclipse.xtext.validation.Check
-import fr.cea.nabla.typing.NablaConnectivityType
-import fr.cea.nabla.typing.NSTScalar
-import fr.cea.nabla.typing.NSTBoolScalar
-import fr.cea.nabla.typing.NSTIntScalar
 
 class TypeValidator extends BasicValidator
 {
@@ -127,7 +127,7 @@ class TypeValidator extends BasicValidator
 	}
 	
 	@Check
-	def checkSeedAndReturnTypes(ReductionArg it)
+	def checkSeedAndReturnTypes(Reduction it)
 	{
 		val seedType = seed?.typeFor
 		// Seed must be scalar and Seed rootType must be the same as Return rootType
@@ -137,9 +137,9 @@ class TypeValidator extends BasicValidator
 		{
 			val rType = returnType.primitive
 			if (!(seedType instanceof NSTScalar))
-				error(getSeedTypeMsg(), NablaPackage.Literals.REDUCTION_ARG__SEED, SEED_TYPE)
+				error(getSeedTypeMsg(), NablaPackage.Literals.REDUCTION__SEED, SEED_TYPE)
 			else if (seedType.label != rType.literal)
-				error(getSeedAndReturnTypesMsg(seedType.label, rType.literal), NablaPackage.Literals.REDUCTION_ARG__SEED, SEED_AND_RETURN_TYPES)
+				error(getSeedAndReturnTypesMsg(seedType.label, rType.literal), NablaPackage.Literals.REDUCTION__SEED, SEED_AND_RETURN_TYPES)
 		}
 	}
 

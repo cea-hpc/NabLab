@@ -74,22 +74,20 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Function">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Function/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Function/argGroups"/>
-    </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//FunctionArg">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//FunctionArg/dimVars"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//FunctionArg/inTypes"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//FunctionArg/returnType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Function/dimVars"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Function/inArgs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Function/returnType"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Reduction">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Reduction/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Reduction/argGroups"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Reduction/dimVars"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Reduction/seed"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Reduction/collectionType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Reduction/returnType"/>
     </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//ReductionArg">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionArg/dimVars"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionArg/seed"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionArg/collectionType"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionArg/returnType"/>
+    <genClasses ecoreClass="Nabla.ecore#//Arg">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Arg/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Arg/name"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//ArgType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//ArgType/primitive"/>

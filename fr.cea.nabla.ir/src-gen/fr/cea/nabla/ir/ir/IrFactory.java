@@ -85,6 +85,15 @@ public interface IrFactory extends EFactory {
 	Reduction createReduction();
 
 	/**
+	 * Returns a new object of class '<em>Arg</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Arg</em>'.
+	 * @generated
+	 */
+	Arg createArg();
+
+	/**
 	 * Returns a new object of class '<em>Connectivity</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

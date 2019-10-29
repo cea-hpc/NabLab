@@ -51,24 +51,18 @@ class ExpressionTypeProviderTest
 	val model = 
 	'''
 	module Test;
-	
+
 	items { node, cell }
-	
-	connectivities 
-	{
-		cells: → {cell};
-		nodesOfCell: cell → {node};
-		nodes: → {node};
-	}
-	
-	functions 
-	{
-		perp: ℝ[2] → ℝ[2];
-		norm: x | ℝ[x] → ℝ;
-		reduceMin: (ℝ.MaxValue, ℝ)→ℝ;
-		solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x];
-	}
-	
+
+	set	cells: → {cell};
+	set	nodesOfCell: cell → {node};
+	set	nodes: → {node};
+
+	def	perp: ℝ[2] a → ℝ[2];
+	def	norm: x | ℝ[x] a → ℝ;
+	def	reduceMin: (ℝ.MaxValue, ℝ)→ℝ;
+	def	solveLinearSystem: x | ℝ[x, x] a × ℝ[x] b → ℝ[x];
+
 	const ℝ X_EDGE_LENGTH = 1.;
 	const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
 	const ℕ X_EDGE_ELEMS = 2;
@@ -76,10 +70,10 @@ class ExpressionTypeProviderTest
 	const ℕ Z_EDGE_ELEMS = 1;
 	const ℝ option_stoptime = 0.1;
 	const ℕ option_max_iterations = 500;
-	
+
 	ℝ t;
 	ℝ[2] X{nodes};
-	
+
 	ℕ a1 = 1;
 	ℕ a2 = 9 % 4;
 	ℕ a3 = ℕ.MinValue;
@@ -89,7 +83,7 @@ class ExpressionTypeProviderTest
 	ℕ[2] a7 = ℕ[2](1);
 	ℕ[2,2] a8;
 	ℕ a9 = a8[0,2];
-	
+
 	ℾ b1 = true;
 	ℾ b2 = false || true;
 	ℾ b3 = false && true;
@@ -99,34 +93,34 @@ class ExpressionTypeProviderTest
 	ℾ b7 = (a1 >= 2);
 	ℾ b8 = (a1 <= 2);
 	ℾ b9 = (a1 < 2);
-	ℾ b10 = !(a1 < 2);	
-	
+	ℾ b10 = !(a1 < 2);
+
 	ℝ c1 = 2.0 + 1.0;
 	ℝ c2 = 2.0 - 1.0;
 	ℝ c3 = 2.0 * 1.0;
 	ℝ c4 = 2.0 / 1.0;		
 	ℝ c5 = -c1;		
-	ℝ c6 = ℝ.MaxValue;		
+	ℝ c6 = ℝ.MaxValue;
 	const ℝ c7 = 1.0e-10;
-	
+
 	ℝ[2] d1 = [1.0, 2.0];
 	ℝ[2] d2 = perp(d1);
 	ℝ[2] d3 = ℝ[2](0.);
-	
+
 	ℝ[3] e = [1.0, 2.0, 3.0];
-	
-	
+
+
 	ℝ[2,2] g = [ [1.0, 0.0], [0.0, 1.0] ];
 	ℝ h = (a1 == 1 ? 0.0 : 1.0);
-	
+
 	ℕ s{cells};
 	ℝ u{cells}, v{cells};
 	ℝ[2] w{cells, nodesOfCell};
 	ℝ x{cells, nodesOfCell};
 	ℝ α{cells, cells}; 
-	
+
 	UpdateU: u^{n+1} = solveLinearSystem(α, u);
-	
+
 	ComputeV: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r} + s{j});
 
 	ComputeX: ∀ j∈cells(), {

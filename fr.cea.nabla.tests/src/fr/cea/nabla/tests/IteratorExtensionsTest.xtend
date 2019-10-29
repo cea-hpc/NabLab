@@ -55,20 +55,17 @@ class IteratorExtensionsTest
 
 	items { cell, node, face }
 	
-	connectivities {
-		cells: → {cell};
-		nodes: → {node};
-		faces: → {face};
-		nodesOfCell: cell → {node};
-		cellsOfNode: node → {cell};
-		neighbourCells: cell → {cell};
-		commonFace: cell × cell → face;
-	}
+	set	cells: → {cell};
+	set	nodes: → {node};
+	set	faces: → {face};
+	set	nodesOfCell: cell → {node};
+	set	cellsOfNode: node → {cell};
+	set	neighbourCells: cell → {cell};
+	set	commonFace: cell × cell → face;
 	
-	functions
-	{
-		∑: (0.0, ℝ) → ℝ, x | (0.0, ℝ[x]) → ℝ[x], x | (0.0, ℝ[x, x]) → ℝ[x, x];
-	}
+	def	∑: (0.0, ℝ) → ℝ;
+	def ∑: x | (0.0, ℝ[x]) → ℝ[x];
+	def ∑: x | (0.0, ℝ[x, x]) → ℝ[x, x];
 	'''
 	+ TestUtils::mandatoryOptions + TestUtils::mandatoryVariables +
 	'''

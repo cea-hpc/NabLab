@@ -14,13 +14,12 @@ import com.google.inject.Singleton
 import fr.cea.nabla.Utils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgType
 import fr.cea.nabla.nabla.Dimension
 import fr.cea.nabla.nabla.DimensionInt
 import fr.cea.nabla.nabla.Function
-import fr.cea.nabla.nabla.FunctionArg
 import fr.cea.nabla.nabla.Reduction
-import fr.cea.nabla.nabla.ReductionArg
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -35,16 +34,16 @@ class IrFunctionFactory
 
 	static val Reductions = #{ '\u2211'->'+', '\u220F'->'*' }
 
-	def create IrFactory::eINSTANCE.createFunction toIrFunction(Function f, FunctionArg a)
+	def create IrFactory::eINSTANCE.createFunction toIrFunction(Function f, Function a)
 	{
 		annotations += a.toIrAnnotation
 		name = f.name
 		returnType = a.returnType.toIrBaseType
-		inTypes += a.inTypes.map[toIrBaseType]
+		inArgs += a.inArgs.map[toIrArg]
 		provider = Utils::getNablaModule(f).name
 	}
 
-	def create IrFactory::eINSTANCE.createReduction toIrReduction(Reduction f, ReductionArg a)
+	def create IrFactory::eINSTANCE.createReduction toIrReduction(Reduction f, Reduction a)
 	{
 		annotations += a.toIrAnnotation
 		val op = Reductions.get(f.name)
@@ -55,6 +54,16 @@ class IrFunctionFactory
 		provider = Utils::getNablaModule(f).name
 	}
 	
+	private def toIrArg(Arg a)
+	{
+		IrFactory::eINSTANCE.createArg =>
+		[
+			annotations += a.toIrAnnotation
+			name = a.name
+			type = a.type.toIrBaseType
+		]
+	}
+
 	/**
 	 * No create method but a nested create to get a new instance at each call
 	 */

@@ -487,29 +487,6 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.FunctionArg} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected FunctionArgItemProvider functionArgItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.FunctionArg}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createFunctionArgAdapter() {
-		if (functionArgItemProvider == null) {
-			functionArgItemProvider = new FunctionArgItemProvider(this);
-		}
-
-		return functionArgItemProvider;
-	}
-
-	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Reduction} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -533,26 +510,26 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.ReductionArg} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Arg} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ReductionArgItemProvider reductionArgItemProvider;
+	protected ArgItemProvider argItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.ReductionArg}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Arg}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createReductionArgAdapter() {
-		if (reductionArgItemProvider == null) {
-			reductionArgItemProvider = new ReductionArgItemProvider(this);
+	public Adapter createArgAdapter() {
+		if (argItemProvider == null) {
+			argItemProvider = new ArgItemProvider(this);
 		}
 
-		return reductionArgItemProvider;
+		return argItemProvider;
 	}
 
 	/**
@@ -1707,9 +1684,8 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (connectivityItemProvider != null) connectivityItemProvider.dispose();
 		if (itemArgTypeItemProvider != null) itemArgTypeItemProvider.dispose();
 		if (functionItemProvider != null) functionItemProvider.dispose();
-		if (functionArgItemProvider != null) functionArgItemProvider.dispose();
 		if (reductionItemProvider != null) reductionItemProvider.dispose();
-		if (reductionArgItemProvider != null) reductionArgItemProvider.dispose();
+		if (argItemProvider != null) argItemProvider.dispose();
 		if (argTypeItemProvider != null) argTypeItemProvider.dispose();
 		if (dimensionVarItemProvider != null) dimensionVarItemProvider.dispose();
 		if (dimensionItemProvider != null) dimensionItemProvider.dispose();

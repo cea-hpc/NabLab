@@ -11,34 +11,7 @@ package fr.cea.nabla.tests
 
 class TestUtils 
 {
-//	static def void assertEquals(PrimitiveType expectedPrimitive, int[] expectedSizes, BaseType actual)
-//	{
-//		Assert.assertEquals(expectedPrimitive, actual.primitive)
-//		Assert.assertArrayEquals(expectedSizes, actual.sizes)
-//	}
-//
-//	static def void assertEquals(PrimitiveType expectedPrimitive, int[] expectedSizes, Connectivity[] expectedConnectivities, NablaType actual)
-//	{
-//		switch actual
-//		{
-//			ArrayType:
-//			{
-//				Assert.assertEquals(expectedPrimitive, actual.primitive)
-//				Assert.assertArrayEquals(expectedSizes, actual.sizes)				
-//				Assert.assertArrayEquals(expectedConnectivities, actual.connectivities)				
-//			}
-//			DefinedType: 
-//			{
-//				Assert.assertEquals(expectedPrimitive, actual.primitive)
-//				Assert.assertArrayEquals(expectedSizes, #[])				
-//				Assert.assertArrayEquals(expectedConnectivities, actual.connectivities)				
-//			}
-//			default: Assert.fail
-//		}
-//	}
-	
 	// ===== CharSequence utils =====
-
 	static def String getEmptyTestModule()
 	'''
 		module Test;
@@ -61,21 +34,16 @@ class TestUtils
 	'''
 	items { node, cell }
 	
-	connectivities {
-		nodes: → {node};
-		cells: → {cell};
-		nodesOfCell: cell → {node};
-	}
+	set nodes: → {node};
+	set cells: → {cell};
+	set nodesOfCell: cell → {node};
 	'''
 
 	static def String getNodesConnectivity()
 	'''
 	items { node }
-	
-	connectivities 
-	{
-		nodes: → {node};
-	}
+
+	set nodes: → {node};
 	'''
 
 	static def String getMandatoryVariables()

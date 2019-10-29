@@ -18,19 +18,18 @@ import fr.cea.nabla.nabla.DimensionOperation
 import fr.cea.nabla.nabla.DimensionVar
 import fr.cea.nabla.nabla.DimensionVarReference
 import fr.cea.nabla.nabla.Expression
-import fr.cea.nabla.nabla.FunctionArg
+import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.PrimitiveType
-import fr.cea.nabla.nabla.ReductionArg
+import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.typing.NablaType
-import fr.cea.nabla.typing.PrimitiveTypeTypeProvider
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.List
 import java.util.Map
 import org.eclipse.xtend.lib.annotations.Data
+import org.eclipse.xtext.EcoreUtil2
 
 @Data
 class DimensionValue 
@@ -53,7 +52,7 @@ class DimensionValue
 @Data
 class FunctionDeclaration
 {
-	val FunctionArg model
+	val Function model
 	val Map<DimensionVar, DimensionValue> dimensionVarValues
 	val NablaType[] inTypes
 	val NablaType returnType
@@ -62,7 +61,7 @@ class FunctionDeclaration
 @Data
 class ReductionDeclaration
 {
-	val ReductionArg model
+	val Reduction model
 	val Map<DimensionVar, DimensionValue> dimensionVarValues
 	val NablaSimpleType collectionType // no reduction on ConnectivityVar => SimpleType only
 	val NablaSimpleType returnType
@@ -76,17 +75,17 @@ class DeclarationProvider
 	def FunctionDeclaration getDeclaration(FunctionCall it)
 	{
 		val dimensionVarValues = new HashMap<DimensionVar, DimensionValue>
-
-		val f = function.argGroups.findFirst[x | 
-			if (x.inTypes.size != args.size) return false
-			for (i : 0..<x.inTypes.size)
-				if (!match(x.inTypes.get(i), args.get(i), dimensionVarValues)) return false
+		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
+		val candidates = module.functions.filter(Function).filter[x | x.name == function.name]
+		val f = candidates.findFirst[x |
+			if (x.inArgs.size != args.size) return false
+			for (i : 0..<x.inArgs.size)
+				if (!match(x.inArgs.get(i).type, args.get(i), dimensionVarValues)) return false
 			return true
 		]
-		
 		if (f === null) return null
 
-		val inTypes = f.inTypes.map[x | x.computeExpressionType(dimensionVarValues)]
+		val inTypes = f.inArgs.map[x | x.type.computeExpressionType(dimensionVarValues)]
 		val returnType = f.returnType.computeExpressionType(dimensionVarValues)
 		return new FunctionDeclaration(f, dimensionVarValues, inTypes, returnType)
 	}
@@ -94,11 +93,9 @@ class DeclarationProvider
 	def ReductionDeclaration getDeclaration(ReductionCall it)
 	{
 		val dimensionVarValues = new HashMap<DimensionVar, DimensionValue>
-
-		val r = reduction.argGroups.findFirst[x | 
-			match(x.collectionType, arg, dimensionVarValues)
-		]
-		
+		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
+		val candidates = module.functions.filter(Reduction).filter[x | x.name == reduction.name]
+		val r = candidates.findFirst[x | match(x.collectionType, arg, dimensionVarValues) ]
 		if (r === null) return null
 
 		val collectionType = r.collectionType.computeExpressionType(dimensionVarValues)

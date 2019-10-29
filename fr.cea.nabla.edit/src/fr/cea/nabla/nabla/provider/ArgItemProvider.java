@@ -4,7 +4,7 @@
 package fr.cea.nabla.nabla.provider;
 
 
-import fr.cea.nabla.nabla.FunctionArg;
+import fr.cea.nabla.nabla.Arg;
 import fr.cea.nabla.nabla.NablaFactory;
 import fr.cea.nabla.nabla.NablaPackage;
 
@@ -18,22 +18,24 @@ import org.eclipse.emf.common.util.ResourceLocator;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link fr.cea.nabla.nabla.FunctionArg} object.
+ * This is the item provider adapter for a {@link fr.cea.nabla.nabla.Arg} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class FunctionArgItemProvider 
+public class ArgItemProvider 
 	extends ItemProviderAdapter
 	implements
 		IEditingDomainItemProvider,
@@ -47,7 +49,7 @@ public class FunctionArgItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FunctionArgItemProvider(AdapterFactory adapterFactory) {
+	public ArgItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -62,8 +64,31 @@ public class FunctionArgItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
+			addNamePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
+	}
+
+	/**
+	 * This adds a property descriptor for the Name feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addNamePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Arg_name_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Arg_name_feature", "_UI_Arg_type"),
+				 NablaPackage.Literals.ARG__NAME,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -78,9 +103,7 @@ public class FunctionArgItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(NablaPackage.Literals.FUNCTION_ARG__DIM_VARS);
-			childrenFeatures.add(NablaPackage.Literals.FUNCTION_ARG__IN_TYPES);
-			childrenFeatures.add(NablaPackage.Literals.FUNCTION_ARG__RETURN_TYPE);
+			childrenFeatures.add(NablaPackage.Literals.ARG__TYPE);
 		}
 		return childrenFeatures;
 	}
@@ -99,14 +122,14 @@ public class FunctionArgItemProvider
 	}
 
 	/**
-	 * This returns FunctionArg.gif.
+	 * This returns Arg.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/FunctionArg"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/Arg"));
 	}
 
 	/**
@@ -117,7 +140,10 @@ public class FunctionArgItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_FunctionArg_type");
+		String label = ((Arg)object).getName();
+		return label == null || label.length() == 0 ?
+			getString("_UI_Arg_type") :
+			getString("_UI_Arg_type") + " " + label;
 	}
 
 
@@ -132,10 +158,11 @@ public class FunctionArgItemProvider
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(FunctionArg.class)) {
-			case NablaPackage.FUNCTION_ARG__DIM_VARS:
-			case NablaPackage.FUNCTION_ARG__IN_TYPES:
-			case NablaPackage.FUNCTION_ARG__RETURN_TYPE:
+		switch (notification.getFeatureID(Arg.class)) {
+			case NablaPackage.ARG__NAME:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
+			case NablaPackage.ARG__TYPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -155,41 +182,8 @@ public class FunctionArgItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.FUNCTION_ARG__DIM_VARS,
-				 NablaFactory.eINSTANCE.createDimensionVar()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.FUNCTION_ARG__IN_TYPES,
+				(NablaPackage.Literals.ARG__TYPE,
 				 NablaFactory.eINSTANCE.createArgType()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.FUNCTION_ARG__RETURN_TYPE,
-				 NablaFactory.eINSTANCE.createArgType()));
-	}
-
-	/**
-	 * This returns the label text for {@link org.eclipse.emf.edit.command.CreateChildCommand}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection) {
-		Object childFeature = feature;
-		Object childObject = child;
-
-		boolean qualify =
-			childFeature == NablaPackage.Literals.FUNCTION_ARG__IN_TYPES ||
-			childFeature == NablaPackage.Literals.FUNCTION_ARG__RETURN_TYPE;
-
-		if (qualify) {
-			return getString
-				("_UI_CreateChild_text2",
-				 new Object[] { getTypeText(childObject), getFeatureText(childFeature), getTypeText(owner) });
-		}
-		return super.getCreateChildText(owner, feature, child, selection);
 	}
 
 	/**

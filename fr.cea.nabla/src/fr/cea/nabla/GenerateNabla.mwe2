@@ -46,9 +46,9 @@ Workflow {
 				generateStub = false
 			}
 
-			validator = {
-				composedCheck = "org.eclipse.xtext.validation.NamesAreUniqueValidator"
-			}
+//			validator = {
+//				composedCheck = "org.eclipse.xtext.validation.NamesAreUniqueValidator"
+//			}
 
 			scopeProvider = scoping.ImportNamespacesScopingFragment2 auto-inject { }
 			fragment = exporting.QualifiedNamesFragment2 auto-inject { }

@@ -192,9 +192,7 @@ class NablaScopeProviderTest
 	{
 		val module = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions(
 			'''
-			functions {
-				reduceMin: (ℝ.MaxValue, ℝ)→ℝ;
-			}
+			def	reduceMin: (ℝ.MaxValue, ℝ) → ℝ;
 			''')
 		)
 		
@@ -212,9 +210,7 @@ class NablaScopeProviderTest
 	{
 		val module = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions(
 			'''
-			functions {
-				inverse: ℝ[2,2] → ℝ[2,2];
-			}
+			def	inverse: ℝ[2,2] a → ℝ[2,2];
 			''')
 		)
 		

@@ -64,16 +64,20 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Function">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//Function/inTypes"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/inArgs"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//Function/returnType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/provider"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Reduction">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Reduction/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//Reduction/collectionType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Reduction/collectionType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//Reduction/returnType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Reduction/provider"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Reduction/operator"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//Arg">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Arg/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Arg/type"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Connectivity">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Connectivity/name"/>

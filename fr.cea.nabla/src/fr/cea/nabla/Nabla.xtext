@@ -16,8 +16,8 @@ NablaModule:
 	'module' name=QualifiedName ';'
 	imports+=Import*
 	('items' '{' items+=ItemType (',' items+=ItemType)* '}'
-	'connectivities' '{' connectivities+=Connectivity* '}')?
-	('functions' '{' functions+=(Function | Reduction)* '}')?
+	connectivities+=Connectivity*)?
+	functions+=(Function | Reduction)*
 	variables+=(SimpleVarDefinition | VarGroupDeclaration)*
 	jobs+=Job*;
 
@@ -33,7 +33,7 @@ Job: name=ID ':' instruction=Instruction;
 /* INSTRUCTIONS ******************************************/
 Instruction: 
 	SimpleVarDefinition |
-	VarGroupDeclaration | // only scalar variables (ScalarVar type)
+	VarGroupDeclaration |
 	{InstructionBlock} '{' instructions+=Instruction+ '}' |
 	{Affectation} varRef=VarRef '=' expression=Expression ';' |
 	{Loop} '\u2200' range=RangeSpaceIterator (',' singletons+=SingletonSpaceIterator)* ',' body=Instruction |
@@ -54,15 +54,14 @@ SimpleVar: name=ID;
 ConnectivityVar: name=ID '{' supports+=[Connectivity] (',' supports+=[Connectivity])* '}';
 
 /* CONNECTIVITES *****************************************/
-Connectivity: name=ID ':' (inTypes+=[ItemType] ('\u00D7' inTypes+=[ItemType])*)?  '\u2192' returnType=ItemArgType ';';
+Connectivity: 'set' name=ID ':' (inTypes+=[ItemType] ('\u00D7' inTypes+=[ItemType])*)?  '\u2192' returnType=ItemArgType ';';
 ItemArgType: multiple?='{' type=[ItemType] '}' | type=[ItemType];
 
 /* FONCTIONS / REDUCTIONS ********************************/
-Function: name=ID ':' argGroups+=FunctionArg (',' argGroups+=FunctionArg)* ';';
-FunctionArg: (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? (inTypes+=ArgType ('\u00D7' inTypes+=ArgType)*)? '\u2192' returnType=ArgType;
-Reduction: name=ID ':' argGroups+=ReductionArg (',' argGroups+=ReductionArg)* ';';
-ReductionArg:  (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? '(' seed=Expression ',' collectionType=ArgType ')' '\u2192' returnType=ArgType;
+Function: 'def' name=ID ':' (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? (inArgs+=Arg ('\u00D7' inArgs+=Arg)*)? '\u2192' returnType=ArgType ';';
+Reduction: 'def' name=ID ':' (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? '(' seed=Expression ',' collectionType=ArgType ')' '\u2192' returnType=ArgType ';';
 
+Arg: type=ArgType name=ID;
 ArgType: primitive=PrimitiveType ('[' indices+=Dimension (',' indices+=Dimension)* ']')?;
 DimensionVar: name=ID;
 Dimension: DimensionOperation;

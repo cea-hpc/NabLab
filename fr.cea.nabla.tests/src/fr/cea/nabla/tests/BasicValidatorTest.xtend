@@ -217,10 +217,7 @@ println()
 		val moduleKo = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
 			'''
-			functions 
-			{
-				f:	x | ℝ[x] → ℝ;
-			}
+			def	f:	x | ℝ[x] a → ℝ;
 			''' 
 			+ 
 			'''ℝ[2] orig = [0.0 , 0.0] ;''')
@@ -234,10 +231,7 @@ println()
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
 			'''
-			functions 
-			{
-				f:	x | ℝ[x] → ℝ;
-			}
+			def	f:	x | ℝ[x] a → ℝ;
 			''')
 			+
 			'''
@@ -259,10 +253,7 @@ println()
 		val moduleKo = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
 			'''
-			functions 
-			{
-				reduceMin: (ℝ.MaxValue, ℝ[2])→ℝ[2];
-			}
+			def reduceMin: (ℝ.MaxValue, ℝ[2]) → ℝ[2];
 			''')
 			+
 			'''
@@ -278,10 +269,7 @@ println()
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
 			'''
-			functions 
-			{
-				reduceMin: (ℝ.MaxValue, ℝ[2])→ℝ[2];
-			}
+			def	reduceMin: (ℝ.MaxValue, ℝ[2]) → ℝ[2];
 			''')
 			+
 			'''
@@ -299,32 +287,28 @@ println()
 		val modulekO = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				functions 
-				{
-					f: x | ℝ[x+1] → ℝ[x];
-					g: ℝ[2] → ℝ, x | ℝ[x] → ℝ;
-				}
+				def	f: x | ℝ[x+1] a → ℝ[x];
+				def	g: ℝ[2] a → ℝ;
+				def g: x | ℝ[x] a → ℝ;
 				'''
 			)
 		)
 		Assert.assertNotNull(modulekO)
 		
-		modulekO.assertError(NablaPackage.eINSTANCE.functionArg, 
+		modulekO.assertError(NablaPackage.eINSTANCE.function, 
 			BasicValidator::FUNCTION_IN_TYPES_OPERATION, 
 			BasicValidator::getFunctionInTypesOperationMsg())
 
-		modulekO.assertError(NablaPackage.eINSTANCE.functionArg, 
+		modulekO.assertError(NablaPackage.eINSTANCE.function, 
 			BasicValidator::FUNCTION_INCOMPATIBLE_IN_TYPES, 
 			BasicValidator::getFunctionIncompatibleInTypesMsg())
 
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				functions 
-				{
-					f: x | ℝ[x] → ℝ[x+1];
-					g: ℝ → ℝ, x | ℝ[x] → ℝ;
-				}
+				def	f: x | ℝ[x] a → ℝ[x+1];
+				def	g: ℝ a → ℝ;
+				def g: x | ℝ[x] a → ℝ;
 				'''
 			)
 		)
@@ -338,32 +322,26 @@ println()
 		val modulekO = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				functions 
-				{
-					f: x | ℝ → ℝ[x];
-				}
+				def	f: x | ℝ a → ℝ[x];
 				'''
 			)
 		)
 		Assert.assertNotNull(modulekO)
 		
-		modulekO.assertError(NablaPackage.eINSTANCE.functionArg, 
+		modulekO.assertError(NablaPackage.eINSTANCE.function, 
 			BasicValidator::FUNCTION_RETURN_TYPE, 
 			BasicValidator::getFunctionReturnTypeMsg("x"))
 
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				functions 
-				{
-					f: x | ℝ[x] → ℝ[x];
-					g: y | ℝ[y] → ℝ[x, y];
-				}
+				def	f: x | ℝ[x] a → ℝ[x];
+				def	g: y | ℝ[y] a → ℝ[x, y];
 				'''
 			)
 		)
 		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors(NablaPackage.eINSTANCE.functionArg, 
+		moduleOk.assertNoErrors(NablaPackage.eINSTANCE.function, 
 			BasicValidator::FUNCTION_RETURN_TYPE)
 	}
 	
@@ -373,32 +351,28 @@ println()
 		val modulekO = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				functions 
-				{
-					reduce1: x,y | (ℝ.MaxValue , ℝ[x+y])→ℝ[x+y];
-					reduce2: (ℝ.MaxValue, ℝ[2])→ℝ ,  x | (ℝ.MaxValue , ℝ[x])→ℝ;
-				}
+				def	reduce1: x,y | (ℝ.MaxValue , ℝ[x+y]) → ℝ[x+y];
+				def	reduce2: (ℝ.MaxValue, ℝ[2]) → ℝ;
+				def reduce2: x | (ℝ.MaxValue , ℝ[x]) → ℝ;
 				'''
 			)
 		)
 		Assert.assertNotNull(modulekO)
 		
-		modulekO.assertError(NablaPackage.eINSTANCE.reductionArg, 
+		modulekO.assertError(NablaPackage.eINSTANCE.reduction, 
 			BasicValidator::REDUCTION_COLLECTION_TYPE_OPERATION, 
 			BasicValidator::getReductionCollectionTypeOperationMsg)
 
-		modulekO.assertError(NablaPackage.eINSTANCE.reductionArg, 
+		modulekO.assertError(NablaPackage.eINSTANCE.reduction, 
 			BasicValidator::REDUCTION_INCOMPATIBLE_COLLECTION_TYPE, 
 			BasicValidator::getReductionIncompatibleCollectionTypeMsg)
 
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				functions 
-				{
-					reduce1: x | (ℝ.MaxValue , ℝ[x])→ℝ[x];
-					reduce2: (ℝ.MaxValue, ℝ)→ℝ ,  x | (ℝ.MaxValue , ℝ[x])→ℝ;
-				}
+				def	reduce1: x | (ℝ.MaxValue , ℝ[x]) → ℝ[x];
+				def	reduce2: (ℝ.MaxValue, ℝ) → ℝ;
+				def reduce2: x | (ℝ.MaxValue , ℝ[x]) → ℝ;
 				'''
 			)
 		)
@@ -412,42 +386,33 @@ println()
 		val modulekO = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				functions 
-				{
-					reduce: x,y | (ℝ.MaxValue , ℝ[x])→ℝ[y];
-				}
+				def	reduce: x,y | (ℝ.MaxValue , ℝ[x]) → ℝ[y];
 				'''
 			)
 		)
 		Assert.assertNotNull(modulekO)
 		
-		modulekO.assertError(NablaPackage.eINSTANCE.reductionArg, 
+		modulekO.assertError(NablaPackage.eINSTANCE.reduction, 
 			BasicValidator::REDUCTION_RETURN_TYPE, 
 			BasicValidator::getReductionReturnTypeMsg("y"))
 
 		val modulekO2 = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				functions 
-				{
-					reduce: x,y | (ℝ.MaxValue , ℝ[x])→ℝ[x+y];
-				}
+				def	reduce: x,y | (ℝ.MaxValue , ℝ[x])→ℝ[x+y];
 				'''
 			)
 		)
 		Assert.assertNotNull(modulekO2)
 		
-		modulekO2.assertError(NablaPackage.eINSTANCE.reductionArg, 
+		modulekO2.assertError(NablaPackage.eINSTANCE.reduction, 
 			BasicValidator::REDUCTION_RETURN_TYPE, 
 			BasicValidator::getReductionReturnTypeMsg("y"))
 
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				functions 
-				{
-					reduce: x | (ℝ.MaxValue , ℝ[x])→ℝ[x];
-				}
+				def	reduce: x | (ℝ.MaxValue , ℝ[x]) → ℝ[x];
 				'''
 			)
 		)
@@ -461,11 +426,8 @@ println()
 		val modulekO = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 			'''
-			functions 
-			{
-				f:	n | ℝ[n] → ℝ;
-				g:	x | ℝ[x] → ℝ;
-			}
+			def f:	n | ℝ[n] a → ℝ;
+			def g:	x | ℝ[x] a → ℝ;
 			''')
 		)
 		Assert.assertNotNull(modulekO)
@@ -477,10 +439,7 @@ println()
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 			'''
-			functions 
-			{
-				f:	x | ℝ[x] → ℝ;
-			}
+			def	f:	x | ℝ[x] a → ℝ;
 			''')
 		)
 		Assert.assertNotNull(moduleOk)
@@ -493,10 +452,7 @@ println()
 		val moduleKo = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
 			'''
-			functions 
-			{
-				f: x,y | ℝ[x] → ℝ[2];
-			}
+			def f: x,y | ℝ[x] a → ℝ[2];
 			'''
 			+
 			'''
@@ -513,10 +469,7 @@ println()
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
 			'''
-			functions 
-			{
-				f: x | ℝ[x] → ℝ[2];
-			}
+			def	f: x | ℝ[x] a → ℝ[2];
 			''')
 			+
 			'''
@@ -537,11 +490,8 @@ println()
 			TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''
 			items { node }
-			connectivities 
-			{
-				nodes: → {node};
-				borderNodes: → {node};
-			}
+			set	nodes: → {node};
+			set	borderNodes: → {node};
 			''')
 		)
 		Assert.assertNotNull(moduleKo)
@@ -554,11 +504,8 @@ println()
 			TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''
 			items { node }
-			connectivities 
-			{
-				nodes: → {node};
-				borderNodes: → {node};
-			}
+			set	nodes: → {node};
+			set	borderNodes: → {node};
 			''')
 			+
 			'''
@@ -645,13 +592,10 @@ println()
 			TestUtils::getTestModuleWithCustomConnectivities(
 				'''
 				items { node, cell }
-				connectivities 
-				{
-					nodes: → {node};
-					cells: → {cell};
-					prevNode: node → node;
-					neigboursCells: cell → {cell};
-				}
+				set	nodes: → {node};
+				set	cells: → {cell};
+				set	prevNode: node → node;
+				set	neigboursCells: cell → {cell};
 				''')
 				+
 				'''
@@ -673,13 +617,10 @@ println()
 			TestUtils::getTestModuleWithCustomConnectivities(
 				'''
 				items { node, cell }
-				connectivities 
-				{
-					nodes: → {node};
-					cells: → {cell};
-					prevNode: node → node;
-					neigboursCells: cell → {cell};
-				}
+				set	nodes: → {node};
+				set	cells: → {cell};
+				set	prevNode: node → node;
+				set	neigboursCells: cell → {cell};
 				''')
 				+
 				'''
@@ -792,11 +733,8 @@ println()
 		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''
 			items { node }
-			connectivities 
-			{
-				nodes: → {node};
-				leftNode: node → node;
-			}
+			set	nodes: → {node};
+			set	leftNode: node → node;
 			''')
 			+
 			'''
@@ -812,11 +750,8 @@ println()
 		val moduleOk =  parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''
 			items { node }
-			connectivities 
-			{
-				nodes: → {node};
-				leftNodes: node → {node};
-			}
+			set	nodes: → {node};
+			set	leftNodes: node → {node};
 			''')
 			+
 			'''
@@ -833,11 +768,8 @@ println()
 		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''
 			items { node }
-			connectivities 
-			{
-				nodes: → {node};
-				leftNode: node → {node};
-			}
+			set	nodes: → {node};
+			set	leftNode: node → {node};
 			''')
 			+
 			'''
@@ -853,11 +785,8 @@ println()
 		val moduleOk =  parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''
 			items { node }
-			connectivities 
-			{
-				nodes: → {node};
-				leftNode: node → node;
-			}
+			set	nodes: → {node};
+			set	leftNode: node → node;
 			''')
 			+
 			'''
@@ -874,11 +803,8 @@ println()
 		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''
 			items { node }
-			connectivities 
-			{
-				nodes: → {node};
-				leftNode: node → node;
-			}
+			set	nodes: → {node};
+			set	leftNode: node → node;
 			''')
 			+
 			'''
@@ -894,11 +820,8 @@ println()
 		val moduleOk =  parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''
 			items { node }
-			connectivities 
-			{
-				nodes: → {node};
-				leftNode: node → node;
-			}
+			set	nodes: → {node};
+			set	leftNode: node → node;
 			''')
 			+
 			'''

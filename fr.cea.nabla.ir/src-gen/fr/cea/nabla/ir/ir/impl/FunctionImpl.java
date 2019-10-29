@@ -2,6 +2,7 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
+import fr.cea.nabla.ir.ir.Arg;
 import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.IrPackage;
@@ -29,7 +30,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getName <em>Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getInTypes <em>In Types</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getInArgs <em>In Args</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getProvider <em>Provider</em>}</li>
  * </ul>
@@ -58,14 +59,14 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getInTypes() <em>In Types</em>}' containment reference list.
+	 * The cached value of the '{@link #getInArgs() <em>In Args</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getInTypes()
+	 * @see #getInArgs()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<BaseType> inTypes;
+	protected EList<Arg> inArgs;
 
 	/**
 	 * The cached value of the '{@link #getReturnType() <em>Return Type</em>}' containment reference.
@@ -142,11 +143,11 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<BaseType> getInTypes() {
-		if (inTypes == null) {
-			inTypes = new EObjectContainmentEList.Resolving<BaseType>(BaseType.class, this, IrPackage.FUNCTION__IN_TYPES);
+	public EList<Arg> getInArgs() {
+		if (inArgs == null) {
+			inArgs = new EObjectContainmentEList.Resolving<Arg>(Arg.class, this, IrPackage.FUNCTION__IN_ARGS);
 		}
-		return inTypes;
+		return inArgs;
 	}
 
 	/**
@@ -244,8 +245,8 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.FUNCTION__IN_TYPES:
-				return ((InternalEList<?>)getInTypes()).basicRemove(otherEnd, msgs);
+			case IrPackage.FUNCTION__IN_ARGS:
+				return ((InternalEList<?>)getInArgs()).basicRemove(otherEnd, msgs);
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				return basicSetReturnType(null, msgs);
 		}
@@ -262,8 +263,8 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 		switch (featureID) {
 			case IrPackage.FUNCTION__NAME:
 				return getName();
-			case IrPackage.FUNCTION__IN_TYPES:
-				return getInTypes();
+			case IrPackage.FUNCTION__IN_ARGS:
+				return getInArgs();
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				if (resolve) return getReturnType();
 				return basicGetReturnType();
@@ -285,9 +286,9 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 			case IrPackage.FUNCTION__NAME:
 				setName((String)newValue);
 				return;
-			case IrPackage.FUNCTION__IN_TYPES:
-				getInTypes().clear();
-				getInTypes().addAll((Collection<? extends BaseType>)newValue);
+			case IrPackage.FUNCTION__IN_ARGS:
+				getInArgs().clear();
+				getInArgs().addAll((Collection<? extends Arg>)newValue);
 				return;
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				setReturnType((BaseType)newValue);
@@ -310,8 +311,8 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 			case IrPackage.FUNCTION__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case IrPackage.FUNCTION__IN_TYPES:
-				getInTypes().clear();
+			case IrPackage.FUNCTION__IN_ARGS:
+				getInArgs().clear();
 				return;
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				setReturnType((BaseType)null);
@@ -333,8 +334,8 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 		switch (featureID) {
 			case IrPackage.FUNCTION__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case IrPackage.FUNCTION__IN_TYPES:
-				return inTypes != null && !inTypes.isEmpty();
+			case IrPackage.FUNCTION__IN_ARGS:
+				return inArgs != null && !inArgs.isEmpty();
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				return returnType != null;
 			case IrPackage.FUNCTION__PROVIDER:

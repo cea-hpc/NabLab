@@ -3,6 +3,7 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Affectation;
+import fr.cea.nabla.ir.ir.Arg;
 import fr.cea.nabla.ir.ir.Array1D;
 import fr.cea.nabla.ir.ir.Array2D;
 import fr.cea.nabla.ir.ir.BaseType;
@@ -135,6 +136,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass reductionEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass argEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -771,7 +779,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getFunction_InTypes() {
+	public EReference getFunction_InArgs() {
 		return (EReference)functionEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -845,6 +853,33 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 */
 	public EAttribute getReduction_Operator() {
 		return (EAttribute)reductionEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getArg() {
+		return argEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getArg_Name() {
+		return (EAttribute)argEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getArg_Type() {
+		return (EReference)argEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1928,7 +1963,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		functionEClass = createEClass(FUNCTION);
 		createEAttribute(functionEClass, FUNCTION__NAME);
-		createEReference(functionEClass, FUNCTION__IN_TYPES);
+		createEReference(functionEClass, FUNCTION__IN_ARGS);
 		createEReference(functionEClass, FUNCTION__RETURN_TYPE);
 		createEAttribute(functionEClass, FUNCTION__PROVIDER);
 
@@ -1938,6 +1973,10 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(reductionEClass, REDUCTION__RETURN_TYPE);
 		createEAttribute(reductionEClass, REDUCTION__PROVIDER);
 		createEAttribute(reductionEClass, REDUCTION__OPERATOR);
+
+		argEClass = createEClass(ARG);
+		createEAttribute(argEClass, ARG__NAME);
+		createEReference(argEClass, ARG__TYPE);
 
 		connectivityEClass = createEClass(CONNECTIVITY);
 		createEAttribute(connectivityEClass, CONNECTIVITY__NAME);
@@ -2133,6 +2172,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		connectivityVariableEClass.getESuperTypes().add(this.getVariable());
 		functionEClass.getESuperTypes().add(this.getIrAnnotable());
 		reductionEClass.getESuperTypes().add(this.getIrAnnotable());
+		argEClass.getESuperTypes().add(this.getIrAnnotable());
 		connectivityEClass.getESuperTypes().add(this.getIrAnnotable());
 		itemArgTypeEClass.getESuperTypes().add(this.getIrAnnotable());
 		jobEClass.getESuperTypes().add(this.getIrAnnotable());
@@ -2213,7 +2253,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(functionEClass, Function.class, "Function", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFunction_Name(), ecorePackage.getEString(), "name", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getFunction_InTypes(), this.getBaseType(), null, "inTypes", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getFunction_InArgs(), this.getArg(), null, "inArgs", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunction_ReturnType(), this.getBaseType(), null, "returnType", null, 0, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getFunction_Provider(), ecorePackage.getEString(), "provider", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -2223,6 +2263,10 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getReduction_ReturnType(), this.getBaseType(), null, "returnType", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getReduction_Provider(), ecorePackage.getEString(), "provider", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getReduction_Operator(), ecorePackage.getEBoolean(), "operator", "false", 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(argEClass, Arg.class, "Arg", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getArg_Name(), ecorePackage.getEString(), "name", null, 1, 1, Arg.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getArg_Type(), this.getBaseType(), null, "type", null, 1, 1, Arg.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(connectivityEClass, Connectivity.class, "Connectivity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getConnectivity_Name(), ecorePackage.getEString(), "name", null, 0, 1, Connectivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

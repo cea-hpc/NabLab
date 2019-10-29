@@ -103,7 +103,10 @@ public class ReductionItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(NablaPackage.Literals.REDUCTION__ARG_GROUPS);
+			childrenFeatures.add(NablaPackage.Literals.REDUCTION__DIM_VARS);
+			childrenFeatures.add(NablaPackage.Literals.REDUCTION__SEED);
+			childrenFeatures.add(NablaPackage.Literals.REDUCTION__COLLECTION_TYPE);
+			childrenFeatures.add(NablaPackage.Literals.REDUCTION__RETURN_TYPE);
 		}
 		return childrenFeatures;
 	}
@@ -162,7 +165,10 @@ public class ReductionItemProvider
 			case NablaPackage.REDUCTION__NAME:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
-			case NablaPackage.REDUCTION__ARG_GROUPS:
+			case NablaPackage.REDUCTION__DIM_VARS:
+			case NablaPackage.REDUCTION__SEED:
+			case NablaPackage.REDUCTION__COLLECTION_TYPE:
+			case NablaPackage.REDUCTION__RETURN_TYPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -182,8 +188,146 @@ public class ReductionItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.REDUCTION__ARG_GROUPS,
-				 NablaFactory.eINSTANCE.createReductionArg()));
+				(NablaPackage.Literals.REDUCTION__DIM_VARS,
+				 NablaFactory.eINSTANCE.createDimensionVar()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createExpression()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createVarRef()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createContractedIf()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createOr()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createAnd()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createEquality()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createComparison()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createPlus()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createMinus()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createMulOrDiv()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createModulo()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createParenthesis()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createUnaryMinus()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createNot()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createIntConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createRealConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createBoolConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createMinConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createMaxConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createFunctionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__SEED,
+				 NablaFactory.eINSTANCE.createReductionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__COLLECTION_TYPE,
+				 NablaFactory.eINSTANCE.createArgType()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION__RETURN_TYPE,
+				 NablaFactory.eINSTANCE.createArgType()));
+	}
+
+	/**
+	 * This returns the label text for {@link org.eclipse.emf.edit.command.CreateChildCommand}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection) {
+		Object childFeature = feature;
+		Object childObject = child;
+
+		boolean qualify =
+			childFeature == NablaPackage.Literals.REDUCTION__COLLECTION_TYPE ||
+			childFeature == NablaPackage.Literals.REDUCTION__RETURN_TYPE;
+
+		if (qualify) {
+			return getString
+				("_UI_CreateChild_text2",
+				 new Object[] { getTypeText(childObject), getFeatureText(childFeature), getTypeText(owner) });
+		}
+		return super.getCreateChildText(owner, feature, child, selection);
 	}
 
 	/**

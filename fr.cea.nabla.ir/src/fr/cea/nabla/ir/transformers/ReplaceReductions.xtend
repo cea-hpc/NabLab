@@ -53,7 +53,7 @@ class ReplaceReductions implements IrTransformationStep
 			val loopExpression = createAffectationRHS(m, reductionInstr)
 			val loop = createReductionLoop(reductionInstr.range, reductionInstr.singletons, reductionInstr.result, loopExpression)
 			val variableDefinition = IrFactory::eINSTANCE.createVarDefinition => [ variables += reductionInstr.result ]
-			replace(reductionInstr, #[variableDefinition, loop])			
+			replace(reductionInstr, #[variableDefinition, loop])
 
 			// si la réduction n'est pas référencée, on l'efface
 			if (!m.eAllContents.filter(ReductionInstruction).exists[x | x.reduction == reduc])
@@ -70,8 +70,8 @@ class ReplaceReductions implements IrTransformationStep
 	private def Expression createAffectationRHS(IrModule m, ReductionInstruction reductionInstr)
 	{
 		val reduction = reductionInstr.reduction
-		val varRef = IrFactory::eINSTANCE.createVarRef => 
-		[ 
+		val varRef = IrFactory::eINSTANCE.createVarRef =>
+		[
 			variable = reductionInstr.result
 			type = EcoreUtil::copy(variable.type)
 		]
@@ -93,7 +93,7 @@ class ReplaceReductions implements IrTransformationStep
 		else
 		{
 			// creation de la fonction
-			val f = findOrCreateFunction(m, reduction)										
+			val f = findOrCreateFunction(m, reduction)
 			// transformation de la reduction
 			return IrFactory::eINSTANCE.createFunctionCall =>
 			[
@@ -101,18 +101,18 @@ class ReplaceReductions implements IrTransformationStep
 				function = f
 				args += varRef
 				args += reductionInstr.arg
-			] 
+			]
 		}
 	}
 	
 	private def findOrCreateFunction(IrModule m, Reduction r)
 	{
 		var function = m.functions.findFirst
-		[   
-			name == r.functionName && 
-			inTypes.length == 2 && 
-			inTypes.get(0) == r.collectionType && 
-			inTypes.get(1) == r.returnType && 
+		[
+			name == r.functionName &&
+			inArgs.size == 2 &&
+			inArgs.get(0).type == r.collectionType &&
+			inArgs.get(1).type == r.returnType &&
 			returnType == r.returnType
 		]
 		
@@ -121,8 +121,16 @@ class ReplaceReductions implements IrTransformationStep
 			function = IrFactory::eINSTANCE.createFunction =>
 			[
 				name = r.functionName
-				inTypes += EcoreUtil.copy(r.collectionType)
-				inTypes += EcoreUtil.copy(r.returnType)
+				inArgs += IrFactory::eINSTANCE.createArg =>
+				[
+					name = 'a'
+					type = EcoreUtil.copy(r.collectionType)
+				]
+				inArgs += IrFactory::eINSTANCE.createArg =>
+				[
+					name = 'b'
+					type = EcoreUtil.copy(r.returnType)
+				]
 				returnType = EcoreUtil.copy(r.returnType)
 				provider = r.provider
 			]
@@ -144,10 +152,10 @@ class ReplaceReductions implements IrTransformationStep
 		val loop = IrFactory::eINSTANCE.createLoop
 		loop.range = range
 		loop.singletons.addAll(singletons)
-		loop.body = IrFactory::eINSTANCE.createAffectation => 
+		loop.body = IrFactory::eINSTANCE.createAffectation =>
 		[
-			left = IrFactory::eINSTANCE.createVarRef => 
-			[ 
+			left = IrFactory::eINSTANCE.createVarRef =>
+			[
 				variable = affectationLHS
 				type = EcoreUtil::copy(affectationRHS.type)
 			]
@@ -162,6 +170,6 @@ class ReplaceReductions implements IrTransformationStep
 		else if (eContainer instanceof Loop) false
 		else if (eContainer instanceof ReductionInstruction) false
 		else if (eContainer instanceof Job) true
-		else eContainer.external	
+		else eContainer.external
 	}
 }

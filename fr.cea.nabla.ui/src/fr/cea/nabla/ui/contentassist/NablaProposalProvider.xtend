@@ -22,17 +22,17 @@ class NablaProposalProvider extends AbstractNablaProposalProvider
 {
 	// alpha, beta, gamma, delta, epsilon, lambda, rho, omega
 	static val GreekLetters = #['\u03B1', '\u03B2', '\u03B3', '\u03B4', '\u03F5', '\u03BB', '\u03C1', '\u2126', '\u03A9']
-	
+
 	override completeSimpleVar_Name(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor)
 	{
 		proposeCompletion(acceptor, GreekLetters, context)
 	}
-	
+
 	override completeConnectivityVar_Name(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor)
 	{
 		proposeCompletion(acceptor, GreekLetters, context)
 	}
-	
+
 	private def proposeCompletion(ICompletionProposalAcceptor acceptor, Iterable<String> proposals, ContentAssistContext context)
 	{
 		for (proposal : proposals) acceptor.accept(createCompletionProposal(proposal, context))

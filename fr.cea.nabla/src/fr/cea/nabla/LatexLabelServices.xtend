@@ -22,11 +22,12 @@ import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
+import fr.cea.nabla.nabla.IndexLoop
 import fr.cea.nabla.nabla.InitTimeIterator
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
+import fr.cea.nabla.nabla.IteratorLoop
 import fr.cea.nabla.nabla.Job
-import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
@@ -60,7 +61,8 @@ class LatexLabelServices
 	static def dispatch String getLatex(VarGroupDeclaration it) { type.latex + ' ' + variables.map[x|x.name.pu].join(', ') }
 	static def dispatch String getLatex(InstructionBlock it) { '...' }
 	static def dispatch String getLatex(Affectation it) { varRef?.latex + ' = ' + expression?.latex }
-	static def dispatch String getLatex(Loop it) { '\\forall {' + range.latex + '}, \\ ' + body.latex }
+	static def dispatch String getLatex(IteratorLoop it) { '\\forall {' + range.latex + '}, \\ ' + body.latex }
+	static def dispatch String getLatex(IndexLoop it) { '\u2200' + index.name.pu + '\u2208 [' + index.from + ';' + index.to + (if (index.lte) ']' else'[') + ', ' + body.latex }
 	static def dispatch String getLatex(If it) { 'if (' + condition.latex + ')'}
 	
 	// ITERATEURS

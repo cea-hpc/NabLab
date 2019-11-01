@@ -63,6 +63,13 @@
   <eClassifiers xsi:type="ecore:EClass" name="Var">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LoopIndex" eSuperTypes="#//Var">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="from" eType="#//Dimension"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="to" eType="#//Dimension"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lte" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SimpleVar" eSuperTypes="#//Var"/>
   <eClassifiers xsi:type="ecore:EClass" name="ConnectivityVar" eSuperTypes="#//Var">
     <eStructuralFeatures xsi:type="ecore:EReference" name="supports" unique="false"
@@ -120,8 +127,8 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="spaceIterators" upperBound="-1"
         eType="#//SpaceIteratorRef" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="indices" unique="false"
-        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="indices" upperBound="-1"
+        eType="#//Expression" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InitializationExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="StrictInitializationExpression" eSuperTypes="#//InitializationExpression"/>
@@ -152,11 +159,17 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Loop" eSuperTypes="#//Instruction">
+  <eClassifiers xsi:type="ecore:EClass" name="IteratorLoop" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="range" eType="#//RangeSpaceIterator"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="singletons" upperBound="-1"
         eType="#//SingletonSpaceIterator" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//Instruction"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IndexLoop" eSuperTypes="#//Instruction">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="index" eType="#//LoopIndex"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//Instruction"
         containment="true"/>
   </eClassifiers>

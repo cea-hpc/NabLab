@@ -16,9 +16,10 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.VarRef
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.If
+import fr.cea.nabla.nabla.IndexLoop
 import fr.cea.nabla.nabla.InitializationExpression
 import fr.cea.nabla.nabla.InstructionBlock
-import fr.cea.nabla.nabla.Loop
+import fr.cea.nabla.nabla.IteratorLoop
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -82,7 +83,7 @@ class IrInstructionFactory
 		#[irInstr]
 	}
 
-	private def dispatch List<Instruction> toIrInstructions(Loop v)
+	private def dispatch List<Instruction> toIrInstructions(IteratorLoop v)
 	{
 		val irInstr = IrFactory::eINSTANCE.createLoop =>
 		[
@@ -92,6 +93,11 @@ class IrInstructionFactory
 			body = v.body.toIrInstruction
 		]
 		#[irInstr]
+	}
+
+	private def dispatch List<Instruction> toIrInstructions(IndexLoop v)
+	{
+		throw new RuntimeException('Not yet implemeted')
 	}
 
 	private def dispatch List<Instruction> toIrInstructions(Affectation v)

@@ -1616,8 +1616,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getVarRef_Indices() {
-		return (EAttribute)varRefEClass.getEStructuralFeatures().get(2);
+	public EReference getVarRef_Indices() {
+		return (EReference)varRefEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -2089,7 +2089,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		varRefEClass = createEClass(VAR_REF);
 		createEReference(varRefEClass, VAR_REF__VARIABLE);
 		createEReference(varRefEClass, VAR_REF__ITERATORS);
-		createEAttribute(varRefEClass, VAR_REF__INDICES);
+		createEReference(varRefEClass, VAR_REF__INDICES);
 
 		iteratorEClass = createEClass(ITERATOR);
 		createEAttribute(iteratorEClass, ITERATOR__NAME);
@@ -2379,7 +2379,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(varRefEClass, VarRef.class, "VarRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getVarRef_Variable(), this.getVariable(), null, "variable", null, 1, 1, VarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getVarRef_Iterators(), this.getVarRefIteratorRef(), this.getVarRefIteratorRef_ReferencedBy(), "iterators", null, 0, -1, VarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getVarRef_Indices(), ecorePackage.getEInt(), "indices", null, 0, -1, VarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getVarRef_Indices(), this.getExpression(), null, "indices", null, 0, -1, VarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(iteratorEClass, Iterator.class, "Iterator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getIterator_Name(), ecorePackage.getEString(), "name", null, 1, 1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

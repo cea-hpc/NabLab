@@ -9,15 +9,27 @@
  *******************************************************************************/
 package fr.cea.nabla
 
+import fr.cea.nabla.nabla.Array1D
+import fr.cea.nabla.nabla.Array2D
+import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.ConnectivityVar
+import fr.cea.nabla.nabla.LoopIndex
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.Scalar
+import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 
 class VarExtensions 
 {
-	def getBaseType(Var it) 
-	{ 
+	def getBaseType(ConnectivityVar it) 
+	{
+		(eContainer as VarGroupDeclaration).type
+	}
+
+	def getBaseType(SimpleVar it) 
+	{
 		val decl = eContainer
 		switch decl
 		{
@@ -40,14 +52,29 @@ class VarExtensions
 	{ 
 		eContainer.eContainer instanceof NablaModule
 	}
-	
+
 	def getDefaultValue(Var it)
 	{
 		val decl = eContainer
 		switch decl
 		{
 			SimpleVarDefinition : decl.defaultValue
-			VarGroupDeclaration : null
+			default : null
+		}
+	}
+
+	def dispatch int getDimension(SimpleVar it) { baseType.typeDimension }
+	def dispatch int getDimension(ConnectivityVar it) { baseType.typeDimension }
+	def dispatch int getDimension(LoopIndex it) { 1 }
+
+	private def int getTypeDimension(BaseType t)
+	{
+		switch t
+		{
+			Scalar: 0
+			Array1D: 1
+			Array2D: 2
+			default: -1
 		}
 	}
 }

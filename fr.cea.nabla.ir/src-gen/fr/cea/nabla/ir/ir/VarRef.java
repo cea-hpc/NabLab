@@ -68,19 +68,19 @@ public interface VarRef extends Expression {
 	EList<VarRefIteratorRef> getIterators();
 
 	/**
-	 * Returns the value of the '<em><b>Indices</b></em>' attribute list.
-	 * The list contents are of type {@link java.lang.Integer}.
+	 * Returns the value of the '<em><b>Indices</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Expression}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Indices</em>' attribute list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Indices</em>' attribute list.
+	 * @return the value of the '<em>Indices</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getVarRef_Indices()
-	 * @model unique="false"
+	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	EList<Integer> getIndices();
+	EList<Expression> getIndices();
 
 } // VarRef

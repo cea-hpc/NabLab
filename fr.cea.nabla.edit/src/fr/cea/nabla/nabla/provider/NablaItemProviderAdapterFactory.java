@@ -372,6 +372,29 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.LoopIndex} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected LoopIndexItemProvider loopIndexItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.LoopIndex}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createLoopIndexAdapter() {
+		if (loopIndexItemProvider == null) {
+			loopIndexItemProvider = new LoopIndexItemProvider(this);
+		}
+
+		return loopIndexItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.SimpleVar} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -832,26 +855,49 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Loop} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.IteratorLoop} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected LoopItemProvider loopItemProvider;
+	protected IteratorLoopItemProvider iteratorLoopItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Loop}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.IteratorLoop}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createLoopAdapter() {
-		if (loopItemProvider == null) {
-			loopItemProvider = new LoopItemProvider(this);
+	public Adapter createIteratorLoopAdapter() {
+		if (iteratorLoopItemProvider == null) {
+			iteratorLoopItemProvider = new IteratorLoopItemProvider(this);
 		}
 
-		return loopItemProvider;
+		return iteratorLoopItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.IndexLoop} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected IndexLoopItemProvider indexLoopItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.IndexLoop}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createIndexLoopAdapter() {
+		if (indexLoopItemProvider == null) {
+			indexLoopItemProvider = new IndexLoopItemProvider(this);
+		}
+
+		return indexLoopItemProvider;
 	}
 
 	/**
@@ -1679,6 +1725,7 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (simpleVarDefinitionItemProvider != null) simpleVarDefinitionItemProvider.dispose();
 		if (varGroupDeclarationItemProvider != null) varGroupDeclarationItemProvider.dispose();
 		if (varItemProvider != null) varItemProvider.dispose();
+		if (loopIndexItemProvider != null) loopIndexItemProvider.dispose();
 		if (simpleVarItemProvider != null) simpleVarItemProvider.dispose();
 		if (connectivityVarItemProvider != null) connectivityVarItemProvider.dispose();
 		if (connectivityItemProvider != null) connectivityItemProvider.dispose();
@@ -1699,7 +1746,8 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (baseTypeItemProvider != null) baseTypeItemProvider.dispose();
 		if (instructionBlockItemProvider != null) instructionBlockItemProvider.dispose();
 		if (affectationItemProvider != null) affectationItemProvider.dispose();
-		if (loopItemProvider != null) loopItemProvider.dispose();
+		if (iteratorLoopItemProvider != null) iteratorLoopItemProvider.dispose();
+		if (indexLoopItemProvider != null) indexLoopItemProvider.dispose();
 		if (ifItemProvider != null) ifItemProvider.dispose();
 		if (dimensionOperationItemProvider != null) dimensionOperationItemProvider.dispose();
 		if (dimensionIntItemProvider != null) dimensionIntItemProvider.dispose();

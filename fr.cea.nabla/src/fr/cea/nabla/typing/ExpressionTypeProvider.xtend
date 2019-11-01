@@ -23,6 +23,7 @@ import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.IntMatrixConstant
 import fr.cea.nabla.nabla.IntVectorConstant
+import fr.cea.nabla.nabla.LoopIndex
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
@@ -42,7 +43,7 @@ import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarRef
 import java.util.List
 
-class ExpressionTypeProvider 
+class ExpressionTypeProvider
 {
 	@Inject extension DeclarationProvider
 	@Inject extension BinaryOperationsTypeProvider
@@ -52,7 +53,7 @@ class ExpressionTypeProvider
 	@Inject extension VarExtensions
 
 	def dispatch NablaType getTypeFor(ContractedIf it) { then.typeFor }
-	
+
 	def dispatch NablaType getTypeFor(Or it) { new NSTBoolScalar }	
 	def dispatch NablaType getTypeFor(And it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(Equality it) { new NSTBoolScalar }
@@ -72,69 +73,77 @@ class ExpressionTypeProvider
 
 	def dispatch NablaType getTypeFor(MinConstant it) { type.typeFor }
 	def dispatch NablaType getTypeFor(MaxConstant it) { type.typeFor }
-	
+
 	def dispatch NablaType getTypeFor(FunctionCall it)
 	{
 		val decl = declaration
 		if (decl === null) null
 		else decl.returnType
 	}
-	
+
 	def dispatch NablaType getTypeFor(ReductionCall it)
 	{
 		val decl = declaration
 		if (decl === null) null
 		else decl.returnType
 	}
-		
+
 	def dispatch NablaType getTypeFor(VarRef it)
 	{
-		getTypeForVar(variable, spaceIterators, indices)
+		getTypeForVar(variable, spaceIterators, indices.size)
 	}
 
-	private def dispatch NablaType getTypeForVar(SimpleVar v, List<SpaceIteratorRef> iterators, int[] indices)
+	private def dispatch NablaType getTypeForVar(SimpleVar v, List<SpaceIteratorRef> iterators, int nbIndices)
 	{
 		if (iterators.empty)
 		{
 			val t = v.baseType.typeFor
-			getTypeForVar(t, indices)
+			getTypeForVar(t, nbIndices)
 		}
 		else null
 	}
-	
-	private def dispatch NablaType getTypeForVar(ConnectivityVar v, List<SpaceIteratorRef> iterators, int[] indices)
+
+	private def dispatch NablaType getTypeForVar(ConnectivityVar v, List<SpaceIteratorRef> iterators, int nbIndices)
 	{
 		if (iterators.empty)
-			if (indices.size == 0) v.typeFor
+			if (nbIndices== 0) v.typeFor
 			else null
 		else
 		{
 			if (iterators.size == v.supports.size)
-				getTypeForVar(v.baseType.typeFor, indices)
+				getTypeForVar(v.baseType.typeFor, nbIndices)
 			else
 				null	
 		}
 	}
 
-	private def NablaType getTypeForVar(NablaSimpleType t, int[] indices)
+	private def dispatch NablaType getTypeForVar(LoopIndex v, List<SpaceIteratorRef> iterators, int nbIndices)
+	{
+		if (iterators.empty && nbIndices==0)
+			v.typeFor
+		else
+			null
+	}
+
+	private def NablaType getTypeForVar(NablaSimpleType t, int nbIndices)
 	{
 		switch t
 		{
-			case indices.size == 0 : t
-			NSTArray1D case indices.size == 1 : t.primitive.typeFor 
-			NSTArray2D case indices.size == 2 : t.primitive.typeFor
+			case nbIndices == 0 : t
+			NSTArray1D case nbIndices == 1 : t.primitive.typeFor 
+			NSTArray2D case nbIndices == 2 : t.primitive.typeFor
 			default : null 
 		}
 	}
-		
+
 	def dispatch NablaType getTypeFor(IntVectorConstant it) { new NSTIntArray1D(values.size) }
 	def dispatch NablaType getTypeFor(RealVectorConstant it) { new NSTRealArray1D(values.size) }
 	def dispatch NablaType getTypeFor(IntMatrixConstant it) { new NSTIntArray2D(values.size, values.head.values.size) }
 	def dispatch NablaType getTypeFor(RealMatrixConstant it) { new NSTRealArray2D(values.size, values.head.values.size) }
 	def dispatch NablaType getTypeFor(BaseTypeConstant it) { type.typeFor }
-	
-	def NablaSimpleType getTypeFor(Expression a, Expression b, String op) 
-	{ 
+
+	def NablaSimpleType getTypeFor(Expression a, Expression b, String op)
+	{
 		val atype = a.typeFor
 		val btype = b.typeFor
 		if (atype !== null && btype !== null && atype instanceof NablaSimpleType && btype instanceof NablaSimpleType)

@@ -273,6 +273,11 @@ public class NablaModuleItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createLoopIndex()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
 				 NablaFactory.eINSTANCE.createSimpleVar()));
 
 		newChildDescriptors.add
@@ -373,7 +378,12 @@ public class NablaModuleItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createLoop()));
+				 NablaFactory.eINSTANCE.createIteratorLoop()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
+				 NablaFactory.eINSTANCE.createIndexLoop()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -558,7 +568,12 @@ public class NablaModuleItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__VARIABLES,
-				 NablaFactory.eINSTANCE.createLoop()));
+				 NablaFactory.eINSTANCE.createIteratorLoop()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.NABLA_MODULE__VARIABLES,
+				 NablaFactory.eINSTANCE.createIndexLoop()));
 
 		newChildDescriptors.add
 			(createChildParameter

@@ -32,7 +32,6 @@ import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.nabla.Scalar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterator
@@ -180,14 +179,8 @@ class BasicValidator extends AbstractNablaValidator
 
 	@Check
 	def checkIndicesNumber(VarRef it)
-	{  
-		val btype = variable.baseType
-		val vTypeSize = switch btype
-		{
-			Scalar: 0
-			Array1D: 1
-			Array2D: 2
-		}
+	{
+		val vTypeSize = variable.dimension
 		if (indices.size > 0 && indices.size != vTypeSize)
 			error(getIndicesNumberMsg(vTypeSize, indices.size), NablaPackage.Literals::VAR_REF__INDICES, INDICES_NUMBER)
 	}
@@ -215,9 +208,11 @@ class BasicValidator extends AbstractNablaValidator
 			}
 		}
 		else
+		{
 			if (!spaceIterators.empty)
 				error(getIteratorNumberMsg(0, spaceIterators.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, ITERATOR_NUMBER)
-	}	
+		}
+	}
 
 	// ===== Functions (Reductions, Dimension) =====
 

@@ -2,6 +2,7 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
+import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.VarRef;
 import fr.cea.nabla.ir.ir.VarRefIteratorRef;
@@ -18,7 +19,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.util.EDataTypeEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -59,14 +60,14 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 	protected EList<VarRefIteratorRef> iterators;
 
 	/**
-	 * The cached value of the '{@link #getIndices() <em>Indices</em>}' attribute list.
+	 * The cached value of the '{@link #getIndices() <em>Indices</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getIndices()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Integer> indices;
+	protected EList<Expression> indices;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -142,9 +143,9 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Integer> getIndices() {
+	public EList<Expression> getIndices() {
 		if (indices == null) {
-			indices = new EDataTypeEList<Integer>(Integer.class, this, IrPackage.VAR_REF__INDICES);
+			indices = new EObjectContainmentEList.Resolving<Expression>(Expression.class, this, IrPackage.VAR_REF__INDICES);
 		}
 		return indices;
 	}
@@ -174,6 +175,8 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 		switch (featureID) {
 			case IrPackage.VAR_REF__ITERATORS:
 				return ((InternalEList<?>)getIterators()).basicRemove(otherEnd, msgs);
+			case IrPackage.VAR_REF__INDICES:
+				return ((InternalEList<?>)getIndices()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -215,7 +218,7 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 				return;
 			case IrPackage.VAR_REF__INDICES:
 				getIndices().clear();
-				getIndices().addAll((Collection<? extends Integer>)newValue);
+				getIndices().addAll((Collection<? extends Expression>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -258,22 +261,6 @@ public class VarRefImpl extends ExpressionImpl implements VarRef {
 				return indices != null && !indices.isEmpty();
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (indices: ");
-		result.append(indices);
-		result.append(')');
-		return result.toString();
 	}
 
 } //VarRefImpl

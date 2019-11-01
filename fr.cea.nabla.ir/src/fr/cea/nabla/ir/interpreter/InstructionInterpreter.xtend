@@ -18,21 +18,21 @@ import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 
-class InstructionInterpreter 
+class InstructionInterpreter
 {
 	static def dispatch void interprete(VarDefinition it, Context context)
 	{ 
 		for (v : variables)
 			context.setVariableValue(v, createValue(v, context))
 	}
-	
+
 	static def dispatch void interprete(InstructionBlock it, Context context)
 	{
 		val innerContext = new Context(context)
 		for (i : instructions)
 			interprete(i, innerContext)
 	}
-	
+
 	static def dispatch void interprete(Affectation it, Context context)
 	{
 		val rightValue = interprete(right, context)
@@ -40,7 +40,9 @@ class InstructionInterpreter
 			context.setVariableValue(left.variable, rightValue)
 		else
 		{
-			val allIndices = left.iterators.map[x | context.getIndexValue(x)] + left.indices
+			val iteratorValues = left.iterators.map[x | context.getIndexValue(x)]
+			val indicesValues = left.indices.map[ x | (interprete(x, context) as NV0Int).data]
+			val allIndices = (iteratorValues + indicesValues).toList
 			setValue(context.getVariableValue(left.variable), allIndices.toList, rightValue)
 		}
 	}
@@ -61,7 +63,7 @@ class InstructionInterpreter
 			body.interprete(context)
 		}	
 	}
-	
+
 	static def dispatch void interprete(If it, Context context)
 	{
 		val cond = interprete(condition, context) as NV0Bool
@@ -88,26 +90,26 @@ class InstructionInterpreter
 	{
 		val indexValue = getIndexValue(it, context)
 		
-		if (target.container.connectivity.indexEqualId || target.singleton) 
+		if (target.container.connectivity.indexEqualId || target.singleton)
 			indexValue
-		else  
+		else
 			context.meshWrapper.getContainer(target).get(indexValue)
 	}
-	
+
 	private static def getIdToIndex(VarRefIteratorRef it, Context context)
 	{
 		val indexValue = context.getIdValue(it)
 		if (varContainer.indexEqualId) indexValue
 		else context.getIndexOf(it.target, indexValue)
 	}
-	
+
 	private static def getIndexValue(IteratorRef it, Context context)
 	{
 		val iteratorRefIndex = context.getIndexValue(target)
 		if (shift === 0)
 			return iteratorRefIndex
 		else
-		{	
+		{
 			val nbElems = context.connectivitySizes.get(target.container.connectivity)
 			return (iteratorRefIndex + shift + nbElems)%nbElems
 		}

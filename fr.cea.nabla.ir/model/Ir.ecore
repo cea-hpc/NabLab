@@ -241,8 +241,8 @@
         eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterators" upperBound="-1"
         eType="#//VarRefIteratorRef" containment="true" resolveProxies="false" eOpposite="#//VarRefIteratorRef/referencedBy"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="indices" unique="false"
-        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="indices" upperBound="-1"
+        eType="#//Expression" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Iterator" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"

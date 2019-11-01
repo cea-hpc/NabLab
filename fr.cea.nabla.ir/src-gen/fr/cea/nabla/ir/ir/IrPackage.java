@@ -2674,7 +2674,7 @@ public interface IrPackage extends EPackage {
 	int VAR_REF__ITERATORS = EXPRESSION_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Indices</b></em>' attribute list.
+	 * The feature id for the '<em><b>Indices</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -4691,15 +4691,15 @@ public interface IrPackage extends EPackage {
 	EReference getVarRef_Iterators();
 
 	/**
-	 * Returns the meta object for the attribute list '{@link fr.cea.nabla.ir.ir.VarRef#getIndices <em>Indices</em>}'.
+	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.VarRef#getIndices <em>Indices</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Indices</em>'.
+	 * @return the meta object for the containment reference list '<em>Indices</em>'.
 	 * @see fr.cea.nabla.ir.ir.VarRef#getIndices()
 	 * @see #getVarRef()
 	 * @generated
 	 */
-	EAttribute getVarRef_Indices();
+	EReference getVarRef_Indices();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Iterator <em>Iterator</em>}'.
@@ -6111,12 +6111,12 @@ public interface IrPackage extends EPackage {
 		EReference VAR_REF__ITERATORS = eINSTANCE.getVarRef_Iterators();
 
 		/**
-		 * The meta object literal for the '<em><b>Indices</b></em>' attribute list feature.
+		 * The meta object literal for the '<em><b>Indices</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute VAR_REF__INDICES = eINSTANCE.getVarRef_Indices();
+		EReference VAR_REF__INDICES = eINSTANCE.getVarRef_Indices();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.IteratorImpl <em>Iterator</em>}' class.

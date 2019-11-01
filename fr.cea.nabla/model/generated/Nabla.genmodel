@@ -59,6 +59,11 @@
     <genClasses ecoreClass="Nabla.ecore#//Var">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Var/name"/>
     </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//LoopIndex">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//LoopIndex/from"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//LoopIndex/to"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//LoopIndex/lte"/>
+    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//SimpleVar"/>
     <genClasses ecoreClass="Nabla.ecore#//ConnectivityVar">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//ConnectivityVar/supports"/>
@@ -102,7 +107,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarRef/variable"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarRef/timeIterator"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarRef/spaceIterators"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//VarRef/indices"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarRef/indices"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//InitializationExpression"/>
     <genClasses ecoreClass="Nabla.ecore#//StrictInitializationExpression"/>
@@ -123,10 +128,14 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Affectation/varRef"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Affectation/expression"/>
     </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//Loop">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Loop/range"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Loop/singletons"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Loop/body"/>
+    <genClasses ecoreClass="Nabla.ecore#//IteratorLoop">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//IteratorLoop/range"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//IteratorLoop/singletons"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//IteratorLoop/body"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//IndexLoop">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//IndexLoop/index"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//IndexLoop/body"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//If">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//If/condition"/>

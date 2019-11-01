@@ -144,8 +144,10 @@ class ExpressionInterpreter
 	static def dispatch NablaValue interprete(VarRef it, Context context)
 	{
 		val value = context.getVariableValue(variable)
-		val allIndices = iterators.map[x | context.getIndexValue(x)] + indices
-		getValue(value, allIndices.toList)
+		val iteratorValues = iterators.map[x | context.getIndexValue(x)]
+		val indicesValues = indices.map[ x | (interprete(x, context) as NV0Int).data]
+		val allIndices = (iteratorValues + indicesValues).toList
+		getValue(value, allIndices)
 	}
 	
 	private static def dispatch NablaValue buildArrayValue(int size, NV0Bool value)

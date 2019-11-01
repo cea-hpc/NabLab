@@ -271,7 +271,12 @@ public class IfItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.IF__THEN,
-				 NablaFactory.eINSTANCE.createLoop()));
+				 NablaFactory.eINSTANCE.createIteratorLoop()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__THEN,
+				 NablaFactory.eINSTANCE.createIndexLoop()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -306,7 +311,12 @@ public class IfItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.IF__ELSE,
-				 NablaFactory.eINSTANCE.createLoop()));
+				 NablaFactory.eINSTANCE.createIteratorLoop()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__ELSE,
+				 NablaFactory.eINSTANCE.createIndexLoop()));
 
 		newChildDescriptors.add
 			(createChildParameter

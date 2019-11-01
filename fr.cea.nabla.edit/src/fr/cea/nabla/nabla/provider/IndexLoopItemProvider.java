@@ -4,7 +4,7 @@
 package fr.cea.nabla.nabla.provider;
 
 
-import fr.cea.nabla.nabla.Loop;
+import fr.cea.nabla.nabla.IndexLoop;
 import fr.cea.nabla.nabla.NablaFactory;
 import fr.cea.nabla.nabla.NablaPackage;
 
@@ -20,19 +20,19 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link fr.cea.nabla.nabla.Loop} object.
+ * This is the item provider adapter for a {@link fr.cea.nabla.nabla.IndexLoop} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class LoopItemProvider extends InstructionItemProvider {
+public class IndexLoopItemProvider extends InstructionItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public LoopItemProvider(AdapterFactory adapterFactory) {
+	public IndexLoopItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -63,9 +63,8 @@ public class LoopItemProvider extends InstructionItemProvider {
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(NablaPackage.Literals.LOOP__RANGE);
-			childrenFeatures.add(NablaPackage.Literals.LOOP__SINGLETONS);
-			childrenFeatures.add(NablaPackage.Literals.LOOP__BODY);
+			childrenFeatures.add(NablaPackage.Literals.INDEX_LOOP__INDEX);
+			childrenFeatures.add(NablaPackage.Literals.INDEX_LOOP__BODY);
 		}
 		return childrenFeatures;
 	}
@@ -84,14 +83,14 @@ public class LoopItemProvider extends InstructionItemProvider {
 	}
 
 	/**
-	 * This returns Loop.gif.
+	 * This returns IndexLoop.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Loop"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/IndexLoop"));
 	}
 
 	/**
@@ -102,7 +101,7 @@ public class LoopItemProvider extends InstructionItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_Loop_type");
+		return getString("_UI_IndexLoop_type");
 	}
 
 
@@ -117,10 +116,9 @@ public class LoopItemProvider extends InstructionItemProvider {
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(Loop.class)) {
-			case NablaPackage.LOOP__RANGE:
-			case NablaPackage.LOOP__SINGLETONS:
-			case NablaPackage.LOOP__BODY:
+		switch (notification.getFeatureID(IndexLoop.class)) {
+			case NablaPackage.INDEX_LOOP__INDEX:
+			case NablaPackage.INDEX_LOOP__BODY:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -140,47 +138,47 @@ public class LoopItemProvider extends InstructionItemProvider {
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.LOOP__RANGE,
-				 NablaFactory.eINSTANCE.createRangeSpaceIterator()));
+				(NablaPackage.Literals.INDEX_LOOP__INDEX,
+				 NablaFactory.eINSTANCE.createLoopIndex()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.LOOP__SINGLETONS,
-				 NablaFactory.eINSTANCE.createSingletonSpaceIterator()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.LOOP__BODY,
+				(NablaPackage.Literals.INDEX_LOOP__BODY,
 				 NablaFactory.eINSTANCE.createInstruction()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.LOOP__BODY,
+				(NablaPackage.Literals.INDEX_LOOP__BODY,
 				 NablaFactory.eINSTANCE.createSimpleVarDefinition()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.LOOP__BODY,
+				(NablaPackage.Literals.INDEX_LOOP__BODY,
 				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.LOOP__BODY,
+				(NablaPackage.Literals.INDEX_LOOP__BODY,
 				 NablaFactory.eINSTANCE.createInstructionBlock()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.LOOP__BODY,
+				(NablaPackage.Literals.INDEX_LOOP__BODY,
 				 NablaFactory.eINSTANCE.createAffectation()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.LOOP__BODY,
-				 NablaFactory.eINSTANCE.createLoop()));
+				(NablaPackage.Literals.INDEX_LOOP__BODY,
+				 NablaFactory.eINSTANCE.createIteratorLoop()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.LOOP__BODY,
+				(NablaPackage.Literals.INDEX_LOOP__BODY,
+				 NablaFactory.eINSTANCE.createIndexLoop()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.INDEX_LOOP__BODY,
 				 NablaFactory.eINSTANCE.createIf()));
 	}
 

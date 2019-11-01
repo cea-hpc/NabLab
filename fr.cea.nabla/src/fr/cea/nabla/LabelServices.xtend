@@ -21,11 +21,12 @@ import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
+import fr.cea.nabla.nabla.IndexLoop
 import fr.cea.nabla.nabla.InitTimeIterator
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
+import fr.cea.nabla.nabla.IteratorLoop
 import fr.cea.nabla.nabla.Job
-import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
@@ -61,7 +62,8 @@ class LabelServices
 	static def dispatch String getLabel(VarGroupDeclaration it) { type.label + ' ' + variables.map[x|x.name].join(', ') }
 	static def dispatch String getLabel(InstructionBlock it) { '...' }
 	static def dispatch String getLabel(Affectation it) { varRef?.label + ' = ' + expression?.label }
-	static def dispatch String getLabel(Loop it) { '\u2200' + range.label + ', ' + body.label }
+	static def dispatch String getLabel(IteratorLoop it) { '\u2200' + range.label + ', ' + body.label }
+	static def dispatch String getLabel(IndexLoop it) { '\u2200' + index.name + '\u2208 [' + index.from + ';' + index.to + (if (index.lte) ']' else'[') + ', ' + body.label }
 	static def dispatch String getLabel(If it) { 'if ' + condition.label }
 
 	// ITERATEURS
@@ -113,5 +115,5 @@ class LabelServices
 	static def dispatch getLabel(Array2D it) { primitive.literal + nbRows.utfExponent + '\u02E3' + nbCols.utfExponent }
 
 	private static def dispatch getTimeIteratorLabel(InitTimeIterator it) '''n=0''' 
-	private static def dispatch getTimeIteratorLabel(NextTimeIterator it) '''n+1«IF hasDiv»/«div»«ENDIF»''' 
+	private static def dispatch getTimeIteratorLabel(NextTimeIterator it) '''n+1«IF hasDiv»/«div»«ENDIF»'''
 }

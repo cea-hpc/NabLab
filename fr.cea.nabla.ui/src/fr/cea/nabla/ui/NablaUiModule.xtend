@@ -21,6 +21,7 @@ import org.eclipse.xtext.service.DispatchingProvider
 import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.hover.IEObjectHoverProvider
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration
+import org.eclipse.xtext.ui.editor.autoedit.AbstractEditStrategyProvider
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
@@ -42,19 +43,24 @@ class NablaUiModule extends AbstractNablaUiModule
 	{
 		typeof(NablaDslEditor)
 	}
-	
+
 	def Class<? extends IEObjectHoverProvider> bindIEObjectHoverProvider()
 	{
 		typeof(NablaEObjectHoverProvider)
 	}
-	
-// Avant, des commentaires sp�ciaux permettaient de mettre une documentation sur l'objet...
-// Faudrait penser � refaire quelques chose pour g�n�rer une documentation
+
+// Avant, des commentaires speciaux permettaient de mettre une documentation sur l'objet...
+// Faudrait penser a refaire quelques chose pour generer une documentation
 //	def Class<? extends IEObjectDocumentationProvider> bindIEObjectDocumentationProvider()
 //	{
 //		typeof(NablaEObjectDocumentationProvider)
 //	}
-	
+
+	override Class<? extends AbstractEditStrategyProvider> bindAbstractEditStrategyProvider()
+	{
+		typeof(NablaAutoEditStrategyProvider)
+	}
+
 	override configureUiEncodingProvider(Binder binder)
 	{
 		binder.bind(typeof(IEncodingProvider))

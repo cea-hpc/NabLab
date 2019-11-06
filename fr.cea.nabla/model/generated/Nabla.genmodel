@@ -31,6 +31,9 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Job/instruction"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Instruction"/>
+    <genClasses ecoreClass="Nabla.ecore#//InstructionBlock">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//InstructionBlock/instructions"/>
+    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//SpaceIterator">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SpaceIterator/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SpaceIterator/container"/>
@@ -59,6 +62,7 @@
     <genClasses ecoreClass="Nabla.ecore#//Var">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Var/name"/>
     </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//DeclaredVar"/>
     <genClasses ecoreClass="Nabla.ecore#//LoopIndex">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//LoopIndex/from"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//LoopIndex/to"/>
@@ -82,6 +86,8 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Function/dimVars"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Function/inArgs"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Function/returnType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Function/body"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Function/external"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Reduction">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Reduction/name"/>
@@ -92,7 +98,6 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Arg">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Arg/type"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Arg/name"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//ArgType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//ArgType/primitive"/>
@@ -121,9 +126,6 @@
     <genClasses ecoreClass="Nabla.ecore#//BaseType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//BaseType/primitive"/>
     </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//InstructionBlock">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//InstructionBlock/instructions"/>
-    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Affectation">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Affectation/varRef"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Affectation/expression"/>
@@ -141,6 +143,9 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//If/condition"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//If/then"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//If/else"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//Return">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Return/expression"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//DimensionOperation">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//DimensionOperation/left"/>

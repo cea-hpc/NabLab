@@ -34,11 +34,14 @@ Job: name=ID ':' instruction=Instruction;
 Instruction: 
 	SimpleVarDefinition |
 	VarGroupDeclaration |
-	{InstructionBlock} '{' instructions+=Instruction+ '}' |
+	InstructionBlock |
 	{Affectation} varRef=VarRef '=' expression=Expression ';' |
 	{IteratorLoop} '\u2200' range=RangeSpaceIterator (',' singletons+=SingletonSpaceIterator)* ',' body=Instruction |
 	{IndexLoop} '\u2200' index=LoopIndex ',' body=Instruction |
-	{If} 'if' '(' condition=Expression ')' then=Instruction (=>'else' else=Instruction)?;
+	{If} 'if' '(' condition=Expression ')' then=Instruction (=>'else' else=Instruction)? |
+	{Return} 'return' expression=Expression ';';
+
+InstructionBlock: '{' instructions+=Instruction+ '}';
 
 /* ITERATEURS ********************************************/
 SpaceIterator: RangeSpaceIterator | SingletonSpaceIterator;
@@ -49,8 +52,9 @@ SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?; // in
 
 /* VARIABLES *********************************************/
 SimpleVarDefinition: (const?='const')? type=BaseType variable=SimpleVar '=' defaultValue=InitializationExpression ';';
-VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
-Var: LoopIndex | SimpleVar | ConnectivityVar;
+VarGroupDeclaration: type=BaseType variables+=DeclaredVar (',' variables+=DeclaredVar)* ';';
+Var: Arg | LoopIndex | DeclaredVar;
+DeclaredVar: SimpleVar | ConnectivityVar;
 LoopIndex: name=ID '\u2208' '[' from=Dimension ';' to=Dimension (lte?=']'|'[');
 SimpleVar: name=ID;
 ConnectivityVar: name=ID '{' supports+=[Connectivity] (',' supports+=[Connectivity])* '}';
@@ -60,7 +64,8 @@ Connectivity: 'set' name=ID ':' (inTypes+=[ItemType] ('\u00D7' inTypes+=[ItemTyp
 ItemArgType: multiple?='{' type=[ItemType] '}' | type=[ItemType];
 
 /* FONCTIONS / REDUCTIONS ********************************/
-Function: 'def' name=ID ':' (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? (inArgs+=Arg ('\u00D7' inArgs+=Arg)*)? '\u2192' returnType=ArgType ';';
+Function: 'def' name=ID ':' (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? (inArgs+=Arg ('\u00D7' inArgs+=Arg)*)? '\u2192' returnType=ArgType 
+	(body=InstructionBlock | external?=';');
 Reduction: 'def' name=ID ':' (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? '(' seed=Expression ',' collectionType=ArgType ')' '\u2192' returnType=ArgType ';';
 
 Arg: type=ArgType name=ID;

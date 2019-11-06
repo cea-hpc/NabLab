@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla
 
+import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.Array1D
 import fr.cea.nabla.nabla.Array2D
 import fr.cea.nabla.nabla.BaseType
@@ -65,7 +66,8 @@ class VarExtensions
 
 	def dispatch int getDimension(SimpleVar it) { baseType.typeDimension }
 	def dispatch int getDimension(ConnectivityVar it) { baseType.typeDimension }
-	def dispatch int getDimension(LoopIndex it) { 1 }
+	def dispatch int getDimension(LoopIndex it) { 0 }
+	def dispatch int getDimension(Arg it) { type.indices.size }
 
 	private def int getTypeDimension(BaseType t)
 	{

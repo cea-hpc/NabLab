@@ -47,6 +47,7 @@ import org.eclipse.xtext.util.SimpleAttributeResolver
 import org.eclipse.xtext.validation.Check
 
 import static extension fr.cea.nabla.Utils.*
+import fr.cea.nabla.nabla.Return
 
 class BasicValidator extends AbstractNablaValidator
 {
@@ -80,7 +81,7 @@ class BasicValidator extends AbstractNablaValidator
 		val candidates = eContainer.eContents.filter(Arg).filter[x | x !== it]
 		val duplicate = candidates.findFirst[x | x.name == name]
 		if (duplicate !== null)
-			error(getDuplicateNameMsg(eClass, name), NablaPackage.Literals.ARG__NAME);
+			error(getDuplicateNameMsg(eClass, name), NablaPackage.Literals.VAR__NAME);
 	}
 
 	private def <T extends EObject> checkDuplicates(T t, EStructuralFeature f, boolean all)
@@ -100,6 +101,44 @@ class BasicValidator extends AbstractNablaValidator
 	}
 
 
+	// ===== Return Instruction ====
+
+	public static val FORBIDDEN_RETURN = "Return::Forbidden"
+	public static val MISSING_RETURN = "Return::Missing"
+	public static val UNREACHABLE_CODE = "Return::UnreachableCode"
+
+	static def getForbiddenReturnMsg() { "Return instruction not permitted in jobs" }
+	static def getMissingReturnMsg() { "Function must end with a return instruction" }
+	static def getUnreachableReturnMsg() { "Unreachable code" }
+
+	@Check
+	def checkForbiddenReturn(Return it)
+	{
+		val function = EcoreUtil2.getContainerOfType(it, Function)
+		if (function === null)
+			error(getForbiddenReturnMsg(), NablaPackage.Literals.RETURN__EXPRESSION, FORBIDDEN_RETURN)
+	}
+
+	@Check
+	def checkMissingReturn(Function it)
+	{
+		val r = body.instructions.filter(Return)
+		if (r.empty)
+			error(getMissingReturnMsg(), NablaPackage.Literals.FUNCTION__NAME, MISSING_RETURN)
+	}
+
+	@Check
+	def checkUnreachableCode(Function it)
+	{
+		for (i : 0..<body.instructions.size-1)
+			if (body.instructions.get(i) instanceof Return)
+			{
+				error(getUnreachableReturnMsg(), body.instructions.get(i+1), null, UNREACHABLE_CODE)
+				return // no need to return further errors
+			}
+	}
+
+
 	// ===== NablaModule =====
 
 	public static val MANDATORY_VARIABLE = "NablaModule::MandatoryVariable"
@@ -116,7 +155,7 @@ class BasicValidator extends AbstractNablaValidator
 		val vars = eAllContents.filter(Var).map[name].toList
 		val missingVars = MandatoryVariables::NAMES.filter[x | !vars.contains(x)]
 		if (missingVars.size > 0)
-			error(getMandatoryVariablesMsg(missingVars), NablaPackage.Literals.NABLA_MODULE__VARIABLES, MANDATORY_VARIABLE)
+			error(getMandatoryVariablesMsg(missingVars), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_VARIABLE)
 	}
 
 	@Check
@@ -125,7 +164,7 @@ class BasicValidator extends AbstractNablaValidator
 		val scalarConsts = variables.filter(SimpleVarDefinition).filter[const].map[variable.name].toList
 		val missingConsts = MandatoryOptions::NAMES.filter[x | !scalarConsts.contains(x)]
 		if (missingConsts.size > 0)
-			error(getMandatoryOptionsMsg(missingConsts), NablaPackage.Literals.NABLA_MODULE__VARIABLES, MANDATORY_OPTION)
+			error(getMandatoryOptionsMsg(missingConsts), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_OPTION)
 	}
 
 	@Check
@@ -180,6 +219,7 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkIndicesNumber(VarRef it)
 	{
+		if (variable === null || variable.eIsProxy) return
 		val vTypeSize = variable.dimension
 		if (indices.size > 0 && indices.size != vTypeSize)
 			error(getIndicesNumberMsg(vTypeSize, indices.size), NablaPackage.Literals::VAR_REF__INDICES, INDICES_NUMBER)

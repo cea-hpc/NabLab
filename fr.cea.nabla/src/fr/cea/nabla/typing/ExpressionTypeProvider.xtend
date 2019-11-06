@@ -90,7 +90,8 @@ class ExpressionTypeProvider
 
 	def dispatch NablaType getTypeFor(VarRef it)
 	{
-		getTypeForVar(variable, spaceIterators, indices.size)
+		if (variable === null || variable.eIsProxy) null
+		else getTypeForVar(variable, spaceIterators, indices.size)
 	}
 
 	private def dispatch NablaType getTypeForVar(SimpleVar v, List<SpaceIteratorRef> iterators, int nbIndices)

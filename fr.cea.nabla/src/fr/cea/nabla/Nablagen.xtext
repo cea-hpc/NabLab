@@ -13,7 +13,6 @@
  * TODO Add steps dedicated to the debug (jobs, variables...)
  * TODO Add step to specify sparse matrices
  * TODO Add step to set solver algorithm & parameters
- * TODO Suppress contributors from files header (separate files)
  */
 grammar fr.cea.nabla.Nablagen 
 with fr.cea.nabla.Nabla 

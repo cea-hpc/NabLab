@@ -27,11 +27,13 @@ import fr.cea.nabla.nabla.DimensionVar
 import fr.cea.nabla.nabla.DimensionVarReference
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterator
@@ -47,7 +49,6 @@ import org.eclipse.xtext.util.SimpleAttributeResolver
 import org.eclipse.xtext.validation.Check
 
 import static extension fr.cea.nabla.Utils.*
-import fr.cea.nabla.nabla.Return
 
 class BasicValidator extends AbstractNablaValidator
 {
@@ -122,20 +123,28 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkMissingReturn(Function it)
 	{
-		val r = body.instructions.filter(Return)
-		if (r.empty)
+		if (external) return;
+
+		val hasReturn = (body instanceof Return) || body.eAllContents.exists[x | x instanceof Return]
+		if (!hasReturn)
 			error(getMissingReturnMsg(), NablaPackage.Literals.FUNCTION__NAME, MISSING_RETURN)
 	}
 
 	@Check
 	def checkUnreachableCode(Function it)
 	{
-		for (i : 0..<body.instructions.size-1)
-			if (body.instructions.get(i) instanceof Return)
-			{
-				error(getUnreachableReturnMsg(), body.instructions.get(i+1), null, UNREACHABLE_CODE)
-				return // no need to return further errors
-			}
+		if (external) return;
+
+		if (body instanceof InstructionBlock)
+		{
+			val instructions = (body as InstructionBlock).instructions
+			for (i : 0..<instructions.size-1)
+				if (instructions.get(i) instanceof Return)
+				{
+					error(getUnreachableReturnMsg(), instructions.get(i+1), null, UNREACHABLE_CODE)
+					return // no need to return further errors
+				}
+		}
 	}
 
 
@@ -258,6 +267,7 @@ class BasicValidator extends AbstractNablaValidator
 
 	public static val UNUSED_FUNCTION = "Functions::UnusedFunction"
 	public static val UNUSED_REDUCTION = "Functions::UnusedReduction"
+	public static val FUNCTION_INVALID_ARG_NUMBER = "Functions::InvalidArgNumber"
 	public static val FUNCTION_IN_TYPES_OPERATION = "Functions::FunctionInTypesOperation"
 	public static val FUNCTION_INCOMPATIBLE_IN_TYPES = "Functions::FunctionIncompatibleInTypes"
 	public static val FUNCTION_RETURN_TYPE = "Functions::FunctionReturnType"
@@ -269,6 +279,7 @@ class BasicValidator extends AbstractNablaValidator
 
 	static def getUnusedFunctionMsg() { "Unused function" }
 	static def getUnusedReductionMsg() { "Unused reduction" }
+	static def getFunctionInvalidArgNumberMsg() { "Number of arguments must be equal to number of input types" }
 	static def getFunctionInTypesOperationMsg() { "In types must not contain operations" }
 	static def getFunctionIncompatibleInTypesMsg() { "Declaration conflicts" }
 	static def getFunctionReturnTypeMsg(String variableName) { "Only input type variables can be used for return types. Invalid variable: " + variableName }
@@ -297,9 +308,15 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkFunctionInTypes(Function it)
 	{
-		for (inArg : inArgs)
-			if (inArg.type.indices.filter(DimensionOperation).size > 0)
-				error(getFunctionInTypesOperationMsg(), NablaPackage.Literals::FUNCTION__IN_ARGS, FUNCTION_IN_TYPES_OPERATION)
+		if (!external && inTypes.size !== inArgs.size)
+		{
+			error(getFunctionInvalidArgNumberMsg(), NablaPackage.Literals::FUNCTION__IN_ARGS, FUNCTION_INVALID_ARG_NUMBER)
+			return
+		}
+
+		for (inType : inTypes)
+			if (inType.indices.filter(DimensionOperation).size > 0)
+				error(getFunctionInTypesOperationMsg(), NablaPackage.Literals::FUNCTION__IN_TYPES, FUNCTION_IN_TYPES_OPERATION)
 
 		val module = eContainer as NablaModule
 		val otherFunctionArgs = module.functions.filter(Function).filter[x | x.name == name && x !== it]
@@ -314,13 +331,13 @@ class BasicValidator extends AbstractNablaValidator
 	 */
 	private def areCompatible(Function a, Function b)
 	{
-		if (a.inArgs.size != b.inArgs.size)
+		if (a.inTypes.size != b.inTypes.size)
 			return true
 
-		for (i : 0..<a.inArgs.size)
+		for (i : 0..<a.inTypes.size)
 		{
-			val ai = a.inArgs.get(i).type
-			val bi = b.inArgs.get(i).type
+			val ai = a.inTypes.get(i)
+			val bi = b.inTypes.get(i)
 			if (ai.primitive != bi.primitive || ai.indices.size != bi.indices.size)
 				return true
 		}
@@ -332,8 +349,8 @@ class BasicValidator extends AbstractNablaValidator
 	def checkFunctionReturnType(Function it)
 	{
 		val inTypeVars = new HashSet<DimensionVar>
-		for (inArg : inArgs)
-			for (dim : inArg.type.eAllContents.filter(DimensionVarReference).toIterable)
+		for (inType : inTypes)
+			for (dim : inType.eAllContents.filter(DimensionVarReference).toIterable)
 				if (dim.target !== null && !dim.target.eIsProxy)
 					inTypeVars += dim.target
 

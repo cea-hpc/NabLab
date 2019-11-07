@@ -95,11 +95,13 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dimVars" upperBound="-1"
         eType="#//DimensionVar" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="inArgs" upperBound="-1"
-        eType="#//Arg" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inTypes" upperBound="-1"
+        eType="#//ArgType" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//ArgType"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//InstructionBlock"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inArgs" upperBound="-1"
+        eType="#//Arg" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//Instruction"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="external" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
@@ -114,10 +116,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//ArgType"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Arg" eSuperTypes="#//Var">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//ArgType"
-        containment="true"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Arg" eSuperTypes="#//Var"/>
   <eClassifiers xsi:type="ecore:EClass" name="ArgType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="primitive" eType="#//PrimitiveType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="indices" upperBound="-1"

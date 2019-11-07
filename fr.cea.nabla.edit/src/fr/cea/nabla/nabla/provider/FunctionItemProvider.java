@@ -65,6 +65,7 @@ public class FunctionItemProvider
 			super.getPropertyDescriptors(object);
 
 			addNamePropertyDescriptor(object);
+			addExternalPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -92,6 +93,28 @@ public class FunctionItemProvider
 	}
 
 	/**
+	 * This adds a property descriptor for the External feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addExternalPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Function_external_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Function_external_feature", "_UI_Function_type"),
+				 NablaPackage.Literals.FUNCTION__EXTERNAL,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
 	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
 	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
 	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
@@ -104,8 +127,10 @@ public class FunctionItemProvider
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(NablaPackage.Literals.FUNCTION__DIM_VARS);
-			childrenFeatures.add(NablaPackage.Literals.FUNCTION__IN_ARGS);
+			childrenFeatures.add(NablaPackage.Literals.FUNCTION__IN_TYPES);
 			childrenFeatures.add(NablaPackage.Literals.FUNCTION__RETURN_TYPE);
+			childrenFeatures.add(NablaPackage.Literals.FUNCTION__IN_ARGS);
+			childrenFeatures.add(NablaPackage.Literals.FUNCTION__BODY);
 		}
 		return childrenFeatures;
 	}
@@ -162,11 +187,14 @@ public class FunctionItemProvider
 
 		switch (notification.getFeatureID(Function.class)) {
 			case NablaPackage.FUNCTION__NAME:
+			case NablaPackage.FUNCTION__EXTERNAL:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case NablaPackage.FUNCTION__DIM_VARS:
-			case NablaPackage.FUNCTION__IN_ARGS:
+			case NablaPackage.FUNCTION__IN_TYPES:
 			case NablaPackage.FUNCTION__RETURN_TYPE:
+			case NablaPackage.FUNCTION__IN_ARGS:
+			case NablaPackage.FUNCTION__BODY:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -191,13 +219,86 @@ public class FunctionItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.FUNCTION__IN_ARGS,
-				 NablaFactory.eINSTANCE.createArg()));
+				(NablaPackage.Literals.FUNCTION__IN_TYPES,
+				 NablaFactory.eINSTANCE.createArgType()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.FUNCTION__RETURN_TYPE,
 				 NablaFactory.eINSTANCE.createArgType()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.FUNCTION__IN_ARGS,
+				 NablaFactory.eINSTANCE.createArg()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.FUNCTION__BODY,
+				 NablaFactory.eINSTANCE.createInstruction()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.FUNCTION__BODY,
+				 NablaFactory.eINSTANCE.createInstructionBlock()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.FUNCTION__BODY,
+				 NablaFactory.eINSTANCE.createSimpleVarDefinition()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.FUNCTION__BODY,
+				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.FUNCTION__BODY,
+				 NablaFactory.eINSTANCE.createAffectation()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.FUNCTION__BODY,
+				 NablaFactory.eINSTANCE.createIteratorLoop()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.FUNCTION__BODY,
+				 NablaFactory.eINSTANCE.createIndexLoop()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.FUNCTION__BODY,
+				 NablaFactory.eINSTANCE.createIf()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.FUNCTION__BODY,
+				 NablaFactory.eINSTANCE.createReturn()));
+	}
+
+	/**
+	 * This returns the label text for {@link org.eclipse.emf.edit.command.CreateChildCommand}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection) {
+		Object childFeature = feature;
+		Object childObject = child;
+
+		boolean qualify =
+			childFeature == NablaPackage.Literals.FUNCTION__IN_TYPES ||
+			childFeature == NablaPackage.Literals.FUNCTION__RETURN_TYPE;
+
+		if (qualify) {
+			return getString
+				("_UI_CreateChild_text2",
+				 new Object[] { getTypeText(childObject), getFeatureText(childFeature), getTypeText(owner) });
+		}
+		return super.getCreateChildText(owner, feature, child, selection);
 	}
 
 	/**

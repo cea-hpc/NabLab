@@ -159,12 +159,7 @@ public class VarGroupDeclarationItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.VAR_GROUP_DECLARATION__VARIABLES,
-				 NablaFactory.eINSTANCE.createVar()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_GROUP_DECLARATION__VARIABLES,
-				 NablaFactory.eINSTANCE.createLoopIndex()));
+				 NablaFactory.eINSTANCE.createDeclaredVar()));
 
 		newChildDescriptors.add
 			(createChildParameter

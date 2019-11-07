@@ -22,7 +22,7 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
  * <!-- end-user-doc -->
  * @generated
  */
-public class ConnectivityVarItemProvider extends VarItemProvider {
+public class ConnectivityVarItemProvider extends DeclaredVarItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->

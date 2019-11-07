@@ -251,17 +251,17 @@ public class IfItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.IF__THEN,
+				 NablaFactory.eINSTANCE.createInstructionBlock()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__THEN,
 				 NablaFactory.eINSTANCE.createSimpleVarDefinition()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.IF__THEN,
 				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.IF__THEN,
-				 NablaFactory.eINSTANCE.createInstructionBlock()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -282,6 +282,11 @@ public class IfItemProvider extends InstructionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.IF__THEN,
 				 NablaFactory.eINSTANCE.createIf()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__THEN,
+				 NablaFactory.eINSTANCE.createReturn()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -291,17 +296,17 @@ public class IfItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.IF__ELSE,
+				 NablaFactory.eINSTANCE.createInstructionBlock()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__ELSE,
 				 NablaFactory.eINSTANCE.createSimpleVarDefinition()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.IF__ELSE,
 				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.IF__ELSE,
-				 NablaFactory.eINSTANCE.createInstructionBlock()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -322,6 +327,11 @@ public class IfItemProvider extends InstructionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.IF__ELSE,
 				 NablaFactory.eINSTANCE.createIf()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__ELSE,
+				 NablaFactory.eINSTANCE.createReturn()));
 	}
 
 	/**

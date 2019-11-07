@@ -142,17 +142,17 @@ public class InstructionBlockItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.INSTRUCTION_BLOCK__INSTRUCTIONS,
+				 NablaFactory.eINSTANCE.createInstructionBlock()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.INSTRUCTION_BLOCK__INSTRUCTIONS,
 				 NablaFactory.eINSTANCE.createSimpleVarDefinition()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.INSTRUCTION_BLOCK__INSTRUCTIONS,
 				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.INSTRUCTION_BLOCK__INSTRUCTIONS,
-				 NablaFactory.eINSTANCE.createInstructionBlock()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -173,6 +173,11 @@ public class InstructionBlockItemProvider extends InstructionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.INSTRUCTION_BLOCK__INSTRUCTIONS,
 				 NablaFactory.eINSTANCE.createIf()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.INSTRUCTION_BLOCK__INSTRUCTIONS,
+				 NablaFactory.eINSTANCE.createReturn()));
 	}
 
 }

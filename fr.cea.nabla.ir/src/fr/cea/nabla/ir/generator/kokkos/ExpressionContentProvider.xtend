@@ -108,7 +108,7 @@ class ExpressionContentProvider
 	'''«function.provider»Functions::«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
 	static def dispatch CharSequence getContent(VarRef it) 
-	'''«codeName»«iteratorsContent»«FOR d:indices BEFORE '['  SEPARATOR '][' AFTER ']'»«d»«ENDFOR»'''
+	'''«codeName»«iteratorsContent»«FOR d:indices BEFORE '['  SEPARATOR '][' AFTER ']'»«d.content»«ENDFOR»'''
 
 	private static def getCodeName(VarRef it)
 	{
@@ -138,7 +138,7 @@ class ExpressionContentProvider
 		if (array.type.connectivities.size < iterators.size) return ''
 		var content = new ArrayList<CharSequence>
 		for (r : iterators)
-			content += r.indexName				
+			content += r.indexName
 		return '(' + content.join(',') + ')'
 	}
 }

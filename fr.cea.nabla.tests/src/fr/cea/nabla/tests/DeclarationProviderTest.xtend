@@ -45,13 +45,13 @@ class DeclarationProviderTest
 		set	nodes: → {node};
 
 		def	f: → ℕ;
-		def f: ℕ a → ℕ;
-		def f: ℝ a → ℝ;
-		def f: ℝ[2] a → ℝ[2];
+		def f: ℕ → ℕ;
+		def f: ℝ → ℝ;
+		def f: ℝ[2] → ℝ[2];
 		
-		def	g: a | ℝ[a] x → ℝ[a];
-		def g: a, b | ℝ[a, b] x → ℝ[a*b];
-		def g: a, b | ℝ[a] x × ℝ[b] y → ℝ[a+b];
+		def	g: a | ℝ[a] → ℝ[a];
+		def g: a, b | ℝ[a, b] → ℝ[a*b];
+		def g: a, b | ℝ[a] × ℝ[b] → ℝ[a+b];
 		'''
 		+ TestUtils::mandatoryOptions + TestUtils::mandatoryVariables +
 		'''

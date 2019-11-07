@@ -54,7 +54,7 @@ class ExpressionContentProvider
 	static def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
 	static def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
 	static def dispatch CharSequence getContent(Constant it) '''«value»'''
-	
+
 	static def dispatch CharSequence getContent(MinConstant it) 
 	{
 		val t = type
@@ -104,5 +104,5 @@ class ExpressionContentProvider
 	'''«function.provider»«Utils::FunctionAndReductionproviderSuffix».«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
 	static def dispatch CharSequence getContent(VarRef it)
-	'''«variable.codeName»«FOR r : iterators BEFORE '[' SEPARATOR '][' AFTER ']'»«r.indexName»«ENDFOR»«FOR d:indices»[«d»]«ENDFOR»'''
+	'''«variable.codeName»«FOR r : iterators BEFORE '[' SEPARATOR '][' AFTER ']'»«r.indexName»«ENDFOR»«FOR d:indices»[«d.content»]«ENDFOR»'''
 }

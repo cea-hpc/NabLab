@@ -149,17 +149,17 @@ public class IndexLoopItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.INDEX_LOOP__BODY,
+				 NablaFactory.eINSTANCE.createInstructionBlock()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.INDEX_LOOP__BODY,
 				 NablaFactory.eINSTANCE.createSimpleVarDefinition()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.INDEX_LOOP__BODY,
 				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.INDEX_LOOP__BODY,
-				 NablaFactory.eINSTANCE.createInstructionBlock()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -180,6 +180,11 @@ public class IndexLoopItemProvider extends InstructionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.INDEX_LOOP__BODY,
 				 NablaFactory.eINSTANCE.createIf()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.INDEX_LOOP__BODY,
+				 NablaFactory.eINSTANCE.createReturn()));
 	}
 
 }

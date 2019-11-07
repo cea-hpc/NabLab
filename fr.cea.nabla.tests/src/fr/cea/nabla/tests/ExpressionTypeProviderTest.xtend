@@ -58,10 +58,10 @@ class ExpressionTypeProviderTest
 	set	nodesOfCell: cell → {node};
 	set	nodes: → {node};
 
-	def	perp: ℝ[2] a → ℝ[2];
-	def	norm: x | ℝ[x] a → ℝ;
+	def	perp: ℝ[2] → ℝ[2];
+	def	norm: x | ℝ[x] → ℝ;
 	def	reduceMin: (ℝ.MaxValue, ℝ)→ℝ;
-	def	solveLinearSystem: x | ℝ[x, x] a × ℝ[x] b → ℝ[x];
+	def	solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x];
 
 	const ℝ X_EDGE_LENGTH = 1.;
 	const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;

@@ -223,7 +223,7 @@ class TypeValidatorTest
 		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
 			(
 				'''
-				def	test: ℾ a × ℝ b × ℝ[2] c → ℝ;
+				def	test: ℾ × ℝ × ℝ[2] → ℝ;
 				'''
 			)
 			+
@@ -245,7 +245,7 @@ class TypeValidatorTest
 		val moduleOk = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
 			(
 				'''
-				def	test: ℾ a × ℝ b × ℝ[2] c → ℝ;
+				def	test: ℾ × ℝ × ℝ[2] → ℝ;
 				'''
 			)
 			+

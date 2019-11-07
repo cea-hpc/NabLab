@@ -9,24 +9,29 @@
  *******************************************************************************/
 module Math;
 
-functions 
-{
-	fabs: ℝ → ℝ;
-	√: ℝ → ℝ;
-	norm: x | ℝ[x] → ℝ;
-	min: ℝ × ℝ → ℝ;
-	max: ℝ × ℝ → ℝ;
-	sin: ℝ → ℝ;
-	cos: ℝ → ℝ;
-	asin: ℝ → ℝ;
-	acos: ℝ → ℝ;
-	
-	dot: x | ℝ[x] × ℝ[x] → ℝ;	// produit scalaire
-	det: ℝ[2] × ℝ[2] → ℝ;		// determinant = produit vectoriel en 2D
+// ***** FUNCTIONS *****
+def fabs: ℝ → ℝ;
+def √: ℝ → ℝ;
+def norm: x | ℝ[x] → ℝ;
+def min: ℝ × ℝ → ℝ;
+def max: ℝ × ℝ → ℝ;
+def sin: ℝ → ℝ;
+def cos: ℝ → ℝ;
+def asin: ℝ → ℝ;
+def acos: ℝ → ℝ;
 
-	// ***** REDUCTIONS *****
-	∑: (0.0, ℝ) → ℝ, x | (0.0, ℝ[x]) → ℝ[x], x | (0.0, ℝ[x, x]) → ℝ[x, x];
-	∏: (1.0, ℝ) → ℝ, x | (1.0, ℝ[x]) → ℝ[x], x | (0.0, ℝ[x, x]) → ℝ[x, x];
-	reduceMin: (ℝ.MaxValue, ℝ)→ℝ;
-	reduceMax: (ℝ.MinValue, ℝ)→ℝ;
-}
+def dot: x | ℝ[x] × ℝ[x] → ℝ;	// produit scalaire
+def det: ℝ[2] × ℝ[2] → ℝ;		// determinant = produit vectoriel en 2D
+
+
+// ***** REDUCTIONS *****
+def ∑: (0.0, ℝ) → ℝ;
+def ∑: x | (0.0, ℝ[x]) → ℝ[x];
+def ∑: x | (0.0, ℝ[x, x]) → ℝ[x, x];
+
+def ∏: (1.0, ℝ) → ℝ;
+def ∏: x | (1.0, ℝ[x]) → ℝ[x];
+def ∏: x | (0.0, ℝ[x, x]) → ℝ[x, x];
+
+def Min: (ℝ.MaxValue, ℝ) → ℝ;
+def Max: (ℝ.MinValue, ℝ) → ℝ;

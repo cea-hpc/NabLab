@@ -12,6 +12,7 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.Utils
+import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.Arg
@@ -31,6 +32,7 @@ class IrFunctionFactory
 {
 	@Inject extension Nabla2IrUtils
 	@Inject extension IrAnnotationHelper
+	@Inject extension VarExtensions
 
 	static val Reductions = #{ '\u2211'->'+', '\u220F'->'*' }
 
@@ -60,7 +62,7 @@ class IrFunctionFactory
 		[
 			annotations += a.toIrAnnotation
 			name = a.name
-			type = a.type.toIrBaseType
+			type = a.argType.toIrBaseType
 		]
 	}
 

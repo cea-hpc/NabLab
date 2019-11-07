@@ -372,6 +372,29 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.DeclaredVar} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected DeclaredVarItemProvider declaredVarItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.DeclaredVar}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createDeclaredVarAdapter() {
+		if (declaredVarItemProvider == null) {
+			declaredVarItemProvider = new DeclaredVarItemProvider(this);
+		}
+
+		return declaredVarItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.LoopIndex} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -921,6 +944,29 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		}
 
 		return ifItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Return} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ReturnItemProvider returnItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Return}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createReturnAdapter() {
+		if (returnItemProvider == null) {
+			returnItemProvider = new ReturnItemProvider(this);
+		}
+
+		return returnItemProvider;
 	}
 
 	/**
@@ -1717,6 +1763,7 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (itemTypeItemProvider != null) itemTypeItemProvider.dispose();
 		if (jobItemProvider != null) jobItemProvider.dispose();
 		if (instructionItemProvider != null) instructionItemProvider.dispose();
+		if (instructionBlockItemProvider != null) instructionBlockItemProvider.dispose();
 		if (spaceIteratorItemProvider != null) spaceIteratorItemProvider.dispose();
 		if (rangeSpaceIteratorItemProvider != null) rangeSpaceIteratorItemProvider.dispose();
 		if (singletonSpaceIteratorItemProvider != null) singletonSpaceIteratorItemProvider.dispose();
@@ -1725,6 +1772,7 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (simpleVarDefinitionItemProvider != null) simpleVarDefinitionItemProvider.dispose();
 		if (varGroupDeclarationItemProvider != null) varGroupDeclarationItemProvider.dispose();
 		if (varItemProvider != null) varItemProvider.dispose();
+		if (declaredVarItemProvider != null) declaredVarItemProvider.dispose();
 		if (loopIndexItemProvider != null) loopIndexItemProvider.dispose();
 		if (simpleVarItemProvider != null) simpleVarItemProvider.dispose();
 		if (connectivityVarItemProvider != null) connectivityVarItemProvider.dispose();
@@ -1744,11 +1792,11 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (realVectorConstantItemProvider != null) realVectorConstantItemProvider.dispose();
 		if (timeIteratorItemProvider != null) timeIteratorItemProvider.dispose();
 		if (baseTypeItemProvider != null) baseTypeItemProvider.dispose();
-		if (instructionBlockItemProvider != null) instructionBlockItemProvider.dispose();
 		if (affectationItemProvider != null) affectationItemProvider.dispose();
 		if (iteratorLoopItemProvider != null) iteratorLoopItemProvider.dispose();
 		if (indexLoopItemProvider != null) indexLoopItemProvider.dispose();
 		if (ifItemProvider != null) ifItemProvider.dispose();
+		if (returnItemProvider != null) returnItemProvider.dispose();
 		if (dimensionOperationItemProvider != null) dimensionOperationItemProvider.dispose();
 		if (dimensionIntItemProvider != null) dimensionIntItemProvider.dispose();
 		if (dimensionVarReferenceItemProvider != null) dimensionVarReferenceItemProvider.dispose();

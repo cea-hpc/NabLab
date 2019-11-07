@@ -39,8 +39,8 @@ class NablaScopeProviderTest
 
 	/*** Scope for iterators **********************************************************/
 
-	@Test 
-	def void testScopeProviderForSpaceIteratorRefInVarRef() 
+	@Test
+	def void testScopeProviderForSpaceIteratorRefInVarRef()
 	{
 		val module = parseHelper.parse(TestUtils::testModule
 			+
@@ -55,7 +55,7 @@ class NablaScopeProviderTest
 			'''
 		)
 		Assert.assertNotNull(module)
-		
+
 		val eref = NablaPackage::eINSTANCE.spaceIteratorRef_Target
 
 		val j1 = module.getJobByName("j1")
@@ -68,7 +68,7 @@ class NablaScopeProviderTest
 		val sum = j2_c.expression.eContents.filter(ReductionCall).head
 		val j2_d = sum.arg as VarRef
 		j2_d.assertScope(eref, "r, j")
-		
+
 		val j3 = module.getJobByName("j3")
 		val j3_b = j3.getVarAffectationByName("b")
 		j3_b.varRef.assertScope(eref, "r, j")
@@ -81,9 +81,8 @@ class NablaScopeProviderTest
 		j4_b.assertScope(eref, "r, j")
 	}
 
-	
-	@Test 
-	def void testScopeProviderForSpaceIteratorRefInConnectivityCall() 
+	@Test
+	def void testScopeProviderForSpaceIteratorRefInConnectivityCall()
 	{
 		val module = parseHelper.parse(TestUtils::testModule
 			+
@@ -98,12 +97,12 @@ class NablaScopeProviderTest
 			'''
 		)
 		Assert.assertNotNull(module)
-		
+
 		val eref = NablaPackage::eINSTANCE.spaceIteratorRef_Target
 		val cells = module.getConnectivityByName("cells")
 		val nodes = module.getConnectivityByName("nodes")
 		val nodesOfCell = module.getConnectivityByName("nodesOfCell")
-	
+
 		val j1 = module.getJobByName("j1")
 		val j1_cells = j1.getConnectivityCallFor(cells)
 		j1_cells.assertScope(eref, "")
@@ -132,16 +131,16 @@ class NablaScopeProviderTest
 		Assert.assertNotNull(j4_nodesOfCell)
 		j4_nodesOfCell.assertScope(eref, "j")
 	}
-	
-	def private assertScope(EObject context, EReference reference, CharSequence expected) 
+
+	def private assertScope(EObject context, EReference reference, CharSequence expected)
 	{
 		val elementNames = context.getScope(reference).allElements.map[name].join(", ")
 		Assert.assertEquals(expected.toString, elementNames)
 	}
-	
+
 	/*** Scope for variables ***********************************************************/
 
-	@Test 
+	@Test
 	def void testScopeProviderForVarRefInInstruction() 
 	{
 		val module = parseHelper.parse(TestUtils::testModule
@@ -186,8 +185,8 @@ class NablaScopeProviderTest
 		val affectationf = j1.getVarAffectationByName("f")
 		affectationf.assertScope(eref, "e, f, d, "+ defaultOptionsScope + ", a, b1, b2, c1, c2")
 	}
-	
-	@Test 
+
+	@Test
 	def void testScopeProviderForVarRefInReduction() 
 	{
 		val module = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions(
@@ -195,7 +194,6 @@ class NablaScopeProviderTest
 			def	reduceMin: (ℝ.MaxValue, ℝ) → ℝ;
 			''')
 		)
-		
 		Assert.assertNotNull(module)
 
 		val eref = NablaPackage::eINSTANCE.varRef_Variable
@@ -205,15 +203,15 @@ class NablaScopeProviderTest
 		reduction.assertScope(eref, "")
 	}
 
-	@Test 
-	def void testScopeProviderForVarRefInFunction() 
+	@Test
+	def void testScopeProviderForVarRefInFunction()
 	{
 		val module = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions(
 			'''
-			def	inverse: ℝ[2,2] a → ℝ[2,2];
+			def	inverse: ℝ[2,2] → ℝ[2,2];
 			''')
 		)
-		
+
 		Assert.assertNotNull(module)
 
 		val eref = NablaPackage::eINSTANCE.varRef_Variable
@@ -222,7 +220,7 @@ class NablaScopeProviderTest
 		Assert.assertNotNull(inverse)
 		inverse.assertScope(eref, "")
 	}
-		
+
 	private def defaultOptionsScope()
 	{
 		return "X_EDGE_LENGTH, Y_EDGE_LENGTH, X_EDGE_ELEMS, Y_EDGE_ELEMS, Z_EDGE_ELEMS, option_stoptime, option_max_iterations, t, X"	

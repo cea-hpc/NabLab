@@ -84,8 +84,9 @@
     <genClasses ecoreClass="Nabla.ecore#//Function">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Function/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Function/dimVars"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Function/inArgs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Function/inTypes"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Function/returnType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Function/inArgs"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Function/body"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Function/external"/>
     </genClasses>
@@ -96,9 +97,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Reduction/collectionType"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Reduction/returnType"/>
     </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//Arg">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Arg/type"/>
-    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//Arg"/>
     <genClasses ecoreClass="Nabla.ecore#//ArgType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//ArgType/primitive"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ArgType/indices"/>

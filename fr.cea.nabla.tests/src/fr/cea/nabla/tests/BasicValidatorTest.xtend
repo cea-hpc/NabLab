@@ -122,7 +122,6 @@ class BasicValidatorTest
 			BasicValidator::UNUSED_VARIABLE, 
 			BasicValidator::getUnusedVariableMsg())		
 
-println()
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomVars(
 			'''
@@ -214,24 +213,17 @@ println()
 	@Test
 	def void testCheckUnusedFunction() 
 	{
-		val moduleKo = parseHelper.parse(
-			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
-			'''
-			def	f:	x | ℝ[x] a → ℝ;
-			''' 
-			+ 
-			'''ℝ[2] orig = [0.0 , 0.0] ;''')
-		)
+		val modelKo = TestUtils::getTestModuleWithCoordVariableWithCustomFunctions('''def	f:	x | ℝ[x] → ℝ''')
+		val moduleKo = parseHelper.parse(modelKo)
 		Assert.assertNotNull(moduleKo)
-			
+
 		moduleKo.assertWarning(NablaPackage.eINSTANCE.function, 
 			BasicValidator::UNUSED_FUNCTION, 
-			BasicValidator::getUnusedFunctionMsg())		
-					
-		val moduleOk = parseHelper.parse(
-			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
+			BasicValidator::getUnusedFunctionMsg())
+
+		val modelOk = TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
 			'''
-			def	f:	x | ℝ[x] a → ℝ;
+			def	f:	x | ℝ[x] → ℝ;
 			''')
 			+
 			'''
@@ -241,8 +233,8 @@ println()
 				ℝ t = f(orig);
 				t = t + 1;	
 			}
-			'''
-		)
+			'''		
+		val moduleOk = parseHelper.parse(modelOk)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoIssues
 	}
@@ -287,9 +279,9 @@ println()
 		val modulekO = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				def	f: x | ℝ[x+1] a → ℝ[x];
-				def	g: ℝ[2] a → ℝ;
-				def g: x | ℝ[x] a → ℝ;
+				def	f: x | ℝ[x+1] → ℝ[x];
+				def	g: ℝ[2] → ℝ;
+				def g: x | ℝ[x] → ℝ;
 				'''
 			)
 		)
@@ -306,9 +298,9 @@ println()
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				def	f: x | ℝ[x] a → ℝ[x+1];
-				def	g: ℝ a → ℝ;
-				def g: x | ℝ[x] a → ℝ;
+				def	f: x | ℝ[x] → ℝ[x+1];
+				def	g: ℝ → ℝ;
+				def g: x | ℝ[x] → ℝ;
 				'''
 			)
 		)
@@ -322,7 +314,7 @@ println()
 		val modulekO = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				def	f: x | ℝ a → ℝ[x];
+				def	f: x | ℝ → ℝ[x];
 				'''
 			)
 		)
@@ -335,8 +327,8 @@ println()
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				def	f: x | ℝ[x] a → ℝ[x];
-				def	g: y | ℝ[y] a → ℝ[x, y];
+				def	f: x | ℝ[x] → ℝ[x];
+				def	g: y | ℝ[y] → ℝ[x, y];
 				'''
 			)
 		)
@@ -399,7 +391,7 @@ println()
 		val modulekO2 = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				def	reduce: x,y | (ℝ.MaxValue , ℝ[x])→ℝ[x+y];
+				def	reduce: x,y | (ℝ.MaxValue , ℝ[x]) → ℝ[x+y];
 				'''
 			)
 		)
@@ -426,8 +418,8 @@ println()
 		val modulekO = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 			'''
-			def f:	n | ℝ[n] a → ℝ;
-			def g:	x | ℝ[x] a → ℝ;
+			def f:	n | ℝ[n] → ℝ;
+			def g:	x | ℝ[x] → ℝ;
 			''')
 		)
 		Assert.assertNotNull(modulekO)
@@ -439,7 +431,7 @@ println()
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 			'''
-			def	f:	x | ℝ[x] a → ℝ;
+			def	f:	x | ℝ[x] → ℝ;
 			''')
 		)
 		Assert.assertNotNull(moduleOk)
@@ -452,7 +444,7 @@ println()
 		val moduleKo = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
 			'''
-			def f: x,y | ℝ[x] a → ℝ[2];
+			def f: x,y | ℝ[x] → ℝ[2];
 			'''
 			+
 			'''
@@ -469,11 +461,11 @@ println()
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
 			'''
-			def	f: x | ℝ[x] a → ℝ[2];
+			def	f: x | ℝ[x] → ℝ[2];
 			''')
 			+
 			'''
-			ℝ[2] orig = [0.0 , 0.0] ;
+			ℝ[2] orig = [0.0 , 0.0];
 			ComputeOrig: orig = f(orig);
 			'''
 		)

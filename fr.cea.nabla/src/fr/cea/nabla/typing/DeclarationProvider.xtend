@@ -71,21 +71,21 @@ class DeclarationProvider
 {
 	@Inject extension ExpressionTypeProvider
 	@Inject extension PrimitiveTypeTypeProvider
-	
+
 	def FunctionDeclaration getDeclaration(FunctionCall it)
 	{
 		val dimensionVarValues = new HashMap<DimensionVar, DimensionValue>
-		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
+		val module = EcoreUtil2.getContainerOfType(function, NablaModule)
 		val candidates = module.functions.filter(Function).filter[x | x.name == function.name]
 		val f = candidates.findFirst[x |
-			if (x.inArgs.size != args.size) return false
-			for (i : 0..<x.inArgs.size)
-				if (!match(x.inArgs.get(i).type, args.get(i), dimensionVarValues)) return false
+			if (x.inTypes.size != args.size) return false
+			for (i : 0..<x.inTypes.size)
+				if (!match(x.inTypes.get(i), args.get(i), dimensionVarValues)) return false
 			return true
 		]
 		if (f === null) return null
 
-		val inTypes = f.inArgs.map[x | x.type.computeExpressionType(dimensionVarValues)]
+		val inTypes = f.inTypes.map[x | x.computeExpressionType(dimensionVarValues)]
 		val returnType = f.returnType.computeExpressionType(dimensionVarValues)
 		return new FunctionDeclaration(f, dimensionVarValues, inTypes, returnType)
 	}
@@ -93,7 +93,7 @@ class DeclarationProvider
 	def ReductionDeclaration getDeclaration(ReductionCall it)
 	{
 		val dimensionVarValues = new HashMap<DimensionVar, DimensionValue>
-		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
+		val module = EcoreUtil2.getContainerOfType(reduction, NablaModule)
 		val candidates = module.functions.filter(Reduction).filter[x | x.name == reduction.name]
 		val r = candidates.findFirst[x | match(x.collectionType, arg, dimensionVarValues) ]
 		if (r === null) return null
@@ -102,16 +102,16 @@ class DeclarationProvider
 		val returnType = r.returnType.computeExpressionType(dimensionVarValues)
 		return new ReductionDeclaration(r, dimensionVarValues, collectionType as NablaSimpleType, returnType as NablaSimpleType)
 	}
-	
+
 	private def boolean match(ArgType a, Expression b, Map<DimensionVar, DimensionValue> dimVarValues) 
-	{ 
+	{
 		val btype = b.typeFor
 		if (btype === null)
 			false // undefined type
 		else
 			a.primitive == btype.primitive && valuesMatch(dimVarValues, a.indices, btype.dimensionValues)
 	}
-	
+
 	private def dispatch List<DimensionValue> getDimensionValues(NSTScalar it) { #[] }
 	private def dispatch List<DimensionValue> getDimensionValues(NSTArray1D it) { #[new DimensionValue(size)] }
 	private def dispatch List<DimensionValue> getDimensionValues(NSTArray2D it) { #[new DimensionValue(nbRows), new DimensionValue(nbCols)] }

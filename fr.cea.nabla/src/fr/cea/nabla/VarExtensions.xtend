@@ -14,6 +14,7 @@ import fr.cea.nabla.nabla.Array1D
 import fr.cea.nabla.nabla.Array2D
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityVar
+import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.LoopIndex
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Scalar
@@ -37,6 +38,13 @@ class VarExtensions
 			SimpleVarDefinition : decl.type
 			VarGroupDeclaration : decl.type
 		}
+	}
+
+	def getArgType(Arg it)
+	{
+		val f = eContainer as Function
+		val i = f.inArgs.indexOf(it)
+		f.inTypes.get(i)
 	}
 
 	def boolean isConst(Var it) 
@@ -67,7 +75,7 @@ class VarExtensions
 	def dispatch int getDimension(SimpleVar it) { baseType.typeDimension }
 	def dispatch int getDimension(ConnectivityVar it) { baseType.typeDimension }
 	def dispatch int getDimension(LoopIndex it) { 0 }
-	def dispatch int getDimension(Arg it) { type.indices.size }
+	def dispatch int getDimension(Arg it) { argType.indices.size }
 
 	private def int getTypeDimension(BaseType t)
 	{

@@ -31,10 +31,10 @@ import static com.google.common.collect.Maps.uniqueIndex
 import static extension fr.cea.nabla.workflow.WorkflowComponentExtensions.*
 import static extension fr.cea.nabla.workflow.WorkflowExtensions.*
 
-class WorkflowInterpretor 
+class WorkflowInterpreter 
 {
 	static val IrExtension = 'nablair'
-	static val logger = Logger.getLogger(WorkflowInterpretor)
+	static val logger = Logger.getLogger(WorkflowInterpreter)
 	val traceListeners = new ArrayList<IWorkflowTraceListener>
 	val modelChangedListeners = new ArrayList<IWorkflowModelChangedListener>
 	@Inject Provider<JavaIoFileSystemAccess> fsaProvider
@@ -66,12 +66,12 @@ class WorkflowInterpretor
 		}
 	}
 	
-	def addWorkflowTraceLister(IWorkflowTraceListener listener)
+	def addWorkflowTraceListener(IWorkflowTraceListener listener)
 	{
 		traceListeners += listener
 	}
 
-	def addWorkflowModelChangedLister(IWorkflowModelChangedListener listener)
+	def addWorkflowModelChangedListener(IWorkflowModelChangedListener listener)
 	{
 		modelChangedListeners += listener
 	}

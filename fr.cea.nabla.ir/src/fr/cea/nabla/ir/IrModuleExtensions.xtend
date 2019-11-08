@@ -6,7 +6,7 @@ import fr.cea.nabla.ir.ir.ConnectivityCall
 
 class IrModuleExtensions
 {
-	def getJobByName(IrModule it, String jobName)
+	static def getJobByName(IrModule it, String jobName)
 	{
 		jobs.findFirst[j | j.name == jobName]
 	}
@@ -25,7 +25,7 @@ class IrModuleExtensions
 		return connectivities.filter[c | c.returnType.multiple]
 	}
 	
-	def getVariableByName(IrModule it, String varName)
+	static def getVariableByName(IrModule it, String varName)
 	{
 		variables.findFirst[j | j.name == varName]
 	}

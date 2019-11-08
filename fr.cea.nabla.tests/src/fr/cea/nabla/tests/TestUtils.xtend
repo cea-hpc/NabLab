@@ -9,39 +9,22 @@
  *******************************************************************************/
 package fr.cea.nabla.tests
 
+import fr.cea.nabla.ir.interpreter.Context
+import fr.cea.nabla.ir.interpreter.NablaValue
+import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.SimpleVariable
+import org.junit.Assert
+
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
+
 class TestUtils 
 {
-//	static def void assertEquals(PrimitiveType expectedPrimitive, int[] expectedSizes, BaseType actual)
-//	{
-//		Assert.assertEquals(expectedPrimitive, actual.primitive)
-//		Assert.assertArrayEquals(expectedSizes, actual.sizes)
-//	}
-//
-//	static def void assertEquals(PrimitiveType expectedPrimitive, int[] expectedSizes, Connectivity[] expectedConnectivities, NablaType actual)
-//	{
-//		switch actual
-//		{
-//			ArrayType:
-//			{
-//				Assert.assertEquals(expectedPrimitive, actual.primitive)
-//				Assert.assertArrayEquals(expectedSizes, actual.sizes)				
-//				Assert.assertArrayEquals(expectedConnectivities, actual.connectivities)				
-//			}
-//			DefinedType: 
-//			{
-//				Assert.assertEquals(expectedPrimitive, actual.primitive)
-//				Assert.assertArrayEquals(expectedSizes, #[])				
-//				Assert.assertArrayEquals(expectedConnectivities, actual.connectivities)				
-//			}
-//			default: Assert.fail
-//		}
-//	}
-	
 	// ===== CharSequence utils =====
 
 	static def String getEmptyTestModule()
 	'''
-		module Test;
+	module Test;
 	'''
 
 	//TODO These options should be filled in nablagen
@@ -133,7 +116,32 @@ class TestUtils
 			Nabla2Ir nabla2ir
 			{
 			}
+			ReplaceUtf replaceUtf follows nabla2ir
+			{
+			}
+			ReplaceInternalReductions replaceReductions follows replaceUtf
+			{
+			}
+			OptimizeConnectivities optimizeConnectivities follows replaceReductions
+			{
+				connectivities = cells, nodes;
+			}
+			FillHLTs fillHlts follows optimizeConnectivities
+			{
+			}
 		}
 		'''
+	}
+
+	// Interpreter asserts
+
+	static def assertVariableDefaultValue(IrModule irModule, Context context, String variableName, NablaValue value)
+	{
+		Assert.assertTrue((irModule.getVariableByName(variableName) as SimpleVariable).defaultValue.interprete(context).equals(value))
+	}
+
+	static def assertVariableValueInContext(IrModule irModule, Context context, String variableName, NablaValue value)
+	{
+		Assert.assertTrue(context.getVariableValue(irModule.getVariableByName(variableName)).equals(value))
 	}
 }

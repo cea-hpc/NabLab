@@ -59,6 +59,7 @@ class ModuleInterpreter
 			for (j : jobs.filter[x | x.at > 0].sortBy[at])
 				interprete(j, context)
 		}
+		return context
 	}
 
 	private static def getInt(IrModule module, String variableName, Context context)

@@ -1,7 +1,6 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.IrModuleExtensions
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import org.eclipse.xtext.testing.InjectWith
@@ -11,6 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
@@ -20,7 +20,6 @@ import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 class IteratorExtensionsTest
 {
 	@Inject CompilationChainHelper compilationHelper
-	@Inject extension IrModuleExtensions
 
 	var Job j1; Job j2; Job j3; Job j4;	Job j5;
 	var Iterator j1_j; Iterator j2_j; Iterator j2_r; Iterator j3_j; Iterator j3_r;

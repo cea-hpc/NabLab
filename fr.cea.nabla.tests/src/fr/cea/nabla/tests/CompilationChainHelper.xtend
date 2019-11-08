@@ -7,20 +7,20 @@ import fr.cea.nabla.NablagenStandaloneSetup
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nablagen.NablagenModule
-import fr.cea.nabla.workflow.WorkflowInterpretor
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.runner.RunWith
+import fr.cea.nabla.workflow.WorkflowInterpreter
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
 class CompilationChainHelper 
 {
 	@Inject extension ValidationTestHelper
-	@Inject Provider<WorkflowInterpretor> interpretorProvider
+	@Inject Provider<WorkflowInterpreter> workflowInterpreterProvider
 	@Inject Provider<ResourceSet> resourceSetProvider
 
 	var nablaSetup = new NablaStandaloneSetup
@@ -46,8 +46,8 @@ class CompilationChainHelper
 		var workflow = nablaGenModule.workflow
 		if (workflow!== null)
 		{
-			var interpretor = interpretorProvider.get
-			interpretor.addWorkflowModelChangedLister([module|irModule = module])
+			var interpretor = workflowInterpreterProvider.get
+			interpretor.addWorkflowModelChangedListener([module|irModule = module])
 			interpretor.launch(workflow)
 		}	
 		return irModule

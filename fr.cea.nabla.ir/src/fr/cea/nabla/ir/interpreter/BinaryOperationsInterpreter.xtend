@@ -15,11 +15,7 @@ class BinaryOperationsInterpreter
 		switch op
 		{
 			case '||': new NV0Bool(a.data || b.data)
-			case '&&': { print("dans && on calcule " + a.data + " && " + b.data + " = ")
-				println(a.data && b.data
-				)
-				new NV0Bool(a.data && b.data)
-				}
+			case '&&': new NV0Bool(a.data && b.data)
 			case '==': new NV0Bool(a.data == b.data)
 			case '!=': new NV0Bool(a.data != b.data)
 			case '>=': new NV0Bool(a.data >= b.data)
@@ -103,7 +99,6 @@ class BinaryOperationsInterpreter
 			case '-':  new NV0Real(a.data - b.data)
 			case '*':  new NV0Real(a.data * b.data)
 			case '/':  new NV0Real(a.data / b.data)
-			case '%':  new NV0Real(a.data % b.data)
 			default: null
 		}
 	}
@@ -280,7 +275,7 @@ class BinaryOperationsInterpreter
 
 	private static def computeValueOf(NV2Int a, NV0Int b, (int, int)=>int f)
 	{
-		val res = newArrayOfSize(a.nbRows).map[x | newIntArrayOfSize(a.nbCols)]
+		val int[][] res = newArrayOfSize(a.nbRows).map[x | newIntArrayOfSize(a.nbCols)]
 		for (i : 0..<a.nbRows)
 			for (j : 0..<a.nbCols)
 				res.get(i).set(j, f.apply(a.data.get(i).get(j), b.data))
@@ -301,7 +296,7 @@ class BinaryOperationsInterpreter
 
 	private static def computeValueOf(NV2Int a, NV0Real b, (int, double)=>double f)
 	{
-		val res = newArrayOfSize(a.nbRows).map[x | newDoubleArrayOfSize(a.nbCols)]
+		val double[][] res = newArrayOfSize(a.nbRows).map[x | newDoubleArrayOfSize(a.nbCols)]
 		for (i : 0..<a.nbRows)
 			for (j : 0..<a.nbCols)
 				res.get(i).set(j, f.apply(a.data.get(i).get(j), b.data))
@@ -322,7 +317,7 @@ class BinaryOperationsInterpreter
 	
 	private static def computeValueOf(NV2Int a, NV2Int b, (int, int)=>int f)
 	{
-		val res = newArrayOfSize(a.nbRows).map[x | newIntArrayOfSize(a.nbCols)]
+		val int[][] res = newArrayOfSize(a.nbRows).map[x | newIntArrayOfSize(a.nbCols)]
 		for (i : 0..<a.nbRows)
 			for (j : 0..<a.nbCols)
 				res.get(i).set(j, f.apply(a.data.get(i).get(j), b.data.get(i).get(j)))
@@ -349,7 +344,7 @@ class BinaryOperationsInterpreter
 
 	private static def computeValueOf(NV2Real a, NV0Real b, (double, double)=>double f)
 	{
-		val res = newArrayOfSize(a.nbRows).map[x | newDoubleArrayOfSize(a.nbCols)]
+		val double[][] res = newArrayOfSize(a.nbRows).map[x | newDoubleArrayOfSize(a.nbCols)]
 		for (i : 0..<a.nbRows)
 			for (j : 0..<a.nbCols)
 				res.get(i).set(j, f.apply(a.data.get(i).get(j), b.data))
@@ -370,7 +365,7 @@ class BinaryOperationsInterpreter
 	
 	private static def computeValueOf(NV2Real a, NV2Real b, (double, double)=>double f)
 	{
-		val res = newArrayOfSize(a.nbRows).map[x | newDoubleArrayOfSize(a.nbCols)]
+		val double[][] res = newArrayOfSize(a.nbRows).map[x | newDoubleArrayOfSize(a.nbCols)]
 		for (i : 0..<a.nbRows)
 			for (j : 0..<a.nbCols)
 				res.get(i).set(j, f.apply(a.data.get(i).get(j), b.data.get(i).get(j)))

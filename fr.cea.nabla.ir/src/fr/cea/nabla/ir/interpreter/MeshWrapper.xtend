@@ -39,8 +39,10 @@ class MeshWrapper
 
 	def int getNbElems(String connectityName)
 	{
+		//TODO Not implemented yet
+		return 4
 		//getNbNodes
-		throw new RuntimeException("Not implemented yet")
+		//throw new RuntimeException("Not implemented yet")
 	}
 
 	def int getMaxNbElems(String connectityName)

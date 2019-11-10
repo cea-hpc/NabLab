@@ -22,12 +22,14 @@ class InstructionInterpreter
 {
 	static def dispatch void interprete(VarDefinition it, Context context)
 	{ 
+		println("Dans interprete de VarDefinition")
 		for (v : variables)
 			context.setVariableValue(v, createValue(v, context))
 	}
 
 	static def dispatch void interprete(InstructionBlock it, Context context)
 	{
+		println("Dans interprete de InstructionBlock")
 		val innerContext = new Context(context)
 		for (i : instructions)
 			interprete(i, innerContext)
@@ -35,6 +37,7 @@ class InstructionInterpreter
 
 	static def dispatch void interprete(Affectation it, Context context)
 	{
+		println("Dans interprete de Affectation")
 		val rightValue = interprete(right, context)
 		if (left.indices.empty && left.iterators.empty)
 			context.setVariableValue(left.variable, rightValue)
@@ -55,6 +58,7 @@ class InstructionInterpreter
 
 	static def dispatch void interprete(Loop it, Context context)
 	{
+		println("Dans interprete de Loop")
 		val container = context.meshWrapper.getContainer(range)
 		for (loopIteratorValue : 0..<container.size)
 		{
@@ -66,6 +70,7 @@ class InstructionInterpreter
 
 	static def dispatch void interprete(If it, Context context)
 	{
+		println("Dans interprete de If")
 		val cond = interprete(condition, context) as NV0Bool
 		if (cond.data) interprete(thenInstruction, context)
 		else interprete(elseInstruction, context)

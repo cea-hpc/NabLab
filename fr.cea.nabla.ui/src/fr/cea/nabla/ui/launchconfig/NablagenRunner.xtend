@@ -6,7 +6,7 @@ import com.google.inject.Singleton
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.Workflow
 import fr.cea.nabla.ui.UiUtils
-import fr.cea.nabla.workflow.WorkflowInterpretor
+import fr.cea.nabla.workflow.WorkflowInterpreter
 import org.eclipse.core.resources.IResource
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.ResourceSet
@@ -20,7 +20,7 @@ class NablagenRunner
 {
 	val MessageConsoleStream stream
 	@Inject Provider<ResourceSet> resourceSetProvider
-	@Inject Provider<WorkflowInterpretor> interpretorProvider
+	@Inject Provider<WorkflowInterpreter> interpretorProvider
 	
 	new()
 	{
@@ -33,7 +33,7 @@ class NablagenRunner
 	def launch(Workflow workflow)
 	{
 		val interpretor = interpretorProvider.get
-		interpretor.addWorkflowTraceLister([msg | stream.print(msg)])
+		interpretor.addWorkflowTraceListener([msg | stream.print(msg)])
 		interpretor.launch(workflow)
 	}
 			

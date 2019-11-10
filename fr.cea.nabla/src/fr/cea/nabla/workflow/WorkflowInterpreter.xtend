@@ -31,10 +31,10 @@ import static com.google.common.collect.Maps.uniqueIndex
 import static extension fr.cea.nabla.workflow.WorkflowComponentExtensions.*
 import static extension fr.cea.nabla.workflow.WorkflowExtensions.*
 
-class WorkflowInterpretor 
+class WorkflowInterpreter 
 {
 	static val IrExtension = 'nablair'
-	static val logger = Logger.getLogger(WorkflowInterpretor)
+	static val logger = Logger.getLogger(WorkflowInterpreter)
 	val traceListeners = new ArrayList<IWorkflowTraceListener>
 	val modelChangedListeners = new ArrayList<IWorkflowModelChangedListener>
 	@Inject Provider<JavaIoFileSystemAccess> fsaProvider
@@ -66,32 +66,29 @@ class WorkflowInterpretor
 		}
 	}
 	
-	def addWorkflowTraceLister(IWorkflowTraceListener listener)
+	def addWorkflowTraceListener(IWorkflowTraceListener listener)
 	{
 		traceListeners += listener
 	}
 
-	def addWorkflowModelChangedLister(IWorkflowModelChangedListener listener)
+	def addWorkflowModelChangedListener(IWorkflowModelChangedListener listener)
 	{
 		modelChangedListeners += listener
 	}
 	
 	private def dispatch void launch(Nabla2IrComponent c, NablaModule nablaModule)
 	{
-		if (!nablaModule.jobs.empty)
-		{
-			val msg = '  Nabla -> IR - ' + c.name
-			logger.info(msg)
-			traceListeners.forEach[write(msg)]
-			val irModule = nabla2Ir.toIrModule(nablaModule)
-			if (c.dumpIr)
-				createAndSaveResource(irModule, c.eclipseProject, c.name)
-			val msgEnd = "... ok\n"
-			logger.info(msgEnd)
-			traceListeners.forEach[write(msgEnd)]
-			modelChangedListeners.forEach[modelChanged(irModule)]
-			fireModel(c, irModule)			
-		}
+		val msg = '  Nabla -> IR - ' + c.name
+		logger.info(msg)
+		traceListeners.forEach[write(msg)]
+		val irModule = nabla2Ir.toIrModule(nablaModule)
+		if (c.dumpIr)
+			createAndSaveResource(irModule, c.eclipseProject, c.name)
+		val msgEnd = "... ok\n"
+		logger.info(msgEnd)
+		traceListeners.forEach[write(msgEnd)]
+		modelChangedListeners.forEach[modelChanged(irModule)]
+		fireModel(c, irModule)
 	}
 
 	private def dispatch void launch(Ir2IrComponent c, IrModule irModule)

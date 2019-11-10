@@ -1,48 +1,26 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
-import com.google.inject.Provider
-import fr.cea.nabla.NablaStandaloneSetup
-import fr.cea.nabla.NablagenStandaloneSetup
-import fr.cea.nabla.ir.IrModuleExtensions
-import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nablagen.NablagenModule
-import fr.cea.nabla.workflow.WorkflowInterpretor
-import org.eclipse.emf.ecore.resource.ResourceSet
+import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.Job
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
-import org.eclipse.xtext.testing.util.ParseHelper
-import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
-import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.Iterator
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
-class IteratorExtensionsTest 
+class IteratorExtensionsTest
 {
-	@Inject Provider<WorkflowInterpretor> interpretorProvider
-	@Inject Provider<ResourceSet> resourceSetProvider
-	@Inject extension ValidationTestHelper
-	@Inject extension IrModuleExtensions
+	@Inject CompilationChainHelper compilationHelper
 
-	var nablaSetup = new NablaStandaloneSetup
-	var nablaInjector = nablaSetup.createInjectorAndDoEMFRegistration
-	var ParseHelper<NablaModule> nablaParseHelper = nablaInjector.getInstance(ParseHelper)
-
-	var nablagenSetup = new NablagenStandaloneSetup
-	var nablagenInjector = nablagenSetup.createInjectorAndDoEMFRegistration
-	var ParseHelper<NablagenModule> nablagenParseHelper = nablagenInjector.getInstance(ParseHelper)
-
-	var IrModule irModule
 	var Job j1; Job j2; Job j3; Job j4;	Job j5;
 	var Iterator j1_j; Iterator j2_j; Iterator j2_r; Iterator j3_j; Iterator j3_r;
 	var Iterator j4_j; Iterator j4_r; Iterator j5_j1; Iterator j5_j2; Iterator j5_cf;
@@ -81,24 +59,12 @@ class IteratorExtensionsTest
 	J5: ∀j1∈cells(), f{j1} = a * ∑{j2∈neighbourCells(j1), cf=commonFace(j1,j2)}( (x{j2}-x{j1}) / surface{cf});	
 	'''
 
-	var genModel =
-	'''
-	with Test.*;
-
-	workflow TestDefaultGenerationChain transforms Test
-	{
-		Nabla2Ir nabla2ir
-		{
-		}
-	}
-	'''
+	var genModel = TestUtils::testGenModel
 
 	@Before
 	def void setUpBefore() throws Exception
 	{
-		nablaModule.assertNoErrors
-		nablagenModule.assertNoErrors
-		launchNablaToIr
+		val irModule = compilationHelper.getIrModule(model, genModel)
 
 		j1 = irModule.getJobByName("J1")
 		j2 = irModule.getJobByName("J2")
@@ -192,30 +158,5 @@ class IteratorExtensionsTest
 		Assert.assertArrayEquals(#[], j5_j1.neededIndices.map[indexName])
 		Assert.assertArrayEquals(#["j2Cells"], j5_j2.neededIndices.map[indexName])
 		Assert.assertArrayEquals(#["cfFaces"], j5_cf.neededIndices.map[indexName])
-	}
-
-	private def getNablaModule()
-	{
-		nablaParseHelper.parse(model)
-	}
-
-	private def getNablagenModule()
-	{
-		var nablaModule = getNablaModule
-
-		var rs = resourceSetProvider.get
-		rs.resources.add(nablaModule.eResource)
-
-		nablagenParseHelper.parse(genModel, rs)
-	}
-	
-	private def launchNablaToIr()
-	{
-		var workflow = nablagenModule.workflow
-		if (workflow!== null) {
-			var interpretor = interpretorProvider.get
-			interpretor.addWorkflowModelChangedLister([module|irModule = module])
-			interpretor.launch(workflow)
-		}
 	}
 }

@@ -29,7 +29,6 @@ import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.nabla.VarRef
 import fr.cea.nabla.typing.BaseTypeTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.NSTBoolScalar
@@ -87,7 +86,6 @@ class TypeValidator extends BasicValidator
 	public static val FUNCTION_ARGS = "Expressions::FunctionArgs"
 	public static val REDUCTION_ON_CONNECTIVITIES_VARIABLE = "Expressions::ReductionOnConnectivitiesVariable"
 	public static val REDUCTION_ARGS = "Expressions::ReductionArgs"
-	public static val VAR_REF_INDICES = "Expressions::VarRefIndices"
 	public static val CONTRACTED_IF_CONDITION_TYPE = "Expressions::ContractedIfConditionType"
 	public static val CONTRACTED_IF_ELSE_TYPE = "Expressions::ContractedIfElseType"
 	public static val NOT_EXPRESSION_TYPE = "Expressions::NotExpressionType"
@@ -106,7 +104,6 @@ class TypeValidator extends BasicValidator
 	static def getFunctionArgsMsg(List<String> inTypes) { "Wrong arguments : " + inTypes.join(', ') }
 	static def getReductionOnConnectivitiesVariableMsg() { "No reduction on connectivities variable" }	
 	static def getReductionArgsMsg(String inType) { "Wrong arguments : " + inType }	
-	static def getVarRefIndicesMsg() { "Type of indices expression must be " + INT.label }
 	static def getContractedIfConditionTypeMsg(String actualType) { "Expected " + BOOL.label + " type, but was " + actualType }
 	static def getContractedIfElseTypeMsg(String actualType, String expectedType) { "Expected " + expectedType + " type, but was " + actualType }
 	static def getNotExpressionTypeMsg(String actualType) { "Expected " + BOOL.label + " type, but was " + actualType }	
@@ -165,23 +162,12 @@ class TypeValidator extends BasicValidator
 			error(getReductionArgsMsg(inT.label), NablaPackage.Literals::REDUCTION_CALL__REDUCTION, REDUCTION_ARGS)
 	}
 
-	@Check
-	def checkVarRefIndices(VarRef it)
-	{
-		for (i : 0..<indices.size)
-		{
-			val indiceType = indices.get(i).typeFor
-			if (indiceType !== null && !(indiceType instanceof NSTIntScalar))
-				error(getVarRefIndicesMsg(), NablaPackage.Literals::VAR_REF__INDICES, i, VAR_REF_INDICES)
-		}
-	}
-
 	@Check 
 	def checkContractedIfType(ContractedIf it)
 	{
-		val condType = condition.typeFor
-		val thenType = then.typeFor
-		val elseType = ^else.typeFor
+		val condType = condition?.typeFor
+		val thenType = then?.typeFor
+		val elseType = ^else?.typeFor
 
 		if (!checkExpectedType(condType, BOOL))
 			error(getContractedIfConditionTypeMsg(condType.label), NablaPackage.Literals::CONTRACTED_IF__CONDITION, CONTRACTED_IF_CONDITION_TYPE)
@@ -193,7 +179,7 @@ class TypeValidator extends BasicValidator
 	def checkNotExpressionType(Not it)
 	{
 		if (!checkExpectedType(expression?.typeFor, BOOL))
-		error(getNotExpressionTypeMsg(expression?.typeFor.label), NablaPackage.Literals::NOT__EXPRESSION, NOT_EXPRESSION_TYPE)
+		error(getNotExpressionTypeMsg(expression?.typeFor?.label), NablaPackage.Literals::NOT__EXPRESSION, NOT_EXPRESSION_TYPE)
 	}
 
 	// UnaryMinus fonctionne avec tous les types
@@ -202,35 +188,35 @@ class TypeValidator extends BasicValidator
 	def checkMulOrDivType(MulOrDiv it)
 	{
 		if (!checkBinaryOp(left, right, op))
-			error(getMulOrDivTypeMsg(op, left.typeFor.label, right.typeFor.label), NablaPackage.Literals.MUL_OR_DIV__OP, MUL_OR_DIV_TYPE)
+			error(getMulOrDivTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.MUL_OR_DIV__OP, MUL_OR_DIV_TYPE)
 	}
 
 	@Check
 	def checkPlusType(Plus it)
 	{
 		if (!checkBinaryOp(left, right, op))
-			error(getPlusTypeMsg(op, left.typeFor.label, right.typeFor.label), NablaPackage.Literals.PLUS__OP, PLUS_TYPE)
+			error(getPlusTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.PLUS__OP, PLUS_TYPE)
 	}
 
 	@Check
 	def checkMinusType(Minus it)
 	{
 		if (!checkBinaryOp(left, right, op))
-			error(getMinusTypeMsg(op, left.typeFor.label, right.typeFor.label), NablaPackage.Literals.MINUS__OP, MINUS_TYPE)
+			error(getMinusTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.MINUS__OP, MINUS_TYPE)
 	}
 
 	@Check
 	def checkComparisonType(Comparison it)
 	{
 		if (!checkBinaryOp(left, right, op))
-			error(getComparisonTypeMsg(op, left.typeFor.label, right.typeFor.label), NablaPackage.Literals.COMPARISON__OP, COMPARISON_TYPE)
+			error(getComparisonTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.COMPARISON__OP, COMPARISON_TYPE)
 	}
 
 	@Check
 	def checkEqualityType(Equality it)
 	{
 		if (!checkBinaryOp(left, right, op))
-			error(getEqualityTypeMsg(op, left.typeFor.label, right.typeFor.label), NablaPackage.Literals.EQUALITY__OP, EQUALITY_TYPE)
+			error(getEqualityTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.EQUALITY__OP, EQUALITY_TYPE)
 	}
 
 	@Check def checkModuloType(Modulo it)

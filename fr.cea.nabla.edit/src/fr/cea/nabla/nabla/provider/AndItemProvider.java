@@ -175,6 +175,11 @@ public class AndItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.AND__LEFT,
+				 NablaFactory.eINSTANCE.createReductionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.AND__LEFT,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -266,11 +271,6 @@ public class AndItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.AND__LEFT,
 				 NablaFactory.eINSTANCE.createFunctionCall()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.AND__LEFT,
-				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -280,6 +280,11 @@ public class AndItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.AND__RIGHT,
+				 NablaFactory.eINSTANCE.createReductionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.AND__RIGHT,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -371,11 +376,6 @@ public class AndItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.AND__RIGHT,
 				 NablaFactory.eINSTANCE.createFunctionCall()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.AND__RIGHT,
-				 NablaFactory.eINSTANCE.createReductionCall()));
 	}
 
 	/**

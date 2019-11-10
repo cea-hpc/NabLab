@@ -142,6 +142,11 @@ public class ReturnItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.RETURN__EXPRESSION,
+				 NablaFactory.eINSTANCE.createReductionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.RETURN__EXPRESSION,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -233,11 +238,6 @@ public class ReturnItemProvider extends InstructionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.RETURN__EXPRESSION,
 				 NablaFactory.eINSTANCE.createFunctionCall()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.RETURN__EXPRESSION,
-				 NablaFactory.eINSTANCE.createReductionCall()));
 	}
 
 }

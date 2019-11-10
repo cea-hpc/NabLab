@@ -164,6 +164,11 @@ public class BaseTypeConstantItemProvider extends StrictInitializationExpression
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE,
+				 NablaFactory.eINSTANCE.createReductionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -255,11 +260,6 @@ public class BaseTypeConstantItemProvider extends StrictInitializationExpression
 			(createChildParameter
 				(NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE,
 				 NablaFactory.eINSTANCE.createFunctionCall()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE,
-				 NablaFactory.eINSTANCE.createReductionCall()));
 	}
 
 }

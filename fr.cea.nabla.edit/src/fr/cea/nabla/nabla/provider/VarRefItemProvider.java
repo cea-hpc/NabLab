@@ -4,19 +4,21 @@
 package fr.cea.nabla.nabla.provider;
 
 
+import fr.cea.nabla.nabla.NablaFactory;
+import fr.cea.nabla.nabla.NablaPackage;
+import fr.cea.nabla.nabla.VarRef;
+
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.ecore.EStructuralFeature;
+
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-
-import fr.cea.nabla.nabla.NablaFactory;
-import fr.cea.nabla.nabla.NablaPackage;
-import fr.cea.nabla.nabla.VarRef;
 
 /**
  * This is the item provider adapter for a {@link fr.cea.nabla.nabla.VarRef} object.
@@ -183,107 +185,22 @@ public class VarRefItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createExpression()));
+				 NablaFactory.eINSTANCE.createDimension()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createVarRef()));
+				 NablaFactory.eINSTANCE.createDimensionOperation()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createContractedIf()));
+				 NablaFactory.eINSTANCE.createDimensionInt()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createOr()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createAnd()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createEquality()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createComparison()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createPlus()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createMinus()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createMulOrDiv()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createModulo()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createParenthesis()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createUnaryMinus()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createNot()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createIntConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createRealConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createBoolConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createMinConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createMaxConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createFunctionCall()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.VAR_REF__INDICES,
-				 NablaFactory.eINSTANCE.createReductionCall()));
+				 NablaFactory.eINSTANCE.createDimensionSymbolReference()));
 	}
 
 }

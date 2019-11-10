@@ -13,11 +13,8 @@
 // TODO change IntVectorConstant, RealVector to allow expressions => validator for the type (idem for matrices)
 // TODO Suppress StrictInitializationExpression
 // TODO Change names Var->Symbol, DeclaredVar->Var, Affectation.expr->Affectation.right (idem for left)
-// TODO Suppress dynamic reductions and change inner reduction suppression for a function call
-// TODO Allow reductions on index
 // TODO Add missing tests of validators
-// TODO Definition d'operateurs
-// TODO Surcharge d'operateurs
+// TODO Operator definition and overload
 
 
 
@@ -32,7 +29,7 @@ NablaModule:
 	('items' '{' items+=ItemType (',' items+=ItemType)* '}'
 	connectivities+=Connectivity*)?
 	functions+=(Function | Reduction)*
-	variables+=(SimpleVarDefinition | VarGroupDeclaration)*
+	instructions+=(SimpleVarDefinition | VarGroupDeclaration)*
 	jobs+=Job*;
 
 Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';
@@ -45,31 +42,38 @@ ItemType:
 Job: name=ID ':' instruction=Instruction;
 
 /* INSTRUCTIONS ******************************************/
+Iterable: Loop | ReductionCall;
 Instruction: 
-	SimpleVarDefinition |
-	VarGroupDeclaration |
-	InstructionBlock |
-	{Affectation} varRef=VarRef '=' expression=Expression ';' |
-	{IteratorLoop} '\u2200' range=RangeSpaceIterator (',' singletons+=SingletonSpaceIterator)* ',' body=Instruction |
-	{IndexLoop} '\u2200' index=LoopIndex ',' body=Instruction |
-	{If} 'if' '(' condition=Expression ')' then=Instruction (=>'else' else=Instruction)? |
-	{Return} 'return' expression=Expression ';';
+	SimpleVarDefinition | VarGroupDeclaration | InstructionBlock |
+	Loop | Affectation | If | Return;
 
+SimpleVarDefinition: (const?='const')? type=BaseType variable=SimpleVar '=' defaultValue=InitializationExpression ';';
+VarGroupDeclaration: type=BaseType variables+=DeclaredVar (',' variables+=DeclaredVar)* ';';
 InstructionBlock: '{' instructions+=Instruction+ '}';
+Loop: '\u2200' iterationBlock=IterationBlock ',' body=Instruction;
+Affectation: varRef=VarRef '=' expression=Expression ';';
+If: 'if' '(' condition=Expression ')' then=Instruction (=>'else' else=Instruction)?;
+Return: 'return' expression=Expression ';';
 
 /* ITERATEURS ********************************************/
+IterationBlock: SpaceIterationBlock | DimensionIterationBlock;
+SpaceIterationBlock: range=RangeSpaceIterator (',' singletons+=SingletonSpaceIterator)*;
+DimensionIterationBlock: index=DimensionIndex;
+
 SpaceIterator: RangeSpaceIterator | SingletonSpaceIterator;
 RangeSpaceIterator: name=ID '\u2208' container=ConnectivityCall; // must return a collection
 SingletonSpaceIterator: name=ID '=' container=ConnectivityCall; // must return a singleton
 ConnectivityCall: connectivity=[Connectivity]  '('(args+=SpaceIteratorRef (',' args+=SpaceIteratorRef)*)?')';
 SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?; // inc/dec only valid on a range
 
+TimeIterator: 
+	{InitTimeIterator} 'n=0' | 
+	{NextTimeIterator} 'n+1' (hasDiv?='/' div=INT)?;
+
+
 /* VARIABLES *********************************************/
-SimpleVarDefinition: (const?='const')? type=BaseType variable=SimpleVar '=' defaultValue=InitializationExpression ';';
-VarGroupDeclaration: type=BaseType variables+=DeclaredVar (',' variables+=DeclaredVar)* ';';
-Var: Arg | LoopIndex | DeclaredVar;
+Var: Arg | DeclaredVar;
 DeclaredVar: SimpleVar | ConnectivityVar;
-LoopIndex: name=ID '\u2208' '[' from=Dimension ';' to=Dimension (lte?=']'|'[');
 SimpleVar: name=ID;
 ConnectivityVar: name=ID '{' supports+=[Connectivity] (',' supports+=[Connectivity])* '}';
 
@@ -79,18 +83,20 @@ ItemArgType: multiple?='{' type=[ItemType] '}' | type=[ItemType];
 
 /* FONCTIONS / REDUCTIONS ********************************/
 Function: 'def' name=ID ':' (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? (inTypes+=ArgType ('\u00D7' inTypes+=ArgType)*)? '\u2192' returnType=ArgType 
-	(',' '(' (inArgs+=Arg ('\u00D7' inArgs+=Arg)*)? ')' '\u2192' body=Instruction | external?=';');
+	((',' '(' (inArgs+=Arg (',' inArgs+=Arg)*)? ')' '\u2192' body=Instruction) | external?=';');
 Reduction: 'def' name=ID ':' (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? '(' seed=Expression ',' collectionType=ArgType ')' '\u2192' returnType=ArgType ';';
 
 Arg: name=ID;
 ArgType: primitive=PrimitiveType ('[' indices+=Dimension (',' indices+=Dimension)* ']')?;
+DimensionSymbol: DimensionIndex | DimensionVar;
+DimensionIndex: name=ID '\u2208' '[' from=Dimension ';' to=Dimension (lte?=']'|'[');
 DimensionVar: name=ID;
 Dimension: DimensionOperation;
 DimensionOperation returns Dimension:
 	DimensionAtomic ({DimensionOperation.left=current} op=('*'|'+') right=DimensionAtomic)*;
 DimensionAtomic returns Dimension: 
 	{DimensionInt} value=INT |
-	{DimensionVarReference} target=[DimensionVar];
+	{DimensionSymbolReference} target=[DimensionSymbol];
 
 /* EXPRESSIONS ******************************************/
 Expression: ContractedIf;
@@ -132,13 +138,13 @@ Atomic returns Expression:
 	{MinConstant} type=PrimitiveType '.MinValue' |
 	{MaxConstant} type=PrimitiveType '.MaxValue'|
 	{FunctionCall} function=[Function|QualifiedName] '(' (args+=Expression (',' args+=Expression)*)? ')' | 
-	{ReductionCall} reduction=[Reduction|QualifiedName] '{' range=RangeSpaceIterator (',' singletons+=SingletonSpaceIterator)* '}' '(' arg=Expression ')' |
-	VarRef;
+	ReductionCall  | VarRef;
 
+ReductionCall: reduction=[Reduction|QualifiedName] '{' iterationBlock=IterationBlock '}' '(' arg=Expression ')';
 VarRef: variable=[Var] 
 	('^{' timeIterator=TimeIterator '}')?
 	('{' spaceIterators+=SpaceIteratorRef (',' spaceIterators+=SpaceIteratorRef)* '}')? 
-	('[' indices+=Expression (',' indices+=Expression)? ']')?;
+	('[' indices+=Dimension (',' indices+=Dimension)? ']')?;
 
 InitializationExpression: Expression | StrictInitializationExpression;
 
@@ -151,10 +157,6 @@ StrictInitializationExpression:
 
 IntVectorConstant: '[' values+=INT (',' values+=INT)* ']';
 RealVectorConstant: '[' values+=REAL (',' values+=REAL)* ']';
-
-TimeIterator: 
-	{InitTimeIterator} 'n=0' | 
-	{NextTimeIterator} 'n+1' (hasDiv?='/' div=INT)?;
 
 /* TYPES *************************************************/
 BaseType: 

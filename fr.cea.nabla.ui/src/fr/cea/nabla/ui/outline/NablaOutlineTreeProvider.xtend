@@ -10,11 +10,10 @@
 package fr.cea.nabla.ui.outline
 
 import fr.cea.nabla.nabla.If
-import fr.cea.nabla.nabla.IndexLoop
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
-import fr.cea.nabla.nabla.IteratorLoop
 import fr.cea.nabla.nabla.Job
+import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
 import java.util.List
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode
@@ -35,19 +34,18 @@ class NablaOutlineTreeProvider extends DefaultOutlineTreeProvider
 		switch it
 		{
 			InstructionBlock, If : false
-			IteratorLoop : !eAllContents.exists[x|x instanceof InstructionBlock || x instanceof If]
-			IndexLoop : !eAllContents.exists[x|x instanceof InstructionBlock || x instanceof If]
+			Loop : !eAllContents.exists[x|x instanceof InstructionBlock || x instanceof If]
 			default : true
 		}
 	}
-	
+
 	/** 
 	 * Des essais int ete realises pour afficher une image SWT de la formule 
 	 * Latex mais le rendu dans l'outline n'est pas satisfaisant.
 	 */
 	def _image(Instruction it) { null }
 	def _image(Job it) { null }
-	
+
 	/** 
 	 * La police de l'outline a des problemes d'affichage.
 	 * Des essais ont ete realises avec des TextStyle. Aucun effet...
@@ -74,16 +72,14 @@ class NablaOutlineTreeProvider extends DefaultOutlineTreeProvider
 	{
 		findChildren.forEach[x | createNode(parentNode, x)]
 	}
-	
+
 	private def List<Instruction> findChildren(Instruction it)
 	{
 		switch(it)
 		{
 			If : #[then, ^else]
 			InstructionBlock: instructions
-			IteratorLoop: body.findChildren
-			IndexLoop: body.findChildren
-			
+			Loop: body.findChildren
 			default: #[]
 		}
 	}

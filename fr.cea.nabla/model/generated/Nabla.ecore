@@ -11,7 +11,7 @@
         eType="#//Connectivity" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="functions" upperBound="-1"
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="instructions" upperBound="-1"
         eType="#//Instruction" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="jobs" upperBound="-1" eType="#//Job"
         containment="true"/>
@@ -32,6 +32,15 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="instructions" upperBound="-1"
         eType="#//Instruction" containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Iterable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="iterationBlock" eType="#//IterationBlock"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Loop" eSuperTypes="#//Instruction #//Iterable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//Instruction"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IterationBlock"/>
   <eClassifiers xsi:type="ecore:EClass" name="SpaceIterator">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="container" eType="#//ConnectivityCall"
@@ -68,13 +77,6 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DeclaredVar" eSuperTypes="#//Var"/>
-  <eClassifiers xsi:type="ecore:EClass" name="LoopIndex" eSuperTypes="#//Var">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="from" eType="#//Dimension"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="to" eType="#//Dimension"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lte" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SimpleVar" eSuperTypes="#//DeclaredVar"/>
   <eClassifiers xsi:type="ecore:EClass" name="ConnectivityVar" eSuperTypes="#//DeclaredVar">
     <eStructuralFeatures xsi:type="ecore:EReference" name="supports" unique="false"
@@ -122,11 +124,24 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="indices" upperBound="-1"
         eType="#//Dimension" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DimensionVar">
+  <eClassifiers xsi:type="ecore:EClass" name="DimensionSymbol">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DimensionIndex" eSuperTypes="#//DimensionSymbol">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="from" eType="#//Dimension"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="to" eType="#//Dimension"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lte" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DimensionVar" eSuperTypes="#//DimensionSymbol"/>
   <eClassifiers xsi:type="ecore:EClass" name="Dimension"/>
   <eClassifiers xsi:type="ecore:EClass" name="Expression" eSuperTypes="#//InitializationExpression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ReductionCall" eSuperTypes="#//Iterable #//Expression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="reduction" eType="#//Reduction"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="arg" eType="#//Expression"
+        containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VarRef" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//Var"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeIterator" eType="#//TimeIterator"
@@ -134,7 +149,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="spaceIterators" upperBound="-1"
         eType="#//SpaceIteratorRef" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="indices" upperBound="-1"
-        eType="#//Expression" containment="true"/>
+        eType="#//Dimension" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InitializationExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="StrictInitializationExpression" eSuperTypes="#//InitializationExpression"/>
@@ -161,20 +176,6 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="IteratorLoop" eSuperTypes="#//Instruction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="range" eType="#//RangeSpaceIterator"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="singletons" upperBound="-1"
-        eType="#//SingletonSpaceIterator" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//Instruction"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="IndexLoop" eSuperTypes="#//Instruction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="index" eType="#//LoopIndex"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//Instruction"
-        containment="true"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="If" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//Expression"
         containment="true"/>
@@ -187,6 +188,16 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SpaceIterationBlock" eSuperTypes="#//IterationBlock">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="range" eType="#//RangeSpaceIterator"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="singletons" upperBound="-1"
+        eType="#//SingletonSpaceIterator" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DimensionIterationBlock" eSuperTypes="#//IterationBlock">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="index" eType="#//DimensionIndex"
+        containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DimensionOperation" eSuperTypes="#//Dimension">
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//Dimension"
         containment="true"/>
@@ -197,8 +208,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="DimensionInt" eSuperTypes="#//Dimension">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DimensionVarReference" eSuperTypes="#//Dimension">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//DimensionVar"/>
+  <eClassifiers xsi:type="ecore:EClass" name="DimensionSymbolReference" eSuperTypes="#//Dimension">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//DimensionSymbol"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ContractedIf" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//Expression"
@@ -294,15 +305,6 @@
   <eClassifiers xsi:type="ecore:EClass" name="FunctionCall" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="function" eType="#//Function"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="args" upperBound="-1" eType="#//Expression"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ReductionCall" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="reduction" eType="#//Reduction"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="range" eType="#//RangeSpaceIterator"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="singletons" upperBound="-1"
-        eType="#//SingletonSpaceIterator" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="arg" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IntMatrixConstant" eSuperTypes="#//StrictInitializationExpression">

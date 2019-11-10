@@ -23,11 +23,12 @@ import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.DimensionOperation
+import fr.cea.nabla.nabla.DimensionSymbolReference
 import fr.cea.nabla.nabla.DimensionVar
-import fr.cea.nabla.nabla.DimensionVarReference
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.InstructionBlock
+import fr.cea.nabla.nabla.Iterable
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.RangeSpaceIterator
@@ -170,7 +171,7 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkMandatoryOptions(NablaModule it)
 	{
-		val scalarConsts = variables.filter(SimpleVarDefinition).filter[const].map[variable.name].toList
+		val scalarConsts = instructions.filter(SimpleVarDefinition).filter[const].map[variable.name].toList
 		val missingConsts = MandatoryOptions::NAMES.filter[x | !scalarConsts.contains(x)]
 		if (missingConsts.size > 0)
 			error(getMandatoryOptionsMsg(missingConsts), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_OPTION)
@@ -350,14 +351,14 @@ class BasicValidator extends AbstractNablaValidator
 	{
 		val inTypeVars = new HashSet<DimensionVar>
 		for (inType : inTypes)
-			for (dim : inType.eAllContents.filter(DimensionVarReference).toIterable)
-				if (dim.target !== null && !dim.target.eIsProxy)
-					inTypeVars += dim.target
+			for (dim : inType.eAllContents.filter(DimensionSymbolReference).toIterable)
+				if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionVar)
+					inTypeVars += dim.target as DimensionVar
 
 		val returnTypeVars = new HashSet<DimensionVar>		
-		for (dim : returnType.eAllContents.filter(DimensionVarReference).toIterable)
-			if (dim.target !== null && !dim.target.eIsProxy)
-				returnTypeVars += dim.target
+		for (dim : returnType.eAllContents.filter(DimensionSymbolReference).toIterable)
+			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionVar)
+				returnTypeVars += dim.target as DimensionVar
 
 		val x = returnTypeVars.findFirst[x | !inTypeVars.contains(x)]
 		if (x !== null)
@@ -386,14 +387,14 @@ class BasicValidator extends AbstractNablaValidator
 	{	
 		// return type should reference only known variables
 		val inTypeVars = new HashSet<DimensionVar>
-		for (dim : collectionType.eAllContents.filter(DimensionVarReference).toIterable)
-			if (dim.target !== null && !dim.target.eIsProxy)
-				inTypeVars += dim.target
+		for (dim : collectionType.eAllContents.filter(DimensionSymbolReference).toIterable)
+			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionVar)
+				inTypeVars += dim.target as DimensionVar
 
 		val returnTypeVars = new HashSet<DimensionVar>
-		for (dim : returnType.eAllContents.filter(DimensionVarReference).toIterable)
-			if (dim.target !== null && !dim.target.eIsProxy)
-				returnTypeVars += dim.target
+		for (dim : returnType.eAllContents.filter(DimensionSymbolReference).toIterable)
+			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionVar)
+				returnTypeVars += dim.target as DimensionVar
 
 		val x = returnTypeVars.findFirst[x | !inTypeVars.contains(x)]
 		if (x !== null)
@@ -404,15 +405,15 @@ class BasicValidator extends AbstractNablaValidator
 	def checkDimensionVarName(DimensionVar it)
 	{
 		if (name == 'n')
-			error(getDimensionVarNameMsg(), NablaPackage.Literals::DIMENSION_VAR__NAME, DIMENSION_VAR_NAME)
+			error(getDimensionVarNameMsg(), NablaPackage.Literals::DIMENSION_SYMBOL__NAME, DIMENSION_VAR_NAME)
 	}
 
 	@Check
 	def checkUnusedDimensionVar(DimensionVar it)
 	{
-		val varRefs = eContainer.eAllContents.filter(DimensionVarReference).map[target].toSet
+		val varRefs = eContainer.eAllContents.filter(DimensionSymbolReference).map[target].toSet
 		if (!varRefs.contains(it))
-			warning(getUnusedDimensionVar(), NablaPackage.Literals::DIMENSION_VAR__NAME, UNUSED_DIMENSION_VAR)
+			warning(getUnusedDimensionVar(), NablaPackage.Literals::DIMENSION_SYMBOL__NAME, UNUSED_DIMENSION_VAR)
 	}
 
 
@@ -515,7 +516,8 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkUnusedIterator(SpaceIterator it)
 	{
-		val referenced = eContainer.eAllContents.filter(SpaceIteratorRef).exists[x|x.target===it]
+		val iterable = EcoreUtil2.getContainerOfType(it, Iterable)
+		val referenced = iterable.eAllContents.filter(SpaceIteratorRef).exists[x|x.target===it]
 		if (!referenced)
 			warning(getUnusedIteratorMsg(), NablaPackage.Literals::SPACE_ITERATOR__NAME, UNUSED_ITERATOR)
 	}

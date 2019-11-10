@@ -13,8 +13,8 @@ class NablaModuleExtensions
 	def getAllVars(NablaModule it)
 	{
 		val allVars = new ArrayList<Var>
-		allVars.addAll(variables.filter(SimpleVarDefinition).map[variable]) 
-		variables.filter(VarGroupDeclaration).forEach[g | allVars.addAll(g.variables)]
+		allVars.addAll(instructions.filter(SimpleVarDefinition).map[variable]) 
+		instructions.filter(VarGroupDeclaration).forEach[g | allVars.addAll(g.variables)]
 		return allVars
 	}	
 	

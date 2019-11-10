@@ -15,8 +15,8 @@ import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.Dimension
 import fr.cea.nabla.nabla.DimensionInt
 import fr.cea.nabla.nabla.DimensionOperation
+import fr.cea.nabla.nabla.DimensionSymbolReference
 import fr.cea.nabla.nabla.DimensionVar
-import fr.cea.nabla.nabla.DimensionVarReference
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
@@ -135,14 +135,14 @@ class DeclarationProvider
 			{
 				DimensionOperation: computeValue(expectedType, dimVarValues)
 				DimensionInt case (!actualType.int || expectedType.value != actualType.intValue): return false
-				DimensionVarReference :
+				DimensionSymbolReference case (expectedType.target instanceof DimensionVar):
 				{
 					val dimVarValue = dimVarValues.get(expectedType.target)
 					if (dimVarValue === null)
 					{
 						// The DimemsionVar instance has not yet been encountered.
 						// Fix the value for the rest of the loop.
-						dimVarValues.put(expectedType.target, actualType)
+						dimVarValues.put(expectedType.target as DimensionVar, actualType)
 					}
 					else
 					{
@@ -171,7 +171,7 @@ class DeclarationProvider
 		new DimensionValue(value)
 	}
 	
-	private def dispatch DimensionValue computeValue(DimensionVarReference it, Map<DimensionVar, DimensionValue> values)
+	private def dispatch DimensionValue computeValue(DimensionSymbolReference it, Map<DimensionVar, DimensionValue> values)
 	{
 		values.getOrDefault(target, DimensionValue::Undefined)
 	}

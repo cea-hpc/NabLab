@@ -193,6 +193,11 @@ public class JobItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.JOB__INSTRUCTION,
+				 NablaFactory.eINSTANCE.createLoop()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.JOB__INSTRUCTION,
 				 NablaFactory.eINSTANCE.createSimpleVarDefinition()));
 
 		newChildDescriptors.add
@@ -204,16 +209,6 @@ public class JobItemProvider
 			(createChildParameter
 				(NablaPackage.Literals.JOB__INSTRUCTION,
 				 NablaFactory.eINSTANCE.createAffectation()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.JOB__INSTRUCTION,
-				 NablaFactory.eINSTANCE.createIteratorLoop()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.JOB__INSTRUCTION,
-				 NablaFactory.eINSTANCE.createIndexLoop()));
 
 		newChildDescriptors.add
 			(createChildParameter

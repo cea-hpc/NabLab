@@ -2,8 +2,8 @@ package fr.cea.nabla.typing
 
 import com.google.inject.Inject
 import fr.cea.nabla.VarExtensions
+import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ConnectivityVar
-import fr.cea.nabla.nabla.LoopIndex
 import fr.cea.nabla.nabla.SimpleVar
 
 class VarTypeProvider
@@ -21,8 +21,9 @@ class VarTypeProvider
 		new NablaConnectivityType(supports, baseType.typeFor)
 	}
 
-	def dispatch NablaType getTypeFor(LoopIndex it)
+	def dispatch NablaType getTypeFor(Arg it)
 	{
-		new NSTIntScalar
+		// TODO
+		null
 	}
 }

@@ -205,6 +205,11 @@ public class SimpleVarDefinitionItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
+				 NablaFactory.eINSTANCE.createReductionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createVarRef()));
 
 		newChildDescriptors.add
@@ -311,11 +316,6 @@ public class SimpleVarDefinitionItemProvider extends InstructionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createFunctionCall()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
-				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter

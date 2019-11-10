@@ -9,8 +9,49 @@
  *******************************************************************************/
 package fr.cea.nabla.tests
 
+import fr.cea.nabla.nabla.Affectation
+import fr.cea.nabla.nabla.Connectivity
+import fr.cea.nabla.nabla.ConnectivityCall
+import fr.cea.nabla.nabla.SimpleVarDefinition
+import fr.cea.nabla.nabla.Var
+import fr.cea.nabla.nabla.VarGroupDeclaration
+import java.util.ArrayList
+import org.eclipse.emf.ecore.EObject
+
 class TestUtils 
 {
+	static def getAllVars(EObject it)
+	{
+		val allVariables = new ArrayList<Var>
+		for (i : eAllContents.toIterable)
+			switch i
+			{
+				VarGroupDeclaration : allVariables += i.variables
+				SimpleVarDefinition : allVariables += i.variable
+			}
+		return allVariables
+	}
+
+	static def getAllAffectations(EObject it)
+	{
+		eAllContents.filter(Affectation)
+	}
+
+	static def getVariableByName(EObject it, String variableName)
+	{
+		allVars.findFirst[v | v.name == variableName]
+	}
+
+	static def getVarAffectationByName(EObject it, String variableName)
+	{
+		allAffectations.findFirst[a | a.varRef.variable.name == variableName]
+	}
+
+	static def getConnectivityCallFor(EObject it, Connectivity connectivity)
+	{
+		eAllContents.filter(ConnectivityCall).findFirst[ cc | cc.connectivity == connectivity]
+	}
+
 	// ===== CharSequence utils =====
 	static def String getEmptyTestModule()
 	'''
@@ -29,11 +70,11 @@ class TestUtils
 	const ℝ option_stoptime = 0.2;
 	const ℕ option_max_iterations = 20000;
 	'''
-	
+
 	static def String getConnectivities()
 	'''
 	items { node, cell }
-	
+
 	set nodes: → {node};
 	set cells: → {cell};
 	set nodesOfCell: cell → {node};
@@ -51,12 +92,12 @@ class TestUtils
 	ℝ t;
 	ℝ[2] X{nodes};
 	'''
-		
+
 	static def CharSequence getTestModule()
 	{
 		emptyTestModule + connectivities + mandatoryOptions + mandatoryVariables
 	}
-	
+
 	static def getTestModuleWithCustomFunctions(CharSequence functions)
 	{
 		emptyTestModule + connectivities + functions + mandatoryOptions + mandatoryVariables
@@ -71,7 +112,7 @@ class TestUtils
 	static def getTestModuleWithCoordVariable()
 	{
 		emptyTestModule + nodesConnectivity + mandatoryOptions + mandatoryVariables
-	}	
+	}
 
 	//Useful to prevent warnings
 	static def getTestModuleWithCoordVariableWithCustomVars(CharSequence variables)

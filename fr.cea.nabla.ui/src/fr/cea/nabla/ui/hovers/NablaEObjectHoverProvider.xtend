@@ -37,7 +37,7 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 			else 
 			{
 				val eType = expression.typeFor
-				'Expression <b>' + LabelServices.getLabel(expression) + '</b> of type <b>' + eType.label + '</b>'
+				'Expression <b>' + LabelServices.getLabel(expression) + '</b> of type <b>' + eType?.label + '</b>'
 			}
 		}
 	}

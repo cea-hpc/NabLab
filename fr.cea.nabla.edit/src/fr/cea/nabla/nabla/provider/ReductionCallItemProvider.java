@@ -26,7 +26,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * <!-- end-user-doc -->
  * @generated
  */
-public class ReductionCallItemProvider extends ExpressionItemProvider {
+public class ReductionCallItemProvider extends IterableItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
@@ -87,8 +87,6 @@ public class ReductionCallItemProvider extends ExpressionItemProvider {
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(NablaPackage.Literals.REDUCTION_CALL__RANGE);
-			childrenFeatures.add(NablaPackage.Literals.REDUCTION_CALL__SINGLETONS);
 			childrenFeatures.add(NablaPackage.Literals.REDUCTION_CALL__ARG);
 		}
 		return childrenFeatures;
@@ -142,8 +140,6 @@ public class ReductionCallItemProvider extends ExpressionItemProvider {
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(ReductionCall.class)) {
-			case NablaPackage.REDUCTION_CALL__RANGE:
-			case NablaPackage.REDUCTION_CALL__SINGLETONS:
 			case NablaPackage.REDUCTION_CALL__ARG:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
@@ -164,18 +160,13 @@ public class ReductionCallItemProvider extends ExpressionItemProvider {
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.REDUCTION_CALL__RANGE,
-				 NablaFactory.eINSTANCE.createRangeSpaceIterator()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.REDUCTION_CALL__SINGLETONS,
-				 NablaFactory.eINSTANCE.createSingletonSpaceIterator()));
+				(NablaPackage.Literals.REDUCTION_CALL__ARG,
+				 NablaFactory.eINSTANCE.createExpression()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_CALL__ARG,
-				 NablaFactory.eINSTANCE.createExpression()));
+				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -271,11 +262,6 @@ public class ReductionCallItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_CALL__ARG,
 				 NablaFactory.eINSTANCE.createFunctionCall()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.REDUCTION_CALL__ARG,
-				 NablaFactory.eINSTANCE.createReductionCall()));
 	}
 
 }

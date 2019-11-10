@@ -12,6 +12,7 @@ package fr.cea.nabla.typing
 import com.google.inject.Inject
 import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.And
+import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
@@ -23,7 +24,6 @@ import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.IntMatrixConstant
 import fr.cea.nabla.nabla.IntVectorConstant
-import fr.cea.nabla.nabla.LoopIndex
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
@@ -63,9 +63,9 @@ class ExpressionTypeProvider
 	def dispatch NablaType getTypeFor(MulOrDiv it)  { getTypeFor(left, right, op) }
 	def dispatch NablaType getTypeFor(Modulo it)  { new NSTIntScalar }
 
-	def dispatch NablaType getTypeFor(Parenthesis it) { expression.typeFor }
-	def dispatch NablaType getTypeFor(UnaryMinus it) { expression.typeFor }
-	def dispatch NablaType getTypeFor(Not it) { expression.typeFor }
+	def dispatch NablaType getTypeFor(Parenthesis it) { expression?.typeFor }
+	def dispatch NablaType getTypeFor(UnaryMinus it) { expression?.typeFor }
+	def dispatch NablaType getTypeFor(Not it) { expression?.typeFor }
 
 	def dispatch NablaType getTypeFor(IntConstant it) { new NSTIntScalar }
 	def dispatch NablaType getTypeFor(RealConstant it) { new NSTRealScalar }
@@ -118,12 +118,10 @@ class ExpressionTypeProvider
 		}
 	}
 
-	private def dispatch NablaType getTypeForVar(LoopIndex v, List<SpaceIteratorRef> iterators, int nbIndices)
+	private def dispatch NablaType getTypeForVar(Arg v, List<SpaceIteratorRef> iterators, int nbIndices)
 	{
-		if (iterators.empty && nbIndices==0)
-			v.typeFor
-		else
-			null
+		// TODO
+		null
 	}
 
 	private def NablaType getTypeForVar(NablaSimpleType t, int nbIndices)
@@ -145,8 +143,8 @@ class ExpressionTypeProvider
 
 	def NablaSimpleType getTypeFor(Expression a, Expression b, String op)
 	{
-		val atype = a.typeFor
-		val btype = b.typeFor
+		val atype = a?.typeFor
+		val btype = b?.typeFor
 		if (atype !== null && btype !== null && atype instanceof NablaSimpleType && btype instanceof NablaSimpleType)
 			getTypeFor(atype as NablaSimpleType, btype as NablaSimpleType, op)
 		else 

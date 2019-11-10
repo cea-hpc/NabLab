@@ -10,7 +10,6 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
-import fr.cea.nabla.JobExtensions
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.Affectation
@@ -18,6 +17,14 @@ import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ExpressionTypeProvider
+import fr.cea.nabla.typing.NSTBoolScalar
+import fr.cea.nabla.typing.NSTIntArray1D
+import fr.cea.nabla.typing.NSTIntArray2D
+import fr.cea.nabla.typing.NSTIntScalar
+import fr.cea.nabla.typing.NSTRealArray1D
+import fr.cea.nabla.typing.NSTRealArray2D
+import fr.cea.nabla.typing.NSTRealScalar
+import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.typing.NablaType
 import fr.cea.nabla.typing.VarTypeProvider
 import org.eclipse.xtext.testing.InjectWith
@@ -27,14 +34,8 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import fr.cea.nabla.typing.NablaConnectivityType
-import fr.cea.nabla.typing.NSTBoolScalar
-import fr.cea.nabla.typing.NSTIntScalar
-import fr.cea.nabla.typing.NSTIntArray1D
-import fr.cea.nabla.typing.NSTIntArray2D
-import fr.cea.nabla.typing.NSTRealScalar
-import fr.cea.nabla.typing.NSTRealArray1D
-import fr.cea.nabla.typing.NSTRealArray2D
+
+import static extension fr.cea.nabla.tests.TestUtils.*
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -46,7 +47,6 @@ class ExpressionTypeProviderTest
 	@Inject extension VarTypeProvider
 	@Inject extension VarExtensions
 	@Inject extension NablaModuleExtensions
-	@Inject extension JobExtensions
 	
 	val model = 
 	'''
@@ -98,7 +98,7 @@ class ExpressionTypeProviderTest
 	ℝ c1 = 2.0 + 1.0;
 	ℝ c2 = 2.0 - 1.0;
 	ℝ c3 = 2.0 * 1.0;
-	ℝ c4 = 2.0 / 1.0;		
+	ℝ c4 = 2.0 / 1.0;
 	ℝ c5 = -c1;		
 	ℝ c6 = ℝ.MaxValue;
 	const ℝ c7 = 1.0e-10;

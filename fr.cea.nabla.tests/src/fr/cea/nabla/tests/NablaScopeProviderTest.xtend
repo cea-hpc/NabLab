@@ -10,11 +10,11 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
-import fr.cea.nabla.JobExtensions
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VarRef
@@ -28,6 +28,8 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
+import static extension fr.cea.nabla.tests.TestUtils.*
+
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
 class NablaScopeProviderTest 
@@ -35,7 +37,6 @@ class NablaScopeProviderTest
 	@Inject ParseHelper<NablaModule> parseHelper;
 	@Inject extension IScopeProvider
 	@Inject extension NablaModuleExtensions
-	@Inject extension JobExtensions
 
 	/*** Scope for iterators **********************************************************/
 
@@ -52,10 +53,10 @@ class NablaScopeProviderTest
 			j2 : ∀j ∈ cells(), c{j} = 0.25 * ∑{r ∈ nodes()}(d{r});
 			j3 : ∀j ∈ cells(), ∀r ∈ nodesOfCell(j), b{j,r} = 0.;
 			j4 : ∀j ∈ cells(), a{j} = ∑{r∈nodesOfCell(j)}(b{j, r});
+			j5 : ℝ[2] z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(X{r}));
 			'''
 		)
 		Assert.assertNotNull(module)
-
 		val eref = NablaPackage::eINSTANCE.spaceIteratorRef_Target
 
 		val j1 = module.getJobByName("j1")
@@ -79,6 +80,10 @@ class NablaScopeProviderTest
 		val sum2 = j4_a.expression as ReductionCall
 		val j4_b = sum2.arg as VarRef
 		j4_b.assertScope(eref, "r, j")
+		
+		val j5 = module.getJobByName("j5")
+		val j5_x = j5.eAllContents.filter(VarRef).head
+		j5_x.assertScope(eref, "r, j")
 	}
 
 	@Test
@@ -161,9 +166,23 @@ class NablaScopeProviderTest
 				f = e + 1.0;
 			}
 		}
+		
+		j2: {
+			ℝ[4] n;
+			ℝ[4, 2] m;
+			∀ i∈[0;4[, 
+			{
+				n[i] = 4.0;
+				∀ j∈[0;2[, m[i,j] = 3.0;
+			}
+		}
+		
+		j3: {
+			ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{k∈[0;1]}(X{r}[k+1])));
+			z = z + 1;
+		}
 		''')
 		Assert.assertNotNull(module)
-
 		val eref = NablaPackage::eINSTANCE.varRef_Variable
 
 		val aDeclaration = module.getVariableByName("a").eContainer as SimpleVarDefinition
@@ -180,10 +199,21 @@ class NablaScopeProviderTest
 		affectationc1.assertScope(eref, defaultOptionsScope + ", a, b1, b2, c1, c2")
 
 		val affectationc2 = j1.getVarAffectationByName("c2")
-		affectationc2.assertScope(eref, "d, "+ defaultOptionsScope + ", a, b1, b2, c1, c2")
+		affectationc2.assertScope(eref, "d, " + defaultOptionsScope + ", a, b1, b2, c1, c2")
 
 		val affectationf = j1.getVarAffectationByName("f")
-		affectationf.assertScope(eref, "e, f, d, "+ defaultOptionsScope + ", a, b1, b2, c1, c2")
+		affectationf.assertScope(eref, "e, f, d, " + defaultOptionsScope + ", a, b1, b2, c1, c2")
+
+		val j2 = module.getJobByName("j2")
+		val affectationn = j2.getVarAffectationByName("n")
+		affectationn.assertScope(eref, "n, m, " + defaultOptionsScope + ", a, b1, b2, c1, c2")
+
+		val affectationm = j2.getVarAffectationByName("m")
+		affectationm.assertScope(eref, "n, m, " + defaultOptionsScope + ", a, b1, b2, c1, c2")
+
+		val j3 = module.getJobByName("j3")
+		val j3_xvarref = j3.instruction.eAllContents.filter(VarRef).findFirst[x | x.variable.name == 'X']
+		j3_xvarref.assertScope(eref, defaultOptionsScope + ", a, b1, b2, c1, c2")
 	}
 
 	@Test
@@ -206,23 +236,151 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForVarRefInFunction()
 	{
-		val module = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions(
+		val model = TestUtils::getTestModuleWithCustomFunctions(
 			'''
 			def	inverse: ℝ[2,2] → ℝ[2,2];
+			def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
+			{
+				ℝ c = 2.0;
+				c = a * 2.0;
+				return c + 4.0;
+			}
+			def g: → ℝ, () →
+			{
+				ℝ[4] n;
+				ℝ[4, 2] m;
+				∀ i∈[0;4[, 
+				{
+					n[i] = 4.0;
+					∀ j∈[0;2[, m[i,j] = 3.0;
+				}
+				return 4.0;
+			}
 			''')
-		)
 
+		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
-
 		val eref = NablaPackage::eINSTANCE.varRef_Variable
 
 		val inverse = module.getFunctionByName("inverse")
 		Assert.assertNotNull(inverse)
 		inverse.assertScope(eref, "")
+
+		val f = module.getFunctionByName("f")
+		Assert.assertNotNull(f)
+		val fReturnInstruction = f.body.eAllContents.filter(Return).head
+		Assert.assertNotNull(fReturnInstruction)
+		fReturnInstruction.assertScope(eref, "c, a, b")
+
+		val g = module.getFunctionByName("g")
+		Assert.assertNotNull(g)
+		val affectationn = g.getVarAffectationByName("n")
+		affectationn.assertScope(eref, "n, m")
+
+		val affectationm = g.getVarAffectationByName("m")
+		affectationm.assertScope(eref, "n, m")
 	}
 
 	private def defaultOptionsScope()
 	{
 		return "X_EDGE_LENGTH, Y_EDGE_LENGTH, X_EDGE_ELEMS, Y_EDGE_ELEMS, Z_EDGE_ELEMS, option_stoptime, option_max_iterations, t, X"	
+	}
+
+	/*** Scope for dimension symbols **********************************/
+
+	@Test
+	def void testScopeProviderForDimensionSymbolInInstruction()
+	{
+		val module = parseHelper.parse(TestUtils::testModule
+		+
+		'''
+		ℝ c1 {cells};
+		
+		j1: ∀ j∈cells(), {
+			c1{j} = 2.0;
+		}
+		
+		j2: {
+			ℝ[4] n;
+			ℝ[4, 2] m;
+			∀ i∈[0;4[, 
+			{
+				n[i] = 4.0;
+				∀ j∈[0;2[, m[i,j] = 3.0;
+			}
+		}
+		
+		j3: {
+			ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{k∈[0;1]}(X{r}[k+1])));
+			z = z + 1;
+		}
+		''')
+		Assert.assertNotNull(module)
+		val eref = NablaPackage::eINSTANCE.dimensionSymbolReference_Target
+
+		val c1Decl = module.instructions.get(0)		
+		c1Decl.assertScope(eref, "")
+
+		val j1 = module.getJobByName("j1")
+		val affectationc1 = j1.getVarAffectationByName("c1")
+		affectationc1.assertScope(eref, "")
+
+		val j2 = module.getJobByName("j2")
+		val affectationn = j2.getVarAffectationByName("n")
+		affectationn.varRef.assertScope(eref, "i")
+
+		val affectationm = j2.getVarAffectationByName("m")
+		affectationm.varRef.assertScope(eref, "j, i")
+
+		val j3 = module.getJobByName("j3")
+		val j3_xvarref = j3.instruction.eAllContents.filter(VarRef).findFirst[x | x.variable.name == 'X']
+		j3_xvarref.assertScope(eref, "k")
+	}
+
+	@Test
+	def void testScopeProviderForDimensionSymbolInFunction()
+	{
+		val model = TestUtils::getTestModuleWithCustomFunctions(
+			'''
+			def	inverse: ℝ[2,2] → ℝ[2,2];
+			def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
+			{
+				ℝ[x,y] c;
+				return c;
+			}
+			def g: → ℝ, () →
+			{
+				ℝ[4] n;
+				ℝ[4, 2] m;
+				∀ i∈[0;4[, 
+				{
+					n[i] = 4.0;
+					∀ j∈[0;2[, m[i,j] = 3.0;
+				}
+				return 4.0;
+			}
+			''')
+
+		val module = parseHelper.parse(model)
+		Assert.assertNotNull(module)
+		val eref = NablaPackage::eINSTANCE.dimensionSymbolReference_Target
+
+		val inverse = module.getFunctionByName("inverse")
+		Assert.assertNotNull(inverse)
+		inverse.assertScope(eref, "")
+
+		val f = module.getFunctionByName("f")
+		Assert.assertNotNull(f)
+		val fReturnInstruction = f.body.eAllContents.filter(Return).head
+		Assert.assertNotNull(fReturnInstruction)
+		fReturnInstruction.expression.assertScope(eref, "x, y")
+
+		val g = module.getFunctionByName("g")
+		Assert.assertNotNull(g)
+		val affectationn = g.getVarAffectationByName("n")
+		affectationn.varRef.assertScope(eref, "i")
+
+		val affectationm = g.getVarAffectationByName("m")
+		affectationm.varRef.assertScope(eref, "j, i")
 	}
 }

@@ -10,11 +10,6 @@
 package fr.cea.nabla.ui.quickfix
 
 import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider
-import org.eclipse.xtext.validation.Issue
-import fr.cea.nabla.validation.NablaValidator
-import org.eclipse.xtext.ui.editor.quickfix.Fix
-import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor
-import fr.cea.nabla.nabla.NablaModule
 
 /**
  * Custom quickfixes.

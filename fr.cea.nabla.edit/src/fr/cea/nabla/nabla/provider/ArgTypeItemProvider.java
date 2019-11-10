@@ -200,7 +200,7 @@ public class ArgTypeItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.ARG_TYPE__INDICES,
-				 NablaFactory.eINSTANCE.createDimensionVarReference()));
+				 NablaFactory.eINSTANCE.createDimensionSymbolReference()));
 	}
 
 	/**

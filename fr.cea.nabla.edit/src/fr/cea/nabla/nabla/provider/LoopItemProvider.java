@@ -25,7 +25,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * <!-- end-user-doc -->
  * @generated
  */
-public class LoopItemProvider extends InstructionItemProvider {
+public class LoopItemProvider extends IterableItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
@@ -63,7 +63,6 @@ public class LoopItemProvider extends InstructionItemProvider {
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(NablaPackage.Literals.ITERABLE__ITERATION_BLOCK);
 			childrenFeatures.add(NablaPackage.Literals.LOOP__BODY);
 		}
 		return childrenFeatures;
@@ -117,7 +116,6 @@ public class LoopItemProvider extends InstructionItemProvider {
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Loop.class)) {
-			case NablaPackage.LOOP__ITERATION_BLOCK:
 			case NablaPackage.LOOP__BODY:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
@@ -138,33 +136,8 @@ public class LoopItemProvider extends InstructionItemProvider {
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.ITERABLE__ITERATION_BLOCK,
-				 NablaFactory.eINSTANCE.createIterationBlock()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.ITERABLE__ITERATION_BLOCK,
-				 NablaFactory.eINSTANCE.createSpaceIterationBlock()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.ITERABLE__ITERATION_BLOCK,
-				 NablaFactory.eINSTANCE.createDimensionIterationBlock()));
-
-		newChildDescriptors.add
-			(createChildParameter
 				(NablaPackage.Literals.LOOP__BODY,
 				 NablaFactory.eINSTANCE.createInstruction()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.LOOP__BODY,
-				 NablaFactory.eINSTANCE.createInstructionBlock()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.LOOP__BODY,
-				 NablaFactory.eINSTANCE.createLoop()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -175,6 +148,16 @@ public class LoopItemProvider extends InstructionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.LOOP__BODY,
 				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.LOOP__BODY,
+				 NablaFactory.eINSTANCE.createInstructionBlock()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.LOOP__BODY,
+				 NablaFactory.eINSTANCE.createLoop()));
 
 		newChildDescriptors.add
 			(createChildParameter

@@ -11,13 +11,13 @@ package fr.cea.nabla.tests
 
 import com.google.inject.Inject
 import fr.cea.nabla.NablaModuleExtensions
+import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
-import fr.cea.nabla.nabla.VarRef
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.scoping.IScopeProvider
@@ -61,28 +61,28 @@ class NablaScopeProviderTest
 
 		val j1 = module.getJobByName("j1")
 		val j1_a = j1.getVarAffectationByName("a")
-		j1_a.varRef.assertScope(eref, "j")
+		j1_a.left.assertScope(eref, "j")
 
 		val j2 = module.getJobByName("j2")
 		val j2_c = j2.getVarAffectationByName("c")
-		j2_c.varRef.assertScope(eref, "j")
-		val sum = j2_c.expression.eContents.filter(ReductionCall).head
-		val j2_d = sum.arg as VarRef
+		j2_c.left.assertScope(eref, "j")
+		val sum = j2_c.right.eContents.filter(ReductionCall).head
+		val j2_d = sum.arg as ArgOrVarRef
 		j2_d.assertScope(eref, "r, j")
 
 		val j3 = module.getJobByName("j3")
 		val j3_b = j3.getVarAffectationByName("b")
-		j3_b.varRef.assertScope(eref, "r, j")
+		j3_b.left.assertScope(eref, "r, j")
 
 		val j4 = module.getJobByName("j4")
 		val j4_a = j4.getVarAffectationByName("a")
-		j4_a.varRef.assertScope(eref, "j")
-		val sum2 = j4_a.expression as ReductionCall
-		val j4_b = sum2.arg as VarRef
+		j4_a.left.assertScope(eref, "j")
+		val sum2 = j4_a.right as ReductionCall
+		val j4_b = sum2.arg as ArgOrVarRef
 		j4_b.assertScope(eref, "r, j")
 		
 		val j5 = module.getJobByName("j5")
-		val j5_x = j5.eAllContents.filter(VarRef).head
+		val j5_x = j5.eAllContents.filter(ArgOrVarRef).head
 		j5_x.assertScope(eref, "r, j")
 	}
 
@@ -146,7 +146,7 @@ class NablaScopeProviderTest
 	/*** Scope for variables ***********************************************************/
 
 	@Test
-	def void testScopeProviderForVarRefInInstruction() 
+	def void testScopeProviderForArgOrVarRefInInstruction() 
 	{
 		val module = parseHelper.parse(TestUtils::testModule
 		+
@@ -183,7 +183,7 @@ class NablaScopeProviderTest
 		}
 		''')
 		Assert.assertNotNull(module)
-		val eref = NablaPackage::eINSTANCE.varRef_Variable
+		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
 
 		val aDeclaration = module.getVariableByName("a").eContainer as SimpleVarDefinition
 		aDeclaration.assertScope(eref, defaultOptionsScope)
@@ -212,12 +212,12 @@ class NablaScopeProviderTest
 		affectationm.assertScope(eref, "n, m, " + defaultOptionsScope + ", a, b1, b2, c1, c2")
 
 		val j3 = module.getJobByName("j3")
-		val j3_xvarref = j3.instruction.eAllContents.filter(VarRef).findFirst[x | x.variable.name == 'X']
+		val j3_xvarref = j3.instruction.eAllContents.filter(ArgOrVarRef).findFirst[x | x.target.name == 'X']
 		j3_xvarref.assertScope(eref, defaultOptionsScope + ", a, b1, b2, c1, c2")
 	}
 
 	@Test
-	def void testScopeProviderForVarRefInReduction() 
+	def void testScopeProviderForArgOrVarRefInReduction() 
 	{
 		val module = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions(
 			'''
@@ -226,7 +226,7 @@ class NablaScopeProviderTest
 		)
 		Assert.assertNotNull(module)
 
-		val eref = NablaPackage::eINSTANCE.varRef_Variable
+		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
 
 		val reduction = module.getReductionByName("reduceMin")
 		Assert.assertNotNull(reduction)
@@ -234,7 +234,7 @@ class NablaScopeProviderTest
 	}
 
 	@Test
-	def void testScopeProviderForVarRefInFunction()
+	def void testScopeProviderForArgOrVarRefInFunction()
 	{
 		val model = TestUtils::getTestModuleWithCustomFunctions(
 			'''
@@ -260,7 +260,7 @@ class NablaScopeProviderTest
 
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
-		val eref = NablaPackage::eINSTANCE.varRef_Variable
+		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
 
 		val inverse = module.getFunctionByName("inverse")
 		Assert.assertNotNull(inverse)
@@ -316,7 +316,7 @@ class NablaScopeProviderTest
 		}
 		''')
 		Assert.assertNotNull(module)
-		val eref = NablaPackage::eINSTANCE.dimensionSymbolReference_Target
+		val eref = NablaPackage::eINSTANCE.dimensionSymbolRef_Target
 
 		val c1Decl = module.instructions.get(0)		
 		c1Decl.assertScope(eref, "")
@@ -327,13 +327,13 @@ class NablaScopeProviderTest
 
 		val j2 = module.getJobByName("j2")
 		val affectationn = j2.getVarAffectationByName("n")
-		affectationn.varRef.assertScope(eref, "i")
+		affectationn.left.assertScope(eref, "i")
 
 		val affectationm = j2.getVarAffectationByName("m")
-		affectationm.varRef.assertScope(eref, "j, i")
+		affectationm.left.assertScope(eref, "j, i")
 
 		val j3 = module.getJobByName("j3")
-		val j3_xvarref = j3.instruction.eAllContents.filter(VarRef).findFirst[x | x.variable.name == 'X']
+		val j3_xvarref = j3.instruction.eAllContents.filter(ArgOrVarRef).findFirst[x | x.target.name == 'X']
 		j3_xvarref.assertScope(eref, "k")
 	}
 
@@ -363,7 +363,7 @@ class NablaScopeProviderTest
 
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
-		val eref = NablaPackage::eINSTANCE.dimensionSymbolReference_Target
+		val eref = NablaPackage::eINSTANCE.dimensionSymbolRef_Target
 
 		val inverse = module.getFunctionByName("inverse")
 		Assert.assertNotNull(inverse)
@@ -378,9 +378,9 @@ class NablaScopeProviderTest
 		val g = module.getFunctionByName("g")
 		Assert.assertNotNull(g)
 		val affectationn = g.getVarAffectationByName("n")
-		affectationn.varRef.assertScope(eref, "i")
+		affectationn.left.assertScope(eref, "i")
 
 		val affectationm = g.getVarAffectationByName("m")
-		affectationm.varRef.assertScope(eref, "j, i")
+		affectationm.left.assertScope(eref, "j, i")
 	}
 }

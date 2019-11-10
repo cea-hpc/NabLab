@@ -24,7 +24,7 @@ import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterationBlock
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
-import fr.cea.nabla.nabla.VarRef
+import fr.cea.nabla.nabla.ArgOrVarRef
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.emf.ecore.EObject
@@ -48,7 +48,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		return s
 	}
 
-	def scope_SpaceIteratorRef_target(VarRef context, EReference r)
+	def scope_SpaceIteratorRef_target(ArgOrVarRef context, EReference r)
 	{
 		val s = iteratorsDefinedBefore(context.eContainer, null)
 		return s
@@ -89,13 +89,13 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	}
 
 	/*** Scope for variables ***********************************************************/
-	def IScope scope_VarRef_variable(Instruction context, EReference r)
+	def IScope scope_ArgOrVarRef_target(Instruction context, EReference r)
 	{
 		//println('scope_VarRef_variable(' + context.class.simpleName + ', ' + r.name + ')')
 		variablesDefinedBefore(context.eContainer, context, '\t')
 	}
 
-	def IScope scope_VarRef_variable(NablaModule context, EReference r)
+	def IScope scope_ArgOrVarRef_target(NablaModule context, EReference r)
 	{
 		//println('scope_VarRef_variable(' + context.class.simpleName + ', ' + r.name + ')')
 		IScope::NULLSCOPE
@@ -157,33 +157,33 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	}
 
 	/*** Scope for dimension symbols **********************************/
-	def IScope scope_DimensionSymbolReference_target(Iterable context, EReference r)
+	def IScope scope_DimensionSymbolRef_target(Iterable context, EReference r)
 	{
-		println('scope_DimensionSymbolReference_target(' + context.class.simpleName + ', ' + r.name + ')')
+		//println('scope_DimensionSymbolRef_target(' + context.class.simpleName + ', ' + r.name + ')')
 		symbolsDefinedBefore(context.eContainer, '\t')
 	}
 
-	def IScope scope_DimensionSymbolReference_target(VarRef context, EReference r)
+	def IScope scope_DimensionSymbolRef_target(ArgOrVarRef context, EReference r)
 	{
-		println('scope_DimensionSymbolReference_target(' + context.class.simpleName + ', ' + r.name + ')')
+		//println('scope_DimensionSymbolRef_target(' + context.class.simpleName + ', ' + r.name + ')')
 		symbolsDefinedBefore(context.eContainer, '\t')
 	}
 
-	def IScope scope_DimensionSymbolReference_target(ArgType context, EReference r)
+	def IScope scope_DimensionSymbolRef_target(ArgType context, EReference r)
 	{
-		println('scope_DimensionSymbolReference_target(' + context.class.simpleName + ', ' + r.name + ')')
+		//println('scope_DimensionSymbolRef_target(' + context.class.simpleName + ', ' + r.name + ')')
 		symbolsDefinedBefore(context.eContainer, '\t')
 	}
 
-	def IScope scope_DimensionSymbolReference_target(EObject context, EReference r)
+	def IScope scope_DimensionSymbolRef_target(NablaModule context, EReference r)
 	{
-		println('scope_DimensionSymbolReference_target(' + context.class.simpleName + ', ' + r.name + ')')
+		//println('scope_DimensionSymbolRef_target(' + context.class.simpleName + ', ' + r.name + ')')
 		IScope::NULLSCOPE
 	}
 
 	private def IScope symbolsDefinedBefore(EObject o, String prefix)
 	{
-		println(prefix + 'symbolsDefinedBefore(' + o.class.simpleName + ')')
+		//println(prefix + 'symbolsDefinedBefore(' + o.class.simpleName + ')')
 		if (o === null || o instanceof NablaModule) IScope.NULLSCOPE
 		else switch o
 		{

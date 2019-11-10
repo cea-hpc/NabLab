@@ -52,7 +52,7 @@ class TestUtils
 
 	static def getVarAffectationByName(EObject it, String variableName)
 	{
-		allAffectations.findFirst[a | a.varRef.variable.name == variableName]
+		allAffectations.findFirst[a | a.left.target.name == variableName]
 	}
 
 	static def getConnectivityCallFor(EObject it, Connectivity connectivity)

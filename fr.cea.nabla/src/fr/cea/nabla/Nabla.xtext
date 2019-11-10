@@ -10,11 +10,10 @@
  
  
  
-// TODO change IntVectorConstant, RealVector to allow expressions => validator for the type (idem for matrices)
-// TODO Suppress StrictInitializationExpression
-// TODO Change names Var->Symbol, DeclaredVar->Var, Affectation.expr->Affectation.right (idem for left)
 // TODO Add missing tests of validators
 // TODO Operator definition and overload
+// TODO Reduction body
+// TODO While: instructions or pow like time iterator
 
 
 
@@ -34,26 +33,20 @@ NablaModule:
 
 Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';
 
-/* ITEMS *************************************************/
-ItemType:
-	name=ID;
 
-/* JOBS **************************************************/
+/* JOBS & INSTRUCTIONS ***********************************/
 Job: name=ID ':' instruction=Instruction;
-
-/* INSTRUCTIONS ******************************************/
 Iterable: Loop | ReductionCall;
-Instruction: 
-	SimpleVarDefinition | VarGroupDeclaration | InstructionBlock |
-	Loop | Affectation | If | Return;
+Instruction: SimpleVarDefinition | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | Return;
 
-SimpleVarDefinition: (const?='const')? type=BaseType variable=SimpleVar '=' defaultValue=InitializationExpression ';';
-VarGroupDeclaration: type=BaseType variables+=DeclaredVar (',' variables+=DeclaredVar)* ';';
+SimpleVarDefinition: (const?='const')? type=BaseType variable=SimpleVar '=' defaultValue=Expression ';';
+VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
 InstructionBlock: '{' instructions+=Instruction+ '}';
 Loop: '\u2200' iterationBlock=IterationBlock ',' body=Instruction;
-Affectation: varRef=VarRef '=' expression=Expression ';';
+Affectation: left=ArgOrVarRef '=' right=Expression ';';
 If: 'if' '(' condition=Expression ')' then=Instruction (=>'else' else=Instruction)?;
 Return: 'return' expression=Expression ';';
+
 
 /* ITERATEURS ********************************************/
 IterationBlock: SpaceIterationBlock | DimensionIterationBlock;
@@ -72,14 +65,17 @@ TimeIterator:
 
 
 /* VARIABLES *********************************************/
-Var: Arg | DeclaredVar;
-DeclaredVar: SimpleVar | ConnectivityVar;
+ArgOrVar: Arg | Var;
+Var: SimpleVar | ConnectivityVar;
 SimpleVar: name=ID;
 ConnectivityVar: name=ID '{' supports+=[Connectivity] (',' supports+=[Connectivity])* '}';
 
-/* CONNECTIVITES *****************************************/
+
+/* ITEMS & CONNECTIVITES *********************************/
+ItemType: name=ID;
 Connectivity: 'set' name=ID ':' (inTypes+=[ItemType] ('\u00D7' inTypes+=[ItemType])*)?  '\u2192' returnType=ItemArgType ';';
 ItemArgType: multiple?='{' type=[ItemType] '}' | type=[ItemType];
+
 
 /* FONCTIONS / REDUCTIONS ********************************/
 Function: 'def' name=ID ':' (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? (inTypes+=ArgType ('\u00D7' inTypes+=ArgType)*)? '\u2192' returnType=ArgType 
@@ -88,6 +84,7 @@ Reduction: 'def' name=ID ':' (dimVars+=DimensionVar (',' dimVars+=DimensionVar)*
 
 Arg: name=ID;
 ArgType: primitive=PrimitiveType ('[' indices+=Dimension (',' indices+=Dimension)* ']')?;
+
 DimensionSymbol: DimensionIndex | DimensionVar;
 DimensionIndex: name=ID '\u2208' '[' from=Dimension ';' to=Dimension (lte?=']'|'[');
 DimensionVar: name=ID;
@@ -96,7 +93,8 @@ DimensionOperation returns Dimension:
 	DimensionAtomic ({DimensionOperation.left=current} op=('*'|'+') right=DimensionAtomic)*;
 DimensionAtomic returns Dimension: 
 	{DimensionInt} value=INT |
-	{DimensionSymbolReference} target=[DimensionSymbol];
+	{DimensionSymbolRef} target=[DimensionSymbol];
+
 
 /* EXPRESSIONS ******************************************/
 Expression: ContractedIf;
@@ -138,41 +136,35 @@ Atomic returns Expression:
 	{MinConstant} type=PrimitiveType '.MinValue' |
 	{MaxConstant} type=PrimitiveType '.MaxValue'|
 	{FunctionCall} function=[Function|QualifiedName] '(' (args+=Expression (',' args+=Expression)*)? ')' | 
-	ReductionCall  | VarRef;
+	ReductionCall |
+	{BaseTypeConstant} type=BaseType '(' value=Expression ')'| 
+	IntVectorConstant | 
+	{IntMatrixConstant} '[' values+=IntVectorConstant (',' values+=IntVectorConstant)+ ']' |
+	RealVectorConstant |
+	{RealMatrixConstant} '[' values+=RealVectorConstant (',' values+=RealVectorConstant)+ ']' |
+	ArgOrVarRef;
 
+IntVectorConstant: '[' values+=INT (',' values+=INT)* ']';
+RealVectorConstant: '[' values+=REAL (',' values+=REAL)* ']';
 ReductionCall: reduction=[Reduction|QualifiedName] '{' iterationBlock=IterationBlock '}' '(' arg=Expression ')';
-VarRef: variable=[Var] 
+ArgOrVarRef: target=[ArgOrVar] 
 	('^{' timeIterator=TimeIterator '}')?
 	('{' spaceIterators+=SpaceIteratorRef (',' spaceIterators+=SpaceIteratorRef)* '}')? 
 	('[' indices+=Dimension (',' indices+=Dimension)? ']')?;
 
-InitializationExpression: Expression | StrictInitializationExpression;
-
-StrictInitializationExpression:	
-	IntVectorConstant |
-	RealVectorConstant |
-	{IntMatrixConstant} '[' values+=IntVectorConstant (',' values+=IntVectorConstant)+ ']' |
-	{RealMatrixConstant} '[' values+=RealVectorConstant (',' values+=RealVectorConstant)+ ']' |
-	{BaseTypeConstant} type=BaseType '(' value=Expression ')'; // Expression Type is Real because there are only Real arrays for the moment but it will become expression
-
-IntVectorConstant: '[' values+=INT (',' values+=INT)* ']';
-RealVectorConstant: '[' values+=REAL (',' values+=REAL)* ']';
 
 /* TYPES *************************************************/
+enum PrimitiveType: Int='\u2115' | Real='\u211D' | Bool='\u213E';
 BaseType: 
 	{Scalar} primitive=PrimitiveType |
 	{Array1D} primitive=PrimitiveType '[' size=INT ']' |
 	{Array2D} primitive=PrimitiveType '[' nbRows=INT ',' nbCols=INT ']'; 
 
-enum PrimitiveType: Int='\u2115' | Real='\u211D' | Bool='\u213E';
 
-/* DATA TYPE *********************************************/
+/* DATA TYPE AND TERMINALS *******************************/
 QualifiedName: ID ('.' ID)*;
 QualifiedNameWithWildcard: QualifiedName '.*'?;
-
-/* TERMINAUX *********************************************/
-@Override 
-terminal ID: '^'? ('a'..'z'|'A'..'Z'|'\u0394'..'\u03F2'|'\u220F'..'\u221A'|'_') ('a'..'z'|'A'..'Z'|'\u0394'..'\u03F2'|'0'..'9'|'\u221A'|'_')*;
 //terminal REAL returns ecore::EDouble: ('0'..'9')+ '.' ('0'..'9')+ ('e'('+'|'-')('0'..'9')+)?;
 terminal REAL returns ecore::EDouble: INT '.' (INT (('e'|'E')('+'|'-')INT)?)?;
-//terminal DIM returns ecore::EChar: '\u00B2'..'\u00B3' | '\u2074'..'\u2079';
+@Override 
+terminal ID: '^'? ('a'..'z'|'A'..'Z'|'\u0394'..'\u03F2'|'\u220F'..'\u221A'|'_') ('a'..'z'|'A'..'Z'|'\u0394'..'\u03F2'|'0'..'9'|'\u221A'|'_')*;

@@ -67,8 +67,8 @@ class TypeValidator extends BasicValidator
 	@Check
 	def checkType(Affectation it)
 	{
-		if (!checkExpectedType(expression?.typeFor, varRef.typeFor))
-			error(getAffectationTypeMsg(expression?.typeFor.label, varRef.typeFor.label), NablaPackage.Literals.AFFECTATION__EXPRESSION, AFFECTATION_TYPE)
+		if (!checkExpectedType(right?.typeFor, left?.typeFor))
+			error(getAffectationTypeMsg(right?.typeFor.label, left?.typeFor.label), NablaPackage.Literals.AFFECTATION__RIGHT, AFFECTATION_TYPE)
 	}
 
 	@Check

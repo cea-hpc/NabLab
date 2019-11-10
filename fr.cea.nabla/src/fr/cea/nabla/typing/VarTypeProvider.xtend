@@ -1,14 +1,14 @@
 package fr.cea.nabla.typing
 
 import com.google.inject.Inject
-import fr.cea.nabla.VarExtensions
+import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.SimpleVar
 
 class VarTypeProvider
 {
-	@Inject extension VarExtensions
+	@Inject extension ArgOrVarExtensions
 	@Inject extension BaseTypeTypeProvider
 
 	def dispatch NablaType getTypeFor(SimpleVar it)

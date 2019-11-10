@@ -240,22 +240,22 @@ public class FunctionItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.FUNCTION__BODY,
-				 NablaFactory.eINSTANCE.createInstructionBlock()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.FUNCTION__BODY,
-				 NablaFactory.eINSTANCE.createLoop()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.FUNCTION__BODY,
 				 NablaFactory.eINSTANCE.createSimpleVarDefinition()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.FUNCTION__BODY,
 				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.FUNCTION__BODY,
+				 NablaFactory.eINSTANCE.createInstructionBlock()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.FUNCTION__BODY,
+				 NablaFactory.eINSTANCE.createLoop()));
 
 		newChildDescriptors.add
 			(createChildParameter

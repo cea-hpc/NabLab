@@ -25,7 +25,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * <!-- end-user-doc -->
  * @generated
  */
-public class BaseTypeConstantItemProvider extends StrictInitializationExpressionItemProvider {
+public class BaseTypeConstantItemProvider extends ExpressionItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
@@ -164,12 +164,22 @@ public class BaseTypeConstantItemProvider extends StrictInitializationExpression
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE,
+				 NablaFactory.eINSTANCE.createIntVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE,
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE,
-				 NablaFactory.eINSTANCE.createVarRef()));
+				 NablaFactory.eINSTANCE.createArgOrVarRef()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -260,6 +270,21 @@ public class BaseTypeConstantItemProvider extends StrictInitializationExpression
 			(createChildParameter
 				(NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE,
 				 NablaFactory.eINSTANCE.createFunctionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE,
+				 NablaFactory.eINSTANCE.createBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE,
+				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE,
+				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
 	}
 
 }

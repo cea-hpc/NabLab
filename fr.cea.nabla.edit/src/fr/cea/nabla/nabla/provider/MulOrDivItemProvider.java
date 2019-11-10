@@ -175,12 +175,22 @@ public class MulOrDivItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.MUL_OR_DIV__LEFT,
+				 NablaFactory.eINSTANCE.createIntVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MUL_OR_DIV__LEFT,
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MUL_OR_DIV__LEFT,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.MUL_OR_DIV__LEFT,
-				 NablaFactory.eINSTANCE.createVarRef()));
+				 NablaFactory.eINSTANCE.createArgOrVarRef()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -271,6 +281,21 @@ public class MulOrDivItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.MUL_OR_DIV__LEFT,
 				 NablaFactory.eINSTANCE.createFunctionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MUL_OR_DIV__LEFT,
+				 NablaFactory.eINSTANCE.createBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MUL_OR_DIV__LEFT,
+				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MUL_OR_DIV__LEFT,
+				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -280,12 +305,22 @@ public class MulOrDivItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.MUL_OR_DIV__RIGHT,
+				 NablaFactory.eINSTANCE.createIntVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MUL_OR_DIV__RIGHT,
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MUL_OR_DIV__RIGHT,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.MUL_OR_DIV__RIGHT,
-				 NablaFactory.eINSTANCE.createVarRef()));
+				 NablaFactory.eINSTANCE.createArgOrVarRef()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -376,6 +411,21 @@ public class MulOrDivItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.MUL_OR_DIV__RIGHT,
 				 NablaFactory.eINSTANCE.createFunctionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MUL_OR_DIV__RIGHT,
+				 NablaFactory.eINSTANCE.createBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MUL_OR_DIV__RIGHT,
+				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.MUL_OR_DIV__RIGHT,
+				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
 	}
 
 	/**

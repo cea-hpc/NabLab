@@ -146,12 +146,22 @@ public class IfItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.IF__CONDITION,
+				 NablaFactory.eINSTANCE.createIntVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__CONDITION,
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__CONDITION,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.IF__CONDITION,
-				 NablaFactory.eINSTANCE.createVarRef()));
+				 NablaFactory.eINSTANCE.createArgOrVarRef()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -245,18 +255,23 @@ public class IfItemProvider extends InstructionItemProvider {
 
 		newChildDescriptors.add
 			(createChildParameter
+				(NablaPackage.Literals.IF__CONDITION,
+				 NablaFactory.eINSTANCE.createBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__CONDITION,
+				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__CONDITION,
+				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
 				(NablaPackage.Literals.IF__THEN,
 				 NablaFactory.eINSTANCE.createInstruction()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.IF__THEN,
-				 NablaFactory.eINSTANCE.createInstructionBlock()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.IF__THEN,
-				 NablaFactory.eINSTANCE.createLoop()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -267,6 +282,16 @@ public class IfItemProvider extends InstructionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.IF__THEN,
 				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__THEN,
+				 NablaFactory.eINSTANCE.createInstructionBlock()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__THEN,
+				 NablaFactory.eINSTANCE.createLoop()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -291,22 +316,22 @@ public class IfItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.IF__ELSE,
-				 NablaFactory.eINSTANCE.createInstructionBlock()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.IF__ELSE,
-				 NablaFactory.eINSTANCE.createLoop()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.IF__ELSE,
 				 NablaFactory.eINSTANCE.createSimpleVarDefinition()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.IF__ELSE,
 				 NablaFactory.eINSTANCE.createVarGroupDeclaration()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__ELSE,
+				 NablaFactory.eINSTANCE.createInstructionBlock()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.IF__ELSE,
+				 NablaFactory.eINSTANCE.createLoop()));
 
 		newChildDescriptors.add
 			(createChildParameter

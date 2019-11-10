@@ -166,12 +166,22 @@ public class ReductionCallItemProvider extends IterableItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_CALL__ARG,
+				 NablaFactory.eINSTANCE.createIntVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION_CALL__ARG,
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION_CALL__ARG,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_CALL__ARG,
-				 NablaFactory.eINSTANCE.createVarRef()));
+				 NablaFactory.eINSTANCE.createArgOrVarRef()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -262,6 +272,21 @@ public class ReductionCallItemProvider extends IterableItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_CALL__ARG,
 				 NablaFactory.eINSTANCE.createFunctionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION_CALL__ARG,
+				 NablaFactory.eINSTANCE.createBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION_CALL__ARG,
+				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.REDUCTION_CALL__ARG,
+				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
 	}
 
 }

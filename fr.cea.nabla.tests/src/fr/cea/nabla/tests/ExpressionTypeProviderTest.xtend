@@ -10,8 +10,8 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
+import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.NablaModuleExtensions
-import fr.cea.nabla.VarExtensions
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
@@ -45,7 +45,7 @@ class ExpressionTypeProviderTest
 	@Inject extension ValidationTestHelper
 	@Inject extension ExpressionTypeProvider
 	@Inject extension VarTypeProvider
-	@Inject extension VarExtensions
+	@Inject extension ArgOrVarExtensions
 	@Inject extension NablaModuleExtensions
 	
 	val model = 
@@ -220,7 +220,7 @@ class ExpressionTypeProviderTest
 			if (affectationRHSDefined)
 				assertTypesFor(expectedType, affectation)						
 			else
-				Assert.assertNull(affectation.expression.typeFor)
+				Assert.assertNull(affectation.right.typeFor)
 		}	
 	}
 
@@ -240,7 +240,7 @@ class ExpressionTypeProviderTest
 	private def assertTypesFor(NablaType expectedType, Affectation affectation)	
 	{
 		// We test both variable type and expression type
-		Assert.assertEquals(expectedType, affectation.varRef.typeFor)
-		Assert.assertEquals(expectedType, affectation.expression.typeFor)
+		Assert.assertEquals(expectedType, affectation.left.typeFor)
+		Assert.assertEquals(expectedType, affectation.right.typeFor)
 	}
 }

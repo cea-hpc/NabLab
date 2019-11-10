@@ -11,7 +11,7 @@ package fr.cea.nabla.validation
 
 import com.google.inject.Inject
 import fr.cea.nabla.SpaceIteratorExtensions
-import fr.cea.nabla.VarExtensions
+import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.nabla.Affectation
@@ -23,7 +23,7 @@ import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.DimensionOperation
-import fr.cea.nabla.nabla.DimensionSymbolReference
+import fr.cea.nabla.nabla.DimensionSymbolRef
 import fr.cea.nabla.nabla.DimensionVar
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
@@ -40,7 +40,7 @@ import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.Var
-import fr.cea.nabla.nabla.VarRef
+import fr.cea.nabla.nabla.ArgOrVarRef
 import java.util.HashSet
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
@@ -53,7 +53,7 @@ import static extension fr.cea.nabla.Utils.*
 
 class BasicValidator extends AbstractNablaValidator
 {
-	@Inject extension VarExtensions
+	@Inject extension ArgOrVarExtensions
 	@Inject extension SpaceIteratorExtensions
 
 	// ===== Unique Names ====
@@ -62,7 +62,7 @@ class BasicValidator extends AbstractNablaValidator
 	static def getDuplicateNameMsg(EClass objectClass, String objectName) { "Duplicate " + objectClass.name + ": " + objectName }
 
 	@Check
-	def void checkDuplicate(Var it) { checkDuplicates(NablaPackage.Literals.VAR__NAME, false) }
+	def void checkDuplicate(Var it) { checkDuplicates(NablaPackage.Literals.ARG_OR_VAR__NAME, false) }
 
 	@Check
 	def void checkDuplicate(Connectivity it) { checkDuplicates(NablaPackage.Literals.CONNECTIVITY__NAME, false) }
@@ -83,7 +83,7 @@ class BasicValidator extends AbstractNablaValidator
 		val candidates = eContainer.eContents.filter(Arg).filter[x | x !== it]
 		val duplicate = candidates.findFirst[x | x.name == name]
 		if (duplicate !== null)
-			error(getDuplicateNameMsg(eClass, name), NablaPackage.Literals.VAR__NAME);
+			error(getDuplicateNameMsg(eClass, name), NablaPackage.Literals.ARG_OR_VAR__NAME);
 	}
 
 	private def <T extends EObject> checkDuplicates(T t, EStructuralFeature f, boolean all)
@@ -221,29 +221,29 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkUnusedVariable(Var it)
 	{
-		val referenced = MandatoryVariables::NAMES.contains(name) || MandatoryOptions::NAMES.contains(name) || nablaModule.eAllContents.filter(VarRef).exists[x|x.variable===it]
+		val referenced = MandatoryVariables::NAMES.contains(name) || MandatoryOptions::NAMES.contains(name) || nablaModule.eAllContents.filter(ArgOrVarRef).exists[x|x.target===it]
 		if (!referenced)
-			warning(getUnusedVariableMsg(), NablaPackage.Literals::VAR__NAME, UNUSED_VARIABLE)
+			warning(getUnusedVariableMsg(), NablaPackage.Literals::ARG_OR_VAR__NAME, UNUSED_VARIABLE)
 	}
 
 	@Check
-	def checkIndicesNumber(VarRef it)
+	def checkIndicesNumber(ArgOrVarRef it)
 	{
-		if (variable === null || variable.eIsProxy) return
-		val vTypeSize = variable.dimension
+		if (target === null || target.eIsProxy) return
+		val vTypeSize = target.dimension
 		if (indices.size > 0 && indices.size != vTypeSize)
-			error(getIndicesNumberMsg(vTypeSize, indices.size), NablaPackage.Literals::VAR_REF__INDICES, INDICES_NUMBER)
+			error(getIndicesNumberMsg(vTypeSize, indices.size), NablaPackage.Literals::ARG_OR_VAR_REF__INDICES, INDICES_NUMBER)
 	}
 
 	@Check
-	def checkIteratorNumberAndType(VarRef it)
+	def checkIteratorNumberAndType(ArgOrVarRef it)
 	{
-		if (variable instanceof ConnectivityVar)
+		if (target instanceof ConnectivityVar)
 		{
-			val dimensions = (variable as ConnectivityVar).supports
+			val dimensions = (target as ConnectivityVar).supports
 
 			if (spaceIterators.size >  0 && spaceIterators.size != dimensions.size)
-				error(getIteratorNumberMsg(dimensions.size, spaceIterators.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, ITERATOR_NUMBER)
+				error(getIteratorNumberMsg(dimensions.size, spaceIterators.size), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, ITERATOR_NUMBER)
 			else
 			{
 				for (i : 0..<spaceIterators.length)
@@ -253,14 +253,14 @@ class BasicValidator extends AbstractNablaValidator
 					val actualT = spaceIteratorRefI.target.type
 					val expectedT = dimensionI.returnType.type
 					if (actualT != expectedT)
-						error(getIteratorTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, i, ITERATOR_TYPE)
+						error(getIteratorTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, i, ITERATOR_TYPE)
 				}
 			}
 		}
 		else
 		{
 			if (!spaceIterators.empty)
-				error(getIteratorNumberMsg(0, spaceIterators.size), NablaPackage.Literals::VAR_REF__SPACE_ITERATORS, ITERATOR_NUMBER)
+				error(getIteratorNumberMsg(0, spaceIterators.size), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, ITERATOR_NUMBER)
 		}
 	}
 
@@ -351,12 +351,12 @@ class BasicValidator extends AbstractNablaValidator
 	{
 		val inTypeVars = new HashSet<DimensionVar>
 		for (inType : inTypes)
-			for (dim : inType.eAllContents.filter(DimensionSymbolReference).toIterable)
+			for (dim : inType.eAllContents.filter(DimensionSymbolRef).toIterable)
 				if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionVar)
 					inTypeVars += dim.target as DimensionVar
 
 		val returnTypeVars = new HashSet<DimensionVar>		
-		for (dim : returnType.eAllContents.filter(DimensionSymbolReference).toIterable)
+		for (dim : returnType.eAllContents.filter(DimensionSymbolRef).toIterable)
 			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionVar)
 				returnTypeVars += dim.target as DimensionVar
 
@@ -387,12 +387,12 @@ class BasicValidator extends AbstractNablaValidator
 	{	
 		// return type should reference only known variables
 		val inTypeVars = new HashSet<DimensionVar>
-		for (dim : collectionType.eAllContents.filter(DimensionSymbolReference).toIterable)
+		for (dim : collectionType.eAllContents.filter(DimensionSymbolRef).toIterable)
 			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionVar)
 				inTypeVars += dim.target as DimensionVar
 
 		val returnTypeVars = new HashSet<DimensionVar>
-		for (dim : returnType.eAllContents.filter(DimensionSymbolReference).toIterable)
+		for (dim : returnType.eAllContents.filter(DimensionSymbolRef).toIterable)
 			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionVar)
 				returnTypeVars += dim.target as DimensionVar
 
@@ -411,7 +411,7 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkUnusedDimensionVar(DimensionVar it)
 	{
-		val varRefs = eContainer.eAllContents.filter(DimensionSymbolReference).map[target].toSet
+		val varRefs = eContainer.eAllContents.filter(DimensionSymbolRef).map[target].toSet
 		if (!varRefs.contains(it))
 			warning(getUnusedDimensionVar(), NablaPackage.Literals::DIMENSION_SYMBOL__NAME, UNUSED_DIMENSION_VAR)
 	}
@@ -464,7 +464,7 @@ class BasicValidator extends AbstractNablaValidator
 	{
 		val varGroupDeclaration = eContainer
 		if (varGroupDeclaration !== null && !(varGroupDeclaration.eContainer instanceof NablaModule))
-			error(getNotInInstructionsMsg(), NablaPackage.Literals::VAR__NAME, NOT_IN_INSTRUCTIONS)
+			error(getNotInInstructionsMsg(), NablaPackage.Literals::ARG_OR_VAR__NAME, NOT_IN_INSTRUCTIONS)
 	}
 
 	@Check
@@ -481,23 +481,23 @@ class BasicValidator extends AbstractNablaValidator
 
 	// ===== Instructions =====
 
-	public static val AFFECTATION_VAR = "Instructions::AffectationVar"
+	public static val AFFECTATION_CONST = "Instructions::AffectationConst"
 	public static val SCALAR_VAR_DEFAULT_VALUE = "Instructions::ScalarVarDefaultValue"
 
-	static def getAffectationVarMsg() { "Affectation to constant variable" }
+	static def getAffectationConstMsg() { "Affectation to constant element" }
 	static def getScalarVarDefaultValueMsg() { "Assignment with non constant variables" }
 
 	@Check
 	def checkAffectationVar(Affectation it)
 	{
-		if (varRef.variable.isConst)
-			error(getAffectationVarMsg(), NablaPackage.Literals::AFFECTATION__VAR_REF, AFFECTATION_VAR)
+		if (left.target.isConst)
+			error(getAffectationConstMsg(), NablaPackage.Literals::AFFECTATION__LEFT, AFFECTATION_CONST)
 	}
 
 	@Check
 	def checkScalarVarDefaultValue(SimpleVarDefinition it)
 	{
-		if (isConst && defaultValue!==null && defaultValue.eAllContents.filter(VarRef).exists[x|!x.variable.isConst])
+		if (isConst && defaultValue!==null && defaultValue.eAllContents.filter(ArgOrVarRef).exists[x|!x.target.isConst])
 			error(getScalarVarDefaultValueMsg(), NablaPackage.Literals::SIMPLE_VAR_DEFINITION__DEFAULT_VALUE, SCALAR_VAR_DEFAULT_VALUE)
 	}
 

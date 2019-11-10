@@ -195,27 +195,7 @@ public class SimpleVarDefinitionItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
-				 NablaFactory.eINSTANCE.createInitializationExpression()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createExpression()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
-				 NablaFactory.eINSTANCE.createReductionCall()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
-				 NablaFactory.eINSTANCE.createVarRef()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
-				 NablaFactory.eINSTANCE.createStrictInitializationExpression()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -226,6 +206,16 @@ public class SimpleVarDefinitionItemProvider extends InstructionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createRealVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
+				 NablaFactory.eINSTANCE.createReductionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
+				 NablaFactory.eINSTANCE.createArgOrVarRef()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -320,17 +310,17 @@ public class SimpleVarDefinitionItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
+				 NablaFactory.eINSTANCE.createBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
-				 NablaFactory.eINSTANCE.createBaseTypeConstant()));
 	}
 
 }

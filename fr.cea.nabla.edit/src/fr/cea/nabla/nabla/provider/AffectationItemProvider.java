@@ -63,8 +63,8 @@ public class AffectationItemProvider extends InstructionItemProvider {
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(NablaPackage.Literals.AFFECTATION__VAR_REF);
-			childrenFeatures.add(NablaPackage.Literals.AFFECTATION__EXPRESSION);
+			childrenFeatures.add(NablaPackage.Literals.AFFECTATION__LEFT);
+			childrenFeatures.add(NablaPackage.Literals.AFFECTATION__RIGHT);
 		}
 		return childrenFeatures;
 	}
@@ -117,8 +117,8 @@ public class AffectationItemProvider extends InstructionItemProvider {
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Affectation.class)) {
-			case NablaPackage.AFFECTATION__VAR_REF:
-			case NablaPackage.AFFECTATION__EXPRESSION:
+			case NablaPackage.AFFECTATION__LEFT:
+			case NablaPackage.AFFECTATION__RIGHT:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -138,113 +138,138 @@ public class AffectationItemProvider extends InstructionItemProvider {
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__VAR_REF,
-				 NablaFactory.eINSTANCE.createVarRef()));
+				(NablaPackage.Literals.AFFECTATION__LEFT,
+				 NablaFactory.eINSTANCE.createArgOrVarRef()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createExpression()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
+				 NablaFactory.eINSTANCE.createIntVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
-				 NablaFactory.eINSTANCE.createVarRef()));
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
+				 NablaFactory.eINSTANCE.createArgOrVarRef()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createContractedIf()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createOr()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createAnd()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createEquality()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createComparison()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createPlus()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createMinus()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createMulOrDiv()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createModulo()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createParenthesis()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createUnaryMinus()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createNot()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createIntConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createRealConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createBoolConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createMinConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createMaxConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__EXPRESSION,
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createFunctionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
+				 NablaFactory.eINSTANCE.createBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
+				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.AFFECTATION__RIGHT,
+				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
 	}
 
 	/**
@@ -259,8 +284,8 @@ public class AffectationItemProvider extends InstructionItemProvider {
 		Object childObject = child;
 
 		boolean qualify =
-			childFeature == NablaPackage.Literals.AFFECTATION__VAR_REF ||
-			childFeature == NablaPackage.Literals.AFFECTATION__EXPRESSION;
+			childFeature == NablaPackage.Literals.AFFECTATION__LEFT ||
+			childFeature == NablaPackage.Literals.AFFECTATION__RIGHT;
 
 		if (qualify) {
 			return getString

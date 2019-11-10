@@ -19,28 +19,68 @@
   <eClassifiers xsi:type="ecore:EClass" name="Import">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importedNamespace" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ItemType">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Job">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" eType="#//Instruction"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Instruction"/>
-  <eClassifiers xsi:type="ecore:EClass" name="InstructionBlock" eSuperTypes="#//Instruction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="instructions" upperBound="-1"
-        eType="#//Instruction" containment="true"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Iterable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterationBlock" eType="#//IterationBlock"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Loop" eSuperTypes="#//Instruction #//Iterable">
+  <eClassifiers xsi:type="ecore:EClass" name="Instruction"/>
+  <eClassifiers xsi:type="ecore:EClass" name="SimpleVarDefinition" eSuperTypes="#//Instruction">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="const" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//SimpleVar"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValue" eType="#//Expression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VarGroupDeclaration" eSuperTypes="#//Instruction">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
+        eType="#//Var" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InstructionBlock" eSuperTypes="#//Instruction">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="instructions" upperBound="-1"
+        eType="#//Instruction" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Loop" eSuperTypes="#//Iterable #//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//Instruction"
         containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Affectation" eSuperTypes="#//Instruction">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//ArgOrVarRef"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//Expression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="If" eSuperTypes="#//Instruction">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//Expression"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="then" eType="#//Instruction"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="else" eType="#//Instruction"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Return" eSuperTypes="#//Instruction">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
+        containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IterationBlock"/>
+  <eClassifiers xsi:type="ecore:EClass" name="SpaceIterationBlock" eSuperTypes="#//IterationBlock">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="range" eType="#//RangeSpaceIterator"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="singletons" upperBound="-1"
+        eType="#//SingletonSpaceIterator" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DimensionIterationBlock" eSuperTypes="#//IterationBlock">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="index" eType="#//DimensionIndex"
+        containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SpaceIterator">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="container" eType="#//ConnectivityCall"
@@ -58,29 +98,18 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="inc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="dec" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SimpleVarDefinition" eSuperTypes="#//Instruction">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="const" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//SimpleVar"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValue" eType="#//InitializationExpression"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="VarGroupDeclaration" eSuperTypes="#//Instruction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
-        eType="#//DeclaredVar" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Var">
+  <eClassifiers xsi:type="ecore:EClass" name="TimeIterator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ArgOrVar">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DeclaredVar" eSuperTypes="#//Var"/>
-  <eClassifiers xsi:type="ecore:EClass" name="SimpleVar" eSuperTypes="#//DeclaredVar"/>
-  <eClassifiers xsi:type="ecore:EClass" name="ConnectivityVar" eSuperTypes="#//DeclaredVar">
+  <eClassifiers xsi:type="ecore:EClass" name="Var" eSuperTypes="#//ArgOrVar"/>
+  <eClassifiers xsi:type="ecore:EClass" name="SimpleVar" eSuperTypes="#//Var"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ConnectivityVar" eSuperTypes="#//Var">
     <eStructuralFeatures xsi:type="ecore:EReference" name="supports" unique="false"
         upperBound="-1" eType="#//Connectivity"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ItemType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Connectivity">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -118,7 +147,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//ArgType"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Arg" eSuperTypes="#//Var"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Arg" eSuperTypes="#//ArgOrVar"/>
   <eClassifiers xsi:type="ecore:EClass" name="ArgType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="primitive" eType="#//PrimitiveType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="indices" upperBound="-1"
@@ -136,14 +165,22 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DimensionVar" eSuperTypes="#//DimensionSymbol"/>
   <eClassifiers xsi:type="ecore:EClass" name="Dimension"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Expression" eSuperTypes="#//InitializationExpression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="IntVectorConstant" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="values" unique="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RealVectorConstant" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="values" unique="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReductionCall" eSuperTypes="#//Iterable #//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="reduction" eType="#//Reduction"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="arg" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="VarRef" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//Var"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ArgOrVarRef" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//ArgOrVar"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeIterator" eType="#//TimeIterator"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="spaceIterators" upperBound="-1"
@@ -151,52 +188,18 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="indices" upperBound="-1"
         eType="#//Dimension" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="InitializationExpression"/>
-  <eClassifiers xsi:type="ecore:EClass" name="StrictInitializationExpression" eSuperTypes="#//InitializationExpression"/>
-  <eClassifiers xsi:type="ecore:EClass" name="IntVectorConstant" eSuperTypes="#//StrictInitializationExpression">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="values" unique="false"
-        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RealVectorConstant" eSuperTypes="#//StrictInitializationExpression">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="values" unique="false"
-        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeIterator"/>
-  <eClassifiers xsi:type="ecore:EClass" name="BaseType">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="primitive" eType="#//PrimitiveType"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="PrimitiveType">
     <eLiterals name="Int" literal="ℕ"/>
     <eLiterals name="Real" value="1" literal="ℝ"/>
     <eLiterals name="Bool" value="2" literal="ℾ"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Affectation" eSuperTypes="#//Instruction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="varRef" eType="#//VarRef"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
-        containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BaseType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="primitive" eType="#//PrimitiveType"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="If" eSuperTypes="#//Instruction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//Expression"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="then" eType="#//Instruction"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="else" eType="#//Instruction"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Return" eSuperTypes="#//Instruction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SpaceIterationBlock" eSuperTypes="#//IterationBlock">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="range" eType="#//RangeSpaceIterator"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="singletons" upperBound="-1"
-        eType="#//SingletonSpaceIterator" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DimensionIterationBlock" eSuperTypes="#//IterationBlock">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="index" eType="#//DimensionIndex"
-        containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="InitTimeIterator" eSuperTypes="#//TimeIterator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="NextTimeIterator" eSuperTypes="#//TimeIterator">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hasDiv" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="div" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DimensionOperation" eSuperTypes="#//Dimension">
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//Dimension"
@@ -208,7 +211,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="DimensionInt" eSuperTypes="#//Dimension">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DimensionSymbolReference" eSuperTypes="#//Dimension">
+  <eClassifiers xsi:type="ecore:EClass" name="DimensionSymbolRef" eSuperTypes="#//Dimension">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//DimensionSymbol"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ContractedIf" eSuperTypes="#//Expression">
@@ -307,24 +310,19 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="args" upperBound="-1" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="IntMatrixConstant" eSuperTypes="#//StrictInitializationExpression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
-        eType="#//IntVectorConstant" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RealMatrixConstant" eSuperTypes="#//StrictInitializationExpression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
-        eType="#//RealVectorConstant" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="BaseTypeConstant" eSuperTypes="#//StrictInitializationExpression">
+  <eClassifiers xsi:type="ecore:EClass" name="BaseTypeConstant" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="InitTimeIterator" eSuperTypes="#//TimeIterator"/>
-  <eClassifiers xsi:type="ecore:EClass" name="NextTimeIterator" eSuperTypes="#//TimeIterator">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hasDiv" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="div" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  <eClassifiers xsi:type="ecore:EClass" name="IntMatrixConstant" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
+        eType="#//IntVectorConstant" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RealMatrixConstant" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
+        eType="#//RealVectorConstant" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Scalar" eSuperTypes="#//BaseType"/>
   <eClassifiers xsi:type="ecore:EClass" name="Array1D" eSuperTypes="#//BaseType">

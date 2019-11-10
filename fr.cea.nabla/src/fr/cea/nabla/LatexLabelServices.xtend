@@ -11,6 +11,7 @@ package fr.cea.nabla
 
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
+import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.Array1D
 import fr.cea.nabla.nabla.Array2D
 import fr.cea.nabla.nabla.BaseTypeConstant
@@ -22,7 +23,7 @@ import fr.cea.nabla.nabla.DimensionIndex
 import fr.cea.nabla.nabla.DimensionInt
 import fr.cea.nabla.nabla.DimensionIterationBlock
 import fr.cea.nabla.nabla.DimensionOperation
-import fr.cea.nabla.nabla.DimensionSymbolReference
+import fr.cea.nabla.nabla.DimensionSymbolRef
 import fr.cea.nabla.nabla.DimensionVar
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
@@ -58,26 +59,22 @@ import fr.cea.nabla.nabla.SpaceIterationBlock
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
-import fr.cea.nabla.nabla.VarRef
 
 class LatexLabelServices
 {
-	// JOBS
+	/* JOBS & INSTRUCTIONS ***********************************/
 	static def dispatch String getLatex(Job it) { '\\texttt{' + name.pu + '} : '+ instruction.latex }
-
-	// INSTRUCTIONS	
 	static def dispatch String getLatex(SimpleVarDefinition it) { type.latex + ' ' + variable.name.pu + '=' + defaultValue.latex }
 	static def dispatch String getLatex(VarGroupDeclaration it) { type.latex + ' ' + variables.map[x|x.name.pu].join(', ') }
 	static def dispatch String getLatex(InstructionBlock it) { '...' }
 	static def dispatch String getLatex(Loop it) { '\\forall {' + iterationBlock.latex + '}, \\ ' + body.latex }
-	static def dispatch String getLatex(Affectation it) { varRef?.latex + ' = ' + expression?.latex }
+	static def dispatch String getLatex(Affectation it) { left?.latex + ' = ' + right?.latex }
 	static def dispatch String getLatex(If it) { 'if (' + condition.latex + ')'}
 	static def dispatch String getLatex(Return it) { 'return (' + expression.latex + ')'}
 
-	// ITERATEURS
+	/* ITERATEURS ********************************************/
 	static def dispatch String getLatex(SpaceIterationBlock it) { range.latex }
-	static def dispatch String getLatex(DimensionIterationBlock it) 
-	{ index.name.pu + '\u2208 [' + index.from + ';' + index.to + (if (index.lte) ']' else'[') }
+	static def dispatch String getLatex(DimensionIterationBlock it) { index.latex }
 
 	static def dispatch String getLatex(RangeSpaceIterator it) { name.pu + '\\in ' + container.latex }
 	static def dispatch String getLatex(SingletonSpaceIterator it) { name.pu + '=' + container.latex }
@@ -92,14 +89,14 @@ class LatexLabelServices
 	static def dispatch String getLatex(InitTimeIterator it) { 'n=0' }
 	static def dispatch String getLatex(NextTimeIterator it) {  if (hasDiv) 'n+1/' + div else 'n+1' } 
 
-	// FUNCTIONS AND REDUCTIONS ARGS AND INDEX
+	/* FONCTIONS / REDUCTIONS ********************************/
 	static def dispatch String getLatex(DimensionIndex it) { name.pu + '\u2208 [' + from + ';' + to + (if (lte) ']' else'[') }
 	static def dispatch String getLatex(DimensionVar it) { name.pu }
 	static def dispatch String getLatex(DimensionOperation it) { left?.latex + ' ' + op + ' ' + right?.latex }
 	static def dispatch String getLatex(DimensionInt it) { value.toString }
-	static def dispatch String getLatex(DimensionSymbolReference it) { target?.name.pu }
+	static def dispatch String getLatex(DimensionSymbolRef it) { target?.name.pu }
 
-	// EXPRESSIONS
+	/* EXPRESSIONS ******************************************/
 	static def dispatch String getLatex(ContractedIf it) { condition.latex + ' ? ' + then.latex + ' : ' + ^else.latex }
 	static def dispatch String getLatex(Or it) { left.latex + ' or ' + right.latex }
 	static def dispatch String getLatex(And it) { left.latex + ' and ' + right.latex }
@@ -140,21 +137,21 @@ class LatexLabelServices
 		}
 	}
 
-	static def dispatch String getLatex(VarRef it)
+	static def dispatch String getLatex(BaseTypeConstant it) { type.latex + '(' + value.latex + ')' }
+	static def dispatch String getLatex(IntVectorConstant it) { '[' + values.join(',') + ']' }
+	static def dispatch String getLatex(IntMatrixConstant it) { '[' + values.map[latex].join(',') + ']' }
+	static def dispatch String getLatex(RealVectorConstant it) { '[' + values.join(',') + ']' }
+	static def dispatch String getLatex(RealMatrixConstant it) { '[' + values.map[latex].join(',') + ']' }
+
+	static def dispatch String getLatex(ArgOrVarRef it)
 	{
-		var label = variable.name.pu
+		var label = target.name.pu
 		if (timeIterator === null) label += '^{n}'
 		else label += '^{' + timeIterator.latex + '}'
 		if (!spaceIterators.empty) label += '_{' + spaceIterators.map[x | x.latex].join('') + '}'
 		if (!indices.empty) label += '[' + indices.join(',') + ']'
 		return label
 	}
-
-	static def dispatch String getLatex(IntVectorConstant it) { '[' + values.join(',') + ']' }
-	static def dispatch String getLatex(IntMatrixConstant it) { '[' + values.map[latex].join(',') + ']' }
-	static def dispatch String getLatex(RealVectorConstant it) { '[' + values.join(',') + ']' }
-	static def dispatch String getLatex(RealMatrixConstant it) { '[' + values.map[latex].join(',') + ']' }
-	static def dispatch String getLatex(BaseTypeConstant it) { type.latex + '(' + value.latex + ')' }
 
 	static def dispatch getLatex(Scalar it) { primitive.literal }
 	static def dispatch getLatex(Array1D it) { primitive.literal + '^{' + size + '}' }

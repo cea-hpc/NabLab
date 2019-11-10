@@ -147,11 +147,11 @@ class BasicValidatorTest
 		)
 		Assert.assertNotNull(moduleKo)
 		
-		moduleKo.assertError(NablaPackage.eINSTANCE.varRef, 
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef, 
 			BasicValidator::INDICES_NUMBER, 
 			BasicValidator::getIndicesNumberMsg(2,1))		
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.varRef, 
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef, 
 			BasicValidator::INDICES_NUMBER, 
 			BasicValidator::getIndicesNumberMsg(1,2))		
 
@@ -180,18 +180,18 @@ class BasicValidatorTest
 		)
 		Assert.assertNotNull(moduleKo)
 		
-		moduleKo.assertError(NablaPackage.eINSTANCE.varRef, 
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef, 
 			BasicValidator::ITERATOR_NUMBER, 
 			BasicValidator::getIteratorNumberMsg(1,2))		
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.varRef, 
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef, 
 			BasicValidator::ITERATOR_NUMBER, 
 			BasicValidator::getIteratorNumberMsg(2,1))		
 
 		val node = moduleKo.getItemTypeByName("node").name
 		val cell = moduleKo.getItemTypeByName("cell").name
 		
-		moduleKo.assertError(NablaPackage.eINSTANCE.varRef, 
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef, 
 			BasicValidator::ITERATOR_TYPE, 
 			BasicValidator::getIteratorTypeMsg(node, cell))		
 
@@ -434,6 +434,10 @@ class BasicValidatorTest
 			def	f:	x | ℝ[x] → ℝ;
 			''')
 		)
+		println(TestUtils::getTestModuleWithCustomFunctions(
+			'''
+			def	f:	x | ℝ[x] → ℝ;
+			'''))
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -638,8 +642,8 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleKo)
 		
 		moduleKo.assertError(NablaPackage.eINSTANCE.affectation, 
-			BasicValidator::AFFECTATION_VAR, 
-			BasicValidator::getAffectationVarMsg)		
+			BasicValidator::AFFECTATION_CONST, 
+			BasicValidator::getAffectationConstMsg)		
 
 		val moduleKo2 = parseHelper.parse(TestUtils::testModule
 			+
@@ -650,8 +654,8 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleKo2)
 		
 		moduleKo2.assertError(NablaPackage.eINSTANCE.affectation, 
-			BasicValidator::AFFECTATION_VAR, 
-			BasicValidator::getAffectationVarMsg)		
+			BasicValidator::AFFECTATION_CONST, 
+			BasicValidator::getAffectationConstMsg)		
 
 		val moduleOk =  parseHelper.parse(TestUtils::testModule
 			+

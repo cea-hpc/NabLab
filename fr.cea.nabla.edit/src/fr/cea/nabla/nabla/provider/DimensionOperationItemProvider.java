@@ -185,7 +185,7 @@ public class DimensionOperationItemProvider extends DimensionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.DIMENSION_OPERATION__LEFT,
-				 NablaFactory.eINSTANCE.createDimensionSymbolReference()));
+				 NablaFactory.eINSTANCE.createDimensionSymbolRef()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -205,7 +205,7 @@ public class DimensionOperationItemProvider extends DimensionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.DIMENSION_OPERATION__RIGHT,
-				 NablaFactory.eINSTANCE.createDimensionSymbolReference()));
+				 NablaFactory.eINSTANCE.createDimensionSymbolRef()));
 	}
 
 	/**

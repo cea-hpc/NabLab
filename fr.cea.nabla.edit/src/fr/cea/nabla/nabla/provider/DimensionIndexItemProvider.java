@@ -185,7 +185,7 @@ public class DimensionIndexItemProvider extends DimensionSymbolItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.DIMENSION_INDEX__FROM,
-				 NablaFactory.eINSTANCE.createDimensionSymbolReference()));
+				 NablaFactory.eINSTANCE.createDimensionSymbolRef()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -205,7 +205,7 @@ public class DimensionIndexItemProvider extends DimensionSymbolItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.DIMENSION_INDEX__TO,
-				 NablaFactory.eINSTANCE.createDimensionSymbolReference()));
+				 NablaFactory.eINSTANCE.createDimensionSymbolRef()));
 	}
 
 	/**

@@ -142,12 +142,22 @@ public class ParenthesisItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
+				 NablaFactory.eINSTANCE.createIntVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
+				 NablaFactory.eINSTANCE.createRealVectorConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
-				 NablaFactory.eINSTANCE.createVarRef()));
+				 NablaFactory.eINSTANCE.createArgOrVarRef()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -238,6 +248,21 @@ public class ParenthesisItemProvider extends ExpressionItemProvider {
 			(createChildParameter
 				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
 				 NablaFactory.eINSTANCE.createFunctionCall()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
+				 NablaFactory.eINSTANCE.createBaseTypeConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
+				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.PARENTHESIS__EXPRESSION,
+				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
 	}
 
 }

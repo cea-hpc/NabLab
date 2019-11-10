@@ -16,6 +16,7 @@ Export-Package: fr.cea.nabla.ir,
  fr.cea.nabla.ir.generator.kokkos,
  fr.cea.nabla.ir.generator.kokkos.defaultparallelism,
  fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism,
+ fr.cea.nabla.ir.interpreter,
  fr.cea.nabla.ir.ir,
  fr.cea.nabla.ir.ir.impl,
  fr.cea.nabla.ir.ir.util,
@@ -25,6 +26,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.macro,
- org.apache.commons.lang3
+ org.apache.commons.lang3,
+ org.apache.commons.lang;bundle-version="2.6.0"
 Bundle-ActivationPolicy: lazy
 

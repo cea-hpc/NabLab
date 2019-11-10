@@ -9,6 +9,10 @@
  *******************************************************************************/
 package fr.cea.nabla.tests
 
+import fr.cea.nabla.ir.interpreter.Context
+import fr.cea.nabla.ir.interpreter.NablaValue
+import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
@@ -17,6 +21,10 @@ import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
+import org.junit.Assert
+
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 
 class TestUtils 
 {
@@ -55,7 +63,7 @@ class TestUtils
 	// ===== CharSequence utils =====
 	static def String getEmptyTestModule()
 	'''
-		module Test;
+	module Test;
 	'''
 
 	//TODO These options should be filled in nablagen
@@ -130,5 +138,44 @@ class TestUtils
 	static def getTestModuleWithCoordVariableWithCustomConnectivities(CharSequence connectivities)
 	{
 		emptyTestModule + connectivities + mandatoryOptions + mandatoryVariables
+	}
+	
+	static def getTestGenModel()
+	{
+		'''
+		with Test.*;
+
+		workflow TestDefaultGenerationChain transforms Test
+		{
+			Nabla2Ir nabla2ir
+			{
+			}
+			ReplaceUtf replaceUtf follows nabla2ir
+			{
+			}
+			ReplaceInternalReductions replaceReductions follows replaceUtf
+			{
+			}
+			OptimizeConnectivities optimizeConnectivities follows replaceReductions
+			{
+				connectivities = cells, nodes;
+			}
+			FillHLTs fillHlts follows optimizeConnectivities
+			{
+			}
+		}
+		'''
+	}
+
+	// Interpreter asserts
+
+	static def assertVariableDefaultValue(IrModule irModule, Context context, String variableName, NablaValue value)
+	{
+		Assert.assertTrue((irModule.getVariableByName(variableName) as SimpleVariable).defaultValue.interprete(context).equals(value))
+	}
+
+	static def assertVariableValueInContext(IrModule irModule, Context context, String variableName, NablaValue value)
+	{
+		Assert.assertTrue(context.getVariableValue(irModule.getVariableByName(variableName)).equals(value))
 	}
 }

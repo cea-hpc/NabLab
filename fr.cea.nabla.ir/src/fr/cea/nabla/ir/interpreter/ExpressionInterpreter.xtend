@@ -183,7 +183,7 @@ class ExpressionInterpreter
 	
 	private static def dispatch NablaValue buildArrayValue(int nbRows, int nbCols, NV0Bool value)
 	{
-		//TODO If we don't precise type for values, Arrays.fill does not work ...
+		//If we don't precise type for values, Arrays.fill does not work ...
 		val boolean[][]values = newArrayOfSize(nbRows).map[newBooleanArrayOfSize(nbCols)]
 		values.forEach[x | Arrays.fill(x, value.data)]
 		return new NV2Bool(values)
@@ -191,7 +191,7 @@ class ExpressionInterpreter
 
 	private static def dispatch NablaValue buildArrayValue(int nbRows, int nbCols, NV0Int value)
 	{
-		//TODO If we don't precise type for values, Arrays.fill does not work ...
+		//If we don't precise type for values, Arrays.fill does not work ...
 		val int[][] values = newArrayOfSize(nbRows).map[newIntArrayOfSize(nbCols)]
 		values.forEach[x | Arrays.fill(x, value.data)]
 		return new NV2Int(values)
@@ -199,7 +199,7 @@ class ExpressionInterpreter
 
 	private static def dispatch NablaValue buildArrayValue(int nbRows, int nbCols, NV0Real value)
 	{
-		//TODO If we don't precise type for values, Arrays.fill does not work ...
+		//If we don't precise type for values, Arrays.fill does not work ...
 		val double[][] values = newArrayOfSize(nbRows).map[newDoubleArrayOfSize(nbCols)]
 		values.forEach[x | Arrays.fill(x, value.data)]
 		return new NV2Real(values)
@@ -209,7 +209,7 @@ class ExpressionInterpreter
 	{
 		val nbRows = values.size
 		val nbCols = values.get(0).values.size
-		//TODO If we don't precise type for result, set does not work ...
+		//If we don't precise type for result, set does not work ...
 		val int[][] result = newArrayOfSize(nbRows).map[newIntArrayOfSize(nbCols)]
 		for (i : 0..<nbRows) 
 			for (j : 0..<nbCols)
@@ -221,7 +221,7 @@ class ExpressionInterpreter
 	{
 		val nbRows = values.size
 		val nbCols = values.get(0).values.size
-		//TODO If we don't precise type for result, set does not work ...
+		//If we don't precise type for result, set does not work ...
 		val double[][] result = newArrayOfSize(nbRows).map[newDoubleArrayOfSize(nbCols)]
 		for (i : 0..<nbRows) 
 			for (j : 0..<nbCols)

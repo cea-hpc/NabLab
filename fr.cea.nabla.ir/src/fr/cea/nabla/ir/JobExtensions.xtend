@@ -87,4 +87,10 @@ class JobExtensions
 		var iterators = eAllContents.filter(Iterator).toList
 		return iterators.findFirst[i | i.name == name]
 	}
+	
+	static def getVariableByName(Job it, String name)
+	{
+		var variables = eAllContents.filter(Variable).toList
+		return variables.findFirst[i | i.name == name]
+	}
 }

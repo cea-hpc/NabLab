@@ -141,13 +141,15 @@ class ExpressionInterpreter
 	static def dispatch NablaValue interprete(FunctionCall it, Context context)
 	{
 		println("Dans interprete de FunctionCall")
-		val providerClassName = function.provider + Utils::FunctionAndReductionproviderSuffix
-		println(providerClassName)
+
+		//TODO : correct this
+		val providerClassName = "fr.cea.nabla.tests." + function.provider + Utils::FunctionAndReductionproviderSuffix
 		val providerClass = Class.forName(providerClassName)
 		val argValues = args.map[x|x.interprete(context)]
 		val javaTypes = argValues.map[x | FunctionCallHelper.getJavaType(x) ]
-		val method = providerClass.getMethod(function.name, javaTypes)
-		val javaValues = argValues.map[x | FunctionCallHelper.getJavaValue(x) ]
+		val method = providerClass.getDeclaredMethod(function.name, javaTypes)
+		method.setAccessible(true)
+		val javaValues = argValues.map[x | FunctionCallHelper.getJavaValue(x)].toArray
 		val result = method.invoke(null, javaValues)
 		return FunctionCallHelper.createNablaValue(result)
 	}

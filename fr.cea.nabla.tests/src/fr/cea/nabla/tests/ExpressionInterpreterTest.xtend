@@ -246,19 +246,25 @@ class ExpressionInterpreterTest
 		val model = TestUtils::getTestModuleWithCustomFunctions(
 		'''
 		functions {
+			getOne:  → ℕ;
 			addOne: ℕ → ℕ;
+			add: ℕ × ℕ → ℕ;
 		}
 		''')
 		+
 		'''
 		ℕ n0 = 0;
-		ℕ n1 = addOne(n0);
+		ℕ n1 = getOne(); 	//-> 1;
+		ℕ n2 = addOne(n1);	//-> 2;
+		ℕ n3 = add(n1, n2);	//-> 3;
 		'''
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
 		val context = irModule.interprete
 
 		assertVariableValueInContext(irModule, context, "n0", new NV0Int(0))
 		assertVariableValueInContext(irModule, context, "n1", new NV0Int(1))
+		assertVariableValueInContext(irModule, context, "n2", new NV0Int(2))
+		assertVariableValueInContext(irModule, context, "n3", new NV0Int(3))
 	}
 
 	@Test

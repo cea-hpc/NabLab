@@ -79,7 +79,7 @@ class ExpressionInterpreterTest
 		assertVariableValueInContext(irModule, context, "n3", new NV2Int(#[#[0, 1],#[1, 2]]))
 		assertVariableValueInContext(irModule, context, "n4", new NV2Int(#[#[0, -1],#[-1, -2]]))
 		assertVariableValueInContext(irModule, context, "r3", new NV2Real(#[#[0.0, 1.0],#[1.0, 2.0]]))
-		// TODO : -0.0 != 0.0 ?
+		// Warning : -0.0 != 0.0
 		assertVariableValueInContext(irModule, context, "r4", new NV2Real(#[#[-0.0, -1.0],#[-1.0, -2.0]]))
 	}
 

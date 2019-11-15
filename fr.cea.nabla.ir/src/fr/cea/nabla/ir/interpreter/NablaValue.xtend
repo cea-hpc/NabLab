@@ -1,6 +1,5 @@
 package fr.cea.nabla.ir.interpreter
 
-import org.apache.commons.lang.ArrayUtils
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtend.lib.annotations.Data
 
@@ -58,52 +57,9 @@ class NV0Real implements NablaValue
 @Data class NV1Int implements NablaValue { int[] data }
 @Data class NV1Real implements NablaValue { double[] data }
 
-@Data class NV2Bool implements NablaValue
-{
-	boolean[][] data
-
-	override boolean equals(Object obj)
-	{
-	    if (this === obj) return true
-	    if (obj === null) return false
-	    if (getClass() !== obj.getClass()) return false
-	    val other = obj as NV2Bool
-	    //NB : java.utils.Arrays.equals does not handle multi-dimensional arrays correctly.
-	    if (!ArrayUtils.isEquals(other.data, this.data)) return false
-	    return true
-	}
-}
-
-@Data class NV2Int implements NablaValue
-{
-	int[][] data
-
-	override boolean equals(Object obj)
-	{
-	    if (this === obj) return true
-	    if (obj === null) return false
-	    if (getClass() !== obj.getClass()) return false
-	    val other = obj as NV2Int
-	    //NB : java.utils.Arrays.equals does not handle multi-dimensional arrays correctly.
-	    if (!ArrayUtils.isEquals(other.data, this.data)) return false
-	    return true
-	}
-}
-@Data class NV2Real implements NablaValue
-{
-	double[][] data
-
-	override boolean equals(Object obj)
-	{
-	    if (this === obj) return true
-	    if (obj === null) return false
-	    if (getClass() !== obj.getClass()) return false
-	    val other = obj as NV2Real
-	    //NB : java.utils.Arrays.equals does not handle multi-dimensional arrays correctly.
-	   if (!ArrayUtils.isEquals(other.data, this.data)) return false
-	    return true
-	}
-}
+@Data class NV2Bool implements NablaValue { boolean[][] data }
+@Data class NV2Int implements NablaValue { int[][] data }
+@Data class NV2Real implements NablaValue { double[][] data }
 
 @Data class NV3Bool implements NablaValue { boolean[][][] data }
 @Data class NV3Int implements NablaValue { int[][][] data }

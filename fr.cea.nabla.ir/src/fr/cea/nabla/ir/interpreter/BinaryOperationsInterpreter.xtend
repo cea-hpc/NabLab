@@ -40,7 +40,7 @@ class BinaryOperationsInterpreter
 			case '+':  new NV0Int(a.data + b.data)
 			case '-':  new NV0Int(a.data - b.data)
 			case '*':  new NV0Int(a.data * b.data)
-			case '/':  new NV0Int(a.data / b.data) //TODO -> WRONG
+			case '/':  new NV0Int(a.data / b.data)
 			case '%':  new NV0Int(a.data % b.data)
 			default: null
 		}

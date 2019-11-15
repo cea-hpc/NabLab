@@ -786,29 +786,6 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.ArgType} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ArgTypeItemProvider argTypeItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.ArgType}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createArgTypeAdapter() {
-		if (argTypeItemProvider == null) {
-			argTypeItemProvider = new ArgTypeItemProvider(this);
-		}
-
-		return argTypeItemProvider;
-	}
-
-	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.DimensionSymbol} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -875,29 +852,6 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		}
 
 		return dimensionVarItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Dimension} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected DimensionItemProvider dimensionItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Dimension}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createDimensionAdapter() {
-		if (dimensionItemProvider == null) {
-			dimensionItemProvider = new DimensionItemProvider(this);
-		}
-
-		return dimensionItemProvider;
 	}
 
 	/**
@@ -1016,26 +970,49 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.BaseType} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.ArgOrVarType} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected BaseTypeItemProvider baseTypeItemProvider;
+	protected ArgOrVarTypeItemProvider argOrVarTypeItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.BaseType}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.ArgOrVarType}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createBaseTypeAdapter() {
-		if (baseTypeItemProvider == null) {
-			baseTypeItemProvider = new BaseTypeItemProvider(this);
+	public Adapter createArgOrVarTypeAdapter() {
+		if (argOrVarTypeItemProvider == null) {
+			argOrVarTypeItemProvider = new ArgOrVarTypeItemProvider(this);
 		}
 
-		return baseTypeItemProvider;
+		return argOrVarTypeItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Dimension} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected DimensionItemProvider dimensionItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Dimension}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createDimensionAdapter() {
+		if (dimensionItemProvider == null) {
+			dimensionItemProvider = new DimensionItemProvider(this);
+		}
+
+		return dimensionItemProvider;
 	}
 
 	/**
@@ -1082,75 +1059,6 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		}
 
 		return nextTimeIteratorItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.DimensionOperation} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected DimensionOperationItemProvider dimensionOperationItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.DimensionOperation}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createDimensionOperationAdapter() {
-		if (dimensionOperationItemProvider == null) {
-			dimensionOperationItemProvider = new DimensionOperationItemProvider(this);
-		}
-
-		return dimensionOperationItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.DimensionInt} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected DimensionIntItemProvider dimensionIntItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.DimensionInt}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createDimensionIntAdapter() {
-		if (dimensionIntItemProvider == null) {
-			dimensionIntItemProvider = new DimensionIntItemProvider(this);
-		}
-
-		return dimensionIntItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.DimensionSymbolRef} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected DimensionSymbolRefItemProvider dimensionSymbolRefItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.DimensionSymbolRef}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createDimensionSymbolRefAdapter() {
-		if (dimensionSymbolRefItemProvider == null) {
-			dimensionSymbolRefItemProvider = new DimensionSymbolRefItemProvider(this);
-		}
-
-		return dimensionSymbolRefItemProvider;
 	}
 
 	/**
@@ -1637,72 +1545,72 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Scalar} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.DimensionOperation} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ScalarItemProvider scalarItemProvider;
+	protected DimensionOperationItemProvider dimensionOperationItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Scalar}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.DimensionOperation}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createScalarAdapter() {
-		if (scalarItemProvider == null) {
-			scalarItemProvider = new ScalarItemProvider(this);
+	public Adapter createDimensionOperationAdapter() {
+		if (dimensionOperationItemProvider == null) {
+			dimensionOperationItemProvider = new DimensionOperationItemProvider(this);
 		}
 
-		return scalarItemProvider;
+		return dimensionOperationItemProvider;
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Array1D} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.DimensionInt} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected Array1DItemProvider array1DItemProvider;
+	protected DimensionIntItemProvider dimensionIntItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Array1D}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.DimensionInt}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createArray1DAdapter() {
-		if (array1DItemProvider == null) {
-			array1DItemProvider = new Array1DItemProvider(this);
+	public Adapter createDimensionIntAdapter() {
+		if (dimensionIntItemProvider == null) {
+			dimensionIntItemProvider = new DimensionIntItemProvider(this);
 		}
 
-		return array1DItemProvider;
+		return dimensionIntItemProvider;
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.Array2D} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.DimensionSymbolRef} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected Array2DItemProvider array2DItemProvider;
+	protected DimensionSymbolRefItemProvider dimensionSymbolRefItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.Array2D}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.DimensionSymbolRef}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createArray2DAdapter() {
-		if (array2DItemProvider == null) {
-			array2DItemProvider = new Array2DItemProvider(this);
+	public Adapter createDimensionSymbolRefAdapter() {
+		if (dimensionSymbolRefItemProvider == null) {
+			dimensionSymbolRefItemProvider = new DimensionSymbolRefItemProvider(this);
 		}
 
-		return array2DItemProvider;
+		return dimensionSymbolRefItemProvider;
 	}
 
 	/**
@@ -1835,22 +1743,18 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (functionItemProvider != null) functionItemProvider.dispose();
 		if (reductionItemProvider != null) reductionItemProvider.dispose();
 		if (argItemProvider != null) argItemProvider.dispose();
-		if (argTypeItemProvider != null) argTypeItemProvider.dispose();
 		if (dimensionSymbolItemProvider != null) dimensionSymbolItemProvider.dispose();
 		if (dimensionIndexItemProvider != null) dimensionIndexItemProvider.dispose();
 		if (dimensionVarItemProvider != null) dimensionVarItemProvider.dispose();
-		if (dimensionItemProvider != null) dimensionItemProvider.dispose();
 		if (expressionItemProvider != null) expressionItemProvider.dispose();
 		if (intVectorConstantItemProvider != null) intVectorConstantItemProvider.dispose();
 		if (realVectorConstantItemProvider != null) realVectorConstantItemProvider.dispose();
 		if (reductionCallItemProvider != null) reductionCallItemProvider.dispose();
 		if (argOrVarRefItemProvider != null) argOrVarRefItemProvider.dispose();
-		if (baseTypeItemProvider != null) baseTypeItemProvider.dispose();
+		if (argOrVarTypeItemProvider != null) argOrVarTypeItemProvider.dispose();
+		if (dimensionItemProvider != null) dimensionItemProvider.dispose();
 		if (initTimeIteratorItemProvider != null) initTimeIteratorItemProvider.dispose();
 		if (nextTimeIteratorItemProvider != null) nextTimeIteratorItemProvider.dispose();
-		if (dimensionOperationItemProvider != null) dimensionOperationItemProvider.dispose();
-		if (dimensionIntItemProvider != null) dimensionIntItemProvider.dispose();
-		if (dimensionSymbolRefItemProvider != null) dimensionSymbolRefItemProvider.dispose();
 		if (contractedIfItemProvider != null) contractedIfItemProvider.dispose();
 		if (orItemProvider != null) orItemProvider.dispose();
 		if (andItemProvider != null) andItemProvider.dispose();
@@ -1872,9 +1776,9 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (baseTypeConstantItemProvider != null) baseTypeConstantItemProvider.dispose();
 		if (intMatrixConstantItemProvider != null) intMatrixConstantItemProvider.dispose();
 		if (realMatrixConstantItemProvider != null) realMatrixConstantItemProvider.dispose();
-		if (scalarItemProvider != null) scalarItemProvider.dispose();
-		if (array1DItemProvider != null) array1DItemProvider.dispose();
-		if (array2DItemProvider != null) array2DItemProvider.dispose();
+		if (dimensionOperationItemProvider != null) dimensionOperationItemProvider.dispose();
+		if (dimensionIntItemProvider != null) dimensionIntItemProvider.dispose();
+		if (dimensionSymbolRefItemProvider != null) dimensionSymbolRefItemProvider.dispose();
 	}
 
 }

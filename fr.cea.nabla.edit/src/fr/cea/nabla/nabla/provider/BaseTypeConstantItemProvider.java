@@ -139,22 +139,7 @@ public class BaseTypeConstantItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE,
-				 NablaFactory.eINSTANCE.createBaseType()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE,
-				 NablaFactory.eINSTANCE.createScalar()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE,
-				 NablaFactory.eINSTANCE.createArray1D()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE,
-				 NablaFactory.eINSTANCE.createArray2D()));
+				 NablaFactory.eINSTANCE.createArgOrVarType()));
 
 		newChildDescriptors.add
 			(createChildParameter

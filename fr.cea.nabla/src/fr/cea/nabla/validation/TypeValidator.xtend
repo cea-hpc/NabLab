@@ -17,6 +17,7 @@ import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
+import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.Minus
@@ -28,8 +29,9 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.typing.BaseTypeTypeProvider
+import fr.cea.nabla.typing.ArgOrVarTypeTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.NSTBoolScalar
 import fr.cea.nabla.typing.NSTIntScalar
@@ -45,7 +47,29 @@ class TypeValidator extends BasicValidator
 	static val INT = new NSTIntScalar
 
 	@Inject extension ExpressionTypeProvider
-	@Inject extension BaseTypeTypeProvider
+	@Inject extension ArgOrVarTypeTypeProvider
+
+	// ===== Functions =====
+
+	public static val FUNCTION_RETURN_TYPE = "Functions::ReturnType"
+	static def getFunctionReturnTypeMsg(String actualTypeName, String expectedTypeName) { "Wrong return type: Expected " + expectedTypeName + ", but was " + actualTypeName }
+
+	@Check
+	def checkReturnType(Function it)
+	{
+		if (!external && body !== null)
+		{
+			val returnInstruction = body.eAllContents.findFirst[x | x instanceof Return]
+			if (returnInstruction !== null)
+			{
+				val ri = returnInstruction as Return
+				val expressionType = ri.expression?.typeFor
+				val fType = returnType.typeFor
+				if (expressionType !== null && !checkExpectedType(expressionType, fType))
+					error(getFunctionReturnTypeMsg(expressionType.label, fType.label), NablaPackage.Literals.FUNCTION__RETURN_TYPE, FUNCTION_RETURN_TYPE)
+			}
+		}
+	}
 
 	// ===== Instructions =====
 

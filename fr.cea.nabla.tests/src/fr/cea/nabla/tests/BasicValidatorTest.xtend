@@ -23,7 +23,7 @@ class BasicValidatorTest
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
 
-	// ===== NablaModule =====	
+	// ===== NablaModule =====
 
 	@Test
 	def void testCheckMandatoryVariables()
@@ -81,17 +81,22 @@ class BasicValidatorTest
 			ℝ[1] a;
 			ℕ[1,3] b;
 			ℕ[2,1] c;
+			ℝ[2, 3, 4] d;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertError(NablaPackage.eINSTANCE.array1D, 
-			BasicValidator::ARRAY_SIZE, 
-			BasicValidator::getArraySizeMsg())
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.array2D, 
-			BasicValidator::ARRAY_SIZE, 
-			BasicValidator::getArraySizeMsg())
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarType,
+			BasicValidator::ARRAY_SIZES,
+			BasicValidator::getArraySizesMsg())
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarType,
+			BasicValidator::ARRAY_SIZES,
+			BasicValidator::getArraySizesMsg())
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarType,
+			BasicValidator::ARRAY_DIMENSION,
+			BasicValidator::getArrayDimensionMsg())
 
 		val moduleOk = parseHelper.parse(TestUtils::testModule
 			+

@@ -220,12 +220,12 @@ public class FunctionItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.FUNCTION__IN_TYPES,
-				 NablaFactory.eINSTANCE.createArgType()));
+				 NablaFactory.eINSTANCE.createArgOrVarType()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.FUNCTION__RETURN_TYPE,
-				 NablaFactory.eINSTANCE.createArgType()));
+				 NablaFactory.eINSTANCE.createArgOrVarType()));
 
 		newChildDescriptors.add
 			(createChildParameter

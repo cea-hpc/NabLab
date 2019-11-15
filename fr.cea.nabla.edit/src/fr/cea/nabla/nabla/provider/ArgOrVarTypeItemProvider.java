@@ -4,7 +4,8 @@
 package fr.cea.nabla.nabla.provider;
 
 
-import fr.cea.nabla.nabla.BaseType;
+import fr.cea.nabla.nabla.ArgOrVarType;
+import fr.cea.nabla.nabla.NablaFactory;
 import fr.cea.nabla.nabla.NablaPackage;
 import fr.cea.nabla.nabla.PrimitiveType;
 
@@ -15,6 +16,8 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
+
+import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -28,12 +31,12 @@ import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link fr.cea.nabla.nabla.BaseType} object.
+ * This is the item provider adapter for a {@link fr.cea.nabla.nabla.ArgOrVarType} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class BaseTypeItemProvider 
+public class ArgOrVarTypeItemProvider 
 	extends ItemProviderAdapter
 	implements
 		IEditingDomainItemProvider,
@@ -47,7 +50,7 @@ public class BaseTypeItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BaseTypeItemProvider(AdapterFactory adapterFactory) {
+	public ArgOrVarTypeItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -78,9 +81,9 @@ public class BaseTypeItemProvider
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_BaseType_primitive_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_BaseType_primitive_feature", "_UI_BaseType_type"),
-				 NablaPackage.Literals.BASE_TYPE__PRIMITIVE,
+				 getString("_UI_ArgOrVarType_primitive_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ArgOrVarType_primitive_feature", "_UI_ArgOrVarType_type"),
+				 NablaPackage.Literals.ARG_OR_VAR_TYPE__PRIMITIVE,
 				 true,
 				 false,
 				 false,
@@ -90,14 +93,44 @@ public class BaseTypeItemProvider
 	}
 
 	/**
-	 * This returns BaseType.gif.
+	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
+	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
+	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
+		if (childrenFeatures == null) {
+			super.getChildrenFeatures(object);
+			childrenFeatures.add(NablaPackage.Literals.ARG_OR_VAR_TYPE__SIZES);
+		}
+		return childrenFeatures;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	protected EStructuralFeature getChildFeature(Object object, Object child) {
+		// Check the type of the specified child object and return the proper feature to use for
+		// adding (see {@link AddCommand}) it as a child.
+
+		return super.getChildFeature(object, child);
+	}
+
+	/**
+	 * This returns ArgOrVarType.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/BaseType"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/ArgOrVarType"));
 	}
 
 	/**
@@ -108,11 +141,11 @@ public class BaseTypeItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		PrimitiveType labelValue = ((BaseType)object).getPrimitive();
+		PrimitiveType labelValue = ((ArgOrVarType)object).getPrimitive();
 		String label = labelValue == null ? null : labelValue.toString();
 		return label == null || label.length() == 0 ?
-			getString("_UI_BaseType_type") :
-			getString("_UI_BaseType_type") + " " + label;
+			getString("_UI_ArgOrVarType_type") :
+			getString("_UI_ArgOrVarType_type") + " " + label;
 	}
 
 
@@ -127,9 +160,12 @@ public class BaseTypeItemProvider
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(BaseType.class)) {
-			case NablaPackage.BASE_TYPE__PRIMITIVE:
+		switch (notification.getFeatureID(ArgOrVarType.class)) {
+			case NablaPackage.ARG_OR_VAR_TYPE__PRIMITIVE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
+			case NablaPackage.ARG_OR_VAR_TYPE__SIZES:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
 		super.notifyChanged(notification);
@@ -145,6 +181,26 @@ public class BaseTypeItemProvider
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.ARG_OR_VAR_TYPE__SIZES,
+				 NablaFactory.eINSTANCE.createDimension()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.ARG_OR_VAR_TYPE__SIZES,
+				 NablaFactory.eINSTANCE.createDimensionOperation()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.ARG_OR_VAR_TYPE__SIZES,
+				 NablaFactory.eINSTANCE.createDimensionInt()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.ARG_OR_VAR_TYPE__SIZES,
+				 NablaFactory.eINSTANCE.createDimensionSymbolRef()));
 	}
 
 	/**

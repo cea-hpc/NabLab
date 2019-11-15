@@ -48,7 +48,7 @@ class ExpressionTypeProvider
 	@Inject extension DeclarationProvider
 	@Inject extension BinaryOperationsTypeProvider
 	@Inject extension PrimitiveTypeTypeProvider
-	@Inject extension BaseTypeTypeProvider
+	@Inject extension ArgOrVarTypeTypeProvider
 	@Inject extension VarTypeProvider
 	@Inject extension ArgOrVarExtensions
 
@@ -63,7 +63,7 @@ class ExpressionTypeProvider
 	}
 
 	def dispatch NablaType getTypeFor(ContractedIf it) { then.typeFor }
-	def dispatch NablaType getTypeFor(Or it) { new NSTBoolScalar }	
+	def dispatch NablaType getTypeFor(Or it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(And it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(Equality it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(Comparison it) { new NSTBoolScalar }
@@ -95,10 +95,18 @@ class ExpressionTypeProvider
 	}
 
 	def dispatch NablaType getTypeFor(BaseTypeConstant it) { type.typeFor }
-	def dispatch NablaType getTypeFor(IntVectorConstant it) { new NSTIntArray1D(values.size) }
-	def dispatch NablaType getTypeFor(RealVectorConstant it) { new NSTRealArray1D(values.size) }
-	def dispatch NablaType getTypeFor(IntMatrixConstant it) { new NSTIntArray2D(values.size, values.head.values.size) }
-	def dispatch NablaType getTypeFor(RealMatrixConstant it) { new NSTRealArray2D(values.size, values.head.values.size) }
+	def dispatch NablaType getTypeFor(IntVectorConstant it) { new NSTIntArray1D(NSTDimension.create(values.size)) }
+	def dispatch NablaType getTypeFor(RealVectorConstant it) { new NSTRealArray1D(NSTDimension.create(values.size)) }
+
+	def dispatch NablaType getTypeFor(IntMatrixConstant it)
+	{
+		new NSTIntArray2D(NSTDimension.create(values.size), NSTDimension.create(values.head.values.size))
+	}
+
+	def dispatch NablaType getTypeFor(RealMatrixConstant it)
+	{
+		new NSTRealArray2D(NSTDimension.create(values.size), NSTDimension.create(values.head.values.size))
+	}
 
 	def dispatch NablaType getTypeFor(ArgOrVarRef it)
 	{
@@ -110,7 +118,7 @@ class ExpressionTypeProvider
 	{
 		if (iterators.empty)
 		{
-			val t = v.baseType.typeFor
+			val t = v.type.typeFor
 			getTypeForVar(t, nbIndices)
 		}
 		else null
@@ -124,16 +132,20 @@ class ExpressionTypeProvider
 		else
 		{
 			if (iterators.size == v.supports.size)
-				getTypeForVar(v.baseType.typeFor, nbIndices)
+				getTypeForVar(v.type.typeFor, nbIndices)
 			else
-				null	
+				null
 		}
 	}
 
 	private def dispatch NablaType getTypeForVar(Arg v, List<SpaceIteratorRef> iterators, int nbIndices)
 	{
-		// TODO
-		null
+		if (iterators.empty)
+		{
+			val t = v.type.typeFor
+			getTypeForVar(t, nbIndices)
+		}
+		else null
 	}
 
 	private def NablaType getTypeForVar(NablaSimpleType t, int nbIndices)
@@ -141,7 +153,7 @@ class ExpressionTypeProvider
 		switch t
 		{
 			case nbIndices == 0 : t
-			NSTArray1D case nbIndices == 1 : t.primitive.typeFor 
+			NSTArray1D case nbIndices == 1 : t.primitive.typeFor
 			NSTArray2D case nbIndices == 2 : t.primitive.typeFor
 			default : null 
 		}

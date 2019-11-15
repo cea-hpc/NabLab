@@ -324,12 +324,12 @@ public class ReductionItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION__COLLECTION_TYPE,
-				 NablaFactory.eINSTANCE.createArgType()));
+				 NablaFactory.eINSTANCE.createArgOrVarType()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION__RETURN_TYPE,
-				 NablaFactory.eINSTANCE.createArgType()));
+				 NablaFactory.eINSTANCE.createArgOrVarType()));
 	}
 
 	/**

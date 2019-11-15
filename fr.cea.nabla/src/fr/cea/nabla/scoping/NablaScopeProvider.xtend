@@ -9,7 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.scoping
 
-import fr.cea.nabla.nabla.ArgType
+import fr.cea.nabla.nabla.ArgOrVarRef
+import fr.cea.nabla.nabla.ArgOrVarType
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.DimensionIterationBlock
 import fr.cea.nabla.nabla.Function
@@ -24,7 +25,6 @@ import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterationBlock
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
-import fr.cea.nabla.nabla.ArgOrVarRef
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.emf.ecore.EObject
@@ -169,7 +169,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		symbolsDefinedBefore(context.eContainer, '\t')
 	}
 
-	def IScope scope_DimensionSymbolRef_target(ArgType context, EReference r)
+	def IScope scope_DimensionSymbolRef_target(ArgOrVarType context, EReference r)
 	{
 		//println('scope_DimensionSymbolRef_target(' + context.class.simpleName + ', ' + r.name + ')')
 		symbolsDefinedBefore(context.eContainer, '\t')

@@ -10,7 +10,7 @@
 package fr.cea.nabla.typing
 
 import com.google.inject.Inject
-import fr.cea.nabla.nabla.ArgType
+import fr.cea.nabla.nabla.ArgOrVarType
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.Dimension
 import fr.cea.nabla.nabla.DimensionInt
@@ -34,19 +34,22 @@ import org.eclipse.xtext.EcoreUtil2
 @Data
 class DimensionValue 
 { 
-	public static val Undefined = new DimensionValue(null)
+	public static val Undefined = new DimensionValue
 	
-	Object value // Integer or Connectivity (constant like nbCells)
+	Object value // NSTDimension or Connectivity (constant like nbCells)
 	
-	new(int value) { this.value = value }
+	new() { this.value = null }
+	new(NSTDimension value) { this.value = value }
 	new(Connectivity value) { this.value = value }
 
 	def isUndefined() { value === null }
 	def isConnectivity() { value instanceof Connectivity }
-	def isInt() { value instanceof Integer }
+	def isNSTDimension() { value instanceof NSTDimension }
+	def isNSTDimensionInt() { value instanceof NSTDimension && NSTDimensionValue.int }
 
 	def getConnectivityValue() { value as Connectivity }
-	def getIntValue() { value as Integer }
+	def getNSTDimensionValue() { value as NSTDimension }
+	def getNSTDimensionIntValue() { NSTDimensionValue.intValue }
 }
 
 @Data
@@ -103,13 +106,13 @@ class DeclarationProvider
 		return new ReductionDeclaration(r, dimensionVarValues, collectionType as NablaSimpleType, returnType as NablaSimpleType)
 	}
 
-	private def boolean match(ArgType a, Expression b, Map<DimensionVar, DimensionValue> dimVarValues) 
+	private def boolean match(ArgOrVarType a, Expression b, Map<DimensionVar, DimensionValue> dimVarValues) 
 	{
 		val btype = b.typeFor
 		if (btype === null)
 			false // undefined type
 		else
-			a.primitive == btype.primitive && valuesMatch(dimVarValues, a.indices, btype.dimensionValues)
+			a.primitive == btype.primitive && valuesMatch(dimVarValues, a.sizes, btype.dimensionValues)
 	}
 
 	private def dispatch List<DimensionValue> getDimensionValues(NSTScalar it) { #[] }
@@ -134,7 +137,7 @@ class DeclarationProvider
 			switch expectedType
 			{
 				DimensionOperation: computeValue(expectedType, dimVarValues)
-				DimensionInt case (!actualType.int || expectedType.value != actualType.intValue): return false
+				DimensionInt case (!actualType.NSTDimensionInt || expectedType.value != actualType.NSTDimensionIntValue): return false
 				DimensionSymbolRef case (expectedType.target instanceof DimensionVar):
 				{
 					val dimVarValue = dimVarValues.get(expectedType.target)
@@ -168,7 +171,7 @@ class DeclarationProvider
 
 	private def dispatch DimensionValue computeValue(DimensionInt it, Map<DimensionVar, DimensionValue> values)
 	{
-		new DimensionValue(value)
+		new DimensionValue(NSTDimension.create(value))
 	}
 	
 	private def dispatch DimensionValue computeValue(DimensionSymbolRef it, Map<DimensionVar, DimensionValue> values)
@@ -176,24 +179,24 @@ class DeclarationProvider
 		values.getOrDefault(target, DimensionValue::Undefined)
 	}
 	
-	private def NablaType computeExpressionType(ArgType argType, Map<DimensionVar, DimensionValue> values)
+	private def NablaType computeExpressionType(ArgOrVarType argType, Map<DimensionVar, DimensionValue> values)
 	{
 		var NablaType returnType = null
-		if (argType.indices.empty)
+		if (argType.sizes.empty)
 			returnType = argType.primitive.typeFor
 		else
 		{
-			val argTypeDimensionValues = argType.indices.map[x | computeValue(x, values)]
+			val argTypeDimensionValues = argType.sizes.map[x | computeValue(x, values)]
 			val firstElement = argTypeDimensionValues.head
 			val allValuesSameType = argTypeDimensionValues.tail.forall[x | x.value.class == firstElement.value.class]
 			if (allValuesSameType)
 			{
 				returnType = switch firstElement
 				{
-					case firstElement.int && argTypeDimensionValues.size == 1: 
-						createArray1D(argTypeDimensionValues.get(0).intValue, argType.primitive)
-					case firstElement.int && argTypeDimensionValues.size == 2: 
-						createArray2D(argTypeDimensionValues.get(0).intValue, argTypeDimensionValues.get(1).intValue, argType.primitive)	
+					case firstElement.NSTDimension && argTypeDimensionValues.size == 1: 
+						createArray1D(argTypeDimensionValues.get(0).NSTDimensionValue, argType.primitive)
+					case firstElement.NSTDimension && argTypeDimensionValues.size == 2: 
+						createArray2D(argTypeDimensionValues.get(0).NSTDimensionValue, argTypeDimensionValues.get(1).NSTDimensionValue, argType.primitive)	
 					case firstElement.connectivity: 
 						new NablaConnectivityType(argTypeDimensionValues.map[x|x.connectivityValue], argType.primitive.typeFor)
 					// default => firstElement is undefined then returnType stays undefined
@@ -205,8 +208,8 @@ class DeclarationProvider
 		return returnType
 	}
 	
-	private def NSTArray1D createArray1D(int size, PrimitiveType primitive) 
-	{ 
+	private def NSTArray1D createArray1D(NSTDimension size, PrimitiveType primitive) 
+	{
 		switch primitive
 		{
 			case INT: new NSTIntArray1D(size)
@@ -215,7 +218,7 @@ class DeclarationProvider
 		}
 	}
 	
-	private def NSTArray2D createArray2D(int nbRows, int nbCols, PrimitiveType primitive) 
+	private def NSTArray2D createArray2D(NSTDimension nbRows, NSTDimension nbCols, PrimitiveType primitive) 
 	{ 
 		switch primitive
 		{
@@ -227,17 +230,17 @@ class DeclarationProvider
 	
 	private def DimensionValue operator_plus(DimensionValue a, DimensionValue b)
 	{
-		if (a.int && b.int)
-			new DimensionValue(a.intValue + b.intValue)
+		if (a.NSTDimensionInt && b.NSTDimensionInt)
+			new DimensionValue(NSTDimension.create(a.NSTDimensionIntValue + b.NSTDimensionIntValue))
 		else 
-			DimensionValue::Undefined // no operation on connectivities
+			DimensionValue::Undefined 
 	}
 
 	private def DimensionValue operator_multiply(DimensionValue a, DimensionValue b)
 	{
-		if (a.int && b.int)
-			new DimensionValue(a.intValue * b.intValue)
+		if (a.NSTDimensionInt && b.NSTDimensionInt)
+			new DimensionValue(NSTDimension.create(a.NSTDimensionIntValue * b.NSTDimensionIntValue))
 		else 
-			DimensionValue::Undefined // no operation on connectivities
+			DimensionValue::Undefined 
 	}
 }

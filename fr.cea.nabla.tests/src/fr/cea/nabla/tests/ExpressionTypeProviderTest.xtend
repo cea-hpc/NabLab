@@ -18,6 +18,7 @@ import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.NSTBoolScalar
+import fr.cea.nabla.typing.NSTDimension
 import fr.cea.nabla.typing.NSTIntArray1D
 import fr.cea.nabla.typing.NSTIntArray2D
 import fr.cea.nabla.typing.NSTIntScalar
@@ -147,14 +148,15 @@ class ExpressionTypeProviderTest
 		val computeV = module.getJobByName("ComputeV")
 		val computeX = module.getJobByName("ComputeX")
 
+		val two = NSTDimension.create(2)
 		assertTypesFor(new NSTIntScalar, module, "a1")
 		assertTypesFor(new NSTIntScalar, module, "a2")
 		assertTypesFor(new NSTIntScalar, module, "a3")
 		assertTypesFor(new NSTIntScalar, module, "a4")
-		assertTypesFor(new NSTIntArray1D(2), module, "a5")
-		assertTypesFor(new NSTIntArray1D(2), module, "a6")
-		assertTypesFor(new NSTIntArray1D(2), module, "a7")
-		assertTypesFor(new NSTIntArray2D(2,2), module, "a8")
+		assertTypesFor(new NSTIntArray1D(two), module, "a5")
+		assertTypesFor(new NSTIntArray1D(two), module, "a6")
+		assertTypesFor(new NSTIntArray1D(two), module, "a7")
+		assertTypesFor(new NSTIntArray2D(two, two), module, "a8")
 		assertTypesFor(new NSTIntScalar, module, "a9")
 
 		assertTypesFor(new NSTBoolScalar, module, "b1")
@@ -176,19 +178,19 @@ class ExpressionTypeProviderTest
 		assertTypesFor(new NSTRealScalar, module, "c6")
 		assertTypesFor(new NSTRealScalar, module, "c7")		
 
-		assertTypesFor(new NSTRealArray1D(2), module, "d1")
-		assertTypesFor(new NSTRealArray1D(2), module, "d2")
-		assertTypesFor(new NSTRealArray1D(2), module, "d3")
+		assertTypesFor(new NSTRealArray1D(two), module, "d1")
+		assertTypesFor(new NSTRealArray1D(two), module, "d2")
+		assertTypesFor(new NSTRealArray1D(two), module, "d3")
 
-		assertTypesFor(new NSTRealArray1D(3), module, "e")
+		assertTypesFor(new NSTRealArray1D(NSTDimension.create(3)), module, "e")
 
-		assertTypesFor(new NSTRealArray2D(2,2), module, "g")
+		assertTypesFor(new NSTRealArray2D(two, two), module, "g")
 		assertTypesFor(new NSTRealScalar, module, "h")
 				
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTIntScalar), module, "s")
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), module, "u")
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), module, "v")
-		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealArray1D(2)), module, "w")
+		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealArray1D(two)), module, "w")
 		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealScalar), module, "x")
 		assertTypesFor(new NablaConnectivityType(#[cells, cells], new NSTRealScalar), module, "α")
 

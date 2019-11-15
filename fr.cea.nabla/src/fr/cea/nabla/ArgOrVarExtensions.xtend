@@ -10,13 +10,10 @@
 package fr.cea.nabla
 
 import fr.cea.nabla.nabla.Arg
-import fr.cea.nabla.nabla.Array1D
-import fr.cea.nabla.nabla.Array2D
-import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.Scalar
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.Var
@@ -24,12 +21,12 @@ import fr.cea.nabla.nabla.VarGroupDeclaration
 
 class ArgOrVarExtensions 
 {
-	def getBaseType(ConnectivityVar it) 
+	def dispatch getType(ConnectivityVar it)
 	{
 		(eContainer as VarGroupDeclaration).type
 	}
 
-	def getBaseType(SimpleVar it) 
+	def dispatch getType(SimpleVar it)
 	{
 		val decl = eContainer
 		switch decl
@@ -39,19 +36,19 @@ class ArgOrVarExtensions
 		}
 	}
 
-	def getArgType(Arg it)
+	def dispatch getType(Arg it)
 	{
 		val f = eContainer as Function
 		val i = f.inArgs.indexOf(it)
 		f.inTypes.get(i)
 	}
 
-	def dispatch boolean isConst(Arg it) 
+	def dispatch boolean isConst(Arg it)
 	{
 		true
 	}
 
-	def dispatch boolean isConst(Var it) 
+	def dispatch boolean isConst(Var it)
 	{ 
 		val decl = eContainer
 		switch decl
@@ -73,18 +70,5 @@ class ArgOrVarExtensions
 		}
 	}
 
-	def dispatch int getDimension(SimpleVar it) { baseType.typeDimension }
-	def dispatch int getDimension(ConnectivityVar it) { baseType.typeDimension }
-	def dispatch int getDimension(Arg it) { argType.indices.size }
-
-	private def int getTypeDimension(BaseType t)
-	{
-		switch t
-		{
-			Scalar: 0
-			Array1D: 1
-			Array2D: 2
-			default: -1
-		}
-	}
+	def int getDimension(ArgOrVar it) { type.sizes.size }
 }

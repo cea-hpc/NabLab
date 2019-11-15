@@ -9,21 +9,20 @@ import fr.cea.nabla.nabla.SimpleVar
 class VarTypeProvider
 {
 	@Inject extension ArgOrVarExtensions
-	@Inject extension BaseTypeTypeProvider
+	@Inject extension ArgOrVarTypeTypeProvider
 
 	def dispatch NablaType getTypeFor(SimpleVar it)
 	{
-		baseType.typeFor
+		type.typeFor
 	}
 
 	def dispatch NablaType getTypeFor(ConnectivityVar it)
 	{
-		new NablaConnectivityType(supports, baseType.typeFor)
+		new NablaConnectivityType(supports, type.typeFor)
 	}
 
 	def dispatch NablaType getTypeFor(Arg it)
 	{
-		// TODO
-		null
+		type.typeFor
 	}
 }

@@ -465,7 +465,7 @@ class BasicValidatorTest
 			
 		moduleKo.assertWarning(NablaPackage.eINSTANCE.dimensionVar, 
 			BasicValidator::UNUSED_DIMENSION_VAR, 
-			BasicValidator::getUnusedDimensionVar())		
+			BasicValidator::getUnusedDimensionVarMsg())		
 									
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(

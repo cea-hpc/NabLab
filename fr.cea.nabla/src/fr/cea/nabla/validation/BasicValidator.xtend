@@ -15,20 +15,23 @@ import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.nabla.Affectation
-import fr.cea.nabla.nabla.Arg
+import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.ArgOrVarType
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
+import fr.cea.nabla.nabla.DimensionIndex
 import fr.cea.nabla.nabla.DimensionInt
 import fr.cea.nabla.nabla.DimensionOperation
+import fr.cea.nabla.nabla.DimensionSymbol
 import fr.cea.nabla.nabla.DimensionSymbolRef
 import fr.cea.nabla.nabla.DimensionVar
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Iterable
+import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.RangeSpaceIterator
@@ -40,23 +43,25 @@ import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.Var
+import fr.cea.nabla.nabla.VarGroupDeclaration
+import fr.cea.nabla.typing.DeclarationProvider
 import java.util.HashSet
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.scoping.IScopeProvider
 import org.eclipse.xtext.util.SimpleAttributeResolver
 import org.eclipse.xtext.validation.Check
 
 import static extension fr.cea.nabla.Utils.*
-import fr.cea.nabla.typing.DeclarationProvider
-import fr.cea.nabla.nabla.ArgOrVar
 
 class BasicValidator extends AbstractNablaValidator
 {
 	@Inject extension ArgOrVarExtensions
 	@Inject extension SpaceIteratorExtensions
 	@Inject extension DeclarationProvider
+	@Inject IScopeProvider scopeProvider
 
 	// ===== Unique Names ====
 
@@ -65,38 +70,60 @@ class BasicValidator extends AbstractNablaValidator
 	static def getDuplicateNameMsg(EClass objectClass, String objectName) { "Duplicate " + objectClass.name + ": " + objectName }
 
 	@Check
-	def void checkDuplicate(ArgOrVar it) { checkDuplicates(NablaPackage.Literals.ARG_OR_VAR__NAME, false) }
+	def void checkDuplicate(Var it) 
+	{
+		if (eContainer instanceof VarGroupDeclaration)
+		{
+			val variables = (eContainer as VarGroupDeclaration).variables
+			val duplicate = variables.findFirst[x | x.name == name && x != it]
+			if (duplicate !== null)
+				error(getDuplicateNameMsg(NablaPackage.Literals.ARG_OR_VAR, duplicate.name), NablaPackage.Literals.ARG_OR_VAR__NAME);
+		}
+	}
 
 	@Check
-	def void checkDuplicate(Connectivity it) { checkDuplicates(NablaPackage.Literals.CONNECTIVITY__NAME, false) }
+	def void checkDuplicate(ArgOrVar it) 
+	{
+		val scope = scopeProvider.getScope(it, NablaPackage.Literals.ARG_OR_VAR_REF__TARGET)
+		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
+		if (duplicated)
+			error(getDuplicateNameMsg(NablaPackage.Literals.ARG_OR_VAR, name), NablaPackage.Literals.ARG_OR_VAR__NAME);
+	}
 
 	@Check
 	def void checkDuplicate(SpaceIterator it)
 	{
-		if (eContainer === null) return
-		val candidates = eContainer.eAllContents.filter(SpaceIterator).filter[x | x !== it]
-		val duplicate = candidates.findFirst[x | x.name == name]
-		if (duplicate !== null)
-			error(getDuplicateNameMsg(eClass, name), NablaPackage.Literals.SPACE_ITERATOR__NAME);
+		val scope = scopeProvider.getScope(it, NablaPackage.Literals.SPACE_ITERATOR_REF__TARGET)
+		println('checkDuplicate(' + it + ') : ' + scope.allElements.map[name.segments.join('.')].join(', '))
+		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
+		if (duplicated)
+			error(getDuplicateNameMsg(NablaPackage.Literals.SPACE_ITERATOR, name), NablaPackage.Literals.SPACE_ITERATOR__NAME);
 	}
 
 	@Check
-	def void checkDuplicate(Arg it)
+	def void checkDuplicate(DimensionSymbol it)
 	{
-		val candidates = eContainer.eContents.filter(Arg).filter[x | x !== it]
-		val duplicate = candidates.findFirst[x | x.name == name]
-		if (duplicate !== null)
-			error(getDuplicateNameMsg(eClass, name), NablaPackage.Literals.ARG_OR_VAR__NAME);
+		val scope = scopeProvider.getScope(it, NablaPackage.Literals.DIMENSION_SYMBOL_REF__TARGET)
+		println('checkDuplicate(' + it + ') : ' + scope.allElements.map[name.lastSegment].join(', '))
+		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
+		if (duplicated)
+			error(getDuplicateNameMsg(NablaPackage.Literals.DIMENSION_SYMBOL, name), NablaPackage.Literals.DIMENSION_SYMBOL__NAME);
 	}
 
-	private def <T extends EObject> checkDuplicates(T t, EStructuralFeature f, boolean all)
+	@Check
+	def void checkDuplicate(Connectivity it) { checkDuplicates(NablaPackage.Literals.CONNECTIVITY__NAME) }
+
+	@Check
+	def void checkDuplicate(Job it) { checkDuplicates(NablaPackage.Literals.JOB__NAME) }
+
+	private def <T extends EObject> checkDuplicates(T t, EStructuralFeature f)
 	{
 		val name = SimpleAttributeResolver.NAME_RESOLVER.apply(t)
 		//println('checkDuplicates(' + t + ', ' + f.name + ', ' + all + ')')
 		val module = EcoreUtil2.getContainerOfType(t, NablaModule)
 		if (module !== null)
 		{
-			val contents = if (all) EcoreUtil2.getAllContentsOfType(module, t.class) else module.eAllContents.filter(t.class).toIterable
+			val contents = EcoreUtil2.getAllContentsOfType(module, t.class)
 			for (tx : contents)
 			{
 				val tx_name = SimpleAttributeResolver.NAME_RESOLVER.apply(tx)
@@ -295,7 +322,7 @@ class BasicValidator extends AbstractNablaValidator
 	static def getReductionIncompatibleCollectionTypeMsg() { "Declaration conflicts" }
 	static def getReductionReturnTypeMsg(String variableName) { "Only collection type variables can be used for return types. Invalid variable: " + variableName }
 	static def getDimensionVarNameMsg() { "Invalid name (reserved for time step)" }
-	static def getUnusedDimensionVar() { "Unused variable" }
+	static def getUnusedDimensionVarMsg() { "Unused variable" }
 
 	@Check
 	def checkUnusedFunction(Function it)
@@ -420,7 +447,7 @@ class BasicValidator extends AbstractNablaValidator
 	{
 		val varRefs = eContainer.eAllContents.filter(DimensionSymbolRef).map[target].toSet
 		if (!varRefs.contains(it))
-			warning(getUnusedDimensionVar(), NablaPackage.Literals::DIMENSION_SYMBOL__NAME, UNUSED_DIMENSION_VAR)
+			warning(getUnusedDimensionVarMsg(), NablaPackage.Literals::DIMENSION_SYMBOL__NAME, UNUSED_DIMENSION_VAR)
 	}
 
 	// ===== Connectivities =====
@@ -496,7 +523,7 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkAffectationVar(Affectation it)
 	{
-		if (left.target.isConst)
+		if (left.target !== null && !left.target.eIsProxy && left.target.isConst)
 			error(getAffectationConstMsg(), NablaPackage.Literals::AFFECTATION__LEFT, AFFECTATION_CONST)
 	}
 
@@ -507,14 +534,16 @@ class BasicValidator extends AbstractNablaValidator
 			error(getScalarVarDefaultValueMsg(), NablaPackage.Literals::SIMPLE_VAR_DEFINITION__DEFAULT_VALUE, SCALAR_VAR_DEFAULT_VALUE)
 	}
 
-	// ===== Iterators =====
+	// ===== Iterators && Dimension indices =====
 
 	public static val UNUSED_ITERATOR = "Iterators::UnusedIterator"
+	public static val UNUSED_DIMENSION_INDEX = "Iterators::UnusedDimensionIndex"
 	public static val RANGE_RETURN_TYPE = "Iterators::RangeReturnType"
 	public static val SINGLETON_RETURN_TYPE = "Iterators::SingletonReturnType"
 	public static val SHIFT_VALIDITY = "Iterators::ShiftValidity"
 
 	static def getUnusedIteratorMsg() { "Unused iterator" }
+	static def getUnusedDimensionIndexMsg() { "Unused index" }
 	static def getRangeReturnTypeMsg() { "Connectivity return type must be a collection" }
 	static def getSingletonReturnTypeMsg() { "Connectivity return type must be a singleton" }
 	static def getShiftValidityMsg() { "Shift only valid on a range iterator" }
@@ -526,6 +555,15 @@ class BasicValidator extends AbstractNablaValidator
 		val referenced = iterable.eAllContents.filter(SpaceIteratorRef).exists[x|x.target===it]
 		if (!referenced)
 			warning(getUnusedIteratorMsg(), NablaPackage.Literals::SPACE_ITERATOR__NAME, UNUSED_ITERATOR)
+	}
+
+	@Check
+	def checkUnusedIterator(DimensionIndex it)
+	{
+		val iterable = EcoreUtil2.getContainerOfType(it, Iterable)
+		val referenced = iterable.eAllContents.filter(DimensionSymbolRef).exists[x|x.target===it]
+		if (!referenced)
+			warning(getUnusedDimensionIndexMsg(), NablaPackage.Literals::DIMENSION_SYMBOL__NAME, UNUSED_DIMENSION_INDEX)
 	}
 
 	@Check

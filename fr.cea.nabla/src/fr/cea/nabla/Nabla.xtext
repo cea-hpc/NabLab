@@ -11,6 +11,8 @@
  
  
 // TODO Add missing tests of validators
+// TODO Test on unique names
+// TODO Test very light on iterators scope provider
 // TODO Add keyword size, i.e. size X = 4; (X : DimensionVar). Check only one DimensionVar X.
 // TODO Operator definition and overload
 // TODO Reduction body

@@ -11,7 +11,6 @@ package fr.cea.nabla.scoping
 
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.ArgOrVarType
-import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.DimensionIterationBlock
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.Instruction
@@ -19,16 +18,19 @@ import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Iterable
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterationBlock
+import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
+import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
@@ -42,50 +44,72 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
 class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 {
 	/*** Scope for iterators **********************************************************/
-	def scope_SpaceIteratorRef_target(ConnectivityCall context, EReference r)
+//	def scope_SpaceIteratorRef_target(ConnectivityCall context, EReference r)
+//	{
+//		println('scope_SpaceIteratorRef_target(' + context.class.simpleName + ', ' + r.name + ')')
+//		val s = iteratorsDefinedBefore(context.eContainer, context, '\t')
+//		println('--> ' + s)
+//		return s
+//	}
+
+	def scope_SpaceIteratorRef_target(RangeSpaceIterator context, EReference r)
 	{
-		val s = iteratorsDefinedBefore(context.eContainer, context)
+		//println('scope_SpaceIteratorRef_target(' + context.class.simpleName + ', ' + r.name + ')')
+		val iterable = EcoreUtil2.getContainerOfType(context, Iterable)
+		val s = iteratorsDefinedBefore(iterable.eContainer, '\t')
+		//println('--> ' + s)
+		return s
+	}
+
+	def scope_SpaceIteratorRef_target(SingletonSpaceIterator context, EReference r)
+	{
+		//println('scope_SpaceIteratorRef_target(' + context.class.simpleName + ', ' + r.name + ')')
+		val block = context.eContainer as SpaceIterationBlock
+		val previousIterators = iteratorsDeclaredBefore(block.singletons, context, '\t')
+		val scopeIterators = new ArrayList<SpaceIterator>
+		scopeIterators += block.range
+		scopeIterators += previousIterators
+		val iterable = EcoreUtil2.getContainerOfType(context, Iterable)
+		val s = Scopes::scopeFor(scopeIterators, iteratorsDefinedBefore(iterable.eContainer, '\t'))
+		//println('--> ' + s)
 		return s
 	}
 
 	def scope_SpaceIteratorRef_target(ArgOrVarRef context, EReference r)
 	{
-		val s = iteratorsDefinedBefore(context.eContainer, null)
+		//println('scope_SpaceIteratorRef_target(' + context.class.simpleName + ', ' + r.name + ')')
+		val s = iteratorsDefinedBefore(context.eContainer, '\t')
+		//println('--> ' + s)
 		return s
 	}
 
-	private def dispatch IScope iteratorsDefinedBefore(EObject context, ConnectivityCall c)
+	private def IScope iteratorsDefinedBefore(EObject o, String prefix)
 	{
-		iteratorsDefinedBefore(context.eContainer, c)
-	}
-
-	private def dispatch IScope iteratorsDefinedBefore(Job context, ConnectivityCall c)
-	{
-		IScope::NULLSCOPE
-	}
-
-	private def dispatch IScope iteratorsDefinedBefore(Iterable context, ConnectivityCall c)
-	{
-		val containerScope = iteratorsDefinedBefore(context.eContainer, c)
-		if (context.iterationBlock instanceof SpaceIterationBlock)
+		//println(prefix + 'iteratorsDefinedBefore(' + o.class.simpleName + ')')
+		if (o === null || o instanceof Job) IScope.NULLSCOPE
+		else switch o
 		{
-			val b = context.iterationBlock as SpaceIterationBlock
-			val previousIterators = iteratorsDeclaredBefore(c, b.singletons)
-			if (b.range.container === c)
-				Scopes::scopeFor(previousIterators, containerScope)
-			else
-				Scopes::scopeFor(#[b.range] + previousIterators, containerScope)			
+			Iterable case (o.iterationBlock instanceof SpaceIterationBlock):
+			{
+				val b = o.iterationBlock as SpaceIterationBlock
+				val scopeIterators = new ArrayList<SpaceIterator>
+				scopeIterators += b.range
+				scopeIterators += b.singletons
+				Scopes::scopeFor(scopeIterators, iteratorsDefinedBefore(o.eContainer, prefix + '\t'))
+			}
+			default: iteratorsDefinedBefore(o.eContainer, prefix + '\t')
 		}
 	}
 
-	private def iteratorsDeclaredBefore(ConnectivityCall c, List<SingletonSpaceIterator> list)
+	private def iteratorsDeclaredBefore(List<SingletonSpaceIterator> list, SingletonSpaceIterator i, String prefix)
 	{
-		if (c !== null && !list.empty) 
-		{
-			val index = list.map[container].indexOf(c)
-			if (index != -1) return list.subList(0, index)
-		}
-		return list
+		var List<SingletonSpaceIterator> iterators
+		val iIndex = list.indexOf(i)
+		if (iIndex == -1) 
+			iterators = #[]
+		else
+			iterators = list.subList(0, iIndex)
+		return iterators
 	}
 
 	/*** Scope for variables ***********************************************************/
@@ -139,7 +163,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		if (iIndex == -1) 
 			variables = #[]
 		else
-			variables = list.subList(0, iIndex).allVariables		
+			variables = list.subList(0, iIndex).allVariables
 		//println(prefix + 'variablesDeclaredBefore(' + i.class.simpleName + ') : ' + variables.map[name].join(', '))
 		return variables
 	}

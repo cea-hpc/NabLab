@@ -92,10 +92,11 @@ class BasicValidator extends AbstractNablaValidator
 	private def <T extends EObject> checkDuplicates(T t, EStructuralFeature f, boolean all)
 	{
 		val name = SimpleAttributeResolver.NAME_RESOLVER.apply(t)
+		//println('checkDuplicates(' + t + ', ' + f.name + ', ' + all + ')')
 		val module = EcoreUtil2.getContainerOfType(t, NablaModule)
 		if (module !== null)
 		{
-			val contents = if (all) EcoreUtil2.getAllContentsOfType(module, t.class) else module.eContents.filter(t.class)
+			val contents = if (all) EcoreUtil2.getAllContentsOfType(module, t.class) else module.eAllContents.filter(t.class).toIterable
 			for (tx : contents)
 			{
 				val tx_name = SimpleAttributeResolver.NAME_RESOLVER.apply(tx)

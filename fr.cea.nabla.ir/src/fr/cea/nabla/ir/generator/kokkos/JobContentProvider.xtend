@@ -9,7 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
-import fr.cea.nabla.ir.MandatoryVariables
+import fr.cea.nabla.ir.MandatoryMeshVariables
+import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.EndOfInitJob
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
@@ -43,7 +44,7 @@ abstract class JobContentProvider
 			«v.type.connectivities.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
 			«ENDFOR»
 			auto quads = mesh->getGeometricMesh()->getQuads();
-			writer.writeFile(iteration, «MandatoryVariables::TIME», nbNodes, «MandatoryVariables::COORD».data(), nbCells, quads.data(), cellVariables, nodeVariables);
+			writer.writeFile(iteration, «MandatorySimulationVariables::TIME», nbNodes, «MandatoryMeshVariables::COORD».data(), nbCells, quads.data(), cellVariables, nodeVariables);
 			«IF timeStep>0»lastWriteTime += «timeStep»;«ENDIF»
 		}
 	'''

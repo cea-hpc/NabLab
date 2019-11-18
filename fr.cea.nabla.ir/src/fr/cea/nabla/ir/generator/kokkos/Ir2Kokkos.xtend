@@ -9,8 +9,9 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
-import fr.cea.nabla.ir.MandatoryOptions
-import fr.cea.nabla.ir.MandatoryVariables
+import fr.cea.nabla.ir.MandatoryMeshOptions
+import fr.cea.nabla.ir.MandatorySimulationOptions
+import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalJobContentProvider
@@ -155,8 +156,8 @@ class Ir2Kokkos extends CodeGenerator
 		{
 			std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting «name» ..." << __RESET__ << "\n\n";
 
-			std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->«MandatoryOptions::X_EDGE_ELEMS» << __RESET__ << ", Y=" << __BOLD__ << options->«MandatoryOptions::Y_EDGE_ELEMS»
-				<< __RESET__ << ", X length=" << __BOLD__ << options->«MandatoryOptions::X_EDGE_LENGTH» << __RESET__ << ", Y length=" << __BOLD__ << options->«MandatoryOptions::Y_EDGE_LENGTH» << __RESET__ << std::endl;
+			std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->«MandatoryMeshOptions::X_EDGE_ELEMS» << __RESET__ << ", Y=" << __BOLD__ << options->«MandatoryMeshOptions::Y_EDGE_ELEMS»
+				<< __RESET__ << ", X length=" << __BOLD__ << options->«MandatoryMeshOptions::X_EDGE_LENGTH» << __RESET__ << ", Y length=" << __BOLD__ << options->«MandatoryMeshOptions::Y_EDGE_LENGTH» << __RESET__ << std::endl;
 
 
 			if (Kokkos::hwloc::available()) {
@@ -185,23 +186,23 @@ class Ir2Kokkos extends CodeGenerator
 
 			«IF jobs.exists[at > 0]»
 			iteration = 0;
-			while («MandatoryVariables::TIME» < options->«MandatoryOptions::STOP_TIME» && iteration < options->«MandatoryOptions::MAX_ITERATIONS»)
+			while («MandatorySimulationVariables::TIME» < options->«MandatorySimulationOptions::STOP_TIME» && iteration < options->«MandatorySimulationOptions::MAX_ITERATIONS»)
 			{
 				timer.start();
 				utils::Timer compute_timer(true);
 				iteration++;
 				if (iteration!=1)
 					std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << iteration << __RESET__ "] t = " << __BOLD__
-						<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << «MandatoryVariables::TIME» << __RESET__;
+						<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << «MandatorySimulationVariables::TIME» << __RESET__;
 
 				«jobs.filter[x | x.at > 0].jobCallsContent»
 				compute_timer.stop();
 
 				// Progress
-				std::cout << utils::progress_bar(iteration, options->«MandatoryOptions::MAX_ITERATIONS», «MandatoryVariables::TIME», options->«MandatoryOptions::STOP_TIME», 30);
+				std::cout << utils::progress_bar(iteration, options->«MandatorySimulationOptions::MAX_ITERATIONS», «MandatorySimulationVariables::TIME», options->«MandatorySimulationOptions::STOP_TIME», 30);
 				timer.stop();
 				std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-					utils::eta(iteration, options->«MandatoryOptions::MAX_ITERATIONS», «MandatoryVariables::TIME», options->«MandatoryOptions::STOP_TIME», deltat, timer), true)
+					utils::eta(iteration, options->«MandatorySimulationOptions::MAX_ITERATIONS», «MandatorySimulationVariables::TIME», options->«MandatorySimulationOptions::STOP_TIME», deltat, timer), true)
 					<< __RESET__ << "\r";
 				std::cout.flush();
 			}
@@ -218,21 +219,21 @@ class Ir2Kokkos extends CodeGenerator
 		auto o = new «name»::Options();
 		string output;
 		if (argc == 5) {
-			o->«MandatoryOptions::X_EDGE_ELEMS» = std::atoi(argv[1]);
-			o->«MandatoryOptions::Y_EDGE_ELEMS» = std::atoi(argv[2]);
-			o->«MandatoryOptions::X_EDGE_LENGTH» = std::atof(argv[3]);
-			o->«MandatoryOptions::Y_EDGE_LENGTH» = std::atof(argv[4]);
+			o->«MandatoryMeshOptions::X_EDGE_ELEMS» = std::atoi(argv[1]);
+			o->«MandatoryMeshOptions::Y_EDGE_ELEMS» = std::atoi(argv[2]);
+			o->«MandatoryMeshOptions::X_EDGE_LENGTH» = std::atof(argv[3]);
+			o->«MandatoryMeshOptions::Y_EDGE_LENGTH» = std::atof(argv[4]);
 		} else if (argc == 6) {
-			o->«MandatoryOptions::X_EDGE_ELEMS» = std::atoi(argv[1]);
-			o->«MandatoryOptions::Y_EDGE_ELEMS» = std::atoi(argv[2]);
-			o->«MandatoryOptions::X_EDGE_LENGTH» = std::atof(argv[3]);
-			o->«MandatoryOptions::Y_EDGE_LENGTH» = std::atof(argv[4]);
+			o->«MandatoryMeshOptions::X_EDGE_ELEMS» = std::atoi(argv[1]);
+			o->«MandatoryMeshOptions::Y_EDGE_ELEMS» = std::atoi(argv[2]);
+			o->«MandatoryMeshOptions::X_EDGE_LENGTH» = std::atof(argv[3]);
+			o->«MandatoryMeshOptions::Y_EDGE_LENGTH» = std::atof(argv[4]);
 			output = argv[5];
 		} else if (argc != 1) {
 			std::cerr << "[ERROR] Wrong number of arguments. Expecting 4 or 5 args: X Y Xlength Ylength (output)." << std::endl;
 			std::cerr << "(X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
 		}
-		auto gm = CartesianMesh2DGenerator::generate(o->«MandatoryOptions::X_EDGE_ELEMS», o->«MandatoryOptions::Y_EDGE_ELEMS», o->«MandatoryOptions::X_EDGE_LENGTH», o->«MandatoryOptions::Y_EDGE_LENGTH»);
+		auto gm = CartesianMesh2DGenerator::generate(o->«MandatoryMeshOptions::X_EDGE_ELEMS», o->«MandatoryMeshOptions::Y_EDGE_ELEMS», o->«MandatoryMeshOptions::X_EDGE_LENGTH», o->«MandatoryMeshOptions::Y_EDGE_LENGTH»);
 		auto nm = new NumericMesh2D(gm);
 		auto c = new «name»(o, nm, output);
 		c->simulate();

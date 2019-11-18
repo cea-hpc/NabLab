@@ -1,7 +1,9 @@
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.MandatoryOptions
-import fr.cea.nabla.ir.MandatoryVariables
+import fr.cea.nabla.ir.MandatoryMeshOptions
+import fr.cea.nabla.ir.MandatoryMeshVariables
+import fr.cea.nabla.ir.MandatorySimulationOptions
+import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
 
@@ -21,24 +23,27 @@ class ModuleInterpreter
 		for (v : variables.filter(SimpleVariable).filter[const])
 			context.setVariableValue(v, interprete(v.defaultValue, context))
 			
-		// Create mesh
-		val nbXQuads = getInt(MandatoryOptions::X_EDGE_ELEMS, context)
-		val nbYQuads = getInt(MandatoryOptions::Y_EDGE_ELEMS, context)
-		val xSize = getReal(MandatoryOptions::X_EDGE_LENGTH, context)
-		val ySize = getReal(MandatoryOptions::Y_EDGE_LENGTH, context)
-		context.initMesh(nbXQuads, nbYQuads, xSize, ySize)
-		
-		// Create mesh nbElems
-		for (c : usedConnectivities)
-		if (c.inTypes.empty)
-			context.connectivitySizes.put(c, context.meshWrapper.getNbElems(c.name))
-		else		
-			context.connectivitySizes.put(c, context.meshWrapper.getMaxNbElems(c.name))
+		if (!items.empty)
+		{
+			// Create mesh
+			val nbXQuads = getInt(MandatoryMeshOptions::X_EDGE_ELEMS, context)
+			val nbYQuads = getInt(MandatoryMeshOptions::Y_EDGE_ELEMS, context)
+			val xSize = getReal(MandatoryMeshOptions::X_EDGE_LENGTH, context)
+			val ySize = getReal(MandatoryMeshOptions::Y_EDGE_LENGTH, context)
+			context.initMesh(nbXQuads, nbYQuads, xSize, ySize)
+
+			// Create mesh nbElems
+			for (c : usedConnectivities)
+			if (c.inTypes.empty)
+				context.connectivitySizes.put(c, context.meshWrapper.getNbElems(c.name))
+			else
+				context.connectivitySizes.put(c, context.meshWrapper.getMaxNbElems(c.name))
+		}
 
 		// Interprete variables
 		for (v : variables.filter[x | !(x instanceof SimpleVariable && x.const)])
 		{
-			if (v.name == MandatoryVariables::COORD)
+			if (v.name == MandatoryMeshVariables::COORD)
 				context.setVariableValue(v, new NV2Real(context.meshWrapper.nodes))
 			else
 				context.setVariableValue(v, createValue(v, context))
@@ -52,10 +57,10 @@ class ModuleInterpreter
 	
 		// Declare time loop
 		var iteration = 0
-		var maxIterations = getInt(MandatoryOptions::MAX_ITERATIONS, context)
-		var stopTime = getReal(MandatoryOptions::STOP_TIME, context)
+		var maxIterations = getInt(MandatorySimulationOptions::MAX_ITERATIONS, context)
+		var stopTime = getReal(MandatorySimulationOptions::STOP_TIME, context)
 		
-		while (iteration < maxIterations && getReal(MandatoryVariables::TIME, context) < stopTime)
+		while (iteration < maxIterations && getReal(MandatorySimulationVariables::TIME, context) < stopTime)
 		{
 			iteration ++
 			for (j : jobs.filter[x | x.at > 0].sortBy[at])

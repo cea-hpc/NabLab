@@ -34,20 +34,29 @@ class TestUtils
 	'''
 
 	//TODO These options should be filled in nablagen
-	static def String getMandatoryOptions(int xQuads, int yQuads, double stopTime, int maxIterations)
+	static def String getMandatoryMeshOptions(int xQuads, int yQuads)
 	'''
-	// Options obligatoires pour générer
 	const ℝ X_EDGE_LENGTH = 0.01;
 	const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
 	const ℕ X_EDGE_ELEMS = «xQuads»;
 	const ℕ Y_EDGE_ELEMS = «yQuads»;
 	const ℕ Z_EDGE_ELEMS = 1;
+	'''
+
+	static def String getMandatoryMeshOptions()
+	{
+		return getMandatoryMeshOptions(10, 10)
+	}
+
+	static def String getMandatorySimulationOptions(double stopTime, int maxIterations)
+	'''
 	const ℝ option_stoptime = «stopTime»;
 	const ℕ option_max_iterations = «maxIterations»;
 	'''
-	static def String getMandatoryOptions()
+
+	static def String getMandatorySimulationOptions()
 	{
-		return getMandatoryOptions(10, 10, 0.2, 1)
+		return getMandatorySimulationOptions(0.2, 1)
 	}
 
 	static def String getConnectivities()
@@ -71,54 +80,82 @@ class TestUtils
 	}
 	'''
 
-	static def String getMandatoryVariables()
+	static def String getMandatoryMeshVariables()
 	'''
-	ℝ t = 0.0;
 	ℝ[2] X{nodes};
 	'''
-		
+
+	static def String getMandatorySimulationVariables()
+	'''
+	ℝ t = 0.0;
+	'''
+
+	static def String getMandatoryMeshOptionsAndVariables()
+	{
+		mandatoryMeshOptions + mandatoryMeshVariables
+	}
+
+	static def String getMandatorySimulationOptionsAndVariables()
+	{
+		mandatorySimulationOptions + mandatorySimulationVariables
+	}
+
+	static def String getMandatoryOptionsAndVariables()
+	{
+		mandatoryMeshOptions + mandatorySimulationOptions + mandatoryMeshVariables + mandatorySimulationVariables
+	}
+
+	static def String getInitTJob()
+	{
+	'''
+	initT: t = 0.0;
+	'''
+	}
+
 	static def CharSequence getTestModule()
 	{
-		emptyTestModule + connectivities + mandatoryOptions + mandatoryVariables
+		emptyTestModule + connectivities + mandatoryOptionsAndVariables
 	}
 
 	static def CharSequence getTestModule(int xQuads, int yQuads, double stopTime, int maxIterations)
 	{
-		emptyTestModule + connectivities + getMandatoryOptions(xQuads, yQuads, stopTime, maxIterations) + mandatoryVariables
+		emptyTestModule + connectivities +
+			getMandatoryMeshOptions(xQuads, yQuads) + getMandatorySimulationOptions(stopTime, maxIterations) + 
+			mandatoryMeshVariables + mandatorySimulationVariables
 	}
 
 	static def getTestModuleWithCustomFunctions(CharSequence functions)
 	{
-		emptyTestModule + connectivities + functions + mandatoryOptions + mandatoryVariables
+		emptyTestModule + connectivities + functions + mandatoryOptionsAndVariables
 	}
 
 	static def getTestModuleWithCustomConnectivities(CharSequence connectivities)
 	{
-		emptyTestModule + connectivities + mandatoryOptions + mandatoryVariables
+		emptyTestModule + connectivities + mandatoryOptionsAndVariables
 	}
 
 	//Useful to prevent warnings
 	static def getTestModuleWithCoordVariable()
 	{
-		emptyTestModule + nodesConnectivity + mandatoryOptions + mandatoryVariables
+		emptyTestModule + nodesConnectivity + mandatoryOptionsAndVariables
 	}	
 
 	//Useful to prevent warnings
 	static def getTestModuleWithCoordVariableWithCustomVars(CharSequence variables)
 	{
-		emptyTestModule + nodesConnectivity + mandatoryOptions + mandatoryVariables + variables
+		emptyTestModule + nodesConnectivity + mandatoryOptionsAndVariables + variables
 	}
 
 	//Useful to prevent warnings
 	static def getTestModuleWithCoordVariableWithCustomFunctions(CharSequence functions)
 	{
-		emptyTestModule + nodesConnectivity + functions + mandatoryOptions + mandatoryVariables
+		emptyTestModule + nodesConnectivity + functions + mandatoryOptionsAndVariables
 	}
 
 	//Useful to prevent warnings
 	static def getTestModuleWithCoordVariableWithCustomConnectivities(CharSequence connectivities)
 	{
-		emptyTestModule + connectivities + mandatoryOptions + mandatoryVariables
+		emptyTestModule + connectivities + mandatoryOptionsAndVariables
 	}
 	
 	static def getTestGenModel()

@@ -9,8 +9,9 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import fr.cea.nabla.ir.MandatoryOptions
-import fr.cea.nabla.ir.MandatoryVariables
+import fr.cea.nabla.ir.MandatoryMeshOptions
+import fr.cea.nabla.ir.MandatorySimulationOptions
+import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Array1D
 import fr.cea.nabla.ir.ir.Array2D
@@ -133,10 +134,10 @@ class Ir2Java extends CodeGenerator
 				«IF jobs.exists[at > 0]»
 
 				iteration = 0;
-				while («MandatoryVariables::TIME» < options.«MandatoryOptions::STOP_TIME» && iteration < options.«MandatoryOptions::MAX_ITERATIONS»)
+				while («MandatorySimulationVariables::TIME» < options.«MandatorySimulationOptions::STOP_TIME» && iteration < options.«MandatorySimulationOptions::MAX_ITERATIONS»)
 				{
 					iteration++;
-					System.out.println("[" + iteration + "] t = " + «MandatoryVariables::TIME»);
+					System.out.println("[" + iteration + "] t = " + «MandatorySimulationVariables::TIME»);
 					«FOR j : jobs.filter[x | x.at > 0].sortBy[at]»
 						«j.name.toFirstLower»(); // @«j.at»
 					«ENDFOR»
@@ -148,7 +149,7 @@ class Ir2Java extends CodeGenerator
 			public static void main(String[] args)
 			{
 				«name».Options o = new «name».Options();
-				Mesh<double[]> gm = CartesianMesh2DGenerator.generate(o.«MandatoryOptions::X_EDGE_ELEMS», o.«MandatoryOptions::Y_EDGE_ELEMS», o.«MandatoryOptions::X_EDGE_LENGTH», o.«MandatoryOptions::Y_EDGE_LENGTH»);
+				Mesh<double[]> gm = CartesianMesh2DGenerator.generate(o.«MandatoryMeshOptions::X_EDGE_ELEMS», o.«MandatoryMeshOptions::Y_EDGE_ELEMS», o.«MandatoryMeshOptions::X_EDGE_LENGTH», o.«MandatoryMeshOptions::Y_EDGE_LENGTH»);
 				NumericMesh2D nm = new NumericMesh2D(gm);
 				«name» i = new «name»(o, nm);
 				i.simulate();

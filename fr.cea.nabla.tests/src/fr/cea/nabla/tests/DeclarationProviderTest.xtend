@@ -52,7 +52,7 @@ class DeclarationProviderTest
 			g:	a | ℝ[a] → ℝ[a], a, b | ℝ[a, b] → ℝ[a*b], a, b | ℝ[a] × ℝ[b] → ℝ[a+b];
 		}
 		'''
-		+ TestUtils::mandatoryOptions + TestUtils::mandatoryVariables +
+		+ TestUtils::mandatoryOptionsAndVariables +
 		'''
 			
 		ℝ a{cells};
@@ -152,7 +152,7 @@ class DeclarationProviderTest
 			f: (0.0, ℝ) → ℝ, x | (0.0, ℝ[x]) → ℝ[x];
 		}
 		'''
-		+ TestUtils::mandatoryOptions + TestUtils::mandatoryVariables +
+		+ TestUtils::mandatoryOptionsAndVariables +
 		'''
 		ℝ u{cells};
 		ℝ[2] u2{cells};

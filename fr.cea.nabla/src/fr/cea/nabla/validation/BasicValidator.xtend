@@ -12,8 +12,10 @@ package fr.cea.nabla.validation
 import com.google.inject.Inject
 import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.VarExtensions
-import fr.cea.nabla.ir.MandatoryOptions
-import fr.cea.nabla.ir.MandatoryVariables
+import fr.cea.nabla.ir.MandatoryMeshOptions
+import fr.cea.nabla.ir.MandatoryMeshVariables
+import fr.cea.nabla.ir.MandatorySimulationOptions
+import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Array1D
 import fr.cea.nabla.nabla.Array2D
@@ -51,30 +53,52 @@ class BasicValidator extends AbstractNablaValidator
 
 	// ===== NablaModule =====
 	
-	public static val MANDATORY_VARIABLE = "NablaModule::MandatoryVariable"
-	public static val MANDATORY_OPTION = "NablaModule::MandatoryOption"
+	public static val MANDATORY_MESH_VARIABLE = "NablaModule::MandatoryMeshVariable"
+	public static val MANDATORY_SIMULATION_VARIABLE = "NablaModule::MandatorySimulationVariable"
+	public static val MANDATORY_MESH_OPTION = "NablaModule::MandatoryMeshOption"
+	public static val MANDATORY_SIMULATION_OPTION = "NablaModule::MandatorySimulationOption"
 	public static val MODULE_NAME = "NablaModule::ModuleName"
 
-	static def getMandatoryVariablesMsg(String[] missingVariables) { "Missing mandatory variable(s): " + missingVariables.join(", ") }
-	static def getMandatoryOptionsMsg(String[] missingOptions) { "Missing mandatory option(s): " + missingOptions.join(", ") }
+	static def getMandatoryMeshOptionsMsg(String[] missingOptions) { "Missing mandatory mesh option(s): " + missingOptions.join(", ") }
+	static def getMandatorySimulationOptionsMsg(String[] missingOptions) { "Missing mandatory simulation option(s): " + missingOptions.join(", ") }
+	static def getMandatoryMeshVariablesMsg(String[] missingVariables) { "Missing mandatory mesh variable(s): " + missingVariables.join(", ") }
+	static def getMandatorySimulationVariablesMsg(String[] missingVariables) { "Missing mandatory simulation variable(s): " + missingVariables.join(", ") }
 	static def getModuleNameMsg() { "Module name must start with an upper case" }
 	
 	@Check
-	def checkMandatoryVariable(NablaModule it)
+	def checkMandatoryMeshVariable(NablaModule it)
 	{
 		val vars = eAllContents.filter(Var).map[name].toList
-		val missingVars = MandatoryVariables::NAMES.filter[x | !vars.contains(x)]
-		if (missingVars.size > 0)
-			error(getMandatoryVariablesMsg(missingVars), NablaPackage.Literals.NABLA_MODULE__VARIABLES, MANDATORY_VARIABLE)			
+		val missingVars = MandatoryMeshVariables::NAMES.filter[x | !vars.contains(x)]
+		if (missingVars.size > 0 && !items.empty)
+			error(getMandatoryMeshVariablesMsg(missingVars), NablaPackage.Literals.NABLA_MODULE__VARIABLES, MANDATORY_MESH_VARIABLE)			
 	}
 	
 	@Check
-	def checkMandatoryOptions(NablaModule it)
+	def checkMandatorySimulationVariable(NablaModule it)
+	{
+		val vars = eAllContents.filter(Var).map[name].toList
+		val missingVars = MandatorySimulationVariables::NAMES.filter[x | !vars.contains(x)]
+		if (missingVars.size > 0 && !jobs.empty)
+			error(getMandatorySimulationVariablesMsg(missingVars), NablaPackage.Literals.NABLA_MODULE__VARIABLES, MANDATORY_SIMULATION_VARIABLE)			
+	}
+
+	@Check
+	def checkMandatoryMeshOptions(NablaModule it)
 	{
 		val scalarConsts = variables.filter(SimpleVarDefinition).filter[const].map[variable.name].toList
-		val missingConsts = MandatoryOptions::NAMES.filter[x | !scalarConsts.contains(x)]
-		if (missingConsts.size > 0)
-			error(getMandatoryOptionsMsg(missingConsts), NablaPackage.Literals.NABLA_MODULE__VARIABLES, MANDATORY_OPTION)			
+		val missingConsts = MandatoryMeshOptions::NAMES.filter[x | !scalarConsts.contains(x)]
+		if (missingConsts.size > 0 && !items.empty)
+			error(getMandatoryMeshOptionsMsg(missingConsts), NablaPackage.Literals.NABLA_MODULE__VARIABLES, MANDATORY_MESH_OPTION)			
+	}
+
+	@Check
+	def checkMandatorySimulationOptions(NablaModule it)
+	{
+		val scalarConsts = variables.filter(SimpleVarDefinition).filter[const].map[variable.name].toList
+		val missingConsts = MandatorySimulationOptions::NAMES.filter[x | !scalarConsts.contains(x)]
+		if (missingConsts.size > 0 && !jobs.empty)
+			error(getMandatorySimulationOptionsMsg(missingConsts), NablaPackage.Literals.NABLA_MODULE__VARIABLES, MANDATORY_SIMULATION_OPTION)			
 	}
 
 	@Check
@@ -121,7 +145,8 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkUnusedVariable(Var it)
 	{
-		val referenced = MandatoryVariables::NAMES.contains(name) || MandatoryOptions::NAMES.contains(name) || nablaModule.eAllContents.filter(VarRef).exists[x|x.variable===it]
+		val mandatories = (MandatoryMeshVariables::NAMES + MandatorySimulationVariables::NAMES + MandatoryMeshOptions::NAMES + MandatorySimulationOptions::NAMES).toList
+		val referenced = mandatories.contains(name) || nablaModule.eAllContents.filter(VarRef).exists[x|x.variable===it]
 		if (!referenced)
 			warning(getUnusedVariableMsg(), NablaPackage.Literals::VAR__NAME, UNUSED_VARIABLE)
 	}

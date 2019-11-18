@@ -150,7 +150,7 @@ QualifiedNameWithWildcard: QualifiedName '.*'?;
 
 /* TERMINAUX *********************************************/
 @Override 
-terminal ID: '^'? ('a'..'z'|'A'..'Z'|'\u0394'..'\u03F2'|'\u220F'..'\u221A'|'_') ('a'..'z'|'A'..'Z'|'\u0394'..'\u03F2'|'0'..'9'|'\u221A'|'_')*;
+terminal ID: '^'? ('a'..'z'|'A'..'Z'|'\u0391'..'\u03C9'|'\u220F'..'\u221A'|'_') ('a'..'z'|'A'..'Z'|'\u0391'..'\u03C9'|'0'..'9'|'_')*;
 //terminal REAL returns ecore::EDouble: ('0'..'9')+ '.' ('0'..'9')+ ('e'('+'|'-')('0'..'9')+)?;
 terminal REAL returns ecore::EDouble: INT '.' (INT (('e'|'E')('+'|'-')INT)?)?;
 //terminal DIM returns ecore::EChar: '\u00B2'..'\u00B3' | '\u2074'..'\u2079';

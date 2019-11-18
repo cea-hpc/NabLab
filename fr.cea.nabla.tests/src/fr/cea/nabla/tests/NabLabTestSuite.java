@@ -16,7 +16,9 @@ import org.junit.runners.Suite;
    NablagenParsingTest.class,
    ExpressionInterpreterTest.class,
    BinaryOperationsInterpreterTest.class,
-   InstructionInterpreterTest.class
+   InstructionInterpreterTest.class,
+   JobInterpreterTest.class,
+   ModuleInterpreterTest.class
 })
 
 public class NabLabTestSuite {   

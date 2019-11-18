@@ -39,13 +39,8 @@ class InstructionInterpreter
 	{
 		println("Dans interprete de Affectation")
 		val rightValue = interprete(right, context)
-		if (left.indices.empty && left.iterators.empty)
-			context.setVariableValue(left.variable, rightValue)
-		else
-		{
-			val allIndices = left.iterators.map[x | context.getIndexValue(x)] + left.indices
-			setValue(context.getVariableValue(left.variable), allIndices.toList, rightValue)
-		}
+		val allIndices = left.iterators.map[x | context.getIndexValue(x)] + left.indices
+		setValue(context.getVariableValue(left.variable), allIndices.toList, rightValue)
 	}
 
 	static def dispatch void interprete(ReductionInstruction it, Context context)
@@ -95,7 +90,8 @@ class InstructionInterpreter
 		
 		if (target.container.connectivity.indexEqualId || target.singleton) 
 			indexValue
-		else  
+		else
+			//TODO : Plus efficace de faire une méthode pour indexValue in container
 			context.meshWrapper.getContainer(target).get(indexValue)
 	}
 	

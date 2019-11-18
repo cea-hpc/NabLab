@@ -10,9 +10,12 @@
 package fr.cea.nabla.tests
 
 import fr.cea.nabla.ir.interpreter.Context
+import fr.cea.nabla.ir.interpreter.NV0Real
 import fr.cea.nabla.ir.interpreter.NablaValue
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
+import java.nio.file.Files
+import java.nio.file.Paths
 import org.junit.Assert
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -20,26 +23,33 @@ import static extension fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 
 class TestUtils 
 {
+	static double doubleError = 1e-15
+
 	// ===== CharSequence utils =====
 
 	static def String getEmptyTestModule()
 	'''
 	module Test;
+	with Math.*;
 	'''
 
 	//TODO These options should be filled in nablagen
-	static def String getMandatoryOptions()
+	static def String getMandatoryOptions(int xQuads, int yQuads, double stopTime, int maxIterations)
 	'''
 	// Options obligatoires pour générer
 	const ℝ X_EDGE_LENGTH = 0.01;
 	const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-	const ℕ X_EDGE_ELEMS = 100;
-	const ℕ Y_EDGE_ELEMS = 10;
+	const ℕ X_EDGE_ELEMS = «xQuads»;
+	const ℕ Y_EDGE_ELEMS = «yQuads»;
 	const ℕ Z_EDGE_ELEMS = 1;
-	const ℝ option_stoptime = 0.2;
-	const ℕ option_max_iterations = 20000;
+	const ℝ option_stoptime = «stopTime»;
+	const ℕ option_max_iterations = «maxIterations»;
 	'''
-	
+	static def String getMandatoryOptions()
+	{
+		return getMandatoryOptions(10, 10, 0.2, 1)
+	}
+
 	static def String getConnectivities()
 	'''
 	items { node, cell }
@@ -63,7 +73,7 @@ class TestUtils
 
 	static def String getMandatoryVariables()
 	'''
-	ℝ t;
+	ℝ t = 0.0;
 	ℝ[2] X{nodes};
 	'''
 		
@@ -71,7 +81,12 @@ class TestUtils
 	{
 		emptyTestModule + connectivities + mandatoryOptions + mandatoryVariables
 	}
-	
+
+	static def CharSequence getTestModule(int xQuads, int yQuads, double stopTime, int maxIterations)
+	{
+		emptyTestModule + connectivities + getMandatoryOptions(xQuads, yQuads, stopTime, maxIterations) + mandatoryVariables
+	}
+
 	static def getTestModuleWithCustomFunctions(CharSequence functions)
 	{
 		emptyTestModule + connectivities + functions + mandatoryOptions + mandatoryVariables
@@ -134,14 +149,28 @@ class TestUtils
 	}
 
 	// Interpreter asserts
-
 	static def assertVariableDefaultValue(IrModule irModule, Context context, String variableName, NablaValue value)
 	{
-		Assert.assertTrue((irModule.getVariableByName(variableName) as SimpleVariable).defaultValue.interprete(context).equals(value))
+		Assert.assertEquals(value, (irModule.getVariableByName(variableName) as SimpleVariable).defaultValue.interprete(context))
 	}
 
-	static def assertVariableValueInContext(IrModule irModule, Context context, String variableName, NablaValue value)
+	static def dispatch assertVariableValueInContext(IrModule irModule, Context context, String variableName, NablaValue value)
 	{
-		Assert.assertTrue(context.getVariableValue(irModule.getVariableByName(variableName)).equals(value))
+		//val res = context.getVariableValue(irModule.getVariableByName(variableName))
+		Assert.assertEquals(value, context.getVariableValue(irModule.getVariableByName(variableName)))
+	}
+
+	static def dispatch assertVariableValueInContext(IrModule irModule, Context context, String variableName, NV0Real value)
+	{
+		val variableValue = context.getVariableValue(irModule.getVariableByName(variableName))
+		Assert.assertNotNull(variableValue)
+		Assert.assertTrue(variableValue instanceof NV0Real)
+		Assert.assertEquals(value.data, (variableValue as NV0Real).data, doubleError)
+	}
+
+	//Read File to String
+	static def readFileAsString(String filePath)
+	{
+		new String(Files.readAllBytes(Paths.get(filePath)))
 	}
 }

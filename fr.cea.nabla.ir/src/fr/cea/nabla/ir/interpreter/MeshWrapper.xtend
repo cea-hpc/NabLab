@@ -3,12 +3,13 @@ package fr.cea.nabla.ir.interpreter
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.javalib.mesh.CartesianMesh2DGenerator
 import fr.cea.nabla.javalib.mesh.Mesh
-import fr.cea.nabla.javalib.mesh.NumericMesh2D
+
 import java.util.ArrayList
+import fr.cea.nabla.javalib.mesh.NumericMesh2D
 
 class MeshWrapper 
 {
-	val Mesh<double[]> gm
+	val Mesh gm
 	val NumericMesh2D nm
 
 	new(int nbXQuads, int nbYQuads, double xSize, double ySize)
@@ -19,7 +20,13 @@ class MeshWrapper
 
 	def int[] getContainer(Iterator iterator)
 	{
-
+		val connectivityName = iterator.container.connectivity.name
+		switch connectivityName {
+			case "nodes" : nm.nodes
+			case "cells" : nm.cells
+			case "faces" : nm.faces
+			default : throw new RuntimeException("Not implemented yet")
+		}
 	}
 
 	def int getIndexOf(Iterator iterator, int id)
@@ -37,12 +44,19 @@ class MeshWrapper
 		gm.nodes
 	}
 
-	def int getNbElems(String connectityName)
+	def int getNbElems(String connectivityName)
 	{
-		//TODO Not implemented yet
-		return 4
-		//getNbNodes
-		//throw new RuntimeException("Not implemented yet")
+		switch connectivityName {
+			case "nodes" : nm.nbNodes
+			case "cells" : nm.nbCells
+			case "faces" : nm.nbFaces
+			case "nodesOfCell" : NumericMesh2D::MaxNbNodesOfCell
+			case "nodesOfFace" : NumericMesh2D::MaxNbNodesOfFace
+			case "cellsOfNode" : NumericMesh2D::MaxNbCellsOfNode
+			case "cellsOfFace" : NumericMesh2D::MaxNbCellsOfFace
+			case "neighbourCells" : NumericMesh2D::MaxNbNeighbourCells
+			default : throw new RuntimeException("Not implemented yet")
+		}
 	}
 
 	def int getMaxNbElems(String connectityName)

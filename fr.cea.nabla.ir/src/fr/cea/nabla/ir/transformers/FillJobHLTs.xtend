@@ -77,6 +77,7 @@ class FillJobHLTs implements IrTransformationStep
 				val graphPath = jalgo.getPath(globalSourceNode, v)
 				if (graphPath!==null) weightByJobs.put(graphPath.endVertex, graphPath.weight)
 			}
+			//TODO if weightByJobs.values empty
 			val minWeight = weightByJobs.values.min
 			for (j : weightByJobs.keySet) j.at = minWeight - weightByJobs.get(j) - 1
 		}

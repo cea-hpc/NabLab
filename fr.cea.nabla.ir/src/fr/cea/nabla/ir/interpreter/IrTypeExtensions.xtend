@@ -17,6 +17,7 @@ class IrTypeExtensions
 
 	static def int[] getSizes(ConnectivityType it, Context context) 
 	{ 
+		context.showConnectivitySizes("Taille des connectivités")
 		connectivities.map[x | context.connectivitySizes.get(x)] + base.sizes
 	}
 }

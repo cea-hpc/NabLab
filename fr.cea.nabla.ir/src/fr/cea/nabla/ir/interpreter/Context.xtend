@@ -69,6 +69,7 @@ class Context
 
 	def int getIndexOf(Iterator iterator, int id)
 	{
+		//TODO : Plus efficace de faire une méthode pour getindexOfId in container
 		val container = meshWrapper.getContainer(iterator)
 		container.indexOf(id)
 	}
@@ -76,6 +77,29 @@ class Context
 	def int getSingleton(Iterator iterator)
 	{
 		val methodName = "get" + iterator.container.connectivity.name.toFirstUpper
+		println(methodName)
 		meshWrapper.invokeSingleton(methodName, iterator.container.args.map[getIndexValue(idName)])
+	}
+
+	def showVariables(String message)
+	{
+		if (message !== null) println(message)
+		variableValues.keySet.forEach[v | println("	Variable " + v.name + " = " + variableValues.get(v).showValue)]
+	}
+
+	private def dispatch showValue(NV0Bool it) { data }
+	private def dispatch showValue(NV1Bool it) { data }
+	private def dispatch showValue(NV2Bool it) { data }
+	private def dispatch showValue(NV0Int it) { data }
+	private def dispatch showValue(NV1Int it) {  data.map[d | "[" + d + "]"] }
+	private def dispatch showValue(NV2Int it) { data }
+	private def dispatch showValue(NV0Real it) { data }
+	private def dispatch showValue(NV1Real it)  { data.map[d | d] }
+	private def dispatch showValue(NV2Real it) { data.map[d | d.map[ dd | dd]] }
+
+	def showConnectivitySizes(String message)
+	{
+		if (message !== null) println(message)
+		connectivitySizes.keySet.forEach[k | println(k.name + " de taille " + connectivitySizes.get(k))]
 	}
 }

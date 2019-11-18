@@ -22,6 +22,7 @@ import java.util.Arrays
 
 import static fr.cea.nabla.ir.interpreter.NablaValueGetter.*
 
+import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class ExpressionInterpreter 
@@ -141,9 +142,7 @@ class ExpressionInterpreter
 	static def dispatch NablaValue interprete(FunctionCall it, Context context)
 	{
 		println("Dans interprete de FunctionCall")
-
-		//TODO : correct this
-		val providerClassName = "fr.cea.nabla.tests." + function.provider + Utils::FunctionAndReductionproviderSuffix
+		val providerClassName = irModule.name.toLowerCase + '.' + function.provider + Utils::FunctionAndReductionproviderSuffix
 		val providerClass = Class.forName(providerClassName)
 		val argValues = args.map[x|x.interprete(context)]
 		val javaTypes = argValues.map[x | FunctionCallHelper.getJavaType(x) ]

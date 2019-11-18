@@ -247,16 +247,32 @@ class ExpressionInterpreterTest
 		'''
 		functions {
 			getOne:  → ℕ;
-			addOne: ℕ → ℕ;
-			add: ℕ × ℕ → ℕ;
+			addOne: ℕ → ℕ , ℝ → ℝ;
+			add: ℕ × ℕ → ℕ, ℝ × ℕ → ℝ, ℝ × ℝ → ℝ, x | ℝ[x] × ℝ[x] → ℝ[x], x,y | ℝ[x,y] × ℝ[x,y] → ℝ[x,y];
 		}
 		''')
 		+
 		'''
 		ℕ n0 = 0;
-		ℕ n1 = getOne(); 	//-> 1;
-		ℕ n2 = addOne(n1);	//-> 2;
-		ℕ n3 = add(n1, n2);	//-> 3;
+		ℕ n1 = getOne(); 	//-> 1
+		ℕ n2 = addOne(n1); 	//-> 2
+		ℕ n3 = add(n1, n2); //-> 3
+		ℝ r0 = 0. ;
+		ℝ r1 = addOne(r0); 	//-> 1.
+		ℝ r2 = add(r1, n1); //-> 2.
+		ℝ r3 = add(r2, r1); //-> 3.
+
+		ℝ[2] u = ℝ[2](1.);
+		ℝ[2] v = ℝ[2](2.);
+		ℝ[2] w = add(u,v); //-> [3., 3.]
+
+		ℝ[3] α = ℝ[3](1.);
+		ℝ[3] β = ℝ[3](2.);
+		ℝ[3] res1 = add(α,β); //-> [3., 3., 3.]
+
+		ℝ[2,2] δ = ℝ[2,2](1.);
+		ℝ[2,2] ρ = ℝ[2,2](2.);
+		ℝ[2,2] res2 = add(δ,ρ); //-> [3., 3][3., 3.]
 		'''
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
 		val context = irModule.interprete
@@ -265,6 +281,14 @@ class ExpressionInterpreterTest
 		assertVariableValueInContext(irModule, context, "n1", new NV0Int(1))
 		assertVariableValueInContext(irModule, context, "n2", new NV0Int(2))
 		assertVariableValueInContext(irModule, context, "n3", new NV0Int(3))
+
+		assertVariableValueInContext(irModule, context, "r1", new NV0Real(1.0))
+		assertVariableValueInContext(irModule, context, "r2", new NV0Real(2.0))
+		assertVariableValueInContext(irModule, context, "r3", new NV0Real(3.0))
+
+		assertVariableValueInContext(irModule, context, "w", new NV1Real(#[3.0, 3.0]))
+		assertVariableValueInContext(irModule, context, "res1", new NV1Real(#[3.0, 3.0, 3.0]))
+		assertVariableValueInContext(irModule, context, "res2", new NV2Real(#[#[3.0, 3.0],#[3.0, 3.0]]))
 	}
 
 	@Test

@@ -47,6 +47,8 @@ class ModuleInterpreter
 		// Interprete init jobs
 		for (j : jobs.filter[x | x.at < 0].sortBy[at])
 			interprete(j, context)
+
+		context.showVariables("After init jobs")
 	
 		// Declare time loop
 		var iteration = 0
@@ -58,6 +60,7 @@ class ModuleInterpreter
 			iteration ++
 			for (j : jobs.filter[x | x.at > 0].sortBy[at])
 				interprete(j, context)
+			context.showVariables("At iteration = " + iteration)
 		}
 		return context
 	}

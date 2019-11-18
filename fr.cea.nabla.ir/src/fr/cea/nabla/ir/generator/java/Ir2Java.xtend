@@ -149,7 +149,7 @@ class Ir2Java extends CodeGenerator
 			public static void main(String[] args)
 			{
 				«name».Options o = new «name».Options();
-				Mesh<double[]> gm = CartesianMesh2DGenerator.generate(o.«MandatoryMeshOptions::X_EDGE_ELEMS», o.«MandatoryMeshOptions::Y_EDGE_ELEMS», o.«MandatoryMeshOptions::X_EDGE_LENGTH», o.«MandatoryMeshOptions::Y_EDGE_LENGTH»);
+				Mesh gm = CartesianMesh2DGenerator.generate(o.«MandatoryMeshOptions::X_EDGE_ELEMS», o.«MandatoryMeshOptions::Y_EDGE_ELEMS», o.«MandatoryMeshOptions::X_EDGE_LENGTH», o.«MandatoryMeshOptions::Y_EDGE_LENGTH»);
 				NumericMesh2D nm = new NumericMesh2D(gm);
 				«name» i = new «name»(o, nm);
 				i.simulate();

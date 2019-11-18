@@ -11,7 +11,7 @@ package fr.cea.nabla.javalib.mesh
 
 class  CartesianMesh2DGenerator
 {
-	static def Mesh<double[]> generate(int nbXQuads, int nbYQuads, double xSize, double ySize)
+	static def Mesh generate(int nbXQuads, int nbYQuads, double xSize, double ySize)
 	{
 		val nbNodes = (nbXQuads + 1) * (nbYQuads + 1)
 		val nbQuads = nbXQuads * nbYQuads

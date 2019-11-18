@@ -11,6 +11,7 @@ package fr.cea.nabla.javalib.mesh
 
 import java.util.HashSet
 import org.eclipse.xtend.lib.annotations.Accessors
+import java.util.stream.IntStream
 
 class NumericMesh2D
 {
@@ -20,9 +21,9 @@ class NumericMesh2D
 	public static val MaxNbCellsOfFace = 2
 	public static val MaxNbNeighbourCells = 4
 	
-	@Accessors val Mesh<double[]> geometricMesh
+	@Accessors val Mesh geometricMesh
 	
-	new(Mesh<double[]> geometricMesh)
+	new(Mesh geometricMesh)
 	{
 		this.geometricMesh = geometricMesh
 	}
@@ -35,6 +36,10 @@ class NumericMesh2D
 	def getNbOuterFaces() { outerFaces.size }
 	def getInnerNodes() { geometricMesh.innerNodeIds }
 	def getOuterFaces() { geometricMesh.outerEdgeIds }
+
+	def getNodes() { IntStream.range(0, nbNodes).toArray }
+	def getCells() { IntStream.range(0, nbCells).toArray }
+	def getFaces() { IntStream.range(0, nbFaces).toArray }
 	
 	def getNodesOfCell(int cellId)
 	{

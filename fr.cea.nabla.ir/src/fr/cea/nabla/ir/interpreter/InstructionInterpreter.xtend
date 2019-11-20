@@ -22,14 +22,14 @@ class InstructionInterpreter
 {
 	static def dispatch void interprete(VarDefinition it, Context context)
 	{ 
-		println("Dans interprete de VarDefinition")
+		//println("Dans interprete de VarDefinition")
 		for (v : variables)
 			context.setVariableValue(v, createValue(v, context))
 	}
 	
 	static def dispatch void interprete(InstructionBlock it, Context context)
 	{
-		println("Dans interprete de InstructionBlock")
+		//println("Dans interprete de InstructionBlock")
 		val innerContext = new Context(context)
 		for (i : instructions)
 			interprete(i, innerContext)
@@ -37,7 +37,7 @@ class InstructionInterpreter
 	
 	static def dispatch void interprete(Affectation it, Context context)
 	{
-		println("Dans interprete de Affectation")
+		//println("Dans interprete de Affectation")
 		val rightValue = interprete(right, context)
 		val allIndices = left.iterators.map[x | context.getIndexValue(x)] + left.indices
 		setValue(context.getVariableValue(left.variable), allIndices.toList, rightValue)
@@ -51,19 +51,21 @@ class InstructionInterpreter
 
 	static def dispatch void interprete(Loop it, Context context)
 	{
-		println("Dans interprete de Loop")
-		val container = context.meshWrapper.getContainer(range)
+		//println("Dans interprete de Loop")
+		val connectivityName = range.container.connectivity.name
+		val argIds =  range.container.args.map[x | context.getIdValue(x)]
+		val container = context.meshWrapper.getElements(connectivityName, argIds)
 		for (loopIteratorValue : 0..<container.size)
 		{
 			context.setIndexValue(range, loopIteratorValue)
 			defineIndices(it, context)
 			body.interprete(context)
-		}	
+		}
 	}
-	
+
 	static def dispatch void interprete(If it, Context context)
 	{
-		println("Dans interprete de If")
+		//println("Dans interprete de If")
 		val cond = interprete(condition, context) as NV0Bool
 		if (cond.data) interprete(thenInstruction, context)
 		else interprete(elseInstruction, context)
@@ -86,20 +88,25 @@ class InstructionInterpreter
 
 	private	static def getIndexToId(IteratorRef it, Context context)
 	{
+		//println("Dans getIndexToId")
 		val indexValue = getIndexValue(it, context)
 		
 		if (target.container.connectivity.indexEqualId || target.singleton) 
 			indexValue
 		else
+		{
 			//TODO : Plus efficace de faire une méthode pour indexValue in container
-			context.meshWrapper.getContainer(target).get(indexValue)
+			val connectivityName = target.container.connectivity.name
+			val args =  target.container.args.map[x | context.getIdValue(x)]
+			context.meshWrapper.getElements(connectivityName, args).get(indexValue)
+		}
 	}
 	
 	private static def getIdToIndex(VarRefIteratorRef it, Context context)
 	{
-		val indexValue = context.getIdValue(it)
-		if (varContainer.indexEqualId) indexValue
-		else context.getIndexOf(it.target, indexValue)
+		val idValue = context.getIdValue(it)
+		if (varContainer.indexEqualId) idValue
+		else context.getIndexOf(it, idValue)
 	}
 	
 	private static def getIndexValue(IteratorRef it, Context context)

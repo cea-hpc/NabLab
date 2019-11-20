@@ -10,6 +10,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
+import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class Context
 {
@@ -67,39 +68,55 @@ class Context
 		idValues.get(id) ?: outerContext.getIdValue(id)
 	}
 
-	def int getIndexOf(Iterator iterator, int id)
+	def int getIndexOf(VarRefIteratorRef it, int id)
 	{
 		//TODO : Plus efficace de faire une méthode pour getindexOfId in container
-		val container = meshWrapper.getContainer(iterator)
+		val connectivityName = varContainer.name
+		val args =  varArgs.map[x | getIdValue(x)]
+		val container = meshWrapper.getElements(connectivityName, args)
 		container.indexOf(id)
 	}
 	
 	def int getSingleton(Iterator iterator)
 	{
 		val methodName = "get" + iterator.container.connectivity.name.toFirstUpper
-		println(methodName)
 		meshWrapper.invokeSingleton(methodName, iterator.container.args.map[getIndexValue(idName)])
 	}
 
 	def showVariables(String message)
 	{
 		if (message !== null) println(message)
-		variableValues.keySet.forEach[v | println("	Variable " + v.name + " = " + variableValues.get(v).showValue)]
+		variableValues.keySet.forEach[v | println("	Variable " + v.name + " = " + variableValues.get(v).displayValue)]
 	}
-
-	private def dispatch showValue(NV0Bool it) { data }
-	private def dispatch showValue(NV1Bool it) { data }
-	private def dispatch showValue(NV2Bool it) { data }
-	private def dispatch showValue(NV0Int it) { data }
-	private def dispatch showValue(NV1Int it) {  data.map[d | "[" + d + "]"] }
-	private def dispatch showValue(NV2Int it) { data }
-	private def dispatch showValue(NV0Real it) { data }
-	private def dispatch showValue(NV1Real it)  { data.map[d | d] }
-	private def dispatch showValue(NV2Real it) { data.map[d | d.map[ dd | dd]] }
 
 	def showConnectivitySizes(String message)
 	{
 		if (message !== null) println(message)
-		connectivitySizes.keySet.forEach[k | println(k.name + " de taille " + connectivitySizes.get(k))]
+		connectivitySizes.keySet.forEach[k | println("	" + k.name + " de taille " + connectivitySizes.get(k))]
+	}
+
+	def showIndexvalues(String message)
+	{
+		if (message !== null) println(message)
+		indexValues.keySet.forEach[k | println("	" + k + " = " + indexValues.get(k))]
+	}
+
+	def showIdvalues(String message)
+	{
+		if (!idValues.empty)
+		{
+			if (message !== null) println(message)
+			idValues.keySet.forEach[k | println("	" + k + " = " + idValues.get(k))]
+		}
+	}
+
+	def showIdsAndIndicesValues(String message)
+	{
+		if (!idValues.empty || !indexValues.empty)
+		{
+			if (message !== null) println(message)
+			idValues.keySet.forEach[k | println("	" + k + " = " + idValues.get(k))]
+			indexValues.keySet.forEach[k | println("	" + k + " = " + indexValues.get(k))]		
+		}
 	}
 }

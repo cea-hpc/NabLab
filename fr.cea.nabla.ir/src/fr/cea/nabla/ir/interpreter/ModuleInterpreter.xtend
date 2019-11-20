@@ -1,7 +1,6 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.MandatoryMeshOptions
-import fr.cea.nabla.ir.MandatoryMeshVariables
 import fr.cea.nabla.ir.MandatorySimulationOptions
 import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.ir.ir.IrModule
@@ -42,12 +41,10 @@ class ModuleInterpreter
 
 		// Interprete variables
 		for (v : variables.filter[x | !(x instanceof SimpleVariable && x.const)])
-		{
-			if (v.name == MandatoryMeshVariables::COORD)
-				context.setVariableValue(v, new NV2Real(context.meshWrapper.nodes))
-			else
-				context.setVariableValue(v, createValue(v, context))
-		}
+			context.setVariableValue(v, createValue(v, context))
+
+		// Copy Node Cooords
+		context.setVariableValue(initCoordVariable, new NV2Real(context.meshWrapper.nodes))
 		
 		// Interprete init jobs
 		for (j : jobs.filter[x | x.at < 0].sortBy[at])

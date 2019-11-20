@@ -29,7 +29,7 @@ class ExpressionInterpreter
 {
 	static def dispatch NablaValue interprete(ContractedIf it, Context context)
 	{
-		println("Dans interprete de ContractedIf")
+		//println("Dans interprete de ContractedIf")
 		val condValue = condition.interprete(context)
 		if ((condValue as NV0Bool).data) thenExpression.interprete(context)
 		else elseExpression.interprete(context) 
@@ -37,7 +37,7 @@ class ExpressionInterpreter
 	
 	static def dispatch NablaValue interprete(BinaryExpression it, Context context)	
 	{
-		println("Dans interprete de BinaryExpression")
+		//println("Dans interprete de BinaryExpression")
 		val lValue = left.interprete(context)
 		val rValue = right.interprete(context)
 		BinaryOperationsInterpreter::getValueOf(lValue, rValue, operator)
@@ -45,7 +45,7 @@ class ExpressionInterpreter
 	
 	static def dispatch NablaValue interprete(UnaryExpression it, Context context)
 	{
-		println("Dans interprete de UnaryExpression")
+		//println("Dans interprete de UnaryExpression")
 		val eValue = expression.interprete(context)
 		switch eValue
 		{
@@ -80,13 +80,13 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(Parenthesis it, Context context)
 	{
-		println("Dans interprete de Parenthesis")
+		//println("Dans interprete de Parenthesis")
 		expression.interprete(context)
 	}
 
 	static def dispatch NablaValue interprete(Constant it, Context context) 
 	{ 
-		println("Dans interprete de Constant")
+		//println("Dans interprete de Constant")
 		val t = type as Scalar
 		switch t.primitive
 		{
@@ -98,7 +98,7 @@ class ExpressionInterpreter
 	
 	static def dispatch NablaValue interprete(MinConstant it, Context context)
 	{
-		println("Dans interprete de MinConstant")
+		//println("Dans interprete de MinConstant")
 		val t = type as Scalar
 		switch t.primitive
 		{
@@ -110,7 +110,7 @@ class ExpressionInterpreter
 	
 	static def dispatch NablaValue interprete(MaxConstant it, Context context)
 	{
-		println("Dans interprete de MaxConstant")
+		//println("Dans interprete de MaxConstant")
 		val t = type as Scalar
 		switch t.primitive
 		{
@@ -122,7 +122,7 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(BaseTypeConstant it, Context context)
 	{
-		println("Dans interprete de BaseTypeConstant")
+		//println("Dans interprete de BaseTypeConstant")
 		val expressionValue = value.interprete(context)
 		val t = type
 		switch t
@@ -134,14 +134,14 @@ class ExpressionInterpreter
 		}
 	}
 	
-	static def dispatch NablaValue interprete(IntVectorConstant it, Context context) { println("Dans interprete de IntVectorConstant") new NV1Int(values) }
-	static def dispatch NablaValue interprete(IntMatrixConstant it, Context context) { println("Dans interprete de IntMatrixConstant") new NV2Int(toArray) }
-	static def dispatch NablaValue interprete(RealVectorConstant it, Context context) { println("Dans interprete de RealVectorConstant") new NV1Real(values) }
-	static def dispatch NablaValue interprete(RealMatrixConstant it, Context context) { println("Dans interprete de RealMatrixConstant") new NV2Real(toArray) }
+	static def dispatch NablaValue interprete(IntVectorConstant it, Context context) { new NV1Int(values) }
+	static def dispatch NablaValue interprete(IntMatrixConstant it, Context context) { new NV2Int(toArray) }
+	static def dispatch NablaValue interprete(RealVectorConstant it, Context context) { new NV1Real(values) }
+	static def dispatch NablaValue interprete(RealMatrixConstant it, Context context) { new NV2Real(toArray) }
 
 	static def dispatch NablaValue interprete(FunctionCall it, Context context)
 	{
-		println("Dans interprete de FunctionCall")
+		//println("Dans interprete de FunctionCall " + function.name)
 		val providerClassName = irModule.name.toLowerCase + '.' + function.provider + Utils::FunctionAndReductionproviderSuffix
 		val providerClass = Class.forName(providerClassName)
 		val argValues = args.map[x|x.interprete(context)]
@@ -155,7 +155,7 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(VarRef it, Context context)
 	{
-		println("Dans interprete de VarRef")
+		//println("Dans interprete de VarRef " + variable.name)
 		val value = context.getVariableValue(variable)
 		val allIndices = iterators.map[x | context.getIndexValue(x)] + indices
 		getValue(value, allIndices.toList)

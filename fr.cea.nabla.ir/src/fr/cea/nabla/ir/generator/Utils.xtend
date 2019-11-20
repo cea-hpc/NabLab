@@ -74,4 +74,6 @@ class Utils
 		if (iterationPeriod > 0) '''(iteration % «iterationPeriod» == 0)'''
 		else if (timeStep > 0) '''(t + deltat > lastWriteTime)'''
 	}
+
+	static def withMesh(IrModule it) { !items.empty }
 }

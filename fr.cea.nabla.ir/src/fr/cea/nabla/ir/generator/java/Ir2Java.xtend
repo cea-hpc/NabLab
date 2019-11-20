@@ -46,13 +46,15 @@ class Ir2Java extends CodeGenerator
 
 		import fr.cea.nabla.javalib.Utils;
 		import fr.cea.nabla.javalib.types.*;
+		«IF withMesh»
 		import fr.cea.nabla.javalib.mesh.*;
+		«ENDIF»
 
 		«val linearAlgebraVars = variables.filter(ConnectivityVariable).filter[linearAlgebra]»
 		«IF !linearAlgebraVars.empty»
 		import org.apache.commons.math3.linear.*;
-		
 		«ENDIF»
+
 		@SuppressWarnings("all")
 		public final class «name»
 		{
@@ -66,10 +68,12 @@ class Ir2Java extends CodeGenerator
 			private final Options options;
 			private int iteration;
 
+			«IF withMesh»
 			// Mesh
 			private final NumericMesh2D mesh;
 			«FOR c : usedConnectivities BEFORE 'private final int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
 			private final FileWriter writer;
+			«ENDIF»
 
 			// Global Variables
 			«val globals = variables.filter(SimpleVariable).filter[!const]»
@@ -93,12 +97,13 @@ class Ir2Java extends CodeGenerator
 			«ENDFOR»
 			«ENDIF»
 			
-			public «name»(Options aOptions, NumericMesh2D aNumericMesh2D)
+			public «name»(Options aOptions«IF withMesh», NumericMesh2D aNumericMesh2D«ENDIF»)
 			{
 				options = aOptions;
+				«IF withMesh»
 				mesh = aNumericMesh2D;
 				writer = new PvdFileWriter2D("«name»");
-
+				«ENDIF»
 				«FOR c : usedConnectivities»
 				«c.nbElems» = «c.connectivityAccessor»;
 				«ENDFOR»
@@ -120,9 +125,11 @@ class Ir2Java extends CodeGenerator
 					«ENDIF»
 				«ENDFOR»
 		
+				«IF withMesh»
 				// Copy node coordinates
 				ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
 				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> «initCoordVariable.name»[rNodes] = gNodes.get(rNodes));
+				«ENDIF»
 			}
 
 			public void simulate()
@@ -149,9 +156,11 @@ class Ir2Java extends CodeGenerator
 			public static void main(String[] args)
 			{
 				«name».Options o = new «name».Options();
+				«IF withMesh»
 				Mesh gm = CartesianMesh2DGenerator.generate(o.«MandatoryMeshOptions::X_EDGE_ELEMS», o.«MandatoryMeshOptions::Y_EDGE_ELEMS», o.«MandatoryMeshOptions::X_EDGE_LENGTH», o.«MandatoryMeshOptions::Y_EDGE_LENGTH»);
 				NumericMesh2D nm = new NumericMesh2D(gm);
-				«name» i = new «name»(o, nm);
+				«ENDIF»
+				«name» i = new «name»(o«IF withMesh», nm«ENDIF»);
 				i.simulate();
 			}
 			

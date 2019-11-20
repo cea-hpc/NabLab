@@ -18,7 +18,7 @@ class VariableValueFactory
 		else
 			defaultValue.interprete(c)
 	}
-	
+
 	static def dispatch NablaValue createValue(ConnectivityVariable it, Context c)
 	{
 		if (defaultValue === null)
@@ -29,7 +29,8 @@ class VariableValueFactory
 				case 1: createValue(type, sizes.get(0))
 				case 2: createValue(type, sizes.get(0), sizes.get(1))
 				case 3: createValue(type, sizes.get(0), sizes.get(1), sizes.get(2))
-				default: throw new RuntimeException("Dimension not yet implemented: " + sizes.size)
+				case 4: createValue(type, sizes.get(0), sizes.get(1), sizes.get(2), sizes.get(3))
+				default: throw new RuntimeException("Dimension not yet implemented: " + sizes.size + " for variable " + name)
 			}
 		}
 		else

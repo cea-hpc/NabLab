@@ -10,14 +10,14 @@ class IrTypeExtensions
 {
 	static def dispatch getPrimitive(BaseType it) { primitive }
 	static def dispatch getPrimitive(ConnectivityType it) { base.primitive }
-	
+
 	static def dispatch int[] getSizes(Scalar it) { #[] }
 	static def dispatch int[] getSizes(Array1D it) { #[size] }
 	static def dispatch int[] getSizes(Array2D it) { #[nbRows, nbCols] }
 
 	static def int[] getSizes(ConnectivityType it, Context context) 
 	{ 
-		context.showConnectivitySizes("Taille des connectivités")
+		//context.showConnectivitySizes("Connectivities size")
 		connectivities.map[x | context.connectivitySizes.get(x)] + base.sizes
 	}
 }

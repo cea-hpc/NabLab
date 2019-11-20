@@ -54,9 +54,11 @@ class Ir2Kokkos extends CodeGenerator
 	#include <Kokkos_hwloc.hpp>
 
 	// Project headers
+	«IF withMesh»
 	#include "mesh/NumericMesh2D.h"
 	#include "mesh/CartesianMesh2DGenerator.h"
 	#include "mesh/PvdFileWriter2D.h"
+	«ENDIF»
 	#include "utils/Utils.h"
 	#include "utils/Timer.h"
 	#include "types/Types.h"
@@ -84,9 +86,11 @@ class Ir2Kokkos extends CodeGenerator
 	
 	private:
 		int iteration;
+		«IF withMesh»
 		NumericMesh2D* mesh;
 		PvdFileWriter2D writer;
 		«FOR c : usedConnectivities BEFORE 'int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
+		«ENDIF»
 
 		// Global Variables
 		«val globals = variables.filter(SimpleVariable).filter[!const]»
@@ -117,10 +121,12 @@ class Ir2Kokkos extends CodeGenerator
 		«ENDIF»
 
 	public:
-		«name»(Options* aOptions, NumericMesh2D* aNumericMesh2D, string output)
+		«name»(Options* aOptions, «IF withMesh»NumericMesh2D* aNumericMesh2D,«ENDIF»string output)
 		: options(aOptions)
+		«IF withMesh»
 		, mesh(aNumericMesh2D)
 		, writer("«name»")
+		«ENDIF»
 		«FOR c : usedConnectivities»
 		, «c.nbElems»(«c.connectivityAccessor»)
 		«ENDFOR»
@@ -134,12 +140,14 @@ class Ir2Kokkos extends CodeGenerator
 		, «a.name»("«a.name»", «FOR d : a.type.connectivities SEPARATOR ', '»«d.nbElems»«ENDFOR»)
 		«ENDFOR»
 		{
+			«IF withMesh»
 			// Copy node coordinates
 			const auto& gNodes = mesh->getGeometricMesh()->getNodes();
 			Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 			{
 				«initCoordVariable.name»(rNodes) = gNodes[rNodes];
 			});
+			«ENDIF»
 		}
 
 	private:
@@ -156,9 +164,10 @@ class Ir2Kokkos extends CodeGenerator
 		{
 			std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting «name» ..." << __RESET__ << "\n\n";
 
+			«IF withMesh»
 			std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->«MandatoryMeshOptions::X_EDGE_ELEMS» << __RESET__ << ", Y=" << __BOLD__ << options->«MandatoryMeshOptions::Y_EDGE_ELEMS»
 				<< __RESET__ << ", X length=" << __BOLD__ << options->«MandatoryMeshOptions::X_EDGE_LENGTH» << __RESET__ << ", Y length=" << __BOLD__ << options->«MandatoryMeshOptions::Y_EDGE_LENGTH» << __RESET__ << std::endl;
-
+			«ENDIF»
 
 			if (Kokkos::hwloc::available()) {
 				std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_numa_count()
@@ -170,10 +179,12 @@ class Ir2Kokkos extends CodeGenerator
 
 			// std::cout << "[" << __GREEN__ << "KOKKOS" << __RESET__ << "]    " << __BOLD__ << (is_same<MyLayout,Kokkos::LayoutLeft>::value?"Left":"Right")" << __RESET__ << " layout" << std::endl;
 
+			«IF withMesh»
 			if (!writer.isDisabled())
 				std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
 			else
 				std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
+			«ENDIF»
 
 			utils::Timer timer(true);
 
@@ -218,6 +229,7 @@ class Ir2Kokkos extends CodeGenerator
 		Kokkos::initialize(argc, argv);
 		auto o = new «name»::Options();
 		string output;
+		«IF withMesh»
 		if (argc == 5) {
 			o->«MandatoryMeshOptions::X_EDGE_ELEMS» = std::atoi(argv[1]);
 			o->«MandatoryMeshOptions::Y_EDGE_ELEMS» = std::atoi(argv[2]);
@@ -235,11 +247,14 @@ class Ir2Kokkos extends CodeGenerator
 		}
 		auto gm = CartesianMesh2DGenerator::generate(o->«MandatoryMeshOptions::X_EDGE_ELEMS», o->«MandatoryMeshOptions::Y_EDGE_ELEMS», o->«MandatoryMeshOptions::X_EDGE_LENGTH», o->«MandatoryMeshOptions::Y_EDGE_LENGTH»);
 		auto nm = new NumericMesh2D(gm);
-		auto c = new «name»(o, nm, output);
+		«ENDIF»
+		auto c = new «name»(o, «IF withMesh»nm,«ENDIF»output);
 		c->simulate();
 		delete c;
+		«IF withMesh»
 		delete nm;
 		delete gm;
+		«ENDIF»
 		delete o;
 		Kokkos::finalize();
 		return 0;

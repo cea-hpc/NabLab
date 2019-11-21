@@ -26,6 +26,16 @@ namespace MathFunctions
 	double asin(const double& v) noexcept { return std::asin(v); }
 	double acos(const double& v) noexcept { return std::acos(v); }
 
+	template<size_t N, size_t M>
+	RealArray1D<N> matVectProduct(const RealArray2D<N, M>& a, const RealArray1D<M>& b) noexcept
+	{
+		RealArray1D<N> result;
+		for (int ia=0 ; ia<N ; ++ia)
+			result[ia] = dot(a[ia], b);
+		return result;
+	}
+
+	/** Scalar product */
 	template<size_t N>
 	double dot(const RealArray1D<N>& a, const RealArray1D<N>& b) noexcept
 	{
@@ -35,9 +45,16 @@ namespace MathFunctions
 		return result;
 	}
 
-	double det(const Real2& a, const Real2& b) noexcept
+	/** Determinant 2D */
+	double det(const RealArray1D<2>& a, const RealArray1D<2>& b) noexcept
 	{
 		return a[0]*b[1] - a[1]*b[0];
+	}
+
+	/** Determinant 2D */
+	double det(const RealArray2D<2, 2>& a) noexcept
+	{
+		return a[0][0] * a[1][1] - a[0][1] * a[1][0];
 	}
 
 	template<size_t N>

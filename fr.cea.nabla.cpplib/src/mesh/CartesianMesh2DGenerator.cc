@@ -13,7 +13,7 @@
 namespace nablalib
 {
 
-Mesh<Real2>*
+Mesh<2>*
 CartesianMesh2DGenerator::generate(int nbXQuads, int nbYQuads, double xSize, double ySize)
 {
 	const int nb_nodes_((nbXQuads + 1) * (nbYQuads + 1));
@@ -21,14 +21,14 @@ CartesianMesh2DGenerator::generate(int nbXQuads, int nbYQuads, double xSize, dou
 	const int nb_edges_(2 * nb_quads_ + nbXQuads + nbYQuads);
 	const int nb_outer_nodes_(2 * (nbXQuads + nbYQuads));
 	const int nb_inner_nodes_(nb_nodes_ - nb_outer_nodes_);
-	Mesh<Real2>* mesh(new Mesh<Real2>(nb_nodes_, nb_edges_, nb_quads_, nb_inner_nodes_));
+	Mesh<2>* mesh(new Mesh<2>(nb_nodes_, nb_edges_, nb_quads_, nb_inner_nodes_));
 
 	// node creation
 	int node_id_(0);
 	int inner_node_id_(0);
 	for (int j(0); j <= nbYQuads; ++j) {
 		for (int i(0); i <= nbXQuads; ++i) {
-			Real2 tmp = { xSize * i, ySize * j };
+			RealArray1D<2> tmp = { xSize * i, ySize * j };
 			mesh->m_nodes[node_id_] = move(tmp);
 			if (i!=0 && j!=0 && i!=nbXQuads && j!=nbYQuads)
 				mesh->m_innerNodeIds[inner_node_id_++] = node_id_;

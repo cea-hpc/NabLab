@@ -48,6 +48,7 @@ class Ir2Java extends CodeGenerator
 		import org.apache.commons.math3.linear.*;
 
 		«ENDIF»
+		@SuppressWarnings("all")
 		public final class «name»
 		{
 			public final static class Options

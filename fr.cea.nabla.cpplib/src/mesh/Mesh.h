@@ -21,7 +21,7 @@ using namespace std;
 namespace nablalib
 {
 
-template<class T>
+template<size_t N>
 class Mesh
 {
   friend class CartesianMesh2DGenerator;
@@ -32,7 +32,7 @@ class Mesh
 
 	const vector<Edge>& getEdges() noexcept { return m_edges; }
 	const vector<int>& getInnerNodeIds() noexcept { return m_innerNodeIds; }
-	const vector<T>& getNodes() noexcept { return m_nodes; }
+	const vector<RealArray1D<N>>& getNodes() noexcept { return m_nodes; }
 	const vector<Quad>& getQuads() noexcept { return m_quads; }
 
 	vector<int> getQuadIdsOfNode(const int& nodeId) const
@@ -62,7 +62,7 @@ class Mesh
 	}
 
 private:
-	vector<T> m_nodes;
+	vector<RealArray1D<N>> m_nodes;
 	vector<Edge> m_edges;
 	vector<Quad> m_quads;
 	vector<int> m_innerNodeIds;

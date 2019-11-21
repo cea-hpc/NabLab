@@ -4,13 +4,20 @@ public class MathFunctions
 {
 	public static double fabs(double v) { return Math.abs(v); }
 	public static double sqrt(double v) { return Math.sqrt(v); }
-	public static double norm(double[] a) { return Math.sqrt(dot(a,a)); }
 	public static double min(double a, double b) { return Math.min(a, b); }
 	public static double max(double a, double b) { return Math.max(a, b); }
 	public static double sin(double v) { return Math.sin(v); }
 	public static double cos(double v) { return Math.cos(v); }
 	public static double asin(double v) { return Math.asin(v); }
 	public static double acos(double v) { return  Math.acos(v); }
+
+	public static double[] matVectProduct(double[][] a, double[] b)
+	{
+		double[] result = new double[a.length];
+		for (int ia=0 ; ia<a.length ; ++ia)
+			result[ia] = dot(a[ia], b);
+		return result;
+	}
 
 	/** Scalar product */
 	public static double dot(double[] a, double[] b)
@@ -21,9 +28,20 @@ public class MathFunctions
 		return result;
 	}
 
-	/** Determinant en 2D */
+	/** Determinant 2D */
 	public static double det(double[] a, double[] b)
 	{
 		return (a[0]*b[1] - a[1]*b[0]);
+	}
+
+	/** Determinant 2D */
+	public static double det(double[][] a)
+	{
+		return a[0][0] * a[1][1] - a[0][1] * a[1][0];
+	}
+
+	public static double norm(double[] a) 
+	{
+		return Math.sqrt(dot(a,a));
 	}
 }

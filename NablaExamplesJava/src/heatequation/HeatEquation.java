@@ -1,7 +1,6 @@
 package heatequation;
 
 import java.util.HashMap;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.stream.IntStream;
 
@@ -24,7 +23,7 @@ public final class HeatEquation
 		public final double PI = 3.1415926;
 		public final double k = 1.0;
 	}
-	
+
 	private final Options options;
 	private int iteration;
 
@@ -35,11 +34,11 @@ public final class HeatEquation
 
 	// Global Variables
 	private double t, deltat, t_nplus1;
-	
+
 	// Connectivity Variables
 	private double[][] X, center;
 	private double[] u, V, f, outgoingFlux, surface, u_nplus1;
-	
+
 	public HeatEquation(Options aOptions, NumericMesh2D aNumericMesh2D)
 	{
 		options = aOptions;
@@ -57,7 +56,7 @@ public final class HeatEquation
 		deltat = 0.001;
 		t_nplus1 = 0.0;
 
-		// Arrays allocation
+		// Allocate arrays
 		X = new double[nbNodes][2];
 		center = new double[nbCells][2];
 		u = new double[nbCells];
@@ -104,7 +103,7 @@ public final class HeatEquation
 		HeatEquation i = new HeatEquation(o, nm);
 		i.simulate();
 	}
-	
+
 	/**
 	 * Job IniF @-2.0
 	 * In variables: 
@@ -117,7 +116,7 @@ public final class HeatEquation
 			f[jCells] = 0.0;
 		});
 	}		
-	
+
 	/**
 	 * Job IniCenter @-2.0
 	 * In variables: X
@@ -128,20 +127,20 @@ public final class HeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double[] reduceSum_906155090 = new double[] {0.0, 0.0};
+			double[] reduction1231346603 = {0.0, 0.0};
 			{
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
 				{
 					int rId = nodesOfCellJ[rNodesOfCellJ];
 					int rNodes = rId;
-					reduceSum_906155090 = ArrayOperations.plus(reduceSum_906155090, (X[rNodes]));
+					reduction1231346603 = ArrayOperations.plus(reduction1231346603, (X[rNodes]));
 				}
 			}
-			center[jCells] = ArrayOperations.multiply(0.25, reduceSum_906155090);
+			center[jCells] = ArrayOperations.multiply(0.25, reduction1231346603);
 		});
 	}		
-	
+
 	/**
 	 * Job ComputeV @-2.0
 	 * In variables: X
@@ -152,7 +151,7 @@ public final class HeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double reduceSum1062049054 = 0.0;
+			double reduction_1598832681 = 0.0;
 			{
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
@@ -161,13 +160,13 @@ public final class HeatEquation
 					int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					int rNodes = rId;
 					int rPlus1Nodes = rPlus1Id;
-					reduceSum1062049054 = reduceSum1062049054 + (MathFunctions.det(X[rNodes], X[rPlus1Nodes]));
+					reduction_1598832681 = reduction_1598832681 + (MathFunctions.det(X[rNodes], X[rPlus1Nodes]));
 				}
 			}
-			V[jCells] = 0.5 * reduceSum1062049054;
+			V[jCells] = 0.5 * reduction_1598832681;
 		});
 	}		
-	
+
 	/**
 	 * Job ComputeSurface @-2.0
 	 * In variables: X
@@ -178,7 +177,7 @@ public final class HeatEquation
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			int fId = fFaces;
-			double reduceSum898849778 = 0.0;
+			double reduction_440358293 = 0.0;
 			{
 				int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
 				for (int rNodesOfFaceF=0; rNodesOfFaceF<nodesOfFaceF.length; rNodesOfFaceF++)
@@ -187,13 +186,13 @@ public final class HeatEquation
 					int rPlus1Id = nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
 					int rNodes = rId;
 					int rPlus1Nodes = rPlus1Id;
-					reduceSum898849778 = reduceSum898849778 + (MathFunctions.norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
+					reduction_440358293 = reduction_440358293 + (MathFunctions.norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
 				}
 			}
-			surface[fFaces] = 0.5 * reduceSum898849778;
+			surface[fFaces] = 0.5 * reduction_440358293;
 		});
 	}		
-	
+
 	/**
 	 * Job IniUn @-1.0
 	 * In variables: PI, k, center
@@ -206,7 +205,7 @@ public final class HeatEquation
 			u[jCells] = MathFunctions.cos(2 * options.PI * options.k * center[jCells][0]);
 		});
 	}		
-	
+
 	/**
 	 * Job ComputeOutgoingFlux @1.0
 	 * In variables: u, center, surface, deltat, V
@@ -217,7 +216,7 @@ public final class HeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(j1Cells -> 
 		{
 			int j1Id = j1Cells;
-			double reduceSum1795706568 = 0.0;
+			double reduction_1707485657 = 0.0;
 			{
 				int[] neighbourCellsJ1 = mesh.getNeighbourCells(j1Id);
 				for (int j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<neighbourCellsJ1.length; j2NeighbourCellsJ1++)
@@ -227,13 +226,13 @@ public final class HeatEquation
 					int cfCommonFaceJ1J2 = mesh.getCommonFace(j1Id, j2Id);
 					int cfId = cfCommonFaceJ1J2;
 					int cfFaces = cfId;
-					reduceSum1795706568 = reduceSum1795706568 + ((u[j2Cells] - u[j1Cells]) / MathFunctions.norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
+					reduction_1707485657 = reduction_1707485657 + ((u[j2Cells] - u[j1Cells]) / MathFunctions.norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
 				}
 			}
-			outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduceSum1795706568;
+			outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction_1707485657;
 		});
 	}		
-	
+
 	/**
 	 * Job ComputeTn @1.0
 	 * In variables: t, deltat
@@ -243,7 +242,7 @@ public final class HeatEquation
 	{
 		t_nplus1 = t + deltat;
 	}		
-	
+
 	/**
 	 * Job dumpVariables @1.0
 	 * In variables: u
@@ -259,7 +258,7 @@ public final class HeatEquation
 			writer.writeFile(iteration, t, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
 		}
 	}		
-	
+
 	/**
 	 * Job Copy_t_nplus1_to_t @2.0
 	 * In variables: t_nplus1
@@ -271,7 +270,7 @@ public final class HeatEquation
 		t = t_nplus1;
 		t_nplus1 = tmpSwitch;
 	}		
-	
+
 	/**
 	 * Job ComputeUn @2.0
 	 * In variables: f, deltat, u, outgoingFlux
@@ -284,7 +283,7 @@ public final class HeatEquation
 			u_nplus1[jCells] = f[jCells] * deltat + u[jCells] + outgoingFlux[jCells];
 		});
 	}		
-	
+
 	/**
 	 * Job Copy_u_nplus1_to_u @3.0
 	 * In variables: u_nplus1

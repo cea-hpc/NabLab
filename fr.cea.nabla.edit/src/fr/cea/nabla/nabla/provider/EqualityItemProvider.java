@@ -175,16 +175,6 @@ public class EqualityItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.EQUALITY__LEFT,
-				 NablaFactory.eINSTANCE.createIntVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
-				 NablaFactory.eINSTANCE.createRealVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
@@ -290,12 +280,7 @@ public class EqualityItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.EQUALITY__LEFT,
-				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__LEFT,
-				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
+				 NablaFactory.eINSTANCE.createVectorConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -305,16 +290,6 @@ public class EqualityItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.EQUALITY__RIGHT,
-				 NablaFactory.eINSTANCE.createIntVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
-				 NablaFactory.eINSTANCE.createRealVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
@@ -420,12 +395,7 @@ public class EqualityItemProvider extends ExpressionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.EQUALITY__RIGHT,
-				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.EQUALITY__RIGHT,
-				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
+				 NablaFactory.eINSTANCE.createVectorConstant()));
 	}
 
 	/**

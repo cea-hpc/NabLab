@@ -30,8 +30,6 @@ import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InitTimeIterator
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
-import fr.cea.nabla.nabla.IntMatrixConstant
-import fr.cea.nabla.nabla.IntVectorConstant
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.MaxConstant
@@ -46,8 +44,6 @@ import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.RealConstant
-import fr.cea.nabla.nabla.RealMatrixConstant
-import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
@@ -56,6 +52,7 @@ import fr.cea.nabla.nabla.SpaceIterationBlock
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
+import fr.cea.nabla.nabla.VectorConstant
 
 class LatexLabelServices
 {
@@ -131,10 +128,7 @@ class LatexLabelServices
 	}
 
 	static def dispatch String getLatex(BaseTypeConstant it) { type.latex + '(' + value.latex + ')' }
-	static def dispatch String getLatex(IntVectorConstant it) { '[' + values.join(',') + ']' }
-	static def dispatch String getLatex(IntMatrixConstant it) { '[' + values.map[latex].join(',') + ']' }
-	static def dispatch String getLatex(RealVectorConstant it) { '[' + values.join(',') + ']' }
-	static def dispatch String getLatex(RealMatrixConstant it) { '[' + values.map[latex].join(',') + ']' }
+	static def dispatch String getLatex(VectorConstant it) { '[' + values.join(',') + ']' }
 
 	static def dispatch String getLatex(ArgOrVarRef it)
 	{

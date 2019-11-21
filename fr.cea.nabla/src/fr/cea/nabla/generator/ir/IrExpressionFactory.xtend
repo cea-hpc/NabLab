@@ -22,8 +22,6 @@ import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.IntConstant
-import fr.cea.nabla.nabla.IntMatrixConstant
-import fr.cea.nabla.nabla.IntVectorConstant
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
@@ -35,10 +33,9 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RealConstant
-import fr.cea.nabla.nabla.RealMatrixConstant
-import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
+import fr.cea.nabla.nabla.VectorConstant
 import fr.cea.nabla.typing.DeclarationProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import org.eclipse.xtext.EcoreUtil2
@@ -171,55 +168,13 @@ class IrExpressionFactory
 		]
 	}
 
-	def dispatch Expression toIrExpression(IntVectorConstant e)
+	def dispatch Expression toIrExpression(VectorConstant e)
 	{
-		IrFactory::eINSTANCE.createIntVectorConstant =>
+		IrFactory::eINSTANCE.createVectorConstant =>
 		[ 
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
-			values += e.values
-		]
-	}
-
-	def dispatch Expression toIrExpression(IntMatrixConstant e)
-	{
-		IrFactory::eINSTANCE.createIntMatrixConstant =>
-		[ 
-			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrType
-			for (ev : e.values)
-				values += IrFactory::eINSTANCE.createIntVectorConstant =>
-				[
-					annotations += e.toIrAnnotation
-					type = e.typeFor?.toIrType
-					values += ev.values
-				]
-		]
-	}
-
-	def dispatch Expression toIrExpression(RealVectorConstant e)
-	{
-		IrFactory::eINSTANCE.createRealVectorConstant =>
-		[ 
-			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrType
-			values += e.values
-		]
-	}
-
-	def dispatch Expression toIrExpression(RealMatrixConstant e)
-	{
-		IrFactory::eINSTANCE.createRealMatrixConstant =>
-		[
-			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrType
-			for (ev : e.values)
-				values += IrFactory::eINSTANCE.createRealVectorConstant =>
-				[
-					annotations += e.toIrAnnotation
-					type = e.typeFor?.toIrType
-					values += ev.values
-				]
+			e.values.forEach[x | values += x.toIrExpression]
 		]
 	}
 

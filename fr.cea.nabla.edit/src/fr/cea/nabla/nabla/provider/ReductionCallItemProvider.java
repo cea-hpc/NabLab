@@ -166,16 +166,6 @@ public class ReductionCallItemProvider extends IterableItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_CALL__ARG,
-				 NablaFactory.eINSTANCE.createIntVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.REDUCTION_CALL__ARG,
-				 NablaFactory.eINSTANCE.createRealVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.REDUCTION_CALL__ARG,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
@@ -281,12 +271,7 @@ public class ReductionCallItemProvider extends IterableItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION_CALL__ARG,
-				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.REDUCTION_CALL__ARG,
-				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
+				 NablaFactory.eINSTANCE.createVectorConstant()));
 	}
 
 }

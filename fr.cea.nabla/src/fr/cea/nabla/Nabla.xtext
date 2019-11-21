@@ -130,14 +130,9 @@ Atomic returns Expression:
 	{FunctionCall} function=[Function|QualifiedName] '(' (args+=Expression (',' args+=Expression)*)? ')' | 
 	ReductionCall |
 	{BaseTypeConstant} type=BaseType '(' value=Expression ')'| 
-	IntVectorConstant | 
-	{IntMatrixConstant} '[' values+=IntVectorConstant (',' values+=IntVectorConstant)+ ']' |
-	RealVectorConstant |
-	{RealMatrixConstant} '[' values+=RealVectorConstant (',' values+=RealVectorConstant)+ ']' |
+	{VectorConstant} '[' values+=Expression (',' values+=Expression)* ']' |
 	ArgOrVarRef;
 
-IntVectorConstant: '[' values+=INT (',' values+=INT)* ']';
-RealVectorConstant: '[' values+=REAL (',' values+=REAL)* ']';
 ReductionCall: reduction=[Reduction|QualifiedName] '{' iterationBlock=IterationBlock '}' '(' arg=Expression ')';
 ArgOrVarRef: target=[ArgOrVar] 
 	('^{' timeIterator=TimeIterator '}')?

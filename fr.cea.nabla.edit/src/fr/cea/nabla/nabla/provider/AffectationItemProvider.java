@@ -149,16 +149,6 @@ public class AffectationItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.AFFECTATION__RIGHT,
-				 NablaFactory.eINSTANCE.createIntVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__RIGHT,
-				 NablaFactory.eINSTANCE.createRealVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__RIGHT,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
@@ -264,12 +254,7 @@ public class AffectationItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.AFFECTATION__RIGHT,
-				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.AFFECTATION__RIGHT,
-				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
+				 NablaFactory.eINSTANCE.createVectorConstant()));
 	}
 
 	/**

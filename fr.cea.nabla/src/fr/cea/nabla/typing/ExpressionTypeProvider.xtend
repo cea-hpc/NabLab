@@ -23,8 +23,6 @@ import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.IntConstant
-import fr.cea.nabla.nabla.IntMatrixConstant
-import fr.cea.nabla.nabla.IntVectorConstant
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
@@ -35,12 +33,11 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RealConstant
-import fr.cea.nabla.nabla.RealMatrixConstant
-import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
+import fr.cea.nabla.nabla.VectorConstant
 import java.util.List
 
 class ExpressionTypeProvider
@@ -94,18 +91,30 @@ class ExpressionTypeProvider
 		else decl.returnType
 	}
 
-	def dispatch NablaType getTypeFor(BaseTypeConstant it) { type.typeFor }
-	def dispatch NablaType getTypeFor(IntVectorConstant it) { new NSTIntArray1D(NSTDimension.create(values.size)) }
-	def dispatch NablaType getTypeFor(RealVectorConstant it) { new NSTRealArray1D(NSTDimension.create(values.size)) }
-
-	def dispatch NablaType getTypeFor(IntMatrixConstant it)
+	def dispatch NablaType getTypeFor(BaseTypeConstant it)
 	{
-		new NSTIntArray2D(NSTDimension.create(values.size), NSTDimension.create(values.head.values.size))
+		type.typeFor
 	}
 
-	def dispatch NablaType getTypeFor(RealMatrixConstant it)
+	def dispatch NablaType getTypeFor(VectorConstant it)
 	{
-		new NSTRealArray2D(NSTDimension.create(values.size), NSTDimension.create(values.head.values.size))
+		if (values.size > 0)
+		{
+			val eltType = values.get(0).typeFor
+			switch eltType
+			{
+				NSTBoolScalar: new NSTBoolArray1D(NSTDimension.create(values.size))
+				NSTIntScalar: new NSTIntArray1D(NSTDimension.create(values.size))
+				NSTRealScalar: new NSTRealArray1D(NSTDimension.create(values.size))
+				NSTBoolArray1D: new NSTBoolArray2D(NSTDimension.create(values.size), eltType.size)
+				NSTIntArray1D: new NSTIntArray2D(NSTDimension.create(values.size), eltType.size)
+				NSTRealArray1D: new NSTRealArray2D(NSTDimension.create(values.size), eltType.size)
+				default: null
+			}
+		}
+		else
+			null
+		
 	}
 
 	def dispatch NablaType getTypeFor(ArgOrVarRef it)

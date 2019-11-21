@@ -51,6 +51,7 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScopeProvider
 import org.eclipse.xtext.util.SimpleAttributeResolver
 import org.eclipse.xtext.validation.Check
+import fr.cea.nabla.nabla.VectorConstant
 
 class BasicValidator extends AbstractNablaValidator
 {
@@ -211,13 +212,13 @@ class BasicValidator extends AbstractNablaValidator
 
 
 	// ===== ArgOrVarType =====
-	
+
 	public static val ARRAY_SIZES = "ArgOrVarType::ArraySizes"
 	public static val ARRAY_DIMENSION = "ArgOrVarType::ArrayDimension"
 
 	static def getArraySizesMsg() { "Must be greater or equal than 2" }
 	static def getArrayDimensionMsg() { "Max 2 dimensions for arrays" }
-	
+
 	@Check
 	def checkArraySizes(BaseType it)
 	{
@@ -234,6 +235,18 @@ class BasicValidator extends AbstractNablaValidator
 	{
 		if (sizes.size > 2)
 			error(getArrayDimensionMsg(), NablaPackage.Literals.BASE_TYPE__SIZES, ARRAY_DIMENSION)
+	}
+
+	// ===== VectorConstant =====
+
+	public static val VECTOR_CONSTANT_SIZE = "VectorConstant::Size"
+	static def getVectorConstantSizeMsg() { "Must be greater or equal than 2" }
+
+	@Check
+	def checkVectorConstantSize(VectorConstant it)
+	{
+		if (values.size < 2)
+			error(getVectorConstantSizeMsg(), NablaPackage.Literals.VECTOR_CONSTANT__VALUES, VECTOR_CONSTANT_SIZE)
 	}
 
 	// ===== Variables : Var & VarRef =====

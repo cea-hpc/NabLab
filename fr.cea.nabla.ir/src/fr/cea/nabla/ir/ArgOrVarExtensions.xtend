@@ -68,8 +68,13 @@ class ArgOrVarExtensions
 
 	static def isLinearAlgebra(ArgOrVar it)
 	{
-		val references = irModule.eAllContents.filter(ArgOrVarRef).filter[x | x.target == it]
-		references.exists[x | x.eContainer.containsLinearAlgebra]
+		if (it instanceof ConnectivityVariable)
+		{
+			val references = irModule.eAllContents.filter(ArgOrVarRef).filter[x | x.target == it]
+			references.exists[x | x.eContainer.containsLinearAlgebra]
+		}
+		else
+			false
 	}
 
 	private static dispatch def boolean containsLinearAlgebra(EObject it)

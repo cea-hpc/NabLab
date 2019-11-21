@@ -40,6 +40,8 @@ import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.typing.NablaType
 import java.util.List
 import org.eclipse.xtext.validation.Check
+import fr.cea.nabla.nabla.VectorConstant
+import fr.cea.nabla.typing.NSTArray1D
 
 class TypeValidator extends BasicValidator
 {
@@ -121,6 +123,8 @@ class TypeValidator extends BasicValidator
 	public static val MODULO_TYPE = "Expressions::ModuloType"
 	public static val AND_TYPE = "Expressions::AndType"
 	public static val OR_TYPE = "Expressions::OrType"
+	public static val VECTOR_CONSTANT_INCONSISTENT_TYPE = "Expressions::VectorConstantInconsistentType"
+	public static val VECTOR_CONSTANT_TYPE_SIZE = "Expressions::VectorConstantTypeSize"
 
 	static def getValueTypeMsg(String expectedTypeName) { "Initialization value type must be " + expectedTypeName }
 	static def getSeedTypeMsg() { "Seed type must be scalar" }
@@ -139,6 +143,8 @@ class TypeValidator extends BasicValidator
 	static def getModuloTypeMsg(String actualType) { "Expected " + INT.label + " type, but was " + actualType }
 	static def getAndTypeMsg(String actualType) { "Expected " + BOOL.label + " type, but was " + actualType }
 	static def getOrTypeMsg(String actualType) { "Expected " + BOOL.label + " type, but was " + actualType }
+	static def getVectorConstantInconsistentTypeMsg()  { "All values must have the same type" }
+	static def getVectorConstantTypeSizeMsg(String actualType)  { "Expected only scalar and vector types, but was " + actualType }
 
 	@Check
 	def checkValueType(BaseTypeConstant it)
@@ -266,6 +272,19 @@ class TypeValidator extends BasicValidator
 			error(getAndTypeMsg(left?.typeFor.label), NablaPackage.Literals.OR__LEFT, OR_TYPE)
 		if (!checkExpectedType(right?.typeFor, BOOL))
 			error(getAndTypeMsg(right?.typeFor.label), NablaPackage.Literals.OR__RIGHT, OR_TYPE)
+	}
+
+	@Check
+	def checkVectorConstantType(VectorConstant it)
+	{
+		if (!values.empty)
+		{
+			val firstEltType = values.get(0).typeFor
+			if (! (firstEltType instanceof NSTScalar || firstEltType instanceof NSTArray1D))
+				error(getVectorConstantTypeSizeMsg(firstEltType.label), NablaPackage.Literals.VECTOR_CONSTANT__VALUES, VECTOR_CONSTANT_TYPE_SIZE)
+			else if (values.size > 1 && values.tail.exists[x | x.typeFor != firstEltType])
+				error(getVectorConstantInconsistentTypeMsg(), NablaPackage.Literals.VECTOR_CONSTANT__VALUES, VECTOR_CONSTANT_INCONSISTENT_TYPE)
+		}
 	}
 
 	private def checkExpectedType(NablaType actualType, NablaType expectedType)

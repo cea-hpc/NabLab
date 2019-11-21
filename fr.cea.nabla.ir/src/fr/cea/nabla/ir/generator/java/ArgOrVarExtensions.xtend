@@ -11,14 +11,28 @@ package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.Arg
 import fr.cea.nabla.ir.ir.ArgOrVar
+import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
+import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.java.DimensionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 
 class ArgOrVarExtensions 
 {
+	static def dispatch getJavaAllocation(SimpleVariable it)
+	{
+		if (type.scalar) ''''''
+		else ''' = new «type.primitive.javaType»«type.dimContent»'''
+	}
+
+	static def dispatch getJavaAllocation(ConnectivityVariable it)
+	''' = new «type.primitive.javaType»«type.dimContent»'''
+
 	static def dispatch getJavaType(Arg it) 
 	{ 
 		type.javaType
@@ -49,4 +63,7 @@ class ArgOrVarExtensions
 		if (option) 'options.' + name
 		else name
 	}
+
+	private def static dispatch String getDimContent(BaseType it) '''«FOR s : sizes BEFORE '[' SEPARATOR '][' AFTER ']'»«s.content»«ENDFOR»'''
+	private def static dispatch String getDimContent(ConnectivityType it) '''«FOR c : connectivities»[«c.nbElems»]«ENDFOR»«base.dimContent»'''
 }

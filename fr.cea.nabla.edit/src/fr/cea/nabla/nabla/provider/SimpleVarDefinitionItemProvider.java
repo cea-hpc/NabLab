@@ -185,16 +185,6 @@ public class SimpleVarDefinitionItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
-				 NablaFactory.eINSTANCE.createIntVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
-				 NablaFactory.eINSTANCE.createRealVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
@@ -300,12 +290,7 @@ public class SimpleVarDefinitionItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
-				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE,
-				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
+				 NablaFactory.eINSTANCE.createVectorConstant()));
 	}
 
 }

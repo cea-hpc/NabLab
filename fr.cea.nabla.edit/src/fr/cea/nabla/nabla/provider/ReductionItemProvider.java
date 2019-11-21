@@ -199,16 +199,6 @@ public class ReductionItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION__SEED,
-				 NablaFactory.eINSTANCE.createIntVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.REDUCTION__SEED,
-				 NablaFactory.eINSTANCE.createRealVectorConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.REDUCTION__SEED,
 				 NablaFactory.eINSTANCE.createReductionCall()));
 
 		newChildDescriptors.add
@@ -314,12 +304,7 @@ public class ReductionItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION__SEED,
-				 NablaFactory.eINSTANCE.createIntMatrixConstant()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.REDUCTION__SEED,
-				 NablaFactory.eINSTANCE.createRealMatrixConstant()));
+				 NablaFactory.eINSTANCE.createVectorConstant()));
 
 		newChildDescriptors.add
 			(createChildParameter

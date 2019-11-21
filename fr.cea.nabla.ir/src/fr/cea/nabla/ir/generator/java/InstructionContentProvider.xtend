@@ -51,7 +51,7 @@ class InstructionContentProvider
 			«i.content»
 			«ENDFOR»
 		}'''
-	
+
 	static def dispatch CharSequence getContent(Affectation it)
 	'''
 		«IF left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty)»
@@ -224,8 +224,13 @@ class InstructionContentProvider
 	}
 
 	private static def dispatch getDefaultValueContent(SimpleVariable it)
-	'''«IF defaultValue !== null» = «defaultValue.content»«ENDIF»'''
-	
+	{
+		if (defaultValue === null)
+			javaAllocation
+		else
+			''' = «defaultValue.content»'''
+	}
+
 	private static def dispatch getDefaultValueContent(ConnectivityVariable it)
 	'''«IF defaultValue !== null» = «defaultValue.content»«ENDIF»'''
 

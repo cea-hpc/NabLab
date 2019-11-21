@@ -12,9 +12,7 @@ package fr.cea.nabla.ir.generator.java
 import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.ir.generator.CodeGenerator
-import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
-import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
@@ -25,10 +23,8 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.generator.java.DimensionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.FunctionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 
 class Ir2Java extends CodeGenerator
@@ -106,15 +102,11 @@ class Ir2Java extends CodeGenerator
 				«ENDFOR»
 
 				// Allocate arrays
-				«FOR a : variables.filter[!const]»
-					«IF a instanceof ConnectivityVariable»
-						«IF a.linearAlgebra»
-							«a.name» = «a.linearAlgebraDefinition»;
-						«ELSE»
-							«a.name» = new «a.type.primitive.javaType»«a.type.dimContent»;
-						«ENDIF»
-					«ELSEIF a instanceof SimpleVariable && !(a.type.scalar)»
-						«a.name» = new «a.type.primitive.javaType»«a.type.dimContent»;
+				«FOR a : variables.filter[!(type.scalar || const)]»
+					«IF a.linearAlgebra»
+						«a.name» = «(a as ConnectivityVariable).linearAlgebraDefinition»;
+					«ELSE»
+						«a.name»«a.javaAllocation»;
 					«ENDIF»
 				«ENDFOR»
 
@@ -180,7 +172,4 @@ class Ir2Java extends CodeGenerator
 			default: throw new RuntimeException("Not implemented exception")
 		}
 	}
-
-	private def dispatch String getDimContent(BaseType it) '''«FOR s : sizes BEFORE '[' SEPARATOR '][' AFTER ']'»«s.content»«ENDFOR»'''
-	private def dispatch String getDimContent(ConnectivityType it) '''«FOR c : connectivities»[«c.nbElems»]«ENDFOR»«base.dimContent»'''
 }

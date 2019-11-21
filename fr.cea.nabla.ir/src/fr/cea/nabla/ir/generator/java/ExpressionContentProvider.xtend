@@ -18,22 +18,20 @@ import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.DimensionInt
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
-import fr.cea.nabla.ir.ir.IntMatrixConstant
-import fr.cea.nabla.ir.ir.IntVectorConstant
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.RealConstant
-import fr.cea.nabla.ir.ir.RealMatrixConstant
-import fr.cea.nabla.ir.ir.RealVectorConstant
 import fr.cea.nabla.ir.ir.UnaryExpression
+import fr.cea.nabla.ir.ir.VectorConstant
 
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.DimensionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 
 class ExpressionContentProvider
 {
@@ -85,22 +83,13 @@ class ExpressionContentProvider
 		val sizes = t.sizes.filter(DimensionInt).map[value]
 		initArray(sizes, value.content)
 	}
-	
-	static def dispatch CharSequence getContent(IntVectorConstant it) 
-	'''new int[] «FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v»«ENDFOR»'''
-	
-	static def dispatch CharSequence getContent(IntMatrixConstant it) 
-	'''new int[][] «FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
-	
-	static def dispatch CharSequence getContent(RealVectorConstant it) 
-	'''new double[] «FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v»«ENDFOR»'''
-	
-	static def dispatch CharSequence getContent(RealMatrixConstant it) 
-	'''new double[][] «FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
-	
+
+	static def dispatch CharSequence getContent(VectorConstant it)
+	'''new «type.javaType» «FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
+
 	static def dispatch CharSequence getContent(FunctionCall it) 
 	'''«function.getCodeName('.')»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
-	
+
 	static def dispatch CharSequence getContent(ArgOrVarRef it)
 	'''«target.codeName»«FOR r : iterators BEFORE '[' SEPARATOR '][' AFTER ']'»«r.indexName»«ENDFOR»«FOR d:indices»[«d.content»]«ENDFOR»'''
 }

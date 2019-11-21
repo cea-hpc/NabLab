@@ -94,10 +94,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.MIN_CONSTANT: return createMinConstant();
 			case IrPackage.MAX_CONSTANT: return createMaxConstant();
 			case IrPackage.BASE_TYPE_CONSTANT: return createBaseTypeConstant();
-			case IrPackage.INT_VECTOR_CONSTANT: return createIntVectorConstant();
-			case IrPackage.INT_MATRIX_CONSTANT: return createIntMatrixConstant();
-			case IrPackage.REAL_VECTOR_CONSTANT: return createRealVectorConstant();
-			case IrPackage.REAL_MATRIX_CONSTANT: return createRealMatrixConstant();
+			case IrPackage.VECTOR_CONSTANT: return createVectorConstant();
 			case IrPackage.FUNCTION_CALL: return createFunctionCall();
 			case IrPackage.ARG_OR_VAR_REF: return createArgOrVarRef();
 			case IrPackage.ITERATOR: return createIterator();
@@ -508,39 +505,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public IntVectorConstant createIntVectorConstant() {
-		IntVectorConstantImpl intVectorConstant = new IntVectorConstantImpl();
-		return intVectorConstant;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public IntMatrixConstant createIntMatrixConstant() {
-		IntMatrixConstantImpl intMatrixConstant = new IntMatrixConstantImpl();
-		return intMatrixConstant;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public RealVectorConstant createRealVectorConstant() {
-		RealVectorConstantImpl realVectorConstant = new RealVectorConstantImpl();
-		return realVectorConstant;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public RealMatrixConstant createRealMatrixConstant() {
-		RealMatrixConstantImpl realMatrixConstant = new RealMatrixConstantImpl();
-		return realMatrixConstant;
+	public VectorConstant createVectorConstant() {
+		VectorConstantImpl vectorConstant = new VectorConstantImpl();
+		return vectorConstant;
 	}
 
 	/**

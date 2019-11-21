@@ -27,6 +27,48 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface Reduction extends IrAnnotable {
 	/**
+	 * Returns the value of the '<em><b>Provider</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Provider</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Provider</em>' attribute.
+	 * @see #setProvider(String)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getReduction_Provider()
+	 * @model required="true"
+	 * @generated
+	 */
+	String getProvider();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Reduction#getProvider <em>Provider</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Provider</em>' attribute.
+	 * @see #getProvider()
+	 * @generated
+	 */
+	void setProvider(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Dimension Vars</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.DimensionSymbol}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Dimension Vars</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Dimension Vars</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getReduction_DimensionVars()
+	 * @model containment="true" resolveProxies="true"
+	 * @generated
+	 */
+	EList<DimensionSymbol> getDimensionVars();
+
+	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -105,32 +147,6 @@ public interface Reduction extends IrAnnotable {
 	void setReturnType(BaseType value);
 
 	/**
-	 * Returns the value of the '<em><b>Provider</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Provider</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Provider</em>' attribute.
-	 * @see #setProvider(String)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getReduction_Provider()
-	 * @model required="true"
-	 * @generated
-	 */
-	String getProvider();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Reduction#getProvider <em>Provider</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Provider</em>' attribute.
-	 * @see #getProvider()
-	 * @generated
-	 */
-	void setProvider(String value);
-
-	/**
 	 * Returns the value of the '<em><b>Operator</b></em>' attribute.
 	 * The default value is <code>"false"</code>.
 	 * <!-- begin-user-doc -->
@@ -156,21 +172,5 @@ public interface Reduction extends IrAnnotable {
 	 * @generated
 	 */
 	void setOperator(boolean value);
-
-	/**
-	 * Returns the value of the '<em><b>Dimension Vars</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.DimensionSymbol}.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Dimension Vars</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Dimension Vars</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getReduction_DimensionVars()
-	 * @model containment="true" resolveProxies="true"
-	 * @generated
-	 */
-	EList<DimensionSymbol> getDimensionVars();
 
 } // Reduction

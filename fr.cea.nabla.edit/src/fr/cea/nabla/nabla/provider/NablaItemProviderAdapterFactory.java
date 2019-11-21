@@ -832,52 +832,6 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.IntVectorConstant} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected IntVectorConstantItemProvider intVectorConstantItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.IntVectorConstant}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createIntVectorConstantAdapter() {
-		if (intVectorConstantItemProvider == null) {
-			intVectorConstantItemProvider = new IntVectorConstantItemProvider(this);
-		}
-
-		return intVectorConstantItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.RealVectorConstant} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected RealVectorConstantItemProvider realVectorConstantItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.RealVectorConstant}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createRealVectorConstantAdapter() {
-		if (realVectorConstantItemProvider == null) {
-			realVectorConstantItemProvider = new RealVectorConstantItemProvider(this);
-		}
-
-		return realVectorConstantItemProvider;
-	}
-
-	/**
 	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.ReductionCall} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1453,49 +1407,26 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.IntMatrixConstant} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.VectorConstant} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected IntMatrixConstantItemProvider intMatrixConstantItemProvider;
+	protected VectorConstantItemProvider vectorConstantItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.IntMatrixConstant}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nabla.VectorConstant}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createIntMatrixConstantAdapter() {
-		if (intMatrixConstantItemProvider == null) {
-			intMatrixConstantItemProvider = new IntMatrixConstantItemProvider(this);
+	public Adapter createVectorConstantAdapter() {
+		if (vectorConstantItemProvider == null) {
+			vectorConstantItemProvider = new VectorConstantItemProvider(this);
 		}
 
-		return intMatrixConstantItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nabla.RealMatrixConstant} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected RealMatrixConstantItemProvider realMatrixConstantItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nabla.RealMatrixConstant}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createRealMatrixConstantAdapter() {
-		if (realMatrixConstantItemProvider == null) {
-			realMatrixConstantItemProvider = new RealMatrixConstantItemProvider(this);
-		}
-
-		return realMatrixConstantItemProvider;
+		return vectorConstantItemProvider;
 	}
 
 	/**
@@ -1699,8 +1630,6 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (argItemProvider != null) argItemProvider.dispose();
 		if (dimensionSymbolItemProvider != null) dimensionSymbolItemProvider.dispose();
 		if (expressionItemProvider != null) expressionItemProvider.dispose();
-		if (intVectorConstantItemProvider != null) intVectorConstantItemProvider.dispose();
-		if (realVectorConstantItemProvider != null) realVectorConstantItemProvider.dispose();
 		if (reductionCallItemProvider != null) reductionCallItemProvider.dispose();
 		if (argOrVarRefItemProvider != null) argOrVarRefItemProvider.dispose();
 		if (baseTypeItemProvider != null) baseTypeItemProvider.dispose();
@@ -1726,8 +1655,7 @@ public class NablaItemProviderAdapterFactory extends NablaAdapterFactory impleme
 		if (maxConstantItemProvider != null) maxConstantItemProvider.dispose();
 		if (functionCallItemProvider != null) functionCallItemProvider.dispose();
 		if (baseTypeConstantItemProvider != null) baseTypeConstantItemProvider.dispose();
-		if (intMatrixConstantItemProvider != null) intMatrixConstantItemProvider.dispose();
-		if (realMatrixConstantItemProvider != null) realMatrixConstantItemProvider.dispose();
+		if (vectorConstantItemProvider != null) vectorConstantItemProvider.dispose();
 		if (dimensionOperationItemProvider != null) dimensionOperationItemProvider.dispose();
 		if (dimensionIntItemProvider != null) dimensionIntItemProvider.dispose();
 		if (dimensionSymbolRefItemProvider != null) dimensionSymbolRefItemProvider.dispose();

@@ -29,8 +29,6 @@ import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InitTimeIterator
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
-import fr.cea.nabla.nabla.IntMatrixConstant
-import fr.cea.nabla.nabla.IntVectorConstant
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.MaxConstant
@@ -45,8 +43,6 @@ import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.RealConstant
-import fr.cea.nabla.nabla.RealMatrixConstant
-import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
@@ -55,6 +51,7 @@ import fr.cea.nabla.nabla.SpaceIterationBlock
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
+import fr.cea.nabla.nabla.VectorConstant
 
 import static extension fr.cea.nabla.ir.Utils.*
 
@@ -111,10 +108,7 @@ class LabelServices
 	static def dispatch String getLabel(FunctionCall it) { function.name + '(' + args.map[label].join(',') + ')' }
 	static def dispatch String getLabel(ReductionCall it) { reduction.name + '{' + iterationBlock?.label + '}(' + arg?.label + ')' }
 	static def dispatch String getLabel(BaseTypeConstant it) { type?.label + '(' + value?.label + ')' }
-	static def dispatch String getLabel(IntVectorConstant it) { '[' + values.join(',') + ']' }
-	static def dispatch String getLabel(IntMatrixConstant it) { '[' + values.map[label].join(',') + ']' }
-	static def dispatch String getLabel(RealVectorConstant it) { '[' + values.join(',') + ']' }
-	static def dispatch String getLabel(RealMatrixConstant it) { '[' + values.map[label].join(',') + ']' }
+	static def dispatch String getLabel(VectorConstant it) { '[' + values.join(',') + ']' }
 	static def dispatch String getLabel(ArgOrVarRef it)
 	{
 		var label = target.name

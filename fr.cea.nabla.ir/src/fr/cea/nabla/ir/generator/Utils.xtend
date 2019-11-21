@@ -21,6 +21,7 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
+import fr.cea.nabla.ir.MandatorySimulationVariables
 
 class Utils 
 {
@@ -72,7 +73,7 @@ class Utils
 	static def getCondition(InSituJob it)
 	{
 		if (iterationPeriod > 0) '''(iteration % «iterationPeriod» == 0)'''
-		else if (timeStep > 0) '''(t + deltat > lastWriteTime)'''
+		else if (timeStep > 0) '''(«MandatorySimulationVariables::TIME» > lastWriteTime)'''
 	}
 
 	static def withMesh(IrModule it) { !items.empty }

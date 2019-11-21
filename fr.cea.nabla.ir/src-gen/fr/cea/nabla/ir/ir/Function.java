@@ -13,10 +13,12 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * </p>
  * <ul>
+ *   <li>{@link fr.cea.nabla.ir.ir.Function#getProvider <em>Provider</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Function#getDimensionVars <em>Dimension Vars</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getInArgs <em>In Args</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getReturnType <em>Return Type</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Function#getProvider <em>Provider</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Function#getBody <em>Body</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getFunction()
@@ -93,6 +95,32 @@ public interface Function extends IrAnnotable {
 	void setReturnType(BaseType value);
 
 	/**
+	 * Returns the value of the '<em><b>Body</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Body</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Body</em>' containment reference.
+	 * @see #setBody(Instruction)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_Body()
+	 * @model containment="true" resolveProxies="true"
+	 * @generated
+	 */
+	Instruction getBody();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Function#getBody <em>Body</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Body</em>' containment reference.
+	 * @see #getBody()
+	 * @generated
+	 */
+	void setBody(Instruction value);
+
+	/**
 	 * Returns the value of the '<em><b>Provider</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -117,5 +145,21 @@ public interface Function extends IrAnnotable {
 	 * @generated
 	 */
 	void setProvider(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Dimension Vars</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.DimensionSymbol}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Dimension Vars</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Dimension Vars</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_DimensionVars()
+	 * @model containment="true" resolveProxies="true"
+	 * @generated
+	 */
+	EList<DimensionSymbol> getDimensionVars();
 
 } // Function

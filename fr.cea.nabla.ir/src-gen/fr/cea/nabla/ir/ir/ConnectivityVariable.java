@@ -56,12 +56,12 @@ public interface ConnectivityVariable extends Variable {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Default Value</em>' containment reference.
-	 * @see #setDefaultValue(VarRef)
+	 * @see #setDefaultValue(ArgOrVarRef)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivityVariable_DefaultValue()
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	VarRef getDefaultValue();
+	ArgOrVarRef getDefaultValue();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ConnectivityVariable#getDefaultValue <em>Default Value</em>}' containment reference.
@@ -71,6 +71,6 @@ public interface ConnectivityVariable extends Variable {
 	 * @see #getDefaultValue()
 	 * @generated
 	 */
-	void setDefaultValue(VarRef value);
+	void setDefaultValue(ArgOrVarRef value);
 
 } // ConnectivityVariable

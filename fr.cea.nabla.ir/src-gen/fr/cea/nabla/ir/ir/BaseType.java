@@ -2,6 +2,7 @@
  */
 package fr.cea.nabla.ir.ir;
 
+import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -13,10 +14,11 @@ package fr.cea.nabla.ir.ir;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.BaseType#getPrimitive <em>Primitive</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.BaseType#getSizes <em>Sizes</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getBaseType()
- * @model abstract="true"
+ * @model
  * @generated
  */
 public interface BaseType extends IrType {
@@ -48,5 +50,21 @@ public interface BaseType extends IrType {
 	 * @generated
 	 */
 	void setPrimitive(PrimitiveType value);
+
+	/**
+	 * Returns the value of the '<em><b>Sizes</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Dimension}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Sizes</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Sizes</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getBaseType_Sizes()
+	 * @model containment="true" resolveProxies="true"
+	 * @generated
+	 */
+	EList<Dimension> getSizes();
 
 } // BaseType

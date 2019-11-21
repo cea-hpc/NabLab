@@ -189,7 +189,7 @@ public class ReductionItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION__DIM_VARS,
-				 NablaFactory.eINSTANCE.createDimensionVar()));
+				 NablaFactory.eINSTANCE.createDimensionSymbol()));
 
 		newChildDescriptors.add
 			(createChildParameter
@@ -324,12 +324,12 @@ public class ReductionItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION__COLLECTION_TYPE,
-				 NablaFactory.eINSTANCE.createArgOrVarType()));
+				 NablaFactory.eINSTANCE.createBaseType()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.REDUCTION__RETURN_TYPE,
-				 NablaFactory.eINSTANCE.createArgOrVarType()));
+				 NablaFactory.eINSTANCE.createBaseType()));
 	}
 
 	/**

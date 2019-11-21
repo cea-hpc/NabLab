@@ -30,12 +30,12 @@ public interface Affectation extends Instruction {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Left</em>' containment reference.
-	 * @see #setLeft(VarRef)
+	 * @see #setLeft(ArgOrVarRef)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getAffectation_Left()
 	 * @model containment="true" required="true"
 	 * @generated
 	 */
-	VarRef getLeft();
+	ArgOrVarRef getLeft();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Affectation#getLeft <em>Left</em>}' containment reference.
@@ -45,7 +45,7 @@ public interface Affectation extends Instruction {
 	 * @see #getLeft()
 	 * @generated
 	 */
-	void setLeft(VarRef value);
+	void setLeft(ArgOrVarRef value);
 
 	/**
 	 * Returns the value of the '<em><b>Right</b></em>' containment reference.

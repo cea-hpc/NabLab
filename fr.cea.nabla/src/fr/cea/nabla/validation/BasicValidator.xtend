@@ -17,16 +17,14 @@ import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ArgOrVarRef
-import fr.cea.nabla.nabla.ArgOrVarType
+import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
-import fr.cea.nabla.nabla.DimensionIndex
 import fr.cea.nabla.nabla.DimensionInt
 import fr.cea.nabla.nabla.DimensionOperation
 import fr.cea.nabla.nabla.DimensionSymbol
 import fr.cea.nabla.nabla.DimensionSymbolRef
-import fr.cea.nabla.nabla.DimensionVar
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.InstructionBlock
@@ -53,8 +51,6 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScopeProvider
 import org.eclipse.xtext.util.SimpleAttributeResolver
 import org.eclipse.xtext.validation.Check
-
-import static extension fr.cea.nabla.Utils.*
 
 class BasicValidator extends AbstractNablaValidator
 {
@@ -94,7 +90,7 @@ class BasicValidator extends AbstractNablaValidator
 	def void checkDuplicate(SpaceIterator it)
 	{
 		val scope = scopeProvider.getScope(it, NablaPackage.Literals.SPACE_ITERATOR_REF__TARGET)
-		println('checkDuplicate(' + it + ') : ' + scope.allElements.map[name.segments.join('.')].join(', '))
+		//println('checkDuplicate(' + it + ') : ' + scope.allElements.map[name.segments.join('.')].join(', '))
 		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
 		if (duplicated)
 			error(getDuplicateNameMsg(NablaPackage.Literals.SPACE_ITERATOR, name), NablaPackage.Literals.SPACE_ITERATOR__NAME);
@@ -104,7 +100,7 @@ class BasicValidator extends AbstractNablaValidator
 	def void checkDuplicate(DimensionSymbol it)
 	{
 		val scope = scopeProvider.getScope(it, NablaPackage.Literals.DIMENSION_SYMBOL_REF__TARGET)
-		println('checkDuplicate(' + it + ') : ' + scope.allElements.map[name.lastSegment].join(', '))
+		//println('checkDuplicate(' + it + ') : ' + scope.allElements.map[name.lastSegment].join(', '))
 		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
 		if (duplicated)
 			error(getDuplicateNameMsg(NablaPackage.Literals.DIMENSION_SYMBOL, name), NablaPackage.Literals.DIMENSION_SYMBOL__NAME);
@@ -223,21 +219,21 @@ class BasicValidator extends AbstractNablaValidator
 	static def getArrayDimensionMsg() { "Max 2 dimensions for arrays" }
 	
 	@Check
-	def checkArraySizes(ArgOrVarType it)
+	def checkArraySizes(BaseType it)
 	{
 		for (i : 0..<sizes.size)
 		{
 			val size = sizes.get(i)
 			if (size instanceof DimensionInt && (size as DimensionInt).value < 2)
-				error(getArraySizesMsg(), NablaPackage.Literals.ARG_OR_VAR_TYPE__SIZES, i, ARRAY_SIZES)
+				error(getArraySizesMsg(), NablaPackage.Literals.BASE_TYPE__SIZES, i, ARRAY_SIZES)
 		}
 	}
 
 	@Check
-	def checkArrayDimension(ArgOrVarType it)
+	def checkArrayDimension(BaseType it)
 	{
 		if (sizes.size > 2)
-			error(getArrayDimensionMsg(), NablaPackage.Literals.ARG_OR_VAR_TYPE__SIZES, ARRAY_DIMENSION)
+			error(getArrayDimensionMsg(), NablaPackage.Literals.BASE_TYPE__SIZES, ARRAY_DIMENSION)
 	}
 
 	// ===== Variables : Var & VarRef =====
@@ -255,7 +251,8 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkUnusedVariable(Var it)
 	{
-		val referenced = MandatoryVariables::NAMES.contains(name) || MandatoryOptions::NAMES.contains(name) || nablaModule.eAllContents.filter(ArgOrVarRef).exists[x|x.target===it]
+		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
+		val referenced = MandatoryVariables::NAMES.contains(name) || MandatoryOptions::NAMES.contains(name) || m.eAllContents.filter(ArgOrVarRef).exists[x|x.target===it]
 		if (!referenced)
 			warning(getUnusedVariableMsg(), NablaPackage.Literals::ARG_OR_VAR__NAME, UNUSED_VARIABLE)
 	}
@@ -309,8 +306,8 @@ class BasicValidator extends AbstractNablaValidator
 	public static val REDUCTION_COLLECTION_TYPE_OPERATION = "Functions::ReductionCollectionTypeOperation"
 	public static val REDUCTION_INCOMPATIBLE_COLLECTION_TYPE = "Functions::ReductionIncompatibleCollectionType"
 	public static val REDUCTION_RETURN_TYPE = "Functions::ReductionReturnType"
-	public static val DIMENSION_VAR_NAME = "Functions::DimensionVarName"
-	public static val UNUSED_DIMENSION_VAR = "Functions::UnusedDimensionVar"
+	public static val DIMENSION_SYMBOL_NAME = "Functions::DimensionSymbolName"
+	public static val UNUSED_DIMENSION_SYMBOL = "Functions::UnusedDimensionSymbol"
 
 	static def getUnusedFunctionMsg() { "Unused function" }
 	static def getUnusedReductionMsg() { "Unused reduction" }
@@ -321,13 +318,14 @@ class BasicValidator extends AbstractNablaValidator
 	static def getReductionCollectionTypeOperationMsg() { "Collection type must not contain operations" }
 	static def getReductionIncompatibleCollectionTypeMsg() { "Declaration conflicts" }
 	static def getReductionReturnTypeMsg(String variableName) { "Only collection type variables can be used for return types. Invalid variable: " + variableName }
-	static def getDimensionVarNameMsg() { "Invalid name (reserved for time step)" }
-	static def getUnusedDimensionVarMsg() { "Unused variable" }
+	static def getDimensionSymbolNameMsg() { "Invalid name (reserved for time step)" }
+	static def getUnusedDimensionSymbolMsg() { "Unused symbol" }
 
 	@Check
 	def checkUnusedFunction(Function it)
 	{
-		val allCalls = nablaModule.eAllContents.filter(FunctionCall)
+		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
+		val allCalls = m.eAllContents.filter(FunctionCall)
 		val allCorrespondingDeclarations = allCalls.map[declaration]
 		val referenced = allCorrespondingDeclarations.exists[x | x !== null && x.model===it]
 		if (!referenced)
@@ -337,7 +335,8 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkUnusedReduction(Reduction it)
 	{
-		val allCalls = nablaModule.eAllContents.filter(ReductionCall)
+		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
+		val allCalls = m.eAllContents.filter(ReductionCall)
 		val allCorrespondingDeclarations = allCalls.map[declaration]
 		val referenced = allCorrespondingDeclarations.exists[x | x !== null && x.model===it]
 		if (!referenced)
@@ -383,16 +382,16 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkFunctionReturnType(Function it)
 	{
-		val inTypeVars = new HashSet<DimensionVar>
+		val inTypeVars = new HashSet<DimensionSymbol>
 		for (inType : inTypes)
 			for (dim : inType.eAllContents.filter(DimensionSymbolRef).toIterable)
-				if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionVar)
-					inTypeVars += dim.target as DimensionVar
+				if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionSymbol)
+					inTypeVars += dim.target as DimensionSymbol
 
-		val returnTypeVars = new HashSet<DimensionVar>
+		val returnTypeVars = new HashSet<DimensionSymbol>
 		for (dim : returnType.eAllContents.filter(DimensionSymbolRef).toIterable)
-			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionVar)
-				returnTypeVars += dim.target as DimensionVar
+			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionSymbol)
+				returnTypeVars += dim.target as DimensionSymbol
 
 		val x = returnTypeVars.findFirst[x | !inTypeVars.contains(x)]
 		if (x !== null)
@@ -411,7 +410,7 @@ class BasicValidator extends AbstractNablaValidator
 			error(getReductionIncompatibleCollectionTypeMsg(), NablaPackage.Literals::REDUCTION__COLLECTION_TYPE, REDUCTION_INCOMPATIBLE_COLLECTION_TYPE)
 	}
 
-	private def areCompatible(ArgOrVarType a, ArgOrVarType b)
+	private def areCompatible(BaseType a, BaseType b)
 	{
 		(a.primitive != b.primitive || a.sizes.size != b.sizes.size)
 	}
@@ -420,15 +419,15 @@ class BasicValidator extends AbstractNablaValidator
 	def checkReductionReturnType(Reduction it)
 	{	
 		// return type should reference only known variables
-		val inTypeVars = new HashSet<DimensionVar>
+		val inTypeVars = new HashSet<DimensionSymbol>
 		for (dim : collectionType.eAllContents.filter(DimensionSymbolRef).toIterable)
-			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionVar)
-				inTypeVars += dim.target as DimensionVar
+			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionSymbol)
+				inTypeVars += dim.target as DimensionSymbol
 
-		val returnTypeVars = new HashSet<DimensionVar>
+		val returnTypeVars = new HashSet<DimensionSymbol>
 		for (dim : returnType.eAllContents.filter(DimensionSymbolRef).toIterable)
-			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionVar)
-				returnTypeVars += dim.target as DimensionVar
+			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof DimensionSymbol)
+				returnTypeVars += dim.target as DimensionSymbol
 
 		val x = returnTypeVars.findFirst[x | !inTypeVars.contains(x)]
 		if (x !== null)
@@ -436,18 +435,20 @@ class BasicValidator extends AbstractNablaValidator
 	}
 
 	@Check
-	def checkDimensionVarName(DimensionVar it)
+	def checkDimensionSymbolName(DimensionSymbol it)
 	{
 		if (name == 'n')
-			error(getDimensionVarNameMsg(), NablaPackage.Literals::DIMENSION_SYMBOL__NAME, DIMENSION_VAR_NAME)
+			error(getDimensionSymbolNameMsg(), NablaPackage.Literals::DIMENSION_SYMBOL__NAME, DIMENSION_SYMBOL_NAME)
 	}
 
 	@Check
-	def checkUnusedDimensionVar(DimensionVar it)
+	def checkUnusedDimensionSymbol(DimensionSymbol it)
 	{
-		val varRefs = eContainer.eAllContents.filter(DimensionSymbolRef).map[target].toSet
+		var EObject container = EcoreUtil2.getContainerOfType(it, Iterable)
+		if (container === null) container = eContainer // Function or Reduction
+		val varRefs = container.eAllContents.filter(DimensionSymbolRef).map[target].toSet
 		if (!varRefs.contains(it))
-			warning(getUnusedDimensionVarMsg(), NablaPackage.Literals::DIMENSION_SYMBOL__NAME, UNUSED_DIMENSION_VAR)
+			warning(getUnusedDimensionSymbolMsg(), NablaPackage.Literals::DIMENSION_SYMBOL__NAME, UNUSED_DIMENSION_SYMBOL)
 	}
 
 	// ===== Connectivities =====
@@ -469,8 +470,9 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkUnusedConnectivity(Connectivity it)
 	{
-		val referenced = nablaModule.eAllContents.filter(ConnectivityCall).exists[x|x.connectivity===it]
-			|| nablaModule.eAllContents.filter(ConnectivityVar).exists[x|x.supports.contains(it)]
+		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
+		val referenced = m.eAllContents.filter(ConnectivityCall).exists[x|x.connectivity===it]
+			|| m.eAllContents.filter(ConnectivityVar).exists[x|x.supports.contains(it)]
 		if (!referenced)
 			warning(getUnusedConnectivityMsg(), NablaPackage.Literals::CONNECTIVITY__NAME, UNUSED_CONNECTIVITY)
 	}
@@ -558,7 +560,7 @@ class BasicValidator extends AbstractNablaValidator
 	}
 
 	@Check
-	def checkUnusedIterator(DimensionIndex it)
+	def checkUnusedIterator(DimensionSymbol it)
 	{
 		val iterable = EcoreUtil2.getContainerOfType(it, Iterable)
 		val referenced = iterable.eAllContents.filter(DimensionSymbolRef).exists[x|x.target===it]

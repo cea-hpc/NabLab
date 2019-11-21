@@ -215,17 +215,17 @@ public class FunctionItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.FUNCTION__DIM_VARS,
-				 NablaFactory.eINSTANCE.createDimensionVar()));
+				 NablaFactory.eINSTANCE.createDimensionSymbol()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.FUNCTION__IN_TYPES,
-				 NablaFactory.eINSTANCE.createArgOrVarType()));
+				 NablaFactory.eINSTANCE.createBaseType()));
 
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.FUNCTION__RETURN_TYPE,
-				 NablaFactory.eINSTANCE.createArgOrVarType()));
+				 NablaFactory.eINSTANCE.createBaseType()));
 
 		newChildDescriptors.add
 			(createChildParameter

@@ -11,14 +11,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import fr.cea.nabla.Utils
-import fr.cea.nabla.VarExtensions
-import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.nabla.Arg
-import fr.cea.nabla.nabla.ArgType
-import fr.cea.nabla.nabla.Dimension
-import fr.cea.nabla.nabla.DimensionInt
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.Reduction
 
@@ -30,77 +23,34 @@ import fr.cea.nabla.nabla.Reduction
 @Singleton
 class IrFunctionFactory 
 {
-	@Inject extension Nabla2IrUtils
 	@Inject extension IrAnnotationHelper
-	@Inject extension VarExtensions
+	@Inject extension BaseType2IrType
+	@Inject extension IrArgOrVarFactory
+	@Inject extension IrDimensionFactory
+	@Inject extension IrInstructionFactory
 
 	static val Reductions = #{ '\u2211'->'+', '\u220F'->'*' }
 
-	def create IrFactory::eINSTANCE.createFunction toIrFunction(Function f, Function a)
+	def create IrFactory::eINSTANCE.createFunction toIrFunction(Function f, String providerName)
 	{
-		annotations += a.toIrAnnotation
+		annotations += f.toIrAnnotation
 		name = f.name
-		returnType = a.returnType.toIrBaseType
-		inArgs += a.inArgs.map[toIrArg]
-		provider = Utils::getNablaModule(f).name
+		provider = providerName
+		f.dimVars.forEach[x | dimensionVars += x.toIrDimensionSymbol]
+		inArgs += f.inArgs.map[x | toIrArg(x, x.name)]
+		returnType = f.returnType.toIrBaseType
+		if (!f.external) body = f.body.toIrInstruction
 	}
 
-	def create IrFactory::eINSTANCE.createReduction toIrReduction(Reduction f, Reduction a)
+	def create IrFactory::eINSTANCE.createReduction toIrReduction(Reduction f, String providerName)
 	{
-		annotations += a.toIrAnnotation
+		annotations += f.toIrAnnotation
+		provider = providerName
+		f.dimVars.forEach[x | dimensionVars += x.toIrDimensionSymbol]
 		val op = Reductions.get(f.name)
 		name = op ?: f.name.replaceFirst("reduce", "").toFirstLower
 		operator = (op !== null)
-		collectionType = a.collectionType.toIrBaseType
-		returnType = a.returnType.toIrBaseType
-		provider = Utils::getNablaModule(f).name
-	}
-	
-	private def toIrArg(Arg a)
-	{
-		IrFactory::eINSTANCE.createArg =>
-		[
-			annotations += a.toIrAnnotation
-			name = a.name
-			type = a.argType.toIrBaseType
-		]
-	}
-
-	/**
-	 * No create method but a nested create to get a new instance at each call
-	 */
-	private def BaseType toIrBaseType(ArgType a)
-	{
-		if (a === null) null
-		else switch a.indices.size
-		{
-			case 0: IrFactory.eINSTANCE.createScalar => 
-			[ 
-				primitive = a.primitive.toIrPrimitiveType
-			]
-			case 1: IrFactory.eINSTANCE.createArray1D => 
-			[ 
-				primitive = a.primitive.toIrPrimitiveType
-				size = a.indices.get(0).value
-			]
-			case 2: IrFactory.eINSTANCE.createArray2D => 
-			[ 
-				primitive = a.primitive.toIrPrimitiveType
-				nbRows = a.indices.get(0).value
-				nbCols = a.indices.get(1).value
-			]
-		}
-	}
-	
-	/**
-	 * Return the value of the dimension if it is fixed (for example, det function only available on R[2]),
-	 * or -1 if the dimension is undefined (for example R[x]).
-	 */
-	private def getValue(Dimension x)
-	{
-		if (x instanceof DimensionInt)
-			x.value
-		else
-			-1
+		collectionType = f.collectionType.toIrBaseType
+		returnType = f.returnType.toIrBaseType
 	}
 }

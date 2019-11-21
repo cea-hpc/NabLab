@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.ir;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.Variable#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getPersistenceName <em>Persistence Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#isConst <em>Const</em>}</li>
  * </ul>
@@ -21,33 +20,7 @@ package fr.cea.nabla.ir.ir;
  * @model abstract="true"
  * @generated
  */
-public interface Variable extends IrAnnotable {
-	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Name</em>' attribute.
-	 * @see #setName(String)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getVariable_Name()
-	 * @model unique="false" required="true"
-	 * @generated
-	 */
-	String getName();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Variable#getName <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Name</em>' attribute.
-	 * @see #getName()
-	 * @generated
-	 */
-	void setName(String value);
-
+public interface Variable extends ArgOrVar {
 	/**
 	 * Returns the value of the '<em><b>Persistence Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->

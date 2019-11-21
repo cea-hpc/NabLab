@@ -84,6 +84,14 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createImportAdapter();
 			}
 			@Override
+			public Adapter caseArgOrVar(ArgOrVar object) {
+				return createArgOrVarAdapter();
+			}
+			@Override
+			public Adapter caseArg(Arg object) {
+				return createArgAdapter();
+			}
+			@Override
 			public Adapter caseVariable(Variable object) {
 				return createVariableAdapter();
 			}
@@ -102,10 +110,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseReduction(Reduction object) {
 				return createReductionAdapter();
-			}
-			@Override
-			public Adapter caseArg(Arg object) {
-				return createArgAdapter();
 			}
 			@Override
 			public Adapter caseConnectivity(Connectivity object) {
@@ -160,6 +164,38 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createIterableInstructionAdapter();
 			}
 			@Override
+			public Adapter caseIterationBlock(IterationBlock object) {
+				return createIterationBlockAdapter();
+			}
+			@Override
+			public Adapter caseSpaceIterationBlock(SpaceIterationBlock object) {
+				return createSpaceIterationBlockAdapter();
+			}
+			@Override
+			public Adapter caseDimensionIterationBlock(DimensionIterationBlock object) {
+				return createDimensionIterationBlockAdapter();
+			}
+			@Override
+			public Adapter caseDimensionSymbol(DimensionSymbol object) {
+				return createDimensionSymbolAdapter();
+			}
+			@Override
+			public Adapter caseDimension(Dimension object) {
+				return createDimensionAdapter();
+			}
+			@Override
+			public Adapter caseDimensionInt(DimensionInt object) {
+				return createDimensionIntAdapter();
+			}
+			@Override
+			public Adapter caseDimensionOperation(DimensionOperation object) {
+				return createDimensionOperationAdapter();
+			}
+			@Override
+			public Adapter caseDimensionSymbolRef(DimensionSymbolRef object) {
+				return createDimensionSymbolRefAdapter();
+			}
+			@Override
 			public Adapter caseReductionInstruction(ReductionInstruction object) {
 				return createReductionInstructionAdapter();
 			}
@@ -170,6 +206,10 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseIf(If object) {
 				return createIfAdapter();
+			}
+			@Override
+			public Adapter caseReturn(Return object) {
+				return createReturnAdapter();
 			}
 			@Override
 			public Adapter caseExpression(Expression object) {
@@ -192,8 +232,16 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createParenthesisAdapter();
 			}
 			@Override
-			public Adapter caseConstant(Constant object) {
-				return createConstantAdapter();
+			public Adapter caseIntConstant(IntConstant object) {
+				return createIntConstantAdapter();
+			}
+			@Override
+			public Adapter caseRealConstant(RealConstant object) {
+				return createRealConstantAdapter();
+			}
+			@Override
+			public Adapter caseBoolConstant(BoolConstant object) {
+				return createBoolConstantAdapter();
 			}
 			@Override
 			public Adapter caseMinConstant(MinConstant object) {
@@ -228,8 +276,8 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createFunctionCallAdapter();
 			}
 			@Override
-			public Adapter caseVarRef(VarRef object) {
-				return createVarRefAdapter();
+			public Adapter caseArgOrVarRef(ArgOrVarRef object) {
+				return createArgOrVarRefAdapter();
 			}
 			@Override
 			public Adapter caseIterator(Iterator object) {
@@ -248,32 +296,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createConnectivityCallIteratorRefAdapter();
 			}
 			@Override
-			public Adapter caseVarRefIteratorRef(VarRefIteratorRef object) {
-				return createVarRefIteratorRefAdapter();
+			public Adapter caseArgOrVarRefIteratorRef(ArgOrVarRefIteratorRef object) {
+				return createArgOrVarRefIteratorRefAdapter();
 			}
 			@Override
 			public Adapter caseItemType(ItemType object) {
 				return createItemTypeAdapter();
 			}
 			@Override
-			public Adapter caseBaseType(BaseType object) {
-				return createBaseTypeAdapter();
-			}
-			@Override
-			public Adapter caseScalar(Scalar object) {
-				return createScalarAdapter();
-			}
-			@Override
-			public Adapter caseArray1D(Array1D object) {
-				return createArray1DAdapter();
-			}
-			@Override
-			public Adapter caseArray2D(Array2D object) {
-				return createArray2DAdapter();
-			}
-			@Override
 			public Adapter caseIrType(IrType object) {
 				return createIrTypeAdapter();
+			}
+			@Override
+			public Adapter caseBaseType(BaseType object) {
+				return createBaseTypeAdapter();
 			}
 			@Override
 			public Adapter caseConnectivityType(ConnectivityType object) {
@@ -352,6 +388,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createImportAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ArgOrVar <em>Arg Or Var</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.ArgOrVar
+	 * @generated
+	 */
+	public Adapter createArgOrVarAdapter() {
 		return null;
 	}
 
@@ -622,6 +672,118 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IterationBlock <em>Iteration Block</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.IterationBlock
+	 * @generated
+	 */
+	public Adapter createIterationBlockAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.SpaceIterationBlock <em>Space Iteration Block</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.SpaceIterationBlock
+	 * @generated
+	 */
+	public Adapter createSpaceIterationBlockAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.DimensionIterationBlock <em>Dimension Iteration Block</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.DimensionIterationBlock
+	 * @generated
+	 */
+	public Adapter createDimensionIterationBlockAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.DimensionSymbol <em>Dimension Symbol</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.DimensionSymbol
+	 * @generated
+	 */
+	public Adapter createDimensionSymbolAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Dimension <em>Dimension</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.Dimension
+	 * @generated
+	 */
+	public Adapter createDimensionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.DimensionInt <em>Dimension Int</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.DimensionInt
+	 * @generated
+	 */
+	public Adapter createDimensionIntAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.DimensionOperation <em>Dimension Operation</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.DimensionOperation
+	 * @generated
+	 */
+	public Adapter createDimensionOperationAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.DimensionSymbolRef <em>Dimension Symbol Ref</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.DimensionSymbolRef
+	 * @generated
+	 */
+	public Adapter createDimensionSymbolRefAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ReductionInstruction <em>Reduction Instruction</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -660,6 +822,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createIfAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Return <em>Return</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.Return
+	 * @generated
+	 */
+	public Adapter createReturnAdapter() {
 		return null;
 	}
 
@@ -734,16 +910,44 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Constant <em>Constant</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IntConstant <em>Int Constant</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.Constant
+	 * @see fr.cea.nabla.ir.ir.IntConstant
 	 * @generated
 	 */
-	public Adapter createConstantAdapter() {
+	public Adapter createIntConstantAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.RealConstant <em>Real Constant</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.RealConstant
+	 * @generated
+	 */
+	public Adapter createRealConstantAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.BoolConstant <em>Bool Constant</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.BoolConstant
+	 * @generated
+	 */
+	public Adapter createBoolConstantAdapter() {
 		return null;
 	}
 
@@ -860,16 +1064,16 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.VarRef <em>Var Ref</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ArgOrVarRef <em>Arg Or Var Ref</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.VarRef
+	 * @see fr.cea.nabla.ir.ir.ArgOrVarRef
 	 * @generated
 	 */
-	public Adapter createVarRefAdapter() {
+	public Adapter createArgOrVarRefAdapter() {
 		return null;
 	}
 
@@ -930,16 +1134,16 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.VarRefIteratorRef <em>Var Ref Iterator Ref</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef <em>Arg Or Var Ref Iterator Ref</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.VarRefIteratorRef
+	 * @see fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
 	 * @generated
 	 */
-	public Adapter createVarRefIteratorRefAdapter() {
+	public Adapter createArgOrVarRefIteratorRefAdapter() {
 		return null;
 	}
 
@@ -968,48 +1172,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createBaseTypeAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Scalar <em>Scalar</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.Scalar
-	 * @generated
-	 */
-	public Adapter createScalarAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Array1D <em>Array1 D</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.Array1D
-	 * @generated
-	 */
-	public Adapter createArray1DAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Array2D <em>Array2 D</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.Array2D
-	 * @generated
-	 */
-	public Adapter createArray2DAdapter() {
 		return null;
 	}
 

@@ -49,6 +49,15 @@ public interface IrFactory extends EFactory {
 	Import createImport();
 
 	/**
+	 * Returns a new object of class '<em>Arg</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Arg</em>'.
+	 * @generated
+	 */
+	Arg createArg();
+
+	/**
 	 * Returns a new object of class '<em>Simple Variable</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -83,15 +92,6 @@ public interface IrFactory extends EFactory {
 	 * @generated
 	 */
 	Reduction createReduction();
-
-	/**
-	 * Returns a new object of class '<em>Arg</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Arg</em>'.
-	 * @generated
-	 */
-	Arg createArg();
 
 	/**
 	 * Returns a new object of class '<em>Connectivity</em>'.
@@ -175,6 +175,60 @@ public interface IrFactory extends EFactory {
 	Affectation createAffectation();
 
 	/**
+	 * Returns a new object of class '<em>Space Iteration Block</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Space Iteration Block</em>'.
+	 * @generated
+	 */
+	SpaceIterationBlock createSpaceIterationBlock();
+
+	/**
+	 * Returns a new object of class '<em>Dimension Iteration Block</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Dimension Iteration Block</em>'.
+	 * @generated
+	 */
+	DimensionIterationBlock createDimensionIterationBlock();
+
+	/**
+	 * Returns a new object of class '<em>Dimension Symbol</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Dimension Symbol</em>'.
+	 * @generated
+	 */
+	DimensionSymbol createDimensionSymbol();
+
+	/**
+	 * Returns a new object of class '<em>Dimension Int</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Dimension Int</em>'.
+	 * @generated
+	 */
+	DimensionInt createDimensionInt();
+
+	/**
+	 * Returns a new object of class '<em>Dimension Operation</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Dimension Operation</em>'.
+	 * @generated
+	 */
+	DimensionOperation createDimensionOperation();
+
+	/**
+	 * Returns a new object of class '<em>Dimension Symbol Ref</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Dimension Symbol Ref</em>'.
+	 * @generated
+	 */
+	DimensionSymbolRef createDimensionSymbolRef();
+
+	/**
 	 * Returns a new object of class '<em>Reduction Instruction</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -200,6 +254,15 @@ public interface IrFactory extends EFactory {
 	 * @generated
 	 */
 	If createIf();
+
+	/**
+	 * Returns a new object of class '<em>Return</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Return</em>'.
+	 * @generated
+	 */
+	Return createReturn();
 
 	/**
 	 * Returns a new object of class '<em>Contracted If</em>'.
@@ -238,13 +301,31 @@ public interface IrFactory extends EFactory {
 	Parenthesis createParenthesis();
 
 	/**
-	 * Returns a new object of class '<em>Constant</em>'.
+	 * Returns a new object of class '<em>Int Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Constant</em>'.
+	 * @return a new object of class '<em>Int Constant</em>'.
 	 * @generated
 	 */
-	Constant createConstant();
+	IntConstant createIntConstant();
+
+	/**
+	 * Returns a new object of class '<em>Real Constant</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Real Constant</em>'.
+	 * @generated
+	 */
+	RealConstant createRealConstant();
+
+	/**
+	 * Returns a new object of class '<em>Bool Constant</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Bool Constant</em>'.
+	 * @generated
+	 */
+	BoolConstant createBoolConstant();
 
 	/**
 	 * Returns a new object of class '<em>Min Constant</em>'.
@@ -319,13 +400,13 @@ public interface IrFactory extends EFactory {
 	FunctionCall createFunctionCall();
 
 	/**
-	 * Returns a new object of class '<em>Var Ref</em>'.
+	 * Returns a new object of class '<em>Arg Or Var Ref</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Var Ref</em>'.
+	 * @return a new object of class '<em>Arg Or Var Ref</em>'.
 	 * @generated
 	 */
-	VarRef createVarRef();
+	ArgOrVarRef createArgOrVarRef();
 
 	/**
 	 * Returns a new object of class '<em>Iterator</em>'.
@@ -355,13 +436,13 @@ public interface IrFactory extends EFactory {
 	ConnectivityCallIteratorRef createConnectivityCallIteratorRef();
 
 	/**
-	 * Returns a new object of class '<em>Var Ref Iterator Ref</em>'.
+	 * Returns a new object of class '<em>Arg Or Var Ref Iterator Ref</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Var Ref Iterator Ref</em>'.
+	 * @return a new object of class '<em>Arg Or Var Ref Iterator Ref</em>'.
 	 * @generated
 	 */
-	VarRefIteratorRef createVarRefIteratorRef();
+	ArgOrVarRefIteratorRef createArgOrVarRefIteratorRef();
 
 	/**
 	 * Returns a new object of class '<em>Item Type</em>'.
@@ -373,33 +454,6 @@ public interface IrFactory extends EFactory {
 	ItemType createItemType();
 
 	/**
-	 * Returns a new object of class '<em>Scalar</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Scalar</em>'.
-	 * @generated
-	 */
-	Scalar createScalar();
-
-	/**
-	 * Returns a new object of class '<em>Array1 D</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Array1 D</em>'.
-	 * @generated
-	 */
-	Array1D createArray1D();
-
-	/**
-	 * Returns a new object of class '<em>Array2 D</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Array2 D</em>'.
-	 * @generated
-	 */
-	Array2D createArray2D();
-
-	/**
 	 * Returns a new object of class '<em>Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -407,6 +461,15 @@ public interface IrFactory extends EFactory {
 	 * @generated
 	 */
 	IrType createIrType();
+
+	/**
+	 * Returns a new object of class '<em>Base Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Base Type</em>'.
+	 * @generated
+	 */
+	BaseType createBaseType();
 
 	/**
 	 * Returns a new object of class '<em>Connectivity Type</em>'.

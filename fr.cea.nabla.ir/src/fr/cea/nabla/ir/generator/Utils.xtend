@@ -9,14 +9,14 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator
 
-import fr.cea.nabla.ir.ir.Array1D
-import fr.cea.nabla.ir.ir.Array2D
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
+import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import org.eclipse.emf.ecore.EObject
 
@@ -24,6 +24,19 @@ import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class Utils 
 {
+	static val FunctionReductionPrefix = 'Functions'
+
+	static def getCodeName(Function it, String separator)
+	{
+		if (body === null) provider + FunctionReductionPrefix + separator + name
+		else name
+	}
+
+	static def getCodeName(Reduction it, String separator)
+	{
+		provider + FunctionReductionPrefix + separator + name
+	}
+
 	static def getNbElems(Connectivity it) { 'nb' + name.toFirstUpper}
 
 	static def getComment(Job it)
@@ -34,7 +47,7 @@ class Utils
 		 * Out variables: «FOR v : outVars SEPARATOR ', '»«v.getName»«ENDFOR»
 		 */
 	'''	
-	
+
 	static def boolean isTopLevelLoop(EObject it)
 	{
 		if (eContainer === null) false
@@ -46,7 +59,7 @@ class Utils
 			default : eContainer.topLevelLoop
 		}
 	}
-	
+
 	static def getOperatorName(String op)
 	{
 		switch op
@@ -58,12 +71,12 @@ class Utils
 		}
 	}
 
-	static def initConstant(Array1D it, CharSequence value)
-	'''«FOR i : 0..<size BEFORE '{' SEPARATOR ', ' AFTER '}'»«value»«ENDFOR»'''
+	static def CharSequence initArray(int[] sizes, CharSequence value)
+	{
+		if (sizes.empty) value
+		else initArray(sizes.tail, '''«FOR i : 0..<sizes.head BEFORE '{' SEPARATOR ', ' AFTER '}'»«value»«ENDFOR»''')
+	}
 
-	static def initConstant(Array2D it, CharSequence value)
-	'''«FOR i : 0..<nbRows BEFORE '{' SEPARATOR ', ' AFTER '}'»«FOR j : 0..<nbCols BEFORE '{' SEPARATOR ', ' AFTER '}'»«value»«ENDFOR»«ENDFOR»'''
-	
 	static def getPersistentVariables(IrModule it) 
 	{ 
 		variables.filter(ConnectivityVariable).filter[x|x.persistenceName !== null && x.type.connectivities.size==1]

@@ -42,8 +42,8 @@ Job: name=ID ':' instruction=Instruction;
 Iterable: Loop | ReductionCall;
 Instruction: SimpleVarDefinition | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | Return;
 
-SimpleVarDefinition: (const?='const')? type=ArgOrVarType variable=SimpleVar '=' defaultValue=Expression ';';
-VarGroupDeclaration: type=ArgOrVarType variables+=Var (',' variables+=Var)* ';';
+SimpleVarDefinition: (const?='const')? type=BaseType variable=SimpleVar '=' defaultValue=Expression ';';
+VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
 InstructionBlock: '{' instructions+=Instruction+ '}';
 Loop: '\u2200' iterationBlock=IterationBlock ',' body=Instruction;
 Affectation: left=ArgOrVarRef '=' right=Expression ';';
@@ -54,7 +54,7 @@ Return: 'return' expression=Expression ';';
 /* ITERATEURS ********************************************/
 IterationBlock: SpaceIterationBlock | DimensionIterationBlock;
 SpaceIterationBlock: range=RangeSpaceIterator (',' singletons+=SingletonSpaceIterator)*;
-DimensionIterationBlock: index=DimensionIndex;
+DimensionIterationBlock: index=DimensionSymbol '\u2208' '[' from=Dimension ';' to=Dimension (toIncluded?=']'|'[');
 
 SpaceIterator: RangeSpaceIterator | SingletonSpaceIterator;
 RangeSpaceIterator: name=ID '\u2208' container=ConnectivityCall; // must return a collection
@@ -81,13 +81,11 @@ ItemArgType: multiple?='{' type=[ItemType] '}' | type=[ItemType];
 
 
 /* FONCTIONS / REDUCTIONS ********************************/
-Function: 'def' name=ID ':' (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? (inTypes+=ArgOrVarType ('\u00D7' inTypes+=ArgOrVarType)*)? '\u2192' returnType=ArgOrVarType 
+Function: 'def' name=ID ':' (dimVars+=DimensionSymbol (',' dimVars+=DimensionSymbol)* '|')? (inTypes+=BaseType ('\u00D7' inTypes+=BaseType)*)? '\u2192' returnType=BaseType 
 	((',' '(' (inArgs+=Arg (',' inArgs+=Arg)*)? ')' '\u2192' body=Instruction) | external?=';');
-Reduction: 'def' name=ID ':' (dimVars+=DimensionVar (',' dimVars+=DimensionVar)* '|')? '(' seed=Expression ',' collectionType=ArgOrVarType ')' '\u2192' returnType=ArgOrVarType ';';
+Reduction: 'def' name=ID ':' (dimVars+=DimensionSymbol (',' dimVars+=DimensionSymbol)* '|')? '(' seed=Expression ',' collectionType=BaseType ')' '\u2192' returnType=BaseType ';';
 Arg: name=ID;
-DimensionSymbol: DimensionIndex | DimensionVar;
-DimensionIndex: name=ID '\u2208' '[' from=Dimension ';' to=Dimension (lte?=']'|'[');
-DimensionVar: name=ID;
+DimensionSymbol: name=ID;
 
 
 /* EXPRESSIONS ******************************************/
@@ -131,7 +129,7 @@ Atomic returns Expression:
 	{MaxConstant} type=PrimitiveType '.MaxValue'|
 	{FunctionCall} function=[Function|QualifiedName] '(' (args+=Expression (',' args+=Expression)*)? ')' | 
 	ReductionCall |
-	{BaseTypeConstant} type=ArgOrVarType '(' value=Expression ')'| 
+	{BaseTypeConstant} type=BaseType '(' value=Expression ')'| 
 	IntVectorConstant | 
 	{IntMatrixConstant} '[' values+=IntVectorConstant (',' values+=IntVectorConstant)+ ']' |
 	RealVectorConstant |
@@ -149,7 +147,7 @@ ArgOrVarRef: target=[ArgOrVar]
 
 /* TYPES *************************************************/
 enum PrimitiveType: Int='\u2115' | Real='\u211D' | Bool='\u213E';
-ArgOrVarType: primitive=PrimitiveType ('[' sizes+=Dimension (',' sizes+=Dimension)* ']')?;
+BaseType: primitive=PrimitiveType ('[' sizes+=Dimension (',' sizes+=Dimension)* ']')?;
 
 Dimension: DimensionOperation;
 DimensionOperation returns Dimension:

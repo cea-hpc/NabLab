@@ -63,28 +63,28 @@ class DeclarationProviderTest
 		ℝ[2] x2{cells};
 
 		// --- TEST DE F ---
-		J0: { ℕ x = f(); }
-		J1: { ℕ x = f(2); }
-		J2: { ℝ x = f(3.0); }
+		J0: { ℕ y = f(); }
+		J1: { ℕ y = f(2); }
+		J2: { ℝ y = f(3.0); }
 		J3: {
-				ℝ[2] a = [1.1, 2.2];
-				ℝ[2] x = f(a);
+				ℝ[2] b = [1.1, 2.2];
+				ℝ[2] y = f(b);
 		}
-		J4: { ℝ x = f(3.0, true); } // Wrong arguments : ℝ, ℾ
+		J4: { ℝ y = f(3.0, true); } // Wrong arguments : ℝ, ℾ
 
 		// --- TEST DE G ---
 		J5: {
-				ℝ[2] a = [1.1, 2.2];
-				ℝ[2] x = g(a);
+				ℝ[2] b = [1.1, 2.2];
+				ℝ[2] y = g(b);
 		}
 		J6: {
-				ℝ[2, 3] a = [[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]];
-				ℝ[6] x = g(a);
+				ℝ[2, 3] b = [[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]];
+				ℝ[6] y = g(b);
 		}
 		J7: {
-				ℝ[2] a = [1.1, 2.2];
-				ℝ[3] b = [3.3, 4.4, 5.5];
-				ℝ[5] x = g(a, b);
+				ℝ[2] b = [1.1, 2.2];
+				ℝ[3] c = [3.3, 4.4, 5.5];
+				ℝ[5] y = g(b, c);
 		}
 		J8: { a = g(x); }
 		J9: { a = g(x, x); } // Wrong arguments : ℝ{cells}, ℝ{cells}
@@ -175,8 +175,8 @@ class DeclarationProviderTest
 
 		Assert.assertEquals(3, module.validate.filter(i | i.severity == Severity.WARNING).size)
 		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 114, 1, BasicValidator::getUnusedFunctionMsg)
-		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 167, 1, BasicValidator::getUnusedFunctionMsg)
-		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 240, 1, BasicValidator::getUnusedFunctionMsg)
+		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 166, 1, BasicValidator::getUnusedFunctionMsg)
+		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 239, 1, BasicValidator::getUnusedFunctionMsg)
 
 		val functions = module.functions.filter(Function)
 		val h = functions.findFirst[name == 'h']

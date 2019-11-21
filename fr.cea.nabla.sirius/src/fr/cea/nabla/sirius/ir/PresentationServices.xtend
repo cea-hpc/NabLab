@@ -12,7 +12,7 @@ package fr.cea.nabla.sirius.ir
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.Variable
 
-import static extension fr.cea.nabla.ir.VariableExtensions.*
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
 class PresentationServices 
 {

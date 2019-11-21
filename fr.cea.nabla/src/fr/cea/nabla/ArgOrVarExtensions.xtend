@@ -58,7 +58,10 @@ class ArgOrVarExtensions
 		}
 	}
 
-	def isGlobal(Var it) { eContainer.eContainer instanceof NablaModule }
+	def isGlobal(Var it) 
+	{ 
+		eContainer.eContainer instanceof NablaModule
+	}
 
 	def getDefaultValue(Var it)
 	{

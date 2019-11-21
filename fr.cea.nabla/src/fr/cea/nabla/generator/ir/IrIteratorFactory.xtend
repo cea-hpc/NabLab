@@ -45,7 +45,7 @@ class IrIteratorFactory
 			args += range.args.get(i).toIrConnectivityCallIteratorRef(i)
 	}
 
-	def create IrFactory::eINSTANCE.createVarRefIteratorRef toIrVarRefIteratorRef(SpaceIteratorRef ref, int index)
+	def create IrFactory::eINSTANCE.createArgOrVarRefIteratorRef toIrArgOrVarRefIteratorRef(SpaceIteratorRef ref, int index)
 	{
 		initIteratorRef(ref, index)
 	}

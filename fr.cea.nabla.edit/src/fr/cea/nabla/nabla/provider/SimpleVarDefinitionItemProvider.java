@@ -170,7 +170,7 @@ public class SimpleVarDefinitionItemProvider extends InstructionItemProvider {
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.SIMPLE_VAR_DEFINITION__TYPE,
-				 NablaFactory.eINSTANCE.createArgOrVarType()));
+				 NablaFactory.eINSTANCE.createBaseType()));
 
 		newChildDescriptors.add
 			(createChildParameter

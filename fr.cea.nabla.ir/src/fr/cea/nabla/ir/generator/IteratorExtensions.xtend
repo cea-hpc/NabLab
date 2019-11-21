@@ -1,9 +1,10 @@
 package fr.cea.nabla.ir.generator
 
+import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
 import fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef
+import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRef
-import fr.cea.nabla.ir.ir.VarRefIteratorRef
 import java.util.TreeSet
 
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
@@ -39,7 +40,7 @@ class IteratorExtensions
 			switch referencer
 			{
 				ConnectivityCallIteratorRef : neededIds += referencer
-				VarRefIteratorRef case (referencer.indexName != indexName) : neededIds += referencer
+				ArgOrVarRefIteratorRef case (referencer.indexName != indexName) : neededIds += referencer
 			}	
 		}
 		return neededIds
@@ -60,17 +61,18 @@ class IteratorExtensions
 	static def getNeededIndices(Iterator it)
 	{
 		//println('getIndicesToDefined for: ' + name + ' - ' + indexName)
-		
+
 		// Only one instance with the same index name.
-		val neededIndices = new TreeSet<VarRefIteratorRef>(sortByIndexName)
-		
+		val neededIndices = new TreeSet<ArgOrVarRefIteratorRef>(sortByIndexName)
+
 		// get all variable indices of the context
-		val allIndices = new TreeSet<VarRefIteratorRef>(sortByIndexName)
-		eContainer.eAllContents.filter(VarRefIteratorRef).forEach[x | allIndices += x]
+		val allIndices = new TreeSet<ArgOrVarRefIteratorRef>(sortByIndexName)
+		val iterableInstruction = eContainer.eContainer as IterableInstruction
+		iterableInstruction.eAllContents.filter(ArgOrVarRefIteratorRef).forEach[x | allIndices += x]
 		//println('  allIndices: ' + allIndices.map[indexName].join(', '))
 
 		// get all inner iterators i.e. not yet defined iterators
-		val innerIterators = eContainer.eAllContents.filter(Iterator).filter[x | x!==it].toList
+		val innerIterators = iterableInstruction.eAllContents.filter(Iterator).filter[x | x!==it].toList
 		//println('  innerIterators: ' + innerIterators.map[indexName].join(', '))
 		
 		for (index : allIndices)
@@ -92,7 +94,7 @@ class IteratorExtensions
 						neededIndices += index
 			}
 		}
-		
+
 		//println('  indexToDefined: ' + indexToDefined.map[indexName].join(', '))
 		return neededIndices
 	}

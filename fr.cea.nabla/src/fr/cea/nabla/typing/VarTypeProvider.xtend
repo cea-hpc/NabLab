@@ -9,7 +9,7 @@ import fr.cea.nabla.nabla.SimpleVar
 class VarTypeProvider
 {
 	@Inject extension ArgOrVarExtensions
-	@Inject extension ArgOrVarTypeTypeProvider
+	@Inject extension BaseTypeTypeProvider
 
 	def dispatch NablaType getTypeFor(SimpleVar it)
 	{

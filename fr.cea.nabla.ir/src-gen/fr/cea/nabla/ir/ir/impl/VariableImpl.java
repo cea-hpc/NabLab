@@ -17,34 +17,13 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getPersistenceName <em>Persistence Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#isConst <em>Const</em>}</li>
  * </ul>
  *
  * @generated
  */
-public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
-	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String name = NAME_EDEFAULT;
-
+public abstract class VariableImpl extends ArgOrVarImpl implements Variable {
 	/**
 	 * The default value of the '{@link #getPersistenceName() <em>Persistence Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -109,27 +88,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setName(String newName) {
-		String oldName = name;
-		name = newName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.VARIABLE__NAME, oldName, name));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public String getPersistenceName() {
 		return persistenceName;
 	}
@@ -175,8 +133,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.VARIABLE__NAME:
-				return getName();
 			case IrPackage.VARIABLE__PERSISTENCE_NAME:
 				return getPersistenceName();
 			case IrPackage.VARIABLE__CONST:
@@ -193,9 +149,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.VARIABLE__NAME:
-				setName((String)newValue);
-				return;
 			case IrPackage.VARIABLE__PERSISTENCE_NAME:
 				setPersistenceName((String)newValue);
 				return;
@@ -214,9 +167,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.VARIABLE__NAME:
-				setName(NAME_EDEFAULT);
-				return;
 			case IrPackage.VARIABLE__PERSISTENCE_NAME:
 				setPersistenceName(PERSISTENCE_NAME_EDEFAULT);
 				return;
@@ -235,8 +185,6 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.VARIABLE__NAME:
-				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case IrPackage.VARIABLE__PERSISTENCE_NAME:
 				return PERSISTENCE_NAME_EDEFAULT == null ? persistenceName != null : !PERSISTENCE_NAME_EDEFAULT.equals(persistenceName);
 			case IrPackage.VARIABLE__CONST:
@@ -255,9 +203,7 @@ public abstract class VariableImpl extends IrAnnotableImpl implements Variable {
 		if (eIsProxy()) return super.toString();
 
 		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (name: ");
-		result.append(name);
-		result.append(", persistenceName: ");
+		result.append(" (persistenceName: ");
 		result.append(persistenceName);
 		result.append(", const: ");
 		result.append(const_);

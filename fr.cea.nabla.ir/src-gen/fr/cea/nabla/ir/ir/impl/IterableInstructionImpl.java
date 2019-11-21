@@ -2,24 +2,15 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.IrPackage;
-import fr.cea.nabla.ir.ir.IterableInstruction;
-import fr.cea.nabla.ir.ir.Iterator;
-
-import java.util.Collection;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
+import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.IterableInstruction;
+import fr.cea.nabla.ir.ir.IterationBlock;
 
 /**
  * <!-- begin-user-doc -->
@@ -29,32 +20,21 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IterableInstructionImpl#getRange <em>Range</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IterableInstructionImpl#getSingletons <em>Singletons</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IterableInstructionImpl#getIterationBlock <em>Iteration Block</em>}</li>
  * </ul>
  *
  * @generated
  */
 public abstract class IterableInstructionImpl extends InstructionImpl implements IterableInstruction {
 	/**
-	 * The cached value of the '{@link #getRange() <em>Range</em>}' containment reference.
+	 * The cached value of the '{@link #getIterationBlock() <em>Iteration Block</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getRange()
+	 * @see #getIterationBlock()
 	 * @generated
 	 * @ordered
 	 */
-	protected Iterator range;
-
-	/**
-	 * The cached value of the '{@link #getSingletons() <em>Singletons</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getSingletons()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Iterator> singletons;
+	protected IterationBlock iterationBlock;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -80,8 +60,22 @@ public abstract class IterableInstructionImpl extends InstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Iterator getRange() {
-		return range;
+	public IterationBlock getIterationBlock() {
+		if (iterationBlock != null && iterationBlock.eIsProxy()) {
+			InternalEObject oldIterationBlock = (InternalEObject)iterationBlock;
+			iterationBlock = (IterationBlock)eResolveProxy(oldIterationBlock);
+			if (iterationBlock != oldIterationBlock) {
+				InternalEObject newIterationBlock = (InternalEObject)iterationBlock;
+				NotificationChain msgs = oldIterationBlock.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERABLE_INSTRUCTION__ITERATION_BLOCK, null, null);
+				if (newIterationBlock.eInternalContainer() == null) {
+					msgs = newIterationBlock.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERABLE_INSTRUCTION__ITERATION_BLOCK, null, msgs);
+				}
+				if (msgs != null) msgs.dispatch();
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.ITERABLE_INSTRUCTION__ITERATION_BLOCK, oldIterationBlock, iterationBlock));
+			}
+		}
+		return iterationBlock;
 	}
 
 	/**
@@ -89,11 +83,20 @@ public abstract class IterableInstructionImpl extends InstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetRange(Iterator newRange, NotificationChain msgs) {
-		Iterator oldRange = range;
-		range = newRange;
+	public IterationBlock basicGetIterationBlock() {
+		return iterationBlock;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetIterationBlock(IterationBlock newIterationBlock, NotificationChain msgs) {
+		IterationBlock oldIterationBlock = iterationBlock;
+		iterationBlock = newIterationBlock;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.ITERABLE_INSTRUCTION__RANGE, oldRange, newRange);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.ITERABLE_INSTRUCTION__ITERATION_BLOCK, oldIterationBlock, newIterationBlock);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -104,30 +107,18 @@ public abstract class IterableInstructionImpl extends InstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setRange(Iterator newRange) {
-		if (newRange != range) {
+	public void setIterationBlock(IterationBlock newIterationBlock) {
+		if (newIterationBlock != iterationBlock) {
 			NotificationChain msgs = null;
-			if (range != null)
-				msgs = ((InternalEObject)range).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERABLE_INSTRUCTION__RANGE, null, msgs);
-			if (newRange != null)
-				msgs = ((InternalEObject)newRange).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERABLE_INSTRUCTION__RANGE, null, msgs);
-			msgs = basicSetRange(newRange, msgs);
+			if (iterationBlock != null)
+				msgs = ((InternalEObject)iterationBlock).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERABLE_INSTRUCTION__ITERATION_BLOCK, null, msgs);
+			if (newIterationBlock != null)
+				msgs = ((InternalEObject)newIterationBlock).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERABLE_INSTRUCTION__ITERATION_BLOCK, null, msgs);
+			msgs = basicSetIterationBlock(newIterationBlock, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.ITERABLE_INSTRUCTION__RANGE, newRange, newRange));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EList<Iterator> getSingletons() {
-		if (singletons == null) {
-			singletons = new EObjectContainmentEList.Resolving<Iterator>(Iterator.class, this, IrPackage.ITERABLE_INSTRUCTION__SINGLETONS);
-		}
-		return singletons;
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.ITERABLE_INSTRUCTION__ITERATION_BLOCK, newIterationBlock, newIterationBlock));
 	}
 
 	/**
@@ -138,10 +129,8 @@ public abstract class IterableInstructionImpl extends InstructionImpl implements
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.ITERABLE_INSTRUCTION__RANGE:
-				return basicSetRange(null, msgs);
-			case IrPackage.ITERABLE_INSTRUCTION__SINGLETONS:
-				return ((InternalEList<?>)getSingletons()).basicRemove(otherEnd, msgs);
+			case IrPackage.ITERABLE_INSTRUCTION__ITERATION_BLOCK:
+				return basicSetIterationBlock(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -154,10 +143,9 @@ public abstract class IterableInstructionImpl extends InstructionImpl implements
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.ITERABLE_INSTRUCTION__RANGE:
-				return getRange();
-			case IrPackage.ITERABLE_INSTRUCTION__SINGLETONS:
-				return getSingletons();
+			case IrPackage.ITERABLE_INSTRUCTION__ITERATION_BLOCK:
+				if (resolve) return getIterationBlock();
+				return basicGetIterationBlock();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -167,16 +155,11 @@ public abstract class IterableInstructionImpl extends InstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.ITERABLE_INSTRUCTION__RANGE:
-				setRange((Iterator)newValue);
-				return;
-			case IrPackage.ITERABLE_INSTRUCTION__SINGLETONS:
-				getSingletons().clear();
-				getSingletons().addAll((Collection<? extends Iterator>)newValue);
+			case IrPackage.ITERABLE_INSTRUCTION__ITERATION_BLOCK:
+				setIterationBlock((IterationBlock)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -190,11 +173,8 @@ public abstract class IterableInstructionImpl extends InstructionImpl implements
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.ITERABLE_INSTRUCTION__RANGE:
-				setRange((Iterator)null);
-				return;
-			case IrPackage.ITERABLE_INSTRUCTION__SINGLETONS:
-				getSingletons().clear();
+			case IrPackage.ITERABLE_INSTRUCTION__ITERATION_BLOCK:
+				setIterationBlock((IterationBlock)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -208,10 +188,8 @@ public abstract class IterableInstructionImpl extends InstructionImpl implements
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.ITERABLE_INSTRUCTION__RANGE:
-				return range != null;
-			case IrPackage.ITERABLE_INSTRUCTION__SINGLETONS:
-				return singletons != null && !singletons.isEmpty();
+			case IrPackage.ITERABLE_INSTRUCTION__ITERATION_BLOCK:
+				return iterationBlock != null;
 		}
 		return super.eIsSet(featureID);
 	}

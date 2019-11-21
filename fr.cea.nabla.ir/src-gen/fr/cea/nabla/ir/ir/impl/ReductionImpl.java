@@ -3,16 +3,21 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.BaseType;
+import fr.cea.nabla.ir.ir.DimensionSymbol;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Reduction;
 
+import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -22,16 +27,47 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionImpl#getProvider <em>Provider</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionImpl#getDimensionVars <em>Dimension Vars</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionImpl#getCollectionType <em>Collection Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionImpl#getReturnType <em>Return Type</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionImpl#getProvider <em>Provider</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionImpl#isOperator <em>Operator</em>}</li>
  * </ul>
  *
  * @generated
  */
 public class ReductionImpl extends IrAnnotableImpl implements Reduction {
+	/**
+	 * The default value of the '{@link #getProvider() <em>Provider</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getProvider()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String PROVIDER_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getProvider() <em>Provider</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getProvider()
+	 * @generated
+	 * @ordered
+	 */
+	protected String provider = PROVIDER_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getDimensionVars() <em>Dimension Vars</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDimensionVars()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<DimensionSymbol> dimensionVars;
+
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -71,26 +107,6 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * @ordered
 	 */
 	protected BaseType returnType;
-
-	/**
-	 * The default value of the '{@link #getProvider() <em>Provider</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getProvider()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String PROVIDER_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getProvider() <em>Provider</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getProvider()
-	 * @generated
-	 * @ordered
-	 */
-	protected String provider = PROVIDER_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #isOperator() <em>Operator</em>}' attribute.
@@ -331,9 +347,23 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EList<DimensionSymbol> getDimensionVars() {
+		if (dimensionVars == null) {
+			dimensionVars = new EObjectContainmentEList.Resolving<DimensionSymbol>(DimensionSymbol.class, this, IrPackage.REDUCTION__DIMENSION_VARS);
+		}
+		return dimensionVars;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
+			case IrPackage.REDUCTION__DIMENSION_VARS:
+				return ((InternalEList<?>)getDimensionVars()).basicRemove(otherEnd, msgs);
 			case IrPackage.REDUCTION__COLLECTION_TYPE:
 				return basicSetCollectionType(null, msgs);
 			case IrPackage.REDUCTION__RETURN_TYPE:
@@ -350,6 +380,10 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
+			case IrPackage.REDUCTION__PROVIDER:
+				return getProvider();
+			case IrPackage.REDUCTION__DIMENSION_VARS:
+				return getDimensionVars();
 			case IrPackage.REDUCTION__NAME:
 				return getName();
 			case IrPackage.REDUCTION__COLLECTION_TYPE:
@@ -358,8 +392,6 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 			case IrPackage.REDUCTION__RETURN_TYPE:
 				if (resolve) return getReturnType();
 				return basicGetReturnType();
-			case IrPackage.REDUCTION__PROVIDER:
-				return getProvider();
 			case IrPackage.REDUCTION__OPERATOR:
 				return isOperator();
 		}
@@ -371,9 +403,17 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
+			case IrPackage.REDUCTION__PROVIDER:
+				setProvider((String)newValue);
+				return;
+			case IrPackage.REDUCTION__DIMENSION_VARS:
+				getDimensionVars().clear();
+				getDimensionVars().addAll((Collection<? extends DimensionSymbol>)newValue);
+				return;
 			case IrPackage.REDUCTION__NAME:
 				setName((String)newValue);
 				return;
@@ -382,9 +422,6 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 				return;
 			case IrPackage.REDUCTION__RETURN_TYPE:
 				setReturnType((BaseType)newValue);
-				return;
-			case IrPackage.REDUCTION__PROVIDER:
-				setProvider((String)newValue);
 				return;
 			case IrPackage.REDUCTION__OPERATOR:
 				setOperator((Boolean)newValue);
@@ -401,6 +438,12 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
+			case IrPackage.REDUCTION__PROVIDER:
+				setProvider(PROVIDER_EDEFAULT);
+				return;
+			case IrPackage.REDUCTION__DIMENSION_VARS:
+				getDimensionVars().clear();
+				return;
 			case IrPackage.REDUCTION__NAME:
 				setName(NAME_EDEFAULT);
 				return;
@@ -409,9 +452,6 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 				return;
 			case IrPackage.REDUCTION__RETURN_TYPE:
 				setReturnType((BaseType)null);
-				return;
-			case IrPackage.REDUCTION__PROVIDER:
-				setProvider(PROVIDER_EDEFAULT);
 				return;
 			case IrPackage.REDUCTION__OPERATOR:
 				setOperator(OPERATOR_EDEFAULT);
@@ -428,14 +468,16 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
+			case IrPackage.REDUCTION__PROVIDER:
+				return PROVIDER_EDEFAULT == null ? provider != null : !PROVIDER_EDEFAULT.equals(provider);
+			case IrPackage.REDUCTION__DIMENSION_VARS:
+				return dimensionVars != null && !dimensionVars.isEmpty();
 			case IrPackage.REDUCTION__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case IrPackage.REDUCTION__COLLECTION_TYPE:
 				return collectionType != null;
 			case IrPackage.REDUCTION__RETURN_TYPE:
 				return returnType != null;
-			case IrPackage.REDUCTION__PROVIDER:
-				return PROVIDER_EDEFAULT == null ? provider != null : !PROVIDER_EDEFAULT.equals(provider);
 			case IrPackage.REDUCTION__OPERATOR:
 				return operator != OPERATOR_EDEFAULT;
 		}
@@ -452,10 +494,10 @@ public class ReductionImpl extends IrAnnotableImpl implements Reduction {
 		if (eIsProxy()) return super.toString();
 
 		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (name: ");
-		result.append(name);
-		result.append(", provider: ");
+		result.append(" (provider: ");
 		result.append(provider);
+		result.append(", name: ");
+		result.append(name);
 		result.append(", operator: ");
 		result.append(operator);
 		result.append(')');

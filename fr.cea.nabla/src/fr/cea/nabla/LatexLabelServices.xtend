@@ -12,18 +12,17 @@ package fr.cea.nabla
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.ArgOrVarRef
-import fr.cea.nabla.nabla.ArgOrVarType
+import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ContractedIf
-import fr.cea.nabla.nabla.DimensionIndex
 import fr.cea.nabla.nabla.DimensionInt
 import fr.cea.nabla.nabla.DimensionIterationBlock
 import fr.cea.nabla.nabla.DimensionOperation
+import fr.cea.nabla.nabla.DimensionSymbol
 import fr.cea.nabla.nabla.DimensionSymbolRef
-import fr.cea.nabla.nabla.DimensionVar
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
@@ -72,7 +71,7 @@ class LatexLabelServices
 
 	/* ITERATEURS ********************************************/
 	static def dispatch String getLatex(SpaceIterationBlock it) { range.latex }
-	static def dispatch String getLatex(DimensionIterationBlock it) { index.latex }
+	static def dispatch String getLatex(DimensionIterationBlock it) { index.latex + '\\in [' + from.latex + ';' + to.latex + (if (toIncluded) ']' else'[') }
 
 	static def dispatch String getLatex(RangeSpaceIterator it) { name.pu + '\\in ' + container.latex }
 	static def dispatch String getLatex(SingletonSpaceIterator it) { name.pu + '=' + container.latex }
@@ -88,8 +87,7 @@ class LatexLabelServices
 	static def dispatch String getLatex(NextTimeIterator it) {  if (hasDiv) 'n+1/' + div else 'n+1' } 
 
 	/* FONCTIONS / REDUCTIONS ********************************/
-	static def dispatch String getLatex(DimensionIndex it) { name.pu + '\\in [' + from.latex + ';' + to.latex + (if (lte) ']' else'[') }
-	static def dispatch String getLatex(DimensionVar it) { name.pu }
+	static def dispatch String getLatex(DimensionSymbol it) { name.pu }
 
 	/* EXPRESSIONS ******************************************/
 	static def dispatch String getLatex(ContractedIf it) { condition.latex + ' ? ' + then.latex + ' : ' + ^else.latex }
@@ -149,7 +147,7 @@ class LatexLabelServices
 	}
 
 	/* TYPES *************************************************/
-	static def dispatch String getLatex(ArgOrVarType it) 
+	static def dispatch String getLatex(BaseType it) 
 	{ 
 		if (sizes.empty)
 			primitive.literal

@@ -12,18 +12,17 @@ package fr.cea.nabla
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.ArgOrVarRef
-import fr.cea.nabla.nabla.ArgOrVarType
+import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ContractedIf
-import fr.cea.nabla.nabla.DimensionIndex
 import fr.cea.nabla.nabla.DimensionInt
 import fr.cea.nabla.nabla.DimensionIterationBlock
 import fr.cea.nabla.nabla.DimensionOperation
+import fr.cea.nabla.nabla.DimensionSymbol
 import fr.cea.nabla.nabla.DimensionSymbolRef
-import fr.cea.nabla.nabla.DimensionVar
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
@@ -73,7 +72,7 @@ class LabelServices
 
 	/* ITERATEURS ********************************************/
 	static def dispatch String getLabel(SpaceIterationBlock it) { range?.label }
-	static def dispatch String getLabel(DimensionIterationBlock it) { index?.label }
+	static def dispatch String getLabel(DimensionIterationBlock it) { index?.label + '\u2208 [' + from.label + ';' + to.label + (if (toIncluded) ']' else'[') }
 
 	static def dispatch String getLabel(RangeSpaceIterator it) { name + '\u2208 ' + container?.label }
 	static def dispatch String getLabel(SingletonSpaceIterator it) { name + '=' + container?.label }
@@ -89,9 +88,8 @@ class LabelServices
 	static def dispatch String getLabel(NextTimeIterator it) {  if (hasDiv) 'n+1/' + div else 'n+1' }
 
 	/* FONCTIONS / REDUCTIONS ********************************/
-	static def dispatch String getLabel(DimensionIndex it) { name + '\u2208 [' + from.label + ';' + to.label + (if (lte) ']' else'[') }
-	static def dispatch String getLabel(DimensionVar it) { name }
-	
+	static def dispatch String getLabel(DimensionSymbol it) { name }
+
 	/* EXPRESSIONS ******************************************/
 	static def dispatch String getLabel(ContractedIf it) { condition?.label + ' ? ' + then?.label + ' : ' + ^else?.label }
 	static def dispatch String getLabel(Or it) { left?.label + ' || ' + right?.label }
@@ -127,7 +125,7 @@ class LabelServices
 	}
 
 	/* TYPES *************************************************/
-	static def dispatch String getLabel(ArgOrVarType it) 
+	static def dispatch String getLabel(BaseType it) 
 	{ 
 		if (sizes.empty) 
 			primitive.literal

@@ -26,10 +26,9 @@ import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.RealMatrixConstant
 import fr.cea.nabla.ir.ir.RealVectorConstant
-import fr.cea.nabla.ir.ir.Scalar
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.UnaryExpression
-import fr.cea.nabla.ir.ir.VarRef
+import fr.cea.nabla.ir.ir.ArgOrVarRef
 import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 
@@ -37,7 +36,7 @@ import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.kokkos.VariableExtensions.*
+import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
 
 class ExpressionContentProvider
 {
@@ -105,7 +104,7 @@ class ExpressionContentProvider
 	'''«FOR v : values BEFORE '{{' SEPARATOR ', ' AFTER '}}'»«v.content»«ENDFOR»'''
 
 	static def dispatch CharSequence getContent(FunctionCall it) 
-	'''«function.provider»Functions::«function.name»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+	'''«function.getCodeName("::")»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	
 	static def dispatch CharSequence getContent(VarRef it) 
 	'''«codeName»«iteratorsContent»«FOR d:indices BEFORE '['  SEPARATOR '][' AFTER ']'»«d.content»«ENDFOR»'''

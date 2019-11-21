@@ -1,13 +1,13 @@
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.IrModule
-import java.util.HashMap
 import fr.cea.nabla.ir.ir.IrFactory
-import org.eclipse.xtend.lib.annotations.Accessors
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.SimpleVariable
+import java.util.HashMap
 import org.eclipse.emf.ecore.util.EcoreUtil
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * Attend des propriétés de type <nom_de_variable> = <nom_de_persistence>.
@@ -19,21 +19,21 @@ class TagPersistentVariables implements IrTransformationStep
 	val HashMap<String, String> variables
 	@Accessors int iterationPeriod = -1;
 	@Accessors double timeStep = -1;
-	
+
 	new(HashMap<String, String> variables)
 	{
 		this.variables = variables
 	}
-	
-	override getDescription() 
+
+	override getDescription()
 	{
 		'Tag variables as persistent'
 	}
-	
-	override transform(IrModule m) 
+
+	override transform(IrModule m)
 	{
 		val candidates = m.variables.filter(ConnectivityVariable)
-		
+
 		// Create InSituJob
 		val inSituJob = IrFactory.eINSTANCE.createInSituJob
 		inSituJob.name = 'dumpVariables'
@@ -49,21 +49,21 @@ class TagPersistentVariables implements IrTransformationStep
 			}
 		}
 		m.jobs += inSituJob
-		
+
 		if (timeStep > 0)
 		{
 			// Create a variable to store the last write time
 			val tVariable = m.variables.filter(SimpleVariable).findFirst[x | x.name == 't']
 			if (tVariable !== null)
 			{
-				val realType = IrFactory.eINSTANCE.createScalar => [ primitive = PrimitiveType::REAL ]
+				val realType = IrFactory.eINSTANCE.createBaseType => [ primitive = PrimitiveType::REAL ]
 				val twriter = IrFactory.eINSTANCE.createSimpleVariable =>
 				[
 					name = 'lastWriteTime'
 					type = realType
-					defaultValue = IrFactory.eINSTANCE.createVarRef =>
+					defaultValue = IrFactory.eINSTANCE.createArgOrVarRef =>
 					[
-						variable = tVariable
+						target = tVariable
 						type = EcoreUtil.copy(realType)
 					]
 				]
@@ -73,8 +73,8 @@ class TagPersistentVariables implements IrTransformationStep
 
 		return true
 	}
-	
-	override getOutputTraces() 
+
+	override getOutputTraces()
 	{
 		#[]
 	}

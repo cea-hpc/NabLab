@@ -11,20 +11,20 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.VarRef
 import fr.cea.nabla.nabla.Affectation
+import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.If
-import fr.cea.nabla.nabla.IndexLoop
-import fr.cea.nabla.nabla.InitializationExpression
 import fr.cea.nabla.nabla.InstructionBlock
-import fr.cea.nabla.nabla.IteratorLoop
+import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
 import java.util.List
+import fr.cea.nabla.nabla.Return
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -34,12 +34,12 @@ import java.util.List
 @Singleton
 class IrInstructionFactory
 {
-	@Inject extension IrVariableFactory
-	@Inject extension IrIteratorFactory
+	@Inject extension IrArgOrVarFactory
 	@Inject extension IrExpressionFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrReductionInstructionFactory
-	
+	@Inject extension IrIterationBlockFactory
+
 	def Instruction toIrInstruction(fr.cea.nabla.nabla.Instruction nablaInstruction)
 	{
 		val irInstructions = nablaInstruction.toIrInstructions
@@ -57,7 +57,7 @@ class IrInstructionFactory
 
 		return irInstr.transformReductions(v.defaultValue)
 	}
-	
+
 	private def dispatch List<Instruction> toIrInstructions(VarGroupDeclaration v)
 	{
 		val irInstr = IrFactory::eINSTANCE.createVarDefinition =>
@@ -72,7 +72,7 @@ class IrInstructionFactory
 		]
 		#[irInstr]
 	}
-	
+
 	private def dispatch List<Instruction> toIrInstructions(InstructionBlock v)
 	{
 		val irInstr = IrFactory::eINSTANCE.createInstructionBlock =>
@@ -83,21 +83,15 @@ class IrInstructionFactory
 		#[irInstr]
 	}
 
-	private def dispatch List<Instruction> toIrInstructions(IteratorLoop v)
+	private def dispatch List<Instruction> toIrInstructions(Loop v)
 	{
 		val irInstr = IrFactory::eINSTANCE.createLoop =>
 		[
 			annotations += v.toIrAnnotation
-			range = v.range.toIrIterator
-			v.singletons.forEach[x | singletons += x.toIrIterator]
+			iterationBlock = v.iterationBlock.toIrIterationBlock
 			body = v.body.toIrInstruction
 		]
 		#[irInstr]
-	}
-
-	private def dispatch List<Instruction> toIrInstructions(IndexLoop v)
-	{
-		throw new RuntimeException('Not yet implemeted')
 	}
 
 	private def dispatch List<Instruction> toIrInstructions(Affectation v)
@@ -105,13 +99,13 @@ class IrInstructionFactory
 		val irInstr = IrFactory::eINSTANCE.createAffectation =>
 		[
 			annotations += v.toIrAnnotation
-			left = v.varRef.toIrExpression as VarRef
-			right = v.expression.toIrExpression
+			left = v.left.toIrExpression as ArgOrVarRef
+			right = v.right.toIrExpression
 		]
 
-		return irInstr.transformReductions(v.expression)
+		return irInstr.transformReductions(v.right)
 	}
-	
+
 	private def dispatch List<Instruction> toIrInstructions(If v)
 	{
 		val irInstr = IrFactory::eINSTANCE.createIf =>
@@ -121,11 +115,22 @@ class IrInstructionFactory
 			thenInstruction = v.then.toIrInstruction
 			if (v.^else !== null) elseInstruction = v.^else.toIrInstruction
 		]		
-		
+
 		return irInstr.transformReductions(v.condition)
 	}
-	
-	private def List<Instruction> transformReductions(Instruction i, InitializationExpression e)
+
+	private def dispatch List<Instruction> toIrInstructions(Return v)
+	{
+		val irInstr = IrFactory::eINSTANCE.createReturn =>
+		[
+			annotations += v.toIrAnnotation
+			expression = v.expression.toIrExpression
+		]		
+
+		return irInstr.transformReductions(v.expression)
+	}
+
+	private def List<Instruction> transformReductions(Instruction i, Expression e)
 	{
 		val reductionInstructions = e.toIrReductions
 		val instructions = new ArrayList<Instruction>

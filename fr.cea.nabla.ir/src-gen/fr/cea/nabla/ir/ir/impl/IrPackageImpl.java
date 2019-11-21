@@ -4,18 +4,25 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Affectation;
 import fr.cea.nabla.ir.ir.Arg;
-import fr.cea.nabla.ir.ir.Array1D;
-import fr.cea.nabla.ir.ir.Array2D;
+import fr.cea.nabla.ir.ir.ArgOrVar;
+import fr.cea.nabla.ir.ir.ArgOrVarRef;
+import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef;
 import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.BaseTypeConstant;
 import fr.cea.nabla.ir.ir.BinaryExpression;
+import fr.cea.nabla.ir.ir.BoolConstant;
 import fr.cea.nabla.ir.ir.Connectivity;
 import fr.cea.nabla.ir.ir.ConnectivityCall;
 import fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef;
 import fr.cea.nabla.ir.ir.ConnectivityType;
 import fr.cea.nabla.ir.ir.ConnectivityVariable;
-import fr.cea.nabla.ir.ir.Constant;
 import fr.cea.nabla.ir.ir.ContractedIf;
+import fr.cea.nabla.ir.ir.Dimension;
+import fr.cea.nabla.ir.ir.DimensionInt;
+import fr.cea.nabla.ir.ir.DimensionIterationBlock;
+import fr.cea.nabla.ir.ir.DimensionOperation;
+import fr.cea.nabla.ir.ir.DimensionSymbol;
+import fr.cea.nabla.ir.ir.DimensionSymbolRef;
 import fr.cea.nabla.ir.ir.EndOfInitJob;
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob;
 import fr.cea.nabla.ir.ir.Expression;
@@ -27,6 +34,7 @@ import fr.cea.nabla.ir.ir.InSituJob;
 import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.InstructionBlock;
 import fr.cea.nabla.ir.ir.InstructionJob;
+import fr.cea.nabla.ir.ir.IntConstant;
 import fr.cea.nabla.ir.ir.IntMatrixConstant;
 import fr.cea.nabla.ir.ir.IntVectorConstant;
 import fr.cea.nabla.ir.ir.IrAnnotable;
@@ -38,6 +46,7 @@ import fr.cea.nabla.ir.ir.IrType;
 import fr.cea.nabla.ir.ir.ItemArgType;
 import fr.cea.nabla.ir.ir.ItemType;
 import fr.cea.nabla.ir.ir.IterableInstruction;
+import fr.cea.nabla.ir.ir.IterationBlock;
 import fr.cea.nabla.ir.ir.Iterator;
 import fr.cea.nabla.ir.ir.IteratorRef;
 import fr.cea.nabla.ir.ir.Job;
@@ -46,17 +55,17 @@ import fr.cea.nabla.ir.ir.MaxConstant;
 import fr.cea.nabla.ir.ir.MinConstant;
 import fr.cea.nabla.ir.ir.Parenthesis;
 import fr.cea.nabla.ir.ir.PrimitiveType;
+import fr.cea.nabla.ir.ir.RealConstant;
 import fr.cea.nabla.ir.ir.RealMatrixConstant;
 import fr.cea.nabla.ir.ir.RealVectorConstant;
 import fr.cea.nabla.ir.ir.Reduction;
 import fr.cea.nabla.ir.ir.ReductionInstruction;
-import fr.cea.nabla.ir.ir.Scalar;
+import fr.cea.nabla.ir.ir.Return;
 import fr.cea.nabla.ir.ir.SimpleVariable;
+import fr.cea.nabla.ir.ir.SpaceIterationBlock;
 import fr.cea.nabla.ir.ir.TimeIterationCopyJob;
 import fr.cea.nabla.ir.ir.UnaryExpression;
 import fr.cea.nabla.ir.ir.VarDefinition;
-import fr.cea.nabla.ir.ir.VarRef;
-import fr.cea.nabla.ir.ir.VarRefIteratorRef;
 import fr.cea.nabla.ir.ir.Variable;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -101,6 +110,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass importEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass argOrVarEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -240,6 +256,62 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	private EClass iterationBlockEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass spaceIterationBlockEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass dimensionIterationBlockEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass dimensionSymbolEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass dimensionEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass dimensionIntEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass dimensionOperationEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass dimensionSymbolRefEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	private EClass reductionInstructionEClass = null;
 
 	/**
@@ -255,6 +327,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass ifEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass returnEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -296,7 +375,21 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass constantEClass = null;
+	private EClass intConstantEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass realConstantEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass boolConstantEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -359,7 +452,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass varRefEClass = null;
+	private EClass argOrVarRefEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -394,7 +487,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass varRefIteratorRefEClass = null;
+	private EClass argOrVarRefIteratorRefEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -409,27 +502,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass baseTypeEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass scalarEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass array1DEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass array2DEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -671,6 +743,24 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getArgOrVar() {
+		return argOrVarEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getArgOrVar_Name() {
+		return (EAttribute)argOrVarEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getVariable() {
 		return variableEClass;
 	}
@@ -680,7 +770,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getVariable_Name() {
+	public EAttribute getVariable_PersistenceName() {
 		return (EAttribute)variableEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -689,17 +779,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getVariable_PersistenceName() {
-		return (EAttribute)variableEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EAttribute getVariable_Const() {
-		return (EAttribute)variableEClass.getEStructuralFeatures().get(2);
+		return (EAttribute)variableEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -771,7 +852,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	public EAttribute getFunction_Name() {
-		return (EAttribute)functionEClass.getEStructuralFeatures().get(0);
+		return (EAttribute)functionEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -780,7 +861,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	public EReference getFunction_InArgs() {
-		return (EReference)functionEClass.getEStructuralFeatures().get(1);
+		return (EReference)functionEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -789,7 +870,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	public EReference getFunction_ReturnType() {
-		return (EReference)functionEClass.getEStructuralFeatures().get(2);
+		return (EReference)functionEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getFunction_Body() {
+		return (EReference)functionEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -798,7 +888,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	public EAttribute getFunction_Provider() {
-		return (EAttribute)functionEClass.getEStructuralFeatures().get(3);
+		return (EAttribute)functionEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getFunction_DimensionVars() {
+		return (EReference)functionEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -816,7 +915,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	public EAttribute getReduction_Name() {
-		return (EAttribute)reductionEClass.getEStructuralFeatures().get(0);
+		return (EAttribute)reductionEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -825,7 +924,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	public EReference getReduction_CollectionType() {
-		return (EReference)reductionEClass.getEStructuralFeatures().get(1);
+		return (EReference)reductionEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -834,7 +933,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	public EReference getReduction_ReturnType() {
-		return (EReference)reductionEClass.getEStructuralFeatures().get(2);
+		return (EReference)reductionEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -843,7 +942,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	public EAttribute getReduction_Provider() {
-		return (EAttribute)reductionEClass.getEStructuralFeatures().get(3);
+		return (EAttribute)reductionEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -852,7 +951,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	public EAttribute getReduction_Operator() {
-		return (EAttribute)reductionEClass.getEStructuralFeatures().get(4);
+		return (EAttribute)reductionEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getReduction_DimensionVars() {
+		return (EReference)reductionEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -869,17 +977,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getArg_Name() {
-		return (EAttribute)argEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getArg_Type() {
-		return (EReference)argEClass.getEStructuralFeatures().get(1);
+		return (EReference)argEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1184,7 +1283,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getIterableInstruction_Range() {
+	public EReference getIterableInstruction_IterationBlock() {
 		return (EReference)iterableInstructionEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -1193,8 +1292,179 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getIterableInstruction_Singletons() {
-		return (EReference)iterableInstructionEClass.getEStructuralFeatures().get(1);
+	public EClass getIterationBlock() {
+		return iterationBlockEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getSpaceIterationBlock() {
+		return spaceIterationBlockEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getSpaceIterationBlock_Range() {
+		return (EReference)spaceIterationBlockEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getSpaceIterationBlock_Singletons() {
+		return (EReference)spaceIterationBlockEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getDimensionIterationBlock() {
+		return dimensionIterationBlockEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getDimensionIterationBlock_Index() {
+		return (EReference)dimensionIterationBlockEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getDimensionIterationBlock_From() {
+		return (EReference)dimensionIterationBlockEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getDimensionIterationBlock_To() {
+		return (EReference)dimensionIterationBlockEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getDimensionIterationBlock_ToIncluded() {
+		return (EAttribute)dimensionIterationBlockEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getDimensionSymbol() {
+		return dimensionSymbolEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getDimensionSymbol_Name() {
+		return (EAttribute)dimensionSymbolEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getDimension() {
+		return dimensionEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getDimensionInt() {
+		return dimensionIntEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getDimensionInt_Value() {
+		return (EAttribute)dimensionIntEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getDimensionOperation() {
+		return dimensionOperationEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getDimensionOperation_Left() {
+		return (EReference)dimensionOperationEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getDimensionOperation_Right() {
+		return (EReference)dimensionOperationEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getDimensionOperation_Operator() {
+		return (EAttribute)dimensionOperationEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getDimensionSymbolRef() {
+		return dimensionSymbolRefEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getDimensionSymbolRef_Target() {
+		return (EReference)dimensionSymbolRefEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1294,6 +1564,24 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 */
 	public EReference getIf_ElseInstruction() {
 		return (EReference)ifEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getReturn() {
+		return returnEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getReturn_Expression() {
+		return (EReference)returnEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1436,8 +1724,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getConstant() {
-		return constantEClass;
+	public EClass getIntConstant() {
+		return intConstantEClass;
 	}
 
 	/**
@@ -1445,8 +1733,44 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getConstant_Value() {
-		return (EAttribute)constantEClass.getEStructuralFeatures().get(0);
+	public EAttribute getIntConstant_Value() {
+		return (EAttribute)intConstantEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getRealConstant() {
+		return realConstantEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getRealConstant_Value() {
+		return (EAttribute)realConstantEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getBoolConstant() {
+		return boolConstantEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getBoolConstant_Value() {
+		return (EAttribute)boolConstantEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1589,8 +1913,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getVarRef() {
-		return varRefEClass;
+	public EClass getArgOrVarRef() {
+		return argOrVarRefEClass;
 	}
 
 	/**
@@ -1598,8 +1922,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getVarRef_Variable() {
-		return (EReference)varRefEClass.getEStructuralFeatures().get(0);
+	public EReference getArgOrVarRef_Target() {
+		return (EReference)argOrVarRefEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1607,8 +1931,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getVarRef_Iterators() {
-		return (EReference)varRefEClass.getEStructuralFeatures().get(1);
+	public EReference getArgOrVarRef_Iterators() {
+		return (EReference)argOrVarRefEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1616,8 +1940,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getVarRef_Indices() {
-		return (EReference)varRefEClass.getEStructuralFeatures().get(2);
+	public EReference getArgOrVarRef_Indices() {
+		return (EReference)argOrVarRefEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -1751,8 +2075,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getVarRefIteratorRef() {
-		return varRefIteratorRefEClass;
+	public EClass getArgOrVarRefIteratorRef() {
+		return argOrVarRefIteratorRefEClass;
 	}
 
 	/**
@@ -1760,8 +2084,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getVarRefIteratorRef_ReferencedBy() {
-		return (EReference)varRefIteratorRefEClass.getEStructuralFeatures().get(0);
+	public EReference getArgOrVarRefIteratorRef_ReferencedBy() {
+		return (EReference)argOrVarRefIteratorRefEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1805,53 +2129,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getScalar() {
-		return scalarEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getArray1D() {
-		return array1DEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getArray1D_Size() {
-		return (EAttribute)array1DEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getArray2D() {
-		return array2DEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getArray2D_NbRows() {
-		return (EAttribute)array2DEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getArray2D_NbCols() {
-		return (EAttribute)array2DEClass.getEStructuralFeatures().get(1);
+	public EReference getBaseType_Sizes() {
+		return (EReference)baseTypeEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1948,8 +2227,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		importEClass = createEClass(IMPORT);
 		createEAttribute(importEClass, IMPORT__IMPORTED_NAMESPACE);
 
+		argOrVarEClass = createEClass(ARG_OR_VAR);
+		createEAttribute(argOrVarEClass, ARG_OR_VAR__NAME);
+
+		argEClass = createEClass(ARG);
+		createEReference(argEClass, ARG__TYPE);
+
 		variableEClass = createEClass(VARIABLE);
-		createEAttribute(variableEClass, VARIABLE__NAME);
 		createEAttribute(variableEClass, VARIABLE__PERSISTENCE_NAME);
 		createEAttribute(variableEClass, VARIABLE__CONST);
 
@@ -1962,21 +2246,20 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(connectivityVariableEClass, CONNECTIVITY_VARIABLE__DEFAULT_VALUE);
 
 		functionEClass = createEClass(FUNCTION);
+		createEAttribute(functionEClass, FUNCTION__PROVIDER);
+		createEReference(functionEClass, FUNCTION__DIMENSION_VARS);
 		createEAttribute(functionEClass, FUNCTION__NAME);
 		createEReference(functionEClass, FUNCTION__IN_ARGS);
 		createEReference(functionEClass, FUNCTION__RETURN_TYPE);
-		createEAttribute(functionEClass, FUNCTION__PROVIDER);
+		createEReference(functionEClass, FUNCTION__BODY);
 
 		reductionEClass = createEClass(REDUCTION);
+		createEAttribute(reductionEClass, REDUCTION__PROVIDER);
+		createEReference(reductionEClass, REDUCTION__DIMENSION_VARS);
 		createEAttribute(reductionEClass, REDUCTION__NAME);
 		createEReference(reductionEClass, REDUCTION__COLLECTION_TYPE);
 		createEReference(reductionEClass, REDUCTION__RETURN_TYPE);
-		createEAttribute(reductionEClass, REDUCTION__PROVIDER);
 		createEAttribute(reductionEClass, REDUCTION__OPERATOR);
-
-		argEClass = createEClass(ARG);
-		createEAttribute(argEClass, ARG__NAME);
-		createEReference(argEClass, ARG__TYPE);
 
 		connectivityEClass = createEClass(CONNECTIVITY);
 		createEAttribute(connectivityEClass, CONNECTIVITY__NAME);
@@ -2023,8 +2306,35 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(affectationEClass, AFFECTATION__RIGHT);
 
 		iterableInstructionEClass = createEClass(ITERABLE_INSTRUCTION);
-		createEReference(iterableInstructionEClass, ITERABLE_INSTRUCTION__RANGE);
-		createEReference(iterableInstructionEClass, ITERABLE_INSTRUCTION__SINGLETONS);
+		createEReference(iterableInstructionEClass, ITERABLE_INSTRUCTION__ITERATION_BLOCK);
+
+		iterationBlockEClass = createEClass(ITERATION_BLOCK);
+
+		spaceIterationBlockEClass = createEClass(SPACE_ITERATION_BLOCK);
+		createEReference(spaceIterationBlockEClass, SPACE_ITERATION_BLOCK__RANGE);
+		createEReference(spaceIterationBlockEClass, SPACE_ITERATION_BLOCK__SINGLETONS);
+
+		dimensionIterationBlockEClass = createEClass(DIMENSION_ITERATION_BLOCK);
+		createEReference(dimensionIterationBlockEClass, DIMENSION_ITERATION_BLOCK__INDEX);
+		createEReference(dimensionIterationBlockEClass, DIMENSION_ITERATION_BLOCK__FROM);
+		createEReference(dimensionIterationBlockEClass, DIMENSION_ITERATION_BLOCK__TO);
+		createEAttribute(dimensionIterationBlockEClass, DIMENSION_ITERATION_BLOCK__TO_INCLUDED);
+
+		dimensionSymbolEClass = createEClass(DIMENSION_SYMBOL);
+		createEAttribute(dimensionSymbolEClass, DIMENSION_SYMBOL__NAME);
+
+		dimensionEClass = createEClass(DIMENSION);
+
+		dimensionIntEClass = createEClass(DIMENSION_INT);
+		createEAttribute(dimensionIntEClass, DIMENSION_INT__VALUE);
+
+		dimensionOperationEClass = createEClass(DIMENSION_OPERATION);
+		createEReference(dimensionOperationEClass, DIMENSION_OPERATION__LEFT);
+		createEReference(dimensionOperationEClass, DIMENSION_OPERATION__RIGHT);
+		createEAttribute(dimensionOperationEClass, DIMENSION_OPERATION__OPERATOR);
+
+		dimensionSymbolRefEClass = createEClass(DIMENSION_SYMBOL_REF);
+		createEReference(dimensionSymbolRefEClass, DIMENSION_SYMBOL_REF__TARGET);
 
 		reductionInstructionEClass = createEClass(REDUCTION_INSTRUCTION);
 		createEReference(reductionInstructionEClass, REDUCTION_INSTRUCTION__INNER_REDUCTIONS);
@@ -2039,6 +2349,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(ifEClass, IF__CONDITION);
 		createEReference(ifEClass, IF__THEN_INSTRUCTION);
 		createEReference(ifEClass, IF__ELSE_INSTRUCTION);
+
+		returnEClass = createEClass(RETURN);
+		createEReference(returnEClass, RETURN__EXPRESSION);
 
 		expressionEClass = createEClass(EXPRESSION);
 		createEReference(expressionEClass, EXPRESSION__TYPE);
@@ -2060,8 +2373,14 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		parenthesisEClass = createEClass(PARENTHESIS);
 		createEReference(parenthesisEClass, PARENTHESIS__EXPRESSION);
 
-		constantEClass = createEClass(CONSTANT);
-		createEAttribute(constantEClass, CONSTANT__VALUE);
+		intConstantEClass = createEClass(INT_CONSTANT);
+		createEAttribute(intConstantEClass, INT_CONSTANT__VALUE);
+
+		realConstantEClass = createEClass(REAL_CONSTANT);
+		createEAttribute(realConstantEClass, REAL_CONSTANT__VALUE);
+
+		boolConstantEClass = createEClass(BOOL_CONSTANT);
+		createEAttribute(boolConstantEClass, BOOL_CONSTANT__VALUE);
 
 		minConstantEClass = createEClass(MIN_CONSTANT);
 
@@ -2086,10 +2405,10 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(functionCallEClass, FUNCTION_CALL__FUNCTION);
 		createEReference(functionCallEClass, FUNCTION_CALL__ARGS);
 
-		varRefEClass = createEClass(VAR_REF);
-		createEReference(varRefEClass, VAR_REF__VARIABLE);
-		createEReference(varRefEClass, VAR_REF__ITERATORS);
-		createEReference(varRefEClass, VAR_REF__INDICES);
+		argOrVarRefEClass = createEClass(ARG_OR_VAR_REF);
+		createEReference(argOrVarRefEClass, ARG_OR_VAR_REF__TARGET);
+		createEReference(argOrVarRefEClass, ARG_OR_VAR_REF__ITERATORS);
+		createEReference(argOrVarRefEClass, ARG_OR_VAR_REF__INDICES);
 
 		iteratorEClass = createEClass(ITERATOR);
 		createEAttribute(iteratorEClass, ITERATOR__NAME);
@@ -2109,25 +2428,17 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		connectivityCallIteratorRefEClass = createEClass(CONNECTIVITY_CALL_ITERATOR_REF);
 		createEReference(connectivityCallIteratorRefEClass, CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY);
 
-		varRefIteratorRefEClass = createEClass(VAR_REF_ITERATOR_REF);
-		createEReference(varRefIteratorRefEClass, VAR_REF_ITERATOR_REF__REFERENCED_BY);
+		argOrVarRefIteratorRefEClass = createEClass(ARG_OR_VAR_REF_ITERATOR_REF);
+		createEReference(argOrVarRefIteratorRefEClass, ARG_OR_VAR_REF_ITERATOR_REF__REFERENCED_BY);
 
 		itemTypeEClass = createEClass(ITEM_TYPE);
 		createEAttribute(itemTypeEClass, ITEM_TYPE__NAME);
 
+		irTypeEClass = createEClass(IR_TYPE);
+
 		baseTypeEClass = createEClass(BASE_TYPE);
 		createEAttribute(baseTypeEClass, BASE_TYPE__PRIMITIVE);
-
-		scalarEClass = createEClass(SCALAR);
-
-		array1DEClass = createEClass(ARRAY1_D);
-		createEAttribute(array1DEClass, ARRAY1_D__SIZE);
-
-		array2DEClass = createEClass(ARRAY2_D);
-		createEAttribute(array2DEClass, ARRAY2_D__NB_ROWS);
-		createEAttribute(array2DEClass, ARRAY2_D__NB_COLS);
-
-		irTypeEClass = createEClass(IR_TYPE);
+		createEReference(baseTypeEClass, BASE_TYPE__SIZES);
 
 		connectivityTypeEClass = createEClass(CONNECTIVITY_TYPE);
 		createEReference(connectivityTypeEClass, CONNECTIVITY_TYPE__CONNECTIVITIES);
@@ -2167,12 +2478,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		// Add supertypes to classes
 		irModuleEClass.getESuperTypes().add(this.getIrAnnotable());
 		importEClass.getESuperTypes().add(this.getIrAnnotable());
-		variableEClass.getESuperTypes().add(this.getIrAnnotable());
+		argOrVarEClass.getESuperTypes().add(this.getIrAnnotable());
+		argEClass.getESuperTypes().add(this.getArgOrVar());
+		variableEClass.getESuperTypes().add(this.getArgOrVar());
 		simpleVariableEClass.getESuperTypes().add(this.getVariable());
 		connectivityVariableEClass.getESuperTypes().add(this.getVariable());
 		functionEClass.getESuperTypes().add(this.getIrAnnotable());
 		reductionEClass.getESuperTypes().add(this.getIrAnnotable());
-		argEClass.getESuperTypes().add(this.getIrAnnotable());
 		connectivityEClass.getESuperTypes().add(this.getIrAnnotable());
 		itemArgTypeEClass.getESuperTypes().add(this.getIrAnnotable());
 		jobEClass.getESuperTypes().add(this.getIrAnnotable());
@@ -2186,15 +2498,26 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		instructionBlockEClass.getESuperTypes().add(this.getInstruction());
 		affectationEClass.getESuperTypes().add(this.getInstruction());
 		iterableInstructionEClass.getESuperTypes().add(this.getInstruction());
+		iterationBlockEClass.getESuperTypes().add(this.getIrAnnotable());
+		spaceIterationBlockEClass.getESuperTypes().add(this.getIterationBlock());
+		dimensionIterationBlockEClass.getESuperTypes().add(this.getIterationBlock());
+		dimensionSymbolEClass.getESuperTypes().add(this.getIrAnnotable());
+		dimensionEClass.getESuperTypes().add(this.getIrAnnotable());
+		dimensionIntEClass.getESuperTypes().add(this.getDimension());
+		dimensionOperationEClass.getESuperTypes().add(this.getDimension());
+		dimensionSymbolRefEClass.getESuperTypes().add(this.getDimension());
 		reductionInstructionEClass.getESuperTypes().add(this.getIterableInstruction());
 		loopEClass.getESuperTypes().add(this.getIterableInstruction());
 		ifEClass.getESuperTypes().add(this.getInstruction());
+		returnEClass.getESuperTypes().add(this.getInstruction());
 		expressionEClass.getESuperTypes().add(this.getIrAnnotable());
 		contractedIfEClass.getESuperTypes().add(this.getExpression());
 		binaryExpressionEClass.getESuperTypes().add(this.getExpression());
 		unaryExpressionEClass.getESuperTypes().add(this.getExpression());
 		parenthesisEClass.getESuperTypes().add(this.getExpression());
-		constantEClass.getESuperTypes().add(this.getExpression());
+		intConstantEClass.getESuperTypes().add(this.getExpression());
+		realConstantEClass.getESuperTypes().add(this.getExpression());
+		boolConstantEClass.getESuperTypes().add(this.getExpression());
 		minConstantEClass.getESuperTypes().add(this.getExpression());
 		maxConstantEClass.getESuperTypes().add(this.getExpression());
 		baseTypeConstantEClass.getESuperTypes().add(this.getExpression());
@@ -2203,17 +2526,14 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		realVectorConstantEClass.getESuperTypes().add(this.getExpression());
 		realMatrixConstantEClass.getESuperTypes().add(this.getExpression());
 		functionCallEClass.getESuperTypes().add(this.getExpression());
-		varRefEClass.getESuperTypes().add(this.getExpression());
+		argOrVarRefEClass.getESuperTypes().add(this.getExpression());
 		iteratorEClass.getESuperTypes().add(this.getIrAnnotable());
 		connectivityCallEClass.getESuperTypes().add(this.getIrAnnotable());
 		iteratorRefEClass.getESuperTypes().add(this.getIrAnnotable());
 		connectivityCallIteratorRefEClass.getESuperTypes().add(this.getIteratorRef());
-		varRefIteratorRefEClass.getESuperTypes().add(this.getIteratorRef());
-		baseTypeEClass.getESuperTypes().add(this.getIrType());
-		scalarEClass.getESuperTypes().add(this.getBaseType());
-		array1DEClass.getESuperTypes().add(this.getBaseType());
-		array2DEClass.getESuperTypes().add(this.getBaseType());
+		argOrVarRefIteratorRefEClass.getESuperTypes().add(this.getIteratorRef());
 		irTypeEClass.getESuperTypes().add(this.getIrAnnotable());
+		baseTypeEClass.getESuperTypes().add(this.getIrType());
 		connectivityTypeEClass.getESuperTypes().add(this.getIrType());
 
 		// Initialize classes, features, and operations; add parameters
@@ -2238,8 +2558,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(importEClass, Import.class, "Import", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getImport_ImportedNamespace(), ecorePackage.getEString(), "importedNamespace", null, 1, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		initEClass(argOrVarEClass, ArgOrVar.class, "ArgOrVar", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getArgOrVar_Name(), ecorePackage.getEString(), "name", null, 1, 1, ArgOrVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(argEClass, Arg.class, "Arg", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getArg_Type(), this.getBaseType(), null, "type", null, 1, 1, Arg.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
 		initEClass(variableEClass, Variable.class, "Variable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getVariable_Name(), ecorePackage.getEString(), "name", null, 1, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getVariable_PersistenceName(), ecorePackage.getEString(), "persistenceName", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getVariable_Const(), ecorePackage.getEBoolean(), "const", "false", 1, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -2249,24 +2574,23 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(connectivityVariableEClass, ConnectivityVariable.class, "ConnectivityVariable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConnectivityVariable_Type(), this.getConnectivityType(), null, "type", null, 1, 1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getConnectivityVariable_DefaultValue(), this.getVarRef(), null, "defaultValue", null, 0, 1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getConnectivityVariable_DefaultValue(), this.getArgOrVarRef(), null, "defaultValue", null, 0, 1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionEClass, Function.class, "Function", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getFunction_Provider(), ecorePackage.getEString(), "provider", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getFunction_DimensionVars(), this.getDimensionSymbol(), null, "dimensionVars", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getFunction_Name(), ecorePackage.getEString(), "name", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunction_InArgs(), this.getArg(), null, "inArgs", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunction_ReturnType(), this.getBaseType(), null, "returnType", null, 0, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getFunction_Provider(), ecorePackage.getEString(), "provider", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getFunction_Body(), this.getInstruction(), null, "body", null, 0, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(reductionEClass, Reduction.class, "Reduction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getReduction_Provider(), ecorePackage.getEString(), "provider", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getReduction_DimensionVars(), this.getDimensionSymbol(), null, "dimensionVars", null, 0, -1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getReduction_Name(), ecorePackage.getEString(), "name", null, 0, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getReduction_CollectionType(), this.getBaseType(), null, "collectionType", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getReduction_ReturnType(), this.getBaseType(), null, "returnType", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getReduction_Provider(), ecorePackage.getEString(), "provider", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getReduction_Operator(), ecorePackage.getEBoolean(), "operator", "false", 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(argEClass, Arg.class, "Arg", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getArg_Name(), ecorePackage.getEString(), "name", null, 1, 1, Arg.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getArg_Type(), this.getBaseType(), null, "type", null, 1, 1, Arg.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(connectivityEClass, Connectivity.class, "Connectivity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getConnectivity_Name(), ecorePackage.getEString(), "name", null, 0, 1, Connectivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2309,12 +2633,39 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getInstructionBlock_Instructions(), this.getInstruction(), null, "instructions", null, 1, -1, InstructionBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(affectationEClass, Affectation.class, "Affectation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getAffectation_Left(), this.getVarRef(), null, "left", null, 1, 1, Affectation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAffectation_Left(), this.getArgOrVarRef(), null, "left", null, 1, 1, Affectation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getAffectation_Right(), this.getExpression(), null, "right", null, 1, 1, Affectation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(iterableInstructionEClass, IterableInstruction.class, "IterableInstruction", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getIterableInstruction_Range(), this.getIterator(), null, "range", null, 1, 1, IterableInstruction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIterableInstruction_Singletons(), this.getIterator(), null, "singletons", null, 0, -1, IterableInstruction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIterableInstruction_IterationBlock(), this.getIterationBlock(), null, "iterationBlock", null, 1, 1, IterableInstruction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(iterationBlockEClass, IterationBlock.class, "IterationBlock", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(spaceIterationBlockEClass, SpaceIterationBlock.class, "SpaceIterationBlock", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getSpaceIterationBlock_Range(), this.getIterator(), null, "range", null, 1, 1, SpaceIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getSpaceIterationBlock_Singletons(), this.getIterator(), null, "singletons", null, 0, -1, SpaceIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(dimensionIterationBlockEClass, DimensionIterationBlock.class, "DimensionIterationBlock", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getDimensionIterationBlock_Index(), this.getDimensionSymbol(), null, "index", null, 1, 1, DimensionIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDimensionIterationBlock_From(), this.getDimension(), null, "from", null, 1, 1, DimensionIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDimensionIterationBlock_To(), this.getDimension(), null, "to", null, 1, 1, DimensionIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDimensionIterationBlock_ToIncluded(), ecorePackage.getEBoolean(), "toIncluded", null, 1, 1, DimensionIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(dimensionSymbolEClass, DimensionSymbol.class, "DimensionSymbol", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getDimensionSymbol_Name(), ecorePackage.getEString(), "name", null, 1, 1, DimensionSymbol.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(dimensionEClass, Dimension.class, "Dimension", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(dimensionIntEClass, DimensionInt.class, "DimensionInt", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getDimensionInt_Value(), ecorePackage.getEInt(), "value", null, 1, 1, DimensionInt.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(dimensionOperationEClass, DimensionOperation.class, "DimensionOperation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getDimensionOperation_Left(), this.getDimension(), null, "left", null, 1, 1, DimensionOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDimensionOperation_Right(), this.getDimension(), null, "right", null, 1, 1, DimensionOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDimensionOperation_Operator(), ecorePackage.getEString(), "operator", null, 1, 1, DimensionOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(dimensionSymbolRefEClass, DimensionSymbolRef.class, "DimensionSymbolRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getDimensionSymbolRef_Target(), this.getDimensionSymbol(), null, "target", null, 1, 1, DimensionSymbolRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(reductionInstructionEClass, ReductionInstruction.class, "ReductionInstruction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getReductionInstruction_InnerReductions(), this.getInstruction(), null, "innerReductions", null, 0, -1, ReductionInstruction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2329,6 +2680,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getIf_Condition(), this.getExpression(), null, "condition", null, 1, 1, If.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIf_ThenInstruction(), this.getInstruction(), null, "thenInstruction", null, 1, 1, If.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIf_ElseInstruction(), this.getInstruction(), null, "elseInstruction", null, 0, 1, If.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(returnEClass, Return.class, "Return", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getReturn_Expression(), this.getExpression(), null, "expression", null, 1, 1, Return.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(expressionEClass, Expression.class, "Expression", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getExpression_Type(), this.getIrType(), null, "type", null, 1, 1, Expression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2350,8 +2704,14 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(parenthesisEClass, Parenthesis.class, "Parenthesis", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getParenthesis_Expression(), this.getExpression(), null, "expression", null, 1, 1, Parenthesis.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(constantEClass, Constant.class, "Constant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getConstant_Value(), ecorePackage.getEString(), "value", null, 1, 1, Constant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(intConstantEClass, IntConstant.class, "IntConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getIntConstant_Value(), ecorePackage.getEInt(), "value", null, 1, 1, IntConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(realConstantEClass, RealConstant.class, "RealConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getRealConstant_Value(), ecorePackage.getEDouble(), "value", null, 1, 1, RealConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(boolConstantEClass, BoolConstant.class, "BoolConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getBoolConstant_Value(), ecorePackage.getEBoolean(), "value", null, 1, 1, BoolConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(minConstantEClass, MinConstant.class, "MinConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -2376,10 +2736,10 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getFunctionCall_Function(), this.getFunction(), null, "function", null, 1, 1, FunctionCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunctionCall_Args(), this.getExpression(), null, "args", null, 0, -1, FunctionCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(varRefEClass, VarRef.class, "VarRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getVarRef_Variable(), this.getVariable(), null, "variable", null, 1, 1, VarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getVarRef_Iterators(), this.getVarRefIteratorRef(), this.getVarRefIteratorRef_ReferencedBy(), "iterators", null, 0, -1, VarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getVarRef_Indices(), this.getExpression(), null, "indices", null, 0, -1, VarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(argOrVarRefEClass, ArgOrVarRef.class, "ArgOrVarRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getArgOrVarRef_Target(), this.getArgOrVar(), null, "target", null, 1, 1, ArgOrVarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getArgOrVarRef_Iterators(), this.getArgOrVarRefIteratorRef(), this.getArgOrVarRefIteratorRef_ReferencedBy(), "iterators", null, 0, -1, ArgOrVarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getArgOrVarRef_Indices(), this.getDimension(), null, "indices", null, 0, -1, ArgOrVarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(iteratorEClass, Iterator.class, "Iterator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getIterator_Name(), ecorePackage.getEString(), "name", null, 1, 1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2399,25 +2759,17 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(connectivityCallIteratorRefEClass, ConnectivityCallIteratorRef.class, "ConnectivityCallIteratorRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConnectivityCallIteratorRef_ReferencedBy(), this.getConnectivityCall(), this.getConnectivityCall_Args(), "referencedBy", null, 1, 1, ConnectivityCallIteratorRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(varRefIteratorRefEClass, VarRefIteratorRef.class, "VarRefIteratorRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getVarRefIteratorRef_ReferencedBy(), this.getVarRef(), this.getVarRef_Iterators(), "referencedBy", null, 1, 1, VarRefIteratorRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(argOrVarRefIteratorRefEClass, ArgOrVarRefIteratorRef.class, "ArgOrVarRefIteratorRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getArgOrVarRefIteratorRef_ReferencedBy(), this.getArgOrVarRef(), this.getArgOrVarRef_Iterators(), "referencedBy", null, 1, 1, ArgOrVarRefIteratorRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(itemTypeEClass, ItemType.class, "ItemType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getItemType_Name(), ecorePackage.getEString(), "name", null, 1, 1, ItemType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(baseTypeEClass, BaseType.class, "BaseType", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getBaseType_Primitive(), this.getPrimitiveType(), "primitive", null, 1, 1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(scalarEClass, Scalar.class, "Scalar", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-		initEClass(array1DEClass, Array1D.class, "Array1D", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getArray1D_Size(), ecorePackage.getEInt(), "size", null, 1, 1, Array1D.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(array2DEClass, Array2D.class, "Array2D", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getArray2D_NbRows(), ecorePackage.getEInt(), "nbRows", null, 1, 1, Array2D.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getArray2D_NbCols(), ecorePackage.getEInt(), "nbCols", null, 1, 1, Array2D.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
 		initEClass(irTypeEClass, IrType.class, "IrType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(baseTypeEClass, BaseType.class, "BaseType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getBaseType_Primitive(), this.getPrimitiveType(), "primitive", null, 1, 1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBaseType_Sizes(), this.getDimension(), null, "sizes", null, 0, -1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(connectivityTypeEClass, ConnectivityType.class, "ConnectivityType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConnectivityType_Connectivities(), this.getConnectivity(), null, "connectivities", null, 0, -1, ConnectivityType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

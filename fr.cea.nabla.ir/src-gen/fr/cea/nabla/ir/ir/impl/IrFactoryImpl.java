@@ -60,11 +60,11 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.IR_ANNOTATION: return createIrAnnotation();
 			case IrPackage.IR_MODULE: return createIrModule();
 			case IrPackage.IMPORT: return createImport();
+			case IrPackage.ARG: return createArg();
 			case IrPackage.SIMPLE_VARIABLE: return createSimpleVariable();
 			case IrPackage.CONNECTIVITY_VARIABLE: return createConnectivityVariable();
 			case IrPackage.FUNCTION: return createFunction();
 			case IrPackage.REDUCTION: return createReduction();
-			case IrPackage.ARG: return createArg();
 			case IrPackage.CONNECTIVITY: return createConnectivity();
 			case IrPackage.ITEM_ARG_TYPE: return createItemArgType();
 			case IrPackage.INSTRUCTION_JOB: return createInstructionJob();
@@ -74,14 +74,23 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.VAR_DEFINITION: return createVarDefinition();
 			case IrPackage.INSTRUCTION_BLOCK: return createInstructionBlock();
 			case IrPackage.AFFECTATION: return createAffectation();
+			case IrPackage.SPACE_ITERATION_BLOCK: return createSpaceIterationBlock();
+			case IrPackage.DIMENSION_ITERATION_BLOCK: return createDimensionIterationBlock();
+			case IrPackage.DIMENSION_SYMBOL: return createDimensionSymbol();
+			case IrPackage.DIMENSION_INT: return createDimensionInt();
+			case IrPackage.DIMENSION_OPERATION: return createDimensionOperation();
+			case IrPackage.DIMENSION_SYMBOL_REF: return createDimensionSymbolRef();
 			case IrPackage.REDUCTION_INSTRUCTION: return createReductionInstruction();
 			case IrPackage.LOOP: return createLoop();
 			case IrPackage.IF: return createIf();
+			case IrPackage.RETURN: return createReturn();
 			case IrPackage.CONTRACTED_IF: return createContractedIf();
 			case IrPackage.BINARY_EXPRESSION: return createBinaryExpression();
 			case IrPackage.UNARY_EXPRESSION: return createUnaryExpression();
 			case IrPackage.PARENTHESIS: return createParenthesis();
-			case IrPackage.CONSTANT: return createConstant();
+			case IrPackage.INT_CONSTANT: return createIntConstant();
+			case IrPackage.REAL_CONSTANT: return createRealConstant();
+			case IrPackage.BOOL_CONSTANT: return createBoolConstant();
 			case IrPackage.MIN_CONSTANT: return createMinConstant();
 			case IrPackage.MAX_CONSTANT: return createMaxConstant();
 			case IrPackage.BASE_TYPE_CONSTANT: return createBaseTypeConstant();
@@ -90,16 +99,14 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.REAL_VECTOR_CONSTANT: return createRealVectorConstant();
 			case IrPackage.REAL_MATRIX_CONSTANT: return createRealMatrixConstant();
 			case IrPackage.FUNCTION_CALL: return createFunctionCall();
-			case IrPackage.VAR_REF: return createVarRef();
+			case IrPackage.ARG_OR_VAR_REF: return createArgOrVarRef();
 			case IrPackage.ITERATOR: return createIterator();
 			case IrPackage.CONNECTIVITY_CALL: return createConnectivityCall();
 			case IrPackage.CONNECTIVITY_CALL_ITERATOR_REF: return createConnectivityCallIteratorRef();
-			case IrPackage.VAR_REF_ITERATOR_REF: return createVarRefIteratorRef();
+			case IrPackage.ARG_OR_VAR_REF_ITERATOR_REF: return createArgOrVarRefIteratorRef();
 			case IrPackage.ITEM_TYPE: return createItemType();
-			case IrPackage.SCALAR: return createScalar();
-			case IrPackage.ARRAY1_D: return createArray1D();
-			case IrPackage.ARRAY2_D: return createArray2D();
 			case IrPackage.IR_TYPE: return createIrType();
+			case IrPackage.BASE_TYPE: return createBaseType();
 			case IrPackage.CONNECTIVITY_TYPE: return createConnectivityType();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -311,6 +318,66 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public SpaceIterationBlock createSpaceIterationBlock() {
+		SpaceIterationBlockImpl spaceIterationBlock = new SpaceIterationBlockImpl();
+		return spaceIterationBlock;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DimensionIterationBlock createDimensionIterationBlock() {
+		DimensionIterationBlockImpl dimensionIterationBlock = new DimensionIterationBlockImpl();
+		return dimensionIterationBlock;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DimensionSymbol createDimensionSymbol() {
+		DimensionSymbolImpl dimensionSymbol = new DimensionSymbolImpl();
+		return dimensionSymbol;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DimensionInt createDimensionInt() {
+		DimensionIntImpl dimensionInt = new DimensionIntImpl();
+		return dimensionInt;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DimensionOperation createDimensionOperation() {
+		DimensionOperationImpl dimensionOperation = new DimensionOperationImpl();
+		return dimensionOperation;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DimensionSymbolRef createDimensionSymbolRef() {
+		DimensionSymbolRefImpl dimensionSymbolRef = new DimensionSymbolRefImpl();
+		return dimensionSymbolRef;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public ReductionInstruction createReductionInstruction() {
 		ReductionInstructionImpl reductionInstruction = new ReductionInstructionImpl();
 		return reductionInstruction;
@@ -334,6 +401,16 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public If createIf() {
 		IfImpl if_ = new IfImpl();
 		return if_;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Return createReturn() {
+		ReturnImpl return_ = new ReturnImpl();
+		return return_;
 	}
 
 	/**
@@ -381,9 +458,29 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Constant createConstant() {
-		ConstantImpl constant = new ConstantImpl();
-		return constant;
+	public IntConstant createIntConstant() {
+		IntConstantImpl intConstant = new IntConstantImpl();
+		return intConstant;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public RealConstant createRealConstant() {
+		RealConstantImpl realConstant = new RealConstantImpl();
+		return realConstant;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public BoolConstant createBoolConstant() {
+		BoolConstantImpl boolConstant = new BoolConstantImpl();
+		return boolConstant;
 	}
 
 	/**
@@ -471,9 +568,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public VarRef createVarRef() {
-		VarRefImpl varRef = new VarRefImpl();
-		return varRef;
+	public ArgOrVarRef createArgOrVarRef() {
+		ArgOrVarRefImpl argOrVarRef = new ArgOrVarRefImpl();
+		return argOrVarRef;
 	}
 
 	/**
@@ -511,9 +608,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public VarRefIteratorRef createVarRefIteratorRef() {
-		VarRefIteratorRefImpl varRefIteratorRef = new VarRefIteratorRefImpl();
-		return varRefIteratorRef;
+	public ArgOrVarRefIteratorRef createArgOrVarRefIteratorRef() {
+		ArgOrVarRefIteratorRefImpl argOrVarRefIteratorRef = new ArgOrVarRefIteratorRefImpl();
+		return argOrVarRefIteratorRef;
 	}
 
 	/**
@@ -531,39 +628,19 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Scalar createScalar() {
-		ScalarImpl scalar = new ScalarImpl();
-		return scalar;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Array1D createArray1D() {
-		Array1DImpl array1D = new Array1DImpl();
-		return array1D;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Array2D createArray2D() {
-		Array2DImpl array2D = new Array2DImpl();
-		return array2D;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public IrType createIrType() {
 		IrTypeImpl irType = new IrTypeImpl();
 		return irType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public BaseType createBaseType() {
+		BaseTypeImpl baseType = new BaseTypeImpl();
+		return baseType;
 	}
 
 	/**

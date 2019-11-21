@@ -10,7 +10,7 @@
 package fr.cea.nabla.scoping
 
 import fr.cea.nabla.nabla.ArgOrVarRef
-import fr.cea.nabla.nabla.ArgOrVarType
+import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.DimensionIterationBlock
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.Instruction
@@ -193,7 +193,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		symbolsDefinedBefore(context.eContainer, '\t')
 	}
 
-	def IScope scope_DimensionSymbolRef_target(ArgOrVarType context, EReference r)
+	def IScope scope_DimensionSymbolRef_target(BaseType context, EReference r)
 	{
 		//println('scope_DimensionSymbolRef_target(' + context.class.simpleName + ', ' + r.name + ')')
 		symbolsDefinedBefore(context.eContainer, '\t')

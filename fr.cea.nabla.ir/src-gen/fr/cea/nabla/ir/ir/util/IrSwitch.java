@@ -92,9 +92,25 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.ARG_OR_VAR: {
+				ArgOrVar argOrVar = (ArgOrVar)theEObject;
+				T result = caseArgOrVar(argOrVar);
+				if (result == null) result = caseIrAnnotable(argOrVar);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.ARG: {
+				Arg arg = (Arg)theEObject;
+				T result = caseArg(arg);
+				if (result == null) result = caseArgOrVar(arg);
+				if (result == null) result = caseIrAnnotable(arg);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.VARIABLE: {
 				Variable variable = (Variable)theEObject;
 				T result = caseVariable(variable);
+				if (result == null) result = caseArgOrVar(variable);
 				if (result == null) result = caseIrAnnotable(variable);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
@@ -103,6 +119,7 @@ public class IrSwitch<T> extends Switch<T> {
 				SimpleVariable simpleVariable = (SimpleVariable)theEObject;
 				T result = caseSimpleVariable(simpleVariable);
 				if (result == null) result = caseVariable(simpleVariable);
+				if (result == null) result = caseArgOrVar(simpleVariable);
 				if (result == null) result = caseIrAnnotable(simpleVariable);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
@@ -111,6 +128,7 @@ public class IrSwitch<T> extends Switch<T> {
 				ConnectivityVariable connectivityVariable = (ConnectivityVariable)theEObject;
 				T result = caseConnectivityVariable(connectivityVariable);
 				if (result == null) result = caseVariable(connectivityVariable);
+				if (result == null) result = caseArgOrVar(connectivityVariable);
 				if (result == null) result = caseIrAnnotable(connectivityVariable);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
@@ -126,13 +144,6 @@ public class IrSwitch<T> extends Switch<T> {
 				Reduction reduction = (Reduction)theEObject;
 				T result = caseReduction(reduction);
 				if (result == null) result = caseIrAnnotable(reduction);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.ARG: {
-				Arg arg = (Arg)theEObject;
-				T result = caseArg(arg);
-				if (result == null) result = caseIrAnnotable(arg);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -238,6 +249,67 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.ITERATION_BLOCK: {
+				IterationBlock iterationBlock = (IterationBlock)theEObject;
+				T result = caseIterationBlock(iterationBlock);
+				if (result == null) result = caseIrAnnotable(iterationBlock);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.SPACE_ITERATION_BLOCK: {
+				SpaceIterationBlock spaceIterationBlock = (SpaceIterationBlock)theEObject;
+				T result = caseSpaceIterationBlock(spaceIterationBlock);
+				if (result == null) result = caseIterationBlock(spaceIterationBlock);
+				if (result == null) result = caseIrAnnotable(spaceIterationBlock);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.DIMENSION_ITERATION_BLOCK: {
+				DimensionIterationBlock dimensionIterationBlock = (DimensionIterationBlock)theEObject;
+				T result = caseDimensionIterationBlock(dimensionIterationBlock);
+				if (result == null) result = caseIterationBlock(dimensionIterationBlock);
+				if (result == null) result = caseIrAnnotable(dimensionIterationBlock);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.DIMENSION_SYMBOL: {
+				DimensionSymbol dimensionSymbol = (DimensionSymbol)theEObject;
+				T result = caseDimensionSymbol(dimensionSymbol);
+				if (result == null) result = caseIrAnnotable(dimensionSymbol);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.DIMENSION: {
+				Dimension dimension = (Dimension)theEObject;
+				T result = caseDimension(dimension);
+				if (result == null) result = caseIrAnnotable(dimension);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.DIMENSION_INT: {
+				DimensionInt dimensionInt = (DimensionInt)theEObject;
+				T result = caseDimensionInt(dimensionInt);
+				if (result == null) result = caseDimension(dimensionInt);
+				if (result == null) result = caseIrAnnotable(dimensionInt);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.DIMENSION_OPERATION: {
+				DimensionOperation dimensionOperation = (DimensionOperation)theEObject;
+				T result = caseDimensionOperation(dimensionOperation);
+				if (result == null) result = caseDimension(dimensionOperation);
+				if (result == null) result = caseIrAnnotable(dimensionOperation);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.DIMENSION_SYMBOL_REF: {
+				DimensionSymbolRef dimensionSymbolRef = (DimensionSymbolRef)theEObject;
+				T result = caseDimensionSymbolRef(dimensionSymbolRef);
+				if (result == null) result = caseDimension(dimensionSymbolRef);
+				if (result == null) result = caseIrAnnotable(dimensionSymbolRef);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.REDUCTION_INSTRUCTION: {
 				ReductionInstruction reductionInstruction = (ReductionInstruction)theEObject;
 				T result = caseReductionInstruction(reductionInstruction);
@@ -261,6 +333,14 @@ public class IrSwitch<T> extends Switch<T> {
 				T result = caseIf(if_);
 				if (result == null) result = caseInstruction(if_);
 				if (result == null) result = caseIrAnnotable(if_);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.RETURN: {
+				Return return_ = (Return)theEObject;
+				T result = caseReturn(return_);
+				if (result == null) result = caseInstruction(return_);
+				if (result == null) result = caseIrAnnotable(return_);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -303,11 +383,27 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.CONSTANT: {
-				Constant constant = (Constant)theEObject;
-				T result = caseConstant(constant);
-				if (result == null) result = caseExpression(constant);
-				if (result == null) result = caseIrAnnotable(constant);
+			case IrPackage.INT_CONSTANT: {
+				IntConstant intConstant = (IntConstant)theEObject;
+				T result = caseIntConstant(intConstant);
+				if (result == null) result = caseExpression(intConstant);
+				if (result == null) result = caseIrAnnotable(intConstant);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.REAL_CONSTANT: {
+				RealConstant realConstant = (RealConstant)theEObject;
+				T result = caseRealConstant(realConstant);
+				if (result == null) result = caseExpression(realConstant);
+				if (result == null) result = caseIrAnnotable(realConstant);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.BOOL_CONSTANT: {
+				BoolConstant boolConstant = (BoolConstant)theEObject;
+				T result = caseBoolConstant(boolConstant);
+				if (result == null) result = caseExpression(boolConstant);
+				if (result == null) result = caseIrAnnotable(boolConstant);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -375,11 +471,11 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.VAR_REF: {
-				VarRef varRef = (VarRef)theEObject;
-				T result = caseVarRef(varRef);
-				if (result == null) result = caseExpression(varRef);
-				if (result == null) result = caseIrAnnotable(varRef);
+			case IrPackage.ARG_OR_VAR_REF: {
+				ArgOrVarRef argOrVarRef = (ArgOrVarRef)theEObject;
+				T result = caseArgOrVarRef(argOrVarRef);
+				if (result == null) result = caseExpression(argOrVarRef);
+				if (result == null) result = caseIrAnnotable(argOrVarRef);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -412,11 +508,11 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.VAR_REF_ITERATOR_REF: {
-				VarRefIteratorRef varRefIteratorRef = (VarRefIteratorRef)theEObject;
-				T result = caseVarRefIteratorRef(varRefIteratorRef);
-				if (result == null) result = caseIteratorRef(varRefIteratorRef);
-				if (result == null) result = caseIrAnnotable(varRefIteratorRef);
+			case IrPackage.ARG_OR_VAR_REF_ITERATOR_REF: {
+				ArgOrVarRefIteratorRef argOrVarRefIteratorRef = (ArgOrVarRefIteratorRef)theEObject;
+				T result = caseArgOrVarRefIteratorRef(argOrVarRefIteratorRef);
+				if (result == null) result = caseIteratorRef(argOrVarRefIteratorRef);
+				if (result == null) result = caseIrAnnotable(argOrVarRefIteratorRef);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -426,45 +522,18 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.IR_TYPE: {
+				IrType irType = (IrType)theEObject;
+				T result = caseIrType(irType);
+				if (result == null) result = caseIrAnnotable(irType);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.BASE_TYPE: {
 				BaseType baseType = (BaseType)theEObject;
 				T result = caseBaseType(baseType);
 				if (result == null) result = caseIrType(baseType);
 				if (result == null) result = caseIrAnnotable(baseType);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.SCALAR: {
-				Scalar scalar = (Scalar)theEObject;
-				T result = caseScalar(scalar);
-				if (result == null) result = caseBaseType(scalar);
-				if (result == null) result = caseIrType(scalar);
-				if (result == null) result = caseIrAnnotable(scalar);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.ARRAY1_D: {
-				Array1D array1D = (Array1D)theEObject;
-				T result = caseArray1D(array1D);
-				if (result == null) result = caseBaseType(array1D);
-				if (result == null) result = caseIrType(array1D);
-				if (result == null) result = caseIrAnnotable(array1D);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.ARRAY2_D: {
-				Array2D array2D = (Array2D)theEObject;
-				T result = caseArray2D(array2D);
-				if (result == null) result = caseBaseType(array2D);
-				if (result == null) result = caseIrType(array2D);
-				if (result == null) result = caseIrAnnotable(array2D);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.IR_TYPE: {
-				IrType irType = (IrType)theEObject;
-				T result = caseIrType(irType);
-				if (result == null) result = caseIrAnnotable(irType);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -537,6 +606,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseImport(Import object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Arg Or Var</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Arg Or Var</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseArgOrVar(ArgOrVar object) {
 		return null;
 	}
 
@@ -826,6 +910,126 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Iteration Block</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Iteration Block</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIterationBlock(IterationBlock object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Space Iteration Block</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Space Iteration Block</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseSpaceIterationBlock(SpaceIterationBlock object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Dimension Iteration Block</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Dimension Iteration Block</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDimensionIterationBlock(DimensionIterationBlock object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Dimension Symbol</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Dimension Symbol</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDimensionSymbol(DimensionSymbol object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Dimension</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Dimension</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDimension(Dimension object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Dimension Int</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Dimension Int</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDimensionInt(DimensionInt object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Dimension Operation</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Dimension Operation</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDimensionOperation(DimensionOperation object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Dimension Symbol Ref</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Dimension Symbol Ref</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDimensionSymbolRef(DimensionSymbolRef object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Reduction Instruction</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -867,6 +1071,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseIf(If object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Return</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Return</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseReturn(Return object) {
 		return null;
 	}
 
@@ -946,17 +1165,47 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Constant</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Int Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Constant</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Int Constant</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseConstant(Constant object) {
+	public T caseIntConstant(IntConstant object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Real Constant</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Real Constant</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseRealConstant(RealConstant object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Bool Constant</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Bool Constant</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseBoolConstant(BoolConstant object) {
 		return null;
 	}
 
@@ -1081,17 +1330,17 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Var Ref</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Arg Or Var Ref</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Var Ref</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Arg Or Var Ref</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseVarRef(VarRef object) {
+	public T caseArgOrVarRef(ArgOrVarRef object) {
 		return null;
 	}
 
@@ -1156,17 +1405,17 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Var Ref Iterator Ref</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Arg Or Var Ref Iterator Ref</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Var Ref Iterator Ref</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Arg Or Var Ref Iterator Ref</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseVarRefIteratorRef(VarRefIteratorRef object) {
+	public T caseArgOrVarRefIteratorRef(ArgOrVarRefIteratorRef object) {
 		return null;
 	}
 
@@ -1197,51 +1446,6 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseBaseType(BaseType object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Scalar</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Scalar</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseScalar(Scalar object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Array1 D</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Array1 D</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseArray1D(Array1D object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Array2 D</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Array2 D</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseArray2D(Array2D object) {
 		return null;
 	}
 

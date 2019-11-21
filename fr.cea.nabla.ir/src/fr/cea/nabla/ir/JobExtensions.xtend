@@ -10,28 +10,28 @@
 package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.IterableInstruction
+import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.TimeIterationCopyJob
-import fr.cea.nabla.ir.ir.VarRef
 import fr.cea.nabla.ir.ir.Variable
 import java.util.HashSet
 
-import static extension fr.cea.nabla.ir.VariableExtensions.*
-import fr.cea.nabla.ir.ir.Iterator
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
-class JobExtensions 
+class JobExtensions
 {
 	static def hasIterable(Job it)
 	{
 		!eAllContents.filter(IterableInstruction).empty
 	}
-	
+
 	static def hasLoop(Job it)
 	{
 		!eAllContents.filter(Loop).empty
@@ -47,10 +47,10 @@ class JobExtensions
 			for (outVar : fromOutVars)
 				if (to.inVars.exists[x|x === outVar])
 					fromTargetJobs += to
-					
+
 		return fromTargetJobs
 	}
-	
+
 	static def dispatch Iterable<Variable> getOutVars(TimeIterationCopyJob it)
 	{
 		#[left].toSet
@@ -58,9 +58,9 @@ class JobExtensions
 
 	static def dispatch Iterable<Variable> getOutVars(InstructionJob it)
 	{
-		eAllContents.filter(Affectation).map[left.variable].filter[global].toSet
+		eAllContents.filter(Affectation).map[left.target].filter(Variable).filter[global].toSet
 	}
-	
+
 	static def dispatch Iterable<Variable> getOutVars(InSituJob it)
 	{
 		#[]
@@ -73,8 +73,9 @@ class JobExtensions
 
 	static def dispatch Iterable<Variable> getInVars(InstructionJob it)
 	{
-		val allVars = eAllContents.filter(VarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[variable].filter[global].toSet
-		return allVars
+		val allVars = eAllContents.filter(ArgOrVarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[target]
+		val inVars = allVars.filter(Variable).filter[global].toSet
+		return inVars
 	}
 
 	static def dispatch Iterable<Variable> getInVars(InSituJob it)
@@ -87,7 +88,7 @@ class JobExtensions
 		var iterators = eAllContents.filter(Iterator).toList
 		return iterators.findFirst[i | i.name == name]
 	}
-	
+
 	static def getVariableByName(Job it, String name)
 	{
 		var variables = eAllContents.filter(Variable).toList

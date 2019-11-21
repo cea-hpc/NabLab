@@ -10,13 +10,13 @@
 package fr.cea.nabla.typing
 
 import com.google.inject.Inject
-import fr.cea.nabla.nabla.ArgOrVarType
+import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.Dimension
 import fr.cea.nabla.nabla.DimensionInt
 import fr.cea.nabla.nabla.DimensionOperation
+import fr.cea.nabla.nabla.DimensionSymbol
 import fr.cea.nabla.nabla.DimensionSymbolRef
-import fr.cea.nabla.nabla.DimensionVar
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
@@ -56,7 +56,7 @@ class DimensionValue
 class FunctionDeclaration
 {
 	val Function model
-	val Map<DimensionVar, DimensionValue> dimensionVarValues
+	val Map<DimensionSymbol, DimensionValue> dimensionVarValues
 	val NablaType[] inTypes
 	val NablaType returnType
 }
@@ -65,7 +65,7 @@ class FunctionDeclaration
 class ReductionDeclaration
 {
 	val Reduction model
-	val Map<DimensionVar, DimensionValue> dimensionVarValues
+	val Map<DimensionSymbol, DimensionValue> dimensionVarValues
 	val NablaSimpleType collectionType // no reduction on ConnectivityVar => SimpleType only
 	val NablaSimpleType returnType
 }
@@ -77,7 +77,7 @@ class DeclarationProvider
 
 	def FunctionDeclaration getDeclaration(FunctionCall it)
 	{
-		val dimensionVarValues = new HashMap<DimensionVar, DimensionValue>
+		val dimensionVarValues = new HashMap<DimensionSymbol, DimensionValue>
 		val module = EcoreUtil2.getContainerOfType(function, NablaModule)
 		val candidates = module.functions.filter(Function).filter[x | x.name == function.name]
 		val f = candidates.findFirst[x |
@@ -95,7 +95,7 @@ class DeclarationProvider
 
 	def ReductionDeclaration getDeclaration(ReductionCall it)
 	{
-		val dimensionVarValues = new HashMap<DimensionVar, DimensionValue>
+		val dimensionVarValues = new HashMap<DimensionSymbol, DimensionValue>
 		val module = EcoreUtil2.getContainerOfType(reduction, NablaModule)
 		val candidates = module.functions.filter(Reduction).filter[x | x.name == reduction.name]
 		val r = candidates.findFirst[x | match(x.collectionType, arg, dimensionVarValues) ]
@@ -106,7 +106,7 @@ class DeclarationProvider
 		return new ReductionDeclaration(r, dimensionVarValues, collectionType as NablaSimpleType, returnType as NablaSimpleType)
 	}
 
-	private def boolean match(ArgOrVarType a, Expression b, Map<DimensionVar, DimensionValue> dimVarValues) 
+	private def boolean match(BaseType a, Expression b, Map<DimensionSymbol, DimensionValue> dimVarValues) 
 	{
 		val btype = b.typeFor
 		if (btype === null)
@@ -126,7 +126,7 @@ class DeclarationProvider
 		return dimensionValues
 	}
 		
-	private def boolean valuesMatch(Map<DimensionVar, DimensionValue> dimVarValues, List<Dimension> dimensions, DimensionValue[] sizes)
+	private def boolean valuesMatch(Map<DimensionSymbol, DimensionValue> dimVarValues, List<Dimension> dimensions, DimensionValue[] sizes)
 	{
 		if (dimensions.size != sizes.size) return false
 		
@@ -138,14 +138,14 @@ class DeclarationProvider
 			{
 				DimensionOperation: computeValue(expectedType, dimVarValues)
 				DimensionInt case (!actualType.NSTDimensionInt || expectedType.value != actualType.NSTDimensionIntValue): return false
-				DimensionSymbolRef case (expectedType.target instanceof DimensionVar):
+				DimensionSymbolRef case (expectedType.target instanceof DimensionSymbol):
 				{
 					val dimVarValue = dimVarValues.get(expectedType.target)
 					if (dimVarValue === null)
 					{
 						// The DimemsionVar instance has not yet been encountered.
 						// Fix the value for the rest of the loop.
-						dimVarValues.put(expectedType.target as DimensionVar, actualType)
+						dimVarValues.put(expectedType.target as DimensionSymbol, actualType)
 					}
 					else
 					{
@@ -159,7 +159,7 @@ class DeclarationProvider
 		return true
 	}
 	
-	private def dispatch DimensionValue computeValue(DimensionOperation it, Map<DimensionVar, DimensionValue> values)
+	private def dispatch DimensionValue computeValue(DimensionOperation it, Map<DimensionSymbol, DimensionValue> values)
 	{
 		switch op
 		{
@@ -169,17 +169,17 @@ class DeclarationProvider
 		}
 	}
 
-	private def dispatch DimensionValue computeValue(DimensionInt it, Map<DimensionVar, DimensionValue> values)
+	private def dispatch DimensionValue computeValue(DimensionInt it, Map<DimensionSymbol, DimensionValue> values)
 	{
 		new DimensionValue(NSTDimension.create(value))
 	}
 	
-	private def dispatch DimensionValue computeValue(DimensionSymbolRef it, Map<DimensionVar, DimensionValue> values)
+	private def dispatch DimensionValue computeValue(DimensionSymbolRef it, Map<DimensionSymbol, DimensionValue> values)
 	{
 		values.getOrDefault(target, DimensionValue::Undefined)
 	}
 	
-	private def NablaType computeExpressionType(ArgOrVarType argType, Map<DimensionVar, DimensionValue> values)
+	private def NablaType computeExpressionType(BaseType argType, Map<DimensionSymbol, DimensionValue> values)
 	{
 		var NablaType returnType = null
 		if (argType.sizes.empty)

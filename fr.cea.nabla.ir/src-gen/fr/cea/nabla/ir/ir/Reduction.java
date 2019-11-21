@@ -2,6 +2,7 @@
  */
 package fr.cea.nabla.ir.ir;
 
+import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -12,10 +13,11 @@ package fr.cea.nabla.ir.ir;
  * The following features are supported:
  * </p>
  * <ul>
+ *   <li>{@link fr.cea.nabla.ir.ir.Reduction#getProvider <em>Provider</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Reduction#getDimensionVars <em>Dimension Vars</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Reduction#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Reduction#getCollectionType <em>Collection Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Reduction#getReturnType <em>Return Type</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Reduction#getProvider <em>Provider</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Reduction#isOperator <em>Operator</em>}</li>
  * </ul>
  *
@@ -154,5 +156,21 @@ public interface Reduction extends IrAnnotable {
 	 * @generated
 	 */
 	void setOperator(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Dimension Vars</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.DimensionSymbol}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Dimension Vars</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Dimension Vars</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getReduction_DimensionVars()
+	 * @model containment="true" resolveProxies="true"
+	 * @generated
+	 */
+	EList<DimensionSymbol> getDimensionVars();
 
 } // Reduction

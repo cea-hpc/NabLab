@@ -1,10 +1,10 @@
 package fr.cea.nabla.ir.transformers
 
+import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.VarRef
 import org.eclipse.emf.ecore.util.EcoreUtil
 
 import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
@@ -30,8 +30,8 @@ class DeclareConstVariables implements IrTransformationStep
 				{
 					val newConstVar = jobInvar.newVariable
 					varDefinition.variables += newConstVar
-					for (jobInVarRef : job.eAllContents.filter(VarRef).filter[x | x.variable == jobInvar].toIterable)
-						jobInVarRef.variable = newConstVar
+					for (jobInVarRef : job.eAllContents.filter(ArgOrVarRef).filter[x | x.target == jobInvar].toIterable)
+						jobInVarRef.target = newConstVar
 				}
 				insertBefore(job.instruction, #[varDefinition])
 			}	
@@ -62,7 +62,7 @@ class DeclareConstVariables implements IrTransformationStep
 			const = true
 			name = 'const_' + v.name
 			type = EcoreUtil::copy(type)
-			defaultValue = IrFactory::eINSTANCE.createVarRef => [ variable = v ]
+			defaultValue = IrFactory::eINSTANCE.createArgOrVarRef => [ target = v ]
 		]
 	}
 }

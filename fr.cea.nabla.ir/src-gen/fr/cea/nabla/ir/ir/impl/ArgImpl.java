@@ -22,33 +22,12 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ArgImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ArgImpl#getType <em>Type</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class ArgImpl extends IrAnnotableImpl implements Arg {
-	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String name = NAME_EDEFAULT;
-
+public class ArgImpl extends ArgOrVarImpl implements Arg {
 	/**
 	 * The cached value of the '{@link #getType() <em>Type</em>}' containment reference.
 	 * <!-- begin-user-doc -->
@@ -76,27 +55,6 @@ public class ArgImpl extends IrAnnotableImpl implements Arg {
 	@Override
 	protected EClass eStaticClass() {
 		return IrPackage.Literals.ARG;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setName(String newName) {
-		String oldName = name;
-		name = newName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.ARG__NAME, oldName, name));
 	}
 
 	/**
@@ -187,8 +145,6 @@ public class ArgImpl extends IrAnnotableImpl implements Arg {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.ARG__NAME:
-				return getName();
 			case IrPackage.ARG__TYPE:
 				if (resolve) return getType();
 				return basicGetType();
@@ -204,9 +160,6 @@ public class ArgImpl extends IrAnnotableImpl implements Arg {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.ARG__NAME:
-				setName((String)newValue);
-				return;
 			case IrPackage.ARG__TYPE:
 				setType((BaseType)newValue);
 				return;
@@ -222,9 +175,6 @@ public class ArgImpl extends IrAnnotableImpl implements Arg {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.ARG__NAME:
-				setName(NAME_EDEFAULT);
-				return;
 			case IrPackage.ARG__TYPE:
 				setType((BaseType)null);
 				return;
@@ -240,28 +190,10 @@ public class ArgImpl extends IrAnnotableImpl implements Arg {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.ARG__NAME:
-				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case IrPackage.ARG__TYPE:
 				return type != null;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (name: ");
-		result.append(name);
-		result.append(')');
-		return result.toString();
 	}
 
 } //ArgImpl

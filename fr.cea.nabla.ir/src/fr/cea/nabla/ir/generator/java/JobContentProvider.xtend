@@ -17,10 +17,10 @@ import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
 
-import static extension fr.cea.nabla.ir.VariableExtensions.*
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.InstructionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.VariableExtensions.*
 
 class JobContentProvider 
 {
@@ -32,12 +32,12 @@ class JobContentProvider
 			«innerContent»
 		}		
 	'''
-	
+
 	private static def dispatch CharSequence getInnerContent(InstructionJob it)
 	'''
 		«instruction.innerContent»
 	'''
-	
+
 	private static def dispatch CharSequence getInnerContent(InSituJob it)
 	'''
 		if «condition»
@@ -51,7 +51,7 @@ class JobContentProvider
 			«IF timeStep>0»lastWriteTime += «timeStep»;«ENDIF»
 		}
 	'''
-	
+
 	private static def dispatch CharSequence getInnerContent(EndOfTimeLoopJob it)
 	'''
 		«left.javaType» tmpSwitch = «left.name»;

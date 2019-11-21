@@ -48,7 +48,7 @@ class ExpressionTypeProvider
 	@Inject extension DeclarationProvider
 	@Inject extension BinaryOperationsTypeProvider
 	@Inject extension PrimitiveTypeTypeProvider
-	@Inject extension ArgOrVarTypeTypeProvider
+	@Inject extension BaseTypeTypeProvider
 	@Inject extension VarTypeProvider
 	@Inject extension ArgOrVarExtensions
 

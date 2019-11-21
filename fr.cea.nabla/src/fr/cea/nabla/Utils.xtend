@@ -9,11 +9,9 @@
  *******************************************************************************/
 package fr.cea.nabla
 
-import fr.cea.nabla.nabla.NablaModule
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.ResourcesPlugin
-import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 
@@ -32,13 +30,6 @@ class Utils
 		}
 		return null
 	}	
-	
-	static def NablaModule getNablaModule(EObject o)
-	{
-		if (o === null) null
-		else if (o instanceof NablaModule) o as NablaModule
-		else o.eContainer.nablaModule
-	}
 
 	static def getFileNameWithoutExtension(Resource input)
 	{

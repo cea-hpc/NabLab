@@ -4,7 +4,9 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Arg;
 import fr.cea.nabla.ir.ir.BaseType;
+import fr.cea.nabla.ir.ir.DimensionSymbol;
 import fr.cea.nabla.ir.ir.Function;
+import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.IrPackage;
 
 import java.util.Collection;
@@ -29,15 +31,47 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getProvider <em>Provider</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getDimensionVars <em>Dimension Vars</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getInArgs <em>In Args</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getReturnType <em>Return Type</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getProvider <em>Provider</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getBody <em>Body</em>}</li>
  * </ul>
  *
  * @generated
  */
 public class FunctionImpl extends IrAnnotableImpl implements Function {
+	/**
+	 * The default value of the '{@link #getProvider() <em>Provider</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getProvider()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String PROVIDER_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getProvider() <em>Provider</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getProvider()
+	 * @generated
+	 * @ordered
+	 */
+	protected String provider = PROVIDER_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getDimensionVars() <em>Dimension Vars</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDimensionVars()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<DimensionSymbol> dimensionVars;
+
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -79,24 +113,14 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	protected BaseType returnType;
 
 	/**
-	 * The default value of the '{@link #getProvider() <em>Provider</em>}' attribute.
+	 * The cached value of the '{@link #getBody() <em>Body</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getProvider()
+	 * @see #getBody()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String PROVIDER_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getProvider() <em>Provider</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getProvider()
-	 * @generated
-	 * @ordered
-	 */
-	protected String provider = PROVIDER_EDEFAULT;
+	protected Instruction body;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -221,6 +245,72 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public Instruction getBody() {
+		if (body != null && body.eIsProxy()) {
+			InternalEObject oldBody = (InternalEObject)body;
+			body = (Instruction)eResolveProxy(oldBody);
+			if (body != oldBody) {
+				InternalEObject newBody = (InternalEObject)body;
+				NotificationChain msgs = oldBody.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.FUNCTION__BODY, null, null);
+				if (newBody.eInternalContainer() == null) {
+					msgs = newBody.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.FUNCTION__BODY, null, msgs);
+				}
+				if (msgs != null) msgs.dispatch();
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.FUNCTION__BODY, oldBody, body));
+			}
+		}
+		return body;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Instruction basicGetBody() {
+		return body;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetBody(Instruction newBody, NotificationChain msgs) {
+		Instruction oldBody = body;
+		body = newBody;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.FUNCTION__BODY, oldBody, newBody);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setBody(Instruction newBody) {
+		if (newBody != body) {
+			NotificationChain msgs = null;
+			if (body != null)
+				msgs = ((InternalEObject)body).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.FUNCTION__BODY, null, msgs);
+			if (newBody != null)
+				msgs = ((InternalEObject)newBody).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.FUNCTION__BODY, null, msgs);
+			msgs = basicSetBody(newBody, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.FUNCTION__BODY, newBody, newBody));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public String getProvider() {
 		return provider;
 	}
@@ -242,13 +332,29 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EList<DimensionSymbol> getDimensionVars() {
+		if (dimensionVars == null) {
+			dimensionVars = new EObjectContainmentEList.Resolving<DimensionSymbol>(DimensionSymbol.class, this, IrPackage.FUNCTION__DIMENSION_VARS);
+		}
+		return dimensionVars;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
+			case IrPackage.FUNCTION__DIMENSION_VARS:
+				return ((InternalEList<?>)getDimensionVars()).basicRemove(otherEnd, msgs);
 			case IrPackage.FUNCTION__IN_ARGS:
 				return ((InternalEList<?>)getInArgs()).basicRemove(otherEnd, msgs);
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				return basicSetReturnType(null, msgs);
+			case IrPackage.FUNCTION__BODY:
+				return basicSetBody(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -261,6 +367,10 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
+			case IrPackage.FUNCTION__PROVIDER:
+				return getProvider();
+			case IrPackage.FUNCTION__DIMENSION_VARS:
+				return getDimensionVars();
 			case IrPackage.FUNCTION__NAME:
 				return getName();
 			case IrPackage.FUNCTION__IN_ARGS:
@@ -268,8 +378,9 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				if (resolve) return getReturnType();
 				return basicGetReturnType();
-			case IrPackage.FUNCTION__PROVIDER:
-				return getProvider();
+			case IrPackage.FUNCTION__BODY:
+				if (resolve) return getBody();
+				return basicGetBody();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -283,6 +394,13 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
+			case IrPackage.FUNCTION__PROVIDER:
+				setProvider((String)newValue);
+				return;
+			case IrPackage.FUNCTION__DIMENSION_VARS:
+				getDimensionVars().clear();
+				getDimensionVars().addAll((Collection<? extends DimensionSymbol>)newValue);
+				return;
 			case IrPackage.FUNCTION__NAME:
 				setName((String)newValue);
 				return;
@@ -293,8 +411,8 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				setReturnType((BaseType)newValue);
 				return;
-			case IrPackage.FUNCTION__PROVIDER:
-				setProvider((String)newValue);
+			case IrPackage.FUNCTION__BODY:
+				setBody((Instruction)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -308,6 +426,12 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
+			case IrPackage.FUNCTION__PROVIDER:
+				setProvider(PROVIDER_EDEFAULT);
+				return;
+			case IrPackage.FUNCTION__DIMENSION_VARS:
+				getDimensionVars().clear();
+				return;
 			case IrPackage.FUNCTION__NAME:
 				setName(NAME_EDEFAULT);
 				return;
@@ -317,8 +441,8 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				setReturnType((BaseType)null);
 				return;
-			case IrPackage.FUNCTION__PROVIDER:
-				setProvider(PROVIDER_EDEFAULT);
+			case IrPackage.FUNCTION__BODY:
+				setBody((Instruction)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -332,14 +456,18 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
+			case IrPackage.FUNCTION__PROVIDER:
+				return PROVIDER_EDEFAULT == null ? provider != null : !PROVIDER_EDEFAULT.equals(provider);
+			case IrPackage.FUNCTION__DIMENSION_VARS:
+				return dimensionVars != null && !dimensionVars.isEmpty();
 			case IrPackage.FUNCTION__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case IrPackage.FUNCTION__IN_ARGS:
 				return inArgs != null && !inArgs.isEmpty();
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				return returnType != null;
-			case IrPackage.FUNCTION__PROVIDER:
-				return PROVIDER_EDEFAULT == null ? provider != null : !PROVIDER_EDEFAULT.equals(provider);
+			case IrPackage.FUNCTION__BODY:
+				return body != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -354,10 +482,10 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 		if (eIsProxy()) return super.toString();
 
 		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (name: ");
-		result.append(name);
-		result.append(", provider: ");
+		result.append(" (provider: ");
 		result.append(provider);
+		result.append(", name: ");
+		result.append(name);
 		result.append(')');
 		return result.toString();
 	}

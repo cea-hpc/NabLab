@@ -368,16 +368,6 @@ public class NablaModuleItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createDimensionIndex()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createDimensionVar()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
 				 NablaFactory.eINSTANCE.createExpression()));
 
 		newChildDescriptors.add
@@ -403,7 +393,7 @@ public class NablaModuleItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.NABLA_MODULE__FUNCTIONS,
-				 NablaFactory.eINSTANCE.createArgOrVarType()));
+				 NablaFactory.eINSTANCE.createBaseType()));
 
 		newChildDescriptors.add
 			(createChildParameter

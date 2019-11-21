@@ -1,17 +1,15 @@
 package fr.cea.nabla.ir
 
-import org.eclipse.emf.ecore.EObject
 import fr.cea.nabla.ir.ir.IrModule
 import org.apache.commons.lang3.builder.HashCodeBuilder
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EAttribute
-import org.eclipse.emf.ecore.EStructuralFeature
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
+import org.eclipse.emf.ecore.EStructuralFeature
 
 class Utils 
 {
-	public static val FunctionAndReductionproviderSuffix = 'Functions'
-	
 	static def IrModule getIrModule(EObject o)
 	{
 		if (o === null) null

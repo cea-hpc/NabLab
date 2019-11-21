@@ -125,8 +125,8 @@ class ExpressionTypeProviderTest
 	ComputeV: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r} + s{j});
 
 	ComputeX: ∀ j∈cells(), {
-		ℝ e = 1.0;
-		u{j} = e * 4; 
+		ℝ ee = 1.0;
+		u{j} = ee * 4; 
 		∀r∈nodesOfCell(j), x{j,r} = norm(w{j,r});
 	}
 	'''
@@ -198,7 +198,7 @@ class ExpressionTypeProviderTest
 
 		assertTypesFor(new NSTRealScalar, computeV, "v")
 				
-		assertTypesFor(new NSTRealScalar, computeX, "e")
+		assertTypesFor(new NSTRealScalar, computeX, "ee")
 		assertTypesFor(new NSTRealScalar, computeX, "u")
 		assertTypesFor(new NSTRealScalar, computeX, "x")
 	}

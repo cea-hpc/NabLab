@@ -1,38 +1,39 @@
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.Array1D
-import fr.cea.nabla.ir.ir.Array2D
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
+import fr.cea.nabla.ir.ir.DimensionInt
+import fr.cea.nabla.ir.ir.DimensionOperation
+import fr.cea.nabla.ir.ir.DimensionSymbolRef
 import fr.cea.nabla.ir.ir.IrType
-import fr.cea.nabla.ir.ir.Scalar
 
 import static extension fr.cea.nabla.ir.Utils.*
 
-class IrTypeExtensions 
+class IrTypeExtensions
 {
-	static def dispatch areEquals(BaseType a, BaseType b) { false }
-	static def dispatch areEquals(Scalar a, Scalar b) { a.primitive == b.primitive }	
-	static def dispatch areEquals(Array1D a, Array1D b) { a.primitive == b.primitive && a.size == b.size }
-	static def dispatch areEquals(Array2D a, Array2D b) { a.primitive == b.primitive && a.nbRows == b.nbRows && a.nbCols == b.nbCols }
-	
 	static def dispatch String getLabel(ConnectivityType it)
 	{
 		if (it === null) null
 		else base.label + '{' + connectivities.map[name].join(',') + '}'
 	}
-	
+
 	static def dispatch String getLabel(BaseType it)
 	{
-		switch it
-		{
-			case null: 'Undefined'
-			Scalar: primitive.literal
-			Array1D: primitive.literal + size.utfExponent
-			Array2D: primitive.literal + nbRows.utfExponent + '\\u02E3' + nbCols.utfExponent
-		}
+		if (it === null)
+			'Undefined'
+		else if (sizes.empty) 
+			primitive.literal
+		else if (sizes.exists[x | !(x instanceof DimensionInt)])
+			primitive.literal + '[' + sizes.map[x | x.dimensionLabel].join(',') + ']'
+		else
+			primitive.literal + sizes.map[x | (x as DimensionInt).value.utfExponent].join('\u02E3')
 	}
-	
+
+	static def isScalar(IrType t)
+	{
+		(t instanceof BaseType) && (t as BaseType).sizes.empty
+	}
+
 	static def getPrimitive(IrType t)
 	{
 		switch t
@@ -41,4 +42,8 @@ class IrTypeExtensions
 			BaseType: t.primitive
 		}
 	}
+
+	private static def dispatch String getDimensionLabel(DimensionOperation it) { left?.dimensionLabel + ' ' + operator + ' ' + right?.dimensionLabel }
+	private static def dispatch String getDimensionLabel(DimensionInt it) { value.toString }
+	private static def dispatch String getDimensionLabel(DimensionSymbolRef it) { target?.name }
 }

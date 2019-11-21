@@ -10,10 +10,11 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
-import fr.cea.nabla.VarRefExtensions
+import fr.cea.nabla.ArgOrVarRefExtensions
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.And
+import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
@@ -28,6 +29,7 @@ import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.MulOrDiv
+import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
@@ -37,20 +39,21 @@ import fr.cea.nabla.nabla.RealMatrixConstant
 import fr.cea.nabla.nabla.RealVectorConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
-import fr.cea.nabla.nabla.VarRef
 import fr.cea.nabla.typing.DeclarationProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
+import org.eclipse.xtext.EcoreUtil2
 
 class IrExpressionFactory
 {
 	@Inject extension DeclarationProvider
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrFunctionFactory
-	@Inject extension IrVariableFactory
+	@Inject extension IrArgOrVarFactory
 	@Inject extension IrIteratorFactory
+	@Inject extension IrDimensionFactory
 	@Inject extension ExpressionTypeProvider
 	@Inject extension ReductionCallExtensions
-	@Inject extension VarRefExtensions
+	@Inject extension ArgOrVarRefExtensions
 	@Inject extension NablaType2IrType
 
 	def dispatch Expression toIrExpression(ContractedIf e)
@@ -89,31 +92,31 @@ class IrExpressionFactory
 
 	def dispatch Expression toIrExpression(IntConstant e)
 	{
-		IrFactory::eINSTANCE.createConstant =>
+		IrFactory::eINSTANCE.createIntConstant =>
 		[
 			annotations += e.toIrAnnotation 
 			type = e.typeFor?.toIrType
-			value = e.value.toString
+			value = e.value
 		]
 	}
 
 	def dispatch Expression toIrExpression(RealConstant e)
 	{
-		IrFactory::eINSTANCE.createConstant =>
+		IrFactory::eINSTANCE.createRealConstant =>
 		[ 
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
-			value = e.value.toString
+			value = e.value
 		]
 	}
 
 	def dispatch Expression toIrExpression(BoolConstant e)
 	{
-		IrFactory::eINSTANCE.createConstant =>
+		IrFactory::eINSTANCE.createBoolConstant =>
 		[ 
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
-			value = e.value.toString
+			value = e.value
 		]
 	}
 
@@ -132,6 +135,29 @@ class IrExpressionFactory
 		[ 
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
+		]
+	}
+
+	def dispatch Expression toIrExpression(FunctionCall e)
+	{
+		val m = EcoreUtil2.getContainerOfType(e.function, NablaModule)
+		IrFactory::eINSTANCE.createFunctionCall =>
+		[
+			annotations += e.toIrAnnotation
+			type = e.typeFor?.toIrType
+			function = e.declaration.model.toIrFunction(m.name)
+			args += e.args.map[toIrExpression]
+		]
+	}
+
+	def dispatch Expression toIrExpression(ReductionCall e)
+	{
+		val irVariable = e.toIrLocalVariable
+		IrFactory::eINSTANCE.createArgOrVarRef =>
+		[
+			annotations += e.toIrAnnotation
+			type = e.typeFor?.toIrType
+			target = irVariable
 		]
 	}
 
@@ -197,40 +223,16 @@ class IrExpressionFactory
 		]
 	}
 
-	def dispatch Expression toIrExpression(FunctionCall e)
+	def dispatch Expression toIrExpression(ArgOrVarRef e)
 	{
-		IrFactory::eINSTANCE.createFunctionCall =>
-		[
-			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrType
-			function = e.function.toIrFunction(e.declaration.model)
-			args += e.args.map[toIrExpression]
-		]
-	}
-
-	def dispatch Expression toIrExpression(ReductionCall e)
-	{
-		// val irVariable = if (e.global) e.toIrGlobalVariable else e.toIrLocalVariable
-		val irVariable = e.toIrLocalVariable
-		IrFactory::eINSTANCE.createVarRef =>
-		[
-			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrType
-			variable = irVariable
-		]
-	}
-
-	def dispatch Expression toIrExpression(VarRef e)
-	{
-		IrFactory::eINSTANCE.createVarRef =>
+		IrFactory::eINSTANCE.createArgOrVarRef =>
 		[ 
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
-			variable = e.variable.toIrVariable(e.timeSuffix)
-			for (i : e.indices)
-				indices += i.toIrExpression
+			target = e.target.toIrArgOrVar(e.timeSuffix)
+			e.indices.forEach[x | indices += x.toIrDimension]
 			for (i : 0..<e.spaceIterators.size)
-				iterators += e.spaceIterators.get(i).toIrVarRefIteratorRef(i)
+				iterators += e.spaceIterators.get(i).toIrArgOrVarRefIteratorRef(i)
 		]
 	}
 

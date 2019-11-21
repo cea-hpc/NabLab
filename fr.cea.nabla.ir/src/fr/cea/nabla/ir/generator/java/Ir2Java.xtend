@@ -12,34 +12,34 @@ package fr.cea.nabla.ir.generator.java
 import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.ir.generator.CodeGenerator
-import fr.cea.nabla.ir.ir.Array1D
-import fr.cea.nabla.ir.ir.Array2D
+import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.Scalar
 import fr.cea.nabla.ir.ir.SimpleVariable
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.generator.java.DimensionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.java.FunctionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.VariableExtensions.*
 
 class Ir2Java extends CodeGenerator
 {
 	new() { super('java', 'java') }
-	
+
 	override getFileContent(IrModule it)
 	'''
 		package «name.toLowerCase»;
-		
+
 		import java.util.HashMap;
-		import java.util.Arrays;
 		import java.util.ArrayList;
 		import java.util.stream.IntStream;
 
@@ -50,9 +50,8 @@ class Ir2Java extends CodeGenerator
 		«val linearAlgebraVars = variables.filter(ConnectivityVariable).filter[linearAlgebra]»
 		«IF !linearAlgebraVars.empty»
 		import org.apache.commons.math3.linear.*;
-		
+
 		«ENDIF»
-		@SuppressWarnings("all")
 		public final class «name»
 		{
 			public final static class Options
@@ -61,7 +60,7 @@ class Ir2Java extends CodeGenerator
 				public final «v.javaType» «v.name» = «v.defaultValue.content.toString.replaceAll('options.', '')»;
 				«ENDFOR»
 			}
-			
+
 			private final Options options;
 			private int iteration;
 
@@ -78,20 +77,20 @@ class Ir2Java extends CodeGenerator
 			«ENDFOR»
 			«val connectivityVars = variables.filter(ConnectivityVariable).filter[!linearAlgebra].groupBy[javaType]»
 			«IF !connectivityVars.empty»
-			
+
 			// Connectivity Variables
 			«FOR type : connectivityVars.keySet»
 			private «type» «FOR v : connectivityVars.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 			«ENDFOR»
 			«ENDIF»
 			«IF !linearAlgebraVars.empty»
-			
+
 			// Linear Algebra Variables
 			«FOR m : linearAlgebraVars»
 			private «m.javaType» «m.name»;
 			«ENDFOR»
 			«ENDIF»
-			
+
 			public «name»(Options aOptions, NumericMesh2D aNumericMesh2D)
 			{
 				options = aOptions;
@@ -112,13 +111,13 @@ class Ir2Java extends CodeGenerator
 						«IF a.linearAlgebra»
 							«a.name» = «a.linearAlgebraDefinition»;
 						«ELSE»
-							«a.name» = new «a.type.primitive.javaType»«a.type.dimensionContent»;
+							«a.name» = new «a.type.primitive.javaType»«a.type.dimContent»;
 						«ENDIF»
-					«ELSEIF a instanceof SimpleVariable && !(a.type instanceof Scalar)»
-						«a.name» = new «a.type.primitive.javaType»«a.type.dimensionContent»;
+					«ELSEIF a instanceof SimpleVariable && !(a.type.scalar)»
+						«a.name» = new «a.type.primitive.javaType»«a.type.dimContent»;
 					«ENDIF»
 				«ENDFOR»
-		
+
 				// Copy node coordinates
 				ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
 				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> «initCoordVariable.name»[rNodes] = gNodes.get(rNodes));
@@ -153,13 +152,17 @@ class Ir2Java extends CodeGenerator
 				«name» i = new «name»(o, nm);
 				i.simulate();
 			}
-			
-			«FOR j : jobs.sortBy[at] SEPARATOR '\n'»
+			«FOR j : jobs.sortBy[at]»
+
 				«j.content»
-			«ENDFOR»			
+			«ENDFOR»
+			«FOR f : functions.filter(Function).filter[body !== null]»
+
+			«f.content»
+			«ENDFOR»
 		};
 	'''
-	
+
 	private def getConnectivityAccessor(Connectivity c)
 	{
 		if (c.inTypes.empty)
@@ -167,7 +170,7 @@ class Ir2Java extends CodeGenerator
 		else
 			'''NumericMesh2D.MaxNb«c.name.toFirstUpper»'''
 	}
-	
+
 	private def getLinearAlgebraDefinition(ConnectivityVariable v)
 	{
 		switch v.type.connectivities.size
@@ -178,8 +181,6 @@ class Ir2Java extends CodeGenerator
 		}
 	}
 
-	private def dispatch String getDimensionContent(Scalar it) ''''''
-	private def dispatch String getDimensionContent(Array1D it) '''[«size»]'''
-	private def dispatch String getDimensionContent(Array2D it) '''[«nbRows»][«nbCols»]'''
-	private def dispatch String getDimensionContent(ConnectivityType it) '''«FOR c : connectivities»[«c.nbElems»]«ENDFOR»«base.dimensionContent»'''
+	private def dispatch String getDimContent(BaseType it) '''«FOR s : sizes BEFORE '[' SEPARATOR '][' AFTER ']'»«s.content»«ENDFOR»'''
+	private def dispatch String getDimContent(ConnectivityType it) '''«FOR c : connectivities»[«c.nbElems»]«ENDFOR»«base.dimContent»'''
 }

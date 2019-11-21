@@ -30,7 +30,7 @@ class BasicValidatorTest
 	{
 		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::mandatoryOptions)
 		Assert.assertNotNull(moduleKo)
-		
+
 		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
 			BasicValidator::MANDATORY_VARIABLE,
 			BasicValidator::getMandatoryVariablesMsg(MandatoryVariables::NAMES))
@@ -45,7 +45,7 @@ class BasicValidatorTest
 	{
 		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::mandatoryVariables)
 		Assert.assertNotNull(moduleKo)
-		
+
 		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
 			BasicValidator::MANDATORY_OPTION,
 			BasicValidator::getMandatoryOptionsMsg(MandatoryOptions::NAMES))
@@ -56,13 +56,13 @@ class BasicValidatorTest
 	}
 
 	@Test
-	def void testCheckName() 
+	def void testCheckName()
 	{
 		val moduleKo = parseHelper.parse(''' module test''')
 		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule, 
-			BasicValidator::MODULE_NAME, 
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
+			BasicValidator::MODULE_NAME,
 			BasicValidator::getModuleNameMsg())		
 
 		val moduleOk = parseHelper.parse(TestUtils::testModule)
@@ -73,7 +73,7 @@ class BasicValidatorTest
 	// ===== BaseType =====	
 
 	@Test
-	def void testCheckArraySize() 
+	def void testCheckArraySize()
 	{
 		val moduleKo = parseHelper.parse(TestUtils::testModule
 			+
@@ -86,15 +86,15 @@ class BasicValidatorTest
 		)
 		Assert.assertNotNull(moduleKo)
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarType,
+		moduleKo.assertError(NablaPackage.eINSTANCE.baseType,
 			BasicValidator::ARRAY_SIZES,
 			BasicValidator::getArraySizesMsg())
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarType,
+		moduleKo.assertError(NablaPackage.eINSTANCE.baseType,
 			BasicValidator::ARRAY_SIZES,
 			BasicValidator::getArraySizesMsg())
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarType,
+		moduleKo.assertError(NablaPackage.eINSTANCE.baseType,
 			BasicValidator::ARRAY_DIMENSION,
 			BasicValidator::getArrayDimensionMsg())
 
@@ -109,11 +109,11 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors		
 	}
-		
-	// ===== Variables : Var & VarRef =====	
+
+	// ===== Variables : Var & VarRef =====
 	
 	@Test
-	def void testCheckUnusedVariable() 
+	def void testCheckUnusedVariable()
 	{
 		val moduleKo = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomVars(
@@ -122,7 +122,7 @@ class BasicValidatorTest
 			''')
 		)
 		Assert.assertNotNull(moduleKo)
-		
+
 		moduleKo.assertWarning(NablaPackage.eINSTANCE.^var, 
 			BasicValidator::UNUSED_VARIABLE, 
 			BasicValidator::getUnusedVariableMsg())		
@@ -139,8 +139,8 @@ class BasicValidatorTest
 	}
 
 	@Test
-	def void testCheckIndicesNumber() 
-	{		
+	def void testCheckIndicesNumber()
+	{
 		val moduleKo = parseHelper.parse(TestUtils::testModule
 			+
 			'''
@@ -151,14 +151,14 @@ class BasicValidatorTest
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef, 
-			BasicValidator::INDICES_NUMBER, 
-			BasicValidator::getIndicesNumberMsg(2,1))		
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef, 
-			BasicValidator::INDICES_NUMBER, 
-			BasicValidator::getIndicesNumberMsg(1,2))		
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
+			BasicValidator::INDICES_NUMBER,
+			BasicValidator::getIndicesNumberMsg(2,1))
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
+			BasicValidator::INDICES_NUMBER,
+			BasicValidator::getIndicesNumberMsg(1,2))
 
 		val moduleOk =  parseHelper.parse(TestUtils::testModule
 			+
@@ -170,10 +170,10 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
-	
+
 	@Test
 	def void testCheckIteratorNumberAndType() 
-	{		
+	{
 		val moduleKo = parseHelper.parse(TestUtils::testModule
 			+
 			'''
@@ -184,21 +184,21 @@ class BasicValidatorTest
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef, 
-			BasicValidator::ITERATOR_NUMBER, 
-			BasicValidator::getIteratorNumberMsg(1,2))		
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef, 
-			BasicValidator::ITERATOR_NUMBER, 
-			BasicValidator::getIteratorNumberMsg(2,1))		
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
+			BasicValidator::ITERATOR_NUMBER,
+			BasicValidator::getIteratorNumberMsg(1,2))
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
+			BasicValidator::ITERATOR_NUMBER,
+			BasicValidator::getIteratorNumberMsg(2,1))
 
 		val node = moduleKo.getItemTypeByName("node").name
 		val cell = moduleKo.getItemTypeByName("cell").name
-		
-		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef, 
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
 			BasicValidator::ITERATOR_TYPE, 
-			BasicValidator::getIteratorTypeMsg(node, cell))		
+			BasicValidator::getIteratorTypeMsg(node, cell))
 
 		val moduleOk =  parseHelper.parse(TestUtils::testModule
 			+
@@ -212,9 +212,9 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
-		
-	// ===== Functions (Reductions, Dimension) =====	
-	
+
+	// ===== Functions (Reductions, Dimension) =====
+
 	@Test
 	def void testCheckUnusedFunction() 
 	{
@@ -222,8 +222,8 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(modelKo)
 		Assert.assertNotNull(moduleKo)
 
-		moduleKo.assertWarning(NablaPackage.eINSTANCE.function, 
-			BasicValidator::UNUSED_FUNCTION, 
+		moduleKo.assertWarning(NablaPackage.eINSTANCE.function,
+			BasicValidator::UNUSED_FUNCTION,
 			BasicValidator::getUnusedFunctionMsg())
 
 		val modelOk = TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
@@ -232,20 +232,20 @@ class BasicValidatorTest
 			''')
 			+
 			'''
-			ℝ[2] orig = [0.0 , 0.0] ;
-			ComputeT: 
+			ℝ[2] orig = [0.0 , 0.0];
+			ComputeV:
 			{ 
-				ℝ t = f(orig);
-				t = t + 1;	
+				ℝ v = f(orig);
+				v = v + 1;
 			}
-			'''		
+			'''
 		val moduleOk = parseHelper.parse(modelOk)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoIssues
 	}
 
 	@Test
-	def void testCheckUnusedReduction() 
+	def void testCheckUnusedReduction()
 	{
 		val moduleKo = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
@@ -254,15 +254,15 @@ class BasicValidatorTest
 			''')
 			+
 			'''
-			ℝ[2] orig = [0.0 , 0.0] ;
+			ℝ[2] orig = [0.0 , 0.0];
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
-			
-		moduleKo.assertWarning(NablaPackage.eINSTANCE.reduction, 
-			BasicValidator::UNUSED_REDUCTION, 
-			BasicValidator::getUnusedReductionMsg())		
-									
+
+		moduleKo.assertWarning(NablaPackage.eINSTANCE.reduction,
+			BasicValidator::UNUSED_REDUCTION,
+			BasicValidator::getUnusedReductionMsg())
+
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
 			'''
@@ -270,7 +270,7 @@ class BasicValidatorTest
 			''')
 			+
 			'''
-			ℝ[2] orig = [0.0 , 0.0] ;
+			ℝ[2] orig = [0.0 , 0.0];
 			ComputeU: orig = reduceMin{r∈nodes()}(X{r});
 			'''
 		)
@@ -291,13 +291,13 @@ class BasicValidatorTest
 			)
 		)
 		Assert.assertNotNull(modulekO)
-		
-		modulekO.assertError(NablaPackage.eINSTANCE.function, 
-			BasicValidator::FUNCTION_IN_TYPES_OPERATION, 
+
+		modulekO.assertError(NablaPackage.eINSTANCE.function,
+			BasicValidator::FUNCTION_IN_TYPES_OPERATION,
 			BasicValidator::getFunctionInTypesOperationMsg())
 
-		modulekO.assertError(NablaPackage.eINSTANCE.function, 
-			BasicValidator::FUNCTION_INCOMPATIBLE_IN_TYPES, 
+		modulekO.assertError(NablaPackage.eINSTANCE.function,
+			BasicValidator::FUNCTION_INCOMPATIBLE_IN_TYPES,
 			BasicValidator::getFunctionIncompatibleInTypesMsg())
 
 		val moduleOk = parseHelper.parse(
@@ -324,7 +324,7 @@ class BasicValidatorTest
 			)
 		)
 		Assert.assertNotNull(modulekO)
-		
+
 		modulekO.assertError(NablaPackage.eINSTANCE.function, 
 			BasicValidator::FUNCTION_RETURN_TYPE, 
 			BasicValidator::getFunctionReturnTypeMsg("x"))
@@ -341,7 +341,7 @@ class BasicValidatorTest
 		moduleOk.assertNoErrors(NablaPackage.eINSTANCE.function, 
 			BasicValidator::FUNCTION_RETURN_TYPE)
 	}
-	
+
 	@Test
 	def testCheckReductionCollectionType() 
 	{
@@ -355,13 +355,13 @@ class BasicValidatorTest
 			)
 		)
 		Assert.assertNotNull(modulekO)
-		
-		modulekO.assertError(NablaPackage.eINSTANCE.reduction, 
-			BasicValidator::REDUCTION_COLLECTION_TYPE_OPERATION, 
+
+		modulekO.assertError(NablaPackage.eINSTANCE.reduction,
+			BasicValidator::REDUCTION_COLLECTION_TYPE_OPERATION,
 			BasicValidator::getReductionCollectionTypeOperationMsg)
 
-		modulekO.assertError(NablaPackage.eINSTANCE.reduction, 
-			BasicValidator::REDUCTION_INCOMPATIBLE_COLLECTION_TYPE, 
+		modulekO.assertError(NablaPackage.eINSTANCE.reduction,
+			BasicValidator::REDUCTION_INCOMPATIBLE_COLLECTION_TYPE,
 			BasicValidator::getReductionIncompatibleCollectionTypeMsg)
 
 		val moduleOk = parseHelper.parse(
@@ -388,9 +388,9 @@ class BasicValidatorTest
 			)
 		)
 		Assert.assertNotNull(modulekO)
-		
-		modulekO.assertError(NablaPackage.eINSTANCE.reduction, 
-			BasicValidator::REDUCTION_RETURN_TYPE, 
+
+		modulekO.assertError(NablaPackage.eINSTANCE.reduction,
+			BasicValidator::REDUCTION_RETURN_TYPE,
 			BasicValidator::getReductionReturnTypeMsg("y"))
 
 		val modulekO2 = parseHelper.parse(
@@ -401,9 +401,9 @@ class BasicValidatorTest
 			)
 		)
 		Assert.assertNotNull(modulekO2)
-		
-		modulekO2.assertError(NablaPackage.eINSTANCE.reduction, 
-			BasicValidator::REDUCTION_RETURN_TYPE, 
+
+		modulekO2.assertError(NablaPackage.eINSTANCE.reduction,
+			BasicValidator::REDUCTION_RETURN_TYPE,
 			BasicValidator::getReductionReturnTypeMsg("y"))
 
 		val moduleOk = parseHelper.parse(
@@ -416,9 +416,9 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
-	
+
 	@Test
-	def testCheckDimensionVarName() 
+	def testCheckDimensionSymbolName()
 	{
 		val modulekO = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
@@ -428,10 +428,10 @@ class BasicValidatorTest
 			''')
 		)
 		Assert.assertNotNull(modulekO)
-		
-		modulekO.assertError(NablaPackage.eINSTANCE.dimensionVar, 
-			BasicValidator::DIMENSION_VAR_NAME, 
-			BasicValidator::getDimensionVarNameMsg())
+
+		modulekO.assertError(NablaPackage.eINSTANCE.dimensionSymbol,
+			BasicValidator::DIMENSION_SYMBOL_NAME,
+			BasicValidator::getDimensionSymbolNameMsg())
 
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
@@ -446,9 +446,9 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
-	
+
 	@Test
-	def void testCheckUnusedDimensionVar() 
+	def void testCheckUnusedDimensionSymbol()
 	{
 		val moduleKo = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
@@ -462,11 +462,11 @@ class BasicValidatorTest
 			)
 		)
 		Assert.assertNotNull(moduleKo)
-			
-		moduleKo.assertWarning(NablaPackage.eINSTANCE.dimensionVar, 
-			BasicValidator::UNUSED_DIMENSION_VAR, 
-			BasicValidator::getUnusedDimensionVarMsg())		
-									
+
+		moduleKo.assertWarning(NablaPackage.eINSTANCE.dimensionSymbol,
+			BasicValidator::UNUSED_DIMENSION_SYMBOL,
+			BasicValidator::getUnusedDimensionSymbolMsg())
+
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
 			'''
@@ -481,11 +481,11 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoIssues
 	}
-	
-	// ===== Connectivities =====	
-	
+
+	// ===== Connectivities =====
+
 	@Test
-	def void testCheckUnusedConnectivity() 
+	def void testCheckUnusedConnectivity()
 	{
 		val moduleKo = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
@@ -496,10 +496,10 @@ class BasicValidatorTest
 			''')
 		)
 		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertWarning(NablaPackage.eINSTANCE.connectivity, 
-			BasicValidator::UNUSED_CONNECTIVITY, 
-			BasicValidator::getUnusedConnectivityMsg())		
+
+		moduleKo.assertWarning(NablaPackage.eINSTANCE.connectivity,
+			BasicValidator::UNUSED_CONNECTIVITY,
+			BasicValidator::getUnusedConnectivityMsg())
 
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
@@ -516,10 +516,10 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoIssues
 	}
-	
+
 	@Test
-	def void testCheckConnectivityCallIndexAndType() 
-	{		
+	def void testCheckConnectivityCallIndexAndType()
+	{
 		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(TestUtils::connectivities)
 			+
 			'''
@@ -529,17 +529,17 @@ class BasicValidatorTest
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityCall, 
-			BasicValidator::CONNECTIVITY_CALL_INDEX, 
-			BasicValidator::getConnectivityCallIndexMsg(0,1))		
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityCall,
+			BasicValidator::CONNECTIVITY_CALL_INDEX,
+			BasicValidator::getConnectivityCallIndexMsg(0,1))
 
 		val node = moduleKo.getItemTypeByName("node").name
 		val cell = moduleKo.getItemTypeByName("cell").name
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityCall, 
-			BasicValidator::CONNECTIVITY_CALL_TYPE, 
-			BasicValidator::getConnectivityCallTypeMsg(cell,node))		
+		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityCall,
+			BasicValidator::CONNECTIVITY_CALL_TYPE,
+			BasicValidator::getConnectivityCallTypeMsg(cell,node))
 
 		val moduleOk =  parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(TestUtils::connectivities)
 			+
@@ -552,10 +552,10 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
-	
+
 	@Test
 	def void testCheckNotInInstructions() 
-	{		
+	{
 		val moduleKo = parseHelper.parse(TestUtils::testModuleWithCoordVariable
 			+
 			'''
@@ -567,10 +567,10 @@ class BasicValidatorTest
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar, 
-			BasicValidator::NOT_IN_INSTRUCTIONS, 
-			BasicValidator::getNotInInstructionsMsg)		
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar,
+			BasicValidator::NOT_IN_INSTRUCTIONS,
+			BasicValidator::getNotInInstructionsMsg)
 
 		val moduleOk =  parseHelper.parse(TestUtils::testModuleWithCoordVariable
 			+
@@ -585,10 +585,10 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
-	
+
 	@Test
-	def void testCheckDimensionMultipleAndArg() 
-	{		
+	def void testCheckDimensionMultipleAndArg()
+	{
 		val moduleKo = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomConnectivities(
 				'''
@@ -605,14 +605,14 @@ class BasicValidatorTest
 				'''
 		)
 		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar, 
-			BasicValidator::DIMENSION_MULTIPLE, 
-			BasicValidator::getDimensionMultipleMsg)		
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar, 
-			BasicValidator::DIMENSION_ARG, 
-			BasicValidator::getDimensionArgMsg)		
+		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar,
+			BasicValidator::DIMENSION_MULTIPLE,
+			BasicValidator::getDimensionMultipleMsg)
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar,
+			BasicValidator::DIMENSION_ARG,
+			BasicValidator::getDimensionArgMsg)
 
 		val moduleOk =  parseHelper.parse(
 			TestUtils::getTestModuleWithCustomConnectivities(
@@ -632,7 +632,7 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
-	
+
 	// ===== Instructions =====
 
 	@Test
@@ -645,10 +645,10 @@ class BasicValidatorTest
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertError(NablaPackage.eINSTANCE.affectation, 
-			BasicValidator::AFFECTATION_CONST, 
-			BasicValidator::getAffectationConstMsg)		
+	
+		moduleKo.assertError(NablaPackage.eINSTANCE.affectation,
+			BasicValidator::AFFECTATION_CONST,
+			BasicValidator::getAffectationConstMsg)
 
 		val moduleKo2 = parseHelper.parse(TestUtils::testModule
 			+
@@ -657,25 +657,25 @@ class BasicValidatorTest
 			'''
 		)
 		Assert.assertNotNull(moduleKo2)
-		
-		moduleKo2.assertError(NablaPackage.eINSTANCE.affectation, 
-			BasicValidator::AFFECTATION_CONST, 
-			BasicValidator::getAffectationConstMsg)		
+
+		moduleKo2.assertError(NablaPackage.eINSTANCE.affectation,
+			BasicValidator::AFFECTATION_CONST,
+			BasicValidator::getAffectationConstMsg)
 
 		val moduleOk =  parseHelper.parse(TestUtils::testModule
 			+
 			'''
-			computeX : ℝ X = Y_EDGE_LENGTH;
+			computeX1 : ℝ X1 = Y_EDGE_LENGTH;
 			initYYY: { const ℝ xxx=0.0; ℝ yyy = xxx; }
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
-	
+
 	@Test
-	def void testCheckScalarVarDefaultValue() 
-	{		
+	def void testCheckScalarVarDefaultValue()
+	{
 		val moduleKo = parseHelper.parse(TestUtils::testModule
 			+
 			'''
@@ -684,10 +684,10 @@ class BasicValidatorTest
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertError(NablaPackage.eINSTANCE.simpleVarDefinition, 
-			BasicValidator::SCALAR_VAR_DEFAULT_VALUE, 
-			BasicValidator::getScalarVarDefaultValueMsg)		
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
+			BasicValidator::SCALAR_VAR_DEFAULT_VALUE,
+			BasicValidator::getScalarVarDefaultValueMsg)
 
 		val moduleOk =  parseHelper.parse(TestUtils::testModule
 			+
@@ -699,11 +699,10 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
-	
+
 	// ===== Iterators =====
-	
-	
-		@Test
+
+	@Test
 	def void testCheckUnusedIterator() 
 	{
 		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCoordVariable
@@ -713,10 +712,10 @@ class BasicValidatorTest
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertWarning(NablaPackage.eINSTANCE.spaceIterator, 
-			BasicValidator::UNUSED_ITERATOR, 
-			BasicValidator::getUnusedIteratorMsg())		
+
+		moduleKo.assertWarning(NablaPackage.eINSTANCE.spaceIterator,
+			BasicValidator::UNUSED_ITERATOR,
+			BasicValidator::getUnusedIteratorMsg())
 
 		val moduleOk = parseHelper.parse(TestUtils::getTestModuleWithCoordVariable
 			+
@@ -727,10 +726,10 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoIssues
 	}
-	
+
 	@Test
 	def void testCheckRangeReturnType() 
-	{		
+	{
 		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''
 			items { node }
@@ -743,10 +742,10 @@ class BasicValidatorTest
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertError(NablaPackage.eINSTANCE.rangeSpaceIterator, 
-			BasicValidator::RANGE_RETURN_TYPE, 
-			BasicValidator::getRangeReturnTypeMsg)		
+	
+		moduleKo.assertError(NablaPackage.eINSTANCE.rangeSpaceIterator,
+			BasicValidator::RANGE_RETURN_TYPE,
+			BasicValidator::getRangeReturnTypeMsg)
 
 		val moduleOk =  parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''
@@ -765,7 +764,7 @@ class BasicValidatorTest
 
 	@Test
 	def void testCheckSingletonReturnType() 
-	{		
+	{
 		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''
 			items { node }
@@ -778,10 +777,10 @@ class BasicValidatorTest
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertError(NablaPackage.eINSTANCE.singletonSpaceIterator, 
-			BasicValidator::SINGLETON_RETURN_TYPE, 
-			BasicValidator::getSingletonReturnTypeMsg)		
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.singletonSpaceIterator,
+			BasicValidator::SINGLETON_RETURN_TYPE,
+			BasicValidator::getSingletonReturnTypeMsg)
 
 		val moduleOk =  parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''
@@ -797,10 +796,10 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
-	
+
 	@Test
 	def void testCheckIncAndDecValidity() 
-	{		
+	{
 		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''
 			items { node }
@@ -813,10 +812,10 @@ class BasicValidatorTest
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
-		
-		moduleKo.assertError(NablaPackage.eINSTANCE.spaceIteratorRef, 
-			BasicValidator::SHIFT_VALIDITY, 
-			BasicValidator::getShiftValidityMsg)		
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.spaceIteratorRef,
+			BasicValidator::SHIFT_VALIDITY,
+			BasicValidator::getShiftValidityMsg)
 
 		val moduleOk =  parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''

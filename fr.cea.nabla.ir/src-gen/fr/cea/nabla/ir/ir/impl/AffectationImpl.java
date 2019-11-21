@@ -3,10 +3,9 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Affectation;
+import fr.cea.nabla.ir.ir.ArgOrVarRef;
 import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.IrPackage;
-import fr.cea.nabla.ir.ir.VarRef;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
@@ -38,7 +37,7 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 	 * @generated
 	 * @ordered
 	 */
-	protected VarRef left;
+	protected ArgOrVarRef left;
 
 	/**
 	 * The cached value of the '{@link #getRight() <em>Right</em>}' containment reference.
@@ -74,7 +73,7 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public VarRef getLeft() {
+	public ArgOrVarRef getLeft() {
 		return left;
 	}
 
@@ -83,8 +82,8 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetLeft(VarRef newLeft, NotificationChain msgs) {
-		VarRef oldLeft = left;
+	public NotificationChain basicSetLeft(ArgOrVarRef newLeft, NotificationChain msgs) {
+		ArgOrVarRef oldLeft = left;
 		left = newLeft;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.AFFECTATION__LEFT, oldLeft, newLeft);
@@ -98,7 +97,7 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setLeft(VarRef newLeft) {
+	public void setLeft(ArgOrVarRef newLeft) {
 		if (newLeft != left) {
 			NotificationChain msgs = null;
 			if (left != null)
@@ -196,7 +195,7 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case IrPackage.AFFECTATION__LEFT:
-				setLeft((VarRef)newValue);
+				setLeft((ArgOrVarRef)newValue);
 				return;
 			case IrPackage.AFFECTATION__RIGHT:
 				setRight((Expression)newValue);
@@ -214,7 +213,7 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case IrPackage.AFFECTATION__LEFT:
-				setLeft((VarRef)null);
+				setLeft((ArgOrVarRef)null);
 				return;
 			case IrPackage.AFFECTATION__RIGHT:
 				setRight((Expression)null);

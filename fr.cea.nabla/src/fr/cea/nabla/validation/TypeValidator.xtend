@@ -31,7 +31,7 @@ import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.typing.ArgOrVarTypeTypeProvider
+import fr.cea.nabla.typing.BaseTypeTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.NSTBoolScalar
 import fr.cea.nabla.typing.NSTIntScalar
@@ -47,7 +47,7 @@ class TypeValidator extends BasicValidator
 	static val INT = new NSTIntScalar
 
 	@Inject extension ExpressionTypeProvider
-	@Inject extension ArgOrVarTypeTypeProvider
+	@Inject extension BaseTypeTypeProvider
 
 	// ===== Functions =====
 

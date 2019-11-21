@@ -320,7 +320,7 @@ class TypeValidatorTest
 			'''
 			ℝ D{cells};
 			ℝ[2] E{cells};
-			computeT: ℝ t = reduceMin{c∈cells()}(D{c});
+			computeT: ℝ u = reduceMin{c∈cells()}(D{c});
 			computeV: ℝ v = reduceMin{c∈cells()}(E{c});
 			'''
 		)

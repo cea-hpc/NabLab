@@ -12,20 +12,19 @@ package fr.cea.nabla.ir.transformers
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.IterableInstruction
+import fr.cea.nabla.ir.ir.IterationBlock
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Variable
-import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtend.lib.annotations.Accessors
 
 import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
 
-import static extension fr.cea.nabla.ir.VariableExtensions.*
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
 class ReplaceReductions implements IrTransformationStep
 {
@@ -51,7 +50,7 @@ class ReplaceReductions implements IrTransformationStep
 			val reduc = reductionInstr.reduction
 			// transformation de la reduction
 			val loopExpression = createAffectationRHS(m, reductionInstr)
-			val loop = createReductionLoop(reductionInstr.range, reductionInstr.singletons, reductionInstr.result, loopExpression)
+			val loop = createReductionLoop(reductionInstr.iterationBlock, reductionInstr.result, loopExpression)
 			val variableDefinition = IrFactory::eINSTANCE.createVarDefinition => [ variables += reductionInstr.result ]
 			replace(reductionInstr, #[variableDefinition, loop])
 
@@ -70,10 +69,10 @@ class ReplaceReductions implements IrTransformationStep
 	private def Expression createAffectationRHS(IrModule m, ReductionInstruction reductionInstr)
 	{
 		val reduction = reductionInstr.reduction
-		val varRef = IrFactory::eINSTANCE.createVarRef =>
+		val varRef = IrFactory::eINSTANCE.createArgOrVarRef =>
 		[
-			variable = reductionInstr.result
-			type = EcoreUtil::copy(variable.type)
+			target = reductionInstr.result
+			type = EcoreUtil::copy(target.type)
 		]
 
 		if (reduction.isOperator)
@@ -104,7 +103,7 @@ class ReplaceReductions implements IrTransformationStep
 			]
 		}
 	}
-	
+
 	private def findOrCreateFunction(IrModule m, Reduction r)
 	{
 		var function = m.functions.findFirst
@@ -115,7 +114,7 @@ class ReplaceReductions implements IrTransformationStep
 			inArgs.get(1).type == r.returnType &&
 			returnType == r.returnType
 		]
-		
+
 		if (function === null) 
 		{ 
 			function = IrFactory::eINSTANCE.createFunction =>
@@ -136,7 +135,7 @@ class ReplaceReductions implements IrTransformationStep
 			]
 			m.functions += function
 		}
-		
+
 		return function
 	}
 
@@ -146,29 +145,27 @@ class ReplaceReductions implements IrTransformationStep
 		if (r.name.startsWith(prefix)) r.name.replaceFirst(prefix, '')
 		else r.name
 	}
-	
-	private def createReductionLoop(Iterator range, List<Iterator> singletons, Variable affectationLHS, Expression affectationRHS)
+
+	private def createReductionLoop(IterationBlock itBlock, Variable affectationLHS, Expression affectationRHS)
 	{
 		val loop = IrFactory::eINSTANCE.createLoop
-		loop.range = range
-		loop.singletons.addAll(singletons)
+		loop.iterationBlock = itBlock
 		loop.body = IrFactory::eINSTANCE.createAffectation =>
 		[
-			left = IrFactory::eINSTANCE.createVarRef =>
+			left = IrFactory::eINSTANCE.createArgOrVarRef =>
 			[
-				variable = affectationLHS
+				target = affectationLHS
 				type = EcoreUtil::copy(affectationRHS.type)
 			]
 			right = affectationRHS
 		]
 		return loop
-	}	
+	}
 
 	private def boolean isExternal(EObject it)
 	{
 		if (eContainer === null) false
-		else if (eContainer instanceof Loop) false
-		else if (eContainer instanceof ReductionInstruction) false
+		else if (eContainer instanceof IterableInstruction) false
 		else if (eContainer instanceof Job) true
 		else eContainer.external
 	}

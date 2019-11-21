@@ -16,7 +16,9 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
@@ -47,8 +49,31 @@ public class DimensionIterationBlockItemProvider extends IterationBlockItemProvi
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
+			addToIncludedPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
+	}
+
+	/**
+	 * This adds a property descriptor for the To Included feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addToIncludedPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_DimensionIterationBlock_toIncluded_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_DimensionIterationBlock_toIncluded_feature", "_UI_DimensionIterationBlock_type"),
+				 NablaPackage.Literals.DIMENSION_ITERATION_BLOCK__TO_INCLUDED,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -64,6 +89,8 @@ public class DimensionIterationBlockItemProvider extends IterationBlockItemProvi
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(NablaPackage.Literals.DIMENSION_ITERATION_BLOCK__INDEX);
+			childrenFeatures.add(NablaPackage.Literals.DIMENSION_ITERATION_BLOCK__FROM);
+			childrenFeatures.add(NablaPackage.Literals.DIMENSION_ITERATION_BLOCK__TO);
 		}
 		return childrenFeatures;
 	}
@@ -100,7 +127,8 @@ public class DimensionIterationBlockItemProvider extends IterationBlockItemProvi
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_DimensionIterationBlock_type");
+		DimensionIterationBlock dimensionIterationBlock = (DimensionIterationBlock)object;
+		return getString("_UI_DimensionIterationBlock_type") + " " + dimensionIterationBlock.isToIncluded();
 	}
 
 
@@ -116,7 +144,12 @@ public class DimensionIterationBlockItemProvider extends IterationBlockItemProvi
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(DimensionIterationBlock.class)) {
+			case NablaPackage.DIMENSION_ITERATION_BLOCK__TO_INCLUDED:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
 			case NablaPackage.DIMENSION_ITERATION_BLOCK__INDEX:
+			case NablaPackage.DIMENSION_ITERATION_BLOCK__FROM:
+			case NablaPackage.DIMENSION_ITERATION_BLOCK__TO:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -137,7 +170,70 @@ public class DimensionIterationBlockItemProvider extends IterationBlockItemProvi
 		newChildDescriptors.add
 			(createChildParameter
 				(NablaPackage.Literals.DIMENSION_ITERATION_BLOCK__INDEX,
-				 NablaFactory.eINSTANCE.createDimensionIndex()));
+				 NablaFactory.eINSTANCE.createDimensionSymbol()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.DIMENSION_ITERATION_BLOCK__FROM,
+				 NablaFactory.eINSTANCE.createDimension()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.DIMENSION_ITERATION_BLOCK__FROM,
+				 NablaFactory.eINSTANCE.createDimensionOperation()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.DIMENSION_ITERATION_BLOCK__FROM,
+				 NablaFactory.eINSTANCE.createDimensionInt()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.DIMENSION_ITERATION_BLOCK__FROM,
+				 NablaFactory.eINSTANCE.createDimensionSymbolRef()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.DIMENSION_ITERATION_BLOCK__TO,
+				 NablaFactory.eINSTANCE.createDimension()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.DIMENSION_ITERATION_BLOCK__TO,
+				 NablaFactory.eINSTANCE.createDimensionOperation()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.DIMENSION_ITERATION_BLOCK__TO,
+				 NablaFactory.eINSTANCE.createDimensionInt()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(NablaPackage.Literals.DIMENSION_ITERATION_BLOCK__TO,
+				 NablaFactory.eINSTANCE.createDimensionSymbolRef()));
+	}
+
+	/**
+	 * This returns the label text for {@link org.eclipse.emf.edit.command.CreateChildCommand}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection) {
+		Object childFeature = feature;
+		Object childObject = child;
+
+		boolean qualify =
+			childFeature == NablaPackage.Literals.DIMENSION_ITERATION_BLOCK__FROM ||
+			childFeature == NablaPackage.Literals.DIMENSION_ITERATION_BLOCK__TO;
+
+		if (qualify) {
+			return getString
+				("_UI_CreateChild_text2",
+				 new Object[] { getTypeText(childObject), getFeatureText(childFeature), getTypeText(owner) });
+		}
+		return super.getCreateChildText(owner, feature, child, selection);
 	}
 
 }

@@ -66,6 +66,9 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//DimensionIterationBlock">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//DimensionIterationBlock/index"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//DimensionIterationBlock/from"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//DimensionIterationBlock/to"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//DimensionIterationBlock/toIncluded"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//SpaceIterator">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SpaceIterator/name"/>
@@ -123,12 +126,6 @@
     <genClasses ecoreClass="Nabla.ecore#//DimensionSymbol">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//DimensionSymbol/name"/>
     </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//DimensionIndex">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//DimensionIndex/from"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//DimensionIndex/to"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//DimensionIndex/lte"/>
-    </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//DimensionVar"/>
     <genClasses ecoreClass="Nabla.ecore#//Expression"/>
     <genClasses ecoreClass="Nabla.ecore#//IntVectorConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//IntVectorConstant/values"/>
@@ -146,9 +143,9 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ArgOrVarRef/spaceIterators"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ArgOrVarRef/indices"/>
     </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//ArgOrVarType">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//ArgOrVarType/primitive"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ArgOrVarType/sizes"/>
+    <genClasses ecoreClass="Nabla.ecore#//BaseType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//BaseType/primitive"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//BaseType/sizes"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Dimension"/>
     <genClasses ecoreClass="Nabla.ecore#//InitTimeIterator"/>

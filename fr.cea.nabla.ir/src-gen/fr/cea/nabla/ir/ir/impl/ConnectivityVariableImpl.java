@@ -2,11 +2,10 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
+import fr.cea.nabla.ir.ir.ArgOrVarRef;
 import fr.cea.nabla.ir.ir.ConnectivityType;
 import fr.cea.nabla.ir.ir.ConnectivityVariable;
 import fr.cea.nabla.ir.ir.IrPackage;
-import fr.cea.nabla.ir.ir.VarRef;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
@@ -48,7 +47,7 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	 * @generated
 	 * @ordered
 	 */
-	protected VarRef defaultValue;
+	protected ArgOrVarRef defaultValue;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -140,10 +139,10 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public VarRef getDefaultValue() {
+	public ArgOrVarRef getDefaultValue() {
 		if (defaultValue != null && defaultValue.eIsProxy()) {
 			InternalEObject oldDefaultValue = (InternalEObject)defaultValue;
-			defaultValue = (VarRef)eResolveProxy(oldDefaultValue);
+			defaultValue = (ArgOrVarRef)eResolveProxy(oldDefaultValue);
 			if (defaultValue != oldDefaultValue) {
 				InternalEObject newDefaultValue = (InternalEObject)defaultValue;
 				NotificationChain msgs = oldDefaultValue.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.CONNECTIVITY_VARIABLE__DEFAULT_VALUE, null, null);
@@ -163,7 +162,7 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public VarRef basicGetDefaultValue() {
+	public ArgOrVarRef basicGetDefaultValue() {
 		return defaultValue;
 	}
 
@@ -172,8 +171,8 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetDefaultValue(VarRef newDefaultValue, NotificationChain msgs) {
-		VarRef oldDefaultValue = defaultValue;
+	public NotificationChain basicSetDefaultValue(ArgOrVarRef newDefaultValue, NotificationChain msgs) {
+		ArgOrVarRef oldDefaultValue = defaultValue;
 		defaultValue = newDefaultValue;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.CONNECTIVITY_VARIABLE__DEFAULT_VALUE, oldDefaultValue, newDefaultValue);
@@ -187,7 +186,7 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setDefaultValue(VarRef newDefaultValue) {
+	public void setDefaultValue(ArgOrVarRef newDefaultValue) {
 		if (newDefaultValue != defaultValue) {
 			NotificationChain msgs = null;
 			if (defaultValue != null)
@@ -247,7 +246,7 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 				setType((ConnectivityType)newValue);
 				return;
 			case IrPackage.CONNECTIVITY_VARIABLE__DEFAULT_VALUE:
-				setDefaultValue((VarRef)newValue);
+				setDefaultValue((ArgOrVarRef)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -265,7 +264,7 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 				setType((ConnectivityType)null);
 				return;
 			case IrPackage.CONNECTIVITY_VARIABLE__DEFAULT_VALUE:
-				setDefaultValue((VarRef)null);
+				setDefaultValue((ArgOrVarRef)null);
 				return;
 		}
 		super.eUnset(featureID);

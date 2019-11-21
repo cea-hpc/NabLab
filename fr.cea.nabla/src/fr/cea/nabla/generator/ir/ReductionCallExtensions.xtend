@@ -13,7 +13,6 @@ import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.Scalar
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.typing.DeclarationProvider
 import org.eclipse.emf.ecore.util.EcoreUtil
@@ -37,7 +36,7 @@ class ReductionCallExtensions
 		type = vType
 		
 		val seedExpression = d.model.seed.toIrExpression
-		if (vType instanceof Scalar)
+		if (vType.sizes.empty) // scalar type
 			defaultValue = seedExpression
 		else
 			defaultValue = IrFactory::eINSTANCE.createBaseTypeConstant =>

@@ -71,4 +71,9 @@ class MeshWrapper
 			default : throw new RuntimeException("Not implemented yet")
 		}
 	}
+
+	def getQuads()
+	{
+		nm.geometricMesh.quads
+	}
 }

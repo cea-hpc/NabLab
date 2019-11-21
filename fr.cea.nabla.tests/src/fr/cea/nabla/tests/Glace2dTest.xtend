@@ -1,7 +1,6 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.interpreter.NV0Real
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Test
@@ -24,7 +23,6 @@ class Glace2dTest
 		val genmodel = readFileAsString("../NablaExamples/src/glace2d/Glace2d.nablagen")
 		
 		val irModule = compilationHelper.getIrModule(model, genmodel)
-		val context = irModule.interprete
-		assertVariableValueInContext(irModule, context, "t", new NV0Real(0.2))
+		irModule.interprete
 	}
 }

@@ -19,8 +19,8 @@ class Glace2dTest
 	@Test
 	def void testInterpreteGlace2D()
 	{
-		val model = readFileAsString("../NablaExamples/src/glace2d/Glace2d.nabla")
-		val genmodel = readFileAsString("../NablaExamples/src/glace2d/Glace2d.nablagen")
+		val model = readFileAsString("src/glace2d/Glace2d.nabla")
+		val genmodel = readFileAsString("src/glace2d/Glace2d.nablagen")
 		
 		val irModule = compilationHelper.getIrModule(model, genmodel)
 		irModule.interprete

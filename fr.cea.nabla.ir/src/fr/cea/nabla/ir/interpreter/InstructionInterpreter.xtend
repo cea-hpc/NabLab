@@ -68,7 +68,7 @@ class InstructionInterpreter
 		//println("Dans interprete de If")
 		val cond = interprete(condition, context) as NV0Bool
 		if (cond.data) interprete(thenInstruction, context)
-		else interprete(elseInstruction, context)
+		else if (elseInstruction !== null) interprete(elseInstruction, context)
 	}
 
  	private static def void defineIndices(IterableInstruction it, Context context)

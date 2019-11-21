@@ -10,12 +10,19 @@ import org.junit.runner.RunWith
 import static fr.cea.nabla.tests.TestUtils.*
 
 import static extension fr.cea.nabla.ir.interpreter.ModuleInterpreter.*
+import org.junit.Assert
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
 class JobInterpreterTest 
 {
 	@Inject CompilationChainHelper compilationHelper
+
+	@Test
+	def void testInterpreteInSituJob()
+	{
+		Assert.fail("Not implemented yet")
+	}
 
 	@Test
 	def void testInterpreteInstructionJob()

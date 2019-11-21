@@ -13,16 +13,14 @@ with Math.*;
 
 items { node, cell, face }
 
-connectivities {
-	nodes: → {node};
-	cells: → {cell};
-	faces: → {face};
-	neighbourCells: cell → {cell};
-	nodesOfFace: face → {node};
-	cellsOfFace: face → {cell};
-	nodesOfCell: cell → {node};
-	commonFace: cell × cell → face;
-}
+set nodes: → {node};
+set cells: → {cell};
+set faces: → {face};
+set neighbourCells: cell → {cell};
+set nodesOfFace: face → {node};
+set cellsOfFace: face → {cell};
+set nodesOfCell: cell → {node};
+set commonFace: cell × cell → face;
 
 const ℝ X_LENGTH = 2.0;
 const ℝ Y_LENGTH = 2.0;
@@ -65,7 +63,7 @@ InitU: ∀c∈cells(),
 InitD: ∀c∈cells(), D{c} = 1.0; // 
 
 // Computing time step with cfl = 0.96
-computeDeltaTn: δt = reduceMin{c∈cells()}(X_EDGE_LENGTH*Y_EDGE_LENGTH/D{c}) * 0.24;
+computeDeltaTn: δt = Min{c∈cells()}(X_EDGE_LENGTH*Y_EDGE_LENGTH/D{c}) * 0.24;
 
 ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{p∈nodesOfCell(j)}(det(X{p}, X{p+1}));
 ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p}-X{p+1}));

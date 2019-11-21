@@ -15,13 +15,13 @@
 namespace nablalib
 {
 
-template <typename T>
+template<size_t N>
 class Mesh;
 
 class CartesianMesh2DGenerator
 {
 public:
-	static Mesh<Real2>* generate(int nbXQuads, int nbYQuads, double xSize, double ySize);
+	static Mesh<2>* generate(int nbXQuads, int nbYQuads, double xSize, double ySize);
 };
 
 }

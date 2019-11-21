@@ -27,7 +27,7 @@ PvdFileWriter2D::writeFile(
 					const int& iteration,
 					const double& time,
 					const int& nbNodes,
-					const Real2* nodes,
+					const RealArray1D<2>* nodes,
 					const int& nbCells,
 					const Quad* cells,
 					const map<string, double*> cellVariables,

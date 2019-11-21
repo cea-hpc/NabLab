@@ -27,8 +27,8 @@ public:
 	static constexpr int MaxNbCellsOfFace = 2;
 	static constexpr int MaxNbNeighbourCells = 2;
 
-	NumericMesh2D(Mesh<Real2>* geometricMesh);
-	Mesh<Real2>* getGeometricMesh() noexcept { return m_geometricMesh; }
+	NumericMesh2D(Mesh<2>* geometricMesh);
+	Mesh<2>* getGeometricMesh() noexcept { return m_geometricMesh; }
 
 	size_t getNbNodes() const noexcept { return m_geometricMesh->getNodes().size(); }
 	size_t getNbCells() const noexcept { return m_geometricMesh->getQuads().size(); }
@@ -48,7 +48,7 @@ public:
 	int getCommonFace(const int& cellId1, const int& cellId2) const noexcept;
 
 private:
-	Mesh<Real2>* m_geometricMesh;
+	Mesh<2>* m_geometricMesh;
 
 	int getNbCommonIds(const vector<int>& a, const vector<int>& b) const noexcept;
 	template <std::size_t T, std::size_t U>

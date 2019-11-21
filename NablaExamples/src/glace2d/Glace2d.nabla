@@ -21,11 +21,29 @@ set	nodesOfCell: cell → {node};
 set	cellsOfNode: node → {cell};
 set	nodesOfFace: face → {node};
 
-def	trace: x | ℝ[x,x] → ℝ;
-def	perp: ℝ[2] → ℝ[2];
-def	tensProduct: x | ℝ[x] × ℝ[x] → ℝ[x,x];
-def	matVectProduct: x, y  | ℝ[x,y] × ℝ[y] → ℝ[x];
-def	inverse: ℝ[2,2] → ℝ[2,2];
+// only for 2D vectors
+def	perp: ℝ[2] → ℝ[2], (a) → return [ a[1], -a[0] ];
+
+def	trace: x | ℝ[x,x] → ℝ, (a) → {
+	ℝ result = 0.0;
+	∀ ia ∈ [0;x[, result = result + a[ia, ia];
+	return result;
+}
+
+def	tensProduct: x | ℝ[x] × ℝ[x] → ℝ[x,x], (a, b) → {
+	ℝ[x,x] result;
+	∀ ia ∈ [0;x[,	
+		∀ ib ∈ [0;x[,
+			result[ia,ib] = a[ia]*b[ib];
+	return result;
+}
+
+// only for 2x2 matrices
+def	inverse: ℝ[2,2] → ℝ[2,2], (a) → {
+	ℝ alpha = 1.0 / det(a);
+	return [[ a[1,1] * alpha, -a[0,1] * alpha ],
+			[-a[1,0] * alpha,  a[0,0] * alpha ]];
+}
 
 // Options obligatoires pour générer
 const ℝ X_EDGE_LENGTH = 0.01;

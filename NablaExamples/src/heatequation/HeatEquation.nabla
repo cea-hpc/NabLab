@@ -13,15 +13,13 @@ with Math.*;
 
 items { node, cell, face }
 
-connectivities {
-	nodes: → {node};
-	cells: → {cell};
-	faces: → {face};
-	neighbourCells: cell → {cell};
-	nodesOfFace: face → {node};
-	nodesOfCell: cell → {node};
-	commonFace: cell × cell → face;
-}
+set nodes: → {node};
+set cells: → {cell};
+set faces: → {face};
+set neighbourCells: cell → {cell};
+set nodesOfFace: face → {node};
+set nodesOfCell: cell → {node};
+set commonFace: cell × cell → face;
 
 // Options obligatoires pour compiler
 const ℝ X_EDGE_LENGTH = 0.1;

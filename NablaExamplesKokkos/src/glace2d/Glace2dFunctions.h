@@ -47,15 +47,6 @@ public:
 		return result;
 	}
 
-	template<size_t N, size_t M>
-	static RealArray1D<N> matVectProduct(const RealArray2D<N, M>& a, const RealArray1D<M>& b) noexcept
-	{
-		RealArray1D<N> result;
-		for (int ia=0 ; ia<N ; ++ia)
-			result[ia] = MathFunctions::dot(a[ia], b);
-		return result;
-	}
-
 	static RealArray2D<2, 2> inverse(const RealArray2D<2, 2>& m) noexcept
 	{
 		RealArray2D<2, 2> result;
@@ -65,12 +56,6 @@ public:
 		result[1][0] = -m[1][0] * alpha;
 		result[1][1] = m[0][0] * alpha;
 		return result;
-	}
-
-private:
-	static double det(const RealArray2D<2, 2>& a) noexcept
-	{
-		return a[0][0] * a[1][1] - a[0][1] * a[1][0];
 	}
 };
 

@@ -12,7 +12,7 @@
 namespace nablalib
 {
 
-NumericMesh2D::NumericMesh2D(Mesh<Real2>* geometricMesh)
+NumericMesh2D::NumericMesh2D(Mesh<2>* geometricMesh)
 : m_geometricMesh(geometricMesh)
 {
 }

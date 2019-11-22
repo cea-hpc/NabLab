@@ -35,7 +35,7 @@ import org.eclipse.xtend.lib.annotations.Data
 @Data
 class DimensionValue 
 { 
-	public static val Undefined = new DimensionValue(null)
+	public static val UNDEFINED = new DimensionValue(null)
 	
 	Object value // Integer or Connectivity (constant like nbCells)
 	
@@ -165,7 +165,7 @@ class DeclarationProvider
 		{
 			case '+': computeValue(left, values) + computeValue(right, values)
 			case '*': computeValue(left, values) * computeValue(right, values)
-			default: DimensionValue::Undefined
+			default: DimensionValue::UNDEFINED
 		}
 	}
 
@@ -176,7 +176,7 @@ class DeclarationProvider
 	
 	private def dispatch DimensionValue computeValue(DimensionVarReference it, Map<DimensionVar, DimensionValue> values)
 	{
-		values.getOrDefault(target, DimensionValue::Undefined)
+		values.getOrDefault(target, DimensionValue::UNDEFINED)
 	}
 	
 	private def NablaType computeExpressionType(ArgType argType, Map<DimensionVar, DimensionValue> values)
@@ -233,7 +233,7 @@ class DeclarationProvider
 		if (a.int && b.int)
 			new DimensionValue(a.intValue + b.intValue)
 		else 
-			DimensionValue::Undefined // no operation on connectivities
+			DimensionValue::UNDEFINED // no operation on connectivities
 	}
 
 	private def DimensionValue operator_multiply(DimensionValue a, DimensionValue b)
@@ -241,6 +241,6 @@ class DeclarationProvider
 		if (a.int && b.int)
 			new DimensionValue(a.intValue * b.intValue)
 		else 
-			DimensionValue::Undefined // no operation on connectivities
+			DimensionValue::UNDEFINED // no operation on connectivities
 	}
 }

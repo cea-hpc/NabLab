@@ -95,7 +95,7 @@ class InstructionInterpreter
 			indexValue
 		else
 		{
-			//TODO : Plus efficace de faire une méthode pour indexValue in container
+			//TODO : Plus efficace de faire une méthode pour indexValue in container ?
 			val connectivityName = target.container.connectivity.name
 			val args =  target.container.args.map[x | context.getIdValue(x)]
 			context.meshWrapper.getElements(connectivityName, args).get(indexValue)

@@ -193,7 +193,6 @@ class TestUtils
 
 	static def dispatch assertVariableValueInContext(IrModule irModule, Context context, String variableName, NablaValue value)
 	{
-		//val res = context.getVariableValue(irModule.getVariableByName(variableName))
 		Assert.assertEquals(value, context.getVariableValue(irModule.getVariableByName(variableName)))
 	}
 

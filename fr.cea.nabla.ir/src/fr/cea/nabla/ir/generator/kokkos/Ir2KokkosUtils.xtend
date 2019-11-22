@@ -9,17 +9,24 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
-import fr.cea.nabla.ir.ir.Array1D
-import fr.cea.nabla.ir.ir.Array2D
+import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.PrimitiveType
-import fr.cea.nabla.ir.ir.Scalar
+
+import static extension fr.cea.nabla.ir.generator.DimensionContentProvider.*
 
 class Ir2KokkosUtils 
 {
-	static def dispatch String getCppType(Scalar it) { primitive.cppType }
-	static def dispatch String getCppType(Array1D it) { primitive.cppArrayType + 'Array1D<' + size + '>' }
-	static def dispatch String getCppType(Array2D it) { primitive.cppArrayType + 'Array2D<' + nbRows + ',' + nbCols + '>' }
+	static def dispatch String getCppType(BaseType it) 
+	{
+		if (it === null) 
+			'null'
+		else if (sizes.empty) 
+			primitive.cppType
+		else
+			getCppArrayType(primitive, sizes.size) + '<' + sizes.map[content].join(',') + '>'
+	}
+
 	static def dispatch String getCppType(ConnectivityType it) 
 	{ 
 		'Kokkos::View<' + base.cppType + connectivities.map['*'].join + '>'
@@ -36,13 +43,13 @@ class Ir2KokkosUtils
 		}
  	}	
 
-	private static def getCppArrayType(PrimitiveType t)
+	private static def getCppArrayType(PrimitiveType t, int dim)
 	{
 		switch t
 		{
 			case null, case BOOL : throw new RuntimeException('Not implemented')
-			case INT: 'Int'
-			case REAL: 'Real'
+			case INT: 'IntArray' + dim + 'D'
+			case REAL: 'RealArray' + dim + 'D'
 		}
  	}	
 }

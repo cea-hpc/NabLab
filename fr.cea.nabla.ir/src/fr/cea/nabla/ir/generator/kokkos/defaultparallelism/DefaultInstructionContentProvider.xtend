@@ -10,27 +10,43 @@
 package fr.cea.nabla.ir.generator.kokkos.defaultparallelism
 
 import fr.cea.nabla.ir.generator.kokkos.InstructionContentProvider
+import fr.cea.nabla.ir.ir.DimensionIterationBlock
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
+import fr.cea.nabla.ir.ir.SpaceIterationBlock
 
+import static extension fr.cea.nabla.ir.generator.DimensionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.kokkos.VariableExtensions.*
+import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
 
 class DefaultInstructionContentProvider extends InstructionContentProvider
 {
-	override protected getParallelContent(Loop it) 
+	override protected getParallelContent(Loop it) { getParallelContent(iterationBlock, it) }
+
+	override protected getHeader(ReductionInstruction it, String nbElems, String indexName)
+	'''
+		Kokkos::parallel_reduce("Reduction«result.name»", «nbElems», KOKKOS_LAMBDA(const int& «indexName», «result.cppType»& x)
+	'''
+
+	private def dispatch getParallelContent(SpaceIterationBlock it, Loop l)
 	'''
 		«IF !range.container.connectivity.indexEqualId»auto «range.containerName»(«range.accessor»);«ENDIF»
 		Kokkos::parallel_for(«range.container.connectivity.nbElems», KOKKOS_LAMBDA(const int& «range.indexName»)
 		{
 			«defineIndices»
-			«body.innerContent»
+			«l.body.innerContent»
 		});
 	'''
-	
-	override protected getHeader(ReductionInstruction it)
+
+	private def dispatch getParallelContent(DimensionIterationBlock it, Loop l)
 	'''
-		Kokkos::parallel_reduce("Reduction«result.name»", «range.container.connectivity.nbElems», KOKKOS_LAMBDA(const int& «range.indexName», «result.cppType»& x)
+		const int from = «from.content»;
+		const int to = «to.content»«IF toIncluded»+1«ENDIF»;
+		const int nbElems = from-to;
+		Kokkos::parallel_for(nbElems, KOKKOS_LAMBDA(const int& «index.name»)
+		{
+			«l.body.innerContent»
+		});
 	'''
 }

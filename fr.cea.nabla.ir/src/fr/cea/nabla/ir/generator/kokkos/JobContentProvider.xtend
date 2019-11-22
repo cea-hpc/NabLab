@@ -16,23 +16,27 @@ import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
+import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 abstract class JobContentProvider 
 {
-	extension InstructionContentProvider icp
-	
-	new(InstructionContentProvider icp) { this.icp = icp }
-	
+	@Accessors val extension InstructionContentProvider instructionContentProvider
+
+	new(InstructionContentProvider icp) 
+	{ 
+		instructionContentProvider = icp
+	}
+
 	abstract def CharSequence getJobCallsContent(Iterable<Job> jobs)
 	abstract def CharSequence getContent(Job it)
-	
+
 	protected def dispatch CharSequence getInnerContent(InstructionJob it)
 	'''
 		«instruction.innerContent»
 	'''
-	
+
 	protected def dispatch CharSequence getInnerContent(InSituJob it)
 	'''
 		if (!writer.isDisabled() && «condition») 

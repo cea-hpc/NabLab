@@ -151,7 +151,7 @@ class Ir2Java extends CodeGenerator
 			«ENDFOR»
 			«FOR f : functions.filter(Function).filter[body !== null]»
 
-			«f.content»
+				«f.content»
 			«ENDFOR»
 		};
 	'''

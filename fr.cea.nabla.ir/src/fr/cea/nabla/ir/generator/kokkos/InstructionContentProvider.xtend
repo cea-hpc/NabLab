@@ -10,72 +10,38 @@
 package fr.cea.nabla.ir.generator.kokkos
 
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
+import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.DimensionIterationBlock
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
-import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionInstruction
+import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.SpaceIterationBlock
 import fr.cea.nabla.ir.ir.VarDefinition
-import fr.cea.nabla.ir.ir.VarRefIteratorRef
 
+import static extension fr.cea.nabla.ir.generator.DimensionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.kokkos.VariableExtensions.*
-import fr.cea.nabla.ir.ir.Connectivity
 
 abstract class InstructionContentProvider 
 {
-	def dispatch getInnerContent(Instruction it) { content }
-	def dispatch getInnerContent(InstructionBlock it)
-	'''
-		«FOR i : instructions»
-		«i.content»
-		«ENDFOR»
-	'''
-
-	/**
-	 * Les réductions à l'intérieur des boucles ont été remplacées dans l'IR par des boucles.
-	 * Ne restent que les réductions au niveau des jobs => reduction //
-	 */
-	def dispatch CharSequence getContent(ReductionInstruction it) 
-	'''
-		«IF !range.container.connectivity.indexEqualId»int[] «range.containerName»(«range.accessor»);«ENDIF»
-		«result.cppType» «result.name»(«result.defaultValue.content»);
-		{
-			Kokkos::«reduction.kokkosName»<«result.cppType»> reducer(«result.name»);
-			«header»
-			{
-				«defineIndices»
-				«FOR innerReduction : innerReductions»
-				«innerReduction.content»
-				«ENDFOR»
-				reducer.join(x, «arg.content»);
-			}, reducer);
-		}
-	'''
-
-	protected abstract def CharSequence getHeader(ReductionInstruction it)
-
 	def dispatch CharSequence getContent(VarDefinition it) 
 	'''
 		«FOR v : variables»
-		«IF v.const»const «ENDIF»«v.varContent»
+		«IF v.const»const «ENDIF»«v.cppType» «v.name»«v.defaultValueContent»
 		«ENDFOR»
 	'''
-	
-	private def dispatch getVarContent(SimpleVariable it)
-	'''«cppType» «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
-	
-	private def dispatch getVarContent(ConnectivityVariable it)
-	'''«cppType» «name»«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
 
 	def dispatch CharSequence getContent(InstructionBlock it) 
 	'''
@@ -84,21 +50,26 @@ abstract class InstructionContentProvider
 			«i.content»
 			«ENDFOR»
 		}'''
-	
+
 	def dispatch CharSequence getContent(Affectation it) 
 	'''«left.content» = «right.content»;'''
+
+	def dispatch CharSequence getContent(ReductionInstruction it)
+	{
+		getContent(it, iterationBlock)
+	} 
 
 	def dispatch CharSequence getContent(Loop it) 
 	{
 		if (topLevelLoop) 
 			if (multithreadable)
-				parallelContent
+				getParallelContent(it)
 			else
-				topLevelSequentialContent
+				getTopLevelSequentialContent(iterationBlock, it)
 		else 
-			sequentialContent
+			getSequentialContent(iterationBlock, it)
 	}
-	
+
 	def dispatch CharSequence getContent(If it) 
 	'''
 		if («condition.content») 
@@ -108,32 +79,96 @@ abstract class InstructionContentProvider
 		«IF !(elseInstruction instanceof InstructionBlock)»	«ENDIF»«elseInstruction.content»
 		«ENDIF»
 	'''
-	
-	protected abstract def CharSequence getParallelContent(Loop it)
 
-	private def getTopLevelSequentialContent(Loop it)
+	def dispatch CharSequence getContent(Return it) 
 	'''
-		for (int «range.indexName»=0; «range.indexName»<«range.container.connectivity.nbElems»; «range.indexName»++)
+		return «expression.content»;
+	'''
+
+	def dispatch getInnerContent(Instruction it) 
+	{ 
+		content
+	}
+
+	def dispatch getInnerContent(InstructionBlock it)
+	'''
+		«FOR i : instructions»
+		«i.content»
+		«ENDFOR»
+	'''
+
+	protected abstract def CharSequence getParallelContent(Loop l)
+	protected abstract def CharSequence getHeader(ReductionInstruction it, String nbElems, String indexName)
+
+	private def dispatch CharSequence getContent(ReductionInstruction it, SpaceIterationBlock b) 
+	'''
+		«IF !b.range.container.connectivity.indexEqualId»int[] «b.range.containerName»(«b.range.accessor»);«ENDIF»
+		«result.cppType» «result.name»(«result.defaultValue.content»);
 		{
-			«defineIndices»
-			«body.innerContent»
+			Kokkos::«reduction.kokkosName»<«result.cppType»> reducer(«result.name»);
+			«getHeader(it, b.range.container.connectivity.nbElems, b.range.indexName)»
+			{
+				«b.defineIndices»
+				«FOR innerReduction : innerReductions»
+				«innerReduction.content»
+				«ENDFOR»
+				reducer.join(x, «arg.content»);
+			}, reducer);
 		}
 	'''
 
-	private def getSequentialContent(Loop it)
+	private def dispatch CharSequence getContent(ReductionInstruction it, DimensionIterationBlock b) 
+	'''
+		const int from = «b.from.content»;
+		const int to = «b.to.content»«IF b.toIncluded»+1«ENDIF»;
+		const int nbElems = from-to;
+		«result.cppType» «result.name»(«result.defaultValue.content»);
+		{
+			Kokkos::«reduction.kokkosName»<«result.cppType»> reducer(«result.name»);
+			«getHeader(it, "nbElems", b.index.name)»
+			{
+				«FOR innerReduction : innerReductions»
+				«innerReduction.content»
+				«ENDFOR»
+				reducer.join(x, «arg.content»);
+			}, reducer);
+		}
+	'''
+
+	private def dispatch getTopLevelSequentialContent(SpaceIterationBlock it, Loop l)
+	'''
+		for (size_t «range.indexName»=0; «range.indexName»<«range.container.connectivity.nbElems»; «range.indexName»++)
+		{
+			«defineIndices»
+			«l.body.innerContent»
+		}
+	'''
+
+	private def dispatch getTopLevelSequentialContent(DimensionIterationBlock it, Loop l)
+	'''
+		for (size_t «index.name»=«from.content»; «index.name»<«IF toIncluded»=«ENDIF»«to.content»; «index.name»++)
+			«l.body.innerContent»
+	'''
+
+	private def dispatch getSequentialContent(SpaceIterationBlock it, Loop l)
 	'''
 		{
 			auto «range.containerName»(«range.accessor»);
 			for (int «range.indexName»=0; «range.indexName»<«range.containerName».size(); «range.indexName»++)
 			{
 				«defineIndices»
-				«body.innerContent»
+				«l.body.innerContent»
 			}
 		}
 	'''
-	
+
+	private def dispatch getSequentialContent(DimensionIterationBlock it, Loop l)
+	{
+		getTopLevelSequentialContent(it, l)
+	}
+
 	/** Define all needed ids and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
-	protected def defineIndices(IterableInstruction it)
+	protected def defineIndices(SpaceIterationBlock it)
 	'''
 		«range.defineIndices»
 		«FOR s : singletons»
@@ -151,24 +186,7 @@ abstract class InstructionContentProvider
 			int «neededIndex.indexName»(«neededIndex.idToIndex»);
 		«ENDFOR»
 	'''
-	
-	private	def getIndexToId(IteratorRef it)
-	{
-		if (target.container.connectivity.indexEqualId || target.singleton) indexValue
-		else target.containerName + '[' + indexValue + ']'		
-	}
-	
-	private def getIdToIndex(VarRefIteratorRef it)
-	{
-		if (varContainer.indexEqualId) idName
-		else 'utils::indexOf(' + accessor + ',' + idName + ')'
-	}
 
-	protected def getAccessor(VarRefIteratorRef it) { getAccessor(varContainer, varArgs) }
-	protected def getAccessor(Iterator it)  { getAccessor(container.connectivity, container.args) }
-	private def getAccessor(Connectivity c, Iterable<? extends IteratorRef> args)  
-	'''mesh->get«c.name.toFirstUpper»(«args.map[idName].join(', ')»)'''
-	
 	private def getKokkosName(Reduction it)
 	{
 		switch name
@@ -187,8 +205,31 @@ abstract class InstructionContentProvider
 	{
 		val affectations = eAllContents.filter(Affectation)
 		for (a : affectations.toIterable)
-			if (a.left.variable.cppType == MatrixType)
+			if (a.left.target.cppType == MatrixType)
 				return false
 		return true
 	}
+
+	private	def getIndexToId(IteratorRef it)
+	{
+		if (target.container.connectivity.indexEqualId || target.singleton) indexValue
+		else target.containerName + '[' + indexValue + ']'		
+	}
+	
+	private def getIdToIndex(ArgOrVarRefIteratorRef it)
+	{
+		if (varContainer.indexEqualId) idName
+		else 'utils::indexOf(' + accessor + ',' + idName + ')'
+	}
+
+	private def dispatch getDefaultValueContent(SimpleVariable it)
+	'''«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
+	
+	private def dispatch getDefaultValueContent(ConnectivityVariable it)
+	'''«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
+
+	protected def getAccessor(ArgOrVarRefIteratorRef it) { getAccessor(varContainer, varArgs) }
+	protected def getAccessor(Iterator it)  { getAccessor(container.connectivity, container.args) }
+	private def getAccessor(Connectivity c, Iterable<? extends IteratorRef> args)  
+	'''mesh->get«c.name.toFirstUpper»(«args.map[idName].join(', ')»)'''
 }

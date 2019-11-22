@@ -16,7 +16,7 @@ workflow ExplicitHeatEquationGenerationChain transforms ExplicitHeatEquation
 	{
 	}
 	
-	ReplaceInternalReductions replaceReductions follows replaceUtf
+	ReplaceReductions replaceReductions follows replaceUtf
 	{
 	}
 	

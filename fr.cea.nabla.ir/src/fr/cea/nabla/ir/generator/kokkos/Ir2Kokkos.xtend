@@ -11,30 +11,33 @@ package fr.cea.nabla.ir.generator.kokkos
 
 import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.ir.MandatoryVariables
-import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.generator.CodeGenerator
+import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalJobContentProvider
 import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalParallelismUtils
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
-import static extension fr.cea.nabla.ir.generator.kokkos.VariableExtensions.*
 
 class Ir2Kokkos extends CodeGenerator
 {
-	extension JobContentProvider jcp
+	val extension JobContentProvider jobContentProvider
+	val extension FunctionContentProvider functionContentProvider
 
 	new(JobContentProvider jcp) 
 	{ 
 		super('kokkos', 'cc')
-		this.jcp = jcp
+		jobContentProvider = jcp
+		functionContentProvider = new FunctionContentProvider(jcp.instructionContentProvider)
 	}
 
 	override getFileContent(IrModule it)
@@ -61,7 +64,7 @@ class Ir2Kokkos extends CodeGenerator
 	#include "types/Types.h"
 	#include "types/MathFunctions.h"
 	#include "types/ArrayOperations.h"
-	«IF functions.exists[f | f.provider == name]»#include "«name.toLowerCase»/«name»«Utils::FunctionAndReductionproviderSuffix».h"«ENDIF»
+	«IF functions.exists[f | f.body === null && f.provider == name]»#include "«name.toLowerCase»/«name»«Utils::FunctionReductionPrefix».h"«ENDIF»
 	«val linearAlgebraVars = variables.filter(ConnectivityVariable).filter[linearAlgebra]»
 	«IF !linearAlgebraVars.empty»
 	#include "types/LinearAlgebraFunctions.h"
@@ -80,7 +83,7 @@ class Ir2Kokkos extends CodeGenerator
 			«ENDFOR»
 		};
 		Options* options;
-	
+
 	private:
 		int iteration;
 		NumericMesh2D* mesh;
@@ -108,8 +111,8 @@ class Ir2Kokkos extends CodeGenerator
 		«m.cppType» «m.name»;
 		«ENDFOR»
 		«ENDIF»
-		
-		«IF (jcp instanceof HierarchicalJobContentProvider)»
+
+		«IF (threadTeam)»
 		typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 		«ELSE»
 		const size_t maxHardThread = Kokkos::DefaultExecutionSpace::max_hardware_threads();
@@ -142,13 +145,17 @@ class Ir2Kokkos extends CodeGenerator
 		}
 
 	private:
-		«IF (jcp instanceof HierarchicalJobContentProvider)»
+		«IF (threadTeam)»
 			«HierarchicalParallelismUtils::teamWorkRange»
 
 		«ENDIF»
 		«FOR j : jobs.sortBy[at] SEPARATOR '\n'»
 			«j.content»
 		«ENDFOR»			
+		«FOR f : functions.filter(Function).filter[body !== null]»
+
+			«f.content»
+		«ENDFOR»
 
 	public:
 		void simulate()
@@ -176,7 +183,7 @@ class Ir2Kokkos extends CodeGenerator
 
 			utils::Timer timer(true);
 
-			«IF (jcp instanceof HierarchicalJobContentProvider)»
+			«IF (threadTeam)»
 				«HierarchicalParallelismUtils::teamPolicy»
 
 			«ENDIF»			
@@ -244,12 +251,17 @@ class Ir2Kokkos extends CodeGenerator
 		return 0;
 	}
 	'''
-	
+
 	private def getConnectivityAccessor(Connectivity c)
 	{
 		if (c.inTypes.empty)
 			'''mesh->getNb«c.name.toFirstUpper»()'''
 		else
 			'''NumericMesh2D::MaxNb«c.name.toFirstUpper»'''
+	}
+
+	private def isThreadTeam()
+	{
+		jobContentProvider instanceof HierarchicalJobContentProvider
 	}
 }

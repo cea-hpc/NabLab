@@ -792,7 +792,7 @@ public final class Glace2d
 	private double[] perp(double[] a) 
 	{
 		return new double[] {a[1], -a[0]};
-	}		
+	}
 
 	private double[][] tensProduct(double[] a, double[] b) 
 	{
@@ -802,7 +802,7 @@ public final class Glace2d
 			for (int ib=0; ib<x; ib++)
 				result[ia][ib] = a[ia] * b[ib];
 		return result;
-	}		
+	}
 
 	private double trace(double[][] a) 
 	{
@@ -811,11 +811,11 @@ public final class Glace2d
 		for (int ia=0; ia<x; ia++)
 			result = result + a[ia][ia];
 		return result;
-	}		
+	}
 
 	private double[][] inverse(double[][] a) 
 	{
 		double alpha = 1.0 / MathFunctions.det(a);
 		return new double[][] {new double[] {a[1][1] * alpha, -a[0][1] * alpha}, new double[] {-a[1][0] * alpha, a[0][0] * alpha}};
-	}		
+	}
 };

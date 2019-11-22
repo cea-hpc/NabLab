@@ -24,7 +24,7 @@ import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class Utils 
 {
-	static val FunctionReductionPrefix = 'Functions'
+	public static val FunctionReductionPrefix = 'Functions'
 
 	static def getCodeName(Function it, String separator)
 	{

@@ -27,10 +27,10 @@ import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
 
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
+import static extension fr.cea.nabla.ir.generator.DimensionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.generator.java.DimensionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 
 class ExpressionContentProvider

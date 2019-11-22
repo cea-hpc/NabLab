@@ -43,7 +43,7 @@ class ArgOrVarExtensions
 		val nextJobs = new HashSet<Job>
 		for (j : irModule.jobs)
 			if (j.inVars.exists[x | x === it])
-				nextJobs += j		
+				nextJobs += j
 		return nextJobs
 	}
 

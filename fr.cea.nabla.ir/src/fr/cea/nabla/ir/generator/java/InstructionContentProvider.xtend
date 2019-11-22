@@ -28,11 +28,11 @@ import fr.cea.nabla.ir.ir.SpaceIterationBlock
 import fr.cea.nabla.ir.ir.VarDefinition
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.generator.DimensionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.generator.java.DimensionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 
 class InstructionContentProvider 
@@ -99,10 +99,6 @@ class InstructionContentProvider
 		«ENDFOR»
 	'''
 
-	/**
-	 * Les réductions à l'intérieur des boucles ont été remplacées dans l'IR par des boucles.
-	 * Ne restent que les réductions au niveau des jobs => reduction //
-	 */
 	private static def dispatch CharSequence getContent(ReductionInstruction it, SpaceIterationBlock b) 
 	'''
 		«result.javaType» «result.name» = IntStream.range(0, «b.range.container.connectivity.nbElems»).boxed().parallel().reduce(
@@ -150,7 +146,6 @@ class InstructionContentProvider
 		if (operator) a + ' ' + name + ' ' + b
 		else getCodeName('.') + '(' + a + ', ' + b + ')'
 	}
-
 
 	private static def dispatch getSequentialContent(SpaceIterationBlock it, Loop l)
 	'''
@@ -214,7 +209,7 @@ class InstructionContentProvider
 	private	static def getIndexToId(IteratorRef it)
 	{
 		if (target.container.connectivity.indexEqualId || target.singleton) indexValue
-		else target.containerName + '[' + indexValue + ']'		
+		else target.containerName + '[' + indexValue + ']'
 	}
 
 	private static def getIdToIndex(ArgOrVarRefIteratorRef it)

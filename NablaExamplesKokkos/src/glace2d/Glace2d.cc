@@ -20,7 +20,6 @@
 #include "types/Types.h"
 #include "types/MathFunctions.h"
 #include "types/ArrayOperations.h"
-#include "glace2d/Glace2dFunctions.h"
 
 using namespace nablalib;
 
@@ -31,7 +30,7 @@ public:
 	{
 		// Should be const but usefull to set them from main args
 		double X_EDGE_LENGTH = 0.01;
-		double Y_EDGE_LENGTH = as_const(X_EDGE_LENGTH);
+		double Y_EDGE_LENGTH = X_EDGE_LENGTH;
 		int X_EDGE_ELEMS = 100;
 		int Y_EDGE_ELEMS = 10;
 		int Z_EDGE_ELEMS = 1;
@@ -86,7 +85,7 @@ private:
 	Kokkos::View<RealArray1D<2>*> X_nplus1;
 	Kokkos::View<RealArray1D<2>*> uj_nplus1;
 	Kokkos::View<double*> E_nplus1;
-	
+
 	const size_t maxHardThread = Kokkos::DefaultExecutionSpace::max_hardware_threads();
 
 public:
@@ -102,8 +101,8 @@ public:
 	, nbOuterFaces(mesh->getNbOuterFaces())
 	, nbNodesOfFace(NumericMesh2D::MaxNbNodesOfFace)
 	, t(0.0)
-	, deltat(as_const(options->option_deltat_ini))
-	, deltat_nplus1(as_const(options->option_deltat_ini))
+	, deltat(options->option_deltat_ini)
+	, deltat_nplus1(options->option_deltat_ini)
 	, t_nplus1(0.0)
 	, X("X", nbNodes)
 	, b("b", nbNodes)
@@ -165,17 +164,17 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
-			RealArray1D<2> reduction1204356241 = {0.0, 0.0};
+			RealArray1D<2> reduction91753293 = {{0.0, 0.0}};
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					int rId(nodesOfCellJ[rNodesOfCellJ]);
 					int rNodes(rId);
-					reduction1204356241 = ArrayOperations::plus(reduction1204356241, (X_n0(rNodes)));
+					reduction91753293 = ArrayOperations::plus(reduction91753293, (X_n0(rNodes)));
 				}
 			}
-			center(jCells) = ArrayOperations::multiply(0.25, reduction1204356241);
+			center(jCells) = ArrayOperations::multiply(0.25, reduction91753293);
 		});
 	}
 	
@@ -198,7 +197,7 @@ private:
 					int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 					int rMinus1Nodes(rMinus1Id);
 					int rPlus1Nodes(rPlus1Id);
-					C_ic(jCells,rNodesOfCellJ) = ArrayOperations::multiply(0.5, Glace2dFunctions::perp(ArrayOperations::minus(X_n0(rPlus1Nodes), X_n0(rMinus1Nodes))));
+					C_ic(jCells,rNodesOfCellJ) = ArrayOperations::multiply(0.5, perp(ArrayOperations::minus(X_n0(rPlus1Nodes), X_n0(rMinus1Nodes))));
 				}
 			}
 		});
@@ -229,15 +228,15 @@ private:
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
-			if (center(jCells)[0] < as_const(options->option_x_interface)) 
+			if (center(jCells)[0] < options->option_x_interface) 
 			{
-				rho_ic(jCells) = as_const(options->option_rho_ini_zg);
-				p_ic(jCells) = as_const(options->option_p_ini_zg);
+				rho_ic(jCells) = options->option_rho_ini_zg;
+				p_ic(jCells) = options->option_p_ini_zg;
 			}
 			else 
 			{
-				rho_ic(jCells) = as_const(options->option_rho_ini_zd);
-				p_ic(jCells) = as_const(options->option_p_ini_zd);
+				rho_ic(jCells) = options->option_rho_ini_zd;
+				p_ic(jCells) = options->option_p_ini_zd;
 			}
 		});
 	}
@@ -253,17 +252,17 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
-			double reduction1137614085 = 0.0;
+			double reduction_1455110305 = 0.0;
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					int rId(nodesOfCellJ[rNodesOfCellJ]);
 					int rNodes(rId);
-					reduction1137614085 = reduction1137614085 + (MathFunctions::dot(C_ic(jCells,rNodesOfCellJ), X_n0(rNodes)));
+					reduction_1455110305 = reduction_1455110305 + (MathFunctions::dot(C_ic(jCells,rNodesOfCellJ), X_n0(rNodes)));
 				}
 			}
-			V_ic(jCells) = 0.5 * reduction1137614085;
+			V_ic(jCells) = 0.5 * reduction_1455110305;
 		});
 	}
 	
@@ -291,7 +290,7 @@ private:
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
-			E(jCells) = p_ic(jCells) / ((as_const(options->gamma) - 1.0) * rho_ic(jCells));
+			E(jCells) = p_ic(jCells) / ((options->gamma - 1.0) * rho_ic(jCells));
 		});
 	}
 	
@@ -314,7 +313,7 @@ private:
 					int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 					int rMinus1Nodes(rMinus1Id);
 					int rPlus1Nodes(rPlus1Id);
-					C(jCells,rNodesOfCellJ) = ArrayOperations::multiply(0.5, Glace2dFunctions::perp(ArrayOperations::minus(X(rPlus1Nodes), X(rMinus1Nodes))));
+					C(jCells,rNodesOfCellJ) = ArrayOperations::multiply(0.5, perp(ArrayOperations::minus(X(rPlus1Nodes), X(rMinus1Nodes))));
 				}
 			}
 		});
@@ -366,17 +365,17 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
-			double reduction_1191516395 = 0.0;
+			double reduction_443215113 = 0.0;
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					int rId(nodesOfCellJ[rNodesOfCellJ]);
 					int rNodes(rId);
-					reduction_1191516395 = reduction_1191516395 + (MathFunctions::dot(C(jCells,rNodesOfCellJ), X(rNodes)));
+					reduction_443215113 = reduction_443215113 + (MathFunctions::dot(C(jCells,rNodesOfCellJ), X(rNodes)));
 				}
 			}
-			V(jCells) = 0.5 * reduction_1191516395;
+			V(jCells) = 0.5 * reduction_443215113;
 		});
 	}
 	
@@ -404,7 +403,7 @@ private:
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
-			p(jCells) = (as_const(options->gamma) - 1.0) * rho(jCells) * e(jCells);
+			p(jCells) = (options->gamma - 1.0) * rho(jCells) * e(jCells);
 		});
 	}
 	
@@ -436,7 +435,7 @@ private:
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
-			c(jCells) = MathFunctions::sqrt(as_const(options->gamma) * p(jCells) / rho(jCells));
+			c(jCells) = MathFunctions::sqrt(options->gamma * p(jCells) / rho(jCells));
 		});
 	}
 	
@@ -451,15 +450,15 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
-			double reduction_224870427 = 0.0;
+			double reduction_1941980426 = 0.0;
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
-					reduction_224870427 = reduction_224870427 + (l(jCells,rNodesOfCellJ));
+					reduction_1941980426 = reduction_1941980426 + (l(jCells,rNodesOfCellJ));
 				}
 			}
-			deltatj(jCells) = 2.0 * V(jCells) / (c(jCells) * reduction_224870427);
+			deltatj(jCells) = 2.0 * V(jCells) / (c(jCells) * reduction_1941980426);
 		});
 	}
 	
@@ -478,7 +477,7 @@ private:
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
-					Ajr(jCells,rNodesOfCellJ) = ArrayOperations::multiply(((rho(jCells) * c(jCells)) / l(jCells,rNodesOfCellJ)), Glace2dFunctions::tensProduct(C(jCells,rNodesOfCellJ), C(jCells,rNodesOfCellJ)));
+					Ajr(jCells,rNodesOfCellJ) = ArrayOperations::multiply(((rho(jCells) * c(jCells)) / l(jCells,rNodesOfCellJ)), tensProduct(C(jCells,rNodesOfCellJ), C(jCells,rNodesOfCellJ)));
 				}
 			}
 		});
@@ -495,7 +494,7 @@ private:
 		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 		{
 			int rId(rNodes);
-			RealArray2D<2,2> reduction_1808600259 = {{{0.0, 0.0}, {0.0, 0.0}}};
+			RealArray2D<2,2> reduction_646088144 = {{{0.0, 0.0}, {0.0, 0.0}}};
 			{
 				auto cellsOfNodeR(mesh->getCellsOfNode(rId));
 				for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.size(); jCellsOfNodeR++)
@@ -503,10 +502,10 @@ private:
 					int jId(cellsOfNodeR[jCellsOfNodeR]);
 					int jCells(jId);
 					int rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId),rId));
-					reduction_1808600259 = ArrayOperations::plus(reduction_1808600259, (Ajr(jCells,rNodesOfCellJ)));
+					reduction_646088144 = ArrayOperations::plus(reduction_646088144, (Ajr(jCells,rNodesOfCellJ)));
 				}
 			}
-			Ar(rNodes) = reduction_1808600259;
+			Ar(rNodes) = reduction_646088144;
 		});
 	}
 	
@@ -521,7 +520,7 @@ private:
 		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 		{
 			int rId(rNodes);
-			RealArray1D<2> reduction193693613 = {0.0, 0.0};
+			RealArray1D<2> reduction265492794 = {{0.0, 0.0}};
 			{
 				auto cellsOfNodeR(mesh->getCellsOfNode(rId));
 				for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.size(); jCellsOfNodeR++)
@@ -529,10 +528,10 @@ private:
 					int jId(cellsOfNodeR[jCellsOfNodeR]);
 					int jCells(jId);
 					int rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId),rId));
-					reduction193693613 = ArrayOperations::plus(reduction193693613, (ArrayOperations::plus(ArrayOperations::multiply(p(jCells), C(jCells,rNodesOfCellJ)), Glace2dFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), uj(jCells)))));
+					reduction265492794 = ArrayOperations::plus(reduction265492794, (ArrayOperations::plus(ArrayOperations::multiply(p(jCells), C(jCells,rNodesOfCellJ)), MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), uj(jCells)))));
 				}
 			}
-			b(rNodes) = reduction193693613;
+			b(rNodes) = reduction265492794;
 		});
 	}
 	
@@ -544,15 +543,15 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeDt() noexcept
 	{
-		double reduction_137878187(numeric_limits<double>::max());
+		double reduction_1441609733(numeric_limits<double>::max());
 		{
-			Kokkos::Min<double> reducer(reduction_137878187);
-			Kokkos::parallel_reduce("Reductionreduction_137878187", nbCells, KOKKOS_LAMBDA(const int& jCells, double& x)
+			Kokkos::Min<double> reducer(reduction_1441609733);
+			Kokkos::parallel_reduce("Reductionreduction_1441609733", nbCells, KOKKOS_LAMBDA(const int& jCells, double& x)
 			{
 				reducer.join(x, deltatj(jCells));
 			}, reducer);
 		}
-		deltat_nplus1 = as_const(options->option_deltat_cfl) * reduction_137878187;
+		deltat_nplus1 = options->option_deltat_cfl * reduction_1441609733;
 	}
 	
 	/**
@@ -613,12 +612,12 @@ private:
 		{
 			int kId(outerFaces[kOuterFaces]);
 			const double epsilon = 1.0E-10;
-			RealArray2D<2,2> I = {{{1.0, 0.0}, {0.0, 1.0}}};
+			RealArray2D<2,2> I = {{{{1.0, 0.0}}, {{0.0, 1.0}}}};
 			double X_MIN = 0.0;
-			double X_MAX = as_const(options->X_EDGE_ELEMS) * as_const(options->X_EDGE_LENGTH);
+			double X_MAX = options->X_EDGE_ELEMS * options->X_EDGE_LENGTH;
 			double Y_MIN = 0.0;
-			double Y_MAX = as_const(options->Y_EDGE_ELEMS) * as_const(options->Y_EDGE_LENGTH);
-			RealArray1D<2> nY = {0.0, 1.0};
+			double Y_MAX = options->Y_EDGE_ELEMS * options->Y_EDGE_LENGTH;
+			RealArray1D<2> nY = {{0.0, 1.0}};
 			{
 				auto nodesOfFaceK(mesh->getNodesOfFace(kId));
 				for (int rNodesOfFaceK=0; rNodesOfFaceK<nodesOfFaceK.size(); rNodesOfFaceK++)
@@ -633,10 +632,10 @@ private:
 						else 
 							sign = 1.0;
 						RealArray1D<2> n = ArrayOperations::multiply(sign, nY);
-						RealArray2D<2,2> nxn = Glace2dFunctions::tensProduct(n, n);
+						RealArray2D<2,2> nxn = tensProduct(n, n);
 						RealArray2D<2,2> IcP = ArrayOperations::minus(I, nxn);
-						bt(rNodes) = Glace2dFunctions::matVectProduct(IcP, b(rNodes));
-						Mt(rNodes) = ArrayOperations::plus(ArrayOperations::multiply(IcP, (ArrayOperations::multiply(Ar(rNodes), IcP))), ArrayOperations::multiply(nxn, Glace2dFunctions::trace(Ar(rNodes))));
+						bt(rNodes) = MathFunctions::matVectProduct(IcP, b(rNodes));
+						Mt(rNodes) = ArrayOperations::plus(ArrayOperations::multiply(IcP, (ArrayOperations::multiply(Ar(rNodes), IcP))), ArrayOperations::multiply(nxn, trace(Ar(rNodes))));
 					}
 					if ((MathFunctions::fabs(X(rNodes)[0] - X_MIN) < epsilon) || ((MathFunctions::fabs(X(rNodes)[0] - X_MAX) < epsilon))) 
 					{
@@ -657,7 +656,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeTn() noexcept
 	{
-		t_nplus1 = as_const(t) + as_const(deltat_nplus1);
+		t_nplus1 = t + deltat_nplus1;
 	}
 	
 	/**
@@ -681,7 +680,7 @@ private:
 	{
 		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 		{
-			ur(rNodes) = Glace2dFunctions::matVectProduct(Glace2dFunctions::inverse(Mt(rNodes)), bt(rNodes));
+			ur(rNodes) = MathFunctions::matVectProduct(inverse(Mt(rNodes)), bt(rNodes));
 		});
 	}
 	
@@ -702,7 +701,7 @@ private:
 				{
 					int rId(nodesOfCellJ[rNodesOfCellJ]);
 					int rNodes(rId);
-					F(jCells,rNodesOfCellJ) = ArrayOperations::plus(ArrayOperations::multiply(p(jCells), C(jCells,rNodesOfCellJ)), Glace2dFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), (ArrayOperations::minus(uj(jCells), ur(rNodes)))));
+					F(jCells,rNodesOfCellJ) = ArrayOperations::plus(ArrayOperations::multiply(p(jCells), C(jCells,rNodesOfCellJ)), MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), (ArrayOperations::minus(uj(jCells), ur(rNodes)))));
 				}
 			}
 		});
@@ -718,7 +717,7 @@ private:
 	{
 		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 		{
-			X_nplus1(rNodes) = ArrayOperations::plus(X(rNodes), ArrayOperations::multiply(as_const(deltat), ur(rNodes)));
+			X_nplus1(rNodes) = ArrayOperations::plus(X(rNodes), ArrayOperations::multiply(deltat, ur(rNodes)));
 		});
 	}
 	
@@ -744,15 +743,15 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
-			RealArray1D<2> reduction_233216747 = {0.0, 0.0};
+			RealArray1D<2> reduction_1949909430 = {{0.0, 0.0}};
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
-					reduction_233216747 = ArrayOperations::plus(reduction_233216747, (F(jCells,rNodesOfCellJ)));
+					reduction_1949909430 = ArrayOperations::plus(reduction_1949909430, (F(jCells,rNodesOfCellJ)));
 				}
 			}
-			uj_nplus1(jCells) = ArrayOperations::minus(uj(jCells), ArrayOperations::multiply((as_const(deltat) / m(jCells)), reduction_233216747));
+			uj_nplus1(jCells) = ArrayOperations::minus(uj(jCells), ArrayOperations::multiply((deltat / m(jCells)), reduction_1949909430));
 		});
 	}
 	
@@ -767,17 +766,17 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
-			double reduction53297701 = 0.0;
+			double reduction_119635181 = 0.0;
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					int rId(nodesOfCellJ[rNodesOfCellJ]);
 					int rNodes(rId);
-					reduction53297701 = reduction53297701 + (MathFunctions::dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
+					reduction_119635181 = reduction_119635181 + (MathFunctions::dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
 				}
 			}
-			E_nplus1(jCells) = E(jCells) - (as_const(deltat) / m(jCells)) * reduction53297701;
+			E_nplus1(jCells) = E(jCells) - (deltat / m(jCells)) * reduction_119635181;
 		});
 	}
 	
@@ -801,6 +800,40 @@ private:
 	void copy_E_nplus1_to_E() noexcept
 	{
 		std::swap(E_nplus1, E);
+	}
+
+	KOKKOS_INLINE_FUNCTION
+	RealArray1D<2> perp(RealArray1D<2> a) 
+	{
+		return {{a[1], -a[0]}};
+	}
+
+	template<size_t x>
+	KOKKOS_INLINE_FUNCTION
+	RealArray2D<x,x> tensProduct(RealArray1D<x> a, RealArray1D<x> b) 
+	{
+		RealArray2D<x,x> result;
+		for (size_t ia=0; ia<x; ia++)
+			for (size_t ib=0; ib<x; ib++)
+				result[ia][ib] = a[ia] * b[ib];
+		return result;
+	}
+
+	template<size_t x>
+	KOKKOS_INLINE_FUNCTION
+	double trace(RealArray2D<x,x> a) 
+	{
+		double result = 0.0;
+		for (size_t ia=0; ia<x; ia++)
+			result = result + a[ia][ia];
+		return result;
+	}
+
+	KOKKOS_INLINE_FUNCTION
+	RealArray2D<2,2> inverse(RealArray2D<2,2> a) 
+	{
+		double alpha = 1.0 / MathFunctions::det(a);
+		return {{{{a[1][1] * alpha, -a[0][1] * alpha}}, {{-a[1][0] * alpha, a[0][0] * alpha}}}};
 	}
 
 public:

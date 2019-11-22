@@ -10,13 +10,14 @@ workflow Glace2dGenerationChain transforms Glace2d
 	{ 
 		variables = ρ as "Density";
 		iterationPeriod = 1;
+		//timeStep = 1.0;
 	}
 	
 	ReplaceUtf replaceUtf follows tagPersistentVariables
 	{
 	}
 	
-	ReplaceInternalReductions replaceReductions follows replaceUtf
+	ReplaceReductions replaceReductions follows replaceUtf
 	{
 	}
 	

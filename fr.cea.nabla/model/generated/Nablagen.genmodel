@@ -43,7 +43,9 @@
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//PersistencePeriod"/>
     <genClasses ecoreClass="Nablagen.ecore#//ReplaceUtfComponent"/>
-    <genClasses ecoreClass="Nablagen.ecore#//ReplaceInternalReductionsComponent"/>
+    <genClasses ecoreClass="Nablagen.ecore#//ReplaceReductionsComponent">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//ReplaceReductionsComponent/replaceAllReductions"/>
+    </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//OptimizeConnectivitiesComponent">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//OptimizeConnectivitiesComponent/connectivities"/>
     </genClasses>

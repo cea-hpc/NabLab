@@ -40,7 +40,9 @@ class JobInterpreter
 		val irModule = eContainer as IrModule
 		val iteration = context.getInt(ModuleInterpreter::ITERATION_VARIABLE_NAME)
 		val time = context.getReal(MandatorySimulationVariables::TIME)
-		val lastWriteTime = context.getReal(Utils::LASTWRITETIME_VARIABLE_NAME)
+		var lastWriteTime = 0.0
+		if (timeStep > 0)
+			lastWriteTime = context.getReal(Utils::LASTWRITETIME_VARIABLE_NAME)
 
 		if ((iterationPeriod > 0 && iteration % iterationPeriod == 0)
 			|| (timeStep > 0 &&  time > lastWriteTime))
@@ -56,8 +58,8 @@ class JobInterpreter
 			val coord = (context.getVariableValue(coordVariable) as NV2Real).data
 			val quads = context.meshWrapper.quads
 			writer.writeFile(iteration, time, coord, quads, cellVariables, nodeVariables)
-
-			context.setVariableValue(Utils::LASTWRITETIME_VARIABLE_NAME, new NV0Real(lastWriteTime + timeStep))
+			if (timeStep > 0)
+				context.setVariableValue(Utils::LASTWRITETIME_VARIABLE_NAME, new NV0Real(lastWriteTime + timeStep))
 		}
 	}
 

@@ -7,6 +7,7 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
@@ -16,32 +17,44 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
 class ModuleInterpreter 
 {
-	static String iterationVariableName = "InterpreterIteration"
+	public static String ITERATION_VARIABLE_NAME = "InterpreterIteration"
 
-	static def interprete(IrModule it)
+	val IrModule module
+	var Context context
+	val PvdFileWriter2D writer
+	var JobInterpreter jobInterpreter
+	var Variable iterationVariable
+
+	new(IrModule module)
 	{
-		val context = new Context
-		val writer = new PvdFileWriter2D(name)
-		val jobInterpreter = new JobInterpreter(writer)
+		this.module = module
+		this.context = new Context(module)
+		this.writer = new PvdFileWriter2D(module.name)
+		this.jobInterpreter = null
+		this.iterationVariable = null
+	}
 
+	def interprete()
+	{
 		// Add Variable for iteration
-		addIterationVariable(context)
+		iterationVariable = createIterationVariable
+		jobInterpreter = new JobInterpreter(writer, iterationVariable)
 		
 		// Interprete constant variables
-		for (v : variables.filter(SimpleVariable).filter[const])
+		for (v : module.variables.filter(SimpleVariable).filter[const])
 			context.setVariableValue(v, interprete(v.defaultValue, context))
 			
-		if (!items.empty)
+		if (!module.items.empty)
 		{
 			// Create mesh
-			val nbXQuads = getInt(MandatoryMeshOptions::X_EDGE_ELEMS, context)
-			val nbYQuads = getInt(MandatoryMeshOptions::Y_EDGE_ELEMS, context)
-			val xSize = getReal(MandatoryMeshOptions::X_EDGE_LENGTH, context)
-			val ySize = getReal(MandatoryMeshOptions::Y_EDGE_LENGTH, context)
+			val nbXQuads = context.getInt(MandatoryMeshOptions::X_EDGE_ELEMS)
+			val nbYQuads = context.getInt(MandatoryMeshOptions::Y_EDGE_ELEMS)
+			val xSize = context.getReal(MandatoryMeshOptions::X_EDGE_LENGTH)
+			val ySize = context.getReal(MandatoryMeshOptions::Y_EDGE_LENGTH)
 			context.initMesh(nbXQuads, nbYQuads, xSize, ySize)
 
 			// Create mesh nbElems
-			for (c : usedConnectivities)
+			for (c : module.usedConnectivities)
 			if (c.inTypes.empty)
 				context.connectivitySizes.put(c, context.meshWrapper.getNbElems(c.name))
 			else
@@ -49,78 +62,55 @@ class ModuleInterpreter
 		}
 
 		// Interprete variables
-		for (v : variables.filter[x | !(x instanceof SimpleVariable && x.const)])
+		for (v : module.variables.filter[x | !(x instanceof SimpleVariable && x.const)])
 			context.setVariableValue(v, createValue(v, context))
 
 		// Copy Node Cooords
-		context.setVariableValue(initCoordVariable, new NV2Real(context.meshWrapper.nodes))
+		context.setVariableValue(module.initCoordVariable, new NV2Real(context.meshWrapper.nodes))
 		
 		// Interprete init jobs
-		for (j : jobs.filter[x | x.at < 0].sortBy[at])
+		for (j : module.jobs.filter[x | x.at < 0].sortBy[at])
 			jobInterpreter.interprete(j, context)
 
 		context.showVariables("After init jobs")
 	
 		// Declare time loop
-		var maxIterations = getInt(MandatorySimulationOptions::MAX_ITERATIONS, context)
-		var stopTime = getReal(MandatorySimulationOptions::STOP_TIME, context)
+		var maxIterations = context.getInt(MandatorySimulationOptions::MAX_ITERATIONS)
+		var stopTime = context.getReal(MandatorySimulationOptions::STOP_TIME)
 		
-		while (getIterationValue(context) < maxIterations && getReal(MandatorySimulationVariables::TIME, context) < stopTime)
+		while (iterationValue < maxIterations && context.getReal(MandatorySimulationVariables::TIME) < stopTime)
 		{
-			for (j : jobs.filter[x | x.at > 0].sortBy[at])
+			for (j : module.jobs.filter[x | x.at > 0].sortBy[at])
 				jobInterpreter.interprete(j, context)
-			context.showVariables("At iteration = " + getIterationValue(context))
-			incrementIterationValue(context)
+			context.showVariables("At iteration = " + iterationValue)
+			incrementIterationValue
 		}
 		return context
 	}
 
-	private static def getInt(IrModule module, String variableName, Context context)
-	{
-		val v = module.variables.findFirst[name == variableName]
-		return (context.getVariableValue(v) as NV0Int).data
-	}
-	
-	private static def getReal(IrModule module, String variableName, Context context)
-	{
-		val v = module.variables.findFirst[name == variableName]
-		return (context.getVariableValue(v) as NV0Real).data
-	}
-
-	private static def addIterationVariable(IrModule it, Context context)
+	private def createIterationVariable()
 	{
 		val iteration = IrFactory::eINSTANCE.createSimpleVariable
-		iteration.name = iterationVariableName
-		iteration.type = IrFactory::eINSTANCE.createScalar =>
-		[
-			primitive = PrimitiveType::INT
-		]
+		iteration.name = fr.cea.nabla.ir.interpreter.ModuleInterpreter.ITERATION_VARIABLE_NAME
+		iteration.type = IrFactory::eINSTANCE.createScalar => [ primitive = PrimitiveType::INT ]
 		iteration.const = false
 		iteration.defaultValue = IrFactory::eINSTANCE.createConstant =>
 		[
-			type = IrFactory::eINSTANCE.createScalar =>
-			[
-				primitive = PrimitiveType::INT
-			]
+			type = IrFactory::eINSTANCE.createScalar => [ primitive = PrimitiveType::INT ]
 			value = '0'
 		]
-		variables.add(iteration)
+		module.variables.add(iteration)
+		return iteration
 	}
 
-	private static def getIterationValue(IrModule module, Context context)
+	private def getIterationValue()
 	{
-		getInt(module, iterationVariableName, context)
+		context.getInt(iterationVariable)
 	}
 
-	private static def incrementIterationValue(IrModule module, Context context)
+	private def incrementIterationValue()
 	{
-		val iteration = module.iterationvariable
-		val value = (context.getVariableValue(iteration) as NV0Int).data
-		context.setVariableValue(iteration, new NV0Int(value + 1))
+		val value = getIterationValue
+		context.setVariableValue(iterationVariable, new NV0Int(value + 1))
 	}
-
-	static def getIterationvariable(IrModule it)
-	{
-		variables.findFirst[j | j.name == iterationVariableName]
-	}	
 }

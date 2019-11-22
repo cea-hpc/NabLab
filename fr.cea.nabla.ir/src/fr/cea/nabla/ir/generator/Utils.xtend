@@ -25,6 +25,9 @@ import fr.cea.nabla.ir.MandatorySimulationVariables
 
 class Utils 
 {
+	// Useful for InSituJob
+	public static String LASTWRITETIME_VARIABLE_NAME = "lastWriteTime"
+
 	static def getNbElems(Connectivity it) { 'nb' + name.toFirstUpper}
 
 	static def getComment(Job it)
@@ -73,7 +76,7 @@ class Utils
 	static def getCondition(InSituJob it)
 	{
 		if (iterationPeriod > 0) '''(iteration % «iterationPeriod» == 0)'''
-		else if (timeStep > 0) '''(«MandatorySimulationVariables::TIME» > lastWriteTime)'''
+		else if (timeStep > 0) '''(«MandatorySimulationVariables::TIME» > «fr.cea.nabla.ir.generator.Utils.LASTWRITETIME_VARIABLE_NAME»)'''
 	}
 
 	static def withMesh(IrModule it) { !items.empty }

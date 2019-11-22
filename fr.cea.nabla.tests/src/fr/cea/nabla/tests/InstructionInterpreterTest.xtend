@@ -1,6 +1,7 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
+import fr.cea.nabla.ir.interpreter.ModuleInterpreter
 import fr.cea.nabla.ir.interpreter.NV0Real
 import fr.cea.nabla.ir.interpreter.NV1Real
 import org.eclipse.xtext.testing.InjectWith
@@ -9,8 +10,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static fr.cea.nabla.tests.TestUtils.*
-
-import static extension fr.cea.nabla.ir.interpreter.ModuleInterpreter.*
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -28,7 +27,8 @@ class InstructionInterpreterTest
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val context = irModule.interprete
+		val moduleInterpreter = new ModuleInterpreter(irModule)
+		val context = moduleInterpreter.interprete
 
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(1.0))
 	}
@@ -43,7 +43,8 @@ class InstructionInterpreterTest
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val context = irModule.interprete
+		val moduleInterpreter = new ModuleInterpreter(irModule)
+		val context = moduleInterpreter.interprete
 
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(1.0))
 	}
@@ -58,7 +59,8 @@ class InstructionInterpreterTest
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val context = irModule.interprete
+		val moduleInterpreter = new ModuleInterpreter(irModule)
+		val context = moduleInterpreter.interprete
 
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(1.0))
 	}
@@ -77,7 +79,8 @@ class InstructionInterpreterTest
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val context = irModule.interprete
+		val moduleInterpreter = new ModuleInterpreter(irModule)
+		val context = moduleInterpreter.interprete
 
 		val double[] res = newDoubleArrayOfSize(xQuads * yQuads)
 		for (var i = 0 ; i < res.length ; i++)

@@ -45,7 +45,7 @@ abstract class JobContentProvider
 			«ENDFOR»
 			auto quads = mesh->getGeometricMesh()->getQuads();
 			writer.writeFile(iteration, «MandatorySimulationVariables::TIME», nbNodes, «MandatoryMeshVariables::COORD».data(), nbCells, quads.data(), cellVariables, nodeVariables);
-			«IF timeStep>0»lastWriteTime += «timeStep»;«ENDIF»
+			«IF timeStep>0»«LASTWRITETIME_VARIABLE_NAME» += «timeStep»;«ENDIF»
 		}
 	'''
 

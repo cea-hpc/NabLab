@@ -1,13 +1,13 @@
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.IrModule
-import java.util.HashMap
 import fr.cea.nabla.ir.ir.IrFactory
-import org.eclipse.xtend.lib.annotations.Accessors
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.SimpleVariable
+import java.util.HashMap
 import org.eclipse.emf.ecore.util.EcoreUtil
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * Attend des propriétés de type <nom_de_variable> = <nom_de_persistence>.

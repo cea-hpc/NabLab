@@ -1,14 +1,15 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.MandatoryMeshVariables
-import fr.cea.nabla.ir.MandatorySimulationOptions
 import fr.cea.nabla.ir.MandatorySimulationVariables
+import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.EndOfInitJob
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.HashMap
 
@@ -21,7 +22,10 @@ class JobInterpreter
 {
 	val PvdFileWriter2D writer
 
-	new (PvdFileWriter2D writer) { this.writer = writer }
+	new (PvdFileWriter2D writer, Variable iterationVariable)
+	{
+		this.writer = writer
+	}
 
 	def dispatch interprete(InstructionJob it, Context context)
 	{
@@ -32,18 +36,14 @@ class JobInterpreter
 
 	def dispatch interprete(InSituJob it, Context context)
 	{
-		println("Dans interprete de InSituJob " + name)
+		println("Dans interprete de InSituJob " + name + " @ " + at)
 		val irModule = eContainer as IrModule
-		val iterationVariable = ModuleInterpreter.getIterationvariable(irModule)
-		val iteration = (context.getVariableValue(iterationVariable) as NV0Int).data
-		val timeVariable = irModule.getVariableByName(MandatorySimulationVariables::TIME)
-		val time = (context.getVariableValue(timeVariable) as NV0Real).data
-		val stopTimeVariable = irModule.getVariableByName(MandatorySimulationOptions::STOP_TIME)
-		val stopTime = (context.getVariableValue(stopTimeVariable) as NV0Real).data
+		val iteration = context.getInt(ModuleInterpreter::ITERATION_VARIABLE_NAME)
+		val time = context.getReal(MandatorySimulationVariables::TIME)
+		val lastWriteTime = context.getReal(Utils::LASTWRITETIME_VARIABLE_NAME)
 
-		//TODO C'est faux timeStep > 0 &&  time > stopTime . pas stopTime mais lastWriteTime
 		if ((iterationPeriod > 0 && iteration % iterationPeriod == 0)
-			|| (timeStep > 0 &&  time > stopTime))
+			|| (timeStep > 0 &&  time > lastWriteTime))
 		{
 			val cellVariables = new HashMap<String, double[]>
 			val nodeVariables = new HashMap<String, double[]>
@@ -56,6 +56,8 @@ class JobInterpreter
 			val coord = (context.getVariableValue(coordVariable) as NV2Real).data
 			val quads = context.meshWrapper.quads
 			writer.writeFile(iteration, time, coord, quads, cellVariables, nodeVariables)
+
+			context.setVariableValue(Utils::LASTWRITETIME_VARIABLE_NAME, new NV0Real(lastWriteTime + timeStep))
 		}
 	}
 

@@ -1,6 +1,7 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.VarRefIteratorRef
@@ -8,6 +9,7 @@ import fr.cea.nabla.ir.ir.Variable
 import java.util.HashMap
 import org.eclipse.xtend.lib.annotations.Accessors
 
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
@@ -15,24 +17,27 @@ import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 class Context
 {
 	val Context outerContext
+	val IrModule module
 	val indexValues = new HashMap<String, Integer>
 	val idValues = new HashMap<String, Integer>
 	val variableValues = new HashMap<Variable, NablaValue>
 	@Accessors val HashMap<Connectivity, Integer> connectivitySizes
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) MeshWrapper meshWrapper
 
-	new()
+	new(IrModule module)
 	{
 		this.outerContext = null
+		this.module = module
 		this.connectivitySizes = new HashMap<Connectivity, Integer>
-		meshWrapper = null
+		this.meshWrapper = null
 	}
 
 	new(Context outerContext)
 	{
 		this.outerContext = outerContext
+		this.module = outerContext.module
 		this.connectivitySizes = outerContext.connectivitySizes
-		meshWrapper = outerContext.meshWrapper
+		this.meshWrapper = outerContext.meshWrapper
 	}
 
 	def initMesh(int nbXQuads, int nbYQuads, double xSize, double ySize)
@@ -45,9 +50,36 @@ class Context
 		variableValues.get(variable) ?: outerContext.getVariableValue(variable)
 	}
 
+	def getInt(Variable variable)
+	{
+		return (getVariableValue(variable) as NV0Int).data
+	}
+
+	def getVariableValue(String variableName)
+	{
+		val variable = module.getVariableByName(variableName)
+		getVariableValue(variable)
+	}
+	
+	def getInt(String variableName)
+	{
+		return (getVariableValue(variableName) as NV0Int).data
+	}
+	
+	def getReal(String variableName)
+	{
+		return (getVariableValue(variableName) as NV0Real).data
+	}
+
 	def void setVariableValue(Variable variable, NablaValue value)
 	{
 		variableValues.put(variable, value)
+	}
+
+	def void setVariableValue(String variableName, NablaValue value)
+	{
+		val variable = module.getVariableByName(variableName)
+		setVariableValue(variable, value)
 	}
 
 	def int getIndexValue(VarRefIteratorRef it) { getIndexValue(indexName) }
@@ -70,7 +102,7 @@ class Context
 
 	def int getIndexOf(VarRefIteratorRef it, int id)
 	{
-		//TODO : Plus efficace de faire une méthode pour getindexOfId in container
+		//TODO : Plus efficace de faire une méthode pour getindexOfId in container ?
 		val connectivityName = varContainer.name
 		val args =  varArgs.map[x | getIdValue(x)]
 		val container = meshWrapper.getElements(connectivityName, args)

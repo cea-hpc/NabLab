@@ -303,26 +303,26 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.ReplaceInternalReductionsComponent} instances.
+	 * This keeps track of the one adapter used for all {@link fr.cea.nabla.nablagen.ReplaceReductionsComponent} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ReplaceInternalReductionsComponentItemProvider replaceInternalReductionsComponentItemProvider;
+	protected ReplaceReductionsComponentItemProvider replaceReductionsComponentItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.ReplaceInternalReductionsComponent}.
+	 * This creates an adapter for a {@link fr.cea.nabla.nablagen.ReplaceReductionsComponent}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createReplaceInternalReductionsComponentAdapter() {
-		if (replaceInternalReductionsComponentItemProvider == null) {
-			replaceInternalReductionsComponentItemProvider = new ReplaceInternalReductionsComponentItemProvider(this);
+	public Adapter createReplaceReductionsComponentAdapter() {
+		if (replaceReductionsComponentItemProvider == null) {
+			replaceReductionsComponentItemProvider = new ReplaceReductionsComponentItemProvider(this);
 		}
 
-		return replaceInternalReductionsComponentItemProvider;
+		return replaceReductionsComponentItemProvider;
 	}
 
 	/**
@@ -549,7 +549,7 @@ public class NablagenItemProviderAdapterFactory extends NablagenAdapterFactory i
 		if (persistentVarItemProvider != null) persistentVarItemProvider.dispose();
 		if (persistencePeriodItemProvider != null) persistencePeriodItemProvider.dispose();
 		if (replaceUtfComponentItemProvider != null) replaceUtfComponentItemProvider.dispose();
-		if (replaceInternalReductionsComponentItemProvider != null) replaceInternalReductionsComponentItemProvider.dispose();
+		if (replaceReductionsComponentItemProvider != null) replaceReductionsComponentItemProvider.dispose();
 		if (optimizeConnectivitiesComponentItemProvider != null) optimizeConnectivitiesComponentItemProvider.dispose();
 		if (fillHLTsComponentItemProvider != null) fillHLTsComponentItemProvider.dispose();
 		if (ir2CodeComponentItemProvider != null) ir2CodeComponentItemProvider.dispose();

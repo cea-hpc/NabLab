@@ -8,7 +8,7 @@ import fr.cea.nabla.ir.transformers.TagPersistentVariables
 import fr.cea.nabla.nablagen.FillHLTsComponent
 import fr.cea.nabla.nablagen.Iteration
 import fr.cea.nabla.nablagen.OptimizeConnectivitiesComponent
-import fr.cea.nabla.nablagen.ReplaceInternalReductionsComponent
+import fr.cea.nabla.nablagen.ReplaceReductionsComponent
 import fr.cea.nabla.nablagen.ReplaceUtfComponent
 import fr.cea.nabla.nablagen.TagPersistentVariablesComponent
 import fr.cea.nabla.nablagen.TimeStep
@@ -37,9 +37,9 @@ class IrTransformationStepProvider
 		new ReplaceUtf8Chars
 	} 
 	
-	static def dispatch get(ReplaceInternalReductionsComponent it)
+	static def dispatch get(ReplaceReductionsComponent it)
 	{
-		new ReplaceReductions
+		new ReplaceReductions(replaceAllReductions)
 	} 
 	
 	static def dispatch get(OptimizeConnectivitiesComponent it)

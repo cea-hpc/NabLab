@@ -20,7 +20,8 @@ Export-Package: fr.cea.nabla.ir,
  fr.cea.nabla.ir.ir,
  fr.cea.nabla.ir.ir.impl,
  fr.cea.nabla.ir.ir.util,
- fr.cea.nabla.ir.transformers
+ fr.cea.nabla.ir.transformers,
+ fr.cea.nabla.javalib.types
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.xtext.xbase.lib,

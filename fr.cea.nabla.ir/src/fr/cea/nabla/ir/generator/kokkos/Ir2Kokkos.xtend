@@ -121,7 +121,7 @@ class Ir2Kokkos extends CodeGenerator
 		«ENDIF»
 
 	public:
-		«name»(Options* aOptions, «IF withMesh»NumericMesh2D* aNumericMesh2D,«ENDIF»string output)
+		«name»(Options* aOptions, «IF withMesh»NumericMesh2D* aNumericMesh2D,«ENDIF» string output)
 		: options(aOptions)
 		«IF withMesh»
 		, mesh(aNumericMesh2D)
@@ -248,7 +248,7 @@ class Ir2Kokkos extends CodeGenerator
 		auto gm = CartesianMesh2DGenerator::generate(o->«MandatoryMeshOptions::X_EDGE_ELEMS», o->«MandatoryMeshOptions::Y_EDGE_ELEMS», o->«MandatoryMeshOptions::X_EDGE_LENGTH», o->«MandatoryMeshOptions::Y_EDGE_LENGTH»);
 		auto nm = new NumericMesh2D(gm);
 		«ENDIF»
-		auto c = new «name»(o, «IF withMesh»nm,«ENDIF»output);
+		auto c = new «name»(o, «IF withMesh»nm,«ENDIF» output);
 		c->simulate();
 		delete c;
 		«IF withMesh»

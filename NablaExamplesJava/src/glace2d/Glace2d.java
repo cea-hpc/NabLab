@@ -9,6 +9,7 @@ import fr.cea.nabla.javalib.Utils;
 import fr.cea.nabla.javalib.types.*;
 import fr.cea.nabla.javalib.mesh.*;
 
+
 @SuppressWarnings("all")
 public final class Glace2d
 {
@@ -53,7 +54,6 @@ public final class Glace2d
 		options = aOptions;
 		mesh = aNumericMesh2D;
 		writer = new PvdFileWriter2D("Glace2d");
-
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbNodesOfCell = NumericMesh2D.MaxNbNodesOfCell;
@@ -153,7 +153,7 @@ public final class Glace2d
 	public static void main(String[] args)
 	{
 		Glace2d.Options o = new Glace2d.Options();
-		Mesh<double[]> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
+		Mesh gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
 		NumericMesh2D nm = new NumericMesh2D(gm);
 		Glace2d i = new Glace2d(o, nm);
 		i.simulate();

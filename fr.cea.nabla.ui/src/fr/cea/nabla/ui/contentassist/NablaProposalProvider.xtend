@@ -21,7 +21,7 @@ import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
 class NablaProposalProvider extends AbstractNablaProposalProvider 
 {
 	// alpha, beta, gamma, delta, epsilon, lambda, rho, omega
-	static val GreekLetters = #['\u03B1', '\u03B2', '\u03B3', '\u03B4', '\u03F5', '\u03BB', '\u03C1', '\u2126', '\u03A9']
+	static val GreekLetters = #['\u03B1', '\u03B2', '\u03B3', '\u03B4', '\u03B5', '\u03BB', '\u03C1', '\u03A9']
 
 	override completeSimpleVar_Name(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor)
 	{

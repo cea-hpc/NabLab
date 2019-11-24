@@ -20,22 +20,22 @@ class VtkFileWriter2D extends FileWriter
 	{
 		super(moduleName) 
 	}
-	
+
 	override writeFile(int iteration, double time, double[][] nodes, Quad[] cells, Map<String, double[]> cellVariables, Map<String, double[]> nodeVariables)
 	{
-		try {
-			
+		try 
+		{
 			val writer = new PrintWriter(OutputDir + '/' + moduleName + '.' + iteration + '.vtk', 'UTF-8')
 			
 			writer.println('# vtk DataFile Version 2.0')
 			writer.println(moduleName + ' at iteration ' + iteration)
 			writer.println('ASCII')
 			writer.println('DATASET POLYDATA')
-			
+
 			writer.println('FIELD FieldData 1')
 			writer.println('TIME 1 1 double')
 			writer.println(time)
-			
+
 			writer.println('POINTS ' + nodes.size + ' float')
 			nodes.forEach[n | writer.println(n.get(0) + "\t" + n.get(1) + "\t" + 0.0)]
 
@@ -65,12 +65,16 @@ class VtkFileWriter2D extends FileWriter
 					cellVariables.get(cellVariableName).forEach[x | writer.println(x)]
 				}
 			}
-			
+
 			writer.close
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
 		}
-	}	
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace
+		} 
+		catch (UnsupportedEncodingException e)
+		{
+			e.printStackTrace
+		}
+	}
 }

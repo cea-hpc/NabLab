@@ -6,7 +6,7 @@ class BinaryOperationsInterpreter
 {
 	static def dispatch NablaValue getValueOf(NablaValue a, NablaValue b, String op)
 	{
-		throw new RuntimeException('Wrong operator: ' + op)
+		throw new RuntimeException('Wrong operator: ' + op + " for " + a.class.name + " and " + b.class.name)
 	}	
 	
 	// BOOL: useful for type validator (unused by type provider)
@@ -40,7 +40,10 @@ class BinaryOperationsInterpreter
 			case '+':  new NV0Int(a.data + b.data)
 			case '-':  new NV0Int(a.data - b.data)
 			case '*':  new NV0Int(a.data * b.data)
-			case '/':  new NV0Int(a.data / b.data)
+			case '/':  { if (b.data == 0)
+							throw new RuntimeException('Dividing by 0 is not possible') 
+						else
+							new NV0Int(a.data / b.data) }
 			case '%':  new NV0Int(a.data % b.data)
 			default: null
 		}
@@ -98,7 +101,10 @@ class BinaryOperationsInterpreter
 			case '+':  new NV0Real(a.data + b.data)
 			case '-':  new NV0Real(a.data - b.data)
 			case '*':  new NV0Real(a.data * b.data)
-			case '/':  new NV0Real(a.data / b.data)
+			case '/':  { if (b.data == 0.0)
+							throw new RuntimeException('Dividing by 0 is not possible') 
+						else
+							new NV0Real(a.data / b.data) }
 			default: null
 		}
 	}

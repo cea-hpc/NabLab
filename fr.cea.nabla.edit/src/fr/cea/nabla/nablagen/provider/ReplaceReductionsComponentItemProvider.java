@@ -4,7 +4,8 @@
 package fr.cea.nabla.nablagen.provider;
 
 
-import fr.cea.nabla.nablagen.ReplaceInternalReductionsComponent;
+import fr.cea.nabla.nablagen.NablagenPackage;
+import fr.cea.nabla.nablagen.ReplaceReductionsComponent;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,22 +13,25 @@ import java.util.List;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link fr.cea.nabla.nablagen.ReplaceInternalReductionsComponent} object.
+ * This is the item provider adapter for a {@link fr.cea.nabla.nablagen.ReplaceReductionsComponent} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class ReplaceInternalReductionsComponentItemProvider extends Ir2IrComponentItemProvider {
+public class ReplaceReductionsComponentItemProvider extends Ir2IrComponentItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ReplaceInternalReductionsComponentItemProvider(AdapterFactory adapterFactory) {
+	public ReplaceReductionsComponentItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -42,19 +46,42 @@ public class ReplaceInternalReductionsComponentItemProvider extends Ir2IrCompone
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
+			addReplaceAllReductionsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This returns ReplaceInternalReductionsComponent.gif.
+	 * This adds a property descriptor for the Replace All Reductions feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addReplaceAllReductionsPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ReplaceReductionsComponent_replaceAllReductions_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ReplaceReductionsComponent_replaceAllReductions_feature", "_UI_ReplaceReductionsComponent_type"),
+				 NablagenPackage.Literals.REPLACE_REDUCTIONS_COMPONENT__REPLACE_ALL_REDUCTIONS,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This returns ReplaceReductionsComponent.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/ReplaceInternalReductionsComponent"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/ReplaceReductionsComponent"));
 	}
 
 	/**
@@ -65,10 +92,10 @@ public class ReplaceInternalReductionsComponentItemProvider extends Ir2IrCompone
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((ReplaceInternalReductionsComponent)object).getName();
+		String label = ((ReplaceReductionsComponent)object).getName();
 		return label == null || label.length() == 0 ?
-			getString("_UI_ReplaceInternalReductionsComponent_type") :
-			getString("_UI_ReplaceInternalReductionsComponent_type") + " " + label;
+			getString("_UI_ReplaceReductionsComponent_type") :
+			getString("_UI_ReplaceReductionsComponent_type") + " " + label;
 	}
 
 
@@ -82,6 +109,12 @@ public class ReplaceInternalReductionsComponentItemProvider extends Ir2IrCompone
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
+
+		switch (notification.getFeatureID(ReplaceReductionsComponent.class)) {
+			case NablagenPackage.REPLACE_REDUCTIONS_COMPONENT__REPLACE_ALL_REDUCTIONS:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
+		}
 		super.notifyChanged(notification);
 	}
 

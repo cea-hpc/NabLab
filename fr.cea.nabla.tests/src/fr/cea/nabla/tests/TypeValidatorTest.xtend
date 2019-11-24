@@ -11,6 +11,7 @@ import fr.cea.nabla.typing.NSTRealScalar
 import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.typing.VarTypeProvider
 import fr.cea.nabla.validation.TypeValidator
+import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -18,7 +19,6 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.eclipse.xtext.diagnostics.Severity
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
@@ -44,7 +44,7 @@ class TypeValidatorTest
 		def f: ℝ → ℝ, (a) → { return 1; }
 		def g: ℝ → ℝ, (a) → { return 1.0; }
 		'''
-		+ TestUtils::mandatoryOptions + TestUtils::mandatoryVariables)
+		+ TestUtils::mandatoryOptionsAndVariables)
 
 		Assert.assertNotNull(module)
 		Assert.assertEquals(1, module.validate.filter(i | i.severity == Severity.ERROR).size)

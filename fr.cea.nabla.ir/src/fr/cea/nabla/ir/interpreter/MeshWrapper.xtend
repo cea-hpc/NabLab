@@ -8,7 +8,7 @@ import java.util.ArrayList
 
 class MeshWrapper 
 {
-	val Mesh<double[]> gm
+	val Mesh gm
 	val NumericMesh2D nm
 
 	new(int nbXQuads, int nbYQuads, double xSize, double ySize)
@@ -17,9 +17,20 @@ class MeshWrapper
 		nm = new NumericMesh2D(gm)
 	}
 
-	def int[] getContainer(Iterator iterator)
+	def int[] getElements(String connectivityName, int[] args)
 	{
-
+		//println("get" + connectivityName + if (args.size>0) "("+args.get(0)+")" else "")
+		switch connectivityName {
+			case "nodes" : nm.nodes
+			case "cells" : nm.cells
+			case "faces" : nm.faces
+			case "innerNodes" : nm.innerNodes
+			case "outerFaces" : nm.outerFaces
+			case "nodesOfCell" : nm.getNodesOfCell(args.get(0))
+			case "cellsOfNode" : nm.getCellsOfNode(args.get(0))
+			case "nodesOfFace" : nm.getNodesOfFace(args.get(0))
+			default : throw new RuntimeException("Not implemented yet (" + connectivityName + ")")
+		}
 	}
 
 	def int getIndexOf(Iterator iterator, int id)
@@ -37,17 +48,32 @@ class MeshWrapper
 		gm.nodes
 	}
 
-	def int getNbElems(String connectityName)
+	def int getNbElems(String connectivityName)
 	{
-		//TODO Not implemented yet
-		return 4
-		//getNbNodes
-		//throw new RuntimeException("Not implemented yet")
+		switch connectivityName {
+			case "nodes" : nm.nbNodes
+			case "cells" : nm.nbCells
+			case "faces" : nm.nbFaces
+			case "outerFaces" : nm.nbOuterFaces
+			case "innerNodes" : nm.nbInnerNodes
+			default : throw new RuntimeException("Not implemented yet")
+		}
 	}
 
-	def int getMaxNbElems(String connectityName)
+	def int getMaxNbElems(String connectivityName)
 	{
-		// MaxNbCellsOfNode
-		throw new RuntimeException("Not implemented yet")
+		switch connectivityName {
+			case "nodesOfCell" : NumericMesh2D::MaxNbNodesOfCell
+			case "nodesOfFace" : NumericMesh2D::MaxNbNodesOfFace
+			case "cellsOfNode" : NumericMesh2D::MaxNbCellsOfNode
+			case "cellsOfFace" : NumericMesh2D::MaxNbCellsOfFace
+			case "neighbourCells" : NumericMesh2D::MaxNbNeighbourCells
+			default : throw new RuntimeException("Not implemented yet")
+		}
+	}
+
+	def getQuads()
+	{
+		nm.geometricMesh.quads
 	}
 }

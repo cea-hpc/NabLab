@@ -45,7 +45,7 @@ class IteratorExtensionsTest
 	def ∑: x | (0.0, ℝ[x]) → ℝ[x];
 	def ∑: x | (0.0, ℝ[x, x]) → ℝ[x, x];
 	'''
-	+ TestUtils::mandatoryOptions + TestUtils::mandatoryVariables +
+	+ TestUtils::mandatoryOptionsAndVariables +
 	'''
 	ℝ x{cells}, f{cells}, Cjr{cells,nodesOfCell};
 	ℝ[2] u{cells};

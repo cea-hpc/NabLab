@@ -44,7 +44,6 @@ public final class HeatEquation
 		options = aOptions;
 		mesh = aNumericMesh2D;
 		writer = new PvdFileWriter2D("HeatEquation");
-
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
@@ -98,7 +97,7 @@ public final class HeatEquation
 	public static void main(String[] args)
 	{
 		HeatEquation.Options o = new HeatEquation.Options();
-		Mesh<double[]> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
+		Mesh gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
 		NumericMesh2D nm = new NumericMesh2D(gm);
 		HeatEquation i = new HeatEquation(o, nm);
 		i.simulate();

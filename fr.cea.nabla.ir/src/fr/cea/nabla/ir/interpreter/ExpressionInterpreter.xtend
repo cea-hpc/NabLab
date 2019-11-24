@@ -1,50 +1,53 @@
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.Utils
-import fr.cea.nabla.ir.ir.Array1D
-import fr.cea.nabla.ir.ir.Array2D
+import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.ir.ArgOrVarRef
+import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
-import fr.cea.nabla.ir.ir.Constant
+import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.ContractedIf
+import fr.cea.nabla.ir.ir.DimensionSymbolRef
 import fr.cea.nabla.ir.ir.FunctionCall
-import fr.cea.nabla.ir.ir.IntMatrixConstant
-import fr.cea.nabla.ir.ir.IntVectorConstant
+import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
-import fr.cea.nabla.ir.ir.RealMatrixConstant
-import fr.cea.nabla.ir.ir.RealVectorConstant
-import fr.cea.nabla.ir.ir.Scalar
+import fr.cea.nabla.ir.ir.RealConstant
 import fr.cea.nabla.ir.ir.UnaryExpression
-import fr.cea.nabla.ir.ir.VarRef
+import fr.cea.nabla.ir.ir.VectorConstant
 import java.util.Arrays
 
+import static fr.cea.nabla.ir.interpreter.DimensionInterpreter.*
+import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
+import static fr.cea.nabla.ir.interpreter.IrTypeExtensions.*
 import static fr.cea.nabla.ir.interpreter.NablaValueGetter.*
+import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
+import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class ExpressionInterpreter 
 {
 	static def dispatch NablaValue interprete(ContractedIf it, Context context)
 	{
-		println("Dans interprete de ContractedIf")
+		//println("Dans interprete de ContractedIf")
 		val condValue = condition.interprete(context)
 		if ((condValue as NV0Bool).data) thenExpression.interprete(context)
 		else elseExpression.interprete(context) 
 	}
-	
+
 	static def dispatch NablaValue interprete(BinaryExpression it, Context context)	
 	{
-		println("Dans interprete de BinaryExpression")
+		//println("Dans interprete de BinaryExpression")
 		val lValue = left.interprete(context)
 		val rValue = right.interprete(context)
 		BinaryOperationsInterpreter::getValueOf(lValue, rValue, operator)
 	}
-	
+
 	static def dispatch NablaValue interprete(UnaryExpression it, Context context)
 	{
-		println("Dans interprete de UnaryExpression")
+		//println("Dans interprete de UnaryExpression")
 		val eValue = expression.interprete(context)
 		switch eValue
 		{
@@ -58,47 +61,35 @@ class ExpressionInterpreter
 			default: throw new RuntimeException('Wrong unary operator: ' + operator)
 		}
 	}
-	
-	private static def computeUnaryMinus(NV2Int a)
-	{
-		val int[][] res = newArrayOfSize(a.nbRows).map[x | newIntArrayOfSize(a.nbCols)]
-		for (i : 0..<a.nbRows)
-			for (j : 0..<a.nbCols)
-				res.get(i).set(j, -a.data.get(i).get(j))
-		return new NV2Int(res)		
-	}
-
-	private static def computeUnaryMinus(NV2Real a)
-	{
-		val double[][] res = newArrayOfSize(a.nbRows).map[x | newDoubleArrayOfSize(a.nbCols)]
-		for (i : 0..<a.nbRows)
-			for (j : 0..<a.nbCols)
-				res.get(i).set(j, -a.data.get(i).get(j))
-		return new NV2Real(res)		
-	}
 
 	static def dispatch NablaValue interprete(Parenthesis it, Context context)
 	{
-		println("Dans interprete de Parenthesis")
+		//println("Dans interprete de Parenthesis")
 		expression.interprete(context)
 	}
 
-	static def dispatch NablaValue interprete(Constant it, Context context) 
-	{ 
-		println("Dans interprete de Constant")
-		val t = type as Scalar
-		switch t.primitive
-		{
-			case BOOL: new NV0Bool(Boolean.parseBoolean(value))
-			case INT: new NV0Int(Integer.parseInt(value))
-			case REAL: new NV0Real(Double.parseDouble(value))
-		}
+	static def dispatch NablaValue interprete(IntConstant it, Context context) 
+	{
+		//println("Dans interprete de IntConstant")
+		new NV0Int(value)
 	}
 	
+	static def dispatch NablaValue interprete(RealConstant it, Context context) 
+	{
+		//println("Dans interprete de RealConstant")
+		new NV0Real(value)
+	}
+
+	static def dispatch NablaValue interprete(BoolConstant it, Context context) 
+	{ 
+		//println("Dans interprete de BoolConstant")
+		new NV0Bool(value)
+	}
+
 	static def dispatch NablaValue interprete(MinConstant it, Context context)
 	{
-		println("Dans interprete de MinConstant")
-		val t = type as Scalar
+		//println("Dans interprete de MinConstant")
+		val t = type as BaseType
 		switch t.primitive
 		{
 			case BOOL: throw new RuntimeException('No min constant on bool')
@@ -106,11 +97,11 @@ class ExpressionInterpreter
 			case REAL: new NV0Real(Double.MIN_VALUE)
 		}
 	}
-	
+
 	static def dispatch NablaValue interprete(MaxConstant it, Context context)
 	{
-		println("Dans interprete de MaxConstant")
-		val t = type as Scalar
+		//println("Dans interprete de MaxConstant")
+		val t = type as BaseType
 		switch t.primitive
 		{
 			case BOOL: throw new RuntimeException('No max constant on bool')
@@ -121,54 +112,86 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(BaseTypeConstant it, Context context)
 	{
-		println("Dans interprete de BaseTypeConstant")
+		//println("Dans interprete de BaseTypeConstant")
 		val expressionValue = value.interprete(context)
-		val t = type
-		switch t
+		val t = type as BaseType
+		val sizes = getIntSizes(t, context)
+		switch sizes.size
 		{
-			Scalar : expressionValue
-			Array1D : buildArrayValue(t.size, expressionValue)
-			Array2D : buildArrayValue(t.nbRows, t.nbCols, expressionValue)
+			case 0: expressionValue
+			case 1: buildArrayValue(sizes.get(0), expressionValue)
+			case 2: buildArrayValue(sizes.get(0), sizes.get(1), expressionValue)
 			default: throw new RuntimeException('Wrong path...')
 		}
 	}
-	
-	static def dispatch NablaValue interprete(IntVectorConstant it, Context context) { println("Dans interprete de IntVectorConstant") new NV1Int(values) }
-	static def dispatch NablaValue interprete(IntMatrixConstant it, Context context) { println("Dans interprete de IntMatrixConstant") new NV2Int(toArray) }
-	static def dispatch NablaValue interprete(RealVectorConstant it, Context context) { println("Dans interprete de RealVectorConstant") new NV1Real(values) }
-	static def dispatch NablaValue interprete(RealMatrixConstant it, Context context) { println("Dans interprete de RealMatrixConstant") new NV2Real(toArray) }
+
+	static def dispatch NablaValue interprete(VectorConstant it, Context context) 
+	{
+		val expressionValues = values.map[x | interprete(x, context)]
+		val t = type as BaseType
+		val value = BaseTypeValueFactory.createValue(t, context)
+		for (i : 0..<expressionValues.length)
+			setValue(value, #[i], expressionValues.get(i))
+		return value
+	}
 
 	static def dispatch NablaValue interprete(FunctionCall it, Context context)
 	{
-		println("Dans interprete de FunctionCall")
-		val providerClassName = function.provider + Utils::FunctionAndReductionproviderSuffix
-		println(providerClassName)
-		val providerClass = Class.forName(providerClassName)
-		val argValues = args.map[x|x.interprete(context)]
-		val javaTypes = argValues.map[x | FunctionCallHelper.getJavaType(x) ]
-		val method = providerClass.getMethod(function.name, javaTypes)
-		val javaValues = argValues.map[x | FunctionCallHelper.getJavaValue(x) ]
-		val result = method.invoke(null, javaValues)
-		return FunctionCallHelper.createNablaValue(result)
+		val argValues = args.map[x|interprete(x, context)]
+		if (function.body === null)
+		{
+			//println("Dans interprete de FunctionCall " + function.name)
+			val providerClassName = irModule.name.toLowerCase + '.' + function.provider + Utils.FunctionReductionPrefix
+			val providerClass = Class.forName(providerClassName)
+			val javaTypes = argValues.map[x | FunctionCallHelper.getJavaType(x) ]
+			val method = providerClass.getDeclaredMethod(function.name, javaTypes)
+			method.setAccessible(true)
+			val javaValues = argValues.map[x | FunctionCallHelper.getJavaValue(x)].toArray
+			val result = method.invoke(null, javaValues)
+			return FunctionCallHelper.createNablaValue(result)
+		}
+		else
+		{
+			val innerContext = new Context(context)
+			for (iArg : 0..<args.length)
+			{
+				// set DimensionSymbol values with argument types
+				val callerArg = args.get(iArg)
+				val calleeArg = function.inArgs.get(iArg)
+				val callerArgTypeSizes = getIntSizes(callerArg.type, context)
+				for (iSize : 0..<callerArgTypeSizes.length)
+				{
+					val callerArgTypeTypeSize = callerArgTypeSizes.get(iSize)
+					val calleeArgTypeDimension = calleeArg.type.sizes.get(iSize)
+					if (calleeArgTypeDimension instanceof DimensionSymbolRef)
+						innerContext.setDimensionValue((calleeArgTypeDimension as DimensionSymbolRef).target, callerArgTypeTypeSize)
+				}
+
+				// set argument value
+				context.setVariableValue(calleeArg, argValues.get(iArg))
+			}
+			interprete(function.body, innerContext)
+			return innerContext.returnValue
+		}
 	}
 
-	static def dispatch NablaValue interprete(VarRef it, Context context)
+	static def dispatch NablaValue interprete(ArgOrVarRef it, Context context)
 	{
-		println("Dans interprete de VarRef")
-		val value = context.getVariableValue(variable)
+		//println("Dans interprete de VarRef " + variable.name)
+		val value = context.getVariableValue(target)
 		val iteratorValues = iterators.map[x | context.getIndexValue(x)]
-		val indicesValues = indices.map[ x | (interprete(x, context) as NV0Int).data]
+		val indicesValues = indices.map[x | interprete(x, context)]
 		val allIndices = (iteratorValues + indicesValues).toList
 		getValue(value, allIndices)
 	}
-	
+
 	private static def dispatch NablaValue buildArrayValue(int size, NV0Bool value)
 	{
 		val values = newBooleanArrayOfSize(size)
 		Arrays.fill(values, value.data)
 		return new NV1Bool(values)
 	}
-	
+
 	private static def dispatch NablaValue buildArrayValue(int size, NV0Int value)
 	{
 		val values = newIntArrayOfSize(size)
@@ -182,7 +205,7 @@ class ExpressionInterpreter
 		Arrays.fill(values, value.data)
 		return new NV1Real(values)
 	}
-	
+
 	private static def dispatch NablaValue buildArrayValue(int nbRows, int nbCols, NV0Bool value)
 	{
 		//If we don't precise type for values, Arrays.fill does not work ...
@@ -206,28 +229,22 @@ class ExpressionInterpreter
 		values.forEach[x | Arrays.fill(x, value.data)]
 		return new NV2Real(values)
 	}
-	
-	private static def int[][] toArray(IntMatrixConstant it)
+
+	private static def computeUnaryMinus(NV2Int a)
 	{
-		val nbRows = values.size
-		val nbCols = values.get(0).values.size
-		//If we don't precise type for result, set does not work ...
-		val int[][] result = newArrayOfSize(nbRows).map[newIntArrayOfSize(nbCols)]
-		for (i : 0..<nbRows) 
-			for (j : 0..<nbCols)
-				result.get(i).set(j, values.get(i).values.get(j))			
-		return result
+		val int[][] res = newArrayOfSize(a.nbRows).map[x | newIntArrayOfSize(a.nbCols)]
+		for (i : 0..<a.nbRows)
+			for (j : 0..<a.nbCols)
+				res.get(i).set(j, -a.data.get(i).get(j))
+		return new NV2Int(res)
 	}
 
-	private static def double[][] toArray(RealMatrixConstant it)
+	private static def computeUnaryMinus(NV2Real a)
 	{
-		val nbRows = values.size
-		val nbCols = values.get(0).values.size
-		//If we don't precise type for result, set does not work ...
-		val double[][] result = newArrayOfSize(nbRows).map[newDoubleArrayOfSize(nbCols)]
-		for (i : 0..<nbRows) 
-			for (j : 0..<nbCols)
-				result.get(i).set(j, values.get(i).values.get(j))
-		return result
+		val double[][] res = newArrayOfSize(a.nbRows).map[x | newDoubleArrayOfSize(a.nbCols)]
+		for (i : 0..<a.nbRows)
+			for (j : 0..<a.nbCols)
+				res.get(i).set(j, -a.data.get(i).get(j))
+		return new NV2Real(res)
 	}
 }

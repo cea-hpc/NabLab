@@ -5,7 +5,7 @@ import fr.cea.nabla.ir.ir.PrimitiveType;
 
 public class NablaValueFactory 
 {
-	static NablaValue createValue(IrType t) 
+	static NablaValue createValue(IrType t)
 	{ 
 		PrimitiveType p = IrTypeExtensions.getPrimitive(t);
 		NablaValue result = null;
@@ -17,8 +17,8 @@ public class NablaValueFactory
 		}
 		return result;
 	}
-	
-	static NablaValue createValue(IrType t, int size) 
+
+	static NablaValue createValue(IrType t, int size)
 	{ 
 		PrimitiveType p = IrTypeExtensions.getPrimitive(t);
 		NablaValue result = null;
@@ -30,8 +30,8 @@ public class NablaValueFactory
 		}
 		return result;
 	}
-	
-	static NablaValue createValue(IrType t, int size1, int size2) 
+
+	static NablaValue createValue(IrType t, int size1, int size2)
 	{ 
 		PrimitiveType p = IrTypeExtensions.getPrimitive(t);
 		NablaValue result = null;
@@ -43,8 +43,8 @@ public class NablaValueFactory
 		}
 		return result;
 	}
-	
-	static NablaValue createValue(IrType t, int size1, int size2, int size3) 
+
+	static NablaValue createValue(IrType t, int size1, int size2, int size3)
 	{ 
 		PrimitiveType p = IrTypeExtensions.getPrimitive(t);
 		NablaValue result = null;
@@ -53,6 +53,19 @@ public class NablaValueFactory
 			case BOOL: result = new NV3Bool(new boolean[size1][size2][size3]);
 			case INT: result = new NV3Int(new int[size1][size2][size3]);
 			case REAL: result = new NV3Real(new double[size1][size2][size3]);
+		}
+		return result;
+	}
+
+	static NablaValue createValue(IrType t, int size1, int size2, int size3, int size4)
+	{
+		PrimitiveType p = IrTypeExtensions.getPrimitive(t);
+		NablaValue result = null;
+		switch (p)
+		{
+			case BOOL: result = new NV4Bool(new boolean[size1][size2][size3][size4]);
+			case INT: result = new NV4Int(new int[size1][size2][size3][size4]);
+			case REAL: result = new NV4Real(new double[size1][size2][size3][size4]);
 		}
 		return result;
 	}

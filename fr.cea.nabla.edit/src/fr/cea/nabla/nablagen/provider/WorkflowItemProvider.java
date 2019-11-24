@@ -236,7 +236,7 @@ public class WorkflowItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(NablagenPackage.Literals.WORKFLOW__COMPONENTS,
-				 NablagenFactory.eINSTANCE.createReplaceInternalReductionsComponent()));
+				 NablagenFactory.eINSTANCE.createReplaceReductionsComponent()));
 
 		newChildDescriptors.add
 			(createChildParameter

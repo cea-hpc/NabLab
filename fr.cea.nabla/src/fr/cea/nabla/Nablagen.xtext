@@ -37,7 +37,7 @@ WorkflowComponent: Nabla2IrComponent | ChildComponent;
 ChildComponent: Ir2CodeComponent | Ir2IrComponent;
 					
 Ir2IrComponent: TagPersistentVariablesComponent | ReplaceUtfComponent | 
-				ReplaceInternalReductionsComponent | OptimizeConnectivitiesComponent |
+				ReplaceReductionsComponent | OptimizeConnectivitiesComponent |
 				FillHLTsComponent;
 					
 Nabla2IrComponent:
@@ -70,9 +70,10 @@ ReplaceUtfComponent:
 		(dumpIr?='dumpIr' ';')? 
 	'}';
 	
-ReplaceInternalReductionsComponent:
-	'ReplaceInternalReductions' name=ID 'follows' parent=[WorkflowComponent]
+ReplaceReductionsComponent:
+	'ReplaceReductions' name=ID 'follows' parent=[WorkflowComponent]
 	'{' 
+		(replaceAllReductions?='replaceAllReductions' ';')?
 		(disabled?='disabled' ';')?
 		(dumpIr?='dumpIr' ';')? 
 	'}';

@@ -65,6 +65,10 @@ class NV0Real implements NablaValue
 @Data class NV3Int implements NablaValue { int[][][] data }
 @Data class NV3Real implements NablaValue { double[][][] data }
 
+@Data class NV4Bool implements NablaValue { boolean[][][][] data }
+@Data class NV4Int implements NablaValue { int[][][][] data }
+@Data class NV4Real implements NablaValue { double[][][][] data }
+
 /*
  * Should test it... 
 @Data class NV0<T> implements NablaValue { T data }

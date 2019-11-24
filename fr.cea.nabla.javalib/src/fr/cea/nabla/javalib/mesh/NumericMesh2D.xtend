@@ -11,6 +11,7 @@ package fr.cea.nabla.javalib.mesh
 
 import java.util.HashSet
 import org.eclipse.xtend.lib.annotations.Accessors
+import java.util.stream.IntStream
 
 class NumericMesh2D
 {
@@ -19,14 +20,14 @@ class NumericMesh2D
 	public static val MaxNbCellsOfNode = 4
 	public static val MaxNbCellsOfFace = 2
 	public static val MaxNbNeighbourCells = 4
-	
-	@Accessors val Mesh<double[]> geometricMesh
-	
-	new(Mesh<double[]> geometricMesh)
+
+	@Accessors val Mesh geometricMesh
+
+	new(Mesh geometricMesh)
 	{
 		this.geometricMesh = geometricMesh
 	}
-	
+
 	def getNbNodes() { geometricMesh.nodes.size }
 	def getNbCells() { geometricMesh.quads.size }
 	def getNbFaces() { geometricMesh.edges.size }
@@ -35,13 +36,17 @@ class NumericMesh2D
 	def getNbOuterFaces() { outerFaces.size }
 	def getInnerNodes() { geometricMesh.innerNodeIds }
 	def getOuterFaces() { geometricMesh.outerEdgeIds }
-	
+
+	def getNodes() { IntStream.range(0, nbNodes).toArray }
+	def getCells() { IntStream.range(0, nbCells).toArray }
+	def getFaces() { IntStream.range(0, nbFaces).toArray }
+
 	def getNodesOfCell(int cellId)
 	{
 		val geometricCell = geometricMesh.quads.get(cellId)
 		geometricCell.nodeIds
 	}
-	
+
 	def getNodesOfFace(int faceId)
 	{
 		val geometricFace = geometricMesh.edges.get(faceId)
@@ -67,7 +72,7 @@ class NumericMesh2D
 			}
 		}
 		val int[] a = cellsOfFace.map[intValue]
-		return a		
+		return a
 	}
 
 	def getNeighbourCells(int cellId)
@@ -87,7 +92,7 @@ class NumericMesh2D
 		val int[] a = neighbours.map[intValue]
 		return a
 	}
-	
+
 	def getFacesOfCell(int cell) 
 	{
 		val geometricCell = geometricMesh.quads.get(cell)

@@ -11,7 +11,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import fr.cea.nabla.ArgOrVarRefExtensions
-import fr.cea.nabla.ir.MandatoryVariables
+import fr.cea.nabla.ir.MandatoryMeshVariables
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.ArgOrVarRef
@@ -82,7 +82,7 @@ class Nabla2Ir
 					{
 						val vAt0 = vAtR
 						jobs += toEndOfInitJob(vAt0, vAtN)
-						if (v.name == MandatoryVariables::COORD) initCoordVariable = vAt0
+						if (v.name == MandatoryMeshVariables::COORD) initCoordVariable = vAt0
 					}
 					// Copy Xn+1 to Xn at the end of time loop.
 					// Xn+1 => NextTimeIterator::div == 0
@@ -97,7 +97,7 @@ class Nabla2Ir
 		}
 
 		if (initCoordVariable === null)
-			initCoordVariable = variables.findFirst[x | x.name == MandatoryVariables::COORD]
+			initCoordVariable = variables.findFirst[x | x.name == MandatoryMeshVariables::COORD]
 
 		m.jobs.forEach[x | jobs += x.toIrInstructionJob]
 	}

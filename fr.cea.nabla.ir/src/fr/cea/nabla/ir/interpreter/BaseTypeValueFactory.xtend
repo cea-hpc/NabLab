@@ -9,13 +9,21 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.ir.Array1D
-import fr.cea.nabla.ir.ir.Array2D
-import fr.cea.nabla.ir.ir.Scalar
+import fr.cea.nabla.ir.ir.BaseType
+
+import static fr.cea.nabla.ir.interpreter.IrTypeExtensions.*
 
 class BaseTypeValueFactory
 {
-	static def dispatch NablaValue createValue(Scalar t) { NablaValueFactory::createValue(t) }
-	static def dispatch NablaValue createValue(Array1D t) { NablaValueFactory::createValue(t, t.size)}
-	static def dispatch NablaValue createValue(Array2D t) { NablaValueFactory::createValue(t, t.nbRows, t.nbCols) }
+	static def NablaValue createValue(BaseType t, Context context) 
+	{
+		val sizes = getIntSizes(t, context)
+		switch sizes.size
+		{
+			case 0: NablaValueFactory::createValue(t)
+			case 1: NablaValueFactory::createValue(t, sizes.get(0))
+			case 2: NablaValueFactory::createValue(t, sizes.get(0), sizes.get(1))
+			default: throw new RuntimeException('Dimension not supported: ' + sizes.size)
+		}
+	}
 }

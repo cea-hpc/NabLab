@@ -23,7 +23,7 @@ class PvdFileWriter2D extends FileWriter
 	{ 
 		super(moduleName)
 	}
-	
+
 	// Points in 3D needed for Paraview
 	override writeFile(int iteration, double time, double[][] nodes, Quad[] cells, Map<String, double[]> cellVariables, Map<String, double[]> nodeVariables)
 	{
@@ -50,7 +50,7 @@ class PvdFileWriter2D extends FileWriter
 			vtpWriter.println('')
 			vtpWriter.println('				</DataArray>')
 			vtpWriter.println('			</Polys>')
-			
+
 			// POINT DATA
 			if (! (nodeVariables === null || nodeVariables.empty))
 			{
@@ -64,7 +64,7 @@ class PvdFileWriter2D extends FileWriter
 				}
 				vtpWriter.println('			</PointData>')
 			}
-			
+
 			// CELL DATA
 			if (! (cellVariables === null || cellVariables.empty))
 			{
@@ -83,7 +83,7 @@ class PvdFileWriter2D extends FileWriter
 			vtpWriter.println('</VTKFile>')
 			vtpWriter.close
 			fileNameByTimes.put(time, fileName)
-			
+
 			val pvdWriter = new PrintWriter(OutputDir + '/' + moduleName + '.pvd', 'UTF-8')
 			pvdWriter.println('<?xml version="1.0"?>')
 			pvdWriter.println('<VTKFile type="Collection" version="0.1">')

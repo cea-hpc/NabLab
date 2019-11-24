@@ -2,6 +2,7 @@ package fr.cea.nabla.tests
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.interpreter.Context
+import fr.cea.nabla.ir.interpreter.ModuleInterpreter
 import fr.cea.nabla.ir.interpreter.NV0Bool
 import fr.cea.nabla.ir.interpreter.NV0Int
 import fr.cea.nabla.ir.interpreter.NV0Real
@@ -12,8 +13,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static fr.cea.nabla.tests.TestUtils.*
-
-import static extension fr.cea.nabla.ir.interpreter.ModuleInterpreter.*
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -43,7 +42,7 @@ class BinaryOperationsInterpreterTest
 		ℾ b12 = true < false; // -> false
 		'''
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val context = new Context
+		val context = new Context(irModule)
 		
 		assertVariableDefaultValue(irModule, context, "b1", new NV0Bool(true))
 		assertVariableDefaultValue(irModule, context, "b2", new NV0Bool(true))
@@ -93,7 +92,7 @@ class BinaryOperationsInterpreterTest
 		ℕ n6 = 7 % 3; // -> 1
 		'''
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val context = new Context
+		val context = new Context(irModule)
 		
 		assertVariableDefaultValue(irModule, context, "b1", new NV0Bool(false))
 		assertVariableDefaultValue(irModule, context, "b2", new NV0Bool(true))
@@ -147,7 +146,7 @@ class BinaryOperationsInterpreterTest
 		ℝ n5 = 7 / 2.; // -> 3.5.
 		'''
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val context = new Context
+		val context = new Context(irModule)
 		
 		assertVariableDefaultValue(irModule, context, "b1", new NV0Bool(false))
 		assertVariableDefaultValue(irModule, context, "b2", new NV0Bool(true))
@@ -180,7 +179,8 @@ class BinaryOperationsInterpreterTest
 	//	ℕ[2] n3 = 3 * n1;
 		'''
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val context = irModule.interprete
+		val moduleInterpreter = new ModuleInterpreter(irModule)
+		val context = moduleInterpreter.interprete
 		
 		assertVariableDefaultValue(irModule, context, "n1", new NV1Int(#[1, 2]))
 		assertVariableValueInContext(irModule, context, "n1", new NV1Int(#[1, 2]))

@@ -20,7 +20,6 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Variable
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.xtend.lib.annotations.Accessors
 
 import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
 
@@ -28,11 +27,16 @@ import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
 class ReplaceReductions implements IrTransformationStep
 {
-	@Accessors boolean onlyInternalReduction = true;
+	val boolean replaceAllReductions
+
+	new(boolean replaceAllReductions)
+	{
+		this.replaceAllReductions = replaceAllReductions
+	}
 
 	override getDescription() 
 	{
-		'Replace internal reductions by loops'
+		'Replace reductions by loops'
 	}
 
 	/**
@@ -41,7 +45,7 @@ class ReplaceReductions implements IrTransformationStep
 	override transform(IrModule m)
 	{
 		var reductions = m.eAllContents.filter(ReductionInstruction)
-		if (onlyInternalReduction) reductions = reductions.filter[!external]
+		if (!replaceAllReductions) reductions = reductions.filter[!external]
 
 		for (reductionInstr : reductions.toList)
 		{

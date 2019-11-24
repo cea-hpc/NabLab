@@ -46,7 +46,6 @@ public final class ExplicitHeatEquation
 		options = aOptions;
 		mesh = aNumericMesh2D;
 		writer = new PvdFileWriter2D("ExplicitHeatEquation");
-
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
@@ -107,7 +106,7 @@ public final class ExplicitHeatEquation
 	public static void main(String[] args)
 	{
 		ExplicitHeatEquation.Options o = new ExplicitHeatEquation.Options();
-		Mesh<double[]> gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
+		Mesh gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
 		NumericMesh2D nm = new NumericMesh2D(gm);
 		ExplicitHeatEquation i = new ExplicitHeatEquation(o, nm);
 		i.simulate();

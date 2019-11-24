@@ -1,0 +1,48 @@
+with Glace2d.*;
+
+workflow Glace2dGenerationChain transforms Glace2d
+{
+	Nabla2Ir nabla2ir
+	{
+	}
+
+	TagPersistentVariables tagPersistentVariables follows nabla2ir
+	{ 
+		variables = ρ as "Density";
+		//iterationPeriod = 1;
+		timeStep = 1.0;
+	}
+
+	ReplaceUtf replaceUtf follows tagPersistentVariables
+	{
+	}
+
+	ReplaceReductions replaceReductions follows replaceUtf
+	{
+		replaceAllReductions;
+	}
+
+	OptimizeConnectivities optimizeConnectivities follows replaceReductions
+	{
+		connectivities = cells, nodes;
+	}
+
+	FillHLTs fillHlts follows optimizeConnectivities
+	{
+		//dumpIr;
+	}
+
+	Ir2Code javaGenerator follows fillHlts
+	{
+		language = Java;
+		disabled;
+		outputDir = "/NablaExamplesJava/src";
+	}
+
+	Ir2Code kokkosGenerator follows fillHlts
+	{
+		language = Kokkos;
+		disabled;
+		outputDir = "/NablaExamplesKokkos/src";
+	}
+}

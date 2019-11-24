@@ -283,7 +283,7 @@ class NablaScopeProviderTest
 
 	private def defaultOptionsScope()
 	{
-		return "X_EDGE_LENGTH, Y_EDGE_LENGTH, X_EDGE_ELEMS, Y_EDGE_ELEMS, Z_EDGE_ELEMS, option_stoptime, option_max_iterations, t, X"	
+		return "X_EDGE_LENGTH, Y_EDGE_LENGTH, X_EDGE_ELEMS, Y_EDGE_ELEMS, Z_EDGE_ELEMS, option_stoptime, option_max_iterations, X, t"	
 	}
 
 	/*** Scope for dimension symbols **********************************/

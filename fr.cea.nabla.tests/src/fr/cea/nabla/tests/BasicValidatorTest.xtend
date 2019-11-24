@@ -2,8 +2,10 @@ package fr.cea.nabla.tests
 
 import com.google.inject.Inject
 import fr.cea.nabla.NablaModuleExtensions
-import fr.cea.nabla.ir.MandatoryOptions
-import fr.cea.nabla.ir.MandatoryVariables
+import fr.cea.nabla.ir.MandatoryMeshOptions
+import fr.cea.nabla.ir.MandatoryMeshVariables
+import fr.cea.nabla.ir.MandatorySimulationOptions
+import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.validation.BasicValidator
@@ -26,31 +28,61 @@ class BasicValidatorTest
 	// ===== NablaModule =====
 
 	@Test
-	def void testCheckMandatoryVariables()
+	def void testCheckMandatoryMeshOptions()
 	{
-		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::mandatoryOptions)
+		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::connectivities + TestUtils::mandatoryMeshVariables)
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
-			BasicValidator::MANDATORY_VARIABLE,
-			BasicValidator::getMandatoryVariablesMsg(MandatoryVariables::NAMES))
+			BasicValidator::MANDATORY_MESH_OPTION,
+			BasicValidator::getMandatoryMeshOptionsMsg(MandatoryMeshOptions::NAMES))
 
-		val moduleOk = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::connectivities + TestUtils::mandatoryOptions + TestUtils::mandatoryVariables)
+		val moduleOk = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::getConnectivities + TestUtils::mandatoryMeshOptionsAndVariables)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
 
 	@Test
-	def void testCheckMandatoryOptions()
+	def void testCheckMandatorySimulationOptions()
 	{
-		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::mandatoryVariables)
+		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::mandatorySimulationVariables + TestUtils::initTJob)
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
-			BasicValidator::MANDATORY_OPTION,
-			BasicValidator::getMandatoryOptionsMsg(MandatoryOptions::NAMES))
+			BasicValidator::MANDATORY_SIMULATION_OPTION,
+			BasicValidator::getMandatorySimulationOptionsMsg(MandatorySimulationOptions::NAMES))
 
-		val moduleOk = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::getConnectivities + TestUtils::mandatoryOptions +  TestUtils::mandatoryVariables)
+		val moduleOk = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::mandatorySimulationOptionsAndVariables + TestUtils::initTJob)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void testCheckMandatoryMeshVariables()
+	{
+		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::connectivities + TestUtils::mandatoryMeshOptions)
+		Assert.assertNotNull(moduleKo)
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
+			BasicValidator::MANDATORY_MESH_VARIABLE,
+			BasicValidator::getMandatoryMeshVariablesMsg(MandatoryMeshVariables::NAMES))
+
+		val moduleOk = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::connectivities + TestUtils::mandatoryMeshOptionsAndVariables)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void testCheckMandatorySimulationVariables()
+	{
+		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::mandatorySimulationOptions + TestUtils::initTJob)
+		Assert.assertNotNull(moduleKo)
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
+			BasicValidator::MANDATORY_SIMULATION_VARIABLE,
+			BasicValidator::getMandatorySimulationVariablesMsg(MandatorySimulationVariables::NAMES))
+
+		val moduleOk = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::mandatorySimulationOptionsAndVariables + TestUtils::initTJob)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}

@@ -12,21 +12,21 @@ package fr.cea.nabla.javalib.mesh
 import java.util.ArrayList
 import org.eclipse.xtend.lib.annotations.Accessors
 
-class Mesh<T> 
+class Mesh
 {
-	@Accessors val ArrayList<T> nodes
+	@Accessors val ArrayList<double[]> nodes
 	@Accessors val Edge[] edges
 	@Accessors val Quad[] quads
 	@Accessors val int[] innerNodeIds
 
 	new(int nbNodes, int nbEdges, int nbQuads, int nbInnerNodes)
 	{
-		nodes = new ArrayList<T>(nbNodes)
+		nodes = new ArrayList<double[]>(nbNodes)
 		edges = newArrayOfSize(nbEdges)
 		quads = newArrayOfSize(nbQuads)
 		innerNodeIds = newIntArrayOfSize(nbInnerNodes)
 	}
-	
+
 	def getQuadIdsOfNode(int nodeId)
 	{
 		val size = quads.filter[q|q.nodeIds.contains(nodeId)].size
@@ -44,7 +44,7 @@ class Mesh<T>
 		}
 		return candidateQuadIds
 	}
-	
+
 	def getOuterEdgeIds()
 	{
 		val size = edges.filter[e|!e.innerEdge].size
@@ -62,16 +62,16 @@ class Mesh<T>
 		}
 		return candidateEdgeIds
 	}
-	
+
 	def isInnerEdge(Edge it)
 	{
 		innerNodeIds.contains(nodeIds.get(0)) || innerNodeIds.contains(nodeIds.get(1))
 	}
-	
+
 	def dump()
 	{
 		println('Mesh ')
-		println('  nodes : ' + nodes.map[toString].join(','))	
+		println('  nodes (' + nodes.size + ') : ' + nodes.map[toString].join(','))
 		println('  edges : ' + edges.map[toString].join(','))	
 		println('  quads : ' + quads.map[toString].join(','))
 		println('  outer edges : ' + outerEdgeIds.map[toString].join(','))

@@ -15,7 +15,7 @@ import org.eclipse.xtend.lib.annotations.Data
 abstract class NodeIdContainer 
 {
 	val int[] nodeIds
-	
+
 	override toString()
 	{
 		'[' + nodeIds.join(',') + ']'
@@ -23,7 +23,7 @@ abstract class NodeIdContainer
 }
 
 class Edge extends NodeIdContainer 
-{ 
+{
 	new(int id1, int id2) { super(#[id1, id2]) }
 }
 

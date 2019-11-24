@@ -10,6 +10,7 @@
 package fr.cea.nabla.tests
 
 import fr.cea.nabla.ir.interpreter.Context
+import fr.cea.nabla.ir.interpreter.NV0Real
 import fr.cea.nabla.ir.interpreter.NablaValue
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
@@ -19,6 +20,8 @@ import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 import org.junit.Assert
@@ -28,6 +31,8 @@ import static extension fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 
 class TestUtils 
 {
+	static val DoubleTolerance = 1e-15
+
 	static def getAllVars(EObject it)
 	{
 		val allVariables = new ArrayList<Var>
@@ -44,6 +49,8 @@ class TestUtils
 	{
 		eAllContents.filter(Affectation)
 	}
+
+	// ===== CharSequence utils =====
 
 	static def getVariableByName(EObject it, String variableName)
 	{
@@ -64,20 +71,34 @@ class TestUtils
 	static def String getEmptyTestModule()
 	'''
 	module Test;
+	with Math.*;
 	'''
 
 	//TODO These options should be filled in nablagen
-	static def String getMandatoryOptions()
+	static def String getMandatoryMeshOptions(int xQuads, int yQuads)
 	'''
-	// Options obligatoires pour générer
 	const ℝ X_EDGE_LENGTH = 0.01;
 	const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-	const ℕ X_EDGE_ELEMS = 100;
-	const ℕ Y_EDGE_ELEMS = 10;
+	const ℕ X_EDGE_ELEMS = «xQuads»;
+	const ℕ Y_EDGE_ELEMS = «yQuads»;
 	const ℕ Z_EDGE_ELEMS = 1;
-	const ℝ option_stoptime = 0.2;
-	const ℕ option_max_iterations = 20000;
 	'''
+
+	static def String getMandatoryMeshOptions()
+	{
+		return getMandatoryMeshOptions(10, 10)
+	}
+
+	static def String getMandatorySimulationOptions(double stopTime, int maxIterations)
+	'''
+	const ℝ option_stoptime = «stopTime»;
+	const ℕ option_max_iterations = «maxIterations»;
+	'''
+
+	static def String getMandatorySimulationOptions()
+	{
+		return getMandatorySimulationOptions(0.2, 1)
+	}
 
 	static def String getConnectivities()
 	'''
@@ -95,49 +116,82 @@ class TestUtils
 	set nodes: → {node};
 	'''
 
-	static def String getMandatoryVariables()
+	static def String getMandatoryMeshVariables()
 	'''
-	ℝ t;
 	ℝ[2] X{nodes};
 	'''
 
+	static def String getMandatorySimulationVariables()
+	'''
+	ℝ t = 0.0;
+	'''
+
+	static def String getMandatoryMeshOptionsAndVariables()
+	{
+		mandatoryMeshOptions + mandatoryMeshVariables
+	}
+
+	static def String getMandatorySimulationOptionsAndVariables()
+	{
+		mandatorySimulationOptions + mandatorySimulationVariables
+	}
+
+	static def String getMandatoryOptionsAndVariables()
+	{
+		mandatoryMeshOptions + mandatorySimulationOptions + mandatoryMeshVariables + mandatorySimulationVariables
+	}
+
+	static def String getInitTJob()
+	{
+	'''
+	initT: t = 0.0;
+	'''
+	}
+
 	static def CharSequence getTestModule()
 	{
-		emptyTestModule + connectivities + mandatoryOptions + mandatoryVariables
+		emptyTestModule + connectivities + mandatoryOptionsAndVariables
+	}
+
+	static def CharSequence getTestModule(int xQuads, int yQuads, double stopTime, int maxIterations)
+	{
+		emptyTestModule + connectivities +
+			getMandatoryMeshOptions(xQuads, yQuads) + getMandatorySimulationOptions(stopTime, maxIterations) + 
+			mandatoryMeshVariables + mandatorySimulationVariables
 	}
 
 	static def getTestModuleWithCustomFunctions(CharSequence functions)
 	{
-		emptyTestModule + connectivities + functions + mandatoryOptions + mandatoryVariables
+		emptyTestModule + connectivities + functions + mandatoryOptionsAndVariables
 	}
 
 	static def getTestModuleWithCustomConnectivities(CharSequence connectivities)
 	{
-		emptyTestModule + connectivities + mandatoryOptions + mandatoryVariables
+		emptyTestModule + connectivities + mandatoryOptionsAndVariables
 	}
 
 	//Useful to prevent warnings
 	static def getTestModuleWithCoordVariable()
 	{
-		emptyTestModule + nodesConnectivity + mandatoryOptions + mandatoryVariables
+		emptyTestModule + nodesConnectivity + mandatoryOptionsAndVariables
 	}
 
 	//Useful to prevent warnings
 	static def getTestModuleWithCoordVariableWithCustomVars(CharSequence variables)
 	{
-		emptyTestModule + nodesConnectivity + mandatoryOptions + mandatoryVariables + variables
+		emptyTestModule + nodesConnectivity + mandatoryOptionsAndVariables + variables
 	}
 
 	//Useful to prevent warnings
 	static def getTestModuleWithCoordVariableWithCustomFunctions(CharSequence functions)
 	{
-		emptyTestModule + nodesConnectivity + functions + mandatoryOptions + mandatoryVariables
+		emptyTestModule + nodesConnectivity + functions + mandatoryOptionsAndVariables
 	}
 
 	//Useful to prevent warnings
 	static def getTestModuleWithCoordVariableWithCustomConnectivities(CharSequence connectivities)
 	{
-		emptyTestModule + connectivities + mandatoryOptions + mandatoryVariables
+		emptyTestModule + connectivities + mandatoryOptionsAndVariables
 	}
 	
 	static def getTestGenModel()
@@ -168,14 +222,27 @@ class TestUtils
 	}
 
 	// Interpreter asserts
-
 	static def assertVariableDefaultValue(IrModule irModule, Context context, String variableName, NablaValue value)
 	{
-		Assert.assertTrue((irModule.getVariableByName(variableName) as SimpleVariable).defaultValue.interprete(context).equals(value))
+		Assert.assertEquals(value, (irModule.getVariableByName(variableName) as SimpleVariable).defaultValue.interprete(context))
 	}
 
-	static def assertVariableValueInContext(IrModule irModule, Context context, String variableName, NablaValue value)
+	static def dispatch assertVariableValueInContext(IrModule irModule, Context context, String variableName, NablaValue value)
 	{
-		Assert.assertTrue(context.getVariableValue(irModule.getVariableByName(variableName)).equals(value))
+		Assert.assertEquals(value, context.getVariableValue(irModule.getVariableByName(variableName)))
+	}
+
+	static def dispatch assertVariableValueInContext(IrModule irModule, Context context, String variableName, NV0Real value)
+	{
+		val variableValue = context.getVariableValue(irModule.getVariableByName(variableName))
+		Assert.assertNotNull(variableValue)
+		Assert.assertTrue(variableValue instanceof NV0Real)
+		Assert.assertEquals(value.data, (variableValue as NV0Real).data, fr.cea.nabla.tests.TestUtils.DoubleTolerance)
+	}
+
+	//Read File to String
+	static def readFileAsString(String filePath)
+	{
+		new String(Files.readAllBytes(Paths.get(filePath)))
 	}
 }

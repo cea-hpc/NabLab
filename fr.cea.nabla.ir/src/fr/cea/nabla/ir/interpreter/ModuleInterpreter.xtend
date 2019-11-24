@@ -1,76 +1,116 @@
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.MandatoryOptions
-import fr.cea.nabla.ir.MandatoryVariables
+import fr.cea.nabla.ir.MandatoryMeshOptions
+import fr.cea.nabla.ir.MandatorySimulationOptions
+import fr.cea.nabla.ir.MandatorySimulationVariables
+import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.Variable
+import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
-import static fr.cea.nabla.ir.interpreter.JobInterpreter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
 class ModuleInterpreter 
 {
-	static def interprete(IrModule it)
+	public static String ITERATION_VARIABLE_NAME = "InterpreterIteration"
+
+	val IrModule module
+	var Context context
+	val PvdFileWriter2D writer
+	var JobInterpreter jobInterpreter
+	var Variable iterationVariable
+
+	new(IrModule module)
 	{
-		val context = new Context
+		this.module = module
+		this.context = new Context(module)
+		this.writer = new PvdFileWriter2D(module.name)
+		this.jobInterpreter = null
+		this.iterationVariable = null
+	}
+
+	def interprete()
+	{
+		// Add Variable for iteration
+		iterationVariable = createIterationVariable
+		jobInterpreter = new JobInterpreter(writer, iterationVariable)
 		
 		// Interprete constant variables
-		for (v : variables.filter(SimpleVariable).filter[const])
+		for (v : module.variables.filter(SimpleVariable).filter[const])
 			context.setVariableValue(v, interprete(v.defaultValue, context))
 			
-		// Create mesh
-		val nbXQuads = getInt(MandatoryOptions::X_EDGE_ELEMS, context)
-		val nbYQuads = getInt(MandatoryOptions::Y_EDGE_ELEMS, context)
-		val xSize = getReal(MandatoryOptions::X_EDGE_LENGTH, context)
-		val ySize = getReal(MandatoryOptions::Y_EDGE_LENGTH, context)
-		context.initMesh(nbXQuads, nbYQuads, xSize, ySize)
-		
-		// Create mesh nbElems
-		for (c : usedConnectivities)
-		if (c.inTypes.empty)
-			context.connectivitySizes.put(c, context.meshWrapper.getNbElems(c.name))
-		else		
-			context.connectivitySizes.put(c, context.meshWrapper.getMaxNbElems(c.name))
+		if (!module.items.empty)
+		{
+			// Create mesh
+			val nbXQuads = context.getInt(MandatoryMeshOptions::X_EDGE_ELEMS)
+			val nbYQuads = context.getInt(MandatoryMeshOptions::Y_EDGE_ELEMS)
+			val xSize = context.getReal(MandatoryMeshOptions::X_EDGE_LENGTH)
+			val ySize = context.getReal(MandatoryMeshOptions::Y_EDGE_LENGTH)
+			context.initMesh(nbXQuads, nbYQuads, xSize, ySize)
+
+			// Create mesh nbElems
+			for (c : module.usedConnectivities)
+			if (c.inTypes.empty)
+				context.connectivitySizes.put(c, context.meshWrapper.getNbElems(c.name))
+			else
+				context.connectivitySizes.put(c, context.meshWrapper.getMaxNbElems(c.name))
+		}
 
 		// Interprete variables
-		for (v : variables.filter[x | !(x instanceof SimpleVariable && x.const)])
-		{
-			if (v.name == MandatoryVariables::COORD)
-				context.setVariableValue(v, new NV2Real(context.meshWrapper.nodes))
-			else
-				context.setVariableValue(v, createValue(v, context))
-		}
+		for (v : module.variables.filter[x | !(x instanceof SimpleVariable && x.const)])
+			context.setVariableValue(v, createValue(v, context))
+
+		// Copy Node Cooords
+		context.setVariableValue(module.initCoordVariable, new NV2Real(context.meshWrapper.nodes))
 		
 		// Interprete init jobs
-		for (j : jobs.filter[x | x.at < 0].sortBy[at])
-			interprete(j, context)
+		for (j : module.jobs.filter[x | x.at < 0].sortBy[at])
+			jobInterpreter.interprete(j, context)
+
+		context.showVariables("After init jobs")
 	
 		// Declare time loop
-		var iteration = 0
-		var maxIterations = getInt(MandatoryOptions::MAX_ITERATIONS, context)
-		var stopTime = getReal(MandatoryOptions::STOP_TIME, context)
+		var maxIterations = context.getInt(MandatorySimulationOptions::MAX_ITERATIONS)
+		var stopTime = context.getReal(MandatorySimulationOptions::STOP_TIME)
 		
-		while (iteration < maxIterations && getReal(MandatoryVariables::TIME, context) < stopTime)
+		while (iterationValue < maxIterations && context.getReal(MandatorySimulationVariables::TIME) < stopTime)
 		{
-			iteration ++
-			for (j : jobs.filter[x | x.at > 0].sortBy[at])
-				interprete(j, context)
+			for (j : module.jobs.filter[x | x.at > 0].sortBy[at])
+				jobInterpreter.interprete(j, context)
+			context.showVariables("At iteration = " + iterationValue)
+			incrementIterationValue
 		}
 		return context
 	}
 
-	private static def getInt(IrModule module, String variableName, Context context)
+	private def createIterationVariable()
 	{
-		val v = module.variables.findFirst[name == variableName]
-		return (context.getVariableValue(v) as NV0Int).data
+		val iteration = IrFactory::eINSTANCE.createSimpleVariable
+		iteration.name = ModuleInterpreter.ITERATION_VARIABLE_NAME
+		iteration.type = IrFactory::eINSTANCE.createBaseType => [ primitive = PrimitiveType::INT ]
+		iteration.const = false
+		iteration.defaultValue = IrFactory::eINSTANCE.createIntConstant =>
+		[
+			type = IrFactory::eINSTANCE.createBaseType => [ primitive = PrimitiveType::INT ]
+			value = 0
+		]
+		module.variables.add(iteration)
+		return iteration
 	}
-	
-	private static def getReal(IrModule module, String variableName, Context context)
+
+	private def getIterationValue()
 	{
-		val v = module.variables.findFirst[name == variableName]
-		return (context.getVariableValue(v) as NV0Real).data
-	}	
+		context.getInt(iterationVariable)
+	}
+
+	private def incrementIterationValue()
+	{
+		val value = getIterationValue
+		context.setVariableValue(iterationVariable, new NV0Int(value + 1))
+	}
 }

@@ -1,16 +1,19 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
+import fr.cea.nabla.ir.ir.DimensionIterationBlock
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.InstructionBlock
-import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
+import fr.cea.nabla.ir.ir.Return
+import fr.cea.nabla.ir.ir.SpaceIterationBlock
 import fr.cea.nabla.ir.ir.VarDefinition
-import fr.cea.nabla.ir.ir.VarRefIteratorRef
 
+import static fr.cea.nabla.ir.interpreter.DimensionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
@@ -22,14 +25,14 @@ class InstructionInterpreter
 {
 	static def dispatch void interprete(VarDefinition it, Context context)
 	{ 
-		println("Dans interprete de VarDefinition")
+		//println("Dans interprete de VarDefinition")
 		for (v : variables)
 			context.setVariableValue(v, createValue(v, context))
 	}
 
 	static def dispatch void interprete(InstructionBlock it, Context context)
 	{
-		println("Dans interprete de InstructionBlock")
+		//println("Dans interprete de InstructionBlock")
 		val innerContext = new Context(context)
 		for (i : instructions)
 			interprete(i, innerContext)
@@ -37,17 +40,10 @@ class InstructionInterpreter
 
 	static def dispatch void interprete(Affectation it, Context context)
 	{
-		println("Dans interprete de Affectation")
+		//println("Dans interprete de Affectation")
 		val rightValue = interprete(right, context)
-		if (left.indices.empty && left.iterators.empty)
-			context.setVariableValue(left.variable, rightValue)
-		else
-		{
-			val iteratorValues = left.iterators.map[x | context.getIndexValue(x)]
-			val indicesValues = left.indices.map[ x | (interprete(x, context) as NV0Int).data]
-			val allIndices = (iteratorValues + indicesValues).toList
-			setValue(context.getVariableValue(left.variable), allIndices.toList, rightValue)
-		}
+		val allIndices = left.iterators.map[x | context.getIndexValue(x)] + left.indices.map[x | interprete(x, context)]
+		setValue(context.getVariableValue(left.target), allIndices.toList, rightValue)
 	}
 
 	static def dispatch void interprete(ReductionInstruction it, Context context)
@@ -58,25 +54,51 @@ class InstructionInterpreter
 
 	static def dispatch void interprete(Loop it, Context context)
 	{
-		println("Dans interprete de Loop")
-		val container = context.meshWrapper.getContainer(range)
-		for (loopIteratorValue : 0..<container.size)
+		//println("Dans interprete de Loop")
+		val b = iterationBlock
+		switch b
 		{
-			context.setIndexValue(range, loopIteratorValue)
-			defineIndices(it, context)
-			body.interprete(context)
-		}	
+			SpaceIterationBlock:
+			{
+				val connectivityName = b.range.container.connectivity.name
+				val argIds =  b.range.container.args.map[x | context.getIdValue(x)]
+				val container = context.meshWrapper.getElements(connectivityName, argIds)
+				for (loopIteratorValue : 0..<container.size)
+				{
+					context.setIndexValue(b.range, loopIteratorValue)
+					defineIndices(b, context)
+					interprete(body, context)
+				}
+			}
+			DimensionIterationBlock:
+			{
+				val from = interprete(b.from, context)
+				var to = interprete(b.to, context)
+				if (b.toIncluded) to = to + 1
+				for (i : from..<to)
+				{
+					context.setDimensionValue(b.index, i)
+					interprete(body, context)
+				}
+			}
+		}
 	}
 
 	static def dispatch void interprete(If it, Context context)
 	{
-		println("Dans interprete de If")
+		//println("Dans interprete de If")
 		val cond = interprete(condition, context) as NV0Bool
 		if (cond.data) interprete(thenInstruction, context)
-		else interprete(elseInstruction, context)
+		else if (elseInstruction !== null) interprete(elseInstruction, context)
 	}
 
- 	private static def void defineIndices(IterableInstruction it, Context context)
+	static def dispatch void interprete(Return it, Context context)
+	{
+		//println("Dans interprete de If")
+		context.returnValue = interprete(expression, context)
+	}
+
+ 	private static def void defineIndices(SpaceIterationBlock it, Context context)
 	{
 		defineIndices(range, context)
 		for (s : singletons)
@@ -93,19 +115,25 @@ class InstructionInterpreter
 
 	private	static def getIndexToId(IteratorRef it, Context context)
 	{
+		//println("Dans getIndexToId")
 		val indexValue = getIndexValue(it, context)
 		
 		if (target.container.connectivity.indexEqualId || target.singleton)
 			indexValue
 		else
-			context.meshWrapper.getContainer(target).get(indexValue)
+		{
+			//TODO : Plus efficace de faire une méthode pour indexValue in container ?
+			val connectivityName = target.container.connectivity.name
+			val args =  target.container.args.map[x | context.getIdValue(x)]
+			context.meshWrapper.getElements(connectivityName, args).get(indexValue)
+		}
 	}
 
-	private static def getIdToIndex(VarRefIteratorRef it, Context context)
+	private static def getIdToIndex(ArgOrVarRefIteratorRef it, Context context)
 	{
-		val indexValue = context.getIdValue(it)
-		if (varContainer.indexEqualId) indexValue
-		else context.getIndexOf(it.target, indexValue)
+		val idValue = context.getIdValue(it)
+		if (varContainer.indexEqualId) idValue
+		else context.getIndexOf(it, idValue)
 	}
 
 	private static def getIndexValue(IteratorRef it, Context context)

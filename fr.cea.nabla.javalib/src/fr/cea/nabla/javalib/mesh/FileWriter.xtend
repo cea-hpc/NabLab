@@ -17,7 +17,7 @@ abstract class FileWriter
 	protected static val OutputDir = 'output'
 	protected val String moduleName
 
-	protected new(String moduleName) 
+	protected new(String moduleName)
 	{ 
 		this.moduleName = moduleName
 		val outputDir = new File(OutputDir)
@@ -26,6 +26,6 @@ abstract class FileWriter
 		else
 			outputDir.mkdir
 	}
-	
+
 	abstract def void writeFile(int iteration, double time, double[][] nodes, Quad[] cells, Map<String, double[]> cellVariables, Map<String, double[]> nodeVariables)	
 }

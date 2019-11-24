@@ -13,6 +13,7 @@ import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
+import java.util.ArrayList
 import java.util.HashMap
 import org.jgrapht.alg.cycle.CycleDetector
 import org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths
@@ -20,7 +21,6 @@ import org.jgrapht.graph.DefaultWeightedEdge
 import org.jgrapht.graph.DirectedWeightedPseudograph
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
-import java.util.ArrayList
 
 class FillJobHLTs implements IrTransformationStep
 {
@@ -77,8 +77,11 @@ class FillJobHLTs implements IrTransformationStep
 				val graphPath = jalgo.getPath(globalSourceNode, v)
 				if (graphPath!==null) weightByJobs.put(graphPath.endVertex, graphPath.weight)
 			}
-			val minWeight = weightByJobs.values.min
-			for (j : weightByJobs.keySet) j.at = minWeight - weightByJobs.get(j) - 1
+			if (!weightByJobs.empty)
+			{
+				val minWeight = weightByJobs.values.min
+				for (j : weightByJobs.keySet) j.at = minWeight - weightByJobs.get(j) - 1
+			}
 		}
 		return !hasCycles
 	}

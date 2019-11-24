@@ -34,10 +34,10 @@ import org.eclipse.xtext.EcoreUtil2
 @Data
 class DimensionValue 
 { 
-	public static val Undefined = new DimensionValue
-	
+	public static val UNDEFINED = new DimensionValue
+
 	Object value // NSTDimension or Connectivity (constant like nbCells)
-	
+
 	new() { this.value = null }
 	new(NSTDimension value) { this.value = value }
 	new(Connectivity value) { this.value = value }
@@ -165,7 +165,7 @@ class DeclarationProvider
 		{
 			case '+': computeValue(left, values) + computeValue(right, values)
 			case '*': computeValue(left, values) * computeValue(right, values)
-			default: DimensionValue::Undefined
+			default: DimensionValue::UNDEFINED
 		}
 	}
 
@@ -176,7 +176,7 @@ class DeclarationProvider
 	
 	private def dispatch DimensionValue computeValue(DimensionSymbolRef it, Map<DimensionSymbol, DimensionValue> values)
 	{
-		values.getOrDefault(target, DimensionValue::Undefined)
+		values.getOrDefault(target, DimensionValue::UNDEFINED)
 	}
 	
 	private def NablaType computeExpressionType(BaseType argType, Map<DimensionSymbol, DimensionValue> values)
@@ -233,7 +233,7 @@ class DeclarationProvider
 		if (a.NSTDimensionInt && b.NSTDimensionInt)
 			new DimensionValue(NSTDimension.create(a.NSTDimensionIntValue + b.NSTDimensionIntValue))
 		else 
-			DimensionValue::Undefined 
+			DimensionValue::UNDEFINED // no operation on connectivities
 	}
 
 	private def DimensionValue operator_multiply(DimensionValue a, DimensionValue b)
@@ -241,6 +241,6 @@ class DeclarationProvider
 		if (a.NSTDimensionInt && b.NSTDimensionInt)
 			new DimensionValue(NSTDimension.create(a.NSTDimensionIntValue * b.NSTDimensionIntValue))
 		else 
-			DimensionValue::Undefined 
+			DimensionValue::UNDEFINED // no operation on connectivities
 	}
 }

@@ -25,7 +25,6 @@ class Context
 	val variableValues = new HashMap<ArgOrVar, NablaValue>
 	@Accessors val HashMap<Connectivity, Integer> connectivitySizes
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) MeshWrapper meshWrapper
-	@Accessors NablaValue returnValue // value of return instruction
 
 	new(IrModule module)
 	{
@@ -103,7 +102,7 @@ class Context
 		dimensionValues.get(it) ?: outerContext.getDimensionValue(it)
 	}
 
-	def int setDimensionValue(DimensionSymbol it, int value)
+	def setDimensionValue(DimensionSymbol it, int value)
 	{
 		dimensionValues.put(it, value)
 	}
@@ -163,5 +162,11 @@ class Context
 			idValues.keySet.forEach[k | println("	" + k + " = " + idValues.get(k))]
 			indexValues.keySet.forEach[k | println("	" + k + " = " + indexValues.get(k))]
 		}
+	}
+
+	def showDimensions(String message)
+	{
+		if (message !== null) println(message)
+		dimensionValues.keySet.forEach[d | println("	Dimension " + d.name + " = " + dimensionValues.get(d))]
 	}
 }

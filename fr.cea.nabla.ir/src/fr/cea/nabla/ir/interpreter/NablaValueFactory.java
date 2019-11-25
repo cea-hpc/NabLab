@@ -12,8 +12,8 @@ public class NablaValueFactory
 		switch (p)
 		{
 			case BOOL: result = new NV0Bool(false); break;
-			case INT: result = new NV0Int(0);  break;
-			case REAL: result = new NV0Real(0.0);  break;
+			case INT: result = new NV0Int(0); break;
+			case REAL: result = new NV0Real(0.0); break;
 		}
 		return result;
 	}

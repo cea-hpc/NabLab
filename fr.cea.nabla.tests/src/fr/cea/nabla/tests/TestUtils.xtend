@@ -207,7 +207,7 @@ class TestUtils
 			ReplaceUtf replaceUtf follows nabla2ir
 			{
 			}
-			ReplaceInternalReductions replaceReductions follows replaceUtf
+			ReplaceReductions replaceReductions follows replaceUtf
 			{
 			}
 			OptimizeConnectivities optimizeConnectivities follows replaceReductions

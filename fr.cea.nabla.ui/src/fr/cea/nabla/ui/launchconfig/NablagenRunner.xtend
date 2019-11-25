@@ -21,22 +21,24 @@ class NablagenRunner
 	val MessageConsoleStream stream
 	@Inject Provider<ResourceSet> resourceSetProvider
 	@Inject Provider<WorkflowInterpreter> interpretorProvider
-	
+
 	new()
 	{
-		val console = new MessageConsole("Nabla Console", UiUtils::getImageDescriptor('icons/Nabla.gif'))
+		val imageDescriptor = UiUtils::getImageDescriptor("icons/Nabla.gif")
+		val image = if (imageDescriptor.present) imageDescriptor.get else null
+		val console = new MessageConsole("Nabla Console", image)
 		console.activate
 		ConsolePlugin.^default.consoleManager.addConsoles(#[console])
 		stream = console.newMessageStream
 	}
-	
+
 	def launch(Workflow workflow)
 	{
 		val interpretor = interpretorProvider.get
 		interpretor.addWorkflowTraceListener([msg | stream.print(msg)])
 		interpretor.launch(workflow)
 	}
-			
+
 	package def launch(IResource eclipseResource)
 	{
 		val plaftormUri = URI::createPlatformResourceURI(eclipseResource.project.name + '/' + eclipseResource.projectRelativePath, true)

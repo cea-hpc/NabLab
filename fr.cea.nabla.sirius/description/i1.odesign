@@ -167,7 +167,7 @@
     </ownedRepresentations>
     <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.TraceServices"/>
     <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.ir.JobExtensions"/>
-    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.ir.VariableExtensions"/>
+    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.ir.ArgOrVarExtensions"/>
     <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.ir.PresentationServices"/>
     <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.PresentationServices"/>
   </ownedViewpoints>

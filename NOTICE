@@ -24,17 +24,17 @@ The project maintains the following source code repository : https://github.com/
 
 ## Third-party Content
 
-Xtext (2.12)
+Xtext (2.19)
 
  * License: EPL-1.0
  * Project: http://projects.eclipse.org/projects/modeling.tmf.xtext
 
-Sirius (6.0.0)
+Sirius (6.2.2)
 
  * License: EPL-1.0
  * Project: http://projects.eclipse.org/projects/modeling.sirius
 
-JGraphT (1.2.0)
+JGraphT (1.3.0)
 
  * License: LGP, EPL-1.0
  * Project: http://jgrapht.org

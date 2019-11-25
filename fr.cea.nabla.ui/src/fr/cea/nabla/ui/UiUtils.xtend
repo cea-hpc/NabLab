@@ -10,22 +10,23 @@
 package fr.cea.nabla.ui
 
 import fr.cea.nabla.ui.internal.NablaActivator
-import org.eclipse.jface.resource.ImageDescriptor
+import org.eclipse.jface.resource.ResourceLocator
 import org.eclipse.ui.PlatformUI
 import org.eclipse.xtext.ui.editor.XtextEditor
 
 class UiUtils 
 {
-	static def ImageDescriptor getImageDescriptor(String path)
+	static def getImageDescriptor(String path)
 	{
-		NablaActivator::imageDescriptorFromPlugin("fr.cea.nabla.ui", path)
+		ResourceLocator::imageDescriptorFromBundle("fr.cea.nabla.ui", path)
 	}
-	
+
 	static def createImage(String path)
 	{
-		path.imageDescriptor.createImage
+		val imageDescriptor = getImageDescriptor(path)
+		if (imageDescriptor.present) imageDescriptor.get.createImage
 	}
-	
+
 	static def getActiveNablaEditor()
 	{
 		val w = PlatformUI::workbench.activeWorkbenchWindow

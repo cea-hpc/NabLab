@@ -127,6 +127,7 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(VectorConstant it, Context context) 
 	{
+		//println("Dans interprete de VectorConstant")
 		val expressionValues = values.map[x | interprete(x, context)]
 		val t = type as BaseType
 		val value = BaseTypeValueFactory.createValue(t, context)
@@ -137,10 +138,10 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(FunctionCall it, Context context)
 	{
+		//println("Dans interprete de FunctionCall " + function.name)
 		val argValues = args.map[x|interprete(x, context)]
 		if (function.body === null)
 		{
-			//println("Dans interprete de FunctionCall " + function.name)
 			val providerClassName = irModule.name.toLowerCase + '.' + function.provider + Utils.FunctionReductionPrefix
 			val providerClass = Class.forName(providerClassName)
 			val javaTypes = argValues.map[x | FunctionCallHelper.getJavaType(x) ]

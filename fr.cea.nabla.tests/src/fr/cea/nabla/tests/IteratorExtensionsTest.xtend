@@ -33,15 +33,15 @@ class IteratorExtensionsTest
 
 	items { cell, node, face }
 	
-	set	cells: → {cell};
-	set	nodes: → {node};
-	set	faces: → {face};
-	set	nodesOfCell: cell → {node};
-	set	cellsOfNode: node → {cell};
-	set	neighbourCells: cell → {cell};
-	set	commonFace: cell × cell → face;
+	set cells: → {cell};
+	set nodes: → {node};
+	set faces: → {face};
+	set nodesOfCell: cell → {node};
+	set cellsOfNode: node → {cell};
+	set neighbourCells: cell → {cell};
+	set commonFace: cell × cell → face;
 	
-	def	∑: (0.0, ℝ) → ℝ;
+	def ∑: (0.0, ℝ) → ℝ;
 	def ∑: x | (0.0, ℝ[x]) → ℝ[x];
 	def ∑: x | (0.0, ℝ[x, x]) → ℝ[x, x];
 	'''

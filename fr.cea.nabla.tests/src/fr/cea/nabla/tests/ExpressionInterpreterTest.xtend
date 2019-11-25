@@ -245,11 +245,14 @@ class ExpressionInterpreterTest
 	{
 		val model = TestUtils::getTestModuleWithCustomFunctions(
 		'''
-		functions {
-			getOne:  → ℕ;
-			addOne: ℕ → ℕ , ℝ → ℝ;
-			add: ℕ × ℕ → ℕ, ℝ × ℕ → ℝ, ℝ × ℝ → ℝ, x | ℝ[x] × ℝ[x] → ℝ[x], x,y | ℝ[x,y] × ℝ[x,y] → ℝ[x,y];
-		}
+		def getOne:  → ℕ;
+		def addOne: ℕ → ℕ;
+		def addOne: ℝ → ℝ;
+		def add: ℕ × ℕ → ℕ;
+		def add: ℝ × ℕ → ℝ;
+		def add: ℝ × ℝ → ℝ;
+		def add: x | ℝ[x] × ℝ[x] → ℝ[x];
+		def add: x,y | ℝ[x,y] × ℝ[x,y] → ℝ[x,y];
 		''')
 		+
 		'''

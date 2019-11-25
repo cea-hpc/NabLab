@@ -11,22 +11,22 @@ public class NablaValueFactory
 		NablaValue result = null;
 		switch (p)
 		{
-			case BOOL: result = new NV0Bool(false);
-			case INT: result = new NV0Int(0);
-			case REAL: result = new NV0Real(0.0);
+			case BOOL: result = new NV0Bool(false); break;
+			case INT: result = new NV0Int(0);  break;
+			case REAL: result = new NV0Real(0.0);  break;
 		}
 		return result;
 	}
 
 	static NablaValue createValue(IrType t, int size)
-	{ 
+	{
 		PrimitiveType p = IrTypeExtensions.getPrimitive(t);
 		NablaValue result = null;
 		switch (p)
 		{
-			case BOOL: result = new NV1Bool(new boolean[size]);
-			case INT: result = new NV1Int(new int[size]);
-			case REAL: result = new NV1Real(new double[size]);
+			case BOOL: result = new NV1Bool(new boolean[size]); break;
+			case INT: result = new NV1Int(new int[size]); break;
+			case REAL: result = new NV1Real(new double[size]); break;
 		}
 		return result;
 	}
@@ -37,9 +37,9 @@ public class NablaValueFactory
 		NablaValue result = null;
 		switch (p)
 		{
-			case BOOL: result = new NV2Bool(new boolean[size1][size2]);
-			case INT: result = new NV2Int(new int[size1][size2]);
-			case REAL: result = new NV2Real(new double[size1][size2]);
+			case BOOL: result = new NV2Bool(new boolean[size1][size2]); break;
+			case INT: result = new NV2Int(new int[size1][size2]); break;
+			case REAL: result = new NV2Real(new double[size1][size2]); break;
 		}
 		return result;
 	}
@@ -50,9 +50,9 @@ public class NablaValueFactory
 		NablaValue result = null;
 		switch (p)
 		{
-			case BOOL: result = new NV3Bool(new boolean[size1][size2][size3]);
-			case INT: result = new NV3Int(new int[size1][size2][size3]);
-			case REAL: result = new NV3Real(new double[size1][size2][size3]);
+			case BOOL: result = new NV3Bool(new boolean[size1][size2][size3]); break;
+			case INT: result = new NV3Int(new int[size1][size2][size3]); break;
+			case REAL: result = new NV3Real(new double[size1][size2][size3]); break;
 		}
 		return result;
 	}
@@ -63,9 +63,9 @@ public class NablaValueFactory
 		NablaValue result = null;
 		switch (p)
 		{
-			case BOOL: result = new NV4Bool(new boolean[size1][size2][size3][size4]);
-			case INT: result = new NV4Int(new int[size1][size2][size3][size4]);
-			case REAL: result = new NV4Real(new double[size1][size2][size3][size4]);
+			case BOOL: result = new NV4Bool(new boolean[size1][size2][size3][size4]); break;
+			case INT: result = new NV4Int(new int[size1][size2][size3][size4]); break;
+			case REAL: result = new NV4Real(new double[size1][size2][size3][size4]); break;
 		}
 		return result;
 	}

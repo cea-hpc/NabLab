@@ -25,8 +25,6 @@ class ModuleInterpreterTest
 		InitT: t = 0.;
 		ComputeTn: t^{n+1} = t + 0.01;
 		'''
-		
-		println(model)
 
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
 		val moduleInterpreter = new ModuleInterpreter(irModule)

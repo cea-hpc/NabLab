@@ -23,38 +23,45 @@ import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 
 class InstructionInterpreter
 {
-	static def dispatch void interprete(VarDefinition it, Context context)
+	static def dispatch NablaValue interprete(VarDefinition it, Context context)
 	{ 
-		//println("Dans interprete de VarDefinition")
+		//println("Interprete VarDefinition")
 		for (v : variables)
 			context.setVariableValue(v, createValue(v, context))
+		return null
 	}
 
-	static def dispatch void interprete(InstructionBlock it, Context context)
+	static def dispatch NablaValue interprete(InstructionBlock it, Context context)
 	{
-		//println("Dans interprete de InstructionBlock")
+		//println("Interprete InstructionBlock")
 		val innerContext = new Context(context)
 		for (i : instructions)
-			interprete(i, innerContext)
+		{
+			val ret = interprete(i, innerContext)
+			if (ret !== null)
+				return ret
+		}
+		return null
 	}
 
-	static def dispatch void interprete(Affectation it, Context context)
+	static def dispatch NablaValue interprete(Affectation it, Context context)
 	{
-		//println("Dans interprete de Affectation")
+		//println("Interprete Affectation")
 		val rightValue = interprete(right, context)
 		val allIndices = left.iterators.map[x | context.getIndexValue(x)] + left.indices.map[x | interprete(x, context)]
 		setValue(context.getVariableValue(left.target), allIndices.toList, rightValue)
+		return null
 	}
 
-	static def dispatch void interprete(ReductionInstruction it, Context context)
+	static def dispatch NablaValue interprete(ReductionInstruction it, Context context)
 	{
 		// All reductionInstruction have been replaced by specific Ir Transformation Step
 		throw new RuntimeException('Wrong path...')
 	}
 
-	static def dispatch void interprete(Loop it, Context context)
+	static def dispatch NablaValue interprete(Loop it, Context context)
 	{
-		//println("Dans interprete de Loop")
+		//println("Interprete Loop")
 		val b = iterationBlock
 		switch b
 		{
@@ -67,7 +74,9 @@ class InstructionInterpreter
 				{
 					context.setIndexValue(b.range, loopIteratorValue)
 					defineIndices(b, context)
-					interprete(body, context)
+					val ret = interprete(body, context)
+					if (ret !== null)
+						return ret
 				}
 			}
 			DimensionIterationBlock:
@@ -78,24 +87,27 @@ class InstructionInterpreter
 				for (i : from..<to)
 				{
 					context.setDimensionValue(b.index, i)
-					interprete(body, context)
+					val ret = interprete(body, context)
+					if (ret !== null)
+						return ret
 				}
 			}
 		}
+		return null
 	}
 
-	static def dispatch void interprete(If it, Context context)
+	static def dispatch NablaValue interprete(If it, Context context)
 	{
-		//println("Dans interprete de If")
+		//println("Interprete If")
 		val cond = interprete(condition, context) as NV0Bool
-		if (cond.data) interprete(thenInstruction, context)
-		else if (elseInstruction !== null) interprete(elseInstruction, context)
+		if (cond.data) return interprete(thenInstruction, context)
+		else if (elseInstruction !== null) return interprete(elseInstruction, context)
 	}
 
-	static def dispatch void interprete(Return it, Context context)
+	static def dispatch NablaValue interprete(Return it, Context context)
 	{
-		//println("Dans interprete de If")
-		context.returnValue = interprete(expression, context)
+		println("Interprete Return")
+		return interprete(expression, context)
 	}
 
  	private static def void defineIndices(SpaceIterationBlock it, Context context)

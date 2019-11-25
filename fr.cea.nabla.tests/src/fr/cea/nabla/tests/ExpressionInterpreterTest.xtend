@@ -296,6 +296,55 @@ class ExpressionInterpreterTest
 	}
 
 	@Test
+	def void testInterpreteFunctionCallWithBody()
+	{
+		val model = TestUtils::getTestModuleWithCustomFunctions(
+		'''
+		def h: ℝ[2] → ℝ[2], (a) → return 2 * a;
+
+		def i: a | ℝ[a] → ℝ[a], (x) → {
+			return 2 * x;
+		}
+
+		def	j: a | ℝ[a] → ℝ[a], (x) → {
+			ℝ[a] y;
+			∀i∈[0;a[, y[i] = 2 * x[i];
+			return y;
+		}
+
+		def k: b | ℝ[b] → ℝ[b], (x) → return j(x);
+		''')
+		+
+		'''
+		ℝ[2] u = [0.0, 0.1];
+		ℝ[3] v = [0.0, 0.1, 0.2];
+		ℝ[2] w1;
+		ℝ[2] w2;
+		ℝ[3] w3;
+		ℝ[2] w4;
+		ℝ[3] w5;
+		ℝ[2] w6;
+
+		j1: w1 = h(u);
+		j2: w2 = i(u);
+		j3: w3 = i(v);
+		j4: w4 = j(u);
+		j5: w5 = j(v);
+		j6: w6 = k(u);
+		'''
+		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val moduleInterpreter = new ModuleInterpreter(irModule)
+		val context = moduleInterpreter.interprete
+
+		assertVariableValueInContext(irModule, context, "w1", new NV1Real(#[0.0, 0.2]))
+		assertVariableValueInContext(irModule, context, "w2", new NV1Real(#[0.0, 0.2]))
+		assertVariableValueInContext(irModule, context, "w3", new NV1Real(#[0.0, 0.2, 0.4]))
+		assertVariableValueInContext(irModule, context, "w4", new NV1Real(#[0.0, 0.2]))
+		assertVariableValueInContext(irModule, context, "w5", new NV1Real(#[0.0, 0.2, 0.4]))
+		assertVariableValueInContext(irModule, context, "w6", new NV1Real(#[0.0, 0.2]))
+	}
+
+	@Test
 	def void testInterpreteVarRef()
 	{
 		val model = TestUtils::testModule

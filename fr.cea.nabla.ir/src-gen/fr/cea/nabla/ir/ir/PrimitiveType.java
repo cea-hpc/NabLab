@@ -26,7 +26,7 @@ public enum PrimitiveType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	INT(1, "Int", "Int"),
+	INT(1, "Int", "\u2115"),
 
 	/**
 	 * The '<em><b>Real</b></em>' literal object.
@@ -36,7 +36,7 @@ public enum PrimitiveType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	REAL(2, "Real", "Real"),
+	REAL(2, "Real", "\u211d"),
 
 	/**
 	 * The '<em><b>Bool</b></em>' literal object.
@@ -46,7 +46,7 @@ public enum PrimitiveType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	BOOL(3, "Bool", "Bool");
+	BOOL(3, "Bool", "\u213e");
 
 	/**
 	 * The '<em><b>Int</b></em>' literal value.
@@ -57,7 +57,7 @@ public enum PrimitiveType implements Enumerator {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @see #INT
-	 * @model name="Int"
+	 * @model name="Int" literal="\u2115"
 	 * @generated
 	 * @ordered
 	 */
@@ -72,7 +72,7 @@ public enum PrimitiveType implements Enumerator {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @see #REAL
-	 * @model name="Real"
+	 * @model name="Real" literal="\u211d"
 	 * @generated
 	 * @ordered
 	 */
@@ -87,7 +87,7 @@ public enum PrimitiveType implements Enumerator {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @see #BOOL
-	 * @model name="Bool"
+	 * @model name="Bool" literal="\u213e"
 	 * @generated
 	 * @ordered
 	 */

@@ -794,19 +794,19 @@ public final class Glace2d
 
 	private double[][] tensProduct(double[] a, double[] b) 
 	{
-		final int x = a.length;
-		double[][] result = new double[x][x];
-		for (int ia=0; ia<x; ia++)
-			for (int ib=0; ib<x; ib++)
+		final int l = a.length;
+		double[][] result = new double[l][l];
+		for (int ia=0; ia<l; ia++)
+			for (int ib=0; ib<l; ib++)
 				result[ia][ib] = a[ia] * b[ib];
 		return result;
 	}
 
 	private double trace(double[][] a) 
 	{
-		final int x = a.length;
+		final int l = a.length;
 		double result = 0.0;
-		for (int ia=0; ia<x; ia++)
+		for (int ia=0; ia<l; ia++)
 			result = result + a[ia][ia];
 		return result;
 	}

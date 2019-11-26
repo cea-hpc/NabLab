@@ -808,23 +808,23 @@ private:
 		return {{a[1], -a[0]}};
 	}
 
-	template<size_t x>
+	template<size_t l>
 	KOKKOS_INLINE_FUNCTION
-	RealArray2D<x,x> tensProduct(RealArray1D<x> a, RealArray1D<x> b) 
+	RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b) 
 	{
-		RealArray2D<x,x> result;
-		for (size_t ia=0; ia<x; ia++)
-			for (size_t ib=0; ib<x; ib++)
+		RealArray2D<l,l> result;
+		for (size_t ia=0; ia<l; ia++)
+			for (size_t ib=0; ib<l; ib++)
 				result[ia][ib] = a[ia] * b[ib];
 		return result;
 	}
 
-	template<size_t x>
+	template<size_t l>
 	KOKKOS_INLINE_FUNCTION
-	double trace(RealArray2D<x,x> a) 
+	double trace(RealArray2D<l,l> a) 
 	{
 		double result = 0.0;
-		for (size_t ia=0; ia<x; ia++)
+		for (size_t ia=0; ia<l; ia++)
 			result = result + a[ia][ia];
 		return result;
 	}

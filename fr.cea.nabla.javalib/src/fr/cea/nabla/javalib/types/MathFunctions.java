@@ -11,20 +11,20 @@ public class MathFunctions
 	public static double asin(double v) { return Math.asin(v); }
 	public static double acos(double v) { return  Math.acos(v); }
 
-	public static double[] matVectProduct(double[][] a, double[] b)
-	{
-		double[] result = new double[a.length];
-		for (int ia=0 ; ia<a.length ; ++ia)
-			result[ia] = dot(a[ia], b);
-		return result;
-	}
-
 	/** Scalar product */
 	public static double dot(double[] a, double[] b)
 	{
 		double result = 0.0;
 		for (int i=0 ; i<a.length ; ++i)
 			result += a[i]*b[i];
+		return result;
+	}
+
+	public static double[] matVectProduct(double[][] a, double[] b)
+	{
+		double[] result = new double[a.length];
+		for (int ia=0 ; ia<a.length ; ++ia)
+			result[ia] = dot(a[ia], b);
 		return result;
 	}
 

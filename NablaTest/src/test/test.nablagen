@@ -6,40 +6,36 @@ workflow TestDefaultGenerationChain transforms Test
 	{
 	}
 
-	TagPersistentVariables tagPersistentVariables follows nabla2ir 
-	{ 
-		variables = u as "Vitesse";
+	ReplaceUtf replaceUtf follows nabla2ir
+	{
+		dumpIr;
 	}
 	
-	ReplaceUtf replaceUtf follows tagPersistentVariables
+	ReplaceReductions replaceReductions follows replaceUtf
 	{
-	}
-	
-	ReplaceInternalReductions replaceReductions follows replaceUtf
-	{
+		dumpIr;
 	}
 	
 	OptimizeConnectivities optimizeConnectivities follows replaceReductions
 	{
-		connectivities = cells, nodes;
+		connectivities = nodes;
 	}
 	
 	FillHLTs fillHlts follows optimizeConnectivities
 	{
-		dumpIr;
+		//dumpIr;
 	}
 	
 	Ir2Code javaGenerator follows fillHlts
 	{
 		language = Java;
-		disabled;
-		outputDir = "/NablaTestJava/src";
+		//disabled;
+		outputDir = "/NablaTest/src-gen-java";
 	}
 
 	Ir2Code kokkosGenerator follows fillHlts
 	{
 		language = Kokkos;
-		//disabled;
-		outputDir = "/NablaTestKokkos/src";
+		outputDir = "/NablaTest/src-gen-kokkos";
 	}
 }

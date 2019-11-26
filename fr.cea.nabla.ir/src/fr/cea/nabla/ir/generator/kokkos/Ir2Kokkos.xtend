@@ -36,12 +36,17 @@ class Ir2Kokkos extends CodeGenerator
 
 	new(JobContentProvider jcp) 
 	{ 
-		super('kokkos', 'cc')
+		super('Kokkos')
 		jobContentProvider = jcp
 		functionContentProvider = new FunctionContentProvider(jcp.instructionContentProvider)
 	}
 
-	override getFileContent(IrModule it)
+	override getFileContentsByName(IrModule it)
+	{
+		#{ name + '.cc' -> ccFileContent, 'CMakeLists.txt' -> Ir2Cmake::getFileContent(it)}
+	}
+
+	private def getCcFileContent(IrModule it)
 	'''
 	#include <iostream>
 	#include <iomanip>

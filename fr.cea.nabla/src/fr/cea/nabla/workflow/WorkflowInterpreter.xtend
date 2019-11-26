@@ -40,7 +40,7 @@ class WorkflowInterpreter
 	@Inject Provider<JavaIoFileSystemAccess> fsaProvider
 	@Inject Nabla2Ir nabla2Ir
 	@Inject IOutputConfigurationProvider outputConfigurationProvider
-	
+
 	def launch(Workflow workflow)
 	{	
 		try
@@ -65,7 +65,7 @@ class WorkflowInterpreter
 			throw(e)
 		}
 	}
-	
+
 	def addWorkflowTraceListener(IWorkflowTraceListener listener)
 	{
 		traceListeners += listener
@@ -75,7 +75,7 @@ class WorkflowInterpreter
 	{
 		modelChangedListeners += listener
 	}
-	
+
 	private def dispatch void launch(Nabla2IrComponent c, NablaModule nablaModule)
 	{
 		val msg = '  Nabla -> IR - ' + c.name
@@ -130,11 +130,9 @@ class WorkflowInterpreter
 		if (!c.disabled)
 		{
 			val g = CodeGeneratorProvider::get(c)
-			val fileName = irModule.name.toLowerCase + '/' + irModule.name + '.' + g.fileExtension
-			val msg = "  Generating '" + fileName + "' file"
+			val msg = "  " + g.name + " code generator\n"
 			logger.info(msg)
 			traceListeners.forEach[write(msg)]
-			val fileContent = g.getFileContent(irModule)
 			val outputFolder = c.eclipseProject.workspace.root.findMember(c.outputDir) 
 			if (outputFolder === null || !(outputFolder instanceof IContainer) || !outputFolder.exists)
 			{
@@ -147,21 +145,30 @@ class WorkflowInterpreter
 			else
 			{
 				val fsa = getConfiguredFileSystemAccess(outputFolder.location.toString, false)
-				fsa.generateFile(fileName, fileContent)
-				outputFolder.refreshLocal(IResource::DEPTH_INFINITE, null)
-				val msgEnd = "... ok\n"
-				logger.info(msgEnd)
-				traceListeners.forEach[write(msgEnd)]	
+				val fileContentsByName = g.getFileContentsByName(irModule)
+				for (fileName : fileContentsByName.keySet)
+				{
+					val fullFileName = irModule.name.toLowerCase + '/' + fileName
+					val fileContent = fileContentsByName.get(fileName)
+					val msg2 = "    Generating '" + fullFileName
+					logger.info(msg2)
+					traceListeners.forEach[write(msg2)]	
+					fsa.generateFile(fullFileName, fileContent)
+					outputFolder.refreshLocal(IResource::DEPTH_INFINITE, null)
+					val msgEnd = "... ok\n"
+					logger.info(msgEnd)
+					traceListeners.forEach[write(msgEnd)]	
+				}
 			}
 		}
 	}
-		
+
 	private def createAndSaveResource(IrModule irModule, IProject project, String fileExtensionPart)
 	{
 		val fileName = irModule.name.toLowerCase + '/' + irModule.name + '.' +  fileExtensionPart + '.' + IrExtension
 		val fsa = getConfiguredFileSystemAccess(project.location.toString, true)
 		
-		val uri =  fsa.getURI(fileName)		
+		val uri =  fsa.getURI(fileName)
 		val rSet = new ResourceSetImpl
 		rSet.resourceFactoryRegistry.extensionToFactoryMap.put(IrExtension, new XMIResourceFactoryImpl) 
 		
@@ -170,7 +177,7 @@ class WorkflowInterpreter
 		resource.save(xmlSaveOptions)
 		refreshResourceDir(project, uri.toString)
 	}
-	
+
 	/** Refresh du répertoire s'il est contenu dans la resource (évite le F5) */
 	private static def refreshResourceDir(IProject p, String fileAbsolutePath)
 	{
@@ -181,13 +188,13 @@ class WorkflowInterpreter
 
 	private	def getXmlSaveOptions()
 	{
-		val builder = SaveOptions::newBuilder 
+		val builder = SaveOptions::newBuilder
 		builder.format
 		val so = builder.options.toOptionsMap
 		so.put(XMLResource::OPTION_LINE_WIDTH, 160)
 		return so
 	}
-	
+
 	private def getConfiguredFileSystemAccess(String absoluteBasePath, boolean keepSrcGen) 
 	{
 		val fsa = fsaProvider.get
@@ -196,12 +203,12 @@ class WorkflowInterpreter
 		[
 			if (keepSrcGen)
 				outputDirectory = absoluteBasePath + '/' + outputDirectory
-			else 
+			else
 				outputDirectory = absoluteBasePath 
 		]
 		return fsa
 	}
-	
+
 	private def getOutputConfigurations() 
 	{
 		val configurations = outputConfigurationProvider.outputConfigurations
@@ -210,7 +217,7 @@ class WorkflowInterpreter
 			override apply(OutputConfiguration from) { return from.name }
 		})
 	}
-	
+
 	/**
 	 * Execute next workflow step(s)
 	 * For n steps, the model is duplicated n-1 times to avoid conflicts

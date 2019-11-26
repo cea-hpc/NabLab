@@ -30,9 +30,14 @@ import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 
 class Ir2Java extends CodeGenerator
 {
-	new() { super('java', 'java') }
+	new() { super('Java') }
 
-	override getFileContent(IrModule it)
+	override getFileContentsByName(IrModule it)
+	{
+		#{ name + '.java' -> javaFileContent}
+	}
+
+	private def getJavaFileContent(IrModule it)
 	'''
 		package «name.toLowerCase»;
 
@@ -40,7 +45,6 @@ class Ir2Java extends CodeGenerator
 		import java.util.ArrayList;
 		import java.util.stream.IntStream;
 
-		import fr.cea.nabla.javalib.Utils;
 		import fr.cea.nabla.javalib.types.*;
 		«IF withMesh»
 		import fr.cea.nabla.javalib.mesh.*;

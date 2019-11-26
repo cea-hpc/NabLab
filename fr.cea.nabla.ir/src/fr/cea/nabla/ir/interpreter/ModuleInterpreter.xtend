@@ -9,14 +9,17 @@ import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.logging.ConsoleHandler
+import java.util.logging.Level
+import java.util.logging.Logger
 
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import java.util.logging.Logger
-import java.util.logging.Level
-import java.util.logging.ConsoleHandler
 
 class ModuleInterpreter 
 {
@@ -48,7 +51,9 @@ class ModuleInterpreter
 
 	def interprete()
 	{
-		log.log(Level::WARNING," Start interpreter ");
+		val dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")
+		val startTime = LocalDateTime.now()
+		log.log(Level::WARNING," Start executing " + module.name + " module " + dtf.format(startTime))
 
 		// Add Variable for iteration
 		iterationVariable = createIterationVariable
@@ -86,7 +91,7 @@ class ModuleInterpreter
 		for (j : module.jobs.filter[x | x.at < 0].sortBy[at])
 			jobInterpreter.interprete(j, context)
 
-		context.showVariables("After init jobs")
+		//context.showVariables("After init jobs")
 	
 		// Declare time loop
 		var maxIterations = context.getInt(MandatorySimulationOptions::MAX_ITERATIONS)
@@ -94,13 +99,16 @@ class ModuleInterpreter
 
 		while (iterationValue < maxIterations && context.getReal(MandatorySimulationVariables::TIME) < stopTime)
 		{
+			incrementIterationValue
+			println("[" + iterationValue + "] t = " + context.getReal(MandatorySimulationVariables::TIME))
 			for (j : module.jobs.filter[x | x.at > 0].sortBy[at])
 				jobInterpreter.interprete(j, context)
-			context.showVariables("At iteration = " + iterationValue)
-			incrementIterationValue
+			//context.showVariables("At iteration = " + iterationValue)
 		}
 
-		log.log(Level::WARNING," End interpreter ");
+		val endTime = LocalDateTime.now()
+		val duration = Duration.between(startTime, endTime);
+		log.log(Level::WARNING," End executing " + dtf.format(endTime) + " (" + duration.seconds + " s)")
 
 		return context
 	}

@@ -138,7 +138,7 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(FunctionCall it, Context context)
 	{
-		println("Interprete FunctionCall " + function.name)
+		//println("Interprete FunctionCall " + function.name)
 		val argValues = args.map[x|interprete(x, context)]
 		if (function.body === null)
 		{

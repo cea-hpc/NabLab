@@ -6,4 +6,11 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: CEA
 Automatic-Module-Name: NablaExamples
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: fr.cea.nabla
+Require-Bundle: fr.cea.nabla,
+ fr.cea.nabla.ir,
+ fr.cea.nabla.javalib,
+ org.eclipse.xtext.xbase.lib
+Export-Package: explicitheatequation,
+ glace2d,
+ heatequation,
+ implicitheatequation

@@ -417,4 +417,10 @@ No third-party beneficiary rights are created under this Agreement.
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="fr.cea.nabla.javalib"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
 </feature>

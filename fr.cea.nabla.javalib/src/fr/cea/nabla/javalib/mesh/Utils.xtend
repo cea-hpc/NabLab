@@ -7,20 +7,15 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator
+package fr.cea.nabla.javalib.mesh
 
-import fr.cea.nabla.ir.ir.IrModule
-import java.util.Map
-import org.eclipse.xtend.lib.annotations.Accessors
-
-abstract class CodeGenerator 
+class Utils 
 {
-	@Accessors val String name
-
-	new(String name)
+	static def indexOf(int[] array, int value) 
 	{
-		this.name = name
+		for (int i : 0..<array.length)
+			if (array.get(i) == value)
+				return i
+		throw new Exception("Value '" + value.toString + "' not in array [" + array.map[toString].join(',') + ']')
 	}
-
-	abstract def Map<String, CharSequence> getFileContentsByName(IrModule it)
 }

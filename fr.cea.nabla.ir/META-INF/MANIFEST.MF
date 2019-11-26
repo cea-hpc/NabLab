@@ -5,8 +5,7 @@ Bundle-Name: fr.cea.nabla.ir
 Bundle-SymbolicName: fr.cea.nabla.ir;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .,
- lib/jgrapht-core-1.3.0.jar,
- lib/libjavanabla.jar
+ lib/jgrapht-core-1.3.0.jar
 Bundle-Vendor: CEA
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -20,13 +19,13 @@ Export-Package: fr.cea.nabla.ir,
  fr.cea.nabla.ir.ir,
  fr.cea.nabla.ir.ir.impl,
  fr.cea.nabla.ir.ir.util,
- fr.cea.nabla.ir.transformers,
- fr.cea.nabla.javalib.types
+ fr.cea.nabla.ir.transformers
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.macro,
- org.apache.commons.lang3
+ org.apache.commons.lang3,
+ fr.cea.nabla.javalib
 Bundle-ActivationPolicy: lazy
 

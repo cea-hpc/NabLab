@@ -34,12 +34,18 @@ workflow Glace2dGenerationChain transforms Glace2d
 	Ir2Code javaGenerator follows fillHlts
 	{
 		language = Java;
-		outputDir = "/NablaExamplesJava/src";
+		outputDir = "/NablaExamples/src-gen-java";
 	}
 
 	Ir2Code kokkosGenerator follows fillHlts
 	{
 		language = Kokkos;
-		outputDir = "/NablaExamplesKokkos/src";
+		outputDir = "/NablaExamples/src-gen-kokkos";
 	}
+
+//	Ir2Code kokkosHPGenerator follows fillHlts
+//	{
+//		language = KokkosHierarchicalParallelism;
+//		outputDir = "/NablaExamples/src-gen-kokkoshp";
+//	}
 }

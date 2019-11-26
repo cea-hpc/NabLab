@@ -9,7 +9,8 @@ Bundle-Activator: fr.cea.nabla.nabla.presentation.NablaEditorPlugin$Implementati
 Bundle-Vendor: CEA
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: fr.cea.nabla.nabla.presentation
+Export-Package: fr.cea.nabla.nabla.presentation,
+ fr.cea.nabla.nablagen.presentation
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;visibility:=reexport,
  fr.cea.nabla.edit;visibility:=reexport,

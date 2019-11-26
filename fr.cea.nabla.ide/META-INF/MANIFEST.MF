@@ -11,6 +11,7 @@ Require-Bundle: fr.cea.nabla,
  org.eclipse.xtext.xbase.ide,
  org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: fr.cea.nabla.ide.contentassist.antlr,
+Export-Package: fr.cea.nabla.ide,
+ fr.cea.nabla.ide.contentassist.antlr,
  fr.cea.nabla.ide.contentassist.antlr.internal
 

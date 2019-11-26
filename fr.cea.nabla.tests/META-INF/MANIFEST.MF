@@ -15,7 +15,9 @@ Require-Bundle: fr.cea.nabla,
  org.eclipse.xtext.xbase.testing,
  fr.cea.nabla.ir
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: fr.cea.nabla.tests;x-internal=true
+Export-Package: fr.cea.nabla.tests;x-internal=true,
+ glace2d,
+ test
 Import-Package: org.junit.runners;version="4.5.0",
  org.junit.runners.model;version="4.5.0",
  org.hamcrest.core,

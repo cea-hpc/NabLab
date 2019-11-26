@@ -11,7 +11,7 @@ public class Glace2dFunctions
 			result += a[ia][ia];
 		return result;
 	}
-	
+
 	// only for 2D vectors
   	static double[] perp(double[] a)
   	{

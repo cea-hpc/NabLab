@@ -14,6 +14,9 @@ import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import java.util.logging.Logger
+import java.util.logging.Level
+import java.util.logging.ConsoleHandler
 
 class ModuleInterpreter 
 {
@@ -24,6 +27,7 @@ class ModuleInterpreter
 	val PvdFileWriter2D writer
 	var JobInterpreter jobInterpreter
 	var Variable iterationVariable
+	var Logger log
 
 	new(IrModule module)
 	{
@@ -32,18 +36,28 @@ class ModuleInterpreter
 		this.writer = new PvdFileWriter2D(module.name)
 		this.jobInterpreter = null
 		this.iterationVariable = null
+
+		// create a Logger and a Handler
+		log = Logger.getLogger(ModuleInterpreter.name)
+		log.setLevel(Level::ALL) //All Levels messages
+		log.setUseParentHandlers(false) // Suppress default console
+		val ch = new ConsoleHandler
+		ch.setLevel(Level.INFO); // to accept only INFO messages
+		log.addHandler(ch)
 	}
 
 	def interprete()
 	{
+		log.log(Level::WARNING," Start interpreter ");
+
 		// Add Variable for iteration
 		iterationVariable = createIterationVariable
 		jobInterpreter = new JobInterpreter(writer, iterationVariable)
-		
+
 		// Interprete constant variables
 		for (v : module.variables.filter(SimpleVariable).filter[const])
 			context.setVariableValue(v, interprete(v.defaultValue, context))
-			
+
 		if (!module.items.empty)
 		{
 			// Create mesh
@@ -67,7 +81,7 @@ class ModuleInterpreter
 
 		// Copy Node Cooords
 		context.setVariableValue(module.initCoordVariable, new NV2Real(context.meshWrapper.nodes))
-		
+
 		// Interprete init jobs
 		for (j : module.jobs.filter[x | x.at < 0].sortBy[at])
 			jobInterpreter.interprete(j, context)
@@ -77,7 +91,7 @@ class ModuleInterpreter
 		// Declare time loop
 		var maxIterations = context.getInt(MandatorySimulationOptions::MAX_ITERATIONS)
 		var stopTime = context.getReal(MandatorySimulationOptions::STOP_TIME)
-		
+
 		while (iterationValue < maxIterations && context.getReal(MandatorySimulationVariables::TIME) < stopTime)
 		{
 			for (j : module.jobs.filter[x | x.at > 0].sortBy[at])
@@ -85,6 +99,9 @@ class ModuleInterpreter
 			context.showVariables("At iteration = " + iterationValue)
 			incrementIterationValue
 		}
+
+		log.log(Level::WARNING," End interpreter ");
+
 		return context
 	}
 

@@ -20,7 +20,7 @@ class NablaValueSetter
 		}
 	}
 
-	//TODO NB si indices.size = 0 -> it = data ?
+	//TODO NB si indices.size = 0 -> it = value ?
 	private static def dispatch set(NV0Bool it, NV0Bool value) { data = value.data }
 	private static def dispatch set(NV0Int it, NV0Int value) { data = value.data }
 	private static def dispatch set(NV0Real it, NV0Real value) { data = value.data }

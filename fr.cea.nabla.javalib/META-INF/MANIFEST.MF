@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
+Automatic-Module-Name: fr.cea.nabla.javalib
 Bundle-ManifestVersion: 2
-Bundle-Name: Javalib
+Bundle-Name: fr.cea.nabla.javalib
 Bundle-SymbolicName: fr.cea.nabla.javalib
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: javalib.jar,
@@ -85,3 +86,5 @@ Export-Package: assets.org.apache.commons.math3.exception.util,
  org.apache.commons.math3.stat.regression,
  org.apache.commons.math3.transform,
  org.apache.commons.math3.util
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: CEA

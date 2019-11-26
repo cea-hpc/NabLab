@@ -102,7 +102,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void iniF() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("IniF", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			f(jCells) = 0.0;
 		});
@@ -116,7 +116,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void iniCenter() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("IniCenter", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
 			RealArray1D<2> reduction1231346603 = {{0.0, 0.0}};
@@ -141,7 +141,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeV() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("ComputeV", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
 			double reduction_1598832681 = 0.0;
@@ -168,7 +168,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeSurface() noexcept
 	{
-		Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const int& fFaces)
+		Kokkos::parallel_for("ComputeSurface", nbFaces, KOKKOS_LAMBDA(const int& fFaces)
 		{
 			int fId(fFaces);
 			double reduction_440358293 = 0.0;
@@ -195,7 +195,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void iniUn() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("IniUn", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			u(jCells) = MathFunctions::cos(2 * options->PI * options->k * center(jCells)[0]);
 		});
@@ -209,7 +209,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeOutgoingFlux() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& j1Cells)
+		Kokkos::parallel_for("ComputeOutgoingFlux", nbCells, KOKKOS_LAMBDA(const int& j1Cells)
 		{
 			int j1Id(j1Cells);
 			double reduction_1707485657 = 0.0;
@@ -277,7 +277,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeUn() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("ComputeUn", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			u_nplus1(jCells) = f(jCells) * deltat + u(jCells) + outgoingFlux(jCells);
 		});

@@ -114,7 +114,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void initXc() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& cCells)
+		Kokkos::parallel_for("InitXc", nbCells, KOKKOS_LAMBDA(const int& cCells)
 		{
 			int cId(cCells);
 			RealArray1D<2> reduction83321187 = {{0.0, 0.0}};
@@ -139,7 +139,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void initD() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& cCells)
+		Kokkos::parallel_for("InitD", nbCells, KOKKOS_LAMBDA(const int& cCells)
 		{
 			D(cCells) = 1.0;
 		});
@@ -153,7 +153,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeV() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("ComputeV", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
 			double reduction_1884650213 = 0.0;
@@ -180,7 +180,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeFaceLength() noexcept
 	{
-		Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const int& fFaces)
+		Kokkos::parallel_for("ComputeFaceLength", nbFaces, KOKKOS_LAMBDA(const int& fFaces)
 		{
 			int fId(fFaces);
 			double reduction_1283758977 = 0.0;
@@ -207,7 +207,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void initXcAndYc() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& cCells)
+		Kokkos::parallel_for("InitXcAndYc", nbCells, KOKKOS_LAMBDA(const int& cCells)
 		{
 			xc(cCells) = Xc(cCells)[0];
 			yc(cCells) = Xc(cCells)[1];
@@ -222,7 +222,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void initU() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& cCells)
+		Kokkos::parallel_for("InitU", nbCells, KOKKOS_LAMBDA(const int& cCells)
 		{
 			if (MathFunctions::norm(ArrayOperations::minus(Xc(cCells), options->vectOne)) < 0.5) 
 				u(cCells) = options->u0;
@@ -258,7 +258,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeFaceConductivity() noexcept
 	{
-		Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const int& fFaces)
+		Kokkos::parallel_for("ComputeFaceConductivity", nbFaces, KOKKOS_LAMBDA(const int& fFaces)
 		{
 			int fId(fFaces);
 			double reduction1970506419 = 1.0;

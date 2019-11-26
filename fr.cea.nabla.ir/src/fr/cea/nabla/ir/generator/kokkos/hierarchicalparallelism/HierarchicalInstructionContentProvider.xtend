@@ -22,14 +22,14 @@ import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
 
 class HierarchicalInstructionContentProvider extends InstructionContentProvider
 {
-	override protected getParallelContent(Loop it) { getParallelContent(iterationBlock, it) }
+	override protected getParallelContent(Loop it, String kokkosName) { getBlockParallelContent(iterationBlock, it) }
 
 	override protected getHeader(ReductionInstruction it, String nbElems, String indexName)
 	'''
 		Kokkos::parallel_reduce(Kokkos::TeamThreadRange(team_member, «nbElems»), KOKKOS_LAMBDA(const int& «indexName», «result.cppType»& x)
 	'''
 
-	private def dispatch getParallelContent(SpaceIterationBlock it, Loop l) 
+	private def dispatch getBlockParallelContent(SpaceIterationBlock it, Loop l) 
 	'''
 		const auto team_work(computeTeamWorkRange(team_member, «range.container.connectivity.nbElems»));
 		if (!team_work.second)
@@ -44,7 +44,7 @@ class HierarchicalInstructionContentProvider extends InstructionContentProvider
 		});
 	'''
 
-	private def dispatch getParallelContent(DimensionIterationBlock it, Loop l) 
+	private def dispatch getBlockParallelContent(DimensionIterationBlock it, Loop l) 
 	'''
 		const int from = «from.content»;
 		const int to = «to.content»«IF toIncluded»+1«ENDIF»;

@@ -161,7 +161,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void iniCenter() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("IniCenter", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
 			RealArray1D<2> reduction91753293 = {{0.0, 0.0}};
@@ -186,7 +186,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeCjrIc() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("ComputeCjrIc", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
 			{
@@ -211,7 +211,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void iniUn() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("IniUn", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			uj(jCells)[0] = 0.0;
 			uj(jCells)[1] = 0.0;
@@ -226,7 +226,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void iniIc() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("IniIc", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			if (center(jCells)[0] < options->option_x_interface) 
 			{
@@ -249,7 +249,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void iniVIc() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("IniVIc", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
 			double reduction_1455110305 = 0.0;
@@ -274,7 +274,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void iniM() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("IniM", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			m(jCells) = rho_ic(jCells) * V_ic(jCells);
 		});
@@ -288,7 +288,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void iniEn() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("IniEn", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			E(jCells) = p_ic(jCells) / ((options->gamma - 1.0) * rho_ic(jCells));
 		});
@@ -302,7 +302,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeCjr() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("ComputeCjr", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
 			{
@@ -327,7 +327,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeInternalEnergy() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("ComputeInternalEnergy", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			e(jCells) = E(jCells) - 0.5 * MathFunctions::dot(uj(jCells), uj(jCells));
 		});
@@ -341,7 +341,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeLjr() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("ComputeLjr", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
 			{
@@ -362,7 +362,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeV() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("ComputeV", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
 			double reduction_443215113 = 0.0;
@@ -387,7 +387,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeDensity() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("ComputeDensity", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			rho(jCells) = m(jCells) / V(jCells);
 		});
@@ -401,7 +401,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeEOSp() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("ComputeEOSp", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			p(jCells) = (options->gamma - 1.0) * rho(jCells) * e(jCells);
 		});
@@ -433,7 +433,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeEOSc() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("ComputeEOSc", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			c(jCells) = MathFunctions::sqrt(options->gamma * p(jCells) / rho(jCells));
 		});
@@ -447,7 +447,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computedeltatj() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("Computedeltatj", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
 			double reduction_1941980426 = 0.0;
@@ -470,7 +470,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeAjr() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("ComputeAjr", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
 			{
@@ -491,7 +491,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeAr() noexcept
 	{
-		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
+		Kokkos::parallel_for("ComputeAr", nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 		{
 			int rId(rNodes);
 			RealArray2D<2,2> reduction_646088144 = {{{0.0, 0.0}, {0.0, 0.0}}};
@@ -517,7 +517,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeBr() noexcept
 	{
-		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
+		Kokkos::parallel_for("ComputeBr", nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 		{
 			int rId(rNodes);
 			RealArray1D<2> reduction265492794 = {{0.0, 0.0}};
@@ -574,7 +574,7 @@ private:
 	void computeMt() noexcept
 	{
 		auto innerNodes(mesh->getInnerNodes());
-		Kokkos::parallel_for(nbInnerNodes, KOKKOS_LAMBDA(const int& rInnerNodes)
+		Kokkos::parallel_for("ComputeMt", nbInnerNodes, KOKKOS_LAMBDA(const int& rInnerNodes)
 		{
 			int rId(innerNodes[rInnerNodes]);
 			int rNodes(rId);
@@ -591,7 +591,7 @@ private:
 	void computeBt() noexcept
 	{
 		auto innerNodes(mesh->getInnerNodes());
-		Kokkos::parallel_for(nbInnerNodes, KOKKOS_LAMBDA(const int& rInnerNodes)
+		Kokkos::parallel_for("ComputeBt", nbInnerNodes, KOKKOS_LAMBDA(const int& rInnerNodes)
 		{
 			int rId(innerNodes[rInnerNodes]);
 			int rNodes(rId);
@@ -608,7 +608,7 @@ private:
 	void outerFacesComputations() noexcept
 	{
 		auto outerFaces(mesh->getOuterFaces());
-		Kokkos::parallel_for(nbOuterFaces, KOKKOS_LAMBDA(const int& kOuterFaces)
+		Kokkos::parallel_for("OuterFacesComputations", nbOuterFaces, KOKKOS_LAMBDA(const int& kOuterFaces)
 		{
 			int kId(outerFaces[kOuterFaces]);
 			const double epsilon = 1.0E-10;
@@ -678,7 +678,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeU() noexcept
 	{
-		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
+		Kokkos::parallel_for("ComputeU", nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 		{
 			ur(rNodes) = MathFunctions::matVectProduct(inverse(Mt(rNodes)), bt(rNodes));
 		});
@@ -692,7 +692,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeFjr() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("ComputeFjr", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
 			{
@@ -715,7 +715,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeXn() noexcept
 	{
-		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
+		Kokkos::parallel_for("ComputeXn", nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 		{
 			X_nplus1(rNodes) = ArrayOperations::plus(X(rNodes), ArrayOperations::multiply(deltat, ur(rNodes)));
 		});
@@ -740,7 +740,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeUn() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("ComputeUn", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
 			RealArray1D<2> reduction_1949909430 = {{0.0, 0.0}};
@@ -763,7 +763,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeEn() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("ComputeEn", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
 			double reduction_119635181 = 0.0;

@@ -92,7 +92,7 @@ class ModuleInterpreter
 			jobInterpreter.interprete(j, context)
 
 		context.showVariables("After init jobs")
-	
+
 		// Declare time loop
 		var maxIterations = context.getInt(MandatorySimulationOptions::MAX_ITERATIONS)
 		var stopTime = context.getReal(MandatorySimulationOptions::STOP_TIME)
@@ -111,6 +111,13 @@ class ModuleInterpreter
 		val duration = Duration.between(startTime, endTime);
 		log.log(Level::WARNING," End executing " + dtf.format(endTime) + " (" + duration.seconds + " s)")
 
+		while (iterationValue < maxIterations && context.getReal(MandatorySimulationVariables::TIME) < stopTime)
+		{
+			for (j : module.jobs.filter[x | x.at > 0].sortBy[at])
+				jobInterpreter.interprete(j, context)
+			context.showVariables("At iteration = " + iterationValue)
+			incrementIterationValue
+		}
 		return context
 	}
 

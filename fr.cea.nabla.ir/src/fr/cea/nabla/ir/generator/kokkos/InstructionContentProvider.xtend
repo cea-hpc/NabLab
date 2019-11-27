@@ -33,6 +33,8 @@ import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
+import org.eclipse.emf.ecore.EObject
+import fr.cea.nabla.ir.ir.Job
 
 abstract class InstructionContentProvider 
 {
@@ -63,7 +65,7 @@ abstract class InstructionContentProvider
 	{
 		if (topLevelLoop) 
 			if (multithreadable)
-				getParallelContent(it)
+				getParallelContent(it, jobName)
 			else
 				getTopLevelSequentialContent(iterationBlock, it)
 		else 
@@ -97,7 +99,7 @@ abstract class InstructionContentProvider
 		«ENDFOR»
 	'''
 
-	protected abstract def CharSequence getParallelContent(Loop l)
+	protected abstract def CharSequence getParallelContent(Loop l, String kokkosName)
 	protected abstract def CharSequence getHeader(ReductionInstruction it, String nbElems, String indexName)
 
 	private def dispatch CharSequence getContent(ReductionInstruction it, SpaceIterationBlock b) 
@@ -232,4 +234,11 @@ abstract class InstructionContentProvider
 	protected def getAccessor(Iterator it)  { getAccessor(container.connectivity, container.args) }
 	private def getAccessor(Connectivity c, Iterable<? extends IteratorRef> args)  
 	'''mesh->get«c.name.toFirstUpper»(«args.map[idName].join(', ')»)'''
+
+	private def String getJobName(EObject o)
+	{
+		if (o === null) null
+		else if (o instanceof Job) (o as Job).name
+		else o.eContainer.jobName
+	}
 }

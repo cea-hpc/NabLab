@@ -1,80 +1,56 @@
 module Test;
 
-items { node, cell }
+with Math.*;
 
-connectivities 
-{
-	cells: → {cell};
-	nodesOfCell: cell → {node};
+items { node }
+set	nodes: → {node};
+
+//def f: ℝ → ℝ;
+//def f: ℝ[2] → ℝ;
+//def g: x | ℝ[x] → ℝ[x];
+
+def h: ℝ[2] → ℝ[2], (a) → {
+	return 2 * a;
 }
 
-functions 
-{
-	perp: ℝ[2] → ℝ[2];
-	norm: x | ℝ[x] → ℝ;
-	reduceMin: (ℝ.MaxValue, ℝ)→ℝ;
-	solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x];
+def i: a | ℝ[a] → ℝ[a], (x) → {
+	return 2 * x;
 }
 
-const ℝ X_EDGE_LENGTH = 1.;
+def	j: a | ℝ[a] → ℝ[a], (x) → {
+	ℝ[a] y;
+	∀i∈[0;a[, y[i] = 2 * x[i];
+	return y;
+}
+
+def k: b | ℝ[b] → ℝ[b], (x) → return j(x);
+
+const ℝ X_EDGE_LENGTH = 0.01;
 const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-const ℕ X_EDGE_ELEMS = 2;
-const ℕ Y_EDGE_ELEMS = 2;
+const ℕ X_EDGE_ELEMS = 100;
+const ℕ Y_EDGE_ELEMS = 10;
 const ℕ Z_EDGE_ELEMS = 1;
-const ℝ option_stoptime = 0.1;
-const ℕ option_max_iterations = 500;
 
-ℕ a1 = 1;
-ℕ a2 = 9 % 4;
-ℕ a3 = ℕ.MinValue;
-ℕ a4;
-ℕ[2] a5;
-ℕ[2] a6 = [1,1];
-ℕ[2] a7 = ℕ[2](1);
-ℕ[2,2] a8;
-ℕ a9 = a8[0,2];
+const ℝ option_stoptime = 0.2;
+const ℕ option_max_iterations = 20000;
 
-ℾ b1 = true;
-ℾ b2 = false || true;
-ℾ b3 = false && true;
-ℾ b4 = (a1 == 2);
-ℾ b5 = (a1 != 2);
-ℾ b6 = (a1 > 2);
-ℾ b7 = (a1 >= 2);
-ℾ b8 = (a1 <= 2);
-ℾ b9 = (a1 < 2);
-ℾ b10 = !(a1 < 2);	
+ℝ t;
+ℝ[2] X{nodes};
 
-ℝ c1 = 2.0 + 1.0;
-ℝ c2 = 2.0 - 1.0;
-ℝ c3 = 2.0 * 1.0;
-ℝ c4 = 2.0 / 1.0;		
-ℝ c5 = -c1;		
-ℝ c6 = ℝ.MaxValue;		
-const ℝ c7 = 1.0e-10;
+ℝ[2] u = [0.0, 0.1];
+ℝ[3] v = [0.0, 0.1, 0.2];
+ℝ[2] w1;
+ℝ[2] w2;
+ℝ[3] w3;
+ℝ[2] w4;
+ℝ[3] w5;
+ℝ[2] w6;
 
-ℝ[2] d1 = [1.0, 2.0];
-ℝ[2] d2 = perp(d1);
-ℝ[2] d3 = ℝ[2](0.);
+j1: w1 = h(u);
+j2: w2 = i(u);
+j3: w3 = i(v);
+j4: w4 = j(u);
+j5: w5 = j(v);
+j6: w6 = k(u);
 
-ℝ[3] e = [1.0, 2.0, 3.0];
-
-
-ℝ[2,2] g = [ [1.0, 0.0], [0.0, 1.0] ];
-ℝ h = (a1 == 1 ? 0.0 : 1.0);
-
-ℕ t{cells};
-ℝ u{cells}, v{cells};
-ℝ[2] w{cells, nodesOfCell};
-ℝ x{cells, nodesOfCell};
-ℝ α{cells, cells}; 
-
-UpdateU: u^{n+1} = solveLinearSystem(α, u);
-
-ComputeV: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r} + t{j});
-
-ComputeX: ∀ j∈cells(), {
-	ℝ e = 1.0;
-	u{j} = e * 4; 
-	∀r∈nodesOfCell(j), x{j,r} = norm(w{j,r});
-}
+//j1: ∀r∈nodes(), ℝ[2] ddd = g(X{r});

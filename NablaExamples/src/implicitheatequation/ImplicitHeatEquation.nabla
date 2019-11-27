@@ -23,17 +23,20 @@ set cellsOfFace: face → {cell};
 set nodesOfCell: cell → {node};
 set commonFace: cell × cell → face;
 
+// User options
 const ℝ X_LENGTH = 2.0;
 const ℝ Y_LENGTH = 2.0;
 const ℝ u0 = 1.0;
 const ℝ[2] vectOne = ℝ[2](1.0);
 
-// NabLab Mandatory Options
+// Mesh options
 const ℕ X_EDGE_ELEMS = 40;
 const ℕ Y_EDGE_ELEMS = 40;
 const ℕ Z_EDGE_ELEMS = 1;
 const ℝ X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
 const ℝ Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
+
+// Simulation options
 const ℝ option_stoptime = 1.0;
 const ℕ option_max_iterations = 500000000;
 

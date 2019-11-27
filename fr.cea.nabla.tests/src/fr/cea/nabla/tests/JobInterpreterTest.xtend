@@ -40,7 +40,7 @@ class JobInterpreterTest
 	}
 
 	@Test
-	def void testInterpreteEndOfTimeLoopJob()
+	def void testInterpreteTimeIterationCopyJob()
 	{
 		val model = TestUtils::testModule
 		+
@@ -53,18 +53,6 @@ class JobInterpreterTest
 		val moduleInterpreter = new ModuleInterpreter(irModule)
 		val context = moduleInterpreter.interprete
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(0.01))
+		assertVariableValueInContext(irModule, context, "t_nplus1", new NV0Real(0.01))
 	}
-
-	@Test
-	def void testInterpreteEndOfInitJob()
-	{
-		val model = TestUtils::testModule
-		+
-		'''
-		InitT: t = 0.;
-		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val moduleInterpreter = new ModuleInterpreter(irModule)
-		moduleInterpreter.interprete
-		Assert.fail("On ne passe pas dans interpreteEndOfInitJob avec ce test-ci")	}
 }

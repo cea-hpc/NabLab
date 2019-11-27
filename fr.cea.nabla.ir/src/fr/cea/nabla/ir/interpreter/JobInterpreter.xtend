@@ -4,26 +4,22 @@ import fr.cea.nabla.ir.MandatoryMeshVariables
 import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.EndOfInitJob
-import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.Variable
+import fr.cea.nabla.ir.ir.TimeIterationCopyJob
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.HashMap
 
 import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
-import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class JobInterpreter
 {
 	val PvdFileWriter2D writer
 
-	new (PvdFileWriter2D writer, Variable iterationVariable)
+	new (PvdFileWriter2D writer)
 	{
 		this.writer = writer
 	}
@@ -50,7 +46,7 @@ class JobInterpreter
 			lastWriteTime = context.getReal(Utils::LastWriteTimeVariableName)
 
 		if ((iterationPeriod > 0 && iteration % iterationPeriod == 0)
-			|| (timeStep > 0 &&  time > lastWriteTime))
+			|| (timeStep > 0 && time > lastWriteTime))
 		{
 			val cellVariables = new HashMap<String, double[]>
 			val nodeVariables = new HashMap<String, double[]>
@@ -64,26 +60,18 @@ class JobInterpreter
 			val quads = context.meshWrapper.quads
 			writer.writeFile(iteration, time, coord, quads, cellVariables, nodeVariables)
 			if (timeStep > 0)
-				context.setVariableValue(Utils::LastWriteTimeVariableName, new NV0Real(lastWriteTime + timeStep))
+			{
+				val lastWriteTimeVariable= irModule.getVariableByName(Utils::LastWriteTimeVariableName)
+				context.setVariableValue(lastWriteTimeVariable, new NV0Real(lastWriteTime + timeStep))
+			}
 		}
 	}
 
-	def dispatch interprete(EndOfTimeLoopJob it, Context context)
+	def dispatch interprete(TimeIterationCopyJob it, Context context)
 	{
-		println("Interprete EndOfTimeLoopJob " + name + " @ " + at)
-		// Switch Vn and Vn+1
-		println("Variable " + left.name + " = " + context.getVariableValue(left).displayValue + " switched with " + right.name + " = " + context.getVariableValue(right).displayValue)
-		val leftValue = context.getVariableValue(left)
+		//println("Interprete TimeIterationCopyJob " + name + " @ " + at
 		val rightValue = context.getVariableValue(right)
 		context.setVariableValue(left, rightValue)
-		context.setVariableValue(right, leftValue)
-	}
-
-	def dispatch interprete(EndOfInitJob it, Context context)
-	{
-		//println("Interprete EndOfInitJob " + name + " @ " + at)
-		// Set Vn = V0
-		setValue(context.getVariableValue(left), #[], context.getVariableValue(right))
 	}
 
 	private def setItemVariables(InSituJob it, Context context, IrModule module, String itemName, HashMap<String, double[]> map)

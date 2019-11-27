@@ -165,11 +165,11 @@ class ExpressionInterpreter
 					val callerArgTypeTypeSize = callerArgTypeSizes.get(iSize)
 					val calleeArgTypeDimension = calleeArg.type.sizes.get(iSize)
 					if (calleeArgTypeDimension instanceof DimensionSymbolRef)
-						innerContext.setDimensionValue((calleeArgTypeDimension as DimensionSymbolRef).target, callerArgTypeTypeSize)
+						innerContext.addDimensionValue((calleeArgTypeDimension as DimensionSymbolRef).target, callerArgTypeTypeSize)
 				}
 
 				// set argument value
-				innerContext.setVariableValue(calleeArg, argValues.get(iArg))
+				innerContext.addVariableValue(calleeArg, argValues.get(iArg))
 			}
 			return interprete(function.body, innerContext)
 		}

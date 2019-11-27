@@ -47,6 +47,7 @@ class Context
 		meshWrapper = new MeshWrapper(nbXQuads, nbYQuads, xSize, ySize)
 	}
 	
+	// VariableValues
 	def NablaValue getVariableValue(ArgOrVar variable)
 	{
 		variableValues.get(variable) ?: outerContext.getVariableValue(variable)
@@ -73,43 +74,74 @@ class Context
 		return (getVariableValue(variableName) as NV0Real).data
 	}
 
-	def void setVariableValue(ArgOrVar variable, NablaValue value)
+	def void addVariableValue(ArgOrVar variable, NablaValue value)
 	{
 		variableValues.put(variable, value)
 	}
 
-	def void setVariableValue(String variableName, NablaValue value)
+	def void setVariableValue(ArgOrVar it, NablaValue value)
 	{
-		val variable = module.getVariableByName(variableName)
-		setVariableValue(variable, value)
+		if (variableValues.get(it) !== null)
+			variableValues.replace(it, value)
+		else
+			if (outerContext !== null)
+				outerContext.setVariableValue(it, value)
+			else
+				throw new RuntimeException('Variable not found ' + name)
 	}
 
+	// IndexValues
 	def int getIndexValue(ArgOrVarRefIteratorRef it) { getIndexValue(indexName) }
 	def int getIndexValue(Iterator it) { getIndexValue(indexName) }
-	def void setIndexValue(ArgOrVarRefIteratorRef it, int value) { indexValues.put(indexName, value) }
-	def void setIndexValue(Iterator it, int value) { indexValues.put(indexName, value) }
-
-	private def int getIndexValue(String indexName)
+	def void addIndexValue(ArgOrVarRefIteratorRef it, int value) { indexValues.put(indexName, value) }
+	def void addIndexValue(Iterator it, int value) { indexValues.put(indexName, value) }
+	
+	def void setIndexValue(Iterator it, int value)
 	{
-		indexValues.get(indexName) ?: outerContext.getIndexValue(indexName)
+		if (indexValues.get(indexName) !== null)
+			indexValues.replace(indexName, value)
+		else
+			if (outerContext !== null)
+				outerContext.setIndexValue(it, value)
+			else
+				throw new RuntimeException('Iterator not found ' + indexName)		
 	}
 
+	// IdValues
 	def int getIdValue(IteratorRef it) { getIdValue(idName) }
-	def void setIdValue(IteratorRef it, int value) { idValues.put(idName, value) }
+	def void addIdValue(IteratorRef it, int value) { idValues.put(idName, value) }
 
+	def void setIdValue(IteratorRef it, int value)
+	{
+		if (idValues.get(idName) !== null)
+			idValues.replace(idName, value)
+		else
+			if (outerContext !== null)
+				outerContext.setIdValue(it, value)
+			else
+				throw new RuntimeException('IteratorRef not found ' + idName)		
+	}
+
+	// DimensionValues
 	def int getDimensionValue(DimensionSymbol it) 
 	{ 
 		dimensionValues.get(it) ?: outerContext.getDimensionValue(it)
 	}
 
-	def setDimensionValue(DimensionSymbol it, int value)
+	def addDimensionValue(DimensionSymbol it, int value)
 	{
 		dimensionValues.put(it, value)
 	}
 
-	private def int getIdValue(String id)
+	def void setDimensionValue(DimensionSymbol it, int value)
 	{
-		idValues.get(id) ?: outerContext.getIdValue(id)
+		if (dimensionValues.get(it) !== null)
+			dimensionValues.replace(it, value)
+		else
+			if (outerContext !== null)
+				outerContext.setDimensionValue(it, value)
+			else
+				throw new RuntimeException('Dimension Symbol not found ' + name)
 	}
 
 	def int getIndexOf(ArgOrVarRefIteratorRef it, int id)
@@ -168,5 +200,15 @@ class Context
 	{
 		if (message !== null) println(message)
 		dimensionValues.keySet.forEach[d | println("	Dimension " + d.name + " = " + dimensionValues.get(d))]
+	}
+	
+	private def int getIndexValue(String indexName)
+	{
+		indexValues.get(indexName) ?: outerContext.getIndexValue(indexName)
+	}
+
+	private def int getIdValue(String id)
+	{
+		idValues.get(id) ?: outerContext.getIdValue(id)
 	}
 }

@@ -91,7 +91,7 @@ class ModuleInterpreter
 		for (j : module.jobs.filter[x | x.at < 0].sortBy[at])
 			jobInterpreter.interprete(j, context)
 
-		//context.showVariables("After init jobs")
+		context.showVariables("After init jobs")
 
 		// Declare time loop
 		var maxIterations = context.getInt(MandatorySimulationOptions::MAX_ITERATIONS)
@@ -101,9 +101,10 @@ class ModuleInterpreter
 		{
 			incrementIterationValue
 			println("[" + iterationValue + "] t = " + context.getReal(MandatorySimulationVariables::TIME))
+			context.showVariables("Before iteration = " + iterationValue)
 			for (j : module.jobs.filter[x | x.at > 0].sortBy[at])
 				jobInterpreter.interprete(j, context)
-			//context.showVariables("At iteration = " + iterationValue)
+			context.showVariables("After iteration = " + iterationValue)
 		}
 
 		val endTime = LocalDateTime.now()

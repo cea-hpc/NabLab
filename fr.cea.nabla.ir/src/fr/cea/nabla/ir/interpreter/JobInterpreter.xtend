@@ -17,6 +17,7 @@ import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class JobInterpreter
 {
@@ -30,8 +31,12 @@ class JobInterpreter
 	def dispatch interprete(InstructionJob it, Context context)
 	{
 		//println("Interprete InstructionJob " + name + " @ " + at)
+		if (name == "ComputeDt")
+			context.showVariables("Avant ComputeDt")
 		val innerContext = new Context(context)
 		interprete(instruction, innerContext)
+		if (name == "ComputeDt")
+			context.showVariables("Apres ComputeDt")
 	}
 
 	def dispatch interprete(InSituJob it, Context context)
@@ -65,8 +70,9 @@ class JobInterpreter
 
 	def dispatch interprete(EndOfTimeLoopJob it, Context context)
 	{
-		//println("Interprete EndOfTimeLoopJob" + name + " @ " + at)
+		println("Interprete EndOfTimeLoopJob " + name + " @ " + at)
 		// Switch Vn and Vn+1
+		println("Variable " + left.name + " = " + context.getVariableValue(left).displayValue + " switched with " + right.name + " = " + context.getVariableValue(right).displayValue)
 		val leftValue = context.getVariableValue(left)
 		val rightValue = context.getVariableValue(right)
 		context.setVariableValue(left, rightValue)

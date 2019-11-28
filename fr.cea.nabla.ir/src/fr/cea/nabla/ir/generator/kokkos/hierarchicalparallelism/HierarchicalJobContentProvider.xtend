@@ -18,7 +18,7 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 class HierarchicalJobContentProvider extends JobContentProvider 
 {
 	new() { super(new HierarchicalInstructionContentProvider) }
-	
+
 	override getJobCallsContent(Iterable<Job> jobs) 
 	'''
 		«var nbTimes = 0»
@@ -30,7 +30,7 @@ class HierarchicalJobContentProvider extends JobContentProvider
 				«FOR j : atJobs»
 				«j.name.toFirstLower»();
 				«ENDFOR»
-			«ELSE»			
+			«ELSE»
 			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread) {
 				«FOR j : atJobs»
 					«IF at>0 && nbTimes++==0»
@@ -55,10 +55,10 @@ class HierarchicalJobContentProvider extends JobContentProvider
 				«ENDFOR»
 			});
 			«ENDIF»
-			
+
 		«ENDFOR»
 	'''
-	
+
 	override getContent(Job it)
 	{
 		if (hasIterable)
@@ -66,7 +66,7 @@ class HierarchicalJobContentProvider extends JobContentProvider
 		else
 			sequentialHeader
 	}
-	
+
 	private def getParallelHeader(Job it)
 	'''
 		«comment»

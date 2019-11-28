@@ -34,7 +34,7 @@ class JobContentProvider
 		private void «name.toFirstLower»() 
 		{
 			«innerContent»
-		}		
+		}
 	'''
 
 	private static def dispatch CharSequence getInnerContent(InstructionJob it)

@@ -129,20 +129,20 @@ public final class Glace2d
 			computeAr(); // @7.0
 			computeBr(); // @7.0
 			computeDt(); // @7.0
-			copy_deltat_nplus1_to_deltat(); // @8.0
 			computeMt(); // @8.0
 			computeBt(); // @8.0
 			outerFacesComputations(); // @8.0
 			computeTn(); // @8.0
-			copy_t_nplus1_to_t(); // @9.0
 			computeU(); // @9.0
 			computeFjr(); // @10.0
 			computeXn(); // @10.0
-			copy_X_nplus1_to_X(); // @11.0
 			computeUn(); // @11.0
 			computeEn(); // @11.0
+			copy_X_nplus1_to_X(); // @12.0
 			copy_uj_nplus1_to_uj(); // @12.0
 			copy_E_nplus1_to_E(); // @12.0
+			copy_deltat_nplus1_to_deltat(); // @12.0
+			copy_t_nplus1_to_t(); // @12.0
 		}
 		System.out.println("Fin de l'exécution du module Glace2d");
 	}
@@ -163,7 +163,10 @@ public final class Glace2d
 	 */
 	private void copy_X_n0_to_X() 
 	{
-		IntStream.range(0, X.length).parallel().forEach(i -> X[i] = X_n0[i]);
+		IntStream.range(0, X.length).parallel().forEach(i2 -> {
+			for (int i1=0 ; i1<X[i2].length ; i1++)
+				X[i2][i1] = X_n0[i2][i1];
+		});
 	}		
 
 	/**
@@ -544,18 +547,6 @@ public final class Glace2d
 	}		
 
 	/**
-	 * Job Copy_deltat_nplus1_to_deltat @8.0
-	 * In variables: deltat_nplus1
-	 * Out variables: deltat
-	 */
-	private void copy_deltat_nplus1_to_deltat() 
-	{
-		double tmpSwitch = deltat;
-		deltat = deltat_nplus1;
-		deltat_nplus1 = tmpSwitch;
-	}		
-
-	/**
 	 * Job ComputeMt @8.0
 	 * In variables: Ar
 	 * Out variables: Mt
@@ -646,18 +637,6 @@ public final class Glace2d
 	}		
 
 	/**
-	 * Job Copy_t_nplus1_to_t @9.0
-	 * In variables: t_nplus1
-	 * Out variables: t
-	 */
-	private void copy_t_nplus1_to_t() 
-	{
-		double tmpSwitch = t;
-		t = t_nplus1;
-		t_nplus1 = tmpSwitch;
-	}		
-
-	/**
 	 * Job ComputeU @9.0
 	 * In variables: Mt, bt
 	 * Out variables: ur
@@ -703,18 +682,6 @@ public final class Glace2d
 		{
 			X_nplus1[rNodes] = ArrayOperations.plus(X[rNodes], ArrayOperations.multiply(deltat, ur[rNodes]));
 		});
-	}		
-
-	/**
-	 * Job Copy_X_nplus1_to_X @11.0
-	 * In variables: X_nplus1
-	 * Out variables: X
-	 */
-	private void copy_X_nplus1_to_X() 
-	{
-		double[][] tmpSwitch = X;
-		X = X_nplus1;
-		X_nplus1 = tmpSwitch;
 	}		
 
 	/**
@@ -764,6 +731,18 @@ public final class Glace2d
 	}		
 
 	/**
+	 * Job Copy_X_nplus1_to_X @12.0
+	 * In variables: X_nplus1
+	 * Out variables: X
+	 */
+	private void copy_X_nplus1_to_X() 
+	{
+		double[][] tmpSwitch = X;
+		X = X_nplus1;
+		X_nplus1 = tmpSwitch;
+	}		
+
+	/**
 	 * Job Copy_uj_nplus1_to_uj @12.0
 	 * In variables: uj_nplus1
 	 * Out variables: uj
@@ -785,6 +764,30 @@ public final class Glace2d
 		double[] tmpSwitch = E;
 		E = E_nplus1;
 		E_nplus1 = tmpSwitch;
+	}		
+
+	/**
+	 * Job Copy_deltat_nplus1_to_deltat @12.0
+	 * In variables: deltat_nplus1
+	 * Out variables: deltat
+	 */
+	private void copy_deltat_nplus1_to_deltat() 
+	{
+		double tmpSwitch = deltat;
+		deltat = deltat_nplus1;
+		deltat_nplus1 = tmpSwitch;
+	}		
+
+	/**
+	 * Job Copy_t_nplus1_to_t @12.0
+	 * In variables: t_nplus1
+	 * Out variables: t
+	 */
+	private void copy_t_nplus1_to_t() 
+	{
+		double tmpSwitch = t;
+		t = t_nplus1;
+		t_nplus1 = tmpSwitch;
 	}		
 
 	private double[] perp(double[] a) 

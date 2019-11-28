@@ -259,17 +259,6 @@ private:
 	}
 	
 	/**
-	 * Job Copy_t_nplus1_to_t @2.0
-	 * In variables: t_nplus1
-	 * Out variables: t
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void copy_t_nplus1_to_t() noexcept
-	{
-		std::swap(t_nplus1, t);
-	}
-	
-	/**
 	 * Job ComputeUn @2.0
 	 * In variables: f, deltat, u, outgoingFlux
 	 * Out variables: u_nplus1
@@ -292,6 +281,17 @@ private:
 	void copy_u_nplus1_to_u() noexcept
 	{
 		std::swap(u_nplus1, u);
+	}
+	
+	/**
+	 * Job Copy_t_nplus1_to_t @3.0
+	 * In variables: t_nplus1
+	 * Out variables: t
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void copy_t_nplus1_to_t() noexcept
+	{
+		std::swap(t_nplus1, t);
 	}
 
 public:
@@ -339,9 +339,9 @@ public:
 			computeOutgoingFlux(); // @1.0
 			computeTn(); // @1.0
 			dumpVariables(); // @1.0
-			copy_t_nplus1_to_t(); // @2.0
 			computeUn(); // @2.0
 			copy_u_nplus1_to_u(); // @3.0
+			copy_t_nplus1_to_t(); // @3.0
 			compute_timer.stop();
 
 			// Progress

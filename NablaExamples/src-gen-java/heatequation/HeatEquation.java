@@ -86,9 +86,9 @@ public final class HeatEquation
 			computeOutgoingFlux(); // @1.0
 			computeTn(); // @1.0
 			dumpVariables(); // @1.0
-			copy_t_nplus1_to_t(); // @2.0
 			computeUn(); // @2.0
 			copy_u_nplus1_to_u(); // @3.0
+			copy_t_nplus1_to_t(); // @3.0
 		}
 		System.out.println("Fin de l'exécution du module HeatEquation");
 	}
@@ -258,18 +258,6 @@ public final class HeatEquation
 	}		
 
 	/**
-	 * Job Copy_t_nplus1_to_t @2.0
-	 * In variables: t_nplus1
-	 * Out variables: t
-	 */
-	private void copy_t_nplus1_to_t() 
-	{
-		double tmpSwitch = t;
-		t = t_nplus1;
-		t_nplus1 = tmpSwitch;
-	}		
-
-	/**
 	 * Job ComputeUn @2.0
 	 * In variables: f, deltat, u, outgoingFlux
 	 * Out variables: u_nplus1
@@ -292,5 +280,17 @@ public final class HeatEquation
 		double[] tmpSwitch = u;
 		u = u_nplus1;
 		u_nplus1 = tmpSwitch;
+	}		
+
+	/**
+	 * Job Copy_t_nplus1_to_t @3.0
+	 * In variables: t_nplus1
+	 * Out variables: t
+	 */
+	private void copy_t_nplus1_to_t() 
+	{
+		double tmpSwitch = t;
+		t = t_nplus1;
+		t_nplus1 = tmpSwitch;
 	}		
 };

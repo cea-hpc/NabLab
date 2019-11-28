@@ -555,17 +555,6 @@ private:
 	}
 	
 	/**
-	 * Job Copy_deltat_nplus1_to_deltat @8.0
-	 * In variables: deltat_nplus1
-	 * Out variables: deltat
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void copy_deltat_nplus1_to_deltat() noexcept
-	{
-		std::swap(deltat_nplus1, deltat);
-	}
-	
-	/**
 	 * Job ComputeMt @8.0
 	 * In variables: Ar
 	 * Out variables: Mt
@@ -660,17 +649,6 @@ private:
 	}
 	
 	/**
-	 * Job Copy_t_nplus1_to_t @9.0
-	 * In variables: t_nplus1
-	 * Out variables: t
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void copy_t_nplus1_to_t() noexcept
-	{
-		std::swap(t_nplus1, t);
-	}
-	
-	/**
 	 * Job ComputeU @9.0
 	 * In variables: Mt, bt
 	 * Out variables: ur
@@ -722,17 +700,6 @@ private:
 	}
 	
 	/**
-	 * Job Copy_X_nplus1_to_X @11.0
-	 * In variables: X_nplus1
-	 * Out variables: X
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void copy_X_nplus1_to_X() noexcept
-	{
-		std::swap(X_nplus1, X);
-	}
-	
-	/**
 	 * Job ComputeUn @11.0
 	 * In variables: F, uj, deltat, m
 	 * Out variables: uj_nplus1
@@ -781,6 +748,17 @@ private:
 	}
 	
 	/**
+	 * Job Copy_X_nplus1_to_X @12.0
+	 * In variables: X_nplus1
+	 * Out variables: X
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void copy_X_nplus1_to_X() noexcept
+	{
+		std::swap(X_nplus1, X);
+	}
+	
+	/**
 	 * Job Copy_uj_nplus1_to_uj @12.0
 	 * In variables: uj_nplus1
 	 * Out variables: uj
@@ -800,6 +778,28 @@ private:
 	void copy_E_nplus1_to_E() noexcept
 	{
 		std::swap(E_nplus1, E);
+	}
+	
+	/**
+	 * Job Copy_deltat_nplus1_to_deltat @12.0
+	 * In variables: deltat_nplus1
+	 * Out variables: deltat
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void copy_deltat_nplus1_to_deltat() noexcept
+	{
+		std::swap(deltat_nplus1, deltat);
+	}
+	
+	/**
+	 * Job Copy_t_nplus1_to_t @12.0
+	 * In variables: t_nplus1
+	 * Out variables: t
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void copy_t_nplus1_to_t() noexcept
+	{
+		std::swap(t_nplus1, t);
 	}
 
 	KOKKOS_INLINE_FUNCTION
@@ -894,20 +894,20 @@ public:
 			computeAr(); // @7.0
 			computeBr(); // @7.0
 			computeDt(); // @7.0
-			copy_deltat_nplus1_to_deltat(); // @8.0
 			computeMt(); // @8.0
 			computeBt(); // @8.0
 			outerFacesComputations(); // @8.0
 			computeTn(); // @8.0
-			copy_t_nplus1_to_t(); // @9.0
 			computeU(); // @9.0
 			computeFjr(); // @10.0
 			computeXn(); // @10.0
-			copy_X_nplus1_to_X(); // @11.0
 			computeUn(); // @11.0
 			computeEn(); // @11.0
+			copy_X_nplus1_to_X(); // @12.0
 			copy_uj_nplus1_to_uj(); // @12.0
 			copy_E_nplus1_to_E(); // @12.0
+			copy_deltat_nplus1_to_deltat(); // @12.0
+			copy_t_nplus1_to_t(); // @12.0
 			compute_timer.stop();
 
 			// Progress

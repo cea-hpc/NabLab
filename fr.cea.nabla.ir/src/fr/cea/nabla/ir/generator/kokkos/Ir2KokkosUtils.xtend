@@ -41,7 +41,7 @@ class Ir2KokkosUtils
 			case INT: 'int'
 			case REAL: 'double'
 		}
- 	}	
+ 	}
 
 	private static def getCppArrayType(PrimitiveType t, int dim)
 	{
@@ -51,5 +51,5 @@ class Ir2KokkosUtils
 			case INT: 'IntArray' + dim + 'D'
 			case REAL: 'RealArray' + dim + 'D'
 		}
- 	}	
+ 	}
 }

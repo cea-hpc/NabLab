@@ -550,4 +550,36 @@
        </hiddenToolBarItem>
     </perspectiveExtension>
  </extension>
+ <extension
+       point="org.eclipse.ui.newWizards">
+    <category
+          id="fr.cea.nabla.ui.examples.category"
+          name="Nabla Examples"
+          parentCategory="org.eclipse.ui.Examples">
+    </category>
+    <wizard
+          category="org.eclipse.ui.Examples/fr.cea.nabla.ui.examples.category"
+          class="org.eclipse.emf.common.ui.wizard.ExampleInstallerWizard"
+          icon="icons/Nabla.gif"
+          id="fr.cea.nabla.ui.examples.project.wizard"
+          name="Nabla Examples"
+          project="true">
+       <description>
+          A set of Nabla examples including Glace2D, HeatEquation, ImplicitHeatEquation, and ExplicitHeatEquation.
+       </description>
+    </wizard>
+ </extension>
+ <extension
+       point="org.eclipse.emf.common.ui.examples">
+    <example
+          id="fr.cea.nabla.ui.examples.project.example"
+          pageImage="icons/Nabla.gif"
+          wizardID="fr.cea.nabla.ui.examples.project.wizard">
+       <projectDescriptor
+             contentURI="examples/NablaExamples/"
+             description="A set of Nabla examples including Glace2D, HeatEquation, ImplicitHeatEquation, and ExplicitHeatEquation.&#x0A;Project includes Nabla files, Nablagen files, java generated files, kokkos (c++) generated files."
+             name="NablaExamples">
+       </projectDescriptor>
+    </example>
+ </extension>
 </plugin>

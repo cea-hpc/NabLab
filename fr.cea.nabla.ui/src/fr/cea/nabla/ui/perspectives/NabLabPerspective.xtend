@@ -24,6 +24,7 @@ class NabLabPerspective implements IPerspectiveFactory
 	static val MODEL_EXPLORER_VIEW_ID = "org.eclipse.sirius.ui.tools.views.model.explorer"
 	static val ERROR_LOG_VIEW = "org.eclipse.pde.runtime.LogView"
 	static val NABLA_LATEX_VIEW_ID = "fr.cea.nabla.ui.views.NablaLatexView"
+	static val NABLA_EXAMPLE_WIZARD_ID = "fr.cea.nabla.ui.examples.project.wizard"
 
 	override createInitialLayout(IPageLayout layout)
 	{
@@ -51,6 +52,8 @@ class NabLabPerspective implements IPerspectiveFactory
 		layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET)
 		layout.addShowViewShortcut(ERROR_LOG_VIEW)
 		layout.addShowViewShortcut(IPageLayout.ID_PROBLEM_VIEW)
+
+		layout.addNewWizardShortcut(NABLA_EXAMPLE_WIZARD_ID)
 
 		layout.addPerspectiveShortcut(NABLAB_PERSPECTIVE_ID)
 	}

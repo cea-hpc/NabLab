@@ -516,4 +516,26 @@
           type="fr.cea.nabla.ui.launchconfig.NablagenLaunchConfigurationType">
     </launchConfigurationTabGroup>
  </extension>
+ <extension
+       point="org.eclipse.ui.perspectives">
+    <perspective
+          class="fr.cea.nabla.ui.perspectives.NabLabPerspective"
+          icon="icons/Nabla.gif"
+          id="fr.cea.nabla.ui.NabLabPerpective"
+          name="NabLab">
+    </perspective>
+ </extension>
+ <extension
+       point="org.eclipse.ui.perspectiveExtensions">
+    <perspectiveExtension
+          targetID="fr.cea.nabla.ui.NabLabPerpective">
+       <view
+             id="fr.cea.nabla.ui.views.NablaLatexView"
+             minimized="false"
+             ratio="0.5"
+             relationship="right"
+             relative="org.eclipse.pde.runtime.LogView">
+       </view>
+    </perspectiveExtension>
+ </extension>
 </plugin>

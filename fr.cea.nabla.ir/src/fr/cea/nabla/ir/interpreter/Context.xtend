@@ -162,7 +162,7 @@ class Context
 	def showVariables(String message)
 	{
 		if (message !== null) println(message)
-		variableValues.keySet.forEach[v | if (v.name == "deltat" || v.name == "deltat_nplus1") println("	Variable " + v.name + " = " + variableValues.get(v).displayValue)]
+		variableValues.keySet.forEach[v | println("	Variable " + v.name + " = " + variableValues.get(v).displayValue)]
 	}
 
 	def showConnectivitySizes(String message)

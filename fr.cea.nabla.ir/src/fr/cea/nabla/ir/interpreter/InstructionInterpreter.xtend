@@ -20,7 +20,6 @@ import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
-import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class InstructionInterpreter
 {
@@ -50,8 +49,6 @@ class InstructionInterpreter
 		//println("Interprete Affectation")
 		val rightValue = interprete(right, context)
 		val allIndices = left.iterators.map[x | context.getIndexValue(x)] + left.indices.map[x | interprete(x, context)]
-		if (left.target.name == "deltat" || left.target.name == "deltat_nplus1")
-			println("On affecte la valeur de " + left.target.name + " avec " + rightValue.displayValue)
 		setValue(context.getVariableValue(left.target), allIndices.toList, rightValue)
 		return null
 	}

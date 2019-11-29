@@ -1,0 +1,47 @@
+with HeatEquation.*;
+
+workflow HeatEquationGenerationChain transforms HeatEquation
+{
+	Nabla2Ir nabla2ir
+	{
+	}
+
+	TagPersistentVariables tagPersistentVariables follows nabla2ir 
+	{ 
+		variables = u as "Temperature";
+		iterationPeriod = 1;
+	}
+	
+	ReplaceUtf replaceUtf follows tagPersistentVariables
+	{
+	}
+	
+	ReplaceReductions replaceReductions follows replaceUtf
+	{
+		replaceAllReductions;
+	}
+	
+	OptimizeConnectivities optimizeConnectivities follows replaceReductions
+	{
+		connectivities = cells, nodes, faces;
+	}
+	
+	FillHLTs fillHlts follows optimizeConnectivities
+	{
+		//dumpIr;
+	}
+	
+	Ir2Code javaGenerator follows fillHlts
+	{
+		language = Java;
+		disabled;
+		outputDir = "/NablaExamples/src-gen-java";
+	}
+
+	Ir2Code kokkosGenerator follows fillHlts
+	{
+		language = Kokkos;
+		disabled;
+		outputDir = "/NablaExamples/src-gen-kokkos";
+	}
+}

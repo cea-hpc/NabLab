@@ -27,12 +27,8 @@ class JobInterpreter
 	def dispatch interprete(InstructionJob it, Context context)
 	{
 		//println("Interprete InstructionJob " + name + " @ " + at)
-		if (name == "ComputeDt")
-			context.showVariables("Avant ComputeDt")
 		val innerContext = new Context(context)
 		interprete(instruction, innerContext)
-		if (name == "ComputeDt")
-			context.showVariables("Apres ComputeDt")
 	}
 
 	def dispatch interprete(InSituJob it, Context context)
@@ -69,7 +65,7 @@ class JobInterpreter
 
 	def dispatch interprete(TimeIterationCopyJob it, Context context)
 	{
-		//println("Interprete TimeIterationCopyJob " + name + " @ " + at
+		//println("Interprete TimeIterationCopyJob " + name + " @ " + at)
 		val rightValue = context.getVariableValue(right)
 		context.setVariableValue(left, rightValue)
 	}

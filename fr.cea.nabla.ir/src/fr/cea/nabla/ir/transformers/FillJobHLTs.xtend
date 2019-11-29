@@ -27,28 +27,28 @@ class FillJobHLTs implements IrTransformationStep
 	static val TimeLoopSourceNodeLabel = 'TimeLoopSourceNode'
 	static val GlobalSourceNodeLabel = 'GlobalSourceNode'
 	val outputTraces = new ArrayList<String>
-	
+
 	override getDescription() 
 	{
 		'Compute Hierarchical Logical Time (HLT) of each jobs'
 	}
-	
+
 	/**
-	 * Prend en paramètre une instance de IrModule et renseigne l'attribut @ des jobs
-	 * en utilisant des fonctionnalités de la bibliothèque de graphe jgrapht.
-	 * Retourne faux si le graphe a des cycles et que le calcul des @ est impossible, vrai sinon.
-	 * Si le graphe a des cycles, les noeuds impliqués ont leur attribut onCycle à vrai.
+	 * Set the '@ attribute of every jobs of IrModule.
+	 * The jgrapht library is used to compute the longest path to each node.
+	 * Return false if the graph contains cycle (computing 'at' values is then impossible), true otherwise.
+	 * If the graph contains cycles, nodes on cycle have their 'onCyle' attribute set to true.
 	 */
 	override transform(IrModule m)
 	{
 		if (m.jobs.empty) return true
 
-		// creation du graphe
+		// Graph creation
 		val globalSourceNode = IrFactory::eINSTANCE.createInstructionJob => [ name = GlobalSourceNodeLabel ]
 		val timeLoopSourceNode = IrFactory::eINSTANCE.createInstructionJob => [ name = TimeLoopSourceNodeLabel ]
 		val g = m.createGraph(globalSourceNode, timeLoopSourceNode)
-		
-		// calcul des @
+
+		// Computing 'at' values
 		val cycles = g.findCycle
 		val hasCycles = (cycles !== null)
 		if (hasCycles)
@@ -59,18 +59,26 @@ class FillJobHLTs implements IrTransformationStep
 		else
 		{
 			val jalgo = new FloydWarshallShortestPaths<Job, DefaultWeightedEdge>(g)	
-			
-			// Calcul des at des noeuds de boucle en temps à partir de timeLoopSourceNode
-			// Les at correspondent au plus long chemin. L'algo recherche le plus court. Il faut travailler avec l'inverse.
-			// On initialise donc les arcs à -1
+
+			/*
+			 * Compute 'at' values of time loop nodes starting from timeLoopSourceNode.
+			 * We need the longest path to each node. The jgrapht algorithm computes the shortest path.
+			 * To get the longest path, edges weight is set to -1.
+			 */
+			var maxAtValue = 0.0
 			g.edgeSet.forEach[e | g.setEdgeWeight(e, -1)]
 			for (v : g.vertexSet.filter[v | v!=timeLoopSourceNode])
 			{
 				val graphPath = jalgo.getPath(timeLoopSourceNode, v)
-				if (graphPath!==null) graphPath.endVertex.at = Math::abs(graphPath.weight)
+				if (graphPath!==null) 
+				{
+					val atValue = Math::abs(graphPath.weight)
+					graphPath.endVertex.at = atValue
+					if (atValue > maxAtValue) maxAtValue = atValue
+				}
 			}
-			
-			// Calcul des at des noeuds d'init qui sont les noeuds restants (ceux avec at inchangé ; à 0).
+
+			// Compute 'at' values of init nodes. They are non initialized nodes with 'at' == 0.
 			val weightByJobs = new HashMap<Job, Double>
 			for (v : g.vertexSet.filter[v | v!=globalSourceNode && (v.at as int)==0])
 			{
@@ -82,43 +90,53 @@ class FillJobHLTs implements IrTransformationStep
 				val minWeight = weightByJobs.values.min
 				for (j : weightByJobs.keySet) j.at = minWeight - weightByJobs.get(j) - 1
 			}
+
+			/* 
+			 * At this point, 'at' values of each node are ok.
+			 * EndOfTimeLoop nodes (Xn = Xn+1) are not executed at the end: the earlier 'at' has been set.
+			 * No problem if Xn+1 is copied into Xn but they are optimized: values are just swapped Xn <-> Xn+1.
+			 * So, if a job executed after that takes Xn+1 as an in variable, it will use Xn because of the swap.
+			 * Consequently, EndOfTimeLoop nodes are executed at the last level of 'at'.
+			 */
+			for (j : g.vertexSet.filter(EndOfTimeLoopJob))
+				j.at = maxAtValue
 		}
+
 		return !hasCycles
 	}
-		
+
 	override getOutputTraces() 
 	{
 		outputTraces
 	}
 
-	/** 
-	 * Création d'un graphe correspondant à l'IR. 
-	 * 2 noeuds sources sont ajoutés : 1 correspondant à un noeud source global 
-	 * et l'autre à l'entrée de la boucle en temps. Notons que les arcs sortants
-	 * des jobs de type EndOfTimeLoopJob ne sont pas construits pour éviter les cycles.
+	/**
+	 * Create a graph corresponding to the IR model.
+	 * Two additional source nodes are added: a global source node and a time loop source node.
+	 * EndOfTimeLoop outgoing edges are not added to avoid cycles.
 	 */
 	private def createGraph(IrModule it, Job globalSourceNode, Job timeLoopSourceNode)
 	{	
 		val g = new DirectedWeightedPseudograph<Job, DefaultWeightedEdge>(DefaultWeightedEdge)
-		jobs.forEach[x|g.addVertex(x)]
+		jobs.forEach[x | g.addVertex(x)]
 		g.addVertex(timeLoopSourceNode)
 		for (from : jobs)
 			for (to : from.nextJobs)
 				if (from instanceof EndOfTimeLoopJob)
 					g.addEdge(timeLoopSourceNode, to)
 				else
-					g.addEdge(from, to)	
-		
-		// ajout du noeud source global
+					g.addEdge(from, to)
+
+		// add the global source node
 		g.addVertex(globalSourceNode)
 		g.vertexSet.filter[v | v!==globalSourceNode && v!==timeLoopSourceNode && g.incomingEdgesOf(v).empty].forEach[x | g.addEdge(globalSourceNode, x)]
 
-		// affichage du graphe
+		// display graph
 		// g.print
-		
-		return g				
+
+		return g
 	}
-	
+
 //	private def print(DirectedWeightedPseudograph<Job, DefaultWeightedEdge> g)
 //	{
 //		println('Graph nodes : ')
@@ -126,8 +144,8 @@ class FillJobHLTs implements IrTransformationStep
 //		println('Graph arcs : ')
 //		g.edgeSet.forEach[x|println('  ' + g.getEdgeSource(x).name + ' -> ' + g.getEdgeTarget(x).name)]
 //	}
-	
-	/** Retourne la liste des noeuds du graphe impliqués dans au moins un cycle, null si pas de cycle */
+
+	/** Return the node list implied in at least one cycle. Return null if no cycle */
 	private def findCycle(DirectedWeightedPseudograph<Job, DefaultWeightedEdge> g)
 	{
 		val cycleDetector = new CycleDetector<Job, DefaultWeightedEdge>(g)

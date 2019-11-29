@@ -12,6 +12,8 @@ package fr.cea.nabla.ir.generator.java
 import fr.cea.nabla.ir.MandatoryMeshVariables
 import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.EndOfInitJob
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
@@ -62,7 +64,31 @@ class JobContentProvider
 	'''
 
 	private static def dispatch CharSequence getInnerContent(EndOfInitJob it)
-	'''
-		IntStream.range(0, «left.name».length).parallel().forEach(i -> «left.name»[i] = «right.name»[i]);
-	'''
+	{
+		copy(left.name, right.name, left.type.dimension, true)
+	}
+
+	private static def CharSequence copy(String left, String right, int dimension, boolean firstLoop)
+	{
+		if (dimension == 0)
+			'''«left» = «right»;'''
+		else
+		{
+			val indexName = 'i' + dimension
+			val suffix = '[' + indexName + ']'
+			'''
+				«IF firstLoop»
+				IntStream.range(0, «left».length).parallel().forEach(«indexName» -> {
+					«copy(left + suffix, right + suffix, dimension-1, false)»
+				});
+				«ELSE»
+				for (int «indexName»=0 ; «indexName»<«left».length ; «indexName»++)
+					«copy(left + suffix, right + suffix, dimension-1, false)»
+				«ENDIF»
+			'''
+		}
+	}
+
+	private static def dispatch int getDimension(BaseType it) { sizes.size }
+	private static def dispatch int getDimension(ConnectivityType it) { base.sizes.size + connectivities.size }
 }

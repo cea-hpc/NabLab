@@ -11,6 +11,8 @@ package fr.cea.nabla.ir.generator.kokkos
 
 import fr.cea.nabla.ir.MandatoryMeshVariables
 import fr.cea.nabla.ir.MandatorySimulationVariables
+import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.EndOfInitJob
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
@@ -19,6 +21,7 @@ import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
 import org.eclipse.xtend.lib.annotations.Accessors
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 abstract class JobContentProvider 
@@ -59,7 +62,27 @@ abstract class JobContentProvider
 	'''
 
 	protected def dispatch CharSequence getInnerContent(EndOfInitJob it)
-	'''
-		deep_copy(«left.name», «right.name»);
-	'''
+	{
+		val type = left.type
+		switch type
+		{
+			ConnectivityType: '''deep_copy(«left.name», «right.name»);'''
+			BaseType: copy(left.name, right.name, type.sizes.size)
+		}
+	}
+
+	private static def CharSequence copy(String left, String right, int dimension)
+	{
+		if (dimension == 0)
+			'''«left» = «right»;'''
+		else
+		{
+			val indexName = 'i' + dimension
+			val suffix = '[' + indexName + ']'
+			'''
+				for (int «indexName»=0 ; «indexName»<«left».size() ; «indexName»++)
+					«copy(left + suffix, right + suffix, dimension-1)»
+			'''
+		}
+	}
 }

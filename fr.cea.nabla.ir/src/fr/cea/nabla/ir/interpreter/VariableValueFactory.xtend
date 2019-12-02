@@ -13,9 +13,6 @@ class VariableValueFactory
 {
 	static def dispatch NablaValue createValue(SimpleVariable it, Context context)
 	{
-//		si scalar (sizes.empty), on la crée  + si dV on set
-//		sinon comme avant
-
 		if (type.sizes.empty)
 		{
 			val nv = createValue(type, context)

@@ -4,14 +4,16 @@ import fr.cea.nabla.ir.MandatoryMeshVariables
 import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.EndOfInitJob
+import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.TimeIterationCopyJob
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.HashMap
 
 import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
+import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
@@ -63,10 +65,21 @@ class JobInterpreter
 		}
 	}
 
-	def dispatch interprete(TimeIterationCopyJob it, Context context)
+	def dispatch interprete(EndOfTimeLoopJob it, Context context)
 	{
-		//println("Interprete TimeIterationCopyJob " + name + " @ " + at)
+		//println("Interprete EndOfTimeLoopJob" + name + " @ " + at)
+		// Switch Vn and Vn+1
+		val leftValue = context.getVariableValue(left)
 		val rightValue = context.getVariableValue(right)
+		context.setVariableValue(left, rightValue)
+		context.setVariableValue(right, leftValue)
+	}
+
+	def dispatch interprete(EndOfInitJob it, Context context)
+	{
+		//println("Interprete EndOfInitJob " + name + " @ " + at)
+		// Set Vn = V0
+		val rightValue = createValue(right, context)
 		context.setVariableValue(left, rightValue)
 	}
 

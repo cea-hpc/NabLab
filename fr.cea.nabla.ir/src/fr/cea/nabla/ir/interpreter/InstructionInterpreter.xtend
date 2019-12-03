@@ -20,7 +20,6 @@ import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
-import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class InstructionInterpreter
 {
@@ -28,7 +27,7 @@ class InstructionInterpreter
 	{ 
 		//println("Interprete VarDefinition")
 		for (v : variables)
-			context.setVariableValue(v, createValue(v, context))
+			context.addVariableValue(v, createValue(v, context))
 		return null
 	}
 
@@ -50,8 +49,6 @@ class InstructionInterpreter
 		//println("Interprete Affectation")
 		val rightValue = interprete(right, context)
 		val allIndices = left.iterators.map[x | context.getIndexValue(x)] + left.indices.map[x | interprete(x, context)]
-		if (left.target.name == "deltat" || left.target.name == "deltat_nplus1")
-			println("On affecte la valeur de " + left.target.name + " avec " + rightValue.displayValue)
 		setValue(context.getVariableValue(left.target), allIndices.toList, rightValue)
 		return null
 	}
@@ -73,6 +70,7 @@ class InstructionInterpreter
 				val connectivityName = b.range.container.connectivity.name
 				val argIds =  b.range.container.args.map[x | context.getIdValue(x)]
 				val container = context.meshWrapper.getElements(connectivityName, argIds)
+				context.addIndexValue(b.range, 0)
 				for (loopIteratorValue : 0..<container.size)
 				{
 					context.setIndexValue(b.range, loopIteratorValue)
@@ -87,6 +85,7 @@ class InstructionInterpreter
 				val from = interprete(b.from, context)
 				var to = interprete(b.to, context)
 				if (b.toIncluded) to = to + 1
+				context.addDimensionValue(b.index, from)
 				for (i : from..<to)
 				{
 					context.setDimensionValue(b.index, i)
@@ -123,9 +122,9 @@ class InstructionInterpreter
 	private static def void defineIndices(Iterator it, Context context)
 	{
 		for (neededId : neededIds)
-			context.setIdValue(neededId, getIndexToId(neededId, context))
+			context.addIdValue(neededId, getIndexToId(neededId, context))
 		for (neededIndex : neededIndices)
-			context.setIndexValue(neededIndex, getIdToIndex(neededIndex, context))
+			context.addIndexValue(neededIndex, getIdToIndex(neededIndex, context))
 	}
 
 	private	static def getIndexToId(IteratorRef it, Context context)

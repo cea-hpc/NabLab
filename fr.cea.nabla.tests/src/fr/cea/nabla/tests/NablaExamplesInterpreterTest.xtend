@@ -11,7 +11,7 @@ import static fr.cea.nabla.tests.TestUtils.*
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
-class Glace2dTest 
+class NablaExamplesInterpreterTest 
 {
 	@Inject CompilationChainHelper compilationHelper
 	
@@ -25,4 +25,16 @@ class Glace2dTest
 		val moduleInterpreter = new ModuleInterpreter(irModule)
 		moduleInterpreter.interprete
 	}
+	
+	@Test
+	def void testInterpreteHeatEquation()
+	{
+		val model = readFileAsString("src/heatequation/HeatEquation.nabla")
+		val genmodel = readFileAsString("src/heatequation/HeatEquation.nablagen")
+		
+		val irModule = compilationHelper.getIrModule(model, genmodel)
+		val moduleInterpreter = new ModuleInterpreter(irModule)
+		moduleInterpreter.interprete
+	}
+	
 }

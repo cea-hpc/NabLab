@@ -7,15 +7,26 @@ import static fr.cea.nabla.ir.interpreter.BaseTypeValueFactory.*
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.IrTypeExtensions.*
 import static fr.cea.nabla.ir.interpreter.NablaValueFactory.*
+import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
 class VariableValueFactory 
 {
 	static def dispatch NablaValue createValue(SimpleVariable it, Context context)
 	{
-		if (defaultValue === null)
-			createValue(type, context)
+		if (type.sizes.empty)
+		{
+			val nv = createValue(type, context)
+			if (defaultValue !== null)
+				setValue(nv, #[], interprete(defaultValue, context))
+			return nv
+		}
 		else
-			interprete(defaultValue, context)
+		{
+			if (defaultValue === null)
+				createValue(type, context)
+			else
+				interprete(defaultValue, context)
+		}
 	}
 
 	static def dispatch NablaValue createValue(ConnectivityVariable it, Context context)

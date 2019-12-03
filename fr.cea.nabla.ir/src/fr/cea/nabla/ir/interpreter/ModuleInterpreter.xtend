@@ -7,7 +7,6 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.SimpleVariable
-import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.time.Duration
 import java.time.LocalDateTime
@@ -29,7 +28,6 @@ class ModuleInterpreter
 	var Context context
 	val PvdFileWriter2D writer
 	var JobInterpreter jobInterpreter
-	var Variable iterationVariable
 	var Logger log
 
 	new(IrModule module)
@@ -38,7 +36,6 @@ class ModuleInterpreter
 		this.context = new Context(module)
 		this.writer = new PvdFileWriter2D(module.name)
 		this.jobInterpreter = null
-		this.iterationVariable = null
 
 		// create a Logger and a Handler
 		log = Logger.getLogger(ModuleInterpreter.name)
@@ -56,12 +53,12 @@ class ModuleInterpreter
 		log.log(Level::WARNING," Start executing " + module.name + " module " + dtf.format(startTime))
 
 		// Add Variable for iteration
-		iterationVariable = createIterationVariable
-		jobInterpreter = new JobInterpreter(writer, iterationVariable)
+		val iterationVariable = createIterationVariable
+		jobInterpreter = new JobInterpreter(writer)
 
 		// Interprete constant variables
 		for (v : module.variables.filter(SimpleVariable).filter[const])
-			context.setVariableValue(v, interprete(v.defaultValue, context))
+			context.addVariableValue(v, interprete(v.defaultValue, context))
 
 		if (!module.items.empty)
 		{
@@ -82,42 +79,36 @@ class ModuleInterpreter
 
 		// Interprete variables
 		for (v : module.variables.filter[x | !(x instanceof SimpleVariable && x.const)])
-			context.setVariableValue(v, createValue(v, context))
+			context.addVariableValue(v, createValue(v, context))
 
 		// Copy Node Cooords
-		context.setVariableValue(module.initCoordVariable, new NV2Real(context.meshWrapper.nodes))
+		context.addVariableValue(module.initCoordVariable, new NV2Real(context.meshWrapper.nodes))
 
 		// Interprete init jobs
 		for (j : module.jobs.filter[x | x.at < 0].sortBy[at])
 			jobInterpreter.interprete(j, context)
 
-		context.showVariables("After init jobs")
+		//context.showVariables("After init jobs")
 
 		// Declare time loop
 		var maxIterations = context.getInt(MandatorySimulationOptions::MAX_ITERATIONS)
 		var stopTime = context.getReal(MandatorySimulationOptions::STOP_TIME)
 
-		while (iterationValue < maxIterations && context.getReal(MandatorySimulationVariables::TIME) < stopTime)
+		var iteration = (context.getVariableValue(iterationVariable) as NV0Int).data
+		while (iteration < maxIterations && context.getReal(MandatorySimulationVariables::TIME) < stopTime)
 		{
-			incrementIterationValue
-			println("[" + iterationValue + "] t = " + context.getReal(MandatorySimulationVariables::TIME))
-			context.showVariables("Before iteration = " + iterationValue)
+			iteration ++
+			context.setVariableValue(iterationVariable, new NV0Int(iteration))
+			println("[" + iteration + "] t = " + context.getReal(MandatorySimulationVariables::TIME))
 			for (j : module.jobs.filter[x | x.at > 0].sortBy[at])
 				jobInterpreter.interprete(j, context)
-			context.showVariables("After iteration = " + iterationValue)
+			//context.showVariables("After iteration = " + iteration)
 		}
 
 		val endTime = LocalDateTime.now()
 		val duration = Duration.between(startTime, endTime);
 		log.log(Level::WARNING," End executing " + dtf.format(endTime) + " (" + duration.seconds + " s)")
 
-		while (iterationValue < maxIterations && context.getReal(MandatorySimulationVariables::TIME) < stopTime)
-		{
-			for (j : module.jobs.filter[x | x.at > 0].sortBy[at])
-				jobInterpreter.interprete(j, context)
-			context.showVariables("At iteration = " + iterationValue)
-			incrementIterationValue
-		}
 		return context
 	}
 
@@ -134,16 +125,5 @@ class ModuleInterpreter
 		]
 		module.variables.add(iteration)
 		return iteration
-	}
-
-	private def getIterationValue()
-	{
-		context.getInt(iterationVariable)
-	}
-
-	private def incrementIterationValue()
-	{
-		val value = getIterationValue
-		context.setVariableValue(iterationVariable, new NV0Int(value + 1))
 	}
 }

@@ -61,7 +61,6 @@ class InstructionInterpreter
 
 	static def dispatch NablaValue interprete(Loop it, Context context)
 	{
-		//println("Interprete Loop")
 		val b = iterationBlock
 		switch b
 		{
@@ -116,7 +115,10 @@ class InstructionInterpreter
 	{
 		defineIndices(range, context)
 		for (s : singletons)
+		{
+			context.addIndexValue(s,context.getSingleton(s))
 			defineIndices(s, context)
+		}
 	}
 
 	private static def void defineIndices(Iterator it, Context context)
@@ -125,11 +127,11 @@ class InstructionInterpreter
 			context.addIdValue(neededId, getIndexToId(neededId, context))
 		for (neededIndex : neededIndices)
 			context.addIndexValue(neededIndex, getIdToIndex(neededIndex, context))
+
 	}
 
 	private	static def getIndexToId(IteratorRef it, Context context)
 	{
-		//println("Dans getIndexToId")
 		val indexValue = getIndexValue(it, context)
 		
 		if (target.container.connectivity.indexEqualId || target.singleton)

@@ -30,18 +30,4 @@ workflow HeatEquationGenerationChain transforms HeatEquation
 	{
 		//dumpIr;
 	}
-	
-	Ir2Code javaGenerator follows fillHlts
-	{
-		language = Java;
-		disabled;
-		outputDir = "/NablaExamples/src-gen-java";
-	}
-
-	Ir2Code kokkosGenerator follows fillHlts
-	{
-		language = Kokkos;
-		disabled;
-		outputDir = "/NablaExamples/src-gen-kokkos";
-	}
 }

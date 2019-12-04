@@ -155,8 +155,7 @@ class Context
 
 	def int getSingleton(Iterator iterator)
 	{
-		val methodName = "get" + iterator.container.connectivity.name.toFirstUpper
-		meshWrapper.invokeSingleton(methodName, iterator.container.args.map[getIndexValue(idName)])
+		meshWrapper.getSingleton(iterator.container.connectivity.name, iterator.container.args.map[getIdValue(idName)])
 	}
 
 	def showVariables(String message)

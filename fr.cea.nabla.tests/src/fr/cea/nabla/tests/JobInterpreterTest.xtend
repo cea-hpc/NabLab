@@ -47,17 +47,20 @@ class JobInterpreterTest
 		+
 		'''
 		ℝ[2] u;
-
+		ℝ[2] center{cells};
 		ComputeUx : u[0] = u^{n=0}[0] + 1.0;
 		ComputeUy : u[1] = u^{n=0}[1] + 2.0;
+		IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X^{n=0}{r});
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
 		val moduleInterpreter = new ModuleInterpreter(irModule)
 		val context = moduleInterpreter.interprete
 		context.showVariables("After")
-		assertVariableValueInContext(irModule, context, "u_n0", new NV1Real(#[0.0 , 0.0]))
+		//assertVariableValueInContext(irModule, context, "u_n0", new NV1Real(#[0.0 , 0.0]))
 		assertVariableValueInContext(irModule, context, "u", new NV1Real(#[1.0 , 2.0]))
+		val X_n0 = context.getVariableValue("X_n0")
+		assertVariableValueInContext(irModule, context, "X", X_n0)
 	}
 
 	@Test

@@ -39,9 +39,12 @@ class MeshWrapper
 		throw new RuntimeException("Not implemented yet")
 	}
 
-	def int invokeSingleton(String methodName, int[] params)
+	def int getSingleton(String connectivityName, int[] params)
 	{
-		throw new RuntimeException("Not implemented yet")
+		switch connectivityName {
+			case "commonFace" : nm.getCommonFace(params.get(0), params.get(1))
+			default : throw new RuntimeException("Not implemented yet (" + connectivityName + ")")
+		}
 	}
 
 	def ArrayList<double[]> getNodes()

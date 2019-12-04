@@ -31,18 +31,4 @@ workflow Glace2dGenerationChain transforms Glace2d
 	{
 		//dumpIr;
 	}
-
-	Ir2Code javaGenerator follows fillHlts
-	{
-		language = Java;
-		disabled;
-		outputDir = "/NablaExamplesJava/src";
-	}
-
-	Ir2Code kokkosGenerator follows fillHlts
-	{
-		language = Kokkos;
-		disabled;
-		outputDir = "/NablaExamplesKokkos/src";
-	}
 }

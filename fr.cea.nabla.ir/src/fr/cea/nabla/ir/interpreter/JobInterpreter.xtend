@@ -13,7 +13,6 @@ import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.HashMap
 
 import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
-import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
@@ -75,12 +74,13 @@ class JobInterpreter
 		context.setVariableValue(right, leftValue)
 	}
 
+
 	def dispatch interprete(EndOfInitJob it, Context context)
 	{
 		//println("Interprete EndOfInitJob " + name + " @ " + at)
 		// Set Vn = V0
-		val rightValue = createValue(right, context)
-		context.setVariableValue(left, rightValue)
+		// Warning : V0 and Vn have the same memory representation so if we update Vn, V0 will be modified
+		context.setVariableValue(left, context.getVariableValue(right))
 	}
 
 	private def setItemVariables(InSituJob it, Context context, IrModule module, String itemName, HashMap<String, double[]> map)

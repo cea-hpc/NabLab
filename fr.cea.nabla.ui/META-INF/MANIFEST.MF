@@ -20,7 +20,10 @@ Require-Bundle: fr.cea.nabla,
  org.eclipse.ui.console,
  org.eclipse.ui.views,
  org.eclipse.ui.views.log,
+ org.eclipse.pde.core,
  org.eclipse.search,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.launching,
  org.eclipse.xtend.lib;bundle-version="2.14.0";resolution:=optional,
  org.eclipse.xtext.builder,
  org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
@@ -41,6 +44,8 @@ Export-Package: fr.cea.nabla.ui,
  fr.cea.nabla.ui.perspectives,
  fr.cea.nabla.ui.quickfix,
  fr.cea.nabla.ui.syntaxcoloring,
- fr.cea.nabla.ui.views
+ fr.cea.nabla.ui.views,
+ fr.cea.nabla.ui.wizards
 Bundle-Activator: fr.cea.nabla.ui.internal.NablaActivator
 Bundle-ClassPath: .
+Bundle-Localization: plugin

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <!--
-    Copyright (c) 2018 CEA
+    Copyright (c) 2018, 2019 CEA, Obeo
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License 2.0 which is available at
     http://www.eclipse.org/legal/epl-2.0.
@@ -459,11 +459,11 @@
  <extension
        point="org.eclipse.ui.views">
     <category
-          id="fr.cea.nabla.ui"
-          name="Nabla">
+          id="fr.cea.nabla.ui.category"
+          name="%NablaCategory">
     </category>
     <view
-          category="fr.cea.nabla.ui"
+          category="fr.cea.nabla.ui.category"
           class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.views.LatexView"
           icon="icons/Nabla.gif"
           id="fr.cea.nabla.ui.views.NablaLatexView"
@@ -522,7 +522,7 @@
           class="fr.cea.nabla.ui.perspectives.NabLabPerspective"
           icon="icons/Nabla.gif"
           id="fr.cea.nabla.ui.NabLabPerpective"
-          name="NabLab">
+          name="%NablaPerspective">
     </perspective>
  </extension>
  <extension
@@ -553,19 +553,34 @@
  <extension
        point="org.eclipse.ui.newWizards">
     <category
+          id="fr.cea.nabla.ui.category"
+          name="%NablaCategory">
+    </category>
+    <category
           id="fr.cea.nabla.ui.examples.category"
-          name="Nabla Examples"
+          name="%NablaExamplesCategory"
           parentCategory="org.eclipse.ui.Examples">
     </category>
+    <wizard
+          category="fr.cea.nabla.ui.category"
+          class="fr.cea.nabla.ui.wizards.NewNablaProjectWizard"
+          icon="icons/Nabla.gif"
+          id="fr.cea.nabla.ui.new.project.wizard"
+          name="%NablaProjectWizardName"
+          project="true">
+       <description>
+          %NablaProjectWizardDescription
+       </description>
+    </wizard>
     <wizard
           category="org.eclipse.ui.Examples/fr.cea.nabla.ui.examples.category"
           class="org.eclipse.emf.common.ui.wizard.ExampleInstallerWizard"
           icon="icons/Nabla.gif"
           id="fr.cea.nabla.ui.examples.project.wizard"
-          name="Nabla Examples"
+          name="%NablaExamplesWizardName"
           project="true">
        <description>
-          A set of Nabla examples including Glace2D, HeatEquation, ImplicitHeatEquation, and ExplicitHeatEquation.
+          %NablaExamplesWizardDescription
        </description>
     </wizard>
  </extension>
@@ -577,7 +592,7 @@
           wizardID="fr.cea.nabla.ui.examples.project.wizard">
        <projectDescriptor
              contentURI="examples/NablaExamples/"
-             description="A set of Nabla examples including Glace2D, HeatEquation, ImplicitHeatEquation, and ExplicitHeatEquation.&#x0A;Project includes Nabla files, Nablagen files, java generated files, kokkos (c++) generated files."
+             description="%NablaExamplesWizardFullDescription"
              name="NablaExamples">
        </projectDescriptor>
     </example>

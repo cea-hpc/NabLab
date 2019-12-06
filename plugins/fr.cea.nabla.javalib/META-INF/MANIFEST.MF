@@ -7,7 +7,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .,
  lib/commons-math3-3.6.1.jar
 Export-Package: fr.cea.nabla.javalib.mesh,
- fr.cea.nabla.javalib.mesh.test,
  fr.cea.nabla.javalib.types
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: CEA

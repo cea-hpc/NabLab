@@ -11,3 +11,4 @@ Export-Package: fr.cea.nabla.javalib.mesh,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: CEA
 Require-Bundle: org.eclipse.xtend.lib
+

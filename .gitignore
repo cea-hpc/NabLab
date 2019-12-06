@@ -14,5 +14,7 @@ xtend-gen/
 .nablair
 org.antlr.runtime
 output
+# Maven
+target/
 # macOS
 .DS_Store

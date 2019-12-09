@@ -19,7 +19,11 @@
 
     <properties>
         <tycho-version>1.5.1</tycho-version>
+        <xtend-version>2.19.0</xtend-version>
+        <maven-clean-version>3.1.0</maven-clean-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
     </properties>
 
     <profiles>
@@ -59,50 +63,127 @@
         <plugins>
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
-                <artifactId>tycho-packaging-plugin</artifactId>
-                <version>${tycho-version}</version>
-                <configuration>
-                    <strictBinIncludes>false</strictBinIncludes>
-                </configuration>
+                <artifactId>tycho-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
-                <artifactId>tycho-maven-plugin</artifactId>
-                <version>${tycho-version}</version>
-                <extensions>true</extensions>
+                <artifactId>tycho-packaging-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>target-platform-configuration</artifactId>
-                <version>${tycho-version}</version>
-                <configuration>
-                    <target>
-                        <artifact>
-                            <groupId>fr.cea.nabla</groupId>
-                            <artifactId>fr.cea.nabla.targetplatform</artifactId>
-                            <version>1.0.0-SNAPSHOT</version>
-                            <classifier>nablab</classifier>
-                        </artifact>
-                    </target>
-                    <environments>
-                        <!-- <environment>
-                            <os>win32</os>
-                            <ws>win32</ws>
-                            <arch>x86_64</arch>
-                        </environment> -->
-                        <environment>
-                            <os>linux</os>
-                            <ws>gtk</ws>
-                            <arch>x86_64</arch>
-                        </environment>
-                        <environment>
-                            <os>macosx</os>
-                            <ws>cocoa</ws>
-                            <arch>x86_64</arch>
-                        </environment>
-                    </environments>
-                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.xtend</groupId>
+                <artifactId>xtend-maven-plugin</artifactId>
             </plugin>
         </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-maven-plugin</artifactId>
+                    <version>${tycho-version}</version>
+                    <extensions>true</extensions>
+                </plugin>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-packaging-plugin</artifactId>
+                    <version>${tycho-version}</version>
+                    <configuration>
+                        <strictBinIncludes>false</strictBinIncludes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>target-platform-configuration</artifactId>
+                    <version>${tycho-version}</version>
+                    <configuration>
+                        <target>
+                            <artifact>
+                                <groupId>fr.cea.nabla</groupId>
+                                <artifactId>fr.cea.nabla.targetplatform</artifactId>
+                                <version>1.0.0-SNAPSHOT</version>
+                                <classifier>nablab</classifier>
+                            </artifact>
+                        </target>
+                        <environments>
+                            <!-- <environment>
+                                <os>win32</os>
+                                <ws>win32</ws>
+                                <arch>x86_64</arch>
+                            </environment> -->
+                            <environment>
+                                <os>linux</os>
+                                <ws>gtk</ws>
+                                <arch>x86_64</arch>
+                            </environment>
+                            <environment>
+                                <os>macosx</os>
+                                <ws>cocoa</ws>
+                                <arch>x86_64</arch>
+                            </environment>
+                        </environments>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${maven-clean-version}</version>
+                    <configuration>
+                        <filesets>
+                            <fileset>
+                                <directory>xtend-gen</directory>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                            </fileset>
+                            <fileset>
+                                <directory>src-gen</directory>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                                <!-- Exclude src-gen from fr.cea.nabla.ir because it is not generated by MWE2 workflow -->
+                                <excludes>
+                                    <exclude>fr/cea/nabla/ir/ir/**</exclude>
+                                </excludes>
+                            </fileset>
+                        </filesets>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.eclipse.xtend</groupId>
+                    <artifactId>xtend-maven-plugin</artifactId>
+                    <version>${xtend-version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>compile</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <outputDirectory>${basedir}/xtend-gen</outputDirectory>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-compiler-plugin</artifactId>
+                    <version>${tycho-version}</version>
+                    <configuration>
+                        <useProjectSettings>false</useProjectSettings>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>

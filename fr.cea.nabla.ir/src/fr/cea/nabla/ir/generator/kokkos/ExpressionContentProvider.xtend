@@ -16,7 +16,6 @@ import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.ContractedIf
-import fr.cea.nabla.ir.ir.DimensionInt
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.MaxConstant
@@ -25,13 +24,14 @@ import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.RealConstant
 import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.SizeTypeInt
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.DimensionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
+import static extension fr.cea.nabla.ir.generator.SizeTypeContentProvider.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
 
@@ -82,7 +82,7 @@ class ExpressionContentProvider
 	static def dispatch CharSequence getContent(BaseTypeConstant it) 
 	{
 		val t = type as BaseType
-		val sizes = t.sizes.filter(DimensionInt).map[value]
+		val sizes = t.sizes.filter(SizeTypeInt).map[value]
 		'''{«initArray(sizes, value.content)»}''' // One additional bracket for matrix... Magic C++ !
 	}
 

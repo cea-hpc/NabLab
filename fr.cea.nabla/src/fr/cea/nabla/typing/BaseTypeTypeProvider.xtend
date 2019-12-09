@@ -11,7 +11,7 @@ package fr.cea.nabla.typing
 
 import com.google.inject.Inject
 import fr.cea.nabla.nabla.BaseType
-import fr.cea.nabla.nabla.Dimension
+import fr.cea.nabla.nabla.SizeType
 import fr.cea.nabla.nabla.PrimitiveType
 
 class BaseTypeTypeProvider
@@ -29,9 +29,9 @@ class BaseTypeTypeProvider
 		}
 	}
 
-	private def NablaSimpleType getArray1DTypeFor(PrimitiveType primitive, Dimension size)
+	private def NablaSimpleType getArray1DTypeFor(PrimitiveType primitive, SizeType size)
 	{
-		val s = NSTDimension.create(size)
+		val s = NSTSizeType.create(size)
 		switch primitive
 		{
 			case INT: new NSTIntArray1D(s)
@@ -40,10 +40,10 @@ class BaseTypeTypeProvider
 		}
 	}
 
-	private def NablaSimpleType getArray2DTypeFor(PrimitiveType primitive, Dimension nbRows, Dimension nbCols)
+	private def NablaSimpleType getArray2DTypeFor(PrimitiveType primitive, SizeType nbRows, SizeType nbCols)
 	{
-		val nbr = NSTDimension.create(nbRows)
-		val nbc = NSTDimension.create(nbCols)
+		val nbr = NSTSizeType.create(nbRows)
+		val nbc = NSTSizeType.create(nbCols)
 		switch primitive
 		{
 			case INT: new NSTIntArray2D(nbr, nbc)

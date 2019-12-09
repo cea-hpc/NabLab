@@ -104,6 +104,7 @@ public abstract class IteratorRefImpl extends IrAnnotableImpl implements Iterato
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Iterator getTarget() {
 		if (target != null && target.eIsProxy()) {
 			InternalEObject oldTarget = (InternalEObject)target;
@@ -145,6 +146,7 @@ public abstract class IteratorRefImpl extends IrAnnotableImpl implements Iterato
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setTarget(Iterator newTarget) {
 		if (newTarget != target) {
 			NotificationChain msgs = null;
@@ -164,6 +166,7 @@ public abstract class IteratorRefImpl extends IrAnnotableImpl implements Iterato
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public int getShift() {
 		return shift;
 	}
@@ -173,6 +176,7 @@ public abstract class IteratorRefImpl extends IrAnnotableImpl implements Iterato
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setShift(int newShift) {
 		int oldShift = shift;
 		shift = newShift;
@@ -185,6 +189,7 @@ public abstract class IteratorRefImpl extends IrAnnotableImpl implements Iterato
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public int getIndexInReferencerList() {
 		return indexInReferencerList;
 	}
@@ -194,6 +199,7 @@ public abstract class IteratorRefImpl extends IrAnnotableImpl implements Iterato
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setIndexInReferencerList(int newIndexInReferencerList) {
 		int oldIndexInReferencerList = indexInReferencerList;
 		indexInReferencerList = newIndexInReferencerList;

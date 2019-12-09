@@ -184,49 +184,49 @@ public interface IrFactory extends EFactory {
 	SpaceIterationBlock createSpaceIterationBlock();
 
 	/**
-	 * Returns a new object of class '<em>Dimension Iteration Block</em>'.
+	 * Returns a new object of class '<em>Interval Iteration Block</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Dimension Iteration Block</em>'.
+	 * @return a new object of class '<em>Interval Iteration Block</em>'.
 	 * @generated
 	 */
-	DimensionIterationBlock createDimensionIterationBlock();
+	IntervalIterationBlock createIntervalIterationBlock();
 
 	/**
-	 * Returns a new object of class '<em>Dimension Symbol</em>'.
+	 * Returns a new object of class '<em>Size Type Symbol</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Dimension Symbol</em>'.
+	 * @return a new object of class '<em>Size Type Symbol</em>'.
 	 * @generated
 	 */
-	DimensionSymbol createDimensionSymbol();
+	SizeTypeSymbol createSizeTypeSymbol();
 
 	/**
-	 * Returns a new object of class '<em>Dimension Int</em>'.
+	 * Returns a new object of class '<em>Size Type Int</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Dimension Int</em>'.
+	 * @return a new object of class '<em>Size Type Int</em>'.
 	 * @generated
 	 */
-	DimensionInt createDimensionInt();
+	SizeTypeInt createSizeTypeInt();
 
 	/**
-	 * Returns a new object of class '<em>Dimension Operation</em>'.
+	 * Returns a new object of class '<em>Size Type Operation</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Dimension Operation</em>'.
+	 * @return a new object of class '<em>Size Type Operation</em>'.
 	 * @generated
 	 */
-	DimensionOperation createDimensionOperation();
+	SizeTypeOperation createSizeTypeOperation();
 
 	/**
-	 * Returns a new object of class '<em>Dimension Symbol Ref</em>'.
+	 * Returns a new object of class '<em>Size Type Symbol Ref</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Dimension Symbol Ref</em>'.
+	 * @return a new object of class '<em>Size Type Symbol Ref</em>'.
 	 * @generated
 	 */
-	DimensionSymbolRef createDimensionSymbolRef();
+	SizeTypeSymbolRef createSizeTypeSymbolRef();
 
 	/**
 	 * Returns a new object of class '<em>Reduction Instruction</em>'.

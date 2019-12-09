@@ -7,7 +7,7 @@ import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.ContractedIf
-import fr.cea.nabla.ir.ir.DimensionSymbolRef
+import fr.cea.nabla.ir.ir.SizeTypeSymbolRef
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.MaxConstant
@@ -164,8 +164,8 @@ class ExpressionInterpreter
 				{
 					val callerArgTypeTypeSize = callerArgTypeSizes.get(iSize)
 					val calleeArgTypeDimension = calleeArg.type.sizes.get(iSize)
-					if (calleeArgTypeDimension instanceof DimensionSymbolRef)
-						innerContext.addDimensionValue((calleeArgTypeDimension as DimensionSymbolRef).target, callerArgTypeTypeSize)
+					if (calleeArgTypeDimension instanceof SizeTypeSymbolRef)
+						innerContext.addDimensionValue((calleeArgTypeDimension as SizeTypeSymbolRef).target, callerArgTypeTypeSize)
 				}
 
 				// set argument value

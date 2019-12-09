@@ -73,6 +73,7 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ConnectivityType getType() {
 		if (type != null && type.eIsProxy()) {
 			InternalEObject oldType = (InternalEObject)type;
@@ -120,6 +121,7 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setType(ConnectivityType newType) {
 		if (newType != type) {
 			NotificationChain msgs = null;
@@ -139,6 +141,7 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ArgOrVarRef getDefaultValue() {
 		if (defaultValue != null && defaultValue.eIsProxy()) {
 			InternalEObject oldDefaultValue = (InternalEObject)defaultValue;
@@ -186,6 +189,7 @@ public class ConnectivityVariableImpl extends VariableImpl implements Connectivi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setDefaultValue(ArgOrVarRef newDefaultValue) {
 		if (newDefaultValue != defaultValue) {
 			NotificationChain msgs = null;

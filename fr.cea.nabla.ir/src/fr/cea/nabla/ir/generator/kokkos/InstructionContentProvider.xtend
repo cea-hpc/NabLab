@@ -13,12 +13,13 @@ import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.DimensionIterationBlock
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
+import fr.cea.nabla.ir.ir.IntervalIterationBlock
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRef
+import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionInstruction
@@ -26,15 +27,14 @@ import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.SpaceIterationBlock
 import fr.cea.nabla.ir.ir.VarDefinition
+import org.eclipse.emf.ecore.EObject
 
-import static extension fr.cea.nabla.ir.generator.DimensionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
+import static extension fr.cea.nabla.ir.generator.SizeTypeContentProvider.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
-import org.eclipse.emf.ecore.EObject
-import fr.cea.nabla.ir.ir.Job
 
 abstract class InstructionContentProvider 
 {
@@ -119,7 +119,7 @@ abstract class InstructionContentProvider
 		}
 	'''
 
-	private def dispatch CharSequence getContent(ReductionInstruction it, DimensionIterationBlock b) 
+	private def dispatch CharSequence getContent(ReductionInstruction it, IntervalIterationBlock b) 
 	'''
 		const int from = «b.from.content»;
 		const int to = «b.to.content»«IF b.toIncluded»+1«ENDIF»;
@@ -146,7 +146,7 @@ abstract class InstructionContentProvider
 		}
 	'''
 
-	private def dispatch getTopLevelSequentialContent(DimensionIterationBlock it, Loop l)
+	private def dispatch getTopLevelSequentialContent(IntervalIterationBlock it, Loop l)
 	'''
 		for (size_t «index.name»=«from.content»; «index.name»<«IF toIncluded»=«ENDIF»«to.content»; «index.name»++)
 			«l.body.innerContent»
@@ -164,7 +164,7 @@ abstract class InstructionContentProvider
 		}
 	'''
 
-	private def dispatch getSequentialContent(DimensionIterationBlock it, Loop l)
+	private def dispatch getSequentialContent(IntervalIterationBlock it, Loop l)
 	{
 		getTopLevelSequentialContent(it, l)
 	}

@@ -316,7 +316,7 @@ class NablaScopeProviderTest
 		}
 		''')
 		Assert.assertNotNull(module)
-		val eref = NablaPackage::eINSTANCE.dimensionSymbolRef_Target
+		val eref = NablaPackage::eINSTANCE.sizeTypeSymbolRef_Target
 
 		val c1Decl = module.instructions.get(0)		
 		c1Decl.assertScope(eref, "")
@@ -363,7 +363,7 @@ class NablaScopeProviderTest
 
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
-		val eref = NablaPackage::eINSTANCE.dimensionSymbolRef_Target
+		val eref = NablaPackage::eINSTANCE.sizeTypeSymbolRef_Target
 
 		val inverse = module.getFunctionByName("inverse")
 		Assert.assertNotNull(inverse)

@@ -18,11 +18,6 @@ import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ContractedIf
-import fr.cea.nabla.nabla.DimensionInt
-import fr.cea.nabla.nabla.DimensionIterationBlock
-import fr.cea.nabla.nabla.DimensionOperation
-import fr.cea.nabla.nabla.DimensionSymbol
-import fr.cea.nabla.nabla.DimensionSymbolRef
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
@@ -30,6 +25,7 @@ import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InitTimeIterator
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
+import fr.cea.nabla.nabla.IntervalIterationBlock
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.MaxConstant
@@ -48,6 +44,10 @@ import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
+import fr.cea.nabla.nabla.SizeTypeInt
+import fr.cea.nabla.nabla.SizeTypeOperation
+import fr.cea.nabla.nabla.SizeTypeSymbol
+import fr.cea.nabla.nabla.SizeTypeSymbolRef
 import fr.cea.nabla.nabla.SpaceIterationBlock
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
@@ -68,7 +68,7 @@ class LatexLabelServices
 
 	/* ITERATEURS ********************************************/
 	static def dispatch String getLatex(SpaceIterationBlock it) { range.latex }
-	static def dispatch String getLatex(DimensionIterationBlock it) { index.latex + '\\in [' + from.latex + ';' + to.latex + (if (toIncluded) ']' else'[') }
+	static def dispatch String getLatex(IntervalIterationBlock it) { index.latex + '\\in [' + from.latex + ';' + to.latex + (if (toIncluded) ']' else'[') }
 
 	static def dispatch String getLatex(RangeSpaceIterator it) { name.pu + '\\in ' + container.latex }
 	static def dispatch String getLatex(SingletonSpaceIterator it) { name.pu + '=' + container.latex }
@@ -82,9 +82,6 @@ class LatexLabelServices
 
 	static def dispatch String getLatex(InitTimeIterator it) { 'n=0' }
 	static def dispatch String getLatex(NextTimeIterator it) {  if (hasDiv) 'n+1/' + div else 'n+1' } 
-
-	/* FONCTIONS / REDUCTIONS ********************************/
-	static def dispatch String getLatex(DimensionSymbol it) { name.pu }
 
 	/* EXPRESSIONS ******************************************/
 	static def dispatch String getLatex(ContractedIf it) { condition.latex + ' ? ' + then.latex + ' : ' + ^else.latex }
@@ -149,9 +146,10 @@ class LatexLabelServices
 			primitive.literal + '^{' + sizes.map[x | x.latex].join('x') + '}'
 	}
 
-	static def dispatch String getLatex(DimensionOperation it) { left?.latex + ' ' + op + ' ' + right?.latex }
-	static def dispatch String getLatex(DimensionInt it) { value.toString }
-	static def dispatch String getLatex(DimensionSymbolRef it) { target?.name.pu }
+	static def dispatch String getLatex(SizeTypeOperation it) { left?.latex + ' ' + op + ' ' + right?.latex }
+	static def dispatch String getLatex(SizeTypeInt it) { value.toString }
+	static def dispatch String getLatex(SizeTypeSymbolRef it) { target?.name.pu }
+	static def dispatch String getLatex(SizeTypeSymbol it) { name.pu }
 
 	private static def getLatexArg(Expression it)
 	{

@@ -62,6 +62,7 @@ public class InstructionJobImpl extends JobImpl implements InstructionJob {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Instruction getInstruction() {
 		return instruction;
 	}
@@ -86,6 +87,7 @@ public class InstructionJobImpl extends JobImpl implements InstructionJob {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setInstruction(Instruction newInstruction) {
 		if (newInstruction != instruction) {
 			NotificationChain msgs = null;

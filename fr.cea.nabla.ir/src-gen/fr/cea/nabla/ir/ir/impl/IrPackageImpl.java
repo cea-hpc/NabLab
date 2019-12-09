@@ -17,12 +17,6 @@ import fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef;
 import fr.cea.nabla.ir.ir.ConnectivityType;
 import fr.cea.nabla.ir.ir.ConnectivityVariable;
 import fr.cea.nabla.ir.ir.ContractedIf;
-import fr.cea.nabla.ir.ir.Dimension;
-import fr.cea.nabla.ir.ir.DimensionInt;
-import fr.cea.nabla.ir.ir.DimensionIterationBlock;
-import fr.cea.nabla.ir.ir.DimensionOperation;
-import fr.cea.nabla.ir.ir.DimensionSymbol;
-import fr.cea.nabla.ir.ir.DimensionSymbolRef;
 import fr.cea.nabla.ir.ir.EndOfInitJob;
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob;
 import fr.cea.nabla.ir.ir.Expression;
@@ -35,6 +29,7 @@ import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.InstructionBlock;
 import fr.cea.nabla.ir.ir.InstructionJob;
 import fr.cea.nabla.ir.ir.IntConstant;
+import fr.cea.nabla.ir.ir.IntervalIterationBlock;
 import fr.cea.nabla.ir.ir.IrAnnotable;
 import fr.cea.nabla.ir.ir.IrAnnotation;
 import fr.cea.nabla.ir.ir.IrFactory;
@@ -58,6 +53,11 @@ import fr.cea.nabla.ir.ir.Reduction;
 import fr.cea.nabla.ir.ir.ReductionInstruction;
 import fr.cea.nabla.ir.ir.Return;
 import fr.cea.nabla.ir.ir.SimpleVariable;
+import fr.cea.nabla.ir.ir.SizeType;
+import fr.cea.nabla.ir.ir.SizeTypeInt;
+import fr.cea.nabla.ir.ir.SizeTypeOperation;
+import fr.cea.nabla.ir.ir.SizeTypeSymbol;
+import fr.cea.nabla.ir.ir.SizeTypeSymbolRef;
 import fr.cea.nabla.ir.ir.SpaceIterationBlock;
 import fr.cea.nabla.ir.ir.TimeIterationCopyJob;
 import fr.cea.nabla.ir.ir.UnaryExpression;
@@ -267,42 +267,42 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass dimensionIterationBlockEClass = null;
+	private EClass intervalIterationBlockEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass dimensionSymbolEClass = null;
+	private EClass sizeTypeSymbolEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass dimensionEClass = null;
+	private EClass sizeTypeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass dimensionIntEClass = null;
+	private EClass sizeTypeIntEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass dimensionOperationEClass = null;
+	private EClass sizeTypeOperationEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass dimensionSymbolRefEClass = null;
+	private EClass sizeTypeSymbolRefEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -566,6 +566,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getIrAnnotable() {
 		return irAnnotableEClass;
 	}
@@ -575,6 +576,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIrAnnotable_Annotations() {
 		return (EReference)irAnnotableEClass.getEStructuralFeatures().get(0);
 	}
@@ -584,6 +586,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getIrAnnotation() {
 		return irAnnotationEClass;
 	}
@@ -593,6 +596,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getIrAnnotation_Source() {
 		return (EAttribute)irAnnotationEClass.getEStructuralFeatures().get(0);
 	}
@@ -602,6 +606,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIrAnnotation_Details() {
 		return (EReference)irAnnotationEClass.getEStructuralFeatures().get(1);
 	}
@@ -611,6 +616,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getIrModule() {
 		return irModuleEClass;
 	}
@@ -620,6 +626,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getIrModule_Name() {
 		return (EAttribute)irModuleEClass.getEStructuralFeatures().get(0);
 	}
@@ -629,6 +636,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIrModule_Imports() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(1);
 	}
@@ -638,6 +646,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIrModule_Items() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(2);
 	}
@@ -647,6 +656,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIrModule_Functions() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(3);
 	}
@@ -656,6 +666,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIrModule_Reductions() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(4);
 	}
@@ -665,6 +676,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIrModule_Connectivities() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(5);
 	}
@@ -674,6 +686,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIrModule_Variables() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(6);
 	}
@@ -683,6 +696,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIrModule_InitCoordVariable() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(7);
 	}
@@ -692,6 +706,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIrModule_Jobs() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(8);
 	}
@@ -701,6 +716,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getImport() {
 		return importEClass;
 	}
@@ -710,6 +726,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getImport_ImportedNamespace() {
 		return (EAttribute)importEClass.getEStructuralFeatures().get(0);
 	}
@@ -719,6 +736,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getArgOrVar() {
 		return argOrVarEClass;
 	}
@@ -728,6 +746,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getArgOrVar_Name() {
 		return (EAttribute)argOrVarEClass.getEStructuralFeatures().get(0);
 	}
@@ -737,6 +756,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getVariable() {
 		return variableEClass;
 	}
@@ -746,6 +766,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getVariable_PersistenceName() {
 		return (EAttribute)variableEClass.getEStructuralFeatures().get(0);
 	}
@@ -755,6 +776,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getVariable_Const() {
 		return (EAttribute)variableEClass.getEStructuralFeatures().get(1);
 	}
@@ -764,6 +786,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getSimpleVariable() {
 		return simpleVariableEClass;
 	}
@@ -773,6 +796,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getSimpleVariable_Type() {
 		return (EReference)simpleVariableEClass.getEStructuralFeatures().get(0);
 	}
@@ -782,6 +806,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getSimpleVariable_DefaultValue() {
 		return (EReference)simpleVariableEClass.getEStructuralFeatures().get(1);
 	}
@@ -791,6 +816,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getConnectivityVariable() {
 		return connectivityVariableEClass;
 	}
@@ -800,6 +826,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getConnectivityVariable_Type() {
 		return (EReference)connectivityVariableEClass.getEStructuralFeatures().get(0);
 	}
@@ -809,6 +836,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getConnectivityVariable_DefaultValue() {
 		return (EReference)connectivityVariableEClass.getEStructuralFeatures().get(1);
 	}
@@ -818,6 +846,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getFunction() {
 		return functionEClass;
 	}
@@ -827,6 +856,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getFunction_Name() {
 		return (EAttribute)functionEClass.getEStructuralFeatures().get(2);
 	}
@@ -836,6 +866,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getFunction_InArgs() {
 		return (EReference)functionEClass.getEStructuralFeatures().get(3);
 	}
@@ -845,6 +876,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getFunction_ReturnType() {
 		return (EReference)functionEClass.getEStructuralFeatures().get(4);
 	}
@@ -854,6 +886,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getFunction_Body() {
 		return (EReference)functionEClass.getEStructuralFeatures().get(5);
 	}
@@ -863,6 +896,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getFunction_Provider() {
 		return (EAttribute)functionEClass.getEStructuralFeatures().get(0);
 	}
@@ -872,7 +906,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getFunction_DimensionVars() {
+	@Override
+	public EReference getFunction_Variables() {
 		return (EReference)functionEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -881,6 +916,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getReduction() {
 		return reductionEClass;
 	}
@@ -890,6 +926,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getReduction_Name() {
 		return (EAttribute)reductionEClass.getEStructuralFeatures().get(2);
 	}
@@ -899,6 +936,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getReduction_CollectionType() {
 		return (EReference)reductionEClass.getEStructuralFeatures().get(3);
 	}
@@ -908,6 +946,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getReduction_ReturnType() {
 		return (EReference)reductionEClass.getEStructuralFeatures().get(4);
 	}
@@ -917,6 +956,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getReduction_Provider() {
 		return (EAttribute)reductionEClass.getEStructuralFeatures().get(0);
 	}
@@ -926,6 +966,17 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
+	public EReference getReduction_Variables() {
+		return (EReference)reductionEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EAttribute getReduction_Operator() {
 		return (EAttribute)reductionEClass.getEStructuralFeatures().get(5);
 	}
@@ -935,15 +986,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getReduction_DimensionVars() {
-		return (EReference)reductionEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+	@Override
 	public EClass getArg() {
 		return argEClass;
 	}
@@ -953,6 +996,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getArg_Type() {
 		return (EReference)argEClass.getEStructuralFeatures().get(0);
 	}
@@ -962,6 +1006,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getConnectivity() {
 		return connectivityEClass;
 	}
@@ -971,6 +1016,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getConnectivity_Name() {
 		return (EAttribute)connectivityEClass.getEStructuralFeatures().get(0);
 	}
@@ -980,6 +1026,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getConnectivity_InTypes() {
 		return (EReference)connectivityEClass.getEStructuralFeatures().get(1);
 	}
@@ -989,6 +1036,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getConnectivity_ReturnType() {
 		return (EReference)connectivityEClass.getEStructuralFeatures().get(2);
 	}
@@ -998,6 +1046,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getConnectivity_IndexEqualId() {
 		return (EAttribute)connectivityEClass.getEStructuralFeatures().get(3);
 	}
@@ -1007,6 +1056,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getItemArgType() {
 		return itemArgTypeEClass;
 	}
@@ -1016,6 +1066,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getItemArgType_Multiple() {
 		return (EAttribute)itemArgTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -1025,6 +1076,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getItemArgType_Type() {
 		return (EReference)itemArgTypeEClass.getEStructuralFeatures().get(1);
 	}
@@ -1034,6 +1086,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getJob() {
 		return jobEClass;
 	}
@@ -1043,6 +1096,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getJob_Name() {
 		return (EAttribute)jobEClass.getEStructuralFeatures().get(0);
 	}
@@ -1052,6 +1106,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getJob_At() {
 		return (EAttribute)jobEClass.getEStructuralFeatures().get(1);
 	}
@@ -1061,6 +1116,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getJob_OnCycle() {
 		return (EAttribute)jobEClass.getEStructuralFeatures().get(2);
 	}
@@ -1070,6 +1126,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getInstructionJob() {
 		return instructionJobEClass;
 	}
@@ -1079,6 +1136,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getInstructionJob_Instruction() {
 		return (EReference)instructionJobEClass.getEStructuralFeatures().get(0);
 	}
@@ -1088,6 +1146,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getInSituJob() {
 		return inSituJobEClass;
 	}
@@ -1097,6 +1156,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getInSituJob_Variables() {
 		return (EReference)inSituJobEClass.getEStructuralFeatures().get(0);
 	}
@@ -1106,6 +1166,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getInSituJob_IterationPeriod() {
 		return (EAttribute)inSituJobEClass.getEStructuralFeatures().get(1);
 	}
@@ -1115,6 +1176,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getInSituJob_TimeStep() {
 		return (EAttribute)inSituJobEClass.getEStructuralFeatures().get(2);
 	}
@@ -1124,6 +1186,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getTimeIterationCopyJob() {
 		return timeIterationCopyJobEClass;
 	}
@@ -1133,6 +1196,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getTimeIterationCopyJob_Left() {
 		return (EReference)timeIterationCopyJobEClass.getEStructuralFeatures().get(0);
 	}
@@ -1142,6 +1206,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getTimeIterationCopyJob_Right() {
 		return (EReference)timeIterationCopyJobEClass.getEStructuralFeatures().get(1);
 	}
@@ -1151,6 +1216,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getTimeIterationCopyJob_TimeIteratorName() {
 		return (EAttribute)timeIterationCopyJobEClass.getEStructuralFeatures().get(2);
 	}
@@ -1160,6 +1226,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getEndOfTimeLoopJob() {
 		return endOfTimeLoopJobEClass;
 	}
@@ -1169,6 +1236,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getEndOfInitJob() {
 		return endOfInitJobEClass;
 	}
@@ -1178,6 +1246,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getInstruction() {
 		return instructionEClass;
 	}
@@ -1187,6 +1256,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getVarDefinition() {
 		return varDefinitionEClass;
 	}
@@ -1196,6 +1266,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getVarDefinition_Variables() {
 		return (EReference)varDefinitionEClass.getEStructuralFeatures().get(0);
 	}
@@ -1205,6 +1276,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getInstructionBlock() {
 		return instructionBlockEClass;
 	}
@@ -1214,6 +1286,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getInstructionBlock_Instructions() {
 		return (EReference)instructionBlockEClass.getEStructuralFeatures().get(0);
 	}
@@ -1223,6 +1296,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getAffectation() {
 		return affectationEClass;
 	}
@@ -1232,6 +1306,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getAffectation_Left() {
 		return (EReference)affectationEClass.getEStructuralFeatures().get(0);
 	}
@@ -1241,6 +1316,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getAffectation_Right() {
 		return (EReference)affectationEClass.getEStructuralFeatures().get(1);
 	}
@@ -1250,6 +1326,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getIterableInstruction() {
 		return iterableInstructionEClass;
 	}
@@ -1259,6 +1336,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIterableInstruction_IterationBlock() {
 		return (EReference)iterableInstructionEClass.getEStructuralFeatures().get(0);
 	}
@@ -1268,6 +1346,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getIterationBlock() {
 		return iterationBlockEClass;
 	}
@@ -1277,6 +1356,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getSpaceIterationBlock() {
 		return spaceIterationBlockEClass;
 	}
@@ -1286,6 +1366,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getSpaceIterationBlock_Range() {
 		return (EReference)spaceIterationBlockEClass.getEStructuralFeatures().get(0);
 	}
@@ -1295,6 +1376,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getSpaceIterationBlock_Singletons() {
 		return (EReference)spaceIterationBlockEClass.getEStructuralFeatures().get(1);
 	}
@@ -1304,8 +1386,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDimensionIterationBlock() {
-		return dimensionIterationBlockEClass;
+	@Override
+	public EClass getIntervalIterationBlock() {
+		return intervalIterationBlockEClass;
 	}
 
 	/**
@@ -1313,8 +1396,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDimensionIterationBlock_Index() {
-		return (EReference)dimensionIterationBlockEClass.getEStructuralFeatures().get(0);
+	@Override
+	public EReference getIntervalIterationBlock_Index() {
+		return (EReference)intervalIterationBlockEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1322,8 +1406,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDimensionIterationBlock_From() {
-		return (EReference)dimensionIterationBlockEClass.getEStructuralFeatures().get(1);
+	@Override
+	public EReference getIntervalIterationBlock_From() {
+		return (EReference)intervalIterationBlockEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1331,8 +1416,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDimensionIterationBlock_To() {
-		return (EReference)dimensionIterationBlockEClass.getEStructuralFeatures().get(2);
+	@Override
+	public EReference getIntervalIterationBlock_To() {
+		return (EReference)intervalIterationBlockEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -1340,8 +1426,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDimensionIterationBlock_ToIncluded() {
-		return (EAttribute)dimensionIterationBlockEClass.getEStructuralFeatures().get(3);
+	@Override
+	public EAttribute getIntervalIterationBlock_ToIncluded() {
+		return (EAttribute)intervalIterationBlockEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -1349,8 +1436,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDimensionSymbol() {
-		return dimensionSymbolEClass;
+	@Override
+	public EClass getSizeTypeSymbol() {
+		return sizeTypeSymbolEClass;
 	}
 
 	/**
@@ -1358,8 +1446,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDimensionSymbol_Name() {
-		return (EAttribute)dimensionSymbolEClass.getEStructuralFeatures().get(0);
+	@Override
+	public EAttribute getSizeTypeSymbol_Name() {
+		return (EAttribute)sizeTypeSymbolEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1367,8 +1456,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDimension() {
-		return dimensionEClass;
+	@Override
+	public EClass getSizeType() {
+		return sizeTypeEClass;
 	}
 
 	/**
@@ -1376,8 +1466,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDimensionInt() {
-		return dimensionIntEClass;
+	@Override
+	public EClass getSizeTypeInt() {
+		return sizeTypeIntEClass;
 	}
 
 	/**
@@ -1385,8 +1476,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDimensionInt_Value() {
-		return (EAttribute)dimensionIntEClass.getEStructuralFeatures().get(0);
+	@Override
+	public EAttribute getSizeTypeInt_Value() {
+		return (EAttribute)sizeTypeIntEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1394,8 +1486,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDimensionOperation() {
-		return dimensionOperationEClass;
+	@Override
+	public EClass getSizeTypeOperation() {
+		return sizeTypeOperationEClass;
 	}
 
 	/**
@@ -1403,8 +1496,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDimensionOperation_Left() {
-		return (EReference)dimensionOperationEClass.getEStructuralFeatures().get(0);
+	@Override
+	public EReference getSizeTypeOperation_Left() {
+		return (EReference)sizeTypeOperationEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1412,8 +1506,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDimensionOperation_Right() {
-		return (EReference)dimensionOperationEClass.getEStructuralFeatures().get(1);
+	@Override
+	public EReference getSizeTypeOperation_Right() {
+		return (EReference)sizeTypeOperationEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1421,8 +1516,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDimensionOperation_Operator() {
-		return (EAttribute)dimensionOperationEClass.getEStructuralFeatures().get(2);
+	@Override
+	public EAttribute getSizeTypeOperation_Operator() {
+		return (EAttribute)sizeTypeOperationEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -1430,8 +1526,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDimensionSymbolRef() {
-		return dimensionSymbolRefEClass;
+	@Override
+	public EClass getSizeTypeSymbolRef() {
+		return sizeTypeSymbolRefEClass;
 	}
 
 	/**
@@ -1439,8 +1536,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDimensionSymbolRef_Target() {
-		return (EReference)dimensionSymbolRefEClass.getEStructuralFeatures().get(0);
+	@Override
+	public EReference getSizeTypeSymbolRef_Target() {
+		return (EReference)sizeTypeSymbolRefEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1448,6 +1546,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getReductionInstruction() {
 		return reductionInstructionEClass;
 	}
@@ -1457,6 +1556,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getReductionInstruction_InnerReductions() {
 		return (EReference)reductionInstructionEClass.getEStructuralFeatures().get(0);
 	}
@@ -1466,6 +1566,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getReductionInstruction_Reduction() {
 		return (EReference)reductionInstructionEClass.getEStructuralFeatures().get(1);
 	}
@@ -1475,6 +1576,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getReductionInstruction_Arg() {
 		return (EReference)reductionInstructionEClass.getEStructuralFeatures().get(2);
 	}
@@ -1484,6 +1586,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getReductionInstruction_Result() {
 		return (EReference)reductionInstructionEClass.getEStructuralFeatures().get(3);
 	}
@@ -1493,6 +1596,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getLoop() {
 		return loopEClass;
 	}
@@ -1502,6 +1606,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getLoop_Body() {
 		return (EReference)loopEClass.getEStructuralFeatures().get(0);
 	}
@@ -1511,6 +1616,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getIf() {
 		return ifEClass;
 	}
@@ -1520,6 +1626,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIf_Condition() {
 		return (EReference)ifEClass.getEStructuralFeatures().get(0);
 	}
@@ -1529,6 +1636,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIf_ThenInstruction() {
 		return (EReference)ifEClass.getEStructuralFeatures().get(1);
 	}
@@ -1538,6 +1646,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIf_ElseInstruction() {
 		return (EReference)ifEClass.getEStructuralFeatures().get(2);
 	}
@@ -1547,6 +1656,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getReturn() {
 		return returnEClass;
 	}
@@ -1556,6 +1666,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getReturn_Expression() {
 		return (EReference)returnEClass.getEStructuralFeatures().get(0);
 	}
@@ -1565,6 +1676,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getExpression() {
 		return expressionEClass;
 	}
@@ -1574,6 +1686,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getExpression_Type() {
 		return (EReference)expressionEClass.getEStructuralFeatures().get(0);
 	}
@@ -1583,6 +1696,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getContractedIf() {
 		return contractedIfEClass;
 	}
@@ -1592,6 +1706,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getContractedIf_Condition() {
 		return (EReference)contractedIfEClass.getEStructuralFeatures().get(0);
 	}
@@ -1601,6 +1716,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getContractedIf_ThenExpression() {
 		return (EReference)contractedIfEClass.getEStructuralFeatures().get(1);
 	}
@@ -1610,6 +1726,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getContractedIf_ElseExpression() {
 		return (EReference)contractedIfEClass.getEStructuralFeatures().get(2);
 	}
@@ -1619,6 +1736,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getBinaryExpression() {
 		return binaryExpressionEClass;
 	}
@@ -1628,6 +1746,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getBinaryExpression_Operator() {
 		return (EAttribute)binaryExpressionEClass.getEStructuralFeatures().get(0);
 	}
@@ -1637,6 +1756,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getBinaryExpression_Left() {
 		return (EReference)binaryExpressionEClass.getEStructuralFeatures().get(1);
 	}
@@ -1646,6 +1766,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getBinaryExpression_Right() {
 		return (EReference)binaryExpressionEClass.getEStructuralFeatures().get(2);
 	}
@@ -1655,6 +1776,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getUnaryExpression() {
 		return unaryExpressionEClass;
 	}
@@ -1664,6 +1786,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getUnaryExpression_Operator() {
 		return (EAttribute)unaryExpressionEClass.getEStructuralFeatures().get(0);
 	}
@@ -1673,6 +1796,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getUnaryExpression_Expression() {
 		return (EReference)unaryExpressionEClass.getEStructuralFeatures().get(1);
 	}
@@ -1682,6 +1806,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getParenthesis() {
 		return parenthesisEClass;
 	}
@@ -1691,6 +1816,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getParenthesis_Expression() {
 		return (EReference)parenthesisEClass.getEStructuralFeatures().get(0);
 	}
@@ -1700,6 +1826,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getIntConstant() {
 		return intConstantEClass;
 	}
@@ -1709,6 +1836,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getIntConstant_Value() {
 		return (EAttribute)intConstantEClass.getEStructuralFeatures().get(0);
 	}
@@ -1718,6 +1846,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getRealConstant() {
 		return realConstantEClass;
 	}
@@ -1727,6 +1856,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRealConstant_Value() {
 		return (EAttribute)realConstantEClass.getEStructuralFeatures().get(0);
 	}
@@ -1736,6 +1866,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getBoolConstant() {
 		return boolConstantEClass;
 	}
@@ -1745,6 +1876,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getBoolConstant_Value() {
 		return (EAttribute)boolConstantEClass.getEStructuralFeatures().get(0);
 	}
@@ -1754,6 +1886,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getMaxConstant() {
 		return maxConstantEClass;
 	}
@@ -1763,6 +1896,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getBaseTypeConstant() {
 		return baseTypeConstantEClass;
 	}
@@ -1772,6 +1906,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getBaseTypeConstant_Value() {
 		return (EReference)baseTypeConstantEClass.getEStructuralFeatures().get(0);
 	}
@@ -1781,6 +1916,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getVectorConstant() {
 		return vectorConstantEClass;
 	}
@@ -1790,6 +1926,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getVectorConstant_Values() {
 		return (EReference)vectorConstantEClass.getEStructuralFeatures().get(0);
 	}
@@ -1799,6 +1936,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getMinConstant() {
 		return minConstantEClass;
 	}
@@ -1808,6 +1946,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getFunctionCall() {
 		return functionCallEClass;
 	}
@@ -1817,6 +1956,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getFunctionCall_Function() {
 		return (EReference)functionCallEClass.getEStructuralFeatures().get(0);
 	}
@@ -1826,6 +1966,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getFunctionCall_Args() {
 		return (EReference)functionCallEClass.getEStructuralFeatures().get(1);
 	}
@@ -1835,6 +1976,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getArgOrVarRef() {
 		return argOrVarRefEClass;
 	}
@@ -1844,6 +1986,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getArgOrVarRef_Target() {
 		return (EReference)argOrVarRefEClass.getEStructuralFeatures().get(0);
 	}
@@ -1853,6 +1996,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getArgOrVarRef_Iterators() {
 		return (EReference)argOrVarRefEClass.getEStructuralFeatures().get(1);
 	}
@@ -1862,6 +2006,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getArgOrVarRef_Indices() {
 		return (EReference)argOrVarRefEClass.getEStructuralFeatures().get(2);
 	}
@@ -1871,6 +2016,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getIterator() {
 		return iteratorEClass;
 	}
@@ -1880,6 +2026,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getIterator_Name() {
 		return (EAttribute)iteratorEClass.getEStructuralFeatures().get(0);
 	}
@@ -1889,6 +2036,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIterator_Container() {
 		return (EReference)iteratorEClass.getEStructuralFeatures().get(1);
 	}
@@ -1898,6 +2046,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getIterator_Singleton() {
 		return (EAttribute)iteratorEClass.getEStructuralFeatures().get(2);
 	}
@@ -1907,6 +2056,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIterator_Referencers() {
 		return (EReference)iteratorEClass.getEStructuralFeatures().get(3);
 	}
@@ -1916,6 +2066,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getConnectivityCall() {
 		return connectivityCallEClass;
 	}
@@ -1925,6 +2076,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getConnectivityCall_Connectivity() {
 		return (EReference)connectivityCallEClass.getEStructuralFeatures().get(0);
 	}
@@ -1934,6 +2086,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getConnectivityCall_Args() {
 		return (EReference)connectivityCallEClass.getEStructuralFeatures().get(1);
 	}
@@ -1943,6 +2096,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getIteratorRef() {
 		return iteratorRefEClass;
 	}
@@ -1952,6 +2106,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getIteratorRef_Target() {
 		return (EReference)iteratorRefEClass.getEStructuralFeatures().get(0);
 	}
@@ -1961,6 +2116,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getIteratorRef_Shift() {
 		return (EAttribute)iteratorRefEClass.getEStructuralFeatures().get(1);
 	}
@@ -1970,6 +2126,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getIteratorRef_IndexInReferencerList() {
 		return (EAttribute)iteratorRefEClass.getEStructuralFeatures().get(2);
 	}
@@ -1979,6 +2136,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getConnectivityCallIteratorRef() {
 		return connectivityCallIteratorRefEClass;
 	}
@@ -1988,6 +2146,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getConnectivityCallIteratorRef_ReferencedBy() {
 		return (EReference)connectivityCallIteratorRefEClass.getEStructuralFeatures().get(0);
 	}
@@ -1997,6 +2156,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getArgOrVarRefIteratorRef() {
 		return argOrVarRefIteratorRefEClass;
 	}
@@ -2006,6 +2166,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getArgOrVarRefIteratorRef_ReferencedBy() {
 		return (EReference)argOrVarRefIteratorRefEClass.getEStructuralFeatures().get(0);
 	}
@@ -2015,6 +2176,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getItemType() {
 		return itemTypeEClass;
 	}
@@ -2024,6 +2186,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getItemType_Name() {
 		return (EAttribute)itemTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -2033,6 +2196,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getBaseType() {
 		return baseTypeEClass;
 	}
@@ -2042,6 +2206,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getBaseType_Primitive() {
 		return (EAttribute)baseTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -2051,6 +2216,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getBaseType_Sizes() {
 		return (EReference)baseTypeEClass.getEStructuralFeatures().get(1);
 	}
@@ -2060,6 +2226,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getIrType() {
 		return irTypeEClass;
 	}
@@ -2069,6 +2236,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getConnectivityType() {
 		return connectivityTypeEClass;
 	}
@@ -2078,6 +2246,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getConnectivityType_Connectivities() {
 		return (EReference)connectivityTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -2087,6 +2256,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getConnectivityType_Base() {
 		return (EReference)connectivityTypeEClass.getEStructuralFeatures().get(1);
 	}
@@ -2096,6 +2266,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EEnum getPrimitiveType() {
 		return primitiveTypeEEnum;
 	}
@@ -2105,6 +2276,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public IrFactory getIrFactory() {
 		return (IrFactory)getEFactoryInstance();
 	}
@@ -2169,7 +2341,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		functionEClass = createEClass(FUNCTION);
 		createEAttribute(functionEClass, FUNCTION__PROVIDER);
-		createEReference(functionEClass, FUNCTION__DIMENSION_VARS);
+		createEReference(functionEClass, FUNCTION__VARIABLES);
 		createEAttribute(functionEClass, FUNCTION__NAME);
 		createEReference(functionEClass, FUNCTION__IN_ARGS);
 		createEReference(functionEClass, FUNCTION__RETURN_TYPE);
@@ -2177,7 +2349,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		reductionEClass = createEClass(REDUCTION);
 		createEAttribute(reductionEClass, REDUCTION__PROVIDER);
-		createEReference(reductionEClass, REDUCTION__DIMENSION_VARS);
+		createEReference(reductionEClass, REDUCTION__VARIABLES);
 		createEAttribute(reductionEClass, REDUCTION__NAME);
 		createEReference(reductionEClass, REDUCTION__COLLECTION_TYPE);
 		createEReference(reductionEClass, REDUCTION__RETURN_TYPE);
@@ -2236,27 +2408,27 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(spaceIterationBlockEClass, SPACE_ITERATION_BLOCK__RANGE);
 		createEReference(spaceIterationBlockEClass, SPACE_ITERATION_BLOCK__SINGLETONS);
 
-		dimensionIterationBlockEClass = createEClass(DIMENSION_ITERATION_BLOCK);
-		createEReference(dimensionIterationBlockEClass, DIMENSION_ITERATION_BLOCK__INDEX);
-		createEReference(dimensionIterationBlockEClass, DIMENSION_ITERATION_BLOCK__FROM);
-		createEReference(dimensionIterationBlockEClass, DIMENSION_ITERATION_BLOCK__TO);
-		createEAttribute(dimensionIterationBlockEClass, DIMENSION_ITERATION_BLOCK__TO_INCLUDED);
+		intervalIterationBlockEClass = createEClass(INTERVAL_ITERATION_BLOCK);
+		createEReference(intervalIterationBlockEClass, INTERVAL_ITERATION_BLOCK__INDEX);
+		createEReference(intervalIterationBlockEClass, INTERVAL_ITERATION_BLOCK__FROM);
+		createEReference(intervalIterationBlockEClass, INTERVAL_ITERATION_BLOCK__TO);
+		createEAttribute(intervalIterationBlockEClass, INTERVAL_ITERATION_BLOCK__TO_INCLUDED);
 
-		dimensionSymbolEClass = createEClass(DIMENSION_SYMBOL);
-		createEAttribute(dimensionSymbolEClass, DIMENSION_SYMBOL__NAME);
+		sizeTypeSymbolEClass = createEClass(SIZE_TYPE_SYMBOL);
+		createEAttribute(sizeTypeSymbolEClass, SIZE_TYPE_SYMBOL__NAME);
 
-		dimensionEClass = createEClass(DIMENSION);
+		sizeTypeEClass = createEClass(SIZE_TYPE);
 
-		dimensionIntEClass = createEClass(DIMENSION_INT);
-		createEAttribute(dimensionIntEClass, DIMENSION_INT__VALUE);
+		sizeTypeIntEClass = createEClass(SIZE_TYPE_INT);
+		createEAttribute(sizeTypeIntEClass, SIZE_TYPE_INT__VALUE);
 
-		dimensionOperationEClass = createEClass(DIMENSION_OPERATION);
-		createEReference(dimensionOperationEClass, DIMENSION_OPERATION__LEFT);
-		createEReference(dimensionOperationEClass, DIMENSION_OPERATION__RIGHT);
-		createEAttribute(dimensionOperationEClass, DIMENSION_OPERATION__OPERATOR);
+		sizeTypeOperationEClass = createEClass(SIZE_TYPE_OPERATION);
+		createEReference(sizeTypeOperationEClass, SIZE_TYPE_OPERATION__LEFT);
+		createEReference(sizeTypeOperationEClass, SIZE_TYPE_OPERATION__RIGHT);
+		createEAttribute(sizeTypeOperationEClass, SIZE_TYPE_OPERATION__OPERATOR);
 
-		dimensionSymbolRefEClass = createEClass(DIMENSION_SYMBOL_REF);
-		createEReference(dimensionSymbolRefEClass, DIMENSION_SYMBOL_REF__TARGET);
+		sizeTypeSymbolRefEClass = createEClass(SIZE_TYPE_SYMBOL_REF);
+		createEReference(sizeTypeSymbolRefEClass, SIZE_TYPE_SYMBOL_REF__TARGET);
 
 		reductionInstructionEClass = createEClass(REDUCTION_INSTRUCTION);
 		createEReference(reductionInstructionEClass, REDUCTION_INSTRUCTION__INNER_REDUCTIONS);
@@ -2413,12 +2585,12 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		iterableInstructionEClass.getESuperTypes().add(this.getInstruction());
 		iterationBlockEClass.getESuperTypes().add(this.getIrAnnotable());
 		spaceIterationBlockEClass.getESuperTypes().add(this.getIterationBlock());
-		dimensionIterationBlockEClass.getESuperTypes().add(this.getIterationBlock());
-		dimensionSymbolEClass.getESuperTypes().add(this.getIrAnnotable());
-		dimensionEClass.getESuperTypes().add(this.getIrAnnotable());
-		dimensionIntEClass.getESuperTypes().add(this.getDimension());
-		dimensionOperationEClass.getESuperTypes().add(this.getDimension());
-		dimensionSymbolRefEClass.getESuperTypes().add(this.getDimension());
+		intervalIterationBlockEClass.getESuperTypes().add(this.getIterationBlock());
+		sizeTypeSymbolEClass.getESuperTypes().add(this.getIrAnnotable());
+		sizeTypeEClass.getESuperTypes().add(this.getIrAnnotable());
+		sizeTypeIntEClass.getESuperTypes().add(this.getSizeType());
+		sizeTypeOperationEClass.getESuperTypes().add(this.getSizeType());
+		sizeTypeSymbolRefEClass.getESuperTypes().add(this.getSizeType());
 		reductionInstructionEClass.getESuperTypes().add(this.getIterableInstruction());
 		loopEClass.getESuperTypes().add(this.getIterableInstruction());
 		ifEClass.getESuperTypes().add(this.getInstruction());
@@ -2488,7 +2660,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(functionEClass, Function.class, "Function", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFunction_Provider(), ecorePackage.getEString(), "provider", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getFunction_DimensionVars(), this.getDimensionSymbol(), null, "dimensionVars", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getFunction_Variables(), this.getSizeTypeSymbol(), null, "variables", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getFunction_Name(), ecorePackage.getEString(), "name", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunction_InArgs(), this.getArg(), null, "inArgs", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunction_ReturnType(), this.getBaseType(), null, "returnType", null, 0, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2496,7 +2668,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(reductionEClass, Reduction.class, "Reduction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getReduction_Provider(), ecorePackage.getEString(), "provider", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getReduction_DimensionVars(), this.getDimensionSymbol(), null, "dimensionVars", null, 0, -1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getReduction_Variables(), this.getSizeTypeSymbol(), null, "variables", null, 0, -1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getReduction_Name(), ecorePackage.getEString(), "name", null, 0, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getReduction_CollectionType(), this.getBaseType(), null, "collectionType", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getReduction_ReturnType(), this.getBaseType(), null, "returnType", null, 1, 1, Reduction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2555,27 +2727,27 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getSpaceIterationBlock_Range(), this.getIterator(), null, "range", null, 1, 1, SpaceIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getSpaceIterationBlock_Singletons(), this.getIterator(), null, "singletons", null, 0, -1, SpaceIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(dimensionIterationBlockEClass, DimensionIterationBlock.class, "DimensionIterationBlock", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getDimensionIterationBlock_Index(), this.getDimensionSymbol(), null, "index", null, 1, 1, DimensionIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDimensionIterationBlock_From(), this.getDimension(), null, "from", null, 1, 1, DimensionIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDimensionIterationBlock_To(), this.getDimension(), null, "to", null, 1, 1, DimensionIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getDimensionIterationBlock_ToIncluded(), ecorePackage.getEBoolean(), "toIncluded", null, 1, 1, DimensionIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(intervalIterationBlockEClass, IntervalIterationBlock.class, "IntervalIterationBlock", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getIntervalIterationBlock_Index(), this.getSizeTypeSymbol(), null, "index", null, 1, 1, IntervalIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIntervalIterationBlock_From(), this.getSizeType(), null, "from", null, 1, 1, IntervalIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIntervalIterationBlock_To(), this.getSizeType(), null, "to", null, 1, 1, IntervalIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIntervalIterationBlock_ToIncluded(), ecorePackage.getEBoolean(), "toIncluded", null, 1, 1, IntervalIterationBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(dimensionSymbolEClass, DimensionSymbol.class, "DimensionSymbol", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getDimensionSymbol_Name(), ecorePackage.getEString(), "name", null, 1, 1, DimensionSymbol.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(sizeTypeSymbolEClass, SizeTypeSymbol.class, "SizeTypeSymbol", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getSizeTypeSymbol_Name(), ecorePackage.getEString(), "name", null, 1, 1, SizeTypeSymbol.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(dimensionEClass, Dimension.class, "Dimension", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(sizeTypeEClass, SizeType.class, "SizeType", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(dimensionIntEClass, DimensionInt.class, "DimensionInt", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getDimensionInt_Value(), ecorePackage.getEInt(), "value", null, 1, 1, DimensionInt.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(sizeTypeIntEClass, SizeTypeInt.class, "SizeTypeInt", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getSizeTypeInt_Value(), ecorePackage.getEInt(), "value", null, 1, 1, SizeTypeInt.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(dimensionOperationEClass, DimensionOperation.class, "DimensionOperation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getDimensionOperation_Left(), this.getDimension(), null, "left", null, 1, 1, DimensionOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDimensionOperation_Right(), this.getDimension(), null, "right", null, 1, 1, DimensionOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getDimensionOperation_Operator(), ecorePackage.getEString(), "operator", null, 1, 1, DimensionOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(sizeTypeOperationEClass, SizeTypeOperation.class, "SizeTypeOperation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getSizeTypeOperation_Left(), this.getSizeType(), null, "left", null, 1, 1, SizeTypeOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getSizeTypeOperation_Right(), this.getSizeType(), null, "right", null, 1, 1, SizeTypeOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getSizeTypeOperation_Operator(), ecorePackage.getEString(), "operator", null, 1, 1, SizeTypeOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(dimensionSymbolRefEClass, DimensionSymbolRef.class, "DimensionSymbolRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getDimensionSymbolRef_Target(), this.getDimensionSymbol(), null, "target", null, 1, 1, DimensionSymbolRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEClass(sizeTypeSymbolRefEClass, SizeTypeSymbolRef.class, "SizeTypeSymbolRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getSizeTypeSymbolRef_Target(), this.getSizeTypeSymbol(), null, "target", null, 1, 1, SizeTypeSymbolRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(reductionInstructionEClass, ReductionInstruction.class, "ReductionInstruction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getReductionInstruction_InnerReductions(), this.getInstruction(), null, "innerReductions", null, 0, -1, ReductionInstruction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2640,7 +2812,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(argOrVarRefEClass, ArgOrVarRef.class, "ArgOrVarRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getArgOrVarRef_Target(), this.getArgOrVar(), null, "target", null, 1, 1, ArgOrVarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getArgOrVarRef_Iterators(), this.getArgOrVarRefIteratorRef(), this.getArgOrVarRefIteratorRef_ReferencedBy(), "iterators", null, 0, -1, ArgOrVarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getArgOrVarRef_Indices(), this.getDimension(), null, "indices", null, 0, -1, ArgOrVarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getArgOrVarRef_Indices(), this.getSizeType(), null, "indices", null, 0, -1, ArgOrVarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(iteratorEClass, Iterator.class, "Iterator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getIterator_Name(), ecorePackage.getEString(), "name", null, 1, 1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2670,7 +2842,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(baseTypeEClass, BaseType.class, "BaseType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getBaseType_Primitive(), this.getPrimitiveType(), "primitive", null, 1, 1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getBaseType_Sizes(), this.getDimension(), null, "sizes", null, 0, -1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBaseType_Sizes(), this.getSizeType(), null, "sizes", null, 0, -1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(connectivityTypeEClass, ConnectivityType.class, "ConnectivityType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConnectivityType_Connectivities(), this.getConnectivity(), null, "connectivities", null, 0, -1, ConnectivityType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

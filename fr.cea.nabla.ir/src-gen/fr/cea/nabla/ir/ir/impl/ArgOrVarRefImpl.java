@@ -5,8 +5,8 @@ package fr.cea.nabla.ir.ir.impl;
 import fr.cea.nabla.ir.ir.ArgOrVar;
 import fr.cea.nabla.ir.ir.ArgOrVarRef;
 import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef;
-import fr.cea.nabla.ir.ir.Dimension;
 import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.SizeType;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -66,7 +66,7 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Dimension> indices;
+	protected EList<SizeType> indices;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -92,6 +92,7 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ArgOrVar getTarget() {
 		if (target != null && target.eIsProxy()) {
 			InternalEObject oldTarget = (InternalEObject)target;
@@ -118,6 +119,7 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setTarget(ArgOrVar newTarget) {
 		ArgOrVar oldTarget = target;
 		target = newTarget;
@@ -130,6 +132,7 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<ArgOrVarRefIteratorRef> getIterators() {
 		if (iterators == null) {
 			iterators = new EObjectContainmentWithInverseEList<ArgOrVarRefIteratorRef>(ArgOrVarRefIteratorRef.class, this, IrPackage.ARG_OR_VAR_REF__ITERATORS, IrPackage.ARG_OR_VAR_REF_ITERATOR_REF__REFERENCED_BY);
@@ -142,9 +145,10 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Dimension> getIndices() {
+	@Override
+	public EList<SizeType> getIndices() {
 		if (indices == null) {
-			indices = new EObjectContainmentEList.Resolving<Dimension>(Dimension.class, this, IrPackage.ARG_OR_VAR_REF__INDICES);
+			indices = new EObjectContainmentEList.Resolving<SizeType>(SizeType.class, this, IrPackage.ARG_OR_VAR_REF__INDICES);
 		}
 		return indices;
 	}
@@ -217,7 +221,7 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 				return;
 			case IrPackage.ARG_OR_VAR_REF__INDICES:
 				getIndices().clear();
-				getIndices().addAll((Collection<? extends Dimension>)newValue);
+				getIndices().addAll((Collection<? extends SizeType>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);

@@ -22,7 +22,6 @@ import org.eclipse.emf.ecore.EReference;
  * <!-- end-user-doc -->
  * @see fr.cea.nabla.ir.ir.IrFactory
  * @model kind="package"
- *        annotation="http://www.eclipse.org/emf/2002/GenModel fileExtensions='nablair' modelName='NablaIR' importerID='org.eclipse.emf.importer.ecore' basePackage='fr.cea.nabla.ir'"
  * @generated
  */
 public interface IrPackage extends EPackage {
@@ -663,13 +662,13 @@ public interface IrPackage extends EPackage {
 	int FUNCTION__PROVIDER = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Dimension Vars</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Variables</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION__DIMENSION_VARS = IR_ANNOTABLE_FEATURE_COUNT + 1;
+	int FUNCTION__VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -754,13 +753,13 @@ public interface IrPackage extends EPackage {
 	int REDUCTION__PROVIDER = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Dimension Vars</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Variables</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int REDUCTION__DIMENSION_VARS = IR_ANNOTABLE_FEATURE_COUNT + 1;
+	int REDUCTION__VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1768,14 +1767,14 @@ public interface IrPackage extends EPackage {
 	int SPACE_ITERATION_BLOCK_OPERATION_COUNT = ITERATION_BLOCK_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.DimensionIterationBlockImpl <em>Dimension Iteration Block</em>}' class.
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.IntervalIterationBlockImpl <em>Interval Iteration Block</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.DimensionIterationBlockImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getDimensionIterationBlock()
+	 * @see fr.cea.nabla.ir.ir.impl.IntervalIterationBlockImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIntervalIterationBlock()
 	 * @generated
 	 */
-	int DIMENSION_ITERATION_BLOCK = 26;
+	int INTERVAL_ITERATION_BLOCK = 26;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -1784,7 +1783,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_ITERATION_BLOCK__ANNOTATIONS = ITERATION_BLOCK__ANNOTATIONS;
+	int INTERVAL_ITERATION_BLOCK__ANNOTATIONS = ITERATION_BLOCK__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Index</b></em>' containment reference.
@@ -1793,7 +1792,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_ITERATION_BLOCK__INDEX = ITERATION_BLOCK_FEATURE_COUNT + 0;
+	int INTERVAL_ITERATION_BLOCK__INDEX = ITERATION_BLOCK_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>From</b></em>' containment reference.
@@ -1802,7 +1801,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_ITERATION_BLOCK__FROM = ITERATION_BLOCK_FEATURE_COUNT + 1;
+	int INTERVAL_ITERATION_BLOCK__FROM = ITERATION_BLOCK_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>To</b></em>' containment reference.
@@ -1811,7 +1810,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_ITERATION_BLOCK__TO = ITERATION_BLOCK_FEATURE_COUNT + 2;
+	int INTERVAL_ITERATION_BLOCK__TO = ITERATION_BLOCK_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>To Included</b></em>' attribute.
@@ -1820,35 +1819,35 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_ITERATION_BLOCK__TO_INCLUDED = ITERATION_BLOCK_FEATURE_COUNT + 3;
+	int INTERVAL_ITERATION_BLOCK__TO_INCLUDED = ITERATION_BLOCK_FEATURE_COUNT + 3;
 
 	/**
-	 * The number of structural features of the '<em>Dimension Iteration Block</em>' class.
+	 * The number of structural features of the '<em>Interval Iteration Block</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_ITERATION_BLOCK_FEATURE_COUNT = ITERATION_BLOCK_FEATURE_COUNT + 4;
+	int INTERVAL_ITERATION_BLOCK_FEATURE_COUNT = ITERATION_BLOCK_FEATURE_COUNT + 4;
 
 	/**
-	 * The number of operations of the '<em>Dimension Iteration Block</em>' class.
+	 * The number of operations of the '<em>Interval Iteration Block</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_ITERATION_BLOCK_OPERATION_COUNT = ITERATION_BLOCK_OPERATION_COUNT + 0;
+	int INTERVAL_ITERATION_BLOCK_OPERATION_COUNT = ITERATION_BLOCK_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.DimensionSymbolImpl <em>Dimension Symbol</em>}' class.
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeSymbolImpl <em>Size Type Symbol</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.DimensionSymbolImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getDimensionSymbol()
+	 * @see fr.cea.nabla.ir.ir.impl.SizeTypeSymbolImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeSymbol()
 	 * @generated
 	 */
-	int DIMENSION_SYMBOL = 27;
+	int SIZE_TYPE_SYMBOL = 27;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -1857,7 +1856,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_SYMBOL__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
+	int SIZE_TYPE_SYMBOL__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1866,35 +1865,35 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_SYMBOL__NAME = IR_ANNOTABLE_FEATURE_COUNT + 0;
+	int SIZE_TYPE_SYMBOL__NAME = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Dimension Symbol</em>' class.
+	 * The number of structural features of the '<em>Size Type Symbol</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_SYMBOL_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 1;
+	int SIZE_TYPE_SYMBOL_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of operations of the '<em>Dimension Symbol</em>' class.
+	 * The number of operations of the '<em>Size Type Symbol</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_SYMBOL_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
+	int SIZE_TYPE_SYMBOL_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.DimensionImpl <em>Dimension</em>}' class.
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeImpl <em>Size Type</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.DimensionImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getDimension()
+	 * @see fr.cea.nabla.ir.ir.impl.SizeTypeImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeType()
 	 * @generated
 	 */
-	int DIMENSION = 28;
+	int SIZE_TYPE = 28;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -1903,35 +1902,35 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
+	int SIZE_TYPE__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
 
 	/**
-	 * The number of structural features of the '<em>Dimension</em>' class.
+	 * The number of structural features of the '<em>Size Type</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 0;
+	int SIZE_TYPE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of operations of the '<em>Dimension</em>' class.
+	 * The number of operations of the '<em>Size Type</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
+	int SIZE_TYPE_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.DimensionIntImpl <em>Dimension Int</em>}' class.
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeIntImpl <em>Size Type Int</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.DimensionIntImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getDimensionInt()
+	 * @see fr.cea.nabla.ir.ir.impl.SizeTypeIntImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeInt()
 	 * @generated
 	 */
-	int DIMENSION_INT = 29;
+	int SIZE_TYPE_INT = 29;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -1940,7 +1939,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_INT__ANNOTATIONS = DIMENSION__ANNOTATIONS;
+	int SIZE_TYPE_INT__ANNOTATIONS = SIZE_TYPE__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -1949,35 +1948,35 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_INT__VALUE = DIMENSION_FEATURE_COUNT + 0;
+	int SIZE_TYPE_INT__VALUE = SIZE_TYPE_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Dimension Int</em>' class.
+	 * The number of structural features of the '<em>Size Type Int</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_INT_FEATURE_COUNT = DIMENSION_FEATURE_COUNT + 1;
+	int SIZE_TYPE_INT_FEATURE_COUNT = SIZE_TYPE_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of operations of the '<em>Dimension Int</em>' class.
+	 * The number of operations of the '<em>Size Type Int</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_INT_OPERATION_COUNT = DIMENSION_OPERATION_COUNT + 0;
+	int SIZE_TYPE_INT_OPERATION_COUNT = SIZE_TYPE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.DimensionOperationImpl <em>Dimension Operation</em>}' class.
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeOperationImpl <em>Size Type Operation</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.DimensionOperationImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getDimensionOperation()
+	 * @see fr.cea.nabla.ir.ir.impl.SizeTypeOperationImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeOperation()
 	 * @generated
 	 */
-	int DIMENSION_OPERATION = 30;
+	int SIZE_TYPE_OPERATION = 30;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -1986,7 +1985,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_OPERATION__ANNOTATIONS = DIMENSION__ANNOTATIONS;
+	int SIZE_TYPE_OPERATION__ANNOTATIONS = SIZE_TYPE__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -1995,7 +1994,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_OPERATION__LEFT = DIMENSION_FEATURE_COUNT + 0;
+	int SIZE_TYPE_OPERATION__LEFT = SIZE_TYPE_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Right</b></em>' containment reference.
@@ -2004,7 +2003,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_OPERATION__RIGHT = DIMENSION_FEATURE_COUNT + 1;
+	int SIZE_TYPE_OPERATION__RIGHT = SIZE_TYPE_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Operator</b></em>' attribute.
@@ -2013,35 +2012,35 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_OPERATION__OPERATOR = DIMENSION_FEATURE_COUNT + 2;
+	int SIZE_TYPE_OPERATION__OPERATOR = SIZE_TYPE_FEATURE_COUNT + 2;
 
 	/**
-	 * The number of structural features of the '<em>Dimension Operation</em>' class.
+	 * The number of structural features of the '<em>Size Type Operation</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_OPERATION_FEATURE_COUNT = DIMENSION_FEATURE_COUNT + 3;
+	int SIZE_TYPE_OPERATION_FEATURE_COUNT = SIZE_TYPE_FEATURE_COUNT + 3;
 
 	/**
-	 * The number of operations of the '<em>Dimension Operation</em>' class.
+	 * The number of operations of the '<em>Size Type Operation</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_OPERATION_OPERATION_COUNT = DIMENSION_OPERATION_COUNT + 0;
+	int SIZE_TYPE_OPERATION_OPERATION_COUNT = SIZE_TYPE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.DimensionSymbolRefImpl <em>Dimension Symbol Ref</em>}' class.
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeSymbolRefImpl <em>Size Type Symbol Ref</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.DimensionSymbolRefImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getDimensionSymbolRef()
+	 * @see fr.cea.nabla.ir.ir.impl.SizeTypeSymbolRefImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeSymbolRef()
 	 * @generated
 	 */
-	int DIMENSION_SYMBOL_REF = 31;
+	int SIZE_TYPE_SYMBOL_REF = 31;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2050,7 +2049,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_SYMBOL_REF__ANNOTATIONS = DIMENSION__ANNOTATIONS;
+	int SIZE_TYPE_SYMBOL_REF__ANNOTATIONS = SIZE_TYPE__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Target</b></em>' reference.
@@ -2059,25 +2058,25 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_SYMBOL_REF__TARGET = DIMENSION_FEATURE_COUNT + 0;
+	int SIZE_TYPE_SYMBOL_REF__TARGET = SIZE_TYPE_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Dimension Symbol Ref</em>' class.
+	 * The number of structural features of the '<em>Size Type Symbol Ref</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_SYMBOL_REF_FEATURE_COUNT = DIMENSION_FEATURE_COUNT + 1;
+	int SIZE_TYPE_SYMBOL_REF_FEATURE_COUNT = SIZE_TYPE_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of operations of the '<em>Dimension Symbol Ref</em>' class.
+	 * The number of operations of the '<em>Size Type Symbol Ref</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DIMENSION_SYMBOL_REF_OPERATION_COUNT = DIMENSION_OPERATION_COUNT + 0;
+	int SIZE_TYPE_SYMBOL_REF_OPERATION_COUNT = SIZE_TYPE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ReductionInstructionImpl <em>Reduction Instruction</em>}' class.
@@ -4017,15 +4016,15 @@ public interface IrPackage extends EPackage {
 	EAttribute getFunction_Provider();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.Function#getDimensionVars <em>Dimension Vars</em>}'.
+	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.Function#getVariables <em>Variables</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Dimension Vars</em>'.
-	 * @see fr.cea.nabla.ir.ir.Function#getDimensionVars()
+	 * @return the meta object for the containment reference list '<em>Variables</em>'.
+	 * @see fr.cea.nabla.ir.ir.Function#getVariables()
 	 * @see #getFunction()
 	 * @generated
 	 */
-	EReference getFunction_DimensionVars();
+	EReference getFunction_Variables();
 
 	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Function#getName <em>Name</em>}'.
@@ -4093,15 +4092,15 @@ public interface IrPackage extends EPackage {
 	EAttribute getReduction_Provider();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.Reduction#getDimensionVars <em>Dimension Vars</em>}'.
+	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.Reduction#getVariables <em>Variables</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Dimension Vars</em>'.
-	 * @see fr.cea.nabla.ir.ir.Reduction#getDimensionVars()
+	 * @return the meta object for the containment reference list '<em>Variables</em>'.
+	 * @see fr.cea.nabla.ir.ir.Reduction#getVariables()
 	 * @see #getReduction()
 	 * @generated
 	 */
-	EReference getReduction_DimensionVars();
+	EReference getReduction_Variables();
 
 	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Reduction#getName <em>Name</em>}'.
@@ -4551,174 +4550,174 @@ public interface IrPackage extends EPackage {
 	EReference getSpaceIterationBlock_Singletons();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.DimensionIterationBlock <em>Dimension Iteration Block</em>}'.
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.IntervalIterationBlock <em>Interval Iteration Block</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Dimension Iteration Block</em>'.
-	 * @see fr.cea.nabla.ir.ir.DimensionIterationBlock
+	 * @return the meta object for class '<em>Interval Iteration Block</em>'.
+	 * @see fr.cea.nabla.ir.ir.IntervalIterationBlock
 	 * @generated
 	 */
-	EClass getDimensionIterationBlock();
+	EClass getIntervalIterationBlock();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.DimensionIterationBlock#getIndex <em>Index</em>}'.
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.IntervalIterationBlock#getIndex <em>Index</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference '<em>Index</em>'.
-	 * @see fr.cea.nabla.ir.ir.DimensionIterationBlock#getIndex()
-	 * @see #getDimensionIterationBlock()
+	 * @see fr.cea.nabla.ir.ir.IntervalIterationBlock#getIndex()
+	 * @see #getIntervalIterationBlock()
 	 * @generated
 	 */
-	EReference getDimensionIterationBlock_Index();
+	EReference getIntervalIterationBlock_Index();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.DimensionIterationBlock#getFrom <em>From</em>}'.
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.IntervalIterationBlock#getFrom <em>From</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference '<em>From</em>'.
-	 * @see fr.cea.nabla.ir.ir.DimensionIterationBlock#getFrom()
-	 * @see #getDimensionIterationBlock()
+	 * @see fr.cea.nabla.ir.ir.IntervalIterationBlock#getFrom()
+	 * @see #getIntervalIterationBlock()
 	 * @generated
 	 */
-	EReference getDimensionIterationBlock_From();
+	EReference getIntervalIterationBlock_From();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.DimensionIterationBlock#getTo <em>To</em>}'.
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.IntervalIterationBlock#getTo <em>To</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference '<em>To</em>'.
-	 * @see fr.cea.nabla.ir.ir.DimensionIterationBlock#getTo()
-	 * @see #getDimensionIterationBlock()
+	 * @see fr.cea.nabla.ir.ir.IntervalIterationBlock#getTo()
+	 * @see #getIntervalIterationBlock()
 	 * @generated
 	 */
-	EReference getDimensionIterationBlock_To();
+	EReference getIntervalIterationBlock_To();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.DimensionIterationBlock#isToIncluded <em>To Included</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.IntervalIterationBlock#isToIncluded <em>To Included</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>To Included</em>'.
-	 * @see fr.cea.nabla.ir.ir.DimensionIterationBlock#isToIncluded()
-	 * @see #getDimensionIterationBlock()
+	 * @see fr.cea.nabla.ir.ir.IntervalIterationBlock#isToIncluded()
+	 * @see #getIntervalIterationBlock()
 	 * @generated
 	 */
-	EAttribute getDimensionIterationBlock_ToIncluded();
+	EAttribute getIntervalIterationBlock_ToIncluded();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.DimensionSymbol <em>Dimension Symbol</em>}'.
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SizeTypeSymbol <em>Size Type Symbol</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Dimension Symbol</em>'.
-	 * @see fr.cea.nabla.ir.ir.DimensionSymbol
+	 * @return the meta object for class '<em>Size Type Symbol</em>'.
+	 * @see fr.cea.nabla.ir.ir.SizeTypeSymbol
 	 * @generated
 	 */
-	EClass getDimensionSymbol();
+	EClass getSizeTypeSymbol();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.DimensionSymbol#getName <em>Name</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.SizeTypeSymbol#getName <em>Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see fr.cea.nabla.ir.ir.DimensionSymbol#getName()
-	 * @see #getDimensionSymbol()
+	 * @see fr.cea.nabla.ir.ir.SizeTypeSymbol#getName()
+	 * @see #getSizeTypeSymbol()
 	 * @generated
 	 */
-	EAttribute getDimensionSymbol_Name();
+	EAttribute getSizeTypeSymbol_Name();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Dimension <em>Dimension</em>}'.
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SizeType <em>Size Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Dimension</em>'.
-	 * @see fr.cea.nabla.ir.ir.Dimension
+	 * @return the meta object for class '<em>Size Type</em>'.
+	 * @see fr.cea.nabla.ir.ir.SizeType
 	 * @generated
 	 */
-	EClass getDimension();
+	EClass getSizeType();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.DimensionInt <em>Dimension Int</em>}'.
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SizeTypeInt <em>Size Type Int</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Dimension Int</em>'.
-	 * @see fr.cea.nabla.ir.ir.DimensionInt
+	 * @return the meta object for class '<em>Size Type Int</em>'.
+	 * @see fr.cea.nabla.ir.ir.SizeTypeInt
 	 * @generated
 	 */
-	EClass getDimensionInt();
+	EClass getSizeTypeInt();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.DimensionInt#getValue <em>Value</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.SizeTypeInt#getValue <em>Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see fr.cea.nabla.ir.ir.DimensionInt#getValue()
-	 * @see #getDimensionInt()
+	 * @see fr.cea.nabla.ir.ir.SizeTypeInt#getValue()
+	 * @see #getSizeTypeInt()
 	 * @generated
 	 */
-	EAttribute getDimensionInt_Value();
+	EAttribute getSizeTypeInt_Value();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.DimensionOperation <em>Dimension Operation</em>}'.
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SizeTypeOperation <em>Size Type Operation</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Dimension Operation</em>'.
-	 * @see fr.cea.nabla.ir.ir.DimensionOperation
+	 * @return the meta object for class '<em>Size Type Operation</em>'.
+	 * @see fr.cea.nabla.ir.ir.SizeTypeOperation
 	 * @generated
 	 */
-	EClass getDimensionOperation();
+	EClass getSizeTypeOperation();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.DimensionOperation#getLeft <em>Left</em>}'.
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.SizeTypeOperation#getLeft <em>Left</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference '<em>Left</em>'.
-	 * @see fr.cea.nabla.ir.ir.DimensionOperation#getLeft()
-	 * @see #getDimensionOperation()
+	 * @see fr.cea.nabla.ir.ir.SizeTypeOperation#getLeft()
+	 * @see #getSizeTypeOperation()
 	 * @generated
 	 */
-	EReference getDimensionOperation_Left();
+	EReference getSizeTypeOperation_Left();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.DimensionOperation#getRight <em>Right</em>}'.
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.SizeTypeOperation#getRight <em>Right</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference '<em>Right</em>'.
-	 * @see fr.cea.nabla.ir.ir.DimensionOperation#getRight()
-	 * @see #getDimensionOperation()
+	 * @see fr.cea.nabla.ir.ir.SizeTypeOperation#getRight()
+	 * @see #getSizeTypeOperation()
 	 * @generated
 	 */
-	EReference getDimensionOperation_Right();
+	EReference getSizeTypeOperation_Right();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.DimensionOperation#getOperator <em>Operator</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.SizeTypeOperation#getOperator <em>Operator</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Operator</em>'.
-	 * @see fr.cea.nabla.ir.ir.DimensionOperation#getOperator()
-	 * @see #getDimensionOperation()
+	 * @see fr.cea.nabla.ir.ir.SizeTypeOperation#getOperator()
+	 * @see #getSizeTypeOperation()
 	 * @generated
 	 */
-	EAttribute getDimensionOperation_Operator();
+	EAttribute getSizeTypeOperation_Operator();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.DimensionSymbolRef <em>Dimension Symbol Ref</em>}'.
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SizeTypeSymbolRef <em>Size Type Symbol Ref</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Dimension Symbol Ref</em>'.
-	 * @see fr.cea.nabla.ir.ir.DimensionSymbolRef
+	 * @return the meta object for class '<em>Size Type Symbol Ref</em>'.
+	 * @see fr.cea.nabla.ir.ir.SizeTypeSymbolRef
 	 * @generated
 	 */
-	EClass getDimensionSymbolRef();
+	EClass getSizeTypeSymbolRef();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.DimensionSymbolRef#getTarget <em>Target</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.SizeTypeSymbolRef#getTarget <em>Target</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Target</em>'.
-	 * @see fr.cea.nabla.ir.ir.DimensionSymbolRef#getTarget()
-	 * @see #getDimensionSymbolRef()
+	 * @see fr.cea.nabla.ir.ir.SizeTypeSymbolRef#getTarget()
+	 * @see #getSizeTypeSymbolRef()
 	 * @generated
 	 */
-	EReference getDimensionSymbolRef_Target();
+	EReference getSizeTypeSymbolRef_Target();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ReductionInstruction <em>Reduction Instruction</em>}'.
@@ -5795,12 +5794,12 @@ public interface IrPackage extends EPackage {
 		EAttribute FUNCTION__PROVIDER = eINSTANCE.getFunction_Provider();
 
 		/**
-		 * The meta object literal for the '<em><b>Dimension Vars</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Variables</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference FUNCTION__DIMENSION_VARS = eINSTANCE.getFunction_DimensionVars();
+		EReference FUNCTION__VARIABLES = eINSTANCE.getFunction_Variables();
 
 		/**
 		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -5853,12 +5852,12 @@ public interface IrPackage extends EPackage {
 		EAttribute REDUCTION__PROVIDER = eINSTANCE.getReduction_Provider();
 
 		/**
-		 * The meta object literal for the '<em><b>Dimension Vars</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Variables</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference REDUCTION__DIMENSION_VARS = eINSTANCE.getReduction_DimensionVars();
+		EReference REDUCTION__VARIABLES = eINSTANCE.getReduction_Variables();
 
 		/**
 		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -6227,14 +6226,14 @@ public interface IrPackage extends EPackage {
 		EReference SPACE_ITERATION_BLOCK__SINGLETONS = eINSTANCE.getSpaceIterationBlock_Singletons();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.DimensionIterationBlockImpl <em>Dimension Iteration Block</em>}' class.
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.IntervalIterationBlockImpl <em>Interval Iteration Block</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.DimensionIterationBlockImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getDimensionIterationBlock()
+		 * @see fr.cea.nabla.ir.ir.impl.IntervalIterationBlockImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIntervalIterationBlock()
 		 * @generated
 		 */
-		EClass DIMENSION_ITERATION_BLOCK = eINSTANCE.getDimensionIterationBlock();
+		EClass INTERVAL_ITERATION_BLOCK = eINSTANCE.getIntervalIterationBlock();
 
 		/**
 		 * The meta object literal for the '<em><b>Index</b></em>' containment reference feature.
@@ -6242,7 +6241,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference DIMENSION_ITERATION_BLOCK__INDEX = eINSTANCE.getDimensionIterationBlock_Index();
+		EReference INTERVAL_ITERATION_BLOCK__INDEX = eINSTANCE.getIntervalIterationBlock_Index();
 
 		/**
 		 * The meta object literal for the '<em><b>From</b></em>' containment reference feature.
@@ -6250,7 +6249,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference DIMENSION_ITERATION_BLOCK__FROM = eINSTANCE.getDimensionIterationBlock_From();
+		EReference INTERVAL_ITERATION_BLOCK__FROM = eINSTANCE.getIntervalIterationBlock_From();
 
 		/**
 		 * The meta object literal for the '<em><b>To</b></em>' containment reference feature.
@@ -6258,7 +6257,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference DIMENSION_ITERATION_BLOCK__TO = eINSTANCE.getDimensionIterationBlock_To();
+		EReference INTERVAL_ITERATION_BLOCK__TO = eINSTANCE.getIntervalIterationBlock_To();
 
 		/**
 		 * The meta object literal for the '<em><b>To Included</b></em>' attribute feature.
@@ -6266,17 +6265,17 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute DIMENSION_ITERATION_BLOCK__TO_INCLUDED = eINSTANCE.getDimensionIterationBlock_ToIncluded();
+		EAttribute INTERVAL_ITERATION_BLOCK__TO_INCLUDED = eINSTANCE.getIntervalIterationBlock_ToIncluded();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.DimensionSymbolImpl <em>Dimension Symbol</em>}' class.
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeSymbolImpl <em>Size Type Symbol</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.DimensionSymbolImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getDimensionSymbol()
+		 * @see fr.cea.nabla.ir.ir.impl.SizeTypeSymbolImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeSymbol()
 		 * @generated
 		 */
-		EClass DIMENSION_SYMBOL = eINSTANCE.getDimensionSymbol();
+		EClass SIZE_TYPE_SYMBOL = eINSTANCE.getSizeTypeSymbol();
 
 		/**
 		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -6284,27 +6283,27 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute DIMENSION_SYMBOL__NAME = eINSTANCE.getDimensionSymbol_Name();
+		EAttribute SIZE_TYPE_SYMBOL__NAME = eINSTANCE.getSizeTypeSymbol_Name();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.DimensionImpl <em>Dimension</em>}' class.
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeImpl <em>Size Type</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.DimensionImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getDimension()
+		 * @see fr.cea.nabla.ir.ir.impl.SizeTypeImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeType()
 		 * @generated
 		 */
-		EClass DIMENSION = eINSTANCE.getDimension();
+		EClass SIZE_TYPE = eINSTANCE.getSizeType();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.DimensionIntImpl <em>Dimension Int</em>}' class.
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeIntImpl <em>Size Type Int</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.DimensionIntImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getDimensionInt()
+		 * @see fr.cea.nabla.ir.ir.impl.SizeTypeIntImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeInt()
 		 * @generated
 		 */
-		EClass DIMENSION_INT = eINSTANCE.getDimensionInt();
+		EClass SIZE_TYPE_INT = eINSTANCE.getSizeTypeInt();
 
 		/**
 		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
@@ -6312,17 +6311,17 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute DIMENSION_INT__VALUE = eINSTANCE.getDimensionInt_Value();
+		EAttribute SIZE_TYPE_INT__VALUE = eINSTANCE.getSizeTypeInt_Value();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.DimensionOperationImpl <em>Dimension Operation</em>}' class.
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeOperationImpl <em>Size Type Operation</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.DimensionOperationImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getDimensionOperation()
+		 * @see fr.cea.nabla.ir.ir.impl.SizeTypeOperationImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeOperation()
 		 * @generated
 		 */
-		EClass DIMENSION_OPERATION = eINSTANCE.getDimensionOperation();
+		EClass SIZE_TYPE_OPERATION = eINSTANCE.getSizeTypeOperation();
 
 		/**
 		 * The meta object literal for the '<em><b>Left</b></em>' containment reference feature.
@@ -6330,7 +6329,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference DIMENSION_OPERATION__LEFT = eINSTANCE.getDimensionOperation_Left();
+		EReference SIZE_TYPE_OPERATION__LEFT = eINSTANCE.getSizeTypeOperation_Left();
 
 		/**
 		 * The meta object literal for the '<em><b>Right</b></em>' containment reference feature.
@@ -6338,7 +6337,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference DIMENSION_OPERATION__RIGHT = eINSTANCE.getDimensionOperation_Right();
+		EReference SIZE_TYPE_OPERATION__RIGHT = eINSTANCE.getSizeTypeOperation_Right();
 
 		/**
 		 * The meta object literal for the '<em><b>Operator</b></em>' attribute feature.
@@ -6346,17 +6345,17 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute DIMENSION_OPERATION__OPERATOR = eINSTANCE.getDimensionOperation_Operator();
+		EAttribute SIZE_TYPE_OPERATION__OPERATOR = eINSTANCE.getSizeTypeOperation_Operator();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.DimensionSymbolRefImpl <em>Dimension Symbol Ref</em>}' class.
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeSymbolRefImpl <em>Size Type Symbol Ref</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.DimensionSymbolRefImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getDimensionSymbolRef()
+		 * @see fr.cea.nabla.ir.ir.impl.SizeTypeSymbolRefImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeSymbolRef()
 		 * @generated
 		 */
-		EClass DIMENSION_SYMBOL_REF = eINSTANCE.getDimensionSymbolRef();
+		EClass SIZE_TYPE_SYMBOL_REF = eINSTANCE.getSizeTypeSymbolRef();
 
 		/**
 		 * The meta object literal for the '<em><b>Target</b></em>' reference feature.
@@ -6364,7 +6363,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference DIMENSION_SYMBOL_REF__TARGET = eINSTANCE.getDimensionSymbolRef_Target();
+		EReference SIZE_TYPE_SYMBOL_REF__TARGET = eINSTANCE.getSizeTypeSymbolRef_Target();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ReductionInstructionImpl <em>Reduction Instruction</em>}' class.

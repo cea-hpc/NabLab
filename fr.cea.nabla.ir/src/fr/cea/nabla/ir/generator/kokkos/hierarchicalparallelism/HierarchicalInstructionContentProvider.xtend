@@ -10,13 +10,13 @@
 package fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism
 
 import fr.cea.nabla.ir.generator.kokkos.InstructionContentProvider
-import fr.cea.nabla.ir.ir.DimensionIterationBlock
+import fr.cea.nabla.ir.ir.IntervalIterationBlock
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.SpaceIterationBlock
 
-import static extension fr.cea.nabla.ir.generator.DimensionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
+import static extension fr.cea.nabla.ir.generator.SizeTypeContentProvider.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
 
@@ -44,7 +44,7 @@ class HierarchicalInstructionContentProvider extends InstructionContentProvider
 		});
 	'''
 
-	private def dispatch getBlockParallelContent(DimensionIterationBlock it, Loop l) 
+	private def dispatch getBlockParallelContent(IntervalIterationBlock it, Loop l) 
 	'''
 		const int from = «from.content»;
 		const int to = «to.content»«IF toIncluded»+1«ENDIF»;

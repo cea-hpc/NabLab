@@ -97,6 +97,7 @@ public class ConnectivityTypeImpl extends IrTypeImpl implements ConnectivityType
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public BaseType getBase() {
 		if (base != null && base.eIsProxy()) {
 			InternalEObject oldBase = (InternalEObject)base;
@@ -144,6 +145,7 @@ public class ConnectivityTypeImpl extends IrTypeImpl implements ConnectivityType
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setBase(BaseType newBase) {
 		if (newBase != base) {
 			NotificationChain msgs = null;

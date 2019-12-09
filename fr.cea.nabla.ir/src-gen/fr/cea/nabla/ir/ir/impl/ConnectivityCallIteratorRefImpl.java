@@ -53,6 +53,7 @@ public class ConnectivityCallIteratorRefImpl extends IteratorRefImpl implements 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ConnectivityCall getReferencedBy() {
 		if (eContainerFeatureID() != IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY) return null;
 		return (ConnectivityCall)eContainer();
@@ -83,6 +84,7 @@ public class ConnectivityCallIteratorRefImpl extends IteratorRefImpl implements 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setReferencedBy(ConnectivityCall newReferencedBy) {
 		if (newReferencedBy != eInternalContainer() || (eContainerFeatureID() != IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY && newReferencedBy != null)) {
 			if (EcoreUtil.isAncestor(this, newReferencedBy))

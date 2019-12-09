@@ -80,6 +80,7 @@ public class ConnectivityCallImpl extends IrAnnotableImpl implements Connectivit
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Connectivity getConnectivity() {
 		if (connectivity != null && connectivity.eIsProxy()) {
 			InternalEObject oldConnectivity = (InternalEObject)connectivity;
@@ -106,6 +107,7 @@ public class ConnectivityCallImpl extends IrAnnotableImpl implements Connectivit
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setConnectivity(Connectivity newConnectivity) {
 		Connectivity oldConnectivity = connectivity;
 		connectivity = newConnectivity;
@@ -118,6 +120,7 @@ public class ConnectivityCallImpl extends IrAnnotableImpl implements Connectivit
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<ConnectivityCallIteratorRef> getArgs() {
 		if (args == null) {
 			args = new EObjectContainmentWithInverseEList<ConnectivityCallIteratorRef>(ConnectivityCallIteratorRef.class, this, IrPackage.CONNECTIVITY_CALL__ARGS, IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY);

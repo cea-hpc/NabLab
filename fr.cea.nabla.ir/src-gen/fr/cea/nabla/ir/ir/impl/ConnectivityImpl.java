@@ -122,6 +122,7 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -131,6 +132,7 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -143,6 +145,7 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<ItemType> getInTypes() {
 		if (inTypes == null) {
 			inTypes = new EObjectResolvingEList<ItemType>(ItemType.class, this, IrPackage.CONNECTIVITY__IN_TYPES);
@@ -155,6 +158,7 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ItemArgType getReturnType() {
 		return returnType;
 	}
@@ -179,6 +183,7 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setReturnType(ItemArgType newReturnType) {
 		if (newReturnType != returnType) {
 			NotificationChain msgs = null;
@@ -198,6 +203,7 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public boolean isIndexEqualId() {
 		return indexEqualId;
 	}
@@ -207,6 +213,7 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setIndexEqualId(boolean newIndexEqualId) {
 		boolean oldIndexEqualId = indexEqualId;
 		indexEqualId = newIndexEqualId;

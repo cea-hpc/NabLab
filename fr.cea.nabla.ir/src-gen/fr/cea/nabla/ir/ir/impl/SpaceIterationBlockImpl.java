@@ -80,6 +80,7 @@ public class SpaceIterationBlockImpl extends IterationBlockImpl implements Space
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Iterator getRange() {
 		return range;
 	}
@@ -104,6 +105,7 @@ public class SpaceIterationBlockImpl extends IterationBlockImpl implements Space
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setRange(Iterator newRange) {
 		if (newRange != range) {
 			NotificationChain msgs = null;
@@ -123,6 +125,7 @@ public class SpaceIterationBlockImpl extends IterationBlockImpl implements Space
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<Iterator> getSingletons() {
 		if (singletons == null) {
 			singletons = new EObjectContainmentEList.Resolving<Iterator>(Iterator.class, this, IrPackage.SPACE_ITERATION_BLOCK__SINGLETONS);

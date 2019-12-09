@@ -21,7 +21,7 @@ class FunctionContentProvider
 
 	def getContent(Function it)
 	'''
-		«FOR v : dimensionVars BEFORE "template<" SEPARATOR ", " AFTER ">"»size_t «v.name»«ENDFOR»
+		«FOR v : variables BEFORE "template<" SEPARATOR ", " AFTER ">"»size_t «v.name»«ENDFOR»
 		KOKKOS_INLINE_FUNCTION
 		«returnType.cppType» «name.toFirstLower»(«FOR a : inArgs SEPARATOR ', '»«a.type.cppType» «a.name»«ENDFOR») 
 		{

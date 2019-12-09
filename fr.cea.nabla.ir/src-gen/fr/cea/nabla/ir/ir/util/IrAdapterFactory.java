@@ -172,28 +172,28 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createSpaceIterationBlockAdapter();
 			}
 			@Override
-			public Adapter caseDimensionIterationBlock(DimensionIterationBlock object) {
-				return createDimensionIterationBlockAdapter();
+			public Adapter caseIntervalIterationBlock(IntervalIterationBlock object) {
+				return createIntervalIterationBlockAdapter();
 			}
 			@Override
-			public Adapter caseDimensionSymbol(DimensionSymbol object) {
-				return createDimensionSymbolAdapter();
+			public Adapter caseSizeTypeSymbol(SizeTypeSymbol object) {
+				return createSizeTypeSymbolAdapter();
 			}
 			@Override
-			public Adapter caseDimension(Dimension object) {
-				return createDimensionAdapter();
+			public Adapter caseSizeType(SizeType object) {
+				return createSizeTypeAdapter();
 			}
 			@Override
-			public Adapter caseDimensionInt(DimensionInt object) {
-				return createDimensionIntAdapter();
+			public Adapter caseSizeTypeInt(SizeTypeInt object) {
+				return createSizeTypeIntAdapter();
 			}
 			@Override
-			public Adapter caseDimensionOperation(DimensionOperation object) {
-				return createDimensionOperationAdapter();
+			public Adapter caseSizeTypeOperation(SizeTypeOperation object) {
+				return createSizeTypeOperationAdapter();
 			}
 			@Override
-			public Adapter caseDimensionSymbolRef(DimensionSymbolRef object) {
-				return createDimensionSymbolRefAdapter();
+			public Adapter caseSizeTypeSymbolRef(SizeTypeSymbolRef object) {
+				return createSizeTypeSymbolRefAdapter();
 			}
 			@Override
 			public Adapter caseReductionInstruction(ReductionInstruction object) {
@@ -688,86 +688,86 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.DimensionIterationBlock <em>Dimension Iteration Block</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IntervalIterationBlock <em>Interval Iteration Block</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.DimensionIterationBlock
+	 * @see fr.cea.nabla.ir.ir.IntervalIterationBlock
 	 * @generated
 	 */
-	public Adapter createDimensionIterationBlockAdapter() {
+	public Adapter createIntervalIterationBlockAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.DimensionSymbol <em>Dimension Symbol</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.SizeTypeSymbol <em>Size Type Symbol</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.DimensionSymbol
+	 * @see fr.cea.nabla.ir.ir.SizeTypeSymbol
 	 * @generated
 	 */
-	public Adapter createDimensionSymbolAdapter() {
+	public Adapter createSizeTypeSymbolAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Dimension <em>Dimension</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.SizeType <em>Size Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.Dimension
+	 * @see fr.cea.nabla.ir.ir.SizeType
 	 * @generated
 	 */
-	public Adapter createDimensionAdapter() {
+	public Adapter createSizeTypeAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.DimensionInt <em>Dimension Int</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.SizeTypeInt <em>Size Type Int</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.DimensionInt
+	 * @see fr.cea.nabla.ir.ir.SizeTypeInt
 	 * @generated
 	 */
-	public Adapter createDimensionIntAdapter() {
+	public Adapter createSizeTypeIntAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.DimensionOperation <em>Dimension Operation</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.SizeTypeOperation <em>Size Type Operation</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.DimensionOperation
+	 * @see fr.cea.nabla.ir.ir.SizeTypeOperation
 	 * @generated
 	 */
-	public Adapter createDimensionOperationAdapter() {
+	public Adapter createSizeTypeOperationAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.DimensionSymbolRef <em>Dimension Symbol Ref</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.SizeTypeSymbolRef <em>Size Type Symbol Ref</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.DimensionSymbolRef
+	 * @see fr.cea.nabla.ir.ir.SizeTypeSymbolRef
 	 * @generated
 	 */
-	public Adapter createDimensionSymbolRefAdapter() {
+	public Adapter createSizeTypeSymbolRefAdapter() {
 		return null;
 	}
 

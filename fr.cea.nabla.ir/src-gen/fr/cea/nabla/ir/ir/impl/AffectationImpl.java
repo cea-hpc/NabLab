@@ -73,6 +73,7 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ArgOrVarRef getLeft() {
 		return left;
 	}
@@ -97,6 +98,7 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setLeft(ArgOrVarRef newLeft) {
 		if (newLeft != left) {
 			NotificationChain msgs = null;
@@ -116,6 +118,7 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Expression getRight() {
 		return right;
 	}
@@ -140,6 +143,7 @@ public class AffectationImpl extends InstructionImpl implements Affectation {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setRight(Expression newRight) {
 		if (newRight != right) {
 			NotificationChain msgs = null;

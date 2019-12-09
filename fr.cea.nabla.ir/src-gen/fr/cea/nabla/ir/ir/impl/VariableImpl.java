@@ -88,6 +88,7 @@ public abstract class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getPersistenceName() {
 		return persistenceName;
 	}
@@ -97,6 +98,7 @@ public abstract class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setPersistenceName(String newPersistenceName) {
 		String oldPersistenceName = persistenceName;
 		persistenceName = newPersistenceName;
@@ -109,6 +111,7 @@ public abstract class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public boolean isConst() {
 		return const_;
 	}
@@ -118,6 +121,7 @@ public abstract class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setConst(boolean newConst) {
 		boolean oldConst = const_;
 		const_ = newConst;

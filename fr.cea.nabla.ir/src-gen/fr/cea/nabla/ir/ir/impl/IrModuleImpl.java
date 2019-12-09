@@ -173,6 +173,7 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -182,6 +183,7 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -194,6 +196,7 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<Import> getImports() {
 		if (imports == null) {
 			imports = new EObjectContainmentEList<Import>(Import.class, this, IrPackage.IR_MODULE__IMPORTS);
@@ -206,6 +209,7 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<ItemType> getItems() {
 		if (items == null) {
 			items = new EObjectContainmentEList.Resolving<ItemType>(ItemType.class, this, IrPackage.IR_MODULE__ITEMS);
@@ -218,6 +222,7 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<Function> getFunctions() {
 		if (functions == null) {
 			functions = new EObjectContainmentEList<Function>(Function.class, this, IrPackage.IR_MODULE__FUNCTIONS);
@@ -230,6 +235,7 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<Reduction> getReductions() {
 		if (reductions == null) {
 			reductions = new EObjectContainmentEList<Reduction>(Reduction.class, this, IrPackage.IR_MODULE__REDUCTIONS);
@@ -242,6 +248,7 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<Connectivity> getConnectivities() {
 		if (connectivities == null) {
 			connectivities = new EObjectContainmentEList<Connectivity>(Connectivity.class, this, IrPackage.IR_MODULE__CONNECTIVITIES);
@@ -254,6 +261,7 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<Variable> getVariables() {
 		if (variables == null) {
 			variables = new EObjectContainmentEList<Variable>(Variable.class, this, IrPackage.IR_MODULE__VARIABLES);
@@ -266,6 +274,7 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Variable getInitCoordVariable() {
 		if (initCoordVariable != null && initCoordVariable.eIsProxy()) {
 			InternalEObject oldInitCoordVariable = (InternalEObject)initCoordVariable;
@@ -292,6 +301,7 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setInitCoordVariable(Variable newInitCoordVariable) {
 		Variable oldInitCoordVariable = initCoordVariable;
 		initCoordVariable = newInitCoordVariable;
@@ -304,6 +314,7 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<Job> getJobs() {
 		if (jobs == null) {
 			jobs = new EObjectContainmentEList<Job>(Job.class, this, IrPackage.IR_MODULE__JOBS);

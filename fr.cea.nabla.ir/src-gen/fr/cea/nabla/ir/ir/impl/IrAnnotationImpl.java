@@ -91,6 +91,7 @@ public class IrAnnotationImpl extends MinimalEObjectImpl.Container implements Ir
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getSource() {
 		return source;
 	}
@@ -100,6 +101,7 @@ public class IrAnnotationImpl extends MinimalEObjectImpl.Container implements Ir
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setSource(String newSource) {
 		String oldSource = source;
 		source = newSource;
@@ -112,6 +114,7 @@ public class IrAnnotationImpl extends MinimalEObjectImpl.Container implements Ir
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EMap<String, String> getDetails() {
 		if (details == null) {
 			details = new EcoreEMap<String,String>(EcorePackage.Literals.ESTRING_TO_STRING_MAP_ENTRY, EStringToStringMapEntryImpl.class, this, IrPackage.IR_ANNOTATION__DETAILS);

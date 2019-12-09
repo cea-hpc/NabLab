@@ -10,7 +10,6 @@ import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.typing.DeclarationProvider
-import fr.cea.nabla.typing.NSTDimension
 import fr.cea.nabla.typing.NSTRealArray1D
 import fr.cea.nabla.typing.NSTRealScalar
 import fr.cea.nabla.typing.NablaConnectivityType
@@ -24,6 +23,7 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import fr.cea.nabla.validation.BasicValidator
+import fr.cea.nabla.typing.NSTSizeType
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
@@ -100,7 +100,7 @@ class DeclarationProviderTest
 		val cells = module.getConnectivityByName("cells")
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		TypeValidator::FUNCTION_ARGS,
-		TypeValidator::getFunctionArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealArray1D(NSTDimension.create(2))).label]))
+		TypeValidator::getFunctionArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealArray1D(NSTSizeType.create(2))).label]))
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		TypeValidator::FUNCTION_ARGS,
 		TypeValidator::getFunctionArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealScalar).label, new NablaConnectivityType(#[cells], new NSTRealScalar).label]))
@@ -120,13 +120,13 @@ class DeclarationProviderTest
 		val gFunctions = module.functions.filter(Function).filter[x | x.name == 'g']
 		val j5Gdecl = getFunctionDeclarationOfJob(module, 5)
 		Assert.assertEquals(gFunctions.get(0), j5Gdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(NSTDimension.create(2)), j5Gdecl.returnType)
+		Assert.assertEquals(new NSTRealArray1D(NSTSizeType.create(2)), j5Gdecl.returnType)
 		val j6Gdecl = getFunctionDeclarationOfJob(module, 6)
 		Assert.assertEquals(gFunctions.get(1), j6Gdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(NSTDimension.create(6)), j6Gdecl.returnType)
+		Assert.assertEquals(new NSTRealArray1D(NSTSizeType.create(6)), j6Gdecl.returnType)
 		val j7Gdecl = getFunctionDeclarationOfJob(module, 7)
 		Assert.assertEquals(gFunctions.get(2), j7Gdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(NSTDimension.create(5)), j7Gdecl.returnType)
+		Assert.assertEquals(new NSTRealArray1D(NSTSizeType.create(5)), j7Gdecl.returnType)
 		val j8Gdecl = getFunctionDeclarationOfJob(module, 8)
 		Assert.assertEquals(gFunctions.get(0), j8Gdecl.model)
 		Assert.assertEquals(new NablaConnectivityType(#[cells], new NSTRealScalar), j8Gdecl.returnType)
@@ -231,7 +231,7 @@ class DeclarationProviderTest
 		Assert.assertEquals(fReductions.get(0), j0Fdecl.model)
 		val j1Fdecl = getReductionDeclarationOfJob(module, 1)
 		Assert.assertEquals(fReductions.get(1), j1Fdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(NSTDimension.create(2)), j1Fdecl.returnType)
+		Assert.assertEquals(new NSTRealArray1D(NSTSizeType.create(2)), j1Fdecl.returnType)
 		val j2Fdecl = getReductionDeclarationOfJob(module, 2)
 		Assert.assertNull(j2Fdecl)
 	}

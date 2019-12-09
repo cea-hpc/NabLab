@@ -3,10 +3,10 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.BaseType;
-import fr.cea.nabla.ir.ir.Dimension;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.PrimitiveType;
 
+import fr.cea.nabla.ir.ir.SizeType;
 import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 
@@ -62,7 +62,7 @@ public class BaseTypeImpl extends IrTypeImpl implements BaseType {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Dimension> sizes;
+	protected EList<SizeType> sizes;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -88,6 +88,7 @@ public class BaseTypeImpl extends IrTypeImpl implements BaseType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public PrimitiveType getPrimitive() {
 		return primitive;
 	}
@@ -97,6 +98,7 @@ public class BaseTypeImpl extends IrTypeImpl implements BaseType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setPrimitive(PrimitiveType newPrimitive) {
 		PrimitiveType oldPrimitive = primitive;
 		primitive = newPrimitive == null ? PRIMITIVE_EDEFAULT : newPrimitive;
@@ -109,9 +111,10 @@ public class BaseTypeImpl extends IrTypeImpl implements BaseType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Dimension> getSizes() {
+	@Override
+	public EList<SizeType> getSizes() {
 		if (sizes == null) {
-			sizes = new EObjectContainmentEList.Resolving<Dimension>(Dimension.class, this, IrPackage.BASE_TYPE__SIZES);
+			sizes = new EObjectContainmentEList.Resolving<SizeType>(SizeType.class, this, IrPackage.BASE_TYPE__SIZES);
 		}
 		return sizes;
 	}
@@ -160,7 +163,7 @@ public class BaseTypeImpl extends IrTypeImpl implements BaseType {
 				return;
 			case IrPackage.BASE_TYPE__SIZES:
 				getSizes().clear();
-				getSizes().addAll((Collection<? extends Dimension>)newValue);
+				getSizes().addAll((Collection<? extends SizeType>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);

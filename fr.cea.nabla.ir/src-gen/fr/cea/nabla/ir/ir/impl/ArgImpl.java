@@ -62,6 +62,7 @@ public class ArgImpl extends ArgOrVarImpl implements Arg {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public BaseType getType() {
 		if (type != null && type.eIsProxy()) {
 			InternalEObject oldType = (InternalEObject)type;
@@ -109,6 +110,7 @@ public class ArgImpl extends ArgOrVarImpl implements Arg {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setType(BaseType newType) {
 		if (newType != type) {
 			NotificationChain msgs = null;

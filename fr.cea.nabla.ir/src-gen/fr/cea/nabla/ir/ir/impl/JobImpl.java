@@ -111,6 +111,7 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -120,6 +121,7 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -132,6 +134,7 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public double getAt() {
 		return at;
 	}
@@ -141,6 +144,7 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setAt(double newAt) {
 		double oldAt = at;
 		at = newAt;
@@ -153,6 +157,7 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public boolean isOnCycle() {
 		return onCycle;
 	}
@@ -162,6 +167,7 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setOnCycle(boolean newOnCycle) {
 		boolean oldOnCycle = onCycle;
 		onCycle = newOnCycle;

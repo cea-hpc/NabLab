@@ -10,45 +10,45 @@
 package fr.cea.nabla.typing
 
 import fr.cea.nabla.nabla.Connectivity
-import fr.cea.nabla.nabla.Dimension
-import fr.cea.nabla.nabla.DimensionInt
 import fr.cea.nabla.nabla.PrimitiveType
+import fr.cea.nabla.nabla.SizeType
+import fr.cea.nabla.nabla.SizeTypeInt
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.LabelServices.*
 import static extension fr.cea.nabla.ir.Utils.*
 
-class NSTDimension
+class NSTSizeType
 {
 	val Object value // Integer or Dimension
 
-	static def NSTDimension create(int v)
+	static def NSTSizeType create(int v)
 	{
-		new NSTDimension(v)
+		new NSTSizeType(v)
 	}
 
-	static def NSTDimension create(Dimension v)
+	static def NSTSizeType create(SizeType v)
 	{
-		if (v instanceof DimensionInt)
-			new NSTDimension((v as DimensionInt).value)
+		if (v instanceof SizeTypeInt)
+			new NSTSizeType((v as SizeTypeInt).value)
 		else
-			new NSTDimension(v)
+			new NSTSizeType(v)
 	}
 
 	private new(int value) { this.value = value }
-	private new(Dimension value) { this.value = value }
+	private new(SizeType value) { this.value = value }
 
 	def isUndefined() { value === null }
-	def isDimension() { value instanceof Dimension }
+	def isSizeType() { value instanceof SizeType }
 	def isInt() { value instanceof Integer }
 
-	def getDimensionValue() { value as Dimension }
+	def getSizeTypeValue() { value as SizeType }
 	def getIntValue() { value as Integer }
 
 	def getLabel()
 	{
 		if (isInt) intValue.toString
-		else dimensionValue.label
+		else sizeTypeValue.label
 	}
 
 	override boolean equals(Object obj)
@@ -56,7 +56,7 @@ class NSTDimension
 		if (this === obj) return true
 		if (obj === null) return false
 		if (class != obj.class) return false
-		val other = obj as NSTDimension
+		val other = obj as NSTSizeType
 		if (value === null)
 		{
 			if (other.value !== null) return false
@@ -67,7 +67,7 @@ class NSTDimension
 			else
 			{
 				if (isInt) return (intValue == other.intValue)
-				if (isDimension) return (dimensionValue.label == other.dimensionValue.label)
+				if (isSizeType) return (sizeTypeValue.label == other.sizeTypeValue.label)
 			}
 		}
 		return true
@@ -110,7 +110,7 @@ abstract class NSTScalar extends NablaSimpleType
 @Data
 abstract class NSTArray1D extends NablaSimpleType
 {
-	val NSTDimension size
+	val NSTSizeType size
 
 	override getLabel()
 	{
@@ -124,8 +124,8 @@ abstract class NSTArray1D extends NablaSimpleType
 @Data
 abstract class NSTArray2D extends NablaSimpleType 
 {
-	val NSTDimension nbRows
-	val NSTDimension nbCols
+	val NSTSizeType nbRows
+	val NSTSizeType nbCols
 
 	override getLabel()
 	{

@@ -13,7 +13,7 @@ import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.PrimitiveType
 
-import static extension fr.cea.nabla.ir.generator.DimensionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.SizeTypeContentProvider.*
 
 class Ir2KokkosUtils 
 {

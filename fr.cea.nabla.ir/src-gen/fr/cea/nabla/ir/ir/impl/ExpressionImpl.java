@@ -61,6 +61,7 @@ public abstract class ExpressionImpl extends IrAnnotableImpl implements Expressi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public IrType getType() {
 		return type;
 	}
@@ -85,6 +86,7 @@ public abstract class ExpressionImpl extends IrAnnotableImpl implements Expressi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setType(IrType newType) {
 		if (newType != type) {
 			NotificationChain msgs = null;

@@ -2,10 +2,10 @@ package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
-import fr.cea.nabla.ir.ir.DimensionInt
-import fr.cea.nabla.ir.ir.DimensionOperation
-import fr.cea.nabla.ir.ir.DimensionSymbolRef
 import fr.cea.nabla.ir.ir.IrType
+import fr.cea.nabla.ir.ir.SizeTypeInt
+import fr.cea.nabla.ir.ir.SizeTypeOperation
+import fr.cea.nabla.ir.ir.SizeTypeSymbolRef
 
 import static extension fr.cea.nabla.ir.Utils.*
 
@@ -23,10 +23,10 @@ class IrTypeExtensions
 			'Undefined'
 		else if (sizes.empty) 
 			primitive.literal
-		else if (sizes.exists[x | !(x instanceof DimensionInt)])
-			primitive.literal + '[' + sizes.map[x | x.dimensionLabel].join(',') + ']'
+		else if (sizes.exists[x | !(x instanceof SizeTypeInt)])
+			primitive.literal + '[' + sizes.map[x | x.sizeTypeLabel].join(',') + ']'
 		else
-			primitive.literal + sizes.map[x | (x as DimensionInt).value.utfExponent].join('\u02E3')
+			primitive.literal + sizes.map[x | (x as SizeTypeInt).value.utfExponent].join('\u02E3')
 	}
 
 	static def isScalar(IrType t)
@@ -43,7 +43,7 @@ class IrTypeExtensions
 		}
 	}
 
-	private static def dispatch String getDimensionLabel(DimensionOperation it) { left?.dimensionLabel + ' ' + operator + ' ' + right?.dimensionLabel }
-	private static def dispatch String getDimensionLabel(DimensionInt it) { value.toString }
-	private static def dispatch String getDimensionLabel(DimensionSymbolRef it) { target?.name }
+	private static def dispatch String getSizeTypeLabel(SizeTypeOperation it) { left?.sizeTypeLabel + ' ' + operator + ' ' + right?.sizeTypeLabel }
+	private static def dispatch String getSizeTypeLabel(SizeTypeInt it) { value.toString }
+	private static def dispatch String getSizeTypeLabel(SizeTypeSymbolRef it) { target?.name }
 }

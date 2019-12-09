@@ -81,6 +81,7 @@ public class FunctionCallImpl extends ExpressionImpl implements FunctionCall {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Function getFunction() {
 		if (function != null && function.eIsProxy()) {
 			InternalEObject oldFunction = (InternalEObject)function;
@@ -107,6 +108,7 @@ public class FunctionCallImpl extends ExpressionImpl implements FunctionCall {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setFunction(Function newFunction) {
 		Function oldFunction = function;
 		function = newFunction;
@@ -119,6 +121,7 @@ public class FunctionCallImpl extends ExpressionImpl implements FunctionCall {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<Expression> getArgs() {
 		if (args == null) {
 			args = new EObjectContainmentEList<Expression>(Expression.class, this, IrPackage.FUNCTION_CALL__ARGS);

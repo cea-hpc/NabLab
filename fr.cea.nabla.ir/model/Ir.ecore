@@ -69,8 +69,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="Function" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="provider" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dimensionVars" upperBound="-1"
-        eType="#//DimensionSymbol" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
+        eType="#//SizeTypeSymbol" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="inArgs" upperBound="-1"
@@ -83,8 +83,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="Reduction" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="provider" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dimensionVars" upperBound="-1"
-        eType="#//DimensionSymbol" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
+        eType="#//SizeTypeSymbol" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="collectionType" lowerBound="1"
         eType="#//BaseType" containment="true"/>
@@ -163,36 +163,36 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="singletons" upperBound="-1"
         eType="#//Iterator" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DimensionIterationBlock" eSuperTypes="#//IterationBlock">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="index" lowerBound="1" eType="#//DimensionSymbol"
+  <eClassifiers xsi:type="ecore:EClass" name="IntervalIterationBlock" eSuperTypes="#//IterationBlock">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="index" lowerBound="1" eType="#//SizeTypeSymbol"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="from" lowerBound="1" eType="#//Dimension"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="from" lowerBound="1" eType="#//SizeType"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="to" lowerBound="1" eType="#//Dimension"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="to" lowerBound="1" eType="#//SizeType"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="toIncluded" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DimensionSymbol" eSuperTypes="#//IrAnnotable">
+  <eClassifiers xsi:type="ecore:EClass" name="SizeTypeSymbol" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Dimension" abstract="true" eSuperTypes="#//IrAnnotable"/>
-  <eClassifiers xsi:type="ecore:EClass" name="DimensionInt" eSuperTypes="#//Dimension">
+  <eClassifiers xsi:type="ecore:EClass" name="SizeType" abstract="true" eSuperTypes="#//IrAnnotable"/>
+  <eClassifiers xsi:type="ecore:EClass" name="SizeTypeInt" eSuperTypes="#//SizeType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DimensionOperation" eSuperTypes="#//Dimension">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="#//Dimension"
+  <eClassifiers xsi:type="ecore:EClass" name="SizeTypeOperation" eSuperTypes="#//SizeType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="#//SizeType"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="#//Dimension"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="#//SizeType"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" unique="false"
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DimensionSymbolRef" eSuperTypes="#//Dimension">
+  <eClassifiers xsi:type="ecore:EClass" name="SizeTypeSymbolRef" eSuperTypes="#//SizeType">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" ordered="false"
-        lowerBound="1" eType="#//DimensionSymbol"/>
+        lowerBound="1" eType="#//SizeTypeSymbol"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReductionInstruction" eSuperTypes="#//IterableInstruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="innerReductions" upperBound="-1"
@@ -285,7 +285,7 @@
         eType="#//ArgOrVarRefIteratorRef" containment="true" resolveProxies="false"
         eOpposite="#//ArgOrVarRefIteratorRef/referencedBy"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="indices" upperBound="-1"
-        eType="#//Dimension" containment="true"/>
+        eType="#//SizeType" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Iterator" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
@@ -333,7 +333,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="primitive" lowerBound="1"
         eType="#//PrimitiveType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="sizes" upperBound="-1"
-        eType="#//Dimension" containment="true"/>
+        eType="#//SizeType" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConnectivityType" eSuperTypes="#//IrType">
     <eStructuralFeatures xsi:type="ecore:EReference" name="connectivities" unique="false"

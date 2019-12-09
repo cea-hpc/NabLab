@@ -4,11 +4,11 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Arg;
 import fr.cea.nabla.ir.ir.BaseType;
-import fr.cea.nabla.ir.ir.DimensionSymbol;
 import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.IrPackage;
 
+import fr.cea.nabla.ir.ir.SizeTypeSymbol;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -32,7 +32,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getProvider <em>Provider</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getDimensionVars <em>Dimension Vars</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getInArgs <em>In Args</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getReturnType <em>Return Type</em>}</li>
@@ -63,14 +63,14 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	protected String provider = PROVIDER_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getDimensionVars() <em>Dimension Vars</em>}' containment reference list.
+	 * The cached value of the '{@link #getVariables() <em>Variables</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getDimensionVars()
+	 * @see #getVariables()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<DimensionSymbol> dimensionVars;
+	protected EList<SizeTypeSymbol> variables;
 
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -146,6 +146,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -155,6 +156,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -167,6 +169,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<Arg> getInArgs() {
 		if (inArgs == null) {
 			inArgs = new EObjectContainmentEList.Resolving<Arg>(Arg.class, this, IrPackage.FUNCTION__IN_ARGS);
@@ -179,6 +182,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public BaseType getReturnType() {
 		if (returnType != null && returnType.eIsProxy()) {
 			InternalEObject oldReturnType = (InternalEObject)returnType;
@@ -226,6 +230,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setReturnType(BaseType newReturnType) {
 		if (newReturnType != returnType) {
 			NotificationChain msgs = null;
@@ -245,6 +250,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Instruction getBody() {
 		if (body != null && body.eIsProxy()) {
 			InternalEObject oldBody = (InternalEObject)body;
@@ -292,6 +298,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setBody(Instruction newBody) {
 		if (newBody != body) {
 			NotificationChain msgs = null;
@@ -311,6 +318,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getProvider() {
 		return provider;
 	}
@@ -320,6 +328,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setProvider(String newProvider) {
 		String oldProvider = provider;
 		provider = newProvider;
@@ -332,11 +341,12 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<DimensionSymbol> getDimensionVars() {
-		if (dimensionVars == null) {
-			dimensionVars = new EObjectContainmentEList.Resolving<DimensionSymbol>(DimensionSymbol.class, this, IrPackage.FUNCTION__DIMENSION_VARS);
+	@Override
+	public EList<SizeTypeSymbol> getVariables() {
+		if (variables == null) {
+			variables = new EObjectContainmentEList.Resolving<SizeTypeSymbol>(SizeTypeSymbol.class, this, IrPackage.FUNCTION__VARIABLES);
 		}
-		return dimensionVars;
+		return variables;
 	}
 
 	/**
@@ -347,8 +357,8 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.FUNCTION__DIMENSION_VARS:
-				return ((InternalEList<?>)getDimensionVars()).basicRemove(otherEnd, msgs);
+			case IrPackage.FUNCTION__VARIABLES:
+				return ((InternalEList<?>)getVariables()).basicRemove(otherEnd, msgs);
 			case IrPackage.FUNCTION__IN_ARGS:
 				return ((InternalEList<?>)getInArgs()).basicRemove(otherEnd, msgs);
 			case IrPackage.FUNCTION__RETURN_TYPE:
@@ -369,8 +379,8 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 		switch (featureID) {
 			case IrPackage.FUNCTION__PROVIDER:
 				return getProvider();
-			case IrPackage.FUNCTION__DIMENSION_VARS:
-				return getDimensionVars();
+			case IrPackage.FUNCTION__VARIABLES:
+				return getVariables();
 			case IrPackage.FUNCTION__NAME:
 				return getName();
 			case IrPackage.FUNCTION__IN_ARGS:
@@ -397,9 +407,9 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 			case IrPackage.FUNCTION__PROVIDER:
 				setProvider((String)newValue);
 				return;
-			case IrPackage.FUNCTION__DIMENSION_VARS:
-				getDimensionVars().clear();
-				getDimensionVars().addAll((Collection<? extends DimensionSymbol>)newValue);
+			case IrPackage.FUNCTION__VARIABLES:
+				getVariables().clear();
+				getVariables().addAll((Collection<? extends SizeTypeSymbol>)newValue);
 				return;
 			case IrPackage.FUNCTION__NAME:
 				setName((String)newValue);
@@ -429,8 +439,8 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 			case IrPackage.FUNCTION__PROVIDER:
 				setProvider(PROVIDER_EDEFAULT);
 				return;
-			case IrPackage.FUNCTION__DIMENSION_VARS:
-				getDimensionVars().clear();
+			case IrPackage.FUNCTION__VARIABLES:
+				getVariables().clear();
 				return;
 			case IrPackage.FUNCTION__NAME:
 				setName(NAME_EDEFAULT);
@@ -458,8 +468,8 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 		switch (featureID) {
 			case IrPackage.FUNCTION__PROVIDER:
 				return PROVIDER_EDEFAULT == null ? provider != null : !PROVIDER_EDEFAULT.equals(provider);
-			case IrPackage.FUNCTION__DIMENSION_VARS:
-				return dimensionVars != null && !dimensionVars.isEmpty();
+			case IrPackage.FUNCTION__VARIABLES:
+				return variables != null && !variables.isEmpty();
 			case IrPackage.FUNCTION__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case IrPackage.FUNCTION__IN_ARGS:

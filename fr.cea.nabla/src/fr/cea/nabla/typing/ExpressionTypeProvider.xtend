@@ -103,12 +103,12 @@ class ExpressionTypeProvider
 			val eltType = values.get(0).typeFor
 			switch eltType
 			{
-				NSTBoolScalar: new NSTBoolArray1D(NSTDimension.create(values.size))
-				NSTIntScalar: new NSTIntArray1D(NSTDimension.create(values.size))
-				NSTRealScalar: new NSTRealArray1D(NSTDimension.create(values.size))
-				NSTBoolArray1D: new NSTBoolArray2D(NSTDimension.create(values.size), eltType.size)
-				NSTIntArray1D: new NSTIntArray2D(NSTDimension.create(values.size), eltType.size)
-				NSTRealArray1D: new NSTRealArray2D(NSTDimension.create(values.size), eltType.size)
+				NSTBoolScalar: new NSTBoolArray1D(NSTSizeType.create(values.size))
+				NSTIntScalar: new NSTIntArray1D(NSTSizeType.create(values.size))
+				NSTRealScalar: new NSTRealArray1D(NSTSizeType.create(values.size))
+				NSTBoolArray1D: new NSTBoolArray2D(NSTSizeType.create(values.size), eltType.size)
+				NSTIntArray1D: new NSTIntArray2D(NSTSizeType.create(values.size), eltType.size)
+				NSTRealArray1D: new NSTRealArray2D(NSTSizeType.create(values.size), eltType.size)
 				default: null
 			}
 		}

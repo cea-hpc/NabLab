@@ -75,11 +75,11 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.INSTRUCTION_BLOCK: return createInstructionBlock();
 			case IrPackage.AFFECTATION: return createAffectation();
 			case IrPackage.SPACE_ITERATION_BLOCK: return createSpaceIterationBlock();
-			case IrPackage.DIMENSION_ITERATION_BLOCK: return createDimensionIterationBlock();
-			case IrPackage.DIMENSION_SYMBOL: return createDimensionSymbol();
-			case IrPackage.DIMENSION_INT: return createDimensionInt();
-			case IrPackage.DIMENSION_OPERATION: return createDimensionOperation();
-			case IrPackage.DIMENSION_SYMBOL_REF: return createDimensionSymbolRef();
+			case IrPackage.INTERVAL_ITERATION_BLOCK: return createIntervalIterationBlock();
+			case IrPackage.SIZE_TYPE_SYMBOL: return createSizeTypeSymbol();
+			case IrPackage.SIZE_TYPE_INT: return createSizeTypeInt();
+			case IrPackage.SIZE_TYPE_OPERATION: return createSizeTypeOperation();
+			case IrPackage.SIZE_TYPE_SYMBOL_REF: return createSizeTypeSymbolRef();
 			case IrPackage.REDUCTION_INSTRUCTION: return createReductionInstruction();
 			case IrPackage.LOOP: return createLoop();
 			case IrPackage.IF: return createIf();
@@ -145,6 +145,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public IrAnnotation createIrAnnotation() {
 		IrAnnotationImpl irAnnotation = new IrAnnotationImpl();
 		return irAnnotation;
@@ -155,6 +156,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public IrModule createIrModule() {
 		IrModuleImpl irModule = new IrModuleImpl();
 		return irModule;
@@ -165,6 +167,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Import createImport() {
 		ImportImpl import_ = new ImportImpl();
 		return import_;
@@ -175,6 +178,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public SimpleVariable createSimpleVariable() {
 		SimpleVariableImpl simpleVariable = new SimpleVariableImpl();
 		return simpleVariable;
@@ -185,6 +189,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ConnectivityVariable createConnectivityVariable() {
 		ConnectivityVariableImpl connectivityVariable = new ConnectivityVariableImpl();
 		return connectivityVariable;
@@ -195,6 +200,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Function createFunction() {
 		FunctionImpl function = new FunctionImpl();
 		return function;
@@ -205,6 +211,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Reduction createReduction() {
 		ReductionImpl reduction = new ReductionImpl();
 		return reduction;
@@ -215,6 +222,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Arg createArg() {
 		ArgImpl arg = new ArgImpl();
 		return arg;
@@ -225,6 +233,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Connectivity createConnectivity() {
 		ConnectivityImpl connectivity = new ConnectivityImpl();
 		return connectivity;
@@ -235,6 +244,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ItemArgType createItemArgType() {
 		ItemArgTypeImpl itemArgType = new ItemArgTypeImpl();
 		return itemArgType;
@@ -245,6 +255,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public InstructionJob createInstructionJob() {
 		InstructionJobImpl instructionJob = new InstructionJobImpl();
 		return instructionJob;
@@ -255,6 +266,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public InSituJob createInSituJob() {
 		InSituJobImpl inSituJob = new InSituJobImpl();
 		return inSituJob;
@@ -265,6 +277,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EndOfTimeLoopJob createEndOfTimeLoopJob() {
 		EndOfTimeLoopJobImpl endOfTimeLoopJob = new EndOfTimeLoopJobImpl();
 		return endOfTimeLoopJob;
@@ -275,6 +288,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EndOfInitJob createEndOfInitJob() {
 		EndOfInitJobImpl endOfInitJob = new EndOfInitJobImpl();
 		return endOfInitJob;
@@ -285,6 +299,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public VarDefinition createVarDefinition() {
 		VarDefinitionImpl varDefinition = new VarDefinitionImpl();
 		return varDefinition;
@@ -295,6 +310,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public InstructionBlock createInstructionBlock() {
 		InstructionBlockImpl instructionBlock = new InstructionBlockImpl();
 		return instructionBlock;
@@ -305,6 +321,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Affectation createAffectation() {
 		AffectationImpl affectation = new AffectationImpl();
 		return affectation;
@@ -315,6 +332,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public SpaceIterationBlock createSpaceIterationBlock() {
 		SpaceIterationBlockImpl spaceIterationBlock = new SpaceIterationBlockImpl();
 		return spaceIterationBlock;
@@ -325,9 +343,10 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DimensionIterationBlock createDimensionIterationBlock() {
-		DimensionIterationBlockImpl dimensionIterationBlock = new DimensionIterationBlockImpl();
-		return dimensionIterationBlock;
+	@Override
+	public IntervalIterationBlock createIntervalIterationBlock() {
+		IntervalIterationBlockImpl intervalIterationBlock = new IntervalIterationBlockImpl();
+		return intervalIterationBlock;
 	}
 
 	/**
@@ -335,9 +354,10 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DimensionSymbol createDimensionSymbol() {
-		DimensionSymbolImpl dimensionSymbol = new DimensionSymbolImpl();
-		return dimensionSymbol;
+	@Override
+	public SizeTypeSymbol createSizeTypeSymbol() {
+		SizeTypeSymbolImpl sizeTypeSymbol = new SizeTypeSymbolImpl();
+		return sizeTypeSymbol;
 	}
 
 	/**
@@ -345,9 +365,10 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DimensionInt createDimensionInt() {
-		DimensionIntImpl dimensionInt = new DimensionIntImpl();
-		return dimensionInt;
+	@Override
+	public SizeTypeInt createSizeTypeInt() {
+		SizeTypeIntImpl sizeTypeInt = new SizeTypeIntImpl();
+		return sizeTypeInt;
 	}
 
 	/**
@@ -355,9 +376,10 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DimensionOperation createDimensionOperation() {
-		DimensionOperationImpl dimensionOperation = new DimensionOperationImpl();
-		return dimensionOperation;
+	@Override
+	public SizeTypeOperation createSizeTypeOperation() {
+		SizeTypeOperationImpl sizeTypeOperation = new SizeTypeOperationImpl();
+		return sizeTypeOperation;
 	}
 
 	/**
@@ -365,9 +387,10 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DimensionSymbolRef createDimensionSymbolRef() {
-		DimensionSymbolRefImpl dimensionSymbolRef = new DimensionSymbolRefImpl();
-		return dimensionSymbolRef;
+	@Override
+	public SizeTypeSymbolRef createSizeTypeSymbolRef() {
+		SizeTypeSymbolRefImpl sizeTypeSymbolRef = new SizeTypeSymbolRefImpl();
+		return sizeTypeSymbolRef;
 	}
 
 	/**
@@ -375,6 +398,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ReductionInstruction createReductionInstruction() {
 		ReductionInstructionImpl reductionInstruction = new ReductionInstructionImpl();
 		return reductionInstruction;
@@ -385,6 +409,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Loop createLoop() {
 		LoopImpl loop = new LoopImpl();
 		return loop;
@@ -395,6 +420,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public If createIf() {
 		IfImpl if_ = new IfImpl();
 		return if_;
@@ -405,6 +431,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Return createReturn() {
 		ReturnImpl return_ = new ReturnImpl();
 		return return_;
@@ -415,6 +442,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ContractedIf createContractedIf() {
 		ContractedIfImpl contractedIf = new ContractedIfImpl();
 		return contractedIf;
@@ -425,6 +453,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public BinaryExpression createBinaryExpression() {
 		BinaryExpressionImpl binaryExpression = new BinaryExpressionImpl();
 		return binaryExpression;
@@ -435,6 +464,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public UnaryExpression createUnaryExpression() {
 		UnaryExpressionImpl unaryExpression = new UnaryExpressionImpl();
 		return unaryExpression;
@@ -445,6 +475,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Parenthesis createParenthesis() {
 		ParenthesisImpl parenthesis = new ParenthesisImpl();
 		return parenthesis;
@@ -455,6 +486,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public IntConstant createIntConstant() {
 		IntConstantImpl intConstant = new IntConstantImpl();
 		return intConstant;
@@ -465,6 +497,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public RealConstant createRealConstant() {
 		RealConstantImpl realConstant = new RealConstantImpl();
 		return realConstant;
@@ -475,6 +508,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public BoolConstant createBoolConstant() {
 		BoolConstantImpl boolConstant = new BoolConstantImpl();
 		return boolConstant;
@@ -485,6 +519,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public MaxConstant createMaxConstant() {
 		MaxConstantImpl maxConstant = new MaxConstantImpl();
 		return maxConstant;
@@ -495,6 +530,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public BaseTypeConstant createBaseTypeConstant() {
 		BaseTypeConstantImpl baseTypeConstant = new BaseTypeConstantImpl();
 		return baseTypeConstant;
@@ -505,6 +541,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public VectorConstant createVectorConstant() {
 		VectorConstantImpl vectorConstant = new VectorConstantImpl();
 		return vectorConstant;
@@ -515,6 +552,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public MinConstant createMinConstant() {
 		MinConstantImpl minConstant = new MinConstantImpl();
 		return minConstant;
@@ -525,6 +563,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public FunctionCall createFunctionCall() {
 		FunctionCallImpl functionCall = new FunctionCallImpl();
 		return functionCall;
@@ -535,6 +574,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ArgOrVarRef createArgOrVarRef() {
 		ArgOrVarRefImpl argOrVarRef = new ArgOrVarRefImpl();
 		return argOrVarRef;
@@ -545,6 +585,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Iterator createIterator() {
 		IteratorImpl iterator = new IteratorImpl();
 		return iterator;
@@ -555,6 +596,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ConnectivityCall createConnectivityCall() {
 		ConnectivityCallImpl connectivityCall = new ConnectivityCallImpl();
 		return connectivityCall;
@@ -565,6 +607,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ConnectivityCallIteratorRef createConnectivityCallIteratorRef() {
 		ConnectivityCallIteratorRefImpl connectivityCallIteratorRef = new ConnectivityCallIteratorRefImpl();
 		return connectivityCallIteratorRef;
@@ -575,6 +618,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ArgOrVarRefIteratorRef createArgOrVarRefIteratorRef() {
 		ArgOrVarRefIteratorRefImpl argOrVarRefIteratorRef = new ArgOrVarRefIteratorRefImpl();
 		return argOrVarRefIteratorRef;
@@ -585,6 +629,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ItemType createItemType() {
 		ItemTypeImpl itemType = new ItemTypeImpl();
 		return itemType;
@@ -595,6 +640,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public IrType createIrType() {
 		IrTypeImpl irType = new IrTypeImpl();
 		return irType;
@@ -605,6 +651,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public BaseType createBaseType() {
 		BaseTypeImpl baseType = new BaseTypeImpl();
 		return baseType;
@@ -615,6 +662,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ConnectivityType createConnectivityType() {
 		ConnectivityTypeImpl connectivityType = new ConnectivityTypeImpl();
 		return connectivityType;
@@ -645,6 +693,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public IrPackage getIrPackage() {
 		return (IrPackage)getEPackage();
 	}

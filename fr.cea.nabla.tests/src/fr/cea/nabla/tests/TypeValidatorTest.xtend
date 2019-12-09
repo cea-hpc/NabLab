@@ -5,7 +5,6 @@ import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.PrimitiveType
-import fr.cea.nabla.typing.NSTDimension
 import fr.cea.nabla.typing.NSTRealArray1D
 import fr.cea.nabla.typing.NSTRealScalar
 import fr.cea.nabla.typing.NablaConnectivityType
@@ -19,6 +18,7 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import fr.cea.nabla.typing.NSTSizeType
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
@@ -70,7 +70,7 @@ class TypeValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
 			TypeValidator::SCALAR_VAR_DEFAULT_VALUE_TYPE, 
-			TypeValidator::getScalarDefinitionTypeMsg(new NSTRealArray1D(NSTDimension.create(2)).label,
+			TypeValidator::getScalarDefinitionTypeMsg(new NSTRealArray1D(NSTSizeType.create(2)).label,
 				PrimitiveType::REAL.literal
 			))
 
@@ -263,7 +263,7 @@ class TypeValidatorTest
 			TypeValidator::getFunctionArgsMsg(
 				#[PrimitiveType::BOOL.literal,
 				PrimitiveType::INT.literal,
-				new NSTRealArray1D(NSTDimension.create(2)).label]
+				new NSTRealArray1D(NSTSizeType.create(2)).label]
 		))		
 
 		val moduleOk = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
@@ -307,7 +307,7 @@ class TypeValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.reductionCall,
 			TypeValidator::REDUCTION_ARGS,
-			TypeValidator::getReductionArgsMsg(new NSTRealArray1D(NSTDimension.create(2)).label))
+			TypeValidator::getReductionArgsMsg(new NSTRealArray1D(NSTSizeType.create(2)).label))
 
 		val moduleOk = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
 			(
@@ -473,9 +473,9 @@ class TypeValidatorTest
 		moduleKo.assertError(NablaPackage.eINSTANCE.minus,
 			TypeValidator::MINUS_TYPE,
 			TypeValidator::getMinusTypeMsg("-",
-				new NSTRealArray1D(NSTDimension.create(2)).label,
+				new NSTRealArray1D(NSTSizeType.create(2)).label,
 
-				new NSTRealArray1D(NSTDimension.create(3)).label
+				new NSTRealArray1D(NSTSizeType.create(3)).label
 			))
 
 		val moduleOk = parseHelper.parse(TestUtils::testModule
@@ -507,7 +507,7 @@ class TypeValidatorTest
 			TypeValidator::COMPARISON_TYPE,
 			TypeValidator::getComparisonTypeMsg(">",
 				PrimitiveType::REAL.literal,
-				new NSTRealArray1D(NSTDimension.create(2)).label
+				new NSTRealArray1D(NSTSizeType.create(2)).label
 			))
 
 		val moduleOk = parseHelper.parse(TestUtils::testModule
@@ -539,7 +539,7 @@ class TypeValidatorTest
 			TypeValidator::EQUALITY_TYPE,
 			TypeValidator::getEqualityTypeMsg("==",
 				PrimitiveType::REAL.literal,
-				new NSTRealArray1D(NSTDimension.create(2)).label
+				new NSTRealArray1D(NSTSizeType.create(2)).label
 			))
 
 		val moduleOk = parseHelper.parse(TestUtils::testModule
@@ -573,7 +573,7 @@ class TypeValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.modulo,
 			TypeValidator::MODULO_TYPE,
-			TypeValidator::getModuloTypeMsg(new NSTRealArray1D(NSTDimension.create(2)).label))
+			TypeValidator::getModuloTypeMsg(new NSTRealArray1D(NSTSizeType.create(2)).label))
 
 		val moduleOk = parseHelper.parse(TestUtils::testModule
 			+

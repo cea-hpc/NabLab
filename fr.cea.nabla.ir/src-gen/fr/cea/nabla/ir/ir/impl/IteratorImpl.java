@@ -123,6 +123,7 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -132,6 +133,7 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -144,6 +146,7 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ConnectivityCall getContainer() {
 		return container;
 	}
@@ -168,6 +171,7 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setContainer(ConnectivityCall newContainer) {
 		if (newContainer != container) {
 			NotificationChain msgs = null;
@@ -187,6 +191,7 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public boolean isSingleton() {
 		return singleton;
 	}
@@ -196,6 +201,7 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setSingleton(boolean newSingleton) {
 		boolean oldSingleton = singleton;
 		singleton = newSingleton;
@@ -208,6 +214,7 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<IteratorRef> getReferencers() {
 		if (referencers == null) {
 			referencers = new EObjectWithInverseResolvingEList<IteratorRef>(IteratorRef.class, this, IrPackage.ITERATOR__REFERENCERS, IrPackage.ITERATOR_REF__TARGET);

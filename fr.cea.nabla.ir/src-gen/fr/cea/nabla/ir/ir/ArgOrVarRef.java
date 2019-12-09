@@ -69,7 +69,7 @@ public interface ArgOrVarRef extends Expression {
 
 	/**
 	 * Returns the value of the '<em><b>Indices</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Dimension}.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.SizeType}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Indices</em>' containment reference list isn't clear,
@@ -81,6 +81,6 @@ public interface ArgOrVarRef extends Expression {
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	EList<Dimension> getIndices();
+	EList<SizeType> getIndices();
 
 } // ArgOrVarRef

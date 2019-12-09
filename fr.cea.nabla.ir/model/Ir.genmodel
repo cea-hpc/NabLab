@@ -69,7 +69,7 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Function">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/provider"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/dimensionVars"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/variables"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/inArgs"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//Function/returnType"/>
@@ -77,7 +77,7 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Reduction">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Reduction/provider"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Reduction/dimensionVars"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Reduction/variables"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Reduction/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Reduction/collectionType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//Reduction/returnType"/>
@@ -132,26 +132,26 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SpaceIterationBlock/range"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SpaceIterationBlock/singletons"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//DimensionIterationBlock">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//DimensionIterationBlock/index"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//DimensionIterationBlock/from"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//DimensionIterationBlock/to"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//DimensionIterationBlock/toIncluded"/>
+    <genClasses ecoreClass="Ir.ecore#//IntervalIterationBlock">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IntervalIterationBlock/index"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IntervalIterationBlock/from"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IntervalIterationBlock/to"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IntervalIterationBlock/toIncluded"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//DimensionSymbol">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//DimensionSymbol/name"/>
+    <genClasses ecoreClass="Ir.ecore#//SizeTypeSymbol">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SizeTypeSymbol/name"/>
     </genClasses>
-    <genClasses image="false" ecoreClass="Ir.ecore#//Dimension"/>
-    <genClasses ecoreClass="Ir.ecore#//DimensionInt">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//DimensionInt/value"/>
+    <genClasses image="false" ecoreClass="Ir.ecore#//SizeType"/>
+    <genClasses ecoreClass="Ir.ecore#//SizeTypeInt">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SizeTypeInt/value"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//DimensionOperation">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//DimensionOperation/left"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//DimensionOperation/right"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//DimensionOperation/operator"/>
+    <genClasses ecoreClass="Ir.ecore#//SizeTypeOperation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SizeTypeOperation/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SizeTypeOperation/right"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SizeTypeOperation/operator"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//DimensionSymbolRef">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//DimensionSymbolRef/target"/>
+    <genClasses ecoreClass="Ir.ecore#//SizeTypeSymbolRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//SizeTypeSymbolRef/target"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ReductionInstruction">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/innerReductions"/>

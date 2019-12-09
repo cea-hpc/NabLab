@@ -85,6 +85,7 @@ public class IfImpl extends InstructionImpl implements If {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Expression getCondition() {
 		return condition;
 	}
@@ -109,6 +110,7 @@ public class IfImpl extends InstructionImpl implements If {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setCondition(Expression newCondition) {
 		if (newCondition != condition) {
 			NotificationChain msgs = null;
@@ -128,6 +130,7 @@ public class IfImpl extends InstructionImpl implements If {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Instruction getThenInstruction() {
 		return thenInstruction;
 	}
@@ -152,6 +155,7 @@ public class IfImpl extends InstructionImpl implements If {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setThenInstruction(Instruction newThenInstruction) {
 		if (newThenInstruction != thenInstruction) {
 			NotificationChain msgs = null;
@@ -171,6 +175,7 @@ public class IfImpl extends InstructionImpl implements If {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Instruction getElseInstruction() {
 		return elseInstruction;
 	}
@@ -195,6 +200,7 @@ public class IfImpl extends InstructionImpl implements If {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setElseInstruction(Instruction newElseInstruction) {
 		if (newElseInstruction != elseInstruction) {
 			NotificationChain msgs = null;

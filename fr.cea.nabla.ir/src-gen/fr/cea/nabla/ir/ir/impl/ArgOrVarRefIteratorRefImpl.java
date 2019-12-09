@@ -54,6 +54,7 @@ public class ArgOrVarRefIteratorRefImpl extends IteratorRefImpl implements ArgOr
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ArgOrVarRef getReferencedBy() {
 		if (eContainerFeatureID() != IrPackage.ARG_OR_VAR_REF_ITERATOR_REF__REFERENCED_BY) return null;
 		return (ArgOrVarRef)eContainer();
@@ -84,6 +85,7 @@ public class ArgOrVarRefIteratorRefImpl extends IteratorRefImpl implements ArgOr
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setReferencedBy(ArgOrVarRef newReferencedBy) {
 		if (newReferencedBy != eInternalContainer() || (eContainerFeatureID() != IrPackage.ARG_OR_VAR_REF_ITERATOR_REF__REFERENCED_BY && newReferencedBy != null)) {
 			if (EcoreUtil.isAncestor(this, newReferencedBy))

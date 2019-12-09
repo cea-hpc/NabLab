@@ -66,6 +66,7 @@ public class VectorConstantImpl extends ExpressionImpl implements VectorConstant
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<Expression> getValues() {
 		if (values == null) {
 			values = new EObjectContainmentEList.Resolving<Expression>(Expression.class, this, IrPackage.VECTOR_CONSTANT__VALUES);

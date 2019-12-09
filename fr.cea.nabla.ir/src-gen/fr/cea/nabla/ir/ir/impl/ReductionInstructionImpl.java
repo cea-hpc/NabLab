@@ -104,6 +104,7 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<Instruction> getInnerReductions() {
 		if (innerReductions == null) {
 			innerReductions = new EObjectContainmentEList.Resolving<Instruction>(Instruction.class, this, IrPackage.REDUCTION_INSTRUCTION__INNER_REDUCTIONS);
@@ -116,6 +117,7 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Reduction getReduction() {
 		if (reduction != null && reduction.eIsProxy()) {
 			InternalEObject oldReduction = (InternalEObject)reduction;
@@ -142,6 +144,7 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setReduction(Reduction newReduction) {
 		Reduction oldReduction = reduction;
 		reduction = newReduction;
@@ -154,6 +157,7 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Expression getArg() {
 		return arg;
 	}
@@ -178,6 +182,7 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setArg(Expression newArg) {
 		if (newArg != arg) {
 			NotificationChain msgs = null;
@@ -197,6 +202,7 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public SimpleVariable getResult() {
 		return result;
 	}
@@ -221,6 +227,7 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setResult(SimpleVariable newResult) {
 		if (newResult != result) {
 			NotificationChain msgs = null;

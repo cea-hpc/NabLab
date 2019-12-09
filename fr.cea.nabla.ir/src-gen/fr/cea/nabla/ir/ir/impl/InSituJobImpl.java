@@ -103,6 +103,7 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<Variable> getVariables() {
 		if (variables == null) {
 			variables = new EObjectResolvingEList<Variable>(Variable.class, this, IrPackage.IN_SITU_JOB__VARIABLES);
@@ -115,6 +116,7 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public int getIterationPeriod() {
 		return iterationPeriod;
 	}
@@ -124,6 +126,7 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setIterationPeriod(int newIterationPeriod) {
 		int oldIterationPeriod = iterationPeriod;
 		iterationPeriod = newIterationPeriod;
@@ -136,6 +139,7 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public double getTimeStep() {
 		return timeStep;
 	}
@@ -145,6 +149,7 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setTimeStep(double newTimeStep) {
 		double oldTimeStep = timeStep;
 		timeStep = newTimeStep;

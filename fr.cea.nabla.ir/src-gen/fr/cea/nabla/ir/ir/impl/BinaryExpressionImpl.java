@@ -94,6 +94,7 @@ public class BinaryExpressionImpl extends ExpressionImpl implements BinaryExpres
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getOperator() {
 		return operator;
 	}
@@ -103,6 +104,7 @@ public class BinaryExpressionImpl extends ExpressionImpl implements BinaryExpres
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setOperator(String newOperator) {
 		String oldOperator = operator;
 		operator = newOperator;
@@ -115,6 +117,7 @@ public class BinaryExpressionImpl extends ExpressionImpl implements BinaryExpres
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Expression getLeft() {
 		return left;
 	}
@@ -139,6 +142,7 @@ public class BinaryExpressionImpl extends ExpressionImpl implements BinaryExpres
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setLeft(Expression newLeft) {
 		if (newLeft != left) {
 			NotificationChain msgs = null;
@@ -158,6 +162,7 @@ public class BinaryExpressionImpl extends ExpressionImpl implements BinaryExpres
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Expression getRight() {
 		return right;
 	}
@@ -182,6 +187,7 @@ public class BinaryExpressionImpl extends ExpressionImpl implements BinaryExpres
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setRight(Expression newRight) {
 		if (newRight != right) {
 			NotificationChain msgs = null;

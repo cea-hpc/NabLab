@@ -84,6 +84,7 @@ public class ContractedIfImpl extends ExpressionImpl implements ContractedIf {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Expression getCondition() {
 		if (condition != null && condition.eIsProxy()) {
 			InternalEObject oldCondition = (InternalEObject)condition;
@@ -131,6 +132,7 @@ public class ContractedIfImpl extends ExpressionImpl implements ContractedIf {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setCondition(Expression newCondition) {
 		if (newCondition != condition) {
 			NotificationChain msgs = null;
@@ -150,6 +152,7 @@ public class ContractedIfImpl extends ExpressionImpl implements ContractedIf {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Expression getThenExpression() {
 		if (thenExpression != null && thenExpression.eIsProxy()) {
 			InternalEObject oldThenExpression = (InternalEObject)thenExpression;
@@ -197,6 +200,7 @@ public class ContractedIfImpl extends ExpressionImpl implements ContractedIf {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setThenExpression(Expression newThenExpression) {
 		if (newThenExpression != thenExpression) {
 			NotificationChain msgs = null;
@@ -216,6 +220,7 @@ public class ContractedIfImpl extends ExpressionImpl implements ContractedIf {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Expression getElseExpression() {
 		if (elseExpression != null && elseExpression.eIsProxy()) {
 			InternalEObject oldElseExpression = (InternalEObject)elseExpression;
@@ -263,6 +268,7 @@ public class ContractedIfImpl extends ExpressionImpl implements ContractedIf {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setElseExpression(Expression newElseExpression) {
 		if (newElseExpression != elseExpression) {
 			NotificationChain msgs = null;

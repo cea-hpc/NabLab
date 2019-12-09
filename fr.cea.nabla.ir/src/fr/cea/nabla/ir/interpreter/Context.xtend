@@ -3,10 +3,10 @@ package fr.cea.nabla.ir.interpreter
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
 import fr.cea.nabla.ir.ir.Connectivity
-import fr.cea.nabla.ir.ir.DimensionSymbol
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRef
+import fr.cea.nabla.ir.ir.SizeTypeSymbol
 import java.util.HashMap
 import org.eclipse.xtend.lib.annotations.Accessors
 
@@ -21,7 +21,7 @@ class Context
 	val IrModule module
 	val indexValues = new HashMap<String, Integer>
 	val idValues = new HashMap<String, Integer>
-	val dimensionValues = new HashMap<DimensionSymbol, Integer>
+	val dimensionValues = new HashMap<SizeTypeSymbol, Integer>
 	val variableValues = new HashMap<ArgOrVar, NablaValue>
 	@Accessors val HashMap<Connectivity, Integer> connectivitySizes
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) MeshWrapper meshWrapper
@@ -46,7 +46,7 @@ class Context
 	{
 		meshWrapper = new MeshWrapper(nbXQuads, nbYQuads, xSize, ySize)
 	}
-	
+
 	// VariableValues
 	def NablaValue getVariableValue(ArgOrVar variable)
 	{
@@ -95,7 +95,7 @@ class Context
 	def int getIndexValue(Iterator it) { getIndexValue(indexName) }
 	def void addIndexValue(ArgOrVarRefIteratorRef it, int value) { indexValues.put(indexName, value) }
 	def void addIndexValue(Iterator it, int value) { indexValues.put(indexName, value) }
-	
+
 	def void setIndexValue(Iterator it, int value)
 	{
 		if (indexValues.get(indexName) !== null)
@@ -104,7 +104,7 @@ class Context
 			if (outerContext !== null)
 				outerContext.setIndexValue(it, value)
 			else
-				throw new RuntimeException('Iterator not found ' + indexName)		
+				throw new RuntimeException('Iterator not found ' + indexName)
 	}
 
 	// IdValues
@@ -119,21 +119,21 @@ class Context
 			if (outerContext !== null)
 				outerContext.setIdValue(it, value)
 			else
-				throw new RuntimeException('IteratorRef not found ' + idName)		
+				throw new RuntimeException('IteratorRef not found ' + idName)
 	}
 
 	// DimensionValues
-	def int getDimensionValue(DimensionSymbol it) 
-	{ 
+	def int getDimensionValue(SizeTypeSymbol it) 
+	{
 		dimensionValues.get(it) ?: outerContext.getDimensionValue(it)
 	}
 
-	def addDimensionValue(DimensionSymbol it, int value)
+	def addDimensionValue(SizeTypeSymbol it, int value)
 	{
 		dimensionValues.put(it, value)
 	}
 
-	def void setDimensionValue(DimensionSymbol it, int value)
+	def void setDimensionValue(SizeTypeSymbol it, int value)
 	{
 		if (dimensionValues.get(it) !== null)
 			dimensionValues.replace(it, value)
@@ -200,7 +200,7 @@ class Context
 		if (message !== null) println(message)
 		dimensionValues.keySet.forEach[d | println("	Dimension " + d.name + " = " + dimensionValues.get(d))]
 	}
-	
+
 	private def int getIndexValue(String indexName)
 	{
 		indexValues.get(indexName) ?: outerContext.getIndexValue(indexName)

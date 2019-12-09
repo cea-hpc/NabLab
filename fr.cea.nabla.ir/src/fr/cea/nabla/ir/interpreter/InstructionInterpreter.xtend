@@ -2,9 +2,9 @@ package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
-import fr.cea.nabla.ir.ir.DimensionIterationBlock
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.InstructionBlock
+import fr.cea.nabla.ir.ir.IntervalIterationBlock
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Loop
@@ -79,7 +79,7 @@ class InstructionInterpreter
 						return ret
 				}
 			}
-			DimensionIterationBlock:
+			IntervalIterationBlock:
 			{
 				val from = interprete(b.from, context)
 				var to = interprete(b.to, context)

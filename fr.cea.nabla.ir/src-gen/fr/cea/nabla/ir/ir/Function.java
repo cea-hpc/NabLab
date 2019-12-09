@@ -14,7 +14,7 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getProvider <em>Provider</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Function#getDimensionVars <em>Dimension Vars</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Function#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getInArgs <em>In Args</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getReturnType <em>Return Type</em>}</li>
@@ -53,20 +53,16 @@ public interface Function extends IrAnnotable {
 	void setProvider(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Dimension Vars</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.DimensionSymbol}.
+	 * Returns the value of the '<em><b>Variables</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.SizeTypeSymbol}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Dimension Vars</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Dimension Vars</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_DimensionVars()
+	 * @return the value of the '<em>Variables</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_Variables()
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	EList<DimensionSymbol> getDimensionVars();
+	EList<SizeTypeSymbol> getVariables();
 
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.

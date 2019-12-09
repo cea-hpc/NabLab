@@ -143,7 +143,7 @@ class BasicValidatorTest
 	}
 
 	// ===== Variables : Var & VarRef =====
-	
+
 	@Test
 	def void testCheckUnusedVariable()
 	{
@@ -316,7 +316,6 @@ class BasicValidatorTest
 		val modulekO = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				def	f: x | ℝ[x+1] → ℝ[x];
 				def	g: ℝ[2] → ℝ;
 				def g: x | ℝ[x] → ℝ;
 				'''
@@ -325,17 +324,12 @@ class BasicValidatorTest
 		Assert.assertNotNull(modulekO)
 
 		modulekO.assertError(NablaPackage.eINSTANCE.function,
-			BasicValidator::FUNCTION_IN_TYPES_OPERATION,
-			BasicValidator::getFunctionInTypesOperationMsg())
-
-		modulekO.assertError(NablaPackage.eINSTANCE.function,
 			BasicValidator::FUNCTION_INCOMPATIBLE_IN_TYPES,
 			BasicValidator::getFunctionIncompatibleInTypesMsg())
 
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				def	f: x | ℝ[x] → ℝ[x+1];
 				def	g: ℝ → ℝ;
 				def g: x | ℝ[x] → ℝ;
 				'''
@@ -380,17 +374,12 @@ class BasicValidatorTest
 		val modulekO = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				def	reduce1: x,y | (ℝ.MaxValue , ℝ[x+y]) → ℝ[x+y];
-				def	reduce2: (ℝ.MaxValue, ℝ[2]) → ℝ;
-				def reduce2: x | (ℝ.MaxValue , ℝ[x]) → ℝ;
+				def	reduce: (ℝ.MaxValue, ℝ[2]) → ℝ;
+				def reduce: x | (ℝ.MaxValue , ℝ[x]) → ℝ;
 				'''
 			)
 		)
 		Assert.assertNotNull(modulekO)
-
-		modulekO.assertError(NablaPackage.eINSTANCE.reduction,
-			BasicValidator::REDUCTION_COLLECTION_TYPE_OPERATION,
-			BasicValidator::getReductionCollectionTypeOperationMsg)
 
 		modulekO.assertError(NablaPackage.eINSTANCE.reduction,
 			BasicValidator::REDUCTION_INCOMPATIBLE_COLLECTION_TYPE,
@@ -399,9 +388,8 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCustomFunctions(
 				'''
-				def	reduce1: x | (ℝ.MaxValue , ℝ[x]) → ℝ[x];
-				def	reduce2: (ℝ.MaxValue, ℝ) → ℝ;
-				def reduce2: x | (ℝ.MaxValue , ℝ[x]) → ℝ;
+				def	reduce: (ℝ.MaxValue, ℝ) → ℝ;
+				def reduce: x | (ℝ.MaxValue , ℝ[x]) → ℝ;
 				'''
 			)
 		)
@@ -449,70 +437,6 @@ class BasicValidatorTest
 		moduleOk.assertNoErrors
 	}
 
-	@Test
-	def testCheckDimensionSymbolName()
-	{
-		val modulekO = parseHelper.parse(
-			TestUtils::getTestModuleWithCustomFunctions(
-			'''
-			def f:	n | ℝ[n] → ℝ;
-			def g:	x | ℝ[x] → ℝ;
-			''')
-		)
-		Assert.assertNotNull(modulekO)
-
-		modulekO.assertError(NablaPackage.eINSTANCE.dimensionSymbol,
-			BasicValidator::DIMENSION_SYMBOL_NAME,
-			BasicValidator::getDimensionSymbolNameMsg())
-
-		val moduleOk = parseHelper.parse(
-			TestUtils::getTestModuleWithCustomFunctions(
-			'''
-			def	f:	x | ℝ[x] → ℝ;
-			''')
-		)
-		println(TestUtils::getTestModuleWithCustomFunctions(
-			'''
-			def	f:	x | ℝ[x] → ℝ;
-			'''))
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
-	@Test
-	def void testCheckUnusedDimensionSymbol()
-	{
-		val moduleKo = parseHelper.parse(
-			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
-			'''
-			def f: x,y | ℝ[x] → ℝ[2];
-			'''
-			+
-			'''
-			ℝ[2] orig = [0.0 , 0.0] ;
-			'''
-			)
-		)
-		Assert.assertNotNull(moduleKo)
-
-		moduleKo.assertWarning(NablaPackage.eINSTANCE.dimensionSymbol,
-			BasicValidator::UNUSED_DIMENSION_SYMBOL,
-			BasicValidator::getUnusedDimensionSymbolMsg())
-
-		val moduleOk = parseHelper.parse(
-			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
-			'''
-			def	f: x | ℝ[x] → ℝ[2];
-			''')
-			+
-			'''
-			ℝ[2] orig = [0.0 , 0.0];
-			ComputeOrig: orig = f(orig);
-			'''
-		)
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoIssues
-	}
 
 	// ===== Connectivities =====
 
@@ -724,7 +648,7 @@ class BasicValidatorTest
 		val moduleOk =  parseHelper.parse(TestUtils::testModule
 			+
 			'''
-			constℕ coef = 2;
+			const ℕ coef = 2;
 			const ℝ DOUBLE_LENGTH = X_EDGE_LENGTH * coef;
 			'''
 		)
@@ -765,8 +689,8 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''
 			items { node }
-			set	nodes: → {node};
-			set	leftNode: node → node;
+			set nodes: → {node};
+			set leftNode: node → node;
 			''')
 			+
 			'''
@@ -782,8 +706,8 @@ class BasicValidatorTest
 		val moduleOk =  parseHelper.parse(TestUtils::getTestModuleWithCoordVariableWithCustomConnectivities(
 			'''
 			items { node }
-			set	nodes: → {node};
-			set	leftNodes: node → {node};
+			set nodes: → {node};
+			set leftNodes: node → {node};
 			''')
 			+
 			'''
@@ -858,6 +782,150 @@ class BasicValidatorTest
 			+
 			'''
 			UpdateX: ∀r1∈nodes(), r2 = leftNode(r1), X{r2} = X{r1-1} - 1;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	// ===== SizeType =====
+
+	@Test
+	def testCheckSizeTypeSymbolName()
+	{
+		val modulekO = parseHelper.parse(
+			TestUtils::getTestModuleWithCustomFunctions(
+			'''
+			def f: n | ℝ[n] → ℝ;
+			def g: x | ℝ[x] → ℝ;
+			''')
+		)
+		Assert.assertNotNull(modulekO)
+
+		modulekO.assertError(NablaPackage.eINSTANCE.sizeTypeSymbol,
+			BasicValidator::SIZE_TYPE_SYMBOL_NAME,
+			BasicValidator::getSizeTypeSymbolNameMsg())
+
+		val moduleOk = parseHelper.parse(
+			TestUtils::getTestModuleWithCustomFunctions(
+			'''
+			def f: x | ℝ[x] → ℝ;
+			''')
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void testCheckUnusedSizeTypeSymbol()
+	{
+		val moduleKo = parseHelper.parse(
+			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
+			'''
+			def f: x,y | ℝ[x] → ℝ[2];
+			'''
+			+
+			'''
+			ℝ[2] orig = [0.0 , 0.0] ;
+			'''
+			)
+		)
+		Assert.assertNotNull(moduleKo)
+
+		moduleKo.assertWarning(NablaPackage.eINSTANCE.sizeTypeSymbol,
+			BasicValidator::UNUSED_SIZE_TYPE_SYMBOL,
+			BasicValidator::getUnusedSizeTypeSymbolMsg())
+
+		val moduleOk = parseHelper.parse(
+			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
+			'''
+			def	f: x | ℝ[x] → ℝ[2];
+			''')
+			+
+			'''
+			ℝ[2] orig = [0.0 , 0.0];
+			ComputeOrig: orig = f(orig);
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoIssues
+	}
+
+	@Test
+	def testCheckNoOperationInFunctionInTypes() 
+	{
+		val modulekO = parseHelper.parse(
+			TestUtils::getTestModuleWithCustomFunctions(
+				'''
+				def	f: x | ℝ[x+1] → ℝ[x];
+				'''
+			)
+		)
+		Assert.assertNotNull(modulekO)
+
+		modulekO.assertError(NablaPackage.eINSTANCE.function,
+			BasicValidator::NO_OPERATION_IN_FUNCTION_IN_TYPES,
+			BasicValidator::getNoOperationInFunctionInTypesMsg())
+
+		val moduleOk = parseHelper.parse(
+			TestUtils::getTestModuleWithCustomFunctions(
+				'''
+				def	f: x | ℝ[x] → ℝ[x+1];
+				'''
+			)
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def testCheckNoOperationInReductionCollectionType() 
+	{
+		val modulekO = parseHelper.parse(
+			TestUtils::getTestModuleWithCustomFunctions(
+				'''
+				def	reduce: x,y | (ℝ.MaxValue , ℝ[x+y]) → ℝ[x+y];
+				'''
+			)
+		)
+		Assert.assertNotNull(modulekO)
+
+		modulekO.assertError(NablaPackage.eINSTANCE.reduction,
+			BasicValidator::NO_OPERATION_IN_REDUCTION_COLLECTION_TYPE,
+			BasicValidator::getNoOperationInReductionCollectionTypeMsg)
+
+		val moduleOk = parseHelper.parse(
+			TestUtils::getTestModuleWithCustomFunctions(
+				'''
+				def	reduce: x | (ℝ.MaxValue , ℝ[x]) → ℝ[x];
+				'''
+			)
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void testCheckNoOperationInVarRefIndices()
+	{
+		val moduleKo = parseHelper.parse(TestUtils::testModuleWithCoordVariable
+			+
+			'''
+			ℝ[2] orig = [0.0 , 0.0];
+			ComputeOrig: orig[0+1] = 1.0;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
+			BasicValidator::NO_OPERATION_IN_VAR_REF_INDICES,
+			BasicValidator::getNoOperationInVarRefIndicesMsg())
+
+		val moduleOk =  parseHelper.parse(TestUtils::testModuleWithCoordVariable
+			+
+			'''
+			ℝ[2] orig = [0.0 , 0.0];
+			ComputeOrig: orig[0] = 1.0;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

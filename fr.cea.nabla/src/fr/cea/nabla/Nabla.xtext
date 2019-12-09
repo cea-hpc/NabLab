@@ -10,9 +10,6 @@
  
  
  
-// TODO Add missing tests of validators
-// TODO Test on unique names
-// TODO Test very light on iterators scope provider
 // TODO Add keyword size, i.e. size X = 4; (X : DimensionVar). Check only one DimensionVar X.
 // TODO Operator definition and overload
 // TODO Reduction body
@@ -52,9 +49,9 @@ Return: 'return' expression=Expression ';';
 
 
 /* ITERATEURS ********************************************/
-IterationBlock: SpaceIterationBlock | DimensionIterationBlock;
+IterationBlock: SpaceIterationBlock | IntervalIterationBlock;
 SpaceIterationBlock: range=RangeSpaceIterator (',' singletons+=SingletonSpaceIterator)*;
-DimensionIterationBlock: index=DimensionSymbol '\u2208' '[' from=Dimension ';' to=Dimension (toIncluded?=']'|'[');
+IntervalIterationBlock: index=SizeTypeSymbol '\u2208' '[' from=SizeType ';' to=SizeType (toIncluded?=']'|'[');
 
 SpaceIterator: RangeSpaceIterator | SingletonSpaceIterator;
 RangeSpaceIterator: name=ID '\u2208' container=ConnectivityCall; // must return a collection
@@ -81,11 +78,10 @@ ItemArgType: multiple?='{' type=[ItemType] '}' | type=[ItemType];
 
 
 /* FONCTIONS / REDUCTIONS ********************************/
-Function: 'def' name=ID ':' (dimVars+=DimensionSymbol (',' dimVars+=DimensionSymbol)* '|')? (inTypes+=BaseType ('\u00D7' inTypes+=BaseType)*)? '\u2192' returnType=BaseType 
+Function: 'def' name=ID ':' (vars+=SizeTypeSymbol (',' vars+=SizeTypeSymbol)* '|')? (inTypes+=BaseType ('\u00D7' inTypes+=BaseType)*)? '\u2192' returnType=BaseType 
 	((',' '(' (inArgs+=Arg (',' inArgs+=Arg)*)? ')' '\u2192' body=Instruction) | external?=';');
-Reduction: 'def' name=ID ':' (dimVars+=DimensionSymbol (',' dimVars+=DimensionSymbol)* '|')? '(' seed=Expression ',' collectionType=BaseType ')' '\u2192' returnType=BaseType ';';
+Reduction: 'def' name=ID ':' (vars+=SizeTypeSymbol (',' vars+=SizeTypeSymbol)* '|')? '(' seed=Expression ',' collectionType=BaseType ')' '\u2192' returnType=BaseType ';';
 Arg: name=ID;
-DimensionSymbol: name=ID;
 
 
 /* EXPRESSIONS ******************************************/
@@ -137,19 +133,20 @@ ReductionCall: reduction=[Reduction|QualifiedName] '{' iterationBlock=IterationB
 ArgOrVarRef: target=[ArgOrVar] 
 	('^{' timeIterator=TimeIterator '}')?
 	('{' spaceIterators+=SpaceIteratorRef (',' spaceIterators+=SpaceIteratorRef)* '}')? 
-	('[' indices+=Dimension (',' indices+=Dimension)? ']')?;
+	('[' indices+=SizeType (',' indices+=SizeType)? ']')?;
 
 
 /* TYPES *************************************************/
 enum PrimitiveType: Int='\u2115' | Real='\u211D' | Bool='\u213E';
-BaseType: primitive=PrimitiveType ('[' sizes+=Dimension (',' sizes+=Dimension)* ']')?;
+BaseType: primitive=PrimitiveType ('[' sizes+=SizeType (',' sizes+=SizeType)* ']')?;
 
-Dimension: DimensionOperation;
-DimensionOperation returns Dimension:
-	DimensionAtomic ({DimensionOperation.left=current} op=('*'|'+') right=DimensionAtomic)*;
-DimensionAtomic returns Dimension: 
-	{DimensionInt} value=INT |
-	{DimensionSymbolRef} target=[DimensionSymbol];
+SizeType: SizeTypeOperation;
+SizeTypeOperation returns SizeType:
+	SizeTypeAtomic ({SizeTypeOperation.left=current} op=('*'|'+') right=SizeTypeAtomic)*;
+SizeTypeAtomic returns SizeType: 
+	{SizeTypeInt} value=INT |	// = IntConstant
+	{SizeTypeSymbolRef} target=[SizeTypeSymbol];
+SizeTypeSymbol: name=ID;
 
 
 /* DATA TYPE AND TERMINALS *******************************/

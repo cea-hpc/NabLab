@@ -18,7 +18,6 @@ import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.NSTBoolScalar
-import fr.cea.nabla.typing.NSTDimension
 import fr.cea.nabla.typing.NSTIntArray1D
 import fr.cea.nabla.typing.NSTIntArray2D
 import fr.cea.nabla.typing.NSTIntScalar
@@ -37,6 +36,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static extension fr.cea.nabla.tests.TestUtils.*
+import fr.cea.nabla.typing.NSTSizeType
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -148,7 +148,7 @@ class ExpressionTypeProviderTest
 		val computeV = module.getJobByName("ComputeV")
 		val computeX = module.getJobByName("ComputeX")
 
-		val two = NSTDimension.create(2)
+		val two = NSTSizeType.create(2)
 		assertTypesFor(new NSTIntScalar, module, "a1")
 		assertTypesFor(new NSTIntScalar, module, "a2")
 		assertTypesFor(new NSTIntScalar, module, "a3")
@@ -182,7 +182,7 @@ class ExpressionTypeProviderTest
 		assertTypesFor(new NSTRealArray1D(two), module, "d2")
 		assertTypesFor(new NSTRealArray1D(two), module, "d3")
 
-		assertTypesFor(new NSTRealArray1D(NSTDimension.create(3)), module, "e")
+		assertTypesFor(new NSTRealArray1D(NSTSizeType.create(3)), module, "e")
 
 		assertTypesFor(new NSTRealArray2D(two, two), module, "g")
 		assertTypesFor(new NSTRealScalar, module, "h")

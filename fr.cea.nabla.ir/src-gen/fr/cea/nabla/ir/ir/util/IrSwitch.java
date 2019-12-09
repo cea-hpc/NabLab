@@ -264,49 +264,49 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.DIMENSION_ITERATION_BLOCK: {
-				DimensionIterationBlock dimensionIterationBlock = (DimensionIterationBlock)theEObject;
-				T result = caseDimensionIterationBlock(dimensionIterationBlock);
-				if (result == null) result = caseIterationBlock(dimensionIterationBlock);
-				if (result == null) result = caseIrAnnotable(dimensionIterationBlock);
+			case IrPackage.INTERVAL_ITERATION_BLOCK: {
+				IntervalIterationBlock intervalIterationBlock = (IntervalIterationBlock)theEObject;
+				T result = caseIntervalIterationBlock(intervalIterationBlock);
+				if (result == null) result = caseIterationBlock(intervalIterationBlock);
+				if (result == null) result = caseIrAnnotable(intervalIterationBlock);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.DIMENSION_SYMBOL: {
-				DimensionSymbol dimensionSymbol = (DimensionSymbol)theEObject;
-				T result = caseDimensionSymbol(dimensionSymbol);
-				if (result == null) result = caseIrAnnotable(dimensionSymbol);
+			case IrPackage.SIZE_TYPE_SYMBOL: {
+				SizeTypeSymbol sizeTypeSymbol = (SizeTypeSymbol)theEObject;
+				T result = caseSizeTypeSymbol(sizeTypeSymbol);
+				if (result == null) result = caseIrAnnotable(sizeTypeSymbol);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.DIMENSION: {
-				Dimension dimension = (Dimension)theEObject;
-				T result = caseDimension(dimension);
-				if (result == null) result = caseIrAnnotable(dimension);
+			case IrPackage.SIZE_TYPE: {
+				SizeType sizeType = (SizeType)theEObject;
+				T result = caseSizeType(sizeType);
+				if (result == null) result = caseIrAnnotable(sizeType);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.DIMENSION_INT: {
-				DimensionInt dimensionInt = (DimensionInt)theEObject;
-				T result = caseDimensionInt(dimensionInt);
-				if (result == null) result = caseDimension(dimensionInt);
-				if (result == null) result = caseIrAnnotable(dimensionInt);
+			case IrPackage.SIZE_TYPE_INT: {
+				SizeTypeInt sizeTypeInt = (SizeTypeInt)theEObject;
+				T result = caseSizeTypeInt(sizeTypeInt);
+				if (result == null) result = caseSizeType(sizeTypeInt);
+				if (result == null) result = caseIrAnnotable(sizeTypeInt);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.DIMENSION_OPERATION: {
-				DimensionOperation dimensionOperation = (DimensionOperation)theEObject;
-				T result = caseDimensionOperation(dimensionOperation);
-				if (result == null) result = caseDimension(dimensionOperation);
-				if (result == null) result = caseIrAnnotable(dimensionOperation);
+			case IrPackage.SIZE_TYPE_OPERATION: {
+				SizeTypeOperation sizeTypeOperation = (SizeTypeOperation)theEObject;
+				T result = caseSizeTypeOperation(sizeTypeOperation);
+				if (result == null) result = caseSizeType(sizeTypeOperation);
+				if (result == null) result = caseIrAnnotable(sizeTypeOperation);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.DIMENSION_SYMBOL_REF: {
-				DimensionSymbolRef dimensionSymbolRef = (DimensionSymbolRef)theEObject;
-				T result = caseDimensionSymbolRef(dimensionSymbolRef);
-				if (result == null) result = caseDimension(dimensionSymbolRef);
-				if (result == null) result = caseIrAnnotable(dimensionSymbolRef);
+			case IrPackage.SIZE_TYPE_SYMBOL_REF: {
+				SizeTypeSymbolRef sizeTypeSymbolRef = (SizeTypeSymbolRef)theEObject;
+				T result = caseSizeTypeSymbolRef(sizeTypeSymbolRef);
+				if (result == null) result = caseSizeType(sizeTypeSymbolRef);
+				if (result == null) result = caseIrAnnotable(sizeTypeSymbolRef);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -916,92 +916,92 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Dimension Iteration Block</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Interval Iteration Block</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Dimension Iteration Block</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Interval Iteration Block</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDimensionIterationBlock(DimensionIterationBlock object) {
+	public T caseIntervalIterationBlock(IntervalIterationBlock object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Dimension Symbol</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Size Type Symbol</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Dimension Symbol</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Size Type Symbol</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDimensionSymbol(DimensionSymbol object) {
+	public T caseSizeTypeSymbol(SizeTypeSymbol object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Dimension</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Size Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Dimension</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Size Type</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDimension(Dimension object) {
+	public T caseSizeType(SizeType object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Dimension Int</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Size Type Int</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Dimension Int</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Size Type Int</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDimensionInt(DimensionInt object) {
+	public T caseSizeTypeInt(SizeTypeInt object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Dimension Operation</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Size Type Operation</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Dimension Operation</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Size Type Operation</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDimensionOperation(DimensionOperation object) {
+	public T caseSizeTypeOperation(SizeTypeOperation object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Dimension Symbol Ref</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Size Type Symbol Ref</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Dimension Symbol Ref</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Size Type Symbol Ref</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDimensionSymbolRef(DimensionSymbolRef object) {
+	public T caseSizeTypeSymbolRef(SizeTypeSymbolRef object) {
 		return null;
 	}
 

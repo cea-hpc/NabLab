@@ -26,7 +26,7 @@ class IrFunctionFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension BaseType2IrType
 	@Inject extension IrArgOrVarFactory
-	@Inject extension IrDimensionFactory
+	@Inject extension IrSizeTypeFactory
 	@Inject extension IrInstructionFactory
 
 	static val Reductions = #{ '\u2211'->'+', '\u220F'->'*' }
@@ -36,7 +36,7 @@ class IrFunctionFactory
 		annotations += f.toIrAnnotation
 		name = f.name
 		provider = providerName
-		f.dimVars.forEach[x | dimensionVars += x.toIrDimensionSymbol]
+		f.vars.forEach[x | variables += x.toIrSizeTypeSymbol]
 		inArgs += f.inArgs.map[x | toIrArg(x, x.name)]
 		returnType = f.returnType.toIrBaseType
 		if (!f.external) body = f.body.toIrInstruction
@@ -46,7 +46,7 @@ class IrFunctionFactory
 	{
 		annotations += f.toIrAnnotation
 		provider = providerName
-		f.dimVars.forEach[x | dimensionVars += x.toIrDimensionSymbol]
+		f.vars.forEach[x | variables += x.toIrSizeTypeSymbol]
 		val op = Reductions.get(f.name)
 		name = op ?: f.name.replaceFirst("reduce", "").toFirstLower
 		operator = (op !== null)

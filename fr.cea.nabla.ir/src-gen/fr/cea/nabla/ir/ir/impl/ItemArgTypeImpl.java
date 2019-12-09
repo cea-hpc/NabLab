@@ -82,6 +82,7 @@ public class ItemArgTypeImpl extends IrAnnotableImpl implements ItemArgType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public boolean isMultiple() {
 		return multiple;
 	}
@@ -91,6 +92,7 @@ public class ItemArgTypeImpl extends IrAnnotableImpl implements ItemArgType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setMultiple(boolean newMultiple) {
 		boolean oldMultiple = multiple;
 		multiple = newMultiple;
@@ -103,6 +105,7 @@ public class ItemArgTypeImpl extends IrAnnotableImpl implements ItemArgType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ItemType getType() {
 		if (type != null && type.eIsProxy()) {
 			InternalEObject oldType = (InternalEObject)type;
@@ -129,6 +132,7 @@ public class ItemArgTypeImpl extends IrAnnotableImpl implements ItemArgType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setType(ItemType newType) {
 		ItemType oldType = type;
 		type = newType;

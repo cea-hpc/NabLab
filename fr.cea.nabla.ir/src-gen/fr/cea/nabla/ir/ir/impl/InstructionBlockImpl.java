@@ -66,6 +66,7 @@ public class InstructionBlockImpl extends InstructionImpl implements Instruction
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<Instruction> getInstructions() {
 		if (instructions == null) {
 			instructions = new EObjectContainmentEList<Instruction>(Instruction.class, this, IrPackage.INSTRUCTION_BLOCK__INSTRUCTIONS);

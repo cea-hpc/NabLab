@@ -7,8 +7,8 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.typing.NSTArray1D
 import fr.cea.nabla.typing.NSTArray2D
-import fr.cea.nabla.typing.NSTDimension
 import fr.cea.nabla.typing.NSTScalar
+import fr.cea.nabla.typing.NSTSizeType
 import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.typing.NablaSimpleType
 import fr.cea.nabla.typing.NablaType
@@ -17,7 +17,7 @@ class NablaType2IrType
 {
 	@Inject extension Nabla2IrUtils
 	@Inject extension IrConnectivityFactory
-	@Inject extension IrDimensionFactory
+	@Inject extension IrSizeTypeFactory
 
 	def IrType toIrType(NablaType t)
 	{
@@ -42,7 +42,7 @@ class NablaType2IrType
 		IrFactory.eINSTANCE.createBaseType =>
 		[
 			primitive = t.primitive.toIrPrimitiveType
-			sizes += t.size.toIrDimension
+			sizes += t.size.toIrSizeType
 		]
 	}
 
@@ -51,8 +51,8 @@ class NablaType2IrType
 		IrFactory.eINSTANCE.createBaseType =>
 		[
 			primitive = t.primitive.toIrPrimitiveType
-			sizes += t.nbRows.toIrDimension
-			sizes += t.nbCols.toIrDimension
+			sizes += t.nbRows.toIrSizeType
+			sizes += t.nbCols.toIrSizeType
 		]
 	}
 
@@ -65,11 +65,11 @@ class NablaType2IrType
 		]
 	}
 
-	private def toIrDimension(NSTDimension d)
+	private def toIrSizeType(NSTSizeType d)
 	{
 		if (d.isInt)
-			IrFactory::eINSTANCE.createDimensionInt => [ value = d.intValue ]
+			IrFactory::eINSTANCE.createSizeTypeInt => [ value = d.intValue ]
 		else
-			d.dimensionValue.toIrDimension
+			d.sizeTypeValue.toIrSizeType
 	}
 }

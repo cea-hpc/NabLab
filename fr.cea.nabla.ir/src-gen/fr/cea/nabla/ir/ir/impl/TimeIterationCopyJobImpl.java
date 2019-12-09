@@ -93,6 +93,7 @@ public abstract class TimeIterationCopyJobImpl extends JobImpl implements TimeIt
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Variable getLeft() {
 		if (left != null && left.eIsProxy()) {
 			InternalEObject oldLeft = (InternalEObject)left;
@@ -119,6 +120,7 @@ public abstract class TimeIterationCopyJobImpl extends JobImpl implements TimeIt
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setLeft(Variable newLeft) {
 		Variable oldLeft = left;
 		left = newLeft;
@@ -131,6 +133,7 @@ public abstract class TimeIterationCopyJobImpl extends JobImpl implements TimeIt
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Variable getRight() {
 		if (right != null && right.eIsProxy()) {
 			InternalEObject oldRight = (InternalEObject)right;
@@ -157,6 +160,7 @@ public abstract class TimeIterationCopyJobImpl extends JobImpl implements TimeIt
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setRight(Variable newRight) {
 		Variable oldRight = right;
 		right = newRight;
@@ -169,6 +173,7 @@ public abstract class TimeIterationCopyJobImpl extends JobImpl implements TimeIt
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getTimeIteratorName() {
 		return timeIteratorName;
 	}
@@ -178,6 +183,7 @@ public abstract class TimeIterationCopyJobImpl extends JobImpl implements TimeIt
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setTimeIteratorName(String newTimeIteratorName) {
 		String oldTimeIteratorName = timeIteratorName;
 		timeIteratorName = newTimeIteratorName;

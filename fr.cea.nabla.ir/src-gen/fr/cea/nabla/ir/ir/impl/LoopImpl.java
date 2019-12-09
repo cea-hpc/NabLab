@@ -62,6 +62,7 @@ public class LoopImpl extends IterableInstructionImpl implements Loop {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Instruction getBody() {
 		return body;
 	}
@@ -86,6 +87,7 @@ public class LoopImpl extends IterableInstructionImpl implements Loop {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setBody(Instruction newBody) {
 		if (newBody != body) {
 			NotificationChain msgs = null;

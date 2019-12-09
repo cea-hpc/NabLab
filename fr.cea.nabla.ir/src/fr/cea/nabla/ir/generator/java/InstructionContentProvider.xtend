@@ -13,10 +13,10 @@ import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.DimensionIterationBlock
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
+import fr.cea.nabla.ir.ir.IntervalIterationBlock
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Loop
@@ -28,9 +28,9 @@ import fr.cea.nabla.ir.ir.SpaceIterationBlock
 import fr.cea.nabla.ir.ir.VarDefinition
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.generator.DimensionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
+import static extension fr.cea.nabla.ir.generator.SizeTypeContentProvider.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
@@ -119,7 +119,7 @@ class InstructionContentProvider
 		);
 	'''
 
-	private static def dispatch CharSequence getContent(ReductionInstruction it, DimensionIterationBlock b) 
+	private static def dispatch CharSequence getContent(ReductionInstruction it, IntervalIterationBlock b) 
 	'''
 		final int from = «b.from.content»;
 		final int to = «b.to.content»«IF b.toIncluded»+1«ENDIF»;
@@ -159,7 +159,7 @@ class InstructionContentProvider
 		}
 	'''
 
-	private static def dispatch getSequentialContent(DimensionIterationBlock it, Loop l)
+	private static def dispatch getSequentialContent(IntervalIterationBlock it, Loop l)
 	'''
 		for (int «index.name»=«from.content»; «index.name»<«IF toIncluded»=«ENDIF»«to.content»; «index.name»++)
 			«l.body.content»
@@ -175,7 +175,7 @@ class InstructionContentProvider
 		});
 	'''
 
-	private static def dispatch getParallelContent(DimensionIterationBlock it, Loop l)
+	private static def dispatch getParallelContent(IntervalIterationBlock it, Loop l)
 	'''
 		final int from = «from.content»;
 		final int to = «to.content»«IF toIncluded»+1«ENDIF»;

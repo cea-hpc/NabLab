@@ -11,10 +11,10 @@ package fr.cea.nabla.scoping
 
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
-import fr.cea.nabla.nabla.DimensionIterationBlock
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
+import fr.cea.nabla.nabla.IntervalIterationBlock
 import fr.cea.nabla.nabla.Iterable
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
@@ -181,25 +181,25 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	}
 
 	/*** Scope for dimension symbols **********************************/
-	def IScope scope_DimensionSymbolRef_target(Iterable context, EReference r)
+	def IScope scope_SizeTypeSymbolRef_target(Iterable context, EReference r)
 	{
 		//println('scope_DimensionSymbolRef_target(' + context.class.simpleName + ', ' + r.name + ')')
 		symbolsDefinedBefore(context.eContainer, '\t')
 	}
 
-	def IScope scope_DimensionSymbolRef_target(ArgOrVarRef context, EReference r)
+	def IScope scope_SizeTypeSymbolRef_target(ArgOrVarRef context, EReference r)
 	{
 		//println('scope_DimensionSymbolRef_target(' + context.class.simpleName + ', ' + r.name + ')')
 		symbolsDefinedBefore(context.eContainer, '\t')
 	}
 
-	def IScope scope_DimensionSymbolRef_target(BaseType context, EReference r)
+	def IScope scope_SizeTypeSymbolRef_target(BaseType context, EReference r)
 	{
 		//println('scope_DimensionSymbolRef_target(' + context.class.simpleName + ', ' + r.name + ')')
 		symbolsDefinedBefore(context.eContainer, '\t')
 	}
 
-	def IScope scope_DimensionSymbolRef_target(NablaModule context, EReference r)
+	def IScope scope_SizeTypeSymbolRef_target(NablaModule context, EReference r)
 	{
 		//println('scope_DimensionSymbolRef_target(' + context.class.simpleName + ', ' + r.name + ')')
 		IScope::NULLSCOPE
@@ -211,10 +211,10 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		if (o === null || o instanceof NablaModule) IScope.NULLSCOPE
 		else switch o
 		{
-			Function: Scopes.scopeFor(o.dimVars)
-			Reduction: Scopes.scopeFor(o.dimVars)
-			Iterable case (o.iterationBlock instanceof DimensionIterationBlock):
-				Scopes.scopeFor(#[(o.iterationBlock as DimensionIterationBlock).index], symbolsDefinedBefore(o.eContainer, prefix + '\t'))
+			Function: Scopes.scopeFor(o.vars)
+			Reduction: Scopes.scopeFor(o.vars)
+			Iterable case (o.iterationBlock instanceof IntervalIterationBlock):
+				Scopes.scopeFor(#[(o.iterationBlock as IntervalIterationBlock).index], symbolsDefinedBefore(o.eContainer, prefix + '\t'))
 			default: symbolsDefinedBefore(o.eContainer, prefix + '\t')
 		}
 	}

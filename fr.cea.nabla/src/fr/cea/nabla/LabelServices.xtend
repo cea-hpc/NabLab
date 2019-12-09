@@ -18,17 +18,13 @@ import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ContractedIf
-import fr.cea.nabla.nabla.DimensionInt
-import fr.cea.nabla.nabla.DimensionIterationBlock
-import fr.cea.nabla.nabla.DimensionOperation
-import fr.cea.nabla.nabla.DimensionSymbol
-import fr.cea.nabla.nabla.DimensionSymbolRef
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InitTimeIterator
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
+import fr.cea.nabla.nabla.IntervalIterationBlock
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.MaxConstant
@@ -47,6 +43,10 @@ import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
+import fr.cea.nabla.nabla.SizeTypeInt
+import fr.cea.nabla.nabla.SizeTypeOperation
+import fr.cea.nabla.nabla.SizeTypeSymbol
+import fr.cea.nabla.nabla.SizeTypeSymbolRef
 import fr.cea.nabla.nabla.SpaceIterationBlock
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
@@ -69,7 +69,7 @@ class LabelServices
 
 	/* ITERATEURS ********************************************/
 	static def dispatch String getLabel(SpaceIterationBlock it) { range?.label }
-	static def dispatch String getLabel(DimensionIterationBlock it) { index?.label + '\u2208 [' + from.label + ';' + to.label + (if (toIncluded) ']' else'[') }
+	static def dispatch String getLabel(IntervalIterationBlock it) { index?.label + '\u2208 [' + from.label + ';' + to.label + (if (toIncluded) ']' else'[') }
 
 	static def dispatch String getLabel(RangeSpaceIterator it) { name + '\u2208 ' + container?.label }
 	static def dispatch String getLabel(SingletonSpaceIterator it) { name + '=' + container?.label }
@@ -83,9 +83,6 @@ class LabelServices
 
 	static def dispatch String getLabel(InitTimeIterator it) { 'n=0' }
 	static def dispatch String getLabel(NextTimeIterator it) {  if (hasDiv) 'n+1/' + div else 'n+1' }
-
-	/* FONCTIONS / REDUCTIONS ********************************/
-	static def dispatch String getLabel(DimensionSymbol it) { name }
 
 	/* EXPRESSIONS ******************************************/
 	static def dispatch String getLabel(ContractedIf it) { condition?.label + ' ? ' + then?.label + ' : ' + ^else?.label }
@@ -123,13 +120,14 @@ class LabelServices
 	{ 
 		if (sizes.empty) 
 			primitive.literal
-		else if (sizes.exists[x | !(x instanceof DimensionInt)])
+		else if (sizes.exists[x | !(x instanceof SizeTypeInt)])
 			primitive.literal + '[' + sizes.map[x | x.label].join(',') + ']'
 		else
-			primitive.literal + sizes.map[x | (x as DimensionInt).value.utfExponent].join('\u02E3')
+			primitive.literal + sizes.map[x | (x as SizeTypeInt).value.utfExponent].join('\u02E3')
 	}
 
-	static def dispatch String getLabel(DimensionOperation it) { left?.label + ' ' + op + ' ' + right?.label }
-	static def dispatch String getLabel(DimensionInt it) { value.toString }
-	static def dispatch String getLabel(DimensionSymbolRef it) { target?.name }
+	static def dispatch String getLabel(SizeTypeOperation it) { left?.label + ' ' + op + ' ' + right?.label }
+	static def dispatch String getLabel(SizeTypeInt it) { value.toString }
+	static def dispatch String getLabel(SizeTypeSymbolRef it) { target?.name }
+	static def dispatch String getLabel(SizeTypeSymbol it) { name }
 }

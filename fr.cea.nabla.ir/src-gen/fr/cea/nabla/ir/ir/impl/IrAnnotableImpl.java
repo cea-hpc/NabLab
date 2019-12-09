@@ -68,6 +68,7 @@ public abstract class IrAnnotableImpl extends MinimalEObjectImpl.Container imple
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<IrAnnotation> getAnnotations() {
 		if (annotations == null) {
 			annotations = new EObjectContainmentEList<IrAnnotation>(IrAnnotation.class, this, IrPackage.IR_ANNOTABLE__ANNOTATIONS);

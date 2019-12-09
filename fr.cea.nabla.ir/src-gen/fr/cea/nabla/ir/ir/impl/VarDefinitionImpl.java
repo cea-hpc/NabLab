@@ -65,6 +65,7 @@ public class VarDefinitionImpl extends InstructionImpl implements VarDefinition 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<Variable> getVariables() {
 		if (variables == null) {
 			variables = new EObjectContainmentEList<Variable>(Variable.class, this, IrPackage.VAR_DEFINITION__VARIABLES);

@@ -1,22 +1,22 @@
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.ir.DimensionInt
-import fr.cea.nabla.ir.ir.DimensionOperation
-import fr.cea.nabla.ir.ir.DimensionSymbolRef
+import fr.cea.nabla.ir.ir.SizeTypeInt
+import fr.cea.nabla.ir.ir.SizeTypeOperation
+import fr.cea.nabla.ir.ir.SizeTypeSymbolRef
 
 class DimensionInterpreter 
 {
-	static def dispatch int interprete(DimensionInt it, Context context)
+	static def dispatch int interprete(SizeTypeInt it, Context context)
 	{
 		value
 	}
 
-	static def dispatch int interprete(DimensionSymbolRef it, Context context)
+	static def dispatch int interprete(SizeTypeSymbolRef it, Context context)
 	{
 		context.getDimensionValue(target)
 	}
 
-	static def dispatch int interprete(DimensionOperation it, Context context)
+	static def dispatch int interprete(SizeTypeOperation it, Context context)
 	{
 		val leftValue = interprete(left, context)
 		val rightValue = interprete(right, context)

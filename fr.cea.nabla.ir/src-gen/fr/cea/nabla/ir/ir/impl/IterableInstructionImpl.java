@@ -60,6 +60,7 @@ public abstract class IterableInstructionImpl extends InstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public IterationBlock getIterationBlock() {
 		if (iterationBlock != null && iterationBlock.eIsProxy()) {
 			InternalEObject oldIterationBlock = (InternalEObject)iterationBlock;
@@ -107,6 +108,7 @@ public abstract class IterableInstructionImpl extends InstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setIterationBlock(IterationBlock newIterationBlock) {
 		if (newIterationBlock != iterationBlock) {
 			NotificationChain msgs = null;

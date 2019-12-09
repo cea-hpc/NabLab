@@ -74,6 +74,7 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public BaseType getType() {
 		if (type != null && type.eIsProxy()) {
 			InternalEObject oldType = (InternalEObject)type;
@@ -121,6 +122,7 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setType(BaseType newType) {
 		if (newType != type) {
 			NotificationChain msgs = null;
@@ -140,6 +142,7 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Expression getDefaultValue() {
 		return defaultValue;
 	}
@@ -164,6 +167,7 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setDefaultValue(Expression newDefaultValue) {
 		if (newDefaultValue != defaultValue) {
 			NotificationChain msgs = null;

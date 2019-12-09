@@ -1,12 +1,18 @@
 # DO NOT IGNORE src-gen DIRECTORIES FOR ALL PROJECTS
-*/xtend-gen/*
-*.class
-*/bin/*
-*.o
-*.a
-/.metadata/
-output
-*.nablair
-.settings
+# Java
+.class
+bin/
+# Eclipse
+.metadata
+.settings/
+# Xtext
+xtend-gen/
+# C++
+.o
+.a
+# Nabla
+.nablair
 org.antlr.runtime
-
+output
+# macOS
+.DS_Store

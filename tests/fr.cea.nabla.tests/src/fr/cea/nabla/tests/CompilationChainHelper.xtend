@@ -38,7 +38,7 @@ class CompilationChainHelper
 	def getIrModule(CharSequence model, CharSequence genModel)
 	{
 		// First read MathFunctions
-		val mathFunctionsPath = "../fr.cea.nabla/nablalib/mathfunctions.nabla"
+		val mathFunctionsPath = "../../plugins/fr.cea.nabla/nablalib/mathfunctions.nabla"
 		var mathFunctions = nablaParseHelper.parse(new String(Files.readAllBytes(Paths.get(mathFunctionsPath))))
 
 		var rs = resourceSetProvider.get

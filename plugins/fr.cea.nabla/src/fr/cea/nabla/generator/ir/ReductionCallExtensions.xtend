@@ -11,30 +11,27 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.typing.DeclarationProvider
 import org.eclipse.emf.ecore.util.EcoreUtil
 
-/**
- * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
- * Si elle n'est pas singleton, plusieurs instances d'un même objet seront créées (voir la documentation Xtext).
- */
-@Singleton
+@Singleton	// Must be singleton because contains create methods
 class ReductionCallExtensions 
 {
+	public static val ReductionVariableName = "reduction<NUMBER>"
+
 	@Inject extension DeclarationProvider
 	@Inject extension NablaType2IrType
 	@Inject extension IrExpressionFactory
-	
+
 	def create IrFactory::eINSTANCE.createSimpleVariable toIrLocalVariable(ReductionCall rc)
 	{
-		name = 'reduction' + Utils::hashString(rc)
+		name = ReductionVariableName
 		val d = rc.declaration
 		val vType = d.returnType.toIrBaseType
 		type = vType
-		
+
 		val seedExpression = d.model.seed.toIrExpression
 		if (vType.sizes.empty) // scalar type
 			defaultValue = seedExpression
@@ -43,6 +40,6 @@ class ReductionCallExtensions
 			[
 				type = EcoreUtil::copy(vType)
 				value = seedExpression
-			]	
+			]
 	}
 }

@@ -25,6 +25,7 @@ import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.typing.DeclarationProvider
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
+import fr.cea.nabla.ir.ir.SimpleVariable
 
 class Nabla2Ir
 {
@@ -100,6 +101,12 @@ class Nabla2Ir
 			initCoordVariable = variables.findFirst[x | x.name == MandatoryMeshVariables::COORD]
 
 		m.jobs.forEach[x | jobs += x.toIrInstructionJob]
+
+		// Create a unique name for reduction instruction variable
+		var i = 0
+		for (v : eAllContents.filter(SimpleVariable).toIterable)
+			if (v.name == ReductionCallExtensions.ReductionVariableName)
+				v.name = v.name.replace("<NUMBER>", (i++).toString)
 	}
 
 	private def getModuleName(EObject it) 

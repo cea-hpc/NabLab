@@ -121,19 +121,19 @@ public final class ExplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			int cId = cCells;
-			double[] reduction83321187 = {0.0, 0.0};
+			double[] reduction0 = {0.0, 0.0};
 			{
 				int[] nodesOfCellC = mesh.getNodesOfCell(cId);
 				for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.length; pNodesOfCellC++)
 				{
 					int pId = nodesOfCellC[pNodesOfCellC];
 					int pNodes = pId;
-					reduction83321187 = ArrayOperations.plus(reduction83321187, (X[pNodes]));
+					reduction0 = ArrayOperations.plus(reduction0, (X[pNodes]));
 				}
 			}
-			Xc[cCells] = ArrayOperations.multiply(0.25, reduction83321187);
+			Xc[cCells] = ArrayOperations.multiply(0.25, reduction0);
 		});
-	}		
+	}
 
 	/**
 	 * Job InitD @-3.0
@@ -146,7 +146,7 @@ public final class ExplicitHeatEquation
 		{
 			D[cCells] = 1.0;
 		});
-	}		
+	}
 
 	/**
 	 * Job ComputeV @-3.0
@@ -158,7 +158,7 @@ public final class ExplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double reduction_1884650213 = 0.0;
+			double reduction2 = 0.0;
 			{
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int pNodesOfCellJ=0; pNodesOfCellJ<nodesOfCellJ.length; pNodesOfCellJ++)
@@ -167,12 +167,12 @@ public final class ExplicitHeatEquation
 					int pPlus1Id = nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					int pNodes = pId;
 					int pPlus1Nodes = pPlus1Id;
-					reduction_1884650213 = reduction_1884650213 + (MathFunctions.det(X[pNodes], X[pPlus1Nodes]));
+					reduction2 = reduction2 + (MathFunctions.det(X[pNodes], X[pPlus1Nodes]));
 				}
 			}
-			V[jCells] = 0.5 * reduction_1884650213;
+			V[jCells] = 0.5 * reduction2;
 		});
-	}		
+	}
 
 	/**
 	 * Job ComputeFaceLength @-3.0
@@ -184,7 +184,7 @@ public final class ExplicitHeatEquation
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			int fId = fFaces;
-			double reduction_1283758977 = 0.0;
+			double reduction3 = 0.0;
 			{
 				int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
 				for (int pNodesOfFaceF=0; pNodesOfFaceF<nodesOfFaceF.length; pNodesOfFaceF++)
@@ -193,12 +193,12 @@ public final class ExplicitHeatEquation
 					int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
 					int pNodes = pId;
 					int pPlus1Nodes = pPlus1Id;
-					reduction_1283758977 = reduction_1283758977 + (MathFunctions.norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
+					reduction3 = reduction3 + (MathFunctions.norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
 				}
 			}
-			faceLength[fFaces] = 0.5 * reduction_1283758977;
+			faceLength[fFaces] = 0.5 * reduction3;
 		});
-	}		
+	}
 
 	/**
 	 * Job InitXcAndYc @-2.0
@@ -212,7 +212,7 @@ public final class ExplicitHeatEquation
 			xc[cCells] = Xc[cCells][0];
 			yc[cCells] = Xc[cCells][1];
 		});
-	}		
+	}
 
 	/**
 	 * Job InitU @-2.0
@@ -228,7 +228,7 @@ public final class ExplicitHeatEquation
 			else 
 				u[cCells] = 0.0;
 		});
-	}		
+	}
 
 	/**
 	 * Job computeDeltaTn @-2.0
@@ -237,13 +237,13 @@ public final class ExplicitHeatEquation
 	 */
 	private void computeDeltaTn() 
 	{
-		double reduction_714853031 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+		double reduction1 = IntStream.range(0, nbCells).boxed().parallel().reduce(
 			Double.MAX_VALUE, 
 			(r, cCells) -> MathFunctions.min(r, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]),
 			(r1, r2) -> MathFunctions.min(r1, r2)
 		);
-		deltat = reduction_714853031 * 0.24;
-	}		
+		deltat = reduction1 * 0.24;
+	}
 
 	/**
 	 * Job ComputeFaceConductivity @-2.0
@@ -255,29 +255,29 @@ public final class ExplicitHeatEquation
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			int fId = fFaces;
-			double reduction1970506419 = 1.0;
+			double reduction4 = 1.0;
 			{
 				int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				for (int c1CellsOfFaceF=0; c1CellsOfFaceF<cellsOfFaceF.length; c1CellsOfFaceF++)
 				{
 					int c1Id = cellsOfFaceF[c1CellsOfFaceF];
 					int c1Cells = c1Id;
-					reduction1970506419 = reduction1970506419 * (D[c1Cells]);
+					reduction4 = reduction4 * (D[c1Cells]);
 				}
 			}
-			double reduction1628650791 = 0.0;
+			double reduction5 = 0.0;
 			{
 				int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				for (int c2CellsOfFaceF=0; c2CellsOfFaceF<cellsOfFaceF.length; c2CellsOfFaceF++)
 				{
 					int c2Id = cellsOfFaceF[c2CellsOfFaceF];
 					int c2Cells = c2Id;
-					reduction1628650791 = reduction1628650791 + (D[c2Cells]);
+					reduction5 = reduction5 + (D[c2Cells]);
 				}
 			}
-			faceConductivity[fFaces] = 2.0 * reduction1970506419 / reduction1628650791;
+			faceConductivity[fFaces] = 2.0 * reduction4 / reduction5;
 		});
-	}		
+	}
 
 	/**
 	 * Job computeAlphaCoeff @-1.0
@@ -306,7 +306,7 @@ public final class ExplicitHeatEquation
 			}
 			alpha[cCells][cCells] = 1 - alphaDiag;
 		});
-	}		
+	}
 
 	/**
 	 * Job UpdateU @1.0
@@ -318,19 +318,19 @@ public final class ExplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			int cId = cCells;
-			double reduction_230660488 = 0.0;
+			double reduction6 = 0.0;
 			{
 				int[] neighbourCellsC = mesh.getNeighbourCells(cId);
 				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.length; dNeighbourCellsC++)
 				{
 					int dId = neighbourCellsC[dNeighbourCellsC];
 					int dCells = dId;
-					reduction_230660488 = reduction_230660488 + (alpha[cCells][dCells] * u[dCells]);
+					reduction6 = reduction6 + (alpha[cCells][dCells] * u[dCells]);
 				}
 			}
-			u_nplus1[cCells] = alpha[cCells][cCells] * u[cCells] + reduction_230660488;
+			u_nplus1[cCells] = alpha[cCells][cCells] * u[cCells] + reduction6;
 		});
-	}		
+	}
 
 	/**
 	 * Job ComputeTn @1.0
@@ -340,7 +340,7 @@ public final class ExplicitHeatEquation
 	private void computeTn() 
 	{
 		t_nplus1 = t + deltat;
-	}		
+	}
 
 	/**
 	 * Job dumpVariables @1.0
@@ -356,7 +356,7 @@ public final class ExplicitHeatEquation
 			cellVariables.put("Temperature", u);
 			writer.writeFile(iteration, t, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
 		}
-	}		
+	}
 
 	/**
 	 * Job Copy_u_nplus1_to_u @2.0
@@ -368,7 +368,7 @@ public final class ExplicitHeatEquation
 		double[] tmpSwitch = u;
 		u = u_nplus1;
 		u_nplus1 = tmpSwitch;
-	}		
+	}
 
 	/**
 	 * Job Copy_t_nplus1_to_t @2.0
@@ -380,5 +380,5 @@ public final class ExplicitHeatEquation
 		double tmpSwitch = t;
 		t = t_nplus1;
 		t_nplus1 = tmpSwitch;
-	}		
+	}
 };

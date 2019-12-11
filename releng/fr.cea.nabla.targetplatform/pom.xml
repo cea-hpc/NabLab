@@ -18,6 +18,8 @@
         <relativePath>../../</relativePath>
     </parent>
 
+    <groupId>fr.cea.nabla</groupId>
     <artifactId>fr.cea.nabla.targetplatform</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 </project>

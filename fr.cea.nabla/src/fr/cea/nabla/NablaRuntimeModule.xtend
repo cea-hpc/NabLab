@@ -25,7 +25,7 @@ class NablaRuntimeModule extends AbstractNablaRuntimeModule
 		.annotatedWith(typeof(DispatchingProvider.Runtime))
 		.to(typeof(NablaEncodingProvider))
 	}
-	
+
 	override Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() 
 	{
 		return NablaQualifiedNameProvider

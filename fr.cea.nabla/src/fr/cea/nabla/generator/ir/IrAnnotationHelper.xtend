@@ -19,36 +19,36 @@ import org.eclipse.xtext.resource.ILocationInFileProvider
 class IrAnnotationHelper 
 {
 	@Inject ILocationInFileProvider locationProvider
-	
+
 	public static val ANNOTATION_NABLA_ORIGIN_SOURCE = "nabla-origin"
 	public static val ANNOTATION_URI_DETAIL = 'uri'
 	public static val ANNOTATION_OFFSET_DETAIL = 'offset'
 	public static val ANNOTATION_LENGTH_DETAIL = 'length'
-	
+
 	def dispatch toIrAnnotation(NablaModule it)
 	{
 		val annotation = createIrAnnot
 		annotation.details.put(ANNOTATION_URI_DETAIL, eResource.URI.toString)
 		return annotation
 	}
-	
+
 	def dispatch toIrAnnotation(EObject it)
 	{
 		createIrAnnot
 	}
-	
+
 	def getUriDetail(EObject o)
 	{
 		val irFile = Utils::getIrModule(o)
 		if (irFile === null) null
 		else irFile.annotations.head.details.get(ANNOTATION_URI_DETAIL)
 	}
-	
+
 	private def createIrAnnot(EObject nablaElt)
 	{
 		val region = locationProvider.getFullTextRegion(nablaElt)
 		if (region === null) throw new RuntimeException('Ooops : impossible de créer une annotation pour : ' + nablaElt)
-		
+
 		IrFactory::eINSTANCE.createIrAnnotation => 
 		[
 			source = ANNOTATION_NABLA_ORIGIN_SOURCE

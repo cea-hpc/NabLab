@@ -3,9 +3,9 @@
  */
 package fr.cea.nabla
 
-
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
-class NablagenRuntimeModule extends AbstractNablagenRuntimeModule {
+class NablagenRuntimeModule extends AbstractNablagenRuntimeModule 
+{
 }

@@ -563,7 +563,7 @@
     </category>
     <wizard
           category="fr.cea.nabla.ui.category"
-          class="fr.cea.nabla.ui.wizards.NewNablaProjectWizard"
+          class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:fr.cea.nabla.ui.wizards.NewNablaProjectWizard"
           icon="icons/Nabla.gif"
           id="fr.cea.nabla.ui.new.project.wizard"
           name="%NablaProjectWizardName"

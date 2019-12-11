@@ -49,7 +49,7 @@ class NablagenRunner
 		EcoreUtil::resolveAll(resourceSet)
 		emfResource.load(null)
 		for (module : emfResource.contents.filter(NablagenModule))
-		if (module.workflow !== null) 
-			module.workflow.launch
+			if (module.workflow !== null) 
+				module.workflow.launch
 	}
 }

@@ -57,6 +57,7 @@ Workflow {
 		language = StandardLanguage {
 			name = "fr.cea.nabla.Nablagen"
 			fileExtensions = "nablagen"
+			referencedResource = "platform:/resource/fr.cea.nabla/src/fr/cea/nabla/Nabla.xtext"
 
 			serializer = {
 				generateStub = false

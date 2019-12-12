@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 CEA, Obeo
+    This program and the accompanying materials are made available under the 
+    terms of the Eclipse Public License 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+    SPDX-License-Identifier: EPL-2.0
+    Contributors: see AUTHORS file
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>fr.cea.nabla</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>NabLab build</name>
+
+    <properties>
+        <tycho-version>1.5.1</tycho-version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>updatesite</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>plugins/fr.cea.nabla</module>
+                <module>plugins/fr.cea.nabla.edit</module>
+                <module>plugins/fr.cea.nabla.editor</module>
+                <module>plugins/fr.cea.nabla.ir</module>
+                <module>plugins/fr.cea.nabla.ide</module>
+                <module>plugins/fr.cea.nabla.javalib</module>
+                <module>plugins/fr.cea.nabla.sirius</module>
+                <module>plugins/fr.cea.nabla.ui</module>
+                <module>features/fr.cea.nabla.feature</module>
+                <module>releng/fr.cea.nabla.targetplatform</module>
+                <module>releng/fr.cea.nabla.updatesite</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>tests</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>tests/fr.cea.nabla.tests</module>
+                <module>tests/fr.cea.nabla.javalib.tests</module>
+                <module>releng/fr.cea.nabla.targetplatform</module>
+            </modules>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-packaging-plugin</artifactId>
+                <version>${tycho-version}</version>
+                <configuration>
+                    <strictBinIncludes>false</strictBinIncludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-maven-plugin</artifactId>
+                <version>${tycho-version}</version>
+                <extensions>true</extensions>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>target-platform-configuration</artifactId>
+                <version>${tycho-version}</version>
+                <configuration>
+                    <target>
+                        <artifact>
+                            <groupId>fr.cea.nabla</groupId>
+                            <artifactId>fr.cea.nabla.targetplatform</artifactId>
+                            <version>1.0.0-SNAPSHOT</version>
+                            <classifier>nablab</classifier>
+                        </artifact>
+                    </target>
+                    <environments>
+                        <!-- <environment>
+                            <os>win32</os>
+                            <ws>win32</ws>
+                            <arch>x86_64</arch>
+                        </environment> -->
+                        <environment>
+                            <os>linux</os>
+                            <ws>gtk</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                        <environment>
+                            <os>macosx</os>
+                            <ws>cocoa</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                    </environments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

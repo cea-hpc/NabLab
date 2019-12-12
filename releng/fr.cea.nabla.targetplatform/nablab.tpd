@@ -1,0 +1,47 @@
+/*******************************************************************************
+ * Copyright (c) 2019 CEA, Obeo
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+target "NabLab Target platform"
+
+with source requirements
+environment JavaSE-1.8
+
+location eclipse "http://download.eclipse.org/releases/2019-09" {
+	org.eclipse.sdk.feature.group
+	org.eclipse.platform.feature.group
+	org.eclipse.pde.feature.group
+	org.eclipse.emf.feature.group
+	org.eclipse.emf.mwe2.runtime.sdk.feature.group
+	org.eclipse.emf.mwe2.launcher.feature.group
+	org.eclipse.emf.mwe2.language.sdk.feature.group
+	org.eclipse.gmf.feature.group
+	org.eclipse.xtext.runtime.feature.group
+	org.eclipse.xtext.ui.feature.group
+	org.eclipse.xtext.redist.feature.group
+	org.eclipse.xtext.xbase.feature.group
+	org.eclipse.xtext.xbase.junit
+	org.eclipse.xtext.xbase.testing
+	org.eclipse.xtext.junit4
+	
+}
+
+location siruis "http://download.eclipse.org/sirius/updates/releases/6.2.2/2019-06" {
+	org.eclipse.sirius.runtime.feature.group
+	org.eclipse.sirius.runtime.aql.feature.group
+	org.eclipse.sirius.runtime.ide.ui.feature.group
+	org.eclipse.sirius.properties.feature.feature.group
+	org.eclipse.eef.sdk.feature.feature.group
+	org.eclipse.eef.ext.widgets.reference.feature.feature.group
+}
+
+location orbit "https://download.eclipse.org/tools/orbit/downloads/drops/R20190827152740/repository/" {
+	org.hamcrest.core
+	org.apache.commons.lang3
+	com.google.guava
+}

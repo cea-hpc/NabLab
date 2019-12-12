@@ -13,3 +13,4 @@ Require-Bundle: org.junit,
  org.eclipse.xtext.xbase.junit,
  org.eclipse.xtext.testing,
  fr.cea.nabla.javalib
+Bundle-ClassPath: .

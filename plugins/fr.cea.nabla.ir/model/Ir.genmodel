@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/fr.cea.nabla.ir/src-gen" modelPluginID="fr.cea.nabla.ir"
+    runtimeJar="true" modelName="NablaIR" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    testsDirectory="/fr.cea.nabla.ir.tests/src" booleanFlagsField="" booleanFlagsReservedBits="8"
+    importerID="org.eclipse.emf.importer.ecore" containmentProxies="true" complianceLevel="8.0"
+    language="en" operationReflection="true" importOrganizing="true" decoration="Live"
+    oSGiCompatible="true">
+  <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
+    <genAnnotations source="selectedPackages">
+      <details key="http://www.eclipse.org/emf/2002/Ecore" value="Ecore.xsd"/>
+    </genAnnotations>
+    <details key="directoryURI" value="."/>
+  </genAnnotations>
+  <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter.xmi">
+    <genAnnotations source="selectedPackages">
+      <details key="http://www.eclipse.org/emf/2002/Ecore" value="EcoreXMI.xsd"/>
+    </genAnnotations>
+    <details key="directoryURI" value="."/>
+  </genAnnotations>
+  <foreignModel>Ir.ecore</foreignModel>
+  <modelPluginVariables>org.eclipse.xtext.xbase.lib</modelPluginVariables>
+  <modelPluginVariables>org.eclipse.emf.ecore.xcore.lib</modelPluginVariables>
+  <genPackages prefix="Ir" basePackage="fr.cea.nabla.ir" disposableProviderFactory="true"
+      fileExtensions="nablair" ecorePackage="Ir.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Ir.ecore#//PrimitiveType">
+      <genEnumLiterals ecoreEnumLiteral="Ir.ecore#//PrimitiveType/Int"/>
+      <genEnumLiterals ecoreEnumLiteral="Ir.ecore#//PrimitiveType/Real"/>
+      <genEnumLiterals ecoreEnumLiteral="Ir.ecore#//PrimitiveType/Bool"/>
+    </genEnums>
+    <genClasses image="false" ecoreClass="Ir.ecore#//IrAnnotable">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrAnnotable/annotations"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//IrAnnotation">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IrAnnotation/source"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrAnnotation/details"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//IrModule">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IrModule/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/imports"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/items"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/functions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/reductions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/connectivities"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/variables"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/initCoordVariable"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/jobs"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//Import">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Import/importedNamespace"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Ir.ecore#//ArgOrVar">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ArgOrVar/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//Arg">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Arg/type"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Ir.ecore#//Variable">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/persistenceName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/const"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//SimpleVariable">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SimpleVariable/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SimpleVariable/defaultValue"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//ConnectivityVariable">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityVariable/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityVariable/defaultValue"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//Function">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/provider"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/variables"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/inArgs"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//Function/returnType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/body"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//Reduction">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Reduction/provider"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Reduction/variables"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Reduction/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Reduction/collectionType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//Reduction/returnType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Reduction/operator"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//Connectivity">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Connectivity/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Connectivity/inTypes"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Connectivity/returnType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Connectivity/indexEqualId"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//ItemArgType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ItemArgType/multiple"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//ItemArgType/type"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Ir.ecore#//Job">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Job/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Job/at"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Job/onCycle"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//InstructionJob">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InstructionJob/instruction"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//InSituJob">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//InSituJob/variables"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//InSituJob/iterationPeriod"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//InSituJob/timeStep"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//TimeIterationCopyJob">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeIterationCopyJob/left"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeIterationCopyJob/right"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//TimeIterationCopyJob/timeIteratorName"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//EndOfTimeLoopJob"/>
+    <genClasses ecoreClass="Ir.ecore#//EndOfInitJob"/>
+    <genClasses image="false" ecoreClass="Ir.ecore#//Instruction"/>
+    <genClasses ecoreClass="Ir.ecore#//VarDefinition">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//VarDefinition/variables"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//InstructionBlock">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InstructionBlock/instructions"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//Affectation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Affectation/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Affectation/right"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Ir.ecore#//IterableInstruction">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IterableInstruction/iterationBlock"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Ir.ecore#//IterationBlock"/>
+    <genClasses ecoreClass="Ir.ecore#//SpaceIterationBlock">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SpaceIterationBlock/range"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SpaceIterationBlock/singletons"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//IntervalIterationBlock">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IntervalIterationBlock/index"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IntervalIterationBlock/from"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IntervalIterationBlock/to"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IntervalIterationBlock/toIncluded"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//SizeTypeSymbol">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SizeTypeSymbol/name"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Ir.ecore#//SizeType"/>
+    <genClasses ecoreClass="Ir.ecore#//SizeTypeInt">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SizeTypeInt/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//SizeTypeOperation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SizeTypeOperation/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SizeTypeOperation/right"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SizeTypeOperation/operator"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//SizeTypeSymbolRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//SizeTypeSymbolRef/target"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//ReductionInstruction">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/innerReductions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/reduction"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/arg"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/result"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//Loop">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Loop/body"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//If">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//If/condition"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//If/thenInstruction"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//If/elseInstruction"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//Return">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Return/expression"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Ir.ecore#//Expression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Expression/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//ContractedIf">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ContractedIf/condition"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ContractedIf/thenExpression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ContractedIf/elseExpression"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//BinaryExpression">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//BinaryExpression/operator"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//BinaryExpression/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//BinaryExpression/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//UnaryExpression">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//UnaryExpression/operator"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//UnaryExpression/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//Parenthesis">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Parenthesis/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//IntConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IntConstant/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//RealConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//RealConstant/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//BoolConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//BoolConstant/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//MinConstant"/>
+    <genClasses ecoreClass="Ir.ecore#//MaxConstant"/>
+    <genClasses ecoreClass="Ir.ecore#//BaseTypeConstant">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//BaseTypeConstant/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//VectorConstant">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//VectorConstant/values"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//FunctionCall">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//FunctionCall/function"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//FunctionCall/args"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//ArgOrVarRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ArgOrVarRef/target"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ArgOrVarRef/iterators"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ArgOrVarRef/indices"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//Iterator">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Iterator/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Iterator/container"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Iterator/singleton"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Iterator/referencers"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//ConnectivityCall">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityCall/connectivity"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityCall/args"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//IteratorRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IteratorRef/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IteratorRef/shift"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IteratorRef/indexInReferencerList"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//ConnectivityCallIteratorRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityCallIteratorRef/referencedBy"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//ArgOrVarRefIteratorRef">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//ArgOrVarRefIteratorRef/referencedBy"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//ItemType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ItemType/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//IrType"/>
+    <genClasses ecoreClass="Ir.ecore#//BaseType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//BaseType/primitive"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//BaseType/sizes"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//ConnectivityType">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityType/connectivities"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityType/base"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

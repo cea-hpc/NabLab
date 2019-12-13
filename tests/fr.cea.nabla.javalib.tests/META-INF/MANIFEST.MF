@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: fr.cea.nabla.javalib.tests
+Bundle-Version: 1.0.0.qualifier
+Export-Package: fr.cea.nabla.javalib.mesh.test
+Bundle-Vendor: CEA
+Bundle-Name: fr.cea.nabla.javalib.tests
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: fr.cea.nabla.javalib.tests
+Require-Bundle: org.junit,
+ org.eclipse.xtend.lib,
+ org.eclipse.xtext.junit4,
+ org.eclipse.xtext.xbase.junit,
+ org.eclipse.xtext.testing,
+ fr.cea.nabla.javalib
+Bundle-ClassPath: .

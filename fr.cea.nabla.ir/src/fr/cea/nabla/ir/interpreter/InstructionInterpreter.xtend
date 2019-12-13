@@ -12,6 +12,7 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SpaceIterationBlock
 import fr.cea.nabla.ir.ir.VarDefinition
+import java.util.TreeSet
 
 import static fr.cea.nabla.ir.interpreter.DimensionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
@@ -66,14 +67,17 @@ class InstructionInterpreter
 		{
 			SpaceIterationBlock:
 			{
+				println("On traite la boucle " + b.range.container.connectivity.name)
 				val connectivityName = b.range.container.connectivity.name
 				val argIds =  b.range.container.args.map[x | context.getIdValue(x)]
 				val container = context.meshWrapper.getElements(connectivityName, argIds)
 				context.addIndexValue(b.range, 0)
+				val indices = b.range.neededIndices
+				val ids = b.range.neededIds
 				for (loopIteratorValue : 0..<container.size)
 				{
 					context.setIndexValue(b.range, loopIteratorValue)
-					defineIndices(b, context)
+					defineIndices(b, context, ids, indices)
 					val ret = interprete(body, context)
 					if (ret !== null)
 						return ret
@@ -111,23 +115,23 @@ class InstructionInterpreter
 		return interprete(expression, context)
 	}
 
- 	private static def void defineIndices(SpaceIterationBlock it, Context context)
+ 	private static def void defineIndices(SpaceIterationBlock it, Context context, TreeSet<IteratorRef> ids, TreeSet<ArgOrVarRefIteratorRef> indices)
 	{
-		defineIndices(range, context)
+		defineIndices(range, context, ids, indices)
 		for (s : singletons)
 		{
-			context.addIndexValue(s,context.getSingleton(s))
-			defineIndices(s, context)
+			context.addIndexValue(s, context.getSingleton(s))
+			defineIndices(s, context, s.neededIds, s.neededIndices)
 		}
 	}
 
-	private static def void defineIndices(Iterator it, Context context)
+	private static def void defineIndices(Iterator it, Context context, TreeSet<IteratorRef> ids, TreeSet<ArgOrVarRefIteratorRef> indices)
 	{
-		for (neededId : neededIds)
+		// Not  necessary to look for neededId and neededIndex at each iteration
+		for (neededId : ids)
 			context.addIdValue(neededId, getIndexToId(neededId, context))
-		for (neededIndex : neededIndices)
+		for (neededIndex : indices)
 			context.addIndexValue(neededIndex, getIdToIndex(neededIndex, context))
-
 	}
 
 	private	static def getIndexToId(IteratorRef it, Context context)

@@ -19,6 +19,7 @@ import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import fr.cea.nabla.ir.ir.Iterator
 
 class ModuleInterpreter 
 {
@@ -55,6 +56,9 @@ class ModuleInterpreter
 		// Add Variable for iteration
 		val iterationVariable = createIterationVariable
 		jobInterpreter = new JobInterpreter(writer)
+
+		// Compute NeededIds and NeededIndexes for each iterator to spare time during interpretation
+		module.eAllContents.filter(Iterator).forEach[i | context.setNeededIndicesAndNeededIdsInContext(i)]
 
 		// Interprete constant variables
 		for (v : module.variables.filter(SimpleVariable).filter[const])

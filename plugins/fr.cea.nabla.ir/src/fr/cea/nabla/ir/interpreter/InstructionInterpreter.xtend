@@ -12,14 +12,12 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SpaceIterationBlock
 import fr.cea.nabla.ir.ir.VarDefinition
-import java.util.TreeSet
 
 import static fr.cea.nabla.ir.interpreter.DimensionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
-import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 
 class InstructionInterpreter
@@ -67,17 +65,15 @@ class InstructionInterpreter
 		{
 			SpaceIterationBlock:
 			{
-				println("On traite la boucle " + b.range.container.connectivity.name)
+				//println("On traite la boucle " + b.range.container.connectivity.name)
 				val connectivityName = b.range.container.connectivity.name
 				val argIds =  b.range.container.args.map[x | context.getIdValue(x)]
 				val container = context.meshWrapper.getElements(connectivityName, argIds)
 				context.addIndexValue(b.range, 0)
-				val indices = b.range.neededIndices
-				val ids = b.range.neededIds
 				for (loopIteratorValue : 0..<container.size)
 				{
 					context.setIndexValue(b.range, loopIteratorValue)
-					defineIndices(b, context, ids, indices)
+					setIndices(b, context)
 					val ret = interprete(body, context)
 					if (ret !== null)
 						return ret
@@ -115,22 +111,22 @@ class InstructionInterpreter
 		return interprete(expression, context)
 	}
 
- 	private static def void defineIndices(SpaceIterationBlock it, Context context, TreeSet<IteratorRef> ids, TreeSet<ArgOrVarRefIteratorRef> indices)
+	private static def void setIndices(SpaceIterationBlock it, Context context)
 	{
-		defineIndices(range, context, ids, indices)
+		setIndices(range, context)
 		for (s : singletons)
 		{
 			context.addIndexValue(s, context.getSingleton(s))
-			defineIndices(s, context, s.neededIds, s.neededIndices)
+			setIndices(s, context)
 		}
 	}
 
-	private static def void defineIndices(Iterator it, Context context, TreeSet<IteratorRef> ids, TreeSet<ArgOrVarRefIteratorRef> indices)
+	private static def void setIndices(Iterator it, Context context)
 	{
 		// Not  necessary to look for neededId and neededIndex at each iteration
-		for (neededId : ids)
+		for (neededId : context.getNeededIdsInContext(it))
 			context.addIdValue(neededId, getIndexToId(neededId, context))
-		for (neededIndex : indices)
+		for (neededIndex : context.getNeededIndicesInContext(it))
 			context.addIndexValue(neededIndex, getIdToIndex(neededIndex, context))
 	}
 

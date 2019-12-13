@@ -8,6 +8,7 @@ import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.SizeTypeSymbol
 import java.util.HashMap
+import java.util.TreeSet
 import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -23,6 +24,8 @@ class Context
 	val idValues = new HashMap<String, Integer>
 	val dimensionValues = new HashMap<SizeTypeSymbol, Integer>
 	val variableValues = new HashMap<ArgOrVar, NablaValue>
+	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Iterator, TreeSet<ArgOrVarRefIteratorRef>> neededIndices
+	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Iterator, TreeSet<IteratorRef>> neededIds
 	@Accessors val HashMap<Connectivity, Integer> connectivitySizes
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) MeshWrapper meshWrapper
 
@@ -32,6 +35,8 @@ class Context
 		this.module = module
 		this.connectivitySizes = new HashMap<Connectivity, Integer>
 		this.meshWrapper = null
+		this.neededIndices = new HashMap<Iterator, TreeSet<ArgOrVarRefIteratorRef>>
+		this.neededIds = new HashMap<Iterator, TreeSet<IteratorRef>>
 	}
 
 	new(Context outerContext)
@@ -40,6 +45,8 @@ class Context
 		this.module = outerContext.module
 		this.connectivitySizes = outerContext.connectivitySizes
 		this.meshWrapper = outerContext.meshWrapper
+		this.neededIndices = outerContext.neededIndices
+		this.neededIds = outerContext.neededIds
 	}
 
 	def initMesh(int nbXQuads, int nbYQuads, double xSize, double ySize)
@@ -199,6 +206,22 @@ class Context
 	{
 		if (message !== null) println(message)
 		dimensionValues.keySet.forEach[d | println("	Dimension " + d.name + " = " + dimensionValues.get(d))]
+	}
+
+	def setNeededIndicesAndNeededIdsInContext(Iterator iterator)
+	{
+		neededIndices.put(iterator, iterator.neededIndices)
+		neededIds.put(iterator, iterator.neededIds)
+	}
+
+	def getNeededIndicesInContext(Iterator iterator)
+	{
+		neededIndices.get(iterator)
+	}
+
+	def getNeededIdsInContext(Iterator iterator)
+	{
+		neededIds.get(iterator)
 	}
 
 	private def int getIndexValue(String indexName)

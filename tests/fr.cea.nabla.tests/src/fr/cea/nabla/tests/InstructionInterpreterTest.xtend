@@ -68,14 +68,15 @@ class InstructionInterpreterTest
 	@Test
 	def void testInterpreteLoop()
 	{
-		val xQuads = 10
-		val yQuads = 10
+		val xQuads = 100
+		val yQuads = 100
 		val model = TestUtils::getTestModule(xQuads, yQuads, 0.2, 1)
 		+
 		'''
 		ℝ U{cells};
-		ℝ r;
+		ℝ[2] C{cells, nodesOfCell};
 		InitU : ∀r∈cells(), U{r} = 1.0;
+		ComputeCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), C{j,r} = 0.5 * (X{r+1} - X{r-1});
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)

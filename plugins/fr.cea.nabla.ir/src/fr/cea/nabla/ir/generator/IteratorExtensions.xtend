@@ -52,6 +52,10 @@ class IteratorExtensions
 				ArgOrVarRefIteratorRef case (referencer.indexName != indexName) : neededIds += referencer
 			}	
 		}
+//		if (neededIds.empty)
+//			println('  neededIds for ' + name + ' empty')
+//		else
+//			println('  neededIds for ' + name + ' : ' + neededIds.map[idName].join(', '))
 		return neededIds
 	}
 
@@ -69,7 +73,7 @@ class IteratorExtensions
 	 */
 	static def getNeededIndices(Iterator it)
 	{
-		//println('getIndicesToDefined for: ' + name + ' - ' + indexName)
+//		println('getIndicesToDefine for: ' + name + ' - ' + indexName)
 
 		// Only one instance with the same index name.
 		val neededIndices = new TreeSet<ArgOrVarRefIteratorRef>(sortByIndexName)
@@ -78,23 +82,23 @@ class IteratorExtensions
 		val allIndices = new TreeSet<ArgOrVarRefIteratorRef>(sortByIndexName)
 		val iterableInstruction = eContainer.eContainer as IterableInstruction
 		iterableInstruction.eAllContents.filter(ArgOrVarRefIteratorRef).forEach[x | allIndices += x]
-		//println('  allIndices: ' + allIndices.map[indexName].join(', '))
+//		println('  allIndices: ' + allIndices.map[indexName].join(', '))
 
 		// get all inner iterators i.e. not yet defined iterators
 		val innerIterators = iterableInstruction.eAllContents.filter(Iterator).filter[x | x!==it].toList
-		//println('  innerIterators: ' + innerIterators.map[indexName].join(', '))
+//		println('  innerIterators: ' + innerIterators.map[indexName].join(', '))
 		
 		for (index : allIndices)
 		{
-			//println('  - index ' + index.indexName)
+//			println('  - index ' + index.indexName)
 			// if iterator index and index are identical, nothing to do
 			if (index.indexName != indexName)
 			{
 				val directReference = index.target
-				//println('    directReference: ' + directReference.name)
+//				println('    directReference: ' + directReference.name)
 
 				val indexIndirectReferences = index.varArgs.map[target]
-				//println('    indexIndirectReferences: ' + indexIndirectReferences.map[name].join(', '))
+//				println('    indexIndirectReferences: ' + indexIndirectReferences.map[name].join(', '))
 				
 				// if the iterator 'it' is referenced by the index
 				if (directReference===it || indexIndirectReferences.contains(it))
@@ -104,7 +108,10 @@ class IteratorExtensions
 			}
 		}
 
-		//println('  indexToDefined: ' + indexToDefined.map[indexName].join(', '))
+//		if (neededIndices.empty)
+//			println('  neededIndices for ' + name + ' empty')
+//		else
+//			println('  neededIndices for ' + name + ' : ' + neededIndices.map[indexName].join(', '))
 		return neededIndices
 	}
 }

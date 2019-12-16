@@ -18,7 +18,6 @@ import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
-import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 
 class InstructionInterpreter
@@ -66,6 +65,7 @@ class InstructionInterpreter
 		{
 			SpaceIterationBlock:
 			{
+				//println("On traite la boucle " + b.range.container.connectivity.name)
 				val connectivityName = b.range.container.connectivity.name
 				val argIds =  b.range.container.args.map[x | context.getIdValue(x)]
 				val container = context.meshWrapper.getElements(connectivityName, argIds)
@@ -73,7 +73,7 @@ class InstructionInterpreter
 				for (loopIteratorValue : 0..<container.size)
 				{
 					context.setIndexValue(b.range, loopIteratorValue)
-					defineIndices(b, context)
+					setIndices(b, context)
 					val ret = interprete(body, context)
 					if (ret !== null)
 						return ret
@@ -111,23 +111,23 @@ class InstructionInterpreter
 		return interprete(expression, context)
 	}
 
- 	private static def void defineIndices(SpaceIterationBlock it, Context context)
+	private static def void setIndices(SpaceIterationBlock it, Context context)
 	{
-		defineIndices(range, context)
+		setIndices(range, context)
 		for (s : singletons)
 		{
-			context.addIndexValue(s,context.getSingleton(s))
-			defineIndices(s, context)
+			context.addIndexValue(s, context.getSingleton(s))
+			setIndices(s, context)
 		}
 	}
 
-	private static def void defineIndices(Iterator it, Context context)
+	private static def void setIndices(Iterator it, Context context)
 	{
-		for (neededId : neededIds)
+		// Not  necessary to look for neededId and neededIndex at each iteration
+		for (neededId : context.getNeededIdsInContext(it))
 			context.addIdValue(neededId, getIndexToId(neededId, context))
-		for (neededIndex : neededIndices)
+		for (neededIndex : context.getNeededIndicesInContext(it))
 			context.addIndexValue(neededIndex, getIdToIndex(neededIndex, context))
-
 	}
 
 	private	static def getIndexToId(IteratorRef it, Context context)

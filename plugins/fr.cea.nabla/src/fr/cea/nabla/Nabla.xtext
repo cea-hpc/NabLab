@@ -29,7 +29,8 @@ NablaModule:
 	imports+=Import*
 	('items' '{' items+=ItemType (',' items+=ItemType)* '}'
 	connectivities+=Connectivity*)?
-	functions+=(Function | Reduction)*
+	reductions+=Reduction*
+	functions+=Function*
 	instructions+=(SimpleVarDefinition | VarGroupDeclaration)*
 	jobs+=Job*;
 

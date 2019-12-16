@@ -97,7 +97,7 @@ class DeclarationProvider
 	{
 		val dimensionVarValues = new HashMap<SizeTypeSymbol, DimensionValue>
 		val module = EcoreUtil2.getContainerOfType(reduction, NablaModule)
-		val candidates = module.functions.filter(Reduction).filter[x | x.name == reduction.name]
+		val candidates = module.reductions.filter(Reduction).filter[x | x.name == reduction.name]
 		val r = candidates.findFirst[x | match(x.collectionType, arg, dimensionVarValues) ]
 		if (r === null) return null
 

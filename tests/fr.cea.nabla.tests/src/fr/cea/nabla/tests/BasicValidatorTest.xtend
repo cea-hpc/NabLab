@@ -250,7 +250,7 @@ class BasicValidatorTest
 	@Test
 	def void testCheckUnusedFunction() 
 	{
-		val modelKo = TestUtils::getTestModuleWithCoordVariableWithCustomFunctions('''def	f:	x | ℝ[x] → ℝ''')
+		val modelKo = TestUtils::getTestModuleWithCoordVariableWithCustomFunctions('''def f: x | ℝ[x] → ℝ''')
 		val moduleKo = parseHelper.parse(modelKo)
 		Assert.assertNotNull(moduleKo)
 
@@ -260,7 +260,7 @@ class BasicValidatorTest
 
 		val modelOk = TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
 			'''
-			def	f:	x | ℝ[x] → ℝ;
+			def f: x | ℝ[x] → ℝ;
 			''')
 			+
 			'''
@@ -298,7 +298,7 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(
 			TestUtils::getTestModuleWithCoordVariableWithCustomFunctions(
 			'''
-			def	reduceMin: (ℝ.MaxValue, ℝ[2]) → ℝ[2];
+			def reduceMin: (ℝ.MaxValue, ℝ[2]) → ℝ[2];
 			''')
 			+
 			'''

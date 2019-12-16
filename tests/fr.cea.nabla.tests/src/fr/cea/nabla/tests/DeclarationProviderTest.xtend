@@ -7,12 +7,13 @@ import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.PrimitiveType
-import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.typing.DeclarationProvider
 import fr.cea.nabla.typing.NSTRealArray1D
 import fr.cea.nabla.typing.NSTRealScalar
+import fr.cea.nabla.typing.NSTSizeType
 import fr.cea.nabla.typing.NablaConnectivityType
+import fr.cea.nabla.validation.BasicValidator
 import fr.cea.nabla.validation.TypeValidator
 import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.testing.InjectWith
@@ -22,8 +23,6 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import fr.cea.nabla.validation.BasicValidator
-import fr.cea.nabla.typing.NSTSizeType
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
@@ -105,7 +104,7 @@ class DeclarationProviderTest
 		TypeValidator::FUNCTION_ARGS,
 		TypeValidator::getFunctionArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealScalar).label, new NablaConnectivityType(#[cells], new NSTRealScalar).label]))
 
-		val fFunctions = module.functions.filter(Function).filter[x | x.name == 'f']
+		val fFunctions = module.functions.filter[x | x.name == 'f']
 		val j0Fdecl = getFunctionDeclarationOfJob(module, 0)
 		Assert.assertEquals(fFunctions.get(0), j0Fdecl.model)
 		val j1Fdecl = getFunctionDeclarationOfJob(module, 1)
@@ -178,7 +177,7 @@ class DeclarationProviderTest
 		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 166, 1, BasicValidator::getUnusedFunctionMsg)
 		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 239, 1, BasicValidator::getUnusedFunctionMsg)
 
-		val functions = module.functions.filter(Function)
+		val functions = module.functions
 		val h = functions.findFirst[name == 'h']
 		val hfCall = h.body.eAllContents.filter(FunctionCall).toList.get(0)
 		Assert.assertEquals(functions.get(1), hfCall.declaration.model)
@@ -226,7 +225,7 @@ class DeclarationProviderTest
 		TypeValidator::REDUCTION_ARGS,
 		TypeValidator::getReductionArgsMsg(PrimitiveType::INT.literal))
 		
-		val fReductions = module.functions.filter(Reduction).filter[x | x.name == 'f']
+		val fReductions = module.reductions.filter[x | x.name == 'f']
 		val j0Fdecl = getReductionDeclarationOfJob(module, 0)
 		Assert.assertEquals(fReductions.get(0), j0Fdecl.model)
 		val j1Fdecl = getReductionDeclarationOfJob(module, 1)

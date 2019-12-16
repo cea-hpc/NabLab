@@ -176,7 +176,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 			{
 				VarGroupDeclaration : variables += i.variables
 				SimpleVarDefinition : variables += i.variable
-			}				
+			}
 		return variables
 	}
 

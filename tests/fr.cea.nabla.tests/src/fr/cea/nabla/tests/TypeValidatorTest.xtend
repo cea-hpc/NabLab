@@ -39,7 +39,7 @@ class TypeValidatorTest
 		module Test;
 
 		items { node }
-		set	nodes: → {node};
+		set nodes: → {node};
 
 		def f: ℝ → ℝ, (a) → { return 1; }
 		def g: ℝ → ℝ, (a) → { return 1.0; }
@@ -212,9 +212,10 @@ class TypeValidatorTest
 		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
 			(
 				'''
-				def	f: → ℝ[2];
-				def	reduce1: (f(), ℝ) → ℝ;
-				def	reduce2: (ℝ.MinValue, ℝ) → ℕ;
+				def reduce1: (f(), ℝ) → ℝ;
+				def reduce2: (ℝ.MinValue, ℝ) → ℕ;
+
+				def f: → ℝ[2];
 				'''
 			)
 		)
@@ -231,9 +232,10 @@ class TypeValidatorTest
 		val moduleOk = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
 			(
 				'''
-				def	f: → ℝ;
-				def	reduce1: (f(), ℝ) → ℝ;
-				def	reduce2: (ℕ.MinValue, ℝ) → ℕ;
+				def reduce1: (f(), ℝ) → ℝ;
+				def reduce2: (ℕ.MinValue, ℝ) → ℕ;
+
+				def f: → ℝ;
 				'''
 			)
 		)
@@ -312,7 +314,7 @@ class TypeValidatorTest
 		val moduleOk = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
 			(
 				'''
-				def	reduceMin: (ℝ.MaxValue, ℝ) → ℝ;
+				def reduceMin: (ℝ.MaxValue, ℝ) → ℝ;
 				def reduceMin: (ℝ.MaxValue, ℝ[2]) → ℝ;
 				'''
 			)

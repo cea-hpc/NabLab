@@ -221,7 +221,7 @@ class NablaScopeProviderTest
 	{
 		val module = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions(
 			'''
-			def	reduceMin: (ℝ.MaxValue, ℝ) → ℝ;
+			def reduceMin: (ℝ.MaxValue, ℝ) → ℝ;
 			''')
 		)
 		Assert.assertNotNull(module)

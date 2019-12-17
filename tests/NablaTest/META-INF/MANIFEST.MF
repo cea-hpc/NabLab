@@ -8,4 +8,6 @@ Bundle-Vendor: CEA
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: test
 Require-Bundle: fr.cea.nabla,
- fr.cea.nabla.ir
+ fr.cea.nabla.ir,
+ fr.cea.nabla.javalib,
+ org.eclipse.xtext.xbase.lib

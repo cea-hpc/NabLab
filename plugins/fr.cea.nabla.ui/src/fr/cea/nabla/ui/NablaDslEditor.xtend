@@ -9,72 +9,93 @@
  *******************************************************************************/
 package fr.cea.nabla.ui
 
+import com.google.inject.Inject
+import fr.cea.nabla.generator.ir.IrAnnotationHelper
+import fr.cea.nabla.ir.ir.IrAnnotable
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart
+import org.eclipse.jface.viewers.ISelection
+import org.eclipse.jface.viewers.IStructuredSelection
+import org.eclipse.sirius.viewpoint.DRepresentationElement
+import org.eclipse.swt.widgets.Composite
+import org.eclipse.ui.ISelectionListener
+import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.xtext.ui.editor.XtextEditor
 
 class NablaDslEditor extends XtextEditor 
 {
-//	val listener = new NablaDslListener(this)
-//	
-//	override createPartControl(Composite parent)
-//	{
-//		super.createPartControl(parent)
-//		site.page.addPostSelectionListener(listener)
-//	}
-//	
-//	override dispose()
-//	{
-//		site.page.removePostSelectionListener(listener)
-//	}
+	@Inject IrAnnotationHelper annotationHelper
+
+	val listener = new NablaDslListener(this)
+
+	def getAnnotationHelper() { annotationHelper }
+
+	override createPartControl(Composite parent)
+	{
+		super.createPartControl(parent)
+		site.page.addPostSelectionListener(listener)
+	}
+
+	override dispose()
+	{
+		site.page.removePostSelectionListener(listener)
+	}
 }
 
-//class NablaDslListener implements ISelectionListener
-//{
-//	val locationProvider = new DefaultLocationInFileProvider
-//	val NablaDslEditor editor
-//	
-//	new(NablaDslEditor editor) { this.editor = editor }
-//	
-//	override selectionChanged(IWorkbenchPart part, ISelection selection) 
-//	{
-//		val modelObject = selection.modelObject
-//		
-//		//println("  MODEL OBJECT : " + modelObject.class.name + " - " + modelObject)
-//		if (modelObject !== null && modelObject instanceof EObject) 
-//			openInDslEditor(modelObject as EObject)
-//	}
-//	
-//	private def getModelObject(ISelection selection)
-//	{
-//		//println("selection : " + selection.class.name)
-//		if (selection instanceof IStructuredSelection)
-//		{
-//			val firstElement = (selection as IStructuredSelection).firstElement
-//			if (firstElement instanceof IGraphicalEditPart)
-//			{
-//				val se = (firstElement as IGraphicalEditPart).resolveSemanticElement
-//				if (se instanceof DRepresentationElement)
-//					return (se as DRepresentationElement).semanticElements.head
-//			} 
-//		}
-//		return null
-//	}
-//
-//	/** 
-//	 * Cette m�thode ne doit pas ouvrir un nouvel �diteur ; cette action est laiss�e au double clic.
-//	 * L'objectif est juste de s�lectionner l'EObject param�tre s'il se trouve dans le fichier.
-//	 */
-//	private def void openInDslEditor(EObject any) 
-//	{
-//		val anyUri = any.eResource.URI.toPlatformString(true)
-//		val editorResourceUri = editor.resource.fullPath.toString
-//		if (any !== null && anyUri == editorResourceUri)
-//		{
-//			val region = locationProvider.getFullTextRegion(any)
-//			// On pr�f�re ne pas s�lectionner l'objet mais seulement se mettre au d�but.
-//			//editor.selectAndReveal(region.offset, region.length)	
-//			editor.selectAndReveal(region.offset, 0)	
-//		}
-//		else
-//			editor.selectAndReveal(0,0)
-//	}
-//}
+class NablaDslListener implements ISelectionListener
+{
+	val NablaDslEditor editor
+
+	new(NablaDslEditor editor) 
+	{ 
+		this.editor = editor
+	}
+
+	override selectionChanged(IWorkbenchPart part, ISelection selection) 
+	{
+		val modelObject = selection.modelObject
+
+		if (modelObject !== null && modelObject instanceof IrAnnotable) 
+			openInDslEditor(modelObject as IrAnnotable)
+	}
+
+	private def getModelObject(ISelection selection)
+	{
+		//println("selection : " + selection.class.name)
+		if (selection instanceof IStructuredSelection)
+		{
+			val firstElement = (selection as IStructuredSelection).firstElement
+			if (firstElement instanceof IGraphicalEditPart)
+			{
+				val se = (firstElement as IGraphicalEditPart).resolveSemanticElement
+				if (se instanceof DRepresentationElement)
+					return (se as DRepresentationElement).semanticElements.head
+			} 
+		}
+		return null
+	}
+
+	/** 
+	 * Select the any argument in the editor if it is present.
+	 * Do not open the file if it is not: this action is reserved for double click.
+	 */
+	private def void openInDslEditor(IrAnnotable any) 
+	{
+		val annotation = any.annotations.findFirst[x | x.source == IrAnnotationHelper::ANNOTATION_NABLA_ORIGIN_SOURCE]
+		if (annotation !== null)
+		{
+			val uri = editor.annotationHelper.getUriDetail(any)
+			val editorResourceUri = editor.resource.fullPath.toString
+			if (any !== null && uri.endsWith(editorResourceUri))
+			{
+				val offset = Integer::parseInt(annotation.details.get(IrAnnotationHelper::ANNOTATION_OFFSET_DETAIL))
+				val length = Integer::parseInt(annotation.details.get(IrAnnotationHelper::ANNOTATION_LENGTH_DETAIL))
+				editor.selectAndReveal(offset, length)
+			}
+			else
+				editor.selectAndReveal(0,0)
+		}
+		else
+			editor.selectAndReveal(0,0)
+	}
+}

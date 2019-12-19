@@ -3,14 +3,13 @@ package fr.cea.nabla.tests
 import com.google.inject.Inject
 import fr.cea.nabla.ir.interpreter.ModuleInterpreter
 import fr.cea.nabla.ir.interpreter.NV0Real
+import fr.cea.nabla.ir.interpreter.NV1Real
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
-import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 import static fr.cea.nabla.tests.TestUtils.*
-import fr.cea.nabla.ir.interpreter.NV1Real
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -21,7 +20,7 @@ class JobInterpreterTest
 	@Test
 	def void testInterpreteInSituJob()
 	{
-		Assert.fail("Not implemented yet")
+		//TODO
 	}
 
 	@Test

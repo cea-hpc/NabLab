@@ -9,6 +9,8 @@ import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.SizeTypeSymbol
 import java.util.HashMap
 import java.util.TreeSet
+import java.util.logging.Level
+import java.util.logging.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -20,6 +22,7 @@ class Context
 {
 	val Context outerContext
 	val IrModule module
+	val Logger logger
 	val indexValues = new HashMap<String, Integer>
 	val idValues = new HashMap<String, Integer>
 	val dimensionValues = new HashMap<SizeTypeSymbol, Integer>
@@ -29,10 +32,11 @@ class Context
 	@Accessors val HashMap<Connectivity, Integer> connectivitySizes
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) MeshWrapper meshWrapper
 
-	new(IrModule module)
+	new(IrModule module, Logger logger)
 	{
 		this.outerContext = null
 		this.module = module
+		this.logger = logger
 		this.connectivitySizes = new HashMap<Connectivity, Integer>
 		this.meshWrapper = null
 		this.neededIndices = new HashMap<Iterator, TreeSet<ArgOrVarRefIteratorRef>>
@@ -43,6 +47,7 @@ class Context
 	{
 		this.outerContext = outerContext
 		this.module = outerContext.module
+		this.logger = outerContext.logger
 		this.connectivitySizes = outerContext.connectivitySizes
 		this.meshWrapper = outerContext.meshWrapper
 		this.neededIndices = outerContext.neededIndices
@@ -165,47 +170,52 @@ class Context
 		meshWrapper.getSingleton(iterator.container.connectivity.name, iterator.container.args.map[getIdValue(idName)])
 	}
 
-	def showVariables(String message)
+	def logVariables(String message)
 	{
-		if (message !== null) println(message)
-		variableValues.keySet.forEach[v | println("	Variable " + v.name + " = " + variableValues.get(v).displayValue)]
+		if (message !== null) logger.log(Level::INFO, message)
+		variableValues.keySet.forEach[v | logger.log(Level::INFO,"	Variable " + v.name + " = " + variableValues.get(v).displayValue)]
 	}
 
-	def showConnectivitySizes(String message)
+	def logConnectivitySizes(String message)
 	{
-		if (message !== null) println(message)
-		connectivitySizes.keySet.forEach[k | println("	" + k.name + " de taille " + connectivitySizes.get(k))]
+		if (message !== null) logger.log(Level::INFO, message)
+		connectivitySizes.keySet.forEach[k | logger.log(Level::INFO, "	" + k.name + " de taille " + connectivitySizes.get(k))]
 	}
 
-	def showIndexvalues(String message)
+	def logIndexvalues(String message)
 	{
-		if (message !== null) println(message)
-		indexValues.keySet.forEach[k | println("	" + k + " = " + indexValues.get(k))]
+		if (message !== null) logger.log(Level::INFO, message)
+		indexValues.keySet.forEach[k | logger.log(Level::INFO, "	" + k + " = " + indexValues.get(k))]
 	}
 
-	def showIdvalues(String message)
+	def logIdvalues(String message)
 	{
 		if (!idValues.empty)
 		{
-			if (message !== null) println(message)
-			idValues.keySet.forEach[k | println("	" + k + " = " + idValues.get(k))]
+			if (message !== null) logger.log(Level::INFO, message)
+			idValues.keySet.forEach[k | logger.log(Level::INFO, "	" + k + " = " + idValues.get(k))]
 		}
 	}
 
-	def showIdsAndIndicesValues(String message)
+	def logIdsAndIndicesValues(String message)
 	{
 		if (!idValues.empty || !indexValues.empty)
 		{
-			if (message !== null) println(message)
-			idValues.keySet.forEach[k | println("	" + k + " = " + idValues.get(k))]
-			indexValues.keySet.forEach[k | println("	" + k + " = " + indexValues.get(k))]
+			if (message !== null) logger.log(Level::INFO, message)
+			idValues.keySet.forEach[k | logger.log(Level::INFO, "	" + k + " = " + idValues.get(k))]
+			indexValues.keySet.forEach[k | logger.log(Level::INFO, "	" + k + " = " + indexValues.get(k))]
 		}
 	}
 
-	def showDimensions(String message)
+	def logDimensions(String message)
 	{
-		if (message !== null) println(message)
-		dimensionValues.keySet.forEach[d | println("	Dimension " + d.name + " = " + dimensionValues.get(d))]
+		if (message !== null) logger.log(Level::INFO, message)
+		dimensionValues.keySet.forEach[d | logger.log(Level::INFO, "	Dimension " + d.name + " = " + dimensionValues.get(d))]
+	}
+	
+	def logFinest(String message)
+	{
+		logger.log(Level::FINEST, message)
 	}
 
 	def setNeededIndicesAndNeededIdsInContext(Iterator iterator)

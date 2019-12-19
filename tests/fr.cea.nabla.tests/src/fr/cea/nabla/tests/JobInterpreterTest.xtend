@@ -4,6 +4,8 @@ import com.google.inject.Inject
 import fr.cea.nabla.ir.interpreter.ModuleInterpreter
 import fr.cea.nabla.ir.interpreter.NV0Real
 import fr.cea.nabla.ir.interpreter.NV1Real
+import java.util.logging.ConsoleHandler
+import java.util.logging.Level
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Test
@@ -33,7 +35,9 @@ class JobInterpreterTest
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val moduleInterpreter = new ModuleInterpreter(irModule)
+		val handler = new ConsoleHandler
+		handler.level = Level::OFF
+		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 		val context = moduleInterpreter.interprete
 
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(5.0))
@@ -53,9 +57,11 @@ class JobInterpreterTest
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val moduleInterpreter = new ModuleInterpreter(irModule)
+		val handler = new ConsoleHandler
+		handler.level = Level::OFF
+		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 		val context = moduleInterpreter.interprete
-		context.showVariables("After")
+		context.logVariables("After")
 		//assertVariableValueInContext(irModule, context, "u_n0", new NV1Real(#[0.0 , 0.0]))
 		assertVariableValueInContext(irModule, context, "u", new NV1Real(#[1.0 , 2.0]))
 		val X_n0 = context.getVariableValue("X_n0")
@@ -73,7 +79,9 @@ class JobInterpreterTest
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val moduleInterpreter = new ModuleInterpreter(irModule)
+		val handler = new ConsoleHandler
+		handler.level = Level::OFF
+		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 		val context = moduleInterpreter.interprete
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(0.01))
 		assertVariableValueInContext(irModule, context, "t_nplus1", new NV0Real(0.00))

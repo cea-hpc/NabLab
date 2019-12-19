@@ -24,7 +24,7 @@ class InstructionInterpreter
 {
 	static def dispatch NablaValue interprete(VarDefinition it, Context context)
 	{ 
-		//println("Interprete VarDefinition")
+		context.logFinest("Interprete VarDefinition")
 		for (v : variables)
 			context.addVariableValue(v, createValue(v, context))
 		return null
@@ -32,7 +32,7 @@ class InstructionInterpreter
 
 	static def dispatch NablaValue interprete(InstructionBlock it, Context context)
 	{
-		//println("Interprete InstructionBlock")
+		context.logFinest("Interprete InstructionBlock")
 		val innerContext = new Context(context)
 		for (i : instructions)
 		{
@@ -45,7 +45,7 @@ class InstructionInterpreter
 
 	static def dispatch NablaValue interprete(Affectation it, Context context)
 	{
-		//println("Interprete Affectation")
+		context.logFinest("Interprete Affectation")
 		val rightValue = interprete(right, context)
 		val allIndices = left.iterators.map[x | context.getIndexValue(x)] + left.indices.map[x | interprete(x, context)]
 		setValue(context.getVariableValue(left.target), allIndices.toList, rightValue)
@@ -65,7 +65,7 @@ class InstructionInterpreter
 		{
 			SpaceIterationBlock:
 			{
-				//println("On traite la boucle " + b.range.container.connectivity.name)
+				context.logFinest("On traite la boucle " + b.range.container.connectivity.name)
 				val connectivityName = b.range.container.connectivity.name
 				val argIds =  b.range.container.args.map[x | context.getIdValue(x)]
 				val container = context.meshWrapper.getElements(connectivityName, argIds)
@@ -99,7 +99,7 @@ class InstructionInterpreter
 
 	static def dispatch NablaValue interprete(If it, Context context)
 	{
-		//println("Interprete If")
+		context.logFinest("Interprete If")
 		val cond = interprete(condition, context) as NV0Bool
 		if (cond.data) return interprete(thenInstruction, context)
 		else if (elseInstruction !== null) return interprete(elseInstruction, context)
@@ -107,7 +107,7 @@ class InstructionInterpreter
 
 	static def dispatch NablaValue interprete(Return it, Context context)
 	{
-		//println("Interprete Return")
+		context.logFinest("Interprete Return")
 		return interprete(expression, context)
 	}
 

@@ -19,7 +19,6 @@ class MeshWrapper
 
 	def int[] getElements(String connectivityName, int[] args)
 	{
-		//println("get" + connectivityName + if (args.size>0) "("+args.get(0)+")" else "")
 		switch connectivityName {
 			case "nodes" : nm.nodes
 			case "cells" : nm.cells

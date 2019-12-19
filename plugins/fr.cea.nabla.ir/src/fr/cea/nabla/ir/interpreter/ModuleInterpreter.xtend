@@ -5,23 +5,23 @@ import fr.cea.nabla.ir.MandatorySimulationOptions
 import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 import java.util.logging.Logger
+import java.util.logging.StreamHandler
 
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import fr.cea.nabla.ir.ir.Iterator
 
-class ModuleInterpreter 
+class ModuleInterpreter
 {
 	public static String ITERATION_VARIABLE_NAME = "InterpreterIteration"
 
@@ -29,29 +29,28 @@ class ModuleInterpreter
 	var Context context
 	val PvdFileWriter2D writer
 	var JobInterpreter jobInterpreter
-	var Logger log
+	var Logger logger
 
-	new(IrModule module)
+	new(IrModule module, StreamHandler handler)
 	{
+		// create a Logger and a Handler
+		logger = Logger.getLogger(ModuleInterpreter.name)
+		logger.setLevel(Level::WARNING) //All Levels messages
+		logger.setUseParentHandlers(false) // Suppress default console
+		logger.handlers.forEach(h | logger.removeHandler(h))
+		logger.addHandler(handler)
+
 		this.module = module
-		this.context = new Context(module)
+		this.context = new Context(module, logger)
 		this.writer = new PvdFileWriter2D(module.name)
 		this.jobInterpreter = null
-
-		// create a Logger and a Handler
-		log = Logger.getLogger(ModuleInterpreter.name)
-		log.setLevel(Level::ALL) //All Levels messages
-		log.setUseParentHandlers(false) // Suppress default console
-		val ch = new ConsoleHandler
-		ch.setLevel(Level.INFO); // to accept only INFO messages
-		log.addHandler(ch)
 	}
 
 	def interprete()
 	{
 		val dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")
 		val startTime = LocalDateTime.now()
-		log.log(Level::WARNING," Start executing " + module.name + " module " + dtf.format(startTime))
+		logger.warning(" Start executing " + module.name + " module " + dtf.format(startTime))
 
 		// Add Variable for iteration
 		val iterationVariable = createIterationVariable
@@ -92,7 +91,7 @@ class ModuleInterpreter
 		for (j : module.jobs.filter[x | x.at < 0].sortBy[at])
 			jobInterpreter.interprete(j, context)
 
-		context.showVariables("After init jobs")
+		context.logVariables("After init jobs")
 
 		// Declare time loop
 		var maxIterations = context.getInt(MandatorySimulationOptions::MAX_ITERATIONS)
@@ -103,18 +102,23 @@ class ModuleInterpreter
 		{
 			iteration ++
 			context.setVariableValue(iterationVariable, new NV0Int(iteration))
-			println("[" + iteration + "] t = " + context.getReal(MandatorySimulationVariables::TIME))
+			logger.info("[" + iteration + "] t = " + context.getReal(MandatorySimulationVariables::TIME))
 			for (j : module.jobs.filter[x | x.at > 0].sortBy[at])
 				jobInterpreter.interprete(j, context)
-			//context.showVariables("After iteration = " + iteration)
+			context.logVariables("After iteration = " + iteration)
 		}
 
-		context.showVariables("At the end")
+		context.logVariables("At the end")
 		val endTime = LocalDateTime.now()
 		val duration = Duration.between(startTime, endTime);
-		log.log(Level::WARNING," End executing " + dtf.format(endTime) + " (" + duration.seconds + " s)")
+		logger.warning(" End executing " + dtf.format(endTime) + " (" + duration.seconds + " s)")
 
 		return context
+	}
+
+	def warn(String message)
+	{
+		logger.warning(message)
 	}
 
 	private def createIterationVariable()

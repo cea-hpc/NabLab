@@ -7,6 +7,9 @@ import fr.cea.nabla.ir.interpreter.NV0Bool
 import fr.cea.nabla.ir.interpreter.NV0Int
 import fr.cea.nabla.ir.interpreter.NV0Real
 import fr.cea.nabla.ir.interpreter.NV1Int
+import java.util.logging.ConsoleHandler
+import java.util.logging.Level
+import java.util.logging.Logger
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Test
@@ -42,7 +45,7 @@ class BinaryOperationsInterpreterTest
 		ℾ b12 = true < false; // -> false
 		'''
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val context = new Context(irModule)
+		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
 		
 		assertVariableDefaultValue(irModule, context, "b1", new NV0Bool(true))
 		assertVariableDefaultValue(irModule, context, "b2", new NV0Bool(true))
@@ -92,7 +95,7 @@ class BinaryOperationsInterpreterTest
 		ℕ n6 = 7 % 3; // -> 1
 		'''
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val context = new Context(irModule)
+		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
 		
 		assertVariableDefaultValue(irModule, context, "b1", new NV0Bool(false))
 		assertVariableDefaultValue(irModule, context, "b2", new NV0Bool(true))
@@ -146,7 +149,7 @@ class BinaryOperationsInterpreterTest
 		ℝ n5 = 7 / 2.; // -> 3.5.
 		'''
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val context = new Context(irModule)
+		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
 		
 		assertVariableDefaultValue(irModule, context, "b1", new NV0Bool(false))
 		assertVariableDefaultValue(irModule, context, "b2", new NV0Bool(true))
@@ -179,7 +182,9 @@ class BinaryOperationsInterpreterTest
 	//	ℕ[2] n3 = 3 * n1;
 		'''
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
-		val moduleInterpreter = new ModuleInterpreter(irModule)
+		val handler = new ConsoleHandler
+		handler.level = Level::OFF
+		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 		val context = moduleInterpreter.interprete
 		
 		assertVariableDefaultValue(irModule, context, "n1", new NV1Int(#[1, 2]))

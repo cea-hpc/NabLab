@@ -33,6 +33,9 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>plugins/commons-math3</module>
+                <module>plugins/jlatexmath</module>
+                <module>plugins/jgrapht-core</module>
                 <module>plugins/fr.cea.nabla</module>
                 <module>plugins/fr.cea.nabla.edit</module>
                 <module>plugins/fr.cea.nabla.editor</module>
@@ -43,6 +46,7 @@
                 <module>plugins/fr.cea.nabla.ui</module>
                 <module>plugins/fr.cea.nabla.rcp</module>
                 <module>features/fr.cea.nabla.feature</module>
+                <module>features/fr.cea.nabla.thirdparty.libraries.feature</module>
                 <module>releng/fr.cea.nabla.targetplatform</module>
                 <module>releng/fr.cea.nabla.updatesite</module>
             </modules>

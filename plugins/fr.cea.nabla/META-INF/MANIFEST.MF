@@ -18,7 +18,8 @@ Require-Bundle: fr.cea.nabla.ir,
  org.eclipse.xtend.lib;bundle-version="2.14.0",
  org.eclipse.emf.common,
  org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
- org.eclipse.core.resources
+ org.eclipse.core.resources,
+ jlatexmath;bundle-version="1.0.3"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: fr.cea.nabla,
  fr.cea.nabla.generator,
@@ -40,5 +41,4 @@ Export-Package: fr.cea.nabla,
  nablalib
 Import-Package: com.google.inject,
  org.apache.log4j
-Bundle-ClassPath: .,
- lib/jlatexmath-1.0.3.jar
+Bundle-ClassPath: .

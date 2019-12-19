@@ -10,6 +10,5 @@
 	<classpathentry kind="src" path="src-gen"/>
 	<classpathentry kind="src" path="xtend-gen"/>
 	<classpathentry kind="src" path="nablalib"/>
-	<classpathentry exported="true" kind="lib" path="lib/jlatexmath-1.0.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

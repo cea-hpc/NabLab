@@ -9,6 +9,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static fr.cea.nabla.tests.TestUtils.*
+import java.util.logging.Level
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -36,27 +37,12 @@ class NablaExamplesInterpreterTest
 		
 		val irModule = compilationHelper.getIrModule(model, genmodel)
 		val handler = new FileHandler("src/heatequation/InterpreteHeatEquation.log")
+		handler.level = Level::WARNING
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		//moduleInterpreter.warn("Execution 1")
-		moduleInterpreter.interprete
-		// To test cache influence
-//		moduleInterpreter.warn("Execution 2")
-//		moduleInterpreter.interprete
-//		moduleInterpreter.warn("Execution 3")
-//		moduleInterpreter.interprete
-//		moduleInterpreter.warn("Execution 4")
-//		moduleInterpreter.interprete
-//		moduleInterpreter.warn("Execution 5")
-//		moduleInterpreter.interprete
-//		moduleInterpreter.warn("Execution 6")
-//		moduleInterpreter.interprete
-//		moduleInterpreter.warn("Execution 7")
-//		moduleInterpreter.interprete
-//		moduleInterpreter.warn("Execution 8")
-//		moduleInterpreter.interprete
-//		moduleInterpreter.warn("Execution 9")
-//		moduleInterpreter.interprete
-//		moduleInterpreter.warn("Execution 10")
-//		moduleInterpreter.interprete
+		for (var i = 0 ; i < 10 ; i++) 
+		{
+ 			moduleInterpreter.warn("Execution " + i)
+			moduleInterpreter.interprete
+		}
 	}
 }

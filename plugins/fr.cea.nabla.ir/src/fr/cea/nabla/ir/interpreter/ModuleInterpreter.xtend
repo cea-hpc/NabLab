@@ -35,7 +35,7 @@ class ModuleInterpreter
 	{
 		// create a Logger and a Handler
 		logger = Logger.getLogger(ModuleInterpreter.name)
-		logger.setLevel(Level::WARNING) //All Levels messages
+		logger.setLevel(Level::ALL) //All Levels messages
 		logger.setUseParentHandlers(false) // Suppress default console
 		logger.handlers.forEach(h | logger.removeHandler(h))
 		logger.addHandler(handler)

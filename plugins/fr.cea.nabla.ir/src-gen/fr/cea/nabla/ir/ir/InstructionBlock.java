@@ -25,10 +25,6 @@ public interface InstructionBlock extends Instruction {
 	 * Returns the value of the '<em><b>Instructions</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Instruction}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Instructions</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Instructions</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getInstructionBlock_Instructions()

@@ -120,22 +120,39 @@
         eType="#//Instruction" containment="true" resolveProxies="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InSituJob" eSuperTypes="#//Job">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dumpedVariables" upperBound="-1"
         eType="#//Variable"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="iterationPeriod" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt" defaultValueLiteral="-1"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeStep" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="periodValue" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" defaultValueLiteral="-1.0"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="periodVariable" lowerBound="1"
+        eType="#//SimpleVariable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="iterationVariable" lowerBound="1"
+        eType="#//SimpleVariable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="timeVariable" lowerBound="1"
+        eType="#//SimpleVariable"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeIterationCopyJob" abstract="true"
-      eSuperTypes="#//Job">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="#//Variable"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="#//Variable"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeIteratorName" unique="false"
-        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BeginOfTimeLoopJob" eSuperTypes="#//Job">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="end" eType="#//EndOfTimeLoopJob"
+        eOpposite="#//EndOfTimeLoopJob/begin"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="initializations" upperBound="-1"
+        eType="#//TimeLoopCopy" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EndOfTimeLoopJob" eSuperTypes="#//TimeIterationCopyJob"/>
-  <eClassifiers xsi:type="ecore:EClass" name="EndOfInitJob" eSuperTypes="#//TimeIterationCopyJob"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EndOfTimeLoopJob" eSuperTypes="#//Job">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="begin" lowerBound="1" eType="#//BeginOfTimeLoopJob"
+        eOpposite="#//BeginOfTimeLoopJob/end"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nextLoopCopies" upperBound="-1"
+        eType="#//TimeLoopCopy" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="exitLoopCopies" upperBound="-1"
+        eType="#//TimeLoopCopy" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="whileCondition" lowerBound="1"
+        eType="#//Expression" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeLoopCopy" eSuperTypes="#//IrAnnotable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="destination" lowerBound="1"
+        eType="#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1"
+        eType="#//Variable"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Instruction" abstract="true" eSuperTypes="#//IrAnnotable"/>
   <eClassifiers xsi:type="ecore:EClass" name="VarDefinition" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" lowerBound="1"

@@ -69,8 +69,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.ITEM_ARG_TYPE: return createItemArgType();
 			case IrPackage.INSTRUCTION_JOB: return createInstructionJob();
 			case IrPackage.IN_SITU_JOB: return createInSituJob();
+			case IrPackage.BEGIN_OF_TIME_LOOP_JOB: return createBeginOfTimeLoopJob();
 			case IrPackage.END_OF_TIME_LOOP_JOB: return createEndOfTimeLoopJob();
-			case IrPackage.END_OF_INIT_JOB: return createEndOfInitJob();
+			case IrPackage.TIME_LOOP_COPY: return createTimeLoopCopy();
 			case IrPackage.VAR_DEFINITION: return createVarDefinition();
 			case IrPackage.INSTRUCTION_BLOCK: return createInstructionBlock();
 			case IrPackage.AFFECTATION: return createAffectation();
@@ -278,6 +279,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
+	public BeginOfTimeLoopJob createBeginOfTimeLoopJob() {
+		BeginOfTimeLoopJobImpl beginOfTimeLoopJob = new BeginOfTimeLoopJobImpl();
+		return beginOfTimeLoopJob;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EndOfTimeLoopJob createEndOfTimeLoopJob() {
 		EndOfTimeLoopJobImpl endOfTimeLoopJob = new EndOfTimeLoopJobImpl();
 		return endOfTimeLoopJob;
@@ -289,9 +301,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public EndOfInitJob createEndOfInitJob() {
-		EndOfInitJobImpl endOfInitJob = new EndOfInitJobImpl();
-		return endOfInitJob;
+	public TimeLoopCopy createTimeLoopCopy() {
+		TimeLoopCopyImpl timeLoopCopy = new TimeLoopCopyImpl();
+		return timeLoopCopy;
 	}
 
 	/**

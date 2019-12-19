@@ -49,8 +49,10 @@ Nabla2IrComponent:
 TagPersistentVariablesComponent:
 	'TagPersistentVariables' name=ID 'follows' parent=[WorkflowComponent] 
 	'{' 
-		'variables' '=' vars+=PersistentVar (',' vars+=PersistentVar)* ';'
-		period=PersistencePeriod ';'
+		'timeVariable' '=' timeVar=[nabla::SimpleVar]';'
+		'iterationVariable' '=' iterationVar=[nabla::SimpleVar]';'
+		'dumpedVariables' '=' dumpedVars+=PersistentVar (',' dumpedVars+=PersistentVar)* ';'
+		'period' '=' periodValue=REAL 'for' periodVar=[nabla::SimpleVar]';'
 		(disabled?='disabled' ';')?
 		(dumpIr?='dumpIr' ';')?
 	'}';
@@ -58,10 +60,6 @@ TagPersistentVariablesComponent:
 PersistentVar:
 	varRef=[nabla::ConnectivityVar]
 	'as' varName=STRING;
-
-PersistencePeriod:
-	{Iteration} 'iterationPeriod' '=' value=INT |
-	{TimeStep} 'timeStep' '=' value=REAL;
 
 ReplaceUtfComponent:
 	'ReplaceUtf' name=ID 'follows' parent=[WorkflowComponent] 

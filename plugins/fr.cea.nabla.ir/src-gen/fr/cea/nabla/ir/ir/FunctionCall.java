@@ -25,10 +25,6 @@ public interface FunctionCall extends Expression {
 	/**
 	 * Returns the value of the '<em><b>Function</b></em>' reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Function</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Function</em>' reference.
 	 * @see #setFunction(Function)
@@ -52,10 +48,6 @@ public interface FunctionCall extends Expression {
 	 * Returns the value of the '<em><b>Args</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Expression}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Args</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Args</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunctionCall_Args()

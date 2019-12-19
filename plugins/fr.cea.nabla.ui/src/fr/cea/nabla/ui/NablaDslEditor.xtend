@@ -12,7 +12,6 @@ package fr.cea.nabla.ui
 import com.google.inject.Inject
 import fr.cea.nabla.generator.ir.IrAnnotationHelper
 import fr.cea.nabla.ir.ir.IrAnnotable
-import org.eclipse.emf.ecore.EObject
 import org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart
 import org.eclipse.jface.viewers.ISelection
 import org.eclipse.jface.viewers.IStructuredSelection

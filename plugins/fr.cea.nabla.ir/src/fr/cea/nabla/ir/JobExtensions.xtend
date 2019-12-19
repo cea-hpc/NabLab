@@ -11,6 +11,8 @@ package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVarRef
+import fr.cea.nabla.ir.ir.BeginOfTimeLoopJob
+import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
@@ -19,7 +21,6 @@ import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
-import fr.cea.nabla.ir.ir.TimeIterationCopyJob
 import fr.cea.nabla.ir.ir.Variable
 import java.util.HashSet
 
@@ -51,9 +52,14 @@ class JobExtensions
 		return fromTargetJobs
 	}
 
-	static def dispatch Iterable<Variable> getOutVars(TimeIterationCopyJob it)
+	static def dispatch Iterable<Variable> getOutVars(BeginOfTimeLoopJob it)
 	{
-		#[left].toSet
+		initializations.map[destination]
+	}
+
+	static def dispatch Iterable<Variable> getOutVars(EndOfTimeLoopJob it)
+	{
+		nextLoopCopies.map[destination] + exitLoopCopies.map[destination]
 	}
 
 	static def dispatch Iterable<Variable> getOutVars(InstructionJob it)
@@ -66,9 +72,14 @@ class JobExtensions
 		#[]
 	}
 
-	static def dispatch Iterable<Variable> getInVars(TimeIterationCopyJob it)
+	static def dispatch Iterable<Variable> getInVars(BeginOfTimeLoopJob it)
 	{
-		#[right].toSet
+		initializations.map[source]
+	}
+
+	static def dispatch Iterable<Variable> getInVars(EndOfTimeLoopJob it)
+	{
+		nextLoopCopies.map[source] + exitLoopCopies.map[source]
 	}
 
 	static def dispatch Iterable<Variable> getInVars(InstructionJob it)
@@ -80,9 +91,9 @@ class JobExtensions
 
 	static def dispatch Iterable<Variable> getInVars(InSituJob it)
 	{
-		return variables
+		return dumpedVariables + #[periodVariable]
 	}
-	
+
 	static def getIteratorByName(Job it, String name)
 	{
 		var iterators = eAllContents.filter(Iterator).toList

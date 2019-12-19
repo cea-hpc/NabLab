@@ -3,11 +3,9 @@ package fr.cea.nabla.ir.transformers
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.SimpleVariable
 import java.util.HashMap
 import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * Attend des propriétés de type <nom_de_variable> = <nom_de_persistence>.
@@ -16,13 +14,21 @@ import org.eclipse.xtend.lib.annotations.Accessors
  */
 class TagPersistentVariables implements IrTransformationStep 
 {
-	val HashMap<String, String> variables
-	@Accessors int iterationPeriod = -1;
-	@Accessors double timeStep = -1;
+	public static val LastDumpVariableName = "lastDump" // Useful for InSituJob
 
-	new(HashMap<String, String> variables)
+	val String timeVariableName
+	val String iterationVariableName
+	val HashMap<String, String> dumpedVariables
+	val double periodValue
+	val String periodVariableName
+
+	new(String timeVariableName, String iterationVariableName, HashMap<String, String> dumpedVariables, double periodValue, String periodVariableName)
 	{
-		this.variables = variables
+		this.timeVariableName = timeVariableName
+		this.iterationVariableName = iterationVariableName
+		this.dumpedVariables = dumpedVariables
+		this.periodValue = periodValue
+		this.periodVariableName = periodVariableName
 	}
 
 	override getDescription()
@@ -32,44 +38,47 @@ class TagPersistentVariables implements IrTransformationStep
 
 	override transform(IrModule m)
 	{
-		val candidates = m.variables.filter(ConnectivityVariable)
-
 		// Create InSituJob
 		val inSituJob = IrFactory.eINSTANCE.createInSituJob
 		inSituJob.name = 'dumpVariables'
-		inSituJob.iterationPeriod = iterationPeriod
-		inSituJob.timeStep = timeStep
-		for (key : variables.keySet)
+		inSituJob.periodValue = periodValue
+		
+		val timeVariable = m.variables.filter(SimpleVariable).findFirst[x | x.name == timeVariableName]
+		if (timeVariable === null) return false
+		inSituJob.timeVariable = timeVariable
+
+		val iterationVariable = m.variables.filter(SimpleVariable).findFirst[x | x.name == iterationVariableName]
+		if (iterationVariable === null) return false
+		inSituJob.iterationVariable = iterationVariable
+
+		val periodVariable = m.variables.filter(SimpleVariable).findFirst[x | x.name == periodVariableName]
+		if (periodVariable === null) return false
+		inSituJob.periodVariable = periodVariable
+
+		val connectivityVariables = m.variables.filter(ConnectivityVariable)
+		for (key : dumpedVariables.keySet)
 		{
-			val v = candidates.findFirst[x | x.name == key]
+			val v = connectivityVariables.findFirst[x | x.name == key]
 			if (v !== null) 
 			{
-				v.persistenceName = variables.get(key)
-				inSituJob.variables += v
+				v.persistenceName = dumpedVariables.get(key)
+				inSituJob.dumpedVariables += v
 			}
 		}
 		m.jobs += inSituJob
 
-		if (timeStep > 0)
-		{
-			// Create a variable to store the last write time
-			val tVariable = m.variables.filter(SimpleVariable).findFirst[x | x.name == 't']
-			if (tVariable !== null)
-			{
-				val realType = IrFactory.eINSTANCE.createBaseType => [ primitive = PrimitiveType::REAL ]
-				val twriter = IrFactory.eINSTANCE.createSimpleVariable =>
-				[
-					name = 'lastWriteTime'
-					type = realType
-					defaultValue = IrFactory.eINSTANCE.createArgOrVarRef =>
-					[
-						target = tVariable
-						type = EcoreUtil.copy(realType)
-					]
-				]
-				m.variables += twriter
-			}
-		}
+		// Create a variable to store the last write time
+		val twriter = IrFactory.eINSTANCE.createSimpleVariable =>
+		[
+			name = LastDumpVariableName
+			type = EcoreUtil::copy(periodVariable.type)
+			defaultValue = IrFactory.eINSTANCE.createArgOrVarRef =>
+			[
+				target = periodVariable
+				type = EcoreUtil.copy(periodVariable.type)
+			]
+		]
+		m.variables += twriter
 
 		return true
 	}

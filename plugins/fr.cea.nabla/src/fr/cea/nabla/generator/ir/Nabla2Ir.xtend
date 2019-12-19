@@ -10,33 +10,30 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
-import fr.cea.nabla.ArgOrVarRefExtensions
 import fr.cea.nabla.ir.MandatoryMeshVariables
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.FunctionCall
-import fr.cea.nabla.nabla.InitTimeIterator
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.NextTimeIterator
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.typing.DeclarationProvider
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
-import fr.cea.nabla.ir.ir.SimpleVariable
 
 class Nabla2Ir
 {
 	@Inject extension Nabla2IrUtils
+	@Inject extension TimeIteratorUtils
 	@Inject extension IrJobFactory
 	@Inject extension IrFunctionFactory
 	@Inject extension IrArgOrVarFactory
 	@Inject extension IrConnectivityFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension DeclarationProvider
-	@Inject extension ArgOrVarRefExtensions
 
 	def create IrFactory::eINSTANCE.createIrModule toIrModule(NablaModule m)
 	{
@@ -64,35 +61,66 @@ class Nabla2Ir
 			}
 		}
 
+		// Time loop job creation
+		for (iteration : m.iterations)
+		{
+			for (timeIterator : iteration.iterators)
+			{
+				val bj = timeIterator.toIrBeginOfTimeLoopJob
+				val ej = timeIterator.toIrEndOfTimeLoopJob => [ begin = bj ]
+				jobs += bj
+				jobs += ej
+			}
+		}
+
 		// Time n+1 variables and EndOfInitJob creation 
-		val timeIteratorVarRefsByVariable = m.eAllContents.filter(ArgOrVarRef).filter[timeIterator !== null].groupBy[target]
+		val timeIteratorVarRefsByVariable = m.eAllContents.filter(ArgOrVarRef).filter[!timeIterators.empty].groupBy[target]
 		for (v : timeIteratorVarRefsByVariable.keySet)
 		{
-			val timeIteratorVarRefs = timeIteratorVarRefsByVariable.get(v)
-			for (r : timeIteratorVarRefs)
+			val varRefs = timeIteratorVarRefsByVariable.get(v)
+			for (varRef : varRefs)
 			{
-				val vAtN = r.target.toIrArgOrVar('') as Variable // no arg with time suffix
-				// No duplicates thanks to r.timeSuffix and Xtend create methods
-				val vAtR = r.target.toIrArgOrVar(r.timeSuffix) as Variable
-				// No duplicates thanks to unique attribute on IrModule::variables
-				variables += vAtR
-				val timeIterator = r.timeIterator
-				switch timeIterator
+				val iterators = varRef.timeIterators
+				switch iterators.last.type
 				{
-					InitTimeIterator: 
+					case CURRENT: 
 					{
-						val vAt0 = vAtR
-						jobs += toEndOfInitJob(vAt0, vAtN)
-						if (v.name == MandatoryMeshVariables::COORD) initCoordVariable = vAt0
+						// nothing to do
 					}
-					// Copy Xn+1 to Xn at the end of time loop.
-					// Xn+1 => NextTimeIterator::div == 0
-					NextTimeIterator case timeIterator.div==0: 
+					case INIT:
 					{
-						val vAtNplus1 = vAtR
-						jobs += toEndOfLoopJob(vAtN, vAtNplus1)
+						val varAtInit = varRef.target.toIrArgOrVar(varRef.timeSuffix)
+						val varAtCurrent = varRef.target.toIrArgOrVar(varRef.currentTimeSuffix)
+						val tlCopy = IrFactory::eINSTANCE.createTimeLoopCopy =>
+						[
+							source = varAtInit as Variable
+							destination = varAtCurrent as Variable
+						]
+						val beginJob = iterators.last.target.toIrBeginOfTimeLoopJob
+						beginJob.initializations += tlCopy
 					}
-					// No job to create for instances of NextTimeIterator with div !== 1
+					case NEXT:
+					{
+						val varAtNext = varRef.target.toIrArgOrVar(varRef.timeSuffix)
+						val varAtCurrent = varRef.target.toIrArgOrVar(varRef.currentTimeSuffix)
+						val endJob = iterators.last.target.toIrEndOfTimeLoopJob
+						endJob.nextLoopCopies += IrFactory::eINSTANCE.createTimeLoopCopy =>
+						[
+							source = varAtNext as Variable
+							destination = varAtCurrent as Variable
+						]
+
+						val outerTimeIteratorSuffix = varRef.outerTimeSuffix
+						if (outerTimeIteratorSuffix !== null)
+						{
+							val varAtOuterTimeIterator = varRef.target.toIrArgOrVar(outerTimeIteratorSuffix)
+							endJob.exitLoopCopies += IrFactory::eINSTANCE.createTimeLoopCopy =>
+							[
+								source = varAtNext as Variable
+								destination = varAtOuterTimeIterator as Variable
+							]
+						}
+					}
 				}
 			}
 		}

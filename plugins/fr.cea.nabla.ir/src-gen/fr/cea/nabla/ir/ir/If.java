@@ -25,10 +25,6 @@ public interface If extends Instruction {
 	/**
 	 * Returns the value of the '<em><b>Condition</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Condition</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Condition</em>' containment reference.
 	 * @see #setCondition(Expression)
@@ -51,10 +47,6 @@ public interface If extends Instruction {
 	/**
 	 * Returns the value of the '<em><b>Then Instruction</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Then Instruction</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Then Instruction</em>' containment reference.
 	 * @see #setThenInstruction(Instruction)
@@ -77,10 +69,6 @@ public interface If extends Instruction {
 	/**
 	 * Returns the value of the '<em><b>Else Instruction</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Else Instruction</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Else Instruction</em>' containment reference.
 	 * @see #setElseInstruction(Instruction)

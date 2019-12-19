@@ -130,6 +130,15 @@ public interface IrFactory extends EFactory {
 	InSituJob createInSituJob();
 
 	/**
+	 * Returns a new object of class '<em>Begin Of Time Loop Job</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Begin Of Time Loop Job</em>'.
+	 * @generated
+	 */
+	BeginOfTimeLoopJob createBeginOfTimeLoopJob();
+
+	/**
 	 * Returns a new object of class '<em>End Of Time Loop Job</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -139,13 +148,13 @@ public interface IrFactory extends EFactory {
 	EndOfTimeLoopJob createEndOfTimeLoopJob();
 
 	/**
-	 * Returns a new object of class '<em>End Of Init Job</em>'.
+	 * Returns a new object of class '<em>Time Loop Copy</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>End Of Init Job</em>'.
+	 * @return a new object of class '<em>Time Loop Copy</em>'.
 	 * @generated
 	 */
-	EndOfInitJob createEndOfInitJob();
+	TimeLoopCopy createTimeLoopCopy();
 
 	/**
 	 * Returns a new object of class '<em>Var Definition</em>'.

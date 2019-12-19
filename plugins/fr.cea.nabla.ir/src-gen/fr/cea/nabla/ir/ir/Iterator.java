@@ -27,10 +27,6 @@ public interface Iterator extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
@@ -53,10 +49,6 @@ public interface Iterator extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Container</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Container</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Container</em>' containment reference.
 	 * @see #setContainer(ConnectivityCall)
@@ -80,10 +72,6 @@ public interface Iterator extends IrAnnotable {
 	 * Returns the value of the '<em><b>Singleton</b></em>' attribute.
 	 * The default value is <code>"false"</code>.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Singleton</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Singleton</em>' attribute.
 	 * @see #setSingleton(boolean)
@@ -108,10 +96,6 @@ public interface Iterator extends IrAnnotable {
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.IteratorRef}.
 	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.IteratorRef#getTarget <em>Target</em>}'.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Referencers</em>' reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Referencers</em>' reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getIterator_Referencers()

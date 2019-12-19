@@ -10,7 +10,6 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
-import fr.cea.nabla.ArgOrVarRefExtensions
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.And
@@ -50,7 +49,7 @@ class IrExpressionFactory
 	@Inject extension IrSizeTypeFactory
 	@Inject extension ExpressionTypeProvider
 	@Inject extension ReductionCallExtensions
-	@Inject extension ArgOrVarRefExtensions
+	@Inject extension TimeIteratorUtils
 	@Inject extension NablaType2IrType
 
 	def dispatch Expression toIrExpression(ContractedIf e)

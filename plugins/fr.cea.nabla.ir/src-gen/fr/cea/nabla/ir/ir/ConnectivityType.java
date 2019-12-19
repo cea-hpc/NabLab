@@ -26,10 +26,6 @@ public interface ConnectivityType extends IrType {
 	 * Returns the value of the '<em><b>Connectivities</b></em>' reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Connectivity}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Connectivities</em>' reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Connectivities</em>' reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivityType_Connectivities()
@@ -41,10 +37,6 @@ public interface ConnectivityType extends IrType {
 	/**
 	 * Returns the value of the '<em><b>Base</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Base</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Base</em>' containment reference.
 	 * @see #setBase(BaseType)

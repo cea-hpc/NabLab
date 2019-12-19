@@ -1127,31 +1127,49 @@ public interface IrPackage extends EPackage {
 	int IN_SITU_JOB__ON_CYCLE = JOB__ON_CYCLE;
 
 	/**
-	 * The feature id for the '<em><b>Variables</b></em>' reference list.
+	 * The feature id for the '<em><b>Dumped Variables</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IN_SITU_JOB__VARIABLES = JOB_FEATURE_COUNT + 0;
+	int IN_SITU_JOB__DUMPED_VARIABLES = JOB_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Iteration Period</b></em>' attribute.
+	 * The feature id for the '<em><b>Period Value</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IN_SITU_JOB__ITERATION_PERIOD = JOB_FEATURE_COUNT + 1;
+	int IN_SITU_JOB__PERIOD_VALUE = JOB_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Time Step</b></em>' attribute.
+	 * The feature id for the '<em><b>Period Variable</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IN_SITU_JOB__TIME_STEP = JOB_FEATURE_COUNT + 2;
+	int IN_SITU_JOB__PERIOD_VARIABLE = JOB_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Iteration Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IN_SITU_JOB__ITERATION_VARIABLE = JOB_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Time Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IN_SITU_JOB__TIME_VARIABLE = JOB_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of structural features of the '<em>In Situ Job</em>' class.
@@ -1160,7 +1178,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IN_SITU_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 3;
+	int IN_SITU_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of operations of the '<em>In Situ Job</em>' class.
@@ -1172,14 +1190,14 @@ public interface IrPackage extends EPackage {
 	int IN_SITU_JOB_OPERATION_COUNT = JOB_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.TimeIterationCopyJobImpl <em>Time Iteration Copy Job</em>}' class.
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.BeginOfTimeLoopJobImpl <em>Begin Of Time Loop Job</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.TimeIterationCopyJobImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTimeIterationCopyJob()
+	 * @see fr.cea.nabla.ir.ir.impl.BeginOfTimeLoopJobImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getBeginOfTimeLoopJob()
 	 * @generated
 	 */
-	int TIME_ITERATION_COPY_JOB = 16;
+	int BEGIN_OF_TIME_LOOP_JOB = 16;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -1188,7 +1206,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_ITERATION_COPY_JOB__ANNOTATIONS = JOB__ANNOTATIONS;
+	int BEGIN_OF_TIME_LOOP_JOB__ANNOTATIONS = JOB__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1197,7 +1215,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_ITERATION_COPY_JOB__NAME = JOB__NAME;
+	int BEGIN_OF_TIME_LOOP_JOB__NAME = JOB__NAME;
 
 	/**
 	 * The feature id for the '<em><b>At</b></em>' attribute.
@@ -1206,7 +1224,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_ITERATION_COPY_JOB__AT = JOB__AT;
+	int BEGIN_OF_TIME_LOOP_JOB__AT = JOB__AT;
 
 	/**
 	 * The feature id for the '<em><b>On Cycle</b></em>' attribute.
@@ -1215,52 +1233,43 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_ITERATION_COPY_JOB__ON_CYCLE = JOB__ON_CYCLE;
+	int BEGIN_OF_TIME_LOOP_JOB__ON_CYCLE = JOB__ON_CYCLE;
 
 	/**
-	 * The feature id for the '<em><b>Left</b></em>' reference.
+	 * The feature id for the '<em><b>End</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_ITERATION_COPY_JOB__LEFT = JOB_FEATURE_COUNT + 0;
+	int BEGIN_OF_TIME_LOOP_JOB__END = JOB_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Right</b></em>' reference.
+	 * The feature id for the '<em><b>Initializations</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_ITERATION_COPY_JOB__RIGHT = JOB_FEATURE_COUNT + 1;
+	int BEGIN_OF_TIME_LOOP_JOB__INITIALIZATIONS = JOB_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Time Iterator Name</b></em>' attribute.
+	 * The number of structural features of the '<em>Begin Of Time Loop Job</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_ITERATION_COPY_JOB__TIME_ITERATOR_NAME = JOB_FEATURE_COUNT + 2;
+	int BEGIN_OF_TIME_LOOP_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 2;
 
 	/**
-	 * The number of structural features of the '<em>Time Iteration Copy Job</em>' class.
+	 * The number of operations of the '<em>Begin Of Time Loop Job</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_ITERATION_COPY_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 3;
-
-	/**
-	 * The number of operations of the '<em>Time Iteration Copy Job</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_ITERATION_COPY_JOB_OPERATION_COUNT = JOB_OPERATION_COUNT + 0;
+	int BEGIN_OF_TIME_LOOP_JOB_OPERATION_COUNT = JOB_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.EndOfTimeLoopJobImpl <em>End Of Time Loop Job</em>}' class.
@@ -1279,7 +1288,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int END_OF_TIME_LOOP_JOB__ANNOTATIONS = TIME_ITERATION_COPY_JOB__ANNOTATIONS;
+	int END_OF_TIME_LOOP_JOB__ANNOTATIONS = JOB__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1288,7 +1297,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int END_OF_TIME_LOOP_JOB__NAME = TIME_ITERATION_COPY_JOB__NAME;
+	int END_OF_TIME_LOOP_JOB__NAME = JOB__NAME;
 
 	/**
 	 * The feature id for the '<em><b>At</b></em>' attribute.
@@ -1297,7 +1306,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int END_OF_TIME_LOOP_JOB__AT = TIME_ITERATION_COPY_JOB__AT;
+	int END_OF_TIME_LOOP_JOB__AT = JOB__AT;
 
 	/**
 	 * The feature id for the '<em><b>On Cycle</b></em>' attribute.
@@ -1306,34 +1315,43 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int END_OF_TIME_LOOP_JOB__ON_CYCLE = TIME_ITERATION_COPY_JOB__ON_CYCLE;
+	int END_OF_TIME_LOOP_JOB__ON_CYCLE = JOB__ON_CYCLE;
 
 	/**
-	 * The feature id for the '<em><b>Left</b></em>' reference.
+	 * The feature id for the '<em><b>Begin</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int END_OF_TIME_LOOP_JOB__LEFT = TIME_ITERATION_COPY_JOB__LEFT;
+	int END_OF_TIME_LOOP_JOB__BEGIN = JOB_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Right</b></em>' reference.
+	 * The feature id for the '<em><b>Next Loop Copies</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int END_OF_TIME_LOOP_JOB__RIGHT = TIME_ITERATION_COPY_JOB__RIGHT;
+	int END_OF_TIME_LOOP_JOB__NEXT_LOOP_COPIES = JOB_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Time Iterator Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Exit Loop Copies</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int END_OF_TIME_LOOP_JOB__TIME_ITERATOR_NAME = TIME_ITERATION_COPY_JOB__TIME_ITERATOR_NAME;
+	int END_OF_TIME_LOOP_JOB__EXIT_LOOP_COPIES = JOB_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>While Condition</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int END_OF_TIME_LOOP_JOB__WHILE_CONDITION = JOB_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>End Of Time Loop Job</em>' class.
@@ -1342,7 +1360,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int END_OF_TIME_LOOP_JOB_FEATURE_COUNT = TIME_ITERATION_COPY_JOB_FEATURE_COUNT + 0;
+	int END_OF_TIME_LOOP_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of operations of the '<em>End Of Time Loop Job</em>' class.
@@ -1351,17 +1369,17 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int END_OF_TIME_LOOP_JOB_OPERATION_COUNT = TIME_ITERATION_COPY_JOB_OPERATION_COUNT + 0;
+	int END_OF_TIME_LOOP_JOB_OPERATION_COUNT = JOB_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.EndOfInitJobImpl <em>End Of Init Job</em>}' class.
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.TimeLoopCopyImpl <em>Time Loop Copy</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.EndOfInitJobImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getEndOfInitJob()
+	 * @see fr.cea.nabla.ir.ir.impl.TimeLoopCopyImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTimeLoopCopy()
 	 * @generated
 	 */
-	int END_OF_INIT_JOB = 18;
+	int TIME_LOOP_COPY = 18;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -1370,79 +1388,43 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int END_OF_INIT_JOB__ANNOTATIONS = TIME_ITERATION_COPY_JOB__ANNOTATIONS;
+	int TIME_LOOP_COPY__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
 
 	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Destination</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int END_OF_INIT_JOB__NAME = TIME_ITERATION_COPY_JOB__NAME;
+	int TIME_LOOP_COPY__DESTINATION = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>At</b></em>' attribute.
+	 * The feature id for the '<em><b>Source</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int END_OF_INIT_JOB__AT = TIME_ITERATION_COPY_JOB__AT;
+	int TIME_LOOP_COPY__SOURCE = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>On Cycle</b></em>' attribute.
+	 * The number of structural features of the '<em>Time Loop Copy</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int END_OF_INIT_JOB__ON_CYCLE = TIME_ITERATION_COPY_JOB__ON_CYCLE;
+	int TIME_LOOP_COPY_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Left</b></em>' reference.
+	 * The number of operations of the '<em>Time Loop Copy</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int END_OF_INIT_JOB__LEFT = TIME_ITERATION_COPY_JOB__LEFT;
-
-	/**
-	 * The feature id for the '<em><b>Right</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int END_OF_INIT_JOB__RIGHT = TIME_ITERATION_COPY_JOB__RIGHT;
-
-	/**
-	 * The feature id for the '<em><b>Time Iterator Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int END_OF_INIT_JOB__TIME_ITERATOR_NAME = TIME_ITERATION_COPY_JOB__TIME_ITERATOR_NAME;
-
-	/**
-	 * The number of structural features of the '<em>End Of Init Job</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int END_OF_INIT_JOB_FEATURE_COUNT = TIME_ITERATION_COPY_JOB_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of operations of the '<em>End Of Init Job</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int END_OF_INIT_JOB_OPERATION_COUNT = TIME_ITERATION_COPY_JOB_OPERATION_COUNT + 0;
+	int TIME_LOOP_COPY_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.InstructionImpl <em>Instruction</em>}' class.
@@ -4307,80 +4289,91 @@ public interface IrPackage extends EPackage {
 	EClass getInSituJob();
 
 	/**
-	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.InSituJob#getVariables <em>Variables</em>}'.
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.InSituJob#getDumpedVariables <em>Dumped Variables</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Variables</em>'.
-	 * @see fr.cea.nabla.ir.ir.InSituJob#getVariables()
+	 * @return the meta object for the reference list '<em>Dumped Variables</em>'.
+	 * @see fr.cea.nabla.ir.ir.InSituJob#getDumpedVariables()
 	 * @see #getInSituJob()
 	 * @generated
 	 */
-	EReference getInSituJob_Variables();
+	EReference getInSituJob_DumpedVariables();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.InSituJob#getIterationPeriod <em>Iteration Period</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.InSituJob#getPeriodValue <em>Period Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Iteration Period</em>'.
-	 * @see fr.cea.nabla.ir.ir.InSituJob#getIterationPeriod()
+	 * @return the meta object for the attribute '<em>Period Value</em>'.
+	 * @see fr.cea.nabla.ir.ir.InSituJob#getPeriodValue()
 	 * @see #getInSituJob()
 	 * @generated
 	 */
-	EAttribute getInSituJob_IterationPeriod();
+	EAttribute getInSituJob_PeriodValue();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.InSituJob#getTimeStep <em>Time Step</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.InSituJob#getPeriodVariable <em>Period Variable</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Time Step</em>'.
-	 * @see fr.cea.nabla.ir.ir.InSituJob#getTimeStep()
+	 * @return the meta object for the reference '<em>Period Variable</em>'.
+	 * @see fr.cea.nabla.ir.ir.InSituJob#getPeriodVariable()
 	 * @see #getInSituJob()
 	 * @generated
 	 */
-	EAttribute getInSituJob_TimeStep();
+	EReference getInSituJob_PeriodVariable();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.TimeIterationCopyJob <em>Time Iteration Copy Job</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.InSituJob#getIterationVariable <em>Iteration Variable</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Time Iteration Copy Job</em>'.
-	 * @see fr.cea.nabla.ir.ir.TimeIterationCopyJob
+	 * @return the meta object for the reference '<em>Iteration Variable</em>'.
+	 * @see fr.cea.nabla.ir.ir.InSituJob#getIterationVariable()
+	 * @see #getInSituJob()
 	 * @generated
 	 */
-	EClass getTimeIterationCopyJob();
+	EReference getInSituJob_IterationVariable();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.TimeIterationCopyJob#getLeft <em>Left</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.InSituJob#getTimeVariable <em>Time Variable</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Left</em>'.
-	 * @see fr.cea.nabla.ir.ir.TimeIterationCopyJob#getLeft()
-	 * @see #getTimeIterationCopyJob()
+	 * @return the meta object for the reference '<em>Time Variable</em>'.
+	 * @see fr.cea.nabla.ir.ir.InSituJob#getTimeVariable()
+	 * @see #getInSituJob()
 	 * @generated
 	 */
-	EReference getTimeIterationCopyJob_Left();
+	EReference getInSituJob_TimeVariable();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.TimeIterationCopyJob#getRight <em>Right</em>}'.
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.BeginOfTimeLoopJob <em>Begin Of Time Loop Job</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Right</em>'.
-	 * @see fr.cea.nabla.ir.ir.TimeIterationCopyJob#getRight()
-	 * @see #getTimeIterationCopyJob()
+	 * @return the meta object for class '<em>Begin Of Time Loop Job</em>'.
+	 * @see fr.cea.nabla.ir.ir.BeginOfTimeLoopJob
 	 * @generated
 	 */
-	EReference getTimeIterationCopyJob_Right();
+	EClass getBeginOfTimeLoopJob();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.TimeIterationCopyJob#getTimeIteratorName <em>Time Iterator Name</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.BeginOfTimeLoopJob#getEnd <em>End</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Time Iterator Name</em>'.
-	 * @see fr.cea.nabla.ir.ir.TimeIterationCopyJob#getTimeIteratorName()
-	 * @see #getTimeIterationCopyJob()
+	 * @return the meta object for the reference '<em>End</em>'.
+	 * @see fr.cea.nabla.ir.ir.BeginOfTimeLoopJob#getEnd()
+	 * @see #getBeginOfTimeLoopJob()
 	 * @generated
 	 */
-	EAttribute getTimeIterationCopyJob_TimeIteratorName();
+	EReference getBeginOfTimeLoopJob_End();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.BeginOfTimeLoopJob#getInitializations <em>Initializations</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Initializations</em>'.
+	 * @see fr.cea.nabla.ir.ir.BeginOfTimeLoopJob#getInitializations()
+	 * @see #getBeginOfTimeLoopJob()
+	 * @generated
+	 */
+	EReference getBeginOfTimeLoopJob_Initializations();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.EndOfTimeLoopJob <em>End Of Time Loop Job</em>}'.
@@ -4393,14 +4386,80 @@ public interface IrPackage extends EPackage {
 	EClass getEndOfTimeLoopJob();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.EndOfInitJob <em>End Of Init Job</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.EndOfTimeLoopJob#getBegin <em>Begin</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>End Of Init Job</em>'.
-	 * @see fr.cea.nabla.ir.ir.EndOfInitJob
+	 * @return the meta object for the reference '<em>Begin</em>'.
+	 * @see fr.cea.nabla.ir.ir.EndOfTimeLoopJob#getBegin()
+	 * @see #getEndOfTimeLoopJob()
 	 * @generated
 	 */
-	EClass getEndOfInitJob();
+	EReference getEndOfTimeLoopJob_Begin();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.EndOfTimeLoopJob#getNextLoopCopies <em>Next Loop Copies</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Next Loop Copies</em>'.
+	 * @see fr.cea.nabla.ir.ir.EndOfTimeLoopJob#getNextLoopCopies()
+	 * @see #getEndOfTimeLoopJob()
+	 * @generated
+	 */
+	EReference getEndOfTimeLoopJob_NextLoopCopies();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.EndOfTimeLoopJob#getExitLoopCopies <em>Exit Loop Copies</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Exit Loop Copies</em>'.
+	 * @see fr.cea.nabla.ir.ir.EndOfTimeLoopJob#getExitLoopCopies()
+	 * @see #getEndOfTimeLoopJob()
+	 * @generated
+	 */
+	EReference getEndOfTimeLoopJob_ExitLoopCopies();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.EndOfTimeLoopJob#getWhileCondition <em>While Condition</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>While Condition</em>'.
+	 * @see fr.cea.nabla.ir.ir.EndOfTimeLoopJob#getWhileCondition()
+	 * @see #getEndOfTimeLoopJob()
+	 * @generated
+	 */
+	EReference getEndOfTimeLoopJob_WhileCondition();
+
+	/**
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.TimeLoopCopy <em>Time Loop Copy</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Time Loop Copy</em>'.
+	 * @see fr.cea.nabla.ir.ir.TimeLoopCopy
+	 * @generated
+	 */
+	EClass getTimeLoopCopy();
+
+	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.TimeLoopCopy#getDestination <em>Destination</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Destination</em>'.
+	 * @see fr.cea.nabla.ir.ir.TimeLoopCopy#getDestination()
+	 * @see #getTimeLoopCopy()
+	 * @generated
+	 */
+	EReference getTimeLoopCopy_Destination();
+
+	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.TimeLoopCopy#getSource <em>Source</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Source</em>'.
+	 * @see fr.cea.nabla.ir.ir.TimeLoopCopy#getSource()
+	 * @see #getTimeLoopCopy()
+	 * @generated
+	 */
+	EReference getTimeLoopCopy_Source();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Instruction <em>Instruction</em>}'.
@@ -6022,62 +6081,70 @@ public interface IrPackage extends EPackage {
 		EClass IN_SITU_JOB = eINSTANCE.getInSituJob();
 
 		/**
-		 * The meta object literal for the '<em><b>Variables</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Dumped Variables</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference IN_SITU_JOB__VARIABLES = eINSTANCE.getInSituJob_Variables();
+		EReference IN_SITU_JOB__DUMPED_VARIABLES = eINSTANCE.getInSituJob_DumpedVariables();
 
 		/**
-		 * The meta object literal for the '<em><b>Iteration Period</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Period Value</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute IN_SITU_JOB__ITERATION_PERIOD = eINSTANCE.getInSituJob_IterationPeriod();
+		EAttribute IN_SITU_JOB__PERIOD_VALUE = eINSTANCE.getInSituJob_PeriodValue();
 
 		/**
-		 * The meta object literal for the '<em><b>Time Step</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Period Variable</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute IN_SITU_JOB__TIME_STEP = eINSTANCE.getInSituJob_TimeStep();
+		EReference IN_SITU_JOB__PERIOD_VARIABLE = eINSTANCE.getInSituJob_PeriodVariable();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.TimeIterationCopyJobImpl <em>Time Iteration Copy Job</em>}' class.
+		 * The meta object literal for the '<em><b>Iteration Variable</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.TimeIterationCopyJobImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTimeIterationCopyJob()
 		 * @generated
 		 */
-		EClass TIME_ITERATION_COPY_JOB = eINSTANCE.getTimeIterationCopyJob();
+		EReference IN_SITU_JOB__ITERATION_VARIABLE = eINSTANCE.getInSituJob_IterationVariable();
 
 		/**
-		 * The meta object literal for the '<em><b>Left</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Time Variable</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference TIME_ITERATION_COPY_JOB__LEFT = eINSTANCE.getTimeIterationCopyJob_Left();
+		EReference IN_SITU_JOB__TIME_VARIABLE = eINSTANCE.getInSituJob_TimeVariable();
 
 		/**
-		 * The meta object literal for the '<em><b>Right</b></em>' reference feature.
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.BeginOfTimeLoopJobImpl <em>Begin Of Time Loop Job</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
+		 * @see fr.cea.nabla.ir.ir.impl.BeginOfTimeLoopJobImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getBeginOfTimeLoopJob()
 		 * @generated
 		 */
-		EReference TIME_ITERATION_COPY_JOB__RIGHT = eINSTANCE.getTimeIterationCopyJob_Right();
+		EClass BEGIN_OF_TIME_LOOP_JOB = eINSTANCE.getBeginOfTimeLoopJob();
 
 		/**
-		 * The meta object literal for the '<em><b>Time Iterator Name</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>End</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute TIME_ITERATION_COPY_JOB__TIME_ITERATOR_NAME = eINSTANCE.getTimeIterationCopyJob_TimeIteratorName();
+		EReference BEGIN_OF_TIME_LOOP_JOB__END = eINSTANCE.getBeginOfTimeLoopJob_End();
+
+		/**
+		 * The meta object literal for the '<em><b>Initializations</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BEGIN_OF_TIME_LOOP_JOB__INITIALIZATIONS = eINSTANCE.getBeginOfTimeLoopJob_Initializations();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.EndOfTimeLoopJobImpl <em>End Of Time Loop Job</em>}' class.
@@ -6090,14 +6157,62 @@ public interface IrPackage extends EPackage {
 		EClass END_OF_TIME_LOOP_JOB = eINSTANCE.getEndOfTimeLoopJob();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.EndOfInitJobImpl <em>End Of Init Job</em>}' class.
+		 * The meta object literal for the '<em><b>Begin</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.EndOfInitJobImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getEndOfInitJob()
 		 * @generated
 		 */
-		EClass END_OF_INIT_JOB = eINSTANCE.getEndOfInitJob();
+		EReference END_OF_TIME_LOOP_JOB__BEGIN = eINSTANCE.getEndOfTimeLoopJob_Begin();
+
+		/**
+		 * The meta object literal for the '<em><b>Next Loop Copies</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference END_OF_TIME_LOOP_JOB__NEXT_LOOP_COPIES = eINSTANCE.getEndOfTimeLoopJob_NextLoopCopies();
+
+		/**
+		 * The meta object literal for the '<em><b>Exit Loop Copies</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference END_OF_TIME_LOOP_JOB__EXIT_LOOP_COPIES = eINSTANCE.getEndOfTimeLoopJob_ExitLoopCopies();
+
+		/**
+		 * The meta object literal for the '<em><b>While Condition</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference END_OF_TIME_LOOP_JOB__WHILE_CONDITION = eINSTANCE.getEndOfTimeLoopJob_WhileCondition();
+
+		/**
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.TimeLoopCopyImpl <em>Time Loop Copy</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.cea.nabla.ir.ir.impl.TimeLoopCopyImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTimeLoopCopy()
+		 * @generated
+		 */
+		EClass TIME_LOOP_COPY = eINSTANCE.getTimeLoopCopy();
+
+		/**
+		 * The meta object literal for the '<em><b>Destination</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference TIME_LOOP_COPY__DESTINATION = eINSTANCE.getTimeLoopCopy_Destination();
+
+		/**
+		 * The meta object literal for the '<em><b>Source</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference TIME_LOOP_COPY__SOURCE = eINSTANCE.getTimeLoopCopy_Source();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.InstructionImpl <em>Instruction</em>}' class.

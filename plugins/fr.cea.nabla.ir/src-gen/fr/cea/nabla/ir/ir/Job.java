@@ -25,10 +25,6 @@ public interface Job extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
@@ -51,10 +47,6 @@ public interface Job extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>At</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>At</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>At</em>' attribute.
 	 * @see #setAt(double)
@@ -77,10 +69,6 @@ public interface Job extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>On Cycle</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>On Cycle</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>On Cycle</em>' attribute.
 	 * @see #setOnCycle(boolean)

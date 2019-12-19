@@ -26,10 +26,6 @@ public interface IteratorRef extends IrAnnotable {
 	 * Returns the value of the '<em><b>Target</b></em>' reference.
 	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.Iterator#getReferencers <em>Referencers</em>}'.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Target</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Target</em>' reference.
 	 * @see #setTarget(Iterator)
@@ -54,10 +50,6 @@ public interface IteratorRef extends IrAnnotable {
 	 * Returns the value of the '<em><b>Shift</b></em>' attribute.
 	 * The default value is <code>"0"</code>.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Shift</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Shift</em>' attribute.
 	 * @see #setShift(int)
@@ -80,10 +72,6 @@ public interface IteratorRef extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Index In Referencer List</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Index In Referencer List</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Index In Referencer List</em>' attribute.
 	 * @see #setIndexInReferencerList(int)

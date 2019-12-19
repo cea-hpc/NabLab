@@ -25,10 +25,6 @@ public interface ConnectivityCall extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Connectivity</b></em>' reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Connectivity</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Connectivity</em>' reference.
 	 * @see #setConnectivity(Connectivity)
@@ -53,10 +49,6 @@ public interface ConnectivityCall extends IrAnnotable {
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef}.
 	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef#getReferencedBy <em>Referenced By</em>}'.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Args</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Args</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivityCall_Args()

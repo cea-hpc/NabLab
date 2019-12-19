@@ -10,20 +10,18 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.MandatoryMeshVariables
-import fr.cea.nabla.ir.MandatorySimulationVariables
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.BeginOfTimeLoopJob
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.EndOfInitJob
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.transformers.TagPersistentVariables
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.InstructionContentProvider.*
 
 class JobContentProvider 
@@ -44,16 +42,23 @@ class JobContentProvider
 
 	private static def dispatch CharSequence getInnerContent(InSituJob it)
 	'''
-		if «condition»
+		if «periodVariable.name» >= «TagPersistentVariables::LastDumpVariableName»
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-			«FOR v : variables.filter(ConnectivityVariable)»
+			«FOR v : dumpedVariables.filter(ConnectivityVariable)»
 			«v.type.connectivities.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 			«ENDFOR»
-			writer.writeFile(iteration, «MandatorySimulationVariables::TIME», «MandatoryMeshVariables::COORD», mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
-			«IF timeStep>0»«Utils::LastWriteTimeVariableName» += «timeStep»;«ENDIF»
+			writer.writeFile(«iterationVariable.name», «timeVariable.name», «MandatoryMeshVariables::COORD», mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			«TagPersistentVariables::LastDumpVariableName» += «periodVariable.name»;
 		}
+	'''
+
+	private static def dispatch CharSequence getInnerContent(BeginOfTimeLoopJob it)
+	'''
+		«FOR initialization : initializations»
+			«copy(initialization.destination.name, initialization.source.name, initialization.destination.type.dimension, true)»
+		«ENDFOR»
 	'''
 
 	private static def dispatch CharSequence getInnerContent(EndOfTimeLoopJob it)
@@ -62,11 +67,6 @@ class JobContentProvider
 		«left.name» = «right.name»;
 		«right.name» = tmpSwitch;
 	'''
-
-	private static def dispatch CharSequence getInnerContent(EndOfInitJob it)
-	{
-		copy(left.name, right.name, left.type.dimension, true)
-	}
 
 	private static def CharSequence copy(String left, String right, int dimension, boolean firstLoop)
 	{

@@ -12,10 +12,9 @@
  
 // TODO Add keyword size, i.e. size X = 4; (X : DimensionVar). Check only one DimensionVar X.
 // TODO Operator definition and overload
-// TODO Reduction body
-// TODO While: instructions or pow like time iterator
 // TODO Formatter nabla and nablagen for project creation wizard
-// TODO Reproductible unique ids (hashcode)
+// TODO Check unused time iterator
+// TODO Pow label for time iterators
 
 
 
@@ -32,6 +31,7 @@ NablaModule:
 	reductions+=Reduction*
 	functions+=Function*
 	instructions+=(SimpleVarDefinition | VarGroupDeclaration)*
+	iterations+=TimeIteratorDefinition*
 	jobs+=Job*;
 
 Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';
@@ -62,9 +62,10 @@ SingletonSpaceIterator: name=ID '=' container=ConnectivityCall; // must return a
 ConnectivityCall: connectivity=[Connectivity]  '('(args+=SpaceIteratorRef (',' args+=SpaceIteratorRef)*)?')';
 SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?; // inc/dec only valid on a range
 
-TimeIterator: 
-	{InitTimeIterator} 'n=0' | 
-	{NextTimeIterator} 'n+1' (hasDiv?='/' div=INT)?;
+TimeIteratorDefinition: 'iterate' iterators+=TimeIterator (',' iterators+=TimeIterator)* ';';
+TimeIterator: name=TIME_ITERATOR_ID 'while' cond=Expression;
+TimeIteratorRef: target=[TimeIterator|TIME_ITERATOR_ID] type=TimeIteratorRefType;
+enum TimeIteratorRefType: Current | Init='=0' | Next='+1';
 
 
 /* VARIABLES *********************************************/
@@ -134,7 +135,7 @@ Atomic returns Expression:
 
 ReductionCall: reduction=[Reduction|QualifiedName] '{' iterationBlock=IterationBlock '}' '(' arg=Expression ')';
 ArgOrVarRef: target=[ArgOrVar] 
-	('^{' timeIterator=TimeIterator '}')?
+	('^{' timeIterators+=TimeIteratorRef (',' timeIterators+=TimeIteratorRef)* '}')?
 	('{' spaceIterators+=SpaceIteratorRef (',' spaceIterators+=SpaceIteratorRef)* '}')? 
 	('[' indices+=SizeType (',' indices+=SizeType)? ']')?;
 
@@ -158,5 +159,7 @@ QualifiedNameWithWildcard: QualifiedName '.*'?;
 
 //terminal REAL returns ecore::EDouble: ('0'..'9')+ '.' ('0'..'9')+ ('e'('+'|'-')('0'..'9')+)?;
 terminal REAL returns ecore::EDouble: INT '.' (INT (('e'|'E')('+'|'-')INT)?)?;
+terminal TIME_ITERATOR_ID: 'n';
 @Override 
 terminal ID: '^'? ('a'..'z'|'A'..'Z'|'\u0391'..'\u03C9'|'\u220F'..'\u221A'|'_') ('a'..'z'|'A'..'Z'|'\u0391'..'\u03C9'|'0'..'9'|'_')*;
+

@@ -62,7 +62,7 @@ class ArgOrVarExtensions
 	}
 
 	static def isGlobal(Variable it) 
-	{ 
+	{
 		(eContainer instanceof IrModule)
 	}
 

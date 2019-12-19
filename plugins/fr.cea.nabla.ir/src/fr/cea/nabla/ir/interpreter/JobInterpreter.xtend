@@ -1,10 +1,9 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.MandatoryMeshVariables
-import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.ir.BeginOfTimeLoopJob
 import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.EndOfInitJob
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
@@ -12,6 +11,7 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.HashMap
 
+import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -64,23 +64,28 @@ class JobInterpreter
 		}
 	}
 
-	def dispatch interprete(EndOfTimeLoopJob it, Context context)
+	def dispatch interprete(BeginOfTimeLoopJob it, Context context)
 	{
 		//println("Interprete EndOfTimeLoopJob" + name + " @ " + at)
 		// Switch Vn and Vn+1
-		val leftValue = context.getVariableValue(left)
-		val rightValue = context.getVariableValue(right)
-		context.setVariableValue(left, rightValue)
-		context.setVariableValue(right, leftValue)
+		for (initialization : initializations)
+		{
+			val leftValue = context.getVariableValue(initialization.destination)
+			val rightValue = context.getVariableValue(initialization.source)
+			context.setVariableValue(initialization.destination, rightValue)
+			context.setVariableValue(initialization.source, leftValue)
+		}
 	}
 
-
-	def dispatch interprete(EndOfInitJob it, Context context)
+	def dispatch interprete(EndOfTimeLoopJob it, Context context)
 	{
 		//println("Interprete EndOfInitJob " + name + " @ " + at)
 		// Set Vn = V0
 		// Warning : V0 and Vn have the same memory representation so if we update Vn, V0 will be modified
-		context.setVariableValue(left, context.getVariableValue(right))
+		val cond = interprete(whileCondition, context) as NV0Bool
+		val varCopies = if (cond.data) nextLoopCopies else exitLoopCopies
+		for (copy : varCopies)
+			context.setVariableValue(copy.destination, context.getVariableValue(copy.source))
 	}
 
 	private def setItemVariables(InSituJob it, Context context, IrModule module, String itemName, HashMap<String, double[]> map)

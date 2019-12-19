@@ -17,34 +17,29 @@ import fr.cea.nabla.nabla.ItemArgType
 import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.PrimitiveType
 
-/**
- * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
- * Si elle n'est pas singleton, plusieurs instances d'un même objet seront créées lors
- * deu parcours du graphe d'origine (voir la documentation Xtext).
- */
 @Singleton
 class Nabla2IrUtils
 {
 	@Inject extension IrAnnotationHelper 
-	
+
 	def toIrPrimitiveType(PrimitiveType t)
 	{
-		val type = fr.cea.nabla.ir.ir.PrimitiveType::get(t.value + 1) // le premier literal est void en IR
+		val type = fr.cea.nabla.ir.ir.PrimitiveType::get(t.value + 1) // First literal is VOID in the IR model
 		if (type === null) throw new RuntimeException('Conversion Nabla --> IR impossible : type inconnu ' + t.literal)
 		return type
-	}	
-	
+	}
+
 	def create IrFactory::eINSTANCE.createItemType toIrItemType(ItemType i)
 	{
 		name = i.name
 	}
-	
+
 	def create IrFactory::eINSTANCE.createItemArgType toIrItemArgType(ItemArgType i)
 	{
 		multiple = i.multiple
 		type = i.type.toIrItemType
 	}
-	
+
 	def create IrFactory::eINSTANCE.createImport toIrImport(Import i)
 	{
 		importedNamespace = i.importedNamespace

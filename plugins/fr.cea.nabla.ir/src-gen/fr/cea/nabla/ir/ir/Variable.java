@@ -24,10 +24,6 @@ public interface Variable extends ArgOrVar {
 	/**
 	 * Returns the value of the '<em><b>Persistence Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Persistence Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Persistence Name</em>' attribute.
 	 * @see #setPersistenceName(String)
@@ -51,10 +47,6 @@ public interface Variable extends ArgOrVar {
 	 * Returns the value of the '<em><b>Const</b></em>' attribute.
 	 * The default value is <code>"false"</code>.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Const</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Const</em>' attribute.
 	 * @see #setConst(boolean)

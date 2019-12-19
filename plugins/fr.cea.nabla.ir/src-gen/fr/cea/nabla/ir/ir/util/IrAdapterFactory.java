@@ -132,16 +132,16 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createInSituJobAdapter();
 			}
 			@Override
-			public Adapter caseTimeIterationCopyJob(TimeIterationCopyJob object) {
-				return createTimeIterationCopyJobAdapter();
+			public Adapter caseBeginOfTimeLoopJob(BeginOfTimeLoopJob object) {
+				return createBeginOfTimeLoopJobAdapter();
 			}
 			@Override
 			public Adapter caseEndOfTimeLoopJob(EndOfTimeLoopJob object) {
 				return createEndOfTimeLoopJobAdapter();
 			}
 			@Override
-			public Adapter caseEndOfInitJob(EndOfInitJob object) {
-				return createEndOfInitJobAdapter();
+			public Adapter caseTimeLoopCopy(TimeLoopCopy object) {
+				return createTimeLoopCopyAdapter();
 			}
 			@Override
 			public Adapter caseInstruction(Instruction object) {
@@ -548,16 +548,16 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.TimeIterationCopyJob <em>Time Iteration Copy Job</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.BeginOfTimeLoopJob <em>Begin Of Time Loop Job</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.TimeIterationCopyJob
+	 * @see fr.cea.nabla.ir.ir.BeginOfTimeLoopJob
 	 * @generated
 	 */
-	public Adapter createTimeIterationCopyJobAdapter() {
+	public Adapter createBeginOfTimeLoopJobAdapter() {
 		return null;
 	}
 
@@ -576,16 +576,16 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.EndOfInitJob <em>End Of Init Job</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.TimeLoopCopy <em>Time Loop Copy</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.EndOfInitJob
+	 * @see fr.cea.nabla.ir.ir.TimeLoopCopy
 	 * @generated
 	 */
-	public Adapter createEndOfInitJobAdapter() {
+	public Adapter createTimeLoopCopyAdapter() {
 		return null;
 	}
 

@@ -89,15 +89,15 @@ class TestUtils
 		return getMandatoryMeshOptions(10, 10)
 	}
 
-	static def String getMandatorySimulationOptions(double stopTime, int maxIterations)
+	static def String getSimulationOptions(double stopTime, int maxIterations)
 	'''
 	const ℝ option_stoptime = «stopTime»;
 	const ℕ option_max_iterations = «maxIterations»;
 	'''
 
-	static def String getMandatorySimulationOptions()
+	static def String getSimulationOptions()
 	{
-		return getMandatorySimulationOptions(0.2, 1)
+		return getSimulationOptions(0.2, 1)
 	}
 
 	static def String getConnectivities()
@@ -133,12 +133,12 @@ class TestUtils
 
 	static def String getMandatorySimulationOptionsAndVariables()
 	{
-		mandatorySimulationOptions + mandatorySimulationVariables
+		simulationOptions + mandatorySimulationVariables
 	}
 
 	static def String getMandatoryOptionsAndVariables()
 	{
-		mandatoryMeshOptions + mandatorySimulationOptions + mandatoryMeshVariables + mandatorySimulationVariables
+		mandatoryMeshOptions + simulationOptions + mandatoryMeshVariables + mandatorySimulationVariables
 	}
 
 	static def String getInitTJob()
@@ -156,7 +156,7 @@ class TestUtils
 	static def CharSequence getTestModule(int xQuads, int yQuads, double stopTime, int maxIterations)
 	{
 		emptyTestModule + connectivities +
-			getMandatoryMeshOptions(xQuads, yQuads) + getMandatorySimulationOptions(stopTime, maxIterations) + 
+			getMandatoryMeshOptions(xQuads, yQuads) + TestUtils.getSimulationOptions(stopTime, maxIterations) + 
 			mandatoryMeshVariables + mandatorySimulationVariables
 	}
 
@@ -237,7 +237,7 @@ class TestUtils
 		val variableValue = context.getVariableValue(irModule.getVariableByName(variableName))
 		Assert.assertNotNull(variableValue)
 		Assert.assertTrue(variableValue instanceof NV0Real)
-		Assert.assertEquals(value.data, (variableValue as NV0Real).data, fr.cea.nabla.tests.TestUtils.DoubleTolerance)
+		Assert.assertEquals(value.data, (variableValue as NV0Real).data, TestUtils.DoubleTolerance)
 	}
 
 	//Read File to String

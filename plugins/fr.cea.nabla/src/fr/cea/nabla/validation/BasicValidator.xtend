@@ -14,8 +14,6 @@ import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.ir.MandatoryMeshOptions
 import fr.cea.nabla.ir.MandatoryMeshVariables
-import fr.cea.nabla.ir.MandatorySimulationOptions
-import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ArgOrVarRef
@@ -180,15 +178,11 @@ class BasicValidator extends AbstractNablaValidator
 	// ===== NablaModule =====
 
 	public static val MANDATORY_MESH_VARIABLE = "NablaModule::MandatoryMeshVariable"
-	public static val MANDATORY_SIMULATION_VARIABLE = "NablaModule::MandatorySimulationVariable"
 	public static val MANDATORY_MESH_OPTION = "NablaModule::MandatoryMeshOption"
-	public static val MANDATORY_SIMULATION_OPTION = "NablaModule::MandatorySimulationOption"
 	public static val MODULE_NAME = "NablaModule::ModuleName"
 
-	static def getMandatoryMeshOptionsMsg(String[] missingOptions) { "Missing mandatory mesh option(s): " + missingOptions.join(", ") }
-	static def getMandatorySimulationOptionsMsg(String[] missingOptions) { "Missing mandatory simulation option(s): " + missingOptions.join(", ") }
 	static def getMandatoryMeshVariablesMsg(String[] missingVariables) { "Missing mandatory mesh variable(s): " + missingVariables.join(", ") }
-	static def getMandatorySimulationVariablesMsg(String[] missingVariables) { "Missing mandatory simulation variable(s): " + missingVariables.join(", ") }
+	static def getMandatoryMeshOptionsMsg(String[] missingOptions) { "Missing mandatory mesh option(s): " + missingOptions.join(", ") }
 	static def getModuleNameMsg() { "Module name must start with an upper case" }
 
 	@Check
@@ -201,30 +195,12 @@ class BasicValidator extends AbstractNablaValidator
 	}
 
 	@Check
-	def checkMandatorySimulationVariable(NablaModule it)
-	{
-		val vars = eAllContents.filter(Var).map[name].toList
-		val missingVars = MandatorySimulationVariables::NAMES.filter[x | !vars.contains(x)]
-		if (missingVars.size > 0 && !jobs.empty)
-			error(getMandatorySimulationVariablesMsg(missingVars), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_SIMULATION_VARIABLE)
-	}
-
-	@Check
 	def checkMandatoryMeshOptions(NablaModule it)
 	{
 		val scalarConsts = instructions.filter(SimpleVarDefinition).filter[const].map[variable.name].toList
 		val missingConsts = MandatoryMeshOptions::NAMES.filter[x | !scalarConsts.contains(x)]
 		if (missingConsts.size > 0 && !items.empty)
 			error(getMandatoryMeshOptionsMsg(missingConsts), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_MESH_OPTION)
-	}
-
-	@Check
-	def checkMandatorySimulationOptions(NablaModule it)
-	{
-		val scalarConsts = instructions.filter(SimpleVarDefinition).filter[const].map[variable.name].toList
-		val missingConsts = MandatorySimulationOptions::NAMES.filter[x | !scalarConsts.contains(x)]
-		if (missingConsts.size > 0 && !jobs.empty)
-			error(getMandatorySimulationOptionsMsg(missingConsts), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_SIMULATION_OPTION)
 	}
 
 	@Check
@@ -288,7 +264,7 @@ class BasicValidator extends AbstractNablaValidator
 	def checkUnusedVariable(Var it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
-		val mandatories = (MandatoryMeshVariables::NAMES + MandatorySimulationVariables::NAMES + MandatoryMeshOptions::NAMES + MandatorySimulationOptions::NAMES).toList
+		val mandatories = (MandatoryMeshVariables::NAMES + MandatoryMeshOptions::NAMES).toList
 		val referenced = mandatories.contains(name) || m.eAllContents.filter(ArgOrVarRef).exists[x|x.target===it]
 		if (!referenced)
 			warning(getUnusedVariableMsg(), NablaPackage.Literals::ARG_OR_VAR__NAME, UNUSED_VARIABLE)
@@ -597,24 +573,15 @@ class BasicValidator extends AbstractNablaValidator
 
 	// ===== SizeType =====
 
-	public static val SIZE_TYPE_SYMBOL_NAME = "SizeType::SizeTypeSymbolName"
 	public static val UNUSED_SIZE_TYPE_SYMBOL = "SizeType::UnusedSizeTypeSymbol"
 	public static val NO_OPERATION_IN_FUNCTION_IN_TYPES = "SizeType::NoOperationInFunctionInTypes"
 	public static val NO_OPERATION_IN_REDUCTION_COLLECTION_TYPE = "SizeType::NoOperationInReductionCollectionType"
 	public static val NO_OPERATION_IN_VAR_REF_INDICES = "SizeType::NoOperationInVarRefIndices"
 
-	static def getSizeTypeSymbolNameMsg() { "Invalid name (reserved for time step)" }
 	static def getUnusedSizeTypeSymbolMsg() { "Unused symbol" }
 	static def getNoOperationInFunctionInTypesMsg() { "In types must not contain operations" }
 	static def getNoOperationInReductionCollectionTypeMsg() { "Collection type must not contain operations" }
 	static def getNoOperationInVarRefIndicesMsg() { "Indices must not contain operations" }
-
-	@Check
-	def checkSizeTypeSymbolName(SizeTypeSymbol it)
-	{
-		if (name == 'n')
-			error(getSizeTypeSymbolNameMsg(), NablaPackage.Literals::SIZE_TYPE_SYMBOL__NAME, BasicValidator.SIZE_TYPE_SYMBOL_NAME)
-	}
 
 	@Check
 	def checkSizeTypeDimensionSymbol(SizeTypeSymbol it)

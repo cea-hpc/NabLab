@@ -22,7 +22,6 @@ import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
-import fr.cea.nabla.nabla.InitTimeIterator
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.IntervalIterationBlock
@@ -33,7 +32,6 @@ import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.MulOrDiv
-import fr.cea.nabla.nabla.NextTimeIterator
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
@@ -50,6 +48,7 @@ import fr.cea.nabla.nabla.SizeTypeSymbol
 import fr.cea.nabla.nabla.SizeTypeSymbolRef
 import fr.cea.nabla.nabla.SpaceIterationBlock
 import fr.cea.nabla.nabla.SpaceIteratorRef
+import fr.cea.nabla.nabla.TimeIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
@@ -80,8 +79,7 @@ class LatexLabelServices
 		else target.name.pu
 	}
 
-	static def dispatch String getLatex(InitTimeIterator it) { 'n=0' }
-	static def dispatch String getLatex(NextTimeIterator it) {  if (hasDiv) 'n+1/' + div else 'n+1' } 
+	static def dispatch String getLatex(TimeIteratorRef it) { target.name.pu + type.literal }
 
 	/* EXPRESSIONS ******************************************/
 	static def dispatch String getLatex(ContractedIf it) { condition.latex + ' ? ' + then.latex + ' : ' + ^else.latex }
@@ -130,8 +128,7 @@ class LatexLabelServices
 	static def dispatch String getLatex(ArgOrVarRef it)
 	{
 		var label = target.name.pu
-		if (timeIterator === null) label += '^{n}'
-		else label += '^{' + timeIterator.latex + '}'
+		if (!timeIterators.empty) label += '^{' + timeIterators.map[x | x.latex].join(', ') + '}'
 		if (!spaceIterators.empty) label += '_{' + spaceIterators.map[x | x.latex].join('') + '}'
 		if (!indices.empty) label += '[' + indices.map[x | x.latex].join(',') + ']'
 		return label

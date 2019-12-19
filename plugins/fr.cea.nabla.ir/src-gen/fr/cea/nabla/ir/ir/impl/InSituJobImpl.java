@@ -4,6 +4,7 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.InSituJob;
 import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.SimpleVariable;
 import fr.cea.nabla.ir.ir.Variable;
 
 import java.util.Collection;
@@ -13,6 +14,7 @@ import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
@@ -24,60 +26,75 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getVariables <em>Variables</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getIterationPeriod <em>Iteration Period</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getTimeStep <em>Time Step</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getDumpedVariables <em>Dumped Variables</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getPeriodValue <em>Period Value</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getPeriodVariable <em>Period Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getIterationVariable <em>Iteration Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getTimeVariable <em>Time Variable</em>}</li>
  * </ul>
  *
  * @generated
  */
 public class InSituJobImpl extends JobImpl implements InSituJob {
 	/**
-	 * The cached value of the '{@link #getVariables() <em>Variables</em>}' reference list.
+	 * The cached value of the '{@link #getDumpedVariables() <em>Dumped Variables</em>}' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getVariables()
+	 * @see #getDumpedVariables()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Variable> variables;
+	protected EList<Variable> dumpedVariables;
 
 	/**
-	 * The default value of the '{@link #getIterationPeriod() <em>Iteration Period</em>}' attribute.
+	 * The default value of the '{@link #getPeriodValue() <em>Period Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getIterationPeriod()
+	 * @see #getPeriodValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int ITERATION_PERIOD_EDEFAULT = -1;
+	protected static final double PERIOD_VALUE_EDEFAULT = -1.0;
+
 	/**
-	 * The cached value of the '{@link #getIterationPeriod() <em>Iteration Period</em>}' attribute.
+	 * The cached value of the '{@link #getPeriodValue() <em>Period Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getIterationPeriod()
+	 * @see #getPeriodValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected int iterationPeriod = ITERATION_PERIOD_EDEFAULT;
+	protected double periodValue = PERIOD_VALUE_EDEFAULT;
+
 	/**
-	 * The default value of the '{@link #getTimeStep() <em>Time Step</em>}' attribute.
+	 * The cached value of the '{@link #getPeriodVariable() <em>Period Variable</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getTimeStep()
+	 * @see #getPeriodVariable()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double TIME_STEP_EDEFAULT = -1.0;
+	protected SimpleVariable periodVariable;
+
 	/**
-	 * The cached value of the '{@link #getTimeStep() <em>Time Step</em>}' attribute.
+	 * The cached value of the '{@link #getIterationVariable() <em>Iteration Variable</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getTimeStep()
+	 * @see #getIterationVariable()
 	 * @generated
 	 * @ordered
 	 */
-	protected double timeStep = TIME_STEP_EDEFAULT;
+	protected SimpleVariable iterationVariable;
+
+	/**
+	 * The cached value of the '{@link #getTimeVariable() <em>Time Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTimeVariable()
+	 * @generated
+	 * @ordered
+	 */
+	protected SimpleVariable timeVariable;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -104,11 +121,11 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * @generated
 	 */
 	@Override
-	public EList<Variable> getVariables() {
-		if (variables == null) {
-			variables = new EObjectResolvingEList<Variable>(Variable.class, this, IrPackage.IN_SITU_JOB__VARIABLES);
+	public EList<Variable> getDumpedVariables() {
+		if (dumpedVariables == null) {
+			dumpedVariables = new EObjectResolvingEList<Variable>(Variable.class, this, IrPackage.IN_SITU_JOB__DUMPED_VARIABLES);
 		}
-		return variables;
+		return dumpedVariables;
 	}
 
 	/**
@@ -117,8 +134,8 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * @generated
 	 */
 	@Override
-	public int getIterationPeriod() {
-		return iterationPeriod;
+	public double getPeriodValue() {
+		return periodValue;
 	}
 
 	/**
@@ -127,11 +144,11 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * @generated
 	 */
 	@Override
-	public void setIterationPeriod(int newIterationPeriod) {
-		int oldIterationPeriod = iterationPeriod;
-		iterationPeriod = newIterationPeriod;
+	public void setPeriodValue(double newPeriodValue) {
+		double oldPeriodValue = periodValue;
+		periodValue = newPeriodValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IN_SITU_JOB__ITERATION_PERIOD, oldIterationPeriod, iterationPeriod));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IN_SITU_JOB__PERIOD_VALUE, oldPeriodValue, periodValue));
 	}
 
 	/**
@@ -140,8 +157,25 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * @generated
 	 */
 	@Override
-	public double getTimeStep() {
-		return timeStep;
+	public SimpleVariable getPeriodVariable() {
+		if (periodVariable != null && periodVariable.eIsProxy()) {
+			InternalEObject oldPeriodVariable = (InternalEObject)periodVariable;
+			periodVariable = (SimpleVariable)eResolveProxy(oldPeriodVariable);
+			if (periodVariable != oldPeriodVariable) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IN_SITU_JOB__PERIOD_VARIABLE, oldPeriodVariable, periodVariable));
+			}
+		}
+		return periodVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SimpleVariable basicGetPeriodVariable() {
+		return periodVariable;
 	}
 
 	/**
@@ -150,11 +184,91 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * @generated
 	 */
 	@Override
-	public void setTimeStep(double newTimeStep) {
-		double oldTimeStep = timeStep;
-		timeStep = newTimeStep;
+	public void setPeriodVariable(SimpleVariable newPeriodVariable) {
+		SimpleVariable oldPeriodVariable = periodVariable;
+		periodVariable = newPeriodVariable;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IN_SITU_JOB__TIME_STEP, oldTimeStep, timeStep));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IN_SITU_JOB__PERIOD_VARIABLE, oldPeriodVariable, periodVariable));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public SimpleVariable getIterationVariable() {
+		if (iterationVariable != null && iterationVariable.eIsProxy()) {
+			InternalEObject oldIterationVariable = (InternalEObject)iterationVariable;
+			iterationVariable = (SimpleVariable)eResolveProxy(oldIterationVariable);
+			if (iterationVariable != oldIterationVariable) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IN_SITU_JOB__ITERATION_VARIABLE, oldIterationVariable, iterationVariable));
+			}
+		}
+		return iterationVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SimpleVariable basicGetIterationVariable() {
+		return iterationVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setIterationVariable(SimpleVariable newIterationVariable) {
+		SimpleVariable oldIterationVariable = iterationVariable;
+		iterationVariable = newIterationVariable;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IN_SITU_JOB__ITERATION_VARIABLE, oldIterationVariable, iterationVariable));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public SimpleVariable getTimeVariable() {
+		if (timeVariable != null && timeVariable.eIsProxy()) {
+			InternalEObject oldTimeVariable = (InternalEObject)timeVariable;
+			timeVariable = (SimpleVariable)eResolveProxy(oldTimeVariable);
+			if (timeVariable != oldTimeVariable) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IN_SITU_JOB__TIME_VARIABLE, oldTimeVariable, timeVariable));
+			}
+		}
+		return timeVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SimpleVariable basicGetTimeVariable() {
+		return timeVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setTimeVariable(SimpleVariable newTimeVariable) {
+		SimpleVariable oldTimeVariable = timeVariable;
+		timeVariable = newTimeVariable;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IN_SITU_JOB__TIME_VARIABLE, oldTimeVariable, timeVariable));
 	}
 
 	/**
@@ -165,12 +279,19 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.IN_SITU_JOB__VARIABLES:
-				return getVariables();
-			case IrPackage.IN_SITU_JOB__ITERATION_PERIOD:
-				return getIterationPeriod();
-			case IrPackage.IN_SITU_JOB__TIME_STEP:
-				return getTimeStep();
+			case IrPackage.IN_SITU_JOB__DUMPED_VARIABLES:
+				return getDumpedVariables();
+			case IrPackage.IN_SITU_JOB__PERIOD_VALUE:
+				return getPeriodValue();
+			case IrPackage.IN_SITU_JOB__PERIOD_VARIABLE:
+				if (resolve) return getPeriodVariable();
+				return basicGetPeriodVariable();
+			case IrPackage.IN_SITU_JOB__ITERATION_VARIABLE:
+				if (resolve) return getIterationVariable();
+				return basicGetIterationVariable();
+			case IrPackage.IN_SITU_JOB__TIME_VARIABLE:
+				if (resolve) return getTimeVariable();
+				return basicGetTimeVariable();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -184,15 +305,21 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.IN_SITU_JOB__VARIABLES:
-				getVariables().clear();
-				getVariables().addAll((Collection<? extends Variable>)newValue);
+			case IrPackage.IN_SITU_JOB__DUMPED_VARIABLES:
+				getDumpedVariables().clear();
+				getDumpedVariables().addAll((Collection<? extends Variable>)newValue);
 				return;
-			case IrPackage.IN_SITU_JOB__ITERATION_PERIOD:
-				setIterationPeriod((Integer)newValue);
+			case IrPackage.IN_SITU_JOB__PERIOD_VALUE:
+				setPeriodValue((Double)newValue);
 				return;
-			case IrPackage.IN_SITU_JOB__TIME_STEP:
-				setTimeStep((Double)newValue);
+			case IrPackage.IN_SITU_JOB__PERIOD_VARIABLE:
+				setPeriodVariable((SimpleVariable)newValue);
+				return;
+			case IrPackage.IN_SITU_JOB__ITERATION_VARIABLE:
+				setIterationVariable((SimpleVariable)newValue);
+				return;
+			case IrPackage.IN_SITU_JOB__TIME_VARIABLE:
+				setTimeVariable((SimpleVariable)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -206,14 +333,20 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.IN_SITU_JOB__VARIABLES:
-				getVariables().clear();
+			case IrPackage.IN_SITU_JOB__DUMPED_VARIABLES:
+				getDumpedVariables().clear();
 				return;
-			case IrPackage.IN_SITU_JOB__ITERATION_PERIOD:
-				setIterationPeriod(ITERATION_PERIOD_EDEFAULT);
+			case IrPackage.IN_SITU_JOB__PERIOD_VALUE:
+				setPeriodValue(PERIOD_VALUE_EDEFAULT);
 				return;
-			case IrPackage.IN_SITU_JOB__TIME_STEP:
-				setTimeStep(TIME_STEP_EDEFAULT);
+			case IrPackage.IN_SITU_JOB__PERIOD_VARIABLE:
+				setPeriodVariable((SimpleVariable)null);
+				return;
+			case IrPackage.IN_SITU_JOB__ITERATION_VARIABLE:
+				setIterationVariable((SimpleVariable)null);
+				return;
+			case IrPackage.IN_SITU_JOB__TIME_VARIABLE:
+				setTimeVariable((SimpleVariable)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -227,12 +360,16 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.IN_SITU_JOB__VARIABLES:
-				return variables != null && !variables.isEmpty();
-			case IrPackage.IN_SITU_JOB__ITERATION_PERIOD:
-				return iterationPeriod != ITERATION_PERIOD_EDEFAULT;
-			case IrPackage.IN_SITU_JOB__TIME_STEP:
-				return timeStep != TIME_STEP_EDEFAULT;
+			case IrPackage.IN_SITU_JOB__DUMPED_VARIABLES:
+				return dumpedVariables != null && !dumpedVariables.isEmpty();
+			case IrPackage.IN_SITU_JOB__PERIOD_VALUE:
+				return periodValue != PERIOD_VALUE_EDEFAULT;
+			case IrPackage.IN_SITU_JOB__PERIOD_VARIABLE:
+				return periodVariable != null;
+			case IrPackage.IN_SITU_JOB__ITERATION_VARIABLE:
+				return iterationVariable != null;
+			case IrPackage.IN_SITU_JOB__TIME_VARIABLE:
+				return timeVariable != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -247,10 +384,8 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 		if (eIsProxy()) return super.toString();
 
 		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (iterationPeriod: ");
-		result.append(iterationPeriod);
-		result.append(", timeStep: ");
-		result.append(timeStep);
+		result.append(" (periodValue: ");
+		result.append(periodValue);
 		result.append(')');
 		return result.toString();
 	}

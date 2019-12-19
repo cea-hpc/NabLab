@@ -9,6 +9,7 @@ import fr.cea.nabla.ir.ir.ArgOrVarRef;
 import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef;
 import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.BaseTypeConstant;
+import fr.cea.nabla.ir.ir.BeginOfTimeLoopJob;
 import fr.cea.nabla.ir.ir.BinaryExpression;
 import fr.cea.nabla.ir.ir.BoolConstant;
 import fr.cea.nabla.ir.ir.Connectivity;
@@ -17,7 +18,6 @@ import fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef;
 import fr.cea.nabla.ir.ir.ConnectivityType;
 import fr.cea.nabla.ir.ir.ConnectivityVariable;
 import fr.cea.nabla.ir.ir.ContractedIf;
-import fr.cea.nabla.ir.ir.EndOfInitJob;
 import fr.cea.nabla.ir.ir.EndOfTimeLoopJob;
 import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.Function;
@@ -59,7 +59,7 @@ import fr.cea.nabla.ir.ir.SizeTypeOperation;
 import fr.cea.nabla.ir.ir.SizeTypeSymbol;
 import fr.cea.nabla.ir.ir.SizeTypeSymbolRef;
 import fr.cea.nabla.ir.ir.SpaceIterationBlock;
-import fr.cea.nabla.ir.ir.TimeIterationCopyJob;
+import fr.cea.nabla.ir.ir.TimeLoopCopy;
 import fr.cea.nabla.ir.ir.UnaryExpression;
 import fr.cea.nabla.ir.ir.VarDefinition;
 import fr.cea.nabla.ir.ir.Variable;
@@ -197,7 +197,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass timeIterationCopyJobEClass = null;
+	private EClass beginOfTimeLoopJobEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -211,7 +211,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass endOfInitJobEClass = null;
+	private EClass timeLoopCopyEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -1157,7 +1157,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getInSituJob_Variables() {
+	public EReference getInSituJob_DumpedVariables() {
 		return (EReference)inSituJobEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -1167,7 +1167,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EAttribute getInSituJob_IterationPeriod() {
+	public EAttribute getInSituJob_PeriodValue() {
 		return (EAttribute)inSituJobEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -1177,8 +1177,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EAttribute getInSituJob_TimeStep() {
-		return (EAttribute)inSituJobEClass.getEStructuralFeatures().get(2);
+	public EReference getInSituJob_PeriodVariable() {
+		return (EReference)inSituJobEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -1187,8 +1187,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EClass getTimeIterationCopyJob() {
-		return timeIterationCopyJobEClass;
+	public EReference getInSituJob_IterationVariable() {
+		return (EReference)inSituJobEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -1197,8 +1197,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getTimeIterationCopyJob_Left() {
-		return (EReference)timeIterationCopyJobEClass.getEStructuralFeatures().get(0);
+	public EReference getInSituJob_TimeVariable() {
+		return (EReference)inSituJobEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -1207,8 +1207,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getTimeIterationCopyJob_Right() {
-		return (EReference)timeIterationCopyJobEClass.getEStructuralFeatures().get(1);
+	public EClass getBeginOfTimeLoopJob() {
+		return beginOfTimeLoopJobEClass;
 	}
 
 	/**
@@ -1217,8 +1217,18 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EAttribute getTimeIterationCopyJob_TimeIteratorName() {
-		return (EAttribute)timeIterationCopyJobEClass.getEStructuralFeatures().get(2);
+	public EReference getBeginOfTimeLoopJob_End() {
+		return (EReference)beginOfTimeLoopJobEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getBeginOfTimeLoopJob_Initializations() {
+		return (EReference)beginOfTimeLoopJobEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1237,8 +1247,68 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EClass getEndOfInitJob() {
-		return endOfInitJobEClass;
+	public EReference getEndOfTimeLoopJob_Begin() {
+		return (EReference)endOfTimeLoopJobEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getEndOfTimeLoopJob_NextLoopCopies() {
+		return (EReference)endOfTimeLoopJobEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getEndOfTimeLoopJob_ExitLoopCopies() {
+		return (EReference)endOfTimeLoopJobEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getEndOfTimeLoopJob_WhileCondition() {
+		return (EReference)endOfTimeLoopJobEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EClass getTimeLoopCopy() {
+		return timeLoopCopyEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getTimeLoopCopy_Destination() {
+		return (EReference)timeLoopCopyEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getTimeLoopCopy_Source() {
+		return (EReference)timeLoopCopyEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -2374,18 +2444,25 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(instructionJobEClass, INSTRUCTION_JOB__INSTRUCTION);
 
 		inSituJobEClass = createEClass(IN_SITU_JOB);
-		createEReference(inSituJobEClass, IN_SITU_JOB__VARIABLES);
-		createEAttribute(inSituJobEClass, IN_SITU_JOB__ITERATION_PERIOD);
-		createEAttribute(inSituJobEClass, IN_SITU_JOB__TIME_STEP);
+		createEReference(inSituJobEClass, IN_SITU_JOB__DUMPED_VARIABLES);
+		createEAttribute(inSituJobEClass, IN_SITU_JOB__PERIOD_VALUE);
+		createEReference(inSituJobEClass, IN_SITU_JOB__PERIOD_VARIABLE);
+		createEReference(inSituJobEClass, IN_SITU_JOB__ITERATION_VARIABLE);
+		createEReference(inSituJobEClass, IN_SITU_JOB__TIME_VARIABLE);
 
-		timeIterationCopyJobEClass = createEClass(TIME_ITERATION_COPY_JOB);
-		createEReference(timeIterationCopyJobEClass, TIME_ITERATION_COPY_JOB__LEFT);
-		createEReference(timeIterationCopyJobEClass, TIME_ITERATION_COPY_JOB__RIGHT);
-		createEAttribute(timeIterationCopyJobEClass, TIME_ITERATION_COPY_JOB__TIME_ITERATOR_NAME);
+		beginOfTimeLoopJobEClass = createEClass(BEGIN_OF_TIME_LOOP_JOB);
+		createEReference(beginOfTimeLoopJobEClass, BEGIN_OF_TIME_LOOP_JOB__END);
+		createEReference(beginOfTimeLoopJobEClass, BEGIN_OF_TIME_LOOP_JOB__INITIALIZATIONS);
 
 		endOfTimeLoopJobEClass = createEClass(END_OF_TIME_LOOP_JOB);
+		createEReference(endOfTimeLoopJobEClass, END_OF_TIME_LOOP_JOB__BEGIN);
+		createEReference(endOfTimeLoopJobEClass, END_OF_TIME_LOOP_JOB__NEXT_LOOP_COPIES);
+		createEReference(endOfTimeLoopJobEClass, END_OF_TIME_LOOP_JOB__EXIT_LOOP_COPIES);
+		createEReference(endOfTimeLoopJobEClass, END_OF_TIME_LOOP_JOB__WHILE_CONDITION);
 
-		endOfInitJobEClass = createEClass(END_OF_INIT_JOB);
+		timeLoopCopyEClass = createEClass(TIME_LOOP_COPY);
+		createEReference(timeLoopCopyEClass, TIME_LOOP_COPY__DESTINATION);
+		createEReference(timeLoopCopyEClass, TIME_LOOP_COPY__SOURCE);
 
 		instructionEClass = createEClass(INSTRUCTION);
 
@@ -2575,9 +2652,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		jobEClass.getESuperTypes().add(this.getIrAnnotable());
 		instructionJobEClass.getESuperTypes().add(this.getJob());
 		inSituJobEClass.getESuperTypes().add(this.getJob());
-		timeIterationCopyJobEClass.getESuperTypes().add(this.getJob());
-		endOfTimeLoopJobEClass.getESuperTypes().add(this.getTimeIterationCopyJob());
-		endOfInitJobEClass.getESuperTypes().add(this.getTimeIterationCopyJob());
+		beginOfTimeLoopJobEClass.getESuperTypes().add(this.getJob());
+		endOfTimeLoopJobEClass.getESuperTypes().add(this.getJob());
+		timeLoopCopyEClass.getESuperTypes().add(this.getIrAnnotable());
 		instructionEClass.getESuperTypes().add(this.getIrAnnotable());
 		varDefinitionEClass.getESuperTypes().add(this.getInstruction());
 		instructionBlockEClass.getESuperTypes().add(this.getInstruction());
@@ -2693,18 +2770,25 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getInstructionJob_Instruction(), this.getInstruction(), null, "instruction", null, 1, 1, InstructionJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(inSituJobEClass, InSituJob.class, "InSituJob", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getInSituJob_Variables(), this.getVariable(), null, "variables", null, 0, -1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getInSituJob_IterationPeriod(), ecorePackage.getEInt(), "iterationPeriod", "-1", 1, 1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getInSituJob_TimeStep(), ecorePackage.getEDouble(), "timeStep", "-1.0", 1, 1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getInSituJob_DumpedVariables(), this.getVariable(), null, "dumpedVariables", null, 0, -1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInSituJob_PeriodValue(), ecorePackage.getEDouble(), "periodValue", "-1.0", 1, 1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getInSituJob_PeriodVariable(), this.getSimpleVariable(), null, "periodVariable", null, 1, 1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getInSituJob_IterationVariable(), this.getSimpleVariable(), null, "iterationVariable", null, 1, 1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getInSituJob_TimeVariable(), this.getSimpleVariable(), null, "timeVariable", null, 1, 1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(timeIterationCopyJobEClass, TimeIterationCopyJob.class, "TimeIterationCopyJob", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getTimeIterationCopyJob_Left(), this.getVariable(), null, "left", null, 1, 1, TimeIterationCopyJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getTimeIterationCopyJob_Right(), this.getVariable(), null, "right", null, 1, 1, TimeIterationCopyJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getTimeIterationCopyJob_TimeIteratorName(), ecorePackage.getEString(), "timeIteratorName", null, 1, 1, TimeIterationCopyJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(beginOfTimeLoopJobEClass, BeginOfTimeLoopJob.class, "BeginOfTimeLoopJob", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getBeginOfTimeLoopJob_End(), this.getEndOfTimeLoopJob(), this.getEndOfTimeLoopJob_Begin(), "end", null, 0, 1, BeginOfTimeLoopJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBeginOfTimeLoopJob_Initializations(), this.getTimeLoopCopy(), null, "initializations", null, 0, -1, BeginOfTimeLoopJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(endOfTimeLoopJobEClass, EndOfTimeLoopJob.class, "EndOfTimeLoopJob", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getEndOfTimeLoopJob_Begin(), this.getBeginOfTimeLoopJob(), this.getBeginOfTimeLoopJob_End(), "begin", null, 1, 1, EndOfTimeLoopJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getEndOfTimeLoopJob_NextLoopCopies(), this.getTimeLoopCopy(), null, "nextLoopCopies", null, 0, -1, EndOfTimeLoopJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getEndOfTimeLoopJob_ExitLoopCopies(), this.getTimeLoopCopy(), null, "exitLoopCopies", null, 0, -1, EndOfTimeLoopJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getEndOfTimeLoopJob_WhileCondition(), this.getExpression(), null, "whileCondition", null, 1, 1, EndOfTimeLoopJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(endOfInitJobEClass, EndOfInitJob.class, "EndOfInitJob", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(timeLoopCopyEClass, TimeLoopCopy.class, "TimeLoopCopy", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getTimeLoopCopy_Destination(), this.getVariable(), null, "destination", null, 1, 1, TimeLoopCopy.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTimeLoopCopy_Source(), this.getVariable(), null, "source", null, 1, 1, TimeLoopCopy.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(instructionEClass, Instruction.class, "Instruction", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

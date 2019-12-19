@@ -13,9 +13,11 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getVariables <em>Variables</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getIterationPeriod <em>Iteration Period</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getTimeStep <em>Time Step</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getDumpedVariables <em>Dumped Variables</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getPeriodValue <em>Period Value</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getPeriodVariable <em>Period Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getIterationVariable <em>Iteration Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getTimeVariable <em>Time Variable</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getInSituJob()
@@ -24,73 +26,104 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface InSituJob extends Job {
 	/**
-	 * Returns the value of the '<em><b>Variables</b></em>' reference list.
+	 * Returns the value of the '<em><b>Dumped Variables</b></em>' reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Variable}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Variables</em>' reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Variables</em>' reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getInSituJob_Variables()
+	 * @return the value of the '<em>Dumped Variables</em>' reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getInSituJob_DumpedVariables()
 	 * @model
 	 * @generated
 	 */
-	EList<Variable> getVariables();
+	EList<Variable> getDumpedVariables();
 
 	/**
-	 * Returns the value of the '<em><b>Iteration Period</b></em>' attribute.
-	 * The default value is <code>"-1"</code>.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Iteration Period</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Iteration Period</em>' attribute.
-	 * @see #setIterationPeriod(int)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getInSituJob_IterationPeriod()
-	 * @model default="-1" required="true"
-	 * @generated
-	 */
-	int getIterationPeriod();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.InSituJob#getIterationPeriod <em>Iteration Period</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Iteration Period</em>' attribute.
-	 * @see #getIterationPeriod()
-	 * @generated
-	 */
-	void setIterationPeriod(int value);
-
-	/**
-	 * Returns the value of the '<em><b>Time Step</b></em>' attribute.
+	 * Returns the value of the '<em><b>Period Value</b></em>' attribute.
 	 * The default value is <code>"-1.0"</code>.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Time Step</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Time Step</em>' attribute.
-	 * @see #setTimeStep(double)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getInSituJob_TimeStep()
+	 * @return the value of the '<em>Period Value</em>' attribute.
+	 * @see #setPeriodValue(double)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getInSituJob_PeriodValue()
 	 * @model default="-1.0" required="true"
 	 * @generated
 	 */
-	double getTimeStep();
+	double getPeriodValue();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.InSituJob#getTimeStep <em>Time Step</em>}' attribute.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.InSituJob#getPeriodValue <em>Period Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Time Step</em>' attribute.
-	 * @see #getTimeStep()
+	 * @param value the new value of the '<em>Period Value</em>' attribute.
+	 * @see #getPeriodValue()
 	 * @generated
 	 */
-	void setTimeStep(double value);
+	void setPeriodValue(double value);
+
+	/**
+	 * Returns the value of the '<em><b>Period Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Period Variable</em>' reference.
+	 * @see #setPeriodVariable(SimpleVariable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getInSituJob_PeriodVariable()
+	 * @model required="true"
+	 * @generated
+	 */
+	SimpleVariable getPeriodVariable();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.InSituJob#getPeriodVariable <em>Period Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Period Variable</em>' reference.
+	 * @see #getPeriodVariable()
+	 * @generated
+	 */
+	void setPeriodVariable(SimpleVariable value);
+
+	/**
+	 * Returns the value of the '<em><b>Iteration Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Iteration Variable</em>' reference.
+	 * @see #setIterationVariable(SimpleVariable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getInSituJob_IterationVariable()
+	 * @model required="true"
+	 * @generated
+	 */
+	SimpleVariable getIterationVariable();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.InSituJob#getIterationVariable <em>Iteration Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Iteration Variable</em>' reference.
+	 * @see #getIterationVariable()
+	 * @generated
+	 */
+	void setIterationVariable(SimpleVariable value);
+
+	/**
+	 * Returns the value of the '<em><b>Time Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Time Variable</em>' reference.
+	 * @see #setTimeVariable(SimpleVariable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getInSituJob_TimeVariable()
+	 * @model required="true"
+	 * @generated
+	 */
+	SimpleVariable getTimeVariable();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.InSituJob#getTimeVariable <em>Time Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Time Variable</em>' reference.
+	 * @see #getTimeVariable()
+	 * @generated
+	 */
+	void setTimeVariable(SimpleVariable value);
 
 } // InSituJob

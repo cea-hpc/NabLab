@@ -24,10 +24,6 @@ public interface ConnectivityCallIteratorRef extends IteratorRef {
 	 * Returns the value of the '<em><b>Referenced By</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.ConnectivityCall#getArgs <em>Args</em>}'.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Referenced By</em>' container reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Referenced By</em>' container reference.
 	 * @see #setReferencedBy(ConnectivityCall)

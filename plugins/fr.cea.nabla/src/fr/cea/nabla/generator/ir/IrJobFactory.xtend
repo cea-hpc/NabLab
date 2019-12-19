@@ -11,15 +11,15 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.TimeIterationCopyJob
-import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.Job
+import fr.cea.nabla.nabla.TimeIterator
 
 class IrJobFactory 
 {
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrInstructionFactory
-	
+	@Inject extension IrExpressionFactory
+
 	def create IrFactory::eINSTANCE.createInstructionJob toIrInstructionJob(Job j)
 	{
 		annotations += j.toIrAnnotation
@@ -27,15 +27,15 @@ class IrJobFactory
 		onCycle = false
 		instruction = j.instruction.toIrInstruction
 	}
-	
-	def create IrFactory::eINSTANCE.createEndOfInitJob toEndOfInitJob(Variable vAtN0, Variable vAtN)  { init(vAtN, vAtN0) }
-	def create IrFactory::eINSTANCE.createEndOfTimeLoopJob toEndOfLoopJob(Variable vAtN, Variable vAtNplus1) { init(vAtN, vAtNplus1) }
 
-	private def init(TimeIterationCopyJob it, Variable vLeft, Variable vRight)
+	def create IrFactory::eINSTANCE.createBeginOfTimeLoopJob toIrBeginOfTimeLoopJob(TimeIterator ti)
 	{
-		name = 'Copy_' + vRight.name + '_to_' + vLeft.name
-		left = vLeft
-		right = vRight
-		timeIteratorName = 'n'
+		name = "Begin of " + ti.name + " time loop"
+	}
+
+	def create IrFactory::eINSTANCE.createEndOfTimeLoopJob toIrEndOfTimeLoopJob(TimeIterator ti)
+	{ 
+		name = "End of " + ti.name + " time loop"
+		whileCondition = ti.cond.toIrExpression
 	}
 }

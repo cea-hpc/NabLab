@@ -34,6 +34,7 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
+import fr.cea.nabla.nabla.TimeIteratorDefinition
 
 /**
  * This class contains custom scoping description.
@@ -117,6 +118,12 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	{
 		//println('scope_VarRef_variable(' + context.class.simpleName + ', ' + r.name + ')')
 		variablesDefinedBefore(context.eContainer, context, '\t')
+	}
+
+	def IScope scope_ArgOrVarRef_target(TimeIteratorDefinition context, EReference r)
+	{
+		//println('scope_VarRef_variable(' + context.class.simpleName + ', ' + r.name + ')')
+		Scopes::scopeFor((context.eContainer as NablaModule).instructions.allVariables)
 	}
 
 	def IScope scope_ArgOrVarRef_target(NablaModule context, EReference r)

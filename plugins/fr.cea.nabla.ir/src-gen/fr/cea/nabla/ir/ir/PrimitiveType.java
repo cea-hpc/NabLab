@@ -51,10 +51,6 @@ public enum PrimitiveType implements Enumerator {
 	/**
 	 * The '<em><b>Int</b></em>' literal value.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of '<em><b>Int</b></em>' literal object isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @see #INT
 	 * @model name="Int" literal="\u2115"
@@ -66,10 +62,6 @@ public enum PrimitiveType implements Enumerator {
 	/**
 	 * The '<em><b>Real</b></em>' literal value.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of '<em><b>Real</b></em>' literal object isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @see #REAL
 	 * @model name="Real" literal="\u211d"
@@ -81,10 +73,6 @@ public enum PrimitiveType implements Enumerator {
 	/**
 	 * The '<em><b>Bool</b></em>' literal value.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of '<em><b>Bool</b></em>' literal object isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @see #BOOL
 	 * @model name="Bool" literal="\u213e"

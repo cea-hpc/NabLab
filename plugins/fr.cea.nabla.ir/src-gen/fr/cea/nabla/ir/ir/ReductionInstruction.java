@@ -28,10 +28,6 @@ public interface ReductionInstruction extends IterableInstruction {
 	 * Returns the value of the '<em><b>Inner Reductions</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Instruction}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Inner Reductions</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Inner Reductions</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getReductionInstruction_InnerReductions()
@@ -43,10 +39,6 @@ public interface ReductionInstruction extends IterableInstruction {
 	/**
 	 * Returns the value of the '<em><b>Reduction</b></em>' reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Reduction</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Reduction</em>' reference.
 	 * @see #setReduction(Reduction)
@@ -69,10 +61,6 @@ public interface ReductionInstruction extends IterableInstruction {
 	/**
 	 * Returns the value of the '<em><b>Arg</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Arg</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Arg</em>' containment reference.
 	 * @see #setArg(Expression)
@@ -95,10 +83,6 @@ public interface ReductionInstruction extends IterableInstruction {
 	/**
 	 * Returns the value of the '<em><b>Result</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Result</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Result</em>' containment reference.
 	 * @see #setResult(SimpleVariable)

@@ -184,29 +184,26 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.TIME_ITERATION_COPY_JOB: {
-				TimeIterationCopyJob timeIterationCopyJob = (TimeIterationCopyJob)theEObject;
-				T result = caseTimeIterationCopyJob(timeIterationCopyJob);
-				if (result == null) result = caseJob(timeIterationCopyJob);
-				if (result == null) result = caseIrAnnotable(timeIterationCopyJob);
+			case IrPackage.BEGIN_OF_TIME_LOOP_JOB: {
+				BeginOfTimeLoopJob beginOfTimeLoopJob = (BeginOfTimeLoopJob)theEObject;
+				T result = caseBeginOfTimeLoopJob(beginOfTimeLoopJob);
+				if (result == null) result = caseJob(beginOfTimeLoopJob);
+				if (result == null) result = caseIrAnnotable(beginOfTimeLoopJob);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case IrPackage.END_OF_TIME_LOOP_JOB: {
 				EndOfTimeLoopJob endOfTimeLoopJob = (EndOfTimeLoopJob)theEObject;
 				T result = caseEndOfTimeLoopJob(endOfTimeLoopJob);
-				if (result == null) result = caseTimeIterationCopyJob(endOfTimeLoopJob);
 				if (result == null) result = caseJob(endOfTimeLoopJob);
 				if (result == null) result = caseIrAnnotable(endOfTimeLoopJob);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.END_OF_INIT_JOB: {
-				EndOfInitJob endOfInitJob = (EndOfInitJob)theEObject;
-				T result = caseEndOfInitJob(endOfInitJob);
-				if (result == null) result = caseTimeIterationCopyJob(endOfInitJob);
-				if (result == null) result = caseJob(endOfInitJob);
-				if (result == null) result = caseIrAnnotable(endOfInitJob);
+			case IrPackage.TIME_LOOP_COPY: {
+				TimeLoopCopy timeLoopCopy = (TimeLoopCopy)theEObject;
+				T result = caseTimeLoopCopy(timeLoopCopy);
+				if (result == null) result = caseIrAnnotable(timeLoopCopy);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -766,17 +763,17 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Time Iteration Copy Job</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Begin Of Time Loop Job</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Time Iteration Copy Job</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Begin Of Time Loop Job</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseTimeIterationCopyJob(TimeIterationCopyJob object) {
+	public T caseBeginOfTimeLoopJob(BeginOfTimeLoopJob object) {
 		return null;
 	}
 
@@ -796,17 +793,17 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>End Of Init Job</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Time Loop Copy</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>End Of Init Job</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Time Loop Copy</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEndOfInitJob(EndOfInitJob object) {
+	public T caseTimeLoopCopy(TimeLoopCopy object) {
 		return null;
 	}
 

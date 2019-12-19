@@ -32,10 +32,6 @@ public interface IrModule extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
@@ -59,10 +55,6 @@ public interface IrModule extends IrAnnotable {
 	 * Returns the value of the '<em><b>Imports</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Import}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Imports</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Imports</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Imports()
@@ -75,10 +67,6 @@ public interface IrModule extends IrAnnotable {
 	 * Returns the value of the '<em><b>Items</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ItemType}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Items</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Items</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Items()
@@ -91,10 +79,6 @@ public interface IrModule extends IrAnnotable {
 	 * Returns the value of the '<em><b>Functions</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Function}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Functions</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Functions</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Functions()
@@ -107,10 +91,6 @@ public interface IrModule extends IrAnnotable {
 	 * Returns the value of the '<em><b>Reductions</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Reduction}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Reductions</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Reductions</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Reductions()
@@ -123,10 +103,6 @@ public interface IrModule extends IrAnnotable {
 	 * Returns the value of the '<em><b>Connectivities</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Connectivity}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Connectivities</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Connectivities</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Connectivities()
@@ -139,10 +115,6 @@ public interface IrModule extends IrAnnotable {
 	 * Returns the value of the '<em><b>Variables</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Variable}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Variables</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Variables</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Variables()
@@ -154,10 +126,6 @@ public interface IrModule extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Init Coord Variable</b></em>' reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Init Coord Variable</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Init Coord Variable</em>' reference.
 	 * @see #setInitCoordVariable(Variable)
@@ -181,10 +149,6 @@ public interface IrModule extends IrAnnotable {
 	 * Returns the value of the '<em><b>Jobs</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Job}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Jobs</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Jobs</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Jobs()

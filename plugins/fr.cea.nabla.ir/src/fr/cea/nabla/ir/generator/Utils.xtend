@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.generator
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
-import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
@@ -21,12 +20,10 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
-import fr.cea.nabla.ir.MandatorySimulationVariables
 
 class Utils 
 {
 	public static val FunctionReductionPrefix = 'Functions'
-	public static val LastWriteTimeVariableName = "lastWriteTime" // Useful for InSituJob
 
 	static def getCodeName(Function it, String separator)
 	{
@@ -48,7 +45,7 @@ class Utils
 		 * In variables: «FOR v : inVars SEPARATOR ', '»«v.getName»«ENDFOR»
 		 * Out variables: «FOR v : outVars SEPARATOR ', '»«v.getName»«ENDFOR»
 		 */
-	'''	
+	'''
 
 	static def boolean isTopLevelLoop(EObject it)
 	{
@@ -81,13 +78,7 @@ class Utils
 
 	static def getPersistentVariables(IrModule it) 
 	{ 
-		variables.filter(ConnectivityVariable).filter[x|x.persistenceName !== null && x.type.connectivities.size==1]
-	}
-
-	static def getCondition(InSituJob it)
-	{
-		if (iterationPeriod > 0) '''(iteration % «iterationPeriod» == 0)'''
-		else if (timeStep > 0) '''(«MandatorySimulationVariables::TIME» > «fr.cea.nabla.ir.generator.Utils.LastWriteTimeVariableName»)'''
+		variables.filter(ConnectivityVariable).filter[x|x.persistenceName !== null && x.type.connectivities.size == 1]
 	}
 
 	static def withMesh(IrModule it) { !items.empty }

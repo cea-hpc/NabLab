@@ -26,10 +26,6 @@ public interface ArgOrVarRef extends Expression {
 	/**
 	 * Returns the value of the '<em><b>Target</b></em>' reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Target</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Target</em>' reference.
 	 * @see #setTarget(ArgOrVar)
@@ -54,10 +50,6 @@ public interface ArgOrVarRef extends Expression {
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef}.
 	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef#getReferencedBy <em>Referenced By</em>}'.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Iterators</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Iterators</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getArgOrVarRef_Iterators()
@@ -71,10 +63,6 @@ public interface ArgOrVarRef extends Expression {
 	 * Returns the value of the '<em><b>Indices</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.SizeType}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Indices</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Indices</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getArgOrVarRef_Indices()

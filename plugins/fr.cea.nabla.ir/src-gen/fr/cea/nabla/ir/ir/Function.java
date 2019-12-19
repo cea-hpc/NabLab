@@ -29,10 +29,6 @@ public interface Function extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Provider</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Provider</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Provider</em>' attribute.
 	 * @see #setProvider(String)
@@ -67,10 +63,6 @@ public interface Function extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
@@ -94,10 +86,6 @@ public interface Function extends IrAnnotable {
 	 * Returns the value of the '<em><b>In Args</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Arg}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>In Args</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>In Args</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_InArgs()
@@ -109,10 +97,6 @@ public interface Function extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Return Type</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Return Type</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Return Type</em>' containment reference.
 	 * @see #setReturnType(BaseType)
@@ -135,10 +119,6 @@ public interface Function extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Body</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Body</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Body</em>' containment reference.
 	 * @see #setBody(Instruction)

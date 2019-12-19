@@ -23,10 +23,6 @@ public interface InstructionJob extends Job {
 	/**
 	 * Returns the value of the '<em><b>Instruction</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Instruction</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Instruction</em>' containment reference.
 	 * @see #setInstruction(Instruction)

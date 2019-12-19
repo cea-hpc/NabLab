@@ -27,10 +27,6 @@ public interface Connectivity extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
@@ -54,10 +50,6 @@ public interface Connectivity extends IrAnnotable {
 	 * Returns the value of the '<em><b>In Types</b></em>' reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ItemType}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>In Types</em>' reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>In Types</em>' reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivity_InTypes()
@@ -69,10 +61,6 @@ public interface Connectivity extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Return Type</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Return Type</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Return Type</em>' containment reference.
 	 * @see #setReturnType(ItemArgType)
@@ -96,10 +84,6 @@ public interface Connectivity extends IrAnnotable {
 	 * Returns the value of the '<em><b>Index Equal Id</b></em>' attribute.
 	 * The default value is <code>"false"</code>.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Index Equal Id</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Index Equal Id</em>' attribute.
 	 * @see #setIndexEqualId(boolean)

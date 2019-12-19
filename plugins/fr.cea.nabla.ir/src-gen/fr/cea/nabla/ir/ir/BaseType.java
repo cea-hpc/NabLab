@@ -26,10 +26,6 @@ public interface BaseType extends IrType {
 	 * Returns the value of the '<em><b>Primitive</b></em>' attribute.
 	 * The literals are from the enumeration {@link fr.cea.nabla.ir.ir.PrimitiveType}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Primitive</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Primitive</em>' attribute.
 	 * @see fr.cea.nabla.ir.ir.PrimitiveType
@@ -55,10 +51,6 @@ public interface BaseType extends IrType {
 	 * Returns the value of the '<em><b>Sizes</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.SizeType}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Sizes</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Sizes</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getBaseType_Sizes()

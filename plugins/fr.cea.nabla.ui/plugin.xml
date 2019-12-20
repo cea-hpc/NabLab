@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <!--
-    Copyright (c) 2018, 2019 CEA, Obeo
+    Copyright (c) 2018, 2019 CEA
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License 2.0 which is available at
     http://www.eclipse.org/legal/epl-2.0.
@@ -596,5 +596,59 @@
              name="NablaExamples">
        </projectDescriptor>
     </example>
+ </extension>
+ <!-- Add NabLab wizard shortcuts into Model Explorer View (only when NabLab perspective is active) -->
+ <extension
+       point="org.eclipse.ui.navigator.navigatorContent">
+    <commonWizard
+          type="new"
+          wizardId="fr.cea.nabla.ui.examples.project.wizard">
+       <enablement>
+          <with
+                variable="activeWorkbenchWindow.activePerspective">
+             <equals
+                   value="fr.cea.nabla.ui.NabLabPerpective">
+             </equals>
+          </with>
+       </enablement>
+    </commonWizard>
+    <commonWizard
+          type="new"
+          wizardId="fr.cea.nabla.ui.new.project.wizard">
+       <enablement>
+          <with
+                variable="activeWorkbenchWindow.activePerspective">
+             <equals
+                   value="fr.cea.nabla.ui.NabLabPerpective">
+             </equals>
+          </with>
+       </enablement>
+    </commonWizard>
+ </extension>
+ <!-- Hide Xtend and Sirius wizard shortcuts from Model Explorer View (only when NabLab perspective is active) -->
+ <extension
+       point="org.eclipse.ui.activities">
+    <activity
+          id="fr.cea.nabla.ui.activity"
+          name="NabLabActivity">
+       <enabledWhen>
+          <with
+                variable="activeWorkbenchWindow.activePerspective">
+                <not>
+                   <equals
+                      value="fr.cea.nabla.ui.NabLabPerpective">
+                   </equals>
+                </not>
+          </with>
+       </enabledWhen>
+    </activity>
+    <activityPatternBinding
+          activityId="fr.cea.nabla.ui.activity"
+          pattern="org\.eclipse\.xtend.*">
+    </activityPatternBinding>
+    <activityPatternBinding
+          activityId="fr.cea.nabla.ui.activity"
+          pattern="org.eclipse.sirius.ui.ext/org.eclipse.sirius.ui.modelingproject.wizard">
+    </activityPatternBinding>
  </extension>
 </plugin>

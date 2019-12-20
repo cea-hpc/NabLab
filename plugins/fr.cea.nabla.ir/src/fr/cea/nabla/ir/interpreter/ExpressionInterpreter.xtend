@@ -143,7 +143,8 @@ class ExpressionInterpreter
 		if (function.body === null)
 		{
 			val providerClassName = irModule.name.toLowerCase + '.' + function.provider + Utils.FunctionReductionPrefix
-			val providerClass = Class.forName(providerClassName)
+			val tccl = Thread.currentThread().getContextClassLoader()
+			val providerClass = Class.forName(providerClassName, true, tccl)
 			val javaTypes = argValues.map[x | FunctionCallHelper.getJavaType(x) ]
 			val method = providerClass.getDeclaredMethod(function.name, javaTypes)
 			method.setAccessible(true)

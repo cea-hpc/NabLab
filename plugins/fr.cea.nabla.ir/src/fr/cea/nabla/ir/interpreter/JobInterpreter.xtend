@@ -27,14 +27,14 @@ class JobInterpreter
 
 	def dispatch interprete(InstructionJob it, Context context)
 	{
-		//println("Interprete InstructionJob " + name + " @ " + at)
+		context.logFinest("Interprete InstructionJob " + name + " @ " + at)
 		val innerContext = new Context(context)
 		interprete(instruction, innerContext)
 	}
 
 	def dispatch interprete(InSituJob it, Context context)
 	{
-		//println("Interprete InSituJob " + name + " @ " + at)
+		context.logFinest("Interprete InSituJob " + name + " @ " + at)
 		val irModule = eContainer as IrModule
 		val iteration = context.getInt(ModuleInterpreter::ITERATION_VARIABLE_NAME)
 		val time = context.getReal(MandatorySimulationVariables::TIME)
@@ -66,7 +66,7 @@ class JobInterpreter
 
 	def dispatch interprete(BeginOfTimeLoopJob it, Context context)
 	{
-		//println("Interprete EndOfTimeLoopJob" + name + " @ " + at)
+		context.logFinest("Interprete EndOfTimeLoopJob" + name + " @ " + at)
 		// Switch Vn and Vn+1
 		for (initialization : initializations)
 		{
@@ -79,7 +79,7 @@ class JobInterpreter
 
 	def dispatch interprete(EndOfTimeLoopJob it, Context context)
 	{
-		//println("Interprete EndOfInitJob " + name + " @ " + at)
+		context.logFinest("Interprete EndOfInitJob " + name + " @ " + at)
 		// Set Vn = V0
 		// Warning : V0 and Vn have the same memory representation so if we update Vn, V0 will be modified
 		val cond = interprete(whileCondition, context) as NV0Bool

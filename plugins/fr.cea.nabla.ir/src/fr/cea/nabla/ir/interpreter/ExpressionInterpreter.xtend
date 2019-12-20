@@ -31,7 +31,7 @@ class ExpressionInterpreter
 {
 	static def dispatch NablaValue interprete(ContractedIf it, Context context)
 	{
-		//println("Interprete ContractedIf")
+		context.logFinest("Interprete ContractedIf")
 		val condValue = condition.interprete(context)
 		if ((condValue as NV0Bool).data) thenExpression.interprete(context)
 		else elseExpression.interprete(context) 
@@ -39,7 +39,7 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(BinaryExpression it, Context context)	
 	{
-		//println("Interprete BinaryExpression")
+		context.logFinest("Interprete BinaryExpression")
 		val lValue = left.interprete(context)
 		val rValue = right.interprete(context)
 		BinaryOperationsInterpreter::getValueOf(lValue, rValue, operator)
@@ -47,7 +47,7 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(UnaryExpression it, Context context)
 	{
-		//println("Interprete UnaryExpression")
+		context.logFinest("Interprete UnaryExpression")
 		val eValue = expression.interprete(context)
 		switch eValue
 		{
@@ -64,31 +64,31 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(Parenthesis it, Context context)
 	{
-		//println("Interprete Parenthesis")
+		context.logFinest("Interprete Parenthesis")
 		expression.interprete(context)
 	}
 
 	static def dispatch NablaValue interprete(IntConstant it, Context context) 
 	{
-		//println("Interprete IntConstant")
+		context.logFinest("Interprete IntConstant")
 		new NV0Int(value)
 	}
 	
 	static def dispatch NablaValue interprete(RealConstant it, Context context) 
 	{
-		//println("Interprete RealConstant")
+		context.logFinest("Interprete RealConstant")
 		new NV0Real(value)
 	}
 
 	static def dispatch NablaValue interprete(BoolConstant it, Context context) 
 	{ 
-		//println("Interprete BoolConstant")
+		context.logFinest("Interprete BoolConstant")
 		new NV0Bool(value)
 	}
 
 	static def dispatch NablaValue interprete(MinConstant it, Context context)
 	{
-		//println("Interprete MinConstant")
+		context.logFinest("Interprete MinConstant")
 		val t = type as BaseType
 		switch t.primitive
 		{
@@ -100,7 +100,7 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(MaxConstant it, Context context)
 	{
-		//println("Interprete MaxConstant")
+		context.logFinest("Interprete MaxConstant")
 		val t = type as BaseType
 		switch t.primitive
 		{
@@ -112,7 +112,7 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(BaseTypeConstant it, Context context)
 	{
-		//println("Interprete BaseTypeConstant")
+		context.logFinest("Interprete BaseTypeConstant")
 		val expressionValue = value.interprete(context)
 		val t = type as BaseType
 		val sizes = getIntSizes(t, context)
@@ -127,7 +127,7 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(VectorConstant it, Context context) 
 	{
-		//println("Interprete VectorConstant")
+		context.logFinest("Interprete VectorConstant")
 		val expressionValues = values.map[x | interprete(x, context)]
 		val t = type as BaseType
 		val value = BaseTypeValueFactory.createValue(t, context)
@@ -138,7 +138,7 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(FunctionCall it, Context context)
 	{
-		//println("Interprete FunctionCall " + function.name)
+		context.logFinest("Interprete FunctionCall " + function.name)
 		val argValues = args.map[x|interprete(x, context)]
 		if (function.body === null)
 		{
@@ -177,7 +177,7 @@ class ExpressionInterpreter
 
 	static def dispatch NablaValue interprete(ArgOrVarRef it, Context context)
 	{
-		//println("Interprete VarRef " + variable.name)
+		context.logFinest("Interprete VarRef " + target.name)
 		val value = context.getVariableValue(target)
 		val iteratorValues = iterators.map[x | context.getIndexValue(x)]
 		val indicesValues = indices.map[x | interprete(x, context)]

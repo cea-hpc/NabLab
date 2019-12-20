@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="NabLab Target platform" sequenceNumber="1575644602">
+<target name="NabLab Target platform" sequenceNumber="1576679940">
   <locations>
-    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.sdk.feature.group" version="4.13.0.v20190916-1323"/>
-      <unit id="org.eclipse.platform.feature.group" version="4.13.0.v20190916-1323"/>
-      <unit id="org.eclipse.pde.feature.group" version="3.14.100.v20190916-1045"/>
+      <unit id="org.eclipse.rcp.feature.group" version="4.13.0.v20190916-1045"/>
+      <unit id="org.eclipse.equinox.p2.sdk.feature.group" version="3.11.500.v20190903-0934"/>
+      <unit id="org.eclipse.equinox.executable.feature.group" version="3.8.500.v20190907-0428"/>
       <unit id="org.eclipse.emf.feature.group" version="2.19.0.v20190824-1315"/>
       <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.11.0.201906111547"/>
       <unit id="org.eclipse.emf.mwe2.launcher.feature.group" version="2.11.0.201906111547"/>
@@ -19,18 +20,30 @@
       <unit id="org.eclipse.xtext.xbase.junit" version="2.19.0.v20190902-1023"/>
       <unit id="org.eclipse.xtext.xbase.testing" version="2.19.0.v20190902-0952"/>
       <unit id="org.eclipse.xtext.junit4" version="2.19.0.v20190902-1023"/>
-      <repository id="eclipse" location="http://download.eclipse.org/releases/2019-09"/>
+      <unit id="org.eclipse.cdt.feature.group" version="9.9.0.201909091956"/>
+      <unit id="org.eclipse.wst.xml_core.feature.feature.group" version="3.15.0.v201907091226"/>
+      <unit id="org.eclipse.wst.xml_ui.feature.feature.group" version="3.15.0.v201907091226"/>
+      <unit id="org.eclipse.egit.feature.group" version="5.5.0.201909110433-r"/>
+      <repository id="eclipse" location="https://download.eclipse.org/releases/2019-09"/>
     </location>
-    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.sirius.aql.feature.group" version="6.2.2.201907100713"/>
       <unit id="org.eclipse.sirius.runtime.feature.group" version="6.2.2.201907100713"/>
       <unit id="org.eclipse.sirius.runtime.aql.feature.group" version="6.2.2.201907100713"/>
+      <unit id="org.eclipse.sirius.runtime.ocl.feature.group" version="6.2.2.201907100713"/>
       <unit id="org.eclipse.sirius.runtime.ide.ui.feature.group" version="6.2.2.201907100713"/>
+      <unit id="org.eclipse.sirius.runtime.ide.eef.feature.group" version="6.2.2.201907100713"/>
+      <unit id="org.eclipse.sirius.runtime.ide.xtext.feature.group" version="6.2.2.201907100713"/>
       <unit id="org.eclipse.sirius.properties.feature.feature.group" version="6.2.2.201907100713"/>
       <unit id="org.eclipse.eef.sdk.feature.feature.group" version="2.1.2.201903071543"/>
       <unit id="org.eclipse.eef.ext.widgets.reference.feature.feature.group" version="2.1.2.201903071543"/>
-      <repository id="siruis" location="http://download.eclipse.org/sirius/updates/releases/6.2.2/2019-06"/>
+      <repository id="siruis" location="https://download.eclipse.org/sirius/updates/releases/6.2.2/2019-06"/>
     </location>
-    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.python.pydev.feature.feature.group" version="7.4.0.201910251334"/>
+      <repository location="http://www.pydev.org/update_sites/7.4.0"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.hamcrest.core" version="1.3.0.v20180420-1519"/>
       <unit id="org.apache.commons.lang3" version="3.1.0.v201403281430"/>
       <unit id="com.google.guava" version="27.1.0.v20190517-1946"/>

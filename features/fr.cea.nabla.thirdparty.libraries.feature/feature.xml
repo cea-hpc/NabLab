@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 CEA
+    This program and the accompanying materials are made available under the 
+    terms of the Eclipse Public License 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+    SPDX-License-Identifier: EPL-2.0, LGPL-2.1, GPL-2.0, Apache v2
+    Contributors: see AUTHORS file
+ -->
+<feature
+      id="fr.cea.nabla.thirdparty.libraries.feature"
+      label="Nabla 3rd party libraries feature"
+      version="1.0.0.qualifier"
+      provider-name="CEA">
+
+   <description>
+      The 3rd party libraries for NabLab environment.
+   </description>
+
+   <copyright>
+    Copyright (c) 2019 CEA
+    This program and the accompanying materials are made available under the 
+    terms of the Eclipse Public License 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+    SPDX-License-Identifier: EPL-2.0, LGPL-2.1, GPL-2.0, Apache v2
+    Contributors: see AUTHORS file
+   </copyright>
+
+   <license>
+ JGraphT (1.3.0)
+  * License: LGPL-2.1, EPL-2.0
+  * Project: http://jgrapht.org
+  * Source: https://github.com/jgrapht/jgrapht
+
+ JLatexMath (1.0.3)
+  * License: GPL-2.0
+  * Project: http://www.scilab.org/projects/thirdparty_project/jlatexmath
+  * Source: https://github.com/opencollab/jlatexmath
+ 
+ Commons-Math3 (3.6.1)
+  * License: Apache v2
+  * Project: https://commons.apache.org/proper/commons-math/
+  * Source: https://github.com/apache/commons-math
+   </license>
+
+   <plugin
+         id="jgrapht-core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="jlatexmath"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="commons-math3"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+</feature>

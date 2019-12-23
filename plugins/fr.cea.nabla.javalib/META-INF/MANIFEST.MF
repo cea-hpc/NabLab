@@ -4,11 +4,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: fr.cea.nabla.javalib
 Bundle-SymbolicName: fr.cea.nabla.javalib
 Bundle-Version: 1.0.0.qualifier
-Bundle-ClassPath: .,
- lib/commons-math3-3.6.1.jar
+Bundle-ClassPath: .
 Export-Package: fr.cea.nabla.javalib.mesh,
  fr.cea.nabla.javalib.types
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: CEA
-Require-Bundle: org.eclipse.xtend.lib
+Require-Bundle: org.eclipse.xtend.lib,
+ commons-math3;bundle-version="3.6.1"
 

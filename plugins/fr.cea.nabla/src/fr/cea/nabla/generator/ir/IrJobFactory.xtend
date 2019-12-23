@@ -28,14 +28,19 @@ class IrJobFactory
 		instruction = j.instruction.toIrInstruction
 	}
 
-	def create IrFactory::eINSTANCE.createBeginOfTimeLoopJob toIrBeginOfTimeLoopJob(TimeIterator ti)
+	def create IrFactory::eINSTANCE.createBeforeTimeLoopJob toIrBeforeTimeLoopJob(TimeIterator ti)
 	{
-		name = "Begin of " + ti.name + " time loop"
+		name = "Before time loop " + ti.name
+		whileCondition = ti.cond.toIrExpression
 	}
 
-	def create IrFactory::eINSTANCE.createEndOfTimeLoopJob toIrEndOfTimeLoopJob(TimeIterator ti)
+	def create IrFactory::eINSTANCE.createAfterTimeLoopJob toIrAfterTimeLoopJob(TimeIterator ti)
 	{ 
-		name = "End of " + ti.name + " time loop"
-		whileCondition = ti.cond.toIrExpression
+		name = "After time loop " + ti.name
+	}
+
+	def create IrFactory::eINSTANCE.createNextTimeLoopIterationJob toIrNextTimeLoopIterationJob(TimeIterator ti)
+	{ 
+		name = "Next iteration of time loop " + ti.name
 	}
 }

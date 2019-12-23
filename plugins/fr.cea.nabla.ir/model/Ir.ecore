@@ -131,22 +131,20 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeVariable" lowerBound="1"
         eType="#//SimpleVariable"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="BeginOfTimeLoopJob" eSuperTypes="#//Job">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="end" eType="#//EndOfTimeLoopJob"
-        eOpposite="#//EndOfTimeLoopJob/begin"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="initializations" upperBound="-1"
+  <eClassifiers xsi:type="ecore:EClass" name="TimeLoopBodyJob" eSuperTypes="#//Job">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="innerjobs" upperBound="-1"
+        eType="#//Job"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeLoopCopyJob" abstract="true" eSuperTypes="#//Job">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="copies" upperBound="-1"
         eType="#//TimeLoopCopy" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EndOfTimeLoopJob" eSuperTypes="#//Job">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="begin" lowerBound="1" eType="#//BeginOfTimeLoopJob"
-        eOpposite="#//BeginOfTimeLoopJob/end"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="nextLoopCopies" upperBound="-1"
-        eType="#//TimeLoopCopy" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="exitLoopCopies" upperBound="-1"
-        eType="#//TimeLoopCopy" containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BeforeTimeLoopJob" eSuperTypes="#//TimeLoopCopyJob">
     <eStructuralFeatures xsi:type="ecore:EReference" name="whileCondition" lowerBound="1"
         eType="#//Expression" containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AfterTimeLoopJob" eSuperTypes="#//TimeLoopCopyJob"/>
+  <eClassifiers xsi:type="ecore:EClass" name="NextTimeLoopIterationJob" eSuperTypes="#//TimeLoopCopyJob"/>
   <eClassifiers xsi:type="ecore:EClass" name="TimeLoopCopy" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="destination" lowerBound="1"
         eType="#//Variable"/>

@@ -21,6 +21,7 @@ import org.jgrapht.graph.DefaultWeightedEdge
 import org.jgrapht.graph.DirectedWeightedPseudograph
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
+import fr.cea.nabla.ir.ir.NextTimeLoopIterationJob
 
 class FillJobHLTs implements IrTransformationStep
 {
@@ -42,6 +43,10 @@ class FillJobHLTs implements IrTransformationStep
 	override transform(IrModule m)
 	{
 		if (m.jobs.empty) return true
+		if (m.hasCycles) return false
+
+		// No cyles => create TimeLoopBody instances
+		
 
 		// Graph creation
 		val globalSourceNode = IrFactory::eINSTANCE.createInstructionJob => [ name = GlobalSourceNodeLabel ]
@@ -53,7 +58,7 @@ class FillJobHLTs implements IrTransformationStep
 		val hasCycles = (cycles !== null)
 		if (hasCycles)
 		{
-			outputTraces += '*** HLT calculation impossible: graph contains cycles.'
+			outputTraces += '*** HLT impossible calculation: graph contains cycles.'
 			outputTraces += '*** ' + cycles.map[name].join(' -> ')
 		}
 		else
@@ -110,33 +115,6 @@ class FillJobHLTs implements IrTransformationStep
 		outputTraces
 	}
 
-	/**
-	 * Create a graph corresponding to the IR model.
-	 * Two additional source nodes are added: a global source node and a time loop source node.
-	 * EndOfTimeLoop outgoing edges are not added to avoid cycles.
-	 */
-	private def createGraph(IrModule it, Job globalSourceNode, Job timeLoopSourceNode)
-	{	
-		val g = new DirectedWeightedPseudograph<Job, DefaultWeightedEdge>(DefaultWeightedEdge)
-		jobs.forEach[x | g.addVertex(x)]
-		g.addVertex(timeLoopSourceNode)
-		for (from : jobs)
-			for (to : from.nextJobs)
-				if (from instanceof EndOfTimeLoopJob)
-					g.addEdge(timeLoopSourceNode, to)
-				else
-					g.addEdge(from, to)
-
-		// add the global source node
-		g.addVertex(globalSourceNode)
-		g.vertexSet.filter[v | v!==globalSourceNode && v!==timeLoopSourceNode && g.incomingEdgesOf(v).empty].forEach[x | g.addEdge(globalSourceNode, x)]
-
-		// display graph
-		// g.print
-
-		return g
-	}
-
 //	private def print(DirectedWeightedPseudograph<Job, DefaultWeightedEdge> g)
 //	{
 //		println('Graph nodes : ')
@@ -145,7 +123,38 @@ class FillJobHLTs implements IrTransformationStep
 //		g.edgeSet.forEach[x|println('  ' + g.getEdgeSource(x).name + ' -> ' + g.getEdgeTarget(x).name)]
 //	}
 
-	/** Return the node list implied in at least one cycle. Return null if no cycle */
+	/** Build the jgrapht graph corresponding to IrModule and check if it has cycles */
+	private def hasCycles(IrModule it)
+	{
+		// Create nodes 
+		val g = new DirectedWeightedPseudograph<Job, DefaultWeightedEdge>(DefaultWeightedEdge)
+		jobs.forEach[x | g.addVertex(x)]
+
+		// Create edges: no outgoing edges from NextTimeLoopIterationJob instances to break time cycles.
+		for (from : jobs.reject(NextTimeLoopIterationJob))
+			for (to : from.nextJobs)
+				g.addEdge(from, to)
+
+		// Add a global source node and edges to nodes with no incoming edges
+		val globalSourceNode = IrFactory::eINSTANCE.createInstructionJob => [ name = GlobalSourceNodeLabel ]
+		g.addVertex(globalSourceNode)
+		g.vertexSet.filter[v | v!==globalSourceNode && g.incomingEdgesOf(v).empty].forEach[x | g.addEdge(globalSourceNode, x)]
+
+		// display graph
+		// g.print
+
+		val cycles = g.findCycle
+		val hasCycles = (cycles !== null)
+		if (hasCycles)
+		{
+			outputTraces += '*** HLT impossible calculation: graph contains cycles.'
+			outputTraces += '*** ' + cycles.map[name].join(' -> ')
+		}
+
+		return hasCycles
+	}
+
+	/** Return the nodes list implied in at least one cycle. Return null if no cycle */
 	private def findCycle(DirectedWeightedPseudograph<Job, DefaultWeightedEdge> g)
 	{
 		val cycleDetector = new CycleDetector<Job, DefaultWeightedEdge>(g)

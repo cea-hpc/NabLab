@@ -69,8 +69,10 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.ITEM_ARG_TYPE: return createItemArgType();
 			case IrPackage.INSTRUCTION_JOB: return createInstructionJob();
 			case IrPackage.IN_SITU_JOB: return createInSituJob();
-			case IrPackage.BEGIN_OF_TIME_LOOP_JOB: return createBeginOfTimeLoopJob();
-			case IrPackage.END_OF_TIME_LOOP_JOB: return createEndOfTimeLoopJob();
+			case IrPackage.TIME_LOOP_BODY_JOB: return createTimeLoopBodyJob();
+			case IrPackage.BEFORE_TIME_LOOP_JOB: return createBeforeTimeLoopJob();
+			case IrPackage.AFTER_TIME_LOOP_JOB: return createAfterTimeLoopJob();
+			case IrPackage.NEXT_TIME_LOOP_ITERATION_JOB: return createNextTimeLoopIterationJob();
 			case IrPackage.TIME_LOOP_COPY: return createTimeLoopCopy();
 			case IrPackage.VAR_DEFINITION: return createVarDefinition();
 			case IrPackage.INSTRUCTION_BLOCK: return createInstructionBlock();
@@ -279,9 +281,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public BeginOfTimeLoopJob createBeginOfTimeLoopJob() {
-		BeginOfTimeLoopJobImpl beginOfTimeLoopJob = new BeginOfTimeLoopJobImpl();
-		return beginOfTimeLoopJob;
+	public BeforeTimeLoopJob createBeforeTimeLoopJob() {
+		BeforeTimeLoopJobImpl beforeTimeLoopJob = new BeforeTimeLoopJobImpl();
+		return beforeTimeLoopJob;
 	}
 
 	/**
@@ -290,9 +292,20 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public EndOfTimeLoopJob createEndOfTimeLoopJob() {
-		EndOfTimeLoopJobImpl endOfTimeLoopJob = new EndOfTimeLoopJobImpl();
-		return endOfTimeLoopJob;
+	public AfterTimeLoopJob createAfterTimeLoopJob() {
+		AfterTimeLoopJobImpl afterTimeLoopJob = new AfterTimeLoopJobImpl();
+		return afterTimeLoopJob;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NextTimeLoopIterationJob createNextTimeLoopIterationJob() {
+		NextTimeLoopIterationJobImpl nextTimeLoopIterationJob = new NextTimeLoopIterationJobImpl();
+		return nextTimeLoopIterationJob;
 	}
 
 	/**
@@ -678,6 +691,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public ConnectivityType createConnectivityType() {
 		ConnectivityTypeImpl connectivityType = new ConnectivityTypeImpl();
 		return connectivityType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public TimeLoopBodyJob createTimeLoopBodyJob() {
+		TimeLoopBodyJobImpl timeLoopBodyJob = new TimeLoopBodyJobImpl();
+		return timeLoopBodyJob;
 	}
 
 	/**

@@ -66,10 +66,9 @@ class Nabla2Ir
 		{
 			for (timeIterator : iteration.iterators)
 			{
-				val bj = timeIterator.toIrBeginOfTimeLoopJob
-				val ej = timeIterator.toIrEndOfTimeLoopJob => [ begin = bj ]
-				jobs += bj
-				jobs += ej
+				jobs += timeIterator.toIrBeforeTimeLoopJob
+				jobs += timeIterator.toIrAfterTimeLoopJob
+				jobs += timeIterator.toIrNextTimeLoopIterationJob
 			}
 		}
 
@@ -96,25 +95,26 @@ class Nabla2Ir
 							source = varAtInit as Variable
 							destination = varAtCurrent as Variable
 						]
-						val beginJob = iterators.last.target.toIrBeginOfTimeLoopJob
-						beginJob.initializations += tlCopy
+						val beforeJob = iterators.last.target.toIrBeforeTimeLoopJob
+						beforeJob.copies += tlCopy
 					}
 					case NEXT:
 					{
 						val varAtNext = varRef.target.toIrArgOrVar(varRef.timeSuffix)
 						val varAtCurrent = varRef.target.toIrArgOrVar(varRef.currentTimeSuffix)
-						val endJob = iterators.last.target.toIrEndOfTimeLoopJob
-						endJob.nextLoopCopies += IrFactory::eINSTANCE.createTimeLoopCopy =>
+						val nextIterJob = iterators.last.target.toIrNextTimeLoopIterationJob
+						nextIterJob.copies += IrFactory::eINSTANCE.createTimeLoopCopy =>
 						[
 							source = varAtNext as Variable
 							destination = varAtCurrent as Variable
 						]
 
+						val afterJob = iterators.last.target.toIrAfterTimeLoopJob
 						val outerTimeIteratorSuffix = varRef.outerTimeSuffix
 						if (outerTimeIteratorSuffix !== null)
 						{
 							val varAtOuterTimeIterator = varRef.target.toIrArgOrVar(outerTimeIteratorSuffix)
-							endJob.exitLoopCopies += IrFactory::eINSTANCE.createTimeLoopCopy =>
+							afterJob.copies += IrFactory::eINSTANCE.createTimeLoopCopy =>
 							[
 								source = varAtNext as Variable
 								destination = varAtOuterTimeIterator as Variable

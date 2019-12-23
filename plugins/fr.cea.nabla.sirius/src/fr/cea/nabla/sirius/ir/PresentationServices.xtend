@@ -9,7 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.sirius.ir
 
-import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
+import fr.cea.nabla.ir.ir.AfterTimeLoopJob
+import fr.cea.nabla.ir.ir.BeforeTimeLoopJob
 import fr.cea.nabla.ir.ir.Variable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
@@ -18,8 +19,8 @@ class PresentationServices
 {
 	static def startsGraph(Variable it) { previousJobs.empty }
 	static def endsGraph(Variable it) { nextJobs.empty }
-	static def startsTimeLoop(Variable it) { previousJobs.exists[x|x instanceof EndOfTimeLoopJob] }
-	static def endsTimeLoop(Variable it) { nextJobs.exists[x|x instanceof EndOfTimeLoopJob] }
+	static def startsTimeLoop(Variable it) { previousJobs.exists[x|x instanceof BeforeTimeLoopJob] }
+	static def endsTimeLoop(Variable it) { nextJobs.exists[x|x instanceof AfterTimeLoopJob] }
 	static def isOnCycle(Variable it) { previousJobs.exists[x|x.onCycle] }
 	static def isInit(Variable it) { !previousJobs.exists[x|x.at>0] }	
 } 

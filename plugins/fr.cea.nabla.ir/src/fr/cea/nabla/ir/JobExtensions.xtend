@@ -11,8 +11,6 @@ package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVarRef
-import fr.cea.nabla.ir.ir.BeginOfTimeLoopJob
-import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
@@ -21,6 +19,8 @@ import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
+import fr.cea.nabla.ir.ir.TimeLoopBodyJob
+import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.Variable
 import java.util.HashSet
 
@@ -52,14 +52,16 @@ class JobExtensions
 		return fromTargetJobs
 	}
 
-	static def dispatch Iterable<Variable> getOutVars(BeginOfTimeLoopJob it)
+	static def dispatch Iterable<Variable> getOutVars(TimeLoopBodyJob it)
 	{
-		initializations.map[destination]
+		val outVars = new HashSet<Variable>
+		innerjobs.forEach[x | outVars += x.outVars]
+		return outVars
 	}
 
-	static def dispatch Iterable<Variable> getOutVars(EndOfTimeLoopJob it)
+	static def dispatch Iterable<Variable> getOutVars(TimeLoopCopyJob it)
 	{
-		nextLoopCopies.map[destination] + exitLoopCopies.map[destination]
+		copies.map[destination]
 	}
 
 	static def dispatch Iterable<Variable> getOutVars(InstructionJob it)
@@ -72,14 +74,16 @@ class JobExtensions
 		#[]
 	}
 
-	static def dispatch Iterable<Variable> getInVars(BeginOfTimeLoopJob it)
+	static def dispatch Iterable<Variable> getInVars(TimeLoopBodyJob it)
 	{
-		initializations.map[source]
+		val inVars = new HashSet<Variable>
+		innerjobs.forEach[x | inVars += x.inVars]
+		return inVars
 	}
 
-	static def dispatch Iterable<Variable> getInVars(EndOfTimeLoopJob it)
+	static def dispatch Iterable<Variable> getInVars(TimeLoopCopyJob it)
 	{
-		nextLoopCopies.map[source] + exitLoopCopies.map[source]
+		copies.map[source]
 	}
 
 	static def dispatch Iterable<Variable> getInVars(InstructionJob it)

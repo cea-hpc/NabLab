@@ -27,10 +27,20 @@
 
     <properties>
         <product-name>NabLab</product-name>
+        <updatesite-name>fr.cea.nabla.updatesite</updatesite-name>
     </properties>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-p2-repository-plugin</artifactId>
+                <version>${tycho-version}</version>
+                <configuration>
+                    <!-- customize the name of the updatesite zip -->
+                    <finalName>${updatesite-name}-${unqualifiedVersion}.${buildQualifier}</finalName>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-p2-director-plugin</artifactId>

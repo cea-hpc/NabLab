@@ -13,7 +13,6 @@ import fr.cea.nabla.nablagen.Workflow
 import fr.cea.nabla.nablagen.WorkflowComponent
 import java.net.URI
 import java.util.ArrayList
-import org.apache.log4j.Logger
 import org.eclipse.core.resources.IContainer
 import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
@@ -34,7 +33,6 @@ import static extension fr.cea.nabla.workflow.WorkflowExtensions.*
 class WorkflowInterpreter 
 {
 	static val IrExtension = 'nablair'
-	static val logger = Logger.getLogger(WorkflowInterpreter)
 	val traceListeners = new ArrayList<IWorkflowTraceListener>
 	val modelChangedListeners = new ArrayList<IWorkflowModelChangedListener>
 	@Inject Provider<JavaIoFileSystemAccess> fsaProvider
@@ -46,20 +44,17 @@ class WorkflowInterpreter
 		try
 		{
 			val msg = 'STARTING ' + workflow.name + '\n'
-			logger.info(msg)
 			traceListeners.forEach[write(msg)]
 			workflow.roots.forEach[c | launch(c, workflow.nablaModule)]	
 		}
 		catch(Exception e)
 		{
 			val msgheader = '\n***' + e.class.name + ': ' + e.message + '\n'
-			logger.info(msgheader)
 			traceListeners.forEach[write(msgheader)]
 			if (e.stackTrace !== null && !e.stackTrace.empty)
 			{
 				val stack = e.stackTrace.head
 				val msg = 'at ' + stack.className + '.' + stack.methodName + '(' + stack.fileName + ':' + stack.lineNumber + ')\n'
-				logger.info(msg)
 				traceListeners.forEach[write(msg)]
 			}
 			throw(e)
@@ -79,13 +74,11 @@ class WorkflowInterpreter
 	private def dispatch void launch(Nabla2IrComponent c, NablaModule nablaModule)
 	{
 		val msg = '  Nabla -> IR - ' + c.name
-		logger.info(msg)
 		traceListeners.forEach[write(msg)]
 		val irModule = nabla2Ir.toIrModule(nablaModule)
 		if (c.dumpIr)
 			createAndSaveResource(irModule, c.eclipseProject, c.name)
 		val msgEnd = "... ok\n"
-		logger.info(msgEnd)
 		traceListeners.forEach[write(msgEnd)]
 		modelChangedListeners.forEach[modelChanged(irModule)]
 		fireModel(c, irModule)
@@ -97,7 +90,6 @@ class WorkflowInterpreter
 		{
 			val step = IrTransformationStepProvider::get(c)
 			val msg = '  IR -> IR - ' + c.name + ': ' + step.description
-			logger.info(msg)
 			traceListeners.forEach[write(msg)]
 			val ok = step.transform(irModule)
 			if (c.dumpIr)
@@ -105,18 +97,15 @@ class WorkflowInterpreter
 			if (ok)
 			{
 				val msgEnd = "... ok\n"
-				logger.info(msgEnd)
 				traceListeners.forEach[write(msgEnd)]
 				modelChangedListeners.forEach[modelChanged(irModule)]
 			}
 			else
 			{
 				val exceptionMsg = '... ko\n*** Error in IR transformation step\n'
-				logger.info(exceptionMsg)
 				traceListeners.forEach[write(exceptionMsg)]
 				for (trace : step.outputTraces)
 				{
-					logger.info(trace + '\n')
 					traceListeners.forEach[write(trace + '\n')]
 				}
 				return
@@ -131,13 +120,11 @@ class WorkflowInterpreter
 		{
 			val g = CodeGeneratorProvider::get(c)
 			val msg = "  " + g.name + " code generator\n"
-			logger.info(msg)
 			traceListeners.forEach[write(msg)]
 			val outputFolder = c.eclipseProject.workspace.root.findMember(c.outputDir) 
 			if (outputFolder === null || !(outputFolder instanceof IContainer) || !outputFolder.exists)
 			{
 				val exceptionMsg = '   ** Invalid outputDir: ' + c.outputDir + '\n'
-				logger.info(exceptionMsg)
 				traceListeners.forEach[write(exceptionMsg)]
 				//throw new RuntimeException(exceptionMsg)
 				return
@@ -151,12 +138,10 @@ class WorkflowInterpreter
 					val fullFileName = irModule.name.toLowerCase + '/' + fileName
 					val fileContent = fileContentsByName.get(fileName)
 					val msg2 = "    Generating '" + fullFileName
-					logger.info(msg2)
 					traceListeners.forEach[write(msg2)]	
 					fsa.generateFile(fullFileName, fileContent)
 					outputFolder.refreshLocal(IResource::DEPTH_INFINITE, null)
 					val msgEnd = "... ok\n"
-					logger.info(msgEnd)
 					traceListeners.forEach[write(msgEnd)]	
 				}
 			}

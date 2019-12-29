@@ -26,3 +26,11 @@ class MandatoryMeshVariables
 
 	public static val NAMES = #[COORD]
 }
+
+class MandatoryIterationVariables
+{
+	static def getName(String iteratorName)
+	{
+		'iteration' + iteratorName.toFirstUpper
+	}
+}

@@ -19,12 +19,12 @@ import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Loop
+import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
 import java.util.List
-import fr.cea.nabla.nabla.Return
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -52,7 +52,7 @@ class IrInstructionFactory
 		val irInstr = IrFactory::eINSTANCE.createVarDefinition =>
 		[
 			annotations += v.toIrAnnotation
-			variables += v.variable.toIrSimpleVariable
+			variables += v.variable.toIrVariable
 		]
 
 		return irInstr.transformReductions(v.defaultValue)
@@ -67,7 +67,7 @@ class IrInstructionFactory
 			for (scalarVar : v.variables.filter(SimpleVar))
 			{
 				annotations += v.toIrAnnotation
-				variables += scalarVar.toIrSimpleVariable
+				variables += scalarVar.toIrVariable
 			}
 		]
 		#[irInstr]

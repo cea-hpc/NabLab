@@ -18,10 +18,12 @@ import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ContractedIf
+import fr.cea.nabla.nabla.CurrentTimeIteratorRef
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
+import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.IntervalIterationBlock
@@ -32,6 +34,7 @@ import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.MulOrDiv
+import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
@@ -48,7 +51,6 @@ import fr.cea.nabla.nabla.SizeTypeSymbol
 import fr.cea.nabla.nabla.SizeTypeSymbolRef
 import fr.cea.nabla.nabla.SpaceIterationBlock
 import fr.cea.nabla.nabla.SpaceIteratorRef
-import fr.cea.nabla.nabla.TimeIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
@@ -79,7 +81,9 @@ class LatexLabelServices
 		else target.name.pu
 	}
 
-	static def dispatch String getLatex(TimeIteratorRef it) { target.name.pu + type.literal }
+	static def dispatch String getLatex(CurrentTimeIteratorRef it) { target.name.pu }
+	static def dispatch String getLatex(InitTimeIteratorRef it) { target.name.pu + '=' + value }
+	static def dispatch String getLatex(NextTimeIteratorRef it) { target.name.pu + '+' + value }
 
 	/* EXPRESSIONS ******************************************/
 	static def dispatch String getLatex(ContractedIf it) { condition.latex + ' ? ' + then.latex + ' : ' + ^else.latex }

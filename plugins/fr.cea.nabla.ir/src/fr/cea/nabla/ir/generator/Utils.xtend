@@ -36,6 +36,11 @@ class Utils
 		provider + FunctionReductionPrefix + separator + name
 	}
 
+	static def getCodeName(Job it)
+	{
+		name.toFirstLower
+	}
+
 	static def getNbElems(Connectivity it) { 'nb' + name.toFirstUpper}
 
 	static def getComment(Job it)

@@ -9,19 +9,23 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
+import fr.cea.nabla.ir.MandatoryIterationVariables
 import fr.cea.nabla.ir.MandatoryMeshVariables
 import fr.cea.nabla.ir.ir.BaseType
-import fr.cea.nabla.ir.ir.BeginOfTimeLoopJob
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.NextTimeLoopIterationJob
+import fr.cea.nabla.ir.ir.TimeLoopCopyJob
+import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.transformers.TagPersistentVariables
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.InstructionContentProvider.*
 
 class JobContentProvider 
@@ -29,7 +33,7 @@ class JobContentProvider
 	static def getContent(Job it)
 	'''
 		«comment»
-		private void «name.toFirstLower»() 
+		private void «codeName»() 
 		{
 			«innerContent»
 		}
@@ -42,7 +46,7 @@ class JobContentProvider
 
 	private static def dispatch CharSequence getInnerContent(InSituJob it)
 	'''
-		if «periodVariable.name» >= «TagPersistentVariables::LastDumpVariableName»
+		if («periodVariable.name» >= «TagPersistentVariables::LastDumpVariableName»)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
@@ -54,18 +58,32 @@ class JobContentProvider
 		}
 	'''
 
-	private static def dispatch CharSequence getInnerContent(BeginOfTimeLoopJob it)
+	private static def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
-		«FOR initialization : initializations»
-			«copy(initialization.destination.name, initialization.source.name, initialization.destination.type.dimension, true)»
+		«MandatoryIterationVariables.getName(timeLoopName)» = 0;
+		while («whileCondition.content»)
+		{
+			«MandatoryIterationVariables.getName(timeLoopName)»++;
+			«FOR j : jobs.sortBy[at]»
+				«j.codeName»(); // @«j.at»
+			«ENDFOR»
+		}
+	'''
+
+	private static def dispatch CharSequence getInnerContent(TimeLoopCopyJob it)
+	'''
+		«FOR copy : copies»
+			«copy(copy.destination.name, copy.source.name, copy.destination.type.dimension, true)»
 		«ENDFOR»
 	'''
 
-	private static def dispatch CharSequence getInnerContent(EndOfTimeLoopJob it)
+	private static def dispatch CharSequence getInnerContent(NextTimeLoopIterationJob it)
 	'''
-		«left.javaType» tmpSwitch = «left.name»;
-		«left.name» = «right.name»;
-		«right.name» = tmpSwitch;
+		«FOR copy : copies»
+			«copy.destination.javaType» tmp«copy.destination.name.toFirstUpper» = «copy.destination.name»;
+			«copy.destination.name» = «copy.source.name»;
+			«copy.source.name» = tmp«copy.destination.name.toFirstUpper»;
+		«ENDFOR»
 	'''
 
 	private static def CharSequence copy(String left, String right, int dimension, boolean firstLoop)
@@ -78,7 +96,8 @@ class JobContentProvider
 			val suffix = '[' + indexName + ']'
 			'''
 				«IF firstLoop»
-				IntStream.range(0, «left».length).parallel().forEach(«indexName» -> {
+				IntStream.range(0, «left».length).parallel().forEach(«indexName» -> 
+				{
 					«copy(left + suffix, right + suffix, dimension-1, false)»
 				});
 				«ELSE»

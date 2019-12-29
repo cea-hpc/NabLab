@@ -97,6 +97,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Job/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Job/at"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Job/onCycle"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/timeLoopContainer"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//InstructionJob">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InstructionJob/instruction"/>
@@ -108,16 +109,22 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//InSituJob/iterationVariable"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//InSituJob/timeVariable"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//TimeLoopBodyJob">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopBodyJob/innerjobs"/>
+    <genClasses ecoreClass="Ir.ecore#//TimeLoopJob">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopJob/jobs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopJob/whileCondition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopJob/outerTimeLoop"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopJob/innerTimeLoop"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//TimeLoopJob/timeLoopName"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//TimeLoopCopyJob">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopCopyJob/copies"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//BeforeTimeLoopJob">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//BeforeTimeLoopJob/whileCondition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//BeforeTimeLoopJob/associatedTimeLoop"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//AfterTimeLoopJob"/>
+    <genClasses ecoreClass="Ir.ecore#//AfterTimeLoopJob">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//AfterTimeLoopJob/associatedTimeLoop"/>
+    </genClasses>
     <genClasses ecoreClass="Ir.ecore#//NextTimeLoopIterationJob"/>
     <genClasses ecoreClass="Ir.ecore#//TimeLoopCopy">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopCopy/destination"/>

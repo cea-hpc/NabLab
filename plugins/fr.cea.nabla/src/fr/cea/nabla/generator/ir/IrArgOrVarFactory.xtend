@@ -12,9 +12,7 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ArgOrVarExtensions
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVar
@@ -54,10 +52,6 @@ class IrArgOrVarFactory
 	// fonctions générales retournent des Var
 	def dispatch Variable toIrVariable(SimpleVar v) { toIrSimpleVariable(v, v.name) }
 	def dispatch Variable toIrVariable(ConnectivityVar v) { toIrConnectivityVariable(v, v.name) }
-
-	// fonctions avec type de retour précis
-	def SimpleVariable toIrSimpleVariable(SimpleVar v) { toIrSimpleVariable(v, v.name) }
-	def ConnectivityVariable toIrConnectivityVariable(ConnectivityVar v) { toIrConnectivityVariable(v, v.name) }
 
 	def create IrFactory::eINSTANCE.createArg toIrArg(Arg v, String varName)
 	{

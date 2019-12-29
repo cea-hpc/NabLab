@@ -12,6 +12,7 @@ package fr.cea.nabla.validation
 import com.google.inject.Inject
 import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.SpaceIteratorExtensions
+import fr.cea.nabla.ir.MandatoryIterationVariables
 import fr.cea.nabla.ir.MandatoryMeshOptions
 import fr.cea.nabla.ir.MandatoryMeshVariables
 import fr.cea.nabla.nabla.Affectation
@@ -28,6 +29,7 @@ import fr.cea.nabla.nabla.Iterable
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
+import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
@@ -40,10 +42,12 @@ import fr.cea.nabla.nabla.SizeTypeSymbol
 import fr.cea.nabla.nabla.SizeTypeSymbolRef
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
+import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
 import fr.cea.nabla.typing.DeclarationProvider
+import java.util.ArrayList
 import java.util.HashSet
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
@@ -52,6 +56,8 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScopeProvider
 import org.eclipse.xtext.util.SimpleAttributeResolver
 import org.eclipse.xtext.validation.Check
+import fr.cea.nabla.nabla.InitTimeIteratorRef
+import fr.cea.nabla.nabla.NextTimeIteratorRef
 
 class BasicValidator extends AbstractNablaValidator
 {
@@ -188,7 +194,7 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkMandatoryMeshVariable(NablaModule it)
 	{
-		val vars = eAllContents.filter(Var).map[name].toList
+		val vars = allVars.map[name].toList
 		val missingVars = MandatoryMeshVariables::NAMES.filter[x | !vars.contains(x)]
 		if (missingVars.size > 0 && !items.empty)
 			error(getMandatoryMeshVariablesMsg(missingVars), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_MESH_VARIABLE)
@@ -208,6 +214,55 @@ class BasicValidator extends AbstractNablaValidator
 	{
 		if (!name.nullOrEmpty && Character::isLowerCase(name.charAt(0)))
 			error(getModuleNameMsg(), NablaPackage.Literals.NABLA_MODULE__NAME, MODULE_NAME)
+	}
+
+	// ===== TimeIterator =====
+
+	public static val MISSING_MANDATORY_ITERATION_VARIABLE = "TimeIterator::MissingMandatoryIterationVariable"
+	public static val INIT_VALUE = "TimeIterator::InitValue"
+	public static val NEXT_VALUE = "TimeIterator::NextValue"
+
+	static def getMandatoryIterationVariableMsg(String missingVariable) { "Missing mandatory iteration counter variable of type ℕ: " + missingVariable }
+	static def getInitValueMsg(int actualValue) { "Wrong time iterator init value: Expected 0, but was " + actualValue }
+	static def getNextValueMsg(int actualValue) { "Wrong time iterator next value: Expected 1, but was " + actualValue }
+
+	@Check 
+	def checkInitValue(InitTimeIteratorRef it)
+	{
+		if (value !== 0)
+			error(getInitValueMsg(value), NablaPackage.Literals.INIT_TIME_ITERATOR_REF__VALUE)
+	}
+
+	@Check 
+	def checkNextValue(NextTimeIteratorRef it)
+	{
+		if (value !== 1)
+			error(getNextValueMsg(value), NablaPackage.Literals.NEXT_TIME_ITERATOR_REF__VALUE)
+	}
+
+	@Check
+	def checkMandatoryIterationVariables(TimeIterator it)
+	{
+		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
+		if (module !== null)
+		{
+			val counterName = MandatoryIterationVariables.getName(name)
+			val counter = module.allVars.findFirst[x | x.name == counterName && x.type.sizes.empty && x.type.primitive == PrimitiveType.INT]
+			if (counter === null)
+				error(getMandatoryIterationVariableMsg(counterName), NablaPackage.Literals.TIME_ITERATOR__NAME, MISSING_MANDATORY_ITERATION_VARIABLE)
+		}
+	}
+
+	private def getAllVars(NablaModule it)
+	{
+		val variables = new ArrayList<Var>
+		for (i : instructions)
+			switch i
+			{
+				VarGroupDeclaration : variables += i.variables
+				SimpleVarDefinition : variables += i.variable
+			}
+		return variables
 	}
 
 	// ===== ArgOrVarType =====
@@ -252,13 +307,15 @@ class BasicValidator extends AbstractNablaValidator
 
 	public static val UNUSED_VARIABLE = "Variables::UnusedVariable"
 	public static val INDICES_NUMBER = "Variables::IndicesNumber"
-	public static val ITERATOR_NUMBER = "Variables::IteratorNumber"
-	public static val ITERATOR_TYPE = "Variables::IteratorType"
-
+	public static val SPACE_ITERATOR_NUMBER = "Variables::SpaceIteratorNumber"
+	public static val SPACE_ITERATOR_TYPE = "Variables::SpaceIteratorType"
+	public static val TIME_ITERATOR_USAGE = 'Variables::TimeIteratorUsage'
+	
 	static def getUnusedVariableMsg() { "Unused variable" }
 	static def getIndicesNumberMsg(int expectedSize, int actualSize) { "Wrong number of indices: Expected " + expectedSize + ", but was " + actualSize }
-	static def getIteratorNumberMsg(int expectedSize, int actualSize) { "Wrong number of space iterators: Expected " + expectedSize + ", but was " + actualSize }
-	static def getIteratorTypeMsg(String expectedTypeName, String actualTypeName) { "Wrong space iterator type: Expected " + expectedTypeName + ", but was " + actualTypeName }
+	static def getSpaceIteratorNumberMsg(int expectedSize, int actualSize) { "Wrong number of space iterators: Expected " + expectedSize + ", but was " + actualSize }
+	static def getSpaceIteratorTypeMsg(String expectedTypeName, String actualTypeName) { "Wrong space iterator type: Expected " + expectedTypeName + ", but was " + actualTypeName }
+	static def getTimeIteratorUsageMsg() { "Time iterator must be specified" }
 
 	@Check
 	def checkUnusedVariable(Var it)
@@ -280,14 +337,14 @@ class BasicValidator extends AbstractNablaValidator
 	}
 
 	@Check
-	def checkIteratorNumberAndType(ArgOrVarRef it)
+	def checkSpaceIteratorNumberAndType(ArgOrVarRef it)
 	{
 		if (target instanceof ConnectivityVar)
 		{
 			val dimensions = (target as ConnectivityVar).supports
 
 			if (spaceIterators.size >  0 && spaceIterators.size != dimensions.size)
-				error(getIteratorNumberMsg(dimensions.size, spaceIterators.size), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, ITERATOR_NUMBER)
+				error(getSpaceIteratorNumberMsg(dimensions.size, spaceIterators.size), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, SPACE_ITERATOR_NUMBER)
 			else
 			{
 				for (i : 0..<spaceIterators.length)
@@ -297,16 +354,29 @@ class BasicValidator extends AbstractNablaValidator
 					val actualT = spaceIteratorRefI.target.type
 					val expectedT = dimensionI.returnType.type
 					if (actualT != expectedT)
-						error(getIteratorTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, i, ITERATOR_TYPE)
+						error(getSpaceIteratorTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, i, SPACE_ITERATOR_TYPE)
 				}
 			}
 		}
 		else
 		{
 			if (!spaceIterators.empty)
-				error(getIteratorNumberMsg(0, spaceIterators.size), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, ITERATOR_NUMBER)
+				error(getSpaceIteratorNumberMsg(0, spaceIterators.size), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, SPACE_ITERATOR_NUMBER)
 		}
 	}
+
+	@Check
+	def checkTimeIteratorUsage(ArgOrVarRef it)
+	{
+		if (timeIterators.empty)
+		{
+			val module = EcoreUtil2::getContainerOfType(it, NablaModule)
+			val otherSameVarRefs = module.eAllContents.filter(ArgOrVarRef).filter[x | x.target == target]
+			if (otherSameVarRefs.exists[x | !x.timeIterators.empty])
+				error(getTimeIteratorUsageMsg(), NablaPackage.Literals::ARG_OR_VAR_REF__TIME_ITERATORS, TIME_ITERATOR_USAGE)
+		}
+	}
+
 
 	// ===== Functions (Reductions, Dimension) =====
 

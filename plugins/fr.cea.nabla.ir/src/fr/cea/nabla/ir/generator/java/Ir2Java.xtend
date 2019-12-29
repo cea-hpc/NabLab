@@ -10,8 +10,6 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.MandatoryMeshOptions
-import fr.cea.nabla.ir.MandatorySimulationOptions
-import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
@@ -34,7 +32,7 @@ class Ir2Java extends CodeGenerator
 
 	override getFileContentsByName(IrModule it)
 	{
-		#{ name + '.java' -> javaFileContent}
+		#{ name + '.java' -> javaFileContent }
 	}
 
 	private def getJavaFileContent(IrModule it)
@@ -66,7 +64,6 @@ class Ir2Java extends CodeGenerator
 			}
 
 			private final Options options;
-			private int iteration;
 
 			«IF withMesh»
 			// Mesh
@@ -131,21 +128,9 @@ class Ir2Java extends CodeGenerator
 			public void simulate()
 			{
 				System.out.println("Début de l'exécution du module «name»");
-				«FOR j : jobs.filter[x | x.at < 0].sortBy[at]»
-					«j.name.toFirstLower»(); // @«j.at»
+				«FOR j : jobs.filter[timeLoopContainer === null].sortBy[at]»
+					«j.codeName»(); // @«j.at»
 				«ENDFOR»
-				«IF jobs.exists[at > 0]»
-
-				iteration = 0;
-				while («MandatorySimulationVariables::TIME» < options.«MandatorySimulationOptions::STOP_TIME» && iteration < options.«MandatorySimulationOptions::MAX_ITERATIONS»)
-				{
-					iteration++;
-					System.out.println("[" + iteration + "] t = " + «MandatorySimulationVariables::TIME»);
-					«FOR j : jobs.filter[x | x.at > 0].sortBy[at]»
-						«j.name.toFirstLower»(); // @«j.at»
-					«ENDFOR»
-				}
-				«ENDIF»
 				System.out.println("Fin de l'exécution du module «name»");
 			}
 

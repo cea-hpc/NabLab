@@ -12,6 +12,22 @@ class Utils
 		else o.eContainer.irModule
 	}
 
+	static def getDefaultIrVariable(IrModule m, String nablaVariableName)
+	{
+		var irVariable = m.variables.findFirst[x | x.name == nablaVariableName]
+		if (irVariable === null)
+		{
+			val allTimeVariables = m.variables.filter[x | x.name.startsWith(nablaVariableName + '_')]
+			if (!allTimeVariables.empty)
+			{
+				// take the shortest extension (corresponding to the default variable, i.e. t_n for t)
+				irVariable = allTimeVariables.sortBy[name.length].head
+				println("Variables for " + nablaVariableName + " : " + allTimeVariables.sortBy[name.length].map[name].join(', '))
+			}
+		}
+		return irVariable
+	}
+
 	static def getUtfExponent(int x)
 	{
 		val xstring = x.toString

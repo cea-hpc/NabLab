@@ -132,8 +132,8 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createInSituJobAdapter();
 			}
 			@Override
-			public Adapter caseTimeLoopBodyJob(TimeLoopBodyJob object) {
-				return createTimeLoopBodyJobAdapter();
+			public Adapter caseTimeLoopJob(TimeLoopJob object) {
+				return createTimeLoopJobAdapter();
 			}
 			@Override
 			public Adapter caseTimeLoopCopyJob(TimeLoopCopyJob object) {
@@ -556,6 +556,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createInSituJobAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.TimeLoopJob <em>Time Loop Job</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.TimeLoopJob
+	 * @generated
+	 */
+	public Adapter createTimeLoopJobAdapter() {
 		return null;
 	}
 
@@ -1172,20 +1186,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createConnectivityTypeAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.TimeLoopBodyJob <em>Time Loop Body Job</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.TimeLoopBodyJob
-	 * @generated
-	 */
-	public Adapter createTimeLoopBodyJobAdapter() {
 		return null;
 	}
 

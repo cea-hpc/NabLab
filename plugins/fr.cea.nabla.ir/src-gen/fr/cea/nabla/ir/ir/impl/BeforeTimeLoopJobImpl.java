@@ -2,15 +2,13 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.BeforeTimeLoopJob;
-import fr.cea.nabla.ir.ir.Expression;
-import fr.cea.nabla.ir.ir.IrPackage;
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import fr.cea.nabla.ir.ir.BeforeTimeLoopJob;
+import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.TimeLoopJob;
+import org.eclipse.emf.common.notify.Notification;
 
 /**
  * <!-- begin-user-doc -->
@@ -20,22 +18,21 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.BeforeTimeLoopJobImpl#getWhileCondition <em>While Condition</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.BeforeTimeLoopJobImpl#getAssociatedTimeLoop <em>Associated Time Loop</em>}</li>
  * </ul>
  *
  * @generated
  */
 public class BeforeTimeLoopJobImpl extends TimeLoopCopyJobImpl implements BeforeTimeLoopJob {
 	/**
-	 * The cached value of the '{@link #getWhileCondition() <em>While Condition</em>}' containment reference.
+	 * The cached value of the '{@link #getAssociatedTimeLoop() <em>Associated Time Loop</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getWhileCondition()
+	 * @see #getAssociatedTimeLoop()
 	 * @generated
 	 * @ordered
 	 */
-	protected Expression whileCondition;
-
+	protected TimeLoopJob associatedTimeLoop;
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -61,22 +58,16 @@ public class BeforeTimeLoopJobImpl extends TimeLoopCopyJobImpl implements Before
 	 * @generated
 	 */
 	@Override
-	public Expression getWhileCondition() {
-		if (whileCondition != null && whileCondition.eIsProxy()) {
-			InternalEObject oldWhileCondition = (InternalEObject)whileCondition;
-			whileCondition = (Expression)eResolveProxy(oldWhileCondition);
-			if (whileCondition != oldWhileCondition) {
-				InternalEObject newWhileCondition = (InternalEObject)whileCondition;
-				NotificationChain msgs = oldWhileCondition.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.BEFORE_TIME_LOOP_JOB__WHILE_CONDITION, null, null);
-				if (newWhileCondition.eInternalContainer() == null) {
-					msgs = newWhileCondition.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.BEFORE_TIME_LOOP_JOB__WHILE_CONDITION, null, msgs);
-				}
-				if (msgs != null) msgs.dispatch();
+	public TimeLoopJob getAssociatedTimeLoop() {
+		if (associatedTimeLoop != null && associatedTimeLoop.eIsProxy()) {
+			InternalEObject oldAssociatedTimeLoop = (InternalEObject)associatedTimeLoop;
+			associatedTimeLoop = (TimeLoopJob)eResolveProxy(oldAssociatedTimeLoop);
+			if (associatedTimeLoop != oldAssociatedTimeLoop) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.BEFORE_TIME_LOOP_JOB__WHILE_CONDITION, oldWhileCondition, whileCondition));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.BEFORE_TIME_LOOP_JOB__ASSOCIATED_TIME_LOOP, oldAssociatedTimeLoop, associatedTimeLoop));
 			}
 		}
-		return whileCondition;
+		return associatedTimeLoop;
 	}
 
 	/**
@@ -84,23 +75,8 @@ public class BeforeTimeLoopJobImpl extends TimeLoopCopyJobImpl implements Before
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Expression basicGetWhileCondition() {
-		return whileCondition;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetWhileCondition(Expression newWhileCondition, NotificationChain msgs) {
-		Expression oldWhileCondition = whileCondition;
-		whileCondition = newWhileCondition;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.BEFORE_TIME_LOOP_JOB__WHILE_CONDITION, oldWhileCondition, newWhileCondition);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
+	public TimeLoopJob basicGetAssociatedTimeLoop() {
+		return associatedTimeLoop;
 	}
 
 	/**
@@ -109,32 +85,11 @@ public class BeforeTimeLoopJobImpl extends TimeLoopCopyJobImpl implements Before
 	 * @generated
 	 */
 	@Override
-	public void setWhileCondition(Expression newWhileCondition) {
-		if (newWhileCondition != whileCondition) {
-			NotificationChain msgs = null;
-			if (whileCondition != null)
-				msgs = ((InternalEObject)whileCondition).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.BEFORE_TIME_LOOP_JOB__WHILE_CONDITION, null, msgs);
-			if (newWhileCondition != null)
-				msgs = ((InternalEObject)newWhileCondition).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.BEFORE_TIME_LOOP_JOB__WHILE_CONDITION, null, msgs);
-			msgs = basicSetWhileCondition(newWhileCondition, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.BEFORE_TIME_LOOP_JOB__WHILE_CONDITION, newWhileCondition, newWhileCondition));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case IrPackage.BEFORE_TIME_LOOP_JOB__WHILE_CONDITION:
-				return basicSetWhileCondition(null, msgs);
-		}
-		return super.eInverseRemove(otherEnd, featureID, msgs);
+	public void setAssociatedTimeLoop(TimeLoopJob newAssociatedTimeLoop) {
+		TimeLoopJob oldAssociatedTimeLoop = associatedTimeLoop;
+		associatedTimeLoop = newAssociatedTimeLoop;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.BEFORE_TIME_LOOP_JOB__ASSOCIATED_TIME_LOOP, oldAssociatedTimeLoop, associatedTimeLoop));
 	}
 
 	/**
@@ -145,9 +100,9 @@ public class BeforeTimeLoopJobImpl extends TimeLoopCopyJobImpl implements Before
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.BEFORE_TIME_LOOP_JOB__WHILE_CONDITION:
-				if (resolve) return getWhileCondition();
-				return basicGetWhileCondition();
+			case IrPackage.BEFORE_TIME_LOOP_JOB__ASSOCIATED_TIME_LOOP:
+				if (resolve) return getAssociatedTimeLoop();
+				return basicGetAssociatedTimeLoop();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -157,12 +112,11 @@ public class BeforeTimeLoopJobImpl extends TimeLoopCopyJobImpl implements Before
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.BEFORE_TIME_LOOP_JOB__WHILE_CONDITION:
-				setWhileCondition((Expression)newValue);
+			case IrPackage.BEFORE_TIME_LOOP_JOB__ASSOCIATED_TIME_LOOP:
+				setAssociatedTimeLoop((TimeLoopJob)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -176,8 +130,8 @@ public class BeforeTimeLoopJobImpl extends TimeLoopCopyJobImpl implements Before
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.BEFORE_TIME_LOOP_JOB__WHILE_CONDITION:
-				setWhileCondition((Expression)null);
+			case IrPackage.BEFORE_TIME_LOOP_JOB__ASSOCIATED_TIME_LOOP:
+				setAssociatedTimeLoop((TimeLoopJob)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -191,8 +145,8 @@ public class BeforeTimeLoopJobImpl extends TimeLoopCopyJobImpl implements Before
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.BEFORE_TIME_LOOP_JOB__WHILE_CONDITION:
-				return whileCondition != null;
+			case IrPackage.BEFORE_TIME_LOOP_JOB__ASSOCIATED_TIME_LOOP:
+				return associatedTimeLoop != null;
 		}
 		return super.eIsSet(featureID);
 	}

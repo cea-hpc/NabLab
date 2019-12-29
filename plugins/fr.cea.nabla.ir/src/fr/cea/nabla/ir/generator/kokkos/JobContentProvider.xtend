@@ -9,20 +9,22 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
+import fr.cea.nabla.ir.MandatoryIterationVariables
 import fr.cea.nabla.ir.MandatoryMeshVariables
-import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.ir.ir.BaseType
-import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.EndOfInitJob
-import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.NextTimeLoopIterationJob
+import fr.cea.nabla.ir.ir.TimeLoopCopyJob
+import fr.cea.nabla.ir.ir.TimeLoopJob
+import fr.cea.nabla.ir.transformers.TagPersistentVariables
 import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
 
 abstract class JobContentProvider 
 {
@@ -43,33 +45,48 @@ abstract class JobContentProvider
 
 	protected def dispatch CharSequence getInnerContent(InSituJob it)
 	'''
-		if (!writer.isDisabled() && «condition») 
+		if (!writer.isDisabled() && «periodVariable.name» >= «TagPersistentVariables::LastDumpVariableName»)
 		{
 			std::map<string, double*> cellVariables;
 			std::map<string, double*> nodeVariables;
-			«FOR v : variables.filter(ConnectivityVariable)»
+			«FOR v : dumpedVariables.filter(ConnectivityVariable)»
 			«v.type.connectivities.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
 			«ENDFOR»
 			auto quads = mesh->getGeometricMesh()->getQuads();
-			writer.writeFile(iteration, «MandatorySimulationVariables::TIME», nbNodes, «MandatoryMeshVariables::COORD».data(), nbCells, quads.data(), cellVariables, nodeVariables);
-			«IF timeStep>0»«LastWriteTimeVariableName» += «timeStep»;«ENDIF»
+			writer.writeFile(«iterationVariable.name», «timeVariable.name», nbNodes, «MandatoryMeshVariables::COORD».data(), nbCells, quads.data(), cellVariables, nodeVariables);
+			«TagPersistentVariables::LastDumpVariableName» += «periodVariable.name»;
 		}
 	'''
 
-	protected def dispatch CharSequence getInnerContent(EndOfTimeLoopJob it)
+	protected def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
-		std::swap(«right.name», «left.name»);
-	'''
-
-	protected def dispatch CharSequence getInnerContent(EndOfInitJob it)
-	{
-		val type = left.type
-		switch type
+		«MandatoryIterationVariables.getName(name)» = 0;
+		while («whileCondition.content»)
 		{
-			ConnectivityType: '''deep_copy(«left.name», «right.name»);'''
-			BaseType: copy(left.name, right.name, type.sizes.size)
+			«MandatoryIterationVariables.getName(name)»++;
+			«FOR j : jobs.sortBy[at]»
+				«j.codeName»(); // @«j.at»
+			«ENDFOR»
 		}
-	}
+	'''
+
+	protected def dispatch CharSequence getInnerContent(TimeLoopCopyJob it)
+	'''
+		«FOR copy : copies»
+			«IF (copy.destination.type instanceof BaseType)»
+			«copy(copy.destination.name, copy.source.name, (copy.destination.type as BaseType).sizes.size)»
+			«ELSE»
+			deep_copy(«copy.destination.name», «copy.source.name»);
+			«ENDIF»
+		«ENDFOR»
+	'''
+
+	protected def dispatch CharSequence getInnerContent(NextTimeLoopIterationJob it)
+	'''
+		«FOR copy : copies»
+			std::swap(«copy.source.name», «copy.destination.name»);
+		«ENDFOR»
+	'''
 
 	private static def CharSequence copy(String left, String right, int dimension)
 	{

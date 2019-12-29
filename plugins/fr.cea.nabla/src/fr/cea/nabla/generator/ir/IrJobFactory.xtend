@@ -30,17 +30,25 @@ class IrJobFactory
 
 	def create IrFactory::eINSTANCE.createBeforeTimeLoopJob toIrBeforeTimeLoopJob(TimeIterator ti)
 	{
-		name = "Before time loop " + ti.name
-		whileCondition = ti.cond.toIrExpression
+		name = "setUpTimeLoop" + ti.name.toFirstUpper
+		associatedTimeLoop = ti.toIrTimeLoopJob
 	}
 
 	def create IrFactory::eINSTANCE.createAfterTimeLoopJob toIrAfterTimeLoopJob(TimeIterator ti)
 	{ 
-		name = "After time loop " + ti.name
+		name = "tearDownTimeLoop" + ti.name.toFirstUpper
+		associatedTimeLoop = ti.toIrTimeLoopJob
 	}
 
 	def create IrFactory::eINSTANCE.createNextTimeLoopIterationJob toIrNextTimeLoopIterationJob(TimeIterator ti)
 	{ 
-		name = "Next iteration of time loop " + ti.name
+		name = "prepareNextIterationOfTimeLoop" + ti.name.toFirstUpper
+	}
+
+	def create IrFactory::eINSTANCE.createTimeLoopJob toIrTimeLoopJob(TimeIterator ti)
+	{
+		timeLoopName = ti.name
+		name = "executeTimeLoop" + ti.name.toFirstUpper
+		whileCondition = ti.cond.toIrExpression
 	}
 }

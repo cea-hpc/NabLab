@@ -19,8 +19,8 @@ import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
-import fr.cea.nabla.ir.ir.TimeLoopBodyJob
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
+import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.ir.Variable
 import java.util.HashSet
 
@@ -41,21 +41,20 @@ class JobExtensions
 	static def getNextJobs(Job from)
 	{
 		val fromTargetJobs = new HashSet<Job>
-		val irFile = from.eContainer as IrModule
+		val irModule = from.eContainer as IrModule
 		val fromOutVars = from.outVars
-		//for (to : irFile.jobs.filter[x|x != from])
-		for (to : irFile.jobs)
+		for (to : irModule.jobs.filter[x | x.timeLoopContainer == from.timeLoopContainer])
 			for (outVar : fromOutVars)
-				if (to.inVars.exists[x|x === outVar])
+				if (to.inVars.exists[x | x === outVar])
 					fromTargetJobs += to
 
 		return fromTargetJobs
 	}
 
-	static def dispatch Iterable<Variable> getOutVars(TimeLoopBodyJob it)
+	static def dispatch Iterable<Variable> getOutVars(TimeLoopJob it)
 	{
 		val outVars = new HashSet<Variable>
-		innerjobs.forEach[x | outVars += x.outVars]
+		jobs.forEach[x | outVars += x.outVars]
 		return outVars
 	}
 
@@ -74,10 +73,10 @@ class JobExtensions
 		#[]
 	}
 
-	static def dispatch Iterable<Variable> getInVars(TimeLoopBodyJob it)
+	static def dispatch Iterable<Variable> getInVars(TimeLoopJob it)
 	{
 		val inVars = new HashSet<Variable>
-		innerjobs.forEach[x | inVars += x.inVars]
+		jobs.forEach[x | inVars += x.inVars]
 		return inVars
 	}
 

@@ -8,11 +8,6 @@
     runtimeVersion="2.19">
   <genPackages prefix="Nabla" basePackage="fr.cea.nabla" disposableProviderFactory="true"
       fileExtensions="nabla" ecorePackage="Nabla.ecore#/">
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Nabla.ecore#//TimeIteratorRefType">
-      <genEnumLiterals ecoreEnumLiteral="Nabla.ecore#//TimeIteratorRefType/Current"/>
-      <genEnumLiterals ecoreEnumLiteral="Nabla.ecore#//TimeIteratorRefType/Init"/>
-      <genEnumLiterals ecoreEnumLiteral="Nabla.ecore#//TimeIteratorRefType/Next"/>
-    </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="Nabla.ecore#//PrimitiveType">
       <genEnumLiterals ecoreEnumLiteral="Nabla.ecore#//PrimitiveType/Int"/>
       <genEnumLiterals ecoreEnumLiteral="Nabla.ecore#//PrimitiveType/Real"/>
@@ -103,7 +98,6 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//TimeIteratorRef">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeIteratorRef/target"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//TimeIteratorRef/type"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//ArgOrVar">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//ArgOrVar/name"/>
@@ -160,6 +154,13 @@
     <genClasses ecoreClass="Nabla.ecore#//SizeType"/>
     <genClasses ecoreClass="Nabla.ecore#//SizeTypeSymbol">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SizeTypeSymbol/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//CurrentTimeIteratorRef"/>
+    <genClasses ecoreClass="Nabla.ecore#//InitTimeIteratorRef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//InitTimeIteratorRef/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//NextTimeIteratorRef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//NextTimeIteratorRef/value"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//ContractedIf">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ContractedIf/condition"/>

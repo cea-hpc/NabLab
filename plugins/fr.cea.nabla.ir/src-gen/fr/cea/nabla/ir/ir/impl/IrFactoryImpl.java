@@ -69,7 +69,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.ITEM_ARG_TYPE: return createItemArgType();
 			case IrPackage.INSTRUCTION_JOB: return createInstructionJob();
 			case IrPackage.IN_SITU_JOB: return createInSituJob();
-			case IrPackage.TIME_LOOP_BODY_JOB: return createTimeLoopBodyJob();
+			case IrPackage.TIME_LOOP_JOB: return createTimeLoopJob();
 			case IrPackage.BEFORE_TIME_LOOP_JOB: return createBeforeTimeLoopJob();
 			case IrPackage.AFTER_TIME_LOOP_JOB: return createAfterTimeLoopJob();
 			case IrPackage.NEXT_TIME_LOOP_ITERATION_JOB: return createNextTimeLoopIterationJob();
@@ -273,6 +273,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public InSituJob createInSituJob() {
 		InSituJobImpl inSituJob = new InSituJobImpl();
 		return inSituJob;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public TimeLoopJob createTimeLoopJob() {
+		TimeLoopJobImpl timeLoopJob = new TimeLoopJobImpl();
+		return timeLoopJob;
 	}
 
 	/**
@@ -691,17 +702,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public ConnectivityType createConnectivityType() {
 		ConnectivityTypeImpl connectivityType = new ConnectivityTypeImpl();
 		return connectivityType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public TimeLoopBodyJob createTimeLoopBodyJob() {
-		TimeLoopBodyJobImpl timeLoopBodyJob = new TimeLoopBodyJobImpl();
-		return timeLoopBodyJob;
 	}
 
 	/**

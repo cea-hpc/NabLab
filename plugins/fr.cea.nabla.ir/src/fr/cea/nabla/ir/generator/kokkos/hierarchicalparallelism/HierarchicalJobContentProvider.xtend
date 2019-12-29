@@ -28,7 +28,7 @@ class HierarchicalJobContentProvider extends JobContentProvider
 			// @«at»
 			«IF (atJobs.forall[!hasIterable])»
 				«FOR j : atJobs»
-				«j.name.toFirstLower»();
+				«j.codeName»();
 				«ENDFOR»
 			«ELSE»
 			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread) {
@@ -45,12 +45,12 @@ class HierarchicalJobContentProvider extends JobContentProvider
 					«IF !j.hasLoop»
 					if (thread.league_rank() == 0)
 						«IF !j.hasIterable /* Only simple instruction jobs */»
-							Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){«j.name.toFirstLower»();});
+							Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){«j.codeName»();});
 						«ELSE /* Only for jobs containing ReductionInstruction */»
-							«j.name.toFirstLower»(thread);
+							«j.codeName»(thread);
 						«ENDIF»
 					«ELSE»
-						«j.name.toFirstLower»(thread);
+						«j.codeName»(thread);
 					«ENDIF»
 				«ENDFOR»
 			});
@@ -71,7 +71,7 @@ class HierarchicalJobContentProvider extends JobContentProvider
 	'''
 		«comment»
 		KOKKOS_INLINE_FUNCTION
-		void «name.toFirstLower»(const member_type& team_member) noexcept
+		void «codeName»(const member_type& team_member) noexcept
 		{
 			«innerContent»
 		}
@@ -81,7 +81,7 @@ class HierarchicalJobContentProvider extends JobContentProvider
 	'''
 		«comment»
 		KOKKOS_INLINE_FUNCTION
-		void «name.toFirstLower»() noexcept
+		void «codeName»() noexcept
 		{
 			«innerContent»
 		}

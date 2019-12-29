@@ -183,7 +183,7 @@ class IrExpressionFactory
 		[ 
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
-			target = e.target.toIrArgOrVar(e.timeSuffix)
+			target = e.target.toIrArgOrVar(e.irTimeSuffix)
 			e.indices.forEach[x | indices += x.toIrSizeType]
 			for (i : 0..<e.spaceIterators.size)
 				iterators += e.spaceIterators.get(i).toIrArgOrVarRefIteratorRef(i)

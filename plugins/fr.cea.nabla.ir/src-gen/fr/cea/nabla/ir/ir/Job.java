@@ -2,7 +2,6 @@
  */
 package fr.cea.nabla.ir.ir;
 
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Job</b></em>'.
@@ -15,6 +14,7 @@ package fr.cea.nabla.ir.ir;
  *   <li>{@link fr.cea.nabla.ir.ir.Job#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Job#getAt <em>At</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Job#isOnCycle <em>On Cycle</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Job#getTimeLoopContainer <em>Time Loop Container</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getJob()
@@ -87,5 +87,29 @@ public interface Job extends IrAnnotable {
 	 * @generated
 	 */
 	void setOnCycle(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Time Loop Container</b></em>' reference.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.TimeLoopJob#getJobs <em>Jobs</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Time Loop Container</em>' reference.
+	 * @see #setTimeLoopContainer(TimeLoopJob)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_TimeLoopContainer()
+	 * @see fr.cea.nabla.ir.ir.TimeLoopJob#getJobs
+	 * @model opposite="jobs"
+	 * @generated
+	 */
+	TimeLoopJob getTimeLoopContainer();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Job#getTimeLoopContainer <em>Time Loop Container</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Time Loop Container</em>' reference.
+	 * @see #getTimeLoopContainer()
+	 * @generated
+	 */
+	void setTimeLoopContainer(TimeLoopJob value);
 
 } // Job

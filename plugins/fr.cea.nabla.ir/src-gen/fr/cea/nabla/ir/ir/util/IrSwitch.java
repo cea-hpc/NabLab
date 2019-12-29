@@ -184,11 +184,11 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.TIME_LOOP_BODY_JOB: {
-				TimeLoopBodyJob timeLoopBodyJob = (TimeLoopBodyJob)theEObject;
-				T result = caseTimeLoopBodyJob(timeLoopBodyJob);
-				if (result == null) result = caseJob(timeLoopBodyJob);
-				if (result == null) result = caseIrAnnotable(timeLoopBodyJob);
+			case IrPackage.TIME_LOOP_JOB: {
+				TimeLoopJob timeLoopJob = (TimeLoopJob)theEObject;
+				T result = caseTimeLoopJob(timeLoopJob);
+				if (result == null) result = caseJob(timeLoopJob);
+				if (result == null) result = caseIrAnnotable(timeLoopJob);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -786,6 +786,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseInSituJob(InSituJob object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Time Loop Job</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Time Loop Job</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseTimeLoopJob(TimeLoopJob object) {
 		return null;
 	}
 
@@ -1446,21 +1461,6 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseConnectivityType(ConnectivityType object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Time Loop Body Job</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Time Loop Body Job</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseTimeLoopBodyJob(TimeLoopBodyJob object) {
 		return null;
 	}
 

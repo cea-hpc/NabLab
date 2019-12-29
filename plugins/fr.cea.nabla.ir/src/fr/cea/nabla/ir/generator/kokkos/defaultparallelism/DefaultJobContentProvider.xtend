@@ -21,7 +21,7 @@ class DefaultJobContentProvider extends JobContentProvider
 	override getJobCallsContent(Iterable<Job> jobs)
 	'''
 		«FOR j : jobs.sortBy[at]»
-		«j.name.toFirstLower»(); // @«j.at»
+		«j.codeName»(); // @«j.at»
 		«ENDFOR»
 	'''
 	
@@ -29,7 +29,7 @@ class DefaultJobContentProvider extends JobContentProvider
 	'''
 		«comment»
 		KOKKOS_INLINE_FUNCTION
-		void «name.toFirstLower»() noexcept
+		void «codeName»() noexcept
 		{
 			«innerContent»
 		}

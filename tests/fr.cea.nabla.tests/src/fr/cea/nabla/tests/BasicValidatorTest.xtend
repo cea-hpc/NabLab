@@ -172,7 +172,7 @@ class BasicValidatorTest
 	}
 
 	@Test
-	def void testCheckIteratorNumberAndType() 
+	def void testCheckSpaceIteratorNumberAndType() 
 	{
 		val moduleKo = parseHelper.parse(TestUtils::testModule
 			+
@@ -186,19 +186,19 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
-			BasicValidator::ITERATOR_NUMBER,
-			BasicValidator::getIteratorNumberMsg(1,2))
+			BasicValidator::SPACE_ITERATOR_NUMBER,
+			BasicValidator::getSpaceIteratorNumberMsg(1,2))
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
-			BasicValidator::ITERATOR_NUMBER,
-			BasicValidator::getIteratorNumberMsg(2,1))
+			BasicValidator::SPACE_ITERATOR_NUMBER,
+			BasicValidator::getSpaceIteratorNumberMsg(2,1))
 
 		val node = moduleKo.getItemTypeByName("node").name
 		val cell = moduleKo.getItemTypeByName("cell").name
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
-			BasicValidator::ITERATOR_TYPE, 
-			BasicValidator::getIteratorTypeMsg(node, cell))
+			BasicValidator::SPACE_ITERATOR_TYPE, 
+			BasicValidator::getSpaceIteratorTypeMsg(node, cell))
 
 		val moduleOk =  parseHelper.parse(TestUtils::testModule
 			+

@@ -1,8 +1,8 @@
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.ConnectivityCall
+import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.IrModule
 
 class IrModuleExtensions
 {
@@ -24,7 +24,7 @@ class IrModuleExtensions
 
 		return connectivities.filter[c | c.returnType.multiple]
 	}
-	
+
 	static def getVariableByName(IrModule it, String varName)
 	{
 		variables.findFirst[j | j.name == varName]

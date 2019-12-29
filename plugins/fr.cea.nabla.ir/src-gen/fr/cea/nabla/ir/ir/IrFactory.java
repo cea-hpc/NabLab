@@ -130,6 +130,15 @@ public interface IrFactory extends EFactory {
 	InSituJob createInSituJob();
 
 	/**
+	 * Returns a new object of class '<em>Time Loop Job</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Time Loop Job</em>'.
+	 * @generated
+	 */
+	TimeLoopJob createTimeLoopJob();
+
+	/**
 	 * Returns a new object of class '<em>Before Time Loop Job</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -470,15 +479,6 @@ public interface IrFactory extends EFactory {
 	 * @generated
 	 */
 	ConnectivityType createConnectivityType();
-
-	/**
-	 * Returns a new object of class '<em>Time Loop Body Job</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Time Loop Body Job</em>'.
-	 * @generated
-	 */
-	TimeLoopBodyJob createTimeLoopBodyJob();
 
 	/**
 	 * Returns the package supported by this factory.

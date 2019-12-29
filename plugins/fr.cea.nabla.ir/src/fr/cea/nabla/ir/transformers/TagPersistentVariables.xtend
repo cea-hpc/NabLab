@@ -1,11 +1,12 @@
 package fr.cea.nabla.ir.transformers
 
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
 import java.util.HashMap
 import org.eclipse.emf.ecore.util.EcoreUtil
+
+import static fr.cea.nabla.ir.Utils.getDefaultIrVariable
 
 /**
  * Attend des propriétés de type <nom_de_variable> = <nom_de_persistence>.
@@ -43,22 +44,21 @@ class TagPersistentVariables implements IrTransformationStep
 		inSituJob.name = 'dumpVariables'
 		inSituJob.periodValue = periodValue
 		
-		val timeVariable = m.variables.filter(SimpleVariable).findFirst[x | x.name == timeVariableName]
+		val timeVariable = getDefaultIrVariable(m, timeVariableName)
 		if (timeVariable === null) return false
-		inSituJob.timeVariable = timeVariable
+		inSituJob.timeVariable = timeVariable as SimpleVariable
 
-		val iterationVariable = m.variables.filter(SimpleVariable).findFirst[x | x.name == iterationVariableName]
+		val iterationVariable = getDefaultIrVariable(m, iterationVariableName)
 		if (iterationVariable === null) return false
-		inSituJob.iterationVariable = iterationVariable
+		inSituJob.iterationVariable = iterationVariable as SimpleVariable
 
-		val periodVariable = m.variables.filter(SimpleVariable).findFirst[x | x.name == periodVariableName]
+		val periodVariable = getDefaultIrVariable(m, periodVariableName)
 		if (periodVariable === null) return false
-		inSituJob.periodVariable = periodVariable
+		inSituJob.periodVariable = periodVariable as SimpleVariable
 
-		val connectivityVariables = m.variables.filter(ConnectivityVariable)
 		for (key : dumpedVariables.keySet)
 		{
-			val v = connectivityVariables.findFirst[x | x.name == key]
+			val v = getDefaultIrVariable(m, key)
 			if (v !== null) 
 			{
 				v.persistenceName = dumpedVariables.get(key)
@@ -68,14 +68,15 @@ class TagPersistentVariables implements IrTransformationStep
 		m.jobs += inSituJob
 
 		// Create a variable to store the last write time
+		val periodVariableType = (periodVariable as SimpleVariable).type
 		val twriter = IrFactory.eINSTANCE.createSimpleVariable =>
 		[
 			name = LastDumpVariableName
-			type = EcoreUtil::copy(periodVariable.type)
+			type = EcoreUtil::copy(periodVariableType)
 			defaultValue = IrFactory.eINSTANCE.createArgOrVarRef =>
 			[
 				target = periodVariable
-				type = EcoreUtil.copy(periodVariable.type)
+				type = EcoreUtil.copy(periodVariableType)
 			]
 		]
 		m.variables += twriter

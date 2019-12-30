@@ -20,23 +20,23 @@ public final class HeatEquation
 		public final double option_stoptime = 0.1;
 		public final int option_max_iterations = 500;
 		public final double PI = 3.1415926;
-		public final double k = 1.0;
+		public final double alpha = 1.0;
 	}
 
 	private final Options options;
-	private int iteration;
 
 	// Mesh
 	private final NumericMesh2D mesh;
-	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
 	private final FileWriter writer;
+	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
 
 	// Global Variables
-	private double t, deltat, t_nplus1;
+	private double t_n, t_nplus1, deltat;
+	private int iterationN, lastDump;
 
 	// Connectivity Variables
 	private double[][] X, center;
-	private double[] u, V, f, outgoingFlux, surface, u_nplus1;
+	private double[] u_n, u_nplus1, V, f, outgoingFlux, surface;
 
 	public HeatEquation(Options aOptions, NumericMesh2D aNumericMesh2D)
 	{
@@ -50,19 +50,20 @@ public final class HeatEquation
 		nbNodesOfFace = NumericMesh2D.MaxNbNodesOfFace;
 		nbNeighbourCells = NumericMesh2D.MaxNbNeighbourCells;
 
-		t = 0.0;
-		deltat = 0.001;
+		t_n = 0.0;
 		t_nplus1 = 0.0;
+		deltat = 0.001;
+		lastDump = iterationN;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
 		center = new double[nbCells][2];
-		u = new double[nbCells];
+		u_n = new double[nbCells];
+		u_nplus1 = new double[nbCells];
 		V = new double[nbCells];
 		f = new double[nbCells];
 		outgoingFlux = new double[nbCells];
 		surface = new double[nbFaces];
-		u_nplus1 = new double[nbCells];
 
 		// Copy node coordinates
 		ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
@@ -72,24 +73,13 @@ public final class HeatEquation
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module HeatEquation");
-		iniF(); // @-2.0
-		iniCenter(); // @-2.0
-		computeV(); // @-2.0
-		computeSurface(); // @-2.0
-		iniUn(); // @-1.0
-
-		iteration = 0;
-		while (t < options.option_stoptime && iteration < options.option_max_iterations)
-		{
-			iteration++;
-			System.out.println("[" + iteration + "] t = " + t);
-			computeOutgoingFlux(); // @1.0
-			computeTn(); // @1.0
-			dumpVariables(); // @1.0
-			computeUn(); // @2.0
-			copy_u_nplus1_to_u(); // @3.0
-			copy_t_nplus1_to_t(); // @3.0
-		}
+		setUpTimeLoopN(); // @1.0
+		iniF(); // @1.0
+		iniCenter(); // @1.0
+		computeV(); // @1.0
+		computeSurface(); // @1.0
+		iniUn(); // @2.0
+		executeTimeLoopN(); // @3.0
 		System.out.println("Fin de l'exécution du module HeatEquation");
 	}
 
@@ -103,7 +93,16 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job IniF @-2.0
+	 * Job setUpTimeLoopN @1.0
+	 * In variables: 
+	 * Out variables: 
+	 */
+	private void setUpTimeLoopN() 
+	{
+	}
+
+	/**
+	 * Job IniF @1.0
 	 * In variables: 
 	 * Out variables: f
 	 */
@@ -116,7 +115,7 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job IniCenter @-2.0
+	 * Job IniCenter @1.0
 	 * In variables: X
 	 * Out variables: center
 	 */
@@ -140,7 +139,7 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job ComputeV @-2.0
+	 * Job ComputeV @1.0
 	 * In variables: X
 	 * Out variables: V
 	 */
@@ -166,7 +165,7 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job ComputeSurface @-2.0
+	 * Job ComputeSurface @1.0
 	 * In variables: X
 	 * Out variables: surface
 	 */
@@ -192,21 +191,8 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job IniUn @-1.0
-	 * In variables: PI, k, center
-	 * Out variables: u
-	 */
-	private void iniUn() 
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			u[jCells] = MathFunctions.cos(2 * options.PI * options.k * center[jCells][0]);
-		});
-	}
-
-	/**
 	 * Job ComputeOutgoingFlux @1.0
-	 * In variables: u, center, surface, deltat, V
+	 * In variables: u_n, center, surface, deltat, V
 	 * Out variables: outgoingFlux
 	 */
 	private void computeOutgoingFlux() 
@@ -224,7 +210,7 @@ public final class HeatEquation
 					int cfCommonFaceJ1J2 = mesh.getCommonFace(j1Id, j2Id);
 					int cfId = cfCommonFaceJ1J2;
 					int cfFaces = cfId;
-					reduction3 = reduction3 + ((u[j2Cells] - u[j1Cells]) / MathFunctions.norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
+					reduction3 = reduction3 + ((u_n[j2Cells] - u_n[j1Cells]) / MathFunctions.norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
 				}
 			}
 			outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction3;
@@ -233,64 +219,89 @@ public final class HeatEquation
 
 	/**
 	 * Job ComputeTn @1.0
-	 * In variables: t, deltat
+	 * In variables: t_n, deltat
 	 * Out variables: t_nplus1
 	 */
 	private void computeTn() 
 	{
-		t_nplus1 = t + deltat;
+		t_nplus1 = t_n + deltat;
 	}
 
 	/**
 	 * Job dumpVariables @1.0
-	 * In variables: u
+	 * In variables: u_n, iterationN
 	 * Out variables: 
 	 */
 	private void dumpVariables() 
 	{
-		if (iteration % 1 == 0)
+		if (iterationN >= lastDump)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-			cellVariables.put("Temperature", u);
-			writer.writeFile(iteration, t, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			cellVariables.put("Temperature", u_n);
+			writer.writeFile(iterationN, t_n, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			lastDump = iterationN;
 		}
 	}
 
 	/**
+	 * Job IniUn @2.0
+	 * In variables: PI, alpha, center
+	 * Out variables: u_n
+	 */
+	private void iniUn() 
+	{
+		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		{
+			u_n[jCells] = MathFunctions.cos(2 * options.PI * options.alpha * center[jCells][0]);
+		});
+	}
+
+	/**
 	 * Job ComputeUn @2.0
-	 * In variables: f, deltat, u, outgoingFlux
+	 * In variables: f, deltat, u_n, outgoingFlux
 	 * Out variables: u_nplus1
 	 */
 	private void computeUn() 
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			u_nplus1[jCells] = f[jCells] * deltat + u[jCells] + outgoingFlux[jCells];
+			u_nplus1[jCells] = f[jCells] * deltat + u_n[jCells] + outgoingFlux[jCells];
 		});
 	}
 
 	/**
-	 * Job Copy_u_nplus1_to_u @3.0
-	 * In variables: u_nplus1
-	 * Out variables: u
+	 * Job executeTimeLoopN @3.0
+	 * In variables: outgoingFlux, f, iterationN, center, t_n, surface, t_nplus1, u_n, V, deltat, u_nplus1
+	 * Out variables: outgoingFlux, t_n, t_nplus1, u_n, u_nplus1
 	 */
-	private void copy_u_nplus1_to_u() 
+	private void executeTimeLoopN() 
 	{
-		double[] tmpSwitch = u;
-		u = u_nplus1;
-		u_nplus1 = tmpSwitch;
+		iterationN = 0;
+		while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations))
+		{
+			iterationN++;
+			System.out.println("[iterationN : " + iterationN + "] t : " + t_n);
+			dumpVariables(); // @1.0
+			computeOutgoingFlux(); // @1.0
+			computeTn(); // @1.0
+			computeUn(); // @2.0
+			prepareNextIterationOfTimeLoopN(); // @3.0
+		}
 	}
 
 	/**
-	 * Job Copy_t_nplus1_to_t @3.0
-	 * In variables: t_nplus1
-	 * Out variables: t
+	 * Job prepareNextIterationOfTimeLoopN @3.0
+	 * In variables: t_nplus1, u_nplus1
+	 * Out variables: t_n, u_n
 	 */
-	private void copy_t_nplus1_to_t() 
+	private void prepareNextIterationOfTimeLoopN() 
 	{
-		double tmpSwitch = t;
-		t = t_nplus1;
-		t_nplus1 = tmpSwitch;
+		double tmpT_n = t_n;
+		t_n = t_nplus1;
+		t_nplus1 = tmpT_n;
+		double[] tmpU_n = u_n;
+		u_n = u_nplus1;
+		u_nplus1 = tmpU_n;
 	}
 };

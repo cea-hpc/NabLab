@@ -4,12 +4,15 @@ workflow ImplicitHeatEquationGenerationChain transforms ImplicitHeatEquation
 {
 	Nabla2Ir nabla2ir
 	{
+		timeVariable = t;
+		nodeCoordVariable = X;
 	}
 
 	TagPersistentVariables tagPersistentVariables follows nabla2ir 
 	{ 
-		variables = u as "Temperature";
-		iterationPeriod = 1;
+		iterationVariable = iterationN;
+		dumpedVariables = u as "Temperature";
+		period = 1.0 for iterationN;
 	}
 	
 	ReplaceUtf replaceUtf follows tagPersistentVariables
@@ -40,5 +43,6 @@ workflow ImplicitHeatEquationGenerationChain transforms ImplicitHeatEquation
 	{
 		language = Kokkos;
 		outputDir = "/NablaExamples/src-gen-kokkos";
+		disabled;
 	}
 }

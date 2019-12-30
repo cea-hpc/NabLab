@@ -93,10 +93,9 @@ class Ir2Kokkos extends CodeGenerator
 		Options* options;
 
 	private:
-		int iteration;
 		«IF withMesh»
 		NumericMesh2D* mesh;
-		PvdFileWriter2D writer;
+		FileWriter writer;
 		«FOR c : usedConnectivities BEFORE 'int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
 		«ENDIF»
 
@@ -106,9 +105,9 @@ class Ir2Kokkos extends CodeGenerator
 		«FOR type : globalsByType.keySet»
 		«type» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 		«ENDFOR»
-
 		«val connectivityVars = variables.filter(ConnectivityVariable).filter[!linearAlgebra]»
 		«IF !connectivityVars.empty»
+
 		// Connectivity Variables
 		«FOR a : connectivityVars»
 		«a.cppType» «a.name»;
@@ -153,7 +152,7 @@ class Ir2Kokkos extends CodeGenerator
 			const auto& gNodes = mesh->getGeometricMesh()->getNodes();
 			Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 			{
-				«initCoordVariable.name»(rNodes) = gNodes[rNodes];
+				«initNodeCoordVariable.name»(rNodes) = gNodes[rNodes];
 			});
 			«ENDIF»
 		}

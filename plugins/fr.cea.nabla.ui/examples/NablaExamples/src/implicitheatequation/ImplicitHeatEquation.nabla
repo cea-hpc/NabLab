@@ -50,6 +50,9 @@ const ℕ option_max_iterations = 500000000;
 ℝ faceLength{faces}, faceConductivity{faces};
 ℝ α{cells, cells}; 
 
+ℕ iterationN;
+iterate n while (t^{n} < option_stoptime && iterationN < option_max_iterations);
+
 InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
 
 InitXcAndYc: ∀c∈cells(), {
@@ -59,9 +62,9 @@ InitXcAndYc: ∀c∈cells(), {
 
 InitU: ∀c∈cells(),
 	if (norm(Xc{c} - vectOne) < 0.5)
-		u{c} = u0;
+		u^{n}{c} = u0;
 	else 
-		u{c} = 0.0; // Initial circle in the center with value u0
+		u^{n}{c} = 0.0; // Initial circle in the center with value u0
 
 InitD: ∀c∈cells(), D{c} = 1.0; // 
 
@@ -82,6 +85,7 @@ computeAlphaCoeff: ∀c∈cells(), {
 	}
 	α{c, c} = 1 - αDiag;
 }
-UpdateU: u^{n+1} = solveLinearSystem(α, u);
 
-ComputeTn: t^{n+1}=t+δt;
+UpdateU: u^{n+1} = solveLinearSystem(α, u^{n});
+
+ComputeTn: t^{n+1}=t^{n}+δt;

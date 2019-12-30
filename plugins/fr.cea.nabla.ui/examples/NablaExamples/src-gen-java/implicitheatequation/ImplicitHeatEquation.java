@@ -28,24 +28,24 @@ public final class ImplicitHeatEquation
 	}
 
 	private final Options options;
-	private int iteration;
 
 	// Mesh
 	private final NumericMesh2D mesh;
-	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 	private final FileWriter writer;
+	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
 	// Global Variables
-	private double t, deltat, t_nplus1;
+	private double t_n, t_nplus1, deltat;
+	private int iterationN, lastDump;
 
 	// Connectivity Variables
 	private double[][] X, Xc;
 	private double[] xc, yc, V, D, faceLength, faceConductivity;
 
 	// Linear Algebra Variables
-	private Vector u;
-	private Matrix alpha;
+	private Vector u_n;
 	private Vector u_nplus1;
+	private Matrix alpha;
 
 	public ImplicitHeatEquation(Options aOptions, NumericMesh2D aNumericMesh2D)
 	{
@@ -60,22 +60,23 @@ public final class ImplicitHeatEquation
 		nbCellsOfFace = NumericMesh2D.MaxNbCellsOfFace;
 		nbNeighbourCells = NumericMesh2D.MaxNbNeighbourCells;
 
-		t = 0.0;
-		deltat = 0.001;
+		t_n = 0.0;
 		t_nplus1 = 0.0;
+		deltat = 0.001;
+		lastDump = iterationN;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
 		Xc = new double[nbCells][2];
 		xc = new double[nbCells];
 		yc = new double[nbCells];
-		u = Vector.createDenseVector(nbCells);
+		u_n = Vector.createDenseVector(nbCells);
+		u_nplus1 = Vector.createDenseVector(nbCells);
 		V = new double[nbCells];
 		D = new double[nbCells];
 		faceLength = new double[nbFaces];
 		faceConductivity = new double[nbFaces];
 		alpha = Matrix.createDenseMatrix(nbCells, nbCells);
-		u_nplus1 = Vector.createDenseVector(nbCells);
 
 		// Copy node coordinates
 		ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
@@ -85,27 +86,17 @@ public final class ImplicitHeatEquation
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module ImplicitHeatEquation");
-		initXc(); // @-3.0
-		initD(); // @-3.0
-		computeV(); // @-3.0
-		computeFaceLength(); // @-3.0
-		initXcAndYc(); // @-2.0
-		initU(); // @-2.0
-		computeDeltaTn(); // @-2.0
-		computeFaceConductivity(); // @-2.0
-		computeAlphaCoeff(); // @-1.0
-
-		iteration = 0;
-		while (t < options.option_stoptime && iteration < options.option_max_iterations)
-		{
-			iteration++;
-			System.out.println("[" + iteration + "] t = " + t);
-			updateU(); // @1.0
-			computeTn(); // @1.0
-			dumpVariables(); // @1.0
-			copy_u_nplus1_to_u(); // @2.0
-			copy_t_nplus1_to_t(); // @2.0
-		}
+		setUpTimeLoopN(); // @1.0
+		initXc(); // @1.0
+		initD(); // @1.0
+		computeV(); // @1.0
+		computeFaceLength(); // @1.0
+		initXcAndYc(); // @2.0
+		initU(); // @2.0
+		computeDeltaTn(); // @2.0
+		computeFaceConductivity(); // @2.0
+		computeAlphaCoeff(); // @3.0
+		executeTimeLoopN(); // @4.0
 		System.out.println("Fin de l'exécution du module ImplicitHeatEquation");
 	}
 
@@ -119,7 +110,16 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job InitXc @-3.0
+	 * Job setUpTimeLoopN @1.0
+	 * In variables: 
+	 * Out variables: 
+	 */
+	private void setUpTimeLoopN() 
+	{
+	}
+
+	/**
+	 * Job InitXc @1.0
 	 * In variables: X
 	 * Out variables: Xc
 	 */
@@ -143,7 +143,7 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job InitD @-3.0
+	 * Job InitD @1.0
 	 * In variables: 
 	 * Out variables: D
 	 */
@@ -156,7 +156,7 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job ComputeV @-3.0
+	 * Job ComputeV @1.0
 	 * In variables: X
 	 * Out variables: V
 	 */
@@ -182,7 +182,7 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job ComputeFaceLength @-3.0
+	 * Job ComputeFaceLength @1.0
 	 * In variables: X
 	 * Out variables: faceLength
 	 */
@@ -208,7 +208,59 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job InitXcAndYc @-2.0
+	 * Job UpdateU @1.0
+	 * In variables: alpha, u_n
+	 * Out variables: u_nplus1
+	 */
+	private void updateU() 
+	{
+		u_nplus1 = LinearAlgebraFunctions.solveLinearSystem(alpha, u_n);
+	}
+
+	/**
+	 * Job ComputeTn @1.0
+	 * In variables: t_n, deltat
+	 * Out variables: t_nplus1
+	 */
+	private void computeTn() 
+	{
+		t_nplus1 = t_n + deltat;
+	}
+
+	/**
+	 * Job dumpVariables @1.0
+	 * In variables: u_n, iterationN
+	 * Out variables: 
+	 */
+	private void dumpVariables() 
+	{
+		if (iterationN >= lastDump)
+		{
+			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+			cellVariables.put("Temperature", u_n.toArray());
+			writer.writeFile(iterationN, t_n, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			lastDump = iterationN;
+		}
+	}
+
+	/**
+	 * Job prepareNextIterationOfTimeLoopN @2.0
+	 * In variables: t_nplus1, u_nplus1
+	 * Out variables: t_n, u_n
+	 */
+	private void prepareNextIterationOfTimeLoopN() 
+	{
+		double tmpT_n = t_n;
+		t_n = t_nplus1;
+		t_nplus1 = tmpT_n;
+		Vector tmpU_n = u_n;
+		u_n = u_nplus1;
+		u_nplus1 = tmpU_n;
+	}
+
+	/**
+	 * Job InitXcAndYc @2.0
 	 * In variables: Xc
 	 * Out variables: xc, yc
 	 */
@@ -222,23 +274,23 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job InitU @-2.0
+	 * Job InitU @2.0
 	 * In variables: Xc, vectOne, u0
-	 * Out variables: u
+	 * Out variables: u_n
 	 */
 	private void initU() 
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			if (MathFunctions.norm(ArrayOperations.minus(Xc[cCells], options.vectOne)) < 0.5) 
-				u.set(cCells, options.u0);
+				u_n.set(cCells, options.u0);
 			else 
-				u.set(cCells, 0.0);
+				u_n.set(cCells, 0.0);
 		});
 	}
 
 	/**
-	 * Job computeDeltaTn @-2.0
+	 * Job computeDeltaTn @2.0
 	 * In variables: X_EDGE_LENGTH, Y_EDGE_LENGTH, D
 	 * Out variables: deltat
 	 */
@@ -253,7 +305,7 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job ComputeFaceConductivity @-2.0
+	 * Job ComputeFaceConductivity @2.0
 	 * In variables: D
 	 * Out variables: faceConductivity
 	 */
@@ -287,7 +339,7 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job computeAlphaCoeff @-1.0
+	 * Job computeAlphaCoeff @3.0
 	 * In variables: deltat, V, faceLength, faceConductivity, Xc
 	 * Out variables: alpha
 	 */
@@ -316,62 +368,21 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job UpdateU @1.0
-	 * In variables: alpha, u
-	 * Out variables: u_nplus1
+	 * Job executeTimeLoopN @4.0
+	 * In variables: alpha, t_n, deltat, u_n, t_nplus1, u_nplus1, iterationN
+	 * Out variables: t_n, u_n, t_nplus1, u_nplus1
 	 */
-	private void updateU() 
+	private void executeTimeLoopN() 
 	{
-		u_nplus1 = LinearAlgebraFunctions.solveLinearSystem(alpha, u);
-	}
-
-	/**
-	 * Job ComputeTn @1.0
-	 * In variables: t, deltat
-	 * Out variables: t_nplus1
-	 */
-	private void computeTn() 
-	{
-		t_nplus1 = t + deltat;
-	}
-
-	/**
-	 * Job dumpVariables @1.0
-	 * In variables: u
-	 * Out variables: 
-	 */
-	private void dumpVariables() 
-	{
-		if (iteration % 1 == 0)
+		iterationN = 0;
+		while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations))
 		{
-			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-			cellVariables.put("Temperature", u.toArray());
-			writer.writeFile(iteration, t, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			iterationN++;
+			System.out.println("[iterationN : " + iterationN + "] t : " + t_n);
+			updateU(); // @1.0
+			dumpVariables(); // @1.0
+			computeTn(); // @1.0
+			prepareNextIterationOfTimeLoopN(); // @2.0
 		}
-	}
-
-	/**
-	 * Job Copy_u_nplus1_to_u @2.0
-	 * In variables: u_nplus1
-	 * Out variables: u
-	 */
-	private void copy_u_nplus1_to_u() 
-	{
-		Vector tmpSwitch = u;
-		u = u_nplus1;
-		u_nplus1 = tmpSwitch;
-	}
-
-	/**
-	 * Job Copy_t_nplus1_to_t @2.0
-	 * In variables: t_nplus1
-	 * Out variables: t
-	 */
-	private void copy_t_nplus1_to_t() 
-	{
-		double tmpSwitch = t;
-		t = t_nplus1;
-		t_nplus1 = tmpSwitch;
 	}
 };

@@ -33,8 +33,8 @@ public final class Glace2d
 
 	// Mesh
 	private final NumericMesh2D mesh;
-	private final int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
 	private final FileWriter writer;
+	private final int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
 
 	// Global Variables
 	private double t_n, t_nplus1, deltat_n, deltat_nplus1;
@@ -368,8 +368,8 @@ public final class Glace2d
 
 	/**
 	 * Job executeTimeLoopN @4.0
-	 * In variables: ur, l, V, deltatj, e, Y_EDGE_LENGTH, c, deltat_n, C, p, t_nplus1, m, E_n, option_deltat_cfl, deltat_nplus1, Mt, X_nplus1, X_EDGE_ELEMS, b, gamma, t_n, X_EDGE_LENGTH, uj_n, rho, bt, X_n, uj_nplus1, Ar, F, iterationN, Ajr, E_nplus1, Y_EDGE_ELEMS
-	 * Out variables: ur, V, l, deltatj, e, c, deltat_n, C, p, t_nplus1, E_n, Mt, deltat_nplus1, X_nplus1, b, t_n, uj_n, rho, bt, X_n, uj_nplus1, Ar, F, Ajr, E_nplus1
+	 * In variables: t_nplus1, X_EDGE_LENGTH, uj_nplus1, option_deltat_cfl, rho, deltat_n, C, t_n, gamma, deltatj, V, X_EDGE_ELEMS, p, E_n, Y_EDGE_ELEMS, deltat_nplus1, X_nplus1, c, X_n, E_nplus1, Ajr, Ar, l, F, bt, uj_n, Mt, Y_EDGE_LENGTH, e, b, iterationN, ur, m
+	 * Out variables: t_nplus1, uj_nplus1, deltat_n, rho, C, t_n, deltatj, V, p, E_n, deltat_nplus1, X_nplus1, c, X_n, Ajr, E_nplus1, Ar, l, F, bt, uj_n, Mt, e, b, ur
 	 */
 	private void executeTimeLoopN() 
 	{
@@ -378,23 +378,23 @@ public final class Glace2d
 		{
 			iterationN++;
 			System.out.println("[iterationN : " + iterationN + "] t : " + t_n);
-			computeInternalEnergy(); // @1.0
 			computeCjr(); // @1.0
-			computeV(); // @2.0
+			computeInternalEnergy(); // @1.0
 			computeLjr(); // @2.0
+			computeV(); // @2.0
 			computeDensity(); // @3.0
 			computeEOSp(); // @4.0
 			dumpVariables(); // @4.0
 			computeEOSc(); // @5.0
 			computedeltatj(); // @6.0
 			computeAjr(); // @6.0
-			computeBr(); // @7.0
 			computeDt(); // @7.0
 			computeAr(); // @7.0
-			computeBt(); // @8.0
-			outerFacesComputations(); // @8.0
+			computeBr(); // @7.0
 			computeTn(); // @8.0
 			computeMt(); // @8.0
+			outerFacesComputations(); // @8.0
+			computeBt(); // @8.0
 			computeU(); // @9.0
 			computeFjr(); // @10.0
 			computeXn(); // @10.0

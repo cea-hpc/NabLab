@@ -68,8 +68,8 @@ class Ir2Java extends CodeGenerator
 			«IF withMesh»
 			// Mesh
 			private final NumericMesh2D mesh;
-			«FOR c : usedConnectivities BEFORE 'private final int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
 			private final FileWriter writer;
+			«FOR c : usedConnectivities BEFORE 'private final int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
 			«ENDIF»
 
 			// Global Variables

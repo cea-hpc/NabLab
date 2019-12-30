@@ -26,19 +26,19 @@ public final class ExplicitHeatEquation
 	}
 
 	private final Options options;
-	private int iteration;
 
 	// Mesh
 	private final NumericMesh2D mesh;
-	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 	private final FileWriter writer;
+	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
 	// Global Variables
-	private double t, deltat, t_nplus1;
+	private double t_n, t_nplus1, deltat;
+	private int iterationN, lastDump;
 
 	// Connectivity Variables
 	private double[][] X, Xc, alpha;
-	private double[] xc, yc, u, V, D, faceLength, faceConductivity, u_nplus1;
+	private double[] xc, yc, u_n, u_nplus1, V, D, faceLength, faceConductivity;
 
 	public ExplicitHeatEquation(Options aOptions, NumericMesh2D aNumericMesh2D)
 	{
@@ -53,22 +53,23 @@ public final class ExplicitHeatEquation
 		nbCellsOfFace = NumericMesh2D.MaxNbCellsOfFace;
 		nbNeighbourCells = NumericMesh2D.MaxNbNeighbourCells;
 
-		t = 0.0;
-		deltat = 0.001;
+		t_n = 0.0;
 		t_nplus1 = 0.0;
+		deltat = 0.001;
+		lastDump = iterationN;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
 		Xc = new double[nbCells][2];
 		xc = new double[nbCells];
 		yc = new double[nbCells];
-		u = new double[nbCells];
+		u_n = new double[nbCells];
+		u_nplus1 = new double[nbCells];
 		V = new double[nbCells];
 		D = new double[nbCells];
 		faceLength = new double[nbFaces];
 		faceConductivity = new double[nbFaces];
 		alpha = new double[nbCells][nbCells];
-		u_nplus1 = new double[nbCells];
 
 		// Copy node coordinates
 		ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
@@ -78,27 +79,17 @@ public final class ExplicitHeatEquation
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module ExplicitHeatEquation");
-		initXc(); // @-3.0
-		initD(); // @-3.0
-		computeV(); // @-3.0
-		computeFaceLength(); // @-3.0
-		initXcAndYc(); // @-2.0
-		initU(); // @-2.0
-		computeDeltaTn(); // @-2.0
-		computeFaceConductivity(); // @-2.0
-		computeAlphaCoeff(); // @-1.0
-
-		iteration = 0;
-		while (t < options.option_stoptime && iteration < options.option_max_iterations)
-		{
-			iteration++;
-			System.out.println("[" + iteration + "] t = " + t);
-			updateU(); // @1.0
-			computeTn(); // @1.0
-			dumpVariables(); // @1.0
-			copy_u_nplus1_to_u(); // @2.0
-			copy_t_nplus1_to_t(); // @2.0
-		}
+		setUpTimeLoopN(); // @1.0
+		initXc(); // @1.0
+		initD(); // @1.0
+		computeV(); // @1.0
+		computeFaceLength(); // @1.0
+		initXcAndYc(); // @2.0
+		initU(); // @2.0
+		computeDeltaTn(); // @2.0
+		computeFaceConductivity(); // @2.0
+		computeAlphaCoeff(); // @3.0
+		executeTimeLoopN(); // @4.0
 		System.out.println("Fin de l'exécution du module ExplicitHeatEquation");
 	}
 
@@ -112,7 +103,16 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
-	 * Job InitXc @-3.0
+	 * Job setUpTimeLoopN @1.0
+	 * In variables: 
+	 * Out variables: 
+	 */
+	private void setUpTimeLoopN() 
+	{
+	}
+
+	/**
+	 * Job InitXc @1.0
 	 * In variables: X
 	 * Out variables: Xc
 	 */
@@ -136,7 +136,7 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
-	 * Job InitD @-3.0
+	 * Job InitD @1.0
 	 * In variables: 
 	 * Out variables: D
 	 */
@@ -149,7 +149,7 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
-	 * Job ComputeV @-3.0
+	 * Job ComputeV @1.0
 	 * In variables: X
 	 * Out variables: V
 	 */
@@ -175,7 +175,7 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
-	 * Job ComputeFaceLength @-3.0
+	 * Job ComputeFaceLength @1.0
 	 * In variables: X
 	 * Out variables: faceLength
 	 */
@@ -201,7 +201,73 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
-	 * Job InitXcAndYc @-2.0
+	 * Job UpdateU @1.0
+	 * In variables: alpha, u_n
+	 * Out variables: u_nplus1
+	 */
+	private void updateU() 
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			int cId = cCells;
+			double reduction6 = 0.0;
+			{
+				int[] neighbourCellsC = mesh.getNeighbourCells(cId);
+				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.length; dNeighbourCellsC++)
+				{
+					int dId = neighbourCellsC[dNeighbourCellsC];
+					int dCells = dId;
+					reduction6 = reduction6 + (alpha[cCells][dCells] * u_n[dCells]);
+				}
+			}
+			u_nplus1[cCells] = alpha[cCells][cCells] * u_n[cCells] + reduction6;
+		});
+	}
+
+	/**
+	 * Job ComputeTn @1.0
+	 * In variables: t_n, deltat
+	 * Out variables: t_nplus1
+	 */
+	private void computeTn() 
+	{
+		t_nplus1 = t_n + deltat;
+	}
+
+	/**
+	 * Job dumpVariables @1.0
+	 * In variables: u_n, iterationN
+	 * Out variables: 
+	 */
+	private void dumpVariables() 
+	{
+		if (iterationN >= lastDump)
+		{
+			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+			cellVariables.put("Temperature", u_n);
+			writer.writeFile(iterationN, t_n, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			lastDump = iterationN;
+		}
+	}
+
+	/**
+	 * Job prepareNextIterationOfTimeLoopN @2.0
+	 * In variables: t_nplus1, u_nplus1
+	 * Out variables: t_n, u_n
+	 */
+	private void prepareNextIterationOfTimeLoopN() 
+	{
+		double tmpT_n = t_n;
+		t_n = t_nplus1;
+		t_nplus1 = tmpT_n;
+		double[] tmpU_n = u_n;
+		u_n = u_nplus1;
+		u_nplus1 = tmpU_n;
+	}
+
+	/**
+	 * Job InitXcAndYc @2.0
 	 * In variables: Xc
 	 * Out variables: xc, yc
 	 */
@@ -215,23 +281,23 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
-	 * Job InitU @-2.0
+	 * Job InitU @2.0
 	 * In variables: Xc, vectOne, u0
-	 * Out variables: u
+	 * Out variables: u_n
 	 */
 	private void initU() 
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			if (MathFunctions.norm(ArrayOperations.minus(Xc[cCells], options.vectOne)) < 0.5) 
-				u[cCells] = options.u0;
+				u_n[cCells] = options.u0;
 			else 
-				u[cCells] = 0.0;
+				u_n[cCells] = 0.0;
 		});
 	}
 
 	/**
-	 * Job computeDeltaTn @-2.0
+	 * Job computeDeltaTn @2.0
 	 * In variables: X_EDGE_LENGTH, Y_EDGE_LENGTH, D
 	 * Out variables: deltat
 	 */
@@ -246,7 +312,7 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
-	 * Job ComputeFaceConductivity @-2.0
+	 * Job ComputeFaceConductivity @2.0
 	 * In variables: D
 	 * Out variables: faceConductivity
 	 */
@@ -280,7 +346,7 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
-	 * Job computeAlphaCoeff @-1.0
+	 * Job computeAlphaCoeff @3.0
 	 * In variables: deltat, V, faceLength, faceConductivity, Xc
 	 * Out variables: alpha
 	 */
@@ -309,76 +375,21 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
-	 * Job UpdateU @1.0
-	 * In variables: alpha, u
-	 * Out variables: u_nplus1
+	 * Job executeTimeLoopN @4.0
+	 * In variables: u_nplus1, u_n, t_n, alpha, deltat, iterationN, t_nplus1
+	 * Out variables: u_nplus1, t_n, u_n, t_nplus1
 	 */
-	private void updateU() 
+	private void executeTimeLoopN() 
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		iterationN = 0;
+		while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations))
 		{
-			int cId = cCells;
-			double reduction6 = 0.0;
-			{
-				int[] neighbourCellsC = mesh.getNeighbourCells(cId);
-				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.length; dNeighbourCellsC++)
-				{
-					int dId = neighbourCellsC[dNeighbourCellsC];
-					int dCells = dId;
-					reduction6 = reduction6 + (alpha[cCells][dCells] * u[dCells]);
-				}
-			}
-			u_nplus1[cCells] = alpha[cCells][cCells] * u[cCells] + reduction6;
-		});
-	}
-
-	/**
-	 * Job ComputeTn @1.0
-	 * In variables: t, deltat
-	 * Out variables: t_nplus1
-	 */
-	private void computeTn() 
-	{
-		t_nplus1 = t + deltat;
-	}
-
-	/**
-	 * Job dumpVariables @1.0
-	 * In variables: u
-	 * Out variables: 
-	 */
-	private void dumpVariables() 
-	{
-		if (iteration % 1 == 0)
-		{
-			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-			cellVariables.put("Temperature", u);
-			writer.writeFile(iteration, t, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			iterationN++;
+			System.out.println("[iterationN : " + iterationN + "] t : " + t_n);
+			updateU(); // @1.0
+			computeTn(); // @1.0
+			dumpVariables(); // @1.0
+			prepareNextIterationOfTimeLoopN(); // @2.0
 		}
-	}
-
-	/**
-	 * Job Copy_u_nplus1_to_u @2.0
-	 * In variables: u_nplus1
-	 * Out variables: u
-	 */
-	private void copy_u_nplus1_to_u() 
-	{
-		double[] tmpSwitch = u;
-		u = u_nplus1;
-		u_nplus1 = tmpSwitch;
-	}
-
-	/**
-	 * Job Copy_t_nplus1_to_t @2.0
-	 * In variables: t_nplus1
-	 * Out variables: t
-	 */
-	private void copy_t_nplus1_to_t() 
-	{
-		double tmpSwitch = t;
-		t = t_nplus1;
-		t_nplus1 = tmpSwitch;
 	}
 };

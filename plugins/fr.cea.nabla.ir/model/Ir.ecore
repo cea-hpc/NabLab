@@ -33,8 +33,12 @@
         eType="#//Connectivity" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//Variable" containment="true" resolveProxies="false"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="initCoordVariable" lowerBound="1"
-        eType="#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="initNodeCoordVariable"
+        lowerBound="1" eType="#//ConnectivityVariable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nodeCoordVariable" lowerBound="1"
+        eType="#//ConnectivityVariable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="timeVariable" lowerBound="1"
+        eType="#//SimpleVariable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="jobs" upperBound="-1" eType="#//Job"
         containment="true" resolveProxies="false"/>
   </eClassifiers>
@@ -130,8 +134,6 @@
         eType="#//SimpleVariable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterationVariable" lowerBound="1"
         eType="#//SimpleVariable"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="timeVariable" lowerBound="1"
-        eType="#//SimpleVariable"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeLoopJob" eSuperTypes="#//Job">
     <eStructuralFeatures xsi:type="ecore:EReference" name="jobs" upperBound="-1" eType="#//Job"
@@ -148,15 +150,11 @@
   <eClassifiers xsi:type="ecore:EClass" name="TimeLoopCopyJob" abstract="true" eSuperTypes="#//Job">
     <eStructuralFeatures xsi:type="ecore:EReference" name="copies" upperBound="-1"
         eType="#//TimeLoopCopy" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="BeforeTimeLoopJob" eSuperTypes="#//TimeLoopCopyJob">
     <eStructuralFeatures xsi:type="ecore:EReference" name="associatedTimeLoop" lowerBound="1"
         eType="#//TimeLoopJob"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AfterTimeLoopJob" eSuperTypes="#//TimeLoopCopyJob">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="associatedTimeLoop" lowerBound="1"
-        eType="#//TimeLoopJob"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BeforeTimeLoopJob" eSuperTypes="#//TimeLoopCopyJob"/>
+  <eClassifiers xsi:type="ecore:EClass" name="AfterTimeLoopJob" eSuperTypes="#//TimeLoopCopyJob"/>
   <eClassifiers xsi:type="ecore:EClass" name="NextTimeLoopIterationJob" eSuperTypes="#//TimeLoopCopyJob"/>
   <eClassifiers xsi:type="ecore:EClass" name="TimeLoopCopy" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="destination" lowerBound="1"

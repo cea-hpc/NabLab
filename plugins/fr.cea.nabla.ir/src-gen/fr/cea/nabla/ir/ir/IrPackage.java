@@ -223,13 +223,31 @@ public interface IrPackage extends EPackage {
 	int IR_MODULE__VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 6;
 
 	/**
-	 * The feature id for the '<em><b>Init Coord Variable</b></em>' reference.
+	 * The feature id for the '<em><b>Init Node Coord Variable</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__INIT_COORD_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 7;
+	int IR_MODULE__INIT_NODE_COORD_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 7;
+
+	/**
+	 * The feature id for the '<em><b>Node Coord Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_MODULE__NODE_COORD_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 8;
+
+	/**
+	 * The feature id for the '<em><b>Time Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_MODULE__TIME_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 9;
 
 	/**
 	 * The feature id for the '<em><b>Jobs</b></em>' containment reference list.
@@ -238,7 +256,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__JOBS = IR_ANNOTABLE_FEATURE_COUNT + 8;
+	int IR_MODULE__JOBS = IR_ANNOTABLE_FEATURE_COUNT + 10;
 
 	/**
 	 * The number of structural features of the '<em>Module</em>' class.
@@ -247,7 +265,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 9;
+	int IR_MODULE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 11;
 
 	/**
 	 * The number of operations of the '<em>Module</em>' class.
@@ -1190,22 +1208,13 @@ public interface IrPackage extends EPackage {
 	int IN_SITU_JOB__ITERATION_VARIABLE = JOB_FEATURE_COUNT + 3;
 
 	/**
-	 * The feature id for the '<em><b>Time Variable</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int IN_SITU_JOB__TIME_VARIABLE = JOB_FEATURE_COUNT + 4;
-
-	/**
 	 * The number of structural features of the '<em>In Situ Job</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IN_SITU_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 5;
+	int IN_SITU_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of operations of the '<em>In Situ Job</em>' class.
@@ -1399,13 +1408,22 @@ public interface IrPackage extends EPackage {
 	int TIME_LOOP_COPY_JOB__COPIES = JOB_FEATURE_COUNT + 0;
 
 	/**
+	 * The feature id for the '<em><b>Associated Time Loop</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TIME_LOOP_COPY_JOB__ASSOCIATED_TIME_LOOP = JOB_FEATURE_COUNT + 1;
+
+	/**
 	 * The number of structural features of the '<em>Time Loop Copy Job</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_LOOP_COPY_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 1;
+	int TIME_LOOP_COPY_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Time Loop Copy Job</em>' class.
@@ -1487,7 +1505,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BEFORE_TIME_LOOP_JOB__ASSOCIATED_TIME_LOOP = TIME_LOOP_COPY_JOB_FEATURE_COUNT + 0;
+	int BEFORE_TIME_LOOP_JOB__ASSOCIATED_TIME_LOOP = TIME_LOOP_COPY_JOB__ASSOCIATED_TIME_LOOP;
 
 	/**
 	 * The number of structural features of the '<em>Before Time Loop Job</em>' class.
@@ -1496,7 +1514,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BEFORE_TIME_LOOP_JOB_FEATURE_COUNT = TIME_LOOP_COPY_JOB_FEATURE_COUNT + 1;
+	int BEFORE_TIME_LOOP_JOB_FEATURE_COUNT = TIME_LOOP_COPY_JOB_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of operations of the '<em>Before Time Loop Job</em>' class.
@@ -1578,7 +1596,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int AFTER_TIME_LOOP_JOB__ASSOCIATED_TIME_LOOP = TIME_LOOP_COPY_JOB_FEATURE_COUNT + 0;
+	int AFTER_TIME_LOOP_JOB__ASSOCIATED_TIME_LOOP = TIME_LOOP_COPY_JOB__ASSOCIATED_TIME_LOOP;
 
 	/**
 	 * The number of structural features of the '<em>After Time Loop Job</em>' class.
@@ -1587,7 +1605,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int AFTER_TIME_LOOP_JOB_FEATURE_COUNT = TIME_LOOP_COPY_JOB_FEATURE_COUNT + 1;
+	int AFTER_TIME_LOOP_JOB_FEATURE_COUNT = TIME_LOOP_COPY_JOB_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of operations of the '<em>After Time Loop Job</em>' class.
@@ -1661,6 +1679,15 @@ public interface IrPackage extends EPackage {
 	 * @ordered
 	 */
 	int NEXT_TIME_LOOP_ITERATION_JOB__COPIES = TIME_LOOP_COPY_JOB__COPIES;
+
+	/**
+	 * The feature id for the '<em><b>Associated Time Loop</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NEXT_TIME_LOOP_ITERATION_JOB__ASSOCIATED_TIME_LOOP = TIME_LOOP_COPY_JOB__ASSOCIATED_TIME_LOOP;
 
 	/**
 	 * The number of structural features of the '<em>Next Time Loop Iteration Job</em>' class.
@@ -4105,15 +4132,37 @@ public interface IrPackage extends EPackage {
 	EReference getIrModule_Variables();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrModule#getInitCoordVariable <em>Init Coord Variable</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrModule#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Init Coord Variable</em>'.
-	 * @see fr.cea.nabla.ir.ir.IrModule#getInitCoordVariable()
+	 * @return the meta object for the reference '<em>Init Node Coord Variable</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrModule#getInitNodeCoordVariable()
 	 * @see #getIrModule()
 	 * @generated
 	 */
-	EReference getIrModule_InitCoordVariable();
+	EReference getIrModule_InitNodeCoordVariable();
+
+	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrModule#getNodeCoordVariable <em>Node Coord Variable</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Node Coord Variable</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrModule#getNodeCoordVariable()
+	 * @see #getIrModule()
+	 * @generated
+	 */
+	EReference getIrModule_NodeCoordVariable();
+
+	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrModule#getTimeVariable <em>Time Variable</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Time Variable</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrModule#getTimeVariable()
+	 * @see #getIrModule()
+	 * @generated
+	 */
+	EReference getIrModule_TimeVariable();
 
 	/**
 	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.IrModule#getJobs <em>Jobs</em>}'.
@@ -4653,17 +4702,6 @@ public interface IrPackage extends EPackage {
 	EReference getInSituJob_IterationVariable();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.InSituJob#getTimeVariable <em>Time Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Time Variable</em>'.
-	 * @see fr.cea.nabla.ir.ir.InSituJob#getTimeVariable()
-	 * @see #getInSituJob()
-	 * @generated
-	 */
-	EReference getInSituJob_TimeVariable();
-
-	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.TimeLoopJob <em>Time Loop Job</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4750,6 +4788,17 @@ public interface IrPackage extends EPackage {
 	EReference getTimeLoopCopyJob_Copies();
 
 	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.TimeLoopCopyJob#getAssociatedTimeLoop <em>Associated Time Loop</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Associated Time Loop</em>'.
+	 * @see fr.cea.nabla.ir.ir.TimeLoopCopyJob#getAssociatedTimeLoop()
+	 * @see #getTimeLoopCopyJob()
+	 * @generated
+	 */
+	EReference getTimeLoopCopyJob_AssociatedTimeLoop();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.BeforeTimeLoopJob <em>Before Time Loop Job</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4760,17 +4809,6 @@ public interface IrPackage extends EPackage {
 	EClass getBeforeTimeLoopJob();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.BeforeTimeLoopJob#getAssociatedTimeLoop <em>Associated Time Loop</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Associated Time Loop</em>'.
-	 * @see fr.cea.nabla.ir.ir.BeforeTimeLoopJob#getAssociatedTimeLoop()
-	 * @see #getBeforeTimeLoopJob()
-	 * @generated
-	 */
-	EReference getBeforeTimeLoopJob_AssociatedTimeLoop();
-
-	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.AfterTimeLoopJob <em>After Time Loop Job</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4779,17 +4817,6 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getAfterTimeLoopJob();
-
-	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.AfterTimeLoopJob#getAssociatedTimeLoop <em>Associated Time Loop</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Associated Time Loop</em>'.
-	 * @see fr.cea.nabla.ir.ir.AfterTimeLoopJob#getAssociatedTimeLoop()
-	 * @see #getAfterTimeLoopJob()
-	 * @generated
-	 */
-	EReference getAfterTimeLoopJob_AssociatedTimeLoop();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.NextTimeLoopIterationJob <em>Next Time Loop Iteration Job</em>}'.
@@ -6059,12 +6086,28 @@ public interface IrPackage extends EPackage {
 		EReference IR_MODULE__VARIABLES = eINSTANCE.getIrModule_Variables();
 
 		/**
-		 * The meta object literal for the '<em><b>Init Coord Variable</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Init Node Coord Variable</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference IR_MODULE__INIT_COORD_VARIABLE = eINSTANCE.getIrModule_InitCoordVariable();
+		EReference IR_MODULE__INIT_NODE_COORD_VARIABLE = eINSTANCE.getIrModule_InitNodeCoordVariable();
+
+		/**
+		 * The meta object literal for the '<em><b>Node Coord Variable</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference IR_MODULE__NODE_COORD_VARIABLE = eINSTANCE.getIrModule_NodeCoordVariable();
+
+		/**
+		 * The meta object literal for the '<em><b>Time Variable</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference IR_MODULE__TIME_VARIABLE = eINSTANCE.getIrModule_TimeVariable();
 
 		/**
 		 * The meta object literal for the '<em><b>Jobs</b></em>' containment reference list feature.
@@ -6493,14 +6536,6 @@ public interface IrPackage extends EPackage {
 		EReference IN_SITU_JOB__ITERATION_VARIABLE = eINSTANCE.getInSituJob_IterationVariable();
 
 		/**
-		 * The meta object literal for the '<em><b>Time Variable</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference IN_SITU_JOB__TIME_VARIABLE = eINSTANCE.getInSituJob_TimeVariable();
-
-		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.TimeLoopJobImpl <em>Time Loop Job</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6569,6 +6604,14 @@ public interface IrPackage extends EPackage {
 		EReference TIME_LOOP_COPY_JOB__COPIES = eINSTANCE.getTimeLoopCopyJob_Copies();
 
 		/**
+		 * The meta object literal for the '<em><b>Associated Time Loop</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference TIME_LOOP_COPY_JOB__ASSOCIATED_TIME_LOOP = eINSTANCE.getTimeLoopCopyJob_AssociatedTimeLoop();
+
+		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.BeforeTimeLoopJobImpl <em>Before Time Loop Job</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6579,14 +6622,6 @@ public interface IrPackage extends EPackage {
 		EClass BEFORE_TIME_LOOP_JOB = eINSTANCE.getBeforeTimeLoopJob();
 
 		/**
-		 * The meta object literal for the '<em><b>Associated Time Loop</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference BEFORE_TIME_LOOP_JOB__ASSOCIATED_TIME_LOOP = eINSTANCE.getBeforeTimeLoopJob_AssociatedTimeLoop();
-
-		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.AfterTimeLoopJobImpl <em>After Time Loop Job</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6595,14 +6630,6 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EClass AFTER_TIME_LOOP_JOB = eINSTANCE.getAfterTimeLoopJob();
-
-		/**
-		 * The meta object literal for the '<em><b>Associated Time Loop</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference AFTER_TIME_LOOP_JOB__ASSOCIATED_TIME_LOOP = eINSTANCE.getAfterTimeLoopJob_AssociatedTimeLoop();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.NextTimeLoopIterationJobImpl <em>Next Time Loop Iteration Job</em>}' class.

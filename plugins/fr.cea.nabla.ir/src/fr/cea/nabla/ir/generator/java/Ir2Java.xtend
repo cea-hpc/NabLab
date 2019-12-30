@@ -121,7 +121,7 @@ class Ir2Java extends CodeGenerator
 
 				// Copy node coordinates
 				ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
-				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> «initCoordVariable.name»[rNodes] = gNodes.get(rNodes));
+				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> «initNodeCoordVariable.name»[rNodes] = gNodes.get(rNodes));
 				«ENDIF»
 			}
 

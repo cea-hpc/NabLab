@@ -3,6 +3,7 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Connectivity;
+import fr.cea.nabla.ir.ir.ConnectivityVariable;
 import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.Import;
 import fr.cea.nabla.ir.ir.IrModule;
@@ -10,6 +11,7 @@ import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.ItemType;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.Reduction;
+import fr.cea.nabla.ir.ir.SimpleVariable;
 import fr.cea.nabla.ir.ir.Variable;
 
 import java.util.Collection;
@@ -42,7 +44,9 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getReductions <em>Reductions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getConnectivities <em>Connectivities</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getVariables <em>Variables</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getInitCoordVariable <em>Init Coord Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getTimeVariable <em>Time Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getJobs <em>Jobs</em>}</li>
  * </ul>
  *
@@ -130,14 +134,34 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	protected EList<Variable> variables;
 
 	/**
-	 * The cached value of the '{@link #getInitCoordVariable() <em>Init Coord Variable</em>}' reference.
+	 * The cached value of the '{@link #getInitNodeCoordVariable() <em>Init Node Coord Variable</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getInitCoordVariable()
+	 * @see #getInitNodeCoordVariable()
 	 * @generated
 	 * @ordered
 	 */
-	protected Variable initCoordVariable;
+	protected ConnectivityVariable initNodeCoordVariable;
+
+	/**
+	 * The cached value of the '{@link #getNodeCoordVariable() <em>Node Coord Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getNodeCoordVariable()
+	 * @generated
+	 * @ordered
+	 */
+	protected ConnectivityVariable nodeCoordVariable;
+
+	/**
+	 * The cached value of the '{@link #getTimeVariable() <em>Time Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTimeVariable()
+	 * @generated
+	 * @ordered
+	 */
+	protected SimpleVariable timeVariable;
 
 	/**
 	 * The cached value of the '{@link #getJobs() <em>Jobs</em>}' containment reference list.
@@ -275,16 +299,16 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
-	public Variable getInitCoordVariable() {
-		if (initCoordVariable != null && initCoordVariable.eIsProxy()) {
-			InternalEObject oldInitCoordVariable = (InternalEObject)initCoordVariable;
-			initCoordVariable = (Variable)eResolveProxy(oldInitCoordVariable);
-			if (initCoordVariable != oldInitCoordVariable) {
+	public ConnectivityVariable getInitNodeCoordVariable() {
+		if (initNodeCoordVariable != null && initNodeCoordVariable.eIsProxy()) {
+			InternalEObject oldInitNodeCoordVariable = (InternalEObject)initNodeCoordVariable;
+			initNodeCoordVariable = (ConnectivityVariable)eResolveProxy(oldInitNodeCoordVariable);
+			if (initNodeCoordVariable != oldInitNodeCoordVariable) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_MODULE__INIT_COORD_VARIABLE, oldInitCoordVariable, initCoordVariable));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE, oldInitNodeCoordVariable, initNodeCoordVariable));
 			}
 		}
-		return initCoordVariable;
+		return initNodeCoordVariable;
 	}
 
 	/**
@@ -292,8 +316,8 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Variable basicGetInitCoordVariable() {
-		return initCoordVariable;
+	public ConnectivityVariable basicGetInitNodeCoordVariable() {
+		return initNodeCoordVariable;
 	}
 
 	/**
@@ -302,11 +326,91 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
-	public void setInitCoordVariable(Variable newInitCoordVariable) {
-		Variable oldInitCoordVariable = initCoordVariable;
-		initCoordVariable = newInitCoordVariable;
+	public void setInitNodeCoordVariable(ConnectivityVariable newInitNodeCoordVariable) {
+		ConnectivityVariable oldInitNodeCoordVariable = initNodeCoordVariable;
+		initNodeCoordVariable = newInitNodeCoordVariable;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__INIT_COORD_VARIABLE, oldInitCoordVariable, initCoordVariable));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE, oldInitNodeCoordVariable, initNodeCoordVariable));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ConnectivityVariable getNodeCoordVariable() {
+		if (nodeCoordVariable != null && nodeCoordVariable.eIsProxy()) {
+			InternalEObject oldNodeCoordVariable = (InternalEObject)nodeCoordVariable;
+			nodeCoordVariable = (ConnectivityVariable)eResolveProxy(oldNodeCoordVariable);
+			if (nodeCoordVariable != oldNodeCoordVariable) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_MODULE__NODE_COORD_VARIABLE, oldNodeCoordVariable, nodeCoordVariable));
+			}
+		}
+		return nodeCoordVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ConnectivityVariable basicGetNodeCoordVariable() {
+		return nodeCoordVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setNodeCoordVariable(ConnectivityVariable newNodeCoordVariable) {
+		ConnectivityVariable oldNodeCoordVariable = nodeCoordVariable;
+		nodeCoordVariable = newNodeCoordVariable;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__NODE_COORD_VARIABLE, oldNodeCoordVariable, nodeCoordVariable));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public SimpleVariable getTimeVariable() {
+		if (timeVariable != null && timeVariable.eIsProxy()) {
+			InternalEObject oldTimeVariable = (InternalEObject)timeVariable;
+			timeVariable = (SimpleVariable)eResolveProxy(oldTimeVariable);
+			if (timeVariable != oldTimeVariable) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_MODULE__TIME_VARIABLE, oldTimeVariable, timeVariable));
+			}
+		}
+		return timeVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SimpleVariable basicGetTimeVariable() {
+		return timeVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setTimeVariable(SimpleVariable newTimeVariable) {
+		SimpleVariable oldTimeVariable = timeVariable;
+		timeVariable = newTimeVariable;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__TIME_VARIABLE, oldTimeVariable, timeVariable));
 	}
 
 	/**
@@ -370,9 +474,15 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 				return getConnectivities();
 			case IrPackage.IR_MODULE__VARIABLES:
 				return getVariables();
-			case IrPackage.IR_MODULE__INIT_COORD_VARIABLE:
-				if (resolve) return getInitCoordVariable();
-				return basicGetInitCoordVariable();
+			case IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE:
+				if (resolve) return getInitNodeCoordVariable();
+				return basicGetInitNodeCoordVariable();
+			case IrPackage.IR_MODULE__NODE_COORD_VARIABLE:
+				if (resolve) return getNodeCoordVariable();
+				return basicGetNodeCoordVariable();
+			case IrPackage.IR_MODULE__TIME_VARIABLE:
+				if (resolve) return getTimeVariable();
+				return basicGetTimeVariable();
 			case IrPackage.IR_MODULE__JOBS:
 				return getJobs();
 		}
@@ -415,8 +525,14 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 				getVariables().clear();
 				getVariables().addAll((Collection<? extends Variable>)newValue);
 				return;
-			case IrPackage.IR_MODULE__INIT_COORD_VARIABLE:
-				setInitCoordVariable((Variable)newValue);
+			case IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE:
+				setInitNodeCoordVariable((ConnectivityVariable)newValue);
+				return;
+			case IrPackage.IR_MODULE__NODE_COORD_VARIABLE:
+				setNodeCoordVariable((ConnectivityVariable)newValue);
+				return;
+			case IrPackage.IR_MODULE__TIME_VARIABLE:
+				setTimeVariable((SimpleVariable)newValue);
 				return;
 			case IrPackage.IR_MODULE__JOBS:
 				getJobs().clear();
@@ -455,8 +571,14 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 			case IrPackage.IR_MODULE__VARIABLES:
 				getVariables().clear();
 				return;
-			case IrPackage.IR_MODULE__INIT_COORD_VARIABLE:
-				setInitCoordVariable((Variable)null);
+			case IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE:
+				setInitNodeCoordVariable((ConnectivityVariable)null);
+				return;
+			case IrPackage.IR_MODULE__NODE_COORD_VARIABLE:
+				setNodeCoordVariable((ConnectivityVariable)null);
+				return;
+			case IrPackage.IR_MODULE__TIME_VARIABLE:
+				setTimeVariable((SimpleVariable)null);
 				return;
 			case IrPackage.IR_MODULE__JOBS:
 				getJobs().clear();
@@ -487,8 +609,12 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 				return connectivities != null && !connectivities.isEmpty();
 			case IrPackage.IR_MODULE__VARIABLES:
 				return variables != null && !variables.isEmpty();
-			case IrPackage.IR_MODULE__INIT_COORD_VARIABLE:
-				return initCoordVariable != null;
+			case IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE:
+				return initNodeCoordVariable != null;
+			case IrPackage.IR_MODULE__NODE_COORD_VARIABLE:
+				return nodeCoordVariable != null;
+			case IrPackage.IR_MODULE__TIME_VARIABLE:
+				return timeVariable != null;
 			case IrPackage.IR_MODULE__JOBS:
 				return jobs != null && !jobs.isEmpty();
 		}

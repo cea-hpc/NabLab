@@ -3,7 +3,6 @@ package fr.cea.nabla.tests
 import com.google.inject.Inject
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.ir.MandatoryMeshOptions
-import fr.cea.nabla.ir.MandatoryMeshVariables
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.validation.BasicValidator
@@ -36,21 +35,6 @@ class BasicValidatorTest
 			BasicValidator::getMandatoryMeshOptionsMsg(MandatoryMeshOptions::NAMES))
 
 		val moduleOk = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::getConnectivities + TestUtils::mandatoryMeshOptionsAndVariables)
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
-	@Test
-	def void testCheckMandatoryMeshVariables()
-	{
-		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::connectivities + TestUtils::mandatoryMeshOptions)
-		Assert.assertNotNull(moduleKo)
-
-		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
-			BasicValidator::MANDATORY_MESH_VARIABLE,
-			BasicValidator::getMandatoryMeshVariablesMsg(MandatoryMeshVariables::NAMES))
-
-		val moduleOk = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::connectivities + TestUtils::mandatoryMeshOptionsAndVariables)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}

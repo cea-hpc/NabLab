@@ -17,15 +17,13 @@ class TagPersistentVariables implements IrTransformationStep
 {
 	public static val LastDumpVariableName = "lastDump" // Useful for InSituJob
 
-	val String timeVariableName
 	val String iterationVariableName
 	val HashMap<String, String> dumpedVariables
 	val double periodValue
 	val String periodVariableName
 
-	new(String timeVariableName, String iterationVariableName, HashMap<String, String> dumpedVariables, double periodValue, String periodVariableName)
+	new(String iterationVariableName, HashMap<String, String> dumpedVariables, double periodValue, String periodVariableName)
 	{
-		this.timeVariableName = timeVariableName
 		this.iterationVariableName = iterationVariableName
 		this.dumpedVariables = dumpedVariables
 		this.periodValue = periodValue
@@ -43,10 +41,6 @@ class TagPersistentVariables implements IrTransformationStep
 		val inSituJob = IrFactory.eINSTANCE.createInSituJob
 		inSituJob.name = 'dumpVariables'
 		inSituJob.periodValue = periodValue
-		
-		val timeVariable = getDefaultIrVariable(m, timeVariableName)
-		if (timeVariable === null) return false
-		inSituJob.timeVariable = timeVariable as SimpleVariable
 
 		val iterationVariable = getDefaultIrVariable(m, iterationVariableName)
 		if (iterationVariable === null) return false

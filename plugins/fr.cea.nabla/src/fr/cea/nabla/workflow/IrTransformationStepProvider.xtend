@@ -13,6 +13,15 @@ import fr.cea.nabla.nablagen.TagPersistentVariablesComponent
 import java.util.ArrayList
 import java.util.HashMap
 
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 class IrTransformationStepProvider 
 {
 	// Dispatch on Ir2IrComponent
@@ -20,7 +29,7 @@ class IrTransformationStepProvider
 	{
 		val outVars = new HashMap<String, String>
 		dumpedVars.forEach[x | outVars.put(x.varRef.name, x.varName)]
-		return new TagPersistentVariables(timeVar.name, iterationVar.name, outVars, periodValue, periodVar.name)
+		return new TagPersistentVariables(iterationVar.name, outVars, periodValue, periodVar.name)
 	}
 
 	static def dispatch get(ReplaceUtfComponent it)

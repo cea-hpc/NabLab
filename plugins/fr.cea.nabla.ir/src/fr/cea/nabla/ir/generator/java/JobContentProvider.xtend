@@ -10,7 +10,6 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.MandatoryIterationVariables
-import fr.cea.nabla.ir.MandatoryMeshVariables
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
@@ -23,6 +22,7 @@ import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.transformers.TagPersistentVariables
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.Utils.getIrModule
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
@@ -53,17 +53,19 @@ class JobContentProvider
 			«FOR v : dumpedVariables.filter(ConnectivityVariable)»
 			«v.type.connectivities.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 			«ENDFOR»
-			writer.writeFile(«iterationVariable.name», «timeVariable.name», «MandatoryMeshVariables::COORD», mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
-			«TagPersistentVariables::LastDumpVariableName» += «periodVariable.name»;
+			writer.writeFile(«iterationVariable.name», «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			«TagPersistentVariables::LastDumpVariableName» = «periodVariable.name»;
 		}
 	'''
 
 	private static def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
-		«MandatoryIterationVariables.getName(timeLoopName)» = 0;
+		«val itVar = MandatoryIterationVariables.getName(timeLoopName)»
+		«itVar» = 0;
 		while («whileCondition.content»)
 		{
-			«MandatoryIterationVariables.getName(timeLoopName)»++;
+			«itVar»++;
+			System.out.println("«indentation»[«itVar» : " + «itVar» + "] t : " + «irModule.timeVariable.name»);
 			«FOR j : jobs.sortBy[at]»
 				«j.codeName»(); // @«j.at»
 			«ENDFOR»
@@ -110,4 +112,10 @@ class JobContentProvider
 
 	private static def dispatch int getDimension(BaseType it) { sizes.size }
 	private static def dispatch int getDimension(ConnectivityType it) { base.sizes.size + connectivities.size }
+
+	private static def String getIndentation(TimeLoopJob it)
+	{
+		if (outerTimeLoop === null) ''
+		else getIndentation(outerTimeLoop) + '\t'
+	}
 }

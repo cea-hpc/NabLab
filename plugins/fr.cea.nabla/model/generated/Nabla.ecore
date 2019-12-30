@@ -15,8 +15,8 @@
         eType="#//Function" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="instructions" upperBound="-1"
         eType="#//Instruction" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="iterations" upperBound="-1"
-        eType="#//TimeIteratorDefinition" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="iteration" eType="#//TimeIteratorDefinition"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="jobs" upperBound="-1" eType="#//Job"
         containment="true"/>
   </eClassifiers>

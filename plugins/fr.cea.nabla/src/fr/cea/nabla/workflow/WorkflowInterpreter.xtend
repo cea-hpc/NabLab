@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.workflow
 
 import com.google.common.base.Function
@@ -28,7 +37,6 @@ import org.eclipse.xtext.resource.SaveOptions
 import static com.google.common.collect.Maps.uniqueIndex
 
 import static extension fr.cea.nabla.workflow.WorkflowComponentExtensions.*
-import static extension fr.cea.nabla.workflow.WorkflowExtensions.*
 
 class WorkflowInterpreter 
 {
@@ -40,12 +48,12 @@ class WorkflowInterpreter
 	@Inject IOutputConfigurationProvider outputConfigurationProvider
 
 	def launch(Workflow workflow)
-	{	
+	{
 		try
 		{
 			val msg = 'STARTING ' + workflow.name + '\n'
 			traceListeners.forEach[write(msg)]
-			workflow.roots.forEach[c | launch(c, workflow.nablaModule)]	
+			workflow.components.filter(Nabla2IrComponent).forEach[c | launch(c, workflow.nablaModule)]
 		}
 		catch(Exception e)
 		{
@@ -75,7 +83,7 @@ class WorkflowInterpreter
 	{
 		val msg = '  Nabla -> IR - ' + c.name
 		traceListeners.forEach[write(msg)]
-		val irModule = nabla2Ir.toIrModule(nablaModule)
+		val irModule = nabla2Ir.toIrModule(nablaModule, c.timeVar, c.nodeCoordVar)
 		if (c.dumpIr)
 			createAndSaveResource(irModule, c.eclipseProject, c.name)
 		val msgEnd = "... ok\n"

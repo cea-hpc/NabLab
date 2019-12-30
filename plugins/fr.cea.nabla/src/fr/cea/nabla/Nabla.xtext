@@ -32,7 +32,8 @@ NablaModule:
 	reductions+=Reduction*
 	functions+=Function*
 	instructions+=(SimpleVarDefinition | VarGroupDeclaration)*
-	iterations+=TimeIteratorDefinition*
+	// Only one block of iteration (don't know how to manage several blocks on node variable X)
+	(iteration=TimeIteratorDefinition)?
 	jobs+=Job*;
 
 Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';

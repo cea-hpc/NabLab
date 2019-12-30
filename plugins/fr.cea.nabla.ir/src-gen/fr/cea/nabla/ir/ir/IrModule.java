@@ -20,7 +20,9 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getReductions <em>Reductions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getConnectivities <em>Connectivities</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getVariables <em>Variables</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getInitCoordVariable <em>Init Coord Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getTimeVariable <em>Time Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getJobs <em>Jobs</em>}</li>
  * </ul>
  *
@@ -124,26 +126,70 @@ public interface IrModule extends IrAnnotable {
 	EList<Variable> getVariables();
 
 	/**
-	 * Returns the value of the '<em><b>Init Coord Variable</b></em>' reference.
+	 * Returns the value of the '<em><b>Init Node Coord Variable</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Init Coord Variable</em>' reference.
-	 * @see #setInitCoordVariable(Variable)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_InitCoordVariable()
+	 * @return the value of the '<em>Init Node Coord Variable</em>' reference.
+	 * @see #setInitNodeCoordVariable(ConnectivityVariable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_InitNodeCoordVariable()
 	 * @model required="true"
 	 * @generated
 	 */
-	Variable getInitCoordVariable();
+	ConnectivityVariable getInitNodeCoordVariable();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getInitCoordVariable <em>Init Coord Variable</em>}' reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Init Coord Variable</em>' reference.
-	 * @see #getInitCoordVariable()
+	 * @param value the new value of the '<em>Init Node Coord Variable</em>' reference.
+	 * @see #getInitNodeCoordVariable()
 	 * @generated
 	 */
-	void setInitCoordVariable(Variable value);
+	void setInitNodeCoordVariable(ConnectivityVariable value);
+
+	/**
+	 * Returns the value of the '<em><b>Node Coord Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Node Coord Variable</em>' reference.
+	 * @see #setNodeCoordVariable(ConnectivityVariable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_NodeCoordVariable()
+	 * @model required="true"
+	 * @generated
+	 */
+	ConnectivityVariable getNodeCoordVariable();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getNodeCoordVariable <em>Node Coord Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Node Coord Variable</em>' reference.
+	 * @see #getNodeCoordVariable()
+	 * @generated
+	 */
+	void setNodeCoordVariable(ConnectivityVariable value);
+
+	/**
+	 * Returns the value of the '<em><b>Time Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Time Variable</em>' reference.
+	 * @see #setTimeVariable(SimpleVariable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_TimeVariable()
+	 * @model required="true"
+	 * @generated
+	 */
+	SimpleVariable getTimeVariable();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getTimeVariable <em>Time Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Time Variable</em>' reference.
+	 * @see #getTimeVariable()
+	 * @generated
+	 */
+	void setTimeVariable(SimpleVariable value);
 
 	/**
 	 * Returns the value of the '<em><b>Jobs</b></em>' containment reference list.

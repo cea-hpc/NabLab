@@ -43,6 +43,7 @@ class IrJobFactory
 	def create IrFactory::eINSTANCE.createNextTimeLoopIterationJob toIrNextTimeLoopIterationJob(TimeIterator ti)
 	{ 
 		name = "prepareNextIterationOfTimeLoop" + ti.name.toFirstUpper
+		associatedTimeLoop = ti.toIrTimeLoopJob
 	}
 
 	def create IrFactory::eINSTANCE.createTimeLoopJob toIrTimeLoopJob(TimeIterator ti)

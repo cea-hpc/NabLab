@@ -20,13 +20,6 @@ class MandatoryMeshOptions
 	public static val NAMES = #[X_EDGE_LENGTH, Y_EDGE_LENGTH, X_EDGE_ELEMS, Y_EDGE_ELEMS, Z_EDGE_ELEMS]
 }
 
-class MandatoryMeshVariables
-{	
-	public static val COORD = 'X'
-
-	public static val NAMES = #[COORD]
-}
-
 class MandatoryIterationVariables
 {
 	static def getName(String iteratorName)

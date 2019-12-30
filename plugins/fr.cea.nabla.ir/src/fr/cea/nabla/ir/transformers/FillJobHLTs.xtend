@@ -124,32 +124,42 @@ class FillJobHLTs implements IrTransformationStep
 	}
 
 	/** 
-	 * Create JobContainer instances corresponding to time loops.
-	 * Before this method, jobs are contained in a unique container hold by the module.
-	 * After, there is one container by time loop and one main container and jobs are 
-	 * splitted into the right containers.
-	 * Warning: the module must not contain job cycles (must be checked before).
+	 * Split jobs in their corresponding time loops 
+	 * i.e. add them to 'jobs' of TimeLoopJob instance.
+	 * Warning: the module must not contain job cycles.
 	 */
 	private def void distributeJobsInTimeLoops(IrModule it)
 	{
-		val topLevelBeforeTLJobs = jobs.filter(BeforeTimeLoopJob).filter[timeLoopContainer === null]
-		for (topLevelBeforeTJJob : topLevelBeforeTLJobs)
-			for (next : topLevelBeforeTJJob.nextJobs.reject(TimeLoopJob))
-				distributeJobsInTimeLoops(topLevelBeforeTJJob.associatedTimeLoop, next)
+		val startTLJobs = jobs.filter(NextTimeLoopIterationJob).filter[timeLoopContainer === null]
+		for (startTJJob : startTLJobs)
+			for (next : startTJJob.nextJobs.reject(TimeLoopJob))
+				distributeJobsInTimeLoops(startTJJob.associatedTimeLoop, next)
 	}
 
 	private def void distributeJobsInTimeLoops(TimeLoopJob tlj, Job j)
 	{
+		println("distributeJobsInTimeLoops(" + tlj + ", " + j.name)
 		val nextJobs = j.nextJobs.reject(TimeLoopJob)
 		switch j
 		{
 			BeforeTimeLoopJob: 
-				nextJobs.forEach[x | distributeJobsInTimeLoops(j.associatedTimeLoop, x)]
-			AfterTimeLoopJob: 
+			{
+				// Start of another time loop. Do not follow next.
+				tlj.jobs += j
+			}
+			AfterTimeLoopJob:
+			{
 				if (tlj.outerTimeLoop !== null)
+				{
+					tlj.outerTimeLoop.jobs += j
 					nextJobs.forEach[x | distributeJobsInTimeLoops(tlj.outerTimeLoop, x)]
-			NextTimeLoopIterationJob: 
-				nextJobs.forEach[x | distributeJobsInTimeLoops(tlj, x)]
+				}
+			}
+			NextTimeLoopIterationJob:
+			{
+				// Do not follow next jobs to avoid cycles
+				tlj.jobs += j
+			}
 			default:
 			{
 				tlj.jobs += j

@@ -4,13 +4,15 @@ workflow Glace2dGenerationChain transforms Glace2d
 {
 	Nabla2Ir nabla2ir
 	{
+		timeVariable = t;
+		nodeCoordVariable = X;
 	}
 
 	TagPersistentVariables tagPersistentVariables follows nabla2ir 
-	{ 
-		variables = ρ as "Density";
-		iterationPeriod = 1;
-		//timeStep = 1.0;
+	{
+		iterationVariable = iterationN;
+		dumpedVariables = ρ as "Density";
+		period = 1.0 for iterationN;
 	}
 	
 	ReplaceUtf replaceUtf follows tagPersistentVariables
@@ -24,6 +26,7 @@ workflow Glace2dGenerationChain transforms Glace2d
 	OptimizeConnectivities optimizeConnectivities follows replaceReductions
 	{
 		connectivities = cells, nodes;
+		dumpIr;
 	}
 	
 	FillHLTs fillHlts follows optimizeConnectivities
@@ -41,6 +44,7 @@ workflow Glace2dGenerationChain transforms Glace2d
 	{
 		language = Kokkos;
 		outputDir = "/NablaExamples/src-gen-kokkos";
+		disabled;
 	}
 
 //	Ir2Code kokkosHPGenerator follows fillHlts

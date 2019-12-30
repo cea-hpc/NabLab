@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.IrModule
@@ -10,22 +19,6 @@ class Utils
 		if (o === null) null
 		else if (o instanceof IrModule) o as IrModule
 		else o.eContainer.irModule
-	}
-
-	static def getDefaultIrVariable(IrModule m, String nablaVariableName)
-	{
-		var irVariable = m.variables.findFirst[x | x.name == nablaVariableName]
-		if (irVariable === null)
-		{
-			val allTimeVariables = m.variables.filter[x | x.name.startsWith(nablaVariableName + '_')]
-			if (!allTimeVariables.empty)
-			{
-				// take the shortest extension (corresponding to the default variable, i.e. t_n for t)
-				irVariable = allTimeVariables.sortBy[name.length].head
-				println("Variables for " + nablaVariableName + " : " + allTimeVariables.sortBy[name.length].map[name].join(', '))
-			}
-		}
-		return irVariable
 	}
 
 	static def getUtfExponent(int x)
@@ -49,5 +42,21 @@ class Utils
 			}
 		}
 		return utfExponent
+	}
+
+	static def getDefaultIrVariable(IrModule m, String nablaVariableName)
+	{
+		var irVariable = m.variables.findFirst[x | x.name == nablaVariableName]
+		if (irVariable === null)
+		{
+			val allTimeVariables = m.variables.filter[x | x.name.startsWith(nablaVariableName + '_')]
+			if (!allTimeVariables.empty)
+			{
+				// Take the shortest extension (corresponding to the default variable, i.e. t_n for t)
+				// To be improved...
+				irVariable = allTimeVariables.sortBy[name.length].head
+			}
+		}
+		return irVariable
 	}
 }

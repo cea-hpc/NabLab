@@ -10,23 +10,25 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.MandatoryMeshVariables
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.ArgOrVarRef
+import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.CurrentTimeIteratorRef
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.typing.DeclarationProvider
-import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 
@@ -43,27 +45,27 @@ class Nabla2Ir
 	@Inject extension IrAnnotationHelper
 	@Inject extension DeclarationProvider
 
-	def create IrFactory::eINSTANCE.createIrModule toIrModule(NablaModule m)
+	def create IrFactory::eINSTANCE.createIrModule toIrModule(NablaModule nablaModule, SimpleVar nablaTimeVariable, ConnectivityVar nablaNodeCoordVariable)
 	{
-		annotations += m.toIrAnnotation
-		name = m.name
-		m.imports.forEach[x | imports += x.toIrImport]
-		m.items.forEach[x | items += x.toIrItemType]
-		m.connectivities.forEach[x | connectivities += x.toIrConnectivity]
+		annotations += nablaModule.toIrAnnotation
+		name = nablaModule.name
+		nablaModule.imports.forEach[x | imports += x.toIrImport]
+		nablaModule.items.forEach[x | items += x.toIrItemType]
+		nablaModule.connectivities.forEach[x | connectivities += x.toIrConnectivity]
 
 		/* 
 		 * To create functions, do not iterate on declarations to prevent creating external functions.
 		 * Look for FunctionCall instead to link to the external function object properly.
 		 * Same method fir reductions.
 		 */
-		m.eAllContents.filter(FunctionCall).forEach[x | functions += x.declaration.model.toIrFunction(x.function.moduleName)]
-		m.eAllContents.filter(ReductionCall).forEach[x | reductions += x.declaration.model.toIrReduction(x.reduction.moduleName)]
+		nablaModule.eAllContents.filter(FunctionCall).forEach[x | functions += x.declaration.model.toIrFunction(x.function.moduleName)]
+		nablaModule.eAllContents.filter(ReductionCall).forEach[x | reductions += x.declaration.model.toIrReduction(x.reduction.moduleName)]
 
 		// Time loop job creation
-		for (iteration : m.iterations)
+		if (nablaModule.iteration !== null)
 		{
 			var TimeLoopJob outerTL = null
-			for (ti : iteration.iterators)
+			for (ti : nablaModule.iteration.iterators)
 			{
 				val currentTL = ti.toIrTimeLoopJob
 				if (outerTL !== null) outerTL.innerTimeLoop = currentTL
@@ -79,17 +81,21 @@ class Nabla2Ir
 		}
 
 		// Global variables creation
-		for (instruction : m.instructions)
+		for (instruction : nablaModule.instructions)
 		{
 			switch instruction
 			{
-				SimpleVarDefinition: variables += toIrVariables(m, instruction.variable)
-				VarGroupDeclaration: instruction.variables.forEach[x | variables += toIrVariables(m, x) ]
+				SimpleVarDefinition: fillIrVariables(nablaModule, it, instruction.variable, nablaNodeCoordVariable)
+				VarGroupDeclaration: instruction.variables.forEach[x | fillIrVariables(nablaModule, it, x, nablaNodeCoordVariable) ]
 			}
 		}
-		initCoordVariable = getDefaultIrVariable(it, MandatoryMeshVariables::COORD)
 
-		m.jobs.forEach[x | jobs += x.toIrInstructionJob]
+		if (initNodeCoordVariable === null) // can be initialized in fillIrVariables
+			initNodeCoordVariable = getDefaultIrVariable(it, nablaNodeCoordVariable.name) as ConnectivityVariable
+		nodeCoordVariable = getDefaultIrVariable(it, nablaNodeCoordVariable.name) as ConnectivityVariable
+		timeVariable = getDefaultIrVariable(it, nablaTimeVariable.name) as SimpleVariable
+
+		nablaModule.jobs.forEach[x | jobs += x.toIrInstructionJob]
 
 		// Create a unique name for reduction instruction variable
 		var i = 0
@@ -104,15 +110,13 @@ class Nabla2Ir
 		return module.name
 	}
 
-	private def toIrVariables(NablaModule m, Var v)
+	private def void fillIrVariables(NablaModule nablaModule, IrModule irModule, Var v, ConnectivityVar nablaNodeCoordVariable)
 	{
-		val irVariables = new ArrayList<Variable>
-
 		// Time n+1 variables and EndOfInitJob creation 
-		val vRefs = m.eAllContents.filter(ArgOrVarRef).filter[!timeIterators.empty && target == v]
+		val vRefs = nablaModule.eAllContents.filter(ArgOrVarRef).filter[!timeIterators.empty && target == v]
 		if (vRefs.empty) 
 		{
-			irVariables += v.toIrVariable
+			irModule.variables += v.toIrVariable
 		}
 		else for (vRef : vRefs.toIterable)
 		{
@@ -121,47 +125,41 @@ class Nabla2Ir
 			{
 				CurrentTimeIteratorRef: 
 				{
-					irVariables += v.toIrArgOrVar(vRef.irTimeSuffix) as Variable
+					irModule.variables += v.toIrArgOrVar(vRef.irTimeSuffix) as Variable
 				}
 				InitTimeIteratorRef:
 				{
 					val varAtInit = v.toIrArgOrVar(vRef.irTimeSuffix) as Variable
-					irVariables += varAtInit
+					irModule.variables += varAtInit
+					if (v == nablaNodeCoordVariable) irModule.initNodeCoordVariable = varAtInit as ConnectivityVariable
 					val varAtCurrent = v.toIrArgOrVar(vRef.irCurrentTimeSuffix) as Variable
-					val tlCopy = IrFactory::eINSTANCE.createTimeLoopCopy =>
-					[
-						source = varAtInit
-						destination = varAtCurrent
-					]
+					val tlCopy = toIrCopy(varAtInit, varAtCurrent)
 					val beforeJob = iterators.last.target.toIrBeforeTimeLoopJob
 					beforeJob.copies += tlCopy
 				}
 				NextTimeIteratorRef:
 				{
 					val varAtNext = v.toIrArgOrVar(vRef.irTimeSuffix) as Variable
-					irVariables += varAtNext
+					irModule.variables += varAtNext
 					val varAtCurrent = v.toIrArgOrVar(vRef.irCurrentTimeSuffix) as Variable
 					val nextIterJob = iterators.last.target.toIrNextTimeLoopIterationJob
-					nextIterJob.copies += IrFactory::eINSTANCE.createTimeLoopCopy =>
-					[
-						source = varAtNext
-						destination = varAtCurrent
-					]
+					nextIterJob.copies += toIrCopy(varAtNext, varAtCurrent)
 
 					val afterJob = iterators.last.target.toIrAfterTimeLoopJob
 					val outerTimeIteratorSuffix = vRef.irOuterTimeSuffix
 					if (outerTimeIteratorSuffix !== null)
 					{
 						val varAtOuterTimeIterator = v.toIrArgOrVar(outerTimeIteratorSuffix)
-						afterJob.copies += IrFactory::eINSTANCE.createTimeLoopCopy =>
-						[
-							source = varAtNext as Variable
-							destination = varAtOuterTimeIterator as Variable
-						]
+						afterJob.copies += toIrCopy(varAtNext as Variable, varAtOuterTimeIterator as Variable)
 					}
 				}
 			}
 		}
-		return irVariables
+	}
+
+	private def create IrFactory::eINSTANCE.createTimeLoopCopy toIrCopy(Variable from, Variable to)
+	{
+		source = from as Variable
+		destination = to as Variable
 	}
 }

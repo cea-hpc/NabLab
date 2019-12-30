@@ -17,7 +17,6 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getPeriodValue <em>Period Value</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getPeriodVariable <em>Period Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getIterationVariable <em>Iteration Variable</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getTimeVariable <em>Time Variable</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getInSituJob()
@@ -103,27 +102,5 @@ public interface InSituJob extends Job {
 	 * @generated
 	 */
 	void setIterationVariable(SimpleVariable value);
-
-	/**
-	 * Returns the value of the '<em><b>Time Variable</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Time Variable</em>' reference.
-	 * @see #setTimeVariable(SimpleVariable)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getInSituJob_TimeVariable()
-	 * @model required="true"
-	 * @generated
-	 */
-	SimpleVariable getTimeVariable();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.InSituJob#getTimeVariable <em>Time Variable</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Time Variable</em>' reference.
-	 * @see #getTimeVariable()
-	 * @generated
-	 */
-	void setTimeVariable(SimpleVariable value);
 
 } // InSituJob

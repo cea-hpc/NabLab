@@ -31,25 +31,26 @@ Workflow:
 	'{'
 		components+=WorkflowComponent*
 	'}';
-	
+
 WorkflowComponent: Nabla2IrComponent | ChildComponent;
 
 ChildComponent: Ir2CodeComponent | Ir2IrComponent;
-					
+
 Ir2IrComponent: TagPersistentVariablesComponent | ReplaceUtfComponent | 
 				ReplaceReductionsComponent | OptimizeConnectivitiesComponent |
 				FillHLTsComponent;
-					
+
 Nabla2IrComponent:
 	'Nabla2Ir' name=ID 
 	'{' 
+		'timeVariable' '=' timeVar=[nabla::SimpleVar]';'
+		'nodeCoordVariable' '=' nodeCoordVar=[nabla::ConnectivityVar]';'
 		(dumpIr?='dumpIr' ';')?	
 	'}';
-	
+
 TagPersistentVariablesComponent:
 	'TagPersistentVariables' name=ID 'follows' parent=[WorkflowComponent] 
 	'{' 
-		'timeVariable' '=' timeVar=[nabla::SimpleVar]';'
 		'iterationVariable' '=' iterationVar=[nabla::SimpleVar]';'
 		'dumpedVariables' '=' dumpedVars+=PersistentVar (',' dumpedVars+=PersistentVar)* ';'
 		'period' '=' periodValue=REAL 'for' periodVar=[nabla::SimpleVar]';'
@@ -67,7 +68,7 @@ ReplaceUtfComponent:
 		(disabled?='disabled' ';')?
 		(dumpIr?='dumpIr' ';')? 
 	'}';
-	
+
 ReplaceReductionsComponent:
 	'ReplaceReductions' name=ID 'follows' parent=[WorkflowComponent]
 	'{' 
@@ -90,15 +91,14 @@ FillHLTsComponent:
 		(disabled?='disabled' ';')?
 		(dumpIr?='dumpIr' ';')? 
 	'}';
-	
+
 Ir2CodeComponent:
 	'Ir2Code' name=ID 'follows' parent=[WorkflowComponent]
 	'{' 
 		'language' '=' language=Language ';'
-		(disabled?='disabled' ';')?
 		'outputDir' '=' outputDir=STRING ';' 
+		(disabled?='disabled' ';')?
 	'}';
-	
+
 enum Language:
 	Java | Kokkos | KokkosHierarchicalParallelism;
-	

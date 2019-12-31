@@ -34,7 +34,7 @@ class TimeIteratorUtils
 	def getIrOuterTimeSuffix(ArgOrVarRef it) 
 	{
 		if (timeIterators.size < 2) null
-		else timeIterators.subList(0, timeIterators.size-2).suffixes
+		else timeIterators.subList(0, timeIterators.size-1).suffixes
 	}
 
 	private def getSuffixes(Iterable<TimeIteratorRef> timeIterators)

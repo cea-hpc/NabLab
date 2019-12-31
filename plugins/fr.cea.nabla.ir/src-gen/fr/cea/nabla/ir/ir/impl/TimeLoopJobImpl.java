@@ -31,8 +31,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopJobImpl#getJobs <em>Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopJobImpl#getWhileCondition <em>While Condition</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopJobImpl#getOuterTimeLoop <em>Outer Time Loop</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopJobImpl#getInnerTimeLoop <em>Inner Time Loop</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopJobImpl#getTimeLoopName <em>Time Loop Name</em>}</li>
  * </ul>
  *
@@ -57,24 +55,6 @@ public class TimeLoopJobImpl extends JobImpl implements TimeLoopJob {
 	 * @ordered
 	 */
 	protected Expression whileCondition;
-	/**
-	 * The cached value of the '{@link #getOuterTimeLoop() <em>Outer Time Loop</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getOuterTimeLoop()
-	 * @generated
-	 * @ordered
-	 */
-	protected TimeLoopJob outerTimeLoop;
-	/**
-	 * The cached value of the '{@link #getInnerTimeLoop() <em>Inner Time Loop</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getInnerTimeLoop()
-	 * @generated
-	 * @ordered
-	 */
-	protected TimeLoopJob innerTimeLoop;
 	/**
 	 * The default value of the '{@link #getTimeLoopName() <em>Time Loop Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -199,130 +179,6 @@ public class TimeLoopJobImpl extends JobImpl implements TimeLoopJob {
 	 * @generated
 	 */
 	@Override
-	public TimeLoopJob getOuterTimeLoop() {
-		if (outerTimeLoop != null && outerTimeLoop.eIsProxy()) {
-			InternalEObject oldOuterTimeLoop = (InternalEObject)outerTimeLoop;
-			outerTimeLoop = (TimeLoopJob)eResolveProxy(oldOuterTimeLoop);
-			if (outerTimeLoop != oldOuterTimeLoop) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.TIME_LOOP_JOB__OUTER_TIME_LOOP, oldOuterTimeLoop, outerTimeLoop));
-			}
-		}
-		return outerTimeLoop;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TimeLoopJob basicGetOuterTimeLoop() {
-		return outerTimeLoop;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetOuterTimeLoop(TimeLoopJob newOuterTimeLoop, NotificationChain msgs) {
-		TimeLoopJob oldOuterTimeLoop = outerTimeLoop;
-		outerTimeLoop = newOuterTimeLoop;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP_JOB__OUTER_TIME_LOOP, oldOuterTimeLoop, newOuterTimeLoop);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setOuterTimeLoop(TimeLoopJob newOuterTimeLoop) {
-		if (newOuterTimeLoop != outerTimeLoop) {
-			NotificationChain msgs = null;
-			if (outerTimeLoop != null)
-				msgs = ((InternalEObject)outerTimeLoop).eInverseRemove(this, IrPackage.TIME_LOOP_JOB__INNER_TIME_LOOP, TimeLoopJob.class, msgs);
-			if (newOuterTimeLoop != null)
-				msgs = ((InternalEObject)newOuterTimeLoop).eInverseAdd(this, IrPackage.TIME_LOOP_JOB__INNER_TIME_LOOP, TimeLoopJob.class, msgs);
-			msgs = basicSetOuterTimeLoop(newOuterTimeLoop, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP_JOB__OUTER_TIME_LOOP, newOuterTimeLoop, newOuterTimeLoop));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public TimeLoopJob getInnerTimeLoop() {
-		if (innerTimeLoop != null && innerTimeLoop.eIsProxy()) {
-			InternalEObject oldInnerTimeLoop = (InternalEObject)innerTimeLoop;
-			innerTimeLoop = (TimeLoopJob)eResolveProxy(oldInnerTimeLoop);
-			if (innerTimeLoop != oldInnerTimeLoop) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.TIME_LOOP_JOB__INNER_TIME_LOOP, oldInnerTimeLoop, innerTimeLoop));
-			}
-		}
-		return innerTimeLoop;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TimeLoopJob basicGetInnerTimeLoop() {
-		return innerTimeLoop;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetInnerTimeLoop(TimeLoopJob newInnerTimeLoop, NotificationChain msgs) {
-		TimeLoopJob oldInnerTimeLoop = innerTimeLoop;
-		innerTimeLoop = newInnerTimeLoop;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP_JOB__INNER_TIME_LOOP, oldInnerTimeLoop, newInnerTimeLoop);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setInnerTimeLoop(TimeLoopJob newInnerTimeLoop) {
-		if (newInnerTimeLoop != innerTimeLoop) {
-			NotificationChain msgs = null;
-			if (innerTimeLoop != null)
-				msgs = ((InternalEObject)innerTimeLoop).eInverseRemove(this, IrPackage.TIME_LOOP_JOB__OUTER_TIME_LOOP, TimeLoopJob.class, msgs);
-			if (newInnerTimeLoop != null)
-				msgs = ((InternalEObject)newInnerTimeLoop).eInverseAdd(this, IrPackage.TIME_LOOP_JOB__OUTER_TIME_LOOP, TimeLoopJob.class, msgs);
-			msgs = basicSetInnerTimeLoop(newInnerTimeLoop, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP_JOB__INNER_TIME_LOOP, newInnerTimeLoop, newInnerTimeLoop));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public String getTimeLoopName() {
 		return timeLoopName;
 	}
@@ -351,14 +207,6 @@ public class TimeLoopJobImpl extends JobImpl implements TimeLoopJob {
 		switch (featureID) {
 			case IrPackage.TIME_LOOP_JOB__JOBS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getJobs()).basicAdd(otherEnd, msgs);
-			case IrPackage.TIME_LOOP_JOB__OUTER_TIME_LOOP:
-				if (outerTimeLoop != null)
-					msgs = ((InternalEObject)outerTimeLoop).eInverseRemove(this, IrPackage.TIME_LOOP_JOB__INNER_TIME_LOOP, TimeLoopJob.class, msgs);
-				return basicSetOuterTimeLoop((TimeLoopJob)otherEnd, msgs);
-			case IrPackage.TIME_LOOP_JOB__INNER_TIME_LOOP:
-				if (innerTimeLoop != null)
-					msgs = ((InternalEObject)innerTimeLoop).eInverseRemove(this, IrPackage.TIME_LOOP_JOB__OUTER_TIME_LOOP, TimeLoopJob.class, msgs);
-				return basicSetInnerTimeLoop((TimeLoopJob)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -375,10 +223,6 @@ public class TimeLoopJobImpl extends JobImpl implements TimeLoopJob {
 				return ((InternalEList<?>)getJobs()).basicRemove(otherEnd, msgs);
 			case IrPackage.TIME_LOOP_JOB__WHILE_CONDITION:
 				return basicSetWhileCondition(null, msgs);
-			case IrPackage.TIME_LOOP_JOB__OUTER_TIME_LOOP:
-				return basicSetOuterTimeLoop(null, msgs);
-			case IrPackage.TIME_LOOP_JOB__INNER_TIME_LOOP:
-				return basicSetInnerTimeLoop(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -396,12 +240,6 @@ public class TimeLoopJobImpl extends JobImpl implements TimeLoopJob {
 			case IrPackage.TIME_LOOP_JOB__WHILE_CONDITION:
 				if (resolve) return getWhileCondition();
 				return basicGetWhileCondition();
-			case IrPackage.TIME_LOOP_JOB__OUTER_TIME_LOOP:
-				if (resolve) return getOuterTimeLoop();
-				return basicGetOuterTimeLoop();
-			case IrPackage.TIME_LOOP_JOB__INNER_TIME_LOOP:
-				if (resolve) return getInnerTimeLoop();
-				return basicGetInnerTimeLoop();
 			case IrPackage.TIME_LOOP_JOB__TIME_LOOP_NAME:
 				return getTimeLoopName();
 		}
@@ -424,12 +262,6 @@ public class TimeLoopJobImpl extends JobImpl implements TimeLoopJob {
 			case IrPackage.TIME_LOOP_JOB__WHILE_CONDITION:
 				setWhileCondition((Expression)newValue);
 				return;
-			case IrPackage.TIME_LOOP_JOB__OUTER_TIME_LOOP:
-				setOuterTimeLoop((TimeLoopJob)newValue);
-				return;
-			case IrPackage.TIME_LOOP_JOB__INNER_TIME_LOOP:
-				setInnerTimeLoop((TimeLoopJob)newValue);
-				return;
 			case IrPackage.TIME_LOOP_JOB__TIME_LOOP_NAME:
 				setTimeLoopName((String)newValue);
 				return;
@@ -451,12 +283,6 @@ public class TimeLoopJobImpl extends JobImpl implements TimeLoopJob {
 			case IrPackage.TIME_LOOP_JOB__WHILE_CONDITION:
 				setWhileCondition((Expression)null);
 				return;
-			case IrPackage.TIME_LOOP_JOB__OUTER_TIME_LOOP:
-				setOuterTimeLoop((TimeLoopJob)null);
-				return;
-			case IrPackage.TIME_LOOP_JOB__INNER_TIME_LOOP:
-				setInnerTimeLoop((TimeLoopJob)null);
-				return;
 			case IrPackage.TIME_LOOP_JOB__TIME_LOOP_NAME:
 				setTimeLoopName(TIME_LOOP_NAME_EDEFAULT);
 				return;
@@ -476,10 +302,6 @@ public class TimeLoopJobImpl extends JobImpl implements TimeLoopJob {
 				return jobs != null && !jobs.isEmpty();
 			case IrPackage.TIME_LOOP_JOB__WHILE_CONDITION:
 				return whileCondition != null;
-			case IrPackage.TIME_LOOP_JOB__OUTER_TIME_LOOP:
-				return outerTimeLoop != null;
-			case IrPackage.TIME_LOOP_JOB__INNER_TIME_LOOP:
-				return innerTimeLoop != null;
 			case IrPackage.TIME_LOOP_JOB__TIME_LOOP_NAME:
 				return TIME_LOOP_NAME_EDEFAULT == null ? timeLoopName != null : !TIME_LOOP_NAME_EDEFAULT.equals(timeLoopName);
 		}

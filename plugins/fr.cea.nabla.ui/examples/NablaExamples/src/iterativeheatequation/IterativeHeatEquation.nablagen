@@ -1,0 +1,48 @@
+with ExplicitHeatEquation.*;
+
+workflow IterativeHeatEquationGenerationChain transforms IterativeHeatEquation
+{
+	Nabla2Ir nabla2ir
+	{
+		timeVariable = t;
+		nodeCoordVariable = X;
+	}
+
+	TagPersistentVariables tagPersistentVariables follows nabla2ir 
+	{ 
+		iterationVariable = iterationN;
+		dumpedVariables = u as "Temperature";
+		period = 1.0 for iterationN;
+	}
+	
+	ReplaceUtf replaceUtf follows tagPersistentVariables
+	{
+	}
+	
+	ReplaceReductions replaceReductions follows replaceUtf
+	{
+	}
+	
+	OptimizeConnectivities optimizeConnectivities follows replaceReductions
+	{
+		connectivities = cells, nodes, faces;
+	}
+	
+	FillHLTs fillHlts follows optimizeConnectivities
+	{
+		dumpIr;
+	}
+	
+	Ir2Code javaGenerator follows fillHlts
+	{
+		language = Java;
+		outputDir = "/NablaExamples/src-gen-java";
+	}
+
+	Ir2Code kokkosGenerator follows fillHlts
+	{
+		language = Kokkos;
+		outputDir = "/NablaExamples/src-gen-kokkos";
+		disabled;
+	}
+}

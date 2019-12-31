@@ -1,4 +1,4 @@
-package explicitheatequation;
+package iterativeheatequation;
 
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import fr.cea.nabla.javalib.types.*;
 import fr.cea.nabla.javalib.mesh.*;
 
 @SuppressWarnings("all")
-public final class ExplicitHeatEquation
+public final class IterativeHeatEquation
 {
 	public final static class Options
 	{
@@ -23,6 +23,7 @@ public final class ExplicitHeatEquation
 		public final double Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 		public final double option_stoptime = 1.0;
 		public final int option_max_iterations = 500000000;
+		public final int option_max_iterations_k = 100;
 	}
 
 	private final Options options;
@@ -33,18 +34,18 @@ public final class ExplicitHeatEquation
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
 	// Global Variables
-	private double t_n, t_nplus1, deltat;
-	private int iterationN, lastDump;
+	private double t_n, t_nplus1, deltat, ε;
+	private int iterationN, iterationK, lastDump;
 
 	// Connectivity Variables
 	private double[][] X, Xc, alpha;
-	private double[] xc, yc, u_n, u_nplus1, V, D, faceLength, faceConductivity;
+	private double[] xc, yc, u_nplus1_kplus1, u_nplus1_k, u_nplus1, u_n, V, D, faceLength, faceConductivity;
 
-	public ExplicitHeatEquation(Options aOptions, NumericMesh2D aNumericMesh2D)
+	public IterativeHeatEquation(Options aOptions, NumericMesh2D aNumericMesh2D)
 	{
 		options = aOptions;
 		mesh = aNumericMesh2D;
-		writer = new PvdFileWriter2D("ExplicitHeatEquation");
+		writer = new PvdFileWriter2D("IterativeHeatEquation");
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
@@ -56,6 +57,7 @@ public final class ExplicitHeatEquation
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat = 0.001;
+		ε = 1.0E-8;
 		lastDump = iterationN;
 
 		// Allocate arrays
@@ -63,8 +65,10 @@ public final class ExplicitHeatEquation
 		Xc = new double[nbCells][2];
 		xc = new double[nbCells];
 		yc = new double[nbCells];
-		u_n = new double[nbCells];
+		u_nplus1_kplus1 = new double[nbCells];
+		u_nplus1_k = new double[nbCells];
 		u_nplus1 = new double[nbCells];
+		u_n = new double[nbCells];
 		V = new double[nbCells];
 		D = new double[nbCells];
 		faceLength = new double[nbFaces];
@@ -78,7 +82,7 @@ public final class ExplicitHeatEquation
 
 	public void simulate()
 	{
-		System.out.println("Début de l'exécution du module ExplicitHeatEquation");
+		System.out.println("Début de l'exécution du module IterativeHeatEquation");
 		initXc(); // @1.0
 		initD(); // @1.0
 		computeV(); // @1.0
@@ -88,17 +92,48 @@ public final class ExplicitHeatEquation
 		computeDeltaTn(); // @2.0
 		computeFaceConductivity(); // @2.0
 		computeAlphaCoeff(); // @3.0
+		dumpVariables(); // @3.0
 		executeTimeLoopN(); // @4.0
-		System.out.println("Fin de l'exécution du module ExplicitHeatEquation");
+		System.out.println("Fin de l'exécution du module IterativeHeatEquation");
 	}
 
 	public static void main(String[] args)
 	{
-		ExplicitHeatEquation.Options o = new ExplicitHeatEquation.Options();
+		IterativeHeatEquation.Options o = new IterativeHeatEquation.Options();
 		Mesh gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
 		NumericMesh2D nm = new NumericMesh2D(gm);
-		ExplicitHeatEquation i = new ExplicitHeatEquation(o, nm);
+		IterativeHeatEquation i = new IterativeHeatEquation(o, nm);
 		i.simulate();
+	}
+
+	/**
+	 * Job executeTimeLoopK @0.0
+	 * In variables: u_nplus1_kplus1, alpha, u_nplus1_k, u_n
+	 * Out variables: u_nplus1_kplus1, u_nplus1_k
+	 */
+	private void executeTimeLoopK() 
+	{
+		iterationK = 0;
+		while ((linftyNorm(u_nplus1_kplus1, u_nplus1_k) > ε && iterationK < options.option_max_iterations_k))
+		{
+			iterationK++;
+			System.out.println("	[iterationK : " + iterationK + "] t : " + t_n);
+			updateU(); // @1.0
+			prepareNextIterationOfTimeLoopK(); // @2.0
+		}
+	}
+
+	/**
+	 * Job tearDownTimeLoopK @0.0
+	 * In variables: u_nplus1_kplus1
+	 * Out variables: u_nplus1
+	 */
+	private void tearDownTimeLoopK() 
+	{
+		IntStream.range(0, u_nplus1.length).parallel().forEach(i1 -> 
+		{
+			u_nplus1[i1] = u_nplus1_kplus1[i1];
+		});
 	}
 
 	/**
@@ -111,17 +146,17 @@ public final class ExplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			int cId = cCells;
-			double[] reduction0 = {0.0, 0.0};
+			double[] reduction1 = {0.0, 0.0};
 			{
 				int[] nodesOfCellC = mesh.getNodesOfCell(cId);
 				for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.length; pNodesOfCellC++)
 				{
 					int pId = nodesOfCellC[pNodesOfCellC];
 					int pNodes = pId;
-					reduction0 = ArrayOperations.plus(reduction0, (X[pNodes]));
+					reduction1 = ArrayOperations.plus(reduction1, (X[pNodes]));
 				}
 			}
-			Xc[cCells] = ArrayOperations.multiply(0.25, reduction0);
+			Xc[cCells] = ArrayOperations.multiply(0.25, reduction1);
 		});
 	}
 
@@ -148,7 +183,7 @@ public final class ExplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double reduction2 = 0.0;
+			double reduction3 = 0.0;
 			{
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int pNodesOfCellJ=0; pNodesOfCellJ<nodesOfCellJ.length; pNodesOfCellJ++)
@@ -157,10 +192,10 @@ public final class ExplicitHeatEquation
 					int pPlus1Id = nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					int pNodes = pId;
 					int pPlus1Nodes = pPlus1Id;
-					reduction2 = reduction2 + (MathFunctions.det(X[pNodes], X[pPlus1Nodes]));
+					reduction3 = reduction3 + (MathFunctions.det(X[pNodes], X[pPlus1Nodes]));
 				}
 			}
-			V[jCells] = 0.5 * reduction2;
+			V[jCells] = 0.5 * reduction3;
 		});
 	}
 
@@ -174,7 +209,7 @@ public final class ExplicitHeatEquation
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			int fId = fFaces;
-			double reduction3 = 0.0;
+			double reduction4 = 0.0;
 			{
 				int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
 				for (int pNodesOfFaceF=0; pNodesOfFaceF<nodesOfFaceF.length; pNodesOfFaceF++)
@@ -183,34 +218,34 @@ public final class ExplicitHeatEquation
 					int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
 					int pNodes = pId;
 					int pPlus1Nodes = pPlus1Id;
-					reduction3 = reduction3 + (MathFunctions.norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
+					reduction4 = reduction4 + (MathFunctions.norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
 				}
 			}
-			faceLength[fFaces] = 0.5 * reduction3;
+			faceLength[fFaces] = 0.5 * reduction4;
 		});
 	}
 
 	/**
 	 * Job UpdateU @1.0
-	 * In variables: alpha, u_n
-	 * Out variables: u_nplus1
+	 * In variables: alpha, u_nplus1_k, u_n
+	 * Out variables: u_nplus1_kplus1
 	 */
 	private void updateU() 
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			int cId = cCells;
-			double reduction6 = 0.0;
+			double reduction7 = 0.0;
 			{
 				int[] neighbourCellsC = mesh.getNeighbourCells(cId);
 				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.length; dNeighbourCellsC++)
 				{
 					int dId = neighbourCellsC[dNeighbourCellsC];
 					int dCells = dId;
-					reduction6 = reduction6 + (alpha[cCells][dCells] * u_n[dCells]);
+					reduction7 = reduction7 + (alpha[cCells][dCells] * u_nplus1_k[dCells]);
 				}
 			}
-			u_nplus1[cCells] = alpha[cCells][cCells] * u_n[cCells] + reduction6;
+			u_nplus1_kplus1[cCells] = u_n[cCells] + alpha[cCells][cCells] * u_nplus1_k[cCells] + reduction7;
 		});
 	}
 
@@ -225,35 +260,27 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
-	 * Job dumpVariables @1.0
-	 * In variables: u_n, iterationN
-	 * Out variables: 
-	 */
-	private void dumpVariables() 
-	{
-		if (iterationN >= lastDump)
-		{
-			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-			cellVariables.put("Temperature", u_n);
-			writer.writeFile(iterationN, t_n, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
-			lastDump = iterationN;
-		}
-	}
-
-	/**
 	 * Job prepareNextIterationOfTimeLoopN @2.0
-	 * In variables: t_nplus1, u_nplus1
-	 * Out variables: t_n, u_n
+	 * In variables: t_nplus1
+	 * Out variables: t_n
 	 */
 	private void prepareNextIterationOfTimeLoopN() 
 	{
 		double tmpT_n = t_n;
 		t_n = t_nplus1;
 		t_nplus1 = tmpT_n;
-		double[] tmpU_n = u_n;
-		u_n = u_nplus1;
-		u_nplus1 = tmpU_n;
+	}
+
+	/**
+	 * Job prepareNextIterationOfTimeLoopK @2.0
+	 * In variables: u_nplus1_kplus1
+	 * Out variables: u_nplus1_k
+	 */
+	private void prepareNextIterationOfTimeLoopK() 
+	{
+		double[] tmpU_nplus1_k = u_nplus1_k;
+		u_nplus1_k = u_nplus1_kplus1;
+		u_nplus1_kplus1 = tmpU_nplus1_k;
 	}
 
 	/**
@@ -293,12 +320,12 @@ public final class ExplicitHeatEquation
 	 */
 	private void computeDeltaTn() 
 	{
-		double reduction1 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+		double reduction2 = IntStream.range(0, nbCells).boxed().parallel().reduce(
 			Double.MAX_VALUE, 
 			(r, cCells) -> MathFunctions.min(r, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]),
 			(r1, r2) -> MathFunctions.min(r1, r2)
 		);
-		deltat = reduction1 * 0.24;
+		deltat = reduction2 * 0.24;
 	}
 
 	/**
@@ -311,27 +338,27 @@ public final class ExplicitHeatEquation
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			int fId = fFaces;
-			double reduction4 = 1.0;
+			double reduction5 = 1.0;
 			{
 				int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				for (int c1CellsOfFaceF=0; c1CellsOfFaceF<cellsOfFaceF.length; c1CellsOfFaceF++)
 				{
 					int c1Id = cellsOfFaceF[c1CellsOfFaceF];
 					int c1Cells = c1Id;
-					reduction4 = reduction4 * (D[c1Cells]);
+					reduction5 = reduction5 * (D[c1Cells]);
 				}
 			}
-			double reduction5 = 0.0;
+			double reduction6 = 0.0;
 			{
 				int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				for (int c2CellsOfFaceF=0; c2CellsOfFaceF<cellsOfFaceF.length; c2CellsOfFaceF++)
 				{
 					int c2Id = cellsOfFaceF[c2CellsOfFaceF];
 					int c2Cells = c2Id;
-					reduction5 = reduction5 + (D[c2Cells]);
+					reduction6 = reduction6 + (D[c2Cells]);
 				}
 			}
-			faceConductivity[fFaces] = 2.0 * reduction4 / reduction5;
+			faceConductivity[fFaces] = 2.0 * reduction5 / reduction6;
 		});
 	}
 
@@ -365,9 +392,26 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
+	 * Job dumpVariables @3.0
+	 * In variables: u_n, iterationN
+	 * Out variables: 
+	 */
+	private void dumpVariables() 
+	{
+		if (iterationN >= lastDump)
+		{
+			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+			cellVariables.put("Temperature", u_n);
+			writer.writeFile(iterationN, t_n, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			lastDump = iterationN;
+		}
+	}
+
+	/**
 	 * Job executeTimeLoopN @4.0
-	 * In variables: t_n, u_n, alpha, iterationN, deltat, t_nplus1, u_nplus1
-	 * Out variables: t_n, u_n, u_nplus1, t_nplus1
+	 * In variables: u_nplus1_kplus1, deltat, alpha, t_n, t_nplus1, u_nplus1_k, u_n
+	 * Out variables: u_nplus1_kplus1, u_nplus1, t_n, t_nplus1, u_nplus1_k
 	 */
 	private void executeTimeLoopN() 
 	{
@@ -376,10 +420,19 @@ public final class ExplicitHeatEquation
 		{
 			iterationN++;
 			System.out.println("[iterationN : " + iterationN + "] t : " + t_n);
-			updateU(); // @1.0
-			dumpVariables(); // @1.0
+			executeTimeLoopK(); // @0.0
+			tearDownTimeLoopK(); // @0.0
 			computeTn(); // @1.0
 			prepareNextIterationOfTimeLoopN(); // @2.0
 		}
+	}
+
+	private double linftyNorm(double[] a, double[] b)
+	{
+		final int l = a.length;
+		double reduction0 = Double.MIN_VALUE;
+		for (int i=0; i<l; i++)
+			reduction0 = MathFunctions.max(reduction0, MathFunctions.fabs(a[i] - b[i]));
+		return reduction0;
 	}
 };

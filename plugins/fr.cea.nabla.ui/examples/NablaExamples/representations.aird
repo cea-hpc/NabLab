@@ -17,6 +17,9 @@
     <semanticResources>platform:/resource/fr.cea.nabla/linearalgebrafunctions.nabla</semanticResources>
     <semanticResources>src-gen/glace2d/Glace2d.optimizeConnectivities.nablair</semanticResources>
     <semanticResources>src-gen/glace2d/Glace2d.fillHlts.nablair</semanticResources>
+    <semanticResources>src/iterativeheatequation/IterativeHeatEquation.nabla</semanticResources>
+    <semanticResources>src/iterativeheatequation/IterativeHeatEquation.nablagen</semanticResources>
+    <semanticResources>src-gen/iterativeheatequation/IterativeHeatEquation.fillHlts.nablair</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_mRvOsIBWEemS0rMnoZr-Bw">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_2cXZkMtdEemou5PVW8MNNQ" name="TestDefaultGenerationChainDiagram" repPath="#_2ZuVQMtdEemou5PVW8MNNQ">
@@ -2021,8 +2024,8 @@
       <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@nodeMappings[name='NID.VariableBaseNode']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DNode" uid="_JkhTgBDpEeqlZLaJmusm9w" name="X" outgoingEdges="_Jl3XVBDpEeqlZLaJmusm9w _Jl4lchDpEeqlZLaJmusm9w _Jl5zkBDpEeqlZLaJmusm9w" width="10" height="5" resizeKind="NSEW">
-      <target xmi:type="ir:ConnectivityVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.13"/>
-      <semanticElements xmi:type="ir:ConnectivityVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.13"/>
+      <target xmi:type="ir:SimpleVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.13"/>
+      <semanticElements xmi:type="ir:SimpleVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.13"/>
       <ownedStyle xmi:type="diagram:Square" uid="_Jkh6kBDpEeqlZLaJmusm9w" showIcon="false" labelColor="114,73,110" borderSize="1" borderSizeComputationExpression="1" borderColor="114,73,110" labelPosition="node" width="10" height="5" color="217,196,215">
         <description xmi:type="style:SquareDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@nodeMappings[name='NID.VariableBaseNode']/@conditionnalStyles.0/@style"/>
       </ownedStyle>
@@ -2109,8 +2112,8 @@
       <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@nodeMappings[name='NID.VariableBaseNode']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DNode" uid="_JlLa0RDpEeqlZLaJmusm9w" name="t_nplus1" outgoingEdges="_JmJrMhDpEeqlZLaJmusm9w" incomingEdges="_JmOjuRDpEeqlZLaJmusm9w" width="13" height="5" resizeKind="NSEW">
-      <target xmi:type="ir:SimpleVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.24"/>
-      <semanticElements xmi:type="ir:SimpleVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.24"/>
+      <target xmi:type="ir:ConnectivityVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.24"/>
+      <semanticElements xmi:type="ir:ConnectivityVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.24"/>
       <ownedStyle xmi:type="diagram:Square" uid="_JlN3EBDpEeqlZLaJmusm9w" iconPath="/fr.cea.nabla.sirius/icons/endloop.png" labelColor="136,136,136" borderSize="1" borderSizeComputationExpression="1" borderColor="136,136,136" labelPosition="node" width="13" height="5" color="194,239,255">
         <description xmi:type="style:SquareDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@nodeMappings[name='NID.VariableBaseNode']/@conditionnalStyles.4/@style"/>
       </ownedStyle>
@@ -2304,11 +2307,11 @@
       <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DNodeContainer" uid="_JlXBABDpEeqlZLaJmusm9w" name="UpdateU" tooltipText="UpdateU" outgoingEdges="_JmOjtBDpEeqlZLaJmusm9w" incomingEdges="_Jl-sEhDpEeqlZLaJmusm9w _JmH2BBDpEeqlZLaJmusm9w">
-      <target xmi:type="ir:InSituJob" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@jobs.11"/>
-      <semanticElements xmi:type="ir:InSituJob" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@jobs.11"/>
+      <target xmi:type="ir:InstructionJob" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@jobs.11"/>
+      <semanticElements xmi:type="ir:InstructionJob" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@jobs.11"/>
       <ownedBorderedNodes xmi:type="diagram:DNode" uid="_JlgK8BDpEeqlZLaJmusm9w" name="1.0" width="3" height="3" resizeKind="NSEW">
-        <target xmi:type="ir:InSituJob" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@jobs.11"/>
-        <semanticElements xmi:type="ir:InSituJob" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@jobs.11"/>
+        <target xmi:type="ir:InstructionJob" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@jobs.11"/>
+        <semanticElements xmi:type="ir:InstructionJob" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@jobs.11"/>
         <ownedStyle xmi:type="diagram:Dot" uid="_JlgK8RDpEeqlZLaJmusm9w" showIcon="false" labelPosition="node" backgroundColor="255,255,255">
           <description xmi:type="style:DotDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']/@borderedNodeMappings[name='NID.JN.At']/@style"/>
         </ownedStyle>
@@ -2411,7 +2414,7 @@
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_Jl3XVBDpEeqlZLaJmusm9w" sourceNode="_JkhTgBDpEeqlZLaJmusm9w" targetNode="_JlVL0xDpEeqlZLaJmusm9w">
-      <target xmi:type="ir:ConnectivityVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.13"/>
+      <target xmi:type="ir:SimpleVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.13"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" uid="_Jl3-YBDpEeqlZLaJmusm9w" size="2" strokeColor="173,127,168">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']/@conditionnalStyles.2/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_Jl3-YRDpEeqlZLaJmusm9w"/>
@@ -2419,7 +2422,7 @@
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_Jl4lchDpEeqlZLaJmusm9w" sourceNode="_JkhTgBDpEeqlZLaJmusm9w" targetNode="_JlVy4RDpEeqlZLaJmusm9w">
-      <target xmi:type="ir:ConnectivityVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.13"/>
+      <target xmi:type="ir:SimpleVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.13"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" uid="_Jl5MgBDpEeqlZLaJmusm9w" size="2" strokeColor="173,127,168">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']/@conditionnalStyles.2/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_Jl5MgRDpEeqlZLaJmusm9w"/>
@@ -2427,7 +2430,7 @@
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_Jl5zkBDpEeqlZLaJmusm9w" sourceNode="_JkhTgBDpEeqlZLaJmusm9w" targetNode="_JlTWohDpEeqlZLaJmusm9w">
-      <target xmi:type="ir:ConnectivityVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.13"/>
+      <target xmi:type="ir:SimpleVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.13"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" uid="_Jl6aoBDpEeqlZLaJmusm9w" size="2" strokeColor="173,127,168">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']/@conditionnalStyles.2/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_Jl6aoRDpEeqlZLaJmusm9w"/>
@@ -2531,7 +2534,7 @@
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_JmJrMhDpEeqlZLaJmusm9w" sourceNode="_JlLa0RDpEeqlZLaJmusm9w" targetNode="_JlSvkBDpEeqlZLaJmusm9w">
-      <target xmi:type="ir:SimpleVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.24"/>
+      <target xmi:type="ir:ConnectivityVariable" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@variables.24"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" uid="_JmJrMxDpEeqlZLaJmusm9w" lineStyle="dash" size="2">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Var2Job']/@conditionnalStyles.0/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_JmJrNBDpEeqlZLaJmusm9w"/>
@@ -2635,7 +2638,7 @@
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Job2Var']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_JmOjtBDpEeqlZLaJmusm9w" sourceNode="_JlXBABDpEeqlZLaJmusm9w" targetNode="_JlBCwBDpEeqlZLaJmusm9w">
-      <target xmi:type="ir:InSituJob" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@jobs.11"/>
+      <target xmi:type="ir:InstructionJob" href="src-gen/explicitheatequation/ExplicitHeatEquation.fillHlts.nablair#//@jobs.11"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" uid="_JmOjtRDpEeqlZLaJmusm9w" size="2">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@edgeMappings[name='NID.Job2Var']/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_JmOjthDpEeqlZLaJmusm9w"/>

@@ -1299,31 +1299,13 @@ public interface IrPackage extends EPackage {
 	int TIME_LOOP_JOB__WHILE_CONDITION = JOB_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Outer Time Loop</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_JOB__OUTER_TIME_LOOP = JOB_FEATURE_COUNT + 2;
-
-	/**
-	 * The feature id for the '<em><b>Inner Time Loop</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_JOB__INNER_TIME_LOOP = JOB_FEATURE_COUNT + 3;
-
-	/**
 	 * The feature id for the '<em><b>Time Loop Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_LOOP_JOB__TIME_LOOP_NAME = JOB_FEATURE_COUNT + 4;
+	int TIME_LOOP_JOB__TIME_LOOP_NAME = JOB_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Time Loop Job</em>' class.
@@ -1332,7 +1314,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_LOOP_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 5;
+	int TIME_LOOP_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of operations of the '<em>Time Loop Job</em>' class.
@@ -4734,28 +4716,6 @@ public interface IrPackage extends EPackage {
 	EReference getTimeLoopJob_WhileCondition();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.TimeLoopJob#getOuterTimeLoop <em>Outer Time Loop</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Outer Time Loop</em>'.
-	 * @see fr.cea.nabla.ir.ir.TimeLoopJob#getOuterTimeLoop()
-	 * @see #getTimeLoopJob()
-	 * @generated
-	 */
-	EReference getTimeLoopJob_OuterTimeLoop();
-
-	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.TimeLoopJob#getInnerTimeLoop <em>Inner Time Loop</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Inner Time Loop</em>'.
-	 * @see fr.cea.nabla.ir.ir.TimeLoopJob#getInnerTimeLoop()
-	 * @see #getTimeLoopJob()
-	 * @generated
-	 */
-	EReference getTimeLoopJob_InnerTimeLoop();
-
-	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.TimeLoopJob#getTimeLoopName <em>Time Loop Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -6560,22 +6520,6 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference TIME_LOOP_JOB__WHILE_CONDITION = eINSTANCE.getTimeLoopJob_WhileCondition();
-
-		/**
-		 * The meta object literal for the '<em><b>Outer Time Loop</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference TIME_LOOP_JOB__OUTER_TIME_LOOP = eINSTANCE.getTimeLoopJob_OuterTimeLoop();
-
-		/**
-		 * The meta object literal for the '<em><b>Inner Time Loop</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference TIME_LOOP_JOB__INNER_TIME_LOOP = eINSTANCE.getTimeLoopJob_InnerTimeLoop();
 
 		/**
 		 * The meta object literal for the '<em><b>Time Loop Name</b></em>' attribute feature.

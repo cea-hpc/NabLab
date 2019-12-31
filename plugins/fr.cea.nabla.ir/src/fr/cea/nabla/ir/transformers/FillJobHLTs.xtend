@@ -138,7 +138,7 @@ class FillJobHLTs implements IrTransformationStep
 
 	private def void distributeJobsInTimeLoops(TimeLoopJob tlj, Job j)
 	{
-		println("distributeJobsInTimeLoops(" + tlj + ", " + j.name)
+		//println("distributeJobsInTimeLoops(" + tlj + ", " + j.name)
 		val nextJobs = j.nextJobs.reject(TimeLoopJob)
 		switch j
 		{
@@ -149,10 +149,10 @@ class FillJobHLTs implements IrTransformationStep
 			}
 			AfterTimeLoopJob:
 			{
-				if (tlj.outerTimeLoop !== null)
+				if (tlj.timeLoopContainer !== null)
 				{
-					tlj.outerTimeLoop.jobs += j
-					nextJobs.forEach[x | distributeJobsInTimeLoops(tlj.outerTimeLoop, x)]
+					tlj.timeLoopContainer.jobs += j
+					nextJobs.forEach[x | distributeJobsInTimeLoops(tlj.timeLoopContainer, x)]
 				}
 			}
 			NextTimeLoopIterationJob:

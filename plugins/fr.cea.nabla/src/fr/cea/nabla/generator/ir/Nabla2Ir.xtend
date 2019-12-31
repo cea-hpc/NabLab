@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.ArgOrVarRef
@@ -30,6 +31,7 @@ import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.typing.DeclarationProvider
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.EcoreUtil2
 
 import static fr.cea.nabla.ir.Utils.getDefaultIrVariable
@@ -68,13 +70,12 @@ class Nabla2Ir
 			for (ti : nablaModule.iteration.iterators)
 			{
 				val currentTL = ti.toIrTimeLoopJob
-				if (outerTL !== null) outerTL.innerTimeLoop = currentTL
+				if (outerTL !== null) currentTL.timeLoopContainer = outerTL
 
 				jobs += currentTL
 				jobs += ti.toIrBeforeTimeLoopJob
 				jobs += ti.toIrNextTimeLoopIterationJob
-				// Nothing to do after time loop if it is the outer time loop => no job creation
-				if (outerTL !== null) jobs += ti.toIrAfterTimeLoopJob
+				jobs += ti.toIrAfterTimeLoopJob
 
 				outerTL = currentTL
 			}
@@ -95,6 +96,10 @@ class Nabla2Ir
 		nodeCoordVariable = getDefaultIrVariable(it, nablaNodeCoordVariable.name) as ConnectivityVariable
 		timeVariable = getDefaultIrVariable(it, nablaTimeVariable.name) as SimpleVariable
 
+		// Eliminate TimeLoopCopyJob with no copies
+		val tlcps = jobs.filter(TimeLoopCopyJob).filter[copies.empty].toList
+		EcoreUtil::deleteAll(tlcps, false)
+
 		nablaModule.jobs.forEach[x | jobs += x.toIrInstructionJob]
 
 		// Create a unique name for reduction instruction variable
@@ -110,6 +115,12 @@ class Nabla2Ir
 		return module.name
 	}
 
+	/** 
+	 * Create IR variable(s) corresponding to Nabla Var v.
+	 * Several IR variables can be created if v is used at several time steps (ArgOrVarRef instances).
+	 * Each created variables can be added to irModule: the collection as a unique qualifier 
+	 * consequently it can contains only one instance of each variable.
+	 */
 	private def void fillIrVariables(NablaModule nablaModule, IrModule irModule, Var v, ConnectivityVar nablaNodeCoordVariable)
 	{
 		// Time n+1 variables and EndOfInitJob creation 
@@ -120,8 +131,8 @@ class Nabla2Ir
 		}
 		else for (vRef : vRefs.toIterable)
 		{
-			val iterators = vRef.timeIterators
-			switch iterators.last
+			val ti = vRef.timeIterators.last
+			switch ti
 			{
 				CurrentTimeIteratorRef: 
 				{
@@ -133,8 +144,9 @@ class Nabla2Ir
 					irModule.variables += varAtInit
 					if (v == nablaNodeCoordVariable) irModule.initNodeCoordVariable = varAtInit as ConnectivityVariable
 					val varAtCurrent = v.toIrArgOrVar(vRef.irCurrentTimeSuffix) as Variable
+					irModule.variables += varAtCurrent
 					val tlCopy = toIrCopy(varAtInit, varAtCurrent)
-					val beforeJob = iterators.last.target.toIrBeforeTimeLoopJob
+					val beforeJob = ti.target.toIrBeforeTimeLoopJob
 					beforeJob.copies += tlCopy
 				}
 				NextTimeIteratorRef:
@@ -142,15 +154,17 @@ class Nabla2Ir
 					val varAtNext = v.toIrArgOrVar(vRef.irTimeSuffix) as Variable
 					irModule.variables += varAtNext
 					val varAtCurrent = v.toIrArgOrVar(vRef.irCurrentTimeSuffix) as Variable
-					val nextIterJob = iterators.last.target.toIrNextTimeLoopIterationJob
+					irModule.variables += varAtCurrent
+					val nextIterJob = ti.target.toIrNextTimeLoopIterationJob
 					nextIterJob.copies += toIrCopy(varAtNext, varAtCurrent)
 
-					val afterJob = iterators.last.target.toIrAfterTimeLoopJob
+					val afterJob = ti.target.toIrAfterTimeLoopJob
 					val outerTimeIteratorSuffix = vRef.irOuterTimeSuffix
 					if (outerTimeIteratorSuffix !== null)
 					{
-						val varAtOuterTimeIterator = v.toIrArgOrVar(outerTimeIteratorSuffix)
-						afterJob.copies += toIrCopy(varAtNext as Variable, varAtOuterTimeIterator as Variable)
+						val varAtOuterTimeIterator = v.toIrArgOrVar(outerTimeIteratorSuffix) as Variable
+						irModule.variables += varAtOuterTimeIterator
+						afterJob.copies += toIrCopy(varAtNext as Variable, varAtOuterTimeIterator)
 					}
 				}
 			}

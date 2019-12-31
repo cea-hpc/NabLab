@@ -15,8 +15,6 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoopJob#getJobs <em>Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoopJob#getWhileCondition <em>While Condition</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.TimeLoopJob#getOuterTimeLoop <em>Outer Time Loop</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.TimeLoopJob#getInnerTimeLoop <em>Inner Time Loop</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoopJob#getTimeLoopName <em>Time Loop Name</em>}</li>
  * </ul>
  *
@@ -60,54 +58,6 @@ public interface TimeLoopJob extends Job {
 	 * @generated
 	 */
 	void setWhileCondition(Expression value);
-
-	/**
-	 * Returns the value of the '<em><b>Outer Time Loop</b></em>' reference.
-	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.TimeLoopJob#getInnerTimeLoop <em>Inner Time Loop</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Outer Time Loop</em>' reference.
-	 * @see #setOuterTimeLoop(TimeLoopJob)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoopJob_OuterTimeLoop()
-	 * @see fr.cea.nabla.ir.ir.TimeLoopJob#getInnerTimeLoop
-	 * @model opposite="innerTimeLoop"
-	 * @generated
-	 */
-	TimeLoopJob getOuterTimeLoop();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.TimeLoopJob#getOuterTimeLoop <em>Outer Time Loop</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Outer Time Loop</em>' reference.
-	 * @see #getOuterTimeLoop()
-	 * @generated
-	 */
-	void setOuterTimeLoop(TimeLoopJob value);
-
-	/**
-	 * Returns the value of the '<em><b>Inner Time Loop</b></em>' reference.
-	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.TimeLoopJob#getOuterTimeLoop <em>Outer Time Loop</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Inner Time Loop</em>' reference.
-	 * @see #setInnerTimeLoop(TimeLoopJob)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoopJob_InnerTimeLoop()
-	 * @see fr.cea.nabla.ir.ir.TimeLoopJob#getOuterTimeLoop
-	 * @model opposite="outerTimeLoop"
-	 * @generated
-	 */
-	TimeLoopJob getInnerTimeLoop();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.TimeLoopJob#getInnerTimeLoop <em>Inner Time Loop</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Inner Time Loop</em>' reference.
-	 * @see #getInnerTimeLoop()
-	 * @generated
-	 */
-	void setInnerTimeLoop(TimeLoopJob value);
 
 	/**
 	 * Returns the value of the '<em><b>Time Loop Name</b></em>' attribute.

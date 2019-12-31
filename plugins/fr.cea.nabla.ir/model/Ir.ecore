@@ -140,10 +140,6 @@
         eOpposite="#//Job/timeLoopContainer"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="whileCondition" lowerBound="1"
         eType="#//Expression" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="outerTimeLoop" eType="#//TimeLoopJob"
-        eOpposite="#//TimeLoopJob/innerTimeLoop"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="innerTimeLoop" eType="#//TimeLoopJob"
-        eOpposite="#//TimeLoopJob/outerTimeLoop"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeLoopName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>

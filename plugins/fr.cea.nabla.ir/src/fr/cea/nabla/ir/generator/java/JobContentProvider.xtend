@@ -115,7 +115,7 @@ class JobContentProvider
 
 	private static def String getIndentation(TimeLoopJob it)
 	{
-		if (outerTimeLoop === null) ''
-		else getIndentation(outerTimeLoop) + '\t'
+		if (timeLoopContainer === null) ''
+		else getIndentation(timeLoopContainer) + '\t'
 	}
 }

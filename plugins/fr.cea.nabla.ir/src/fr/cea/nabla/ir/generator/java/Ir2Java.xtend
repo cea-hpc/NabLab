@@ -128,7 +128,7 @@ class Ir2Java extends CodeGenerator
 			public void simulate()
 			{
 				System.out.println("Début de l'exécution du module «name»");
-				«FOR j : jobs.filter[timeLoopContainer === null].sortBy[at]»
+				«FOR j : jobs.filter[jobContainer === null].sortBy[at]»
 					«j.codeName»(); // @«j.at»
 				«ENDFOR»
 				System.out.println("Fin de l'exécution du module «name»");

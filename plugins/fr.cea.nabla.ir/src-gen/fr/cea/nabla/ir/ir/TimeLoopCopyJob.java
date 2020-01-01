@@ -14,7 +14,7 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoopCopyJob#getCopies <em>Copies</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.TimeLoopCopyJob#getAssociatedTimeLoop <em>Associated Time Loop</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.TimeLoopCopyJob#getTimeLoop <em>Time Loop</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoopCopyJob()
@@ -35,25 +35,25 @@ public interface TimeLoopCopyJob extends Job {
 	EList<TimeLoopCopy> getCopies();
 
 	/**
-	 * Returns the value of the '<em><b>Associated Time Loop</b></em>' reference.
+	 * Returns the value of the '<em><b>Time Loop</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Associated Time Loop</em>' reference.
-	 * @see #setAssociatedTimeLoop(TimeLoopJob)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoopCopyJob_AssociatedTimeLoop()
+	 * @return the value of the '<em>Time Loop</em>' reference.
+	 * @see #setTimeLoop(TimeLoop)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoopCopyJob_TimeLoop()
 	 * @model required="true"
 	 * @generated
 	 */
-	TimeLoopJob getAssociatedTimeLoop();
+	TimeLoop getTimeLoop();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.TimeLoopCopyJob#getAssociatedTimeLoop <em>Associated Time Loop</em>}' reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.TimeLoopCopyJob#getTimeLoop <em>Time Loop</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Associated Time Loop</em>' reference.
-	 * @see #getAssociatedTimeLoop()
+	 * @param value the new value of the '<em>Time Loop</em>' reference.
+	 * @see #getTimeLoop()
 	 * @generated
 	 */
-	void setAssociatedTimeLoop(TimeLoopJob value);
+	void setTimeLoop(TimeLoop value);
 
 } // TimeLoopCopyJob

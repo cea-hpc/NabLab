@@ -11,14 +11,14 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.TimeLoop
+import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.Job
-import fr.cea.nabla.nabla.TimeIterator
 
 class IrJobFactory 
 {
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrInstructionFactory
-	@Inject extension IrExpressionFactory
 
 	def create IrFactory::eINSTANCE.createInstructionJob toIrInstructionJob(Job j)
 	{
@@ -28,28 +28,43 @@ class IrJobFactory
 		instruction = j.instruction.toIrInstruction
 	}
 
-	def create IrFactory::eINSTANCE.createBeforeTimeLoopJob toIrBeforeTimeLoopJob(TimeIterator ti)
+	def create IrFactory::eINSTANCE.createBeforeTimeLoopJob toIrBeforeTimeLoopJob(TimeLoop tl)
 	{
-		name = "setUpTimeLoop" + ti.name.toFirstUpper
-		associatedTimeLoop = ti.toIrTimeLoopJob
+		name = "setUpTimeLoop" + tl.name.toFirstUpper
+		timeLoop = tl
+		for (v : tl.variables.filter[v | v.init !== null])
+			copies += toIrCopy(v.init, v.current)
 	}
 
-	def create IrFactory::eINSTANCE.createAfterTimeLoopJob toIrAfterTimeLoopJob(TimeIterator ti)
+	def create IrFactory::eINSTANCE.createAfterTimeLoopJob toIrAfterTimeLoopJob(TimeLoop tl)
 	{ 
-		name = "tearDownTimeLoop" + ti.name.toFirstUpper
-		associatedTimeLoop = ti.toIrTimeLoopJob
+		name = "tearDownTimeLoop" + tl.name.toFirstUpper
+		timeLoop = tl
+		if (tl.outerTimeLoop !== null)
+			for (v : tl.variables)
+			{
+				val outerV = tl.outerTimeLoop.variables.findFirst[name == v.name]
+				if (outerV !== null) copies += toIrCopy(v.next, outerV.next)
+			}
 	}
 
-	def create IrFactory::eINSTANCE.createNextTimeLoopIterationJob toIrNextTimeLoopIterationJob(TimeIterator ti)
+	def create IrFactory::eINSTANCE.createNextTimeLoopIterationJob toIrNextTimeLoopIterationJob(TimeLoop tl)
 	{ 
-		name = "prepareNextIterationOfTimeLoop" + ti.name.toFirstUpper
-		associatedTimeLoop = ti.toIrTimeLoopJob
+		name = "prepareNextIterationOfTimeLoop" + tl.name.toFirstUpper
+		timeLoop = tl
+		for (v : tl.variables)
+			copies += toIrCopy(v.next, v.current)
 	}
 
-	def create IrFactory::eINSTANCE.createTimeLoopJob toIrTimeLoopJob(TimeIterator ti)
+	def create IrFactory::eINSTANCE.createTimeLoopJob toIrTimeLoopJob(TimeLoop tl)
 	{
-		timeLoopName = ti.name
-		name = "executeTimeLoop" + ti.name.toFirstUpper
-		whileCondition = ti.cond.toIrExpression
+		name = "executeTimeLoop" + tl.name.toFirstUpper
+		timeLoop= tl
+	}
+
+	private def create IrFactory::eINSTANCE.createTimeLoopCopy toIrCopy(Variable from, Variable to)
+	{
+		source = from
+		destination = to
 	}
 }

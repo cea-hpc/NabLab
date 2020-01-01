@@ -12,6 +12,7 @@ import fr.cea.nabla.ir.ir.ItemType;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.Reduction;
 import fr.cea.nabla.ir.ir.SimpleVariable;
+import fr.cea.nabla.ir.ir.TimeLoop;
 import fr.cea.nabla.ir.ir.Variable;
 
 import java.util.Collection;
@@ -48,6 +49,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getTimeVariable <em>Time Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getJobs <em>Jobs</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getMainTimeLoop <em>Main Time Loop</em>}</li>
  * </ul>
  *
  * @generated
@@ -172,6 +174,16 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * @ordered
 	 */
 	protected EList<Job> jobs;
+
+	/**
+	 * The cached value of the '{@link #getMainTimeLoop() <em>Main Time Loop</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getMainTimeLoop()
+	 * @generated
+	 * @ordered
+	 */
+	protected TimeLoop mainTimeLoop;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -432,6 +444,74 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
+	public TimeLoop getMainTimeLoop() {
+		if (mainTimeLoop != null && mainTimeLoop.eIsProxy()) {
+			InternalEObject oldMainTimeLoop = (InternalEObject)mainTimeLoop;
+			mainTimeLoop = (TimeLoop)eResolveProxy(oldMainTimeLoop);
+			if (mainTimeLoop != oldMainTimeLoop) {
+				InternalEObject newMainTimeLoop = (InternalEObject)mainTimeLoop;
+				NotificationChain msgs = oldMainTimeLoop.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__MAIN_TIME_LOOP, null, null);
+				if (newMainTimeLoop.eInternalContainer() == null) {
+					msgs = newMainTimeLoop.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__MAIN_TIME_LOOP, null, msgs);
+				}
+				if (msgs != null) msgs.dispatch();
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_MODULE__MAIN_TIME_LOOP, oldMainTimeLoop, mainTimeLoop));
+			}
+		}
+		return mainTimeLoop;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public TimeLoop basicGetMainTimeLoop() {
+		return mainTimeLoop;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetMainTimeLoop(TimeLoop newMainTimeLoop, NotificationChain msgs) {
+		TimeLoop oldMainTimeLoop = mainTimeLoop;
+		mainTimeLoop = newMainTimeLoop;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__MAIN_TIME_LOOP, oldMainTimeLoop, newMainTimeLoop);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setMainTimeLoop(TimeLoop newMainTimeLoop) {
+		if (newMainTimeLoop != mainTimeLoop) {
+			NotificationChain msgs = null;
+			if (mainTimeLoop != null)
+				msgs = ((InternalEObject)mainTimeLoop).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__MAIN_TIME_LOOP, null, msgs);
+			if (newMainTimeLoop != null)
+				msgs = ((InternalEObject)newMainTimeLoop).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__MAIN_TIME_LOOP, null, msgs);
+			msgs = basicSetMainTimeLoop(newMainTimeLoop, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__MAIN_TIME_LOOP, newMainTimeLoop, newMainTimeLoop));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.IR_MODULE__IMPORTS:
@@ -448,6 +528,8 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 				return ((InternalEList<?>)getVariables()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__JOBS:
 				return ((InternalEList<?>)getJobs()).basicRemove(otherEnd, msgs);
+			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
+				return basicSetMainTimeLoop(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -485,6 +567,9 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 				return basicGetTimeVariable();
 			case IrPackage.IR_MODULE__JOBS:
 				return getJobs();
+			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
+				if (resolve) return getMainTimeLoop();
+				return basicGetMainTimeLoop();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -538,6 +623,9 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 				getJobs().clear();
 				getJobs().addAll((Collection<? extends Job>)newValue);
 				return;
+			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
+				setMainTimeLoop((TimeLoop)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -583,6 +671,9 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 			case IrPackage.IR_MODULE__JOBS:
 				getJobs().clear();
 				return;
+			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
+				setMainTimeLoop((TimeLoop)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -617,6 +708,8 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 				return timeVariable != null;
 			case IrPackage.IR_MODULE__JOBS:
 				return jobs != null && !jobs.isEmpty();
+			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
+				return mainTimeLoop != null;
 		}
 		return super.eIsSet(featureID);
 	}

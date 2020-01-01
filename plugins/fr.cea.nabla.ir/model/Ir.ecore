@@ -41,10 +41,25 @@
         eType="#//SimpleVariable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="jobs" upperBound="-1" eType="#//Job"
         containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mainTimeLoop" eType="#//TimeLoop"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Import" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importedNamespace" unique="false"
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeLoop" eSuperTypes="#//IrAnnotable">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="innerTimeLoop" eType="#//TimeLoop"
+        containment="true" eOpposite="#//TimeLoop/outerTimeLoop"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="outerTimeLoop" eType="#//TimeLoop"
+        eOpposite="#//TimeLoop/innerTimeLoop"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
+        eType="#//TimeLoopVariable" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="whileCondition" lowerBound="1"
+        eType="#//Expression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="associatedJob" lowerBound="1"
+        eType="#//TimeLoopJob" eOpposite="#//TimeLoopJob/timeLoop"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ArgOrVar" abstract="true" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -118,7 +133,7 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="onCycle" unique="false"
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="timeLoopContainer" eType="#//TimeLoopJob"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="jobContainer" eType="#//TimeLoopJob"
         eOpposite="#//TimeLoopJob/jobs"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InstructionJob" eSuperTypes="#//Job">
@@ -137,17 +152,15 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeLoopJob" eSuperTypes="#//Job">
     <eStructuralFeatures xsi:type="ecore:EReference" name="jobs" upperBound="-1" eType="#//Job"
-        eOpposite="#//Job/timeLoopContainer"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="whileCondition" lowerBound="1"
-        eType="#//Expression" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeLoopName" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        eOpposite="#//Job/jobContainer"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="timeLoop" lowerBound="1"
+        eType="#//TimeLoop" eOpposite="#//TimeLoop/associatedJob"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeLoopCopyJob" abstract="true" eSuperTypes="#//Job">
     <eStructuralFeatures xsi:type="ecore:EReference" name="copies" upperBound="-1"
         eType="#//TimeLoopCopy" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="associatedTimeLoop" lowerBound="1"
-        eType="#//TimeLoopJob"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="timeLoop" lowerBound="1"
+        eType="#//TimeLoop"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BeforeTimeLoopJob" eSuperTypes="#//TimeLoopCopyJob"/>
   <eClassifiers xsi:type="ecore:EClass" name="AfterTimeLoopJob" eSuperTypes="#//TimeLoopCopyJob"/>
@@ -362,5 +375,12 @@
         upperBound="-1" eType="#//Connectivity"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" lowerBound="1" eType="#//BaseType"
         containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeLoopVariable" eSuperTypes="#//IrAnnotable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="init" eType="#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="current" lowerBound="1"
+        eType="#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="next" lowerBound="1" eType="#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
 </ecore:EPackage>

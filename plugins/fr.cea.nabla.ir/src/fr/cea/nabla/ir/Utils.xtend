@@ -44,17 +44,21 @@ class Utils
 		return utfExponent
 	}
 
-	static def getDefaultIrVariable(IrModule m, String nablaVariableName)
+	static def getCurrentIrVariable(IrModule m, String nablaVariableName) { getIrVariable(m, nablaVariableName, false) }
+	static def getInitIrVariable(IrModule m, String nablaVariableName) { getIrVariable(m, nablaVariableName, true) }
+
+	private static def getIrVariable(IrModule m, String nablaVariableName, boolean initTimeIterator)
 	{
 		var irVariable = m.variables.findFirst[x | x.name == nablaVariableName]
-		if (irVariable === null)
+		if (irVariable === null && m.mainTimeLoop !== null) 
 		{
-			val allTimeVariables = m.variables.filter[x | x.name.startsWith(nablaVariableName + '_')]
-			if (!allTimeVariables.empty)
+			val timeLoopVariable = m.mainTimeLoop.variables.findFirst[x | x.name == nablaVariableName]
+			if (timeLoopVariable !== null) 
 			{
-				// Take the shortest extension (corresponding to the default variable, i.e. t_n for t)
-				// To be improved...
-				irVariable = allTimeVariables.sortBy[name.length].head
+				if (initTimeIterator && timeLoopVariable.init !== null) 
+					irVariable = timeLoopVariable.init
+				else
+					irVariable = timeLoopVariable.current
 			}
 		}
 		return irVariable

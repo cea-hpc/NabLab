@@ -18,6 +18,7 @@ import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.SimpleVar
+import fr.cea.nabla.nabla.Var
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -32,12 +33,6 @@ class IrArgOrVarFactory
 	@Inject extension BaseType2IrType
 	@Inject extension IrAnnotationHelper
 
-	/**
-	 * Cette méthode permet de construire une variable IR depuis
-	 * une variable Nabla. C'est utile à partir d'une instance de VarRef.
-	 * A une variable Nabla peut correspondre plusieurs variables IR,
-	 * en fonction de l'itérateur en temps.
-	 */	
 	def toIrArgOrVar(ArgOrVar v, String timeSuffix)
 	{
 		val name = v.name + timeSuffix
@@ -46,6 +41,16 @@ class IrArgOrVarFactory
 			SimpleVar : v.toIrSimpleVariable(name)
 			ConnectivityVar : v.toIrConnectivityVariable(name)
 			Arg: v.toIrArg(name)
+		}
+	}
+
+	def toIrVar(Var v, String timeSuffix)
+	{
+		val name = v.name + timeSuffix
+		switch v
+		{
+			SimpleVar : v.toIrSimpleVariable(name)
+			ConnectivityVar : v.toIrConnectivityVariable(name)
 		}
 	}
 

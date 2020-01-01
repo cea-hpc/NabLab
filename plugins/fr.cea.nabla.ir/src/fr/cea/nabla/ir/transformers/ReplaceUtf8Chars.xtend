@@ -39,7 +39,7 @@ class ReplaceUtf8Chars implements IrTransformationStep
 		.replace('\u03B2', 'beta')
 		.replace('\u03B3', 'gamma') 
 		.replace('\u03B4', 'delta')
-		.replace('\u03F5', 'epsilon')
+		.replace('\u03B5', 'epsilon')
 		.replace('\u03BB', 'lambda')
 		.replace('\u03C1', 'rho')
 		.replace('\u2126', 'omega')

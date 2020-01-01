@@ -3,10 +3,11 @@ package fr.cea.nabla.ir.transformers
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
+import java.util.ArrayList
 import java.util.HashMap
 import org.eclipse.emf.ecore.util.EcoreUtil
 
-import static fr.cea.nabla.ir.Utils.getDefaultIrVariable
+import static fr.cea.nabla.ir.Utils.getCurrentIrVariable
 
 /**
  * Attend des propriétés de type <nom_de_variable> = <nom_de_persistence>.
@@ -21,6 +22,7 @@ class TagPersistentVariables implements IrTransformationStep
 	val HashMap<String, String> dumpedVariables
 	val double periodValue
 	val String periodVariableName
+	val ArrayList<String> traces
 
 	new(String iterationVariableName, HashMap<String, String> dumpedVariables, double periodValue, String periodVariableName)
 	{
@@ -28,6 +30,7 @@ class TagPersistentVariables implements IrTransformationStep
 		this.dumpedVariables = dumpedVariables
 		this.periodValue = periodValue
 		this.periodVariableName = periodVariableName
+		this.traces = new ArrayList<String>
 	}
 
 	override getDescription()
@@ -42,17 +45,17 @@ class TagPersistentVariables implements IrTransformationStep
 		inSituJob.name = 'dumpVariables'
 		inSituJob.periodValue = periodValue
 
-		val iterationVariable = getDefaultIrVariable(m, iterationVariableName)
+		val iterationVariable = getCurrentIrVariable(m, iterationVariableName)
 		if (iterationVariable === null) return false
 		inSituJob.iterationVariable = iterationVariable as SimpleVariable
 
-		val periodVariable = getDefaultIrVariable(m, periodVariableName)
+		val periodVariable = getCurrentIrVariable(m, periodVariableName)
 		if (periodVariable === null) return false
 		inSituJob.periodVariable = periodVariable as SimpleVariable
 
 		for (key : dumpedVariables.keySet)
 		{
-			val v = getDefaultIrVariable(m, key)
+			val v = getCurrentIrVariable(m, key)
 			if (v !== null) 
 			{
 				v.persistenceName = dumpedVariables.get(key)
@@ -78,8 +81,8 @@ class TagPersistentVariables implements IrTransformationStep
 		return true
 	}
 
-	override getOutputTraces()
+	override getOutputTraces() 
 	{
-		#[]
+		traces
 	}
 }

@@ -95,4 +95,4 @@ computeAlphaCoeff: ∀c∈cells(), {
 }
 UpdateU: ∀c∈cells(), u^{n+1, k+1}{c} = u^{n}{c} + α{c, c} * u^{n+1, k}{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u^{n+1, k}{d});
 
-ComputeTn: t^{n+1}=t^{n}+δt;
+ComputeTn: t^{n+1} = t^{n} + δt;

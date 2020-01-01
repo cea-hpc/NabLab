@@ -60,6 +60,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.IR_ANNOTATION: return createIrAnnotation();
 			case IrPackage.IR_MODULE: return createIrModule();
 			case IrPackage.IMPORT: return createImport();
+			case IrPackage.TIME_LOOP: return createTimeLoop();
 			case IrPackage.ARG: return createArg();
 			case IrPackage.SIMPLE_VARIABLE: return createSimpleVariable();
 			case IrPackage.CONNECTIVITY_VARIABLE: return createConnectivityVariable();
@@ -108,6 +109,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.IR_TYPE: return createIrType();
 			case IrPackage.BASE_TYPE: return createBaseType();
 			case IrPackage.CONNECTIVITY_TYPE: return createConnectivityType();
+			case IrPackage.TIME_LOOP_VARIABLE: return createTimeLoopVariable();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -174,6 +176,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public Import createImport() {
 		ImportImpl import_ = new ImportImpl();
 		return import_;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public TimeLoop createTimeLoop() {
+		TimeLoopImpl timeLoop = new TimeLoopImpl();
+		return timeLoop;
 	}
 
 	/**
@@ -702,6 +715,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public ConnectivityType createConnectivityType() {
 		ConnectivityTypeImpl connectivityType = new ConnectivityTypeImpl();
 		return connectivityType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public TimeLoopVariable createTimeLoopVariable() {
+		TimeLoopVariableImpl timeLoopVariable = new TimeLoopVariableImpl();
+		return timeLoopVariable;
 	}
 
 	/**

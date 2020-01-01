@@ -17,6 +17,7 @@ import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.NextTimeLoopIterationJob
+import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.transformers.TagPersistentVariables
@@ -60,12 +61,12 @@ class JobContentProvider
 
 	private static def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
-		«val itVar = MandatoryIterationVariables.getName(timeLoopName)»
+		«val itVar = MandatoryIterationVariables.getName(timeLoop.name)»
 		«itVar» = 0;
-		while («whileCondition.content»)
+		while («timeLoop.whileCondition.content»)
 		{
 			«itVar»++;
-			System.out.println("«indentation»[«itVar» : " + «itVar» + "] t : " + «irModule.timeVariable.name»);
+			System.out.println("«timeLoop.indentation»[«itVar» : " + «itVar» + "] t : " + «irModule.timeVariable.name»);
 			«FOR j : jobs.sortBy[at]»
 				«j.codeName»(); // @«j.at»
 			«ENDFOR»
@@ -113,9 +114,9 @@ class JobContentProvider
 	private static def dispatch int getDimension(BaseType it) { sizes.size }
 	private static def dispatch int getDimension(ConnectivityType it) { base.sizes.size + connectivities.size }
 
-	private static def String getIndentation(TimeLoopJob it)
+	private static def String getIndentation(TimeLoop it)
 	{
-		if (timeLoopContainer === null) ''
-		else getIndentation(timeLoopContainer) + '\t'
+		if (outerTimeLoop === null) ''
+		else getIndentation(outerTimeLoop) + '\t'
 	}
 }

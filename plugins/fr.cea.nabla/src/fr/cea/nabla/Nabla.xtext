@@ -66,10 +66,10 @@ SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?; // in
 
 TimeIteratorDefinition: 'iterate' iterators+=TimeIterator (',' iterators+=TimeIterator)* ';';
 TimeIterator: name=TIME_ITERATOR_ID 'while' cond=Expression;
-TimeIteratorRef: 
-	{CurrentTimeIteratorRef} target=[TimeIterator|TIME_ITERATOR_ID] |
-	{InitTimeIteratorRef} target=[TimeIterator|TIME_ITERATOR_ID] '=' value=INT |
-	{NextTimeIteratorRef} target=[TimeIterator|TIME_ITERATOR_ID] '+' value=INT;
+TimeIteratorRef: CurrentTimeIteratorRef | InitTimeIteratorRef | NextTimeIteratorRef;
+CurrentTimeIteratorRef: target=[TimeIterator|TIME_ITERATOR_ID];
+InitTimeIteratorRef: target=[TimeIterator|TIME_ITERATOR_ID] '=' value=INT;
+NextTimeIteratorRef: target=[TimeIterator|TIME_ITERATOR_ID] '+' value=INT;
 
 
 /* VARIABLES *********************************************/
@@ -139,7 +139,7 @@ Atomic returns Expression:
 
 ReductionCall: reduction=[Reduction|QualifiedName] '{' iterationBlock=IterationBlock '}' '(' arg=Expression ')';
 ArgOrVarRef: target=[ArgOrVar] 
-	('^{' timeIterators+=TimeIteratorRef (',' timeIterators+=TimeIteratorRef)* '}')?
+	('^{' (timeIterators+=NextTimeIteratorRef ',')* timeIterators+=TimeIteratorRef '}')?
 	('{' spaceIterators+=SpaceIteratorRef (',' spaceIterators+=SpaceIteratorRef)* '}')? 
 	('[' indices+=SizeType (',' indices+=SizeType)? ']')?;
 

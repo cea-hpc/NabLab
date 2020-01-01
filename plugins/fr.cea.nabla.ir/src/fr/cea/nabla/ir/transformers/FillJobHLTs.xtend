@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.NextTimeLoopIterationJob
+import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import java.util.ArrayList
 import org.jgrapht.alg.cycle.CycleDetector
@@ -51,7 +52,7 @@ class FillJobHLTs implements IrTransformationStep
 		m.distributeJobsInTimeLoops
 
 		// compute at for each subGraph
-		val subGraphs = m.jobs.groupBy[timeLoopContainer]
+		val subGraphs = m.jobs.groupBy[jobContainer]
 		for (subGraph : subGraphs.values)
 			subGraph.fillAt
 
@@ -130,40 +131,51 @@ class FillJobHLTs implements IrTransformationStep
 	 */
 	private def void distributeJobsInTimeLoops(IrModule it)
 	{
-		val startTLJobs = jobs.filter(NextTimeLoopIterationJob).filter[timeLoopContainer === null]
+		// distribute TimeLoopJob instances
+		if (mainTimeLoop !== null) distributeTimeLoopJobs(it, mainTimeLoop)
+
+		// distribute other jobs in time loop jobs
+		val startTLJobs = jobs.filter(NextTimeLoopIterationJob)
 		for (startTJJob : startTLJobs)
 			for (next : startTJJob.nextJobs.reject(TimeLoopJob))
-				distributeJobsInTimeLoops(startTJJob.associatedTimeLoop, next)
+				distributeJobsInTimeLoops(startTJJob.timeLoop, next)
 	}
 
-	private def void distributeJobsInTimeLoops(TimeLoopJob tlj, Job j)
+	private def void distributeTimeLoopJobs(IrModule m, TimeLoop tl)
+	{
+		tl.associatedJob.jobs += m.jobs.filter(NextTimeLoopIterationJob).filter[timeLoop == tl]
+
+		if (tl.innerTimeLoop !== null)
+		{
+			tl.associatedJob.jobs += m.jobs.filter(TimeLoopJob).filter[timeLoop == tl.innerTimeLoop]
+			tl.associatedJob.jobs += m.jobs.filter(BeforeTimeLoopJob).filter[timeLoop == tl.innerTimeLoop]
+			tl.associatedJob.jobs += m.jobs.filter(AfterTimeLoopJob).filter[timeLoop == tl.innerTimeLoop]
+			distributeTimeLoopJobs(m, tl.innerTimeLoop)
+		}
+	}
+
+	private def void distributeJobsInTimeLoops(TimeLoop tl, Job j)
 	{
 		//println("distributeJobsInTimeLoops(" + tlj + ", " + j.name)
-		val nextJobs = j.nextJobs.reject(TimeLoopJob)
 		switch j
 		{
 			BeforeTimeLoopJob: 
 			{
 				// Start of another time loop. Do not follow next.
-				tlj.jobs += j
-			}
-			AfterTimeLoopJob:
-			{
-				if (tlj.timeLoopContainer !== null)
-				{
-					tlj.timeLoopContainer.jobs += j
-					nextJobs.forEach[x | distributeJobsInTimeLoops(tlj.timeLoopContainer, x)]
-				}
 			}
 			NextTimeLoopIterationJob:
 			{
 				// Do not follow next jobs to avoid cycles
-				tlj.jobs += j
+			}
+			AfterTimeLoopJob:
+			{
+				if (tl.outerTimeLoop !== null)
+					j.nextJobs.reject(TimeLoopJob).forEach[x | distributeJobsInTimeLoops(tl.outerTimeLoop, x)]
 			}
 			default:
 			{
-				tlj.jobs += j
-				nextJobs.forEach[x | distributeJobsInTimeLoops(tlj, x)]
+				tl.associatedJob.jobs += j
+				j.nextJobs.reject(TimeLoopJob).forEach[x | distributeJobsInTimeLoops(tl, x)]
 			}
 		}
 	}

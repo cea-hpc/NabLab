@@ -41,7 +41,7 @@ public final class Glace2d
 	private int iterationN, lastDump;
 
 	// Connectivity Variables
-	private double[][] X_n0, X_n, X_nplus1, b, bt, ur, uj_n, uj_nplus1, center, l;
+	private double[][] X_n, X_nplus1, X_n0, b, bt, ur, uj_n, uj_nplus1, center, l;
 	private double[][][] Ar, Mt, C_ic, C, F;
 	private double[] p_ic, rho_ic, V_ic, c, m, p, rho, e, E_n, E_nplus1, V, deltatj;
 	private double[][][][] Ajr;
@@ -66,9 +66,9 @@ public final class Glace2d
 		lastDump = iterationN;
 
 		// Allocate arrays
-		X_n0 = new double[nbNodes][2];
 		X_n = new double[nbNodes][2];
 		X_nplus1 = new double[nbNodes][2];
+		X_n0 = new double[nbNodes][2];
 		b = new double[nbNodes][2];
 		bt = new double[nbNodes][2];
 		Ar = new double[nbNodes][2][2];
@@ -368,8 +368,8 @@ public final class Glace2d
 
 	/**
 	 * Job executeTimeLoopN @4.0
-	 * In variables: t_nplus1, X_EDGE_LENGTH, uj_nplus1, option_deltat_cfl, rho, deltat_n, C, t_n, gamma, deltatj, V, X_EDGE_ELEMS, p, E_n, Y_EDGE_ELEMS, deltat_nplus1, X_nplus1, c, X_n, E_nplus1, Ajr, Ar, l, F, bt, uj_n, Mt, Y_EDGE_LENGTH, e, b, iterationN, ur, m
-	 * Out variables: t_nplus1, uj_nplus1, deltat_n, rho, C, t_n, deltatj, V, p, E_n, deltat_nplus1, X_nplus1, c, X_n, Ajr, E_nplus1, Ar, l, F, bt, uj_n, Mt, e, b, ur
+	 * In variables: m, Ajr, Y_EDGE_LENGTH, option_deltat_cfl, E_nplus1, p, t_nplus1, t_n, b, deltat_n, X_nplus1, Ar, c, l, Y_EDGE_ELEMS, rho, C, Mt, V, ur, iterationN, X_EDGE_ELEMS, X_EDGE_LENGTH, bt, deltat_nplus1, X_n, F, uj_nplus1, e, uj_n, E_n, deltatj, gamma
+	 * Out variables: Ajr, E_nplus1, p, t_n, t_nplus1, b, deltat_n, X_nplus1, Ar, c, l, rho, C, Mt, V, ur, bt, deltat_nplus1, X_n, F, uj_nplus1, e, uj_n, E_n, deltatj
 	 */
 	private void executeTimeLoopN() 
 	{
@@ -378,26 +378,26 @@ public final class Glace2d
 		{
 			iterationN++;
 			System.out.println("[iterationN : " + iterationN + "] t : " + t_n);
-			computeCjr(); // @1.0
 			computeInternalEnergy(); // @1.0
-			computeLjr(); // @2.0
+			computeCjr(); // @1.0
 			computeV(); // @2.0
+			computeLjr(); // @2.0
 			computeDensity(); // @3.0
 			computeEOSp(); // @4.0
 			dumpVariables(); // @4.0
 			computeEOSc(); // @5.0
-			computedeltatj(); // @6.0
 			computeAjr(); // @6.0
-			computeDt(); // @7.0
-			computeAr(); // @7.0
+			computedeltatj(); // @6.0
 			computeBr(); // @7.0
-			computeTn(); // @8.0
-			computeMt(); // @8.0
-			outerFacesComputations(); // @8.0
+			computeAr(); // @7.0
+			computeDt(); // @7.0
 			computeBt(); // @8.0
+			outerFacesComputations(); // @8.0
+			computeMt(); // @8.0
+			computeTn(); // @8.0
 			computeU(); // @9.0
-			computeFjr(); // @10.0
 			computeXn(); // @10.0
+			computeFjr(); // @10.0
 			computeEn(); // @11.0
 			computeUn(); // @11.0
 			prepareNextIterationOfTimeLoopN(); // @12.0

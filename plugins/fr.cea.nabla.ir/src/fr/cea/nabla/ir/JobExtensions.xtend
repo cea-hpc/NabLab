@@ -43,7 +43,7 @@ class JobExtensions
 		val fromTargetJobs = new HashSet<Job>
 		val irModule = from.eContainer as IrModule
 		val fromOutVars = from.outVars
-		for (to : irModule.jobs.filter[x | x.timeLoopContainer == from.timeLoopContainer])
+		for (to : irModule.jobs.filter[x | x.jobContainer == from.jobContainer])
 			for (outVar : fromOutVars)
 				if (to.inVars.exists[x | x === outVar])
 					fromTargetJobs += to

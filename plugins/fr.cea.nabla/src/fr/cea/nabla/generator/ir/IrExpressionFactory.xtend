@@ -49,7 +49,7 @@ class IrExpressionFactory
 	@Inject extension IrSizeTypeFactory
 	@Inject extension ExpressionTypeProvider
 	@Inject extension ReductionCallExtensions
-	@Inject extension TimeIteratorUtils
+	@Inject extension IrTimeLoopFactory
 	@Inject extension NablaType2IrType
 
 	def dispatch Expression toIrExpression(ContractedIf e)

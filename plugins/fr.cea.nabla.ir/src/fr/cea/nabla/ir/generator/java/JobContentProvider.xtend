@@ -16,7 +16,6 @@ import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.NextTimeLoopIterationJob
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
@@ -34,7 +33,7 @@ class JobContentProvider
 	static def getContent(Job it)
 	'''
 		«comment»
-		private void «codeName»() 
+		private void «codeName»()
 		{
 			«innerContent»
 		}
@@ -70,6 +69,13 @@ class JobContentProvider
 			«FOR j : jobs.sortBy[at]»
 				«j.codeName»(); // @«j.at»
 			«ENDFOR»
+
+			// Switch variables to prepare next iteration
+			«FOR copy : copies»
+				«copy.destination.javaType» tmp«copy.destination.name.toFirstUpper» = «copy.destination.name»;
+				«copy.destination.name» = «copy.source.name»;
+				«copy.source.name» = tmp«copy.destination.name.toFirstUpper»;
+			«ENDFOR»
 		}
 	'''
 
@@ -77,15 +83,6 @@ class JobContentProvider
 	'''
 		«FOR copy : copies»
 			«copy(copy.destination.name, copy.source.name, copy.destination.type.dimension, true)»
-		«ENDFOR»
-	'''
-
-	private static def dispatch CharSequence getInnerContent(NextTimeLoopIterationJob it)
-	'''
-		«FOR copy : copies»
-			«copy.destination.javaType» tmp«copy.destination.name.toFirstUpper» = «copy.destination.name»;
-			«copy.destination.name» = «copy.source.name»;
-			«copy.source.name» = tmp«copy.destination.name.toFirstUpper»;
 		«ENDFOR»
 	'''
 

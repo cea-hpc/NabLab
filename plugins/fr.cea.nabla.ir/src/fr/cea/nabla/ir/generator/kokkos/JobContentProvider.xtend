@@ -10,19 +10,18 @@
 package fr.cea.nabla.ir.generator.kokkos
 
 import fr.cea.nabla.ir.MandatoryIterationVariables
-import fr.cea.nabla.ir.MandatoryMeshVariables
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.NextTimeLoopIterationJob
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.transformers.TagPersistentVariables
 import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.Utils.getIrModule
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
 
@@ -53,7 +52,7 @@ abstract class JobContentProvider
 			«v.type.connectivities.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
 			«ENDFOR»
 			auto quads = mesh->getGeometricMesh()->getQuads();
-			writer.writeFile(«iterationVariable.name», «timeVariable.name», nbNodes, «MandatoryMeshVariables::COORD».data(), nbCells, quads.data(), cellVariables, nodeVariables);
+			writer.writeFile(«iterationVariable.name», «irModule.timeVariable.name», «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);
 			«TagPersistentVariables::LastDumpVariableName» += «periodVariable.name»;
 		}
 	'''
@@ -61,12 +60,17 @@ abstract class JobContentProvider
 	protected def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
 		«MandatoryIterationVariables.getName(name)» = 0;
-		while («whileCondition.content»)
+		while («timeLoop.whileCondition.content»)
 		{
 			«MandatoryIterationVariables.getName(name)»++;
 			«FOR j : jobs.sortBy[at]»
 				«j.codeName»(); // @«j.at»
 			«ENDFOR»
+
+			// Switch variables to prepare next iteration
+		«FOR copy : copies»
+			std::swap(«copy.source.name», «copy.destination.name»);
+		«ENDFOR»
 		}
 	'''
 
@@ -78,13 +82,6 @@ abstract class JobContentProvider
 			«ELSE»
 			deep_copy(«copy.destination.name», «copy.source.name»);
 			«ENDIF»
-		«ENDFOR»
-	'''
-
-	protected def dispatch CharSequence getInnerContent(NextTimeLoopIterationJob it)
-	'''
-		«FOR copy : copies»
-			std::swap(«copy.source.name», «copy.destination.name»);
 		«ENDFOR»
 	'''
 

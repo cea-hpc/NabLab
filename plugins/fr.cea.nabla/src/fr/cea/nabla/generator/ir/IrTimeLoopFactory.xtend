@@ -49,8 +49,7 @@ class IrTimeLoopFactory
 		val createdJobs = new ArrayList<Job>
 
 		createdJobs += tl.toIrTimeLoopJob
-		createdJobs += tl.toIrNextTimeLoopIterationJob
-		if (tl.variables.exists[init !== null]) createdJobs += tl.toIrBeforeTimeLoopJob
+		if (tl.outerTimeLoop !== null || tl.variables.exists[init !== null]) createdJobs += tl.toIrBeforeTimeLoopJob
 		if (tl.outerTimeLoop !== null) createdJobs += tl.toIrAfterTimeLoopJob
 
 		if (tl.innerTimeLoop !== null) createdJobs += tl.innerTimeLoop.createTimeLoopJobs
@@ -71,7 +70,7 @@ class IrTimeLoopFactory
 		val createdVariables = new ArrayList<Variable>
 
 		// Find all v references with time iterators
-		val vRefsWithTimeIterators = m.eAllContents.filter(ArgOrVarRef).filter[target == v && !timeIterators.empty]
+		val vRefsWithTimeIterators = m.eAllContents.filter(ArgOrVarRef).filter[target == v && !timeIterators.empty].toList
 
 		// Is v a time variable ? 
 		if (vRefsWithTimeIterators.empty)
@@ -79,19 +78,21 @@ class IrTimeLoopFactory
 		else
 		{
 			// Fill time loop variables for all iterators
-			for (vRefsWithTimeIterator : vRefsWithTimeIterators.toIterable)
+			for (vRefsWithTimeIterator : vRefsWithTimeIterators)
+			{
 				for (tiRef : vRefsWithTimeIterator.timeIterators)
 				{
 					val ti = tiRef.target
 					val tl = ti.toIrTimeLoop
 
 					// Are variables for this timeloop already created ?
-					if (!tl.variables.exists[name == v])
+					if (!tl.variables.exists[name == v.name])
 					{
 						val hasInitTimeIterator = vRefsWithTimeIterators.exists[timeIterators.exists[x | x instanceof InitTimeIteratorRef && x.target == ti]]
 						createdVariables += createIrTimeLoopVariablesFor(v, tl, hasInitTimeIterator)
 					}
 				}
+			}
 		}
 
 		return createdVariables

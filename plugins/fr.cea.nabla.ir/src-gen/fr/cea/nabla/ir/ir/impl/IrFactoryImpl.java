@@ -73,7 +73,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.TIME_LOOP_JOB: return createTimeLoopJob();
 			case IrPackage.BEFORE_TIME_LOOP_JOB: return createBeforeTimeLoopJob();
 			case IrPackage.AFTER_TIME_LOOP_JOB: return createAfterTimeLoopJob();
-			case IrPackage.NEXT_TIME_LOOP_ITERATION_JOB: return createNextTimeLoopIterationJob();
 			case IrPackage.TIME_LOOP_COPY: return createTimeLoopCopy();
 			case IrPackage.VAR_DEFINITION: return createVarDefinition();
 			case IrPackage.INSTRUCTION_BLOCK: return createInstructionBlock();
@@ -319,17 +318,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public AfterTimeLoopJob createAfterTimeLoopJob() {
 		AfterTimeLoopJobImpl afterTimeLoopJob = new AfterTimeLoopJobImpl();
 		return afterTimeLoopJob;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public NextTimeLoopIterationJob createNextTimeLoopIterationJob() {
-		NextTimeLoopIterationJobImpl nextTimeLoopIterationJob = new NextTimeLoopIterationJobImpl();
-		return nextTimeLoopIterationJob;
 	}
 
 	/**

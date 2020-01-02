@@ -132,14 +132,12 @@ public interface TimeLoop extends IrAnnotable {
 
 	/**
 	 * Returns the value of the '<em><b>Associated Job</b></em>' reference.
-	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.TimeLoopJob#getTimeLoop <em>Time Loop</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Associated Job</em>' reference.
 	 * @see #setAssociatedJob(TimeLoopJob)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoop_AssociatedJob()
-	 * @see fr.cea.nabla.ir.ir.TimeLoopJob#getTimeLoop
-	 * @model opposite="timeLoop" required="true"
+	 * @model required="true"
 	 * @generated
 	 */
 	TimeLoopJob getAssociatedJob();

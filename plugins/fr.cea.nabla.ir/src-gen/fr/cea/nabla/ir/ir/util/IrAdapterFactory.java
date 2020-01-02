@@ -152,10 +152,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createAfterTimeLoopJobAdapter();
 			}
 			@Override
-			public Adapter caseNextTimeLoopIterationJob(NextTimeLoopIterationJob object) {
-				return createNextTimeLoopIterationJobAdapter();
-			}
-			@Override
 			public Adapter caseTimeLoopCopy(TimeLoopCopy object) {
 				return createTimeLoopCopyAdapter();
 			}
@@ -620,20 +616,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createAfterTimeLoopJobAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.NextTimeLoopIterationJob <em>Next Time Loop Iteration Job</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.NextTimeLoopIterationJob
-	 * @generated
-	 */
-	public Adapter createNextTimeLoopIterationJobAdapter() {
 		return null;
 	}
 

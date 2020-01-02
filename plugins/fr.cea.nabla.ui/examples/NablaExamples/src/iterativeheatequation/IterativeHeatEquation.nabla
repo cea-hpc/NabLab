@@ -22,10 +22,6 @@ set cellsOfFace: face → {cell};
 set nodesOfCell: cell → {node};
 set commonFace: cell × cell → face;
 
-def linftyNorm: l | ℝ[l] × ℝ[l] → ℝ, (a, b) → {
-	return Max{i ∈ [0;l[}(fabs(a[i] - b[i]));
-}
-
 const ℝ X_LENGTH = 2.0;
 const ℝ Y_LENGTH = 2.0;
 const ℝ u0 = 1.0;
@@ -41,7 +37,7 @@ const ℝ Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 // Simulation options
 const ℝ option_stoptime = 1.0;
 const ℕ option_max_iterations = 500000000;
-const ℕ option_max_iterations_k = 100;
+const ℕ option_max_iterations_k = 1000;
 
 // User options
 ℝ t=0.0; 
@@ -54,12 +50,12 @@ const ℕ option_max_iterations_k = 100;
 ℝ faceLength{faces}, faceConductivity{faces};
 ℝ α{cells, cells};
 ℝ ε =  1.0e-8;
+ℝ residual = ε + 1.0;
 
 ℕ iterationN;
 ℕ iterationK;
 iterate	n while (t^{n} < option_stoptime && iterationN < option_max_iterations),
-		k while (linftyNorm(u^{n+1,k+1}, u^{n+1,k}) > ε && iterationK < option_max_iterations_k);
-//		k while (Max{j ∈ cells()}(fabs(u^{n+1,k+1}{j} - u^{n+1,k}{j})) > ε && iterationK < option_max_iterations_k);
+		k while (residual > ε && iterationK < option_max_iterations_k);
 
 InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
 
@@ -74,7 +70,7 @@ InitU: ∀c∈cells(),
 	else 
 		u^{n}{c} = 0.0; // Initial circle in the center with value u0
 
-InitD: ∀c∈cells(), D{c} = 1.0; // 
+InitD: ∀c∈cells(), D{c} = 1.0;
 
 // Computing time step with cfl = 0.96
 computeDeltaTn: δt = Min{c∈cells()}(X_EDGE_LENGTH*Y_EDGE_LENGTH/D{c}) * 0.24;
@@ -94,5 +90,5 @@ computeAlphaCoeff: ∀c∈cells(), {
 	α{c, c} = 1 - αDiag;
 }
 UpdateU: ∀c∈cells(), u^{n+1, k+1}{c} = u^{n}{c} + α{c, c} * u^{n+1, k}{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u^{n+1, k}{d});
-
+ComputeResidual: residual = Max{j ∈ cells()}(fabs(u^{n+1,k+1}{j} - u^{n+1,k}{j}));
 ComputeTn: t^{n+1} = t^{n} + δt;

@@ -32,14 +32,27 @@ class IrJobFactory
 	{
 		name = "setUpTimeLoop" + tl.name.toFirstUpper
 		timeLoop = tl
-		for (v : tl.variables.filter[v | v.init !== null])
-			copies += toIrCopy(v.init, v.current)
+
+		// if x^{n+1, k=0} exists, x^{n+1, k} = x^{n+1, k=0}
+		// else x^{n+1, k} = x^{n}
+		for (v : tl.variables)
+		{
+			if (v.init !== null)
+				copies += toIrCopy(v.init, v.current)
+			else if (tl.outerTimeLoop !== null)
+			{
+				val outerV = tl.outerTimeLoop.variables.findFirst[name == v.name]
+				copies += toIrCopy(outerV.current, v.current)
+			}
+		}
 	}
 
 	def create IrFactory::eINSTANCE.createAfterTimeLoopJob toIrAfterTimeLoopJob(TimeLoop tl)
 	{ 
 		name = "tearDownTimeLoop" + tl.name.toFirstUpper
 		timeLoop = tl
+
+		// x^{n+1} = x^{n+1, k+1}
 		if (tl.outerTimeLoop !== null)
 			for (v : tl.variables)
 			{
@@ -48,18 +61,16 @@ class IrJobFactory
 			}
 	}
 
-	def create IrFactory::eINSTANCE.createNextTimeLoopIterationJob toIrNextTimeLoopIterationJob(TimeLoop tl)
-	{ 
-		name = "prepareNextIterationOfTimeLoop" + tl.name.toFirstUpper
-		timeLoop = tl
-		for (v : tl.variables)
-			copies += toIrCopy(v.next, v.current)
-	}
-
 	def create IrFactory::eINSTANCE.createTimeLoopJob toIrTimeLoopJob(TimeLoop tl)
 	{
 		name = "executeTimeLoop" + tl.name.toFirstUpper
 		timeLoop= tl
+		tl.associatedJob = it
+
+		// variables copy for next iteration
+		// x^{n+1, k} <---> x^{n+1, k+1}
+		for (v : tl.variables)
+			copies += toIrCopy(v.next, v.current)
 	}
 
 	private def create IrFactory::eINSTANCE.createTimeLoopCopy toIrCopy(Variable from, Variable to)

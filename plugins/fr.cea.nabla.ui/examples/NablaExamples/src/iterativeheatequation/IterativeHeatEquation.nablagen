@@ -26,6 +26,7 @@ workflow IterativeHeatEquationGenerationChain transforms IterativeHeatEquation
 	OptimizeConnectivities optimizeConnectivities follows replaceReductions
 	{
 		connectivities = cells, nodes, faces;
+		dumpIr;
 	}
 	
 	FillHLTs fillHlts follows optimizeConnectivities

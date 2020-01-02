@@ -379,34 +379,12 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetAssociatedJob(TimeLoopJob newAssociatedJob, NotificationChain msgs) {
-		TimeLoopJob oldAssociatedJob = associatedJob;
-		associatedJob = newAssociatedJob;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP__ASSOCIATED_JOB, oldAssociatedJob, newAssociatedJob);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@Override
 	public void setAssociatedJob(TimeLoopJob newAssociatedJob) {
-		if (newAssociatedJob != associatedJob) {
-			NotificationChain msgs = null;
-			if (associatedJob != null)
-				msgs = ((InternalEObject)associatedJob).eInverseRemove(this, IrPackage.TIME_LOOP_JOB__TIME_LOOP, TimeLoopJob.class, msgs);
-			if (newAssociatedJob != null)
-				msgs = ((InternalEObject)newAssociatedJob).eInverseAdd(this, IrPackage.TIME_LOOP_JOB__TIME_LOOP, TimeLoopJob.class, msgs);
-			msgs = basicSetAssociatedJob(newAssociatedJob, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP__ASSOCIATED_JOB, newAssociatedJob, newAssociatedJob));
+		TimeLoopJob oldAssociatedJob = associatedJob;
+		associatedJob = newAssociatedJob;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP__ASSOCIATED_JOB, oldAssociatedJob, associatedJob));
 	}
 
 	/**
@@ -425,10 +403,6 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetOuterTimeLoop((TimeLoop)otherEnd, msgs);
-			case IrPackage.TIME_LOOP__ASSOCIATED_JOB:
-				if (associatedJob != null)
-					msgs = ((InternalEObject)associatedJob).eInverseRemove(this, IrPackage.TIME_LOOP_JOB__TIME_LOOP, TimeLoopJob.class, msgs);
-				return basicSetAssociatedJob((TimeLoopJob)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -449,8 +423,6 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 				return ((InternalEList<?>)getVariables()).basicRemove(otherEnd, msgs);
 			case IrPackage.TIME_LOOP__WHILE_CONDITION:
 				return basicSetWhileCondition(null, msgs);
-			case IrPackage.TIME_LOOP__ASSOCIATED_JOB:
-				return basicSetAssociatedJob(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}

@@ -166,15 +166,6 @@ public interface IrFactory extends EFactory {
 	AfterTimeLoopJob createAfterTimeLoopJob();
 
 	/**
-	 * Returns a new object of class '<em>Next Time Loop Iteration Job</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Next Time Loop Iteration Job</em>'.
-	 * @generated
-	 */
-	NextTimeLoopIterationJob createNextTimeLoopIterationJob();
-
-	/**
 	 * Returns a new object of class '<em>Time Loop Copy</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

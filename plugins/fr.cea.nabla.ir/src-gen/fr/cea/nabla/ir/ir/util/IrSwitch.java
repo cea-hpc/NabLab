@@ -194,6 +194,7 @@ public class IrSwitch<T> extends Switch<T> {
 			case IrPackage.TIME_LOOP_JOB: {
 				TimeLoopJob timeLoopJob = (TimeLoopJob)theEObject;
 				T result = caseTimeLoopJob(timeLoopJob);
+				if (result == null) result = caseTimeLoopCopyJob(timeLoopJob);
 				if (result == null) result = caseJob(timeLoopJob);
 				if (result == null) result = caseIrAnnotable(timeLoopJob);
 				if (result == null) result = defaultCase(theEObject);
@@ -222,15 +223,6 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = caseTimeLoopCopyJob(afterTimeLoopJob);
 				if (result == null) result = caseJob(afterTimeLoopJob);
 				if (result == null) result = caseIrAnnotable(afterTimeLoopJob);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.NEXT_TIME_LOOP_ITERATION_JOB: {
-				NextTimeLoopIterationJob nextTimeLoopIterationJob = (NextTimeLoopIterationJob)theEObject;
-				T result = caseNextTimeLoopIterationJob(nextTimeLoopIterationJob);
-				if (result == null) result = caseTimeLoopCopyJob(nextTimeLoopIterationJob);
-				if (result == null) result = caseJob(nextTimeLoopIterationJob);
-				if (result == null) result = caseIrAnnotable(nextTimeLoopIterationJob);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -860,21 +852,6 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseAfterTimeLoopJob(AfterTimeLoopJob object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Next Time Loop Iteration Job</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Next Time Loop Iteration Job</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseNextTimeLoopIterationJob(NextTimeLoopIterationJob object) {
 		return null;
 	}
 

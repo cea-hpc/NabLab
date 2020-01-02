@@ -43,7 +43,7 @@ class JobExtensions
 		val fromTargetJobs = new HashSet<Job>
 		val irModule = from.eContainer as IrModule
 		val fromOutVars = from.outVars
-		for (to : irModule.jobs.filter[x | x.jobContainer == from.jobContainer])
+		for (to : irModule.jobs)
 			for (outVar : fromOutVars)
 				if (to.inVars.exists[x | x === outVar])
 					fromTargetJobs += to
@@ -73,6 +73,7 @@ class JobExtensions
 		#[]
 	}
 
+	/** For TimeLoopJob, copies are ignored to avoid cycles */
 	static def dispatch Iterable<Variable> getInVars(TimeLoopJob it)
 	{
 		val inVars = new HashSet<Variable>

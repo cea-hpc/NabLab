@@ -14,15 +14,16 @@ import fr.cea.nabla.ir.ir.BeforeTimeLoopJob
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.NextTimeLoopIterationJob
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import java.util.ArrayList
+import java.util.HashSet
 import org.jgrapht.alg.cycle.CycleDetector
 import org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths
 import org.jgrapht.graph.DefaultWeightedEdge
 import org.jgrapht.graph.DirectedWeightedPseudograph
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class FillJobHLTs implements IrTransformationStep
@@ -96,8 +97,8 @@ class FillJobHLTs implements IrTransformationStep
 		jobs.forEach[x | g.addVertex(x)]
 
 		// Create edges: no outgoing edges from NextTimeLoopIterationJob instances to break time cycles.
-		for (from : jobs.reject(NextTimeLoopIterationJob))
-			for (to : from.nextJobs)
+		for (from : jobs)
+			for (to : from.nextJobs.filter[jobContainer == from.jobContainer])
 				g.addEdge(from, to)
 
 		// Add a source node and edges to nodes with no incoming edges
@@ -135,16 +136,18 @@ class FillJobHLTs implements IrTransformationStep
 		if (mainTimeLoop !== null) distributeTimeLoopJobs(it, mainTimeLoop)
 
 		// distribute other jobs in time loop jobs
-		val startTLJobs = jobs.filter(NextTimeLoopIterationJob)
-		for (startTJJob : startTLJobs)
-			for (next : startTJJob.nextJobs.reject(TimeLoopJob))
-				distributeJobsInTimeLoops(startTJJob.timeLoop, next)
+		for (tlNextJob : jobs.filter(TimeLoopJob))
+		{
+			val tlInVariables = tlNextJob.copies.map[destination]
+			val tlNextJobs = new HashSet<Job>
+			tlInVariables.forEach[v | tlNextJobs += v.nextJobs]
+			for (next : tlNextJobs.reject(TimeLoopJob))
+				distributeJobsInTimeLoops(tlNextJob.timeLoop, next)
+		}
 	}
 
 	private def void distributeTimeLoopJobs(IrModule m, TimeLoop tl)
 	{
-		tl.associatedJob.jobs += m.jobs.filter(NextTimeLoopIterationJob).filter[timeLoop == tl]
-
 		if (tl.innerTimeLoop !== null)
 		{
 			tl.associatedJob.jobs += m.jobs.filter(TimeLoopJob).filter[timeLoop == tl.innerTimeLoop]
@@ -162,10 +165,6 @@ class FillJobHLTs implements IrTransformationStep
 			BeforeTimeLoopJob: 
 			{
 				// Start of another time loop. Do not follow next.
-			}
-			NextTimeLoopIterationJob:
-			{
-				// Do not follow next jobs to avoid cycles
 			}
 			AfterTimeLoopJob:
 			{

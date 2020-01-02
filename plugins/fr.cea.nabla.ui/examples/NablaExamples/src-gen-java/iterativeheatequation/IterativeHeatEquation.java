@@ -23,7 +23,7 @@ public final class IterativeHeatEquation
 		public final double Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 		public final double option_stoptime = 1.0;
 		public final int option_max_iterations = 500000000;
-		public final int option_max_iterations_k = 100;
+		public final int option_max_iterations_k = 1000;
 	}
 
 	private final Options options;
@@ -34,7 +34,7 @@ public final class IterativeHeatEquation
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
 	// Global Variables
-	private double t_n, t_nplus1, deltat, epsilon;
+	private double t_n, t_nplus1, deltat, epsilon, residual;
 	private int iterationN, iterationK, lastDump;
 
 	// Connectivity Variables
@@ -58,6 +58,7 @@ public final class IterativeHeatEquation
 		t_nplus1 = 0.0;
 		deltat = 0.001;
 		epsilon = 1.0E-8;
+		residual = epsilon + 1.0;
 		lastDump = iterationN;
 
 		// Allocate arrays
@@ -92,10 +93,7 @@ public final class IterativeHeatEquation
 		computeDeltaTn(); // @2.0
 		computeFaceConductivity(); // @2.0
 		computeAlphaCoeff(); // @3.0
-		executeTimeLoopN(); // @5.0
-		updateU(); // @6.0
-		computeTn(); // @6.0
-		dumpVariables(); // @6.0
+		executeTimeLoopN(); // @4.0
 		System.out.println("Fin de l'exécution du module IterativeHeatEquation");
 	}
 
@@ -109,76 +107,48 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job executeTimeLoopK @1.0 in executeTimeLoopN method.
-	 * In variables: u_nplus1_kplus1
+	 * Job setUpTimeLoopK called @1.0 in executeTimeLoopN method.
+	 * In variables: u_n
 	 * Out variables: u_nplus1_k
 	 */
-	private void executeTimeLoopK() 
+	private void setUpTimeLoopK()
 	{
-		iterationK = 0;
-		while ((linftyNorm(u_nplus1_kplus1, u_nplus1_k) > epsilon && iterationK < options.option_max_iterations_k))
+		IntStream.range(0, u_nplus1_k.length).parallel().forEach(i1 -> 
 		{
-			iterationK++;
-			System.out.println("	[iterationK : " + iterationK + "] t : " + t_n);
-			prepareNextIterationOfTimeLoopK(); // @1.0
-		}
-	}
-
-	/**
-	 * Job prepareNextIterationOfTimeLoopK @1.0 in executeTimeLoopK method.
-	 * In variables: u_nplus1_kplus1
-	 * Out variables: u_nplus1_k
-	 */
-	private void prepareNextIterationOfTimeLoopK() 
-	{
-		double[] tmpU_nplus1_k = u_nplus1_k;
-		u_nplus1_k = u_nplus1_kplus1;
-		u_nplus1_kplus1 = tmpU_nplus1_k;
-	}
-
-	/**
-	 * Job tearDownTimeLoopK @1.0 in executeTimeLoopN method.
-	 * In variables: u_nplus1_kplus1
-	 * Out variables: u_nplus1
-	 */
-	private void tearDownTimeLoopK() 
-	{
-		IntStream.range(0, u_nplus1.length).parallel().forEach(i1 -> 
-		{
-			u_nplus1[i1] = u_nplus1_kplus1[i1];
+			u_nplus1_k[i1] = u_n[i1];
 		});
 	}
 
 	/**
-	 * Job InitXc @1.0 in simulate method.
+	 * Job InitXc called @1.0 in simulate method.
 	 * In variables: X
 	 * Out variables: Xc
 	 */
-	private void initXc() 
+	private void initXc()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			int cId = cCells;
-			double[] reduction1 = {0.0, 0.0};
+			double[] reduction0 = {0.0, 0.0};
 			{
 				int[] nodesOfCellC = mesh.getNodesOfCell(cId);
 				for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.length; pNodesOfCellC++)
 				{
 					int pId = nodesOfCellC[pNodesOfCellC];
 					int pNodes = pId;
-					reduction1 = ArrayOperations.plus(reduction1, (X[pNodes]));
+					reduction0 = ArrayOperations.plus(reduction0, (X[pNodes]));
 				}
 			}
-			Xc[cCells] = ArrayOperations.multiply(0.25, reduction1);
+			Xc[cCells] = ArrayOperations.multiply(0.25, reduction0);
 		});
 	}
 
 	/**
-	 * Job InitD @1.0 in simulate method.
+	 * Job InitD called @1.0 in simulate method.
 	 * In variables: 
 	 * Out variables: D
 	 */
-	private void initD() 
+	private void initD()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -187,16 +157,16 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job ComputeV @1.0 in simulate method.
+	 * Job ComputeV called @1.0 in simulate method.
 	 * In variables: X
 	 * Out variables: V
 	 */
-	private void computeV() 
+	private void computeV()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double reduction3 = 0.0;
+			double reduction2 = 0.0;
 			{
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int pNodesOfCellJ=0; pNodesOfCellJ<nodesOfCellJ.length; pNodesOfCellJ++)
@@ -205,24 +175,24 @@ public final class IterativeHeatEquation
 					int pPlus1Id = nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					int pNodes = pId;
 					int pPlus1Nodes = pPlus1Id;
-					reduction3 = reduction3 + (MathFunctions.det(X[pNodes], X[pPlus1Nodes]));
+					reduction2 = reduction2 + (MathFunctions.det(X[pNodes], X[pPlus1Nodes]));
 				}
 			}
-			V[jCells] = 0.5 * reduction3;
+			V[jCells] = 0.5 * reduction2;
 		});
 	}
 
 	/**
-	 * Job ComputeFaceLength @1.0 in simulate method.
+	 * Job ComputeFaceLength called @1.0 in simulate method.
 	 * In variables: X
 	 * Out variables: faceLength
 	 */
-	private void computeFaceLength() 
+	private void computeFaceLength()
 	{
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			int fId = fFaces;
-			double reduction4 = 0.0;
+			double reduction3 = 0.0;
 			{
 				int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
 				for (int pNodesOfFaceF=0; pNodesOfFaceF<nodesOfFaceF.length; pNodesOfFaceF++)
@@ -231,34 +201,92 @@ public final class IterativeHeatEquation
 					int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
 					int pNodes = pId;
 					int pPlus1Nodes = pPlus1Id;
-					reduction4 = reduction4 + (MathFunctions.norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
+					reduction3 = reduction3 + (MathFunctions.norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
 				}
 			}
-			faceLength[fFaces] = 0.5 * reduction4;
+			faceLength[fFaces] = 0.5 * reduction3;
 		});
 	}
 
 	/**
-	 * Job prepareNextIterationOfTimeLoopN @2.0 in executeTimeLoopN method.
-	 * In variables: t_nplus1, u_nplus1
-	 * Out variables: t_n, u_n
+	 * Job UpdateU called @1.0 in executeTimeLoopK method.
+	 * In variables: alpha, u_nplus1_k, u_n
+	 * Out variables: u_nplus1_kplus1
 	 */
-	private void prepareNextIterationOfTimeLoopN() 
+	private void updateU()
 	{
-		double tmpT_n = t_n;
-		t_n = t_nplus1;
-		t_nplus1 = tmpT_n;
-		double[] tmpU_n = u_n;
-		u_n = u_nplus1;
-		u_nplus1 = tmpU_n;
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			int cId = cCells;
+			double reduction6 = 0.0;
+			{
+				int[] neighbourCellsC = mesh.getNeighbourCells(cId);
+				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.length; dNeighbourCellsC++)
+				{
+					int dId = neighbourCellsC[dNeighbourCellsC];
+					int dCells = dId;
+					reduction6 = reduction6 + (alpha[cCells][dCells] * u_nplus1_k[dCells]);
+				}
+			}
+			u_nplus1_kplus1[cCells] = u_n[cCells] + alpha[cCells][cCells] * u_nplus1_k[cCells] + reduction6;
+		});
 	}
 
 	/**
-	 * Job InitXcAndYc @2.0 in simulate method.
+	 * Job ComputeTn called @1.0 in executeTimeLoopN method.
+	 * In variables: t_n, deltat
+	 * Out variables: t_nplus1
+	 */
+	private void computeTn()
+	{
+		t_nplus1 = t_n + deltat;
+	}
+
+	/**
+	 * Job dumpVariables called @1.0 in executeTimeLoopN method.
+	 * In variables: u_n, iterationN
+	 * Out variables: 
+	 */
+	private void dumpVariables()
+	{
+		if (iterationN >= lastDump)
+		{
+			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+			cellVariables.put("Temperature", u_n);
+			writer.writeFile(iterationN, t_n, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			lastDump = iterationN;
+		}
+	}
+
+	/**
+	 * Job executeTimeLoopK called @2.0 in executeTimeLoopN method.
+	 * In variables: alpha, u_n, u_nplus1_k, u_nplus1_kplus1
+	 * Out variables: residual, u_nplus1_kplus1
+	 */
+	private void executeTimeLoopK()
+	{
+		iterationK = 0;
+		while ((residual > epsilon && iterationK < options.option_max_iterations_k))
+		{
+			iterationK++;
+			System.out.println("	[iterationK : " + iterationK + "] t : " + t_n);
+			updateU(); // @1.0
+			computeResidual(); // @2.0
+		
+			// Switch variables to prepare next iteration
+			double[] tmpU_nplus1_k = u_nplus1_k;
+			u_nplus1_k = u_nplus1_kplus1;
+			u_nplus1_kplus1 = tmpU_nplus1_k;
+		}
+	}
+
+	/**
+	 * Job InitXcAndYc called @2.0 in simulate method.
 	 * In variables: Xc
 	 * Out variables: xc, yc
 	 */
-	private void initXcAndYc() 
+	private void initXcAndYc()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -268,11 +296,11 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job InitU @2.0 in simulate method.
+	 * Job InitU called @2.0 in simulate method.
 	 * In variables: Xc, vectOne, u0
 	 * Out variables: u_n
 	 */
-	private void initU() 
+	private void initU()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -284,60 +312,88 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job computeDeltaTn @2.0 in simulate method.
+	 * Job computeDeltaTn called @2.0 in simulate method.
 	 * In variables: X_EDGE_LENGTH, Y_EDGE_LENGTH, D
 	 * Out variables: deltat
 	 */
-	private void computeDeltaTn() 
+	private void computeDeltaTn()
 	{
-		double reduction2 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+		double reduction1 = IntStream.range(0, nbCells).boxed().parallel().reduce(
 			Double.MAX_VALUE, 
 			(r, cCells) -> MathFunctions.min(r, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]),
 			(r1, r2) -> MathFunctions.min(r1, r2)
 		);
-		deltat = reduction2 * 0.24;
+		deltat = reduction1 * 0.24;
 	}
 
 	/**
-	 * Job ComputeFaceConductivity @2.0 in simulate method.
+	 * Job ComputeFaceConductivity called @2.0 in simulate method.
 	 * In variables: D
 	 * Out variables: faceConductivity
 	 */
-	private void computeFaceConductivity() 
+	private void computeFaceConductivity()
 	{
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			int fId = fFaces;
-			double reduction5 = 1.0;
+			double reduction4 = 1.0;
 			{
 				int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				for (int c1CellsOfFaceF=0; c1CellsOfFaceF<cellsOfFaceF.length; c1CellsOfFaceF++)
 				{
 					int c1Id = cellsOfFaceF[c1CellsOfFaceF];
 					int c1Cells = c1Id;
-					reduction5 = reduction5 * (D[c1Cells]);
+					reduction4 = reduction4 * (D[c1Cells]);
 				}
 			}
-			double reduction6 = 0.0;
+			double reduction5 = 0.0;
 			{
 				int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				for (int c2CellsOfFaceF=0; c2CellsOfFaceF<cellsOfFaceF.length; c2CellsOfFaceF++)
 				{
 					int c2Id = cellsOfFaceF[c2CellsOfFaceF];
 					int c2Cells = c2Id;
-					reduction6 = reduction6 + (D[c2Cells]);
+					reduction5 = reduction5 + (D[c2Cells]);
 				}
 			}
-			faceConductivity[fFaces] = 2.0 * reduction5 / reduction6;
+			faceConductivity[fFaces] = 2.0 * reduction4 / reduction5;
 		});
 	}
 
 	/**
-	 * Job computeAlphaCoeff @3.0 in simulate method.
+	 * Job ComputeResidual called @2.0 in executeTimeLoopK method.
+	 * In variables: u_nplus1_kplus1, u_nplus1_k
+	 * Out variables: residual
+	 */
+	private void computeResidual()
+	{
+		double reduction7 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+			Double.MIN_VALUE, 
+			(r, jCells) -> MathFunctions.max(r, MathFunctions.fabs(u_nplus1_kplus1[jCells] - u_nplus1_k[jCells])),
+			(r1, r2) -> MathFunctions.max(r1, r2)
+		);
+		residual = reduction7;
+	}
+
+	/**
+	 * Job tearDownTimeLoopK called @3.0 in executeTimeLoopN method.
+	 * In variables: u_nplus1_kplus1
+	 * Out variables: u_nplus1
+	 */
+	private void tearDownTimeLoopK()
+	{
+		IntStream.range(0, u_nplus1.length).parallel().forEach(i1 -> 
+		{
+			u_nplus1[i1] = u_nplus1_kplus1[i1];
+		});
+	}
+
+	/**
+	 * Job computeAlphaCoeff called @3.0 in simulate method.
 	 * In variables: deltat, V, faceLength, faceConductivity, Xc
 	 * Out variables: alpha
 	 */
-	private void computeAlphaCoeff() 
+	private void computeAlphaCoeff()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -362,80 +418,30 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job executeTimeLoopN @5.0 in simulate method.
-	 * In variables: t_nplus1, u_nplus1_kplus1, u_nplus1
-	 * Out variables: t_n, u_n, u_nplus1, u_nplus1_k
+	 * Job executeTimeLoopN called @4.0 in simulate method.
+	 * In variables: t_n, alpha, u_n, u_nplus1_k, deltat, u_nplus1_kplus1, iterationN
+	 * Out variables: residual, u_nplus1, t_nplus1, u_nplus1_k, u_nplus1_kplus1
 	 */
-	private void executeTimeLoopN() 
+	private void executeTimeLoopN()
 	{
 		iterationN = 0;
 		while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations))
 		{
 			iterationN++;
 			System.out.println("[iterationN : " + iterationN + "] t : " + t_n);
-			executeTimeLoopK(); // @1.0
-			tearDownTimeLoopK(); // @1.0
-			prepareNextIterationOfTimeLoopN(); // @2.0
+			setUpTimeLoopK(); // @1.0
+			dumpVariables(); // @1.0
+			computeTn(); // @1.0
+			executeTimeLoopK(); // @2.0
+			tearDownTimeLoopK(); // @3.0
+		
+			// Switch variables to prepare next iteration
+			double tmpT_n = t_n;
+			t_n = t_nplus1;
+			t_nplus1 = tmpT_n;
+			double[] tmpU_n = u_n;
+			u_n = u_nplus1;
+			u_nplus1 = tmpU_n;
 		}
-	}
-
-	/**
-	 * Job UpdateU @6.0 in simulate method.
-	 * In variables: alpha, u_nplus1_k, u_n
-	 * Out variables: u_nplus1_kplus1
-	 */
-	private void updateU() 
-	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
-		{
-			int cId = cCells;
-			double reduction7 = 0.0;
-			{
-				int[] neighbourCellsC = mesh.getNeighbourCells(cId);
-				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.length; dNeighbourCellsC++)
-				{
-					int dId = neighbourCellsC[dNeighbourCellsC];
-					int dCells = dId;
-					reduction7 = reduction7 + (alpha[cCells][dCells] * u_nplus1_k[dCells]);
-				}
-			}
-			u_nplus1_kplus1[cCells] = u_n[cCells] + alpha[cCells][cCells] * u_nplus1_k[cCells] + reduction7;
-		});
-	}
-
-	/**
-	 * Job ComputeTn @6.0 in simulate method.
-	 * In variables: t_n, deltat
-	 * Out variables: t_nplus1
-	 */
-	private void computeTn() 
-	{
-		t_nplus1 = t_n + deltat;
-	}
-
-	/**
-	 * Job dumpVariables @6.0 in simulate method.
-	 * In variables: u_n, iterationN
-	 * Out variables: 
-	 */
-	private void dumpVariables() 
-	{
-		if (iterationN >= lastDump)
-		{
-			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-			cellVariables.put("Temperature", u_n);
-			writer.writeFile(iterationN, t_n, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
-			lastDump = iterationN;
-		}
-	}
-
-	private double linftyNorm(double[] a, double[] b)
-	{
-		final int l = a.length;
-		double reduction0 = Double.MIN_VALUE;
-		for (int i=0; i<l; i++)
-			reduction0 = MathFunctions.max(reduction0, MathFunctions.fabs(a[i] - b[i]));
-		return reduction0;
 	}
 };

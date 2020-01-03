@@ -86,7 +86,6 @@ public final class ImplicitHeatEquation
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module ImplicitHeatEquation");
-		setUpTimeLoopN(); // @1.0
 		initXc(); // @1.0
 		initD(); // @1.0
 		computeV(); // @1.0
@@ -110,20 +109,11 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job setUpTimeLoopN @1.0
-	 * In variables: 
-	 * Out variables: 
-	 */
-	private void setUpTimeLoopN() 
-	{
-	}
-
-	/**
-	 * Job InitXc @1.0
+	 * Job InitXc called @1.0 in simulate method.
 	 * In variables: X
 	 * Out variables: Xc
 	 */
-	private void initXc() 
+	private void initXc()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -143,11 +133,11 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job InitD @1.0
+	 * Job InitD called @1.0 in simulate method.
 	 * In variables: 
 	 * Out variables: D
 	 */
-	private void initD() 
+	private void initD()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -156,11 +146,11 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job ComputeV @1.0
+	 * Job ComputeV called @1.0 in simulate method.
 	 * In variables: X
 	 * Out variables: V
 	 */
-	private void computeV() 
+	private void computeV()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -182,11 +172,11 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job ComputeFaceLength @1.0
+	 * Job ComputeFaceLength called @1.0 in simulate method.
 	 * In variables: X
 	 * Out variables: faceLength
 	 */
-	private void computeFaceLength() 
+	private void computeFaceLength()
 	{
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
@@ -208,31 +198,31 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job UpdateU @1.0
+	 * Job UpdateU called @1.0 in executeTimeLoopN method.
 	 * In variables: alpha, u_n
 	 * Out variables: u_nplus1
 	 */
-	private void updateU() 
+	private void updateU()
 	{
 		u_nplus1 = LinearAlgebraFunctions.solveLinearSystem(alpha, u_n);
 	}
 
 	/**
-	 * Job ComputeTn @1.0
+	 * Job ComputeTn called @1.0 in executeTimeLoopN method.
 	 * In variables: t_n, deltat
 	 * Out variables: t_nplus1
 	 */
-	private void computeTn() 
+	private void computeTn()
 	{
 		t_nplus1 = t_n + deltat;
 	}
 
 	/**
-	 * Job dumpVariables @1.0
+	 * Job dumpVariables called @1.0 in executeTimeLoopN method.
 	 * In variables: u_n, iterationN
 	 * Out variables: 
 	 */
-	private void dumpVariables() 
+	private void dumpVariables()
 	{
 		if (iterationN >= lastDump)
 		{
@@ -245,26 +235,11 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job prepareNextIterationOfTimeLoopN @2.0
-	 * In variables: t_nplus1, u_nplus1
-	 * Out variables: t_n, u_n
-	 */
-	private void prepareNextIterationOfTimeLoopN() 
-	{
-		double tmpT_n = t_n;
-		t_n = t_nplus1;
-		t_nplus1 = tmpT_n;
-		Vector tmpU_n = u_n;
-		u_n = u_nplus1;
-		u_nplus1 = tmpU_n;
-	}
-
-	/**
-	 * Job InitXcAndYc @2.0
+	 * Job InitXcAndYc called @2.0 in simulate method.
 	 * In variables: Xc
 	 * Out variables: xc, yc
 	 */
-	private void initXcAndYc() 
+	private void initXcAndYc()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -274,11 +249,11 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job InitU @2.0
+	 * Job InitU called @2.0 in simulate method.
 	 * In variables: Xc, vectOne, u0
 	 * Out variables: u_n
 	 */
-	private void initU() 
+	private void initU()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -290,11 +265,11 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job computeDeltaTn @2.0
+	 * Job computeDeltaTn called @2.0 in simulate method.
 	 * In variables: X_EDGE_LENGTH, Y_EDGE_LENGTH, D
 	 * Out variables: deltat
 	 */
-	private void computeDeltaTn() 
+	private void computeDeltaTn()
 	{
 		double reduction1 = IntStream.range(0, nbCells).boxed().parallel().reduce(
 			Double.MAX_VALUE, 
@@ -305,11 +280,11 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job ComputeFaceConductivity @2.0
+	 * Job ComputeFaceConductivity called @2.0 in simulate method.
 	 * In variables: D
 	 * Out variables: faceConductivity
 	 */
-	private void computeFaceConductivity() 
+	private void computeFaceConductivity()
 	{
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
@@ -339,11 +314,11 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job computeAlphaCoeff @3.0
+	 * Job computeAlphaCoeff called @3.0 in simulate method.
 	 * In variables: deltat, V, faceLength, faceConductivity, Xc
 	 * Out variables: alpha
 	 */
-	private void computeAlphaCoeff() 
+	private void computeAlphaCoeff()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -368,21 +343,28 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job executeTimeLoopN @4.0
-	 * In variables: alpha, t_n, deltat, u_n, t_nplus1, u_nplus1, iterationN
-	 * Out variables: t_n, u_n, t_nplus1, u_nplus1
+	 * Job executeTimeLoopN called @4.0 in simulate method.
+	 * In variables: iterationN, u_n, deltat, t_n, alpha
+	 * Out variables: t_nplus1, u_nplus1
 	 */
-	private void executeTimeLoopN() 
+	private void executeTimeLoopN()
 	{
 		iterationN = 0;
-		while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations))
+		do
 		{
 			iterationN++;
 			System.out.println("[iterationN : " + iterationN + "] t : " + t_n);
-			updateU(); // @1.0
 			dumpVariables(); // @1.0
 			computeTn(); // @1.0
-			prepareNextIterationOfTimeLoopN(); // @2.0
-		}
+			updateU(); // @1.0
+		
+			// Switch variables to prepare next iteration
+			double tmpT_n = t_n;
+			t_n = t_nplus1;
+			t_nplus1 = tmpT_n;
+			Vector tmpU_n = u_n;
+			u_n = u_nplus1;
+			u_nplus1 = tmpU_n;
+		} while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations));
 	}
 };

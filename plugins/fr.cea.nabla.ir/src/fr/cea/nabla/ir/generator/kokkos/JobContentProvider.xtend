@@ -60,7 +60,7 @@ abstract class JobContentProvider
 	protected def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
 		«MandatoryIterationVariables.getName(name)» = 0;
-		while («timeLoop.whileCondition.content»)
+		do
 		{
 			«MandatoryIterationVariables.getName(name)»++;
 			«FOR j : jobs.sortBy[at]»
@@ -71,7 +71,7 @@ abstract class JobContentProvider
 		«FOR copy : copies»
 			std::swap(«copy.source.name», «copy.destination.name»);
 		«ENDFOR»
-		}
+		} while («timeLoop.whileCondition.content»);
 	'''
 
 	protected def dispatch CharSequence getInnerContent(TimeLoopCopyJob it)

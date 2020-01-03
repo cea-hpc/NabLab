@@ -62,7 +62,7 @@ class JobContentProvider
 	'''
 		«val itVar = MandatoryIterationVariables.getName(timeLoop.name)»
 		«itVar» = 0;
-		while («timeLoop.whileCondition.content»)
+		do
 		{
 			«itVar»++;
 			System.out.println("«timeLoop.indentation»[«itVar» : " + «itVar» + "] t : " + «irModule.timeVariable.name»);
@@ -76,7 +76,7 @@ class JobContentProvider
 				«copy.destination.name» = «copy.source.name»;
 				«copy.source.name» = tmp«copy.destination.name.toFirstUpper»;
 			«ENDFOR»
-		}
+		} while («timeLoop.whileCondition.content»);
 	'''
 
 	private static def dispatch CharSequence getInnerContent(TimeLoopCopyJob it)

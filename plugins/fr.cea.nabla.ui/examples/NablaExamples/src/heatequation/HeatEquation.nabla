@@ -45,7 +45,7 @@ const ℝ α = 1.0;
 iterate n while (t^{n} < option_stoptime && iterationN < option_max_iterations);
 
 IniF: ∀j∈cells(), f{j} = 0.0;
-IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});  // ne fonctionne que sur des parallélogrammes
+IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});  // only on parallelograms
 IniUn: ∀j∈cells(), u^{n}{j} = cos(2*PI*α*center{j}[0]);
 ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(det(X{r}, X{r+1}));
 ComputeSurface: ∀f∈faces(), surface{f} = 0.5 * ∑{r∈nodesOfFace(f)}(norm(X{r}-X{r+1}));

@@ -73,7 +73,6 @@ public final class HeatEquation
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module HeatEquation");
-		setUpTimeLoopN(); // @1.0
 		iniF(); // @1.0
 		iniCenter(); // @1.0
 		computeV(); // @1.0
@@ -93,20 +92,11 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job setUpTimeLoopN @1.0
-	 * In variables: 
-	 * Out variables: 
-	 */
-	private void setUpTimeLoopN() 
-	{
-	}
-
-	/**
-	 * Job IniF @1.0
+	 * Job IniF called @1.0 in simulate method.
 	 * In variables: 
 	 * Out variables: f
 	 */
-	private void iniF() 
+	private void iniF()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -115,11 +105,11 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job IniCenter @1.0
+	 * Job IniCenter called @1.0 in simulate method.
 	 * In variables: X
 	 * Out variables: center
 	 */
-	private void iniCenter() 
+	private void iniCenter()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -139,11 +129,11 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job ComputeV @1.0
+	 * Job ComputeV called @1.0 in simulate method.
 	 * In variables: X
 	 * Out variables: V
 	 */
-	private void computeV() 
+	private void computeV()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -165,11 +155,11 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job ComputeSurface @1.0
+	 * Job ComputeSurface called @1.0 in simulate method.
 	 * In variables: X
 	 * Out variables: surface
 	 */
-	private void computeSurface() 
+	private void computeSurface()
 	{
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
@@ -191,11 +181,11 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job ComputeOutgoingFlux @1.0
+	 * Job ComputeOutgoingFlux called @1.0 in executeTimeLoopN method.
 	 * In variables: u_n, center, surface, deltat, V
 	 * Out variables: outgoingFlux
 	 */
-	private void computeOutgoingFlux() 
+	private void computeOutgoingFlux()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(j1Cells -> 
 		{
@@ -218,21 +208,21 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job ComputeTn @1.0
+	 * Job ComputeTn called @1.0 in executeTimeLoopN method.
 	 * In variables: t_n, deltat
 	 * Out variables: t_nplus1
 	 */
-	private void computeTn() 
+	private void computeTn()
 	{
 		t_nplus1 = t_n + deltat;
 	}
 
 	/**
-	 * Job dumpVariables @1.0
+	 * Job dumpVariables called @1.0 in executeTimeLoopN method.
 	 * In variables: u_n, iterationN
 	 * Out variables: 
 	 */
-	private void dumpVariables() 
+	private void dumpVariables()
 	{
 		if (iterationN >= lastDump)
 		{
@@ -245,11 +235,11 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job IniUn @2.0
+	 * Job IniUn called @2.0 in simulate method.
 	 * In variables: PI, alpha, center
 	 * Out variables: u_n
 	 */
-	private void iniUn() 
+	private void iniUn()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -258,11 +248,11 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job ComputeUn @2.0
+	 * Job ComputeUn called @2.0 in executeTimeLoopN method.
 	 * In variables: f, deltat, u_n, outgoingFlux
 	 * Out variables: u_nplus1
 	 */
-	private void computeUn() 
+	private void computeUn()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -271,14 +261,14 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job executeTimeLoopN @3.0
-	 * In variables: outgoingFlux, f, iterationN, center, t_n, surface, t_nplus1, u_n, V, deltat, u_nplus1
-	 * Out variables: outgoingFlux, t_n, t_nplus1, u_n, u_nplus1
+	 * Job executeTimeLoopN called @3.0 in simulate method.
+	 * In variables: deltat, iterationN, surface, outgoingFlux, V, f, center, t_n, u_n
+	 * Out variables: u_nplus1, t_nplus1, outgoingFlux
 	 */
-	private void executeTimeLoopN() 
+	private void executeTimeLoopN()
 	{
 		iterationN = 0;
-		while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations))
+		do
 		{
 			iterationN++;
 			System.out.println("[iterationN : " + iterationN + "] t : " + t_n);
@@ -286,22 +276,14 @@ public final class HeatEquation
 			computeOutgoingFlux(); // @1.0
 			computeTn(); // @1.0
 			computeUn(); // @2.0
-			prepareNextIterationOfTimeLoopN(); // @3.0
-		}
-	}
-
-	/**
-	 * Job prepareNextIterationOfTimeLoopN @3.0
-	 * In variables: t_nplus1, u_nplus1
-	 * Out variables: t_n, u_n
-	 */
-	private void prepareNextIterationOfTimeLoopN() 
-	{
-		double tmpT_n = t_n;
-		t_n = t_nplus1;
-		t_nplus1 = tmpT_n;
-		double[] tmpU_n = u_n;
-		u_n = u_nplus1;
-		u_nplus1 = tmpU_n;
+		
+			// Switch variables to prepare next iteration
+			double tmpT_n = t_n;
+			t_n = t_nplus1;
+			t_nplus1 = tmpT_n;
+			double[] tmpU_n = u_n;
+			u_n = u_nplus1;
+			u_nplus1 = tmpU_n;
+		} while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations));
 	}
 };

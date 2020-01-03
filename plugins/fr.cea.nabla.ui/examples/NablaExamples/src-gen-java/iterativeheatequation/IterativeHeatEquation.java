@@ -21,7 +21,7 @@ public final class IterativeHeatEquation
 		public final int Z_EDGE_ELEMS = 1;
 		public final double X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
 		public final double Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
-		public final double option_stoptime = 1.0;
+		public final double option_stoptime = 0.1;
 		public final int option_max_iterations = 500000000;
 		public final int option_max_iterations_k = 1000;
 	}
@@ -261,13 +261,13 @@ public final class IterativeHeatEquation
 
 	/**
 	 * Job executeTimeLoopK called @2.0 in executeTimeLoopN method.
-	 * In variables: alpha, u_n, u_nplus1_k, u_nplus1_kplus1
-	 * Out variables: residual, u_nplus1_kplus1
+	 * In variables: u_nplus1_kplus1, u_nplus1_k, u_n, alpha
+	 * Out variables: u_nplus1_kplus1, residual
 	 */
 	private void executeTimeLoopK()
 	{
 		iterationK = 0;
-		while ((residual > epsilon && iterationK < options.option_max_iterations_k))
+		do
 		{
 			iterationK++;
 			System.out.println("	[iterationK : " + iterationK + "] t : " + t_n);
@@ -278,7 +278,7 @@ public final class IterativeHeatEquation
 			double[] tmpU_nplus1_k = u_nplus1_k;
 			u_nplus1_k = u_nplus1_kplus1;
 			u_nplus1_kplus1 = tmpU_nplus1_k;
-		}
+		} while ((residual > epsilon && iterationK < options.option_max_iterations_k));
 	}
 
 	/**
@@ -323,7 +323,7 @@ public final class IterativeHeatEquation
 			(r, cCells) -> MathFunctions.min(r, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]),
 			(r1, r2) -> MathFunctions.min(r1, r2)
 		);
-		deltat = reduction1 * 0.24;
+		deltat = reduction1 * 0.1;
 	}
 
 	/**
@@ -413,25 +413,25 @@ public final class IterativeHeatEquation
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
 			}
-			alpha[cCells][cCells] = 1 - alphaDiag;
+			alpha[cCells][cCells] = -alphaDiag;
 		});
 	}
 
 	/**
 	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: t_n, alpha, u_n, u_nplus1_k, deltat, u_nplus1_kplus1, iterationN
-	 * Out variables: residual, u_nplus1, t_nplus1, u_nplus1_k, u_nplus1_kplus1
+	 * In variables: t_n, u_nplus1_kplus1, u_nplus1_k, iterationN, u_n, deltat, alpha
+	 * Out variables: u_nplus1_kplus1, u_nplus1_k, residual, t_nplus1, u_nplus1
 	 */
 	private void executeTimeLoopN()
 	{
 		iterationN = 0;
-		while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations))
+		do
 		{
 			iterationN++;
 			System.out.println("[iterationN : " + iterationN + "] t : " + t_n);
 			setUpTimeLoopK(); // @1.0
-			dumpVariables(); // @1.0
 			computeTn(); // @1.0
+			dumpVariables(); // @1.0
 			executeTimeLoopK(); // @2.0
 			tearDownTimeLoopK(); // @3.0
 		
@@ -442,6 +442,6 @@ public final class IterativeHeatEquation
 			double[] tmpU_n = u_n;
 			u_n = u_nplus1;
 			u_nplus1 = tmpU_n;
-		}
+		} while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations));
 	}
 };

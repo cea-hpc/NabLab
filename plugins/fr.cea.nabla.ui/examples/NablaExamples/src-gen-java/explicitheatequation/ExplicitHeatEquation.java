@@ -351,19 +351,19 @@ public final class ExplicitHeatEquation
 
 	/**
 	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: deltat, iterationN, u_n, alpha, t_n
+	 * In variables: u_n, iterationN, t_n, alpha, deltat
 	 * Out variables: u_nplus1, t_nplus1
 	 */
 	private void executeTimeLoopN()
 	{
 		iterationN = 0;
-		while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations))
+		do
 		{
 			iterationN++;
 			System.out.println("[iterationN : " + iterationN + "] t : " + t_n);
-			computeTn(); // @1.0
-			updateU(); // @1.0
 			dumpVariables(); // @1.0
+			updateU(); // @1.0
+			computeTn(); // @1.0
 		
 			// Switch variables to prepare next iteration
 			double tmpT_n = t_n;
@@ -372,6 +372,6 @@ public final class ExplicitHeatEquation
 			double[] tmpU_n = u_n;
 			u_n = u_nplus1;
 			u_nplus1 = tmpU_n;
-		}
+		} while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations));
 	}
 };

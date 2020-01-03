@@ -129,7 +129,7 @@ public final class Glace2d
 	 * In variables: X_n0
 	 * Out variables: X_n
 	 */
-	private void setUpTimeLoopN() 
+	private void setUpTimeLoopN()
 	{
 		IntStream.range(0, X_n.length).parallel().forEach(i2 -> 
 		{
@@ -143,7 +143,7 @@ public final class Glace2d
 	 * In variables: X_n0
 	 * Out variables: center
 	 */
-	private void iniCenter() 
+	private void iniCenter()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -167,7 +167,7 @@ public final class Glace2d
 	 * In variables: X_n0
 	 * Out variables: C_ic
 	 */
-	private void computeCjrIc() 
+	private void computeCjrIc()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -191,7 +191,7 @@ public final class Glace2d
 	 * In variables: X_n
 	 * Out variables: C
 	 */
-	private void computeCjr() 
+	private void computeCjr()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -215,7 +215,7 @@ public final class Glace2d
 	 * In variables: E_n, uj_n
 	 * Out variables: e
 	 */
-	private void computeInternalEnergy() 
+	private void computeInternalEnergy()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -228,7 +228,7 @@ public final class Glace2d
 	 * In variables: 
 	 * Out variables: uj_n
 	 */
-	private void iniUn() 
+	private void iniUn()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -242,7 +242,7 @@ public final class Glace2d
 	 * In variables: center, option_x_interface, option_rho_ini_zg, option_p_ini_zg, option_rho_ini_zd, option_p_ini_zd
 	 * Out variables: rho_ic, p_ic
 	 */
-	private void iniIc() 
+	private void iniIc()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -264,7 +264,7 @@ public final class Glace2d
 	 * In variables: C_ic, X_n0
 	 * Out variables: V_ic
 	 */
-	private void iniVIc() 
+	private void iniVIc()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -288,7 +288,7 @@ public final class Glace2d
 	 * In variables: C
 	 * Out variables: l
 	 */
-	private void computeLjr() 
+	private void computeLjr()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -308,7 +308,7 @@ public final class Glace2d
 	 * In variables: C, X_n
 	 * Out variables: V
 	 */
-	private void computeV() 
+	private void computeV()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -332,7 +332,7 @@ public final class Glace2d
 	 * In variables: rho_ic, V_ic
 	 * Out variables: m
 	 */
-	private void iniM() 
+	private void iniM()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -345,7 +345,7 @@ public final class Glace2d
 	 * In variables: m, V
 	 * Out variables: rho
 	 */
-	private void computeDensity() 
+	private void computeDensity()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -358,7 +358,7 @@ public final class Glace2d
 	 * In variables: p_ic, gamma, rho_ic
 	 * Out variables: E_n
 	 */
-	private void iniEn() 
+	private void iniEn()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -368,13 +368,13 @@ public final class Glace2d
 
 	/**
 	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: deltat_nplus1, Ajr, l, uj_n, gamma, t_n, E_n, p, deltat_n, iterationN, bt, C, Ar, Mt, uj_nplus1, t_nplus1, Y_EDGE_LENGTH, ur, e, option_deltat_cfl, E_nplus1, V, c, X_EDGE_ELEMS, Y_EDGE_ELEMS, F, deltatj, X_nplus1, X_n, b, rho, X_EDGE_LENGTH, m
-	 * Out variables: deltat_nplus1, Ajr, l, uj_n, t_n, deltat_n, E_n, p, bt, Ar, C, Mt, uj_nplus1, t_nplus1, ur, e, E_nplus1, c, V, F, deltatj, X_nplus1, X_n, b, rho
+	 * In variables: C, V, F, uj_n, ur, Mt, X_EDGE_LENGTH, X_EDGE_ELEMS, deltat_n, bt, l, iterationN, Y_EDGE_LENGTH, Ar, X_n, e, Ajr, Y_EDGE_ELEMS, gamma, deltatj, rho, p, option_deltat_cfl, b, t_n, E_n, m, deltat_nplus1, c
+	 * Out variables: Ar, C, E_nplus1, e, V, F, t_nplus1, ur, uj_nplus1, Mt, Ajr, deltatj, p, rho, X_nplus1, b, bt, l, deltat_nplus1, c
 	 */
-	private void executeTimeLoopN() 
+	private void executeTimeLoopN()
 	{
 		iterationN = 0;
-		while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations))
+		do
 		{
 			iterationN++;
 			System.out.println("[iterationN : " + iterationN + "] t : " + t_n);
@@ -398,10 +398,26 @@ public final class Glace2d
 			computeU(); // @9.0
 			computeFjr(); // @10.0
 			computeXn(); // @10.0
-			computeEn(); // @11.0
 			computeUn(); // @11.0
-			prepareNextIterationOfTimeLoopN(); // @12.0
-		}
+			computeEn(); // @11.0
+		
+			// Switch variables to prepare next iteration
+			double tmpT_n = t_n;
+			t_n = t_nplus1;
+			t_nplus1 = tmpT_n;
+			double tmpDeltat_n = deltat_n;
+			deltat_n = deltat_nplus1;
+			deltat_nplus1 = tmpDeltat_n;
+			double[][] tmpX_n = X_n;
+			X_n = X_nplus1;
+			X_nplus1 = tmpX_n;
+			double[] tmpE_n = E_n;
+			E_n = E_nplus1;
+			E_nplus1 = tmpE_n;
+			double[][] tmpUj_n = uj_n;
+			uj_n = uj_nplus1;
+			uj_nplus1 = tmpUj_n;
+		} while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations));
 	}
 
 	/**
@@ -409,7 +425,7 @@ public final class Glace2d
 	 * In variables: gamma, rho, e
 	 * Out variables: p
 	 */
-	private void computeEOSp() 
+	private void computeEOSp()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -422,7 +438,7 @@ public final class Glace2d
 	 * In variables: rho, iterationN
 	 * Out variables: 
 	 */
-	private void dumpVariables() 
+	private void dumpVariables()
 	{
 		if (iterationN >= lastDump)
 		{
@@ -439,7 +455,7 @@ public final class Glace2d
 	 * In variables: gamma, p, rho
 	 * Out variables: c
 	 */
-	private void computeEOSc() 
+	private void computeEOSc()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -452,7 +468,7 @@ public final class Glace2d
 	 * In variables: l, V, c
 	 * Out variables: deltatj
 	 */
-	private void computedeltatj() 
+	private void computedeltatj()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -474,7 +490,7 @@ public final class Glace2d
 	 * In variables: rho, c, l, C
 	 * Out variables: Ajr
 	 */
-	private void computeAjr() 
+	private void computeAjr()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -494,7 +510,7 @@ public final class Glace2d
 	 * In variables: Ajr
 	 * Out variables: Ar
 	 */
-	private void computeAr() 
+	private void computeAr()
 	{
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
@@ -519,7 +535,7 @@ public final class Glace2d
 	 * In variables: p, C, Ajr, uj_n
 	 * Out variables: b
 	 */
-	private void computeBr() 
+	private void computeBr()
 	{
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
@@ -544,7 +560,7 @@ public final class Glace2d
 	 * In variables: deltatj, option_deltat_cfl
 	 * Out variables: deltat_nplus1
 	 */
-	private void computeDt() 
+	private void computeDt()
 	{
 		double reduction8 = IntStream.range(0, nbCells).boxed().parallel().reduce(
 			Double.MAX_VALUE, 
@@ -559,7 +575,7 @@ public final class Glace2d
 	 * In variables: Ar
 	 * Out variables: Mt
 	 */
-	private void computeMt() 
+	private void computeMt()
 	{
 		int[] innerNodes = mesh.getInnerNodes();
 		IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes -> 
@@ -575,7 +591,7 @@ public final class Glace2d
 	 * In variables: b
 	 * Out variables: bt
 	 */
-	private void computeBt() 
+	private void computeBt()
 	{
 		int[] innerNodes = mesh.getInnerNodes();
 		IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes -> 
@@ -591,7 +607,7 @@ public final class Glace2d
 	 * In variables: X_EDGE_ELEMS, X_EDGE_LENGTH, Y_EDGE_ELEMS, Y_EDGE_LENGTH, X_n, b, Ar
 	 * Out variables: bt, Mt
 	 */
-	private void outerFacesComputations() 
+	private void outerFacesComputations()
 	{
 		int[] outerFaces = mesh.getOuterFaces();
 		IntStream.range(0, nbOuterFaces).parallel().forEach(fOuterFaces -> 
@@ -639,7 +655,7 @@ public final class Glace2d
 	 * In variables: t_n, deltat_nplus1
 	 * Out variables: t_nplus1
 	 */
-	private void computeTn() 
+	private void computeTn()
 	{
 		t_nplus1 = t_n + deltat_nplus1;
 	}
@@ -649,7 +665,7 @@ public final class Glace2d
 	 * In variables: Mt, bt
 	 * Out variables: ur
 	 */
-	private void computeU() 
+	private void computeU()
 	{
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
@@ -662,7 +678,7 @@ public final class Glace2d
 	 * In variables: p, C, Ajr, uj_n, ur
 	 * Out variables: F
 	 */
-	private void computeFjr() 
+	private void computeFjr()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -684,7 +700,7 @@ public final class Glace2d
 	 * In variables: X_n, deltat_n, ur
 	 * Out variables: X_nplus1
 	 */
-	private void computeXn() 
+	private void computeXn()
 	{
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
@@ -697,7 +713,7 @@ public final class Glace2d
 	 * In variables: F, uj_n, deltat_n, m
 	 * Out variables: uj_nplus1
 	 */
-	private void computeUn() 
+	private void computeUn()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -719,7 +735,7 @@ public final class Glace2d
 	 * In variables: F, ur, E_n, deltat_n, m
 	 * Out variables: E_nplus1
 	 */
-	private void computeEn() 
+	private void computeEn()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -736,30 +752,6 @@ public final class Glace2d
 			}
 			E_nplus1[jCells] = E_n[jCells] - (deltat_n / m[jCells]) * reduction7;
 		});
-	}
-
-	/**
-	 * Job prepareNextIterationOfTimeLoopN called @12.0 in executeTimeLoopN method.
-	 * In variables: t_nplus1, deltat_nplus1, X_nplus1, E_nplus1, uj_nplus1
-	 * Out variables: t_n, deltat_n, X_n, E_n, uj_n
-	 */
-	private void prepareNextIterationOfTimeLoopN() 
-	{
-		double tmpT_n = t_n;
-		t_n = t_nplus1;
-		t_nplus1 = tmpT_n;
-		double tmpDeltat_n = deltat_n;
-		deltat_n = deltat_nplus1;
-		deltat_nplus1 = tmpDeltat_n;
-		double[][] tmpX_n = X_n;
-		X_n = X_nplus1;
-		X_nplus1 = tmpX_n;
-		double[] tmpE_n = E_n;
-		E_n = E_nplus1;
-		E_nplus1 = tmpE_n;
-		double[][] tmpUj_n = uj_n;
-		uj_n = uj_nplus1;
-		uj_nplus1 = tmpUj_n;
 	}
 
 	private double[] perp(double[] a)

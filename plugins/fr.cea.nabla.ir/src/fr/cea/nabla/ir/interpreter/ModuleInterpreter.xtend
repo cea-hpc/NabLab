@@ -1,12 +1,8 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.MandatoryMeshOptions
-import fr.cea.nabla.ir.MandatorySimulationOptions
-import fr.cea.nabla.ir.MandatorySimulationVariables
-import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Iterator
-import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.time.Duration
@@ -52,8 +48,6 @@ class ModuleInterpreter
 		val startTime = LocalDateTime.now()
 		logger.warning(" Start executing " + module.name + " module " + dtf.format(startTime))
 
-		// Add Variable for iteration
-		val iterationVariable = createIterationVariable
 		jobInterpreter = new JobInterpreter(writer)
 
 		// Compute NeededIds and NeededIndexes for each iterator to spare time during interpretation
@@ -63,7 +57,7 @@ class ModuleInterpreter
 		for (v : module.variables.filter(SimpleVariable).filter[const])
 			context.addVariableValue(v, interprete(v.defaultValue, context))
 
-		if (!module.items.empty)
+		if (module.withMesh)
 		{
 			// Create mesh
 			val nbXQuads = context.getInt(MandatoryMeshOptions::X_EDGE_ELEMS)
@@ -85,28 +79,11 @@ class ModuleInterpreter
 			context.addVariableValue(v, createValue(v, context))
 
 		// Copy Node Cooords
-		context.addVariableValue(module.initCoordVariable, new NV2Real(context.meshWrapper.nodes))
+		context.addVariableValue(module.initNodeCoordVariable, new NV2Real(context.meshWrapper.nodes))
 
-		// Interprete init jobs
-		for (j : module.jobs.filter[x | x.at < 0].sortBy[at])
-			jobInterpreter.interprete(j, context)
-
-		context.logVariables("After init jobs")
-
-		// Declare time loop
-		var maxIterations = context.getInt(MandatorySimulationOptions::MAX_ITERATIONS)
-		var stopTime = context.getReal(MandatorySimulationOptions::STOP_TIME)
-
-		var iteration = (context.getVariableValue(iterationVariable) as NV0Int).data
-		while (iteration < maxIterations && context.getReal(MandatorySimulationVariables::TIME) < stopTime)
-		{
-			iteration ++
-			context.setVariableValue(iterationVariable, new NV0Int(iteration))
-			logger.info("[" + iteration + "] t = " + context.getReal(MandatorySimulationVariables::TIME))
-			for (j : module.jobs.filter[x | x.at > 0].sortBy[at])
+		// Interprete Top level jobs
+		for (j : module.jobs.filter[jobContainer === null].sortBy[at])
 				jobInterpreter.interprete(j, context)
-			context.logVariables("After iteration = " + iteration)
-		}
 
 		context.logVariables("At the end")
 		val endTime = LocalDateTime.now()
@@ -119,20 +96,5 @@ class ModuleInterpreter
 	def warn(String message)
 	{
 		logger.warning(message)
-	}
-
-	private def createIterationVariable()
-	{
-		val iteration = IrFactory::eINSTANCE.createSimpleVariable
-		iteration.name = ModuleInterpreter.ITERATION_VARIABLE_NAME
-		iteration.type = IrFactory::eINSTANCE.createBaseType => [ primitive = PrimitiveType::INT ]
-		iteration.const = false
-		iteration.defaultValue = IrFactory::eINSTANCE.createIntConstant =>
-		[
-			type = IrFactory::eINSTANCE.createBaseType => [ primitive = PrimitiveType::INT ]
-			value = 0
-		]
-		module.variables.add(iteration)
-		return iteration
 	}
 }

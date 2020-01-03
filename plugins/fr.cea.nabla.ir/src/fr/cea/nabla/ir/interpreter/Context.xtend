@@ -86,6 +86,17 @@ class Context
 		return (getVariableValue(variableName) as NV0Real).data
 	}
 
+	def double getNumber(String variableName)
+	{
+		val vv = getVariableValue(variableName)
+		switch vv
+		{
+			NV0Real : vv.data
+			NV0Int : vv.data as double
+			default : 0.0
+		}
+	}
+
 	def void addVariableValue(ArgOrVar variable, NablaValue value)
 	{
 		variableValues.put(variable, value)
@@ -216,6 +227,11 @@ class Context
 	def logFinest(String message)
 	{
 		logger.log(Level::FINEST, message)
+	}
+
+	def logInfo(String message)
+	{
+		logger.log(Level::INFO, message)
 	}
 
 	def setNeededIndicesAndNeededIdsInContext(Iterator iterator)

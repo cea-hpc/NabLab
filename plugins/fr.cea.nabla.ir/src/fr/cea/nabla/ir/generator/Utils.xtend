@@ -10,9 +10,7 @@
 package fr.cea.nabla.ir.generator
 
 import fr.cea.nabla.ir.ir.Connectivity
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
-import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Reduction
@@ -80,11 +78,4 @@ class Utils
 		if (sizes.empty) value
 		else initArray(sizes.tail, '''«FOR i : 0..<sizes.head BEFORE '{' SEPARATOR ', ' AFTER '}'»«value»«ENDFOR»''')
 	}
-
-	static def getPersistentVariables(IrModule it) 
-	{ 
-		variables.filter(ConnectivityVariable).filter[x|x.persistenceName !== null && x.type.connectivities.size == 1]
-	}
-
-	static def withMesh(IrModule it) { !items.empty }
 }

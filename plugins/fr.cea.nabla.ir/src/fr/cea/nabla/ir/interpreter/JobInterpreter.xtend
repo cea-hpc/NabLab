@@ -1,13 +1,14 @@
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.MandatoryMeshVariables
-import fr.cea.nabla.ir.generator.Utils
-import fr.cea.nabla.ir.ir.BeginOfTimeLoopJob
+import fr.cea.nabla.ir.MandatoryIterationVariables
 import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.EndOfTimeLoopJob
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.TimeLoop
+import fr.cea.nabla.ir.ir.TimeLoopCopyJob
+import fr.cea.nabla.ir.ir.TimeLoopJob
+import fr.cea.nabla.ir.transformers.TagPersistentVariables
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.HashMap
 
@@ -15,6 +16,7 @@ import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
 class JobInterpreter
 {
@@ -25,25 +27,23 @@ class JobInterpreter
 		this.writer = writer
 	}
 
-	def dispatch interprete(InstructionJob it, Context context)
+	def dispatch void interprete(InstructionJob it, Context context)
 	{
 		context.logFinest("Interprete InstructionJob " + name + " @ " + at)
 		val innerContext = new Context(context)
 		interprete(instruction, innerContext)
 	}
 
-	def dispatch interprete(InSituJob it, Context context)
+	def dispatch void interprete(InSituJob it, Context context)
 	{
 		context.logFinest("Interprete InSituJob " + name + " @ " + at)
 		val irModule = eContainer as IrModule
-		val iteration = context.getInt(ModuleInterpreter::ITERATION_VARIABLE_NAME)
-		val time = context.getReal(MandatorySimulationVariables::TIME)
-		var lastWriteTime = 0.0
-		if (timeStep > 0)
-			lastWriteTime = context.getReal(Utils::LastWriteTimeVariableName)
+		val iteration = context.getInt(iterationVariable.name)
+		val time = context.getReal(irModule.timeVariable.name)
+		val period = context.getNumber(periodVariable.name)
+		val lastDump = context.getReal(TagPersistentVariables::LastDumpVariableName)
 
-		if ((iterationPeriod > 0 && iteration % iterationPeriod == 0)
-			|| (timeStep > 0 && time > lastWriteTime))
+		if (period >= lastDump)
 		{
 			val cellVariables = new HashMap<String, double[]>
 			val nodeVariables = new HashMap<String, double[]>
@@ -52,48 +52,69 @@ class JobInterpreter
 			setItemVariables(context, irModule, "cell", cellVariables)
 			setItemVariables(context, irModule, "node", nodeVariables)
 
-			val coordVariable = irModule.getVariableByName(MandatoryMeshVariables::COORD)
+			val coordVariable = irModule.getVariableByName(irModule.nodeCoordVariable.name)
 			val coord = (context.getVariableValue(coordVariable) as NV2Real).data
 			val quads = context.meshWrapper.quads
 			writer.writeFile(iteration, time, coord, quads, cellVariables, nodeVariables)
-			if (timeStep > 0)
+			val lastDumpVariable= irModule.getVariableByName(TagPersistentVariables::LastDumpVariableName)
+			context.setVariableValue(lastDumpVariable, new NV0Real(period))
+		}
+	}
+
+	def dispatch void interprete(TimeLoopJob it, Context context)
+	{
+		context.logFinest("Interprete TimeLoopJob" + name + " @ " + at)
+		val iterationVariableName = MandatoryIterationVariables.getName(timeLoop.name)
+		val irModule = eContainer as IrModule
+		val iterationVariable = irModule.getVariableByName(iterationVariableName)
+		var iteration = 0
+		context.logVariables("Before timeLoop " + timeLoop.name)
+		context.addVariableValue(iterationVariable, new NV0Int(iteration))
+		do
+		{
+			iteration ++
+			context.setVariableValue(iterationVariable, new NV0Int(iteration))
+			context.logInfo(timeLoop.indentation + "[" + iteration + "] t : " + context.getReal(irModule.timeVariable.name))
+			for (j : jobs.filter[x | x.at > 0].sortBy[at])
+				interprete(j, context)
+			context.logVariables("After iteration = " + iteration)
+			// Switch variables to prepare next iteration
+			for (copy : copies)
 			{
-				val lastWriteTimeVariable= irModule.getVariableByName(Utils::LastWriteTimeVariableName)
-				context.setVariableValue(lastWriteTimeVariable, new NV0Real(lastWriteTime + timeStep))
+				val leftValue = context.getVariableValue(copy.destination)
+				val rightValue = context.getVariableValue(copy.source)
+				context.setVariableValue(copy.destination, rightValue)
+				context.setVariableValue(copy.source, leftValue)
 			}
 		}
+		while ((interprete(timeLoop.whileCondition, context) as NV0Bool).data)
+		context.logVariables("After timeLoop " + iteration)
 	}
 
-	def dispatch interprete(BeginOfTimeLoopJob it, Context context)
+	def dispatch void interprete(TimeLoopCopyJob it, Context context)
 	{
-		context.logFinest("Interprete EndOfTimeLoopJob" + name + " @ " + at)
-		// Switch Vn and Vn+1
-		for (initialization : initializations)
+		context.logFinest("Interprete TimeLoopCopyJob " + name + " @ " + at)
+
+		for (copy : copies)
 		{
-			val leftValue = context.getVariableValue(initialization.destination)
-			val rightValue = context.getVariableValue(initialization.source)
-			context.setVariableValue(initialization.destination, rightValue)
-			context.setVariableValue(initialization.source, leftValue)
+			val sourceValue = context.getVariableValue(copy.source)
+			val destinationValue = context.getVariableValue(copy.destination)
+			destinationValue.setValue(#[], sourceValue)
 		}
-	}
-
-	def dispatch interprete(EndOfTimeLoopJob it, Context context)
-	{
-		context.logFinest("Interprete EndOfInitJob " + name + " @ " + at)
-		// Set Vn = V0
-		// Warning : V0 and Vn have the same memory representation so if we update Vn, V0 will be modified
-		val cond = interprete(whileCondition, context) as NV0Bool
-		val varCopies = if (cond.data) nextLoopCopies else exitLoopCopies
-		for (copy : varCopies)
-			context.setVariableValue(copy.destination, context.getVariableValue(copy.source))
 	}
 
 	private def setItemVariables(InSituJob it, Context context, IrModule module, String itemName, HashMap<String, double[]> map)
 	{
-		for (v : variables.filter(ConnectivityVariable).filter(v | v.type.connectivities.head.returnType.type.name == itemName))
+		for (v : dumpedVariables.filter(ConnectivityVariable).filter(v | v.type.connectivities.head.returnType.type.name == itemName))
 		{
 			val value = context.getVariableValue(module.getVariableByName(v.name))
 			if (value instanceof NV1Real) map.put(v.persistenceName, (value as NV1Real).data)
 		}
+	}
+
+	private static def String getIndentation(TimeLoop it)
+	{
+		if (outerTimeLoop === null) ''
+		else getIndentation(outerTimeLoop) + '\t'
 	}
 }

@@ -38,4 +38,6 @@ class IrModuleExtensions
 	{
 		variables.findFirst[j | j.name == varName]
 	}
+
+	static def withMesh(IrModule it) { !items.empty }
 }

@@ -1,7 +1,7 @@
 
 # NabLab
 
-<img src="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla.rcp/icons/logo_128.png" width="20%" height="20%" align="right" /> 
+<img src="https://github.com/cea-hpc/NabLab/edit/master/docs/logo_512.png" width="20%" height="20%" align="right" /> 
 
 NabLab is a open-source research project led by [HPC initiative of the CEA](http://www-hpc.cea.fr/index-en.htm). Its aim is to realize a modeling environment for the [Nabla language](http://nabla-lang.org/index.html) to provide a productive development way for exascale HPC technologies, flexible enough to be competitive in terms of performances.
 

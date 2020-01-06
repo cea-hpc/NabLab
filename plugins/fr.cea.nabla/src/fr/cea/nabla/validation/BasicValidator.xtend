@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -180,7 +180,7 @@ class BasicValidator extends AbstractNablaValidator
 
 	// ===== NablaModule =====
 
-	public static val MANDATORY_MESH_OPTION = "NablaModule::MandatoryMeshOption"
+	public static val MANDATORY_OPTION = "NablaModule::MandatoryOption"
 	public static val MODULE_NAME = "NablaModule::ModuleName"
 
 	static def getMandatoryOptionsMsg(String[] missingOptions) { "Missing mandatory mesh option(s): " + missingOptions.join(", ") }
@@ -189,10 +189,11 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkMandatoryOptions(NablaModule it)
 	{
+		if (items.empty) return; // no mesh
 		val scalarConsts = instructions.filter(SimpleVarDefinition).filter[const].map[variable.name].toList
 		val missingConsts = MandatoryOptions::NAMES.filter[x | !scalarConsts.contains(x)]
-		if (missingConsts.size > 0 && !items.empty)
-			error(getMandatoryOptionsMsg(missingConsts), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_MESH_OPTION)
+		if (missingConsts.size > 0)
+			error(getMandatoryOptionsMsg(missingConsts), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_OPTION)
 	}
 
 	@Check

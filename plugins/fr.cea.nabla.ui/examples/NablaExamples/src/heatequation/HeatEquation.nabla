@@ -26,7 +26,6 @@ const ℝ X_EDGE_LENGTH = 0.1;
 const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
 const ℕ X_EDGE_ELEMS = 20;
 const ℕ Y_EDGE_ELEMS = 20;
-const ℕ Z_EDGE_ELEMS = 1;
 
 // Simulation options
 const ℝ option_stoptime = 0.1;

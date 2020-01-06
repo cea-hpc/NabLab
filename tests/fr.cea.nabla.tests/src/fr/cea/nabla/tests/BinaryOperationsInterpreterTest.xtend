@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
@@ -22,13 +31,12 @@ import static fr.cea.nabla.tests.TestUtils.*
 class BinaryOperationsInterpreterTest
 {
 	@Inject CompilationChainHelper compilationHelper
-				
+
 	@Test
-	def void testGetValueOfNV0Bool_NV0Bool() 
+	def void testGetValueOfNV0Bool_NV0Bool()
 	{
-		val model = TestUtils::testModule 
-		+
-		'''	
+		val model = getTestModule('', '') +
+		'''
 		ℾ b1 = true || false; // -> true
 		ℾ b2 = true || true; // -> true
 		ℾ b3 = false || false; // -> false
@@ -44,9 +52,10 @@ class BinaryOperationsInterpreterTest
 		ℾ b11 = true > false; // -> true
 		ℾ b12 = true < false; // -> false
 		'''
+		println(model)
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
-		
+
 		assertVariableDefaultValue(irModule, context, "b1", new NV0Bool(true))
 		assertVariableDefaultValue(irModule, context, "b2", new NV0Bool(true))
 		assertVariableDefaultValue(irModule, context, "b3", new NV0Bool(false))
@@ -56,19 +65,18 @@ class BinaryOperationsInterpreterTest
 		assertVariableDefaultValue(irModule, context, "b6", new NV0Bool(false))
 
 		assertVariableDefaultValue(irModule, context, "b7", new NV0Bool(false))
-		assertVariableDefaultValue(irModule, context, "b8", new NV0Bool(true))	
+		assertVariableDefaultValue(irModule, context, "b8", new NV0Bool(true))
 		assertVariableDefaultValue(irModule, context, "b9", new NV0Bool(true))
 		assertVariableDefaultValue(irModule, context, "b10", new NV0Bool(false))
 		assertVariableDefaultValue(irModule, context, "b11", new NV0Bool(true))
 		assertVariableDefaultValue(irModule, context, "b12", new NV0Bool(false))
 	}
-	
+
 	@Test
-	def void testGetValueOfNV0Int_NV0Int() 
+	def void testGetValueOfNV0Int_NV0Int()
 	{
-		val model = TestUtils::testModule 
-		+
-		'''	
+		val model = getTestModule('', '') +
+		'''
 		ℾ b1 = 1 == 2; // -> false
 		ℾ b2 = 1 == 1; // -> true
 
@@ -96,7 +104,7 @@ class BinaryOperationsInterpreterTest
 		'''
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
-		
+
 		assertVariableDefaultValue(irModule, context, "b1", new NV0Bool(false))
 		assertVariableDefaultValue(irModule, context, "b2", new NV0Bool(true))
 		assertVariableDefaultValue(irModule, context, "b3", new NV0Bool(true))
@@ -109,7 +117,7 @@ class BinaryOperationsInterpreterTest
 		assertVariableDefaultValue(irModule, context, "b10", new NV0Bool(true))
 		assertVariableDefaultValue(irModule, context, "b11", new NV0Bool(true))
 		assertVariableDefaultValue(irModule, context, "b12", new NV0Bool(false))
-		
+
 		assertVariableDefaultValue(irModule, context, "n1", new NV0Int(3))
 		assertVariableDefaultValue(irModule, context, "n2", new NV0Int(1))
 		assertVariableDefaultValue(irModule, context, "n3", new NV0Int(6))
@@ -119,11 +127,10 @@ class BinaryOperationsInterpreterTest
 	}
 
 	@Test
-	def void testGetValueOfNV0Int_NV0Real() 
+	def void testGetValueOfNV0Int_NV0Real()
 	{
-		val model = TestUtils::testModule 
-		+
-		'''	
+		val model = getTestModule('', '') +
+		'''
 		ℾ b1 = 1 == 2.; // -> false
 		ℾ b2 = 1 == 1; // -> true
 
@@ -150,7 +157,7 @@ class BinaryOperationsInterpreterTest
 		'''
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
-		
+
 		assertVariableDefaultValue(irModule, context, "b1", new NV0Bool(false))
 		assertVariableDefaultValue(irModule, context, "b2", new NV0Bool(true))
 		assertVariableDefaultValue(irModule, context, "b3", new NV0Bool(true))
@@ -163,19 +170,18 @@ class BinaryOperationsInterpreterTest
 		assertVariableDefaultValue(irModule, context, "b10", new NV0Bool(true))
 		assertVariableDefaultValue(irModule, context, "b11", new NV0Bool(true))
 		assertVariableDefaultValue(irModule, context, "b12", new NV0Bool(false))
-		
+
 		assertVariableDefaultValue(irModule, context, "n1", new NV0Real(3.0))
 		assertVariableDefaultValue(irModule, context, "n2", new NV0Real(1.0))
 		assertVariableDefaultValue(irModule, context, "n3", new NV0Real(6.0))
 		assertVariableDefaultValue(irModule, context, "n4", new NV0Real(2.0))
 		assertVariableDefaultValue(irModule, context, "n5", new NV0Real(3.5))
 	}
-	
-		@Test
-	def void testGetValueOfNV0Int_NV1Int() 
+
+	@Test
+	def void testGetValueOfNV0Int_NV1Int()
 	{
-		val model = TestUtils::testModule 
-		+
+		val model = getTestModule('', '') +
 		'''
 		ℕ[2] n1 = [1,2];
 		ℕ[2] n2 = 3 + n1;
@@ -186,7 +192,7 @@ class BinaryOperationsInterpreterTest
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 		val context = moduleInterpreter.interprete
-		
+
 		assertVariableDefaultValue(irModule, context, "n1", new NV1Int(#[1, 2]))
 		assertVariableValueInContext(irModule, context, "n1", new NV1Int(#[1, 2]))
 		//assertVariableValueInContext(irModule, context, "n2", new NV1Int(#[4, 5]))

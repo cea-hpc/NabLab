@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -68,39 +68,38 @@ class TestUtils
 	}
 
 	// ===== CharSequence utils =====
-	static def String getEmptyTestModule()
+	private static def String getEmptyTestModule()
 	'''
 	module Test;
 	with Math.*;
 	'''
 
 	//TODO These options should be filled in nablagen
-	static def String getMandatoryMeshOptions(int xQuads, int yQuads)
+	private static def String getMandatoryOptions(int xQuads, int yQuads)
 	'''
 	const ℝ X_EDGE_LENGTH = 0.01;
 	const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
 	const ℕ X_EDGE_ELEMS = «xQuads»;
 	const ℕ Y_EDGE_ELEMS = «yQuads»;
-	const ℕ Z_EDGE_ELEMS = 1;
 	'''
 
-	static def String getMandatoryMeshOptions()
+	static def String getMandatoryOptions()
 	{
-		return getMandatoryMeshOptions(10, 10)
+		return getMandatoryOptions(10, 10)
 	}
 
-	static def String getSimulationOptions(double stopTime, int maxIterations)
-	'''
-	const ℝ option_stoptime = «stopTime»;
-	const ℕ option_max_iterations = «maxIterations»;
-	'''
+//	static def String getSimulationOptions(double stopTime, int maxIterations)
+//	'''
+//	const ℝ option_stoptime = «stopTime»;
+//	const ℕ option_max_iterations = «maxIterations»;
+//	'''
+//
+//	static def String getSimulationOptions()
+//	{
+//		return getSimulationOptions(0.2, 1)
+//	}
 
-	static def String getSimulationOptions()
-	{
-		return getSimulationOptions(0.2, 1)
-	}
-
-	static def String getConnectivities()
+	static def CharSequence getConnectivities()
 	'''
 	items { node, cell }
 
@@ -109,90 +108,86 @@ class TestUtils
 	set nodesOfCell: cell → {node};
 	'''
 
-	static def String getNodesConnectivity()
+	static def CharSequence getNodesConnectivity()
 	'''
 	items { node }
 
 	set nodes: → {node};
 	'''
 
-	static def String getMandatoryMeshVariables()
-	'''
-	ℝ[2] X{nodes};
-	'''
+//	static def String getMandatoryMeshVariables()
+//	'''
+//	ℝ[2] X{nodes};
+//	'''
+//
+//	static def String getMandatorySimulationVariables()
+//	'''
+//	ℝ t = 0.0;
+//	'''
+//
+//	static def String getMandatoryMeshOptionsAndVariables()
+//	{
+//		mandatoryMeshOptions + mandatoryMeshVariables
+//	}
+//
+//	static def String getMandatorySimulationOptionsAndVariables()
+//	{
+//		simulationOptions + mandatorySimulationVariables
+//	}
+//
+//	static def String getMandatoryOptionsAndVariables()
+//	{
+//		mandatoryMeshOptions + simulationOptions + mandatoryMeshVariables + mandatorySimulationVariables
+//	}
 
-	static def String getMandatorySimulationVariables()
-	'''
-	ℝ t = 0.0;
-	'''
-
-	static def String getMandatoryMeshOptionsAndVariables()
-	{
-		mandatoryMeshOptions + mandatoryMeshVariables
-	}
-
-	static def String getMandatorySimulationOptionsAndVariables()
-	{
-		simulationOptions + mandatorySimulationVariables
-	}
-
-	static def String getMandatoryOptionsAndVariables()
-	{
-		mandatoryMeshOptions + simulationOptions + mandatoryMeshVariables + mandatorySimulationVariables
-	}
-
-	static def String getInitTJob()
-	{
+	static def CharSequence getInitTJob()
 	'''
 	initT: t = 0.0;
 	'''
+
+	static def CharSequence getTestModule(CharSequence connectivities, CharSequence functions)
+	{
+		emptyTestModule + connectivities + functions + mandatoryOptions
 	}
 
-	static def CharSequence getTestModule()
+	static def CharSequence getTestModule(int xQuads, int yQuads)
 	{
-		emptyTestModule + connectivities + mandatoryOptionsAndVariables
+		emptyTestModule + connectivities + getMandatoryOptions(xQuads, yQuads)
 	}
 
-	static def CharSequence getTestModule(int xQuads, int yQuads, double stopTime, int maxIterations)
-	{
-		emptyTestModule + connectivities +
-			getMandatoryMeshOptions(xQuads, yQuads) + TestUtils.getSimulationOptions(stopTime, maxIterations) + 
-			mandatoryMeshVariables + mandatorySimulationVariables
-	}
+//	static def getTestModuleWithCustomFunctions(CharSequence functions, boolean withConnectivities)
+//	{
+//		emptyTestModule + connectivities + functions + mandatoryOptions
+//	}
+//
+//	static def getTestModuleWithCustomConnectivities(CharSequence connectivities)
+//	{
+//		emptyTestModule + connectivities + mandatoryOptions
+//	}
 
-	static def getTestModuleWithCustomFunctions(CharSequence functions)
-	{
-		emptyTestModule + connectivities + functions + mandatoryOptionsAndVariables
-	}
-
-	static def getTestModuleWithCustomConnectivities(CharSequence connectivities)
-	{
-		emptyTestModule + connectivities + mandatoryOptionsAndVariables
-	}
+//	//Useful to prevent warnings
+//	static def getTestModuleWithMandatoryOptions()
+//	{
+//		emptyTestModule + mandatoryOptions
+//	}
+//
+	//Useful to prevent warnings
+//	static def getTestModuleWithCustomVars(CharSequence variables)
+//	{
+//		emptyTestModule + mandatoryOptions + variables
+//	}
+//
+//	//Useful to prevent warnings
+//	static def getTestModuleWithCoordVariableWithCustomFunctions(CharSequence functions)
+//	{
+//		emptyTestModule + nodesConnectivity + functions + mandatoryOptions
+//	}
 
 	//Useful to prevent warnings
-	static def getTestModuleWithCoordVariable()
-	{
-		emptyTestModule + nodesConnectivity + mandatoryOptionsAndVariables
-	}
-
-	//Useful to prevent warnings
-	static def getTestModuleWithCoordVariableWithCustomVars(CharSequence variables)
-	{
-		emptyTestModule + nodesConnectivity + mandatoryOptionsAndVariables + variables
-	}
-
-	//Useful to prevent warnings
-	static def getTestModuleWithCoordVariableWithCustomFunctions(CharSequence functions)
-	{
-		emptyTestModule + nodesConnectivity + functions + mandatoryOptionsAndVariables
-	}
-
-	//Useful to prevent warnings
-	static def getTestModuleWithCoordVariableWithCustomConnectivities(CharSequence connectivities)
-	{
-		emptyTestModule + connectivities + mandatoryOptionsAndVariables
-	}
+//	static def getTestModuleWithCoordVariableWithCustomConnectivities(CharSequence connectivities)
+//	{
+//		emptyTestModule + connectivities + mandatoryOptions
+//	}
 	
 	static def getTestGenModel()
 	{

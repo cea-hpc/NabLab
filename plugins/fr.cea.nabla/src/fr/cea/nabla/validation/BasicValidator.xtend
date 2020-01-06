@@ -53,6 +53,8 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScopeProvider
 import org.eclipse.xtext.util.SimpleAttributeResolver
 import org.eclipse.xtext.validation.Check
+import fr.cea.nabla.nabla.TimeIterator
+import java.util.ArrayList
 
 class BasicValidator extends AbstractNablaValidator
 {
@@ -279,7 +281,9 @@ class BasicValidator extends AbstractNablaValidator
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
 		val mandatories = (MandatoryOptions::NAMES).toList
-		val referenced = mandatories.contains(name) || m.eAllContents.filter(ArgOrVarRef).exists[x|x.target===it]
+		val timeIterators = new ArrayList<String>
+		if (m.iteration !== null) m.iteration.eAllContents.filter(TimeIterator).forEach[timeIterators += counter.name]
+		val referenced = mandatories.contains(name) || timeIterators.contains(name) || m.eAllContents.filter(ArgOrVarRef).exists[x|x.target===it]
 		if (!referenced)
 			warning(getUnusedVariableMsg(), NablaPackage.Literals::ARG_OR_VAR__NAME, UNUSED_VARIABLE)
 	}

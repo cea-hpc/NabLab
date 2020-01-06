@@ -151,6 +151,8 @@
         eType="#//SimpleVariable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterationVariable" lowerBound="1"
         eType="#//SimpleVariable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lastDumpVariable" lowerBound="1"
+        eType="#//SimpleVariable"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeLoopJob" eSuperTypes="#//TimeLoopCopyJob">
     <eStructuralFeatures xsi:type="ecore:EReference" name="jobs" upperBound="-1" eType="#//Job"

@@ -30,6 +30,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getPeriodValue <em>Period Value</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getPeriodVariable <em>Period Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getIterationVariable <em>Iteration Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getLastDumpVariable <em>Last Dump Variable</em>}</li>
  * </ul>
  *
  * @generated
@@ -84,6 +85,16 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * @ordered
 	 */
 	protected SimpleVariable iterationVariable;
+
+	/**
+	 * The cached value of the '{@link #getLastDumpVariable() <em>Last Dump Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLastDumpVariable()
+	 * @generated
+	 * @ordered
+	 */
+	protected SimpleVariable lastDumpVariable;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -226,6 +237,46 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * @generated
 	 */
 	@Override
+	public SimpleVariable getLastDumpVariable() {
+		if (lastDumpVariable != null && lastDumpVariable.eIsProxy()) {
+			InternalEObject oldLastDumpVariable = (InternalEObject)lastDumpVariable;
+			lastDumpVariable = (SimpleVariable)eResolveProxy(oldLastDumpVariable);
+			if (lastDumpVariable != oldLastDumpVariable) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE, oldLastDumpVariable, lastDumpVariable));
+			}
+		}
+		return lastDumpVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SimpleVariable basicGetLastDumpVariable() {
+		return lastDumpVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setLastDumpVariable(SimpleVariable newLastDumpVariable) {
+		SimpleVariable oldLastDumpVariable = lastDumpVariable;
+		lastDumpVariable = newLastDumpVariable;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE, oldLastDumpVariable, lastDumpVariable));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case IrPackage.IN_SITU_JOB__DUMPED_VARIABLES:
@@ -238,6 +289,9 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 			case IrPackage.IN_SITU_JOB__ITERATION_VARIABLE:
 				if (resolve) return getIterationVariable();
 				return basicGetIterationVariable();
+			case IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE:
+				if (resolve) return getLastDumpVariable();
+				return basicGetLastDumpVariable();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -264,6 +318,9 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 			case IrPackage.IN_SITU_JOB__ITERATION_VARIABLE:
 				setIterationVariable((SimpleVariable)newValue);
 				return;
+			case IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE:
+				setLastDumpVariable((SimpleVariable)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -288,6 +345,9 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 			case IrPackage.IN_SITU_JOB__ITERATION_VARIABLE:
 				setIterationVariable((SimpleVariable)null);
 				return;
+			case IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE:
+				setLastDumpVariable((SimpleVariable)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -308,6 +368,8 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 				return periodVariable != null;
 			case IrPackage.IN_SITU_JOB__ITERATION_VARIABLE:
 				return iterationVariable != null;
+			case IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE:
+				return lastDumpVariable != null;
 		}
 		return super.eIsSet(featureID);
 	}

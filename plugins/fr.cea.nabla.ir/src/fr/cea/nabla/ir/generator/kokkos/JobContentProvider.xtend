@@ -16,7 +16,6 @@ import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
-import fr.cea.nabla.ir.transformers.TagPersistentVariables
 import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
@@ -43,7 +42,7 @@ abstract class JobContentProvider
 
 	protected def dispatch CharSequence getInnerContent(InSituJob it)
 	'''
-		if (!writer.isDisabled() && «periodVariable.name» >= «TagPersistentVariables::LastDumpVariableName»)
+		if (!writer.isDisabled() && «periodVariable.name» >= «lastDumpVariable.name»)
 		{
 			std::map<string, double*> cellVariables;
 			std::map<string, double*> nodeVariables;
@@ -52,7 +51,7 @@ abstract class JobContentProvider
 			«ENDFOR»
 			auto quads = mesh->getGeometricMesh()->getQuads();
 			writer.writeFile(«iterationVariable.name», «irModule.timeVariable.name», «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);
-			«TagPersistentVariables::LastDumpVariableName» += «periodVariable.name»;
+			«lastDumpVariable.name» += «periodVariable.name»;
 		}
 	'''
 

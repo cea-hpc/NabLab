@@ -16,8 +16,6 @@ import static fr.cea.nabla.ir.Utils.getCurrentIrVariable
  */
 class TagPersistentVariables implements IrTransformationStep 
 {
-	public static val LastDumpVariableName = "lastDump" // Useful for InSituJob
-
 	val String iterationVariableName
 	val HashMap<String, String> dumpedVariables
 	val double periodValue
@@ -68,7 +66,7 @@ class TagPersistentVariables implements IrTransformationStep
 		val periodVariableType = (periodVariable as SimpleVariable).type
 		val twriter = IrFactory.eINSTANCE.createSimpleVariable =>
 		[
-			name = LastDumpVariableName
+			name = "lastDump"
 			type = EcoreUtil::copy(periodVariableType)
 			defaultValue = IrFactory.eINSTANCE.createArgOrVarRef =>
 			[
@@ -77,6 +75,7 @@ class TagPersistentVariables implements IrTransformationStep
 			]
 		]
 		m.variables += twriter
+		inSituJob.lastDumpVariable = twriter
 
 		return true
 	}

@@ -18,7 +18,6 @@ import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
-import fr.cea.nabla.ir.transformers.TagPersistentVariables
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.Utils.getIrModule
@@ -45,7 +44,7 @@ class JobContentProvider
 
 	private static def dispatch CharSequence getInnerContent(InSituJob it)
 	'''
-		if («periodVariable.name» >= «TagPersistentVariables::LastDumpVariableName»)
+		if («periodVariable.name» >= «lastDumpVariable.name»)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
@@ -53,7 +52,7 @@ class JobContentProvider
 			«v.type.connectivities.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 			«ENDFOR»
 			writer.writeFile(«iterationVariable.name», «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
-			«TagPersistentVariables::LastDumpVariableName» = «periodVariable.name»;
+			«lastDumpVariable.name» = «periodVariable.name»;
 		}
 	'''
 

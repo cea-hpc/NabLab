@@ -7,7 +7,6 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
-import fr.cea.nabla.ir.transformers.TagPersistentVariables
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.HashMap
 
@@ -40,7 +39,7 @@ class JobInterpreter
 		val iteration = context.getInt(iterationVariable.name)
 		val time = context.getReal(irModule.timeVariable.name)
 		val period = context.getNumber(periodVariable.name)
-		val lastDump = context.getNumber(TagPersistentVariables::LastDumpVariableName)
+		val lastDump = context.getNumber(lastDumpVariable.name)
 
 		if (period >= lastDump)
 		{
@@ -55,7 +54,6 @@ class JobInterpreter
 			val coord = (context.getVariableValue(coordVariable) as NV2Real).data
 			val quads = context.meshWrapper.quads
 			writer.writeFile(iteration, time, coord, quads, cellVariables, nodeVariables)
-			val lastDumpVariable= irModule.getVariableByName(TagPersistentVariables::LastDumpVariableName)
 			context.setVariableValue(lastDumpVariable, new NV0Real(period))
 		}
 	}

@@ -17,6 +17,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getPeriodValue <em>Period Value</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getPeriodVariable <em>Period Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getIterationVariable <em>Iteration Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getLastDumpVariable <em>Last Dump Variable</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getInSituJob()
@@ -102,5 +103,27 @@ public interface InSituJob extends Job {
 	 * @generated
 	 */
 	void setIterationVariable(SimpleVariable value);
+
+	/**
+	 * Returns the value of the '<em><b>Last Dump Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Last Dump Variable</em>' reference.
+	 * @see #setLastDumpVariable(SimpleVariable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getInSituJob_LastDumpVariable()
+	 * @model required="true"
+	 * @generated
+	 */
+	SimpleVariable getLastDumpVariable();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.InSituJob#getLastDumpVariable <em>Last Dump Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Last Dump Variable</em>' reference.
+	 * @see #getLastDumpVariable()
+	 * @generated
+	 */
+	void setLastDumpVariable(SimpleVariable value);
 
 } // InSituJob

@@ -65,11 +65,11 @@ ConnectivityCall: connectivity=[Connectivity]  '('(args+=SpaceIteratorRef (',' a
 SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?; // inc/dec only valid on a range
 
 TimeIteratorDefinition: 'iterate' iterators+=TimeIterator (',' iterators+=TimeIterator)* ';';
-TimeIterator: name=TIME_ITERATOR_ID 'counter' counter=[SimpleVar] 'while' cond=Expression;
+TimeIterator: name=ID 'counter' counter=[SimpleVar] 'while' cond=Expression;
 TimeIteratorRef: CurrentTimeIteratorRef | InitTimeIteratorRef | NextTimeIteratorRef;
-CurrentTimeIteratorRef: target=[TimeIterator|TIME_ITERATOR_ID];
-InitTimeIteratorRef: target=[TimeIterator|TIME_ITERATOR_ID] '=' value=INT;
-NextTimeIteratorRef: target=[TimeIterator|TIME_ITERATOR_ID] '+' value=INT;
+CurrentTimeIteratorRef: target=[TimeIterator];
+InitTimeIteratorRef: target=[TimeIterator] '=' value=INT;
+NextTimeIteratorRef: target=[TimeIterator] '+' value=INT;
 
 
 /* VARIABLES *********************************************/
@@ -163,8 +163,6 @@ QualifiedNameWithWildcard: QualifiedName '.*'?;
 
 //terminal REAL returns ecore::EDouble: ('0'..'9')+ '.' ('0'..'9')+ ('e'('+'|'-')('0'..'9')+)?;
 terminal REAL returns ecore::EDouble: INT '.' (INT (('e'|'E')('+'|'-')INT)?)?;
-//terminal TIME_ITERATOR_ID: '\u207F'|'\u1D4F';
-terminal TIME_ITERATOR_ID: 'n'|'k';
 @Override 
 terminal ID: '^'? ('a'..'z'|'A'..'Z'|'\u0391'..'\u03C9'|'\u220F'..'\u221A'|'_') ('a'..'z'|'A'..'Z'|'\u0391'..'\u03C9'|'0'..'9'|'_')*;
 

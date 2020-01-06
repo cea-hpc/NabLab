@@ -12,8 +12,7 @@ package fr.cea.nabla.validation
 import com.google.inject.Inject
 import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.SpaceIteratorExtensions
-import fr.cea.nabla.ir.MandatoryIterationVariables
-import fr.cea.nabla.ir.MandatoryMeshOptions
+import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ArgOrVarRef
@@ -30,7 +29,6 @@ import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.NextTimeIteratorRef
-import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
@@ -43,12 +41,10 @@ import fr.cea.nabla.nabla.SizeTypeSymbol
 import fr.cea.nabla.nabla.SizeTypeSymbolRef
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
-import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
 import fr.cea.nabla.typing.DeclarationProvider
-import java.util.ArrayList
 import java.util.HashSet
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
@@ -185,16 +181,16 @@ class BasicValidator extends AbstractNablaValidator
 	public static val MANDATORY_MESH_OPTION = "NablaModule::MandatoryMeshOption"
 	public static val MODULE_NAME = "NablaModule::ModuleName"
 
-	static def getMandatoryMeshOptionsMsg(String[] missingOptions) { "Missing mandatory mesh option(s): " + missingOptions.join(", ") }
+	static def getMandatoryOptionsMsg(String[] missingOptions) { "Missing mandatory mesh option(s): " + missingOptions.join(", ") }
 	static def getModuleNameMsg() { "Module name must start with an upper case" }
 
 	@Check
-	def checkMandatoryMeshOptions(NablaModule it)
+	def checkMandatoryOptions(NablaModule it)
 	{
 		val scalarConsts = instructions.filter(SimpleVarDefinition).filter[const].map[variable.name].toList
-		val missingConsts = MandatoryMeshOptions::NAMES.filter[x | !scalarConsts.contains(x)]
+		val missingConsts = MandatoryOptions::NAMES.filter[x | !scalarConsts.contains(x)]
 		if (missingConsts.size > 0 && !items.empty)
-			error(getMandatoryMeshOptionsMsg(missingConsts), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_MESH_OPTION)
+			error(getMandatoryOptionsMsg(missingConsts), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_MESH_OPTION)
 	}
 
 	@Check
@@ -206,11 +202,9 @@ class BasicValidator extends AbstractNablaValidator
 
 	// ===== TimeIterator =====
 
-	public static val MISSING_MANDATORY_ITERATION_VARIABLE = "TimeIterator::MissingMandatoryIterationVariable"
 	public static val INIT_VALUE = "TimeIterator::InitValue"
 	public static val NEXT_VALUE = "TimeIterator::NextValue"
 
-	static def getMandatoryIterationVariableMsg(String missingVariable) { "Missing mandatory iteration counter variable of type ℕ: " + missingVariable }
 	static def getInitValueMsg(int actualValue) { "Wrong time iterator init value: Expected 0, but was " + actualValue }
 	static def getNextValueMsg(int actualValue) { "Wrong time iterator next value: Expected 1, but was " + actualValue }
 
@@ -226,31 +220,6 @@ class BasicValidator extends AbstractNablaValidator
 	{
 		if (value !== 1)
 			error(getNextValueMsg(value), NablaPackage.Literals.NEXT_TIME_ITERATOR_REF__VALUE)
-	}
-
-	@Check
-	def checkMandatoryIterationVariables(TimeIterator it)
-	{
-		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
-		if (module !== null)
-		{
-			val counterName = MandatoryIterationVariables.getName(name)
-			val counter = module.allVars.findFirst[x | x.name == counterName && x.type.sizes.empty && x.type.primitive == PrimitiveType.INT]
-			if (counter === null)
-				error(getMandatoryIterationVariableMsg(counterName), NablaPackage.Literals.TIME_ITERATOR__NAME, MISSING_MANDATORY_ITERATION_VARIABLE)
-		}
-	}
-
-	private def getAllVars(NablaModule it)
-	{
-		val variables = new ArrayList<Var>
-		for (i : instructions)
-			switch i
-			{
-				VarGroupDeclaration : variables += i.variables
-				SimpleVarDefinition : variables += i.variable
-			}
-		return variables
 	}
 
 	// ===== ArgOrVarType =====
@@ -309,7 +278,7 @@ class BasicValidator extends AbstractNablaValidator
 	def checkUnusedVariable(Var it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
-		val mandatories = (MandatoryMeshOptions::NAMES).toList
+		val mandatories = (MandatoryOptions::NAMES).toList
 		val referenced = mandatories.contains(name) || m.eAllContents.filter(ArgOrVarRef).exists[x|x.target===it]
 		if (!referenced)
 			warning(getUnusedVariableMsg(), NablaPackage.Literals::ARG_OR_VAR__NAME, UNUSED_VARIABLE)

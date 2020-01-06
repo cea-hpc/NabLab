@@ -9,6 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.scoping
 
+import com.google.inject.Inject
+import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Function
@@ -18,12 +20,16 @@ import fr.cea.nabla.nabla.IntervalIterationBlock
 import fr.cea.nabla.nabla.Iterable
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.Reduction
+import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterationBlock
 import fr.cea.nabla.nabla.SpaceIterator
+import fr.cea.nabla.nabla.TimeIterator
+import fr.cea.nabla.nabla.TimeIteratorDefinition
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
@@ -34,7 +40,6 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
-import fr.cea.nabla.nabla.TimeIteratorDefinition
 
 /**
  * This class contains custom scoping description.
@@ -44,6 +49,21 @@ import fr.cea.nabla.nabla.TimeIteratorDefinition
  */
 class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 {
+	@Inject extension ArgOrVarExtensions
+
+	def scope_TimeIterator_counter(TimeIterator context, EReference r)
+	{
+		println('scope_TimeIterator_counter(' + context.class.simpleName + ', ' + r.name + ')')
+		val module = EcoreUtil2.getContainerOfType(context, NablaModule)
+		if (module !== null)
+		{
+			val allSimpleVars = module.instructions.allVariables.filter(SimpleVar)
+			val candidates = allSimpleVars.filter[x | x.type.primitive == PrimitiveType::INT && x.type.sizes.empty ]
+			return Scopes::scopeFor(candidates)
+	    }
+	    return IScope::NULLSCOPE
+	}
+
 	/*** Scope for iterators **********************************************************/
 //	def scope_SpaceIteratorRef_target(ConnectivityCall context, EReference r)
 //	{

@@ -42,7 +42,7 @@ const ℝ α = 1.0;
 ℝ u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
 
 ℕ iterationN;
-iterate n while (t^{n} < option_stoptime && iterationN < option_max_iterations);
+iterate n counter iterationN while (t^{n} < option_stoptime && iterationN < option_max_iterations);
 
 IniF: ∀j∈cells(), f{j} = 0.0;
 IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});  // only on parallelograms

@@ -1,6 +1,6 @@
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.MandatoryMeshOptions
+import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.SimpleVariable
@@ -60,10 +60,10 @@ class ModuleInterpreter
 		if (module.withMesh)
 		{
 			// Create mesh
-			val nbXQuads = context.getInt(MandatoryMeshOptions::X_EDGE_ELEMS)
-			val nbYQuads = context.getInt(MandatoryMeshOptions::Y_EDGE_ELEMS)
-			val xSize = context.getReal(MandatoryMeshOptions::X_EDGE_LENGTH)
-			val ySize = context.getReal(MandatoryMeshOptions::Y_EDGE_LENGTH)
+			val nbXQuads = context.getInt(MandatoryOptions::X_EDGE_ELEMS)
+			val nbYQuads = context.getInt(MandatoryOptions::Y_EDGE_ELEMS)
+			val xSize = context.getReal(MandatoryOptions::X_EDGE_LENGTH)
+			val ySize = context.getReal(MandatoryOptions::Y_EDGE_LENGTH)
 			context.initMesh(nbXQuads, nbYQuads, xSize, ySize)
 
 			// Create mesh nbElems

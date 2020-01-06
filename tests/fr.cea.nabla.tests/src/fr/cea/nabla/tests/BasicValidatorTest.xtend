@@ -2,7 +2,6 @@ package fr.cea.nabla.tests
 
 import com.google.inject.Inject
 import fr.cea.nabla.NablaModuleExtensions
-import fr.cea.nabla.ir.MandatoryMeshOptions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.validation.BasicValidator
@@ -13,6 +12,7 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import fr.cea.nabla.ir.MandatoryOptions
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
@@ -25,14 +25,14 @@ class BasicValidatorTest
 	// ===== NablaModule =====
 
 	@Test
-	def void testCheckMandatoryMeshOptions()
+	def void testCheckMandatoryOptions()
 	{
 		val moduleKo = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::connectivities + TestUtils::mandatoryMeshVariables)
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
 			BasicValidator::MANDATORY_MESH_OPTION,
-			BasicValidator::getMandatoryMeshOptionsMsg(MandatoryMeshOptions::NAMES))
+			BasicValidator::getMandatoryOptionsMsg(MandatoryOptions::NAMES))
 
 		val moduleOk = parseHelper.parse(TestUtils::emptyTestModule + TestUtils::getConnectivities + TestUtils::mandatoryMeshOptionsAndVariables)
 		Assert.assertNotNull(moduleOk)

@@ -4,6 +4,7 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.SimpleVariable;
 import fr.cea.nabla.ir.ir.TimeLoop;
 import fr.cea.nabla.ir.ir.TimeLoopJob;
 import fr.cea.nabla.ir.ir.TimeLoopVariable;
@@ -38,6 +39,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getWhileCondition <em>While Condition</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getAssociatedJob <em>Associated Job</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getCounter <em>Counter</em>}</li>
  * </ul>
  *
  * @generated
@@ -102,6 +104,16 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 	 * @ordered
 	 */
 	protected TimeLoopJob associatedJob;
+
+	/**
+	 * The cached value of the '{@link #getCounter() <em>Counter</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCounter()
+	 * @generated
+	 * @ordered
+	 */
+	protected SimpleVariable counter;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -393,6 +405,46 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 	 * @generated
 	 */
 	@Override
+	public SimpleVariable getCounter() {
+		if (counter != null && counter.eIsProxy()) {
+			InternalEObject oldCounter = (InternalEObject)counter;
+			counter = (SimpleVariable)eResolveProxy(oldCounter);
+			if (counter != oldCounter) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.TIME_LOOP__COUNTER, oldCounter, counter));
+			}
+		}
+		return counter;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SimpleVariable basicGetCounter() {
+		return counter;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setCounter(SimpleVariable newCounter) {
+		SimpleVariable oldCounter = counter;
+		counter = newCounter;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP__COUNTER, oldCounter, counter));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.TIME_LOOP__INNER_TIME_LOOP:
@@ -465,6 +517,9 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 			case IrPackage.TIME_LOOP__ASSOCIATED_JOB:
 				if (resolve) return getAssociatedJob();
 				return basicGetAssociatedJob();
+			case IrPackage.TIME_LOOP__COUNTER:
+				if (resolve) return getCounter();
+				return basicGetCounter();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -497,6 +552,9 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 			case IrPackage.TIME_LOOP__ASSOCIATED_JOB:
 				setAssociatedJob((TimeLoopJob)newValue);
 				return;
+			case IrPackage.TIME_LOOP__COUNTER:
+				setCounter((SimpleVariable)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -527,6 +585,9 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 			case IrPackage.TIME_LOOP__ASSOCIATED_JOB:
 				setAssociatedJob((TimeLoopJob)null);
 				return;
+			case IrPackage.TIME_LOOP__COUNTER:
+				setCounter((SimpleVariable)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -551,6 +612,8 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 				return whileCondition != null;
 			case IrPackage.TIME_LOOP__ASSOCIATED_JOB:
 				return associatedJob != null;
+			case IrPackage.TIME_LOOP__COUNTER:
+				return counter != null;
 		}
 		return super.eIsSet(featureID);
 	}

@@ -405,13 +405,22 @@ public interface IrPackage extends EPackage {
 	int TIME_LOOP__ASSOCIATED_JOB = IR_ANNOTABLE_FEATURE_COUNT + 5;
 
 	/**
+	 * The feature id for the '<em><b>Counter</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TIME_LOOP__COUNTER = IR_ANNOTABLE_FEATURE_COUNT + 6;
+
+	/**
 	 * The number of structural features of the '<em>Time Loop</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_LOOP_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 6;
+	int TIME_LOOP_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 7;
 
 	/**
 	 * The number of operations of the '<em>Time Loop</em>' class.
@@ -4348,6 +4357,17 @@ public interface IrPackage extends EPackage {
 	EReference getTimeLoop_AssociatedJob();
 
 	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.TimeLoop#getCounter <em>Counter</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Counter</em>'.
+	 * @see fr.cea.nabla.ir.ir.TimeLoop#getCounter()
+	 * @see #getTimeLoop()
+	 * @generated
+	 */
+	EReference getTimeLoop_Counter();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ArgOrVar <em>Arg Or Var</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -6351,6 +6371,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference TIME_LOOP__ASSOCIATED_JOB = eINSTANCE.getTimeLoop_AssociatedJob();
+
+		/**
+		 * The meta object literal for the '<em><b>Counter</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference TIME_LOOP__COUNTER = eINSTANCE.getTimeLoop_Counter();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ArgOrVarImpl <em>Arg Or Var</em>}' class.

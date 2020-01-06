@@ -54,8 +54,8 @@ const ℕ option_max_iterations_k = 1000;
 
 ℕ iterationN;
 ℕ iterationK;
-iterate	n while (t^{n} < option_stoptime && iterationN < option_max_iterations),
-		k while (residual > ε && iterationK < option_max_iterations_k);
+iterate	n counter iterationN while (t^{n} < option_stoptime && iterationN < option_max_iterations),
+		k counter iterationK while (residual > ε && iterationK < option_max_iterations_k);
 
 InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
 

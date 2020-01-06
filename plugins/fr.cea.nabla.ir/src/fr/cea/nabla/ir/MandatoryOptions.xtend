@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-class MandatoryMeshOptions
+class MandatoryOptions
 {
 	public static val X_EDGE_LENGTH = 'X_EDGE_LENGTH'
 	public static val Y_EDGE_LENGTH = 'Y_EDGE_LENGTH'
@@ -18,12 +18,4 @@ class MandatoryMeshOptions
 	public static val Z_EDGE_ELEMS = 'Z_EDGE_ELEMS'
 	
 	public static val NAMES = #[X_EDGE_LENGTH, Y_EDGE_LENGTH, X_EDGE_ELEMS, Y_EDGE_ELEMS, Z_EDGE_ELEMS]
-}
-
-class MandatoryIterationVariables
-{
-	static def getName(String iteratorName)
-	{
-		'iteration' + iteratorName.toFirstUpper
-	}
 }

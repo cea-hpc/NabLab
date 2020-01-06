@@ -869,6 +869,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EReference getTimeLoop_Counter() {
+		return (EReference)timeLoopEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getArgOrVar() {
 		return argOrVarEClass;
 	}
@@ -2573,6 +2583,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(timeLoopEClass, TIME_LOOP__VARIABLES);
 		createEReference(timeLoopEClass, TIME_LOOP__WHILE_CONDITION);
 		createEReference(timeLoopEClass, TIME_LOOP__ASSOCIATED_JOB);
+		createEReference(timeLoopEClass, TIME_LOOP__COUNTER);
 
 		argOrVarEClass = createEClass(ARG_OR_VAR);
 		createEAttribute(argOrVarEClass, ARG_OR_VAR__NAME);
@@ -2921,6 +2932,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getTimeLoop_Variables(), this.getTimeLoopVariable(), null, "variables", null, 0, -1, TimeLoop.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTimeLoop_WhileCondition(), this.getExpression(), null, "whileCondition", null, 1, 1, TimeLoop.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTimeLoop_AssociatedJob(), this.getTimeLoopJob(), null, "associatedJob", null, 1, 1, TimeLoop.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTimeLoop_Counter(), this.getSimpleVariable(), null, "counter", null, 1, 1, TimeLoop.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(argOrVarEClass, ArgOrVar.class, "ArgOrVar", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getArgOrVar_Name(), ecorePackage.getEString(), "name", null, 1, 1, ArgOrVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import fr.cea.nabla.ir.MandatoryMeshOptions
+import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
@@ -138,7 +138,7 @@ class Ir2Java extends CodeGenerator
 			{
 				«name».Options o = new «name».Options();
 				«IF withMesh»
-				Mesh gm = CartesianMesh2DGenerator.generate(o.«MandatoryMeshOptions::X_EDGE_ELEMS», o.«MandatoryMeshOptions::Y_EDGE_ELEMS», o.«MandatoryMeshOptions::X_EDGE_LENGTH», o.«MandatoryMeshOptions::Y_EDGE_LENGTH»);
+				Mesh gm = CartesianMesh2DGenerator.generate(o.«MandatoryOptions::X_EDGE_ELEMS», o.«MandatoryOptions::Y_EDGE_ELEMS», o.«MandatoryOptions::X_EDGE_LENGTH», o.«MandatoryOptions::Y_EDGE_LENGTH»);
 				NumericMesh2D nm = new NumericMesh2D(gm);
 				«ENDIF»
 				«name» i = new «name»(o«IF withMesh», nm«ENDIF»);

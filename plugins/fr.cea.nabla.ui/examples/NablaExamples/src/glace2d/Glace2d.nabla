@@ -81,7 +81,7 @@ const ℝ option_p_ini_zd = 0.1;
 ℝ[2,2] Ajr{cells, nodesOfCell};
 
 ℕ iterationN;
-iterate n while (t^{n} < option_stoptime && iterationN < option_max_iterations);
+iterate n counter iterationN while (t^{n} < option_stoptime && iterationN < option_max_iterations);
 
 // *************************************************************
 // * Init: X_ic(par le mailleur), ρ_ic, p_ic, V_ic & m

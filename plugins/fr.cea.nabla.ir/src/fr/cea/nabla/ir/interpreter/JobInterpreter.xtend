@@ -1,6 +1,5 @@
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.MandatoryIterationVariables
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
@@ -41,7 +40,7 @@ class JobInterpreter
 		val iteration = context.getInt(iterationVariable.name)
 		val time = context.getReal(irModule.timeVariable.name)
 		val period = context.getNumber(periodVariable.name)
-		val lastDump = context.getReal(TagPersistentVariables::LastDumpVariableName)
+		val lastDump = context.getNumber(TagPersistentVariables::LastDumpVariableName)
 
 		if (period >= lastDump)
 		{
@@ -64,9 +63,8 @@ class JobInterpreter
 	def dispatch void interprete(TimeLoopJob it, Context context)
 	{
 		context.logFinest("Interprete TimeLoopJob" + name + " @ " + at)
-		val iterationVariableName = MandatoryIterationVariables.getName(timeLoop.name)
 		val irModule = eContainer as IrModule
-		val iterationVariable = irModule.getVariableByName(iterationVariableName)
+		val iterationVariable = timeLoop.counter
 		var iteration = 0
 		context.logVariables("Before timeLoop " + timeLoop.name)
 		context.addVariableValue(iterationVariable, new NV0Int(iteration))

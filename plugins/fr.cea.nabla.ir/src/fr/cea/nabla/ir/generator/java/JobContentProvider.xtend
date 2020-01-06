@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import fr.cea.nabla.ir.MandatoryIterationVariables
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
@@ -60,7 +59,7 @@ class JobContentProvider
 
 	private static def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
-		«val itVar = MandatoryIterationVariables.getName(timeLoop.name)»
+		«val itVar = timeLoop.counter.name»
 		«itVar» = 0;
 		do
 		{

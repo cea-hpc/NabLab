@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
-import fr.cea.nabla.ir.MandatoryIterationVariables
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.InSituJob
@@ -59,10 +58,10 @@ abstract class JobContentProvider
 
 	protected def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
-		«MandatoryIterationVariables.getName(name)» = 0;
+		«timeLoop.counter.name» = 0;
 		do
 		{
-			«MandatoryIterationVariables.getName(name)»++;
+			«timeLoop.counter.name»++;
 			«FOR j : jobs.sortBy[at]»
 				«j.codeName»(); // @«j.at»
 			«ENDFOR»

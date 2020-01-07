@@ -127,7 +127,7 @@ class LatexLabelServices
 	}
 
 	static def dispatch String getLatex(BaseTypeConstant it) { type.latex + '(' + value.latex + ')' }
-	static def dispatch String getLatex(VectorConstant it) { '[' + values.join(',') + ']' }
+	static def dispatch String getLatex(VectorConstant it) { '[' + values.map[latex].join(',') + ']' }
 
 	static def dispatch String getLatex(ArgOrVarRef it)
 	{

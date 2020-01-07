@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -12,7 +12,9 @@ package fr.cea.nabla.ui.views
 import com.google.inject.Inject
 import fr.cea.nabla.generator.ir.IrAnnotationHelper
 import fr.cea.nabla.ir.ir.IrAnnotable
+import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Instruction
+import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.ui.NablaDslEditor
 import fr.cea.nabla.ui.internal.NablaActivator
@@ -34,21 +36,20 @@ class LatexViewListener implements ISelectionListener
 {
 	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
 	@Inject extension IrAnnotationHelper
-	
+
 	val modelListeners = new ArrayList<(EObject)=>void> 
 
 	def void addNablaTextListener((EObject)=>void f)
 	{
 		modelListeners += f
 	}
-	
+
 	/**
-	 * Si la selection a lieu dans l'editeur Nabla, on recupere le modele associe
-	 * et on l'affecte au viewer de la vue si ce modele est de type Diagram
-	 * et que ce n'est pas deja le diagramme affichee dans la vue.
-	 * Attention : on compare les noms des diagrammes et pas les objets car Xtext
-	 * peut recreer les objets avec la compilation et il faut eviter de recreer 
-	 * la vue graphique.
+	 * If the selection happens in the NabLab editor, the model associated to 
+	 * the selection is set to the viewer if its type is Diagram and if it is not
+	 * already displayed in the view.
+	 * Names are compared instead of object because of incremental build system
+	 * and re-created objects.
 	 */
 	override selectionChanged(IWorkbenchPart part, ISelection selection) 
 	{
@@ -99,21 +100,36 @@ class LatexViewListener implements ISelectionListener
 				getObjectAndFireNotification(xtextEditor, textSelection.offset)
 		}
 	}
-	
+
 	private def getObjectAndFireNotification(XtextEditor editor, int offset)
 	{
 		val obj = editor.document.readOnly([state | eObjectAtOffsetHelper.resolveContainedElementAt(state, offset)])
-		val nablaElt = obj.jobOrInstruction
+		val nablaElt = obj.closestDisplayableNablaElt
 		if (nablaElt !== null) modelListeners.forEach[x | x.apply(nablaElt)]
 	}
-	
-	private def EObject getJobOrInstruction(EObject elt)
+
+	/** Return the highest displayable object, Job, Instruction or Expression */
+	private def EObject getClosestDisplayableNablaElt(EObject elt)
 	{
 		switch elt
 		{
-			Job : elt
-			Instruction : elt
-			default : if (elt.eContainer === null) null else elt.eContainer.jobOrInstruction
+			Job: elt
+			InstructionBlock: null
+			Instruction:
+				if (elt.eContainer === null) 
+					null
+				else 
+					elt.eContainer.closestDisplayableNablaElt ?: elt
+			Expression:
+				if (elt.eContainer === null) 
+					null
+				else 
+					elt.eContainer.closestDisplayableNablaElt ?: elt
+			default:
+				if (elt.eContainer === null) 
+					null 
+				else 
+					elt.eContainer.closestDisplayableNablaElt
 		}
 	}
 }

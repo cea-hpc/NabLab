@@ -107,7 +107,7 @@ class LabelServices
 	static def dispatch String getLabel(FunctionCall it) { function.name + '(' + args.map[label].join(',') + ')' }
 	static def dispatch String getLabel(ReductionCall it) { reduction.name + '{' + iterationBlock?.label + '}(' + arg?.label + ')' }
 	static def dispatch String getLabel(BaseTypeConstant it) { type?.label + '(' + value?.label + ')' }
-	static def dispatch String getLabel(VectorConstant it) { '[' + values.join(',') + ']' }
+	static def dispatch String getLabel(VectorConstant it) { '[' + values.map[label].join(',') + ']' }
 	static def dispatch String getLabel(ArgOrVarRef it)
 	{
 		var label = target.name

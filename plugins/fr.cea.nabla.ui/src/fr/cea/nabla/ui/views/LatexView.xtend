@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -25,21 +25,21 @@ class LatexView extends ViewPart
 {
 	@Inject LatexViewListener listener
 	Label label
-	
+
 	override createPartControl(Composite parent) 
 	{
 		label = new Label(parent, SWT.NONE)
-		
+
 		// reaction a la selection dans l'editeur ou dans l'outline 
 		listener.addNablaTextListener([x | label.image = x.latexImage])
 		site.page.addPostSelectionListener(listener)
 	}
-	
+
 	override setFocus() 
 	{
 		label.setFocus
 	}
-	
+
 	private def getLatexImage(EObject element)
 	{
 		if (element !== null && !element.eIsProxy)
@@ -50,7 +50,7 @@ class LatexView extends ViewPart
 				val image = LatexImageServices.createPngImage(latexLabel, 25)
 				val swtImage = new Image(Display.^default, new ByteArrayInputStream(image))
 				return swtImage
-			}	
+			}
 		}
 		return null
 	}

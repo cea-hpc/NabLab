@@ -53,7 +53,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 
 	def scope_TimeIterator_counter(TimeIterator context, EReference r)
 	{
-		println('scope_TimeIterator_counter(' + context.class.simpleName + ', ' + r.name + ')')
+		//println('scope_TimeIterator_counter(' + context.class.simpleName + ', ' + r.name + ')')
 		val module = EcoreUtil2.getContainerOfType(context, NablaModule)
 		if (module !== null)
 		{

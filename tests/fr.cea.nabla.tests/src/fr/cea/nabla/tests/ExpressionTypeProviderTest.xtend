@@ -121,13 +121,16 @@ class ExpressionTypeProviderTest
 	ℝ x{cells, nodesOfCell};
 	ℝ α{cells, cells}; 
 
-	UpdateU: u^{n+1} = solveLinearSystem(α, u);
+	ℕ iterationN;
+	iterate n counter iterationN while (iterationN < option_max_iterations);
+
+	UpdateU: u^{n+1} = solveLinearSystem(α, u^{n});
 
 	ComputeV: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r} + s{j});
 
 	ComputeX: ∀ j∈cells(), {
 		ℝ ee = 1.0;
-		u{j} = ee * 4; 
+		u^{n}{j} = ee * 4;
 		∀r∈nodesOfCell(j), x{j,r} = norm(w{j,r});
 	}
 	'''

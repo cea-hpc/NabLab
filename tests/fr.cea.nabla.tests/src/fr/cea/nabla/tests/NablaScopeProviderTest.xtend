@@ -43,9 +43,11 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForSpaceIteratorRefInVarRef()
 	{
-		val module = parseHelper.parse(TestUtils::testModule
+		val module = parseHelper.parse(getTestModule(defaultConnectivities, '')
 			+
 			'''
+			ℝ t=0.0;
+			ℝ[2] X{nodes};
 			ℝ a{cells}, b{cells, nodesOfCell}, c{cells};
 			ℝ d{nodes};
 			
@@ -89,7 +91,7 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForSpaceIteratorRefInConnectivityCall()
 	{
-		val module = parseHelper.parse(TestUtils::testModule
+		val module = parseHelper.parse(getTestModule(defaultConnectivities, '')
 			+
 			'''
 			ℝ a{cells}, b{cells, nodesOfCell}, c{cells};
@@ -146,11 +148,12 @@ class NablaScopeProviderTest
 	/*** Scope for variables ***********************************************************/
 
 	@Test
-	def void testScopeProviderForArgOrVarRefInInstruction() 
+	def void testScopeProviderForArgOrVarRefInInstruction()
 	{
-		val module = parseHelper.parse(TestUtils::testModule
+		val module = parseHelper.parse(getTestModule(defaultConnectivities, '')
 		+
 		'''
+		ℝ[2] X{nodes};
 		ℝ a = 4.0;
 		ℝ b1;
 		ℝ b2 = b1;		
@@ -178,48 +181,49 @@ class NablaScopeProviderTest
 		}
 		
 		j3: {
-			ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{k∈[0;1]}(X{r}[k+1])));
+			ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{k∈[0;1]}(X{r}[k])));
 			z = z + 1;
 		}
 		''')
+
 		Assert.assertNotNull(module)
 		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
 
 		val aDeclaration = module.getVariableByName("a").eContainer as SimpleVarDefinition
-		aDeclaration.assertScope(eref, defaultOptionsScope)
+		aDeclaration.assertScope(eref, defaultOptionsScope + ", X")
 
 		val b1Declaration = module.getVariableByName("b1").eContainer as VarGroupDeclaration
-		b1Declaration.assertScope(eref, defaultOptionsScope + ", a")		
+		b1Declaration.assertScope(eref, defaultOptionsScope + ", X, a")
 
 		val b2Declaration = module.getVariableByName("b2").eContainer as SimpleVarDefinition
-		b2Declaration.assertScope(eref, defaultOptionsScope + ", a, b1")	// ????	
+		b2Declaration.assertScope(eref, defaultOptionsScope + ", X, a, b1")
 		
 		val j1 = module.getJobByName("j1")
 		val affectationc1 = j1.getVarAffectationByName("c1")
-		affectationc1.assertScope(eref, defaultOptionsScope + ", a, b1, b2, c1, c2")
+		affectationc1.assertScope(eref, defaultOptionsScope + ", X, a, b1, b2, c1, c2")
 
 		val affectationc2 = j1.getVarAffectationByName("c2")
-		affectationc2.assertScope(eref, "d, " + defaultOptionsScope + ", a, b1, b2, c1, c2")
+		affectationc2.assertScope(eref, "d, " + defaultOptionsScope + ", X, a, b1, b2, c1, c2")
 
 		val affectationf = j1.getVarAffectationByName("f")
-		affectationf.assertScope(eref, "e, f, d, " + defaultOptionsScope + ", a, b1, b2, c1, c2")
+		affectationf.assertScope(eref, "e, f, d, " + defaultOptionsScope + ", X, a, b1, b2, c1, c2")
 
 		val j2 = module.getJobByName("j2")
 		val affectationn = j2.getVarAffectationByName("n")
-		affectationn.assertScope(eref, "n, m, " + defaultOptionsScope + ", a, b1, b2, c1, c2")
+		affectationn.assertScope(eref, "n, m, " + defaultOptionsScope + ", X, a, b1, b2, c1, c2")
 
 		val affectationm = j2.getVarAffectationByName("m")
-		affectationm.assertScope(eref, "n, m, " + defaultOptionsScope + ", a, b1, b2, c1, c2")
+		affectationm.assertScope(eref, "n, m, " + defaultOptionsScope + ", X, a, b1, b2, c1, c2")
 
 		val j3 = module.getJobByName("j3")
 		val j3_xvarref = j3.instruction.eAllContents.filter(ArgOrVarRef).findFirst[x | x.target.name == 'X']
-		j3_xvarref.assertScope(eref, defaultOptionsScope + ", a, b1, b2, c1, c2")
+		j3_xvarref.assertScope(eref, defaultOptionsScope + ", X, a, b1, b2, c1, c2")
 	}
 
 	@Test
 	def void testScopeProviderForArgOrVarRefInReduction() 
 	{
-		val module = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions(
+		val module = parseHelper.parse(TestUtils::getTestModule('',
 			'''
 			def reduceMin: (ℝ.MaxValue, ℝ) → ℝ;
 			''')
@@ -236,7 +240,7 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForArgOrVarRefInFunction()
 	{
-		val model = TestUtils::getTestModuleWithCustomFunctions(
+		val model = TestUtils::getTestModule( '',
 			'''
 			def	inverse: ℝ[2,2] → ℝ[2,2];
 			def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
@@ -283,7 +287,7 @@ class NablaScopeProviderTest
 
 	private def defaultOptionsScope()
 	{
-		return "X_EDGE_LENGTH, Y_EDGE_LENGTH, X_EDGE_ELEMS, Y_EDGE_ELEMS, Z_EDGE_ELEMS, option_stoptime, option_max_iterations, X, t"	
+		return "X_EDGE_LENGTH, Y_EDGE_LENGTH, X_EDGE_ELEMS, Y_EDGE_ELEMS"
 	}
 
 	/*** Scope for dimension symbols **********************************/
@@ -291,9 +295,10 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForDimensionSymbolInInstruction()
 	{
-		val module = parseHelper.parse(TestUtils::testModule
+		val module = parseHelper.parse(getTestModule(defaultConnectivities, '')
 		+
 		'''
+		ℝ[2] X{nodes}
 		ℝ c1 {cells};
 		
 		j1: ∀ j∈cells(), {
@@ -309,7 +314,7 @@ class NablaScopeProviderTest
 				∀ j∈[0;2[, m[i,j] = 3.0;
 			}
 		}
-		
+
 		j3: {
 			ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{k∈[0;1]}(X{r}[k+1])));
 			z = z + 1;
@@ -340,7 +345,7 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForDimensionSymbolInFunction()
 	{
-		val model = TestUtils::getTestModuleWithCustomFunctions(
+		val model = TestUtils::getTestModule( '',
 			'''
 			def	inverse: ℝ[2,2] → ℝ[2,2];
 			def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →

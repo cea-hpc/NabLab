@@ -45,8 +45,10 @@ class IteratorExtensionsTest
 	def ∑: x | (0.0, ℝ[x]) → ℝ[x];
 	def ∑: x | (0.0, ℝ[x, x]) → ℝ[x, x];
 	'''
-	+ TestUtils::mandatoryOptionsAndVariables +
+	+ TestUtils::mandatoryOptions +
 	'''
+	ℝ t=0.0;
+	ℝ[2] X{nodes};
 	ℝ x{cells}, f{cells}, Cjr{cells,nodesOfCell};
 	ℝ[2] u{cells};
 	ℝ surface{faces};

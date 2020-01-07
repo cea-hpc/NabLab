@@ -20,6 +20,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import fr.cea.nabla.typing.NSTSizeType
 
+import static fr.cea.nabla.tests.TestUtils.*
+
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
 class TypeValidatorTest 
@@ -44,7 +46,7 @@ class TypeValidatorTest
 		def f: ℝ → ℝ, (a) → { return 1; }
 		def g: ℝ → ℝ, (a) → { return 1.0; }
 		'''
-		+ TestUtils::mandatoryOptionsAndVariables)
+		+ mandatoryOptions)
 
 		Assert.assertNotNull(module)
 		Assert.assertEquals(1, module.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -56,7 +58,7 @@ class TypeValidatorTest
 	@Test
 	def void testCheckScalarVarDefinitionType() 
 	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule
+		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '')
 			+
 			'''
 			ℝ d = ℝ[2](0.);
@@ -80,7 +82,7 @@ class TypeValidatorTest
 				PrimitiveType::REAL.literal
 			))
 
-		val moduleOk = parseHelper.parse(TestUtils::testModule
+		val moduleOk = parseHelper.parse(getTestModule(defaultConnectivities, '')
 			+
 			'''
 			ℝ[2] d = ℝ[2](0.);
@@ -95,7 +97,7 @@ class TypeValidatorTest
 	@Test
 	def void testChecAffectationType() 
 	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule
+		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '')
 			+
 			'''
 			ℕ U{cells};
@@ -119,7 +121,7 @@ class TypeValidatorTest
 			TypeValidator::AFFECTATION_TYPE,
 			TypeValidator::getAffectationTypeMsg("ℕ{cells}", "ℕ{nodes}"))
 
-			val moduleOk = parseHelper.parse(TestUtils::testModule
+			val moduleOk = parseHelper.parse(getTestModule(defaultConnectivities, '')
 			+
 			'''
 			ℕ U{cells}; 
@@ -138,7 +140,7 @@ class TypeValidatorTest
 	@Test
 	def void testChecIfType() 
 	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule
+		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
 			ℕ cond;
@@ -152,7 +154,7 @@ class TypeValidatorTest
 			TypeValidator::IF_CONDITION_BOOL,
 			TypeValidator::getIfConditionBoolMsg(PrimitiveType::INT.literal))
 
-		val moduleOk = parseHelper.parse(TestUtils::testModule
+		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
 			ℾ cond;
@@ -169,7 +171,7 @@ class TypeValidatorTest
 	@Test
 	def void testCheckValueType()
 	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule
+		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
 			const ℝ[2] one = [1.0, 1.0];
@@ -193,7 +195,7 @@ class TypeValidatorTest
 			TypeValidator::VALUE_TYPE,
 			TypeValidator::getValueTypeMsg(PrimitiveType::BOOL.literal))
 
-		val moduleOk = parseHelper.parse(TestUtils::testModule
+		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
 			const ℕ int = ℕ(1);
@@ -209,8 +211,7 @@ class TypeValidatorTest
 	@Test
 	def void testCheckSeedAndReturnTypes()
 	{
-		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
-			(
+		val moduleKo = parseHelper.parse(getTestModule ('',
 				'''
 				def reduce1: (f(), ℝ) → ℝ;
 				def reduce2: (ℝ.MinValue, ℝ) → ℕ;
@@ -229,8 +230,7 @@ class TypeValidatorTest
 			TypeValidator::SEED_AND_RETURN_TYPES,
 			TypeValidator::getSeedAndReturnTypesMsg(PrimitiveType::REAL.literal, PrimitiveType::INT.literal))
 
-		val moduleOk = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
-			(
+		val moduleOk = parseHelper.parse(getTestModule( '',
 				'''
 				def reduce1: (f(), ℝ) → ℝ;
 				def reduce2: (ℕ.MinValue, ℝ) → ℕ;
@@ -246,12 +246,12 @@ class TypeValidatorTest
 	@Test
 	def void testCheckFunctionCallArgs()
 	{
-		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
-			(
-				'''
-				def	test: ℾ × ℝ × ℝ[2] → ℝ;
-				'''
-			)
+		val functions =
+			'''
+			def	test: ℾ × ℝ × ℝ[2] → ℝ;
+			'''
+
+		val moduleKo = parseHelper.parse(getTestModule('', functions)
 			+
 			'''
 			const ℝ[2] option = [0., 1.];
@@ -268,12 +268,7 @@ class TypeValidatorTest
 				new NSTRealArray1D(NSTSizeType.create(2)).label]
 		))		
 
-		val moduleOk = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
-			(
-				'''
-				def	test: ℾ × ℝ × ℝ[2] → ℝ;
-				'''
-			)
+		val moduleOk = parseHelper.parse(getTestModule('', functions)
 			+
 			'''
 			const ℝ[2] option = [0., 1.];
@@ -287,12 +282,12 @@ class TypeValidatorTest
 	@Test
 	def void testCheckReductionArgs()
 	{
-		val moduleKo = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
-			(
-				'''
-				def	reduceMin: (ℝ.MaxValue, ℝ) → ℝ;
-				'''
-			)
+		var functions =
+			'''
+			def	reduceMin: (ℝ.MaxValue, ℝ) → ℝ;
+			'''
+
+		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, functions)
 			+
 			'''
 			ℝ D{cells}; 
@@ -311,13 +306,13 @@ class TypeValidatorTest
 			TypeValidator::REDUCTION_ARGS,
 			TypeValidator::getReductionArgsMsg(new NSTRealArray1D(NSTSizeType.create(2)).label))
 
-		val moduleOk = parseHelper.parse(TestUtils::getTestModuleWithCustomFunctions
-			(
-				'''
-				def reduceMin: (ℝ.MaxValue, ℝ) → ℝ;
-				def reduceMin: (ℝ.MaxValue, ℝ[2]) → ℝ;
-				'''
-			)
+		functions =
+			'''
+			def reduceMin: (ℝ.MaxValue, ℝ) → ℝ;
+			def reduceMin: (ℝ.MaxValue, ℝ[2]) → ℝ;
+			'''
+
+		val moduleOk = parseHelper.parse(getTestModule(defaultConnectivities, functions)
 			+
 			'''
 			ℝ D{cells};
@@ -333,7 +328,7 @@ class TypeValidatorTest
 	@Test
 	def void testCheckContractedIfType() 
 	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule
+		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
 			ℝ cond;
@@ -355,7 +350,7 @@ class TypeValidatorTest
 			TypeValidator::CONTRACTED_IF_ELSE_TYPE,
 			TypeValidator::getContractedIfElseTypeMsg(v.typeFor.label, u.typeFor.label))
 
-		val moduleOk = parseHelper.parse(TestUtils::testModule
+		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
 			ℾ cond;
@@ -371,7 +366,7 @@ class TypeValidatorTest
 	@Test
 	def void testCheckNotExpressionType()
 	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule
+		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
 			ℝ cond;
@@ -385,7 +380,7 @@ class TypeValidatorTest
 			TypeValidator::NOT_EXPRESSION_TYPE,
 			TypeValidator::getNotExpressionTypeMsg(cond.typeFor.label))
 
-		val moduleOk = parseHelper.parse(TestUtils::testModule
+		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
 			ℾ cond;
@@ -399,7 +394,7 @@ class TypeValidatorTest
 	@Test
 	def void testCheckMulOrDivType()
 	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule
+		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
 			ℾ a; 
@@ -416,7 +411,7 @@ class TypeValidatorTest
 				PrimitiveType::REAL.literal
 			))
 
-		val moduleOk = parseHelper.parse(TestUtils::testModule
+		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
 			ℝ a;
@@ -431,7 +426,7 @@ class TypeValidatorTest
 	@Test
 	def void testCheckPlusType() 
 	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule +
+		val moduleKo = parseHelper.parse(testModule +
 			'''
 			ℾ a; 
 			ℕ b;
@@ -447,7 +442,7 @@ class TypeValidatorTest
 				PrimitiveType::INT.literal
 			))
 
-		val moduleOk = parseHelper.parse(TestUtils::testModule
+		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
 			ℝ a;
@@ -462,7 +457,7 @@ class TypeValidatorTest
 	@Test
 	def void testCheckMinusType()
 	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule
+		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
 			ℝ[2] a;
@@ -480,7 +475,7 @@ class TypeValidatorTest
 				new NSTRealArray1D(NSTSizeType.create(3)).label
 			))
 
-		val moduleOk = parseHelper.parse(TestUtils::testModule
+		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
 			ℝ[2] a;
@@ -495,7 +490,7 @@ class TypeValidatorTest
 	@Test
 	def void testCheckComparisonType()
 	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule
+		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
 			ℝ a;
@@ -512,7 +507,7 @@ class TypeValidatorTest
 				new NSTRealArray1D(NSTSizeType.create(2)).label
 			))
 
-		val moduleOk = parseHelper.parse(TestUtils::testModule
+		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
 			ℝ a;
@@ -527,7 +522,7 @@ class TypeValidatorTest
 	@Test
 	def void testCheckEqualityType()
 	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule
+		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
 			ℝ a;
@@ -544,7 +539,7 @@ class TypeValidatorTest
 				new NSTRealArray1D(NSTSizeType.create(2)).label
 			))
 
-		val moduleOk = parseHelper.parse(TestUtils::testModule
+		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
 			ℝ a; 
@@ -559,7 +554,7 @@ class TypeValidatorTest
 	@Test
 	def void testCheckModuloType()
 	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule
+		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
 			ℝ a;
@@ -577,7 +572,7 @@ class TypeValidatorTest
 			TypeValidator::MODULO_TYPE,
 			TypeValidator::getModuloTypeMsg(new NSTRealArray1D(NSTSizeType.create(2)).label))
 
-		val moduleOk = parseHelper.parse(TestUtils::testModule
+		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
 			ℕ a;
@@ -592,7 +587,7 @@ class TypeValidatorTest
 	@Test
 	def void testCheckAndType() 
 	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule
+		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
 			ℕ a;
@@ -610,7 +605,7 @@ class TypeValidatorTest
 			TypeValidator::AND_TYPE,
 			TypeValidator::getAndTypeMsg(PrimitiveType::INT.literal))
 
-		val moduleOk = parseHelper.parse(TestUtils::testModule
+		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
 			ℾ a;
@@ -625,7 +620,7 @@ class TypeValidatorTest
 	@Test
 	def void testCheckOrType()
 	{
-		val moduleKo = parseHelper.parse(TestUtils::testModule
+		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
 			ℕ a;
@@ -643,7 +638,7 @@ class TypeValidatorTest
 			TypeValidator::OR_TYPE,
 			TypeValidator::getOrTypeMsg(PrimitiveType::INT.literal))
 
-		val moduleOk = parseHelper.parse(TestUtils::testModule
+		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
 			ℾ a;

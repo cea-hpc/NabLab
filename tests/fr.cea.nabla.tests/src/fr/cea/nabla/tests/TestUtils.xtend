@@ -88,18 +88,7 @@ class TestUtils
 		return getMandatoryOptions(10, 10)
 	}
 
-//	static def String getSimulationOptions(double stopTime, int maxIterations)
-//	'''
-//	const ℝ option_stoptime = «stopTime»;
-//	const ℕ option_max_iterations = «maxIterations»;
-//	'''
-//
-//	static def String getSimulationOptions()
-//	{
-//		return getSimulationOptions(0.2, 1)
-//	}
-
-	static def CharSequence getConnectivities()
+	static def CharSequence getDefaultConnectivities()
 	'''
 	items { node, cell }
 
@@ -115,35 +104,26 @@ class TestUtils
 	set nodes: → {node};
 	'''
 
-//	static def String getMandatoryMeshVariables()
-//	'''
-//	ℝ[2] X{nodes};
-//	'''
-//
-//	static def String getMandatorySimulationVariables()
-//	'''
-//	ℝ t = 0.0;
-//	'''
-//
-//	static def String getMandatoryMeshOptionsAndVariables()
-//	{
-//		mandatoryMeshOptions + mandatoryMeshVariables
-//	}
-//
-//	static def String getMandatorySimulationOptionsAndVariables()
-//	{
-//		simulationOptions + mandatorySimulationVariables
-//	}
-//
-//	static def String getMandatoryOptionsAndVariables()
-//	{
-//		mandatoryMeshOptions + simulationOptions + mandatoryMeshVariables + mandatorySimulationVariables
-//	}
+	static def String getNIteration()
+	'''
+	// Simulation options
+	const ℝ option_stoptime = 0.2;
+	const ℕ option_max_iterations = 20000;
+	ℝ t=0.0;
+	ℝ[2] X{nodes};
+	ℕ iterationN;
+	iterate n counter iterationN while (t^{n} < option_stoptime && iterationN < option_max_iterations);
+	'''
 
 	static def CharSequence getInitTJob()
 	'''
 	initT: t = 0.0;
 	'''
+
+	static def CharSequence getTestModule()
+	{
+		emptyTestModule + mandatoryOptions
+	}
 
 	static def CharSequence getTestModule(CharSequence connectivities, CharSequence functions)
 	{
@@ -152,7 +132,7 @@ class TestUtils
 
 	static def CharSequence getTestModule(int xQuads, int yQuads)
 	{
-		emptyTestModule + connectivities + getMandatoryOptions(xQuads, yQuads)
+		emptyTestModule + defaultConnectivities + getMandatoryOptions(xQuads, yQuads)
 	}
 
 //	static def getTestModuleWithCustomFunctions(CharSequence functions, boolean withConnectivities)
@@ -198,6 +178,8 @@ class TestUtils
 		{
 			Nabla2Ir nabla2ir
 			{
+				timeVariable = t;
+				nodeCoordVariable = X;
 			}
 			ReplaceUtf replaceUtf follows nabla2ir
 			{

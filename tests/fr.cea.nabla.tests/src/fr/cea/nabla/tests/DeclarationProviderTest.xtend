@@ -54,7 +54,7 @@ class DeclarationProviderTest
 		def g: a, b | ℝ[a, b] → ℝ[a*b];
 		def g: a, b | ℝ[a] × ℝ[b] → ℝ[a+b];
 		'''
-		+ TestUtils::mandatoryOptionsAndVariables +
+		+ TestUtils::mandatoryOptions +
 		'''
 			
 		ℝ a{cells};
@@ -165,14 +165,14 @@ class DeclarationProviderTest
 			return y;
 		}
 		'''
-		+ TestUtils::mandatoryOptionsAndVariables
+		+ TestUtils::mandatoryOptions
 
 		val module = model.parse
 		Assert.assertNotNull(module)
 		Assert.assertEquals(1, module.validate.filter(i | i.severity == Severity.ERROR).size)
 		module.assertError(NablaPackage.eINSTANCE.functionCall, TypeValidator::FUNCTION_ARGS, TypeValidator::getReductionArgsMsg("ℝ[a]"))
 
-		Assert.assertEquals(3, module.validate.filter(i | i.severity == Severity.WARNING).size)
+		Assert.assertEquals(4, module.validate.filter(i | i.severity == Severity.WARNING).size)
 		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 114, 1, BasicValidator::getUnusedFunctionMsg)
 		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 166, 1, BasicValidator::getUnusedFunctionMsg)
 		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 239, 1, BasicValidator::getUnusedFunctionMsg)
@@ -206,7 +206,7 @@ class DeclarationProviderTest
 		def	f: (0.0, ℝ) → ℝ;
 		def f: x | (0.0, ℝ[x]) → ℝ[x];
 		'''
-		+ TestUtils::mandatoryOptionsAndVariables +
+		+ TestUtils::mandatoryOptions +
 		'''
 		ℝ u{cells};
 		ℝ[2] u2{cells};

@@ -60,8 +60,8 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 			val allSimpleVars = module.instructions.allVariables.filter(SimpleVar)
 			val candidates = allSimpleVars.filter[x | x.type.primitive == PrimitiveType::INT && x.type.sizes.empty ]
 			return Scopes::scopeFor(candidates)
-	    }
-	    return IScope::NULLSCOPE
+		}
+		return IScope::NULLSCOPE
 	}
 
 	/*** Scope for iterators **********************************************************/

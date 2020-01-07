@@ -41,10 +41,13 @@ import fr.cea.nabla.nabla.SizeTypeSymbol
 import fr.cea.nabla.nabla.SizeTypeSymbolRef
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
+import fr.cea.nabla.nabla.TimeIterator
+import fr.cea.nabla.nabla.TimeIteratorRef
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
 import fr.cea.nabla.typing.DeclarationProvider
+import java.util.ArrayList
 import java.util.HashSet
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
@@ -53,8 +56,6 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScopeProvider
 import org.eclipse.xtext.util.SimpleAttributeResolver
 import org.eclipse.xtext.validation.Check
-import fr.cea.nabla.nabla.TimeIterator
-import java.util.ArrayList
 
 class BasicValidator extends AbstractNablaValidator
 {
@@ -115,6 +116,9 @@ class BasicValidator extends AbstractNablaValidator
 
 	@Check
 	def void checkDuplicate(Job it) { checkDuplicates(NablaPackage.Literals.JOB__NAME) }
+
+	@Check
+	def void checkDuplicate(TimeIterator it) { checkDuplicates(NablaPackage.Literals.TIME_ITERATOR__NAME) }
 
 	private def <T extends EObject> checkDuplicates(T t, EStructuralFeature f)
 	{
@@ -205,24 +209,39 @@ class BasicValidator extends AbstractNablaValidator
 
 	// ===== TimeIterator =====
 
+	public static val UNUSED_TIME_ITERATOR = "TimeIterator::Unused"
 	public static val INIT_VALUE = "TimeIterator::InitValue"
 	public static val NEXT_VALUE = "TimeIterator::NextValue"
 
+	static def getUnusedTimeIteratorMsg() { "Unused time iterator" }
 	static def getInitValueMsg(int actualValue) { "Wrong time iterator init value: Expected 0, but was " + actualValue }
 	static def getNextValueMsg(int actualValue) { "Wrong time iterator next value: Expected 1, but was " + actualValue }
+
+	@Check 
+	def checkUnusedTimeIterator(TimeIterator it)
+	{
+		val m = EcoreUtil2::getContainerOfType(it, NablaModule)
+		if (m !== null)
+		{
+			val timeIterRefs =  m.eAllContents.filter(TimeIteratorRef).toList
+			val hasItRef = timeIterRefs.exists[x | x.target === it]
+			if (!hasItRef)
+				warning(getUnusedTimeIteratorMsg(), NablaPackage.Literals.TIME_ITERATOR__NAME, UNUSED_TIME_ITERATOR)
+		}
+	}
 
 	@Check 
 	def checkInitValue(InitTimeIteratorRef it)
 	{
 		if (value !== 0)
-			error(getInitValueMsg(value), NablaPackage.Literals.INIT_TIME_ITERATOR_REF__VALUE)
+			error(getInitValueMsg(value), NablaPackage.Literals.INIT_TIME_ITERATOR_REF__VALUE, INIT_VALUE)
 	}
 
 	@Check 
 	def checkNextValue(NextTimeIteratorRef it)
 	{
 		if (value !== 1)
-			error(getNextValueMsg(value), NablaPackage.Literals.NEXT_TIME_ITERATOR_REF__VALUE)
+			error(getNextValueMsg(value), NablaPackage.Literals.NEXT_TIME_ITERATOR_REF__VALUE, NEXT_VALUE)
 	}
 
 	// ===== ArgOrVarType =====

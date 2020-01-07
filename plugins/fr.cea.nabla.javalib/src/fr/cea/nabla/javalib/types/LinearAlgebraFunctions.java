@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -16,20 +16,19 @@ import org.apache.commons.math3.linear.ConjugateGradient;
 import org.apache.commons.math3.linear.IterativeLinearSolver;
 import org.apache.commons.math3.linear.RealVector;
 
-/** TODO Integrated Newton algorithm */
 public class LinearAlgebraFunctions 
 {
 	public static Vector solveLinearSystem(Matrix a, Vector b)
 	{
-	    final RealVector x = solveLinearSystem(a.getNativeMatrix(), b.getNativeVector());
-	    return new Vector(x);
+		final RealVector x = solveLinearSystem(a.getNativeMatrix(), b.getNativeVector());
+		return new Vector(x);
 	}
-	
+
 	public static RealVector solveLinearSystem(AbstractRealMatrix a, RealVector b)
 	{
 		final int maxIterations = 100;
 		final IterativeLinearSolver m_solver = new ConjugateGradient(maxIterations, 1E-10, true);
-	    return m_solver.solve(a, b);
+		return m_solver.solve(a, b);
 	}
 
 	public static void print(double[] x, DecimalFormat df)
@@ -39,7 +38,7 @@ public class LinearAlgebraFunctions
 			System.out. print(df.format(x[i]) + " ");
 		System.out.println("]");
 	}
-	
+
 	public static void print(double[][] x, DecimalFormat df)
 	{
 		for (int i=0 ; i<x.length ; ++i)

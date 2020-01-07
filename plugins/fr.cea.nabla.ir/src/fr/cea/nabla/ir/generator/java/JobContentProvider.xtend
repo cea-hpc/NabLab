@@ -20,7 +20,7 @@ import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.Utils.getIrModule
+import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
@@ -64,7 +64,7 @@ class JobContentProvider
 		{
 			«itVar»++;
 			System.out.println("«timeLoop.indentation»[«itVar» : " + «itVar» + "] t : " + «irModule.timeVariable.name»);
-			«FOR j : jobs.sortBy[at]»
+			«FOR j : jobs.sortJobs»
 				«j.codeName»(); // @«j.at»
 			«ENDFOR»
 

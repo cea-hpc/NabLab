@@ -10,6 +10,8 @@
 package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.Job
+import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 
 class Utils 
@@ -46,6 +48,17 @@ class Utils
 
 	static def getCurrentIrVariable(IrModule m, String nablaVariableName) { getIrVariable(m, nablaVariableName, false) }
 	static def getInitIrVariable(IrModule m, String nablaVariableName) { getIrVariable(m, nablaVariableName, true) }
+
+	/** Return a list of jobs sorted by at and name for the generation to be reproductible */
+	static def sortJobs(Iterable<Job> jobs)
+	{
+		val jobsByAt = jobs.groupBy[at]
+		val orderedKeys = jobsByAt.keySet.sort
+		val sortedJobs = new ArrayList<Job>
+		for (k : orderedKeys)
+			sortedJobs += jobsByAt.get(k).sortBy[name]
+		return sortedJobs
+	}
 
 	private static def getIrVariable(IrModule m, String nablaVariableName, boolean initTimeIterator)
 	{

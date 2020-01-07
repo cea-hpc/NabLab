@@ -19,6 +19,7 @@ import fr.cea.nabla.ir.ir.TimeLoopJob
 import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.Utils.getIrModule
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
@@ -61,7 +62,7 @@ abstract class JobContentProvider
 		do
 		{
 			«timeLoop.counter.name»++;
-			«FOR j : jobs.sortBy[at]»
+			«FOR j : jobs.sortJobs»
 				«j.codeName»(); // @«j.at»
 			«ENDFOR»
 

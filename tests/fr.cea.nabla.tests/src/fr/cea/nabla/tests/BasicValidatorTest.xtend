@@ -136,6 +136,7 @@ class BasicValidatorTest
 			ComputeA: a = 1.;
 			'''
 		)
+
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoIssues
 	}

@@ -47,8 +47,9 @@ class IteratorExtensionsTest
 	'''
 	+ TestUtils::mandatoryOptions +
 	'''
-	ℝ t=0.0;
+	ℝ t = 0.0;
 	ℝ[2] X{nodes};
+
 	ℝ x{cells}, f{cells}, Cjr{cells,nodesOfCell};
 	ℝ[2] u{cells};
 	ℝ surface{faces};

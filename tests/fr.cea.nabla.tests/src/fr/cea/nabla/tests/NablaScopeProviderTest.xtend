@@ -46,8 +46,6 @@ class NablaScopeProviderTest
 		val module = parseHelper.parse(getTestModule(defaultConnectivities, '')
 			+
 			'''
-			ℝ t=0.0;
-			ℝ[2] X{nodes};
 			ℝ a{cells}, b{cells, nodesOfCell}, c{cells};
 			ℝ d{nodes};
 			

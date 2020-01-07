@@ -1,13 +1,16 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
+import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.ir.interpreter.ModuleInterpreter
 import fr.cea.nabla.ir.interpreter.NV0Real
 import fr.cea.nabla.ir.interpreter.NV1Real
+import fr.cea.nabla.ir.interpreter.NV3Real
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -22,7 +25,7 @@ class InstructionInterpreterTest
 	@Test
 	def void testInterpreteVarDefinition()
 	{
-		val model = TestUtils::testModule
+		val model = testModuleForCompilation
 		+
 		'''
 		Job1: { ℝ r = 1.0; t = r; }
@@ -40,7 +43,7 @@ class InstructionInterpreterTest
 	@Test
 	def void testInterpreteInstructionBlock()
 	{
-		val model = TestUtils::testModule
+		val model = testModuleForCompilation
 		+
 		'''
 		Job1: { ℝ r = 1.0; t = r; }
@@ -58,7 +61,7 @@ class InstructionInterpreterTest
 	@Test
 	def void testInterpreteAffectation()
 	{
-		val model = TestUtils::testModule
+		val model = testModuleForCompilation
 		+
 		'''
 		Job1: { ℝ r = 1.0; t = r; }
@@ -78,7 +81,7 @@ class InstructionInterpreterTest
 	{
 		val xQuads = 100
 		val yQuads = 100
-		val model = TestUtils::getTestModule(xQuads, yQuads, 0.2, 1)
+		val model = TestUtils::getTestModule(xQuads, yQuads)
 		+
 		'''
 		ℝ U{cells};
@@ -93,10 +96,25 @@ class InstructionInterpreterTest
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 		val context = moduleInterpreter.interprete
 
-		val double[] res = newDoubleArrayOfSize(xQuads * yQuads)
-		for (var i = 0 ; i < res.length ; i++)
-			res.set(i, 1.0)
+		val nbCells = xQuads * yQuads
+		val double[] u = newDoubleArrayOfSize(nbCells)
+		for (var i = 0 ; i < u.length ; i++)
+			u.set(i, 1.0)
 
-		assertVariableValueInContext(irModule, context, "U", new NV1Real(res))
+		assertVariableValueInContext(irModule, context, "U", new NV1Real(u))
+
+		val cjr = (context.getVariableValue("C") as NV3Real).data
+
+		val nbNodesOfCell = 4
+		val xEdgeLength = (context.getVariableValue(MandatoryOptions::X_EDGE_LENGTH) as NV0Real).data
+		val yEdgeLength = (context.getVariableValue(MandatoryOptions::Y_EDGE_LENGTH) as NV0Real).data
+		for (var j = 0 ; j < nbCells ; j++)
+		{
+			for (var r = 0 ; r < nbNodesOfCell; r++)
+			{
+				Assert.assertEquals(0.5*(xEdgeLength), Math.abs(cjr.get(j,r).get(0)), TestUtils.DoubleTolerance)
+				Assert.assertEquals(0.5*(yEdgeLength), Math.abs(cjr.get(j,r).get(1)), TestUtils.DoubleTolerance)
+			}
+		}
 	}
 }

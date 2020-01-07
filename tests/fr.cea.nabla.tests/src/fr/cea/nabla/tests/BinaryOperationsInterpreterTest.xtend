@@ -35,7 +35,8 @@ class BinaryOperationsInterpreterTest
 	@Test
 	def void testGetValueOfNV0Bool_NV0Bool()
 	{
-		val model = getTestModule('', '') +
+		val model = testModuleForCompilation
+		+
 		'''
 		ℾ b1 = true || false; // -> true
 		ℾ b2 = true || true; // -> true
@@ -52,7 +53,7 @@ class BinaryOperationsInterpreterTest
 		ℾ b11 = true > false; // -> true
 		ℾ b12 = true < false; // -> false
 		'''
-		println(model)
+
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
 
@@ -75,7 +76,8 @@ class BinaryOperationsInterpreterTest
 	@Test
 	def void testGetValueOfNV0Int_NV0Int()
 	{
-		val model = getTestModule('', '') +
+		val model = testModuleForCompilation
+		+
 		'''
 		ℾ b1 = 1 == 2; // -> false
 		ℾ b2 = 1 == 1; // -> true
@@ -129,7 +131,8 @@ class BinaryOperationsInterpreterTest
 	@Test
 	def void testGetValueOfNV0Int_NV0Real()
 	{
-		val model = getTestModule('', '') +
+		val model = testModuleForCompilation
+		+
 		'''
 		ℾ b1 = 1 == 2.; // -> false
 		ℾ b2 = 1 == 1; // -> true
@@ -181,11 +184,12 @@ class BinaryOperationsInterpreterTest
 	@Test
 	def void testGetValueOfNV0Int_NV1Int()
 	{
-		val model = getTestModule('', '') +
+		val model = testModuleForCompilation
+		+
 		'''
 		ℕ[2] n1 = [1,2];
 		ℕ[2] n2 = 3 + n1;
-	//	ℕ[2] n3 = 3 * n1;
+		ℕ[2] n3 = 3 * n1;
 		'''
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
 		val handler = new ConsoleHandler
@@ -195,7 +199,7 @@ class BinaryOperationsInterpreterTest
 
 		assertVariableDefaultValue(irModule, context, "n1", new NV1Int(#[1, 2]))
 		assertVariableValueInContext(irModule, context, "n1", new NV1Int(#[1, 2]))
-		//assertVariableValueInContext(irModule, context, "n2", new NV1Int(#[4, 5]))
-		//assertVariableValueInContext(irModule, context, "n3", new NV1Int(#[3, 6]))
+		assertVariableValueInContext(irModule, context, "n2", new NV1Int(#[4, 5]))
+		assertVariableValueInContext(irModule, context, "n3", new NV1Int(#[3, 6]))
 	}
 }

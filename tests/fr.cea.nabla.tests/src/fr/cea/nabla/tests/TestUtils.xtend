@@ -31,7 +31,7 @@ import static extension fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 
 class TestUtils 
 {
-	static val DoubleTolerance = 1e-15
+	public static val DoubleTolerance = 1e-15
 
 	static def getAllVars(EObject it)
 	{
@@ -83,6 +83,12 @@ class TestUtils
 	const ℕ Y_EDGE_ELEMS = «yQuads»;
 	'''
 
+	private static def String getCompilationVariables()
+	'''
+	ℝ t = 0.0;
+	ℝ[2] X{nodes};
+	'''
+
 	static def String getMandatoryOptions()
 	{
 		return getMandatoryOptions(10, 10)
@@ -104,25 +110,14 @@ class TestUtils
 	set nodes: → {node};
 	'''
 
-	static def String getNIteration()
-	'''
-	// Simulation options
-	const ℝ option_stoptime = 0.2;
-	const ℕ option_max_iterations = 20000;
-	ℝ t=0.0;
-	ℝ[2] X{nodes};
-	ℕ iterationN;
-	iterate n counter iterationN while (t^{n} < option_stoptime && iterationN < option_max_iterations);
-	'''
-
-	static def CharSequence getInitTJob()
-	'''
-	initT: t = 0.0;
-	'''
-
 	static def CharSequence getTestModule()
 	{
 		emptyTestModule + mandatoryOptions
+	}
+
+	static def CharSequence getTestModuleForCompilation()
+	{
+		emptyTestModule + nodesConnectivity + mandatoryOptions + compilationVariables
 	}
 
 	static def CharSequence getTestModule(CharSequence connectivities, CharSequence functions)
@@ -132,7 +127,7 @@ class TestUtils
 
 	static def CharSequence getTestModule(int xQuads, int yQuads)
 	{
-		emptyTestModule + defaultConnectivities + getMandatoryOptions(xQuads, yQuads)
+		emptyTestModule + defaultConnectivities + getMandatoryOptions(xQuads, yQuads) + compilationVariables
 	}
 
 //	static def getTestModuleWithCustomFunctions(CharSequence functions, boolean withConnectivities)
@@ -189,7 +184,7 @@ class TestUtils
 			}
 			OptimizeConnectivities optimizeConnectivities follows replaceReductions
 			{
-				connectivities = cells, nodes;
+				connectivities = nodes;
 			}
 			FillHLTs fillHlts follows optimizeConnectivities
 			{

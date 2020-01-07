@@ -60,7 +60,7 @@ class JobInterpreter
 
 	def dispatch void interprete(TimeLoopJob it, Context context)
 	{
-		context.logFinest("Interprete TimeLoopJob" + name + " @ " + at)
+		context.logFinest("Interprete TimeLoopJob " + name + " @ " + at)
 		val irModule = eContainer as IrModule
 		val iterationVariable = timeLoop.counter
 		var iteration = 0
@@ -73,7 +73,7 @@ class JobInterpreter
 			context.logInfo(timeLoop.indentation + "[" + iteration + "] t : " + context.getReal(irModule.timeVariable.name))
 			for (j : jobs.filter[x | x.at > 0].sortBy[at])
 				interprete(j, context)
-			context.logVariables("After iteration = " + iteration)
+			//context.logVariables("After iteration = " + iteration)
 			// Switch variables to prepare next iteration
 			for (copy : copies)
 			{

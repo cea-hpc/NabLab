@@ -21,11 +21,18 @@ class ModuleInterpreterTest
 	@Test
 	def void testInterpreteModule()
 	{
-		val model = TestUtils::getTestModule(10, 10, 0.2, 2000)
+		val model = TestUtils::getTestModule(10, 10)
 		+
 		'''
-		InitT: t = 0.;
-		ComputeTn: t^{n+1} = t + 0.01;
+		// Simulation options
+		const ℝ option_stoptime = 0.2;
+		const ℕ option_max_iterations = 20000;
+
+		ℕ iterationN;
+		iterate n counter iterationN while (t^{n} < option_stoptime && iterationN < option_max_iterations);
+
+		InitT: t^{n=0} = 0.;
+		ComputeTn: t^{n+1} = t^{n} + 0.01;
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
@@ -33,6 +40,6 @@ class ModuleInterpreterTest
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 		val context = moduleInterpreter.interprete
-		assertVariableValueInContext(irModule, context, "t", new NV0Real(0.2))
+		assertVariableValueInContext(irModule, context, "t_n", new NV0Real(0.2))
 	}
 }

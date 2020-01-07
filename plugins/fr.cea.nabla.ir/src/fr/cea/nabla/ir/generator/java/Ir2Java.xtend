@@ -20,6 +20,7 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
+import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
@@ -128,7 +129,7 @@ class Ir2Java extends CodeGenerator
 			public void simulate()
 			{
 				System.out.println("Début de l'exécution du module «name»");
-				«FOR j : jobs.filter[jobContainer === null].sortBy[at]»
+				«FOR j : jobs.filter[jobContainer === null].sortJobs»
 					«j.codeName»(); // @«j.at»
 				«ENDFOR»
 				System.out.println("Fin de l'exécution du module «name»");
@@ -144,7 +145,7 @@ class Ir2Java extends CodeGenerator
 				«name» i = new «name»(o«IF withMesh», nm«ENDIF»);
 				i.simulate();
 			}
-			«FOR j : jobs.sortBy[at]»
+			«FOR j : jobs.sortJobs»
 
 				«j.content»
 			«ENDFOR»

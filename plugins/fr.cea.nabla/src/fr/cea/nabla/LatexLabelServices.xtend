@@ -59,12 +59,12 @@ class LatexLabelServices
 {
 	/* JOBS & INSTRUCTIONS ***********************************/
 	static def dispatch String getLatex(Job it) { '\\texttt{' + name.pu + '} : '+ instruction.latex }
-	static def dispatch String getLatex(SimpleVarDefinition it) { type.latex + ' ' + variable.name.pu + '=' + defaultValue.latex }
-	static def dispatch String getLatex(VarGroupDeclaration it) { type.latex + ' ' + variables.map[x|x.name.pu].join(', ') }
+	static def dispatch String getLatex(SimpleVarDefinition it) { type.latex + '~' + variable.name.pu + '=' + defaultValue.latex }
+	static def dispatch String getLatex(VarGroupDeclaration it) { type.latex + '~' + variables.map[x|x.name.pu].join(', ') }
 	static def dispatch String getLatex(InstructionBlock it) { '\\{ \\}' }
-	static def dispatch String getLatex(Loop it) { '\\forall {' + iterationBlock.latex + '}, \\ ' + body.latex }
+	static def dispatch String getLatex(Loop it) { '\\forall{' + iterationBlock.latex + '}, \\ ' + body.latex }
 	static def dispatch String getLatex(Affectation it) { left?.latex + ' = ' + right?.latex }
-	static def dispatch String getLatex(If it) { 'if (' + condition.latex + ')'}
+	static def dispatch String getLatex(If it) { 'if~(' + condition.latex + ')'}
 	static def dispatch String getLatex(Return it) { 'return (' + expression.latex + ')'}
 
 	/* ITERATEURS ********************************************/
@@ -87,8 +87,8 @@ class LatexLabelServices
 
 	/* EXPRESSIONS ******************************************/
 	static def dispatch String getLatex(ContractedIf it) { condition.latex + ' ? ' + then.latex + ' : ' + ^else.latex }
-	static def dispatch String getLatex(Or it) { left.latex + ' or ' + right.latex }
-	static def dispatch String getLatex(And it) { left.latex + ' and ' + right.latex }
+	static def dispatch String getLatex(Or it) { left.latex + '~or~' + right.latex }
+	static def dispatch String getLatex(And it) { left.latex + '~and~' + right.latex }
 	static def dispatch String getLatex(Equality it) { left.latex + ' == ' + right.latex }
 	static def dispatch String getLatex(Comparison it) { left.latex + ' ' + op + ' ' + right.latex }
 	static def dispatch String getLatex(Plus it) { left.latex + ' + ' + right.latex }
@@ -127,7 +127,7 @@ class LatexLabelServices
 	}
 
 	static def dispatch String getLatex(BaseTypeConstant it) { type.latex + '(' + value.latex + ')' }
-	static def dispatch String getLatex(VectorConstant it) { '[' + values.join(',') + ']' }
+	static def dispatch String getLatex(VectorConstant it) { '[' + values.map[latex].join(',') + ']' }
 
 	static def dispatch String getLatex(ArgOrVarRef it)
 	{

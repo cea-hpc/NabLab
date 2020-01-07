@@ -22,6 +22,7 @@ import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
 
+import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
@@ -162,7 +163,7 @@ class Ir2Kokkos extends CodeGenerator
 			«HierarchicalParallelismUtils::teamWorkRange»
 
 		«ENDIF»
-		«FOR j : jobs.sortBy[at] SEPARATOR '\n'»
+		«FOR j : jobs.sortJobs SEPARATOR '\n'»
 			«j.content»
 		«ENDFOR»			
 		«FOR f : functions.filter(Function).filter[body !== null]»

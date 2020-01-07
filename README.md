@@ -128,7 +128,7 @@ JGraphT (1.3.0)
  * Project: http://jgrapht.org
  * Source: https://github.com/jgrapht/jgrapht
 
-JLatexMath (1.0.3)
+JLatexMath (1.0.7)
  * License: GPL-2.0
  * Project: http://www.scilab.org/projects/thirdparty_project/jlatexmath
  * Source: https://github.com/opencollab/jlatexmath

@@ -2,12 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: fr.cea.library.jlatexmath
 Bundle-SymbolicName: jlatexmath
-Bundle-Version: 1.0.3
-Bundle-ClassPath: jlatexmath-1.0.3.jar
+Bundle-Version: 1.0.7
+Bundle-ClassPath: jlatexmath-1.0.7.jar
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: jlatexmath
 Export-Package: org.scilab.forge.jlatexmath,
  org.scilab.forge.jlatexmath.cache,
  org.scilab.forge.jlatexmath.cyrillic,
- org.scilab.forge.jlatexmath.cyrillic.fonts,
  org.scilab.forge.jlatexmath.dynamic,
  org.scilab.forge.jlatexmath.fonts.base,
  org.scilab.forge.jlatexmath.fonts.euler,
@@ -17,6 +18,4 @@ Export-Package: org.scilab.forge.jlatexmath,
  org.scilab.forge.jlatexmath.fonts.maths,
  org.scilab.forge.jlatexmath.fonts.maths.optional,
  org.scilab.forge.jlatexmath.greek,
- org.scilab.forge.jlatexmath.greek.fonts
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Automatic-Module-Name: jlatexmath
+ org.scilab.forge.jlatexmath.internal.util

@@ -34,7 +34,7 @@ class IrTimeLoopFactory
 	def create IrFactory::eINSTANCE.createTimeLoop toIrTimeLoop(TimeIterator ti)
 	{
 		name = ti.name
-		counter = ti.counter.toIrSimpleVariable('')
+		counter = ti.counter.toIrSimpleVariable(ti.counter.name)
 		whileCondition = ti.cond.toIrExpression
 	}
 

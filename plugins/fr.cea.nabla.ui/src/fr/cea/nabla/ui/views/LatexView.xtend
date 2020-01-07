@@ -47,6 +47,7 @@ class LatexView extends ViewPart
 			val latexLabel = LatexLabelServices.getLatex(element)
 			if (latexLabel !== null) 
 			{
+				//println("LATEX : " + latexLabel)
 				val image = LatexImageServices.createPngImage(latexLabel, 25)
 				val swtImage = new Image(Display.^default, new ByteArrayInputStream(image))
 				return swtImage

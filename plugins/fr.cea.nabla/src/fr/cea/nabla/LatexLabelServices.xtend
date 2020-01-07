@@ -21,6 +21,7 @@ import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.CurrentTimeIteratorRef
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
+import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InitTimeIteratorRef
@@ -41,6 +42,7 @@ import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.RealConstant
+import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
@@ -54,6 +56,7 @@ import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
+import java.util.List
 
 class LatexLabelServices
 {
@@ -84,6 +87,15 @@ class LatexLabelServices
 	static def dispatch String getLatex(CurrentTimeIteratorRef it) { target.name.pu }
 	static def dispatch String getLatex(InitTimeIteratorRef it) { target.name.pu + '=' + value }
 	static def dispatch String getLatex(NextTimeIteratorRef it) { target.name.pu + '+' + value }
+
+	/* FONCTIONS / REDUCTIONS ********************************/
+	static def dispatch String getLatex(Function it) { 'def~' + name.pu + '~:~' + vars.latexForVars + inTypes.map[latex].join(' \u00D7 ') + ' \u2192 ' + returnType.latex }
+	static def dispatch String getLatex(Reduction it) { 'def~' + name.pu + '~:~' + vars.latexForVars + '(' + seed.latex + ', ' + collectionType.latex + ') \u2192 ' + returnType.latex }
+	private static def getLatexForVars(List<SizeTypeSymbol> symbols)
+	{
+		if (symbols.empty) ''
+		else symbols.map[latex].join(', ') + '~|~'
+	}
 
 	/* EXPRESSIONS ******************************************/
 	static def dispatch String getLatex(ContractedIf it) { condition.latex + ' ? ' + then.latex + ' : ' + ^else.latex }
@@ -144,7 +156,7 @@ class LatexLabelServices
 		if (sizes.empty)
 			primitive.literal
 		else
-			primitive.literal + '^{' + sizes.map[x | x.latex].join('x') + '}'
+			primitive.literal + '^{' + sizes.map[x | x.latex].join(' \\times ') + '}'
 	}
 
 	static def dispatch String getLatex(SizeTypeOperation it) { left?.latex + ' ' + op + ' ' + right?.latex }

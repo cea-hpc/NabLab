@@ -31,6 +31,8 @@ import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.ui.PlatformUI
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 import org.eclipse.xtext.ui.editor.XtextEditor
+import fr.cea.nabla.nabla.Function
+import fr.cea.nabla.nabla.Reduction
 
 class LatexViewListener implements ISelectionListener
 {
@@ -113,7 +115,10 @@ class LatexViewListener implements ISelectionListener
 	{
 		switch elt
 		{
+			case null: null
 			Job: elt
+			Function: elt
+			Reduction: elt
 			InstructionBlock: null
 			Instruction:
 				if (elt.eContainer === null) 

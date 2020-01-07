@@ -20,6 +20,7 @@ import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.CurrentTimeIteratorRef
 import fr.cea.nabla.nabla.Equality
+import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InitTimeIteratorRef
@@ -40,6 +41,7 @@ import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.RealConstant
+import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
@@ -53,6 +55,7 @@ import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
+import java.util.List
 
 import static extension fr.cea.nabla.ir.Utils.*
 
@@ -85,6 +88,15 @@ class LabelServices
 	static def dispatch String getLabel(CurrentTimeIteratorRef it) { target.name }
 	static def dispatch String getLabel(InitTimeIteratorRef it) { target.name + '=' + value }
 	static def dispatch String getLabel(NextTimeIteratorRef it) { target.name + '+' + value }
+
+	/* FONCTIONS / REDUCTIONS ********************************/
+	static def dispatch String getLabel(Function it) { 'def ' + name + ' : ' + vars.labelForVars + inTypes.map[label].join(' \u00D7 ') + ' \u2192 ' + returnType.label }
+	static def dispatch String getLabel(Reduction it) { 'def ' + name + ' : ' + vars.labelForVars + '(' + seed.label + ', ' + collectionType.label + ') \u2192 ' + returnType.label }
+	private static def getLabelForVars(List<SizeTypeSymbol> symbols)
+	{
+		if (symbols.empty) ''
+		else symbols.map[label].join(', ') + ' | '
+	}
 
 	/* EXPRESSIONS ******************************************/
 	static def dispatch String getLabel(ContractedIf it) { condition?.label + ' ? ' + then?.label + ' : ' + ^else?.label }

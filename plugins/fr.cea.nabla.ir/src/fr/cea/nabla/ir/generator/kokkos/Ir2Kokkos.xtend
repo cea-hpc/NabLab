@@ -216,16 +216,16 @@ class Ir2Kokkos extends CodeGenerator
 				iteration++;
 				if (iteration!=1)
 					std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << iteration << __RESET__ "] t = " << __BOLD__
-						<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << «MandatorySimulationVariables::TIME» << __RESET__;
+						<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << «timeVariable.name» << __RESET__;
 
 				«jobs.filter[x | x.at > 0].jobCallsContent»
 				compute_timer.stop();
 
 				// Progress
-				std::cout << utils::progress_bar(iteration, options->«MandatorySimulationOptions::MAX_ITERATIONS», «MandatorySimulationVariables::TIME», options->«MandatorySimulationOptions::STOP_TIME», 30);
+				std::cout << utils::progress_bar(iteration, options->«MandatorySimulationOptions::MAX_ITERATIONS», «timeVariable», options->«MandatorySimulationOptions::STOP_TIME», 30);
 				timer.stop();
 				std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-					utils::eta(iteration, options->«MandatorySimulationOptions::MAX_ITERATIONS», «MandatorySimulationVariables::TIME», options->«MandatorySimulationOptions::STOP_TIME», deltat, timer), true)
+					utils::eta(«iterationVariable», options->«MandatorySimulationOptions::MAX_ITERATIONS», «timeVariable», options->«MandatorySimulationOptions::STOP_TIME», deltat, timer), true)
 					<< __RESET__ << "\r";
 				std::cout.flush();
 			}

@@ -394,6 +394,33 @@ class BasicValidatorTest
 		moduleOk.assertNoErrors		
 	}
 
+	@Test
+	def testCheckNoReductionInConsition()
+	{
+		val moduleKo = parseHelper.parse(testModule +
+			'''
+				ℝ[3] x;
+				ℕ in;
+				iterate n counter in while(∑{x∈[0;3[}(x[i]]));
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.timeIterator,
+			BasicValidator::NO_REDUCTION_IN_CONDITION,
+			BasicValidator::getNoReductionInConditionMsg())
+
+		val moduleOk = parseHelper.parse(testModule +
+			'''
+				ℝ[3] x;
+				ℕ in;
+				iterate n counter in while(x[0] > 0.0);
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors		
+	}
+
 	// ===== BaseType =====	
 
 	@Test

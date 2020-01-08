@@ -239,10 +239,12 @@ class BasicValidator extends AbstractNablaValidator
 	public static val UNUSED_TIME_ITERATOR = "TimeIterator::Unused"
 	public static val INIT_VALUE = "TimeIterator::InitValue"
 	public static val NEXT_VALUE = "TimeIterator::NextValue"
+	public static val NO_REDUCTION_IN_CONDITION = "TimeIterator::NoReductionInCondition"
 
 	static def getUnusedTimeIteratorMsg() { "Unused time iterator" }
 	static def getInitValueMsg(int actualValue) { "Wrong time iterator init value: Expected 0, but was " + actualValue }
 	static def getNextValueMsg(int actualValue) { "Wrong time iterator next value: Expected 1, but was " + actualValue }
+	static def getNoReductionInConditionMsg() { "Reduction in time iterator condition not yet implemented" }
 
 	@Check 
 	def checkUnusedTimeIterator(TimeIterator it)
@@ -269,6 +271,13 @@ class BasicValidator extends AbstractNablaValidator
 	{
 		if (value !== 1)
 			error(getNextValueMsg(value), NablaPackage.Literals.NEXT_TIME_ITERATOR_REF__VALUE, NEXT_VALUE)
+	}
+
+	@Check
+	def checkNoReductionInCondition(TimeIterator it)
+	{
+		if (cond !== null && (cond instanceof ReductionCall || cond.eAllContents.exists[x | x instanceof ReductionCall]))
+			error(getNoReductionInConditionMsg(), NablaPackage.Literals.TIME_ITERATOR__COND, NO_REDUCTION_IN_CONDITION)
 	}
 
 	// ===== BaseType =====

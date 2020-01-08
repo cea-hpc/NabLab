@@ -130,40 +130,6 @@ class TestUtils
 		emptyTestModule + defaultConnectivities + getMandatoryOptions(xQuads, yQuads) + compilationVariables
 	}
 
-//	static def getTestModuleWithCustomFunctions(CharSequence functions, boolean withConnectivities)
-//	{
-//		emptyTestModule + connectivities + functions + mandatoryOptions
-//	}
-//
-//	static def getTestModuleWithCustomConnectivities(CharSequence connectivities)
-//	{
-//		emptyTestModule + connectivities + mandatoryOptions
-//	}
-
-//	//Useful to prevent warnings
-//	static def getTestModuleWithMandatoryOptions()
-//	{
-//		emptyTestModule + mandatoryOptions
-//	}
-//
-	//Useful to prevent warnings
-//	static def getTestModuleWithCustomVars(CharSequence variables)
-//	{
-//		emptyTestModule + mandatoryOptions + variables
-//	}
-//
-//	//Useful to prevent warnings
-//	static def getTestModuleWithCoordVariableWithCustomFunctions(CharSequence functions)
-//	{
-//		emptyTestModule + nodesConnectivity + functions + mandatoryOptions
-//	}
-
-	//Useful to prevent warnings
-//	static def getTestModuleWithCoordVariableWithCustomConnectivities(CharSequence connectivities)
-//	{
-//		emptyTestModule + connectivities + mandatoryOptions
-//	}
-	
 	static def getTestGenModel()
 	{
 		'''

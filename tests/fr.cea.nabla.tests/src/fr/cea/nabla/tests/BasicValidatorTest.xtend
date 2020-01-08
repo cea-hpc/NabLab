@@ -33,6 +33,237 @@ class BasicValidatorTest
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
 
+	// ===== Unique Names ====
+
+	@Test
+	def void checkDuplicateArg()
+	{
+		val moduleKo = parseHelper.parse(getTestModule('', '''def f: ℕ × ℕ → ℕ, (a, a) → { return a; }'''))
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.arg,
+			BasicValidator::DUPLICATE_NAME,
+			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.ARG, "a"))
+
+		val moduleOk = parseHelper.parse(getTestModule('', '''def f: ℕ × ℕ → ℕ, (a, b) → { return a; }'''))
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void checkDuplicateVar()
+	{
+		val moduleKo = parseHelper.parse(testModule +
+		'''
+			ℝ a, a;
+		''')
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.^var,
+			BasicValidator::DUPLICATE_NAME,
+			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.VAR, "a"))
+
+		val moduleOk = parseHelper.parse(testModule +
+		'''
+			ℝ a;
+		''')
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void checkDuplicateArgOrVar()
+	{
+		val moduleKo = parseHelper.parse(testModule +
+		'''
+			ℝ a;
+			ℝ a;
+		''')
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVar,
+			BasicValidator::DUPLICATE_NAME,
+			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.ARG_OR_VAR, "a"))
+
+		val moduleOk = parseHelper.parse(testModule +
+		'''
+			ℝ a;
+		''')
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void checkDuplicateSpaceIterator()
+	{
+		val moduleKo = parseHelper.parse(getTestModule(nodesConnectivity, '') +
+		'''
+			ℝ X{nodes, nodes};
+			j1: ∀r∈nodes(), ∀r∈nodes(), ℝ d = X{r, r} * 2.0;
+		''')
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.spaceIterator,
+			BasicValidator::DUPLICATE_NAME,
+			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.SPACE_ITERATOR, "r"))
+
+		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, '') +
+		'''
+			ℝ X{nodes, nodes};
+			j1: ∀r1∈nodes(), ∀r2∈nodes(), ℝ d = X{r1, r2} * 2.0;
+		''')
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void checkDuplicateVarTypeSymbol()
+	{
+		val moduleKo = parseHelper.parse(getTestModule('', '''def j: a, a | ℝ[a, a] → ℝ;'''))
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.sizeTypeSymbol,
+			BasicValidator::DUPLICATE_NAME,
+			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.SIZE_TYPE_SYMBOL, "a"))
+
+		val moduleOk = parseHelper.parse(getTestModule('', '''def j: a | ℝ[a, a] → ℝ;'''))
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+
+		val moduleKo2 = parseHelper.parse(getTestModule('', '''
+			def j: a | ℝ[a, a] → ℝ, (x) → {
+				ℝ y;
+				∀i∈[0;a[, ∀i∈[0;a[, y = y * x[i, i];
+				return y;
+			}'''))
+		Assert.assertNotNull(moduleKo2)
+		moduleKo2.assertError(NablaPackage.eINSTANCE.sizeTypeSymbol,
+			BasicValidator::DUPLICATE_NAME,
+			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.SIZE_TYPE_SYMBOL, "i"))
+
+		val moduleOk2 = parseHelper.parse(getTestModule('', '''
+			def j: a | ℝ[a, a] → ℝ, (x) → {
+				ℝ y;
+				∀i∈[0;a[, ∀j∈[0;a[, y = y * x[i, j];
+				return y;
+			}'''))
+		Assert.assertNotNull(moduleOk2)
+		moduleOk2.assertNoErrors
+	}
+
+	@Test
+	def void checkDuplicateItemType()
+	{
+		val moduleKo = parseHelper.parse('''
+			module Test;
+			
+			items { node, node }
+			
+			set	nodes: → {node};
+			
+			const ℝ X_EDGE_LENGTH = 0.01;
+			const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			const ℕ X_EDGE_ELEMS = 100;
+			const ℕ Y_EDGE_ELEMS = 10;
+		''')
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.itemType,
+			BasicValidator::DUPLICATE_NAME,
+			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.ITEM_TYPE, "node"))
+
+		val moduleOk = parseHelper.parse('''
+			module Test;
+			
+			items { node }
+			
+			set	nodes: → {node};
+			
+			const ℝ X_EDGE_LENGTH = 0.01;
+			const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			const ℕ X_EDGE_ELEMS = 100;
+			const ℕ Y_EDGE_ELEMS = 10;
+		''')
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void checkDuplicateConnectivity()
+	{
+		val moduleKo = parseHelper.parse('''
+			module Test;
+			
+			items { node }
+			
+			set	nodes: → {node};
+			set	nodes: → {node};
+			
+			const ℝ X_EDGE_LENGTH = 0.01;
+			const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			const ℕ X_EDGE_ELEMS = 100;
+			const ℕ Y_EDGE_ELEMS = 10;
+		''')
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.connectivity,
+			BasicValidator::DUPLICATE_NAME,
+			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.CONNECTIVITY, "nodes"))
+
+		val moduleOk = parseHelper.parse('''
+			module Test;
+			
+			items { node }
+			
+			set	nodes: → {node};
+			
+			const ℝ X_EDGE_LENGTH = 0.01;
+			const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			const ℕ X_EDGE_ELEMS = 100;
+			const ℕ Y_EDGE_ELEMS = 10;
+		''')
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void checkJob()
+	{
+		val moduleKo = parseHelper.parse(testModule +
+		'''
+			ℝ a;
+			IncrA: a = a + 1;
+			IncrA: a = a + 1;
+		''')
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.job,
+			BasicValidator::DUPLICATE_NAME,
+			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.JOB, "IncrA"))
+
+		val moduleOk = parseHelper.parse(testModule +
+		'''
+			ℝ a;
+			IncrA: a = a + 1;
+		''')
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void checkTimeIterator()
+	{
+		val moduleKo = parseHelper.parse(testModule +
+		'''
+			ℕ in, ik;
+			iterate n counter in while(true), n counter ik while(true);
+		''')
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.timeIterator,
+			BasicValidator::DUPLICATE_NAME,
+			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.TIME_ITERATOR, "n"))
+
+		val moduleOk = parseHelper.parse(testModule +
+		'''
+			ℕ in, ik;
+			iterate n counter in while(true), k counter ik while(true);
+		''')
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
 	// ===== NablaModule =====
 
 	@Test
@@ -72,6 +303,95 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse('''module Test;''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
+	}
+
+	// ===== TimeIterator =====
+
+	@Test
+	def testCheckUnusedTimeIterator()
+	{
+		val moduleKo = parseHelper.parse(testModule +
+			'''
+			ℕ ni;
+			iterate n counter ni while(true);
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+
+		moduleKo.assertWarning(NablaPackage.eINSTANCE.timeIterator,
+			BasicValidator::UNUSED_TIME_ITERATOR,
+			BasicValidator::getUnusedTimeIteratorMsg())
+
+		val moduleOk = parseHelper.parse(testModule +
+			'''
+			ℝ u, v;
+			ℕ ni;
+			iterate n counter ni while(true);
+			ComputeU: u^{n+1} = u^{n} + 6.0;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors		
+	}
+
+	@Test
+	def testCheckInitValue()
+	{
+		val moduleKo = parseHelper.parse(testModule +
+			'''
+			ℝ u, v;
+			ℕ ni;
+			iterate n counter ni while(true);
+			ComputeUinit: u^{n=1} = 0.0;
+			ComputeU: u^{n+1} = u^{n} + 6.0;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.initTimeIteratorRef,
+			BasicValidator::INIT_VALUE,
+			BasicValidator::getInitValueMsg(1))
+
+		val moduleOk = parseHelper.parse(testModule +
+			'''
+			ℝ u, v;
+			ℕ ni;
+			iterate n counter ni while(true);
+			ComputeUinit: u^{n=0} = 0.0;
+			ComputeU: u^{n+1} = u^{n} + 6.0;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors		
+	}
+
+	@Test
+	def testCheckNextValue()
+	{
+		val moduleKo = parseHelper.parse(testModule +
+			'''
+			ℝ u, v;
+			ℕ ni;
+			iterate n counter ni while(true);
+			ComputeU: u^{n+2} = u^{n} + 6.0;
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.nextTimeIteratorRef,
+			BasicValidator::NEXT_VALUE,
+			BasicValidator::getNextValueMsg(2))
+
+		val moduleOk = parseHelper.parse(testModule +
+			'''
+			ℝ u, v;
+			ℕ ni;
+			iterate n counter ni while(true);
+			ComputeU: u^{n+1} = u^{n} + 6.0;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors		
 	}
 
 	// ===== BaseType =====	
@@ -206,6 +526,37 @@ class BasicValidatorTest
 			ComputeU: ∀ j∈cells(), ∀r∈nodesOfCell(j), u{j} = 1.;
 			ComputeV: ∀ j∈cells(), ∀r∈nodesOfCell(j), v{j,r} = 1.;
 			ComputeW: ∀ j∈nodes(), w{j} = 1.;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void testCheckTimeIteratorUsage() 
+	{
+		val moduleKo = parseHelper.parse(getTestModule('', '') +
+			'''
+			ℝ u, v;
+			ℕ ni;
+			iterate n counter ni while(true);
+			ComputeU: u^{n+1} = u^{n} + 6.0;
+			ComputeV: v = u + 4.0; // Wrong: must be u^{n}
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
+			BasicValidator::TIME_ITERATOR_USAGE,
+			BasicValidator::getTimeIteratorUsageMsg())
+
+		val moduleOk =  parseHelper.parse(getTestModule('', '') +
+			'''
+			ℝ u, v;
+			ℕ ni;
+			iterate n counter ni while(true);
+			ComputeU: u^{n+1} = u^{n} + 6.0;
+			ComputeV: v = u^{n} + 4.0; // Wrong: must be u^{n}
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

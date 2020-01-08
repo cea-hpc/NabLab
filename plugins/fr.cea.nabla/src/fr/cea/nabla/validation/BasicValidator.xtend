@@ -14,6 +14,7 @@ import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.nabla.Affectation
+import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
@@ -24,6 +25,7 @@ import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.InstructionBlock
+import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.Iterable
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
@@ -71,6 +73,18 @@ class BasicValidator extends AbstractNablaValidator
 	static def getDuplicateNameMsg(EClass objectClass, String objectName) { "Duplicate " + objectClass.name + ": " + objectName }
 
 	@Check
+	def void checkDuplicate(Arg it)
+	{
+		if (eContainer instanceof Function && (eContainer as Function).inArgs.size>0)
+		{
+			val args = (eContainer as Function).inArgs
+			val duplicate = args.findFirst[x | x.name == name && x != it]
+			if (duplicate !== null)
+				error(getDuplicateNameMsg(NablaPackage.Literals.ARG, duplicate.name), NablaPackage.Literals.ARG_OR_VAR__NAME, DUPLICATE_NAME);
+		}
+	}
+
+	@Check
 	def void checkDuplicate(Var it) 
 	{
 		if (eContainer instanceof VarGroupDeclaration)
@@ -78,7 +92,7 @@ class BasicValidator extends AbstractNablaValidator
 			val variables = (eContainer as VarGroupDeclaration).variables
 			val duplicate = variables.findFirst[x | x.name == name && x != it]
 			if (duplicate !== null)
-				error(getDuplicateNameMsg(NablaPackage.Literals.ARG_OR_VAR, duplicate.name), NablaPackage.Literals.ARG_OR_VAR__NAME);
+				error(getDuplicateNameMsg(NablaPackage.Literals.VAR, duplicate.name), NablaPackage.Literals.ARG_OR_VAR__NAME, DUPLICATE_NAME);
 		}
 	}
 
@@ -88,7 +102,7 @@ class BasicValidator extends AbstractNablaValidator
 		val scope = scopeProvider.getScope(it, NablaPackage.Literals.ARG_OR_VAR_REF__TARGET)
 		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
 		if (duplicated)
-			error(getDuplicateNameMsg(NablaPackage.Literals.ARG_OR_VAR, name), NablaPackage.Literals.ARG_OR_VAR__NAME);
+			error(getDuplicateNameMsg(NablaPackage.Literals.ARG_OR_VAR, name), NablaPackage.Literals.ARG_OR_VAR__NAME, DUPLICATE_NAME);
 	}
 
 	@Check
@@ -98,18 +112,31 @@ class BasicValidator extends AbstractNablaValidator
 		//println('checkDuplicate(' + it + ') : ' + scope.allElements.map[name.segments.join('.')].join(', '))
 		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
 		if (duplicated)
-			error(getDuplicateNameMsg(NablaPackage.Literals.SPACE_ITERATOR, name), NablaPackage.Literals.SPACE_ITERATOR__NAME);
+			error(getDuplicateNameMsg(NablaPackage.Literals.SPACE_ITERATOR, name), NablaPackage.Literals.SPACE_ITERATOR__NAME, DUPLICATE_NAME);
 	}
 
 	@Check
 	def void checkDuplicate(SizeTypeSymbol it)
 	{
-		val scope = scopeProvider.getScope(it, NablaPackage.Literals.SIZE_TYPE_SYMBOL_REF__TARGET)
-		//println('checkDuplicate(' + it + ') : ' + scope.allElements.map[name.lastSegment].join(', '))
-		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
-		if (duplicated)
-			error(getDuplicateNameMsg(NablaPackage.Literals.SIZE_TYPE_SYMBOL, name), NablaPackage.Literals.SIZE_TYPE_SYMBOL__NAME);
+		if (eContainer instanceof Function && (eContainer as Function).vars.size > 0)
+		{
+			val vars = (eContainer as Function).vars
+			val duplicate = vars.findFirst[x | x.name == name && x != it]
+			if (duplicate !== null)
+				error(getDuplicateNameMsg(NablaPackage.Literals.SIZE_TYPE_SYMBOL, duplicate.name), NablaPackage.Literals.SIZE_TYPE_SYMBOL__NAME, DUPLICATE_NAME);
+		}
+		else
+		{
+			val scope = scopeProvider.getScope(it, NablaPackage.Literals.SIZE_TYPE_SYMBOL_REF__TARGET)
+			//println('checkDuplicate(' + it + ') : ' + scope.allElements.map[name.lastSegment].join(', '))
+			val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
+			if (duplicated)
+				error(getDuplicateNameMsg(NablaPackage.Literals.SIZE_TYPE_SYMBOL, name), NablaPackage.Literals.SIZE_TYPE_SYMBOL__NAME, DUPLICATE_NAME);
+		}
 	}
+
+	@Check
+	def void checkDuplicate(ItemType it) { checkDuplicates(NablaPackage.Literals.ITEM_TYPE__NAME) }
 
 	@Check
 	def void checkDuplicate(Connectivity it) { checkDuplicates(NablaPackage.Literals.CONNECTIVITY__NAME) }
@@ -132,7 +159,7 @@ class BasicValidator extends AbstractNablaValidator
 			{
 				val tx_name = SimpleAttributeResolver.NAME_RESOLVER.apply(tx)
 				if (tx_name.equals(name) && tx !== t)
-					error(getDuplicateNameMsg(t.eClass, name), f);
+					error(getDuplicateNameMsg(t.eClass, name), f, DUPLICATE_NAME);
 			}
 		}
 	}
@@ -244,10 +271,10 @@ class BasicValidator extends AbstractNablaValidator
 			error(getNextValueMsg(value), NablaPackage.Literals.NEXT_TIME_ITERATOR_REF__VALUE, NEXT_VALUE)
 	}
 
-	// ===== ArgOrVarType =====
+	// ===== BaseType =====
 
-	public static val ARRAY_SIZES = "ArgOrVarType::ArraySizes"
-	public static val ARRAY_DIMENSION = "ArgOrVarType::ArrayDimension"
+	public static val ARRAY_SIZES = "BaseType::ArraySizes"
+	public static val ARRAY_DIMENSION = "BaseType::ArrayDimension"
 
 	static def getArraySizesMsg() { "Must be greater or equal than 2" }
 	static def getArrayDimensionMsg() { "Max 2 dimensions for arrays" }

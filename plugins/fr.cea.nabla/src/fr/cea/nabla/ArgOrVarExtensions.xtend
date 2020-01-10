@@ -18,6 +18,7 @@ import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
+import fr.cea.nabla.nabla.TimeIterator
 
 class ArgOrVarExtensions 
 {
@@ -43,7 +44,7 @@ class ArgOrVarExtensions
 		f.inTypes.get(i)
 	}
 
-	def dispatch boolean isConst(Arg it)
+	def dispatch boolean isConst(ArgOrVar it)
 	{
 		true
 	}
@@ -73,5 +74,6 @@ class ArgOrVarExtensions
 		}
 	}
 
-	def int getDimension(ArgOrVar it) { type.sizes.size }
+	def dispatch int getDimension(TimeIterator it) { 0 }
+	def dispatch int getDimension(ArgOrVar it) { type.sizes.size }
 }

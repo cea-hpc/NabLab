@@ -869,7 +869,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getTimeLoop_Counter() {
+	public EReference getTimeLoop_IterationCounter() {
 		return (EReference)timeLoopEClass.getEStructuralFeatures().get(6);
 	}
 
@@ -1339,7 +1339,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getInSituJob_IterationVariable() {
+	public EReference getInSituJob_NbCalls() {
 		return (EReference)inSituJobEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -2593,7 +2593,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(timeLoopEClass, TIME_LOOP__VARIABLES);
 		createEReference(timeLoopEClass, TIME_LOOP__WHILE_CONDITION);
 		createEReference(timeLoopEClass, TIME_LOOP__ASSOCIATED_JOB);
-		createEReference(timeLoopEClass, TIME_LOOP__COUNTER);
+		createEReference(timeLoopEClass, TIME_LOOP__ITERATION_COUNTER);
 
 		argOrVarEClass = createEClass(ARG_OR_VAR);
 		createEAttribute(argOrVarEClass, ARG_OR_VAR__NAME);
@@ -2652,7 +2652,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(inSituJobEClass, IN_SITU_JOB__DUMPED_VARIABLES);
 		createEAttribute(inSituJobEClass, IN_SITU_JOB__PERIOD_VALUE);
 		createEReference(inSituJobEClass, IN_SITU_JOB__PERIOD_VARIABLE);
-		createEReference(inSituJobEClass, IN_SITU_JOB__ITERATION_VARIABLE);
+		createEReference(inSituJobEClass, IN_SITU_JOB__NB_CALLS);
 		createEReference(inSituJobEClass, IN_SITU_JOB__LAST_DUMP_VARIABLE);
 
 		timeLoopJobEClass = createEClass(TIME_LOOP_JOB);
@@ -2943,7 +2943,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getTimeLoop_Variables(), this.getTimeLoopVariable(), null, "variables", null, 0, -1, TimeLoop.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTimeLoop_WhileCondition(), this.getExpression(), null, "whileCondition", null, 1, 1, TimeLoop.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTimeLoop_AssociatedJob(), this.getTimeLoopJob(), null, "associatedJob", null, 1, 1, TimeLoop.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getTimeLoop_Counter(), this.getSimpleVariable(), null, "counter", null, 1, 1, TimeLoop.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTimeLoop_IterationCounter(), this.getSimpleVariable(), null, "iterationCounter", null, 1, 1, TimeLoop.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(argOrVarEClass, ArgOrVar.class, "ArgOrVar", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getArgOrVar_Name(), ecorePackage.getEString(), "name", null, 1, 1, ArgOrVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3002,7 +3002,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getInSituJob_DumpedVariables(), this.getVariable(), null, "dumpedVariables", null, 0, -1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getInSituJob_PeriodValue(), ecorePackage.getEDouble(), "periodValue", "-1.0", 1, 1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getInSituJob_PeriodVariable(), this.getSimpleVariable(), null, "periodVariable", null, 1, 1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getInSituJob_IterationVariable(), this.getSimpleVariable(), null, "iterationVariable", null, 1, 1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getInSituJob_NbCalls(), this.getSimpleVariable(), null, "nbCalls", null, 1, 1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getInSituJob_LastDumpVariable(), this.getSimpleVariable(), null, "lastDumpVariable", null, 1, 1, InSituJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(timeLoopJobEClass, TimeLoopJob.class, "TimeLoopJob", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

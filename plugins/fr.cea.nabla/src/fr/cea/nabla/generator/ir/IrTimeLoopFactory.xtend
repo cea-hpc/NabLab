@@ -30,11 +30,12 @@ class IrTimeLoopFactory
 	@Inject extension IrJobFactory
 	@Inject extension IrExpressionFactory
 	@Inject extension IrArgOrVarFactory
+	@Inject extension IrAnnotationHelper
 
 	def create IrFactory::eINSTANCE.createTimeLoop toIrTimeLoop(TimeIterator ti)
 	{
+		annotations += ti.toIrAnnotation
 		name = ti.name
-		counter = ti.counter.toIrSimpleVariable(ti.counter.name)
 		whileCondition = ti.cond.toIrExpression
 	}
 

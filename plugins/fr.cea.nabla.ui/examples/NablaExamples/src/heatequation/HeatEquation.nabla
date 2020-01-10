@@ -40,8 +40,7 @@ const ℝ α = 1.0;
 ℝ[2] X{nodes}, center{cells};
 ℝ u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
 
-ℕ iterationN;
-iterate n counter iterationN while (t^{n} < option_stoptime && iterationN < option_max_iterations);
+iterate n while (t^{n+1} < option_stoptime && n+1 < option_max_iterations);
 
 IniF: ∀j∈cells(), f{j} = 0.0;
 IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});  // only on parallelograms
@@ -50,4 +49,4 @@ ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(det(X{r}, X{r+1})
 ComputeSurface: ∀f∈faces(), surface{f} = 0.5 * ∑{r∈nodesOfFace(f)}(norm(X{r}-X{r+1}));
 ComputeOutgoingFlux: ∀j1∈cells(), outgoingFlux{j1} = δt/V{j1} * ∑{j2∈neighbourCells(j1), cf=commonFace(j1,j2)}( (u^{n}{j2}-u^{n}{j1}) / norm(center{j2}-center{j1}) * surface{cf});
 ComputeUn: ∀j∈cells(), u^{n+1}{j} = f{j} * δt + u^{n}{j} + outgoingFlux{j};
-ComputeTn: t^{n+1} = t^{n}+δt;
+ComputeTn: t^{n+1} = t^{n} + δt;

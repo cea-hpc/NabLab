@@ -39,7 +39,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getWhileCondition <em>While Condition</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getAssociatedJob <em>Associated Job</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getCounter <em>Counter</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getIterationCounter <em>Iteration Counter</em>}</li>
  * </ul>
  *
  * @generated
@@ -106,14 +106,14 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 	protected TimeLoopJob associatedJob;
 
 	/**
-	 * The cached value of the '{@link #getCounter() <em>Counter</em>}' reference.
+	 * The cached value of the '{@link #getIterationCounter() <em>Iteration Counter</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getCounter()
+	 * @see #getIterationCounter()
 	 * @generated
 	 * @ordered
 	 */
-	protected SimpleVariable counter;
+	protected SimpleVariable iterationCounter;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -405,16 +405,16 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 	 * @generated
 	 */
 	@Override
-	public SimpleVariable getCounter() {
-		if (counter != null && counter.eIsProxy()) {
-			InternalEObject oldCounter = (InternalEObject)counter;
-			counter = (SimpleVariable)eResolveProxy(oldCounter);
-			if (counter != oldCounter) {
+	public SimpleVariable getIterationCounter() {
+		if (iterationCounter != null && iterationCounter.eIsProxy()) {
+			InternalEObject oldIterationCounter = (InternalEObject)iterationCounter;
+			iterationCounter = (SimpleVariable)eResolveProxy(oldIterationCounter);
+			if (iterationCounter != oldIterationCounter) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.TIME_LOOP__COUNTER, oldCounter, counter));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.TIME_LOOP__ITERATION_COUNTER, oldIterationCounter, iterationCounter));
 			}
 		}
-		return counter;
+		return iterationCounter;
 	}
 
 	/**
@@ -422,8 +422,8 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SimpleVariable basicGetCounter() {
-		return counter;
+	public SimpleVariable basicGetIterationCounter() {
+		return iterationCounter;
 	}
 
 	/**
@@ -432,11 +432,11 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 	 * @generated
 	 */
 	@Override
-	public void setCounter(SimpleVariable newCounter) {
-		SimpleVariable oldCounter = counter;
-		counter = newCounter;
+	public void setIterationCounter(SimpleVariable newIterationCounter) {
+		SimpleVariable oldIterationCounter = iterationCounter;
+		iterationCounter = newIterationCounter;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP__COUNTER, oldCounter, counter));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP__ITERATION_COUNTER, oldIterationCounter, iterationCounter));
 	}
 
 	/**
@@ -517,9 +517,9 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 			case IrPackage.TIME_LOOP__ASSOCIATED_JOB:
 				if (resolve) return getAssociatedJob();
 				return basicGetAssociatedJob();
-			case IrPackage.TIME_LOOP__COUNTER:
-				if (resolve) return getCounter();
-				return basicGetCounter();
+			case IrPackage.TIME_LOOP__ITERATION_COUNTER:
+				if (resolve) return getIterationCounter();
+				return basicGetIterationCounter();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -552,8 +552,8 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 			case IrPackage.TIME_LOOP__ASSOCIATED_JOB:
 				setAssociatedJob((TimeLoopJob)newValue);
 				return;
-			case IrPackage.TIME_LOOP__COUNTER:
-				setCounter((SimpleVariable)newValue);
+			case IrPackage.TIME_LOOP__ITERATION_COUNTER:
+				setIterationCounter((SimpleVariable)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -585,8 +585,8 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 			case IrPackage.TIME_LOOP__ASSOCIATED_JOB:
 				setAssociatedJob((TimeLoopJob)null);
 				return;
-			case IrPackage.TIME_LOOP__COUNTER:
-				setCounter((SimpleVariable)null);
+			case IrPackage.TIME_LOOP__ITERATION_COUNTER:
+				setIterationCounter((SimpleVariable)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -612,8 +612,8 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 				return whileCondition != null;
 			case IrPackage.TIME_LOOP__ASSOCIATED_JOB:
 				return associatedJob != null;
-			case IrPackage.TIME_LOOP__COUNTER:
-				return counter != null;
+			case IrPackage.TIME_LOOP__ITERATION_COUNTER:
+				return iterationCounter != null;
 		}
 		return super.eIsSet(featureID);
 	}

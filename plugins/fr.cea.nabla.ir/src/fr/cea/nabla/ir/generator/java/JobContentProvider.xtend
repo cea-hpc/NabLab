@@ -44,6 +44,7 @@ class JobContentProvider
 
 	private static def dispatch CharSequence getInnerContent(InSituJob it)
 	'''
+		«nbCalls.name»++;
 		if («periodVariable.name» >= «lastDumpVariable.name»)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
@@ -51,30 +52,37 @@ class JobContentProvider
 			«FOR v : dumpedVariables.filter(ConnectivityVariable)»
 			«v.type.connectivities.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 			«ENDFOR»
-			writer.writeFile(«iterationVariable.name», «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			writer.writeFile(«nbCalls.name», «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
 			«lastDumpVariable.name» = «periodVariable.name»;
 		}
 	'''
 
 	private static def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
-		«val itVar = timeLoop.counter.name»
+		«val itVar = timeLoop.iterationCounter.name»
 		«itVar» = 0;
+		boolean continueLoop = true;
 		do
 		{
 			«itVar»++;
-			System.out.println("«timeLoop.indentation»[«itVar» : " + «itVar» + "] t : " + «irModule.timeVariable.name»);
+			System.out.println("«timeLoop.indentation»[" + «itVar» + "] t : " + «irModule.timeVariable.name»);
 			«FOR j : jobs.sortJobs»
 				«j.codeName»(); // @«j.at»
 			«ENDFOR»
 
-			// Switch variables to prepare next iteration
-			«FOR copy : copies»
-				«copy.destination.javaType» tmp«copy.destination.name.toFirstUpper» = «copy.destination.name»;
-				«copy.destination.name» = «copy.source.name»;
-				«copy.source.name» = tmp«copy.destination.name.toFirstUpper»;
-			«ENDFOR»
-		} while («timeLoop.whileCondition.content»);
+			// Evaluate loop condition with variables at time n
+			continueLoop = «timeLoop.whileCondition.content»;
+
+			if (continueLoop)
+			{
+				// Switch variables to prepare next iteration
+				«FOR copy : copies»
+					«copy.destination.javaType» tmp«copy.destination.name.toFirstUpper» = «copy.destination.name»;
+					«copy.destination.name» = «copy.source.name»;
+					«copy.source.name» = tmp«copy.destination.name.toFirstUpper»;
+				«ENDFOR»
+			} 
+		} while (continueLoop);
 	'''
 
 	private static def dispatch CharSequence getInnerContent(TimeLoopCopyJob it)

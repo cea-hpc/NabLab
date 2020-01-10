@@ -10,9 +10,8 @@ workflow Glace2dGenerationChain transforms Glace2d
 
 	TagPersistentVariables tagPersistentVariables follows nabla2ir 
 	{
-		iterationVariable = iterationN;
 		dumpedVariables = ρ as "Density";
-		period = 1.0 for iterationN;
+		period = 1.0 for n;
 	}
 	
 	ReplaceUtf replaceUtf follows tagPersistentVariables

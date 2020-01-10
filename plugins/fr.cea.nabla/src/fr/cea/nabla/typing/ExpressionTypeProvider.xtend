@@ -39,6 +39,7 @@ import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VectorConstant
 import java.util.List
+import fr.cea.nabla.nabla.TimeIterator
 
 class ExpressionTypeProvider
 {
@@ -130,6 +131,12 @@ class ExpressionTypeProvider
 			val t = v.type.typeFor
 			getTypeForVar(t, nbIndices)
 		}
+		else null
+	}
+
+	private def dispatch NablaType getTypeForVar(TimeIterator v, List<SpaceIteratorRef> iterators, int nbIndices)
+	{
+		if (iterators.empty && nbIndices==0) v.typeFor
 		else null
 	}
 

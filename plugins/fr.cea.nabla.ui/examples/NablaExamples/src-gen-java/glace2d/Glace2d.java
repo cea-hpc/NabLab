@@ -36,8 +36,8 @@ public final class Glace2d
 	private final int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
 
 	// Global Variables
+	private int n, nbCalls, lastDump;
 	private double t_n, t_nplus1, deltat_n, deltat_nplus1;
-	private int iterationN, lastDump;
 
 	// Connectivity Variables
 	private double[][] X_n, X_nplus1, X_n0, b, bt, ur, uj_n, uj_nplus1, center, l;
@@ -62,7 +62,8 @@ public final class Glace2d
 		t_nplus1 = 0.0;
 		deltat_n = options.option_deltat_ini;
 		deltat_nplus1 = options.option_deltat_ini;
-		lastDump = iterationN;
+		nbCalls = 0;
+		lastDump = n;
 
 		// Allocate arrays
 		X_n = new double[nbNodes][2];
@@ -380,33 +381,35 @@ public final class Glace2d
 
 	/**
 	 * Job dumpVariables called @4.0 in executeTimeLoopN method.
-	 * In variables: rho, iterationN
+	 * In variables: rho, n
 	 * Out variables: 
 	 */
 	private void dumpVariables()
 	{
-		if (iterationN >= lastDump)
+		nbCalls++;
+		if (n >= lastDump)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
 			cellVariables.put("Density", rho);
-			writer.writeFile(iterationN, t_n, X_n, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
-			lastDump = iterationN;
+			writer.writeFile(nbCalls, t_n, X_n, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			lastDump = n;
 		}
 	}
 
 	/**
 	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: X_n, t_n, X_EDGE_LENGTH, gamma, Y_EDGE_ELEMS, option_deltat_cfl, e, ur, Y_EDGE_LENGTH, deltatj, deltat_nplus1, Ajr, V, c, bt, F, p, E_n, rho, iterationN, m, Mt, X_EDGE_ELEMS, l, uj_n, b, C, Ar, deltat_n
-	 * Out variables: bt, F, t_nplus1, E_nplus1, p, rho, Mt, uj_nplus1, l, e, X_nplus1, ur, b, deltatj, deltat_nplus1, C, Ajr, V, Ar, c
+	 * In variables: t_n, c, X_EDGE_ELEMS, bt, gamma, deltat_n, ur, Ar, l, m, Y_EDGE_ELEMS, n, option_deltat_cfl, E_n, Mt, deltatj, X_n, deltat_nplus1, e, Ajr, Y_EDGE_LENGTH, uj_n, V, F, rho, p, b, X_EDGE_LENGTH, C
+	 * Out variables: Mt, X_nplus1, deltatj, deltat_nplus1, e, c, bt, Ajr, E_nplus1, ur, V, uj_nplus1, Ar, F, l, t_nplus1, rho, p, b, C
 	 */
 	private void executeTimeLoopN()
 	{
-		iterationN = 0;
+		n = 0;
+		boolean continueLoop = true;
 		do
 		{
-			iterationN++;
-			System.out.println("[iterationN : " + iterationN + "] t : " + t_n);
+			n++;
+			System.out.println("[" + n + "] t : " + t_n);
 			computeCjr(); // @1.0
 			computeInternalEnergy(); // @1.0
 			computeLjr(); // @2.0
@@ -430,23 +433,29 @@ public final class Glace2d
 			computeEn(); // @11.0
 			computeUn(); // @11.0
 		
-			// Switch variables to prepare next iteration
-			double tmpT_n = t_n;
-			t_n = t_nplus1;
-			t_nplus1 = tmpT_n;
-			double tmpDeltat_n = deltat_n;
-			deltat_n = deltat_nplus1;
-			deltat_nplus1 = tmpDeltat_n;
-			double[][] tmpX_n = X_n;
-			X_n = X_nplus1;
-			X_nplus1 = tmpX_n;
-			double[] tmpE_n = E_n;
-			E_n = E_nplus1;
-			E_nplus1 = tmpE_n;
-			double[][] tmpUj_n = uj_n;
-			uj_n = uj_nplus1;
-			uj_nplus1 = tmpUj_n;
-		} while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations));
+			// Evaluate loop condition with variables at time n
+			continueLoop = (t_nplus1 < options.option_stoptime && n + 1 < options.option_max_iterations);
+		
+			if (continueLoop)
+			{
+				// Switch variables to prepare next iteration
+				double tmpT_n = t_n;
+				t_n = t_nplus1;
+				t_nplus1 = tmpT_n;
+				double tmpDeltat_n = deltat_n;
+				deltat_n = deltat_nplus1;
+				deltat_nplus1 = tmpDeltat_n;
+				double[][] tmpX_n = X_n;
+				X_n = X_nplus1;
+				X_nplus1 = tmpX_n;
+				double[] tmpE_n = E_n;
+				E_n = E_nplus1;
+				E_nplus1 = tmpE_n;
+				double[][] tmpUj_n = uj_n;
+				uj_n = uj_nplus1;
+				uj_nplus1 = tmpUj_n;
+			} 
+		} while (continueLoop);
 	}
 
 	/**

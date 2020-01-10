@@ -30,6 +30,7 @@ import static fr.cea.nabla.ir.Utils.*
 class Nabla2Ir
 {
 	@Inject extension Nabla2IrUtils
+	@Inject extension IrArgOrVarFactory
 	@Inject extension IrTimeLoopFactory
 	@Inject extension IrJobFactory
 	@Inject extension IrFunctionFactory
@@ -57,11 +58,18 @@ class Nabla2Ir
 		if (nablaModule.iteration !== null)
 		{
 			val timeIterators = nablaModule.iteration.iterators
-			mainTimeLoop = timeIterators.head.toIrTimeLoop
+			val firstTimeIterator = timeIterators.head
+			val mainIC = firstTimeIterator.toIrIterationCounter
+			variables += mainIC
+			mainTimeLoop = firstTimeIterator.toIrTimeLoop
+			mainTimeLoop.iterationCounter = mainIC
 			var TimeLoop outerTL = mainTimeLoop
 			for (ti : timeIterators.tail)
 			{
+				val ic = ti.toIrIterationCounter
+				variables += ic
 				val tl = ti.toIrTimeLoop
+				tl.iterationCounter = ic
 				outerTL.innerTimeLoop = tl
 				outerTL = tl
 			}

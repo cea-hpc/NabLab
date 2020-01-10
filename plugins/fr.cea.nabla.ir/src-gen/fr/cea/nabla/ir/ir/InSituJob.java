@@ -16,7 +16,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getDumpedVariables <em>Dumped Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getPeriodValue <em>Period Value</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getPeriodVariable <em>Period Variable</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getIterationVariable <em>Iteration Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getNbCalls <em>Nb Calls</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.InSituJob#getLastDumpVariable <em>Last Dump Variable</em>}</li>
  * </ul>
  *
@@ -83,26 +83,26 @@ public interface InSituJob extends Job {
 	void setPeriodVariable(SimpleVariable value);
 
 	/**
-	 * Returns the value of the '<em><b>Iteration Variable</b></em>' reference.
+	 * Returns the value of the '<em><b>Nb Calls</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Iteration Variable</em>' reference.
-	 * @see #setIterationVariable(SimpleVariable)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getInSituJob_IterationVariable()
+	 * @return the value of the '<em>Nb Calls</em>' reference.
+	 * @see #setNbCalls(SimpleVariable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getInSituJob_NbCalls()
 	 * @model required="true"
 	 * @generated
 	 */
-	SimpleVariable getIterationVariable();
+	SimpleVariable getNbCalls();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.InSituJob#getIterationVariable <em>Iteration Variable</em>}' reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.InSituJob#getNbCalls <em>Nb Calls</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Iteration Variable</em>' reference.
-	 * @see #getIterationVariable()
+	 * @param value the new value of the '<em>Nb Calls</em>' reference.
+	 * @see #getNbCalls()
 	 * @generated
 	 */
-	void setIterationVariable(SimpleVariable value);
+	void setNbCalls(SimpleVariable value);
 
 	/**
 	 * Returns the value of the '<em><b>Last Dump Variable</b></em>' reference.

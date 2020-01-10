@@ -18,7 +18,6 @@ public final class ExplicitHeatEquation
 		public final double[] vectOne = {1.0, 1.0};
 		public final int X_EDGE_ELEMS = 40;
 		public final int Y_EDGE_ELEMS = 40;
-		public final int Z_EDGE_ELEMS = 1;
 		public final double X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
 		public final double Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 		public final double option_stoptime = 1.0;
@@ -33,8 +32,8 @@ public final class ExplicitHeatEquation
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
 	// Global Variables
+	private int n, nbCalls, lastDump;
 	private double t_n, t_nplus1, deltat;
-	private int iterationN, lastDump;
 
 	// Connectivity Variables
 	private double[][] X, Xc, alpha;
@@ -56,7 +55,8 @@ public final class ExplicitHeatEquation
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat = 0.001;
-		lastDump = iterationN;
+		nbCalls = 0;
+		lastDump = n;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
@@ -79,14 +79,14 @@ public final class ExplicitHeatEquation
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module ExplicitHeatEquation");
-		initXc(); // @1.0
-		initD(); // @1.0
-		computeV(); // @1.0
 		computeFaceLength(); // @1.0
-		initXcAndYc(); // @2.0
-		initU(); // @2.0
-		computeDeltaTn(); // @2.0
+		computeV(); // @1.0
+		initD(); // @1.0
+		initXc(); // @1.0
 		computeFaceConductivity(); // @2.0
+		initU(); // @2.0
+		initXcAndYc(); // @2.0
+		computeDeltaTn(); // @2.0
 		computeAlphaCoeff(); // @3.0
 		executeTimeLoopN(); // @4.0
 		System.out.println("Fin de l'exécution du module ExplicitHeatEquation");
@@ -99,69 +99,6 @@ public final class ExplicitHeatEquation
 		NumericMesh2D nm = new NumericMesh2D(gm);
 		ExplicitHeatEquation i = new ExplicitHeatEquation(o, nm);
 		i.simulate();
-	}
-
-	/**
-	 * Job InitXc called @1.0 in simulate method.
-	 * In variables: X
-	 * Out variables: Xc
-	 */
-	private void initXc()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
-		{
-			int cId = cCells;
-			double[] reduction0 = {0.0, 0.0};
-			{
-				int[] nodesOfCellC = mesh.getNodesOfCell(cId);
-				for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.length; pNodesOfCellC++)
-				{
-					int pId = nodesOfCellC[pNodesOfCellC];
-					int pNodes = pId;
-					reduction0 = ArrayOperations.plus(reduction0, (X[pNodes]));
-				}
-			}
-			Xc[cCells] = ArrayOperations.multiply(0.25, reduction0);
-		});
-	}
-
-	/**
-	 * Job InitD called @1.0 in simulate method.
-	 * In variables: 
-	 * Out variables: D
-	 */
-	private void initD()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
-		{
-			D[cCells] = 1.0;
-		});
-	}
-
-	/**
-	 * Job ComputeV called @1.0 in simulate method.
-	 * In variables: X
-	 * Out variables: V
-	 */
-	private void computeV()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			int jId = jCells;
-			double reduction2 = 0.0;
-			{
-				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				for (int pNodesOfCellJ=0; pNodesOfCellJ<nodesOfCellJ.length; pNodesOfCellJ++)
-				{
-					int pId = nodesOfCellJ[pNodesOfCellJ];
-					int pPlus1Id = nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
-					int pNodes = pId;
-					int pPlus1Nodes = pPlus1Id;
-					reduction2 = reduction2 + (MathFunctions.det(X[pNodes], X[pPlus1Nodes]));
-				}
-			}
-			V[jCells] = 0.5 * reduction2;
-		});
 	}
 
 	/**
@@ -191,6 +128,79 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
+	 * Job ComputeTn called @1.0 in executeTimeLoopN method.
+	 * In variables: t_n, deltat
+	 * Out variables: t_nplus1
+	 */
+	private void computeTn()
+	{
+		t_nplus1 = t_n + deltat;
+	}
+
+	/**
+	 * Job ComputeV called @1.0 in simulate method.
+	 * In variables: X
+	 * Out variables: V
+	 */
+	private void computeV()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		{
+			int jId = jCells;
+			double reduction2 = 0.0;
+			{
+				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
+				for (int pNodesOfCellJ=0; pNodesOfCellJ<nodesOfCellJ.length; pNodesOfCellJ++)
+				{
+					int pId = nodesOfCellJ[pNodesOfCellJ];
+					int pPlus1Id = nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
+					int pNodes = pId;
+					int pPlus1Nodes = pPlus1Id;
+					reduction2 = reduction2 + (MathFunctions.det(X[pNodes], X[pPlus1Nodes]));
+				}
+			}
+			V[jCells] = 0.5 * reduction2;
+		});
+	}
+
+	/**
+	 * Job InitD called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: D
+	 */
+	private void initD()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			D[cCells] = 1.0;
+		});
+	}
+
+	/**
+	 * Job InitXc called @1.0 in simulate method.
+	 * In variables: X
+	 * Out variables: Xc
+	 */
+	private void initXc()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			int cId = cCells;
+			double[] reduction0 = {0.0, 0.0};
+			{
+				int[] nodesOfCellC = mesh.getNodesOfCell(cId);
+				for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.length; pNodesOfCellC++)
+				{
+					int pId = nodesOfCellC[pNodesOfCellC];
+					int pNodes = pId;
+					reduction0 = ArrayOperations.plus(reduction0, (X[pNodes]));
+				}
+			}
+			Xc[cCells] = ArrayOperations.multiply(0.25, reduction0);
+		});
+	}
+
+	/**
 	 * Job UpdateU called @1.0 in executeTimeLoopN method.
 	 * In variables: alpha, u_n
 	 * Out variables: u_nplus1
@@ -215,75 +225,21 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
-	 * Job ComputeTn called @1.0 in executeTimeLoopN method.
-	 * In variables: t_n, deltat
-	 * Out variables: t_nplus1
-	 */
-	private void computeTn()
-	{
-		t_nplus1 = t_n + deltat;
-	}
-
-	/**
 	 * Job dumpVariables called @1.0 in executeTimeLoopN method.
-	 * In variables: u_n, iterationN
+	 * In variables: u_n, n
 	 * Out variables: 
 	 */
 	private void dumpVariables()
 	{
-		if (iterationN >= lastDump)
+		nbCalls++;
+		if (n >= lastDump)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
 			cellVariables.put("Temperature", u_n);
-			writer.writeFile(iterationN, t_n, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
-			lastDump = iterationN;
+			writer.writeFile(nbCalls, t_n, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			lastDump = n;
 		}
-	}
-
-	/**
-	 * Job InitXcAndYc called @2.0 in simulate method.
-	 * In variables: Xc
-	 * Out variables: xc, yc
-	 */
-	private void initXcAndYc()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
-		{
-			xc[cCells] = Xc[cCells][0];
-			yc[cCells] = Xc[cCells][1];
-		});
-	}
-
-	/**
-	 * Job InitU called @2.0 in simulate method.
-	 * In variables: Xc, vectOne, u0
-	 * Out variables: u_n
-	 */
-	private void initU()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
-		{
-			if (MathFunctions.norm(ArrayOperations.minus(Xc[cCells], options.vectOne)) < 0.5) 
-				u_n[cCells] = options.u0;
-			else 
-				u_n[cCells] = 0.0;
-		});
-	}
-
-	/**
-	 * Job computeDeltaTn called @2.0 in simulate method.
-	 * In variables: X_EDGE_LENGTH, Y_EDGE_LENGTH, D
-	 * Out variables: deltat
-	 */
-	private void computeDeltaTn()
-	{
-		double reduction1 = IntStream.range(0, nbCells).boxed().parallel().reduce(
-			Double.MAX_VALUE, 
-			(r, cCells) -> MathFunctions.min(r, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]),
-			(r1, r2) -> MathFunctions.min(r1, r2)
-		);
-		deltat = reduction1 * 0.24;
 	}
 
 	/**
@@ -321,6 +277,51 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
+	 * Job InitU called @2.0 in simulate method.
+	 * In variables: Xc, vectOne, u0
+	 * Out variables: u_n
+	 */
+	private void initU()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			if (MathFunctions.norm(ArrayOperations.minus(Xc[cCells], options.vectOne)) < 0.5) 
+				u_n[cCells] = options.u0;
+			else 
+				u_n[cCells] = 0.0;
+		});
+	}
+
+	/**
+	 * Job InitXcAndYc called @2.0 in simulate method.
+	 * In variables: Xc
+	 * Out variables: xc, yc
+	 */
+	private void initXcAndYc()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			xc[cCells] = Xc[cCells][0];
+			yc[cCells] = Xc[cCells][1];
+		});
+	}
+
+	/**
+	 * Job computeDeltaTn called @2.0 in simulate method.
+	 * In variables: X_EDGE_LENGTH, Y_EDGE_LENGTH, D
+	 * Out variables: deltat
+	 */
+	private void computeDeltaTn()
+	{
+		double reduction1 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+			Double.MAX_VALUE, 
+			(r, cCells) -> MathFunctions.min(r, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]),
+			(r1, r2) -> MathFunctions.min(r1, r2)
+		);
+		deltat = reduction1 * 0.24;
+	}
+
+	/**
 	 * Job computeAlphaCoeff called @3.0 in simulate method.
 	 * In variables: deltat, V, faceLength, faceConductivity, Xc
 	 * Out variables: alpha
@@ -351,27 +352,34 @@ public final class ExplicitHeatEquation
 
 	/**
 	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: u_n, iterationN, t_n, alpha, deltat
+	 * In variables: n, t_n, deltat, alpha, u_n
 	 * Out variables: u_nplus1, t_nplus1
 	 */
 	private void executeTimeLoopN()
 	{
-		iterationN = 0;
+		n = 0;
+		boolean continueLoop = true;
 		do
 		{
-			iterationN++;
-			System.out.println("[iterationN : " + iterationN + "] t : " + t_n);
-			dumpVariables(); // @1.0
-			updateU(); // @1.0
+			n++;
+			System.out.println("[" + n + "] t : " + t_n);
 			computeTn(); // @1.0
+			updateU(); // @1.0
+			dumpVariables(); // @1.0
 		
-			// Switch variables to prepare next iteration
-			double tmpT_n = t_n;
-			t_n = t_nplus1;
-			t_nplus1 = tmpT_n;
-			double[] tmpU_n = u_n;
-			u_n = u_nplus1;
-			u_nplus1 = tmpU_n;
-		} while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations));
+			// Evaluate loop condition with variables at time n
+			continueLoop = (t_nplus1 < options.option_stoptime && n + 1 < options.option_max_iterations);
+		
+			if (continueLoop)
+			{
+				// Switch variables to prepare next iteration
+				double tmpT_n = t_n;
+				t_n = t_nplus1;
+				t_nplus1 = tmpT_n;
+				double[] tmpU_n = u_n;
+				u_n = u_nplus1;
+				u_nplus1 = tmpU_n;
+			} 
+		} while (continueLoop);
 	}
 };

@@ -29,7 +29,7 @@ class IrTransformationStepProvider
 	{
 		val outVars = new HashMap<String, String>
 		dumpedVars.forEach[x | outVars.put(x.varRef.name, x.varName)]
-		return new TagPersistentVariables(iterationVar.name, outVars, periodValue, periodVar.name)
+		return new TagPersistentVariables(outVars, periodValue, periodVar.name)
 	}
 
 	static def dispatch get(ReplaceUtfComponent it)

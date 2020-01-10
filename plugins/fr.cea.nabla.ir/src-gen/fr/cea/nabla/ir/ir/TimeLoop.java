@@ -19,7 +19,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getWhileCondition <em>While Condition</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getAssociatedJob <em>Associated Job</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getCounter <em>Counter</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getIterationCounter <em>Iteration Counter</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoop()
@@ -154,25 +154,25 @@ public interface TimeLoop extends IrAnnotable {
 	void setAssociatedJob(TimeLoopJob value);
 
 	/**
-	 * Returns the value of the '<em><b>Counter</b></em>' reference.
+	 * Returns the value of the '<em><b>Iteration Counter</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Counter</em>' reference.
-	 * @see #setCounter(SimpleVariable)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoop_Counter()
+	 * @return the value of the '<em>Iteration Counter</em>' reference.
+	 * @see #setIterationCounter(SimpleVariable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoop_IterationCounter()
 	 * @model required="true"
 	 * @generated
 	 */
-	SimpleVariable getCounter();
+	SimpleVariable getIterationCounter();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.TimeLoop#getCounter <em>Counter</em>}' reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.TimeLoop#getIterationCounter <em>Iteration Counter</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Counter</em>' reference.
-	 * @see #getCounter()
+	 * @param value the new value of the '<em>Iteration Counter</em>' reference.
+	 * @see #getIterationCounter()
 	 * @generated
 	 */
-	void setCounter(SimpleVariable value);
+	void setIterationCounter(SimpleVariable value);
 
 } // TimeLoop

@@ -16,7 +16,6 @@ public final class HeatEquation
 		public final double Y_EDGE_LENGTH = X_EDGE_LENGTH;
 		public final int X_EDGE_ELEMS = 20;
 		public final int Y_EDGE_ELEMS = 20;
-		public final int Z_EDGE_ELEMS = 1;
 		public final double option_stoptime = 0.1;
 		public final int option_max_iterations = 500;
 		public final double PI = 3.1415926;
@@ -31,8 +30,8 @@ public final class HeatEquation
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
 
 	// Global Variables
+	private int n, nbCalls, lastDump;
 	private double t_n, t_nplus1, deltat;
-	private int iterationN, lastDump;
 
 	// Connectivity Variables
 	private double[][] X, center;
@@ -53,7 +52,8 @@ public final class HeatEquation
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat = 0.001;
-		lastDump = iterationN;
+		nbCalls = 0;
+		lastDump = n;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
@@ -73,10 +73,10 @@ public final class HeatEquation
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module HeatEquation");
-		iniF(); // @1.0
-		iniCenter(); // @1.0
-		computeV(); // @1.0
 		computeSurface(); // @1.0
+		computeV(); // @1.0
+		iniCenter(); // @1.0
+		iniF(); // @1.0
 		iniUn(); // @2.0
 		executeTimeLoopN(); // @3.0
 		System.out.println("Fin de l'exécution du module HeatEquation");
@@ -89,95 +89,6 @@ public final class HeatEquation
 		NumericMesh2D nm = new NumericMesh2D(gm);
 		HeatEquation i = new HeatEquation(o, nm);
 		i.simulate();
-	}
-
-	/**
-	 * Job IniF called @1.0 in simulate method.
-	 * In variables: 
-	 * Out variables: f
-	 */
-	private void iniF()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			f[jCells] = 0.0;
-		});
-	}
-
-	/**
-	 * Job IniCenter called @1.0 in simulate method.
-	 * In variables: X
-	 * Out variables: center
-	 */
-	private void iniCenter()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			int jId = jCells;
-			double[] reduction0 = {0.0, 0.0};
-			{
-				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
-				{
-					int rId = nodesOfCellJ[rNodesOfCellJ];
-					int rNodes = rId;
-					reduction0 = ArrayOperations.plus(reduction0, (X[rNodes]));
-				}
-			}
-			center[jCells] = ArrayOperations.multiply(0.25, reduction0);
-		});
-	}
-
-	/**
-	 * Job ComputeV called @1.0 in simulate method.
-	 * In variables: X
-	 * Out variables: V
-	 */
-	private void computeV()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			int jId = jCells;
-			double reduction1 = 0.0;
-			{
-				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
-				{
-					int rId = nodesOfCellJ[rNodesOfCellJ];
-					int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
-					int rNodes = rId;
-					int rPlus1Nodes = rPlus1Id;
-					reduction1 = reduction1 + (MathFunctions.det(X[rNodes], X[rPlus1Nodes]));
-				}
-			}
-			V[jCells] = 0.5 * reduction1;
-		});
-	}
-
-	/**
-	 * Job ComputeSurface called @1.0 in simulate method.
-	 * In variables: X
-	 * Out variables: surface
-	 */
-	private void computeSurface()
-	{
-		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
-		{
-			int fId = fFaces;
-			double reduction2 = 0.0;
-			{
-				int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
-				for (int rNodesOfFaceF=0; rNodesOfFaceF<nodesOfFaceF.length; rNodesOfFaceF++)
-				{
-					int rId = nodesOfFaceF[rNodesOfFaceF];
-					int rPlus1Id = nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
-					int rNodes = rId;
-					int rPlus1Nodes = rPlus1Id;
-					reduction2 = reduction2 + (MathFunctions.norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
-				}
-			}
-			surface[fFaces] = 0.5 * reduction2;
-		});
 	}
 
 	/**
@@ -208,6 +119,32 @@ public final class HeatEquation
 	}
 
 	/**
+	 * Job ComputeSurface called @1.0 in simulate method.
+	 * In variables: X
+	 * Out variables: surface
+	 */
+	private void computeSurface()
+	{
+		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
+		{
+			int fId = fFaces;
+			double reduction2 = 0.0;
+			{
+				int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
+				for (int rNodesOfFaceF=0; rNodesOfFaceF<nodesOfFaceF.length; rNodesOfFaceF++)
+				{
+					int rId = nodesOfFaceF[rNodesOfFaceF];
+					int rPlus1Id = nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
+					int rNodes = rId;
+					int rPlus1Nodes = rPlus1Id;
+					reduction2 = reduction2 + (MathFunctions.norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
+				}
+			}
+			surface[fFaces] = 0.5 * reduction2;
+		});
+	}
+
+	/**
 	 * Job ComputeTn called @1.0 in executeTimeLoopN method.
 	 * In variables: t_n, deltat
 	 * Out variables: t_nplus1
@@ -218,33 +155,84 @@ public final class HeatEquation
 	}
 
 	/**
+	 * Job ComputeV called @1.0 in simulate method.
+	 * In variables: X
+	 * Out variables: V
+	 */
+	private void computeV()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		{
+			int jId = jCells;
+			double reduction1 = 0.0;
+			{
+				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
+				{
+					int rId = nodesOfCellJ[rNodesOfCellJ];
+					int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
+					int rNodes = rId;
+					int rPlus1Nodes = rPlus1Id;
+					reduction1 = reduction1 + (MathFunctions.det(X[rNodes], X[rPlus1Nodes]));
+				}
+			}
+			V[jCells] = 0.5 * reduction1;
+		});
+	}
+
+	/**
+	 * Job IniCenter called @1.0 in simulate method.
+	 * In variables: X
+	 * Out variables: center
+	 */
+	private void iniCenter()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		{
+			int jId = jCells;
+			double[] reduction0 = {0.0, 0.0};
+			{
+				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
+				{
+					int rId = nodesOfCellJ[rNodesOfCellJ];
+					int rNodes = rId;
+					reduction0 = ArrayOperations.plus(reduction0, (X[rNodes]));
+				}
+			}
+			center[jCells] = ArrayOperations.multiply(0.25, reduction0);
+		});
+	}
+
+	/**
+	 * Job IniF called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: f
+	 */
+	private void iniF()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		{
+			f[jCells] = 0.0;
+		});
+	}
+
+	/**
 	 * Job dumpVariables called @1.0 in executeTimeLoopN method.
-	 * In variables: u_n, iterationN
+	 * In variables: u_n, n
 	 * Out variables: 
 	 */
 	private void dumpVariables()
 	{
-		if (iterationN >= lastDump)
+		nbCalls++;
+		if (n >= lastDump)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
 			cellVariables.put("Temperature", u_n);
-			writer.writeFile(iterationN, t_n, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
-			lastDump = iterationN;
+			writer.writeFile(nbCalls, t_n, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			lastDump = n;
 		}
-	}
-
-	/**
-	 * Job IniUn called @2.0 in simulate method.
-	 * In variables: PI, alpha, center
-	 * Out variables: u_n
-	 */
-	private void iniUn()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			u_n[jCells] = MathFunctions.cos(2 * options.PI * options.alpha * center[jCells][0]);
-		});
 	}
 
 	/**
@@ -261,29 +249,49 @@ public final class HeatEquation
 	}
 
 	/**
+	 * Job IniUn called @2.0 in simulate method.
+	 * In variables: PI, alpha, center
+	 * Out variables: u_n
+	 */
+	private void iniUn()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		{
+			u_n[jCells] = MathFunctions.cos(2 * options.PI * options.alpha * center[jCells][0]);
+		});
+	}
+
+	/**
 	 * Job executeTimeLoopN called @3.0 in simulate method.
-	 * In variables: deltat, iterationN, surface, outgoingFlux, V, f, center, t_n, u_n
-	 * Out variables: u_nplus1, t_nplus1, outgoingFlux
+	 * In variables: u_n, f, center, outgoingFlux, V, n, surface, deltat, t_n
+	 * Out variables: u_nplus1, outgoingFlux, t_nplus1
 	 */
 	private void executeTimeLoopN()
 	{
-		iterationN = 0;
+		n = 0;
+		boolean continueLoop = true;
 		do
 		{
-			iterationN++;
-			System.out.println("[iterationN : " + iterationN + "] t : " + t_n);
-			dumpVariables(); // @1.0
+			n++;
+			System.out.println("[" + n + "] t : " + t_n);
 			computeOutgoingFlux(); // @1.0
 			computeTn(); // @1.0
+			dumpVariables(); // @1.0
 			computeUn(); // @2.0
 		
-			// Switch variables to prepare next iteration
-			double tmpT_n = t_n;
-			t_n = t_nplus1;
-			t_nplus1 = tmpT_n;
-			double[] tmpU_n = u_n;
-			u_n = u_nplus1;
-			u_nplus1 = tmpU_n;
-		} while ((t_n < options.option_stoptime && iterationN < options.option_max_iterations));
+			// Evaluate loop condition with variables at time n
+			continueLoop = (t_nplus1 < options.option_stoptime && n + 1 < options.option_max_iterations);
+		
+			if (continueLoop)
+			{
+				// Switch variables to prepare next iteration
+				double tmpT_n = t_n;
+				t_n = t_nplus1;
+				t_nplus1 = tmpT_n;
+				double[] tmpU_n = u_n;
+				u_n = u_nplus1;
+				u_nplus1 = tmpU_n;
+			} 
+		} while (continueLoop);
 	}
 };

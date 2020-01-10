@@ -51,9 +51,8 @@ Nabla2IrComponent:
 TagPersistentVariablesComponent:
 	'TagPersistentVariables' name=ID 'follows' parent=[WorkflowComponent] 
 	'{' 
-		'iterationVariable' '=' iterationVar=[nabla::SimpleVar]';'
 		'dumpedVariables' '=' dumpedVars+=PersistentVar (',' dumpedVars+=PersistentVar)* ';'
-		'period' '=' periodValue=REAL 'for' periodVar=[nabla::SimpleVar]';'
+		'period' '=' periodValue=REAL 'for' periodVar=[nabla::ArgOrVar]';'
 		(disabled?='disabled' ';')?
 		(dumpIr?='dumpIr' ';')?
 	'}';

@@ -5,6 +5,7 @@ import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.SimpleVar
+import fr.cea.nabla.nabla.TimeIterator
 
 class VarTypeProvider
 {
@@ -24,5 +25,10 @@ class VarTypeProvider
 	def dispatch NablaType getTypeFor(Arg it)
 	{
 		type.typeFor
+	}
+
+	def dispatch NablaType getTypeFor(TimeIterator it)
+	{
+		new NSTIntScalar
 	}
 }

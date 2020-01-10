@@ -36,6 +36,20 @@ class BasicValidatorTest
 	// ===== Unique Names ====
 
 	@Test
+	def void checkDuplicateTimeIterator()
+	{
+		val moduleKo = parseHelper.parse(getTestModule('', '') + '''iterate n while (true), n while (true);''')
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.timeIterator,
+			BasicValidator::DUPLICATE_NAME,
+			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.TIME_ITERATOR, "n"))
+
+		val moduleOk = parseHelper.parse(getTestModule('', '') + '''iterate n while (true), m while (true);''')
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
 	def void checkDuplicateArg()
 	{
 		val moduleKo = parseHelper.parse(getTestModule('', '''def f: ℕ × ℕ → ℕ, (a, a) → { return a; }'''))
@@ -247,8 +261,7 @@ class BasicValidatorTest
 	{
 		val moduleKo = parseHelper.parse(testModule +
 		'''
-			ℕ in, ik;
-			iterate n counter in while(true), n counter ik while(true);
+			iterate n while(true), n while(true);
 		''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.timeIterator,
@@ -257,8 +270,7 @@ class BasicValidatorTest
 
 		val moduleOk = parseHelper.parse(testModule +
 		'''
-			ℕ in, ik;
-			iterate n counter in while(true), k counter ik while(true);
+			iterate n while(true), k while(true);
 		''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -312,8 +324,7 @@ class BasicValidatorTest
 	{
 		val moduleKo = parseHelper.parse(testModule +
 			'''
-			ℕ ni;
-			iterate n counter ni while(true);
+			iterate n while(true);
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -325,8 +336,7 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(testModule +
 			'''
 			ℝ u, v;
-			ℕ ni;
-			iterate n counter ni while(true);
+			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			'''
 		)
@@ -340,8 +350,7 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(testModule +
 			'''
 			ℝ u, v;
-			ℕ ni;
-			iterate n counter ni while(true);
+			iterate n while(true);
 			ComputeUinit: u^{n=1} = 0.0;
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			'''
@@ -355,8 +364,7 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(testModule +
 			'''
 			ℝ u, v;
-			ℕ ni;
-			iterate n counter ni while(true);
+			iterate n while(true);
 			ComputeUinit: u^{n=0} = 0.0;
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			'''
@@ -385,8 +393,7 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(testModule +
 			'''
 			ℝ u, v;
-			ℕ ni;
-			iterate n counter ni while(true);
+			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			'''
 		)
@@ -400,8 +407,7 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(testModule +
 			'''
 				ℝ[3] x;
-				ℕ in;
-				iterate n counter in while(∑{x∈[0;3[}(x[i]]));
+				iterate n while(∑{x∈[0;3[}(x[i]]));
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -413,8 +419,7 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(testModule +
 			'''
 				ℝ[3] x;
-				ℕ in;
-				iterate n counter in while(x[0] > 0.0);
+				iterate n while(x[0] > 0.0);
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -565,8 +570,7 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(getTestModule('', '') +
 			'''
 			ℝ u, v;
-			ℕ ni;
-			iterate n counter ni while(true);
+			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			ComputeV: v = u + 4.0; // Wrong: must be u^{n}
 			'''
@@ -580,8 +584,7 @@ class BasicValidatorTest
 		val moduleOk =  parseHelper.parse(getTestModule('', '') +
 			'''
 			ℝ u, v;
-			ℕ ni;
-			iterate n counter ni while(true);
+			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			ComputeV: v = u^{n} + 4.0; // Wrong: must be u^{n}
 			'''

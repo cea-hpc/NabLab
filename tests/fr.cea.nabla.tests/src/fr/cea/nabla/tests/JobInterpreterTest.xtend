@@ -62,8 +62,7 @@ class JobInterpreterTest
 		const ℝ option_stoptime = 0.2;
 		const ℕ option_max_iterations = 10;
 
-		ℕ iterationN;
-		iterate n counter iterationN while (t^{n} < option_stoptime && iterationN < option_max_iterations);
+		iterate n while (t^{n} < option_stoptime && n < option_max_iterations);
 
 		InitT: t^{n=0} = 0.;
 		ComputeTn: t^{n+1} = t^{n} + 0.01;
@@ -92,8 +91,7 @@ class JobInterpreterTest
 		ℝ[2] u;
 		ℝ[2] center{cells};
 
-		ℕ iterationN;
-		iterate n counter iterationN while (t^{n} < option_stoptime && iterationN < option_max_iterations);
+		iterate n while (t^{n} < option_stoptime && n < option_max_iterations);
 
 		ComputeUx : u^{n}[0] = u^{n=0}[0] + 1.0;
 		ComputeUy : u^{n}[1] = u^{n=0}[1] + 2.0;

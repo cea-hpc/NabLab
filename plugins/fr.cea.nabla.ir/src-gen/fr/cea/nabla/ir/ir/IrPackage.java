@@ -405,13 +405,13 @@ public interface IrPackage extends EPackage {
 	int TIME_LOOP__ASSOCIATED_JOB = IR_ANNOTABLE_FEATURE_COUNT + 5;
 
 	/**
-	 * The feature id for the '<em><b>Counter</b></em>' reference.
+	 * The feature id for the '<em><b>Iteration Counter</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_LOOP__COUNTER = IR_ANNOTABLE_FEATURE_COUNT + 6;
+	int TIME_LOOP__ITERATION_COUNTER = IR_ANNOTABLE_FEATURE_COUNT + 6;
 
 	/**
 	 * The number of structural features of the '<em>Time Loop</em>' class.
@@ -1308,13 +1308,13 @@ public interface IrPackage extends EPackage {
 	int IN_SITU_JOB__PERIOD_VARIABLE = JOB_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Iteration Variable</b></em>' reference.
+	 * The feature id for the '<em><b>Nb Calls</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IN_SITU_JOB__ITERATION_VARIABLE = JOB_FEATURE_COUNT + 3;
+	int IN_SITU_JOB__NB_CALLS = JOB_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Last Dump Variable</b></em>' reference.
@@ -4366,15 +4366,15 @@ public interface IrPackage extends EPackage {
 	EReference getTimeLoop_AssociatedJob();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.TimeLoop#getCounter <em>Counter</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.TimeLoop#getIterationCounter <em>Iteration Counter</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Counter</em>'.
-	 * @see fr.cea.nabla.ir.ir.TimeLoop#getCounter()
+	 * @return the meta object for the reference '<em>Iteration Counter</em>'.
+	 * @see fr.cea.nabla.ir.ir.TimeLoop#getIterationCounter()
 	 * @see #getTimeLoop()
 	 * @generated
 	 */
-	EReference getTimeLoop_Counter();
+	EReference getTimeLoop_IterationCounter();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ArgOrVar <em>Arg Or Var</em>}'.
@@ -4871,15 +4871,15 @@ public interface IrPackage extends EPackage {
 	EReference getInSituJob_PeriodVariable();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.InSituJob#getIterationVariable <em>Iteration Variable</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.InSituJob#getNbCalls <em>Nb Calls</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Iteration Variable</em>'.
-	 * @see fr.cea.nabla.ir.ir.InSituJob#getIterationVariable()
+	 * @return the meta object for the reference '<em>Nb Calls</em>'.
+	 * @see fr.cea.nabla.ir.ir.InSituJob#getNbCalls()
 	 * @see #getInSituJob()
 	 * @generated
 	 */
-	EReference getInSituJob_IterationVariable();
+	EReference getInSituJob_NbCalls();
 
 	/**
 	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.InSituJob#getLastDumpVariable <em>Last Dump Variable</em>}'.
@@ -6393,12 +6393,12 @@ public interface IrPackage extends EPackage {
 		EReference TIME_LOOP__ASSOCIATED_JOB = eINSTANCE.getTimeLoop_AssociatedJob();
 
 		/**
-		 * The meta object literal for the '<em><b>Counter</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Iteration Counter</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference TIME_LOOP__COUNTER = eINSTANCE.getTimeLoop_Counter();
+		EReference TIME_LOOP__ITERATION_COUNTER = eINSTANCE.getTimeLoop_IterationCounter();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ArgOrVarImpl <em>Arg Or Var</em>}' class.
@@ -6793,12 +6793,12 @@ public interface IrPackage extends EPackage {
 		EReference IN_SITU_JOB__PERIOD_VARIABLE = eINSTANCE.getInSituJob_PeriodVariable();
 
 		/**
-		 * The meta object literal for the '<em><b>Iteration Variable</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Nb Calls</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference IN_SITU_JOB__ITERATION_VARIABLE = eINSTANCE.getInSituJob_IterationVariable();
+		EReference IN_SITU_JOB__NB_CALLS = eINSTANCE.getInSituJob_NbCalls();
 
 		/**
 		 * The meta object literal for the '<em><b>Last Dump Variable</b></em>' reference feature.

@@ -9,8 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.scoping
 
-import com.google.inject.Inject
-import fr.cea.nabla.ArgOrVarExtensions
+import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Function
@@ -20,17 +19,14 @@ import fr.cea.nabla.nabla.IntervalIterationBlock
 import fr.cea.nabla.nabla.Iterable
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.Reduction
-import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterationBlock
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorDefinition
-import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
 import java.util.List
@@ -49,30 +45,7 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
  */
 class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 {
-	@Inject extension ArgOrVarExtensions
-
-	def scope_TimeIterator_counter(TimeIterator context, EReference r)
-	{
-		//println('scope_TimeIterator_counter(' + context.class.simpleName + ', ' + r.name + ')')
-		val module = EcoreUtil2.getContainerOfType(context, NablaModule)
-		if (module !== null)
-		{
-			val allSimpleVars = module.instructions.allVariables.filter(SimpleVar)
-			val candidates = allSimpleVars.filter[x | x.type.primitive == PrimitiveType::INT && x.type.sizes.empty ]
-			return Scopes::scopeFor(candidates)
-		}
-		return IScope::NULLSCOPE
-	}
-
 	/*** Scope for iterators **********************************************************/
-//	def scope_SpaceIteratorRef_target(ConnectivityCall context, EReference r)
-//	{
-//		println('scope_SpaceIteratorRef_target(' + context.class.simpleName + ', ' + r.name + ')')
-//		val s = iteratorsDefinedBefore(context.eContainer, context, '\t')
-//		println('--> ' + s)
-//		return s
-//	}
-
 	def scope_SpaceIteratorRef_target(RangeSpaceIterator context, EReference r)
 	{
 		//println('scope_SpaceIteratorRef_target(' + context.class.simpleName + ', ' + r.name + ')')
@@ -86,7 +59,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	{
 		//println('scope_SpaceIteratorRef_target(' + context.class.simpleName + ', ' + r.name + ')')
 		val block = context.eContainer as SpaceIterationBlock
-		val previousIterators = iteratorsDeclaredBefore(block.singletons, context, '\t')
+		val previousIterators = tObjectsDeclaredBeforeInList(block.singletons, context)
 		val scopeIterators = new ArrayList<SpaceIterator>
 		scopeIterators += block.range
 		scopeIterators += previousIterators
@@ -122,17 +95,6 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		}
 	}
 
-	private def iteratorsDeclaredBefore(List<SingletonSpaceIterator> list, SingletonSpaceIterator i, String prefix)
-	{
-		var List<SingletonSpaceIterator> iterators
-		val iIndex = list.indexOf(i)
-		if (iIndex == -1) 
-			iterators = #[]
-		else
-			iterators = list.subList(0, iIndex)
-		return iterators
-	}
-
 	/*** Scope for variables ***********************************************************/
 	def IScope scope_ArgOrVarRef_target(Instruction context, EReference r)
 	{
@@ -140,10 +102,16 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		variablesDefinedBefore(context.eContainer, context, '\t')
 	}
 
-	def IScope scope_ArgOrVarRef_target(TimeIteratorDefinition context, EReference r)
+	def IScope scope_ArgOrVarRef_target(TimeIterator context, EReference r)
 	{
-		//println('scope_VarRef_variable(' + context.class.simpleName + ', ' + r.name + ')')
-		Scopes::scopeFor((context.eContainer as NablaModule).instructions.allVariables)
+		//println('1. scope_VarRef_variable(' + context.class.simpleName + ', ' + r.name + ')')
+		val definition = context.eContainer as TimeIteratorDefinition 
+		val iteratorsAndVars = new ArrayList<ArgOrVar>
+		val module = EcoreUtil2.getContainerOfType(context, NablaModule)
+		iteratorsAndVars += module.allVariables
+		iteratorsAndVars += tObjectsDeclaredBeforeInList(definition.iterators, context)
+		iteratorsAndVars += context
+		Scopes::scopeFor(iteratorsAndVars)
 	}
 
 	def IScope scope_ArgOrVarRef_target(NablaModule context, EReference r)
@@ -161,7 +129,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	private def dispatch IScope variablesDefinedBefore(Job context, Instruction i, String prefix)
 	{
 		//println(prefix + 'variablesDefinedBefore(' + context.class.simpleName + ', ' + i.class.simpleName + ')')
-		Scopes::scopeFor((context.eContainer as NablaModule).instructions.allVariables)
+		Scopes::scopeFor((context.eContainer as NablaModule).allVariables)
 	}
 
 	private def dispatch IScope variablesDefinedBefore(NablaModule context, Instruction i, String prefix)
@@ -185,7 +153,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 
 	private def variablesDeclaredBefore(List<? extends Instruction> list, Instruction i, String prefix)
 	{
-		var List<Var> variables
+		var List<ArgOrVar> variables
 		val iIndex = list.indexOf(i)
 		if (iIndex == -1) 
 			variables = #[]
@@ -195,9 +163,10 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		return variables
 	}
 
+	private def getAllVariables(NablaModule it) { instructions.allVariables }
 	private def getAllVariables(List<? extends Instruction> instructions)
 	{
-		val variables = new ArrayList<Var>
+		val variables = new ArrayList<ArgOrVar>
 		for (i : instructions)
 			switch i
 			{
@@ -244,5 +213,16 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 				Scopes.scopeFor(#[(o.iterationBlock as IntervalIterationBlock).index], symbolsDefinedBefore(o.eContainer, prefix + '\t'))
 			default: symbolsDefinedBefore(o.eContainer, prefix + '\t')
 		}
+	}
+
+	private def <T extends EObject> tObjectsDeclaredBeforeInList(List<T> listOfElts, T eltInList)
+	{
+		var List<T> iterators
+		val iIndex = listOfElts.indexOf(eltInList)
+		if (iIndex == -1) 
+			iterators = #[]
+		else
+			iterators = listOfElts.subList(0, iIndex)
+		return iterators
 	}
 }

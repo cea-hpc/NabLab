@@ -48,8 +48,7 @@ const ℕ option_max_iterations = 500000000;
 ℝ faceLength{faces}, faceConductivity{faces};
 ℝ α{cells, cells}; 
 
-ℕ iterationN;
-iterate n counter iterationN while (t^{n} < option_stoptime && iterationN < option_max_iterations);
+iterate n while (t^{n+1} < option_stoptime && n+1 < option_max_iterations);
 
 InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
 

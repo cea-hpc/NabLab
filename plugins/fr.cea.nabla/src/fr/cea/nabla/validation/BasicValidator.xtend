@@ -15,7 +15,6 @@ import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Arg
-import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Connectivity
@@ -49,7 +48,6 @@ import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
 import fr.cea.nabla.typing.DeclarationProvider
-import java.util.ArrayList
 import java.util.HashSet
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
@@ -94,11 +92,7 @@ class BasicValidator extends AbstractNablaValidator
 			if (duplicate !== null)
 				error(getDuplicateNameMsg(NablaPackage.Literals.VAR, duplicate.name), NablaPackage.Literals.ARG_OR_VAR__NAME, DUPLICATE_NAME);
 		}
-	}
 
-	@Check
-	def void checkDuplicate(ArgOrVar it) 
-	{
 		val scope = scopeProvider.getScope(it, NablaPackage.Literals.ARG_OR_VAR_REF__TARGET)
 		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
 		if (duplicated)
@@ -145,12 +139,12 @@ class BasicValidator extends AbstractNablaValidator
 	def void checkDuplicate(Job it) { checkDuplicates(NablaPackage.Literals.JOB__NAME) }
 
 	@Check
-	def void checkDuplicate(TimeIterator it) { checkDuplicates(NablaPackage.Literals.TIME_ITERATOR__NAME) }
+	def void checkDuplicate(TimeIterator it) { checkDuplicates(NablaPackage.Literals.ARG_OR_VAR__NAME) }
 
 	private def <T extends EObject> checkDuplicates(T t, EStructuralFeature f)
 	{
 		val name = SimpleAttributeResolver.NAME_RESOLVER.apply(t)
-		//println('checkDuplicates(' + t + ', ' + f.name + ', ' + all + ')')
+		//println('checkDuplicates(' + t + ', ' + f.name + ', ' + name + ')')
 		val module = EcoreUtil2.getContainerOfType(t, NablaModule)
 		if (module !== null)
 		{
@@ -255,7 +249,7 @@ class BasicValidator extends AbstractNablaValidator
 			val timeIterRefs =  m.eAllContents.filter(TimeIteratorRef).toList
 			val hasItRef = timeIterRefs.exists[x | x.target === it]
 			if (!hasItRef)
-				warning(getUnusedTimeIteratorMsg(), NablaPackage.Literals.TIME_ITERATOR__NAME, UNUSED_TIME_ITERATOR)
+				warning(getUnusedTimeIteratorMsg(), NablaPackage.Literals.ARG_OR_VAR__NAME, UNUSED_TIME_ITERATOR)
 		}
 	}
 
@@ -337,9 +331,7 @@ class BasicValidator extends AbstractNablaValidator
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
 		val mandatories = (MandatoryOptions::NAMES).toList
-		val timeIterators = new ArrayList<String>
-		if (m.iteration !== null) m.iteration.eAllContents.filter(TimeIterator).forEach[timeIterators += counter.name]
-		val referenced = mandatories.contains(name) || timeIterators.contains(name) || m.eAllContents.filter(ArgOrVarRef).exists[x|x.target===it]
+		val referenced = mandatories.contains(name) || m.eAllContents.filter(ArgOrVarRef).exists[x|x.target===it]
 		if (!referenced)
 			warning(getUnusedVariableMsg(), NablaPackage.Literals::ARG_OR_VAR__NAME, UNUSED_VARIABLE)
 	}

@@ -29,7 +29,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getDumpedVariables <em>Dumped Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getPeriodValue <em>Period Value</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getPeriodVariable <em>Period Variable</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getIterationVariable <em>Iteration Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getNbCalls <em>Nb Calls</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getLastDumpVariable <em>Last Dump Variable</em>}</li>
  * </ul>
  *
@@ -77,14 +77,14 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	protected SimpleVariable periodVariable;
 
 	/**
-	 * The cached value of the '{@link #getIterationVariable() <em>Iteration Variable</em>}' reference.
+	 * The cached value of the '{@link #getNbCalls() <em>Nb Calls</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getIterationVariable()
+	 * @see #getNbCalls()
 	 * @generated
 	 * @ordered
 	 */
-	protected SimpleVariable iterationVariable;
+	protected SimpleVariable nbCalls;
 
 	/**
 	 * The cached value of the '{@link #getLastDumpVariable() <em>Last Dump Variable</em>}' reference.
@@ -197,16 +197,16 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * @generated
 	 */
 	@Override
-	public SimpleVariable getIterationVariable() {
-		if (iterationVariable != null && iterationVariable.eIsProxy()) {
-			InternalEObject oldIterationVariable = (InternalEObject)iterationVariable;
-			iterationVariable = (SimpleVariable)eResolveProxy(oldIterationVariable);
-			if (iterationVariable != oldIterationVariable) {
+	public SimpleVariable getNbCalls() {
+		if (nbCalls != null && nbCalls.eIsProxy()) {
+			InternalEObject oldNbCalls = (InternalEObject)nbCalls;
+			nbCalls = (SimpleVariable)eResolveProxy(oldNbCalls);
+			if (nbCalls != oldNbCalls) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IN_SITU_JOB__ITERATION_VARIABLE, oldIterationVariable, iterationVariable));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IN_SITU_JOB__NB_CALLS, oldNbCalls, nbCalls));
 			}
 		}
-		return iterationVariable;
+		return nbCalls;
 	}
 
 	/**
@@ -214,8 +214,8 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SimpleVariable basicGetIterationVariable() {
-		return iterationVariable;
+	public SimpleVariable basicGetNbCalls() {
+		return nbCalls;
 	}
 
 	/**
@@ -224,11 +224,11 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * @generated
 	 */
 	@Override
-	public void setIterationVariable(SimpleVariable newIterationVariable) {
-		SimpleVariable oldIterationVariable = iterationVariable;
-		iterationVariable = newIterationVariable;
+	public void setNbCalls(SimpleVariable newNbCalls) {
+		SimpleVariable oldNbCalls = nbCalls;
+		nbCalls = newNbCalls;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IN_SITU_JOB__ITERATION_VARIABLE, oldIterationVariable, iterationVariable));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IN_SITU_JOB__NB_CALLS, oldNbCalls, nbCalls));
 	}
 
 	/**
@@ -286,9 +286,9 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 			case IrPackage.IN_SITU_JOB__PERIOD_VARIABLE:
 				if (resolve) return getPeriodVariable();
 				return basicGetPeriodVariable();
-			case IrPackage.IN_SITU_JOB__ITERATION_VARIABLE:
-				if (resolve) return getIterationVariable();
-				return basicGetIterationVariable();
+			case IrPackage.IN_SITU_JOB__NB_CALLS:
+				if (resolve) return getNbCalls();
+				return basicGetNbCalls();
 			case IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE:
 				if (resolve) return getLastDumpVariable();
 				return basicGetLastDumpVariable();
@@ -315,8 +315,8 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 			case IrPackage.IN_SITU_JOB__PERIOD_VARIABLE:
 				setPeriodVariable((SimpleVariable)newValue);
 				return;
-			case IrPackage.IN_SITU_JOB__ITERATION_VARIABLE:
-				setIterationVariable((SimpleVariable)newValue);
+			case IrPackage.IN_SITU_JOB__NB_CALLS:
+				setNbCalls((SimpleVariable)newValue);
 				return;
 			case IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE:
 				setLastDumpVariable((SimpleVariable)newValue);
@@ -342,8 +342,8 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 			case IrPackage.IN_SITU_JOB__PERIOD_VARIABLE:
 				setPeriodVariable((SimpleVariable)null);
 				return;
-			case IrPackage.IN_SITU_JOB__ITERATION_VARIABLE:
-				setIterationVariable((SimpleVariable)null);
+			case IrPackage.IN_SITU_JOB__NB_CALLS:
+				setNbCalls((SimpleVariable)null);
 				return;
 			case IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE:
 				setLastDumpVariable((SimpleVariable)null);
@@ -366,8 +366,8 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 				return periodValue != PERIOD_VALUE_EDEFAULT;
 			case IrPackage.IN_SITU_JOB__PERIOD_VARIABLE:
 				return periodVariable != null;
-			case IrPackage.IN_SITU_JOB__ITERATION_VARIABLE:
-				return iterationVariable != null;
+			case IrPackage.IN_SITU_JOB__NB_CALLS:
+				return nbCalls != null;
 			case IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE:
 				return lastDumpVariable != null;
 		}

@@ -36,7 +36,7 @@ class JobInterpreter
 	{
 		context.logFinest("Interprete InSituJob " + name + " @ " + at)
 		val irModule = eContainer as IrModule
-		val iteration = context.getInt(iterationVariable.name)
+		val iteration = context.getInt(nbCalls.name)
 		val time = context.getReal(irModule.timeVariable.name)
 		val period = context.getNumber(periodVariable.name)
 		val lastDump = context.getNumber(lastDumpVariable.name)
@@ -62,7 +62,7 @@ class JobInterpreter
 	{
 		context.logFinest("Interprete TimeLoopJob " + name + " @ " + at)
 		val irModule = eContainer as IrModule
-		val iterationVariable = timeLoop.counter
+		val iterationVariable = timeLoop.iterationCounter
 		var iteration = 0
 		context.logVariables("Before timeLoop " + timeLoop.name)
 		context.addVariableValue(iterationVariable, new NV0Int(iteration))

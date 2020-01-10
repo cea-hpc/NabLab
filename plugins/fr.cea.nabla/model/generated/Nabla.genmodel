@@ -93,8 +93,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeIteratorDefinition/iterators"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//TimeIterator">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//TimeIterator/name"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeIterator/counter"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeIterator/cond"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//TimeIteratorRef">

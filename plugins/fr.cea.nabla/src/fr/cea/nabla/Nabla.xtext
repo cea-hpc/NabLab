@@ -12,9 +12,9 @@
  
 // TODO Add keyword size, i.e. size X = 4; (X : DimensionVar). Check only one DimensionVar X.
 // TODO Operator definition and overload
-// TODO Formatter nabla and nablagen for project creation wizard
-// TODO Check unused time iterator
-// TODO Test time iterator validator
+// TODO Sirius Graph with composite graph
+// TODO Embedded C++ library
+// TODO assert
 
 
 
@@ -64,7 +64,7 @@ ConnectivityCall: connectivity=[Connectivity]  '('(args+=SpaceIteratorRef (',' a
 SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?; // inc/dec only valid on a range
 
 TimeIteratorDefinition: 'iterate' iterators+=TimeIterator (',' iterators+=TimeIterator)* ';';
-TimeIterator: name=ID 'counter' counter=[SimpleVar] 'while' cond=Expression;
+TimeIterator: name=ID 'while' cond=Expression;
 TimeIteratorRef: CurrentTimeIteratorRef | InitTimeIteratorRef | NextTimeIteratorRef;
 CurrentTimeIteratorRef: target=[TimeIterator];
 InitTimeIteratorRef: target=[TimeIterator] '=' value=INT;
@@ -72,7 +72,7 @@ NextTimeIteratorRef: target=[TimeIterator] '+' value=INT;
 
 
 /* VARIABLES *********************************************/
-ArgOrVar: Arg | Var;
+ArgOrVar: Arg | Var | TimeIterator;
 Var: SimpleVar | ConnectivityVar;
 SimpleVar: name=ID;
 ConnectivityVar: name=ID '{' supports+=[Connectivity] (',' supports+=[Connectivity])* '}';

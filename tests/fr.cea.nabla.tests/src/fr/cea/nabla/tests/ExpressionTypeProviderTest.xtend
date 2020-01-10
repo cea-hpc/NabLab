@@ -121,8 +121,7 @@ class ExpressionTypeProviderTest
 	ℝ x{cells, nodesOfCell};
 	ℝ α{cells, cells}; 
 
-	ℕ iterationN;
-	iterate n counter iterationN while (iterationN < option_max_iterations);
+	iterate n while (n < option_max_iterations);
 
 	UpdateU: u^{n+1} = solveLinearSystem(α, u^{n});
 

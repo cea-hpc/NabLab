@@ -2,6 +2,7 @@ package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.SimpleVariable
 import java.util.ArrayList
 import java.util.HashMap
@@ -9,22 +10,15 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 
 import static fr.cea.nabla.ir.Utils.getCurrentIrVariable
 
-/**
- * Attend des propriétés de type <nom_de_variable> = <nom_de_persistence>.
- * Le <nom_de_variable> représente lae nom de la vraible du code.
- * Le <nom_de_persistence> représente un alias qui sera généralement donné en dépouillement. 
- */
 class TagPersistentVariables implements IrTransformationStep 
 {
-	val String iterationVariableName
-	val HashMap<String, String> dumpedVariables
+	val HashMap<String, String> dumpedVariables // variable name, persistence name (name displayed in visualisation)
 	val double periodValue
 	val String periodVariableName
 	val ArrayList<String> traces
 
-	new(String iterationVariableName, HashMap<String, String> dumpedVariables, double periodValue, String periodVariableName)
+	new(HashMap<String, String> dumpedVariables, double periodValue, String periodVariableName)
 	{
-		this.iterationVariableName = iterationVariableName
 		this.dumpedVariables = dumpedVariables
 		this.periodValue = periodValue
 		this.periodVariableName = periodVariableName
@@ -43,10 +37,6 @@ class TagPersistentVariables implements IrTransformationStep
 		inSituJob.name = 'dumpVariables'
 		inSituJob.periodValue = periodValue
 
-		val iterationVariable = getCurrentIrVariable(m, iterationVariableName)
-		if (iterationVariable === null) return false
-		inSituJob.iterationVariable = iterationVariable as SimpleVariable
-
 		val periodVariable = getCurrentIrVariable(m, periodVariableName)
 		if (periodVariable === null) return false
 		inSituJob.periodVariable = periodVariable as SimpleVariable
@@ -62,20 +52,31 @@ class TagPersistentVariables implements IrTransformationStep
 		}
 		m.jobs += inSituJob
 
+		// Create a variable to count the number of Calls
+		val f = IrFactory.eINSTANCE
+		val nbCallsVariable = f.createSimpleVariable =>
+		[
+			name = "nbCalls"
+			type = f.createBaseType => [ primitive = PrimitiveType::INT ]
+			defaultValue = f.createIntConstant => [ value = 0 ]
+		]
+		m.variables += nbCallsVariable
+		inSituJob.nbCalls = nbCallsVariable
+
 		// Create a variable to store the last write time
 		val periodVariableType = (periodVariable as SimpleVariable).type
-		val twriter = IrFactory.eINSTANCE.createSimpleVariable =>
+		val lastDumpVariable = f.createSimpleVariable =>
 		[
 			name = "lastDump"
 			type = EcoreUtil::copy(periodVariableType)
-			defaultValue = IrFactory.eINSTANCE.createArgOrVarRef =>
+			defaultValue = f.createArgOrVarRef =>
 			[
 				target = periodVariable
 				type = EcoreUtil.copy(periodVariableType)
 			]
 		]
-		m.variables += twriter
-		inSituJob.lastDumpVariable = twriter
+		m.variables += lastDumpVariable
+		inSituJob.lastDumpVariable = lastDumpVariable
 
 		return true
 	}

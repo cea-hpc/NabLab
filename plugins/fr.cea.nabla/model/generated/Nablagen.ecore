@@ -29,11 +29,10 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="dumpIr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TagPersistentVariablesComponent" eSuperTypes="#//Ir2IrComponent">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="iterationVar" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dumpedVars" upperBound="-1"
         eType="#//PersistentVar" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="periodValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="periodVar" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="periodVar" eType="ecore:EClass Nabla.ecore#//ArgOrVar"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PersistentVar">
     <eStructuralFeatures xsi:type="ecore:EReference" name="varRef" eType="ecore:EClass Nabla.ecore#//ConnectivityVar"/>

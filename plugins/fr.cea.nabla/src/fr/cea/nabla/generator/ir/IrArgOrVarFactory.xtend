@@ -13,11 +13,13 @@ import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.SimpleVar
+import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 
 /**
@@ -41,6 +43,7 @@ class IrArgOrVarFactory
 			SimpleVar : v.toIrSimpleVariable(name)
 			ConnectivityVar : v.toIrConnectivityVariable(name)
 			Arg: v.toIrArg(name)
+			TimeIterator: v.toIrIterationCounter
 		}
 	}
 
@@ -81,5 +84,13 @@ class IrArgOrVarFactory
 		name = varName
 		type = toIrConnectivityType(v.type, v.supports)
 		const = v.const
+	}
+
+	def create 	IrFactory::eINSTANCE.createSimpleVariable toIrIterationCounter(TimeIterator t)
+	{
+		annotations += t.toIrAnnotation
+		name = t.name
+		type = IrFactory.eINSTANCE.createBaseType => [ primitive = PrimitiveType::INT ]
+		const = false
 	}
 }

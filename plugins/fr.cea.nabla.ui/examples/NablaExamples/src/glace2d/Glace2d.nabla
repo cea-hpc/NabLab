@@ -79,8 +79,7 @@ const ℝ option_p_ini_zd = 0.1;
 ℝ[2] C_ic{cells, nodesOfCell}, C{cells, nodesOfCell}, F{cells, nodesOfCell};
 ℝ[2,2] Ajr{cells, nodesOfCell};
 
-ℕ iterationN;
-iterate n counter iterationN while (t^{n} < option_stoptime && iterationN < option_max_iterations);
+iterate n while (t^{n+1} < option_stoptime && n+1 < option_max_iterations);
 
 // *************************************************************
 // * Init: X_ic(par le mailleur), ρ_ic, p_ic, V_ic & m
@@ -167,4 +166,4 @@ ComputeUn: ∀j∈cells(), uj^{n+1}{j} = uj^{n}{j} - (δt^{n}/m{j}) * ∑{r∈no
 IniEn: ∀j∈cells(), E^{n}{j} = p_ic{j} / ((γ-1.0) * ρ_ic{j});
 ComputeEn: ∀j∈cells(), E^{n+1}{j} = E^{n}{j} - (δt^{n} / m{j}) * ∑{r∈nodesOfCell(j)}(dot(F{j,r}, ur{r}));
 ComputeDt: δt^{n+1} = option_δt_cfl * Min{j∈cells()}(δtj{j});
-ComputeTn: t^{n+1} = t^{n}+δt^{n+1};
+ComputeTn: t^{n+1} = t^{n} + δt^{n+1};

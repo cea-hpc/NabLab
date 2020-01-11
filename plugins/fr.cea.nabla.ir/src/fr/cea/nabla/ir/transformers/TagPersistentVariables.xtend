@@ -69,11 +69,7 @@ class TagPersistentVariables implements IrTransformationStep
 		[
 			name = "lastDump"
 			type = EcoreUtil::copy(periodVariableType)
-			defaultValue = f.createArgOrVarRef =>
-			[
-				target = periodVariable
-				type = EcoreUtil.copy(periodVariableType)
-			]
+			defaultValue = periodVariableType.primitive.defaultValue
 		]
 		m.variables += lastDumpVariable
 		inSituJob.lastDumpVariable = lastDumpVariable
@@ -84,5 +80,15 @@ class TagPersistentVariables implements IrTransformationStep
 	override getOutputTraces() 
 	{
 		traces
+	}
+
+	private def getDefaultValue(PrimitiveType t)
+	{
+		switch t
+		{
+			case BOOL: IrFactory.eINSTANCE.createBoolConstant => [ value = false ]
+			case INT: IrFactory.eINSTANCE.createIntConstant => [ value = 0 ]
+			case REAL: IrFactory.eINSTANCE.createRealConstant => [ value = 0.0 ]
+		}
 	}
 }

@@ -38,7 +38,7 @@ class Nabla2Ir
 	@Inject extension IrAnnotationHelper
 	@Inject extension DeclarationProvider
 
-	def create IrFactory::eINSTANCE.createIrModule toIrModule(NablaModule nablaModule, SimpleVar nablaTimeVariable, ConnectivityVar nablaNodeCoordVariable)
+	def create IrFactory::eINSTANCE.createIrModule toIrModule(NablaModule nablaModule, SimpleVar nablaTimeVariable, SimpleVar nablaDeltatVariable, ConnectivityVar nablaNodeCoordVariable)
 	{
 		annotations += nablaModule.toIrAnnotation
 		name = nablaModule.name
@@ -89,6 +89,7 @@ class Nabla2Ir
 		initNodeCoordVariable = getInitIrVariable(it, nablaNodeCoordVariable.name) as ConnectivityVariable
 		nodeCoordVariable = getCurrentIrVariable(it, nablaNodeCoordVariable.name) as ConnectivityVariable
 		timeVariable = getCurrentIrVariable(it, nablaTimeVariable.name) as SimpleVariable
+		deltatVariable = getCurrentIrVariable(it, nablaDeltatVariable.name) as SimpleVariable
 
 		// TimeLoop jobs creation
 		if (mainTimeLoop !== null) jobs += mainTimeLoop.createTimeLoopJobs

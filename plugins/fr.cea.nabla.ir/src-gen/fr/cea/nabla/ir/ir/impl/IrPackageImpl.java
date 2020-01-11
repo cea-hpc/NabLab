@@ -759,7 +759,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIrModule_Jobs() {
+	public EReference getIrModule_DeltatVariable() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(10);
 	}
 
@@ -769,8 +769,18 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIrModule_MainTimeLoop() {
+	public EReference getIrModule_Jobs() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(11);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getIrModule_MainTimeLoop() {
+		return (EReference)irModuleEClass.getEStructuralFeatures().get(12);
 	}
 
 	/**
@@ -2580,6 +2590,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(irModuleEClass, IR_MODULE__INIT_NODE_COORD_VARIABLE);
 		createEReference(irModuleEClass, IR_MODULE__NODE_COORD_VARIABLE);
 		createEReference(irModuleEClass, IR_MODULE__TIME_VARIABLE);
+		createEReference(irModuleEClass, IR_MODULE__DELTAT_VARIABLE);
 		createEReference(irModuleEClass, IR_MODULE__JOBS);
 		createEReference(irModuleEClass, IR_MODULE__MAIN_TIME_LOOP);
 
@@ -2930,6 +2941,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getIrModule_InitNodeCoordVariable(), this.getConnectivityVariable(), null, "initNodeCoordVariable", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_NodeCoordVariable(), this.getConnectivityVariable(), null, "nodeCoordVariable", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_TimeVariable(), this.getSimpleVariable(), null, "timeVariable", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIrModule_DeltatVariable(), this.getSimpleVariable(), null, "deltatVariable", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_Jobs(), this.getJob(), null, "jobs", null, 0, -1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_MainTimeLoop(), this.getTimeLoop(), null, "mainTimeLoop", null, 0, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

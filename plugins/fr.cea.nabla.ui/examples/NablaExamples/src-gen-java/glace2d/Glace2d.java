@@ -63,7 +63,7 @@ public final class Glace2d
 		deltat_n = options.option_deltat_ini;
 		deltat_nplus1 = options.option_deltat_ini;
 		nbCalls = 0;
-		lastDump = n;
+		lastDump = 0;
 
 		// Allocate arrays
 		X_n = new double[nbNodes][2];
@@ -387,7 +387,7 @@ public final class Glace2d
 	private void dumpVariables()
 	{
 		nbCalls++;
-		if (n >= lastDump)
+		if (n >= lastDump + 1.0)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
@@ -399,8 +399,8 @@ public final class Glace2d
 
 	/**
 	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: t_n, c, X_EDGE_ELEMS, bt, gamma, deltat_n, ur, Ar, l, m, Y_EDGE_ELEMS, n, option_deltat_cfl, E_n, Mt, deltatj, X_n, deltat_nplus1, e, Ajr, Y_EDGE_LENGTH, uj_n, V, F, rho, p, b, X_EDGE_LENGTH, C
-	 * Out variables: Mt, X_nplus1, deltatj, deltat_nplus1, e, c, bt, Ajr, E_nplus1, ur, V, uj_nplus1, Ar, F, l, t_nplus1, rho, p, b, C
+	 * In variables: X_n, deltatj, deltat_n, p, V, F, X_EDGE_ELEMS, t_n, Ajr, n, l, C, gamma, ur, E_n, m, Ar, deltat_nplus1, X_EDGE_LENGTH, Y_EDGE_ELEMS, c, rho, b, Mt, bt, uj_n, e, Y_EDGE_LENGTH, option_deltat_cfl
+	 * Out variables: deltatj, Ar, E_nplus1, p, deltat_nplus1, c, rho, t_nplus1, b, V, Mt, F, uj_nplus1, bt, Ajr, X_nplus1, l, C, e, ur
 	 */
 	private void executeTimeLoopN()
 	{
@@ -409,7 +409,7 @@ public final class Glace2d
 		do
 		{
 			n++;
-			System.out.println("[" + n + "] t : " + t_n);
+			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat_n);
 			computeCjr(); // @1.0
 			computeInternalEnergy(); // @1.0
 			computeLjr(); // @2.0

@@ -23,7 +23,7 @@
 
 using namespace nablalib;
 
-class ExplicitHeatEquation
+class IterativeHeatEquation
 {
 public:
 	struct Options
@@ -37,8 +37,9 @@ public:
 		int Y_EDGE_ELEMS = 40;
 		double X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
 		double Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
-		double option_stoptime = 1.0;
+		double option_stoptime = 0.1;
 		int option_max_iterations = 500000000;
+		int option_max_iterations_k = 1000;
 	};
 	Options* options;
 
@@ -48,8 +49,8 @@ private:
 	int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
 	// Global Variables
-	int n, nbCalls, lastDump;
-	double t_n, t_nplus1, deltat;
+	int n, k, nbCalls, lastDump;
+	double t_n, t_nplus1, deltat, epsilon, residual;
 
 	// Connectivity Variables
 	Kokkos::View<RealArray1D<2>*> X;
@@ -58,6 +59,8 @@ private:
 	Kokkos::View<double*> yc;
 	Kokkos::View<double*> u_n;
 	Kokkos::View<double*> u_nplus1;
+	Kokkos::View<double*> u_nplus1_k;
+	Kokkos::View<double*> u_nplus1_kplus1;
 	Kokkos::View<double*> V;
 	Kokkos::View<double*> D;
 	Kokkos::View<double*> faceLength;
@@ -68,10 +71,10 @@ private:
 	const size_t maxHardThread = Kokkos::DefaultExecutionSpace::max_hardware_threads();
 
 public:
-	ExplicitHeatEquation(Options* aOptions, NumericMesh2D* aNumericMesh2D, string output)
+	IterativeHeatEquation(Options* aOptions, NumericMesh2D* aNumericMesh2D, string output)
 	: options(aOptions)
 	, mesh(aNumericMesh2D)
-	, writer("ExplicitHeatEquation")
+	, writer("IterativeHeatEquation")
 	, nbNodes(mesh->getNbNodes())
 	, nbCells(mesh->getNbCells())
 	, nbFaces(mesh->getNbFaces())
@@ -82,6 +85,7 @@ public:
 	, t_n(0.0)
 	, t_nplus1(0.0)
 	, deltat(0.001)
+	, epsilon(1.0E-8)
 	, nbCalls(0)
 	, lastDump(0)
 	, X("X", nbNodes)
@@ -90,6 +94,8 @@ public:
 	, yc("yc", nbCells)
 	, u_n("u_n", nbCells)
 	, u_nplus1("u_nplus1", nbCells)
+	, u_nplus1_k("u_nplus1_k", nbCells)
+	, u_nplus1_kplus1("u_nplus1_kplus1", nbCells)
 	, V("V", nbCells)
 	, D("D", nbCells)
 	, faceLength("faceLength", nbFaces)
@@ -210,9 +216,9 @@ private:
 	}
 	
 	/**
-	 * Job UpdateU called @1.0 in executeTimeLoopN method.
-	 * In variables: alpha, u_n
-	 * Out variables: u_nplus1
+	 * Job UpdateU called @1.0 in executeTimeLoopK method.
+	 * In variables: alpha, u_nplus1_k, u_n
+	 * Out variables: u_nplus1_kplus1
 	 */
 	KOKKOS_INLINE_FUNCTION
 	void updateU() noexcept
@@ -227,10 +233,10 @@ private:
 				{
 					int dId(neighbourCellsC[dNeighbourCellsC]);
 					int dCells(dId);
-					reduction6 = reduction6 + (alpha(cCells,dCells) * u_n(dCells));
+					reduction6 = reduction6 + (alpha(cCells,dCells) * u_nplus1_k(dCells));
 				}
 			}
-			u_nplus1(cCells) = alpha(cCells,cCells) * u_n(cCells) + reduction6;
+			u_nplus1_kplus1(cCells) = u_n(cCells) + alpha(cCells,cCells) * u_nplus1_k(cCells) + reduction6;
 		});
 	}
 	
@@ -252,6 +258,17 @@ private:
 			writer.writeFile(nbCalls, t_n, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
 			lastDump = n;
 		}
+	}
+	
+	/**
+	 * Job setUpTimeLoopK called @1.0 in executeTimeLoopN method.
+	 * In variables: u_n
+	 * Out variables: u_nplus1_k
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void setUpTimeLoopK() noexcept
+	{
+		deep_copy(u_nplus1_k, u_n);
 	}
 	
 	/**
@@ -287,6 +304,25 @@ private:
 			}
 			faceConductivity(fFaces) = 2.0 * reduction4 / reduction5;
 		});
+	}
+	
+	/**
+	 * Job ComputeResidual called @2.0 in executeTimeLoopK method.
+	 * In variables: u_nplus1_kplus1, u_nplus1_k
+	 * Out variables: residual
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void computeResidual() noexcept
+	{
+		double reduction7(numeric_limits<double>::min());
+		{
+			Kokkos::Max<double> reducer(reduction7);
+			Kokkos::parallel_reduce("Reductionreduction7", nbCells, KOKKOS_LAMBDA(const int& jCells, double& x)
+			{
+				reducer.join(x, MathFunctions::fabs(u_nplus1_kplus1(jCells) - u_nplus1_k(jCells)));
+			}, reducer);
+		}
+		residual = reduction7;
 	}
 	
 	/**
@@ -337,7 +373,36 @@ private:
 				reducer.join(x, options->X_EDGE_LENGTH * options->Y_EDGE_LENGTH / D(cCells));
 			}, reducer);
 		}
-		deltat = reduction1 * 0.24;
+		deltat = reduction1 * 0.1;
+	}
+	
+	/**
+	 * Job executeTimeLoopK called @2.0 in executeTimeLoopN method.
+	 * In variables: u_n, u_nplus1_k, u_nplus1_kplus1, alpha
+	 * Out variables: residual, u_nplus1_kplus1
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void executeTimeLoopK() noexcept
+	{
+		k = 0;
+		bool continueLoop = true;
+		do
+		{
+			k++;
+		
+			updateU(); // @1.0
+			computeResidual(); // @2.0
+		
+		
+			// Evaluate loop condition with variables at time n
+			continueLoop = (residual > epsilon && k + 1 < options->option_max_iterations_k);
+		
+			if (continueLoop)
+			{
+				// Switch variables to prepare next iteration
+				std::swap(u_nplus1_kplus1, u_nplus1_k);
+			}
+		} while (continueLoop);
 	}
 	
 	/**
@@ -366,14 +431,25 @@ private:
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
 			}
-			alpha(cCells,cCells) = 1 - alphaDiag;
+			alpha(cCells,cCells) = -alphaDiag;
 		});
 	}
 	
 	/**
+	 * Job tearDownTimeLoopK called @3.0 in executeTimeLoopN method.
+	 * In variables: u_nplus1_kplus1
+	 * Out variables: u_nplus1
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void tearDownTimeLoopK() noexcept
+	{
+		deep_copy(u_nplus1, u_nplus1_kplus1);
+	}
+	
+	/**
 	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: n, u_n, t_n, alpha, deltat
-	 * Out variables: u_nplus1, t_nplus1
+	 * In variables: n, u_n, deltat, t_n, u_nplus1_k, u_nplus1_kplus1, alpha
+	 * Out variables: residual, t_nplus1, u_nplus1_k, u_nplus1_kplus1, u_nplus1
 	 */
 	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept
@@ -388,8 +464,10 @@ private:
 					<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
 		
 			computeTn(); // @1.0
-			updateU(); // @1.0
 			dumpVariables(); // @1.0
+			setUpTimeLoopK(); // @1.0
+			executeTimeLoopK(); // @2.0
+			tearDownTimeLoopK(); // @3.0
 		
 			// Progress
 			std::cout << utils::progress_bar(n, options->option_max_iterations, t_n, options->option_stoptime, 30);
@@ -413,7 +491,7 @@ private:
 public:
 	void simulate()
 	{
-		std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting ExplicitHeatEquation ..." << __RESET__ << "\n\n";
+		std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting IterativeHeatEquation ..." << __RESET__ << "\n\n";
 		
 		std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
 			<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
@@ -451,7 +529,7 @@ public:
 int main(int argc, char* argv[]) 
 {
 	Kokkos::initialize(argc, argv);
-	auto o = new ExplicitHeatEquation::Options();
+	auto o = new IterativeHeatEquation::Options();
 	string output;
 	if (argc == 5) {
 		o->X_EDGE_ELEMS = std::atoi(argv[1]);
@@ -470,7 +548,7 @@ int main(int argc, char* argv[])
 	}
 	auto gm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
 	auto nm = new NumericMesh2D(gm);
-	auto c = new ExplicitHeatEquation(o, nm, output);
+	auto c = new IterativeHeatEquation(o, nm, output);
 	c->simulate();
 	delete c;
 	delete nm;

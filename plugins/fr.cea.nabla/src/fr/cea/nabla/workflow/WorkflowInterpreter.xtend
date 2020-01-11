@@ -83,7 +83,7 @@ class WorkflowInterpreter
 	{
 		val msg = '  Nabla -> IR - ' + c.name
 		traceListeners.forEach[write(msg)]
-		val irModule = nabla2Ir.toIrModule(nablaModule, c.timeVar, c.nodeCoordVar)
+		val irModule = nabla2Ir.toIrModule(nablaModule, c.timeVar, c.deltatVar, c.nodeCoordVar)
 		if (c.dumpIr)
 			createAndSaveResource(irModule, c.eclipseProject, c.name)
 		val msgEnd = "... ok\n"

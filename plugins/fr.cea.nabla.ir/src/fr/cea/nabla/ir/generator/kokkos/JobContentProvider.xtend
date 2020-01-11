@@ -23,14 +23,17 @@ import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.Utils.getIrModule
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
+import fr.cea.nabla.ir.ir.IrModule
 
 abstract class JobContentProvider 
 {
 	@Accessors val extension InstructionContentProvider instructionContentProvider
+	@Accessors val TraceContentProvider traceContentProvider
 
-	new(InstructionContentProvider icp) 
+	new(InstructionContentProvider icp, TraceContentProvider tcp) 
 	{ 
 		instructionContentProvider = icp
+		traceContentProvider = tcp
 	}
 
 	abstract def CharSequence getJobCallsContent(Iterable<Job> jobs)
@@ -43,7 +46,8 @@ abstract class JobContentProvider
 
 	protected def dispatch CharSequence getInnerContent(InSituJob it)
 	'''
-		if (!writer.isDisabled() && «periodVariable.name» >= «lastDumpVariable.name»)
+		«nbCalls.name»++;
+		if (!writer.isDisabled() && «periodVariable.name» >= «lastDumpVariable.name» + «periodValue»)
 		{
 			std::map<string, double*> cellVariables;
 			std::map<string, double*> nodeVariables;
@@ -51,26 +55,38 @@ abstract class JobContentProvider
 			«v.type.connectivities.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
 			«ENDFOR»
 			auto quads = mesh->getGeometricMesh()->getQuads();
-			writer.writeFile(«iterationVariable.name», «irModule.timeVariable.name», «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);
-			«lastDumpVariable.name» += «periodVariable.name»;
+			writer.writeFile(«nbCalls.name», «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);
+			«lastDumpVariable.name» = «periodVariable.name»;
 		}
 	'''
 
 	protected def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
-		«timeLoop.counter.name» = 0;
+		«val itVar = timeLoop.iterationCounter.name»
+		«itVar» = 0;
+		bool continueLoop = true;
 		do
 		{
-			«timeLoop.counter.name»++;
+			«itVar»++;
+			«traceContentProvider.getBeginOfLoopTrace(itVar, timeVarName, (jobContainer === null))»
+
 			«FOR j : jobs.sortJobs»
 				«j.codeName»(); // @«j.at»
 			«ENDFOR»
 
-			// Switch variables to prepare next iteration
-		«FOR copy : copies»
-			std::swap(«copy.source.name», «copy.destination.name»);
-		«ENDFOR»
-		} while («timeLoop.whileCondition.content»);
+			«traceContentProvider.getEndOfLoopTrace(itVar, timeVarName, deltatVarName, (jobContainer === null))»
+
+			// Evaluate loop condition with variables at time n
+			continueLoop = «timeLoop.whileCondition.content»;
+
+			if (continueLoop)
+			{
+				// Switch variables to prepare next iteration
+				«FOR copy : copies»
+					std::swap(«copy.source.name», «copy.destination.name»);
+				«ENDFOR»
+			}
+		} while (continueLoop);
 	'''
 
 	protected def dispatch CharSequence getInnerContent(TimeLoopCopyJob it)
@@ -97,5 +113,17 @@ abstract class JobContentProvider
 					«copy(left + suffix, right + suffix, dimension-1)»
 			'''
 		}
+	}
+
+	private static def getTimeVarName(TimeLoopJob it)
+	{
+		val irModule = eContainer as IrModule
+		irModule.timeVariable.name
+	}
+
+	private static def getDeltatVarName(TimeLoopJob it)
+	{
+		val irModule = eContainer as IrModule
+		irModule.deltatVariable.name
 	}
 }

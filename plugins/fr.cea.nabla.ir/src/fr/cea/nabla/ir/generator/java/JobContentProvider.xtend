@@ -45,7 +45,7 @@ class JobContentProvider
 	private static def dispatch CharSequence getInnerContent(InSituJob it)
 	'''
 		«nbCalls.name»++;
-		if («periodVariable.name» >= «lastDumpVariable.name»)
+		if («periodVariable.name» >= «lastDumpVariable.name» + «periodValue»)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
@@ -65,7 +65,7 @@ class JobContentProvider
 		do
 		{
 			«itVar»++;
-			System.out.println("«timeLoop.indentation»[" + «itVar» + "] t : " + «irModule.timeVariable.name»);
+			System.out.printf("«timeLoop.indentation»[%5d] t: %5.5f - deltat: %5.5f\n", «itVar», «irModule.timeVariable.name», «irModule.deltatVariable.name»);
 			«FOR j : jobs.sortJobs»
 				«j.codeName»(); // @«j.at»
 			«ENDFOR»

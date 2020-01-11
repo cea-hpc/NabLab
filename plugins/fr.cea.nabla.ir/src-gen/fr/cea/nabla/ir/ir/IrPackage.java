@@ -250,13 +250,22 @@ public interface IrPackage extends EPackage {
 	int IR_MODULE__TIME_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 9;
 
 	/**
+	 * The feature id for the '<em><b>Deltat Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_MODULE__DELTAT_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 10;
+
+	/**
 	 * The feature id for the '<em><b>Jobs</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__JOBS = IR_ANNOTABLE_FEATURE_COUNT + 10;
+	int IR_MODULE__JOBS = IR_ANNOTABLE_FEATURE_COUNT + 11;
 
 	/**
 	 * The feature id for the '<em><b>Main Time Loop</b></em>' containment reference.
@@ -265,7 +274,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__MAIN_TIME_LOOP = IR_ANNOTABLE_FEATURE_COUNT + 11;
+	int IR_MODULE__MAIN_TIME_LOOP = IR_ANNOTABLE_FEATURE_COUNT + 12;
 
 	/**
 	 * The number of structural features of the '<em>Module</em>' class.
@@ -274,7 +283,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 12;
+	int IR_MODULE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 13;
 
 	/**
 	 * The number of operations of the '<em>Module</em>' class.
@@ -4247,6 +4256,17 @@ public interface IrPackage extends EPackage {
 	EReference getIrModule_TimeVariable();
 
 	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrModule#getDeltatVariable <em>Deltat Variable</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Deltat Variable</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrModule#getDeltatVariable()
+	 * @see #getIrModule()
+	 * @generated
+	 */
+	EReference getIrModule_DeltatVariable();
+
+	/**
 	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.IrModule#getJobs <em>Jobs</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -6299,6 +6319,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference IR_MODULE__TIME_VARIABLE = eINSTANCE.getIrModule_TimeVariable();
+
+		/**
+		 * The meta object literal for the '<em><b>Deltat Variable</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference IR_MODULE__DELTAT_VARIABLE = eINSTANCE.getIrModule_DeltatVariable();
 
 		/**
 		 * The meta object literal for the '<em><b>Jobs</b></em>' containment reference list feature.

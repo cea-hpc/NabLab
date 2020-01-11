@@ -14,4 +14,5 @@ Require-Bundle: fr.cea.nabla,
 Export-Package: explicitheatequation,
  glace2d,
  heatequation,
- implicitheatequation
+ implicitheatequation,
+ iterativeheatequation

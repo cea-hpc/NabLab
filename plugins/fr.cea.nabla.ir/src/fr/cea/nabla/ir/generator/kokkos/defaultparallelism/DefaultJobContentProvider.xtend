@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -13,18 +13,22 @@ import fr.cea.nabla.ir.generator.kokkos.JobContentProvider
 import fr.cea.nabla.ir.ir.Job
 
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import fr.cea.nabla.ir.generator.kokkos.TraceContentProvider
 
-class DefaultJobContentProvider extends JobContentProvider 
+class DefaultJobContentProvider extends JobContentProvider
 {
-	new() { super(new DefaultInstructionContentProvider) }
-	
+	new(TraceContentProvider tcp)
+	{
+		super(new DefaultInstructionContentProvider, tcp)
+	}
+
 	override getJobCallsContent(Iterable<Job> jobs)
 	'''
 		«FOR j : jobs.sortBy[at]»
 		«j.codeName»(); // @«j.at»
 		«ENDFOR»
 	'''
-	
+
 	override getContent(Job it)
 	'''
 		«comment»

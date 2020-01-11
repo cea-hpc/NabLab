@@ -39,6 +39,8 @@
         eType="#//ConnectivityVariable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeVariable" lowerBound="1"
         eType="#//SimpleVariable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deltatVariable" lowerBound="1"
+        eType="#//SimpleVariable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="jobs" upperBound="-1" eType="#//Job"
         containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="mainTimeLoop" eType="#//TimeLoop"

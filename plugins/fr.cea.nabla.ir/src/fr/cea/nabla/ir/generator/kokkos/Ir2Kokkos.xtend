@@ -10,8 +10,6 @@
 package fr.cea.nabla.ir.generator.kokkos
 
 import fr.cea.nabla.ir.MandatoryOptions
-import fr.cea.nabla.ir.MandatorySimulationOptions
-import fr.cea.nabla.ir.MandatorySimulationVariables
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalJobContentProvider
@@ -22,9 +20,9 @@ import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
 
-import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
@@ -46,6 +44,8 @@ class Ir2Kokkos extends CodeGenerator
 	{
 		#{ name + '.cc' -> ccFileContent, 'CMakeLists.txt' -> Ir2Cmake::getFileContent(it)}
 	}
+
+	private def getTraceContentProvider() { jobContentProvider.traceContentProvider }
 
 	private def getCcFileContent(IrModule it)
 	'''
@@ -96,7 +96,7 @@ class Ir2Kokkos extends CodeGenerator
 	private:
 		«IF withMesh»
 		NumericMesh2D* mesh;
-		FileWriter writer;
+		PvdFileWriter2D writer;
 		«FOR c : usedConnectivities BEFORE 'int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
 		«ENDIF»
 
@@ -122,6 +122,7 @@ class Ir2Kokkos extends CodeGenerator
 		«ENDFOR»
 		«ENDIF»
 
+		utils::Timer timer;
 		«IF (threadTeam)»
 		typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 		«ELSE»
@@ -174,67 +175,17 @@ class Ir2Kokkos extends CodeGenerator
 	public:
 		void simulate()
 		{
-			std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting «name» ..." << __RESET__ << "\n\n";
-
-			«IF withMesh»
-			std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->«MandatoryOptions::X_EDGE_ELEMS» << __RESET__ << ", Y=" << __BOLD__ << options->«MandatoryOptions::Y_EDGE_ELEMS»
-				<< __RESET__ << ", X length=" << __BOLD__ << options->«MandatoryOptions::X_EDGE_LENGTH» << __RESET__ << ", Y length=" << __BOLD__ << options->«MandatoryOptions::Y_EDGE_LENGTH» << __RESET__ << std::endl;
-			«ENDIF»
-
-			if (Kokkos::hwloc::available()) {
-				std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_numa_count()
-					<< __RESET__ << ", Cores/NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_cores_per_numa()
-					<< __RESET__ << ", Threads/Core=" << __BOLD__ << Kokkos::hwloc::get_available_threads_per_core() << __RESET__ << std::endl;
-			} else {
-				std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
-			}
-
-			// std::cout << "[" << __GREEN__ << "KOKKOS" << __RESET__ << "]    " << __BOLD__ << (is_same<MyLayout,Kokkos::LayoutLeft>::value?"Left":"Right")" << __RESET__ << " layout" << std::endl;
-
-			«IF withMesh»
-			if (!writer.isDisabled())
-				std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
-			else
-				std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
-			«ENDIF»
-
-			utils::Timer timer(true);
-
+			«traceContentProvider.getBeginOfSimuTrace(name, withMesh)»
 			«IF (threadTeam)»
 				«HierarchicalParallelismUtils::teamPolicy»
 
-			«ENDIF»			
-			«jobs.filter[x | x.at < 0].jobCallsContent»	
-			timer.stop();
-
-			«IF jobs.exists[at > 0]»
-			iteration = 0;
-			while («MandatorySimulationVariables::TIME» < options->«MandatorySimulationOptions::STOP_TIME» && iteration < options->«MandatorySimulationOptions::MAX_ITERATIONS»)
-			{
-				timer.start();
-				utils::Timer compute_timer(true);
-				iteration++;
-				if (iteration!=1)
-					std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << iteration << __RESET__ "] t = " << __BOLD__
-						<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << «timeVariable.name» << __RESET__;
-
-				«jobs.filter[x | x.at > 0].jobCallsContent»
-				compute_timer.stop();
-
-				// Progress
-				std::cout << utils::progress_bar(iteration, options->«MandatorySimulationOptions::MAX_ITERATIONS», «timeVariable», options->«MandatorySimulationOptions::STOP_TIME», 30);
-				timer.stop();
-				std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-					utils::eta(«iterationVariable», options->«MandatorySimulationOptions::MAX_ITERATIONS», «timeVariable», options->«MandatorySimulationOptions::STOP_TIME», deltat, timer), true)
-					<< __RESET__ << "\r";
-				std::cout.flush();
-			}
-			std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << timer.print() << __RESET__ << std::endl;
-			«ELSE /* no jobs with at > 0 */»
-			timer.stop();
 			«ENDIF»
+			timer.start();
+			«jobs.filter[jobContainer === null].jobCallsContent»
+			timer.stop();
+			«traceContentProvider.endOfSimuTrace»
 		}
-	};	
+	};
 
 	int main(int argc, char* argv[]) 
 	{

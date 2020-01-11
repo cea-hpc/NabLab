@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -8,12 +8,6 @@
  * Contributors: see AUTHORS file
  *******************************************************************************/
 
-/** 
- * TODO Create of a default nablagen file from a nabla file (wizard ?)
- * TODO Add steps dedicated to the debug (jobs, variables...)
- * TODO Add step to specify sparse matrices
- * TODO Add step to set solver algorithm & parameters
- */
 grammar fr.cea.nabla.Nablagen 
 with fr.cea.nabla.Nabla 
 
@@ -44,6 +38,7 @@ Nabla2IrComponent:
 	'Nabla2Ir' name=ID 
 	'{' 
 		'timeVariable' '=' timeVar=[nabla::SimpleVar]';'
+		'deltatVariable' '=' deltatVar=[nabla::SimpleVar]';'
 		'nodeCoordVariable' '=' nodeCoordVar=[nabla::ConnectivityVar]';'
 		(dumpIr?='dumpIr' ';')?	
 	'}';
@@ -65,7 +60,7 @@ ReplaceUtfComponent:
 	'ReplaceUtf' name=ID 'follows' parent=[WorkflowComponent] 
 	'{' 
 		(disabled?='disabled' ';')?
-		(dumpIr?='dumpIr' ';')? 
+		(dumpIr?='dumpIr' ';')?
 	'}';
 
 ReplaceReductionsComponent:
@@ -73,7 +68,7 @@ ReplaceReductionsComponent:
 	'{' 
 		(replaceAllReductions?='replaceAllReductions' ';')?
 		(disabled?='disabled' ';')?
-		(dumpIr?='dumpIr' ';')? 
+		(dumpIr?='dumpIr' ';')?
 	'}';
 
 OptimizeConnectivitiesComponent:
@@ -88,16 +83,23 @@ FillHLTsComponent:
 	'FillHLTs' name=ID 'follows' parent=[WorkflowComponent]
 	'{' 
 		(disabled?='disabled' ';')?
-		(dumpIr?='dumpIr' ';')? 
+		(dumpIr?='dumpIr' ';')?
 	'}';
 
 Ir2CodeComponent:
 	'Ir2Code' name=ID 'follows' parent=[WorkflowComponent]
 	'{' 
-		'language' '=' language=Language ';'
-		'outputDir' '=' outputDir=STRING ';' 
+		'language' '=' language=Language
+		'outputDir' '=' outputDir=STRING ';'
 		(disabled?='disabled' ';')?
 	'}';
 
-enum Language:
-	Java | Kokkos | KokkosHierarchicalParallelism;
+Language: Java | CppKokkos;
+
+Java: activated?='Java' ';';
+
+CppKokkos: 'Kokkos' '{'
+		'maxIterationVariable' '=' maxIterationVar=[nabla::SimpleVar] ';'
+		'stopTimeVariable' '=' stopTimeVar=[nabla::SimpleVar] ';'
+		(teamOfThreads?='teamOfThreads' ';')?
+	'}';

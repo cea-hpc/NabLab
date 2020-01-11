@@ -36,7 +36,6 @@ public:
 		RealArray1D<2> vectOne = {{1.0, 1.0}};
 		int X_EDGE_ELEMS = 40;
 		int Y_EDGE_ELEMS = 40;
-		int Z_EDGE_ELEMS = 1;
 		double X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
 		double Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 		double option_stoptime = 1.0;
@@ -45,13 +44,13 @@ public:
 	Options* options;
 
 private:
-	int iteration;
 	NumericMesh2D* mesh;
 	PvdFileWriter2D writer;
 	int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
 	// Global Variables
-	double t, deltat, t_nplus1;
+	int n, nbCalls, lastDump;
+	double t_n, t_nplus1, deltat;
 
 	// Connectivity Variables
 	Kokkos::View<RealArray1D<2>*> X;
@@ -64,10 +63,11 @@ private:
 	Kokkos::View<double*> faceConductivity;
 	
 	// Linear Algebra Variables
-	VectorType u;
-	NablaSparseMatrix alpha;
+	VectorType u_n;
 	VectorType u_nplus1;
+	NablaSparseMatrix alpha;
 
+	utils::Timer timer;
 	const size_t maxHardThread = Kokkos::DefaultExecutionSpace::max_hardware_threads();
 
 public:
@@ -82,9 +82,11 @@ public:
 	, nbNodesOfFace(NumericMesh2D::MaxNbNodesOfFace)
 	, nbCellsOfFace(NumericMesh2D::MaxNbCellsOfFace)
 	, nbNeighbourCells(NumericMesh2D::MaxNbNeighbourCells)
-	, t(0.0)
-	, deltat(0.001)
+	, t_n(0.0)
 	, t_nplus1(0.0)
+	, deltat(0.001)
+	, nbCalls(0)
+	, lastDump(0)
 	, X("X", nbNodes)
 	, Xc("Xc", nbCells)
 	, xc("xc", nbCells)
@@ -93,9 +95,9 @@ public:
 	, D("D", nbCells)
 	, faceLength("faceLength", nbFaces)
 	, faceConductivity("faceConductivity", nbFaces)
-	, u("u", nbCells)
-	, alpha("alpha", nbCells, nbCells)
+	, u_n("u_n", nbCells)
 	, u_nplus1("u_nplus1", nbCells)
+	, alpha("alpha", nbCells, nbCells)
 	{
 		// Copy node coordinates
 		const auto& gNodes = mesh->getGeometricMesh()->getNodes();
@@ -107,73 +109,7 @@ public:
 
 private:
 	/**
-	 * Job InitXc @-3.0
-	 * In variables: X
-	 * Out variables: Xc
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void initXc() noexcept
-	{
-		Kokkos::parallel_for("InitXc", nbCells, KOKKOS_LAMBDA(const int& cCells)
-		{
-			int cId(cCells);
-			RealArray1D<2> reduction0 = {{0.0, 0.0}};
-			{
-				auto nodesOfCellC(mesh->getNodesOfCell(cId));
-				for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.size(); pNodesOfCellC++)
-				{
-					int pId(nodesOfCellC[pNodesOfCellC]);
-					int pNodes(pId);
-					reduction0 = ArrayOperations::plus(reduction0, (X(pNodes)));
-				}
-			}
-			Xc(cCells) = ArrayOperations::multiply(0.25, reduction0);
-		});
-	}
-	
-	/**
-	 * Job InitD @-3.0
-	 * In variables: 
-	 * Out variables: D
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void initD() noexcept
-	{
-		Kokkos::parallel_for("InitD", nbCells, KOKKOS_LAMBDA(const int& cCells)
-		{
-			D(cCells) = 1.0;
-		});
-	}
-	
-	/**
-	 * Job ComputeV @-3.0
-	 * In variables: X
-	 * Out variables: V
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeV() noexcept
-	{
-		Kokkos::parallel_for("ComputeV", nbCells, KOKKOS_LAMBDA(const int& jCells)
-		{
-			int jId(jCells);
-			double reduction2 = 0.0;
-			{
-				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				for (int pNodesOfCellJ=0; pNodesOfCellJ<nodesOfCellJ.size(); pNodesOfCellJ++)
-				{
-					int pId(nodesOfCellJ[pNodesOfCellJ]);
-					int pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
-					int pNodes(pId);
-					int pPlus1Nodes(pPlus1Id);
-					reduction2 = reduction2 + (MathFunctions::det(X(pNodes), X(pPlus1Nodes)));
-				}
-			}
-			V(jCells) = 0.5 * reduction2;
-		});
-	}
-	
-	/**
-	 * Job ComputeFaceLength @-3.0
+	 * Job ComputeFaceLength called @1.0 in simulate method.
 	 * In variables: X
 	 * Out variables: faceLength
 	 */
@@ -200,58 +136,115 @@ private:
 	}
 	
 	/**
-	 * Job InitXcAndYc @-2.0
-	 * In variables: Xc
-	 * Out variables: xc, yc
+	 * Job ComputeTn called @1.0 in executeTimeLoopN method.
+	 * In variables: t_n, deltat
+	 * Out variables: t_nplus1
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void initXcAndYc() noexcept
+	void computeTn() noexcept
 	{
-		Kokkos::parallel_for("InitXcAndYc", nbCells, KOKKOS_LAMBDA(const int& cCells)
-		{
-			xc(cCells) = Xc(cCells)[0];
-			yc(cCells) = Xc(cCells)[1];
-		});
+		t_nplus1 = t_n + deltat;
 	}
 	
 	/**
-	 * Job InitU @-2.0
-	 * In variables: Xc, vectOne, u0
-	 * Out variables: u
+	 * Job ComputeV called @1.0 in simulate method.
+	 * In variables: X
+	 * Out variables: V
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void initU() noexcept
+	void computeV() noexcept
 	{
-		Kokkos::parallel_for("InitU", nbCells, KOKKOS_LAMBDA(const int& cCells)
+		Kokkos::parallel_for("ComputeV", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
-			if (MathFunctions::norm(ArrayOperations::minus(Xc(cCells), options->vectOne)) < 0.5) 
-				u(cCells) = options->u0;
-			else 
-				u(cCells) = 0.0;
-		});
-	}
-	
-	/**
-	 * Job computeDeltaTn @-2.0
-	 * In variables: X_EDGE_LENGTH, Y_EDGE_LENGTH, D
-	 * Out variables: deltat
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeDeltaTn() noexcept
-	{
-		double reduction1(numeric_limits<double>::max());
-		{
-			Kokkos::Min<double> reducer(reduction1);
-			Kokkos::parallel_reduce("Reductionreduction1", nbCells, KOKKOS_LAMBDA(const int& cCells, double& x)
+			int jId(jCells);
+			double reduction2 = 0.0;
 			{
-				reducer.join(x, options->X_EDGE_LENGTH * options->Y_EDGE_LENGTH / D(cCells));
-			}, reducer);
-		}
-		deltat = reduction1 * 0.24;
+				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+				for (int pNodesOfCellJ=0; pNodesOfCellJ<nodesOfCellJ.size(); pNodesOfCellJ++)
+				{
+					int pId(nodesOfCellJ[pNodesOfCellJ]);
+					int pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
+					int pNodes(pId);
+					int pPlus1Nodes(pPlus1Id);
+					reduction2 = reduction2 + (MathFunctions::det(X(pNodes), X(pPlus1Nodes)));
+				}
+			}
+			V(jCells) = 0.5 * reduction2;
+		});
 	}
 	
 	/**
-	 * Job ComputeFaceConductivity @-2.0
+	 * Job InitD called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: D
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void initD() noexcept
+	{
+		Kokkos::parallel_for("InitD", nbCells, KOKKOS_LAMBDA(const int& cCells)
+		{
+			D(cCells) = 1.0;
+		});
+	}
+	
+	/**
+	 * Job InitXc called @1.0 in simulate method.
+	 * In variables: X
+	 * Out variables: Xc
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void initXc() noexcept
+	{
+		Kokkos::parallel_for("InitXc", nbCells, KOKKOS_LAMBDA(const int& cCells)
+		{
+			int cId(cCells);
+			RealArray1D<2> reduction0 = {{0.0, 0.0}};
+			{
+				auto nodesOfCellC(mesh->getNodesOfCell(cId));
+				for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.size(); pNodesOfCellC++)
+				{
+					int pId(nodesOfCellC[pNodesOfCellC]);
+					int pNodes(pId);
+					reduction0 = ArrayOperations::plus(reduction0, (X(pNodes)));
+				}
+			}
+			Xc(cCells) = ArrayOperations::multiply(0.25, reduction0);
+		});
+	}
+	
+	/**
+	 * Job UpdateU called @1.0 in executeTimeLoopN method.
+	 * In variables: alpha, u_n
+	 * Out variables: u_nplus1
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void updateU() noexcept
+	{
+		u_nplus1 = LinearAlgebraFunctions::solveLinearSystem(alpha, u_n);
+	}
+	
+	/**
+	 * Job dumpVariables called @1.0 in executeTimeLoopN method.
+	 * In variables: u_n, n
+	 * Out variables: 
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void dumpVariables() noexcept
+	{
+		nbCalls++;
+		if (!writer.isDisabled() && n >= lastDump + 1.0)
+		{
+			std::map<string, double*> cellVariables;
+			std::map<string, double*> nodeVariables;
+			cellVariables.insert(pair<string,double*>("Temperature", u_n.data()));
+			auto quads = mesh->getGeometricMesh()->getQuads();
+			writer.writeFile(nbCalls, t_n, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+			lastDump = n;
+		}
+	}
+	
+	/**
+	 * Job ComputeFaceConductivity called @2.0 in simulate method.
 	 * In variables: D
 	 * Out variables: faceConductivity
 	 */
@@ -286,7 +279,58 @@ private:
 	}
 	
 	/**
-	 * Job computeAlphaCoeff @-1.0
+	 * Job InitU called @2.0 in simulate method.
+	 * In variables: Xc, vectOne, u0
+	 * Out variables: u_n
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void initU() noexcept
+	{
+		Kokkos::parallel_for("InitU", nbCells, KOKKOS_LAMBDA(const int& cCells)
+		{
+			if (MathFunctions::norm(ArrayOperations::minus(Xc(cCells), options->vectOne)) < 0.5) 
+				u_n(cCells) = options->u0;
+			else 
+				u_n(cCells) = 0.0;
+		});
+	}
+	
+	/**
+	 * Job InitXcAndYc called @2.0 in simulate method.
+	 * In variables: Xc
+	 * Out variables: xc, yc
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void initXcAndYc() noexcept
+	{
+		Kokkos::parallel_for("InitXcAndYc", nbCells, KOKKOS_LAMBDA(const int& cCells)
+		{
+			xc(cCells) = Xc(cCells)[0];
+			yc(cCells) = Xc(cCells)[1];
+		});
+	}
+	
+	/**
+	 * Job computeDeltaTn called @2.0 in simulate method.
+	 * In variables: X_EDGE_LENGTH, Y_EDGE_LENGTH, D
+	 * Out variables: deltat
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void computeDeltaTn() noexcept
+	{
+		double reduction1(numeric_limits<double>::max());
+		{
+			Kokkos::Min<double> reducer(reduction1);
+			Kokkos::parallel_reduce("Reductionreduction1", nbCells, KOKKOS_LAMBDA(const int& cCells, double& x)
+			{
+				reducer.join(x, options->X_EDGE_LENGTH * options->Y_EDGE_LENGTH / D(cCells));
+			}, reducer);
+		}
+		deltat = reduction1 * 0.24;
+	}
+	
+	/**
+	 * Job computeAlphaCoeff called @3.0 in simulate method.
 	 * In variables: deltat, V, faceLength, faceConductivity, Xc
 	 * Out variables: alpha
 	 */
@@ -316,75 +360,53 @@ private:
 	}
 	
 	/**
-	 * Job UpdateU @1.0
-	 * In variables: alpha, u
-	 * Out variables: u_nplus1
+	 * Job executeTimeLoopN called @4.0 in simulate method.
+	 * In variables: u_n, deltat, t_n, alpha, n
+	 * Out variables: t_nplus1, u_nplus1
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void updateU() noexcept
+	void executeTimeLoopN() noexcept
 	{
-		u_nplus1 = LinearAlgebraFunctions::solveLinearSystem(alpha, u);
-	}
-	
-	/**
-	 * Job ComputeTn @1.0
-	 * In variables: t, deltat
-	 * Out variables: t_nplus1
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeTn() noexcept
-	{
-		t_nplus1 = t + deltat;
-	}
-	
-	/**
-	 * Job dumpVariables @1.0
-	 * In variables: u
-	 * Out variables: 
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void dumpVariables() noexcept
-	{
-		if (!writer.isDisabled() && (iteration % 1 == 0)) 
+		n = 0;
+		bool continueLoop = true;
+		do
 		{
-			std::map<string, double*> cellVariables;
-			std::map<string, double*> nodeVariables;
-			cellVariables.insert(pair<string,double*>("Temperature", u.data()));
-			auto quads = mesh->getGeometricMesh()->getQuads();
-			writer.writeFile(iteration, t, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
-		}
-	}
-	
-	/**
-	 * Job Copy_u_nplus1_to_u @2.0
-	 * In variables: u_nplus1
-	 * Out variables: u
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void copy_u_nplus1_to_u() noexcept
-	{
-		std::swap(u_nplus1, u);
-	}
-	
-	/**
-	 * Job Copy_t_nplus1_to_t @2.0
-	 * In variables: t_nplus1
-	 * Out variables: t
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void copy_t_nplus1_to_t() noexcept
-	{
-		std::swap(t_nplus1, t);
+			n++;
+			if (n!=1)
+				std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
+					<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
+		
+			computeTn(); // @1.0
+			updateU(); // @1.0
+			dumpVariables(); // @1.0
+		
+			// Progress
+			std::cout << utils::progress_bar(n, options->option_max_iterations, t_n, options->option_stoptime, 30);
+			std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
+				utils::eta(n, options->option_max_iterations, t_n, options->option_stoptime, deltat, timer), true)
+				<< __RESET__ << "\r";
+			std::cout.flush();
+		
+			// Evaluate loop condition with variables at time n
+			continueLoop = (t_nplus1 < options->option_stoptime && n + 1 < options->option_max_iterations);
+		
+			if (continueLoop)
+			{
+				// Switch variables to prepare next iteration
+				std::swap(t_nplus1, t_n);
+				std::swap(u_nplus1, u_n);
+			}
+		} while (continueLoop);
 	}
 
 public:
 	void simulate()
 	{
 		std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting ImplicitHeatEquation ..." << __RESET__ << "\n\n";
-
+		
 		std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
 			<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
-
+		
 		if (Kokkos::hwloc::available()) {
 			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_numa_count()
 				<< __RESET__ << ", Cores/NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_cores_per_numa()
@@ -392,55 +414,28 @@ public:
 		} else {
 			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 		}
-
+		
 		// std::cout << "[" << __GREEN__ << "KOKKOS" << __RESET__ << "]    " << __BOLD__ << (is_same<MyLayout,Kokkos::LayoutLeft>::value?"Left":"Right")" << __RESET__ << " layout" << std::endl;
-
+		
 		if (!writer.isDisabled())
 			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
 		else
 			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
-
-		utils::Timer timer(true);
-
-		initXc(); // @-3.0
-		initD(); // @-3.0
-		computeV(); // @-3.0
-		computeFaceLength(); // @-3.0
-		initXcAndYc(); // @-2.0
-		initU(); // @-2.0
-		computeDeltaTn(); // @-2.0
-		computeFaceConductivity(); // @-2.0
-		computeAlphaCoeff(); // @-1.0
+		timer.start();
+		initXc(); // @1.0
+		initD(); // @1.0
+		computeV(); // @1.0
+		computeFaceLength(); // @1.0
+		initXcAndYc(); // @2.0
+		initU(); // @2.0
+		computeDeltaTn(); // @2.0
+		computeFaceConductivity(); // @2.0
+		computeAlphaCoeff(); // @3.0
+		executeTimeLoopN(); // @4.0
 		timer.stop();
-
-		iteration = 0;
-		while (t < options->option_stoptime && iteration < options->option_max_iterations)
-		{
-			timer.start();
-			utils::Timer compute_timer(true);
-			iteration++;
-			if (iteration!=1)
-				std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << iteration << __RESET__ "] t = " << __BOLD__
-					<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t << __RESET__;
-
-			updateU(); // @1.0
-			computeTn(); // @1.0
-			dumpVariables(); // @1.0
-			copy_u_nplus1_to_u(); // @2.0
-			copy_t_nplus1_to_t(); // @2.0
-			compute_timer.stop();
-
-			// Progress
-			std::cout << utils::progress_bar(iteration, options->option_max_iterations, t, options->option_stoptime, 30);
-			timer.stop();
-			std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-				utils::eta(iteration, options->option_max_iterations, t, options->option_stoptime, deltat, timer), true)
-				<< __RESET__ << "\r";
-			std::cout.flush();
-		}
 		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << timer.print() << __RESET__ << std::endl;
 	}
-};	
+};
 
 int main(int argc, char* argv[]) 
 {

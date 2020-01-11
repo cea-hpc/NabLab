@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -14,12 +14,16 @@ import fr.cea.nabla.ir.ir.Job
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import fr.cea.nabla.ir.generator.kokkos.TraceContentProvider
 
-class HierarchicalJobContentProvider extends JobContentProvider 
+class HierarchicalJobContentProvider extends JobContentProvider
 {
-	new() { super(new HierarchicalInstructionContentProvider) }
+	new(TraceContentProvider tcp)
+	{
+		super(new HierarchicalInstructionContentProvider, tcp)
+	}
 
-	override getJobCallsContent(Iterable<Job> jobs) 
+	override getJobCallsContent(Iterable<Job> jobs)
 	'''
 		«var nbTimes = 0»
 		«val jobsByAt = jobs.groupBy[at]»

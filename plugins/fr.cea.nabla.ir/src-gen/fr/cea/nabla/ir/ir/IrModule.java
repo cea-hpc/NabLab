@@ -23,6 +23,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getTimeVariable <em>Time Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getDeltatVariable <em>Deltat Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getJobs <em>Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getMainTimeLoop <em>Main Time Loop</em>}</li>
  * </ul>
@@ -191,6 +192,28 @@ public interface IrModule extends IrAnnotable {
 	 * @generated
 	 */
 	void setTimeVariable(SimpleVariable value);
+
+	/**
+	 * Returns the value of the '<em><b>Deltat Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Deltat Variable</em>' reference.
+	 * @see #setDeltatVariable(SimpleVariable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_DeltatVariable()
+	 * @model required="true"
+	 * @generated
+	 */
+	SimpleVariable getDeltatVariable();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getDeltatVariable <em>Deltat Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Deltat Variable</em>' reference.
+	 * @see #getDeltatVariable()
+	 * @generated
+	 */
+	void setDeltatVariable(SimpleVariable value);
 
 	/**
 	 * Returns the value of the '<em><b>Jobs</b></em>' containment reference list.

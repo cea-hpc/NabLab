@@ -63,7 +63,7 @@ public final class ImplicitHeatEquation
 		t_nplus1 = 0.0;
 		deltat = 0.001;
 		nbCalls = 0;
-		lastDump = n;
+		lastDump = 0;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
@@ -225,7 +225,7 @@ public final class ImplicitHeatEquation
 	private void dumpVariables()
 	{
 		nbCalls++;
-		if (n >= lastDump)
+		if (n >= lastDump + 1.0)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
@@ -345,7 +345,7 @@ public final class ImplicitHeatEquation
 
 	/**
 	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: n, t_n, alpha, u_n, deltat
+	 * In variables: deltat, u_n, alpha, t_n, n
 	 * Out variables: u_nplus1, t_nplus1
 	 */
 	private void executeTimeLoopN()
@@ -355,7 +355,7 @@ public final class ImplicitHeatEquation
 		do
 		{
 			n++;
-			System.out.println("[" + n + "] t : " + t_n);
+			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
 			computeTn(); // @1.0
 			updateU(); // @1.0
 			dumpVariables(); // @1.0

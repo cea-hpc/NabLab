@@ -9,23 +9,32 @@
  *******************************************************************************/
 package fr.cea.nabla.workflow
 
-import fr.cea.nabla.nablagen.Ir2CodeComponent
-import fr.cea.nabla.nablagen.Language
 import fr.cea.nabla.ir.generator.java.Ir2Java
 import fr.cea.nabla.ir.generator.kokkos.Ir2Kokkos
+import fr.cea.nabla.ir.generator.kokkos.TraceContentProvider
 import fr.cea.nabla.ir.generator.kokkos.defaultparallelism.DefaultJobContentProvider
 import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalJobContentProvider
+import fr.cea.nabla.nablagen.CppKokkos
+import fr.cea.nabla.nablagen.Ir2CodeComponent
+import fr.cea.nabla.nablagen.Java
 
-class CodeGeneratorProvider 
+class CodeGeneratorProvider
 {
 	static def get(Ir2CodeComponent it)
 	{
-		switch (language)
+		val l = language
+		switch l
 		{
-			case Language::JAVA : new Ir2Java
-			case Language::KOKKOS : new Ir2Kokkos(new DefaultJobContentProvider)
-			case Language::KOKKOS_HIERARCHICAL_PARALLELISM : new Ir2Kokkos(new HierarchicalJobContentProvider)
-			default : throw new RuntimeException("Unsupported language " + language.literal)
+			Java: new Ir2Java
+			CppKokkos:
+			{
+				val tcp = new TraceContentProvider(l.maxIterationVar.name , l.stopTimeVar.name)
+				if (l.teamOfThreads)
+					new Ir2Kokkos(new HierarchicalJobContentProvider(tcp))
+				else
+					new Ir2Kokkos(new DefaultJobContentProvider(tcp))
+			}
+			default : throw new RuntimeException("Unsupported language " + language.class.name)
 		}
 	}
 }

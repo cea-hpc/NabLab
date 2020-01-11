@@ -25,6 +25,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Nabla2IrComponent" eSuperTypes="#//WorkflowComponent">
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeVar" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deltatVar" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="nodeCoordVar" eType="ecore:EClass Nabla.ecore#//ConnectivityVar"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="dumpIr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
@@ -48,12 +49,17 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FillHLTsComponent" eSuperTypes="#//Ir2IrComponent"/>
   <eClassifiers xsi:type="ecore:EClass" name="Ir2CodeComponent" eSuperTypes="#//ChildComponent">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="language" eType="#//Language"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="language" eType="#//Language"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputDir" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="Language">
-    <eLiterals name="Java" literal="Java"/>
-    <eLiterals name="Kokkos" value="1" literal="Kokkos"/>
-    <eLiterals name="KokkosHierarchicalParallelism" value="2" literal="KokkosHierarchicalParallelism"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Language"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Java" eSuperTypes="#//Language">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="activated" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CppKokkos" eSuperTypes="#//Language">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="maxIterationVar" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stopTimeVar" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="teamOfThreads" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
 </ecore:EPackage>

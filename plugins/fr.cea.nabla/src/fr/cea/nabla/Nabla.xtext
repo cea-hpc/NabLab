@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -7,14 +7,14 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
- 
- 
- 
+
+
 // TODO Add keyword size, i.e. size X = 4; (X : DimensionVar). Check only one DimensionVar X.
 // TODO Operator definition and overload
 // TODO Sirius Graph with composite graph
 // TODO Embedded C++ library
 // TODO assert
+// TODO warning compilation maven
 
 
 

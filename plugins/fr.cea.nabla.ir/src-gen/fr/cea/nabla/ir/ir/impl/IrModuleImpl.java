@@ -48,6 +48,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getTimeVariable <em>Time Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getDeltatVariable <em>Deltat Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getJobs <em>Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getMainTimeLoop <em>Main Time Loop</em>}</li>
  * </ul>
@@ -164,6 +165,16 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * @ordered
 	 */
 	protected SimpleVariable timeVariable;
+
+	/**
+	 * The cached value of the '{@link #getDeltatVariable() <em>Deltat Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDeltatVariable()
+	 * @generated
+	 * @ordered
+	 */
+	protected SimpleVariable deltatVariable;
 
 	/**
 	 * The cached value of the '{@link #getJobs() <em>Jobs</em>}' containment reference list.
@@ -431,6 +442,46 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
+	public SimpleVariable getDeltatVariable() {
+		if (deltatVariable != null && deltatVariable.eIsProxy()) {
+			InternalEObject oldDeltatVariable = (InternalEObject)deltatVariable;
+			deltatVariable = (SimpleVariable)eResolveProxy(oldDeltatVariable);
+			if (deltatVariable != oldDeltatVariable) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_MODULE__DELTAT_VARIABLE, oldDeltatVariable, deltatVariable));
+			}
+		}
+		return deltatVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SimpleVariable basicGetDeltatVariable() {
+		return deltatVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setDeltatVariable(SimpleVariable newDeltatVariable) {
+		SimpleVariable oldDeltatVariable = deltatVariable;
+		deltatVariable = newDeltatVariable;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__DELTAT_VARIABLE, oldDeltatVariable, deltatVariable));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EList<Job> getJobs() {
 		if (jobs == null) {
 			jobs = new EObjectContainmentEList<Job>(Job.class, this, IrPackage.IR_MODULE__JOBS);
@@ -565,6 +616,9 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 			case IrPackage.IR_MODULE__TIME_VARIABLE:
 				if (resolve) return getTimeVariable();
 				return basicGetTimeVariable();
+			case IrPackage.IR_MODULE__DELTAT_VARIABLE:
+				if (resolve) return getDeltatVariable();
+				return basicGetDeltatVariable();
 			case IrPackage.IR_MODULE__JOBS:
 				return getJobs();
 			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
@@ -619,6 +673,9 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 			case IrPackage.IR_MODULE__TIME_VARIABLE:
 				setTimeVariable((SimpleVariable)newValue);
 				return;
+			case IrPackage.IR_MODULE__DELTAT_VARIABLE:
+				setDeltatVariable((SimpleVariable)newValue);
+				return;
 			case IrPackage.IR_MODULE__JOBS:
 				getJobs().clear();
 				getJobs().addAll((Collection<? extends Job>)newValue);
@@ -668,6 +725,9 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 			case IrPackage.IR_MODULE__TIME_VARIABLE:
 				setTimeVariable((SimpleVariable)null);
 				return;
+			case IrPackage.IR_MODULE__DELTAT_VARIABLE:
+				setDeltatVariable((SimpleVariable)null);
+				return;
 			case IrPackage.IR_MODULE__JOBS:
 				getJobs().clear();
 				return;
@@ -706,6 +766,8 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 				return nodeCoordVariable != null;
 			case IrPackage.IR_MODULE__TIME_VARIABLE:
 				return timeVariable != null;
+			case IrPackage.IR_MODULE__DELTAT_VARIABLE:
+				return deltatVariable != null;
 			case IrPackage.IR_MODULE__JOBS:
 				return jobs != null && !jobs.isEmpty();
 			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:

@@ -8,11 +8,6 @@
     runtimeVersion="2.19" usedGenPackages="Nabla.genmodel#//nabla">
   <genPackages prefix="Nablagen" basePackage="fr.cea.nabla" disposableProviderFactory="true"
       fileExtensions="nablagen" ecorePackage="Nablagen.ecore#/">
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Nablagen.ecore#//Language">
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//Language/Java"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//Language/Kokkos"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//Language/KokkosHierarchicalParallelism"/>
-    </genEnums>
     <genClasses ecoreClass="Nablagen.ecore#//NablagenModule">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenModule/imports"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenModule/workflow"/>
@@ -34,6 +29,7 @@
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//Nabla2IrComponent">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Nabla2IrComponent/timeVar"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Nabla2IrComponent/deltatVar"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Nabla2IrComponent/nodeCoordVar"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Nabla2IrComponent/dumpIr"/>
     </genClasses>
@@ -55,8 +51,17 @@
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//FillHLTsComponent"/>
     <genClasses ecoreClass="Nablagen.ecore#//Ir2CodeComponent">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Ir2CodeComponent/language"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Ir2CodeComponent/language"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Ir2CodeComponent/outputDir"/>
+    </genClasses>
+    <genClasses ecoreClass="Nablagen.ecore#//Language"/>
+    <genClasses ecoreClass="Nablagen.ecore#//Java">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Java/activated"/>
+    </genClasses>
+    <genClasses ecoreClass="Nablagen.ecore#//CppKokkos">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//CppKokkos/maxIterationVar"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//CppKokkos/stopTimeVar"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//CppKokkos/teamOfThreads"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

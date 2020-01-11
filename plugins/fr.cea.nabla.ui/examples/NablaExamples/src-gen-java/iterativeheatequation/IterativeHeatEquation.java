@@ -58,7 +58,7 @@ public final class IterativeHeatEquation
 		deltat = 0.001;
 		epsilon = 1.0E-8;
 		nbCalls = 0;
-		lastDump = n;
+		lastDump = 0;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
@@ -236,7 +236,7 @@ public final class IterativeHeatEquation
 	private void dumpVariables()
 	{
 		nbCalls++;
-		if (n >= lastDump)
+		if (n >= lastDump + 1.0)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
@@ -355,8 +355,8 @@ public final class IterativeHeatEquation
 
 	/**
 	 * Job executeTimeLoopK called @2.0 in executeTimeLoopN method.
-	 * In variables: u_n, alpha, u_nplus1_kplus1, u_nplus1_k
-	 * Out variables: u_nplus1_kplus1, residual
+	 * In variables: u_nplus1_k, u_n, alpha, u_nplus1_kplus1
+	 * Out variables: residual, u_nplus1_kplus1
 	 */
 	private void executeTimeLoopK()
 	{
@@ -365,7 +365,7 @@ public final class IterativeHeatEquation
 		do
 		{
 			k++;
-			System.out.println("	[" + k + "] t : " + t_n);
+			System.out.printf("	[%5d] t: %5.5f - deltat: %5.5f\n", k, t_n, deltat);
 			updateU(); // @1.0
 			computeResidual(); // @2.0
 		
@@ -426,8 +426,8 @@ public final class IterativeHeatEquation
 
 	/**
 	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: deltat, u_n, alpha, n, u_nplus1_kplus1, u_nplus1_k, t_n
-	 * Out variables: t_nplus1, u_nplus1_kplus1, u_nplus1_k, residual, u_nplus1
+	 * In variables: u_nplus1_k, deltat, t_n, u_n, alpha, n, u_nplus1_kplus1
+	 * Out variables: u_nplus1_k, residual, t_nplus1, u_nplus1, u_nplus1_kplus1
 	 */
 	private void executeTimeLoopN()
 	{
@@ -436,7 +436,7 @@ public final class IterativeHeatEquation
 		do
 		{
 			n++;
-			System.out.println("[" + n + "] t : " + t_n);
+			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
 			computeTn(); // @1.0
 			dumpVariables(); // @1.0
 			setUpTimeLoopK(); // @1.0

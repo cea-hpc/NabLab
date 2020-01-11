@@ -35,12 +35,10 @@ workflow Glace2dGenerationChain transforms Glace2d
 	OptimizeConnectivities optimizeConnectivities follows replaceReductions
 	{
 		connectivities = cells, nodes;
-		dumpIr;
 	}
 	
 	FillHLTs fillHlts follows optimizeConnectivities
 	{
-		dumpIr;
 	}
 	
 	Ir2Code javaGenerator follows fillHlts

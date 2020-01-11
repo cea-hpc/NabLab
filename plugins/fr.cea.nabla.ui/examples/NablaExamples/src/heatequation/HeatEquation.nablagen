@@ -39,7 +39,6 @@ workflow HeatEquationGenerationChain transforms HeatEquation
 	
 	FillHLTs fillHlts follows optimizeConnectivities
 	{
-		dumpIr;
 	}
 	
 	Ir2Code javaGenerator follows fillHlts

@@ -60,7 +60,7 @@ private:
 	Kokkos::View<double*> surface;
 
 	utils::Timer timer;
-	const size_t maxHardThread = Kokkos::DefaultExecutionSpace::max_hardware_threads();
+	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 public:
 	HeatEquation(Options* aOptions, NumericMesh2D* aNumericMesh2D, string output)
@@ -97,15 +97,48 @@ public:
 
 private:
 	/**
+	 * Utility function to get work load for each team of threads
+	 * In  : thread and number of element to use for computation
+	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
+	 */
+	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const int& nb_elmt) noexcept
+	{
+		/*
+		if (nb_elmt % thread.team_size())
+		{
+			std::cerr << "[ERROR] nb of elmt (" << nb_elmt << ") not multiple of nb of thread per team ("
+		              << thread.team_size() << ")" << std::endl;
+			std::terminate();
+		}
+		*/
+		// Size
+		size_t team_chunk(std::floor(nb_elmt / thread.league_size()));
+		// Offset
+		const size_t team_offset(thread.league_rank() * team_chunk);
+		// Last team get remaining work
+		if (thread.league_rank() == thread.league_size() - 1)
+		{
+			size_t left_over(nb_elmt - (team_chunk * thread.league_size()));
+			team_chunk += left_over;
+		}
+		return std::pair<size_t, size_t>(team_offset, team_chunk);
+	}
+
+	/**
 	 * Job ComputeOutgoingFlux called @1.0 in executeTimeLoopN method.
 	 * In variables: V, center, deltat, surface, u_n
 	 * Out variables: outgoingFlux
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeOutgoingFlux() noexcept
+	void computeOutgoingFlux(const member_type& team_member) noexcept
 	{
-		Kokkos::parallel_for("ComputeOutgoingFlux", nbCells, KOKKOS_LAMBDA(const int& j1Cells)
+		const auto team_work(computeTeamWorkRange(team_member, nbCells));
+		if (!team_work.second)
+			return;
+		
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& j1CellsTeam)
 		{
+			int j1Cells(j1CellsTeam + team_work.first);
 			int j1Id(j1Cells);
 			double reduction3 = 0.0;
 			{
@@ -130,10 +163,15 @@ private:
 	 * Out variables: surface
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeSurface() noexcept
+	void computeSurface(const member_type& team_member) noexcept
 	{
-		Kokkos::parallel_for("ComputeSurface", nbFaces, KOKKOS_LAMBDA(const int& fFaces)
+		const auto team_work(computeTeamWorkRange(team_member, nbFaces));
+		if (!team_work.second)
+			return;
+		
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& fFacesTeam)
 		{
+			int fFaces(fFacesTeam + team_work.first);
 			int fId(fFaces);
 			double reduction2 = 0.0;
 			{
@@ -168,10 +206,15 @@ private:
 	 * Out variables: V
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeV() noexcept
+	void computeV(const member_type& team_member) noexcept
 	{
-		Kokkos::parallel_for("ComputeV", nbCells, KOKKOS_LAMBDA(const int& jCells)
+		const auto team_work(computeTeamWorkRange(team_member, nbCells));
+		if (!team_work.second)
+			return;
+		
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 		{
+			int jCells(jCellsTeam + team_work.first);
 			int jId(jCells);
 			double reduction1 = 0.0;
 			{
@@ -195,10 +238,15 @@ private:
 	 * Out variables: center
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void iniCenter() noexcept
+	void iniCenter(const member_type& team_member) noexcept
 	{
-		Kokkos::parallel_for("IniCenter", nbCells, KOKKOS_LAMBDA(const int& jCells)
+		const auto team_work(computeTeamWorkRange(team_member, nbCells));
+		if (!team_work.second)
+			return;
+		
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 		{
+			int jCells(jCellsTeam + team_work.first);
 			int jId(jCells);
 			RealArray1D<2> reduction0 = {{0.0, 0.0}};
 			{
@@ -220,10 +268,15 @@ private:
 	 * Out variables: f
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void iniF() noexcept
+	void iniF(const member_type& team_member) noexcept
 	{
-		Kokkos::parallel_for("IniF", nbCells, KOKKOS_LAMBDA(const int& jCells)
+		const auto team_work(computeTeamWorkRange(team_member, nbCells));
+		if (!team_work.second)
+			return;
+		
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 		{
+			int jCells(jCellsTeam + team_work.first);
 			f(jCells) = 0.0;
 		});
 	}
@@ -254,10 +307,15 @@ private:
 	 * Out variables: u_nplus1
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeUn() noexcept
+	void computeUn(const member_type& team_member) noexcept
 	{
-		Kokkos::parallel_for("ComputeUn", nbCells, KOKKOS_LAMBDA(const int& jCells)
+		const auto team_work(computeTeamWorkRange(team_member, nbCells));
+		if (!team_work.second)
+			return;
+		
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 		{
+			int jCells(jCellsTeam + team_work.first);
 			u_nplus1(jCells) = f(jCells) * deltat + u_n(jCells) + outgoingFlux(jCells);
 		});
 	}
@@ -268,10 +326,15 @@ private:
 	 * Out variables: u_n
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void iniUn() noexcept
+	void iniUn(const member_type& team_member) noexcept
 	{
-		Kokkos::parallel_for("IniUn", nbCells, KOKKOS_LAMBDA(const int& jCells)
+		const auto team_work(computeTeamWorkRange(team_member, nbCells));
+		if (!team_work.second)
+			return;
+		
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 		{
+			int jCells(jCellsTeam + team_work.first);
 			u_n(jCells) = MathFunctions::cos(2 * options->PI * options->alpha * center(jCells)[0]);
 		});
 	}
@@ -284,6 +347,10 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept
 	{
+		auto team_policy(Kokkos::TeamPolicy<>(
+			Kokkos::hwloc::get_available_numa_count(),
+			Kokkos::hwloc::get_available_cores_per_numa() * Kokkos::hwloc::get_available_threads_per_core()));
+		
 		n = 0;
 		bool continueLoop = true;
 		do
@@ -293,10 +360,22 @@ private:
 				std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
 					<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
 		
-			computeOutgoingFlux(); // @1.0
-			computeTn(); // @1.0
-			dumpVariables(); // @1.0
-			computeUn(); // @2.0
+			// @1.0
+			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+			{
+				if (thread.league_rank() == 0)
+					Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){dumpVariables();});
+				if (thread.league_rank() == 0)
+					Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){computeTn();});
+				computeOutgoingFlux(thread);
+			});
+			
+			// @2.0
+			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+			{
+				computeUn(thread);
+			});
+			
 		
 			// Progress
 			std::cout << utils::progress_bar(n, options->option_max_iterations, t_n, options->option_stoptime, 30);
@@ -340,13 +419,33 @@ public:
 		else
 			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
+		auto team_policy(Kokkos::TeamPolicy<>(
+			Kokkos::hwloc::get_available_numa_count(),
+			Kokkos::hwloc::get_available_cores_per_numa() * Kokkos::hwloc::get_available_threads_per_core()));
+
 		timer.start();
-		computeSurface(); // @1.0
-		computeV(); // @1.0
-		iniCenter(); // @1.0
-		iniF(); // @1.0
-		iniUn(); // @2.0
-		executeTimeLoopN(); // @3.0
+		// @1.0
+		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+		{
+			if (thread.league_rank() == 0)
+				Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){
+					std::cout << "[" << __GREEN__ << "RUNTIME" << __RESET__ << "]   Using " << __BOLD__ << setw(3) << thread.league_size() << __RESET__ << " team(s) of "
+						<< __BOLD__ << setw(3) << thread.team_size() << __RESET__<< " thread(s)" << std::endl;});
+			iniF(thread);
+			iniCenter(thread);
+			computeV(thread);
+			computeSurface(thread);
+		});
+		
+		// @2.0
+		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+		{
+			iniUn(thread);
+		});
+		
+		// @3.0
+		executeTimeLoopN();
+		
 		timer.stop();
 
 		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << timer.print() << __RESET__ << std::endl;

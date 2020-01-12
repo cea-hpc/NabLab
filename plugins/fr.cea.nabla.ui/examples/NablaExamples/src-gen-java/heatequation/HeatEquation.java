@@ -93,7 +93,7 @@ public final class HeatEquation
 
 	/**
 	 * Job ComputeOutgoingFlux called @1.0 in executeTimeLoopN method.
-	 * In variables: u_n, center, surface, deltat, V
+	 * In variables: V, center, deltat, surface, u_n
 	 * Out variables: outgoingFlux
 	 */
 	private void computeOutgoingFlux()
@@ -146,7 +146,7 @@ public final class HeatEquation
 
 	/**
 	 * Job ComputeTn called @1.0 in executeTimeLoopN method.
-	 * In variables: t_n, deltat
+	 * In variables: deltat, t_n
 	 * Out variables: t_nplus1
 	 */
 	private void computeTn()
@@ -219,7 +219,7 @@ public final class HeatEquation
 
 	/**
 	 * Job dumpVariables called @1.0 in executeTimeLoopN method.
-	 * In variables: u_n, n
+	 * In variables: n, u_n
 	 * Out variables: 
 	 */
 	private void dumpVariables()
@@ -237,7 +237,7 @@ public final class HeatEquation
 
 	/**
 	 * Job ComputeUn called @2.0 in executeTimeLoopN method.
-	 * In variables: f, deltat, u_n, outgoingFlux
+	 * In variables: deltat, f, outgoingFlux, u_n
 	 * Out variables: u_nplus1
 	 */
 	private void computeUn()
@@ -263,7 +263,7 @@ public final class HeatEquation
 
 	/**
 	 * Job executeTimeLoopN called @3.0 in simulate method.
-	 * In variables: center, f, outgoingFlux, deltat, u_n, t_n, V, n, surface
+	 * In variables: V, center, deltat, f, n, outgoingFlux, surface, t_n, u_n
 	 * Out variables: outgoingFlux, t_nplus1, u_nplus1
 	 */
 	private void executeTimeLoopN()

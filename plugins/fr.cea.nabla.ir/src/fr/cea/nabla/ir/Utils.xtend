@@ -50,7 +50,7 @@ class Utils
 	static def getInitIrVariable(IrModule m, String nablaVariableName) { getIrVariable(m, nablaVariableName, true) }
 
 	/** Return a list of jobs sorted by at and name for the generation to be reproductible */
-	static def sortJobs(Iterable<Job> jobs)
+	static def sortByAtAndName(Iterable<Job> jobs)
 	{
 		val jobsByAt = jobs.groupBy[at]
 		val orderedKeys = jobsByAt.keySet.sort

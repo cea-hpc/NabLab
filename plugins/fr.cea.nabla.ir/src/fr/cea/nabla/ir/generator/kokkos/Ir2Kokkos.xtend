@@ -1,6 +1,6 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
- * This program and the accompanying materials are made available under the 
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.generator.kokkos
 import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.generator.Utils
-import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalJobContentProvider
 import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalParallelismUtils
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
@@ -22,6 +21,7 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
@@ -35,7 +35,7 @@ class Ir2Kokkos extends CodeGenerator
 
 	new(JobContentProvider jcp) 
 	{ 
-		super('Kokkos')
+		super('Kokkos' + (if (jcp.threadTeam) ' team of threads' else ''))
 		jobContentProvider = jcp
 		functionContentProvider = new FunctionContentProvider(jcp.instructionContentProvider)
 	}
@@ -164,7 +164,7 @@ class Ir2Kokkos extends CodeGenerator
 			«HierarchicalParallelismUtils::teamWorkRange»
 
 		«ENDIF»
-		«FOR j : jobs.sortJobs SEPARATOR '\n'»
+		«FOR j : jobs.sortByAtAndName SEPARATOR '\n'»
 			«j.content»
 		«ENDFOR»			
 		«FOR f : functions.filter(Function).filter[body !== null]»
@@ -176,13 +176,15 @@ class Ir2Kokkos extends CodeGenerator
 		void simulate()
 		{
 			«traceContentProvider.getBeginOfSimuTrace(name, withMesh)»
+
 			«IF (threadTeam)»
 				«HierarchicalParallelismUtils::teamPolicy»
 
 			«ENDIF»
 			timer.start();
-			«jobs.filter[jobContainer === null].jobCallsContent»
+			«jobs.filter[topLevel].jobCallsContent»
 			timer.stop();
+
 			«traceContentProvider.endOfSimuTrace»
 		}
 	};
@@ -230,10 +232,5 @@ class Ir2Kokkos extends CodeGenerator
 			'''mesh->getNb«c.name.toFirstUpper»()'''
 		else
 			'''NumericMesh2D::MaxNb«c.name.toFirstUpper»'''
-	}
-
-	private def isThreadTeam()
-	{
-		jobContentProvider instanceof HierarchicalJobContentProvider
 	}
 }

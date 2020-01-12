@@ -61,4 +61,14 @@ class TraceContentProvider
 	'''
 		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << timer.print() << __RESET__ << std::endl;
 	'''
+
+	def getTeamOfThreadsInfo(boolean isTopLoop)
+	'''
+		«IF isTopLoop»
+		if (thread.league_rank() == 0)
+			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){
+				std::cout << "[" << __GREEN__ << "RUNTIME" << __RESET__ << "]   Using " << __BOLD__ << setw(3) << thread.league_size() << __RESET__ << " team(s) of "
+					<< __BOLD__ << setw(3) << thread.team_size() << __RESET__<< " thread(s)" << std::endl;});
+		«ENDIF»
+	'''
 }

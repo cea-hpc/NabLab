@@ -56,4 +56,15 @@ workflow ExplicitHeatEquationGenerationChain transforms ExplicitHeatEquation
 		}
 		outputDir = "/NablaExamples/src-gen-kokkos";
 	}
+
+	Ir2Code kokkosTeamOfThreadGenerator follows fillHlts
+	{
+		language = Kokkos
+		{
+			maxIterationVariable = option_max_iterations;
+			stopTimeVariable = option_stoptime;
+			teamOfThreads;
+		}
+		outputDir = "/NablaExamples/src-gen-kokkos-team";
+	}
 }

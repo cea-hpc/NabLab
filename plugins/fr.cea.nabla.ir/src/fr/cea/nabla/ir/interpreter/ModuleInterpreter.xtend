@@ -16,6 +16,7 @@ import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class ModuleInterpreter
 {
@@ -82,7 +83,7 @@ class ModuleInterpreter
 		context.addVariableValue(module.initNodeCoordVariable, new NV2Real(context.meshWrapper.nodes))
 
 		// Interprete Top level jobs
-		for (j : module.jobs.filter[jobContainer === null].sortBy[at])
+		for (j : module.jobs.filter[topLevel].sortBy[at])
 				jobInterpreter.interprete(j, context)
 
 		context.logVariables("At the end")

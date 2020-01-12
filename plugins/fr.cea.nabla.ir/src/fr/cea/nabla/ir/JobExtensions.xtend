@@ -28,6 +28,11 @@ import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
 class JobExtensions
 {
+	static def isTopLevel(Job it)
+	{
+		(jobContainer === null)
+	}
+
 	static def hasIterable(Job it)
 	{
 		!eAllContents.filter(IterableInstruction).empty

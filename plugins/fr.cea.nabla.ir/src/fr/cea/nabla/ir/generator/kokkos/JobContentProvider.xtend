@@ -9,21 +9,22 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
+import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalJobContentProvider
+import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalParallelismUtils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.Utils.*
+import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.Utils.getIrModule
-import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
-import fr.cea.nabla.ir.ir.IrModule
 
 abstract class JobContentProvider 
 {
@@ -38,6 +39,11 @@ abstract class JobContentProvider
 
 	abstract def CharSequence getJobCallsContent(Iterable<Job> jobs)
 	abstract def CharSequence getContent(Job it)
+
+	def isThreadTeam()
+	{
+		this instanceof HierarchicalJobContentProvider
+	}
 
 	protected def dispatch CharSequence getInnerContent(InstructionJob it)
 	'''
@@ -62,19 +68,21 @@ abstract class JobContentProvider
 
 	protected def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
+		«IF (threadTeam)»
+			«HierarchicalParallelismUtils::teamPolicy»
+
+		«ENDIF»
 		«val itVar = timeLoop.iterationCounter.name»
 		«itVar» = 0;
 		bool continueLoop = true;
 		do
 		{
 			«itVar»++;
-			«traceContentProvider.getBeginOfLoopTrace(itVar, timeVarName, (jobContainer === null))»
+			«traceContentProvider.getBeginOfLoopTrace(itVar, timeVarName, isTopLevel)»
 
-			«FOR j : jobs.sortJobs»
-				«j.codeName»(); // @«j.at»
-			«ENDFOR»
+			«jobs.jobCallsContent»
 
-			«traceContentProvider.getEndOfLoopTrace(itVar, timeVarName, deltatVarName, (jobContainer === null))»
+			«traceContentProvider.getEndOfLoopTrace(itVar, timeVarName, deltatVarName, isTopLevel)»
 
 			// Evaluate loop condition with variables at time n
 			continueLoop = «timeLoop.whileCondition.content»;

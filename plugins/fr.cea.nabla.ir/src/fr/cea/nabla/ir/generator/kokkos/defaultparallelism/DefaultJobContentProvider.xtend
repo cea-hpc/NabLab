@@ -10,10 +10,11 @@
 package fr.cea.nabla.ir.generator.kokkos.defaultparallelism
 
 import fr.cea.nabla.ir.generator.kokkos.JobContentProvider
+import fr.cea.nabla.ir.generator.kokkos.TraceContentProvider
 import fr.cea.nabla.ir.ir.Job
 
+import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import fr.cea.nabla.ir.generator.kokkos.TraceContentProvider
 
 class DefaultJobContentProvider extends JobContentProvider
 {
@@ -24,7 +25,7 @@ class DefaultJobContentProvider extends JobContentProvider
 
 	override getJobCallsContent(Iterable<Job> jobs)
 	'''
-		«FOR j : jobs.sortBy[at]»
+		«FOR j : jobs.sortByAtAndName»
 		«j.codeName»(); // @«j.at»
 		«ENDFOR»
 	'''

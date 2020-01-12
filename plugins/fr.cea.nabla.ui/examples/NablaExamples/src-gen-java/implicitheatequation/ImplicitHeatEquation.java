@@ -136,7 +136,7 @@ public final class ImplicitHeatEquation
 
 	/**
 	 * Job ComputeTn called @1.0 in executeTimeLoopN method.
-	 * In variables: t_n, deltat
+	 * In variables: deltat, t_n
 	 * Out variables: t_nplus1
 	 */
 	private void computeTn()
@@ -219,7 +219,7 @@ public final class ImplicitHeatEquation
 
 	/**
 	 * Job dumpVariables called @1.0 in executeTimeLoopN method.
-	 * In variables: u_n, n
+	 * In variables: n, u_n
 	 * Out variables: 
 	 */
 	private void dumpVariables()
@@ -271,7 +271,7 @@ public final class ImplicitHeatEquation
 
 	/**
 	 * Job InitU called @2.0 in simulate method.
-	 * In variables: Xc, vectOne, u0
+	 * In variables: Xc, u0, vectOne
 	 * Out variables: u_n
 	 */
 	private void initU()
@@ -301,7 +301,7 @@ public final class ImplicitHeatEquation
 
 	/**
 	 * Job computeDeltaTn called @2.0 in simulate method.
-	 * In variables: X_EDGE_LENGTH, Y_EDGE_LENGTH, D
+	 * In variables: D, X_EDGE_LENGTH, Y_EDGE_LENGTH
 	 * Out variables: deltat
 	 */
 	private void computeDeltaTn()
@@ -316,7 +316,7 @@ public final class ImplicitHeatEquation
 
 	/**
 	 * Job computeAlphaCoeff called @3.0 in simulate method.
-	 * In variables: deltat, V, faceLength, faceConductivity, Xc
+	 * In variables: V, Xc, deltat, faceConductivity, faceLength
 	 * Out variables: alpha
 	 */
 	private void computeAlphaCoeff()
@@ -345,8 +345,8 @@ public final class ImplicitHeatEquation
 
 	/**
 	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: deltat, u_n, alpha, t_n, n
-	 * Out variables: u_nplus1, t_nplus1
+	 * In variables: alpha, deltat, n, t_n, u_n
+	 * Out variables: t_nplus1, u_nplus1
 	 */
 	private void executeTimeLoopN()
 	{

@@ -134,7 +134,7 @@ private:
 	
 	/**
 	 * Job ComputeTn called @1.0 in executeTimeLoopN method.
-	 * In variables: t_n, deltat
+	 * In variables: deltat, t_n
 	 * Out variables: t_nplus1
 	 */
 	KOKKOS_INLINE_FUNCTION
@@ -236,7 +236,7 @@ private:
 	
 	/**
 	 * Job dumpVariables called @1.0 in executeTimeLoopN method.
-	 * In variables: u_n, n
+	 * In variables: n, u_n
 	 * Out variables: 
 	 */
 	KOKKOS_INLINE_FUNCTION
@@ -291,7 +291,7 @@ private:
 	
 	/**
 	 * Job InitU called @2.0 in simulate method.
-	 * In variables: Xc, vectOne, u0
+	 * In variables: Xc, u0, vectOne
 	 * Out variables: u_n
 	 */
 	KOKKOS_INLINE_FUNCTION
@@ -323,7 +323,7 @@ private:
 	
 	/**
 	 * Job computeDeltaTn called @2.0 in simulate method.
-	 * In variables: X_EDGE_LENGTH, Y_EDGE_LENGTH, D
+	 * In variables: D, X_EDGE_LENGTH, Y_EDGE_LENGTH
 	 * Out variables: deltat
 	 */
 	KOKKOS_INLINE_FUNCTION
@@ -342,7 +342,7 @@ private:
 	
 	/**
 	 * Job computeAlphaCoeff called @3.0 in simulate method.
-	 * In variables: deltat, V, faceLength, faceConductivity, Xc
+	 * In variables: V, Xc, deltat, faceConductivity, faceLength
 	 * Out variables: alpha
 	 */
 	KOKKOS_INLINE_FUNCTION
@@ -372,8 +372,8 @@ private:
 	
 	/**
 	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: n, u_n, t_n, alpha, deltat
-	 * Out variables: u_nplus1, t_nplus1
+	 * In variables: alpha, deltat, n, t_n, u_n
+	 * Out variables: t_nplus1, u_nplus1
 	 */
 	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept
@@ -432,18 +432,20 @@ public:
 			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
 		else
 			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
+
 		timer.start();
-		initXc(); // @1.0
-		initD(); // @1.0
-		computeV(); // @1.0
 		computeFaceLength(); // @1.0
-		initXcAndYc(); // @2.0
-		initU(); // @2.0
-		computeDeltaTn(); // @2.0
+		computeV(); // @1.0
+		initD(); // @1.0
+		initXc(); // @1.0
 		computeFaceConductivity(); // @2.0
+		initU(); // @2.0
+		initXcAndYc(); // @2.0
+		computeDeltaTn(); // @2.0
 		computeAlphaCoeff(); // @3.0
 		executeTimeLoopN(); // @4.0
 		timer.stop();
+
 		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << timer.print() << __RESET__ << std::endl;
 	}
 };

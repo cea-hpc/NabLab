@@ -133,7 +133,7 @@ public final class IterativeHeatEquation
 
 	/**
 	 * Job ComputeTn called @1.0 in executeTimeLoopN method.
-	 * In variables: t_n, deltat
+	 * In variables: deltat, t_n
 	 * Out variables: t_nplus1
 	 */
 	private void computeTn()
@@ -206,7 +206,7 @@ public final class IterativeHeatEquation
 
 	/**
 	 * Job UpdateU called @1.0 in executeTimeLoopK method.
-	 * In variables: alpha, u_nplus1_k, u_n
+	 * In variables: alpha, u_n, u_nplus1_k
 	 * Out variables: u_nplus1_kplus1
 	 */
 	private void updateU()
@@ -230,7 +230,7 @@ public final class IterativeHeatEquation
 
 	/**
 	 * Job dumpVariables called @1.0 in executeTimeLoopN method.
-	 * In variables: u_n, n
+	 * In variables: n, u_n
 	 * Out variables: 
 	 */
 	private void dumpVariables()
@@ -295,7 +295,7 @@ public final class IterativeHeatEquation
 
 	/**
 	 * Job ComputeResidual called @2.0 in executeTimeLoopK method.
-	 * In variables: u_nplus1_kplus1, u_nplus1_k
+	 * In variables: u_nplus1_k, u_nplus1_kplus1
 	 * Out variables: residual
 	 */
 	private void computeResidual()
@@ -310,7 +310,7 @@ public final class IterativeHeatEquation
 
 	/**
 	 * Job InitU called @2.0 in simulate method.
-	 * In variables: Xc, vectOne, u0
+	 * In variables: Xc, u0, vectOne
 	 * Out variables: u_n
 	 */
 	private void initU()
@@ -340,7 +340,7 @@ public final class IterativeHeatEquation
 
 	/**
 	 * Job computeDeltaTn called @2.0 in simulate method.
-	 * In variables: X_EDGE_LENGTH, Y_EDGE_LENGTH, D
+	 * In variables: D, X_EDGE_LENGTH, Y_EDGE_LENGTH
 	 * Out variables: deltat
 	 */
 	private void computeDeltaTn()
@@ -355,7 +355,7 @@ public final class IterativeHeatEquation
 
 	/**
 	 * Job executeTimeLoopK called @2.0 in executeTimeLoopN method.
-	 * In variables: u_nplus1_k, u_n, alpha, u_nplus1_kplus1
+	 * In variables: alpha, u_n, u_nplus1_k, u_nplus1_kplus1
 	 * Out variables: residual, u_nplus1_kplus1
 	 */
 	private void executeTimeLoopK()
@@ -384,7 +384,7 @@ public final class IterativeHeatEquation
 
 	/**
 	 * Job computeAlphaCoeff called @3.0 in simulate method.
-	 * In variables: deltat, V, faceLength, faceConductivity, Xc
+	 * In variables: V, Xc, deltat, faceConductivity, faceLength
 	 * Out variables: alpha
 	 */
 	private void computeAlphaCoeff()
@@ -426,8 +426,8 @@ public final class IterativeHeatEquation
 
 	/**
 	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: u_nplus1_k, deltat, t_n, u_n, alpha, n, u_nplus1_kplus1
-	 * Out variables: u_nplus1_k, residual, t_nplus1, u_nplus1, u_nplus1_kplus1
+	 * In variables: alpha, deltat, n, t_n, u_n, u_nplus1_k, u_nplus1_kplus1
+	 * Out variables: residual, t_nplus1, u_nplus1, u_nplus1_k, u_nplus1_kplus1
 	 */
 	private void executeTimeLoopN()
 	{

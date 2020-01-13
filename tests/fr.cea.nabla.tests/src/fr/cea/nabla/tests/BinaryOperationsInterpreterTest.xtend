@@ -35,7 +35,7 @@ class BinaryOperationsInterpreterTest
 	@Test
 	def void testGetValueOfNV0Bool_NV0Bool()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		ℾ b1 = true || false; // -> true
@@ -76,7 +76,7 @@ class BinaryOperationsInterpreterTest
 	@Test
 	def void testGetValueOfNV0Int_NV0Int()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		ℾ b1 = 1 == 2; // -> false
@@ -131,7 +131,7 @@ class BinaryOperationsInterpreterTest
 	@Test
 	def void testGetValueOfNV0Int_NV0Real()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		ℾ b1 = 1 == 2.; // -> false
@@ -184,7 +184,7 @@ class BinaryOperationsInterpreterTest
 	@Test
 	def void testGetValueOfNV0Int_NV1Int()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		ℕ[2] n1 = [1,2];

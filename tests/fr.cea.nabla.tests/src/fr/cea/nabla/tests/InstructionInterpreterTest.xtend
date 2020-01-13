@@ -34,7 +34,7 @@ class InstructionInterpreterTest
 	@Test
 	def void testInterpreteVarDefinition()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		Job1: { ℝ r = 1.0; t = r; }
@@ -52,7 +52,7 @@ class InstructionInterpreterTest
 	@Test
 	def void testInterpreteInstructionBlock()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		Job1: { ℝ r = 1.0; t = r; }
@@ -70,7 +70,7 @@ class InstructionInterpreterTest
 	@Test
 	def void testInterpreteAffectation()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		Job1: { ℝ r = 1.0; t = r; }

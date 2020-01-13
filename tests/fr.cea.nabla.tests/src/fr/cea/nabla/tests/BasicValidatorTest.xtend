@@ -44,6 +44,15 @@ class BasicValidatorTest
 			BasicValidator::DUPLICATE_NAME,
 			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.TIME_ITERATOR, "n"))
 
+		val moduleKo2 = parseHelper.parse(getTestModule('', '') + '''
+			ℕ n;
+			iterate n while (true), m while (true);
+			''')
+		Assert.assertNotNull(moduleKo2)
+		moduleKo2.assertError(NablaPackage.eINSTANCE.argOrVar,
+			BasicValidator::DUPLICATE_NAME,
+			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.ARG_OR_VAR, "n (iterator)"))
+
 		val moduleOk = parseHelper.parse(getTestModule('', '') + '''iterate n while (true), m while (true);''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors

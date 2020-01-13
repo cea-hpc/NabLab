@@ -96,7 +96,15 @@ class BasicValidator extends AbstractNablaValidator
 		val scope = scopeProvider.getScope(it, NablaPackage.Literals.ARG_OR_VAR_REF__TARGET)
 		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
 		if (duplicated)
+		{
 			error(getDuplicateNameMsg(NablaPackage.Literals.ARG_OR_VAR, name), NablaPackage.Literals.ARG_OR_VAR__NAME, DUPLICATE_NAME);
+		}
+		else
+		{
+			val module = EcoreUtil2.getContainerOfType(it, NablaModule)
+			if (module.iteration !== null && module.iteration.iterators.exists[x | x.name == name])
+				error(getDuplicateNameMsg(NablaPackage.Literals.ARG_OR_VAR, name + " (iterator)"), NablaPackage.Literals.ARG_OR_VAR__NAME, DUPLICATE_NAME);
+		}
 	}
 
 	@Check
@@ -139,7 +147,7 @@ class BasicValidator extends AbstractNablaValidator
 	def void checkDuplicate(Job it) { checkDuplicates(NablaPackage.Literals.JOB__NAME) }
 
 	@Check
-	def void checkDuplicate(TimeIterator it) { checkDuplicates(NablaPackage.Literals.ARG_OR_VAR__NAME) }
+	def void checkDuplicate(TimeIterator it) {  checkDuplicates(NablaPackage.Literals.ARG_OR_VAR__NAME) }
 
 	private def <T extends EObject> checkDuplicates(T t, EStructuralFeature f)
 	{

@@ -225,10 +225,10 @@
               <value href="environment:/viewpoint#//@systemColors/@entries[name='light_gray']"/>
             </featureCustomizations>
           </vsmElementCustomizations>
-          <vsmElementCustomizations xsi:type="description:VSMElementCustomization" predicateExpression="aql:self.oclIsKindOf(nablagen::Ir2CodeComponent) and (self.oclAsType(nablagen::Ir2CodeComponent).language ==  nablagen::Language::Kokkos or self.oclAsType(nablagen::Ir2CodeComponent).language ==  nablagen::Language::KokkosHierarchicalParallelism)">
+          <vsmElementCustomizations xsi:type="description:VSMElementCustomization" predicateExpression="aql:self.oclIsKindOf(nablagen::Ir2CodeComponent) and (self.oclAsType(nablagen::Ir2CodeComponent).language.oclIsKindOf(nablagen::CppKokkos)">
             <featureCustomizations xsi:type="description:EAttributeCustomization" appliedOn="//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']/@style" attributeName="iconPath" value="/fr.cea.nabla.sirius/icons/kokkos.png"/>
           </vsmElementCustomizations>
-          <vsmElementCustomizations xsi:type="description:VSMElementCustomization" predicateExpression="aql:self.oclIsKindOf(nablagen::Ir2CodeComponent) and self.oclAsType(nablagen::Ir2CodeComponent).language ==  nablagen::Language::Java">
+          <vsmElementCustomizations xsi:type="description:VSMElementCustomization" predicateExpression="aql:self.oclIsKindOf(nablagen::Ir2CodeComponent) and self.oclAsType(nablagen::Ir2CodeComponent).language.oclIsKindOf(nablagen::Java)">
             <featureCustomizations xsi:type="description:EAttributeCustomization" appliedOn="//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer/@nodeMappings[name='WD.Component']/@style" attributeName="iconPath" value="/fr.cea.nabla.sirius/icons/java.png"/>
           </vsmElementCustomizations>
         </customization>

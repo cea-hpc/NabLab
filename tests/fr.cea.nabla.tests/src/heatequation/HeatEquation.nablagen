@@ -4,12 +4,15 @@ workflow HeatEquationGenerationChain transforms HeatEquation
 {
 	Nabla2Ir nabla2ir
 	{
+		timeVariable = t;
+		deltatVariable = δt;
+		nodeCoordVariable = X;
 	}
 
 	TagPersistentVariables tagPersistentVariables follows nabla2ir 
 	{ 
-		variables = u as "Temperature";
-		iterationPeriod = 1;
+		dumpedVariables = u as "Temperature";
+		period = 1.0 for n;
 	}
 	
 	ReplaceUtf replaceUtf follows tagPersistentVariables

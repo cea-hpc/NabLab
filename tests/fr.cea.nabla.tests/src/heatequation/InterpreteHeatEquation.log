@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2020-01-13T15:44:21</date>
+  <millis>1578926661918</millis>
+  <sequence>0</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>warn</method>
+  <thread>1</thread>
+  <message>Execution 0</message>
+</record>
+<record>
+  <date>2020-01-13T15:44:21</date>
+  <millis>1578926661934</millis>
+  <sequence>1</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> Start executing HeatEquation module 2020/01/13 15:44:21</message>
+</record>
+<record>
+  <date>2020-01-13T15:44:53</date>
+  <millis>1578926693018</millis>
+  <sequence>3519795</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> End executing 2020/01/13 15:44:53 (31 s)</message>
+</record>
+<record>
+  <date>2020-01-13T15:44:53</date>
+  <millis>1578926693018</millis>
+  <sequence>3519796</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>warn</method>
+  <thread>1</thread>
+  <message>Execution 1</message>
+</record>
+<record>
+  <date>2020-01-13T15:44:53</date>
+  <millis>1578926693018</millis>
+  <sequence>3519797</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> Start executing HeatEquation module 2020/01/13 15:44:53</message>
+</record>
+<record>
+  <date>2020-01-13T15:46:14</date>
+  <millis>1578926774234</millis>
+  <sequence>7039591</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> End executing 2020/01/13 15:46:14 (81 s)</message>
+</record>
+<record>
+  <date>2020-01-13T15:46:14</date>
+  <millis>1578926774235</millis>
+  <sequence>7039592</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>warn</method>
+  <thread>1</thread>
+  <message>Execution 2</message>
+</record>
+<record>
+  <date>2020-01-13T15:46:14</date>
+  <millis>1578926774235</millis>
+  <sequence>7039593</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> Start executing HeatEquation module 2020/01/13 15:46:14</message>
+</record>
+<record>
+  <date>2020-01-13T15:47:38</date>
+  <millis>1578926858204</millis>
+  <sequence>10559387</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> End executing 2020/01/13 15:47:38 (83 s)</message>
+</record>
+<record>
+  <date>2020-01-13T15:48:43</date>
+  <millis>1578926923948</millis>
+  <sequence>10559388</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>warn</method>
+  <thread>1</thread>
+  <message>Execution 3</message>
+</record>
+<record>
+  <date>2020-01-13T15:48:43</date>
+  <millis>1578926923948</millis>
+  <sequence>10559389</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> Start executing HeatEquation module 2020/01/13 15:48:43</message>
+</record>
+<record>
+  <date>2020-01-13T15:49:14</date>
+  <millis>1578926954447</millis>
+  <sequence>14079183</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> End executing 2020/01/13 15:49:14 (30 s)</message>
+</record>
+<record>
+  <date>2020-01-13T15:49:14</date>
+  <millis>1578926954447</millis>
+  <sequence>14079184</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>warn</method>
+  <thread>1</thread>
+  <message>Execution 4</message>
+</record>
+<record>
+  <date>2020-01-13T15:49:14</date>
+  <millis>1578926954447</millis>
+  <sequence>14079185</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> Start executing HeatEquation module 2020/01/13 15:49:14</message>
+</record>
+<record>
+  <date>2020-01-13T15:49:45</date>
+  <millis>1578926985094</millis>
+  <sequence>17598979</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> End executing 2020/01/13 15:49:45 (30 s)</message>
+</record>
+<record>
+  <date>2020-01-13T15:49:45</date>
+  <millis>1578926985094</millis>
+  <sequence>17598980</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>warn</method>
+  <thread>1</thread>
+  <message>Execution 5</message>
+</record>
+<record>
+  <date>2020-01-13T15:49:45</date>
+  <millis>1578926985095</millis>
+  <sequence>17598981</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> Start executing HeatEquation module 2020/01/13 15:49:45</message>
+</record>
+<record>
+  <date>2020-01-13T15:50:15</date>
+  <millis>1578927015421</millis>
+  <sequence>21118775</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> End executing 2020/01/13 15:50:15 (30 s)</message>
+</record>
+<record>
+  <date>2020-01-13T15:50:15</date>
+  <millis>1578927015421</millis>
+  <sequence>21118776</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>warn</method>
+  <thread>1</thread>
+  <message>Execution 6</message>
+</record>
+<record>
+  <date>2020-01-13T15:50:15</date>
+  <millis>1578927015421</millis>
+  <sequence>21118777</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> Start executing HeatEquation module 2020/01/13 15:50:15</message>
+</record>
+<record>
+  <date>2020-01-13T15:50:45</date>
+  <millis>1578927045663</millis>
+  <sequence>24638571</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> End executing 2020/01/13 15:50:45 (30 s)</message>
+</record>
+<record>
+  <date>2020-01-13T15:50:45</date>
+  <millis>1578927045663</millis>
+  <sequence>24638572</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>warn</method>
+  <thread>1</thread>
+  <message>Execution 7</message>
+</record>
+<record>
+  <date>2020-01-13T15:50:45</date>
+  <millis>1578927045664</millis>
+  <sequence>24638573</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> Start executing HeatEquation module 2020/01/13 15:50:45</message>
+</record>
+<record>
+  <date>2020-01-13T15:51:15</date>
+  <millis>1578927075556</millis>
+  <sequence>28158367</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> End executing 2020/01/13 15:51:15 (29 s)</message>
+</record>
+<record>
+  <date>2020-01-13T15:51:15</date>
+  <millis>1578927075556</millis>
+  <sequence>28158368</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>warn</method>
+  <thread>1</thread>
+  <message>Execution 8</message>
+</record>
+<record>
+  <date>2020-01-13T15:51:15</date>
+  <millis>1578927075556</millis>
+  <sequence>28158369</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> Start executing HeatEquation module 2020/01/13 15:51:15</message>
+</record>
+<record>
+  <date>2020-01-13T15:51:45</date>
+  <millis>1578927105514</millis>
+  <sequence>31678163</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> End executing 2020/01/13 15:51:45 (29 s)</message>
+</record>
+<record>
+  <date>2020-01-13T15:51:45</date>
+  <millis>1578927105514</millis>
+  <sequence>31678164</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>warn</method>
+  <thread>1</thread>
+  <message>Execution 9</message>
+</record>
+<record>
+  <date>2020-01-13T15:51:45</date>
+  <millis>1578927105514</millis>
+  <sequence>31678165</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> Start executing HeatEquation module 2020/01/13 15:51:45</message>
+</record>
+<record>
+  <date>2020-01-13T15:52:15</date>
+  <millis>1578927135930</millis>
+  <sequence>35197959</sequence>
+  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
+  <level>WARNING</level>
+  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
+  <method>interprete</method>
+  <thread>1</thread>
+  <message> End executing 2020/01/13 15:52:15 (30 s)</message>
+</record>

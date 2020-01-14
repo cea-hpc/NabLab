@@ -75,7 +75,7 @@ class JobInterpreter
 				context.getReal(irModule.timeVariable.name) + " - deltat: " +
 				context.getReal(irModule.deltatVariable.name)
 			)
-			for (j : jobs.filter[x | x.at > 0].sortBy[at])
+			for (j : innerJobs.filter[x | x.at > 0].sortBy[at])
 				interprete(j, context)
 			//context.logVariables("After iteration = " + iteration)
 

@@ -18,6 +18,9 @@ import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
+import org.eclipse.core.resources.ResourcesPlugin
+import org.eclipse.core.runtime.FileLocator
+import org.eclipse.core.runtime.Path
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -27,17 +30,31 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
+import org.eclipse.core.runtime.Platform
 
 class Ir2Kokkos extends CodeGenerator
 {
 	val extension JobContentProvider jobContentProvider
 	val extension FunctionContentProvider functionContentProvider
 
-	new(JobContentProvider jcp) 
-	{ 
+	new(String outputFolder, JobContentProvider jcp)
+	{
 		super('Kokkos' + (if (jcp.threadTeam) ' team of threads' else ''))
 		jobContentProvider = jcp
 		functionContentProvider = new FunctionContentProvider(jcp.instructionContentProvider)
+
+		// check if c++ resources are available in the output folder
+		val workspaceRoot = ResourcesPlugin.workspace.root
+		val of = workspaceRoot.getFolder(new Path(outputFolder))
+		if (of.exists && !of.getFolder("libcppnabla").exists)
+		{
+			// c++ resources not available => unzip them
+			val bundle = Platform.getBundle("fr.cea.nabla.ir")
+			val cppResourcesUrl = bundle.getEntry("cppresources/libcppnabla.zip")
+			val zipFileUri = FileLocator.resolve(cppResourcesUrl).toURI()
+			val outputFolderUri = of.locationURI
+			UnzipHelper::unzip(zipFileUri, outputFolderUri)
+		}
 	}
 
 	override getFileContentsByName(IrModule it)

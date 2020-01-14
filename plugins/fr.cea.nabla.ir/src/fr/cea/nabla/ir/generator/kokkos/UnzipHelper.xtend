@@ -1,55 +1,60 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos
 
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.io.IOException
+import java.net.URI
 import java.util.zip.ZipInputStream
 
-class UnzipHelper 
+class UnzipHelper
 {
-	def static void unzip(String zipFilePath, String destDir) 
+	def static void unzip(URI zipFilePath, URI destDir)
 	{
 		val dir = new File(destDir)
 
 		// create output directory if it doesn't exist
 		if (!dir.exists) dir.mkdirs
-		var FileInputStream fis
 
 		// Buffer for read and write data to file
 		val buffer = newByteArrayOfSize(1024)
-		try 
+		val zis = new ZipInputStream(new FileInputStream(new File(zipFilePath)))
+		var ze = zis.nextEntry
+		while (ze !== null)
 		{
-			fis = new FileInputStream(zipFilePath)
-			val zis = new ZipInputStream(fis)
-			var ze = zis.nextEntry
-			while (ze !== null)
+			val newFile = new File(dir, ze.name)
+			//println("Unzipping to " + newFile.absolutePath)
+
+			if (ze.directory)
 			{
-				val fileName = ze.name
-				val newFile = new File(destDir + File.separator + fileName)
-				println("Unzipping to " + newFile.absolutePath)
+				newFile.mkdirs
+			}
+			else
+			{
+				val parent = new File(newFile.parent)
+				if (!parent.exists) parent.mkdirs
 
 				// Create directories for sub directories in zip
-				new File(newFile.parent).mkdirs
+				if (!newFile.exists) newFile.createNewFile
 				val fos = new FileOutputStream(newFile)
 				var int len
 				while ((len = zis.read(buffer)) > 0)
 					fos.write(buffer, 0, len)
 				fos.close
-
-				// Close this ZipEntry
-				zis.closeEntry
-				ze = zis.nextEntry
 			}
-
-			// Close last ZipEntry
-			zis.closeEntry
-			zis.close
-			fis.close
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace
+			ze = zis.nextEntry
 		}
+
+		// Close last ZipEntry
+		zis.closeEntry
+		zis.close
 	}
 }

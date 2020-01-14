@@ -30,9 +30,9 @@ class CodeGeneratorProvider
 			{
 				val tcp = new TraceContentProvider(l.maxIterationVar.name , l.stopTimeVar.name)
 				if (l.teamOfThreads)
-					new Ir2Kokkos(new HierarchicalJobContentProvider(tcp))
+					new Ir2Kokkos(outputDir, new HierarchicalJobContentProvider(tcp))
 				else
-					new Ir2Kokkos(new DefaultJobContentProvider(tcp))
+					new Ir2Kokkos(outputDir, new DefaultJobContentProvider(tcp))
 			}
 			default : throw new RuntimeException("Unsupported language " + language.class.name)
 		}

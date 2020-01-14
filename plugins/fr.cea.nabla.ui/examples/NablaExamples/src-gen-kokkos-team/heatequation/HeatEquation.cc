@@ -363,11 +363,11 @@ private:
 			// @1.0
 			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 			{
-				if (thread.league_rank() == 0)
-					Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){dumpVariables();});
+				computeOutgoingFlux(thread);
 				if (thread.league_rank() == 0)
 					Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){computeTn();});
-				computeOutgoingFlux(thread);
+				if (thread.league_rank() == 0)
+					Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){dumpVariables();});
 			});
 			
 			// @2.0
@@ -431,10 +431,10 @@ public:
 				Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){
 					std::cout << "[" << __GREEN__ << "RUNTIME" << __RESET__ << "]   Using " << __BOLD__ << setw(3) << thread.league_size() << __RESET__ << " team(s) of "
 						<< __BOLD__ << setw(3) << thread.team_size() << __RESET__<< " thread(s)" << std::endl;});
-			iniF(thread);
-			iniCenter(thread);
-			computeV(thread);
 			computeSurface(thread);
+			computeV(thread);
+			iniCenter(thread);
+			iniF(thread);
 		});
 		
 		// @2.0

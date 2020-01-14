@@ -31,13 +31,13 @@ class HierarchicalJobContentProvider extends JobContentProvider
 			«val atJobs = jobsByAt.get(at)»
 			// @«at»
 			«IF (atJobs.forall[!hasIterable])»
-				«FOR j : atJobs»
+				«FOR j : atJobs.sortBy[name]»
 				«j.codeName»();
 				«ENDFOR»
 			«ELSE»
 			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 			{
-				«FOR j : atJobs»
+				«FOR j : atJobs.sortBy[name]»
 					«IF nbTimes++==0»
 						«traceContentProvider.getTeamOfThreadsInfo(j.topLevel)»
 					«ENDIF»

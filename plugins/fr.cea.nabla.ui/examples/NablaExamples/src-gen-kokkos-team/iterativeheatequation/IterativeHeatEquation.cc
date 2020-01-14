@@ -556,9 +556,9 @@ private:
 					<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
 		
 			// @1.0
-			setUpTimeLoopK();
 			computeTn();
 			dumpVariables();
+			setUpTimeLoopK();
 			
 			// @2.0
 			executeTimeLoopK();
@@ -621,20 +621,20 @@ public:
 				Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){
 					std::cout << "[" << __GREEN__ << "RUNTIME" << __RESET__ << "]   Using " << __BOLD__ << setw(3) << thread.league_size() << __RESET__ << " team(s) of "
 						<< __BOLD__ << setw(3) << thread.team_size() << __RESET__<< " thread(s)" << std::endl;});
-			initXc(thread);
-			initD(thread);
-			computeV(thread);
 			computeFaceLength(thread);
+			computeV(thread);
+			initD(thread);
+			initXc(thread);
 		});
 		
 		// @2.0
 		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 		{
-			initXcAndYc(thread);
+			computeFaceConductivity(thread);
 			initU(thread);
+			initXcAndYc(thread);
 			if (thread.league_rank() == 0)
 				computeDeltaTn(thread);
-			computeFaceConductivity(thread);
 		});
 		
 		// @3.0

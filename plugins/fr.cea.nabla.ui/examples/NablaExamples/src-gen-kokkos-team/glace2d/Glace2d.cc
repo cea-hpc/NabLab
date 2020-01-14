@@ -546,8 +546,8 @@ private:
 			// @1.0
 			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 			{
-				computeInternalEnergy(thread);
 				computeCjr(thread);
+				computeInternalEnergy(thread);
 			});
 			
 			// @2.0
@@ -587,8 +587,8 @@ private:
 			// @7.0
 			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 			{
-				computeBr(thread);
 				computeAr(thread);
+				computeBr(thread);
 				if (thread.league_rank() == 0)
 					computeDt(thread);
 			});
@@ -596,11 +596,11 @@ private:
 			// @8.0
 			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 			{
-				outerFacesComputations(thread);
 				computeBt(thread);
 				computeMt(thread);
 				if (thread.league_rank() == 0)
 					Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){computeTn();});
+				outerFacesComputations(thread);
 			});
 			
 			// @9.0
@@ -612,8 +612,8 @@ private:
 			// @10.0
 			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 			{
-				computeXn(thread);
 				computeFjr(thread);
+				computeXn(thread);
 			});
 			
 			// @11.0
@@ -1102,11 +1102,11 @@ public:
 				Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){
 					std::cout << "[" << __GREEN__ << "RUNTIME" << __RESET__ << "]   Using " << __BOLD__ << setw(3) << thread.league_size() << __RESET__ << " team(s) of "
 						<< __BOLD__ << setw(3) << thread.team_size() << __RESET__<< " thread(s)" << std::endl;});
+			computeCjrIc(thread);
+			iniCenter(thread);
+			iniUn(thread);
 			if (thread.league_rank() == 0)
 				Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){setUpTimeLoopN();});
-			iniCenter(thread);
-			computeCjrIc(thread);
-			iniUn(thread);
 		});
 		
 		// @2.0
@@ -1119,8 +1119,8 @@ public:
 		// @3.0
 		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 		{
-			iniM(thread);
 			iniEn(thread);
+			iniM(thread);
 		});
 		
 		// @4.0

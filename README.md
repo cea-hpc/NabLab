@@ -98,7 +98,7 @@ The products resulting from the build will be accessible in */releng/fr.cea.nabl
 
 The Eclipse update-site resulting from the build will be accessible in */releng/fr.cea.nabla.updatesite/target/fr.cea.nabla.updatesite-1.0.0.yyyymmddHHMM.zip*.
 
-Just install this update-site in an Eclipse 2019-06 with Sirius 6.2.2 and Xtext 2.19.0 already installed to use NabLab.
+Just install this update-site in an Eclipse 2019-09 with Sirius 6.2.2 and Xtext 2.19.0 already installed to use NabLab.
 
 If you want to skip tests execution, you can run the following command:
 `mvn clean; mvn verify -Dmaven.test.skip=true`

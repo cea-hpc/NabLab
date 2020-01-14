@@ -80,7 +80,7 @@ abstract class JobContentProvider
 			«itVar»++;
 			«traceContentProvider.getBeginOfLoopTrace(itVar, timeVarName, isTopLevel)»
 
-			«jobs.jobCallsContent»
+			«innerJobs.jobCallsContent»
 
 			«traceContentProvider.getEndOfLoopTrace(itVar, timeVarName, deltatVarName, isTopLevel)»
 

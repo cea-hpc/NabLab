@@ -66,7 +66,7 @@ class JobContentProvider
 		{
 			«itVar»++;
 			System.out.printf("«timeLoop.indentation»[%5d] t: %5.5f - deltat: %5.5f\n", «itVar», «irModule.timeVariable.name», «irModule.deltatVariable.name»);
-			«FOR j : jobs.sortByAtAndName»
+			«FOR j : innerJobs.sortByAtAndName»
 				«j.codeName»(); // @«j.at»
 			«ENDFOR»
 

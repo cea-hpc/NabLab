@@ -24,7 +24,6 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.sirius.common.tools.api.interpreter
 Export-Package: fr.cea.nabla.sirius,
- fr.cea.nabla.sirius.ir,
  fr.cea.nabla.sirius.nablagen
 Bundle-ClassPath: .
 Bundle-Vendor: CEA

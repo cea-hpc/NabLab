@@ -35,6 +35,9 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IrAnnotation/source"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrAnnotation/details"/>
     </genClasses>
+    <genClasses image="false" ecoreClass="Ir.ecore#//JobContainer">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//JobContainer/innerJobs"/>
+    </genClasses>
     <genClasses ecoreClass="Ir.ecore#//IrModule">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IrModule/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/imports"/>
@@ -122,9 +125,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//InSituJob/nbCalls"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//InSituJob/lastDumpVariable"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//TimeLoopJob">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopJob/jobs"/>
-    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//TimeLoopJob"/>
     <genClasses image="false" ecoreClass="Ir.ecore#//TimeLoopCopyJob">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopCopyJob/copies"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopCopyJob/timeLoop"/>

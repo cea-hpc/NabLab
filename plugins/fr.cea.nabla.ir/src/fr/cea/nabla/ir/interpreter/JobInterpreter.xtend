@@ -71,7 +71,7 @@ class JobInterpreter
 			iteration ++
 			context.setVariableValue(iterationVariable, new NV0Int(iteration))
 			context.logInfo(timeLoop.indentation + "[" + iteration + "] t : " + context.getReal(irModule.timeVariable.name))
-			for (j : jobs.filter[x | x.at > 0].sortBy[at])
+			for (j : innerJobs.filter[x | x.at > 0].sortBy[at])
 				interprete(j, context)
 			//context.logVariables("After iteration = " + iteration)
 			// Switch variables to prepare next iteration

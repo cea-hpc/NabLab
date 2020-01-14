@@ -91,17 +91,17 @@ public interface Job extends IrAnnotable {
 
 	/**
 	 * Returns the value of the '<em><b>Job Container</b></em>' reference.
-	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.TimeLoopJob#getJobs <em>Jobs</em>}'.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.JobContainer#getInnerJobs <em>Inner Jobs</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Job Container</em>' reference.
-	 * @see #setJobContainer(TimeLoopJob)
+	 * @see #setJobContainer(JobContainer)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_JobContainer()
-	 * @see fr.cea.nabla.ir.ir.TimeLoopJob#getJobs
-	 * @model opposite="jobs"
+	 * @see fr.cea.nabla.ir.ir.JobContainer#getInnerJobs
+	 * @model opposite="innerJobs" required="true"
 	 * @generated
 	 */
-	TimeLoopJob getJobContainer();
+	JobContainer getJobContainer();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Job#getJobContainer <em>Job Container</em>}' reference.
@@ -111,6 +111,6 @@ public interface Job extends IrAnnotable {
 	 * @see #getJobContainer()
 	 * @generated
 	 */
-	void setJobContainer(TimeLoopJob value);
+	void setJobContainer(JobContainer value);
 
 } // Job

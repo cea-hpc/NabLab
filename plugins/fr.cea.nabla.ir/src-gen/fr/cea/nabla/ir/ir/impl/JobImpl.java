@@ -10,7 +10,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Job;
-import fr.cea.nabla.ir.ir.TimeLoopJob;
+import fr.cea.nabla.ir.ir.JobContainer;
 
 /**
  * <!-- begin-user-doc -->
@@ -97,7 +97,7 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * @generated
 	 * @ordered
 	 */
-	protected TimeLoopJob jobContainer;
+	protected JobContainer jobContainer;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -193,10 +193,10 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * @generated
 	 */
 	@Override
-	public TimeLoopJob getJobContainer() {
+	public JobContainer getJobContainer() {
 		if (jobContainer != null && jobContainer.eIsProxy()) {
 			InternalEObject oldJobContainer = (InternalEObject)jobContainer;
-			jobContainer = (TimeLoopJob)eResolveProxy(oldJobContainer);
+			jobContainer = (JobContainer)eResolveProxy(oldJobContainer);
 			if (jobContainer != oldJobContainer) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.JOB__JOB_CONTAINER, oldJobContainer, jobContainer));
@@ -210,7 +210,7 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public TimeLoopJob basicGetJobContainer() {
+	public JobContainer basicGetJobContainer() {
 		return jobContainer;
 	}
 
@@ -219,8 +219,8 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetJobContainer(TimeLoopJob newJobContainer, NotificationChain msgs) {
-		TimeLoopJob oldJobContainer = jobContainer;
+	public NotificationChain basicSetJobContainer(JobContainer newJobContainer, NotificationChain msgs) {
+		JobContainer oldJobContainer = jobContainer;
 		jobContainer = newJobContainer;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.JOB__JOB_CONTAINER, oldJobContainer, newJobContainer);
@@ -235,13 +235,13 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * @generated
 	 */
 	@Override
-	public void setJobContainer(TimeLoopJob newJobContainer) {
+	public void setJobContainer(JobContainer newJobContainer) {
 		if (newJobContainer != jobContainer) {
 			NotificationChain msgs = null;
 			if (jobContainer != null)
-				msgs = ((InternalEObject)jobContainer).eInverseRemove(this, IrPackage.TIME_LOOP_JOB__JOBS, TimeLoopJob.class, msgs);
+				msgs = ((InternalEObject)jobContainer).eInverseRemove(this, IrPackage.JOB_CONTAINER__INNER_JOBS, JobContainer.class, msgs);
 			if (newJobContainer != null)
-				msgs = ((InternalEObject)newJobContainer).eInverseAdd(this, IrPackage.TIME_LOOP_JOB__JOBS, TimeLoopJob.class, msgs);
+				msgs = ((InternalEObject)newJobContainer).eInverseAdd(this, IrPackage.JOB_CONTAINER__INNER_JOBS, JobContainer.class, msgs);
 			msgs = basicSetJobContainer(newJobContainer, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
@@ -259,8 +259,8 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 		switch (featureID) {
 			case IrPackage.JOB__JOB_CONTAINER:
 				if (jobContainer != null)
-					msgs = ((InternalEObject)jobContainer).eInverseRemove(this, IrPackage.TIME_LOOP_JOB__JOBS, TimeLoopJob.class, msgs);
-				return basicSetJobContainer((TimeLoopJob)otherEnd, msgs);
+					msgs = ((InternalEObject)jobContainer).eInverseRemove(this, IrPackage.JOB_CONTAINER__INNER_JOBS, JobContainer.class, msgs);
+				return basicSetJobContainer((JobContainer)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -318,7 +318,7 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 				setOnCycle((Boolean)newValue);
 				return;
 			case IrPackage.JOB__JOB_CONTAINER:
-				setJobContainer((TimeLoopJob)newValue);
+				setJobContainer((JobContainer)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -342,7 +342,7 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 				setOnCycle(ON_CYCLE_EDEFAULT);
 				return;
 			case IrPackage.JOB__JOB_CONTAINER:
-				setJobContainer((TimeLoopJob)null);
+				setJobContainer((JobContainer)null);
 				return;
 		}
 		super.eUnset(featureID);

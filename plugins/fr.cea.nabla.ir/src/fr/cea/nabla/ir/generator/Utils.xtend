@@ -44,7 +44,7 @@ class Utils
 	static def getComment(Job it)
 	'''
 		/**
-		 * Job «name» called @«at» in «IF topLevel»simulate«ELSE»«jobContainer.codeName»«ENDIF» method.
+		 * Job «name» called @«at» in «IF topLevel»simulate«ELSE»«(jobContainer as Job).codeName»«ENDIF» method.
 		 * In variables: «FOR v : inVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
 		 * Out variables: «FOR v : outVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
 		 */

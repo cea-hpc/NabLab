@@ -30,7 +30,7 @@ class JobExtensions
 {
 	static def isTopLevel(Job it)
 	{
-		(jobContainer === null)
+		(jobContainer instanceof IrModule)
 	}
 
 	static def hasIterable(Job it)
@@ -59,7 +59,7 @@ class JobExtensions
 	static def dispatch Iterable<Variable> getOutVars(TimeLoopJob it)
 	{
 		val outVars = new HashSet<Variable>
-		jobs.forEach[x | outVars += x.outVars]
+		innerJobs.forEach[x | outVars += x.outVars]
 		return outVars
 	}
 
@@ -82,7 +82,7 @@ class JobExtensions
 	static def dispatch Iterable<Variable> getInVars(TimeLoopJob it)
 	{
 		val inVars = new HashSet<Variable>
-		jobs.forEach[x | inVars += x.inVars]
+		innerJobs.forEach[x | inVars += x.inVars]
 		return inVars
 	}
 

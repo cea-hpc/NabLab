@@ -136,23 +136,34 @@ class FillJobHLTs implements IrTransformationStep
 		if (mainTimeLoop !== null) distributeTimeLoopJobs(it, mainTimeLoop)
 
 		// distribute other jobs in time loop jobs
-		for (tlNextJob : jobs.filter(TimeLoopJob))
+		for (tlJob : jobs.filter(TimeLoopJob))
 		{
-			val tlInVariables = tlNextJob.copies.map[destination]
+			val tlInVariables = tlJob.copies.map[destination]
 			val tlNextJobs = new HashSet<Job>
 			tlInVariables.forEach[v | tlNextJobs += v.nextJobs]
 			for (next : tlNextJobs.reject(TimeLoopJob))
-				distributeJobsInTimeLoops(tlNextJob.timeLoop, next)
+				distributeJobsInTimeLoops(tlJob.timeLoop, next)
 		}
+
+		// job with no container depends on module
+		val jobsWithNoContainer = jobs.filter[jobContainer === null]
+		for (j : jobsWithNoContainer) j.jobContainer = it
 	}
 
 	private def void distributeTimeLoopJobs(IrModule m, TimeLoop tl)
 	{
+		if (tl.outerTimeLoop === null)
+		{
+			m.innerJobs += m.jobs.filter(TimeLoopJob).filter[timeLoop == tl]
+			m.innerJobs += m.jobs.filter(BeforeTimeLoopJob).filter[timeLoop == tl]
+			m.innerJobs += m.jobs.filter(AfterTimeLoopJob).filter[timeLoop == tl]
+		}
+
 		if (tl.innerTimeLoop !== null)
 		{
-			tl.associatedJob.jobs += m.jobs.filter(TimeLoopJob).filter[timeLoop == tl.innerTimeLoop]
-			tl.associatedJob.jobs += m.jobs.filter(BeforeTimeLoopJob).filter[timeLoop == tl.innerTimeLoop]
-			tl.associatedJob.jobs += m.jobs.filter(AfterTimeLoopJob).filter[timeLoop == tl.innerTimeLoop]
+			tl.associatedJob.innerJobs += m.jobs.filter(TimeLoopJob).filter[timeLoop == tl.innerTimeLoop]
+			tl.associatedJob.innerJobs += m.jobs.filter(BeforeTimeLoopJob).filter[timeLoop == tl.innerTimeLoop]
+			tl.associatedJob.innerJobs += m.jobs.filter(AfterTimeLoopJob).filter[timeLoop == tl.innerTimeLoop]
 			distributeTimeLoopJobs(m, tl.innerTimeLoop)
 		}
 	}
@@ -173,7 +184,7 @@ class FillJobHLTs implements IrTransformationStep
 			}
 			default:
 			{
-				tl.associatedJob.jobs += j
+				tl.associatedJob.innerJobs += j
 				j.nextJobs.reject(TimeLoopJob).forEach[x | distributeJobsInTimeLoops(tl, x)]
 			}
 		}

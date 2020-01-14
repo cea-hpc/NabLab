@@ -76,6 +76,10 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createIrAnnotationAdapter();
 			}
 			@Override
+			public Adapter caseJobContainer(JobContainer object) {
+				return createJobContainerAdapter();
+			}
+			@Override
 			public Adapter caseIrModule(IrModule object) {
 				return createIrModuleAdapter();
 			}
@@ -364,6 +368,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createIrAnnotationAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.JobContainer <em>Job Container</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.JobContainer
+	 * @generated
+	 */
+	public Adapter createJobContainerAdapter() {
 		return null;
 	}
 

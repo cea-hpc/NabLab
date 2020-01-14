@@ -55,7 +55,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
+public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->

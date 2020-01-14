@@ -66,24 +66,34 @@ class JobInterpreter
 		var iteration = 0
 		context.logVariables("Before timeLoop " + timeLoop.name)
 		context.addVariableValue(iterationVariable, new NV0Int(iteration))
+		var continueLoop = true
 		do
 		{
 			iteration ++
 			context.setVariableValue(iterationVariable, new NV0Int(iteration))
-			context.logInfo(timeLoop.indentation + "[" + iteration + "] t : " + context.getReal(irModule.timeVariable.name))
-			for (j : innerJobs.filter[x | x.at > 0].sortBy[at])
+			context.logInfo(timeLoop.indentation + "[" + iteration + "] t: " +
+				context.getReal(irModule.timeVariable.name) + " - deltat: " +
+				context.getReal(irModule.deltatVariable.name)
+			)
+			for (j : jobs.filter[x | x.at > 0].sortBy[at])
 				interprete(j, context)
 			//context.logVariables("After iteration = " + iteration)
-			// Switch variables to prepare next iteration
-			for (copy : copies)
+
+			continueLoop = (interprete(timeLoop.whileCondition, context) as NV0Bool).data
+
+			if (continueLoop)
 			{
-				val leftValue = context.getVariableValue(copy.destination)
-				val rightValue = context.getVariableValue(copy.source)
-				context.setVariableValue(copy.destination, rightValue)
-				context.setVariableValue(copy.source, leftValue)
+				// Switch variables to prepare next iteration
+				for (copy : copies)
+				{
+					val leftValue = context.getVariableValue(copy.destination)
+					val rightValue = context.getVariableValue(copy.source)
+					context.setVariableValue(copy.destination, rightValue)
+					context.setVariableValue(copy.source, leftValue)
+				}
 			}
 		}
-		while ((interprete(timeLoop.whileCondition, context) as NV0Bool).data)
+		while (continueLoop)
 		context.logVariables("After timeLoop " + iteration)
 	}
 

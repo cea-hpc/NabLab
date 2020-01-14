@@ -40,7 +40,7 @@ class ExpressionInterpreterTest
 	@Test
 	def void testInterpreteContractedIf() 
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''	
 		ℝ r1 = true ? 1.0 : 2.0; // -> 1.0
@@ -63,7 +63,7 @@ class ExpressionInterpreterTest
 	@Test
 	def void testInterpreteUnaryExpression()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		ℾ b0 = !false; // -> true
@@ -101,7 +101,7 @@ class ExpressionInterpreterTest
 	@Test
 	def void testInterpreteParenthesis()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		ℾ b = (true);
@@ -116,7 +116,7 @@ class ExpressionInterpreterTest
 	def void testInterpreteConstant()
 	{
 		//NB : Constant only for Scalar
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		ℕ n1 = 1;
@@ -136,7 +136,7 @@ class ExpressionInterpreterTest
 	@Test
 	def void testInterpreteMinConstant()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		ℕ nMin = ℕ.MinValue;
@@ -152,7 +152,7 @@ class ExpressionInterpreterTest
 	@Test
 	def void testInterpreteMaxConstant()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		ℕ nMax = ℕ.MaxValue;
@@ -168,7 +168,7 @@ class ExpressionInterpreterTest
 	@Test
 	def void testInterpreteBaseTypeConstant()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		ℕ n1 = ℕ(1);
@@ -202,7 +202,7 @@ class ExpressionInterpreterTest
 	@Test
 	def void testInterpreteIntVectorConstant()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		ℕ[2] n = [1, 2];
@@ -216,7 +216,7 @@ class ExpressionInterpreterTest
 	@Test
 	def void testInterpreteIntMatrixConstant()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		ℕ[2,3] n = [[0, 1, 2],[1, 2, 3]];
@@ -230,7 +230,7 @@ class ExpressionInterpreterTest
 	@Test
 	def void testInterpreteRealVectorConstant()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		ℝ[2] r = [1.0, 2.0];
@@ -244,7 +244,7 @@ class ExpressionInterpreterTest
 	@Test
 	def void testInterpreteRealMatrixConstant()
 	{
-		val model = testModuleForCompilation
+		val model = testModuleForSimulation
 		+
 		'''
 		ℝ[2,3] r = [[0., 1., 2.],[1., 2., 3.]];
@@ -269,11 +269,8 @@ class ExpressionInterpreterTest
 		def add: x | ℝ[x] × ℝ[x] → ℝ[x];
 		def add: x,y | ℝ[x,y] × ℝ[x,y] → ℝ[x,y];
 		''')
-		+
+		+ TestUtils::simulationVariables +
 		'''
-		ℝ t = 0.0;
-		ℝ[2] X{nodes};
-
 		ℕ n0 = 0;
 		ℕ n1 = getOne(); 	//-> 1
 		ℕ n2 = addOne(n1); 	//-> 2
@@ -334,11 +331,8 @@ class ExpressionInterpreterTest
 
 		def k: b | ℝ[b] → ℝ[b], (x) → return j(x);
 		''')
-		+
+		+ TestUtils::simulationVariables +
 		'''
-		ℝ t = 0.0;
-		ℝ[2] X{nodes};
-
 		ℝ[2] u = [0.0, 0.1];
 		ℝ[3] v = [0.0, 0.1, 0.2];
 		ℝ[2] w1;
@@ -372,7 +366,7 @@ class ExpressionInterpreterTest
 	@Test
 	def void testInterpreteVarRef()
 	{
-		val model = getTestModuleForCompilation
+		val model = getTestModuleForSimulation
 		+
 		'''
 		ℾ b1 = true;

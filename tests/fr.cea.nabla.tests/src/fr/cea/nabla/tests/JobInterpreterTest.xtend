@@ -31,7 +31,7 @@ class JobInterpreterTest
 	@Test
 	def void testInterpreteInstructionJob()
 	{
-		val model = TestUtils::testModuleForCompilation
+		val model = TestUtils::testModuleForSimulation
 		+
 		'''
 		initT : t = 5.;
@@ -55,7 +55,7 @@ class JobInterpreterTest
 	@Test
 	def void testInterpreteTimeLoopJob()
 	{
-		val model = TestUtils::testModuleForCompilation
+		val model = TestUtils::testModuleForSimulation
 		+
 		'''
 		// Simulation options

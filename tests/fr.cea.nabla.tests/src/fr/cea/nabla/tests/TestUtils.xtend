@@ -83,9 +83,10 @@ class TestUtils
 	const ℕ Y_EDGE_ELEMS = «yQuads»;
 	'''
 
-	private static def String getCompilationVariables()
+	static def String getSimulationVariables()
 	'''
 	ℝ t = 0.0;
+	ℝ δt = 0.001;
 	ℝ[2] X{nodes};
 	'''
 
@@ -115,9 +116,9 @@ class TestUtils
 		emptyTestModule + mandatoryOptions
 	}
 
-	static def CharSequence getTestModuleForCompilation()
+	static def CharSequence getTestModuleForSimulation()
 	{
-		emptyTestModule + nodesConnectivity + mandatoryOptions + compilationVariables
+		emptyTestModule + nodesConnectivity + mandatoryOptions + fr.cea.nabla.tests.TestUtils.getSimulationVariables
 	}
 
 	static def CharSequence getTestModule(CharSequence connectivities, CharSequence functions)
@@ -127,7 +128,7 @@ class TestUtils
 
 	static def CharSequence getTestModule(int xQuads, int yQuads)
 	{
-		emptyTestModule + defaultConnectivities + getMandatoryOptions(xQuads, yQuads) + compilationVariables
+		emptyTestModule + defaultConnectivities + getMandatoryOptions(xQuads, yQuads) + fr.cea.nabla.tests.TestUtils.getSimulationVariables
 	}
 
 	static def getTestGenModel()
@@ -140,6 +141,7 @@ class TestUtils
 			Nabla2Ir nabla2ir
 			{
 				timeVariable = t;
+				deltatVariable = δt;
 				nodeCoordVariable = X;
 			}
 			ReplaceUtf replaceUtf follows nabla2ir

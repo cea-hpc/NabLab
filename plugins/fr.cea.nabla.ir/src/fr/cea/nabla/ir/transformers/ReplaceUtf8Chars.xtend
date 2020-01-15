@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -13,14 +13,14 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.VarDefinition
 
-class ReplaceUtf8Chars implements IrTransformationStep 
+class ReplaceUtf8Chars implements IrTransformationStep
 {
-	override getDescription() 
+	override getDescription()
 	{
 		'Replace UTF8 characters in function, variable and job names by ASCII characters'
 	}
-	
-	override transform(IrModule m) 
+
+	override transform(IrModule m)
 	{
 		m.variables.forEach[x | x.name = x.name.noUtf8]
 		for (svd : m.eAllContents.filter(VarDefinition).toIterable)
@@ -32,7 +32,7 @@ class ReplaceUtf8Chars implements IrTransformationStep
 		m.jobs.forEach[x | x.name = x.name.noUtf8]
 		return true
 	}
-	
+
 	private def getNoUtf8(String name)
 	{
 		name.replace('\u03B1', 'alpha')
@@ -45,8 +45,8 @@ class ReplaceUtf8Chars implements IrTransformationStep
 		.replace('\u2126', 'omega')
 		.replace('\u221A', 'sqrt')
 	}
-	
-	override getOutputTraces() 
+
+	override getOutputTraces()
 	{
 		#[]
 	}

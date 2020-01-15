@@ -26,7 +26,7 @@ class LatexView extends ViewPart
 	@Inject LatexViewListener listener
 	Label label
 
-	override createPartControl(Composite parent) 
+	override createPartControl(Composite parent)
 	{
 		label = new Label(parent, SWT.NONE)
 
@@ -35,7 +35,7 @@ class LatexView extends ViewPart
 		site.page.addPostSelectionListener(listener)
 	}
 
-	override setFocus() 
+	override setFocus()
 	{
 		label.setFocus
 	}
@@ -45,7 +45,7 @@ class LatexView extends ViewPart
 		if (element !== null && !element.eIsProxy)
 		{
 			val latexLabel = LatexLabelServices.getLatex(element)
-			if (latexLabel !== null) 
+			if (latexLabel !== null)
 			{
 				//println("LATEX : " + latexLabel)
 				val image = LatexImageServices.createPngImage(latexLabel, 25)

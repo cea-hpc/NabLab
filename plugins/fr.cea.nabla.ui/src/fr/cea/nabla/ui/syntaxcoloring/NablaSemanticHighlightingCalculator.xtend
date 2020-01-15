@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -22,13 +22,13 @@ import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.util.CancelIndicator
 
-class NablaSemanticHighlightingCalculator implements ISemanticHighlightingCalculator 
+class NablaSemanticHighlightingCalculator implements ISemanticHighlightingCalculator
 {
-	override provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor, CancelIndicator arg2) 
+	override provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor, CancelIndicator arg2)
 	{
 		if (resource !== null && resource.parseResult !== null)
 		{
-			val root = resource.parseResult.rootNode			
+			val root = resource.parseResult.rootNode
 			for (node : root.asTreeIterable) 
 			{
 				val elt = node.grammarElement
@@ -40,7 +40,7 @@ class NablaSemanticHighlightingCalculator implements ISemanticHighlightingCalcul
 			}
 		}
 	}
-	
+
 //	private def String debug(EObject elt, int depth)
 //	{
 //		var s = ''
@@ -58,23 +58,23 @@ class NablaSemanticHighlightingCalculator implements ISemanticHighlightingCalcul
 //		}
 //		return s
 //	}
-	
+
 	private def void colorize(IHighlightedPositionAcceptor a, INode n, EObject elt)
 	{
 		switch elt
 		{
-			TerminalRule : 
+			TerminalRule :
 			{
 				switch elt.name
 				{
 					case NablaHighlightingConfiguration::REAL_ID: colorizeNode(a, n, NablaHighlightingConfiguration::REAL_ID)
 					case NablaHighlightingConfiguration::ID_ID: colorizeNode(a, n, NablaHighlightingConfiguration::ID_ID)
-				}	
+				}
 			}
 			Action: {}
 			CrossReference: {}
 			RuleCall: colorize(a, n, elt.rule)
-			ParserRule: 
+			ParserRule:
 			{
 				switch elt.name
 				{
@@ -86,17 +86,17 @@ class NablaSemanticHighlightingCalculator implements ISemanticHighlightingCalcul
 			default: {}
 		}
 	}
-	
+
 	private def colorizeNode(IHighlightedPositionAcceptor acceptor, INode node, String colorId)
 	{
 		acceptor.addPosition(node.offset, node.length, colorId)
 	}
-	
+
 	private def colorizeTimeIterator(IHighlightedPositionAcceptor acceptor, INode node, String colorId)
 	{
 		val s = node.text.trim
 		//println('node info - text:' + s + ', offset:' + node.offset + ', length:' + node.length)
-		
+
 		val offset = s.indexOf('^{')
 		val lastIndex = s.indexOf('}')
 		val length = lastIndex-offset-2

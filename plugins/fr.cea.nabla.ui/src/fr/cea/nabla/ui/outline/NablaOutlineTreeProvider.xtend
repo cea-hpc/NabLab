@@ -29,10 +29,10 @@ import fr.cea.nabla.nabla.Reduction
  *
  * See https://www.eclipse.org/Xtext/documentation/304_ide_concepts.html#outline
  */
-class NablaOutlineTreeProvider extends DefaultOutlineTreeProvider 
+class NablaOutlineTreeProvider extends DefaultOutlineTreeProvider
 {
-	def _isLeaf(Instruction it) 
-	{ 
+	def _isLeaf(Instruction it)
+	{
 		switch it
 		{
 			InstructionBlock, If : false
@@ -57,10 +57,10 @@ class NablaOutlineTreeProvider extends DefaultOutlineTreeProvider
 	 * La police de l'outline a des problemes d'affichage.
 	 * Des essais ont ete realises avec des TextStyle. Aucun effet...
 	 */
-	def _text(Instruction it) 
-	{ 
-		if (it === null) return null // ca arrive !
-		
+	def _text(Instruction it)
+	{
+		if (it === null) return null
+
 		val c = eContainer
 		switch c
 		{
@@ -73,19 +73,19 @@ class NablaOutlineTreeProvider extends DefaultOutlineTreeProvider
 	def _text(Function it) { label }
 	def _text(Reduction it) { label }
 
-	def _createChildren(DocumentRootNode parentNode, NablaModule it) 
+	def _createChildren(DocumentRootNode parentNode, NablaModule it)
 	{
 		functions.forEach[x | createNode(parentNode, x)]
 		reductions.forEach[x | createNode(parentNode, x)]
 		jobs.forEach[x | createNode(parentNode, x)]
 	}
 
-	def _createChildren(IOutlineNode parentNode, Function it) 
+	def _createChildren(IOutlineNode parentNode, Function it)
 	{
 		if (body !== null) body.findChildren.forEach[x | createNode(parentNode, x)]
 	}
 
-	def _createChildren(IOutlineNode parentNode, Instruction it) 
+	def _createChildren(IOutlineNode parentNode, Instruction it)
 	{
 		findChildren.forEach[x | createNode(parentNode, x)]
 	}

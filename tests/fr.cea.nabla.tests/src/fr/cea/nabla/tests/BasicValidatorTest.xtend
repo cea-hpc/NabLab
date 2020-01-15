@@ -27,7 +27,7 @@ import static fr.cea.nabla.tests.TestUtils.*
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
-class BasicValidatorTest 
+class BasicValidatorTest
 {
 	@Inject ParseHelper<NablaModule> parseHelper
 	@Inject extension ValidationTestHelper

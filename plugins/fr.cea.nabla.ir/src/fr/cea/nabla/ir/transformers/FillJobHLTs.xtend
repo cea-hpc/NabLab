@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -60,7 +60,7 @@ class FillJobHLTs implements IrTransformationStep
 		return true
 	}
 
-	override getOutputTraces() 
+	override getOutputTraces()
 	{
 		outputTraces
 	}
@@ -198,7 +198,7 @@ class FillJobHLTs implements IrTransformationStep
 	private def void fillAt(Iterable<Job> jobs)
 	{
 		val g = createGraph(jobs)
-		val jalgo = new FloydWarshallShortestPaths<Job, DefaultWeightedEdge>(g)	
+		val jalgo = new FloydWarshallShortestPaths<Job, DefaultWeightedEdge>(g)
 
 		var maxAtValue = 0.0
 		g.edgeSet.forEach[e | g.setEdgeWeight(e, -1)]

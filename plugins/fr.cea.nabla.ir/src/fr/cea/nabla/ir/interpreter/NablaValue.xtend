@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -5,19 +14,19 @@ import org.eclipse.xtend.lib.annotations.Data
 
 interface NablaValue { }
 
-class NV0Bool implements NablaValue 
+class NV0Bool implements NablaValue
 {
 	@Accessors boolean data 
 	new(boolean data) { this.data = data }
 
 	override boolean equals(Object obj)
 	{
-	    if (this === obj) return true
-	    if (obj === null) return false
-	    if (getClass() !== obj.getClass()) return false
-	    val other = obj as NV0Bool
-	    if (other.data !== this.data) return false
-	    return true
+		if (this === obj) return true
+		if (obj === null) return false
+		if (getClass() !== obj.getClass()) return false
+		val other = obj as NV0Bool
+		if (other.data !== this.data) return false
+		return true
 	}
 }
 
@@ -28,28 +37,28 @@ class NV0Int implements NablaValue
 
 	override boolean equals(Object obj)
 	{
-	    if (this === obj) return true
-	    if (obj === null) return false
-	    if (getClass() !== obj.getClass()) return false
-	    val other = obj as NV0Int
-	    if (other.data !== this.data) return false
-	    return true
+		if (this === obj) return true
+		if (obj === null) return false
+		if (getClass() !== obj.getClass()) return false
+		val other = obj as NV0Int
+		if (other.data !== this.data) return false
+		return true
 	}
 }
 
 class NV0Real implements NablaValue
-{  
+{
 	@Accessors double data 
 	new(double data) { this.data = data }
 
 	override boolean equals(Object obj)
 	{
-	    if (this === obj) return true
-	    if (obj === null) return false
-	    if (getClass() !== obj.getClass()) return false
-	    val other = obj as NV0Real
-	    if (other.data !== this.data) return false
-	    return true
+		if (this === obj) return true
+		if (obj === null) return false
+		if (getClass() !== obj.getClass()) return false
+		val other = obj as NV0Real
+		if (other.data !== this.data) return false
+		return true
 	}
 }
 

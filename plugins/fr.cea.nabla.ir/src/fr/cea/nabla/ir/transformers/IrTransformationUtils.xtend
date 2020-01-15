@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.Instruction
@@ -5,7 +14,7 @@ import fr.cea.nabla.ir.ir.IrFactory
 import java.util.List
 import org.eclipse.emf.ecore.util.FeatureMapUtil
 
-class IrTransformationUtils 
+class IrTransformationUtils
 {
 	/**
 	 * Extension of the EcoreUtil::replace operation for a list of objects.
@@ -14,8 +23,8 @@ class IrTransformationUtils
 	 */
 	static def replace(Instruction oldInstruction, List<Instruction> newInstructions)
 	{
-    	val container = oldInstruction.eContainer
-    	if (container !== null && !newInstructions.empty)
+		val container = oldInstruction.eContainer
+		if (container !== null && !newInstructions.empty)
 		{
 			val feature = oldInstruction.eContainmentFeature
 			if (FeatureMapUtil.isMany(container, feature))
@@ -25,10 +34,10 @@ class IrTransformationUtils
 				list.set(reductionIndex, newInstructions.get(0))
 				for (i : 1..<newInstructions.length)
 					list.add(reductionIndex+i, newInstructions.get(i))
-      		}
+			}
 			else
 			{
-				val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock => 
+				val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock =>
 				[
 					for (toAdd : newInstructions)
 						instructions += toAdd
@@ -37,15 +46,15 @@ class IrTransformationUtils
 			}
 		}
 	}
-	
+
 	/**
 	 * Nearly the same method as above except that the 'existingInstruction' is not replace;
 	 * instructions are just inserted before
 	 */
 	static def insertBefore(Instruction existingInstruction, List<Instruction> instructionsToInsert)
 	{
-    	val container = existingInstruction.eContainer
-    	if (container !== null && !instructionsToInsert.empty)
+		val container = existingInstruction.eContainer
+		if (container !== null && !instructionsToInsert.empty)
 		{
 			val feature = existingInstruction.eContainmentFeature
 			if (FeatureMapUtil.isMany(container, feature))
@@ -54,10 +63,10 @@ class IrTransformationUtils
 				val reductionIndex = list.indexOf(existingInstruction)
 				for (toAdd : instructionsToInsert)
 					list.add(reductionIndex, toAdd)
-      		}
+			}
 			else
 			{
-				val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock => 
+				val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock =>
 				[
 					for (toAdd : instructionsToInsert) instructions += toAdd
 					instructions += existingInstruction

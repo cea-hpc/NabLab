@@ -29,7 +29,7 @@ class HierarchicalInstructionContentProvider extends InstructionContentProvider
 		Kokkos::parallel_reduce(Kokkos::TeamThreadRange(team_member, «nbElems»), KOKKOS_LAMBDA(const int& «indexName», «result.cppType»& x)
 	'''
 
-	private def dispatch getBlockParallelContent(SpaceIterationBlock it, Loop l) 
+	private def dispatch getBlockParallelContent(SpaceIterationBlock it, Loop l)
 	'''
 		const auto team_work(computeTeamWorkRange(team_member, «range.container.connectivity.nbElems»));
 		if (!team_work.second)

@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.Affectation
@@ -23,7 +32,7 @@ import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 class InstructionInterpreter
 {
 	static def dispatch NablaValue interprete(VarDefinition it, Context context)
-	{ 
+	{
 		context.logFinest("Interprete VarDefinition")
 		for (v : variables)
 			context.addVariableValue(v, createValue(v, context))
@@ -133,7 +142,7 @@ class InstructionInterpreter
 	private	static def getIndexToId(IteratorRef it, Context context)
 	{
 		val indexValue = getIndexValue(it, context)
-		
+
 		if (target.container.connectivity.indexEqualId || target.singleton)
 			indexValue
 		else

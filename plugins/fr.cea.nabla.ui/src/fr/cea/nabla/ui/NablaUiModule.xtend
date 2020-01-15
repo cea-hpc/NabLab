@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -27,7 +27,7 @@ import org.eclipse.xtext.ui.editor.autoedit.AbstractEditStrategyProvider
  * Use this class to register components to be used within the Eclipse IDE.
  */
 @FinalFieldsConstructor
-class NablaUiModule extends AbstractNablaUiModule 
+class NablaUiModule extends AbstractNablaUiModule
 {
 	def Class<? extends IHighlightingConfiguration> bindIHighlightingConfiguration()
 	{
@@ -48,13 +48,6 @@ class NablaUiModule extends AbstractNablaUiModule
 	{
 		typeof(NablaEObjectHoverProvider)
 	}
-
-// Avant, des commentaires speciaux permettaient de mettre une documentation sur l'objet...
-// Faudrait penser a refaire quelques chose pour generer une documentation
-//	def Class<? extends IEObjectDocumentationProvider> bindIEObjectDocumentationProvider()
-//	{
-//		typeof(NablaEObjectDocumentationProvider)
-//	}
 
 	override Class<? extends AbstractEditStrategyProvider> bindAbstractEditStrategyProvider()
 	{

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -22,7 +22,7 @@ import static extension fr.cea.nabla.ir.generator.SizeTypeContentProvider.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 
-class ArgOrVarExtensions 
+class ArgOrVarExtensions
 {
 	static def dispatch getJavaAllocation(SimpleVariable it)
 	{
@@ -33,12 +33,12 @@ class ArgOrVarExtensions
 	static def dispatch getJavaAllocation(ConnectivityVariable it)
 	''' = new «type.primitive.javaType»«type.dimContent»'''
 
-	static def dispatch getJavaType(Arg it) 
+	static def dispatch getJavaType(Arg it)
 	{ 
 		type.javaType
 	}
 
-	static def dispatch getJavaType(SimpleVariable it) 
+	static def dispatch getJavaType(SimpleVariable it)
 	{ 
 		type.javaType
 	}
@@ -64,6 +64,9 @@ class ArgOrVarExtensions
 		else name
 	}
 
-	private def static dispatch String getDimContent(BaseType it) '''«FOR s : sizes BEFORE '[' SEPARATOR '][' AFTER ']'»«s.content»«ENDFOR»'''
-	private def static dispatch String getDimContent(ConnectivityType it) '''«FOR c : connectivities»[«c.nbElems»]«ENDFOR»«base.dimContent»'''
+	private def static dispatch String getDimContent(BaseType it)
+	'''«FOR s : sizes BEFORE '[' SEPARATOR '][' AFTER ']'»«s.content»«ENDFOR»'''
+
+	private def static dispatch String getDimContent(ConnectivityType it)
+	'''«FOR c : connectivities»[«c.nbElems»]«ENDFOR»«base.dimContent»'''
 }

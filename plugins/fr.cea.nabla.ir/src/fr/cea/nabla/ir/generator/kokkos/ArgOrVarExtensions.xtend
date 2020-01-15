@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -17,10 +17,10 @@ import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
 import fr.cea.nabla.ir.ir.Arg
 
-class ArgOrVarExtensions 
+class ArgOrVarExtensions
 {
 	public static val MatrixType = 'NablaSparseMatrix'
-	
+
 	static def dispatch getCppType(Arg it) 
 	{
 		type.cppType
@@ -30,7 +30,7 @@ class ArgOrVarExtensions
 	{
 		type.cppType
 	}
-	
+
 	static def dispatch getCppType(ConnectivityVariable it)
 	{
 		if (linearAlgebra)

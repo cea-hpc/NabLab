@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism
 
-class HierarchicalParallelismUtils 
+class HierarchicalParallelismUtils
 {
 	static def getTeamWorkRange()
 	'''

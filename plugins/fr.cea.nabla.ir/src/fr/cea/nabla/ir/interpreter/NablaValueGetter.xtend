@@ -1,8 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
 import java.util.List
 
-class NablaValueGetter 
+class NablaValueGetter
 {
 	//To handle NV0*
 	static def dispatch getValue(NablaValue it, List<Integer> indices)
@@ -67,7 +76,7 @@ class NablaValueGetter
 			case 0 : it
 			case 1 : new NV0Int(data.get(indices.get(0)))
 			default : throw new RuntimeException("Wrong access")
-		}	
+		}
 	}
 
 	static def dispatch getValue(NV2Int it, List<Integer> indices)

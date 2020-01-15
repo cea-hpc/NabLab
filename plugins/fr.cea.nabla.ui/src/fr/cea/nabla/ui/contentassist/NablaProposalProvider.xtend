@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -18,7 +18,7 @@ import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
  * See https://www.eclipse.org/Xtext/documentation/304_ide_concepts.html#content-assist
  * on how to customize the content assistant.
  */
-class NablaProposalProvider extends AbstractNablaProposalProvider 
+class NablaProposalProvider extends AbstractNablaProposalProvider
 {
 	// alpha, beta, gamma, delta, epsilon, lambda, rho, omega
 	static val GreekLetters = #['\u03B1', '\u03B2', '\u03B3', '\u03B4', '\u03B5', '\u03BB', '\u03C1', '\u03A9']

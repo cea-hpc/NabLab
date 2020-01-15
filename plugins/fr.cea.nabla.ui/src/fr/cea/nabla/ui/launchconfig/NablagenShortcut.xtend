@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.ui.launchconfig
 
 import com.google.inject.Inject
@@ -18,8 +27,8 @@ import org.eclipse.xtext.ui.editor.XtextEditor
 class NablagenShortcut implements ILaunchShortcut
 {
 	@Inject NablagenRunner runner
-	
-	override launch(ISelection selection, String mode) 
+
+	override launch(ISelection selection, String mode)
 	{
 		if (selection !== null && selection instanceof TreeSelection)
 		{
@@ -28,8 +37,8 @@ class NablagenShortcut implements ILaunchShortcut
 				launchGeneration(elt as IResource, mode)
 		}
 	}
-	
-	override launch(IEditorPart editor, String mode) 
+
+	override launch(IEditorPart editor, String mode)
 	{
 		if (editor instanceof XtextEditor)
 		{
@@ -38,7 +47,7 @@ class NablagenShortcut implements ILaunchShortcut
 				launchGeneration(resource, mode)
 		}
 	}
-	
+
 	private def launchGeneration(IResource file, String mode)
 	{
 		if (file instanceof IFile)
@@ -48,7 +57,7 @@ class NablagenShortcut implements ILaunchShortcut
 			try
 			{
 				var configurations = getLaunchConfigurations(file)
-				if (configurations.length == 0) 
+				if (configurations.length == 0)
 				{
 					// no configuration found, create new one
 					val manager = DebugPlugin::^default.launchManager
@@ -65,31 +74,31 @@ class NablagenShortcut implements ILaunchShortcut
 				}
 
 				// launch
-				configurations.get(0).launch(mode, new NullProgressMonitor());
+				configurations.get(0).launch(mode, new NullProgressMonitor())
 
-			} 
-			catch (CoreException e) 
+			}
+			catch (CoreException e)
 			{
 				// could not create launch configuration, run file directly
-				runner.launch(file);
+				runner.launch(file)
 			}
 		}
 	}
-	
+
 	/**
 	 * Get all launch configurations that target a dedicated resource file.
 	 * 
 	 * @param resource root file to execute
 	 * @return {@link ILaunchConfiguration}s using resource
 	 */
-	private def ILaunchConfiguration[] getLaunchConfigurations(IResource resource) 
+	private def ILaunchConfiguration[] getLaunchConfigurations(IResource resource)
 	{
 		val configurations = new ArrayList<ILaunchConfiguration>
 		val manager = DebugPlugin.^default.launchManager
 		val type = manager.getLaunchConfigurationType(NablagenLaunchConstants::LAUNCH_CONFIGURATION_TYPE_ID)
 
 		// try to find existing configurations using the same file
-		try 
+		try
 		{
 			for (ILaunchConfiguration configuration : manager.getLaunchConfigurations(type))
 			{
@@ -98,14 +107,14 @@ class NablagenShortcut implements ILaunchShortcut
 					val file = NablagenLaunchConstants::getSourceFile(configuration)
 					if (resource.equals(file))
 						configurations.add(configuration)
-				} 
-				catch (CoreException e) 
+				}
+				catch (CoreException e)
 				{
 					// could not read configuration, ignore
 				}
 			}
-		} 
-		catch (CoreException e) 
+		}
+		catch (CoreException e)
 		{
 			// could not load configurations, ignore
 		}

@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.ArgOrVarRef
@@ -11,14 +20,14 @@ import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
 
-class DeclareConstVariables implements IrTransformationStep 
+class DeclareConstVariables implements IrTransformationStep
 {
-	override getDescription() 
+	override getDescription()
 	{
 		'Declare const local variables in jobs (Kokkos optimization)'
 	}
-	
-	override transform(IrModule m) 
+
+	override transform(IrModule m)
 	{
 		for (job : m.eAllContents.filter(InstructionJob).toIterable)
 		{
@@ -34,27 +43,16 @@ class DeclareConstVariables implements IrTransformationStep
 						jobInVarRef.target = newConstVar
 				}
 				insertBefore(job.instruction, #[varDefinition])
-			}	
+			}
 		}
 		return true
 	}
-	
-	override getOutputTraces() 
+
+	override getOutputTraces()
 	{
 		#[]
 	}
-//	private def dispatch newVariable(ScalarVariable v)
-//	{
-//		IrFactory::eINSTANCE.createScalarVariable =>
-//		[
-//			const = true
-//			name = 'const_' + v.name
-//			type = v.type
-//			defaultValue = IrFactory::eINSTANCE.createVarRef => [ variable = v ]
-//		]
-//	}
 
-//	private def dispatch newVariable(ArrayVariable v)
 	private def newVariable(ConnectivityVariable v)
 	{
 		IrFactory::eINSTANCE.createConnectivityVariable =>

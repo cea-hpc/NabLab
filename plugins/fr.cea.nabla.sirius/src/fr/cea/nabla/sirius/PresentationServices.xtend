@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.resource.Resource
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
 
-class PresentationServices 
+class PresentationServices
 {
 	static def getWorkspaceImagePath(EObject it, String imagePath)
 	{

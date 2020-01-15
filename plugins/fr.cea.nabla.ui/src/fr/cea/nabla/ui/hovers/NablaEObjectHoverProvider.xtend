@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -28,15 +28,15 @@ import org.eclipse.xtext.ui.editor.model.IXtextDocument
  * If you put the cursor on a binary operation operator for example, getFirstLine will not be called.
  * That is the reason why the method XtextBrowserInformationControlInput getHoverInfo is overriden.
  */
-class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider 
+class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 {
 	@Inject extension ExpressionTypeProvider
-	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper	
+	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
 	EObject resolvedContainedObject
 
-	override String getFirstLine(EObject o) 
+	override String getFirstLine(EObject o)
 	{
-		if (resolvedContainedObject === null) 
+		if (resolvedContainedObject === null)
 			super.getFirstLine(o)
 		else
 		{
@@ -48,16 +48,16 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 		}
 	}
 
-	override XtextBrowserInformationControlInput getHoverInfo(EObject object, IRegion region, XtextBrowserInformationControlInput prev) 
+	override XtextBrowserInformationControlInput getHoverInfo(EObject object, IRegion region, XtextBrowserInformationControlInput prev)
 	{
-		if (resolvedContainedObject === null) 
+		if (resolvedContainedObject === null)
 			super.getHoverInfo(object, region, prev)
 		else
 		{
 			val expression = resolvedContainedObject.expression
-			if (expression === null || expression.eIsProxy) 
+			if (expression === null || expression.eIsProxy)
 				super.getHoverInfo(object, region, prev)
-			else 
+			else
 			{
 				val buffer = new StringBuilder(expression.buildLabel)
 				HTMLPrinter.insertPageProlog(buffer, 0, getStyleSheet())

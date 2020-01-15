@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -9,9 +9,9 @@
  *******************************************************************************/
 package fr.cea.nabla.ide
 
-
 /**
  * Use this class to register ide components.
  */
-class NablaIdeModule extends AbstractNablaIdeModule {
+class NablaIdeModule extends AbstractNablaIdeModule
+{
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -22,17 +22,17 @@ class IteratorExtensions
 {
 	static val sortByIdName = new SortByIdName
 	static val sortByIndexName = new SortByIndexName
-	
+
 	static def String getContainerName(Iterator it)
 	{
 		container.connectivity.name + container.args.map[x | x.name.toFirstUpper].join('')
 	}
-	
+
 	static def getIndexName(Iterator it)
 	{
 		name + containerName.toFirstUpper
 	}
-	
+
 	/**
 	 * Return the list of IteratorRef that need ids (and not indices) in the scope of 'it':
 	 * - either the args feature of ConnectivityCall: a ConnectivityCall arg is 
@@ -63,7 +63,7 @@ class IteratorExtensions
 	 * Return the list of indices to declare in the scope of 'it' iterator.
 	 * 
 	 * An index must be declare when :
-	 * - it references the 'it' iterator directly or indirectly (see below) 
+	 * - it references the 'it' iterator directly or indirectly (see below)
 	 * - all iterator referenced by the index are defined (because they
 	 *   are necessary to obtain the value of the index)
 	 * 
@@ -87,7 +87,7 @@ class IteratorExtensions
 		// get all inner iterators i.e. not yet defined iterators
 		val innerIterators = iterableInstruction.eAllContents.filter(Iterator).filter[x | x!==it].toList
 //		println('  innerIterators: ' + innerIterators.map[indexName].join(', '))
-		
+
 		for (index : allIndices)
 		{
 //			println('  - index ' + index.indexName)
@@ -99,7 +99,7 @@ class IteratorExtensions
 
 				val indexIndirectReferences = index.varArgs.map[target]
 //				println('    indexIndirectReferences: ' + indexIndirectReferences.map[name].join(', '))
-				
+
 				// if the iterator 'it' is referenced by the index
 				if (directReference===it || indexIndirectReferences.contains(it))
 					// if all iterators are defined

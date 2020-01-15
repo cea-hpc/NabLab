@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.generator.Utils
@@ -27,7 +36,7 @@ import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
-class ExpressionInterpreter 
+class ExpressionInterpreter
 {
 	static def dispatch NablaValue interprete(ContractedIf it, Context context)
 	{
@@ -73,7 +82,7 @@ class ExpressionInterpreter
 		context.logFinest("Interprete IntConstant")
 		new NV0Int(value)
 	}
-	
+
 	static def dispatch NablaValue interprete(RealConstant it, Context context) 
 	{
 		context.logFinest("Interprete RealConstant")
@@ -125,7 +134,7 @@ class ExpressionInterpreter
 		}
 	}
 
-	static def dispatch NablaValue interprete(VectorConstant it, Context context) 
+	static def dispatch NablaValue interprete(VectorConstant it, Context context)
 	{
 		context.logFinest("Interprete VectorConstant")
 		val expressionValues = values.map[x | interprete(x, context)]

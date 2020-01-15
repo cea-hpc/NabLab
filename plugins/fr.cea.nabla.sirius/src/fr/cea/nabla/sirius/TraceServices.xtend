@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -12,15 +12,15 @@ package fr.cea.nabla.sirius
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.sirius.business.api.session.SessionManager
 
-class TraceServices 
+class TraceServices
 {
-	static def trace(EObject o) 
+	static def trace(EObject o)
 	{
 		if (o === null) println("NULL")
 		else println(o + ' : ' + o.class.name)
-		return o	
+		return o
 	}
-	
+
 	static def traceWithVars(EObject o)
 	{
 		val manager = SessionManager::INSTANCE
@@ -30,5 +30,5 @@ class TraceServices
 		println("Variables [" + variables.size + "] : ")
 		variables.keySet.forEach[v | println('  - ' + v + ' : ' + variables.get(v))]
 		o.trace
-	}	
+	}
 }

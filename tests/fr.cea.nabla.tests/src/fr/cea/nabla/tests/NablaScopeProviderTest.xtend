@@ -32,7 +32,7 @@ import static extension fr.cea.nabla.tests.TestUtils.*
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
-class NablaScopeProviderTest 
+class NablaScopeProviderTest
 {
 	@Inject ParseHelper<NablaModule> parseHelper;
 	@Inject extension IScopeProvider
@@ -131,7 +131,7 @@ class NablaScopeProviderTest
 		val j3_nodesOfCell = j3.getConnectivityCallFor(nodesOfCell)
 		Assert.assertNotNull(j3_nodesOfCell)
 		j3_nodesOfCell.assertScope(eref, "j")
-		
+
 		val j4 = module.getJobByName("j4")
 		val j4_cells = j4.getConnectivityCallFor(cells)
 		Assert.assertNotNull(j4_cells)
@@ -246,7 +246,7 @@ class NablaScopeProviderTest
 	}
 
 	@Test
-	def void testScopeProviderForArgOrVarRefInReduction() 
+	def void testScopeProviderForArgOrVarRefInReduction()
 	{
 		val module = parseHelper.parse(TestUtils::getTestModule('',
 			'''

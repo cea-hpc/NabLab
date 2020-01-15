@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -11,10 +11,10 @@ package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.IrModule
 
-interface IrTransformationStep 
+interface IrTransformationStep
 {
 	def String getDescription()
-	/** Retourne vrai si la passe s'est correctement déroulée, faux sinon */
+	/** Return true if the transformation step succeeds false otherwise */
 	def boolean transform(IrModule m)
 	def String[] getOutputTraces()
 }

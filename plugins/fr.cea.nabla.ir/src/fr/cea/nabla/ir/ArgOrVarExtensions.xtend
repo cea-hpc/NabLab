@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -26,7 +26,7 @@ import org.eclipse.emf.ecore.EObject
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 
-class ArgOrVarExtensions 
+class ArgOrVarExtensions
 {
 	static def IrType getType(ArgOrVar it)
 	{
@@ -61,7 +61,7 @@ class ArgOrVarExtensions
 		(it instanceof SimpleVariable) && (it as SimpleVariable).const && (it as SimpleVariable).global
 	}
 
-	static def isGlobal(Variable it) 
+	static def isGlobal(Variable it)
 	{
 		(eContainer instanceof IrModule)
 	}

@@ -49,7 +49,7 @@ class IteratorExtensionsTest
 	set cellsOfNode: node → {cell};
 	set neighbourCells: cell → {cell};
 	set commonFace: cell × cell → face;
-	
+
 	def ∑: (0.0, ℝ) → ℝ;
 	def ∑: x | (0.0, ℝ[x]) → ℝ[x];
 	def ∑: x | (0.0, ℝ[x, x]) → ℝ[x, x];
@@ -60,7 +60,7 @@ class IteratorExtensionsTest
 	ℝ[2] u{cells};
 	ℝ surface{faces};
 	ℝ a;
-	
+
 	J1: ∀j∈cells(), x{j} = 2.0;
 	J2: ∀j∈cells(), ∀r∈nodesOfCell(j), Cjr{j,r} = 3.0;
 	J3: ∀r∈nodes(), ∀j∈cellsOfNode(r), Cjr{j,r} = 1.0;

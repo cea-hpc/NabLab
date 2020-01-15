@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.ui.launchconfig
 
 import org.eclipse.core.resources.IFile
@@ -20,14 +29,14 @@ import org.eclipse.swt.widgets.Text
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog
 import org.eclipse.ui.model.WorkbenchLabelProvider
 
-class NablagenLaunchConfigurationTab extends AbstractLaunchConfigurationTab 
-{	
+class NablagenLaunchConfigurationTab extends AbstractLaunchConfigurationTab
+{
 	public static val FileExtension = 'nablagen'
 	boolean fDisableUpdate = false
-	
+
 	Text fTxtProject
 	Text fTxtFile
-	
+
 	override createControl(Composite parent) 
 	{
 		val topControl = new Composite(parent, SWT.NONE)
@@ -37,10 +46,10 @@ class NablagenLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 		fGroup.setLayout(new GridLayout(2, false))
 		fGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1))
 		fGroup.setText("Project")
-		
+
 		fTxtProject = new Text(fGroup, SWT.BORDER)
 		fTxtProject.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1))
-		
+
 		val fBtnBrowseProject = new Button(fGroup, SWT.NONE)
 		fBtnBrowseProject.addSelectionListener(new NablagenProjectSelectionAdapter(parent, fTxtProject))
 		fBtnBrowseProject.setText("Browse...");
@@ -58,39 +67,39 @@ class NablagenLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 		btnBrowseScript.addSelectionListener(new NablagenFileSelectionAdapter(parent, fTxtFile))
 		btnBrowseScript.setText("Browse...");
 
-		setControl(topControl);
+		setControl(topControl)
 	}
 	
-	override getName() 
-	{ 
-		'Global' 
+	override getName()
+	{
+		'Global'
 	}
-	
-	override initializeFrom(ILaunchConfiguration configuration) 
+
+	override initializeFrom(ILaunchConfiguration configuration)
 	{
 		fDisableUpdate = true
-		
+
 		fTxtProject.text = ''
 		fTxtFile.text = ''
-		
-		try 
+
+		try
 		{
 			fTxtProject.text = configuration.getAttribute(NablagenLaunchConstants::PROJECT, '')
 			fTxtFile.text = configuration.getAttribute(NablagenLaunchConstants::FILE_LOCATION, '')
 		}
 		catch (CoreException e)
-		{	
+		{
 		}
 		fDisableUpdate = false
 	}
-	
-	override performApply(ILaunchConfigurationWorkingCopy configuration) 
+
+	override performApply(ILaunchConfigurationWorkingCopy configuration)
 	{
 		configuration.setAttribute(NablagenLaunchConstants::PROJECT, fTxtProject.text)
 		configuration.setAttribute(NablagenLaunchConstants::FILE_LOCATION, fTxtFile.text)
 	}
-	
-	override setDefaults(ILaunchConfigurationWorkingCopy configuration) 
+
+	override setDefaults(ILaunchConfigurationWorkingCopy configuration)
 	{
 		configuration.setAttribute(NablagenLaunchConstants::PROJECT, '')
 		configuration.setAttribute(NablagenLaunchConstants::FILE_LOCATION, '')
@@ -101,14 +110,14 @@ class NablagenProjectSelectionAdapter extends SelectionAdapter
 {
 	val Composite parent
 	val Text fTxtProject
-	
-	new(Composite parent, Text fTxtProject) 
-	{ 
+
+	new(Composite parent, Text fTxtProject)
+	{
 		this.parent = parent
 		this.fTxtProject = fTxtProject
 	}
-	
-	override void widgetSelected(SelectionEvent e) 
+
+	override void widgetSelected(SelectionEvent e)
 	{
 		val dialog = new ElementTreeSelectionDialog(parent.shell, new WorkbenchLabelProvider, new ProjectContentProvider)
 		dialog.setTitle("Select Project")
@@ -119,18 +128,18 @@ class NablagenProjectSelectionAdapter extends SelectionAdapter
 	}
 }
 
-class NablagenFileSelectionAdapter extends SelectionAdapter 
+class NablagenFileSelectionAdapter extends SelectionAdapter
 {
 	val Composite parent
 	val Text fTxtFile
-	
-	new(Composite parent, Text fTxtFile) 
-	{ 
+
+	new(Composite parent, Text fTxtFile)
+	{
 		this.parent = parent
 		this.fTxtFile = fTxtFile
 	}
-	
-	override void widgetSelected(SelectionEvent e) 
+
+	override void widgetSelected(SelectionEvent e)
 	{
 		val dialog = new ElementTreeSelectionDialog(parent.shell, new WorkbenchLabelProvider, new SourceFileContentProvider(NablagenLaunchConfigurationTab::FileExtension))
 		dialog.setTitle("Select Nablagen File")

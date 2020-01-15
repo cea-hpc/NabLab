@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.ArgOrVar
@@ -80,7 +89,7 @@ class Context
 	{
 		return (getVariableValue(variableName) as NV0Int).data
 	}
-	
+
 	def getReal(String variableName)
 	{
 		return (getVariableValue(variableName) as NV0Real).data
@@ -146,7 +155,7 @@ class Context
 	}
 
 	// DimensionValues
-	def int getDimensionValue(SizeTypeSymbol it) 
+	def int getDimensionValue(SizeTypeSymbol it)
 	{
 		dimensionValues.get(it) ?: outerContext.getDimensionValue(it)
 	}
@@ -223,7 +232,7 @@ class Context
 		if (message !== null) logger.log(Level::INFO, message)
 		dimensionValues.keySet.forEach[d | logger.log(Level::INFO, "	Dimension " + d.name + " = " + dimensionValues.get(d))]
 	}
-	
+
 	def logFinest(String message)
 	{
 		logger.log(Level::FINEST, message)

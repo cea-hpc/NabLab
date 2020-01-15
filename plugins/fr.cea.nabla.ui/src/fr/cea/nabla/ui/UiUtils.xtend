@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -14,7 +14,7 @@ import org.eclipse.jface.resource.ResourceLocator
 import org.eclipse.ui.PlatformUI
 import org.eclipse.xtext.ui.editor.XtextEditor
 
-class UiUtils 
+class UiUtils
 {
 	static def getImageDescriptor(String path)
 	{
@@ -30,11 +30,11 @@ class UiUtils
 	static def getActiveNablaEditor()
 	{
 		val w = PlatformUI::workbench.activeWorkbenchWindow
-		if (w!==null && w.activePage!==null && w.activePage.activeEditor!==null 
+		if (w!==null && w.activePage!==null && w.activePage.activeEditor!==null
 			&& (w.activePage.activeEditor instanceof XtextEditor)
 			&& (w.activePage.activeEditor as XtextEditor).languageName == NablaActivator::FR_CEA_NABLA_NABLA)
 			w.activePage.activeEditor as XtextEditor
-		else 
+		else
 			null
 	}
 }

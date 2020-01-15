@@ -22,16 +22,16 @@ import static fr.cea.nabla.tests.TestUtils.*
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
-class NablaExamplesInterpreterTest 
+class NablaExamplesInterpreterTest
 {
 	@Inject CompilationChainHelper compilationHelper
-	
+
 	@Test
 	def void testInterpreteGlace2D()
 	{
 		val model = readFileAsString("src/glace2d/Glace2d.nabla")
 		val genmodel = readFileAsString("src/glace2d/Glace2d.nablagen")
-		
+
 		val irModule = compilationHelper.getIrModule(model, genmodel)
 		val handler = new FileHandler("src/glace2d/InterpreteGlace2d.log")
 		//val handler = new ConsoleHandler
@@ -39,7 +39,7 @@ class NablaExamplesInterpreterTest
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 		moduleInterpreter.interprete
 	}
-	
+
 	@Test
 	def void testInterpreteHeatEquation()
 	{

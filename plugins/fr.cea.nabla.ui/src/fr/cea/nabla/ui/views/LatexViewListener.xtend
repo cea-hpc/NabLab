@@ -39,7 +39,7 @@ class LatexViewListener implements ISelectionListener
 	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
 	@Inject extension IrAnnotationHelper
 
-	val modelListeners = new ArrayList<(EObject)=>void> 
+	val modelListeners = new ArrayList<(EObject)=>void>
 
 	def void addNablaTextListener((EObject)=>void f)
 	{
@@ -53,7 +53,7 @@ class LatexViewListener implements ISelectionListener
 	 * Names are compared instead of object because of incremental build system
 	 * and re-created objects.
 	 */
-	override selectionChanged(IWorkbenchPart part, ISelection selection) 
+	override selectionChanged(IWorkbenchPart part, ISelection selection)
 	{
 		if (selection instanceof StructuredSelection && part instanceof DDiagramEditor)
 		{
@@ -62,7 +62,7 @@ class LatexViewListener implements ISelectionListener
 			{
 				val gep = structuredSelection.firstElement as GraphicalEditPart
 				val semanticElement = gep.resolveSemanticElement
-				
+
 				if (semanticElement instanceof DDiagramElement)
 				{
 					val irElement = (semanticElement as DDiagramElement).target
@@ -121,17 +121,17 @@ class LatexViewListener implements ISelectionListener
 			Reduction: elt
 			InstructionBlock: null
 			Instruction:
-				if (elt.eContainer === null) 
+				if (elt.eContainer === null)
 					null
 				else 
 					elt.eContainer.closestDisplayableNablaElt ?: elt
 			Expression:
-				if (elt.eContainer === null) 
+				if (elt.eContainer === null)
 					null
 				else 
 					elt.eContainer.closestDisplayableNablaElt ?: elt
 			default:
-				if (elt.eContainer === null) 
+				if (elt.eContainer === null)
 					null 
 				else 
 					elt.eContainer.closestDisplayableNablaElt

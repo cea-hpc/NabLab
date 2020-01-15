@@ -21,6 +21,7 @@ import org.junit.runner.RunWith
 
 import static fr.cea.nabla.tests.TestUtils.*
 import fr.cea.nabla.ir.interpreter.NV1Real
+import fr.cea.nabla.ir.interpreter.NV0Int
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -74,9 +75,9 @@ class JobInterpreterTest
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 		val context = moduleInterpreter.interprete
 		assertVariableValueInContext(irModule, context, "t_n0", new NV0Real(0.0))
-		assertVariableValueInContext(irModule, context, "t_n", new NV0Real(0.1))
-		// Due to switch t_n and t_nplus1
-		assertVariableValueInContext(irModule, context, "t_nplus1", new NV0Real(0.09))
+		assertVariableValueInContext(irModule, context, "n", new NV0Int(10))
+		assertVariableValueInContext(irModule, context, "t_n", new NV0Real(0.09))
+		assertVariableValueInContext(irModule, context, "t_nplus1", new NV0Real(0.1))
 	}
 
 	@Test

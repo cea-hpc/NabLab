@@ -348,7 +348,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		Bundle-ManifestVersion: 2
 		Bundle-Name: nabla.project
 		Bundle-SymbolicName: nabla.project
-		Bundle-Version: 1.0.0.qualifier
+		Bundle-Version: 0.1.0.qualifier
 		Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 		Automatic-Module-Name: nabla.project
 		Require-Bundle: fr.cea.nabla,

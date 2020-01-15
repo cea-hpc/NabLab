@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="NabLab" uid="fr.cea.nabla.product" id="fr.cea.nabla.product" application="org.eclipse.ui.ide.workbench" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="NabLab" uid="fr.cea.nabla.product" id="fr.cea.nabla.product" application="org.eclipse.ui.ide.workbench" version="0.1.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <text>
-         NabLab Version 1.0.0
+         NabLab Version 0.1.0
 Copyright (c) 2019 CEA
       </text>
    </aboutInfo>

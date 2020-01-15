@@ -63,12 +63,12 @@ class NablaDslListener implements ISelectionListener
 		//println("selection : " + selection.class.name)
 		if (selection instanceof IStructuredSelection)
 		{
-			val firstElement = (selection as IStructuredSelection).firstElement
+			val firstElement = selection.firstElement
 			if (firstElement instanceof IGraphicalEditPart)
 			{
-				val se = (firstElement as IGraphicalEditPart).resolveSemanticElement
+				val se = firstElement.resolveSemanticElement
 				if (se instanceof DRepresentationElement)
-					return (se as DRepresentationElement).semanticElements.head
+					return se.semanticElements.head
 			} 
 		}
 		return null

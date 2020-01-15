@@ -32,7 +32,7 @@ class SourceFileContentProvider extends BaseWorkbenchContentProvider implements 
 	private def boolean isCandidate(Object o)
 	{
 		if (o instanceof IFile)
-			(o as IFile).fileExtension == fExtension
+			o.fileExtension == fExtension
 		else
 			true
 	}

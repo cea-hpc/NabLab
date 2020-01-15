@@ -145,7 +145,7 @@ class DeclarationProvider
 					{
 						// The DimemsionVar instance has not yet been encountered.
 						// Fix the value for the rest of the loop.
-						dimVarValues.put(expectedType.target as SizeTypeSymbol, actualType)
+						dimVarValues.put(expectedType.target, actualType)
 					}
 					else
 					{

@@ -238,7 +238,7 @@ abstract class InstructionContentProvider
 	private def String getJobName(EObject o)
 	{
 		if (o === null) null
-		else if (o instanceof Job) (o as Job).name
+		else if (o instanceof Job) o.name
 		else o.eContainer.jobName
 	}
 }

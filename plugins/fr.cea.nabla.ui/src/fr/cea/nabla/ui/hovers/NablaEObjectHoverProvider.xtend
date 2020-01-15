@@ -71,9 +71,9 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 	{
 		if (viewer instanceof XtextSourceViewer)
 		{
-			val document = (viewer as XtextSourceViewer).document
+			val document = viewer.document
 			if(document instanceof IXtextDocument)
-				resolvedContainedObject = (document as IXtextDocument).readOnly([state |
+				resolvedContainedObject = document.readOnly([state |
 						eObjectAtOffsetHelper.resolveContainedElementAt(state, region.offset)
 				])
 		}
@@ -82,7 +82,7 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 
 	private def Expression getExpression(EObject o)
 	{
-		if (o instanceof Expression) o as Expression
+		if (o instanceof Expression) o
 		else if (o.eContainer !== null) o.eContainer.expression
 		else null
 	}

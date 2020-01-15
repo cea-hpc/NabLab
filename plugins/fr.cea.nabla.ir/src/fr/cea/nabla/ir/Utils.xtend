@@ -19,7 +19,7 @@ class Utils
 	static def IrModule getIrModule(EObject o)
 	{
 		if (o === null) null
-		else if (o instanceof IrModule) o as IrModule
+		else if (o instanceof IrModule) o
 		else o.eContainer.irModule
 	}
 

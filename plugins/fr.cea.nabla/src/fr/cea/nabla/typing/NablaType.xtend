@@ -30,7 +30,7 @@ class NSTSizeType
 	static def NSTSizeType create(SizeType v)
 	{
 		if (v instanceof SizeTypeInt)
-			new NSTSizeType((v as SizeTypeInt).value)
+			new NSTSizeType(v.value)
 		else
 			new NSTSizeType(v)
 	}

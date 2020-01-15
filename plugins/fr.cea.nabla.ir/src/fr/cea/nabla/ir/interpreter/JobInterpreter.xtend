@@ -123,7 +123,7 @@ class JobInterpreter
 		for (v : dumpedVariables.filter(ConnectivityVariable).filter(v | v.type.connectivities.head.returnType.type.name == itemName))
 		{
 			val value = context.getVariableValue(module.getVariableByName(v.name))
-			if (value instanceof NV1Real) map.put(v.persistenceName, (value as NV1Real).data)
+			if (value instanceof NV1Real) map.put(v.persistenceName, value.data)
 		}
 	}
 

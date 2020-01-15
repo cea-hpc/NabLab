@@ -42,7 +42,7 @@ class NablagenShortcut implements ILaunchShortcut
 	{
 		if (editor instanceof XtextEditor)
 		{
-			val resource = (editor as XtextEditor).resource
+			val resource = editor.resource
 			if (resource !== null)
 				launchGeneration(resource, mode)
 		}

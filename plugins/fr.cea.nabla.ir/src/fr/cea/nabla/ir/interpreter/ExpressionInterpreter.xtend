@@ -175,7 +175,7 @@ class ExpressionInterpreter
 					val callerArgTypeTypeSize = callerArgTypeSizes.get(iSize)
 					val calleeArgTypeDimension = calleeArg.type.sizes.get(iSize)
 					if (calleeArgTypeDimension instanceof SizeTypeSymbolRef)
-						innerContext.addDimensionValue((calleeArgTypeDimension as SizeTypeSymbolRef).target, callerArgTypeTypeSize)
+						innerContext.addDimensionValue(calleeArgTypeDimension.target, callerArgTypeTypeSize)
 				}
 
 				// set argument value

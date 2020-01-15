@@ -65,11 +65,10 @@ class LatexViewListener implements ISelectionListener
 
 				if (semanticElement instanceof DDiagramElement)
 				{
-					val irElement = (semanticElement as DDiagramElement).target
+					val irElement = semanticElement.target
 					if (irElement instanceof IrAnnotable)
 					{
-						val annotable = irElement as IrAnnotable
-						val annotation = annotable.annotations.findFirst[x | x.source == IrAnnotationHelper::ANNOTATION_NABLA_ORIGIN_SOURCE]
+						val annotation = irElement.annotations.findFirst[x | x.source == IrAnnotationHelper::ANNOTATION_NABLA_ORIGIN_SOURCE]
 						if (annotation !== null)
 						{
 							val offset = Integer::parseInt(annotation.details.get(IrAnnotationHelper::ANNOTATION_OFFSET_DETAIL))

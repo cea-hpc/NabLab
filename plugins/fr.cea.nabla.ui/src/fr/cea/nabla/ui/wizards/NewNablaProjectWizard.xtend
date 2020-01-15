@@ -281,40 +281,63 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 	'''
 		with «nablaModuleName».*;
 
-		workflow «nablaModuleName»GenerationChain transforms «nablaModuleName» 
-		{ 
-			Nabla2Ir nabla2ir 
+		workflow «nablaModuleName»GenerationChain transforms «nablaModuleName»
+		{
+			Nabla2Ir nabla2ir
+			{
+				timeVariable = t;
+				deltatVariable = δt;
+				nodeCoordVariable = X;
+			}
+
+			TagPersistentVariables tagPersistentVariables follows nabla2ir
+			{ 
+				dumpedVariables = u as "Temperature";
+				period = 1.0 for n;
+			}
+
+			ReplaceUtf replaceUtf follows tagPersistentVariables
 			{
 			}
 
-			ReplaceUtf replaceUtf follows nabla2ir 
+			ReplaceReductions replaceReductions follows replaceUtf
 			{
 			}
 
-			ReplaceReductions replaceReductions follows replaceUtf 
+			OptimizeConnectivities optimizeConnectivities follows replaceReductions
+			{
+				connectivities = cells, nodes, faces;
+			}
+
+			FillHLTs fillHlts follows optimizeConnectivities
 			{
 			}
 
-			OptimizeConnectivities optimizeConnectivities follows replaceReductions 
+			Ir2Code javaGenerator follows fillHlts
 			{
-				connectivities = nodes ;
+				language = Java;
+				outputDir = "/NablaExamples/src-gen-java";
 			}
 
-			FillHLTs fillHLTs follows optimizeConnectivities 
+			Ir2Code kokkosGenerator follows fillHlts
 			{
-				dumpIr;
+				language = Kokkos
+				{
+					maxIterationVariable = option_max_iterations;
+					stopTimeVariable = option_stoptime;
+				}
+				outputDir = "/NablaExamples/src-gen-kokkos";
 			}
 
-			Ir2Code javaGenerator follows fillHLTs 
+			Ir2Code kokkosTeamOfThreadGenerator follows fillHlts
 			{
-				language = Java; 
-				outputDir = "«srcGenJavaFolder.fullPath»";
-			}
-
-			Ir2Code kokkosGenerator follows fillHLTs 
-			{
-				language = Kokkos;
-				outputDir = "«srcGenKokkosFolder.fullPath»";
+				language = Kokkos
+				{
+					maxIterationVariable = option_max_iterations;
+					stopTimeVariable = option_stoptime;
+					teamOfThreads;
+				}
+				outputDir = "/NablaExamples/src-gen-kokkos-team";
 			}
 		}
 	'''

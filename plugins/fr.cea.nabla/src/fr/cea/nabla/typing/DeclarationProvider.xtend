@@ -138,7 +138,7 @@ class DeclarationProvider
 			{
 				SizeTypeOperation: computeValue(expectedType, dimVarValues)
 				SizeTypeInt case (!actualType.NSTDimensionInt || expectedType.value != actualType.NSTDimensionIntValue): return false
-				SizeTypeSymbolRef case (expectedType.target instanceof SizeTypeSymbol):
+				SizeTypeSymbolRef:
 				{
 					val dimVarValue = dimVarValues.get(expectedType.target)
 					if (dimVarValue === null)

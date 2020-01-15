@@ -262,7 +262,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 	private def getNablaModelContent(String moduleName)
 	'''
-		module «moduleName»; 
+		module «moduleName»;
 
 		items { node }
 
@@ -272,9 +272,14 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
 		const ℕ X_EDGE_ELEMS = 20;
 		const ℕ Y_EDGE_ELEMS = 20;
-		const ℕ Z_EDGE_ELEMS = 20;
 
-		ℝ[2] X { nodes };
+		const ℕ max_iter = 200;
+		const ℝ max_time = 1.0;
+
+		ℝ t, δt;
+		ℝ[2] X{nodes}, e{nodes};
+
+		iterate n while (n+1 < max_iter && t^{n+1} < max_time);
 	'''
 
 	private def getNablagenModelContent(String nablaModuleName, IFolder srcGenJavaFolder, IFolder srcGenKokkosFolder)
@@ -292,7 +297,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 			TagPersistentVariables tagPersistentVariables follows nabla2ir
 			{ 
-				dumpedVariables = u as "Temperature";
+				dumpedVariables = e as "Energy";
 				period = 1.0 for n;
 			}
 
@@ -306,7 +311,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 			OptimizeConnectivities optimizeConnectivities follows replaceReductions
 			{
-				connectivities = cells, nodes, faces;
+				connectivities = nodes;
 			}
 
 			FillHLTs fillHlts follows optimizeConnectivities
@@ -323,8 +328,8 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 			{
 				language = Kokkos
 				{
-					maxIterationVariable = option_max_iterations;
-					stopTimeVariable = option_stoptime;
+					maxIterationVariable = max_iter;
+					stopTimeVariable = max_time;
 				}
 				outputDir = "/NablaExamples/src-gen-kokkos";
 			}
@@ -333,8 +338,8 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 			{
 				language = Kokkos
 				{
-					maxIterationVariable = option_max_iterations;
-					stopTimeVariable = option_stoptime;
+					maxIterationVariable = max_iter;
+					stopTimeVariable = max_time;
 					teamOfThreads;
 				}
 				outputDir = "/NablaExamples/src-gen-kokkos-team";

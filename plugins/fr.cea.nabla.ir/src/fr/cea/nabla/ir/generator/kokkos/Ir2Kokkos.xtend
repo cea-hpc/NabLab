@@ -18,9 +18,11 @@ import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
+import java.net.URI
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.FileLocator
 import org.eclipse.core.runtime.Path
+import org.eclipse.core.runtime.Platform
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -30,7 +32,6 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
-import org.eclipse.core.runtime.Platform
 
 class Ir2Kokkos extends CodeGenerator
 {
@@ -51,7 +52,9 @@ class Ir2Kokkos extends CodeGenerator
 			// c++ resources not available => unzip them
 			val bundle = Platform.getBundle("fr.cea.nabla.ir")
 			val cppResourcesUrl = bundle.getEntry("cppresources/libcppnabla.zip")
-			val zipFileUri = FileLocator.resolve(cppResourcesUrl).toURI()
+			val tmpURI = FileLocator.toFileURL(cppResourcesUrl)
+			// need to use a 3-arg constructor in order to properly escape file system chars
+			val zipFileUri = new URI(tmpURI.protocol, tmpURI.path, null)
 			val outputFolderUri = of.locationURI
 			UnzipHelper::unzip(zipFileUri, outputFolderUri)
 		}

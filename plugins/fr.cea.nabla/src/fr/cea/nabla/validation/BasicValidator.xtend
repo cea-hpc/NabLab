@@ -473,12 +473,12 @@ class BasicValidator extends AbstractNablaValidator
 		val inTypeVars = new HashSet<SizeTypeSymbol>
 		for (inType : inTypes)
 			for (dim : inType.eAllContents.filter(SizeTypeSymbolRef).toIterable)
-				if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof SizeTypeSymbol)
+				if (dim.target !== null && !dim.target.eIsProxy)
 					inTypeVars += dim.target
 
 		val returnTypeVars = new HashSet<SizeTypeSymbol>
 		for (dim : returnType.eAllContents.filter(SizeTypeSymbolRef).toIterable)
-			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof SizeTypeSymbol)
+			if (dim.target !== null && !dim.target.eIsProxy)
 				returnTypeVars += dim.target
 
 		val x = returnTypeVars.findFirst[x | !inTypeVars.contains(x)]
@@ -506,12 +506,12 @@ class BasicValidator extends AbstractNablaValidator
 		// return type should reference only known variables
 		val inTypeVars = new HashSet<SizeTypeSymbol>
 		for (dim : collectionType.eAllContents.filter(SizeTypeSymbolRef).toIterable)
-			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof SizeTypeSymbol)
+			if (dim.target !== null && !dim.target.eIsProxy)
 				inTypeVars += dim.target
 
 		val returnTypeVars = new HashSet<SizeTypeSymbol>
 		for (dim : returnType.eAllContents.filter(SizeTypeSymbolRef).toIterable)
-			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof SizeTypeSymbol)
+			if (dim.target !== null && !dim.target.eIsProxy)
 				returnTypeVars += dim.target
 
 		val x = returnTypeVars.findFirst[x | !inTypeVars.contains(x)]

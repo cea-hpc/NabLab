@@ -23,6 +23,7 @@
 #include <cmath>
 #include <limits>
 #include <array>
+#include <mutex>
 
 // Kokkos headers
 #include "Kokkos_Core.hpp"
@@ -70,7 +71,7 @@ class NablaSparseMatrix
   NablaSparseMatrixHelper operator()(int row, int col);
   double operator()(int row, int col) const;
 
- private:
+ //private:
   int findCrsOffset(const int& i, const int& j) const;
 
   // Attributes
@@ -83,6 +84,7 @@ class NablaSparseMatrix
   Kokkos::View<int*> m_row_map;
   Kokkos::View<int*> m_col_ind;
   SparseMatrixType* m_matrix;
+  std::mutex m_mutex;
 };
 
 }

@@ -7,16 +7,13 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-#ifdef UNIT_TEST 
-
 
 #include "MultiArray.h"
 #include <iostream>
 #include <cassert>
 
-
-int main()
-{
+/******************************************************************************/
+void dummy() {
    RealArray<7> v{0., 1., 2., 3., 4., 5., 6.};
    
    std::cout << "RealArray<7> v test value:\n\t" << v << std::endl;
@@ -61,6 +58,13 @@ int main()
    for (RealArray<5, 5>::size_type i(0); i < 5; ++i)
      std::cout << tmp[i];
    std::cout << std::endl;
+}
+
+/******************************************************************************/
+#ifdef TEST
+
+int main() {
+  dummy();
 }
 
 #endif

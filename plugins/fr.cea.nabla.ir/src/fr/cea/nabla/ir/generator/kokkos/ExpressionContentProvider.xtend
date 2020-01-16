@@ -79,23 +79,28 @@ class ExpressionContentProvider
 		}
 	}
 
-	static def dispatch CharSequence getContent(BaseTypeConstant it) 
+	static def dispatch CharSequence getContent(BaseTypeConstant it)
 	{
 		val t = type as BaseType
 		val sizes = t.sizes.filter(SizeTypeInt).map[value]
 		'''{«initArray(sizes, value.content)»}''' // One additional bracket for matrix... Magic C++ !
 	}
 
-	static def dispatch CharSequence getContent(VectorConstant it) 
+	static def dispatch CharSequence getContent(VectorConstant it)
 	'''«FOR v : values BEFORE '{{' SEPARATOR ', ' AFTER '}}'»«v.content»«ENDFOR»'''
 
-	static def dispatch CharSequence getContent(FunctionCall it) 
-	'''«function.getCodeName("::")»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+	static def dispatch CharSequence getContent(FunctionCall it)
+	{
+		if (function.name == 'solveLinearSystem')
+			'''«function.getCodeName("::")»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR», cg_info)'''
+		else
+			'''«function.getCodeName("::")»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+	}
 
-	static def dispatch CharSequence getContent(ArgOrVarRef it) 
+	static def dispatch CharSequence getContent(ArgOrVarRef it)
 	'''«target.codeName»«iteratorsContent»«FOR d:indices BEFORE '['  SEPARATOR '][' AFTER ']'»«d.content»«ENDFOR»'''
 
-	private static def getIteratorsContent(ArgOrVarRef it) 
+	private static def getIteratorsContent(ArgOrVarRef it)
 	{
 		if (iterators.empty || target instanceof SimpleVariable) return ''
 		val array = target as ConnectivityVariable

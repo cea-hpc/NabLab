@@ -85,14 +85,16 @@ private:
 	Kokkos::View<RealArray1D<2>**> F;
 	Kokkos::View<RealArray2D<2,2>**> Ajr;
 
-	utils::Timer timer;
+	utils::Timer global_timer;
+	utils::Timer cpu_timer;
+	utils::Timer io_timer;
 	const size_t maxHardThread = Kokkos::DefaultExecutionSpace::max_hardware_threads();
 
 public:
 	Glace2d(Options* aOptions, NumericMesh2D* aNumericMesh2D, string output)
 	: options(aOptions)
 	, mesh(aNumericMesh2D)
-	, writer("Glace2d")
+	, writer("Glace2d", output)
 	, nbNodes(mesh->getNbNodes())
 	, nbCells(mesh->getNbCells())
 	, nbNodesOfCell(NumericMesh2D::MaxNbNodesOfCell)
@@ -420,12 +422,16 @@ private:
 		nbCalls++;
 		if (!writer.isDisabled() && n >= lastDump + 1.0)
 		{
+			cpu_timer.stop();
+			io_timer.start();
 			std::map<string, double*> cellVariables;
 			std::map<string, double*> nodeVariables;
 			cellVariables.insert(pair<string,double*>("Density", rho.data()));
 			auto quads = mesh->getGeometricMesh()->getQuads();
 			writer.writeFile(nbCalls, t_n, nbNodes, X_n.data(), nbCells, quads.data(), cellVariables, nodeVariables);
 			lastDump = n;
+			io_timer.stop();
+			cpu_timer.start();
 		}
 	}
 	
@@ -441,6 +447,8 @@ private:
 		bool continueLoop = true;
 		do
 		{
+			global_timer.start();
+			cpu_timer.start();
 			n++;
 			if (n!=1)
 				std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
@@ -469,13 +477,6 @@ private:
 			computeEn(); // @11.0
 			computeUn(); // @11.0
 		
-			// Progress
-			std::cout << utils::progress_bar(n, options->option_max_iterations, t_n, options->option_stoptime, 30);
-			std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-				utils::eta(n, options->option_max_iterations, t_n, options->option_stoptime, deltat_n, timer), true)
-				<< __RESET__ << "\r";
-			std::cout.flush();
-		
 			// Evaluate loop condition with variables at time n
 			continueLoop = (t_nplus1 < options->option_stoptime && n + 1 < options->option_max_iterations);
 		
@@ -488,6 +489,25 @@ private:
 				std::swap(E_nplus1, E_n);
 				std::swap(uj_nplus1, uj_n);
 			}
+		
+			cpu_timer.stop();
+			global_timer.stop();
+		
+			// Timers display
+			if (!writer.isDisabled())
+				std::cout << " {CPU: " << __BLUE__ << cpu_timer.print(true) << __RESET__ ", IO: " << __BLUE__ << io_timer.print(true) << __RESET__ "} ";
+			else
+				std::cout << " {CPU: " << __BLUE__ << cpu_timer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
+			
+			// Progress
+			std::cout << utils::progress_bar(n, options->option_max_iterations, t_n, options->option_stoptime, 30);
+			std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
+				utils::eta(n, options->option_max_iterations, t_n, options->option_stoptime, deltat_n, global_timer), true)
+				<< __RESET__ << "\r";
+			std::cout.flush();
+		
+			cpu_timer.reset();
+			io_timer.reset();
 		} while (continueLoop);
 	}
 	
@@ -870,7 +890,6 @@ public:
 		else
 			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
-		timer.start();
 		computeCjrIc(); // @1.0
 		iniCenter(); // @1.0
 		iniUn(); // @1.0
@@ -880,9 +899,7 @@ public:
 		iniEn(); // @3.0
 		iniM(); // @3.0
 		executeTimeLoopN(); // @4.0
-		timer.stop();
-
-		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << timer.print() << __RESET__ << std::endl;
+		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << global_timer.print() << __RESET__ << std::endl;
 	}
 };
 

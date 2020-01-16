@@ -140,9 +140,13 @@ class Ir2Kokkos extends CodeGenerator
 		«FOR m : linearAlgebraVars»
 		«m.cppType» «m.name»;
 		«ENDFOR»
+		// CG details
+		LinearAlgebraFunctions::CGInfo cg_info;
 		«ENDIF»
 
-		utils::Timer timer;
+		utils::Timer global_timer;
+		utils::Timer cpu_timer;
+		utils::Timer io_timer;
 		«IF (threadTeam)»
 		typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 		«ELSE»
@@ -154,7 +158,7 @@ class Ir2Kokkos extends CodeGenerator
 		: options(aOptions)
 		«IF withMesh»
 		, mesh(aNumericMesh2D)
-		, writer("«name»")
+		, writer("«name»", output)
 		«ENDIF»
 		«FOR c : usedConnectivities»
 		, «c.nbElems»(«c.connectivityAccessor»)
@@ -201,11 +205,9 @@ class Ir2Kokkos extends CodeGenerator
 				«HierarchicalParallelismUtils::teamPolicy»
 
 			«ENDIF»
-			timer.start();
 			«jobs.filter[topLevel].jobCallsContent»
-			timer.stop();
-
 			«traceContentProvider.endOfSimuTrace»
+			«IF !linearAlgebraVars.empty && mainTimeLoop !== null»«traceContentProvider.getCGInfoTrace(mainTimeLoop.iterationCounter.name)»«ENDIF»
 		}
 	};
 

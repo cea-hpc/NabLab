@@ -17,11 +17,18 @@ namespace nablalib
 
 namespace LinearAlgebraFunctions
 {
+  struct CGInfo {
+    int m_nb_it;
+    double m_norm_res;
+    std::stringstream m_display;
+  };
+
+  std::string print(const NablaSparseMatrix& M);
   std::string print(const SparseMatrixType& M);
   std::string print(const VectorType& v);
-  VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x,
+  VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x, CGInfo& info,
 		             const size_t max_it = 200, const double tolerance = std::numeric_limits<double>::epsilon());
-  VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b);
+  VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info);
 }
 }
 

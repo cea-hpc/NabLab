@@ -23,36 +23,4 @@
 			class = "fr.cea.nabla.nablagen.NablagenPackage"
 			genModel = "model/generated/Nablagen.genmodel" />
 	</extension>
- <extension
-       id="product"
-       point="org.eclipse.core.runtime.products">
-    <product
-          application="org.eclipse.ui.ide.workbench"
-          name="NabLab">
-       <property
-             name="windowImages"
-             value="platform:/plugin/fr.cea.nabla.rcp/icons/logo_16.png,platform:/plugin/fr.cea.nabla.rcp/icons/logo_32.png,platform:/plugin/fr.cea.nabla.rcp/icons/logo_48.png,platform:/plugin/fr.cea.nabla.rcp/icons/logo_64.png,platform:/plugin/fr.cea.nabla.rcp/icons/logo_128.png,platform:/plugin/fr.cea.nabla.rcp/icons/logo_256.png">
-       </property>
-       <property
-             name="aboutText"
-             value="NabLab Version 0.1.0&#x0A;Copyright (c) 2019 CEA">
-       </property>
-       <property
-             name="startupForegroundColor"
-             value="FFFFFF">
-       </property>
-       <property
-             name="startupProgressRect"
-             value="0,328,458,18">
-       </property>
-       <property
-             name="startupMessageRect"
-             value="7,308,458,18">
-       </property>
-       <property
-             name="preferenceCustomization"
-             value="plugin_customization.ini">
-       </property>
-    </product>
- </extension>
 </plugin>

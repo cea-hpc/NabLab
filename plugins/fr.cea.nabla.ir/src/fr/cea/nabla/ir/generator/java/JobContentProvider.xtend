@@ -77,9 +77,9 @@ class JobContentProvider
 			{
 				// Switch variables to prepare next iteration
 				«FOR copy : copies»
-					«copy.destination.javaType» tmp«copy.destination.name.toFirstUpper» = «copy.destination.name»;
+					«copy.destination.javaType» tmp_«copy.destination.name» = «copy.destination.name»;
 					«copy.destination.name» = «copy.source.name»;
-					«copy.source.name» = tmp«copy.destination.name.toFirstUpper»;
+					«copy.source.name» = tmp_«copy.destination.name»;
 				«ENDFOR»
 			} 
 		} while (continueLoop);

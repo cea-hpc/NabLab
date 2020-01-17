@@ -439,21 +439,21 @@ public final class Glace2d
 			if (continueLoop)
 			{
 				// Switch variables to prepare next iteration
-				double tmpT_n = t_n;
+				double tmp_t_n = t_n;
 				t_n = t_nplus1;
-				t_nplus1 = tmpT_n;
-				double tmpDeltat_n = deltat_n;
+				t_nplus1 = tmp_t_n;
+				double tmp_deltat_n = deltat_n;
 				deltat_n = deltat_nplus1;
-				deltat_nplus1 = tmpDeltat_n;
-				double[][] tmpX_n = X_n;
+				deltat_nplus1 = tmp_deltat_n;
+				double[][] tmp_X_n = X_n;
 				X_n = X_nplus1;
-				X_nplus1 = tmpX_n;
-				double[] tmpE_n = E_n;
+				X_nplus1 = tmp_X_n;
+				double[] tmp_E_n = E_n;
 				E_n = E_nplus1;
-				E_nplus1 = tmpE_n;
-				double[][] tmpUj_n = uj_n;
+				E_nplus1 = tmp_E_n;
+				double[][] tmp_uj_n = uj_n;
 				uj_n = uj_nplus1;
-				uj_nplus1 = tmpUj_n;
+				uj_nplus1 = tmp_uj_n;
 			} 
 		} while (continueLoop);
 	}

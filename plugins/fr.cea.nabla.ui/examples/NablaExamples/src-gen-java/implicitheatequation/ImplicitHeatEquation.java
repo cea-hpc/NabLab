@@ -366,12 +366,12 @@ public final class ImplicitHeatEquation
 			if (continueLoop)
 			{
 				// Switch variables to prepare next iteration
-				double tmpT_n = t_n;
+				double tmp_t_n = t_n;
 				t_n = t_nplus1;
-				t_nplus1 = tmpT_n;
-				Vector tmpU_n = u_n;
+				t_nplus1 = tmp_t_n;
+				Vector tmp_u_n = u_n;
 				u_n = u_nplus1;
-				u_nplus1 = tmpU_n;
+				u_nplus1 = tmp_u_n;
 			} 
 		} while (continueLoop);
 	}

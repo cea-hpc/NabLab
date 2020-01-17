@@ -151,11 +151,15 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				val srcGenKokkosFolder = project.getFolder("src-gen-kokkos")
 				srcGenKokkosFolder.create(false, true, monitor)
 
+				// Create src-gen-kokkos-team folder
+				val srcGenKokkosTeamFolder = project.getFolder("src-gen-kokkos-team")
+				srcGenKokkosTeamFolder.create(false, true, monitor)
+
 				// Create nabla and nablagen models
 				val nablaFile = modulesFolder.getFile(newProjectPage.moduleName + ".nabla")
 				createFile(nablaFile, getNablaModelContent(newProjectPage.moduleName), monitor)
 				val nablagenFile = modulesFolder.getFile(newProjectPage.moduleName + ".nablagen")
-				createFile(nablagenFile, getNablagenModelContent(newProjectPage.moduleName, srcGenJavaFolder, srcGenKokkosFolder), monitor)
+				createFile(nablagenFile, getNablagenModelContent(newProjectPage.moduleName, srcGenJavaFolder, srcGenKokkosFolder, srcGenKokkosTeamFolder), monitor)
 
 				// Create META-INF folder and MANIFEST
 				val metaInf = project.getFolder("META-INF")
@@ -178,7 +182,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				session.save(monitor)
 
 				// Convert into Java Project
-				convertIntoJavaProject(project, #{srcGenJavaFolder}, monitor)
+				convertIntoJavaProject(project, #{srcFolder, srcGenJavaFolder}, monitor)
 
 				// Create build.properties
 				val buildPropertiesFile = project.getFile("build.properties")
@@ -282,7 +286,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		iterate n while (n+1 < max_iter && t^{n+1} < max_time);
 	'''
 
-	private def getNablagenModelContent(String nablaModuleName, IFolder srcGenJavaFolder, IFolder srcGenKokkosFolder)
+	private def getNablagenModelContent(String nablaModuleName, IFolder srcGenJavaFolder, IFolder srcGenKokkosFolder, IFolder srcGenKokkosTeamFolder)
 	'''
 		with «nablaModuleName».*;
 
@@ -321,7 +325,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 			Ir2Code javaGenerator follows fillHlts
 			{
 				language = Java;
-				outputDir = "/NablaExamples/src-gen-java";
+				outputDir = "«srcGenJavaFolder.fullPath»";
 			}
 
 			Ir2Code kokkosGenerator follows fillHlts
@@ -331,7 +335,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 					maxIterationVariable = max_iter;
 					stopTimeVariable = max_time;
 				}
-				outputDir = "/NablaExamples/src-gen-kokkos";
+				outputDir = "«srcGenKokkosFolder.fullPath»";
 			}
 
 			Ir2Code kokkosTeamOfThreadGenerator follows fillHlts
@@ -342,7 +346,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 					stopTimeVariable = max_time;
 					teamOfThreads;
 				}
-				outputDir = "/NablaExamples/src-gen-kokkos-team";
+				outputDir = "«srcGenKokkosTeamFolder.fullPath»";
 			}
 		}
 	'''

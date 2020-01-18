@@ -52,7 +52,7 @@ class JobContentProvider
 			«FOR v : dumpedVariables.filter(ConnectivityVariable)»
 			«v.type.connectivities.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 			«ENDFOR»
-			writer.writeFile(«nbCalls.name», «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			writer.writeFile(«nbCalls.name», «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
 			«lastDumpVariable.name» = «periodVariable.name»;
 		}
 	'''

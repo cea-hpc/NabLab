@@ -10,34 +10,30 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.javalib.mesh.CartesianMesh2D
 import fr.cea.nabla.javalib.mesh.CartesianMesh2DGenerator
-import fr.cea.nabla.javalib.mesh.Mesh
-import fr.cea.nabla.javalib.mesh.NumericMesh2D
-import java.util.ArrayList
 
 class MeshWrapper 
 {
-	val Mesh gm
-	val NumericMesh2D nm
+	val CartesianMesh2D mesh
 
 	new(int nbXQuads, int nbYQuads, double xSize, double ySize)
 	{
-		gm = CartesianMesh2DGenerator.generate(nbXQuads, nbYQuads, xSize, ySize)
-		nm = new NumericMesh2D(gm)
+		mesh = CartesianMesh2DGenerator.generate(nbXQuads, nbYQuads, xSize, ySize)
 	}
 
 	def int[] getElements(String connectivityName, int[] args)
 	{
 		switch connectivityName {
-			case "nodes" : nm.nodes
-			case "cells" : nm.cells
-			case "faces" : nm.faces
-			case "innerNodes" : nm.innerNodes
-			case "outerFaces" : nm.outerFaces
-			case "nodesOfCell" : nm.getNodesOfCell(args.get(0))
-			case "cellsOfNode" : nm.getCellsOfNode(args.get(0))
-			case "nodesOfFace" : nm.getNodesOfFace(args.get(0))
-			case "neighbourCells" : nm.getNeighbourCells(args.get(0))
+			case "nodes" : mesh.nodes
+			case "cells" : mesh.cells
+			case "faces" : mesh.faces
+			case "innerNodes" : mesh.innerNodes
+			case "outerFaces" : mesh.outerFaces
+			case "nodesOfCell" : mesh.getNodesOfCell(args.get(0))
+			case "cellsOfNode" : mesh.getCellsOfNode(args.get(0))
+			case "nodesOfFace" : mesh.getNodesOfFace(args.get(0))
+			case "neighbourCells" : mesh.getNeighbourCells(args.get(0))
 			default : throw new RuntimeException("Not implemented yet (" + connectivityName + ")")
 		}
 	}
@@ -50,24 +46,24 @@ class MeshWrapper
 	def int getSingleton(String connectivityName, int[] params)
 	{
 		switch connectivityName {
-			case "commonFace" : nm.getCommonFace(params.get(0), params.get(1))
+			case "commonFace" : mesh.getCommonFace(params.get(0), params.get(1))
 			default : throw new RuntimeException("Not implemented yet (" + connectivityName + ")")
 		}
 	}
 
-	def ArrayList<double[]> getNodes()
+	def double[][] getNodes()
 	{
-		gm.nodes
+		mesh.geometry.nodes
 	}
 
 	def int getNbElems(String connectivityName)
 	{
 		switch connectivityName {
-			case "nodes" : nm.nbNodes
-			case "cells" : nm.nbCells
-			case "faces" : nm.nbFaces
-			case "outerFaces" : nm.nbOuterFaces
-			case "innerNodes" : nm.nbInnerNodes
+			case "nodes" : mesh.nbNodes
+			case "cells" : mesh.nbCells
+			case "faces" : mesh.nbFaces
+			case "outerFaces" : mesh.nbOuterFaces
+			case "innerNodes" : mesh.nbInnerNodes
 			default : throw new RuntimeException("Not implemented yet")
 		}
 	}
@@ -75,17 +71,17 @@ class MeshWrapper
 	def int getMaxNbElems(String connectivityName)
 	{
 		switch connectivityName {
-			case "nodesOfCell" : NumericMesh2D::MaxNbNodesOfCell
-			case "nodesOfFace" : NumericMesh2D::MaxNbNodesOfFace
-			case "cellsOfNode" : NumericMesh2D::MaxNbCellsOfNode
-			case "cellsOfFace" : NumericMesh2D::MaxNbCellsOfFace
-			case "neighbourCells" : NumericMesh2D::MaxNbNeighbourCells
+			case "nodesOfCell" : CartesianMesh2D::MaxNbNodesOfCell
+			case "nodesOfFace" : CartesianMesh2D::MaxNbNodesOfFace
+			case "cellsOfNode" : CartesianMesh2D::MaxNbCellsOfNode
+			case "cellsOfFace" : CartesianMesh2D::MaxNbCellsOfFace
+			case "neighbourCells" : CartesianMesh2D::MaxNbNeighbourCells
 			default : throw new RuntimeException("Not implemented yet")
 		}
 	}
 
 	def getQuads()
 	{
-		nm.geometricMesh.quads
+		mesh.geometry.quads
 	}
 }

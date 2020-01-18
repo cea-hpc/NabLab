@@ -11,32 +11,44 @@ package fr.cea.nabla.javalib.mesh
 
 class  CartesianMesh2DGenerator
 {
-	static def Mesh generate(int nbXQuads, int nbYQuads, double xSize, double ySize)
+	static def CartesianMesh2D generate(int nbXQuads, int nbYQuads, double xSize, double ySize)
 	{
-		val nbNodes = (nbXQuads + 1) * (nbYQuads + 1)
-		val nbQuads = nbXQuads * nbYQuads
-		val nbEdges = 2 * nbQuads + nbXQuads + nbYQuads
-		val nbOuterNodes = 2 * (nbXQuads + nbYQuads)
-		val nbInnerNodes = nbNodes - nbOuterNodes
-		val mesh = new Mesh(nbNodes, nbEdges, nbQuads, nbInnerNodes)
+		val double[][] nodes = newDoubleArrayOfSize((nbXQuads + 1) * (nbYQuads + 1)).map[newDoubleArrayOfSize(2)]
+		val Quad[] quads = newArrayOfSize(nbXQuads * nbYQuads)
+		val Edge[] edges = newArrayOfSize(2 * quads.size + nbXQuads + nbYQuads)
+
+		val outerNodeIds = newIntArrayOfSize(2 * (nbXQuads + nbYQuads))
+		val innerNodeIds = newIntArrayOfSize(nodes.size - outerNodeIds.size)
+		val topNodeIds = newIntArrayOfSize(nbXQuads + 1)
+		val bottomNodeIds = newIntArrayOfSize(nbXQuads + 1)
+		val leftNodeIds = newIntArrayOfSize(nbYQuads + 1)
+		val rightNodeIds = newIntArrayOfSize(nbYQuads + 1)
 
 		// node creation
-		val nodes = mesh.nodes
-		val innerNodeIds = mesh.innerNodeIds
 		var nodeId = 0
 		var innerNodeId = 0
+		var topNodeId = 0
+		var bottomNodeId = 0
+		var leftNodeId = 0
+		var rightNodeId = 0
 		for (j : 0..nbYQuads)
 			for (i : 0..nbXQuads)
 			{
-				val coord = #[xSize*i, ySize*j]
-				nodes.add(coord)
+				nodes.set(nodeId, 0, xSize*i)
+				nodes.set(nodeId, 1, ySize*j)
 				if (i!=0 && j!=0 && i!=nbXQuads && j!=nbYQuads) 
 					innerNodeIds.set(innerNodeId++, nodeId)
+				else
+				{
+					if (j==0) topNodeIds.set(topNodeId++, nodeId)
+					if (j==nbYQuads) bottomNodeIds.set(bottomNodeId++, nodeId)
+					if (i==0) leftNodeIds.set(leftNodeId++, nodeId)
+					if (i==nbXQuads) rightNodeIds.set(rightNodeId++, nodeId)
+				}
 				nodeId++
 			}
 
 		// edge creation
-		val edges = mesh.edges
 		val nbXNodes = nbXQuads+1
 		var edgeId = 0
 		for (i : 0..<nodes.size)
@@ -48,7 +60,6 @@ class  CartesianMesh2DGenerator
 		}
 
 		// quad creation
-		val quads = mesh.quads
 		var quadId = 0
 		for (j : 0..<nbYQuads)
 			for (i : 0..<nbXQuads)
@@ -58,6 +69,7 @@ class  CartesianMesh2DGenerator
 				quads.set(quadId++, new Quad(upperLeftNodeIndex, upperLeftNodeIndex+1, lowerLeftNodeIndex+1, lowerLeftNodeIndex))
 			}
 
-		return mesh
+		val meshGeometry = new MeshGeometry(nodes, edges, quads)
+		return new CartesianMesh2D(meshGeometry, innerNodeIds, topNodeIds, bottomNodeIds, leftNodeIds, rightNodeIds)
 	}
 }

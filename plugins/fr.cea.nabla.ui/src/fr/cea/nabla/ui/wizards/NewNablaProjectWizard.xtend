@@ -281,7 +281,8 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		const ℝ max_time = 1.0;
 
 		ℝ t, δt;
-		ℝ[2] X{nodes}, e{nodes};
+		ℝ[2] X{nodes};
+		ℝ e{nodes};
 
 		iterate n while (n+1 < max_iter && t^{n+1} < max_time);
 	'''

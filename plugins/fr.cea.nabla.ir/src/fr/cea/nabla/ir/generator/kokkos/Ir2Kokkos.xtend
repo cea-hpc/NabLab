@@ -84,8 +84,8 @@ class Ir2Kokkos extends CodeGenerator
 
 	// Project headers
 	«IF withMesh»
-	#include "mesh/NumericMesh2D.h"
 	#include "mesh/CartesianMesh2DGenerator.h"
+	#include "mesh/CartesianMesh2D.h"
 	#include "mesh/PvdFileWriter2D.h"
 	«ENDIF»
 	#include "utils/Utils.h"
@@ -115,7 +115,7 @@ class Ir2Kokkos extends CodeGenerator
 
 	private:
 		«IF withMesh»
-		NumericMesh2D* mesh;
+		CartesianMesh2D* mesh;
 		PvdFileWriter2D writer;
 		«FOR c : usedConnectivities BEFORE 'int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
 		«ENDIF»
@@ -154,10 +154,10 @@ class Ir2Kokkos extends CodeGenerator
 		«ENDIF»
 
 	public:
-		«name»(Options* aOptions, «IF withMesh»NumericMesh2D* aNumericMesh2D,«ENDIF» string output)
+		«name»(Options* aOptions, «IF withMesh»CartesianMesh2D* aCartesianMesh2D,«ENDIF» string output)
 		: options(aOptions)
 		«IF withMesh»
-		, mesh(aNumericMesh2D)
+		, mesh(aCartesianMesh2D)
 		, writer("«name»", output)
 		«ENDIF»
 		«FOR c : usedConnectivities»
@@ -175,7 +175,7 @@ class Ir2Kokkos extends CodeGenerator
 		{
 			«IF withMesh»
 			// Copy node coordinates
-			const auto& gNodes = mesh->getGeometricMesh()->getNodes();
+			const auto& gNodes = mesh->getGeometry()->getNodes();
 			Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 			{
 				«initNodeCoordVariable.name»(rNodes) = gNodes[rNodes];
@@ -232,15 +232,13 @@ class Ir2Kokkos extends CodeGenerator
 			std::cerr << "[ERROR] Wrong number of arguments. Expecting 4 or 5 args: X Y Xlength Ylength (output)." << std::endl;
 			std::cerr << "(X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
 		}
-		auto gm = CartesianMesh2DGenerator::generate(o->«MandatoryOptions::X_EDGE_ELEMS», o->«MandatoryOptions::Y_EDGE_ELEMS», o->«MandatoryOptions::X_EDGE_LENGTH», o->«MandatoryOptions::Y_EDGE_LENGTH»);
-		auto nm = new NumericMesh2D(gm);
+		auto nm = CartesianMesh2DGenerator::generate(o->«MandatoryOptions::X_EDGE_ELEMS», o->«MandatoryOptions::Y_EDGE_ELEMS», o->«MandatoryOptions::X_EDGE_LENGTH», o->«MandatoryOptions::Y_EDGE_LENGTH»);
 		«ENDIF»
 		auto c = new «name»(o, «IF withMesh»nm,«ENDIF» output);
 		c->simulate();
 		delete c;
 		«IF withMesh»
 		delete nm;
-		delete gm;
 		«ENDIF»
 		delete o;
 		Kokkos::finalize();
@@ -253,6 +251,6 @@ class Ir2Kokkos extends CodeGenerator
 		if (c.inTypes.empty)
 			'''mesh->getNb«c.name.toFirstUpper»()'''
 		else
-			'''NumericMesh2D::MaxNb«c.name.toFirstUpper»'''
+			'''CartesianMesh2D::MaxNb«c.name.toFirstUpper»'''
 	}
 }

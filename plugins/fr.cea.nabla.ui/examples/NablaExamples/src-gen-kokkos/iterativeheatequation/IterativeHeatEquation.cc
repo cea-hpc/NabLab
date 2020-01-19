@@ -12,8 +12,8 @@
 #include <Kokkos_hwloc.hpp>
 
 // Project headers
-#include "mesh/NumericMesh2D.h"
 #include "mesh/CartesianMesh2DGenerator.h"
+#include "mesh/CartesianMesh2D.h"
 #include "mesh/PvdFileWriter2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
@@ -44,7 +44,7 @@ public:
 	Options* options;
 
 private:
-	NumericMesh2D* mesh;
+	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
 	int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
@@ -73,17 +73,17 @@ private:
 	const size_t maxHardThread = Kokkos::DefaultExecutionSpace::max_hardware_threads();
 
 public:
-	IterativeHeatEquation(Options* aOptions, NumericMesh2D* aNumericMesh2D, string output)
+	IterativeHeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string output)
 	: options(aOptions)
-	, mesh(aNumericMesh2D)
+	, mesh(aCartesianMesh2D)
 	, writer("IterativeHeatEquation", output)
 	, nbNodes(mesh->getNbNodes())
 	, nbCells(mesh->getNbCells())
 	, nbFaces(mesh->getNbFaces())
-	, nbNodesOfCell(NumericMesh2D::MaxNbNodesOfCell)
-	, nbNodesOfFace(NumericMesh2D::MaxNbNodesOfFace)
-	, nbCellsOfFace(NumericMesh2D::MaxNbCellsOfFace)
-	, nbNeighbourCells(NumericMesh2D::MaxNbNeighbourCells)
+	, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+	, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
+	, nbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
+	, nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
 	, t_n(0.0)
 	, t_nplus1(0.0)
 	, deltat(0.001)
@@ -105,7 +105,7 @@ public:
 	, alpha("alpha", nbCells, nbCells)
 	{
 		// Copy node coordinates
-		const auto& gNodes = mesh->getGeometricMesh()->getNodes();
+		const auto& gNodes = mesh->getGeometry()->getNodes();
 		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 		{
 			X(rNodes) = gNodes[rNodes];
@@ -258,7 +258,7 @@ private:
 			std::map<string, double*> cellVariables;
 			std::map<string, double*> nodeVariables;
 			cellVariables.insert(pair<string,double*>("Temperature", u_n.data()));
-			auto quads = mesh->getGeometricMesh()->getQuads();
+			auto quads = mesh->getGeometry()->getQuads();
 			writer.writeFile(nbCalls, t_n, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
 			lastDump = n;
 			io_timer.stop();
@@ -566,13 +566,11 @@ int main(int argc, char* argv[])
 		std::cerr << "[ERROR] Wrong number of arguments. Expecting 4 or 5 args: X Y Xlength Ylength (output)." << std::endl;
 		std::cerr << "(X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
 	}
-	auto gm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
-	auto nm = new NumericMesh2D(gm);
+	auto nm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
 	auto c = new IterativeHeatEquation(o, nm, output);
 	c->simulate();
 	delete c;
 	delete nm;
-	delete gm;
 	delete o;
 	Kokkos::finalize();
 	return 0;

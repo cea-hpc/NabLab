@@ -34,20 +34,22 @@ class NodeIdContainer
 
   const array<T, N>& getNodeIds() const noexcept { return m_nodeIds; }
 
-  ostream& operator<<(ostream& s)
-  {
-    if (m_nodeIds.size() > 0) {
-      s << "[" << m_nodeIds[0];
-      for (size_t i(1); i < m_nodeIds.size(); ++i)
-        s << ", " << m_nodeIds[i];
-      s << "]";
-    }
-    return s;
-  }
-
  private:
   array<T, N> m_nodeIds;
 };
+
+template <typename T, size_t N>
+ostream& operator<<(ostream& s, const NodeIdContainer<T, N>& o)
+{
+  auto nodeIds = o.getNodeIds();
+  if (nodeIds.size() > 0) {
+    s << "[" << nodeIds[0];
+    for (size_t i(1); i < nodeIds.size(); ++i)
+      s << ", " << nodeIds[i];
+    s << "]";
+  }
+  return s;
+}
 
 // Type alias
 using Edge = NodeIdContainer<int, 2>;

@@ -25,7 +25,7 @@ public final class HeatEquation
 	private final Options options;
 
 	// Mesh
-	private final NumericMesh2D mesh;
+	private final CartesianMesh2D mesh;
 	private final FileWriter writer;
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
 
@@ -37,17 +37,17 @@ public final class HeatEquation
 	private double[][] X, center;
 	private double[] u_n, u_nplus1, V, f, outgoingFlux, surface;
 
-	public HeatEquation(Options aOptions, NumericMesh2D aNumericMesh2D)
+	public HeatEquation(Options aOptions, CartesianMesh2D aCartesianMesh2D)
 	{
 		options = aOptions;
-		mesh = aNumericMesh2D;
+		mesh = aCartesianMesh2D;
 		writer = new PvdFileWriter2D("HeatEquation");
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
-		nbNodesOfCell = NumericMesh2D.MaxNbNodesOfCell;
-		nbNodesOfFace = NumericMesh2D.MaxNbNodesOfFace;
-		nbNeighbourCells = NumericMesh2D.MaxNbNeighbourCells;
+		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
+		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 
 		t_n = 0.0;
 		t_nplus1 = 0.0;
@@ -66,8 +66,11 @@ public final class HeatEquation
 		surface = new double[nbFaces];
 
 		// Copy node coordinates
-		ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
-		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> X[rNodes] = gNodes.get(rNodes));
+		double[][] gNodes = mesh.getGeometry().getNodes();
+		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> {
+			X[rNodes][0] = gNodes[rNodes][0];
+			X[rNodes][1] = gNodes[rNodes][1];
+		});
 	}
 
 	public void simulate()
@@ -85,9 +88,8 @@ public final class HeatEquation
 	public static void main(String[] args)
 	{
 		HeatEquation.Options o = new HeatEquation.Options();
-		Mesh gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
-		NumericMesh2D nm = new NumericMesh2D(gm);
-		HeatEquation i = new HeatEquation(o, nm);
+		CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
+		HeatEquation i = new HeatEquation(o, mesh);
 		i.simulate();
 	}
 
@@ -230,7 +232,7 @@ public final class HeatEquation
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
 			cellVariables.put("Temperature", u_n);
-			writer.writeFile(nbCalls, t_n, X, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			writer.writeFile(nbCalls, t_n, X, mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
 			lastDump = n;
 		}
 	}

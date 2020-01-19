@@ -21,8 +21,8 @@ class MeshGeometry
 	def dump()
 	{
 		println('Mesh Geometry')
-		println('  nodes (' + nodes.size + ') : ' + nodes.map[toString].join(','))
-		println('  edges : ' + edges.map[toString].join(','))	
-		println('  quads : ' + quads.map[toString].join(','))
+		println('  nodes (' + nodes.size + ') : ' + nodes.map[toString].join(', '))
+		println('  edges (' + edges.size + ') : ' + edges.map[toString].join(', '))	
+		println('  quads (' + quads.size + ') : ' + quads.map[toString].join(', '))
 	}
 }

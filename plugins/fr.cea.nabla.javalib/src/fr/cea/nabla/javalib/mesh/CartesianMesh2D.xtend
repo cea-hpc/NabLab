@@ -54,11 +54,7 @@ class CartesianMesh2D
 		var int outerFaceId = 0
 		for (e : geometry.edges)
 		{
-			if (!e.innerEdge)
-			{
-				outerFaces.set(outerFaceId, edgeId)
-				outerFaceId++
-			}
+			if (!e.innerEdge) outerFaces.set(outerFaceId++, edgeId)
 			edgeId++
 		}
 	}
@@ -172,13 +168,12 @@ class CartesianMesh2D
 	{
 		geometry.dump
 		println('Mesh Topology')
-		println('  inner nodes  : ' + innerNodes.map[toString].join(','))
-		println('  top nodes    : ' + topNodes.map[toString].join(','))
-		println('  bottom nodes : ' + bottomNodes.map[toString].join(','))
-		println('  left nodes   : ' + leftNodes.map[toString].join(','))
-		println('  right nodes  : ' + rightNodes.map[toString].join(','))
-		println('  outer faces  : ' + outerFaces.map[toString].join(','))
-		
+		println('  inner nodes  : ' + innerNodes.map[toString].join(', '))
+		println('  top nodes    : ' + topNodes.map[toString].join(', '))
+		println('  bottom nodes : ' + bottomNodes.map[toString].join(', '))
+		println('  left nodes   : ' + leftNodes.map[toString].join(', '))
+		println('  right nodes  : ' + rightNodes.map[toString].join(', '))
+		println('  outer faces  : ' + outerFaces.map[toString].join(', '))
 	}
 
 	private def isInnerEdge(Edge it)

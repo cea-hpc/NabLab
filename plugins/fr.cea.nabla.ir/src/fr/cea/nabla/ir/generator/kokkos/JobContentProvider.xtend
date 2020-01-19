@@ -62,7 +62,7 @@ abstract class JobContentProvider
 			«FOR v : dumpedVariables.filter(ConnectivityVariable)»
 			«v.type.connectivities.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
 			«ENDFOR»
-			auto quads = mesh->getGeometricMesh()->getQuads();
+			auto quads = mesh->getGeometry()->getQuads();
 			writer.writeFile(«nbCalls.name», «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);
 			«lastDumpVariable.name» = «periodVariable.name»;
 			io_timer.stop();

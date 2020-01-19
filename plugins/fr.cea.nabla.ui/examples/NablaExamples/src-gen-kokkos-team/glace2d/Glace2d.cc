@@ -12,8 +12,8 @@
 #include <Kokkos_hwloc.hpp>
 
 // Project headers
-#include "mesh/NumericMesh2D.h"
 #include "mesh/CartesianMesh2DGenerator.h"
+#include "mesh/CartesianMesh2D.h"
 #include "mesh/PvdFileWriter2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
@@ -47,7 +47,7 @@ public:
 	Options* options;
 
 private:
-	NumericMesh2D* mesh;
+	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
 	int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
 
@@ -91,17 +91,17 @@ private:
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 public:
-	Glace2d(Options* aOptions, NumericMesh2D* aNumericMesh2D, string output)
+	Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string output)
 	: options(aOptions)
-	, mesh(aNumericMesh2D)
+	, mesh(aCartesianMesh2D)
 	, writer("Glace2d", output)
 	, nbNodes(mesh->getNbNodes())
 	, nbCells(mesh->getNbCells())
-	, nbNodesOfCell(NumericMesh2D::MaxNbNodesOfCell)
-	, nbCellsOfNode(NumericMesh2D::MaxNbCellsOfNode)
+	, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+	, nbCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
 	, nbInnerNodes(mesh->getNbInnerNodes())
 	, nbOuterFaces(mesh->getNbOuterFaces())
-	, nbNodesOfFace(NumericMesh2D::MaxNbNodesOfFace)
+	, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 	, t_n(0.0)
 	, t_nplus1(0.0)
 	, deltat_n(options->option_deltat_ini)
@@ -138,7 +138,7 @@ public:
 	, Ajr("Ajr", nbCells, nbNodesOfCell)
 	{
 		// Copy node coordinates
-		const auto& gNodes = mesh->getGeometricMesh()->getNodes();
+		const auto& gNodes = mesh->getGeometry()->getNodes();
 		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 		{
 			X_n0(rNodes) = gNodes[rNodes];
@@ -520,7 +520,7 @@ private:
 			std::map<string, double*> cellVariables;
 			std::map<string, double*> nodeVariables;
 			cellVariables.insert(pair<string,double*>("Density", rho.data()));
-			auto quads = mesh->getGeometricMesh()->getQuads();
+			auto quads = mesh->getGeometry()->getQuads();
 			writer.writeFile(nbCalls, t_n, nbNodes, X_n.data(), nbCells, quads.data(), cellVariables, nodeVariables);
 			lastDump = n;
 			io_timer.stop();
@@ -1169,13 +1169,11 @@ int main(int argc, char* argv[])
 		std::cerr << "[ERROR] Wrong number of arguments. Expecting 4 or 5 args: X Y Xlength Ylength (output)." << std::endl;
 		std::cerr << "(X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
 	}
-	auto gm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
-	auto nm = new NumericMesh2D(gm);
+	auto nm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
 	auto c = new Glace2d(o, nm, output);
 	c->simulate();
 	delete c;
 	delete nm;
-	delete gm;
 	delete o;
 	Kokkos::finalize();
 	return 0;

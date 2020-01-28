@@ -8,15 +8,9 @@
  * Contributors: see AUTHORS file
  *******************************************************************************/
 
-
 // TODO Add keyword size, i.e. size X = 4; (X : DimensionVar). Check only one DimensionVar X.
 // TODO Operator definition and overload
-// TODO Sirius Graph with composite graph
-// TODO Embedded C++ library
 // TODO assert
-// TODO warning compilation maven
-
-
 
 grammar fr.cea.nabla.Nabla with org.eclipse.xtext.common.Terminals
 

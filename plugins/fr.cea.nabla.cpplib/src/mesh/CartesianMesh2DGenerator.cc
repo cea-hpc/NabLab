@@ -79,7 +79,7 @@ CartesianMesh2DGenerator::generate(int nbXQuads, int nbYQuads, double xSize, dou
 		}
 	}
 
-	auto mesh_geometry = new MeshGeometry(nodes_, edges_, quads_);
+	auto mesh_geometry = new MeshGeometry<2>(nodes_, edges_, quads_);
 	return new CartesianMesh2D(
 		mesh_geometry, 
 		inner_node_ids_, 

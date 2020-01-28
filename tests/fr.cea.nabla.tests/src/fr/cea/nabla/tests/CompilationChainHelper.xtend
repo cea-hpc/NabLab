@@ -46,12 +46,18 @@ class CompilationChainHelper
 
 	def getIrModule(CharSequence model, CharSequence genModel)
 	{
-		// First read MathFunctions
-		val mathFunctionsPath = "../../plugins/fr.cea.nabla/nablalib/mathfunctions.nabla"
-		var mathFunctions = nablaParseHelper.parse(new String(Files.readAllBytes(Paths.get(mathFunctionsPath))))
-
+		val testProjectPath = System.getProperty("user.dir")
+		val pluginsPath = testProjectPath + "/../../plugins/"
 		var rs = resourceSetProvider.get
-		rs.resources.add(mathFunctions.eResource)
+
+		// Read MathFunctions
+		val mathFunctionsPath = pluginsPath + "fr.cea.nabla/nablalib/mathfunctions.nabla"
+		nablaParseHelper.parse(new String(Files.readAllBytes(Paths.get(mathFunctionsPath))), rs)
+
+		// Read LinearAlgebraFunctions
+		val linearAlgebraFunctionsPath = pluginsPath + "fr.cea.nabla/nablalib/linearalgebrafunctions.nabla"
+		nablaParseHelper.parse(new String(Files.readAllBytes(Paths.get(linearAlgebraFunctionsPath))), rs)
+
 		var nablaModule = nablaParseHelper.parse(model, rs)
 		nablaModule.assertNoErrors
 
@@ -64,7 +70,7 @@ class CompilationChainHelper
 		{
 			var interpretor = workflowInterpreterProvider.get
 			interpretor.addWorkflowModelChangedListener([module|irModule = module])
-			interpretor.launch(workflow)
+			interpretor.launch(workflow, pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples")
 		}
 		return irModule
 	}

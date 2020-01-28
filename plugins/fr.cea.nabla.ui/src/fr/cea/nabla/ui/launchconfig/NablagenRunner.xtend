@@ -41,11 +41,11 @@ class NablagenRunner
 		stream = console.newMessageStream
 	}
 
-	def launch(Workflow workflow)
+	def launch(Workflow workflow, String baseDir)
 	{
 		val interpretor = interpretorProvider.get
 		interpretor.addWorkflowTraceListener([msg | stream.print(msg)])
-		interpretor.launch(workflow)
+		interpretor.launch(workflow, baseDir)
 	}
 
 	package def launch(IResource eclipseResource)
@@ -59,6 +59,18 @@ class NablagenRunner
 		emfResource.load(null)
 		for (module : emfResource.contents.filter(NablagenModule))
 			if (module.workflow !== null) 
-				module.workflow.launch
+				launch(module.workflow, eclipseResource.project.location.toString)
+
+		eclipseResource.project.refreshLocal(IResource::DEPTH_INFINITE, null)
 	}
+
+//	/** Refresh du répertoire s'il est contenu dans la resource (évite le F5) */
+//	private static def refreshResourceDir(IProject p, String fileAbsolutePath)
+//	{
+//		p.refreshLocal(IResource::DEPTH_INFINITE, null)
+//		val uri = java.net.URI::create(fileAbsolutePath)
+//		val files = p.workspace.root.findFilesForLocationURI(uri)
+//		if (files !== null && files.size == 1) files.head.parent.refreshLocal(IResource::DEPTH_INFINITE, null)
+//	}
+
 }

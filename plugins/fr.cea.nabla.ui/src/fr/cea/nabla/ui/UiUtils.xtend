@@ -10,6 +10,10 @@
 package fr.cea.nabla.ui
 
 import fr.cea.nabla.ui.internal.NablaActivator
+import org.eclipse.core.resources.IFile
+import org.eclipse.core.resources.IResource
+import org.eclipse.core.resources.ResourcesPlugin
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.jface.resource.ResourceLocator
 import org.eclipse.ui.PlatformUI
 import org.eclipse.xtext.ui.editor.XtextEditor
@@ -36,5 +40,19 @@ class UiUtils
 			w.activePage.activeEditor as XtextEditor
 		else
 			null
+	}
+
+	static def IFile toEclipseFile(Resource emfResource)
+	{
+		val uri = emfResource.URI
+		if (uri !== null && uri.platformResource)
+		{
+			val ws = ResourcesPlugin::workspace.root
+			val platformString = uri.toPlatformString(true)
+			val resource = ws.findMember(platformString)
+			if (resource !== null && resource.exists && resource.type == IResource::FILE)
+				return resource as IFile
+		}
+		return null
 	}
 }

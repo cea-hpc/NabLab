@@ -17,10 +17,11 @@ import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalJobC
 import fr.cea.nabla.nablagen.CppKokkos
 import fr.cea.nabla.nablagen.Ir2CodeComponent
 import fr.cea.nabla.nablagen.Java
+import java.io.File
 
 class CodeGeneratorProvider
 {
-	static def get(Ir2CodeComponent it)
+	static def get(Ir2CodeComponent it, String baseDir)
 	{
 		val l = language
 		switch l
@@ -29,10 +30,11 @@ class CodeGeneratorProvider
 			CppKokkos:
 			{
 				val tcp = new TraceContentProvider(l.maxIterationVar.name , l.stopTimeVar.name)
+				val outputDirectory = new File(baseDir + outputDir)
 				if (l.teamOfThreads)
-					new Ir2Kokkos(outputDir, new HierarchicalJobContentProvider(tcp))
+					new Ir2Kokkos(outputDirectory, new HierarchicalJobContentProvider(tcp))
 				else
-					new Ir2Kokkos(outputDir, new DefaultJobContentProvider(tcp))
+					new Ir2Kokkos(outputDirectory, new DefaultJobContentProvider(tcp))
 			}
 			default : throw new RuntimeException("Unsupported language " + language.class.name)
 		}

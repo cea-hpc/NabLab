@@ -20,11 +20,8 @@ import fr.cea.nabla.nablagen.Ir2IrComponent
 import fr.cea.nabla.nablagen.Nabla2IrComponent
 import fr.cea.nabla.nablagen.Workflow
 import fr.cea.nabla.nablagen.WorkflowComponent
-import java.net.URI
+import java.io.File
 import java.util.ArrayList
-import org.eclipse.core.resources.IContainer
-import org.eclipse.core.resources.IProject
-import org.eclipse.core.resources.IResource
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.emf.ecore.xmi.XMLResource
@@ -41,19 +38,21 @@ import static extension fr.cea.nabla.workflow.WorkflowComponentExtensions.*
 class WorkflowInterpreter 
 {
 	static val IrExtension = 'nablair'
+	String projectDir
 	val traceListeners = new ArrayList<IWorkflowTraceListener>
 	val modelChangedListeners = new ArrayList<IWorkflowModelChangedListener>
 	@Inject Provider<JavaIoFileSystemAccess> fsaProvider
 	@Inject Nabla2Ir nabla2Ir
 	@Inject IOutputConfigurationProvider outputConfigurationProvider
 
-	def launch(Workflow workflow)
+	def launch(Workflow workflow, String projectDir)
 	{
 		try
 		{
+			this.projectDir = projectDir
 			val msg = 'STARTING ' + workflow.name + '\n'
 			traceListeners.forEach[write(msg)]
-			workflow.components.filter(Nabla2IrComponent).forEach[c | launch(c, workflow.nablaModule)]
+			workflow.components.filter(Nabla2IrComponent).forEach[c | launchComponent(c, workflow.nablaModule)]
 		}
 		catch(Exception e)
 		{
@@ -79,20 +78,20 @@ class WorkflowInterpreter
 		modelChangedListeners += listener
 	}
 
-	private def dispatch void launch(Nabla2IrComponent c, NablaModule nablaModule)
+	private def dispatch void launchComponent(Nabla2IrComponent c, NablaModule nablaModule)
 	{
 		val msg = '  Nabla -> IR - ' + c.name
 		traceListeners.forEach[write(msg)]
 		val irModule = nabla2Ir.toIrModule(nablaModule, c.timeVar, c.deltatVar, c.nodeCoordVar)
 		if (c.dumpIr)
-			createAndSaveResource(irModule, c.eclipseProject, c.name)
+			createAndSaveResource(irModule, projectDir, c.name)
 		val msgEnd = "... ok\n"
 		traceListeners.forEach[write(msgEnd)]
 		modelChangedListeners.forEach[modelChanged(irModule)]
 		fireModel(c, irModule)
 	}
 
-	private def dispatch void launch(Ir2IrComponent c, IrModule irModule)
+	private def dispatch void launchComponent(Ir2IrComponent c, IrModule irModule)
 	{
 		if (!c.disabled)
 		{
@@ -101,7 +100,7 @@ class WorkflowInterpreter
 			traceListeners.forEach[write(msg)]
 			val ok = step.transform(irModule)
 			if (c.dumpIr)
-				createAndSaveResource(irModule, c.eclipseProject, c.name)
+				createAndSaveResource(irModule, projectDir, c.name)
 			if (ok)
 			{
 				val msgEnd = "... ok\n"
@@ -122,15 +121,17 @@ class WorkflowInterpreter
 		fireModel(c, irModule)
 	}
 		
-	private def dispatch void launch(Ir2CodeComponent c, IrModule irModule)
+	private def dispatch void launchComponent(Ir2CodeComponent c, IrModule irModule)
 	{
 		if (!c.disabled)
 		{
-			val g = CodeGeneratorProvider::get(c)
+			val baseDir =  projectDir + "/.."
+			val g = CodeGeneratorProvider::get(c, baseDir)
 			val msg = "  " + g.name + " code generator\n"
 			traceListeners.forEach[write(msg)]
-			val outputFolder = c.eclipseProject.workspace.root.findMember(c.outputDir) 
-			if (outputFolder === null || !(outputFolder instanceof IContainer) || !outputFolder.exists)
+			val outputFolderName = baseDir + c.outputDir
+			val outputFolder = new File(outputFolderName)
+			if (!outputFolder.exists || !(outputFolder.isDirectory))
 			{
 				val exceptionMsg = '   ** Invalid outputDir: ' + c.outputDir + '\n'
 				traceListeners.forEach[write(exceptionMsg)]
@@ -139,7 +140,7 @@ class WorkflowInterpreter
 			}
 			else
 			{
-				val fsa = getConfiguredFileSystemAccess(outputFolder.location.toString, false)
+				val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
 				val fileContentsByName = g.getFileContentsByName(irModule)
 				for (fileName : fileContentsByName.keySet)
 				{
@@ -148,7 +149,6 @@ class WorkflowInterpreter
 					val msg2 = "    Generating '" + fullFileName
 					traceListeners.forEach[write(msg2)]	
 					fsa.generateFile(fullFileName, fileContent)
-					outputFolder.refreshLocal(IResource::DEPTH_INFINITE, null)
 					val msgEnd = "... ok\n"
 					traceListeners.forEach[write(msgEnd)]	
 				}
@@ -156,10 +156,10 @@ class WorkflowInterpreter
 		}
 	}
 
-	private def createAndSaveResource(IrModule irModule, IProject project, String fileExtensionPart)
+	private def createAndSaveResource(IrModule irModule, String projectAbsolutePath, String fileExtensionPart)
 	{
 		val fileName = irModule.name.toLowerCase + '/' + irModule.name + '.' +  fileExtensionPart + '.' + IrExtension
-		val fsa = getConfiguredFileSystemAccess(project.location.toString, true)
+		val fsa = getConfiguredFileSystemAccess(projectAbsolutePath, true)
 		
 		val uri =  fsa.getURI(fileName)
 		val rSet = new ResourceSetImpl
@@ -168,15 +168,6 @@ class WorkflowInterpreter
 		val resource = rSet.createResource(uri)
 		resource.contents += irModule
 		resource.save(xmlSaveOptions)
-		refreshResourceDir(project, uri.toString)
-	}
-
-	/** Refresh du répertoire s'il est contenu dans la resource (évite le F5) */
-	private static def refreshResourceDir(IProject p, String fileAbsolutePath)
-	{
-		val uri = URI::create(fileAbsolutePath)
-		val files = p.workspace.root.findFilesForLocationURI(uri)
-		if (files !== null && files.size == 1) files.head.parent.refreshLocal(IResource::DEPTH_INFINITE, null)
 	}
 
 	private	def getXmlSaveOptions()
@@ -220,9 +211,9 @@ class WorkflowInterpreter
 		val nextComponents = nexts
 		if (!nextComponents.empty)
 		{
-			nextComponents.get(0).launch(model)
+			nextComponents.get(0).launchComponent(model)
 			for(i : 1..<nextComponents.size) 
-				nextComponents.get(i).launch(EcoreUtil::copy(model))
+				nextComponents.get(i).launchComponent(EcoreUtil::copy(model))
 		}
 	}
 }

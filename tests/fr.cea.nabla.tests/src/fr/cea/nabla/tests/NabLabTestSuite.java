@@ -23,6 +23,7 @@ import org.junit.runners.Suite;
 	NablaScopeProviderTest.class,
 	NablaParsingTest.class,
 	NablagenParsingTest.class,
+	NablaExamplesTest.class,
 	ExpressionInterpreterTest.class,
 	BinaryOperationsInterpreterTest.class,
 	InstructionInterpreterTest.class,

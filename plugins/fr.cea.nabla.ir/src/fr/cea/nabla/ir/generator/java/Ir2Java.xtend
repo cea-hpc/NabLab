@@ -69,7 +69,7 @@ class Ir2Java extends CodeGenerator
 
 			«IF withMesh»
 			// Mesh
-			private final NumericMesh2D mesh;
+			private final CartesianMesh2D mesh;
 			private final FileWriter writer;
 			«FOR c : usedConnectivities BEFORE 'private final int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
 			«ENDIF»
@@ -96,11 +96,11 @@ class Ir2Java extends CodeGenerator
 			«ENDFOR»
 			«ENDIF»
 
-			public «name»(Options aOptions«IF withMesh», NumericMesh2D aNumericMesh2D«ENDIF»)
+			public «name»(Options aOptions«IF withMesh», CartesianMesh2D aCartesianMesh2D«ENDIF»)
 			{
 				options = aOptions;
 				«IF withMesh»
-				mesh = aNumericMesh2D;
+				mesh = aCartesianMesh2D;
 				writer = new PvdFileWriter2D("«name»");
 				«ENDIF»
 				«FOR c : usedConnectivities»
@@ -122,8 +122,11 @@ class Ir2Java extends CodeGenerator
 				«IF withMesh»
 
 				// Copy node coordinates
-				ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
-				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> «initNodeCoordVariable.name»[rNodes] = gNodes.get(rNodes));
+				double[][] gNodes = mesh.getGeometry().getNodes();
+				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> {
+					«initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
+					«initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
+				});
 				«ENDIF»
 			}
 
@@ -140,10 +143,9 @@ class Ir2Java extends CodeGenerator
 			{
 				«name».Options o = new «name».Options();
 				«IF withMesh»
-				Mesh gm = CartesianMesh2DGenerator.generate(o.«MandatoryOptions::X_EDGE_ELEMS», o.«MandatoryOptions::Y_EDGE_ELEMS», o.«MandatoryOptions::X_EDGE_LENGTH», o.«MandatoryOptions::Y_EDGE_LENGTH»);
-				NumericMesh2D nm = new NumericMesh2D(gm);
+				CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.«MandatoryOptions::X_EDGE_ELEMS», o.«MandatoryOptions::Y_EDGE_ELEMS», o.«MandatoryOptions::X_EDGE_LENGTH», o.«MandatoryOptions::Y_EDGE_LENGTH»);
 				«ENDIF»
-				«name» i = new «name»(o«IF withMesh», nm«ENDIF»);
+				«name» i = new «name»(o«IF withMesh», mesh«ENDIF»);
 				i.simulate();
 			}
 			«FOR j : jobs.sortByAtAndName»
@@ -162,7 +164,7 @@ class Ir2Java extends CodeGenerator
 		if (c.inTypes.empty)
 			'''mesh.getNb«c.name.toFirstUpper»()'''
 		else
-			'''NumericMesh2D.MaxNb«c.name.toFirstUpper»'''
+			'''CartesianMesh2D.MaxNb«c.name.toFirstUpper»'''
 	}
 
 	private def getLinearAlgebraDefinition(ConnectivityVariable v)

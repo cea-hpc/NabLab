@@ -20,7 +20,6 @@ class UnzipHelper
 	def static void unzip(URI zipFilePath, URI destDir)
 	{
 		val dir = new File(destDir)
-
 		// create output directory if it doesn't exist
 		if (!dir.exists) dir.mkdirs
 

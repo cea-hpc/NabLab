@@ -31,7 +31,7 @@ public final class Glace2d
 	private final Options options;
 
 	// Mesh
-	private final NumericMesh2D mesh;
+	private final CartesianMesh2D mesh;
 	private final FileWriter writer;
 	private final int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
 
@@ -45,18 +45,18 @@ public final class Glace2d
 	private double[] p_ic, rho_ic, V_ic, c, m, p, rho, e, E_n, E_nplus1, V, deltatj;
 	private double[][][][] Ajr;
 
-	public Glace2d(Options aOptions, NumericMesh2D aNumericMesh2D)
+	public Glace2d(Options aOptions, CartesianMesh2D aCartesianMesh2D)
 	{
 		options = aOptions;
-		mesh = aNumericMesh2D;
+		mesh = aCartesianMesh2D;
 		writer = new PvdFileWriter2D("Glace2d");
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
-		nbNodesOfCell = NumericMesh2D.MaxNbNodesOfCell;
-		nbCellsOfNode = NumericMesh2D.MaxNbCellsOfNode;
+		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+		nbCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
 		nbInnerNodes = mesh.getNbInnerNodes();
 		nbOuterFaces = mesh.getNbOuterFaces();
-		nbNodesOfFace = NumericMesh2D.MaxNbNodesOfFace;
+		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 
 		t_n = 0.0;
 		t_nplus1 = 0.0;
@@ -96,8 +96,11 @@ public final class Glace2d
 		Ajr = new double[nbCells][nbNodesOfCell][2][2];
 
 		// Copy node coordinates
-		ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
-		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> X_n0[rNodes] = gNodes.get(rNodes));
+		double[][] gNodes = mesh.getGeometry().getNodes();
+		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> {
+			X_n0[rNodes][0] = gNodes[rNodes][0];
+			X_n0[rNodes][1] = gNodes[rNodes][1];
+		});
 	}
 
 	public void simulate()
@@ -118,9 +121,8 @@ public final class Glace2d
 	public static void main(String[] args)
 	{
 		Glace2d.Options o = new Glace2d.Options();
-		Mesh gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
-		NumericMesh2D nm = new NumericMesh2D(gm);
-		Glace2d i = new Glace2d(o, nm);
+		CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
+		Glace2d i = new Glace2d(o, mesh);
 		i.simulate();
 	}
 
@@ -392,7 +394,7 @@ public final class Glace2d
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
 			cellVariables.put("Density", rho);
-			writer.writeFile(nbCalls, t_n, X_n, mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			writer.writeFile(nbCalls, t_n, X_n, mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
 			lastDump = n;
 		}
 	}
@@ -439,21 +441,21 @@ public final class Glace2d
 			if (continueLoop)
 			{
 				// Switch variables to prepare next iteration
-				double tmpT_n = t_n;
+				double tmp_t_n = t_n;
 				t_n = t_nplus1;
-				t_nplus1 = tmpT_n;
-				double tmpDeltat_n = deltat_n;
+				t_nplus1 = tmp_t_n;
+				double tmp_deltat_n = deltat_n;
 				deltat_n = deltat_nplus1;
-				deltat_nplus1 = tmpDeltat_n;
-				double[][] tmpX_n = X_n;
+				deltat_nplus1 = tmp_deltat_n;
+				double[][] tmp_X_n = X_n;
 				X_n = X_nplus1;
-				X_nplus1 = tmpX_n;
-				double[] tmpE_n = E_n;
+				X_nplus1 = tmp_X_n;
+				double[] tmp_E_n = E_n;
 				E_n = E_nplus1;
-				E_nplus1 = tmpE_n;
-				double[][] tmpUj_n = uj_n;
+				E_nplus1 = tmp_E_n;
+				double[][] tmp_uj_n = uj_n;
 				uj_n = uj_nplus1;
-				uj_nplus1 = tmpUj_n;
+				uj_nplus1 = tmp_uj_n;
 			} 
 		} while (continueLoop);
 	}

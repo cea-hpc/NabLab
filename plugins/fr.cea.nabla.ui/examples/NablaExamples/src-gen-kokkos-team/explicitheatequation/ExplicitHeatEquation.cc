@@ -12,8 +12,8 @@
 #include <Kokkos_hwloc.hpp>
 
 // Project headers
-#include "mesh/NumericMesh2D.h"
 #include "mesh/CartesianMesh2DGenerator.h"
+#include "mesh/CartesianMesh2D.h"
 #include "mesh/PvdFileWriter2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
@@ -43,7 +43,7 @@ public:
 	Options* options;
 
 private:
-	NumericMesh2D* mesh;
+	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
 	int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
@@ -64,21 +64,23 @@ private:
 	Kokkos::View<double*> faceConductivity;
 	Kokkos::View<double**> alpha;
 
-	utils::Timer timer;
+	utils::Timer global_timer;
+	utils::Timer cpu_timer;
+	utils::Timer io_timer;
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 public:
-	ExplicitHeatEquation(Options* aOptions, NumericMesh2D* aNumericMesh2D, string output)
+	ExplicitHeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string output)
 	: options(aOptions)
-	, mesh(aNumericMesh2D)
-	, writer("ExplicitHeatEquation")
+	, mesh(aCartesianMesh2D)
+	, writer("ExplicitHeatEquation", output)
 	, nbNodes(mesh->getNbNodes())
 	, nbCells(mesh->getNbCells())
 	, nbFaces(mesh->getNbFaces())
-	, nbNodesOfCell(NumericMesh2D::MaxNbNodesOfCell)
-	, nbNodesOfFace(NumericMesh2D::MaxNbNodesOfFace)
-	, nbCellsOfFace(NumericMesh2D::MaxNbCellsOfFace)
-	, nbNeighbourCells(NumericMesh2D::MaxNbNeighbourCells)
+	, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+	, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
+	, nbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
+	, nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
 	, t_n(0.0)
 	, t_nplus1(0.0)
 	, deltat(0.001)
@@ -97,7 +99,7 @@ public:
 	, alpha("alpha", nbCells, nbCells)
 	{
 		// Copy node coordinates
-		const auto& gNodes = mesh->getGeometricMesh()->getNodes();
+		const auto& gNodes = mesh->getGeometry()->getNodes();
 		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
 		{
 			X(rNodes) = gNodes[rNodes];
@@ -298,12 +300,16 @@ private:
 		nbCalls++;
 		if (!writer.isDisabled() && n >= lastDump + 1.0)
 		{
+			cpu_timer.stop();
+			io_timer.start();
 			std::map<string, double*> cellVariables;
 			std::map<string, double*> nodeVariables;
 			cellVariables.insert(pair<string,double*>("Temperature", u_n.data()));
-			auto quads = mesh->getGeometricMesh()->getQuads();
+			auto quads = mesh->getGeometry()->getQuads();
 			writer.writeFile(nbCalls, t_n, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
 			lastDump = n;
+			io_timer.stop();
+			cpu_timer.start();
 		}
 	}
 	
@@ -459,6 +465,8 @@ private:
 		bool continueLoop = true;
 		do
 		{
+			global_timer.start();
+			cpu_timer.start();
 			n++;
 			if (n!=1)
 				std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
@@ -475,13 +483,6 @@ private:
 			});
 			
 		
-			// Progress
-			std::cout << utils::progress_bar(n, options->option_max_iterations, t_n, options->option_stoptime, 30);
-			std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-				utils::eta(n, options->option_max_iterations, t_n, options->option_stoptime, deltat, timer), true)
-				<< __RESET__ << "\r";
-			std::cout.flush();
-		
 			// Evaluate loop condition with variables at time n
 			continueLoop = (t_nplus1 < options->option_stoptime && n + 1 < options->option_max_iterations);
 		
@@ -491,6 +492,25 @@ private:
 				std::swap(t_nplus1, t_n);
 				std::swap(u_nplus1, u_n);
 			}
+		
+			cpu_timer.stop();
+			global_timer.stop();
+		
+			// Timers display
+			if (!writer.isDisabled())
+				std::cout << " {CPU: " << __BLUE__ << cpu_timer.print(true) << __RESET__ ", IO: " << __BLUE__ << io_timer.print(true) << __RESET__ "} ";
+			else
+				std::cout << " {CPU: " << __BLUE__ << cpu_timer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
+			
+			// Progress
+			std::cout << utils::progress_bar(n, options->option_max_iterations, t_n, options->option_stoptime, 30);
+			std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
+				utils::eta(n, options->option_max_iterations, t_n, options->option_stoptime, deltat, global_timer), true)
+				<< __RESET__ << "\r";
+			std::cout.flush();
+		
+			cpu_timer.reset();
+			io_timer.reset();
 		} while (continueLoop);
 	}
 
@@ -521,7 +541,6 @@ public:
 			Kokkos::hwloc::get_available_numa_count(),
 			Kokkos::hwloc::get_available_cores_per_numa() * Kokkos::hwloc::get_available_threads_per_core()));
 
-		timer.start();
 		// @1.0
 		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 		{
@@ -554,9 +573,7 @@ public:
 		// @4.0
 		executeTimeLoopN();
 		
-		timer.stop();
-
-		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << timer.print() << __RESET__ << std::endl;
+		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << global_timer.print() << __RESET__ << std::endl;
 	}
 };
 
@@ -580,13 +597,11 @@ int main(int argc, char* argv[])
 		std::cerr << "[ERROR] Wrong number of arguments. Expecting 4 or 5 args: X Y Xlength Ylength (output)." << std::endl;
 		std::cerr << "(X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
 	}
-	auto gm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
-	auto nm = new NumericMesh2D(gm);
+	auto nm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
 	auto c = new ExplicitHeatEquation(o, nm, output);
 	c->simulate();
 	delete c;
 	delete nm;
-	delete gm;
 	delete o;
 	Kokkos::finalize();
 	return 0;

@@ -151,11 +151,15 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				val srcGenKokkosFolder = project.getFolder("src-gen-kokkos")
 				srcGenKokkosFolder.create(false, true, monitor)
 
+				// Create src-gen-kokkos-team folder
+				val srcGenKokkosTeamFolder = project.getFolder("src-gen-kokkos-team")
+				srcGenKokkosTeamFolder.create(false, true, monitor)
+
 				// Create nabla and nablagen models
 				val nablaFile = modulesFolder.getFile(newProjectPage.moduleName + ".nabla")
 				createFile(nablaFile, getNablaModelContent(newProjectPage.moduleName), monitor)
 				val nablagenFile = modulesFolder.getFile(newProjectPage.moduleName + ".nablagen")
-				createFile(nablagenFile, getNablagenModelContent(newProjectPage.moduleName, srcGenJavaFolder, srcGenKokkosFolder), monitor)
+				createFile(nablagenFile, getNablagenModelContent(newProjectPage.moduleName, srcGenJavaFolder, srcGenKokkosFolder, srcGenKokkosTeamFolder), monitor)
 
 				// Create META-INF folder and MANIFEST
 				val metaInf = project.getFolder("META-INF")
@@ -178,7 +182,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				session.save(monitor)
 
 				// Convert into Java Project
-				convertIntoJavaProject(project, #{srcGenJavaFolder}, monitor)
+				convertIntoJavaProject(project, #{srcFolder, srcGenJavaFolder}, monitor)
 
 				// Create build.properties
 				val buildPropertiesFile = project.getFile("build.properties")
@@ -262,7 +266,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 	private def getNablaModelContent(String moduleName)
 	'''
-		module «moduleName»; 
+		module «moduleName»;
 
 		items { node }
 
@@ -272,12 +276,18 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
 		const ℕ X_EDGE_ELEMS = 20;
 		const ℕ Y_EDGE_ELEMS = 20;
-		const ℕ Z_EDGE_ELEMS = 20;
 
-		ℝ[2] X { nodes };
+		const ℕ max_iter = 200;
+		const ℝ max_time = 1.0;
+
+		ℝ t, δt;
+		ℝ[2] X{nodes};
+		ℝ e{nodes};
+
+		iterate n while (n+1 < max_iter && t^{n+1} < max_time);
 	'''
 
-	private def getNablagenModelContent(String nablaModuleName, IFolder srcGenJavaFolder, IFolder srcGenKokkosFolder)
+	private def getNablagenModelContent(String nablaModuleName, IFolder srcGenJavaFolder, IFolder srcGenKokkosFolder, IFolder srcGenKokkosTeamFolder)
 	'''
 		with «nablaModuleName».*;
 
@@ -292,7 +302,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 			TagPersistentVariables tagPersistentVariables follows nabla2ir
 			{ 
-				dumpedVariables = u as "Temperature";
+				dumpedVariables = e as "Energy";
 				period = 1.0 for n;
 			}
 
@@ -306,7 +316,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 			OptimizeConnectivities optimizeConnectivities follows replaceReductions
 			{
-				connectivities = cells, nodes, faces;
+				connectivities = nodes;
 			}
 
 			FillHLTs fillHlts follows optimizeConnectivities
@@ -316,28 +326,28 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 			Ir2Code javaGenerator follows fillHlts
 			{
 				language = Java;
-				outputDir = "/NablaExamples/src-gen-java";
+				outputDir = "«srcGenJavaFolder.fullPath»";
 			}
 
 			Ir2Code kokkosGenerator follows fillHlts
 			{
 				language = Kokkos
 				{
-					maxIterationVariable = option_max_iterations;
-					stopTimeVariable = option_stoptime;
+					maxIterationVariable = max_iter;
+					stopTimeVariable = max_time;
 				}
-				outputDir = "/NablaExamples/src-gen-kokkos";
+				outputDir = "«srcGenKokkosFolder.fullPath»";
 			}
 
 			Ir2Code kokkosTeamOfThreadGenerator follows fillHlts
 			{
 				language = Kokkos
 				{
-					maxIterationVariable = option_max_iterations;
-					stopTimeVariable = option_stoptime;
+					maxIterationVariable = max_iter;
+					stopTimeVariable = max_time;
 					teamOfThreads;
 				}
-				outputDir = "/NablaExamples/src-gen-kokkos-team";
+				outputDir = "«srcGenKokkosTeamFolder.fullPath»";
 			}
 		}
 	'''

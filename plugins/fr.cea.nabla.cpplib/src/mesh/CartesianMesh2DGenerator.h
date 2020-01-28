@@ -7,21 +7,20 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-#ifndef CARTESIAN_MESH_2D_GENERATOR_H_
-#define CARTESIAN_MESH_2D_GENERATOR_H_
+#ifndef MESH_CARTESIANMESH2DGENERATOR_H_
+#define MESH_CARTESIANMESH2DGENERATOR_H_
 
 #include "types/Types.h"
 
 namespace nablalib
 {
 
-template<size_t N>
-class Mesh;
+class CartesianMesh2D;
 
 class CartesianMesh2DGenerator
 {
 public:
-	static Mesh<2>* generate(int nbXQuads, int nbYQuads, double xSize, double ySize);
+	static CartesianMesh2D* generate(int nbXQuads, int nbYQuads, double xSize, double ySize);
 };
 
 }

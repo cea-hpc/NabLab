@@ -15,7 +15,6 @@
     <semanticResources>platform:/resource/fr.cea.nabla/linearalgebrafunctions.nabla</semanticResources>
     <semanticResources>src/iterativeheatequation/IterativeHeatEquation.nabla</semanticResources>
     <semanticResources>src/iterativeheatequation/IterativeHeatEquation.nablagen</semanticResources>
-    <semanticResources>src-gen/glace2d/Glace2d.fillHlts.nablair</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_mRvOsIBWEemS0rMnoZr-Bw">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_2cXZkMtdEemou5PVW8MNNQ" name="TestDefaultGenerationChainDiagram" repPath="#_2ZuVQMtdEemou5PVW8MNNQ">

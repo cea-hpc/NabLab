@@ -15,6 +15,40 @@ namespace nablalib
 namespace LinearAlgebraFunctions
 {
 /*
+ * Simple pretty printing function for Sparse Matrix
+ */
+ std::string print(const NablaSparseMatrix& M) {
+   if (!M.m_matrix) {
+     std::stringstream ss;
+     for (auto i(0); i < M.m_nb_row; ++i) {
+       for (auto j(0); j < M.m_nb_col; ++j) {
+         if (j == 0)
+           ss << "|";
+         auto pos_line(std::find_if(M.m_building_struct.begin(), M.m_building_struct.end(),
+                                    [&](const std::pair<int, std::list<std::pair<int, double>>>& line)
+                                    {return (line.first == i);}));
+         if (pos_line != M.m_building_struct.end()) {
+           auto pos_col(std::find_if(pos_line->second.begin(), pos_line->second.end(),
+                                     [&](const std::pair<int, double>& col){return col.first == j;}));
+           if (pos_col != pos_line->second.end())
+             ss << std::setprecision(2) << std::setw(6) << pos_col->second;
+           else
+             ss << std::setprecision(2) << std::setw(6) << "0";
+         } else {
+           ss << std::setprecision(2) << std::setw(6) << "0";
+         }
+         if (j == M.m_nb_col - 1)
+           ss << "|";
+       }
+       ss << std::endl;
+     }
+     return std::string(ss.str());
+   } else {
+     return print(*M.m_matrix);
+   }
+ }  
+  
+/*
  * Simple pretty printing function for Kokkos Sparse Matrix
  */
 std::string print(const SparseMatrixType& M) {
@@ -62,7 +96,7 @@ std::string print(const VectorType& v) {
  * \param A: [in] Convergence threshold (default = 1.e-8)
  * \return: Solution vector
  */
-VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x,
+VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x, CGInfo& info,
 		           const size_t max_it, const double tolerance) {
 
   size_t it(0);
@@ -114,21 +148,24 @@ VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorT
   }
   VectorType::execution_space().fence();
 
-//  std::cout << "---== Solved A * x = b ==---" << std::endl;
-//  std::cout << "Nb it = " << it << std::endl;
-//  std::cout << "Res = " << norm_res << std::endl;
-//  std::cout << "----------------------------" << std::endl;
+  // fill infos
+  info.m_display << "---== Solved A * x = b ==---" << std::endl;
+  info.m_display << "Nb it = " << it << std::endl;
+  info.m_display << "Res = " << norm_res << std::endl;
+  info.m_display << "----------------------------" << std::endl;
+  info.m_nb_it += it;
+  info.m_norm_res += norm_res;
 
   return x;
 }
 
-VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b)
+VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info)
 {
   const size_t count(b.extent(0));
   VectorType x0("x0", count);
   for (auto i(0); i < count; ++i)
     x0(i) = 0.0;
-  return CGSolve(A.crsMatrix(), b, x0, 100, 1.e-8);
+  return CGSolve(A.crsMatrix(), b, x0, info, 100, 1.e-8);
 }
 
 }  // LinearAlgebraFunctions

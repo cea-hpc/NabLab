@@ -10,28 +10,26 @@
 #ifndef UTILS_MULTIARRAY_H_
 #define UTILS_MULTIARRAY_H_
 
-
 #include <array>
 #include <iostream>
 #include <type_traits>
 #include <algorithm>
 #include <functional>
 
-
 /******************************* MACROs ***************************************/
 // Designed to be used with array value type as T1 and scalar operand type as T2
 // Meaning that if T2==float and T1==int, return type is T2 else T1
 #define RES_TYPE(T1, T2) \
-        typename std::conditional<std::is_floating_point<T2>::value && std::is_integral<T1>::value, T2, T1>::type
+        typename std::conditional_t<std::is_floating_point<T2>::value && std::is_integral<T1>::value, T2, T1>
 
 // Meaning T1 and T2 are arithmetic type (i.e. integral or floating point) and T2 can be converted into T1
 #define TYPE_CHECK(T1, T2) \
-        typename std::enable_if<std::is_arithmetic<T1>::value && std::is_arithmetic<T2>::value && \
-                                std::is_convertible<T1, T2>::value>::type* = nullptr
+        typename std::enable_if_t<std::is_arithmetic<T1>::value && std::is_arithmetic<T2>::value && \
+                                  std::is_convertible<T1, T2>::value>* = nullptr
                                 
 // Meaning T1 and T2 are of the same type   is an array of dimension N
 #define DIM_CHECK(T1, T2) \
-        typename std::enable_if<std::is_same<T1, T2>::value>::type* = nullptr
+        typename std::enable_if_t<std::is_same<T1, T2>::value>* = nullptr
 
 
 /******************************************************************************/
@@ -61,7 +59,7 @@ struct MultiArray : public std::array<MultiArray<T, dimN...>, dim1>
   MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator+(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::plus<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray operator+(ArrayT a) {
     return arrayOp(a, std::plus<>());
   }
@@ -71,7 +69,7 @@ struct MultiArray : public std::array<MultiArray<T, dimN...>, dim1>
   MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator-(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::minus<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray operator-(ArrayT a) {
     return arrayOp(a, std::minus<>());
   }
@@ -81,7 +79,7 @@ struct MultiArray : public std::array<MultiArray<T, dimN...>, dim1>
   MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator*(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::multiplies<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray operator*(ArrayT a) {
     return arrayOp(a, std::multiplies<>());
   }
@@ -91,7 +89,7 @@ struct MultiArray : public std::array<MultiArray<T, dimN...>, dim1>
   MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator/(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::divides<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray operator/(ArrayT a) {
     return arrayOp(a, std::divides<>());
   }
@@ -116,7 +114,7 @@ struct MultiArray : public std::array<MultiArray<T, dimN...>, dim1>
   MultiArray& operator+=(ScalarT x) {
     return scalarOpInPlace(static_cast<T>(x), std::plus<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray& operator+=(ArrayT a) {
     return arrayOpInPlace(a, std::plus<>());
   }
@@ -126,7 +124,7 @@ struct MultiArray : public std::array<MultiArray<T, dimN...>, dim1>
   MultiArray& operator-=(ScalarT x) {
     return scalarOpInPlace(static_cast<T>(x), std::minus<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray& operator-=(ArrayT a) {
     return arrayOpInPlace(a, std::minus<>());
   }
@@ -136,7 +134,7 @@ struct MultiArray : public std::array<MultiArray<T, dimN...>, dim1>
   MultiArray& operator*=(ScalarT x) {
     return scalarOpInPlace(static_cast<T>(x), std::multiplies<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray& operator*=(ArrayT a) {
     return arrayOpInPlace(a, std::multiplies<>());
   }
@@ -146,7 +144,7 @@ struct MultiArray : public std::array<MultiArray<T, dimN...>, dim1>
   MultiArray& operator/=(ScalarT x) {
     return scalarOpInPlace(static_cast<T>(x), std::divides<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray& operator/=(ArrayT a) {
     return arrayOpInPlace(a, std::divides<>());
   }
@@ -182,7 +180,7 @@ struct MultiArray<T, dim> : public std::array<T, dim>
   MultiArray<RES_TYPE(T, ScalarT), dim> operator+(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::plus<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray operator+(ArrayT a) {
     return arrayOp(a, std::plus<>());
   }
@@ -192,7 +190,7 @@ struct MultiArray<T, dim> : public std::array<T, dim>
   MultiArray<RES_TYPE(T, ScalarT), dim> operator-(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::minus<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray operator-(ArrayT a) {
     return arrayOp(a, std::minus<>());
   }
@@ -202,7 +200,7 @@ struct MultiArray<T, dim> : public std::array<T, dim>
   MultiArray<RES_TYPE(T, ScalarT), dim> operator*(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::multiplies<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray operator*(ArrayT a) {
     return arrayOp(a, std::multiplies<>());
   }
@@ -212,7 +210,7 @@ struct MultiArray<T, dim> : public std::array<T, dim>
   MultiArray<RES_TYPE(T, ScalarT), dim> operator/(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::divides<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray operator/(ArrayT a) {
     return arrayOp(a, std::divides<>());
   }
@@ -238,7 +236,7 @@ struct MultiArray<T, dim> : public std::array<T, dim>
   MultiArray& operator+=(ScalarT x) {
     return scalarOpInPlace(static_cast<T>(x), std::plus<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray& operator+=(ArrayT a) {
     return arrayOpInPlace(a, std::plus<>());
   }
@@ -248,7 +246,7 @@ struct MultiArray<T, dim> : public std::array<T, dim>
   MultiArray& operator-=(ScalarT x) {
     return scalarOpInPlace(static_cast<T>(x), std::minus<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray& operator-=(ArrayT a) {
     return arrayOpInPlace(a, std::minus<>());
   }
@@ -258,7 +256,7 @@ struct MultiArray<T, dim> : public std::array<T, dim>
   MultiArray& operator*=(ScalarT x) {
     return scalarOpInPlace(static_cast<T>(x), std::multiplies<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray& operator*=(ArrayT a) {
     return arrayOpInPlace(a, std::multiplies<>());
   }
@@ -268,7 +266,7 @@ struct MultiArray<T, dim> : public std::array<T, dim>
   MultiArray& operator/=(ScalarT x) {
     return scalarOpInPlace(static_cast<T>(x), std::divides<>());
   }
-  template <typename ArrayT, typename std::enable_if<std::is_same<ArrayT, MultiArray>::value>::type* = nullptr>
+  template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
   MultiArray& operator/=(ArrayT a) {
     return arrayOpInPlace(a, std::divides<>());
   }
@@ -294,5 +292,19 @@ std::ostream& operator<<(std::ostream& os, const std::array<T, N>& array) {
     os << array[i] << (i!=N-1?", ":"]\n");
   return os;
 }
+
+
+/******************************************************************************/
+// Commutative helpers
+template <typename T, size_t dim1, size_t... dimN, typename std::enable_if_t<std::is_arithmetic<T>::value>* = nullptr>
+auto operator+(T lhs, MultiArray<T, dim1, dimN...> rhs) {
+  return rhs.operator+(lhs);
+}
+
+template <typename T, size_t dim1, size_t... dimN, typename std::enable_if_t<std::is_arithmetic<T>::value>* = nullptr>
+auto operator*(T lhs, MultiArray<T, dim1, dimN...> rhs) {
+  return rhs.operator*(lhs);
+}
+
 
 #endif

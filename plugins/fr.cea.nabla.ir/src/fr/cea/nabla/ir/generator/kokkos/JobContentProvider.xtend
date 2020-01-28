@@ -55,14 +55,18 @@ abstract class JobContentProvider
 		«nbCalls.name»++;
 		if (!writer.isDisabled() && «periodVariable.name» >= «lastDumpVariable.name» + «periodValue»)
 		{
+			cpu_timer.stop();
+			io_timer.start();
 			std::map<string, double*> cellVariables;
 			std::map<string, double*> nodeVariables;
 			«FOR v : dumpedVariables.filter(ConnectivityVariable)»
 			«v.type.connectivities.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
 			«ENDFOR»
-			auto quads = mesh->getGeometricMesh()->getQuads();
+			auto quads = mesh->getGeometry()->getQuads();
 			writer.writeFile(«nbCalls.name», «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);
 			«lastDumpVariable.name» = «periodVariable.name»;
+			io_timer.stop();
+			cpu_timer.start();
 		}
 	'''
 
@@ -77,12 +81,14 @@ abstract class JobContentProvider
 		bool continueLoop = true;
 		do
 		{
+			«IF isTopLevel»
+			global_timer.start();
+			cpu_timer.start();
+			«ENDIF»
 			«itVar»++;
 			«traceContentProvider.getBeginOfLoopTrace(itVar, timeVarName, isTopLevel)»
 
 			«innerJobs.jobCallsContent»
-
-			«traceContentProvider.getEndOfLoopTrace(itVar, timeVarName, deltatVarName, isTopLevel)»
 
 			// Evaluate loop condition with variables at time n
 			continueLoop = «timeLoop.whileCondition.content»;
@@ -94,6 +100,18 @@ abstract class JobContentProvider
 					std::swap(«copy.source.name», «copy.destination.name»);
 				«ENDFOR»
 			}
+			«IF isTopLevel»
+
+			cpu_timer.stop();
+			global_timer.stop();
+			«ENDIF»
+
+			«traceContentProvider.getEndOfLoopTrace(itVar, timeVarName, deltatVarName, isTopLevel)»
+
+			«IF isTopLevel»
+			cpu_timer.reset();
+			io_timer.reset();
+			«ENDIF»
 		} while (continueLoop);
 	'''
 

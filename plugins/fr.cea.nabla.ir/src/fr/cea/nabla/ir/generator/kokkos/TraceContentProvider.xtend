@@ -57,10 +57,16 @@ class TraceContentProvider
 	def getEndOfLoopTrace(String iterationVarName, String timeVarName, String deltatVarName, boolean isTopLoop)
 	'''
 		«IF isTopLoop»
+		// Timers display
+		if (!writer.isDisabled())
+			std::cout << " {CPU: " << __BLUE__ << cpu_timer.print(true) << __RESET__ ", IO: " << __BLUE__ << io_timer.print(true) << __RESET__ "} ";
+		else
+			std::cout << " {CPU: " << __BLUE__ << cpu_timer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
+
 		// Progress
 		std::cout << utils::progress_bar(«iterationVarName», options->«maxIterationsVarName», «timeVarName», options->«stopTimeVarName», 30);
 		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(«iterationVarName», options->«maxIterationsVarName», «timeVarName», options->«stopTimeVarName», «deltatVarName», timer), true)
+			utils::eta(«iterationVarName», options->«maxIterationsVarName», «timeVarName», options->«stopTimeVarName», «deltatVarName», global_timer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 		«ENDIF»
@@ -68,7 +74,12 @@ class TraceContentProvider
 
 	def getEndOfSimuTrace()
 	'''
-		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << timer.print() << __RESET__ << std::endl;
+		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << global_timer.print() << __RESET__ << std::endl;
+	'''
+
+	def getCGInfoTrace(String iterationVarName)
+	'''
+		std::cout << "[CG] average iteration: " << cg_info.m_nb_it / «iterationVarName» << std::endl;
 	'''
 
 	def getTeamOfThreadsInfo(boolean isTopLoop)

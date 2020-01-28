@@ -52,7 +52,7 @@ class JobContentProvider
 			«FOR v : dumpedVariables.filter(ConnectivityVariable)»
 			«v.type.connectivities.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 			«ENDFOR»
-			writer.writeFile(«nbCalls.name», «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometricMesh().getQuads(), cellVariables, nodeVariables);
+			writer.writeFile(«nbCalls.name», «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
 			«lastDumpVariable.name» = «periodVariable.name»;
 		}
 	'''
@@ -77,9 +77,9 @@ class JobContentProvider
 			{
 				// Switch variables to prepare next iteration
 				«FOR copy : copies»
-					«copy.destination.javaType» tmp«copy.destination.name.toFirstUpper» = «copy.destination.name»;
+					«copy.destination.javaType» tmp_«copy.destination.name» = «copy.destination.name»;
 					«copy.destination.name» = «copy.source.name»;
-					«copy.source.name» = tmp«copy.destination.name.toFirstUpper»;
+					«copy.source.name» = tmp_«copy.destination.name»;
 				«ENDFOR»
 			} 
 		} while (continueLoop);

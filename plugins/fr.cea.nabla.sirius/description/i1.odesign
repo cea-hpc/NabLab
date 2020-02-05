@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <description:Group xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:filter="http://www.eclipse.org/sirius/diagram/description/filter/1.1.0" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" xmlns:tool="http://www.eclipse.org/sirius/description/tool/1.1.0" xmlns:tool_1="http://www.eclipse.org/sirius/diagram/description/tool/1.1.0" name="i1" version="12.0.0.2017041100">
   <ownedViewpoints name="InstructionViewpoint" modelFileExtension="nablair">
-    <ownedRepresentations xsi:type="description_1:DiagramDescription" name="NablaIrDiagram" titleExpression="aql:self.name.toUpperFirst() + '  Ir Graph'" domainClass="ir.JobContainer" enablePopupBars="true">
+    <ownedRepresentations xsi:type="description_1:DiagramDescription" name="NablaIrDiagram" titleExpression="aql:self.name.toUpperFirst() + '  Ir Graph'" initialisation="true" domainClass="ir.JobContainer" enablePopupBars="true">
       <metamodel href="http://www.cea.fr/nabla/ir#/"/>
       <filters xsi:type="filter:CompositeFilterDescription" name="FilterCopyNodes" label="Filter Copy and InSitu Nodes">
         <filters xsi:type="filter:MappingFilter" mappings="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" semanticConditionExpression="aql:not (self.oclIsKindOf(ir::TimeIterationCopyJob) or self.oclIsKindOf(ir::InSituJob))"/>
+      </filters>
+      <filters xsi:type="filter:CompositeFilterDescription" name="KeepOnCycleNodes" label="Keep only nodes on a cycle">
+        <filters xsi:type="filter:MappingFilter" mappings="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" semanticConditionExpression="aql:self.onCycle"/>
       </filters>
       <layout xsi:type="description_1:CompositeLayout"/>
       <defaultLayer name="Default">
@@ -15,6 +18,14 @@
               <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
             </centerLabelStyleDescription>
           </style>
+          <conditionnalStyles predicateExpression="aql:(targetView.target.onCycle and sourceView.target.onCycle)">
+            <style sizeComputationExpression="2">
+              <strokeColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
+              <centerLabelStyleDescription labelSize="12">
+                <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+              </centerLabelStyleDescription>
+            </style>
+          </conditionnalStyles>
         </edgeMappings>
         <containerMappings name="NID.JobNode" semanticCandidatesExpression="aql:self.innerJobs" domainClass="ir.Job">
           <borderedNodeMappings name="NID.JN.At" semanticCandidatesExpression="aql:self" domainClass="ir.Job">
@@ -77,7 +88,7 @@
     <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.PresentationServices"/>
   </ownedViewpoints>
   <ownedViewpoints name="NablagenViewpoint" modelFileExtension="nablagen">
-    <ownedRepresentations xsi:type="description_1:DiagramDescription" name="WorflowDiagram" titleExpression="aql:self.name + 'Diagram'" domainClass="nablagen::Workflow" enablePopupBars="true">
+    <ownedRepresentations xsi:type="description_1:DiagramDescription" name="WorflowDiagram" titleExpression="aql:self.name + 'Diagram'" initialisation="true" domainClass="nablagen::Workflow" enablePopupBars="true">
       <metamodel href="http://www.cea.fr/nabla/Nablagen#/"/>
       <defaultLayer name="Default">
         <nodeMappings name="WD.Component" semanticCandidatesExpression="aql:self.components" domainClass="nablagen::WorkflowComponent">

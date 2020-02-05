@@ -47,10 +47,16 @@ class FillJobHLTs implements IrTransformationStep
 		if (m.jobs.empty) return true
 
 		// check that IrModule has no job cycles (except timestep cycles)
-		if (m.hasCycles) return false
+		if (m.hasCycles) 
+		{
+			// All jobs belongs to the module. No dispatch possible.
+			// Jobs are put in module inner jobs for graph display...
+			m.innerJobs.addAll(m.jobs)
+			return false
+		}
 
-		// No cyles => create subgraphs (i.e. JobContainer instances) corresponding to time loops
-		m.distributeJobsInTimeLoops
+		// No cycles => create subgraphs (i.e. JobContainer instances) corresponding to time loops
+		m.dispatchJobsInTimeLoops
 
 		// compute at for each subGraph
 		val subGraphs = m.jobs.groupBy[jobContainer]
@@ -130,7 +136,7 @@ class FillJobHLTs implements IrTransformationStep
 	 * i.e. add them to 'jobs' of TimeLoopJob instance.
 	 * Warning: the module must not contain job cycles.
 	 */
-	private def void distributeJobsInTimeLoops(IrModule it)
+	private def void dispatchJobsInTimeLoops(IrModule it)
 	{
 		// distribute TimeLoopJob instances
 		if (mainTimeLoop !== null) distributeTimeLoopJobs(it, mainTimeLoop)

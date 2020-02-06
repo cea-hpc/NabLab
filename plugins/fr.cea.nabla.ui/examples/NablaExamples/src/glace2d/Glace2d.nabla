@@ -21,7 +21,7 @@ set nodesOfCell: cell → {node};
 set cellsOfNode: node → {cell};
 set nodesOfFace: face → {node};
 
-// only for 2D vectors
+// Only for 2D vectors
 def perp: ℝ[2] → ℝ[2], (a) → return [ a[1], -a[0] ];
 
 def trace: l | ℝ[l,l] → ℝ, (a) → {
@@ -38,7 +38,7 @@ def tensProduct: l | ℝ[l] × ℝ[l] → ℝ[l,l], (a, b) → {
 	return result;
 }
 
-// only for 2x2 matrices
+// Only for 2x2 matrices
 def inverse: ℝ[2,2] → ℝ[2,2], (a) → {
 	ℝ alpha = 1.0 / det(a);
 	return [[ a[1,1] * alpha, -a[0,1] * alpha ],
@@ -71,42 +71,48 @@ const ℝ option_p_ini_zd = 0.1;
 ℝ[2] X{nodes}, b{nodes}, bt{nodes};
 ℝ[2,2] Ar{nodes}, Mt{nodes};
 ℝ[2] ur{nodes};
-ℝ p_ic{cells}, ρ_ic{cells}, V_ic{cells};
 ℝ c{cells}, m{cells}, p{cells}, ρ{cells}, e{cells}, E{cells}, V{cells};
 ℝ δtj{cells};
-ℝ[2] uj{cells}, center{cells};
+ℝ[2] uj{cells};
 ℝ l{cells, nodesOfCell};
-ℝ[2] C_ic{cells, nodesOfCell}, C{cells, nodesOfCell}, F{cells, nodesOfCell};
+ℝ[2] Cjr_ic{cells, nodesOfCell}, C{cells, nodesOfCell}, F{cells, nodesOfCell};
 ℝ[2,2] Ajr{cells, nodesOfCell};
 
 iterate n while (t^{n+1} < option_stoptime && n+1 < option_max_iterations);
 
 // *************************************************************
-// * Init: X_ic(par le mailleur), ρ_ic, p_ic, V_ic & m
+// * Initialization
 // *************************************************************
-IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X^{n=0}{r});
-IniIc: ∀j∈cells(), if (center{j}[0] < option_x_interface) {
-  ρ_ic{j}=option_ρ_ini_zg;
-  p_ic{j}=option_p_ini_zg;
-} else {
-  ρ_ic{j}=option_ρ_ini_zd;
-  p_ic{j}=option_p_ini_zd;
+IniCjrIc: ∀j∈cells(), ∀r∈nodesOfCell(j), 
+	Cjr_ic{j,r} = 0.5 * perp(X^{n=0}{r+1} - X^{n=0}{r-1});
+
+Initialize: ∀j∈cells(), {
+	ℝ ρ_ic, p_ic;
+	ℝ[2] center = 0.25 * ∑{r∈nodesOfCell(j)}(X^{n=0}{r});
+	if (center[0] < option_x_interface) {
+		ρ_ic = option_ρ_ini_zg;
+		p_ic = option_p_ini_zg;
+	} else {
+  		ρ_ic = option_ρ_ini_zd;
+  		p_ic = option_p_ini_zd;
+  	}
+  	ℝ V_ic = 0.5 * ∑{r∈nodesOfCell(j)}(dot(Cjr_ic{j,r}, X^{n=0}{r}));
+  	m{j} = ρ_ic * V_ic; // m is a constant
+  	p{j} = p_ic;
+	E^{n}{j} = p_ic / ((γ-1.0) * ρ_ic);
+	uj^{n}{j} = [0.0, 0.0];
 }
 
-ComputeCjrIc: ∀j∈cells(), ∀r∈nodesOfCell(j), 
-	C_ic{j,r} = 0.5 * perp(X^{n=0}{r+1} - X^{n=0}{r-1});
-IniVIc: ∀j∈cells(), V_ic{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C_ic{j,r}, X^{n=0}{r}));
-IniM: ∀j∈cells(), m{j} = ρ_ic{j} * V_ic{j}; // m est constant
 
 // *************************************************************
-// * Calcul des C{j,r} et des variables qui en découlent
+// * C{j,r} and dependent variables computation 
 // *************************************************************
 ComputeCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), C{j,r} = 0.5 * perp(X^{n}{r+1} - X^{n}{r-1});
 ComputeLjr: ∀j∈cells(), ∀r∈nodesOfCell(j), l{j,r} = norm(C{j,r});
 Computeδtj: ∀j∈cells(), δtj{j} = 2.0 * V{j} / (c{j} * ∑{r∈nodesOfCell(j)}(l{j,r}));
 
 // *************************************************************
-// * Règles EOS standards: m, ρ, c, p, e
+// * Standard EOS rules: m, ρ, c, p, e
 // *************************************************************
 ComputeDensity: ∀j∈cells(), ρ{j} = m{j} / V{j};
 ComputeEOSp: ∀j∈cells(), p{j} = (γ-1.0) * ρ{j} * e{j};
@@ -147,8 +153,7 @@ OuterFacesComputations: ∀f∈outerFaces(), {
 		// X boundary conditions
 		if ((fabs(X^{n}{r}[0]-X_MIN) < epsilon) || ( (fabs(X^{n}{r}[0]-X_MAX) < epsilon) )) {
 			Mt{r} = I;
-			bt{r}[0] = 0.0;
-			bt{r}[1] = 0.0;
+			bt{r} = [0.0, 0.0];
 		}
 	}
 }
@@ -157,13 +162,10 @@ ComputeU: ∀r∈nodes(), ur{r} = matVectProduct(inverse(Mt{r}), bt{r});
 ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C{j,r},X^{n}{r}));
 
 // *************************************************************
-// * Itérations de la boucle en 'n'
-// * Et calcule du δt pour mise-à-jour du temps de la simulation
+// * Loop iteration (n)
 // *************************************************************
 ComputeXn: ∀r∈nodes(), X^{n+1}{r} = X^{n}{r}+δt^{n}*ur{r};
-IniUn: ∀j∈cells(), { uj^{n}{j}[0] = 0.0; uj^{n}{j}[1] = 0.0; }
 ComputeUn: ∀j∈cells(), uj^{n+1}{j} = uj^{n}{j} - (δt^{n}/m{j}) * ∑{r∈nodesOfCell(j)}(F{j,r});
-IniEn: ∀j∈cells(), E^{n}{j} = p_ic{j} / ((γ-1.0) * ρ_ic{j});
 ComputeEn: ∀j∈cells(), E^{n+1}{j} = E^{n}{j} - (δt^{n} / m{j}) * ∑{r∈nodesOfCell(j)}(dot(F{j,r}, ur{r}));
 ComputeDt: δt^{n+1} = option_δt_cfl * Min{j∈cells()}(δtj{j});
 ComputeTn: t^{n+1} = t^{n} + δt^{n+1};

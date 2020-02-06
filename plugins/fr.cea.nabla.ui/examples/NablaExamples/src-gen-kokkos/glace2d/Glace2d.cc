@@ -64,9 +64,6 @@ private:
 	Kokkos::View<RealArray2D<2,2>*> Ar;
 	Kokkos::View<RealArray2D<2,2>*> Mt;
 	Kokkos::View<RealArray1D<2>*> ur;
-	Kokkos::View<double*> p_ic;
-	Kokkos::View<double*> rho_ic;
-	Kokkos::View<double*> V_ic;
 	Kokkos::View<double*> c;
 	Kokkos::View<double*> m;
 	Kokkos::View<double*> p;
@@ -78,9 +75,8 @@ private:
 	Kokkos::View<double*> deltatj;
 	Kokkos::View<RealArray1D<2>*> uj_n;
 	Kokkos::View<RealArray1D<2>*> uj_nplus1;
-	Kokkos::View<RealArray1D<2>*> center;
 	Kokkos::View<double**> l;
-	Kokkos::View<RealArray1D<2>**> C_ic;
+	Kokkos::View<RealArray1D<2>**> Cjr_ic;
 	Kokkos::View<RealArray1D<2>**> C;
 	Kokkos::View<RealArray1D<2>**> F;
 	Kokkos::View<RealArray2D<2,2>**> Ajr;
@@ -116,9 +112,6 @@ public:
 	, Ar("Ar", nbNodes)
 	, Mt("Mt", nbNodes)
 	, ur("ur", nbNodes)
-	, p_ic("p_ic", nbCells)
-	, rho_ic("rho_ic", nbCells)
-	, V_ic("V_ic", nbCells)
 	, c("c", nbCells)
 	, m("m", nbCells)
 	, p("p", nbCells)
@@ -130,9 +123,8 @@ public:
 	, deltatj("deltatj", nbCells)
 	, uj_n("uj_n", nbCells)
 	, uj_nplus1("uj_nplus1", nbCells)
-	, center("center", nbCells)
 	, l("l", nbCells, nbNodesOfCell)
-	, C_ic("C_ic", nbCells, nbNodesOfCell)
+	, Cjr_ic("Cjr_ic", nbCells, nbNodesOfCell)
 	, C("C", nbCells, nbNodesOfCell)
 	, F("F", nbCells, nbNodesOfCell)
 	, Ajr("Ajr", nbCells, nbNodesOfCell)
@@ -172,31 +164,6 @@ private:
 	}
 	
 	/**
-	 * Job ComputeCjrIc called @1.0 in simulate method.
-	 * In variables: X_n0
-	 * Out variables: C_ic
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeCjrIc() noexcept
-	{
-		Kokkos::parallel_for("ComputeCjrIc", nbCells, KOKKOS_LAMBDA(const int& jCells)
-		{
-			int jId(jCells);
-			{
-				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
-				{
-					int rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
-					int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
-					int rMinus1Nodes(rMinus1Id);
-					int rPlus1Nodes(rPlus1Id);
-					C_ic(jCells,rNodesOfCellJ) = ArrayOperations::multiply(0.5, perp(ArrayOperations::minus(X_n0(rPlus1Nodes), X_n0(rMinus1Nodes))));
-				}
-			}
-		});
-	}
-	
-	/**
 	 * Job ComputeInternalEnergy called @1.0 in executeTimeLoopN method.
 	 * In variables: E_n, uj_n
 	 * Out variables: e
@@ -211,47 +178,32 @@ private:
 	}
 	
 	/**
-	 * Job IniCenter called @1.0 in simulate method.
+	 * Job IniCjrIc called @1.0 in simulate method.
 	 * In variables: X_n0
-	 * Out variables: center
+	 * Out variables: Cjr_ic
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void iniCenter() noexcept
+	void iniCjrIc() noexcept
 	{
-		Kokkos::parallel_for("IniCenter", nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("IniCjrIc", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			int jId(jCells);
-			RealArray1D<2> reduction0 = {{0.0, 0.0}};
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
-					int rId(nodesOfCellJ[rNodesOfCellJ]);
-					int rNodes(rId);
-					reduction0 = ArrayOperations::plus(reduction0, (X_n0(rNodes)));
+					int rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
+					int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
+					int rMinus1Nodes(rMinus1Id);
+					int rPlus1Nodes(rPlus1Id);
+					Cjr_ic(jCells,rNodesOfCellJ) = ArrayOperations::multiply(0.5, perp(ArrayOperations::minus(X_n0(rPlus1Nodes), X_n0(rMinus1Nodes))));
 				}
 			}
-			center(jCells) = ArrayOperations::multiply(0.25, reduction0);
 		});
 	}
 	
 	/**
-	 * Job IniUn called @1.0 in simulate method.
-	 * In variables: 
-	 * Out variables: uj_n
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void iniUn() noexcept
-	{
-		Kokkos::parallel_for("IniUn", nbCells, KOKKOS_LAMBDA(const int& jCells)
-		{
-			uj_n(jCells)[0] = 0.0;
-			uj_n(jCells)[1] = 0.0;
-		});
-	}
-	
-	/**
-	 * Job setUpTimeLoopN called @1.0 in simulate method.
+	 * Job SetUpTimeLoopN called @1.0 in simulate method.
 	 * In variables: X_n0
 	 * Out variables: X_n
 	 */
@@ -308,39 +260,39 @@ private:
 	}
 	
 	/**
-	 * Job IniIc called @2.0 in simulate method.
-	 * In variables: center, option_p_ini_zd, option_p_ini_zg, option_rho_ini_zd, option_rho_ini_zg, option_x_interface
-	 * Out variables: p_ic, rho_ic
+	 * Job Initialize called @2.0 in simulate method.
+	 * In variables: Cjr_ic, X_n0, gamma, option_p_ini_zd, option_p_ini_zg, option_rho_ini_zd, option_rho_ini_zg, option_x_interface
+	 * Out variables: E_n, m, p, uj_n
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void iniIc() noexcept
+	void initialize() noexcept
 	{
-		Kokkos::parallel_for("IniIc", nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for("Initialize", nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
-			if (center(jCells)[0] < options->option_x_interface) 
+			int jId(jCells);
+			double rho_ic;
+			double p_ic;
+			RealArray1D<2> reduction0 = {{0.0, 0.0}};
 			{
-				rho_ic(jCells) = options->option_rho_ini_zg;
-				p_ic(jCells) = options->option_p_ini_zg;
+				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+				{
+					int rId(nodesOfCellJ[rNodesOfCellJ]);
+					int rNodes(rId);
+					reduction0 = ArrayOperations::plus(reduction0, (X_n0(rNodes)));
+				}
+			}
+			RealArray1D<2> center = ArrayOperations::multiply(0.25, reduction0);
+			if (center[0] < options->option_x_interface) 
+			{
+				rho_ic = options->option_rho_ini_zg;
+				p_ic = options->option_p_ini_zg;
 			}
 			else 
 			{
-				rho_ic(jCells) = options->option_rho_ini_zd;
-				p_ic(jCells) = options->option_p_ini_zd;
+				rho_ic = options->option_rho_ini_zd;
+				p_ic = options->option_p_ini_zd;
 			}
-		});
-	}
-	
-	/**
-	 * Job IniVIc called @2.0 in simulate method.
-	 * In variables: C_ic, X_n0
-	 * Out variables: V_ic
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void iniVIc() noexcept
-	{
-		Kokkos::parallel_for("IniVIc", nbCells, KOKKOS_LAMBDA(const int& jCells)
-		{
-			int jId(jCells);
 			double reduction1 = 0.0;
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
@@ -348,10 +300,14 @@ private:
 				{
 					int rId(nodesOfCellJ[rNodesOfCellJ]);
 					int rNodes(rId);
-					reduction1 = reduction1 + (MathFunctions::dot(C_ic(jCells,rNodesOfCellJ), X_n0(rNodes)));
+					reduction1 = reduction1 + (MathFunctions::dot(Cjr_ic(jCells,rNodesOfCellJ), X_n0(rNodes)));
 				}
 			}
-			V_ic(jCells) = 0.5 * reduction1;
+			double V_ic = 0.5 * reduction1;
+			m(jCells) = rho_ic * V_ic;
+			p(jCells) = p_ic;
+			E_n(jCells) = p_ic / ((options->gamma - 1.0) * rho_ic);
+			uj_n(jCells) = {{0.0, 0.0}};
 		});
 	}
 	
@@ -370,73 +326,7 @@ private:
 	}
 	
 	/**
-	 * Job IniEn called @3.0 in simulate method.
-	 * In variables: gamma, p_ic, rho_ic
-	 * Out variables: E_n
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void iniEn() noexcept
-	{
-		Kokkos::parallel_for("IniEn", nbCells, KOKKOS_LAMBDA(const int& jCells)
-		{
-			E_n(jCells) = p_ic(jCells) / ((options->gamma - 1.0) * rho_ic(jCells));
-		});
-	}
-	
-	/**
-	 * Job IniM called @3.0 in simulate method.
-	 * In variables: V_ic, rho_ic
-	 * Out variables: m
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void iniM() noexcept
-	{
-		Kokkos::parallel_for("IniM", nbCells, KOKKOS_LAMBDA(const int& jCells)
-		{
-			m(jCells) = rho_ic(jCells) * V_ic(jCells);
-		});
-	}
-	
-	/**
-	 * Job ComputeEOSp called @4.0 in executeTimeLoopN method.
-	 * In variables: e, gamma, rho
-	 * Out variables: p
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeEOSp() noexcept
-	{
-		Kokkos::parallel_for("ComputeEOSp", nbCells, KOKKOS_LAMBDA(const int& jCells)
-		{
-			p(jCells) = (options->gamma - 1.0) * rho(jCells) * e(jCells);
-		});
-	}
-	
-	/**
-	 * Job dumpVariables called @4.0 in executeTimeLoopN method.
-	 * In variables: n, rho
-	 * Out variables: 
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void dumpVariables() noexcept
-	{
-		nbCalls++;
-		if (!writer.isDisabled() && n >= lastDump + 1.0)
-		{
-			cpu_timer.stop();
-			io_timer.start();
-			std::map<string, double*> cellVariables;
-			std::map<string, double*> nodeVariables;
-			cellVariables.insert(pair<string,double*>("Density", rho.data()));
-			auto quads = mesh->getGeometry()->getQuads();
-			writer.writeFile(nbCalls, t_n, nbNodes, X_n.data(), nbCells, quads.data(), cellVariables, nodeVariables);
-			lastDump = n;
-			io_timer.stop();
-			cpu_timer.start();
-		}
-	}
-	
-	/**
-	 * Job executeTimeLoopN called @4.0 in simulate method.
+	 * Job ExecuteTimeLoopN called @3.0 in simulate method.
 	 * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b, bt, c, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, n, option_deltat_cfl, p, rho, t_n, uj_n, ur
 	 * Out variables: Ajr, Ar, C, E_nplus1, F, Mt, V, X_nplus1, b, bt, c, deltat_nplus1, deltatj, e, l, p, rho, t_nplus1, uj_nplus1, ur
 	 */
@@ -509,6 +399,44 @@ private:
 			cpu_timer.reset();
 			io_timer.reset();
 		} while (continueLoop);
+	}
+	
+	/**
+	 * Job ComputeEOSp called @4.0 in executeTimeLoopN method.
+	 * In variables: e, gamma, rho
+	 * Out variables: p
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void computeEOSp() noexcept
+	{
+		Kokkos::parallel_for("ComputeEOSp", nbCells, KOKKOS_LAMBDA(const int& jCells)
+		{
+			p(jCells) = (options->gamma - 1.0) * rho(jCells) * e(jCells);
+		});
+	}
+	
+	/**
+	 * Job DumpVariables called @4.0 in executeTimeLoopN method.
+	 * In variables: n, rho
+	 * Out variables: 
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void dumpVariables() noexcept
+	{
+		nbCalls++;
+		if (!writer.isDisabled() && n >= lastDump + 1.0)
+		{
+			cpu_timer.stop();
+			io_timer.start();
+			std::map<string, double*> cellVariables;
+			std::map<string, double*> nodeVariables;
+			cellVariables.insert(pair<string,double*>("Density", rho.data()));
+			auto quads = mesh->getGeometry()->getQuads();
+			writer.writeFile(nbCalls, t_n, nbNodes, X_n.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+			lastDump = n;
+			io_timer.stop();
+			cpu_timer.start();
+		}
 	}
 	
 	/**
@@ -890,15 +818,10 @@ public:
 		else
 			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
-		computeCjrIc(); // @1.0
-		iniCenter(); // @1.0
-		iniUn(); // @1.0
+		iniCjrIc(); // @1.0
 		setUpTimeLoopN(); // @1.0
-		iniIc(); // @2.0
-		iniVIc(); // @2.0
-		iniEn(); // @3.0
-		iniM(); // @3.0
-		executeTimeLoopN(); // @4.0
+		initialize(); // @2.0
+		executeTimeLoopN(); // @3.0
 		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << global_timer.print() << __RESET__ << std::endl;
 	}
 };

@@ -40,9 +40,9 @@ public final class Glace2d
 	private double t_n, t_nplus1, deltat_n, deltat_nplus1;
 
 	// Connectivity Variables
-	private double[][] X_n, X_nplus1, X_n0, b, bt, ur, uj_n, uj_nplus1, center, l;
-	private double[][][] Ar, Mt, C_ic, C, F;
-	private double[] p_ic, rho_ic, V_ic, c, m, p, rho, e, E_n, E_nplus1, V, deltatj;
+	private double[][] X_n, X_nplus1, X_n0, b, bt, ur, uj_n, uj_nplus1, l;
+	private double[][][] Ar, Mt, Cjr_ic, C, F;
+	private double[] c, m, p, rho, e, E_n, E_nplus1, V, deltatj;
 	private double[][][][] Ajr;
 
 	public Glace2d(Options aOptions, CartesianMesh2D aCartesianMesh2D)
@@ -74,9 +74,6 @@ public final class Glace2d
 		Ar = new double[nbNodes][2][2];
 		Mt = new double[nbNodes][2][2];
 		ur = new double[nbNodes][2];
-		p_ic = new double[nbCells];
-		rho_ic = new double[nbCells];
-		V_ic = new double[nbCells];
 		c = new double[nbCells];
 		m = new double[nbCells];
 		p = new double[nbCells];
@@ -88,9 +85,8 @@ public final class Glace2d
 		deltatj = new double[nbCells];
 		uj_n = new double[nbCells][2];
 		uj_nplus1 = new double[nbCells][2];
-		center = new double[nbCells][2];
 		l = new double[nbCells][nbNodesOfCell];
-		C_ic = new double[nbCells][nbNodesOfCell][2];
+		Cjr_ic = new double[nbCells][nbNodesOfCell][2];
 		C = new double[nbCells][nbNodesOfCell][2];
 		F = new double[nbCells][nbNodesOfCell][2];
 		Ajr = new double[nbCells][nbNodesOfCell][2][2];
@@ -106,15 +102,10 @@ public final class Glace2d
 	public void simulate()
 	{
 		System.out.println("Début de l'exécution du module Glace2d");
-		computeCjrIc(); // @1.0
-		iniCenter(); // @1.0
-		iniUn(); // @1.0
+		iniCjrIc(); // @1.0
 		setUpTimeLoopN(); // @1.0
-		iniIc(); // @2.0
-		iniVIc(); // @2.0
-		iniEn(); // @3.0
-		iniM(); // @3.0
-		executeTimeLoopN(); // @4.0
+		initialize(); // @2.0
+		executeTimeLoopN(); // @3.0
 		System.out.println("Fin de l'exécution du module Glace2d");
 	}
 
@@ -151,30 +142,6 @@ public final class Glace2d
 	}
 
 	/**
-	 * Job ComputeCjrIc called @1.0 in simulate method.
-	 * In variables: X_n0
-	 * Out variables: C_ic
-	 */
-	private void computeCjrIc()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			int jId = jCells;
-			{
-				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
-				{
-					int rMinus1Id = nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell];
-					int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
-					int rMinus1Nodes = rMinus1Id;
-					int rPlus1Nodes = rPlus1Id;
-					C_ic[jCells][rNodesOfCellJ] = ArrayOperations.multiply(0.5, perp(ArrayOperations.minus(X_n0[rPlus1Nodes], X_n0[rMinus1Nodes])));
-				}
-			}
-		});
-	}
-
-	/**
 	 * Job ComputeInternalEnergy called @1.0 in executeTimeLoopN method.
 	 * In variables: E_n, uj_n
 	 * Out variables: e
@@ -188,45 +155,31 @@ public final class Glace2d
 	}
 
 	/**
-	 * Job IniCenter called @1.0 in simulate method.
+	 * Job IniCjrIc called @1.0 in simulate method.
 	 * In variables: X_n0
-	 * Out variables: center
+	 * Out variables: Cjr_ic
 	 */
-	private void iniCenter()
+	private void iniCjrIc()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double[] reduction0 = {0.0, 0.0};
 			{
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
 				{
-					int rId = nodesOfCellJ[rNodesOfCellJ];
-					int rNodes = rId;
-					reduction0 = ArrayOperations.plus(reduction0, (X_n0[rNodes]));
+					int rMinus1Id = nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell];
+					int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
+					int rMinus1Nodes = rMinus1Id;
+					int rPlus1Nodes = rPlus1Id;
+					Cjr_ic[jCells][rNodesOfCellJ] = ArrayOperations.multiply(0.5, perp(ArrayOperations.minus(X_n0[rPlus1Nodes], X_n0[rMinus1Nodes])));
 				}
 			}
-			center[jCells] = ArrayOperations.multiply(0.25, reduction0);
 		});
 	}
 
 	/**
-	 * Job IniUn called @1.0 in simulate method.
-	 * In variables: 
-	 * Out variables: uj_n
-	 */
-	private void iniUn()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			uj_n[jCells][0] = 0.0;
-			uj_n[jCells][1] = 0.0;
-		});
-	}
-
-	/**
-	 * Job setUpTimeLoopN called @1.0 in simulate method.
+	 * Job SetUpTimeLoopN called @1.0 in simulate method.
 	 * In variables: X_n0
 	 * Out variables: X_n
 	 */
@@ -284,37 +237,38 @@ public final class Glace2d
 	}
 
 	/**
-	 * Job IniIc called @2.0 in simulate method.
-	 * In variables: center, option_p_ini_zd, option_p_ini_zg, option_rho_ini_zd, option_rho_ini_zg, option_x_interface
-	 * Out variables: p_ic, rho_ic
+	 * Job Initialize called @2.0 in simulate method.
+	 * In variables: Cjr_ic, X_n0, gamma, option_p_ini_zd, option_p_ini_zg, option_rho_ini_zd, option_rho_ini_zg, option_x_interface
+	 * Out variables: E_n, m, p, uj_n
 	 */
-	private void iniIc()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			if (center[jCells][0] < options.option_x_interface) 
-			{
-				rho_ic[jCells] = options.option_rho_ini_zg;
-				p_ic[jCells] = options.option_p_ini_zg;
-			}
-			else 
-			{
-				rho_ic[jCells] = options.option_rho_ini_zd;
-				p_ic[jCells] = options.option_p_ini_zd;
-			}
-		});
-	}
-
-	/**
-	 * Job IniVIc called @2.0 in simulate method.
-	 * In variables: C_ic, X_n0
-	 * Out variables: V_ic
-	 */
-	private void iniVIc()
+	private void initialize()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
+			double rho_ic;
+			double p_ic;
+			double[] reduction0 = {0.0, 0.0};
+			{
+				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
+				{
+					int rId = nodesOfCellJ[rNodesOfCellJ];
+					int rNodes = rId;
+					reduction0 = ArrayOperations.plus(reduction0, (X_n0[rNodes]));
+				}
+			}
+			double[] center = ArrayOperations.multiply(0.25, reduction0);
+			if (center[0] < options.option_x_interface) 
+			{
+				rho_ic = options.option_rho_ini_zg;
+				p_ic = options.option_p_ini_zg;
+			}
+			else 
+			{
+				rho_ic = options.option_rho_ini_zd;
+				p_ic = options.option_p_ini_zd;
+			}
 			double reduction1 = 0.0;
 			{
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
@@ -322,10 +276,14 @@ public final class Glace2d
 				{
 					int rId = nodesOfCellJ[rNodesOfCellJ];
 					int rNodes = rId;
-					reduction1 = reduction1 + (MathFunctions.dot(C_ic[jCells][rNodesOfCellJ], X_n0[rNodes]));
+					reduction1 = reduction1 + (MathFunctions.dot(Cjr_ic[jCells][rNodesOfCellJ], X_n0[rNodes]));
 				}
 			}
-			V_ic[jCells] = 0.5 * reduction1;
+			double V_ic = 0.5 * reduction1;
+			m[jCells] = rho_ic * V_ic;
+			p[jCells] = p_ic;
+			E_n[jCells] = p_ic / ((options.gamma - 1.0) * rho_ic);
+			uj_n[jCells] = new double[] {0.0, 0.0};
 		});
 	}
 
@@ -343,64 +301,7 @@ public final class Glace2d
 	}
 
 	/**
-	 * Job IniEn called @3.0 in simulate method.
-	 * In variables: gamma, p_ic, rho_ic
-	 * Out variables: E_n
-	 */
-	private void iniEn()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			E_n[jCells] = p_ic[jCells] / ((options.gamma - 1.0) * rho_ic[jCells]);
-		});
-	}
-
-	/**
-	 * Job IniM called @3.0 in simulate method.
-	 * In variables: V_ic, rho_ic
-	 * Out variables: m
-	 */
-	private void iniM()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			m[jCells] = rho_ic[jCells] * V_ic[jCells];
-		});
-	}
-
-	/**
-	 * Job ComputeEOSp called @4.0 in executeTimeLoopN method.
-	 * In variables: e, gamma, rho
-	 * Out variables: p
-	 */
-	private void computeEOSp()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			p[jCells] = (options.gamma - 1.0) * rho[jCells] * e[jCells];
-		});
-	}
-
-	/**
-	 * Job dumpVariables called @4.0 in executeTimeLoopN method.
-	 * In variables: n, rho
-	 * Out variables: 
-	 */
-	private void dumpVariables()
-	{
-		nbCalls++;
-		if (n >= lastDump + 1.0)
-		{
-			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-			cellVariables.put("Density", rho);
-			writer.writeFile(nbCalls, t_n, X_n, mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
-			lastDump = n;
-		}
-	}
-
-	/**
-	 * Job executeTimeLoopN called @4.0 in simulate method.
+	 * Job ExecuteTimeLoopN called @3.0 in simulate method.
 	 * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b, bt, c, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, n, option_deltat_cfl, p, rho, t_n, uj_n, ur
 	 * Out variables: Ajr, Ar, C, E_nplus1, F, Mt, V, X_nplus1, b, bt, c, deltat_nplus1, deltatj, e, l, p, rho, t_nplus1, uj_nplus1, ur
 	 */
@@ -458,6 +359,37 @@ public final class Glace2d
 				uj_nplus1 = tmp_uj_n;
 			} 
 		} while (continueLoop);
+	}
+
+	/**
+	 * Job ComputeEOSp called @4.0 in executeTimeLoopN method.
+	 * In variables: e, gamma, rho
+	 * Out variables: p
+	 */
+	private void computeEOSp()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		{
+			p[jCells] = (options.gamma - 1.0) * rho[jCells] * e[jCells];
+		});
+	}
+
+	/**
+	 * Job DumpVariables called @4.0 in executeTimeLoopN method.
+	 * In variables: n, rho
+	 * Out variables: 
+	 */
+	private void dumpVariables()
+	{
+		nbCalls++;
+		if (n >= lastDump + 1.0)
+		{
+			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+			cellVariables.put("Density", rho);
+			writer.writeFile(nbCalls, t_n, X_n, mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
+			lastDump = n;
+		}
 	}
 
 	/**

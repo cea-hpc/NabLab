@@ -30,7 +30,7 @@ class IrJobFactory
 
 	def create IrFactory::eINSTANCE.createBeforeTimeLoopJob toIrBeforeTimeLoopJob(TimeLoop tl)
 	{
-		name = "setUpTimeLoop" + tl.name.toFirstUpper
+		name = "SetUpTimeLoop" + tl.name.toFirstUpper
 		timeLoop = tl
 
 		// if x^{n+1, k=0} exists, x^{n+1, k} = x^{n+1, k=0}
@@ -49,7 +49,7 @@ class IrJobFactory
 
 	def create IrFactory::eINSTANCE.createAfterTimeLoopJob toIrAfterTimeLoopJob(TimeLoop tl)
 	{ 
-		name = "tearDownTimeLoop" + tl.name.toFirstUpper
+		name = "TearDownTimeLoop" + tl.name.toFirstUpper
 		timeLoop = tl
 
 		// x^{n+1} = x^{n+1, k+1}
@@ -63,7 +63,7 @@ class IrJobFactory
 
 	def create IrFactory::eINSTANCE.createTimeLoopJob toIrTimeLoopJob(TimeLoop tl)
 	{
-		name = "executeTimeLoop" + tl.name.toFirstUpper
+		name = "ExecuteTimeLoop" + tl.name.toFirstUpper
 		timeLoop= tl
 		tl.associatedJob = it
 

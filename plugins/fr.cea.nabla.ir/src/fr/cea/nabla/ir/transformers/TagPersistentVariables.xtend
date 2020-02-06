@@ -43,7 +43,7 @@ class TagPersistentVariables implements IrTransformationStep
 	{
 		// Create InSituJob
 		val inSituJob = IrFactory.eINSTANCE.createInSituJob
-		inSituJob.name = 'dumpVariables'
+		inSituJob.name = 'DumpVariables'
 		inSituJob.periodValue = periodValue
 
 		val periodVariable = getCurrentIrVariable(m, periodVariableName)

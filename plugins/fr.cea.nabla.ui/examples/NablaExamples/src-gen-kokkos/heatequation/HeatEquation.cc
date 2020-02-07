@@ -46,7 +46,7 @@ private:
 	int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
 
 	// Global Variables
-	int n, nbCalls, lastDump;
+	int n, lastDump;
 	double t_n, t_nplus1, deltat;
 
 	// Connectivity Variables
@@ -78,8 +78,7 @@ public:
 	, t_n(0.0)
 	, t_nplus1(0.0)
 	, deltat(0.001)
-	, nbCalls(0)
-	, lastDump(0)
+	, lastDump(numeric_limits<int>::min())
 	, X("X", nbNodes)
 	, center("center", nbCells)
 	, u_n("u_n", nbCells)
@@ -231,30 +230,6 @@ private:
 	}
 	
 	/**
-	 * Job dumpVariables called @1.0 in executeTimeLoopN method.
-	 * In variables: n, u_n
-	 * Out variables: 
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void dumpVariables() noexcept
-	{
-		nbCalls++;
-		if (!writer.isDisabled() && n >= lastDump + 1.0)
-		{
-			cpu_timer.stop();
-			io_timer.start();
-			std::map<string, double*> cellVariables;
-			std::map<string, double*> nodeVariables;
-			cellVariables.insert(pair<string,double*>("Temperature", u_n.data()));
-			auto quads = mesh->getGeometry()->getQuads();
-			writer.writeFile(nbCalls, t_n, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
-			lastDump = n;
-			io_timer.stop();
-			cpu_timer.start();
-		}
-	}
-	
-	/**
 	 * Job ComputeUn called @2.0 in executeTimeLoopN method.
 	 * In variables: deltat, f, outgoingFlux, u_n
 	 * Out variables: u_nplus1
@@ -283,8 +258,8 @@ private:
 	}
 	
 	/**
-	 * Job executeTimeLoopN called @3.0 in simulate method.
-	 * In variables: V, center, deltat, f, n, outgoingFlux, surface, t_n, u_n
+	 * Job ExecuteTimeLoopN called @3.0 in simulate method.
+	 * In variables: V, center, deltat, f, outgoingFlux, surface, t_n, u_n
 	 * Out variables: outgoingFlux, t_nplus1, u_nplus1
 	 */
 	KOKKOS_INLINE_FUNCTION
@@ -297,13 +272,13 @@ private:
 			global_timer.start();
 			cpu_timer.start();
 			n++;
+			dumpVariables(n);
 			if (n!=1)
 				std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
 					<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
 		
 			computeOutgoingFlux(); // @1.0
 			computeTn(); // @1.0
-			dumpVariables(); // @1.0
 			computeUn(); // @2.0
 		
 			// Evaluate loop condition with variables at time n
@@ -335,6 +310,23 @@ private:
 			cpu_timer.reset();
 			io_timer.reset();
 		} while (continueLoop);
+	}
+
+	void dumpVariables(int iteration)
+	{
+		if (!writer.isDisabled() && n >= lastDump + 1.0)
+		{
+			cpu_timer.stop();
+			io_timer.start();
+			std::map<string, double*> cellVariables;
+			std::map<string, double*> nodeVariables;
+			cellVariables.insert(pair<string,double*>("Temperature", u_n.data()));
+			auto quads = mesh->getGeometry()->getQuads();
+			writer.writeFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+			lastDump = n;
+			io_timer.stop();
+			cpu_timer.start();
+		}
 	}
 
 public:

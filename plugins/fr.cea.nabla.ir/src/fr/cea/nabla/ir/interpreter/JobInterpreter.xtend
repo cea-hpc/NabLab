@@ -59,7 +59,7 @@ class JobInterpreter
 				context.getReal(irModule.timeVariable.name) + " - deltat: " +
 				context.getReal(irModule.deltatVariable.name)
 			)
-			if (it.topLevel) dumpVariables(irModule, iteration, context);
+			if (topLevel && irModule.postProcessingInfo !== null) dumpVariables(irModule, iteration, context);
 			for (j : innerJobs.filter[x | x.at > 0].sortBy[at])
 				interprete(j, context)
 			//context.logVariables("After iteration = " + iteration)
@@ -94,7 +94,7 @@ class JobInterpreter
 		}
 	}
 
-	def void dumpVariables(IrModule irModule, int iteration, Context context)
+	private def void dumpVariables(IrModule irModule, int iteration, Context context)
 	{
 		val time = context.getReal(irModule.timeVariable.name)
 		val ppInfo = irModule.postProcessingInfo

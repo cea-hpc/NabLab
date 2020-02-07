@@ -33,7 +33,7 @@ public final class IterativeHeatEquation
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
 	// Global Variables
-	private int n, k, nbCalls, lastDump;
+	private int n, k, lastDump;
 	private double t_n, t_nplus1, deltat, epsilon, residual;
 
 	// Connectivity Variables
@@ -57,8 +57,7 @@ public final class IterativeHeatEquation
 		t_nplus1 = 0.0;
 		deltat = 0.001;
 		epsilon = 1.0E-8;
-		nbCalls = 0;
-		lastDump = 0;
+		lastDump = Integer.MIN_VALUE;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
@@ -85,7 +84,7 @@ public final class IterativeHeatEquation
 
 	public void simulate()
 	{
-		System.out.println("Début de l'exécution du module IterativeHeatEquation");
+		System.out.println("Start execution of module IterativeHeatEquation");
 		computeFaceLength(); // @1.0
 		computeV(); // @1.0
 		initD(); // @1.0
@@ -96,7 +95,7 @@ public final class IterativeHeatEquation
 		computeDeltaTn(); // @2.0
 		computeAlphaCoeff(); // @3.0
 		executeTimeLoopN(); // @4.0
-		System.out.println("Fin de l'exécution du module IterativeHeatEquation");
+		System.out.println("End of execution of module IterativeHeatEquation");
 	}
 
 	public static void main(String[] args)
@@ -207,6 +206,19 @@ public final class IterativeHeatEquation
 	}
 
 	/**
+	 * Job SetUpTimeLoopK called @1.0 in executeTimeLoopN method.
+	 * In variables: u_n
+	 * Out variables: u_nplus1_k
+	 */
+	private void setUpTimeLoopK()
+	{
+		IntStream.range(0, u_nplus1_k.length).parallel().forEach(i1 -> 
+		{
+			u_nplus1_k[i1] = u_n[i1];
+		});
+	}
+
+	/**
 	 * Job UpdateU called @1.0 in executeTimeLoopK method.
 	 * In variables: alpha, u_n, u_nplus1_k
 	 * Out variables: u_nplus1_kplus1
@@ -227,37 +239,6 @@ public final class IterativeHeatEquation
 				}
 			}
 			u_nplus1_kplus1[cCells] = u_n[cCells] + alpha[cCells][cCells] * u_nplus1_k[cCells] + reduction6;
-		});
-	}
-
-	/**
-	 * Job dumpVariables called @1.0 in executeTimeLoopN method.
-	 * In variables: n, u_n
-	 * Out variables: 
-	 */
-	private void dumpVariables()
-	{
-		nbCalls++;
-		if (n >= lastDump + 1.0)
-		{
-			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-			cellVariables.put("Temperature", u_n);
-			writer.writeFile(nbCalls, t_n, X, mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
-			lastDump = n;
-		}
-	}
-
-	/**
-	 * Job setUpTimeLoopK called @1.0 in executeTimeLoopN method.
-	 * In variables: u_n
-	 * Out variables: u_nplus1_k
-	 */
-	private void setUpTimeLoopK()
-	{
-		IntStream.range(0, u_nplus1_k.length).parallel().forEach(i1 -> 
-		{
-			u_nplus1_k[i1] = u_n[i1];
 		});
 	}
 
@@ -311,6 +292,35 @@ public final class IterativeHeatEquation
 	}
 
 	/**
+	 * Job ExecuteTimeLoopK called @2.0 in executeTimeLoopN method.
+	 * In variables: alpha, u_n, u_nplus1_k, u_nplus1_kplus1
+	 * Out variables: residual, u_nplus1_kplus1
+	 */
+	private void executeTimeLoopK()
+	{
+		k = 0;
+		boolean continueLoop = true;
+		do
+		{
+			k++;
+			System.out.printf("	[%5d] t: %5.5f - deltat: %5.5f\n", k, t_n, deltat);
+			updateU(); // @1.0
+			computeResidual(); // @2.0
+		
+			// Evaluate loop condition with variables at time n
+			continueLoop = (residual > epsilon && k + 1 < options.option_max_iterations_k);
+		
+			if (continueLoop)
+			{
+				// Switch variables to prepare next iteration
+				double[] tmp_u_nplus1_k = u_nplus1_k;
+				u_nplus1_k = u_nplus1_kplus1;
+				u_nplus1_kplus1 = tmp_u_nplus1_k;
+			} 
+		} while (continueLoop);
+	}
+
+	/**
 	 * Job InitU called @2.0 in simulate method.
 	 * In variables: Xc, u0, vectOne
 	 * Out variables: u_n
@@ -356,32 +366,16 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job executeTimeLoopK called @2.0 in executeTimeLoopN method.
-	 * In variables: alpha, u_n, u_nplus1_k, u_nplus1_kplus1
-	 * Out variables: residual, u_nplus1_kplus1
+	 * Job TearDownTimeLoopK called @3.0 in executeTimeLoopN method.
+	 * In variables: u_nplus1_kplus1
+	 * Out variables: u_nplus1
 	 */
-	private void executeTimeLoopK()
+	private void tearDownTimeLoopK()
 	{
-		k = 0;
-		boolean continueLoop = true;
-		do
+		IntStream.range(0, u_nplus1.length).parallel().forEach(i1 -> 
 		{
-			k++;
-			System.out.printf("	[%5d] t: %5.5f - deltat: %5.5f\n", k, t_n, deltat);
-			updateU(); // @1.0
-			computeResidual(); // @2.0
-		
-			// Evaluate loop condition with variables at time n
-			continueLoop = (residual > epsilon && k + 1 < options.option_max_iterations_k);
-		
-			if (continueLoop)
-			{
-				// Switch variables to prepare next iteration
-				double[] tmp_u_nplus1_k = u_nplus1_k;
-				u_nplus1_k = u_nplus1_kplus1;
-				u_nplus1_kplus1 = tmp_u_nplus1_k;
-			} 
-		} while (continueLoop);
+			u_nplus1[i1] = u_nplus1_kplus1[i1];
+		});
 	}
 
 	/**
@@ -414,21 +408,8 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job tearDownTimeLoopK called @3.0 in executeTimeLoopN method.
-	 * In variables: u_nplus1_kplus1
-	 * Out variables: u_nplus1
-	 */
-	private void tearDownTimeLoopK()
-	{
-		IntStream.range(0, u_nplus1.length).parallel().forEach(i1 -> 
-		{
-			u_nplus1[i1] = u_nplus1_kplus1[i1];
-		});
-	}
-
-	/**
-	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: alpha, deltat, n, t_n, u_n, u_nplus1_k, u_nplus1_kplus1
+	 * Job ExecuteTimeLoopN called @4.0 in simulate method.
+	 * In variables: alpha, deltat, t_n, u_n, u_nplus1_k, u_nplus1_kplus1
 	 * Out variables: residual, t_nplus1, u_nplus1, u_nplus1_k, u_nplus1_kplus1
 	 */
 	private void executeTimeLoopN()
@@ -439,8 +420,8 @@ public final class IterativeHeatEquation
 		{
 			n++;
 			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
+			dumpVariables(n);
 			computeTn(); // @1.0
-			dumpVariables(); // @1.0
 			setUpTimeLoopK(); // @1.0
 			executeTimeLoopK(); // @2.0
 			tearDownTimeLoopK(); // @3.0
@@ -459,5 +440,17 @@ public final class IterativeHeatEquation
 				u_nplus1 = tmp_u_n;
 			} 
 		} while (continueLoop);
+	}
+
+	private void dumpVariables(int iteration)
+	{
+		if (n >= lastDump + 1.0)
+		{
+			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+			cellVariables.put("Temperature", u_n);
+			writer.writeFile(iteration, t_n, X, mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
+			lastDump = n;
+		}
 	}
 };

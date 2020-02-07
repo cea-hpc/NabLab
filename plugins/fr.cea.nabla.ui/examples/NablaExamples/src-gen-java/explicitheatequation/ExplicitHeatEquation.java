@@ -32,7 +32,7 @@ public final class ExplicitHeatEquation
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
 	// Global Variables
-	private int n, nbCalls, lastDump;
+	private int n, lastDump;
 	private double t_n, t_nplus1, deltat;
 
 	// Connectivity Variables
@@ -55,8 +55,7 @@ public final class ExplicitHeatEquation
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat = 0.001;
-		nbCalls = 0;
-		lastDump = 0;
+		lastDump = Integer.MIN_VALUE;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
@@ -81,7 +80,7 @@ public final class ExplicitHeatEquation
 
 	public void simulate()
 	{
-		System.out.println("Début de l'exécution du module ExplicitHeatEquation");
+		System.out.println("Start execution of module ExplicitHeatEquation");
 		computeFaceLength(); // @1.0
 		computeV(); // @1.0
 		initD(); // @1.0
@@ -92,7 +91,7 @@ public final class ExplicitHeatEquation
 		computeDeltaTn(); // @2.0
 		computeAlphaCoeff(); // @3.0
 		executeTimeLoopN(); // @4.0
-		System.out.println("Fin de l'exécution du module ExplicitHeatEquation");
+		System.out.println("End of execution of module ExplicitHeatEquation");
 	}
 
 	public static void main(String[] args)
@@ -227,24 +226,6 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
-	 * Job dumpVariables called @1.0 in executeTimeLoopN method.
-	 * In variables: n, u_n
-	 * Out variables: 
-	 */
-	private void dumpVariables()
-	{
-		nbCalls++;
-		if (n >= lastDump + 1.0)
-		{
-			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-			cellVariables.put("Temperature", u_n);
-			writer.writeFile(nbCalls, t_n, X, mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
-			lastDump = n;
-		}
-	}
-
-	/**
 	 * Job ComputeFaceConductivity called @2.0 in simulate method.
 	 * In variables: D
 	 * Out variables: faceConductivity
@@ -353,8 +334,8 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
-	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: alpha, deltat, n, t_n, u_n
+	 * Job ExecuteTimeLoopN called @4.0 in simulate method.
+	 * In variables: alpha, deltat, t_n, u_n
 	 * Out variables: t_nplus1, u_nplus1
 	 */
 	private void executeTimeLoopN()
@@ -365,9 +346,9 @@ public final class ExplicitHeatEquation
 		{
 			n++;
 			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
+			dumpVariables(n);
 			computeTn(); // @1.0
 			updateU(); // @1.0
-			dumpVariables(); // @1.0
 		
 			// Evaluate loop condition with variables at time n
 			continueLoop = (t_nplus1 < options.option_stoptime && n + 1 < options.option_max_iterations);
@@ -383,5 +364,17 @@ public final class ExplicitHeatEquation
 				u_nplus1 = tmp_u_n;
 			} 
 		} while (continueLoop);
+	}
+
+	private void dumpVariables(int iteration)
+	{
+		if (n >= lastDump + 1.0)
+		{
+			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+			cellVariables.put("Temperature", u_n);
+			writer.writeFile(iteration, t_n, X, mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
+			lastDump = n;
+		}
 	}
 };

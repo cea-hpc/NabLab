@@ -49,7 +49,7 @@ private:
 	int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
 	// Global Variables
-	int n, k, nbCalls, lastDump;
+	int n, k, lastDump;
 	double t_n, t_nplus1, deltat, epsilon, residual;
 
 	// Connectivity Variables
@@ -88,8 +88,7 @@ public:
 	, t_nplus1(0.0)
 	, deltat(0.001)
 	, epsilon(1.0E-8)
-	, nbCalls(0)
-	, lastDump(0)
+	, lastDump(numeric_limits<int>::min())
 	, X("X", nbNodes)
 	, Xc("Xc", nbCells)
 	, xc("xc", nbCells)
@@ -218,6 +217,17 @@ private:
 	}
 	
 	/**
+	 * Job SetUpTimeLoopK called @1.0 in executeTimeLoopN method.
+	 * In variables: u_n
+	 * Out variables: u_nplus1_k
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void setUpTimeLoopK() noexcept
+	{
+		deep_copy(u_nplus1_k, u_n);
+	}
+	
+	/**
 	 * Job UpdateU called @1.0 in executeTimeLoopK method.
 	 * In variables: alpha, u_n, u_nplus1_k
 	 * Out variables: u_nplus1_kplus1
@@ -240,41 +250,6 @@ private:
 			}
 			u_nplus1_kplus1(cCells) = u_n(cCells) + alpha(cCells,cCells) * u_nplus1_k(cCells) + reduction6;
 		});
-	}
-	
-	/**
-	 * Job dumpVariables called @1.0 in executeTimeLoopN method.
-	 * In variables: n, u_n
-	 * Out variables: 
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void dumpVariables() noexcept
-	{
-		nbCalls++;
-		if (!writer.isDisabled() && n >= lastDump + 1.0)
-		{
-			cpu_timer.stop();
-			io_timer.start();
-			std::map<string, double*> cellVariables;
-			std::map<string, double*> nodeVariables;
-			cellVariables.insert(pair<string,double*>("Temperature", u_n.data()));
-			auto quads = mesh->getGeometry()->getQuads();
-			writer.writeFile(nbCalls, t_n, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
-			lastDump = n;
-			io_timer.stop();
-			cpu_timer.start();
-		}
-	}
-	
-	/**
-	 * Job setUpTimeLoopK called @1.0 in executeTimeLoopN method.
-	 * In variables: u_n
-	 * Out variables: u_nplus1_k
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void setUpTimeLoopK() noexcept
-	{
-		deep_copy(u_nplus1_k, u_n);
 	}
 	
 	/**
@@ -332,6 +307,36 @@ private:
 	}
 	
 	/**
+	 * Job ExecuteTimeLoopK called @2.0 in executeTimeLoopN method.
+	 * In variables: alpha, u_n, u_nplus1_k, u_nplus1_kplus1
+	 * Out variables: residual, u_nplus1_kplus1
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void executeTimeLoopK() noexcept
+	{
+		k = 0;
+		bool continueLoop = true;
+		do
+		{
+			k++;
+		
+			updateU(); // @1.0
+			computeResidual(); // @2.0
+		
+			// Evaluate loop condition with variables at time n
+			continueLoop = (residual > epsilon && k + 1 < options->option_max_iterations_k);
+		
+			if (continueLoop)
+			{
+				// Switch variables to prepare next iteration
+				std::swap(u_nplus1_kplus1, u_nplus1_k);
+			}
+		
+		
+		} while (continueLoop);
+	}
+	
+	/**
 	 * Job InitU called @2.0 in simulate method.
 	 * In variables: Xc, u0, vectOne
 	 * Out variables: u_n
@@ -383,33 +388,14 @@ private:
 	}
 	
 	/**
-	 * Job executeTimeLoopK called @2.0 in executeTimeLoopN method.
-	 * In variables: alpha, u_n, u_nplus1_k, u_nplus1_kplus1
-	 * Out variables: residual, u_nplus1_kplus1
+	 * Job TearDownTimeLoopK called @3.0 in executeTimeLoopN method.
+	 * In variables: u_nplus1_kplus1
+	 * Out variables: u_nplus1
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void executeTimeLoopK() noexcept
+	void tearDownTimeLoopK() noexcept
 	{
-		k = 0;
-		bool continueLoop = true;
-		do
-		{
-			k++;
-		
-			updateU(); // @1.0
-			computeResidual(); // @2.0
-		
-			// Evaluate loop condition with variables at time n
-			continueLoop = (residual > epsilon && k + 1 < options->option_max_iterations_k);
-		
-			if (continueLoop)
-			{
-				// Switch variables to prepare next iteration
-				std::swap(u_nplus1_kplus1, u_nplus1_k);
-			}
-		
-		
-		} while (continueLoop);
+		deep_copy(u_nplus1, u_nplus1_kplus1);
 	}
 	
 	/**
@@ -443,19 +429,8 @@ private:
 	}
 	
 	/**
-	 * Job tearDownTimeLoopK called @3.0 in executeTimeLoopN method.
-	 * In variables: u_nplus1_kplus1
-	 * Out variables: u_nplus1
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void tearDownTimeLoopK() noexcept
-	{
-		deep_copy(u_nplus1, u_nplus1_kplus1);
-	}
-	
-	/**
-	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: alpha, deltat, n, t_n, u_n, u_nplus1_k, u_nplus1_kplus1
+	 * Job ExecuteTimeLoopN called @4.0 in simulate method.
+	 * In variables: alpha, deltat, t_n, u_n, u_nplus1_k, u_nplus1_kplus1
 	 * Out variables: residual, t_nplus1, u_nplus1, u_nplus1_k, u_nplus1_kplus1
 	 */
 	KOKKOS_INLINE_FUNCTION
@@ -468,12 +443,12 @@ private:
 			global_timer.start();
 			cpu_timer.start();
 			n++;
+			dumpVariables(n);
 			if (n!=1)
 				std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
 					<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
 		
 			computeTn(); // @1.0
-			dumpVariables(); // @1.0
 			setUpTimeLoopK(); // @1.0
 			executeTimeLoopK(); // @2.0
 			tearDownTimeLoopK(); // @3.0
@@ -507,6 +482,23 @@ private:
 			cpu_timer.reset();
 			io_timer.reset();
 		} while (continueLoop);
+	}
+
+	void dumpVariables(int iteration)
+	{
+		if (!writer.isDisabled() && n >= lastDump + 1.0)
+		{
+			cpu_timer.stop();
+			io_timer.start();
+			std::map<string, double*> cellVariables;
+			std::map<string, double*> nodeVariables;
+			cellVariables.insert(pair<string,double*>("Temperature", u_n.data()));
+			auto quads = mesh->getGeometry()->getQuads();
+			writer.writeFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+			lastDump = n;
+			io_timer.stop();
+			cpu_timer.start();
+		}
 	}
 
 public:

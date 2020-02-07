@@ -30,7 +30,7 @@ public final class HeatEquation
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
 
 	// Global Variables
-	private int n, nbCalls, lastDump;
+	private int n, lastDump;
 	private double t_n, t_nplus1, deltat;
 
 	// Connectivity Variables
@@ -52,8 +52,7 @@ public final class HeatEquation
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat = 0.001;
-		nbCalls = 0;
-		lastDump = 0;
+		lastDump = Integer.MIN_VALUE;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
@@ -75,14 +74,14 @@ public final class HeatEquation
 
 	public void simulate()
 	{
-		System.out.println("Début de l'exécution du module HeatEquation");
+		System.out.println("Start execution of module HeatEquation");
 		computeSurface(); // @1.0
 		computeV(); // @1.0
 		iniCenter(); // @1.0
 		iniF(); // @1.0
 		iniUn(); // @2.0
 		executeTimeLoopN(); // @3.0
-		System.out.println("Fin de l'exécution du module HeatEquation");
+		System.out.println("End of execution of module HeatEquation");
 	}
 
 	public static void main(String[] args)
@@ -220,24 +219,6 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job dumpVariables called @1.0 in executeTimeLoopN method.
-	 * In variables: n, u_n
-	 * Out variables: 
-	 */
-	private void dumpVariables()
-	{
-		nbCalls++;
-		if (n >= lastDump + 1.0)
-		{
-			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-			cellVariables.put("Temperature", u_n);
-			writer.writeFile(nbCalls, t_n, X, mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
-			lastDump = n;
-		}
-	}
-
-	/**
 	 * Job ComputeUn called @2.0 in executeTimeLoopN method.
 	 * In variables: deltat, f, outgoingFlux, u_n
 	 * Out variables: u_nplus1
@@ -264,8 +245,8 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job executeTimeLoopN called @3.0 in simulate method.
-	 * In variables: V, center, deltat, f, n, outgoingFlux, surface, t_n, u_n
+	 * Job ExecuteTimeLoopN called @3.0 in simulate method.
+	 * In variables: V, center, deltat, f, outgoingFlux, surface, t_n, u_n
 	 * Out variables: outgoingFlux, t_nplus1, u_nplus1
 	 */
 	private void executeTimeLoopN()
@@ -276,9 +257,9 @@ public final class HeatEquation
 		{
 			n++;
 			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
+			dumpVariables(n);
 			computeOutgoingFlux(); // @1.0
 			computeTn(); // @1.0
-			dumpVariables(); // @1.0
 			computeUn(); // @2.0
 		
 			// Evaluate loop condition with variables at time n
@@ -295,5 +276,17 @@ public final class HeatEquation
 				u_nplus1 = tmp_u_n;
 			} 
 		} while (continueLoop);
+	}
+
+	private void dumpVariables(int iteration)
+	{
+		if (n >= lastDump + 1.0)
+		{
+			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+			cellVariables.put("Temperature", u_n);
+			writer.writeFile(iteration, t_n, X, mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
+			lastDump = n;
+		}
 	}
 };

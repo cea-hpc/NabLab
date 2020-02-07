@@ -12,8 +12,6 @@ package fr.cea.nabla.ir.generator.kokkos
 import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalJobContentProvider
 import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalParallelismUtils
 import fr.cea.nabla.ir.ir.BaseType
-import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
@@ -23,7 +21,6 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
-import static extension fr.cea.nabla.ir.Utils.getIrModule
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
 
 abstract class JobContentProvider 
@@ -50,26 +47,6 @@ abstract class JobContentProvider
 		«instruction.innerContent»
 	'''
 
-	protected def dispatch CharSequence getInnerContent(InSituJob it)
-	'''
-		«nbCalls.name»++;
-		if (!writer.isDisabled() && «periodVariable.name» >= «lastDumpVariable.name» + «periodValue»)
-		{
-			cpu_timer.stop();
-			io_timer.start();
-			std::map<string, double*> cellVariables;
-			std::map<string, double*> nodeVariables;
-			«FOR v : dumpedVariables.filter(ConnectivityVariable)»
-			«v.type.connectivities.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
-			«ENDFOR»
-			auto quads = mesh->getGeometry()->getQuads();
-			writer.writeFile(«nbCalls.name», «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);
-			«lastDumpVariable.name» = «periodVariable.name»;
-			io_timer.stop();
-			cpu_timer.start();
-		}
-	'''
-
 	protected def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
 		«IF (threadTeam)»
@@ -86,6 +63,7 @@ abstract class JobContentProvider
 			cpu_timer.start();
 			«ENDIF»
 			«itVar»++;
+			«IF topLevel»dumpVariables(«itVar»);«ENDIF»
 			«traceContentProvider.getBeginOfLoopTrace(itVar, timeVarName, isTopLevel)»
 
 			«innerJobs.jobCallsContent»

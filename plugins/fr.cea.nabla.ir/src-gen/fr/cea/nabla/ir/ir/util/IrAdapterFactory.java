@@ -88,6 +88,10 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createImportAdapter();
 			}
 			@Override
+			public Adapter casePostProcessingInfo(PostProcessingInfo object) {
+				return createPostProcessingInfoAdapter();
+			}
+			@Override
 			public Adapter caseTimeLoop(TimeLoop object) {
 				return createTimeLoopAdapter();
 			}
@@ -134,10 +138,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseInstructionJob(InstructionJob object) {
 				return createInstructionJobAdapter();
-			}
-			@Override
-			public Adapter caseInSituJob(InSituJob object) {
-				return createInSituJobAdapter();
 			}
 			@Override
 			public Adapter caseTimeLoopJob(TimeLoopJob object) {
@@ -414,6 +414,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.PostProcessingInfo <em>Post Processing Info</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo
+	 * @generated
+	 */
+	public Adapter createPostProcessingInfoAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.TimeLoop <em>Time Loop</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -578,20 +592,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createInstructionJobAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.InSituJob <em>In Situ Job</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.InSituJob
-	 * @generated
-	 */
-	public Adapter createInSituJobAdapter() {
 		return null;
 	}
 

@@ -2,49 +2,50 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.InSituJob;
 import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.PostProcessingInfo;
 import fr.cea.nabla.ir.ir.SimpleVariable;
 import fr.cea.nabla.ir.ir.Variable;
 
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>In Situ Job</b></em>'.
+ * An implementation of the model object '<em><b>Post Processing Info</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getDumpedVariables <em>Dumped Variables</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getPeriodValue <em>Period Value</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getPeriodVariable <em>Period Variable</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getNbCalls <em>Nb Calls</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.InSituJobImpl#getLastDumpVariable <em>Last Dump Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl#getPostProcessedVariables <em>Post Processed Variables</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl#getPeriodValue <em>Period Value</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl#getPeriodVariable <em>Period Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl#getLastDumpVariable <em>Last Dump Variable</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class InSituJobImpl extends JobImpl implements InSituJob {
+public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProcessingInfo {
 	/**
-	 * The cached value of the '{@link #getDumpedVariables() <em>Dumped Variables</em>}' reference list.
+	 * The cached value of the '{@link #getPostProcessedVariables() <em>Post Processed Variables</em>}' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getDumpedVariables()
+	 * @see #getPostProcessedVariables()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Variable> dumpedVariables;
+	protected EList<Variable> postProcessedVariables;
 
 	/**
 	 * The default value of the '{@link #getPeriodValue() <em>Period Value</em>}' attribute.
@@ -77,16 +78,6 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	protected SimpleVariable periodVariable;
 
 	/**
-	 * The cached value of the '{@link #getNbCalls() <em>Nb Calls</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getNbCalls()
-	 * @generated
-	 * @ordered
-	 */
-	protected SimpleVariable nbCalls;
-
-	/**
 	 * The cached value of the '{@link #getLastDumpVariable() <em>Last Dump Variable</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -101,7 +92,7 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected InSituJobImpl() {
+	protected PostProcessingInfoImpl() {
 		super();
 	}
 
@@ -112,7 +103,7 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return IrPackage.Literals.IN_SITU_JOB;
+		return IrPackage.Literals.POST_PROCESSING_INFO;
 	}
 
 	/**
@@ -121,11 +112,11 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	 * @generated
 	 */
 	@Override
-	public EList<Variable> getDumpedVariables() {
-		if (dumpedVariables == null) {
-			dumpedVariables = new EObjectResolvingEList<Variable>(Variable.class, this, IrPackage.IN_SITU_JOB__DUMPED_VARIABLES);
+	public EList<Variable> getPostProcessedVariables() {
+		if (postProcessedVariables == null) {
+			postProcessedVariables = new EObjectResolvingEList<Variable>(Variable.class, this, IrPackage.POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES);
 		}
-		return dumpedVariables;
+		return postProcessedVariables;
 	}
 
 	/**
@@ -148,7 +139,7 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 		double oldPeriodValue = periodValue;
 		periodValue = newPeriodValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IN_SITU_JOB__PERIOD_VALUE, oldPeriodValue, periodValue));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE, oldPeriodValue, periodValue));
 	}
 
 	/**
@@ -163,7 +154,7 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 			periodVariable = (SimpleVariable)eResolveProxy(oldPeriodVariable);
 			if (periodVariable != oldPeriodVariable) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IN_SITU_JOB__PERIOD_VARIABLE, oldPeriodVariable, periodVariable));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.POST_PROCESSING_INFO__PERIOD_VARIABLE, oldPeriodVariable, periodVariable));
 			}
 		}
 		return periodVariable;
@@ -188,47 +179,7 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 		SimpleVariable oldPeriodVariable = periodVariable;
 		periodVariable = newPeriodVariable;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IN_SITU_JOB__PERIOD_VARIABLE, oldPeriodVariable, periodVariable));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public SimpleVariable getNbCalls() {
-		if (nbCalls != null && nbCalls.eIsProxy()) {
-			InternalEObject oldNbCalls = (InternalEObject)nbCalls;
-			nbCalls = (SimpleVariable)eResolveProxy(oldNbCalls);
-			if (nbCalls != oldNbCalls) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IN_SITU_JOB__NB_CALLS, oldNbCalls, nbCalls));
-			}
-		}
-		return nbCalls;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public SimpleVariable basicGetNbCalls() {
-		return nbCalls;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setNbCalls(SimpleVariable newNbCalls) {
-		SimpleVariable oldNbCalls = nbCalls;
-		nbCalls = newNbCalls;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IN_SITU_JOB__NB_CALLS, oldNbCalls, nbCalls));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.POST_PROCESSING_INFO__PERIOD_VARIABLE, oldPeriodVariable, periodVariable));
 	}
 
 	/**
@@ -243,7 +194,7 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 			lastDumpVariable = (SimpleVariable)eResolveProxy(oldLastDumpVariable);
 			if (lastDumpVariable != oldLastDumpVariable) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE, oldLastDumpVariable, lastDumpVariable));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.POST_PROCESSING_INFO__LAST_DUMP_VARIABLE, oldLastDumpVariable, lastDumpVariable));
 			}
 		}
 		return lastDumpVariable;
@@ -268,7 +219,7 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 		SimpleVariable oldLastDumpVariable = lastDumpVariable;
 		lastDumpVariable = newLastDumpVariable;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE, oldLastDumpVariable, lastDumpVariable));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.POST_PROCESSING_INFO__LAST_DUMP_VARIABLE, oldLastDumpVariable, lastDumpVariable));
 	}
 
 	/**
@@ -279,17 +230,14 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.IN_SITU_JOB__DUMPED_VARIABLES:
-				return getDumpedVariables();
-			case IrPackage.IN_SITU_JOB__PERIOD_VALUE:
+			case IrPackage.POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES:
+				return getPostProcessedVariables();
+			case IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE:
 				return getPeriodValue();
-			case IrPackage.IN_SITU_JOB__PERIOD_VARIABLE:
+			case IrPackage.POST_PROCESSING_INFO__PERIOD_VARIABLE:
 				if (resolve) return getPeriodVariable();
 				return basicGetPeriodVariable();
-			case IrPackage.IN_SITU_JOB__NB_CALLS:
-				if (resolve) return getNbCalls();
-				return basicGetNbCalls();
-			case IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE:
+			case IrPackage.POST_PROCESSING_INFO__LAST_DUMP_VARIABLE:
 				if (resolve) return getLastDumpVariable();
 				return basicGetLastDumpVariable();
 		}
@@ -305,20 +253,17 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.IN_SITU_JOB__DUMPED_VARIABLES:
-				getDumpedVariables().clear();
-				getDumpedVariables().addAll((Collection<? extends Variable>)newValue);
+			case IrPackage.POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES:
+				getPostProcessedVariables().clear();
+				getPostProcessedVariables().addAll((Collection<? extends Variable>)newValue);
 				return;
-			case IrPackage.IN_SITU_JOB__PERIOD_VALUE:
+			case IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE:
 				setPeriodValue((Double)newValue);
 				return;
-			case IrPackage.IN_SITU_JOB__PERIOD_VARIABLE:
+			case IrPackage.POST_PROCESSING_INFO__PERIOD_VARIABLE:
 				setPeriodVariable((SimpleVariable)newValue);
 				return;
-			case IrPackage.IN_SITU_JOB__NB_CALLS:
-				setNbCalls((SimpleVariable)newValue);
-				return;
-			case IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE:
+			case IrPackage.POST_PROCESSING_INFO__LAST_DUMP_VARIABLE:
 				setLastDumpVariable((SimpleVariable)newValue);
 				return;
 		}
@@ -333,19 +278,16 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.IN_SITU_JOB__DUMPED_VARIABLES:
-				getDumpedVariables().clear();
+			case IrPackage.POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES:
+				getPostProcessedVariables().clear();
 				return;
-			case IrPackage.IN_SITU_JOB__PERIOD_VALUE:
+			case IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE:
 				setPeriodValue(PERIOD_VALUE_EDEFAULT);
 				return;
-			case IrPackage.IN_SITU_JOB__PERIOD_VARIABLE:
+			case IrPackage.POST_PROCESSING_INFO__PERIOD_VARIABLE:
 				setPeriodVariable((SimpleVariable)null);
 				return;
-			case IrPackage.IN_SITU_JOB__NB_CALLS:
-				setNbCalls((SimpleVariable)null);
-				return;
-			case IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE:
+			case IrPackage.POST_PROCESSING_INFO__LAST_DUMP_VARIABLE:
 				setLastDumpVariable((SimpleVariable)null);
 				return;
 		}
@@ -360,15 +302,13 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.IN_SITU_JOB__DUMPED_VARIABLES:
-				return dumpedVariables != null && !dumpedVariables.isEmpty();
-			case IrPackage.IN_SITU_JOB__PERIOD_VALUE:
+			case IrPackage.POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES:
+				return postProcessedVariables != null && !postProcessedVariables.isEmpty();
+			case IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE:
 				return periodValue != PERIOD_VALUE_EDEFAULT;
-			case IrPackage.IN_SITU_JOB__PERIOD_VARIABLE:
+			case IrPackage.POST_PROCESSING_INFO__PERIOD_VARIABLE:
 				return periodVariable != null;
-			case IrPackage.IN_SITU_JOB__NB_CALLS:
-				return nbCalls != null;
-			case IrPackage.IN_SITU_JOB__LAST_DUMP_VARIABLE:
+			case IrPackage.POST_PROCESSING_INFO__LAST_DUMP_VARIABLE:
 				return lastDumpVariable != null;
 		}
 		return super.eIsSet(featureID);
@@ -390,4 +330,4 @@ public class InSituJobImpl extends JobImpl implements InSituJob {
 		return result.toString();
 	}
 
-} //InSituJobImpl
+} //PostProcessingInfoImpl

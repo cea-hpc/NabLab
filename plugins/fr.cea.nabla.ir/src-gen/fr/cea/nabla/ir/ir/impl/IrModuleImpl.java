@@ -10,6 +10,7 @@ import fr.cea.nabla.ir.ir.IrModule;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.ItemType;
 import fr.cea.nabla.ir.ir.Job;
+import fr.cea.nabla.ir.ir.PostProcessingInfo;
 import fr.cea.nabla.ir.ir.Reduction;
 import fr.cea.nabla.ir.ir.SimpleVariable;
 import fr.cea.nabla.ir.ir.TimeLoop;
@@ -51,6 +52,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getDeltatVariable <em>Deltat Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getJobs <em>Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getMainTimeLoop <em>Main Time Loop</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getPostProcessingInfo <em>Post Processing Info</em>}</li>
  * </ul>
  *
  * @generated
@@ -195,6 +197,16 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * @ordered
 	 */
 	protected TimeLoop mainTimeLoop;
+
+	/**
+	 * The cached value of the '{@link #getPostProcessingInfo() <em>Post Processing Info</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPostProcessingInfo()
+	 * @generated
+	 * @ordered
+	 */
+	protected PostProcessingInfo postProcessingInfo;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -563,6 +575,74 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
+	public PostProcessingInfo getPostProcessingInfo() {
+		if (postProcessingInfo != null && postProcessingInfo.eIsProxy()) {
+			InternalEObject oldPostProcessingInfo = (InternalEObject)postProcessingInfo;
+			postProcessingInfo = (PostProcessingInfo)eResolveProxy(oldPostProcessingInfo);
+			if (postProcessingInfo != oldPostProcessingInfo) {
+				InternalEObject newPostProcessingInfo = (InternalEObject)postProcessingInfo;
+				NotificationChain msgs = oldPostProcessingInfo.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__POST_PROCESSING_INFO, null, null);
+				if (newPostProcessingInfo.eInternalContainer() == null) {
+					msgs = newPostProcessingInfo.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__POST_PROCESSING_INFO, null, msgs);
+				}
+				if (msgs != null) msgs.dispatch();
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_MODULE__POST_PROCESSING_INFO, oldPostProcessingInfo, postProcessingInfo));
+			}
+		}
+		return postProcessingInfo;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public PostProcessingInfo basicGetPostProcessingInfo() {
+		return postProcessingInfo;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetPostProcessingInfo(PostProcessingInfo newPostProcessingInfo, NotificationChain msgs) {
+		PostProcessingInfo oldPostProcessingInfo = postProcessingInfo;
+		postProcessingInfo = newPostProcessingInfo;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__POST_PROCESSING_INFO, oldPostProcessingInfo, newPostProcessingInfo);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setPostProcessingInfo(PostProcessingInfo newPostProcessingInfo) {
+		if (newPostProcessingInfo != postProcessingInfo) {
+			NotificationChain msgs = null;
+			if (postProcessingInfo != null)
+				msgs = ((InternalEObject)postProcessingInfo).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__POST_PROCESSING_INFO, null, msgs);
+			if (newPostProcessingInfo != null)
+				msgs = ((InternalEObject)newPostProcessingInfo).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__POST_PROCESSING_INFO, null, msgs);
+			msgs = basicSetPostProcessingInfo(newPostProcessingInfo, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__POST_PROCESSING_INFO, newPostProcessingInfo, newPostProcessingInfo));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.IR_MODULE__IMPORTS:
@@ -581,6 +661,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return ((InternalEList<?>)getJobs()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
 				return basicSetMainTimeLoop(null, msgs);
+			case IrPackage.IR_MODULE__POST_PROCESSING_INFO:
+				return basicSetPostProcessingInfo(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -624,6 +706,9 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
 				if (resolve) return getMainTimeLoop();
 				return basicGetMainTimeLoop();
+			case IrPackage.IR_MODULE__POST_PROCESSING_INFO:
+				if (resolve) return getPostProcessingInfo();
+				return basicGetPostProcessingInfo();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -683,6 +768,9 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
 				setMainTimeLoop((TimeLoop)newValue);
 				return;
+			case IrPackage.IR_MODULE__POST_PROCESSING_INFO:
+				setPostProcessingInfo((PostProcessingInfo)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -734,6 +822,9 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
 				setMainTimeLoop((TimeLoop)null);
 				return;
+			case IrPackage.IR_MODULE__POST_PROCESSING_INFO:
+				setPostProcessingInfo((PostProcessingInfo)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -772,6 +863,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return jobs != null && !jobs.isEmpty();
 			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
 				return mainTimeLoop != null;
+			case IrPackage.IR_MODULE__POST_PROCESSING_INFO:
+				return postProcessingInfo != null;
 		}
 		return super.eIsSet(featureID);
 	}

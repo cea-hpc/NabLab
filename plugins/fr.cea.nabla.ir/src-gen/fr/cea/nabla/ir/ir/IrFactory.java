@@ -49,6 +49,15 @@ public interface IrFactory extends EFactory {
 	Import createImport();
 
 	/**
+	 * Returns a new object of class '<em>Post Processing Info</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Post Processing Info</em>'.
+	 * @generated
+	 */
+	PostProcessingInfo createPostProcessingInfo();
+
+	/**
 	 * Returns a new object of class '<em>Time Loop</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -128,15 +137,6 @@ public interface IrFactory extends EFactory {
 	 * @generated
 	 */
 	InstructionJob createInstructionJob();
-
-	/**
-	 * Returns a new object of class '<em>In Situ Job</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>In Situ Job</em>'.
-	 * @generated
-	 */
-	InSituJob createInSituJob();
 
 	/**
 	 * Returns a new object of class '<em>Time Loop Job</em>'.

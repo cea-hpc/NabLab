@@ -60,6 +60,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.IR_ANNOTATION: return createIrAnnotation();
 			case IrPackage.IR_MODULE: return createIrModule();
 			case IrPackage.IMPORT: return createImport();
+			case IrPackage.POST_PROCESSING_INFO: return createPostProcessingInfo();
 			case IrPackage.TIME_LOOP: return createTimeLoop();
 			case IrPackage.ARG: return createArg();
 			case IrPackage.SIMPLE_VARIABLE: return createSimpleVariable();
@@ -69,7 +70,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.CONNECTIVITY: return createConnectivity();
 			case IrPackage.ITEM_ARG_TYPE: return createItemArgType();
 			case IrPackage.INSTRUCTION_JOB: return createInstructionJob();
-			case IrPackage.IN_SITU_JOB: return createInSituJob();
 			case IrPackage.TIME_LOOP_JOB: return createTimeLoopJob();
 			case IrPackage.BEFORE_TIME_LOOP_JOB: return createBeforeTimeLoopJob();
 			case IrPackage.AFTER_TIME_LOOP_JOB: return createAfterTimeLoopJob();
@@ -183,6 +183,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
+	public PostProcessingInfo createPostProcessingInfo() {
+		PostProcessingInfoImpl postProcessingInfo = new PostProcessingInfoImpl();
+		return postProcessingInfo;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public TimeLoop createTimeLoop() {
 		TimeLoopImpl timeLoop = new TimeLoopImpl();
 		return timeLoop;
@@ -274,17 +285,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public InstructionJob createInstructionJob() {
 		InstructionJobImpl instructionJob = new InstructionJobImpl();
 		return instructionJob;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public InSituJob createInSituJob() {
-		InSituJobImpl inSituJob = new InSituJobImpl();
-		return inSituJob;
 	}
 
 	/**

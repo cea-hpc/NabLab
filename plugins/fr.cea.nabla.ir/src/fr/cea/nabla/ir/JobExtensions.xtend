@@ -11,7 +11,6 @@ package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVarRef
-import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrPackage
@@ -73,11 +72,6 @@ class JobExtensions
 		eAllContents.filter(Affectation).map[left.target].filter(Variable).filter[global].toSet
 	}
 
-	static def dispatch Iterable<Variable> getOutVars(InSituJob it)
-	{
-		#[]
-	}
-
 	/** For TimeLoopJob, copies are ignored to avoid cycles */
 	static def dispatch Iterable<Variable> getInVars(TimeLoopJob it)
 	{
@@ -96,11 +90,6 @@ class JobExtensions
 		val allVars = eAllContents.filter(ArgOrVarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[target]
 		val inVars = allVars.filter(Variable).filter[global].toSet
 		return inVars
-	}
-
-	static def dispatch Iterable<Variable> getInVars(InSituJob it)
-	{
-		return dumpedVariables + #[periodVariable]
 	}
 
 	static def getIteratorByName(Job it, String name)

@@ -52,7 +52,7 @@ private:
 	int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
 
 	// Global Variables
-	int n, nbCalls, lastDump;
+	int n, lastDump;
 	double t_n, t_nplus1, deltat_n, deltat_nplus1;
 
 	// Connectivity Variables
@@ -102,8 +102,7 @@ public:
 	, t_nplus1(0.0)
 	, deltat_n(options->option_deltat_ini)
 	, deltat_nplus1(options->option_deltat_ini)
-	, nbCalls(0)
-	, lastDump(0)
+	, lastDump(numeric_limits<int>::min())
 	, X_n("X_n", nbNodes)
 	, X_nplus1("X_nplus1", nbNodes)
 	, X_n0("X_n0", nbNodes)
@@ -262,7 +261,7 @@ private:
 	/**
 	 * Job Initialize called @2.0 in simulate method.
 	 * In variables: Cjr_ic, X_n0, gamma, option_p_ini_zd, option_p_ini_zg, option_rho_ini_zd, option_rho_ini_zg, option_x_interface
-	 * Out variables: E_n, m, p, uj_n
+	 * Out variables: E_n, m, p, rho, uj_n
 	 */
 	KOKKOS_INLINE_FUNCTION
 	void initialize() noexcept
@@ -306,6 +305,7 @@ private:
 			double V_ic = 0.5 * reduction1;
 			m(jCells) = rho_ic * V_ic;
 			p(jCells) = p_ic;
+			rho(jCells) = rho_ic;
 			E_n(jCells) = p_ic / ((options->gamma - 1.0) * rho_ic);
 			uj_n(jCells) = {{0.0, 0.0}};
 		});
@@ -327,7 +327,7 @@ private:
 	
 	/**
 	 * Job ExecuteTimeLoopN called @3.0 in simulate method.
-	 * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b, bt, c, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, n, option_deltat_cfl, p, rho, t_n, uj_n, ur
+	 * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b, bt, c, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, option_deltat_cfl, p, rho, t_n, uj_n, ur
 	 * Out variables: Ajr, Ar, C, E_nplus1, F, Mt, V, X_nplus1, b, bt, c, deltat_nplus1, deltatj, e, l, p, rho, t_nplus1, uj_nplus1, ur
 	 */
 	KOKKOS_INLINE_FUNCTION
@@ -340,6 +340,7 @@ private:
 			global_timer.start();
 			cpu_timer.start();
 			n++;
+			dumpVariables(n);
 			if (n!=1)
 				std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
 					<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
@@ -350,7 +351,6 @@ private:
 			computeV(); // @2.0
 			computeDensity(); // @3.0
 			computeEOSp(); // @4.0
-			dumpVariables(); // @4.0
 			computeEOSc(); // @5.0
 			computeAjr(); // @6.0
 			computedeltatj(); // @6.0
@@ -413,30 +413,6 @@ private:
 		{
 			p(jCells) = (options->gamma - 1.0) * rho(jCells) * e(jCells);
 		});
-	}
-	
-	/**
-	 * Job DumpVariables called @4.0 in executeTimeLoopN method.
-	 * In variables: n, rho
-	 * Out variables: 
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void dumpVariables() noexcept
-	{
-		nbCalls++;
-		if (!writer.isDisabled() && n >= lastDump + 1.0)
-		{
-			cpu_timer.stop();
-			io_timer.start();
-			std::map<string, double*> cellVariables;
-			std::map<string, double*> nodeVariables;
-			cellVariables.insert(pair<string,double*>("Density", rho.data()));
-			auto quads = mesh->getGeometry()->getQuads();
-			writer.writeFile(nbCalls, t_n, nbNodes, X_n.data(), nbCells, quads.data(), cellVariables, nodeVariables);
-			lastDump = n;
-			io_timer.stop();
-			cpu_timer.start();
-		}
 	}
 	
 	/**
@@ -654,8 +630,7 @@ private:
 					if ((MathFunctions::fabs(X_n(rNodes)[0] - X_MIN) < epsilon) || ((MathFunctions::fabs(X_n(rNodes)[0] - X_MAX) < epsilon))) 
 					{
 						Mt(rNodes) = I;
-						bt(rNodes)[0] = 0.0;
-						bt(rNodes)[1] = 0.0;
+						bt(rNodes) = {{0.0, 0.0}};
 					}
 				}
 			}
@@ -793,6 +768,23 @@ private:
 	{
 		double alpha = 1.0 / MathFunctions::det(a);
 		return {{{{a[1][1] * alpha, -a[0][1] * alpha}}, {{-a[1][0] * alpha, a[0][0] * alpha}}}};
+	}
+
+	void dumpVariables(int iteration)
+	{
+		if (!writer.isDisabled() && n >= lastDump + 1.0)
+		{
+			cpu_timer.stop();
+			io_timer.start();
+			std::map<string, double*> cellVariables;
+			std::map<string, double*> nodeVariables;
+			cellVariables.insert(pair<string,double*>("Density", rho.data()));
+			auto quads = mesh->getGeometry()->getQuads();
+			writer.writeFile(iteration, t_n, nbNodes, X_n.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+			lastDump = n;
+			io_timer.stop();
+			cpu_timer.start();
+		}
 	}
 
 public:

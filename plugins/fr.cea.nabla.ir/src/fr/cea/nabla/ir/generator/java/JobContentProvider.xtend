@@ -11,8 +11,6 @@ package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
-import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.TimeLoop
@@ -21,6 +19,7 @@ import fr.cea.nabla.ir.ir.TimeLoopJob
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
+import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
@@ -42,21 +41,6 @@ class JobContentProvider
 		«instruction.innerContent»
 	'''
 
-	private static def dispatch CharSequence getInnerContent(InSituJob it)
-	'''
-		«nbCalls.name»++;
-		if («periodVariable.name» >= «lastDumpVariable.name» + «periodValue»)
-		{
-			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-			«FOR v : dumpedVariables.filter(ConnectivityVariable)»
-			«v.type.connectivities.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
-			«ENDFOR»
-			writer.writeFile(«nbCalls.name», «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
-			«lastDumpVariable.name» = «periodVariable.name»;
-		}
-	'''
-
 	private static def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
 		«val itVar = timeLoop.iterationCounter.name»
@@ -66,6 +50,7 @@ class JobContentProvider
 		{
 			«itVar»++;
 			System.out.printf("«timeLoop.indentation»[%5d] t: %5.5f - deltat: %5.5f\n", «itVar», «irModule.timeVariable.name», «irModule.deltatVariable.name»);
+			«IF topLevel»dumpVariables(«itVar»);«ENDIF»
 			«FOR j : innerJobs.sortByAtAndName»
 				«j.codeName»(); // @«j.at»
 			«ENDFOR»

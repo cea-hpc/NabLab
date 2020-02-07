@@ -132,11 +132,11 @@ class Ir2Java extends CodeGenerator
 
 			public void simulate()
 			{
-				System.out.println("Début de l'exécution du module «name»");
+				System.out.println("Start execution of module «name»");
 				«FOR j : jobs.filter[topLevel].sortByAtAndName»
 					«j.codeName»(); // @«j.at»
 				«ENDFOR»
-				System.out.println("Fin de l'exécution du module «name»");
+				System.out.println("End of execution of module «name»");
 			}
 
 			public static void main(String[] args)
@@ -156,6 +156,22 @@ class Ir2Java extends CodeGenerator
 
 				«f.content»
 			«ENDFOR»
+			«IF postProcessingInfo !== null»
+
+			private void dumpVariables(int iteration)
+			{
+				if («postProcessingInfo.periodVariable.name» >= «postProcessingInfo.lastDumpVariable.name» + «postProcessingInfo.periodValue»)
+				{
+					HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
+					HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+					«FOR v : postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable)»
+					«v.type.connectivities.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
+					«ENDFOR»
+					writer.writeFile(iteration, «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
+					«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodVariable.name»;
+				}
+			}
+			«ENDIF»
 		};
 	'''
 

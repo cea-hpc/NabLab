@@ -41,14 +41,13 @@ class TagPersistentVariables implements IrTransformationStep
 
 	override transform(IrModule m)
 	{
-		// Create InSituJob
-		val inSituJob = IrFactory.eINSTANCE.createInSituJob
-		inSituJob.name = 'DumpVariables'
-		inSituJob.periodValue = periodValue
+		// Create PostProcessingInfo instance
+		val ppInfo = IrFactory.eINSTANCE.createPostProcessingInfo
+		ppInfo.periodValue = periodValue
 
 		val periodVariable = getCurrentIrVariable(m, periodVariableName)
 		if (periodVariable === null) return false
-		inSituJob.periodVariable = periodVariable as SimpleVariable
+		ppInfo.periodVariable = periodVariable as SimpleVariable
 
 		for (key : dumpedVariables.keySet)
 		{
@@ -56,32 +55,21 @@ class TagPersistentVariables implements IrTransformationStep
 			if (v !== null) 
 			{
 				v.persistenceName = dumpedVariables.get(key)
-				inSituJob.dumpedVariables += v
+				ppInfo.postProcessedVariables += v
 			}
 		}
-		m.jobs += inSituJob
-
-		// Create a variable to count the number of Calls
-		val f = IrFactory.eINSTANCE
-		val nbCallsVariable = f.createSimpleVariable =>
-		[
-			name = "nbCalls"
-			type = f.createBaseType => [ primitive = PrimitiveType::INT ]
-			defaultValue = f.createIntConstant => [ value = 0 ]
-		]
-		m.variables += nbCallsVariable
-		inSituJob.nbCalls = nbCallsVariable
+		m.postProcessingInfo = ppInfo
 
 		// Create a variable to store the last write time
 		val periodVariableType = (periodVariable as SimpleVariable).type
-		val lastDumpVariable = f.createSimpleVariable =>
+		val lastDumpVariable = IrFactory.eINSTANCE.createSimpleVariable =>
 		[
 			name = "lastDump"
 			type = EcoreUtil::copy(periodVariableType)
 			defaultValue = periodVariableType.primitive.defaultValue
 		]
 		m.variables += lastDumpVariable
-		inSituJob.lastDumpVariable = lastDumpVariable
+		ppInfo.lastDumpVariable = lastDumpVariable
 
 		return true
 	}
@@ -93,11 +81,11 @@ class TagPersistentVariables implements IrTransformationStep
 
 	private def getDefaultValue(PrimitiveType t)
 	{
+		val f =  IrFactory.eINSTANCE
 		switch t
 		{
-			case BOOL: IrFactory.eINSTANCE.createBoolConstant => [ value = false ]
-			case INT: IrFactory.eINSTANCE.createIntConstant => [ value = 0 ]
-			case REAL: IrFactory.eINSTANCE.createRealConstant => [ value = 0.0 ]
+			case BOOL: f.createBoolConstant => [ value = false ]
+			default: f.createMinConstant => [ type = f.createBaseType => [ primitive = t] ]
 		}
 	}
 }

@@ -26,6 +26,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getDeltatVariable <em>Deltat Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getJobs <em>Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getMainTimeLoop <em>Main Time Loop</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getPostProcessingInfo <em>Post Processing Info</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule()
@@ -248,5 +249,27 @@ public interface IrModule extends JobContainer {
 	 * @generated
 	 */
 	void setMainTimeLoop(TimeLoop value);
+
+	/**
+	 * Returns the value of the '<em><b>Post Processing Info</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Post Processing Info</em>' containment reference.
+	 * @see #setPostProcessingInfo(PostProcessingInfo)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_PostProcessingInfo()
+	 * @model containment="true" resolveProxies="true"
+	 * @generated
+	 */
+	PostProcessingInfo getPostProcessingInfo();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getPostProcessingInfo <em>Post Processing Info</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Post Processing Info</em>' containment reference.
+	 * @see #getPostProcessingInfo()
+	 * @generated
+	 */
+	void setPostProcessingInfo(PostProcessingInfo value);
 
 } // IrModule

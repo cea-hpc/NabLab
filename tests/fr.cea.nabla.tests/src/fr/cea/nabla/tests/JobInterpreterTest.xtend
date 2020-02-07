@@ -48,12 +48,6 @@ class JobInterpreterTest
 	}
 
 	@Test
-	def void testInterpreteInSituJob()
-	{
-		//TODO
-	}
-
-	@Test
 	def void testInterpreteTimeLoopJob()
 	{
 		val model = TestUtils::testModuleForSimulation

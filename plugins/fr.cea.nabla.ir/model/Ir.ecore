@@ -49,10 +49,22 @@
         containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="mainTimeLoop" eType="#//TimeLoop"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="postProcessingInfo" eType="#//PostProcessingInfo"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Import" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importedNamespace" unique="false"
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PostProcessingInfo" eSuperTypes="#//IrAnnotable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="postProcessedVariables"
+        upperBound="-1" eType="#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="periodValue" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" defaultValueLiteral="-1.0"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="periodVariable" lowerBound="1"
+        eType="#//SimpleVariable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lastDumpVariable" lowerBound="1"
+        eType="#//SimpleVariable"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeLoop" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -147,18 +159,6 @@
   <eClassifiers xsi:type="ecore:EClass" name="InstructionJob" eSuperTypes="#//Job">
     <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" lowerBound="1"
         eType="#//Instruction" containment="true" resolveProxies="false"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="InSituJob" eSuperTypes="#//Job">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dumpedVariables" upperBound="-1"
-        eType="#//Variable"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="periodValue" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" defaultValueLiteral="-1.0"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="periodVariable" lowerBound="1"
-        eType="#//SimpleVariable"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="nbCalls" lowerBound="1"
-        eType="#//SimpleVariable"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="lastDumpVariable" lowerBound="1"
-        eType="#//SimpleVariable"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeLoopJob" eSuperTypes="#//TimeLoopCopyJob #//JobContainer"/>
   <eClassifiers xsi:type="ecore:EClass" name="TimeLoopCopyJob" abstract="true" eSuperTypes="#//Job">

@@ -10,9 +10,9 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.InSituJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.PostProcessingInfo
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
@@ -23,6 +23,7 @@ import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.JobExtensions.isTopLevel
 import static extension fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
 class JobInterpreter
@@ -39,32 +40,6 @@ class JobInterpreter
 		context.logFinest("Interprete InstructionJob " + name + " @ " + at)
 		val innerContext = new Context(context)
 		interprete(instruction, innerContext)
-	}
-
-	def dispatch void interprete(InSituJob it, Context context)
-	{
-		context.logFinest("Interprete InSituJob " + name + " @ " + at)
-		val irModule = eContainer as IrModule
-		val iteration = context.getInt(nbCalls.name)
-		val time = context.getReal(irModule.timeVariable.name)
-		val period = context.getNumber(periodVariable.name)
-		val lastDump = context.getNumber(lastDumpVariable.name)
-
-		if (period >= lastDump)
-		{
-			val cellVariables = new HashMap<String, double[]>
-			val nodeVariables = new HashMap<String, double[]>
-
-			//TODO deal with linearAlgebra
-			setItemVariables(context, irModule, "cell", cellVariables)
-			setItemVariables(context, irModule, "node", nodeVariables)
-
-			val coordVariable = irModule.getVariableByName(irModule.nodeCoordVariable.name)
-			val coord = (context.getVariableValue(coordVariable) as NV2Real).data
-			val quads = context.meshWrapper.quads
-			writer.writeFile(iteration, time, coord, quads, cellVariables, nodeVariables)
-			context.setVariableValue(lastDumpVariable, new NV0Real(period))
-		}
 	}
 
 	def dispatch void interprete(TimeLoopJob it, Context context)
@@ -84,6 +59,7 @@ class JobInterpreter
 				context.getReal(irModule.timeVariable.name) + " - deltat: " +
 				context.getReal(irModule.deltatVariable.name)
 			)
+			if (it.topLevel) dumpVariables(irModule, iteration, context);
 			for (j : innerJobs.filter[x | x.at > 0].sortBy[at])
 				interprete(j, context)
 			//context.logVariables("After iteration = " + iteration)
@@ -118,9 +94,33 @@ class JobInterpreter
 		}
 	}
 
-	private def setItemVariables(InSituJob it, Context context, IrModule module, String itemName, HashMap<String, double[]> map)
+	def void dumpVariables(IrModule irModule, int iteration, Context context)
 	{
-		for (v : dumpedVariables.filter(ConnectivityVariable).filter(v | v.type.connectivities.head.returnType.type.name == itemName))
+		val time = context.getReal(irModule.timeVariable.name)
+		val ppInfo = irModule.postProcessingInfo
+		val period = context.getNumber(ppInfo.periodVariable.name)
+		val lastDump = context.getNumber(ppInfo.lastDumpVariable.name)
+
+		if (period >= lastDump)
+		{
+			val cellVariables = new HashMap<String, double[]>
+			val nodeVariables = new HashMap<String, double[]>
+
+			//TODO deal with linearAlgebra
+			setItemVariables(ppInfo, context, irModule, "cell", cellVariables)
+			setItemVariables(ppInfo, context, irModule, "node", nodeVariables)
+
+			val coordVariable = irModule.getVariableByName(irModule.nodeCoordVariable.name)
+			val coord = (context.getVariableValue(coordVariable) as NV2Real).data
+			val quads = context.meshWrapper.quads
+			writer.writeFile(iteration, time, coord, quads, cellVariables, nodeVariables)
+			context.setVariableValue(ppInfo.lastDumpVariable, new NV0Real(period))
+		}
+	}
+
+	private def setItemVariables(PostProcessingInfo it, Context context, IrModule module, String itemName, HashMap<String, double[]> map)
+	{
+		for (v : postProcessedVariables.filter(ConnectivityVariable).filter(v | v.type.connectivities.head.returnType.type.name == itemName))
 		{
 			val value = context.getVariableValue(module.getVariableByName(v.name))
 			if (value instanceof NV1Real) map.put(v.persistenceName, value.data)

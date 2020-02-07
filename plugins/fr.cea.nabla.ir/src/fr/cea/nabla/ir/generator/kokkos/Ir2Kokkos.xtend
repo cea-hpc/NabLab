@@ -194,6 +194,27 @@ class Ir2Kokkos extends CodeGenerator
 
 			«f.content»
 		«ENDFOR»
+		«IF postProcessingInfo !== null»
+
+		void dumpVariables(int iteration)
+		{
+			if (!writer.isDisabled() && «postProcessingInfo.periodVariable.name» >= «postProcessingInfo.lastDumpVariable.name» + «postProcessingInfo.periodValue»)
+			{
+				cpu_timer.stop();
+				io_timer.start();
+				std::map<string, double*> cellVariables;
+				std::map<string, double*> nodeVariables;
+				«FOR v : postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable)»
+				«v.type.connectivities.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
+				«ENDFOR»
+				auto quads = mesh->getGeometry()->getQuads();
+				writer.writeFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);
+				«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodVariable.name»;
+				io_timer.stop();
+				cpu_timer.start();
+			}
+		}
+		«ENDIF»
 
 	public:
 		void simulate()

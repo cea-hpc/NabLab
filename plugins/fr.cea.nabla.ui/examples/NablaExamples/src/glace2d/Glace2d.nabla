@@ -99,10 +99,10 @@ Initialize: ∀j∈cells(), {
   	ℝ V_ic = 0.5 * ∑{r∈nodesOfCell(j)}(dot(Cjr_ic{j,r}, X^{n=0}{r}));
   	m{j} = ρ_ic * V_ic; // m is a constant
   	p{j} = p_ic;
+  	ρ{j} = ρ_ic;
 	E^{n}{j} = p_ic / ((γ-1.0) * ρ_ic);
 	uj^{n}{j} = [0.0, 0.0];
 }
-
 
 // *************************************************************
 // * C{j,r} and dependent variables computation 

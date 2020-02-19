@@ -26,6 +26,8 @@ import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
+import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
+import fr.cea.nabla.ir.ir.Function
 
 class ModuleInterpreter
 {
@@ -61,7 +63,13 @@ class ModuleInterpreter
 		jobInterpreter = new JobInterpreter(writer)
 
 		// Compute NeededIds and NeededIndexes for each iterator to spare time during interpretation
-		module.eAllContents.filter(Iterator).forEach[i | context.setNeededIndicesAndNeededIdsInContext(i)]
+		// Compute indexName and resolve external functions for the same reason
+		module.eAllContents.filter(Iterator).forEach[i |
+			context.setNeededIndicesAndNeededIdsInContext(i)
+			context.setIndexName(i)
+		]
+		module.eAllContents.filter(ArgOrVarRefIteratorRef).forEach[i | context.setIndexName(i)]
+		module.eAllContents.filter(Function).filter[f|f.body === null].forEach[f | context.resolveFunction(f)]
 
 		// Interprete constant variables
 		for (v : module.variables.filter(SimpleVariable).filter[const])

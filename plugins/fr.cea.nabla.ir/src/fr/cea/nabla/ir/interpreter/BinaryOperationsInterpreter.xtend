@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
+
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class BinaryOperationsInterpreter
@@ -131,7 +132,7 @@ class BinaryOperationsInterpreter
 	{
 		switch op
 		{
-			case '+': new NV1Real(b.data.map[x | x + a.data]) 
+			case '+': new NV1Real(b.data.map[x | x + a.data])
 			case '*': new NV1Real(b.data.map[x | x * a.data]) 
 			default: null
 		}
@@ -182,9 +183,10 @@ class BinaryOperationsInterpreter
 
 	static def dispatch NablaValue getValueOf(NV1Int a, NV1Int b, String op)
 	{
+		// Optimizing generated code by streamlining switch cases to characters only
+		if (a.size !== b.size) return null
 		switch op
 		{
-			case a.size !== b.size: null
 			case '+': computeValueOf(a, b, [x, y | x + y])
 			case '-': computeValueOf(a, b, [x, y | x - y])
 			case '*': computeValueOf(a, b, [x, y | x * y])
@@ -192,7 +194,7 @@ class BinaryOperationsInterpreter
 			default: null
 		}
 	}
-
+	
 	private static def computeValueOf(NV1Int a, NV1Int b, (int, int)=>int f)
 	{
 		val res = newIntArrayOfSize(a.size)
@@ -203,9 +205,10 @@ class BinaryOperationsInterpreter
 
 	static def dispatch NablaValue getValueOf(NV1Int a, NV1Real b, String op)
 	{
+		// Optimizing generated code by streamlining switch cases to characters only
+		if (a.size !== b.size) return null
 		switch op
 		{
-			case a.size !== b.size: null
 			case '+': computeValueOf(a, b, [x, y | x + y])
 			case '-': computeValueOf(a, b, [x, y | x - y])
 			case '*': computeValueOf(a, b, [x, y | x * y])
@@ -242,10 +245,11 @@ class BinaryOperationsInterpreter
 
 	static def dispatch NablaValue getValueOf(NV1Real a, NV1Int b, String op)
 	{
+		// Optimizing generated code by streamlining switch cases to characters only
+		if (a.size !== b.size) return null
 		switch op
 		{
 			// !! Parameters have been switched to reuse private method defined before
-			case a.size !== b.size: null
 			case '+': computeValueOf(b, a, [x, y | y + x])
 			case '-': computeValueOf(b, a, [x, y | y - x])
 			case '*': computeValueOf(b, a, [x, y | y * x])
@@ -256,9 +260,10 @@ class BinaryOperationsInterpreter
 
 	static def dispatch NablaValue getValueOf(NV1Real a, NV1Real b, String op)
 	{
+		// Optimizing generated code by streamlining switch cases to characters only
+		if (a.size !== b.size) return null
 		switch op
 		{
-			case a.size !== b.size: null
 			case '+': computeValueOf(a, b, [x, y | x + y])
 			case '-': computeValueOf(a, b, [x, y | x - y])
 			case '*': computeValueOf(a, b, [x, y | x * y])
@@ -320,9 +325,10 @@ class BinaryOperationsInterpreter
 
 	static def dispatch NablaValue getValueOf(NV2Int a, NV2Int b, String op)
 	{
+		// Optimizing generated code by streamlining switch cases to characters only
+		if (a.nbRows!==b.nbRows || a.nbCols!==b.nbCols) return null
 		switch op
 		{
-			case a.nbRows!==b.nbRows || a.nbCols!==b.nbCols: null
 			case '+': computeValueOf(a, b, [x, y | x + y])
 			case '-': computeValueOf(a, b, [x, y | x - y])
 			case '*': computeValueOf(a, b, [x, y | x * y])
@@ -368,9 +374,10 @@ class BinaryOperationsInterpreter
 
 	static def dispatch NablaValue getValueOf(NV2Real a, NV2Real b, String op)
 	{
+		// Optimizing generated code by streamlining switch cases to characters only
+		if (a.nbRows!==b.nbRows || a.nbCols!==b.nbCols) return null
 		switch op
 		{
-			case a.nbRows!==b.nbRows || a.nbCols!==b.nbCols: null
 			case '+': computeValueOf(a, b, [x, y | x + y])
 			case '-': computeValueOf(a, b, [x, y | x - y])
 			case '*': computeValueOf(a, b, [x, y | x * y])

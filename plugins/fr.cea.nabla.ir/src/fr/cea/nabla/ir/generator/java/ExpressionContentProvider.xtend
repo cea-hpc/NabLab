@@ -81,7 +81,8 @@ class ExpressionContentProvider
 	{
 		val t = type as BaseType
 		val sizes = t.sizes.filter(SizeTypeInt).map[value]
-		initArray(sizes, value.content)
+		if (sizes.empty) value.content
+		else '''new «type.javaType» «initArray(sizes, value.content)»'''
 	}
 
 	static def dispatch CharSequence getContent(VectorConstant it)

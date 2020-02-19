@@ -183,7 +183,7 @@ private:
 			int jId(jCells);
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					int rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
 					int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
@@ -232,7 +232,7 @@ private:
 			int jId(jCells);
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					int rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
 					int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
@@ -273,7 +273,7 @@ private:
 			int jId(jCells);
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					l(jCells,rNodesOfCellJ) = MathFunctions::norm(C(jCells,rNodesOfCellJ));
 				}
@@ -300,7 +300,7 @@ private:
 			double reduction5 = 0.0;
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					int rId(nodesOfCellJ[rNodesOfCellJ]);
 					int rNodes(rId);
@@ -332,7 +332,7 @@ private:
 			RealArray1D<2> reduction0 = {{0.0, 0.0}};
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					int rId(nodesOfCellJ[rNodesOfCellJ]);
 					int rNodes(rId);
@@ -353,7 +353,7 @@ private:
 			double reduction1 = 0.0;
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					int rId(nodesOfCellJ[rNodesOfCellJ]);
 					int rNodes(rId);
@@ -581,7 +581,7 @@ private:
 			int jId(jCells);
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					Ajr(jCells,rNodesOfCellJ) = ArrayOperations::multiply(((rho(jCells) * c(jCells)) / l(jCells,rNodesOfCellJ)), tensProduct(C(jCells,rNodesOfCellJ), C(jCells,rNodesOfCellJ)));
 				}
@@ -608,7 +608,7 @@ private:
 			double reduction2 = 0.0;
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					reduction2 = reduction2 + (l(jCells,rNodesOfCellJ));
 				}
@@ -636,7 +636,7 @@ private:
 			RealArray2D<2,2> reduction3 = {{{0.0, 0.0}, {0.0, 0.0}}};
 			{
 				auto cellsOfNodeR(mesh->getCellsOfNode(rId));
-				for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.size(); jCellsOfNodeR++)
+				for (size_t jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.size(); jCellsOfNodeR++)
 				{
 					int jId(cellsOfNodeR[jCellsOfNodeR]);
 					int jCells(jId);
@@ -667,7 +667,7 @@ private:
 			RealArray1D<2> reduction4 = {{0.0, 0.0}};
 			{
 				auto cellsOfNodeR(mesh->getCellsOfNode(rId));
-				for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.size(); jCellsOfNodeR++)
+				for (size_t jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.size(); jCellsOfNodeR++)
 				{
 					int jId(cellsOfNodeR[jCellsOfNodeR]);
 					int jCells(jId);
@@ -779,7 +779,7 @@ private:
 			RealArray1D<2> nY = {{0.0, 1.0}};
 			{
 				auto nodesOfFaceF(mesh->getNodesOfFace(fId));
-				for (int rNodesOfFaceF=0; rNodesOfFaceF<nodesOfFaceF.size(); rNodesOfFaceF++)
+				for (size_t rNodesOfFaceF=0; rNodesOfFaceF<nodesOfFaceF.size(); rNodesOfFaceF++)
 				{
 					int rId(nodesOfFaceF[rNodesOfFaceF]);
 					int rNodes(rId);
@@ -843,7 +843,7 @@ private:
 			int jId(jCells);
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					int rId(nodesOfCellJ[rNodesOfCellJ]);
 					int rNodes(rId);
@@ -891,7 +891,7 @@ private:
 			double reduction7 = 0.0;
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					int rId(nodesOfCellJ[rNodesOfCellJ]);
 					int rNodes(rId);
@@ -921,7 +921,7 @@ private:
 			RealArray1D<2> reduction6 = {{0.0, 0.0}};
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
 				{
 					reduction6 = ArrayOperations::plus(reduction6, (F(jCells,rNodesOfCellJ)));
 				}

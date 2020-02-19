@@ -247,7 +247,7 @@ public final class Glace2d
 			int jId = jCells;
 			double rho_ic;
 			double p_ic;
-			double[] reduction0 = {0.0, 0.0};
+			double[] reduction0 = new double[] {0.0, 0.0};
 			{
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
@@ -439,7 +439,7 @@ public final class Glace2d
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
 			int rId = rNodes;
-			double[][] reduction3 = {{0.0, 0.0}, {0.0, 0.0}};
+			double[][] reduction3 = new double[][] {{0.0, 0.0}, {0.0, 0.0}};
 			{
 				int[] cellsOfNodeR = mesh.getCellsOfNode(rId);
 				for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.length; jCellsOfNodeR++)
@@ -464,7 +464,7 @@ public final class Glace2d
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
 			int rId = rNodes;
-			double[] reduction4 = {0.0, 0.0};
+			double[] reduction4 = new double[] {0.0, 0.0};
 			{
 				int[] cellsOfNodeR = mesh.getCellsOfNode(rId);
 				for (int jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.length; jCellsOfNodeR++)
@@ -487,7 +487,7 @@ public final class Glace2d
 	private void computeDt()
 	{
 		double reduction8 = IntStream.range(0, nbCells).boxed().parallel().reduce(
-			Double.MAX_VALUE, 
+			Double.MAX_VALUE,
 			(r, jCells) -> MathFunctions.min(r, deltatj[jCells]),
 			(r1, r2) -> MathFunctions.min(r1, r2)
 		);
@@ -665,7 +665,7 @@ public final class Glace2d
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			int jId = jCells;
-			double[] reduction6 = {0.0, 0.0};
+			double[] reduction6 = new double[] {0.0, 0.0};
 			{
 				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)

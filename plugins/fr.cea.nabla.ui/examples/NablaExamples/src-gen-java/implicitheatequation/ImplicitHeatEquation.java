@@ -17,7 +17,7 @@ public final class ImplicitHeatEquation
 		public final double X_LENGTH = 2.0;
 		public final double Y_LENGTH = 2.0;
 		public final double u0 = 1.0;
-		public final double[] vectOne = {1.0, 1.0};
+		public final double[] vectOne = new double[] {1.0, 1.0};
 		public final int X_EDGE_ELEMS = 40;
 		public final int Y_EDGE_ELEMS = 40;
 		public final double X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
@@ -194,7 +194,7 @@ public final class ImplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			int cId = cCells;
-			double[] reduction0 = {0.0, 0.0};
+			double[] reduction0 = new double[] {0.0, 0.0};
 			{
 				int[] nodesOfCellC = mesh.getNodesOfCell(cId);
 				for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.length; pNodesOfCellC++)
@@ -290,7 +290,7 @@ public final class ImplicitHeatEquation
 	private void computeDeltaTn()
 	{
 		double reduction1 = IntStream.range(0, nbCells).boxed().parallel().reduce(
-			Double.MAX_VALUE, 
+			Double.MAX_VALUE,
 			(r, cCells) -> MathFunctions.min(r, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]),
 			(r1, r2) -> MathFunctions.min(r1, r2)
 		);

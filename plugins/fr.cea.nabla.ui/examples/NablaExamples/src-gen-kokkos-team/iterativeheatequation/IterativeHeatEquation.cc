@@ -159,7 +159,7 @@ private:
 			double reduction3 = 0.0;
 			{
 				auto nodesOfFaceF(mesh->getNodesOfFace(fId));
-				for (int pNodesOfFaceF=0; pNodesOfFaceF<nodesOfFaceF.size(); pNodesOfFaceF++)
+				for (size_t pNodesOfFaceF=0; pNodesOfFaceF<nodesOfFaceF.size(); pNodesOfFaceF++)
 				{
 					int pId(nodesOfFaceF[pNodesOfFaceF]);
 					int pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
@@ -202,7 +202,7 @@ private:
 			double reduction2 = 0.0;
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				for (int pNodesOfCellJ=0; pNodesOfCellJ<nodesOfCellJ.size(); pNodesOfCellJ++)
+				for (size_t pNodesOfCellJ=0; pNodesOfCellJ<nodesOfCellJ.size(); pNodesOfCellJ++)
 				{
 					int pId(nodesOfCellJ[pNodesOfCellJ]);
 					int pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
@@ -253,7 +253,7 @@ private:
 			RealArray1D<2> reduction0 = {{0.0, 0.0}};
 			{
 				auto nodesOfCellC(mesh->getNodesOfCell(cId));
-				for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.size(); pNodesOfCellC++)
+				for (size_t pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.size(); pNodesOfCellC++)
 				{
 					int pId(nodesOfCellC[pNodesOfCellC]);
 					int pNodes(pId);
@@ -294,7 +294,7 @@ private:
 			double reduction6 = 0.0;
 			{
 				auto neighbourCellsC(mesh->getNeighbourCells(cId));
-				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.size(); dNeighbourCellsC++)
+				for (size_t dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.size(); dNeighbourCellsC++)
 				{
 					int dId(neighbourCellsC[dNeighbourCellsC]);
 					int dCells(dId);
@@ -324,7 +324,7 @@ private:
 			double reduction4 = 1.0;
 			{
 				auto cellsOfFaceF(mesh->getCellsOfFace(fId));
-				for (int c1CellsOfFaceF=0; c1CellsOfFaceF<cellsOfFaceF.size(); c1CellsOfFaceF++)
+				for (size_t c1CellsOfFaceF=0; c1CellsOfFaceF<cellsOfFaceF.size(); c1CellsOfFaceF++)
 				{
 					int c1Id(cellsOfFaceF[c1CellsOfFaceF]);
 					int c1Cells(c1Id);
@@ -334,7 +334,7 @@ private:
 			double reduction5 = 0.0;
 			{
 				auto cellsOfFaceF(mesh->getCellsOfFace(fId));
-				for (int c2CellsOfFaceF=0; c2CellsOfFaceF<cellsOfFaceF.size(); c2CellsOfFaceF++)
+				for (size_t c2CellsOfFaceF=0; c2CellsOfFaceF<cellsOfFaceF.size(); c2CellsOfFaceF++)
 				{
 					int c2Id(cellsOfFaceF[c2CellsOfFaceF]);
 					int c2Cells(c2Id);
@@ -500,7 +500,7 @@ private:
 			double alphaDiag = 0.0;
 			{
 				auto neighbourCellsC(mesh->getNeighbourCells(cId));
-				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.size(); dNeighbourCellsC++)
+				for (size_t dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.size(); dNeighbourCellsC++)
 				{
 					int dId(neighbourCellsC[dNeighbourCellsC]);
 					int dCells(dId);

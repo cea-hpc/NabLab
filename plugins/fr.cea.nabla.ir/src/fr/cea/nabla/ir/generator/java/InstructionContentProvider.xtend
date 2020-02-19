@@ -27,6 +27,7 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.SpaceIterationBlock
 import fr.cea.nabla.ir.ir.VarDefinition
 
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
@@ -143,8 +144,17 @@ class InstructionContentProvider
 
 	private static def getCall(Reduction it, String a, String b)
 	{
-		if (operator) a + ' ' + name + ' ' + b
-		else getCodeName('.') + '(' + a + ', ' + b + ')'
+		if (operator)
+		{
+			if (returnType.scalar && collectionType.scalar)
+				'''«a» «name» «b»'''
+			else
+				'''ArrayOperations.«name.operatorName»(«a», «b»)'''
+		}
+		else
+		{
+			'''«getCodeName('.')»(«a», «b»)'''
+		}
 	}
 
 	private static def dispatch getSequentialContent(SpaceIterationBlock it, Loop l)

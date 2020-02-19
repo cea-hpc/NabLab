@@ -121,7 +121,7 @@ class Ir2Kokkos extends CodeGenerator
 
 		// Global Variables
 		«val globals = variables.filter(SimpleVariable).filter[!const]»
-		«val globalsByType = globals.groupBy[type.primitive.cppType]»
+		«val globalsByType = globals.groupBy[type.cppType]»
 		«FOR type : globalsByType.keySet»
 		«type» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 		«ENDFOR»

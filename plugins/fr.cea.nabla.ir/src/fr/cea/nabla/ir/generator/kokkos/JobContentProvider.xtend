@@ -19,6 +19,7 @@ import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import org.eclipse.xtend.lib.annotations.Accessors
 
+import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
@@ -63,7 +64,7 @@ abstract class JobContentProvider
 			cpu_timer.start();
 			«ENDIF»
 			«itVar»++;
-			«IF topLevel»dumpVariables(«itVar»);«ENDIF»
+			«IF topLevel && irModule.postProcessingInfo !== null»dumpVariables(«itVar»);«ENDIF»
 			«traceContentProvider.getBeginOfLoopTrace(itVar, timeVarName, isTopLevel)»
 
 			«innerJobs.jobCallsContent»

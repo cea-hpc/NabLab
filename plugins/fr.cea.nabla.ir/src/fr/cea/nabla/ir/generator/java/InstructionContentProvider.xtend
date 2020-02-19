@@ -102,7 +102,7 @@ class InstructionContentProvider
 	private static def dispatch CharSequence getContent(ReductionInstruction it, SpaceIterationBlock b) 
 	'''
 		«result.javaType» «result.name» = IntStream.range(0, «b.range.container.connectivity.nbElems»).boxed().parallel().reduce(
-			«result.defaultValue.content», 
+			«result.defaultValue.content»,
 			«IF innerReductions.empty»
 			(r, «b.range.indexName») -> «getCall(reduction, 'r', arg.content.toString)»,
 			(r1, r2) -> «getCall(reduction, 'r1', 'r2')»

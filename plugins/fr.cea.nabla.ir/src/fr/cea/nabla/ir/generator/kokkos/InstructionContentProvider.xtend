@@ -156,7 +156,7 @@ abstract class InstructionContentProvider
 	'''
 		{
 			auto «range.containerName»(«range.accessor»);
-			for (int «range.indexName»=0; «range.indexName»<«range.containerName».size(); «range.indexName»++)
+			for (size_t «range.indexName»=0; «range.indexName»<«range.containerName».size(); «range.indexName»++)
 			{
 				«defineIndices»
 				«l.body.innerContent»

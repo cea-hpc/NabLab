@@ -101,17 +101,17 @@ public final class HeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(j1Cells -> 
 		{
-			int j1Id = j1Cells;
+			final int j1Id = j1Cells;
 			double reduction3 = 0.0;
 			{
-				int[] neighbourCellsJ1 = mesh.getNeighbourCells(j1Id);
+				final int[] neighbourCellsJ1 = mesh.getNeighbourCells(j1Id);
 				for (int j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<neighbourCellsJ1.length; j2NeighbourCellsJ1++)
 				{
-					int j2Id = neighbourCellsJ1[j2NeighbourCellsJ1];
-					int j2Cells = j2Id;
-					int cfCommonFaceJ1J2 = mesh.getCommonFace(j1Id, j2Id);
-					int cfId = cfCommonFaceJ1J2;
-					int cfFaces = cfId;
+					final int j2Id = neighbourCellsJ1[j2NeighbourCellsJ1];
+					final int j2Cells = j2Id;
+					final int cfCommonFaceJ1J2 = mesh.getCommonFace(j1Id, j2Id);
+					final int cfId = cfCommonFaceJ1J2;
+					final int cfFaces = cfId;
 					reduction3 = reduction3 + ((u_n[j2Cells] - u_n[j1Cells]) / MathFunctions.norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
 				}
 			}
@@ -128,16 +128,16 @@ public final class HeatEquation
 	{
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
-			int fId = fFaces;
+			final int fId = fFaces;
 			double reduction2 = 0.0;
 			{
-				int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
+				final int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
 				for (int rNodesOfFaceF=0; rNodesOfFaceF<nodesOfFaceF.length; rNodesOfFaceF++)
 				{
-					int rId = nodesOfFaceF[rNodesOfFaceF];
-					int rPlus1Id = nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
-					int rNodes = rId;
-					int rPlus1Nodes = rPlus1Id;
+					final int rId = nodesOfFaceF[rNodesOfFaceF];
+					final int rPlus1Id = nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
+					final int rNodes = rId;
+					final int rPlus1Nodes = rPlus1Id;
 					reduction2 = reduction2 + (MathFunctions.norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
 				}
 			}
@@ -164,16 +164,16 @@ public final class HeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			int jId = jCells;
+			final int jId = jCells;
 			double reduction1 = 0.0;
 			{
-				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
+				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
 				{
-					int rId = nodesOfCellJ[rNodesOfCellJ];
-					int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
-					int rNodes = rId;
-					int rPlus1Nodes = rPlus1Id;
+					final int rId = nodesOfCellJ[rNodesOfCellJ];
+					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
+					final int rNodes = rId;
+					final int rPlus1Nodes = rPlus1Id;
 					reduction1 = reduction1 + (MathFunctions.det(X[rNodes], X[rPlus1Nodes]));
 				}
 			}
@@ -190,14 +190,14 @@ public final class HeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			int jId = jCells;
+			final int jId = jCells;
 			double[] reduction0 = new double[] {0.0, 0.0};
 			{
-				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
+				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
 				{
-					int rId = nodesOfCellJ[rNodesOfCellJ];
-					int rNodes = rId;
+					final int rId = nodesOfCellJ[rNodesOfCellJ];
+					final int rNodes = rId;
 					reduction0 = ArrayOperations.plus(reduction0, (X[rNodes]));
 				}
 			}

@@ -129,7 +129,7 @@ ComputeBr: ∀r∈nodes(), b{r} = ∑{j∈cellsOfNode(r)}(p{j}*C{j,r} + matVectP
 ComputeMt: ∀r∈innerNodes(), Mt{r} = Ar{r};
 ComputeBt: ∀r∈innerNodes(), bt{r} = b{r};
 
-OuterFacesComputations: ∀f∈outerFaces(), {
+ComputeBoundaryConditions: ∀f∈outerFaces(), {
 	const ℝ epsilon = 1.0e-10;
 	ℝ[2,2] I = [ [1.0, 0.0], [0.0, 1.0] ];
 	ℝ X_MIN = 0.0;

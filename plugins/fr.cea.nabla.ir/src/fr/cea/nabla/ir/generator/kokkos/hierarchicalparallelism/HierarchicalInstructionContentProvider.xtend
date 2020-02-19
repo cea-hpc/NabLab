@@ -31,32 +31,36 @@ class HierarchicalInstructionContentProvider extends InstructionContentProvider
 
 	private def dispatch getBlockParallelContent(SpaceIterationBlock it, Loop l)
 	'''
-		const auto team_work(computeTeamWorkRange(team_member, «range.container.connectivity.nbElems»));
-		if (!team_work.second)
-			return;
-
-		«IF !range.container.connectivity.indexEqualId»auto «range.containerName»(«range.accessor»);«ENDIF»
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& «range.indexName»Team)
 		{
-			int «range.indexName»(«range.indexName»Team + team_work.first);
-			«defineIndices»
-			«l.body.innerContent»
-		});
+			const auto team_work(computeTeamWorkRange(team_member, «range.container.connectivity.nbElems»));
+			if (!team_work.second)
+				return;
+
+			«IF !range.container.connectivity.indexEqualId»auto «range.containerName»(«range.accessor»);«ENDIF»
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& «range.indexName»Team)
+			{
+				int «range.indexName»(«range.indexName»Team + team_work.first);
+				«defineIndices»
+				«l.body.innerContent»
+			});
+		}
 	'''
 
 	private def dispatch getBlockParallelContent(IntervalIterationBlock it, Loop l)
 	'''
-		const int from = «from.content»;
-		const int to = «to.content»«IF toIncluded»+1«ENDIF»;
-		const int nbElems = from-to;
-		const auto team_work(computeTeamWorkRange(team_member, nbElems));
-		if (!team_work.second)
-			return;
-
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& «index.name»Team)
 		{
-			int «index.name»(«index.name»Team + team_work.first);
-			«l.body.innerContent»
-		});
+			const int from = «from.content»;
+			const int to = «to.content»«IF toIncluded»+1«ENDIF»;
+			const int nbElems = from-to;
+			const auto team_work(computeTeamWorkRange(team_member, nbElems));
+			if (!team_work.second)
+				return;
+
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& «index.name»Team)
+			{
+				int «index.name»(«index.name»Team + team_work.first);
+				«l.body.innerContent»
+			});
+		}
 	'''
 }

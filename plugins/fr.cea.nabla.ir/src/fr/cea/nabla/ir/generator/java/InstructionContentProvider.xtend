@@ -75,11 +75,13 @@ class InstructionContentProvider
 
 	static def dispatch CharSequence getContent(If it) 
 	'''
-		if («condition.content») 
-		«IF !(thenInstruction instanceof InstructionBlock)»	«ENDIF»«thenInstruction.content»
+		if («condition.content»)
+		«val thenContent = thenInstruction.content»
+		«IF !(thenContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«thenContent»
 		«IF (elseInstruction !== null)»
-		else 
-		«IF !(elseInstruction instanceof InstructionBlock)»	«ENDIF»«elseInstruction.content»
+			«val elseContent = elseInstruction.content»
+			else
+			«IF !(elseContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«elseContent»
 		«ENDIF»
 	'''
 
@@ -102,13 +104,15 @@ class InstructionContentProvider
 
 	private static def dispatch CharSequence getContent(ReductionInstruction it, SpaceIterationBlock b) 
 	'''
-		«result.javaType» «result.name» = IntStream.range(0, «b.range.container.connectivity.nbElems»).boxed().parallel().reduce(
+		«result.javaType» «result.name» = IntStream.range(0, «b.range.container.connectivity.nbElems»).boxed().parallel().reduce
+		(
 			«result.defaultValue.content»,
 			«IF innerReductions.empty»
 			(r, «b.range.indexName») -> «getCall(reduction, 'r', arg.content.toString)»,
 			(r1, r2) -> «getCall(reduction, 'r1', 'r2')»
 			«ELSE»
-			(r, «b.range.indexName») -> {
+			(r, «b.range.indexName») ->
+			{
 				«b.defineIndices»
 				«FOR innerReduction : innerReductions»
 				«innerReduction.content»
@@ -122,24 +126,28 @@ class InstructionContentProvider
 
 	private static def dispatch CharSequence getContent(ReductionInstruction it, IntervalIterationBlock b) 
 	'''
-		final int from = «b.from.content»;
-		final int to = «b.to.content»«IF b.toIncluded»+1«ENDIF»;
-		final int nbElems = from-to;
-		«result.javaType» «result.name» = IntStream.range(from, nbElems).boxed().parallel().reduce(
-			«result.defaultValue.content», 
-			«IF innerReductions.empty»
-			(r, «b.index.name») -> «getCall(reduction, 'r', arg.content.toString)»,
-			(r1, r2) -> «getCall(reduction, 'r1', 'r2')»
-			«ELSE»
-			(r, «b.index.name») -> {
-				«FOR innerReduction : innerReductions»
-				«innerReduction.content»
-				«ENDFOR»
-				return «getCall(reduction, 'r', arg.content.toString)»;
-			},
-			(r1, r2) -> «getCall(reduction, 'r1', 'r2')»
-			«ENDIF»
-		);
+		{
+			final int from = «b.from.content»;
+			final int to = «b.to.content»«IF b.toIncluded»+1«ENDIF»;
+			final int nbElems = from-to;
+			«result.javaType» «result.name» = IntStream.range(from, nbElems).boxed().parallel().reduce
+			(
+				«result.defaultValue.content»,
+				«IF innerReductions.empty»
+				(r, «b.index.name») -> «getCall(reduction, 'r', arg.content.toString)»,
+				(r1, r2) -> «getCall(reduction, 'r1', 'r2')»
+				«ELSE»
+				(r, «b.index.name») ->
+				{
+					«FOR innerReduction : innerReductions»
+					«innerReduction.content»
+					«ENDFOR»
+					return «getCall(reduction, 'r', arg.content.toString)»;
+				},
+				(r1, r2) -> «getCall(reduction, 'r1', 'r2')»
+				«ENDIF»
+			);
+		}
 	'''
 
 	private static def getCall(Reduction it, String a, String b)
@@ -160,7 +168,7 @@ class InstructionContentProvider
 	private static def dispatch getSequentialContent(SpaceIterationBlock it, Loop l)
 	'''
 		{
-			int[] «range.containerName» = «range.accessor»;
+			final int[] «range.containerName» = «range.accessor»;
 			for (int «range.indexName»=0; «range.indexName»<«range.containerName».length; «range.indexName»++)
 			{
 				«defineIndices»
@@ -177,7 +185,18 @@ class InstructionContentProvider
 
 	private static def dispatch getParallelContent(SpaceIterationBlock it, Loop l)
 	'''
-		«IF !range.container.connectivity.indexEqualId»int[] «range.containerName» = «range.accessor»;«ENDIF»
+		«IF !range.container.connectivity.indexEqualId»
+		{
+			final int[] «range.containerName» = «range.accessor»;
+			«getInternalParallelContent(l)»
+		}
+		«ELSE»
+			«getInternalParallelContent(l)»
+		«ENDIF»
+	'''
+
+	private static def getInternalParallelContent(SpaceIterationBlock it, Loop l)
+	'''
 		IntStream.range(0, «range.container.connectivity.nbElems»).parallel().forEach(«range.indexName» -> 
 		{
 			«defineIndices»
@@ -187,13 +206,15 @@ class InstructionContentProvider
 
 	private static def dispatch getParallelContent(IntervalIterationBlock it, Loop l)
 	'''
-		final int from = «from.content»;
-		final int to = «to.content»«IF toIncluded»+1«ENDIF»;
-		final int nbElems = from-to;
-		IntStream.range(from, nbElems).parallel().forEach(«index.name» -> 
 		{
-			«l.body.innerContent»
-		});
+			final int from = «from.content»;
+			final int to = «to.content»«IF toIncluded»+1«ENDIF»;
+			final int nbElems = from-to;
+			IntStream.range(from, nbElems).parallel().forEach(«index.name» ->
+			{
+				«l.body.innerContent»
+			});
+		}
 	'''
 
 	/** Define all needed ids and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
@@ -201,7 +222,7 @@ class InstructionContentProvider
 	'''
 		«range.defineIndices»
 		«FOR s : singletons»
-			int «s.indexName» = «s.accessor»;
+			final int «s.indexName» = «s.accessor»;
 			«s.defineIndices»
 		«ENDFOR»
 	'''
@@ -209,10 +230,10 @@ class InstructionContentProvider
 	private static def defineIndices(Iterator it)
 	'''
 		«FOR neededId : neededIds»
-			int «neededId.idName» = «neededId.indexToId»;
+			final int «neededId.idName» = «neededId.indexToId»;
 		«ENDFOR»
 		«FOR neededIndex : neededIndices»
-			int «neededIndex.indexName» = «neededIndex.idToIndex»;
+			final int «neededIndex.indexName» = «neededIndex.idToIndex»;
 		«ENDFOR»
 	'''
 

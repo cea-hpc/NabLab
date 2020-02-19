@@ -287,7 +287,7 @@ private:
 				rho_ic = options->option_rho_ini_zg;
 				p_ic = options->option_p_ini_zg;
 			}
-			else 
+			else
 			{
 				rho_ic = options->option_rho_ini_zd;
 				p_ic = options->option_p_ini_zd;
@@ -357,10 +357,10 @@ private:
 			computeAr(); // @7.0
 			computeBr(); // @7.0
 			computeDt(); // @7.0
+			computeBoundaryConditions(); // @8.0
 			computeBt(); // @8.0
 			computeMt(); // @8.0
 			computeTn(); // @8.0
-			outerFacesComputations(); // @8.0
 			computeU(); // @9.0
 			computeFjr(); // @10.0
 			computeXn(); // @10.0
@@ -545,6 +545,56 @@ private:
 	}
 	
 	/**
+	 * Job ComputeBoundaryConditions called @8.0 in executeTimeLoopN method.
+	 * In variables: Ar, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b
+	 * Out variables: Mt, bt
+	 */
+	KOKKOS_INLINE_FUNCTION
+	void computeBoundaryConditions() noexcept
+	{
+		{
+			auto outerFaces(mesh->getOuterFaces());
+			Kokkos::parallel_for("ComputeBoundaryConditions", nbOuterFaces, KOKKOS_LAMBDA(const int& fOuterFaces)
+			{
+				int fId(outerFaces[fOuterFaces]);
+				const double epsilon = 1.0E-10;
+				RealArray2D<2,2> I = {{{{1.0, 0.0}}, {{0.0, 1.0}}}};
+				double X_MIN = 0.0;
+				double X_MAX = options->X_EDGE_ELEMS * options->X_EDGE_LENGTH;
+				double Y_MIN = 0.0;
+				double Y_MAX = options->Y_EDGE_ELEMS * options->Y_EDGE_LENGTH;
+				RealArray1D<2> nY = {{0.0, 1.0}};
+				{
+					auto nodesOfFaceF(mesh->getNodesOfFace(fId));
+					for (size_t rNodesOfFaceF=0; rNodesOfFaceF<nodesOfFaceF.size(); rNodesOfFaceF++)
+					{
+						int rId(nodesOfFaceF[rNodesOfFaceF]);
+						int rNodes(rId);
+						if ((X_n(rNodes)[1] - Y_MIN < epsilon) || (X_n(rNodes)[1] - Y_MAX < epsilon)) 
+						{
+							double sign = 0.0;
+							if (X_n(rNodes)[1] - Y_MIN < epsilon) 
+								sign = -1.0;
+							else
+								sign = 1.0;
+							RealArray1D<2> N = ArrayOperations::multiply(sign, nY);
+							RealArray2D<2,2> NxN = tensProduct(N, N);
+							RealArray2D<2,2> IcP = ArrayOperations::minus(I, NxN);
+							bt(rNodes) = MathFunctions::matVectProduct(IcP, b(rNodes));
+							Mt(rNodes) = ArrayOperations::plus(ArrayOperations::multiply(IcP, (ArrayOperations::multiply(Ar(rNodes), IcP))), ArrayOperations::multiply(NxN, trace(Ar(rNodes))));
+						}
+						if ((MathFunctions::fabs(X_n(rNodes)[0] - X_MIN) < epsilon) || ((MathFunctions::fabs(X_n(rNodes)[0] - X_MAX) < epsilon))) 
+						{
+							Mt(rNodes) = I;
+							bt(rNodes) = {{0.0, 0.0}};
+						}
+					}
+				}
+			});
+		}
+	}
+	
+	/**
 	 * Job ComputeBt called @8.0 in executeTimeLoopN method.
 	 * In variables: b
 	 * Out variables: bt
@@ -552,13 +602,15 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeBt() noexcept
 	{
-		auto innerNodes(mesh->getInnerNodes());
-		Kokkos::parallel_for("ComputeBt", nbInnerNodes, KOKKOS_LAMBDA(const int& rInnerNodes)
 		{
-			int rId(innerNodes[rInnerNodes]);
-			int rNodes(rId);
-			bt(rNodes) = b(rNodes);
-		});
+			auto innerNodes(mesh->getInnerNodes());
+			Kokkos::parallel_for("ComputeBt", nbInnerNodes, KOKKOS_LAMBDA(const int& rInnerNodes)
+			{
+				int rId(innerNodes[rInnerNodes]);
+				int rNodes(rId);
+				bt(rNodes) = b(rNodes);
+			});
+		}
 	}
 	
 	/**
@@ -569,13 +621,15 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeMt() noexcept
 	{
-		auto innerNodes(mesh->getInnerNodes());
-		Kokkos::parallel_for("ComputeMt", nbInnerNodes, KOKKOS_LAMBDA(const int& rInnerNodes)
 		{
-			int rId(innerNodes[rInnerNodes]);
-			int rNodes(rId);
-			Mt(rNodes) = Ar(rNodes);
-		});
+			auto innerNodes(mesh->getInnerNodes());
+			Kokkos::parallel_for("ComputeMt", nbInnerNodes, KOKKOS_LAMBDA(const int& rInnerNodes)
+			{
+				int rId(innerNodes[rInnerNodes]);
+				int rNodes(rId);
+				Mt(rNodes) = Ar(rNodes);
+			});
+		}
 	}
 	
 	/**
@@ -587,54 +641,6 @@ private:
 	void computeTn() noexcept
 	{
 		t_nplus1 = t_n + deltat_nplus1;
-	}
-	
-	/**
-	 * Job OuterFacesComputations called @8.0 in executeTimeLoopN method.
-	 * In variables: Ar, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b
-	 * Out variables: Mt, bt
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void outerFacesComputations() noexcept
-	{
-		auto outerFaces(mesh->getOuterFaces());
-		Kokkos::parallel_for("OuterFacesComputations", nbOuterFaces, KOKKOS_LAMBDA(const int& fOuterFaces)
-		{
-			int fId(outerFaces[fOuterFaces]);
-			const double epsilon = 1.0E-10;
-			RealArray2D<2,2> I = {{{{1.0, 0.0}}, {{0.0, 1.0}}}};
-			double X_MIN = 0.0;
-			double X_MAX = options->X_EDGE_ELEMS * options->X_EDGE_LENGTH;
-			double Y_MIN = 0.0;
-			double Y_MAX = options->Y_EDGE_ELEMS * options->Y_EDGE_LENGTH;
-			RealArray1D<2> nY = {{0.0, 1.0}};
-			{
-				auto nodesOfFaceF(mesh->getNodesOfFace(fId));
-				for (size_t rNodesOfFaceF=0; rNodesOfFaceF<nodesOfFaceF.size(); rNodesOfFaceF++)
-				{
-					int rId(nodesOfFaceF[rNodesOfFaceF]);
-					int rNodes(rId);
-					if ((X_n(rNodes)[1] - Y_MIN < epsilon) || (X_n(rNodes)[1] - Y_MAX < epsilon)) 
-					{
-						double sign = 0.0;
-						if (X_n(rNodes)[1] - Y_MIN < epsilon) 
-							sign = -1.0;
-						else 
-							sign = 1.0;
-						RealArray1D<2> N = ArrayOperations::multiply(sign, nY);
-						RealArray2D<2,2> NxN = tensProduct(N, N);
-						RealArray2D<2,2> IcP = ArrayOperations::minus(I, NxN);
-						bt(rNodes) = MathFunctions::matVectProduct(IcP, b(rNodes));
-						Mt(rNodes) = ArrayOperations::plus(ArrayOperations::multiply(IcP, (ArrayOperations::multiply(Ar(rNodes), IcP))), ArrayOperations::multiply(NxN, trace(Ar(rNodes))));
-					}
-					if ((MathFunctions::fabs(X_n(rNodes)[0] - X_MIN) < epsilon) || ((MathFunctions::fabs(X_n(rNodes)[0] - X_MAX) < epsilon))) 
-					{
-						Mt(rNodes) = I;
-						bt(rNodes) = {{0.0, 0.0}};
-					}
-				}
-			}
-		});
 	}
 	
 	/**
@@ -795,11 +801,14 @@ public:
 		std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
 			<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
 		
-		if (Kokkos::hwloc::available()) {
+		if (Kokkos::hwloc::available())
+		{
 			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_numa_count()
 				<< __RESET__ << ", Cores/NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_cores_per_numa()
 				<< __RESET__ << ", Threads/Core=" << __BOLD__ << Kokkos::hwloc::get_available_threads_per_core() << __RESET__ << std::endl;
-		} else {
+		}
+		else
+		{
 			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 		}
 		
@@ -823,18 +832,23 @@ int main(int argc, char* argv[])
 	Kokkos::initialize(argc, argv);
 	auto o = new Glace2d::Options();
 	string output;
-	if (argc == 5) {
+	if (argc == 5)
+	{
 		o->X_EDGE_ELEMS = std::atoi(argv[1]);
 		o->Y_EDGE_ELEMS = std::atoi(argv[2]);
 		o->X_EDGE_LENGTH = std::atof(argv[3]);
 		o->Y_EDGE_LENGTH = std::atof(argv[4]);
-	} else if (argc == 6) {
+	}
+	else if (argc == 6)
+	{
 		o->X_EDGE_ELEMS = std::atoi(argv[1]);
 		o->Y_EDGE_ELEMS = std::atoi(argv[2]);
 		o->X_EDGE_LENGTH = std::atof(argv[3]);
 		o->Y_EDGE_LENGTH = std::atof(argv[4]);
 		output = argv[5];
-	} else if (argc != 1) {
+	}
+	else if (argc != 1)
+	{
 		std::cerr << "[ERROR] Wrong number of arguments. Expecting 4 or 5 args: X Y Xlength Ylength (output)." << std::endl;
 		std::cerr << "(X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
 	}

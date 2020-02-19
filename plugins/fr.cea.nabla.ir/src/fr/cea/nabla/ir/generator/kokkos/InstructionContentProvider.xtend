@@ -75,10 +75,12 @@ abstract class InstructionContentProvider
 	def dispatch CharSequence getContent(If it) 
 	'''
 		if («condition.content») 
-		«IF !(thenInstruction instanceof InstructionBlock)»	«ENDIF»«thenInstruction.content»
+		«val thenContent = thenInstruction.content»
+		«IF !(thenContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«thenContent»
 		«IF (elseInstruction !== null)»
-		else 
-		«IF !(elseInstruction instanceof InstructionBlock)»	«ENDIF»«elseInstruction.content»
+			«val elseContent = elseInstruction.content»
+			else
+			«IF !(elseContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«elseContent»
 		«ENDIF»
 	'''
 
@@ -121,19 +123,21 @@ abstract class InstructionContentProvider
 
 	private def dispatch CharSequence getContent(ReductionInstruction it, IntervalIterationBlock b) 
 	'''
-		const int from = «b.from.content»;
-		const int to = «b.to.content»«IF b.toIncluded»+1«ENDIF»;
-		const int nbElems = from-to;
-		«result.cppType» «result.name»(«result.defaultValue.content»);
 		{
-			Kokkos::«reduction.kokkosName»<«result.cppType»> reducer(«result.name»);
-			«getHeader(it, "nbElems", b.index.name)»
+			const int from = «b.from.content»;
+			const int to = «b.to.content»«IF b.toIncluded»+1«ENDIF»;
+			const int nbElems = from-to;
+			«result.cppType» «result.name»(«result.defaultValue.content»);
 			{
-				«FOR innerReduction : innerReductions»
-				«innerReduction.content»
-				«ENDFOR»
-				reducer.join(x, «arg.content»);
-			}, reducer);
+				Kokkos::«reduction.kokkosName»<«result.cppType»> reducer(«result.name»);
+				«getHeader(it, "nbElems", b.index.name)»
+				{
+					«FOR innerReduction : innerReductions»
+					«innerReduction.content»
+					«ENDFOR»
+					reducer.join(x, «arg.content»);
+				}, reducer);
+			}
 		}
 	'''
 

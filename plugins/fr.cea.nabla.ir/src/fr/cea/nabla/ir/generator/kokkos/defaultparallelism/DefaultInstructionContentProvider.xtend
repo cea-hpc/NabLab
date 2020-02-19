@@ -31,7 +31,18 @@ class DefaultInstructionContentProvider extends InstructionContentProvider
 
 	private def dispatch getParallelContent(SpaceIterationBlock it, Loop l, String kokkosName)
 	'''
-		«IF !range.container.connectivity.indexEqualId»auto «range.containerName»(«range.accessor»);«ENDIF»
+		«IF !range.container.connectivity.indexEqualId»
+		{
+			auto «range.containerName»(«range.accessor»);
+			«getInternalParallelContent(l, kokkosName)»
+		}
+		«ELSE»
+			«getInternalParallelContent(l, kokkosName)»
+		«ENDIF»
+	'''
+
+	private def getInternalParallelContent(SpaceIterationBlock it, Loop l, String kokkosName)
+	'''
 		Kokkos::parallel_for(«IF kokkosName !== null»"«kokkosName»", «ENDIF»«range.container.connectivity.nbElems», KOKKOS_LAMBDA(const int& «range.indexName»)
 		{
 			«defineIndices»
@@ -41,12 +52,14 @@ class DefaultInstructionContentProvider extends InstructionContentProvider
 
 	private def dispatch getParallelContent(IntervalIterationBlock it, Loop l, String kokkosName)
 	'''
-		const int from = «from.content»;
-		const int to = «to.content»«IF toIncluded»+1«ENDIF»;
-		const int nbElems = from-to;
-		Kokkos::parallel_for(«IF kokkosName !== null»«kokkosName», «ENDIF»nbElems, KOKKOS_LAMBDA(const int& «index.name»)
 		{
-			«l.body.innerContent»
-		});
+			const int from = «from.content»;
+			const int to = «to.content»«IF toIncluded»+1«ENDIF»;
+			const int nbElems = from-to;
+			Kokkos::parallel_for(«IF kokkosName !== null»«kokkosName», «ENDIF»nbElems, KOKKOS_LAMBDA(const int& «index.name»)
+			{
+				«l.body.innerContent»
+			});
+		}
 	'''
 }

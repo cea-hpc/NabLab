@@ -111,16 +111,16 @@ public final class ExplicitHeatEquation
 	{
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
-			int fId = fFaces;
+			final int fId = fFaces;
 			double reduction3 = 0.0;
 			{
-				int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
+				final int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
 				for (int pNodesOfFaceF=0; pNodesOfFaceF<nodesOfFaceF.length; pNodesOfFaceF++)
 				{
-					int pId = nodesOfFaceF[pNodesOfFaceF];
-					int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
-					int pNodes = pId;
-					int pPlus1Nodes = pPlus1Id;
+					final int pId = nodesOfFaceF[pNodesOfFaceF];
+					final int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
+					final int pNodes = pId;
+					final int pPlus1Nodes = pPlus1Id;
 					reduction3 = reduction3 + (MathFunctions.norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
 				}
 			}
@@ -147,16 +147,16 @@ public final class ExplicitHeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			int jId = jCells;
+			final int jId = jCells;
 			double reduction2 = 0.0;
 			{
-				int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
+				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				for (int pNodesOfCellJ=0; pNodesOfCellJ<nodesOfCellJ.length; pNodesOfCellJ++)
 				{
-					int pId = nodesOfCellJ[pNodesOfCellJ];
-					int pPlus1Id = nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
-					int pNodes = pId;
-					int pPlus1Nodes = pPlus1Id;
+					final int pId = nodesOfCellJ[pNodesOfCellJ];
+					final int pPlus1Id = nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
+					final int pNodes = pId;
+					final int pPlus1Nodes = pPlus1Id;
 					reduction2 = reduction2 + (MathFunctions.det(X[pNodes], X[pPlus1Nodes]));
 				}
 			}
@@ -186,14 +186,14 @@ public final class ExplicitHeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			int cId = cCells;
+			final int cId = cCells;
 			double[] reduction0 = new double[] {0.0, 0.0};
 			{
-				int[] nodesOfCellC = mesh.getNodesOfCell(cId);
+				final int[] nodesOfCellC = mesh.getNodesOfCell(cId);
 				for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.length; pNodesOfCellC++)
 				{
-					int pId = nodesOfCellC[pNodesOfCellC];
-					int pNodes = pId;
+					final int pId = nodesOfCellC[pNodesOfCellC];
+					final int pNodes = pId;
 					reduction0 = ArrayOperations.plus(reduction0, (X[pNodes]));
 				}
 			}
@@ -210,14 +210,14 @@ public final class ExplicitHeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			int cId = cCells;
+			final int cId = cCells;
 			double reduction6 = 0.0;
 			{
-				int[] neighbourCellsC = mesh.getNeighbourCells(cId);
+				final int[] neighbourCellsC = mesh.getNeighbourCells(cId);
 				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.length; dNeighbourCellsC++)
 				{
-					int dId = neighbourCellsC[dNeighbourCellsC];
-					int dCells = dId;
+					final int dId = neighbourCellsC[dNeighbourCellsC];
+					final int dCells = dId;
 					reduction6 = reduction6 + (alpha[cCells][dCells] * u_n[dCells]);
 				}
 			}
@@ -234,24 +234,24 @@ public final class ExplicitHeatEquation
 	{
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
-			int fId = fFaces;
+			final int fId = fFaces;
 			double reduction4 = 1.0;
 			{
-				int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
+				final int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				for (int c1CellsOfFaceF=0; c1CellsOfFaceF<cellsOfFaceF.length; c1CellsOfFaceF++)
 				{
-					int c1Id = cellsOfFaceF[c1CellsOfFaceF];
-					int c1Cells = c1Id;
+					final int c1Id = cellsOfFaceF[c1CellsOfFaceF];
+					final int c1Cells = c1Id;
 					reduction4 = reduction4 * (D[c1Cells]);
 				}
 			}
 			double reduction5 = 0.0;
 			{
-				int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
+				final int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				for (int c2CellsOfFaceF=0; c2CellsOfFaceF<cellsOfFaceF.length; c2CellsOfFaceF++)
 				{
-					int c2Id = cellsOfFaceF[c2CellsOfFaceF];
-					int c2Cells = c2Id;
+					final int c2Id = cellsOfFaceF[c2CellsOfFaceF];
+					final int c2Cells = c2Id;
 					reduction5 = reduction5 + (D[c2Cells]);
 				}
 			}
@@ -268,9 +268,9 @@ public final class ExplicitHeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			if (MathFunctions.norm(ArrayOperations.minus(Xc[cCells], options.vectOne)) < 0.5) 
+			if (MathFunctions.norm(ArrayOperations.minus(Xc[cCells], options.vectOne)) < 0.5)
 				u_n[cCells] = options.u0;
-			else 
+			else
 				u_n[cCells] = 0.0;
 		});
 	}
@@ -296,7 +296,8 @@ public final class ExplicitHeatEquation
 	 */
 	private void computeDeltaTn()
 	{
-		double reduction1 = IntStream.range(0, nbCells).boxed().parallel().reduce(
+		double reduction1 = IntStream.range(0, nbCells).boxed().parallel().reduce
+		(
 			Double.MAX_VALUE,
 			(r, cCells) -> MathFunctions.min(r, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]),
 			(r1, r2) -> MathFunctions.min(r1, r2)
@@ -313,17 +314,17 @@ public final class ExplicitHeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			int cId = cCells;
+			final int cId = cCells;
 			double alphaDiag = 0.0;
 			{
-				int[] neighbourCellsC = mesh.getNeighbourCells(cId);
+				final int[] neighbourCellsC = mesh.getNeighbourCells(cId);
 				for (int dNeighbourCellsC=0; dNeighbourCellsC<neighbourCellsC.length; dNeighbourCellsC++)
 				{
-					int dId = neighbourCellsC[dNeighbourCellsC];
-					int dCells = dId;
-					int fCommonFaceCD = mesh.getCommonFace(cId, dId);
-					int fId = fCommonFaceCD;
-					int fFaces = fId;
+					final int dId = neighbourCellsC[dNeighbourCellsC];
+					final int dCells = dId;
+					final int fCommonFaceCD = mesh.getCommonFace(cId, dId);
+					final int fId = fCommonFaceCD;
+					final int fFaces = fId;
 					double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions.norm(ArrayOperations.minus(Xc[cCells], Xc[dCells]));
 					alpha[cCells][dCells] = alphaExtraDiag;
 					alphaDiag = alphaDiag + alphaExtraDiag;

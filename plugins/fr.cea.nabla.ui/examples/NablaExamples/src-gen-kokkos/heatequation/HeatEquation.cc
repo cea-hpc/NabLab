@@ -337,11 +337,14 @@ public:
 		std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
 			<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
 		
-		if (Kokkos::hwloc::available()) {
+		if (Kokkos::hwloc::available())
+		{
 			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_numa_count()
 				<< __RESET__ << ", Cores/NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_cores_per_numa()
 				<< __RESET__ << ", Threads/Core=" << __BOLD__ << Kokkos::hwloc::get_available_threads_per_core() << __RESET__ << std::endl;
-		} else {
+		}
+		else
+		{
 			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 		}
 		
@@ -367,18 +370,23 @@ int main(int argc, char* argv[])
 	Kokkos::initialize(argc, argv);
 	auto o = new HeatEquation::Options();
 	string output;
-	if (argc == 5) {
+	if (argc == 5)
+	{
 		o->X_EDGE_ELEMS = std::atoi(argv[1]);
 		o->Y_EDGE_ELEMS = std::atoi(argv[2]);
 		o->X_EDGE_LENGTH = std::atof(argv[3]);
 		o->Y_EDGE_LENGTH = std::atof(argv[4]);
-	} else if (argc == 6) {
+	}
+	else if (argc == 6)
+	{
 		o->X_EDGE_ELEMS = std::atoi(argv[1]);
 		o->Y_EDGE_ELEMS = std::atoi(argv[2]);
 		o->X_EDGE_LENGTH = std::atof(argv[3]);
 		o->Y_EDGE_LENGTH = std::atof(argv[4]);
 		output = argv[5];
-	} else if (argc != 1) {
+	}
+	else if (argc != 1)
+	{
 		std::cerr << "[ERROR] Wrong number of arguments. Expecting 4 or 5 args: X Y Xlength Ylength (output)." << std::endl;
 		std::cerr << "(X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
 	}

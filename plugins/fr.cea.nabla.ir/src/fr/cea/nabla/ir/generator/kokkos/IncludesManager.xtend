@@ -16,16 +16,24 @@ import java.util.LinkedHashSet
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import java.util.Collection
 
-abstract class IncludesManager
+interface IncludesManager
 {
-	def getPragmasFor(IrModule m)
+	def Collection<String> getPragmasFor(IrModule m)
+	def Collection<String> getSystemIncludesFor(IrModule m)
+	def Collection<String> getUserIncludesFor(IrModule m)
+}
+
+class DefaultIncludesManager implements IncludesManager
+{
+	override getPragmasFor(IrModule m)
 	{
 		val pragmas = new LinkedHashSet<String>
 		return pragmas
 	}
 
-	def getSystemIncludesFor(IrModule m)
+	override getSystemIncludesFor(IrModule m)
 	{
 		val systemIncludes = new LinkedHashSet<String>
 
@@ -40,7 +48,7 @@ abstract class IncludesManager
 		return systemIncludes
 	}
 
-	def getUserIncludesFor(IrModule m)
+	override getUserIncludesFor(IrModule m)
 	{
 		val userIncludes = new LinkedHashSet<String>
 
@@ -67,7 +75,7 @@ abstract class IncludesManager
 	}
 }
 
-class KokkosIncludeManager extends IncludesManager
+class KokkosIncludeManager extends DefaultIncludesManager
 {
 	override getPragmasFor(IrModule m)
 	{
@@ -85,7 +93,7 @@ class KokkosIncludeManager extends IncludesManager
 	}
 }
 
-class OmpIncludeManager extends IncludesManager
+class OmpIncludeManager extends DefaultIncludesManager
 {
 	override getSystemIncludesFor(IrModule m)
 	{
@@ -95,7 +103,7 @@ class OmpIncludeManager extends IncludesManager
 	}
 }
 
-class StlThreadsIncludeManager extends IncludesManager
+class StlThreadsIncludeManager extends DefaultIncludesManager
 {
 	override getUserIncludesFor(IrModule m)
 	{

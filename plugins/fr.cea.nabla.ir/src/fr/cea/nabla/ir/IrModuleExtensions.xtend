@@ -12,12 +12,35 @@ package fr.cea.nabla.ir
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.SimpleVariable
+
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
 class IrModuleExtensions
 {
 	static def getJobByName(IrModule it, String jobName)
 	{
 		jobs.findFirst[j | j.name == jobName]
+	}
+
+	static def getOptions(IrModule it)
+	{
+		variables.filter(SimpleVariable).filter[const]
+	}
+
+	static def getGlobalVariables(IrModule it)
+	{
+		variables.filter(SimpleVariable).filter[!const]
+	}
+
+	static def getConnectivityVariables(IrModule it)
+	{
+		variables.filter(ConnectivityVariable).filter[!linearAlgebra]
+	}
+
+	static def getLinearAlgebraVariables(IrModule it)
+	{
+		variables.filter(ConnectivityVariable).filter[linearAlgebra]
 	}
 
 	/**

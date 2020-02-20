@@ -15,7 +15,6 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -50,7 +49,7 @@ class Ir2Java extends CodeGenerator
 		import fr.cea.nabla.javalib.mesh.*;
 		«ENDIF»
 
-		«val linearAlgebraVars = variables.filter(ConnectivityVariable).filter[linearAlgebra]»
+		«val linearAlgebraVars = linearAlgebraVariables»
 		«IF !linearAlgebraVars.empty»
 		import org.apache.commons.math3.linear.*;
 
@@ -60,7 +59,7 @@ class Ir2Java extends CodeGenerator
 		{
 			public final static class Options
 			{
-				«FOR v : variables.filter(SimpleVariable).filter[const]»
+				«FOR v : options»
 				public final «v.javaType» «v.name» = «v.defaultValue.content.toString.replaceAll('options.', '')»;
 				«ENDFOR»
 			}
@@ -75,12 +74,11 @@ class Ir2Java extends CodeGenerator
 			«ENDIF»
 
 			// Global Variables
-			«val globals = variables.filter(SimpleVariable).filter[!const]»
-			«val globalsByType = globals.groupBy[javaType]»
+			«val globalsByType = globalVariables.groupBy[javaType]»
 			«FOR type : globalsByType.keySet»
 			private «type» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 			«ENDFOR»
-			«val connectivityVars = variables.filter(ConnectivityVariable).filter[!linearAlgebra].groupBy[javaType]»
+			«val connectivityVars = connectivityVariables.groupBy[javaType]»
 			«IF !connectivityVars.empty»
 
 			// Connectivity Variables
@@ -107,7 +105,7 @@ class Ir2Java extends CodeGenerator
 				«c.nbElems» = «c.connectivityAccessor»;
 				«ENDFOR»
 
-				«FOR uv : globals.filter[x|x.defaultValue!==null]»
+				«FOR uv : globalVariables.filter[x|x.defaultValue!==null]»
 				«uv.name» = «uv.defaultValue.content»;
 				«ENDFOR»
 

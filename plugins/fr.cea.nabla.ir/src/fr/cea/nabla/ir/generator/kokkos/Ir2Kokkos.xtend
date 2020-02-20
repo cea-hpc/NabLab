@@ -16,31 +16,30 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.SimpleVariable
 import java.io.File
 import java.net.URI
 import org.eclipse.core.runtime.FileLocator
 import org.eclipse.core.runtime.Platform
 
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
 
 class Ir2Kokkos extends CodeGenerator
 {
 	val IncludesManager includesManager
+	val AttributesContentProvider attributesContentProvider
 	val extension JobContentProvider jobContentProvider
 	val extension FunctionContentProvider functionContentProvider
 
-	new(File outputDirectory, IncludesManager im, JobContentProvider jcp)
+	new(File outputDirectory, IncludesManager im, AttributesContentProvider acp, JobContentProvider jcp)
 	{
 		super('Kokkos' + (if (jcp.threadTeam) ' team of threads' else ''))
 		includesManager = im
+		attributesContentProvider = acp
 		jobContentProvider = jcp
 		functionContentProvider = new FunctionContentProvider(jcp.instructionContentProvider)
 
@@ -87,52 +86,14 @@ class Ir2Kokkos extends CodeGenerator
 		struct Options
 		{
 			// Should be const but usefull to set them from main args
-			«FOR v : variables.filter(SimpleVariable).filter[const]»
+			«FOR v : options»
 				«v.cppType» «v.name» = «v.defaultValue.content.toString.replaceAll('options->', '')»;
 			«ENDFOR»
 		};
 		Options* options;
 
 	private:
-		«IF withMesh»
-		CartesianMesh2D* mesh;
-		PvdFileWriter2D writer;
-		«FOR c : usedConnectivities BEFORE 'int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
-		«ENDIF»
-
-		// Global Variables
-		«val globals = variables.filter(SimpleVariable).filter[!const]»
-		«val globalsByType = globals.groupBy[type.cppType]»
-		«FOR type : globalsByType.keySet»
-		«type» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
-		«ENDFOR»
-		«val connectivityVars = variables.filter(ConnectivityVariable).filter[!linearAlgebra]»
-		«IF !connectivityVars.empty»
-
-		// Connectivity Variables
-		«FOR a : connectivityVars»
-		«a.cppType» «a.name»;
-		«ENDFOR»
-		«ENDIF»
-		«val linearAlgebraVars = variables.filter(ConnectivityVariable).filter[linearAlgebra]»
-		«IF !linearAlgebraVars.empty»
-		
-		// Linear Algebra Variables
-		«FOR m : linearAlgebraVars»
-		«m.cppType» «m.name»;
-		«ENDFOR»
-		// CG details
-		LinearAlgebraFunctions::CGInfo cg_info;
-		«ENDIF»
-
-		utils::Timer global_timer;
-		utils::Timer cpu_timer;
-		utils::Timer io_timer;
-		«IF (threadTeam)»
-		typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
-		«ELSE»
-		const size_t maxHardThread = Kokkos::DefaultExecutionSpace::max_hardware_threads();
-		«ENDIF»
+		«attributesContentProvider.getContentFor(it)»
 
 	public:
 		«name»(Options* aOptions, «IF withMesh»CartesianMesh2D* aCartesianMesh2D,«ENDIF» string output)
@@ -144,13 +105,13 @@ class Ir2Kokkos extends CodeGenerator
 		«FOR c : usedConnectivities»
 		, «c.nbElems»(«c.connectivityAccessor»)
 		«ENDFOR»
-		«FOR uv : globals.filter[x|x.defaultValue!==null]»
+		«FOR uv : globalVariables.filter[x|x.defaultValue!==null]»
 		, «uv.name»(«uv.defaultValue.content»)
 		«ENDFOR»
-		«FOR a : connectivityVars»
+		«FOR a : connectivityVariables»
 		, «a.name»("«a.name»", «FOR d : a.type.connectivities SEPARATOR ', '»«d.nbElems»«ENDFOR»)
 		«ENDFOR»
-		«FOR a : linearAlgebraVars»
+		«FOR a : linearAlgebraVariables»
 		, «a.name»("«a.name»", «FOR d : a.type.connectivities SEPARATOR ', '»«d.nbElems»«ENDFOR»)
 		«ENDFOR»
 		{
@@ -209,7 +170,7 @@ class Ir2Kokkos extends CodeGenerator
 			«ENDIF»
 			«jobs.filter[topLevel].jobCallsContent»
 			«traceContentProvider.endOfSimuTrace»
-			«IF !linearAlgebraVars.empty && mainTimeLoop !== null»«traceContentProvider.getCGInfoTrace(mainTimeLoop.iterationCounter.name)»«ENDIF»
+			«IF !linearAlgebraVariables.empty && mainTimeLoop !== null»«traceContentProvider.getCGInfoTrace(mainTimeLoop.iterationCounter.name)»«ENDIF»
 		}
 	};
 

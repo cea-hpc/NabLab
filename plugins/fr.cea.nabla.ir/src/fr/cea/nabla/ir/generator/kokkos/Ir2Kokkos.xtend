@@ -11,7 +11,6 @@ package fr.cea.nabla.ir.generator.kokkos
 
 import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.ir.generator.CodeGenerator
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalParallelismUtils
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
@@ -34,12 +33,14 @@ import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
 
 class Ir2Kokkos extends CodeGenerator
 {
+	val IncludesManager includesManager
 	val extension JobContentProvider jobContentProvider
 	val extension FunctionContentProvider functionContentProvider
 
-	new(File outputDirectory, JobContentProvider jcp)
+	new(File outputDirectory, IncludesManager im, JobContentProvider jcp)
 	{
 		super('Kokkos' + (if (jcp.threadTeam) ' team of threads' else ''))
+		includesManager = im
 		jobContentProvider = jcp
 		functionContentProvider = new FunctionContentProvider(jcp.instructionContentProvider)
 
@@ -68,35 +69,15 @@ class Ir2Kokkos extends CodeGenerator
 
 	private def getCcFileContent(IrModule it)
 	'''
-	#include <iostream>
-	#include <iomanip>
-	#include <type_traits>
-	#include <limits>
-	#include <utility>
-	#include <cmath>
-	#include <cfenv>
-	#pragma STDC FENV_ACCESS ON
-
-	// Kokkos headers
-	#include <Kokkos_Core.hpp>
-	#include <Kokkos_hwloc.hpp>
-
-	// Project headers
-	«IF withMesh»
-	#include "mesh/CartesianMesh2DGenerator.h"
-	#include "mesh/CartesianMesh2D.h"
-	#include "mesh/PvdFileWriter2D.h"
-	«ENDIF»
-	#include "utils/Utils.h"
-	#include "utils/Timer.h"
-	#include "types/Types.h"
-	#include "types/MathFunctions.h"
-	#include "types/ArrayOperations.h"
-	«IF functions.exists[f | f.body === null && f.provider == name]»#include "«name.toLowerCase»/«name»«Utils::FunctionReductionPrefix».h"«ENDIF»
-	«val linearAlgebraVars = variables.filter(ConnectivityVariable).filter[linearAlgebra]»
-	«IF !linearAlgebraVars.empty»
-	#include "types/LinearAlgebraFunctions.h"
-	«ENDIF»
+	«FOR include : includesManager.getSystemIncludesFor(it)»
+	#include <«include»>
+	«ENDFOR»
+	«FOR pragma : includesManager.getPragmasFor(it)»
+	#pragma «pragma»
+	«ENDFOR»
+	«FOR include : includesManager.getUserIncludesFor(it)»
+	#include "«include»"
+	«ENDFOR»
 
 	using namespace nablalib;
 
@@ -133,6 +114,7 @@ class Ir2Kokkos extends CodeGenerator
 		«a.cppType» «a.name»;
 		«ENDFOR»
 		«ENDIF»
+		«val linearAlgebraVars = variables.filter(ConnectivityVariable).filter[linearAlgebra]»
 		«IF !linearAlgebraVars.empty»
 		
 		// Linear Algebra Variables

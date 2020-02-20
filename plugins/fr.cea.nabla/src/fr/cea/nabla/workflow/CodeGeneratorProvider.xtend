@@ -11,6 +11,7 @@ package fr.cea.nabla.workflow
 
 import fr.cea.nabla.ir.generator.java.Ir2Java
 import fr.cea.nabla.ir.generator.kokkos.Ir2Kokkos
+import fr.cea.nabla.ir.generator.kokkos.KokkosIncludeManager
 import fr.cea.nabla.ir.generator.kokkos.TraceContentProvider
 import fr.cea.nabla.ir.generator.kokkos.defaultparallelism.DefaultJobContentProvider
 import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalJobContentProvider
@@ -32,9 +33,9 @@ class CodeGeneratorProvider
 				val tcp = new TraceContentProvider(l.maxIterationVar.name , l.stopTimeVar.name)
 				val outputDirectory = new File(baseDir + outputDir)
 				if (l.teamOfThreads)
-					new Ir2Kokkos(outputDirectory, new HierarchicalJobContentProvider(tcp))
+					new Ir2Kokkos(outputDirectory, new KokkosIncludeManager, new HierarchicalJobContentProvider(tcp))
 				else
-					new Ir2Kokkos(outputDirectory, new DefaultJobContentProvider(tcp))
+					new Ir2Kokkos(outputDirectory, new KokkosIncludeManager, new DefaultJobContentProvider(tcp))
 			}
 			default : throw new RuntimeException("Unsupported language " + language.class.name)
 		}

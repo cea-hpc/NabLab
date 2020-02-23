@@ -11,16 +11,11 @@ package fr.cea.nabla.ir.generator
 
 import fr.cea.nabla.ir.ir.IrModule
 import java.util.Map
-import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtend.lib.annotations.Data
 
+@Data
 abstract class CodeGenerator
 {
-	@Accessors val String name
-
-	new(String name)
-	{
-		this.name = name
-	}
-
-	abstract def Map<String, CharSequence> getFileContentsByName(IrModule it)
+	val String name
+	def Map<String, CharSequence> getFileContentsByName(IrModule it)
 }

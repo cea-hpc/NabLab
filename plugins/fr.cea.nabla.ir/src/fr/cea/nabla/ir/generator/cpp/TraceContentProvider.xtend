@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.kokkos
+package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.MandatoryOptions
 import org.eclipse.xtend.lib.annotations.Data

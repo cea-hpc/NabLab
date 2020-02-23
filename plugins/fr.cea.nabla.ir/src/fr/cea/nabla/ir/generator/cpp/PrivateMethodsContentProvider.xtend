@@ -1,17 +1,33 @@
-/*******************************************************************************
- * Copyright (c) 2020 CEA
- * This program and the accompanying materials are made available under the 
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
- * Contributors: see AUTHORS file
- *******************************************************************************/
-package fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism
+package fr.cea.nabla.ir.generator.cpp
 
-class HierarchicalParallelismUtils
+import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.IrModule
+import org.eclipse.xtend.lib.annotations.Data
+
+import static extension fr.cea.nabla.ir.Utils.*
+
+@Data
+class PrivateMethodsContentProvider 
 {
-	static def getTeamWorkRange()
+	protected val extension JobContentProvider
+	protected val extension FunctionContentProvider
+
+	def getContentFor(IrModule it)
+	'''
+		«FOR j : jobs.sortByAtAndName SEPARATOR '\n'»
+			«j.content»
+		«ENDFOR»			
+		«FOR f : functions.filter(Function).filter[body !== null]»
+
+			«f.content»
+		«ENDFOR»
+	'''
+}
+
+@Data
+class KokkosTeamThreadPrivateMethodsContentProvider extends PrivateMethodsContentProvider
+{
+	override getContentFor(IrModule it)
 	'''
 		/**
 		 * Utility function to get work load for each team of threads
@@ -40,12 +56,7 @@ class HierarchicalParallelismUtils
 			}
 			return std::pair<size_t, size_t>(team_offset, team_chunk);
 		}
-	'''
 
-	static def getTeamPolicy()
-	'''
-		auto team_policy(Kokkos::TeamPolicy<>(
-			Kokkos::hwloc::get_available_numa_count(),
-			Kokkos::hwloc::get_available_cores_per_numa() * Kokkos::hwloc::get_available_threads_per_core()));
+		«super.getContentFor(it)»
 	'''
 }

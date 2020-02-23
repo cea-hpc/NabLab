@@ -94,12 +94,14 @@ Ir2CodeComponent:
 		(disabled?='disabled' ';')?
 	'}';
 
-Language: Java | CppKokkos;
+Language: Java | Cpp;
 
 Java: activated?='Java' ';';
 
-CppKokkos: 'Kokkos' '{'
+Cpp: 'Cpp' '{'
 		'maxIterationVariable' '=' maxIterationVar=[nabla::SimpleVar] ';'
 		'stopTimeVariable' '=' stopTimeVar=[nabla::SimpleVar] ';'
-		(teamOfThreads?='teamOfThreads' ';')?
+		'model' '=' model=CppModel
 	'}';
+
+enum CppModel: Sequential | StlThread | OpenMP | Kokkos | KokkosTeamThread;

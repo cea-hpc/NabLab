@@ -7,41 +7,38 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.kokkos
+package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalJobContentProvider
-import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalParallelismUtils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.JobContainer
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
-import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtend.lib.annotations.Data
 
-import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
-import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.Utils.*
+import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.cpp.ExpressionContentProvider.*
 
+@Data
 abstract class JobContentProvider 
 {
-	@Accessors val extension InstructionContentProvider instructionContentProvider
-	@Accessors val TraceContentProvider traceContentProvider
+	protected val TraceContentProvider traceContentProvider
+	protected val extension InstructionContentProvider instructionContentProvider
+	protected val extension JobCallsContentProvider jobCallContentProvider
 
-	new(InstructionContentProvider icp, TraceContentProvider tcp) 
-	{ 
-		instructionContentProvider = icp
-		traceContentProvider = tcp
-	}
-
-	abstract def CharSequence getJobCallsContent(Iterable<Job> jobs)
-	abstract def CharSequence getContent(Job it)
-
-	def isThreadTeam()
-	{
-		this instanceof HierarchicalJobContentProvider
-	}
+	def getContent(Job it)
+	'''
+		«comment»
+		void «codeName»() noexcept
+		{
+			«innerContent»
+		}
+	'''
 
 	protected def dispatch CharSequence getInnerContent(InstructionJob it)
 	'''
@@ -50,10 +47,6 @@ abstract class JobContentProvider
 
 	protected def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
-		«IF (threadTeam)»
-			«HierarchicalParallelismUtils::teamPolicy»
-
-		«ENDIF»
 		«val itVar = timeLoop.iterationCounter.name»
 		«itVar» = 0;
 		bool continueLoop = true;
@@ -67,7 +60,7 @@ abstract class JobContentProvider
 			«IF topLevel && irModule.postProcessingInfo !== null»dumpVariables(«itVar»);«ENDIF»
 			«traceContentProvider.getBeginOfLoopTrace(itVar, timeVarName, isTopLevel)»
 
-			«innerJobs.jobCallsContent»
+			«innerJobs.content»
 
 			// Evaluate loop condition with variables at time n
 			continueLoop = «timeLoop.whileCondition.content»;
@@ -105,7 +98,7 @@ abstract class JobContentProvider
 		«ENDFOR»
 	'''
 
-	private static def CharSequence copy(String left, String right, int dimension)
+	private def CharSequence copy(String left, String right, int dimension)
 	{
 		if (dimension == 0)
 			'''«left» = «right»;'''
@@ -120,15 +113,59 @@ abstract class JobContentProvider
 		}
 	}
 
-	private static def getTimeVarName(TimeLoopJob it)
+	private def getTimeVarName(TimeLoopJob it)
 	{
 		val irModule = eContainer as IrModule
 		irModule.timeVariable.name
 	}
 
-	private static def getDeltatVarName(TimeLoopJob it)
+	private def getDeltatVarName(TimeLoopJob it)
 	{
 		val irModule = eContainer as IrModule
 		irModule.deltatVariable.name
+	}
+}
+
+@Data
+class KokkosJobContentProvider extends JobContentProvider
+{
+	override getContent(Job it)
+	'''
+		«comment»
+		KOKKOS_INLINE_FUNCTION
+		void «codeName»() noexcept
+		{
+			«innerContent»
+		}
+	'''
+}
+
+@Data
+class KokkosTeamThreadJobContentProvider extends JobContentProvider
+{
+	override getContent(Job it)
+	'''
+		«comment»
+		KOKKOS_INLINE_FUNCTION
+		void «codeName»(«IF hasIterable»const member_type& team_member«ENDIF») noexcept
+		{
+			«teamPolicy»
+			«innerContent»
+		}
+	'''
+
+	private def getTeamPolicy(Job it)
+	{
+		switch it
+		{
+			JobContainer case !innerJobs.empty:
+			'''
+			auto team_policy(Kokkos::TeamPolicy<>(
+				Kokkos::hwloc::get_available_numa_count(),
+				Kokkos::hwloc::get_available_cores_per_numa() * Kokkos::hwloc::get_available_threads_per_core()));
+
+			'''
+			default:''''''
+		}
 	}
 }

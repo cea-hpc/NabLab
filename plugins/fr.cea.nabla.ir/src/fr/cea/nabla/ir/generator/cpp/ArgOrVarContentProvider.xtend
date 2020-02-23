@@ -1,0 +1,77 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+package fr.cea.nabla.ir.generator.cpp
+
+import fr.cea.nabla.ir.ir.Arg
+import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.SimpleVariable
+import org.eclipse.xtend.lib.annotations.Data
+
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import fr.cea.nabla.ir.ir.ArgOrVar
+
+@Data
+abstract class ArgOrVarContentProvider
+{
+	val extension TypeContentProvider tcp
+
+	protected abstract def String getLinearAlgebraType(int dimension)
+
+	def dispatch String getCppType(Arg it)
+	{
+		type.cppType
+	}
+
+	def dispatch String getCppType(SimpleVariable it)
+	{
+		type.cppType
+	}
+
+	def dispatch String getCppType(ConnectivityVariable it)
+	{
+		if (linearAlgebra)
+			type.connectivities.size.linearAlgebraType
+		else
+			type.cppType
+	}
+
+	def boolean isMatrix(ArgOrVar it)
+	{
+		if (it instanceof ConnectivityVariable)
+			(linearAlgebra && type.connectivities.size == 2)
+		else
+			false
+	}
+}
+
+@Data
+class NoLinearAlgebraArgOrVarContentProvider extends ArgOrVarContentProvider
+{
+	override protected getLinearAlgebraType(int dimension) 
+	{
+		throw new UnsupportedOperationException("Not yet implemented: linear algebra")
+	}
+}
+
+@Data
+class KokkosArgOrVarContentProvider extends ArgOrVarContentProvider
+{
+	static val MatrixType = 'NablaSparseMatrix'
+
+	override protected getLinearAlgebraType(int dimension) 
+	{
+		switch dimension
+		{
+			case 1: return 'VectorType'
+			case 2: return MatrixType
+			default: throw new RuntimeException("Unsupported dimension: " + dimension)
+		}
+	}
+}

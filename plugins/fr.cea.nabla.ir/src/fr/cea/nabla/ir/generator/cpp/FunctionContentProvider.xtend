@@ -7,25 +7,34 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.kokkos
+package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.Function
+import org.eclipse.xtend.lib.annotations.Data
 
-import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
-
+@Data
 class FunctionContentProvider 
 {
-	extension InstructionContentProvider icp
-	
-	new(InstructionContentProvider icp) { this.icp = icp }
+	protected val extension TypeContentProvider typeContentProvider
+	protected val extension InstructionContentProvider instructionContentProvider
+	protected def String getMacro() { null }
 
 	def getContent(Function it)
 	'''
 		«FOR v : variables BEFORE "template<" SEPARATOR ", " AFTER ">"»size_t «v.name»«ENDFOR»
-		KOKKOS_INLINE_FUNCTION
+		«IF macro !== null»«macro»«ENDIF»
 		«returnType.cppType» «name.toFirstLower»(«FOR a : inArgs SEPARATOR ', '»«a.type.cppType» «a.name»«ENDFOR») 
 		{
 			«body.innerContent»
 		}
 	'''
+}
+
+@Data
+class KokkosFunctionContentProvider extends FunctionContentProvider
+{
+	override getMacro()
+	{
+		"KOKKOS_INLINE_FUNCTION"
+	}
 }

@@ -9,15 +9,11 @@
  *******************************************************************************/
 package fr.cea.nabla.workflow
 
+import fr.cea.nabla.ir.generator.cpp.Ir2Cpp
+import fr.cea.nabla.ir.generator.cpp.KokkosBackend
+import fr.cea.nabla.ir.generator.cpp.KokkosTeamThreadBackend
 import fr.cea.nabla.ir.generator.java.Ir2Java
-import fr.cea.nabla.ir.generator.kokkos.DefaultAttributesContentProvider
-import fr.cea.nabla.ir.generator.kokkos.Ir2Kokkos
-import fr.cea.nabla.ir.generator.kokkos.KokkosIncludeManager
-import fr.cea.nabla.ir.generator.kokkos.KokkosTeamThreadAttributesContentProvider
-import fr.cea.nabla.ir.generator.kokkos.TraceContentProvider
-import fr.cea.nabla.ir.generator.kokkos.defaultparallelism.DefaultJobContentProvider
-import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalJobContentProvider
-import fr.cea.nabla.nablagen.CppKokkos
+import fr.cea.nabla.nablagen.Cpp
 import fr.cea.nabla.nablagen.Ir2CodeComponent
 import fr.cea.nabla.nablagen.Java
 import java.io.File
@@ -30,16 +26,20 @@ class CodeGeneratorProvider
 		switch l
 		{
 			Java: new Ir2Java
-			CppKokkos:
-			{
-				val tcp = new TraceContentProvider(l.maxIterationVar.name , l.stopTimeVar.name)
-				val outputDirectory = new File(baseDir + outputDir)
-				if (l.teamOfThreads)
-					new Ir2Kokkos(outputDirectory, new KokkosIncludeManager, new KokkosTeamThreadAttributesContentProvider, new HierarchicalJobContentProvider(tcp))
-				else
-					new Ir2Kokkos(outputDirectory, new KokkosIncludeManager, new DefaultAttributesContentProvider, new DefaultJobContentProvider(tcp))
-			}
+			Cpp: new Ir2Cpp(new File(baseDir + outputDir), l.backend)
 			default : throw new RuntimeException("Unsupported language " + language.class.name)
+		}
+	}
+
+	private static def getBackend(Cpp it)
+	{
+		switch model
+		{
+			case SEQUENTIAL: throw new RuntimeException('Not yet implemented')
+			case STL_THREAD: throw new RuntimeException('Not yet implemented')
+			case OPEN_MP: throw new RuntimeException('Not yet implemented')
+			case KOKKOS: new KokkosBackend(maxIterationVar.name , stopTimeVar.name)
+			case KOKKOS_TEAM_THREAD: new KokkosTeamThreadBackend(maxIterationVar.name , stopTimeVar.name)
 		}
 	}
 }

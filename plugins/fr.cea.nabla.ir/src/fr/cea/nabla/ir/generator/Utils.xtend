@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator
 
+import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.Job
@@ -17,6 +18,7 @@ import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import org.eclipse.emf.ecore.EObject
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class Utils 
@@ -37,6 +39,12 @@ class Utils
 	static def getCodeName(Job it)
 	{
 		name.toFirstLower
+	}
+
+	static def getCodeName(ArgOrVar it, String separator)
+	{
+		if (option) 'options' + separator + name
+		else name
 	}
 
 	static def getNbElems(Connectivity it) { 'nb' + name.toFirstUpper}

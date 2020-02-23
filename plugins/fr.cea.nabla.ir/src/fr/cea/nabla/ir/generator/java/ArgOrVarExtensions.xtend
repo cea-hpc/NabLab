@@ -10,7 +10,6 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.Arg
-import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
@@ -56,12 +55,6 @@ class ArgOrVarExtensions
 		}
 		else
 			type.javaType
-	}
-
-	static def getCodeName(ArgOrVar it)
-	{
-		if (option) 'options.' + name
-		else name
 	}
 
 	private def static dispatch String getDimContent(BaseType it)

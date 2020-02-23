@@ -27,8 +27,8 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.SpaceIterationBlock
 import fr.cea.nabla.ir.ir.VarDefinition
 
-import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.SizeTypeContentProvider.*
@@ -56,7 +56,7 @@ class InstructionContentProvider
 	static def dispatch CharSequence getContent(Affectation it)
 	'''
 		«IF left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty)»
-			«left.target.codeName».set(«FOR r : left.iterators SEPARATOR ', ' AFTER ', '»«r.indexName»«ENDFOR»«FOR d : left.indices SEPARATOR ', ' AFTER ', '»«d»«ENDFOR»«right.content»);
+			«left.target.getCodeName('.')».set(«FOR r : left.iterators SEPARATOR ', ' AFTER ', '»«r.indexName»«ENDFOR»«FOR d : left.indices SEPARATOR ', ' AFTER ', '»«d»«ENDFOR»«right.content»);
 		«ELSE»
 			«left.content» = «right.content»;
 		«ENDIF»
@@ -188,20 +188,19 @@ class InstructionContentProvider
 		«IF !range.container.connectivity.indexEqualId»
 		{
 			final int[] «range.containerName» = «range.accessor»;
-			«getInternalParallelContent(l)»
+			IntStream.range(0, «range.container.connectivity.nbElems»).parallel().forEach(«range.indexName» -> 
+			{
+				«defineIndices»
+				«l.body.innerContent»
+			});
 		}
 		«ELSE»
-			«getInternalParallelContent(l)»
+			IntStream.range(0, «range.container.connectivity.nbElems»).parallel().forEach(«range.indexName» -> 
+			{
+				«defineIndices»
+				«l.body.innerContent»
+			});
 		«ENDIF»
-	'''
-
-	private static def getInternalParallelContent(SpaceIterationBlock it, Loop l)
-	'''
-		IntStream.range(0, «range.container.connectivity.nbElems»).parallel().forEach(«range.indexName» -> 
-		{
-			«defineIndices»
-			«l.body.innerContent»
-		});
 	'''
 
 	private static def dispatch getParallelContent(IntervalIterationBlock it, Loop l)

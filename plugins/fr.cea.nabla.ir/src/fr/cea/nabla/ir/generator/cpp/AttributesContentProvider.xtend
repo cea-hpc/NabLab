@@ -1,19 +1,18 @@
-package fr.cea.nabla.ir.generator.kokkos
+package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.IrModule
+import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.kokkos.Ir2KokkosUtils.*
 
-interface AttributesContentProvider 
+@Data
+class AttributesContentProvider
 {
-	def CharSequence getContentFor(IrModule m)
-}
+	protected val extension TypeContentProvider typeContentProvider
+	protected def CharSequence getAdditionalContent() { null }
 
-class DefaultAttributesContentProvider implements AttributesContentProvider
-{
-	override getContentFor(IrModule m)
+	def getContentFor(IrModule m)
 	'''
 		«IF m.withMesh»
 		CartesianMesh2D* mesh;
@@ -26,9 +25,12 @@ class DefaultAttributesContentProvider implements AttributesContentProvider
 		utils::Timer global_timer;
 		utils::Timer cpu_timer;
 		utils::Timer io_timer;
+		«IF additionalContent !== null»
+		«additionalContent»
+		«ENDIF»
 	'''
 
-	protected def getGlobalVariablesContent(IrModule m)
+	private def getGlobalVariablesContent(IrModule m)
 	'''
 		«val globals = m.globalVariables»
 		«IF !globals.empty»
@@ -41,7 +43,7 @@ class DefaultAttributesContentProvider implements AttributesContentProvider
 		«ENDIF»
 	'''
 
-	protected def getConnectivityVariablesContent(IrModule m)
+	private def getConnectivityVariablesContent(IrModule m)
 	'''
 		«val connectivityVars = m.connectivityVariables»
 		«IF !connectivityVars.empty»
@@ -53,11 +55,8 @@ class DefaultAttributesContentProvider implements AttributesContentProvider
 		«ENDIF»
 	'''
 
-	protected def getLinearAlgebraVariablesContent(IrModule m)
-	'''		utils::Timer global_timer;
-			utils::Timer cpu_timer;
-			utils::Timer io_timer;
-	
+	private def getLinearAlgebraVariablesContent(IrModule m)
+	'''
 		«val linearAlgebraVars = m.linearAlgebraVariables»
 		«IF !linearAlgebraVars.empty»
 		
@@ -71,11 +70,11 @@ class DefaultAttributesContentProvider implements AttributesContentProvider
 	'''
 }
 
-class KokkosTeamThreadAttributesContentProvider extends DefaultAttributesContentProvider
+@Data
+class KokkosTeamThreadAttributesContentProvider extends AttributesContentProvider
 {
-	override getContentFor(IrModule m)
+	override getAdditionalContent()
 	'''
-		«super.getContentFor(m)»
 		typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 	'''
 }

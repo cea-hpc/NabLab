@@ -7,14 +7,12 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.kokkos
+package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.ir.generator.CodeGenerator
-import fr.cea.nabla.ir.generator.kokkos.hierarchicalparallelism.HierarchicalParallelismUtils
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import java.io.File
 import java.net.URI
@@ -25,23 +23,28 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.cpp.ExpressionContentProvider.*
 
-class Ir2Kokkos extends CodeGenerator
+class Ir2Cpp extends CodeGenerator
 {
-	val IncludesManager includesManager
+	val IncludesContentProvider includesContentProvider
+	val TraceContentProvider traceContentProvider
 	val AttributesContentProvider attributesContentProvider
-	val extension JobContentProvider jobContentProvider
-	val extension FunctionContentProvider functionContentProvider
+	val PrivateMethodsContentProvider privateMethodsContentProvider
 
-	new(File outputDirectory, IncludesManager im, AttributesContentProvider acp, JobContentProvider jcp)
+	val extension TypeContentProvider typeContentProvider
+	val extension JobCallsContentProvider jobCallsContentProvider
+
+	new(File outputDirectory, Backend backend)
 	{
-		super('Kokkos' + (if (jcp.threadTeam) ' team of threads' else ''))
-		includesManager = im
-		attributesContentProvider = acp
-		jobContentProvider = jcp
-		functionContentProvider = new FunctionContentProvider(jcp.instructionContentProvider)
+		super(backend.name)
+		includesContentProvider = backend.includesContentProvider
+		traceContentProvider = backend.traceContenProvider
+		attributesContentProvider = backend.attributesContentProvider
+		privateMethodsContentProvider = backend.privateMethodsContentProvider
+
+		typeContentProvider = backend.typeContentProvider
+		jobCallsContentProvider = backend.jobCallsContentProvider
 
 		// check if c++ resources are available in the output folder
 		if (outputDirectory.exists && outputDirectory.isDirectory &&
@@ -64,19 +67,9 @@ class Ir2Kokkos extends CodeGenerator
 		#{ name + '.cc' -> ccFileContent, 'CMakeLists.txt' -> Ir2Cmake::getFileContent(it)}
 	}
 
-	private def getTraceContentProvider() { jobContentProvider.traceContentProvider }
-
 	private def getCcFileContent(IrModule it)
 	'''
-	«FOR include : includesManager.getSystemIncludesFor(it)»
-	#include <«include»>
-	«ENDFOR»
-	«FOR pragma : includesManager.getPragmasFor(it)»
-	#pragma «pragma»
-	«ENDFOR»
-	«FOR include : includesManager.getUserIncludesFor(it)»
-	#include "«include»"
-	«ENDFOR»
+	«includesContentProvider.getContentFor(it)»
 
 	using namespace nablalib;
 
@@ -126,17 +119,7 @@ class Ir2Kokkos extends CodeGenerator
 		}
 
 	private:
-		«IF (threadTeam)»
-			«HierarchicalParallelismUtils::teamWorkRange»
-
-		«ENDIF»
-		«FOR j : jobs.sortByAtAndName SEPARATOR '\n'»
-			«j.content»
-		«ENDFOR»			
-		«FOR f : functions.filter(Function).filter[body !== null]»
-
-			«f.content»
-		«ENDFOR»
+		«privateMethodsContentProvider.getContentFor(it)»
 		«IF postProcessingInfo !== null»
 
 		void dumpVariables(int iteration)
@@ -163,12 +146,7 @@ class Ir2Kokkos extends CodeGenerator
 		void simulate()
 		{
 			«traceContentProvider.getBeginOfSimuTrace(name, withMesh)»
-
-			«IF (threadTeam)»
-				«HierarchicalParallelismUtils::teamPolicy»
-
-			«ENDIF»
-			«jobs.filter[topLevel].jobCallsContent»
+			«jobs.filter[topLevel].content»
 			«traceContentProvider.endOfSimuTrace»
 			«IF !linearAlgebraVariables.empty && mainTimeLoop !== null»«traceContentProvider.getCGInfoTrace(mainTimeLoop.iterationCounter.name)»«ENDIF»
 		}

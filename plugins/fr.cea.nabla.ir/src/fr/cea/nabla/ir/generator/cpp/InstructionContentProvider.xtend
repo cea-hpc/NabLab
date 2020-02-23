@@ -7,18 +7,14 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.kokkos
+package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.Affectation
-import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
-import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.IntervalIterationBlock
-import fr.cea.nabla.ir.ir.Iterator
-import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Reduction
@@ -28,16 +24,21 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.SpaceIterationBlock
 import fr.cea.nabla.ir.ir.VarDefinition
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
-import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.SizeTypeContentProvider.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.kokkos.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.generator.kokkos.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.cpp.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.cpp.IndexBuilder.*
 
-abstract class InstructionContentProvider 
+@Data
+abstract class InstructionContentProvider
 {
+	protected val extension ArgOrVarContentProvider argOrVarExtensions
+	protected abstract def CharSequence getHeader(ReductionInstruction ri, String nbElems, String indexName)
+	protected abstract def CharSequence getParallelContent(Loop l)
+
 	def dispatch CharSequence getContent(VarDefinition it) 
 	'''
 		«FOR v : variables»
@@ -65,7 +66,7 @@ abstract class InstructionContentProvider
 	{
 		if (topLevelLoop) 
 			if (multithreadable)
-				getParallelContent(it, jobName)
+				getParallelContent(it)
 			else
 				getTopLevelSequentialContent(iterationBlock, it)
 		else 
@@ -100,9 +101,6 @@ abstract class InstructionContentProvider
 		«i.content»
 		«ENDFOR»
 	'''
-
-	protected abstract def CharSequence getParallelContent(Loop l, String kokkosName)
-	protected abstract def CharSequence getHeader(ReductionInstruction it, String nbElems, String indexName)
 
 	private def dispatch CharSequence getContent(ReductionInstruction it, SpaceIterationBlock b) 
 	'''
@@ -173,26 +171,6 @@ abstract class InstructionContentProvider
 		getTopLevelSequentialContent(it, l)
 	}
 
-	/** Define all needed ids and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
-	protected def defineIndices(SpaceIterationBlock it)
-	'''
-		«range.defineIndices»
-		«FOR s : singletons»
-			int «s.indexName»(«s.accessor»);
-			«s.defineIndices»
-		«ENDFOR»
-	'''
-
-	private def defineIndices(Iterator it)
-	'''
-		«FOR neededId : neededIds»
-			int «neededId.idName»(«neededId.indexToId»);
-		«ENDFOR»
-		«FOR neededIndex : neededIndices»
-			int «neededIndex.indexName»(«neededIndex.idToIndex»);
-		«ENDFOR»
-	'''
-
 	private def getKokkosName(Reduction it)
 	{
 		switch name
@@ -211,21 +189,9 @@ abstract class InstructionContentProvider
 	{
 		val affectations = eAllContents.filter(Affectation)
 		for (a : affectations.toIterable)
-			if (a.left.target.cppType == MatrixType)
+			if (a.left.target.matrix)
 				return false
 		return true
-	}
-
-	private	def getIndexToId(IteratorRef it)
-	{
-		if (target.container.connectivity.indexEqualId || target.singleton) indexValue
-		else target.containerName + '[' + indexValue + ']'		
-	}
-	
-	private def getIdToIndex(ArgOrVarRefIteratorRef it)
-	{
-		if (varContainer.indexEqualId) idName
-		else 'utils::indexOf(' + accessor + ',' + idName + ')'
 	}
 
 	private def dispatch getDefaultValueContent(SimpleVariable it)
@@ -234,15 +200,108 @@ abstract class InstructionContentProvider
 	private def dispatch getDefaultValueContent(ConnectivityVariable it)
 	'''«IF defaultValue !== null» = «defaultValue.content»«ENDIF»;'''
 
-	protected def getAccessor(ArgOrVarRefIteratorRef it) { getAccessor(varContainer, varArgs) }
-	protected def getAccessor(Iterator it)  { getAccessor(container.connectivity, container.args) }
-	private def getAccessor(Connectivity c, Iterable<? extends IteratorRef> args)  
-	'''mesh->get«c.name.toFirstUpper»(«args.map[idName].join(', ')»)'''
-
-	private def String getJobName(EObject o)
+	protected def String getJobName(EObject o)
 	{
 		if (o === null) null
 		else if (o instanceof Job) o.name
 		else o.eContainer.jobName
 	}
+}
+
+@Data
+class KokkosInstructionContentProvider extends InstructionContentProvider
+{
+	override protected getHeader(ReductionInstruction ri, String nbElems, String indexName)
+	'''
+		Kokkos::parallel_reduce("«ri.jobName»«ri.result.name.toFirstUpper»", «nbElems», KOKKOS_LAMBDA(const int& «indexName», «ri.result.cppType»& x)
+	'''
+
+	override protected getParallelContent(Loop l)
+	{ 
+		getParallelContent(l.iterationBlock, l)
+	}
+
+	private def dispatch getParallelContent(SpaceIterationBlock it, Loop l)
+	'''
+		«val kokkosName = l.jobName»
+		«IF !range.container.connectivity.indexEqualId»
+		{
+			auto «range.containerName»(«range.accessor»);
+			Kokkos::parallel_for(«IF kokkosName !== null»"«kokkosName»", «ENDIF»«range.container.connectivity.nbElems», KOKKOS_LAMBDA(const int& «range.indexName»)
+			{
+				«defineIndices»
+				«l.body.innerContent»
+			});
+		}
+		«ELSE»
+			Kokkos::parallel_for(«IF kokkosName !== null»"«kokkosName»", «ENDIF»«range.container.connectivity.nbElems», KOKKOS_LAMBDA(const int& «range.indexName»)
+			{
+				«defineIndices»
+				«l.body.innerContent»
+			});
+		«ENDIF»
+	'''
+
+	private def dispatch getParallelContent(IntervalIterationBlock it, Loop l)
+	'''
+		«val kokkosName = l.jobName»
+		{
+			const int from = «from.content»;
+			const int to = «to.content»«IF toIncluded»+1«ENDIF»;
+			const int nbElems = from-to;
+			Kokkos::parallel_for(«IF kokkosName !== null»«kokkosName», «ENDIF»nbElems, KOKKOS_LAMBDA(const int& «index.name»)
+			{
+				«l.body.innerContent»
+			});
+		}
+	'''
+}
+
+@Data
+class KokkosTeamThreadInstructionContentProvider extends InstructionContentProvider
+{
+	override protected getHeader(ReductionInstruction ri, String nbElems, String indexName)
+	'''
+		Kokkos::parallel_reduce(Kokkos::TeamThreadRange(team_member, «nbElems»), KOKKOS_LAMBDA(const int& «indexName», «ri.result.cppType»& x)
+	'''
+
+	override protected getParallelContent(Loop l)
+	{
+		getParallelContent(l.iterationBlock, l)
+	}
+
+	private def dispatch getParallelContent(SpaceIterationBlock it, Loop l)
+	'''
+		{
+			const auto team_work(computeTeamWorkRange(team_member, «range.container.connectivity.nbElems»));
+			if (!team_work.second)
+				return;
+
+			«IF !range.container.connectivity.indexEqualId»auto «range.containerName»(«range.accessor»);«ENDIF»
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& «range.indexName»Team)
+			{
+				int «range.indexName»(«range.indexName»Team + team_work.first);
+				«defineIndices»
+				«l.body.innerContent»
+			});
+		}
+	'''
+
+	private def dispatch getParallelContent(IntervalIterationBlock it, Loop l)
+	'''
+		{
+			const int from = «from.content»;
+			const int to = «to.content»«IF toIncluded»+1«ENDIF»;
+			const int nbElems = from-to;
+			const auto team_work(computeTeamWorkRange(team_member, nbElems));
+			if (!team_work.second)
+				return;
+
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& «index.name»Team)
+			{
+				int «index.name»(«index.name»Team + team_work.first);
+				«l.body.innerContent»
+			});
+		}
+	'''
 }

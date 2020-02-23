@@ -7,33 +7,42 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.kokkos
+package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
 import java.util.LinkedHashSet
+import java.util.List
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import java.util.Collection
 
-interface IncludesManager
+class IncludesContentProvider
 {
-	def Collection<String> getPragmasFor(IrModule m)
-	def Collection<String> getSystemIncludesFor(IrModule m)
-	def Collection<String> getUserIncludesFor(IrModule m)
-}
+	protected def List<String> getAdditionalPragmas() { #[] }
+	protected def List<String> getAdditionalSystemIncludes() { #[] }
+	protected def List<String> getAdditionalUserIncludes() { #[] }
 
-class DefaultIncludesManager implements IncludesManager
-{
-	override getPragmasFor(IrModule m)
+	def getContentFor(IrModule m)
+	'''
+	«FOR include : getSystemIncludesFor(m)»
+	#include <«include»>
+	«ENDFOR»
+	«FOR pragma : getPragmasFor(m)»
+	#pragma «pragma»
+	«ENDFOR»
+	«FOR include : getUserIncludesFor(m)»
+	#include "«include»"
+	«ENDFOR»
+	'''
+
+	private def getPragmasFor(IrModule m)
 	{
-		val pragmas = new LinkedHashSet<String>
-		return pragmas
+		additionalPragmas
 	}
 
-	override getSystemIncludesFor(IrModule m)
+	private def getSystemIncludesFor(IrModule m)
 	{
 		val systemIncludes = new LinkedHashSet<String>
 
@@ -44,11 +53,12 @@ class DefaultIncludesManager implements IncludesManager
 		systemIncludes += "utility"
 		systemIncludes += "cmath"
 		systemIncludes += "cfenv"
+		systemIncludes += additionalSystemIncludes
 
 		return systemIncludes
 	}
 
-	override getUserIncludesFor(IrModule m)
+	private def getUserIncludesFor(IrModule m)
 	{
 		val userIncludes = new LinkedHashSet<String>
 
@@ -71,44 +81,20 @@ class DefaultIncludesManager implements IncludesManager
 		val linearAlgebraVars = m.variables.filter(ConnectivityVariable).filter[linearAlgebra]
 		if (!linearAlgebraVars.empty) userIncludes += "types/LinearAlgebraFunctions.h"
 
+		userIncludes += additionalUserIncludes
 		return userIncludes
 	}
 }
 
-class KokkosIncludeManager extends DefaultIncludesManager
+class KokkosIncludesContentProvider extends IncludesContentProvider
 {
-	override getPragmasFor(IrModule m)
+	override getAdditionalPragmas()
 	{
-		val pragmas = super.getPragmasFor(m)
-		pragmas += "STDC FENV_ACCESS ON"
-		return pragmas
+		#["STDC FENV_ACCESS ON"]
 	}
 
-	override getSystemIncludesFor(IrModule m)
+	override getAdditionalSystemIncludes()
 	{
-		val includes = super.getSystemIncludesFor(m)
-		includes += "Kokkos_Core.hpp"
-		includes += "Kokkos_hwloc.hpp"
-		return includes
-	}
-}
-
-class OmpIncludeManager extends DefaultIncludesManager
-{
-	override getSystemIncludesFor(IrModule m)
-	{
-		val includes = super.getSystemIncludesFor(m)
-		includes += "omp.h"
-		return includes
-	}
-}
-
-class StlThreadsIncludeManager extends DefaultIncludesManager
-{
-	override getUserIncludesFor(IrModule m)
-	{
-		val includes = super.getUserIncludesFor(m)
-		includes += "utils/Parallel.h"
-		return includes
+		#["Kokkos_Core.hpp", "Kokkos_hwloc.hpp"]
 	}
 }

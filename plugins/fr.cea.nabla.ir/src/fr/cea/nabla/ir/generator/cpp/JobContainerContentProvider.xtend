@@ -1,6 +1,6 @@
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.JobContainer
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
@@ -8,25 +8,40 @@ import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 @Data
-class JobCallsContentProvider
+class JobContainerContentProvider
 {
 	protected val TraceContentProvider traceContentProvider
 
-	def getContent(Iterable<Job> jobs)
+	def getCallsHeader(JobContainer it) ''''''
+
+	def getCallsContent(JobContainer it)
 	'''
-		«FOR j : jobs.sortByAtAndName»
+		«FOR j : innerJobs.sortByAtAndName»
 		«j.codeName»(); // @«j.at»
 		«ENDFOR»
+
 	'''
 }
 
 @Data
-class KokkosTeamThreadJobCallsContentProvider extends JobCallsContentProvider
+class KokkosTeamThreadJobContainerContentProvider extends JobContainerContentProvider
 {
-	override getContent(Iterable<Job> jobs)
+	override getCallsHeader(JobContainer it)
+	{
+		if (innerJobs.exists[x | x.hasIterable])
+		'''
+		auto team_policy(Kokkos::TeamPolicy<>(
+			Kokkos::hwloc::get_available_numa_count(),
+			Kokkos::hwloc::get_available_cores_per_numa() * Kokkos::hwloc::get_available_threads_per_core()));
+
+		'''
+		else ''''''
+	}
+
+	override getCallsContent(JobContainer it)
 	'''
 		«var nbTimes = 0»
-		«val jobsByAt = jobs.groupBy[at]»
+		«val jobsByAt = innerJobs.groupBy[at]»
 		«FOR at : jobsByAt.keySet.sort»
 			«val atJobs = jobsByAt.get(at)»
 			// @«at»

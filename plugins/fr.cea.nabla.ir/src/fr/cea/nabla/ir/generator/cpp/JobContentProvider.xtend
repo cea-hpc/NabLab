@@ -13,7 +13,6 @@ import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.JobContainer
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import org.eclipse.xtend.lib.annotations.Data
@@ -28,8 +27,8 @@ import static extension fr.cea.nabla.ir.generator.cpp.ExpressionContentProvider.
 abstract class JobContentProvider 
 {
 	protected val TraceContentProvider traceContentProvider
-	protected val extension InstructionContentProvider instructionContentProvider
-	protected val extension JobCallsContentProvider jobCallContentProvider
+	protected val extension InstructionContentProvider
+	protected val extension JobContainerContentProvider
 
 	def getContent(Job it)
 	'''
@@ -47,6 +46,7 @@ abstract class JobContentProvider
 
 	protected def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
+		«callsHeader»
 		«val itVar = timeLoop.iterationCounter.name»
 		«itVar» = 0;
 		bool continueLoop = true;
@@ -60,7 +60,7 @@ abstract class JobContentProvider
 			«IF topLevel && irModule.postProcessingInfo !== null»dumpVariables(«itVar»);«ENDIF»
 			«traceContentProvider.getBeginOfLoopTrace(itVar, timeVarName, isTopLevel)»
 
-			«innerJobs.content»
+			«callsContent»
 
 			// Evaluate loop condition with variables at time n
 			continueLoop = «timeLoop.whileCondition.content»;
@@ -149,23 +149,7 @@ class KokkosTeamThreadJobContentProvider extends JobContentProvider
 		KOKKOS_INLINE_FUNCTION
 		void «codeName»(«IF hasIterable»const member_type& team_member«ENDIF») noexcept
 		{
-			«teamPolicy»
 			«innerContent»
 		}
 	'''
-
-	private def getTeamPolicy(Job it)
-	{
-		switch it
-		{
-			JobContainer case !innerJobs.empty:
-			'''
-			auto team_policy(Kokkos::TeamPolicy<>(
-				Kokkos::hwloc::get_available_numa_count(),
-				Kokkos::hwloc::get_available_cores_per_numa() * Kokkos::hwloc::get_available_threads_per_core()));
-
-			'''
-			default:''''''
-		}
-	}
 }

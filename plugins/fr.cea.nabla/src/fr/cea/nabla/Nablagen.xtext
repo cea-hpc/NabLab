@@ -101,7 +101,7 @@ Java: activated?='Java' ';';
 Cpp: 'Cpp' '{'
 		'maxIterationVariable' '=' maxIterationVar=[nabla::SimpleVar] ';'
 		'stopTimeVariable' '=' stopTimeVar=[nabla::SimpleVar] ';'
-		'model' '=' model=CppModel
+		'programmingModel' '=' programmingModel=CppProgrammingModel
 	'}';
 
-enum CppModel: Sequential | StlThread | OpenMP | Kokkos | KokkosTeamThread;
+enum CppProgrammingModel: Sequential | StlThread | OpenMP | Kokkos | KokkosTeamThread;

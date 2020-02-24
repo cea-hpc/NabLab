@@ -26,11 +26,11 @@ class IncludesContentProvider
 
 	def getContentFor(IrModule m)
 	'''
-	«FOR include : getSystemIncludesFor(m)»
-	#include <«include»>
-	«ENDFOR»
 	«FOR pragma : getPragmasFor(m)»
 	#pragma «pragma»
+	«ENDFOR»
+	«FOR include : getSystemIncludesFor(m)»
+	#include <«include»>
 	«ENDFOR»
 	«FOR include : getUserIncludesFor(m)»
 	#include "«include»"

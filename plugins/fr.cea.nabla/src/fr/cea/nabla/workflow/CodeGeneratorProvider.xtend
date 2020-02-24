@@ -33,7 +33,7 @@ class CodeGeneratorProvider
 
 	private static def getBackend(Cpp it)
 	{
-		switch model
+		switch programmingModel
 		{
 			case SEQUENTIAL: throw new RuntimeException('Not yet implemented')
 			case STL_THREAD: throw new RuntimeException('Not yet implemented')

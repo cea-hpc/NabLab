@@ -60,9 +60,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="Cpp" eSuperTypes="#//Language">
     <eStructuralFeatures xsi:type="ecore:EReference" name="maxIterationVar" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="stopTimeVar" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="model" eType="#//CppModel"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="programmingModel" eType="#//CppProgrammingModel"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="CppModel">
+  <eClassifiers xsi:type="ecore:EEnum" name="CppProgrammingModel">
     <eLiterals name="Sequential" literal="Sequential"/>
     <eLiterals name="StlThread" value="1" literal="StlThread"/>
     <eLiterals name="OpenMP" value="2" literal="OpenMP"/>

@@ -35,7 +35,7 @@ import static extension fr.cea.nabla.ir.generator.cpp.IndexBuilder.*
 @Data
 abstract class InstructionContentProvider
 {
-	protected val extension ArgOrVarContentProvider argOrVarExtensions
+	protected val extension ArgOrVarContentProvider
 	protected abstract def CharSequence getHeader(ReductionInstruction ri, String nbElems, String indexName)
 	protected abstract def CharSequence getParallelContent(Loop l)
 

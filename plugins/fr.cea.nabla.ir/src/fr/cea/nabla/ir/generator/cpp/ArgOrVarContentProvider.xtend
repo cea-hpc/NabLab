@@ -20,7 +20,7 @@ import fr.cea.nabla.ir.ir.ArgOrVar
 @Data
 abstract class ArgOrVarContentProvider
 {
-	val extension TypeContentProvider tcp
+	val extension TypeContentProvider
 
 	protected abstract def String getLinearAlgebraType(int dimension)
 

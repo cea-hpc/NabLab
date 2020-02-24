@@ -9,7 +9,7 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 @Data
 class AttributesContentProvider
 {
-	protected val extension TypeContentProvider typeContentProvider
+	protected val extension ArgOrVarContentProvider
 	protected def CharSequence getAdditionalContent() { null }
 
 	def getContentFor(IrModule m)
@@ -34,9 +34,9 @@ class AttributesContentProvider
 	'''
 		«val globals = m.globalVariables»
 		«IF !globals.empty»
-		
+
 		// Global Variables
-		«val globalsByType = globals.groupBy[type.cppType]»
+		«val globalsByType = globals.groupBy[cppType]»
 		«FOR type : globalsByType.keySet»
 		«type» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
 		«ENDFOR»
@@ -59,7 +59,7 @@ class AttributesContentProvider
 	'''
 		«val linearAlgebraVars = m.linearAlgebraVariables»
 		«IF !linearAlgebraVars.empty»
-		
+
 		// Linear Algebra Variables
 		«FOR v : linearAlgebraVars»
 		«v.cppType» «v.name»;

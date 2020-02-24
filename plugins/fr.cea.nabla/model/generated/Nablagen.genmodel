@@ -8,12 +8,12 @@
     runtimeVersion="2.19" usedGenPackages="Nabla.genmodel#//nabla">
   <genPackages prefix="Nablagen" basePackage="fr.cea.nabla" disposableProviderFactory="true"
       fileExtensions="nablagen" ecorePackage="Nablagen.ecore#/">
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Nablagen.ecore#//CppModel">
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppModel/Sequential"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppModel/StlThread"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppModel/OpenMP"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppModel/Kokkos"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppModel/KokkosTeamThread"/>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Nablagen.ecore#//CppProgrammingModel">
+      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppProgrammingModel/Sequential"/>
+      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppProgrammingModel/StlThread"/>
+      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppProgrammingModel/OpenMP"/>
+      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppProgrammingModel/Kokkos"/>
+      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppProgrammingModel/KokkosTeamThread"/>
     </genEnums>
     <genClasses ecoreClass="Nablagen.ecore#//NablagenModule">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenModule/imports"/>
@@ -68,7 +68,7 @@
     <genClasses ecoreClass="Nablagen.ecore#//Cpp">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Cpp/maxIterationVar"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Cpp/stopTimeVar"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Cpp/model"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Cpp/programmingModel"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

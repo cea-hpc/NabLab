@@ -49,21 +49,22 @@ workflow HeatEquationGenerationChain transforms HeatEquation
 
 	Ir2Code kokkosGenerator follows fillHlts
 	{
-		language = Kokkos
+		language = Cpp
 		{
 			maxIterationVariable = option_max_iterations;
 			stopTimeVariable = option_stoptime;
+			programmingModel = Kokkos
 		}
 		outputDir = "/NablaExamples/src-gen-kokkos";
 	}
 
-	Ir2Code kokkosTeamOfThreadGenerator follows fillHlts
+	Ir2Code kokkosTeamThreadGenerator follows fillHlts
 	{
-		language = Kokkos
+		language = Cpp
 		{
 			maxIterationVariable = option_max_iterations;
 			stopTimeVariable = option_stoptime;
-			teamOfThreads;
+			programmingModel = KokkosTeamThread
 		}
 		outputDir = "/NablaExamples/src-gen-kokkos-team";
 	}

@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.FileLocator
 import org.eclipse.core.runtime.Platform
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ExpressionContentProvider.*
@@ -32,8 +31,8 @@ class Ir2Cpp extends CodeGenerator
 	val AttributesContentProvider attributesContentProvider
 	val PrivateMethodsContentProvider privateMethodsContentProvider
 
-	val extension TypeContentProvider typeContentProvider
-	val extension JobCallsContentProvider jobCallsContentProvider
+	val extension ArgOrVarContentProvider argOrVarContentProvider
+	val extension JobContainerContentProvider jobContainerContentProvider
 
 	new(File outputDirectory, Backend backend)
 	{
@@ -43,8 +42,8 @@ class Ir2Cpp extends CodeGenerator
 		attributesContentProvider = backend.attributesContentProvider
 		privateMethodsContentProvider = backend.privateMethodsContentProvider
 
-		typeContentProvider = backend.typeContentProvider
-		jobCallsContentProvider = backend.jobCallsContentProvider
+		argOrVarContentProvider = backend.argOrVarContentProvider
+		jobContainerContentProvider = backend.jobContainerContentProvider
 
 		// check if c++ resources are available in the output folder
 		if (outputDirectory.exists && outputDirectory.isDirectory &&
@@ -146,7 +145,9 @@ class Ir2Cpp extends CodeGenerator
 		void simulate()
 		{
 			«traceContentProvider.getBeginOfSimuTrace(name, withMesh)»
-			«jobs.filter[topLevel].content»
+
+			«callsHeader»
+			«callsContent»
 			«traceContentProvider.endOfSimuTrace»
 			«IF !linearAlgebraVariables.empty && mainTimeLoop !== null»«traceContentProvider.getCGInfoTrace(mainTimeLoop.iterationCounter.name)»«ENDIF»
 		}

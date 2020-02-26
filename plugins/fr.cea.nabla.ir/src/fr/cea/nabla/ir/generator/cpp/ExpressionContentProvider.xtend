@@ -28,18 +28,22 @@ import fr.cea.nabla.ir.ir.SizeTypeInt
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
 import java.util.ArrayList
+import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.SizeTypeContentProvider.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
+@Data
 class ExpressionContentProvider
 {
-	static def dispatch CharSequence getContent(ContractedIf it) 
+	val extension TypeContentProvider
+
+	def dispatch CharSequence getContent(ContractedIf it) 
 	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
 
-	static def dispatch CharSequence getContent(BinaryExpression it) 
+	def dispatch CharSequence getContent(BinaryExpression it) 
 	{
 		val lContent = left.content
 		val rContent = right.content
@@ -50,13 +54,13 @@ class ExpressionContentProvider
 			'''ArrayOperations::«operator.operatorName»(«lContent», «rContent»)'''
 	}
 
-	static def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
-	static def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
-	static def dispatch CharSequence getContent(IntConstant it) '''«value»'''
-	static def dispatch CharSequence getContent(RealConstant it) '''«value»'''
-	static def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
+	def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
+	def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
+	def dispatch CharSequence getContent(IntConstant it) '''«value»'''
+	def dispatch CharSequence getContent(RealConstant it) '''«value»'''
+	def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
 
-	static def dispatch CharSequence getContent(MinConstant it) 
+	def dispatch CharSequence getContent(MinConstant it) 
 	{
 		val t = type
 		switch t
@@ -67,7 +71,7 @@ class ExpressionContentProvider
 		}
 	}
 
-	static def dispatch CharSequence getContent(MaxConstant it) 
+	def dispatch CharSequence getContent(MaxConstant it) 
 	{
 		val t = type
 		switch t
@@ -78,17 +82,17 @@ class ExpressionContentProvider
 		}
 	}
 
-	static def dispatch CharSequence getContent(BaseTypeConstant it)
+	def dispatch CharSequence getContent(BaseTypeConstant it)
 	{
 		val t = type as BaseType
 		val sizes = t.sizes.filter(SizeTypeInt).map[value]
 		'''{«initArray(sizes, value.content)»}''' // One additional bracket for matrix... Magic C++ !
 	}
 
-	static def dispatch CharSequence getContent(VectorConstant it)
+	def dispatch CharSequence getContent(VectorConstant it)
 	'''«FOR v : values BEFORE '{{' SEPARATOR ', ' AFTER '}}'»«v.content»«ENDFOR»'''
 
-	static def dispatch CharSequence getContent(FunctionCall it)
+	def dispatch CharSequence getContent(FunctionCall it)
 	{
 		if (function.name == 'solveLinearSystem')
 			'''«function.getCodeName("::")»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR», cg_info)'''
@@ -96,17 +100,17 @@ class ExpressionContentProvider
 			'''«function.getCodeName("::")»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	}
 
-	static def dispatch CharSequence getContent(ArgOrVarRef it)
+	def dispatch CharSequence getContent(ArgOrVarRef it)
 	'''«target.getCodeName('->')»«iteratorsContent»«FOR d:indices BEFORE '['  SEPARATOR '][' AFTER ']'»«d.content»«ENDFOR»'''
 
-	private static def getIteratorsContent(ArgOrVarRef it)
+	private def getIteratorsContent(ArgOrVarRef it)
 	{
 		if (iterators.empty || target instanceof SimpleVariable) return ''
 		val array = target as ConnectivityVariable
 		if (array.type.connectivities.size < iterators.size) return ''
-		var content = new ArrayList<CharSequence>
+		var content = new ArrayList<String>
 		for (r : iterators)
 			content += r.indexName
-		return '(' + content.join(',') + ')'
+		content.formatVarIteratorsContent
 	}
 }

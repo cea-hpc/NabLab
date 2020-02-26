@@ -15,20 +15,24 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
+import fr.cea.nabla.ir.ir.Variable
+import java.util.List
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.cpp.ExpressionContentProvider.*
 
 @Data
-abstract class JobContentProvider 
+abstract class JobContentProvider
 {
 	protected val TraceContentProvider traceContentProvider
+	protected val extension ExpressionContentProvider
 	protected val extension InstructionContentProvider
 	protected val extension JobContainerContentProvider
+	protected abstract def CharSequence copy(Variable source, Variable destination)
 
 	def getContent(Job it)
 	'''
@@ -90,15 +94,11 @@ abstract class JobContentProvider
 	protected def dispatch CharSequence getInnerContent(TimeLoopCopyJob it)
 	'''
 		«FOR copy : copies»
-			«IF (copy.destination.type instanceof BaseType)»
-			«copy(copy.destination.name, copy.source.name, (copy.destination.type as BaseType).sizes.size)»
-			«ELSE»
-			deep_copy(«copy.destination.name», «copy.source.name»);
-			«ENDIF»
+			«copy(copy.source, copy.destination)»
 		«ENDFOR»
 	'''
 
-	private def CharSequence copy(String left, String right, int dimension)
+	protected def CharSequence copy(String left, String right, int dimension)
 	{
 		if (dimension == 0)
 			'''«left» = «right»;'''
@@ -127,29 +127,53 @@ abstract class JobContentProvider
 }
 
 @Data
+class SequentialJobContentProvider extends JobContentProvider
+{
+	override getContent(Job it)
+	'''
+		«comment»
+		void «codeName»() noexcept
+		{
+			«innerContent»
+		}
+	'''
+
+	override copy(Variable source, Variable destination)
+	{
+		copy(destination.name, source.name, destination.type.dimension)
+	}
+}
+
+@Data
 class KokkosJobContentProvider extends JobContentProvider
 {
 	override getContent(Job it)
 	'''
 		«comment»
 		KOKKOS_INLINE_FUNCTION
-		void «codeName»() noexcept
+		void «codeName»(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept
 		{
 			«innerContent»
 		}
 	'''
+
+	override copy(Variable source, Variable destination)
+	{
+		if (destination.type instanceof BaseType)
+			copy(destination.name, source.name, (destination.type as BaseType).sizes.size)
+		else
+			'''deep_copy(«destination.name», «source.name»);'''
+	}
+
+	protected def List<String> getArguments(Job it) { #[] }
 }
 
 @Data
-class KokkosTeamThreadJobContentProvider extends JobContentProvider
+class KokkosTeamThreadJobContentProvider extends KokkosJobContentProvider
 {
-	override getContent(Job it)
-	'''
-		«comment»
-		KOKKOS_INLINE_FUNCTION
-		void «codeName»(«IF hasIterable»const member_type& team_member«ENDIF») noexcept
-		{
-			«innerContent»
-		}
-	'''
+	override getArguments(Job it)
+	{
+		if (hasIterable) #["const member_type& team_member"]
+		else #[]
+	}
 }

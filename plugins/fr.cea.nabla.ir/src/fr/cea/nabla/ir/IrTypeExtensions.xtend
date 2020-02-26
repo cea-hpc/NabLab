@@ -38,6 +38,9 @@ class IrTypeExtensions
 			primitive.literal + sizes.map[x | (x as SizeTypeInt).value.utfExponent].join('\u02E3')
 	}
 
+	static def dispatch int getDimension(BaseType it) { sizes.size }
+	static def dispatch int getDimension(ConnectivityType it) { base.sizes.size + connectivities.size }
+
 	static def isScalar(IrType t)
 	{
 		(t instanceof BaseType) && (t as BaseType).sizes.empty

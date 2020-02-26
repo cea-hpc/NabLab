@@ -10,12 +10,12 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.Arg
+import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.SimpleVariable
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import fr.cea.nabla.ir.ir.ArgOrVar
 
 @Data
 abstract class ArgOrVarContentProvider

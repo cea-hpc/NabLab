@@ -15,7 +15,7 @@ import fr.cea.nabla.ir.ir.SizeTypeSymbolRef
 
 class SizeTypeContentProvider 
 {
-	static def dispatch CharSequence getContent(SizeTypeInt it) '''«value»'''
-	static def dispatch CharSequence getContent(SizeTypeSymbolRef it) '''«target.name»'''
-	static def dispatch CharSequence getContent(SizeTypeOperation it) '''«left.content» «operator» «right.content»'''
+	static def dispatch String getContent(SizeTypeInt it) { value.toString }
+	static def dispatch String getContent(SizeTypeSymbolRef it) { target.name }
+	static def dispatch String getContent(SizeTypeOperation it) { left.content + ' ' + operator + ' ' + right.content }
 }

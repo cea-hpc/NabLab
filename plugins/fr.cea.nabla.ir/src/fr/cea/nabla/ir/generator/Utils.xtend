@@ -47,7 +47,7 @@ class Utils
 		else name
 	}
 
-	static def getNbElems(Connectivity it) { 'nb' + name.toFirstUpper}
+	static def getNbElems(Connectivity it) { 'nb' + name.toFirstUpper }
 
 	static def getComment(Job it)
 	'''

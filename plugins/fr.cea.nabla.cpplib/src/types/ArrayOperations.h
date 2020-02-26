@@ -13,9 +13,6 @@
 #include <iostream>
 #include "types/Types.h"
 
-// Kokkos headers
-#include "Kokkos_Core.hpp"
-
 namespace nablalib
 {
 namespace ArrayOperations

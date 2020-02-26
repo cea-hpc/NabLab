@@ -10,10 +10,18 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.IrModule
+import java.util.LinkedHashSet
+import org.eclipse.xtend.lib.annotations.Data
 
+@Data
 class Ir2Cmake
 {
-	static def getFileContent(IrModule it) 
+	val LinkedHashSet<String> environmentVariables = new LinkedHashSet<String>
+	val LinkedHashSet<String> includeDirectories = new LinkedHashSet<String>
+	val LinkedHashSet<String> linkDirectories = new LinkedHashSet<String>
+	val LinkedHashSet<String> targetLinkLibraries = new LinkedHashSet<String>
+
+	def getContentFor(IrModule it)
 	'''
 		#
 		# Generated file - Do not overwrite
@@ -23,23 +31,38 @@ class Ir2Cmake
 		SET(CMAKE_CXX_COMPILER /usr/bin/g++)
 		SET(CMAKE_CXX_FLAGS "-O3 --std=c++17 -fopenmp -march=core-avx2 -mtune=core-avx2 -fopt-info-vec-missed=vec_opt_miss.txt -g")
 		project(«name.toFirstUpper»Project CXX)
+		«FOR ev : environmentVariables»
 
-		SET(KOKKOS_HOME $ENV{KOKKOS_HOME})
-		IF(DEFINED KOKKOS_HOME)
-		    MESSAGE(STATUS "KOKKOS_HOME: ${KOKKOS_HOME}")
+		SET(«ev» $ENV{«ev»})
+		IF(DEFINED «ev»)
+		    MESSAGE(STATUS "«ev»: ${«ev»}")
 		ELSE()
-		    MESSAGE(FATAL_ERROR "KOKKOS_HOME environment variable must be defined")
+		    MESSAGE(FATAL_ERROR "«ev» environment variable must be defined")
 		ENDIF()
+		«ENDFOR»
 
 		ADD_SUBDIRECTORY(${CMAKE_SOURCE_DIR}/../libcppnabla libcppnabla)
-		include_directories("${CMAKE_CURRENT_SOURCE_DIR};${KOKKOS_HOME}/include")
-		link_directories(${KOKKOS_HOME}/lib)
+		include_directories("${CMAKE_CURRENT_SOURCE_DIR}«FOR id : includeDirectories»;«id»«ENDFOR»")
+		«FOR ld : linkDirectories BEFORE "link_directories(" SEPARATOR ";" AFTER ")"»«ld»«ENDFOR»
 
 		add_executable(«name.toLowerCase» «name + '.cc'»)
-		target_link_libraries(«name.toLowerCase» cppnabla kokkos kokkos_kernels dl stdc++fs hwloc)
-
+		target_link_libraries(«name.toLowerCase» cppnabla dl stdc++fs«FOR tll : targetLinkLibraries» «tll»«ENDFOR»)
 		if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 		include(Project.cmake)
 		endif()
 	'''
+}
+
+class KokkosIr2Cmake extends Ir2Cmake
+{
+	new()
+	{
+		environmentVariables += "KOKKOS_HOME"
+		includeDirectories += "${KOKKOS_HOME}/include"
+		linkDirectories += "${KOKKOS_HOME}/lib"
+		targetLinkLibraries += "kokkos"
+		targetLinkLibraries += "kokkos_kernels"
+		targetLinkLibraries += "dl"
+		targetLinkLibraries += "hwloc"
+	}
 }

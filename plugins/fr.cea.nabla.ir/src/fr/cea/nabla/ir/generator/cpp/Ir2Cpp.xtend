@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
@@ -22,27 +21,22 @@ import org.eclipse.core.runtime.Platform
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.cpp.ExpressionContentProvider.*
 
 class Ir2Cpp extends CodeGenerator
 {
-	val IncludesContentProvider includesContentProvider
-	val TraceContentProvider traceContentProvider
-	val AttributesContentProvider attributesContentProvider
-	val PrivateMethodsContentProvider privateMethodsContentProvider
+	val Backend backend
 
 	val extension ArgOrVarContentProvider argOrVarContentProvider
+	val extension ExpressionContentProvider expressionContentProvider
 	val extension JobContainerContentProvider jobContainerContentProvider
 
 	new(File outputDirectory, Backend backend)
 	{
 		super(backend.name)
-		includesContentProvider = backend.includesContentProvider
-		traceContentProvider = backend.traceContenProvider
-		attributesContentProvider = backend.attributesContentProvider
-		privateMethodsContentProvider = backend.privateMethodsContentProvider
+		this.backend = backend
 
 		argOrVarContentProvider = backend.argOrVarContentProvider
+		expressionContentProvider = backend.expressionContentProvider
 		jobContainerContentProvider = backend.jobContainerContentProvider
 
 		// check if c++ resources are available in the output folder
@@ -63,12 +57,12 @@ class Ir2Cpp extends CodeGenerator
 
 	override getFileContentsByName(IrModule it)
 	{
-		#{ name + '.cc' -> ccFileContent, 'CMakeLists.txt' -> Ir2Cmake::getFileContent(it)}
+		#{ name + '.cc' -> ccFileContent, 'CMakeLists.txt' -> backend.ir2Cmake.getContentFor(it)}
 	}
 
 	private def getCcFileContent(IrModule it)
 	'''
-	«includesContentProvider.getContentFor(it)»
+	«backend.includesContentProvider.getContentFor(it)»
 
 	using namespace nablalib;
 
@@ -85,7 +79,7 @@ class Ir2Cpp extends CodeGenerator
 		Options* options;
 
 	private:
-		«attributesContentProvider.getContentFor(it)»
+		«backend.attributesContentProvider.getContentFor(it)»
 
 	public:
 		«name»(Options* aOptions, «IF withMesh»CartesianMesh2D* aCartesianMesh2D,«ENDIF» string output)
@@ -101,24 +95,22 @@ class Ir2Cpp extends CodeGenerator
 		, «uv.name»(«uv.defaultValue.content»)
 		«ENDFOR»
 		«FOR a : connectivityVariables»
-		, «a.name»("«a.name»", «FOR d : a.type.connectivities SEPARATOR ', '»«d.nbElems»«ENDFOR»)
+		, «a.name»(«backend.typeContentProvider.getCstrInit(a.name, a.type.base, a.type.connectivities)»)
 		«ENDFOR»
 		«FOR a : linearAlgebraVariables»
-		, «a.name»("«a.name»", «FOR d : a.type.connectivities SEPARATOR ', '»«d.nbElems»«ENDFOR»)
+		, «a.name»(«backend.typeContentProvider.getCstrInit(a.name, a.type.base, a.type.connectivities)»)
 		«ENDFOR»
 		{
 			«IF withMesh»
 			// Copy node coordinates
 			const auto& gNodes = mesh->getGeometry()->getNodes();
-			Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
-			{
-				«initNodeCoordVariable.name»(rNodes) = gNodes[rNodes];
-			});
+			«val iterator = backend.typeContentProvider.formatVarIteratorsContent(#["rNodes"])»
+			«backend.instructionContentProvider.getContent("rNodes", "nbNodes", '''«initNodeCoordVariable.name»«iterator» = gNodes[rNodes];''')»
 			«ENDIF»
 		}
 
 	private:
-		«privateMethodsContentProvider.getContentFor(it)»
+		«backend.privateMethodsContentProvider.getContentFor(it)»
 		«IF postProcessingInfo !== null»
 
 		void dumpVariables(int iteration)
@@ -144,51 +136,18 @@ class Ir2Cpp extends CodeGenerator
 	public:
 		void simulate()
 		{
-			«traceContentProvider.getBeginOfSimuTrace(name, withMesh)»
+			«backend.traceContentProvider.getBeginOfSimuTrace(name, withMesh)»
 
 			«callsHeader»
 			«callsContent»
-			«traceContentProvider.endOfSimuTrace»
-			«IF !linearAlgebraVariables.empty && mainTimeLoop !== null»«traceContentProvider.getCGInfoTrace(mainTimeLoop.iterationCounter.name)»«ENDIF»
+			«backend.traceContentProvider.endOfSimuTrace»
+			«IF !linearAlgebraVariables.empty && mainTimeLoop !== null»«backend.traceContentProvider.getCGInfoTrace(mainTimeLoop.iterationCounter.name)»«ENDIF»
 		}
 	};
 
 	int main(int argc, char* argv[]) 
 	{
-		Kokkos::initialize(argc, argv);
-		auto o = new «name»::Options();
-		string output;
-		«IF withMesh»
-		if (argc == 5)
-		{
-			o->«MandatoryOptions::X_EDGE_ELEMS» = std::atoi(argv[1]);
-			o->«MandatoryOptions::Y_EDGE_ELEMS» = std::atoi(argv[2]);
-			o->«MandatoryOptions::X_EDGE_LENGTH» = std::atof(argv[3]);
-			o->«MandatoryOptions::Y_EDGE_LENGTH» = std::atof(argv[4]);
-		}
-		else if (argc == 6)
-		{
-			o->«MandatoryOptions::X_EDGE_ELEMS» = std::atoi(argv[1]);
-			o->«MandatoryOptions::Y_EDGE_ELEMS» = std::atoi(argv[2]);
-			o->«MandatoryOptions::X_EDGE_LENGTH» = std::atof(argv[3]);
-			o->«MandatoryOptions::Y_EDGE_LENGTH» = std::atof(argv[4]);
-			output = argv[5];
-		}
-		else if (argc != 1)
-		{
-			std::cerr << "[ERROR] Wrong number of arguments. Expecting 4 or 5 args: X Y Xlength Ylength (output)." << std::endl;
-			std::cerr << "(X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
-		}
-		auto nm = CartesianMesh2DGenerator::generate(o->«MandatoryOptions::X_EDGE_ELEMS», o->«MandatoryOptions::Y_EDGE_ELEMS», o->«MandatoryOptions::X_EDGE_LENGTH», o->«MandatoryOptions::Y_EDGE_LENGTH»);
-		«ENDIF»
-		auto c = new «name»(o, «IF withMesh»nm,«ENDIF» output);
-		c->simulate();
-		delete c;
-		«IF withMesh»
-		delete nm;
-		«ENDIF»
-		delete o;
-		Kokkos::finalize();
+		«backend.mainContentProvider.getContentFor(it)»
 		return 0;
 	}
 	'''

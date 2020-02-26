@@ -1,17 +1,13 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.JobContainer
-import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
-@Data
 class JobContainerContentProvider
 {
-	protected val TraceContentProvider traceContentProvider
-
 	def getCallsHeader(JobContainer it) ''''''
 
 	def getCallsContent(JobContainer it)
@@ -23,7 +19,6 @@ class JobContainerContentProvider
 	'''
 }
 
-@Data
 class KokkosTeamThreadJobContainerContentProvider extends JobContainerContentProvider
 {
 	override getCallsHeader(JobContainer it)
@@ -53,8 +48,11 @@ class KokkosTeamThreadJobContainerContentProvider extends JobContainerContentPro
 			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 			{
 				«FOR j : atJobs.sortBy[name]»
-					«IF nbTimes++==0»
-						«traceContentProvider.getTeamOfThreadsInfo(j.topLevel)»
+					«IF nbTimes++==0 && j.topLevel»
+					if (thread.league_rank() == 0)
+						Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){
+							std::cout << "[" << __GREEN__ << "RUNTIME" << __RESET__ << "]   Using " << __BOLD__ << setw(3) << thread.league_size() << __RESET__ << " team(s) of "
+								<< __BOLD__ << setw(3) << thread.team_size() << __RESET__<< " thread(s)" << std::endl;});
 					«ENDIF»
 					«IF !j.hasLoop»
 					if (thread.league_rank() == 0)

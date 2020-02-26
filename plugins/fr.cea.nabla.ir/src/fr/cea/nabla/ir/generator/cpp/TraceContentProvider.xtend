@@ -18,6 +18,11 @@ class TraceContentProvider
 	val String maxIterationsVarName
 	val String stopTimeVarName
 
+	protected def getHwlocTraceContent()
+	'''
+		std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
+	'''
+
 	def getBeginOfSimuTrace(String simuName, boolean useMesh)
 	'''
 		std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting «simuName» ..." << __RESET__ << "\n\n";
@@ -27,18 +32,7 @@ class TraceContentProvider
 			<< __RESET__ << ", X length=" << __BOLD__ << options->«MandatoryOptions::X_EDGE_LENGTH» << __RESET__ << ", Y length=" << __BOLD__ << options->«MandatoryOptions::Y_EDGE_LENGTH» << __RESET__ << std::endl;
 		«ENDIF»
 
-		if (Kokkos::hwloc::available())
-		{
-			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_numa_count()
-				<< __RESET__ << ", Cores/NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_cores_per_numa()
-				<< __RESET__ << ", Threads/Core=" << __BOLD__ << Kokkos::hwloc::get_available_threads_per_core() << __RESET__ << std::endl;
-		}
-		else
-		{
-			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
-		}
-
-		// std::cout << "[" << __GREEN__ << "KOKKOS" << __RESET__ << "]    " << __BOLD__ << (is_same<MyLayout,Kokkos::LayoutLeft>::value?"Left":"Right")" << __RESET__ << " layout" << std::endl;
+		«hwlocTraceContent»
 		«IF useMesh»
 
 		if (!writer.isDisabled())
@@ -84,14 +78,24 @@ class TraceContentProvider
 	'''
 		std::cout << "[CG] average iteration: " << cg_info.m_nb_it / «iterationVarName» << std::endl;
 	'''
+}
 
-	def getTeamOfThreadsInfo(boolean isTopLoop)
+@Data
+class KokkosTraceContentProvider extends TraceContentProvider
+{
+	override getHwlocTraceContent()
 	'''
-		«IF isTopLoop»
-		if (thread.league_rank() == 0)
-			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){
-				std::cout << "[" << __GREEN__ << "RUNTIME" << __RESET__ << "]   Using " << __BOLD__ << setw(3) << thread.league_size() << __RESET__ << " team(s) of "
-					<< __BOLD__ << setw(3) << thread.team_size() << __RESET__<< " thread(s)" << std::endl;});
-		«ENDIF»
+		if (Kokkos::hwloc::available())
+		{
+			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_numa_count()
+				<< __RESET__ << ", Cores/NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_cores_per_numa()
+				<< __RESET__ << ", Threads/Core=" << __BOLD__ << Kokkos::hwloc::get_available_threads_per_core() << __RESET__ << std::endl;
+		}
+		else
+		{
+			«super.hwlocTraceContent»
+		}
+
+		// std::cout << "[" << __GREEN__ << "KOKKOS" << __RESET__ << "]    " << __BOLD__ << (is_same<MyLayout,Kokkos::LayoutLeft>::value?"Left":"Right")" << __RESET__ << " layout" << std::endl;
 	'''
 }

@@ -204,16 +204,18 @@ class WorkflowInterpreter
 
 	/**
 	 * Execute next workflow step(s)
-	 * For n steps, the model is duplicated n-1 times to avoid conflicts
+	 * For n steps, the model is cloned n-1 times to avoid conflicts.
+	 * Caution: clones must be done before continuing the workflow
+	 * to keep consistent for the following steps.
 	 */
 	private def fireModel(WorkflowComponent it, IrModule model)
 	{
 		val nextComponents = nexts
-		if (!nextComponents.empty)
+		switch (nextComponents.size)
 		{
-			nextComponents.get(0).launchComponent(model)
-			for(i : 1..<nextComponents.size) 
-				nextComponents.get(i).launchComponent(EcoreUtil::copy(model))
+			case 0: return
+			case 1: nextComponents.head.launchComponent(model)
+			default: nextComponents.forEach[c | c.launchComponent(EcoreUtil::copy(model))]
 		}
 	}
 }

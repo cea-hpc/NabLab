@@ -10,12 +10,12 @@
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.Expression
+import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.IterationBlock
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Variable
 import org.eclipse.emf.ecore.EObject
@@ -40,27 +40,23 @@ class ReplaceReductions implements IrTransformationStep
 	}
 
 	/**
-	 * Replace inner reductions by a Loop + a Variable.
+	 * Replace inner reductions by a variable definition (accumulator) and a Loop.
+	 * The loop contains an affectation with a call to the binary function of the reduction.
 	 */
 	override transform(IrModule m)
 	{
 		var reductions = m.eAllContents.filter(ReductionInstruction)
 		if (!replaceAllReductions) reductions = reductions.filter[!external]
 
-		for (reductionInstr : reductions.toList)
+		for (reduction : reductions.toList)
 		{
-			// création des fonctions correspondantes
-			// 2 arguments IN : 1 du type de la collection, l'autre du type de retour (appel en chaine)
-			val reduc = reductionInstr.reduction
-			// transformation de la reduction
-			val loopExpression = createAffectationRHS(m, reductionInstr)
-			val loop = createReductionLoop(reductionInstr.iterationBlock, reductionInstr.result, loopExpression)
-			val variableDefinition = IrFactory::eINSTANCE.createVarDefinition => [ variables += reductionInstr.result ]
-			replace(reductionInstr, #[variableDefinition, loop])
+			val functionCall = createFunctionCall(reduction)
+			val affectation = createAffectation(reduction.result, functionCall)
+			val loop = createLoop(reduction.iterationBlock, affectation)
 
-			// si la réduction n'est pas référencée, on l'efface
-			if (!m.eAllContents.filter(ReductionInstruction).exists[x | x.reduction == reduc])
-				EcoreUtil::delete(reduc, true)
+			// instantiate the VarDefinition at the end to prevent reduction.result from becoming null
+			val variableDefinition = IrFactory::eINSTANCE.createVarDefinition => [ variables += reduction.result ]
+			replace(reduction, #[variableDefinition, loop])
 		}
 		return true
 	}
@@ -70,100 +66,35 @@ class ReplaceReductions implements IrTransformationStep
 		#[]
 	}
 
-	private def Expression createAffectationRHS(IrModule m, ReductionInstruction reductionInstr)
+	private def Expression createFunctionCall(ReductionInstruction reduction)
 	{
-		val reduction = reductionInstr.reduction
-		val varRef = IrFactory::eINSTANCE.createArgOrVarRef =>
+		IrFactory::eINSTANCE.createFunctionCall =>
 		[
-			target = reductionInstr.result
-			type = EcoreUtil::copy(target.type)
+			type = EcoreUtil::copy(reduction.result.type)
+			function = reduction.binaryFunction
+			args += IrFactory::eINSTANCE.createArgOrVarRef =>
+			[
+				target = reduction.result
+				type = EcoreUtil::copy(target.type)
+			]
+			args += reduction.lambda
 		]
-
-		if (reduction.isOperator)
-		{
-			return IrFactory::eINSTANCE.createBinaryExpression =>
-			[
-				type = EcoreUtil::copy(reductionInstr.result.type)
-				operator = reduction.name
-				left = varRef
-				right = IrFactory::eINSTANCE.createParenthesis => 
-				[ 
-					expression = reductionInstr.arg
-					type = EcoreUtil::copy(expression.type)
-				]
-			]
-		}
-		else
-		{
-			// creation de la fonction
-			val f = findOrCreateFunction(m, reduction)
-			// transformation de la reduction
-			return IrFactory::eINSTANCE.createFunctionCall =>
-			[
-				type = EcoreUtil::copy(reductionInstr.result.type)
-				function = f
-				args += varRef
-				args += reductionInstr.arg
-			]
-		}
 	}
 
-	private def findOrCreateFunction(IrModule m, Reduction r)
+	private def create IrFactory::eINSTANCE.createAffectation createAffectation(Variable lhs, Expression rhs)
 	{
-		var function = m.functions.findFirst
+		left = IrFactory::eINSTANCE.createArgOrVarRef =>
 		[
-			name == r.functionName &&
-			inArgs.size == 2 &&
-			inArgs.get(0).type == r.collectionType &&
-			inArgs.get(1).type == r.returnType &&
-			returnType == r.returnType
+			target = lhs
+			type = EcoreUtil::copy(rhs.type)
 		]
-
-		if (function === null) 
-		{ 
-			function = IrFactory::eINSTANCE.createFunction =>
-			[
-				name = r.functionName
-				inArgs += IrFactory::eINSTANCE.createArg =>
-				[
-					name = 'a'
-					type = EcoreUtil.copy(r.collectionType)
-				]
-				inArgs += IrFactory::eINSTANCE.createArg =>
-				[
-					name = 'b'
-					type = EcoreUtil.copy(r.returnType)
-				]
-				returnType = EcoreUtil.copy(r.returnType)
-				provider = r.provider
-			]
-			m.functions += function
-		}
-
-		return function
+		right = rhs
 	}
 
-	private def getFunctionName(Reduction r)
+	private def create IrFactory::eINSTANCE.createLoop createLoop(IterationBlock itBlock, Instruction b)
 	{
-		val prefix = 'reduce'
-		if (r.name.startsWith(prefix)) r.name.replaceFirst(prefix, '')
-		else r.name
-	}
-
-	private def createReductionLoop(IterationBlock itBlock, Variable affectationLHS, Expression affectationRHS)
-	{
-		val loop = IrFactory::eINSTANCE.createLoop
-		loop.iterationBlock = itBlock
-		loop.body = IrFactory::eINSTANCE.createAffectation =>
-		[
-			left = IrFactory::eINSTANCE.createArgOrVarRef =>
-			[
-				target = affectationLHS
-				type = EcoreUtil::copy(affectationRHS.type)
-			]
-			right = affectationRHS
-		]
-		return loop
+		iterationBlock = itBlock
+		body = b
 	}
 
 	private def boolean isExternal(EObject it)

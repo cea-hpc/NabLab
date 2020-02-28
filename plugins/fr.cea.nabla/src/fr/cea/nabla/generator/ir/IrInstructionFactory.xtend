@@ -114,7 +114,7 @@ class IrInstructionFactory
 			condition = v.condition.toIrExpression
 			thenInstruction = v.then.toIrInstruction
 			if (v.^else !== null) elseInstruction = v.^else.toIrInstruction
-		]		
+		]
 
 		return irInstr.transformReductions(v.condition)
 	}
@@ -125,7 +125,7 @@ class IrInstructionFactory
 		[
 			annotations += v.toIrAnnotation
 			expression = v.expression.toIrExpression
-		]		
+		]
 
 		return irInstr.transformReductions(v.expression)
 	}

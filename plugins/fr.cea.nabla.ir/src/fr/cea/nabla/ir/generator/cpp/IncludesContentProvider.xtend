@@ -86,6 +86,14 @@ class IncludesContentProvider
 	}
 }
 
+class StlThreadIncludesContentProvider extends IncludesContentProvider
+{
+	override getAdditionalUserIncludes()
+	{
+		#["Parallel.h"]
+	}
+}
+
 class KokkosIncludesContentProvider extends IncludesContentProvider
 {
 	override getAdditionalPragmas()

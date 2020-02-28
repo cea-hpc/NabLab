@@ -66,8 +66,7 @@ class ReductionDeclaration
 {
 	val Reduction model
 	val Map<SizeTypeSymbol, DimensionValue> dimensionVarValues
-	val NablaSimpleType collectionType // no reduction on ConnectivityVar => SimpleType only
-	val NablaSimpleType returnType
+	val NablaSimpleType type // no reduction on ConnectivityVar => SimpleType only
 }
 
 class DeclarationProvider 
@@ -98,12 +97,11 @@ class DeclarationProvider
 		val dimensionVarValues = new HashMap<SizeTypeSymbol, DimensionValue>
 		val module = EcoreUtil2.getContainerOfType(reduction, NablaModule)
 		val candidates = module.reductions.filter(Reduction).filter[x | x.name == reduction.name]
-		val r = candidates.findFirst[x | match(x.collectionType, arg, dimensionVarValues) ]
+		val r = candidates.findFirst[x | match(x.type, arg, dimensionVarValues) ]
 		if (r === null) return null
 
-		val collectionType = r.collectionType.computeExpressionType(dimensionVarValues)
-		val returnType = r.returnType.computeExpressionType(dimensionVarValues)
-		return new ReductionDeclaration(r, dimensionVarValues, collectionType as NablaSimpleType, returnType as NablaSimpleType)
+		val type = r.type.computeExpressionType(dimensionVarValues) as NablaSimpleType
+		return new ReductionDeclaration(r, dimensionVarValues, type)
 	}
 
 	private def boolean match(BaseType a, Expression b, Map<SizeTypeSymbol, DimensionValue> dimVarValues) 

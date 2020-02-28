@@ -24,9 +24,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IntervalIterationBlockImpl#getIndex <em>Index</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IntervalIterationBlockImpl#getFrom <em>From</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IntervalIterationBlockImpl#getTo <em>To</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IntervalIterationBlockImpl#isToIncluded <em>To Included</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IntervalIterationBlockImpl#getNbElems <em>Nb Elems</em>}</li>
  * </ul>
  *
  * @generated
@@ -43,44 +41,14 @@ public class IntervalIterationBlockImpl extends IterationBlockImpl implements In
 	protected SizeTypeSymbol index;
 
 	/**
-	 * The cached value of the '{@link #getFrom() <em>From</em>}' containment reference.
+	 * The cached value of the '{@link #getNbElems() <em>Nb Elems</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getFrom()
+	 * @see #getNbElems()
 	 * @generated
 	 * @ordered
 	 */
-	protected SizeType from;
-
-	/**
-	 * The cached value of the '{@link #getTo() <em>To</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getTo()
-	 * @generated
-	 * @ordered
-	 */
-	protected SizeType to;
-
-	/**
-	 * The default value of the '{@link #isToIncluded() <em>To Included</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isToIncluded()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean TO_INCLUDED_EDEFAULT = false;
-
-	/**
-	 * The cached value of the '{@link #isToIncluded() <em>To Included</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isToIncluded()
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean toIncluded = TO_INCLUDED_EDEFAULT;
+	protected SizeType nbElems;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -175,22 +143,22 @@ public class IntervalIterationBlockImpl extends IterationBlockImpl implements In
 	 * @generated
 	 */
 	@Override
-	public SizeType getFrom() {
-		if (from != null && from.eIsProxy()) {
-			InternalEObject oldFrom = (InternalEObject)from;
-			from = (SizeType)eResolveProxy(oldFrom);
-			if (from != oldFrom) {
-				InternalEObject newFrom = (InternalEObject)from;
-				NotificationChain msgs = oldFrom.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.INTERVAL_ITERATION_BLOCK__FROM, null, null);
-				if (newFrom.eInternalContainer() == null) {
-					msgs = newFrom.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.INTERVAL_ITERATION_BLOCK__FROM, null, msgs);
+	public SizeType getNbElems() {
+		if (nbElems != null && nbElems.eIsProxy()) {
+			InternalEObject oldNbElems = (InternalEObject)nbElems;
+			nbElems = (SizeType)eResolveProxy(oldNbElems);
+			if (nbElems != oldNbElems) {
+				InternalEObject newNbElems = (InternalEObject)nbElems;
+				NotificationChain msgs = oldNbElems.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.INTERVAL_ITERATION_BLOCK__NB_ELEMS, null, null);
+				if (newNbElems.eInternalContainer() == null) {
+					msgs = newNbElems.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.INTERVAL_ITERATION_BLOCK__NB_ELEMS, null, msgs);
 				}
 				if (msgs != null) msgs.dispatch();
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.INTERVAL_ITERATION_BLOCK__FROM, oldFrom, from));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.INTERVAL_ITERATION_BLOCK__NB_ELEMS, oldNbElems, nbElems));
 			}
 		}
-		return from;
+		return nbElems;
 	}
 
 	/**
@@ -198,8 +166,8 @@ public class IntervalIterationBlockImpl extends IterationBlockImpl implements In
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SizeType basicGetFrom() {
-		return from;
+	public SizeType basicGetNbElems() {
+		return nbElems;
 	}
 
 	/**
@@ -207,11 +175,11 @@ public class IntervalIterationBlockImpl extends IterationBlockImpl implements In
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetFrom(SizeType newFrom, NotificationChain msgs) {
-		SizeType oldFrom = from;
-		from = newFrom;
+	public NotificationChain basicSetNbElems(SizeType newNbElems, NotificationChain msgs) {
+		SizeType oldNbElems = nbElems;
+		nbElems = newNbElems;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.INTERVAL_ITERATION_BLOCK__FROM, oldFrom, newFrom);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.INTERVAL_ITERATION_BLOCK__NB_ELEMS, oldNbElems, newNbElems);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -223,109 +191,18 @@ public class IntervalIterationBlockImpl extends IterationBlockImpl implements In
 	 * @generated
 	 */
 	@Override
-	public void setFrom(SizeType newFrom) {
-		if (newFrom != from) {
+	public void setNbElems(SizeType newNbElems) {
+		if (newNbElems != nbElems) {
 			NotificationChain msgs = null;
-			if (from != null)
-				msgs = ((InternalEObject)from).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.INTERVAL_ITERATION_BLOCK__FROM, null, msgs);
-			if (newFrom != null)
-				msgs = ((InternalEObject)newFrom).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.INTERVAL_ITERATION_BLOCK__FROM, null, msgs);
-			msgs = basicSetFrom(newFrom, msgs);
+			if (nbElems != null)
+				msgs = ((InternalEObject)nbElems).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.INTERVAL_ITERATION_BLOCK__NB_ELEMS, null, msgs);
+			if (newNbElems != null)
+				msgs = ((InternalEObject)newNbElems).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.INTERVAL_ITERATION_BLOCK__NB_ELEMS, null, msgs);
+			msgs = basicSetNbElems(newNbElems, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.INTERVAL_ITERATION_BLOCK__FROM, newFrom, newFrom));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public SizeType getTo() {
-		if (to != null && to.eIsProxy()) {
-			InternalEObject oldTo = (InternalEObject)to;
-			to = (SizeType)eResolveProxy(oldTo);
-			if (to != oldTo) {
-				InternalEObject newTo = (InternalEObject)to;
-				NotificationChain msgs = oldTo.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.INTERVAL_ITERATION_BLOCK__TO, null, null);
-				if (newTo.eInternalContainer() == null) {
-					msgs = newTo.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.INTERVAL_ITERATION_BLOCK__TO, null, msgs);
-				}
-				if (msgs != null) msgs.dispatch();
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.INTERVAL_ITERATION_BLOCK__TO, oldTo, to));
-			}
-		}
-		return to;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public SizeType basicGetTo() {
-		return to;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetTo(SizeType newTo, NotificationChain msgs) {
-		SizeType oldTo = to;
-		to = newTo;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.INTERVAL_ITERATION_BLOCK__TO, oldTo, newTo);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setTo(SizeType newTo) {
-		if (newTo != to) {
-			NotificationChain msgs = null;
-			if (to != null)
-				msgs = ((InternalEObject)to).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.INTERVAL_ITERATION_BLOCK__TO, null, msgs);
-			if (newTo != null)
-				msgs = ((InternalEObject)newTo).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.INTERVAL_ITERATION_BLOCK__TO, null, msgs);
-			msgs = basicSetTo(newTo, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.INTERVAL_ITERATION_BLOCK__TO, newTo, newTo));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public boolean isToIncluded() {
-		return toIncluded;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setToIncluded(boolean newToIncluded) {
-		boolean oldToIncluded = toIncluded;
-		toIncluded = newToIncluded;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.INTERVAL_ITERATION_BLOCK__TO_INCLUDED, oldToIncluded, toIncluded));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.INTERVAL_ITERATION_BLOCK__NB_ELEMS, newNbElems, newNbElems));
 	}
 
 	/**
@@ -338,10 +215,8 @@ public class IntervalIterationBlockImpl extends IterationBlockImpl implements In
 		switch (featureID) {
 			case IrPackage.INTERVAL_ITERATION_BLOCK__INDEX:
 				return basicSetIndex(null, msgs);
-			case IrPackage.INTERVAL_ITERATION_BLOCK__FROM:
-				return basicSetFrom(null, msgs);
-			case IrPackage.INTERVAL_ITERATION_BLOCK__TO:
-				return basicSetTo(null, msgs);
+			case IrPackage.INTERVAL_ITERATION_BLOCK__NB_ELEMS:
+				return basicSetNbElems(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -357,14 +232,9 @@ public class IntervalIterationBlockImpl extends IterationBlockImpl implements In
 			case IrPackage.INTERVAL_ITERATION_BLOCK__INDEX:
 				if (resolve) return getIndex();
 				return basicGetIndex();
-			case IrPackage.INTERVAL_ITERATION_BLOCK__FROM:
-				if (resolve) return getFrom();
-				return basicGetFrom();
-			case IrPackage.INTERVAL_ITERATION_BLOCK__TO:
-				if (resolve) return getTo();
-				return basicGetTo();
-			case IrPackage.INTERVAL_ITERATION_BLOCK__TO_INCLUDED:
-				return isToIncluded();
+			case IrPackage.INTERVAL_ITERATION_BLOCK__NB_ELEMS:
+				if (resolve) return getNbElems();
+				return basicGetNbElems();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -380,14 +250,8 @@ public class IntervalIterationBlockImpl extends IterationBlockImpl implements In
 			case IrPackage.INTERVAL_ITERATION_BLOCK__INDEX:
 				setIndex((SizeTypeSymbol)newValue);
 				return;
-			case IrPackage.INTERVAL_ITERATION_BLOCK__FROM:
-				setFrom((SizeType)newValue);
-				return;
-			case IrPackage.INTERVAL_ITERATION_BLOCK__TO:
-				setTo((SizeType)newValue);
-				return;
-			case IrPackage.INTERVAL_ITERATION_BLOCK__TO_INCLUDED:
-				setToIncluded((Boolean)newValue);
+			case IrPackage.INTERVAL_ITERATION_BLOCK__NB_ELEMS:
+				setNbElems((SizeType)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -404,14 +268,8 @@ public class IntervalIterationBlockImpl extends IterationBlockImpl implements In
 			case IrPackage.INTERVAL_ITERATION_BLOCK__INDEX:
 				setIndex((SizeTypeSymbol)null);
 				return;
-			case IrPackage.INTERVAL_ITERATION_BLOCK__FROM:
-				setFrom((SizeType)null);
-				return;
-			case IrPackage.INTERVAL_ITERATION_BLOCK__TO:
-				setTo((SizeType)null);
-				return;
-			case IrPackage.INTERVAL_ITERATION_BLOCK__TO_INCLUDED:
-				setToIncluded(TO_INCLUDED_EDEFAULT);
+			case IrPackage.INTERVAL_ITERATION_BLOCK__NB_ELEMS:
+				setNbElems((SizeType)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -427,30 +285,10 @@ public class IntervalIterationBlockImpl extends IterationBlockImpl implements In
 		switch (featureID) {
 			case IrPackage.INTERVAL_ITERATION_BLOCK__INDEX:
 				return index != null;
-			case IrPackage.INTERVAL_ITERATION_BLOCK__FROM:
-				return from != null;
-			case IrPackage.INTERVAL_ITERATION_BLOCK__TO:
-				return to != null;
-			case IrPackage.INTERVAL_ITERATION_BLOCK__TO_INCLUDED:
-				return toIncluded != TO_INCLUDED_EDEFAULT;
+			case IrPackage.INTERVAL_ITERATION_BLOCK__NB_ELEMS:
+				return nbElems != null;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (toIncluded: ");
-		result.append(toIncluded);
-		result.append(')');
-		return result.toString();
 	}
 
 } //IntervalIterationBlockImpl

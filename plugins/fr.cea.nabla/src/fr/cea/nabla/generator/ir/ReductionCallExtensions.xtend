@@ -29,7 +29,7 @@ class ReductionCallExtensions
 	{
 		name = ReductionVariableName
 		val d = rc.declaration
-		val vType = d.returnType.toIrBaseType
+		val vType = d.type.toIrBaseType
 		type = vType
 
 		val seedExpression = d.model.seed.toIrExpression

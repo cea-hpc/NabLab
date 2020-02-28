@@ -28,7 +28,6 @@ class ReplaceUtf8Chars implements IrTransformationStep
 		m.eAllContents.filter(ReductionInstruction).forEach[x | x.result.name = x.result.name.noUtf8]
 		m.connectivities.forEach[x | x.name = x.name.noUtf8]
 		m.functions.forEach[x | x.name = x.name.noUtf8]
-		m.reductions.forEach[x | x.name = x.name.noUtf8]
 		m.jobs.forEach[x | x.name = x.name.noUtf8]
 		return true
 	}
@@ -44,6 +43,8 @@ class ReplaceUtf8Chars implements IrTransformationStep
 		.replace('\u03C1', 'rho')
 		.replace('\u2126', 'omega')
 		.replace('\u221A', 'sqrt')
+		.replace('∑', 'sum')
+		.replace('∏', 'prod')
 	}
 
 	override getOutputTraces()

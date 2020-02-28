@@ -103,15 +103,6 @@ public interface IrFactory extends EFactory {
 	Function createFunction();
 
 	/**
-	 * Returns a new object of class '<em>Reduction</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Reduction</em>'.
-	 * @generated
-	 */
-	Reduction createReduction();
-
-	/**
 	 * Returns a new object of class '<em>Connectivity</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

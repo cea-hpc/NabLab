@@ -26,7 +26,6 @@ import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.MulOrDiv
-import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
@@ -37,7 +36,6 @@ import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VectorConstant
 import fr.cea.nabla.typing.DeclarationProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
-import org.eclipse.xtext.EcoreUtil2
 
 class IrExpressionFactory
 {
@@ -136,12 +134,11 @@ class IrExpressionFactory
 
 	def dispatch Expression toIrExpression(FunctionCall e)
 	{
-		val m = EcoreUtil2.getContainerOfType(e.function, NablaModule)
 		IrFactory::eINSTANCE.createFunctionCall =>
 		[
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
-			function = e.declaration.model.toIrFunction(m.name)
+			function = e.declaration.model.toIrFunction
 			args += e.args.map[toIrExpression]
 		]
 	}

@@ -22,6 +22,7 @@ import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.ItemType
@@ -173,7 +174,7 @@ class BasicValidator extends AbstractNablaValidator
 	public static val UNREACHABLE_CODE = "Return::UnreachableCode"
 
 	static def getForbiddenReturnMsg() { "Return instruction not permitted in jobs" }
-	static def getMissingReturnMsg() { "Function must end with a return instruction" }
+	static def getMissingReturnMsg() { "Function/Reduction must end with a return instruction" }
 	static def getUnreachableReturnMsg() { "Unreachable code" }
 
 	@Check
@@ -185,20 +186,20 @@ class BasicValidator extends AbstractNablaValidator
 	}
 
 	@Check
-	def checkMissingReturn(Function it)
+	def checkMissingReturn(FunctionOrReduction it)
 	{
-		if (external) return;
+		if (body === null) return;
 
 		val hasReturn = (body instanceof Return) || body.eAllContents.exists[x | x instanceof Return]
 		if (!hasReturn)
-			error(getMissingReturnMsg(), NablaPackage.Literals.FUNCTION__NAME, MISSING_RETURN)
+			error(getMissingReturnMsg(), NablaPackage.Literals.FUNCTION_OR_REDUCTION__NAME, MISSING_RETURN)
 	}
 
 	@Check
-	def checkUnreachableCode(Function it)
+	def checkUnreachableCode(FunctionOrReduction it)
 	{
-		if (external) return;
-
+		if (body === null) return;
+		
 		if (body instanceof InstructionBlock)
 		{
 			val instructions = (body as InstructionBlock).instructions
@@ -402,7 +403,7 @@ class BasicValidator extends AbstractNablaValidator
 	public static val FUNCTION_INVALID_ARG_NUMBER = "Functions::InvalidArgNumber"
 	public static val FUNCTION_INCOMPATIBLE_IN_TYPES = "Functions::FunctionIncompatibleInTypes"
 	public static val FUNCTION_RETURN_TYPE = "Functions::FunctionReturnType"
-	public static val REDUCTION_INCOMPATIBLE_COLLECTION_TYPE = "Functions::ReductionIncompatibleCollectionType"
+	public static val REDUCTION_INCOMPATIBLE_TYPE = "Functions::ReductionIncompatibleType"
 	public static val REDUCTION_RETURN_TYPE = "Functions::ReductionReturnType"
 
 	static def getUnusedFunctionMsg() { "Unused function" }
@@ -410,7 +411,7 @@ class BasicValidator extends AbstractNablaValidator
 	static def getFunctionInvalidArgNumberMsg() { "Number of arguments must be equal to number of input types" }
 	static def getFunctionIncompatibleInTypesMsg() { "Declaration conflicts" }
 	static def getFunctionReturnTypeMsg(String variableName) { "Only input type variables can be used for return types. Invalid variable: " + variableName }
-	static def getReductionIncompatibleCollectionTypeMsg() { "Declaration conflicts" }
+	static def getReductionIncompatibleTypeMsg() { "Declaration conflicts" }
 	static def getReductionReturnTypeMsg(String variableName) { "Only collection type variables can be used for return types. Invalid variable: " + variableName }
 
 	@Check
@@ -421,7 +422,7 @@ class BasicValidator extends AbstractNablaValidator
 		val allCorrespondingDeclarations = allCalls.map[declaration]
 		val referenced = allCorrespondingDeclarations.exists[x | x !== null && x.model===it]
 		if (!referenced)
-			warning(getUnusedFunctionMsg(), NablaPackage.Literals::FUNCTION__NAME, UNUSED_FUNCTION)
+			warning(getUnusedFunctionMsg(), NablaPackage.Literals::FUNCTION_OR_REDUCTION__NAME, UNUSED_FUNCTION)
 	}
 
 	@Check
@@ -432,7 +433,7 @@ class BasicValidator extends AbstractNablaValidator
 		val allCorrespondingDeclarations = allCalls.map[declaration]
 		val referenced = allCorrespondingDeclarations.exists[x | x !== null && x.model===it]
 		if (!referenced)
-			warning(getUnusedReductionMsg(), NablaPackage.Literals::REDUCTION__NAME, UNUSED_REDUCTION)
+			warning(getUnusedReductionMsg(), NablaPackage.Literals::FUNCTION_OR_REDUCTION__NAME, UNUSED_REDUCTION)
 	}
 
 	@Check
@@ -440,7 +441,7 @@ class BasicValidator extends AbstractNablaValidator
 	{
 		if (!external && inTypes.size !== inArgs.size)
 		{
-			error(getFunctionInvalidArgNumberMsg(), NablaPackage.Literals::FUNCTION__IN_ARGS, FUNCTION_INVALID_ARG_NUMBER)
+			error(getFunctionInvalidArgNumberMsg(), NablaPackage.Literals::FUNCTION_OR_REDUCTION__IN_ARGS, FUNCTION_INVALID_ARG_NUMBER)
 			return
 		}
 
@@ -448,7 +449,7 @@ class BasicValidator extends AbstractNablaValidator
 		val otherFunctionArgs = module.functions.filter(Function).filter[x | x.name == name && x !== it]
 		val conflictingFunctionArg = otherFunctionArgs.findFirst[x | !areCompatible(x, it)]
 		if (conflictingFunctionArg !== null)
-			error(getFunctionIncompatibleInTypesMsg(), NablaPackage.Literals::FUNCTION__NAME, FUNCTION_INCOMPATIBLE_IN_TYPES)
+			error(getFunctionIncompatibleInTypesMsg(), NablaPackage.Literals::FUNCTION_OR_REDUCTION__NAME, FUNCTION_INCOMPATIBLE_IN_TYPES)
 	}
 
 	/** 
@@ -487,12 +488,12 @@ class BasicValidator extends AbstractNablaValidator
 	}
 
 	@Check
-	def checkReductionCollectionType(Reduction it)
+	def checkReductionType(Reduction it)
 	{
 		val otherReductionArgs = eContainer.eAllContents.filter(Reduction).filter[x | x.name == name && x !== it]
-		val conflictingReductionArg = otherReductionArgs.findFirst[x | !areCompatible(x.collectionType, collectionType)]
+		val conflictingReductionArg = otherReductionArgs.findFirst[x | !areCompatible(x.type, type)]
 		if (conflictingReductionArg !== null)
-			error(getReductionIncompatibleCollectionTypeMsg(), NablaPackage.Literals::REDUCTION__COLLECTION_TYPE, REDUCTION_INCOMPATIBLE_COLLECTION_TYPE)
+			error(getReductionIncompatibleTypeMsg(), NablaPackage.Literals::REDUCTION__TYPE, REDUCTION_INCOMPATIBLE_TYPE)
 	}
 
 	private def areCompatible(BaseType a, BaseType b)
@@ -500,24 +501,6 @@ class BasicValidator extends AbstractNablaValidator
 		(a.primitive != b.primitive || a.sizes.size != b.sizes.size)
 	}
 
-	@Check
-	def checkReductionReturnType(Reduction it)
-	{	
-		// return type should reference only known variables
-		val inTypeVars = new HashSet<SizeTypeSymbol>
-		for (dim : collectionType.eAllContents.filter(SizeTypeSymbolRef).toIterable)
-			if (dim.target !== null && !dim.target.eIsProxy)
-				inTypeVars += dim.target
-
-		val returnTypeVars = new HashSet<SizeTypeSymbol>
-		for (dim : returnType.eAllContents.filter(SizeTypeSymbolRef).toIterable)
-			if (dim.target !== null && !dim.target.eIsProxy)
-				returnTypeVars += dim.target
-
-		val x = returnTypeVars.findFirst[x | !inTypeVars.contains(x)]
-		if (x !== null)
-			error(getReductionReturnTypeMsg(x.name), NablaPackage.Literals::REDUCTION__RETURN_TYPE, REDUCTION_RETURN_TYPE)
-	}
 
 	// ===== Connectivities =====
 
@@ -662,12 +645,12 @@ class BasicValidator extends AbstractNablaValidator
 
 	public static val UNUSED_SIZE_TYPE_SYMBOL = "SizeType::UnusedSizeTypeSymbol"
 	public static val NO_OPERATION_IN_FUNCTION_IN_TYPES = "SizeType::NoOperationInFunctionInTypes"
-	public static val NO_OPERATION_IN_REDUCTION_COLLECTION_TYPE = "SizeType::NoOperationInReductionCollectionType"
+	public static val NO_OPERATION_IN_REDUCTION_TYPE = "SizeType::NoOperationInReductionType"
 	public static val NO_OPERATION_IN_VAR_REF_INDICES = "SizeType::NoOperationInVarRefIndices"
 
 	static def getUnusedSizeTypeSymbolMsg() { "Unused symbol" }
 	static def getNoOperationInFunctionInTypesMsg() { "In types must not contain operations" }
-	static def getNoOperationInReductionCollectionTypeMsg() { "Collection type must not contain operations" }
+	static def getNoOperationInReductionTypeMsg() { "Type must not contain operations" }
 	static def getNoOperationInVarRefIndicesMsg() { "Indices must not contain operations" }
 
 	@Check
@@ -689,10 +672,10 @@ class BasicValidator extends AbstractNablaValidator
 	}
 
 	@Check
-	def checkNoOperationInReductionCollectionType(Reduction it)
+	def checkNoOperationInReductionType(Reduction it)
 	{
-		if (collectionType.eAllContents.filter(SizeTypeOperation).size > 0)
-			error(getNoOperationInReductionCollectionTypeMsg(), NablaPackage.Literals::REDUCTION__COLLECTION_TYPE, NO_OPERATION_IN_REDUCTION_COLLECTION_TYPE)
+		if (type.eAllContents.filter(SizeTypeOperation).size > 0)
+			error(getNoOperationInReductionTypeMsg(), NablaPackage.Literals::REDUCTION__TYPE, NO_OPERATION_IN_REDUCTION_TYPE)
 	}
 
 	@Check

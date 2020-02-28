@@ -12,7 +12,7 @@ package fr.cea.nabla.scoping
 import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
-import fr.cea.nabla.nabla.Function
+import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntervalIterationBlock
@@ -20,7 +20,6 @@ import fr.cea.nabla.nabla.Iterable
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.RangeSpaceIterator
-import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterationBlock
@@ -138,7 +137,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		Scopes::scopeFor(variablesDeclaredBefore(context.instructions, i, prefix + '\t'))
 	}
 
-	private def dispatch IScope variablesDefinedBefore(Function context, Instruction i, String prefix)
+	private def dispatch IScope variablesDefinedBefore(FunctionOrReduction context, Instruction i, String prefix)
 	{
 		//println(prefix + 'variablesDefinedBefore(' + context.class.simpleName + ', ' + i.class.simpleName + ')')
 		Scopes::scopeFor(context.inArgs)
@@ -207,8 +206,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		if (o === null || o instanceof NablaModule) IScope.NULLSCOPE
 		else switch o
 		{
-			Function: Scopes.scopeFor(o.vars)
-			Reduction: Scopes.scopeFor(o.vars)
+			FunctionOrReduction: Scopes.scopeFor(o.vars)
 			Iterable case (o.iterationBlock instanceof IntervalIterationBlock):
 				Scopes.scopeFor(#[(o.iterationBlock as IntervalIterationBlock).index], symbolsDefinedBefore(o.eContainer, prefix + '\t'))
 			default: symbolsDefinedBefore(o.eContainer, prefix + '\t')

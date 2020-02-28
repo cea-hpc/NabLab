@@ -10,16 +10,16 @@
 module Math;
 
 // ***** REDUCTIONS *****
-def ∑: (0.0, ℝ) → ℝ;
-def ∑: x | (0.0, ℝ[x]) → ℝ[x];
-def ∑: x | (0.0, ℝ[x, x]) → ℝ[x, x];
+def ∑: 0.0, ℝ, (a, b) → return a + b;
+def ∑: x | 0.0, ℝ[x], (a, b) → return a + b;
+def ∑: x | 0.0, ℝ[x, x], (a, b) → return a + b;
 
-def ∏: (1.0, ℝ) → ℝ;
-def ∏: x | (1.0, ℝ[x]) → ℝ[x];
-def ∏: x | (0.0, ℝ[x, x]) → ℝ[x, x];
+def ∏: 1.0, ℝ, (a, b) → return a * b;
+def ∏: x | 1.0, ℝ[x], (a, b) → return a * b;
+def ∏: x | 0.0, ℝ[x, x], (a, b) → return a * b;
 
-def Min: (ℝ.MaxValue, ℝ) → ℝ;
-def Max: (ℝ.MinValue, ℝ) → ℝ;
+def Min: ℝ.MaxValue, ℝ, (a, b) → return min(a, b);
+def Max: ℝ.MinValue, ℝ, (a, b) → return max(a, b);
 
 // ***** FUNCTIONS *****
 def fabs: ℝ → ℝ;

@@ -162,13 +162,6 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.REDUCTION: {
-				Reduction reduction = (Reduction)theEObject;
-				T result = caseReduction(reduction);
-				if (result == null) result = caseIrAnnotable(reduction);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case IrPackage.CONNECTIVITY: {
 				Connectivity connectivity = (Connectivity)theEObject;
 				T result = caseConnectivity(connectivity);
@@ -740,21 +733,6 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseFunction(Function object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Reduction</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Reduction</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseReduction(Reduction object) {
 		return null;
 	}
 

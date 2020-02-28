@@ -17,7 +17,6 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getImports <em>Imports</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getItems <em>Items</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getFunctions <em>Functions</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getReductions <em>Reductions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getConnectivities <em>Connectivities</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
@@ -91,18 +90,6 @@ public interface IrModule extends JobContainer {
 	 * @generated
 	 */
 	EList<Function> getFunctions();
-
-	/**
-	 * Returns the value of the '<em><b>Reductions</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Reduction}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Reductions</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Reductions()
-	 * @model containment="true"
-	 * @generated
-	 */
-	EList<Reduction> getReductions();
 
 	/**
 	 * Returns the value of the '<em><b>Connectivities</b></em>' containment reference list.

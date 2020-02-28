@@ -13,7 +13,10 @@ import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.Function
+import fr.cea.nabla.nabla.FunctionOrReduction
+import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Reduction
+import org.eclipse.xtext.EcoreUtil2
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -29,28 +32,32 @@ class IrFunctionFactory
 	@Inject extension IrSizeTypeFactory
 	@Inject extension IrInstructionFactory
 
-	static val Reductions = #{ '\u2211'->'+', '\u220F'->'*' }
-
-	def create IrFactory::eINSTANCE.createFunction toIrFunction(Function f, String providerName)
+	def dispatch create IrFactory::eINSTANCE.createFunction toIrFunction(Function f)
 	{
 		annotations += f.toIrAnnotation
 		name = f.name
-		provider = providerName
+		provider = f.moduleName
 		f.vars.forEach[x | variables += x.toIrSizeTypeSymbol]
 		inArgs += f.inArgs.map[x | toIrArg(x, x.name)]
 		returnType = f.returnType.toIrBaseType
 		if (!f.external) body = f.body.toIrInstruction
 	}
 
-	def create IrFactory::eINSTANCE.createReduction toIrReduction(Reduction f, String providerName)
+	def dispatch create IrFactory::eINSTANCE.createFunction toIrFunction(Reduction f)
 	{
 		annotations += f.toIrAnnotation
-		provider = providerName
+		// build a unique name with name and type
+		name = f.name.toFirstLower + f.type.primitive.getName().charAt(0) + f.type.sizes.size
+		provider = f.moduleName
 		f.vars.forEach[x | variables += x.toIrSizeTypeSymbol]
-		val op = Reductions.get(f.name)
-		name = op ?: f.name.replaceFirst("reduce", "").toFirstLower
-		operator = (op !== null)
-		collectionType = f.collectionType.toIrBaseType
-		returnType = f.returnType.toIrBaseType
+		inArgs += f.inArgs.map[x | toIrArg(x, x.name)]
+		returnType = f.type.toIrBaseType
+		body = f.body.toIrInstruction
+	}
+
+	private def getModuleName(FunctionOrReduction it) 
+	{
+		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
+		return module.name
 	}
 }

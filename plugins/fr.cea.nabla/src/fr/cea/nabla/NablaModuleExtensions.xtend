@@ -23,13 +23,13 @@ class NablaModuleExtensions
 		allVars.addAll(instructions.filter(SimpleVarDefinition).map[variable]) 
 		instructions.filter(VarGroupDeclaration).forEach[g | allVars.addAll(g.variables)]
 		return allVars
-	}	
-	
+	}
+
 	def getFunctionByName(NablaModule it, String funcName)
 	{
 		return functions.findFirst[f | f.name == funcName]
 	}
-	
+
 	def getReductionByName(NablaModule it, String reducName)
 	{
 		return reductions.findFirst[f | f.name == reducName]
@@ -39,17 +39,17 @@ class NablaModuleExtensions
 	{
 		jobs.findFirst[j | j.name == jobName]
 	}
-	
+
 	def getConnectivityByName(NablaModule it, String connectivityName)
 	{
 		connectivities.findFirst[c | c.name == connectivityName]
 	}
-	
+
 	def getItemTypeByName(NablaModule it, String itemTypeName)
 	{
 		items.findFirst[i | i.name == itemTypeName]
 	}
-	
+
 	def getVariableByName(NablaModule it, String variableName)
 	{
 		allVars.findFirst[v | v.name == variableName]

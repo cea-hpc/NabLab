@@ -49,7 +49,7 @@ Return: 'return' expression=Expression ';';
 /* ITERATEURS ********************************************/
 IterationBlock: SpaceIterationBlock | IntervalIterationBlock;
 SpaceIterationBlock: range=RangeSpaceIterator (',' singletons+=SingletonSpaceIterator)*;
-IntervalIterationBlock: index=SizeTypeSymbol '\u2208' '[' from=SizeType ';' to=SizeType (toIncluded?=']'|'[');
+IntervalIterationBlock: index=SizeTypeSymbol '\u2208' nbElems=SizeType;
 
 SpaceIterator: RangeSpaceIterator | SingletonSpaceIterator;
 RangeSpaceIterator: name=ID '\u2208' container=ConnectivityCall; // must return a collection
@@ -79,9 +79,11 @@ ItemArgType: multiple?='{' type=[ItemType] '}' | type=[ItemType];
 
 
 /* FONCTIONS / REDUCTIONS ********************************/
+FunctionOrReduction: Function | Reduction;
 Function: 'def' name=ID ':' (vars+=SizeTypeSymbol (',' vars+=SizeTypeSymbol)* '|')? (inTypes+=BaseType ('\u00D7' inTypes+=BaseType)*)? '\u2192' returnType=BaseType 
 	((',' '(' (inArgs+=Arg (',' inArgs+=Arg)*)? ')' '\u2192' body=Instruction) | external?=';');
-Reduction: 'def' name=ID ':' (vars+=SizeTypeSymbol (',' vars+=SizeTypeSymbol)* '|')? '(' seed=Expression ',' collectionType=BaseType ')' '\u2192' returnType=BaseType ';';
+Reduction: 'def' name=ID ':' (vars+=SizeTypeSymbol (',' vars+=SizeTypeSymbol)* '|')? seed=Expression ',' type=BaseType 
+	',' '(' inArgs+=Arg ',' inArgs+=Arg ')' '\u2192' body=Instruction;
 Arg: name=ID;
 
 

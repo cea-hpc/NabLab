@@ -24,8 +24,8 @@ import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.FunctionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
+import static extension fr.cea.nabla.ir.generator.java.FunctionContentProvider.*
 
 class Ir2Java extends CodeGenerator
 {

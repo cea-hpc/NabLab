@@ -31,8 +31,10 @@ import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
+import fr.cea.nabla.nabla.VectorConstant
 import fr.cea.nabla.typing.BaseTypeTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
+import fr.cea.nabla.typing.NSTArray1D
 import fr.cea.nabla.typing.NSTBoolScalar
 import fr.cea.nabla.typing.NSTIntScalar
 import fr.cea.nabla.typing.NSTScalar
@@ -40,8 +42,6 @@ import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.typing.NablaType
 import java.util.List
 import org.eclipse.xtext.validation.Check
-import fr.cea.nabla.nabla.VectorConstant
-import fr.cea.nabla.typing.NSTArray1D
 
 class TypeValidator extends BasicValidator
 {
@@ -107,8 +107,8 @@ class TypeValidator extends BasicValidator
 	// ===== Expressions =====
 
 	public static val VALUE_TYPE = "Expressions::ValueType"
-	public static val SEED_TYPE = "Expressions::SeedType"
-	public static val SEED_AND_RETURN_TYPES = "Expressions::SeedAndReturnTypes"
+	public static val REDUCTION_SEED_TYPE = "Expressions::ReductionSeedType"
+	public static val REDUCTION_TYPES_COMPATIBILITY = "Expressions::ReductionTypesCompatibility"
 	public static val FUNCTION_ARGS = "Expressions::FunctionArgs"
 	public static val REDUCTION_ON_CONNECTIVITIES_VARIABLE = "Expressions::ReductionOnConnectivitiesVariable"
 	public static val REDUCTION_ARGS = "Expressions::ReductionArgs"
@@ -127,8 +127,8 @@ class TypeValidator extends BasicValidator
 	public static val VECTOR_CONSTANT_TYPE_SIZE = "Expressions::VectorConstantTypeSize"
 
 	static def getValueTypeMsg(String expectedTypeName) { "Initialization value type must be " + expectedTypeName }
-	static def getSeedTypeMsg() { "Seed type must be scalar" }
-	static def getSeedAndReturnTypesMsg(String seedType, String returnType) { "Seed type and return primitive type must be identical: " + seedType + "!=" + returnType }
+	static def getReductionSeedTypeMsg() { "Seed type must be scalar" }
+	static def getReductionTypesCompatibilityMsg(String seedType, String type) { "Seed type and reduction type are incompatible: " + seedType + " and " + type }
 	static def getFunctionArgsMsg(List<String> inTypes) { "Wrong arguments : " + inTypes.join(', ') }
 	static def getReductionOnConnectivitiesVariableMsg() { "No reduction on connectivities variable" }	
 	static def getReductionArgsMsg(String inType) { "Wrong arguments : " + inType }	
@@ -155,19 +155,19 @@ class TypeValidator extends BasicValidator
 	}
 
 	@Check
-	def checkSeedAndReturnTypes(Reduction it)
+	def checkSeedAndType(Reduction it)
 	{
 		val seedType = seed?.typeFor
 		// Seed must be scalar and Seed rootType must be the same as Return rootType
-		// If Return type is Array, the reduction Seed will be used as many times as Array size
+		// If type is Array, the reduction Seed will be used as many times as Array size
 		// Ex (ℕ.MaxValue, ℝ])→ℕ[2]; -> we will use (ℕ.MaxValue, ℕ.MaxValue) as reduction seed
 		if (seedType !== null)
 		{
-			val rType = returnType.primitive
+			val rType = type.primitive
 			if (!(seedType instanceof NSTScalar))
-				error(getSeedTypeMsg(), NablaPackage.Literals.REDUCTION__SEED, SEED_TYPE)
+				error(getReductionSeedTypeMsg(), NablaPackage.Literals.REDUCTION__SEED, REDUCTION_SEED_TYPE)
 			else if (seedType.label != rType.literal)
-				error(getSeedAndReturnTypesMsg(seedType.label, rType.literal), NablaPackage.Literals.REDUCTION__SEED, SEED_AND_RETURN_TYPES)
+				error(getReductionTypesCompatibilityMsg(seedType.label, rType.literal), NablaPackage.Literals.REDUCTION__SEED, REDUCTION_TYPES_COMPATIBILITY)
 		}
 	}
 

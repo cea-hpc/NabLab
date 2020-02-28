@@ -3,9 +3,8 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Expression;
-import fr.cea.nabla.ir.ir.Instruction;
+import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.IrPackage;
-import fr.cea.nabla.ir.ir.Reduction;
 import fr.cea.nabla.ir.ir.ReductionInstruction;
 import fr.cea.nabla.ir.ir.SimpleVariable;
 import java.util.Collection;
@@ -32,8 +31,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionInstructionImpl#getInnerReductions <em>Inner Reductions</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionInstructionImpl#getReduction <em>Reduction</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionInstructionImpl#getArg <em>Arg</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionInstructionImpl#getBinaryFunction <em>Binary Function</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionInstructionImpl#getLambda <em>Lambda</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionInstructionImpl#getResult <em>Result</em>}</li>
  * </ul>
  *
@@ -48,27 +47,27 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Instruction> innerReductions;
+	protected EList<ReductionInstruction> innerReductions;
 
 	/**
-	 * The cached value of the '{@link #getReduction() <em>Reduction</em>}' reference.
+	 * The cached value of the '{@link #getBinaryFunction() <em>Binary Function</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getReduction()
+	 * @see #getBinaryFunction()
 	 * @generated
 	 * @ordered
 	 */
-	protected Reduction reduction;
+	protected Function binaryFunction;
 
 	/**
-	 * The cached value of the '{@link #getArg() <em>Arg</em>}' containment reference.
+	 * The cached value of the '{@link #getLambda() <em>Lambda</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getArg()
+	 * @see #getLambda()
 	 * @generated
 	 * @ordered
 	 */
-	protected Expression arg;
+	protected Expression lambda;
 
 	/**
 	 * The cached value of the '{@link #getResult() <em>Result</em>}' containment reference.
@@ -105,9 +104,9 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * @generated
 	 */
 	@Override
-	public EList<Instruction> getInnerReductions() {
+	public EList<ReductionInstruction> getInnerReductions() {
 		if (innerReductions == null) {
-			innerReductions = new EObjectContainmentEList.Resolving<Instruction>(Instruction.class, this, IrPackage.REDUCTION_INSTRUCTION__INNER_REDUCTIONS);
+			innerReductions = new EObjectContainmentEList.Resolving<ReductionInstruction>(ReductionInstruction.class, this, IrPackage.REDUCTION_INSTRUCTION__INNER_REDUCTIONS);
 		}
 		return innerReductions;
 	}
@@ -118,16 +117,16 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * @generated
 	 */
 	@Override
-	public Reduction getReduction() {
-		if (reduction != null && reduction.eIsProxy()) {
-			InternalEObject oldReduction = (InternalEObject)reduction;
-			reduction = (Reduction)eResolveProxy(oldReduction);
-			if (reduction != oldReduction) {
+	public Function getBinaryFunction() {
+		if (binaryFunction != null && binaryFunction.eIsProxy()) {
+			InternalEObject oldBinaryFunction = (InternalEObject)binaryFunction;
+			binaryFunction = (Function)eResolveProxy(oldBinaryFunction);
+			if (binaryFunction != oldBinaryFunction) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.REDUCTION_INSTRUCTION__REDUCTION, oldReduction, reduction));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.REDUCTION_INSTRUCTION__BINARY_FUNCTION, oldBinaryFunction, binaryFunction));
 			}
 		}
-		return reduction;
+		return binaryFunction;
 	}
 
 	/**
@@ -135,8 +134,8 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Reduction basicGetReduction() {
-		return reduction;
+	public Function basicGetBinaryFunction() {
+		return binaryFunction;
 	}
 
 	/**
@@ -145,11 +144,11 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * @generated
 	 */
 	@Override
-	public void setReduction(Reduction newReduction) {
-		Reduction oldReduction = reduction;
-		reduction = newReduction;
+	public void setBinaryFunction(Function newBinaryFunction) {
+		Function oldBinaryFunction = binaryFunction;
+		binaryFunction = newBinaryFunction;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION_INSTRUCTION__REDUCTION, oldReduction, reduction));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION_INSTRUCTION__BINARY_FUNCTION, oldBinaryFunction, binaryFunction));
 	}
 
 	/**
@@ -158,8 +157,8 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * @generated
 	 */
 	@Override
-	public Expression getArg() {
-		return arg;
+	public Expression getLambda() {
+		return lambda;
 	}
 
 	/**
@@ -167,11 +166,11 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetArg(Expression newArg, NotificationChain msgs) {
-		Expression oldArg = arg;
-		arg = newArg;
+	public NotificationChain basicSetLambda(Expression newLambda, NotificationChain msgs) {
+		Expression oldLambda = lambda;
+		lambda = newLambda;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION_INSTRUCTION__ARG, oldArg, newArg);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION_INSTRUCTION__LAMBDA, oldLambda, newLambda);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -183,18 +182,18 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * @generated
 	 */
 	@Override
-	public void setArg(Expression newArg) {
-		if (newArg != arg) {
+	public void setLambda(Expression newLambda) {
+		if (newLambda != lambda) {
 			NotificationChain msgs = null;
-			if (arg != null)
-				msgs = ((InternalEObject)arg).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.REDUCTION_INSTRUCTION__ARG, null, msgs);
-			if (newArg != null)
-				msgs = ((InternalEObject)newArg).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.REDUCTION_INSTRUCTION__ARG, null, msgs);
-			msgs = basicSetArg(newArg, msgs);
+			if (lambda != null)
+				msgs = ((InternalEObject)lambda).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.REDUCTION_INSTRUCTION__LAMBDA, null, msgs);
+			if (newLambda != null)
+				msgs = ((InternalEObject)newLambda).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.REDUCTION_INSTRUCTION__LAMBDA, null, msgs);
+			msgs = basicSetLambda(newLambda, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION_INSTRUCTION__ARG, newArg, newArg));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.REDUCTION_INSTRUCTION__LAMBDA, newLambda, newLambda));
 	}
 
 	/**
@@ -252,8 +251,8 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 		switch (featureID) {
 			case IrPackage.REDUCTION_INSTRUCTION__INNER_REDUCTIONS:
 				return ((InternalEList<?>)getInnerReductions()).basicRemove(otherEnd, msgs);
-			case IrPackage.REDUCTION_INSTRUCTION__ARG:
-				return basicSetArg(null, msgs);
+			case IrPackage.REDUCTION_INSTRUCTION__LAMBDA:
+				return basicSetLambda(null, msgs);
 			case IrPackage.REDUCTION_INSTRUCTION__RESULT:
 				return basicSetResult(null, msgs);
 		}
@@ -270,11 +269,11 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 		switch (featureID) {
 			case IrPackage.REDUCTION_INSTRUCTION__INNER_REDUCTIONS:
 				return getInnerReductions();
-			case IrPackage.REDUCTION_INSTRUCTION__REDUCTION:
-				if (resolve) return getReduction();
-				return basicGetReduction();
-			case IrPackage.REDUCTION_INSTRUCTION__ARG:
-				return getArg();
+			case IrPackage.REDUCTION_INSTRUCTION__BINARY_FUNCTION:
+				if (resolve) return getBinaryFunction();
+				return basicGetBinaryFunction();
+			case IrPackage.REDUCTION_INSTRUCTION__LAMBDA:
+				return getLambda();
 			case IrPackage.REDUCTION_INSTRUCTION__RESULT:
 				return getResult();
 		}
@@ -292,13 +291,13 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 		switch (featureID) {
 			case IrPackage.REDUCTION_INSTRUCTION__INNER_REDUCTIONS:
 				getInnerReductions().clear();
-				getInnerReductions().addAll((Collection<? extends Instruction>)newValue);
+				getInnerReductions().addAll((Collection<? extends ReductionInstruction>)newValue);
 				return;
-			case IrPackage.REDUCTION_INSTRUCTION__REDUCTION:
-				setReduction((Reduction)newValue);
+			case IrPackage.REDUCTION_INSTRUCTION__BINARY_FUNCTION:
+				setBinaryFunction((Function)newValue);
 				return;
-			case IrPackage.REDUCTION_INSTRUCTION__ARG:
-				setArg((Expression)newValue);
+			case IrPackage.REDUCTION_INSTRUCTION__LAMBDA:
+				setLambda((Expression)newValue);
 				return;
 			case IrPackage.REDUCTION_INSTRUCTION__RESULT:
 				setResult((SimpleVariable)newValue);
@@ -318,11 +317,11 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 			case IrPackage.REDUCTION_INSTRUCTION__INNER_REDUCTIONS:
 				getInnerReductions().clear();
 				return;
-			case IrPackage.REDUCTION_INSTRUCTION__REDUCTION:
-				setReduction((Reduction)null);
+			case IrPackage.REDUCTION_INSTRUCTION__BINARY_FUNCTION:
+				setBinaryFunction((Function)null);
 				return;
-			case IrPackage.REDUCTION_INSTRUCTION__ARG:
-				setArg((Expression)null);
+			case IrPackage.REDUCTION_INSTRUCTION__LAMBDA:
+				setLambda((Expression)null);
 				return;
 			case IrPackage.REDUCTION_INSTRUCTION__RESULT:
 				setResult((SimpleVariable)null);
@@ -341,10 +340,10 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 		switch (featureID) {
 			case IrPackage.REDUCTION_INSTRUCTION__INNER_REDUCTIONS:
 				return innerReductions != null && !innerReductions.isEmpty();
-			case IrPackage.REDUCTION_INSTRUCTION__REDUCTION:
-				return reduction != null;
-			case IrPackage.REDUCTION_INSTRUCTION__ARG:
-				return arg != null;
+			case IrPackage.REDUCTION_INSTRUCTION__BINARY_FUNCTION:
+				return binaryFunction != null;
+			case IrPackage.REDUCTION_INSTRUCTION__LAMBDA:
+				return lambda != null;
 			case IrPackage.REDUCTION_INSTRUCTION__RESULT:
 				return result != null;
 		}

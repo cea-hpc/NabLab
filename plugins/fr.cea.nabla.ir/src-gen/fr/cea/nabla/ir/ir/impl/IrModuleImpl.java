@@ -11,7 +11,6 @@ import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.ItemType;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.PostProcessingInfo;
-import fr.cea.nabla.ir.ir.Reduction;
 import fr.cea.nabla.ir.ir.SimpleVariable;
 import fr.cea.nabla.ir.ir.TimeLoop;
 import fr.cea.nabla.ir.ir.Variable;
@@ -43,7 +42,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getImports <em>Imports</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getItems <em>Items</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getFunctions <em>Functions</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getReductions <em>Reductions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getConnectivities <em>Connectivities</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
@@ -107,16 +105,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * @ordered
 	 */
 	protected EList<Function> functions;
-
-	/**
-	 * The cached value of the '{@link #getReductions() <em>Reductions</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getReductions()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Reduction> reductions;
 
 	/**
 	 * The cached value of the '{@link #getConnectivities() <em>Connectivities</em>}' containment reference list.
@@ -287,19 +275,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			functions = new EObjectContainmentEList<Function>(Function.class, this, IrPackage.IR_MODULE__FUNCTIONS);
 		}
 		return functions;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EList<Reduction> getReductions() {
-		if (reductions == null) {
-			reductions = new EObjectContainmentEList<Reduction>(Reduction.class, this, IrPackage.IR_MODULE__REDUCTIONS);
-		}
-		return reductions;
 	}
 
 	/**
@@ -651,8 +626,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return ((InternalEList<?>)getItems()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__FUNCTIONS:
 				return ((InternalEList<?>)getFunctions()).basicRemove(otherEnd, msgs);
-			case IrPackage.IR_MODULE__REDUCTIONS:
-				return ((InternalEList<?>)getReductions()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				return ((InternalEList<?>)getConnectivities()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__VARIABLES:
@@ -683,8 +656,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return getItems();
 			case IrPackage.IR_MODULE__FUNCTIONS:
 				return getFunctions();
-			case IrPackage.IR_MODULE__REDUCTIONS:
-				return getReductions();
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				return getConnectivities();
 			case IrPackage.IR_MODULE__VARIABLES:
@@ -736,10 +707,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__FUNCTIONS:
 				getFunctions().clear();
 				getFunctions().addAll((Collection<? extends Function>)newValue);
-				return;
-			case IrPackage.IR_MODULE__REDUCTIONS:
-				getReductions().clear();
-				getReductions().addAll((Collection<? extends Reduction>)newValue);
 				return;
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				getConnectivities().clear();
@@ -795,9 +762,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__FUNCTIONS:
 				getFunctions().clear();
 				return;
-			case IrPackage.IR_MODULE__REDUCTIONS:
-				getReductions().clear();
-				return;
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				getConnectivities().clear();
 				return;
@@ -845,8 +809,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return items != null && !items.isEmpty();
 			case IrPackage.IR_MODULE__FUNCTIONS:
 				return functions != null && !functions.isEmpty();
-			case IrPackage.IR_MODULE__REDUCTIONS:
-				return reductions != null && !reductions.isEmpty();
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				return connectivities != null && !connectivities.isEmpty();
 			case IrPackage.IR_MODULE__VARIABLES:

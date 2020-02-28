@@ -16,14 +16,15 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.typing.DeclarationProvider
+import java.util.LinkedHashSet
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtext.EcoreUtil2
 
 import static fr.cea.nabla.ir.Utils.*
 
@@ -46,13 +47,8 @@ class Nabla2Ir
 		nablaModule.items.forEach[x | items += x.toIrItemType]
 		nablaModule.connectivities.forEach[x | connectivities += x.toIrConnectivity]
 
-		/* 
-		 * To create functions, do not iterate on declarations to prevent creating external functions.
-		 * Look for FunctionCall instead to link to the external function object properly.
-		 * Same method fir reductions.
-		 */
-		nablaModule.eAllContents.filter(FunctionCall).forEach[x | functions += x.declaration.model.toIrFunction(x.function.moduleName)]
-		nablaModule.eAllContents.filter(ReductionCall).forEach[x | reductions += x.declaration.model.toIrReduction(x.reduction.moduleName)]
+		// Function and reduction
+		nablaModule.allUsedFunctionAndReductions.forEach[x | functions += x.toIrFunction]
 
 		// Time loop creation
 		if (nablaModule.iteration !== null)
@@ -104,9 +100,26 @@ class Nabla2Ir
 				v.name = v.name.replace("<NUMBER>", (i++).toString)
 	}
 
-	private def getModuleName(EObject it) 
+	/**
+	 * Need to be recursive if a function/reduction use a function/reduction
+	 */
+	private def LinkedHashSet<FunctionOrReduction> getAllUsedFunctionAndReductions(EObject it)
 	{
-		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
-		return module.name
+		val allUsedFunctionAndReductions = new LinkedHashSet<FunctionOrReduction>
+		for (call : eAllContents.filter(FunctionCall).toIterable)
+		{
+			val f = call.declaration.model
+			allUsedFunctionAndReductions += f
+			if (f.body !== null)
+				allUsedFunctionAndReductions += f.body.allUsedFunctionAndReductions
+		}
+		for (call : eAllContents.filter(ReductionCall).toIterable)
+		{
+			val f = call.declaration.model
+			allUsedFunctionAndReductions += f
+			if (f.body !== null)
+				allUsedFunctionAndReductions += f.body.allUsedFunctionAndReductions
+		}
+		return allUsedFunctionAndReductions
 	}
 }

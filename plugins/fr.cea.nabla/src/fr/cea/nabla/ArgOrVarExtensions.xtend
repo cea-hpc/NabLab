@@ -14,11 +14,12 @@ import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
+import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
-import fr.cea.nabla.nabla.TimeIterator
 
 class ArgOrVarExtensions 
 {
@@ -39,9 +40,17 @@ class ArgOrVarExtensions
 
 	def dispatch getType(Arg it)
 	{
-		val f = eContainer as Function
-		val i = f.inArgs.indexOf(it)
-		f.inTypes.get(i)
+		val fOrR = eContainer
+		switch (fOrR)
+		{
+			Function: 
+			{
+				val i = fOrR.inArgs.indexOf(it)
+				fOrR.inTypes.get(i)
+			}
+			Reduction:
+				fOrR.type
+		}
 	}
 
 	def dispatch boolean isConst(ArgOrVar it)

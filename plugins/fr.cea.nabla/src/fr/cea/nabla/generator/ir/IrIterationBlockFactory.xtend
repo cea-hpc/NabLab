@@ -32,8 +32,6 @@ class IrIterationBlockFactory
 	{
 		annotations += b.toIrAnnotation
 		index = b.index.toIrSizeTypeSymbol
-		from = b.from.toIrSizeType
-		to = b.to.toIrSizeType
-		toIncluded = b.toIncluded
+		nbElems = b.nbElems.toIrSizeType
 	}
 }

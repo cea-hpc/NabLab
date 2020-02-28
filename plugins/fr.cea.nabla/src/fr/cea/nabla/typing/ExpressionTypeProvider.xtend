@@ -89,7 +89,7 @@ class ExpressionTypeProvider
 	{
 		val decl = declaration
 		if (decl === null) null
-		else decl.returnType
+		else decl.type
 	}
 
 	def dispatch NablaType getTypeFor(BaseTypeConstant it)

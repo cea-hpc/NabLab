@@ -72,7 +72,7 @@ class LatexLabelServices
 
 	/* ITERATEURS ********************************************/
 	static def dispatch String getLatex(SpaceIterationBlock it) { range.latex }
-	static def dispatch String getLatex(IntervalIterationBlock it) { index.latex + '\\in [' + from.latex + ';' + to.latex + (if (toIncluded) ']' else'[') }
+	static def dispatch String getLatex(IntervalIterationBlock it) { index.latex + '\\in ' + nbElems.latex }
 
 	static def dispatch String getLatex(RangeSpaceIterator it) { name.pu + '\\in ' + container.latex }
 	static def dispatch String getLatex(SingletonSpaceIterator it) { name.pu + '=' + container.latex }
@@ -90,7 +90,7 @@ class LatexLabelServices
 
 	/* FONCTIONS / REDUCTIONS ********************************/
 	static def dispatch String getLatex(Function it) { 'def~' + name.pu + '~:~' + vars.latexForVars + inTypes.map[latex].join(' \u00D7 ') + ' \u2192 ' + returnType.latex }
-	static def dispatch String getLatex(Reduction it) { 'def~' + name.pu + '~:~' + vars.latexForVars + '(' + seed.latex + ', ' + collectionType.latex + ') \u2192 ' + returnType.latex }
+	static def dispatch String getLatex(Reduction it) { 'def~' + name.pu + '~:~' + vars.latexForVars + '(' + seed.latex + ', ' + type.latex + ')' }
 	private static def getLatexForVars(List<SizeTypeSymbol> symbols)
 	{
 		if (symbols.empty) ''

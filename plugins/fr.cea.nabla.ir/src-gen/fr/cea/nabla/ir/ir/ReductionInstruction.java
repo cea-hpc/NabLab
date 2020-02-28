@@ -14,8 +14,8 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.ReductionInstruction#getInnerReductions <em>Inner Reductions</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.ReductionInstruction#getReduction <em>Reduction</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.ReductionInstruction#getArg <em>Arg</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.ReductionInstruction#getBinaryFunction <em>Binary Function</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.ReductionInstruction#getLambda <em>Lambda</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ReductionInstruction#getResult <em>Result</em>}</li>
  * </ul>
  *
@@ -26,7 +26,7 @@ import org.eclipse.emf.common.util.EList;
 public interface ReductionInstruction extends IterableInstruction {
 	/**
 	 * Returns the value of the '<em><b>Inner Reductions</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Instruction}.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ReductionInstruction}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Inner Reductions</em>' containment reference list.
@@ -34,51 +34,51 @@ public interface ReductionInstruction extends IterableInstruction {
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	EList<Instruction> getInnerReductions();
+	EList<ReductionInstruction> getInnerReductions();
 
 	/**
-	 * Returns the value of the '<em><b>Reduction</b></em>' reference.
+	 * Returns the value of the '<em><b>Binary Function</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Reduction</em>' reference.
-	 * @see #setReduction(Reduction)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getReductionInstruction_Reduction()
+	 * @return the value of the '<em>Binary Function</em>' reference.
+	 * @see #setBinaryFunction(Function)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getReductionInstruction_BinaryFunction()
 	 * @model required="true"
 	 * @generated
 	 */
-	Reduction getReduction();
+	Function getBinaryFunction();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ReductionInstruction#getReduction <em>Reduction</em>}' reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ReductionInstruction#getBinaryFunction <em>Binary Function</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Reduction</em>' reference.
-	 * @see #getReduction()
+	 * @param value the new value of the '<em>Binary Function</em>' reference.
+	 * @see #getBinaryFunction()
 	 * @generated
 	 */
-	void setReduction(Reduction value);
+	void setBinaryFunction(Function value);
 
 	/**
-	 * Returns the value of the '<em><b>Arg</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Lambda</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Arg</em>' containment reference.
-	 * @see #setArg(Expression)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getReductionInstruction_Arg()
+	 * @return the value of the '<em>Lambda</em>' containment reference.
+	 * @see #setLambda(Expression)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getReductionInstruction_Lambda()
 	 * @model containment="true" required="true"
 	 * @generated
 	 */
-	Expression getArg();
+	Expression getLambda();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ReductionInstruction#getArg <em>Arg</em>}' containment reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ReductionInstruction#getLambda <em>Lambda</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Arg</em>' containment reference.
-	 * @see #getArg()
+	 * @param value the new value of the '<em>Lambda</em>' containment reference.
+	 * @see #getLambda()
 	 * @generated
 	 */
-	void setArg(Expression value);
+	void setLambda(Expression value);
 
 	/**
 	 * Returns the value of the '<em><b>Result</b></em>' containment reference.

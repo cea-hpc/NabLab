@@ -120,10 +120,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createFunctionAdapter();
 			}
 			@Override
-			public Adapter caseReduction(Reduction object) {
-				return createReductionAdapter();
-			}
-			@Override
 			public Adapter caseConnectivity(Connectivity object) {
 				return createConnectivityAdapter();
 			}
@@ -508,20 +504,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createFunctionAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Reduction <em>Reduction</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.Reduction
-	 * @generated
-	 */
-	public Adapter createReductionAdapter() {
 		return null;
 	}
 

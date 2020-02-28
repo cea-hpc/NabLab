@@ -43,7 +43,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/imports"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/items"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/functions"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/reductions"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/connectivities"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/variables"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/initNodeCoordVariable"/>
@@ -91,20 +90,12 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityVariable/defaultValue"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Function">
+      <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//Function/returnType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/provider"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/variables"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/inArgs"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//Function/returnType"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/body"/>
-    </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//Reduction">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Reduction/provider"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Reduction/variables"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Reduction/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Reduction/collectionType"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//Reduction/returnType"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Reduction/operator"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Connectivity">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Connectivity/name"/>
@@ -157,9 +148,7 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//IntervalIterationBlock">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IntervalIterationBlock/index"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IntervalIterationBlock/from"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IntervalIterationBlock/to"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IntervalIterationBlock/toIncluded"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IntervalIterationBlock/nbElems"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//SizeTypeSymbol">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SizeTypeSymbol/name"/>
@@ -178,8 +167,8 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ReductionInstruction">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/innerReductions"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/reduction"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/arg"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/binaryFunction"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/lambda"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ReductionInstruction/result"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Loop">

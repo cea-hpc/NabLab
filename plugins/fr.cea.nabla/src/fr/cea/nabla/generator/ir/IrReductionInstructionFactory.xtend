@@ -22,7 +22,6 @@ import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.MulOrDiv
-import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
@@ -30,7 +29,6 @@ import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.typing.DeclarationProvider
-import org.eclipse.xtext.EcoreUtil2
 
 class IrReductionInstructionFactory 
 {
@@ -55,20 +53,19 @@ class IrReductionInstructionFactory
 	def dispatch Iterable<ReductionInstruction> toIrReductions(UnaryMinus it) { expression.toIrReductions }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(Not it) { expression.toIrReductions }
 
-	def dispatch Iterable<ReductionInstruction> toIrReductions(FunctionCall it) 
-	{ 
+	def dispatch Iterable<ReductionInstruction> toIrReductions(FunctionCall it)
+	{
 		args.map[a | a.toIrReductions].flatten
 	}
 
 	def dispatch Iterable<ReductionInstruction> toIrReductions(ReductionCall it) 
 	{
-		val m = EcoreUtil2.getContainerOfType(reduction, NablaModule)
 		val irInstruction = IrFactory::eINSTANCE.createReductionInstruction
 		irInstruction.annotations += toIrAnnotation
 		irInstruction.innerReductions += arg.toIrReductions
-		irInstruction.reduction = declaration.model.toIrReduction(m.name)
+		irInstruction.binaryFunction = declaration.model.toIrFunction
 		irInstruction.iterationBlock = iterationBlock.toIrIterationBlock
-		irInstruction.arg = arg.toIrExpression		
+		irInstruction.lambda = arg.toIrExpression
 		irInstruction.result = toIrLocalVariable
 		return #[irInstruction]
 	}

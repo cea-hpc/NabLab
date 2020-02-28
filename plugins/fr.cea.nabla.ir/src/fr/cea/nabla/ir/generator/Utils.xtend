@@ -14,7 +14,6 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
-import fr.cea.nabla.ir.ir.Reduction
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import org.eclipse.emf.ecore.EObject
 
@@ -29,11 +28,6 @@ class Utils
 	{
 		if (body === null) provider + FunctionReductionPrefix + separator + name
 		else name
-	}
-
-	static def getCodeName(Reduction it, String separator)
-	{
-		provider + FunctionReductionPrefix + separator + name
 	}
 
 	static def getCodeName(Job it)

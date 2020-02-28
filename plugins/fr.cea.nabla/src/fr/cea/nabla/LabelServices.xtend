@@ -73,7 +73,7 @@ class LabelServices
 
 	/* ITERATEURS ********************************************/
 	static def dispatch String getLabel(SpaceIterationBlock it) { range?.label }
-	static def dispatch String getLabel(IntervalIterationBlock it) { index?.label + '\u2208 [' + from.label + ';' + to.label + (if (toIncluded) ']' else'[') }
+	static def dispatch String getLabel(IntervalIterationBlock it) { index?.label + '\u2208' + nbElems.label }
 
 	static def dispatch String getLabel(RangeSpaceIterator it) { name + '\u2208 ' + container?.label }
 	static def dispatch String getLabel(SingletonSpaceIterator it) { name + '=' + container?.label }
@@ -91,7 +91,7 @@ class LabelServices
 
 	/* FONCTIONS / REDUCTIONS ********************************/
 	static def dispatch String getLabel(Function it) { 'def ' + name + ' : ' + vars.labelForVars + inTypes.map[label].join(' \u00D7 ') + ' \u2192 ' + returnType.label }
-	static def dispatch String getLabel(Reduction it) { 'def ' + name + ' : ' + vars.labelForVars + '(' + seed.label + ', ' + collectionType.label + ') \u2192 ' + returnType.label }
+	static def dispatch String getLabel(Reduction it) { 'def ' + name + ' : ' + vars.labelForVars + '(' + seed.label + ', ' + type.label + ')' }
 	private static def getLabelForVars(List<SizeTypeSymbol> symbols)
 	{
 		if (symbols.empty) ''

@@ -66,7 +66,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.SIMPLE_VARIABLE: return createSimpleVariable();
 			case IrPackage.CONNECTIVITY_VARIABLE: return createConnectivityVariable();
 			case IrPackage.FUNCTION: return createFunction();
-			case IrPackage.REDUCTION: return createReduction();
 			case IrPackage.CONNECTIVITY: return createConnectivity();
 			case IrPackage.ITEM_ARG_TYPE: return createItemArgType();
 			case IrPackage.INSTRUCTION_JOB: return createInstructionJob();
@@ -230,17 +229,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public Function createFunction() {
 		FunctionImpl function = new FunctionImpl();
 		return function;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Reduction createReduction() {
-		ReductionImpl reduction = new ReductionImpl();
-		return reduction;
 	}
 
 	/**

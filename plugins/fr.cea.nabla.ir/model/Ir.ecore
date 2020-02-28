@@ -31,8 +31,6 @@
         eType="#//ItemType" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="functions" upperBound="-1"
         eType="#//Function" containment="true" resolveProxies="false"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="reductions" upperBound="-1"
-        eType="#//Reduction" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="connectivities" upperBound="-1"
         eType="#//Connectivity" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
@@ -106,6 +104,8 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Function" eSuperTypes="#//IrAnnotable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//BaseType"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="provider" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
@@ -114,23 +114,8 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="inArgs" upperBound="-1"
         eType="#//Arg" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//BaseType"
-        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//Instruction"
         containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Reduction" eSuperTypes="#//IrAnnotable">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="provider" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
-        eType="#//SizeTypeSymbol" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="collectionType" lowerBound="1"
-        eType="#//BaseType" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" lowerBound="1"
-        eType="#//BaseType" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Connectivity" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -205,12 +190,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="IntervalIterationBlock" eSuperTypes="#//IterationBlock">
     <eStructuralFeatures xsi:type="ecore:EReference" name="index" lowerBound="1" eType="#//SizeTypeSymbol"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="from" lowerBound="1" eType="#//SizeType"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="to" lowerBound="1" eType="#//SizeType"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="toIncluded" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nbElems" lowerBound="1"
+        eType="#//SizeType" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SizeTypeSymbol" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
@@ -235,11 +216,11 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReductionInstruction" eSuperTypes="#//IterableInstruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="innerReductions" upperBound="-1"
-        eType="#//Instruction" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="reduction" lowerBound="1"
-        eType="#//Reduction"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="arg" lowerBound="1" eType="#//Expression"
-        containment="true" resolveProxies="false"/>
+        eType="#//ReductionInstruction" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="binaryFunction" lowerBound="1"
+        eType="#//Function"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lambda" lowerBound="1"
+        eType="#//Expression" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="result" lowerBound="1"
         eType="#//SimpleVariable" containment="true" resolveProxies="false"/>
   </eClassifiers>

@@ -173,14 +173,14 @@ class BasicValidator extends AbstractNablaValidator
 	public static val MISSING_RETURN = "Return::Missing"
 	public static val UNREACHABLE_CODE = "Return::UnreachableCode"
 
-	static def getForbiddenReturnMsg() { "Return instruction not permitted in jobs" }
+	static def getForbiddenReturnMsg() { "Return instruction tted in jobs" }
 	static def getMissingReturnMsg() { "Function/Reduction must end with a return instruction" }
 	static def getUnreachableReturnMsg() { "Unreachable code" }
 
 	@Check
 	def checkForbiddenReturn(Return it)
 	{
-		val function = EcoreUtil2.getContainerOfType(it, Function)
+		val function = EcoreUtil2.getContainerOfType(it, FunctionOrReduction)
 		if (function === null)
 			error(getForbiddenReturnMsg(), NablaPackage.Literals.RETURN__EXPRESSION, FORBIDDEN_RETURN)
 	}
@@ -403,16 +403,14 @@ class BasicValidator extends AbstractNablaValidator
 	public static val FUNCTION_INVALID_ARG_NUMBER = "Functions::InvalidArgNumber"
 	public static val FUNCTION_INCOMPATIBLE_IN_TYPES = "Functions::FunctionIncompatibleInTypes"
 	public static val FUNCTION_RETURN_TYPE = "Functions::FunctionReturnType"
-	public static val REDUCTION_INCOMPATIBLE_TYPE = "Functions::ReductionIncompatibleType"
-	public static val REDUCTION_RETURN_TYPE = "Functions::ReductionReturnType"
+	public static val REDUCTION_INCOMPATIBLE_TYPES = "Functions::ReductionIncompatibleTypes"
 
 	static def getUnusedFunctionMsg() { "Unused function" }
 	static def getUnusedReductionMsg() { "Unused reduction" }
 	static def getFunctionInvalidArgNumberMsg() { "Number of arguments must be equal to number of input types" }
 	static def getFunctionIncompatibleInTypesMsg() { "Declaration conflicts" }
 	static def getFunctionReturnTypeMsg(String variableName) { "Only input type variables can be used for return types. Invalid variable: " + variableName }
-	static def getReductionIncompatibleTypeMsg() { "Declaration conflicts" }
-	static def getReductionReturnTypeMsg(String variableName) { "Only collection type variables can be used for return types. Invalid variable: " + variableName }
+	static def getReductionIncompatibleTypesMsg() { "Declaration conflicts" }
 
 	@Check
 	def checkUnusedFunction(Function it)
@@ -437,7 +435,7 @@ class BasicValidator extends AbstractNablaValidator
 	}
 
 	@Check
-	def checkFunctionInTypes(Function it)
+	def checkFunctionIncompatibleInTypes(Function it)
 	{
 		if (!external && inTypes.size !== inArgs.size)
 		{
@@ -488,12 +486,12 @@ class BasicValidator extends AbstractNablaValidator
 	}
 
 	@Check
-	def checkReductionType(Reduction it)
+	def checkReductionIncompatibleTypes(Reduction it)
 	{
 		val otherReductionArgs = eContainer.eAllContents.filter(Reduction).filter[x | x.name == name && x !== it]
 		val conflictingReductionArg = otherReductionArgs.findFirst[x | !areCompatible(x.type, type)]
 		if (conflictingReductionArg !== null)
-			error(getReductionIncompatibleTypeMsg(), NablaPackage.Literals::REDUCTION__TYPE, REDUCTION_INCOMPATIBLE_TYPE)
+			error(getReductionIncompatibleTypesMsg(), NablaPackage.Literals::REDUCTION__TYPE, REDUCTION_INCOMPATIBLE_TYPES)
 	}
 
 	private def areCompatible(BaseType a, BaseType b)

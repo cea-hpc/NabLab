@@ -90,11 +90,9 @@ class InstructionInterpreter
 			}
 			IntervalIterationBlock:
 			{
-				val from = interprete(b.from, context)
-				var to = interprete(b.to, context)
-				if (b.toIncluded) to = to + 1
-				context.addDimensionValue(b.index, from)
-				for (i : from..<to)
+				val nbElems = interprete(b.nbElems, context)
+				context.addDimensionValue(b.index, 0)
+				for (i : 0..<nbElems)
 				{
 					context.setDimensionValue(b.index, i)
 					val ret = interprete(body, context)

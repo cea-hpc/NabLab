@@ -49,7 +49,7 @@ Return: 'return' expression=Expression ';';
 /* ITERATEURS ********************************************/
 IterationBlock: SpaceIterationBlock | IntervalIterationBlock;
 SpaceIterationBlock: range=RangeSpaceIterator (',' singletons+=SingletonSpaceIterator)*;
-IntervalIterationBlock: index=SizeTypeSymbol '\u2208' nbElems=SizeType;
+IntervalIterationBlock: index=SizeTypeSymbol '\u2208' '[' from=INT ';' nbElems=SizeType '[';  // from forced to 0 for the moment
 
 SpaceIterator: RangeSpaceIterator | SingletonSpaceIterator;
 RangeSpaceIterator: name=ID '\u2208' container=ConnectivityCall; // must return a collection

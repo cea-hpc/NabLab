@@ -70,6 +70,7 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//IntervalIterationBlock">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//IntervalIterationBlock/index"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//IntervalIterationBlock/from"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//IntervalIterationBlock/nbElems"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//SpaceIterator">

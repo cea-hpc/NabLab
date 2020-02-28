@@ -57,6 +57,7 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScopeProvider
 import org.eclipse.xtext.util.SimpleAttributeResolver
 import org.eclipse.xtext.validation.Check
+import fr.cea.nabla.nabla.IntervalIterationBlock
 
 class BasicValidator extends AbstractNablaValidator
 {
@@ -65,10 +66,21 @@ class BasicValidator extends AbstractNablaValidator
 	@Inject extension DeclarationProvider
 	@Inject IScopeProvider scopeProvider
 
+	// ===== Temporary limitations ====
+
+	public static val ZERO_FROM = "ZeroFrom"
+	static def getZeroFromMsg() { "Lower bound must be 0" }
+
+	@Check
+	def void checkFrom(IntervalIterationBlock it)
+	{
+		if (from != 0)
+			error(getZeroFromMsg(), NablaPackage.Literals.INTERVAL_ITERATION_BLOCK__FROM, ZERO_FROM);
+	}
+
 	// ===== Unique Names ====
 
 	public static val DUPLICATE_NAME = "DuplicateName"
-
 	static def getDuplicateNameMsg(EClass objectClass, String objectName) { "Duplicate " + objectClass.name + ": " + objectName }
 
 	@Check

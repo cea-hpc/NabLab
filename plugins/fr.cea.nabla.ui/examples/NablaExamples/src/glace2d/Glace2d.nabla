@@ -26,14 +26,14 @@ def perp: ℝ[2] → ℝ[2], (a) → return [ a[1], -a[0] ];
 
 def trace: l | ℝ[l,l] → ℝ, (a) → {
 	ℝ result = 0.0;
-	∀ ia ∈ l, result = result + a[ia, ia];
+	∀ ia ∈ [0;l[, result = result + a[ia, ia];
 	return result;
 }
 
 def tensProduct: l | ℝ[l] × ℝ[l] → ℝ[l,l], (a, b) → {
 	ℝ[l,l] result;
-	∀ ia ∈ l,
-		∀ ib ∈ l,
+	∀ ia ∈ [0;l[,
+		∀ ib ∈ [0;l[,
 			result[ia,ib] = a[ia]*b[ib];
 	return result;
 }

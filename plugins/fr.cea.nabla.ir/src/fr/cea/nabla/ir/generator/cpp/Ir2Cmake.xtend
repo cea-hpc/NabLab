@@ -62,7 +62,6 @@ class KokkosIr2Cmake extends Ir2Cmake
 		linkDirectories += "${KOKKOS_HOME}/lib"
 		targetLinkLibraries += "kokkos"
 		targetLinkLibraries += "kokkos_kernels"
-		targetLinkLibraries += "dl"
 		targetLinkLibraries += "hwloc"
 	}
 }

@@ -10,13 +10,10 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.Affectation
-import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
-import fr.cea.nabla.ir.ir.Iterator
-import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
@@ -24,8 +21,9 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.SpaceIterationBlock
 import fr.cea.nabla.ir.ir.VarDefinition
 
+import static fr.cea.nabla.ir.generator.java.IndexBuilder.*
+
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
@@ -61,26 +59,20 @@ class InstructionContentProvider
 	static def dispatch CharSequence getContent(ReductionInstruction it)
 	'''
 		«result.javaType» «result.name»«result.defaultValueContent»;
-		{
-			«iterationBlock.defineInterval('''
-			«result.name» = IntStream.range(0, «iterationBlock.nbElems»).boxed().parallel().reduce
-			(
-				«result.defaultValue.content»,
-				«IF innerReductions.empty»
-				(accu, «iterationBlock.indexName») -> «binaryFunction.getCodeName('.')»(accu, «lambda.content»),
-				«ELSE»
-				(accu, «iterationBlock.indexName») ->
-				{
-					«IF iterationBlock instanceof SpaceIterationBlock»«defineIndices(iterationBlock as SpaceIterationBlock)»«ENDIF»
-					«FOR innerReduction : innerReductions»
-					«innerReduction.content»
-					«ENDFOR»
-					return «binaryFunction.getCodeName('.')»(accu, «lambda.content»);
-				},
-				«ENDIF»
-				(r1, r2) -> «binaryFunction.getCodeName('.')»(r1, r2)
-			);''')»
-		}
+		«iterationBlock.defineInterval('''
+		«result.name» = IntStream.range(0, «iterationBlock.nbElems»).boxed().parallel().reduce
+		(
+			«result.defaultValue.content»,
+			(accu, «iterationBlock.indexName») ->
+			{
+				«IF iterationBlock instanceof SpaceIterationBlock»«defineIndices(iterationBlock as SpaceIterationBlock)»«ENDIF»
+				«FOR innerReduction : innerReductions»
+				«innerReduction.content»
+				«ENDFOR»
+				return «binaryFunction.getCodeName('.')»(accu, «lambda.content»);
+			},
+			(r1, r2) -> «binaryFunction.getCodeName('.')»(r1, r2)
+		);''')»
 	'''
 
 	static def dispatch CharSequence getContent(Loop it)
@@ -128,38 +120,6 @@ class InstructionContentProvider
 		«ENDFOR»
 	'''
 
-	/** Define all needed ids and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
-	private static def defineIndices(SpaceIterationBlock it)
-	'''
-		«range.defineIndices»
-		«FOR s : singletons»
-			final int «s.indexName» = «s.accessor»;
-			«s.defineIndices»
-		«ENDFOR»
-	'''
-
-	private static def defineIndices(Iterator it)
-	'''
-		«FOR neededId : neededIds»
-			final int «neededId.idName» = «neededId.indexToId»;
-		«ENDFOR»
-		«FOR neededIndex : neededIndices»
-			final int «neededIndex.indexName» = «neededIndex.idToIndex»;
-		«ENDFOR»
-	'''
-
-	private	static def getIndexToId(IteratorRef it)
-	{
-		if (target.container.connectivity.indexEqualId || target.singleton) indexValue
-		else target.containerName + '[' + indexValue + ']'
-	}
-
-	private static def getIdToIndex(ArgOrVarRefIteratorRef it)
-	{
-		if (varContainer.indexEqualId) idName
-		else 'Utils.indexOf(' + accessor + ', ' + idName + ')'
-	}
-
 	private static def dispatch getDefaultValueContent(SimpleVariable it)
 	{
 		if (defaultValue === null)
@@ -170,6 +130,4 @@ class InstructionContentProvider
 
 	private static def dispatch getDefaultValueContent(ConnectivityVariable it)
 	'''«IF defaultValue !== null» = «defaultValue.content»«ENDIF»'''
-
-	private static def getAccessor(ArgOrVarRefIteratorRef it) { getAccessor(varContainer, varArgs) }
 }

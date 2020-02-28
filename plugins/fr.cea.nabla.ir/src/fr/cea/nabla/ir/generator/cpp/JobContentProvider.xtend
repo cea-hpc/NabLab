@@ -57,8 +57,8 @@ abstract class JobContentProvider
 		do
 		{
 			«IF isTopLevel»
-			global_timer.start();
-			cpu_timer.start();
+			globalTimer.start();
+			cpuTimer.start();
 			«ENDIF»
 			«itVar»++;
 			«IF topLevel && irModule.postProcessingInfo !== null»dumpVariables(«itVar»);«ENDIF»
@@ -78,15 +78,15 @@ abstract class JobContentProvider
 			}
 			«IF isTopLevel»
 
-			cpu_timer.stop();
-			global_timer.stop();
+			cpuTimer.stop();
+			globalTimer.stop();
 			«ENDIF»
 
 			«traceContentProvider.getEndOfLoopTrace(itVar, timeVarName, deltatVarName, isTopLevel)»
 
 			«IF isTopLevel»
-			cpu_timer.reset();
-			io_timer.reset();
+			cpuTimer.reset();
+			ioTimer.reset();
 			«ENDIF»
 		} while (continueLoop);
 	'''
@@ -173,7 +173,7 @@ class KokkosTeamThreadJobContentProvider extends KokkosJobContentProvider
 {
 	override getArguments(Job it)
 	{
-		if (hasIterable) #["const member_type& team_member"]
+		if (hasIterable) #["const member_type& teamMember"]
 		else #[]
 	}
 }

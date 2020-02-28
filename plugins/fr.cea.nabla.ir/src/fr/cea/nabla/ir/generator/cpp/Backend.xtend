@@ -26,7 +26,7 @@ class KokkosBackend extends Backend
 	{
 		name = 'Kokkos'
 		ir2Cmake = new KokkosIr2Cmake
-		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
+		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new KokkosIncludesContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
@@ -47,7 +47,7 @@ class KokkosTeamThreadBackend extends Backend
 	{
 		name = 'Kokkos Team Thread'
 		ir2Cmake = new KokkosIr2Cmake
-		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
+		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new KokkosIncludesContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)

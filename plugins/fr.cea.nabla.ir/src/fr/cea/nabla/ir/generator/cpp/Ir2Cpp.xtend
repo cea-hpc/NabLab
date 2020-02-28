@@ -105,7 +105,8 @@ class Ir2Cpp extends CodeGenerator
 			// Copy node coordinates
 			const auto& gNodes = mesh->getGeometry()->getNodes();
 			«val iterator = backend.typeContentProvider.formatVarIteratorsContent(#["rNodes"])»
-			«backend.instructionContentProvider.getContent("rNodes", "nbNodes", '''«initNodeCoordVariable.name»«iterator» = gNodes[rNodes];''')»
+			for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+				«initNodeCoordVariable.name»«iterator» = gNodes[rNodes];
 			«ENDIF»
 		}
 
@@ -117,8 +118,8 @@ class Ir2Cpp extends CodeGenerator
 		{
 			if (!writer.isDisabled() && «postProcessingInfo.periodVariable.name» >= «postProcessingInfo.lastDumpVariable.name» + «postProcessingInfo.periodValue»)
 			{
-				cpu_timer.stop();
-				io_timer.start();
+				cpuTimer.stop();
+				ioTimer.start();
 				std::map<string, double*> cellVariables;
 				std::map<string, double*> nodeVariables;
 				«FOR v : postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable)»
@@ -127,8 +128,8 @@ class Ir2Cpp extends CodeGenerator
 				auto quads = mesh->getGeometry()->getQuads();
 				writer.writeFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);
 				«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodVariable.name»;
-				io_timer.stop();
-				cpu_timer.start();
+				ioTimer.stop();
+				cpuTimer.start();
 			}
 		}
 		«ENDIF»

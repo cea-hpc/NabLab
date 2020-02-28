@@ -1,12 +1,15 @@
-package fr.cea.nabla.ir.generator.java
+package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.IntervalIterationBlock
+import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.SpaceIterationBlock
 
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
+import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.SizeTypeContentProvider.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.java.IndexBuilder.*
 
 class IterationBlockExtensions
 {
@@ -27,8 +30,8 @@ class IterationBlockExtensions
 		else
 		'''
 		{
-			final int[] «range.containerName» = «range.accessor»;
-			final int «nbElems» = «range.containerName».length;
+			const auto «range.containerName»(«range.accessor»);
+			const int «nbElems»(«range.containerName».size());
 			«innerContent»
 		}
 		'''
@@ -51,4 +54,8 @@ class IterationBlockExtensions
 	{
 		nbElems.content
 	}
+
+	static def getAccessor(Iterator it)  { getAccessor(container.connectivity, container.args) }
+	static def getAccessor(Connectivity c, Iterable<? extends IteratorRef> args)  
+	'''mesh->get«c.name.toFirstUpper»(«args.map[idName].join(', ')»)'''
 }

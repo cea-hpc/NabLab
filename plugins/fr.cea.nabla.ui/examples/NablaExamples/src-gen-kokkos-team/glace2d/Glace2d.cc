@@ -1,3 +1,4 @@
+#pragma STDC FENV_ACCESS ON
 #include <iostream>
 #include <iomanip>
 #include <type_traits>
@@ -5,13 +6,8 @@
 #include <utility>
 #include <cmath>
 #include <cfenv>
-#pragma STDC FENV_ACCESS ON
-
-// Kokkos headers
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
-
-// Project headers
 #include "mesh/CartesianMesh2DGenerator.h"
 #include "mesh/CartesianMesh2D.h"
 #include "mesh/PvdFileWriter2D.h"
@@ -50,11 +46,11 @@ private:
 	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
 	int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
-
+	
 	// Global Variables
 	int n, lastDump;
 	double t_n, t_nplus1, deltat_n, deltat_nplus1;
-
+	
 	// Connectivity Variables
 	Kokkos::View<RealArray1D<2>*> X_n;
 	Kokkos::View<RealArray1D<2>*> X_nplus1;
@@ -80,10 +76,9 @@ private:
 	Kokkos::View<RealArray1D<2>**> C;
 	Kokkos::View<RealArray1D<2>**> F;
 	Kokkos::View<RealArray2D<2,2>**> Ajr;
-
-	utils::Timer global_timer;
-	utils::Timer cpu_timer;
-	utils::Timer io_timer;
+	utils::Timer globalTimer;
+	utils::Timer cpuTimer;
+	utils::Timer ioTimer;
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 public:
@@ -130,10 +125,8 @@ public:
 	{
 		// Copy node coordinates
 		const auto& gNodes = mesh->getGeometry()->getNodes();
-		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
-		{
+		for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 			X_n0(rNodes) = gNodes[rNodes];
-		});
 	}
 
 private:
@@ -164,32 +157,33 @@ private:
 		}
 		return std::pair<size_t, size_t>(team_offset, team_chunk);
 	}
-
+	
 	/**
 	 * Job ComputeCjr called @1.0 in executeTimeLoopN method.
 	 * In variables: X_n
 	 * Out variables: C
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeCjr(const member_type& team_member) noexcept
+	void computeCjr(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbCells));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 			{
-				int jCells(jCellsTeam + team_work.first);
-				int jId(jCells);
+				int jCells(jCellsTeam + teamWork.first);
+				const int jId(jCells);
 				{
-					auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+					const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 					{
-						int rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
-						int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
-						int rMinus1Nodes(rMinus1Id);
-						int rPlus1Nodes(rPlus1Id);
+						const int rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
+						const int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
+						const int rMinus1Nodes(rMinus1Id);
+						const int rPlus1Nodes(rPlus1Id);
 						C(jCells,rNodesOfCellJ) = ArrayOperations::multiply(0.5, perp(ArrayOperations::minus(X_n(rPlus1Nodes), X_n(rMinus1Nodes))));
 					}
 				}
@@ -203,16 +197,16 @@ private:
 	 * Out variables: e
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeInternalEnergy(const member_type& team_member) noexcept
+	void computeInternalEnergy(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbCells));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 			{
-				int jCells(jCellsTeam + team_work.first);
+				int jCells(jCellsTeam + teamWork.first);
 				e(jCells) = E_n(jCells) - 0.5 * MathFunctions::dot(uj_n(jCells), uj_n(jCells));
 			});
 		}
@@ -224,25 +218,26 @@ private:
 	 * Out variables: Cjr_ic
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void iniCjrIc(const member_type& team_member) noexcept
+	void iniCjrIc(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbCells));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 			{
-				int jCells(jCellsTeam + team_work.first);
-				int jId(jCells);
+				int jCells(jCellsTeam + teamWork.first);
+				const int jId(jCells);
 				{
-					auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+					const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 					{
-						int rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
-						int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
-						int rMinus1Nodes(rMinus1Id);
-						int rPlus1Nodes(rPlus1Id);
+						const int rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
+						const int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
+						const int rMinus1Nodes(rMinus1Id);
+						const int rPlus1Nodes(rPlus1Id);
 						Cjr_ic(jCells,rNodesOfCellJ) = ArrayOperations::multiply(0.5, perp(ArrayOperations::minus(X_n0(rPlus1Nodes), X_n0(rMinus1Nodes))));
 					}
 				}
@@ -267,20 +262,21 @@ private:
 	 * Out variables: l
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeLjr(const member_type& team_member) noexcept
+	void computeLjr(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbCells));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 			{
-				int jCells(jCellsTeam + team_work.first);
-				int jId(jCells);
+				int jCells(jCellsTeam + teamWork.first);
+				const int jId(jCells);
 				{
-					auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+					const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 					{
 						l(jCells,rNodesOfCellJ) = MathFunctions::norm(C(jCells,rNodesOfCellJ));
 					}
@@ -295,25 +291,26 @@ private:
 	 * Out variables: V
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeV(const member_type& team_member) noexcept
+	void computeV(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbCells));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 			{
-				int jCells(jCellsTeam + team_work.first);
-				int jId(jCells);
-				double reduction5 = 0.0;
+				int jCells(jCellsTeam + teamWork.first);
+				const int jId(jCells);
+				double reduction5(0.0);
 				{
-					auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+					const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 					{
-						int rId(nodesOfCellJ[rNodesOfCellJ]);
-						int rNodes(rId);
-						reduction5 = reduction5 + (MathFunctions::dot(C(jCells,rNodesOfCellJ), X_n(rNodes)));
+						const int rId(nodesOfCellJ[rNodesOfCellJ]);
+						const int rNodes(rId);
+						reduction5 = sumR0(reduction5, MathFunctions::dot(C(jCells,rNodesOfCellJ), X_n(rNodes)));
 					}
 				}
 				V(jCells) = 0.5 * reduction5;
@@ -327,30 +324,31 @@ private:
 	 * Out variables: E_n, m, p, rho, uj_n
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void initialize(const member_type& team_member) noexcept
+	void initialize(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbCells));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 			{
-				int jCells(jCellsTeam + team_work.first);
-				int jId(jCells);
+				int jCells(jCellsTeam + teamWork.first);
+				const int jId(jCells);
 				double rho_ic;
 				double p_ic;
-				RealArray1D<2> reduction0 = {{0.0, 0.0}};
+				RealArray1D<2> reduction0({{0.0, 0.0}});
 				{
-					auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+					const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 					{
-						int rId(nodesOfCellJ[rNodesOfCellJ]);
-						int rNodes(rId);
-						reduction0 = ArrayOperations::plus(reduction0, (X_n0(rNodes)));
+						const int rId(nodesOfCellJ[rNodesOfCellJ]);
+						const int rNodes(rId);
+						reduction0 = sumR1(reduction0, X_n0(rNodes));
 					}
 				}
-				RealArray1D<2> center = ArrayOperations::multiply(0.25, reduction0);
+				RealArray1D<2> center(ArrayOperations::multiply(0.25, reduction0));
 				if (center[0] < options->option_x_interface) 
 				{
 					rho_ic = options->option_rho_ini_zg;
@@ -361,17 +359,18 @@ private:
 					rho_ic = options->option_rho_ini_zd;
 					p_ic = options->option_p_ini_zd;
 				}
-				double reduction1 = 0.0;
+				double reduction1(0.0);
 				{
-					auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+					const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 					{
-						int rId(nodesOfCellJ[rNodesOfCellJ]);
-						int rNodes(rId);
-						reduction1 = reduction1 + (MathFunctions::dot(Cjr_ic(jCells,rNodesOfCellJ), X_n0(rNodes)));
+						const int rId(nodesOfCellJ[rNodesOfCellJ]);
+						const int rNodes(rId);
+						reduction1 = sumR0(reduction1, MathFunctions::dot(Cjr_ic(jCells,rNodesOfCellJ), X_n0(rNodes)));
 					}
 				}
-				double V_ic = 0.5 * reduction1;
+				double V_ic(0.5 * reduction1);
 				m(jCells) = rho_ic * V_ic;
 				p(jCells) = p_ic;
 				rho(jCells) = rho_ic;
@@ -387,16 +386,16 @@ private:
 	 * Out variables: rho
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeDensity(const member_type& team_member) noexcept
+	void computeDensity(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbCells));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 			{
-				int jCells(jCellsTeam + team_work.first);
+				int jCells(jCellsTeam + teamWork.first);
 				rho(jCells) = m(jCells) / V(jCells);
 			});
 		}
@@ -418,8 +417,8 @@ private:
 		bool continueLoop = true;
 		do
 		{
-			global_timer.start();
-			cpu_timer.start();
+			globalTimer.start();
+			cpuTimer.start();
 			n++;
 			dumpVariables(n);
 			if (n!=1)
@@ -518,24 +517,24 @@ private:
 				std::swap(uj_nplus1, uj_n);
 			}
 		
-			cpu_timer.stop();
-			global_timer.stop();
+			cpuTimer.stop();
+			globalTimer.stop();
 		
 			// Timers display
 			if (!writer.isDisabled())
-				std::cout << " {CPU: " << __BLUE__ << cpu_timer.print(true) << __RESET__ ", IO: " << __BLUE__ << io_timer.print(true) << __RESET__ "} ";
+				std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __BLUE__ << ioTimer.print(true) << __RESET__ "} ";
 			else
-				std::cout << " {CPU: " << __BLUE__ << cpu_timer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
+				std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 			
 			// Progress
 			std::cout << utils::progress_bar(n, options->option_max_iterations, t_n, options->option_stoptime, 30);
 			std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-				utils::eta(n, options->option_max_iterations, t_n, options->option_stoptime, deltat_n, global_timer), true)
+				utils::eta(n, options->option_max_iterations, t_n, options->option_stoptime, deltat_n, globalTimer), true)
 				<< __RESET__ << "\r";
 			std::cout.flush();
 		
-			cpu_timer.reset();
-			io_timer.reset();
+			cpuTimer.reset();
+			ioTimer.reset();
 		} while (continueLoop);
 	}
 	
@@ -545,16 +544,16 @@ private:
 	 * Out variables: p
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeEOSp(const member_type& team_member) noexcept
+	void computeEOSp(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbCells));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 			{
-				int jCells(jCellsTeam + team_work.first);
+				int jCells(jCellsTeam + teamWork.first);
 				p(jCells) = (options->gamma - 1.0) * rho(jCells) * e(jCells);
 			});
 		}
@@ -566,16 +565,16 @@ private:
 	 * Out variables: c
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeEOSc(const member_type& team_member) noexcept
+	void computeEOSc(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbCells));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 			{
-				int jCells(jCellsTeam + team_work.first);
+				int jCells(jCellsTeam + teamWork.first);
 				c(jCells) = MathFunctions::sqrt(options->gamma * p(jCells) / rho(jCells));
 			});
 		}
@@ -587,20 +586,21 @@ private:
 	 * Out variables: Ajr
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeAjr(const member_type& team_member) noexcept
+	void computeAjr(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbCells));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 			{
-				int jCells(jCellsTeam + team_work.first);
-				int jId(jCells);
+				int jCells(jCellsTeam + teamWork.first);
+				const int jId(jCells);
 				{
-					auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+					const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 					{
 						Ajr(jCells,rNodesOfCellJ) = ArrayOperations::multiply(((rho(jCells) * c(jCells)) / l(jCells,rNodesOfCellJ)), tensProduct(C(jCells,rNodesOfCellJ), C(jCells,rNodesOfCellJ)));
 					}
@@ -615,23 +615,24 @@ private:
 	 * Out variables: deltatj
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computedeltatj(const member_type& team_member) noexcept
+	void computedeltatj(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbCells));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 			{
-				int jCells(jCellsTeam + team_work.first);
-				int jId(jCells);
-				double reduction2 = 0.0;
+				int jCells(jCellsTeam + teamWork.first);
+				const int jId(jCells);
+				double reduction2(0.0);
 				{
-					auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+					const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 					{
-						reduction2 = reduction2 + (l(jCells,rNodesOfCellJ));
+						reduction2 = sumR0(reduction2, l(jCells,rNodesOfCellJ));
 					}
 				}
 				deltatj(jCells) = 2.0 * V(jCells) / (c(jCells) * reduction2);
@@ -645,26 +646,27 @@ private:
 	 * Out variables: Ar
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeAr(const member_type& team_member) noexcept
+	void computeAr(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbNodes));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbNodes));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& rNodesTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& rNodesTeam)
 			{
-				int rNodes(rNodesTeam + team_work.first);
-				int rId(rNodes);
-				RealArray2D<2,2> reduction3 = {{{0.0, 0.0}, {0.0, 0.0}}};
+				int rNodes(rNodesTeam + teamWork.first);
+				const int rId(rNodes);
+				RealArray2D<2,2> reduction3({{{0.0, 0.0}, {0.0, 0.0}}});
 				{
-					auto cellsOfNodeR(mesh->getCellsOfNode(rId));
-					for (size_t jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.size(); jCellsOfNodeR++)
+					const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
+					const int nbElemsJCellsOfNodeR(cellsOfNodeR.size());
+					for (size_t jCellsOfNodeR=0; jCellsOfNodeR<nbElemsJCellsOfNodeR; jCellsOfNodeR++)
 					{
-						int jId(cellsOfNodeR[jCellsOfNodeR]);
-						int jCells(jId);
-						int rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId),rId));
-						reduction3 = ArrayOperations::plus(reduction3, (Ajr(jCells,rNodesOfCellJ)));
+						const int jId(cellsOfNodeR[jCellsOfNodeR]);
+						const int jCells(jId);
+						const int rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId),rId));
+						reduction3 = sumR2(reduction3, Ajr(jCells,rNodesOfCellJ));
 					}
 				}
 				Ar(rNodes) = reduction3;
@@ -678,26 +680,27 @@ private:
 	 * Out variables: b
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeBr(const member_type& team_member) noexcept
+	void computeBr(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbNodes));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbNodes));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& rNodesTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& rNodesTeam)
 			{
-				int rNodes(rNodesTeam + team_work.first);
-				int rId(rNodes);
-				RealArray1D<2> reduction4 = {{0.0, 0.0}};
+				int rNodes(rNodesTeam + teamWork.first);
+				const int rId(rNodes);
+				RealArray1D<2> reduction4({{0.0, 0.0}});
 				{
-					auto cellsOfNodeR(mesh->getCellsOfNode(rId));
-					for (size_t jCellsOfNodeR=0; jCellsOfNodeR<cellsOfNodeR.size(); jCellsOfNodeR++)
+					const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
+					const int nbElemsJCellsOfNodeR(cellsOfNodeR.size());
+					for (size_t jCellsOfNodeR=0; jCellsOfNodeR<nbElemsJCellsOfNodeR; jCellsOfNodeR++)
 					{
-						int jId(cellsOfNodeR[jCellsOfNodeR]);
-						int jCells(jId);
-						int rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId),rId));
-						reduction4 = ArrayOperations::plus(reduction4, (ArrayOperations::plus(ArrayOperations::multiply(p(jCells), C(jCells,rNodesOfCellJ)), MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells)))));
+						const int jId(cellsOfNodeR[jCellsOfNodeR]);
+						const int jCells(jId);
+						const int rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId),rId));
+						reduction4 = sumR1(reduction4, ArrayOperations::plus(ArrayOperations::multiply(p(jCells), C(jCells,rNodesOfCellJ)), MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells))));
 					}
 				}
 				b(rNodes) = reduction4;
@@ -711,16 +714,13 @@ private:
 	 * Out variables: deltat_nplus1
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeDt(const member_type& team_member) noexcept
+	void computeDt(const member_type& teamMember) noexcept
 	{
 		double reduction8(numeric_limits<double>::max());
+		Kokkos::parallel_reduce(Kokkos::TeamThreadRange(teamMember, nbCells), KOKKOS_LAMBDA(const int& jCells, double& accu)
 		{
-			Kokkos::Min<double> reducer(reduction8);
-			Kokkos::parallel_reduce(Kokkos::TeamThreadRange(team_member, nbCells), KOKKOS_LAMBDA(const int& jCells, double& x)
-			{
-				reducer.join(x, deltatj(jCells));
-			}, reducer);
-		}
+			accu = minR0(accu, deltatj(jCells));
+		}, Kokkos::Min<double>(reduction8));
 		deltat_nplus1 = options->option_deltat_cfl * reduction8;
 	}
 	
@@ -730,52 +730,56 @@ private:
 	 * Out variables: Mt, bt
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeBoundaryConditions(const member_type& team_member) noexcept
+	void computeBoundaryConditions(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbOuterFaces));
-			if (!team_work.second)
-				return;
-		
-			auto outerFaces(mesh->getOuterFaces());
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& fOuterFacesTeam)
+			const auto outerFaces(mesh->getOuterFaces());
+			const int nbElemsFOuterFaces(outerFaces.size());
 			{
-				int fOuterFaces(fOuterFacesTeam + team_work.first);
-				int fId(outerFaces[fOuterFaces]);
-				const double epsilon = 1.0E-10;
-				RealArray2D<2,2> I = {{{{1.0, 0.0}}, {{0.0, 1.0}}}};
-				double X_MIN = 0.0;
-				double X_MAX = options->X_EDGE_ELEMS * options->X_EDGE_LENGTH;
-				double Y_MIN = 0.0;
-				double Y_MAX = options->Y_EDGE_ELEMS * options->Y_EDGE_LENGTH;
-				RealArray1D<2> nY = {{0.0, 1.0}};
+				const auto teamWork(computeTeamWorkRange(teamMember, nbElemsFOuterFaces));
+				if (!teamWork.second)
+					return;
+			
+				Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& fOuterFacesTeam)
 				{
-					auto nodesOfFaceF(mesh->getNodesOfFace(fId));
-					for (size_t rNodesOfFaceF=0; rNodesOfFaceF<nodesOfFaceF.size(); rNodesOfFaceF++)
+					int fOuterFaces(fOuterFacesTeam + teamWork.first);
+					const int fId(outerFaces[fOuterFaces]);
+					const double epsilon(1.0E-10);
+					RealArray2D<2,2> I({{{{1.0, 0.0}}, {{0.0, 1.0}}}});
+					double X_MIN(0.0);
+					double X_MAX(options->X_EDGE_ELEMS * options->X_EDGE_LENGTH);
+					double Y_MIN(0.0);
+					double Y_MAX(options->Y_EDGE_ELEMS * options->Y_EDGE_LENGTH);
+					RealArray1D<2> nY({{0.0, 1.0}});
 					{
-						int rId(nodesOfFaceF[rNodesOfFaceF]);
-						int rNodes(rId);
-						if ((X_n(rNodes)[1] - Y_MIN < epsilon) || (X_n(rNodes)[1] - Y_MAX < epsilon)) 
+						const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
+						const int nbElemsRNodesOfFaceF(nodesOfFaceF.size());
+						for (size_t rNodesOfFaceF=0; rNodesOfFaceF<nbElemsRNodesOfFaceF; rNodesOfFaceF++)
 						{
-							double sign = 0.0;
-							if (X_n(rNodes)[1] - Y_MIN < epsilon) 
-								sign = -1.0;
-							else
-								sign = 1.0;
-							RealArray1D<2> N = ArrayOperations::multiply(sign, nY);
-							RealArray2D<2,2> NxN = tensProduct(N, N);
-							RealArray2D<2,2> IcP = ArrayOperations::minus(I, NxN);
-							bt(rNodes) = MathFunctions::matVectProduct(IcP, b(rNodes));
-							Mt(rNodes) = ArrayOperations::plus(ArrayOperations::multiply(IcP, (ArrayOperations::multiply(Ar(rNodes), IcP))), ArrayOperations::multiply(NxN, trace(Ar(rNodes))));
-						}
-						if ((MathFunctions::fabs(X_n(rNodes)[0] - X_MIN) < epsilon) || ((MathFunctions::fabs(X_n(rNodes)[0] - X_MAX) < epsilon))) 
-						{
-							Mt(rNodes) = I;
-							bt(rNodes) = {{0.0, 0.0}};
+							const int rId(nodesOfFaceF[rNodesOfFaceF]);
+							const int rNodes(rId);
+							if ((X_n(rNodes)[1] - Y_MIN < epsilon) || (X_n(rNodes)[1] - Y_MAX < epsilon)) 
+							{
+								double sign(0.0);
+								if (X_n(rNodes)[1] - Y_MIN < epsilon) 
+									sign = -1.0;
+								else
+									sign = 1.0;
+								RealArray1D<2> N(ArrayOperations::multiply(sign, nY));
+								RealArray2D<2,2> NxN(tensProduct(N, N));
+								RealArray2D<2,2> IcP(ArrayOperations::minus(I, NxN));
+								bt(rNodes) = MathFunctions::matVectProduct(IcP, b(rNodes));
+								Mt(rNodes) = ArrayOperations::plus(ArrayOperations::multiply(IcP, (ArrayOperations::multiply(Ar(rNodes), IcP))), ArrayOperations::multiply(NxN, trace(Ar(rNodes))));
+							}
+							if ((MathFunctions::fabs(X_n(rNodes)[0] - X_MIN) < epsilon) || ((MathFunctions::fabs(X_n(rNodes)[0] - X_MAX) < epsilon))) 
+							{
+								Mt(rNodes) = I;
+								bt(rNodes) = {{0.0, 0.0}};
+							}
 						}
 					}
-				}
-			});
+				});
+			}
 		}
 	}
 	
@@ -785,21 +789,24 @@ private:
 	 * Out variables: bt
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeBt(const member_type& team_member) noexcept
+	void computeBt(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbInnerNodes));
-			if (!team_work.second)
-				return;
-		
-			auto innerNodes(mesh->getInnerNodes());
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& rInnerNodesTeam)
+			const auto innerNodes(mesh->getInnerNodes());
+			const int nbElemsRInnerNodes(innerNodes.size());
 			{
-				int rInnerNodes(rInnerNodesTeam + team_work.first);
-				int rId(innerNodes[rInnerNodes]);
-				int rNodes(rId);
-				bt(rNodes) = b(rNodes);
-			});
+				const auto teamWork(computeTeamWorkRange(teamMember, nbElemsRInnerNodes));
+				if (!teamWork.second)
+					return;
+			
+				Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& rInnerNodesTeam)
+				{
+					int rInnerNodes(rInnerNodesTeam + teamWork.first);
+					const int rId(innerNodes[rInnerNodes]);
+					const int rNodes(rId);
+					bt(rNodes) = b(rNodes);
+				});
+			}
 		}
 	}
 	
@@ -809,21 +816,24 @@ private:
 	 * Out variables: Mt
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeMt(const member_type& team_member) noexcept
+	void computeMt(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbInnerNodes));
-			if (!team_work.second)
-				return;
-		
-			auto innerNodes(mesh->getInnerNodes());
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& rInnerNodesTeam)
+			const auto innerNodes(mesh->getInnerNodes());
+			const int nbElemsRInnerNodes(innerNodes.size());
 			{
-				int rInnerNodes(rInnerNodesTeam + team_work.first);
-				int rId(innerNodes[rInnerNodes]);
-				int rNodes(rId);
-				Mt(rNodes) = Ar(rNodes);
-			});
+				const auto teamWork(computeTeamWorkRange(teamMember, nbElemsRInnerNodes));
+				if (!teamWork.second)
+					return;
+			
+				Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& rInnerNodesTeam)
+				{
+					int rInnerNodes(rInnerNodesTeam + teamWork.first);
+					const int rId(innerNodes[rInnerNodes]);
+					const int rNodes(rId);
+					Mt(rNodes) = Ar(rNodes);
+				});
+			}
 		}
 	}
 	
@@ -844,16 +854,16 @@ private:
 	 * Out variables: ur
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeU(const member_type& team_member) noexcept
+	void computeU(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbNodes));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbNodes));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& rNodesTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& rNodesTeam)
 			{
-				int rNodes(rNodesTeam + team_work.first);
+				int rNodes(rNodesTeam + teamWork.first);
 				ur(rNodes) = MathFunctions::matVectProduct(inverse(Mt(rNodes)), bt(rNodes));
 			});
 		}
@@ -865,23 +875,24 @@ private:
 	 * Out variables: F
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeFjr(const member_type& team_member) noexcept
+	void computeFjr(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbCells));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 			{
-				int jCells(jCellsTeam + team_work.first);
-				int jId(jCells);
+				int jCells(jCellsTeam + teamWork.first);
+				const int jId(jCells);
 				{
-					auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+					const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 					{
-						int rId(nodesOfCellJ[rNodesOfCellJ]);
-						int rNodes(rId);
+						const int rId(nodesOfCellJ[rNodesOfCellJ]);
+						const int rNodes(rId);
 						F(jCells,rNodesOfCellJ) = ArrayOperations::plus(ArrayOperations::multiply(p(jCells), C(jCells,rNodesOfCellJ)), MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), (ArrayOperations::minus(uj_n(jCells), ur(rNodes)))));
 					}
 				}
@@ -895,16 +906,16 @@ private:
 	 * Out variables: X_nplus1
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeXn(const member_type& team_member) noexcept
+	void computeXn(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbNodes));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbNodes));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& rNodesTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& rNodesTeam)
 			{
-				int rNodes(rNodesTeam + team_work.first);
+				int rNodes(rNodesTeam + teamWork.first);
 				X_nplus1(rNodes) = ArrayOperations::plus(X_n(rNodes), ArrayOperations::multiply(deltat_n, ur(rNodes)));
 			});
 		}
@@ -916,25 +927,26 @@ private:
 	 * Out variables: E_nplus1
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeEn(const member_type& team_member) noexcept
+	void computeEn(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbCells));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 			{
-				int jCells(jCellsTeam + team_work.first);
-				int jId(jCells);
-				double reduction7 = 0.0;
+				int jCells(jCellsTeam + teamWork.first);
+				const int jId(jCells);
+				double reduction7(0.0);
 				{
-					auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+					const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 					{
-						int rId(nodesOfCellJ[rNodesOfCellJ]);
-						int rNodes(rId);
-						reduction7 = reduction7 + (MathFunctions::dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
+						const int rId(nodesOfCellJ[rNodesOfCellJ]);
+						const int rNodes(rId);
+						reduction7 = sumR0(reduction7, MathFunctions::dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
 					}
 				}
 				E_nplus1(jCells) = E_n(jCells) - (deltat_n / m(jCells)) * reduction7;
@@ -948,78 +960,111 @@ private:
 	 * Out variables: uj_nplus1
 	 */
 	KOKKOS_INLINE_FUNCTION
-	void computeUn(const member_type& team_member) noexcept
+	void computeUn(const member_type& teamMember) noexcept
 	{
 		{
-			const auto team_work(computeTeamWorkRange(team_member, nbCells));
-			if (!team_work.second)
+			const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+			if (!teamWork.second)
 				return;
 		
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(team_member, team_work.second), KOKKOS_LAMBDA(const int& jCellsTeam)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& jCellsTeam)
 			{
-				int jCells(jCellsTeam + team_work.first);
-				int jId(jCells);
-				RealArray1D<2> reduction6 = {{0.0, 0.0}};
+				int jCells(jCellsTeam + teamWork.first);
+				const int jId(jCells);
+				RealArray1D<2> reduction6({{0.0, 0.0}});
 				{
-					auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.size(); rNodesOfCellJ++)
+					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+					const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 					{
-						reduction6 = ArrayOperations::plus(reduction6, (F(jCells,rNodesOfCellJ)));
+						reduction6 = sumR1(reduction6, F(jCells,rNodesOfCellJ));
 					}
 				}
 				uj_nplus1(jCells) = ArrayOperations::minus(uj_n(jCells), ArrayOperations::multiply((deltat_n / m(jCells)), reduction6));
 			});
 		}
 	}
-
+	
 	KOKKOS_INLINE_FUNCTION
 	RealArray1D<2> perp(RealArray1D<2> a) 
 	{
 		return {{a[1], -a[0]}};
 	}
-
+	
 	template<size_t l>
 	KOKKOS_INLINE_FUNCTION
 	RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b) 
 	{
 		RealArray2D<l,l> result;
 		for (size_t ia=0; ia<l; ia++)
+		{
 			for (size_t ib=0; ib<l; ib++)
+			{
 				result[ia][ib] = a[ia] * b[ib];
+			}
+		}
 		return result;
 	}
-
+	
 	template<size_t l>
 	KOKKOS_INLINE_FUNCTION
 	double trace(RealArray2D<l,l> a) 
 	{
-		double result = 0.0;
+		double result(0.0);
 		for (size_t ia=0; ia<l; ia++)
+		{
 			result = result + a[ia][ia];
+		}
 		return result;
 	}
-
+	
 	KOKKOS_INLINE_FUNCTION
 	RealArray2D<2,2> inverse(RealArray2D<2,2> a) 
 	{
-		double alpha = 1.0 / MathFunctions::det(a);
+		double alpha(1.0 / MathFunctions::det(a));
 		return {{{{a[1][1] * alpha, -a[0][1] * alpha}}, {{-a[1][0] * alpha, a[0][0] * alpha}}}};
+	}
+	
+	template<size_t x>
+	KOKKOS_INLINE_FUNCTION
+	RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b) 
+	{
+		return ArrayOperations::plus(a, b);
+	}
+	
+	KOKKOS_INLINE_FUNCTION
+	double sumR0(double a, double b) 
+	{
+		return a + b;
+	}
+	
+	template<size_t x>
+	KOKKOS_INLINE_FUNCTION
+	RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b) 
+	{
+		return ArrayOperations::plus(a, b);
+	}
+	
+	KOKKOS_INLINE_FUNCTION
+	double minR0(double a, double b) 
+	{
+		return MathFunctions::min(a, b);
 	}
 
 	void dumpVariables(int iteration)
 	{
 		if (!writer.isDisabled() && n >= lastDump + 1.0)
 		{
-			cpu_timer.stop();
-			io_timer.start();
+			cpuTimer.stop();
+			ioTimer.start();
 			std::map<string, double*> cellVariables;
 			std::map<string, double*> nodeVariables;
 			cellVariables.insert(pair<string,double*>("Density", rho.data()));
 			auto quads = mesh->getGeometry()->getQuads();
 			writer.writeFile(iteration, t_n, nbNodes, X_n.data(), nbCells, quads.data(), cellVariables, nodeVariables);
 			lastDump = n;
-			io_timer.stop();
-			cpu_timer.start();
+			ioTimer.stop();
+			cpuTimer.start();
 		}
 	}
 
@@ -1031,18 +1076,7 @@ public:
 		std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
 			<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
 		
-		if (Kokkos::hwloc::available())
-		{
-			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_numa_count()
-				<< __RESET__ << ", Cores/NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_cores_per_numa()
-				<< __RESET__ << ", Threads/Core=" << __BOLD__ << Kokkos::hwloc::get_available_threads_per_core() << __RESET__ << std::endl;
-		}
-		else
-		{
-			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
-		}
-		
-		// std::cout << "[" << __GREEN__ << "KOKKOS" << __RESET__ << "]    " << __BOLD__ << (is_same<MyLayout,Kokkos::LayoutLeft>::value?"Left":"Right")" << __RESET__ << " layout" << std::endl;
+		std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 		
 		if (!writer.isDisabled())
 			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
@@ -1052,7 +1086,7 @@ public:
 		auto team_policy(Kokkos::TeamPolicy<>(
 			Kokkos::hwloc::get_available_numa_count(),
 			Kokkos::hwloc::get_available_cores_per_numa() * Kokkos::hwloc::get_available_threads_per_core()));
-
+		
 		// @1.0
 		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 		{
@@ -1074,7 +1108,7 @@ public:
 		// @3.0
 		executeTimeLoopN();
 		
-		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << global_timer.print() << __RESET__ << std::endl;
+		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 	}
 };
 

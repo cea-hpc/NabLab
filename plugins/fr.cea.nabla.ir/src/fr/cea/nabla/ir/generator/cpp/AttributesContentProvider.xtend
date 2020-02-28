@@ -22,9 +22,9 @@ class AttributesContentProvider
 		«getGlobalVariablesContent(m)»
 		«getConnectivityVariablesContent(m)»
 		«getLinearAlgebraVariablesContent(m)»
-		utils::Timer global_timer;
-		utils::Timer cpu_timer;
-		utils::Timer io_timer;
+		utils::Timer globalTimer;
+		utils::Timer cpuTimer;
+		utils::Timer ioTimer;
 		«IF additionalContent !== null»
 		«additionalContent»
 		«ENDIF»

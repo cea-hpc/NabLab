@@ -19,8 +19,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR};${KOKKOS_HOME}/include")
 link_directories(${KOKKOS_HOME}/lib)
 
 add_executable(heatequation HeatEquation.cc)
-target_link_libraries(heatequation cppnabla kokkos kokkos_kernels dl stdc++fs hwloc)
-
+target_link_libraries(heatequation cppnabla stdc++fs kokkos kokkos_kernels hwloc dl)
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 include(Project.cmake)
 endif()

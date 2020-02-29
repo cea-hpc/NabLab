@@ -59,7 +59,7 @@ class ExpressionTypeProviderTest
 	set nodesOfCell: cell → {node};
 	set nodes: → {node};
 
-	def reduceMin: (ℝ.MaxValue, ℝ)→ℝ;
+	def reduceMin: ℝ.MaxValue, ℝ, (a, b) → return a;
 
 	def perp: ℝ[2] → ℝ[2];
 	def norm: x | ℝ[x] → ℝ;

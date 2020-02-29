@@ -19,7 +19,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR};${KOKKOS_HOME}/include")
 link_directories(${KOKKOS_HOME}/lib)
 
 add_executable(glace2d Glace2d.cc)
-target_link_libraries(glace2d cppnabla dl stdc++fs kokkos kokkos_kernels hwloc)
+target_link_libraries(glace2d cppnabla stdc++fs kokkos kokkos_kernels hwloc dl)
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 include(Project.cmake)
 endif()

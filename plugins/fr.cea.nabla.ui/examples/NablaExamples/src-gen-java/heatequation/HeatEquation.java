@@ -105,14 +105,15 @@ public final class HeatEquation
 			double reduction3 = 0.0;
 			{
 				final int[] neighbourCellsJ1 = mesh.getNeighbourCells(j1Id);
-				for (int j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<neighbourCellsJ1.length; j2NeighbourCellsJ1++)
+				final int nbElemsJ2NeighbourCellsJ1 = neighbourCellsJ1.length;
+				for (int j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<nbElemsJ2NeighbourCellsJ1; j2NeighbourCellsJ1++)
 				{
 					final int j2Id = neighbourCellsJ1[j2NeighbourCellsJ1];
 					final int j2Cells = j2Id;
 					final int cfCommonFaceJ1J2 = mesh.getCommonFace(j1Id, j2Id);
 					final int cfId = cfCommonFaceJ1J2;
 					final int cfFaces = cfId;
-					reduction3 = reduction3 + ((u_n[j2Cells] - u_n[j1Cells]) / MathFunctions.norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
+					reduction3 = sumR0(reduction3, (u_n[j2Cells] - u_n[j1Cells]) / MathFunctions.norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
 				}
 			}
 			outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction3;
@@ -132,13 +133,14 @@ public final class HeatEquation
 			double reduction2 = 0.0;
 			{
 				final int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
-				for (int rNodesOfFaceF=0; rNodesOfFaceF<nodesOfFaceF.length; rNodesOfFaceF++)
+				final int nbElemsRNodesOfFaceF = nodesOfFaceF.length;
+				for (int rNodesOfFaceF=0; rNodesOfFaceF<nbElemsRNodesOfFaceF; rNodesOfFaceF++)
 				{
 					final int rId = nodesOfFaceF[rNodesOfFaceF];
 					final int rPlus1Id = nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
 					final int rNodes = rId;
 					final int rPlus1Nodes = rPlus1Id;
-					reduction2 = reduction2 + (MathFunctions.norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
+					reduction2 = sumR0(reduction2, MathFunctions.norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
 				}
 			}
 			surface[fFaces] = 0.5 * reduction2;
@@ -168,13 +170,14 @@ public final class HeatEquation
 			double reduction1 = 0.0;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
+				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					final int rNodes = rId;
 					final int rPlus1Nodes = rPlus1Id;
-					reduction1 = reduction1 + (MathFunctions.det(X[rNodes], X[rPlus1Nodes]));
+					reduction1 = sumR0(reduction1, MathFunctions.det(X[rNodes], X[rPlus1Nodes]));
 				}
 			}
 			V[jCells] = 0.5 * reduction1;
@@ -194,11 +197,12 @@ public final class HeatEquation
 			double[] reduction0 = new double[] {0.0, 0.0};
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nodesOfCellJ.length; rNodesOfCellJ++)
+				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;
-					reduction0 = ArrayOperations.plus(reduction0, (X[rNodes]));
+					reduction0 = sumR1(reduction0, X[rNodes]);
 				}
 			}
 			center[jCells] = ArrayOperations.multiply(0.25, reduction0);
@@ -276,6 +280,17 @@ public final class HeatEquation
 				u_nplus1 = tmp_u_n;
 			} 
 		} while (continueLoop);
+	}
+
+	private double[] sumR1(double[] a, double[] b)
+	{
+		final int x = a.length;
+		return ArrayOperations.plus(a, b);
+	}
+
+	private double sumR0(double a, double b)
+	{
+		return a + b;
 	}
 
 	private void dumpVariables(int iteration)

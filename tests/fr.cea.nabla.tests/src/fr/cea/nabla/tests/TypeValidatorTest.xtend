@@ -16,6 +16,7 @@ import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.typing.NSTRealArray1D
 import fr.cea.nabla.typing.NSTRealScalar
+import fr.cea.nabla.typing.NSTSizeType
 import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.typing.VarTypeProvider
 import fr.cea.nabla.validation.TypeValidator
@@ -27,7 +28,6 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import fr.cea.nabla.typing.NSTSizeType
 
 import static fr.cea.nabla.tests.TestUtils.*
 
@@ -218,33 +218,29 @@ class TypeValidatorTest
 	}
 
 	@Test
-	def void testCheckSeedAndReturnTypes()
+	def void testCheckSeedAndTypes()
 	{
 		val moduleKo = parseHelper.parse(getTestModule ('',
 				'''
-				def reduce1: (f(), ℝ) → ℝ;
-				def reduce2: (ℝ.MinValue, ℝ) → ℕ;
-
-				def f: → ℝ[2];
+				def sum1: [0.0, 0.0], ℝ[2], (a, b) → return a + b;
+				def sum1: 0.0, ℕ, (a, b) → return a + b;
 				'''
 			)
 		)
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.reduction,
-			TypeValidator::SEED_TYPE,
-			TypeValidator::getSeedTypeMsg())
+			TypeValidator::REDUCTION_SEED_TYPE,
+			TypeValidator::getReductionSeedTypeMsg())
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.reduction,
-			TypeValidator::SEED_AND_RETURN_TYPES,
-			TypeValidator::getSeedAndReturnTypesMsg(PrimitiveType::REAL.literal, PrimitiveType::INT.literal))
+			TypeValidator::REDUCTION_TYPES_COMPATIBILITY,
+			TypeValidator::getReductionTypesCompatibilityMsg(PrimitiveType::REAL.literal, PrimitiveType::INT.literal))
 
 		val moduleOk = parseHelper.parse(getTestModule( '',
 				'''
-				def reduce1: (f(), ℝ) → ℝ;
-				def reduce2: (ℕ.MinValue, ℝ) → ℕ;
-
-				def f: → ℝ;
+				def sum1: 0.0, ℝ[2], (a, b) → return a + b;
+				def sum1: 0, ℕ, (a, b) → return a + b;
 				'''
 			)
 		)
@@ -293,7 +289,7 @@ class TypeValidatorTest
 	{
 		var functions =
 			'''
-			def	reduceMin: (ℝ.MaxValue, ℝ) → ℝ;
+			def sum:  0.0, ℝ, (a, b) → return a + b;
 			'''
 
 		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, functions)
@@ -301,8 +297,8 @@ class TypeValidatorTest
 			'''
 			ℝ D{cells}; 
 			ℝ[2] E{cells}; 
-			computeU: ℝ u = reduceMin{c∈cells()}(D);
-			computeV: ℝ v = reduceMin{c∈cells()}(E{c});
+			computeU: ℝ u = sum{c∈cells()}(D);
+			computeV: ℝ[2] v = sum{c∈cells()}(E{c});
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -313,12 +309,12 @@ class TypeValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.reductionCall,
 			TypeValidator::REDUCTION_ARGS,
-			TypeValidator::getReductionArgsMsg(new NSTRealArray1D(NSTSizeType.create(2)).label))
+			TypeValidator::getReductionArgsMsg(new NSTRealScalar().label))
 
 		functions =
 			'''
-			def reduceMin: (ℝ.MaxValue, ℝ) → ℝ;
-			def reduceMin: (ℝ.MaxValue, ℝ[2]) → ℝ;
+			def sum: 0.0 , ℝ, (a,b) → return a + b;
+			def sum: x | 0.0 , ℝ[x], (a,b) → return a + b;
 			'''
 
 		val moduleOk = parseHelper.parse(getTestModule(defaultConnectivities, functions)
@@ -326,8 +322,8 @@ class TypeValidatorTest
 			'''
 			ℝ D{cells};
 			ℝ[2] E{cells};
-			computeT: ℝ u = reduceMin{c∈cells()}(D{c});
-			computeV: ℝ v = reduceMin{c∈cells()}(E{c});
+			computeT: ℝ u = sum{c∈cells()}(D{c});
+			computeV: ℝ[2] v = sum{c∈cells()}(E{c});
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

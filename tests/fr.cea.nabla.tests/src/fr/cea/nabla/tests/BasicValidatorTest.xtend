@@ -632,18 +632,19 @@ class BasicValidatorTest
 	@Test
 	def void testCheckUnusedReduction()
 	{
-		val moduleKo = parseHelper.parse(getTestModule('', '''def reduceMin: (ℝ.MaxValue, ℝ[2]) → ℝ[2];'''))
+		val reduc = '''def sum: 0.0, ℝ[2], (a, b) → return a+b;'''
+		val moduleKo = parseHelper.parse(getTestModule('', reduc))
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertWarning(NablaPackage.eINSTANCE.reduction,
 			BasicValidator::UNUSED_REDUCTION,
 			BasicValidator::getUnusedReductionMsg())
 
-		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, '''def reduceMin: (ℝ.MaxValue, ℝ[2]) → ℝ[2];''') +
+		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, reduc) +
 			'''
 			ℝ[2] orig = [0.0 , 0.0];
 			ℝ[2] X{nodes};
-			ComputeU: orig = reduceMin{r∈nodes()}(X{r});
+			ComputeU: orig = sum{r∈nodes()}(X{r});
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -651,11 +652,11 @@ class BasicValidatorTest
 	}
 
 	@Test
-	def testCheckFunctionInTypes() 
+	def testCheckFunctionIncompatibleInTypes() 
 	{
 		var functions =
 			'''
-			def	g: ℝ[2] → ℝ;
+			def g: ℝ[2] → ℝ;
 			def g: x | ℝ[x] → ℝ;
 			'''
 
@@ -668,7 +669,7 @@ class BasicValidatorTest
 
 		functions =
 			'''
-			def	g: ℝ → ℝ;
+			def g: ℝ → ℝ;
 			def g: x | ℝ[x] → ℝ;
 			'''
 
@@ -680,7 +681,7 @@ class BasicValidatorTest
 	@Test
 	def testCheckFunctionReturnType() 
 	{
-		var functions = '''def	f: x | ℝ → ℝ[x];'''
+		var functions = '''def f: x | ℝ → ℝ[x];'''
 
 		val modulekO = parseHelper.parse(getTestModule('', functions))
 		Assert.assertNotNull(modulekO)
@@ -691,8 +692,8 @@ class BasicValidatorTest
 
 		functions =
 			'''
-			def	f: x | ℝ[x] → ℝ[x];
-			def	g: y | ℝ[y] → ℝ[x, y];
+			def f: x | ℝ[x] → ℝ[x];
+			def g: y | ℝ[y] → ℝ[x, y];
 			'''
 
 		val moduleOk = parseHelper.parse(getTestModule('', functions))
@@ -701,50 +702,26 @@ class BasicValidatorTest
 	}
 
 	@Test
-	def testCheckReductionCollectionType() 
+	def testCheckReductionIncompatibleTypes() 
 	{
-		var functions =
+		var reductions =
 			'''
-			def	reduce: (ℝ.MaxValue, ℝ[2]) → ℝ;
-			def reduce: x | (ℝ.MaxValue , ℝ[x]) → ℝ;
+			def g: 0.0, ℝ[2], (a, b) → return a;
+			def g: x | 0.0, ℝ[x], (a, b) → return a;
 			'''
-
-		val modulekO = parseHelper.parse(getTestModule('',functions))
+		val modulekO = parseHelper.parse(getTestModule('', reductions))
 		Assert.assertNotNull(modulekO)
 
 		modulekO.assertError(NablaPackage.eINSTANCE.reduction,
-			BasicValidator::REDUCTION_INCOMPATIBLE_COLLECTION_TYPE,
-			BasicValidator::getReductionIncompatibleCollectionTypeMsg)
+			BasicValidator::REDUCTION_INCOMPATIBLE_TYPES,
+			BasicValidator::getReductionIncompatibleTypesMsg())
 
-		functions =
+		reductions =
 			'''
-			def	reduce: (ℝ.MaxValue, ℝ) → ℝ;
-			def reduce: x | (ℝ.MaxValue , ℝ[x]) → ℝ;
+			def g: 0.0, ℝ, (a, b) → return a;
+			def g: x | 0.0, ℝ[x], (a, b) → return a;
 			'''
-
-		val moduleOk = parseHelper.parse(getTestModule('', functions))
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
-	@Test
-	def testCheckReductionReturnType() 
-	{
-		val modulekO = parseHelper.parse(getTestModule('', '''def	reduce: x,y | (ℝ.MaxValue , ℝ[x]) → ℝ[y];'''))
-		Assert.assertNotNull(modulekO)
-
-		modulekO.assertError(NablaPackage.eINSTANCE.reduction,
-			BasicValidator::REDUCTION_RETURN_TYPE,
-			BasicValidator::getReductionReturnTypeMsg("y"))
-
-		val modulekO2 = parseHelper.parse(getTestModule('', '''def	reduce: x,y | (ℝ.MaxValue , ℝ[x]) → ℝ[x+y];'''))
-		Assert.assertNotNull(modulekO2)
-
-		modulekO2.assertError(NablaPackage.eINSTANCE.reduction,
-			BasicValidator::REDUCTION_RETURN_TYPE,
-			BasicValidator::getReductionReturnTypeMsg("y"))
-
-		val moduleOk = parseHelper.parse(getTestModule('', '''def	reduce: x | (ℝ.MaxValue , ℝ[x]) → ℝ[x];'''))
+		val moduleOk = parseHelper.parse(getTestModule('', reductions))
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -1128,14 +1105,14 @@ class BasicValidatorTest
 	@Test
 	def testCheckNoOperationInReductionCollectionType()
 	{
-		val modulekO = parseHelper.parse(getTestModule('', '''def reduce: x,y | (ℝ.MaxValue , ℝ[x+y]) → ℝ[x+y];'''))
+		val modulekO = parseHelper.parse(getTestModule('', '''def sum: x,y | 0.0 , ℝ[x+y], (a,b) → return a + b;'''))
 		Assert.assertNotNull(modulekO)
 
 		modulekO.assertError(NablaPackage.eINSTANCE.reduction,
-			BasicValidator::NO_OPERATION_IN_REDUCTION_COLLECTION_TYPE,
-			BasicValidator::getNoOperationInReductionCollectionTypeMsg)
+			BasicValidator::NO_OPERATION_IN_REDUCTION_TYPE,
+			BasicValidator::getNoOperationInReductionTypeMsg)
 
-		val moduleOk = parseHelper.parse(getTestModule('', '''def	reduce: x | (ℝ.MaxValue , ℝ[x]) → ℝ[x];'''))
+		val moduleOk = parseHelper.parse(getTestModule('', '''def sum: x | 0.0 , ℝ[x], (a,b) → return a + b;'''))
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}

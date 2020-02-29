@@ -50,9 +50,9 @@ class IteratorExtensionsTest
 	set neighbourCells: cell → {cell};
 	set commonFace: cell × cell → face;
 
-	def ∑: (0.0, ℝ) → ℝ;
-	def ∑: x | (0.0, ℝ[x]) → ℝ[x];
-	def ∑: x | (0.0, ℝ[x, x]) → ℝ[x, x];
+	def ∑: 0.0, ℝ, (a, b) → return a + b;
+	def ∑: x | 0.0, ℝ[x], (a, b) → return a + b;
+	def ∑: x | 0.0, ℝ[x, x], (a, b) → return a + b;
 	'''
 	+ TestUtils::mandatoryOptions + TestUtils::simulationVariables +
 	'''

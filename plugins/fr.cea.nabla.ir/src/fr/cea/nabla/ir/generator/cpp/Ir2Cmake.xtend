@@ -46,7 +46,7 @@ class Ir2Cmake
 		«FOR ld : linkDirectories BEFORE "link_directories(" SEPARATOR ";" AFTER ")"»«ld»«ENDFOR»
 
 		add_executable(«name.toLowerCase» «name + '.cc'»)
-		target_link_libraries(«name.toLowerCase» cppnabla dl stdc++fs«FOR tll : targetLinkLibraries» «tll»«ENDFOR»)
+		target_link_libraries(«name.toLowerCase» cppnabla stdc++fs«FOR tll : targetLinkLibraries» «tll»«ENDFOR»)
 		if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 		include(Project.cmake)
 		endif()
@@ -63,5 +63,6 @@ class KokkosIr2Cmake extends Ir2Cmake
 		targetLinkLibraries += "kokkos"
 		targetLinkLibraries += "kokkos_kernels"
 		targetLinkLibraries += "hwloc"
+		targetLinkLibraries += "dl"
 	}
 }

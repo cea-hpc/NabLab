@@ -212,8 +212,8 @@ class DeclarationProviderTest
 		set cells: → {cell}; 
 		set nodes: → {node};
 			
-		def	f: (0.0, ℝ) → ℝ;
-		def f: x | (0.0, ℝ[x]) → ℝ[x];
+		def f: 0.0, ℝ, (a , b) → return a;
+		def f: x | 0.0, ℝ[x], (a , b) → return a;
 		'''
 		+ TestUtils::mandatoryOptions +
 		'''
@@ -239,7 +239,7 @@ class DeclarationProviderTest
 		Assert.assertEquals(fReductions.get(0), j0Fdecl.model)
 		val j1Fdecl = getReductionDeclarationOfJob(module, 1)
 		Assert.assertEquals(fReductions.get(1), j1Fdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(NSTSizeType.create(2)), j1Fdecl.returnType)
+		Assert.assertEquals(new NSTRealArray1D(NSTSizeType.create(2)), j1Fdecl.type)
 		val j2Fdecl = getReductionDeclarationOfJob(module, 2)
 		Assert.assertNull(j2Fdecl)
 	}

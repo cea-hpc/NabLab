@@ -28,17 +28,20 @@ workflow Glace2dGenerationChain transforms Glace2d
 	{
 	}
 	
-	ReplaceReductions replaceReductions follows replaceUtf
-	{
-	}
-	
-	OptimizeConnectivities optimizeConnectivities follows replaceReductions
+	OptimizeConnectivities optimizeConnectivities follows replaceUtf
 	{
 		connectivities = cells, nodes;
+		dumpIr;
 	}
 	
-	FillHLTs fillHlts follows optimizeConnectivities
+	ReplaceReductions replaceReductions follows optimizeConnectivities
 	{
+		//dumpIr;
+	}
+	
+	FillHLTs fillHlts follows replaceReductions
+	{
+		dumpIr;
 	}
 	
 	Ir2Code javaGenerator follows fillHlts
@@ -68,4 +71,26 @@ workflow Glace2dGenerationChain transforms Glace2d
 		}
 		outputDir = "/NablaExamples/src-gen-kokkos-team";
 	}
+//
+//	ReplaceReductions replaceReductionAlls follows optimizeConnectivities
+//	{
+//		replaceAllReductions;
+//		dumpIr;
+//	}
+//	
+//	FillHLTs fillHltAlls follows replaceReductionAlls
+//	{
+//		dumpIr;
+//	}
+//
+//	Ir2Code sequentialGenerator follows fillHltAlls
+//	{
+//		language = Cpp
+//		{
+//			maxIterationVariable = option_max_iterations;
+//			stopTimeVariable = option_stoptime;
+//			programmingModel = Sequential
+//		}
+//		outputDir = "/NablaExamples/src-gen-sequential";
+//	}
 }

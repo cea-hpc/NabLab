@@ -9,13 +9,18 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
+import fr.cea.nabla.ir.generator.IteratorExtensions
+import fr.cea.nabla.ir.generator.IteratorRefExtensions
+import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.SizeTypeSymbol
+import java.lang.reflect.Method
 import java.util.HashMap
 import java.util.TreeSet
 import java.util.logging.Level
@@ -38,6 +43,8 @@ class Context
 	val variableValues = new HashMap<ArgOrVar, NablaValue>
 	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Iterator, TreeSet<ArgOrVarRefIteratorRef>> neededIndices
 	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Iterator, TreeSet<IteratorRef>> neededIds
+	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Object, String> indexNames
+	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Function, Method> functionToMethod
 	@Accessors val HashMap<Connectivity, Integer> connectivitySizes
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) MeshWrapper meshWrapper
 
@@ -50,6 +57,8 @@ class Context
 		this.meshWrapper = null
 		this.neededIndices = new HashMap<Iterator, TreeSet<ArgOrVarRefIteratorRef>>
 		this.neededIds = new HashMap<Iterator, TreeSet<IteratorRef>>
+		this.indexNames = new HashMap<Object, String>
+		this.functionToMethod = new HashMap<Function, Method>
 	}
 
 	new(Context outerContext)
@@ -61,6 +70,8 @@ class Context
 		this.meshWrapper = outerContext.meshWrapper
 		this.neededIndices = outerContext.neededIndices
 		this.neededIds = outerContext.neededIds
+		this.indexNames = outerContext.indexNames
+		this.functionToMethod = outerContext.functionToMethod
 	}
 
 	def initMesh(int nbXQuads, int nbYQuads, double xSize, double ySize)
@@ -130,6 +141,8 @@ class Context
 
 	def void setIndexValue(Iterator it, int value)
 	{
+		// Store indexName to avoid retrieving it in the map repetitively
+		val indexName = indexName
 		if (indexValues.get(indexName) !== null)
 			indexValues.replace(indexName, value)
 		else
@@ -259,9 +272,45 @@ class Context
 		neededIds.get(iterator)
 	}
 
-	private def int getIndexValue(String indexName)
+	def setIndexName(Iterator iterator)
 	{
-		indexValues.get(indexName) ?: outerContext.getIndexValue(indexName)
+		indexNames.put(iterator, IteratorExtensions::getIndexName(iterator))
+	}
+
+	def setIndexName(ArgOrVarRefIteratorRef iteratorRef)
+	{
+		indexNames.put(iteratorRef, IteratorRefExtensions::getIndexName(iteratorRef))
+	}
+
+	def String getIndexName(ArgOrVarRefIteratorRef it)
+	{
+		return indexNames.get(it)
+	}
+
+	def String getIndexName(Iterator it)
+	{
+		return indexNames.get(it)
+	}
+
+	def resolveFunction(Function it)
+	{
+		val tccl = Thread.currentThread().getContextClassLoader()
+		val providerClassName = module.name.toLowerCase + '.' + provider + Utils::FunctionReductionPrefix
+		val providerClass = Class.forName(providerClassName, true, tccl)
+		val javaTypes = it.inArgs.map[a|FunctionCallHelper.getJavaType(BaseTypeValueFactory::createValue(a.type, this))]
+		val result = providerClass.getDeclaredMethod(name, javaTypes)
+		result.setAccessible(true)
+		functionToMethod.put(it, result)
+	}
+
+	def Method getMethod(Function it)
+	{
+		functionToMethod.get(it)
+	}
+
+	private def int getIndexValue(String indexname)
+	{
+		indexValues.get(indexname) ?: outerContext.getIndexValue(indexname)
 	}
 
 	private def int getIdValue(String id)

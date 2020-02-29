@@ -36,7 +36,7 @@ import static fr.cea.nabla.tests.TestUtils.*
 class ExpressionInterpreterTest
 {
 	@Inject CompilationChainHelper compilationHelper
-		
+
 	@Test
 	def void testInterpreteContractedIf() 
 	{
@@ -53,7 +53,7 @@ class ExpressionInterpreterTest
 		assertVariableDefaultValue(irModule, context, "r1", new NV0Real(1.0))
 		assertVariableDefaultValue(irModule, context, "r2", new NV0Real(2.0))
 	}
-		
+
 	@Test
 	def void testInterpreteBinaryExpression()
 	{
@@ -390,6 +390,7 @@ class ExpressionInterpreterTest
 		ℝ[3,2] r7 = r6; // -> [[2.,3.],[4.,5.],[6.,7.]]
 		ℝ r8 = r6[1,1]; // -> 5.
 		'''
+
 		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF

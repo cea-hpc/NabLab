@@ -28,10 +28,36 @@ import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
+import fr.cea.nabla.ir.ir.Instruction
+import java.util.Arrays
 
 class InstructionInterpreter
 {
-	static def dispatch NablaValue interprete(VarDefinition it, Context context)
+
+	// Switch to more efficient dispatch (also clearer for profiling)
+	static def NablaValue interprete(Instruction it, Context context)
+	{
+		if (it instanceof Loop) {
+			return interpreteLoop(context)
+		} else if (it instanceof ReductionInstruction) {
+			return interpreteReductionInstruction(context)
+		} else if (it instanceof Affectation) {
+			return interpreteAffectation(context)
+		} else if (it instanceof If) {
+			return interpreteIf(context)
+		} else if (it instanceof InstructionBlock) {
+			return interpreteInstructionBlock(context)
+		} else if (it instanceof Return) {
+			return interpreteReturn(context)
+		} else if (it instanceof VarDefinition) {
+			return interpreteVarDefinition(context)
+		} else {
+			throw new IllegalArgumentException("Unhandled parameter types: " +
+				Arrays.<Object>asList(it, context).toString());
+		}
+	}
+
+	static def NablaValue interpreteVarDefinition(VarDefinition it, Context context)
 	{
 		context.logFinest("Interprete VarDefinition")
 		for (v : variables)
@@ -39,7 +65,7 @@ class InstructionInterpreter
 		return null
 	}
 
-	static def dispatch NablaValue interprete(InstructionBlock it, Context context)
+	static def NablaValue interpreteInstructionBlock(InstructionBlock it, Context context)
 	{
 		context.logFinest("Interprete InstructionBlock")
 		val innerContext = new Context(context)
@@ -52,22 +78,25 @@ class InstructionInterpreter
 		return null
 	}
 
-	static def dispatch NablaValue interprete(Affectation it, Context context)
+	static def NablaValue interpreteAffectation(Affectation it, Context context)
 	{
 		context.logFinest("Interprete Affectation")
 		val rightValue = interprete(right, context)
-		val allIndices = left.iterators.map[x | context.getIndexValue(x)] + left.indices.map[x | interprete(x, context)]
-		setValue(context.getVariableValue(left.target), allIndices.toList, rightValue)
+		// Switch to more efficient implementation (avoid costly toList calls)
+		val allIndices = newArrayList
+		left.iterators.forEach[x|allIndices.add(context.getIndexValue(x))]
+		left.indices.forEach[x|allIndices.add(interprete(x, context))]
+		setValue(context.getVariableValue(left.target), allIndices, rightValue)
 		return null
 	}
 
-	static def dispatch NablaValue interprete(ReductionInstruction it, Context context)
+	static def NablaValue interpreteReductionInstruction(ReductionInstruction it, Context context)
 	{
 		// All reductionInstruction have been replaced by specific Ir Transformation Step
 		throw new RuntimeException('Wrong path...')
 	}
 
-	static def dispatch NablaValue interprete(Loop it, Context context)
+	static def NablaValue interpreteLoop(Loop it, Context context)
 	{
 		val b = iterationBlock
 		switch b
@@ -104,7 +133,7 @@ class InstructionInterpreter
 		return null
 	}
 
-	static def dispatch NablaValue interprete(If it, Context context)
+	static def NablaValue interpreteIf(If it, Context context)
 	{
 		context.logFinest("Interprete If")
 		val cond = interprete(condition, context) as NV0Bool
@@ -112,7 +141,7 @@ class InstructionInterpreter
 		else if (elseInstruction !== null) return interprete(elseInstruction, context)
 	}
 
-	static def dispatch NablaValue interprete(Return it, Context context)
+	static def NablaValue interpreteReturn(Return it, Context context)
 	{
 		context.logFinest("Interprete Return")
 		return interprete(expression, context)
@@ -137,7 +166,7 @@ class InstructionInterpreter
 			context.addIndexValue(neededIndex, getIdToIndex(neededIndex, context))
 	}
 
-	private	static def getIndexToId(IteratorRef it, Context context)
+	private static def getIndexToId(IteratorRef it, Context context)
 	{
 		val indexValue = getIndexValue(it, context)
 

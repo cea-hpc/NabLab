@@ -12,11 +12,13 @@ package fr.cea.nabla.ir.interpreter
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.PostProcessingInfo
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
+import java.util.Arrays
 import java.util.HashMap
 
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
@@ -35,14 +37,29 @@ class JobInterpreter
 		this.writer = writer
 	}
 
-	def dispatch void interprete(InstructionJob it, Context context)
+	// Switch to more efficient dispatch (also clearer for profiling)
+	def void interprete(Job it, Context context)
+	{
+		if (it instanceof TimeLoopJob) {
+			interpreteTimeLoopJob(context)
+		} else if (it instanceof InstructionJob) {
+			interpreteInstructionJob(context)
+		} else if (it instanceof TimeLoopCopyJob) {
+			interpreteTimeLoopCopyJob(context)
+		} else {
+			throw new IllegalArgumentException("Unhandled parameter types: " +
+				Arrays.<Object>asList(it, context).toString())
+		}
+	}
+
+	def void interpreteInstructionJob(InstructionJob it, Context context)
 	{
 		context.logFinest("Interprete InstructionJob " + name + " @ " + at)
 		val innerContext = new Context(context)
 		interprete(instruction, innerContext)
 	}
 
-	def dispatch void interprete(TimeLoopJob it, Context context)
+	def void interpreteTimeLoopJob(TimeLoopJob it, Context context)
 	{
 		context.logFinest("Interprete TimeLoopJob " + name + " @ " + at)
 		val irModule = eContainer as IrModule
@@ -82,7 +99,7 @@ class JobInterpreter
 		context.logVariables("After timeLoop " + iteration)
 	}
 
-	def dispatch void interprete(TimeLoopCopyJob it, Context context)
+	def void interpreteTimeLoopCopyJob(TimeLoopCopyJob it, Context context)
 	{
 		context.logFinest("Interprete TimeLoopCopyJob " + name + " @ " + at)
 

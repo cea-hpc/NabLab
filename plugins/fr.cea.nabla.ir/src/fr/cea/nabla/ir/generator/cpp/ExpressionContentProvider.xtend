@@ -48,7 +48,7 @@ class ExpressionContentProvider
 		val lContent = left.content
 		val rContent = right.content
 
-		if (left.type.scalar && right.type.scalar) 
+		if (left.type.scalar && right.type.scalar)
 			'''«lContent» «operator» «rContent»'''
 		else 
 			'''ArrayOperations::«operator.operatorName»(«lContent», «rContent»)'''

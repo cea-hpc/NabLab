@@ -12,6 +12,8 @@ package fr.cea.nabla.javalib.mesh
 import java.util.HashSet
 import java.util.stream.IntStream
 import org.eclipse.xtend.lib.annotations.Accessors
+import java.util.Map
+import java.util.concurrent.ConcurrentHashMap
 
 class CartesianMesh2D
 {
@@ -87,53 +89,63 @@ class CartesianMesh2D
 		geometricFace.nodeIds
 	}
 
+	// Store effectively constant data requiring intensive computations
+	val nodeIdToCells = new ConcurrentHashMap<Integer, int[]>
+	val faceIdToCells = new ConcurrentHashMap<Integer, int[]>
+	val cellIdToNeighbourCell = new ConcurrentHashMap<Integer, int[]>
+
 	def getCellsOfNode(int nodeId)
 	{
-		val size = geometry.quads.filter[q|q.nodeIds.contains(nodeId)].size
-		val candidateQuadIds = newIntArrayOfSize(size)
-		var int quadId = 0
-		var int candidateQuadId = 0
-		for (q : geometry.quads)
-		{
-			if (q.nodeIds.contains(nodeId)) candidateQuadIds.set(candidateQuadId++, quadId)
-			quadId++
-		}
-		return candidateQuadIds
+		return nodeIdToCells.computeIfAbsent(nodeId, [id|
+			val size = geometry.quads.filter[q|q.nodeIds.contains(id)].size
+			val candidateQuadIds = newIntArrayOfSize(size)
+			var int quadId = 0
+			var int candidateQuadId = 0
+			for (q : geometry.quads) {
+				if (q.nodeIds.contains(id)) candidateQuadIds.set(candidateQuadId++, quadId)
+				quadId++
+			}
+			return candidateQuadIds
+		])
 	}
 
 	def getCellsOfFace(int faceId)
 	{
-		val cellsOfFace = new HashSet<Integer>
-		val nodes = getNodesOfFace(faceId)
-		for (nodeId : nodes)
-		{
-			for (quadId : getCellsOfNode(nodeId))
+		return faceIdToCells.computeIfAbsent(faceId, [id|
+			val cellsOfFace = new HashSet<Integer>
+			val nodes = getNodesOfFace(id)
+			for (nodeId : nodes)
 			{
-				val adjacentQuad = geometry.quads.get(quadId)
-				if (adjacentQuad.nodeIds.filter(n | nodes.contains(n)).size == 2)
-					cellsOfFace.add(quadId)
+				for (quadId : getCellsOfNode(nodeId))
+				{
+					val adjacentQuad = geometry.quads.get(quadId)
+					if (adjacentQuad.nodeIds.filter(n | nodes.contains(n)).size == 2)
+						cellsOfFace.add(quadId)
+				}
 			}
-		}
-		val int[] a = cellsOfFace.map[intValue]
-		return a
+			val int[] a = cellsOfFace.map[intValue]
+			return a
+		])
 	}
 
 	def getNeighbourCells(int cellId)
 	{
-		val neighbours = new HashSet<Integer>
-		val nodes = getNodesOfCell(cellId)
-		for (nodeId : nodes)
-		{
-			for (quadId : getCellsOfNode(nodeId))
-				if (quadId != cellId)
-				{
-					val adjacentQuad = geometry.quads.get(quadId)
-					if (adjacentQuad.nodeIds.filter(n | nodes.contains(n)).size == 2)
-						neighbours.add(quadId)
-				}
-		}
-		val int[] a = neighbours.map[intValue]
-		return a
+		return cellIdToNeighbourCell.computeIfAbsent(cellId, [id|
+			val neighbours = new HashSet<Integer>
+			val nodes = getNodesOfCell(id)
+			for (nodeId : nodes)
+			{
+				for (quadId : getCellsOfNode(nodeId))
+					if (quadId != id)
+					{
+						val adjacentQuad = geometry.quads.get(quadId)
+						if (adjacentQuad.nodeIds.filter(n | nodes.contains(n)).size == 2)
+							neighbours.add(quadId)
+					}
+			}
+			val int[] a = neighbours.map[intValue]
+			return a
+		])
 	}
 
 	def getFacesOfCell(int cell)

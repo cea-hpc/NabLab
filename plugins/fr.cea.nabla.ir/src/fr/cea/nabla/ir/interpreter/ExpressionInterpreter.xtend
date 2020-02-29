@@ -3,26 +3,26 @@
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.ContractedIf
-import fr.cea.nabla.ir.ir.SizeTypeSymbolRef
+import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.RealConstant
+import fr.cea.nabla.ir.ir.SizeTypeSymbolRef
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
 import java.util.Arrays
@@ -33,20 +33,54 @@ import static fr.cea.nabla.ir.interpreter.IrTypeExtensions.*
 import static fr.cea.nabla.ir.interpreter.NablaValueGetter.*
 import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
-import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class ExpressionInterpreter
 {
-	static def dispatch NablaValue interprete(ContractedIf it, Context context)
+
+	// Switch to more efficient dispatch (also clearer for profiling)
+	static def NablaValue interprete(Expression it, Context context) {
+		if (it instanceof ArgOrVarRef) {
+			return interpreteArgOrVarRef(context)
+		} else if (it instanceof BaseTypeConstant) {
+			return interpreteBaseTypeConstant(context)
+		} else if (it instanceof BinaryExpression) {
+			return interpreteBinaryExpression(context)
+		} else if (it instanceof BoolConstant) {
+			return interpreteBoolConstant(context)
+		} else if (it instanceof ContractedIf) {
+			return interpreteContractedIf(context)
+		} else if (it instanceof FunctionCall) {
+			return interpreteFunctionCall(context)
+		} else if (it instanceof IntConstant) {
+			return interpreteIntConstant(context)
+		} else if (it instanceof MaxConstant) {
+			return interpreteMaxConstant(context)
+		} else if (it instanceof MinConstant) {
+			return interpreteMinConstant(context)
+		} else if (it instanceof Parenthesis) {
+			return interpreteParenthesis(context)
+		} else if (it instanceof RealConstant) {
+			return interpreteRealConstant(context)
+		} else if (it instanceof UnaryExpression) {
+			return interpreteUnaryExpression(context)
+		} else if (it instanceof VectorConstant) {
+			return interpreteVectorConstant(context)
+		} else {
+			throw new IllegalArgumentException("Unhandled parameter types: " +
+				Arrays.<Object>asList(it, context).toString())
+		}
+	}
+
+	static def NablaValue interpreteContractedIf(ContractedIf it, Context context)
 	{
 		context.logFinest("Interprete ContractedIf")
 		val condValue = condition.interprete(context)
 		if ((condValue as NV0Bool).data) thenExpression.interprete(context)
-		else elseExpression.interprete(context) 
+		else elseExpression.interprete(context)
 	}
 
-	static def dispatch NablaValue interprete(BinaryExpression it, Context context)	
+	static def NablaValue interpreteBinaryExpression(BinaryExpression it, Context context)
 	{
 		context.logFinest("Interprete BinaryExpression")
 		val lValue = left.interprete(context)
@@ -54,48 +88,55 @@ class ExpressionInterpreter
 		BinaryOperationsInterpreter::getValueOf(lValue, rValue, operator)
 	}
 
-	static def dispatch NablaValue interprete(UnaryExpression it, Context context)
+	static def NablaValue interpreteUnaryExpression(UnaryExpression it, Context context)
 	{
 		context.logFinest("Interprete UnaryExpression")
 		val eValue = expression.interprete(context)
-		switch eValue
-		{
-			NV0Bool case operator == '!': new NV0Bool(!eValue.data)
-			NV0Int case operator == '-': new NV0Int(-eValue.data)
-			NV0Real case operator == '-': new NV0Real(-eValue.data)
-			NV1Int case operator == '-': new NV1Int(eValue.data.map[x|-x])
-			NV1Real case operator == '-': new NV1Real(eValue.data.map[x|-x])
-			NV2Int case operator == '-': computeUnaryMinus(eValue)
-			NV2Real case operator == '-': computeUnaryMinus(eValue)
-			default: throw new RuntimeException('Wrong unary operator: ' + operator)
+		// Switch to more efficient dispatch
+		if (eValue instanceof NV0Bool && it.operator == '!') {
+			return new NV0Bool(!(eValue as NV0Bool).data)
+		} else if (eValue instanceof NV0Int && it.operator == '-') {
+			return new NV0Int(-(eValue as NV0Int).data)
+		} else if (eValue instanceof NV0Real && it.operator == '-') {
+			return new NV0Real(-(eValue as NV0Real).data)
+		} else if (eValue instanceof NV1Int && it.operator == '-') {
+			return new NV1Int((eValue as NV1Int).data.map[x|-x])
+		} else if (eValue instanceof NV1Real && it.operator == '-') {
+			return new NV1Real((eValue as NV1Real).data.map[x|-x])
+		} else if (eValue instanceof NV2Int && it.operator == '-') {
+			return computeUnaryMinus(eValue as NV2Int)
+		} else if (eValue instanceof NV2Real && it.operator == '-') {
+			return computeUnaryMinus(eValue as NV2Real)
+		} else {
+			throw new RuntimeException('Wrong unary operator: ' + operator)
 		}
 	}
 
-	static def dispatch NablaValue interprete(Parenthesis it, Context context)
+	static def NablaValue interpreteParenthesis(Parenthesis it, Context context)
 	{
 		context.logFinest("Interprete Parenthesis")
 		expression.interprete(context)
 	}
 
-	static def dispatch NablaValue interprete(IntConstant it, Context context) 
+	static def NablaValue interpreteIntConstant(IntConstant it, Context context)
 	{
 		context.logFinest("Interprete IntConstant")
 		new NV0Int(value)
 	}
 
-	static def dispatch NablaValue interprete(RealConstant it, Context context) 
+	static def NablaValue interpreteRealConstant(RealConstant it, Context context)
 	{
 		context.logFinest("Interprete RealConstant")
 		new NV0Real(value)
 	}
 
-	static def dispatch NablaValue interprete(BoolConstant it, Context context) 
-	{ 
+	static def NablaValue interpreteBoolConstant(BoolConstant it, Context context)
+	{
 		context.logFinest("Interprete BoolConstant")
 		new NV0Bool(value)
 	}
 
-	static def dispatch NablaValue interprete(MinConstant it, Context context)
+	static def NablaValue interpreteMinConstant(MinConstant it, Context context)
 	{
 		context.logFinest("Interprete MinConstant")
 		val t = type as BaseType
@@ -107,7 +148,7 @@ class ExpressionInterpreter
 		}
 	}
 
-	static def dispatch NablaValue interprete(MaxConstant it, Context context)
+	static def NablaValue interpreteMaxConstant(MaxConstant it, Context context)
 	{
 		context.logFinest("Interprete MaxConstant")
 		val t = type as BaseType
@@ -119,7 +160,7 @@ class ExpressionInterpreter
 		}
 	}
 
-	static def dispatch NablaValue interprete(BaseTypeConstant it, Context context)
+	static def NablaValue interpreteBaseTypeConstant(BaseTypeConstant it, Context context)
 	{
 		context.logFinest("Interprete BaseTypeConstant")
 		val expressionValue = value.interprete(context)
@@ -134,7 +175,7 @@ class ExpressionInterpreter
 		}
 	}
 
-	static def dispatch NablaValue interprete(VectorConstant it, Context context)
+	static def NablaValue interpreteVectorConstant(VectorConstant it, Context context)
 	{
 		context.logFinest("Interprete VectorConstant")
 		val expressionValues = values.map[x | interprete(x, context)]
@@ -145,19 +186,16 @@ class ExpressionInterpreter
 		return value
 	}
 
-	static def dispatch NablaValue interprete(FunctionCall it, Context context)
+	static def NablaValue interpreteFunctionCall(FunctionCall it, Context context)
 	{
+		val function = function
 		context.logFinest("Interprete FunctionCall " + function.name)
 		val argValues = args.map[x|interprete(x, context)]
 		if (function.body === null)
 		{
-			val providerClassName = irModule.name.toLowerCase + '.' + function.provider + Utils.FunctionReductionPrefix
-			val tccl = Thread.currentThread().getContextClassLoader()
-			val providerClass = Class.forName(providerClassName, true, tccl)
-			val javaTypes = argValues.map[x | FunctionCallHelper.getJavaType(x) ]
-			val method = providerClass.getDeclaredMethod(function.name, javaTypes)
-			method.setAccessible(true)
-			val javaValues = argValues.map[x | FunctionCallHelper.getJavaValue(x)].toArray
+			// Use method cache instead of resolving on each iteration
+			val method = context.getMethod(function)
+			val javaValues = argValues.map[x|FunctionCallHelper.getJavaValue(x)].toArray
 			val result = method.invoke(null, javaValues)
 			return FunctionCallHelper.createNablaValue(result)
 		}
@@ -185,13 +223,15 @@ class ExpressionInterpreter
 		}
 	}
 
-	static def dispatch NablaValue interprete(ArgOrVarRef it, Context context)
+	static def NablaValue interpreteArgOrVarRef(ArgOrVarRef it, Context context)
 	{
+		val target = target
 		context.logFinest("Interprete VarRef " + target.name)
 		val value = context.getVariableValue(target)
-		val iteratorValues = iterators.map[x | context.getIndexValue(x)]
-		val indicesValues = indices.map[x | interprete(x, context)]
-		val allIndices = (iteratorValues + indicesValues).toList
+		// Switch to more efficient implementation (avoid costly toList calls)
+		val allIndices = newArrayList
+		iterators.forEach[x|allIndices.add(context.getIndexValue(x))]
+		indices.forEach[x|allIndices.add(interprete(x, context))]
 		getValue(value, allIndices)
 	}
 

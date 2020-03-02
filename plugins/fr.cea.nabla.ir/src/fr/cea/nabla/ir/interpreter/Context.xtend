@@ -28,6 +28,7 @@ import java.util.logging.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
@@ -297,10 +298,18 @@ class Context
 		val tccl = Thread.currentThread().getContextClassLoader()
 		val providerClassName = module.name.toLowerCase + '.' + provider + Utils::FunctionReductionPrefix
 		val providerClass = Class.forName(providerClassName, true, tccl)
-		val javaTypes = it.inArgs.map[a|FunctionCallHelper.getJavaType(BaseTypeValueFactory::createValue(a.type, this))]
-		val result = providerClass.getDeclaredMethod(name, javaTypes)
-		result.setAccessible(true)
-		functionToMethod.put(it, result)
+		val javaTypes = inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension)]
+		try 
+		{
+			val result = providerClass.getDeclaredMethod(name, javaTypes)
+			result.setAccessible(true)
+			functionToMethod.put(it, result)
+		}
+		catch (NoSuchMethodException e)
+		{
+			println("** Method '" + providerClassName + "::" + name + "(" + inArgs.map[type.label + " " + name].join(", ") + ")' not found")
+			throw(e);
+		}
 	}
 
 	def Method getMethod(Function it)

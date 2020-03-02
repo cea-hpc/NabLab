@@ -44,16 +44,13 @@ class IrModuleExtensions
 	}
 
 	/**
-	 * Retourne la liste des connectivités utilisées par le module,
-	 * lors de la déclaration des variables ou des itérateurs.
+	 * Return the list of connectivities used by the module
+	 * during variables and iterators definition.
 	 */
 	static def getUsedConnectivities(IrModule it)
 	{
-		// connectivités nécessaires pour les variables
 		val connectivities = variables.filter(ConnectivityVariable).map[type.connectivities].flatten.toSet
-		// connectivités utilisées dans le code
 		jobs.forEach[j | connectivities += j.eAllContents.filter(ConnectivityCall).map[connectivity].toSet]
-
 		return connectivities.filter[c | c.returnType.multiple]
 	}
 

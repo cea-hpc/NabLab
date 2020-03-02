@@ -21,6 +21,7 @@ import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
+import fr.cea.nabla.nabla.BaseType
 
 /**
  * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
@@ -60,6 +61,13 @@ class IrArgOrVarFactory
 	// fonctions générales retournent des Var
 	def dispatch Variable toIrVariable(SimpleVar v) { toIrSimpleVariable(v, v.name) }
 	def dispatch Variable toIrVariable(ConnectivityVar v) { toIrConnectivityVariable(v, v.name) }
+
+	def create IrFactory::eINSTANCE.createArg toIrArg(BaseType nablaType, String nablaName)
+	{
+		annotations += nablaType.toIrAnnotation
+		name = nablaName
+		type = nablaType.toIrBaseType
+	}
 
 	def create IrFactory::eINSTANCE.createArg toIrArg(Arg v, String varName)
 	{

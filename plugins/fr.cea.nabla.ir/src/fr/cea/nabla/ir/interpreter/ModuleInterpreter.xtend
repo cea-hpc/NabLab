@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.MandatoryOptions
+import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.SimpleVariable
@@ -26,8 +27,6 @@ import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
-import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
-import fr.cea.nabla.ir.ir.Function
 
 class ModuleInterpreter
 {
@@ -69,7 +68,7 @@ class ModuleInterpreter
 			context.setIndexName(i)
 		]
 		module.eAllContents.filter(ArgOrVarRefIteratorRef).forEach[i | context.setIndexName(i)]
-		module.eAllContents.filter(Function).filter[f|f.body === null].forEach[f | context.resolveFunction(f)]
+		module.functions.filter[body === null].forEach[f | context.resolveFunction(f)]
 
 		// Interprete constant variables
 		for (v : module.variables.filter(SimpleVariable).filter[const])

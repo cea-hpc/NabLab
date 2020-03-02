@@ -9,17 +9,46 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
+import fr.cea.nabla.ir.ir.PrimitiveType
+
 class FunctionCallHelper
 {
-	static def dispatch Class<?> getJavaType(NV0Bool it) { typeof(boolean) }
-	static def dispatch Class<?> getJavaType(NV1Bool it) { typeof(boolean[]) }
-	static def dispatch Class<?> getJavaType(NV2Bool it) { typeof(boolean[][]) }
-	static def dispatch Class<?> getJavaType(NV0Int it) { typeof(int) }
-	static def dispatch Class<?> getJavaType(NV1Int it) { typeof(int[]) }
-	static def dispatch Class<?> getJavaType(NV2Int it) { typeof(int[][]) }
-	static def dispatch Class<?> getJavaType(NV0Real it) { typeof(double) }
-	static def dispatch Class<?> getJavaType(NV1Real it) { typeof(double[]) }
-	static def dispatch Class<?> getJavaType(NV2Real it) { typeof(double[][]) }
+	static def Class<?> getJavaType(PrimitiveType primitive, int dimension) 
+	{
+		switch (primitive)
+		{
+			case BOOL: 
+			{
+				switch dimension
+				{
+					case 0: typeof(boolean)
+					case 1: typeof(boolean[])
+					case 2: typeof(boolean[][])
+					default: throw new RuntimeException("Dimension not implemented: " + dimension) 
+				}
+			}
+			case INT:
+			{
+				switch dimension
+				{
+					case 0: typeof(int)
+					case 1: typeof(int[])
+					case 2: typeof(int[][])
+					default: throw new RuntimeException("Dimension not implemented: " + dimension) 
+				}
+			}
+			case REAL:
+			{
+				switch dimension
+				{
+					case 0: typeof(double)
+					case 1: typeof(double[])
+					case 2: typeof(double[][])
+					default: throw new RuntimeException("Dimension not implemented: " + dimension) 
+				}
+			}
+		}
+	}
 
 	static def dispatch Object getJavaValue(NV0Bool it) { data }
 	static def dispatch Object getJavaValue(NV1Bool it) { data }

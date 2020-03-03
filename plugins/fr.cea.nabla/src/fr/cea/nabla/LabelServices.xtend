@@ -16,7 +16,6 @@ import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
-import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.CurrentTimeIteratorRef
 import fr.cea.nabla.nabla.Equality
@@ -26,7 +25,7 @@ import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
-import fr.cea.nabla.nabla.IntervalIterationBlock
+import fr.cea.nabla.nabla.Interval
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.MaxConstant
@@ -34,23 +33,23 @@ import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.MulOrDiv
+import fr.cea.nabla.nabla.MultipleConnectivityCall
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
-import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.nabla.SingletonSpaceIterator
+import fr.cea.nabla.nabla.SingleConnectivityCall
 import fr.cea.nabla.nabla.SizeTypeInt
 import fr.cea.nabla.nabla.SizeTypeOperation
 import fr.cea.nabla.nabla.SizeTypeSymbol
 import fr.cea.nabla.nabla.SizeTypeSymbolRef
-import fr.cea.nabla.nabla.SpaceIterationBlock
+import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -72,12 +71,10 @@ class LabelServices
 	static def dispatch String getLabel(Return it) { 'return ' + expression?.label }
 
 	/* ITERATEURS ********************************************/
-	static def dispatch String getLabel(SpaceIterationBlock it) { range?.label }
-	static def dispatch String getLabel(IntervalIterationBlock it) { index?.label + '\u2208' + nbElems.label }
-
-	static def dispatch String getLabel(RangeSpaceIterator it) { name + '\u2208 ' + container?.label }
-	static def dispatch String getLabel(SingletonSpaceIterator it) { name + '=' + container?.label }
-	static def dispatch String getLabel(ConnectivityCall it) { connectivity.name + '(' + args.map[label].join(',') + ')' }
+	static def dispatch String getLabel(SpaceIterator it) { name + '\u2208 ' + container?.label }
+	static def dispatch String getLabel(Interval it) { index?.label + '\u2208' + nbElems.label }
+	static def dispatch String getLabel(MultipleConnectivityCall it) { connectivity.name + '(' + args.map[label].join(',') + ')' }
+	static def dispatch String getLabel(SingleConnectivityCall it) { connectivity.name + '(' + args.map[label].join(',') + ')' }
 	static def dispatch String getLabel(SpaceIteratorRef it) 
 	{ 
 		if (inc > 0) target?.name + '+' + inc

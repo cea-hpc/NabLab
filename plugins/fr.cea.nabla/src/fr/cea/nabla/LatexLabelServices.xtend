@@ -16,7 +16,6 @@ import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
-import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.CurrentTimeIteratorRef
 import fr.cea.nabla.nabla.Equality
@@ -27,7 +26,7 @@ import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
-import fr.cea.nabla.nabla.IntervalIterationBlock
+import fr.cea.nabla.nabla.Interval
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.MaxConstant
@@ -35,23 +34,23 @@ import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.MulOrDiv
+import fr.cea.nabla.nabla.MultipleConnectivityCall
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
-import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.nabla.SingletonSpaceIterator
+import fr.cea.nabla.nabla.SingleConnectivityCall
 import fr.cea.nabla.nabla.SizeTypeInt
 import fr.cea.nabla.nabla.SizeTypeOperation
 import fr.cea.nabla.nabla.SizeTypeSymbol
 import fr.cea.nabla.nabla.SizeTypeSymbolRef
-import fr.cea.nabla.nabla.SpaceIterationBlock
+import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -71,12 +70,10 @@ class LatexLabelServices
 	static def dispatch String getLatex(Return it) { 'return (' + expression.latex + ')'}
 
 	/* ITERATEURS ********************************************/
-	static def dispatch String getLatex(SpaceIterationBlock it) { range.latex }
-	static def dispatch String getLatex(IntervalIterationBlock it) { index.latex + '\\in ' + nbElems.latex }
-
-	static def dispatch String getLatex(RangeSpaceIterator it) { name.pu + '\\in ' + container.latex }
-	static def dispatch String getLatex(SingletonSpaceIterator it) { name.pu + '=' + container.latex }
-	static def dispatch String getLatex(ConnectivityCall it) { connectivity.name.pu + '(' + args.map[latex].join(',') + ')' }
+	static def dispatch String getLatex(SpaceIterator it) { name.pu + '\\in ' + container.latex }
+	static def dispatch String getLatex(Interval it) { index.latex + '\\in ' + nbElems.latex }
+	static def dispatch String getLatex(MultipleConnectivityCall it) { connectivity.name.pu + '(' + args.map[latex].join(',') + ')' }
+	static def dispatch String getLatex(SingleConnectivityCall it) { connectivity.name.pu + '(' + args.map[latex].join(',') + ')' }
 	static def dispatch String getLatex(SpaceIteratorRef it) 
 	{ 
 		if (inc > 0) target.name.pu + '+' + inc

@@ -11,10 +11,10 @@ package fr.cea.nabla.typing
 
 import com.google.inject.Inject
 import fr.cea.nabla.nabla.BaseType
-import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.MultipleConnectivity
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.Reduction
@@ -40,14 +40,14 @@ class DimensionValue
 
 	new() { this.value = null }
 	new(NSTSizeType value) { this.value = value }
-	new(Connectivity value) { this.value = value }
+	new(MultipleConnectivity value) { this.value = value }
 
 	def isUndefined() { value === null }
-	def isConnectivity() { value instanceof Connectivity }
+	def isConnectivity() { value instanceof MultipleConnectivity }
 	def isNSTDimension() { value instanceof NSTSizeType }
 	def isNSTDimensionInt() { value instanceof NSTSizeType && NSTDimensionValue.int }
 
-	def getConnectivityValue() { value as Connectivity }
+	def getConnectivityValue() { value as MultipleConnectivity }
 	def getNSTDimensionValue() { value as NSTSizeType }
 	def getNSTDimensionIntValue() { NSTDimensionValue.intValue }
 }

@@ -35,11 +35,11 @@ import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVar
-import fr.cea.nabla.nabla.SpaceIteratorRef
+import fr.cea.nabla.nabla.SpaceIndex
+import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VectorConstant
 import java.util.List
-import fr.cea.nabla.nabla.TimeIterator
 
 class ExpressionTypeProvider
 {
@@ -124,7 +124,7 @@ class ExpressionTypeProvider
 		else getTypeForVar(target, spaceIterators, indices.size)
 	}
 
-	private def dispatch NablaType getTypeForVar(SimpleVar v, List<SpaceIteratorRef> iterators, int nbIndices)
+	private def dispatch NablaType getTypeForVar(SimpleVar v, List<SpaceIndex> iterators, int nbIndices)
 	{
 		if (iterators.empty)
 		{
@@ -134,13 +134,13 @@ class ExpressionTypeProvider
 		else null
 	}
 
-	private def dispatch NablaType getTypeForVar(TimeIterator v, List<SpaceIteratorRef> iterators, int nbIndices)
+	private def dispatch NablaType getTypeForVar(TimeIterator v, List<SpaceIndex> iterators, int nbIndices)
 	{
 		if (iterators.empty && nbIndices==0) v.typeFor
 		else null
 	}
 
-	private def dispatch NablaType getTypeForVar(ConnectivityVar v, List<SpaceIteratorRef> iterators, int nbIndices)
+	private def dispatch NablaType getTypeForVar(ConnectivityVar v, List<SpaceIndex> iterators, int nbIndices)
 	{
 		if (iterators.empty)
 			if (nbIndices== 0) v.typeFor
@@ -154,7 +154,7 @@ class ExpressionTypeProvider
 		}
 	}
 
-	private def dispatch NablaType getTypeForVar(Arg v, List<SpaceIteratorRef> iterators, int nbIndices)
+	private def dispatch NablaType getTypeForVar(Arg v, List<SpaceIndex> iterators, int nbIndices)
 	{
 		if (iterators.empty)
 		{

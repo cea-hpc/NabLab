@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.typing
 
-import fr.cea.nabla.nabla.Connectivity
+import fr.cea.nabla.nabla.MultipleConnectivity
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.SizeType
 import fr.cea.nabla.nabla.SizeTypeInt
@@ -84,7 +84,7 @@ abstract class NablaType
 @Data
 class NablaConnectivityType extends NablaType
 {
-	val Connectivity[] supports
+	val MultipleConnectivity[] supports
 	val NablaSimpleType simple
 	override getPrimitive() { simple.primitive }
 

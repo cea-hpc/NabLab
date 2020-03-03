@@ -15,14 +15,11 @@ import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
-import fr.cea.nabla.nabla.IntervalIterationBlock
+import fr.cea.nabla.nabla.Interval
 import fr.cea.nabla.nabla.Iterable
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.nabla.SingletonSpaceIterator
-import fr.cea.nabla.nabla.SpaceIterationBlock
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorDefinition
@@ -45,25 +42,11 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
 class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 {
 	/*** Scope for iterators **********************************************************/
-	def scope_SpaceIteratorRef_target(RangeSpaceIterator context, EReference r)
+	def scope_SpaceIteratorRef_target(SpaceIterator context, EReference r)
 	{
 		//println('scope_SpaceIteratorRef_target(' + context.class.simpleName + ', ' + r.name + ')')
 		val iterable = EcoreUtil2.getContainerOfType(context, Iterable)
 		val s = iteratorsDefinedBefore(iterable.eContainer, '\t')
-		//println('--> ' + s)
-		return s
-	}
-
-	def scope_SpaceIteratorRef_target(SingletonSpaceIterator context, EReference r)
-	{
-		//println('scope_SpaceIteratorRef_target(' + context.class.simpleName + ', ' + r.name + ')')
-		val block = context.eContainer as SpaceIterationBlock
-		val previousIterators = tObjectsDeclaredBeforeInList(block.singletons, context)
-		val scopeIterators = new ArrayList<SpaceIterator>
-		scopeIterators += block.range
-		scopeIterators += previousIterators
-		val iterable = EcoreUtil2.getContainerOfType(context, Iterable)
-		val s = Scopes::scopeFor(scopeIterators, iteratorsDefinedBefore(iterable.eContainer, '\t'))
 		//println('--> ' + s)
 		return s
 	}
@@ -82,15 +65,10 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		if (o === null || o instanceof Job) IScope.NULLSCOPE
 		else switch o
 		{
-			Iterable case (o.iterationBlock instanceof SpaceIterationBlock):
-			{
-				val b = o.iterationBlock as SpaceIterationBlock
-				val scopeIterators = new ArrayList<SpaceIterator>
-				scopeIterators += b.range
-				scopeIterators += b.singletons
-				Scopes::scopeFor(scopeIterators, iteratorsDefinedBefore(o.eContainer, prefix + '\t'))
-			}
-			default: iteratorsDefinedBefore(o.eContainer, prefix + '\t')
+			Iterable case (o.iterationBlock instanceof SpaceIterator):
+				Scopes::scopeFor(#[o.iterationBlock as SpaceIterator], iteratorsDefinedBefore(o.eContainer, prefix + '\t'))
+			default: 
+				iteratorsDefinedBefore(o.eContainer, prefix + '\t')
 		}
 	}
 
@@ -207,8 +185,8 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		else switch o
 		{
 			FunctionOrReduction: Scopes.scopeFor(o.vars)
-			Iterable case (o.iterationBlock instanceof IntervalIterationBlock):
-				Scopes.scopeFor(#[(o.iterationBlock as IntervalIterationBlock).index], symbolsDefinedBefore(o.eContainer, prefix + '\t'))
+			Iterable case (o.iterationBlock instanceof Interval):
+				Scopes.scopeFor(#[(o.iterationBlock as Interval).index], symbolsDefinedBefore(o.eContainer, prefix + '\t'))
 			default: symbolsDefinedBefore(o.eContainer, prefix + '\t')
 		}
 	}

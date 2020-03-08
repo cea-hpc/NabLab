@@ -72,7 +72,7 @@ class JobInterpreter
 		{
 			iteration ++
 			context.setVariableValue(iterationVariable, new NV0Int(iteration))
-			context.logInfo(timeLoop.indentation + "[" + iteration + "] t: " +
+			context.logFine(timeLoop.indentation + "[" + iteration + "] t: " +
 				context.getReal(irModule.timeVariable.name) + " - deltat: " +
 				context.getReal(irModule.deltatVariable.name)
 			)
@@ -96,6 +96,7 @@ class JobInterpreter
 			}
 		}
 		while (continueLoop)
+		context.logInfo("	Nb Iteration = " + iteration)
 		context.logVariables("After timeLoop " + iteration)
 	}
 

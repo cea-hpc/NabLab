@@ -17,7 +17,6 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.time.Duration
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.logging.Level
 import java.util.logging.Logger
 import java.util.logging.StreamHandler
@@ -55,13 +54,12 @@ class ModuleInterpreter
 
 	def interprete()
 	{
-		val dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")
 		val startTime = LocalDateTime.now()
-		logger.warning(" Start executing " + module.name + " module " + dtf.format(startTime))
+		logger.info(" Start interpreting " + module.name + " module ")
 
 		jobInterpreter = new JobInterpreter(writer)
 
-		// Compute NeededIds and NeededIndexes for each iterator to spare time during interpretation
+		// Compute NeINFOededIds and NeededIndexes for each iterator to spare time during interpretation
 		// Compute indexName and resolve external functions for the same reason
 		module.eAllContents.filter(Iterator).forEach[i |
 			context.setNeededIndicesAndNeededIdsInContext(i)
@@ -105,13 +103,14 @@ class ModuleInterpreter
 		context.logVariables("At the end")
 		val endTime = LocalDateTime.now()
 		val duration = Duration.between(startTime, endTime);
-		logger.warning(" End executing " + dtf.format(endTime) + " (" + duration.seconds + " s)")
-
+		logger.info(" End interpreting")
+		logger.fine(" Elapsed time : " + duration.seconds + "s")
+		
 		return context
 	}
-
-	def warn(String message)
+	
+	def info(String message)
 	{
-		logger.warning(message)
+		logger.info(message)
 	}
 }

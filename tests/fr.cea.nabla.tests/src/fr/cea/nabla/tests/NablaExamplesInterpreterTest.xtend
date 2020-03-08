@@ -20,6 +20,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static fr.cea.nabla.tests.TestUtils.*
+import java.util.logging.FileHandler
+import java.util.logging.SimpleFormatter
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -38,19 +40,24 @@ class NablaExamplesInterpreterTest
 		wsPath = testProjectPath + "/../../"
 		examplesProjectSubPath = "plugins/fr.cea.nabla.ui/examples/NablaExamples/"
 		examplesProjectPath = wsPath + examplesProjectSubPath
+		
+		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s %n")
+		
 	}
 
 	@Test
 	def void testInterpreteGlace2D()
-	{
+	{       
 		val model = readFileAsString(examplesProjectPath + "src/glace2d/Glace2d.nabla")
 		// We use a dedicated genmodel to replaceAllreductions and not to generate code
 		val genmodel = readFileAsString("src/glace2d/Glace2d.nablagen")
 
 		val irModule = compilationHelper.getIrModule(model, genmodel)
-		//val handler = new FileHandler("src/glace2d/InterpreteGlace2d.log")
-		val handler = new ConsoleHandler
-		handler.level = Level::WARNING
+		val handler = new FileHandler("src/glace2d/InterpreteGlace2d.log")
+		val formatter = new SimpleFormatter
+		handler.setFormatter(formatter)
+		//val handler = new ConsoleHandler
+		handler.level = Level::FINE
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 		moduleInterpreter.interprete
 	}
@@ -63,13 +70,15 @@ class NablaExamplesInterpreterTest
 		val genmodel = readFileAsString("src/heatequation/HeatEquation.nablagen")
 		
 		val irModule = compilationHelper.getIrModule(model, genmodel)
-		//val handler = new FileHandler("src/heatequation/InterpreteHeatEquation.log")
-		val handler = new ConsoleHandler
-		handler.level = Level::WARNING
+		val handler = new FileHandler("src/heatequation/InterpreteHeatEquation.log")
+		val formatter = new SimpleFormatter
+		handler.setFormatter(formatter)
+		//val handler = new ConsoleHandler
+		handler.level = Level::FINEST
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		for (var i = 0 ; i < 10 ; i++) 
+		for (var i = 0 ; i < 1 ; i++) 
 		{
- 			moduleInterpreter.warn("Execution " + i)
+ 			moduleInterpreter.info("Execution " + i)
 			moduleInterpreter.interprete
 		}
 	}

@@ -552,6 +552,27 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.IR_CONNECTIVITY_CALL: {
+				IrConnectivityCall irConnectivityCall = (IrConnectivityCall)theEObject;
+				T result = caseIrConnectivityCall(irConnectivityCall);
+				if (result == null) result = caseIrAnnotable(irConnectivityCall);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.IR_UNIQUE_ID: {
+				IrUniqueId irUniqueId = (IrUniqueId)theEObject;
+				T result = caseIrUniqueId(irUniqueId);
+				if (result == null) result = caseIrAnnotable(irUniqueId);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.IR_INDEX: {
+				IrIndex irIndex = (IrIndex)theEObject;
+				T result = caseIrIndex(irIndex);
+				if (result == null) result = caseIrAnnotable(irIndex);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -1483,6 +1504,51 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseTimeLoopVariable(TimeLoopVariable object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Connectivity Call</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Connectivity Call</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIrConnectivityCall(IrConnectivityCall object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Unique Id</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Unique Id</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIrUniqueId(IrUniqueId object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Index</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Index</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIrIndex(IrIndex object) {
 		return null;
 	}
 

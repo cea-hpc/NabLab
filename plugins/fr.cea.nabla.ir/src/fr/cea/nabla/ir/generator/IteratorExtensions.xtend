@@ -41,7 +41,7 @@ class IteratorExtensions
 	 *   is then used to go from the iterator index to the variable index 
 	 * Because two identical ids represent the same object, only one IteratorRef by id is kept.
 	 */
-	static def getNeededIds(Iterator it)
+	static def getOldNeededIds(Iterator it)
 	{
 		val neededIds = new TreeSet<IteratorRef>(sortByIdName)
 		for (referencer : referencers)
@@ -50,7 +50,7 @@ class IteratorExtensions
 			{
 				ConnectivityCallIteratorRef : neededIds += referencer
 				ArgOrVarRefIteratorRef case (referencer.indexName != indexName) : neededIds += referencer
-			}	
+			}
 		}
 //		if (neededIds.empty)
 //			println('  neededIds for ' + name + ' empty')
@@ -71,7 +71,7 @@ class IteratorExtensions
 	 * - directly via the 'target' feature reference 
 	 * - indirectly via the return of indirectIteratorReferences operation.
 	 */
-	static def getNeededIndices(Iterator it)
+	static def getOldNeededIndices(Iterator it)
 	{
 //		println('getIndicesToDefine for: ' + name + ' - ' + indexName)
 

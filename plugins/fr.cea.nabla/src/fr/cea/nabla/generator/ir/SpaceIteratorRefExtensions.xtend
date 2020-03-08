@@ -9,22 +9,15 @@
  *******************************************************************************/
 package fr.cea.nabla.generator.ir
 
-import com.google.inject.Inject
-import com.google.inject.Singleton
-import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.nabla.Connectivity
+import fr.cea.nabla.nabla.SpaceIteratorRef
 
-@Singleton
-class IrConnectivityFactory 
+class SpaceIteratorRefExtensions
 {
-	@Inject extension Nabla2IrUtils
-	@Inject extension IrAnnotationHelper
-
-	def create IrFactory::eINSTANCE.createConnectivity toIrConnectivity(Connectivity c)
+	static def getName(SpaceIteratorRef it)
 	{
-		annotations += c.toIrAnnotation
-		name = c.name
-		returnType = c.returnType.toIrItemArgType
-		inTypes += c.inTypes.map[toIrItemType]
-	}	
+		if (dec > 0) target.name + 'Minus' + dec
+		else if (inc > 0) target.name + 'Plus' + inc
+		else target.name
+	}
 }
+

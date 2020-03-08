@@ -17,32 +17,44 @@ import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
+import fr.cea.nabla.ir.ir.IrIndex
 
-/**
- * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
- * Si elle n'est pas singleton, plusieurs instances d'un même objet seront créées lors
- * deu parcours du graphe d'origine (voir la documentation Xtext).
- */
 @Singleton
-class IrIteratorFactory 
-{	
+class IrIteratorFactory
+{
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrConnectivityFactory
-	
+	@Inject extension SpaceIteratorExtensions
+	@Inject extension IrIndexFactory
+	@Inject extension IrUniqueIdFactory
+
 	def create IrFactory::eINSTANCE.createIterator toIrIterator(SpaceIterator si)
 	{
 		annotations += si.toIrAnnotation
 		name = si.name
+		associatedIndex = si.toIrIndex
 		container = si.container.toIrConnectivityCall
 		singleton = (si instanceof SingletonSpaceIterator)
+		neededIds += si.createNeededIds
+		neededIndices += si.createNeededIndices
 	}
-	
+
 	def create IrFactory::eINSTANCE.createConnectivityCall toIrConnectivityCall(ConnectivityCall range)
 	{
 		annotations += range.toIrAnnotation
 		connectivity = range.connectivity.toIrConnectivity
 		for (i : 0..<range.args.size)
 			args += range.args.get(i).toIrConnectivityCallIteratorRef(i)
+	}
+
+
+	// index as arg because it is part of the primary key
+	def create IrFactory::eINSTANCE.createIrConnectivityCall toIrNewConnectivityCall(IrIndex index, ConnectivityCall range)
+	{
+		annotations += range.toIrAnnotation
+		connectivity = range.connectivity.toIrConnectivity
+		println("newConnectivityCall " + range.connectivity.name + " - " + range.args.size)
+		range.args.forEach[x | args += x.toIrUniqueId]
 	}
 
 	def create IrFactory::eINSTANCE.createArgOrVarRefIteratorRef toIrArgOrVarRefIteratorRef(SpaceIteratorRef ref, int index)
@@ -54,7 +66,7 @@ class IrIteratorFactory
 	{
 		initIteratorRef(ref, index)
 	}
-	
+
 	private def initIteratorRef(IteratorRef it, SpaceIteratorRef ref, int index)
 	{
 		annotations += ref.toIrAnnotation

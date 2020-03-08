@@ -108,6 +108,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.BASE_TYPE: return createBaseType();
 			case IrPackage.CONNECTIVITY_TYPE: return createConnectivityType();
 			case IrPackage.TIME_LOOP_VARIABLE: return createTimeLoopVariable();
+			case IrPackage.IR_CONNECTIVITY_CALL: return createIrConnectivityCall();
+			case IrPackage.IR_UNIQUE_ID: return createIrUniqueId();
+			case IrPackage.IR_INDEX: return createIrIndex();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -702,6 +705,39 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public TimeLoopVariable createTimeLoopVariable() {
 		TimeLoopVariableImpl timeLoopVariable = new TimeLoopVariableImpl();
 		return timeLoopVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public IrConnectivityCall createIrConnectivityCall() {
+		IrConnectivityCallImpl irConnectivityCall = new IrConnectivityCallImpl();
+		return irConnectivityCall;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public IrUniqueId createIrUniqueId() {
+		IrUniqueIdImpl irUniqueId = new IrUniqueIdImpl();
+		return irUniqueId;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public IrIndex createIrIndex() {
+		IrIndexImpl irIndex = new IrIndexImpl();
+		return irIndex;
 	}
 
 	/**

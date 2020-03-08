@@ -481,6 +481,33 @@ public interface IrFactory extends EFactory {
 	TimeLoopVariable createTimeLoopVariable();
 
 	/**
+	 * Returns a new object of class '<em>Connectivity Call</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Connectivity Call</em>'.
+	 * @generated
+	 */
+	IrConnectivityCall createIrConnectivityCall();
+
+	/**
+	 * Returns a new object of class '<em>Unique Id</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Unique Id</em>'.
+	 * @generated
+	 */
+	IrUniqueId createIrUniqueId();
+
+	/**
+	 * Returns a new object of class '<em>Index</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Index</em>'.
+	 * @generated
+	 */
+	IrIndex createIrIndex();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

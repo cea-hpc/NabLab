@@ -320,6 +320,18 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createTimeLoopVariableAdapter();
 			}
 			@Override
+			public Adapter caseIrConnectivityCall(IrConnectivityCall object) {
+				return createIrConnectivityCallAdapter();
+			}
+			@Override
+			public Adapter caseIrUniqueId(IrUniqueId object) {
+				return createIrUniqueIdAdapter();
+			}
+			@Override
+			public Adapter caseIrIndex(IrIndex object) {
+				return createIrIndexAdapter();
+			}
+			@Override
 			public Adapter defaultCase(EObject object) {
 				return createEObjectAdapter();
 			}
@@ -1204,6 +1216,48 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createTimeLoopVariableAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IrConnectivityCall <em>Connectivity Call</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.IrConnectivityCall
+	 * @generated
+	 */
+	public Adapter createIrConnectivityCallAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IrUniqueId <em>Unique Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.IrUniqueId
+	 * @generated
+	 */
+	public Adapter createIrUniqueIdAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IrIndex <em>Index</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.IrIndex
+	 * @generated
+	 */
+	public Adapter createIrIndexAdapter() {
 		return null;
 	}
 

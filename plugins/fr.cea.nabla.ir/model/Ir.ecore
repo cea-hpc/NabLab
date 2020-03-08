@@ -316,6 +316,12 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="referencers" upperBound="-1"
         eType="#//IteratorRef" eOpposite="#//IteratorRef/target"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="associatedIndex" lowerBound="1"
+        eType="#//IrIndex" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="neededIds" upperBound="-1"
+        eType="#//IrUniqueId" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="neededIndices" upperBound="-1"
+        eType="#//IrIndex" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConnectivityCall" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="connectivity" lowerBound="1"
@@ -367,5 +373,22 @@
         eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="next" lowerBound="1" eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IrConnectivityCall" eSuperTypes="#//IrAnnotable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connectivity" lowerBound="1"
+        eType="#//Connectivity"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="args" upperBound="-1" eType="#//IrUniqueId"
+        resolveProxies="false"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IrUniqueId" eSuperTypes="#//IrAnnotable">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValueIndex" eType="#//IrIndex"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="shift" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IrIndex" eSuperTypes="#//IrAnnotable">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValueId" eType="#//IrUniqueId"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="container" lowerBound="1"
+        eType="#//IrConnectivityCall" containment="true"/>
   </eClassifiers>
 </ecore:EPackage>

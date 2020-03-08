@@ -3433,13 +3433,40 @@ public interface IrPackage extends EPackage {
 	int ITERATOR__REFERENCERS = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
+	 * The feature id for the '<em><b>Associated Index</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ITERATOR__ASSOCIATED_INDEX = IR_ANNOTABLE_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Needed Ids</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ITERATOR__NEEDED_IDS = IR_ANNOTABLE_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Needed Indices</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ITERATOR__NEEDED_INDICES = IR_ANNOTABLE_FEATURE_COUNT + 6;
+
+	/**
 	 * The number of structural features of the '<em>Iterator</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ITERATOR_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int ITERATOR_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 7;
 
 	/**
 	 * The number of operations of the '<em>Iterator</em>' class.
@@ -3973,6 +4000,189 @@ public interface IrPackage extends EPackage {
 	int TIME_LOOP_VARIABLE_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
 
 	/**
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.IrConnectivityCallImpl <em>Connectivity Call</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.cea.nabla.ir.ir.impl.IrConnectivityCallImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIrConnectivityCall()
+	 * @generated
+	 */
+	int IR_CONNECTIVITY_CALL = 63;
+
+	/**
+	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_CONNECTIVITY_CALL__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
+
+	/**
+	 * The feature id for the '<em><b>Connectivity</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_CONNECTIVITY_CALL__CONNECTIVITY = IR_ANNOTABLE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Args</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_CONNECTIVITY_CALL__ARGS = IR_ANNOTABLE_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of structural features of the '<em>Connectivity Call</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_CONNECTIVITY_CALL_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of operations of the '<em>Connectivity Call</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_CONNECTIVITY_CALL_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.IrUniqueIdImpl <em>Unique Id</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.cea.nabla.ir.ir.impl.IrUniqueIdImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIrUniqueId()
+	 * @generated
+	 */
+	int IR_UNIQUE_ID = 64;
+
+	/**
+	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_UNIQUE_ID__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_UNIQUE_ID__NAME = IR_ANNOTABLE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Default Value Index</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_UNIQUE_ID__DEFAULT_VALUE_INDEX = IR_ANNOTABLE_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Shift</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_UNIQUE_ID__SHIFT = IR_ANNOTABLE_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of structural features of the '<em>Unique Id</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_UNIQUE_ID_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 3;
+
+	/**
+	 * The number of operations of the '<em>Unique Id</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_UNIQUE_ID_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.IrIndexImpl <em>Index</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.cea.nabla.ir.ir.impl.IrIndexImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIrIndex()
+	 * @generated
+	 */
+	int IR_INDEX = 65;
+
+	/**
+	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_INDEX__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_INDEX__NAME = IR_ANNOTABLE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Default Value Id</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_INDEX__DEFAULT_VALUE_ID = IR_ANNOTABLE_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Container</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_INDEX__CONTAINER = IR_ANNOTABLE_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of structural features of the '<em>Index</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_INDEX_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 3;
+
+	/**
+	 * The number of operations of the '<em>Index</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_INDEX_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
+
+	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.PrimitiveType <em>Primitive Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3980,7 +4190,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getPrimitiveType()
 	 * @generated
 	 */
-	int PRIMITIVE_TYPE = 63;
+	int PRIMITIVE_TYPE = 66;
 
 
 	/**
@@ -5690,6 +5900,39 @@ public interface IrPackage extends EPackage {
 	EReference getIterator_Referencers();
 
 	/**
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.Iterator#getAssociatedIndex <em>Associated Index</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Associated Index</em>'.
+	 * @see fr.cea.nabla.ir.ir.Iterator#getAssociatedIndex()
+	 * @see #getIterator()
+	 * @generated
+	 */
+	EReference getIterator_AssociatedIndex();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.Iterator#getNeededIds <em>Needed Ids</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Needed Ids</em>'.
+	 * @see fr.cea.nabla.ir.ir.Iterator#getNeededIds()
+	 * @see #getIterator()
+	 * @generated
+	 */
+	EReference getIterator_NeededIds();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.Iterator#getNeededIndices <em>Needed Indices</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Needed Indices</em>'.
+	 * @see fr.cea.nabla.ir.ir.Iterator#getNeededIndices()
+	 * @see #getIterator()
+	 * @generated
+	 */
+	EReference getIterator_NeededIndices();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ConnectivityCall <em>Connectivity Call</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -5954,6 +6197,124 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getTimeLoopVariable_Name();
+
+	/**
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.IrConnectivityCall <em>Connectivity Call</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Connectivity Call</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrConnectivityCall
+	 * @generated
+	 */
+	EClass getIrConnectivityCall();
+
+	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrConnectivityCall#getConnectivity <em>Connectivity</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Connectivity</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrConnectivityCall#getConnectivity()
+	 * @see #getIrConnectivityCall()
+	 * @generated
+	 */
+	EReference getIrConnectivityCall_Connectivity();
+
+	/**
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.IrConnectivityCall#getArgs <em>Args</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Args</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrConnectivityCall#getArgs()
+	 * @see #getIrConnectivityCall()
+	 * @generated
+	 */
+	EReference getIrConnectivityCall_Args();
+
+	/**
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.IrUniqueId <em>Unique Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Unique Id</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrUniqueId
+	 * @generated
+	 */
+	EClass getIrUniqueId();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.IrUniqueId#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrUniqueId#getName()
+	 * @see #getIrUniqueId()
+	 * @generated
+	 */
+	EAttribute getIrUniqueId_Name();
+
+	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrUniqueId#getDefaultValueIndex <em>Default Value Index</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Default Value Index</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrUniqueId#getDefaultValueIndex()
+	 * @see #getIrUniqueId()
+	 * @generated
+	 */
+	EReference getIrUniqueId_DefaultValueIndex();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.IrUniqueId#getShift <em>Shift</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Shift</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrUniqueId#getShift()
+	 * @see #getIrUniqueId()
+	 * @generated
+	 */
+	EAttribute getIrUniqueId_Shift();
+
+	/**
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.IrIndex <em>Index</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Index</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrIndex
+	 * @generated
+	 */
+	EClass getIrIndex();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.IrIndex#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrIndex#getName()
+	 * @see #getIrIndex()
+	 * @generated
+	 */
+	EAttribute getIrIndex_Name();
+
+	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrIndex#getDefaultValueId <em>Default Value Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Default Value Id</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrIndex#getDefaultValueId()
+	 * @see #getIrIndex()
+	 * @generated
+	 */
+	EReference getIrIndex_DefaultValueId();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.IrIndex#getContainer <em>Container</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Container</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrIndex#getContainer()
+	 * @see #getIrIndex()
+	 * @generated
+	 */
+	EReference getIrIndex_Container();
 
 	/**
 	 * Returns the meta object for enum '{@link fr.cea.nabla.ir.ir.PrimitiveType <em>Primitive Type</em>}'.
@@ -7377,6 +7738,30 @@ public interface IrPackage extends EPackage {
 		EReference ITERATOR__REFERENCERS = eINSTANCE.getIterator_Referencers();
 
 		/**
+		 * The meta object literal for the '<em><b>Associated Index</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ITERATOR__ASSOCIATED_INDEX = eINSTANCE.getIterator_AssociatedIndex();
+
+		/**
+		 * The meta object literal for the '<em><b>Needed Ids</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ITERATOR__NEEDED_IDS = eINSTANCE.getIterator_NeededIds();
+
+		/**
+		 * The meta object literal for the '<em><b>Needed Indices</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ITERATOR__NEEDED_INDICES = eINSTANCE.getIterator_NeededIndices();
+
+		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl <em>Connectivity Call</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -7593,6 +7978,100 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute TIME_LOOP_VARIABLE__NAME = eINSTANCE.getTimeLoopVariable_Name();
+
+		/**
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.IrConnectivityCallImpl <em>Connectivity Call</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.cea.nabla.ir.ir.impl.IrConnectivityCallImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIrConnectivityCall()
+		 * @generated
+		 */
+		EClass IR_CONNECTIVITY_CALL = eINSTANCE.getIrConnectivityCall();
+
+		/**
+		 * The meta object literal for the '<em><b>Connectivity</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference IR_CONNECTIVITY_CALL__CONNECTIVITY = eINSTANCE.getIrConnectivityCall_Connectivity();
+
+		/**
+		 * The meta object literal for the '<em><b>Args</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference IR_CONNECTIVITY_CALL__ARGS = eINSTANCE.getIrConnectivityCall_Args();
+
+		/**
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.IrUniqueIdImpl <em>Unique Id</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.cea.nabla.ir.ir.impl.IrUniqueIdImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIrUniqueId()
+		 * @generated
+		 */
+		EClass IR_UNIQUE_ID = eINSTANCE.getIrUniqueId();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IR_UNIQUE_ID__NAME = eINSTANCE.getIrUniqueId_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Default Value Index</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference IR_UNIQUE_ID__DEFAULT_VALUE_INDEX = eINSTANCE.getIrUniqueId_DefaultValueIndex();
+
+		/**
+		 * The meta object literal for the '<em><b>Shift</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IR_UNIQUE_ID__SHIFT = eINSTANCE.getIrUniqueId_Shift();
+
+		/**
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.IrIndexImpl <em>Index</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.cea.nabla.ir.ir.impl.IrIndexImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIrIndex()
+		 * @generated
+		 */
+		EClass IR_INDEX = eINSTANCE.getIrIndex();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IR_INDEX__NAME = eINSTANCE.getIrIndex_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Default Value Id</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference IR_INDEX__DEFAULT_VALUE_ID = eINSTANCE.getIrIndex_DefaultValueId();
+
+		/**
+		 * The meta object literal for the '<em><b>Container</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference IR_INDEX__CONTAINER = eINSTANCE.getIrIndex_Container();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.PrimitiveType <em>Primitive Type</em>}' enum.

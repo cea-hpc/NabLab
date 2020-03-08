@@ -3,7 +3,9 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.ConnectivityCall;
+import fr.cea.nabla.ir.ir.IrIndex;
 import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.IrUniqueId;
 import fr.cea.nabla.ir.ir.Iterator;
 import fr.cea.nabla.ir.ir.IteratorRef;
 
@@ -18,7 +20,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -34,6 +36,9 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#getContainer <em>Container</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#isSingleton <em>Singleton</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#getReferencers <em>Referencers</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#getAssociatedIndex <em>Associated Index</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#getNeededIds <em>Needed Ids</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#getNeededIndices <em>Needed Indices</em>}</li>
  * </ul>
  *
  * @generated
@@ -98,6 +103,36 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * @ordered
 	 */
 	protected EList<IteratorRef> referencers;
+
+	/**
+	 * The cached value of the '{@link #getAssociatedIndex() <em>Associated Index</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getAssociatedIndex()
+	 * @generated
+	 * @ordered
+	 */
+	protected IrIndex associatedIndex;
+
+	/**
+	 * The cached value of the '{@link #getNeededIds() <em>Needed Ids</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getNeededIds()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<IrUniqueId> neededIds;
+
+	/**
+	 * The cached value of the '{@link #getNeededIndices() <em>Needed Indices</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getNeededIndices()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<IrIndex> neededIndices;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -227,6 +262,100 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
+	public IrIndex getAssociatedIndex() {
+		if (associatedIndex != null && associatedIndex.eIsProxy()) {
+			InternalEObject oldAssociatedIndex = (InternalEObject)associatedIndex;
+			associatedIndex = (IrIndex)eResolveProxy(oldAssociatedIndex);
+			if (associatedIndex != oldAssociatedIndex) {
+				InternalEObject newAssociatedIndex = (InternalEObject)associatedIndex;
+				NotificationChain msgs = oldAssociatedIndex.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__ASSOCIATED_INDEX, null, null);
+				if (newAssociatedIndex.eInternalContainer() == null) {
+					msgs = newAssociatedIndex.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__ASSOCIATED_INDEX, null, msgs);
+				}
+				if (msgs != null) msgs.dispatch();
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.ITERATOR__ASSOCIATED_INDEX, oldAssociatedIndex, associatedIndex));
+			}
+		}
+		return associatedIndex;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public IrIndex basicGetAssociatedIndex() {
+		return associatedIndex;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetAssociatedIndex(IrIndex newAssociatedIndex, NotificationChain msgs) {
+		IrIndex oldAssociatedIndex = associatedIndex;
+		associatedIndex = newAssociatedIndex;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.ITERATOR__ASSOCIATED_INDEX, oldAssociatedIndex, newAssociatedIndex);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setAssociatedIndex(IrIndex newAssociatedIndex) {
+		if (newAssociatedIndex != associatedIndex) {
+			NotificationChain msgs = null;
+			if (associatedIndex != null)
+				msgs = ((InternalEObject)associatedIndex).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__ASSOCIATED_INDEX, null, msgs);
+			if (newAssociatedIndex != null)
+				msgs = ((InternalEObject)newAssociatedIndex).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__ASSOCIATED_INDEX, null, msgs);
+			msgs = basicSetAssociatedIndex(newAssociatedIndex, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.ITERATOR__ASSOCIATED_INDEX, newAssociatedIndex, newAssociatedIndex));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EList<IrUniqueId> getNeededIds() {
+		if (neededIds == null) {
+			neededIds = new EObjectContainmentEList.Resolving<IrUniqueId>(IrUniqueId.class, this, IrPackage.ITERATOR__NEEDED_IDS);
+		}
+		return neededIds;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EList<IrIndex> getNeededIndices() {
+		if (neededIndices == null) {
+			neededIndices = new EObjectContainmentEList.Resolving<IrIndex>(IrIndex.class, this, IrPackage.ITERATOR__NEEDED_INDICES);
+		}
+		return neededIndices;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
@@ -249,6 +378,12 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 				return basicSetContainer(null, msgs);
 			case IrPackage.ITERATOR__REFERENCERS:
 				return ((InternalEList<?>)getReferencers()).basicRemove(otherEnd, msgs);
+			case IrPackage.ITERATOR__ASSOCIATED_INDEX:
+				return basicSetAssociatedIndex(null, msgs);
+			case IrPackage.ITERATOR__NEEDED_IDS:
+				return ((InternalEList<?>)getNeededIds()).basicRemove(otherEnd, msgs);
+			case IrPackage.ITERATOR__NEEDED_INDICES:
+				return ((InternalEList<?>)getNeededIndices()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -269,6 +404,13 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 				return isSingleton();
 			case IrPackage.ITERATOR__REFERENCERS:
 				return getReferencers();
+			case IrPackage.ITERATOR__ASSOCIATED_INDEX:
+				if (resolve) return getAssociatedIndex();
+				return basicGetAssociatedIndex();
+			case IrPackage.ITERATOR__NEEDED_IDS:
+				return getNeededIds();
+			case IrPackage.ITERATOR__NEEDED_INDICES:
+				return getNeededIndices();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -295,6 +437,17 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 				getReferencers().clear();
 				getReferencers().addAll((Collection<? extends IteratorRef>)newValue);
 				return;
+			case IrPackage.ITERATOR__ASSOCIATED_INDEX:
+				setAssociatedIndex((IrIndex)newValue);
+				return;
+			case IrPackage.ITERATOR__NEEDED_IDS:
+				getNeededIds().clear();
+				getNeededIds().addAll((Collection<? extends IrUniqueId>)newValue);
+				return;
+			case IrPackage.ITERATOR__NEEDED_INDICES:
+				getNeededIndices().clear();
+				getNeededIndices().addAll((Collection<? extends IrIndex>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -319,6 +472,15 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 			case IrPackage.ITERATOR__REFERENCERS:
 				getReferencers().clear();
 				return;
+			case IrPackage.ITERATOR__ASSOCIATED_INDEX:
+				setAssociatedIndex((IrIndex)null);
+				return;
+			case IrPackage.ITERATOR__NEEDED_IDS:
+				getNeededIds().clear();
+				return;
+			case IrPackage.ITERATOR__NEEDED_INDICES:
+				getNeededIndices().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -339,6 +501,12 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 				return singleton != SINGLETON_EDEFAULT;
 			case IrPackage.ITERATOR__REFERENCERS:
 				return referencers != null && !referencers.isEmpty();
+			case IrPackage.ITERATOR__ASSOCIATED_INDEX:
+				return associatedIndex != null;
+			case IrPackage.ITERATOR__NEEDED_IDS:
+				return neededIds != null && !neededIds.isEmpty();
+			case IrPackage.ITERATOR__NEEDED_INDICES:
+				return neededIndices != null && !neededIndices.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

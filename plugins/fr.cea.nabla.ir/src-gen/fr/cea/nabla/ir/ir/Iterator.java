@@ -17,6 +17,9 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getContainer <em>Container</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Iterator#isSingleton <em>Singleton</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getReferencers <em>Referencers</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getAssociatedIndex <em>Associated Index</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getNeededIds <em>Needed Ids</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getNeededIndices <em>Needed Indices</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getIterator()
@@ -104,5 +107,51 @@ public interface Iterator extends IrAnnotable {
 	 * @generated
 	 */
 	EList<IteratorRef> getReferencers();
+
+	/**
+	 * Returns the value of the '<em><b>Associated Index</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Associated Index</em>' containment reference.
+	 * @see #setAssociatedIndex(IrIndex)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIterator_AssociatedIndex()
+	 * @model containment="true" resolveProxies="true" required="true"
+	 * @generated
+	 */
+	IrIndex getAssociatedIndex();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Iterator#getAssociatedIndex <em>Associated Index</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Associated Index</em>' containment reference.
+	 * @see #getAssociatedIndex()
+	 * @generated
+	 */
+	void setAssociatedIndex(IrIndex value);
+
+	/**
+	 * Returns the value of the '<em><b>Needed Ids</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.IrUniqueId}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Needed Ids</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIterator_NeededIds()
+	 * @model containment="true" resolveProxies="true"
+	 * @generated
+	 */
+	EList<IrUniqueId> getNeededIds();
+
+	/**
+	 * Returns the value of the '<em><b>Needed Indices</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.IrIndex}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Needed Indices</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIterator_NeededIndices()
+	 * @model containment="true" resolveProxies="true"
+	 * @generated
+	 */
+	EList<IrIndex> getNeededIndices();
 
 } // Iterator

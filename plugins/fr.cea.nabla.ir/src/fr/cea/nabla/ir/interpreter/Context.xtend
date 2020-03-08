@@ -206,28 +206,28 @@ class Context
 
 	def logVariables(String message)
 	{
-		if (message !== null) logger.log(Level::INFO, message)
-		variableValues.keySet.forEach[v | logger.log(Level::INFO,"	Variable " + v.name + " = " + variableValues.get(v).displayValue)]
+		if (message !== null) logger.log(Level::FINER, message)
+		variableValues.keySet.forEach[v | logger.log(Level::FINER,"	Variable " + v.name + " = " + variableValues.get(v).displayValue)]
 	}
 
 	def logConnectivitySizes(String message)
 	{
-		if (message !== null) logger.log(Level::INFO, message)
-		connectivitySizes.keySet.forEach[k | logger.log(Level::INFO, "	" + k.name + " de taille " + connectivitySizes.get(k))]
+		if (message !== null) logger.log(Level::FINER, message)
+		connectivitySizes.keySet.forEach[k | logger.log(Level::FINER, "	" + k.name + " de taille " + connectivitySizes.get(k))]
 	}
 
 	def logIndexvalues(String message)
 	{
-		if (message !== null) logger.log(Level::INFO, message)
-		indexValues.keySet.forEach[k | logger.log(Level::INFO, "	" + k + " = " + indexValues.get(k))]
+		if (message !== null) logger.log(Level::FINER, message)
+		indexValues.keySet.forEach[k | logger.log(Level::FINER, "	" + k + " = " + indexValues.get(k))]
 	}
 
 	def logIdvalues(String message)
 	{
 		if (!idValues.empty)
 		{
-			if (message !== null) logger.log(Level::INFO, message)
-			idValues.keySet.forEach[k | logger.log(Level::INFO, "	" + k + " = " + idValues.get(k))]
+			if (message !== null) logger.log(Level::FINER, message)
+			idValues.keySet.forEach[k | logger.log(Level::FINER, "	" + k + " = " + idValues.get(k))]
 		}
 	}
 
@@ -235,21 +235,31 @@ class Context
 	{
 		if (!idValues.empty || !indexValues.empty)
 		{
-			if (message !== null) logger.log(Level::INFO, message)
-			idValues.keySet.forEach[k | logger.log(Level::INFO, "	" + k + " = " + idValues.get(k))]
-			indexValues.keySet.forEach[k | logger.log(Level::INFO, "	" + k + " = " + indexValues.get(k))]
+			if (message !== null) logger.log(Level::FINER, message)
+			idValues.keySet.forEach[k | logger.log(Level::FINER, "	" + k + " = " + idValues.get(k))]
+			indexValues.keySet.forEach[k | logger.log(Level::FINER, "	" + k + " = " + indexValues.get(k))]
 		}
 	}
 
 	def logDimensions(String message)
 	{
-		if (message !== null) logger.log(Level::INFO, message)
-		dimensionValues.keySet.forEach[d | logger.log(Level::INFO, "	Dimension " + d.name + " = " + dimensionValues.get(d))]
+		if (message !== null) logger.log(Level::FINER, message)
+		dimensionValues.keySet.forEach[d | logger.log(Level::FINER, "	Dimension " + d.name + " = " + dimensionValues.get(d))]
 	}
 
 	def logFinest(String message)
 	{
 		logger.log(Level::FINEST, message)
+	}
+
+	def logFiner(String message)
+	{
+		logger.log(Level::FINER, message)
+	}
+
+	def logFine(String message)
+	{
+		logger.log(Level::FINE, message)
 	}
 
 	def logInfo(String message)

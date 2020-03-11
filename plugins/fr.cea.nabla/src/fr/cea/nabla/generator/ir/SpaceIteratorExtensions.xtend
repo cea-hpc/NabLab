@@ -41,13 +41,12 @@ class SpaceIteratorExtensions
 		for (referencer : iterable.eAllContents.filter(SpaceIteratorRef).filter[x | x.target.name == name].toIterable)
 		{
 			val c = referencer.eContainer
-			println("  referencer: " + referencer.target.name + " - container:" + c)
-//			println("  " + toIrIndex(new IndexInfo(c, referencer)).name + " !== " + index.name + " - " + (referencer.target.toIrIndex !== index))
+			println("  referencer : " + referencer + " - " + c)
 			switch c
 			{
 				ConnectivityCall: 
 					neededIds += (referencer.toIrUniqueId => [defaultValueIndex = index])
-				ArgOrVarRef case (toIrIndex(new IndexInfo(c, referencer)) !== index): 
+				ArgOrVarRef case (toIrIndex(new IndexInfo(c, referencer)) !== index):
 					neededIds += (referencer.toIrUniqueId => [defaultValueIndex = index])
 			}
 		}
@@ -69,6 +68,7 @@ class SpaceIteratorExtensions
 	 */
 	def createNeededIndices(SpaceIterator it)
 	{
+		println("Recherche des indices pour l'itérateur " + name)
 		// Only one instance with the same index name.
 		val sorter = [IrIndex a, IrIndex b| a.name.compareTo(b.name)]
 		val neededIndices = new TreeSet<IrIndex>(sorter)
@@ -78,32 +78,31 @@ class SpaceIteratorExtensions
 		val allVarRefIterators = iterable.eAllContents.filter(SpaceIteratorRef).filter[x | x.eContainer instanceof ArgOrVarRef].toSet
 
 		// get all inner iterators i.e. not yet defined iterators
-		val undefinedIterators = iterable.eAllContents.filter(SpaceIterator).filter[x | x!==it].toList
-//		println('  innerIterators: ' + innerIterators.map[indexName].join(', '))
+		val undefinedIterators = iterable.eAllContents.filter(SpaceIterator).filter[x | x !== it].toList
 
 		val spaceIteratorIndex = toIrIndex
 		for (varRefIterator : allVarRefIterators)
 		{
-//			println('  - index ' + index.indexName)
 			// if iterator index and index are identical, nothing to do
 			val varRef = varRefIterator.eContainer as ArgOrVarRef
 			val varRefIndexInfo = new IndexInfo(varRef, varRefIterator)
 			val varRefIndex = toIrIndex(varRefIndexInfo)
-			varRefIndex.defaultValueId = toIrUniqueId(varRefIterator)
+			println("  varRefIndex : " + varRefIndex)
+			println("  spaceIteratorIndex : " + varRefIndex)
 
 			if (spaceIteratorIndex != varRefIndex)
 			{
 				val directReference = varRefIndexInfo.directIterator
-//				println('    directReference: ' + directReference.name)
-
-				val indexIndirectReferences = varRefIndexInfo.varRefArgsIterator
-//				println('    indexIndirectReferences: ' + indexIndirectReferences.map[name].join(', '))
+				val indexIndirectReferences = varRefIndexInfo.args.map[target]
 
 				// if the iterator 'it' is referenced by the index
 				if (directReference===it || indexIndirectReferences.contains(it))
 					// if all iterators are defined
 					if (! (undefinedIterators.contains(directReference) || indexIndirectReferences.exists[x | undefinedIterators.contains(x)]))
+					{
+						varRefIndex.defaultValueId = toIrUniqueId(varRefIterator)
 						neededIndices += varRefIndex
+					}
 			}
 		}
 		println("Needed indices: " + neededIndices.map[name + '(' + defaultValueId + ')'].join(', '))

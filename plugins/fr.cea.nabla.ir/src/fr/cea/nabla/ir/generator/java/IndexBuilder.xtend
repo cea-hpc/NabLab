@@ -18,7 +18,6 @@ class IndexBuilder
 	/** Define all needed ids and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
 	static def defineIndices(SpaceIterationBlock it)
 	'''
-		// direct index   «range.associatedIndex.name»
 		«range.defineIndices»
 		«FOR s : singletons»
 			final int «s.indexName» = «s.accessor»;
@@ -57,9 +56,8 @@ class IndexBuilder
 	static def getIndexToId(IrUniqueId it)
 	{
 		if (defaultValueIndex === null) throw new RuntimeException("** Can not compute index value of unique id " + name + ": no index")
-		println("indexToId " + name + " - index: " + defaultValueIndex + " - container " + defaultValueIndex.container)
 		if (defaultValueIndex.container.connectivity.indexEqualId) indexValue
-		else defaultValueIndex.container.accessor + '[' + indexValue + ']'
+		else containerName + '[' + indexValue + ']'
 	}
 
 	static def getIdToIndex(IrIndex it)

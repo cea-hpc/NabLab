@@ -12,12 +12,14 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.IrIndex
 import fr.cea.nabla.ir.ir.IteratorRef
+import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
-import fr.cea.nabla.ir.ir.IrIndex
+import java.util.List
 
 @Singleton
 class IrIteratorFactory
@@ -47,14 +49,12 @@ class IrIteratorFactory
 			args += range.args.get(i).toIrConnectivityCallIteratorRef(i)
 	}
 
-
 	// index as arg because it is part of the primary key
-	def create IrFactory::eINSTANCE.createIrConnectivityCall toIrNewConnectivityCall(IrIndex index, ConnectivityCall range)
+	def create IrFactory::eINSTANCE.createIrConnectivityCall toIrNewConnectivityCall(IrIndex index, Connectivity c, List<SpaceIteratorRef> las)
 	{
-		annotations += range.toIrAnnotation
-		connectivity = range.connectivity.toIrConnectivity
-		println("newConnectivityCall " + range.connectivity.name + " - " + range.args.size)
-		range.args.forEach[x | args += x.toIrUniqueId]
+		annotations += c.toIrAnnotation
+		connectivity = c.toIrConnectivity
+		las.forEach[x | args += x.toIrUniqueId]
 	}
 
 	def create IrFactory::eINSTANCE.createArgOrVarRefIteratorRef toIrArgOrVarRefIteratorRef(SpaceIteratorRef ref, int index)

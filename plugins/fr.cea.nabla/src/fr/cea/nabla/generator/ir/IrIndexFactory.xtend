@@ -12,22 +12,25 @@ class IrIndexFactory
 {
 	@Inject extension IrIteratorFactory
 
-	def toIrIndex(SpaceIterator it)
+	def toIrIndex(SpaceIterator si)
 	{
-		val containerName = container.connectivity.name + container.args.map[x | x.name.toFirstUpper].join('')
-		val indexName = name + containerName.toFirstUpper
-		createIrIndex(indexName, it)
+		val containerName = si.container.connectivity.name + si.container.args.map[x | x.name.toFirstUpper].join('')
+		val index = toIrIndex(si.name + containerName.toFirstUpper, si)
+		index.container = toIrNewConnectivityCall(index, si.container.connectivity, si.container.args)
+		return index
 	}
 
 	def toIrIndex(IndexInfo info)
 	{
-		createIrIndex(info.name, info.iteratorRef.target)
+		val index = toIrIndex(info.name, info.iteratorRef.target)
+		index.container = toIrNewConnectivityCall(index, info.container, info.args)
+		return index
 	}
 
 	// The primary key of the index is a pair (indexName, iterator)
-	private def create IrFactory::eINSTANCE.createIrIndex createIrIndex(String indexName, SpaceIterator iterator)
+	private def create IrFactory::eINSTANCE.createIrIndex toIrIndex(String indexName, SpaceIterator si)
 	{
 		name = indexName
-		container = toIrNewConnectivityCall(iterator.container)
+		iterator = si.toIrIterator
 	}
 }

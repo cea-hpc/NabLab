@@ -2543,6 +2543,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EReference getIrUniqueId_Iterator() {
+		return (EReference)irUniqueIdEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getIrIndex() {
 		return irIndexEClass;
 	}
@@ -2575,6 +2585,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EReference getIrIndex_Container() {
 		return (EReference)irIndexEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getIrIndex_Iterator() {
+		return (EReference)irIndexEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -2905,11 +2925,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEAttribute(irUniqueIdEClass, IR_UNIQUE_ID__NAME);
 		createEReference(irUniqueIdEClass, IR_UNIQUE_ID__DEFAULT_VALUE_INDEX);
 		createEAttribute(irUniqueIdEClass, IR_UNIQUE_ID__SHIFT);
+		createEReference(irUniqueIdEClass, IR_UNIQUE_ID__ITERATOR);
 
 		irIndexEClass = createEClass(IR_INDEX);
 		createEAttribute(irIndexEClass, IR_INDEX__NAME);
 		createEReference(irIndexEClass, IR_INDEX__DEFAULT_VALUE_ID);
 		createEReference(irIndexEClass, IR_INDEX__CONTAINER);
+		createEReference(irIndexEClass, IR_INDEX__ITERATOR);
 
 		// Create enums
 		primitiveTypeEEnum = createEEnum(PRIMITIVE_TYPE);
@@ -3268,11 +3290,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEAttribute(getIrUniqueId_Name(), ecorePackage.getEString(), "name", null, 1, 1, IrUniqueId.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrUniqueId_DefaultValueIndex(), this.getIrIndex(), null, "defaultValueIndex", null, 0, 1, IrUniqueId.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getIrUniqueId_Shift(), ecorePackage.getEInt(), "shift", null, 1, 1, IrUniqueId.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIrUniqueId_Iterator(), this.getIterator(), null, "iterator", null, 1, 1, IrUniqueId.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(irIndexEClass, IrIndex.class, "IrIndex", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getIrIndex_Name(), ecorePackage.getEString(), "name", null, 1, 1, IrIndex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrIndex_DefaultValueId(), this.getIrUniqueId(), null, "defaultValueId", null, 0, 1, IrIndex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrIndex_Container(), this.getIrConnectivityCall(), null, "container", null, 1, 1, IrIndex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIrIndex_Iterator(), this.getIterator(), null, "iterator", null, 1, 1, IrIndex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(primitiveTypeEEnum, PrimitiveType.class, "PrimitiveType");

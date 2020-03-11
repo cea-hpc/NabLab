@@ -6,6 +6,7 @@ import fr.cea.nabla.ir.ir.IrIndex;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.IrUniqueId;
 
+import fr.cea.nabla.ir.ir.Iterator;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -23,6 +24,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrUniqueIdImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrUniqueIdImpl#getDefaultValueIndex <em>Default Value Index</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrUniqueIdImpl#getShift <em>Shift</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrUniqueIdImpl#getIterator <em>Iterator</em>}</li>
  * </ul>
  *
  * @generated
@@ -77,6 +79,16 @@ public class IrUniqueIdImpl extends IrAnnotableImpl implements IrUniqueId {
 	 * @ordered
 	 */
 	protected int shift = SHIFT_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getIterator() <em>Iterator</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getIterator()
+	 * @generated
+	 * @ordered
+	 */
+	protected Iterator iterator;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -189,6 +201,46 @@ public class IrUniqueIdImpl extends IrAnnotableImpl implements IrUniqueId {
 	 * @generated
 	 */
 	@Override
+	public Iterator getIterator() {
+		if (iterator != null && iterator.eIsProxy()) {
+			InternalEObject oldIterator = (InternalEObject)iterator;
+			iterator = (Iterator)eResolveProxy(oldIterator);
+			if (iterator != oldIterator) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_UNIQUE_ID__ITERATOR, oldIterator, iterator));
+			}
+		}
+		return iterator;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Iterator basicGetIterator() {
+		return iterator;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setIterator(Iterator newIterator) {
+		Iterator oldIterator = iterator;
+		iterator = newIterator;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_UNIQUE_ID__ITERATOR, oldIterator, iterator));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case IrPackage.IR_UNIQUE_ID__NAME:
@@ -198,6 +250,9 @@ public class IrUniqueIdImpl extends IrAnnotableImpl implements IrUniqueId {
 				return basicGetDefaultValueIndex();
 			case IrPackage.IR_UNIQUE_ID__SHIFT:
 				return getShift();
+			case IrPackage.IR_UNIQUE_ID__ITERATOR:
+				if (resolve) return getIterator();
+				return basicGetIterator();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -218,6 +273,9 @@ public class IrUniqueIdImpl extends IrAnnotableImpl implements IrUniqueId {
 				return;
 			case IrPackage.IR_UNIQUE_ID__SHIFT:
 				setShift((Integer)newValue);
+				return;
+			case IrPackage.IR_UNIQUE_ID__ITERATOR:
+				setIterator((Iterator)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -240,6 +298,9 @@ public class IrUniqueIdImpl extends IrAnnotableImpl implements IrUniqueId {
 			case IrPackage.IR_UNIQUE_ID__SHIFT:
 				setShift(SHIFT_EDEFAULT);
 				return;
+			case IrPackage.IR_UNIQUE_ID__ITERATOR:
+				setIterator((Iterator)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -258,6 +319,8 @@ public class IrUniqueIdImpl extends IrAnnotableImpl implements IrUniqueId {
 				return defaultValueIndex != null;
 			case IrPackage.IR_UNIQUE_ID__SHIFT:
 				return shift != SHIFT_EDEFAULT;
+			case IrPackage.IR_UNIQUE_ID__ITERATOR:
+				return iterator != null;
 		}
 		return super.eIsSet(featureID);
 	}

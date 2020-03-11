@@ -4101,13 +4101,22 @@ public interface IrPackage extends EPackage {
 	int IR_UNIQUE_ID__SHIFT = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
+	 * The feature id for the '<em><b>Iterator</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_UNIQUE_ID__ITERATOR = IR_ANNOTABLE_FEATURE_COUNT + 3;
+
+	/**
 	 * The number of structural features of the '<em>Unique Id</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_UNIQUE_ID_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 3;
+	int IR_UNIQUE_ID_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of operations of the '<em>Unique Id</em>' class.
@@ -4165,13 +4174,22 @@ public interface IrPackage extends EPackage {
 	int IR_INDEX__CONTAINER = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
+	 * The feature id for the '<em><b>Iterator</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_INDEX__ITERATOR = IR_ANNOTABLE_FEATURE_COUNT + 3;
+
+	/**
 	 * The number of structural features of the '<em>Index</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_INDEX_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 3;
+	int IR_INDEX_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of operations of the '<em>Index</em>' class.
@@ -6274,6 +6292,17 @@ public interface IrPackage extends EPackage {
 	EAttribute getIrUniqueId_Shift();
 
 	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrUniqueId#getIterator <em>Iterator</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Iterator</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrUniqueId#getIterator()
+	 * @see #getIrUniqueId()
+	 * @generated
+	 */
+	EReference getIrUniqueId_Iterator();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.IrIndex <em>Index</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -6315,6 +6344,17 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getIrIndex_Container();
+
+	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrIndex#getIterator <em>Iterator</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Iterator</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrIndex#getIterator()
+	 * @see #getIrIndex()
+	 * @generated
+	 */
+	EReference getIrIndex_Iterator();
 
 	/**
 	 * Returns the meta object for enum '{@link fr.cea.nabla.ir.ir.PrimitiveType <em>Primitive Type</em>}'.
@@ -8040,6 +8080,14 @@ public interface IrPackage extends EPackage {
 		EAttribute IR_UNIQUE_ID__SHIFT = eINSTANCE.getIrUniqueId_Shift();
 
 		/**
+		 * The meta object literal for the '<em><b>Iterator</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference IR_UNIQUE_ID__ITERATOR = eINSTANCE.getIrUniqueId_Iterator();
+
+		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.IrIndexImpl <em>Index</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -8072,6 +8120,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference IR_INDEX__CONTAINER = eINSTANCE.getIrIndex_Container();
+
+		/**
+		 * The meta object literal for the '<em><b>Iterator</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference IR_INDEX__ITERATOR = eINSTANCE.getIrIndex_Iterator();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.PrimitiveType <em>Primitive Type</em>}' enum.

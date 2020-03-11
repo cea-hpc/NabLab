@@ -17,4 +17,10 @@ class IrUniqueIdExtensions
 			default: '''«index»'''
 		}
 	}
+
+	static def String getContainerName(IrUniqueId it)
+	{
+		val container = defaultValueIndex.container
+		container.connectivity.name + container.args.map[x | x.iterator.name.toFirstUpper].join('')
+	}
 }

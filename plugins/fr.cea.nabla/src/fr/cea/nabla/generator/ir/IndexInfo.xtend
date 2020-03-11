@@ -32,17 +32,12 @@ class IndexInfo
 		iteratorRef.target
 	}
 
-	def getVarRefArgsIterator()
-	{
-		args.map[target]
-	}
-
-	private def getContainer()
+	def getContainer()
 	{
 		(varRef.target as ConnectivityVar).supports.get(iteratorIndexInVarIterators)
 	}
 
-	private def getArgs()
+	def getArgs()
 	{
 		val refLastArgIndex = iteratorIndexInVarIterators
 		val refFirstArgIndex = iteratorIndexInVarIterators - container.inTypes.size

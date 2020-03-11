@@ -278,11 +278,13 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IrUniqueId/name"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrUniqueId/defaultValueIndex"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IrUniqueId/shift"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrUniqueId/iterator"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//IrIndex">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IrIndex/name"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrIndex/defaultValueId"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrIndex/container"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrIndex/iterator"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

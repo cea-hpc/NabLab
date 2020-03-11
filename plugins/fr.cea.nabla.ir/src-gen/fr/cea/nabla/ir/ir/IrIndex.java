@@ -15,6 +15,7 @@ package fr.cea.nabla.ir.ir;
  *   <li>{@link fr.cea.nabla.ir.ir.IrIndex#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrIndex#getDefaultValueId <em>Default Value Id</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrIndex#getContainer <em>Container</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrIndex#getIterator <em>Iterator</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getIrIndex()
@@ -87,5 +88,27 @@ public interface IrIndex extends IrAnnotable {
 	 * @generated
 	 */
 	void setContainer(IrConnectivityCall value);
+
+	/**
+	 * Returns the value of the '<em><b>Iterator</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Iterator</em>' reference.
+	 * @see #setIterator(Iterator)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrIndex_Iterator()
+	 * @model required="true"
+	 * @generated
+	 */
+	Iterator getIterator();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrIndex#getIterator <em>Iterator</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Iterator</em>' reference.
+	 * @see #getIterator()
+	 * @generated
+	 */
+	void setIterator(Iterator value);
 
 } // IrIndex

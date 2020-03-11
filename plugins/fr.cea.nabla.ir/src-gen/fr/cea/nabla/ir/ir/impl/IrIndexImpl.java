@@ -6,6 +6,7 @@ import fr.cea.nabla.ir.ir.IrConnectivityCall;
 import fr.cea.nabla.ir.ir.IrIndex;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.IrUniqueId;
+import fr.cea.nabla.ir.ir.Iterator;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
@@ -23,6 +24,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrIndexImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrIndexImpl#getDefaultValueId <em>Default Value Id</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrIndexImpl#getContainer <em>Container</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrIndexImpl#getIterator <em>Iterator</em>}</li>
  * </ul>
  *
  * @generated
@@ -67,6 +69,16 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 	 * @ordered
 	 */
 	protected IrConnectivityCall container;
+
+	/**
+	 * The cached value of the '{@link #getIterator() <em>Iterator</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getIterator()
+	 * @generated
+	 * @ordered
+	 */
+	protected Iterator iterator;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -224,6 +236,46 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 	 * @generated
 	 */
 	@Override
+	public Iterator getIterator() {
+		if (iterator != null && iterator.eIsProxy()) {
+			InternalEObject oldIterator = (InternalEObject)iterator;
+			iterator = (Iterator)eResolveProxy(oldIterator);
+			if (iterator != oldIterator) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_INDEX__ITERATOR, oldIterator, iterator));
+			}
+		}
+		return iterator;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Iterator basicGetIterator() {
+		return iterator;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setIterator(Iterator newIterator) {
+		Iterator oldIterator = iterator;
+		iterator = newIterator;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_INDEX__ITERATOR, oldIterator, iterator));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.IR_INDEX__CONTAINER:
@@ -248,6 +300,9 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 			case IrPackage.IR_INDEX__CONTAINER:
 				if (resolve) return getContainer();
 				return basicGetContainer();
+			case IrPackage.IR_INDEX__ITERATOR:
+				if (resolve) return getIterator();
+				return basicGetIterator();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -268,6 +323,9 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 				return;
 			case IrPackage.IR_INDEX__CONTAINER:
 				setContainer((IrConnectivityCall)newValue);
+				return;
+			case IrPackage.IR_INDEX__ITERATOR:
+				setIterator((Iterator)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -290,6 +348,9 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 			case IrPackage.IR_INDEX__CONTAINER:
 				setContainer((IrConnectivityCall)null);
 				return;
+			case IrPackage.IR_INDEX__ITERATOR:
+				setIterator((Iterator)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -308,6 +369,8 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 				return defaultValueId != null;
 			case IrPackage.IR_INDEX__CONTAINER:
 				return container != null;
+			case IrPackage.IR_INDEX__ITERATOR:
+				return iterator != null;
 		}
 		return super.eIsSet(featureID);
 	}

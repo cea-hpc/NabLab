@@ -1,22 +1,21 @@
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
-import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.Iterator
-import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.SpaceIterationBlock
 
-import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
-import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
+import static fr.cea.nabla.ir.generator.IrIndexExtensions.*
+import static fr.cea.nabla.ir.generator.IrUniqueIdExtensions.*
 
 class IndexBuilder 
 {
+	public static val MeshAccessorPrefix = "mesh->"
+
 	/** Define all needed ids and indexes at the beginning of an iteration, ie Loop or ReductionInstruction  */
 	static def defineIndices(SpaceIterationBlock it)
 	'''
 		«range.defineIndices»
 		«FOR s : singletons»
-			const int «s.indexName»(«s.accessor»);
+			const int «s.index.name»(«getContainerAccessor(s.index, MeshAccessorPrefix)»);
 			«s.defineIndices»
 		«ENDFOR»
 	'''
@@ -24,28 +23,10 @@ class IndexBuilder
 	static def defineIndices(Iterator it)
 	'''
 		«FOR neededId : neededIds»
-			const int «neededId.idName»(«neededId.indexToId»);
+			const int «neededId.name»(«getIndexToId(neededId)»);
 		«ENDFOR»
 		«FOR neededIndex : neededIndices»
-			const int «neededIndex.indexName»(«neededIndex.idToIndex»);
+			const int «neededIndex.name»(«getIdToIndex(neededIndex, "utils::", MeshAccessorPrefix)»);
 		«ENDFOR»
 	'''
-
-	private static def getIndexToId(IteratorRef it)
-	{
-		if (target.container.connectivity.indexEqualId || target.singleton) indexValue
-		else target.containerName + '[' + indexValue + ']'		
-	}
-
-	private static def getIdToIndex(ArgOrVarRefIteratorRef it)
-	{
-		if (varContainer.indexEqualId) idName
-		else 'utils::indexOf(' + accessor + ',' + idName + ')'
-	}
-
-	static def getAccessor(ArgOrVarRefIteratorRef it) { getAccessor(varContainer, varArgs) }
-	static def getAccessor(Iterator it)  { getAccessor(container.connectivity, container.args) }
-
-	private static def getAccessor(Connectivity c, Iterable<? extends IteratorRef> args)  
-	'''mesh->get«c.name.toFirstUpper»(«args.map[idName].join(', ')»)'''
 }

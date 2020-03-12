@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -25,9 +26,9 @@ import org.eclipse.xtend.lib.annotations.Data
 
 import static fr.cea.nabla.ir.generator.cpp.IndexBuilder.*
 
+import static extension fr.cea.nabla.ir.generator.IterationBlockExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.IterationBlockExtensions.*
-import fr.cea.nabla.ir.ir.Function
 
 @Data
 abstract class InstructionContentProvider

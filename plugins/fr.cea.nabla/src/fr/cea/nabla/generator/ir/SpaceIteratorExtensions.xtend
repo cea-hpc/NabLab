@@ -35,13 +35,13 @@ class SpaceIteratorExtensions
 	def createNeededIds(SpaceIterator it)
 	{
 		val index = toIrIndex
-		println("Recherche des ids pour l'itérateur " + name + " - " + index.name)
+		//println("[" + name + ", " + index.name + "] Recherche des ids")
 		val neededIds = new TreeSet<IrUniqueId>([a, b| a.name.compareTo(b.name)])
 		val iterable = EcoreUtil2::getContainerOfType(it, Iterable)
 		for (referencer : iterable.eAllContents.filter(SpaceIteratorRef).filter[x | x.target.name == name].toIterable)
 		{
 			val c = referencer.eContainer
-			println("  referencer : " + referencer + " - " + c)
+			// println("[" + name + ", " + index.name + "] referencer : " + referencer + " - " + c)
 			switch c
 			{
 				ConnectivityCall: 
@@ -50,7 +50,7 @@ class SpaceIteratorExtensions
 					neededIds += (referencer.toIrUniqueId => [defaultValueIndex = index])
 			}
 		}
-		println("Needed ids: " + neededIds.map[name + '(' + defaultValueIndex + ')'].join(', '))
+		//println("[" + name + ", " + index.name + "] Needed ids: " + neededIds.map[name + ' (' + toString + ')'].join(', '))
 		return neededIds
 	}
 
@@ -68,7 +68,7 @@ class SpaceIteratorExtensions
 	 */
 	def createNeededIndices(SpaceIterator it)
 	{
-		println("Recherche des indices pour l'itérateur " + name)
+		//println("[" + name + "] Recherche des indices")
 		// Only one instance with the same index name.
 		val sorter = [IrIndex a, IrIndex b| a.name.compareTo(b.name)]
 		val neededIndices = new TreeSet<IrIndex>(sorter)
@@ -81,14 +81,15 @@ class SpaceIteratorExtensions
 		val undefinedIterators = iterable.eAllContents.filter(SpaceIterator).filter[x | x !== it].toList
 
 		val spaceIteratorIndex = toIrIndex
+		//println("[" + name + "] spaceIteratorIndex : " + spaceIteratorIndex)
 		for (varRefIterator : allVarRefIterators)
 		{
 			// if iterator index and index are identical, nothing to do
 			val varRef = varRefIterator.eContainer as ArgOrVarRef
 			val varRefIndexInfo = new IndexInfo(varRef, varRefIterator)
+			//println("[" + name + "] varRefInfo " + varRefIndexInfo.name)
 			val varRefIndex = toIrIndex(varRefIndexInfo)
-			println("  varRefIndex : " + varRefIndex)
-			println("  spaceIteratorIndex : " + varRefIndex)
+			//println("[" + name + "] varRefIndex : " + varRefIndex)
 
 			if (spaceIteratorIndex != varRefIndex)
 			{
@@ -105,7 +106,7 @@ class SpaceIteratorExtensions
 					}
 			}
 		}
-		println("Needed indices: " + neededIndices.map[name + '(' + defaultValueId + ')'].join(', '))
+		//println("[" + name + "] Needed indices: " + neededIndices.map[name + ' (' + toString + ')'].join(', '))
 		return neededIndices
 	}
 }

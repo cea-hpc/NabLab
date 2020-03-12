@@ -2,11 +2,10 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.IrConnectivityCall;
+import fr.cea.nabla.ir.ir.ConnectivityCall;
 import fr.cea.nabla.ir.ir.IrIndex;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.IrUniqueId;
-import fr.cea.nabla.ir.ir.Iterator;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
@@ -24,7 +23,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrIndexImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrIndexImpl#getDefaultValueId <em>Default Value Id</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrIndexImpl#getContainer <em>Container</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrIndexImpl#getIterator <em>Iterator</em>}</li>
  * </ul>
  *
  * @generated
@@ -68,17 +66,7 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 	 * @generated
 	 * @ordered
 	 */
-	protected IrConnectivityCall container;
-
-	/**
-	 * The cached value of the '{@link #getIterator() <em>Iterator</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getIterator()
-	 * @generated
-	 * @ordered
-	 */
-	protected Iterator iterator;
+	protected ConnectivityCall container;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -168,10 +156,10 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 	 * @generated
 	 */
 	@Override
-	public IrConnectivityCall getContainer() {
+	public ConnectivityCall getContainer() {
 		if (container != null && container.eIsProxy()) {
 			InternalEObject oldContainer = (InternalEObject)container;
-			container = (IrConnectivityCall)eResolveProxy(oldContainer);
+			container = (ConnectivityCall)eResolveProxy(oldContainer);
 			if (container != oldContainer) {
 				InternalEObject newContainer = (InternalEObject)container;
 				NotificationChain msgs = oldContainer.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_INDEX__CONTAINER, null, null);
@@ -191,7 +179,7 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public IrConnectivityCall basicGetContainer() {
+	public ConnectivityCall basicGetContainer() {
 		return container;
 	}
 
@@ -200,8 +188,8 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetContainer(IrConnectivityCall newContainer, NotificationChain msgs) {
-		IrConnectivityCall oldContainer = container;
+	public NotificationChain basicSetContainer(ConnectivityCall newContainer, NotificationChain msgs) {
+		ConnectivityCall oldContainer = container;
 		container = newContainer;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.IR_INDEX__CONTAINER, oldContainer, newContainer);
@@ -216,7 +204,7 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 	 * @generated
 	 */
 	@Override
-	public void setContainer(IrConnectivityCall newContainer) {
+	public void setContainer(ConnectivityCall newContainer) {
 		if (newContainer != container) {
 			NotificationChain msgs = null;
 			if (container != null)
@@ -228,46 +216,6 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 		}
 		else if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_INDEX__CONTAINER, newContainer, newContainer));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Iterator getIterator() {
-		if (iterator != null && iterator.eIsProxy()) {
-			InternalEObject oldIterator = (InternalEObject)iterator;
-			iterator = (Iterator)eResolveProxy(oldIterator);
-			if (iterator != oldIterator) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_INDEX__ITERATOR, oldIterator, iterator));
-			}
-		}
-		return iterator;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Iterator basicGetIterator() {
-		return iterator;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setIterator(Iterator newIterator) {
-		Iterator oldIterator = iterator;
-		iterator = newIterator;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_INDEX__ITERATOR, oldIterator, iterator));
 	}
 
 	/**
@@ -300,9 +248,6 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 			case IrPackage.IR_INDEX__CONTAINER:
 				if (resolve) return getContainer();
 				return basicGetContainer();
-			case IrPackage.IR_INDEX__ITERATOR:
-				if (resolve) return getIterator();
-				return basicGetIterator();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -322,10 +267,7 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 				setDefaultValueId((IrUniqueId)newValue);
 				return;
 			case IrPackage.IR_INDEX__CONTAINER:
-				setContainer((IrConnectivityCall)newValue);
-				return;
-			case IrPackage.IR_INDEX__ITERATOR:
-				setIterator((Iterator)newValue);
+				setContainer((ConnectivityCall)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -346,10 +288,7 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 				setDefaultValueId((IrUniqueId)null);
 				return;
 			case IrPackage.IR_INDEX__CONTAINER:
-				setContainer((IrConnectivityCall)null);
-				return;
-			case IrPackage.IR_INDEX__ITERATOR:
-				setIterator((Iterator)null);
+				setContainer((ConnectivityCall)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -369,8 +308,6 @@ public class IrIndexImpl extends IrAnnotableImpl implements IrIndex {
 				return defaultValueId != null;
 			case IrPackage.IR_INDEX__CONTAINER:
 				return container != null;
-			case IrPackage.IR_INDEX__ITERATOR:
-				return iterator != null;
 		}
 		return super.eIsSet(featureID);
 	}

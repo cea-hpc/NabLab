@@ -7,7 +7,6 @@ import fr.cea.nabla.ir.ir.AfterTimeLoopJob;
 import fr.cea.nabla.ir.ir.Arg;
 import fr.cea.nabla.ir.ir.ArgOrVar;
 import fr.cea.nabla.ir.ir.ArgOrVarRef;
-import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef;
 import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.BaseTypeConstant;
 import fr.cea.nabla.ir.ir.BeforeTimeLoopJob;
@@ -15,7 +14,6 @@ import fr.cea.nabla.ir.ir.BinaryExpression;
 import fr.cea.nabla.ir.ir.BoolConstant;
 import fr.cea.nabla.ir.ir.Connectivity;
 import fr.cea.nabla.ir.ir.ConnectivityCall;
-import fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef;
 import fr.cea.nabla.ir.ir.ConnectivityType;
 import fr.cea.nabla.ir.ir.ConnectivityVariable;
 import fr.cea.nabla.ir.ir.ContractedIf;
@@ -31,7 +29,6 @@ import fr.cea.nabla.ir.ir.IntConstant;
 import fr.cea.nabla.ir.ir.IntervalIterationBlock;
 import fr.cea.nabla.ir.ir.IrAnnotable;
 import fr.cea.nabla.ir.ir.IrAnnotation;
-import fr.cea.nabla.ir.ir.IrConnectivityCall;
 import fr.cea.nabla.ir.ir.IrFactory;
 import fr.cea.nabla.ir.ir.IrIndex;
 import fr.cea.nabla.ir.ir.IrModule;
@@ -43,7 +40,6 @@ import fr.cea.nabla.ir.ir.ItemType;
 import fr.cea.nabla.ir.ir.IterableInstruction;
 import fr.cea.nabla.ir.ir.IterationBlock;
 import fr.cea.nabla.ir.ir.Iterator;
-import fr.cea.nabla.ir.ir.IteratorRef;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.JobContainer;
 import fr.cea.nabla.ir.ir.Loop;
@@ -470,27 +466,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass iteratorRefEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass connectivityCallIteratorRefEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass argOrVarRefIteratorRefEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	private EClass itemTypeEClass = null;
 
 	/**
@@ -520,13 +495,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass timeLoopVariableEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass irConnectivityCallEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -2163,18 +2131,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIterator_Container() {
-		return (EReference)iteratorEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EAttribute getIterator_Singleton() {
-		return (EAttribute)iteratorEClass.getEStructuralFeatures().get(2);
+		return (EAttribute)iteratorEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -2183,18 +2141,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIterator_Referencers() {
-		return (EReference)iteratorEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getIterator_AssociatedIndex() {
-		return (EReference)iteratorEClass.getEStructuralFeatures().get(4);
+	public EReference getIterator_Index() {
+		return (EReference)iteratorEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -2204,7 +2152,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 */
 	@Override
 	public EReference getIterator_NeededIds() {
-		return (EReference)iteratorEClass.getEStructuralFeatures().get(5);
+		return (EReference)iteratorEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -2214,7 +2162,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 */
 	@Override
 	public EReference getIterator_NeededIndices() {
-		return (EReference)iteratorEClass.getEStructuralFeatures().get(6);
+		return (EReference)iteratorEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -2245,86 +2193,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EReference getConnectivityCall_Args() {
 		return (EReference)connectivityCallEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getIteratorRef() {
-		return iteratorRefEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getIteratorRef_Target() {
-		return (EReference)iteratorRefEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getIteratorRef_Shift() {
-		return (EAttribute)iteratorRefEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getIteratorRef_IndexInReferencerList() {
-		return (EAttribute)iteratorRefEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getConnectivityCallIteratorRef() {
-		return connectivityCallIteratorRefEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getConnectivityCallIteratorRef_ReferencedBy() {
-		return (EReference)connectivityCallIteratorRefEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getArgOrVarRefIteratorRef() {
-		return argOrVarRefIteratorRefEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getArgOrVarRefIteratorRef_ReferencedBy() {
-		return (EReference)argOrVarRefIteratorRefEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -2473,36 +2341,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EClass getIrConnectivityCall() {
-		return irConnectivityCallEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getIrConnectivityCall_Connectivity() {
-		return (EReference)irConnectivityCallEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getIrConnectivityCall_Args() {
-		return (EReference)irConnectivityCallEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EClass getIrUniqueId() {
 		return irUniqueIdEClass;
 	}
@@ -2585,16 +2423,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EReference getIrIndex_Container() {
 		return (EReference)irIndexEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getIrIndex_Iterator() {
-		return (EReference)irIndexEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -2876,27 +2704,10 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		iteratorEClass = createEClass(ITERATOR);
 		createEAttribute(iteratorEClass, ITERATOR__NAME);
-		createEReference(iteratorEClass, ITERATOR__CONTAINER);
 		createEAttribute(iteratorEClass, ITERATOR__SINGLETON);
-		createEReference(iteratorEClass, ITERATOR__REFERENCERS);
-		createEReference(iteratorEClass, ITERATOR__ASSOCIATED_INDEX);
+		createEReference(iteratorEClass, ITERATOR__INDEX);
 		createEReference(iteratorEClass, ITERATOR__NEEDED_IDS);
 		createEReference(iteratorEClass, ITERATOR__NEEDED_INDICES);
-
-		connectivityCallEClass = createEClass(CONNECTIVITY_CALL);
-		createEReference(connectivityCallEClass, CONNECTIVITY_CALL__CONNECTIVITY);
-		createEReference(connectivityCallEClass, CONNECTIVITY_CALL__ARGS);
-
-		iteratorRefEClass = createEClass(ITERATOR_REF);
-		createEReference(iteratorRefEClass, ITERATOR_REF__TARGET);
-		createEAttribute(iteratorRefEClass, ITERATOR_REF__SHIFT);
-		createEAttribute(iteratorRefEClass, ITERATOR_REF__INDEX_IN_REFERENCER_LIST);
-
-		connectivityCallIteratorRefEClass = createEClass(CONNECTIVITY_CALL_ITERATOR_REF);
-		createEReference(connectivityCallIteratorRefEClass, CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY);
-
-		argOrVarRefIteratorRefEClass = createEClass(ARG_OR_VAR_REF_ITERATOR_REF);
-		createEReference(argOrVarRefIteratorRefEClass, ARG_OR_VAR_REF_ITERATOR_REF__REFERENCED_BY);
 
 		itemTypeEClass = createEClass(ITEM_TYPE);
 		createEAttribute(itemTypeEClass, ITEM_TYPE__NAME);
@@ -2917,9 +2728,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(timeLoopVariableEClass, TIME_LOOP_VARIABLE__NEXT);
 		createEAttribute(timeLoopVariableEClass, TIME_LOOP_VARIABLE__NAME);
 
-		irConnectivityCallEClass = createEClass(IR_CONNECTIVITY_CALL);
-		createEReference(irConnectivityCallEClass, IR_CONNECTIVITY_CALL__CONNECTIVITY);
-		createEReference(irConnectivityCallEClass, IR_CONNECTIVITY_CALL__ARGS);
+		connectivityCallEClass = createEClass(CONNECTIVITY_CALL);
+		createEReference(connectivityCallEClass, CONNECTIVITY_CALL__CONNECTIVITY);
+		createEReference(connectivityCallEClass, CONNECTIVITY_CALL__ARGS);
 
 		irUniqueIdEClass = createEClass(IR_UNIQUE_ID);
 		createEAttribute(irUniqueIdEClass, IR_UNIQUE_ID__NAME);
@@ -2931,7 +2742,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEAttribute(irIndexEClass, IR_INDEX__NAME);
 		createEReference(irIndexEClass, IR_INDEX__DEFAULT_VALUE_ID);
 		createEReference(irIndexEClass, IR_INDEX__CONTAINER);
-		createEReference(irIndexEClass, IR_INDEX__ITERATOR);
 
 		// Create enums
 		primitiveTypeEEnum = createEEnum(PRIMITIVE_TYPE);
@@ -3018,15 +2828,11 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		functionCallEClass.getESuperTypes().add(this.getExpression());
 		argOrVarRefEClass.getESuperTypes().add(this.getExpression());
 		iteratorEClass.getESuperTypes().add(this.getIrAnnotable());
-		connectivityCallEClass.getESuperTypes().add(this.getIrAnnotable());
-		iteratorRefEClass.getESuperTypes().add(this.getIrAnnotable());
-		connectivityCallIteratorRefEClass.getESuperTypes().add(this.getIteratorRef());
-		argOrVarRefIteratorRefEClass.getESuperTypes().add(this.getIteratorRef());
 		irTypeEClass.getESuperTypes().add(this.getIrAnnotable());
 		baseTypeEClass.getESuperTypes().add(this.getIrType());
 		connectivityTypeEClass.getESuperTypes().add(this.getIrType());
 		timeLoopVariableEClass.getESuperTypes().add(this.getIrAnnotable());
-		irConnectivityCallEClass.getESuperTypes().add(this.getIrAnnotable());
+		connectivityCallEClass.getESuperTypes().add(this.getIrAnnotable());
 		irUniqueIdEClass.getESuperTypes().add(this.getIrAnnotable());
 		irIndexEClass.getESuperTypes().add(this.getIrAnnotable());
 
@@ -3236,32 +3042,15 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(argOrVarRefEClass, ArgOrVarRef.class, "ArgOrVarRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getArgOrVarRef_Target(), this.getArgOrVar(), null, "target", null, 1, 1, ArgOrVarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getArgOrVarRef_Iterators(), this.getArgOrVarRefIteratorRef(), this.getArgOrVarRefIteratorRef_ReferencedBy(), "iterators", null, 0, -1, ArgOrVarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getArgOrVarRef_Iterators(), this.getIrIndex(), null, "iterators", null, 0, -1, ArgOrVarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getArgOrVarRef_Indices(), this.getSizeType(), null, "indices", null, 0, -1, ArgOrVarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(iteratorEClass, Iterator.class, "Iterator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getIterator_Name(), ecorePackage.getEString(), "name", null, 1, 1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIterator_Container(), this.getConnectivityCall(), null, "container", null, 1, 1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getIterator_Singleton(), ecorePackage.getEBoolean(), "singleton", "false", 1, 1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIterator_Referencers(), this.getIteratorRef(), this.getIteratorRef_Target(), "referencers", null, 0, -1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIterator_AssociatedIndex(), this.getIrIndex(), null, "associatedIndex", null, 1, 1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIterator_Index(), this.getIrIndex(), null, "index", null, 1, 1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIterator_NeededIds(), this.getIrUniqueId(), null, "neededIds", null, 0, -1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIterator_NeededIndices(), this.getIrIndex(), null, "neededIndices", null, 0, -1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(connectivityCallEClass, ConnectivityCall.class, "ConnectivityCall", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getConnectivityCall_Connectivity(), this.getConnectivity(), null, "connectivity", null, 1, 1, ConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getConnectivityCall_Args(), this.getConnectivityCallIteratorRef(), this.getConnectivityCallIteratorRef_ReferencedBy(), "args", null, 0, -1, ConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(iteratorRefEClass, IteratorRef.class, "IteratorRef", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getIteratorRef_Target(), this.getIterator(), this.getIterator_Referencers(), "target", null, 1, 1, IteratorRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIteratorRef_Shift(), ecorePackage.getEInt(), "shift", "0", 1, 1, IteratorRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIteratorRef_IndexInReferencerList(), ecorePackage.getEInt(), "indexInReferencerList", null, 1, 1, IteratorRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(connectivityCallIteratorRefEClass, ConnectivityCallIteratorRef.class, "ConnectivityCallIteratorRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getConnectivityCallIteratorRef_ReferencedBy(), this.getConnectivityCall(), this.getConnectivityCall_Args(), "referencedBy", null, 1, 1, ConnectivityCallIteratorRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(argOrVarRefIteratorRefEClass, ArgOrVarRefIteratorRef.class, "ArgOrVarRefIteratorRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getArgOrVarRefIteratorRef_ReferencedBy(), this.getArgOrVarRef(), this.getArgOrVarRef_Iterators(), "referencedBy", null, 1, 1, ArgOrVarRefIteratorRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(itemTypeEClass, ItemType.class, "ItemType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getItemType_Name(), ecorePackage.getEString(), "name", null, 1, 1, ItemType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3282,9 +3071,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getTimeLoopVariable_Next(), this.getVariable(), null, "next", null, 1, 1, TimeLoopVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTimeLoopVariable_Name(), ecorePackage.getEString(), "name", null, 1, 1, TimeLoopVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(irConnectivityCallEClass, IrConnectivityCall.class, "IrConnectivityCall", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getIrConnectivityCall_Connectivity(), this.getConnectivity(), null, "connectivity", null, 1, 1, IrConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIrConnectivityCall_Args(), this.getIrUniqueId(), null, "args", null, 0, -1, IrConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(connectivityCallEClass, ConnectivityCall.class, "ConnectivityCall", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getConnectivityCall_Connectivity(), this.getConnectivity(), null, "connectivity", null, 1, 1, ConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getConnectivityCall_Args(), this.getIrUniqueId(), null, "args", null, 0, -1, ConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(irUniqueIdEClass, IrUniqueId.class, "IrUniqueId", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getIrUniqueId_Name(), ecorePackage.getEString(), "name", null, 1, 1, IrUniqueId.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3295,8 +3084,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(irIndexEClass, IrIndex.class, "IrIndex", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getIrIndex_Name(), ecorePackage.getEString(), "name", null, 1, 1, IrIndex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrIndex_DefaultValueId(), this.getIrUniqueId(), null, "defaultValueId", null, 0, 1, IrIndex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIrIndex_Container(), this.getIrConnectivityCall(), null, "container", null, 1, 1, IrIndex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIrIndex_Iterator(), this.getIterator(), null, "iterator", null, 1, 1, IrIndex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIrIndex_Container(), this.getConnectivityCall(), null, "container", null, 1, 1, IrIndex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(primitiveTypeEEnum, PrimitiveType.class, "PrimitiveType");

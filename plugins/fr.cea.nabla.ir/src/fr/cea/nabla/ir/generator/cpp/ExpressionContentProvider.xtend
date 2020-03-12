@@ -31,7 +31,6 @@ import java.util.ArrayList
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.SizeTypeContentProvider.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
@@ -110,7 +109,7 @@ class ExpressionContentProvider
 		if (array.type.connectivities.size < iterators.size) return ''
 		var content = new ArrayList<String>
 		for (r : iterators)
-			content += r.indexName
+			content += r.name
 		content.formatVarIteratorsContent
 	}
 }

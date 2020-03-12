@@ -2,25 +2,23 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.ArgOrVar;
-import fr.cea.nabla.ir.ir.ArgOrVarRef;
-import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef;
-import fr.cea.nabla.ir.ir.IrPackage;
-import fr.cea.nabla.ir.ir.SizeType;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
+import org.eclipse.emf.ecore.util.EObjectEList;
 import org.eclipse.emf.ecore.util.InternalEList;
+
+import fr.cea.nabla.ir.ir.ArgOrVar;
+import fr.cea.nabla.ir.ir.ArgOrVarRef;
+import fr.cea.nabla.ir.ir.IrIndex;
+import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.SizeType;
 
 /**
  * <!-- begin-user-doc -->
@@ -49,14 +47,14 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 	protected ArgOrVar target;
 
 	/**
-	 * The cached value of the '{@link #getIterators() <em>Iterators</em>}' containment reference list.
+	 * The cached value of the '{@link #getIterators() <em>Iterators</em>}' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getIterators()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<ArgOrVarRefIteratorRef> iterators;
+	protected EList<IrIndex> iterators;
 
 	/**
 	 * The cached value of the '{@link #getIndices() <em>Indices</em>}' containment reference list.
@@ -130,12 +128,17 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * @generated NOT 
+	 * FIXME workaround BUG 89325
 	 */
 	@Override
-	public EList<ArgOrVarRefIteratorRef> getIterators() {
+	@SuppressWarnings("serial")
+	public EList<IrIndex> getIterators() {
 		if (iterators == null) {
-			iterators = new EObjectContainmentWithInverseEList<ArgOrVarRefIteratorRef>(ArgOrVarRefIteratorRef.class, this, IrPackage.ARG_OR_VAR_REF__ITERATORS, IrPackage.ARG_OR_VAR_REF_ITERATOR_REF__REFERENCED_BY);
+			iterators = new EObjectEList<IrIndex>(IrIndex.class, this, IrPackage.ARG_OR_VAR_REF__ITERATORS) {
+				@Override
+				protected boolean isUnique() { return false; }
+			};
 		}
 		return iterators;
 	}
@@ -158,26 +161,9 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case IrPackage.ARG_OR_VAR_REF__ITERATORS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getIterators()).basicAdd(otherEnd, msgs);
-		}
-		return super.eInverseAdd(otherEnd, featureID, msgs);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.ARG_OR_VAR_REF__ITERATORS:
-				return ((InternalEList<?>)getIterators()).basicRemove(otherEnd, msgs);
 			case IrPackage.ARG_OR_VAR_REF__INDICES:
 				return ((InternalEList<?>)getIndices()).basicRemove(otherEnd, msgs);
 		}
@@ -217,7 +203,7 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 				return;
 			case IrPackage.ARG_OR_VAR_REF__ITERATORS:
 				getIterators().clear();
-				getIterators().addAll((Collection<? extends ArgOrVarRefIteratorRef>)newValue);
+				getIterators().addAll((Collection<? extends IrIndex>)newValue);
 				return;
 			case IrPackage.ARG_OR_VAR_REF__INDICES:
 				getIndices().clear();

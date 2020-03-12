@@ -14,10 +14,8 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getName <em>Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getContainer <em>Container</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Iterator#isSingleton <em>Singleton</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getReferencers <em>Referencers</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getAssociatedIndex <em>Associated Index</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getIndex <em>Index</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getNeededIds <em>Needed Ids</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getNeededIndices <em>Needed Indices</em>}</li>
  * </ul>
@@ -50,28 +48,6 @@ public interface Iterator extends IrAnnotable {
 	void setName(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Container</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Container</em>' containment reference.
-	 * @see #setContainer(ConnectivityCall)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIterator_Container()
-	 * @model containment="true" required="true"
-	 * @generated
-	 */
-	ConnectivityCall getContainer();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Iterator#getContainer <em>Container</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Container</em>' containment reference.
-	 * @see #getContainer()
-	 * @generated
-	 */
-	void setContainer(ConnectivityCall value);
-
-	/**
 	 * Returns the value of the '<em><b>Singleton</b></em>' attribute.
 	 * The default value is <code>"false"</code>.
 	 * <!-- begin-user-doc -->
@@ -95,40 +71,26 @@ public interface Iterator extends IrAnnotable {
 	void setSingleton(boolean value);
 
 	/**
-	 * Returns the value of the '<em><b>Referencers</b></em>' reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.IteratorRef}.
-	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.IteratorRef#getTarget <em>Target</em>}'.
+	 * Returns the value of the '<em><b>Index</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Referencers</em>' reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIterator_Referencers()
-	 * @see fr.cea.nabla.ir.ir.IteratorRef#getTarget
-	 * @model opposite="target"
-	 * @generated
-	 */
-	EList<IteratorRef> getReferencers();
-
-	/**
-	 * Returns the value of the '<em><b>Associated Index</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Associated Index</em>' containment reference.
-	 * @see #setAssociatedIndex(IrIndex)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIterator_AssociatedIndex()
+	 * @return the value of the '<em>Index</em>' containment reference.
+	 * @see #setIndex(IrIndex)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIterator_Index()
 	 * @model containment="true" resolveProxies="true" required="true"
 	 * @generated
 	 */
-	IrIndex getAssociatedIndex();
+	IrIndex getIndex();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Iterator#getAssociatedIndex <em>Associated Index</em>}' containment reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Iterator#getIndex <em>Index</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Associated Index</em>' containment reference.
-	 * @see #getAssociatedIndex()
+	 * @param value the new value of the '<em>Index</em>' containment reference.
+	 * @see #getIndex()
 	 * @generated
 	 */
-	void setAssociatedIndex(IrIndex value);
+	void setIndex(IrIndex value);
 
 	/**
 	 * Returns the value of the '<em><b>Needed Ids</b></em>' containment reference list.

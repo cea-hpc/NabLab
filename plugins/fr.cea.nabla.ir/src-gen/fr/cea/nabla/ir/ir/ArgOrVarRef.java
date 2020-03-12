@@ -46,18 +46,16 @@ public interface ArgOrVarRef extends Expression {
 	void setTarget(ArgOrVar value);
 
 	/**
-	 * Returns the value of the '<em><b>Iterators</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef}.
-	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef#getReferencedBy <em>Referenced By</em>}'.
+	 * Returns the value of the '<em><b>Iterators</b></em>' reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.IrIndex}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Iterators</em>' containment reference list.
+	 * @return the value of the '<em>Iterators</em>' reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getArgOrVarRef_Iterators()
-	 * @see fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef#getReferencedBy
-	 * @model opposite="referencedBy" containment="true"
+	 * @model resolveProxies="false"
 	 * @generated
 	 */
-	EList<ArgOrVarRefIteratorRef> getIterators();
+	EList<IrIndex> getIterators();
 
 	/**
 	 * Returns the value of the '<em><b>Indices</b></em>' containment reference list.

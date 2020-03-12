@@ -486,36 +486,6 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.CONNECTIVITY_CALL: {
-				ConnectivityCall connectivityCall = (ConnectivityCall)theEObject;
-				T result = caseConnectivityCall(connectivityCall);
-				if (result == null) result = caseIrAnnotable(connectivityCall);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.ITERATOR_REF: {
-				IteratorRef iteratorRef = (IteratorRef)theEObject;
-				T result = caseIteratorRef(iteratorRef);
-				if (result == null) result = caseIrAnnotable(iteratorRef);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.CONNECTIVITY_CALL_ITERATOR_REF: {
-				ConnectivityCallIteratorRef connectivityCallIteratorRef = (ConnectivityCallIteratorRef)theEObject;
-				T result = caseConnectivityCallIteratorRef(connectivityCallIteratorRef);
-				if (result == null) result = caseIteratorRef(connectivityCallIteratorRef);
-				if (result == null) result = caseIrAnnotable(connectivityCallIteratorRef);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.ARG_OR_VAR_REF_ITERATOR_REF: {
-				ArgOrVarRefIteratorRef argOrVarRefIteratorRef = (ArgOrVarRefIteratorRef)theEObject;
-				T result = caseArgOrVarRefIteratorRef(argOrVarRefIteratorRef);
-				if (result == null) result = caseIteratorRef(argOrVarRefIteratorRef);
-				if (result == null) result = caseIrAnnotable(argOrVarRefIteratorRef);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case IrPackage.ITEM_TYPE: {
 				ItemType itemType = (ItemType)theEObject;
 				T result = caseItemType(itemType);
@@ -552,10 +522,10 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.IR_CONNECTIVITY_CALL: {
-				IrConnectivityCall irConnectivityCall = (IrConnectivityCall)theEObject;
-				T result = caseIrConnectivityCall(irConnectivityCall);
-				if (result == null) result = caseIrAnnotable(irConnectivityCall);
+			case IrPackage.CONNECTIVITY_CALL: {
+				ConnectivityCall connectivityCall = (ConnectivityCall)theEObject;
+				T result = caseConnectivityCall(connectivityCall);
+				if (result == null) result = caseIrAnnotable(connectivityCall);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -1388,51 +1358,6 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Iterator Ref</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Iterator Ref</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseIteratorRef(IteratorRef object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Connectivity Call Iterator Ref</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Connectivity Call Iterator Ref</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseConnectivityCallIteratorRef(ConnectivityCallIteratorRef object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Arg Or Var Ref Iterator Ref</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Arg Or Var Ref Iterator Ref</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseArgOrVarRefIteratorRef(ArgOrVarRefIteratorRef object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Item Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -1504,21 +1429,6 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseTimeLoopVariable(TimeLoopVariable object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Connectivity Call</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Connectivity Call</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseIrConnectivityCall(IrConnectivityCall object) {
 		return null;
 	}
 

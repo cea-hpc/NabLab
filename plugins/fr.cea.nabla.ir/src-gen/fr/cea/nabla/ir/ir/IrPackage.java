@@ -3342,7 +3342,7 @@ public interface IrPackage extends EPackage {
 	int ARG_OR_VAR_REF__TARGET = EXPRESSION_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Iterators</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Iterators</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -3406,40 +3406,22 @@ public interface IrPackage extends EPackage {
 	int ITERATOR__NAME = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Container</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITERATOR__CONTAINER = IR_ANNOTABLE_FEATURE_COUNT + 1;
-
-	/**
 	 * The feature id for the '<em><b>Singleton</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ITERATOR__SINGLETON = IR_ANNOTABLE_FEATURE_COUNT + 2;
+	int ITERATOR__SINGLETON = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Referencers</b></em>' reference list.
+	 * The feature id for the '<em><b>Index</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ITERATOR__REFERENCERS = IR_ANNOTABLE_FEATURE_COUNT + 3;
-
-	/**
-	 * The feature id for the '<em><b>Associated Index</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITERATOR__ASSOCIATED_INDEX = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int ITERATOR__INDEX = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Needed Ids</b></em>' containment reference list.
@@ -3448,7 +3430,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ITERATOR__NEEDED_IDS = IR_ANNOTABLE_FEATURE_COUNT + 5;
+	int ITERATOR__NEEDED_IDS = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Needed Indices</b></em>' containment reference list.
@@ -3457,7 +3439,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ITERATOR__NEEDED_INDICES = IR_ANNOTABLE_FEATURE_COUNT + 6;
+	int ITERATOR__NEEDED_INDICES = IR_ANNOTABLE_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of structural features of the '<em>Iterator</em>' class.
@@ -3466,7 +3448,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ITERATOR_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 7;
+	int ITERATOR_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of operations of the '<em>Iterator</em>' class.
@@ -3478,271 +3460,6 @@ public interface IrPackage extends EPackage {
 	int ITERATOR_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl <em>Connectivity Call</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getConnectivityCall()
-	 * @generated
-	 */
-	int CONNECTIVITY_CALL = 54;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_CALL__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Connectivity</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_CALL__CONNECTIVITY = IR_ANNOTABLE_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Args</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_CALL__ARGS = IR_ANNOTABLE_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of structural features of the '<em>Connectivity Call</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_CALL_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 2;
-
-	/**
-	 * The number of operations of the '<em>Connectivity Call</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_CALL_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.IteratorRefImpl <em>Iterator Ref</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.IteratorRefImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIteratorRef()
-	 * @generated
-	 */
-	int ITERATOR_REF = 55;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITERATOR_REF__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Target</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITERATOR_REF__TARGET = IR_ANNOTABLE_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Shift</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITERATOR_REF__SHIFT = IR_ANNOTABLE_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Index In Referencer List</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITERATOR_REF__INDEX_IN_REFERENCER_LIST = IR_ANNOTABLE_FEATURE_COUNT + 2;
-
-	/**
-	 * The number of structural features of the '<em>Iterator Ref</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITERATOR_REF_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 3;
-
-	/**
-	 * The number of operations of the '<em>Iterator Ref</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITERATOR_REF_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallIteratorRefImpl <em>Connectivity Call Iterator Ref</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.ConnectivityCallIteratorRefImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getConnectivityCallIteratorRef()
-	 * @generated
-	 */
-	int CONNECTIVITY_CALL_ITERATOR_REF = 56;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_CALL_ITERATOR_REF__ANNOTATIONS = ITERATOR_REF__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Target</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_CALL_ITERATOR_REF__TARGET = ITERATOR_REF__TARGET;
-
-	/**
-	 * The feature id for the '<em><b>Shift</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_CALL_ITERATOR_REF__SHIFT = ITERATOR_REF__SHIFT;
-
-	/**
-	 * The feature id for the '<em><b>Index In Referencer List</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_CALL_ITERATOR_REF__INDEX_IN_REFERENCER_LIST = ITERATOR_REF__INDEX_IN_REFERENCER_LIST;
-
-	/**
-	 * The feature id for the '<em><b>Referenced By</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY = ITERATOR_REF_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Connectivity Call Iterator Ref</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_CALL_ITERATOR_REF_FEATURE_COUNT = ITERATOR_REF_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Connectivity Call Iterator Ref</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_CALL_ITERATOR_REF_OPERATION_COUNT = ITERATOR_REF_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ArgOrVarRefIteratorRefImpl <em>Arg Or Var Ref Iterator Ref</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.ArgOrVarRefIteratorRefImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getArgOrVarRefIteratorRef()
-	 * @generated
-	 */
-	int ARG_OR_VAR_REF_ITERATOR_REF = 57;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARG_OR_VAR_REF_ITERATOR_REF__ANNOTATIONS = ITERATOR_REF__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Target</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARG_OR_VAR_REF_ITERATOR_REF__TARGET = ITERATOR_REF__TARGET;
-
-	/**
-	 * The feature id for the '<em><b>Shift</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARG_OR_VAR_REF_ITERATOR_REF__SHIFT = ITERATOR_REF__SHIFT;
-
-	/**
-	 * The feature id for the '<em><b>Index In Referencer List</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARG_OR_VAR_REF_ITERATOR_REF__INDEX_IN_REFERENCER_LIST = ITERATOR_REF__INDEX_IN_REFERENCER_LIST;
-
-	/**
-	 * The feature id for the '<em><b>Referenced By</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARG_OR_VAR_REF_ITERATOR_REF__REFERENCED_BY = ITERATOR_REF_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Arg Or Var Ref Iterator Ref</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARG_OR_VAR_REF_ITERATOR_REF_FEATURE_COUNT = ITERATOR_REF_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Arg Or Var Ref Iterator Ref</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARG_OR_VAR_REF_ITERATOR_REF_OPERATION_COUNT = ITERATOR_REF_OPERATION_COUNT + 0;
-
-	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ItemTypeImpl <em>Item Type</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3750,7 +3467,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemType()
 	 * @generated
 	 */
-	int ITEM_TYPE = 58;
+	int ITEM_TYPE = 54;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -3787,7 +3504,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIrType()
 	 * @generated
 	 */
-	int IR_TYPE = 59;
+	int IR_TYPE = 55;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3824,7 +3541,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getBaseType()
 	 * @generated
 	 */
-	int BASE_TYPE = 60;
+	int BASE_TYPE = 56;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3879,7 +3596,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getConnectivityType()
 	 * @generated
 	 */
-	int CONNECTIVITY_TYPE = 61;
+	int CONNECTIVITY_TYPE = 57;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3934,7 +3651,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTimeLoopVariable()
 	 * @generated
 	 */
-	int TIME_LOOP_VARIABLE = 62;
+	int TIME_LOOP_VARIABLE = 58;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4000,14 +3717,14 @@ public interface IrPackage extends EPackage {
 	int TIME_LOOP_VARIABLE_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.IrConnectivityCallImpl <em>Connectivity Call</em>}' class.
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl <em>Connectivity Call</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.IrConnectivityCallImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIrConnectivityCall()
+	 * @see fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getConnectivityCall()
 	 * @generated
 	 */
-	int IR_CONNECTIVITY_CALL = 63;
+	int CONNECTIVITY_CALL = 59;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4016,7 +3733,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_CONNECTIVITY_CALL__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
+	int CONNECTIVITY_CALL__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Connectivity</b></em>' reference.
@@ -4025,7 +3742,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_CONNECTIVITY_CALL__CONNECTIVITY = IR_ANNOTABLE_FEATURE_COUNT + 0;
+	int CONNECTIVITY_CALL__CONNECTIVITY = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Args</b></em>' reference list.
@@ -4034,7 +3751,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_CONNECTIVITY_CALL__ARGS = IR_ANNOTABLE_FEATURE_COUNT + 1;
+	int CONNECTIVITY_CALL__ARGS = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Connectivity Call</em>' class.
@@ -4043,7 +3760,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_CONNECTIVITY_CALL_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 2;
+	int CONNECTIVITY_CALL_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Connectivity Call</em>' class.
@@ -4052,7 +3769,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_CONNECTIVITY_CALL_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
+	int CONNECTIVITY_CALL_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.IrUniqueIdImpl <em>Unique Id</em>}' class.
@@ -4062,7 +3779,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIrUniqueId()
 	 * @generated
 	 */
-	int IR_UNIQUE_ID = 64;
+	int IR_UNIQUE_ID = 60;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4135,7 +3852,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIrIndex()
 	 * @generated
 	 */
-	int IR_INDEX = 65;
+	int IR_INDEX = 61;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4174,22 +3891,13 @@ public interface IrPackage extends EPackage {
 	int IR_INDEX__CONTAINER = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Iterator</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int IR_INDEX__ITERATOR = IR_ANNOTABLE_FEATURE_COUNT + 3;
-
-	/**
 	 * The number of structural features of the '<em>Index</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_INDEX_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int IR_INDEX_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of operations of the '<em>Index</em>' class.
@@ -4208,7 +3916,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getPrimitiveType()
 	 * @generated
 	 */
-	int PRIMITIVE_TYPE = 66;
+	int PRIMITIVE_TYPE = 62;
 
 
 	/**
@@ -5842,10 +5550,10 @@ public interface IrPackage extends EPackage {
 	EReference getArgOrVarRef_Target();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.ArgOrVarRef#getIterators <em>Iterators</em>}'.
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.ArgOrVarRef#getIterators <em>Iterators</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Iterators</em>'.
+	 * @return the meta object for the reference list '<em>Iterators</em>'.
 	 * @see fr.cea.nabla.ir.ir.ArgOrVarRef#getIterators()
 	 * @see #getArgOrVarRef()
 	 * @generated
@@ -5885,17 +5593,6 @@ public interface IrPackage extends EPackage {
 	EAttribute getIterator_Name();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.Iterator#getContainer <em>Container</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Container</em>'.
-	 * @see fr.cea.nabla.ir.ir.Iterator#getContainer()
-	 * @see #getIterator()
-	 * @generated
-	 */
-	EReference getIterator_Container();
-
-	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Iterator#isSingleton <em>Singleton</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -5907,26 +5604,15 @@ public interface IrPackage extends EPackage {
 	EAttribute getIterator_Singleton();
 
 	/**
-	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.Iterator#getReferencers <em>Referencers</em>}'.
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.Iterator#getIndex <em>Index</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Referencers</em>'.
-	 * @see fr.cea.nabla.ir.ir.Iterator#getReferencers()
+	 * @return the meta object for the containment reference '<em>Index</em>'.
+	 * @see fr.cea.nabla.ir.ir.Iterator#getIndex()
 	 * @see #getIterator()
 	 * @generated
 	 */
-	EReference getIterator_Referencers();
-
-	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.Iterator#getAssociatedIndex <em>Associated Index</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Associated Index</em>'.
-	 * @see fr.cea.nabla.ir.ir.Iterator#getAssociatedIndex()
-	 * @see #getIterator()
-	 * @generated
-	 */
-	EReference getIterator_AssociatedIndex();
+	EReference getIterator_Index();
 
 	/**
 	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.Iterator#getNeededIds <em>Needed Ids</em>}'.
@@ -5949,123 +5635,6 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getIterator_NeededIndices();
-
-	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ConnectivityCall <em>Connectivity Call</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Connectivity Call</em>'.
-	 * @see fr.cea.nabla.ir.ir.ConnectivityCall
-	 * @generated
-	 */
-	EClass getConnectivityCall();
-
-	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.ConnectivityCall#getConnectivity <em>Connectivity</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Connectivity</em>'.
-	 * @see fr.cea.nabla.ir.ir.ConnectivityCall#getConnectivity()
-	 * @see #getConnectivityCall()
-	 * @generated
-	 */
-	EReference getConnectivityCall_Connectivity();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.ConnectivityCall#getArgs <em>Args</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Args</em>'.
-	 * @see fr.cea.nabla.ir.ir.ConnectivityCall#getArgs()
-	 * @see #getConnectivityCall()
-	 * @generated
-	 */
-	EReference getConnectivityCall_Args();
-
-	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.IteratorRef <em>Iterator Ref</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Iterator Ref</em>'.
-	 * @see fr.cea.nabla.ir.ir.IteratorRef
-	 * @generated
-	 */
-	EClass getIteratorRef();
-
-	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IteratorRef#getTarget <em>Target</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Target</em>'.
-	 * @see fr.cea.nabla.ir.ir.IteratorRef#getTarget()
-	 * @see #getIteratorRef()
-	 * @generated
-	 */
-	EReference getIteratorRef_Target();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.IteratorRef#getShift <em>Shift</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Shift</em>'.
-	 * @see fr.cea.nabla.ir.ir.IteratorRef#getShift()
-	 * @see #getIteratorRef()
-	 * @generated
-	 */
-	EAttribute getIteratorRef_Shift();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.IteratorRef#getIndexInReferencerList <em>Index In Referencer List</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Index In Referencer List</em>'.
-	 * @see fr.cea.nabla.ir.ir.IteratorRef#getIndexInReferencerList()
-	 * @see #getIteratorRef()
-	 * @generated
-	 */
-	EAttribute getIteratorRef_IndexInReferencerList();
-
-	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef <em>Connectivity Call Iterator Ref</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Connectivity Call Iterator Ref</em>'.
-	 * @see fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef
-	 * @generated
-	 */
-	EClass getConnectivityCallIteratorRef();
-
-	/**
-	 * Returns the meta object for the container reference '{@link fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef#getReferencedBy <em>Referenced By</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Referenced By</em>'.
-	 * @see fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef#getReferencedBy()
-	 * @see #getConnectivityCallIteratorRef()
-	 * @generated
-	 */
-	EReference getConnectivityCallIteratorRef_ReferencedBy();
-
-	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef <em>Arg Or Var Ref Iterator Ref</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Arg Or Var Ref Iterator Ref</em>'.
-	 * @see fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
-	 * @generated
-	 */
-	EClass getArgOrVarRefIteratorRef();
-
-	/**
-	 * Returns the meta object for the container reference '{@link fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef#getReferencedBy <em>Referenced By</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Referenced By</em>'.
-	 * @see fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef#getReferencedBy()
-	 * @see #getArgOrVarRefIteratorRef()
-	 * @generated
-	 */
-	EReference getArgOrVarRefIteratorRef_ReferencedBy();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ItemType <em>Item Type</em>}'.
@@ -6217,36 +5786,36 @@ public interface IrPackage extends EPackage {
 	EAttribute getTimeLoopVariable_Name();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.IrConnectivityCall <em>Connectivity Call</em>}'.
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ConnectivityCall <em>Connectivity Call</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Connectivity Call</em>'.
-	 * @see fr.cea.nabla.ir.ir.IrConnectivityCall
+	 * @see fr.cea.nabla.ir.ir.ConnectivityCall
 	 * @generated
 	 */
-	EClass getIrConnectivityCall();
+	EClass getConnectivityCall();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrConnectivityCall#getConnectivity <em>Connectivity</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.ConnectivityCall#getConnectivity <em>Connectivity</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Connectivity</em>'.
-	 * @see fr.cea.nabla.ir.ir.IrConnectivityCall#getConnectivity()
-	 * @see #getIrConnectivityCall()
+	 * @see fr.cea.nabla.ir.ir.ConnectivityCall#getConnectivity()
+	 * @see #getConnectivityCall()
 	 * @generated
 	 */
-	EReference getIrConnectivityCall_Connectivity();
+	EReference getConnectivityCall_Connectivity();
 
 	/**
-	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.IrConnectivityCall#getArgs <em>Args</em>}'.
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.ConnectivityCall#getArgs <em>Args</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference list '<em>Args</em>'.
-	 * @see fr.cea.nabla.ir.ir.IrConnectivityCall#getArgs()
-	 * @see #getIrConnectivityCall()
+	 * @see fr.cea.nabla.ir.ir.ConnectivityCall#getArgs()
+	 * @see #getConnectivityCall()
 	 * @generated
 	 */
-	EReference getIrConnectivityCall_Args();
+	EReference getConnectivityCall_Args();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.IrUniqueId <em>Unique Id</em>}'.
@@ -6344,17 +5913,6 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getIrIndex_Container();
-
-	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrIndex#getIterator <em>Iterator</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Iterator</em>'.
-	 * @see fr.cea.nabla.ir.ir.IrIndex#getIterator()
-	 * @see #getIrIndex()
-	 * @generated
-	 */
-	EReference getIrIndex_Iterator();
 
 	/**
 	 * Returns the meta object for enum '{@link fr.cea.nabla.ir.ir.PrimitiveType <em>Primitive Type</em>}'.
@@ -7720,7 +7278,7 @@ public interface IrPackage extends EPackage {
 		EReference ARG_OR_VAR_REF__TARGET = eINSTANCE.getArgOrVarRef_Target();
 
 		/**
-		 * The meta object literal for the '<em><b>Iterators</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Iterators</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -7754,14 +7312,6 @@ public interface IrPackage extends EPackage {
 		EAttribute ITERATOR__NAME = eINSTANCE.getIterator_Name();
 
 		/**
-		 * The meta object literal for the '<em><b>Container</b></em>' containment reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ITERATOR__CONTAINER = eINSTANCE.getIterator_Container();
-
-		/**
 		 * The meta object literal for the '<em><b>Singleton</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -7770,20 +7320,12 @@ public interface IrPackage extends EPackage {
 		EAttribute ITERATOR__SINGLETON = eINSTANCE.getIterator_Singleton();
 
 		/**
-		 * The meta object literal for the '<em><b>Referencers</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Index</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference ITERATOR__REFERENCERS = eINSTANCE.getIterator_Referencers();
-
-		/**
-		 * The meta object literal for the '<em><b>Associated Index</b></em>' containment reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ITERATOR__ASSOCIATED_INDEX = eINSTANCE.getIterator_AssociatedIndex();
+		EReference ITERATOR__INDEX = eINSTANCE.getIterator_Index();
 
 		/**
 		 * The meta object literal for the '<em><b>Needed Ids</b></em>' containment reference list feature.
@@ -7800,102 +7342,6 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference ITERATOR__NEEDED_INDICES = eINSTANCE.getIterator_NeededIndices();
-
-		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl <em>Connectivity Call</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getConnectivityCall()
-		 * @generated
-		 */
-		EClass CONNECTIVITY_CALL = eINSTANCE.getConnectivityCall();
-
-		/**
-		 * The meta object literal for the '<em><b>Connectivity</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CONNECTIVITY_CALL__CONNECTIVITY = eINSTANCE.getConnectivityCall_Connectivity();
-
-		/**
-		 * The meta object literal for the '<em><b>Args</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CONNECTIVITY_CALL__ARGS = eINSTANCE.getConnectivityCall_Args();
-
-		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.IteratorRefImpl <em>Iterator Ref</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.IteratorRefImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIteratorRef()
-		 * @generated
-		 */
-		EClass ITERATOR_REF = eINSTANCE.getIteratorRef();
-
-		/**
-		 * The meta object literal for the '<em><b>Target</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ITERATOR_REF__TARGET = eINSTANCE.getIteratorRef_Target();
-
-		/**
-		 * The meta object literal for the '<em><b>Shift</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute ITERATOR_REF__SHIFT = eINSTANCE.getIteratorRef_Shift();
-
-		/**
-		 * The meta object literal for the '<em><b>Index In Referencer List</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute ITERATOR_REF__INDEX_IN_REFERENCER_LIST = eINSTANCE.getIteratorRef_IndexInReferencerList();
-
-		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallIteratorRefImpl <em>Connectivity Call Iterator Ref</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.ConnectivityCallIteratorRefImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getConnectivityCallIteratorRef()
-		 * @generated
-		 */
-		EClass CONNECTIVITY_CALL_ITERATOR_REF = eINSTANCE.getConnectivityCallIteratorRef();
-
-		/**
-		 * The meta object literal for the '<em><b>Referenced By</b></em>' container reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY = eINSTANCE.getConnectivityCallIteratorRef_ReferencedBy();
-
-		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ArgOrVarRefIteratorRefImpl <em>Arg Or Var Ref Iterator Ref</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.ArgOrVarRefIteratorRefImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getArgOrVarRefIteratorRef()
-		 * @generated
-		 */
-		EClass ARG_OR_VAR_REF_ITERATOR_REF = eINSTANCE.getArgOrVarRefIteratorRef();
-
-		/**
-		 * The meta object literal for the '<em><b>Referenced By</b></em>' container reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ARG_OR_VAR_REF_ITERATOR_REF__REFERENCED_BY = eINSTANCE.getArgOrVarRefIteratorRef_ReferencedBy();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ItemTypeImpl <em>Item Type</em>}' class.
@@ -8020,14 +7466,14 @@ public interface IrPackage extends EPackage {
 		EAttribute TIME_LOOP_VARIABLE__NAME = eINSTANCE.getTimeLoopVariable_Name();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.IrConnectivityCallImpl <em>Connectivity Call</em>}' class.
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl <em>Connectivity Call</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.IrConnectivityCallImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIrConnectivityCall()
+		 * @see fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getConnectivityCall()
 		 * @generated
 		 */
-		EClass IR_CONNECTIVITY_CALL = eINSTANCE.getIrConnectivityCall();
+		EClass CONNECTIVITY_CALL = eINSTANCE.getConnectivityCall();
 
 		/**
 		 * The meta object literal for the '<em><b>Connectivity</b></em>' reference feature.
@@ -8035,7 +7481,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference IR_CONNECTIVITY_CALL__CONNECTIVITY = eINSTANCE.getIrConnectivityCall_Connectivity();
+		EReference CONNECTIVITY_CALL__CONNECTIVITY = eINSTANCE.getConnectivityCall_Connectivity();
 
 		/**
 		 * The meta object literal for the '<em><b>Args</b></em>' reference list feature.
@@ -8043,7 +7489,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference IR_CONNECTIVITY_CALL__ARGS = eINSTANCE.getIrConnectivityCall_Args();
+		EReference CONNECTIVITY_CALL__ARGS = eINSTANCE.getConnectivityCall_Args();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.IrUniqueIdImpl <em>Unique Id</em>}' class.
@@ -8120,14 +7566,6 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference IR_INDEX__CONTAINER = eINSTANCE.getIrIndex_Container();
-
-		/**
-		 * The meta object literal for the '<em><b>Iterator</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference IR_INDEX__ITERATOR = eINSTANCE.getIrIndex_Iterator();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.PrimitiveType <em>Primitive Type</em>}' enum.

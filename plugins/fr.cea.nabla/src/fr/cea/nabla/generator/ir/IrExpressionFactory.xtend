@@ -43,7 +43,7 @@ class IrExpressionFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrFunctionFactory
 	@Inject extension IrArgOrVarFactory
-	@Inject extension IrIteratorFactory
+	@Inject extension IrIndexFactory
 	@Inject extension IrSizeTypeFactory
 	@Inject extension ExpressionTypeProvider
 	@Inject extension ReductionCallExtensions
@@ -183,7 +183,7 @@ class IrExpressionFactory
 			target = e.target.toIrArgOrVar(e.irTimeSuffix)
 			e.indices.forEach[x | indices += x.toIrSizeType]
 			for (i : 0..<e.spaceIterators.size)
-				iterators += e.spaceIterators.get(i).toIrArgOrVarRefIteratorRef(i)
+				iterators += toIrIndex(new IndexInfo(e, e.spaceIterators.get(i)))
 		]
 	}
 

@@ -25,6 +25,6 @@ class IrUniqueIdFactory
 	private def create IrFactory::eINSTANCE.createIrUniqueId toIrUniqueId(String nameWithoutId, SpaceIterator si)
 	{
 		name = nameWithoutId + 'Id'
-		iterator = si.toIrIterator;
+		iterator = si.toIrIterator
 	}
 }

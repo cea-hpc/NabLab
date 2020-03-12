@@ -24,8 +24,8 @@ import fr.cea.nabla.ir.ir.VarDefinition
 import static fr.cea.nabla.ir.generator.java.IndexBuilder.*
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.IterationBlockExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.IterationBlockExtensions.*
@@ -50,7 +50,7 @@ class InstructionContentProvider
 	static def dispatch CharSequence getContent(Affectation it)
 	'''
 		«IF left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty)»
-			«left.target.getCodeName('.')».set(«FOR r : left.iterators SEPARATOR ', ' AFTER ', '»«r.indexName»«ENDFOR»«FOR d : left.indices SEPARATOR ', ' AFTER ', '»«d»«ENDFOR»«right.content»);
+			«left.target.getCodeName('.')».set(«FOR r : left.iterators SEPARATOR ', ' AFTER ', '»«r.name»«ENDFOR»«FOR d : left.indices SEPARATOR ', ' AFTER ', '»«d»«ENDFOR»«right.content»);
 		«ELSE»
 			«left.content» = «right.content»;
 		«ENDIF»

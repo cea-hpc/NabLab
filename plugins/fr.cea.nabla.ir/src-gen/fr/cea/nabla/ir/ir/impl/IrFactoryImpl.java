@@ -100,15 +100,12 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.FUNCTION_CALL: return createFunctionCall();
 			case IrPackage.ARG_OR_VAR_REF: return createArgOrVarRef();
 			case IrPackage.ITERATOR: return createIterator();
-			case IrPackage.CONNECTIVITY_CALL: return createConnectivityCall();
-			case IrPackage.CONNECTIVITY_CALL_ITERATOR_REF: return createConnectivityCallIteratorRef();
-			case IrPackage.ARG_OR_VAR_REF_ITERATOR_REF: return createArgOrVarRefIteratorRef();
 			case IrPackage.ITEM_TYPE: return createItemType();
 			case IrPackage.IR_TYPE: return createIrType();
 			case IrPackage.BASE_TYPE: return createBaseType();
 			case IrPackage.CONNECTIVITY_TYPE: return createConnectivityType();
 			case IrPackage.TIME_LOOP_VARIABLE: return createTimeLoopVariable();
-			case IrPackage.IR_CONNECTIVITY_CALL: return createIrConnectivityCall();
+			case IrPackage.CONNECTIVITY_CALL: return createConnectivityCall();
 			case IrPackage.IR_UNIQUE_ID: return createIrUniqueId();
 			case IrPackage.IR_INDEX: return createIrIndex();
 			default:
@@ -636,28 +633,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public ConnectivityCallIteratorRef createConnectivityCallIteratorRef() {
-		ConnectivityCallIteratorRefImpl connectivityCallIteratorRef = new ConnectivityCallIteratorRefImpl();
-		return connectivityCallIteratorRef;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public ArgOrVarRefIteratorRef createArgOrVarRefIteratorRef() {
-		ArgOrVarRefIteratorRefImpl argOrVarRefIteratorRef = new ArgOrVarRefIteratorRefImpl();
-		return argOrVarRefIteratorRef;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public ItemType createItemType() {
 		ItemTypeImpl itemType = new ItemTypeImpl();
 		return itemType;
@@ -705,17 +680,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public TimeLoopVariable createTimeLoopVariable() {
 		TimeLoopVariableImpl timeLoopVariable = new TimeLoopVariableImpl();
 		return timeLoopVariable;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public IrConnectivityCall createIrConnectivityCall() {
-		IrConnectivityCallImpl irConnectivityCall = new IrConnectivityCallImpl();
-		return irConnectivityCall;
 	}
 
 	/**

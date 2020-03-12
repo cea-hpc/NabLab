@@ -20,4 +20,4 @@ an EMF bug that not allows duplicated elements even if the ecore unique attribut
 		return connectivities;
 	}
 
-
+Same problem for method getIterators of ArgOrvarRefImpl.

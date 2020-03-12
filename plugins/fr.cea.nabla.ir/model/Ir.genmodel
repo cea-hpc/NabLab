@@ -230,27 +230,10 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Iterator">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Iterator/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Iterator/container"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Iterator/singleton"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Iterator/referencers"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Iterator/associatedIndex"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Iterator/index"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Iterator/neededIds"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Iterator/neededIndices"/>
-    </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//ConnectivityCall">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityCall/connectivity"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityCall/args"/>
-    </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//IteratorRef">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IteratorRef/target"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IteratorRef/shift"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IteratorRef/indexInReferencerList"/>
-    </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//ConnectivityCallIteratorRef">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityCallIteratorRef/referencedBy"/>
-    </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//ArgOrVarRefIteratorRef">
-      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//ArgOrVarRefIteratorRef/referencedBy"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ItemType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ItemType/name"/>
@@ -270,9 +253,9 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopVariable/next"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//TimeLoopVariable/name"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//IrConnectivityCall">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrConnectivityCall/connectivity"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrConnectivityCall/args"/>
+    <genClasses ecoreClass="Ir.ecore#//ConnectivityCall">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityCall/connectivity"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityCall/args"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//IrUniqueId">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IrUniqueId/name"/>
@@ -284,7 +267,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IrIndex/name"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrIndex/defaultValueId"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrIndex/container"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrIndex/iterator"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

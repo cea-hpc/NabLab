@@ -409,33 +409,6 @@ public interface IrFactory extends EFactory {
 	Iterator createIterator();
 
 	/**
-	 * Returns a new object of class '<em>Connectivity Call</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Connectivity Call</em>'.
-	 * @generated
-	 */
-	ConnectivityCall createConnectivityCall();
-
-	/**
-	 * Returns a new object of class '<em>Connectivity Call Iterator Ref</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Connectivity Call Iterator Ref</em>'.
-	 * @generated
-	 */
-	ConnectivityCallIteratorRef createConnectivityCallIteratorRef();
-
-	/**
-	 * Returns a new object of class '<em>Arg Or Var Ref Iterator Ref</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Arg Or Var Ref Iterator Ref</em>'.
-	 * @generated
-	 */
-	ArgOrVarRefIteratorRef createArgOrVarRefIteratorRef();
-
-	/**
 	 * Returns a new object of class '<em>Item Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -487,7 +460,7 @@ public interface IrFactory extends EFactory {
 	 * @return a new object of class '<em>Connectivity Call</em>'.
 	 * @generated
 	 */
-	IrConnectivityCall createIrConnectivityCall();
+	ConnectivityCall createConnectivityCall();
 
 	/**
 	 * Returns a new object of class '<em>Unique Id</em>'.

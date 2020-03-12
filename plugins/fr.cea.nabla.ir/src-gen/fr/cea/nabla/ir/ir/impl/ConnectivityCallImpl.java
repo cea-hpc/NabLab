@@ -4,22 +4,19 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Connectivity;
 import fr.cea.nabla.ir.ir.ConnectivityCall;
-import fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef;
 import fr.cea.nabla.ir.ir.IrPackage;
 
+import fr.cea.nabla.ir.ir.IrUniqueId;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
-import org.eclipse.emf.ecore.util.InternalEList;
+import org.eclipse.emf.ecore.util.EObjectEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -47,14 +44,14 @@ public class ConnectivityCallImpl extends IrAnnotableImpl implements Connectivit
 	protected Connectivity connectivity;
 
 	/**
-	 * The cached value of the '{@link #getArgs() <em>Args</em>}' containment reference list.
+	 * The cached value of the '{@link #getArgs() <em>Args</em>}' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getArgs()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<ConnectivityCallIteratorRef> args;
+	protected EList<IrUniqueId> args;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -121,40 +118,11 @@ public class ConnectivityCallImpl extends IrAnnotableImpl implements Connectivit
 	 * @generated
 	 */
 	@Override
-	public EList<ConnectivityCallIteratorRef> getArgs() {
+	public EList<IrUniqueId> getArgs() {
 		if (args == null) {
-			args = new EObjectContainmentWithInverseEList<ConnectivityCallIteratorRef>(ConnectivityCallIteratorRef.class, this, IrPackage.CONNECTIVITY_CALL__ARGS, IrPackage.CONNECTIVITY_CALL_ITERATOR_REF__REFERENCED_BY);
+			args = new EObjectEList<IrUniqueId>(IrUniqueId.class, this, IrPackage.CONNECTIVITY_CALL__ARGS);
 		}
 		return args;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case IrPackage.CONNECTIVITY_CALL__ARGS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getArgs()).basicAdd(otherEnd, msgs);
-		}
-		return super.eInverseAdd(otherEnd, featureID, msgs);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case IrPackage.CONNECTIVITY_CALL__ARGS:
-				return ((InternalEList<?>)getArgs()).basicRemove(otherEnd, msgs);
-		}
-		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -188,7 +156,7 @@ public class ConnectivityCallImpl extends IrAnnotableImpl implements Connectivit
 				return;
 			case IrPackage.CONNECTIVITY_CALL__ARGS:
 				getArgs().clear();
-				getArgs().addAll((Collection<? extends ConnectivityCallIteratorRef>)newValue);
+				getArgs().addAll((Collection<? extends IrUniqueId>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);

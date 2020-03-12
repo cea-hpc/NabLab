@@ -665,7 +665,7 @@ private:
 					{
 						const int jId(cellsOfNodeR[jCellsOfNodeR]);
 						const int jCells(jId);
-						const int rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId),rId));
+						const int rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
 						reduction3 = sumR2(reduction3, Ajr(jCells,rNodesOfCellJ));
 					}
 				}
@@ -699,7 +699,7 @@ private:
 					{
 						const int jId(cellsOfNodeR[jCellsOfNodeR]);
 						const int jCells(jId);
-						const int rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId),rId));
+						const int rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
 						reduction4 = sumR1(reduction4, ArrayOperations::plus(ArrayOperations::multiply(p(jCells), C(jCells,rNodesOfCellJ)), MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells))));
 					}
 				}

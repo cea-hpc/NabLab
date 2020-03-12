@@ -284,22 +284,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createIteratorAdapter();
 			}
 			@Override
-			public Adapter caseConnectivityCall(ConnectivityCall object) {
-				return createConnectivityCallAdapter();
-			}
-			@Override
-			public Adapter caseIteratorRef(IteratorRef object) {
-				return createIteratorRefAdapter();
-			}
-			@Override
-			public Adapter caseConnectivityCallIteratorRef(ConnectivityCallIteratorRef object) {
-				return createConnectivityCallIteratorRefAdapter();
-			}
-			@Override
-			public Adapter caseArgOrVarRefIteratorRef(ArgOrVarRefIteratorRef object) {
-				return createArgOrVarRefIteratorRefAdapter();
-			}
-			@Override
 			public Adapter caseItemType(ItemType object) {
 				return createItemTypeAdapter();
 			}
@@ -320,8 +304,8 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createTimeLoopVariableAdapter();
 			}
 			@Override
-			public Adapter caseIrConnectivityCall(IrConnectivityCall object) {
-				return createIrConnectivityCallAdapter();
+			public Adapter caseConnectivityCall(ConnectivityCall object) {
+				return createConnectivityCallAdapter();
 			}
 			@Override
 			public Adapter caseIrUniqueId(IrUniqueId object) {
@@ -1108,48 +1092,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IteratorRef <em>Iterator Ref</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.IteratorRef
-	 * @generated
-	 */
-	public Adapter createIteratorRefAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef <em>Connectivity Call Iterator Ref</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.ConnectivityCallIteratorRef
-	 * @generated
-	 */
-	public Adapter createConnectivityCallIteratorRefAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef <em>Arg Or Var Ref Iterator Ref</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
-	 * @generated
-	 */
-	public Adapter createArgOrVarRefIteratorRefAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemType <em>Item Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -1216,20 +1158,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createTimeLoopVariableAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IrConnectivityCall <em>Connectivity Call</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.IrConnectivityCall
-	 * @generated
-	 */
-	public Adapter createIrConnectivityCallAdapter() {
 		return null;
 	}
 

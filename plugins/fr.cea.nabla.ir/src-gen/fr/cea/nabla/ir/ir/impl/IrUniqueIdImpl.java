@@ -5,7 +5,6 @@ package fr.cea.nabla.ir.ir.impl;
 import fr.cea.nabla.ir.ir.IrIndex;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.IrUniqueId;
-
 import fr.cea.nabla.ir.ir.Iterator;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;

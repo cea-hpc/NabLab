@@ -10,9 +10,7 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.MandatoryOptions
-import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.time.Duration
@@ -60,14 +58,6 @@ class ModuleInterpreter
 		logger.warning(" Start executing " + module.name + " module " + dtf.format(startTime))
 
 		jobInterpreter = new JobInterpreter(writer)
-
-		// Compute NeededIds and NeededIndexes for each iterator to spare time during interpretation
-		// Compute indexName and resolve external functions for the same reason
-		module.eAllContents.filter(Iterator).forEach[i |
-			context.setNeededIndicesAndNeededIdsInContext(i)
-			context.setIndexName(i)
-		]
-		module.eAllContents.filter(ArgOrVarRefIteratorRef).forEach[i | context.setIndexName(i)]
 		module.functions.filter[body === null].forEach[f | context.resolveFunction(f)]
 
 		// Interprete constant variables

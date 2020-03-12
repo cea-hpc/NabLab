@@ -21,8 +21,7 @@ import org.junit.runner.RunWith
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
-import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
-import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
+import static extension fr.cea.nabla.ir.generator.IrIndexExtensions.*
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -65,7 +64,7 @@ class IteratorExtensionsTest
 	J2: ∀j∈cells(), ∀r∈nodesOfCell(j), Cjr{j,r} = 3.0;
 	J3: ∀r∈nodes(), ∀j∈cellsOfNode(r), Cjr{j,r} = 1.0;
 	J4: ∀j∈cells(), u{j} = 0.5 * ∑{r∈nodesOfCell(j)}(X{r} - X{r+1});
-	J5: ∀j1∈cells(), f{j1} = a * ∑{j2∈neighbourCells(j1), cf=commonFace(j1,j2)}( (x{j2}-x{j1}) / surface{cf});	
+	J5: ∀j1∈cells(), f{j1} = a * ∑{j2∈neighbourCells(j1), cf=commonFace(j1,j2)}( (x{j2}-x{j1}) / surface{cf});
 	'''
 
 	var genModel = TestUtils::testGenModel
@@ -96,76 +95,76 @@ class IteratorExtensionsTest
 	@Test
 	def void testGetContainerName()
 	{
-		Assert.assertEquals("cells", j1_j.containerName)
+		Assert.assertEquals("cells", j1_j.index.containerName)
 
-		Assert.assertEquals("cells", j2_j.containerName)
-		Assert.assertEquals("nodesOfCellJ", j2_r.containerName)
+		Assert.assertEquals("cells", j2_j.index.containerName)
+		Assert.assertEquals("nodesOfCellJ", j2_r.index.containerName)
 
-		Assert.assertEquals("nodes", j3_r.containerName)
-		Assert.assertEquals("cellsOfNodeR", j3_j.containerName)
+		Assert.assertEquals("nodes", j3_r.index.containerName)
+		Assert.assertEquals("cellsOfNodeR", j3_j.index.containerName)
 
-		Assert.assertEquals("cells", j4_j.containerName)
-		Assert.assertEquals("nodesOfCellJ", j4_r.containerName)
+		Assert.assertEquals("cells", j4_j.index.containerName)
+		Assert.assertEquals("nodesOfCellJ", j4_r.index.containerName)
 
-		Assert.assertEquals("cells", j5_j1.containerName)
-		Assert.assertEquals("neighbourCellsJ1", j5_j2.containerName)
-		Assert.assertEquals("commonFaceJ1J2", j5_cf.containerName)
+		Assert.assertEquals("cells", j5_j1.index.containerName)
+		Assert.assertEquals("neighbourCellsJ1", j5_j2.index.containerName)
+		Assert.assertEquals("commonFaceJ1J2", j5_cf.index.containerName)
 	}
 
 	@Test
 	def void testGetIndexName()
 	{
-		Assert.assertEquals("jCells", j1_j.indexName)
+		Assert.assertEquals("jCells", j1_j.index.name)
 
-		Assert.assertEquals("jCells", j2_j.indexName)
-		Assert.assertEquals("rNodesOfCellJ", j2_r.indexName)
+		Assert.assertEquals("jCells", j2_j.index.name)
+		Assert.assertEquals("rNodesOfCellJ", j2_r.index.name)
 
-		Assert.assertEquals("rNodes", j3_r.indexName)
-		Assert.assertEquals("jCellsOfNodeR", j3_j.indexName)
+		Assert.assertEquals("rNodes", j3_r.index.name)
+		Assert.assertEquals("jCellsOfNodeR", j3_j.index.name)
 
-		Assert.assertEquals("jCells", j4_j.indexName)
-		Assert.assertEquals("rNodesOfCellJ", j4_r.indexName)
+		Assert.assertEquals("jCells", j4_j.index.name)
+		Assert.assertEquals("rNodesOfCellJ", j4_r.index.name)
 
-		Assert.assertEquals("j1Cells", j5_j1.indexName)
-		Assert.assertEquals("j2NeighbourCellsJ1", j5_j2.indexName)
-		Assert.assertEquals("cfCommonFaceJ1J2", j5_cf.indexName)
+		Assert.assertEquals("j1Cells", j5_j1.index.name)
+		Assert.assertEquals("j2NeighbourCellsJ1", j5_j2.index.name)
+		Assert.assertEquals("cfCommonFaceJ1J2", j5_cf.index.name)
 	}
 
 	@Test
 	def void testGetNeededIds()
 	{
-		Assert.assertArrayEquals(#[], j1_j.neededIds.map[idName])
+		Assert.assertArrayEquals(#[], j1_j.neededIds.map[name])
 
-		Assert.assertArrayEquals(#["jId"], j2_j.neededIds.map[idName])
-		Assert.assertArrayEquals(#[], j2_r.neededIds.map[idName])
+		Assert.assertArrayEquals(#["jId"], j2_j.neededIds.map[name])
+		Assert.assertArrayEquals(#[], j2_r.neededIds.map[name])
 
-		Assert.assertArrayEquals(#["jId"], j3_j.neededIds.map[idName])
-		Assert.assertArrayEquals(#["rId"], j3_r.neededIds.map[idName])
+		Assert.assertArrayEquals(#["jId"], j3_j.neededIds.map[name])
+		Assert.assertArrayEquals(#["rId"], j3_r.neededIds.map[name])
 
-		Assert.assertArrayEquals(#["jId"], j4_j.neededIds.map[idName])
-		Assert.assertArrayEquals(#["rId", "rPlus1Id"], j4_r.neededIds.map[idName])
+		Assert.assertArrayEquals(#["jId"], j4_j.neededIds.map[name])
+		Assert.assertArrayEquals(#["rId", "rPlus1Id"], j4_r.neededIds.map[name])
 
-		Assert.assertArrayEquals(#["j1Id"], j5_j1.neededIds.map[idName])
-		Assert.assertArrayEquals(#["j2Id"], j5_j2.neededIds.map[idName])
-		Assert.assertArrayEquals(#["cfId"], j5_cf.neededIds.map[idName])
+		Assert.assertArrayEquals(#["j1Id"], j5_j1.neededIds.map[name])
+		Assert.assertArrayEquals(#["j2Id"], j5_j2.neededIds.map[name])
+		Assert.assertArrayEquals(#["cfId"], j5_cf.neededIds.map[name])
 	}
 
 	@Test
 	def void testGetNeededIndices()
 	{
-		Assert.assertArrayEquals(#[], j1_j.neededIndices.map[indexName])
+		Assert.assertArrayEquals(#[], j1_j.neededIndices.map[name])
 
-		Assert.assertArrayEquals(#[], j2_j.neededIndices.map[indexName])
-		Assert.assertArrayEquals(#[], j2_r.neededIndices.map[indexName])
+		Assert.assertArrayEquals(#[], j2_j.neededIndices.map[name])
+		Assert.assertArrayEquals(#[], j2_r.neededIndices.map[name])
 
-		Assert.assertArrayEquals(#[], j3_r.neededIndices.map[indexName])
-		Assert.assertArrayEquals(#["jCells", "rNodesOfCellJ"], j3_j.neededIndices.map[indexName])
+		Assert.assertArrayEquals(#[], j3_r.neededIndices.map[name])
+		Assert.assertArrayEquals(#["jCells", "rNodesOfCellJ"], j3_j.neededIndices.map[name])
 
-		Assert.assertArrayEquals(#[], j4_j.neededIndices.map[indexName])
-		Assert.assertArrayEquals(#["rNodes", "rPlus1Nodes"], j4_r.neededIndices.map[indexName])
+		Assert.assertArrayEquals(#[], j4_j.neededIndices.map[name])
+		Assert.assertArrayEquals(#["rNodes", "rPlus1Nodes"], j4_r.neededIndices.map[name])
 
-		Assert.assertArrayEquals(#[], j5_j1.neededIndices.map[indexName])
-		Assert.assertArrayEquals(#["j2Cells"], j5_j2.neededIndices.map[indexName])
-		Assert.assertArrayEquals(#["cfFaces"], j5_cf.neededIndices.map[indexName])
+		Assert.assertArrayEquals(#[], j5_j1.neededIndices.map[name])
+		Assert.assertArrayEquals(#["j2Cells"], j5_j2.neededIndices.map[name])
+		Assert.assertArrayEquals(#["cfFaces"], j5_cf.neededIndices.map[name])
 	}
 }

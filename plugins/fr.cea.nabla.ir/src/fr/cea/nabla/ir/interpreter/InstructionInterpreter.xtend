@@ -10,26 +10,24 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.Affectation
-import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
 import fr.cea.nabla.ir.ir.If
+import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.IntervalIterationBlock
+import fr.cea.nabla.ir.ir.IrIndex
+import fr.cea.nabla.ir.ir.IrUniqueId
 import fr.cea.nabla.ir.ir.Iterator
-import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SpaceIterationBlock
 import fr.cea.nabla.ir.ir.VarDefinition
+import java.util.Arrays
 
 import static fr.cea.nabla.ir.interpreter.DimensionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
-
-import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
-import fr.cea.nabla.ir.ir.Instruction
-import java.util.Arrays
 
 class InstructionInterpreter
 {
@@ -103,14 +101,15 @@ class InstructionInterpreter
 		{
 			SpaceIterationBlock:
 			{
-				context.logFinest("On traite la boucle " + b.range.container.connectivity.name)
-				val connectivityName = b.range.container.connectivity.name
-				val argIds =  b.range.container.args.map[x | context.getIdValue(x)]
+				val itIndex = b.range.index
+				val connectivityName = itIndex.container.connectivity.name
+				context.logFinest("On traite la boucle " + connectivityName)
+				val argIds =  itIndex.container.args.map[x | context.getIdValue(x)]
 				val container = context.meshWrapper.getElements(connectivityName, argIds)
-				context.addIndexValue(b.range, 0)
+				context.addIndexValue(itIndex, 0)
 				for (loopIteratorValue : 0..<container.size)
 				{
-					context.setIndexValue(b.range, loopIteratorValue)
+					context.setIndexValue(itIndex, loopIteratorValue)
 					setIndices(b, context)
 					val ret = interprete(body, context)
 					if (ret !== null)
@@ -152,7 +151,7 @@ class InstructionInterpreter
 		setIndices(range, context)
 		for (s : singletons)
 		{
-			context.addIndexValue(s, context.getSingleton(s))
+			context.addIndexValue(s.index, context.getSingleton(s))
 			setIndices(s, context)
 		}
 	}
@@ -160,42 +159,48 @@ class InstructionInterpreter
 	private static def void setIndices(Iterator it, Context context)
 	{
 		// Not  necessary to look for neededId and neededIndex at each iteration
-		for (neededId : context.getNeededIdsInContext(it))
+		for (neededId : neededIds)
 			context.addIdValue(neededId, getIndexToId(neededId, context))
-		for (neededIndex : context.getNeededIndicesInContext(it))
+		for (neededIndex : neededIndices)
 			context.addIndexValue(neededIndex, getIdToIndex(neededIndex, context))
 	}
 
-	private static def getIndexToId(IteratorRef it, Context context)
+	private static def getIndexToId(IrUniqueId it, Context context)
 	{
 		val indexValue = getIndexValue(it, context)
 
-		if (target.container.connectivity.indexEqualId || target.singleton)
+		if (defaultValueIndex.container.connectivity.indexEqualId)
 			indexValue
 		else
 		{
 			//TODO : Plus efficace de faire une méthode pour indexValue in container ?
-			val connectivityName = target.container.connectivity.name
-			val args =  target.container.args.map[x | context.getIdValue(x)]
+			val connectivityName = defaultValueIndex.container.connectivity.name
+			val args =  defaultValueIndex.container.args.map[x | context.getIdValue(x)]
 			context.meshWrapper.getElements(connectivityName, args).get(indexValue)
 		}
 	}
 
-	private static def getIdToIndex(ArgOrVarRefIteratorRef it, Context context)
+	private static def getIdToIndex(IrIndex it, Context context)
 	{
-		val idValue = context.getIdValue(it)
-		if (varContainer.indexEqualId) idValue
-		else context.getIndexOf(it, idValue)
+		val idValue = context.getIdValue(defaultValueId)
+		if (container.connectivity.indexEqualId) idValue
+		else 
+		{
+			val connectivityName = container.connectivity.name
+			val args =  container.args.map[x | context.getIdValue(x)]
+			val elements = context.meshWrapper.getElements(connectivityName, args)
+			elements.indexOf(idValue)
+		}
 	}
 
-	private static def getIndexValue(IteratorRef it, Context context)
+	private static def getIndexValue(IrUniqueId it, Context context)
 	{
-		val iteratorRefIndex = context.getIndexValue(target)
+		val iteratorRefIndex = context.getIndexValue(defaultValueIndex)
 		if (shift === 0)
 			return iteratorRefIndex
 		else
 		{
-			val nbElems = context.connectivitySizes.get(target.container.connectivity)
+			val nbElems = context.connectivitySizes.get(defaultValueIndex.container.connectivity)
 			return (iteratorRefIndex + shift + nbElems)%nbElems
 		}
 	}

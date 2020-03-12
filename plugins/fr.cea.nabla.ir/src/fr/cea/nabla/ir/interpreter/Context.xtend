@@ -9,28 +9,23 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.generator.IteratorExtensions
-import fr.cea.nabla.ir.generator.IteratorRefExtensions
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArgOrVar
-import fr.cea.nabla.ir.ir.ArgOrVarRefIteratorRef
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.IrIndex
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrUniqueId
 import fr.cea.nabla.ir.ir.Iterator
-import fr.cea.nabla.ir.ir.IteratorRef
 import fr.cea.nabla.ir.ir.SizeTypeSymbol
 import java.lang.reflect.Method
 import java.util.HashMap
-import java.util.TreeSet
 import java.util.logging.Level
 import java.util.logging.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
-import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class Context
@@ -38,13 +33,10 @@ class Context
 	val Context outerContext
 	val IrModule module
 	val Logger logger
-	val indexValues = new HashMap<String, Integer>
-	val idValues = new HashMap<String, Integer>
+	val indexValues = new HashMap<IrIndex, Integer>
+	val idValues = new HashMap<IrUniqueId, Integer>
 	val dimensionValues = new HashMap<SizeTypeSymbol, Integer>
 	val variableValues = new HashMap<ArgOrVar, NablaValue>
-	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Iterator, TreeSet<ArgOrVarRefIteratorRef>> neededIndices
-	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Iterator, TreeSet<IteratorRef>> neededIds
-	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Object, String> indexNames
 	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Function, Method> functionToMethod
 	@Accessors val HashMap<Connectivity, Integer> connectivitySizes
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) MeshWrapper meshWrapper
@@ -56,9 +48,6 @@ class Context
 		this.logger = logger
 		this.connectivitySizes = new HashMap<Connectivity, Integer>
 		this.meshWrapper = null
-		this.neededIndices = new HashMap<Iterator, TreeSet<ArgOrVarRefIteratorRef>>
-		this.neededIds = new HashMap<Iterator, TreeSet<IteratorRef>>
-		this.indexNames = new HashMap<Object, String>
 		this.functionToMethod = new HashMap<Function, Method>
 	}
 
@@ -69,9 +58,6 @@ class Context
 		this.logger = outerContext.logger
 		this.connectivitySizes = outerContext.connectivitySizes
 		this.meshWrapper = outerContext.meshWrapper
-		this.neededIndices = outerContext.neededIndices
-		this.neededIds = outerContext.neededIds
-		this.indexNames = outerContext.indexNames
 		this.functionToMethod = outerContext.functionToMethod
 	}
 
@@ -135,37 +121,48 @@ class Context
 	}
 
 	// IndexValues
-	def int getIndexValue(ArgOrVarRefIteratorRef it) { getIndexValue(indexName) }
-	def int getIndexValue(Iterator it) { getIndexValue(indexName) }
-	def void addIndexValue(ArgOrVarRefIteratorRef it, int value) { indexValues.put(indexName, value) }
-	def void addIndexValue(Iterator it, int value) { indexValues.put(indexName, value) }
+	def int getIndexValue(IrIndex index) 
+	{ 
+		indexValues.get(index) ?: outerContext.getIndexValue(index)
+	}
 
-	def void setIndexValue(Iterator it, int value)
+	def void addIndexValue(IrIndex index, int value) 
+	{ 
+		indexValues.put(index, value)
+	}
+
+	def void setIndexValue(IrIndex index, int value)
 	{
 		// Store indexName to avoid retrieving it in the map repetitively
-		val indexName = indexName
-		if (indexValues.get(indexName) !== null)
-			indexValues.replace(indexName, value)
+		if (indexValues.get(index) !== null)
+			indexValues.replace(index, value)
 		else
 			if (outerContext !== null)
-				outerContext.setIndexValue(it, value)
+				outerContext.setIndexValue(index, value)
 			else
-				throw new RuntimeException('Iterator not found ' + indexName)
+				throw new RuntimeException('Index not found ' + index.name)
 	}
 
 	// IdValues
-	def int getIdValue(IteratorRef it) { getIdValue(idName) }
-	def void addIdValue(IteratorRef it, int value) { idValues.put(idName, value) }
+	def int getIdValue(IrUniqueId id) 
+	{ 
+		idValues.get(id) ?: outerContext.getIdValue(id)
+	}
 
-	def void setIdValue(IteratorRef it, int value)
+	def void addIdValue(IrUniqueId id, int value) 
+	{ 
+		idValues.put(id, value)
+	}
+
+	def void setIdValue(IrUniqueId id, int value)
 	{
-		if (idValues.get(idName) !== null)
-			idValues.replace(idName, value)
+		if (idValues.get(id) !== null)
+			idValues.replace(id, value)
 		else
 			if (outerContext !== null)
-				outerContext.setIdValue(it, value)
+				outerContext.setIdValue(id, value)
 			else
-				throw new RuntimeException('IteratorRef not found ' + idName)
+				throw new RuntimeException('Unique identifier not found ' + id.name)
 	}
 
 	// DimensionValues
@@ -190,18 +187,10 @@ class Context
 				throw new RuntimeException('Dimension Symbol not found ' + name)
 	}
 
-	def int getIndexOf(ArgOrVarRefIteratorRef it, int id)
-	{
-		//TODO : Plus efficace de faire une méthode pour getindexOfId in container ?
-		val connectivityName = varContainer.name
-		val args =  varArgs.map[x | getIdValue(x)]
-		val container = meshWrapper.getElements(connectivityName, args)
-		container.indexOf(id)
-	}
-
 	def int getSingleton(Iterator iterator)
 	{
-		meshWrapper.getSingleton(iterator.container.connectivity.name, iterator.container.args.map[getIdValue(idName)])
+		val c = iterator.index.container
+		meshWrapper.getSingleton(c.connectivity.name, c.args.map[x | getIdValue(x)])
 	}
 
 	def logVariables(String message)
@@ -257,42 +246,6 @@ class Context
 		logger.log(Level::INFO, message)
 	}
 
-	def setNeededIndicesAndNeededIdsInContext(Iterator iterator)
-	{
-		neededIndices.put(iterator, iterator.neededIndices)
-		neededIds.put(iterator, iterator.neededIds)
-	}
-
-	def getNeededIndicesInContext(Iterator iterator)
-	{
-		neededIndices.get(iterator)
-	}
-
-	def getNeededIdsInContext(Iterator iterator)
-	{
-		neededIds.get(iterator)
-	}
-
-	def setIndexName(Iterator iterator)
-	{
-		indexNames.put(iterator, IteratorExtensions::getIndexName(iterator))
-	}
-
-	def setIndexName(ArgOrVarRefIteratorRef iteratorRef)
-	{
-		indexNames.put(iteratorRef, IteratorRefExtensions::getIndexName(iteratorRef))
-	}
-
-	def String getIndexName(ArgOrVarRefIteratorRef it)
-	{
-		return indexNames.get(it)
-	}
-
-	def String getIndexName(Iterator it)
-	{
-		return indexNames.get(it)
-	}
-
 	def resolveFunction(Function it)
 	{
 		val tccl = Thread.currentThread().getContextClassLoader()
@@ -315,15 +268,5 @@ class Context
 	def Method getMethod(Function it)
 	{
 		functionToMethod.get(it)
-	}
-
-	private def int getIndexValue(String indexname)
-	{
-		indexValues.get(indexname) ?: outerContext.getIndexValue(indexname)
-	}
-
-	private def int getIdValue(String id)
-	{
-		idValues.get(id) ?: outerContext.getIdValue(id)
 	}
 }

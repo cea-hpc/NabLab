@@ -54,14 +54,14 @@ class JobInterpreter
 
 	def void interpreteInstructionJob(InstructionJob it, Context context)
 	{
-		context.logFinest("Interprete InstructionJob " + name + " @ " + at)
+		context.logFiner("Interprete InstructionJob " + name + " @ " + at)
 		val innerContext = new Context(context)
 		interprete(instruction, innerContext)
 	}
 
 	def void interpreteTimeLoopJob(TimeLoopJob it, Context context)
 	{
-		context.logFinest("Interprete TimeLoopJob " + name + " @ " + at)
+		context.logFiner("Interprete TimeLoopJob " + name + " @ " + at)
 		val irModule = eContainer as IrModule
 		val iterationVariable = timeLoop.iterationCounter
 		var iteration = 0
@@ -102,7 +102,7 @@ class JobInterpreter
 
 	def void interpreteTimeLoopCopyJob(TimeLoopCopyJob it, Context context)
 	{
-		context.logFinest("Interprete TimeLoopCopyJob " + name + " @ " + at)
+		context.logFiner("Interprete TimeLoopCopyJob " + name + " @ " + at)
 
 		for (copy : copies)
 		{

@@ -17,7 +17,6 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.time.Duration
 import java.time.LocalDateTime
-import java.util.logging.Level
 import java.util.logging.Logger
 import java.util.logging.StreamHandler
 
@@ -41,7 +40,7 @@ class ModuleInterpreter
 	{
 		// create a Logger and a Handler
 		logger = Logger.getLogger(ModuleInterpreter.name)
-		logger.setLevel(Level::ALL) //All Levels messages
+		logger.setLevel(handler.level)  //Create only logs if needed by handler
 		logger.setUseParentHandlers(false) // Suppress default console
 		logger.handlers.forEach(h | logger.removeHandler(h))
 		logger.addHandler(handler)

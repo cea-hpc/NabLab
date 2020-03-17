@@ -103,7 +103,7 @@ class InstructionInterpreter
 		{
 			SpaceIterationBlock:
 			{
-				context.logFinest("On traite la boucle " + b.range.container.connectivity.name)
+				context.logFinest("We deal with loop " + b.range.container.connectivity.name)
 				val connectivityName = b.range.container.connectivity.name
 				val argIds =  b.range.container.args.map[x | context.getIdValue(x)]
 				val container = context.meshWrapper.getElements(connectivityName, argIds)

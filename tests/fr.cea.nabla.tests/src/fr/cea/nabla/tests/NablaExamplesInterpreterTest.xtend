@@ -11,7 +11,7 @@ package fr.cea.nabla.tests
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.interpreter.ModuleInterpreter
-import java.util.logging.ConsoleHandler
+//import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
@@ -27,9 +27,9 @@ import java.util.logging.SimpleFormatter
 @InjectWith(NablaInjectorProvider)
 class NablaExamplesInterpreterTest
 {
-	static String wsPath
-	static String examplesProjectSubPath
+	static String testsProjectSubPath
 	static String examplesProjectPath
+	static GitUtils git
 
 	@Inject CompilationChainHelper compilationHelper
 
@@ -37,12 +37,16 @@ class NablaExamplesInterpreterTest
 	def static void setup()
 	{
 		val testProjectPath = System.getProperty("user.dir")
-		wsPath = testProjectPath + "/../../"
-		examplesProjectSubPath = "plugins/fr.cea.nabla.ui/examples/NablaExamples/"
+		testsProjectSubPath = testProjectPath.split('/').reverse.get(1) + '/' + testProjectPath.split('/').reverse.get(0)
+
+		val wsPath = testProjectPath + "/../../"
+		val examplesProjectSubPath = "plugins/fr.cea.nabla.ui/examples/NablaExamples/"
 		examplesProjectPath = wsPath + examplesProjectSubPath
+		git = new GitUtils(wsPath)
 		
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s %n")
-		
+		System.setProperty("java.util.logging.FileHandler.limit", "1024000")
+		System.setProperty("java.util.logging.FileHandler.count", "3")
 	}
 
 	@Test
@@ -53,13 +57,16 @@ class NablaExamplesInterpreterTest
 		val genmodel = readFileAsString("src/glace2d/Glace2d.nablagen")
 
 		val irModule = compilationHelper.getIrModule(model, genmodel)
-		val handler = new FileHandler("src/glace2d/InterpreteGlace2d.log")
+		//val handler = new ConsoleHandler
+		val handler = new FileHandler("src/glace2d/InterpreteGlace2d.log", false)
+
 		val formatter = new SimpleFormatter
 		handler.setFormatter(formatter)
-		//val handler = new ConsoleHandler
-		handler.level = Level::FINE
+		handler.level = Level::INFO
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 		moduleInterpreter.interprete
+
+		testNoGitDiff("glace2d")
 	}
 
 	@Test
@@ -70,16 +77,20 @@ class NablaExamplesInterpreterTest
 		val genmodel = readFileAsString("src/heatequation/HeatEquation.nablagen")
 		
 		val irModule = compilationHelper.getIrModule(model, genmodel)
-		val handler = new FileHandler("src/heatequation/InterpreteHeatEquation.log")
+		//val handler = new ConsoleHandler
+		val handler = new FileHandler("src/heatequation/InterpreteHeatEquation.log", false)
+
 		val formatter = new SimpleFormatter
 		handler.setFormatter(formatter)
-		//val handler = new ConsoleHandler
 		handler.level = Level::INFO
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		for (var i = 0 ; i < 1 ; i++) 
-		{
- 			moduleInterpreter.info("Execution " + i)
-			moduleInterpreter.interprete
-		}
+		moduleInterpreter.interprete
+
+		testNoGitDiff("heatequation")
+	}
+
+	private def testNoGitDiff(String moduleName)
+	{
+		git.testNoGitDiff(testsProjectSubPath, moduleName)
 	}
 }

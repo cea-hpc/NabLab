@@ -1,26 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE log SYSTEM "logger.dtd">
-<log>
-<record>
-  <date>2020-01-13T15:52:17</date>
-  <millis>1578927137119</millis>
-  <sequence>35197960</sequence>
-  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
-  <level>WARNING</level>
-  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
-  <method>interprete</method>
-  <thread>1</thread>
-  <message> Start executing Glace2d module 2020/01/13 15:52:17</message>
-</record>
-<record>
-  <date>2020-01-13T15:55:27</date>
-  <millis>1578927327356</millis>
-  <sequence>152653699</sequence>
-  <logger>fr.cea.nabla.ir.interpreter.ModuleInterpreter</logger>
-  <level>WARNING</level>
-  <class>fr.cea.nabla.ir.interpreter.ModuleInterpreter</class>
-  <method>interprete</method>
-  <thread>1</thread>
-  <message> End executing 2020/01/13 15:55:27 (190 s)</message>
-</record>
-</log>
+INFO:  Start interpreting Glace2d module  
+INFO: 	Nb Iteration = 148 
+INFO:  End interpreting 

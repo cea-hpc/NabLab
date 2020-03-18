@@ -34,6 +34,7 @@ class MeshWrapper
 			case "cellsOfNode" : mesh.getCellsOfNode(args.get(0))
 			case "nodesOfFace" : mesh.getNodesOfFace(args.get(0))
 			case "neighbourCells" : mesh.getNeighbourCells(args.get(0))
+			case "cellsOfFace" : mesh.getCellsOfFace(args.get(0))
 			default : throw new RuntimeException("Not implemented yet (" + connectivityName + ")")
 		}
 	}

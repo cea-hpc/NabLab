@@ -51,7 +51,7 @@ class NablaExamplesInterpreterTest
 
 	@Test
 	def void testInterpreteGlace2D()
-	{       
+	{
 		val model = readFileAsString(examplesProjectPath + "src/glace2d/Glace2d.nabla")
 		// We use a dedicated genmodel to replaceAllreductions and not to generate code
 		val genmodel = readFileAsString("src/glace2d/Glace2d.nablagen")
@@ -86,7 +86,27 @@ class NablaExamplesInterpreterTest
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 		moduleInterpreter.interprete
 
-		testNoGitDiff("heatequation")
+		testNoGitDiff("/heatequation")
+	}
+
+	@Test
+	def void testInterpreteExplicitHeatEquation()
+	{
+		val model = readFileAsString(examplesProjectPath + "src/explicitheatequation/ExplicitHeatEquation.nabla")
+		// We use a dedicated genmodel to replaceAllreductions and not to generate code
+		val genmodel = readFileAsString("src/explicitheatequation/ExplicitHeatEquation.nablagen")
+
+		val irModule = compilationHelper.getIrModule(model, genmodel)
+		//val handler = new ConsoleHandler
+		val handler = new FileHandler("src/explicitheatequation/ExplicitHeatEquation.log", false)
+
+		val formatter = new SimpleFormatter
+		handler.setFormatter(formatter)
+		handler.level = Level::INFO
+		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
+		moduleInterpreter.interprete
+
+		testNoGitDiff("explicitheatequation")
 	}
 
 	private def testNoGitDiff(String moduleName)

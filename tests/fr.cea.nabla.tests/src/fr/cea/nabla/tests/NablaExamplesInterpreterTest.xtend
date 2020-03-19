@@ -11,8 +11,9 @@ package fr.cea.nabla.tests
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.interpreter.ModuleInterpreter
-//import java.util.logging.ConsoleHandler
+import java.util.logging.FileHandler
 import java.util.logging.Level
+import java.util.logging.SimpleFormatter
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.BeforeClass
@@ -20,8 +21,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static fr.cea.nabla.tests.TestUtils.*
-import java.util.logging.FileHandler
-import java.util.logging.SimpleFormatter
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -107,6 +106,46 @@ class NablaExamplesInterpreterTest
 		moduleInterpreter.interprete
 
 		testNoGitDiff("explicitheatequation")
+	}
+
+	@Test
+	def void testInterpreteImplicitHeatEquation()
+	{
+		val model = readFileAsString(examplesProjectPath + "src/implicitheatequation/ImplicitHeatEquation.nabla")
+		// We use a dedicated genmodel to replaceAllreductions and not to generate code
+		val genmodel = readFileAsString("src/implicitheatequation/ImplicitHeatEquation.nablagen")
+
+		val irModule = compilationHelper.getIrModule(model, genmodel)
+		//val handler = new ConsoleHandler
+		val handler = new FileHandler("src/implicitheatequation/ImplicitHeatEquation.log", false)
+
+		val formatter = new SimpleFormatter
+		handler.setFormatter(formatter)
+		handler.level = Level::INFO
+		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
+		moduleInterpreter.interprete
+
+		testNoGitDiff("implicitheatequation")
+	}
+
+	@Test
+	def void testIterativeHeatEquation()
+	{
+		val model = readFileAsString(examplesProjectPath + "src/iterativeheatequation/IterativeHeatEquation.nabla")
+		// We use a dedicated genmodel to replaceAllreductions and not to generate code
+		val genmodel = readFileAsString("src/iterativeheatequation/IterativeHeatEquation.nablagen")
+
+		val irModule = compilationHelper.getIrModule(model, genmodel)
+		//val handler = new ConsoleHandler
+		val handler = new FileHandler("src/iterativeheatequation/IterativeHeatEquation.log", false)
+
+		val formatter = new SimpleFormatter
+		handler.setFormatter(formatter)
+		handler.level = Level::INFO
+		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
+		moduleInterpreter.interprete
+
+		testNoGitDiff("iterativeheatequation")
 	}
 
 	private def testNoGitDiff(String moduleName)

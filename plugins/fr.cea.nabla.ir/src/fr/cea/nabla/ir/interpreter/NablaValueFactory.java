@@ -11,6 +11,8 @@ package fr.cea.nabla.ir.interpreter;
 
 import fr.cea.nabla.ir.ir.IrType;
 import fr.cea.nabla.ir.ir.PrimitiveType;
+import fr.cea.nabla.javalib.types.Matrix;
+import fr.cea.nabla.javalib.types.Vector;
 
 public class NablaValueFactory
 {
@@ -27,7 +29,7 @@ public class NablaValueFactory
 		return result;
 	}
 
-	static NablaValue createValue(IrType t, int size)
+	static NablaValue createValue(IrType t, int size, boolean linearAlgebra)
 	{
 		PrimitiveType p = IrTypeExtensions.getPrimitive(t);
 		NablaValue result = null;
@@ -35,12 +37,13 @@ public class NablaValueFactory
 		{
 			case BOOL: result = new NV1Bool(new boolean[size]); break;
 			case INT: result = new NV1Int(new int[size]); break;
-			case REAL: result = new NV1Real(new double[size]); break;
+			case REAL: if (!linearAlgebra) result = new NV1Real(new double[size]);
+						else result = new NVVector(Vector.createDenseVector(size)); break;
 		}
 		return result;
 	}
 
-	static NablaValue createValue(IrType t, int size1, int size2)
+	static NablaValue createValue(IrType t, int size1, int size2, boolean linearAlgebra)
 	{ 
 		PrimitiveType p = IrTypeExtensions.getPrimitive(t);
 		NablaValue result = null;
@@ -48,7 +51,8 @@ public class NablaValueFactory
 		{
 			case BOOL: result = new NV2Bool(new boolean[size1][size2]); break;
 			case INT: result = new NV2Int(new int[size1][size2]); break;
-			case REAL: result = new NV2Real(new double[size1][size2]); break;
+			case REAL: if (!linearAlgebra) result = new NV2Real(new double[size1][size2]);
+			else result = new NVMatrix(Matrix.createDenseMatrix(size1, size2)); break;
 		}
 		return result;
 	}

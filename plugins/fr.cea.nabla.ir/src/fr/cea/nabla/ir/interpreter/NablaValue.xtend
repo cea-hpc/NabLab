@@ -9,6 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
+import fr.cea.nabla.javalib.types.Matrix
+import fr.cea.nabla.javalib.types.Vector
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtend.lib.annotations.Data
 
@@ -65,10 +67,20 @@ class NV0Real implements NablaValue
 @Data class NV1Bool implements NablaValue { boolean[] data }
 @Data class NV1Int implements NablaValue { int[] data }
 @Data class NV1Real implements NablaValue { double[] data }
+class NVVector implements NablaValue
+{
+	@Accessors Vector data
+	new(Vector data) { this.data = data }
+}
 
 @Data class NV2Bool implements NablaValue { boolean[][] data }
 @Data class NV2Int implements NablaValue { int[][] data }
 @Data class NV2Real implements NablaValue { double[][] data }
+class NVMatrix implements NablaValue
+{
+	@Accessors Matrix data
+	new(Matrix data) { this.data = data }
+}
 
 @Data class NV3Bool implements NablaValue { boolean[][][] data }
 @Data class NV3Int implements NablaValue { int[][][] data }

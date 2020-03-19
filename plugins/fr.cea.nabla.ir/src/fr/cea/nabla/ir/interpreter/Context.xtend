@@ -32,6 +32,7 @@ import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorExtensions.*
 import static extension fr.cea.nabla.ir.generator.IteratorRefExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
 class Context
 {
@@ -308,7 +309,7 @@ class Context
 		val tccl = Thread.currentThread().getContextClassLoader()
 		val providerClassName = module.name.toLowerCase + '.' + provider + Utils::FunctionReductionPrefix
 		val providerClass = Class.forName(providerClassName, true, tccl)
-		val javaTypes = inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension)]
+		val javaTypes = inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension, linearAlgebra)]
 		try 
 		{
 			val result = providerClass.getDeclaredMethod(name, javaTypes)

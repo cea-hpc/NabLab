@@ -33,7 +33,9 @@ class NablaValueExtensions
 
 	static def dispatch displayValue(NV0Real it) { data }
 	static def dispatch displayValue(NV1Real it)  { data.map[d | d] }
+	static def dispatch displayValue(NVVector it)  { data.toArray.map[d | d] }
 	static def dispatch displayValue(NV2Real it) { data.map[d | d.map[ dd | dd]] }
+	static def dispatch displayValue(NVMatrix it)  { 'not yet implemented' }
 	static def dispatch displayValue(NV3Real it) { data.map[d | d.map[ dd | dd.map[ddd | ddd]]] }
 	static def dispatch displayValue(NV4Real it) { data.map[d | d.map[ dd | dd.map[ddd | ddd.map[dddd | dddd]]]] }
 }

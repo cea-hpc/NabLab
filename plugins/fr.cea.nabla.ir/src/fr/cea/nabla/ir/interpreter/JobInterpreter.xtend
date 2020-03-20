@@ -72,10 +72,13 @@ class JobInterpreter
 		{
 			iteration ++
 			context.setVariableValue(iterationVariable, new NV0Int(iteration))
-			context.logFine(timeLoop.indentation + "[" + iteration + "] t: " +
-				context.getReal(irModule.timeVariable.name) + " - deltat: " +
-				context.getReal(irModule.deltatVariable.name)
-			)
+
+			val log = String.format("%1$s [%2$d] t: %3$.5f - deltat: %4$.5f",
+					timeLoop.indentation,
+					iteration,
+					context.getReal(irModule.timeVariable.name),
+					context.getReal(irModule.deltatVariable.name))
+			context.logFine(log)
 			if (topLevel && irModule.postProcessingInfo !== null) dumpVariables(irModule, iteration, context);
 			for (j : innerJobs.filter[x | x.at > 0].sortBy[at])
 				interprete(j, context)
@@ -96,8 +99,10 @@ class JobInterpreter
 			}
 		}
 		while (continueLoop)
-		context.logInfo("	Nb Iteration = " + iteration)
-		context.logVariables("After timeLoop " + iteration)
+		val log = String.format("%1$s Nb iteration %2$s = %3$d", timeLoop.indentation, timeLoop.name, iteration)
+		context.logInfo(log)
+		val msg = String.format("%1$s After timeLoop %2$s %3$d", timeLoop.indentation, timeLoop.name, iteration)
+		context.logVariables(msg)
 	}
 
 	def void interpreteTimeLoopCopyJob(TimeLoopCopyJob it, Context context)
@@ -148,6 +153,6 @@ class JobInterpreter
 	private static def String getIndentation(TimeLoop it)
 	{
 		if (outerTimeLoop === null) ''
-		else getIndentation(outerTimeLoop) + '\t'
+		else getIndentation(outerTimeLoop) + '\t\t'
 	}
 }

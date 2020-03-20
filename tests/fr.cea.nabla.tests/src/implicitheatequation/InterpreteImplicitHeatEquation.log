@@ -1,4 +1,4 @@
-INFO:  Start interpreting ExplicitHeatEquation module  
+INFO:  Start interpreting ImplicitHeatEquation module  
 FINE:  [1] t: 0.00000 - deltat: 0.00060 
 FINE:  [2] t: 0.00060 - deltat: 0.00060 
 FINE:  [3] t: 0.00120 - deltat: 0.00060 

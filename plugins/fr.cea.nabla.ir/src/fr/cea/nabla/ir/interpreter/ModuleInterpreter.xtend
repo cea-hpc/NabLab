@@ -15,8 +15,6 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
-import java.time.Duration
-import java.time.LocalDateTime
 import java.util.logging.Logger
 import java.util.logging.StreamHandler
 
@@ -53,7 +51,6 @@ class ModuleInterpreter
 
 	def interprete()
 	{
-		val startTime = LocalDateTime.now()
 		logger.info(" Start interpreting " + module.name + " module ")
 
 		jobInterpreter = new JobInterpreter(writer)
@@ -100,10 +97,7 @@ class ModuleInterpreter
 			jobInterpreter.interprete(j, context)
 
 		context.logVariables("At the end")
-		val endTime = LocalDateTime.now()
-		val duration = Duration.between(startTime, endTime);
 		logger.info(" End interpreting")
-		logger.fine(" Elapsed time : " + duration.seconds + "s")
 		
 		return context
 	}

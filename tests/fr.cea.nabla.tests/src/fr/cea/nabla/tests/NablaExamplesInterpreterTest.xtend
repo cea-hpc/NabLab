@@ -11,11 +11,15 @@ package fr.cea.nabla.tests
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.interpreter.ModuleInterpreter
+import java.time.Duration
+import java.time.LocalDateTime
 import java.util.logging.FileHandler
 import java.util.logging.Level
 import java.util.logging.SimpleFormatter
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
+import org.junit.After
+import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,6 +33,7 @@ class NablaExamplesInterpreterTest
 	static String testsProjectSubPath
 	static String examplesProjectPath
 	static GitUtils git
+	LocalDateTime startTime
 
 	@Inject CompilationChainHelper compilationHelper
 
@@ -48,104 +53,72 @@ class NablaExamplesInterpreterTest
 		System.setProperty("java.util.logging.FileHandler.count", "3")
 	}
 
-	@Test
-	def void testInterpreteGlace2D()
+	@Before
+	def void initTimer()
 	{
-		val model = readFileAsString(examplesProjectPath + "src/glace2d/Glace2d.nabla")
-		// We use a dedicated genmodel to replaceAllreductions and not to generate code
-		val genmodel = readFileAsString("src/glace2d/Glace2d.nablagen")
+		startTime = LocalDateTime.now()
+	}
 
-		val irModule = compilationHelper.getIrModule(model, genmodel)
-		//val handler = new ConsoleHandler
-		val handler = new FileHandler("src/glace2d/InterpreteGlace2d.log", false)
+	@After
+	def void endTimer()
+	{
+		val endTime = LocalDateTime.now()
+		val duration = Duration.between(startTime, endTime);
+		println("  Elapsed time : " + duration.seconds + "s")
+	}
 
-		val formatter = new SimpleFormatter
-		handler.setFormatter(formatter)
-		handler.level = Level::INFO
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		moduleInterpreter.interprete
-
-		testNoGitDiff("glace2d")
+	@Test
+	def void testInterpreteGlace2d()
+	{
+		testInterpreteModule("Glace2d")
 	}
 
 	@Test
 	def void testInterpreteHeatEquation()
 	{
-		val model = readFileAsString(examplesProjectPath + "src/heatequation/HeatEquation.nabla")
-		// We use a dedicated genmodel to replaceAllreductions and not to generate code
-		val genmodel = readFileAsString("src/heatequation/HeatEquation.nablagen")
-		
-		val irModule = compilationHelper.getIrModule(model, genmodel)
-		//val handler = new ConsoleHandler
-		val handler = new FileHandler("src/heatequation/InterpreteHeatEquation.log", false)
-
-		val formatter = new SimpleFormatter
-		handler.setFormatter(formatter)
-		handler.level = Level::INFO
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		moduleInterpreter.interprete
-
-		testNoGitDiff("/heatequation")
+		testInterpreteModule("HeatEquation")
 	}
 
 	@Test
 	def void testInterpreteExplicitHeatEquation()
 	{
-		val model = readFileAsString(examplesProjectPath + "src/explicitheatequation/ExplicitHeatEquation.nabla")
-		// We use a dedicated genmodel to replaceAllreductions and not to generate code
-		val genmodel = readFileAsString("src/explicitheatequation/ExplicitHeatEquation.nablagen")
-
-		val irModule = compilationHelper.getIrModule(model, genmodel)
-		//val handler = new ConsoleHandler
-		val handler = new FileHandler("src/explicitheatequation/ExplicitHeatEquation.log", false)
-
-		val formatter = new SimpleFormatter
-		handler.setFormatter(formatter)
-		handler.level = Level::INFO
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		moduleInterpreter.interprete
-
-		testNoGitDiff("explicitheatequation")
+		testInterpreteModule("ExplicitHeatEquation")
 	}
 
 	@Test
 	def void testInterpreteImplicitHeatEquation()
 	{
-		val model = readFileAsString(examplesProjectPath + "src/implicitheatequation/ImplicitHeatEquation.nabla")
-		// We use a dedicated genmodel to replaceAllreductions and not to generate code
-		val genmodel = readFileAsString("src/implicitheatequation/ImplicitHeatEquation.nablagen")
-
-		val irModule = compilationHelper.getIrModule(model, genmodel)
-		//val handler = new ConsoleHandler
-		val handler = new FileHandler("src/implicitheatequation/ImplicitHeatEquation.log", false)
-
-		val formatter = new SimpleFormatter
-		handler.setFormatter(formatter)
-		handler.level = Level::INFO
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		moduleInterpreter.interprete
-
-		testNoGitDiff("implicitheatequation")
+		testInterpreteModule("ImplicitHeatEquation")
 	}
 
 	@Test
-	def void testIterativeHeatEquation()
+	def void testInterpreteIterativeHeatEquation()
 	{
-		val model = readFileAsString(examplesProjectPath + "src/iterativeheatequation/IterativeHeatEquation.nabla")
+		testInterpreteModule("IterativeHeatEquation")
+	}
+
+	private def void testInterpreteModule(String moduleName)
+	{
+		println("test" + moduleName)
+		val modelFile = String.format("%1$ssrc/%2$s/%3$s.nabla", examplesProjectPath, moduleName.toLowerCase, moduleName)
+		val model = readFileAsString(modelFile)
 		// We use a dedicated genmodel to replaceAllreductions and not to generate code
-		val genmodel = readFileAsString("src/iterativeheatequation/IterativeHeatEquation.nablagen")
+		val genmodelFile = String.format("src/%1$s/%2$s.nablagen", moduleName.toLowerCase, moduleName)
+		val genmodel = readFileAsString(genmodelFile)
 
 		val irModule = compilationHelper.getIrModule(model, genmodel)
 		//val handler = new ConsoleHandler
-		val handler = new FileHandler("src/iterativeheatequation/IterativeHeatEquation.log", false)
+		val logFile = String.format("src/%1$s/Interprete%2$s.log", moduleName.toLowerCase, moduleName)
+		val handler = new FileHandler(logFile, false)
 
 		val formatter = new SimpleFormatter
 		handler.setFormatter(formatter)
-		handler.level = Level::INFO
+		handler.level = Level::FINE
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 		moduleInterpreter.interprete
+		handler.close
 
-		testNoGitDiff("iterativeheatequation")
+		testNoGitDiff("/"+moduleName.toLowerCase)
 	}
 
 	private def testNoGitDiff(String moduleName)

@@ -17,8 +17,6 @@ import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import static fr.cea.nabla.tests.TestUtils.*
-
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
 class NablaExamplesTest
@@ -29,6 +27,7 @@ class NablaExamplesTest
 	static GitUtils git
 
 	@Inject CompilationChainHelper compilationHelper
+	@Inject extension TestUtils
 
 	@BeforeClass
 	def static void setup()

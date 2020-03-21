@@ -15,7 +15,7 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getImports <em>Imports</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getItems <em>Items</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getItemTypes <em>Item Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getFunctions <em>Functions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getConnectivities <em>Connectivities</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getVariables <em>Variables</em>}</li>
@@ -68,16 +68,16 @@ public interface IrModule extends JobContainer {
 	EList<Import> getImports();
 
 	/**
-	 * Returns the value of the '<em><b>Items</b></em>' containment reference list.
+	 * Returns the value of the '<em><b>Item Types</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ItemType}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Items</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Items()
+	 * @return the value of the '<em>Item Types</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_ItemTypes()
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	EList<ItemType> getItems();
+	EList<ItemType> getItemTypes();
 
 	/**
 	 * Returns the value of the '<em><b>Functions</b></em>' containment reference list.

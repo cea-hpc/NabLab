@@ -8,15 +8,19 @@ import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.SizeTypeSymbol;
+
 import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.common.util.EList;
+
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -58,6 +62,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @ordered
 	 */
 	protected static final String PROVIDER_EDEFAULT = null;
+
 	/**
 	 * The cached value of the '{@link #getProvider() <em>Provider</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -67,6 +72,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @ordered
 	 */
 	protected String provider = PROVIDER_EDEFAULT;
+
 	/**
 	 * The cached value of the '{@link #getVariables() <em>Variables</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
@@ -76,6 +82,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @ordered
 	 */
 	protected EList<SizeTypeSymbol> variables;
+
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -85,6 +92,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @ordered
 	 */
 	protected static final String NAME_EDEFAULT = null;
+
 	/**
 	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -94,6 +102,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @ordered
 	 */
 	protected String name = NAME_EDEFAULT;
+
 	/**
 	 * The cached value of the '{@link #getInArgs() <em>In Args</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
@@ -103,6 +112,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @ordered
 	 */
 	protected EList<Arg> inArgs;
+
 	/**
 	 * The cached value of the '{@link #getBody() <em>Body</em>}' containment reference.
 	 * <!-- begin-user-doc -->

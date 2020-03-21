@@ -40,7 +40,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getImports <em>Imports</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getItems <em>Items</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getItemTypes <em>Item Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getFunctions <em>Functions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getConnectivities <em>Connectivities</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getVariables <em>Variables</em>}</li>
@@ -87,14 +87,14 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	protected EList<Import> imports;
 
 	/**
-	 * The cached value of the '{@link #getItems() <em>Items</em>}' containment reference list.
+	 * The cached value of the '{@link #getItemTypes() <em>Item Types</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getItems()
+	 * @see #getItemTypes()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<ItemType> items;
+	protected EList<ItemType> itemTypes;
 
 	/**
 	 * The cached value of the '{@link #getFunctions() <em>Functions</em>}' containment reference list.
@@ -257,11 +257,11 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
-	public EList<ItemType> getItems() {
-		if (items == null) {
-			items = new EObjectContainmentEList.Resolving<ItemType>(ItemType.class, this, IrPackage.IR_MODULE__ITEMS);
+	public EList<ItemType> getItemTypes() {
+		if (itemTypes == null) {
+			itemTypes = new EObjectContainmentEList.Resolving<ItemType>(ItemType.class, this, IrPackage.IR_MODULE__ITEM_TYPES);
 		}
-		return items;
+		return itemTypes;
 	}
 
 	/**
@@ -622,8 +622,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 		switch (featureID) {
 			case IrPackage.IR_MODULE__IMPORTS:
 				return ((InternalEList<?>)getImports()).basicRemove(otherEnd, msgs);
-			case IrPackage.IR_MODULE__ITEMS:
-				return ((InternalEList<?>)getItems()).basicRemove(otherEnd, msgs);
+			case IrPackage.IR_MODULE__ITEM_TYPES:
+				return ((InternalEList<?>)getItemTypes()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__FUNCTIONS:
 				return ((InternalEList<?>)getFunctions()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
@@ -652,8 +652,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return getName();
 			case IrPackage.IR_MODULE__IMPORTS:
 				return getImports();
-			case IrPackage.IR_MODULE__ITEMS:
-				return getItems();
+			case IrPackage.IR_MODULE__ITEM_TYPES:
+				return getItemTypes();
 			case IrPackage.IR_MODULE__FUNCTIONS:
 				return getFunctions();
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
@@ -700,9 +700,9 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				getImports().clear();
 				getImports().addAll((Collection<? extends Import>)newValue);
 				return;
-			case IrPackage.IR_MODULE__ITEMS:
-				getItems().clear();
-				getItems().addAll((Collection<? extends ItemType>)newValue);
+			case IrPackage.IR_MODULE__ITEM_TYPES:
+				getItemTypes().clear();
+				getItemTypes().addAll((Collection<? extends ItemType>)newValue);
 				return;
 			case IrPackage.IR_MODULE__FUNCTIONS:
 				getFunctions().clear();
@@ -756,8 +756,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__IMPORTS:
 				getImports().clear();
 				return;
-			case IrPackage.IR_MODULE__ITEMS:
-				getItems().clear();
+			case IrPackage.IR_MODULE__ITEM_TYPES:
+				getItemTypes().clear();
 				return;
 			case IrPackage.IR_MODULE__FUNCTIONS:
 				getFunctions().clear();
@@ -805,8 +805,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case IrPackage.IR_MODULE__IMPORTS:
 				return imports != null && !imports.isEmpty();
-			case IrPackage.IR_MODULE__ITEMS:
-				return items != null && !items.isEmpty();
+			case IrPackage.IR_MODULE__ITEM_TYPES:
+				return itemTypes != null && !itemTypes.isEmpty();
 			case IrPackage.IR_MODULE__FUNCTIONS:
 				return functions != null && !functions.isEmpty();
 			case IrPackage.IR_MODULE__CONNECTIVITIES:

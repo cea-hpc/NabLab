@@ -13,7 +13,7 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.ReductionInstruction#getInnerReductions <em>Inner Reductions</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.ReductionInstruction#getInnerInstructions <em>Inner Instructions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ReductionInstruction#getBinaryFunction <em>Binary Function</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ReductionInstruction#getLambda <em>Lambda</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ReductionInstruction#getResult <em>Result</em>}</li>
@@ -25,16 +25,16 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface ReductionInstruction extends IterableInstruction {
 	/**
-	 * Returns the value of the '<em><b>Inner Reductions</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ReductionInstruction}.
+	 * Returns the value of the '<em><b>Inner Instructions</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Instruction}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Inner Reductions</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getReductionInstruction_InnerReductions()
+	 * @return the value of the '<em>Inner Instructions</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getReductionInstruction_InnerInstructions()
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	EList<ReductionInstruction> getInnerReductions();
+	EList<Instruction> getInnerInstructions();
 
 	/**
 	 * Returns the value of the '<em><b>Binary Function</b></em>' reference.

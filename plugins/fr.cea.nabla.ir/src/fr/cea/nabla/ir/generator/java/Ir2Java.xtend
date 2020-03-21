@@ -100,10 +100,10 @@ class Ir2Java extends CodeGenerator
 				«IF withMesh»
 				mesh = aCartesianMesh2D;
 				writer = new PvdFileWriter2D("«name»");
-				«ENDIF»
 				«FOR c : usedConnectivities»
 				«c.nbElems» = «c.connectivityAccessor»;
 				«ENDFOR»
+				«ENDIF»
 
 				«FOR uv : globalVariables.filter[x|x.defaultValue!==null]»
 				«uv.name» = «uv.defaultValue.content»;
@@ -163,7 +163,7 @@ class Ir2Java extends CodeGenerator
 					HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 					HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
 					«FOR v : postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable)»
-					«v.type.connectivities.head.returnType.type.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
+					«v.type.connectivities.head.returnType.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 					«ENDFOR»
 					writer.writeFile(iteration, «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
 					«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodVariable.name»;

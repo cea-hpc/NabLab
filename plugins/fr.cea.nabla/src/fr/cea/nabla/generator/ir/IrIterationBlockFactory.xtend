@@ -10,28 +10,60 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
+import com.google.inject.Singleton
+import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IterationBlock
-import fr.cea.nabla.nabla.IntervalIterationBlock
-import fr.cea.nabla.nabla.SpaceIterationBlock
+import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.nabla.Interval
+import fr.cea.nabla.nabla.SpaceIterator
+import java.util.ArrayList
+import java.util.List
 
+@Singleton
 class IrIterationBlockFactory 
 {
 	@Inject extension IrAnnotationHelper
-	@Inject extension IrIteratorFactory
+	@Inject extension IrConnectivityCallFactory
+	@Inject extension IrItemIndexDefinitionFactory
+	@Inject extension IrItemIdDefinitionFactory
+	@Inject extension IrItemIndexFactory
 	@Inject extension IrSizeTypeFactory
 
-	def dispatch IterationBlock create IrFactory::eINSTANCE.createSpaceIterationBlock toIrIterationBlock(SpaceIterationBlock b)
+	def toIrIterator(SpaceIterator b)
 	{
-		annotations += b.toIrAnnotation
-		range = b.range.toIrIterator
-		b.singletons.forEach[x | singletons += x.toIrIterator]
+		b.toIrIterationBlock as Iterator
 	}
 
-	def dispatch IterationBlock create IrFactory::eINSTANCE.createIntervalIterationBlock toIrIterationBlock(IntervalIterationBlock b)
+	def dispatch IterationBlock create IrFactory::eINSTANCE.createIterator toIrIterationBlock(SpaceIterator b)
+	{
+		annotations += b.toIrAnnotation
+		index = b.toIrIndex
+		container = toIrConnectivityCall(b.container.connectivity, b.container.args)
+	}
+
+	def dispatch IterationBlock create IrFactory::eINSTANCE.createInterval toIrIterationBlock(Interval b)
 	{
 		annotations += b.toIrAnnotation
 		index = b.index.toIrSizeTypeSymbol
 		nbElems = b.nbElems.toIrSizeType
+	}
+
+	def dispatch List<Instruction> getNeededIndexAndIdDefinitions(SpaceIterator b)
+	{
+		val instructions = new ArrayList<Instruction>
+		instructions += b.neededIdDefinitions
+		instructions += b.neededIndexDefinitions
+		for (s : b.singletons)
+		{
+			instructions += s.toIrIdDefinition
+			instructions += s.item.neededIndexDefinitions
+		}
+		return instructions
+	}
+
+	def dispatch List<Instruction> getNeededIndexAndIdDefinitions(Interval b)
+	{
+		#[]
 	}
 }

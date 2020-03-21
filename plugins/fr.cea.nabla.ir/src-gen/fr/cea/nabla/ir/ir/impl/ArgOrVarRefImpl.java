@@ -2,23 +2,27 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
+import fr.cea.nabla.ir.ir.ArgOrVar;
+import fr.cea.nabla.ir.ir.ArgOrVarRef;
+import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.ItemIndex;
+import fr.cea.nabla.ir.ir.SizeType;
+
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectEList;
 import org.eclipse.emf.ecore.util.InternalEList;
-
-import fr.cea.nabla.ir.ir.ArgOrVar;
-import fr.cea.nabla.ir.ir.ArgOrVarRef;
-import fr.cea.nabla.ir.ir.IrIndex;
-import fr.cea.nabla.ir.ir.IrPackage;
-import fr.cea.nabla.ir.ir.SizeType;
 
 /**
  * <!-- begin-user-doc -->
@@ -54,7 +58,7 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<IrIndex> iterators;
+	protected EList<ItemIndex> iterators;
 
 	/**
 	 * The cached value of the '{@link #getIndices() <em>Indices</em>}' containment reference list.
@@ -133,9 +137,9 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 	 */
 	@Override
 	@SuppressWarnings("serial")
-	public EList<IrIndex> getIterators() {
+	public EList<ItemIndex> getIterators() {
 		if (iterators == null) {
-			iterators = new EObjectEList<IrIndex>(IrIndex.class, this, IrPackage.ARG_OR_VAR_REF__ITERATORS) {
+			iterators = new EObjectEList<ItemIndex>(ItemIndex.class, this, IrPackage.ARG_OR_VAR_REF__ITERATORS) {
 				@Override
 				protected boolean isUnique() { return false; }
 			};
@@ -203,7 +207,7 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 				return;
 			case IrPackage.ARG_OR_VAR_REF__ITERATORS:
 				getIterators().clear();
-				getIterators().addAll((Collection<? extends IrIndex>)newValue);
+				getIterators().addAll((Collection<? extends ItemIndex>)newValue);
 				return;
 			case IrPackage.ARG_OR_VAR_REF__INDICES:
 				getIndices().clear();

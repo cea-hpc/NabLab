@@ -2,23 +2,19 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.IrIndex;
+import fr.cea.nabla.ir.ir.ConnectivityCall;
 import fr.cea.nabla.ir.ir.IrPackage;
-import fr.cea.nabla.ir.ir.IrUniqueId;
+import fr.cea.nabla.ir.ir.ItemIndex;
+import fr.cea.nabla.ir.ir.ItemIndexValueIterator;
 import fr.cea.nabla.ir.ir.Iterator;
-import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -28,56 +24,14 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#getName <em>Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#isSingleton <em>Singleton</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#getIndex <em>Index</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#getNeededIds <em>Needed Ids</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#getNeededIndices <em>Needed Indices</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#getIndexValue <em>Index Value</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#getContainer <em>Container</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class IteratorImpl extends IrAnnotableImpl implements Iterator {
-	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String name = NAME_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #isSingleton() <em>Singleton</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isSingleton()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean SINGLETON_EDEFAULT = false;
-
-	/**
-	 * The cached value of the '{@link #isSingleton() <em>Singleton</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isSingleton()
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean singleton = SINGLETON_EDEFAULT;
-
+public class IteratorImpl extends IterationBlockImpl implements Iterator {
 	/**
 	 * The cached value of the '{@link #getIndex() <em>Index</em>}' containment reference.
 	 * <!-- begin-user-doc -->
@@ -86,27 +40,27 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * @generated
 	 * @ordered
 	 */
-	protected IrIndex index;
+	protected ItemIndex index;
 
 	/**
-	 * The cached value of the '{@link #getNeededIds() <em>Needed Ids</em>}' containment reference list.
+	 * The cached value of the '{@link #getIndexValue() <em>Index Value</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getNeededIds()
+	 * @see #getIndexValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<IrUniqueId> neededIds;
+	protected ItemIndexValueIterator indexValue;
 
 	/**
-	 * The cached value of the '{@link #getNeededIndices() <em>Needed Indices</em>}' containment reference list.
+	 * The cached value of the '{@link #getContainer() <em>Container</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getNeededIndices()
+	 * @see #getContainer()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<IrIndex> neededIndices;
+	protected ConnectivityCall container;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -133,56 +87,10 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * @generated
 	 */
 	@Override
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setName(String newName) {
-		String oldName = name;
-		name = newName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.ITERATOR__NAME, oldName, name));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public boolean isSingleton() {
-		return singleton;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setSingleton(boolean newSingleton) {
-		boolean oldSingleton = singleton;
-		singleton = newSingleton;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.ITERATOR__SINGLETON, oldSingleton, singleton));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public IrIndex getIndex() {
+	public ItemIndex getIndex() {
 		if (index != null && index.eIsProxy()) {
 			InternalEObject oldIndex = (InternalEObject)index;
-			index = (IrIndex)eResolveProxy(oldIndex);
+			index = (ItemIndex)eResolveProxy(oldIndex);
 			if (index != oldIndex) {
 				InternalEObject newIndex = (InternalEObject)index;
 				NotificationChain msgs = oldIndex.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__INDEX, null, null);
@@ -202,7 +110,7 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public IrIndex basicGetIndex() {
+	public ItemIndex basicGetIndex() {
 		return index;
 	}
 
@@ -211,8 +119,8 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetIndex(IrIndex newIndex, NotificationChain msgs) {
-		IrIndex oldIndex = index;
+	public NotificationChain basicSetIndex(ItemIndex newIndex, NotificationChain msgs) {
+		ItemIndex oldIndex = index;
 		index = newIndex;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.ITERATOR__INDEX, oldIndex, newIndex);
@@ -227,7 +135,7 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * @generated
 	 */
 	@Override
-	public void setIndex(IrIndex newIndex) {
+	public void setIndex(ItemIndex newIndex) {
 		if (newIndex != index) {
 			NotificationChain msgs = null;
 			if (index != null)
@@ -247,11 +155,46 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * @generated
 	 */
 	@Override
-	public EList<IrUniqueId> getNeededIds() {
-		if (neededIds == null) {
-			neededIds = new EObjectContainmentEList.Resolving<IrUniqueId>(IrUniqueId.class, this, IrPackage.ITERATOR__NEEDED_IDS);
+	public ItemIndexValueIterator getIndexValue() {
+		if (indexValue != null && indexValue.eIsProxy()) {
+			InternalEObject oldIndexValue = (InternalEObject)indexValue;
+			indexValue = (ItemIndexValueIterator)eResolveProxy(oldIndexValue);
+			if (indexValue != oldIndexValue) {
+				InternalEObject newIndexValue = (InternalEObject)indexValue;
+				NotificationChain msgs =  oldIndexValue.eInverseRemove(this, IrPackage.ITEM_INDEX_VALUE_ITERATOR__ITERATOR, ItemIndexValueIterator.class, null);
+				if (newIndexValue.eInternalContainer() == null) {
+					msgs =  newIndexValue.eInverseAdd(this, IrPackage.ITEM_INDEX_VALUE_ITERATOR__ITERATOR, ItemIndexValueIterator.class, msgs);
+				}
+				if (msgs != null) msgs.dispatch();
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.ITERATOR__INDEX_VALUE, oldIndexValue, indexValue));
+			}
 		}
-		return neededIds;
+		return indexValue;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ItemIndexValueIterator basicGetIndexValue() {
+		return indexValue;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetIndexValue(ItemIndexValueIterator newIndexValue, NotificationChain msgs) {
+		ItemIndexValueIterator oldIndexValue = indexValue;
+		indexValue = newIndexValue;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.ITERATOR__INDEX_VALUE, oldIndexValue, newIndexValue);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
 	}
 
 	/**
@@ -260,11 +203,102 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * @generated
 	 */
 	@Override
-	public EList<IrIndex> getNeededIndices() {
-		if (neededIndices == null) {
-			neededIndices = new EObjectContainmentEList.Resolving<IrIndex>(IrIndex.class, this, IrPackage.ITERATOR__NEEDED_INDICES);
+	public void setIndexValue(ItemIndexValueIterator newIndexValue) {
+		if (newIndexValue != indexValue) {
+			NotificationChain msgs = null;
+			if (indexValue != null)
+				msgs = ((InternalEObject)indexValue).eInverseRemove(this, IrPackage.ITEM_INDEX_VALUE_ITERATOR__ITERATOR, ItemIndexValueIterator.class, msgs);
+			if (newIndexValue != null)
+				msgs = ((InternalEObject)newIndexValue).eInverseAdd(this, IrPackage.ITEM_INDEX_VALUE_ITERATOR__ITERATOR, ItemIndexValueIterator.class, msgs);
+			msgs = basicSetIndexValue(newIndexValue, msgs);
+			if (msgs != null) msgs.dispatch();
 		}
-		return neededIndices;
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.ITERATOR__INDEX_VALUE, newIndexValue, newIndexValue));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ConnectivityCall getContainer() {
+		if (container != null && container.eIsProxy()) {
+			InternalEObject oldContainer = (InternalEObject)container;
+			container = (ConnectivityCall)eResolveProxy(oldContainer);
+			if (container != oldContainer) {
+				InternalEObject newContainer = (InternalEObject)container;
+				NotificationChain msgs = oldContainer.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__CONTAINER, null, null);
+				if (newContainer.eInternalContainer() == null) {
+					msgs = newContainer.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__CONTAINER, null, msgs);
+				}
+				if (msgs != null) msgs.dispatch();
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.ITERATOR__CONTAINER, oldContainer, container));
+			}
+		}
+		return container;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ConnectivityCall basicGetContainer() {
+		return container;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetContainer(ConnectivityCall newContainer, NotificationChain msgs) {
+		ConnectivityCall oldContainer = container;
+		container = newContainer;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.ITERATOR__CONTAINER, oldContainer, newContainer);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setContainer(ConnectivityCall newContainer) {
+		if (newContainer != container) {
+			NotificationChain msgs = null;
+			if (container != null)
+				msgs = ((InternalEObject)container).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__CONTAINER, null, msgs);
+			if (newContainer != null)
+				msgs = ((InternalEObject)newContainer).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__CONTAINER, null, msgs);
+			msgs = basicSetContainer(newContainer, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.ITERATOR__CONTAINER, newContainer, newContainer));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case IrPackage.ITERATOR__INDEX_VALUE:
+				if (indexValue != null)
+					msgs = ((InternalEObject)indexValue).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__INDEX_VALUE, null, msgs);
+				return basicSetIndexValue((ItemIndexValueIterator)otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -277,10 +311,10 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 		switch (featureID) {
 			case IrPackage.ITERATOR__INDEX:
 				return basicSetIndex(null, msgs);
-			case IrPackage.ITERATOR__NEEDED_IDS:
-				return ((InternalEList<?>)getNeededIds()).basicRemove(otherEnd, msgs);
-			case IrPackage.ITERATOR__NEEDED_INDICES:
-				return ((InternalEList<?>)getNeededIndices()).basicRemove(otherEnd, msgs);
+			case IrPackage.ITERATOR__INDEX_VALUE:
+				return basicSetIndexValue(null, msgs);
+			case IrPackage.ITERATOR__CONTAINER:
+				return basicSetContainer(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -293,17 +327,15 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.ITERATOR__NAME:
-				return getName();
-			case IrPackage.ITERATOR__SINGLETON:
-				return isSingleton();
 			case IrPackage.ITERATOR__INDEX:
 				if (resolve) return getIndex();
 				return basicGetIndex();
-			case IrPackage.ITERATOR__NEEDED_IDS:
-				return getNeededIds();
-			case IrPackage.ITERATOR__NEEDED_INDICES:
-				return getNeededIndices();
+			case IrPackage.ITERATOR__INDEX_VALUE:
+				if (resolve) return getIndexValue();
+				return basicGetIndexValue();
+			case IrPackage.ITERATOR__CONTAINER:
+				if (resolve) return getContainer();
+				return basicGetContainer();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -313,26 +345,17 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.ITERATOR__NAME:
-				setName((String)newValue);
-				return;
-			case IrPackage.ITERATOR__SINGLETON:
-				setSingleton((Boolean)newValue);
-				return;
 			case IrPackage.ITERATOR__INDEX:
-				setIndex((IrIndex)newValue);
+				setIndex((ItemIndex)newValue);
 				return;
-			case IrPackage.ITERATOR__NEEDED_IDS:
-				getNeededIds().clear();
-				getNeededIds().addAll((Collection<? extends IrUniqueId>)newValue);
+			case IrPackage.ITERATOR__INDEX_VALUE:
+				setIndexValue((ItemIndexValueIterator)newValue);
 				return;
-			case IrPackage.ITERATOR__NEEDED_INDICES:
-				getNeededIndices().clear();
-				getNeededIndices().addAll((Collection<? extends IrIndex>)newValue);
+			case IrPackage.ITERATOR__CONTAINER:
+				setContainer((ConnectivityCall)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -346,20 +369,14 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.ITERATOR__NAME:
-				setName(NAME_EDEFAULT);
-				return;
-			case IrPackage.ITERATOR__SINGLETON:
-				setSingleton(SINGLETON_EDEFAULT);
-				return;
 			case IrPackage.ITERATOR__INDEX:
-				setIndex((IrIndex)null);
+				setIndex((ItemIndex)null);
 				return;
-			case IrPackage.ITERATOR__NEEDED_IDS:
-				getNeededIds().clear();
+			case IrPackage.ITERATOR__INDEX_VALUE:
+				setIndexValue((ItemIndexValueIterator)null);
 				return;
-			case IrPackage.ITERATOR__NEEDED_INDICES:
-				getNeededIndices().clear();
+			case IrPackage.ITERATOR__CONTAINER:
+				setContainer((ConnectivityCall)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -373,36 +390,14 @@ public class IteratorImpl extends IrAnnotableImpl implements Iterator {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.ITERATOR__NAME:
-				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case IrPackage.ITERATOR__SINGLETON:
-				return singleton != SINGLETON_EDEFAULT;
 			case IrPackage.ITERATOR__INDEX:
 				return index != null;
-			case IrPackage.ITERATOR__NEEDED_IDS:
-				return neededIds != null && !neededIds.isEmpty();
-			case IrPackage.ITERATOR__NEEDED_INDICES:
-				return neededIndices != null && !neededIndices.isEmpty();
+			case IrPackage.ITERATOR__INDEX_VALUE:
+				return indexValue != null;
+			case IrPackage.ITERATOR__CONTAINER:
+				return container != null;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (name: ");
-		result.append(name);
-		result.append(", singleton: ");
-		result.append(singleton);
-		result.append(')');
-		return result.toString();
 	}
 
 } //IteratorImpl

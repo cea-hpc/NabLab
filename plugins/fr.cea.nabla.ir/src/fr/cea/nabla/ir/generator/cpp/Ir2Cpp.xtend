@@ -87,10 +87,10 @@ class Ir2Cpp extends CodeGenerator
 		«IF withMesh»
 		, mesh(aCartesianMesh2D)
 		, writer("«name»", output)
-		«ENDIF»
 		«FOR c : usedConnectivities»
 		, «c.nbElems»(«c.connectivityAccessor»)
 		«ENDFOR»
+		«ENDIF»
 		«FOR uv : globalVariables.filter[x|x.defaultValue!==null]»
 		, «uv.name»(«uv.defaultValue.content»)
 		«ENDFOR»
@@ -123,7 +123,7 @@ class Ir2Cpp extends CodeGenerator
 				std::map<string, double*> cellVariables;
 				std::map<string, double*> nodeVariables;
 				«FOR v : postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable)»
-				«v.type.connectivities.head.returnType.type.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
+				«v.type.connectivities.head.returnType.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
 				«ENDFOR»
 				auto quads = mesh->getGeometry()->getQuads();
 				writer.writeFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);

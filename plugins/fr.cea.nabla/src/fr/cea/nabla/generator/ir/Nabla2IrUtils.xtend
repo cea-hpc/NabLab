@@ -13,7 +13,6 @@ import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.Import
-import fr.cea.nabla.nabla.ItemArgType
 import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.PrimitiveType
 
@@ -31,13 +30,8 @@ class Nabla2IrUtils
 
 	def create IrFactory::eINSTANCE.createItemType toIrItemType(ItemType i)
 	{
+		annotations += i.toIrAnnotation
 		name = i.name
-	}
-
-	def create IrFactory::eINSTANCE.createItemArgType toIrItemArgType(ItemArgType i)
-	{
-		multiple = i.multiple
-		type = i.type.toIrItemType
 	}
 
 	def create IrFactory::eINSTANCE.createImport toIrImport(Import i)

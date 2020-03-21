@@ -13,6 +13,7 @@ import com.google.inject.Inject
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.MultipleConnectivity
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.PrimitiveType
@@ -41,6 +42,7 @@ class DeclarationProviderTest
 	@Inject extension DeclarationProvider
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
+	@Inject extension TestUtils
 
 	@Test
 	def void testFunctions() 
@@ -63,7 +65,7 @@ class DeclarationProviderTest
 		def g: a, b | ℝ[a, b] → ℝ[a*b];
 		def g: a, b | ℝ[a] × ℝ[b] → ℝ[a+b];
 		'''
-		+ TestUtils::mandatoryOptions +
+		+ mandatoryOptions +
 		'''
 			
 		ℝ a{cells};
@@ -105,7 +107,7 @@ class DeclarationProviderTest
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		TypeValidator::FUNCTION_ARGS,
 		TypeValidator::getFunctionArgsMsg(#[PrimitiveType::REAL.literal, PrimitiveType::BOOL.literal]))
-		val cells = module.getConnectivityByName("cells")
+		val cells = module.getConnectivityByName("cells") as MultipleConnectivity
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		TypeValidator::FUNCTION_ARGS,
 		TypeValidator::getFunctionArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealArray1D(NSTSizeType.create(2))).label]))
@@ -174,7 +176,7 @@ class DeclarationProviderTest
 			return y;
 		}
 		'''
-		+ TestUtils::mandatoryOptions
+		+ mandatoryOptions
 
 		val module = model.parse
 		Assert.assertNotNull(module)
@@ -215,7 +217,7 @@ class DeclarationProviderTest
 		def f: 0.0, ℝ, (a , b) → return a;
 		def f: x | 0.0, ℝ[x], (a , b) → return a;
 		'''
-		+ TestUtils::mandatoryOptions +
+		+ mandatoryOptions +
 		'''
 		ℝ u{cells};
 		ℝ[2] u2{cells};

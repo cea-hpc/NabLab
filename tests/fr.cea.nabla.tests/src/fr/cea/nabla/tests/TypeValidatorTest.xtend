@@ -11,6 +11,7 @@ package fr.cea.nabla.tests
 
 import com.google.inject.Inject
 import fr.cea.nabla.NablaModuleExtensions
+import fr.cea.nabla.nabla.MultipleConnectivity
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.PrimitiveType
@@ -29,8 +30,6 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import static fr.cea.nabla.tests.TestUtils.*
-
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
 class TypeValidatorTest 
@@ -39,6 +38,7 @@ class TypeValidatorTest
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
 	@Inject extension VarTypeProvider
+	@Inject extension TestUtils
 
 	// ===== Functions =====
 
@@ -77,7 +77,7 @@ class TypeValidatorTest
 		)
 		Assert.assertNotNull(moduleKo)
 
-		val cells = moduleKo.getConnectivityByName("cells")
+		val cells = moduleKo.getConnectivityByName("cells") as MultipleConnectivity
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
 			TypeValidator::SCALAR_VAR_DEFAULT_VALUE_TYPE, 

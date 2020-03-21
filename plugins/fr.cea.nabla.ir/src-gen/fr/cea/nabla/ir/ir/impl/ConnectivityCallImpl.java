@@ -5,17 +5,19 @@ package fr.cea.nabla.ir.ir.impl;
 import fr.cea.nabla.ir.ir.Connectivity;
 import fr.cea.nabla.ir.ir.ConnectivityCall;
 import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.ItemId;
 
-import fr.cea.nabla.ir.ir.IrUniqueId;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
 import org.eclipse.emf.ecore.util.EObjectEList;
 
 /**
@@ -51,7 +53,7 @@ public class ConnectivityCallImpl extends IrAnnotableImpl implements Connectivit
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<IrUniqueId> args;
+	protected EList<ItemId> args;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -118,9 +120,9 @@ public class ConnectivityCallImpl extends IrAnnotableImpl implements Connectivit
 	 * @generated
 	 */
 	@Override
-	public EList<IrUniqueId> getArgs() {
+	public EList<ItemId> getArgs() {
 		if (args == null) {
-			args = new EObjectEList<IrUniqueId>(IrUniqueId.class, this, IrPackage.CONNECTIVITY_CALL__ARGS);
+			args = new EObjectEList<ItemId>(ItemId.class, this, IrPackage.CONNECTIVITY_CALL__ARGS);
 		}
 		return args;
 	}
@@ -156,7 +158,7 @@ public class ConnectivityCallImpl extends IrAnnotableImpl implements Connectivit
 				return;
 			case IrPackage.CONNECTIVITY_CALL__ARGS:
 				getArgs().clear();
-				getArgs().addAll((Collection<? extends IrUniqueId>)newValue);
+				getArgs().addAll((Collection<? extends ItemId>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);

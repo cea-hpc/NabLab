@@ -29,13 +29,12 @@ import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import static fr.cea.nabla.tests.TestUtils.*
-
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
 class ExpressionInterpreterTest
 {
 	@Inject CompilationChainHelper compilationHelper
+	@Inject extension TestUtils
 
 	@Test
 	def void testInterpreteContractedIf() 
@@ -47,7 +46,7 @@ class ExpressionInterpreterTest
 		ℝ r2 = false ? 1.0 : 2.0; // -> 1.0
 		'''
 
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "r1", new NV0Real(1.0))
@@ -78,7 +77,7 @@ class ExpressionInterpreterTest
 		ℝ[2,2] r3 = [[0., 1.],[1., 2.]];
 		ℝ[2,2] r4 = -r3; // -> [[-0., -1.],[-1., -2.]]*/
 		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -106,7 +105,7 @@ class ExpressionInterpreterTest
 		'''
 		ℾ b = (true);
 		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "b", new NV0Bool(true))
@@ -124,7 +123,7 @@ class ExpressionInterpreterTest
 		ℾ b1 = true;
 		ℾ b2 = false;
 		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "n1", new NV0Int(1))
@@ -142,7 +141,7 @@ class ExpressionInterpreterTest
 		ℕ nMin = ℕ.MinValue;
 		ℝ rMin = ℝ.MinValue;
 		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "nMin", new NV0Int(Integer.MIN_VALUE))
@@ -158,7 +157,7 @@ class ExpressionInterpreterTest
 		ℕ nMax = ℕ.MaxValue;
 		ℝ rMax = ℝ.MaxValue;
 		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "nMax", new NV0Int(Integer.MAX_VALUE))
@@ -183,7 +182,7 @@ class ExpressionInterpreterTest
 		ℾ[2] b2 = ℾ[2](true);
 		ℾ[2,3] b3 = ℾ[2,3](true);
 		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "n1", new NV0Int(1))
@@ -207,7 +206,7 @@ class ExpressionInterpreterTest
 		'''
 		ℕ[2] n = [1, 2];
 		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "n", new NV1Int(#[1,2]))
@@ -221,7 +220,7 @@ class ExpressionInterpreterTest
 		'''
 		ℕ[2,3] n = [[0, 1, 2],[1, 2, 3]];
 		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "n", new NV2Int(#[#[0, 1, 2],#[1, 2, 3]]))
@@ -235,7 +234,7 @@ class ExpressionInterpreterTest
 		'''
 		ℝ[2] r = [1.0, 2.0];
 		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "r", new NV1Real(#[1.0, 2.0]))
@@ -249,7 +248,7 @@ class ExpressionInterpreterTest
 		'''
 		ℝ[2,3] r = [[0., 1., 2.],[1., 2., 3.]];
 		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "r", new NV2Real(#[#[0.0, 1.0, 2.0],#[1.0, 2.0, 3.0]]))
@@ -258,7 +257,7 @@ class ExpressionInterpreterTest
 	@Test
 	def void testInterpreteFunctionCall()
 	{
-		val model = TestUtils::getTestModule(defaultConnectivities,
+		val model = getTestModule(defaultConnectivities,
 		'''
 		def getOne:  → ℕ;
 		def addOne: ℕ → ℕ;
@@ -269,7 +268,7 @@ class ExpressionInterpreterTest
 		def add: x | ℝ[x] × ℝ[x] → ℝ[x];
 		def add: x,y | ℝ[x,y] × ℝ[x,y] → ℝ[x,y];
 		''')
-		+ TestUtils::simulationVariables +
+		+ simulationVariables +
 		'''
 		ℕ n0 = 0;
 		ℕ n1 = getOne(); 	//-> 1
@@ -292,7 +291,7 @@ class ExpressionInterpreterTest
 		ℝ[2,2] ρ = ℝ[2,2](2.);
 		ℝ[2,2] res2 = add(δ,ρ); //-> [3., 3][3., 3.]
 		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -315,7 +314,7 @@ class ExpressionInterpreterTest
 	@Test
 	def void testInterpreteFunctionCallWithBody()
 	{
-		val model = TestUtils::getTestModule(defaultConnectivities,
+		val model = getTestModule(defaultConnectivities,
 		'''
 		def h: ℝ[2] → ℝ[2], (a) → return 2 * a;
 
@@ -331,7 +330,7 @@ class ExpressionInterpreterTest
 
 		def k: b | ℝ[b] → ℝ[b], (x) → return j(x);
 		''')
-		+ TestUtils::simulationVariables +
+		+ simulationVariables +
 		'''
 		ℝ[2] u = [0.0, 0.1];
 		ℝ[3] v = [0.0, 0.1, 0.2];
@@ -349,7 +348,7 @@ class ExpressionInterpreterTest
 		j5: w5 = j(v);
 		j6: w6 = k(u);
 		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -391,7 +390,7 @@ class ExpressionInterpreterTest
 		ℝ r8 = r6[1,1]; // -> 5.
 		'''
 
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)

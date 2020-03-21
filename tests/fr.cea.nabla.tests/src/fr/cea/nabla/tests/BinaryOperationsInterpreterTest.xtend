@@ -24,13 +24,12 @@ import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import static fr.cea.nabla.tests.TestUtils.*
-
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
 class BinaryOperationsInterpreterTest
 {
 	@Inject CompilationChainHelper compilationHelper
+	@Inject extension TestUtils
 
 	@Test
 	def void testGetValueOfNV0Bool_NV0Bool()
@@ -54,7 +53,7 @@ class BinaryOperationsInterpreterTest
 		ℾ b12 = true < false; // -> false
 		'''
 
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "b1", new NV0Bool(true))
@@ -104,7 +103,7 @@ class BinaryOperationsInterpreterTest
 		ℕ n5 = 7 / 3; // -> 2
 		ℕ n6 = 7 % 3; // -> 1
 		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "b1", new NV0Bool(false))
@@ -158,7 +157,7 @@ class BinaryOperationsInterpreterTest
 		ℝ n4 = 6 / 3.; // -> 2.
 		ℝ n5 = 7 / 2.; // -> 3.5.
 		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "b1", new NV0Bool(false))
@@ -191,7 +190,7 @@ class BinaryOperationsInterpreterTest
 		ℕ[2] n2 = 3 + n1;
 		ℕ[2] n3 = 3 * n1;
 		'''
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)

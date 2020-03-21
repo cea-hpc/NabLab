@@ -18,6 +18,8 @@ import fr.cea.nabla.ir.ir.IterationBlock
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Variable
+import java.util.ArrayList
+import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
 
@@ -52,10 +54,13 @@ class ReplaceReductions implements IrTransformationStep
 		{
 			val functionCall = createFunctionCall(reduction)
 			val affectation = createAffectation(reduction.result, functionCall)
-			val loop = createLoop(reduction.iterationBlock, affectation)
+			val innerInstructions = new ArrayList<Instruction>
+			innerInstructions += reduction.innerInstructions.filter[x | !(x instanceof ReductionInstruction)]
+			innerInstructions += affectation
+			val loop = createLoop(reduction.iterationBlock, innerInstructions)
 
 			// instantiate the VarDefinition at the end to prevent reduction.result from becoming null
-			val variableDefinition = IrFactory::eINSTANCE.createVarDefinition => [ variables += reduction.result ]
+			val variableDefinition = IrFactory::eINSTANCE.createVariablesDefinition => [ variables += reduction.result ]
 			replace(reduction, #[variableDefinition, loop])
 		}
 		return true
@@ -91,10 +96,18 @@ class ReplaceReductions implements IrTransformationStep
 		right = rhs
 	}
 
-	private def create IrFactory::eINSTANCE.createLoop createLoop(IterationBlock itBlock, Instruction b)
+	private def create IrFactory::eINSTANCE.createLoop createLoop(IterationBlock itBlock, List<Instruction> _instructions)
 	{
 		iterationBlock = itBlock
-		body = b
+		switch _instructions.size
+		{
+			case 0: body = null
+			case 1: body = _instructions.head
+			default: body = IrFactory::eINSTANCE.createInstructionBlock =>
+			[
+				instructions += _instructions
+			]
+		}
 	}
 
 	private def boolean isExternal(EObject it)

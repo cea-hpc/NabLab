@@ -62,7 +62,8 @@ class IrReductionInstructionFactory
 	{
 		val irInstruction = IrFactory::eINSTANCE.createReductionInstruction
 		irInstruction.annotations += toIrAnnotation
-		irInstruction.innerReductions += arg.toIrReductions
+		irInstruction.innerInstructions += iterationBlock.neededIndexAndIdDefinitions
+		irInstruction.innerInstructions += arg.toIrReductions
 		irInstruction.binaryFunction = declaration.model.toIrFunction
 		irInstruction.iterationBlock = iterationBlock.toIrIterationBlock
 		irInstruction.lambda = arg.toIrExpression

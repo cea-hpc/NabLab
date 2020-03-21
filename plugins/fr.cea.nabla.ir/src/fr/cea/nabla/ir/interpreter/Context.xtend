@@ -12,11 +12,11 @@ package fr.cea.nabla.ir.interpreter
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Function
-import fr.cea.nabla.ir.ir.IrIndex
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.IrUniqueId
-import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.ItemId
+import fr.cea.nabla.ir.ir.ItemIndex
 import fr.cea.nabla.ir.ir.SizeTypeSymbol
 import java.lang.reflect.Method
 import java.util.HashMap
@@ -33,8 +33,8 @@ class Context
 	val Context outerContext
 	val IrModule module
 	val Logger logger
-	val indexValues = new HashMap<IrIndex, Integer>
-	val idValues = new HashMap<IrUniqueId, Integer>
+	val indexValues = new HashMap<ItemIndex, Integer>
+	val idValues = new HashMap<ItemId, Integer>
 	val dimensionValues = new HashMap<SizeTypeSymbol, Integer>
 	val variableValues = new HashMap<ArgOrVar, NablaValue>
 	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Function, Method> functionToMethod
@@ -121,17 +121,17 @@ class Context
 	}
 
 	// IndexValues
-	def int getIndexValue(IrIndex index) 
+	def int getIndexValue(ItemIndex index) 
 	{ 
 		indexValues.get(index) ?: outerContext.getIndexValue(index)
 	}
 
-	def void addIndexValue(IrIndex index, int value) 
+	def void addIndexValue(ItemIndex index, int value) 
 	{ 
 		indexValues.put(index, value)
 	}
 
-	def void setIndexValue(IrIndex index, int value)
+	def void setIndexValue(ItemIndex index, int value)
 	{
 		// Store indexName to avoid retrieving it in the map repetitively
 		if (indexValues.get(index) !== null)
@@ -144,17 +144,17 @@ class Context
 	}
 
 	// IdValues
-	def int getIdValue(IrUniqueId id) 
+	def int getIdValue(ItemId id) 
 	{ 
 		idValues.get(id) ?: outerContext.getIdValue(id)
 	}
 
-	def void addIdValue(IrUniqueId id, int value) 
+	def void addIdValue(ItemId id, int value) 
 	{ 
 		idValues.put(id, value)
 	}
 
-	def void setIdValue(IrUniqueId id, int value)
+	def void setIdValue(ItemId id, int value)
 	{
 		if (idValues.get(id) !== null)
 			idValues.replace(id, value)
@@ -187,10 +187,9 @@ class Context
 				throw new RuntimeException('Dimension Symbol not found ' + name)
 	}
 
-	def int getSingleton(Iterator iterator)
+	def int getSingleton(ConnectivityCall it)
 	{
-		val c = iterator.index.container
-		meshWrapper.getSingleton(c.connectivity.name, c.args.map[x | getIdValue(x)])
+		meshWrapper.getSingleton(connectivity.name, args.map[x | getIdValue(x)])
 	}
 
 	def logVariables(String message)

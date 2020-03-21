@@ -13,15 +13,16 @@ import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
-import fr.cea.nabla.ir.ir.IntervalIterationBlock
-import fr.cea.nabla.ir.ir.IrIndex
-import fr.cea.nabla.ir.ir.IrUniqueId
+import fr.cea.nabla.ir.ir.Interval
+import fr.cea.nabla.ir.ir.ItemIdDefinition
+import fr.cea.nabla.ir.ir.ItemIdValueCall
+import fr.cea.nabla.ir.ir.ItemIdValueIterator
+import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
-import fr.cea.nabla.ir.ir.SpaceIterationBlock
-import fr.cea.nabla.ir.ir.VarDefinition
+import fr.cea.nabla.ir.ir.VariablesDefinition
 import java.util.Arrays
 
 import static fr.cea.nabla.ir.interpreter.DimensionInterpreter.*
@@ -47,15 +48,19 @@ class InstructionInterpreter
 			return interpreteInstructionBlock(context)
 		} else if (it instanceof Return) {
 			return interpreteReturn(context)
-		} else if (it instanceof VarDefinition) {
-			return interpreteVarDefinition(context)
+		} else if (it instanceof VariablesDefinition) {
+			return interpreteVariablesDefinition(context)
+		} else if (it instanceof ItemIdDefinition) {
+			return interpreteItemIdDefinition(context)
+		} else if (it instanceof ItemIndexDefinition) {
+			return interpreteItemIndexDefinition(context)
 		} else {
 			throw new IllegalArgumentException("Unhandled parameter types: " +
 				Arrays.<Object>asList(it, context).toString());
 		}
 	}
 
-	static def NablaValue interpreteVarDefinition(VarDefinition it, Context context)
+	static def NablaValue interpreteVariablesDefinition(VariablesDefinition it, Context context)
 	{
 		context.logFinest("Interprete VarDefinition")
 		for (v : variables)
@@ -99,24 +104,22 @@ class InstructionInterpreter
 		val b = iterationBlock
 		switch b
 		{
-			SpaceIterationBlock:
+			Iterator:
 			{
-				val itIndex = b.range.index
-				val connectivityName = itIndex.container.connectivity.name
+				val connectivityName = b.container.connectivity.name
 				context.logFinest("On traite la boucle " + connectivityName)
-				val argIds =  itIndex.container.args.map[x | context.getIdValue(x)]
+				val argIds =  b.container.args.map[x | context.getIdValue(x)]
 				val container = context.meshWrapper.getElements(connectivityName, argIds)
-				context.addIndexValue(itIndex, 0)
+				context.addIndexValue(b.index, 0)
 				for (loopIteratorValue : 0..<container.size)
 				{
-					context.setIndexValue(itIndex, loopIteratorValue)
-					setIndices(b, context)
+					context.setIndexValue(b.index, loopIteratorValue)
 					val ret = interprete(body, context)
 					if (ret !== null)
 						return ret
 				}
 			}
-			IntervalIterationBlock:
+			Interval:
 			{
 				val nbElems = interprete(b.nbElems, context)
 				context.addDimensionValue(b.index, 0)
@@ -140,67 +143,63 @@ class InstructionInterpreter
 		else if (elseInstruction !== null) return interprete(elseInstruction, context)
 	}
 
+	static def NablaValue interpreteItemIndexDefinition(ItemIndexDefinition it, Context context)
+	{
+		context.logFinest("Interprete ItemIndexDefinition")
+		val idValue = context.getIdValue(value.id)
+		if (value.container.connectivity.indexEqualId) 
+			context.addIndexValue(index, idValue)
+		else 
+		{
+			val connectivityName = value.container.connectivity.name
+			val args =  value.container.args.map[x | context.getIdValue(x)]
+			val elements = context.meshWrapper.getElements(connectivityName, args)
+			context.addIndexValue(index, elements.indexOf(idValue))
+		}
+		return null
+	}
+
+	static def NablaValue interpreteItemIdDefinition(ItemIdDefinition it, Context context)
+	{
+		context.logFinest("Interprete ItemIdDefinition")
+		val idValue = getIdValue(value, context)
+		context.addIdValue(id, idValue)
+		return null
+	}
+
 	static def NablaValue interpreteReturn(Return it, Context context)
 	{
 		context.logFinest("Interprete Return")
 		return interprete(expression, context)
 	}
 
-	private static def void setIndices(SpaceIterationBlock it, Context context)
+	private static dispatch def getIdValue(ItemIdValueCall it, Context context)
 	{
-		setIndices(range, context)
-		for (s : singletons)
-		{
-			context.addIndexValue(s.index, context.getSingleton(s))
-			setIndices(s, context)
-		}
+		context.getSingleton(call)
 	}
 
-	private static def void setIndices(Iterator it, Context context)
+	private static dispatch def getIdValue(ItemIdValueIterator it, Context context)
 	{
-		// Not  necessary to look for neededId and neededIndex at each iteration
-		for (neededId : neededIds)
-			context.addIdValue(neededId, getIndexToId(neededId, context))
-		for (neededIndex : neededIndices)
-			context.addIndexValue(neededIndex, getIdToIndex(neededIndex, context))
-	}
-
-	private static def getIndexToId(IrUniqueId it, Context context)
-	{
-		val indexValue = getIndexValue(it, context)
-
-		if (defaultValueIndex.container.connectivity.indexEqualId)
-			indexValue
+		if (iterator.container.connectivity.indexEqualId)
+			getIndexValue(context)
 		else
 		{
 			//TODO : Plus efficace de faire une méthode pour indexValue in container ?
-			val connectivityName = defaultValueIndex.container.connectivity.name
-			val args =  defaultValueIndex.container.args.map[x | context.getIdValue(x)]
-			context.meshWrapper.getElements(connectivityName, args).get(indexValue)
+			val connectivityName = iterator.container.connectivity.name
+			val args =  iterator.container.args.map[x | context.getIdValue(x)]
+			val index = getIndexValue(context)
+			context.meshWrapper.getElements(connectivityName, args).get(index)
 		}
 	}
 
-	private static def getIdToIndex(IrIndex it, Context context)
+	private static def getIndexValue(ItemIdValueIterator it, Context context)
 	{
-		val idValue = context.getIdValue(defaultValueId)
-		if (container.connectivity.indexEqualId) idValue
-		else 
-		{
-			val connectivityName = container.connectivity.name
-			val args =  container.args.map[x | context.getIdValue(x)]
-			val elements = context.meshWrapper.getElements(connectivityName, args)
-			elements.indexOf(idValue)
-		}
-	}
-
-	private static def getIndexValue(IrUniqueId it, Context context)
-	{
-		val iteratorRefIndex = context.getIndexValue(defaultValueIndex)
+		val iteratorRefIndex = context.getIndexValue(iterator.index)
 		if (shift === 0)
 			return iteratorRefIndex
 		else
 		{
-			val nbElems = context.connectivitySizes.get(defaultValueIndex.container.connectivity)
+			val nbElems = context.connectivitySizes.get(iterator.container.connectivity)
 			return (iteratorRefIndex + shift + nbElems)%nbElems
 		}
 	}

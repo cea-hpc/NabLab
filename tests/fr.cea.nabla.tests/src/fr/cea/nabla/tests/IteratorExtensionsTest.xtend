@@ -28,6 +28,7 @@ import static extension fr.cea.nabla.ir.generator.IrIndexExtensions.*
 class IteratorExtensionsTest
 {
 	@Inject CompilationChainHelper compilationHelper
+	@Inject extension TestUtils
 
 	var Job j1; Job j2; Job j3; Job j4;	Job j5;
 	var Iterator j1_j; Iterator j2_j; Iterator j2_r; Iterator j3_j; Iterator j3_r;
@@ -47,13 +48,13 @@ class IteratorExtensionsTest
 	set nodesOfCell: cell → {node};
 	set cellsOfNode: node → {cell};
 	set neighbourCells: cell → {cell};
-	set commonFace: cell × cell → face;
+	item commonFace: cell × cell → face;
 
 	def ∑: 0.0, ℝ, (a, b) → return a + b;
 	def ∑: x | 0.0, ℝ[x], (a, b) → return a + b;
 	def ∑: x | 0.0, ℝ[x, x], (a, b) → return a + b;
 	'''
-	+ TestUtils::mandatoryOptions + TestUtils::simulationVariables +
+	+ mandatoryOptions + simulationVariables +
 	'''
 	ℝ x{cells}, f{cells}, Cjr{cells,nodesOfCell};
 	ℝ[2] u{cells};
@@ -67,7 +68,7 @@ class IteratorExtensionsTest
 	J5: ∀j1∈cells(), f{j1} = a * ∑{j2∈neighbourCells(j1), cf=commonFace(j1,j2)}( (x{j2}-x{j1}) / surface{cf});
 	'''
 
-	var genModel = TestUtils::testGenModel
+	var genModel = testGenModel
 
 	@Before
 	def void setUpBefore() throws Exception

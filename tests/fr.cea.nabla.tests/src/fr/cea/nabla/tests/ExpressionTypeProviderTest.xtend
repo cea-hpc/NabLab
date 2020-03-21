@@ -14,6 +14,7 @@ import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Job
+import fr.cea.nabla.nabla.MultipleConnectivity
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ExpressionTypeProvider
@@ -24,6 +25,7 @@ import fr.cea.nabla.typing.NSTIntScalar
 import fr.cea.nabla.typing.NSTRealArray1D
 import fr.cea.nabla.typing.NSTRealArray2D
 import fr.cea.nabla.typing.NSTRealScalar
+import fr.cea.nabla.typing.NSTSizeType
 import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.typing.NablaType
 import fr.cea.nabla.typing.VarTypeProvider
@@ -35,9 +37,6 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import static extension fr.cea.nabla.tests.TestUtils.*
-import fr.cea.nabla.typing.NSTSizeType
-
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
 class ExpressionTypeProviderTest 
@@ -48,7 +47,8 @@ class ExpressionTypeProviderTest
 	@Inject extension VarTypeProvider
 	@Inject extension ArgOrVarExtensions
 	@Inject extension NablaModuleExtensions
-	
+	@Inject extension TestUtils
+
 	val model = 
 	'''
 	module Test;
@@ -139,14 +139,14 @@ class ExpressionTypeProviderTest
 	{
 		model.parse.assertNoErrors
 	}
-		
-	//TODO : Ajouter un BinaryOperationsTypeProviderTest pour tester tous les cas
+
+	//TODO : add a BinaryOperationsTypeProviderTest to cover all cases
 	@Test 
 	def void testGetTypeFor() 
 	{
  		val module = model.parse
- 		val cells = module.getConnectivityByName("cells")
- 		val nodesOfCell = module.getConnectivityByName("nodesOfCell")
+ 		val cells = module.getConnectivityByName("cells") as MultipleConnectivity
+ 		val nodesOfCell = module.getConnectivityByName("nodesOfCell") as MultipleConnectivity
 		val updateU = module.getJobByName("UpdateU")
 		val computeV = module.getJobByName("ComputeV")
 		val computeX = module.getJobByName("ComputeX")
@@ -171,7 +171,7 @@ class ExpressionTypeProviderTest
 		assertTypesFor(new NSTBoolScalar, module, "b7")
 		assertTypesFor(new NSTBoolScalar, module, "b8")
 		assertTypesFor(new NSTBoolScalar, module, "b9")
-		assertTypesFor(new NSTBoolScalar, module, "b10")		
+		assertTypesFor(new NSTBoolScalar, module, "b10")
 
 		assertTypesFor(new NSTRealScalar, module, "c1")
 		assertTypesFor(new NSTRealScalar, module, "c2")
@@ -179,7 +179,7 @@ class ExpressionTypeProviderTest
 		assertTypesFor(new NSTRealScalar, module, "c4")
 		assertTypesFor(new NSTRealScalar, module, "c5")
 		assertTypesFor(new NSTRealScalar, module, "c6")
-		assertTypesFor(new NSTRealScalar, module, "c7")		
+		assertTypesFor(new NSTRealScalar, module, "c7")
 
 		assertTypesFor(new NSTRealArray1D(two), module, "d1")
 		assertTypesFor(new NSTRealArray1D(two), module, "d2")
@@ -189,7 +189,7 @@ class ExpressionTypeProviderTest
 
 		assertTypesFor(new NSTRealArray2D(two, two), module, "g")
 		assertTypesFor(new NSTRealScalar, module, "h")
-				
+
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTIntScalar), module, "s")
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), module, "u")
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), module, "v")
@@ -200,33 +200,33 @@ class ExpressionTypeProviderTest
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), updateU, "u")
 
 		assertTypesFor(new NSTRealScalar, computeV, "v")
-				
+
 		assertTypesFor(new NSTRealScalar, computeX, "ee")
 		assertTypesFor(new NSTRealScalar, computeX, "u")
 		assertTypesFor(new NSTRealScalar, computeX, "x")
 	}
-					
-	private def assertTypesFor(NablaType expectedType, NablaModule module, String varName)	
+
+	private def assertTypesFor(NablaType expectedType, NablaModule module, String varName)
 	{
 		val variable = module.getVariableByName(varName)
 		Assert.assertNotNull(variable)
 		assertTypesFor(expectedType, variable)
 	}
 
-	private def assertTypesFor(NablaType expectedType, Job job, String varName, boolean affectationRHSDefined)	
+	private def assertTypesFor(NablaType expectedType, Job job, String varName, boolean affectationRHSDefined)
 	{
-		val variable = job.getVariableByName(varName)
-		val affectation = job.getVarAffectationByName(varName) 
+		val variable = job.getVarByName(varName)
+		val affectation = job.getVarAffectationByName(varName)
 		Assert.assertTrue(variable !== null || affectation !== null)
 		if (variable !== null)
 			assertTypesFor(expectedType, variable)
 		if (affectation !== null)
 		{
 			if (affectationRHSDefined)
-				assertTypesFor(expectedType, affectation)						
+				assertTypesFor(expectedType, affectation)
 			else
 				Assert.assertNull(affectation.right.typeFor)
-		}	
+		}
 	}
 
 	private def assertTypesFor(NablaType expectedType, Job job, String varName)
@@ -234,7 +234,7 @@ class ExpressionTypeProviderTest
 		assertTypesFor(expectedType, job, varName, true)
 	}	
 
-	private def assertTypesFor(NablaType expectedType, Var variable)	
+	private def assertTypesFor(NablaType expectedType, Var variable)
 	{
 		// We test both variable type and default value type
 		Assert.assertEquals(expectedType, variable.typeFor)
@@ -242,7 +242,7 @@ class ExpressionTypeProviderTest
 			Assert.assertEquals(expectedType, variable.defaultValue.typeFor)
 	}
 
-	private def assertTypesFor(NablaType expectedType, Affectation affectation)	
+	private def assertTypesFor(NablaType expectedType, Affectation affectation)
 	{
 		// We test both variable type and expression type
 		Assert.assertEquals(expectedType, affectation.left.typeFor)

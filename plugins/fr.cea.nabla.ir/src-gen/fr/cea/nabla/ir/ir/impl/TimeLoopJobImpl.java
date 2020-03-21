@@ -8,11 +8,14 @@ import fr.cea.nabla.ir.ir.JobContainer;
 import fr.cea.nabla.ir.ir.TimeLoopJob;
 
 import java.util.Collection;
+
 import org.eclipse.emf.common.notify.NotificationChain;
+
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -39,6 +42,7 @@ public class TimeLoopJobImpl extends TimeLoopCopyJobImpl implements TimeLoopJob 
 	 * @ordered
 	 */
 	protected EList<Job> innerJobs;
+
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -1,35 +1,31 @@
 package fr.cea.nabla.generator.ir
 
+import fr.cea.nabla.ConnectivityCallExtensions
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.ConnectivityVar
-import fr.cea.nabla.nabla.SpaceIteratorRef
+import fr.cea.nabla.nabla.ItemRef
 import org.eclipse.xtend.lib.annotations.Data
 
-import static extension fr.cea.nabla.generator.ir.SpaceIteratorRefExtensions.getName
+import static extension fr.cea.nabla.ItemRefExtensions.*
 
 @Data
-class IndexInfo 
+class IndexInfo
 {
 	val ArgOrVarRef varRef
-	val SpaceIteratorRef iteratorRef
+	val ItemRef itemRef
 	val int iteratorIndexInVarIterators
 
-	new(ArgOrVarRef varRef, SpaceIteratorRef iteratorRef)
+	new(ArgOrVarRef varRef, ItemRef itemRef)
 	{
 		this.varRef = varRef
-		this.iteratorRef = iteratorRef
-		this.iteratorIndexInVarIterators = varRef.spaceIterators.indexOf(iteratorRef)
+		this.itemRef = itemRef
+		this.iteratorIndexInVarIterators = varRef.spaceIterators.indexOf(itemRef)
 		if (iteratorIndexInVarIterators == -1) throw new RuntimeException("** Ooops: iterator does not belong to variable")
 	}
 
-	def getName() 
+	def getName()
 	{
-		iteratorRef.name + container.name.toFirstUpper + args.map[x | getName(x).toFirstUpper].join
-	}
-
-	def getDirectIterator()
-	{
-		iteratorRef.target
+		itemRef.name + ConnectivityCallExtensions::getUniqueName(container, args).toFirstUpper
 	}
 
 	def getContainer()

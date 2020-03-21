@@ -47,7 +47,7 @@ class NablaModuleExtensions
 
 	def getItemTypeByName(NablaModule it, String itemTypeName)
 	{
-		items.findFirst[i | i.name == itemTypeName]
+		itemTypes.findFirst[i | i.name == itemTypeName]
 	}
 
 	def getVariableByName(NablaModule it, String variableName)

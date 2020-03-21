@@ -23,13 +23,12 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import static fr.cea.nabla.tests.TestUtils.*
-
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
 class InstructionInterpreterTest 
 {
 	@Inject CompilationChainHelper compilationHelper
+	@Inject extension TestUtils
 
 	@Test
 	def void testInterpreteVarDefinition()
@@ -40,7 +39,7 @@ class InstructionInterpreterTest
 		Job1: { ℝ r = 1.0; t = r; }
 		'''
 
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -58,7 +57,7 @@ class InstructionInterpreterTest
 		Job1: { ℝ r = 1.0; t = r; }
 		'''
 
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -76,7 +75,7 @@ class InstructionInterpreterTest
 		Job1: { ℝ r = 1.0; t = r; }
 		'''
 
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -90,7 +89,7 @@ class InstructionInterpreterTest
 	{
 		val xQuads = 100
 		val yQuads = 100
-		val model = TestUtils::getTestModule(xQuads, yQuads)
+		val model = getTestModule(xQuads, yQuads)
 		+
 		'''
 		ℝ U{cells};
@@ -99,7 +98,7 @@ class InstructionInterpreterTest
 		ComputeCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), C{j,r} = 0.5 * (X{r+1} - X{r-1});
 		'''
 
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)

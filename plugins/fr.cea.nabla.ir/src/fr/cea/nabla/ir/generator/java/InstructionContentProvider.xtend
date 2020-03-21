@@ -14,25 +14,25 @@ import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
+import fr.cea.nabla.ir.ir.ItemIdDefinition
+import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SimpleVariable
-import fr.cea.nabla.ir.ir.SpaceIterationBlock
-import fr.cea.nabla.ir.ir.VarDefinition
-
-import static fr.cea.nabla.ir.generator.java.IndexBuilder.*
+import fr.cea.nabla.ir.ir.VariablesDefinition
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.IterationBlockExtensions.*
+import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.java.ItemIndexAndIdValueContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.IterationBlockExtensions.*
 
 class InstructionContentProvider 
 {
-	static def dispatch CharSequence getContent(VarDefinition it) 
+	static def dispatch CharSequence getContent(VariablesDefinition it) 
 	'''
 		«FOR v : variables»
 		«IF v.const»final «ENDIF»«v.javaType» «v.name»«v.defaultValueContent»;
@@ -65,9 +65,8 @@ class InstructionContentProvider
 			«result.defaultValue.content»,
 			(accu, «iterationBlock.indexName») ->
 			{
-				«IF iterationBlock instanceof SpaceIterationBlock»«defineIndices(iterationBlock as SpaceIterationBlock)»«ENDIF»
-				«FOR innerReduction : innerReductions»
-				«innerReduction.content»
+				«FOR innerInstruction : innerInstructions»
+				«innerInstruction.content»
 				«ENDFOR»
 				return «binaryFunction.getCodeName('.')»(accu, «lambda.content»);
 			},
@@ -85,7 +84,6 @@ class InstructionContentProvider
 			for (int «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
 			«ENDIF»
 			{
-				«IF iterationBlock instanceof SpaceIterationBlock»«defineIndices(iterationBlock as SpaceIterationBlock)»«ENDIF»
 				«body.innerContent»
 			}«IF topLevelLoop»);«ENDIF»
 		''')
@@ -101,6 +99,16 @@ class InstructionContentProvider
 			else
 			«IF !(elseContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«elseContent»
 		«ENDIF»
+	'''
+
+	static def dispatch CharSequence getContent(ItemIndexDefinition it)
+	'''
+		final int «index.name» = «value.content»;
+	'''
+
+	static def dispatch CharSequence getContent(ItemIdDefinition it)
+	'''
+		final int «id.name» = «value.content»;
 	'''
 
 	static def dispatch CharSequence getContent(Return it) 

@@ -1,33 +1,32 @@
 package fr.cea.nabla.ir.generator
 
-import fr.cea.nabla.ir.ir.IntervalIterationBlock
-import fr.cea.nabla.ir.ir.SpaceIterationBlock
+import fr.cea.nabla.ir.ir.Interval
+import fr.cea.nabla.ir.ir.Iterator
 
 import static extension fr.cea.nabla.ir.generator.SizeTypeContentProvider.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class IterationBlockExtensions 
 {
-	static def dispatch getIndexName(SpaceIterationBlock it)
-	{
-		range.index.name
-	}
-
-	static def dispatch getIndexName(IntervalIterationBlock it)
+	static def dispatch getIndexName(Iterator it)
 	{
 		index.name
 	}
 
-	static def dispatch getNbElems(SpaceIterationBlock it)
+	static def dispatch getIndexName(Interval it)
 	{
-		val connectivity = range.index.container.connectivity
-		if (connectivity.indexEqualId)
-			connectivity.nbElems
+		index.name
+	}
+
+	static def dispatch getNbElems(Iterator it)
+	{
+		if (container.connectivity.indexEqualId)
+			container.connectivity.nbElems
 		else
 			'nbElems' + indexName.toFirstUpper
 	}
 
-	static def dispatch getNbElems(IntervalIterationBlock it)
+	static def dispatch getNbElems(Interval it)
 	{
 		nbElems.content
 	}

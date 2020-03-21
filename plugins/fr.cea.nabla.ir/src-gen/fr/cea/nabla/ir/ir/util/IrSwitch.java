@@ -169,13 +169,6 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.ITEM_ARG_TYPE: {
-				ItemArgType itemArgType = (ItemArgType)theEObject;
-				T result = caseItemArgType(itemArgType);
-				if (result == null) result = caseIrAnnotable(itemArgType);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case IrPackage.JOB: {
 				Job job = (Job)theEObject;
 				T result = caseJob(job);
@@ -241,19 +234,19 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.VAR_DEFINITION: {
-				VarDefinition varDefinition = (VarDefinition)theEObject;
-				T result = caseVarDefinition(varDefinition);
-				if (result == null) result = caseInstruction(varDefinition);
-				if (result == null) result = caseIrAnnotable(varDefinition);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case IrPackage.INSTRUCTION_BLOCK: {
 				InstructionBlock instructionBlock = (InstructionBlock)theEObject;
 				T result = caseInstructionBlock(instructionBlock);
 				if (result == null) result = caseInstruction(instructionBlock);
 				if (result == null) result = caseIrAnnotable(instructionBlock);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.VARIABLES_DEFINITION: {
+				VariablesDefinition variablesDefinition = (VariablesDefinition)theEObject;
+				T result = caseVariablesDefinition(variablesDefinition);
+				if (result == null) result = caseInstruction(variablesDefinition);
+				if (result == null) result = caseIrAnnotable(variablesDefinition);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -273,6 +266,56 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.REDUCTION_INSTRUCTION: {
+				ReductionInstruction reductionInstruction = (ReductionInstruction)theEObject;
+				T result = caseReductionInstruction(reductionInstruction);
+				if (result == null) result = caseIterableInstruction(reductionInstruction);
+				if (result == null) result = caseInstruction(reductionInstruction);
+				if (result == null) result = caseIrAnnotable(reductionInstruction);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.LOOP: {
+				Loop loop = (Loop)theEObject;
+				T result = caseLoop(loop);
+				if (result == null) result = caseIterableInstruction(loop);
+				if (result == null) result = caseInstruction(loop);
+				if (result == null) result = caseIrAnnotable(loop);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.ITEM_INDEX_DEFINITION: {
+				ItemIndexDefinition itemIndexDefinition = (ItemIndexDefinition)theEObject;
+				T result = caseItemIndexDefinition(itemIndexDefinition);
+				if (result == null) result = caseInstruction(itemIndexDefinition);
+				if (result == null) result = caseIrAnnotable(itemIndexDefinition);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.ITEM_ID_DEFINITION: {
+				ItemIdDefinition itemIdDefinition = (ItemIdDefinition)theEObject;
+				T result = caseItemIdDefinition(itemIdDefinition);
+				if (result == null) result = caseInstruction(itemIdDefinition);
+				if (result == null) result = caseIrAnnotable(itemIdDefinition);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.IF: {
+				If if_ = (If)theEObject;
+				T result = caseIf(if_);
+				if (result == null) result = caseInstruction(if_);
+				if (result == null) result = caseIrAnnotable(if_);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.RETURN: {
+				Return return_ = (Return)theEObject;
+				T result = caseReturn(return_);
+				if (result == null) result = caseInstruction(return_);
+				if (result == null) result = caseIrAnnotable(return_);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.ITERATION_BLOCK: {
 				IterationBlock iterationBlock = (IterationBlock)theEObject;
 				T result = caseIterationBlock(iterationBlock);
@@ -280,19 +323,19 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.SPACE_ITERATION_BLOCK: {
-				SpaceIterationBlock spaceIterationBlock = (SpaceIterationBlock)theEObject;
-				T result = caseSpaceIterationBlock(spaceIterationBlock);
-				if (result == null) result = caseIterationBlock(spaceIterationBlock);
-				if (result == null) result = caseIrAnnotable(spaceIterationBlock);
+			case IrPackage.ITERATOR: {
+				Iterator iterator = (Iterator)theEObject;
+				T result = caseIterator(iterator);
+				if (result == null) result = caseIterationBlock(iterator);
+				if (result == null) result = caseIrAnnotable(iterator);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.INTERVAL_ITERATION_BLOCK: {
-				IntervalIterationBlock intervalIterationBlock = (IntervalIterationBlock)theEObject;
-				T result = caseIntervalIterationBlock(intervalIterationBlock);
-				if (result == null) result = caseIterationBlock(intervalIterationBlock);
-				if (result == null) result = caseIrAnnotable(intervalIterationBlock);
+			case IrPackage.INTERVAL: {
+				Interval interval = (Interval)theEObject;
+				T result = caseInterval(interval);
+				if (result == null) result = caseIterationBlock(interval);
+				if (result == null) result = caseIrAnnotable(interval);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -331,40 +374,6 @@ public class IrSwitch<T> extends Switch<T> {
 				T result = caseSizeTypeSymbolRef(sizeTypeSymbolRef);
 				if (result == null) result = caseSizeType(sizeTypeSymbolRef);
 				if (result == null) result = caseIrAnnotable(sizeTypeSymbolRef);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.REDUCTION_INSTRUCTION: {
-				ReductionInstruction reductionInstruction = (ReductionInstruction)theEObject;
-				T result = caseReductionInstruction(reductionInstruction);
-				if (result == null) result = caseIterableInstruction(reductionInstruction);
-				if (result == null) result = caseInstruction(reductionInstruction);
-				if (result == null) result = caseIrAnnotable(reductionInstruction);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.LOOP: {
-				Loop loop = (Loop)theEObject;
-				T result = caseLoop(loop);
-				if (result == null) result = caseIterableInstruction(loop);
-				if (result == null) result = caseInstruction(loop);
-				if (result == null) result = caseIrAnnotable(loop);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.IF: {
-				If if_ = (If)theEObject;
-				T result = caseIf(if_);
-				if (result == null) result = caseInstruction(if_);
-				if (result == null) result = caseIrAnnotable(if_);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.RETURN: {
-				Return return_ = (Return)theEObject;
-				T result = caseReturn(return_);
-				if (result == null) result = caseInstruction(return_);
-				if (result == null) result = caseIrAnnotable(return_);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -479,16 +488,10 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.ITERATOR: {
-				Iterator iterator = (Iterator)theEObject;
-				T result = caseIterator(iterator);
-				if (result == null) result = caseIrAnnotable(iterator);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case IrPackage.ITEM_TYPE: {
 				ItemType itemType = (ItemType)theEObject;
 				T result = caseItemType(itemType);
+				if (result == null) result = caseIrAnnotable(itemType);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -529,17 +532,63 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.IR_UNIQUE_ID: {
-				IrUniqueId irUniqueId = (IrUniqueId)theEObject;
-				T result = caseIrUniqueId(irUniqueId);
-				if (result == null) result = caseIrAnnotable(irUniqueId);
+			case IrPackage.ITEM_ID: {
+				ItemId itemId = (ItemId)theEObject;
+				T result = caseItemId(itemId);
+				if (result == null) result = caseIrAnnotable(itemId);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.IR_INDEX: {
-				IrIndex irIndex = (IrIndex)theEObject;
-				T result = caseIrIndex(irIndex);
-				if (result == null) result = caseIrAnnotable(irIndex);
+			case IrPackage.ITEM_ID_VALUE: {
+				ItemIdValue itemIdValue = (ItemIdValue)theEObject;
+				T result = caseItemIdValue(itemIdValue);
+				if (result == null) result = caseIrAnnotable(itemIdValue);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.ITEM_ID_VALUE_ITERATOR: {
+				ItemIdValueIterator itemIdValueIterator = (ItemIdValueIterator)theEObject;
+				T result = caseItemIdValueIterator(itemIdValueIterator);
+				if (result == null) result = caseItemIdValue(itemIdValueIterator);
+				if (result == null) result = caseIrAnnotable(itemIdValueIterator);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.ITEM_ID_VALUE_CALL: {
+				ItemIdValueCall itemIdValueCall = (ItemIdValueCall)theEObject;
+				T result = caseItemIdValueCall(itemIdValueCall);
+				if (result == null) result = caseItemIdValue(itemIdValueCall);
+				if (result == null) result = caseIrAnnotable(itemIdValueCall);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.ITEM_INDEX: {
+				ItemIndex itemIndex = (ItemIndex)theEObject;
+				T result = caseItemIndex(itemIndex);
+				if (result == null) result = caseIrAnnotable(itemIndex);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.ITEM_INDEX_VALUE: {
+				ItemIndexValue itemIndexValue = (ItemIndexValue)theEObject;
+				T result = caseItemIndexValue(itemIndexValue);
+				if (result == null) result = caseIrAnnotable(itemIndexValue);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.ITEM_INDEX_VALUE_ITERATOR: {
+				ItemIndexValueIterator itemIndexValueIterator = (ItemIndexValueIterator)theEObject;
+				T result = caseItemIndexValueIterator(itemIndexValueIterator);
+				if (result == null) result = caseItemIndexValue(itemIndexValueIterator);
+				if (result == null) result = caseIrAnnotable(itemIndexValueIterator);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.ITEM_INDEX_VALUE_ID: {
+				ItemIndexValueId itemIndexValueId = (ItemIndexValueId)theEObject;
+				T result = caseItemIndexValueId(itemIndexValueId);
+				if (result == null) result = caseItemIndexValue(itemIndexValueId);
+				if (result == null) result = caseIrAnnotable(itemIndexValueId);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -668,6 +717,21 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Arg</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Arg</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseArg(Arg object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Variable</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -728,21 +792,6 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Arg</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Arg</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseArg(Arg object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Connectivity</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -754,21 +803,6 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseConnectivity(Connectivity object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Item Arg Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Item Arg Type</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseItemArgType(ItemArgType object) {
 		return null;
 	}
 
@@ -814,6 +848,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseTimeLoopJob(TimeLoopJob object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Time Loop Copy Job</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Time Loop Copy Job</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseTimeLoopCopyJob(TimeLoopCopyJob object) {
 		return null;
 	}
 
@@ -878,21 +927,6 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Var Definition</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Var Definition</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseVarDefinition(VarDefinition object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Instruction Block</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -904,6 +938,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseInstructionBlock(InstructionBlock object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Variables Definition</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Variables Definition</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseVariablesDefinition(VariablesDefinition object) {
 		return null;
 	}
 
@@ -938,6 +987,96 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Reduction Instruction</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Reduction Instruction</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseReductionInstruction(ReductionInstruction object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Loop</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Loop</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseLoop(Loop object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Item Index Definition</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Item Index Definition</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseItemIndexDefinition(ItemIndexDefinition object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Item Id Definition</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Item Id Definition</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseItemIdDefinition(ItemIdDefinition object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>If</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>If</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIf(If object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Return</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Return</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseReturn(Return object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Iteration Block</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -953,32 +1092,32 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Space Iteration Block</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Iterator</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Space Iteration Block</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Iterator</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseSpaceIterationBlock(SpaceIterationBlock object) {
+	public T caseIterator(Iterator object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Interval Iteration Block</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Interval</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Interval Iteration Block</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Interval</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseIntervalIterationBlock(IntervalIterationBlock object) {
+	public T caseInterval(Interval object) {
 		return null;
 	}
 
@@ -1054,66 +1193,6 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseSizeTypeSymbolRef(SizeTypeSymbolRef object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Reduction Instruction</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Reduction Instruction</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseReductionInstruction(ReductionInstruction object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Loop</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Loop</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseLoop(Loop object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>If</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>If</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseIf(If object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Return</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Return</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseReturn(Return object) {
 		return null;
 	}
 
@@ -1238,6 +1317,21 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Min Constant</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Min Constant</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseMinConstant(MinConstant object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Max Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -1283,21 +1377,6 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Min Constant</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Min Constant</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseMinConstant(MinConstant object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Function Call</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -1328,36 +1407,6 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Iterator</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Iterator</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseIterator(Iterator object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Connectivity Call</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Connectivity Call</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseConnectivityCall(ConnectivityCall object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Item Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -1373,21 +1422,6 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Base Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Base Type</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseBaseType(BaseType object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -1399,6 +1433,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseIrType(IrType object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Base Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Base Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseBaseType(BaseType object) {
 		return null;
 	}
 
@@ -1433,47 +1482,137 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Unique Id</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Connectivity Call</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Unique Id</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Connectivity Call</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseIrUniqueId(IrUniqueId object) {
+	public T caseConnectivityCall(ConnectivityCall object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Index</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Item Id</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Index</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Item Id</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseIrIndex(IrIndex object) {
+	public T caseItemId(ItemId object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Time Loop Copy Job</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Item Id Value</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Time Loop Copy Job</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Item Id Value</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseTimeLoopCopyJob(TimeLoopCopyJob object) {
+	public T caseItemIdValue(ItemIdValue object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Item Id Value Iterator</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Item Id Value Iterator</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseItemIdValueIterator(ItemIdValueIterator object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Item Id Value Call</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Item Id Value Call</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseItemIdValueCall(ItemIdValueCall object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Item Index</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Item Index</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseItemIndex(ItemIndex object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Item Index Value</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Item Index Value</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseItemIndexValue(ItemIndexValue object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Item Index Value Iterator</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Item Index Value Iterator</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseItemIndexValueIterator(ItemIndexValueIterator object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Item Index Value Id</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Item Index Value Id</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseItemIndexValueId(ItemIndexValueId object) {
 		return null;
 	}
 

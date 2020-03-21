@@ -92,7 +92,7 @@ public class ConnectivityTypeImpl extends IrTypeImpl implements ConnectivityType
 		}
 		return connectivities;
 	}
-	
+
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

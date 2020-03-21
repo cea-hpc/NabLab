@@ -19,7 +19,6 @@ import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import static fr.cea.nabla.tests.TestUtils.*
 import fr.cea.nabla.ir.interpreter.NV1Real
 import fr.cea.nabla.ir.interpreter.NV0Int
 
@@ -28,17 +27,18 @@ import fr.cea.nabla.ir.interpreter.NV0Int
 class JobInterpreterTest 
 {
 	@Inject CompilationChainHelper compilationHelper
+	@Inject extension TestUtils
 
 	@Test
 	def void testInterpreteInstructionJob()
 	{
-		val model = TestUtils::testModuleForSimulation
+		val model = testModuleForSimulation
 		+
 		'''
 		initT : t = 5.;
 		'''
 
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -50,7 +50,7 @@ class JobInterpreterTest
 	@Test
 	def void testInterpreteTimeLoopJob()
 	{
-		val model = TestUtils::testModuleForSimulation
+		val model = testModuleForSimulation
 		+
 		'''
 		// Simulation options
@@ -63,7 +63,7 @@ class JobInterpreterTest
 		ComputeTn: t^{n+1} = t^{n} + 0.01;
 		'''
 
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -93,7 +93,7 @@ class JobInterpreterTest
 		IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X^{n=0}{r});
 		'''
 
-		val irModule = compilationHelper.getIrModule(model, TestUtils::testGenModel)
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)

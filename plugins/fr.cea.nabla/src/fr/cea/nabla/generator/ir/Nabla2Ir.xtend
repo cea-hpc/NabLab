@@ -44,7 +44,7 @@ class Nabla2Ir
 		annotations += nablaModule.toIrAnnotation
 		name = nablaModule.name
 		nablaModule.imports.forEach[x | imports += x.toIrImport]
-		nablaModule.items.forEach[x | items += x.toIrItemType]
+		nablaModule.itemTypes.forEach[x | itemTypes += x.toIrItemType]
 		nablaModule.connectivities.forEach[x | connectivities += x.toIrConnectivity]
 
 		// Function and reduction

@@ -4,6 +4,7 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.AfterTimeLoopJob;
 import fr.cea.nabla.ir.ir.IrPackage;
+
 import org.eclipse.emf.ecore.EClass;
 
 /**

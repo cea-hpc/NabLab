@@ -37,7 +37,7 @@ class OptimizeConnectivities implements IrTransformationStep
 	{
 		for (c : m.connectivities)
 		{
-			if (!c.returnType.multiple) c.indexEqualId = true
+			if (!c.multiple) c.indexEqualId = true
 			else if (connectivities.contains(c.name)) c.indexEqualId = true
 		}
 		return true

@@ -4,8 +4,8 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.IrPackage;
-
 import fr.cea.nabla.ir.ir.IrType;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
@@ -37,6 +37,7 @@ public abstract class ExpressionImpl extends IrAnnotableImpl implements Expressi
 	 * @ordered
 	 */
 	protected IrType type;
+
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

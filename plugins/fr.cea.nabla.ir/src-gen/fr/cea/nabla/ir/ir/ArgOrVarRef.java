@@ -47,7 +47,7 @@ public interface ArgOrVarRef extends Expression {
 
 	/**
 	 * Returns the value of the '<em><b>Iterators</b></em>' reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.IrIndex}.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ItemIndex}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Iterators</em>' reference list.
@@ -55,7 +55,7 @@ public interface ArgOrVarRef extends Expression {
 	 * @model resolveProxies="false"
 	 * @generated
 	 */
-	EList<IrIndex> getIterators();
+	EList<ItemIndex> getIterators();
 
 	/**
 	 * Returns the value of the '<em><b>Indices</b></em>' containment reference list.

@@ -2,9 +2,10 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import org.eclipse.emf.ecore.EClass;
 import fr.cea.nabla.ir.ir.BeforeTimeLoopJob;
 import fr.cea.nabla.ir.ir.IrPackage;
+
+import org.eclipse.emf.ecore.EClass;
 
 /**
  * <!-- begin-user-doc -->

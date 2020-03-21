@@ -4,9 +4,11 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.Function;
+import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.ReductionInstruction;
 import fr.cea.nabla.ir.ir.SimpleVariable;
+
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -30,7 +32,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionInstructionImpl#getInnerReductions <em>Inner Reductions</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionInstructionImpl#getInnerInstructions <em>Inner Instructions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionInstructionImpl#getBinaryFunction <em>Binary Function</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionInstructionImpl#getLambda <em>Lambda</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ReductionInstructionImpl#getResult <em>Result</em>}</li>
@@ -40,14 +42,14 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class ReductionInstructionImpl extends IterableInstructionImpl implements ReductionInstruction {
 	/**
-	 * The cached value of the '{@link #getInnerReductions() <em>Inner Reductions</em>}' containment reference list.
+	 * The cached value of the '{@link #getInnerInstructions() <em>Inner Instructions</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getInnerReductions()
+	 * @see #getInnerInstructions()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<ReductionInstruction> innerReductions;
+	protected EList<Instruction> innerInstructions;
 
 	/**
 	 * The cached value of the '{@link #getBinaryFunction() <em>Binary Function</em>}' reference.
@@ -104,11 +106,11 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	 * @generated
 	 */
 	@Override
-	public EList<ReductionInstruction> getInnerReductions() {
-		if (innerReductions == null) {
-			innerReductions = new EObjectContainmentEList.Resolving<ReductionInstruction>(ReductionInstruction.class, this, IrPackage.REDUCTION_INSTRUCTION__INNER_REDUCTIONS);
+	public EList<Instruction> getInnerInstructions() {
+		if (innerInstructions == null) {
+			innerInstructions = new EObjectContainmentEList.Resolving<Instruction>(Instruction.class, this, IrPackage.REDUCTION_INSTRUCTION__INNER_INSTRUCTIONS);
 		}
-		return innerReductions;
+		return innerInstructions;
 	}
 
 	/**
@@ -249,8 +251,8 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.REDUCTION_INSTRUCTION__INNER_REDUCTIONS:
-				return ((InternalEList<?>)getInnerReductions()).basicRemove(otherEnd, msgs);
+			case IrPackage.REDUCTION_INSTRUCTION__INNER_INSTRUCTIONS:
+				return ((InternalEList<?>)getInnerInstructions()).basicRemove(otherEnd, msgs);
 			case IrPackage.REDUCTION_INSTRUCTION__LAMBDA:
 				return basicSetLambda(null, msgs);
 			case IrPackage.REDUCTION_INSTRUCTION__RESULT:
@@ -267,8 +269,8 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.REDUCTION_INSTRUCTION__INNER_REDUCTIONS:
-				return getInnerReductions();
+			case IrPackage.REDUCTION_INSTRUCTION__INNER_INSTRUCTIONS:
+				return getInnerInstructions();
 			case IrPackage.REDUCTION_INSTRUCTION__BINARY_FUNCTION:
 				if (resolve) return getBinaryFunction();
 				return basicGetBinaryFunction();
@@ -289,9 +291,9 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.REDUCTION_INSTRUCTION__INNER_REDUCTIONS:
-				getInnerReductions().clear();
-				getInnerReductions().addAll((Collection<? extends ReductionInstruction>)newValue);
+			case IrPackage.REDUCTION_INSTRUCTION__INNER_INSTRUCTIONS:
+				getInnerInstructions().clear();
+				getInnerInstructions().addAll((Collection<? extends Instruction>)newValue);
 				return;
 			case IrPackage.REDUCTION_INSTRUCTION__BINARY_FUNCTION:
 				setBinaryFunction((Function)newValue);
@@ -314,8 +316,8 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.REDUCTION_INSTRUCTION__INNER_REDUCTIONS:
-				getInnerReductions().clear();
+			case IrPackage.REDUCTION_INSTRUCTION__INNER_INSTRUCTIONS:
+				getInnerInstructions().clear();
 				return;
 			case IrPackage.REDUCTION_INSTRUCTION__BINARY_FUNCTION:
 				setBinaryFunction((Function)null);
@@ -338,8 +340,8 @@ public class ReductionInstructionImpl extends IterableInstructionImpl implements
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.REDUCTION_INSTRUCTION__INNER_REDUCTIONS:
-				return innerReductions != null && !innerReductions.isEmpty();
+			case IrPackage.REDUCTION_INSTRUCTION__INNER_INSTRUCTIONS:
+				return innerInstructions != null && !innerInstructions.isEmpty();
 			case IrPackage.REDUCTION_INSTRUCTION__BINARY_FUNCTION:
 				return binaryFunction != null;
 			case IrPackage.REDUCTION_INSTRUCTION__LAMBDA:

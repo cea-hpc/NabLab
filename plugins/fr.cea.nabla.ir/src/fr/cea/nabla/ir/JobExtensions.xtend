@@ -92,15 +92,15 @@ class JobExtensions
 		return inVars
 	}
 
-	static def getIteratorByName(Job it, String name)
+	static def getIteratorByName(Job it, String itName)
 	{
 		var iterators = eAllContents.filter(Iterator).toList
-		return iterators.findFirst[i | i.name == name]
+		return iterators.findFirst[index.name == itName]
 	}
 
-	static def getVariableByName(Job it, String name)
+	static def getVariableByName(Job it, String varName)
 	{
 		var variables = eAllContents.filter(Variable).toList
-		return variables.findFirst[i | i.name == name]
+		return variables.findFirst[x | x.name == varName]
 	}
 }

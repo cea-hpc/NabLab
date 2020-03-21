@@ -43,7 +43,7 @@ class IrExpressionFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrFunctionFactory
 	@Inject extension IrArgOrVarFactory
-	@Inject extension IrIndexFactory
+	@Inject extension IrItemIndexFactory
 	@Inject extension IrSizeTypeFactory
 	@Inject extension ExpressionTypeProvider
 	@Inject extension ReductionCallExtensions

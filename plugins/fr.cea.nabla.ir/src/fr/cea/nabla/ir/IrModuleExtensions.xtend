@@ -51,7 +51,7 @@ class IrModuleExtensions
 	{
 		val connectivities = variables.filter(ConnectivityVariable).map[type.connectivities].flatten.toSet
 		jobs.forEach[j | connectivities += j.eAllContents.filter(ConnectivityCall).map[connectivity].toSet]
-		return connectivities.filter[c | c.returnType.multiple]
+		return connectivities.filter[c | c.multiple]
 	}
 
 	static def getVariableByName(IrModule it, String varName)
@@ -59,5 +59,5 @@ class IrModuleExtensions
 		variables.findFirst[j | j.name == varName]
 	}
 
-	static def withMesh(IrModule it) { !items.empty }
+	static def withMesh(IrModule it) { !itemTypes.empty }
 }

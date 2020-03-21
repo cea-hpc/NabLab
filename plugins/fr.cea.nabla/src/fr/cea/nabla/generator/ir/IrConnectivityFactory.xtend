@@ -13,6 +13,7 @@ import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.Connectivity
+import fr.cea.nabla.nabla.MultipleConnectivity
 
 @Singleton
 class IrConnectivityFactory 
@@ -24,7 +25,8 @@ class IrConnectivityFactory
 	{
 		annotations += c.toIrAnnotation
 		name = c.name
-		returnType = c.returnType.toIrItemArgType
+		returnType = c.returnType.toIrItemType
 		inTypes += c.inTypes.map[toIrItemType]
-	}	
+		multiple = (c instanceof MultipleConnectivity)
+	}
 }

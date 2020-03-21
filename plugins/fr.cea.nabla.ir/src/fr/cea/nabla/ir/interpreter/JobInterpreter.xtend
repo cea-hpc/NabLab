@@ -137,7 +137,7 @@ class JobInterpreter
 
 	private def setItemVariables(PostProcessingInfo it, Context context, IrModule module, String itemName, HashMap<String, double[]> map)
 	{
-		for (v : postProcessedVariables.filter(ConnectivityVariable).filter(v | v.type.connectivities.head.returnType.type.name == itemName))
+		for (v : postProcessedVariables.filter(ConnectivityVariable).filter(v | v.type.connectivities.head.returnType.name == itemName))
 		{
 			val value = context.getVariableValue(module.getVariableByName(v.name))
 			if (value instanceof NV1Real) map.put(v.persistenceName, value.data)

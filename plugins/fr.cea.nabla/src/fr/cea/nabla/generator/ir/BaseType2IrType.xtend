@@ -33,7 +33,7 @@ class BaseType2IrType
 		]
 	}
 
-	def toIrConnectivityType(BaseType t, List<Connectivity> supports)
+	def toIrConnectivityType(BaseType t, List<? extends Connectivity> supports)
 	{
 		IrFactory::eINSTANCE.createConnectivityType => 
 		[

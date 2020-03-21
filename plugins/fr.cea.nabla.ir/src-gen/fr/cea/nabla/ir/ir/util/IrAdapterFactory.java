@@ -124,10 +124,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createConnectivityAdapter();
 			}
 			@Override
-			public Adapter caseItemArgType(ItemArgType object) {
-				return createItemArgTypeAdapter();
-			}
-			@Override
 			public Adapter caseJob(Job object) {
 				return createJobAdapter();
 			}
@@ -160,12 +156,12 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createInstructionAdapter();
 			}
 			@Override
-			public Adapter caseVarDefinition(VarDefinition object) {
-				return createVarDefinitionAdapter();
-			}
-			@Override
 			public Adapter caseInstructionBlock(InstructionBlock object) {
 				return createInstructionBlockAdapter();
+			}
+			@Override
+			public Adapter caseVariablesDefinition(VariablesDefinition object) {
+				return createVariablesDefinitionAdapter();
 			}
 			@Override
 			public Adapter caseAffectation(Affectation object) {
@@ -176,16 +172,40 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createIterableInstructionAdapter();
 			}
 			@Override
+			public Adapter caseReductionInstruction(ReductionInstruction object) {
+				return createReductionInstructionAdapter();
+			}
+			@Override
+			public Adapter caseLoop(Loop object) {
+				return createLoopAdapter();
+			}
+			@Override
+			public Adapter caseItemIndexDefinition(ItemIndexDefinition object) {
+				return createItemIndexDefinitionAdapter();
+			}
+			@Override
+			public Adapter caseItemIdDefinition(ItemIdDefinition object) {
+				return createItemIdDefinitionAdapter();
+			}
+			@Override
+			public Adapter caseIf(If object) {
+				return createIfAdapter();
+			}
+			@Override
+			public Adapter caseReturn(Return object) {
+				return createReturnAdapter();
+			}
+			@Override
 			public Adapter caseIterationBlock(IterationBlock object) {
 				return createIterationBlockAdapter();
 			}
 			@Override
-			public Adapter caseSpaceIterationBlock(SpaceIterationBlock object) {
-				return createSpaceIterationBlockAdapter();
+			public Adapter caseIterator(Iterator object) {
+				return createIteratorAdapter();
 			}
 			@Override
-			public Adapter caseIntervalIterationBlock(IntervalIterationBlock object) {
-				return createIntervalIterationBlockAdapter();
+			public Adapter caseInterval(Interval object) {
+				return createIntervalAdapter();
 			}
 			@Override
 			public Adapter caseSizeTypeSymbol(SizeTypeSymbol object) {
@@ -206,22 +226,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseSizeTypeSymbolRef(SizeTypeSymbolRef object) {
 				return createSizeTypeSymbolRefAdapter();
-			}
-			@Override
-			public Adapter caseReductionInstruction(ReductionInstruction object) {
-				return createReductionInstructionAdapter();
-			}
-			@Override
-			public Adapter caseLoop(Loop object) {
-				return createLoopAdapter();
-			}
-			@Override
-			public Adapter caseIf(If object) {
-				return createIfAdapter();
-			}
-			@Override
-			public Adapter caseReturn(Return object) {
-				return createReturnAdapter();
 			}
 			@Override
 			public Adapter caseExpression(Expression object) {
@@ -280,10 +284,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createArgOrVarRefAdapter();
 			}
 			@Override
-			public Adapter caseIterator(Iterator object) {
-				return createIteratorAdapter();
-			}
-			@Override
 			public Adapter caseItemType(ItemType object) {
 				return createItemTypeAdapter();
 			}
@@ -308,12 +308,36 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createConnectivityCallAdapter();
 			}
 			@Override
-			public Adapter caseIrUniqueId(IrUniqueId object) {
-				return createIrUniqueIdAdapter();
+			public Adapter caseItemId(ItemId object) {
+				return createItemIdAdapter();
 			}
 			@Override
-			public Adapter caseIrIndex(IrIndex object) {
-				return createIrIndexAdapter();
+			public Adapter caseItemIdValue(ItemIdValue object) {
+				return createItemIdValueAdapter();
+			}
+			@Override
+			public Adapter caseItemIdValueIterator(ItemIdValueIterator object) {
+				return createItemIdValueIteratorAdapter();
+			}
+			@Override
+			public Adapter caseItemIdValueCall(ItemIdValueCall object) {
+				return createItemIdValueCallAdapter();
+			}
+			@Override
+			public Adapter caseItemIndex(ItemIndex object) {
+				return createItemIndexAdapter();
+			}
+			@Override
+			public Adapter caseItemIndexValue(ItemIndexValue object) {
+				return createItemIndexValueAdapter();
+			}
+			@Override
+			public Adapter caseItemIndexValueIterator(ItemIndexValueIterator object) {
+				return createItemIndexValueIteratorAdapter();
+			}
+			@Override
+			public Adapter caseItemIndexValueId(ItemIndexValueId object) {
+				return createItemIndexValueIdAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -448,6 +472,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Arg <em>Arg</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.Arg
+	 * @generated
+	 */
+	public Adapter createArgAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Variable <em>Variable</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -504,20 +542,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Arg <em>Arg</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.Arg
-	 * @generated
-	 */
-	public Adapter createArgAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Connectivity <em>Connectivity</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -528,20 +552,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createConnectivityAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemArgType <em>Item Arg Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.ItemArgType
-	 * @generated
-	 */
-	public Adapter createItemArgTypeAdapter() {
 		return null;
 	}
 
@@ -584,6 +594,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createTimeLoopJobAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.TimeLoopCopyJob <em>Time Loop Copy Job</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.TimeLoopCopyJob
+	 * @generated
+	 */
+	public Adapter createTimeLoopCopyJobAdapter() {
 		return null;
 	}
 
@@ -644,20 +668,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.VarDefinition <em>Var Definition</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.VarDefinition
-	 * @generated
-	 */
-	public Adapter createVarDefinitionAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.InstructionBlock <em>Instruction Block</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -668,6 +678,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createInstructionBlockAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.VariablesDefinition <em>Variables Definition</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.VariablesDefinition
+	 * @generated
+	 */
+	public Adapter createVariablesDefinitionAdapter() {
 		return null;
 	}
 
@@ -700,6 +724,90 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ReductionInstruction <em>Reduction Instruction</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.ReductionInstruction
+	 * @generated
+	 */
+	public Adapter createReductionInstructionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Loop <em>Loop</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.Loop
+	 * @generated
+	 */
+	public Adapter createLoopAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemIndexDefinition <em>Item Index Definition</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.ItemIndexDefinition
+	 * @generated
+	 */
+	public Adapter createItemIndexDefinitionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemIdDefinition <em>Item Id Definition</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.ItemIdDefinition
+	 * @generated
+	 */
+	public Adapter createItemIdDefinitionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.If <em>If</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.If
+	 * @generated
+	 */
+	public Adapter createIfAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Return <em>Return</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.Return
+	 * @generated
+	 */
+	public Adapter createReturnAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IterationBlock <em>Iteration Block</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -714,30 +822,30 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.SpaceIterationBlock <em>Space Iteration Block</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Iterator <em>Iterator</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.SpaceIterationBlock
+	 * @see fr.cea.nabla.ir.ir.Iterator
 	 * @generated
 	 */
-	public Adapter createSpaceIterationBlockAdapter() {
+	public Adapter createIteratorAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IntervalIterationBlock <em>Interval Iteration Block</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Interval <em>Interval</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.IntervalIterationBlock
+	 * @see fr.cea.nabla.ir.ir.Interval
 	 * @generated
 	 */
-	public Adapter createIntervalIterationBlockAdapter() {
+	public Adapter createIntervalAdapter() {
 		return null;
 	}
 
@@ -808,62 +916,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createSizeTypeSymbolRefAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ReductionInstruction <em>Reduction Instruction</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.ReductionInstruction
-	 * @generated
-	 */
-	public Adapter createReductionInstructionAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Loop <em>Loop</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.Loop
-	 * @generated
-	 */
-	public Adapter createLoopAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.If <em>If</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.If
-	 * @generated
-	 */
-	public Adapter createIfAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Return <em>Return</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.Return
-	 * @generated
-	 */
-	public Adapter createReturnAdapter() {
 		return null;
 	}
 
@@ -980,6 +1032,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.MinConstant <em>Min Constant</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.MinConstant
+	 * @generated
+	 */
+	public Adapter createMinConstantAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.MaxConstant <em>Max Constant</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -1022,20 +1088,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.MinConstant <em>Min Constant</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.MinConstant
-	 * @generated
-	 */
-	public Adapter createMinConstantAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.FunctionCall <em>Function Call</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -1064,34 +1116,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Iterator <em>Iterator</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.Iterator
-	 * @generated
-	 */
-	public Adapter createIteratorAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ConnectivityCall <em>Connectivity Call</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.ConnectivityCall
-	 * @generated
-	 */
-	public Adapter createConnectivityCallAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemType <em>Item Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -1106,20 +1130,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.BaseType <em>Base Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.BaseType
-	 * @generated
-	 */
-	public Adapter createBaseTypeAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IrType <em>Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -1130,6 +1140,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createIrTypeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.BaseType <em>Base Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.BaseType
+	 * @generated
+	 */
+	public Adapter createBaseTypeAdapter() {
 		return null;
 	}
 
@@ -1162,44 +1186,128 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IrUniqueId <em>Unique Id</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ConnectivityCall <em>Connectivity Call</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.IrUniqueId
+	 * @see fr.cea.nabla.ir.ir.ConnectivityCall
 	 * @generated
 	 */
-	public Adapter createIrUniqueIdAdapter() {
+	public Adapter createConnectivityCallAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.IrIndex <em>Index</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemId <em>Item Id</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.IrIndex
+	 * @see fr.cea.nabla.ir.ir.ItemId
 	 * @generated
 	 */
-	public Adapter createIrIndexAdapter() {
+	public Adapter createItemIdAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.TimeLoopCopyJob <em>Time Loop Copy Job</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemIdValue <em>Item Id Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.TimeLoopCopyJob
+	 * @see fr.cea.nabla.ir.ir.ItemIdValue
 	 * @generated
 	 */
-	public Adapter createTimeLoopCopyJobAdapter() {
+	public Adapter createItemIdValueAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemIdValueIterator <em>Item Id Value Iterator</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.ItemIdValueIterator
+	 * @generated
+	 */
+	public Adapter createItemIdValueIteratorAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemIdValueCall <em>Item Id Value Call</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.ItemIdValueCall
+	 * @generated
+	 */
+	public Adapter createItemIdValueCallAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemIndex <em>Item Index</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.ItemIndex
+	 * @generated
+	 */
+	public Adapter createItemIndexAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemIndexValue <em>Item Index Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.ItemIndexValue
+	 * @generated
+	 */
+	public Adapter createItemIndexValueAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemIndexValueIterator <em>Item Index Value Iterator</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.ItemIndexValueIterator
+	 * @generated
+	 */
+	public Adapter createItemIndexValueIteratorAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemIndexValueId <em>Item Index Value Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.ItemIndexValueId
+	 * @generated
+	 */
+	public Adapter createItemIndexValueIdAdapter() {
 		return null;
 	}
 

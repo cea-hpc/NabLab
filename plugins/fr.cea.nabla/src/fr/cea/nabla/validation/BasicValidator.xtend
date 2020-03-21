@@ -11,7 +11,7 @@ package fr.cea.nabla.validation
 
 import com.google.inject.Inject
 import fr.cea.nabla.ArgOrVarExtensions
-import fr.cea.nabla.SpaceIteratorExtensions
+import fr.cea.nabla.ItemExtensions
 import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Arg
@@ -25,24 +25,24 @@ import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.InstructionBlock
+import fr.cea.nabla.nabla.Interval
+import fr.cea.nabla.nabla.Item
+import fr.cea.nabla.nabla.ItemRef
 import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.Iterable
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.NextTimeIteratorRef
-import fr.cea.nabla.nabla.RangeSpaceIterator
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.nabla.SingletonSpaceIterator
 import fr.cea.nabla.nabla.SizeTypeInt
 import fr.cea.nabla.nabla.SizeTypeOperation
 import fr.cea.nabla.nabla.SizeTypeSymbol
 import fr.cea.nabla.nabla.SizeTypeSymbolRef
 import fr.cea.nabla.nabla.SpaceIterator
-import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorRef
 import fr.cea.nabla.nabla.Var
@@ -57,13 +57,14 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScopeProvider
 import org.eclipse.xtext.util.SimpleAttributeResolver
 import org.eclipse.xtext.validation.Check
-import fr.cea.nabla.nabla.IntervalIterationBlock
+
+import static extension fr.cea.nabla.ConnectivityCallExtensions.*
 
 class BasicValidator extends AbstractNablaValidator
 {
 	@Inject extension ArgOrVarExtensions
-	@Inject extension SpaceIteratorExtensions
 	@Inject extension DeclarationProvider
+	@Inject extension ItemExtensions
 	@Inject IScopeProvider scopeProvider
 
 	// ===== Temporary limitations ====
@@ -72,10 +73,10 @@ class BasicValidator extends AbstractNablaValidator
 	static def getZeroFromMsg() { "Lower bound must be 0" }
 
 	@Check
-	def void checkFrom(IntervalIterationBlock it)
+	def void checkFrom(Interval it)
 	{
 		if (from != 0)
-			error(getZeroFromMsg(), NablaPackage.Literals.INTERVAL_ITERATION_BLOCK__FROM, ZERO_FROM);
+			error(getZeroFromMsg(), NablaPackage.Literals.INTERVAL__FROM, ZERO_FROM);
 	}
 
 	// ===== Unique Names ====
@@ -121,13 +122,13 @@ class BasicValidator extends AbstractNablaValidator
 	}
 
 	@Check
-	def void checkDuplicate(SpaceIterator it)
+	def void checkDuplicate(Item it)
 	{
-		val scope = scopeProvider.getScope(it, NablaPackage.Literals.SPACE_ITERATOR_REF__TARGET)
+		val scope = scopeProvider.getScope(it, NablaPackage.Literals.ITEM_REF__TARGET)
 		//println('checkDuplicate(' + it + ') : ' + scope.allElements.map[name.segments.join('.')].join(', '))
 		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
 		if (duplicated)
-			error(getDuplicateNameMsg(NablaPackage.Literals.SPACE_ITERATOR, name), NablaPackage.Literals.SPACE_ITERATOR__NAME, DUPLICATE_NAME);
+			error(getDuplicateNameMsg(NablaPackage.Literals.ITEM, name), NablaPackage.Literals.ITEM__NAME, DUPLICATE_NAME);
 	}
 
 	@Check
@@ -235,7 +236,7 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkMandatoryOptions(NablaModule it)
 	{
-		if (items.empty) return; // no mesh
+		if (itemTypes.empty) return; // no mesh
 		val scalarConsts = instructions.filter(SimpleVarDefinition).filter[const].map[variable.name].toList
 		val missingConsts = MandatoryOptions::NAMES.filter[x | !scalarConsts.contains(x)]
 		if (missingConsts.size > 0)
@@ -382,7 +383,7 @@ class BasicValidator extends AbstractNablaValidator
 					val spaceIteratorRefI = spaceIterators.get(i)
 					val dimensionI = dimensions.get(i)
 					val actualT = spaceIteratorRefI.target.type
-					val expectedT = dimensionI.returnType.type
+					val expectedT = dimensionI.returnType
 					if (actualT != expectedT)
 						error(getSpaceIteratorTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, i, SPACE_ITERATOR_TYPE)
 				}
@@ -518,14 +519,12 @@ class BasicValidator extends AbstractNablaValidator
 	public static val CONNECTIVITY_CALL_INDEX = "Connectivities::ConnectivityCallIndex"
 	public static val CONNECTIVITY_CALL_TYPE = "Connectivities::ConnectivityCallType"
 	public static val NOT_IN_INSTRUCTIONS = "Connectivities::NotInInstructions"
-	public static val DIMENSION_MULTIPLE = "Connectivities::DimensionMultiple"
 	public static val DIMENSION_ARG = "Connectivities::DimensionArg"
 
 	static def getUnusedConnectivityMsg() { "Unused connectivity" }
 	static def getConnectivityCallIndexMsg(int expectedSize, int actualSize) { "Wrong number of arguments: Expected " + expectedSize + ", but was " + actualSize }
 	static def getConnectivityCallTypeMsg(String expectedType, String actualType) { "Wrong argument type: Expected " + expectedType + ', but was ' + actualType }
 	static def getNotInInstructionsMsg() { "Local variables can only be scalar (no connectivity arrays)" }
-	static def getDimensionMultipleMsg() { "Dimension must be on connectivities returning a set of items" }
 	static def getDimensionArgMsg() { "Dimension 1 must be on connectivities taking no argument" }
 
 	@Check
@@ -564,13 +563,9 @@ class BasicValidator extends AbstractNablaValidator
 	}
 
 	@Check
-	def checkDimensionMultipleAndArg(ConnectivityVar it)
+	def checkDimensionArg(ConnectivityVar it)
 	{
 		if (supports.empty) return;
-
-		for (i : 0..<supports.length)
-			if (!supports.get(i).returnType.multiple)
-				error(getDimensionMultipleMsg(), NablaPackage.Literals::CONNECTIVITY_VAR__SUPPORTS, i, DIMENSION_MULTIPLE)
 
 		if (!supports.head.inTypes.empty)
 			error(getDimensionArgMsg(), NablaPackage.Literals::CONNECTIVITY_VAR__SUPPORTS, DIMENSION_ARG)
@@ -598,27 +593,24 @@ class BasicValidator extends AbstractNablaValidator
 			error(getScalarVarDefaultValueMsg(), NablaPackage.Literals::SIMPLE_VAR_DEFINITION__DEFAULT_VALUE, SCALAR_VAR_DEFAULT_VALUE)
 	}
 
-	// ===== Iterators =====
+	// ===== Items =====
 
-	public static val UNUSED_ITERATOR = "Iterators::UnusedIterator"
-	public static val UNUSED_DIMENSION_INDEX = "Iterators::UnusedDimensionIndex"
-	public static val RANGE_RETURN_TYPE = "Iterators::RangeReturnType"
-	public static val SINGLETON_RETURN_TYPE = "Iterators::SingletonReturnType"
-	public static val SHIFT_VALIDITY = "Iterators::ShiftValidity"
+	public static val UNUSED_ITEM = "Items::UnusedItem"
+	public static val UNUSED_DIMENSION_INDEX = "Items::UnusedDimensionIndex"
+	public static val SHIFT_VALIDITY = "Items::ShiftValidity"
 
-	static def getUnusedIteratorMsg() { "Unused iterator" }
+	static def getUnusedItemMsg() { "Unused iterator" }
 	static def getUnusedDimensionIndexMsg() { "Unused index" }
-	static def getRangeReturnTypeMsg() { "Connectivity return type must be a collection" }
-	static def getSingletonReturnTypeMsg() { "Connectivity return type must be a singleton" }
-	static def getShiftValidityMsg() { "Shift only valid on a range iterator" }
+	static def getShiftValidityMsg() { "Shift only valid for an iteration on a connectivity set" }
 
 	@Check
-	def checkUnusedIterator(SpaceIterator it)
+	def checkUnusedItem(Item it)
 	{
-		val iterable = EcoreUtil2.getContainerOfType(it, Iterable)
-		val referenced = iterable.eAllContents.filter(SpaceIteratorRef).exists[x|x.target===it]
+		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
+		val referenced = m.eAllContents.filter(ConnectivityCall).exists[x|x.args.contains(it)]
+			|| m.eAllContents.filter(ItemRef).exists[x|x.target === it]
 		if (!referenced)
-			warning(getUnusedIteratorMsg(), NablaPackage.Literals::SPACE_ITERATOR__NAME, UNUSED_ITERATOR)
+			warning(getUnusedItemMsg(), NablaPackage.Literals::ITEM__NAME, UNUSED_ITEM)
 	}
 
 	@Check
@@ -631,24 +623,10 @@ class BasicValidator extends AbstractNablaValidator
 	}
 
 	@Check
-	def checkRangeReturnType(RangeSpaceIterator it)
+	def checkIncAndDecValidity(ItemRef it)
 	{
-		if (!container.connectivity.returnType.multiple)
-			error(getRangeReturnTypeMsg(), NablaPackage.Literals::SPACE_ITERATOR__CONTAINER, RANGE_RETURN_TYPE)
-	}
-
-	@Check
-	def checkSingletonReturnType(SingletonSpaceIterator it)
-	{
-		if (container.connectivity.returnType.multiple)
-			error(getSingletonReturnTypeMsg(), NablaPackage.Literals::SPACE_ITERATOR__CONTAINER, SINGLETON_RETURN_TYPE)
-	}
-
-	@Check
-	def checkIncAndDecValidity(SpaceIteratorRef it)
-	{
-		if ((inc>0 || dec>0) && target !== null && target instanceof SingletonSpaceIterator)
-			error(getShiftValidityMsg(), NablaPackage.Literals::SPACE_ITERATOR_REF__TARGET, SHIFT_VALIDITY)
+		if ((inc>0 || dec>0) && target !== null && !(target.eContainer instanceof SpaceIterator))
+			error(getShiftValidityMsg(), NablaPackage.Literals::ITEM_REF__TARGET, SHIFT_VALIDITY)
 	}
 
 	// ===== SizeType =====

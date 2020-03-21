@@ -1,29 +1,28 @@
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.ir.IntervalIterationBlock
-import fr.cea.nabla.ir.ir.SpaceIterationBlock
+import fr.cea.nabla.ir.ir.Interval
+import fr.cea.nabla.ir.ir.Iterator
 
-import static extension fr.cea.nabla.ir.generator.IrIndexExtensions.*
 import static extension fr.cea.nabla.ir.generator.IterationBlockExtensions.*
+import static extension fr.cea.nabla.ir.generator.java.ConnectivityCallExtensions.*
 
 class IterationBlockExtensions
 {
-	static def dispatch defineInterval(SpaceIterationBlock it, CharSequence innerContent)
+	static def dispatch defineInterval(Iterator it, CharSequence innerContent)
 	{
-		val i = range.index
-		if (i.container.connectivity.indexEqualId)
+		if (container.connectivity.indexEqualId)
 			innerContent
 		else
 		'''
 		{
-			const auto «i.containerName»(«getContainerAccessor(i, IndexBuilder.MeshAccessorPrefix)»);
-			const int «nbElems»(«i.containerName».size());
+			const auto «container.name»(«container.accessor»);
+			const int «nbElems»(«container.name».size());
 			«innerContent»
 		}
 		'''
 	}
 
-	static def dispatch defineInterval(IntervalIterationBlock it, CharSequence innerContent)
+	static def dispatch defineInterval(Interval it, CharSequence innerContent)
 	{
 		innerContent
 	}

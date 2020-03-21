@@ -34,7 +34,7 @@ class DeclareConstVariables implements IrTransformationStep
 			val jobInVars = job.inVars
 			if (!jobInVars.empty)
 			{
-				val varDefinition = IrFactory::eINSTANCE.createVarDefinition
+				val varDefinition = IrFactory::eINSTANCE.createVariablesDefinition
 				for (jobInvar : jobInVars.filter(ConnectivityVariable))
 				{
 					val newConstVar = jobInvar.newVariable

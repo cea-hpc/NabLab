@@ -46,7 +46,7 @@ public interface ConnectivityCall extends IrAnnotable {
 
 	/**
 	 * Returns the value of the '<em><b>Args</b></em>' reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.IrUniqueId}.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ItemId}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Args</em>' reference list.
@@ -54,6 +54,6 @@ public interface ConnectivityCall extends IrAnnotable {
 	 * @model resolveProxies="false"
 	 * @generated
 	 */
-	EList<IrUniqueId> getArgs();
+	EList<ItemId> getArgs();
 
 } // ConnectivityCall

@@ -18,6 +18,7 @@ import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InstructionBlock
+import fr.cea.nabla.nabla.ItemDefinition
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVar
@@ -26,11 +27,6 @@ import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
 import java.util.List
 
-/**
- * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
- * Si elle n'est pas singleton, plusieurs instances d'un même objet seront créées lors
- * deu parcours du graphe d'origine (voir la documentation Xtext).
- */
 @Singleton
 class IrInstructionFactory
 {
@@ -39,6 +35,7 @@ class IrInstructionFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrReductionInstructionFactory
 	@Inject extension IrIterationBlockFactory
+	@Inject extension IrItemIdDefinitionFactory
 
 	def Instruction toIrInstruction(fr.cea.nabla.nabla.Instruction nablaInstruction)
 	{
@@ -49,7 +46,7 @@ class IrInstructionFactory
 
 	private def dispatch List<Instruction> toIrInstructions(SimpleVarDefinition v)
 	{
-		val irInstr = IrFactory::eINSTANCE.createVarDefinition =>
+		val irInstr = IrFactory::eINSTANCE.createVariablesDefinition =>
 		[
 			annotations += v.toIrAnnotation
 			variables += v.variable.toIrVariable
@@ -60,7 +57,7 @@ class IrInstructionFactory
 
 	private def dispatch List<Instruction> toIrInstructions(VarGroupDeclaration v)
 	{
-		val irInstr = IrFactory::eINSTANCE.createVarDefinition =>
+		val irInstr = IrFactory::eINSTANCE.createVariablesDefinition =>
 		[
 			// Il n'y a que des ScalarVar quand VarGroupDeclaration est une instruction.
 			// Les ArrayVar ne sont que dans les variables du module (variables globales)
@@ -89,7 +86,7 @@ class IrInstructionFactory
 		[
 			annotations += v.toIrAnnotation
 			iterationBlock = v.iterationBlock.toIrIterationBlock
-			body = v.body.toIrInstruction
+			body = flatten(v.body.toIrInstruction, v.iterationBlock.neededIndexAndIdDefinitions)
 		]
 		#[irInstr]
 	}
@@ -119,6 +116,11 @@ class IrInstructionFactory
 		return irInstr.transformReductions(v.condition)
 	}
 
+	private def dispatch List<Instruction> toIrInstructions(ItemDefinition v)
+	{
+		return #[v.toIrIdDefinition]
+	}
+
 	private def dispatch List<Instruction> toIrInstructions(Return v)
 	{
 		val irInstr = IrFactory::eINSTANCE.createReturn =>
@@ -137,5 +139,21 @@ class IrInstructionFactory
 		instructions.addAll(reductionInstructions)
 		instructions += i
 		return instructions
+	}
+
+	private def flatten(Instruction instruction, List<Instruction> definitions)
+	{
+		if (definitions.empty) 
+			return instruction
+		else if (instruction instanceof fr.cea.nabla.ir.ir.InstructionBlock)
+		{
+			instruction.instructions.addAll(0, definitions)
+			return instruction
+		}
+		else return IrFactory::eINSTANCE.createInstructionBlock =>
+		[
+			instructions.addAll(0, definitions)
+			instructions.add(instruction)
+		]
 	}
 }

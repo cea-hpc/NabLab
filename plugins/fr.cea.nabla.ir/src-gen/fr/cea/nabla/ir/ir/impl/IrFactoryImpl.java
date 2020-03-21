@@ -67,25 +67,26 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.CONNECTIVITY_VARIABLE: return createConnectivityVariable();
 			case IrPackage.FUNCTION: return createFunction();
 			case IrPackage.CONNECTIVITY: return createConnectivity();
-			case IrPackage.ITEM_ARG_TYPE: return createItemArgType();
 			case IrPackage.INSTRUCTION_JOB: return createInstructionJob();
 			case IrPackage.TIME_LOOP_JOB: return createTimeLoopJob();
 			case IrPackage.BEFORE_TIME_LOOP_JOB: return createBeforeTimeLoopJob();
 			case IrPackage.AFTER_TIME_LOOP_JOB: return createAfterTimeLoopJob();
 			case IrPackage.TIME_LOOP_COPY: return createTimeLoopCopy();
-			case IrPackage.VAR_DEFINITION: return createVarDefinition();
 			case IrPackage.INSTRUCTION_BLOCK: return createInstructionBlock();
+			case IrPackage.VARIABLES_DEFINITION: return createVariablesDefinition();
 			case IrPackage.AFFECTATION: return createAffectation();
-			case IrPackage.SPACE_ITERATION_BLOCK: return createSpaceIterationBlock();
-			case IrPackage.INTERVAL_ITERATION_BLOCK: return createIntervalIterationBlock();
+			case IrPackage.REDUCTION_INSTRUCTION: return createReductionInstruction();
+			case IrPackage.LOOP: return createLoop();
+			case IrPackage.ITEM_INDEX_DEFINITION: return createItemIndexDefinition();
+			case IrPackage.ITEM_ID_DEFINITION: return createItemIdDefinition();
+			case IrPackage.IF: return createIf();
+			case IrPackage.RETURN: return createReturn();
+			case IrPackage.ITERATOR: return createIterator();
+			case IrPackage.INTERVAL: return createInterval();
 			case IrPackage.SIZE_TYPE_SYMBOL: return createSizeTypeSymbol();
 			case IrPackage.SIZE_TYPE_INT: return createSizeTypeInt();
 			case IrPackage.SIZE_TYPE_OPERATION: return createSizeTypeOperation();
 			case IrPackage.SIZE_TYPE_SYMBOL_REF: return createSizeTypeSymbolRef();
-			case IrPackage.REDUCTION_INSTRUCTION: return createReductionInstruction();
-			case IrPackage.LOOP: return createLoop();
-			case IrPackage.IF: return createIf();
-			case IrPackage.RETURN: return createReturn();
 			case IrPackage.CONTRACTED_IF: return createContractedIf();
 			case IrPackage.BINARY_EXPRESSION: return createBinaryExpression();
 			case IrPackage.UNARY_EXPRESSION: return createUnaryExpression();
@@ -99,15 +100,18 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.VECTOR_CONSTANT: return createVectorConstant();
 			case IrPackage.FUNCTION_CALL: return createFunctionCall();
 			case IrPackage.ARG_OR_VAR_REF: return createArgOrVarRef();
-			case IrPackage.ITERATOR: return createIterator();
 			case IrPackage.ITEM_TYPE: return createItemType();
 			case IrPackage.IR_TYPE: return createIrType();
 			case IrPackage.BASE_TYPE: return createBaseType();
 			case IrPackage.CONNECTIVITY_TYPE: return createConnectivityType();
 			case IrPackage.TIME_LOOP_VARIABLE: return createTimeLoopVariable();
 			case IrPackage.CONNECTIVITY_CALL: return createConnectivityCall();
-			case IrPackage.IR_UNIQUE_ID: return createIrUniqueId();
-			case IrPackage.IR_INDEX: return createIrIndex();
+			case IrPackage.ITEM_ID: return createItemId();
+			case IrPackage.ITEM_ID_VALUE_ITERATOR: return createItemIdValueIterator();
+			case IrPackage.ITEM_ID_VALUE_CALL: return createItemIdValueCall();
+			case IrPackage.ITEM_INDEX: return createItemIndex();
+			case IrPackage.ITEM_INDEX_VALUE_ITERATOR: return createItemIndexValueIterator();
+			case IrPackage.ITEM_INDEX_VALUE_ID: return createItemIndexValueId();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -204,6 +208,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
+	public Arg createArg() {
+		ArgImpl arg = new ArgImpl();
+		return arg;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public SimpleVariable createSimpleVariable() {
 		SimpleVariableImpl simpleVariable = new SimpleVariableImpl();
 		return simpleVariable;
@@ -237,31 +252,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public Arg createArg() {
-		ArgImpl arg = new ArgImpl();
-		return arg;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public Connectivity createConnectivity() {
 		ConnectivityImpl connectivity = new ConnectivityImpl();
 		return connectivity;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public ItemArgType createItemArgType() {
-		ItemArgTypeImpl itemArgType = new ItemArgTypeImpl();
-		return itemArgType;
 	}
 
 	/**
@@ -325,9 +318,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public VarDefinition createVarDefinition() {
-		VarDefinitionImpl varDefinition = new VarDefinitionImpl();
-		return varDefinition;
+	public InstructionBlock createInstructionBlock() {
+		InstructionBlockImpl instructionBlock = new InstructionBlockImpl();
+		return instructionBlock;
 	}
 
 	/**
@@ -336,9 +329,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public InstructionBlock createInstructionBlock() {
-		InstructionBlockImpl instructionBlock = new InstructionBlockImpl();
-		return instructionBlock;
+	public VariablesDefinition createVariablesDefinition() {
+		VariablesDefinitionImpl variablesDefinition = new VariablesDefinitionImpl();
+		return variablesDefinition;
 	}
 
 	/**
@@ -358,9 +351,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public SpaceIterationBlock createSpaceIterationBlock() {
-		SpaceIterationBlockImpl spaceIterationBlock = new SpaceIterationBlockImpl();
-		return spaceIterationBlock;
+	public ReductionInstruction createReductionInstruction() {
+		ReductionInstructionImpl reductionInstruction = new ReductionInstructionImpl();
+		return reductionInstruction;
 	}
 
 	/**
@@ -369,9 +362,75 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public IntervalIterationBlock createIntervalIterationBlock() {
-		IntervalIterationBlockImpl intervalIterationBlock = new IntervalIterationBlockImpl();
-		return intervalIterationBlock;
+	public Loop createLoop() {
+		LoopImpl loop = new LoopImpl();
+		return loop;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ItemIndexDefinition createItemIndexDefinition() {
+		ItemIndexDefinitionImpl itemIndexDefinition = new ItemIndexDefinitionImpl();
+		return itemIndexDefinition;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ItemIdDefinition createItemIdDefinition() {
+		ItemIdDefinitionImpl itemIdDefinition = new ItemIdDefinitionImpl();
+		return itemIdDefinition;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public If createIf() {
+		IfImpl if_ = new IfImpl();
+		return if_;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Return createReturn() {
+		ReturnImpl return_ = new ReturnImpl();
+		return return_;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Iterator createIterator() {
+		IteratorImpl iterator = new IteratorImpl();
+		return iterator;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Interval createInterval() {
+		IntervalImpl interval = new IntervalImpl();
+		return interval;
 	}
 
 	/**
@@ -416,50 +475,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public SizeTypeSymbolRef createSizeTypeSymbolRef() {
 		SizeTypeSymbolRefImpl sizeTypeSymbolRef = new SizeTypeSymbolRefImpl();
 		return sizeTypeSymbolRef;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public ReductionInstruction createReductionInstruction() {
-		ReductionInstructionImpl reductionInstruction = new ReductionInstructionImpl();
-		return reductionInstruction;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Loop createLoop() {
-		LoopImpl loop = new LoopImpl();
-		return loop;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public If createIf() {
-		IfImpl if_ = new IfImpl();
-		return if_;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Return createReturn() {
-		ReturnImpl return_ = new ReturnImpl();
-		return return_;
 	}
 
 	/**
@@ -545,6 +560,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
+	public MinConstant createMinConstant() {
+		MinConstantImpl minConstant = new MinConstantImpl();
+		return minConstant;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public MaxConstant createMaxConstant() {
 		MaxConstantImpl maxConstant = new MaxConstantImpl();
 		return maxConstant;
@@ -578,17 +604,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public MinConstant createMinConstant() {
-		MinConstantImpl minConstant = new MinConstantImpl();
-		return minConstant;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public FunctionCall createFunctionCall() {
 		FunctionCallImpl functionCall = new FunctionCallImpl();
 		return functionCall;
@@ -603,28 +618,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public ArgOrVarRef createArgOrVarRef() {
 		ArgOrVarRefImpl argOrVarRef = new ArgOrVarRefImpl();
 		return argOrVarRef;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Iterator createIterator() {
-		IteratorImpl iterator = new IteratorImpl();
-		return iterator;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public ConnectivityCall createConnectivityCall() {
-		ConnectivityCallImpl connectivityCall = new ConnectivityCallImpl();
-		return connectivityCall;
 	}
 
 	/**
@@ -688,9 +681,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public IrUniqueId createIrUniqueId() {
-		IrUniqueIdImpl irUniqueId = new IrUniqueIdImpl();
-		return irUniqueId;
+	public ConnectivityCall createConnectivityCall() {
+		ConnectivityCallImpl connectivityCall = new ConnectivityCallImpl();
+		return connectivityCall;
 	}
 
 	/**
@@ -699,9 +692,64 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public IrIndex createIrIndex() {
-		IrIndexImpl irIndex = new IrIndexImpl();
-		return irIndex;
+	public ItemId createItemId() {
+		ItemIdImpl itemId = new ItemIdImpl();
+		return itemId;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ItemIdValueIterator createItemIdValueIterator() {
+		ItemIdValueIteratorImpl itemIdValueIterator = new ItemIdValueIteratorImpl();
+		return itemIdValueIterator;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ItemIdValueCall createItemIdValueCall() {
+		ItemIdValueCallImpl itemIdValueCall = new ItemIdValueCallImpl();
+		return itemIdValueCall;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ItemIndex createItemIndex() {
+		ItemIndexImpl itemIndex = new ItemIndexImpl();
+		return itemIndex;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ItemIndexValueIterator createItemIndexValueIterator() {
+		ItemIndexValueIteratorImpl itemIndexValueIterator = new ItemIndexValueIteratorImpl();
+		return itemIndexValueIterator;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ItemIndexValueId createItemIndexValueId() {
+		ItemIndexValueIdImpl itemIndexValueId = new ItemIndexValueIdImpl();
+		return itemIndexValueId;
 	}
 
 	/**

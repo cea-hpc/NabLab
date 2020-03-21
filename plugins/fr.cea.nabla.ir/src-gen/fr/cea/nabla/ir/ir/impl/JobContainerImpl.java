@@ -41,6 +41,7 @@ public abstract class JobContainerImpl extends IrAnnotableImpl implements JobCon
 	 * @ordered
 	 */
 	protected EList<Job> innerJobs;
+
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

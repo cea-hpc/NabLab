@@ -6,7 +6,9 @@ import fr.cea.nabla.ir.ir.ArgOrVar;
 import fr.cea.nabla.ir.ir.IrPackage;
 
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.ecore.EClass;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
@@ -32,6 +34,7 @@ public abstract class ArgOrVarImpl extends IrAnnotableImpl implements ArgOrVar {
 	 * @ordered
 	 */
 	protected static final String NAME_EDEFAULT = null;
+
 	/**
 	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->

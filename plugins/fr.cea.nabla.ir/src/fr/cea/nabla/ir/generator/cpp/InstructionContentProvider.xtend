@@ -20,11 +20,8 @@ import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SimpleVariable
-import fr.cea.nabla.ir.ir.SpaceIterationBlock
-import fr.cea.nabla.ir.ir.VarDefinition
+import fr.cea.nabla.ir.ir.VariablesDefinition
 import org.eclipse.xtend.lib.annotations.Data
-
-import static fr.cea.nabla.ir.generator.cpp.IndexBuilder.*
 
 import static extension fr.cea.nabla.ir.generator.IterationBlockExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
@@ -38,7 +35,7 @@ abstract class InstructionContentProvider
 	protected abstract def CharSequence getReductionContent(ReductionInstruction it)
 	protected abstract def CharSequence getLoopContent(Loop it)
 
-	def dispatch CharSequence getContent(VarDefinition it) 
+	def dispatch CharSequence getContent(VariablesDefinition it) 
 	'''
 		«FOR v : variables»
 		«IF v.const»const «ENDIF»«v.cppType» «v.name»«v.defaultValueContent»;
@@ -59,7 +56,7 @@ abstract class InstructionContentProvider
 	def dispatch CharSequence getContent(ReductionInstruction it)
 	{
 		reductionContent
-	} 
+	}
 
 	def dispatch CharSequence getContent(Loop it) 
 	{
@@ -70,7 +67,6 @@ abstract class InstructionContentProvider
 			'''
 				for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
 				{
-					«IF iterationBlock instanceof SpaceIterationBlock»«defineIndices(iterationBlock as SpaceIterationBlock)»«ENDIF»
 					«body.innerContent»
 				}
 			''')
@@ -139,9 +135,8 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 		«iterationBlock.defineInterval('''
 		Kokkos::parallel_reduce(«firstArgument», KOKKOS_LAMBDA(const int& «iterationBlock.indexName», «result.cppType»& accu)
 		{
-			«IF iterationBlock instanceof SpaceIterationBlock»«defineIndices(iterationBlock as SpaceIterationBlock)»«ENDIF»
-			«FOR innerReduction : innerReductions»
-			«innerReduction.content»
+			«FOR innerInstruction : innerInstructions»
+			«innerInstruction.content»
 			«ENDFOR»
 			accu = «binaryFunction.getCodeName('.')»(accu, «lambda.content»);
 		}, Kokkos::«binaryFunction.kokkosName»<«result.cppType»>(«result.name»));''')»
@@ -151,7 +146,6 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 	'''
 		Kokkos::parallel_for(«iterationBlock.nbElems», KOKKOS_LAMBDA(const int& «iterationBlock.indexName»)
 		{
-			«IF iterationBlock instanceof SpaceIterationBlock»«defineIndices(iterationBlock as SpaceIterationBlock)»«ENDIF»
 			«body.innerContent»
 		});
 	'''
@@ -187,7 +181,6 @@ class KokkosTeamThreadInstructionContentProvider extends KokkosInstructionConten
 			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& «iterationBlock.indexName»Team)
 			{
 				int «iterationBlock.indexName»(«iterationBlock.indexName»Team + teamWork.first);
-				«IF iterationBlock instanceof SpaceIterationBlock»«defineIndices(iterationBlock as SpaceIterationBlock)»«ENDIF»
 				«body.innerContent»
 			});
 		}

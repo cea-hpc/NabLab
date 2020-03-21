@@ -9,6 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.tests
 
+import com.google.inject.Inject
+import fr.cea.nabla.ConnectivityCallExtensions
 import fr.cea.nabla.ir.interpreter.Context
 import fr.cea.nabla.ir.interpreter.NV0Real
 import fr.cea.nabla.ir.interpreter.NablaValue
@@ -26,14 +28,16 @@ import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 import org.junit.Assert
 
-import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
 class TestUtils 
 {
+	@Inject extension ConnectivityCallExtensions
+
 	public static val DoubleTolerance = 1e-15
 
-	static def getAllVars(EObject it)
+	def getAllVars(EObject it)
 	{
 		val allVariables = new ArrayList<Var>
 		for (i : eAllContents.toIterable)
@@ -45,37 +49,37 @@ class TestUtils
 		return allVariables
 	}
 
-	static def getAllAffectations(EObject it)
+	def getAllAffectations(EObject it)
 	{
 		eAllContents.filter(Affectation)
 	}
 
 	// ===== CharSequence utils =====
 
-	static def getVariableByName(EObject it, String variableName)
+	def getVarByName(EObject it, String variableName)
 	{
 		allVars.findFirst[v | v.name == variableName]
 	}
 
-	static def getVarAffectationByName(EObject it, String variableName)
+	def getVarAffectationByName(EObject it, String variableName)
 	{
 		allAffectations.findFirst[a | a.left.target.name == variableName]
 	}
 
-	static def getConnectivityCallFor(EObject it, Connectivity connectivity)
+	def getConnectivityCallFor(EObject it, Connectivity connectivity)
 	{
 		eAllContents.filter(ConnectivityCall).findFirst[ cc | cc.connectivity == connectivity]
 	}
 
 	// ===== CharSequence utils =====
-	private static def String getEmptyTestModule()
+	private def String getEmptyTestModule()
 	'''
 	module Test;
 	with Math.*;
 	'''
 
 	//TODO These options should be filled in nablagen
-	private static def String getMandatoryOptions(int xQuads, int yQuads)
+	private def String getMandatoryOptions(int xQuads, int yQuads)
 	'''
 	const ℝ X_EDGE_LENGTH = 0.01;
 	const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
@@ -83,19 +87,19 @@ class TestUtils
 	const ℕ Y_EDGE_ELEMS = «yQuads»;
 	'''
 
-	static def String getSimulationVariables()
+	def String getSimulationVariables()
 	'''
 	ℝ t = 0.0;
 	ℝ δt = 0.001;
 	ℝ[2] X{nodes};
 	'''
 
-	static def String getMandatoryOptions()
+	def String getMandatoryOptions()
 	{
 		return getMandatoryOptions(10, 10)
 	}
 
-	static def CharSequence getDefaultConnectivities()
+	def CharSequence getDefaultConnectivities()
 	'''
 	items { node, cell }
 
@@ -104,34 +108,34 @@ class TestUtils
 	set nodesOfCell: cell → {node};
 	'''
 
-	static def CharSequence getNodesConnectivity()
+	def CharSequence getNodesConnectivity()
 	'''
 	items { node }
 
 	set nodes: → {node};
 	'''
 
-	static def CharSequence getTestModule()
+	def CharSequence getTestModule()
 	{
 		emptyTestModule + mandatoryOptions
 	}
 
-	static def CharSequence getTestModuleForSimulation()
+	def CharSequence getTestModuleForSimulation()
 	{
-		emptyTestModule + nodesConnectivity + mandatoryOptions + fr.cea.nabla.tests.TestUtils.getSimulationVariables
+		emptyTestModule + nodesConnectivity + mandatoryOptions + getSimulationVariables
 	}
 
-	static def CharSequence getTestModule(CharSequence connectivities, CharSequence functions)
+	def CharSequence getTestModule(CharSequence connectivities, CharSequence functions)
 	{
 		emptyTestModule + connectivities + functions + mandatoryOptions
 	}
 
-	static def CharSequence getTestModule(int xQuads, int yQuads)
+	def CharSequence getTestModule(int xQuads, int yQuads)
 	{
-		emptyTestModule + defaultConnectivities + getMandatoryOptions(xQuads, yQuads) + fr.cea.nabla.tests.TestUtils.getSimulationVariables
+		emptyTestModule + defaultConnectivities + getMandatoryOptions(xQuads, yQuads) + getSimulationVariables
 	}
 
-	static def getTestGenModel()
+	def getTestGenModel()
 	{
 		'''
 		with Test.*;
@@ -162,17 +166,17 @@ class TestUtils
 	}
 
 	// Interpreter asserts
-	static def assertVariableDefaultValue(IrModule irModule, Context context, String variableName, NablaValue value)
+	def assertVariableDefaultValue(IrModule irModule, Context context, String variableName, NablaValue value)
 	{
 		Assert.assertEquals(value, (irModule.getVariableByName(variableName) as SimpleVariable).defaultValue.interprete(context))
 	}
 
-	static def dispatch assertVariableValueInContext(IrModule irModule, Context context, String variableName, NablaValue value)
+	def dispatch assertVariableValueInContext(IrModule irModule, Context context, String variableName, NablaValue value)
 	{
 		Assert.assertEquals(value, context.getVariableValue(irModule.getVariableByName(variableName)))
 	}
 
-	static def dispatch assertVariableValueInContext(IrModule irModule, Context context, String variableName, NV0Real value)
+	def dispatch assertVariableValueInContext(IrModule irModule, Context context, String variableName, NV0Real value)
 	{
 		val variableValue = context.getVariableValue(irModule.getVariableByName(variableName))
 		Assert.assertNotNull(variableValue)
@@ -181,7 +185,7 @@ class TestUtils
 	}
 
 	//Read File to String
-	static def readFileAsString(String filePath)
+	def readFileAsString(String filePath)
 	{
 		new String(Files.readAllBytes(Paths.get(filePath)))
 	}

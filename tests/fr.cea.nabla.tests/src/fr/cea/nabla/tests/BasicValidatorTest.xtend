@@ -23,13 +23,12 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import static fr.cea.nabla.tests.TestUtils.*
-
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
 class BasicValidatorTest
 {
 	@Inject ParseHelper<NablaModule> parseHelper
+	@Inject extension TestUtils
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
 
@@ -122,9 +121,9 @@ class BasicValidatorTest
 			j1: ∀r∈nodes(), ∀r∈nodes(), ℝ d = X{r, r} * 2.0;
 		''')
 		Assert.assertNotNull(moduleKo)
-		moduleKo.assertError(NablaPackage.eINSTANCE.spaceIterator,
+		moduleKo.assertError(NablaPackage.eINSTANCE.item,
 			BasicValidator::DUPLICATE_NAME,
-			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.SPACE_ITERATOR, "r"))
+			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.ITEM, "r"))
 
 		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, '') +
 		'''
@@ -213,8 +212,8 @@ class BasicValidatorTest
 			
 			items { node }
 			
-			set	nodes: → {node};
-			set	nodes: → {node};
+			set nodes: → {node};
+			set nodes: → {node};
 			
 			const ℝ X_EDGE_LENGTH = 0.01;
 			const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
@@ -224,7 +223,7 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.connectivity,
 			BasicValidator::DUPLICATE_NAME,
-			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.CONNECTIVITY, "nodes"))
+			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.MULTIPLE_CONNECTIVITY, "nodes"))
 
 		val moduleOk = parseHelper.parse('''
 			module Test;
@@ -824,43 +823,6 @@ class BasicValidatorTest
 		moduleOk.assertNoErrors
 	}
 
-	@Test
-	def void testCheckDimensionMultipleAndArg()
-	{
-		val connectivities =
-		'''
-		items { node, cell }
-		set	nodes: → {node};
-		set	cells: → {cell};
-		set	prevNode: node → node;
-		set	neigboursCells: cell → {cell};
-		'''
-		val moduleKo = parseHelper.parse(getTestModule(connectivities, '')
-			+
-			'''
-			ℝ[2] U{prevNode};
-			ℝ[2] V{neigboursCells};
-			''')
-		Assert.assertNotNull(moduleKo)
-
-		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar,
-			BasicValidator::DIMENSION_MULTIPLE,
-			BasicValidator::getDimensionMultipleMsg)
-
-		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar,
-			BasicValidator::DIMENSION_ARG,
-			BasicValidator::getDimensionArgMsg)
-
-		val moduleOk =  parseHelper.parse(getTestModule(connectivities, '')
-				+
-				'''
-				ℝ[2] U{nodes};
-				ℝ[2] V{cells, neigboursCells};
-				''')
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
 	// ===== Instructions =====
 
 	@Test
@@ -923,10 +885,10 @@ class BasicValidatorTest
 		moduleOk.assertNoErrors
 	}
 
-	// ===== Iterators =====
+	// ===== Items =====
 
 	@Test
-	def void testCheckUnusedIterator() 
+	def void testCheckUnusedItem() 
 	{
 		val moduleKo = parseHelper.parse(testModule +
 			'''
@@ -935,9 +897,9 @@ class BasicValidatorTest
 		)
 		Assert.assertNotNull(moduleKo)
 
-		moduleKo.assertWarning(NablaPackage.eINSTANCE.spaceIterator,
-			BasicValidator::UNUSED_ITERATOR,
-			BasicValidator::getUnusedIteratorMsg())
+		moduleKo.assertWarning(NablaPackage.eINSTANCE.item,
+			BasicValidator::UNUSED_ITEM,
+			BasicValidator::getUnusedItemMsg())
 
 		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, '') +
 			'''
@@ -950,91 +912,13 @@ class BasicValidatorTest
 	}
 
 	@Test
-	def void testCheckRangeReturnType()
-	{
-		var connectivities =
-			'''
-			items { node }
-			set nodes: → {node};
-			set leftNode: node → node;
-			'''
-		val moduleKo = parseHelper.parse(getTestModule(connectivities, '')
-			+
-			'''
-			ℝ[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), ∀r2∈leftNode(r1), X{r2} = X{r1} - 1;
-			'''
-		)
-		Assert.assertNotNull(moduleKo)
-
-		moduleKo.assertError(NablaPackage.eINSTANCE.rangeSpaceIterator,
-			BasicValidator::RANGE_RETURN_TYPE,
-			BasicValidator::getRangeReturnTypeMsg)
-
-		connectivities =
-			'''
-			items { node }
-			set nodes: → {node};
-			set leftNodes: node → {node};
-			'''
-		val moduleOk =  parseHelper.parse(getTestModule(connectivities, '')
-			+
-			'''
-			ℝ[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), ∀r2∈leftNodes(r1), X{r2} = X{r1} - 1;
-			'''
-		)
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
-	@Test
-	def void testCheckSingletonReturnType() 
-	{
-		var connectivities =
-			'''
-			items { node }
-			set	nodes: → {node};
-			set	leftNode: node → {node};
-			'''
-		val moduleKo = parseHelper.parse(getTestModule(connectivities, '')
-			+
-			'''
-			ℝ[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), r2 = leftNode(r1), X{r2} = X{r1} - 1;
-			'''
-		)
-		Assert.assertNotNull(moduleKo)
-
-		moduleKo.assertError(NablaPackage.eINSTANCE.singletonSpaceIterator,
-			BasicValidator::SINGLETON_RETURN_TYPE,
-			BasicValidator::getSingletonReturnTypeMsg)
-
-		connectivities =
-			'''
-			items { node }
-			set	nodes: → {node};
-			set	leftNode: node → node;
-			'''
-		val moduleOk =  parseHelper.parse(getTestModule(connectivities, '')
-			+
-			'''
-			ℝ[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), r2 = leftNode(r1), X{r2} = X{r1} - 1;
-			'''
-		)
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
-	@Test
 	def void testCheckIncAndDecValidity() 
 	{
 		val connectivities =
 			'''
 			items { node }
-			set	nodes: → {node};
-			set	leftNode: node → node;
+			set nodes: → {node};
+			item leftNode: node → node;
 			'''
 
 		val moduleKo = parseHelper.parse(getTestModule(connectivities, '')
@@ -1046,7 +930,7 @@ class BasicValidatorTest
 		)
 		Assert.assertNotNull(moduleKo)
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.spaceIteratorRef,
+		moduleKo.assertError(NablaPackage.eINSTANCE.itemRef,
 			BasicValidator::SHIFT_VALIDITY,
 			BasicValidator::getShiftValidityMsg)
 

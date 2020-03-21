@@ -28,8 +28,6 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import static extension fr.cea.nabla.tests.TestUtils.*
-
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
 class NablaScopeProviderTest
@@ -37,6 +35,7 @@ class NablaScopeProviderTest
 	@Inject ParseHelper<NablaModule> parseHelper;
 	@Inject extension IScopeProvider
 	@Inject extension NablaModuleExtensions
+	@Inject extension TestUtils
 
 	/*** Scope for iterators **********************************************************/
 
@@ -58,7 +57,7 @@ class NablaScopeProviderTest
 		)
 		Assert.assertNotNull(module)
 
-		val eref = NablaPackage::eINSTANCE.spaceIteratorRef_Target
+		val eref = NablaPackage::eINSTANCE.itemRef_Target
 		val j1 = module.getJobByName("j1")
 		val j1_a = j1.getVarAffectationByName("a")
 		j1_a.left.assertScope(eref, "j")
@@ -87,11 +86,11 @@ class NablaScopeProviderTest
 	}
 
 	@Test
-	def void testScopeProviderForSpaceIteratorRefInConnectivityCall()
+	def void testScopeProviderForItemRefInConnectivityCall()
 	{
-		val module = parseHelper.parse(getTestModule(defaultConnectivities+ '''
-			set leftCell: cell → cell;
-			set rightCell: cell → cell;
+		val module = parseHelper.parse(getTestModule(defaultConnectivities + '''
+			item leftCell: cell → cell;
+			item rightCell: cell → cell;
 			''', '')
 			+
 			'''
@@ -107,7 +106,7 @@ class NablaScopeProviderTest
 		)
 		Assert.assertNotNull(module)
 
-		val eref = NablaPackage::eINSTANCE.spaceIteratorRef_Target
+		val eref = NablaPackage::eINSTANCE.itemRef_Target
 		val cells = module.getConnectivityByName("cells")
 		val nodes = module.getConnectivityByName("nodes")
 		val nodesOfCell = module.getConnectivityByName("nodesOfCell")
@@ -151,7 +150,7 @@ class NablaScopeProviderTest
 		val leftCell = module.getConnectivityByName("leftCell")
 		val j5_leftCell = j5.getConnectivityCallFor(leftCell)
 		Assert.assertNotNull(j5_leftCell)
-		j5_leftCell.assertScope(eref, "j, rj")
+		j5_leftCell.assertScope(eref, "rj, j")
 	}
 
 	def private assertScope(EObject context, EReference reference, CharSequence expected)
@@ -248,7 +247,7 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForArgOrVarRefInReduction()
 	{
-		val module = parseHelper.parse(TestUtils::getTestModule('',
+		val module = parseHelper.parse(getTestModule('',
 			'''
 			def reduceMin: (ℝ.MaxValue, ℝ) → ℝ;
 			''')
@@ -265,7 +264,7 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForArgOrVarRefInFunction()
 	{
-		val model = TestUtils::getTestModule( '',
+		val model = getTestModule( '',
 			'''
 			def	inverse: ℝ[2,2] → ℝ[2,2];
 			def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
@@ -370,7 +369,7 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForDimensionSymbolInFunction()
 	{
-		val model = TestUtils::getTestModule( '',
+		val model = getTestModule( '',
 			'''
 			def	inverse: ℝ[2,2] → ℝ[2,2];
 			def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →

@@ -17,6 +17,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.Connectivity#getInTypes <em>In Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Connectivity#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Connectivity#isIndexEqualId <em>Index Equal Id</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Connectivity#isMultiple <em>Multiple</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivity()
@@ -59,26 +60,26 @@ public interface Connectivity extends IrAnnotable {
 	EList<ItemType> getInTypes();
 
 	/**
-	 * Returns the value of the '<em><b>Return Type</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Return Type</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Return Type</em>' containment reference.
-	 * @see #setReturnType(ItemArgType)
+	 * @return the value of the '<em>Return Type</em>' reference.
+	 * @see #setReturnType(ItemType)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivity_ReturnType()
-	 * @model containment="true"
+	 * @model resolveProxies="false"
 	 * @generated
 	 */
-	ItemArgType getReturnType();
+	ItemType getReturnType();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Connectivity#getReturnType <em>Return Type</em>}' containment reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Connectivity#getReturnType <em>Return Type</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Return Type</em>' containment reference.
+	 * @param value the new value of the '<em>Return Type</em>' reference.
 	 * @see #getReturnType()
 	 * @generated
 	 */
-	void setReturnType(ItemArgType value);
+	void setReturnType(ItemType value);
 
 	/**
 	 * Returns the value of the '<em><b>Index Equal Id</b></em>' attribute.
@@ -102,5 +103,27 @@ public interface Connectivity extends IrAnnotable {
 	 * @generated
 	 */
 	void setIndexEqualId(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Multiple</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Multiple</em>' attribute.
+	 * @see #setMultiple(boolean)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivity_Multiple()
+	 * @model unique="false" required="true"
+	 * @generated
+	 */
+	boolean isMultiple();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Connectivity#isMultiple <em>Multiple</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Multiple</em>' attribute.
+	 * @see #isMultiple()
+	 * @generated
+	 */
+	void setMultiple(boolean value);
 
 } // Connectivity

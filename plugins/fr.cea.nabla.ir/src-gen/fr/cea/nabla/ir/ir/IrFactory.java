@@ -112,15 +112,6 @@ public interface IrFactory extends EFactory {
 	Connectivity createConnectivity();
 
 	/**
-	 * Returns a new object of class '<em>Item Arg Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Item Arg Type</em>'.
-	 * @generated
-	 */
-	ItemArgType createItemArgType();
-
-	/**
 	 * Returns a new object of class '<em>Instruction Job</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -166,15 +157,6 @@ public interface IrFactory extends EFactory {
 	TimeLoopCopy createTimeLoopCopy();
 
 	/**
-	 * Returns a new object of class '<em>Var Definition</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Var Definition</em>'.
-	 * @generated
-	 */
-	VarDefinition createVarDefinition();
-
-	/**
 	 * Returns a new object of class '<em>Instruction Block</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -182,6 +164,15 @@ public interface IrFactory extends EFactory {
 	 * @generated
 	 */
 	InstructionBlock createInstructionBlock();
+
+	/**
+	 * Returns a new object of class '<em>Variables Definition</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Variables Definition</em>'.
+	 * @generated
+	 */
+	VariablesDefinition createVariablesDefinition();
 
 	/**
 	 * Returns a new object of class '<em>Affectation</em>'.
@@ -193,22 +184,76 @@ public interface IrFactory extends EFactory {
 	Affectation createAffectation();
 
 	/**
-	 * Returns a new object of class '<em>Space Iteration Block</em>'.
+	 * Returns a new object of class '<em>Reduction Instruction</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Space Iteration Block</em>'.
+	 * @return a new object of class '<em>Reduction Instruction</em>'.
 	 * @generated
 	 */
-	SpaceIterationBlock createSpaceIterationBlock();
+	ReductionInstruction createReductionInstruction();
 
 	/**
-	 * Returns a new object of class '<em>Interval Iteration Block</em>'.
+	 * Returns a new object of class '<em>Loop</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Interval Iteration Block</em>'.
+	 * @return a new object of class '<em>Loop</em>'.
 	 * @generated
 	 */
-	IntervalIterationBlock createIntervalIterationBlock();
+	Loop createLoop();
+
+	/**
+	 * Returns a new object of class '<em>Item Index Definition</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Item Index Definition</em>'.
+	 * @generated
+	 */
+	ItemIndexDefinition createItemIndexDefinition();
+
+	/**
+	 * Returns a new object of class '<em>Item Id Definition</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Item Id Definition</em>'.
+	 * @generated
+	 */
+	ItemIdDefinition createItemIdDefinition();
+
+	/**
+	 * Returns a new object of class '<em>If</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>If</em>'.
+	 * @generated
+	 */
+	If createIf();
+
+	/**
+	 * Returns a new object of class '<em>Return</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Return</em>'.
+	 * @generated
+	 */
+	Return createReturn();
+
+	/**
+	 * Returns a new object of class '<em>Iterator</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Iterator</em>'.
+	 * @generated
+	 */
+	Iterator createIterator();
+
+	/**
+	 * Returns a new object of class '<em>Interval</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Interval</em>'.
+	 * @generated
+	 */
+	Interval createInterval();
 
 	/**
 	 * Returns a new object of class '<em>Size Type Symbol</em>'.
@@ -245,42 +290,6 @@ public interface IrFactory extends EFactory {
 	 * @generated
 	 */
 	SizeTypeSymbolRef createSizeTypeSymbolRef();
-
-	/**
-	 * Returns a new object of class '<em>Reduction Instruction</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Reduction Instruction</em>'.
-	 * @generated
-	 */
-	ReductionInstruction createReductionInstruction();
-
-	/**
-	 * Returns a new object of class '<em>Loop</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Loop</em>'.
-	 * @generated
-	 */
-	Loop createLoop();
-
-	/**
-	 * Returns a new object of class '<em>If</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>If</em>'.
-	 * @generated
-	 */
-	If createIf();
-
-	/**
-	 * Returns a new object of class '<em>Return</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Return</em>'.
-	 * @generated
-	 */
-	Return createReturn();
 
 	/**
 	 * Returns a new object of class '<em>Contracted If</em>'.
@@ -400,15 +409,6 @@ public interface IrFactory extends EFactory {
 	ArgOrVarRef createArgOrVarRef();
 
 	/**
-	 * Returns a new object of class '<em>Iterator</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Iterator</em>'.
-	 * @generated
-	 */
-	Iterator createIterator();
-
-	/**
 	 * Returns a new object of class '<em>Item Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -463,22 +463,58 @@ public interface IrFactory extends EFactory {
 	ConnectivityCall createConnectivityCall();
 
 	/**
-	 * Returns a new object of class '<em>Unique Id</em>'.
+	 * Returns a new object of class '<em>Item Id</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Unique Id</em>'.
+	 * @return a new object of class '<em>Item Id</em>'.
 	 * @generated
 	 */
-	IrUniqueId createIrUniqueId();
+	ItemId createItemId();
 
 	/**
-	 * Returns a new object of class '<em>Index</em>'.
+	 * Returns a new object of class '<em>Item Id Value Iterator</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Index</em>'.
+	 * @return a new object of class '<em>Item Id Value Iterator</em>'.
 	 * @generated
 	 */
-	IrIndex createIrIndex();
+	ItemIdValueIterator createItemIdValueIterator();
+
+	/**
+	 * Returns a new object of class '<em>Item Id Value Call</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Item Id Value Call</em>'.
+	 * @generated
+	 */
+	ItemIdValueCall createItemIdValueCall();
+
+	/**
+	 * Returns a new object of class '<em>Item Index</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Item Index</em>'.
+	 * @generated
+	 */
+	ItemIndex createItemIndex();
+
+	/**
+	 * Returns a new object of class '<em>Item Index Value Iterator</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Item Index Value Iterator</em>'.
+	 * @generated
+	 */
+	ItemIndexValueIterator createItemIndexValueIterator();
+
+	/**
+	 * Returns a new object of class '<em>Item Index Value Id</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Item Index Value Id</em>'.
+	 * @generated
+	 */
+	ItemIndexValueId createItemIndexValueId();
 
 	/**
 	 * Returns the package supported by this factory.

@@ -7,24 +7,17 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla
+package fr.cea.nabla.ir.generator
 
-import fr.cea.nabla.nabla.Item
-import fr.cea.nabla.nabla.ItemDefinition
-import fr.cea.nabla.nabla.ItemType
-import fr.cea.nabla.nabla.SpaceIterator
-import fr.cea.nabla.nabla.SingletonDefinition
+import fr.cea.nabla.ir.ir.ConnectivityCall
 
-class ItemExtensions
+class ConnectivityCallExtensions 
 {
-	def ItemType getType(Item it)
+	static def getName(ConnectivityCall it)
 	{
-		val c = eContainer
-		switch c
-		{
-			ItemDefinition: c.type
-			SpaceIterator: c.container.connectivity.returnType
-			SingletonDefinition: c.value.connectivity.returnType
-		}
+		connectivity.name + args.map[x | x.itemName.toFirstUpper].join('')
 	}
+
+	static def getAccessor(ConnectivityCall it)
+	'''get«connectivity.name.toFirstUpper»(«args.map[name].join(', ')»)'''
 }

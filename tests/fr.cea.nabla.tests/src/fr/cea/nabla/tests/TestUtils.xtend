@@ -9,8 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.tests
 
-import com.google.inject.Inject
-import fr.cea.nabla.ConnectivityCallExtensions
 import fr.cea.nabla.ir.interpreter.Context
 import fr.cea.nabla.ir.interpreter.NV0Real
 import fr.cea.nabla.ir.interpreter.NablaValue
@@ -28,13 +26,12 @@ import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 import org.junit.Assert
 
-import static extension fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
+import static extension fr.cea.nabla.ConnectivityCallExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 
 class TestUtils 
 {
-	@Inject extension ConnectivityCallExtensions
-
 	public static val DoubleTolerance = 1e-15
 
 	def getAllVars(EObject it)

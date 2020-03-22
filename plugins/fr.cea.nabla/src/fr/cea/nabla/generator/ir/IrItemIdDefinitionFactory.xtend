@@ -43,7 +43,7 @@ class IrItemIdDefinitionFactory
 	 */
 	def getNeededIdDefinitions(SpaceIterator it)
 	{
-		println("[" + item.name + "] Recherche des ids")
+		//println("[" + item.name + "] Recherche des ids")
 		val neededDefinitions = new ArrayList<ItemIdDefinition>
 		val iterable = EcoreUtil2::getContainerOfType(it, Iterable)
 		for (referencer : iterable.eAllContents.filter(ItemRef).filter[x | x.target == item].toIterable)
@@ -61,7 +61,7 @@ class IrItemIdDefinitionFactory
 				}
 			}
 		}
-		println("[" + item.name + "] Needed ids: " + neededDefinitions.map[id.name].join(', '))
+		//println("[" + item.name + "] Needed ids: " + neededDefinitions.map[id.name].join(', '))
 		return neededDefinitions
 	}
 

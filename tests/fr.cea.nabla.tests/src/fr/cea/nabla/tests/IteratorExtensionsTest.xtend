@@ -10,76 +10,83 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.ir.Iterator
-import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.NablaModuleExtensions
+import fr.cea.nabla.generator.ir.IrItemIdDefinitionFactory
+import fr.cea.nabla.generator.ir.IrItemIndexDefinitionFactory
+import fr.cea.nabla.generator.ir.IrItemIndexFactory
+import fr.cea.nabla.nabla.Job
+import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.SpaceIterator
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
+import org.eclipse.xtext.testing.util.ParseHelper
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.JobExtensions.*
-import static extension fr.cea.nabla.ir.generator.IrIndexExtensions.*
+import static extension fr.cea.nabla.ConnectivityCallExtensions.*
+import fr.cea.nabla.nabla.SingletonDefinition
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
 class IteratorExtensionsTest
 {
-	@Inject CompilationChainHelper compilationHelper
 	@Inject extension TestUtils
+	@Inject extension NablaModuleExtensions
+	@Inject extension IrItemIndexFactory
+	@Inject extension IrItemIdDefinitionFactory
+	@Inject extension IrItemIndexDefinitionFactory
+	@Inject ParseHelper<NablaModule> parseHelper
 
 	var Job j1; Job j2; Job j3; Job j4;	Job j5;
-	var Iterator j1_j; Iterator j2_j; Iterator j2_r; Iterator j3_j; Iterator j3_r;
-	var Iterator j4_j; Iterator j4_r; Iterator j5_j1; Iterator j5_j2; Iterator j5_cf;
-
-	var model =
-	'''
-	module Test;
-	
-	with Math.*;
-
-	items { cell, node, face }
-	
-	set cells: → {cell};
-	set nodes: → {node};
-	set faces: → {face};
-	set nodesOfCell: cell → {node};
-	set cellsOfNode: node → {cell};
-	set neighbourCells: cell → {cell};
-	item commonFace: cell × cell → face;
-
-	def ∑: 0.0, ℝ, (a, b) → return a + b;
-	def ∑: x | 0.0, ℝ[x], (a, b) → return a + b;
-	def ∑: x | 0.0, ℝ[x, x], (a, b) → return a + b;
-	'''
-	+ mandatoryOptions + simulationVariables +
-	'''
-	ℝ x{cells}, f{cells}, Cjr{cells,nodesOfCell};
-	ℝ[2] u{cells};
-	ℝ surface{faces};
-	ℝ a;
-
-	J1: ∀j∈cells(), x{j} = 2.0;
-	J2: ∀j∈cells(), ∀r∈nodesOfCell(j), Cjr{j,r} = 3.0;
-	J3: ∀r∈nodes(), ∀j∈cellsOfNode(r), Cjr{j,r} = 1.0;
-	J4: ∀j∈cells(), u{j} = 0.5 * ∑{r∈nodesOfCell(j)}(X{r} - X{r+1});
-	J5: ∀j1∈cells(), f{j1} = a * ∑{j2∈neighbourCells(j1), cf=commonFace(j1,j2)}( (x{j2}-x{j1}) / surface{cf});
-	'''
-
-	var genModel = testGenModel
+	var SpaceIterator j1_j; SpaceIterator j2_j; SpaceIterator j2_r; SpaceIterator j3_j; SpaceIterator j3_r;
+	var SpaceIterator j4_j; SpaceIterator j4_r; SpaceIterator j5_j1; SpaceIterator j5_j2; SingletonDefinition j5_cf;
 
 	@Before
 	def void setUpBefore() throws Exception
 	{
-		val irModule = compilationHelper.getIrModule(model, genModel)
+		val model =
+		'''
+		module Test;
+		
+		with Math.*;
 
-		j1 = irModule.getJobByName("J1")
-		j2 = irModule.getJobByName("J2")
-		j3 = irModule.getJobByName("J3")
-		j4 = irModule.getJobByName("J4")
-		j5 = irModule.getJobByName("J5")
+		items { cell, node, face }
+		
+		set cells: → {cell};
+		set nodes: → {node};
+		set faces: → {face};
+		set nodesOfCell: cell → {node};
+		set cellsOfNode: node → {cell};
+		set neighbourCells: cell → {cell};
+		item commonFace: cell × cell → face;
+
+		def ∑: 0.0, ℝ, (a, b) → return a + b;
+		def ∑: x | 0.0, ℝ[x], (a, b) → return a + b;
+		def ∑: x | 0.0, ℝ[x, x], (a, b) → return a + b;
+		'''
+		+ mandatoryOptions + simulationVariables +
+		'''
+		ℝ x{cells}, f{cells}, Cjr{cells,nodesOfCell};
+		ℝ[2] u{cells};
+		ℝ surface{faces};
+		ℝ a;
+
+		J1: ∀j∈cells(), x{j} = 2.0;
+		J2: ∀j∈cells(), ∀r∈nodesOfCell(j), Cjr{j,r} = 3.0;
+		J3: ∀r∈nodes(), ∀j∈cellsOfNode(r), Cjr{j,r} = 1.0;
+		J4: ∀j∈cells(), u{j} = 0.5 * ∑{r∈nodesOfCell(j)}(X{r} - X{r+1});
+		J5: ∀j1∈cells(), f{j1} = a * ∑{j2∈neighbourCells(j1), cf=commonFace(j1,j2)}( (x{j2}-x{j1}) / surface{cf});
+		'''
+
+		val nablaModule = parseHelper.parse(model)
+
+		j1 = nablaModule.getJobByName("J1")
+		j2 = nablaModule.getJobByName("J2")
+		j3 = nablaModule.getJobByName("J3")
+		j4 = nablaModule.getJobByName("J4")
+		j5 = nablaModule.getJobByName("J5")
 
 		j1_j = j1.getIteratorByName("j")
 		j2_j = j2.getIteratorByName("j")
@@ -90,82 +97,87 @@ class IteratorExtensionsTest
 		j4_r = j4.getIteratorByName("r")
 		j5_j1 = j5.getIteratorByName("j1")
 		j5_j2 = j5.getIteratorByName("j2")
-		j5_cf = j5.getIteratorByName("cf")
+		j5_cf = j5_j2.singletons.head
 	}
 
 	@Test
-	def void testGetContainerName()
+	def void testGetConnectivityCallUniqueName()
 	{
-		Assert.assertEquals("cells", j1_j.index.containerName)
+		Assert.assertEquals("cells", j1_j.container.uniqueName)
 
-		Assert.assertEquals("cells", j2_j.index.containerName)
-		Assert.assertEquals("nodesOfCellJ", j2_r.index.containerName)
+		Assert.assertEquals("cells", j2_j.container.uniqueName)
+		Assert.assertEquals("nodesOfCellJ", j2_r.container.uniqueName)
 
-		Assert.assertEquals("nodes", j3_r.index.containerName)
-		Assert.assertEquals("cellsOfNodeR", j3_j.index.containerName)
+		Assert.assertEquals("nodes", j3_r.container.uniqueName)
+		Assert.assertEquals("cellsOfNodeR", j3_j.container.uniqueName)
 
-		Assert.assertEquals("cells", j4_j.index.containerName)
-		Assert.assertEquals("nodesOfCellJ", j4_r.index.containerName)
+		Assert.assertEquals("cells", j4_j.container.uniqueName)
+		Assert.assertEquals("nodesOfCellJ", j4_r.container.uniqueName)
 
-		Assert.assertEquals("cells", j5_j1.index.containerName)
-		Assert.assertEquals("neighbourCellsJ1", j5_j2.index.containerName)
-		Assert.assertEquals("commonFaceJ1J2", j5_cf.index.containerName)
+		Assert.assertEquals("cells", j5_j1.container.uniqueName)
+		Assert.assertEquals("neighbourCellsJ1", j5_j2.container.uniqueName)
 	}
 
 	@Test
 	def void testGetIndexName()
 	{
-		Assert.assertEquals("jCells", j1_j.index.name)
+		Assert.assertEquals("jCells", j1_j.toIrIndex.name)
 
-		Assert.assertEquals("jCells", j2_j.index.name)
-		Assert.assertEquals("rNodesOfCellJ", j2_r.index.name)
+		Assert.assertEquals("jCells", j2_j.toIrIndex.name)
+		Assert.assertEquals("rNodesOfCellJ", j2_r.toIrIndex.name)
 
-		Assert.assertEquals("rNodes", j3_r.index.name)
-		Assert.assertEquals("jCellsOfNodeR", j3_j.index.name)
+		Assert.assertEquals("rNodes", j3_r.toIrIndex.name)
+		Assert.assertEquals("jCellsOfNodeR", j3_j.toIrIndex.name)
 
-		Assert.assertEquals("jCells", j4_j.index.name)
-		Assert.assertEquals("rNodesOfCellJ", j4_r.index.name)
+		Assert.assertEquals("jCells", j4_j.toIrIndex.name)
+		Assert.assertEquals("rNodesOfCellJ", j4_r.toIrIndex.name)
 
-		Assert.assertEquals("j1Cells", j5_j1.index.name)
-		Assert.assertEquals("j2NeighbourCellsJ1", j5_j2.index.name)
-		Assert.assertEquals("cfCommonFaceJ1J2", j5_cf.index.name)
+		Assert.assertEquals("j1Cells", j5_j1.toIrIndex.name)
+		Assert.assertEquals("j2NeighbourCellsJ1", j5_j2.toIrIndex.name)
 	}
 
 	@Test
-	def void testGetNeededIds()
+	def void testGetNeededIdDefinitions()
 	{
-		Assert.assertArrayEquals(#[], j1_j.neededIds.map[name])
+		Assert.assertArrayEquals(#[], j1_j.neededIdDefinitions.map[id.name])
 
-		Assert.assertArrayEquals(#["jId"], j2_j.neededIds.map[name])
-		Assert.assertArrayEquals(#[], j2_r.neededIds.map[name])
+		Assert.assertArrayEquals(#["jId"], j2_j.neededIdDefinitions.map[id.name])
+		Assert.assertArrayEquals(#[], j2_r.neededIdDefinitions.map[id.name])
 
-		Assert.assertArrayEquals(#["jId"], j3_j.neededIds.map[name])
-		Assert.assertArrayEquals(#["rId"], j3_r.neededIds.map[name])
+		Assert.assertArrayEquals(#["jId"], j3_j.neededIdDefinitions.map[id.name])
+		Assert.assertArrayEquals(#["rId"], j3_r.neededIdDefinitions.map[id.name])
 
-		Assert.assertArrayEquals(#["jId"], j4_j.neededIds.map[name])
-		Assert.assertArrayEquals(#["rId", "rPlus1Id"], j4_r.neededIds.map[name])
+		Assert.assertArrayEquals(#["jId"], j4_j.neededIdDefinitions.map[id.name])
+		Assert.assertArrayEquals(#["rId", "rPlus1Id"], j4_r.neededIdDefinitions.map[id.name])
 
-		Assert.assertArrayEquals(#["j1Id"], j5_j1.neededIds.map[name])
-		Assert.assertArrayEquals(#["j2Id"], j5_j2.neededIds.map[name])
-		Assert.assertArrayEquals(#["cfId"], j5_cf.neededIds.map[name])
+		Assert.assertArrayEquals(#["j1Id"], j5_j1.neededIdDefinitions.map[id.name])
+		Assert.assertArrayEquals(#["j2Id"], j5_j2.neededIdDefinitions.map[id.name])
+		Assert.assertEquals("cfId", j5_cf.toIrIdDefinition.id.name)
 	}
 
 	@Test
-	def void testGetNeededIndices()
+	def void testGetNeededIndexDefinitions()
 	{
-		Assert.assertArrayEquals(#[], j1_j.neededIndices.map[name])
+		Assert.assertArrayEquals(#[], j1_j.neededIndexDefinitions.map[index.name])
 
-		Assert.assertArrayEquals(#[], j2_j.neededIndices.map[name])
-		Assert.assertArrayEquals(#[], j2_r.neededIndices.map[name])
+		Assert.assertArrayEquals(#[], j2_j.neededIndexDefinitions.map[index.name])
+		Assert.assertArrayEquals(#[], j2_r.neededIndexDefinitions.map[index.name])
 
-		Assert.assertArrayEquals(#[], j3_r.neededIndices.map[name])
-		Assert.assertArrayEquals(#["jCells", "rNodesOfCellJ"], j3_j.neededIndices.map[name])
+		Assert.assertArrayEquals(#[], j3_r.neededIndexDefinitions.map[index.name])
+		Assert.assertArrayEquals(#["jCells", "rNodesOfCellJ"], j3_j.neededIndexDefinitions.map[index.name])
 
-		Assert.assertArrayEquals(#[], j4_j.neededIndices.map[name])
-		Assert.assertArrayEquals(#["rNodes", "rPlus1Nodes"], j4_r.neededIndices.map[name])
+		Assert.assertArrayEquals(#[], j4_j.neededIndexDefinitions.map[index.name])
+		Assert.assertArrayEquals(#["rNodes", "rPlus1Nodes"], j4_r.neededIndexDefinitions.map[index.name])
 
-		Assert.assertArrayEquals(#[], j5_j1.neededIndices.map[name])
-		Assert.assertArrayEquals(#["j2Cells"], j5_j2.neededIndices.map[name])
-		Assert.assertArrayEquals(#["cfFaces"], j5_cf.neededIndices.map[name])
+		Assert.assertArrayEquals(#[], j5_j1.neededIndexDefinitions.map[index.name])
+		Assert.assertArrayEquals(#["j2Cells"], j5_j2.neededIndexDefinitions.map[index.name])
+		Assert.assertArrayEquals(#["cfFaces"], j5_cf.item.neededIndexDefinitions.map[index.name])
+	}
+
+	private def getIteratorByName(Job it, String name)
+	{
+		val iterator = eAllContents.filter(SpaceIterator).findFirst[x | x.item.name == name]
+//		println("iterator " + name + " : " + iterator)
+		return iterator
 	}
 }

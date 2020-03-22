@@ -19,7 +19,7 @@ set faces: → {face};
 set neighbourCells: cell → {cell};
 set nodesOfFace: face → {node};
 set nodesOfCell: cell → {node};
-set commonFace: cell × cell → face;
+item commonFace: cell × cell → face;
 
 // Mesh options
 const ℝ X_EDGE_LENGTH = 0.1;

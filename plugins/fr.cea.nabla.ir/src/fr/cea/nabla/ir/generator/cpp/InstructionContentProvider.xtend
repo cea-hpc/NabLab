@@ -15,6 +15,8 @@ import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
+import fr.cea.nabla.ir.ir.ItemIdDefinition
+import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.IterationBlock
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
@@ -25,6 +27,7 @@ import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.generator.IterationBlockExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
 import static extension fr.cea.nabla.ir.generator.cpp.IterationBlockExtensions.*
 
 @Data
@@ -82,6 +85,16 @@ abstract class InstructionContentProvider
 			else
 			«IF !(elseContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«elseContent»
 		«ENDIF»
+	'''
+
+	def dispatch CharSequence getContent(ItemIndexDefinition it)
+	'''
+		const int «index.name»(«value.content»);
+	'''
+
+	def dispatch CharSequence getContent(ItemIdDefinition it)
+	'''
+		const int «id.name»(«value.content»);
 	'''
 
 	def dispatch CharSequence getContent(Return it) 

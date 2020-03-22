@@ -412,8 +412,7 @@ public final class IterativeHeatEquation
 				{
 					final int dId = neighbourCellsC[dNeighbourCellsC];
 					final int dCells = dId;
-					final int fCommonFaceCD = mesh.getCommonFace(cId, dId);
-					final int fId = fCommonFaceCD;
+					final int fId = mesh.getCommonFace(cId, dId);
 					final int fFaces = fId;
 					double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions.norm(ArrayOperations.minus(Xc[cCells], Xc[dCells]));
 					alpha[cCells][dCells] = alphaExtraDiag;

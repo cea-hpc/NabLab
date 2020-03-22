@@ -145,10 +145,10 @@ private:
 				const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
 				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 				{
-					const int rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
 					const int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
-					const int rMinus1Nodes(rMinus1Id);
+					const int rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
 					const int rPlus1Nodes(rPlus1Id);
+					const int rMinus1Nodes(rMinus1Id);
 					C(jCells,rNodesOfCellJ) = ArrayOperations::multiply(0.5, perp(ArrayOperations::minus(X_n(rPlus1Nodes), X_n(rMinus1Nodes))));
 				}
 			}
@@ -185,10 +185,10 @@ private:
 				const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
 				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 				{
-					const int rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
 					const int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
-					const int rMinus1Nodes(rMinus1Id);
+					const int rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
 					const int rPlus1Nodes(rPlus1Id);
+					const int rMinus1Nodes(rMinus1Id);
 					Cjr_ic(jCells,rNodesOfCellJ) = ArrayOperations::multiply(0.5, perp(ArrayOperations::minus(X_n0(rPlus1Nodes), X_n0(rMinus1Nodes))));
 				}
 			}

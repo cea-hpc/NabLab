@@ -110,8 +110,7 @@ public final class HeatEquation
 				{
 					final int j2Id = neighbourCellsJ1[j2NeighbourCellsJ1];
 					final int j2Cells = j2Id;
-					final int cfCommonFaceJ1J2 = mesh.getCommonFace(j1Id, j2Id);
-					final int cfId = cfCommonFaceJ1J2;
+					final int cfId = mesh.getCommonFace(j1Id, j2Id);
 					final int cfFaces = cfId;
 					reduction3 = sumR0(reduction3, (u_n[j2Cells] - u_n[j1Cells]) / MathFunctions.norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
 				}

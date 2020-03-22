@@ -23,7 +23,7 @@ class ItemIndexAndIdValueContentProvider
 		if (container.connectivity.indexEqualId) 
 			'''«id.name»'''
 		else 
-			'''utils::indexOf(mesh.«container.accessor», «id.name»)'''
+			'''utils::indexOf(mesh->«container.accessor», «id.name»)'''
 	}
 
 	static def dispatch getContent(ItemIdValueIterator it)

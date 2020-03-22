@@ -335,8 +335,7 @@ private:
 				{
 					const int dId(neighbourCellsC[dNeighbourCellsC]);
 					const int dCells(dId);
-					const int fCommonFaceCD(mesh->getCommonFace(cId, dId));
-					const int fId(fCommonFaceCD);
+					const int fId(mesh->getCommonFace(cId, dId));
 					const int fFaces(fId);
 					double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / MathFunctions::norm(ArrayOperations::minus(Xc(cCells), Xc(dCells))));
 					alpha(cCells,dCells) = alphaExtraDiag;

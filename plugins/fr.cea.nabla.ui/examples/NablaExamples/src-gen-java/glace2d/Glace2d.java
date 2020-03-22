@@ -131,10 +131,10 @@ public final class Glace2d
 				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 				{
-					final int rMinus1Id = nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell];
 					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
-					final int rMinus1Nodes = rMinus1Id;
+					final int rMinus1Id = nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell];
 					final int rPlus1Nodes = rPlus1Id;
+					final int rMinus1Nodes = rMinus1Id;
 					C[jCells][rNodesOfCellJ] = ArrayOperations.multiply(0.5, perp(ArrayOperations.minus(X_n[rPlus1Nodes], X_n[rMinus1Nodes])));
 				}
 			}
@@ -169,10 +169,10 @@ public final class Glace2d
 				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 				{
-					final int rMinus1Id = nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell];
 					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
-					final int rMinus1Nodes = rMinus1Id;
+					final int rMinus1Id = nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell];
 					final int rPlus1Nodes = rPlus1Id;
+					final int rMinus1Nodes = rMinus1Id;
 					Cjr_ic[jCells][rNodesOfCellJ] = ArrayOperations.multiply(0.5, perp(ArrayOperations.minus(X_n0[rPlus1Nodes], X_n0[rMinus1Nodes])));
 				}
 			}

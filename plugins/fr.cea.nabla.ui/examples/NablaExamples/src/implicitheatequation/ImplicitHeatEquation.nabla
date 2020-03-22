@@ -21,7 +21,7 @@ set neighbourCells: cell → {cell};
 set nodesOfFace: face → {node};
 set cellsOfFace: face → {cell};
 set nodesOfCell: cell → {node};
-set commonFace: cell × cell → face;
+item commonFace: cell × cell → face;
 
 // User options
 const ℝ X_LENGTH = 2.0;

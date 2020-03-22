@@ -51,7 +51,7 @@ class ModuleInterpreter
 
 	def interprete()
 	{
-		logger.info(" Start interpreting " + module.name + " module ")
+		context.logInfo(" Start interpreting " + module.name + " module ")
 
 		jobInterpreter = new JobInterpreter(writer)
 
@@ -97,7 +97,7 @@ class ModuleInterpreter
 			jobInterpreter.interprete(j, context)
 
 		context.logVariables("At the end")
-		logger.info(" End interpreting")
+		context.logInfo(" End interpreting")
 		
 		return context
 	}

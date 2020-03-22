@@ -20,6 +20,7 @@ import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.Arrays
 import java.util.HashMap
+import java.util.Locale
 
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
@@ -73,7 +74,7 @@ class JobInterpreter
 			iteration ++
 			context.setVariableValue(iterationVariable, new NV0Int(iteration))
 
-			val log = String.format("%1$s [%2$d] t: %3$.5f - deltat: %4$.5f",
+			val log = String.format(Locale::ENGLISH, "%1$s [%2$d] t: %3$.5f - deltat: %4$.5f",
 					timeLoop.indentation,
 					iteration,
 					context.getReal(irModule.timeVariable.name),

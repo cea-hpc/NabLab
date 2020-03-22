@@ -23,7 +23,6 @@ import fr.cea.nabla.ir.ir.SizeTypeSymbol
 import java.lang.reflect.Method
 import java.util.HashMap
 import java.util.TreeSet
-import java.util.logging.Level
 import java.util.logging.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
 
@@ -336,5 +335,23 @@ class Context
 	private def int getIdValue(String id)
 	{
 		idValues.get(id) ?: outerContext.getIdValue(id)
+		
+	}
+	
+	static class Level extends java.util.logging.Level {
+
+	    static val Level OFF = new Level("OFF", Integer.MAX_VALUE);
+	    static val Level SEVERE = new Level("SEVERE", 1000);
+	    static val Level WARNING = new Level("WARNING", 900);
+	    static val Level INFO = new Level("INFO", 800);
+	    static val Level CONFIG = new Level("CONFIG", 700);
+	    static val Level FINE = new Level("FINE", 500);
+	    static val Level FINER = new Level("FINER", 400);
+	    static val Level FINEST = new Level("FINEST", 300);
+	    static val Level ALL = new Level("ALL", Integer.MIN_VALUE);
+	
+	    new(String name, int value) {
+	        super(name, value)
+	    }
 	}
 }

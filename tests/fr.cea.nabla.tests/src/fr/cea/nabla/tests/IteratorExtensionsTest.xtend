@@ -27,6 +27,7 @@ import org.junit.runner.RunWith
 
 import static extension fr.cea.nabla.ConnectivityCallExtensions.*
 import fr.cea.nabla.nabla.SingletonDefinition
+import fr.cea.nabla.nabla.ItemDefinition
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -39,9 +40,10 @@ class IteratorExtensionsTest
 	@Inject extension IrItemIndexDefinitionFactory
 	@Inject ParseHelper<NablaModule> parseHelper
 
-	var Job j1; Job j2; Job j3; Job j4;	Job j5;
-	var SpaceIterator j1_j; SpaceIterator j2_j; SpaceIterator j2_r; SpaceIterator j3_j; SpaceIterator j3_r;
-	var SpaceIterator j4_j; SpaceIterator j4_r; SpaceIterator j5_j1; SpaceIterator j5_j2; SingletonDefinition j5_cf;
+	Job j1; Job j2; Job j3; Job j4; Job j5; Job j6;
+	SpaceIterator j1_j; SpaceIterator j2_j; SpaceIterator j2_r; SpaceIterator j3_j; SpaceIterator j3_r;
+	SpaceIterator j4_j; SpaceIterator j4_r; SpaceIterator j5_j1; SpaceIterator j5_j2; SingletonDefinition j5_cf;
+	ItemDefinition j6_cf;
 
 	@Before
 	def void setUpBefore() throws Exception
@@ -78,6 +80,11 @@ class IteratorExtensionsTest
 		J3: ∀r∈nodes(), ∀j∈cellsOfNode(r), Cjr{j,r} = 1.0;
 		J4: ∀j∈cells(), u{j} = 0.5 * ∑{r∈nodesOfCell(j)}(X{r} - X{r+1});
 		J5: ∀j1∈cells(), f{j1} = a * ∑{j2∈neighbourCells(j1), cf=commonFace(j1,j2)}( (x{j2}-x{j1}) / surface{cf});
+		J6: ∀j1∈cells(), ∀j2∈neighbourCells(j1), 
+		    {
+		    	face cf = commonFace(j1,j2);
+		    	ℝ bidon = (x{j2}-x{j1}) / surface{cf});
+		    }
 		'''
 
 		val nablaModule = parseHelper.parse(model)
@@ -87,6 +94,7 @@ class IteratorExtensionsTest
 		j3 = nablaModule.getJobByName("J3")
 		j4 = nablaModule.getJobByName("J4")
 		j5 = nablaModule.getJobByName("J5")
+		j6 = nablaModule.getJobByName("J6")
 
 		j1_j = j1.getIteratorByName("j")
 		j2_j = j2.getIteratorByName("j")
@@ -98,6 +106,7 @@ class IteratorExtensionsTest
 		j5_j1 = j5.getIteratorByName("j1")
 		j5_j2 = j5.getIteratorByName("j2")
 		j5_cf = j5_j2.singletons.head
+		j6_cf = j6.eAllContents.filter(ItemDefinition).head
 	}
 
 	@Test
@@ -116,6 +125,9 @@ class IteratorExtensionsTest
 
 		Assert.assertEquals("cells", j5_j1.container.uniqueName)
 		Assert.assertEquals("neighbourCellsJ1", j5_j2.container.uniqueName)
+		Assert.assertEquals("commonFaceJ1J2", j5_cf.value.uniqueName)
+
+		Assert.assertEquals("commonFaceJ1J2", j6_cf.value.uniqueName)
 	}
 
 	@Test
@@ -153,6 +165,8 @@ class IteratorExtensionsTest
 		Assert.assertArrayEquals(#["j1Id"], j5_j1.neededIdDefinitions.map[id.name])
 		Assert.assertArrayEquals(#["j2Id"], j5_j2.neededIdDefinitions.map[id.name])
 		Assert.assertEquals("cfId", j5_cf.toIrIdDefinition.id.name)
+
+		Assert.assertEquals("cfId", j6_cf.toIrIdDefinition.id.name)
 	}
 
 	@Test

@@ -32,18 +32,6 @@ class IrItemIndexDefinitionFactory
 	@Inject extension IrItemIndexFactory
 	@Inject IScopeProvider scopeProvider
 
-	/** 
-	 * Return the list of indices to declare in the scope of 'it' iterator.
-	 * 
-	 * An index must be declare when :
-	 * - it references the 'it' iterator directly or indirectly (see below)
-	 * - all iterator referenced by the index are defined (because they
-	 *   are necessary to obtain the value of the index)
-	 * 
-	 * What means directly/indirectly: an iterator can be referenced :
-	 * - directly via the 'target' feature reference 
-	 * - indirectly via the return of indirectIteratorReferences operation.
-	 */
 	def getNeededIndexDefinitions(SpaceIterator si)
 	{
 		val indexExists = [String indexName | si.toIrIndex.name == indexName]
@@ -56,6 +44,30 @@ class IrItemIndexDefinitionFactory
 		createIndexDefinitions(item, indexExists)
 	}
 
+	/**
+	 * Return the list of needed ItemIdDefinition instructions for the SpaceIterator 'it':
+	 * - either the args feature of ConnectivityCall: a ConnectivityCall arg is always an id, never an index
+	 * - either an index of a VarRef different from the index of the iterator: the id
+	 *   is then used to go from the iterator index to the variable index
+	 * Several ids can be necessary for a single iterator due to shifted references (ex: X{r+1} can need rPlus1Id).
+	 */
+
+	/**
+	 * Return the list of needed ItemIndexDefinition instructions for 'item'.
+	 *
+	 * An index must be declare when an ItemRef instance references 'item',
+	 * - directly, for instance rNodes in ∀r∈nodes(), X{nodes}.
+	 * - by its arguments, for instance : ∀r∈nodes(), ∀j∈cellsOfNode(r), Cjr{j,r}
+	 *   rNodesOfCellJ can not be created after r iterator declaration because
+	 *   its value depends of j which is not yet defined. Consequently, rNodesOfCellJ
+	 *   has to be defined when j is declared because the arguments needed to get
+	 *   its value depends on j, i.e. rNodesOfCellJ = mesh.getNodesOfCell(jId).
+	 *
+	 * The indexExists lambda is used when createIndexDefinitions is called from iterator.
+	 * For instance, in ∀r∈nodes(), X{nodes}, rNodes index is needed because
+	 * it is referenced by X but rNodes is automatically created by r iterator.
+	 * indexExists will then return true to prevent from creating the index two times.
+	 */
 	private def createIndexDefinitions(Item item, (String)=>boolean indexExists)
 	{
 		//println("[" + item.name + "] Recherche des indices")
@@ -65,9 +77,6 @@ class IrItemIndexDefinitionFactory
 		// get all variable iterators of the context
 		val module = EcoreUtil2::getContainerOfType(item, NablaModule)
 		val allVarRefIterators = module.eAllContents.filter(ItemRef).filter[x | x.eContainer instanceof ArgOrVarRef].toSet
-
-		// get all inner items i.e. not yet defined items
-		//val undefinedItems = module.eAllContents.filter(Item).filter[x | x !== item].toList
 
 		val scope = scopeProvider.getScope(item, NablaPackage.Literals.ITEM_REF__TARGET)
 		val definedItems = new ArrayList<Item>
@@ -85,16 +94,15 @@ class IrItemIndexDefinitionFactory
 			//println("[" + item.name + "] indexExists " + indexExists.apply(varRefInfo.name))
 			if (!indexExists.apply(varRefInfo.name))
 			{
-				val directReference = varRefInfo.itemRef.target
 				//println("  [" + item.name + "] directReference " + directReference.name)
-				val indexIndirectReferences = varRefInfo.args.map[target]
+				val argReferences = varRefInfo.args.map[target]
 				//println("  [" + item.name + "] indexIndirectReferences " + indexIndirectReferences.map[name].join(', '))
 
 				// if the iterator 'it' is referenced by the index
-				if (directReference===item || indexIndirectReferences.contains(item))
+				if (varRefIterator.target===item || argReferences.contains(item))
 				{
 					// if all iterators are defined
-					if (definedItems.contains(directReference) && indexIndirectReferences.forall[x | definedItems.contains(x)])
+					if (definedItems.contains(varRefIterator.target) && argReferences.forall[x | definedItems.contains(x)])
 						addIndexDefinitionIfNotExists(neededDefinitions, varRefInfo)
 				}
 			}

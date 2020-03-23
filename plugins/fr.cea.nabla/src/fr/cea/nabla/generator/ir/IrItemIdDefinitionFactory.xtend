@@ -35,11 +35,11 @@ class IrItemIdDefinitionFactory
 	@Inject extension IrItemIndexFactory
 
 	/**
-	 * Return the list of needed ids (and not indices) in the scope of 'it':
+	 * Return the list of needed ItemIdDefinition instructions for the SpaceIterator 'it':
 	 * - either the args feature of ConnectivityCall: a ConnectivityCall arg is always an id, never an index
 	 * - either an index of a VarRef different from the index of the iterator: the id 
-	 *   is then used to go from the iterator index to the variable index 
-	 * Because two identical ids represent the same object, only one IteratorRef by id is kept.
+	 *   is then used to go from the iterator index to the variable index
+	 * Several ids can be necessary for a single iterator due to shifted reference (ex: X{r+1} can need rPlus1Id).
 	 */
 	def getNeededIdDefinitions(SpaceIterator it)
 	{

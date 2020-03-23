@@ -36,6 +36,7 @@ class IrInstructionFactory
 	@Inject extension IrReductionInstructionFactory
 	@Inject extension IrIterationBlockFactory
 	@Inject extension IrItemIdDefinitionFactory
+	@Inject extension IrItemIndexDefinitionFactory
 
 	def Instruction toIrInstruction(fr.cea.nabla.nabla.Instruction nablaInstruction)
 	{
@@ -118,7 +119,10 @@ class IrInstructionFactory
 
 	private def dispatch List<Instruction> toIrInstructions(ItemDefinition v)
 	{
-		return #[v.toIrIdDefinition]
+		val instructions = new ArrayList<Instruction>
+		instructions += v.toIrIdDefinition
+		instructions += v.item.neededIndexDefinitions
+		return instructions
 	}
 
 	private def dispatch List<Instruction> toIrInstructions(Return v)

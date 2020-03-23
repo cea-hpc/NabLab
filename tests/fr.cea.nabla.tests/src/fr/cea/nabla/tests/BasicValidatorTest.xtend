@@ -888,7 +888,7 @@ class BasicValidatorTest
 	// ===== Items =====
 
 	@Test
-	def void testCheckUnusedItem() 
+	def void testCheckUnusedItem()
 	{
 		val moduleKo = parseHelper.parse(testModule +
 			'''
@@ -912,7 +912,7 @@ class BasicValidatorTest
 	}
 
 	@Test
-	def void testCheckIncAndDecValidity() 
+	def void testCheckShiftValidity()
 	{
 		val connectivities =
 			'''
@@ -939,6 +939,46 @@ class BasicValidatorTest
 			'''
 			ℝ[2] X{nodes};
 			UpdateX: ∀r1∈nodes(), r2 = leftNode(r1), X{r2} = X{r1-1} - 1;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void testCheckItemType()
+	{
+		val connectivities =
+			'''
+			itemtypes { cell, node }
+			set nodes: → {node};
+			item leftNode: node → node;
+			'''
+
+		val moduleKo = parseHelper.parse(getTestModule(connectivities, '')
+			+
+			'''
+			ℝ[2] X{nodes};
+			UpdateX: ∀r1∈nodes(), {
+				cell r2 = leftNode(r1);
+				X{r2} = X{r2} - 1;
+			}
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.itemDefinition,
+			BasicValidator::ITEM_TYPE,
+			BasicValidator::getItemTypeMsg("cell", "node"))
+
+		val moduleOk = parseHelper.parse(getTestModule(connectivities, '')
+			+
+			'''
+			ℝ[2] X{nodes};
+			UpdateX: ∀r1∈nodes(), {
+				node r2 = leftNode(r1);
+				X{r2} = X{r2} - 1;
+			}
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

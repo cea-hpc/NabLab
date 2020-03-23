@@ -10,10 +10,9 @@
 package fr.cea.nabla.javalib.mesh
 
 import java.util.HashSet
+import java.util.concurrent.ConcurrentHashMap
 import java.util.stream.IntStream
 import org.eclipse.xtend.lib.annotations.Accessors
-import java.util.Map
-import java.util.concurrent.ConcurrentHashMap
 
 class CartesianMesh2D
 {

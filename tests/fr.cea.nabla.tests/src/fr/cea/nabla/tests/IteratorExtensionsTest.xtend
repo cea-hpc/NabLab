@@ -80,11 +80,10 @@ class IteratorExtensionsTest
 		J3: ∀r∈nodes(), ∀j∈cellsOfNode(r), Cjr{j,r} = 1.0;
 		J4: ∀j∈cells(), u{j} = 0.5 * ∑{r∈nodesOfCell(j)}(X{r} - X{r+1});
 		J5: ∀j1∈cells(), f{j1} = a * ∑{j2∈neighbourCells(j1), cf=commonFace(j1,j2)}( (x{j2}-x{j1}) / surface{cf});
-		J6: ∀j1∈cells(), ∀j2∈neighbourCells(j1), 
-		    {
-		    	face cf = commonFace(j1,j2);
-		    	ℝ bidon = (x{j2}-x{j1}) / surface{cf});
-		    }
+		J6: ∀j1∈cells(), ∀j2∈neighbourCells(j1), {
+				face cf = commonFace(j1,j2);
+				ℝ bidon = (x{j2}-x{j1}) / surface{cf});
+			}
 		'''
 
 		val nablaModule = parseHelper.parse(model)

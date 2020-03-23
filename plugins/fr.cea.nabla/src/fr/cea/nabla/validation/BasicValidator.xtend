@@ -27,6 +27,7 @@ import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Interval
 import fr.cea.nabla.nabla.Item
+import fr.cea.nabla.nabla.ItemDefinition
 import fr.cea.nabla.nabla.ItemRef
 import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.Iterable
@@ -345,7 +346,7 @@ class BasicValidator extends AbstractNablaValidator
 	static def getUnusedVariableMsg() { "Unused variable" }
 	static def getIndicesNumberMsg(int expectedSize, int actualSize) { "Wrong number of indices: Expected " + expectedSize + ", but was " + actualSize }
 	static def getSpaceIteratorNumberMsg(int expectedSize, int actualSize) { "Wrong number of space iterators: Expected " + expectedSize + ", but was " + actualSize }
-	static def getSpaceIteratorTypeMsg(String expectedTypeName, String actualTypeName) { "Wrong space iterator type: Expected " + expectedTypeName + ", but was " + actualTypeName }
+	static def getSpaceIteratorTypeMsg(String expectedType, String actualType) { "Wrong space iterator type: Expected " + expectedType + ", but was " + actualType }
 	static def getTimeIteratorUsageMsg() { "Time iterator must be specified" }
 
 	@Check
@@ -596,12 +597,12 @@ class BasicValidator extends AbstractNablaValidator
 	// ===== Items =====
 
 	public static val UNUSED_ITEM = "Items::UnusedItem"
-	public static val UNUSED_DIMENSION_INDEX = "Items::UnusedDimensionIndex"
 	public static val SHIFT_VALIDITY = "Items::ShiftValidity"
+	public static val ITEM_TYPE = "Items::ItemType"
 
 	static def getUnusedItemMsg() { "Unused iterator" }
-	static def getUnusedDimensionIndexMsg() { "Unused index" }
 	static def getShiftValidityMsg() { "Shift only valid for an iteration on a connectivity set" }
+	static def getItemTypeMsg(String expectedType, String actualType) { "Wrong item type: Expected " + expectedType + ", but was " + actualType }
 
 	@Check
 	def checkUnusedItem(Item it)
@@ -614,19 +615,17 @@ class BasicValidator extends AbstractNablaValidator
 	}
 
 	@Check
-	def checkUnusedIterator(SizeTypeSymbol it)
-	{
-		val iterable = EcoreUtil2.getContainerOfType(it, Iterable)
-		val referenced = iterable.eAllContents.filter(SizeTypeSymbolRef).exists[x|x.target===it]
-		if (!referenced)
-			warning(getUnusedDimensionIndexMsg(), NablaPackage.Literals::SIZE_TYPE_SYMBOL__NAME, UNUSED_DIMENSION_INDEX)
-	}
-
-	@Check
-	def checkIncAndDecValidity(ItemRef it)
+	def checkShiftValidity(ItemRef it)
 	{
 		if ((inc>0 || dec>0) && target !== null && !(target.eContainer instanceof SpaceIterator))
 			error(getShiftValidityMsg(), NablaPackage.Literals::ITEM_REF__TARGET, SHIFT_VALIDITY)
+	}
+
+	@Check
+	def checkItemType(ItemDefinition it)
+	{
+		if (type !== value.connectivity.returnType)
+			error(getItemTypeMsg(type.name, value.connectivity.returnType.name), NablaPackage.Literals::ITEM_DEFINITION__VALUE, ITEM_TYPE)
 	}
 
 	// ===== SizeType =====
@@ -642,7 +641,7 @@ class BasicValidator extends AbstractNablaValidator
 	static def getNoOperationInVarRefIndicesMsg() { "Indices must not contain operations" }
 
 	@Check
-	def checkSizeTypeDimensionSymbol(SizeTypeSymbol it)
+	def checkUnusedSizeTypeSymbol(SizeTypeSymbol it)
 	{
 		var EObject container = EcoreUtil2.getContainerOfType(it, Iterable)
 		if (container === null) container = eContainer // Function or Reduction

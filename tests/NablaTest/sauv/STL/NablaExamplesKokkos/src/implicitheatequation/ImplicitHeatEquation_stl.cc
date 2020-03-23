@@ -7,32 +7,29 @@
 #include <cfenv>
 #pragma STDC FENV_ACCESS ON
 
-// Kokkos headers
-#include <Kokkos_Core.hpp>
-#include <Kokkos_hwloc.hpp>
-
 // Project headers
 #include "mesh/NumericMesh2D.h"
 #include "mesh/CartesianMesh2DGenerator.h"
-#include "mesh/VtkFileWriter2D.h"
+#include "mesh/PvdFileWriter2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
 #include "types/MathFunctions.h"
-#include "types/LinearAlgebraFunctions.h"
+#include "types/LinearAlgebraFunctions_stl.h"
+#include "utils/Parallel.h"
 
 using namespace nablalib;
-using namespace std;
 
 class ImplicitHeatEquation
 {
 public:
 	struct Options
 	{
+		// Should be const but usefull to set them from main args
 		double X_LENGTH = 2.0;
 		double Y_LENGTH = 2.0;
 		double u0 = 1.0;
-		Real2 vectOne = Real2(1.0);
+		RealArray1D<2> vectOne = {1.0, 1.0};
 		int X_EDGE_ELEMS = 40;
 		int Y_EDGE_ELEMS = 40;
 		int Z_EDGE_ELEMS = 1;
@@ -44,33 +41,41 @@ public:
 	Options* options;
 
 private:
+	int iteration;
 	NumericMesh2D* mesh;
-	VtkFileWriter2D writer;
+	PvdFileWriter2D writer;
 	int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
 	// Global Variables
 	double t, deltat, t_nplus1;
 
-	// Array Variables
-	Kokkos::View<Real2*> X;
-	Kokkos::View<Real2*> Xc;
-	Kokkos::View<double*> xc;
-	Kokkos::View<double*> yc;
-	Kokkos::View<double*> u;
-	Kokkos::View<double*> V;
-	Kokkos::View<double*> D;
-	Kokkos::View<double*> faceLength;
-	Kokkos::View<double*> faceConductivity;
-	NablaSparseMatrix alpha;
-	Kokkos::View<double*> u_nplus1;
+	// Connectivity Variables
+	std::vector<RealArray1D<2>> X;
+	std::vector<RealArray1D<2>> Xc;
+	std::vector<double> xc;
+	std::vector<double> yc;
+	std::vector<double> V;
+	std::vector<double> D;
+	std::vector<double> faceLength;
+	std::vector<double> faceConductivity;
 	
-	const size_t maxHardThread = Kokkos::DefaultExecutionSpace::max_hardware_threads();
+	// Linear Algebra Variables
+	VectorType u;
+	NablaSparseMatrix alpha;
+	VectorType u_nplus1;
+	
+	// Timers
+	utils::Timer cpu_timer;
+	utils::Timer io_timer;
+
+	// CG details
+	LinearAlgebraFunctions::CGInfo cg_info;
 
 public:
 	ImplicitHeatEquation(Options* aOptions, NumericMesh2D* aNumericMesh2D, string output)
 	: options(aOptions)
 	, mesh(aNumericMesh2D)
-	, writer("ImplicitHeatEquation", output)
+	, writer("ImplicitHeatEquation")
 	, nbNodes(mesh->getNbNodes())
 	, nbCells(mesh->getNbCells())
 	, nbFaces(mesh->getNbFaces())
@@ -81,24 +86,24 @@ public:
 	, t(0.0)
 	, deltat(0.001)
 	, t_nplus1(0.0)
-	, X("X", nbNodes)
-	, Xc("Xc", nbCells)
-	, xc("xc", nbCells)
-	, yc("yc", nbCells)
-	, u("u", nbCells)
-	, V("V", nbCells)
-	, D("D", nbCells)
-	, faceLength("faceLength", nbFaces)
-	, faceConductivity("faceConductivity", nbFaces)
+	, X(nbNodes)
+	, Xc(nbCells)
+	, xc(nbCells)
+	, yc(nbCells)
+	, V(nbCells)
+	, D(nbCells)
+	, faceLength(nbFaces)
+	, faceConductivity(nbFaces)
+	, u(nbCells)
 	, alpha("alpha", nbCells, nbCells)
-	, u_nplus1("u_nplus1", nbCells)
+	, u_nplus1(nbCells)
 	{
 		// Copy node coordinates
 		const auto& gNodes = mesh->getGeometricMesh()->getNodes();
-		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const int& rNodes)
-		{
-			X(rNodes) = gNodes[rNodes];
-		});
+		for (int rNodes(0); rNodes < nbNodes; ++rNodes)
+    {
+			X[rNodes] = gNodes[rNodes];
+		}
 	}
 
 private:
@@ -107,23 +112,22 @@ private:
 	 * In variables: X
 	 * Out variables: Xc
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void initXc() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& cCells)
+		parallel::parallel_exec(nbCells, [&](const int& cCells)
 		{
 			int cId(cCells);
-			Real2 reduceSum9574393(0.0);
+			RealArray1D<2> reduction948066823 = {0.0, 0.0};
 			{
 				auto nodesOfCellC(mesh->getNodesOfCell(cId));
 				for (int pNodesOfCellC=0; pNodesOfCellC<nodesOfCellC.size(); pNodesOfCellC++)
 				{
 					int pId(nodesOfCellC[pNodesOfCellC]);
 					int pNodes(pId);
-					reduceSum9574393 = reduceSum9574393 + (X(pNodes));
+					reduction948066823 += (X[pNodes]);
 				}
 			}
-			Xc(cCells) = 0.25 * reduceSum9574393;
+			Xc[cCells] = 0.25 * reduction948066823;
 		});
 	}
 	
@@ -132,12 +136,11 @@ private:
 	 * In variables: 
 	 * Out variables: D
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void initD() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& cCells)
+		parallel::parallel_exec(nbCells, [&](const int& cCells)
 		{
-			D(cCells) = 1.0;
+			D[cCells] = 1.0;
 		});
 	}
 	
@@ -146,13 +149,12 @@ private:
 	 * In variables: X
 	 * Out variables: V
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void computeV() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		parallel::parallel_exec(nbCells, [&](const int& jCells)
 		{
 			int jId(jCells);
-			double reduceSum_236982947 = 0.0;
+			double reduction764078647 = 0.0;
 			{
 				auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				for (int pNodesOfCellJ=0; pNodesOfCellJ<nodesOfCellJ.size(); pNodesOfCellJ++)
@@ -161,10 +163,10 @@ private:
 					int pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 					int pNodes(pId);
 					int pPlus1Nodes(pPlus1Id);
-					reduceSum_236982947 = reduceSum_236982947 + (MathFunctions::det(X(pNodes), X(pPlus1Nodes)));
+					reduction764078647 += (MathFunctions::det(X[pNodes], X[pPlus1Nodes]));
 				}
 			}
-			V(jCells) = 0.5 * reduceSum_236982947;
+			V[jCells] = 0.5 * reduction764078647;
 		});
 	}
 	
@@ -173,13 +175,12 @@ private:
 	 * In variables: X
 	 * Out variables: faceLength
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void computeFaceLength() noexcept
 	{
-		Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const int& fFaces)
+		parallel::parallel_exec(nbFaces, [&](const int& fFaces)
 		{
 			int fId(fFaces);
-			double reduceSum505189429 = 0.0;
+			double reduction_212101173 = 0.0;
 			{
 				auto nodesOfFaceF(mesh->getNodesOfFace(fId));
 				for (int pNodesOfFaceF=0; pNodesOfFaceF<nodesOfFaceF.size(); pNodesOfFaceF++)
@@ -188,10 +189,10 @@ private:
 					int pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 					int pNodes(pId);
 					int pPlus1Nodes(pPlus1Id);
-					reduceSum505189429 = reduceSum505189429 + (MathFunctions::norm(X(pNodes) - X(pPlus1Nodes)));
+					reduction_212101173 += (MathFunctions::norm(X[pNodes] - X[pPlus1Nodes]));
 				}
 			}
-			faceLength(fFaces) = 0.5 * reduceSum505189429;
+			faceLength[fFaces] = 0.5 * reduction_212101173;
 		});
 	}
 	
@@ -200,13 +201,12 @@ private:
 	 * In variables: Xc
 	 * Out variables: xc, yc
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void initXcAndYc() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& cCells)
+		parallel::parallel_exec(nbCells, [&](const int& cCells)
 		{
-			xc(cCells) = Xc(cCells).x;
-			yc(cCells) = Xc(cCells).y;
+			xc[cCells] = Xc[cCells][0];
+			yc[cCells] = Xc[cCells][1];
 		});
 	}
 	
@@ -215,35 +215,34 @@ private:
 	 * In variables: Xc, vectOne, u0
 	 * Out variables: u
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void initU() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& cCells)
+		parallel::parallel_exec(nbCells, [&](const int& cCells)
 		{
-			if (MathFunctions::norm(Xc(cCells) - as_const(options->vectOne)) < 0.5) 
-				u(cCells) = as_const(options->u0);
+			if (MathFunctions::norm(Xc[cCells] - as_const(options->vectOne)) < 0.5) 
+				u[cCells] = as_const(options->u0);
 			else 
-				u(cCells) = 0.0;
+				u[cCells] = 0.0;
 		});
 	}
 	
+  double minR0(double a, double b)
+	{
+		return MathFunctions::min(a, b);
+	}
+  
+  
 	/**
 	 * Job computeDeltaTn @-2.0
 	 * In variables: X_EDGE_LENGTH, Y_EDGE_LENGTH, D
 	 * Out variables: deltat
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void computeDeltaTn() noexcept
 	{
-		double reduceMin_1282422837(numeric_limits<double>::max());
-		{
-			Kokkos::Min<double> reducer(reduceMin_1282422837);
-			Kokkos::parallel_reduce("ReductionreduceMin_1282422837", nbCells, KOKKOS_LAMBDA(const int& cCells, double& x)
-			{
-				reducer.join(x, as_const(options->X_EDGE_LENGTH) * as_const(options->Y_EDGE_LENGTH) / D(cCells));
-			}, reducer);
-		}
-		deltat = reduceMin_1282422837 * 0.24;
+    deltat = 0.24 * parallel::parallel_reduce(
+        nbCells, numeric_limits<double>::max(),
+        [&](double& accu, const int& jCells){return (accu = as_const(options->X_EDGE_LENGTH) * as_const(options->Y_EDGE_LENGTH) / D[jCells]);},
+        std::bind(&ImplicitHeatEquation::minR0, this, std::placeholders::_1, std::placeholders::_2));
 	}
 	
 	/**
@@ -251,33 +250,32 @@ private:
 	 * In variables: D
 	 * Out variables: faceConductivity
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void computeFaceConductivity() noexcept
 	{
-		Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const int& fFaces)
+		parallel::parallel_exec(nbFaces, [&](const int& fFaces)
 		{
 			int fId(fFaces);
-			double reduceProd_1688659495 = 1.0;
+			double reduction_760779145 = 1.0;
 			{
 				auto cellsOfFaceF(mesh->getCellsOfFace(fId));
 				for (int c1CellsOfFaceF=0; c1CellsOfFaceF<cellsOfFaceF.size(); c1CellsOfFaceF++)
 				{
 					int c1Id(cellsOfFaceF[c1CellsOfFaceF]);
 					int c1Cells(c1Id);
-					reduceProd_1688659495 = reduceProd_1688659495 * (D(c1Cells));
+					reduction_760779145 *= (D[c1Cells]);
 				}
 			}
-			double reduceSum1410943609 = 0.0;
+			double reduction_1934919177 = 0.0;
 			{
 				auto cellsOfFaceF(mesh->getCellsOfFace(fId));
 				for (int c2CellsOfFaceF=0; c2CellsOfFaceF<cellsOfFaceF.size(); c2CellsOfFaceF++)
 				{
 					int c2Id(cellsOfFaceF[c2CellsOfFaceF]);
 					int c2Cells(c2Id);
-					reduceSum1410943609 = reduceSum1410943609 + (D(c2Cells));
+					reduction_1934919177 += (D[c2Cells]);
 				}
 			}
-			faceConductivity(fFaces) = 2.0 * reduceProd_1688659495 / reduceSum1410943609;
+			faceConductivity[fFaces] = 2.0 * reduction_760779145 / reduction_1934919177;
 		});
 	}
 	
@@ -286,13 +284,10 @@ private:
 	 * In variables: deltat, V, faceLength, faceConductivity, Xc
 	 * Out variables: alpha
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void computeAlphaCoeff() noexcept
 	{
-//		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& cCells)
-//		{
-		for (int cCells=0; cCells<nbCells; cCells++) {
-
+		parallel::parallel_exec(nbCells, [&](const int& cCells)
+		{
 			int cId(cCells);
 			double alphaDiag = 0.0;
 			{
@@ -301,16 +296,16 @@ private:
 				{
 					int dId(neighbourCellsC[dNeighbourCellsC]);
 					int dCells(dId);
-					int fId(mesh->getCommonFace(cId, dId));
+					int fCommonFaceCD(mesh->getCommonFace(cId, dId));
+					int fId(fCommonFaceCD);
 					int fFaces(fId);
-					double alphaExtraDiag = -as_const(deltat) / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / MathFunctions::norm(Xc(cCells) - Xc(dCells));
+					double alphaExtraDiag = -as_const(deltat) / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions::norm(Xc[cCells] - Xc[dCells]);
 					alpha(cCells,dCells) = alphaExtraDiag;
-					alphaDiag = alphaDiag + alphaExtraDiag;
+					alphaDiag += alphaExtraDiag;
 				}
 			}
-			alpha(cCells,cCells) = (1.0 - alphaDiag);
-//		});
-		}
+			alpha(cCells,cCells) = 1 - alphaDiag;
+		});
 	}
 	
 	/**
@@ -318,10 +313,9 @@ private:
 	 * In variables: alpha, u
 	 * Out variables: u_nplus1
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void updateU() noexcept
 	{
-		u_nplus1 = LinearAlgebraFunctions::solveLinearSystem(alpha, u);
+		u_nplus1 = LinearAlgebraFunctions::solveLinearSystem(alpha, u, cg_info);
 	}
 	
 	/**
@@ -329,10 +323,30 @@ private:
 	 * In variables: t, deltat
 	 * Out variables: t_nplus1
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void computeTn() noexcept
 	{
 		t_nplus1 = as_const(t) + as_const(deltat);
+	}
+	
+	/**
+	 * Job dumpVariables @1.0
+	 * In variables: u
+	 * Out variables: 
+	 */
+	void dumpVariables() noexcept
+	{
+		if (!writer.isDisabled() && (iteration % 1 == 0)) 
+		{
+			cpu_timer.stop();
+			io_timer.start();
+			std::map<string, double*> cellVariables;
+			std::map<string, double*> nodeVariables;
+			cellVariables.insert(pair<string,double*>("Temperature", u.data()));
+			auto quads = mesh->getGeometricMesh()->getQuads();
+			writer.writeFile(iteration, t, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+			io_timer.stop();
+			cpu_timer.start();
+		}
 	}
 	
 	/**
@@ -340,7 +354,6 @@ private:
 	 * In variables: u_nplus1
 	 * Out variables: u
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void copy_u_nplus1_to_u() noexcept
 	{
 		std::swap(u_nplus1, u);
@@ -351,21 +364,10 @@ private:
 	 * In variables: t_nplus1
 	 * Out variables: t
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void copy_t_nplus1_to_t() noexcept
 	{
 		std::swap(t_nplus1, t);
 	}
-
-	void dumpVariables(const int iteration)
-	{
-		std::map<string, double*> cellVariables;
-		std::map<string, double*> nodeVariables;
-		cellVariables.insert(pair<string,double*>("Temperature", u.data()));
-		auto quads = mesh->getGeometricMesh()->getQuads();
-		writer.writeFile(iteration, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
-	}
-
 
 public:
 	void simulate()
@@ -375,17 +377,9 @@ public:
 		std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
 			<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
 
-
-		if (Kokkos::hwloc::available()) {
-			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_numa_count()
-				<< __RESET__ << ", Cores/NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_cores_per_numa()
-				<< __RESET__ << ", Threads/Core=" << __BOLD__ << Kokkos::hwloc::get_available_threads_per_core() << __RESET__ << std::endl;
-		} else {
-			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
-		}
-
-		// std::cout << "[" << __GREEN__ << "KOKKOS" << __RESET__ << "]    " << __BOLD__ << (is_same<MyLayout,Kokkos::LayoutLeft>::value?"Left":"Right")" << __RESET__ << " layout" << std::endl;
-
+    std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  Running "
+              << (std::thread::hardware_concurrency()>2?std::thread::hardware_concurrency():2) << " threads" << std::endl;
+              
 		if (!writer.isDisabled())
 			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
 		else
@@ -403,11 +397,12 @@ public:
 		computeFaceConductivity(); // @-2.0
 		computeAlphaCoeff(); // @-1.0
 		timer.stop();
-		int iteration = 0;
+
+		iteration = 0;
 		while (t < options->option_stoptime && iteration < options->option_max_iterations)
 		{
 			timer.start();
-			utils::Timer compute_timer(true);
+			cpu_timer.start();
 			iteration++;
 			if (iteration!=1)
 				std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << iteration << __RESET__ "] t = " << __BOLD__
@@ -415,34 +410,35 @@ public:
 
 			updateU(); // @1.0
 			computeTn(); // @1.0
+			dumpVariables(); // @1.0
 			copy_u_nplus1_to_u(); // @2.0
 			copy_t_nplus1_to_t(); // @2.0
-			compute_timer.stop();
+			cpu_timer.stop();
 
+			// Timers display
 			if (!writer.isDisabled()) {
-				utils::Timer io_timer(true);
-				dumpVariables(iteration);
-				io_timer.stop();
-				std::cout << " {CPU: " << __BLUE__ << compute_timer.print(true) << __RESET__ ", IO: " << __BLUE__ << io_timer.print(true) << __RESET__ "} ";
+				std::cout << " {CPU: " << __BLUE__ << cpu_timer.print(true) << __RESET__ ", IO: " << __BLUE__ << io_timer.print(true) << __RESET__ "} ";
 			} else {
-				std::cout << " {CPU: " << __BLUE__ << compute_timer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
+				std::cout << " {CPU: " << __BLUE__ << cpu_timer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 			}
+
 			// Progress
-			std::cout << utils::progress_bar(iteration, options->option_max_iterations, t, options->option_stoptime);
+			std::cout << utils::progress_bar(iteration, options->option_max_iterations, t, options->option_stoptime, 25);
 			timer.stop();
 			std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
 				utils::eta(iteration, options->option_max_iterations, t, options->option_stoptime, deltat, timer), true)
 				<< __RESET__ << "\r";
 			std::cout.flush();
+			cpu_timer.reset();
+			io_timer.reset();
 		}
-		dumpVariables(iteration);
 		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << timer.print() << __RESET__ << std::endl;
+		std::cout << "[CG] average iteration: " << cg_info.m_nb_it / iteration << std::endl;	
 	}
 };	
 
 int main(int argc, char* argv[]) 
 {
-	Kokkos::initialize(argc, argv);
 	auto o = new ImplicitHeatEquation::Options();
 	string output;
 	if (argc == 5) {
@@ -468,6 +464,5 @@ int main(int argc, char* argv[])
 	delete nm;
 	delete gm;
 	delete o;
-	Kokkos::finalize();
 	return 0;
 }

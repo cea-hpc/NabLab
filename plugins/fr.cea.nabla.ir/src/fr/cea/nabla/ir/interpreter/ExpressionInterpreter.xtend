@@ -180,7 +180,7 @@ class ExpressionInterpreter
 		context.logFinest("Interprete VectorConstant")
 		val expressionValues = values.map[x | interprete(x, context)]
 		val t = type as BaseType
-		val value = BaseTypeValueFactory.createValue(t, context)
+		val value = BaseTypeValueFactory.createValue(t, context, false)
 		for (i : 0..<expressionValues.length)
 			setValue(value, #[i], expressionValues.get(i))
 		return value

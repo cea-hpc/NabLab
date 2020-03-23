@@ -144,32 +144,6 @@ public:
 	}
 
 private:
-
-
-  //// Some kind of bad static openMP parallel for
-  //void parallel_shit(const int beg, const int end, std::function<void(const int&)> lambda) noexcept
-  //{
-    //const int chunck_size(std::floor(nbCells / maxHardThread));  // to test shit, could be better
-    //const int len(end - beg);
-    //// if every chuncks have been computed
-    //if (len <= chunck_size) {
-      //for (int i(beg); i < end; ++i)
-        //lambda(i);
-      //return;
-    //}
-
-    //std::cout << "BEG = " << beg << ", END = " << end << std::endl;
-
-    //// else spawn a new thread asynchronously
-    //const int next(beg + chunck_size < end ? beg + chunck_size : end);
-    //auto func = std::bind(&Glace2d::parallel_shit, this, next, end, lambda);
-    //auto future = std::async(std::launch::async, func);
-    //parallel_shit(beg, next, lambda);
-    //return future.get();
-  //}
-
-
-
 	/**
 	 * Job Copy_X_n0_to_X @-3.0
 	 * In variables: X_n0
@@ -437,6 +411,11 @@ private:
 		});
 	}
 	
+	double minR0(double a, double b)
+	{
+		return MathFunctions::min(a, b);
+	}
+  
 	/**
 	 * Job dumpVariables @4.0
 	 * In variables: rho
@@ -576,21 +555,13 @@ private:
 	 */
 	
 	void computeDt() noexcept
-	{
-		//double reduction1979477213(numeric_limits<double>::max());
-		//{
-			//Kokkos::Min<double> reducer(reduction1979477213);
-			//Kokkos::parallel_reduce("Reductionreduction1979477213", nbCells, [&](const int& jCells, double& x)
-			//{
-				//reducer.join(x, deltatj(jCells));
-			//}, reducer);
-		//}
-		//deltat_nplus1 = as_const(options->option_deltat_cfl) * reduction1979477213;
-    
-    deltat_nplus1 = as_const(options->option_deltat_cfl) *
-                        parallel::parallel_reduce(nbCells, deltatj, numeric_limits<double>::max(),
-                                                  [&](const double& a, const double& b){return std::min(a, b);});
-	}
+	{   
+    deltat_nplus1 = as_const(options->option_deltat_cfl) * parallel::parallel_reduce(
+        nbCells, numeric_limits<double>::max(),
+        [&](double& accu, const int& jCells){return (accu = minR0(accu, deltatj[jCells]));},
+        std::bind(&Glace2d::minR0, this, std::placeholders::_1, std::placeholders::_2));
+        //[](const double& a, const double& b){return MathFunctions::min(a, b);});
+  }
 	
 	/**
 	 * Job Copy_deltat_nplus1_to_deltat @8.0
@@ -925,7 +896,7 @@ public:
 			}
 
 			// Progress
-			std::cout << utils::progress_bar(iteration, options->option_max_iterations, t, options->option_stoptime, 30);
+			std::cout << utils::progress_bar(iteration, options->option_max_iterations, t, options->option_stoptime, 25);
 			timer.stop();
 			std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
 				utils::eta(iteration, options->option_max_iterations, t, options->option_stoptime, deltat, timer), true)

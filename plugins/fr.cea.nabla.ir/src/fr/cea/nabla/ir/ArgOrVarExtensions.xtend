@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
+import fr.cea.nabla.ir.ir.Function
 
 class ArgOrVarExtensions
 {
@@ -66,6 +67,11 @@ class ArgOrVarExtensions
 		(eContainer instanceof IrModule)
 	}
 
+	static def isLinearAlgebra(Function it)
+	{
+		containsLinearAlgebra
+	}
+
 	static def isLinearAlgebra(ArgOrVar it)
 	{
 		if (it instanceof ConnectivityVariable)
@@ -77,18 +83,23 @@ class ArgOrVarExtensions
 			false
 	}
 
-	private static dispatch def boolean containsLinearAlgebra(EObject it)
+	private static def dispatch boolean containsLinearAlgebra(EObject it)
 	{
 		false
 	}
 
-	private static dispatch def boolean containsLinearAlgebra(Affectation it)
+	private static def dispatch boolean containsLinearAlgebra(Affectation it)
 	{
 		right.containsLinearAlgebra
 	}
 
-	private static dispatch def boolean containsLinearAlgebra(FunctionCall it)
+	private static def dispatch boolean containsLinearAlgebra(FunctionCall it)
 	{
-		function.provider == 'LinearAlgebra'
+		function.containsLinearAlgebra
+	}
+
+	private static def dispatch boolean containsLinearAlgebra(Function it)
+	{
+		provider == 'LinearAlgebra'
 	}
 }

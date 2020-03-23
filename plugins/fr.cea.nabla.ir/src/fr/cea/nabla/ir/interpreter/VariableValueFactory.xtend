@@ -18,13 +18,15 @@ import static fr.cea.nabla.ir.interpreter.IrTypeExtensions.*
 import static fr.cea.nabla.ir.interpreter.NablaValueFactory.*
 import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+
 class VariableValueFactory
 {
 	static def dispatch NablaValue createValue(SimpleVariable it, Context context)
 	{
 		if (type.sizes.empty)
 		{
-			val nv = createValue(type, context)
+			val nv = createValue(type, context, false)
 			if (defaultValue !== null)
 				setValue(nv, #[], interprete(defaultValue, context))
 			return nv
@@ -32,7 +34,7 @@ class VariableValueFactory
 		else
 		{
 			if (defaultValue === null)
-				createValue(type, context)
+				createValue(type, context, false)
 			else
 				interprete(defaultValue, context)
 		}
@@ -45,8 +47,8 @@ class VariableValueFactory
 			var sizes = getIntSizes(type, context)
 			switch sizes.size
 			{
-				case 1: createValue(type, sizes.get(0))
-				case 2: createValue(type, sizes.get(0), sizes.get(1))
+				case 1: createValue(type, sizes.get(0), linearAlgebra)
+				case 2: createValue(type, sizes.get(0), sizes.get(1), linearAlgebra)
 				case 3: createValue(type, sizes.get(0), sizes.get(1), sizes.get(2))
 				case 4: createValue(type, sizes.get(0), sizes.get(1), sizes.get(2), sizes.get(3))
 				default: throw new RuntimeException("Dimension not yet implemented: " + sizes.size + " for variable " + name)

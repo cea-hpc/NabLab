@@ -106,8 +106,8 @@ class InstructionInterpreter
 		{
 			Iterator:
 			{
+				context.logFinest("We deal with loop " + b.container.connectivity.name)
 				val connectivityName = b.container.connectivity.name
-				context.logFinest("On traite la boucle " + connectivityName)
 				val argIds =  b.container.args.map[x | context.getIdValue(x)]
 				val container = context.meshWrapper.getElements(connectivityName, argIds)
 				context.addIndexValue(b.index, 0)

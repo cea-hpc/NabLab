@@ -20,10 +20,10 @@ import fr.cea.nabla.ir.ir.ItemIndex
 import fr.cea.nabla.ir.ir.SizeTypeSymbol
 import java.lang.reflect.Method
 import java.util.HashMap
-import java.util.logging.Level
 import java.util.logging.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
@@ -194,28 +194,28 @@ class Context
 
 	def logVariables(String message)
 	{
-		if (message !== null) logger.log(Level::INFO, message)
-		variableValues.keySet.forEach[v | logger.log(Level::INFO,"	Variable " + v.name + " = " + variableValues.get(v).displayValue)]
+		if (message !== null) logger.log(Context.Level::FINER, message)
+		variableValues.keySet.forEach[v | logger.log(Context.Level::FINER,"	Variable " + v.name + " = " + variableValues.get(v).displayValue)]
 	}
 
 	def logConnectivitySizes(String message)
 	{
-		if (message !== null) logger.log(Level::INFO, message)
-		connectivitySizes.keySet.forEach[k | logger.log(Level::INFO, "	" + k.name + " de taille " + connectivitySizes.get(k))]
+		if (message !== null) logger.log(Context.Level::FINER, message)
+		connectivitySizes.keySet.forEach[k | logger.log(Context.Level::FINER, "	" + k.name + " de taille " + connectivitySizes.get(k))]
 	}
 
 	def logIndexvalues(String message)
 	{
-		if (message !== null) logger.log(Level::INFO, message)
-		indexValues.keySet.forEach[k | logger.log(Level::INFO, "	" + k + " = " + indexValues.get(k))]
+		if (message !== null) logger.log(Context.Level::FINER, message)
+		indexValues.keySet.forEach[k | logger.log(Context.Level::FINER, "	" + k + " = " + indexValues.get(k))]
 	}
 
 	def logIdvalues(String message)
 	{
 		if (!idValues.empty)
 		{
-			if (message !== null) logger.log(Level::INFO, message)
-			idValues.keySet.forEach[k | logger.log(Level::INFO, "	" + k + " = " + idValues.get(k))]
+			if (message !== null) logger.log(Context.Level::FINER, message)
+			idValues.keySet.forEach[k | logger.log(Context.Level::FINER, "	" + k + " = " + idValues.get(k))]
 		}
 	}
 
@@ -223,26 +223,36 @@ class Context
 	{
 		if (!idValues.empty || !indexValues.empty)
 		{
-			if (message !== null) logger.log(Level::INFO, message)
-			idValues.keySet.forEach[k | logger.log(Level::INFO, "	" + k + " = " + idValues.get(k))]
-			indexValues.keySet.forEach[k | logger.log(Level::INFO, "	" + k + " = " + indexValues.get(k))]
+			if (message !== null) logger.log(Context.Level::FINER, message)
+			idValues.keySet.forEach[k | logger.log(Context.Level::FINER, "	" + k + " = " + idValues.get(k))]
+			indexValues.keySet.forEach[k | logger.log(Context.Level::FINER, "	" + k + " = " + indexValues.get(k))]
 		}
 	}
 
 	def logDimensions(String message)
 	{
-		if (message !== null) logger.log(Level::INFO, message)
-		dimensionValues.keySet.forEach[d | logger.log(Level::INFO, "	Dimension " + d.name + " = " + dimensionValues.get(d))]
+		if (message !== null) logger.log(Context.Level::FINER, message)
+		dimensionValues.keySet.forEach[d | logger.log(Context.Level::FINER, "	Dimension " + d.name + " = " + dimensionValues.get(d))]
 	}
 
 	def logFinest(String message)
 	{
-		logger.log(Level::FINEST, message)
+		logger.log(Context.Level::FINEST, message)
+	}
+
+	def logFiner(String message)
+	{
+		logger.log(Context.Level::FINER, message)
+	}
+
+	def logFine(String message)
+	{
+		logger.log(Context.Level::FINE, message)
 	}
 
 	def logInfo(String message)
 	{
-		logger.log(Level::INFO, message)
+		logger.log(Context.Level::INFO, message)
 	}
 
 	def resolveFunction(Function it)
@@ -250,7 +260,7 @@ class Context
 		val tccl = Thread.currentThread().getContextClassLoader()
 		val providerClassName = module.name.toLowerCase + '.' + provider + Utils::FunctionReductionPrefix
 		val providerClass = Class.forName(providerClassName, true, tccl)
-		val javaTypes = inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension)]
+		val javaTypes = inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension, linearAlgebra)]
 		try 
 		{
 			val result = providerClass.getDeclaredMethod(name, javaTypes)
@@ -267,5 +277,20 @@ class Context
 	def Method getMethod(Function it)
 	{
 		functionToMethod.get(it)
+	}
+
+	static class Level extends java.util.logging.Level
+	{
+		//static val OFF = new fr.cea.nabla.ir.interpreter.Context.Level("OFF", Integer.MAX_VALUE)
+		//static val SEVERE = new fr.cea.nabla.ir.interpreter.Context.Level("SEVERE", 1000)
+		//static val WARNING = new fr.cea.nabla.ir.interpreter.Context.Level("WARNING", 900)
+		static val INFO = new fr.cea.nabla.ir.interpreter.Context.Level("INFO", 800)
+		//static val CONFIG = new fr.cea.nabla.ir.interpreter.Context.Level("CONFIG", 700)
+		static val FINE = new fr.cea.nabla.ir.interpreter.Context.Level("FINE", 500)
+		static val FINER = new fr.cea.nabla.ir.interpreter.Context.Level("FINER", 400)
+		static val FINEST = new fr.cea.nabla.ir.interpreter.Context.Level("FINEST", 300)
+		//static val ALL = new fr.cea.nabla.ir.interpreter.Context.Level("ALL", Integer.MIN_VALUE)
+
+		new(String name, int value) { super(name, value) }
 	}
 }

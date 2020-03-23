@@ -10,10 +10,12 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.PrimitiveType
+import fr.cea.nabla.javalib.types.Matrix
+import fr.cea.nabla.javalib.types.Vector
 
 class FunctionCallHelper
 {
-	static def Class<?> getJavaType(PrimitiveType primitive, int dimension) 
+	static def Class<?> getJavaType(PrimitiveType primitive, int dimension, boolean linearAlgebra)
 	{
 		switch (primitive)
 		{
@@ -42,8 +44,8 @@ class FunctionCallHelper
 				switch dimension
 				{
 					case 0: typeof(double)
-					case 1: typeof(double[])
-					case 2: typeof(double[][])
+					case 1: if (!linearAlgebra) typeof(double[]) else typeof(Vector)
+					case 2: if (!linearAlgebra) typeof(double[][]) else typeof(Matrix)
 					default: throw new RuntimeException("Dimension not implemented: " + dimension) 
 				}
 			}
@@ -58,7 +60,9 @@ class FunctionCallHelper
 	static def dispatch Object getJavaValue(NV2Int it) { data }
 	static def dispatch Object getJavaValue(NV0Real it) { data }
 	static def dispatch Object getJavaValue(NV1Real it) { data }
+	static def dispatch Object getJavaValue(NVVector it) { data }
 	static def dispatch Object getJavaValue(NV2Real it) { data }
+	static def dispatch Object getJavaValue(NVMatrix it) { data }
 
 	static def dispatch createNablaValue(Object x) { throw new RuntimeException('Not yet implemented') }
 	static def dispatch createNablaValue(Boolean x) { new NV0Bool(x) }
@@ -69,5 +73,7 @@ class FunctionCallHelper
 	static def dispatch createNablaValue(int[][] x) { new NV2Int(x) }
 	static def dispatch createNablaValue(Double x) { new NV0Real(x) }
 	static def dispatch createNablaValue(double[] x) { new NV1Real(x) }
+	static def dispatch createNablaValue(Vector x) { new NVVector(x) }
 	static def dispatch createNablaValue(double[][] x) { new NV2Real(x) }
+	static def dispatch createNablaValue(Matrix x) { new NVMatrix(x) }
 }

@@ -49,7 +49,7 @@ class TypeValidatorTest
 		'''
 		module Test;
 
-		items { node }
+		itemtypes { node }
 		set nodes: → {node};
 
 		def f: ℝ → ℝ, (a) → { return 1; }

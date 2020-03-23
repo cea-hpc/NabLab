@@ -53,7 +53,7 @@ class ExpressionTypeProviderTest
 	'''
 	module Test;
 
-	items { node, cell }
+	itemtypes { node, cell }
 
 	set cells: → {cell};
 	set nodesOfCell: cell → {node};

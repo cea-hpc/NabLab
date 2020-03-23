@@ -12,7 +12,7 @@ module ImplicitHeatEquation;
 with Math.*;
 with LinearAlgebra.*;
 
-items { node, cell, face }
+itemtypes { node, cell, face }
 
 set nodes: → {node};
 set cells: → {cell};

@@ -174,7 +174,7 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse('''
 			module Test;
 			
-			items { node, node }
+			itemtypes { node, node }
 			
 			set	nodes: → {node};
 			
@@ -191,7 +191,7 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse('''
 			module Test;
 			
-			items { node }
+			itemtypes { node }
 			
 			set	nodes: → {node};
 			
@@ -210,7 +210,7 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse('''
 			module Test;
 			
-			items { node }
+			itemtypes { node }
 			
 			set nodes: → {node};
 			set nodes: → {node};
@@ -228,7 +228,7 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse('''
 			module Test;
 			
-			items { node }
+			itemtypes { node }
 			
 			set	nodes: → {node};
 			
@@ -298,7 +298,7 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(
 		'''
 			module Test;
-			items { node }
+			itemtypes { node }
 		''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
@@ -733,7 +733,7 @@ class BasicValidatorTest
 	{
 		val connectivities =
 			'''
-			items { node }
+			itemtypes { node }
 			set	nodes: → {node};
 			set	borderNodes: → {node};
 			'''
@@ -916,7 +916,7 @@ class BasicValidatorTest
 	{
 		val connectivities =
 			'''
-			items { node }
+			itemtypes { node }
 			set nodes: → {node};
 			item leftNode: node → node;
 			'''

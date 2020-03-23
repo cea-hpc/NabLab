@@ -54,7 +54,7 @@ class IteratorExtensionsTest
 		
 		with Math.*;
 
-		items { cell, node, face }
+		itemtypes { cell, node, face }
 		
 		set cells: → {cell};
 		set nodes: → {node};

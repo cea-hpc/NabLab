@@ -268,7 +268,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 	'''
 		module «moduleName»;
 
-		items { node }
+		itemtypes { node }
 
 		set nodes: → { node };
 

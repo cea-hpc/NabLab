@@ -20,7 +20,7 @@ generate nabla "http://www.cea.fr/nabla/Nabla"
 NablaModule:
 	'module' name=QualifiedName ';'
 	imports+=Import*
-	('items' '{' itemTypes+=ItemType (',' itemTypes+=ItemType)* '}'
+	('itemtypes' '{' itemTypes+=ItemType (',' itemTypes+=ItemType)* '}'
 	connectivities+=Connectivity*)?
 	reductions+=Reduction*
 	functions+=Function*

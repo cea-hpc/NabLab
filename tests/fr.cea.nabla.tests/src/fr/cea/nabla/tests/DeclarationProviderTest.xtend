@@ -51,7 +51,7 @@ class DeclarationProviderTest
 		'''
 		module Test;
 
-		items { cell, node }
+		itemtypes { cell, node }
 
 		set	cells: → {cell};
 		set	nodes: → {node};
@@ -155,8 +155,8 @@ class DeclarationProviderTest
 		'''
 		module Test;
 
-		items { node }
-		set	nodes: → {node};
+		itemtypes { node }
+		set nodes: → {node};
 
 		def f: ℝ → ℝ;
 		def f: ℝ[2] → ℝ[2];
@@ -184,9 +184,9 @@ class DeclarationProviderTest
 		module.assertError(NablaPackage.eINSTANCE.functionCall, TypeValidator::FUNCTION_ARGS, TypeValidator::getReductionArgsMsg("ℝ[a]"))
 
 		Assert.assertEquals(4, module.validate.filter(i | i.severity == Severity.WARNING).size)
-		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 114, 1, BasicValidator::getUnusedFunctionMsg)
-		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 166, 1, BasicValidator::getUnusedFunctionMsg)
-		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 239, 1, BasicValidator::getUnusedFunctionMsg)
+		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 118, 1, BasicValidator::getUnusedFunctionMsg)
+		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 170, 1, BasicValidator::getUnusedFunctionMsg)
+		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 243, 1, BasicValidator::getUnusedFunctionMsg)
 
 		val functions = module.functions
 		val h = functions.findFirst[name == 'h']
@@ -209,7 +209,7 @@ class DeclarationProviderTest
 		'''
 		module Test;
 
-		items { cell, node }
+		itemtypes { cell, node }
 
 		set cells: → {cell}; 
 		set nodes: → {node};

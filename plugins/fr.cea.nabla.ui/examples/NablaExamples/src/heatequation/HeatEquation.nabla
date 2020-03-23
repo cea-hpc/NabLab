@@ -11,7 +11,7 @@ module HeatEquation;
 
 with Math.*;
 
-items { node, cell, face }
+itemtypes { node, cell, face }
 
 set nodes: → {node};
 set cells: → {cell};

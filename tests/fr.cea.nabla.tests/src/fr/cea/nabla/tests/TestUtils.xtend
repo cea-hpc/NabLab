@@ -98,7 +98,7 @@ class TestUtils
 
 	def CharSequence getDefaultConnectivities()
 	'''
-	items { node, cell }
+	itemtypes { node, cell }
 
 	set nodes: → {node};
 	set cells: → {cell};
@@ -107,7 +107,7 @@ class TestUtils
 
 	def CharSequence getNodesConnectivity()
 	'''
-	items { node }
+	itemtypes { node }
 
 	set nodes: → {node};
 	'''

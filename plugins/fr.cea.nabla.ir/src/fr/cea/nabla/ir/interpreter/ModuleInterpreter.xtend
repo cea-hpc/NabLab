@@ -15,10 +15,6 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.logging.Level
 import java.util.logging.Logger
 import java.util.logging.StreamHandler
 
@@ -42,7 +38,7 @@ class ModuleInterpreter
 	{
 		// create a Logger and a Handler
 		logger = Logger.getLogger(ModuleInterpreter.name)
-		logger.setLevel(Level::ALL) //All Levels messages
+		logger.setLevel(handler.level)  //Create only logs if needed by handler
 		logger.setUseParentHandlers(false) // Suppress default console
 		logger.handlers.forEach(h | logger.removeHandler(h))
 		logger.addHandler(handler)
@@ -55,13 +51,11 @@ class ModuleInterpreter
 
 	def interprete()
 	{
-		val dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")
-		val startTime = LocalDateTime.now()
-		logger.warning(" Start executing " + module.name + " module " + dtf.format(startTime))
+		context.logInfo(" Start interpreting " + module.name + " module ")
 
 		jobInterpreter = new JobInterpreter(writer)
 
-		// Compute NeededIds and NeededIndexes for each iterator to spare time during interpretation
+		// Compute NeINFOededIds and NeededIndexes for each iterator to spare time during interpretation
 		// Compute indexName and resolve external functions for the same reason
 		module.eAllContents.filter(Iterator).forEach[i |
 			context.setNeededIndicesAndNeededIdsInContext(i)
@@ -103,15 +97,13 @@ class ModuleInterpreter
 			jobInterpreter.interprete(j, context)
 
 		context.logVariables("At the end")
-		val endTime = LocalDateTime.now()
-		val duration = Duration.between(startTime, endTime);
-		logger.warning(" End executing " + dtf.format(endTime) + " (" + duration.seconds + " s)")
-
+		context.logInfo(" End interpreting")
+		
 		return context
 	}
-
-	def warn(String message)
+	
+	def info(String message)
 	{
-		logger.warning(message)
+		logger.info(message)
 	}
 }

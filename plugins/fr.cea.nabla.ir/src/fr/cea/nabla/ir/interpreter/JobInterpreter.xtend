@@ -20,6 +20,7 @@ import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.Arrays
 import java.util.HashMap
+import java.util.Locale
 
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
@@ -54,14 +55,14 @@ class JobInterpreter
 
 	def void interpreteInstructionJob(InstructionJob it, Context context)
 	{
-		context.logFinest("Interprete InstructionJob " + name + " @ " + at)
+		context.logFiner("Interprete InstructionJob " + name + " @ " + at)
 		val innerContext = new Context(context)
 		interprete(instruction, innerContext)
 	}
 
 	def void interpreteTimeLoopJob(TimeLoopJob it, Context context)
 	{
-		context.logFinest("Interprete TimeLoopJob " + name + " @ " + at)
+		context.logFiner("Interprete TimeLoopJob " + name + " @ " + at)
 		val irModule = eContainer as IrModule
 		val iterationVariable = timeLoop.iterationCounter
 		var iteration = 0
@@ -72,10 +73,13 @@ class JobInterpreter
 		{
 			iteration ++
 			context.setVariableValue(iterationVariable, new NV0Int(iteration))
-			context.logInfo(timeLoop.indentation + "[" + iteration + "] t: " +
-				context.getReal(irModule.timeVariable.name) + " - deltat: " +
-				context.getReal(irModule.deltatVariable.name)
-			)
+
+			val log = String.format(Locale::ENGLISH, "%1$s [%2$d] t: %3$.5f - deltat: %4$.5f",
+					timeLoop.indentation,
+					iteration,
+					context.getReal(irModule.timeVariable.name),
+					context.getReal(irModule.deltatVariable.name))
+			context.logFine(log)
 			if (topLevel && irModule.postProcessingInfo !== null) dumpVariables(irModule, iteration, context);
 			for (j : innerJobs.filter[x | x.at > 0].sortBy[at])
 				interprete(j, context)
@@ -96,12 +100,15 @@ class JobInterpreter
 			}
 		}
 		while (continueLoop)
-		context.logVariables("After timeLoop " + iteration)
+		val log = String.format("%1$s Nb iteration %2$s = %3$d", timeLoop.indentation, timeLoop.name, iteration)
+		context.logInfo(log)
+		val msg = String.format("%1$s After timeLoop %2$s %3$d", timeLoop.indentation, timeLoop.name, iteration)
+		context.logVariables(msg)
 	}
 
 	def void interpreteTimeLoopCopyJob(TimeLoopCopyJob it, Context context)
 	{
-		context.logFinest("Interprete TimeLoopCopyJob " + name + " @ " + at)
+		context.logFiner("Interprete TimeLoopCopyJob " + name + " @ " + at)
 
 		for (copy : copies)
 		{
@@ -147,6 +154,6 @@ class JobInterpreter
 	private static def String getIndentation(TimeLoop it)
 	{
 		if (outerTimeLoop === null) ''
-		else getIndentation(outerTimeLoop) + '\t'
+		else getIndentation(outerTimeLoop) + '\t\t'
 	}
 }

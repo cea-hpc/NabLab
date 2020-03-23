@@ -20,6 +20,7 @@ import org.eclipse.jgit.revwalk.RevWalk
 import org.eclipse.jgit.treewalk.CanonicalTreeParser
 import org.eclipse.jgit.treewalk.FileTreeIterator
 import org.eclipse.jgit.treewalk.filter.PathFilter
+import org.junit.Assert
 
 class GitUtils
 {
@@ -35,7 +36,7 @@ class GitUtils
 		return git.repository
 	}
 
-	def getModifiedFiles(String path)
+	private def getModifiedFiles(String path)
 	{
 		val diffCommand = git.diff
 		if (!path.nullOrEmpty)
@@ -79,5 +80,17 @@ class GitUtils
 			walk.dispose
 			return oldTreeParser
 		}
+	}
+
+	def testNoGitDiff(String subPath, String moduleName)
+	{
+		var diffs = getModifiedFiles(subPath)
+		diffs =	diffs.filter[d | d.newPath.contains(moduleName)]
+		for (diff : diffs)
+		{
+			println(diff.changeType + " " + diff.newPath)
+			//printDiffFor(diff.newPath)
+		}
+		Assert.assertTrue(diffs.empty)
 	}
 }

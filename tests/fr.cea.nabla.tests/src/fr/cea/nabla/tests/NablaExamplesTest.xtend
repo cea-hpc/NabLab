@@ -12,7 +12,7 @@ package fr.cea.nabla.tests
 import com.google.inject.Inject
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
-import org.junit.Assert
+
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,7 +23,6 @@ import static fr.cea.nabla.tests.TestUtils.*
 @InjectWith(NablaInjectorProvider)
 class NablaExamplesTest
 {
-	static String wsPath
 	static String examplesProjectSubPath
 	static String examplesProjectPath
 	static GitUtils git
@@ -34,7 +33,7 @@ class NablaExamplesTest
 	def static void setup()
 	{
 		val testProjectPath = System.getProperty("user.dir")
-		wsPath = testProjectPath + "/../../"
+		val wsPath = testProjectPath + "/../../"
 		examplesProjectSubPath = "plugins/fr.cea.nabla.ui/examples/NablaExamples/"
 		examplesProjectPath = wsPath + examplesProjectSubPath
 		git = new GitUtils(wsPath)
@@ -67,7 +66,7 @@ class NablaExamplesTest
 		val genmodel = readFileAsString(examplesProjectPath + "src/heatequation/HeatEquation.nablagen")
 
 		compilationHelper.getIrModule(model, genmodel)
-		testNoGitDiff("/heatequation") // To avoid a false posiotiv on explicitheatequation fail or implicitheatequation
+		testNoGitDiff("/heatequation") // To avoid a false positiv on explicitheatequation fail or implicitheatequation
 	}
 
 	@Test
@@ -90,15 +89,8 @@ class NablaExamplesTest
 		testNoGitDiff("iterativeheatequation")
 	}
 
-	private def testNoGitDiff(String projectName)
+	private def testNoGitDiff(String moduleName)
 	{
-		var diffs = git.getModifiedFiles(examplesProjectSubPath)
-		diffs =	diffs.filter[d | d.newPath.contains(projectName)]
-		for (diff : diffs)
-		{
-			println(diff.changeType + " " + diff.newPath)
-			//git.printDiffFor(diff.newPath)
-		}
-		Assert.assertTrue(diffs.empty)
+		git.testNoGitDiff(examplesProjectSubPath, moduleName)
 	}
 }

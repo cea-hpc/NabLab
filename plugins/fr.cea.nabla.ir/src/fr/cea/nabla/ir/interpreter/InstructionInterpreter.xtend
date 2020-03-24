@@ -24,11 +24,14 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.VariablesDefinition
 import java.util.Arrays
+import java.util.stream.IntStream
 
 import static fr.cea.nabla.ir.interpreter.DimensionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
+
+import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class InstructionInterpreter
 {
@@ -110,13 +113,28 @@ class InstructionInterpreter
 				val connectivityName = b.container.connectivity.name
 				val argIds =  b.container.args.map[x | context.getIdValue(x)]
 				val container = context.meshWrapper.getElements(connectivityName, argIds)
-				context.addIndexValue(b.index, 0)
-				for (loopIteratorValue : 0..<container.size)
+				if (topLevelLoop && isMultithreadable)
 				{
-					context.setIndexValue(b.index, loopIteratorValue)
-					val ret = interprete(body, context)
-					if (ret !== null)
-						return ret
+					//NB Can't return in parallelForEach
+					IntStream.range(0, container.size).parallel().forEach([loopIteratorValue |
+					{
+						val innerContext = new Context(context)
+						innerContext.addIndexValue(b.index, loopIteratorValue)
+						val ret = interprete(body, innerContext)
+						if (ret !== null)
+							throw new RuntimeException("No return in parallel loop ! " + ret)
+					}])
+				}
+				else
+				{
+					context.addIndexValue(b.index, 0)
+					for (loopIteratorValue : 0..<container.size)
+					{
+						context.setIndexValue(b.index, loopIteratorValue)
+						val ret = interprete(body, context)
+						if (ret !== null)
+							return ret
+					}
 				}
 			}
 			Interval:

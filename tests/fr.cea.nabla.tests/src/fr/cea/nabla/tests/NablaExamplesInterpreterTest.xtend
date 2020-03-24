@@ -107,6 +107,7 @@ class NablaExamplesInterpreterTest
 
 		val irModule = compilationHelper.getIrModule(model, genmodel)
 		//val handler = new ConsoleHandler
+
 		val logFile = String.format("src/%1$s/Interprete%2$s.log", moduleName.toLowerCase, moduleName)
 		val handler = new FileHandler(logFile, false)
 

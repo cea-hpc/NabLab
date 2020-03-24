@@ -5,8 +5,8 @@ package fr.cea.nabla.ir.ir.impl;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.ItemIndex;
 import fr.cea.nabla.ir.ir.ItemIndexDefinition;
-
 import fr.cea.nabla.ir.ir.ItemIndexValueId;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 

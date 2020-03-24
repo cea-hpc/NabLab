@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.LoopImpl#getBody <em>Body</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.LoopImpl#isMultithreadable <em>Multithreadable</em>}</li>
  * </ul>
  *
  * @generated
@@ -37,6 +38,25 @@ public class LoopImpl extends IterableInstructionImpl implements Loop {
 	 * @ordered
 	 */
 	protected Instruction body;
+
+	/**
+	 * The default value of the '{@link #isMultithreadable() <em>Multithreadable</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isMultithreadable()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean MULTITHREADABLE_EDEFAULT = true;
+	/**
+	 * The cached value of the '{@link #isMultithreadable() <em>Multithreadable</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isMultithreadable()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean multithreadable = MULTITHREADABLE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -108,6 +128,29 @@ public class LoopImpl extends IterableInstructionImpl implements Loop {
 	 * @generated
 	 */
 	@Override
+	public boolean isMultithreadable() {
+		return multithreadable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setMultithreadable(boolean newMultithreadable) {
+		boolean oldMultithreadable = multithreadable;
+		multithreadable = newMultithreadable;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.LOOP__MULTITHREADABLE, oldMultithreadable, multithreadable));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.LOOP__BODY:
@@ -126,6 +169,8 @@ public class LoopImpl extends IterableInstructionImpl implements Loop {
 		switch (featureID) {
 			case IrPackage.LOOP__BODY:
 				return getBody();
+			case IrPackage.LOOP__MULTITHREADABLE:
+				return isMultithreadable();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -140,6 +185,9 @@ public class LoopImpl extends IterableInstructionImpl implements Loop {
 		switch (featureID) {
 			case IrPackage.LOOP__BODY:
 				setBody((Instruction)newValue);
+				return;
+			case IrPackage.LOOP__MULTITHREADABLE:
+				setMultithreadable((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -156,6 +204,9 @@ public class LoopImpl extends IterableInstructionImpl implements Loop {
 			case IrPackage.LOOP__BODY:
 				setBody((Instruction)null);
 				return;
+			case IrPackage.LOOP__MULTITHREADABLE:
+				setMultithreadable(MULTITHREADABLE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -170,8 +221,26 @@ public class LoopImpl extends IterableInstructionImpl implements Loop {
 		switch (featureID) {
 			case IrPackage.LOOP__BODY:
 				return body != null;
+			case IrPackage.LOOP__MULTITHREADABLE:
+				return multithreadable != MULTITHREADABLE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuilder result = new StringBuilder(super.toString());
+		result.append(" (multithreadable: ");
+		result.append(multithreadable);
+		result.append(')');
+		return result.toString();
 	}
 
 } //LoopImpl

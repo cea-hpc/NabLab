@@ -1599,6 +1599,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EAttribute getLoop_Multithreadable() {
+		return (EAttribute)loopEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getItemIndexDefinition() {
 		return itemIndexDefinitionEClass;
 	}
@@ -2755,6 +2765,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		loopEClass = createEClass(LOOP);
 		createEReference(loopEClass, LOOP__BODY);
+		createEAttribute(loopEClass, LOOP__MULTITHREADABLE);
 
 		itemIndexDefinitionEClass = createEClass(ITEM_INDEX_DEFINITION);
 		createEReference(itemIndexDefinitionEClass, ITEM_INDEX_DEFINITION__INDEX);
@@ -3120,6 +3131,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(loopEClass, Loop.class, "Loop", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getLoop_Body(), this.getInstruction(), null, "body", null, 1, 1, Loop.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getLoop_Multithreadable(), ecorePackage.getEBoolean(), "multithreadable", "true", 0, 1, Loop.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(itemIndexDefinitionEClass, ItemIndexDefinition.class, "ItemIndexDefinition", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getItemIndexDefinition_Index(), this.getItemIndex(), null, "index", null, 1, 1, ItemIndexDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

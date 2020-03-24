@@ -188,7 +188,6 @@ class ExpressionInterpreter
 
 	static def NablaValue interpreteFunctionCall(FunctionCall it, Context context)
 	{
-		val function = function
 		context.logFinest("Interprete FunctionCall " + function.name)
 		val argValues = args.map[x|interprete(x, context)]
 		if (function.body === null)
@@ -225,7 +224,6 @@ class ExpressionInterpreter
 
 	static def NablaValue interpreteArgOrVarRef(ArgOrVarRef it, Context context)
 	{
-		val target = target
 		context.logFinest("Interprete VarRef " + target.name)
 		val value = context.getVariableValue(target)
 		// Switch to more efficient implementation (avoid costly toList calls)

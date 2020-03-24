@@ -13,6 +13,7 @@ package fr.cea.nabla.ir.ir;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.Loop#getBody <em>Body</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Loop#isMultithreadable <em>Multithreadable</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getLoop()
@@ -41,5 +42,28 @@ public interface Loop extends IterableInstruction {
 	 * @generated
 	 */
 	void setBody(Instruction value);
+
+	/**
+	 * Returns the value of the '<em><b>Multithreadable</b></em>' attribute.
+	 * The default value is <code>"true"</code>.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Multithreadable</em>' attribute.
+	 * @see #setMultithreadable(boolean)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getLoop_Multithreadable()
+	 * @model default="true"
+	 * @generated
+	 */
+	boolean isMultithreadable();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Loop#isMultithreadable <em>Multithreadable</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Multithreadable</em>' attribute.
+	 * @see #isMultithreadable()
+	 * @generated
+	 */
+	void setMultithreadable(boolean value);
 
 } // Loop

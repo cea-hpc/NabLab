@@ -88,6 +88,7 @@ class IrInstructionFactory
 			annotations += v.toIrAnnotation
 			iterationBlock = v.iterationBlock.toIrIterationBlock
 			body = flatten(v.body.toIrInstruction, v.iterationBlock.neededIndexAndIdDefinitions)
+			multithreadable = true
 		]
 		#[irInstr]
 	}

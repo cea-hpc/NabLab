@@ -2012,13 +2012,22 @@ public interface IrPackage extends EPackage {
 	int LOOP__BODY = ITERABLE_INSTRUCTION_FEATURE_COUNT + 0;
 
 	/**
+	 * The feature id for the '<em><b>Multithreadable</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOOP__MULTITHREADABLE = ITERABLE_INSTRUCTION_FEATURE_COUNT + 1;
+
+	/**
 	 * The number of structural features of the '<em>Loop</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LOOP_FEATURE_COUNT = ITERABLE_INSTRUCTION_FEATURE_COUNT + 1;
+	int LOOP_FEATURE_COUNT = ITERABLE_INSTRUCTION_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Loop</em>' class.
@@ -5206,6 +5215,17 @@ public interface IrPackage extends EPackage {
 	EReference getLoop_Body();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Loop#isMultithreadable <em>Multithreadable</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Multithreadable</em>'.
+	 * @see fr.cea.nabla.ir.ir.Loop#isMultithreadable()
+	 * @see #getLoop()
+	 * @generated
+	 */
+	EAttribute getLoop_Multithreadable();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ItemIndexDefinition <em>Item Index Definition</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -7121,6 +7141,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference LOOP__BODY = eINSTANCE.getLoop_Body();
+
+		/**
+		 * The meta object literal for the '<em><b>Multithreadable</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute LOOP__MULTITHREADABLE = eINSTANCE.getLoop_Multithreadable();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ItemIndexDefinitionImpl <em>Item Index Definition</em>}' class.

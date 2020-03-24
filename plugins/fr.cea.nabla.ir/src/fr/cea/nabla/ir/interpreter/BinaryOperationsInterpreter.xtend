@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
-
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class BinaryOperationsInterpreter

@@ -108,6 +108,8 @@ class ReplaceReductions implements IrTransformationStep
 				instructions += _instructions
 			]
 		}
+		// A reduction cannot be executed in //
+		multithreadable = false
 	}
 
 	private def boolean isExternal(EObject it)

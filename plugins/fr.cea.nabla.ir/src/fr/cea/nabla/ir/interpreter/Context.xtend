@@ -194,25 +194,34 @@ class Context
 
 	def logVariables(String message)
 	{
-		if (message !== null) logger.log(Context.Level::FINER, message)
-		variableValues.keySet.forEach[v | logger.log(Context.Level::FINER,"	Variable " + v.name + " = " + variableValues.get(v).displayValue)]
+		if (logger.level.intValue <= Context.Level::FINER.intValue)
+		{
+			if (message !== null) logger.log(Context.Level::FINER, message)
+			variableValues.keySet.forEach[v | logger.log(Context.Level::FINER,"	Variable " + v.name + " = " + variableValues.get(v).displayValue)]
+		}
 	}
 
 	def logConnectivitySizes(String message)
 	{
-		if (message !== null) logger.log(Context.Level::FINER, message)
-		connectivitySizes.keySet.forEach[k | logger.log(Context.Level::FINER, "	" + k.name + " de taille " + connectivitySizes.get(k))]
+		if (logger.level.intValue <= Context.Level::FINER.intValue)
+		{
+			if (message !== null) logger.log(Context.Level::FINER, message)
+			connectivitySizes.keySet.forEach[k | logger.log(Context.Level::FINER, "	" + k.name + " de taille " + connectivitySizes.get(k))]
+		}
 	}
 
 	def logIndexvalues(String message)
 	{
-		if (message !== null) logger.log(Context.Level::FINER, message)
-		indexValues.keySet.forEach[k | logger.log(Context.Level::FINER, "	" + k + " = " + indexValues.get(k))]
+		if (logger.level.intValue <= Context.Level::FINER.intValue)
+		{
+			if (message !== null) logger.log(Context.Level::FINER, message)
+			indexValues.keySet.forEach[k | logger.log(Context.Level::FINER, "	" + k + " = " + indexValues.get(k))]
+		}
 	}
 
 	def logIdvalues(String message)
 	{
-		if (!idValues.empty)
+		if (!idValues.empty && logger.level.intValue <= Context.Level::FINER.intValue)
 		{
 			if (message !== null) logger.log(Context.Level::FINER, message)
 			idValues.keySet.forEach[k | logger.log(Context.Level::FINER, "	" + k + " = " + idValues.get(k))]
@@ -221,7 +230,7 @@ class Context
 
 	def logIdsAndIndicesValues(String message)
 	{
-		if (!idValues.empty || !indexValues.empty)
+		if (!idValues.empty || !indexValues.empty && logger.level.intValue <= Context.Level::FINER.intValue)
 		{
 			if (message !== null) logger.log(Context.Level::FINER, message)
 			idValues.keySet.forEach[k | logger.log(Context.Level::FINER, "	" + k + " = " + idValues.get(k))]
@@ -231,8 +240,11 @@ class Context
 
 	def logDimensions(String message)
 	{
-		if (message !== null) logger.log(Context.Level::FINER, message)
-		dimensionValues.keySet.forEach[d | logger.log(Context.Level::FINER, "	Dimension " + d.name + " = " + dimensionValues.get(d))]
+		if (logger.level.intValue <= Context.Level::FINER.intValue)
+		{
+			if (message !== null) logger.log(Context.Level::FINER, message)
+			dimensionValues.keySet.forEach[d | logger.log(Context.Level::FINER, "	Dimension " + d.name + " = " + dimensionValues.get(d))]
+		}
 	}
 
 	def logFinest(String message)

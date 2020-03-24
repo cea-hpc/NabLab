@@ -83,7 +83,7 @@ class JobInterpreter
 			if (topLevel && irModule.postProcessingInfo !== null) dumpVariables(irModule, iteration, context);
 			for (j : innerJobs.filter[x | x.at > 0].sortBy[at])
 				interprete(j, context)
-			//context.logVariables("After iteration = " + iteration)
+			context.logVariables("After iteration = " + iteration)
 
 			continueLoop = (interprete(timeLoop.whileCondition, context) as NV0Bool).data
 

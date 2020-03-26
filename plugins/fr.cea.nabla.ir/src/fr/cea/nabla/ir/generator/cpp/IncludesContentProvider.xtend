@@ -20,7 +20,6 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
 class IncludesContentProvider
 {
-	protected def List<String> getAdditionalPragmas() { #[] }
 	protected def List<String> getAdditionalSystemIncludes() { #[] }
 	protected def List<String> getAdditionalUserIncludes() { #[] }
 
@@ -39,7 +38,7 @@ class IncludesContentProvider
 
 	private def getPragmasFor(IrModule m)
 	{
-		additionalPragmas
+		#["STDC FENV_ACCESS ON"]
 	}
 
 	private def getSystemIncludesFor(IrModule m)
@@ -89,19 +88,15 @@ class StlThreadIncludesContentProvider extends IncludesContentProvider
 {
 	override getAdditionalUserIncludes()
 	{
-		#["Parallel.h"]
+		#["utils/Parallel.h"]
 	}
 }
 
 class KokkosIncludesContentProvider extends IncludesContentProvider
 {
-	override getAdditionalPragmas()
-	{
-		#["STDC FENV_ACCESS ON"]
-	}
-
 	override getAdditionalSystemIncludes()
 	{
 		#["Kokkos_Core.hpp", "Kokkos_hwloc.hpp"]
 	}
 }
+

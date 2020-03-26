@@ -26,6 +26,7 @@ import fr.cea.nabla.ir.ir.VariablesDefinition
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.generator.IterationBlockExtensions.*
+import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
 import static extension fr.cea.nabla.ir.generator.cpp.IterationBlockExtensions.*
@@ -137,6 +138,29 @@ class SequentialInstructionContentProvider extends InstructionContentProvider
 	{
 		throw new UnsupportedOperationException("No parallel loop... bad path")
 	}
+}
+
+@Data
+class StlThreadInstructionContentProvider extends InstructionContentProvider
+{
+	override getReductionContent(ReductionInstruction it)
+	'''
+		«result.cppType» «result.name»;
+		«iterationBlock.defineInterval('''
+		«result.name» = parallel::parallel_reduce(«iterationBlock.nbElems», «result.defaultValue.content», [&](«result.cppType»& accu, const int& «iterationBlock.indexName»)
+			{
+				return (accu = «binaryFunction.getCodeName('.')»(accu, «lambda.content»));
+			},
+			std::bind(&«irModule.name»::«binaryFunction.name», this, std::placeholders::_1, std::placeholders::_2));''')»
+	'''
+
+	override getLoopContent(Loop it)
+	'''
+		parallel::parallel_exec(«iterationBlock.nbElems», [&](const int& «iterationBlock.indexName»)
+		{
+			«body.innerContent»
+		});
+	'''
 }
 
 @Data

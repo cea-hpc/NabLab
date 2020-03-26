@@ -13,6 +13,7 @@ import fr.cea.nabla.ir.generator.cpp.Ir2Cpp
 import fr.cea.nabla.ir.generator.cpp.KokkosBackend
 import fr.cea.nabla.ir.generator.cpp.KokkosTeamThreadBackend
 import fr.cea.nabla.ir.generator.cpp.SequentialBackend
+import fr.cea.nabla.ir.generator.cpp.StlThreadBackend
 import fr.cea.nabla.ir.generator.java.Ir2Java
 import fr.cea.nabla.nablagen.Cpp
 import fr.cea.nabla.nablagen.Ir2CodeComponent
@@ -37,7 +38,7 @@ class CodeGeneratorProvider
 		switch programmingModel
 		{
 			case SEQUENTIAL: new SequentialBackend(maxIterationVar.name , stopTimeVar.name)
-			case STL_THREAD: throw new RuntimeException('Not yet implemented')
+			case STL_THREAD: new StlThreadBackend(maxIterationVar.name , stopTimeVar.name)
 			case OPEN_MP: throw new RuntimeException('Not yet implemented')
 			case KOKKOS: new KokkosBackend(maxIterationVar.name , stopTimeVar.name)
 			case KOKKOS_TEAM_THREAD: new KokkosTeamThreadBackend(maxIterationVar.name , stopTimeVar.name)

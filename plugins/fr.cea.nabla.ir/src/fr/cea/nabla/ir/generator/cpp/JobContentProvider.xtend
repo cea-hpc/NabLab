@@ -26,13 +26,12 @@ import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 @Data
-abstract class JobContentProvider
+class JobContentProvider
 {
 	protected val TraceContentProvider traceContentProvider
 	protected val extension ExpressionContentProvider
 	protected val extension InstructionContentProvider
 	protected val extension JobContainerContentProvider
-	protected abstract def CharSequence copy(Variable source, Variable destination)
 
 	def getContent(Job it)
 	'''
@@ -42,6 +41,11 @@ abstract class JobContentProvider
 			«innerContent»
 		}
 	'''
+
+	def copy(Variable source, Variable destination)
+	{
+		copy(destination.name, source.name, destination.type.dimension)
+	}
 
 	protected def dispatch CharSequence getInnerContent(InstructionJob it)
 	'''
@@ -107,7 +111,7 @@ abstract class JobContentProvider
 			val indexName = 'i' + dimension
 			val suffix = '[' + indexName + ']'
 			'''
-				for (int «indexName»=0 ; «indexName»<«left».size() ; «indexName»++)
+				for (size_t «indexName»(0) ; «indexName»<«left».size() ; «indexName»++)
 					«copy(left + suffix, right + suffix, dimension-1)»
 			'''
 		}
@@ -123,24 +127,6 @@ abstract class JobContentProvider
 	{
 		val irModule = eContainer as IrModule
 		irModule.deltatVariable.name
-	}
-}
-
-@Data
-class SequentialJobContentProvider extends JobContentProvider
-{
-	override getContent(Job it)
-	'''
-		«comment»
-		void «codeName»() noexcept
-		{
-			«innerContent»
-		}
-	'''
-
-	override copy(Variable source, Variable destination)
-	{
-		copy(destination.name, source.name, destination.type.dimension)
 	}
 }
 

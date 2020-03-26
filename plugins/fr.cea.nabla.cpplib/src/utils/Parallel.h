@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 CEA
+ * Copyright (c) 2018 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -50,24 +50,25 @@ void parallel_exec_internal(const int& nb_thread, const int& nb_elmt,
 }
 
 // Internal call for parallel reduce, not meant to be use outside the parallel_reduce
-template <typename T, typename V, typename BinOp>
-T parallel_reduce_internal(const int& nb_thread, const int& nb_elmt, const V& var,
-                           const int& begin, const int& end, const T init_val, BinOp bin_op) noexcept
+template <typename T, typename BinOp, typename JoinOp>
+T parallel_reduce_internal(const int& nb_thread, const int& nb_elmt,
+                           std::vector<int>::iterator begin, std::vector<int>::iterator end,
+                           const T init_val, BinOp bin_op, JoinOp join_op) noexcept
 {
   const int chunck_size(std::floor(nb_elmt / nb_thread));  // chuncks are simples, we should do better...
-  const int len(end - begin);
+  const int len(std::distance(begin, end));
   // if every chuncks have been computed
   if (len <= chunck_size)
-    return std::accumulate(&var[begin], &var[end], init_val, bin_op);
+    return std::accumulate(begin, end, init_val, bin_op);
 
   // std::cout << "BEG = " << begin << ", END = " << end << std::endl;
 
   // else spawn a new thread asynchronously
-  const int next(begin + chunck_size < end ? begin + chunck_size : end);
-  auto future = std::async(std::launch::async, parallel_reduce_internal<T, V, BinOp>,
-                           nb_thread, nb_elmt, var, next, end, init_val, bin_op);
-  auto result = parallel_reduce_internal(nb_thread, nb_elmt, var, begin, next, init_val, bin_op);
-  return bin_op(result, future.get());
+  auto next(begin + chunck_size < end ? begin + chunck_size : end);
+  auto future = std::async(std::launch::async, parallel_reduce_internal<T, BinOp, JoinOp>,
+                           nb_thread, nb_elmt, next, end, init_val, bin_op, join_op);
+  auto result = parallel_reduce_internal(nb_thread, nb_elmt, begin, next, init_val, bin_op, join_op);
+  return join_op(result, future.get());
 }
 }  // ------------------------------ end of namespace internal  ------------------------------ 
 
@@ -91,8 +92,8 @@ void parallel_exec(const int nb_elmt, F&& lambda) noexcept
 // Some kind of bad static openMP parallel reduce
 // Given a number of elements, binary operation is called upon each couple of elements of variable V.
 // Data is processed by chuncks and each chunck has is own dedicated thread.
-template <typename T, typename V, typename BinOp>
-T parallel_reduce(const int nb_elmt, const V& var, const T init_val, BinOp&& bin_op) noexcept
+template <typename T, typename BinOp, typename JoinOp>
+T parallel_reduce(const int nb_elmt, const T init_val, BinOp&& bin_op, JoinOp&& join_op) noexcept
 {
   // Getting number of concurrent threads supported.
   int nb_thread(2);  // Hyper thread support by default
@@ -102,11 +103,15 @@ T parallel_reduce(const int nb_elmt, const V& var, const T init_val, BinOp&& bin
     std::cerr << "WARNING: can't figure out optimal threads number, using 2 by default." << std::endl;
     
   // Actually calling multithreaded lambda function over nb_elmt
-  return internal::parallel_reduce_internal(nb_thread, nb_elmt, var, 0, nb_elmt, init_val, bin_op);
+  // We need an indexes vector to handle dereference operator in bin_op for accumulate call
+  std::vector<int> indexes(nb_elmt);
+  std::iota(indexes.begin(), indexes.end(), 0);
+  return internal::parallel_reduce_internal(nb_thread, nb_elmt, indexes.begin(), indexes.end(),
+                                            init_val, bin_op, join_op);
 }
 
 }  // end of namespace parallel
 
-}  // end of namespace naballib
+}  // end of namespace nablalib
 
 #endif  // UTILS_PARALLEL_H_

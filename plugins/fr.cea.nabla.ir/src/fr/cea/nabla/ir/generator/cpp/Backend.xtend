@@ -29,6 +29,48 @@ abstract class Backend
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) MainContentProvider mainContentProvider
 }
 
+class SequentialBackend extends Backend
+{
+	new(String maxIterationVarName, String stopTimeVarName)
+	{
+		name = 'Sequential'
+		ir2Cmake = new Ir2Cmake
+		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
+		includesContentProvider = new IncludesContentProvider
+		typeContentProvider = new StdVectorTypeContentProvider
+		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
+		argOrVarContentProvider = new NoLinearAlgebraArgOrVarContentProvider(typeContentProvider)
+		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider)
+		instructionContentProvider = new SequentialInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
+		jobContainerContentProvider = new JobContainerContentProvider
+		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)
+		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider, functionContentProvider)
+		mainContentProvider = new MainContentProvider
+	}
+}
+
+class StlThreadBackend extends Backend
+{
+	new(String maxIterationVarName, String stopTimeVarName)
+	{
+		name = 'Sequential'
+		ir2Cmake = new Ir2Cmake
+		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
+		includesContentProvider = new StlThreadIncludesContentProvider
+		typeContentProvider = new StdVectorTypeContentProvider
+		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
+		argOrVarContentProvider = new NoLinearAlgebraArgOrVarContentProvider(typeContentProvider)
+		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider)
+		instructionContentProvider = new StlThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
+		jobContainerContentProvider = new JobContainerContentProvider
+		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)
+		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider, functionContentProvider)
+		mainContentProvider = new MainContentProvider
+	}
+}
+
 class KokkosBackend extends Backend
 {
 	new(String maxIterationVarName, String stopTimeVarName)
@@ -71,23 +113,3 @@ class KokkosTeamThreadBackend extends Backend
 	}
 }
 
-class SequentialBackend extends Backend
-{
-	new(String maxIterationVarName, String stopTimeVarName)
-	{
-		name = 'Sequential'
-		ir2Cmake = new Ir2Cmake
-		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
-		includesContentProvider = new IncludesContentProvider
-		typeContentProvider = new StdVectorTypeContentProvider
-		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
-		argOrVarContentProvider = new NoLinearAlgebraArgOrVarContentProvider(typeContentProvider)
-		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider)
-		instructionContentProvider = new SequentialInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
-		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
-		jobContainerContentProvider = new JobContainerContentProvider
-		jobContentProvider = new SequentialJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)
-		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider, functionContentProvider)
-		mainContentProvider = new MainContentProvider
-	}
-}

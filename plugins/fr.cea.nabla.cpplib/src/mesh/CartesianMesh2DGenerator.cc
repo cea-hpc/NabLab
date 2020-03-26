@@ -43,14 +43,14 @@ CartesianMesh2DGenerator::generate(int nbXQuads, int nbYQuads, double xSize, dou
 				inner_node_ids_[inner_node_id_++] = node_id_;
 			else
 			{
-				if (j==0) top_node_ids_[top_node_id_++] = node_id_;
-				if (j==nbYQuads) bottom_node_ids_[bottom_node_id_++] = node_id_;
+				if (j==0) bottom_node_ids_[bottom_node_id_++] = node_id_;
+				if (j==nbYQuads) top_node_ids_[top_node_id_++] = node_id_;
 				if (i==0) left_node_ids_[left_node_id_++] = node_id_;
 				if (i==nbXQuads) right_node_ids_[right_node_id_++] = node_id_;
-				if (i==0 && j==0) top_left_node_id_ = node_id_;
-				if (i==nbXQuads && j==0) top_right_node_id_ = node_id_;
-				if (i==0 && j==nbYQuads) bottom_left_node_id_ = node_id_;
-				if (i==nbXQuads && j==nbYQuads) bottom_right_node_id_ = node_id_;
+				if (i==0 && j==0) bottom_left_node_id_ = node_id_;
+				if (i==nbXQuads && j==0) bottom_right_node_id_ = node_id_;
+				if (i==0 && j==nbYQuads) top_left_node_id_ = node_id_;
+				if (i==nbXQuads && j==nbYQuads) top_right_node_id_ = node_id_;
 			}
 			++node_id_;
 		}

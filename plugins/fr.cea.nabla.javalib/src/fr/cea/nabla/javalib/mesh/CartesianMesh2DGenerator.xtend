@@ -40,8 +40,8 @@ class  CartesianMesh2DGenerator
 					innerNodeIds.set(innerNodeId++, nodeId)
 				else
 				{
-					if (j==0) topNodeIds.set(topNodeId++, nodeId)
-					if (j==nbYQuads) bottomNodeIds.set(bottomNodeId++, nodeId)
+					if (j==0) bottomNodeIds.set(bottomNodeId++, nodeId)
+					if (j==nbYQuads) topNodeIds.set(topNodeId++, nodeId)
 					if (i==0) leftNodeIds.set(leftNodeId++, nodeId)
 					if (i==nbXQuads) rightNodeIds.set(rightNodeId++, nodeId)
 				}

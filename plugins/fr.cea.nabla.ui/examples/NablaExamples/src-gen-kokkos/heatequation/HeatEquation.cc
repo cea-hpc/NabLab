@@ -15,7 +15,6 @@
 #include "utils/Timer.h"
 #include "types/Types.h"
 #include "types/MathFunctions.h"
-#include "types/ArrayOperations.h"
 
 using namespace nablalib;
 
@@ -110,7 +109,7 @@ private:
 					const int j2Cells(j2Id);
 					const int cfId(mesh->getCommonFace(j1Id, j2Id));
 					const int cfFaces(cfId);
-					reduction3 = sumR0(reduction3, (u_n(j2Cells) - u_n(j1Cells)) / MathFunctions::norm(ArrayOperations::minus(center(j2Cells), center(j1Cells))) * surface(cfFaces));
+					reduction3 = sumR0(reduction3, (u_n(j2Cells) - u_n(j1Cells)) / MathFunctions::norm(center(j2Cells) - center(j1Cells)) * surface(cfFaces));
 				}
 			}
 			outgoingFlux(j1Cells) = deltat / V(j1Cells) * reduction3;
@@ -138,7 +137,7 @@ private:
 					const int rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 					const int rNodes(rId);
 					const int rPlus1Nodes(rPlus1Id);
-					reduction2 = sumR0(reduction2, MathFunctions::norm(ArrayOperations::minus(X(rNodes), X(rPlus1Nodes))));
+					reduction2 = sumR0(reduction2, MathFunctions::norm(X(rNodes) - X(rPlus1Nodes)));
 				}
 			}
 			surface(fFaces) = 0.5 * reduction2;
@@ -195,7 +194,7 @@ private:
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
 		{
 			const int jId(jCells);
-			RealArray1D<2> reduction0({{0.0, 0.0}});
+			RealArray1D<2> reduction0({0.0, 0.0});
 			{
 				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
@@ -206,7 +205,7 @@ private:
 					reduction0 = sumR1(reduction0, X(rNodes));
 				}
 			}
-			center(jCells) = ArrayOperations::multiply(0.25, reduction0);
+			center(jCells) = 0.25 * reduction0;
 		});
 	}
 	
@@ -312,7 +311,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b) 
 	{
-		return ArrayOperations::plus(a, b);
+		return a + b;
 	}
 	
 	KOKKOS_INLINE_FUNCTION

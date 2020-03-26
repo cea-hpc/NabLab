@@ -16,6 +16,7 @@ import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.ContractedIf
+import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.MaxConstant
@@ -46,11 +47,7 @@ class ExpressionContentProvider
 	{
 		val lContent = left.content
 		val rContent = right.content
-
-		if (left.type.scalar && right.type.scalar)
-			'''«lContent» «operator» «rContent»'''
-		else 
-			'''ArrayOperations::«operator.operatorName»(«lContent», «rContent»)'''
+		'''«lContent» «operator» «rContent»'''
 	}
 
 	def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
@@ -85,11 +82,11 @@ class ExpressionContentProvider
 	{
 		val t = type as BaseType
 		val sizes = t.sizes.filter(SizeTypeInt).map[value]
-		'''{«initArray(sizes, value.content)»}''' // One additional bracket for matrix... Magic C++ !
+		'''{«initArray(sizes, value.content)»}'''
 	}
 
 	def dispatch CharSequence getContent(VectorConstant it)
-	'''«FOR v : values BEFORE '{{' SEPARATOR ', ' AFTER '}}'»«v.content»«ENDFOR»'''
+	'''{«innerContent»}'''
 
 	def dispatch CharSequence getContent(FunctionCall it)
 	{
@@ -102,6 +99,10 @@ class ExpressionContentProvider
 	def dispatch CharSequence getContent(ArgOrVarRef it)
 	'''«target.getCodeName('->')»«iteratorsContent»«FOR d:indices BEFORE '['  SEPARATOR '][' AFTER ']'»«d.content»«ENDFOR»'''
 
+	private def dispatch CharSequence getInnerContent(Expression it) { content }
+	private def dispatch CharSequence getInnerContent(VectorConstant it)
+	'''«FOR v : values SEPARATOR ', '»«v.innerContent»«ENDFOR»'''
+
 	private def getIteratorsContent(ArgOrVarRef it)
 	{
 		if (iterators.empty || target instanceof SimpleVariable) return ''
@@ -112,4 +113,7 @@ class ExpressionContentProvider
 			content += r.name
 		content.formatVarIteratorsContent
 	}
+
+	private def CharSequence initArray(int[] sizes, CharSequence value)
+	'''«FOR size : sizes SEPARATOR ",  "»«FOR i : 0..<size SEPARATOR ', '»«value»«ENDFOR»«ENDFOR»'''
 }

@@ -73,7 +73,6 @@ class IncludesContentProvider
 		userIncludes +=  "utils/Timer.h"
 		userIncludes +=  "types/Types.h"
 		userIncludes +=  "types/MathFunctions.h"
-		userIncludes +=  "types/ArrayOperations.h"
 
 		if (m.functions.exists[f | f.body === null && f.provider == m.name]) 
 			userIncludes += m.name.toLowerCase + "/" + m.name + Utils::FunctionReductionPrefix + ".h"

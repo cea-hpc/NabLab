@@ -74,10 +74,4 @@ class Utils
 			case '+': 'plus'
 		}
 	}
-
-	static def CharSequence initArray(int[] sizes, CharSequence value)
-	{
-		if (sizes.empty) value
-		else initArray(sizes.tail, '''«FOR i : 0..<sizes.head BEFORE '{' SEPARATOR ', ' AFTER '}'»«value»«ENDFOR»''')
-	}
 }

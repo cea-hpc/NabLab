@@ -15,7 +15,6 @@
 #include "utils/Timer.h"
 #include "types/Types.h"
 #include "types/MathFunctions.h"
-#include "types/ArrayOperations.h"
 
 using namespace nablalib;
 
@@ -28,7 +27,7 @@ public:
 		double X_LENGTH = 2.0;
 		double Y_LENGTH = 2.0;
 		double u0 = 1.0;
-		RealArray1D<2> vectOne = {{1.0, 1.0}};
+		RealArray1D<2> vectOne = {1.0, 1.0};
 		int X_EDGE_ELEMS = 40;
 		int Y_EDGE_ELEMS = 40;
 		double X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
@@ -154,7 +153,7 @@ private:
 						const int pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 						const int pNodes(pId);
 						const int pPlus1Nodes(pPlus1Id);
-						reduction3 = sumR0(reduction3, MathFunctions::norm(ArrayOperations::minus(X(pNodes), X(pPlus1Nodes))));
+						reduction3 = sumR0(reduction3, MathFunctions::norm(X(pNodes) - X(pPlus1Nodes)));
 					}
 				}
 				faceLength(fFaces) = 0.5 * reduction3;
@@ -246,7 +245,7 @@ private:
 			{
 				int cCells(cCellsTeam + teamWork.first);
 				const int cId(cCells);
-				RealArray1D<2> reduction0({{0.0, 0.0}});
+				RealArray1D<2> reduction0({0.0, 0.0});
 				{
 					const auto nodesOfCellC(mesh->getNodesOfCell(cId));
 					const int nbElemsPNodesOfCellC(nodesOfCellC.size());
@@ -257,7 +256,7 @@ private:
 						reduction0 = sumR1(reduction0, X(pNodes));
 					}
 				}
-				Xc(cCells) = ArrayOperations::multiply(0.25, reduction0);
+				Xc(cCells) = 0.25 * reduction0;
 			});
 		}
 	}
@@ -355,7 +354,7 @@ private:
 			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& cCellsTeam)
 			{
 				int cCells(cCellsTeam + teamWork.first);
-				if (MathFunctions::norm(ArrayOperations::minus(Xc(cCells), options->vectOne)) < 0.5) 
+				if (MathFunctions::norm(Xc(cCells) - options->vectOne) < 0.5) 
 					u_n(cCells) = options->u0;
 				else
 					u_n(cCells) = 0.0;
@@ -428,7 +427,7 @@ private:
 						const int dCells(dId);
 						const int fId(mesh->getCommonFace(cId, dId));
 						const int fFaces(fId);
-						double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / MathFunctions::norm(ArrayOperations::minus(Xc(cCells), Xc(dCells))));
+						double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / MathFunctions::norm(Xc(cCells) - Xc(dCells)));
 						alpha(cCells,dCells) = alphaExtraDiag;
 						alphaDiag = alphaDiag + alphaExtraDiag;
 					}
@@ -506,7 +505,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b) 
 	{
-		return ArrayOperations::plus(a, b);
+		return a + b;
 	}
 	
 	KOKKOS_INLINE_FUNCTION

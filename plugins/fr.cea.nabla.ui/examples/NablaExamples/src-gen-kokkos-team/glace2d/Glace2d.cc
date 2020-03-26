@@ -15,7 +15,6 @@
 #include "utils/Timer.h"
 #include "types/Types.h"
 #include "types/MathFunctions.h"
-#include "types/ArrayOperations.h"
 
 using namespace nablalib;
 
@@ -184,7 +183,7 @@ private:
 						const int rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
 						const int rPlus1Nodes(rPlus1Id);
 						const int rMinus1Nodes(rMinus1Id);
-						C(jCells,rNodesOfCellJ) = ArrayOperations::multiply(0.5, perp(ArrayOperations::minus(X_n(rPlus1Nodes), X_n(rMinus1Nodes))));
+						C(jCells,rNodesOfCellJ) = 0.5 * perp(X_n(rPlus1Nodes) - X_n(rMinus1Nodes));
 					}
 				}
 			});
@@ -238,7 +237,7 @@ private:
 						const int rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
 						const int rPlus1Nodes(rPlus1Id);
 						const int rMinus1Nodes(rMinus1Id);
-						Cjr_ic(jCells,rNodesOfCellJ) = ArrayOperations::multiply(0.5, perp(ArrayOperations::minus(X_n0(rPlus1Nodes), X_n0(rMinus1Nodes))));
+						Cjr_ic(jCells,rNodesOfCellJ) = 0.5 * perp(X_n0(rPlus1Nodes) - X_n0(rMinus1Nodes));
 					}
 				}
 			});
@@ -337,7 +336,7 @@ private:
 				const int jId(jCells);
 				double rho_ic;
 				double p_ic;
-				RealArray1D<2> reduction0({{0.0, 0.0}});
+				RealArray1D<2> reduction0({0.0, 0.0});
 				{
 					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 					const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
@@ -348,7 +347,7 @@ private:
 						reduction0 = sumR1(reduction0, X_n0(rNodes));
 					}
 				}
-				RealArray1D<2> center(ArrayOperations::multiply(0.25, reduction0));
+				RealArray1D<2> center(0.25 * reduction0);
 				if (center[0] < options->option_x_interface) 
 				{
 					rho_ic = options->option_rho_ini_zg;
@@ -375,7 +374,7 @@ private:
 				p(jCells) = p_ic;
 				rho(jCells) = rho_ic;
 				E_n(jCells) = p_ic / ((options->gamma - 1.0) * rho_ic);
-				uj_n(jCells) = {{0.0, 0.0}};
+				uj_n(jCells) = {0.0, 0.0};
 			});
 		}
 	}
@@ -602,7 +601,7 @@ private:
 					const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
 					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 					{
-						Ajr(jCells,rNodesOfCellJ) = ArrayOperations::multiply(((rho(jCells) * c(jCells)) / l(jCells,rNodesOfCellJ)), tensProduct(C(jCells,rNodesOfCellJ), C(jCells,rNodesOfCellJ)));
+						Ajr(jCells,rNodesOfCellJ) = ((rho(jCells) * c(jCells)) / l(jCells,rNodesOfCellJ)) * tensProduct(C(jCells,rNodesOfCellJ), C(jCells,rNodesOfCellJ));
 					}
 				}
 			});
@@ -657,7 +656,7 @@ private:
 			{
 				int rNodes(rNodesTeam + teamWork.first);
 				const int rId(rNodes);
-				RealArray2D<2,2> reduction3({{{0.0, 0.0}, {0.0, 0.0}}});
+				RealArray2D<2,2> reduction3({0.0, 0.0,  0.0, 0.0});
 				{
 					const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
 					const int nbElemsJCellsOfNodeR(cellsOfNodeR.size());
@@ -691,7 +690,7 @@ private:
 			{
 				int rNodes(rNodesTeam + teamWork.first);
 				const int rId(rNodes);
-				RealArray1D<2> reduction4({{0.0, 0.0}});
+				RealArray1D<2> reduction4({0.0, 0.0});
 				{
 					const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
 					const int nbElemsJCellsOfNodeR(cellsOfNodeR.size());
@@ -700,7 +699,7 @@ private:
 						const int jId(cellsOfNodeR[jCellsOfNodeR]);
 						const int jCells(jId);
 						const int rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
-						reduction4 = sumR1(reduction4, ArrayOperations::plus(ArrayOperations::multiply(p(jCells), C(jCells,rNodesOfCellJ)), MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells))));
+						reduction4 = sumR1(reduction4, p(jCells) * C(jCells,rNodesOfCellJ) + MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells)));
 					}
 				}
 				b(rNodes) = reduction4;
@@ -745,12 +744,12 @@ private:
 					int fOuterFaces(fOuterFacesTeam + teamWork.first);
 					const int fId(outerFaces[fOuterFaces]);
 					const double epsilon(1.0E-10);
-					RealArray2D<2,2> I({{{{1.0, 0.0}}, {{0.0, 1.0}}}});
+					RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
 					double X_MIN(0.0);
 					double X_MAX(options->X_EDGE_ELEMS * options->X_EDGE_LENGTH);
 					double Y_MIN(0.0);
 					double Y_MAX(options->Y_EDGE_ELEMS * options->Y_EDGE_LENGTH);
-					RealArray1D<2> nY({{0.0, 1.0}});
+					RealArray1D<2> nY({0.0, 1.0});
 					{
 						const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
 						const int nbElemsRNodesOfFaceF(nodesOfFaceF.size());
@@ -765,16 +764,16 @@ private:
 									sign = -1.0;
 								else
 									sign = 1.0;
-								RealArray1D<2> N(ArrayOperations::multiply(sign, nY));
+								RealArray1D<2> N(sign * nY);
 								RealArray2D<2,2> NxN(tensProduct(N, N));
-								RealArray2D<2,2> IcP(ArrayOperations::minus(I, NxN));
+								RealArray2D<2,2> IcP(I - NxN);
 								bt(rNodes) = MathFunctions::matVectProduct(IcP, b(rNodes));
-								Mt(rNodes) = ArrayOperations::plus(ArrayOperations::multiply(IcP, (ArrayOperations::multiply(Ar(rNodes), IcP))), ArrayOperations::multiply(NxN, trace(Ar(rNodes))));
+								Mt(rNodes) = IcP * (Ar(rNodes) * IcP) + NxN * trace(Ar(rNodes));
 							}
 							if ((MathFunctions::fabs(X_n(rNodes)[0] - X_MIN) < epsilon) || ((MathFunctions::fabs(X_n(rNodes)[0] - X_MAX) < epsilon))) 
 							{
 								Mt(rNodes) = I;
-								bt(rNodes) = {{0.0, 0.0}};
+								bt(rNodes) = {0.0, 0.0};
 							}
 						}
 					}
@@ -893,7 +892,7 @@ private:
 					{
 						const int rId(nodesOfCellJ[rNodesOfCellJ]);
 						const int rNodes(rId);
-						F(jCells,rNodesOfCellJ) = ArrayOperations::plus(ArrayOperations::multiply(p(jCells), C(jCells,rNodesOfCellJ)), MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), (ArrayOperations::minus(uj_n(jCells), ur(rNodes)))));
+						F(jCells,rNodesOfCellJ) = p(jCells) * C(jCells,rNodesOfCellJ) + MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), (uj_n(jCells) - ur(rNodes)));
 					}
 				}
 			});
@@ -916,7 +915,7 @@ private:
 			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& rNodesTeam)
 			{
 				int rNodes(rNodesTeam + teamWork.first);
-				X_nplus1(rNodes) = ArrayOperations::plus(X_n(rNodes), ArrayOperations::multiply(deltat_n, ur(rNodes)));
+				X_nplus1(rNodes) = X_n(rNodes) + deltat_n * ur(rNodes);
 			});
 		}
 	}
@@ -971,7 +970,7 @@ private:
 			{
 				int jCells(jCellsTeam + teamWork.first);
 				const int jId(jCells);
-				RealArray1D<2> reduction6({{0.0, 0.0}});
+				RealArray1D<2> reduction6({0.0, 0.0});
 				{
 					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 					const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
@@ -980,7 +979,7 @@ private:
 						reduction6 = sumR1(reduction6, F(jCells,rNodesOfCellJ));
 					}
 				}
-				uj_nplus1(jCells) = ArrayOperations::minus(uj_n(jCells), ArrayOperations::multiply((deltat_n / m(jCells)), reduction6));
+				uj_nplus1(jCells) = uj_n(jCells) - (deltat_n / m(jCells)) * reduction6;
 			});
 		}
 	}
@@ -988,7 +987,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	RealArray1D<2> perp(RealArray1D<2> a) 
 	{
-		return {{a[1], -a[0]}};
+		return {a[1], -a[0]};
 	}
 	
 	template<size_t l>
@@ -1022,14 +1021,14 @@ private:
 	RealArray2D<2,2> inverse(RealArray2D<2,2> a) 
 	{
 		double alpha(1.0 / MathFunctions::det(a));
-		return {{{{a[1][1] * alpha, -a[0][1] * alpha}}, {{-a[1][0] * alpha, a[0][0] * alpha}}}};
+		return {a[1][1] * alpha, -a[0][1] * alpha, -a[1][0] * alpha, a[0][0] * alpha};
 	}
 	
 	template<size_t x>
 	KOKKOS_INLINE_FUNCTION
 	RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b) 
 	{
-		return ArrayOperations::plus(a, b);
+		return a + b;
 	}
 	
 	KOKKOS_INLINE_FUNCTION
@@ -1042,7 +1041,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b) 
 	{
-		return ArrayOperations::plus(a, b);
+		return a + b;
 	}
 	
 	KOKKOS_INLINE_FUNCTION

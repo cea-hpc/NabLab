@@ -39,7 +39,7 @@ class SequentialBackend extends Backend
 		includesContentProvider = new IncludesContentProvider
 		typeContentProvider = new StdVectorTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
-		argOrVarContentProvider = new NoLinearAlgebraArgOrVarContentProvider(typeContentProvider)
+		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider)
 		instructionContentProvider = new SequentialInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
@@ -60,7 +60,7 @@ class StlThreadBackend extends Backend
 		includesContentProvider = new StlThreadIncludesContentProvider
 		typeContentProvider = new StdVectorTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
-		argOrVarContentProvider = new NoLinearAlgebraArgOrVarContentProvider(typeContentProvider)
+		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider)
 		instructionContentProvider = new StlThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)

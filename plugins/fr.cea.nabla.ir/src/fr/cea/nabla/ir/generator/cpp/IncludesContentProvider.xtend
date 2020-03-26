@@ -10,18 +10,16 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.generator.Utils
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
 import java.util.LinkedHashSet
-import java.util.List
 
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
 class IncludesContentProvider
 {
-	protected def List<String> getAdditionalSystemIncludes() { #[] }
-	protected def List<String> getAdditionalUserIncludes() { #[] }
+	protected def Iterable<String> getAdditionalPragmas(IrModule m) { #[] }
+	protected def Iterable<String> getAdditionalSystemIncludes(IrModule m) { #[] }
+	protected def Iterable<String> getAdditionalUserIncludes(IrModule m) { #[] }
 
 	def getContentFor(IrModule m)
 	'''
@@ -38,7 +36,7 @@ class IncludesContentProvider
 
 	private def getPragmasFor(IrModule m)
 	{
-		#["STDC FENV_ACCESS ON"]
+		m.additionalPragmas
 	}
 
 	private def getSystemIncludesFor(IrModule m)
@@ -52,7 +50,7 @@ class IncludesContentProvider
 		systemIncludes += "utility"
 		systemIncludes += "cmath"
 		systemIncludes += "cfenv"
-		systemIncludes += additionalSystemIncludes
+		systemIncludes += m.additionalSystemIncludes
 
 		return systemIncludes
 	}
@@ -76,27 +74,42 @@ class IncludesContentProvider
 		if (m.functions.exists[f | f.body === null && f.provider == m.name]) 
 			userIncludes += m.name.toLowerCase + "/" + m.name + Utils::FunctionReductionPrefix + ".h"
 
-		val linearAlgebraVars = m.variables.filter(ConnectivityVariable).filter[linearAlgebra]
-		if (!linearAlgebraVars.empty) userIncludes += "types/LinearAlgebraFunctions.h"
-
-		userIncludes += additionalUserIncludes
+		userIncludes += m.additionalUserIncludes
 		return userIncludes
 	}
 }
 
 class StlThreadIncludesContentProvider extends IncludesContentProvider
 {
-	override getAdditionalUserIncludes()
+	override getAdditionalUserIncludes(IrModule m)
 	{
-		#["utils/Parallel.h"]
+		val includes = new LinkedHashSet<String>
+		includes += "utils/Parallel.h"
+		if (!m.linearAlgebraVariables.empty)
+			includes += "linearalgebra/LinearAlgebraFunctions.h"
+		return includes
 	}
 }
 
 class KokkosIncludesContentProvider extends IncludesContentProvider
 {
-	override getAdditionalSystemIncludes()
+	override getAdditionalPragmas(IrModule m)
+	{
+		#["STDC FENV_ACCESS ON"]
+	}
+
+	override getAdditionalSystemIncludes(IrModule m)
 	{
 		#["Kokkos_Core.hpp", "Kokkos_hwloc.hpp"]
+	}
+
+	override getAdditionalUserIncludes(IrModule m)
+	{
+		val includes = new LinkedHashSet<String>
+		includes += "kokkos/utils/Parallel.h"
+		if (!m.linearAlgebraVariables.empty)
+			includes += "kokkos/linearalgebra/LinearAlgebraFunctions.h"
+		return includes
 	}
 }
 

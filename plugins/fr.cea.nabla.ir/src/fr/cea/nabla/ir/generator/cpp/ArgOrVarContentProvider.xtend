@@ -52,25 +52,28 @@ abstract class ArgOrVarContentProvider
 }
 
 @Data
-class NoLinearAlgebraArgOrVarContentProvider extends ArgOrVarContentProvider
+class StlArgOrVarContentProvider extends ArgOrVarContentProvider
 {
 	override protected getLinearAlgebraType(int dimension) 
 	{
-		throw new UnsupportedOperationException("Not yet implemented: linear algebra")
+		switch dimension
+		{
+			case 1: return 'VectorType'
+			case 2: return 'NablaSparseMatrix'
+			default: throw new RuntimeException("Unsupported dimension: " + dimension)
+		}
 	}
 }
 
 @Data
 class KokkosArgOrVarContentProvider extends ArgOrVarContentProvider
 {
-	static val MatrixType = 'NablaSparseMatrix'
-
 	override protected getLinearAlgebraType(int dimension) 
 	{
 		switch dimension
 		{
 			case 1: return 'VectorType'
-			case 2: return MatrixType
+			case 2: return 'NablaSparseMatrix'
 			default: throw new RuntimeException("Unsupported dimension: " + dimension)
 		}
 	}

@@ -55,7 +55,7 @@ workflow ExplicitHeatEquationGenerationChain transforms ExplicitHeatEquation
 			stopTimeVariable = option_stoptime;
 			programmingModel = Kokkos
 		}
-		outputDir = "/NablaExamples/src-gen-kokkos";
+		outputDir = "/NablaExamples/src-gen-cpp/kokkos";
 	}
 
 	Ir2Code kokkosTeamThreadGenerator follows fillHlts
@@ -66,6 +66,6 @@ workflow ExplicitHeatEquationGenerationChain transforms ExplicitHeatEquation
 			stopTimeVariable = option_stoptime;
 			programmingModel = KokkosTeamThread
 		}
-		outputDir = "/NablaExamples/src-gen-kokkos-team";
+		outputDir = "/NablaExamples/src-gen-cpp/kokkos-team";
 	}
 }

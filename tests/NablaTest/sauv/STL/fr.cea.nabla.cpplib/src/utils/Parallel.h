@@ -10,107 +10,67 @@
 #ifndef UTILS_PARALLEL_H_
 #define UTILS_PARALLEL_H_
 
-#include <functional>
-#include <thread>
-#include <future>
-#include <algorithm>
-#include <numeric>
+#pragma STDC FENV_ACCESS ON
 
-namespace nablalib
-{
-  
-namespace parallel
-{
-  
-// ------------------------------ Would love to be private  ------------------------------ 
-namespace internal
-{
-// Internal call for parallel process, not meant to be use outside the parallel_exec
-template <typename F>
-void parallel_exec_internal(const int& nb_thread, const int& nb_elmt,
-                            const int& begin, const int& end, F lambda) noexcept
-{
-  const int chunck_size(std::floor(nb_elmt / nb_thread));  // chuncks are simples, we should do better...
-  const int len(end - begin);
-  // if every chuncks have been computed
-  if (len <= chunck_size) {
-    for (int i(begin); i < end; ++i)
-      lambda(i);
-    return;
+#include <functional>
+// Kokkos headers
+#include <Kokkos_Core.hpp>
+
+namespace nablalib { 
+
+template<class T>
+struct KokkosJoiner {
+public:
+  //Required
+  typedef KokkosJoiner reducer;
+  typedef T value_type;
+  typedef Kokkos::View<value_type> result_view_type;
+
+private:
+  value_type & value;
+  value_type init_value;
+  std::function<value_type(value_type,value_type)> user_join;
+
+public:
+
+  KOKKOS_INLINE_FUNCTION
+  KokkosJoiner(value_type& value_, const value_type init_value_, std::function<value_type(value_type,value_type)>&& user_join_)
+  : value(value_)
+  , init_value(init_value_)
+  , user_join(user_join_)
+  {}
+
+  //Required
+  KOKKOS_INLINE_FUNCTION
+  void join(value_type& dest, const value_type& src)  const {
+    dest = user_join(dest, src);
   }
 
-  // std::cout << "BEG = " << begin << ", END = " << end << std::endl;
+  KOKKOS_INLINE_FUNCTION
+  void join(volatile value_type& dest, const volatile value_type& src) const {
+	  dest = user_join(dest, src);
+  }
 
-  // else spawn a new thread asynchronously
-  const int next(begin + chunck_size < end ? begin + chunck_size : end);
-  auto future = std::async(std::launch::async, parallel_exec_internal<F>, nb_thread, nb_elmt, next, end, lambda);
-  parallel_exec_internal(nb_thread, nb_elmt, begin, next, lambda);
-  future.get();
-  return;
-}
+  KOKKOS_INLINE_FUNCTION
+  void init( value_type& val)  const {
+    val = init_value;
+  }
 
-// Internal call for parallel reduce, not meant to be use outside the parallel_reduce
-template <typename T, typename BinOp, typename JoinOp>
-T parallel_reduce_internal(const int& nb_thread, const int& nb_elmt,
-                           std::vector<int>::iterator begin, std::vector<int>::iterator end,
-                           const T init_val, BinOp bin_op, JoinOp join_op) noexcept
-{
-  const int chunck_size(std::floor(nb_elmt / nb_thread));  // chuncks are simples, we should do better...
-  const int len(std::distance(begin, end));
-  // if every chuncks have been computed
-  if (len <= chunck_size)
-    return std::accumulate(begin, end, init_val, bin_op);
+  KOKKOS_INLINE_FUNCTION
+  value_type& reference() const {
+    return value;
+  }
 
-  // std::cout << "BEG = " << begin << ", END = " << end << std::endl;
+  KOKKOS_INLINE_FUNCTION
+  result_view_type view() const {
+    return result_view_type(&value);
+  }
 
-  // else spawn a new thread asynchronously
-  auto next(begin + chunck_size < end ? begin + chunck_size : end);
-  auto future = std::async(std::launch::async, parallel_reduce_internal<T, BinOp, JoinOp>,
-                           nb_thread, nb_elmt, next, end, init_val, bin_op, join_op);
-  auto result = parallel_reduce_internal(nb_thread, nb_elmt, begin, next, init_val, bin_op, join_op);
-  return join_op(result, future.get());
-}
-}  // ------------------------------ end of namespace internal  ------------------------------ 
-
-// Some kind of bad static openMP parallel for
-// Given a range number of elements, the lambda function parameter is called upon each element.
-// Data is processed by chuncks and each chunck has is own dedicated thread.
-template <typename F>
-void parallel_exec(const int nb_elmt, F&& lambda) noexcept
-{
-  // Getting number of concurrent threads supported.
-  int nb_thread(2);  // Hyper thread support by default
-  if (std::thread::hardware_concurrency() > 0)
-    nb_thread = std::thread::hardware_concurrency();
-  else
-    std::cerr << "WARNING: can't figure out optimal threads number, using 2 by default." << std::endl;
-    
-  // Actually calling multithreaded lambda function over nb_elmt
-  internal::parallel_exec_internal(nb_thread, nb_elmt, 0, nb_elmt, lambda);
-}
-
-// Some kind of bad static openMP parallel reduce
-// Given a number of elements, binary operation is called upon each couple of elements of variable V.
-// Data is processed by chuncks and each chunck has is own dedicated thread.
-template <typename T, typename BinOp, typename JoinOp>
-T parallel_reduce(const int nb_elmt, const T init_val, BinOp&& bin_op, JoinOp&& join_op) noexcept
-{
-  // Getting number of concurrent threads supported.
-  int nb_thread(2);  // Hyper thread support by default
-  if (std::thread::hardware_concurrency() > 0)
-    nb_thread = std::thread::hardware_concurrency();
-  else
-    std::cerr << "WARNING: can't figure out optimal threads number, using 2 by default." << std::endl;
-    
-  // Actually calling multithreaded lambda function over nb_elmt
-  // We need an indexes vector to handle dereference operator in bin_op for accumulate call
-  std::vector<int> indexes(nb_elmt);
-  std::iota(indexes.begin(), indexes.end(), 0);
-  return internal::parallel_reduce_internal(nb_thread, nb_elmt, indexes.begin(), indexes.end(),
-                                            init_val, bin_op, join_op);
-}
-
-}  // end of namespace parallel
+  KOKKOS_INLINE_FUNCTION
+  bool references_scalar() const {
+    return true;
+  }
+};
 
 }  // end of namespace nablalib
 

@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-#include "types/Matrix.h"
+#include "kokkos/linearalgebra/Matrix.h"
 
 namespace nablalib
 {
@@ -29,7 +29,7 @@ operator=(double val) {
   } else {
 	  int offset(m_matrix.findCrsOffset(m_row, m_col));
 	  if (offset == -1) {
-	    // FIXME: Attention, il y a un elmt "invisible" sur 1a derniere ligne (l'elmt "past the end" qui indique la fin de la crs), si on tombe dessus on est baises...
+	    // FIXME: Attention, il y a un elmt "invisible" sur 1a derniere ligne (l'elmt "past the end" qui indique la fin de la crs), si on tombe dessus on a un pb...
 	    std::cerr << "Error, can't assign " << val << " at (" << m_row << ", " << m_col << ") for matrix "
 				        << m_matrix.m_name << " after it was build." << std::endl;
 	    std::terminate();
@@ -42,17 +42,26 @@ operator=(double val) {
 
 
 NablaSparseMatrix::
-NablaSparseMatrix(std::string name, int rows, int cols)
+NablaSparseMatrix(const std::string name, const int rows, const int cols)
   : m_name(name), m_nb_row(rows), m_nb_col(cols), m_nb_nnz(0), m_matrix(nullptr) {}
 
 
 NablaSparseMatrix::
-NablaSparseMatrix(std::string name, int rows, int cols, std::initializer_list<std::tuple<int, int, double>> init_list)
+NablaSparseMatrix(const std::string name, const int rows, const int cols,
+                  std::initializer_list<std::tuple<int, int, double>> init_list)
   : m_name(name), m_nb_row(rows), m_nb_col(cols), m_nb_nnz(init_list.size()), m_matrix(nullptr)
 {
   std::for_each(init_list.begin(), init_list.end(),
       [&](const std::tuple<int, int, double>& i){
 	        m_building_struct[std::get<0>(i)].emplace_back(std::get<1>(i), std::get<2>(i));});
+}
+
+
+NablaSparseMatrix::
+~NablaSparseMatrix()
+{
+  if (m_matrix)
+    delete m_matrix;
 }
 
 
@@ -69,25 +78,29 @@ build()
     row_i.second.sort([&](const std::pair<int, double>& a, const std::pair<int, double>& b){
 	                        return (a.first < b.first);});
 
-  // Resize Kokkos containers
-  Kokkos::resize(m_row_map, m_nb_row + 1);
-  Kokkos::resize(m_val, m_nb_nnz);
-  Kokkos::resize(m_col_ind, m_nb_nnz);
+  // Kokkos containers to build matrix
+  Kokkos::View<int*> row_map("row_map", static_cast<size_t>(m_nb_row + 1));
+  Kokkos::View<int*> col_ind("col_ind", static_cast<size_t>(m_nb_nnz));
+  Kokkos::View<double*> val("val", static_cast<size_t>(m_nb_nnz));
 
   int offset(0);
   for (int row_i(0); row_i < m_nb_row; ++row_i) {
-    m_row_map(row_i) = offset;
+    row_map(row_i) = offset;
     auto pos(m_building_struct.find(row_i));
     if (pos != m_building_struct.end()) {
       for (auto nnz : pos->second) {
-        m_col_ind(offset) = nnz.first;
-        m_val(offset) = nnz.second;
+        col_ind(offset) = nnz.first;
+        val(offset) = nnz.second;
         ++offset;
       }
     }
   }
-  m_row_map(m_nb_row) = offset; // past end index
-  m_matrix = new SparseMatrixType(m_name, m_nb_row, m_nb_col, m_nb_nnz, m_val, m_row_map, m_col_ind);
+  row_map(m_nb_row) = offset; // past end index
+  m_matrix = new SparseMatrixType(m_nb_row, m_nb_col, m_nb_nnz, std::move(val), std::move(row_map), std::move(col_ind));
+  
+  
+  // clearing temp struct
+  m_building_struct.clear();
 
   // std::cout << " OK:" << std::endl;
   // std::cout << "row map = {";
@@ -115,14 +128,14 @@ crsMatrix()
 
 
 NablaSparseMatrix::NablaSparseMatrixHelper NablaSparseMatrix::
-operator()(int row, int col)
+operator()(const int row, const int col)
 {
   assert(row < m_nb_row && col < m_nb_col);
   return NablaSparseMatrix::NablaSparseMatrixHelper(*this, row, col);
 }
 
 
-double NablaSparseMatrix::operator()(int row, int col) const
+double NablaSparseMatrix::operator()(const int row, const int col) const
 {
   assert(row < m_nb_row && col < m_nb_col);
   if (!m_matrix) {

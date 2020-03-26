@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-#include "types/LinearAlgebraFunctions.h"
+#include "kokkos/linearalgebra/LinearAlgebraFunctions.h"
 
 namespace nablalib
 {
@@ -77,7 +77,7 @@ std::string print(const SparseMatrixType& M) {
 std::string print(const VectorType& v) {
   std::stringstream ss;
 
-  for (auto i(0); i < v.extent(0); ++i) {
+  for (size_t i(0); i < v.extent(0); ++i) {
   if (!i)
     ss << "|";
   ss << std::setw(2) << v(i) << " ";
@@ -89,15 +89,16 @@ std::string print(const VectorType& v) {
 
 /*
  * \brief Conjugate Gradient function (solves A x = b)
- * \param A: [in] Kokkos sparse matrix
- * \param b: [in] Kokkos vector
- * \param A: [in] Kokkos vector (initial guess, can be null vector)
- * \param A: [in] Iteration threshold (default = 100)
- * \param A: [in] Convergence threshold (default = 1.e-8)
+ * \param A:         [in] Kokkos sparse matrix
+ * \param b:         [in] Kokkos vector
+ * \param x:         [in] Kokkos vector (initial guess, can be null vector)
+ * \param info:      [in/out] Misc. informations on computation result
+ * \param max_it:    [in] Iteration threshold (default = 200)
+ * \param tolerance: [in] Convergence threshold (default = std::numeric_limits<double>::epsilon)
  * \return: Solution vector
  */
 VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x, CGInfo& info,
-		           const size_t max_it, const double tolerance) {
+		               const size_t max_it, const double tolerance) {
 
   size_t it(0);
   double norm_res(0.0);
@@ -159,11 +160,20 @@ VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorT
   return x;
 }
 
+/*
+ * \brief Call to conjugate gradient to solve A x = b
+ * \param A:         [in] Kokkos sparse matrix
+ * \param b:         [in] Kokkos vector
+ * \param info:      [in/out] Misc. informations on computation result
+ * \return: Solution vector
+ * \note: Initial guess is null vector, default iteration threshold is 100),
+ *        default convergence threshold is 1.e-8
+ */
 VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info)
 {
   const size_t count(b.extent(0));
   VectorType x0("x0", count);
-  for (auto i(0); i < count; ++i)
+  for (size_t i(0); i < count; ++i)
     x0(i) = 0.0;
   return CGSolve(A.crsMatrix(), b, x0, info, 100, 1.e-8);
 }

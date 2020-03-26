@@ -10,7 +10,7 @@
 #ifndef TYPES_LINEARALGEBRAFUNCTIONS_H_
 #define TYPES_LINEARALGEBRAFUNCTIONS_H_
 
-#include "types/Matrix.h"
+#include "linearalgebra/Matrix.h"
 
 namespace nablalib
 {
@@ -26,8 +26,8 @@ namespace LinearAlgebraFunctions
   std::string print(const NablaSparseMatrix& M);
   std::string print(const SparseMatrixType& M);
   std::string print(const VectorType& v);
-  VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x, CGInfo& info,
-		             const size_t max_it = 200, const double tolerance = std::numeric_limits<double>::epsilon());
+  void CGSolve(const SparseMatrixType& A, const VectorType& b, VectorType& x, CGInfo& info,
+               const size_t max_it = 200, const double tolerance = std::numeric_limits<double>::epsilon());
   VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info);
 }
 }

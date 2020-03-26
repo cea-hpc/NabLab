@@ -13,8 +13,6 @@
 #include <array>
 #include "types/MultiArray.h"
 
-using namespace std;
-
 namespace nablalib
 {
 

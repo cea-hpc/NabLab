@@ -18,27 +18,21 @@
 #include <list>
 #include <utility>
 #include <algorithm>
-#include <tuple>
+#include <numeric>
 #include <initializer_list>
 #include <cmath>
+#include <cassert>
 #include <limits>
-#include <array>
 #include <mutex>
-
-// Kokkos headers
-#include "Kokkos_Core.hpp"
-#include "Kokkos_hwloc.hpp"
-#include "KokkosSparse.hpp"
-#include "KokkosBlas.hpp"
-
+#include "CrsMatrix.h"
 
 namespace nablalib
 {
 
-typedef KokkosSparse::CrsMatrix<double, int, Kokkos::OpenMP, void, int> SparseMatrixType;
-typedef Kokkos::View<double*> VectorType;
+typedef CrsMatrix<double> SparseMatrixType;
+typedef std::vector<double> VectorType;
 
-// T0D0: templatiser la classe pour passer nb_row, nb_col, nb_nnz en tpl arg,
+// TODO: templatiser la classe pour passer nb_row, nb_col, nb_nnz en tpl arg,
 // calculable dans une passe d'IR pour passer toutes les a1loc en static
 class NablaSparseMatrix
 {
@@ -48,41 +42,42 @@ class NablaSparseMatrix
   /******************************************** Internal Helper Class ********************************************/
   class NablaSparseMatrixHelper {
    public:
-    explicit NablaSparseMatrixHelper(NablaSparseMatrix& m, int i, int j) : m_matrix(m), m_row(i), m_col(j) {}
-	~NablaSparseMatrixHelper() = default;
+    explicit NablaSparseMatrixHelper(NablaSparseMatrix& m, const int i, const int j) : m_matrix(m), m_row(i), m_col(j) {}
+	  ~NablaSparseMatrixHelper() = default;
 
 	NablaSparseMatrixHelper& operator=(double val);
 
    private:
     NablaSparseMatrix& m_matrix;
-	const int m_row;
-	const int m_col;
+	  const int m_row;
+	  const int m_col;
   };
   /***************************************************************************************************************/
 
  public:
-  NablaSparseMatrix(std::string name, int rows, int cols);
-  explicit NablaSparseMatrix(std::string name, int rows, int cols,
-		                     std::initializer_list<std::tuple<int, int, double>> init_list);
-  ~NablaSparseMatrix() = default;
+  NablaSparseMatrix(const std::string name, const int rows, const int cols);
+  explicit NablaSparseMatrix(const std::string name, const int rows, const int cols,
+                             std::initializer_list<std::tuple<int, int, double>> init_list);
+  ~NablaSparseMatrix();
 
+  // explicit build
   void build();
+  // implicit build and accessor
   SparseMatrixType& crsMatrix();
-  NablaSparseMatrixHelper operator()(int row, int col);
-  double operator()(int row, int col) const;
-
+  // getter
+  double operator()(const int row, const int col) const;
+  // setter
+  NablaSparseMatrixHelper operator()(const int row, const int col);
+  
  //private:
   int findCrsOffset(const int& i, const int& j) const;
 
   // Attributes
   std::map<int, std::list<std::pair<int, double>>> m_building_struct;
-  std::string m_name;
-  int m_nb_row;
-  int m_nb_col;
+  const std::string m_name;
+  const int m_nb_row;
+  const int m_nb_col;
   int m_nb_nnz;
-  Kokkos::View<double*> m_val;
-  Kokkos::View<int*> m_row_map;
-  Kokkos::View<int*> m_col_ind;
   SparseMatrixType* m_matrix;
   std::mutex m_mutex;
 };

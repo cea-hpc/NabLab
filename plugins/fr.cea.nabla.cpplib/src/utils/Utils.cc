@@ -20,7 +20,7 @@ namespace utils
 
 int indexOf(const std::vector<int>& array, const int& value)
 {
-  for (int i=0 ; i<array.size() ; ++i)
+  for (size_t i=0; i<array.size(); ++i)
     if (array[i] == value)
       return i;
   throw std::out_of_range("Value not in array");
@@ -40,7 +40,7 @@ const std::string progress_bar(const int& it, const int& max_it, const double& t
   const float progress(std::max(static_cast<float>(it) / static_cast<float>(max_it),
                                 static_cast<float>(t) / static_cast<float>(max_t)));
 
-  const int pos(width * progress);
+  const size_t pos(width * progress);
   std::string bar(__CYAN_BKG__);
   for (size_t i(0); i < width; ++i)
     (bar.append(i<=pos?__CYAN_BKG__:__BLUE_BKG__)).append(" ");

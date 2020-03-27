@@ -146,11 +146,11 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 	'''
 		«result.cppType» «result.name»;
 		«iterationBlock.defineInterval('''
-		«result.name»(parallel::parallel_reduce(«iterationBlock.nbElems», «result.defaultValue.content», [&](«result.cppType»& accu, const int& «iterationBlock.indexName»)
+		«result.name» = parallel::parallel_reduce(«iterationBlock.nbElems», «result.defaultValue.content», [&](«result.cppType»& accu, const int& «iterationBlock.indexName»)
 			{
 				return (accu = «binaryFunction.getCodeName('.')»(accu, «lambda.content»));
 			},
-			std::bind(&«irModule.name»::«binaryFunction.name», this, std::placeholders::_1, std::placeholders::_2)));''')»
+			std::bind(&«irModule.name»::«binaryFunction.name», this, std::placeholders::_1, std::placeholders::_2));''')»
 	'''
 
 	override getLoopContent(Loop it)
@@ -175,7 +175,7 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 			«innerInstruction.content»
 			«ENDFOR»
 			accu = «binaryFunction.getCodeName('.')»(accu, «lambda.content»);
-		}, Kokkos::Joiner<«result.cppType»>(«result.name», «result.defaultValue.content», &«irModule.name»::«binaryFunction.name»));''')»
+		}, KokkosJoiner<«result.cppType»>(«result.name», «result.defaultValue.content», &«irModule.name»::«binaryFunction.name»));''')»
 	'''
 
 	override getLoopContent(Loop it)

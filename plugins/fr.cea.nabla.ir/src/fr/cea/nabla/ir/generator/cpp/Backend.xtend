@@ -34,12 +34,12 @@ class SequentialBackend extends Backend
 	new(String maxIterationVarName, String stopTimeVarName)
 	{
 		name = 'Sequential'
-		ir2Cmake = new Ir2Cmake
+		ir2Cmake = new StlIr2Cmake
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new IncludesContentProvider
-		typeContentProvider = new StdVectorTypeContentProvider
-		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
+		typeContentProvider = new StlTypeContentProvider
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
+		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
 		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider)
 		instructionContentProvider = new SequentialInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
@@ -54,13 +54,13 @@ class StlThreadBackend extends Backend
 {
 	new(String maxIterationVarName, String stopTimeVarName)
 	{
-		name = 'Sequential'
-		ir2Cmake = new Ir2Cmake
+		name = 'StlThread'
+		ir2Cmake = new StlIr2Cmake
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new StlThreadIncludesContentProvider
-		typeContentProvider = new StdVectorTypeContentProvider
-		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
+		typeContentProvider = new StlTypeContentProvider
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
+		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
 		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider)
 		instructionContentProvider = new StlThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
@@ -80,8 +80,8 @@ class KokkosBackend extends Backend
 		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new KokkosIncludesContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
-		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
+		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
 		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider)
 		instructionContentProvider = new KokkosInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)
@@ -101,8 +101,8 @@ class KokkosTeamThreadBackend extends Backend
 		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new KokkosIncludesContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
-		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
+		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
 		attributesContentProvider = new KokkosTeamThreadAttributesContentProvider(argOrVarContentProvider)
 		instructionContentProvider = new KokkosTeamThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)

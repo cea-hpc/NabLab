@@ -95,16 +95,16 @@ class Ir2Cpp extends CodeGenerator
 		, «uv.name»(«uv.defaultValue.content»)
 		«ENDFOR»
 		«FOR a : connectivityVariables»
-		, «a.name»(«backend.typeContentProvider.getCstrInit(a.name, a.type.base, a.type.connectivities)»)
+		, «a.name»(«a.cstrInit»)
 		«ENDFOR»
 		«FOR a : linearAlgebraVariables»
-		, «a.name»(«backend.typeContentProvider.getCstrInit(a.name, a.type.base, a.type.connectivities)»)
+		, «a.name»(«a.cstrInit»)
 		«ENDFOR»
 		{
 			«IF withMesh»
 			// Copy node coordinates
 			const auto& gNodes = mesh->getGeometry()->getNodes();
-			«val iterator = backend.typeContentProvider.formatVarIteratorsContent(#["rNodes"])»
+			«val iterator = backend.argOrVarContentProvider.formatIterators(initNodeCoordVariable, #["rNodes"])»
 			for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 				«initNodeCoordVariable.name»«iterator» = gNodes[rNodes];
 			«ENDIF»

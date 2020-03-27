@@ -28,7 +28,6 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.SizeTypeInt
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
-import java.util.ArrayList
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
@@ -38,7 +37,7 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 @Data
 class ExpressionContentProvider
 {
-	val extension TypeContentProvider
+	val extension ArgOrVarContentProvider
 
 	def dispatch CharSequence getContent(ContractedIf it) 
 	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
@@ -108,10 +107,7 @@ class ExpressionContentProvider
 		if (iterators.empty || target instanceof SimpleVariable) return ''
 		val array = target as ConnectivityVariable
 		if (array.type.connectivities.size < iterators.size) return ''
-		var content = new ArrayList<String>
-		for (r : iterators)
-			content += r.name
-		content.formatVarIteratorsContent
+		formatIterators(array, iterators.map[name])
 	}
 
 	private def CharSequence initArray(int[] sizes, CharSequence value)

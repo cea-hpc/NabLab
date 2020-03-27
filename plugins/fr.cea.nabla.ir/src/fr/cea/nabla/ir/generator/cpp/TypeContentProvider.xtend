@@ -15,13 +15,11 @@ import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.PrimitiveType
 
 import static extension fr.cea.nabla.ir.generator.SizeTypeContentProvider.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
 
 abstract class TypeContentProvider
 {
 	protected abstract def String getCppType(BaseType baseType, Iterable<Connectivity> connectivities)
-	protected abstract def String getCstrInit(String varName, BaseType baseType, Iterable<Connectivity> connectivities)
-	protected abstract def CharSequence formatVarIteratorsContent(String[] spaceIteratorNames)
+	protected abstract def String getLinearAlgebraType(int dimension)
 
 	def dispatch String getCppType(BaseType it)
 	{
@@ -60,7 +58,7 @@ abstract class TypeContentProvider
  	}
  }
 
-class StdVectorTypeContentProvider extends TypeContentProvider
+class StlTypeContentProvider extends TypeContentProvider
 {
 	override getCppType(BaseType baseType, Iterable<Connectivity> connectivities) 
 	{
@@ -68,18 +66,15 @@ class StdVectorTypeContentProvider extends TypeContentProvider
 		else 'std::vector<' + getCppType(baseType, connectivities.tail) + '>'
 	}
 
-	override protected getCstrInit(String varName, BaseType baseType, Iterable<Connectivity> connectivities)
+	override protected getLinearAlgebraType(int dimension) 
 	{
-		switch connectivities.size
+		switch dimension
 		{
-			case 0: throw new RuntimeException("Ooops. Can not be there, normally...")
-			case 1: connectivities.get(0).nbElems
-			default: '''«connectivities.get(0).nbElems», «getCppType(baseType, connectivities.tail)»(«getCstrInit(varName, baseType, connectivities.tail)»)''' 
+			case 1: return 'VectorType'
+			case 2: return 'NablaSparseMatrix'
+			default: throw new RuntimeException("Unsupported dimension: " + dimension)
 		}
 	}
-
-	override protected formatVarIteratorsContent(String[] spaceIteratorNames)
-	'''«FOR s : spaceIteratorNames BEFORE '[' SEPARATOR '][' AFTER ']'»«s»«ENDFOR»'''
 }
 
 class KokkosTypeContentProvider extends TypeContentProvider
@@ -89,9 +84,13 @@ class KokkosTypeContentProvider extends TypeContentProvider
 		'Kokkos::View<' + baseType.cppType + connectivities.map['*'].join + '>'
 	}
 
-	override getCstrInit(String varName, BaseType baseType, Iterable<Connectivity> connectivities)
-	'''"«varName»", «FOR d : connectivities SEPARATOR ', '»«d.nbElems»«ENDFOR»'''
-
-	override protected formatVarIteratorsContent(String[] spaceIteratorNames) 
-	'''«FOR s : spaceIteratorNames BEFORE '(' SEPARATOR ',' AFTER ')'»«s»«ENDFOR»'''
+	override protected getLinearAlgebraType(int dimension) 
+	{
+		switch dimension
+		{
+			case 1: return 'VectorType'
+			case 2: return 'NablaSparseMatrix'
+			default: throw new RuntimeException("Unsupported dimension: " + dimension)
+		}
+	}
 }

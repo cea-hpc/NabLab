@@ -34,23 +34,26 @@ CartesianMesh2DGenerator::generate(int nbXQuads, int nbYQuads, double xSize, dou
 	int bottom_node_id_(0);
 	int left_node_id_(0);
 	int right_node_id_(0);
-	int top_left_node_id_, top_right_node_id_, bottom_left_node_id_, bottom_right_node_id_;
-	for (int j(0); j <= nbYQuads; ++j) {
-		for (int i(0); i <= nbXQuads; ++i) {
+	int top_left_node_id_(0);
+	int top_right_node_id_(0);
+	int bottom_left_node_id_(0);
+	int bottom_right_node_id_(0);
+	for(size_t j(0), nj(nbYQuads); j <= nj; ++j) {
+		for(size_t i(0), ni(nbXQuads); i <= ni; ++i) {
 			RealArray1D<2> tmp = { xSize * i, ySize * j };
 			nodes_[node_id_] = move(tmp);
-			if (i!=0 && j!=0 && i!=nbXQuads && j!=nbYQuads)
+			if (i!=0 && j!=0 && i!=ni && j!=nj)
 				inner_node_ids_[inner_node_id_++] = node_id_;
 			else
 			{
 				if (j==0) bottom_node_ids_[bottom_node_id_++] = node_id_;
-				if (j==nbYQuads) top_node_ids_[top_node_id_++] = node_id_;
+				if (j==nj) top_node_ids_[top_node_id_++] = node_id_;
 				if (i==0) left_node_ids_[left_node_id_++] = node_id_;
-				if (i==nbXQuads) right_node_ids_[right_node_id_++] = node_id_;
+				if (i==ni) right_node_ids_[right_node_id_++] = node_id_;
 				if (i==0 && j==0) bottom_left_node_id_ = node_id_;
-				if (i==nbXQuads && j==0) bottom_right_node_id_ = node_id_;
-				if (i==0 && j==nbYQuads) top_left_node_id_ = node_id_;
-				if (i==nbXQuads && j==nbYQuads) top_right_node_id_ = node_id_;
+				if (i==ni && j==0) bottom_right_node_id_ = node_id_;
+				if (i==0 && j==nj) top_left_node_id_ = node_id_;
+				if (i==ni && j==nj) top_right_node_id_ = node_id_;
 			}
 			++node_id_;
 		}
@@ -59,19 +62,19 @@ CartesianMesh2DGenerator::generate(int nbXQuads, int nbYQuads, double xSize, dou
 	// edge creation
 	const int nb_x_nodes_(nbXQuads + 1);
 	int edge_id_(0);
-	for (int i(0); i < nodes_.size(); ++i)	{
+	for(size_t i(0), n(nodes_.size()); i < n; ++i)	{
 		const int right_node_index_(i + 1);
 		if (right_node_index_ % nb_x_nodes_!=0)
 		  edges_[edge_id_++] = move(Edge(i, right_node_index_));
 		const int below_node_index_(i + nb_x_nodes_);
-		if (below_node_index_ < nodes_.size())
+		if (below_node_index_ < (const int)n)
 		  edges_[edge_id_++] = Edge(i, below_node_index_);
 	}
 
 	// quad creation
 	int quad_id_(0);
-	for (int j(0); j < nbYQuads; ++j) {
-		for (int i(0); i < nbXQuads; ++i) {
+	for(size_t j(0), nj(nbYQuads); j < nj; ++j) {
+		for(size_t i(0), ni(nbXQuads); i < ni; ++i) {
 			const int upper_left_node_index_((j * nb_x_nodes_) + i);
 			const int lower_left_node_index_(upper_left_node_index_ + nb_x_nodes_);
 			quads_[quad_id_++] = move(Quad(upper_left_node_index_, upper_left_node_index_ + 1,

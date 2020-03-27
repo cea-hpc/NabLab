@@ -36,7 +36,7 @@ CartesianMesh2D::CartesianMesh2D(
 {
 	// outer faces
 	auto edges = m_geometry->getEdges();
-	for (int edgeId(0); edgeId < edges.size(); ++edgeId)
+	for (size_t edgeId(0), n(edges.size()); edgeId < n; ++edgeId)
 		if (!isInnerEdge(edges[edgeId]))
 			m_outer_faces.emplace_back(edgeId);
 }
@@ -58,7 +58,7 @@ CartesianMesh2D::getCellsOfNode(const int& nodeId) const noexcept
 {
 	vector<int> candidateQuadIds;
 	auto quads = m_geometry->getQuads();
-	for (int quadId(0); quadId < quads.size(); ++quadId) {
+	for(size_t quadId(0), n(quads.size()); quadId < n; ++quadId) {
 		if (find(quads[quadId].getNodeIds().begin(), quads[quadId].getNodeIds().end(), nodeId) != quads[quadId].getNodeIds().end())
 			candidateQuadIds.emplace_back(quadId);
 	}
@@ -73,7 +73,7 @@ CartesianMesh2D::getCellsOfFace(const int& faceId) const
 	for (auto nodeId : nodes)
 	{
 		auto adjacentCells(getCellsOfNode(nodeId));
-		for (int quadId : adjacentCells)
+		for(auto quadId : adjacentCells)
 			if (getNbCommonIds(nodes, m_geometry->getQuads()[quadId].getNodeIds()) == 2)
 				cellsOfFace.emplace_back(quadId);
 	}
@@ -90,7 +90,7 @@ CartesianMesh2D::getNeighbourCells(const int& cellId) const
 	for (auto nodeId : nodes)
 	{
 		auto adjacentCells(getCellsOfNode(nodeId));
-		for (int quadId : adjacentCells)
+		for(auto quadId : adjacentCells)
 			if (quadId != cellId)
 				if (getNbCommonIds(nodes, m_geometry->getQuads()[quadId].getNodeIds()) == 2)
 					neighbours.emplace_back(quadId);
@@ -105,7 +105,7 @@ CartesianMesh2D::getFacesOfCell(const int& cellId) const
 {
 	vector<int> cellEdgeIds;
 	const auto& edges(m_geometry->getEdges());
-	for (int edgeId=0; edgeId < edges.size(); ++edgeId)
+	for(size_t edgeId=0, n(edges.size()); edgeId < n; ++edgeId)
 		if (getNbCommonIds(edges[edgeId].getNodeIds(), m_geometry->getQuads()[cellId].getNodeIds()) == 2)
 			cellEdgeIds.emplace_back(edgeId);
 	return cellEdgeIds;

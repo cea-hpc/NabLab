@@ -47,6 +47,17 @@ workflow ImplicitHeatEquationGenerationChain transforms ImplicitHeatEquation
 		outputDir = "/NablaExamples/src-gen-java";
 	}
 
+	Ir2Code stlGenerator follows fillHlts
+	{
+		language = Cpp
+		{
+			maxIterationVariable = option_max_iterations;
+			stopTimeVariable = option_stoptime;
+			programmingModel = StlThread
+		}
+		outputDir = "/NablaExamples/src-gen-cpp/stl-thread";
+	}
+
 	Ir2Code kokkosGenerator follows fillHlts
 	{
 		language = Cpp

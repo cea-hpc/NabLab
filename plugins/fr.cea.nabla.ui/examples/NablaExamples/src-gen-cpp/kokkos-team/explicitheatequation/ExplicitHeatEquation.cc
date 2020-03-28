@@ -15,6 +15,7 @@
 #include "utils/Timer.h"
 #include "types/Types.h"
 #include "types/MathFunctions.h"
+#include "utils/kokkos/Parallel.h"
 
 using namespace nablalib;
 
@@ -392,11 +393,11 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeDeltaTn(const member_type& teamMember) noexcept
 	{
-		double reduction1(numeric_limits<double>::max());
+		double reduction1;
 		Kokkos::parallel_reduce(Kokkos::TeamThreadRange(teamMember, nbCells), KOKKOS_LAMBDA(const int& cCells, double& accu)
 		{
 			accu = minR0(accu, options->X_EDGE_LENGTH * options->Y_EDGE_LENGTH / D(cCells));
-		}, Kokkos::Min<double>(reduction1));
+		}, KokkosJoiner<double>(reduction1, numeric_limits<double>::max(), std::bind(&ExplicitHeatEquation::minR0, this, std::placeholders::_1, std::placeholders::_2)));
 		deltat = reduction1 * 0.24;
 	}
 	

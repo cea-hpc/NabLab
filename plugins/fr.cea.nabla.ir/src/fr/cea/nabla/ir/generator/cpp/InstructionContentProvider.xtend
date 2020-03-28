@@ -175,7 +175,7 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 			«innerInstruction.content»
 			«ENDFOR»
 			accu = «binaryFunction.getCodeName('.')»(accu, «lambda.content»);
-		}, KokkosJoiner<«result.cppType»>(«result.name», «result.defaultValue.content», &«irModule.name»::«binaryFunction.name»));''')»
+		}, KokkosJoiner<«result.cppType»>(«result.name», «result.defaultValue.content», std::bind(&«irModule.name»::«binaryFunction.name», this, std::placeholders::_1, std::placeholders::_2)));''')»
 	'''
 
 	override getLoopContent(Loop it)

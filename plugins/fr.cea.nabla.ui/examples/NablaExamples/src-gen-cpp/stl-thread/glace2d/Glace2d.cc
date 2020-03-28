@@ -1,4 +1,3 @@
-#pragma STDC FENV_ACCESS ON
 #include <iostream>
 #include <iomanip>
 #include <type_traits>
@@ -13,7 +12,7 @@
 #include "utils/Timer.h"
 #include "types/Types.h"
 #include "types/MathFunctions.h"
-#include "utils/Parallel.h"
+#include "utils/stl/Parallel.h"
 
 using namespace nablalib;
 

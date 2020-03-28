@@ -10,7 +10,7 @@ Consequently, we use github sources like this:
 	mkdir kokkos-install
 	mkdir kokkos-build
 	cd kokkos-build
-	cmake ../kokkos -DCMAKE_CXX_COMPILER=g++ -DCMAKE_INSTALL_PREFIX=~/kokkos/kokkos-install -DKokkos_ENABLE_OPENMP=On
+	cmake ../kokkos -DCMAKE_CXX_COMPILER=g++ -DKokkos_CXX_STANDARD=17 -DCMAKE_INSTALL_PREFIX=~/kokkos/kokkos-install -DKokkos_ENABLE_OPENMP=On -DKokkos_ENABLE_HWLOC=On
 	make install
 	cd ..
 	rm -rf kokkos-build
@@ -27,7 +27,7 @@ We use the same process.
 	mkdir kokkos-kernels-install
 	mkdir kokkos-kernels-build
 	cd kokkos-build-kernels
-	cmake ../kokkos-kernels -DCMAKE_CXX_COMPILER=g++ -DCMAKE_INSTALL_PREFIX=~/kokkos/kokkos-kernels-install -DCMAKE_PREFIX_PATH=~/kokkos/kokkos-install
+	cmake ../kokkos-kernels -DCMAKE_CXX_COMPILER=g++ -DCMAKE_INSTALL_PREFIX=~/kokkos/kokkos-kernels-install -DKokkos_ENABLE_OPENMP=On -DCMAKE_PREFIX_PATH=~/kokkos/kokkos-install
 	make install
 	cd ..
 	rm -rf kokkos-kernels-build

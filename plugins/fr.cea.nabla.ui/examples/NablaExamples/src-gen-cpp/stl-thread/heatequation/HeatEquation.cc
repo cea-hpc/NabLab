@@ -1,4 +1,3 @@
-#pragma STDC FENV_ACCESS ON
 #include <iostream>
 #include <iomanip>
 #include <type_traits>
@@ -6,8 +5,6 @@
 #include <utility>
 #include <cmath>
 #include <cfenv>
-#include <Kokkos_Core.hpp>
-#include <Kokkos_hwloc.hpp>
 #include "mesh/CartesianMesh2DGenerator.h"
 #include "mesh/CartesianMesh2D.h"
 #include "mesh/PvdFileWriter2D.h"
@@ -15,7 +12,7 @@
 #include "utils/Timer.h"
 #include "types/Types.h"
 #include "types/MathFunctions.h"
-#include "utils/kokkos/Parallel.h"
+#include "utils/stl/Parallel.h"
 
 using namespace nablalib;
 
@@ -46,14 +43,14 @@ private:
 	double t_n, t_nplus1, deltat;
 	
 	// Connectivity Variables
-	Kokkos::View<RealArray1D<2>*> X;
-	Kokkos::View<RealArray1D<2>*> center;
-	Kokkos::View<double*> u_n;
-	Kokkos::View<double*> u_nplus1;
-	Kokkos::View<double*> V;
-	Kokkos::View<double*> f;
-	Kokkos::View<double*> outgoingFlux;
-	Kokkos::View<double*> surface;
+	std::vector<RealArray1D<2>> X;
+	std::vector<RealArray1D<2>> center;
+	std::vector<double> u_n;
+	std::vector<double> u_nplus1;
+	std::vector<double> V;
+	std::vector<double> f;
+	std::vector<double> outgoingFlux;
+	std::vector<double> surface;
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;
@@ -73,19 +70,19 @@ public:
 	, t_nplus1(0.0)
 	, deltat(0.001)
 	, lastDump(numeric_limits<int>::min())
-	, X("X", nbNodes)
-	, center("center", nbCells)
-	, u_n("u_n", nbCells)
-	, u_nplus1("u_nplus1", nbCells)
-	, V("V", nbCells)
-	, f("f", nbCells)
-	, outgoingFlux("outgoingFlux", nbCells)
-	, surface("surface", nbFaces)
+	, X(nbNodes)
+	, center(nbCells)
+	, u_n(nbCells)
+	, u_nplus1(nbCells)
+	, V(nbCells)
+	, f(nbCells)
+	, outgoingFlux(nbCells)
+	, surface(nbFaces)
 	{
 		// Copy node coordinates
 		const auto& gNodes = mesh->getGeometry()->getNodes();
 		for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-			X(rNodes) = gNodes[rNodes];
+			X[rNodes] = gNodes[rNodes];
 	}
 
 private:
@@ -94,10 +91,9 @@ private:
 	 * In variables: V, center, deltat, surface, u_n
 	 * Out variables: outgoingFlux
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void computeOutgoingFlux() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& j1Cells)
+		parallel::parallel_exec(nbCells, [&](const int& j1Cells)
 		{
 			const int j1Id(j1Cells);
 			double reduction3(0.0);
@@ -110,10 +106,10 @@ private:
 					const int j2Cells(j2Id);
 					const int cfId(mesh->getCommonFace(j1Id, j2Id));
 					const int cfFaces(cfId);
-					reduction3 = sumR0(reduction3, (u_n(j2Cells) - u_n(j1Cells)) / MathFunctions::norm(center(j2Cells) - center(j1Cells)) * surface(cfFaces));
+					reduction3 = sumR0(reduction3, (u_n[j2Cells] - u_n[j1Cells]) / MathFunctions::norm(center[j2Cells] - center[j1Cells]) * surface[cfFaces]);
 				}
 			}
-			outgoingFlux(j1Cells) = deltat / V(j1Cells) * reduction3;
+			outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction3;
 		});
 	}
 	
@@ -122,10 +118,9 @@ private:
 	 * In variables: X
 	 * Out variables: surface
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void computeSurface() noexcept
 	{
-		Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const int& fFaces)
+		parallel::parallel_exec(nbFaces, [&](const int& fFaces)
 		{
 			const int fId(fFaces);
 			double reduction2(0.0);
@@ -138,10 +133,10 @@ private:
 					const int rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 					const int rNodes(rId);
 					const int rPlus1Nodes(rPlus1Id);
-					reduction2 = sumR0(reduction2, MathFunctions::norm(X(rNodes) - X(rPlus1Nodes)));
+					reduction2 = sumR0(reduction2, MathFunctions::norm(X[rNodes] - X[rPlus1Nodes]));
 				}
 			}
-			surface(fFaces) = 0.5 * reduction2;
+			surface[fFaces] = 0.5 * reduction2;
 		});
 	}
 	
@@ -150,7 +145,6 @@ private:
 	 * In variables: deltat, t_n
 	 * Out variables: t_nplus1
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void computeTn() noexcept
 	{
 		t_nplus1 = t_n + deltat;
@@ -161,10 +155,9 @@ private:
 	 * In variables: X
 	 * Out variables: V
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void computeV() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		parallel::parallel_exec(nbCells, [&](const int& jCells)
 		{
 			const int jId(jCells);
 			double reduction1(0.0);
@@ -177,10 +170,10 @@ private:
 					const int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 					const int rNodes(rId);
 					const int rPlus1Nodes(rPlus1Id);
-					reduction1 = sumR0(reduction1, MathFunctions::det(X(rNodes), X(rPlus1Nodes)));
+					reduction1 = sumR0(reduction1, MathFunctions::det(X[rNodes], X[rPlus1Nodes]));
 				}
 			}
-			V(jCells) = 0.5 * reduction1;
+			V[jCells] = 0.5 * reduction1;
 		});
 	}
 	
@@ -189,10 +182,9 @@ private:
 	 * In variables: X
 	 * Out variables: center
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void iniCenter() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		parallel::parallel_exec(nbCells, [&](const int& jCells)
 		{
 			const int jId(jCells);
 			RealArray1D<2> reduction0({0.0, 0.0});
@@ -203,10 +195,10 @@ private:
 				{
 					const int rId(nodesOfCellJ[rNodesOfCellJ]);
 					const int rNodes(rId);
-					reduction0 = sumR1(reduction0, X(rNodes));
+					reduction0 = sumR1(reduction0, X[rNodes]);
 				}
 			}
-			center(jCells) = 0.25 * reduction0;
+			center[jCells] = 0.25 * reduction0;
 		});
 	}
 	
@@ -215,12 +207,11 @@ private:
 	 * In variables: 
 	 * Out variables: f
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void iniF() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		parallel::parallel_exec(nbCells, [&](const int& jCells)
 		{
-			f(jCells) = 0.0;
+			f[jCells] = 0.0;
 		});
 	}
 	
@@ -229,12 +220,11 @@ private:
 	 * In variables: deltat, f, outgoingFlux, u_n
 	 * Out variables: u_nplus1
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void computeUn() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		parallel::parallel_exec(nbCells, [&](const int& jCells)
 		{
-			u_nplus1(jCells) = f(jCells) * deltat + u_n(jCells) + outgoingFlux(jCells);
+			u_nplus1[jCells] = f[jCells] * deltat + u_n[jCells] + outgoingFlux[jCells];
 		});
 	}
 	
@@ -243,12 +233,11 @@ private:
 	 * In variables: PI, alpha, center
 	 * Out variables: u_n
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void iniUn() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		parallel::parallel_exec(nbCells, [&](const int& jCells)
 		{
-			u_n(jCells) = MathFunctions::cos(2 * options->PI * options->alpha * center(jCells)[0]);
+			u_n[jCells] = MathFunctions::cos(2 * options->PI * options->alpha * center[jCells][0]);
 		});
 	}
 	
@@ -257,7 +246,6 @@ private:
 	 * In variables: V, center, deltat, f, outgoingFlux, surface, t_n, u_n
 	 * Out variables: outgoingFlux, t_nplus1, u_nplus1
 	 */
-	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept
 	{
 		n = 0;
@@ -309,13 +297,11 @@ private:
 	}
 	
 	template<size_t x>
-	KOKKOS_INLINE_FUNCTION
 	RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b) 
 	{
 		return a + b;
 	}
 	
-	KOKKOS_INLINE_FUNCTION
 	double sumR0(double a, double b) 
 	{
 		return a + b;
@@ -346,18 +332,7 @@ public:
 		std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
 			<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
 		
-		if (Kokkos::hwloc::available())
-		{
-			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_numa_count()
-				<< __RESET__ << ", Cores/NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_cores_per_numa()
-				<< __RESET__ << ", Threads/Core=" << __BOLD__ << Kokkos::hwloc::get_available_threads_per_core() << __RESET__ << std::endl;
-		}
-		else
-		{
-			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
-		}
-		
-		// std::cout << "[" << __GREEN__ << "KOKKOS" << __RESET__ << "]    " << __BOLD__ << (is_same<MyLayout,Kokkos::LayoutLeft>::value?"Left":"Right")" << __RESET__ << " layout" << std::endl;
+		std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 		
 		if (!writer.isDisabled())
 			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
@@ -377,7 +352,6 @@ public:
 
 int main(int argc, char* argv[]) 
 {
-	Kokkos::initialize(argc, argv);
 	auto o = new HeatEquation::Options();
 	string output;
 	if (argc == 5)
@@ -406,6 +380,5 @@ int main(int argc, char* argv[])
 	delete c;
 	delete nm;
 	delete o;
-	Kokkos::finalize();
 	return 0;
 }

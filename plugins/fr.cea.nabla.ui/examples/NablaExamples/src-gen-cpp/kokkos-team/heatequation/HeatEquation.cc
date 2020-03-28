@@ -15,6 +15,7 @@
 #include "utils/Timer.h"
 #include "types/Types.h"
 #include "types/MathFunctions.h"
+#include "utils/kokkos/Parallel.h"
 
 using namespace nablalib;
 

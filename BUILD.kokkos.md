@@ -4,7 +4,7 @@
 
 Kokkos can be installed with debian packages but we do not succeed in using it with Modern CMake.
 Consequently, we use github sources like this:
-```bash
+```
 	mkdir kokkos
 	cd kokkos
 	git clone https://github.com/kokkos/kokkos.git
@@ -22,6 +22,7 @@ The version installed is 3.0.0.
 ## Kokkos Kernels
 
 We use the same process.
+```
 	cd kokkos
 	cd kokkos
 	git clone https://github.com/kokkos/kokkos-kernels.git
@@ -33,7 +34,7 @@ We use the same process.
 	cd ..
 	rm -rf kokkos-kernels-build
 	rm -rf kokkos-kernels (if you do not want to keep sources)
-
+```
 The version installed is 3.0.0.
 
 ## NabLab examples compilation
@@ -42,8 +43,10 @@ If you choose a generation target that does not need Kokkos, the compilation of 
 A warning alerts the user to the fact that the library libcppnablakokkos will not be built but it is not a problem.
 
 If you choose a generation target that needs Kokkos, you can set (for example, several ways) this 2 environment variables before running CMake:
+```
 	export Kokkos_DIR=~/kokkos/kokkos-install
 	export KokkosKernels_DIR=~/kokkos/kokkos-kernels-install
+```
 Then the libcppnablakokkos will be produced and the examples can be compiled.
 
  

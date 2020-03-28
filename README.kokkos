@@ -1,4 +1,0 @@
-Compilation options
-
-generate_makefile.bash --prefix=~/kokkos/kokkos-install --with-openmp --arch=HSW --cxxflags=-03 --cxxflags=-fopenmp --cxxflags=--std=c++17 --with-hwloc
-

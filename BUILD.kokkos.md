@@ -4,7 +4,7 @@
 
 Kokkos can be installed with debian packages but we do not succeed in using it with Modern CMake.
 Consequently, we use github sources like this:
-```shellscript
+```shell
 	mkdir kokkos
 	cd kokkos
 	git clone https://github.com/kokkos/kokkos.git
@@ -22,7 +22,7 @@ The version installed is 3.0.0.
 ## Kokkos Kernels
 
 We use the same process.
-```shellscript
+```bash
 	cd kokkos
 	cd kokkos
 	git clone https://github.com/kokkos/kokkos-kernels.git

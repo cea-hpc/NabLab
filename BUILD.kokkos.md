@@ -22,7 +22,7 @@ The version installed is 3.0.0.
 ## Kokkos Kernels
 
 We use the same process.
-```
+```shellscript
 	cd kokkos
 	cd kokkos
 	git clone https://github.com/kokkos/kokkos-kernels.git

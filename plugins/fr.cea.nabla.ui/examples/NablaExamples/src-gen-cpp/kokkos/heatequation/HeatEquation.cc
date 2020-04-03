@@ -1,11 +1,9 @@
-#pragma STDC FENV_ACCESS ON
 #include <iostream>
 #include <iomanip>
 #include <type_traits>
 #include <limits>
 #include <utility>
 #include <cmath>
-#include <cfenv>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
 #include "mesh/CartesianMesh2DGenerator.h"
@@ -27,10 +25,10 @@ public:
 		// Should be const but usefull to set them from main args
 		double X_EDGE_LENGTH = 0.1;
 		double Y_EDGE_LENGTH = X_EDGE_LENGTH;
-		int X_EDGE_ELEMS = 20;
-		int Y_EDGE_ELEMS = 20;
+		size_t X_EDGE_ELEMS = 20;
+		size_t Y_EDGE_ELEMS = 20;
 		double option_stoptime = 0.1;
-		int option_max_iterations = 500;
+		size_t option_max_iterations = 500;
 		double PI = 3.1415926;
 		double alpha = 1.0;
 	};
@@ -39,7 +37,7 @@ public:
 private:
 	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
-	int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
+	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
 	
 	// Global Variables
 	int n, lastDump;
@@ -97,19 +95,19 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeOutgoingFlux() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& j1Cells)
+		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& j1Cells)
 		{
-			const int j1Id(j1Cells);
+			const Id j1Id(j1Cells);
 			double reduction3(0.0);
 			{
 				const auto neighbourCellsJ1(mesh->getNeighbourCells(j1Id));
-				const int nbElemsJ2NeighbourCellsJ1(neighbourCellsJ1.size());
+				const size_t nbElemsJ2NeighbourCellsJ1(neighbourCellsJ1.size());
 				for (size_t j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<nbElemsJ2NeighbourCellsJ1; j2NeighbourCellsJ1++)
 				{
-					const int j2Id(neighbourCellsJ1[j2NeighbourCellsJ1]);
-					const int j2Cells(j2Id);
-					const int cfId(mesh->getCommonFace(j1Id, j2Id));
-					const int cfFaces(cfId);
+					const Id j2Id(neighbourCellsJ1[j2NeighbourCellsJ1]);
+					const size_t j2Cells(j2Id);
+					const Id cfId(mesh->getCommonFace(j1Id, j2Id));
+					const size_t cfFaces(cfId);
 					reduction3 = sumR0(reduction3, (u_n(j2Cells) - u_n(j1Cells)) / MathFunctions::norm(center(j2Cells) - center(j1Cells)) * surface(cfFaces));
 				}
 			}
@@ -125,19 +123,19 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeSurface() noexcept
 	{
-		Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const int& fFaces)
+		Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const size_t& fFaces)
 		{
-			const int fId(fFaces);
+			const Id fId(fFaces);
 			double reduction2(0.0);
 			{
 				const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
-				const int nbElemsRNodesOfFaceF(nodesOfFaceF.size());
+				const size_t nbElemsRNodesOfFaceF(nodesOfFaceF.size());
 				for (size_t rNodesOfFaceF=0; rNodesOfFaceF<nbElemsRNodesOfFaceF; rNodesOfFaceF++)
 				{
-					const int rId(nodesOfFaceF[rNodesOfFaceF]);
-					const int rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
-					const int rNodes(rId);
-					const int rPlus1Nodes(rPlus1Id);
+					const Id rId(nodesOfFaceF[rNodesOfFaceF]);
+					const Id rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
+					const size_t rNodes(rId);
+					const size_t rPlus1Nodes(rPlus1Id);
 					reduction2 = sumR0(reduction2, MathFunctions::norm(X(rNodes) - X(rPlus1Nodes)));
 				}
 			}
@@ -164,19 +162,19 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeV() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 		{
-			const int jId(jCells);
+			const Id jId(jCells);
 			double reduction1(0.0);
 			{
 				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
+				const size_t nbElemsRNodesOfCellJ(nodesOfCellJ.size());
 				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 				{
-					const int rId(nodesOfCellJ[rNodesOfCellJ]);
-					const int rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
-					const int rNodes(rId);
-					const int rPlus1Nodes(rPlus1Id);
+					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
+					const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
+					const size_t rNodes(rId);
+					const size_t rPlus1Nodes(rPlus1Id);
 					reduction1 = sumR0(reduction1, MathFunctions::det(X(rNodes), X(rPlus1Nodes)));
 				}
 			}
@@ -192,17 +190,17 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void iniCenter() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 		{
-			const int jId(jCells);
+			const Id jId(jCells);
 			RealArray1D<2> reduction0({0.0, 0.0});
 			{
 				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const int nbElemsRNodesOfCellJ(nodesOfCellJ.size());
+				const size_t nbElemsRNodesOfCellJ(nodesOfCellJ.size());
 				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
 				{
-					const int rId(nodesOfCellJ[rNodesOfCellJ]);
-					const int rNodes(rId);
+					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
+					const size_t rNodes(rId);
 					reduction0 = sumR1(reduction0, X(rNodes));
 				}
 			}
@@ -218,7 +216,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void iniF() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 		{
 			f(jCells) = 0.0;
 		});
@@ -232,7 +230,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeUn() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 		{
 			u_nplus1(jCells) = f(jCells) * deltat + u_n(jCells) + outgoingFlux(jCells);
 		});
@@ -246,7 +244,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void iniUn() noexcept
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int& jCells)
+		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 		{
 			u_n(jCells) = MathFunctions::cos(2 * options->PI * options->alpha * center(jCells)[0]);
 		});
@@ -297,7 +295,7 @@ private:
 				std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 			
 			// Progress
-			std::cout << utils::progress_bar(n, options->option_max_iterations, t_n, options->option_stoptime, 30);
+			std::cout << utils::progress_bar(n, options->option_max_iterations, t_n, options->option_stoptime, 25);
 			std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
 				utils::eta(n, options->option_max_iterations, t_n, options->option_stoptime, deltat, globalTimer), true)
 				<< __RESET__ << "\r";

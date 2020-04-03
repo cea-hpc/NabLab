@@ -6,7 +6,8 @@ cmake_minimum_required(VERSION 3.1)
 SET(CMAKE_CXX_COMPILER /usr/bin/g++)
 project(ExplicitHeatEquationProject CXX)
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla libcppnabla)
+set(LIBCPPNABLA_BACKEND "STL")
+add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
 
 add_executable(explicitheatequation ExplicitHeatEquation.cc)
 target_include_directories(explicitheatequation PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")

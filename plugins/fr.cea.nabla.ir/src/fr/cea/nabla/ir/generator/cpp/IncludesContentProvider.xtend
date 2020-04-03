@@ -17,15 +17,11 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
 class IncludesContentProvider
 {
-	protected def Iterable<String> getAdditionalPragmas(IrModule m) { #[] }
 	protected def Iterable<String> getAdditionalSystemIncludes(IrModule m) { #[] }
 	protected def Iterable<String> getAdditionalUserIncludes(IrModule m) { #[] }
 
 	def getContentFor(IrModule m)
 	'''
-	«FOR pragma : getPragmasFor(m)»
-	#pragma «pragma»
-	«ENDFOR»
 	«FOR include : getSystemIncludesFor(m)»
 	#include <«include»>
 	«ENDFOR»
@@ -33,11 +29,6 @@ class IncludesContentProvider
 	#include "«include»"
 	«ENDFOR»
 	'''
-
-	private def getPragmasFor(IrModule m)
-	{
-		m.additionalPragmas
-	}
 
 	private def getSystemIncludesFor(IrModule m)
 	{
@@ -49,7 +40,6 @@ class IncludesContentProvider
 		systemIncludes += "limits"
 		systemIncludes += "utility"
 		systemIncludes += "cmath"
-		systemIncludes += "cfenv"
 		systemIncludes += m.additionalSystemIncludes
 
 		return systemIncludes
@@ -93,11 +83,6 @@ class StlThreadIncludesContentProvider extends IncludesContentProvider
 
 class KokkosIncludesContentProvider extends IncludesContentProvider
 {
-	override getAdditionalPragmas(IrModule m)
-	{
-		#["STDC FENV_ACCESS ON"]
-	}
-
 	override getAdditionalSystemIncludes(IrModule m)
 	{
 		#["Kokkos_Core.hpp", "Kokkos_hwloc.hpp"]

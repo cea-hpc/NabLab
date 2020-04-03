@@ -25,7 +25,7 @@ class IterationBlockExtensions
 		'''
 		{
 			const auto «container.name»(mesh->«container.accessor»);
-			const int «nbElems»(«container.name».size());
+			const size_t «nbElems»(«container.name».size());
 			«innerContent»
 		}
 		'''

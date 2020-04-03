@@ -61,7 +61,7 @@ class TraceContentProvider
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 
 		// Progress
-		std::cout << utils::progress_bar(«iterationVarName», options->«maxIterationsVarName», «timeVarName», options->«stopTimeVarName», 30);
+		std::cout << utils::progress_bar(«iterationVarName», options->«maxIterationsVarName», «timeVarName», options->«stopTimeVarName», 25);
 		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
 			utils::eta(«iterationVarName», options->«maxIterationsVarName», «timeVarName», options->«stopTimeVarName», «deltatVarName», globalTimer), true)
 			<< __RESET__ << "\r";

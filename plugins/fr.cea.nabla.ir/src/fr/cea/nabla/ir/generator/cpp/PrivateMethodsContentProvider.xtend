@@ -43,7 +43,7 @@ class KokkosTeamThreadPrivateMethodsContentProvider extends PrivateMethodsConten
 		 * In  : thread and number of element to use for computation
 		 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
 		 */
-		const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const int& nb_elmt) noexcept
+		const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
 		{
 			/*
 			if (nb_elmt % thread.team_size())

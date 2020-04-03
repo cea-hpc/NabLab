@@ -13,6 +13,7 @@ import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.PrimitiveType
 import java.io.File
 import java.net.URI
 import org.eclipse.core.runtime.FileLocator
@@ -73,7 +74,7 @@ class Ir2Cpp extends CodeGenerator
 		{
 			// Should be const but usefull to set them from main args
 			«FOR v : options»
-				«v.cppType» «v.name» = «v.defaultValue.content.toString.replaceAll('options->', '')»;
+			«IF v.type.primitive == PrimitiveType.INT»size_t«ELSE»«v.cppType»«ENDIF» «v.name» = «v.defaultValue.content.toString.replaceAll('options->', '')»;
 			«ENDFOR»
 		};
 		Options* options;

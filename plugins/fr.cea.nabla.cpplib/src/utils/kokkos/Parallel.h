@@ -10,8 +10,6 @@
 #ifndef UTILS_KOKKOS_PARALLEL_H_
 #define UTILS_KOKKOS_PARALLEL_H_
 
-#pragma STDC FENV_ACCESS ON
-
 #include <functional>
 // Kokkos headers
 #include <Kokkos_Core.hpp>

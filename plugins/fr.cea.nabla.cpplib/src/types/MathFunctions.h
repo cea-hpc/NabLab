@@ -31,8 +31,8 @@ namespace MathFunctions
 	double dot(const RealArray1D<N>& a, const RealArray1D<N>& b) noexcept
 	{
 		double result = 0.0;
-		for (int i=0 ; i<N ; ++i)
-			result += a[i]*b[i];
+		for (size_t i(0); i < N; ++i)
+			result += a[i] * b[i];
 		return result;
 	}
 
@@ -40,7 +40,7 @@ namespace MathFunctions
 	RealArray1D<N> matVectProduct(const RealArray2D<N, M>& a, const RealArray1D<M>& b) noexcept
 	{
 		RealArray1D<N> result;
-		for (int ia=0 ; ia<N ; ++ia)
+		for (size_t ia(0); ia < N; ++ia)
 			result[ia] = dot(a[ia], b);
 		return result;
 	}
@@ -48,7 +48,7 @@ namespace MathFunctions
 	/** Determinant 2D */
 	double det(const RealArray1D<2>& a, const RealArray1D<2>& b) noexcept
 	{
-		return a[0]*b[1] - a[1]*b[0];
+		return a[0] * b[1] - a[1] * b[0];
 	}
 
 	/** Determinant 2D */
@@ -60,7 +60,7 @@ namespace MathFunctions
 	template<size_t N>
 	double norm(const RealArray1D<N>& a) noexcept
 	{
-		return sqrt(dot(a,a));
+		return sqrt(dot(a, a));
 	}
 }
 }

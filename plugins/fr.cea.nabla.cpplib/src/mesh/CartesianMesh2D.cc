@@ -8,21 +8,18 @@
 	 * Contributors: see AUTHORS file
  *******************************************************************************/
 #include "mesh/CartesianMesh2D.h"
+#include <stdexcept>
+#include <sstream>
 
 namespace nablalib
 {
 
 CartesianMesh2D::CartesianMesh2D(
-	MeshGeometry<2>* geometry,
-	const vector<int>& inner_nodes_ids,
-	const vector<int>& top_nodes_ids,
-	const vector<int>& bottom_nodes_ids,
-	const vector<int>& left_nodes_ids,
-	const vector<int>& right_nodes_ids,
-	const int top_left_node_id,
-	const int top_right_node_id,
-	const int bottom_left_node_id,
-	const int bottom_right_node_id)
+  MeshGeometry<2>* geometry, const vector<Id>& inner_nodes_ids,
+  const vector<Id>& top_nodes_ids, const vector<Id>& bottom_nodes_ids,
+  const vector<Id>& left_nodes_ids, const vector<Id>& right_nodes_ids,
+  const Id top_left_node_id, const Id top_right_node_id,
+  const Id bottom_left_node_id, const Id bottom_right_node_id)
 : m_geometry(geometry)
 , m_inner_nodes(inner_nodes_ids)
 , m_top_nodes(top_nodes_ids)
@@ -36,39 +33,39 @@ CartesianMesh2D::CartesianMesh2D(
 {
 	// outer faces
 	auto edges = m_geometry->getEdges();
-	for (size_t edgeId(0), n(edges.size()); edgeId < n; ++edgeId)
+	for (size_t edgeId(0); edgeId < edges.size(); ++edgeId)
 		if (!isInnerEdge(edges[edgeId]))
 			m_outer_faces.emplace_back(edgeId);
 }
 
-const array<int, 4>&
-CartesianMesh2D::getNodesOfCell(const int& cellId) const noexcept
+const array<Id, 4>&
+CartesianMesh2D::getNodesOfCell(const Id& cellId) const noexcept
 {
 	return m_geometry->getQuads()[cellId].getNodeIds();
 }
 
-const array<int, 2>&
-CartesianMesh2D::getNodesOfFace(const int& faceId) const noexcept
+const array<Id, 2>&
+CartesianMesh2D::getNodesOfFace(const Id& faceId) const noexcept
 {
 	return m_geometry->getEdges()[faceId].getNodeIds();
 }
 
-vector<int>
-CartesianMesh2D::getCellsOfNode(const int& nodeId) const noexcept
+vector<Id>
+CartesianMesh2D::getCellsOfNode(const Id& nodeId) const noexcept
 {
-	vector<int> candidateQuadIds;
+	vector<Id> candidateQuadIds;
 	auto quads = m_geometry->getQuads();
-	for(size_t quadId(0), n(quads.size()); quadId < n; ++quadId) {
+	for(size_t quadId(0); quadId < quads.size(); ++quadId) {
 		if (find(quads[quadId].getNodeIds().begin(), quads[quadId].getNodeIds().end(), nodeId) != quads[quadId].getNodeIds().end())
 			candidateQuadIds.emplace_back(quadId);
 	}
 	return candidateQuadIds;
 }
 
-vector<int>
-CartesianMesh2D::getCellsOfFace(const int& faceId) const
+vector<Id>
+CartesianMesh2D::getCellsOfFace(const Id& faceId) const
 {
-	std::vector<int> cellsOfFace;
+	std::vector<Id> cellsOfFace;
 	const auto& nodes(getNodesOfFace(faceId));
 	for (auto nodeId : nodes)
 	{
@@ -82,10 +79,10 @@ CartesianMesh2D::getCellsOfFace(const int& faceId) const
 	return cellsOfFace;
 }
 
-vector<int>
-CartesianMesh2D::getNeighbourCells(const int& cellId) const
+vector<Id>
+CartesianMesh2D::getNeighbourCells(const Id& cellId) const
 {
-	std::vector<int> neighbours;
+	std::vector<Id> neighbours;
 	const auto& nodes(getNodesOfCell(cellId));
 	for (auto nodeId : nodes)
 	{
@@ -100,33 +97,36 @@ CartesianMesh2D::getNeighbourCells(const int& cellId) const
 	return neighbours;
 }
 
-vector<int>
-CartesianMesh2D::getFacesOfCell(const int& cellId) const
+vector<Id>
+CartesianMesh2D::getFacesOfCell(const Id& cellId) const
 {
-	vector<int> cellEdgeIds;
+	vector<Id> cellEdgeIds;
 	const auto& edges(m_geometry->getEdges());
-	for(size_t edgeId=0, n(edges.size()); edgeId < n; ++edgeId)
+	for(size_t edgeId=0; edgeId < edges.size(); ++edgeId)
 		if (getNbCommonIds(edges[edgeId].getNodeIds(), m_geometry->getQuads()[cellId].getNodeIds()) == 2)
 			cellEdgeIds.emplace_back(edgeId);
 	return cellEdgeIds;
 }
 
-int
-CartesianMesh2D::getCommonFace(const int& cellId1, const int& cellId2) const noexcept
+Id
+CartesianMesh2D::getCommonFace(const Id& cellId1, const Id& cellId2) const
 {
 	auto cell1Faces{getFacesOfCell(cellId1)};
 	auto cell2Faces{getFacesOfCell(cellId2)};
 	auto result = find_first_of(cell1Faces.begin(), cell1Faces.end(), cell2Faces.begin(), cell2Faces.end());
-	if (result == cell1Faces.end())
-	  return -1;
-	else
+	if (result == cell1Faces.end()) {
+    stringstream msg;
+    msg << "No common faces found between cell " << cellId1 << " and cell " << cellId2 << endl;
+	  throw runtime_error(msg.str());
+	} else {
 	  return *result;
+  }
 }
 
-int
-CartesianMesh2D::getNbCommonIds(const vector<int>& as, const vector<int>& bs) const noexcept
+size_t
+CartesianMesh2D::getNbCommonIds(const vector<Id>& as, const vector<Id>& bs) const noexcept
 {
-	int nbCommonIds = 0;
+	size_t nbCommonIds = 0;
 	for (auto a : as)
 		for (auto b : bs)
 			if (a == b) nbCommonIds++;

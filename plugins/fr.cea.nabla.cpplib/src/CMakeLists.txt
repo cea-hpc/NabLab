@@ -14,7 +14,6 @@ set(CMAKE_CXX_COMPILER /usr/bin/g++ CACHE STRING "")
 project(nablacpplibs CXX)
 
 ### LIBCPPNABLA
-
 add_library(cppnabla 
     mesh/CartesianMesh2D.cc mesh/CartesianMesh2DGenerator.cc mesh/FileWriter.cc mesh/PvdFileWriter2D.cc mesh/VtkFileWriter2D.cc
     types/MultiArray.cc
@@ -22,22 +21,25 @@ add_library(cppnabla
 target_include_directories(cppnabla PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_directories(cppnabla PUBLIC "/usr/lib/x86_64-linux-gnu")
 target_link_libraries(cppnabla PUBLIC stdc++fs)
-target_compile_options(cppnabla PUBLIC -O3 --std=c++17 -march=native -mtune=native)
+target_compile_options(cppnabla PUBLIC -Wall -O3 --std=c++17 -march=native -mtune=native)
 
 
 
 ### LIBCPPNABLASTL
-
+if(LIBCPPNABLA_BACKEND STREQUAL "STL")
+message(STATUS "Building library with STL.")
 add_library(cppnablastl 
     linearalgebra/stl/LinearAlgebraFunctions.cc linearalgebra/stl/Matrix.cc)
 target_include_directories(cppnablastl PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_directories(cppnablastl PUBLIC "/usr/lib/x86_64-linux-gnu")
 target_link_libraries(cppnablastl PUBLIC)
-target_compile_options(cppnablastl PUBLIC -O3 --std=c++17 -march=native -mtune=native)
-
+target_compile_options(cppnablastl PUBLIC -Wall -O3 --std=c++17 -march=native -mtune=native)
+endif()
 
 
 ### LIBCPPNABLAKOKKOS
+if(LIBCPPNABLA_BACKEND STREQUAL "KOKKOS")
+message(STATUS "Building library with KOKKOS.")
 set(CMAKE_FIND_ROOT_PATH "$ENV{KOKKOS_HOME}")
 find_package(Kokkos)
 find_package(KokkosKernels)
@@ -45,10 +47,11 @@ find_package(KokkosKernels)
 if(TARGET Kokkos::kokkos AND TARGET Kokkos::kokkoskernels)
     message(STATUS "Kokkos::kokkos/Kokkos::kokkoskernels found")
     add_library(cppnablakokkos linearalgebra/kokkos/LinearAlgebraFunctions.cc linearalgebra/kokkos/Matrix.cc)
-    target_include_directories(cppnablakokkos PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-    target_link_directories(cppnablakokkos PUBLIC /usr/lib/x86_64-linux-gnu)
+    target_include_directories(cppnablakokkos PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+    target_link_directories(cppnablakokkos PUBLIC "/usr/lib/x86_64-linux-gnu")
     target_link_libraries(cppnablakokkos PUBLIC Kokkos::kokkos Kokkos::kokkoskernels)
-    target_compile_options(cppnablakokkos PUBLIC -O3 --std=c++17 -fopenmp -march=native -mtune=native)
+    target_compile_options(cppnablakokkos PUBLIC -Wall -O3 --std=c++17 -fopenmp -march=native -mtune=native)
 else()
     message(STATUS "Kokkos::kokkos/Kokkos::kokkoskernels not found: libcppnablakokkos will not be built (only libcppnabla)")
+endif()
 endif()

@@ -22,12 +22,11 @@ import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.RealConstant
-import fr.cea.nabla.ir.ir.SizeTypeSymbolRef
+import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
 import java.util.Arrays
 
-import static fr.cea.nabla.ir.interpreter.DimensionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.IrTypeExtensions.*
 import static fr.cea.nabla.ir.interpreter.NablaValueGetter.*
@@ -211,8 +210,9 @@ class ExpressionInterpreter
 				{
 					val callerArgTypeTypeSize = callerArgTypeSizes.get(iSize)
 					val calleeArgTypeDimension = calleeArg.type.sizes.get(iSize)
-					if (calleeArgTypeDimension instanceof SizeTypeSymbolRef)
-						innerContext.addDimensionValue(calleeArgTypeDimension.target, callerArgTypeTypeSize)
+					if (calleeArgTypeDimension instanceof ArgOrVarRef)
+						if (calleeArgTypeDimension.target instanceof SimpleVariable)
+							innerContext.addDimensionValue(calleeArgTypeDimension.target as SimpleVariable, callerArgTypeTypeSize)
 				}
 
 				// set argument value
@@ -229,8 +229,21 @@ class ExpressionInterpreter
 		// Switch to more efficient implementation (avoid costly toList calls)
 		val allIndices = newArrayList
 		iterators.forEach[x|allIndices.add(context.getIndexValue(x))]
-		indices.forEach[x|allIndices.add(interprete(x, context))]
+		allIndices.addAll(interpreteDimensionExpressions(indices, context))
 		getValue(value, allIndices)
+	}
+
+	static def int[] interpreteDimensionExpressions(Iterable<Expression> dimensionExpressions, Context context)
+	{
+		val values = newIntArrayOfSize(dimensionExpressions.size)
+		for (i : 0..<dimensionExpressions.size)
+		{
+			val value = interprete(dimensionExpressions.get(i), context)
+			if (value instanceof NV0Int)
+				values.set(i, value.data)
+			else
+				throw new RuntimeException("Unsupported type for Dimension: " + value.class)
+		}
 	}
 
 	private static def dispatch NablaValue buildArrayValue(int size, NV0Bool value)

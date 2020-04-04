@@ -9,9 +9,9 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
+import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.Function
-import fr.cea.nabla.ir.ir.SizeTypeSymbol
-import fr.cea.nabla.ir.ir.SizeTypeSymbolRef
+import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.generator.java.InstructionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
@@ -29,18 +29,18 @@ class FunctionContentProvider
 		}
 	'''
 
-	private static def getSizeOf(Function it, SizeTypeSymbol symbol)
+	private static def getSizeOf(Function it, SimpleVariable v)
 	{
 		for (a : inArgs)
 		{
 			var skippedDimensions = ""
-			for (dimension : a.type.sizes)
+			for (expr : a.type.sizes)
 			{
-				if (dimension instanceof SizeTypeSymbolRef && (dimension as SizeTypeSymbolRef).target == symbol)
+				if (expr instanceof ArgOrVarRef && (expr as ArgOrVarRef).target === v)
 					return a.name + skippedDimensions + '.length'
 				skippedDimensions += "[0]"
 			}
 		}
-		throw new RuntimeException("No arg corresponding to dimension symbol " + symbol.name)
+		throw new RuntimeException("No arg corresponding to dimension symbol " + v.name)
 	}
 }

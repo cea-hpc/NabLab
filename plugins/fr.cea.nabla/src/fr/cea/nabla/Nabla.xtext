@@ -8,7 +8,6 @@
  * Contributors: see AUTHORS file
  *******************************************************************************/
 
-// TODO Add keyword size, i.e. size X = 4; (X : DimensionVar). Check only one DimensionVar X.
 // TODO Operator definition and overload
 // TODO assert
 
@@ -44,13 +43,13 @@ Job: name=ID ':' instruction=Instruction;
 Iterable: Loop | ReductionCall;
 Instruction: SimpleVarDefinition | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | ItemDefinition | Return;
 
-SimpleVarDefinition: (const?='const')? type=BaseType variable=SimpleVar '=' defaultValue=Expression ';';
+SimpleVarDefinition: (const?='const' | 'let') variable=SimpleVar '=' defaultValue=Expression ';';
 VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
 InstructionBlock: '{' instructions+=Instruction+ '}';
 Loop: '\u2200' iterationBlock=IterationBlock ',' body=Instruction;
 Affectation: left=ArgOrVarRef '=' right=Expression ';';
 If: 'if' '(' condition=Expression ')' then=Instruction (=>'else' else=Instruction)?;
-ItemDefinition: type=[ItemType] item=Item '=' value=SingleConnectivityCall ';';
+ItemDefinition: 'item' item=Item '=' value=SingleConnectivityCall ';';
 Return: 'return' expression=Expression ';';
 
 
@@ -58,7 +57,7 @@ Return: 'return' expression=Expression ';';
 IterationBlock: SpaceIterator | Interval;
 SpaceIterator: item=Item '\u2208' container=MultipleConnectivityCall (',' singletons+=SingletonDefinition)*;
 SingletonDefinition: item=Item '=' value=SingleConnectivityCall;
-Interval: index=SizeTypeSymbol '\u2208' '[' from=INT ';' nbElems=SizeType '[';  // from forced to 0 for the moment
+Interval: index=SimpleVar '\u2208' '[' from=INT ';' nbElems=Expression '[';  // from forced to 0 for the moment
 ConnectivityCall: MultipleConnectivityCall | SingleConnectivityCall;
 MultipleConnectivityCall: connectivity=[MultipleConnectivity]  '('(args+=ItemRef (',' args+=ItemRef)*)?')';
 SingleConnectivityCall: connectivity=[SingleConnectivity] '('(args+=ItemRef (',' args+=ItemRef)*)?')';
@@ -82,12 +81,11 @@ ConnectivityVar: name=ID '{' supports+=[MultipleConnectivity] (',' supports+=[Mu
 
 /* FONCTIONS / REDUCTIONS ********************************/
 FunctionOrReduction: Function | Reduction;
-Function: 'def' name=ID ':' (vars+=SizeTypeSymbol (',' vars+=SizeTypeSymbol)* '|')? (inTypes+=BaseType ('\u00D7' inTypes+=BaseType)*)? '\u2192' returnType=BaseType 
+Function: 'def' name=ID ':' (vars+=SimpleVar (',' vars+=SimpleVar)* '|')? (inTypes+=BaseType ('\u00D7' inTypes+=BaseType)*)? '\u2192' returnType=BaseType
 	((',' '(' (inArgs+=Arg (',' inArgs+=Arg)*)? ')' '\u2192' body=Instruction) | external?=';');
-Reduction: 'def' name=ID ':' (vars+=SizeTypeSymbol (',' vars+=SizeTypeSymbol)* '|')? seed=Expression ',' type=BaseType 
+Reduction: 'def' name=ID ',' seed=Expression ':' (vars+=SimpleVar (',' vars+=SimpleVar)* '|')? type=BaseType
 	',' '(' inArgs+=Arg ',' inArgs+=Arg ')' '\u2192' body=Instruction;
 Arg: name=ID;
-
 
 /* EXPRESSIONS ******************************************/
 Expression: ContractedIf;
@@ -111,10 +109,10 @@ PlusOrMinus returns Expression: // on garde l'attribut op pour la validation
 	MulOrDiv ( ({Plus.left=current} op='+' | {Minus.left=current} op='-') right=MulOrDiv)*;
 
 MulOrDiv returns Expression:
-	Modulo ({MulOrDiv.left=current} op=('*'|'/') right=Modulo)*;
+	Modulo ( ({Mul.left=current} op='*' | {Div.Left=current} op='/') right=Modulo)*;
 
 Modulo returns Expression:
-	Primary ({Modulo.left=current} op=('%') right=Primary)*;
+	Primary ({Modulo.left=current} op='%' right=Primary)*;
 
 Primary returns Expression:
 	{Parenthesis} '(' expression=Expression ')' | 
@@ -123,7 +121,7 @@ Primary returns Expression:
 	Atomic;
 
 Atomic returns Expression:
-	{IntConstant} value=INT |
+	IntConstant |
 	{RealConstant} value=REAL |
 	{BoolConstant} (value?='true' | 'false') |
 	{MinConstant} type=PrimitiveType '.MinValue' |
@@ -134,24 +132,17 @@ Atomic returns Expression:
 	{VectorConstant} '[' values+=Expression (',' values+=Expression)* ']' |
 	ArgOrVarRef;
 
+IntConstant: value=INT;
 ReductionCall: reduction=[Reduction|QualifiedName] '{' iterationBlock=IterationBlock '}' '(' arg=Expression ')';
 ArgOrVarRef: target=[ArgOrVar] 
 	('^{' (timeIterators+=NextTimeIteratorRef ',')* timeIterators+=TimeIteratorRef '}')?
 	('{' spaceIterators+=ItemRef (',' spaceIterators+=ItemRef)* '}')? 
-	('[' indices+=SizeType (',' indices+=SizeType)? ']')?;
+	('[' indices+=Expression (',' indices+=Expression)? ']')?;
 
 
 /* TYPES *************************************************/
 enum PrimitiveType: Int='\u2115' | Real='\u211D' | Bool='\u213E';
-BaseType: primitive=PrimitiveType ('[' sizes+=SizeType (',' sizes+=SizeType)* ']')?;
-
-SizeType: SizeTypeOperation;
-SizeTypeOperation returns SizeType:
-	SizeTypeAtomic ({SizeTypeOperation.left=current} op=('*'|'+') right=SizeTypeAtomic)*;
-SizeTypeAtomic returns SizeType: 
-	{SizeTypeInt} value=INT |	// = IntConstant
-	{SizeTypeSymbolRef} target=[SizeTypeSymbol];
-SizeTypeSymbol: name=ID;
+BaseType: primitive=PrimitiveType ('[' sizes+=Expression (',' sizes+=Expression)* ']')?;
 
 
 /* DATA TYPE AND TERMINALS *******************************/

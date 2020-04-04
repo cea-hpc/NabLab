@@ -25,19 +25,23 @@ import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.RealConstant
 import fr.cea.nabla.ir.ir.SimpleVariable
-import fr.cea.nabla.ir.ir.SizeTypeInt
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.SizeTypeContentProvider.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 @Data
 class ExpressionContentProvider
 {
-	val extension ArgOrVarContentProvider
+	val extension ArgOrVarContentProvider argContentProvider
+
+	new(ArgOrVarContentProvider argContentProvider)
+	{
+		this.argContentProvider = argContentProvider
+		this.argContentProvider.typeContentProvider.expressionContentProvider = this
+	}
 
 	def dispatch CharSequence getContent(ContractedIf it) 
 	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
@@ -80,7 +84,11 @@ class ExpressionContentProvider
 	def dispatch CharSequence getContent(BaseTypeConstant it)
 	{
 		val t = type as BaseType
-		val sizes = t.sizes.filter(SizeTypeInt).map[value]
+
+		if (t.sizes.exists[x | !(x instanceof IntConstant)])
+			throw new RuntimeException("BaseTypeConstants size expressions must be IntConstant.")
+
+		val sizes = t.sizes.map[x | (x as IntConstant).value]
 		'''{«initArray(sizes, value.content)»}'''
 	}
 

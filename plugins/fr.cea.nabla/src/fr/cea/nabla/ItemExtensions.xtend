@@ -22,7 +22,7 @@ class ItemExtensions
 		val c = eContainer
 		switch c
 		{
-			ItemDefinition: c.type
+			ItemDefinition: c.value.connectivity.returnType
 			SpaceIterator: c.container.connectivity.returnType
 			SingletonDefinition: c.value.connectivity.returnType
 		}

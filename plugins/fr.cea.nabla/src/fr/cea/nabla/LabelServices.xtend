@@ -18,7 +18,9 @@ import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.CurrentTimeIteratorRef
+import fr.cea.nabla.nabla.Div
 import fr.cea.nabla.nabla.Equality
+import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
@@ -34,7 +36,7 @@ import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
-import fr.cea.nabla.nabla.MulOrDiv
+import fr.cea.nabla.nabla.Mul
 import fr.cea.nabla.nabla.MultipleConnectivityCall
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Not
@@ -45,12 +47,10 @@ import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
+import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingleConnectivityCall
-import fr.cea.nabla.nabla.SizeTypeInt
-import fr.cea.nabla.nabla.SizeTypeOperation
-import fr.cea.nabla.nabla.SizeTypeSymbol
-import fr.cea.nabla.nabla.SizeTypeSymbolRef
+import fr.cea.nabla.nabla.SingletonDefinition
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -58,27 +58,26 @@ import fr.cea.nabla.nabla.VectorConstant
 import java.util.List
 
 import static extension fr.cea.nabla.ir.Utils.*
-import fr.cea.nabla.nabla.SingletonDefinition
 
 class LabelServices
 {
 	/* JOBS & INSTRUCTIONS ***********************************/
 	static def dispatch String getLabel(Job it) { name + ' : ' + instruction?.label }
-	static def dispatch String getLabel(SimpleVarDefinition it) { type?.label + ' ' + variable.name + '=' + defaultValue?.label }
-	static def dispatch String getLabel(VarGroupDeclaration it) { type?.label + ' ' + variables.map[x|x.name].join(', ') }
+	static def dispatch String getLabel(SimpleVarDefinition it) { 'let ' + variable?.name + '=' + defaultValue?.label }
+	static def dispatch String getLabel(VarGroupDeclaration it) { type?.label + ' ' + variables?.map[x|x?.name].join(', ') }
 	static def dispatch String getLabel(InstructionBlock it) { '{ }' }
 	static def dispatch String getLabel(Loop it) { '\u2200 ' + iterationBlock?.label + ', ' + body?.label }
 	static def dispatch String getLabel(Affectation it) { left?.label + ' = ' + right?.label }
 	static def dispatch String getLabel(If it) { 'if ' + condition?.label }
-	static def dispatch String getLabel(ItemDefinition it) { type?.name + ' ' + item.name + '=' + value?.label }
+	static def dispatch String getLabel(ItemDefinition it) { 'item ' + item?.name + '=' + value?.label }
 	static def dispatch String getLabel(Return it) { 'return ' + expression?.label }
 
 	/* ITERATEURS ********************************************/
 	static def dispatch String getLabel(SpaceIterator it) { item?.name + '\u2208 ' + container?.label }
-	static def dispatch String getLabel(SingletonDefinition it) { item.name + '=' + value?.label }
-	static def dispatch String getLabel(Interval it) { index?.label + '\u2208' + nbElems.label }
-	static def dispatch String getLabel(MultipleConnectivityCall it) { connectivity.name + '(' + args.map[label].join(',') + ')' }
-	static def dispatch String getLabel(SingleConnectivityCall it) { connectivity.name + '(' + args.map[label].join(',') + ')' }
+	static def dispatch String getLabel(SingletonDefinition it) { item?.name + '=' + value?.label }
+	static def dispatch String getLabel(Interval it) { index?.name + '\u2208' + nbElems?.label }
+	static def dispatch String getLabel(MultipleConnectivityCall it) { connectivity?.name + '(' + args?.map[label].join(',') + ')' }
+	static def dispatch String getLabel(SingleConnectivityCall it) { connectivity?.name + '(' + args?.map[label].join(',') + ')' }
 	static def dispatch String getLabel(ItemRef it) 
 	{ 
 		if (inc > 0) target?.name + '+' + inc
@@ -86,29 +85,31 @@ class LabelServices
 		else target?.name
 	}
 
-	static def dispatch String getLabel(CurrentTimeIteratorRef it) { target.name }
-	static def dispatch String getLabel(InitTimeIteratorRef it) { target.name + '=' + value }
-	static def dispatch String getLabel(NextTimeIteratorRef it) { target.name + '+' + value }
+	static def dispatch String getLabel(CurrentTimeIteratorRef it) { target?.name }
+	static def dispatch String getLabel(InitTimeIteratorRef it) { target?.name + '=' + value }
+	static def dispatch String getLabel(NextTimeIteratorRef it) { target?.name + '+' + value }
 
 	/* FONCTIONS / REDUCTIONS ********************************/
-	static def dispatch String getLabel(Function it) { 'def ' + name + ' : ' + vars.labelForVars + inTypes.map[label].join(' \u00D7 ') + ' \u2192 ' + returnType.label }
-	static def dispatch String getLabel(Reduction it) { 'def ' + name + ' : ' + vars.labelForVars + '(' + seed.label + ', ' + type.label + ')' }
-	private static def getLabelForVars(List<SizeTypeSymbol> symbols)
+	static def dispatch String getLabel(Function it) { 'def ' + name + ' : ' + vars?.labelForVars + inTypes?.map[label].join(' \u00D7 ') + ' \u2192 ' + returnType?.label }
+	static def dispatch String getLabel(Reduction it) { 'def ' + name + ' : ' + vars?.labelForVars + '(' + seed?.label + ', ' + type?.label + ')' }
+
+	private static def getLabelForVars(List<SimpleVar> symbols)
 	{
 		if (symbols.empty) ''
-		else symbols.map[label].join(', ') + ' | '
+		else symbols.map[name].join(', ') + ' | '
 	}
 
 	/* EXPRESSIONS ******************************************/
 	static def dispatch String getLabel(ContractedIf it) { condition?.label + ' ? ' + then?.label + ' : ' + ^else?.label }
-	static def dispatch String getLabel(Or it) { left?.label + ' || ' + right?.label }
-	static def dispatch String getLabel(And it) { left?.label + ' && ' + right?.label }
-	static def dispatch String getLabel(Equality it) { left?.label + ' == ' + right?.label }
-	static def dispatch String getLabel(Comparison it) { left?.label + ' ' + op + ' ' + right?.label }
-	static def dispatch String getLabel(Plus it) { left?.label + ' + ' + right?.label }
-	static def dispatch String getLabel(Minus it) { left?.label + ' - ' + right?.label }
-	static def dispatch String getLabel(MulOrDiv it) { left?.label + ' ' + op + ' ' + right?.label }
-	static def dispatch String getLabel(Modulo it) { left?.label + ' ' + op + ' ' + right?.label }
+	static def dispatch String getLabel(Or it) { getLabel(left, op, right) }
+	static def dispatch String getLabel(And it) { getLabel(left, op, right) }
+	static def dispatch String getLabel(Equality it) { getLabel(left, op, right) }
+	static def dispatch String getLabel(Comparison it) { getLabel(left, op, right) }
+	static def dispatch String getLabel(Plus it) { getLabel(left, op, right) }
+	static def dispatch String getLabel(Minus it) { getLabel(left, op, right) }
+	static def dispatch String getLabel(Mul it) { getLabel(left, op, right) }
+	static def dispatch String getLabel(Div it) { getLabel(left, op, right) }
+	static def dispatch String getLabel(Modulo it) { getLabel(left, op, right) }
 	static def dispatch String getLabel(Parenthesis it) { '(' + expression?.label + ')' }
 	static def dispatch String getLabel(UnaryMinus it) { '-' + expression?.label }
 	static def dispatch String getLabel(Not it) { '!' + expression?.label }
@@ -130,19 +131,19 @@ class LabelServices
 		return label
 	}
 
+	private static def String getLabel(Expression left, String op, Expression right)
+	{
+		left?.label + ' ' + op + ' ' + right?.label
+	}
+
 	/* TYPES *************************************************/
 	static def dispatch String getLabel(BaseType it) 
 	{ 
 		if (sizes.empty) 
 			primitive.literal
-		else if (sizes.exists[x | !(x instanceof SizeTypeInt)])
-			primitive.literal + '[' + sizes.map[x | x.label].join(',') + ']'
+		else if (sizes.forall[x | x instanceof IntConstant])
+			primitive.literal + sizes.map[x | (x as IntConstant).value.utfExponent].join('\u02E3')
 		else
-			primitive.literal + sizes.map[x | (x as SizeTypeInt).value.utfExponent].join('\u02E3')
+			primitive.literal + '[' + sizes.map[label].join(',') + ']'
 	}
-
-	static def dispatch String getLabel(SizeTypeOperation it) { left?.label + ' ' + op + ' ' + right?.label }
-	static def dispatch String getLabel(SizeTypeInt it) { value.toString }
-	static def dispatch String getLabel(SizeTypeSymbolRef it) { target?.name }
-	static def dispatch String getLabel(SizeTypeSymbol it) { name }
 }

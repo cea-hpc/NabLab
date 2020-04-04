@@ -9,70 +9,15 @@
  *******************************************************************************/
 package fr.cea.nabla.typing
 
+import fr.cea.nabla.nabla.Expression
+import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.MultipleConnectivity
 import fr.cea.nabla.nabla.PrimitiveType
-import fr.cea.nabla.nabla.SizeType
-import fr.cea.nabla.nabla.SizeTypeInt
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.LabelServices.*
 import static extension fr.cea.nabla.ir.Utils.*
-
-class NSTSizeType
-{
-	val Object value // Integer or Dimension
-
-	static def NSTSizeType create(int v)
-	{
-		new NSTSizeType(v)
-	}
-
-	static def NSTSizeType create(SizeType v)
-	{
-		if (v instanceof SizeTypeInt)
-			new NSTSizeType(v.value)
-		else
-			new NSTSizeType(v)
-	}
-
-	private new(int value) { this.value = value }
-	private new(SizeType value) { this.value = value }
-
-	def isUndefined() { value === null }
-	def isSizeType() { value instanceof SizeType }
-	def isInt() { value instanceof Integer }
-
-	def getSizeTypeValue() { value as SizeType }
-	def getIntValue() { value as Integer }
-
-	def getLabel()
-	{
-		if (isInt) intValue.toString
-		else sizeTypeValue.label
-	}
-
-	override boolean equals(Object obj)
-	{
-		if (this === obj) return true
-		if (obj === null) return false
-		if (class != obj.class) return false
-		val other = obj as NSTSizeType
-		if (value === null)
-		{
-			if (other.value !== null) return false
-		}
-		else
-		{
-			if (value.class != other.value.class) return false
-			else
-			{
-				if (isInt) return (intValue == other.intValue)
-				if (isSizeType) return (sizeTypeValue.label == other.sizeTypeValue.label)
-			}
-		}
-		return true
-  }
-}
+import org.eclipse.emf.ecore.util.EcoreUtil
 
 @Data
 abstract class NablaType
@@ -110,29 +55,81 @@ abstract class NSTScalar extends NablaSimpleType
 @Data
 abstract class NSTArray1D extends NablaSimpleType
 {
-	val NSTSizeType size
+	val Expression size
 
 	override getLabel()
 	{
-		if (size.int)
-			primitive.literal + size.intValue.utfExponent
+		if (size instanceof IntConstant)
+			primitive.literal + size.value.utfExponent
 		else
 			primitive.literal + '[' + size.label + ']'
+	}
+
+	/**
+	 * Replace the default Xtend @Data generation of equals
+	 * to compare size expression with EcoreUtil::equals
+	 */
+	override equals(Object obj)
+	{
+		if (this === obj) return true
+		if (obj === null) return false
+		if (class !== obj.class) return false
+		if (!super.equals(obj)) return false
+
+		val other = obj as NSTArray1D
+		if (this.size === null)
+		{
+			if (other.size !== null) return false
+		}
+		else 
+			if (!EcoreUtil::equals(this.size, other.size))
+				return false
+		return true
 	}
 }
 
 @Data
 abstract class NSTArray2D extends NablaSimpleType 
 {
-	val NSTSizeType nbRows
-	val NSTSizeType nbCols
+	val Expression nbRows
+	val Expression nbCols
 
 	override getLabel()
 	{
-		if (nbRows.int && nbCols.int)
-			primitive.literal + nbRows.intValue.utfExponent + '\u02E3' + nbCols.intValue.utfExponent
+		if (nbRows instanceof IntConstant && nbCols instanceof IntConstant)
+			primitive.literal + (nbRows as IntConstant).value.utfExponent + '\u02E3' + (nbCols as IntConstant).value.utfExponent
 		else
 			primitive.literal + '[' + nbRows.label + ',' + nbCols.label + ']'
+	}
+
+	/**
+	 * Replace the default Xtend @Data generation of equals
+	 * to compare nbRows/nbCols expressions with EcoreUtil::equals
+	 */
+	override equals(Object obj)
+	{
+		if (this === obj) return true
+		if (obj === null) return false
+		if (getClass() != obj.getClass()) return false
+		if (!super.equals(obj)) return false
+
+		val other = obj as NSTArray2D
+		if (this.nbRows === null)
+		{
+			if (other.nbRows !== null) return false
+		}
+		else
+			if (!EcoreUtil::equals(this.nbRows, other.nbRows))
+				return false;
+
+		if (this.nbCols === null)
+		{
+			if (other.nbCols !== null) return false
+		} 
+		else
+			if (!EcoreUtil::equals(this.nbCols, other.nbCols))
+				return false
+		return true
 	}
 }
 

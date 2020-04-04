@@ -83,10 +83,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.RETURN: return createReturn();
 			case IrPackage.ITERATOR: return createIterator();
 			case IrPackage.INTERVAL: return createInterval();
-			case IrPackage.SIZE_TYPE_SYMBOL: return createSizeTypeSymbol();
-			case IrPackage.SIZE_TYPE_INT: return createSizeTypeInt();
-			case IrPackage.SIZE_TYPE_OPERATION: return createSizeTypeOperation();
-			case IrPackage.SIZE_TYPE_SYMBOL_REF: return createSizeTypeSymbolRef();
 			case IrPackage.CONTRACTED_IF: return createContractedIf();
 			case IrPackage.BINARY_EXPRESSION: return createBinaryExpression();
 			case IrPackage.UNARY_EXPRESSION: return createUnaryExpression();
@@ -431,50 +427,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public Interval createInterval() {
 		IntervalImpl interval = new IntervalImpl();
 		return interval;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public SizeTypeSymbol createSizeTypeSymbol() {
-		SizeTypeSymbolImpl sizeTypeSymbol = new SizeTypeSymbolImpl();
-		return sizeTypeSymbol;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public SizeTypeInt createSizeTypeInt() {
-		SizeTypeIntImpl sizeTypeInt = new SizeTypeIntImpl();
-		return sizeTypeInt;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public SizeTypeOperation createSizeTypeOperation() {
-		SizeTypeOperationImpl sizeTypeOperation = new SizeTypeOperationImpl();
-		return sizeTypeOperation;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public SizeTypeSymbolRef createSizeTypeSymbolRef() {
-		SizeTypeSymbolRefImpl sizeTypeSymbolRef = new SizeTypeSymbolRefImpl();
-		return sizeTypeSymbolRef;
 	}
 
 	/**

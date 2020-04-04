@@ -12,7 +12,7 @@ package fr.cea.nabla.ir.interpreter
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 
-import static fr.cea.nabla.ir.interpreter.DimensionInterpreter.*
+import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 
 class IrTypeExtensions 
 {
@@ -21,7 +21,7 @@ class IrTypeExtensions
 
 	static def dispatch int[] getIntSizes(BaseType it, Context context)
 	{
-		sizes.map[x | interprete(x, context)]
+		interpreteDimensionExpressions(sizes, context)
 	}
 
 	static def dispatch int[] getIntSizes(ConnectivityType it, Context context) 

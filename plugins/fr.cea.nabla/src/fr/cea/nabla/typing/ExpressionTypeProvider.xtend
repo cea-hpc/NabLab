@@ -19,6 +19,7 @@ import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.ContractedIf
+import fr.cea.nabla.nabla.Div
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
@@ -28,7 +29,8 @@ import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
-import fr.cea.nabla.nabla.MulOrDiv
+import fr.cea.nabla.nabla.Mul
+import fr.cea.nabla.nabla.NablaFactory
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
@@ -39,6 +41,7 @@ import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VectorConstant
+import fr.cea.nabla.overloading.DeclarationProvider
 import java.util.List
 
 class ExpressionTypeProvider
@@ -47,7 +50,7 @@ class ExpressionTypeProvider
 	@Inject extension BinaryOperationsTypeProvider
 	@Inject extension PrimitiveTypeTypeProvider
 	@Inject extension BaseTypeTypeProvider
-	@Inject extension VarTypeProvider
+	@Inject extension ArgOrVarTypeProvider
 	@Inject extension ArgOrVarExtensions
 
 	def NablaSimpleType getTypeFor(Expression a, Expression b, String op)
@@ -67,7 +70,8 @@ class ExpressionTypeProvider
 	def dispatch NablaType getTypeFor(Comparison it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(Plus it) { getTypeFor(left, right, op) }
 	def dispatch NablaType getTypeFor(Minus it) { getTypeFor(left, right, op) }
-	def dispatch NablaType getTypeFor(MulOrDiv it)  { getTypeFor(left, right, op) }
+	def dispatch NablaType getTypeFor(Mul it)  { getTypeFor(left, right, op) }
+	def dispatch NablaType getTypeFor(Div it)  { getTypeFor(left, right, op) }
 	def dispatch NablaType getTypeFor(Modulo it)  { new NSTIntScalar }
 	def dispatch NablaType getTypeFor(Parenthesis it) { expression?.typeFor }
 	def dispatch NablaType getTypeFor(UnaryMinus it) { expression?.typeFor }
@@ -104,12 +108,12 @@ class ExpressionTypeProvider
 			val eltType = values.get(0).typeFor
 			switch eltType
 			{
-				NSTBoolScalar: new NSTBoolArray1D(NSTSizeType.create(values.size))
-				NSTIntScalar: new NSTIntArray1D(NSTSizeType.create(values.size))
-				NSTRealScalar: new NSTRealArray1D(NSTSizeType.create(values.size))
-				NSTBoolArray1D: new NSTBoolArray2D(NSTSizeType.create(values.size), eltType.size)
-				NSTIntArray1D: new NSTIntArray2D(NSTSizeType.create(values.size), eltType.size)
-				NSTRealArray1D: new NSTRealArray2D(NSTSizeType.create(values.size), eltType.size)
+				NSTBoolScalar: new NSTBoolArray1D(createIntConstant(values.size))
+				NSTIntScalar: new NSTIntArray1D(createIntConstant(values.size))
+				NSTRealScalar: new NSTRealArray1D(createIntConstant(values.size))
+				NSTBoolArray1D: new NSTBoolArray2D(createIntConstant(values.size), eltType.size)
+				NSTIntArray1D: new NSTIntArray2D(createIntConstant(values.size), eltType.size)
+				NSTRealArray1D: new NSTRealArray2D(createIntConstant(values.size), eltType.size)
 				default: null
 			}
 		}
@@ -128,8 +132,8 @@ class ExpressionTypeProvider
 	{
 		if (spaceIterators.empty)
 		{
-			val t = v.type.typeFor
-			getTypeForVar(t, nbIndices)
+			val t = v.typeFor
+			getTypeForVar(t as NablaSimpleType, nbIndices)
 		}
 		else null
 	}
@@ -173,5 +177,10 @@ class ExpressionTypeProvider
 			NSTArray2D case nbIndices == 2 : t.primitive.typeFor
 			default : null 
 		}
+	}
+
+	private def IntConstant createIntConstant(int v)
+	{
+		NablaFactory::eINSTANCE.createIntConstant => [value = v]
 	}
 }

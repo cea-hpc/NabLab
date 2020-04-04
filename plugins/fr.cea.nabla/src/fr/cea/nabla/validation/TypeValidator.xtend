@@ -15,6 +15,7 @@ import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ContractedIf
+import fr.cea.nabla.nabla.Div
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
@@ -22,7 +23,7 @@ import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
-import fr.cea.nabla.nabla.MulOrDiv
+import fr.cea.nabla.nabla.Mul
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
@@ -61,7 +62,7 @@ class TypeValidator extends BasicValidator
 	{
 		if (!external && body !== null)
 		{
-			val returnInstruction = body.eAllContents.findFirst[x | x instanceof Return]
+			val returnInstruction = if (body instanceof Return) body as Return else body.eAllContents.findFirst[x | x instanceof Return]
 			if (returnInstruction !== null)
 			{
 				val ri = returnInstruction as Return
@@ -83,12 +84,12 @@ class TypeValidator extends BasicValidator
 	static def getAffectationTypeMsg(String actualTypeName, String expectedTypeName) { "Wrong type: Expected " + expectedTypeName + ", but was " + actualTypeName }
 	static def getIfConditionBoolMsg(String actualTypeName) { "Wrong type: Expected " + BOOL.label + ", but was " + actualTypeName }
 
-	@Check
-	def checkType(SimpleVarDefinition it)
-	{
-		if (!checkExpectedType(defaultValue?.typeFor, type.typeFor))
-			error(getScalarDefinitionTypeMsg(defaultValue?.typeFor.label, type.typeFor.label), NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE, SCALAR_VAR_DEFAULT_VALUE_TYPE)
-	}
+//	@Check
+//	def checkType(SimpleVarDefinition it)
+//	{
+//		if (!checkExpectedType(defaultValue?.typeFor, type.typeFor))
+//			error(getScalarDefinitionTypeMsg(defaultValue?.typeFor.label, type.typeFor.label), NablaPackage.Literals.SIMPLE_VAR_DEFINITION__DEFAULT_VALUE, SCALAR_VAR_DEFAULT_VALUE_TYPE)
+//	}
 
 	@Check
 	def checkType(Affectation it)
@@ -115,7 +116,8 @@ class TypeValidator extends BasicValidator
 	public static val CONTRACTED_IF_CONDITION_TYPE = "Expressions::ContractedIfConditionType"
 	public static val CONTRACTED_IF_ELSE_TYPE = "Expressions::ContractedIfElseType"
 	public static val NOT_EXPRESSION_TYPE = "Expressions::NotExpressionType"
-	public static val MUL_OR_DIV_TYPE = "Expressions::MulOrDivType"
+	public static val MUL_TYPE = "Expressions::MulType"
+	public static val DIV_TYPE = "Expressions::DivType"
 	public static val PLUS_TYPE = "Expressions::PlusType"
 	public static val MINUS_TYPE = "Expressions::MinusType"
 	public static val COMPARISON_TYPE = "Expressions::ComparisonType"
@@ -135,11 +137,7 @@ class TypeValidator extends BasicValidator
 	static def getContractedIfConditionTypeMsg(String actualType) { "Expected " + BOOL.label + " type, but was " + actualType }
 	static def getContractedIfElseTypeMsg(String actualType, String expectedType) { "Expected " + expectedType + " type, but was " + actualType }
 	static def getNotExpressionTypeMsg(String actualType) { "Expected " + BOOL.label + " type, but was " + actualType }	
-	static def getMulOrDivTypeMsg(String op, String leftType, String rightType) { "Binary operator " + op + " undefined on types " + leftType + " and " + rightType }
-	static def getPlusTypeMsg(String op, String leftType, String rightType) { "Binary operator " + op + " undefined on types " + leftType + " and " + rightType }
-	static def getMinusTypeMsg(String op, String leftType, String rightType) { "Binary operator " + op + " undefined on types " + leftType + " and " + rightType }
-	static def getComparisonTypeMsg(String op, String leftType, String rightType) { "Binary operator " + op + " undefined on types " + leftType + " and " + rightType }
-	static def getEqualityTypeMsg(String op, String leftType, String rightType) { "Binary operator " + op + " undefined on types " + leftType + " and " + rightType }
+	static def getBinaryTypeMsg(String op, String leftType, String rightType) { "Binary operator " + op + " undefined on types " + leftType + " and " + rightType }
 	static def getModuloTypeMsg(String actualType) { "Expected " + INT.label + " type, but was " + actualType }
 	static def getAndTypeMsg(String actualType) { "Expected " + BOOL.label + " type, but was " + actualType }
 	static def getOrTypeMsg(String actualType) { "Expected " + BOOL.label + " type, but was " + actualType }
@@ -215,38 +213,45 @@ class TypeValidator extends BasicValidator
 	// UnaryMinus fonctionne avec tous les types
 
 	@Check
-	def checkMulOrDivType(MulOrDiv it)
+	def checkMulOrDivType(Mul it)
 	{
 		if (!checkBinaryOp(left, right, op))
-			error(getMulOrDivTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.MUL_OR_DIV__OP, MUL_OR_DIV_TYPE)
+			error(getBinaryTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.MUL__OP, MUL_TYPE)
+	}
+
+	@Check
+	def checkMulOrDivType(Div it)
+	{
+		if (!checkBinaryOp(left, right, op))
+			error(getBinaryTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.DIV__OP, DIV_TYPE)
 	}
 
 	@Check
 	def checkPlusType(Plus it)
 	{
 		if (!checkBinaryOp(left, right, op))
-			error(getPlusTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.PLUS__OP, PLUS_TYPE)
+			error(getBinaryTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.PLUS__OP, PLUS_TYPE)
 	}
 
 	@Check
 	def checkMinusType(Minus it)
 	{
 		if (!checkBinaryOp(left, right, op))
-			error(getMinusTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.MINUS__OP, MINUS_TYPE)
+			error(getBinaryTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.MINUS__OP, MINUS_TYPE)
 	}
 
 	@Check
 	def checkComparisonType(Comparison it)
 	{
 		if (!checkBinaryOp(left, right, op))
-			error(getComparisonTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.COMPARISON__OP, COMPARISON_TYPE)
+			error(getBinaryTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.COMPARISON__OP, COMPARISON_TYPE)
 	}
 
 	@Check
 	def checkEqualityType(Equality it)
 	{
 		if (!checkBinaryOp(left, right, op))
-			error(getEqualityTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.EQUALITY__OP, EQUALITY_TYPE)
+			error(getBinaryTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.EQUALITY__OP, EQUALITY_TYPE)
 	}
 
 	@Check def checkModuloType(Modulo it)

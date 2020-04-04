@@ -4,9 +4,9 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.ArgOrVar;
 import fr.cea.nabla.ir.ir.ArgOrVarRef;
+import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.ItemIndex;
-import fr.cea.nabla.ir.ir.SizeType;
 
 import java.util.Collection;
 
@@ -68,7 +68,7 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<SizeType> indices;
+	protected EList<Expression> indices;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -153,9 +153,9 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 	 * @generated
 	 */
 	@Override
-	public EList<SizeType> getIndices() {
+	public EList<Expression> getIndices() {
 		if (indices == null) {
-			indices = new EObjectContainmentEList.Resolving<SizeType>(SizeType.class, this, IrPackage.ARG_OR_VAR_REF__INDICES);
+			indices = new EObjectContainmentEList.Resolving<Expression>(Expression.class, this, IrPackage.ARG_OR_VAR_REF__INDICES);
 		}
 		return indices;
 	}
@@ -211,7 +211,7 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 				return;
 			case IrPackage.ARG_OR_VAR_REF__INDICES:
 				getIndices().clear();
-				getIndices().addAll((Collection<? extends SizeType>)newValue);
+				getIndices().addAll((Collection<? extends Expression>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);

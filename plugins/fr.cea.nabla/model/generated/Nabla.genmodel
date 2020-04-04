@@ -47,7 +47,6 @@
     <genClasses ecoreClass="Nabla.ecore#//Instruction"/>
     <genClasses ecoreClass="Nabla.ecore#//SimpleVarDefinition">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SimpleVarDefinition/const"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SimpleVarDefinition/type"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SimpleVarDefinition/variable"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SimpleVarDefinition/defaultValue"/>
     </genClasses>
@@ -71,7 +70,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//If/else"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//ItemDefinition">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//ItemDefinition/type"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ItemDefinition/item"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ItemDefinition/value"/>
     </genClasses>
@@ -151,6 +149,9 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Arg"/>
     <genClasses ecoreClass="Nabla.ecore#//Expression"/>
+    <genClasses ecoreClass="Nabla.ecore#//IntConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//IntConstant/value"/>
+    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//ReductionCall">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/reduction"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ReductionCall/arg"/>
@@ -164,10 +165,6 @@
     <genClasses ecoreClass="Nabla.ecore#//BaseType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//BaseType/primitive"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//BaseType/sizes"/>
-    </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//SizeType"/>
-    <genClasses ecoreClass="Nabla.ecore#//SizeTypeSymbol">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SizeTypeSymbol/name"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//ContractedIf">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ContractedIf/condition"/>
@@ -204,10 +201,15 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Minus/op"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Minus/right"/>
     </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//MulOrDiv">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//MulOrDiv/left"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//MulOrDiv/op"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//MulOrDiv/right"/>
+    <genClasses ecoreClass="Nabla.ecore#//Mul">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Mul/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Mul/op"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Mul/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//Div">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Div/Left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Div/op"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Div/right"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Modulo">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Modulo/left"/>
@@ -222,9 +224,6 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Not">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Not/expression"/>
-    </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//IntConstant">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//IntConstant/value"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//RealConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//RealConstant/value"/>
@@ -248,17 +247,6 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//VectorConstant">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VectorConstant/values"/>
-    </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//SizeTypeOperation">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SizeTypeOperation/left"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SizeTypeOperation/op"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SizeTypeOperation/right"/>
-    </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//SizeTypeInt">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SizeTypeInt/value"/>
-    </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//SizeTypeSymbolRef">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//SizeTypeSymbolRef/target"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

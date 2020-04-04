@@ -18,6 +18,7 @@ import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ContractedIf
+import fr.cea.nabla.nabla.Div
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.IntConstant
@@ -25,7 +26,7 @@ import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
-import fr.cea.nabla.nabla.MulOrDiv
+import fr.cea.nabla.nabla.Mul
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
@@ -34,7 +35,7 @@ import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VectorConstant
-import fr.cea.nabla.typing.DeclarationProvider
+import fr.cea.nabla.overloading.DeclarationProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
 
 class IrExpressionFactory
@@ -44,7 +45,6 @@ class IrExpressionFactory
 	@Inject extension IrFunctionFactory
 	@Inject extension IrArgOrVarFactory
 	@Inject extension IrItemIndexFactory
-	@Inject extension IrSizeTypeFactory
 	@Inject extension ExpressionTypeProvider
 	@Inject extension ReductionCallExtensions
 	@Inject extension IrTimeLoopFactory
@@ -68,7 +68,8 @@ class IrExpressionFactory
 	def dispatch Expression toIrExpression(Comparison e) { e.toIrBinaryExpr(e.left, e.right, e.op) }
 	def dispatch Expression toIrExpression(Plus e) { e.toIrBinaryExpr(e.left, e.right, e.op) }
 	def dispatch Expression toIrExpression(Minus e) { e.toIrBinaryExpr(e.left, e.right, e.op) }
-	def dispatch Expression toIrExpression(MulOrDiv e) { e.toIrBinaryExpr(e.left, e.right, e.op) }
+	def dispatch Expression toIrExpression(Mul e) { e.toIrBinaryExpr(e.left, e.right, e.op) }
+	def dispatch Expression toIrExpression(Div e) { e.toIrBinaryExpr(e.left, e.right, e.op) }
 	def dispatch Expression toIrExpression(Modulo e) { e.toIrBinaryExpr(e.left, e.right, e.op) }
 
 	def dispatch Expression toIrExpression(Parenthesis e)
@@ -181,7 +182,7 @@ class IrExpressionFactory
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
 			target = e.target.toIrArgOrVar(e.irTimeSuffix)
-			e.indices.forEach[x | indices += x.toIrSizeType]
+			e.indices.forEach[x | indices += x.toIrExpression]
 			for (i : 0..<e.spaceIterators.size)
 				iterators += toIrIndex(new IndexInfo(e, e.spaceIterators.get(i)))
 		]

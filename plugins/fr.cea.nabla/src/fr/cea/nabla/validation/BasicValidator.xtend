@@ -25,6 +25,7 @@ import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.InstructionBlock
+import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.Interval
 import fr.cea.nabla.nabla.Item
 import fr.cea.nabla.nabla.ItemDefinition
@@ -38,18 +39,15 @@ import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
+import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.nabla.SizeTypeInt
-import fr.cea.nabla.nabla.SizeTypeOperation
-import fr.cea.nabla.nabla.SizeTypeSymbol
-import fr.cea.nabla.nabla.SizeTypeSymbolRef
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorRef
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
-import fr.cea.nabla.typing.DeclarationProvider
+import fr.cea.nabla.overloading.DeclarationProvider
 import java.util.HashSet
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
@@ -130,26 +128,6 @@ class BasicValidator extends AbstractNablaValidator
 		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
 		if (duplicated)
 			error(getDuplicateNameMsg(NablaPackage.Literals.ITEM, name), NablaPackage.Literals.ITEM__NAME, DUPLICATE_NAME);
-	}
-
-	@Check
-	def void checkDuplicate(SizeTypeSymbol it)
-	{
-		if (eContainer instanceof Function && (eContainer as Function).vars.size > 0)
-		{
-			val vars = (eContainer as Function).vars
-			val duplicate = vars.findFirst[x | x.name == name && x != it]
-			if (duplicate !== null)
-				error(getDuplicateNameMsg(NablaPackage.Literals.SIZE_TYPE_SYMBOL, duplicate.name), NablaPackage.Literals.SIZE_TYPE_SYMBOL__NAME, DUPLICATE_NAME);
-		}
-		else
-		{
-			val scope = scopeProvider.getScope(it, NablaPackage.Literals.SIZE_TYPE_SYMBOL_REF__TARGET)
-			//println('checkDuplicate(' + it + ') : ' + scope.allElements.map[name.lastSegment].join(', '))
-			val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
-			if (duplicated)
-				error(getDuplicateNameMsg(NablaPackage.Literals.SIZE_TYPE_SYMBOL, name), NablaPackage.Literals.SIZE_TYPE_SYMBOL__NAME, DUPLICATE_NAME);
-		}
 	}
 
 	@Check
@@ -311,7 +289,7 @@ class BasicValidator extends AbstractNablaValidator
 		for (i : 0..<sizes.size)
 		{
 			val size = sizes.get(i)
-			if (size instanceof SizeTypeInt && (size as SizeTypeInt).value < 2)
+			if (size instanceof IntConstant && (size as IntConstant).value < 2)
 				error(getArraySizesMsg(), NablaPackage.Literals.BASE_TYPE__SIZES, i, ARRAY_SIZES)
 		}
 	}
@@ -359,14 +337,14 @@ class BasicValidator extends AbstractNablaValidator
 			warning(getUnusedVariableMsg(), NablaPackage.Literals::ARG_OR_VAR__NAME, UNUSED_VARIABLE)
 	}
 
-	@Check
-	def checkIndicesNumber(ArgOrVarRef it)
-	{
-		if (target === null || target.eIsProxy) return
-		val vTypeSize = target.dimension
-		if (indices.size > 0 && indices.size != vTypeSize)
-			error(getIndicesNumberMsg(vTypeSize, indices.size), NablaPackage.Literals::ARG_OR_VAR_REF__INDICES, INDICES_NUMBER)
-	}
+//	@Check
+//	def checkIndicesNumber(ArgOrVarRef it)
+//	{
+//		if (target === null || target.eIsProxy) return
+//		val vTypeSize = target.dimension
+//		if (indices.size > 0 && indices.size != vTypeSize)
+//			error(getIndicesNumberMsg(vTypeSize, indices.size), NablaPackage.Literals::ARG_OR_VAR_REF__INDICES, INDICES_NUMBER)
+//	}
 
 	@Check
 	def checkSpaceIteratorNumberAndType(ArgOrVarRef it)
@@ -412,6 +390,8 @@ class BasicValidator extends AbstractNablaValidator
 
 	// ===== Functions (Reductions, Dimension) =====
 
+	public static val ONLY_INT_AND_VAR_IN_FUNCTION_IN_TYPES = "SizeType::OnlyIntAndVarInFunctionInTypes"
+	public static val ONLY_INT_AND_VAR_IN_REDUCTION_TYPE = "SizeType::OnlyIntAndVarInReductionType"
 	public static val UNUSED_FUNCTION = "Functions::UnusedFunction"
 	public static val UNUSED_REDUCTION = "Functions::UnusedReduction"
 	public static val FUNCTION_INVALID_ARG_NUMBER = "Functions::InvalidArgNumber"
@@ -419,12 +399,29 @@ class BasicValidator extends AbstractNablaValidator
 	public static val FUNCTION_RETURN_TYPE = "Functions::FunctionReturnType"
 	public static val REDUCTION_INCOMPATIBLE_TYPES = "Functions::ReductionIncompatibleTypes"
 
+	static def getOnlyIntAndVarInFunctionInTypesMsg() { "In types must only contain int and variables" }
+	static def getOnlyIntAndVarInReductionTypeMsg() { "Type must only contain int and variables" }
 	static def getUnusedFunctionMsg() { "Unused function" }
 	static def getUnusedReductionMsg() { "Unused reduction" }
 	static def getFunctionInvalidArgNumberMsg() { "Number of arguments must be equal to number of input types" }
 	static def getFunctionIncompatibleInTypesMsg() { "Declaration conflicts" }
 	static def getFunctionReturnTypeMsg(String variableName) { "Only input type variables can be used for return types. Invalid variable: " + variableName }
 	static def getReductionIncompatibleTypesMsg() { "Declaration conflicts" }
+
+	@Check
+	def checkNoOperationInFunctionInTypes(Function it)
+	{
+		for (inType : inTypes)
+			if (!inType.sizes.forall[x | x instanceof IntConstant || x instanceof ArgOrVarRef])
+				error(getOnlyIntAndVarInFunctionInTypesMsg(), NablaPackage.Literals::FUNCTION__IN_TYPES, ONLY_INT_AND_VAR_IN_FUNCTION_IN_TYPES)
+	}
+
+	@Check
+	def checkNoOperationInReductionType(Reduction it)
+	{
+		if (!type.sizes.forall[x | x instanceof IntConstant || x instanceof ArgOrVarRef])
+			error(getOnlyIntAndVarInReductionTypeMsg(), NablaPackage.Literals::REDUCTION__TYPE, ONLY_INT_AND_VAR_IN_REDUCTION_TYPE)
+	}
 
 	@Check
 	def checkUnusedFunction(Function it)
@@ -483,16 +480,16 @@ class BasicValidator extends AbstractNablaValidator
 	@Check
 	def checkFunctionReturnType(Function it)
 	{
-		val inTypeVars = new HashSet<SizeTypeSymbol>
+		val inTypeVars = new HashSet<SimpleVar>
 		for (inType : inTypes)
-			for (dim : inType.eAllContents.filter(SizeTypeSymbolRef).toIterable)
-				if (dim.target !== null && !dim.target.eIsProxy)
-					inTypeVars += dim.target
+			for (dim : inType.eAllContents.filter(ArgOrVarRef).toIterable)
+				if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof SimpleVar)
+					inTypeVars += dim.target as SimpleVar
 
-		val returnTypeVars = new HashSet<SizeTypeSymbol>
-		for (dim : returnType.eAllContents.filter(SizeTypeSymbolRef).toIterable)
-			if (dim.target !== null && !dim.target.eIsProxy)
-				returnTypeVars += dim.target
+		val returnTypeVars = new HashSet<SimpleVar>
+		for (dim : returnType.eAllContents.filter(ArgOrVarRef).toIterable)
+			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof SimpleVar)
+				returnTypeVars += dim.target as SimpleVar
 
 		val x = returnTypeVars.findFirst[x | !inTypeVars.contains(x)]
 		if (x !== null)
@@ -619,57 +616,5 @@ class BasicValidator extends AbstractNablaValidator
 	{
 		if ((inc>0 || dec>0) && target !== null && !(target.eContainer instanceof SpaceIterator))
 			error(getShiftValidityMsg(), NablaPackage.Literals::ITEM_REF__TARGET, SHIFT_VALIDITY)
-	}
-
-	@Check
-	def checkItemType(ItemDefinition it)
-	{
-		if (type !== value.connectivity.returnType)
-			error(getItemTypeMsg(type.name, value.connectivity.returnType.name), NablaPackage.Literals::ITEM_DEFINITION__VALUE, ITEM_TYPE)
-	}
-
-	// ===== SizeType =====
-
-	public static val UNUSED_SIZE_TYPE_SYMBOL = "SizeType::UnusedSizeTypeSymbol"
-	public static val NO_OPERATION_IN_FUNCTION_IN_TYPES = "SizeType::NoOperationInFunctionInTypes"
-	public static val NO_OPERATION_IN_REDUCTION_TYPE = "SizeType::NoOperationInReductionType"
-	public static val NO_OPERATION_IN_VAR_REF_INDICES = "SizeType::NoOperationInVarRefIndices"
-
-	static def getUnusedSizeTypeSymbolMsg() { "Unused symbol" }
-	static def getNoOperationInFunctionInTypesMsg() { "In types must not contain operations" }
-	static def getNoOperationInReductionTypeMsg() { "Type must not contain operations" }
-	static def getNoOperationInVarRefIndicesMsg() { "Indices must not contain operations" }
-
-	@Check
-	def checkUnusedSizeTypeSymbol(SizeTypeSymbol it)
-	{
-		var EObject container = EcoreUtil2.getContainerOfType(it, Iterable)
-		if (container === null) container = eContainer // Function or Reduction
-		val varRefs = container.eAllContents.filter(SizeTypeSymbolRef).map[target].toSet
-		if (!varRefs.contains(it))
-			warning(getUnusedSizeTypeSymbolMsg(), NablaPackage.Literals::SIZE_TYPE_SYMBOL__NAME, BasicValidator.UNUSED_SIZE_TYPE_SYMBOL)
-	}
-
-	@Check
-	def checkNoOperationInFunctionInTypes(Function it)
-	{
-		for (inType : inTypes)
-			if (inType.eAllContents.filter(SizeTypeOperation).size > 0)
-				error(getNoOperationInFunctionInTypesMsg(), NablaPackage.Literals::FUNCTION__IN_TYPES, NO_OPERATION_IN_FUNCTION_IN_TYPES)
-	}
-
-	@Check
-	def checkNoOperationInReductionType(Reduction it)
-	{
-		if (type.eAllContents.filter(SizeTypeOperation).size > 0)
-			error(getNoOperationInReductionTypeMsg(), NablaPackage.Literals::REDUCTION__TYPE, NO_OPERATION_IN_REDUCTION_TYPE)
-	}
-
-	@Check
-	def checkNoOperationInVarRefIndices(ArgOrVarRef it)
-	{
-		for (i : 0..<indices.length)
-			if ((indices.get(i) instanceof SizeTypeOperation) || indices.get(i).eAllContents.filter(SizeTypeOperation).size > 0)
-				error(getNoOperationInVarRefIndicesMsg(), NablaPackage.Literals::ARG_OR_VAR_REF__INDICES, i, NO_OPERATION_IN_VAR_REF_INDICES)
 	}
 }

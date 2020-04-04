@@ -7,7 +7,7 @@ import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.IrPackage;
-import fr.cea.nabla.ir.ir.SizeTypeSymbol;
+import fr.cea.nabla.ir.ir.SimpleVariable;
 
 import java.util.Collection;
 
@@ -81,7 +81,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<SizeTypeSymbol> variables;
+	protected EList<SimpleVariable> variables;
 
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -239,9 +239,9 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @generated
 	 */
 	@Override
-	public EList<SizeTypeSymbol> getVariables() {
+	public EList<SimpleVariable> getVariables() {
 		if (variables == null) {
-			variables = new EObjectContainmentEList.Resolving<SizeTypeSymbol>(SizeTypeSymbol.class, this, IrPackage.FUNCTION__VARIABLES);
+			variables = new EObjectContainmentEList.Resolving<SimpleVariable>(SimpleVariable.class, this, IrPackage.FUNCTION__VARIABLES);
 		}
 		return variables;
 	}
@@ -413,7 +413,7 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 				return;
 			case IrPackage.FUNCTION__VARIABLES:
 				getVariables().clear();
-				getVariables().addAll((Collection<? extends SizeTypeSymbol>)newValue);
+				getVariables().addAll((Collection<? extends SimpleVariable>)newValue);
 				return;
 			case IrPackage.FUNCTION__NAME:
 				setName((String)newValue);

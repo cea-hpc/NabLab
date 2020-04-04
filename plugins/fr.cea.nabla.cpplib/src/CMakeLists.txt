@@ -26,7 +26,7 @@ target_compile_options(cppnabla PUBLIC -Wall -O3 --std=c++17 -march=native -mtun
 
 
 ### LIBCPPNABLASTL
-if(LIBCPPNABLA_BACKEND STREQUAL "STL")
+if(NOT DEFINED LIBCPPNABLA_BACKEND OR LIBCPPNABLA_BACKEND STREQUAL "STL")
 message(STATUS "Building library with STL.")
 add_library(cppnablastl 
     linearalgebra/stl/LinearAlgebraFunctions.cc linearalgebra/stl/Matrix.cc)
@@ -38,7 +38,7 @@ endif()
 
 
 ### LIBCPPNABLAKOKKOS
-if(LIBCPPNABLA_BACKEND STREQUAL "KOKKOS")
+if(NOT DEFINED LIBCPPNABLA_BACKEND OR LIBCPPNABLA_BACKEND STREQUAL "KOKKOS")
 message(STATUS "Building library with KOKKOS.")
 set(CMAKE_FIND_ROOT_PATH "$ENV{KOKKOS_HOME}")
 find_package(Kokkos)

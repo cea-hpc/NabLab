@@ -11,15 +11,12 @@ package fr.cea.nabla.tests
 
 import com.google.inject.Inject
 import fr.cea.nabla.NablaModuleExtensions
-import fr.cea.nabla.nabla.MultipleConnectivity
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.PrimitiveType
+import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import fr.cea.nabla.typing.NSTRealArray1D
 import fr.cea.nabla.typing.NSTRealScalar
-import fr.cea.nabla.typing.NSTSizeType
-import fr.cea.nabla.typing.NablaConnectivityType
-import fr.cea.nabla.typing.VarTypeProvider
 import fr.cea.nabla.validation.TypeValidator
 import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.testing.InjectWith
@@ -37,7 +34,7 @@ class TypeValidatorTest
 	@Inject ParseHelper<NablaModule> parseHelper
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
-	@Inject extension VarTypeProvider
+	@Inject extension ArgOrVarTypeProvider
 	@Inject extension TestUtils
 
 	// ===== Functions =====
@@ -65,45 +62,6 @@ class TypeValidatorTest
 	// ===== Instructions =====	
 
 	@Test
-	def void testCheckScalarVarDefinitionType() 
-	{
-		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '')
-			+
-			'''
-			ℝ d = ℝ[2](0.);
-			ℝ u {cells};
-			j: ℝ a = u;
-			'''
-		)
-		Assert.assertNotNull(moduleKo)
-
-		val cells = moduleKo.getConnectivityByName("cells") as MultipleConnectivity
-
-		moduleKo.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
-			TypeValidator::SCALAR_VAR_DEFAULT_VALUE_TYPE, 
-			TypeValidator::getScalarDefinitionTypeMsg(new NSTRealArray1D(NSTSizeType.create(2)).label,
-				PrimitiveType::REAL.literal
-			))
-
-		moduleKo.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
-			TypeValidator::SCALAR_VAR_DEFAULT_VALUE_TYPE, 
-			TypeValidator::getScalarDefinitionTypeMsg(new NablaConnectivityType(#[cells], new NSTRealScalar).label,
-				PrimitiveType::REAL.literal
-			))
-
-		val moduleOk = parseHelper.parse(getTestModule(defaultConnectivities, '')
-			+
-			'''
-			ℝ[2] d = ℝ[2](0.);
-			ℝ u{cells}, a{cells};
-			j: a = u;
-			'''
-		)
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
-	@Test
 	def void testChecAffectationType() 
 	{
 		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '')
@@ -112,7 +70,7 @@ class TypeValidatorTest
 			ℕ U{cells};
 			ℕ V{nodes};
 			ComputeU: ∀ j∈cells(), {
-					ℝ e = 1.0;
+					let e = 1.0;
 					U{j} = e * 4;
 			}
 			ComputeV: V = U;
@@ -136,7 +94,7 @@ class TypeValidatorTest
 			ℕ U{cells}; 
 			ℕ V{cells};
 			ComputeU: ∀ j∈cells(), {
-					ℕ e = 1;
+					let e = 1;
 					U{j} = e * 4;
 			}
 			ComputeV: V = U;
@@ -183,11 +141,11 @@ class TypeValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			const ℝ[2] one = [1.0, 1.0];
-			const ℕ int = ℕ(1.2);
-			const ℾ bool = ℾ(1);
-			const ℝ real = ℝ(true);
-			const ℝ[2] realOne = ℝ[2](one);
+			const one = [1.0, 1.0];
+			const int = ℕ(1.2);
+			const bool = ℾ(1);
+			const real = ℝ(true);
+			const realOne = ℝ[2](one);
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -207,10 +165,10 @@ class TypeValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			const ℕ int = ℕ(1);
-			const ℾ bool = ℾ(true);
-			const ℝ real = ℝ(1.2);
-			const ℝ[2] realOne = ℝ[2](1.0);
+			const int = ℕ(1);
+			const bool = ℾ(true);
+			const real = ℝ(1.2);
+			const realOne = ℝ[2](1.0);
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -222,8 +180,8 @@ class TypeValidatorTest
 	{
 		val moduleKo = parseHelper.parse(getTestModule ('',
 				'''
-				def sum1: [0.0, 0.0], ℝ[2], (a, b) → return a + b;
-				def sum1: 0.0, ℕ, (a, b) → return a + b;
+				def sum1, [0.0, 0.0]: ℝ[2], (a, b) → return a + b;
+				def sum1, 0.0: ℕ, (a, b) → return a + b;
 				'''
 			)
 		)
@@ -239,8 +197,8 @@ class TypeValidatorTest
 
 		val moduleOk = parseHelper.parse(getTestModule( '',
 				'''
-				def sum1: 0.0, ℝ[2], (a, b) → return a + b;
-				def sum1: 0, ℕ, (a, b) → return a + b;
+				def sum1, 0.0: ℝ[2], (a, b) → return a + b;
+				def sum1, 0: ℕ, (a, b) → return a + b;
 				'''
 			)
 		)
@@ -259,8 +217,8 @@ class TypeValidatorTest
 		val moduleKo = parseHelper.parse(getTestModule('', functions)
 			+
 			'''
-			const ℝ[2] option = [0., 1.];
-			const ℝ x = test(true, 0, option);
+			const option = [0., 1.];
+			const x = test(true, 0, option);
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -270,14 +228,14 @@ class TypeValidatorTest
 			TypeValidator::getFunctionArgsMsg(
 				#[PrimitiveType::BOOL.literal,
 				PrimitiveType::INT.literal,
-				new NSTRealArray1D(NSTSizeType.create(2)).label]
+				new NSTRealArray1D(createIntConstant(2)).label]
 		))		
 
 		val moduleOk = parseHelper.parse(getTestModule('', functions)
 			+
 			'''
-			const ℝ[2] option = [0., 1.];
-			const ℝ x = test(true, 0., option);
+			const option = [0., 1.];
+			const x = test(true, 0., option);
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -289,7 +247,7 @@ class TypeValidatorTest
 	{
 		var functions =
 			'''
-			def sum:  0.0, ℝ, (a, b) → return a + b;
+			def sum, 0.0: ℝ, (a, b) → return a + b;
 			'''
 
 		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, functions)
@@ -297,8 +255,8 @@ class TypeValidatorTest
 			'''
 			ℝ D{cells}; 
 			ℝ[2] E{cells}; 
-			computeU: ℝ u = sum{c∈cells()}(D);
-			computeV: ℝ[2] v = sum{c∈cells()}(E{c});
+			computeU: let u = sum{c∈cells()}(D);
+			computeV: let v = sum{c∈cells()}(E{c});
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -313,8 +271,8 @@ class TypeValidatorTest
 
 		functions =
 			'''
-			def sum: 0.0 , ℝ, (a,b) → return a + b;
-			def sum: x | 0.0 , ℝ[x], (a,b) → return a + b;
+			def sum, 0.0: ℝ, (a,b) → return a + b;
+			def sum, 0.0: x | ℝ[x], (a,b) → return a + b;
 			'''
 
 		val moduleOk = parseHelper.parse(getTestModule(defaultConnectivities, functions)
@@ -322,8 +280,8 @@ class TypeValidatorTest
 			'''
 			ℝ D{cells};
 			ℝ[2] E{cells};
-			computeT: ℝ u = sum{c∈cells()}(D{c});
-			computeV: ℝ[2] v = sum{c∈cells()}(E{c});
+			computeT: let u = sum{c∈cells()}(D{c});
+			computeV: let v = sum{c∈cells()}(E{c});
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -339,7 +297,7 @@ class TypeValidatorTest
 			ℝ cond;
 			ℝ U;
 			ℕ V;
-			ℝ W = (cond ? U : V);
+			let W = (cond ? U : V);
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -361,7 +319,7 @@ class TypeValidatorTest
 			ℾ cond;
 			ℝ U;
 			ℝ V;
-			ℝ W = (cond ? U : V);
+			let W = (cond ? U : V);
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -375,7 +333,7 @@ class TypeValidatorTest
 			+
 			'''
 			ℝ cond;
-			ℾ ok = !cond; 
+			let ok = !cond; 
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -389,7 +347,7 @@ class TypeValidatorTest
 			+
 			'''
 			ℾ cond;
-			ℾ ok = !cond; 
+			let ok = !cond; 
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -404,14 +362,14 @@ class TypeValidatorTest
 			'''
 			ℾ a; 
 			ℝ b;
-			ℝ c = a * b;
+			let c = a * b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.mulOrDiv,
-			TypeValidator::MUL_OR_DIV_TYPE,
-			TypeValidator::getMulOrDivTypeMsg("*",
+		moduleKo.assertError(NablaPackage.eINSTANCE.mul,
+			TypeValidator::MUL_TYPE,
+			TypeValidator::getBinaryOpTypeMsg("*",
 				PrimitiveType::BOOL.literal,
 				PrimitiveType::REAL.literal
 			))
@@ -421,7 +379,7 @@ class TypeValidatorTest
 			'''
 			ℝ a;
 			ℝ b;
-			ℝ c = a * b;
+			let c = a * b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -435,14 +393,14 @@ class TypeValidatorTest
 			'''
 			ℾ a; 
 			ℕ b;
-			ℝ c = a + b;
+			let c = a + b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.plus,
 			TypeValidator::PLUS_TYPE,
-			TypeValidator::getPlusTypeMsg("+",
+			TypeValidator::getBinaryOpTypeMsg("+",
 				PrimitiveType::BOOL.literal,
 				PrimitiveType::INT.literal
 			))
@@ -452,7 +410,7 @@ class TypeValidatorTest
 			'''
 			ℝ a;
 			ℕ b;
-			ℝ c = a + b;
+			let c = a + b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -467,17 +425,17 @@ class TypeValidatorTest
 			'''
 			ℝ[2] a;
 			ℝ[3] b;
-			ℝ[2] c = a - b;
+			let c = a - b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.minus,
 			TypeValidator::MINUS_TYPE,
-			TypeValidator::getMinusTypeMsg("-",
-				new NSTRealArray1D(NSTSizeType.create(2)).label,
+			TypeValidator::getBinaryOpTypeMsg("-",
+				new NSTRealArray1D(createIntConstant(2)).label,
 
-				new NSTRealArray1D(NSTSizeType.create(3)).label
+				new NSTRealArray1D(createIntConstant(3)).label
 			))
 
 		val moduleOk = parseHelper.parse(testModule
@@ -485,7 +443,7 @@ class TypeValidatorTest
 			'''
 			ℝ[2] a;
 			ℝ[2] b;
-			ℝ[2] c = a - b;
+			let c = a - b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -500,16 +458,16 @@ class TypeValidatorTest
 			'''
 			ℝ a;
 			ℝ[2] b;
-			ℾ c = a > b;
+			let c = a > b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.comparison,
 			TypeValidator::COMPARISON_TYPE,
-			TypeValidator::getComparisonTypeMsg(">",
+			TypeValidator::getBinaryOpTypeMsg(">",
 				PrimitiveType::REAL.literal,
-				new NSTRealArray1D(NSTSizeType.create(2)).label
+				new NSTRealArray1D(createIntConstant(2)).label
 			))
 
 		val moduleOk = parseHelper.parse(testModule
@@ -517,7 +475,7 @@ class TypeValidatorTest
 			'''
 			ℝ a;
 			ℝ b;
-			ℾ c = a > b;
+			let c = a > b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -532,16 +490,16 @@ class TypeValidatorTest
 			'''
 			ℝ a;
 			ℝ[2] b;
-			ℾ c = a == b;
+			let c = a == b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.equality,
 			TypeValidator::EQUALITY_TYPE,
-			TypeValidator::getEqualityTypeMsg("==",
+			TypeValidator::getBinaryOpTypeMsg("==",
 				PrimitiveType::REAL.literal,
-				new NSTRealArray1D(NSTSizeType.create(2)).label
+				new NSTRealArray1D(createIntConstant(2)).label
 			))
 
 		val moduleOk = parseHelper.parse(testModule
@@ -549,7 +507,7 @@ class TypeValidatorTest
 			'''
 			ℝ a; 
 			ℝ b;
-			ℾ c = a == b;
+			let c = a == b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -564,7 +522,7 @@ class TypeValidatorTest
 			'''
 			ℝ a;
 			ℝ[2] b;
-			ℕ c = a % b;
+			let c = a % b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -575,14 +533,14 @@ class TypeValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.modulo,
 			TypeValidator::MODULO_TYPE,
-			TypeValidator::getModuloTypeMsg(new NSTRealArray1D(NSTSizeType.create(2)).label))
+			TypeValidator::getModuloTypeMsg(new NSTRealArray1D(createIntConstant(2)).label))
 
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
 			ℕ a;
 			ℕ b;
-			ℕ c = a % b;
+			let c = a % b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -597,7 +555,7 @@ class TypeValidatorTest
 			'''
 			ℕ a;
 			ℝ b; 
-			ℾ c = a && b;
+			let c = a && b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -615,7 +573,7 @@ class TypeValidatorTest
 			'''
 			ℾ a;
 			ℾ b; 
-			ℾ c = a && b;
+			let c = a && b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -630,7 +588,7 @@ class TypeValidatorTest
 			'''
 			ℕ a;
 			ℝ b;
-			ℾ c = a || b;
+			let c = a || b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -648,7 +606,7 @@ class TypeValidatorTest
 			'''
 			ℾ a;
 			ℾ b;
-			ℾ c = a || b;
+			let c = a || b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

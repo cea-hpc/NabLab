@@ -36,7 +36,7 @@ class InstructionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		Job1: { ℝ r = 1.0; t = r; }
+		Job1: { let r = 1.0; t = r; }
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
@@ -54,7 +54,7 @@ class InstructionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		Job1: { ℝ r = 1.0; t = r; }
+		Job1: { let r = 1.0; t = r; }
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
@@ -72,7 +72,7 @@ class InstructionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		Job1: { ℝ r = 1.0; t = r; }
+		Job1: { let r = 1.0; t = r; }
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, testGenModel)

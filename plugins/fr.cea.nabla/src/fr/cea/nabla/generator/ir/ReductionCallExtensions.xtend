@@ -13,7 +13,7 @@ import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.typing.DeclarationProvider
+import fr.cea.nabla.overloading.DeclarationProvider
 import org.eclipse.emf.ecore.util.EcoreUtil
 
 @Singleton	// Must be singleton because contains create methods

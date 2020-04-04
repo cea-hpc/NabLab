@@ -28,7 +28,8 @@ class IrIterationBlockFactory
 	@Inject extension IrItemIndexDefinitionFactory
 	@Inject extension IrItemIdDefinitionFactory
 	@Inject extension IrItemIndexFactory
-	@Inject extension IrSizeTypeFactory
+	@Inject extension IrArgOrVarFactory
+	@Inject extension IrExpressionFactory
 
 	def toIrIterator(SpaceIterator b)
 	{
@@ -45,8 +46,8 @@ class IrIterationBlockFactory
 	def dispatch IterationBlock create IrFactory::eINSTANCE.createInterval toIrIterationBlock(Interval b)
 	{
 		annotations += b.toIrAnnotation
-		index = b.index.toIrSizeTypeSymbol
-		nbElems = b.nbElems.toIrSizeType
+		index = toIrSimpleVariable(b.index, b.index.name)
+		nbElems = b.nbElems.toIrExpression
 	}
 
 	def dispatch List<Instruction> getNeededIndexAndIdDefinitions(SpaceIterator b)

@@ -208,26 +208,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createIntervalAdapter();
 			}
 			@Override
-			public Adapter caseSizeTypeSymbol(SizeTypeSymbol object) {
-				return createSizeTypeSymbolAdapter();
-			}
-			@Override
-			public Adapter caseSizeType(SizeType object) {
-				return createSizeTypeAdapter();
-			}
-			@Override
-			public Adapter caseSizeTypeInt(SizeTypeInt object) {
-				return createSizeTypeIntAdapter();
-			}
-			@Override
-			public Adapter caseSizeTypeOperation(SizeTypeOperation object) {
-				return createSizeTypeOperationAdapter();
-			}
-			@Override
-			public Adapter caseSizeTypeSymbolRef(SizeTypeSymbolRef object) {
-				return createSizeTypeSymbolRefAdapter();
-			}
-			@Override
 			public Adapter caseExpression(Expression object) {
 				return createExpressionAdapter();
 			}
@@ -846,76 +826,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createIntervalAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.SizeTypeSymbol <em>Size Type Symbol</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.SizeTypeSymbol
-	 * @generated
-	 */
-	public Adapter createSizeTypeSymbolAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.SizeType <em>Size Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.SizeType
-	 * @generated
-	 */
-	public Adapter createSizeTypeAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.SizeTypeInt <em>Size Type Int</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.SizeTypeInt
-	 * @generated
-	 */
-	public Adapter createSizeTypeIntAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.SizeTypeOperation <em>Size Type Operation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.SizeTypeOperation
-	 * @generated
-	 */
-	public Adapter createSizeTypeOperationAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.SizeTypeSymbolRef <em>Size Type Symbol Ref</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.SizeTypeSymbolRef
-	 * @generated
-	 */
-	public Adapter createSizeTypeSymbolRefAdapter() {
 		return null;
 	}
 

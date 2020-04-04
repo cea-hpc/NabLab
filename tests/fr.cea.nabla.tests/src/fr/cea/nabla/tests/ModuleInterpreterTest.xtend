@@ -33,8 +33,8 @@ class ModuleInterpreterTest
 		+
 		'''
 		// Simulation options
-		const ℝ option_stoptime = 0.2;
-		const ℕ option_max_iterations = 20000;
+		const option_stoptime = 0.2;
+		const option_max_iterations = 20000;
 
 		iterate n while (t^{n} < option_stoptime && n < option_max_iterations);
 

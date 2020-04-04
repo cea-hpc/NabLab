@@ -72,7 +72,7 @@ public interface Function extends IrAnnotable {
 
 	/**
 	 * Returns the value of the '<em><b>Variables</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.SizeTypeSymbol}.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.SimpleVariable}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Variables</em>' containment reference list.
@@ -80,7 +80,7 @@ public interface Function extends IrAnnotable {
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	EList<SizeTypeSymbol> getVariables();
+	EList<SimpleVariable> getVariables();
 
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.

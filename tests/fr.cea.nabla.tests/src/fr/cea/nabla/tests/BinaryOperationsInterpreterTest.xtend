@@ -37,20 +37,20 @@ class BinaryOperationsInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		ℾ b1 = true || false; // -> true
-		ℾ b2 = true || true; // -> true
-		ℾ b3 = false || false; // -> false
+		let b1 = true || false; // -> true
+		let b2 = true || true; // -> true
+		let b3 = false || false; // -> false
 
-		ℾ b4 = true && false; // -> false
-		ℾ b5 = true && true; // -> true
-		ℾ b6 = false && false; // -> false
+		let b4 = true && false; // -> false
+		let b5 = true && true; // -> true
+		let b6 = false && false; // -> false
 
-		ℾ b7 = true == false; // -> false
-		ℾ b8 = true != false; // -> true
-		ℾ b9 = true >= false; // -> true
-		ℾ b10 = true <= false; // -> false
-		ℾ b11 = true > false; // -> true
-		ℾ b12 = true < false; // -> false
+		let b7 = true == false; // -> false
+		let b8 = true != false; // -> true
+		let b9 = true >= false; // -> true
+		let b10 = true <= false; // -> false
+		let b11 = true > false; // -> true
+		let b12 = true < false; // -> false
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
@@ -78,30 +78,30 @@ class BinaryOperationsInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		ℾ b1 = 1 == 2; // -> false
-		ℾ b2 = 1 == 1; // -> true
+		let b1 = 1 == 2; // -> false
+		let b2 = 1 == 1; // -> true
 
-		ℾ b3 = 1 != 2; // -> true
-		ℾ b4 = 2 != 2; // -> false
+		let b3 = 1 != 2; // -> true
+		let b4 = 2 != 2; // -> false
 
-		ℾ b5 = 1 >= 2; // -> false
-		ℾ b6 = 2 >= 2; // -> true
+		let b5 = 1 >= 2; // -> false
+		let b6 = 2 >= 2; // -> true
 
-		ℾ b7 = 1 <= 2; // -> true
-		ℾ b8 = 2 <= 2; // -> true
+		let b7 = 1 <= 2; // -> true
+		let b8 = 2 <= 2; // -> true
 
-		ℾ b9 = 1 > 2; // -> false
-		ℾ b10 = 2 > 1; // -> true
+		let b9 = 1 > 2; // -> false
+		let b10 = 2 > 1; // -> true
 
-		ℾ b11 = 1 < 2; // -> true
-		ℾ b12 = 2 < 1; // -> false
+		let b11 = 1 < 2; // -> true
+		let b12 = 2 < 1; // -> false
 
-		ℕ n1 = 1 + 2; // -> 3
-		ℕ n2 = 2 - 1; // -> 1
-		ℕ n3 = 2 * 3; // -> 6
-		ℕ n4 = 6 / 3; // -> 2
-		ℕ n5 = 7 / 3; // -> 2
-		ℕ n6 = 7 % 3; // -> 1
+		let n1 = 1 + 2; // -> 3
+		let n2 = 2 - 1; // -> 1
+		let n3 = 2 * 3; // -> 6
+		let n4 = 6 / 3; // -> 2
+		let n5 = 7 / 3; // -> 2
+		let n6 = 7 % 3; // -> 1
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
@@ -133,29 +133,29 @@ class BinaryOperationsInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		ℾ b1 = 1 == 2.; // -> false
-		ℾ b2 = 1 == 1; // -> true
+		let b1 = 1 == 2.; // -> false
+		let b2 = 1 == 1; // -> true
 
-		ℾ b3 = 1 != 2.; // -> true
-		ℾ b4 = 2 != 2.; // -> false
+		let b3 = 1 != 2.; // -> true
+		let b4 = 2 != 2.; // -> false
 
-		ℾ b5 = 1 >= 2.; // -> false
-		ℾ b6 = 2 >= 2.; // -> true
+		let b5 = 1 >= 2.; // -> false
+		let b6 = 2 >= 2.; // -> true
 
-		ℾ b7 = 1 <= 2.; // -> true
-		ℾ b8 = 2 <= 2.; // -> true
+		let b7 = 1 <= 2.; // -> true
+		let b8 = 2 <= 2.; // -> true
 
-		ℾ b9 = 1 > 2.; // -> false
-		ℾ b10 = 2 > 1.; // -> true
+		let b9 = 1 > 2.; // -> false
+		let b10 = 2 > 1.; // -> true
 
-		ℾ b11 = 1 < 2.; // -> true
-		ℾ b12 = 2 < 1.; // -> false
+		let b11 = 1 < 2.; // -> true
+		let b12 = 2 < 1.; // -> false
 
-		ℝ n1 = 1 + 2.; // -> 3.
-		ℝ n2 = 2 - 1.; // -> 1.
-		ℝ n3 = 2 * 3.; // -> 6.
-		ℝ n4 = 6 / 3.; // -> 2.
-		ℝ n5 = 7 / 2.; // -> 3.5.
+		let n1 = 1 + 2.; // -> 3.
+		let n2 = 2 - 1.; // -> 1.
+		let n3 = 2 * 3.; // -> 6.
+		let n4 = 6 / 3.; // -> 2.
+		let n5 = 7 / 2.; // -> 3.5.
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
@@ -186,9 +186,9 @@ class BinaryOperationsInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		ℕ[2] n1 = [1,2];
-		ℕ[2] n2 = 3 + n1;
-		ℕ[2] n3 = 3 * n1;
+		let n1 = [1,2];
+		let n2 = 3 + n1;
+		let n3 = 3 * n1;
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler

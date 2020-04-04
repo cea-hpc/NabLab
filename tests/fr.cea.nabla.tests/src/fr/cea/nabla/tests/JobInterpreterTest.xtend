@@ -54,8 +54,8 @@ class JobInterpreterTest
 		+
 		'''
 		// Simulation options
-		const ℝ option_stoptime = 0.2;
-		const ℕ option_max_iterations = 10;
+		const option_stoptime = 0.2;
+		const option_max_iterations = 10;
 
 		iterate n while (t^{n} < option_stoptime && n < option_max_iterations);
 
@@ -81,8 +81,8 @@ class JobInterpreterTest
 		+
 		'''
 		// Simulation options
-		const ℝ option_stoptime = 0.2;
-		const ℕ option_max_iterations = 10;
+		const option_stoptime = 0.2;
+		const option_max_iterations = 10;
 		ℝ[2] u;
 		ℝ[2] center{cells};
 

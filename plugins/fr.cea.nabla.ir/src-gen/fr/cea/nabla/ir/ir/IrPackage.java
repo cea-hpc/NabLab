@@ -2415,245 +2415,6 @@ public interface IrPackage extends EPackage {
 	int INTERVAL_OPERATION_COUNT = ITERATION_BLOCK_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeSymbolImpl <em>Size Type Symbol</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.SizeTypeSymbolImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeSymbol()
-	 * @generated
-	 */
-	int SIZE_TYPE_SYMBOL = 35;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_SYMBOL__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_SYMBOL__NAME = IR_ANNOTABLE_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Size Type Symbol</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_SYMBOL_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Size Type Symbol</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_SYMBOL_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeImpl <em>Size Type</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.SizeTypeImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeType()
-	 * @generated
-	 */
-	int SIZE_TYPE = 36;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
-
-	/**
-	 * The number of structural features of the '<em>Size Type</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of operations of the '<em>Size Type</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeIntImpl <em>Size Type Int</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.SizeTypeIntImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeInt()
-	 * @generated
-	 */
-	int SIZE_TYPE_INT = 37;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_INT__ANNOTATIONS = SIZE_TYPE__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Value</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_INT__VALUE = SIZE_TYPE_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Size Type Int</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_INT_FEATURE_COUNT = SIZE_TYPE_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Size Type Int</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_INT_OPERATION_COUNT = SIZE_TYPE_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeOperationImpl <em>Size Type Operation</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.SizeTypeOperationImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeOperation()
-	 * @generated
-	 */
-	int SIZE_TYPE_OPERATION = 38;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_OPERATION__ANNOTATIONS = SIZE_TYPE__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Left</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_OPERATION__LEFT = SIZE_TYPE_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Right</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_OPERATION__RIGHT = SIZE_TYPE_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Operator</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_OPERATION__OPERATOR = SIZE_TYPE_FEATURE_COUNT + 2;
-
-	/**
-	 * The number of structural features of the '<em>Size Type Operation</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_OPERATION_FEATURE_COUNT = SIZE_TYPE_FEATURE_COUNT + 3;
-
-	/**
-	 * The number of operations of the '<em>Size Type Operation</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_OPERATION_OPERATION_COUNT = SIZE_TYPE_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeSymbolRefImpl <em>Size Type Symbol Ref</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.SizeTypeSymbolRefImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeSymbolRef()
-	 * @generated
-	 */
-	int SIZE_TYPE_SYMBOL_REF = 39;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_SYMBOL_REF__ANNOTATIONS = SIZE_TYPE__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Target</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_SYMBOL_REF__TARGET = SIZE_TYPE_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Size Type Symbol Ref</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_SYMBOL_REF_FEATURE_COUNT = SIZE_TYPE_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Size Type Symbol Ref</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIZE_TYPE_SYMBOL_REF_OPERATION_COUNT = SIZE_TYPE_OPERATION_COUNT + 0;
-
-	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ExpressionImpl <em>Expression</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2661,7 +2422,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getExpression()
 	 * @generated
 	 */
-	int EXPRESSION = 40;
+	int EXPRESSION = 35;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2707,7 +2468,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getContractedIf()
 	 * @generated
 	 */
-	int CONTRACTED_IF = 41;
+	int CONTRACTED_IF = 36;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2780,7 +2541,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getBinaryExpression()
 	 * @generated
 	 */
-	int BINARY_EXPRESSION = 42;
+	int BINARY_EXPRESSION = 37;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2853,7 +2614,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getUnaryExpression()
 	 * @generated
 	 */
-	int UNARY_EXPRESSION = 43;
+	int UNARY_EXPRESSION = 38;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2917,7 +2678,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getParenthesis()
 	 * @generated
 	 */
-	int PARENTHESIS = 44;
+	int PARENTHESIS = 39;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2972,7 +2733,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIntConstant()
 	 * @generated
 	 */
-	int INT_CONSTANT = 45;
+	int INT_CONSTANT = 40;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3027,7 +2788,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getRealConstant()
 	 * @generated
 	 */
-	int REAL_CONSTANT = 46;
+	int REAL_CONSTANT = 41;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3082,7 +2843,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getBoolConstant()
 	 * @generated
 	 */
-	int BOOL_CONSTANT = 47;
+	int BOOL_CONSTANT = 42;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3137,7 +2898,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getMinConstant()
 	 * @generated
 	 */
-	int MIN_CONSTANT = 48;
+	int MIN_CONSTANT = 43;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3183,7 +2944,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getMaxConstant()
 	 * @generated
 	 */
-	int MAX_CONSTANT = 49;
+	int MAX_CONSTANT = 44;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3229,7 +2990,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getBaseTypeConstant()
 	 * @generated
 	 */
-	int BASE_TYPE_CONSTANT = 50;
+	int BASE_TYPE_CONSTANT = 45;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3284,7 +3045,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getVectorConstant()
 	 * @generated
 	 */
-	int VECTOR_CONSTANT = 51;
+	int VECTOR_CONSTANT = 46;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3339,7 +3100,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getFunctionCall()
 	 * @generated
 	 */
-	int FUNCTION_CALL = 52;
+	int FUNCTION_CALL = 47;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3403,7 +3164,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getArgOrVarRef()
 	 * @generated
 	 */
-	int ARG_OR_VAR_REF = 53;
+	int ARG_OR_VAR_REF = 48;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3476,7 +3237,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemType()
 	 * @generated
 	 */
-	int ITEM_TYPE = 54;
+	int ITEM_TYPE = 49;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3522,7 +3283,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIrType()
 	 * @generated
 	 */
-	int IR_TYPE = 55;
+	int IR_TYPE = 50;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3559,7 +3320,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getBaseType()
 	 * @generated
 	 */
-	int BASE_TYPE = 56;
+	int BASE_TYPE = 51;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3614,7 +3375,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getConnectivityType()
 	 * @generated
 	 */
-	int CONNECTIVITY_TYPE = 57;
+	int CONNECTIVITY_TYPE = 52;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3669,7 +3430,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTimeLoopVariable()
 	 * @generated
 	 */
-	int TIME_LOOP_VARIABLE = 58;
+	int TIME_LOOP_VARIABLE = 53;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3742,7 +3503,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getConnectivityCall()
 	 * @generated
 	 */
-	int CONNECTIVITY_CALL = 59;
+	int CONNECTIVITY_CALL = 54;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3797,7 +3558,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemId()
 	 * @generated
 	 */
-	int ITEM_ID = 60;
+	int ITEM_ID = 55;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3852,7 +3613,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIdValue()
 	 * @generated
 	 */
-	int ITEM_ID_VALUE = 61;
+	int ITEM_ID_VALUE = 56;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3889,7 +3650,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIdValueIterator()
 	 * @generated
 	 */
-	int ITEM_ID_VALUE_ITERATOR = 62;
+	int ITEM_ID_VALUE_ITERATOR = 57;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3944,7 +3705,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIdValueCall()
 	 * @generated
 	 */
-	int ITEM_ID_VALUE_CALL = 63;
+	int ITEM_ID_VALUE_CALL = 58;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3990,7 +3751,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIndex()
 	 * @generated
 	 */
-	int ITEM_INDEX = 64;
+	int ITEM_INDEX = 59;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4045,7 +3806,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIndexValue()
 	 * @generated
 	 */
-	int ITEM_INDEX_VALUE = 65;
+	int ITEM_INDEX_VALUE = 60;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4082,7 +3843,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIndexValueIterator()
 	 * @generated
 	 */
-	int ITEM_INDEX_VALUE_ITERATOR = 66;
+	int ITEM_INDEX_VALUE_ITERATOR = 61;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4128,7 +3889,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIndexValueId()
 	 * @generated
 	 */
-	int ITEM_INDEX_VALUE_ID = 67;
+	int ITEM_INDEX_VALUE_ID = 62;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4183,7 +3944,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getPrimitiveType()
 	 * @generated
 	 */
-	int PRIMITIVE_TYPE = 68;
+	int PRIMITIVE_TYPE = 63;
 
 
 	/**
@@ -5437,122 +5198,6 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getInterval_NbElems();
-
-	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SizeTypeSymbol <em>Size Type Symbol</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Size Type Symbol</em>'.
-	 * @see fr.cea.nabla.ir.ir.SizeTypeSymbol
-	 * @generated
-	 */
-	EClass getSizeTypeSymbol();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.SizeTypeSymbol#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see fr.cea.nabla.ir.ir.SizeTypeSymbol#getName()
-	 * @see #getSizeTypeSymbol()
-	 * @generated
-	 */
-	EAttribute getSizeTypeSymbol_Name();
-
-	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SizeType <em>Size Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Size Type</em>'.
-	 * @see fr.cea.nabla.ir.ir.SizeType
-	 * @generated
-	 */
-	EClass getSizeType();
-
-	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SizeTypeInt <em>Size Type Int</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Size Type Int</em>'.
-	 * @see fr.cea.nabla.ir.ir.SizeTypeInt
-	 * @generated
-	 */
-	EClass getSizeTypeInt();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.SizeTypeInt#getValue <em>Value</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see fr.cea.nabla.ir.ir.SizeTypeInt#getValue()
-	 * @see #getSizeTypeInt()
-	 * @generated
-	 */
-	EAttribute getSizeTypeInt_Value();
-
-	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SizeTypeOperation <em>Size Type Operation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Size Type Operation</em>'.
-	 * @see fr.cea.nabla.ir.ir.SizeTypeOperation
-	 * @generated
-	 */
-	EClass getSizeTypeOperation();
-
-	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.SizeTypeOperation#getLeft <em>Left</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Left</em>'.
-	 * @see fr.cea.nabla.ir.ir.SizeTypeOperation#getLeft()
-	 * @see #getSizeTypeOperation()
-	 * @generated
-	 */
-	EReference getSizeTypeOperation_Left();
-
-	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.SizeTypeOperation#getRight <em>Right</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Right</em>'.
-	 * @see fr.cea.nabla.ir.ir.SizeTypeOperation#getRight()
-	 * @see #getSizeTypeOperation()
-	 * @generated
-	 */
-	EReference getSizeTypeOperation_Right();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.SizeTypeOperation#getOperator <em>Operator</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Operator</em>'.
-	 * @see fr.cea.nabla.ir.ir.SizeTypeOperation#getOperator()
-	 * @see #getSizeTypeOperation()
-	 * @generated
-	 */
-	EAttribute getSizeTypeOperation_Operator();
-
-	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SizeTypeSymbolRef <em>Size Type Symbol Ref</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Size Type Symbol Ref</em>'.
-	 * @see fr.cea.nabla.ir.ir.SizeTypeSymbolRef
-	 * @generated
-	 */
-	EClass getSizeTypeSymbolRef();
-
-	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.SizeTypeSymbolRef#getTarget <em>Target</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Target</em>'.
-	 * @see fr.cea.nabla.ir.ir.SizeTypeSymbolRef#getTarget()
-	 * @see #getSizeTypeSymbolRef()
-	 * @generated
-	 */
-	EReference getSizeTypeSymbolRef_Target();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Expression <em>Expression</em>}'.
@@ -7323,104 +6968,6 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference INTERVAL__NB_ELEMS = eINSTANCE.getInterval_NbElems();
-
-		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeSymbolImpl <em>Size Type Symbol</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.SizeTypeSymbolImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeSymbol()
-		 * @generated
-		 */
-		EClass SIZE_TYPE_SYMBOL = eINSTANCE.getSizeTypeSymbol();
-
-		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SIZE_TYPE_SYMBOL__NAME = eINSTANCE.getSizeTypeSymbol_Name();
-
-		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeImpl <em>Size Type</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.SizeTypeImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeType()
-		 * @generated
-		 */
-		EClass SIZE_TYPE = eINSTANCE.getSizeType();
-
-		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeIntImpl <em>Size Type Int</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.SizeTypeIntImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeInt()
-		 * @generated
-		 */
-		EClass SIZE_TYPE_INT = eINSTANCE.getSizeTypeInt();
-
-		/**
-		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SIZE_TYPE_INT__VALUE = eINSTANCE.getSizeTypeInt_Value();
-
-		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeOperationImpl <em>Size Type Operation</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.SizeTypeOperationImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeOperation()
-		 * @generated
-		 */
-		EClass SIZE_TYPE_OPERATION = eINSTANCE.getSizeTypeOperation();
-
-		/**
-		 * The meta object literal for the '<em><b>Left</b></em>' containment reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference SIZE_TYPE_OPERATION__LEFT = eINSTANCE.getSizeTypeOperation_Left();
-
-		/**
-		 * The meta object literal for the '<em><b>Right</b></em>' containment reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference SIZE_TYPE_OPERATION__RIGHT = eINSTANCE.getSizeTypeOperation_Right();
-
-		/**
-		 * The meta object literal for the '<em><b>Operator</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SIZE_TYPE_OPERATION__OPERATOR = eINSTANCE.getSizeTypeOperation_Operator();
-
-		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SizeTypeSymbolRefImpl <em>Size Type Symbol Ref</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.SizeTypeSymbolRefImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSizeTypeSymbolRef()
-		 * @generated
-		 */
-		EClass SIZE_TYPE_SYMBOL_REF = eINSTANCE.getSizeTypeSymbolRef();
-
-		/**
-		 * The meta object literal for the '<em><b>Target</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference SIZE_TYPE_SYMBOL_REF__TARGET = eINSTANCE.getSizeTypeSymbolRef_Target();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ExpressionImpl <em>Expression</em>}' class.

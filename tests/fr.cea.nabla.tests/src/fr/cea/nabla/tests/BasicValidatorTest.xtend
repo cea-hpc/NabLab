@@ -113,12 +113,12 @@ class BasicValidatorTest
 	}
 
 	@Test
-	def void checkDuplicateSpaceIterator()
+	def void checkDuplicateItem()
 	{
 		val moduleKo = parseHelper.parse(getTestModule(nodesConnectivity, '') +
 		'''
 			ℝ X{nodes, nodes};
-			j1: ∀r∈nodes(), ∀r∈nodes(), ℝ d = X{r, r} * 2.0;
+			j1: ∀r∈nodes(), ∀r∈nodes(), let d = X{r, r} * 2.0;
 		''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.item,
@@ -128,44 +128,10 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, '') +
 		'''
 			ℝ X{nodes, nodes};
-			j1: ∀r1∈nodes(), ∀r2∈nodes(), ℝ d = X{r1, r2} * 2.0;
+			j1: ∀r1∈nodes(), ∀r2∈nodes(), let d = X{r1, r2} * 2.0;
 		''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
-	}
-
-	@Test
-	def void checkDuplicateVarTypeSymbol()
-	{
-		val moduleKo = parseHelper.parse(getTestModule('', '''def j: a, a | ℝ[a, a] → ℝ;'''))
-		Assert.assertNotNull(moduleKo)
-		moduleKo.assertError(NablaPackage.eINSTANCE.sizeTypeSymbol,
-			BasicValidator::DUPLICATE_NAME,
-			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.SIZE_TYPE_SYMBOL, "a"))
-
-		val moduleOk = parseHelper.parse(getTestModule('', '''def j: a | ℝ[a, a] → ℝ;'''))
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-
-		val moduleKo2 = parseHelper.parse(getTestModule('', '''
-			def j: a | ℝ[a, a] → ℝ, (x) → {
-				ℝ y;
-				∀i∈[0;a[, ∀i∈[0;a[, y = y * x[i, i];
-				return y;
-			}'''))
-		Assert.assertNotNull(moduleKo2)
-		moduleKo2.assertError(NablaPackage.eINSTANCE.sizeTypeSymbol,
-			BasicValidator::DUPLICATE_NAME,
-			BasicValidator::getDuplicateNameMsg(NablaPackage.Literals.SIZE_TYPE_SYMBOL, "i"))
-
-		val moduleOk2 = parseHelper.parse(getTestModule('', '''
-			def j: a | ℝ[a, a] → ℝ, (x) → {
-				ℝ y;
-				∀i∈[0;a[, ∀j∈[0;a[, y = y * x[i, j];
-				return y;
-			}'''))
-		Assert.assertNotNull(moduleOk2)
-		moduleOk2.assertNoErrors
 	}
 
 	@Test
@@ -176,12 +142,12 @@ class BasicValidatorTest
 			
 			itemtypes { node, node }
 			
-			set	nodes: → {node};
+			set nodes: → {node};
 			
-			const ℝ X_EDGE_LENGTH = 0.01;
-			const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-			const ℕ X_EDGE_ELEMS = 100;
-			const ℕ Y_EDGE_ELEMS = 10;
+			const X_EDGE_LENGTH = 0.01;
+			const Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			const X_EDGE_ELEMS = 100;
+			const Y_EDGE_ELEMS = 10;
 		''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.itemType,
@@ -193,12 +159,12 @@ class BasicValidatorTest
 			
 			itemtypes { node }
 			
-			set	nodes: → {node};
+			set nodes: → {node};
 			
-			const ℝ X_EDGE_LENGTH = 0.01;
-			const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-			const ℕ X_EDGE_ELEMS = 100;
-			const ℕ Y_EDGE_ELEMS = 10;
+			const X_EDGE_LENGTH = 0.01;
+			const Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			const X_EDGE_ELEMS = 100;
+			const Y_EDGE_ELEMS = 10;
 		''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -215,10 +181,10 @@ class BasicValidatorTest
 			set nodes: → {node};
 			set nodes: → {node};
 			
-			const ℝ X_EDGE_LENGTH = 0.01;
-			const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-			const ℕ X_EDGE_ELEMS = 100;
-			const ℕ Y_EDGE_ELEMS = 10;
+			const X_EDGE_LENGTH = 0.01;
+			const Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			const X_EDGE_ELEMS = 100;
+			const Y_EDGE_ELEMS = 10;
 		''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.connectivity,
@@ -227,15 +193,15 @@ class BasicValidatorTest
 
 		val moduleOk = parseHelper.parse('''
 			module Test;
-			
+
 			itemtypes { node }
-			
-			set	nodes: → {node};
-			
-			const ℝ X_EDGE_LENGTH = 0.01;
-			const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-			const ℕ X_EDGE_ELEMS = 100;
-			const ℕ Y_EDGE_ELEMS = 10;
+
+			set nodes: → {node};
+
+			const X_EDGE_LENGTH = 0.01;
+			const Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			const X_EDGE_ELEMS = 100;
+			const Y_EDGE_ELEMS = 10;
 		''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -507,9 +473,9 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(testModule +
 			'''
 			ℕ[2,2] a;
-			ℕ b = a[0];
+			let b = a[0];
 			ℕ[2] c;
-			ℕ d = c[0,1];
+			let d = c[0,1];
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -525,7 +491,7 @@ class BasicValidatorTest
 		val moduleOk =  parseHelper.parse(testModule +
 			'''
 			ℕ[2,2] a;
-			ℕ b = a[0,0];
+			let b = a[0,0];
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -604,6 +570,36 @@ class BasicValidatorTest
 	// ===== Functions (Reductions, Dimension) =====
 
 	@Test
+	def testCheckOnlyIntAndVarInFunctionInTypes()
+	{
+		val modulekO = parseHelper.parse(getTestModule('', '''def f: x | ℝ[x+1] → ℝ[x];'''))
+		Assert.assertNotNull(modulekO)
+
+		modulekO.assertError(NablaPackage.eINSTANCE.function,
+			BasicValidator::ONLY_INT_AND_VAR_IN_FUNCTION_IN_TYPES,
+			BasicValidator::getOnlyIntAndVarInFunctionInTypesMsg())
+
+		val moduleOk = parseHelper.parse(getTestModule('', '''def f: x | ℝ[x] → ℝ[x+1];'''))
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def testCheckOnlyIntAndVarInReductionCollectionType()
+	{
+		val modulekO = parseHelper.parse(getTestModule('', '''def sum, 0.0: x,y | ℝ[x+y], (a,b) → return a + b;'''))
+		Assert.assertNotNull(modulekO)
+
+		modulekO.assertError(NablaPackage.eINSTANCE.reduction,
+			BasicValidator::ONLY_INT_AND_VAR_IN_REDUCTION_TYPE,
+			BasicValidator::getOnlyIntAndVarInReductionTypeMsg)
+
+		val moduleOk = parseHelper.parse(getTestModule('', '''def sum, 0.0: x | ℝ[x], (a,b) → return a + b;'''))
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
 	def void testCheckUnusedFunction() 
 	{
 		val modelKo = getTestModule('', '''def f: x | ℝ[x] → ℝ''')
@@ -616,10 +612,10 @@ class BasicValidatorTest
 
 		val modelOk = getTestModule('', '''def f: x | ℝ[x] → ℝ;''') +
 			'''
-			ℝ[2] orig = [0.0 , 0.0];
+			let orig = [0.0 , 0.0];
 			ComputeV:
 			{ 
-				ℝ v = f(orig);
+				let v = f(orig);
 				v = v + 1;
 			}
 			'''
@@ -631,7 +627,7 @@ class BasicValidatorTest
 	@Test
 	def void testCheckUnusedReduction()
 	{
-		val reduc = '''def sum: 0.0, ℝ[2], (a, b) → return a+b;'''
+		val reduc = '''def sum, 0.0: ℝ[2], (a, b) → return a+b;'''
 		val moduleKo = parseHelper.parse(getTestModule('', reduc))
 		Assert.assertNotNull(moduleKo)
 
@@ -641,7 +637,7 @@ class BasicValidatorTest
 
 		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, reduc) +
 			'''
-			ℝ[2] orig = [0.0 , 0.0];
+			let orig = [0.0 , 0.0];
 			ℝ[2] X{nodes};
 			ComputeU: orig = sum{r∈nodes()}(X{r});
 			'''
@@ -705,8 +701,8 @@ class BasicValidatorTest
 	{
 		var reductions =
 			'''
-			def g: 0.0, ℝ[2], (a, b) → return a;
-			def g: x | 0.0, ℝ[x], (a, b) → return a;
+			def g, 0.0: ℝ[2], (a, b) → return a;
+			def g, 0.0: x | ℝ[x], (a, b) → return a;
 			'''
 		val modulekO = parseHelper.parse(getTestModule('', reductions))
 		Assert.assertNotNull(modulekO)
@@ -717,8 +713,8 @@ class BasicValidatorTest
 
 		reductions =
 			'''
-			def g: 0.0, ℝ, (a, b) → return a;
-			def g: x | 0.0, ℝ[x], (a, b) → return a;
+			def g, 0.0: ℝ, (a, b) → return a;
+			def g, 0.0: x | ℝ[x], (a, b) → return a;
 			'''
 		val moduleOk = parseHelper.parse(getTestModule('', reductions))
 		Assert.assertNotNull(moduleOk)
@@ -734,8 +730,8 @@ class BasicValidatorTest
 		val connectivities =
 			'''
 			itemtypes { node }
-			set	nodes: → {node};
-			set	borderNodes: → {node};
+			set nodes: → {node};
+			set borderNodes: → {node};
 			'''
 		val moduleKo = parseHelper.parse(getTestModule(connectivities, ''))
 		Assert.assertNotNull(moduleKo)
@@ -760,7 +756,7 @@ class BasicValidatorTest
 	{
 		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '') +
 			'''
-			ℝ[2] orig = [0.0 , 0.0] ;
+			let orig = [0.0 , 0.0] ;
 			IniX1: ∀j∈cells(), ∀r∈nodes(j), X{r} = orig; 
 			IniX2: ∀r∈nodes(), ∀j∈nodesOfCell(r), X{r} = orig; 
 			'''
@@ -781,7 +777,7 @@ class BasicValidatorTest
 		val moduleOk =  parseHelper.parse(getTestModule(defaultConnectivities, '') +
 			'''
 			ℝ[2] X{nodes};
-			ℝ[2] orig = [0.0 , 0.0] ;
+			let orig = [0.0 , 0.0] ;
 			IniX1: ∀j∈cells(), ∀r∈nodes(), X{r} = orig; 
 			IniX2: ∀j∈cells(), ∀r∈nodesOfCell(j), X{r} = orig; 
 			'''
@@ -841,7 +837,7 @@ class BasicValidatorTest
 
 		val moduleKo2 = parseHelper.parse(testModule +
 			'''
-			initXXX: { const ℝ xxx=0.0; xxx = 0.01; }
+			initXXX: { const xxx = 0.0; xxx = 0.01; }
 			'''
 		)
 		Assert.assertNotNull(moduleKo2)
@@ -852,8 +848,8 @@ class BasicValidatorTest
 
 		val moduleOk =  parseHelper.parse(testModule +
 			'''
-			computeX1 : ℝ X1 = Y_EDGE_LENGTH;
-			initYYY: { const ℝ xxx=0.0; ℝ yyy = xxx; }
+			computeX1 : let X1 = Y_EDGE_LENGTH;
+			initYYY: { const xxx = 0.0; let yyy = xxx; }
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -865,8 +861,8 @@ class BasicValidatorTest
 	{
 		val moduleKo = parseHelper.parse(testModule +
 			'''
-			ℕ coef = 2;
-			const ℝ DOUBLE_LENGTH = X_EDGE_LENGTH * coef;
+			let coef = 2;
+			const DOUBLE_LENGTH = X_EDGE_LENGTH * coef;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -877,8 +873,8 @@ class BasicValidatorTest
 
 		val moduleOk =  parseHelper.parse(testModule +
 			'''
-			const ℕ coef = 2;
-			const ℝ DOUBLE_LENGTH = X_EDGE_LENGTH * coef;
+			const coef = 2;
+			const DOUBLE_LENGTH = X_EDGE_LENGTH * coef;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -939,127 +935,6 @@ class BasicValidatorTest
 			'''
 			ℝ[2] X{nodes};
 			UpdateX: ∀r1∈nodes(), r2 = leftNode(r1), X{r2} = X{r1-1} - 1;
-			'''
-		)
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
-	@Test
-	def void testCheckItemType()
-	{
-		val connectivities =
-			'''
-			itemtypes { cell, node }
-			set nodes: → {node};
-			item leftNode: node → node;
-			'''
-
-		val moduleKo = parseHelper.parse(getTestModule(connectivities, '')
-			+
-			'''
-			ℝ[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), {
-				cell r2 = leftNode(r1);
-				X{r2} = X{r2} - 1;
-			}
-			'''
-		)
-		Assert.assertNotNull(moduleKo)
-
-		moduleKo.assertError(NablaPackage.eINSTANCE.itemDefinition,
-			BasicValidator::ITEM_TYPE,
-			BasicValidator::getItemTypeMsg("cell", "node"))
-
-		val moduleOk = parseHelper.parse(getTestModule(connectivities, '')
-			+
-			'''
-			ℝ[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), {
-				node r2 = leftNode(r1);
-				X{r2} = X{r2} - 1;
-			}
-			'''
-		)
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
-	// ===== SizeType =====
-
-	@Test
-	def void testCheckUnusedSizeTypeSymbol()
-	{
-		val moduleKo = parseHelper.parse(getTestModule('', '''def f: x,y | ℝ[x] → ℝ[2];''') +
-			'''
-			ℝ[2] orig = [0.0 , 0.0] ;
-			'''
-		)
-		Assert.assertNotNull(moduleKo)
-
-		moduleKo.assertWarning(NablaPackage.eINSTANCE.sizeTypeSymbol,
-			BasicValidator::UNUSED_SIZE_TYPE_SYMBOL,
-			BasicValidator::getUnusedSizeTypeSymbolMsg())
-
-		val moduleOk = parseHelper.parse(getTestModule('', '''def f: x | ℝ[x] → ℝ[2];''') +
-			'''
-			ℝ[2] orig = [0.0 , 0.0];
-			ComputeOrig: orig = f(orig);
-			'''
-		)
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoIssues
-	}
-
-	@Test
-	def testCheckNoOperationInFunctionInTypes()
-	{
-		val modulekO = parseHelper.parse(getTestModule('', '''def f: x | ℝ[x+1] → ℝ[x];'''))
-		Assert.assertNotNull(modulekO)
-
-		modulekO.assertError(NablaPackage.eINSTANCE.function,
-			BasicValidator::NO_OPERATION_IN_FUNCTION_IN_TYPES,
-			BasicValidator::getNoOperationInFunctionInTypesMsg())
-
-		val moduleOk = parseHelper.parse(getTestModule('', '''def f: x | ℝ[x] → ℝ[x+1];'''))
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
-	@Test
-	def testCheckNoOperationInReductionCollectionType()
-	{
-		val modulekO = parseHelper.parse(getTestModule('', '''def sum: x,y | 0.0 , ℝ[x+y], (a,b) → return a + b;'''))
-		Assert.assertNotNull(modulekO)
-
-		modulekO.assertError(NablaPackage.eINSTANCE.reduction,
-			BasicValidator::NO_OPERATION_IN_REDUCTION_TYPE,
-			BasicValidator::getNoOperationInReductionTypeMsg)
-
-		val moduleOk = parseHelper.parse(getTestModule('', '''def sum: x | 0.0 , ℝ[x], (a,b) → return a + b;'''))
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
-	@Test
-	def void testCheckNoOperationInVarRefIndices()
-	{
-		val moduleKo = parseHelper.parse(testModule +
-			'''
-			ℝ[2] orig = [0.0 , 0.0];
-			ComputeOrig: orig[0+1] = 1.0;
-			'''
-		)
-		Assert.assertNotNull(moduleKo)
-
-		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
-			BasicValidator::NO_OPERATION_IN_VAR_REF_INDICES,
-			BasicValidator::getNoOperationInVarRefIndicesMsg())
-
-		val moduleOk =  parseHelper.parse(testModule +
-			'''
-			ℝ[2] orig = [0.0 , 0.0];
-			ComputeOrig: orig[0] = 1.0;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

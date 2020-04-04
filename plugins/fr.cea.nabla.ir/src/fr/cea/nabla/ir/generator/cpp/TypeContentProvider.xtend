@@ -13,11 +13,12 @@ import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.PrimitiveType
-
-import static extension fr.cea.nabla.ir.generator.SizeTypeContentProvider.*
+import org.eclipse.xtend.lib.annotations.Accessors
 
 abstract class TypeContentProvider
 {
+	@Accessors extension ExpressionContentProvider expressionContentProvider
+
 	protected abstract def String getCppType(BaseType baseType, Iterable<Connectivity> connectivities)
 	protected abstract def String getLinearAlgebraType(int dimension)
 

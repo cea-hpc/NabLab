@@ -22,25 +22,25 @@ set cellsOfFace: face → {cell};
 set nodesOfCell: cell → {node};
 item commonFace: cell × cell → face;
 
-const ℝ X_LENGTH = 2.0;
-const ℝ Y_LENGTH = 2.0;
-const ℝ u0 = 1.0;
-const ℝ[2] vectOne = ℝ[2](1.0);
+const X_LENGTH = 2.0;
+const Y_LENGTH = 2.0;
+const u0 = 1.0;
+const vectOne = ℝ[2](1.0);
 
 // Mesh options
-const ℕ X_EDGE_ELEMS = 40;
-const ℕ Y_EDGE_ELEMS = 40;
-const ℝ X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
-const ℝ Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
+const X_EDGE_ELEMS = 40;
+const Y_EDGE_ELEMS = 40;
+const X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
+const Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 
 // Simulation options
-const ℝ option_stoptime = 0.1;
-const ℕ option_max_iterations = 500000000;
-const ℕ option_max_iterations_k = 1000;
+const option_stoptime = 0.1;
+const option_max_iterations = 500000000;
+const option_max_iterations_k = 1000;
+const ε =  1.0e-8;
 
-// User options
-ℝ t=0.0; 
-ℝ δt=0.001;
+let t=0.0;
+let δt=0.001;
 ℝ[2] X{nodes}, Xc{cells}; // Position of nodes and cells center of gravity 
 ℝ xc{cells}, yc{cells}; // Abscissa and ordinate of cells center of gravity so they can be plotted in vtk file
 ℝ u{cells}; // Temperature
@@ -48,7 +48,6 @@ const ℕ option_max_iterations_k = 1000;
 ℝ D{cells}; // Cell centered conductivity
 ℝ faceLength{faces}, faceConductivity{faces};
 ℝ α{cells, cells};
-ℝ ε =  1.0e-8;
 ℝ residual;
 
 iterate	n while (t^{n+1} < option_stoptime && n+1 < option_max_iterations),
@@ -72,14 +71,14 @@ InitD: ∀c∈cells(), D{c} = 1.0;
 computeDeltaTn: δt = Min{c∈cells()}(X_EDGE_LENGTH*Y_EDGE_LENGTH/D{c}) * 0.1;
 
 ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{p∈nodesOfCell(j)}(det(X{p}, X{p+1}));
-ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p}-X{p+1}));
+ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p} - X{p+1}));
 ComputeFaceConductivity: ∀f∈faces(), faceConductivity{f} = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1}) / ∑{c2∈cellsOfFace(f)}(D{c2});
 
 // Assembling of the diffusion matrix
 computeAlphaCoeff: ∀c∈cells(), {
-	ℝ αDiag = 0.0;
+	let αDiag = 0.0;
 	∀d∈neighbourCells(c), f=commonFace(c,d), {
-		ℝ αExtraDiag = δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c}-Xc{d});
+		let αExtraDiag = δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c} - Xc{d});
 		α{c, d} = αExtraDiag;
 		αDiag = αDiag + αExtraDiag;
 	}

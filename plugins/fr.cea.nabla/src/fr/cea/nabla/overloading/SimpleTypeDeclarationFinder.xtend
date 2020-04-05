@@ -63,14 +63,13 @@ class SimpleTypeDeclarationFinder implements IDeclarationFinder
 	}
 
 	private def  Iterable<Expression> getSizeExpressions(NablaSimpleType it) 
-	{ 
+	{
 		switch it
 		{
 			NSTScalar: #[]
 			NSTArray1D: #[size]
 			NSTArray2D: #[nbRows, nbCols]
 		}
-		
 	}
 
 	private def boolean sizesMatch(FunctionOrReduction f, Iterable<Expression> expectedSizes, Iterable<Expression> actualSizes)

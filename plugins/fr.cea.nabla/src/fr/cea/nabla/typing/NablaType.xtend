@@ -13,11 +13,11 @@ import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.MultipleConnectivity
 import fr.cea.nabla.nabla.PrimitiveType
+import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.LabelServices.*
 import static extension fr.cea.nabla.ir.Utils.*
-import org.eclipse.emf.ecore.util.EcoreUtil
 
 @Data
 abstract class NablaType

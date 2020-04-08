@@ -6,7 +6,8 @@ cmake_minimum_required(VERSION 3.1)
 SET(CMAKE_CXX_COMPILER /usr/bin/g++)
 project(IterativeHeatEquationProject CXX)
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla libcppnabla)
+set(LIBCPPNABLA_BACKEND "KOKKOS")
+add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
 
 add_executable(iterativeheatequation IterativeHeatEquation.cc)
 target_include_directories(iterativeheatequation PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")

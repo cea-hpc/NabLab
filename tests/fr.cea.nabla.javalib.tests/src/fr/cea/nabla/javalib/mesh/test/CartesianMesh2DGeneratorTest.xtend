@@ -59,16 +59,16 @@ class CartesianMesh2DGeneratorTest
 	def void testTopology()
 	{
 		assertArrayEquals(mesh.innerNodes, #[6, 7, 8, 11, 12, 13])
-		assertArrayEquals(mesh.topNodes, #[0, 1, 2, 3, 4])
-		assertArrayEquals(mesh.bottomNodes, #[15, 16, 17, 18, 19])
+		assertArrayEquals(mesh.bottomNodes, #[0, 1, 2, 3, 4])
+		assertArrayEquals(mesh.topNodes, #[15, 16, 17, 18, 19])
 		assertArrayEquals(mesh.leftNodes, #[0, 5, 10, 15])
 		assertArrayEquals(mesh.rightNodes, #[4, 9, 14, 19])
 		assertArrayEquals(mesh.outerFaces, #[0, 1, 2, 4, 6, 8, 10, 17, 19, 26, 27, 28, 29, 30])
 
-		assertEquals(mesh.topLeftNode, 0)
-		assertEquals(mesh.topRightNode, 4)
-		assertEquals(mesh.bottomLeftNode, 15)
-		assertEquals(mesh.bottomRightNode, 19)
+		assertEquals(mesh.bottomLeftNode, 0)
+		assertEquals(mesh.bottomRightNode, 4)
+		assertEquals(mesh.topLeftNode, 15)
+		assertEquals(mesh.topRightNode, 19)
 	}
 
 }

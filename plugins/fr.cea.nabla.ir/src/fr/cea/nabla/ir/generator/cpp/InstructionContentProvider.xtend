@@ -90,12 +90,12 @@ abstract class InstructionContentProvider
 
 	def dispatch CharSequence getContent(ItemIndexDefinition it)
 	'''
-		const int «index.name»(«value.content»);
+		const size_t «index.name»(«value.content»);
 	'''
 
 	def dispatch CharSequence getContent(ItemIdDefinition it)
 	'''
-		const int «id.name»(«value.content»);
+		const Id «id.name»(«value.content»);
 	'''
 
 	def dispatch CharSequence getContent(Return it) 
@@ -132,7 +132,7 @@ abstract class InstructionContentProvider
 		'''
 		{
 			const auto «container.name»(mesh->«container.accessor»);
-			const int «nbElems»(«container.name».size());
+			const size_t «nbElems»(«container.name».size());
 			«innerContent»
 		}
 		'''
@@ -183,7 +183,7 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 	'''
 		«result.cppType» «result.name»;
 		«iterationBlock.defineInterval('''
-		«result.name» = parallel::parallel_reduce(«iterationBlock.nbElems», «result.defaultValue.content», [&](«result.cppType»& accu, const int& «iterationBlock.indexName»)
+		«result.name» = parallel::parallel_reduce(«iterationBlock.nbElems», «result.defaultValue.content», [&](«result.cppType»& accu, const size_t& «iterationBlock.indexName»)
 			{
 				return (accu = «binaryFunction.getCodeName('.')»(accu, «lambda.content»));
 			},
@@ -192,7 +192,7 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 
 	override getLoopContent(Loop it)
 	'''
-		parallel::parallel_exec(«iterationBlock.nbElems», [&](const int& «iterationBlock.indexName»)
+		parallel::parallel_exec(«iterationBlock.nbElems», [&](const size_t& «iterationBlock.indexName»)
 		{
 			«body.innerContent»
 		});
@@ -206,7 +206,7 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 	'''
 		«result.cppType» «result.name»;
 		«iterationBlock.defineInterval('''
-		Kokkos::parallel_reduce(«firstArgument», KOKKOS_LAMBDA(const int& «iterationBlock.indexName», «result.cppType»& accu)
+		Kokkos::parallel_reduce(«firstArgument», KOKKOS_LAMBDA(const size_t& «iterationBlock.indexName», «result.cppType»& accu)
 		{
 			«FOR innerInstruction : innerInstructions»
 			«innerInstruction.content»
@@ -217,7 +217,7 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 
 	override getLoopContent(Loop it)
 	'''
-		Kokkos::parallel_for(«iterationBlock.nbElems», KOKKOS_LAMBDA(const int& «iterationBlock.indexName»)
+		Kokkos::parallel_for(«iterationBlock.nbElems», KOKKOS_LAMBDA(const size_t& «iterationBlock.indexName»)
 		{
 			«body.innerContent»
 		});
@@ -242,7 +242,7 @@ class KokkosTeamThreadInstructionContentProvider extends KokkosInstructionConten
 		{
 			«iterationBlock.autoTeamWork»
 
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const int& «iterationBlock.indexName»Team)
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& «iterationBlock.indexName»Team)
 			{
 				int «iterationBlock.indexName»(«iterationBlock.indexName»Team + teamWork.first);
 				«body.innerContent»

@@ -11,12 +11,11 @@ package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.IrModule
 import java.util.LinkedHashSet
-import org.eclipse.xtend.lib.annotations.Data
 
-@Data
 abstract class Ir2Cmake
 {
-	val LinkedHashSet<String> targetLinkLibraries = new LinkedHashSet<String>
+	protected String libraryBackend
+	protected val LinkedHashSet<String> targetLinkLibraries = new LinkedHashSet<String>
 
 	def getContentFor(IrModule it)
 	'''
@@ -28,7 +27,8 @@ abstract class Ir2Cmake
 		SET(CMAKE_CXX_COMPILER /usr/bin/g++)
 		project(«name.toFirstUpper»Project CXX)
 
-		add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla libcppnabla)
+		«libraryBackend»
+		add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
 
 		add_executable(«name.toLowerCase» «name + '.cc'»)
 		target_include_directories(«name.toLowerCase» PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -44,7 +44,8 @@ class StlIr2Cmake extends Ir2Cmake
 {
 	new()
 	{
-		targetLinkLibraries += "cppnablastl"
+		libraryBackend = "set(LIBCPPNABLA_BACKEND \"STL\")"
+		targetLinkLibraries += "cppnablastl pthread"
 	}
 }
 
@@ -52,6 +53,7 @@ class KokkosIr2Cmake extends Ir2Cmake
 {
 	new()
 	{
+		libraryBackend = libraryBackend = "set(LIBCPPNABLA_BACKEND \"KOKKOS\")"
 		targetLinkLibraries += "cppnablakokkos"
 	}
 }

@@ -52,8 +52,8 @@ ostream& operator<<(ostream& s, const NodeIdContainer<T, N>& o)
 }
 
 // Type alias
-using Edge = NodeIdContainer<int, 2>;
-using Quad = NodeIdContainer<int, 4>;
+using Edge = NodeIdContainer<Id, 2>;
+using Quad = NodeIdContainer<Id, 4>;
 
 }
 #endif /* MESH_NODEIDCONTAINER_H_ */

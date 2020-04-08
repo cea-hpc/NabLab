@@ -20,7 +20,7 @@ class CartesianMesh2D;
 class CartesianMesh2DGenerator
 {
 public:
-	static CartesianMesh2D* generate(int nbXQuads, int nbYQuads, double xSize, double ySize);
+	static CartesianMesh2D* generate(size_t nbXQuads, size_t nbYQuads, double xSize, double ySize);
 };
 
 }

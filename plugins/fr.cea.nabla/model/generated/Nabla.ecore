@@ -84,14 +84,23 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//SingleConnectivityCall"
         containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SetDefinition" eSuperTypes="#//Instruction">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//MultipleConnectivityCall"
+        containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Return" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IterationBlock"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Container"/>
+  <eClassifiers xsi:type="ecore:EClass" name="SetRef" eSuperTypes="#//Container">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//SetDefinition"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SpaceIterator" eSuperTypes="#//IterationBlock">
     <eStructuralFeatures xsi:type="ecore:EReference" name="item" eType="#//Item" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="container" eType="#//MultipleConnectivityCall"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="container" eType="#//Container"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="singletons" upperBound="-1"
         eType="#//SingletonDefinition" containment="true"/>
@@ -112,7 +121,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="args" upperBound="-1" eType="#//ItemRef"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="MultipleConnectivityCall" eSuperTypes="#//ConnectivityCall">
+  <eClassifiers xsi:type="ecore:EClass" name="MultipleConnectivityCall" eSuperTypes="#//Container #//ConnectivityCall">
     <eStructuralFeatures xsi:type="ecore:EReference" name="connectivity" eType="#//MultipleConnectivity"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SingleConnectivityCall" eSuperTypes="#//ConnectivityCall">

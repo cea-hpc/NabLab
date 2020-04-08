@@ -11,34 +11,27 @@ package fr.cea.nabla
 
 import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVar
+import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Reduction
-import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 
+/**
+ * Allow to access the type of ArgOrVar except SimpleVar
+ * that needs a type provider to evaluate its defaultValue.
+ */
 class ArgOrVarExtensions 
 {
-	def dispatch getType(ConnectivityVar it)
+	def BaseType getType(ConnectivityVar it)
 	{
 		(eContainer as VarGroupDeclaration).type
 	}
 
-	def dispatch getType(SimpleVar it)
-	{
-		val decl = eContainer
-		switch decl
-		{
-			SimpleVarDefinition : decl.type
-			VarGroupDeclaration : decl.type
-		}
-	}
-
-	def dispatch getType(Arg it)
+	def BaseType getType(Arg it)
 	{
 		val fOrR = eContainer
 		switch (fOrR)
@@ -82,7 +75,4 @@ class ArgOrVarExtensions
 			default : null
 		}
 	}
-
-	def dispatch int getDimension(TimeIterator it) { 0 }
-	def dispatch int getDimension(ArgOrVar it) { type.sizes.size }
 }

@@ -26,7 +26,6 @@ import fr.cea.nabla.ir.ir.VariablesDefinition
 import java.util.Arrays
 import java.util.stream.IntStream
 
-import static fr.cea.nabla.ir.interpreter.DimensionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
@@ -91,7 +90,7 @@ class InstructionInterpreter
 		// Switch to more efficient implementation (avoid costly toList calls)
 		val allIndices = newArrayList
 		left.iterators.forEach[x|allIndices.add(context.getIndexValue(x))]
-		left.indices.forEach[x|allIndices.add(interprete(x, context))]
+		allIndices.addAll(interpreteDimensionExpressions(left.indices, context))
 		setValue(context.getVariableValue(left.target), allIndices, rightValue)
 		return null
 	}
@@ -139,11 +138,11 @@ class InstructionInterpreter
 			}
 			Interval:
 			{
-				val nbElems = interprete(b.nbElems, context)
-				context.addDimensionValue(b.index, 0)
-				for (i : 0..<nbElems)
+				val nbElems = interprete(b.nbElems, context) as NV0Int
+				context.addVariableValue(b.index, new NV0Int(0))
+				for (i : 0..<nbElems.data)
 				{
-					context.setDimensionValue(b.index, i)
+					context.setVariableValue(b.index, new NV0Int(i))
 					val ret = interprete(body, context)
 					if (ret !== null)
 						return ret

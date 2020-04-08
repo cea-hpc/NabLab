@@ -18,18 +18,12 @@ import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Reduction
 import org.eclipse.xtext.EcoreUtil2
 
-/**
- * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
- * Si elle n'est pas singleton, plusieurs instances d'un même objet seront créées lors
- * deu parcours du graphe d'origine (voir la documentation Xtext).
- */
 @Singleton
 class IrFunctionFactory 
 {
 	@Inject extension IrAnnotationHelper
 	@Inject extension BaseType2IrType
 	@Inject extension IrArgOrVarFactory
-	@Inject extension IrSizeTypeFactory
 	@Inject extension IrInstructionFactory
 
 	def dispatch create IrFactory::eINSTANCE.createFunction toIrFunction(Function f)
@@ -37,7 +31,7 @@ class IrFunctionFactory
 		annotations += f.toIrAnnotation
 		name = f.name
 		provider = f.moduleName
-		f.vars.forEach[x | variables += x.toIrSizeTypeSymbol]
+		f.vars.forEach[x | variables += toIrSimpleVariable(x, x.name)]
 		if (f.external)
 		{
 			// f is external. No inArgs only inArgTypes
@@ -59,7 +53,7 @@ class IrFunctionFactory
 		// build a unique name with name and type
 		name = f.name.toFirstLower + f.type.primitive.getName().charAt(0) + f.type.sizes.size
 		provider = f.moduleName
-		f.vars.forEach[x | variables += x.toIrSizeTypeSymbol]
+		f.vars.forEach[x | variables += toIrSimpleVariable(x, x.name)]
 		f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
 		returnType = f.type.toIrBaseType
 		body = f.body.toIrInstruction

@@ -26,12 +26,12 @@ public interface Interval extends IterationBlock {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Index</em>' containment reference.
-	 * @see #setIndex(SizeTypeSymbol)
+	 * @see #setIndex(SimpleVariable)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getInterval_Index()
 	 * @model containment="true" resolveProxies="true" required="true"
 	 * @generated
 	 */
-	SizeTypeSymbol getIndex();
+	SimpleVariable getIndex();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Interval#getIndex <em>Index</em>}' containment reference.
@@ -41,19 +41,19 @@ public interface Interval extends IterationBlock {
 	 * @see #getIndex()
 	 * @generated
 	 */
-	void setIndex(SizeTypeSymbol value);
+	void setIndex(SimpleVariable value);
 
 	/**
 	 * Returns the value of the '<em><b>Nb Elems</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Nb Elems</em>' containment reference.
-	 * @see #setNbElems(SizeType)
+	 * @see #setNbElems(Expression)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getInterval_NbElems()
 	 * @model containment="true" resolveProxies="true" required="true"
 	 * @generated
 	 */
-	SizeType getNbElems();
+	Expression getNbElems();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Interval#getNbElems <em>Nb Elems</em>}' containment reference.
@@ -63,6 +63,6 @@ public interface Interval extends IterationBlock {
 	 * @see #getNbElems()
 	 * @generated
 	 */
-	void setNbElems(SizeType value);
+	void setNbElems(Expression value);
 
 } // Interval

@@ -256,42 +256,6 @@ public interface IrFactory extends EFactory {
 	Interval createInterval();
 
 	/**
-	 * Returns a new object of class '<em>Size Type Symbol</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Size Type Symbol</em>'.
-	 * @generated
-	 */
-	SizeTypeSymbol createSizeTypeSymbol();
-
-	/**
-	 * Returns a new object of class '<em>Size Type Int</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Size Type Int</em>'.
-	 * @generated
-	 */
-	SizeTypeInt createSizeTypeInt();
-
-	/**
-	 * Returns a new object of class '<em>Size Type Operation</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Size Type Operation</em>'.
-	 * @generated
-	 */
-	SizeTypeOperation createSizeTypeOperation();
-
-	/**
-	 * Returns a new object of class '<em>Size Type Symbol Ref</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Size Type Symbol Ref</em>'.
-	 * @generated
-	 */
-	SizeTypeSymbolRef createSizeTypeSymbolRef();
-
-	/**
 	 * Returns a new object of class '<em>Contracted If</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

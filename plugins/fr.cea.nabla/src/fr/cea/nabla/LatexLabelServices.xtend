@@ -18,6 +18,7 @@ import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.CurrentTimeIteratorRef
+import fr.cea.nabla.nabla.Div
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
@@ -35,7 +36,7 @@ import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
-import fr.cea.nabla.nabla.MulOrDiv
+import fr.cea.nabla.nabla.Mul
 import fr.cea.nabla.nabla.MultipleConnectivityCall
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Not
@@ -46,36 +47,33 @@ import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
+import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingleConnectivityCall
-import fr.cea.nabla.nabla.SizeTypeInt
-import fr.cea.nabla.nabla.SizeTypeOperation
-import fr.cea.nabla.nabla.SizeTypeSymbol
-import fr.cea.nabla.nabla.SizeTypeSymbolRef
+import fr.cea.nabla.nabla.SingletonDefinition
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
 import java.util.List
-import fr.cea.nabla.nabla.SingletonDefinition
 
 class LatexLabelServices
 {
 	/* JOBS & INSTRUCTIONS ***********************************/
 	static def dispatch String getLatex(Job it) { '\\texttt{' + name.pu + '} : '+ instruction.latex }
-	static def dispatch String getLatex(SimpleVarDefinition it) { type.latex + '~' + variable.name.pu + '=' + defaultValue.latex }
+	static def dispatch String getLatex(SimpleVarDefinition it) { 'let~' + variable.name.pu + '=' + defaultValue.latex }
 	static def dispatch String getLatex(VarGroupDeclaration it) { type.latex + '~' + variables.map[x|x.name.pu].join(', ') }
 	static def dispatch String getLatex(InstructionBlock it) { '\\{ \\}' }
 	static def dispatch String getLatex(Loop it) { '\\forall{' + iterationBlock.latex + '}, \\ ' + body.latex }
 	static def dispatch String getLatex(Affectation it) { left?.latex + ' = ' + right?.latex }
 	static def dispatch String getLatex(If it) { 'if~(' + condition.latex + ')'}
-	static def dispatch String getLatex(ItemDefinition it) { type?.name + ' ' + item.name + '=' + value?.latex }
+	static def dispatch String getLatex(ItemDefinition it) { 'item~' + item.name + '=' + value?.latex }
 	static def dispatch String getLatex(Return it) { 'return (' + expression.latex + ')'}
 
 	/* ITERATEURS ********************************************/
 	static def dispatch String getLatex(SpaceIterator it) { item.name.pu + '\\in ' + container.latex }
 	static def dispatch String getLatex(SingletonDefinition it) { item.name + '=' + value?.latex }
-	static def dispatch String getLatex(Interval it) { index.latex + '\\in ' + nbElems.latex }
+	static def dispatch String getLatex(Interval it) { index.name + '\\in ' + nbElems.latex }
 	static def dispatch String getLatex(MultipleConnectivityCall it) { connectivity.name.pu + '(' + args.map[latex].join(',') + ')' }
 	static def dispatch String getLatex(SingleConnectivityCall it) { connectivity.name.pu + '(' + args.map[latex].join(',') + ')' }
 	static def dispatch String getLatex(ItemRef it) 
@@ -92,10 +90,11 @@ class LatexLabelServices
 	/* FONCTIONS / REDUCTIONS ********************************/
 	static def dispatch String getLatex(Function it) { 'def~' + name.pu + '~:~' + vars.latexForVars + inTypes.map[latex].join(' \u00D7 ') + ' \u2192 ' + returnType.latex }
 	static def dispatch String getLatex(Reduction it) { 'def~' + name.pu + '~:~' + vars.latexForVars + '(' + seed.latex + ', ' + type.latex + ')' }
-	private static def getLatexForVars(List<SizeTypeSymbol> symbols)
+
+	private static def getLatexForVars(List<SimpleVar> symbols)
 	{
 		if (symbols.empty) ''
-		else symbols.map[latex].join(', ') + '~|~'
+		else symbols.map[name].join(', ') + '~|~'
 	}
 
 	/* EXPRESSIONS ******************************************/
@@ -106,11 +105,8 @@ class LatexLabelServices
 	static def dispatch String getLatex(Comparison it) { left.latex + ' ' + op + ' ' + right.latex }
 	static def dispatch String getLatex(Plus it) { left.latex + ' + ' + right.latex }
 	static def dispatch String getLatex(Minus it) { left.latex + ' - ' + right.latex }
-	static def dispatch String getLatex(MulOrDiv it) 
-	{ 
-		if (op == '/')  '\\frac{' + left.latex + '}{' + right.latex + '}'
-		else left.latex + ' \\cdot ' + right.latex
-	}
+	static def dispatch String getLatex(Mul it) { left.latex + ' \\cdot ' + right.latex }
+	static def dispatch String getLatex(Div it) { '\\frac{' + left.latex + '}{' + right.latex + '}' }
 	static def dispatch String getLatex(Modulo it) { left.latex + ' % ' + right.latex }	
 	static def dispatch String getLatex(Parenthesis it) { '(' + expression.latex + ')' }
 	static def dispatch String getLatex(UnaryMinus it) { '-' + expression.latex }
@@ -159,11 +155,6 @@ class LatexLabelServices
 		else
 			primitive.literal + '^{' + sizes.map[x | x.latex].join(' \\times ') + '}'
 	}
-
-	static def dispatch String getLatex(SizeTypeOperation it) { left?.latex + ' ' + op + ' ' + right?.latex }
-	static def dispatch String getLatex(SizeTypeInt it) { value.toString }
-	static def dispatch String getLatex(SizeTypeSymbolRef it) { target?.name.pu }
-	static def dispatch String getLatex(SizeTypeSymbol it) { name.pu }
 
 	private static def getLatexArg(Expression it)
 	{

@@ -14,8 +14,10 @@ import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
+import fr.cea.nabla.ir.ir.Interval
 import fr.cea.nabla.ir.ir.ItemIdDefinition
 import fr.cea.nabla.ir.ir.ItemIndexDefinition
+import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
@@ -23,12 +25,11 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.VariablesDefinition
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.generator.IterationBlockExtensions.*
+import static extension fr.cea.nabla.ir.generator.ConnectivityCallExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.ItemIndexAndIdValueContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.IterationBlockExtensions.*
 
 class InstructionContentProvider 
 {
@@ -138,4 +139,42 @@ class InstructionContentProvider
 
 	private static def dispatch getDefaultValueContent(ConnectivityVariable it)
 	'''«IF defaultValue !== null» = «defaultValue.content»«ENDIF»'''
+
+	// ### IterationBlock Extensions ###
+	private static def dispatch defineInterval(Iterator it, CharSequence innerContent)
+	{
+		if (container.connectivity.indexEqualId)
+			innerContent
+		else
+		{
+			'''
+			{
+				final int[] «container.name» = mesh.«container.accessor»;
+				final int «nbElems» = «container.name».length;
+				«innerContent»
+			}
+			'''
+		}
+	}
+
+	private static def dispatch defineInterval(Interval it, CharSequence innerContent)
+	{
+		innerContent
+	}
+
+	private static def dispatch getIndexName(Iterator it) { index.name }
+	private static def dispatch getIndexName(Interval it) { index.name }
+
+	private static def dispatch getNbElems(Iterator it)
+	{
+		if (container.connectivity.indexEqualId)
+			container.connectivity.nbElems
+		else
+			'nbElems' + indexName.toFirstUpper
+	}
+
+	private static def dispatch getNbElems(Interval it)
+	{
+		nbElems.content
+	}
 }

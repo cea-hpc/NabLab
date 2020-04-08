@@ -32,6 +32,7 @@ public:
 		double option_stoptime = 0.1;
 		size_t option_max_iterations = 500000000;
 		size_t option_max_iterations_k = 1000;
+		double epsilon = 1.0E-8;
 	};
 	Options* options;
 
@@ -42,7 +43,7 @@ private:
 	
 	// Global Variables
 	int n, k, lastDump;
-	double t_n, t_nplus1, deltat, epsilon, residual;
+	double t_n, t_nplus1, deltat, residual;
 	
 	// Connectivity Variables
 	std::vector<RealArray1D<2>> X;
@@ -77,7 +78,6 @@ public:
 	, t_n(0.0)
 	, t_nplus1(0.0)
 	, deltat(0.001)
-	, epsilon(1.0E-8)
 	, lastDump(numeric_limits<int>::min())
 	, X(nbNodes)
 	, Xc(nbCells)
@@ -308,7 +308,7 @@ private:
 			
 		
 			// Evaluate loop condition with variables at time n
-			continueLoop = (residual > epsilon && k + 1 < options->option_max_iterations_k);
+			continueLoop = (residual > options->epsilon && k + 1 < options->option_max_iterations_k);
 		
 			if (continueLoop)
 			{

@@ -9,6 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.typing
 
+import org.eclipse.emf.ecore.util.EcoreUtil
+
 class BinaryOperationsTypeProvider 
 {
 	def dispatch NablaSimpleType getTypeFor(NablaSimpleType a, NablaSimpleType b, String op)
@@ -251,7 +253,15 @@ class BinaryOperationsTypeProvider
 			default: null
 		}
 	}
-	
-	private def haveSameDimensions(NSTArray1D a, NSTArray1D b) { a.size == b.size }
-	private def haveSameDimensions(NSTArray2D a, NSTArray2D b) { a.nbRows == b.nbRows && a.nbCols == b.nbCols }
+
+	private def haveSameDimensions(NSTArray1D a, NSTArray1D b)
+	{
+		EcoreUtil::equals(a.size, b.size)
+	}
+
+	private def haveSameDimensions(NSTArray2D a, NSTArray2D b)
+	{
+		EcoreUtil::equals(a.nbRows, b.nbRows) 
+		&& EcoreUtil::equals(a.nbCols, b.nbCols)
+	}
 }

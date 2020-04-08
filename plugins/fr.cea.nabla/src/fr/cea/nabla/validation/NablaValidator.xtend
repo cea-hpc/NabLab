@@ -15,8 +15,7 @@ package fr.cea.nabla.validation
  *
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
-class NablaValidator extends TypeValidator 
+class NablaValidator extends ExpressionValidator 
 {
 	// Attention l'ordre d'héritage a son importance.
-	// TypeValidator hérite de BasicValidator car les règles de BasicValidator doivent s'exécuter avant.
 }

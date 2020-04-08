@@ -3,9 +3,9 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.BaseType;
+import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.PrimitiveType;
-import fr.cea.nabla.ir.ir.SizeType;
 
 import java.util.Collection;
 
@@ -65,7 +65,7 @@ public class BaseTypeImpl extends IrTypeImpl implements BaseType {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<SizeType> sizes;
+	protected EList<Expression> sizes;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -115,9 +115,9 @@ public class BaseTypeImpl extends IrTypeImpl implements BaseType {
 	 * @generated
 	 */
 	@Override
-	public EList<SizeType> getSizes() {
+	public EList<Expression> getSizes() {
 		if (sizes == null) {
-			sizes = new EObjectContainmentEList.Resolving<SizeType>(SizeType.class, this, IrPackage.BASE_TYPE__SIZES);
+			sizes = new EObjectContainmentEList.Resolving<Expression>(Expression.class, this, IrPackage.BASE_TYPE__SIZES);
 		}
 		return sizes;
 	}
@@ -166,7 +166,7 @@ public class BaseTypeImpl extends IrTypeImpl implements BaseType {
 				return;
 			case IrPackage.BASE_TYPE__SIZES:
 				getSizes().clear();
-				getSizes().addAll((Collection<? extends SizeType>)newValue);
+				getSizes().addAll((Collection<? extends Expression>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);

@@ -12,23 +12,22 @@ package fr.cea.nabla.tests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import fr.cea.nabla.tests.interpreter.NabLabInterpreterTestSuite;
+import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
+
 @RunWith(Suite.class)
 
-@Suite.SuiteClasses({
-	BasicValidatorTest.class,
-	TypeValidatorTest.class,
+@Suite.SuiteClasses
+({
 	DeclarationProviderTest.class,
 	ExpressionTypeProviderTest.class,
 	IteratorExtensionsTest.class,
-	NablaScopeProviderTest.class,
-	NablaParsingTest.class,
-	NablagenParsingTest.class,
 	NablaExamplesTest.class,
-	ExpressionInterpreterTest.class,
-	BinaryOperationsInterpreterTest.class,
-	InstructionInterpreterTest.class,
-	JobInterpreterTest.class,
-	ModuleInterpreterTest.class
+	NablagenParsingTest.class,
+	NablaParsingTest.class,
+	NablaScopeProviderTest.class,
+	NabLabInterpreterTestSuite.class,
+	NabLabValidationTestSuite.class
 })
 
 public class NabLabTestSuite {}

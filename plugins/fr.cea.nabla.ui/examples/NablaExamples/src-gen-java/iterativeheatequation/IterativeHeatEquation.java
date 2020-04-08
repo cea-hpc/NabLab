@@ -23,6 +23,7 @@ public final class IterativeHeatEquation
 		public final double option_stoptime = 0.1;
 		public final int option_max_iterations = 500000000;
 		public final int option_max_iterations_k = 1000;
+		public final double epsilon = 1.0E-8;
 	}
 
 	private final Options options;
@@ -34,7 +35,7 @@ public final class IterativeHeatEquation
 
 	// Global Variables
 	private int n, k, lastDump;
-	private double t_n, t_nplus1, deltat, epsilon, residual;
+	private double t_n, t_nplus1, deltat, residual;
 
 	// Connectivity Variables
 	private double[][] X, Xc, alpha;
@@ -56,7 +57,6 @@ public final class IterativeHeatEquation
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat = 0.001;
-		epsilon = 1.0E-8;
 		lastDump = Integer.MIN_VALUE;
 
 		// Allocate arrays
@@ -319,7 +319,7 @@ public final class IterativeHeatEquation
 			computeResidual(); // @2.0
 		
 			// Evaluate loop condition with variables at time n
-			continueLoop = (residual > epsilon && k + 1 < options.option_max_iterations_k);
+			continueLoop = (residual > options.epsilon && k + 1 < options.option_max_iterations_k);
 		
 			if (continueLoop)
 			{

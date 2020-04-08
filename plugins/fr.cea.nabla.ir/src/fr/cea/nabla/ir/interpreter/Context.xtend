@@ -17,7 +17,6 @@ import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ItemId
 import fr.cea.nabla.ir.ir.ItemIndex
-import fr.cea.nabla.ir.ir.SizeTypeSymbol
 import java.lang.reflect.Method
 import java.util.HashMap
 import java.util.logging.Logger
@@ -35,7 +34,6 @@ class Context
 	val Logger logger
 	val indexValues = new HashMap<ItemIndex, Integer>
 	val idValues = new HashMap<ItemId, Integer>
-	val dimensionValues = new HashMap<SizeTypeSymbol, Integer>
 	val variableValues = new HashMap<ArgOrVar, NablaValue>
 	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Function, Method> functionToMethod
 	@Accessors val HashMap<Connectivity, Integer> connectivitySizes
@@ -165,28 +163,6 @@ class Context
 				throw new RuntimeException('Unique identifier not found ' + id.name)
 	}
 
-	// DimensionValues
-	def int getDimensionValue(SizeTypeSymbol it)
-	{
-		dimensionValues.get(it) ?: outerContext.getDimensionValue(it)
-	}
-
-	def addDimensionValue(SizeTypeSymbol it, int value)
-	{
-		dimensionValues.put(it, value)
-	}
-
-	def void setDimensionValue(SizeTypeSymbol it, int value)
-	{
-		if (dimensionValues.get(it) !== null)
-			dimensionValues.replace(it, value)
-		else
-			if (outerContext !== null)
-				outerContext.setDimensionValue(it, value)
-			else
-				throw new RuntimeException('Dimension Symbol not found ' + name)
-	}
-
 	def int getSingleton(ConnectivityCall it)
 	{
 		meshWrapper.getSingleton(connectivity.name, args.map[x | getIdValue(x)])
@@ -235,15 +211,6 @@ class Context
 			if (message !== null) logger.log(Context.Level::FINER, message)
 			idValues.keySet.forEach[k | logger.log(Context.Level::FINER, "	" + k + " = " + idValues.get(k))]
 			indexValues.keySet.forEach[k | logger.log(Context.Level::FINER, "	" + k + " = " + indexValues.get(k))]
-		}
-	}
-
-	def logDimensions(String message)
-	{
-		if (logger.level.intValue <= Context.Level::FINER.intValue)
-		{
-			if (message !== null) logger.log(Context.Level::FINER, message)
-			dimensionValues.keySet.forEach[d | logger.log(Context.Level::FINER, "	Dimension " + d.name + " = " + dimensionValues.get(d))]
 		}
 	}
 
@@ -296,11 +263,11 @@ class Context
 		//static val OFF = new fr.cea.nabla.ir.interpreter.Context.Level("OFF", Integer.MAX_VALUE)
 		//static val SEVERE = new fr.cea.nabla.ir.interpreter.Context.Level("SEVERE", 1000)
 		//static val WARNING = new fr.cea.nabla.ir.interpreter.Context.Level("WARNING", 900)
-		static val INFO = new fr.cea.nabla.ir.interpreter.Context.Level("INFO", 800)
+		static val INFO = new Context.Level("INFO", 800)
 		//static val CONFIG = new fr.cea.nabla.ir.interpreter.Context.Level("CONFIG", 700)
-		static val FINE = new fr.cea.nabla.ir.interpreter.Context.Level("FINE", 500)
-		static val FINER = new fr.cea.nabla.ir.interpreter.Context.Level("FINER", 400)
-		static val FINEST = new fr.cea.nabla.ir.interpreter.Context.Level("FINEST", 300)
+		static val FINE = new Context.Level("FINE", 500)
+		static val FINER = new Context.Level("FINER", 400)
+		static val FINEST = new Context.Level("FINEST", 300)
 		//static val ALL = new fr.cea.nabla.ir.interpreter.Context.Level("ALL", Integer.MIN_VALUE)
 
 		new(String name, int value) { super(name, value) }

@@ -14,8 +14,10 @@ import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.generator.ir.IrItemIdDefinitionFactory
 import fr.cea.nabla.generator.ir.IrItemIndexDefinitionFactory
 import fr.cea.nabla.generator.ir.IrItemIndexFactory
+import fr.cea.nabla.nabla.ItemDefinition
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.SingletonDefinition
 import fr.cea.nabla.nabla.SpaceIterator
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
@@ -26,8 +28,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static extension fr.cea.nabla.ConnectivityCallExtensions.*
-import fr.cea.nabla.nabla.SingletonDefinition
-import fr.cea.nabla.nabla.ItemDefinition
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -64,9 +64,9 @@ class IteratorExtensionsTest
 		set neighbourCells: cell → {cell};
 		item commonFace: cell × cell → face;
 
-		def ∑: 0.0, ℝ, (a, b) → return a + b;
-		def ∑: x | 0.0, ℝ[x], (a, b) → return a + b;
-		def ∑: x | 0.0, ℝ[x, x], (a, b) → return a + b;
+		def ∑, 0.0: ℝ, (a, b) → return a + b;
+		def ∑, 0.0: x | ℝ[x], (a, b) → return a + b;
+		def ∑, 0.0: x | ℝ[x, x], (a, b) → return a + b;
 		'''
 		+ mandatoryOptions + simulationVariables +
 		'''
@@ -81,8 +81,8 @@ class IteratorExtensionsTest
 		J4: ∀j∈cells(), u{j} = 0.5 * ∑{r∈nodesOfCell(j)}(X{r} - X{r+1});
 		J5: ∀j1∈cells(), f{j1} = a * ∑{j2∈neighbourCells(j1), cf=commonFace(j1,j2)}( (x{j2}-x{j1}) / surface{cf});
 		J6: ∀j1∈cells(), ∀j2∈neighbourCells(j1), {
-				face cf = commonFace(j1,j2);
-				ℝ bidon = (x{j2}-x{j1}) / surface{cf});
+				item cf = commonFace(j1,j2);
+				let bidon = (x{j2}-x{j1}) / surface{cf});
 			}
 		'''
 

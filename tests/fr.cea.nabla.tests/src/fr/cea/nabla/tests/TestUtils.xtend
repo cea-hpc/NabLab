@@ -17,6 +17,7 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
+import fr.cea.nabla.nabla.NablaFactory
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -78,16 +79,16 @@ class TestUtils
 	//TODO These options should be filled in nablagen
 	private def String getMandatoryOptions(int xQuads, int yQuads)
 	'''
-	const ℝ X_EDGE_LENGTH = 0.01;
-	const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-	const ℕ X_EDGE_ELEMS = «xQuads»;
-	const ℕ Y_EDGE_ELEMS = «yQuads»;
+	const X_EDGE_LENGTH = 0.01;
+	const Y_EDGE_LENGTH = X_EDGE_LENGTH;
+	const X_EDGE_ELEMS = «xQuads»;
+	const Y_EDGE_ELEMS = «yQuads»;
 	'''
 
 	def String getSimulationVariables()
 	'''
-	ℝ t = 0.0;
-	ℝ δt = 0.001;
+	let t = 0.0;
+	let δt = 0.001;
 	ℝ[2] X{nodes};
 	'''
 
@@ -185,5 +186,13 @@ class TestUtils
 	def readFileAsString(String filePath)
 	{
 		new String(Files.readAllBytes(Paths.get(filePath)))
+	}
+
+	def createIntConstant(int v)
+	{
+		NablaFactory::eINSTANCE.createIntConstant =>
+		[
+			value = v
+		]
 	}
 }

@@ -16,19 +16,20 @@ import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ContractedIf
+import fr.cea.nabla.nabla.Div
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
-import fr.cea.nabla.nabla.MulOrDiv
+import fr.cea.nabla.nabla.Mul
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.UnaryMinus
-import fr.cea.nabla.typing.DeclarationProvider
+import fr.cea.nabla.overloading.DeclarationProvider
 
 class IrReductionInstructionFactory 
 {
@@ -47,7 +48,8 @@ class IrReductionInstructionFactory
 	def dispatch Iterable<ReductionInstruction> toIrReductions(Comparison it) { left.toIrReductions + right.toIrReductions }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(Plus it) { left.toIrReductions + right.toIrReductions }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(Minus it) { left.toIrReductions + right.toIrReductions }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(MulOrDiv it) { left.toIrReductions + right.toIrReductions }
+	def dispatch Iterable<ReductionInstruction> toIrReductions(Mul it) { left.toIrReductions + right.toIrReductions }
+	def dispatch Iterable<ReductionInstruction> toIrReductions(Div it) { left.toIrReductions + right.toIrReductions }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(Modulo it) { left.toIrReductions + right.toIrReductions }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(Parenthesis it) { expression.toIrReductions }
 	def dispatch Iterable<ReductionInstruction> toIrReductions(UnaryMinus it) { expression.toIrReductions }

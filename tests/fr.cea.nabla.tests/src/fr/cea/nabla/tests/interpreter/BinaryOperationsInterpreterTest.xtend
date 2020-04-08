@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.tests
+package fr.cea.nabla.tests.interpreter
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.interpreter.Context
@@ -16,6 +16,9 @@ import fr.cea.nabla.ir.interpreter.NV0Bool
 import fr.cea.nabla.ir.interpreter.NV0Int
 import fr.cea.nabla.ir.interpreter.NV0Real
 import fr.cea.nabla.ir.interpreter.NV1Int
+import fr.cea.nabla.tests.CompilationChainHelper
+import fr.cea.nabla.tests.NablaInjectorProvider
+import fr.cea.nabla.tests.TestUtils
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 import java.util.logging.Logger

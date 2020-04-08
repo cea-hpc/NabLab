@@ -23,7 +23,8 @@ import fr.cea.nabla.typing.NSTRealArray1D
 import fr.cea.nabla.typing.NSTRealScalar
 import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.validation.BasicValidator
-import fr.cea.nabla.validation.TypeValidator
+import fr.cea.nabla.validation.ExpressionValidator
+import fr.cea.nabla.validation.UnusedValidator
 import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
@@ -102,17 +103,17 @@ class DeclarationProviderTest
 
 		val module = model.parse
 		Assert.assertNotNull(module)
-		Assert.assertEquals(3, module.validate.filter(i | i.severity == Severity.ERROR).size)
+		Assert.assertEquals(4, module.validate.filter(i | i.severity == Severity.ERROR).size)
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
-		TypeValidator::FUNCTION_ARGS,
-		TypeValidator::getFunctionArgsMsg(#[PrimitiveType::REAL.literal, PrimitiveType::BOOL.literal]))
+		ExpressionValidator::FUNCTION_CALL_ARGS,
+		ExpressionValidator::getFunctionCallArgsMsg(#[PrimitiveType::REAL.literal, PrimitiveType::BOOL.literal]))
 		val cells = module.getConnectivityByName("cells") as MultipleConnectivity
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
-		TypeValidator::FUNCTION_ARGS,
-		TypeValidator::getFunctionArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealArray1D(createIntConstant(2))).label]))
+		ExpressionValidator::FUNCTION_CALL_ARGS,
+		ExpressionValidator::getFunctionCallArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealArray1D(createIntConstant(2))).label]))
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
-		TypeValidator::FUNCTION_ARGS,
-		TypeValidator::getFunctionArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealScalar).label, new NablaConnectivityType(#[cells], new NSTRealScalar).label]))
+		ExpressionValidator::FUNCTION_CALL_ARGS,
+		ExpressionValidator::getFunctionCallArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealScalar).label, new NablaConnectivityType(#[cells], new NSTRealScalar).label]))
 
 		val fFunctions = module.functions.filter[x | x.name == 'f']
 		val j0Fdecl = getFunctionDeclarationOfJob(module, 0)
@@ -179,12 +180,13 @@ class DeclarationProviderTest
 		val module = model.parse
 		Assert.assertNotNull(module)
 		Assert.assertEquals(1, module.validate.filter(i | i.severity == Severity.ERROR).size)
-		module.assertError(NablaPackage.eINSTANCE.functionCall, TypeValidator::FUNCTION_ARGS, TypeValidator::getReductionArgsMsg("ℝ[a]"))
+		module.assertError(NablaPackage.eINSTANCE.functionCall, ExpressionValidator::FUNCTION_CALL_ARGS, ExpressionValidator::getFunctionCallArgsMsg(#["ℝ[a]"]))
 
 		Assert.assertEquals(4, module.validate.filter(i | i.severity == Severity.WARNING).size)
-		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 118, 1, BasicValidator::getUnusedFunctionMsg)
-		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 170, 1, BasicValidator::getUnusedFunctionMsg)
-		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 243, 1, BasicValidator::getUnusedFunctionMsg)
+		module.assertWarning(NablaPackage.eINSTANCE.connectivity, UnusedValidator::UNUSED, 37, 5, BasicValidator::getUnusedMsg(NablaPackage.Literals.CONNECTIVITY, 'nodes'))
+		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 118, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'h'))
+		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 170, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'i'))
+		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 243, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'j'))
 
 		val functions = module.functions
 		val h = functions.findFirst[name == 'h']
@@ -231,9 +233,9 @@ class DeclarationProviderTest
 		Assert.assertNotNull(module)
 		Assert.assertEquals(1, module.validate.filter(i | i.severity == Severity.ERROR).size)
 		module.assertError(NablaPackage.eINSTANCE.reductionCall,
-		TypeValidator::REDUCTION_ARGS,
-		TypeValidator::getReductionArgsMsg(PrimitiveType::INT.literal))
-		
+		ExpressionValidator::REDUCTION_CALL_ARGS,
+		ExpressionValidator::getReductionCallArgsMsg(PrimitiveType::INT.literal))
+
 		val fReductions = module.reductions.filter[x | x.name == 'f']
 		val j0Fdecl = getReductionDeclarationOfJob(module, 0)
 		Assert.assertEquals(fReductions.get(0), j0Fdecl.model)
@@ -243,7 +245,7 @@ class DeclarationProviderTest
 		val j2Fdecl = getReductionDeclarationOfJob(module, 2)
 		Assert.assertNull(j2Fdecl)
 	}
-	
+
 	private def getFunctionDeclarationOfJob(NablaModule m, int jobIndex)
 	{
 		val fcall = m.jobs.get(jobIndex).eAllContents.filter(FunctionCall).head

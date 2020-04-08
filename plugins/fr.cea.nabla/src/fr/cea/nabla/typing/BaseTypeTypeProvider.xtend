@@ -15,29 +15,35 @@ import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.PrimitiveType
 
 import static extension fr.cea.nabla.LabelServices.*
+import fr.cea.nabla.ExpressionExtensions
 
 class BaseTypeTypeProvider
 {
 	@Inject extension PrimitiveTypeTypeProvider
+	@Inject extension ExpressionExtensions
 
 	def NablaSimpleType getTypeFor(BaseType it)
-	{ 
+	{
 		switch sizes.size
 		{
 			case 0: primitive.typeFor
-			case 1: 
+			case 1:
 			{
 				val size = sizes.get(0)
 				// if the label is null, the expression is not consistent
-				if (size === null || size.label === null) null
-				else getArray1DTypeFor(primitive, sizes.get(0))
+				if (size === null || !size.respectIntConstExprConstraints)
+					null
+				else
+					getArray1DTypeFor(primitive, sizes.get(0))
 			}
 			case 2: 
 			{
 				val nbRows = sizes.get(0)
 				val nbCols = sizes.get(1)
-				if (nbRows === null || nbCols === null) null
-				else getArray2DTypeFor(primitive, nbRows, nbCols)
+				if (nbRows === null || nbCols === null || !nbRows.respectIntConstExprConstraints || !nbCols.respectIntConstExprConstraints)
+					null
+				else 
+					getArray2DTypeFor(primitive, nbRows, nbCols)
 			}
 			default: throw new RuntimeException("Unmanaged type")
 		}

@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.tests
+package fr.cea.nabla.tests.interpreter
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.interpreter.Context
@@ -21,6 +21,9 @@ import fr.cea.nabla.ir.interpreter.NV1Real
 import fr.cea.nabla.ir.interpreter.NV2Bool
 import fr.cea.nabla.ir.interpreter.NV2Int
 import fr.cea.nabla.ir.interpreter.NV2Real
+import fr.cea.nabla.tests.CompilationChainHelper
+import fr.cea.nabla.tests.NablaInjectorProvider
+import fr.cea.nabla.tests.TestUtils
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -291,6 +294,7 @@ class ExpressionInterpreterTest
 		let ρ = ℝ[2,2](2.);
 		let res2 = add(δ,ρ); //-> [3., 3][3., 3.]
 		'''
+
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF

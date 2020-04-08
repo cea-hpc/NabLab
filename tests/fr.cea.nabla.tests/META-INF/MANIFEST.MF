@@ -21,6 +21,8 @@ Require-Bundle: fr.cea.nabla,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: explicitheatequation,
  fr.cea.nabla.tests;x-internal=true,
+ fr.cea.nabla.tests.interpreter,
+ fr.cea.nabla.tests.validation,
  glace2d,
  heatequation,
  implicitheatequation,

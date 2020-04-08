@@ -7,27 +7,22 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.tests;
+package fr.cea.nabla.tests.validation;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-
-import fr.cea.nabla.tests.interpreter.NabLabInterpreterTestSuite;
-import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
 
 @RunWith(Suite.class)
 
 @Suite.SuiteClasses
 ({
-	DeclarationProviderTest.class,
-	ExpressionTypeProviderTest.class,
-	IteratorExtensionsTest.class,
-	NablaExamplesTest.class,
-	NablagenParsingTest.class,
-	NablaParsingTest.class,
-	NablaScopeProviderTest.class,
-	NabLabInterpreterTestSuite.class,
-	NabLabValidationTestSuite.class
+	ArgOrVarRefValidatorTest.class,
+	BasicValidatorTest.class,
+	ExpressionValidatorTest.class,
+	FunctionOrReductionValidatorTest.class,
+	InstructionValidatorTest.class,
+	UniqueNameValidatorTest.class,
+	UnusedValidatorTest.class,
 })
 
-public class NabLabTestSuite {}
+public class NabLabValidationTestSuite {}

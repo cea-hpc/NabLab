@@ -18,13 +18,13 @@ import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.typing.DeclarationProvider
+import fr.cea.nabla.overloading.DeclarationProvider
 import fr.cea.nabla.typing.NSTRealArray1D
 import fr.cea.nabla.typing.NSTRealScalar
-import fr.cea.nabla.typing.NSTSizeType
 import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.validation.BasicValidator
-import fr.cea.nabla.validation.TypeValidator
+import fr.cea.nabla.validation.ExpressionValidator
+import fr.cea.nabla.validation.UnusedValidator
 import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
@@ -53,8 +53,8 @@ class DeclarationProviderTest
 
 		itemtypes { cell, node }
 
-		set	cells: → {cell};
-		set	nodes: → {node};
+		set cells: → {cell};
+		set nodes: → {node};
 
 		def	f: → ℕ;
 		def f: ℕ → ℕ;
@@ -73,28 +73,28 @@ class DeclarationProviderTest
 		ℝ[2] x2{cells};
 
 		// --- TEST DE F ---
-		J0: { ℕ y = f(); }
-		J1: { ℕ y = f(2); }
-		J2: { ℝ y = f(3.0); }
+		J0: { let y = f(); }
+		J1: { let y = f(2); }
+		J2: { let y = f(3.0); }
 		J3: {
-				ℝ[2] b = [1.1, 2.2];
-				ℝ[2] y = f(b);
+				let b = [1.1, 2.2];
+				let y = f(b);
 		}
-		J4: { ℝ y = f(3.0, true); } // Wrong arguments : ℝ, ℾ
+		J4: { let y = f(3.0, true); } // Wrong arguments : ℝ, ℾ
 
 		// --- TEST DE G ---
 		J5: {
-				ℝ[2] b = [1.1, 2.2];
-				ℝ[2] y = g(b);
+				let b = [1.1, 2.2];
+				let y = g(b);
 		}
 		J6: {
-				ℝ[2, 3] b = [[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]];
-				ℝ[6] y = g(b);
+				let b = [[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]];
+				let y = g(b);
 		}
 		J7: {
-				ℝ[2] b = [1.1, 2.2];
-				ℝ[3] c = [3.3, 4.4, 5.5];
-				ℝ[5] y = g(b, c);
+				let b = [1.1, 2.2];
+				let c = [3.3, 4.4, 5.5];
+				let y = g(b, c);
 		}
 		J8: { a = g(x); }
 		J9: { a = g(x, x); } // Wrong arguments : ℝ{cells}, ℝ{cells}
@@ -103,17 +103,17 @@ class DeclarationProviderTest
 
 		val module = model.parse
 		Assert.assertNotNull(module)
-		Assert.assertEquals(3, module.validate.filter(i | i.severity == Severity.ERROR).size)
+		Assert.assertEquals(4, module.validate.filter(i | i.severity == Severity.ERROR).size)
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
-		TypeValidator::FUNCTION_ARGS,
-		TypeValidator::getFunctionArgsMsg(#[PrimitiveType::REAL.literal, PrimitiveType::BOOL.literal]))
+		ExpressionValidator::FUNCTION_CALL_ARGS,
+		ExpressionValidator::getFunctionCallArgsMsg(#[PrimitiveType::REAL.literal, PrimitiveType::BOOL.literal]))
 		val cells = module.getConnectivityByName("cells") as MultipleConnectivity
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
-		TypeValidator::FUNCTION_ARGS,
-		TypeValidator::getFunctionArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealArray1D(NSTSizeType.create(2))).label]))
+		ExpressionValidator::FUNCTION_CALL_ARGS,
+		ExpressionValidator::getFunctionCallArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealArray1D(createIntConstant(2))).label]))
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
-		TypeValidator::FUNCTION_ARGS,
-		TypeValidator::getFunctionArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealScalar).label, new NablaConnectivityType(#[cells], new NSTRealScalar).label]))
+		ExpressionValidator::FUNCTION_CALL_ARGS,
+		ExpressionValidator::getFunctionCallArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealScalar).label, new NablaConnectivityType(#[cells], new NSTRealScalar).label]))
 
 		val fFunctions = module.functions.filter[x | x.name == 'f']
 		val j0Fdecl = getFunctionDeclarationOfJob(module, 0)
@@ -130,13 +130,13 @@ class DeclarationProviderTest
 		val gFunctions = module.functions.filter(Function).filter[x | x.name == 'g']
 		val j5Gdecl = getFunctionDeclarationOfJob(module, 5)
 		Assert.assertEquals(gFunctions.get(0), j5Gdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(NSTSizeType.create(2)), j5Gdecl.returnType)
+		Assert.assertEquals(new NSTRealArray1D(createIntConstant(2)), j5Gdecl.returnType)
 		val j6Gdecl = getFunctionDeclarationOfJob(module, 6)
 		Assert.assertEquals(gFunctions.get(1), j6Gdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(NSTSizeType.create(6)), j6Gdecl.returnType)
+		Assert.assertEquals(new NSTRealArray1D(createIntConstant(6)), j6Gdecl.returnType)
 		val j7Gdecl = getFunctionDeclarationOfJob(module, 7)
 		Assert.assertEquals(gFunctions.get(2), j7Gdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(NSTSizeType.create(5)), j7Gdecl.returnType)
+		Assert.assertEquals(new NSTRealArray1D(createIntConstant(5)), j7Gdecl.returnType)
 		val j8Gdecl = getFunctionDeclarationOfJob(module, 8)
 		Assert.assertEquals(gFunctions.get(0), j8Gdecl.model)
 		Assert.assertEquals(new NablaConnectivityType(#[cells], new NSTRealScalar), j8Gdecl.returnType)
@@ -144,8 +144,7 @@ class DeclarationProviderTest
 		Assert.assertEquals(gFunctions.get(2), j9Gdecl.model)
 		Assert.assertNull(j9Gdecl.returnType)
 		val j10Gdecl = getFunctionDeclarationOfJob(module, 10)
-		Assert.assertEquals(gFunctions.get(1), j10Gdecl.model)
-		Assert.assertNull(j10Gdecl.returnType)
+		Assert.assertNull(j10Gdecl)
 	}
 
 	@Test
@@ -170,8 +169,8 @@ class DeclarationProviderTest
 			return f(x); // Wrong f only on ℝ[2]
 		}
 
-		def	j: a | ℝ[a] → ℝ[a], (x) → {
-			ℝ[a] y = g(x);
+		def j: a | ℝ[a] → ℝ[a], (x) → {
+			let y = g(x);
 			∀i∈[0;a[, y[i] = f(x[i]);
 			return y;
 		}
@@ -181,12 +180,13 @@ class DeclarationProviderTest
 		val module = model.parse
 		Assert.assertNotNull(module)
 		Assert.assertEquals(1, module.validate.filter(i | i.severity == Severity.ERROR).size)
-		module.assertError(NablaPackage.eINSTANCE.functionCall, TypeValidator::FUNCTION_ARGS, TypeValidator::getReductionArgsMsg("ℝ[a]"))
+		module.assertError(NablaPackage.eINSTANCE.functionCall, ExpressionValidator::FUNCTION_CALL_ARGS, ExpressionValidator::getFunctionCallArgsMsg(#["ℝ[a]"]))
 
 		Assert.assertEquals(4, module.validate.filter(i | i.severity == Severity.WARNING).size)
-		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 118, 1, BasicValidator::getUnusedFunctionMsg)
-		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 170, 1, BasicValidator::getUnusedFunctionMsg)
-		module.assertWarning(NablaPackage.eINSTANCE.function, BasicValidator::UNUSED_FUNCTION, 243, 1, BasicValidator::getUnusedFunctionMsg)
+		module.assertWarning(NablaPackage.eINSTANCE.connectivity, UnusedValidator::UNUSED, 37, 5, BasicValidator::getUnusedMsg(NablaPackage.Literals.CONNECTIVITY, 'nodes'))
+		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 118, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'h'))
+		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 170, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'i'))
+		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 243, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'j'))
 
 		val functions = module.functions
 		val h = functions.findFirst[name == 'h']
@@ -213,9 +213,9 @@ class DeclarationProviderTest
 
 		set cells: → {cell}; 
 		set nodes: → {node};
-			
-		def f: 0.0, ℝ, (a , b) → return a;
-		def f: x | 0.0, ℝ[x], (a , b) → return a;
+
+		def f, 0.0: ℝ, (a , b) → return a;
+		def f, 0.0: x | ℝ[x], (a , b) → return a;
 		'''
 		+ mandatoryOptions +
 		'''
@@ -224,28 +224,28 @@ class DeclarationProviderTest
 		ℕ bidon{cells};
 
 		// --- TEST DE F ---
-		J0: { ℝ x = f{j ∈ cells()}(u{j}); }
-		J1: { ℝ[2] x = f{j ∈ cells()}(u2{j}); }
-		J2: { ℝ x = f{j ∈ cells()}(bidon{j}); } // Wrong arguments : ℕ
+		J0: { let x = f{j ∈ cells()}(u{j}); }
+		J1: { let x = f{j ∈ cells()}(u2{j}); }
+		J2: { let x = f{j ∈ cells()}(bidon{j}); } // Wrong arguments : ℕ
 		'''
 
 		val module = model.parse
 		Assert.assertNotNull(module)
 		Assert.assertEquals(1, module.validate.filter(i | i.severity == Severity.ERROR).size)
 		module.assertError(NablaPackage.eINSTANCE.reductionCall,
-		TypeValidator::REDUCTION_ARGS,
-		TypeValidator::getReductionArgsMsg(PrimitiveType::INT.literal))
-		
+		ExpressionValidator::REDUCTION_CALL_ARGS,
+		ExpressionValidator::getReductionCallArgsMsg(PrimitiveType::INT.literal))
+
 		val fReductions = module.reductions.filter[x | x.name == 'f']
 		val j0Fdecl = getReductionDeclarationOfJob(module, 0)
 		Assert.assertEquals(fReductions.get(0), j0Fdecl.model)
 		val j1Fdecl = getReductionDeclarationOfJob(module, 1)
 		Assert.assertEquals(fReductions.get(1), j1Fdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(NSTSizeType.create(2)), j1Fdecl.type)
+		Assert.assertEquals(new NSTRealArray1D(createIntConstant(2)), j1Fdecl.type)
 		val j2Fdecl = getReductionDeclarationOfJob(module, 2)
 		Assert.assertNull(j2Fdecl)
 	}
-	
+
 	private def getFunctionDeclarationOfJob(NablaModule m, int jobIndex)
 	{
 		val fcall = m.jobs.get(jobIndex).eAllContents.filter(FunctionCall).head

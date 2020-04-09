@@ -14,158 +14,94 @@ public final class Test
 	{
 		public final double X_EDGE_LENGTH = 0.01;
 		public final double Y_EDGE_LENGTH = X_EDGE_LENGTH;
-		public final int X_EDGE_ELEMS = 100;
+		public final int X_EDGE_ELEMS = 10;
 		public final int Y_EDGE_ELEMS = 10;
-		public final int Z_EDGE_ELEMS = 1;
-		public final double option_stoptime = 0.2;
-		public final int option_max_iterations = 20000;
 	}
 
 	private final Options options;
-	private int iteration;
 
 	// Mesh
-	private final NumericMesh2D mesh;
-	private final int nbNodes;
+	private final CartesianMesh2D mesh;
 	private final FileWriter writer;
+	private final int nbNodes;
 
 	// Global Variables
-	private double t;
-	private double[] u, v, w1, w2, w3, w4, w5, w6;
+	private double t, deltat, r0, r1, r2, r3;
+	private int n0, n1, n2, n3;
+	private double[] u, v, w, alpha, beta, res1;
+	private double[][] delta, rho, res2;
 
 	// Connectivity Variables
 	private double[][] X;
 
-	public Test(Options aOptions, NumericMesh2D aNumericMesh2D)
+	public Test(Options aOptions, CartesianMesh2D aCartesianMesh2D)
 	{
 		options = aOptions;
-		mesh = aNumericMesh2D;
+		mesh = aCartesianMesh2D;
 		writer = new PvdFileWriter2D("Test");
 		nbNodes = mesh.getNbNodes();
 
-		u = new double[] {0.0, 0.1};
-		v = new double[] {0.0, 0.1, 0.2};
+		t = 0.0;
+		deltat = 0.001;
+		n0 = 0;
+		n1 = TestFunctions.getOne();
+		n2 = addOne(n1);
+		n3 = TestFunctions.add(n1, n2);
+		r0 = 0.0;
+		r1 = addOne(r0);
+		r2 = TestFunctions.add(r1, n1);
+		r3 = TestFunctions.add(r2, r1);
+		u = new double[] {1.0, 1.0};
+		v = new double[] {2.0, 2.0};
+		w = TestFunctions.add(u, v);
+		alpha = new double[] {1.0, 1.0, 1.0};
+		beta = new double[] {2.0, 2.0, 2.0};
+		res1 = TestFunctions.add(alpha, beta);
+		delta = new double[][] {{1.0, 1.0}, {1.0, 1.0}};
+		rho = new double[][] {{2.0, 2.0}, {2.0, 2.0}};
+		res2 = TestFunctions.add(delta, rho);
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
 		u = new double[2];
-		v = new double[3];
-		w1 = new double[2];
-		w2 = new double[2];
-		w3 = new double[3];
-		w4 = new double[2];
-		w5 = new double[3];
-		w6 = new double[2];
+		v = new double[2];
+		w = new double[2];
+		alpha = new double[3];
+		beta = new double[3];
+		res1 = new double[3];
+		delta = new double[2][2];
+		rho = new double[2][2];
+		res2 = new double[2][2];
 
 		// Copy node coordinates
-		ArrayList<double[]> gNodes = mesh.getGeometricMesh().getNodes();
-		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> X[rNodes] = gNodes.get(rNodes));
+		double[][] gNodes = mesh.getGeometry().getNodes();
+		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> {
+			X[rNodes][0] = gNodes[rNodes][0];
+			X[rNodes][1] = gNodes[rNodes][1];
+		});
 	}
 
 	public void simulate()
 	{
-		System.out.println("Début de l'exécution du module Test");
-		j1(); // @-1.0
-		j2(); // @-1.0
-		j3(); // @-1.0
-		j4(); // @-1.0
-		j5(); // @-1.0
-		j6(); // @-1.0
-		System.out.println("Fin de l'exécution du module Test");
+		System.out.println("Start execution of module Test");
+		System.out.println("End of execution of module Test");
 	}
 
 	public static void main(String[] args)
 	{
 		Test.Options o = new Test.Options();
-		Mesh gm = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
-		NumericMesh2D nm = new NumericMesh2D(gm);
-		Test i = new Test(o, nm);
+		CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
+		Test i = new Test(o, mesh);
 		i.simulate();
 	}
 
-	/**
-	 * Job j1 @-1.0
-	 * In variables: u
-	 * Out variables: w1
-	 */
-	private void j1() 
+	private int addOne(int a)
 	{
-		w1 = h(u);
-	}		
-
-	/**
-	 * Job j2 @-1.0
-	 * In variables: u
-	 * Out variables: w2
-	 */
-	private void j2() 
-	{
-		w2 = i(u);
-	}		
-
-	/**
-	 * Job j3 @-1.0
-	 * In variables: v
-	 * Out variables: w3
-	 */
-	private void j3() 
-	{
-		w3 = i(v);
-	}		
-
-	/**
-	 * Job j4 @-1.0
-	 * In variables: u
-	 * Out variables: w4
-	 */
-	private void j4() 
-	{
-		w4 = j(u);
-	}		
-
-	/**
-	 * Job j5 @-1.0
-	 * In variables: v
-	 * Out variables: w5
-	 */
-	private void j5() 
-	{
-		w5 = j(v);
-	}		
-
-	/**
-	 * Job j6 @-1.0
-	 * In variables: u
-	 * Out variables: w6
-	 */
-	private void j6() 
-	{
-		w6 = k(u);
-	}		
-
-	private double[] j(double[] x) 
-	{
-		final int a = x.length;
-		double[] y = new double[a];
-		for (int i=0; i<a; i++)
-			y[i] = 2 * x[i];
-		return y;
+		return a + 1;
 	}
 
-	private double[] h(double[] a) 
+	private double addOne(double a)
 	{
-		return ArrayOperations.multiply(2, a);
-	}
-
-	private double[] i(double[] x) 
-	{
-		final int a = x.length;
-		return ArrayOperations.multiply(2, x);
-	}
-
-	private double[] k(double[] x) 
-	{
-		final int b = x.length;
-		return j(x);
+		return a + 1;
 	}
 };

@@ -49,7 +49,7 @@ public interface BaseType extends IrType {
 
 	/**
 	 * Returns the value of the '<em><b>Sizes</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.SizeType}.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Expression}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Sizes</em>' containment reference list.
@@ -57,6 +57,6 @@ public interface BaseType extends IrType {
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	EList<SizeType> getSizes();
+	EList<Expression> getSizes();
 
 } // BaseType

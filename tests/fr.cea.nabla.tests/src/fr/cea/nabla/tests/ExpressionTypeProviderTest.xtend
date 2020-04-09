@@ -17,6 +17,7 @@ import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.MultipleConnectivity
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Var
+import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.NSTBoolScalar
 import fr.cea.nabla.typing.NSTIntArray1D
@@ -25,10 +26,8 @@ import fr.cea.nabla.typing.NSTIntScalar
 import fr.cea.nabla.typing.NSTRealArray1D
 import fr.cea.nabla.typing.NSTRealArray2D
 import fr.cea.nabla.typing.NSTRealScalar
-import fr.cea.nabla.typing.NSTSizeType
 import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.typing.NablaType
-import fr.cea.nabla.typing.VarTypeProvider
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -44,7 +43,7 @@ class ExpressionTypeProviderTest
 	@Inject extension ParseHelper<NablaModule>
 	@Inject extension ValidationTestHelper
 	@Inject extension ExpressionTypeProvider
-	@Inject extension VarTypeProvider
+	@Inject extension ArgOrVarTypeProvider
 	@Inject extension ArgOrVarExtensions
 	@Inject extension NablaModuleExtensions
 	@Inject extension TestUtils
@@ -59,61 +58,61 @@ class ExpressionTypeProviderTest
 	set nodesOfCell: cell → {node};
 	set nodes: → {node};
 
-	def reduceMin: ℝ.MaxValue, ℝ, (a, b) → return a;
+	def reduceMin, ℝ.MaxValue: ℝ, (a, b) → return a;
 
 	def perp: ℝ[2] → ℝ[2];
 	def norm: x | ℝ[x] → ℝ;
 	def solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x];
 
-	const ℝ X_EDGE_LENGTH = 1.;
-	const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-	const ℕ X_EDGE_ELEMS = 2;
-	const ℕ Y_EDGE_ELEMS = 2;
-	const ℕ Z_EDGE_ELEMS = 1;
-	const ℝ option_stoptime = 0.1;
-	const ℕ option_max_iterations = 500;
+	const X_EDGE_LENGTH = 1.;
+	const Y_EDGE_LENGTH = X_EDGE_LENGTH;
+	const X_EDGE_ELEMS = 2;
+	const Y_EDGE_ELEMS = 2;
+	const Z_EDGE_ELEMS = 1;
+	const option_stoptime = 0.1;
+	const option_max_iterations = 500;
 
 	ℝ t;
 	ℝ[2] X{nodes};
 
-	ℕ a1 = 1;
-	ℕ a2 = 9 % 4;
-	ℕ a3 = ℕ.MinValue;
+	let a1 = 1;
+	let a2 = 9 % 4;
+	let a3 = ℕ.MinValue;
 	ℕ a4;
 	ℕ[2] a5;
-	ℕ[2] a6 = [1,1];
-	ℕ[2] a7 = ℕ[2](1);
+	let a6 = [1,1];
+	let a7 = ℕ[2](1);
 	ℕ[2,2] a8;
-	ℕ a9 = a8[0,2];
+	let a9 = a8[0,2];
 
-	ℾ b1 = true;
-	ℾ b2 = false || true;
-	ℾ b3 = false && true;
-	ℾ b4 = (a1 == 2);
-	ℾ b5 = (a1 != 2);
-	ℾ b6 = (a1 > 2);
-	ℾ b7 = (a1 >= 2);
-	ℾ b8 = (a1 <= 2);
-	ℾ b9 = (a1 < 2);
-	ℾ b10 = !(a1 < 2);
+	let b1 = true;
+	let b2 = false || true;
+	let b3 = false && true;
+	let b4 = (a1 == 2);
+	let b5 = (a1 != 2);
+	let b6 = (a1 > 2);
+	let b7 = (a1 >= 2);
+	let b8 = (a1 <= 2);
+	let b9 = (a1 < 2);
+	let b10 = !(a1 < 2);
 
-	ℝ c1 = 2.0 + 1.0;
-	ℝ c2 = 2.0 - 1.0;
-	ℝ c3 = 2.0 * 1.0;
-	ℝ c4 = 2.0 / 1.0;
-	ℝ c5 = -c1;		
-	ℝ c6 = ℝ.MaxValue;
-	const ℝ c7 = 1.0e-10;
+	let c1 = 2.0 + 1.0;
+	let c2 = 2.0 - 1.0;
+	let c3 = 2.0 * 1.0;
+	let c4 = 2.0 / 1.0;
+	let c5 = -c1;		
+	let c6 = ℝ.MaxValue;
+	const c7 = 1.0e-10;
 
-	ℝ[2] d1 = [1.0, 2.0];
-	ℝ[2] d2 = perp(d1);
-	ℝ[2] d3 = ℝ[2](0.);
+	let d1 = [1.0, 2.0];
+	let d2 = perp(d1);
+	let d3 = ℝ[2](0.);
 
-	ℝ[3] e = [1.0, 2.0, 3.0];
+	let e = [1.0, 2.0, 3.0];
 
 
-	ℝ[2,2] g = [ [1.0, 0.0], [0.0, 1.0] ];
-	ℝ h = (a1 == 1 ? 0.0 : 1.0);
+	let g = [ [1.0, 0.0], [0.0, 1.0] ];
+	let h = (a1 == 1 ? 0.0 : 1.0);
 
 	ℕ s{cells};
 	ℝ u{cells}, v{cells};
@@ -128,7 +127,7 @@ class ExpressionTypeProviderTest
 	ComputeV: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r} + s{j});
 
 	ComputeX: ∀ j∈cells(), {
-		ℝ ee = 1.0;
+		const ee = 1.0;
 		u^{n}{j} = ee * 4;
 		∀r∈nodesOfCell(j), x{j,r} = norm(w{j,r});
 	}
@@ -151,15 +150,14 @@ class ExpressionTypeProviderTest
 		val computeV = module.getJobByName("ComputeV")
 		val computeX = module.getJobByName("ComputeX")
 
-		val two = NSTSizeType.create(2)
 		assertTypesFor(new NSTIntScalar, module, "a1")
 		assertTypesFor(new NSTIntScalar, module, "a2")
 		assertTypesFor(new NSTIntScalar, module, "a3")
 		assertTypesFor(new NSTIntScalar, module, "a4")
-		assertTypesFor(new NSTIntArray1D(two), module, "a5")
-		assertTypesFor(new NSTIntArray1D(two), module, "a6")
-		assertTypesFor(new NSTIntArray1D(two), module, "a7")
-		assertTypesFor(new NSTIntArray2D(two, two), module, "a8")
+		assertTypesFor(new NSTIntArray1D(createIntConstant(2)), module, "a5")
+		assertTypesFor(new NSTIntArray1D(createIntConstant(2)), module, "a6")
+		assertTypesFor(new NSTIntArray1D(createIntConstant(2)), module, "a7")
+		assertTypesFor(new NSTIntArray2D(createIntConstant(2), createIntConstant(2)), module, "a8")
 		assertTypesFor(new NSTIntScalar, module, "a9")
 
 		assertTypesFor(new NSTBoolScalar, module, "b1")
@@ -181,19 +179,19 @@ class ExpressionTypeProviderTest
 		assertTypesFor(new NSTRealScalar, module, "c6")
 		assertTypesFor(new NSTRealScalar, module, "c7")
 
-		assertTypesFor(new NSTRealArray1D(two), module, "d1")
-		assertTypesFor(new NSTRealArray1D(two), module, "d2")
-		assertTypesFor(new NSTRealArray1D(two), module, "d3")
+		assertTypesFor(new NSTRealArray1D(createIntConstant(2)), module, "d1")
+		assertTypesFor(new NSTRealArray1D(createIntConstant(2)), module, "d2")
+		assertTypesFor(new NSTRealArray1D(createIntConstant(2)), module, "d3")
 
-		assertTypesFor(new NSTRealArray1D(NSTSizeType.create(3)), module, "e")
+		assertTypesFor(new NSTRealArray1D(createIntConstant(3)), module, "e")
 
-		assertTypesFor(new NSTRealArray2D(two, two), module, "g")
+		assertTypesFor(new NSTRealArray2D(createIntConstant(2), createIntConstant(2)), module, "g")
 		assertTypesFor(new NSTRealScalar, module, "h")
 
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTIntScalar), module, "s")
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), module, "u")
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), module, "v")
-		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealArray1D(two)), module, "w")
+		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealArray1D(createIntConstant(2))), module, "w")
 		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealScalar), module, "x")
 		assertTypesFor(new NablaConnectivityType(#[cells, cells], new NSTRealScalar), module, "α")
 

@@ -11,7 +11,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcp
 
 add_executable(heatequation HeatEquation.cc)
 target_include_directories(heatequation PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
-target_link_libraries(heatequation cppnabla cppnablastl)
+target_link_libraries(heatequation cppnabla cppnablastl pthread)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 include(Project.cmake)

@@ -24,7 +24,7 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 @Data
 abstract class ArgOrVarContentProvider
 {
-	val extension TypeContentProvider tcp
+	val extension TypeContentProvider typeContentProvider
 
 	protected abstract def CharSequence getCstrInit(ConnectivityVariable it)
 	protected abstract def CharSequence formatIterators(ConnectivityVariable it, List<String> iterators)
@@ -84,7 +84,7 @@ class StlArgOrVarContentProvider extends ArgOrVarContentProvider
 		{
 			case 0: throw new RuntimeException("Ooops. Can not be there, normally...")
 			case 1: connectivities.get(0).nbElems
-			default: '''«connectivities.get(0).nbElems», «tcp.getCppType(baseType, connectivities.tail)»(«getCstrInit(varName, baseType, connectivities.tail)»)''' 
+			default: '''«connectivities.get(0).nbElems», «typeContentProvider.getCppType(baseType, connectivities.tail)»(«getCstrInit(varName, baseType, connectivities.tail)»)''' 
 		}
 	}
 }

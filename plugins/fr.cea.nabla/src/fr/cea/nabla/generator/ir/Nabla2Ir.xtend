@@ -22,7 +22,7 @@ import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
-import fr.cea.nabla.typing.DeclarationProvider
+import fr.cea.nabla.overloading.DeclarationProvider
 import java.util.LinkedHashSet
 import org.eclipse.emf.ecore.EObject
 

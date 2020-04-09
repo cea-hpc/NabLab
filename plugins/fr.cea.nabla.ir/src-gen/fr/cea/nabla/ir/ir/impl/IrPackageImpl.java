@@ -59,11 +59,6 @@ import fr.cea.nabla.ir.ir.RealConstant;
 import fr.cea.nabla.ir.ir.ReductionInstruction;
 import fr.cea.nabla.ir.ir.Return;
 import fr.cea.nabla.ir.ir.SimpleVariable;
-import fr.cea.nabla.ir.ir.SizeType;
-import fr.cea.nabla.ir.ir.SizeTypeInt;
-import fr.cea.nabla.ir.ir.SizeTypeOperation;
-import fr.cea.nabla.ir.ir.SizeTypeSymbol;
-import fr.cea.nabla.ir.ir.SizeTypeSymbolRef;
 import fr.cea.nabla.ir.ir.TimeLoop;
 import fr.cea.nabla.ir.ir.TimeLoopCopy;
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob;
@@ -333,41 +328,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass intervalEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass sizeTypeSymbolEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass sizeTypeEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass sizeTypeIntEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass sizeTypeOperationEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass sizeTypeSymbolRefEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -1809,116 +1769,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EClass getSizeTypeSymbol() {
-		return sizeTypeSymbolEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getSizeTypeSymbol_Name() {
-		return (EAttribute)sizeTypeSymbolEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getSizeType() {
-		return sizeTypeEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getSizeTypeInt() {
-		return sizeTypeIntEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getSizeTypeInt_Value() {
-		return (EAttribute)sizeTypeIntEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getSizeTypeOperation() {
-		return sizeTypeOperationEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getSizeTypeOperation_Left() {
-		return (EReference)sizeTypeOperationEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getSizeTypeOperation_Right() {
-		return (EReference)sizeTypeOperationEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getSizeTypeOperation_Operator() {
-		return (EAttribute)sizeTypeOperationEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getSizeTypeSymbolRef() {
-		return sizeTypeSymbolRefEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getSizeTypeSymbolRef_Target() {
-		return (EReference)sizeTypeSymbolRefEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EClass getExpression() {
 		return expressionEClass;
 	}
@@ -2794,22 +2644,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(intervalEClass, INTERVAL__INDEX);
 		createEReference(intervalEClass, INTERVAL__NB_ELEMS);
 
-		sizeTypeSymbolEClass = createEClass(SIZE_TYPE_SYMBOL);
-		createEAttribute(sizeTypeSymbolEClass, SIZE_TYPE_SYMBOL__NAME);
-
-		sizeTypeEClass = createEClass(SIZE_TYPE);
-
-		sizeTypeIntEClass = createEClass(SIZE_TYPE_INT);
-		createEAttribute(sizeTypeIntEClass, SIZE_TYPE_INT__VALUE);
-
-		sizeTypeOperationEClass = createEClass(SIZE_TYPE_OPERATION);
-		createEReference(sizeTypeOperationEClass, SIZE_TYPE_OPERATION__LEFT);
-		createEReference(sizeTypeOperationEClass, SIZE_TYPE_OPERATION__RIGHT);
-		createEAttribute(sizeTypeOperationEClass, SIZE_TYPE_OPERATION__OPERATOR);
-
-		sizeTypeSymbolRefEClass = createEClass(SIZE_TYPE_SYMBOL_REF);
-		createEReference(sizeTypeSymbolRefEClass, SIZE_TYPE_SYMBOL_REF__TARGET);
-
 		expressionEClass = createEClass(EXPRESSION);
 		createEReference(expressionEClass, EXPRESSION__TYPE);
 
@@ -2973,11 +2807,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		iterationBlockEClass.getESuperTypes().add(this.getIrAnnotable());
 		iteratorEClass.getESuperTypes().add(this.getIterationBlock());
 		intervalEClass.getESuperTypes().add(this.getIterationBlock());
-		sizeTypeSymbolEClass.getESuperTypes().add(this.getIrAnnotable());
-		sizeTypeEClass.getESuperTypes().add(this.getIrAnnotable());
-		sizeTypeIntEClass.getESuperTypes().add(this.getSizeType());
-		sizeTypeOperationEClass.getESuperTypes().add(this.getSizeType());
-		sizeTypeSymbolRefEClass.getESuperTypes().add(this.getSizeType());
 		expressionEClass.getESuperTypes().add(this.getIrAnnotable());
 		contractedIfEClass.getESuperTypes().add(this.getExpression());
 		binaryExpressionEClass.getESuperTypes().add(this.getExpression());
@@ -3072,7 +2901,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(functionEClass, Function.class, "Function", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getFunction_ReturnType(), this.getBaseType(), null, "returnType", null, 0, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getFunction_Provider(), ecorePackage.getEString(), "provider", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getFunction_Variables(), this.getSizeTypeSymbol(), null, "variables", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getFunction_Variables(), this.getSimpleVariable(), null, "variables", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getFunction_Name(), ecorePackage.getEString(), "name", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunction_InArgs(), this.getArg(), null, "inArgs", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunction_Body(), this.getInstruction(), null, "body", null, 0, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3157,24 +2986,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getIterator_Container(), this.getConnectivityCall(), null, "container", null, 1, 1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(intervalEClass, Interval.class, "Interval", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getInterval_Index(), this.getSizeTypeSymbol(), null, "index", null, 1, 1, Interval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getInterval_NbElems(), this.getSizeType(), null, "nbElems", null, 1, 1, Interval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(sizeTypeSymbolEClass, SizeTypeSymbol.class, "SizeTypeSymbol", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getSizeTypeSymbol_Name(), ecorePackage.getEString(), "name", null, 1, 1, SizeTypeSymbol.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(sizeTypeEClass, SizeType.class, "SizeType", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-		initEClass(sizeTypeIntEClass, SizeTypeInt.class, "SizeTypeInt", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getSizeTypeInt_Value(), ecorePackage.getEInt(), "value", null, 1, 1, SizeTypeInt.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(sizeTypeOperationEClass, SizeTypeOperation.class, "SizeTypeOperation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getSizeTypeOperation_Left(), this.getSizeType(), null, "left", null, 1, 1, SizeTypeOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getSizeTypeOperation_Right(), this.getSizeType(), null, "right", null, 1, 1, SizeTypeOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getSizeTypeOperation_Operator(), ecorePackage.getEString(), "operator", null, 1, 1, SizeTypeOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(sizeTypeSymbolRefEClass, SizeTypeSymbolRef.class, "SizeTypeSymbolRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getSizeTypeSymbolRef_Target(), this.getSizeTypeSymbol(), null, "target", null, 1, 1, SizeTypeSymbolRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getInterval_Index(), this.getSimpleVariable(), null, "index", null, 1, 1, Interval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getInterval_NbElems(), this.getExpression(), null, "nbElems", null, 1, 1, Interval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(expressionEClass, Expression.class, "Expression", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getExpression_Type(), this.getIrType(), null, "type", null, 1, 1, Expression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3222,7 +3035,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(argOrVarRefEClass, ArgOrVarRef.class, "ArgOrVarRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getArgOrVarRef_Target(), this.getArgOrVar(), null, "target", null, 1, 1, ArgOrVarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getArgOrVarRef_Iterators(), this.getItemIndex(), null, "iterators", null, 0, -1, ArgOrVarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getArgOrVarRef_Indices(), this.getSizeType(), null, "indices", null, 0, -1, ArgOrVarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getArgOrVarRef_Indices(), this.getExpression(), null, "indices", null, 0, -1, ArgOrVarRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(itemTypeEClass, ItemType.class, "ItemType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getItemType_Name(), ecorePackage.getEString(), "name", null, 1, 1, ItemType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3231,7 +3044,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(baseTypeEClass, BaseType.class, "BaseType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getBaseType_Primitive(), this.getPrimitiveType(), "primitive", null, 1, 1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getBaseType_Sizes(), this.getSizeType(), null, "sizes", null, 0, -1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBaseType_Sizes(), this.getExpression(), null, "sizes", null, 0, -1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(connectivityTypeEClass, ConnectivityType.class, "ConnectivityType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConnectivityType_Connectivities(), this.getConnectivity(), null, "connectivities", null, 0, -1, ConnectivityType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -25,7 +25,7 @@ set nodesOfFace: face → {node};
 def perp: ℝ[2] → ℝ[2], (a) → return [ a[1], -a[0] ];
 
 def trace: l | ℝ[l,l] → ℝ, (a) → {
-	ℝ result = 0.0;
+	let result = 0.0;
 	∀ ia ∈ [0;l[, result = result + a[ia, ia];
 	return result;
 }
@@ -40,33 +40,33 @@ def tensProduct: l | ℝ[l] × ℝ[l] → ℝ[l,l], (a, b) → {
 
 // Only for 2x2 matrices
 def inverse: ℝ[2,2] → ℝ[2,2], (a) → {
-	ℝ alpha = 1.0 / det(a);
+	let alpha = 1.0 / det(a);
 	return [[ a[1,1] * alpha, -a[0,1] * alpha ],
 			[-a[1,0] * alpha,  a[0,0] * alpha ]];
 }
 
 // Mesh options
-const ℝ X_EDGE_LENGTH = 0.01;
-const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-const ℕ X_EDGE_ELEMS = 100;
-const ℕ Y_EDGE_ELEMS = 10;
+const X_EDGE_LENGTH = 0.01;
+const Y_EDGE_LENGTH = X_EDGE_LENGTH;
+const X_EDGE_ELEMS = 100;
+const Y_EDGE_ELEMS = 10;
 
 // Simulation options
-const ℝ option_stoptime = 0.2;
-const ℕ option_max_iterations = 20000;
+const option_stoptime = 0.2;
+const option_max_iterations = 20000;
   
 // User options
-const ℝ γ = 1.4;
-const ℝ option_x_interface = 0.5;
-const ℝ option_δt_ini = 1.0e-5;
-const ℝ option_δt_cfl = 0.4;
-const ℝ option_ρ_ini_zg = 1.0;
-const ℝ option_ρ_ini_zd = 0.125;
-const ℝ option_p_ini_zg = 1.0;
-const ℝ option_p_ini_zd = 0.1;
+const γ = 1.4;
+const option_x_interface = 0.5;
+const option_δt_ini = 1.0e-5;
+const option_δt_cfl = 0.4;
+const option_ρ_ini_zg = 1.0;
+const option_ρ_ini_zd = 0.125;
+const option_p_ini_zg = 1.0;
+const option_p_ini_zd = 0.1;
 
-ℝ t=0.0;
-ℝ δt=option_δt_ini;
+let t=0.0;
+let δt=option_δt_ini;
 
 ℝ[2] X{nodes}, b{nodes}, bt{nodes};
 ℝ[2,2] Ar{nodes}, Mt{nodes};
@@ -88,7 +88,7 @@ IniCjrIc: ∀j∈cells(), ∀r∈nodesOfCell(j),
 
 Initialize: ∀j∈cells(), {
 	ℝ ρ_ic, p_ic;
-	ℝ[2] center = 0.25 * ∑{r∈nodesOfCell(j)}(X^{n=0}{r});
+	let center = 0.25 * ∑{r∈nodesOfCell(j)}(X^{n=0}{r});
 	if (center[0] < option_x_interface) {
 		ρ_ic = option_ρ_ini_zg;
 		p_ic = option_p_ini_zg;
@@ -96,7 +96,7 @@ Initialize: ∀j∈cells(), {
   		ρ_ic = option_ρ_ini_zd;
   		p_ic = option_p_ini_zd;
   	}
-  	ℝ V_ic = 0.5 * ∑{r∈nodesOfCell(j)}(dot(Cjr_ic{j,r}, X^{n=0}{r}));
+  	let V_ic = 0.5 * ∑{r∈nodesOfCell(j)}(dot(Cjr_ic{j,r}, X^{n=0}{r}));
   	m{j} = ρ_ic * V_ic; // m is a constant
   	p{j} = p_ic;
   	ρ{j} = ρ_ic;
@@ -117,41 +117,41 @@ Computeδtj: ∀j∈cells(), δtj{j} = 2.0 * V{j} / (c{j} * ∑{r∈nodesOfCell(
 ComputeDensity: ∀j∈cells(), ρ{j} = m{j} / V{j};
 ComputeEOSp: ∀j∈cells(), p{j} = (γ-1.0) * ρ{j} * e{j};
 ComputeInternalEnergy: ∀j∈cells(), e{j} = E^{n}{j} - 0.5 * dot(uj^{n}{j}, uj^{n}{j});
-ComputeEOSc: ∀j∈cells(), c{j} = √(γ*p{j}/ρ{j}); 
+ComputeEOSc: ∀j∈cells(), c{j} = √(γ * p{j} / ρ{j}); 
 
 // *************************************************************
 // * Cell-centered Godunov Scheme for Lagragian gas dynamics
 // *************************************************************
-ComputeAjr: ∀j∈cells(), ∀r∈nodesOfCell(j), Ajr{j,r} = ((ρ{j}*c{j})/l{j,r}) * tensProduct(C{j,r}, C{j,r});
-ComputeFjr: ∀j∈cells(), ∀r∈nodesOfCell(j), F{j,r} = p{j}*C{j,r} + matVectProduct(Ajr{j,r}, (uj^{n}{j}-ur{r}));
+ComputeAjr: ∀j∈cells(), ∀r∈nodesOfCell(j), Ajr{j,r} = ((ρ{j} * c{j}) / l{j,r}) * tensProduct(C{j,r}, C{j,r});
+ComputeFjr: ∀j∈cells(), ∀r∈nodesOfCell(j), F{j,r} = p{j} * C{j,r} + matVectProduct(Ajr{j,r}, (uj^{n}{j}-ur{r}));
 ComputeAr: ∀r∈nodes(), Ar{r} = ∑{j∈cellsOfNode(r)}(Ajr{j,r});
-ComputeBr: ∀r∈nodes(), b{r} = ∑{j∈cellsOfNode(r)}(p{j}*C{j,r} + matVectProduct(Ajr{j,r}, uj^{n}{j}));
+ComputeBr: ∀r∈nodes(), b{r} = ∑{j∈cellsOfNode(r)}(p{j} * C{j,r} + matVectProduct(Ajr{j,r}, uj^{n}{j}));
 ComputeMt: ∀r∈innerNodes(), Mt{r} = Ar{r};
 ComputeBt: ∀r∈innerNodes(), bt{r} = b{r};
 
 ComputeBoundaryConditions: ∀f∈outerFaces(), {
-	const ℝ epsilon = 1.0e-10;
-	ℝ[2,2] I = [ [1.0, 0.0], [0.0, 1.0] ];
-	ℝ X_MIN = 0.0;
-	ℝ X_MAX = X_EDGE_ELEMS * X_EDGE_LENGTH;
-	ℝ Y_MIN = 0.0; 
-	ℝ Y_MAX = Y_EDGE_ELEMS * Y_EDGE_LENGTH;
-	ℝ[2] nY = [0.0, 1.0];
+	const epsilon = 1.0e-10;
+	let I = [ [1.0, 0.0], [0.0, 1.0] ];
+	let X_MIN = 0.0;
+	let X_MAX = X_EDGE_ELEMS * X_EDGE_LENGTH;
+	let Y_MIN = 0.0; 
+	let Y_MAX = Y_EDGE_ELEMS * Y_EDGE_LENGTH;
+	let nY = [0.0, 1.0];
 	
 	∀r∈nodesOfFace(f), {
 		// Y boundary conditions (must be done before X)
-		if ((X^{n}{r}[1]-Y_MIN < epsilon) || (X^{n}{r}[1]-Y_MAX < epsilon)) {
-			ℝ sign = 0.0;
-			if (X^{n}{r}[1]-Y_MIN < epsilon) sign = -1.0;
+		if ((X^{n}{r}[1] - Y_MIN < epsilon) || (X^{n}{r}[1] - Y_MAX < epsilon)) {
+			let sign = 0.0;
+			if (X^{n}{r}[1] - Y_MIN < epsilon) sign = -1.0;
 			else sign = 1.0;
-			ℝ[2] N = sign * nY;
-      		ℝ[2,2] NxN = tensProduct(N,N);
-      		ℝ[2,2] IcP = I - NxN;
+			let N = sign * nY;
+      		let NxN = tensProduct(N,N);
+      		let IcP = I - NxN;
 			bt{r} = matVectProduct(IcP, b{r});
 			Mt{r} = IcP * (Ar{r} * IcP) + NxN*trace(Ar{r});
 		}
 		// X boundary conditions
-		if ((fabs(X^{n}{r}[0]-X_MIN) < epsilon) || ( (fabs(X^{n}{r}[0]-X_MAX) < epsilon) )) {
+		if ((fabs(X^{n}{r}[0] - X_MIN) < epsilon) || ( (fabs(X^{n}{r}[0] - X_MAX) < epsilon) )) {
 			Mt{r} = I;
 			bt{r} = [0.0, 0.0];
 		}
@@ -159,12 +159,12 @@ ComputeBoundaryConditions: ∀f∈outerFaces(), {
 }
 
 ComputeU: ∀r∈nodes(), ur{r} = matVectProduct(inverse(Mt{r}), bt{r});
-ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C{j,r},X^{n}{r}));
+ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C{j,r}, X^{n}{r}));
 
 // *************************************************************
 // * Loop iteration (n)
 // *************************************************************
-ComputeXn: ∀r∈nodes(), X^{n+1}{r} = X^{n}{r}+δt^{n}*ur{r};
+ComputeXn: ∀r∈nodes(), X^{n+1}{r} = X^{n}{r} + δt^{n} * ur{r};
 ComputeUn: ∀j∈cells(), uj^{n+1}{j} = uj^{n}{j} - (δt^{n}/m{j}) * ∑{r∈nodesOfCell(j)}(F{j,r});
 ComputeEn: ∀j∈cells(), E^{n+1}{j} = E^{n}{j} - (δt^{n} / m{j}) * ∑{r∈nodesOfCell(j)}(dot(F{j,r}, ur{r}));
 ComputeDt: δt^{n+1} = option_δt_cfl * Min{j∈cells()}(δtj{j});

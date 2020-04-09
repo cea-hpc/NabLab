@@ -23,12 +23,12 @@ The version installed is 3.0.0.
 
 We use the same process.
 ```bash
-	cd kokkos
+	# kokkos directory already exists from kokkos install
 	cd kokkos
 	git clone https://github.com/kokkos/kokkos-kernels.git
-	mkdir kokkos-install
 	mkdir kokkos-build
 	cd kokkos-build
+	# kokkos-install directory already exists from kokkos install
 	cmake ../kokkos-kernels -DCMAKE_CXX_COMPILER=g++ -DCMAKE_INSTALL_PREFIX=~/kokkos/kokkos-install -DKokkos_ENABLE_OPENMP=On -DCMAKE_PREFIX_PATH=~/kokkos/kokkos-install
 	make install
 	cd ..

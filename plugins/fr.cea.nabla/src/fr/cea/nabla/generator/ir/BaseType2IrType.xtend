@@ -21,7 +21,7 @@ class BaseType2IrType
 {
 	@Inject extension Nabla2IrUtils
 	@Inject extension IrConnectivityFactory
-	@Inject extension IrSizeTypeFactory
+	@Inject extension IrExpressionFactory
 
 	// No create method to ensure a new instance every time (for n+1 time variables)
 	def toIrBaseType(BaseType t)
@@ -29,7 +29,7 @@ class BaseType2IrType
 		IrFactory::eINSTANCE.createBaseType => 
 		[
 			primitive = t.primitive.toIrPrimitiveType
-			t.sizes.forEach[x | sizes += x.toIrSizeType]
+			t.sizes.forEach[x | sizes += x.toIrExpression]
 		]
 	}
 

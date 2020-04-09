@@ -17,17 +17,14 @@ import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVar
+import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
-import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.typing.ArgOrVarTypeProvider
+import fr.cea.nabla.typing.NablaSimpleType
 
-/**
- * Attention : cette classe doit être un singleton car elle utilise des méthodes create.
- * Si elle n'est pas singleton, plusieurs instances d'un même objet seront créées lors
- * deu parcours du graphe d'origine (voir la documentation Xtext).
- */
 @Singleton
 class IrArgOrVarFactory 
 {
@@ -35,6 +32,8 @@ class IrArgOrVarFactory
 	@Inject extension IrExpressionFactory
 	@Inject extension BaseType2IrType
 	@Inject extension IrAnnotationHelper
+	@Inject extension ArgOrVarTypeProvider
+	@Inject NablaType2IrType nablaType2IrType
 
 	def toIrArgOrVar(ArgOrVar v, String timeSuffix)
 	{
@@ -80,7 +79,7 @@ class IrArgOrVarFactory
 	{
 		annotations += v.toIrAnnotation
 		name = varName
-		type = v.type.toIrBaseType
+		type = nablaType2IrType.toIrBaseType(v.typeFor as NablaSimpleType)
 		const = v.const
 		val value = v.defaultValue
 		if (value !== null) defaultValue = value.toIrExpression

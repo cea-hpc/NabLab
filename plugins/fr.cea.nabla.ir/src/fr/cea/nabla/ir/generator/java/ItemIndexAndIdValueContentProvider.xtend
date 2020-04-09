@@ -13,8 +13,8 @@ import fr.cea.nabla.ir.ir.ItemIdValueCall
 import fr.cea.nabla.ir.ir.ItemIdValueIterator
 import fr.cea.nabla.ir.ir.ItemIndexValueId
 
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.ConnectivityCallExtensions.*
 
 class ItemIndexAndIdValueContentProvider 
 {
@@ -29,7 +29,7 @@ class ItemIndexAndIdValueContentProvider
 	static def dispatch getContent(ItemIdValueIterator it)
 	{
 		if (iterator.container.connectivity.indexEqualId) indexValue
-		else iterator.container.name + '[' + indexValue + ']'
+		else iterator.container.uniqueName + '[' + indexValue + ']'
 	}
 
 	static def dispatch getContent(ItemIdValueCall it)

@@ -220,6 +220,15 @@ public interface IrFactory extends EFactory {
 	ItemIdDefinition createItemIdDefinition();
 
 	/**
+	 * Returns a new object of class '<em>Set Definition</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Set Definition</em>'.
+	 * @generated
+	 */
+	SetDefinition createSetDefinition();
+
+	/**
 	 * Returns a new object of class '<em>If</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -425,6 +434,15 @@ public interface IrFactory extends EFactory {
 	 * @generated
 	 */
 	ConnectivityCall createConnectivityCall();
+
+	/**
+	 * Returns a new object of class '<em>Set Ref</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Set Ref</em>'.
+	 * @generated
+	 */
+	SetRef createSetRef();
 
 	/**
 	 * Returns a new object of class '<em>Item Id</em>'.

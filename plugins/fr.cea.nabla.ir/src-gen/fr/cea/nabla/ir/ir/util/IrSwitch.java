@@ -300,6 +300,14 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.SET_DEFINITION: {
+				SetDefinition setDefinition = (SetDefinition)theEObject;
+				T result = caseSetDefinition(setDefinition);
+				if (result == null) result = caseInstruction(setDefinition);
+				if (result == null) result = caseIrAnnotable(setDefinition);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.IF: {
 				If if_ = (If)theEObject;
 				T result = caseIf(if_);
@@ -487,10 +495,26 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.CONTAINER: {
+				Container container = (Container)theEObject;
+				T result = caseContainer(container);
+				if (result == null) result = caseIrAnnotable(container);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.CONNECTIVITY_CALL: {
 				ConnectivityCall connectivityCall = (ConnectivityCall)theEObject;
 				T result = caseConnectivityCall(connectivityCall);
+				if (result == null) result = caseContainer(connectivityCall);
 				if (result == null) result = caseIrAnnotable(connectivityCall);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.SET_REF: {
+				SetRef setRef = (SetRef)theEObject;
+				T result = caseSetRef(setRef);
+				if (result == null) result = caseContainer(setRef);
+				if (result == null) result = caseIrAnnotable(setRef);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -1009,6 +1033,21 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Set Definition</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Set Definition</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseSetDefinition(SetDefinition object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>If</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -1369,6 +1408,21 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Container</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Container</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseContainer(Container object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Connectivity Call</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -1380,6 +1434,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseConnectivityCall(ConnectivityCall object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Set Ref</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Set Ref</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseSetRef(SetRef object) {
 		return null;
 	}
 

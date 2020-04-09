@@ -19,10 +19,13 @@ import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.Item
 import fr.cea.nabla.nabla.ItemRef
+import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.nabla.SetDefinition
+import fr.cea.nabla.nabla.SetRef
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorRef
 import fr.cea.nabla.nabla.Var
@@ -32,7 +35,6 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 
 import static extension fr.cea.nabla.ConnectivityCallExtensions.*
-import fr.cea.nabla.nabla.ItemType
 
 class UnusedValidator extends UniqueNameValidator
 {
@@ -87,10 +89,18 @@ class UnusedValidator extends UniqueNameValidator
 	def checkUnusedItem(Item it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
-		val referenced = m.eAllContents.filter(ConnectivityCall).exists[x | x.args.contains(it)]
-			|| m.eAllContents.filter(ItemRef).exists[x|x.target === it]
+		val referenced = m.eAllContents.filter(ItemRef).exists[x|x.target === it]
 		if (!referenced)
 			warning(getUnusedMsg(NablaPackage.Literals.ITEM, name), NablaPackage.Literals::ITEM__NAME, UNUSED)
+	}
+
+	@Check
+	def checkUnusedSet(SetDefinition it)
+	{
+		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
+		val referenced = m.eAllContents.filter(SetRef).exists[x|x.target === it]
+		if (!referenced)
+			warning(getUnusedMsg(NablaPackage.Literals.SET_DEFINITION, name), NablaPackage.Literals::SET_DEFINITION__NAME, UNUSED)
 	}
 
 	@Check

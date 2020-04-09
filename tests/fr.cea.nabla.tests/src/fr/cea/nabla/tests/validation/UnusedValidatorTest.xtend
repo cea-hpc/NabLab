@@ -143,21 +143,70 @@ class UnusedValidatorTest
 	@Test
 	def void testCheckUnusedItem()
 	{
-		val moduleKo = parseHelper.parse(getTestModule(nodesConnectivity, '') +
+		val moduleKo1 = parseHelper.parse(getTestModule(nodesConnectivity, '') +
 			'''
 			UpdateX: ∀r1∈nodes(), ∀r2∈nodes(), X{r1} = X{r1} + 1;
 			'''
 		)
-		Assert.assertNotNull(moduleKo)
-
-		moduleKo.assertWarning(NablaPackage.eINSTANCE.item,
+		Assert.assertNotNull(moduleKo1)
+		moduleKo1.assertWarning(NablaPackage.eINSTANCE.item,
 			UnusedValidator::UNUSED,
 			UnusedValidator::getUnusedMsg(NablaPackage.Literals.ITEM, 'r2'))
+
+		val moduleKo2 = parseHelper.parse(getTestModule(
+			'''
+			itemtypes { node }
+			set nodes: → {node};
+			item topLeftNode: → node;
+			''', '') +
+			'''
+			ℝ[2] X{nodes};
+			UpdateX: ∀r1∈nodes(), r2=topLeftNode(), X{r1} = X{r1} + 1;
+			Bidon: item r3 = topLeftNode();
+			'''
+		)
+		Assert.assertNotNull(moduleKo1)
+		moduleKo2.assertWarning(NablaPackage.eINSTANCE.item,
+			UnusedValidator::UNUSED,
+			UnusedValidator::getUnusedMsg(NablaPackage.Literals.ITEM, 'r2'))
+		moduleKo2.assertWarning(NablaPackage.eINSTANCE.item,
+			UnusedValidator::UNUSED,
+			UnusedValidator::getUnusedMsg(NablaPackage.Literals.ITEM, 'r3'))
 
 		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, '') +
 			'''
 			ℝ[2] X{nodes};
 			UpdateX: ∀r1∈nodes(), X{r1} = X{r1} + 1;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoIssues
+	}
+
+	@Test
+	def void testCheckUnusedSet()
+	{
+		val moduleKo = parseHelper.parse(getTestModule(nodesConnectivity, '') +
+			'''
+			ℝ[2] X{nodes};
+			UpdateX: {
+				set myNodes = nodes();
+				∀r1∈nodes(), X{r1} = X{r1} + 1;
+			}
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertWarning(NablaPackage.eINSTANCE.setDefinition,
+			UnusedValidator::UNUSED,
+			UnusedValidator::getUnusedMsg(NablaPackage.Literals.SET_DEFINITION, 'myNodes'))
+
+		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, '') +
+			'''
+			ℝ[2] X{nodes};
+			UpdateX: {
+				set myNodes = nodes();
+				∀r1∈myNodes, X{r1} = X{r1} + 1;
+			}
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

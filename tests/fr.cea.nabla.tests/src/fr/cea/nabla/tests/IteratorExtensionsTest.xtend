@@ -27,7 +27,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import static extension fr.cea.nabla.ConnectivityCallExtensions.*
+import static extension fr.cea.nabla.UniqueNameHelper.*
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)

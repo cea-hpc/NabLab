@@ -2,7 +2,6 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.ConnectivityCall;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.ItemIndex;
 import fr.cea.nabla.ir.ir.ItemIndexValueIterator;
@@ -60,7 +59,7 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 	 * @generated
 	 * @ordered
 	 */
-	protected ConnectivityCall container;
+	protected fr.cea.nabla.ir.ir.Container container;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -223,10 +222,10 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 	 * @generated
 	 */
 	@Override
-	public ConnectivityCall getContainer() {
+	public fr.cea.nabla.ir.ir.Container getContainer() {
 		if (container != null && container.eIsProxy()) {
 			InternalEObject oldContainer = (InternalEObject)container;
-			container = (ConnectivityCall)eResolveProxy(oldContainer);
+			container = (fr.cea.nabla.ir.ir.Container)eResolveProxy(oldContainer);
 			if (container != oldContainer) {
 				InternalEObject newContainer = (InternalEObject)container;
 				NotificationChain msgs = oldContainer.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__CONTAINER, null, null);
@@ -246,7 +245,7 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ConnectivityCall basicGetContainer() {
+	public fr.cea.nabla.ir.ir.Container basicGetContainer() {
 		return container;
 	}
 
@@ -255,8 +254,8 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetContainer(ConnectivityCall newContainer, NotificationChain msgs) {
-		ConnectivityCall oldContainer = container;
+	public NotificationChain basicSetContainer(fr.cea.nabla.ir.ir.Container newContainer, NotificationChain msgs) {
+		fr.cea.nabla.ir.ir.Container oldContainer = container;
 		container = newContainer;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.ITERATOR__CONTAINER, oldContainer, newContainer);
@@ -271,7 +270,7 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 	 * @generated
 	 */
 	@Override
-	public void setContainer(ConnectivityCall newContainer) {
+	public void setContainer(fr.cea.nabla.ir.ir.Container newContainer) {
 		if (newContainer != container) {
 			NotificationChain msgs = null;
 			if (container != null)
@@ -355,7 +354,7 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 				setIndexValue((ItemIndexValueIterator)newValue);
 				return;
 			case IrPackage.ITERATOR__CONTAINER:
-				setContainer((ConnectivityCall)newValue);
+				setContainer((fr.cea.nabla.ir.ir.Container)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -376,7 +375,7 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 				setIndexValue((ItemIndexValueIterator)null);
 				return;
 			case IrPackage.ITERATOR__CONTAINER:
-				setContainer((ConnectivityCall)null);
+				setContainer((fr.cea.nabla.ir.ir.Container)null);
 				return;
 		}
 		super.eUnset(featureID);

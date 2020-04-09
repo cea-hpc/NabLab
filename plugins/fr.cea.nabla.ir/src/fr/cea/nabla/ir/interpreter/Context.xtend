@@ -13,10 +13,12 @@ import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityCall
+import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ItemId
 import fr.cea.nabla.ir.ir.ItemIndex
+import fr.cea.nabla.ir.ir.SetRef
 import java.lang.reflect.Method
 import java.util.HashMap
 import java.util.logging.Logger
@@ -32,9 +34,10 @@ class Context
 	val Context outerContext
 	val IrModule module
 	val Logger logger
+	val variableValues = new HashMap<ArgOrVar, NablaValue>
+	val setValues = new HashMap<String, int[]>
 	val indexValues = new HashMap<ItemIndex, Integer>
 	val idValues = new HashMap<ItemId, Integer>
-	val variableValues = new HashMap<ArgOrVar, NablaValue>
 	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Function, Method> functionToMethod
 	@Accessors val HashMap<Connectivity, Integer> connectivitySizes
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) MeshWrapper meshWrapper
@@ -116,6 +119,30 @@ class Context
 				outerContext.setVariableValue(it, value)
 			else
 				throw new RuntimeException('Variable not found ' + name)
+	}
+
+	// ContainerValues
+	def int[] getContainerValue(Container c) 
+	{
+		switch c
+		{
+			ConnectivityCall: c.connectivityCallValue
+			SetRef: setValues.get(c.target.name) ?: outerContext.getContainerValue(c)
+		}
+	}
+
+	def void addSetValue(String setName, ConnectivityCall value) 
+	{ 
+		val connectivityName = value.connectivity.name
+		val argIds =  value.args.map[x | getIdValue(x)]
+		val containerValue = meshWrapper.getElements(connectivityName, argIds)
+		setValues.put(setName, containerValue)
+	}
+
+	def int[] getConnectivityCallValue(ConnectivityCall it)
+	{
+		val argIds =  args.map[x | getIdValue(x)]
+		meshWrapper.getElements(connectivity.name, argIds)
 	}
 
 	// IndexValues

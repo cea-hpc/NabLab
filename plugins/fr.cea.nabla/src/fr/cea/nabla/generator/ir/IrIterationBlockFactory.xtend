@@ -24,7 +24,7 @@ import java.util.List
 class IrIterationBlockFactory 
 {
 	@Inject extension IrAnnotationHelper
-	@Inject extension IrConnectivityCallFactory
+	@Inject extension IrContainerFactory
 	@Inject extension IrItemIndexDefinitionFactory
 	@Inject extension IrItemIdDefinitionFactory
 	@Inject extension IrItemIndexFactory
@@ -40,7 +40,7 @@ class IrIterationBlockFactory
 	{
 		annotations += b.toIrAnnotation
 		index = b.toIrIndex
-		container = toIrConnectivityCall(b.container.connectivity, b.container.args)
+		container = toIrContainer(b.container)
 	}
 
 	def dispatch IterationBlock create IrFactory::eINSTANCE.createInterval toIrIterationBlock(Interval b)

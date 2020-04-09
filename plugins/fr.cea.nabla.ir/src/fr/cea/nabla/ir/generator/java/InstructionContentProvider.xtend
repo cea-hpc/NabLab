@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
@@ -21,11 +22,12 @@ import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
+import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.VariablesDefinition
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.generator.ConnectivityCallExtensions.*
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
@@ -112,6 +114,11 @@ class InstructionContentProvider
 		final int «id.name» = «value.content»;
 	'''
 
+	static def dispatch CharSequence getContent(SetDefinition it)
+	{
+		getSetDefinitionContent(name, value)
+	}
+
 	static def dispatch CharSequence getContent(Return it) 
 	'''
 		return «expression.content»;
@@ -149,8 +156,8 @@ class InstructionContentProvider
 		{
 			'''
 			{
-				final int[] «container.name» = mesh.«container.accessor»;
-				final int «nbElems» = «container.name».length;
+				«IF container instanceof ConnectivityCall»«getSetDefinitionContent(container.uniqueName, container as ConnectivityCall)»«ENDIF»
+				final int «nbElems» = «container.uniqueName».length;
 				«innerContent»
 			}
 			'''
@@ -177,4 +184,9 @@ class InstructionContentProvider
 	{
 		nbElems.content
 	}
+
+	private static def getSetDefinitionContent(String setName, ConnectivityCall call)
+	'''
+		final int[] «setName» = mesh.«call.accessor»;
+	'''
 }

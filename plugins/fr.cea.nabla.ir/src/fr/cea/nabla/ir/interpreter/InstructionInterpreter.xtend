@@ -22,6 +22,7 @@ import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
+import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.VariablesDefinition
 import java.util.Arrays
 import java.util.stream.IntStream
@@ -30,6 +31,7 @@ import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class InstructionInterpreter
@@ -56,6 +58,8 @@ class InstructionInterpreter
 			return interpreteItemIdDefinition(context)
 		} else if (it instanceof ItemIndexDefinition) {
 			return interpreteItemIndexDefinition(context)
+		} else if (it instanceof SetDefinition) {
+			return interpreteSetDefinition(context)
 		} else {
 			throw new IllegalArgumentException("Unhandled parameter types: " +
 				Arrays.<Object>asList(it, context).toString());
@@ -108,10 +112,8 @@ class InstructionInterpreter
 		{
 			Iterator:
 			{
-				context.logFinest("We deal with loop " + b.container.connectivity.name)
-				val connectivityName = b.container.connectivity.name
-				val argIds =  b.container.args.map[x | context.getIdValue(x)]
-				val container = context.meshWrapper.getElements(connectivityName, argIds)
+				context.logFinest("We deal with loop " + b.container.uniqueName)
+				val container = context.getContainerValue(b.container)
 				if (topLevelLoop && isMultithreadable)
 				{
 					//NB Can't return in parallelForEach
@@ -168,9 +170,7 @@ class InstructionInterpreter
 			context.addIndexValue(index, idValue)
 		else 
 		{
-			val connectivityName = value.container.connectivity.name
-			val args =  value.container.args.map[x | context.getIdValue(x)]
-			val elements = context.meshWrapper.getElements(connectivityName, args)
+			val elements = context.getConnectivityCallValue(value.container)
 			context.addIndexValue(index, elements.indexOf(idValue))
 		}
 		return null
@@ -181,6 +181,13 @@ class InstructionInterpreter
 		context.logFinest("Interprete ItemIdDefinition")
 		val idValue = getIdValue(value, context)
 		context.addIdValue(id, idValue)
+		return null
+	}
+
+	static def NablaValue interpreteSetDefinition(SetDefinition it, Context context)
+	{
+		context.logFinest("Interprete Return")
+		context.addSetValue(name, value)
 		return null
 	}
 
@@ -201,11 +208,8 @@ class InstructionInterpreter
 			getIndexValue(context)
 		else
 		{
-			//TODO : Plus efficace de faire une méthode pour indexValue in container ?
-			val connectivityName = iterator.container.connectivity.name
-			val args =  iterator.container.args.map[x | context.getIdValue(x)]
 			val index = getIndexValue(context)
-			context.meshWrapper.getElements(connectivityName, args).get(index)
+			context.getContainerValue(iterator.container).get(index)
 		}
 	}
 

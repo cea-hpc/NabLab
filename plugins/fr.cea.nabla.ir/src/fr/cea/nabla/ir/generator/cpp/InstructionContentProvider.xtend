@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
@@ -22,12 +23,13 @@ import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
+import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.VariablesDefinition
 import org.eclipse.xtend.lib.annotations.Data
 
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
-import static extension fr.cea.nabla.ir.generator.ConnectivityCallExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
 
@@ -98,6 +100,11 @@ abstract class InstructionContentProvider
 		const Id «id.name»(«value.content»);
 	'''
 
+	def dispatch CharSequence getContent(SetDefinition it)
+	{
+		getSetDefinitionContent(name, value)
+	}
+
 	def dispatch CharSequence getContent(Return it) 
 	'''
 		return «expression.content»;
@@ -131,8 +138,8 @@ abstract class InstructionContentProvider
 		else
 		'''
 		{
-			const auto «container.name»(mesh->«container.accessor»);
-			const size_t «nbElems»(«container.name».size());
+			«IF container instanceof ConnectivityCall»«getSetDefinitionContent(container.uniqueName, container as ConnectivityCall)»«ENDIF»
+			const size_t «nbElems»(«container.uniqueName».size());
 			«innerContent»
 		}
 		'''
@@ -158,6 +165,11 @@ abstract class InstructionContentProvider
 	{
 		nbElems.content
 	}
+
+	private def getSetDefinitionContent(String setName, ConnectivityCall call)
+	'''
+		const auto «setName»(mesh->«call.accessor»);
+	'''
 }
 
 @Data

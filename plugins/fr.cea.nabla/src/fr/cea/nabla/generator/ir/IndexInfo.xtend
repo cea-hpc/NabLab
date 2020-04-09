@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.generator.ir
 
-import fr.cea.nabla.ConnectivityCallExtensions
+import fr.cea.nabla.UniqueNameHelper
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.ItemRef
@@ -34,7 +34,7 @@ class IndexInfo
 
 	def getName()
 	{
-		itemRef.name + ConnectivityCallExtensions::getUniqueName(container, args).toFirstUpper
+		itemRef.name + UniqueNameHelper::getUniqueName(container, args).toFirstUpper
 	}
 
 	def getContainer()

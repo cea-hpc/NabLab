@@ -89,20 +89,69 @@ class UniqueNameValidatorTest
 	@Test
 	def void checkDuplicateItem()
 	{
-		val moduleKo = parseHelper.parse(getTestModule(nodesConnectivity, '') +
+		val moduleKo1 = parseHelper.parse(getTestModule(
+		'''
+		itemtypes { node }
+		set nodes: → {node};
+		''', '') +
 		'''
 			ℝ X{nodes, nodes};
 			j1: ∀r∈nodes(), ∀r∈nodes(), let d = X{r, r} * 2.0;
 		''')
-		Assert.assertNotNull(moduleKo)
-		moduleKo.assertError(NablaPackage.eINSTANCE.item,
+		Assert.assertNotNull(moduleKo1)
+		moduleKo1.assertError(NablaPackage.eINSTANCE.item,
 			UniqueNameValidator::DUPLICATE_NAME,
 			UniqueNameValidator::getDuplicateNameMsg(NablaPackage.Literals.ITEM, "r"))
+
+		val moduleKo2 = parseHelper.parse(getTestModule(
+		'''
+		itemtypes { node }
+		set nodes: → {node};
+		item topLeftNode: → node;
+		''', '') +
+		'''
+			ℝ X{nodes, nodes};
+			j1: {
+				item r1 = topLeftNode();
+				∀r1∈nodes(), ∀r2∈nodes(), let d = X{r1, r2} * 2.0;
+			}
+		''')
+		Assert.assertNotNull(moduleKo2)
+		moduleKo2.assertError(NablaPackage.eINSTANCE.item,
+			UniqueNameValidator::DUPLICATE_NAME,
+			UniqueNameValidator::getDuplicateNameMsg(NablaPackage.Literals.ITEM, "r1"))
 
 		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, '') +
 		'''
 			ℝ X{nodes, nodes};
 			j1: ∀r1∈nodes(), ∀r2∈nodes(), let d = X{r1, r2} * 2.0;
+		''')
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void checkDuplicateSet()
+	{
+		val moduleKo = parseHelper.parse(getTestModule(nodesConnectivity, '') +
+		'''
+			j1: {
+				set myNodes = nodes();
+				set myNodes = nodes();
+			}
+		''')
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.setDefinition,
+			UniqueNameValidator::DUPLICATE_NAME,
+			UniqueNameValidator::getDuplicateNameMsg(NablaPackage.Literals.SET_DEFINITION, "myNodes"))
+
+		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, '') +
+		'''
+			ℝ X{nodes, nodes};
+			j1: {
+				set myNodes = nodes();
+				∀r1∈myNodes, ∀r2∈myNodes, let d = X{r1, r2} * 2.0;
+			}
 		''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors

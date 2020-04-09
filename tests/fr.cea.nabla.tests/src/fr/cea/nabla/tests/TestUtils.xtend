@@ -109,7 +109,6 @@ class TestUtils
 	def CharSequence getNodesConnectivity()
 	'''
 	itemtypes { node }
-
 	set nodes: → {node};
 	'''
 

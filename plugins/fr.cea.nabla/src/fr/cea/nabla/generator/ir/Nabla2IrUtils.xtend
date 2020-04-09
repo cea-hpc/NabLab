@@ -19,7 +19,7 @@ import fr.cea.nabla.nabla.PrimitiveType
 @Singleton
 class Nabla2IrUtils
 {
-	@Inject extension IrAnnotationHelper 
+	@Inject extension IrAnnotationHelper
 
 	def toIrPrimitiveType(PrimitiveType t)
 	{

@@ -41,7 +41,7 @@ SingleConnectivity: 'item' name=ID ':' (inTypes+=[ItemType] ('\u00D7' inTypes+=[
 /* JOBS & INSTRUCTIONS ***********************************/
 Job: name=ID ':' instruction=Instruction;
 Iterable: Loop | ReductionCall;
-Instruction: SimpleVarDefinition | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | ItemDefinition | Return;
+Instruction: SimpleVarDefinition | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | ItemDefinition | SetDefinition | Return;
 
 SimpleVarDefinition: (const?='const' | 'let') variable=SimpleVar '=' defaultValue=Expression ';';
 VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
@@ -50,12 +50,15 @@ Loop: '\u2200' iterationBlock=IterationBlock ',' body=Instruction;
 Affectation: left=ArgOrVarRef '=' right=Expression ';';
 If: 'if' '(' condition=Expression ')' then=Instruction (=>'else' else=Instruction)?;
 ItemDefinition: 'item' item=Item '=' value=SingleConnectivityCall ';';
+SetDefinition: 'set' name=ID '=' value=MultipleConnectivityCall ';';
 Return: 'return' expression=Expression ';';
 
 
 /* ITERATEURS ********************************************/
 IterationBlock: SpaceIterator | Interval;
-SpaceIterator: item=Item '\u2208' container=MultipleConnectivityCall (',' singletons+=SingletonDefinition)*;
+Container: SetRef | MultipleConnectivityCall;
+SetRef: target=[SetDefinition];
+SpaceIterator: item=Item '\u2208' container=Container (',' singletons+=SingletonDefinition)*;
 SingletonDefinition: item=Item '=' value=SingleConnectivityCall;
 Interval: index=SimpleVar '\u2208' '[' from=INT ';' nbElems=Expression '[';  // from forced to 0 for the moment
 ConnectivityCall: MultipleConnectivityCall | SingleConnectivityCall;

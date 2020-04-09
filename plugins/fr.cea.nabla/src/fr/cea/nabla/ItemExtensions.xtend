@@ -12,8 +12,10 @@ package fr.cea.nabla
 import fr.cea.nabla.nabla.Item
 import fr.cea.nabla.nabla.ItemDefinition
 import fr.cea.nabla.nabla.ItemType
-import fr.cea.nabla.nabla.SpaceIterator
+import fr.cea.nabla.nabla.MultipleConnectivityCall
+import fr.cea.nabla.nabla.SetRef
 import fr.cea.nabla.nabla.SingletonDefinition
+import fr.cea.nabla.nabla.SpaceIterator
 
 class ItemExtensions
 {
@@ -27,4 +29,7 @@ class ItemExtensions
 			SingletonDefinition: c.value.connectivity.returnType
 		}
 	}
+
+	private def dispatch getConnectivity(MultipleConnectivityCall it) { connectivity }
+	private def dispatch getConnectivity(SetRef it) { target.value.connectivity }
 }

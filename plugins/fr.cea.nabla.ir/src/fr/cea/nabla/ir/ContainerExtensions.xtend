@@ -7,15 +7,31 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator
+package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.ConnectivityCall
+import fr.cea.nabla.ir.ir.SetRef
 
-class ConnectivityCallExtensions 
+class ContainerExtensions 
 {
-	static def getName(ConnectivityCall it)
+	static def dispatch getConnectivity(ConnectivityCall it)
+	{
+		connectivity
+	}
+
+	static def dispatch getConnectivity(SetRef it)
+	{
+		target.value.connectivity
+	}
+
+	static def dispatch getUniqueName(ConnectivityCall it)
 	{
 		connectivity.name + args.map[x | x.itemName.toFirstUpper].join('')
+	}
+
+	static def dispatch getUniqueName(SetRef it)
+	{
+		target.name
 	}
 
 	static def getAccessor(ConnectivityCall it)

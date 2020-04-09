@@ -56,6 +56,8 @@ import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
 import java.util.List
+import fr.cea.nabla.nabla.SetRef
+import fr.cea.nabla.nabla.SetDefinition
 
 class LatexLabelServices
 {
@@ -68,12 +70,14 @@ class LatexLabelServices
 	static def dispatch String getLatex(Affectation it) { left?.latex + ' = ' + right?.latex }
 	static def dispatch String getLatex(If it) { 'if~(' + condition.latex + ')'}
 	static def dispatch String getLatex(ItemDefinition it) { 'item~' + item.name + '=' + value?.latex }
+	static def dispatch String getLatex(SetDefinition it) { 'set~' + name + '=' + value?.latex }
 	static def dispatch String getLatex(Return it) { 'return (' + expression.latex + ')'}
 
 	/* ITERATEURS ********************************************/
 	static def dispatch String getLatex(SpaceIterator it) { item.name.pu + '\\in ' + container.latex }
 	static def dispatch String getLatex(SingletonDefinition it) { item.name + '=' + value?.latex }
 	static def dispatch String getLatex(Interval it) { index.name + '\\in ' + nbElems.latex }
+	static def dispatch String getLatex(SetRef it) { target.name }
 	static def dispatch String getLatex(MultipleConnectivityCall it) { connectivity.name.pu + '(' + args.map[latex].join(',') + ')' }
 	static def dispatch String getLatex(SingleConnectivityCall it) { connectivity.name.pu + '(' + args.map[latex].join(',') + ')' }
 	static def dispatch String getLatex(ItemRef it) 

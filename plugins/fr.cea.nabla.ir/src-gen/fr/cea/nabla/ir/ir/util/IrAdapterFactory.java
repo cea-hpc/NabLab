@@ -188,6 +188,10 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createItemIdDefinitionAdapter();
 			}
 			@Override
+			public Adapter caseSetDefinition(SetDefinition object) {
+				return createSetDefinitionAdapter();
+			}
+			@Override
 			public Adapter caseIf(If object) {
 				return createIfAdapter();
 			}
@@ -284,8 +288,16 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createTimeLoopVariableAdapter();
 			}
 			@Override
+			public Adapter caseContainer(Container object) {
+				return createContainerAdapter();
+			}
+			@Override
 			public Adapter caseConnectivityCall(ConnectivityCall object) {
 				return createConnectivityCallAdapter();
+			}
+			@Override
+			public Adapter caseSetRef(SetRef object) {
+				return createSetRefAdapter();
 			}
 			@Override
 			public Adapter caseItemId(ItemId object) {
@@ -760,6 +772,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.SetDefinition <em>Set Definition</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.SetDefinition
+	 * @generated
+	 */
+	public Adapter createSetDefinitionAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.If <em>If</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -1096,6 +1122,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Container <em>Container</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.Container
+	 * @generated
+	 */
+	public Adapter createContainerAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ConnectivityCall <em>Connectivity Call</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -1106,6 +1146,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createConnectivityCallAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.SetRef <em>Set Ref</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.SetRef
+	 * @generated
+	 */
+	public Adapter createSetRefAdapter() {
 		return null;
 	}
 

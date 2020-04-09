@@ -19,12 +19,12 @@ import fr.cea.nabla.nabla.MultipleConnectivity
 import fr.cea.nabla.nabla.SpaceIterator
 import java.util.List
 
-import static extension fr.cea.nabla.ConnectivityCallExtensions.*
+import static extension fr.cea.nabla.UniqueNameHelper.*
 
 @Singleton
 class IrItemIndexFactory
 {
-	@Inject extension IrConnectivityCallFactory
+	@Inject extension IrContainerFactory
 	@Inject extension IrIterationBlockFactory
 
 	def toIrIndex(IndexInfo info)

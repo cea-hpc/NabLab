@@ -73,10 +73,18 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ItemDefinition/item"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ItemDefinition/value"/>
     </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//SetDefinition">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SetDefinition/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SetDefinition/value"/>
+    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Return">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Return/expression"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//IterationBlock"/>
+    <genClasses ecoreClass="Nabla.ecore#//Container"/>
+    <genClasses ecoreClass="Nabla.ecore#//SetRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//SetRef/target"/>
+    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//SpaceIterator">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SpaceIterator/item"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SpaceIterator/container"/>

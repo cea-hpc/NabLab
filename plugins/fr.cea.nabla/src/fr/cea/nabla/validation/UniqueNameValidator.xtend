@@ -28,6 +28,7 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScopeProvider
 import org.eclipse.xtext.util.SimpleAttributeResolver
 import org.eclipse.xtext.validation.Check
+import fr.cea.nabla.nabla.SetDefinition
 
 class UniqueNameValidator extends AbstractNablaValidator
 {
@@ -81,6 +82,16 @@ class UniqueNameValidator extends AbstractNablaValidator
 		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
 		if (duplicated)
 			error(getDuplicateNameMsg(NablaPackage.Literals.ITEM, name), NablaPackage.Literals.ITEM__NAME, DUPLICATE_NAME);
+	}
+
+	@Check
+	def void checkDuplicate(SetDefinition it)
+	{
+		val scope = scopeProvider.getScope(it, NablaPackage.Literals.SET_REF__TARGET)
+		//println('checkDuplicate(' + it + ') : ' + scope.allElements.map[name.segments.join('.')].join(', '))
+		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
+		if (duplicated)
+			error(getDuplicateNameMsg(NablaPackage.Literals.SET_DEFINITION, name), NablaPackage.Literals.SET_DEFINITION__NAME, DUPLICATE_NAME);
 	}
 
 	@Check

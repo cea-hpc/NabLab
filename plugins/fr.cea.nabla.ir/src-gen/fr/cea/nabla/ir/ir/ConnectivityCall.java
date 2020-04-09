@@ -21,7 +21,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface ConnectivityCall extends IrAnnotable {
+public interface ConnectivityCall extends Container {
 	/**
 	 * Returns the value of the '<em><b>Connectivity</b></em>' reference.
 	 * <!-- begin-user-doc -->

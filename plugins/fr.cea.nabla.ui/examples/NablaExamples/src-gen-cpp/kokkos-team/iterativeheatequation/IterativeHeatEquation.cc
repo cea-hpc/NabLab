@@ -151,8 +151,8 @@ private:
 				double reduction3(0.0);
 				{
 					const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
-					const size_t nbElemsPNodesOfFaceF(nodesOfFaceF.size());
-					for (size_t pNodesOfFaceF=0; pNodesOfFaceF<nbElemsPNodesOfFaceF; pNodesOfFaceF++)
+					const size_t nbNodesOfFaceF(nodesOfFaceF.size());
+					for (size_t pNodesOfFaceF=0; pNodesOfFaceF<nbNodesOfFaceF; pNodesOfFaceF++)
 					{
 						const Id pId(nodesOfFaceF[pNodesOfFaceF]);
 						const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
@@ -197,8 +197,8 @@ private:
 				double reduction2(0.0);
 				{
 					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					const size_t nbElemsPNodesOfCellJ(nodesOfCellJ.size());
-					for (size_t pNodesOfCellJ=0; pNodesOfCellJ<nbElemsPNodesOfCellJ; pNodesOfCellJ++)
+					const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t pNodesOfCellJ=0; pNodesOfCellJ<nbNodesOfCellJ; pNodesOfCellJ++)
 					{
 						const Id pId(nodesOfCellJ[pNodesOfCellJ]);
 						const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
@@ -253,8 +253,8 @@ private:
 				RealArray1D<2> reduction0({0.0, 0.0});
 				{
 					const auto nodesOfCellC(mesh->getNodesOfCell(cId));
-					const size_t nbElemsPNodesOfCellC(nodesOfCellC.size());
-					for (size_t pNodesOfCellC=0; pNodesOfCellC<nbElemsPNodesOfCellC; pNodesOfCellC++)
+					const size_t nbNodesOfCellC(nodesOfCellC.size());
+					for (size_t pNodesOfCellC=0; pNodesOfCellC<nbNodesOfCellC; pNodesOfCellC++)
 					{
 						const Id pId(nodesOfCellC[pNodesOfCellC]);
 						const size_t pNodes(pId);
@@ -297,8 +297,8 @@ private:
 				double reduction6(0.0);
 				{
 					const auto neighbourCellsC(mesh->getNeighbourCells(cId));
-					const size_t nbElemsDNeighbourCellsC(neighbourCellsC.size());
-					for (size_t dNeighbourCellsC=0; dNeighbourCellsC<nbElemsDNeighbourCellsC; dNeighbourCellsC++)
+					const size_t nbNeighbourCellsC(neighbourCellsC.size());
+					for (size_t dNeighbourCellsC=0; dNeighbourCellsC<nbNeighbourCellsC; dNeighbourCellsC++)
 					{
 						const Id dId(neighbourCellsC[dNeighbourCellsC]);
 						const size_t dCells(dId);
@@ -330,8 +330,8 @@ private:
 				double reduction4(1.0);
 				{
 					const auto cellsOfFaceF(mesh->getCellsOfFace(fId));
-					const size_t nbElemsC1CellsOfFaceF(cellsOfFaceF.size());
-					for (size_t c1CellsOfFaceF=0; c1CellsOfFaceF<nbElemsC1CellsOfFaceF; c1CellsOfFaceF++)
+					const size_t nbCellsOfFaceF(cellsOfFaceF.size());
+					for (size_t c1CellsOfFaceF=0; c1CellsOfFaceF<nbCellsOfFaceF; c1CellsOfFaceF++)
 					{
 						const Id c1Id(cellsOfFaceF[c1CellsOfFaceF]);
 						const size_t c1Cells(c1Id);
@@ -341,8 +341,8 @@ private:
 				double reduction5(0.0);
 				{
 					const auto cellsOfFaceF(mesh->getCellsOfFace(fId));
-					const size_t nbElemsC2CellsOfFaceF(cellsOfFaceF.size());
-					for (size_t c2CellsOfFaceF=0; c2CellsOfFaceF<nbElemsC2CellsOfFaceF; c2CellsOfFaceF++)
+					const size_t nbCellsOfFaceF(cellsOfFaceF.size());
+					for (size_t c2CellsOfFaceF=0; c2CellsOfFaceF<nbCellsOfFaceF; c2CellsOfFaceF++)
 					{
 						const Id c2Id(cellsOfFaceF[c2CellsOfFaceF]);
 						const size_t c2Cells(c2Id);
@@ -508,8 +508,8 @@ private:
 				double alphaDiag(0.0);
 				{
 					const auto neighbourCellsC(mesh->getNeighbourCells(cId));
-					const size_t nbElemsDNeighbourCellsC(neighbourCellsC.size());
-					for (size_t dNeighbourCellsC=0; dNeighbourCellsC<nbElemsDNeighbourCellsC; dNeighbourCellsC++)
+					const size_t nbNeighbourCellsC(neighbourCellsC.size());
+					for (size_t dNeighbourCellsC=0; dNeighbourCellsC<nbNeighbourCellsC; dNeighbourCellsC++)
 					{
 						const Id dId(neighbourCellsC[dNeighbourCellsC]);
 						const size_t dCells(dId);

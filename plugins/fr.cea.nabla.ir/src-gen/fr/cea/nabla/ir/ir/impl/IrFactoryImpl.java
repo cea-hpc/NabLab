@@ -79,6 +79,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.LOOP: return createLoop();
 			case IrPackage.ITEM_INDEX_DEFINITION: return createItemIndexDefinition();
 			case IrPackage.ITEM_ID_DEFINITION: return createItemIdDefinition();
+			case IrPackage.SET_DEFINITION: return createSetDefinition();
 			case IrPackage.IF: return createIf();
 			case IrPackage.RETURN: return createReturn();
 			case IrPackage.ITERATOR: return createIterator();
@@ -102,6 +103,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.CONNECTIVITY_TYPE: return createConnectivityType();
 			case IrPackage.TIME_LOOP_VARIABLE: return createTimeLoopVariable();
 			case IrPackage.CONNECTIVITY_CALL: return createConnectivityCall();
+			case IrPackage.SET_REF: return createSetRef();
 			case IrPackage.ITEM_ID: return createItemId();
 			case IrPackage.ITEM_ID_VALUE_ITERATOR: return createItemIdValueIterator();
 			case IrPackage.ITEM_ID_VALUE_CALL: return createItemIdValueCall();
@@ -391,6 +393,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
+	public SetDefinition createSetDefinition() {
+		SetDefinitionImpl setDefinition = new SetDefinitionImpl();
+		return setDefinition;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public If createIf() {
 		IfImpl if_ = new IfImpl();
 		return if_;
@@ -636,6 +649,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public ConnectivityCall createConnectivityCall() {
 		ConnectivityCallImpl connectivityCall = new ConnectivityCallImpl();
 		return connectivityCall;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public SetRef createSetRef() {
+		SetRefImpl setRef = new SetRefImpl();
+		return setRef;
 	}
 
 	/**

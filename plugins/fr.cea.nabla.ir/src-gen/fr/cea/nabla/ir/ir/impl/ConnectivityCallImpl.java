@@ -34,7 +34,7 @@ import org.eclipse.emf.ecore.util.EObjectEList;
  *
  * @generated
  */
-public class ConnectivityCallImpl extends IrAnnotableImpl implements ConnectivityCall {
+public class ConnectivityCallImpl extends ContainerImpl implements ConnectivityCall {
 	/**
 	 * The cached value of the '{@link #getConnectivity() <em>Connectivity</em>}' reference.
 	 * <!-- begin-user-doc -->

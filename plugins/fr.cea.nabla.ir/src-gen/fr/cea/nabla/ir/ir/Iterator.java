@@ -73,12 +73,12 @@ public interface Iterator extends IterationBlock {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Container</em>' containment reference.
-	 * @see #setContainer(ConnectivityCall)
+	 * @see #setContainer(Container)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getIterator_Container()
 	 * @model containment="true" resolveProxies="true" required="true"
 	 * @generated
 	 */
-	ConnectivityCall getContainer();
+	Container getContainer();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Iterator#getContainer <em>Container</em>}' containment reference.
@@ -88,6 +88,6 @@ public interface Iterator extends IterationBlock {
 	 * @see #getContainer()
 	 * @generated
 	 */
-	void setContainer(ConnectivityCall value);
+	void setContainer(Container value);
 
 } // Iterator

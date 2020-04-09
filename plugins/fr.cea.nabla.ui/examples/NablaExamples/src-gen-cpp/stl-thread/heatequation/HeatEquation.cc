@@ -98,8 +98,8 @@ private:
 			double reduction3(0.0);
 			{
 				const auto neighbourCellsJ1(mesh->getNeighbourCells(j1Id));
-				const size_t nbElemsJ2NeighbourCellsJ1(neighbourCellsJ1.size());
-				for (size_t j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<nbElemsJ2NeighbourCellsJ1; j2NeighbourCellsJ1++)
+				const size_t nbNeighbourCellsJ1(neighbourCellsJ1.size());
+				for (size_t j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<nbNeighbourCellsJ1; j2NeighbourCellsJ1++)
 				{
 					const Id j2Id(neighbourCellsJ1[j2NeighbourCellsJ1]);
 					const size_t j2Cells(j2Id);
@@ -125,8 +125,8 @@ private:
 			double reduction2(0.0);
 			{
 				const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
-				const size_t nbElemsRNodesOfFaceF(nodesOfFaceF.size());
-				for (size_t rNodesOfFaceF=0; rNodesOfFaceF<nbElemsRNodesOfFaceF; rNodesOfFaceF++)
+				const size_t nbNodesOfFaceF(nodesOfFaceF.size());
+				for (size_t rNodesOfFaceF=0; rNodesOfFaceF<nbNodesOfFaceF; rNodesOfFaceF++)
 				{
 					const Id rId(nodesOfFaceF[rNodesOfFaceF]);
 					const Id rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
@@ -162,8 +162,8 @@ private:
 			double reduction1(0.0);
 			{
 				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const size_t nbElemsRNodesOfCellJ(nodesOfCellJ.size());
-				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
 					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 					const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
@@ -189,8 +189,8 @@ private:
 			RealArray1D<2> reduction0({0.0, 0.0});
 			{
 				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const size_t nbElemsRNodesOfCellJ(nodesOfCellJ.size());
-				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
 					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 					const size_t rNodes(rId);

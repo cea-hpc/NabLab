@@ -21,6 +21,7 @@ import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.ItemDefinition
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.Return
+import fr.cea.nabla.nabla.SetDefinition
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -37,6 +38,7 @@ class IrInstructionFactory
 	@Inject extension IrIterationBlockFactory
 	@Inject extension IrItemIdDefinitionFactory
 	@Inject extension IrItemIndexDefinitionFactory
+	@Inject extension IrSetDefinitionFactory
 
 	def Instruction toIrInstruction(fr.cea.nabla.nabla.Instruction nablaInstruction)
 	{
@@ -124,6 +126,11 @@ class IrInstructionFactory
 		instructions += v.toIrIdDefinition
 		instructions += v.item.neededIndexDefinitions
 		return instructions
+	}
+
+	private def dispatch List<Instruction> toIrInstructions(SetDefinition v)
+	{
+		#[v.toIrSetDefinition]
 	}
 
 	private def dispatch List<Instruction> toIrInstructions(Return v)

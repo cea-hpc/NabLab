@@ -128,4 +128,33 @@ class InstructionInterpreterTest
 			}
 		}
 	}
+
+	@Test
+	def void testInterpreteSetDefinition()
+	{
+		val xQuads = 100
+		val yQuads = 100
+		val model = getTestModule(xQuads, yQuads)
+		+
+		'''
+		ℝ U{cells};
+		InitU : {
+			set myCells = cells();
+			∀r∈myCells, U{r} = 1.0;
+		}
+		'''
+
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val handler = new ConsoleHandler
+		handler.level = Level::OFF
+		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
+		val context = moduleInterpreter.interprete
+
+		val nbCells = xQuads * yQuads
+		val double[] u = newDoubleArrayOfSize(nbCells)
+		for (var i = 0 ; i < u.length ; i++)
+			u.set(i, 1.0)
+
+		assertVariableValueInContext(irModule, context, "U", new NV1Real(u))
+	}
 }

@@ -22,7 +22,7 @@ import static extension fr.cea.nabla.ItemRefExtensions.*
 @Singleton
 class IrItemIdFactory
 {
-	@Inject extension IrConnectivityCallFactory
+	@Inject extension IrContainerFactory
 	@Inject extension IrIterationBlockFactory
 
 	def toIrId(ItemRef itemRef)

@@ -105,8 +105,8 @@ public final class HeatEquation
 			double reduction3 = 0.0;
 			{
 				final int[] neighbourCellsJ1 = mesh.getNeighbourCells(j1Id);
-				final int nbElemsJ2NeighbourCellsJ1 = neighbourCellsJ1.length;
-				for (int j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<nbElemsJ2NeighbourCellsJ1; j2NeighbourCellsJ1++)
+				final int nbNeighbourCellsJ1 = neighbourCellsJ1.length;
+				for (int j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<nbNeighbourCellsJ1; j2NeighbourCellsJ1++)
 				{
 					final int j2Id = neighbourCellsJ1[j2NeighbourCellsJ1];
 					final int j2Cells = j2Id;
@@ -132,8 +132,8 @@ public final class HeatEquation
 			double reduction2 = 0.0;
 			{
 				final int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
-				final int nbElemsRNodesOfFaceF = nodesOfFaceF.length;
-				for (int rNodesOfFaceF=0; rNodesOfFaceF<nbElemsRNodesOfFaceF; rNodesOfFaceF++)
+				final int nbNodesOfFaceF = nodesOfFaceF.length;
+				for (int rNodesOfFaceF=0; rNodesOfFaceF<nbNodesOfFaceF; rNodesOfFaceF++)
 				{
 					final int rId = nodesOfFaceF[rNodesOfFaceF];
 					final int rPlus1Id = nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
@@ -169,8 +169,8 @@ public final class HeatEquation
 			double reduction1 = 0.0;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+				final int nbNodesOfCellJ = nodesOfCellJ.length;
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
@@ -196,8 +196,8 @@ public final class HeatEquation
 			double[] reduction0 = new double[] {0.0, 0.0};
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+				final int nbNodesOfCellJ = nodesOfCellJ.length;
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;

@@ -47,6 +47,8 @@ import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
+import fr.cea.nabla.nabla.SetDefinition
+import fr.cea.nabla.nabla.SetRef
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingleConnectivityCall
@@ -70,12 +72,14 @@ class LabelServices
 	static def dispatch String getLabel(Affectation it) { left?.label + ' = ' + right?.label }
 	static def dispatch String getLabel(If it) { 'if ' + condition?.label }
 	static def dispatch String getLabel(ItemDefinition it) { 'item ' + item?.name + '=' + value?.label }
+	static def dispatch String getLabel(SetDefinition it) { 'set ' + name + '=' + value?.label }
 	static def dispatch String getLabel(Return it) { 'return ' + expression?.label }
 
 	/* ITERATEURS ********************************************/
 	static def dispatch String getLabel(SpaceIterator it) { item?.name + '\u2208 ' + container?.label }
 	static def dispatch String getLabel(SingletonDefinition it) { item?.name + '=' + value?.label }
 	static def dispatch String getLabel(Interval it) { index?.name + '\u2208' + nbElems?.label }
+	static def dispatch String getLabel(SetRef it) { target?.name }
 	static def dispatch String getLabel(MultipleConnectivityCall it) { connectivity?.name + '(' + args?.map[label].join(',') + ')' }
 	static def dispatch String getLabel(SingleConnectivityCall it) { connectivity?.name + '(' + args?.map[label].join(',') + ')' }
 	static def dispatch String getLabel(ItemRef it) 

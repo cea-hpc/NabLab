@@ -23,6 +23,7 @@ import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.nabla.SetDefinition
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingletonDefinition
 import fr.cea.nabla.nabla.SpaceIterator
@@ -46,7 +47,7 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
  */
 class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 {
-	/*** Scope for iterators **********************************************************/
+	/*** Scope for items *****************************************************/
 	def scope_ItemRef_target(SpaceIterator context, EReference r)
 	{
 		//println('scope_ItemRef_target(' + context.class.simpleName + ', ' + r.name + ')')
@@ -69,7 +70,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		return s
 	}
 
-	def scope_ItemRef_target(ItemDefinition context, EReference r)
+	def scope_ItemRef_target(Instruction context, EReference r)
 	{
 		//println('scope_ItemRef_target(' + context.class.simpleName + ', ' + r.name + ')')
 		val s = itemsDefinedBefore(context.eContainer, context, '\t')
@@ -130,8 +131,48 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		subList(list, i).filter(ItemDefinition).map[item]
 	}
 
-	/*** Scope for variables ***********************************************************/
 
+
+	/*** Scope for sets ******************************************************/
+	def IScope scope_SetRef_target(SpaceIterator context, EReference r)
+	{
+		val instruction = EcoreUtil2::getContainerOfType(context, Instruction)
+		setsDefinedBefore(instruction.eContainer, instruction, '\t')
+	}
+
+	def IScope scope_SetRef_target(Instruction context, EReference r)
+	{
+		setsDefinedBefore(context.eContainer, context, '\t')
+	}
+
+	private def dispatch IScope setsDefinedBefore(InstructionBlock context, EObject o, String prefix)
+	{
+		//println(prefix + 'setsDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
+		val containerScope = setsDefinedBefore(context.eContainer, context, prefix + '\t')
+		Scopes::scopeFor(setsDeclaredBefore(context.instructions, o as Instruction), containerScope)
+	}
+
+	private def dispatch IScope setsDefinedBefore(Instruction context, EObject o, String prefix)
+	{
+		//println(prefix + 'setsDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
+		setsDefinedBefore(context.eContainer, context, prefix + '\t')
+	}
+
+	private def dispatch IScope setsDefinedBefore(EObject context, EObject o, String prefix)
+	{
+		//println(prefix + 'setsDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
+		IScope::NULLSCOPE
+	}
+
+	private def setsDeclaredBefore(List<? extends Instruction> list, Instruction i)
+	{
+		val upperInstructions = subList(list, i)
+		upperInstructions.filter(SetDefinition)
+	}
+
+
+
+	/*** Scope for variables *************************************************/
 	/**
 	 * ArgOrVarRef must be intercepted because they can be arguments of ReductionCall.
 	 * The ReductionCall interval must be intercepted.

@@ -128,8 +128,8 @@ public final class Glace2d
 			final int jId = jCells;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+				final int nbNodesOfCellJ = nodesOfCellJ.length;
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
 					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					final int rMinus1Id = nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell];
@@ -166,8 +166,8 @@ public final class Glace2d
 			final int jId = jCells;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+				final int nbNodesOfCellJ = nodesOfCellJ.length;
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
 					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					final int rMinus1Id = nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell];
@@ -205,8 +205,8 @@ public final class Glace2d
 			final int jId = jCells;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+				final int nbNodesOfCellJ = nodesOfCellJ.length;
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
 					l[jCells][rNodesOfCellJ] = MathFunctions.norm(C[jCells][rNodesOfCellJ]);
 				}
@@ -227,8 +227,8 @@ public final class Glace2d
 			double reduction5 = 0.0;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+				final int nbNodesOfCellJ = nodesOfCellJ.length;
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;
@@ -254,8 +254,8 @@ public final class Glace2d
 			double[] reduction0 = new double[] {0.0, 0.0};
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+				final int nbNodesOfCellJ = nodesOfCellJ.length;
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;
@@ -276,8 +276,8 @@ public final class Glace2d
 			double reduction1 = 0.0;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+				final int nbNodesOfCellJ = nodesOfCellJ.length;
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;
@@ -405,8 +405,8 @@ public final class Glace2d
 			final int jId = jCells;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+				final int nbNodesOfCellJ = nodesOfCellJ.length;
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
 					Ajr[jCells][rNodesOfCellJ] = ArrayOperations.multiply(((rho[jCells] * c[jCells]) / l[jCells][rNodesOfCellJ]), tensProduct(C[jCells][rNodesOfCellJ], C[jCells][rNodesOfCellJ]));
 				}
@@ -427,8 +427,8 @@ public final class Glace2d
 			double reduction2 = 0.0;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+				final int nbNodesOfCellJ = nodesOfCellJ.length;
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
 					reduction2 = sumR0(reduction2, l[jCells][rNodesOfCellJ]);
 				}
@@ -450,8 +450,8 @@ public final class Glace2d
 			double[][] reduction3 = new double[][] {{0.0, 0.0}, {0.0, 0.0}};
 			{
 				final int[] cellsOfNodeR = mesh.getCellsOfNode(rId);
-				final int nbElemsJCellsOfNodeR = cellsOfNodeR.length;
-				for (int jCellsOfNodeR=0; jCellsOfNodeR<nbElemsJCellsOfNodeR; jCellsOfNodeR++)
+				final int nbCellsOfNodeR = cellsOfNodeR.length;
+				for (int jCellsOfNodeR=0; jCellsOfNodeR<nbCellsOfNodeR; jCellsOfNodeR++)
 				{
 					final int jId = cellsOfNodeR[jCellsOfNodeR];
 					final int jCells = jId;
@@ -476,8 +476,8 @@ public final class Glace2d
 			double[] reduction4 = new double[] {0.0, 0.0};
 			{
 				final int[] cellsOfNodeR = mesh.getCellsOfNode(rId);
-				final int nbElemsJCellsOfNodeR = cellsOfNodeR.length;
-				for (int jCellsOfNodeR=0; jCellsOfNodeR<nbElemsJCellsOfNodeR; jCellsOfNodeR++)
+				final int nbCellsOfNodeR = cellsOfNodeR.length;
+				for (int jCellsOfNodeR=0; jCellsOfNodeR<nbCellsOfNodeR; jCellsOfNodeR++)
 				{
 					final int jId = cellsOfNodeR[jCellsOfNodeR];
 					final int jCells = jId;
@@ -518,8 +518,8 @@ public final class Glace2d
 	{
 		{
 			final int[] outerFaces = mesh.getOuterFaces();
-			final int nbElemsFOuterFaces = outerFaces.length;
-			IntStream.range(0, nbElemsFOuterFaces).parallel().forEach(fOuterFaces -> 
+			final int nbOuterFaces = outerFaces.length;
+			IntStream.range(0, nbOuterFaces).parallel().forEach(fOuterFaces -> 
 			{
 				final int fId = outerFaces[fOuterFaces];
 				final double epsilon = 1.0E-10;
@@ -531,8 +531,8 @@ public final class Glace2d
 				double[] nY = new double[] {0.0, 1.0};
 				{
 					final int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
-					final int nbElemsRNodesOfFaceF = nodesOfFaceF.length;
-					for (int rNodesOfFaceF=0; rNodesOfFaceF<nbElemsRNodesOfFaceF; rNodesOfFaceF++)
+					final int nbNodesOfFaceF = nodesOfFaceF.length;
+					for (int rNodesOfFaceF=0; rNodesOfFaceF<nbNodesOfFaceF; rNodesOfFaceF++)
 					{
 						final int rId = nodesOfFaceF[rNodesOfFaceF];
 						final int rNodes = rId;
@@ -569,8 +569,8 @@ public final class Glace2d
 	{
 		{
 			final int[] innerNodes = mesh.getInnerNodes();
-			final int nbElemsRInnerNodes = innerNodes.length;
-			IntStream.range(0, nbElemsRInnerNodes).parallel().forEach(rInnerNodes -> 
+			final int nbInnerNodes = innerNodes.length;
+			IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes -> 
 			{
 				final int rId = innerNodes[rInnerNodes];
 				final int rNodes = rId;
@@ -588,8 +588,8 @@ public final class Glace2d
 	{
 		{
 			final int[] innerNodes = mesh.getInnerNodes();
-			final int nbElemsRInnerNodes = innerNodes.length;
-			IntStream.range(0, nbElemsRInnerNodes).parallel().forEach(rInnerNodes -> 
+			final int nbInnerNodes = innerNodes.length;
+			IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes -> 
 			{
 				final int rId = innerNodes[rInnerNodes];
 				final int rNodes = rId;
@@ -633,8 +633,8 @@ public final class Glace2d
 			final int jId = jCells;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+				final int nbNodesOfCellJ = nodesOfCellJ.length;
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;
@@ -670,8 +670,8 @@ public final class Glace2d
 			double reduction7 = 0.0;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+				final int nbNodesOfCellJ = nodesOfCellJ.length;
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;
@@ -695,8 +695,8 @@ public final class Glace2d
 			double[] reduction6 = new double[] {0.0, 0.0};
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbElemsRNodesOfCellJ = nodesOfCellJ.length;
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+				final int nbNodesOfCellJ = nodesOfCellJ.length;
+				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
 					reduction6 = sumR1(reduction6, F[jCells][rNodesOfCellJ]);
 				}

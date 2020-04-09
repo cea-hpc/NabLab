@@ -175,8 +175,8 @@ private:
 				const Id jId(jCells);
 				{
 					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					const size_t nbElemsRNodesOfCellJ(nodesOfCellJ.size());
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+					const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 					{
 						const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 						const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
@@ -229,8 +229,8 @@ private:
 				const Id jId(jCells);
 				{
 					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					const size_t nbElemsRNodesOfCellJ(nodesOfCellJ.size());
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+					const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 					{
 						const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 						const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
@@ -273,8 +273,8 @@ private:
 				const Id jId(jCells);
 				{
 					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					const size_t nbElemsRNodesOfCellJ(nodesOfCellJ.size());
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+					const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 					{
 						l(jCells,rNodesOfCellJ) = MathFunctions::norm(C(jCells,rNodesOfCellJ));
 					}
@@ -303,8 +303,8 @@ private:
 				double reduction5(0.0);
 				{
 					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					const size_t nbElemsRNodesOfCellJ(nodesOfCellJ.size());
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+					const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 					{
 						const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 						const size_t rNodes(rId);
@@ -338,8 +338,8 @@ private:
 				RealArray1D<2> reduction0({0.0, 0.0});
 				{
 					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					const size_t nbElemsRNodesOfCellJ(nodesOfCellJ.size());
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+					const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 					{
 						const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 						const size_t rNodes(rId);
@@ -360,8 +360,8 @@ private:
 				double reduction1(0.0);
 				{
 					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					const size_t nbElemsRNodesOfCellJ(nodesOfCellJ.size());
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+					const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 					{
 						const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 						const size_t rNodes(rId);
@@ -597,8 +597,8 @@ private:
 				const Id jId(jCells);
 				{
 					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					const size_t nbElemsRNodesOfCellJ(nodesOfCellJ.size());
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+					const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 					{
 						Ajr(jCells,rNodesOfCellJ) = ((rho(jCells) * c(jCells)) / l(jCells,rNodesOfCellJ)) * tensProduct(C(jCells,rNodesOfCellJ), C(jCells,rNodesOfCellJ));
 					}
@@ -627,8 +627,8 @@ private:
 				double reduction2(0.0);
 				{
 					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					const size_t nbElemsRNodesOfCellJ(nodesOfCellJ.size());
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+					const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 					{
 						reduction2 = sumR0(reduction2, l(jCells,rNodesOfCellJ));
 					}
@@ -658,8 +658,8 @@ private:
 				RealArray2D<2,2> reduction3({0.0, 0.0,  0.0, 0.0});
 				{
 					const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
-					const size_t nbElemsJCellsOfNodeR(cellsOfNodeR.size());
-					for (size_t jCellsOfNodeR=0; jCellsOfNodeR<nbElemsJCellsOfNodeR; jCellsOfNodeR++)
+					const size_t nbCellsOfNodeR(cellsOfNodeR.size());
+					for (size_t jCellsOfNodeR=0; jCellsOfNodeR<nbCellsOfNodeR; jCellsOfNodeR++)
 					{
 						const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 						const size_t jCells(jId);
@@ -692,8 +692,8 @@ private:
 				RealArray1D<2> reduction4({0.0, 0.0});
 				{
 					const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
-					const size_t nbElemsJCellsOfNodeR(cellsOfNodeR.size());
-					for (size_t jCellsOfNodeR=0; jCellsOfNodeR<nbElemsJCellsOfNodeR; jCellsOfNodeR++)
+					const size_t nbCellsOfNodeR(cellsOfNodeR.size());
+					for (size_t jCellsOfNodeR=0; jCellsOfNodeR<nbCellsOfNodeR; jCellsOfNodeR++)
 					{
 						const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 						const size_t jCells(jId);
@@ -732,9 +732,9 @@ private:
 	{
 		{
 			const auto outerFaces(mesh->getOuterFaces());
-			const size_t nbElemsFOuterFaces(outerFaces.size());
+			const size_t nbOuterFaces(outerFaces.size());
 			{
-				const auto teamWork(computeTeamWorkRange(teamMember, nbElemsFOuterFaces));
+				const auto teamWork(computeTeamWorkRange(teamMember, nbOuterFaces));
 				if (!teamWork.second)
 					return;
 			
@@ -751,8 +751,8 @@ private:
 					RealArray1D<2> nY({0.0, 1.0});
 					{
 						const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
-						const size_t nbElemsRNodesOfFaceF(nodesOfFaceF.size());
-						for (size_t rNodesOfFaceF=0; rNodesOfFaceF<nbElemsRNodesOfFaceF; rNodesOfFaceF++)
+						const size_t nbNodesOfFaceF(nodesOfFaceF.size());
+						for (size_t rNodesOfFaceF=0; rNodesOfFaceF<nbNodesOfFaceF; rNodesOfFaceF++)
 						{
 							const Id rId(nodesOfFaceF[rNodesOfFaceF]);
 							const size_t rNodes(rId);
@@ -791,9 +791,9 @@ private:
 	{
 		{
 			const auto innerNodes(mesh->getInnerNodes());
-			const size_t nbElemsRInnerNodes(innerNodes.size());
+			const size_t nbInnerNodes(innerNodes.size());
 			{
-				const auto teamWork(computeTeamWorkRange(teamMember, nbElemsRInnerNodes));
+				const auto teamWork(computeTeamWorkRange(teamMember, nbInnerNodes));
 				if (!teamWork.second)
 					return;
 			
@@ -818,9 +818,9 @@ private:
 	{
 		{
 			const auto innerNodes(mesh->getInnerNodes());
-			const size_t nbElemsRInnerNodes(innerNodes.size());
+			const size_t nbInnerNodes(innerNodes.size());
 			{
-				const auto teamWork(computeTeamWorkRange(teamMember, nbElemsRInnerNodes));
+				const auto teamWork(computeTeamWorkRange(teamMember, nbInnerNodes));
 				if (!teamWork.second)
 					return;
 			
@@ -886,8 +886,8 @@ private:
 				const Id jId(jCells);
 				{
 					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					const size_t nbElemsRNodesOfCellJ(nodesOfCellJ.size());
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+					const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 					{
 						const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 						const size_t rNodes(rId);
@@ -939,8 +939,8 @@ private:
 				double reduction7(0.0);
 				{
 					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					const size_t nbElemsRNodesOfCellJ(nodesOfCellJ.size());
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+					const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 					{
 						const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 						const size_t rNodes(rId);
@@ -972,8 +972,8 @@ private:
 				RealArray1D<2> reduction6({0.0, 0.0});
 				{
 					const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-					const size_t nbElemsRNodesOfCellJ(nodesOfCellJ.size());
-					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbElemsRNodesOfCellJ; rNodesOfCellJ++)
+					const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+					for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 					{
 						reduction6 = sumR1(reduction6, F(jCells,rNodesOfCellJ));
 					}

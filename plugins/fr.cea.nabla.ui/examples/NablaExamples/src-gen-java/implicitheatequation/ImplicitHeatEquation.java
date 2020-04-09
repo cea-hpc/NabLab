@@ -122,8 +122,8 @@ public final class ImplicitHeatEquation
 			double reduction3 = 0.0;
 			{
 				final int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
-				final int nbElemsPNodesOfFaceF = nodesOfFaceF.length;
-				for (int pNodesOfFaceF=0; pNodesOfFaceF<nbElemsPNodesOfFaceF; pNodesOfFaceF++)
+				final int nbNodesOfFaceF = nodesOfFaceF.length;
+				for (int pNodesOfFaceF=0; pNodesOfFaceF<nbNodesOfFaceF; pNodesOfFaceF++)
 				{
 					final int pId = nodesOfFaceF[pNodesOfFaceF];
 					final int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
@@ -159,8 +159,8 @@ public final class ImplicitHeatEquation
 			double reduction2 = 0.0;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbElemsPNodesOfCellJ = nodesOfCellJ.length;
-				for (int pNodesOfCellJ=0; pNodesOfCellJ<nbElemsPNodesOfCellJ; pNodesOfCellJ++)
+				final int nbNodesOfCellJ = nodesOfCellJ.length;
+				for (int pNodesOfCellJ=0; pNodesOfCellJ<nbNodesOfCellJ; pNodesOfCellJ++)
 				{
 					final int pId = nodesOfCellJ[pNodesOfCellJ];
 					final int pPlus1Id = nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
@@ -199,8 +199,8 @@ public final class ImplicitHeatEquation
 			double[] reduction0 = new double[] {0.0, 0.0};
 			{
 				final int[] nodesOfCellC = mesh.getNodesOfCell(cId);
-				final int nbElemsPNodesOfCellC = nodesOfCellC.length;
-				for (int pNodesOfCellC=0; pNodesOfCellC<nbElemsPNodesOfCellC; pNodesOfCellC++)
+				final int nbNodesOfCellC = nodesOfCellC.length;
+				for (int pNodesOfCellC=0; pNodesOfCellC<nbNodesOfCellC; pNodesOfCellC++)
 				{
 					final int pId = nodesOfCellC[pNodesOfCellC];
 					final int pNodes = pId;
@@ -234,8 +234,8 @@ public final class ImplicitHeatEquation
 			double reduction4 = 1.0;
 			{
 				final int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
-				final int nbElemsC1CellsOfFaceF = cellsOfFaceF.length;
-				for (int c1CellsOfFaceF=0; c1CellsOfFaceF<nbElemsC1CellsOfFaceF; c1CellsOfFaceF++)
+				final int nbCellsOfFaceF = cellsOfFaceF.length;
+				for (int c1CellsOfFaceF=0; c1CellsOfFaceF<nbCellsOfFaceF; c1CellsOfFaceF++)
 				{
 					final int c1Id = cellsOfFaceF[c1CellsOfFaceF];
 					final int c1Cells = c1Id;
@@ -245,8 +245,8 @@ public final class ImplicitHeatEquation
 			double reduction5 = 0.0;
 			{
 				final int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
-				final int nbElemsC2CellsOfFaceF = cellsOfFaceF.length;
-				for (int c2CellsOfFaceF=0; c2CellsOfFaceF<nbElemsC2CellsOfFaceF; c2CellsOfFaceF++)
+				final int nbCellsOfFaceF = cellsOfFaceF.length;
+				for (int c2CellsOfFaceF=0; c2CellsOfFaceF<nbCellsOfFaceF; c2CellsOfFaceF++)
 				{
 					final int c2Id = cellsOfFaceF[c2CellsOfFaceF];
 					final int c2Cells = c2Id;
@@ -320,8 +320,8 @@ public final class ImplicitHeatEquation
 			double alphaDiag = 0.0;
 			{
 				final int[] neighbourCellsC = mesh.getNeighbourCells(cId);
-				final int nbElemsDNeighbourCellsC = neighbourCellsC.length;
-				for (int dNeighbourCellsC=0; dNeighbourCellsC<nbElemsDNeighbourCellsC; dNeighbourCellsC++)
+				final int nbNeighbourCellsC = neighbourCellsC.length;
+				for (int dNeighbourCellsC=0; dNeighbourCellsC<nbNeighbourCellsC; dNeighbourCellsC++)
 				{
 					final int dId = neighbourCellsC[dNeighbourCellsC];
 					final int dCells = dId;

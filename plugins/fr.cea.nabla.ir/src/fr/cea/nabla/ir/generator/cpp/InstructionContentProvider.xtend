@@ -158,7 +158,7 @@ abstract class InstructionContentProvider
 		if (container.connectivity.indexEqualId)
 			container.connectivity.nbElems
 		else
-			'nbElems' + indexName.toFirstUpper
+			'nb' + container.uniqueName.toFirstUpper
 	}
 
 	protected def dispatch getNbElems(Interval it)

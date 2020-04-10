@@ -23,8 +23,7 @@ The version installed is 3.0.0.
 
 We use the same process.
 ```bash
-	# kokkos directory already exists from kokkos install
-	cd kokkos
+	# Making your way back to kokkos parent directory where is your kokkos install sub-directory
 	git clone https://github.com/kokkos/kokkos-kernels.git
 	mkdir kokkos-build
 	cd kokkos-build

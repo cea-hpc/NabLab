@@ -28,6 +28,8 @@ import org.eclipse.xtext.validation.Check
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.NSTScalar
 import fr.cea.nabla.nabla.Expression
+import fr.cea.nabla.nabla.Instruction
+import fr.cea.nabla.nabla.If
 
 class FunctionOrReductionValidator extends BasicValidator
 {
@@ -72,11 +74,17 @@ class FunctionOrReductionValidator extends BasicValidator
 	@Check
 	def checkMissingReturn(FunctionOrReduction it)
 	{
-		if (body === null) return;
-
-		val hasReturn = (body instanceof Return) || body.eAllContents.exists[x | x instanceof Return]
-		if (!hasReturn)
+		if (body !== null && !body.hasReturn)
 			error(getMissingReturnMsg(), NablaPackage.Literals.FUNCTION_OR_REDUCTION__NAME, MISSING_RETURN)
+	}
+
+	private def dispatch boolean hasReturn(Instruction it) { false }
+	private def dispatch boolean hasReturn(Return it) { true }
+	private def dispatch boolean hasReturn(InstructionBlock it) { instructions.exists[hasReturn] }
+	private def dispatch boolean hasReturn(If it)
+	{
+		if (^else === null) false
+		else then.hasReturn && ^else.hasReturn
 	}
 
 	@Check

@@ -14,7 +14,7 @@ import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.ItemIndex
 import fr.cea.nabla.ir.ir.ItemIndexDefinition
-import fr.cea.nabla.ir.ir.ItemIndexValueId
+import fr.cea.nabla.ir.ir.ItemIndexValue
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.Item
 import fr.cea.nabla.nabla.ItemRef
@@ -43,14 +43,6 @@ class IrItemIndexDefinitionFactory
 		val indexExists = [String indexName | false]
 		createIndexDefinitions(item, indexExists)
 	}
-
-	/**
-	 * Return the list of needed ItemIdDefinition instructions for the SpaceIterator 'it':
-	 * - either the args feature of ConnectivityCall: a ConnectivityCall arg is always an id, never an index
-	 * - either an index of a VarRef different from the index of the iterator: the id
-	 *   is then used to go from the iterator index to the variable index
-	 * Several ids can be necessary for a single iterator due to shifted references (ex: X{r+1} can need rPlus1Id).
-	 */
 
 	/**
 	 * Return the list of needed ItemIndexDefinition instructions for 'item'.
@@ -125,7 +117,7 @@ class IrItemIndexDefinitionFactory
 		createItemIndexDefinition(index, value)
 	}
 
-	private def create IrFactory::eINSTANCE.createItemIndexDefinition createItemIndexDefinition(ItemIndex _index, ItemIndexValueId _value)
+	private def create IrFactory::eINSTANCE.createItemIndexDefinition createItemIndexDefinition(ItemIndex _index, ItemIndexValue _value)
 	{
 		index = _index
 		value = _value

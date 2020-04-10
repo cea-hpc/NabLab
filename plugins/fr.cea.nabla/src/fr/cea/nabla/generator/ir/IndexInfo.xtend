@@ -12,10 +12,38 @@ package fr.cea.nabla.generator.ir
 import fr.cea.nabla.UniqueNameHelper
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.ConnectivityVar
+import fr.cea.nabla.nabla.Item
 import fr.cea.nabla.nabla.ItemRef
+import java.util.Arrays
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ItemRefExtensions.*
+
+/**
+ * Class to store a list of items.
+ * A list can not be used because the equals method is needed
+ * to use Xtend create mechanisms.
+ */
+@Data
+class DependentItemList
+{
+	val Item[] items
+
+	override boolean equals(Object obj)
+	{
+		if (this === obj) return true
+		if (obj === null) return false
+		if (getClass() !== obj.getClass()) return false
+		val other = obj as DependentItemList
+		if (this.items === null) 
+		{
+			if (other.items !== null) return false
+		}
+		else if (!Arrays.deepEquals(this.items, other.items))
+			return false
+		return true
+	}
+}
 
 @Data
 class IndexInfo
@@ -35,6 +63,11 @@ class IndexInfo
 	def getName()
 	{
 		itemRef.name + UniqueNameHelper::getUniqueName(container, args).toFirstUpper
+	}
+
+	def getDependentItems()
+	{
+		new DependentItemList(args.map[target])
 	}
 
 	def getContainer()

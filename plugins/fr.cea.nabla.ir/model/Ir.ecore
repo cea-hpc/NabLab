@@ -198,7 +198,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="ItemIndexDefinition" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="index" lowerBound="1" eType="#//ItemIndex"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="#//ItemIndexValueId"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="#//ItemIndexValue"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ItemIdDefinition" eSuperTypes="#//Instruction">
@@ -228,8 +228,6 @@
   <eClassifiers xsi:type="ecore:EClass" name="Iterator" eSuperTypes="#//IterationBlock">
     <eStructuralFeatures xsi:type="ecore:EReference" name="index" lowerBound="1" eType="#//ItemIndex"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="indexValue" lowerBound="1"
-        eType="#//ItemIndexValueIterator" containment="true" eOpposite="#//ItemIndexValueIterator/iterator"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="container" lowerBound="1"
         eType="#//Container" containment="true"/>
   </eClassifiers>
@@ -370,12 +368,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="itemName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ItemIndexValue" abstract="true" eSuperTypes="#//IrAnnotable"/>
-  <eClassifiers xsi:type="ecore:EClass" name="ItemIndexValueIterator" eSuperTypes="#//ItemIndexValue">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="iterator" lowerBound="1"
-        eType="#//Iterator" eOpposite="#//Iterator/indexValue"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ItemIndexValueId" eSuperTypes="#//ItemIndexValue">
+  <eClassifiers xsi:type="ecore:EClass" name="ItemIndexValue" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="id" lowerBound="1" eType="#//ItemId"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="container" lowerBound="1"
         eType="#//ConnectivityCall" containment="true"/>

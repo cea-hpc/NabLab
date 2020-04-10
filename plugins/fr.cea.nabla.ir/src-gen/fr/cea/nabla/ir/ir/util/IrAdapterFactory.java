@@ -328,14 +328,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createItemIndexValueAdapter();
 			}
 			@Override
-			public Adapter caseItemIndexValueIterator(ItemIndexValueIterator object) {
-				return createItemIndexValueIteratorAdapter();
-			}
-			@Override
-			public Adapter caseItemIndexValueId(ItemIndexValueId object) {
-				return createItemIndexValueIdAdapter();
-			}
-			@Override
 			public Adapter defaultCase(EObject object) {
 				return createEObjectAdapter();
 			}
@@ -1262,34 +1254,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createItemIndexValueAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemIndexValueIterator <em>Item Index Value Iterator</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.ItemIndexValueIterator
-	 * @generated
-	 */
-	public Adapter createItemIndexValueIteratorAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemIndexValueId <em>Item Index Value Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.ItemIndexValueId
-	 * @generated
-	 */
-	public Adapter createItemIndexValueIdAdapter() {
 		return null;
 	}
 

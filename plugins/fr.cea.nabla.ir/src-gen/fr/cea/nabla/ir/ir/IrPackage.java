@@ -2379,22 +2379,13 @@ public interface IrPackage extends EPackage {
 	int ITERATOR__INDEX = ITERATION_BLOCK_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Index Value</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITERATOR__INDEX_VALUE = ITERATION_BLOCK_FEATURE_COUNT + 1;
-
-	/**
 	 * The feature id for the '<em><b>Container</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ITERATOR__CONTAINER = ITERATION_BLOCK_FEATURE_COUNT + 2;
+	int ITERATOR__CONTAINER = ITERATION_BLOCK_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Iterator</em>' class.
@@ -2403,7 +2394,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ITERATOR_FEATURE_COUNT = ITERATION_BLOCK_FEATURE_COUNT + 3;
+	int ITERATOR_FEATURE_COUNT = ITERATION_BLOCK_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Iterator</em>' class.
@@ -4011,13 +4002,31 @@ public interface IrPackage extends EPackage {
 	int ITEM_INDEX_VALUE__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
 
 	/**
+	 * The feature id for the '<em><b>Id</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ITEM_INDEX_VALUE__ID = IR_ANNOTABLE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Container</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ITEM_INDEX_VALUE__CONTAINER = IR_ANNOTABLE_FEATURE_COUNT + 1;
+
+	/**
 	 * The number of structural features of the '<em>Item Index Value</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ITEM_INDEX_VALUE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 0;
+	int ITEM_INDEX_VALUE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Item Index Value</em>' class.
@@ -4029,107 +4038,6 @@ public interface IrPackage extends EPackage {
 	int ITEM_INDEX_VALUE_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ItemIndexValueIteratorImpl <em>Item Index Value Iterator</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.ItemIndexValueIteratorImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIndexValueIterator()
-	 * @generated
-	 */
-	int ITEM_INDEX_VALUE_ITERATOR = 65;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITEM_INDEX_VALUE_ITERATOR__ANNOTATIONS = ITEM_INDEX_VALUE__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Iterator</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITEM_INDEX_VALUE_ITERATOR__ITERATOR = ITEM_INDEX_VALUE_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Item Index Value Iterator</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITEM_INDEX_VALUE_ITERATOR_FEATURE_COUNT = ITEM_INDEX_VALUE_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Item Index Value Iterator</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITEM_INDEX_VALUE_ITERATOR_OPERATION_COUNT = ITEM_INDEX_VALUE_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ItemIndexValueIdImpl <em>Item Index Value Id</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.ItemIndexValueIdImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIndexValueId()
-	 * @generated
-	 */
-	int ITEM_INDEX_VALUE_ID = 66;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITEM_INDEX_VALUE_ID__ANNOTATIONS = ITEM_INDEX_VALUE__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITEM_INDEX_VALUE_ID__ID = ITEM_INDEX_VALUE_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Container</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITEM_INDEX_VALUE_ID__CONTAINER = ITEM_INDEX_VALUE_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of structural features of the '<em>Item Index Value Id</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITEM_INDEX_VALUE_ID_FEATURE_COUNT = ITEM_INDEX_VALUE_FEATURE_COUNT + 2;
-
-	/**
-	 * The number of operations of the '<em>Item Index Value Id</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ITEM_INDEX_VALUE_ID_OPERATION_COUNT = ITEM_INDEX_VALUE_OPERATION_COUNT + 0;
-
-	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.PrimitiveType <em>Primitive Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4137,7 +4045,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getPrimitiveType()
 	 * @generated
 	 */
-	int PRIMITIVE_TYPE = 67;
+	int PRIMITIVE_TYPE = 65;
 
 
 	/**
@@ -5371,17 +5279,6 @@ public interface IrPackage extends EPackage {
 	EReference getIterator_Index();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.Iterator#getIndexValue <em>Index Value</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Index Value</em>'.
-	 * @see fr.cea.nabla.ir.ir.Iterator#getIndexValue()
-	 * @see #getIterator()
-	 * @generated
-	 */
-	EReference getIterator_IndexValue();
-
-	/**
 	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.Iterator#getContainer <em>Container</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -6155,57 +6052,26 @@ public interface IrPackage extends EPackage {
 	EClass getItemIndexValue();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ItemIndexValueIterator <em>Item Index Value Iterator</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Item Index Value Iterator</em>'.
-	 * @see fr.cea.nabla.ir.ir.ItemIndexValueIterator
-	 * @generated
-	 */
-	EClass getItemIndexValueIterator();
-
-	/**
-	 * Returns the meta object for the container reference '{@link fr.cea.nabla.ir.ir.ItemIndexValueIterator#getIterator <em>Iterator</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Iterator</em>'.
-	 * @see fr.cea.nabla.ir.ir.ItemIndexValueIterator#getIterator()
-	 * @see #getItemIndexValueIterator()
-	 * @generated
-	 */
-	EReference getItemIndexValueIterator_Iterator();
-
-	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ItemIndexValueId <em>Item Index Value Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Item Index Value Id</em>'.
-	 * @see fr.cea.nabla.ir.ir.ItemIndexValueId
-	 * @generated
-	 */
-	EClass getItemIndexValueId();
-
-	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.ItemIndexValueId#getId <em>Id</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.ItemIndexValue#getId <em>Id</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Id</em>'.
-	 * @see fr.cea.nabla.ir.ir.ItemIndexValueId#getId()
-	 * @see #getItemIndexValueId()
+	 * @see fr.cea.nabla.ir.ir.ItemIndexValue#getId()
+	 * @see #getItemIndexValue()
 	 * @generated
 	 */
-	EReference getItemIndexValueId_Id();
+	EReference getItemIndexValue_Id();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.ItemIndexValueId#getContainer <em>Container</em>}'.
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.ItemIndexValue#getContainer <em>Container</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference '<em>Container</em>'.
-	 * @see fr.cea.nabla.ir.ir.ItemIndexValueId#getContainer()
-	 * @see #getItemIndexValueId()
+	 * @see fr.cea.nabla.ir.ir.ItemIndexValue#getContainer()
+	 * @see #getItemIndexValue()
 	 * @generated
 	 */
-	EReference getItemIndexValueId_Container();
+	EReference getItemIndexValue_Container();
 
 	/**
 	 * Returns the meta object for enum '{@link fr.cea.nabla.ir.ir.PrimitiveType <em>Primitive Type</em>}'.
@@ -7231,14 +7097,6 @@ public interface IrPackage extends EPackage {
 		EReference ITERATOR__INDEX = eINSTANCE.getIterator_Index();
 
 		/**
-		 * The meta object literal for the '<em><b>Index Value</b></em>' containment reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ITERATOR__INDEX_VALUE = eINSTANCE.getIterator_IndexValue();
-
-		/**
 		 * The meta object literal for the '<em><b>Container</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -7883,40 +7741,12 @@ public interface IrPackage extends EPackage {
 		EClass ITEM_INDEX_VALUE = eINSTANCE.getItemIndexValue();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ItemIndexValueIteratorImpl <em>Item Index Value Iterator</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.ItemIndexValueIteratorImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIndexValueIterator()
-		 * @generated
-		 */
-		EClass ITEM_INDEX_VALUE_ITERATOR = eINSTANCE.getItemIndexValueIterator();
-
-		/**
-		 * The meta object literal for the '<em><b>Iterator</b></em>' container reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ITEM_INDEX_VALUE_ITERATOR__ITERATOR = eINSTANCE.getItemIndexValueIterator_Iterator();
-
-		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ItemIndexValueIdImpl <em>Item Index Value Id</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.ItemIndexValueIdImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIndexValueId()
-		 * @generated
-		 */
-		EClass ITEM_INDEX_VALUE_ID = eINSTANCE.getItemIndexValueId();
-
-		/**
 		 * The meta object literal for the '<em><b>Id</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference ITEM_INDEX_VALUE_ID__ID = eINSTANCE.getItemIndexValueId_Id();
+		EReference ITEM_INDEX_VALUE__ID = eINSTANCE.getItemIndexValue_Id();
 
 		/**
 		 * The meta object literal for the '<em><b>Container</b></em>' containment reference feature.
@@ -7924,7 +7754,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference ITEM_INDEX_VALUE_ID__CONTAINER = eINSTANCE.getItemIndexValueId_Container();
+		EReference ITEM_INDEX_VALUE__CONTAINER = eINSTANCE.getItemIndexValue_Container();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.PrimitiveType <em>Primitive Type</em>}' enum.

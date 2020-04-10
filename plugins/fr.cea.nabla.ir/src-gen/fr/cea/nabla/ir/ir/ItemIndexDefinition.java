@@ -48,12 +48,12 @@ public interface ItemIndexDefinition extends Instruction {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Value</em>' containment reference.
-	 * @see #setValue(ItemIndexValueId)
+	 * @see #setValue(ItemIndexValue)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getItemIndexDefinition_Value()
 	 * @model containment="true" resolveProxies="true" required="true"
 	 * @generated
 	 */
-	ItemIndexValueId getValue();
+	ItemIndexValue getValue();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ItemIndexDefinition#getValue <em>Value</em>}' containment reference.
@@ -63,6 +63,6 @@ public interface ItemIndexDefinition extends Instruction {
 	 * @see #getValue()
 	 * @generated
 	 */
-	void setValue(ItemIndexValueId value);
+	void setValue(ItemIndexValue value);
 
 } // ItemIndexDefinition

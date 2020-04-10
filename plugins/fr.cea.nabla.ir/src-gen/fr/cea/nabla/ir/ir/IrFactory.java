@@ -490,22 +490,13 @@ public interface IrFactory extends EFactory {
 	ItemIndex createItemIndex();
 
 	/**
-	 * Returns a new object of class '<em>Item Index Value Iterator</em>'.
+	 * Returns a new object of class '<em>Item Index Value</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Item Index Value Iterator</em>'.
+	 * @return a new object of class '<em>Item Index Value</em>'.
 	 * @generated
 	 */
-	ItemIndexValueIterator createItemIndexValueIterator();
-
-	/**
-	 * Returns a new object of class '<em>Item Index Value Id</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Item Index Value Id</em>'.
-	 * @generated
-	 */
-	ItemIndexValueId createItemIndexValueId();
+	ItemIndexValue createItemIndexValue();
 
 	/**
 	 * Returns the package supported by this factory.

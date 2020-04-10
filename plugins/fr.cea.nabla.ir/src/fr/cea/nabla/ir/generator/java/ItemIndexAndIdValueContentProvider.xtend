@@ -11,14 +11,14 @@ package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.ItemIdValueCall
 import fr.cea.nabla.ir.ir.ItemIdValueIterator
-import fr.cea.nabla.ir.ir.ItemIndexValueId
+import fr.cea.nabla.ir.ir.ItemIndexValue
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class ItemIndexAndIdValueContentProvider 
 {
-	static def dispatch getContent(ItemIndexValueId it)
+	static def dispatch getContent(ItemIndexValue it)
 	{
 		if (container.connectivity.indexEqualId) 
 			'''«id.name»'''

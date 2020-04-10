@@ -5,8 +5,7 @@ package fr.cea.nabla.ir.ir.impl;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.ItemIndex;
 import fr.cea.nabla.ir.ir.ItemIndexDefinition;
-import fr.cea.nabla.ir.ir.ItemIndexValueId;
-
+import fr.cea.nabla.ir.ir.ItemIndexValue;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
@@ -48,7 +47,7 @@ public class ItemIndexDefinitionImpl extends InstructionImpl implements ItemInde
 	 * @generated
 	 * @ordered
 	 */
-	protected ItemIndexValueId value;
+	protected ItemIndexValue value;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -143,10 +142,10 @@ public class ItemIndexDefinitionImpl extends InstructionImpl implements ItemInde
 	 * @generated
 	 */
 	@Override
-	public ItemIndexValueId getValue() {
+	public ItemIndexValue getValue() {
 		if (value != null && value.eIsProxy()) {
 			InternalEObject oldValue = (InternalEObject)value;
-			value = (ItemIndexValueId)eResolveProxy(oldValue);
+			value = (ItemIndexValue)eResolveProxy(oldValue);
 			if (value != oldValue) {
 				InternalEObject newValue = (InternalEObject)value;
 				NotificationChain msgs = oldValue.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITEM_INDEX_DEFINITION__VALUE, null, null);
@@ -166,7 +165,7 @@ public class ItemIndexDefinitionImpl extends InstructionImpl implements ItemInde
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ItemIndexValueId basicGetValue() {
+	public ItemIndexValue basicGetValue() {
 		return value;
 	}
 
@@ -175,8 +174,8 @@ public class ItemIndexDefinitionImpl extends InstructionImpl implements ItemInde
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetValue(ItemIndexValueId newValue, NotificationChain msgs) {
-		ItemIndexValueId oldValue = value;
+	public NotificationChain basicSetValue(ItemIndexValue newValue, NotificationChain msgs) {
+		ItemIndexValue oldValue = value;
 		value = newValue;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.ITEM_INDEX_DEFINITION__VALUE, oldValue, newValue);
@@ -191,7 +190,7 @@ public class ItemIndexDefinitionImpl extends InstructionImpl implements ItemInde
 	 * @generated
 	 */
 	@Override
-	public void setValue(ItemIndexValueId newValue) {
+	public void setValue(ItemIndexValue newValue) {
 		if (newValue != value) {
 			NotificationChain msgs = null;
 			if (value != null)
@@ -251,7 +250,7 @@ public class ItemIndexDefinitionImpl extends InstructionImpl implements ItemInde
 				setIndex((ItemIndex)newValue);
 				return;
 			case IrPackage.ITEM_INDEX_DEFINITION__VALUE:
-				setValue((ItemIndexValueId)newValue);
+				setValue((ItemIndexValue)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -269,7 +268,7 @@ public class ItemIndexDefinitionImpl extends InstructionImpl implements ItemInde
 				setIndex((ItemIndex)null);
 				return;
 			case IrPackage.ITEM_INDEX_DEFINITION__VALUE:
-				setValue((ItemIndexValueId)null);
+				setValue((ItemIndexValue)null);
 				return;
 		}
 		super.eUnset(featureID);

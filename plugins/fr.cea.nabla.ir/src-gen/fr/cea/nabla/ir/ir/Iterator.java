@@ -13,7 +13,6 @@ package fr.cea.nabla.ir.ir;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getIndex <em>Index</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getIndexValue <em>Index Value</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getContainer <em>Container</em>}</li>
  * </ul>
  *
@@ -43,30 +42,6 @@ public interface Iterator extends IterationBlock {
 	 * @generated
 	 */
 	void setIndex(ItemIndex value);
-
-	/**
-	 * Returns the value of the '<em><b>Index Value</b></em>' containment reference.
-	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.ItemIndexValueIterator#getIterator <em>Iterator</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Index Value</em>' containment reference.
-	 * @see #setIndexValue(ItemIndexValueIterator)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIterator_IndexValue()
-	 * @see fr.cea.nabla.ir.ir.ItemIndexValueIterator#getIterator
-	 * @model opposite="iterator" containment="true" resolveProxies="true" required="true"
-	 * @generated
-	 */
-	ItemIndexValueIterator getIndexValue();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Iterator#getIndexValue <em>Index Value</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Index Value</em>' containment reference.
-	 * @see #getIndexValue()
-	 * @generated
-	 */
-	void setIndexValue(ItemIndexValueIterator value);
 
 	/**
 	 * Returns the value of the '<em><b>Container</b></em>' containment reference.

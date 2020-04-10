@@ -109,8 +109,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.ITEM_ID_VALUE_ITERATOR: return createItemIdValueIterator();
 			case IrPackage.ITEM_ID_VALUE_CALL: return createItemIdValueCall();
 			case IrPackage.ITEM_INDEX: return createItemIndex();
-			case IrPackage.ITEM_INDEX_VALUE_ITERATOR: return createItemIndexValueIterator();
-			case IrPackage.ITEM_INDEX_VALUE_ID: return createItemIndexValueId();
+			case IrPackage.ITEM_INDEX_VALUE: return createItemIndexValue();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -724,20 +723,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public ItemIndexValueIterator createItemIndexValueIterator() {
-		ItemIndexValueIteratorImpl itemIndexValueIterator = new ItemIndexValueIteratorImpl();
-		return itemIndexValueIterator;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public ItemIndexValueId createItemIndexValueId() {
-		ItemIndexValueIdImpl itemIndexValueId = new ItemIndexValueIdImpl();
-		return itemIndexValueId;
+	public ItemIndexValue createItemIndexValue() {
+		ItemIndexValueImpl itemIndexValue = new ItemIndexValueImpl();
+		return itemIndexValue;
 	}
 
 	/**

@@ -133,6 +133,7 @@ Atomic returns Expression:
 	ReductionCall |
 	{BaseTypeConstant} type=BaseType '(' value=Expression ')'| 
 	{VectorConstant} '[' values+=Expression (',' values+=Expression)* ']' |
+	{Cardinality} 'card' '(' container=Container ')' |
 	ArgOrVarRef;
 
 IntConstant: value=INT;

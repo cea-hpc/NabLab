@@ -426,6 +426,14 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.FUNCTION_CALL: {
+				FunctionCall functionCall = (FunctionCall)theEObject;
+				T result = caseFunctionCall(functionCall);
+				if (result == null) result = caseExpression(functionCall);
+				if (result == null) result = caseIrAnnotable(functionCall);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.BASE_TYPE_CONSTANT: {
 				BaseTypeConstant baseTypeConstant = (BaseTypeConstant)theEObject;
 				T result = caseBaseTypeConstant(baseTypeConstant);
@@ -442,11 +450,11 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.FUNCTION_CALL: {
-				FunctionCall functionCall = (FunctionCall)theEObject;
-				T result = caseFunctionCall(functionCall);
-				if (result == null) result = caseExpression(functionCall);
-				if (result == null) result = caseIrAnnotable(functionCall);
+			case IrPackage.CARDINALITY: {
+				Cardinality cardinality = (Cardinality)theEObject;
+				T result = caseCardinality(cardinality);
+				if (result == null) result = caseExpression(cardinality);
+				if (result == null) result = caseIrAnnotable(cardinality);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -1299,6 +1307,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseVectorConstant(VectorConstant object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Cardinality</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Cardinality</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseCardinality(Cardinality object) {
 		return null;
 	}
 

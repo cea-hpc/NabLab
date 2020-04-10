@@ -26,7 +26,7 @@ class AttributesContentProvider
 		«IF m.withMesh»
 		CartesianMesh2D* mesh;
 		PvdFileWriter2D writer;
-		«FOR c : m.usedConnectivities BEFORE 'size_t ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
+		«FOR c : m.usedConnectivities BEFORE 'size_t ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
 		«ENDIF»
 		«getGlobalVariablesContent(m)»
 		«getConnectivityVariablesContent(m)»

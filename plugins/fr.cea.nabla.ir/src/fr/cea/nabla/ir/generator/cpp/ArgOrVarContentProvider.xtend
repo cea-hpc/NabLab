@@ -64,7 +64,7 @@ class StlArgOrVarContentProvider extends ArgOrVarContentProvider
 		val cs = type.connectivities
 		if (linearAlgebra && cs.size == 2)
 			// specific initialization for matrices
-			'''"«name»", «cs.get(0).nbElems», «cs.get(1).nbElems»'''
+			'''"«name»", «cs.get(0).nbElemsVar», «cs.get(1).nbElemsVar»'''
 		else
 			getCstrInit(name, type.base, type.connectivities)
 	}
@@ -83,8 +83,8 @@ class StlArgOrVarContentProvider extends ArgOrVarContentProvider
 		switch connectivities.size
 		{
 			case 0: throw new RuntimeException("Ooops. Can not be there, normally...")
-			case 1: connectivities.get(0).nbElems
-			default: '''«connectivities.get(0).nbElems», «typeContentProvider.getCppType(baseType, connectivities.tail)»(«getCstrInit(varName, baseType, connectivities.tail)»)''' 
+			case 1: connectivities.get(0).nbElemsVar
+			default: '''«connectivities.get(0).nbElemsVar», «typeContentProvider.getCppType(baseType, connectivities.tail)»(«getCstrInit(varName, baseType, connectivities.tail)»)''' 
 		}
 	}
 }
@@ -93,7 +93,7 @@ class StlArgOrVarContentProvider extends ArgOrVarContentProvider
 class KokkosArgOrVarContentProvider extends ArgOrVarContentProvider
 {
 	override getCstrInit(ConnectivityVariable it)
-	'''"«name»", «FOR d : type.connectivities SEPARATOR ', '»«d.nbElems»«ENDFOR»'''
+	'''"«name»", «FOR d : type.connectivities SEPARATOR ', '»«d.nbElemsVar»«ENDFOR»'''
 
 	override protected formatIterators(ConnectivityVariable it, List<String> iterators)
 	'''«FOR i : iterators BEFORE '(' SEPARATOR ',' AFTER ')'»«i»«ENDFOR»'''

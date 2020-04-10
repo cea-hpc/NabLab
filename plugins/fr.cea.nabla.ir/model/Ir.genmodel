@@ -210,15 +210,18 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//MinConstant"/>
     <genClasses ecoreClass="Ir.ecore#//MaxConstant"/>
+    <genClasses ecoreClass="Ir.ecore#//FunctionCall">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//FunctionCall/function"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//FunctionCall/args"/>
+    </genClasses>
     <genClasses ecoreClass="Ir.ecore#//BaseTypeConstant">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//BaseTypeConstant/value"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//VectorConstant">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//VectorConstant/values"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//FunctionCall">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//FunctionCall/function"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//FunctionCall/args"/>
+    <genClasses ecoreClass="Ir.ecore#//Cardinality">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Cardinality/container"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ArgOrVarRef">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ArgOrVarRef/target"/>

@@ -16,6 +16,7 @@ import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
+import fr.cea.nabla.nabla.Cardinality
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.ContractedIf
@@ -121,6 +122,8 @@ class ExpressionTypeProvider
 			null
 		
 	}
+
+	def dispatch NablaType getTypeFor(Cardinality it) { new NSTIntScalar }
 
 	def dispatch NablaType getTypeFor(ArgOrVarRef it)
 	{

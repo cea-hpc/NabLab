@@ -175,7 +175,7 @@ class InstructionContentProvider
 	private static def dispatch getNbElems(Iterator it)
 	{
 		if (container.connectivity.indexEqualId)
-			container.connectivity.nbElems
+			container.connectivity.nbElemsVar
 		else
 			'nb' + container.uniqueName.toFirstUpper
 	}

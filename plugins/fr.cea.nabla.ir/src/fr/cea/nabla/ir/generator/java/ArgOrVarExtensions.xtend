@@ -61,5 +61,5 @@ class ArgOrVarExtensions
 	'''«FOR s : sizes BEFORE '[' SEPARATOR '][' AFTER ']'»«s.content»«ENDFOR»'''
 
 	private def static dispatch String getDimContent(ConnectivityType it)
-	'''«FOR c : connectivities»[«c.nbElems»]«ENDFOR»«base.dimContent»'''
+	'''«FOR c : connectivities»[«c.nbElemsVar»]«ENDFOR»«base.dimContent»'''
 }

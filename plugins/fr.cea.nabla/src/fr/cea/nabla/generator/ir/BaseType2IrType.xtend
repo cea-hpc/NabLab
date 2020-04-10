@@ -24,7 +24,7 @@ class BaseType2IrType
 	@Inject extension IrExpressionFactory
 
 	// No create method to ensure a new instance every time (for n+1 time variables)
-	def toIrBaseType(BaseType t)
+	def fr.cea.nabla.ir.ir.BaseType toIrBaseType(BaseType t)
 	{
 		IrFactory::eINSTANCE.createBaseType => 
 		[
@@ -33,7 +33,7 @@ class BaseType2IrType
 		]
 	}
 
-	def toIrConnectivityType(BaseType t, List<? extends Connectivity> supports)
+	def fr.cea.nabla.ir.ir.ConnectivityType toIrConnectivityType(BaseType t, List<? extends Connectivity> supports)
 	{
 		IrFactory::eINSTANCE.createConnectivityType => 
 		[

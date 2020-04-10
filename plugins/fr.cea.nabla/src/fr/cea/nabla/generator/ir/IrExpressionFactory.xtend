@@ -16,6 +16,7 @@ import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
+import fr.cea.nabla.nabla.Cardinality
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Div
@@ -40,14 +41,15 @@ import fr.cea.nabla.typing.ExpressionTypeProvider
 
 class IrExpressionFactory
 {
+	@Inject extension ReductionCallExtensions
 	@Inject extension DeclarationProvider
+	@Inject extension ExpressionTypeProvider
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrFunctionFactory
 	@Inject extension IrArgOrVarFactory
 	@Inject extension IrItemIndexFactory
-	@Inject extension ExpressionTypeProvider
-	@Inject extension ReductionCallExtensions
 	@Inject extension IrTimeLoopFactory
+	@Inject extension IrContainerFactory
 	@Inject extension NablaType2IrType
 
 	def dispatch Expression toIrExpression(ContractedIf e)
@@ -172,6 +174,15 @@ class IrExpressionFactory
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
 			e.values.forEach[x | values += x.toIrExpression]
+		]
+	}
+
+	def dispatch Expression toIrExpression(Cardinality e)
+	{
+		IrFactory::eINSTANCE.createCardinality =>
+		[ 
+			annotations += e.toIrAnnotation
+			container = e.container.toIrContainer
 		]
 	}
 

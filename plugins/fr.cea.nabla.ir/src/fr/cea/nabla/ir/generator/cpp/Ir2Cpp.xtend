@@ -89,7 +89,7 @@ class Ir2Cpp extends CodeGenerator
 		, mesh(aCartesianMesh2D)
 		, writer("«name»", output)
 		«FOR c : usedConnectivities»
-		, «c.nbElems»(«c.connectivityAccessor»)
+		, «c.nbElemsVar»(«c.connectivityAccessor»)
 		«ENDFOR»
 		«ENDIF»
 		«FOR uv : globalVariables.filter[x|x.defaultValue!==null]»

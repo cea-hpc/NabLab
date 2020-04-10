@@ -60,6 +60,7 @@ import fr.cea.nabla.nabla.VectorConstant
 import java.util.List
 
 import static extension fr.cea.nabla.ir.Utils.*
+import fr.cea.nabla.nabla.Cardinality
 
 class LabelServices
 {
@@ -126,6 +127,7 @@ class LabelServices
 	static def dispatch String getLabel(ReductionCall it) { reduction.name + '{' + iterationBlock?.label + '}(' + arg?.label + ')' }
 	static def dispatch String getLabel(BaseTypeConstant it) { type?.label + '(' + value?.label + ')' }
 	static def dispatch String getLabel(VectorConstant it) { '[' + values.map[label].join(',') + ']' }
+	static def dispatch String getLabel(Cardinality it) { 'card(' + container?.label + ')' }
 	static def dispatch String getLabel(ArgOrVarRef it)
 	{
 		var label = target.name

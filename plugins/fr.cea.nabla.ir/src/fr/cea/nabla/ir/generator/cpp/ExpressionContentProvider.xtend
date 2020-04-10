@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
+import fr.cea.nabla.ir.ir.Cardinality
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.Expression
@@ -29,6 +30,7 @@ import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
 import org.eclipse.xtend.lib.annotations.Data
 
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
@@ -94,6 +96,9 @@ class ExpressionContentProvider
 
 	def dispatch CharSequence getContent(VectorConstant it)
 	'''{«innerContent»}'''
+
+	def dispatch CharSequence getContent(Cardinality it)
+	'''«container.uniqueName».size();'''
 
 	def dispatch CharSequence getContent(FunctionCall it)
 	{

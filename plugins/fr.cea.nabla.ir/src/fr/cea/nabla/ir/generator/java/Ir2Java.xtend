@@ -24,8 +24,8 @@ import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.FunctionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 
 class Ir2Java extends CodeGenerator
 {
@@ -70,7 +70,7 @@ class Ir2Java extends CodeGenerator
 			// Mesh
 			private final CartesianMesh2D mesh;
 			private final FileWriter writer;
-			«FOR c : usedConnectivities BEFORE 'private final int ' SEPARATOR ', '»«c.nbElems»«ENDFOR»;
+			«FOR c : usedConnectivities BEFORE 'private final int ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
 			«ENDIF»
 
 			// Global Variables
@@ -101,7 +101,7 @@ class Ir2Java extends CodeGenerator
 				mesh = aCartesianMesh2D;
 				writer = new PvdFileWriter2D("«name»");
 				«FOR c : usedConnectivities»
-				«c.nbElems» = «c.connectivityAccessor»;
+				«c.nbElemsVar» = «c.connectivityAccessor»;
 				«ENDFOR»
 				«ENDIF»
 
@@ -185,8 +185,8 @@ class Ir2Java extends CodeGenerator
 	{
 		switch v.type.connectivities.size
 		{
-			case 1: 'Vector.createDenseVector(' + v.type.connectivities.get(0).nbElems + ')'
-			case 2: 'Matrix.createDenseMatrix(' + v.type.connectivities.map[nbElems].join(', ') + ')'
+			case 1: 'Vector.createDenseVector(' + v.type.connectivities.get(0).nbElemsVar + ')'
+			case 2: 'Matrix.createDenseMatrix(' + v.type.connectivities.map[nbElemsVar].join(', ') + ')'
 			default: throw new RuntimeException("Not implemented exception")
 		}
 	}

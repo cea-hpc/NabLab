@@ -58,6 +58,7 @@ import fr.cea.nabla.nabla.VectorConstant
 import java.util.List
 import fr.cea.nabla.nabla.SetRef
 import fr.cea.nabla.nabla.SetDefinition
+import fr.cea.nabla.nabla.Cardinality
 
 class LatexLabelServices
 {
@@ -68,10 +69,10 @@ class LatexLabelServices
 	static def dispatch String getLatex(InstructionBlock it) { '\\{ \\}' }
 	static def dispatch String getLatex(Loop it) { '\\forall{' + iterationBlock.latex + '}, \\ ' + body.latex }
 	static def dispatch String getLatex(Affectation it) { left?.latex + ' = ' + right?.latex }
-	static def dispatch String getLatex(If it) { 'if~(' + condition.latex + ')'}
+	static def dispatch String getLatex(If it) { 'if~\\left(' + condition.latex + '\\right)'}
 	static def dispatch String getLatex(ItemDefinition it) { 'item~' + item.name + '=' + value?.latex }
 	static def dispatch String getLatex(SetDefinition it) { 'set~' + name + '=' + value?.latex }
-	static def dispatch String getLatex(Return it) { 'return (' + expression.latex + ')'}
+	static def dispatch String getLatex(Return it) { 'return \\left(' + expression.latex + '\\right)'}
 
 	/* ITERATEURS ********************************************/
 	static def dispatch String getLatex(SpaceIterator it) { item.name.pu + '\\in ' + container.latex }
@@ -139,15 +140,16 @@ class LatexLabelServices
 		}
 	}
 
-	static def dispatch String getLatex(BaseTypeConstant it) { type.latex + '(' + value.latex + ')' }
-	static def dispatch String getLatex(VectorConstant it) { '[' + values.map[latex].join(',') + ']' }
+	static def dispatch String getLatex(BaseTypeConstant it) { type.latex + '\\left(' + value.latex + '\\right)' }
+	static def dispatch String getLatex(VectorConstant it) { '\\left[' + values.map[latex].join(',') + '\\right]' }
+	static def dispatch String getLatex(Cardinality it) { 'card \\left(' + container.latex + '\\right)' }
 
 	static def dispatch String getLatex(ArgOrVarRef it)
 	{
 		var label = target.name.pu
 		if (!timeIterators.empty) label += '^{' + timeIterators.map[x | x.latex].join(', ') + '}'
 		if (!spaceIterators.empty) label += '_{' + spaceIterators.map[x | x.latex].join('') + '}'
-		if (!indices.empty) label += '[' + indices.map[x | x.latex].join(',') + ']'
+		if (!indices.empty) label += '\\left[' + indices.map[x | x.latex].join(',') + '\\right]'
 		return label
 	}
 

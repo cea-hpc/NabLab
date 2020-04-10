@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
+import fr.cea.nabla.ir.ir.Cardinality
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.FunctionCall
@@ -65,6 +66,8 @@ class ExpressionInterpreter
 			return interpreteUnaryExpression(context)
 		} else if (it instanceof VectorConstant) {
 			return interpreteVectorConstant(context)
+		} else if (it instanceof Cardinality) {
+			return interpreteCardinality(context)
 		} else {
 			throw new IllegalArgumentException("Unhandled parameter types: " +
 				Arrays.<Object>asList(it, context).toString())
@@ -183,6 +186,13 @@ class ExpressionInterpreter
 		for (i : 0..<expressionValues.length)
 			setValue(value, #[i], expressionValues.get(i))
 		return value
+	}
+
+	static def NablaValue interpreteCardinality(Cardinality it, Context context)
+	{
+		context.logFinest("Interprete Cardinality")
+		val container = context.getContainerValue(container)
+		new NV0Int(container.size)
 	}
 
 	static def NablaValue interpreteFunctionCall(FunctionCall it, Context context)

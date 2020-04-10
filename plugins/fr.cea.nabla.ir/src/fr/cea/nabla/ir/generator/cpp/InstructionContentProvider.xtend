@@ -149,22 +149,11 @@ abstract class InstructionContentProvider
 	{
 		innerContent
 	}
-	
+
 	protected def dispatch getIndexName(Iterator it) { index.name }
 	protected def dispatch getIndexName(Interval it) { index.name }
-
-	protected def dispatch getNbElems(Iterator it)
-	{
-		if (container.connectivity.indexEqualId)
-			container.connectivity.nbElems
-		else
-			'nb' + container.uniqueName.toFirstUpper
-	}
-
-	protected def dispatch getNbElems(Interval it)
-	{
-		nbElems.content
-	}
+	protected def dispatch getNbElems(Iterator it) { container.nbElemsVar }
+	protected def dispatch getNbElems(Interval it) { nbElems.content }
 
 	private def getSetDefinitionContent(String setName, ConnectivityCall call)
 	'''

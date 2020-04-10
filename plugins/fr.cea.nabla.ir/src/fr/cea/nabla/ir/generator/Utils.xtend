@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.generator
 
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
@@ -18,6 +19,7 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class Utils 
@@ -41,7 +43,15 @@ class Utils
 		else name
 	}
 
-	static def getNbElems(Connectivity it) { 'nb' + name.toFirstUpper }
+	static def getNbElemsVar(Connectivity it) { 'nb' + name.toFirstUpper }
+
+	static def getNbElemsVar(Container it)
+	{
+		if (connectivity.indexEqualId)
+			connectivity.nbElemsVar
+		else
+			'nb' + uniqueName.toFirstUpper
+	}
 
 	static def getComment(Job it)
 	'''

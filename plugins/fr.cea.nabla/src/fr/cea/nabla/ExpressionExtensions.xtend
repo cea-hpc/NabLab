@@ -10,6 +10,7 @@
 package fr.cea.nabla
 
 import fr.cea.nabla.nabla.ArgOrVarRef
+import fr.cea.nabla.nabla.Cardinality
 import fr.cea.nabla.nabla.Div
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.IntConstant
@@ -37,7 +38,7 @@ class ExpressionExtensions
 	{
 		switch e
 		{
-			Plus, Minus, Mul, Div, Modulo, Parenthesis, IntConstant, ArgOrVarRef: true
+			Plus, Minus, Mul, Div, Modulo, Parenthesis, IntConstant, Cardinality, ArgOrVarRef: true
 			default: false
 		}
 	}

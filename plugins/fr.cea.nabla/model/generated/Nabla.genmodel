@@ -256,5 +256,8 @@
     <genClasses ecoreClass="Nabla.ecore#//VectorConstant">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VectorConstant/values"/>
     </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//Cardinality">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Cardinality/container"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>

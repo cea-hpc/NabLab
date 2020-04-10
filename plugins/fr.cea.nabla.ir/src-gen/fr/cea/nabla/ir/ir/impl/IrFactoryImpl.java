@@ -93,9 +93,10 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.BOOL_CONSTANT: return createBoolConstant();
 			case IrPackage.MIN_CONSTANT: return createMinConstant();
 			case IrPackage.MAX_CONSTANT: return createMaxConstant();
+			case IrPackage.FUNCTION_CALL: return createFunctionCall();
 			case IrPackage.BASE_TYPE_CONSTANT: return createBaseTypeConstant();
 			case IrPackage.VECTOR_CONSTANT: return createVectorConstant();
-			case IrPackage.FUNCTION_CALL: return createFunctionCall();
+			case IrPackage.CARDINALITY: return createCardinality();
 			case IrPackage.ARG_OR_VAR_REF: return createArgOrVarRef();
 			case IrPackage.ITEM_TYPE: return createItemType();
 			case IrPackage.IR_TYPE: return createIrType();
@@ -561,6 +562,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public VectorConstant createVectorConstant() {
 		VectorConstantImpl vectorConstant = new VectorConstantImpl();
 		return vectorConstant;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Cardinality createCardinality() {
+		CardinalityImpl cardinality = new CardinalityImpl();
+		return cardinality;
 	}
 
 	/**

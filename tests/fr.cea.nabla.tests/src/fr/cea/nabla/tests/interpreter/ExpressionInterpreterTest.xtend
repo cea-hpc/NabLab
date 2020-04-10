@@ -32,6 +32,9 @@ import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Test
 import org.junit.runner.RunWith
 
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import org.junit.Assert
+
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
 class ExpressionInterpreterTest
@@ -255,6 +258,24 @@ class ExpressionInterpreterTest
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "r", new NV2Real(#[#[0.0, 1.0, 2.0],#[1.0, 2.0, 3.0]]))
+	}
+
+	@Test
+	def void testInterpreteCardinality()
+	{
+		val model = testModuleForSimulation +
+		'''
+		let c = card(nodes());
+		'''
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val handler = new ConsoleHandler
+		handler.level = Level::OFF
+		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
+		val context = moduleInterpreter.interprete
+		val variableValue = context.getVariableValue(irModule.getVariableByName("c"))
+		Assert.assertNotNull(variableValue)
+		Assert.assertTrue(variableValue instanceof NV0Int)
+		Assert.assertEquals(121, (variableValue as NV0Int).data)
 	}
 
 	@Test

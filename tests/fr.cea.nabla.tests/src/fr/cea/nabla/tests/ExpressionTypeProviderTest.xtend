@@ -68,7 +68,6 @@ class ExpressionTypeProviderTest
 	const Y_EDGE_LENGTH = X_EDGE_LENGTH;
 	const X_EDGE_ELEMS = 2;
 	const Y_EDGE_ELEMS = 2;
-	const Z_EDGE_ELEMS = 1;
 	const option_stoptime = 0.1;
 	const option_max_iterations = 500;
 
@@ -109,7 +108,7 @@ class ExpressionTypeProviderTest
 	let d3 = ℝ[2](0.);
 
 	let e = [1.0, 2.0, 3.0];
-
+	let f = card(cells());
 
 	let g = [ [1.0, 0.0], [0.0, 1.0] ];
 	let h = (a1 == 1 ? 0.0 : 1.0);
@@ -184,6 +183,7 @@ class ExpressionTypeProviderTest
 		assertTypesFor(new NSTRealArray1D(createIntConstant(2)), module, "d3")
 
 		assertTypesFor(new NSTRealArray1D(createIntConstant(3)), module, "e")
+		assertTypesFor(new NSTIntScalar, module, "f")
 
 		assertTypesFor(new NSTRealArray2D(createIntConstant(2), createIntConstant(2)), module, "g")
 		assertTypesFor(new NSTRealScalar, module, "h")

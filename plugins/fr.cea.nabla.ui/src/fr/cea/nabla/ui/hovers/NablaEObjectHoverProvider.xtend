@@ -11,10 +11,15 @@ package fr.cea.nabla.ui.hovers
 
 import com.google.inject.Inject
 import fr.cea.nabla.LabelServices
+import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.Expression
+import fr.cea.nabla.nabla.Function
+import fr.cea.nabla.nabla.Instruction
+import fr.cea.nabla.nabla.Job
+import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.jface.internal.text.html.HTMLPrinter
 import org.eclipse.jface.text.IRegion
 import org.eclipse.jface.text.ITextViewer
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
@@ -31,6 +36,7 @@ import org.eclipse.xtext.ui.editor.model.IXtextDocument
 class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 {
 	@Inject extension ExpressionTypeProvider
+	@Inject extension ArgOrVarTypeProvider
 	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
 	EObject resolvedContainedObject
 
@@ -40,11 +46,11 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 			super.getFirstLine(o)
 		else
 		{
-			val expression = resolvedContainedObject.expression
-			if (expression === null || expression.eIsProxy) 
+			val displayableObject = resolvedContainedObject.firstDisplayableObject
+			if (displayableObject === null || displayableObject.eIsProxy)
 				super.getFirstLine(o)
 			else 
-				expression.buildLabel
+				displayableObject.buildLabel
 		}
 	}
 
@@ -54,14 +60,14 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 			super.getHoverInfo(object, region, prev)
 		else
 		{
-			val expression = resolvedContainedObject.expression
-			if (expression === null || expression.eIsProxy)
+			val displayableObject = resolvedContainedObject.firstDisplayableObject
+			if (displayableObject === null || displayableObject.eIsProxy)
 				super.getHoverInfo(object, region, prev)
 			else
 			{
-				val buffer = new StringBuilder(expression.buildLabel)
-				HTMLPrinter.insertPageProlog(buffer, 0, getStyleSheet())
-				HTMLPrinter.addPageEpilog(buffer)
+				val buffer = new StringBuilder(displayableObject.buildLabel)
+				org.eclipse.jface.internal.text.html.HTMLPrinter.insertPageProlog(buffer, 0, getStyleSheet())
+				org.eclipse.jface.internal.text.html.HTMLPrinter.addPageEpilog(buffer)
 				return new XtextBrowserInformationControlInput(prev, object, buffer.toString(), labelProvider)
 			}
 		}
@@ -80,16 +86,39 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 		super.getHoverInfo(object, viewer, region)
 	}
 
-	private def Expression getExpression(EObject o)
+	private def EObject getFirstDisplayableObject(EObject o)
 	{
-		if (o instanceof Expression) o
-		else if (o.eContainer !== null) o.eContainer.expression
-		else null
+		switch o
+		{
+			Expression, ArgOrVar, Function: o
+			NablaModule, Job, Instruction: null
+			case (o.eContainer === null): null
+			default: o.eContainer.firstDisplayableObject
+		}
 	}
 
-	private def buildLabel(Expression e)
+	private def buildLabel(EObject e)
 	{
-		val eType = e.typeFor
-		'Expression <b>' + LabelServices.getLabel(e) + '</b> of type <b>' + eType?.label + '</b>'
+		'<b>' + e.text + '</b> of type <b>' + e.typeText + '</b>'
+	}
+
+	private def String getText(EObject o)
+	{
+		switch o
+		{
+			Expression: LabelServices.getLabel(o)
+			ArgOrVar: o.name
+			Function: o.name
+		}
+	}
+
+	private def String getTypeText(EObject o)
+	{
+		switch o
+		{
+			Expression: o.typeFor?.label
+			ArgOrVar: o.typeFor?.label
+			Function: LabelServices.getLabel(o.returnType)
+		}
 	}
 }

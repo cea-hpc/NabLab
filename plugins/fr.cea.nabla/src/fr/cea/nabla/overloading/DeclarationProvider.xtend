@@ -87,6 +87,7 @@ class DeclarationProvider
 	private def Iterable<Reduction> getCandidates(Reduction r, NablaType callerInType)
 	{
 		val module = EcoreUtil2.getContainerOfType(r, NablaModule)
+		if (module === null) return #[]
 		val candidates = module.reductions.filter[x | x.name == r.name]
 		return candidates.filter[argsMatch(#[type], #[callerInType])]
 	}

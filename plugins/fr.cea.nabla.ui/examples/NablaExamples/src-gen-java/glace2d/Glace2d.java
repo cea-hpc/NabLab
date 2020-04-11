@@ -58,11 +58,11 @@ public final class Glace2d
 		nbOuterFaces = mesh.getNbOuterFaces();
 		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 
+		lastDump = Integer.MIN_VALUE;
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat_n = options.option_deltat_ini;
 		deltat_nplus1 = options.option_deltat_ini;
-		lastDump = Integer.MIN_VALUE;
 
 		// Allocate arrays
 		X_n = new double[nbNodes][2];

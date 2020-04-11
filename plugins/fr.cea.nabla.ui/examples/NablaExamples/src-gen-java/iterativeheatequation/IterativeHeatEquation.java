@@ -54,10 +54,10 @@ public final class IterativeHeatEquation
 		nbCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
 		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 
+		lastDump = Integer.MIN_VALUE;
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat = 0.001;
-		lastDump = Integer.MIN_VALUE;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];

@@ -92,8 +92,11 @@ class Ir2Cpp extends CodeGenerator
 		, «c.nbElemsVar»(«c.connectivityAccessor»)
 		«ENDFOR»
 		«ENDIF»
-		«FOR uv : globalVariables.filter[x|x.defaultValue!==null]»
+		«val globalsByType = globalVariables.groupBy[cppType]»
+		«FOR type : globalsByType.keySet»
+		«FOR uv : globalsByType.get(type).filter[x|x.defaultValue!==null]»
 		, «uv.name»(«uv.defaultValue.content»)
+		«ENDFOR»
 		«ENDFOR»
 		«FOR a : connectivityVariables»
 		, «a.name»(«a.cstrInit»)

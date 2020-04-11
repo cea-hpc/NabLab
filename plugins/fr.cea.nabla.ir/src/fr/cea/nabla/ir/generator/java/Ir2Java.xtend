@@ -105,8 +105,10 @@ class Ir2Java extends CodeGenerator
 				«ENDFOR»
 				«ENDIF»
 
-				«FOR uv : globalVariables.filter[x|x.defaultValue!==null]»
+				«FOR type : globalsByType.keySet»
+				«FOR uv : globalsByType.get(type).filter[x|x.defaultValue!==null]»
 				«uv.name» = «uv.defaultValue.content»;
+				«ENDFOR»
 				«ENDFOR»
 
 				// Allocate arrays

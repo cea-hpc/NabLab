@@ -230,6 +230,8 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="container" lowerBound="1"
         eType="#//Container" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="counter" eType="#//SimpleVariable"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Interval" eSuperTypes="#//IterationBlock">
     <eStructuralFeatures xsi:type="ecore:EReference" name="index" lowerBound="1" eType="#//SimpleVariable"

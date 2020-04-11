@@ -98,7 +98,15 @@ class InstructionInterpreterTest
 		ℝ U{cells};
 		ℝ[2] C{cells, nodesOfCell};
 		InitU : ∀r∈cells(), U{r} = 1.0;
-		ComputeCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), C{j,r} = 0.5 * (X{r+1} - X{r-1});
+		ComputeCjr: ∀j∈ cells(), {
+			set rCellsJ = nodesOfCell(j);
+			const cardRCellsJ = card(rCellsJ);
+			ℝ[cardRCellsJ] tmp;
+			∀r, countr ∈ rCellsJ, {
+				tmp[countr] = 0.5; // stupid but test countr
+				C{j,r} = tmp[countr] * (X{r+1} - X{r-1});
+			}
+		}
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, testGenModel)

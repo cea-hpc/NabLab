@@ -58,7 +58,7 @@ Return: 'return' expression=Expression ';';
 IterationBlock: SpaceIterator | Interval;
 Container: SetRef | MultipleConnectivityCall;
 SetRef: target=[SetDefinition];
-SpaceIterator: item=Item '\u2208' container=Container (',' singletons+=SingletonDefinition)*;
+SpaceIterator: item=Item (',' counter=SimpleVar)? '\u2208' container=Container (',' singletons+=SingletonDefinition)*;
 SingletonDefinition: item=Item '=' value=SingleConnectivityCall;
 Interval: index=SimpleVar '\u2208' '[' from=INT ';' nbElems=Expression '[';  // from forced to 0 for the moment
 ConnectivityCall: MultipleConnectivityCall | SingleConnectivityCall;

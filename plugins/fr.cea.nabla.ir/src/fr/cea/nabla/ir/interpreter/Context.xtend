@@ -70,7 +70,11 @@ class Context
 	// VariableValues
 	def NablaValue getVariableValue(ArgOrVar variable)
 	{
-		variableValues.get(variable) ?: outerContext.getVariableValue(variable)
+		val value = variableValues.get(variable)
+		if (value === null && outerContext !== null)
+			outerContext.getVariableValue(variable)
+		else
+			value
 	}
 
 	def getInt(ArgOrVar variable)

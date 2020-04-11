@@ -1774,6 +1774,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EReference getIterator_Counter() {
+		return (EReference)iteratorEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getInterval() {
 		return intervalEClass;
 	}
@@ -2697,6 +2707,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		iteratorEClass = createEClass(ITERATOR);
 		createEReference(iteratorEClass, ITERATOR__INDEX);
 		createEReference(iteratorEClass, ITERATOR__CONTAINER);
+		createEReference(iteratorEClass, ITERATOR__COUNTER);
 
 		intervalEClass = createEClass(INTERVAL);
 		createEReference(intervalEClass, INTERVAL__INDEX);
@@ -3050,6 +3061,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(iteratorEClass, Iterator.class, "Iterator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getIterator_Index(), this.getItemIndex(), null, "index", null, 1, 1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIterator_Container(), this.getContainer(), null, "container", null, 1, 1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIterator_Counter(), this.getSimpleVariable(), null, "counter", null, 0, 1, Iterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(intervalEClass, Interval.class, "Interval", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInterval_Index(), this.getSimpleVariable(), null, "index", null, 1, 1, Interval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

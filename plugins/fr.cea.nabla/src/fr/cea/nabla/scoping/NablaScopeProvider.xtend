@@ -278,10 +278,12 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		//println(prefix + 'variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
 		val block = context.iterationBlock
 		val containerScope = variablesDefinedBefore(context.eContainer, context, prefix + '\t')
-		if (block instanceof Interval)
-			Scopes::scopeFor(#[block.index], containerScope)
-		else
-			containerScope
+		switch block
+		{
+			Interval: Scopes::scopeFor(#[block.index], containerScope)
+			SpaceIterator case block.counter !== null: Scopes::scopeFor(#[block.counter], containerScope)
+			default: containerScope
+		}
 	}
 
 	private def variablesDeclaredBefore(List<? extends Instruction> list, Instruction i)

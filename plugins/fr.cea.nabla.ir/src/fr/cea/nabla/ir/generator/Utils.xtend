@@ -13,6 +13,7 @@ import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
@@ -39,8 +40,12 @@ class Utils
 
 	static def getCodeName(ArgOrVar it, String separator)
 	{
-		if (option) 'options' + separator + name
-		else name
+		if (option)
+			'options' + separator + name
+		else if (iteratorCounter)
+			(eContainer as Iterator).index.name
+		else
+			name
 	}
 
 	static def getNbElemsVar(Connectivity it) { 'nb' + name.toFirstUpper }

@@ -100,6 +100,8 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SpaceIterator" eSuperTypes="#//IterationBlock">
     <eStructuralFeatures xsi:type="ecore:EReference" name="item" eType="#//Item" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="counter" eType="#//SimpleVar"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="container" eType="#//Container"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="singletons" upperBound="-1"

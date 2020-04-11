@@ -17,6 +17,7 @@ import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.Interval
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
+import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.VarGroupDeclaration
 
@@ -31,8 +32,7 @@ class ArgOrVarTypeProvider
 		val c = eContainer
 		switch c
 		{
-			FunctionOrReduction: new NSTIntScalar
-			Interval: new NSTIntScalar
+			FunctionOrReduction, Interval, SpaceIterator: new NSTIntScalar
 			SimpleVarDefinition: c.defaultValue.typeFor
 			VarGroupDeclaration: c.type.typeFor
 			default: null

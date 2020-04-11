@@ -6,6 +6,7 @@ import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.ItemIndex;
 import fr.cea.nabla.ir.ir.Iterator;
 
+import fr.cea.nabla.ir.ir.SimpleVariable;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
@@ -24,6 +25,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#getIndex <em>Index</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#getContainer <em>Container</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IteratorImpl#getCounter <em>Counter</em>}</li>
  * </ul>
  *
  * @generated
@@ -48,6 +50,16 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 	 * @ordered
 	 */
 	protected fr.cea.nabla.ir.ir.Container container;
+
+	/**
+	 * The cached value of the '{@link #getCounter() <em>Counter</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCounter()
+	 * @generated
+	 * @ordered
+	 */
+	protected SimpleVariable counter;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -210,12 +222,82 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 	 * @generated
 	 */
 	@Override
+	public SimpleVariable getCounter() {
+		if (counter != null && counter.eIsProxy()) {
+			InternalEObject oldCounter = (InternalEObject)counter;
+			counter = (SimpleVariable)eResolveProxy(oldCounter);
+			if (counter != oldCounter) {
+				InternalEObject newCounter = (InternalEObject)counter;
+				NotificationChain msgs = oldCounter.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__COUNTER, null, null);
+				if (newCounter.eInternalContainer() == null) {
+					msgs = newCounter.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__COUNTER, null, msgs);
+				}
+				if (msgs != null) msgs.dispatch();
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.ITERATOR__COUNTER, oldCounter, counter));
+			}
+		}
+		return counter;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SimpleVariable basicGetCounter() {
+		return counter;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetCounter(SimpleVariable newCounter, NotificationChain msgs) {
+		SimpleVariable oldCounter = counter;
+		counter = newCounter;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.ITERATOR__COUNTER, oldCounter, newCounter);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setCounter(SimpleVariable newCounter) {
+		if (newCounter != counter) {
+			NotificationChain msgs = null;
+			if (counter != null)
+				msgs = ((InternalEObject)counter).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__COUNTER, null, msgs);
+			if (newCounter != null)
+				msgs = ((InternalEObject)newCounter).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__COUNTER, null, msgs);
+			msgs = basicSetCounter(newCounter, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.ITERATOR__COUNTER, newCounter, newCounter));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.ITERATOR__INDEX:
 				return basicSetIndex(null, msgs);
 			case IrPackage.ITERATOR__CONTAINER:
 				return basicSetContainer(null, msgs);
+			case IrPackage.ITERATOR__COUNTER:
+				return basicSetCounter(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -234,6 +316,9 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 			case IrPackage.ITERATOR__CONTAINER:
 				if (resolve) return getContainer();
 				return basicGetContainer();
+			case IrPackage.ITERATOR__COUNTER:
+				if (resolve) return getCounter();
+				return basicGetCounter();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -251,6 +336,9 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 				return;
 			case IrPackage.ITERATOR__CONTAINER:
 				setContainer((fr.cea.nabla.ir.ir.Container)newValue);
+				return;
+			case IrPackage.ITERATOR__COUNTER:
+				setCounter((SimpleVariable)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -270,6 +358,9 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 			case IrPackage.ITERATOR__CONTAINER:
 				setContainer((fr.cea.nabla.ir.ir.Container)null);
 				return;
+			case IrPackage.ITERATOR__COUNTER:
+				setCounter((SimpleVariable)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -286,6 +377,8 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 				return index != null;
 			case IrPackage.ITERATOR__CONTAINER:
 				return container != null;
+			case IrPackage.ITERATOR__COUNTER:
+				return counter != null;
 		}
 		return super.eIsSet(featureID);
 	}

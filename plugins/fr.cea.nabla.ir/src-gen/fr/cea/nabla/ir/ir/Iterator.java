@@ -14,6 +14,7 @@ package fr.cea.nabla.ir.ir;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getIndex <em>Index</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getContainer <em>Container</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Iterator#getCounter <em>Counter</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getIterator()
@@ -64,5 +65,27 @@ public interface Iterator extends IterationBlock {
 	 * @generated
 	 */
 	void setContainer(Container value);
+
+	/**
+	 * Returns the value of the '<em><b>Counter</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Counter</em>' containment reference.
+	 * @see #setCounter(SimpleVariable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIterator_Counter()
+	 * @model containment="true" resolveProxies="true"
+	 * @generated
+	 */
+	SimpleVariable getCounter();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Iterator#getCounter <em>Counter</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Counter</em>' containment reference.
+	 * @see #getCounter()
+	 * @generated
+	 */
+	void setCounter(SimpleVariable value);
 
 } // Iterator

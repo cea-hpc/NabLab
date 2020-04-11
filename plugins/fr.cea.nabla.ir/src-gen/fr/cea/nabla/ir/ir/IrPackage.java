@@ -2388,13 +2388,22 @@ public interface IrPackage extends EPackage {
 	int ITERATOR__CONTAINER = ITERATION_BLOCK_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Counter</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ITERATOR__COUNTER = ITERATION_BLOCK_FEATURE_COUNT + 2;
+
+	/**
 	 * The number of structural features of the '<em>Iterator</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ITERATOR_FEATURE_COUNT = ITERATION_BLOCK_FEATURE_COUNT + 2;
+	int ITERATOR_FEATURE_COUNT = ITERATION_BLOCK_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of operations of the '<em>Iterator</em>' class.
@@ -5290,6 +5299,17 @@ public interface IrPackage extends EPackage {
 	EReference getIterator_Container();
 
 	/**
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.Iterator#getCounter <em>Counter</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Counter</em>'.
+	 * @see fr.cea.nabla.ir.ir.Iterator#getCounter()
+	 * @see #getIterator()
+	 * @generated
+	 */
+	EReference getIterator_Counter();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Interval <em>Interval</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -7103,6 +7123,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference ITERATOR__CONTAINER = eINSTANCE.getIterator_Container();
+
+		/**
+		 * The meta object literal for the '<em><b>Counter</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ITERATOR__COUNTER = eINSTANCE.getIterator_Counter();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.IntervalImpl <em>Interval</em>}' class.

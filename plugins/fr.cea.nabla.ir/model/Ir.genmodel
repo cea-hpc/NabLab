@@ -173,6 +173,7 @@
     <genClasses ecoreClass="Ir.ecore#//Iterator">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Iterator/index"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Iterator/container"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Iterator/counter"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Interval">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Interval/index"/>

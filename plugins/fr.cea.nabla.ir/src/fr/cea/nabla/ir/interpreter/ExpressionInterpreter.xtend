@@ -19,6 +19,7 @@ import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
+import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
@@ -33,6 +34,7 @@ import static fr.cea.nabla.ir.interpreter.IrTypeExtensions.*
 import static fr.cea.nabla.ir.interpreter.NablaValueGetter.*
 import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class ExpressionInterpreter
@@ -235,7 +237,11 @@ class ExpressionInterpreter
 	static def NablaValue interpreteArgOrVarRef(ArgOrVarRef it, Context context)
 	{
 		context.logFinest("Interprete VarRef " + target.name)
-		val value = context.getVariableValue(target)
+		val value = if (target.iteratorCounter)
+				new NV0Int(context.getIndexValue((target.eContainer as Iterator).index))
+			else
+				context.getVariableValue(target)
+
 		// Switch to more efficient implementation (avoid costly toList calls)
 		val allIndices = newArrayList
 		iterators.forEach[x|allIndices.add(context.getIndexValue(x))]

@@ -246,7 +246,7 @@ class NablaScopeProviderTest
 			c1{j} = a * 2;
 			let d = 6.0;
 			c2{j} = 2 * d;
-			∀ r∈nodesOfCells(j), {
+			∀ r, countr ∈ nodesOfCell(j) {
 				let e = 3.3;
 				ℝ f;
 				f = e + 1.0;
@@ -297,7 +297,7 @@ class NablaScopeProviderTest
 		affectationc2.assertScope(eref, "d, " + defaultOptionsScope + ", X, a, b1, b2, c1, c2")
 
 		val affectationf = j1.getVarAffectationByName("f")
-		affectationf.assertScope(eref, "e, f, d, " + defaultOptionsScope + ", X, a, b1, b2, c1, c2")
+		affectationf.assertScope(eref, "e, f, countr, d, " + defaultOptionsScope + ", X, a, b1, b2, c1, c2")
 
 		val j2 = module.getJobByName("j2")
 		val affectationn = j2.getVarAffectationByName("n")

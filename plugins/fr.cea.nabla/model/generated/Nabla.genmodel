@@ -87,6 +87,7 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//SpaceIterator">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SpaceIterator/item"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SpaceIterator/counter"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SpaceIterator/container"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SpaceIterator/singletons"/>
     </genClasses>

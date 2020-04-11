@@ -40,6 +40,7 @@ class IrIterationBlockFactory
 	{
 		annotations += b.toIrAnnotation
 		index = b.toIrIndex
+		if (b.counter !== null) counter = toIrSimpleVariable(b.counter, b.counter.name)
 		container = toIrContainer(b.container)
 	}
 

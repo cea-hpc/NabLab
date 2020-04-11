@@ -4,6 +4,9 @@ workflow TestDefaultGenerationChain transforms Test
 {
 	Nabla2Ir nabla2ir
 	{
+		timeVariable = t;
+		deltatVariable = δt;
+		nodeCoordVariable = X;
 	}
 
 	ReplaceUtf replaceUtf follows nabla2ir
@@ -33,9 +36,36 @@ workflow TestDefaultGenerationChain transforms Test
 		outputDir = "/NablaTest/src-gen-java";
 	}
 
+	Ir2Code stlGenerator follows fillHlts
+	{
+		language = Cpp
+		{
+			maxIterationVariable = max_time_iterations;
+			stopTimeVariable = final_time;
+			programmingModel = StlThread
+		}
+		outputDir = "/NablaTest/src-gen-cpp/stl-thread";
+	}
+
 	Ir2Code kokkosGenerator follows fillHlts
 	{
-		language = Kokkos;
-		outputDir = "/NablaTest/src-gen-kokkos";
+		language = Cpp
+		{
+			maxIterationVariable = max_time_iterations;
+			stopTimeVariable = final_time;
+			programmingModel = Kokkos
+		}
+		outputDir = "/NablaTest/src-gen-cpp/kokkos";
+	}
+
+	Ir2Code kokkosTeamThreadGenerator follows fillHlts
+	{
+		language = Cpp
+		{
+			maxIterationVariable = max_time_iterations;
+			stopTimeVariable = final_time;
+			programmingModel = KokkosTeamThread
+		}
+		outputDir = "/NablaTest/src-gen-cpp/kokkos-team";
 	}
 }

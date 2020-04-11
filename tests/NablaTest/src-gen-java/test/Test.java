@@ -14,8 +14,10 @@ public final class Test
 	{
 		public final double X_EDGE_LENGTH = 0.01;
 		public final double Y_EDGE_LENGTH = X_EDGE_LENGTH;
-		public final int X_EDGE_ELEMS = 10;
-		public final int Y_EDGE_ELEMS = 10;
+		public final int X_EDGE_ELEMS = 100;
+		public final int Y_EDGE_ELEMS = 100;
+		public final int max_time_iterations = 500000000;
+		public final double final_time = 1.0;
 	}
 
 	private final Options options;
@@ -23,16 +25,15 @@ public final class Test
 	// Mesh
 	private final CartesianMesh2D mesh;
 	private final FileWriter writer;
-	private final int nbNodes;
+	private final int nbNodes, nbCells, nbNodesOfCell;
 
 	// Global Variables
-	private double t, deltat, r0, r1, r2, r3;
-	private int n0, n1, n2, n3;
-	private double[] u, v, w, alpha, beta, res1;
-	private double[][] delta, rho, res2;
+	private double t, deltat;
 
 	// Connectivity Variables
 	private double[][] X;
+	private double[] U, c1, c2;
+	private double[][][] C;
 
 	public Test(Options aOptions, CartesianMesh2D aCartesianMesh2D)
 	{
@@ -40,38 +41,18 @@ public final class Test
 		mesh = aCartesianMesh2D;
 		writer = new PvdFileWriter2D("Test");
 		nbNodes = mesh.getNbNodes();
+		nbCells = mesh.getNbCells();
+		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
 
 		t = 0.0;
 		deltat = 0.001;
-		n0 = 0;
-		n1 = TestFunctions.getOne();
-		n2 = addOne(n1);
-		n3 = TestFunctions.add(n1, n2);
-		r0 = 0.0;
-		r1 = addOne(r0);
-		r2 = TestFunctions.add(r1, n1);
-		r3 = TestFunctions.add(r2, r1);
-		u = new double[] {1.0, 1.0};
-		v = new double[] {2.0, 2.0};
-		w = TestFunctions.add(u, v);
-		alpha = new double[] {1.0, 1.0, 1.0};
-		beta = new double[] {2.0, 2.0, 2.0};
-		res1 = TestFunctions.add(alpha, beta);
-		delta = new double[][] {{1.0, 1.0}, {1.0, 1.0}};
-		rho = new double[][] {{2.0, 2.0}, {2.0, 2.0}};
-		res2 = TestFunctions.add(delta, rho);
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
-		u = new double[2];
-		v = new double[2];
-		w = new double[2];
-		alpha = new double[3];
-		beta = new double[3];
-		res1 = new double[3];
-		delta = new double[2][2];
-		rho = new double[2][2];
-		res2 = new double[2][2];
+		U = new double[nbCells];
+		C = new double[nbCells][nbNodesOfCell][2];
+		c1 = new double[nbCells];
+		c2 = new double[nbCells];
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -84,6 +65,7 @@ public final class Test
 	public void simulate()
 	{
 		System.out.println("Start execution of module Test");
+		computeCjr(); // @1.0
 		System.out.println("End of execution of module Test");
 	}
 
@@ -95,13 +77,38 @@ public final class Test
 		i.simulate();
 	}
 
-	private int addOne(int a)
+	/**
+	 * Job ComputeCjr called @1.0 in simulate method.
+	 * In variables: X
+	 * Out variables: C
+	 */
+	private void computeCjr()
 	{
-		return a + 1;
-	}
-
-	private double addOne(double a)
-	{
-		return a + 1;
+		{
+			final int[] cells = mesh.getCells();
+			final int nbCells = cells.length;
+			IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+			{
+				final int jId = cells[jCells];
+				final int[] rCellsJ = mesh.getNodesOfCell(jId);
+				final int cardRCellsJ = rCellsJ.length;
+				double[] tmp = new double[cardRCellsJ];
+				{
+					final int nbRCellsJ = rCellsJ.length;
+					for (int rRCellsJ=0; rRCellsJ<nbRCellsJ; rRCellsJ++)
+					{
+						final int rId = rCellsJ[rRCellsJ];
+						final int rPlus1Id = rCellsJ[(rRCellsJ+1+nbNodesOfCell)%nbNodesOfCell];
+						final int rMinus1Id = rCellsJ[(rRCellsJ-1+nbNodesOfCell)%nbNodesOfCell];
+						final int rNodes = rId;
+						final int rNodesOfCellJ = Utils.indexOf(mesh.getNodesOfCell(jId), rId);
+						final int rPlus1Nodes = rPlus1Id;
+						final int rMinus1Nodes = rMinus1Id;
+						tmp[rRCellsJ] = X[rNodes][0];
+						C[jCells][rNodesOfCellJ] = ArrayOperations.multiply(0.5, (ArrayOperations.minus(X[rPlus1Nodes], X[rMinus1Nodes])));
+					}
+				}
+			});
+		}
 	}
 };

@@ -11,12 +11,10 @@ workflow TestDefaultGenerationChain transforms Test
 
 	ReplaceUtf replaceUtf follows nabla2ir
 	{
-		dumpIr;
 	}
 	
 	ReplaceReductions replaceReductions follows replaceUtf
 	{
-		dumpIr;
 	}
 	
 	OptimizeConnectivities optimizeConnectivities follows replaceReductions
@@ -26,13 +24,12 @@ workflow TestDefaultGenerationChain transforms Test
 	
 	FillHLTs fillHlts follows optimizeConnectivities
 	{
-		//dumpIr;
+		dumpIr;
 	}
 	
 	Ir2Code javaGenerator follows fillHlts
 	{
 		language = Java;
-		//disabled;
 		outputDir = "/NablaTest/src-gen-java";
 	}
 

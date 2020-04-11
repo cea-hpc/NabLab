@@ -98,7 +98,7 @@ class ExpressionContentProvider
 	'''{«innerContent»}'''
 
 	def dispatch CharSequence getContent(Cardinality it)
-	'''«container.uniqueName».size();'''
+	'''«container.uniqueName».size()'''
 
 	def dispatch CharSequence getContent(FunctionCall it)
 	{

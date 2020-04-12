@@ -165,4 +165,30 @@ class InstructionInterpreterTest
 
 		assertVariableValueInContext(irModule, context, "U", new NV1Real(u))
 	}
+
+	@Test
+	def void testInterpreteExit()
+	{
+		val xQuads = 100
+		val yQuads = 100
+		val model = getTestModule(xQuads, yQuads)
+		+
+		'''
+		let V=100;
+
+		Test : if (V < 100) V = V+1; else exit "V must be less than 100";
+		'''
+
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val handler = new ConsoleHandler
+		handler.level = Level::OFF
+		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
+
+		try {
+			moduleInterpreter.interprete
+			Assert::fail("Should throw exception")
+		} catch (RuntimeException e) {
+			Assert.assertEquals("V must be less than 100", e.message)
+		}
+	}
 }

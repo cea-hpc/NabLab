@@ -15,11 +15,13 @@ import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
+import fr.cea.nabla.nabla.Cardinality
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.CurrentTimeIteratorRef
 import fr.cea.nabla.nabla.Div
 import fr.cea.nabla.nabla.Equality
+import fr.cea.nabla.nabla.Exit
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
@@ -60,7 +62,6 @@ import fr.cea.nabla.nabla.VectorConstant
 import java.util.List
 
 import static extension fr.cea.nabla.ir.Utils.*
-import fr.cea.nabla.nabla.Cardinality
 
 class LabelServices
 {
@@ -75,6 +76,7 @@ class LabelServices
 	static def dispatch String getLabel(ItemDefinition it) { 'item ' + item?.name + '=' + value?.label }
 	static def dispatch String getLabel(SetDefinition it) { 'set ' + name + '=' + value?.label }
 	static def dispatch String getLabel(Return it) { 'return ' + expression?.label }
+	static def dispatch String getLabel(Exit it) { 'Exit "' + message + '"'}
 
 	/* ITERATEURS ********************************************/
 	static def dispatch String getLabel(SpaceIterator it) { item?.name + '\u2208 ' + container?.label }

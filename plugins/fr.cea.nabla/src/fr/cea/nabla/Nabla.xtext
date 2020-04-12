@@ -41,7 +41,7 @@ SingleConnectivity: 'item' name=ID ':' (inTypes+=[ItemType] ('\u00D7' inTypes+=[
 /* JOBS & INSTRUCTIONS ***********************************/
 Job: name=ID ':' instruction=Instruction;
 Iterable: Loop | ReductionCall;
-Instruction: SimpleVarDefinition | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | ItemDefinition | SetDefinition | Return;
+Instruction: SimpleVarDefinition | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | ItemDefinition | SetDefinition | Return | Exit;
 
 SimpleVarDefinition: (const?='const' | 'let') variable=SimpleVar '=' defaultValue=Expression ';';
 VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
@@ -52,6 +52,7 @@ If: 'if' '(' condition=Expression ')' then=Instruction (=>'else' else=Instructio
 ItemDefinition: 'item' item=Item '=' value=SingleConnectivityCall ';';
 SetDefinition: 'set' name=ID '=' value=MultipleConnectivityCall ';';
 Return: 'return' expression=Expression ';';
+Exit: 'exit' message=STRING ';';
 
 
 /* ITERATEURS ********************************************/

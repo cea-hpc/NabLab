@@ -80,6 +80,9 @@
     <genClasses ecoreClass="Nabla.ecore#//Return">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Return/expression"/>
     </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//Exit">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Exit/message"/>
+    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//IterationBlock"/>
     <genClasses ecoreClass="Nabla.ecore#//Container"/>
     <genClasses ecoreClass="Nabla.ecore#//SetRef">

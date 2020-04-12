@@ -33,6 +33,7 @@ import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import fr.cea.nabla.ir.ir.Exit
 
 class InstructionInterpreter
 {
@@ -52,6 +53,8 @@ class InstructionInterpreter
 			return interpreteInstructionBlock(context)
 		} else if (it instanceof Return) {
 			return interpreteReturn(context)
+		} else if (it instanceof Exit) {
+			return interpreteExit(context)
 		} else if (it instanceof VariablesDefinition) {
 			return interpreteVariablesDefinition(context)
 		} else if (it instanceof ItemIdDefinition) {
@@ -195,6 +198,12 @@ class InstructionInterpreter
 	{
 		context.logFinest("Interprete Return")
 		return interprete(expression, context)
+	}
+
+	static def NablaValue interpreteExit(Exit it, Context context)
+	{
+		context.logFinest("Interprete Exit")
+		throw new RuntimeException(message)
 	}
 
 	private static dispatch def getIdValue(ItemIdValueCall it, Context context)

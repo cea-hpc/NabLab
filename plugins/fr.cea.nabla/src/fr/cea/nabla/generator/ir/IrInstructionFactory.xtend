@@ -27,6 +27,7 @@ import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
 import java.util.List
+import fr.cea.nabla.nabla.Exit
 
 @Singleton
 class IrInstructionFactory
@@ -116,7 +117,6 @@ class IrInstructionFactory
 			thenInstruction = v.then.toIrInstruction
 			if (v.^else !== null) elseInstruction = v.^else.toIrInstruction
 		]
-
 		return irInstr.transformReductions(v.condition)
 	}
 
@@ -140,8 +140,17 @@ class IrInstructionFactory
 			annotations += v.toIrAnnotation
 			expression = v.expression.toIrExpression
 		]
-
 		return irInstr.transformReductions(v.expression)
+	}
+
+	private def dispatch List<Instruction> toIrInstructions(Exit v)
+	{
+		val irInstr = IrFactory::eINSTANCE.createExit =>
+		[
+			annotations += v.toIrAnnotation
+			message = v.message
+		]
+		#[irInstr]
 	}
 
 	private def List<Instruction> transformReductions(Instruction i, Expression e)

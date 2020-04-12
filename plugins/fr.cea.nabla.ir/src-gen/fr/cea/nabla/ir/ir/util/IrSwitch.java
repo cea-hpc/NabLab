@@ -324,6 +324,14 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.EXIT: {
+				Exit exit = (Exit)theEObject;
+				T result = caseExit(exit);
+				if (result == null) result = caseInstruction(exit);
+				if (result == null) result = caseIrAnnotable(exit);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.ITERATION_BLOCK: {
 				IterationBlock iterationBlock = (IterationBlock)theEObject;
 				T result = caseIterationBlock(iterationBlock);
@@ -1066,6 +1074,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseReturn(Return object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Exit</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Exit</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseExit(Exit object) {
 		return null;
 	}
 

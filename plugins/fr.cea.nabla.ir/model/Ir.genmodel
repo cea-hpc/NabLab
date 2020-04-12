@@ -169,6 +169,9 @@
     <genClasses ecoreClass="Ir.ecore#//Return">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Return/expression"/>
     </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//Exit">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Exit/message"/>
+    </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//IterationBlock"/>
     <genClasses ecoreClass="Ir.ecore#//Iterator">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Iterator/index"/>

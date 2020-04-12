@@ -18,6 +18,7 @@ import fr.cea.nabla.ir.ir.ConnectivityCall;
 import fr.cea.nabla.ir.ir.ConnectivityType;
 import fr.cea.nabla.ir.ir.ConnectivityVariable;
 import fr.cea.nabla.ir.ir.ContractedIf;
+import fr.cea.nabla.ir.ir.Exit;
 import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.FunctionCall;
@@ -315,6 +316,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass returnEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass exitEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -1734,6 +1742,26 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EClass getExit() {
+		return exitEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getExit_Message() {
+		return (EAttribute)exitEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getIterationBlock() {
 		return iterationBlockEClass;
 	}
@@ -2702,6 +2730,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		returnEClass = createEClass(RETURN);
 		createEReference(returnEClass, RETURN__EXPRESSION);
 
+		exitEClass = createEClass(EXIT);
+		createEAttribute(exitEClass, EXIT__MESSAGE);
+
 		iterationBlockEClass = createEClass(ITERATION_BLOCK);
 
 		iteratorEClass = createEClass(ITERATOR);
@@ -2877,6 +2908,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		setDefinitionEClass.getESuperTypes().add(this.getInstruction());
 		ifEClass.getESuperTypes().add(this.getInstruction());
 		returnEClass.getESuperTypes().add(this.getInstruction());
+		exitEClass.getESuperTypes().add(this.getInstruction());
 		iterationBlockEClass.getESuperTypes().add(this.getIrAnnotable());
 		iteratorEClass.getESuperTypes().add(this.getIterationBlock());
 		intervalEClass.getESuperTypes().add(this.getIterationBlock());
@@ -3055,6 +3087,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(returnEClass, Return.class, "Return", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getReturn_Expression(), this.getExpression(), null, "expression", null, 1, 1, Return.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(exitEClass, Exit.class, "Exit", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getExit_Message(), ecorePackage.getEString(), "message", null, 1, 1, Exit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(iterationBlockEClass, IterationBlock.class, "IterationBlock", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

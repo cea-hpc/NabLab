@@ -32,6 +32,7 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
+import fr.cea.nabla.ir.ir.Exit
 
 @Data
 abstract class InstructionContentProvider
@@ -41,14 +42,14 @@ abstract class InstructionContentProvider
 	protected abstract def CharSequence getReductionContent(ReductionInstruction it)
 	protected abstract def CharSequence getLoopContent(Loop it)
 
-	def dispatch CharSequence getContent(VariablesDefinition it) 
+	def dispatch CharSequence getContent(VariablesDefinition it)
 	'''
 		«FOR v : variables»
 		«IF v.const»const «ENDIF»«v.cppType» «v.name»«v.defaultValueContent»;
 		«ENDFOR»
 	'''
 
-	def dispatch CharSequence getContent(InstructionBlock it) 
+	def dispatch CharSequence getContent(InstructionBlock it)
 	'''
 		{
 			«FOR i : instructions»
@@ -56,7 +57,7 @@ abstract class InstructionContentProvider
 			«ENDFOR»
 		}'''
 
-	def dispatch CharSequence getContent(Affectation it) 
+	def dispatch CharSequence getContent(Affectation it)
 	'''«left.content» = «right.content»;'''
 
 	def dispatch CharSequence getContent(ReductionInstruction it)
@@ -64,7 +65,7 @@ abstract class InstructionContentProvider
 		reductionContent
 	}
 
-	def dispatch CharSequence getContent(Loop it) 
+	def dispatch CharSequence getContent(Loop it)
 	{
 		if (parallel)
 			iterationBlock.defineInterval(loopContent)
@@ -78,7 +79,7 @@ abstract class InstructionContentProvider
 			''')
 	}
 
-	def dispatch CharSequence getContent(If it) 
+	def dispatch CharSequence getContent(If it)
 	'''
 		if («condition.content») 
 		«val thenContent = thenInstruction.content»
@@ -105,12 +106,17 @@ abstract class InstructionContentProvider
 		getSetDefinitionContent(name, value)
 	}
 
-	def dispatch CharSequence getContent(Return it) 
+	def dispatch CharSequence getContent(Return it)
 	'''
 		return «expression.content»;
 	'''
 
-	def dispatch getInnerContent(Instruction it) 
+	def dispatch CharSequence getContent(Exit it)
+	'''
+		throw std::runtime_error("«message»");
+	'''
+
+	def dispatch getInnerContent(Instruction it)
 	{ 
 		content
 	}
@@ -166,7 +172,7 @@ class SequentialInstructionContentProvider extends InstructionContentProvider
 {
 	override isParallel(Loop it) { false }
 
-	override protected getReductionContent(ReductionInstruction it) 
+	override protected getReductionContent(ReductionInstruction it)
 	{
 		throw new UnsupportedOperationException("ReductionInstruction must have been replaced before using this code generator")
 	}

@@ -247,6 +247,15 @@ public interface IrFactory extends EFactory {
 	Return createReturn();
 
 	/**
+	 * Returns a new object of class '<em>Exit</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Exit</em>'.
+	 * @generated
+	 */
+	Exit createExit();
+
+	/**
 	 * Returns a new object of class '<em>Iterator</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

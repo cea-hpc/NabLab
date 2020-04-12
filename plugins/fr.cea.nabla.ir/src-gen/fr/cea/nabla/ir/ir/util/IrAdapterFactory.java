@@ -200,6 +200,10 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createReturnAdapter();
 			}
 			@Override
+			public Adapter caseExit(Exit object) {
+				return createExitAdapter();
+			}
+			@Override
 			public Adapter caseIterationBlock(IterationBlock object) {
 				return createIterationBlockAdapter();
 			}
@@ -806,6 +810,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createReturnAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Exit <em>Exit</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.Exit
+	 * @generated
+	 */
+	public Adapter createExitAdapter() {
 		return null;
 	}
 

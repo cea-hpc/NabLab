@@ -82,6 +82,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.SET_DEFINITION: return createSetDefinition();
 			case IrPackage.IF: return createIf();
 			case IrPackage.RETURN: return createReturn();
+			case IrPackage.EXIT: return createExit();
 			case IrPackage.ITERATOR: return createIterator();
 			case IrPackage.INTERVAL: return createInterval();
 			case IrPackage.CONTRACTED_IF: return createContractedIf();
@@ -418,6 +419,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public Return createReturn() {
 		ReturnImpl return_ = new ReturnImpl();
 		return return_;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Exit createExit() {
+		ExitImpl exit = new ExitImpl();
+		return exit;
 	}
 
 	/**

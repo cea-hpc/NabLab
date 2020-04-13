@@ -158,6 +158,7 @@ class FillJobHLTs implements IrTransformationStep
 
 	private def void distributeTimeLoopJobs(IrModule m, TimeLoop tl)
 	{
+		//println("distributeJobsInTimeLoops 1(" + m.name + ", " + tl.name + ")")
 		if (tl.outerTimeLoop === null)
 		{
 			m.innerJobs += m.jobs.filter(TimeLoopJob).filter[timeLoop == tl]
@@ -176,10 +177,10 @@ class FillJobHLTs implements IrTransformationStep
 
 	private def void distributeJobsInTimeLoops(TimeLoop tl, Job j)
 	{
-		//println("distributeJobsInTimeLoops(" + tlj + ", " + j.name)
+		//println("distributeJobsInTimeLoops 2(" + tl.name + ", " + j.name + ")")
 		switch j
 		{
-			BeforeTimeLoopJob: 
+			BeforeTimeLoopJob:
 			{
 				// Start of another time loop. Do not follow next.
 			}

@@ -15,6 +15,8 @@ import java.io.ByteArrayInputStream
 import java.lang.reflect.InvocationTargetException
 import java.util.ArrayList
 import java.util.Collection
+import java.util.HashMap
+import java.util.LinkedHashMap
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IFolder
 import org.eclipse.core.resources.IProject
@@ -147,19 +149,30 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				val srcGenJavaFolder = project.getFolder("src-gen-java")
 				srcGenJavaFolder.create(false, true, monitor)
 
-				// Create src-gen-kokkos folder
-				val srcGenKokkosFolder = project.getFolder("src-gen-kokkos")
-				srcGenKokkosFolder.create(false, true, monitor)
+				// Create src-gen-cpp folder
+				val srcGenCppFolder = project.getFolder("src-gen-cpp")
+				srcGenCppFolder.create(false, true, monitor)
 
-				// Create src-gen-kokkos-team folder
-				val srcGenKokkosTeamFolder = project.getFolder("src-gen-kokkos-team")
+				// Create all src-gen-cpp subfolders
+				val cppFoldersByProgrammingModel = new LinkedHashMap<String, IFolder>
+
+				val srcGenStlThreadFolder = srcGenCppFolder.getFolder("stl-thread")
+				srcGenStlThreadFolder.create(false, true, monitor)
+				cppFoldersByProgrammingModel.put("StlThread", srcGenStlThreadFolder)
+
+				val srcGenKokkosFolder = srcGenCppFolder.getFolder("kokkos")
+				srcGenKokkosFolder.create(false, true, monitor)
+				cppFoldersByProgrammingModel.put("Kokkos", srcGenKokkosFolder)
+
+				val srcGenKokkosTeamFolder = srcGenCppFolder.getFolder("kokkos-team")
 				srcGenKokkosTeamFolder.create(false, true, monitor)
+				cppFoldersByProgrammingModel.put("KokkosTeamThread", srcGenKokkosTeamFolder)
 
 				// Create nabla and nablagen models
 				val nablaFile = modulesFolder.getFile(newProjectPage.moduleName + ".nabla")
 				createFile(nablaFile, getNablaModelContent(newProjectPage.moduleName), monitor)
 				val nablagenFile = modulesFolder.getFile(newProjectPage.moduleName + ".nablagen")
-				createFile(nablagenFile, getNablagenModelContent(newProjectPage.moduleName, srcGenJavaFolder, srcGenKokkosFolder, srcGenKokkosTeamFolder), monitor)
+				createFile(nablagenFile, getNablagenModelContent(newProjectPage.moduleName, srcGenJavaFolder, cppFoldersByProgrammingModel), monitor)
 
 				// Create META-INF folder and MANIFEST
 				val metaInf = project.getFolder("META-INF")
@@ -272,13 +285,13 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 		set nodes: → { node };
 
-		const ℝ X_EDGE_LENGTH = 0.1;
-		const ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-		const ℕ X_EDGE_ELEMS = 20;
-		const ℕ Y_EDGE_ELEMS = 20;
+		const X_EDGE_LENGTH = 0.1;
+		const Y_EDGE_LENGTH = X_EDGE_LENGTH;
+		const X_EDGE_ELEMS = 20;
+		const Y_EDGE_ELEMS = 20;
 
-		const ℕ max_iter = 200;
-		const ℝ max_time = 1.0;
+		const max_iter = 200;
+		const max_time = 1.0;
 
 		ℝ t, δt;
 		ℝ[2] X{nodes};
@@ -287,7 +300,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		iterate n while (n+1 < max_iter && t^{n+1} < max_time);
 	'''
 
-	private def getNablagenModelContent(String nablaModuleName, IFolder srcGenJavaFolder, IFolder srcGenKokkosFolder, IFolder srcGenKokkosTeamFolder)
+	private def getNablagenModelContent(String nablaModuleName, IFolder srcGenJavaFolder, HashMap<String, IFolder> cppFoldersByProgrammingModel)
 	'''
 		with «nablaModuleName».*;
 
@@ -328,27 +341,19 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				language = Java;
 				outputDir = "«srcGenJavaFolder.fullPath»";
 			}
+			«FOR cppProgrammingModel : cppFoldersByProgrammingModel.keySet»
 
-			Ir2Code kokkosGenerator follows fillHlts
+			Ir2Code «cppProgrammingModel.toFirstLower»Generator follows fillHlts
 			{
-				language = Kokkos
+				language = Cpp
 				{
 					maxIterationVariable = max_iter;
 					stopTimeVariable = max_time;
+					programmingModel = «cppProgrammingModel»
 				}
-				outputDir = "«srcGenKokkosFolder.fullPath»";
+				outputDir = "«cppFoldersByProgrammingModel.get(cppProgrammingModel).fullPath»";
 			}
-
-			Ir2Code kokkosTeamOfThreadGenerator follows fillHlts
-			{
-				language = Kokkos
-				{
-					maxIterationVariable = max_iter;
-					stopTimeVariable = max_time;
-					teamOfThreads;
-				}
-				outputDir = "«srcGenKokkosTeamFolder.fullPath»";
-			}
+			«ENDFOR»
 		}
 	'''
 

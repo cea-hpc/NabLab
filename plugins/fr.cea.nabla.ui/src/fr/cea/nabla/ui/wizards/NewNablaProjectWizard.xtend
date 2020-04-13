@@ -375,7 +375,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 	private def getBuildPropertiesContent()
 	'''
-		source.. = src-gen-java/
+		source.. = src, src-gen-java/
 		bin.includes = .,\
 		               META-INF/
 	'''

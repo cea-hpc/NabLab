@@ -403,7 +403,7 @@ private:
 			
 		
 			// Evaluate loop condition with variables at time n
-			continueLoop = (residual > options->epsilon && k + 1 < options->option_max_iterations_k);
+			continueLoop = (residual > options->epsilon && check(k + 1 < options->option_max_iterations_k));
 		
 			if (continueLoop)
 			{
@@ -585,6 +585,15 @@ private:
 			cpuTimer.reset();
 			ioTimer.reset();
 		} while (continueLoop);
+	}
+	
+	KOKKOS_INLINE_FUNCTION
+	bool check(bool a) 
+	{
+		if (a) 
+			return true;
+		else
+			throw std::runtime_error("Assertion failed");
 	}
 	
 	template<size_t x>

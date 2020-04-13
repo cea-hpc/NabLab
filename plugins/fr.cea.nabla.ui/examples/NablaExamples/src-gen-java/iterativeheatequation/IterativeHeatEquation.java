@@ -319,7 +319,7 @@ public final class IterativeHeatEquation
 			computeResidual(); // @2.0
 		
 			// Evaluate loop condition with variables at time n
-			continueLoop = (residual > options.epsilon && k + 1 < options.option_max_iterations_k);
+			continueLoop = (residual > options.epsilon && check(k + 1 < options.option_max_iterations_k));
 		
 			if (continueLoop)
 			{
@@ -456,6 +456,14 @@ public final class IterativeHeatEquation
 				u_nplus1 = tmp_u_n;
 			} 
 		} while (continueLoop);
+	}
+
+	private boolean check(boolean a)
+	{
+		if (a)
+			return true;
+		else
+			throw new RuntimeException("Assertion failed");
 	}
 
 	private double[] sumR1(double[] a, double[] b)

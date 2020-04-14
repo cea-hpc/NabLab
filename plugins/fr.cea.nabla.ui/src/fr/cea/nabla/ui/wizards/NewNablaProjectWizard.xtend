@@ -371,6 +371,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		   fr.cea.nabla.sirius,
 		   fr.cea.nabla.javalib,
 		   org.eclipse.xtext.xbase.lib
+		Export-Package: «newProjectPage.moduleName.toLowerCase»
 	'''
 
 	private def getBuildPropertiesContent()

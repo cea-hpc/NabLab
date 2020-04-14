@@ -51,5 +51,5 @@ if grep -q "Version $OLD_VERSION" $f; then
    sed "s/Version $OLD_VERSION/Version $NEW_VERSION/g" $f.old > $f
 fi
 
-echo "DONE. All that remains is to change the SPLASH SCREEN."
+echo "DONE. All that remains is to change the SPLASH SCREEN (BMP 459x347)."
 

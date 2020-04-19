@@ -42,12 +42,11 @@ private:
 	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
 	size_t nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
-	
-	// Global Variables
-	int n, lastDump;
-	double t_n, t_nplus1, deltat_n, deltat_nplus1;
-	
-	// Connectivity Variables
+	int n;
+	double t_n;
+	double t_nplus1;
+	double deltat_n;
+	double deltat_nplus1;
 	std::vector<RealArray1D<2>> X_n;
 	std::vector<RealArray1D<2>> X_nplus1;
 	std::vector<RealArray1D<2>> X_n0;
@@ -72,6 +71,7 @@ private:
 	std::vector<std::vector<RealArray1D<2>>> C;
 	std::vector<std::vector<RealArray1D<2>>> F;
 	std::vector<std::vector<RealArray2D<2,2>>> Ajr;
+	int lastDump;
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;
@@ -88,7 +88,6 @@ public:
 	, nbInnerNodes(mesh->getNbInnerNodes())
 	, nbOuterFaces(mesh->getNbOuterFaces())
 	, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
-	, lastDump(numeric_limits<int>::min())
 	, t_n(0.0)
 	, t_nplus1(0.0)
 	, deltat_n(options->option_deltat_ini)
@@ -117,6 +116,7 @@ public:
 	, C(nbCells, std::vector<RealArray1D<2>>(nbNodesOfCell))
 	, F(nbCells, std::vector<RealArray1D<2>>(nbNodesOfCell))
 	, Ajr(nbCells, std::vector<RealArray2D<2,2>>(nbNodesOfCell))
+	, lastDump(numeric_limits<int>::min())
 	{
 		// Copy node coordinates
 		const auto& gNodes = mesh->getGeometry()->getNodes();
@@ -540,7 +540,7 @@ private:
 			parallel::parallel_exec(nbOuterFaces, [&](const size_t& fOuterFaces)
 			{
 				const Id fId(outerFaces[fOuterFaces]);
-				const double epsilon(1.0E-10);
+				double epsilon(1.0E-10);
 				RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
 				double X_MIN(0.0);
 				double X_MAX(options->X_EDGE_ELEMS * options->X_EDGE_LENGTH);

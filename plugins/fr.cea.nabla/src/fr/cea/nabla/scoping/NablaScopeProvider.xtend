@@ -9,6 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.scoping
 
+import com.google.inject.Inject
+import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
@@ -22,6 +24,7 @@ import fr.cea.nabla.nabla.Iterable
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.OptDefinition
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SetDefinition
 import fr.cea.nabla.nabla.SimpleVarDefinition
@@ -47,6 +50,8 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
  */
 class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 {
+	@Inject extension NablaModuleExtensions
+
 	/*** Scope for items *****************************************************/
 	def scope_ItemRef_target(SpaceIterator context, EReference r)
 	{
@@ -185,6 +190,14 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		return s
 	}
 
+	def IScope scope_ArgOrVarRef_target(OptDefinition context, EReference r)
+	{
+		//println('scope_ArgOrVarRef_target(' + context.class.simpleName + ', ' + r.name + ')')
+		val s = variablesDefinedBefore(context.eContainer, context, '\t')
+		//println('--> ' + s)
+		return s
+	}
+
 	def IScope scope_ArgOrVarRef_target(Instruction context, EReference r)
 	{
 		//println('scope_ArgOrVarRef_target(' + context.class.simpleName + ', ' + r.name + ')')
@@ -199,7 +212,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		val definition = context.eContainer as TimeIteratorDefinition 
 		val iteratorsAndVars = new ArrayList<ArgOrVar>
 		val module = EcoreUtil2.getContainerOfType(context, NablaModule)
-		iteratorsAndVars += getAllVariables(module)
+		iteratorsAndVars += module.allVars
 		iteratorsAndVars += subList(definition.iterators, context)
 		iteratorsAndVars += context
 		val s = Scopes::scopeFor(iteratorsAndVars)
@@ -239,13 +252,29 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	private def dispatch IScope variablesDefinedBefore(Job context, EObject o, String prefix)
 	{
 		//println(prefix + 'variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
-		Scopes::scopeFor(getAllVariables(context.eContainer as NablaModule))
+		Scopes::scopeFor((context.eContainer as NablaModule).allVars)
 	}
 
 	private def dispatch IScope variablesDefinedBefore(NablaModule context, EObject o, String prefix)
 	{
 		//println(prefix + 'variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
-		Scopes::scopeFor(variablesDeclaredBefore(context.instructions, o as Instruction))
+		val variables = new ArrayList<ArgOrVar>
+		switch o
+		{
+			OptDefinition: subList(context.options, o).forEach[x | variables += x.variable]
+			SimpleVarDefinition:
+			{
+				context.options.forEach[x | variables += x.variable]
+				subList(context.definitions, o).forEach[x | variables += x.variable]
+			}
+			VarGroupDeclaration:
+			{
+				context.options.forEach[x | variables += x.variable]
+				context.definitions.forEach[x | variables += x.variable]
+				subList(context.declarations, o).forEach[x | variables += x.variables]
+			}
+		}
+		Scopes::scopeFor(variables)
 	}
 
 	private def dispatch IScope variablesDefinedBefore(FunctionOrReduction context, EObject o, String prefix)
@@ -289,11 +318,6 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	private def variablesDeclaredBefore(List<? extends Instruction> list, Instruction i)
 	{
 		getAllVariables(subList(list, i))
-	}
-
-	private def getAllVariables(NablaModule it) 
-	{ 
-		getAllVariables(instructions)
 	}
 
 	private def getAllVariables(List<? extends Instruction> instructions)

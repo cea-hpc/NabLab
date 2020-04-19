@@ -64,25 +64,20 @@ class ExpressionTypeProviderTest
 	def norm: x | ℝ[x] → ℝ;
 	def solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x];
 
-	const X_EDGE_LENGTH = 1.;
-	const Y_EDGE_LENGTH = X_EDGE_LENGTH;
-	const X_EDGE_ELEMS = 2;
-	const Y_EDGE_ELEMS = 2;
-	const option_stoptime = 0.1;
-	const option_max_iterations = 500;
-
-	ℝ t;
-	ℝ[2] X{nodes};
+	option X_EDGE_LENGTH = 1.;
+	option Y_EDGE_LENGTH = X_EDGE_LENGTH;
+	option X_EDGE_ELEMS = 2;
+	option Y_EDGE_ELEMS = 2;
+	option option_stoptime = 0.1;
+	option option_max_iterations = 500;
 
 	let a1 = 1;
 	let a2 = 9 % 4;
 	let a3 = ℕ.MinValue;
-	ℕ a4;
-	ℕ[2] a5;
-	let a6 = [1,1];
-	let a7 = ℕ[2](1);
-	ℕ[2,2] a8;
-	let a9 = a8[0,2];
+	let a4 = [1,1];
+	let a5 = ℕ[2](1);
+	let a6 = ℕ[2,2](1);
+	let a7 = a6[0,2];
 
 	let b1 = true;
 	let b2 = false || true;
@@ -99,9 +94,9 @@ class ExpressionTypeProviderTest
 	let c2 = 2.0 - 1.0;
 	let c3 = 2.0 * 1.0;
 	let c4 = 2.0 / 1.0;
-	let c5 = -c1;		
+	let c5 = -c1;
 	let c6 = ℝ.MaxValue;
-	const c7 = 1.0e-10;
+	let c7 = 1.0e-10;
 
 	let d1 = [1.0, 2.0];
 	let d2 = perp(d1);
@@ -112,6 +107,12 @@ class ExpressionTypeProviderTest
 
 	let g = [ [1.0, 0.0], [0.0, 1.0] ];
 	let h = (a1 == 1 ? 0.0 : 1.0);
+
+	ℕ i1;
+	ℕ[2] i2;
+
+	ℝ t;
+	ℝ[2] X{nodes};
 
 	ℕ s{cells};
 	ℝ u{cells}, v{cells};
@@ -126,7 +127,7 @@ class ExpressionTypeProviderTest
 	ComputeV: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r} + s{j});
 
 	ComputeX: ∀ j∈cells(), {
-		const ee = 1.0;
+		let ee = 1.0;
 		u^{n}{j} = ee * 4;
 		∀r∈nodesOfCell(j), x{j,r} = norm(w{j,r});
 	}
@@ -152,12 +153,10 @@ class ExpressionTypeProviderTest
 		assertTypesFor(new NSTIntScalar, module, "a1")
 		assertTypesFor(new NSTIntScalar, module, "a2")
 		assertTypesFor(new NSTIntScalar, module, "a3")
-		assertTypesFor(new NSTIntScalar, module, "a4")
+		assertTypesFor(new NSTIntArray1D(createIntConstant(2)), module, "a4")
 		assertTypesFor(new NSTIntArray1D(createIntConstant(2)), module, "a5")
-		assertTypesFor(new NSTIntArray1D(createIntConstant(2)), module, "a6")
-		assertTypesFor(new NSTIntArray1D(createIntConstant(2)), module, "a7")
-		assertTypesFor(new NSTIntArray2D(createIntConstant(2), createIntConstant(2)), module, "a8")
-		assertTypesFor(new NSTIntScalar, module, "a9")
+		assertTypesFor(new NSTIntArray2D(createIntConstant(2), createIntConstant(2)), module, "a6")
+		assertTypesFor(new NSTIntScalar, module, "a7")
 
 		assertTypesFor(new NSTBoolScalar, module, "b1")
 		assertTypesFor(new NSTBoolScalar, module, "b2")
@@ -187,6 +186,9 @@ class ExpressionTypeProviderTest
 
 		assertTypesFor(new NSTRealArray2D(createIntConstant(2), createIntConstant(2)), module, "g")
 		assertTypesFor(new NSTRealScalar, module, "h")
+
+		assertTypesFor(new NSTIntScalar, module, "i1")
+		assertTypesFor(new NSTIntArray1D(createIntConstant(2)), module, "i2")
 
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTIntScalar), module, "s")
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), module, "u")
@@ -236,8 +238,8 @@ class ExpressionTypeProviderTest
 	{
 		// We test both variable type and default value type
 		Assert.assertEquals(expectedType, variable.typeFor)
-		if (variable.defaultValue !== null)
-			Assert.assertEquals(expectedType, variable.defaultValue.typeFor)
+		if (variable.value !== null)
+			Assert.assertEquals(expectedType, variable.value.typeFor)
 	}
 
 	private def assertTypesFor(NablaType expectedType, Affectation affectation)

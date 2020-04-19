@@ -9,16 +9,20 @@
  *******************************************************************************/
 package fr.cea.nabla
 
+import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.OptDefinition
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.SimpleVarDefinition
+import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
+import org.eclipse.xtext.EcoreUtil2
 
 /**
  * Allow to access the type of ArgOrVar except SimpleVar
@@ -46,32 +50,32 @@ class ArgOrVarExtensions
 		}
 	}
 
-	def dispatch boolean isConst(ArgOrVar it)
+	def boolean isConst(ArgOrVar it)
 	{
-		true
-	}
-
-	def dispatch boolean isConst(Var it)
-	{ 
-		val decl = eContainer
-		switch decl
+		switch it
 		{
-			SimpleVarDefinition : decl.const
-			default : false
+			Arg: true
+			TimeIterator: false
+			default: 
+			{
+				val module = EcoreUtil2::getContainerOfType(it, NablaModule)
+				module.eAllContents.filter(Affectation).forall[x | x.left.target !== it]
+			}
 		}
 	}
 
 	def isGlobal(Var it) 
 	{ 
-		eContainer.eContainer instanceof NablaModule
+		(eContainer !== null && eContainer.eContainer !== null && eContainer.eContainer instanceof NablaModule)
 	}
 
-	def getDefaultValue(Var it)
+	def getValue(Var it)
 	{
 		val decl = eContainer
 		switch decl
 		{
-			SimpleVarDefinition : decl.defaultValue
+			OptDefinition: decl.value
+			SimpleVarDefinition : decl.value
 			default : null
 		}
 	}

@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
+import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
@@ -23,25 +24,30 @@ class IrModuleExtensions
 		jobs.findFirst[j | j.name == jobName]
 	}
 
-	static def getOptions(IrModule it)
+	static def getVariablesWithDefaultValue(IrModule it)
 	{
-		variables.filter(SimpleVariable).filter[const]
+		variables.filter(SimpleVariable).filter[x|x.defaultValue!==null]
 	}
 
-	static def getGlobalVariables(IrModule it)
+	static def isLinearAlgebra(IrModule it)
 	{
-		variables.filter(SimpleVariable).filter[!const]
+		variables.filter(ConnectivityVariable).exists[x | x.linearAlgebra]
 	}
 
-	static def getConnectivityVariables(IrModule it)
-	{
-		variables.filter(ConnectivityVariable).filter[!linearAlgebra]
-	}
-
-	static def getLinearAlgebraVariables(IrModule it)
-	{
-		variables.filter(ConnectivityVariable).filter[linearAlgebra]
-	}
+//	static def getSimpleVariables(IrModule it)
+//	{
+//		variables.filter(SimpleVariable)
+//	}
+//
+//	static def getConnectivityVariables(IrModule it)
+//	{
+//		variables.filter(ConnectivityVariable).filter[!linearAlgebra]
+//	}
+//
+//	static def getLinearAlgebraVariables(IrModule it)
+//	{
+//		variables.filter(ConnectivityVariable).filter[linearAlgebra]
+//	}
 
 	/**
 	 * Return the list of connectivities used by the module
@@ -56,7 +62,9 @@ class IrModuleExtensions
 
 	static def getVariableByName(IrModule it, String varName)
 	{
-		variables.findFirst[j | j.name == varName]
+		var ArgOrVar variable = options.findFirst[j | j.name == varName]
+		if (variable === null) variable = variables.findFirst[j | j.name == varName]
+		return variable
 	}
 
 	static def withMesh(IrModule it) { !itemTypes.empty }

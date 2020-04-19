@@ -20,12 +20,18 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/connectivities"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/reductions"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/functions"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/instructions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/options"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/definitions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/declarations"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/iteration"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/jobs"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Import">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//Import/importedNamespace"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//OptDefinition">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//OptDefinition/variable"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//OptDefinition/value"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//ItemType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//ItemType/name"/>
@@ -46,9 +52,8 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Instruction"/>
     <genClasses ecoreClass="Nabla.ecore#//SimpleVarDefinition">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SimpleVarDefinition/const"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SimpleVarDefinition/variable"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SimpleVarDefinition/defaultValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SimpleVarDefinition/value"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//VarGroupDeclaration">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarGroupDeclaration/type"/>

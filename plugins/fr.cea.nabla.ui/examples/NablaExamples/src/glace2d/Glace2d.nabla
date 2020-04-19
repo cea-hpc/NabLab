@@ -46,24 +46,24 @@ def inverse: ℝ[2,2] → ℝ[2,2], (a) → {
 }
 
 // Mesh options
-const X_EDGE_LENGTH = 0.01;
-const Y_EDGE_LENGTH = X_EDGE_LENGTH;
-const X_EDGE_ELEMS = 100;
-const Y_EDGE_ELEMS = 10;
+option X_EDGE_LENGTH = 0.01;
+option Y_EDGE_LENGTH = X_EDGE_LENGTH;
+option X_EDGE_ELEMS = 100;
+option Y_EDGE_ELEMS = 10;
 
 // Simulation options
-const option_stoptime = 0.2;
-const option_max_iterations = 20000;
+option option_stoptime = 0.2;
+option option_max_iterations = 20000;
   
 // User options
-const γ = 1.4;
-const option_x_interface = 0.5;
-const option_δt_ini = 1.0e-5;
-const option_δt_cfl = 0.4;
-const option_ρ_ini_zg = 1.0;
-const option_ρ_ini_zd = 0.125;
-const option_p_ini_zg = 1.0;
-const option_p_ini_zd = 0.1;
+option γ = 1.4;
+option option_x_interface = 0.5;
+option option_δt_ini = 1.0e-5;
+option option_δt_cfl = 0.4;
+option option_ρ_ini_zg = 1.0;
+option option_ρ_ini_zd = 0.125;
+option option_p_ini_zg = 1.0;
+option option_p_ini_zd = 0.1;
 
 let t=0.0;
 let δt=option_δt_ini;
@@ -130,7 +130,7 @@ ComputeMt: ∀r∈innerNodes(), Mt{r} = Ar{r};
 ComputeBt: ∀r∈innerNodes(), bt{r} = b{r};
 
 ComputeBoundaryConditions: ∀f∈outerFaces(), {
-	const epsilon = 1.0e-10;
+	let epsilon = 1.0e-10;
 	let I = [ [1.0, 0.0], [0.0, 1.0] ];
 	let X_MIN = 0.0;
 	let X_MAX = X_EDGE_ELEMS * X_EDGE_LENGTH;

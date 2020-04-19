@@ -43,6 +43,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getItemTypes <em>Item Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getFunctions <em>Functions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getConnectivities <em>Connectivities</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getOptions <em>Options</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
@@ -115,6 +116,16 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * @ordered
 	 */
 	protected EList<Connectivity> connectivities;
+
+	/**
+	 * The cached value of the '{@link #getOptions() <em>Options</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getOptions()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<SimpleVariable> options;
 
 	/**
 	 * The cached value of the '{@link #getVariables() <em>Variables</em>}' containment reference list.
@@ -288,6 +299,19 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			connectivities = new EObjectContainmentEList<Connectivity>(Connectivity.class, this, IrPackage.IR_MODULE__CONNECTIVITIES);
 		}
 		return connectivities;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EList<SimpleVariable> getOptions() {
+		if (options == null) {
+			options = new EObjectContainmentEList<SimpleVariable>(SimpleVariable.class, this, IrPackage.IR_MODULE__OPTIONS);
+		}
+		return options;
 	}
 
 	/**
@@ -628,6 +652,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return ((InternalEList<?>)getFunctions()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				return ((InternalEList<?>)getConnectivities()).basicRemove(otherEnd, msgs);
+			case IrPackage.IR_MODULE__OPTIONS:
+				return ((InternalEList<?>)getOptions()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__VARIABLES:
 				return ((InternalEList<?>)getVariables()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__JOBS:
@@ -658,6 +684,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return getFunctions();
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				return getConnectivities();
+			case IrPackage.IR_MODULE__OPTIONS:
+				return getOptions();
 			case IrPackage.IR_MODULE__VARIABLES:
 				return getVariables();
 			case IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE:
@@ -712,6 +740,10 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				getConnectivities().clear();
 				getConnectivities().addAll((Collection<? extends Connectivity>)newValue);
 				return;
+			case IrPackage.IR_MODULE__OPTIONS:
+				getOptions().clear();
+				getOptions().addAll((Collection<? extends SimpleVariable>)newValue);
+				return;
 			case IrPackage.IR_MODULE__VARIABLES:
 				getVariables().clear();
 				getVariables().addAll((Collection<? extends Variable>)newValue);
@@ -765,6 +797,9 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				getConnectivities().clear();
 				return;
+			case IrPackage.IR_MODULE__OPTIONS:
+				getOptions().clear();
+				return;
 			case IrPackage.IR_MODULE__VARIABLES:
 				getVariables().clear();
 				return;
@@ -811,6 +846,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return functions != null && !functions.isEmpty();
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				return connectivities != null && !connectivities.isEmpty();
+			case IrPackage.IR_MODULE__OPTIONS:
+				return options != null && !options.isEmpty();
 			case IrPackage.IR_MODULE__VARIABLES:
 				return variables != null && !variables.isEmpty();
 			case IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE:

@@ -41,27 +41,23 @@ private:
 	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
 	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
-	
-	// Global Variables
-	int n, lastDump;
-	double t_n, t_nplus1, deltat;
-	
-	// Connectivity Variables
+	int n;
+	double t_n;
+	double t_nplus1;
+	double deltat;
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> Xc;
 	Kokkos::View<double*> xc;
 	Kokkos::View<double*> yc;
+	VectorType u_n;
+	VectorType u_nplus1;
 	Kokkos::View<double*> V;
 	Kokkos::View<double*> D;
 	Kokkos::View<double*> faceLength;
 	Kokkos::View<double*> faceConductivity;
-	
-	// Linear Algebra Variables
-	VectorType u_n;
-	VectorType u_nplus1;
 	NablaSparseMatrix alpha;
-	// CG details
-	LinearAlgebraFunctions::CGInfo cg_info;
+	int lastDump;
+	LinearAlgebraFunctions::CGInfo cg_info; // CG details
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;
@@ -78,7 +74,6 @@ public:
 	, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 	, nbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
 	, nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-	, lastDump(numeric_limits<int>::min())
 	, t_n(0.0)
 	, t_nplus1(0.0)
 	, deltat(0.001)
@@ -86,13 +81,14 @@ public:
 	, Xc("Xc", nbCells)
 	, xc("xc", nbCells)
 	, yc("yc", nbCells)
+	, u_n("u_n", nbCells)
+	, u_nplus1("u_nplus1", nbCells)
 	, V("V", nbCells)
 	, D("D", nbCells)
 	, faceLength("faceLength", nbFaces)
 	, faceConductivity("faceConductivity", nbFaces)
-	, u_n("u_n", nbCells)
-	, u_nplus1("u_nplus1", nbCells)
 	, alpha("alpha", nbCells, nbCells)
+	, lastDump(numeric_limits<int>::min())
 	{
 		// Copy node coordinates
 		const auto& gNodes = mesh->getGeometry()->getNodes();

@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.Affectation
+import fr.cea.nabla.nabla.Exit
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InstructionBlock
@@ -22,12 +23,10 @@ import fr.cea.nabla.nabla.ItemDefinition
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SetDefinition
-import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
 import java.util.List
-import fr.cea.nabla.nabla.Exit
 
 @Singleton
 class IrInstructionFactory
@@ -50,28 +49,27 @@ class IrInstructionFactory
 
 	private def dispatch List<Instruction> toIrInstructions(SimpleVarDefinition v)
 	{
-		val irInstr = IrFactory::eINSTANCE.createVariablesDefinition =>
+		val irInstr = IrFactory::eINSTANCE.createVariableDefinition =>
 		[
 			annotations += v.toIrAnnotation
-			variables += v.variable.toIrVariable
+			variable = v.variable.toIrVariable
 		]
 
-		return irInstr.transformReductions(v.defaultValue)
+		return irInstr.transformReductions(v.value)
 	}
 
 	private def dispatch List<Instruction> toIrInstructions(VarGroupDeclaration v)
 	{
-		val irInstr = IrFactory::eINSTANCE.createVariablesDefinition =>
-		[
-			// Il n'y a que des ScalarVar quand VarGroupDeclaration est une instruction.
-			// Les ArrayVar ne sont que dans les variables du module (variables globales)
-			for (scalarVar : v.variables.filter(SimpleVar))
-			{
-				annotations += v.toIrAnnotation
-				variables += scalarVar.toIrVariable
-			}
-		]
-		#[irInstr]
+		val instructions = new ArrayList<Instruction>
+		for (nablaVar : v.variables)
+		{
+			instructions += IrFactory::eINSTANCE.createVariableDefinition =>
+			[
+				annotations += nablaVar.toIrAnnotation
+				variable = nablaVar.toIrVariable
+			]
+		}
+		return instructions
 	}
 
 	private def dispatch List<Instruction> toIrInstructions(InstructionBlock v)

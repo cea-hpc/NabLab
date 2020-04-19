@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -49,8 +50,7 @@ class Ir2Java extends CodeGenerator
 		import fr.cea.nabla.javalib.mesh.*;
 		«ENDIF»
 
-		«val linearAlgebraVars = linearAlgebraVariables»
-		«IF !linearAlgebraVars.empty»
+		«IF linearAlgebra»
 		import org.apache.commons.math3.linear.*;
 
 		«ENDIF»
@@ -74,25 +74,9 @@ class Ir2Java extends CodeGenerator
 			«ENDIF»
 
 			// Global Variables
-			«val globalsByType = globalVariables.groupBy[javaType]»
-			«FOR type : globalsByType.keySet»
-			private «type» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
+			«FOR v : variables»
+			private «IF v.const»final «ENDIF»«v.javaType» «v.name»;
 			«ENDFOR»
-			«val connectivityVars = connectivityVariables.groupBy[javaType]»
-			«IF !connectivityVars.empty»
-
-			// Connectivity Variables
-			«FOR type : connectivityVars.keySet»
-			private «type» «FOR v : connectivityVars.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
-			«ENDFOR»
-			«ENDIF»
-			«IF !linearAlgebraVars.empty»
-
-			// Linear Algebra Variables
-			«FOR m : linearAlgebraVars»
-			private «m.javaType» «m.name»;
-			«ENDFOR»
-			«ENDIF»
 
 			public «name»(Options aOptions«IF withMesh», CartesianMesh2D aCartesianMesh2D«ENDIF»)
 			{
@@ -105,18 +89,16 @@ class Ir2Java extends CodeGenerator
 				«ENDFOR»
 				«ENDIF»
 
-				«FOR type : globalsByType.keySet»
-				«FOR uv : globalsByType.get(type).filter[x|x.defaultValue!==null]»
-				«uv.name» = «uv.defaultValue.content»;
-				«ENDFOR»
-				«ENDFOR»
-
-				// Allocate arrays
-				«FOR a : variables.filter[!(type.scalar || const)]»
-					«IF a.linearAlgebra»
-						«a.name» = «(a as ConnectivityVariable).linearAlgebraDefinition»;
-					«ELSE»
-						«a.name»«a.javaAllocation»;
+				// Initialize variables
+				«FOR v : variables»
+					«IF v instanceof SimpleVariable && (v as SimpleVariable).defaultValue !== null»
+						«v.name» = «(v as SimpleVariable).defaultValue.content»;
+					«ELSEIF !v.type.scalar»
+						«IF v.linearAlgebra»
+							«v.name» = «(v as ConnectivityVariable).linearAlgebraDefinition»;
+						«ELSE»
+							«v.name»«v.javaAllocation»;
+						«ENDIF»
 					«ENDIF»
 				«ENDFOR»
 				«IF withMesh»

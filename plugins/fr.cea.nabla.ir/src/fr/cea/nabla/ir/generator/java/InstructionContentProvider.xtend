@@ -25,7 +25,7 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.SimpleVariable
-import fr.cea.nabla.ir.ir.VariablesDefinition
+import fr.cea.nabla.ir.ir.VariableDefinition
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
@@ -36,11 +36,9 @@ import static extension fr.cea.nabla.ir.generator.java.ItemIndexAndIdValueConten
 
 class InstructionContentProvider 
 {
-	static def dispatch CharSequence getContent(VariablesDefinition it)
+	static def dispatch CharSequence getContent(VariableDefinition it)
 	'''
-		«FOR v : variables»
-		«IF v.const»final «ENDIF»«v.javaType» «v.name»«v.defaultValueContent»;
-		«ENDFOR»
+		«IF variable.const»final «ENDIF»«variable.javaType» «variable.name»«variable.defaultValueContent»;
 	'''
 
 	static def dispatch CharSequence getContent(InstructionBlock it)

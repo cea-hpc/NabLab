@@ -71,7 +71,7 @@ class IteratorExtensionsTest
 		+ mandatoryOptions + simulationVariables +
 		'''
 		ℝ x{cells}, f{cells}, Cjr{cells,nodesOfCell};
-		ℝ[2] u{cells};
+		ℝ[2] X{nodes}, u{cells};
 		ℝ surface{faces};
 		ℝ a;
 

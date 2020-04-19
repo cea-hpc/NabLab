@@ -166,13 +166,13 @@ public interface IrFactory extends EFactory {
 	InstructionBlock createInstructionBlock();
 
 	/**
-	 * Returns a new object of class '<em>Variables Definition</em>'.
+	 * Returns a new object of class '<em>Variable Definition</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Variables Definition</em>'.
+	 * @return a new object of class '<em>Variable Definition</em>'.
 	 * @generated
 	 */
-	VariablesDefinition createVariablesDefinition();
+	VariableDefinition createVariableDefinition();
 
 	/**
 	 * Returns a new object of class '<em>Affectation</em>'.

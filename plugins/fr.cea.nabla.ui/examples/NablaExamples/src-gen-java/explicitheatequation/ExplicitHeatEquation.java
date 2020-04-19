@@ -32,12 +32,22 @@ public final class ExplicitHeatEquation
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
 	// Global Variables
-	private int n, lastDump;
-	private double t_n, t_nplus1, deltat;
-
-	// Connectivity Variables
-	private double[][] X, Xc, alpha;
-	private double[] xc, yc, u_n, u_nplus1, V, D, faceLength, faceConductivity;
+	private int n;
+	private double t_n;
+	private double t_nplus1;
+	private double deltat;
+	private double[][] X;
+	private double[][] Xc;
+	private double[] xc;
+	private double[] yc;
+	private double[] u_n;
+	private double[] u_nplus1;
+	private double[] V;
+	private double[] D;
+	private double[] faceLength;
+	private double[] faceConductivity;
+	private double[][] alpha;
+	private int lastDump;
 
 	public ExplicitHeatEquation(Options aOptions, CartesianMesh2D aCartesianMesh2D)
 	{
@@ -52,12 +62,10 @@ public final class ExplicitHeatEquation
 		nbCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
 		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 
-		lastDump = Integer.MIN_VALUE;
+		// Initialize variables
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat = 0.001;
-
-		// Allocate arrays
 		X = new double[nbNodes][2];
 		Xc = new double[nbCells][2];
 		xc = new double[nbCells];
@@ -69,6 +77,7 @@ public final class ExplicitHeatEquation
 		faceLength = new double[nbFaces];
 		faceConductivity = new double[nbFaces];
 		alpha = new double[nbCells][nbCells];
+		lastDump = Integer.MIN_VALUE;
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -335,7 +344,7 @@ public final class ExplicitHeatEquation
 					final int dCells = dId;
 					final int fId = mesh.getCommonFace(cId, dId);
 					final int fFaces = fId;
-					double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions.norm(ArrayOperations.minus(Xc[cCells], Xc[dCells]));
+					final double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions.norm(ArrayOperations.minus(Xc[cCells], Xc[dCells]));
 					alpha[cCells][dCells] = alphaExtraDiag;
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}

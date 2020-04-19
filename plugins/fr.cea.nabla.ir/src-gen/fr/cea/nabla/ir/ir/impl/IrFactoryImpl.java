@@ -73,7 +73,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.AFTER_TIME_LOOP_JOB: return createAfterTimeLoopJob();
 			case IrPackage.TIME_LOOP_COPY: return createTimeLoopCopy();
 			case IrPackage.INSTRUCTION_BLOCK: return createInstructionBlock();
-			case IrPackage.VARIABLES_DEFINITION: return createVariablesDefinition();
+			case IrPackage.VARIABLE_DEFINITION: return createVariableDefinition();
 			case IrPackage.AFFECTATION: return createAffectation();
 			case IrPackage.REDUCTION_INSTRUCTION: return createReductionInstruction();
 			case IrPackage.LOOP: return createLoop();
@@ -328,9 +328,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public VariablesDefinition createVariablesDefinition() {
-		VariablesDefinitionImpl variablesDefinition = new VariablesDefinitionImpl();
-		return variablesDefinition;
+	public VariableDefinition createVariableDefinition() {
+		VariableDefinitionImpl variableDefinition = new VariableDefinitionImpl();
+		return variableDefinition;
 	}
 
 	/**

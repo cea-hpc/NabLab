@@ -79,17 +79,16 @@ class TestUtils
 	//TODO These options should be filled in nablagen
 	private def String getMandatoryOptions(int xQuads, int yQuads)
 	'''
-	const X_EDGE_LENGTH = 0.01;
-	const Y_EDGE_LENGTH = X_EDGE_LENGTH;
-	const X_EDGE_ELEMS = «xQuads»;
-	const Y_EDGE_ELEMS = «yQuads»;
+	option X_EDGE_LENGTH = 0.01;
+	option Y_EDGE_LENGTH = X_EDGE_LENGTH;
+	option X_EDGE_ELEMS = «xQuads»;
+	option Y_EDGE_ELEMS = «yQuads»;
 	'''
 
 	def String getSimulationVariables()
 	'''
 	let t = 0.0;
 	let δt = 0.001;
-	ℝ[2] X{nodes};
 	'''
 
 	def String getMandatoryOptions()

@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.Exit
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -23,7 +24,7 @@ import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
-import fr.cea.nabla.ir.ir.VariablesDefinition
+import fr.cea.nabla.ir.ir.VariableDefinition
 import java.util.Arrays
 import java.util.stream.IntStream
 
@@ -33,7 +34,6 @@ import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import fr.cea.nabla.ir.ir.Exit
 
 class InstructionInterpreter
 {
@@ -55,8 +55,8 @@ class InstructionInterpreter
 			return interpreteReturn(context)
 		} else if (it instanceof Exit) {
 			return interpreteExit(context)
-		} else if (it instanceof VariablesDefinition) {
-			return interpreteVariablesDefinition(context)
+		} else if (it instanceof VariableDefinition) {
+			return interpreteVariableDefinition(context)
 		} else if (it instanceof ItemIdDefinition) {
 			return interpreteItemIdDefinition(context)
 		} else if (it instanceof ItemIndexDefinition) {
@@ -69,11 +69,10 @@ class InstructionInterpreter
 		}
 	}
 
-	static def NablaValue interpreteVariablesDefinition(VariablesDefinition it, Context context)
+	static def NablaValue interpreteVariableDefinition(VariableDefinition it, Context context)
 	{
 		context.logFinest("Interprete VarDefinition")
-		for (v : variables)
-			context.addVariableValue(v, createValue(v, context))
+		context.addVariableValue(variable, createValue(variable, context))
 		return null
 	}
 

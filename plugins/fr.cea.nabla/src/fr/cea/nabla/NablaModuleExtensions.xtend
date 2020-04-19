@@ -10,9 +10,7 @@
 package fr.cea.nabla
 
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.Var
-import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
 
 class NablaModuleExtensions 
@@ -20,8 +18,9 @@ class NablaModuleExtensions
 	def getAllVars(NablaModule it)
 	{
 		val allVars = new ArrayList<Var>
-		allVars.addAll(instructions.filter(SimpleVarDefinition).map[variable]) 
-		instructions.filter(VarGroupDeclaration).forEach[g | allVars.addAll(g.variables)]
+		allVars += options.map[variable]
+		allVars += definitions.map[variable]
+		declarations.forEach[x | allVars.addAll(x.variables)]
 		return allVars
 	}
 

@@ -22,18 +22,18 @@ set nodesOfCell: cell → {node};
 item commonFace: cell × cell → face;
 
 // Mesh options
-const X_EDGE_LENGTH = 0.1;
-const Y_EDGE_LENGTH = X_EDGE_LENGTH;
-const X_EDGE_ELEMS = 20;
-const Y_EDGE_ELEMS = 20;
+option X_EDGE_LENGTH = 0.1;
+option Y_EDGE_LENGTH = X_EDGE_LENGTH;
+option X_EDGE_ELEMS = 20;
+option Y_EDGE_ELEMS = 20;
 
 // Simulation options
-const option_stoptime = 0.1;
-const option_max_iterations = 500;
+option option_stoptime = 0.1;
+option option_max_iterations = 500;
 
 // User options
-const PI = 3.1415926;
-const α = 1.0;
+option PI = 3.1415926;
+option α = 1.0;
 
 let t=0.0;
 let δt=0.001;

@@ -39,9 +39,9 @@ class ArgOrVarRefValidatorTest
 	{
 		val moduleKo = parseHelper.parse(testModule +
 			'''
-			ℕ[2,2] a;
+			let a = ℕ[2,2](0);
 			let b = a[0];
-			ℕ[2] c;
+			let c = ℕ[2](0);
 			let d = c[0,1];
 			'''
 		)
@@ -57,7 +57,7 @@ class ArgOrVarRefValidatorTest
 
 		val moduleOk =  parseHelper.parse(testModule +
 			'''
-			ℕ[2,2] a;
+			let a = ℕ[2,2](0);
 			let b = a[0,0];
 			'''
 		)
@@ -141,7 +141,7 @@ class ArgOrVarRefValidatorTest
 
 		val moduleKo1 = parseHelper.parse(getTestModule('', function) +
 			'''
-			ℕ[2] a;
+			let a = ℕ[2](0);
 			let m = a[2.3];
 			'''
 		)
@@ -153,7 +153,7 @@ class ArgOrVarRefValidatorTest
 
 		val moduleKo2 = parseHelper.parse(getTestModule('', function) +
 			'''
-			ℕ[2] a;
+			let a = ℕ[2](0);
 			let b = 1.2;
 			let o = a[b];
 			'''
@@ -166,7 +166,7 @@ class ArgOrVarRefValidatorTest
 
 		val moduleOk =  parseHelper.parse(getTestModule('', function) +
 			'''
-			ℕ[2] a;
+			let a = ℕ[2](0);
 			let b = 1;
 
 			let m = a[2];

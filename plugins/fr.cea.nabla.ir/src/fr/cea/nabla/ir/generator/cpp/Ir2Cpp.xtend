@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.PrimitiveType
+import fr.cea.nabla.ir.ir.SimpleVariable
 import java.io.File
 import java.net.URI
 import org.eclipse.core.runtime.FileLocator
@@ -92,17 +93,12 @@ class Ir2Cpp extends CodeGenerator
 		, «c.nbElemsVar»(«c.connectivityAccessor»)
 		«ENDFOR»
 		«ENDIF»
-		«val globalsByType = globalVariables.groupBy[cppType]»
-		«FOR type : globalsByType.keySet»
-		«FOR uv : globalsByType.get(type).filter[x|x.defaultValue!==null]»
-		, «uv.name»(«uv.defaultValue.content»)
-		«ENDFOR»
-		«ENDFOR»
-		«FOR a : connectivityVariables»
-		, «a.name»(«a.cstrInit»)
-		«ENDFOR»
-		«FOR a : linearAlgebraVariables»
-		, «a.name»(«a.cstrInit»)
+		«FOR v : variables»
+			«IF v instanceof SimpleVariable && (v as SimpleVariable).defaultValue !== null»
+				, «v.name»(«(v as SimpleVariable).defaultValue.content»)
+			«ELSEIF v instanceof ConnectivityVariable»
+				, «v.name»(«v.cstrInit»)
+			«ENDIF»
 		«ENDFOR»
 		{
 			«IF withMesh»
@@ -146,7 +142,7 @@ class Ir2Cpp extends CodeGenerator
 			«callsHeader»
 			«callsContent»
 			«backend.traceContentProvider.endOfSimuTrace»
-			«IF !linearAlgebraVariables.empty && mainTimeLoop !== null»«backend.traceContentProvider.getCGInfoTrace(mainTimeLoop.iterationCounter.name)»«ENDIF»
+			«IF linearAlgebra && mainTimeLoop !== null»«backend.traceContentProvider.getCGInfoTrace(mainTimeLoop.iterationCounter.name)»«ENDIF»
 		}
 	};
 

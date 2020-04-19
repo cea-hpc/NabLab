@@ -162,15 +162,15 @@ class UniqueNameValidatorTest
 	{
 		val moduleKo = parseHelper.parse('''
 			module Test;
-			
+
 			itemtypes { node, node }
-			
+
 			set nodes: → {node};
-			
-			const X_EDGE_LENGTH = 0.01;
-			const Y_EDGE_LENGTH = X_EDGE_LENGTH;
-			const X_EDGE_ELEMS = 100;
-			const Y_EDGE_ELEMS = 10;
+
+			option X_EDGE_LENGTH = 0.01;
+			option Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			option X_EDGE_ELEMS = 100;
+			option Y_EDGE_ELEMS = 10;
 		''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.itemType,
@@ -179,15 +179,15 @@ class UniqueNameValidatorTest
 
 		val moduleOk = parseHelper.parse('''
 			module Test;
-			
+
 			itemtypes { node }
-			
+
 			set nodes: → {node};
-			
-			const X_EDGE_LENGTH = 0.01;
-			const Y_EDGE_LENGTH = X_EDGE_LENGTH;
-			const X_EDGE_ELEMS = 100;
-			const Y_EDGE_ELEMS = 10;
+
+			option X_EDGE_LENGTH = 0.01;
+			option Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			option X_EDGE_ELEMS = 100;
+			option Y_EDGE_ELEMS = 10;
 		''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -198,16 +198,16 @@ class UniqueNameValidatorTest
 	{
 		val moduleKo = parseHelper.parse('''
 			module Test;
-			
+
 			itemtypes { node }
-			
+
 			set nodes: → {node};
 			set nodes: → {node};
-			
-			const X_EDGE_LENGTH = 0.01;
-			const Y_EDGE_LENGTH = X_EDGE_LENGTH;
-			const X_EDGE_ELEMS = 100;
-			const Y_EDGE_ELEMS = 10;
+
+			option X_EDGE_LENGTH = 0.01;
+			option Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			option X_EDGE_ELEMS = 100;
+			option Y_EDGE_ELEMS = 10;
 		''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.connectivity,
@@ -221,10 +221,10 @@ class UniqueNameValidatorTest
 
 			set nodes: → {node};
 
-			const X_EDGE_LENGTH = 0.01;
-			const Y_EDGE_LENGTH = X_EDGE_LENGTH;
-			const X_EDGE_ELEMS = 100;
-			const Y_EDGE_ELEMS = 10;
+			option X_EDGE_LENGTH = 0.01;
+			option Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			option X_EDGE_ELEMS = 100;
+			option Y_EDGE_ELEMS = 10;
 		''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors

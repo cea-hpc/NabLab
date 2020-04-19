@@ -17,7 +17,6 @@ import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.nabla.VarGroupDeclaration
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.scoping.IScopeProvider
@@ -234,10 +233,10 @@ class NablaScopeProviderTest
 		val module = parseHelper.parse(getTestModule(defaultConnectivities, '')
 		+
 		'''
-		ℝ[2] X{nodes};
 		let a = 4.0;
-		ℝ b1;
+		let b1 = 0.0;
 		let b2 = b1;
+		ℝ[2] X{nodes};
 		ℝ c1 {cells}, c2 {cells};
 
 		iterate n while (n > 4), k while (n > 4 && k < 2);
@@ -275,40 +274,40 @@ class NablaScopeProviderTest
 		val iterate = module.iteration
 		val nRefInCondOfN = iterate.iterators.head.cond.eAllContents.filter(ArgOrVarRef).head
 		Assert.assertNotNull(nRefInCondOfN)
-		nRefInCondOfN.assertScope(eref, defaultOptionsScope + ", X, a, b1, b2, c1, c2, n")
+		nRefInCondOfN.assertScope(eref, defaultOptionsScope + ", a, b1, b2, X, c1, c2, n")
 		val nRefInCondOfK = iterate.iterators.last.cond.eAllContents.filter(ArgOrVarRef).head
 		Assert.assertNotNull(nRefInCondOfK)
-		nRefInCondOfK.assertScope(eref, defaultOptionsScope + ", X, a, b1, b2, c1, c2, n, k")
+		nRefInCondOfK.assertScope(eref, defaultOptionsScope + ", a, b1, b2, X, c1, c2, n, k")
 
 		val aDeclaration = module.getVariableByName("a").eContainer as SimpleVarDefinition
-		aDeclaration.assertScope(eref, defaultOptionsScope + ", X")
+		aDeclaration.assertScope(eref, defaultOptionsScope)
 
-		val b1Declaration = module.getVariableByName("b1").eContainer as VarGroupDeclaration
-		b1Declaration.assertScope(eref, defaultOptionsScope + ", X, a")
+		val b1Declaration = module.getVariableByName("b1").eContainer as SimpleVarDefinition
+		b1Declaration.assertScope(eref, defaultOptionsScope + ", a")
 
 		val b2Declaration = module.getVariableByName("b2").eContainer as SimpleVarDefinition
-		b2Declaration.assertScope(eref, defaultOptionsScope + ", X, a, b1")
+		b2Declaration.assertScope(eref, defaultOptionsScope + ", a, b1")
 		
 		val j1 = module.getJobByName("j1")
 		val affectationc1 = j1.getVarAffectationByName("c1")
-		affectationc1.assertScope(eref, defaultOptionsScope + ", X, a, b1, b2, c1, c2")
+		affectationc1.assertScope(eref, defaultOptionsScope + ", a, b1, b2, X, c1, c2")
 
 		val affectationc2 = j1.getVarAffectationByName("c2")
-		affectationc2.assertScope(eref, "d, " + defaultOptionsScope + ", X, a, b1, b2, c1, c2")
+		affectationc2.assertScope(eref, "d, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
 
 		val affectationf = j1.getVarAffectationByName("f")
-		affectationf.assertScope(eref, "e, f, countr, d, " + defaultOptionsScope + ", X, a, b1, b2, c1, c2")
+		affectationf.assertScope(eref, "e, f, countr, d, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
 
 		val j2 = module.getJobByName("j2")
 		val affectationn = j2.getVarAffectationByName("n")
-		affectationn.assertScope(eref, "i, n, m, " + defaultOptionsScope + ", X, a, b1, b2, c1, c2")
+		affectationn.assertScope(eref, "i, n, m, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
 
 		val affectationm = j2.getVarAffectationByName("m")
-		affectationm.assertScope(eref, "j, i, n, m, " + defaultOptionsScope + ", X, a, b1, b2, c1, c2")
+		affectationm.assertScope(eref, "j, i, n, m, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
 
 		val j3 = module.getJobByName("j3")
 		val j3_xvarref = j3.instruction.eAllContents.filter(ArgOrVarRef).findFirst[x | x.target.name == 'X']
-		j3_xvarref.assertScope(eref, "k, " + defaultOptionsScope + ", X, a, b1, b2, c1, c2")
+		j3_xvarref.assertScope(eref, "k, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
 	}
 
 	@Test
@@ -418,8 +417,8 @@ class NablaScopeProviderTest
 		Assert.assertNotNull(module)
 		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
 
-		val c1Decl = module.instructions.get(0)		
-		c1Decl.assertScope(eref, "")
+		val c1Decl = module.declarations.get(1)
+		c1Decl.assertScope(eref, defaultOptionsScope + ", X")
 
 		val j1 = module.getJobByName("j1")
 		val affectationc1 = j1.getVarAffectationByName("c1")

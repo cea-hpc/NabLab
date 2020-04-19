@@ -44,11 +44,11 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			const one = [1.0, 1.0];
-			const int = ℕ(1.2);
-			const bool = ℾ(1);
-			const real = ℝ(true);
-			const realOne = ℝ[2](one);
+			let one = [1.0, 1.0];
+			let int = ℕ(1.2);
+			let bool = ℾ(1);
+			let real = ℝ(true);
+			let realOne = ℝ[2](one);
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -68,10 +68,10 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			const int = ℕ(1);
-			const bool = ℾ(true);
-			const real = ℝ(1.2);
-			const realOne = ℝ[2](1.0);
+			let int = ℕ(1);
+			let bool = ℾ(true);
+			let real = ℝ(1.2);
+			let realOne = ℝ[2](1.0);
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -84,14 +84,14 @@ class ExpressionValidatorTest
 	{
 		val functions =
 			'''
-			def	test: ℾ × ℝ × ℝ[2] → ℝ;
+			def test: ℾ × ℝ × ℝ[2] → ℝ;
 			'''
 
 		val moduleKo = parseHelper.parse(getTestModule('', functions)
 			+
 			'''
-			const option = [0., 1.];
-			j1: let x = test(true, 0, option);
+			let opt = [0., 1.];
+			j1: let x = test(true, 0, opt);
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -102,13 +102,13 @@ class ExpressionValidatorTest
 				#[PrimitiveType::BOOL.literal,
 				PrimitiveType::INT.literal,
 				new NSTRealArray1D(createIntConstant(2)).label]
-		))		
+		))
 
 		val moduleOk = parseHelper.parse(getTestModule('', functions)
 			+
 			'''
-			const option = [0., 1.];
-			j1: let x = test(true, 0., option);
+			let opt = [0., 1.];
+			j1: let x = test(true, 0., opt);
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -167,9 +167,9 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			ℝ cond;
-			ℝ U;
-			ℕ V;
+			let cond = 0.0;
+			let U = 1.1;
+			let V = 2;
 			let W = (cond ? U : V);
 			'''
 		)
@@ -189,9 +189,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			ℾ cond;
-			ℝ U;
-			ℝ V;
+			let cond = true;
+			let U = 0.0;
+			let V = 1.1;
 			let W = (cond ? U : V);
 			'''
 		)
@@ -205,7 +205,7 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			ℝ cond;
+			let cond = 0.0;
 			let ok = !cond; 
 			'''
 		)
@@ -219,7 +219,7 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			ℾ cond;
+			let cond = true;
 			let ok = !cond; 
 			'''
 		)
@@ -233,8 +233,8 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			ℾ a; 
-			ℝ b;
+			let a = true; 
+			let b = 0.0;
 			let c = a * b;
 			'''
 		)
@@ -250,8 +250,8 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			ℝ a;
-			ℝ b;
+			let a = 1.1;
+			let b = 0.0;
 			let c = a * b;
 			'''
 		)
@@ -266,8 +266,8 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			ℾ a; 
-			ℝ b;
+			let a = true; 
+			let b = 0.0;
 			let c = a / b;
 			'''
 		)
@@ -283,8 +283,8 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			ℝ a;
-			ℝ b;
+			let a = 1.1;
+			let b = 0.0;
 			let c = a / b;
 			'''
 		)
@@ -297,8 +297,8 @@ class ExpressionValidatorTest
 	{
 		val moduleKo = parseHelper.parse(testModule +
 			'''
-			ℾ a; 
-			ℕ b;
+			let a = true; 
+			let b = 0;
 			let c = a + b;
 			'''
 		)
@@ -314,8 +314,8 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			ℝ a;
-			ℕ b;
+			let a = 1.1;
+			let b = 0;
 			let c = a + b;
 			'''
 		)
@@ -329,8 +329,8 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			ℝ[2] a;
-			ℝ[3] b;
+			let a = ℝ[2](0.0);
+			let b = ℝ[3](0.0);
 			let c = a - b;
 			'''
 		)
@@ -347,8 +347,8 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			ℝ[2] a;
-			ℝ[2] b;
+			let a = ℝ[2](0.0);
+			let b = ℝ[2](1.1);
 			let c = a - b;
 			'''
 		)
@@ -362,8 +362,8 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			ℝ a;
-			ℝ[2] b;
+			let a = 0.0;
+			let b = ℝ[2](1.1);
 			let c = a > b;
 			'''
 		)
@@ -379,8 +379,8 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			ℝ a;
-			ℝ b;
+			let a = 0.0;
+			let b = 1.1;
 			let c = a > b;
 			'''
 		)
@@ -394,8 +394,8 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			ℝ a;
-			ℝ[2] b;
+			let a = 0.0;
+			let b = ℝ[2](1.1);
 			let c = a == b;
 			'''
 		)
@@ -411,8 +411,8 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			ℝ a; 
-			ℝ b;
+			let a = 0.0; 
+			let b = 1.1;
 			let c = a == b;
 			'''
 		)
@@ -426,8 +426,8 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			ℝ a;
-			ℝ[2] b;
+			let a = 0.0;
+			let b = ℝ[2](1.1);
 			let c = a % b;
 			'''
 		)
@@ -444,8 +444,8 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			ℕ a;
-			ℕ b;
+			let a = 0;
+			let b = 1;
 			let c = a % b;
 			'''
 		)
@@ -459,8 +459,8 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			ℕ a;
-			ℝ b; 
+			let a = 0;
+			let b = 1.1; 
 			let c = a && b;
 			'''
 		)
@@ -477,8 +477,8 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			ℾ a;
-			ℾ b; 
+			let a = true;
+			let b = false; 
 			let c = a && b;
 			'''
 		)
@@ -492,8 +492,8 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			ℕ a;
-			ℝ b;
+			let a = 0;
+			let b = 1.1;
 			let c = a || b;
 			'''
 		)
@@ -510,8 +510,8 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			ℾ a;
-			ℾ b;
+			let a = true;
+			let b = false;
 			let c = a || b;
 			'''
 		)

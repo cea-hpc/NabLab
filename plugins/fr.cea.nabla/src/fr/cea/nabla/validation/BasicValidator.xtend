@@ -23,7 +23,6 @@ import fr.cea.nabla.nabla.ItemRef
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.NextTimeIteratorRef
-import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.typing.ExpressionTypeProvider
@@ -71,7 +70,7 @@ class BasicValidator extends UnusedValidator
 	def checkMandatoryOptions(NablaModule it)
 	{
 		if (itemTypes.empty) return; // no mesh
-		val scalarConsts = instructions.filter(SimpleVarDefinition).filter[const].map[variable.name].toList
+		val scalarConsts = options.map[variable.name].toList
 		val missingConsts = MandatoryOptions::NAMES.filter[x | !scalarConsts.contains(x)]
 		if (missingConsts.size > 0)
 			error(getMandatoryOptionsMsg(missingConsts), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_OPTION)

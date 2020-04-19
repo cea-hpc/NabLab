@@ -81,7 +81,7 @@ class IrArgOrVarFactory
 		name = varName
 		type = nablaType2IrType.toIrBaseType(v.typeFor as NablaSimpleType)
 		const = v.const
-		val value = v.defaultValue
+		val value = v.value
 		if (value !== null) defaultValue = value.toIrExpression
 	}
 

@@ -12,6 +12,7 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.Exit
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -25,14 +26,13 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.SimpleVariable
-import fr.cea.nabla.ir.ir.VariablesDefinition
+import fr.cea.nabla.ir.ir.VariableDefinition
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
-import fr.cea.nabla.ir.ir.Exit
 
 @Data
 abstract class InstructionContentProvider
@@ -42,11 +42,11 @@ abstract class InstructionContentProvider
 	protected abstract def CharSequence getReductionContent(ReductionInstruction it)
 	protected abstract def CharSequence getLoopContent(Loop it)
 
-	def dispatch CharSequence getContent(VariablesDefinition it)
+	def dispatch CharSequence getContent(VariableDefinition it)
+	// Should be the following line but does not compile because of MultiArray operations
+	// «IF variable.const»const «ENDIF»«variable.cppType» «variable.name»«variable.defaultValueContent»; ???
 	'''
-		«FOR v : variables»
-		«IF v.const»const «ENDIF»«v.cppType» «v.name»«v.defaultValueContent»;
-		«ENDFOR»
+		«variable.cppType» «variable.name»«variable.defaultValueContent»;
 	'''
 
 	def dispatch CharSequence getContent(InstructionBlock it)

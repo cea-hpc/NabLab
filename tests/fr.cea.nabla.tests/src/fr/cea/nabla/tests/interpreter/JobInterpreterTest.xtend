@@ -37,6 +37,7 @@ class JobInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
+		ℝ[2] X{nodes};
 		initT : t = 5.;
 		'''
 
@@ -56,8 +57,9 @@ class JobInterpreterTest
 		+
 		'''
 		// Simulation options
-		const option_stoptime = 0.2;
-		const option_max_iterations = 10;
+		let option_stoptime = 0.2;
+		let option_max_iterations = 10;
+		ℝ[2] X{nodes};
 
 		iterate n while (t^{n} < option_stoptime && n < option_max_iterations);
 
@@ -83,10 +85,9 @@ class JobInterpreterTest
 		+
 		'''
 		// Simulation options
-		const option_stoptime = 0.2;
-		const option_max_iterations = 10;
-		ℝ[2] u;
-		ℝ[2] center{cells};
+		let option_stoptime = 0.2;
+		let option_max_iterations = 10;
+		ℝ[2] u, X{nodes}, center{cells};
 
 		iterate n while (t^{n} < option_stoptime && n < option_max_iterations);
 

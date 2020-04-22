@@ -45,7 +45,7 @@ class SequentialBackend extends Backend
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobContainerContentProvider = new JobContainerContentProvider
 		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)
-		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider, functionContentProvider)
+		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider)
 		mainContentProvider = new MainContentProvider
 	}
 }
@@ -66,7 +66,7 @@ class StlThreadBackend extends Backend
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobContainerContentProvider = new JobContainerContentProvider
 		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)
-		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider, functionContentProvider)
+		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider)
 		mainContentProvider = new MainContentProvider
 	}
 }
@@ -87,7 +87,7 @@ class KokkosBackend extends Backend
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobContainerContentProvider = new JobContainerContentProvider
 		jobContentProvider = new KokkosJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)
-		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider, functionContentProvider)
+		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider)
 		mainContentProvider = new KokkosMainContentProvider
 	}
 }
@@ -108,7 +108,7 @@ class KokkosTeamThreadBackend extends Backend
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobContainerContentProvider = new KokkosTeamThreadJobContainerContentProvider
 		jobContentProvider = new KokkosTeamThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)
-		privateMethodsContentProvider = new KokkosTeamThreadPrivateMethodsContentProvider(jobContentProvider, functionContentProvider)
+		privateMethodsContentProvider = new KokkosTeamThreadPrivateMethodsContentProvider(jobContentProvider)
 		mainContentProvider = new KokkosMainContentProvider
 	}
 }

@@ -15,6 +15,41 @@
 
 using namespace nablalib;
 
+
+bool check(bool a)
+{
+	if (a) 
+		return true;
+	else
+		throw std::runtime_error("Assertion failed");
+}
+
+template<size_t x>
+RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
+{
+	return a + b;
+}
+
+double minR0(double a, double b)
+{
+	return MathFunctions::min(a, b);
+}
+
+double sumR0(double a, double b)
+{
+	return a + b;
+}
+
+double prodR0(double a, double b)
+{
+	return a * b;
+}
+
+double maxR0(double a, double b)
+{
+	return MathFunctions::max(a, b);
+}
+
 class IterativeHeatEquation
 {
 public:
@@ -287,7 +322,7 @@ private:
 			{
 				return (accu = maxR0(accu, MathFunctions::fabs(u_nplus1_kplus1[jCells] - u_nplus1_k[jCells])));
 			},
-			std::bind(&IterativeHeatEquation::maxR0, this, std::placeholders::_1, std::placeholders::_2));
+			&maxR0);
 		residual = reduction7;
 	}
 	
@@ -363,7 +398,7 @@ private:
 			{
 				return (accu = minR0(accu, options->X_EDGE_LENGTH * options->Y_EDGE_LENGTH / D[cCells]));
 			},
-			std::bind(&IterativeHeatEquation::minR0, this, std::placeholders::_1, std::placeholders::_2));
+			&minR0);
 		deltat = reduction1 * 0.1;
 	}
 	
@@ -461,40 +496,6 @@ private:
 			cpuTimer.reset();
 			ioTimer.reset();
 		} while (continueLoop);
-	}
-	
-	bool check(bool a) 
-	{
-		if (a) 
-			return true;
-		else
-			throw std::runtime_error("Assertion failed");
-	}
-	
-	template<size_t x>
-	RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b) 
-	{
-		return a + b;
-	}
-	
-	double minR0(double a, double b) 
-	{
-		return MathFunctions::min(a, b);
-	}
-	
-	double sumR0(double a, double b) 
-	{
-		return a + b;
-	}
-	
-	double prodR0(double a, double b) 
-	{
-		return a * b;
-	}
-	
-	double maxR0(double a, double b) 
-	{
-		return MathFunctions::max(a, b);
 	}
 
 	void dumpVariables(int iteration)

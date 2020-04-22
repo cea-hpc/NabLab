@@ -17,6 +17,47 @@
 
 using namespace nablalib;
 
+
+KOKKOS_INLINE_FUNCTION
+bool check(bool a)
+{
+	if (a) 
+		return true;
+	else
+		throw std::runtime_error("Assertion failed");
+}
+
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
+{
+	return a + b;
+}
+
+KOKKOS_INLINE_FUNCTION
+double minR0(double a, double b)
+{
+	return MathFunctions::min(a, b);
+}
+
+KOKKOS_INLINE_FUNCTION
+double sumR0(double a, double b)
+{
+	return a + b;
+}
+
+KOKKOS_INLINE_FUNCTION
+double prodR0(double a, double b)
+{
+	return a * b;
+}
+
+KOKKOS_INLINE_FUNCTION
+double maxR0(double a, double b)
+{
+	return MathFunctions::max(a, b);
+}
+
 class IterativeHeatEquation
 {
 public:
@@ -296,7 +337,7 @@ private:
 		Kokkos::parallel_reduce(nbCells, KOKKOS_LAMBDA(const size_t& jCells, double& accu)
 		{
 			accu = maxR0(accu, MathFunctions::fabs(u_nplus1_kplus1(jCells) - u_nplus1_k(jCells)));
-		}, KokkosJoiner<double>(reduction7, numeric_limits<double>::min(), std::bind(&IterativeHeatEquation::maxR0, this, std::placeholders::_1, std::placeholders::_2)));
+		}, KokkosJoiner<double>(reduction7, numeric_limits<double>::min(), &maxR0));
 		residual = reduction7;
 	}
 	
@@ -375,7 +416,7 @@ private:
 		Kokkos::parallel_reduce(nbCells, KOKKOS_LAMBDA(const size_t& cCells, double& accu)
 		{
 			accu = minR0(accu, options->X_EDGE_LENGTH * options->Y_EDGE_LENGTH / D(cCells));
-		}, KokkosJoiner<double>(reduction1, numeric_limits<double>::max(), std::bind(&IterativeHeatEquation::minR0, this, std::placeholders::_1, std::placeholders::_2)));
+		}, KokkosJoiner<double>(reduction1, numeric_limits<double>::max(), &minR0));
 		deltat = reduction1 * 0.1;
 	}
 	
@@ -475,46 +516,6 @@ private:
 			cpuTimer.reset();
 			ioTimer.reset();
 		} while (continueLoop);
-	}
-	
-	KOKKOS_INLINE_FUNCTION
-	bool check(bool a) 
-	{
-		if (a) 
-			return true;
-		else
-			throw std::runtime_error("Assertion failed");
-	}
-	
-	template<size_t x>
-	KOKKOS_INLINE_FUNCTION
-	RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b) 
-	{
-		return a + b;
-	}
-	
-	KOKKOS_INLINE_FUNCTION
-	double minR0(double a, double b) 
-	{
-		return MathFunctions::min(a, b);
-	}
-	
-	KOKKOS_INLINE_FUNCTION
-	double sumR0(double a, double b) 
-	{
-		return a + b;
-	}
-	
-	KOKKOS_INLINE_FUNCTION
-	double prodR0(double a, double b) 
-	{
-		return a * b;
-	}
-	
-	KOKKOS_INLINE_FUNCTION
-	double maxR0(double a, double b) 
-	{
-		return MathFunctions::max(a, b);
 	}
 
 	void dumpVariables(int iteration)

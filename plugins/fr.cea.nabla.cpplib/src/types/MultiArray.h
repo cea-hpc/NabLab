@@ -40,14 +40,14 @@ struct MultiArray : public std::array<MultiArray<T, dimN...>, dim1>
   // Generic method wich recursively calls relevant operation for every dimensions
   // Scalar operations
   template <typename ScalarT, typename BinaryOp>
-  MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> scalarOp(ScalarT x, BinaryOp op) {
+  MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> scalarOp(ScalarT x, BinaryOp op) const {
     MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> result;
     std::transform(this->begin(), this->end(), result.begin(), [&](auto i){return i.scalarOp(x, op);});
     return result;
   }
   // Array operations
   template <typename ArrayT, typename BinaryOp>
-  MultiArray arrayOp(ArrayT a, BinaryOp op) {
+  MultiArray arrayOp(ArrayT a, BinaryOp op) const {
     MultiArray result;
     std::transform(this->begin(), this->end(), a.begin(), result.begin(),
                    [&](auto& i, auto& j){return i.arrayOp(j, op);});
@@ -56,45 +56,45 @@ struct MultiArray : public std::array<MultiArray<T, dimN...>, dim1>
 
   // Binary +
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
-  MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator+(ScalarT x) {
+  MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator+(ScalarT x) const {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::plus<>());
   }
   template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
-  MultiArray operator+(ArrayT a) {
+  MultiArray operator+(ArrayT a) const {
     return arrayOp(a, std::plus<>());
   }
   
   // Unary -
-  MultiArray operator-() {
+  MultiArray operator-() const {
     return scalarOp(-1.0, std::multiplies<>());
   }
   // Binary -
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
-  MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator-(ScalarT x) {
+  MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator-(ScalarT x) const {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::minus<>());
   }
   template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
-  MultiArray operator-(ArrayT a) {
+  MultiArray operator-(ArrayT a) const {
     return arrayOp(a, std::minus<>());
   }
   
   // Binary *
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
-  MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator*(ScalarT x) {
+  MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator*(ScalarT x) const {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::multiplies<>());
   }
   template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
-  MultiArray operator*(ArrayT a) {
+  MultiArray operator*(ArrayT a) const {
     return arrayOp(a, std::multiplies<>());
   }
   
   // Binary /
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
-  MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator/(ScalarT x) {
+  MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator/(ScalarT x) const {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::divides<>());
   }
   template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
-  MultiArray operator/(ArrayT a) {
+  MultiArray operator/(ArrayT a) const {
     return arrayOp(a, std::divides<>());
   }
   
@@ -163,7 +163,7 @@ struct MultiArray<T, dim> : public std::array<T, dim>
   // ********** Generic method wich calls relevant operation, return by value semantic **********
   // Scalar operations
   template <typename ScalarT, typename BinaryOp>
-  MultiArray<RES_TYPE(T, ScalarT), dim> scalarOp(ScalarT x, BinaryOp op) {
+  MultiArray<RES_TYPE(T, ScalarT), dim> scalarOp(ScalarT x, BinaryOp op) const {
     MultiArray<RES_TYPE(T, ScalarT), dim> result;
     std::transform(this->begin(), this->end(), result.begin(),
                    [&](auto& i){return op(static_cast<RES_TYPE(T, ScalarT)>(i), x);});
@@ -171,7 +171,7 @@ struct MultiArray<T, dim> : public std::array<T, dim>
   }
   // Array operations
   template <typename ArrayT, typename BinaryOp>
-  MultiArray arrayOp(ArrayT a, BinaryOp op) {
+  MultiArray arrayOp(ArrayT a, BinaryOp op) const {
     MultiArray result;
     std::transform(this->begin(), this->end(), a.begin(), result.begin(),
                    [&](auto& i, auto& j){return op(static_cast<T>(i),
@@ -181,45 +181,45 @@ struct MultiArray<T, dim> : public std::array<T, dim>
   
   // Binary +
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
-  MultiArray<RES_TYPE(T, ScalarT), dim> operator+(ScalarT x) {
+  MultiArray<RES_TYPE(T, ScalarT), dim> operator+(ScalarT x) const {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::plus<>());
   }
   template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
-  MultiArray operator+(ArrayT a) {
+  MultiArray operator+(ArrayT a) const {
     return arrayOp(a, std::plus<>());
   }
   
   // Unary -
-  MultiArray operator-() {
+  MultiArray operator-() const {
     return scalarOp(-1.0, std::multiplies<>());
   }
   // Binary -
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
-  MultiArray<RES_TYPE(T, ScalarT), dim> operator-(ScalarT x) {
+  MultiArray<RES_TYPE(T, ScalarT), dim> operator-(ScalarT x) const {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::minus<>());
   }
   template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
-  MultiArray operator-(ArrayT a) {
+  MultiArray operator-(ArrayT a) const {
     return arrayOp(a, std::minus<>());
   }
   
   // Binary *
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
-  MultiArray<RES_TYPE(T, ScalarT), dim> operator*(ScalarT x) {
+  MultiArray<RES_TYPE(T, ScalarT), dim> operator*(ScalarT x) const {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::multiplies<>());
   }
   template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
-  MultiArray operator*(ArrayT a) {
+  MultiArray operator*(ArrayT a) const {
     return arrayOp(a, std::multiplies<>());
   }
   
   // Binary /
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
-  MultiArray<RES_TYPE(T, ScalarT), dim> operator/(ScalarT x) {
+  MultiArray<RES_TYPE(T, ScalarT), dim> operator/(ScalarT x) const {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::divides<>());
   }
   template <typename ArrayT, typename std::enable_if_t<std::is_same<ArrayT, MultiArray>::value>* = nullptr>
-  MultiArray operator/(ArrayT a) {
+  MultiArray operator/(ArrayT a) const {
     return arrayOp(a, std::divides<>());
   }
   

@@ -42,10 +42,8 @@ abstract class InstructionContentProvider
 	protected abstract def CharSequence getLoopContent(Loop it)
 
 	def dispatch CharSequence getContent(VariableDefinition it)
-	// Should be the following line but does not compile because of MultiArray operations
-	// «IF variable.const»const «ENDIF»«variable.cppType» «variable.name»«variable.defaultValueContent»; ???
 	'''
-		«variable.cppType» «variable.name»«variable.defaultValueContent»;
+		«IF variable.const»const «ENDIF»«variable.cppType» «variable.name»«variable.defaultValueContent»;
 	'''
 
 	def dispatch CharSequence getContent(InstructionBlock it)

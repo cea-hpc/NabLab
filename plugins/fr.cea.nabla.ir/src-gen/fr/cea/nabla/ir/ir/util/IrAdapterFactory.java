@@ -160,8 +160,8 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createInstructionBlockAdapter();
 			}
 			@Override
-			public Adapter caseVariablesDefinition(VariablesDefinition object) {
-				return createVariablesDefinitionAdapter();
+			public Adapter caseVariableDefinition(VariableDefinition object) {
+				return createVariableDefinitionAdapter();
 			}
 			@Override
 			public Adapter caseAffectation(Affectation object) {
@@ -198,6 +198,10 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseReturn(Return object) {
 				return createReturnAdapter();
+			}
+			@Override
+			public Adapter caseExit(Exit object) {
+				return createExitAdapter();
 			}
 			@Override
 			public Adapter caseIterationBlock(IterationBlock object) {
@@ -670,16 +674,16 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.VariablesDefinition <em>Variables Definition</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.VariableDefinition <em>Variable Definition</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.VariablesDefinition
+	 * @see fr.cea.nabla.ir.ir.VariableDefinition
 	 * @generated
 	 */
-	public Adapter createVariablesDefinitionAdapter() {
+	public Adapter createVariableDefinitionAdapter() {
 		return null;
 	}
 
@@ -806,6 +810,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createReturnAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Exit <em>Exit</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.Exit
+	 * @generated
+	 */
+	public Adapter createExitAdapter() {
 		return null;
 	}
 

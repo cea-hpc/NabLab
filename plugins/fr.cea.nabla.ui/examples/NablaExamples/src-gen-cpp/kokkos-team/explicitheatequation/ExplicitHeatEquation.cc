@@ -40,12 +40,10 @@ private:
 	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
 	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
-	
-	// Global Variables
-	int n, lastDump;
-	double t_n, t_nplus1, deltat;
-	
-	// Connectivity Variables
+	int n;
+	double t_n;
+	double t_nplus1;
+	double deltat;
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> Xc;
 	Kokkos::View<double*> xc;
@@ -57,6 +55,7 @@ private:
 	Kokkos::View<double*> faceLength;
 	Kokkos::View<double*> faceConductivity;
 	Kokkos::View<double**> alpha;
+	int lastDump;
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;
@@ -74,7 +73,6 @@ public:
 	, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 	, nbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
 	, nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-	, lastDump(numeric_limits<int>::min())
 	, t_n(0.0)
 	, t_nplus1(0.0)
 	, deltat(0.001)
@@ -89,6 +87,7 @@ public:
 	, faceLength("faceLength", nbFaces)
 	, faceConductivity("faceConductivity", nbFaces)
 	, alpha("alpha", nbCells, nbCells)
+	, lastDump(numeric_limits<int>::min())
 	{
 		// Copy node coordinates
 		const auto& gNodes = mesh->getGeometry()->getNodes();

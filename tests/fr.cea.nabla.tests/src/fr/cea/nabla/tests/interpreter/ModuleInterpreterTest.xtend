@@ -36,8 +36,9 @@ class ModuleInterpreterTest
 		+
 		'''
 		// Simulation options
-		const option_stoptime = 0.2;
-		const option_max_iterations = 20000;
+		let option_stoptime = 0.2;
+		let option_max_iterations = 20000;
+		ℝ[2] X{nodes};
 
 		iterate n while (t^{n} < option_stoptime && n < option_max_iterations);
 

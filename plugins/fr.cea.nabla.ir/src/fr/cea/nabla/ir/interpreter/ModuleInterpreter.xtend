@@ -11,7 +11,6 @@ package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.logging.Logger
 import java.util.logging.StreamHandler
@@ -54,8 +53,8 @@ class ModuleInterpreter
 		jobInterpreter = new JobInterpreter(writer)
 		module.functions.filter[body === null].forEach[f | context.resolveFunction(f)]
 
-		// Interprete constant variables
-		for (v : module.variables.filter(SimpleVariable).filter[const])
+		// Interprete options
+		for (v : module.options)
 			context.addVariableValue(v, interprete(v.defaultValue, context))
 
 		if (module.withMesh)
@@ -76,7 +75,7 @@ class ModuleInterpreter
 		}
 
 		// Interprete variables
-		for (v : module.variables.filter[x | !(x instanceof SimpleVariable && x.const)])
+		for (v : module.variables)
 			context.addVariableValue(v, createValue(v, context))
 
 		// Copy Node Cooords
@@ -88,10 +87,10 @@ class ModuleInterpreter
 
 		context.logVariables("At the end")
 		context.logInfo(" End interpreting")
-		
+
 		return context
 	}
-	
+
 	def info(String message)
 	{
 		logger.info(message)

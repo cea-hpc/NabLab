@@ -320,8 +320,8 @@ class BasicValidatorTest
 
 		val moduleOk =  parseHelper.parse(getTestModule(defaultConnectivities, '') +
 			'''
-			ℝ[2] X{nodes};
 			let orig = [0.0 , 0.0] ;
+			ℝ[2] X{nodes};
 			IniX1: ∀j∈cells(), ∀r∈nodes(), X{r} = orig; 
 			IniX2: ∀j∈cells(), ∀r∈nodesOfCell(j), X{r} = orig; 
 			'''

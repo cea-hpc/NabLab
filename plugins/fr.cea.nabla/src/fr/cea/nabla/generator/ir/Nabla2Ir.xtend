@@ -20,8 +20,6 @@ import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVar
-import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.overloading.DeclarationProvider
 import java.util.LinkedHashSet
 import org.eclipse.emf.ecore.EObject
@@ -71,19 +69,19 @@ class Nabla2Ir
 			}
 		}
 
-		// Global variables creation
-		for (instruction : nablaModule.instructions)
-		{
-			switch instruction
-			{
-				SimpleVarDefinition: variables += createIrVariablesFor(nablaModule, instruction.variable)
-				VarGroupDeclaration: instruction.variables.forEach[x | variables += createIrVariablesFor(nablaModule, x) ]
-			}
-		}
+		// Option and global variables creation
+		for (o : nablaModule.options)
+			options += o.variable.toIrVariable as SimpleVariable
+		for (d : nablaModule.definitions)
+			variables += createIrVariablesFor(nablaModule, d.variable)
+		for (d : nablaModule.declarations)
+			for (v : d.variables)
+				variables += createIrVariablesFor(nablaModule, v)
 
 		// Special variables initialization
 		initNodeCoordVariable = getInitIrVariable(it, nablaNodeCoordVariable.name) as ConnectivityVariable
 		nodeCoordVariable = getCurrentIrVariable(it, nablaNodeCoordVariable.name) as ConnectivityVariable
+		nodeCoordVariable.const = false
 		timeVariable = getCurrentIrVariable(it, nablaTimeVariable.name) as SimpleVariable
 		deltatVariable = getCurrentIrVariable(it, nablaDeltatVariable.name) as SimpleVariable
 

@@ -3,7 +3,7 @@ Automatic-Module-Name: fr.cea.nabla.editor
 Bundle-ManifestVersion: 2
 Bundle-Name: fr.cea.nabla.editor
 Bundle-SymbolicName: fr.cea.nabla.editor;singleton:=true
-Bundle-Version: 0.1.0.qualifier
+Bundle-Version: 0.1.2.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: fr.cea.nabla.nabla.presentation.NablaEditorPlugin$Implementation
 Bundle-Vendor: CEA

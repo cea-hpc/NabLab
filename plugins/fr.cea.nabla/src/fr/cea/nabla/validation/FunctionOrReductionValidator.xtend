@@ -12,8 +12,12 @@ package fr.cea.nabla.validation
 import com.google.inject.Inject
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.Exit
+import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionOrReduction
+import fr.cea.nabla.nabla.If
+import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.NablaModule
@@ -22,14 +26,11 @@ import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.typing.BaseTypeTypeProvider
+import fr.cea.nabla.typing.ExpressionTypeProvider
+import fr.cea.nabla.typing.NSTScalar
 import java.util.HashSet
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
-import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.typing.NSTScalar
-import fr.cea.nabla.nabla.Expression
-import fr.cea.nabla.nabla.Instruction
-import fr.cea.nabla.nabla.If
 
 class FunctionOrReductionValidator extends BasicValidator
 {
@@ -80,6 +81,7 @@ class FunctionOrReductionValidator extends BasicValidator
 
 	private def dispatch boolean hasReturn(Instruction it) { false }
 	private def dispatch boolean hasReturn(Return it) { true }
+	private def dispatch boolean hasReturn(Exit it) { true }
 	private def dispatch boolean hasReturn(InstructionBlock it) { instructions.exists[hasReturn] }
 	private def dispatch boolean hasReturn(If it)
 	{

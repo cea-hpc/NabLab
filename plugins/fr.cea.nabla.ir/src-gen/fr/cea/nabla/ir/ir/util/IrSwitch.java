@@ -242,11 +242,11 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.VARIABLES_DEFINITION: {
-				VariablesDefinition variablesDefinition = (VariablesDefinition)theEObject;
-				T result = caseVariablesDefinition(variablesDefinition);
-				if (result == null) result = caseInstruction(variablesDefinition);
-				if (result == null) result = caseIrAnnotable(variablesDefinition);
+			case IrPackage.VARIABLE_DEFINITION: {
+				VariableDefinition variableDefinition = (VariableDefinition)theEObject;
+				T result = caseVariableDefinition(variableDefinition);
+				if (result == null) result = caseInstruction(variableDefinition);
+				if (result == null) result = caseIrAnnotable(variableDefinition);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -321,6 +321,14 @@ public class IrSwitch<T> extends Switch<T> {
 				T result = caseReturn(return_);
 				if (result == null) result = caseInstruction(return_);
 				if (result == null) result = caseIrAnnotable(return_);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.EXIT: {
+				Exit exit = (Exit)theEObject;
+				T result = caseExit(exit);
+				if (result == null) result = caseInstruction(exit);
+				if (result == null) result = caseIrAnnotable(exit);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -920,17 +928,17 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Variables Definition</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Variable Definition</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Variables Definition</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Variable Definition</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseVariablesDefinition(VariablesDefinition object) {
+	public T caseVariableDefinition(VariableDefinition object) {
 		return null;
 	}
 
@@ -1066,6 +1074,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseReturn(Return object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Exit</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Exit</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseExit(Exit object) {
 		return null;
 	}
 

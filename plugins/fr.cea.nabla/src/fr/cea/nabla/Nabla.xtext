@@ -23,12 +23,15 @@ NablaModule:
 	connectivities+=Connectivity*)?
 	reductions+=Reduction*
 	functions+=Function*
-	instructions+=(SimpleVarDefinition | VarGroupDeclaration)*
+	options+=OptDefinition*
+	definitions+=SimpleVarDefinition*
+	declarations+=VarGroupDeclaration*
 	// Only one block of iteration (don't know how to manage several blocks on node variable X)
 	(iteration=TimeIteratorDefinition)?
 	jobs+=Job*;
 
 Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';
+OptDefinition: 'option' variable=SimpleVar '=' value=Expression ';';
 
 
 /* ITEMS & CONNECTIVITES *********************************/
@@ -41,9 +44,9 @@ SingleConnectivity: 'item' name=ID ':' (inTypes+=[ItemType] ('\u00D7' inTypes+=[
 /* JOBS & INSTRUCTIONS ***********************************/
 Job: name=ID ':' instruction=Instruction;
 Iterable: Loop | ReductionCall;
-Instruction: SimpleVarDefinition | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | ItemDefinition | SetDefinition | Return;
+Instruction: SimpleVarDefinition | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | ItemDefinition | SetDefinition | Return | Exit;
 
-SimpleVarDefinition: (const?='const' | 'let') variable=SimpleVar '=' defaultValue=Expression ';';
+SimpleVarDefinition: 'let' variable=SimpleVar '=' value=Expression ';';
 VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
 InstructionBlock: '{' instructions+=Instruction+ '}';
 Loop: '\u2200' iterationBlock=IterationBlock ',' body=Instruction;
@@ -52,6 +55,7 @@ If: 'if' '(' condition=Expression ')' then=Instruction (=>'else' else=Instructio
 ItemDefinition: 'item' item=Item '=' value=SingleConnectivityCall ';';
 SetDefinition: 'set' name=ID '=' value=MultipleConnectivityCall ';';
 Return: 'return' expression=Expression ';';
+Exit: 'exit' message=STRING ';';
 
 
 /* ITERATEURS ********************************************/

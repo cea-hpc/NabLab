@@ -15,6 +15,7 @@ import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.Interval
+import fr.cea.nabla.nabla.OptDefinition
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SpaceIterator
@@ -33,7 +34,8 @@ class ArgOrVarTypeProvider
 		switch c
 		{
 			FunctionOrReduction, Interval, SpaceIterator: new NSTIntScalar
-			SimpleVarDefinition: c.defaultValue.typeFor
+			OptDefinition: c.value.typeFor
+			SimpleVarDefinition: c.value.typeFor
 			VarGroupDeclaration: c.type.typeFor
 			default: null
 		}

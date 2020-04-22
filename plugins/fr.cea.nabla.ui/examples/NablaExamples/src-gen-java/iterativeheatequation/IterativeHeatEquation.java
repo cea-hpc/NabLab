@@ -34,12 +34,26 @@ public final class IterativeHeatEquation
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
 	// Global Variables
-	private int n, k, lastDump;
-	private double t_n, t_nplus1, deltat, residual;
-
-	// Connectivity Variables
-	private double[][] X, Xc, alpha;
-	private double[] xc, yc, u_n, u_nplus1, u_nplus1_k, u_nplus1_kplus1, V, D, faceLength, faceConductivity;
+	private int n;
+	private int k;
+	private double t_n;
+	private double t_nplus1;
+	private double deltat;
+	private double[][] X;
+	private double[][] Xc;
+	private double[] xc;
+	private double[] yc;
+	private double[] u_n;
+	private double[] u_nplus1;
+	private double[] u_nplus1_k;
+	private double[] u_nplus1_kplus1;
+	private double[] V;
+	private double[] D;
+	private double[] faceLength;
+	private double[] faceConductivity;
+	private double[][] alpha;
+	private double residual;
+	private int lastDump;
 
 	public IterativeHeatEquation(Options aOptions, CartesianMesh2D aCartesianMesh2D)
 	{
@@ -54,12 +68,10 @@ public final class IterativeHeatEquation
 		nbCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
 		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 
-		lastDump = Integer.MIN_VALUE;
+		// Initialize variables
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat = 0.001;
-
-		// Allocate arrays
 		X = new double[nbNodes][2];
 		Xc = new double[nbCells][2];
 		xc = new double[nbCells];
@@ -73,6 +85,7 @@ public final class IterativeHeatEquation
 		faceLength = new double[nbFaces];
 		faceConductivity = new double[nbFaces];
 		alpha = new double[nbCells][nbCells];
+		lastDump = Integer.MIN_VALUE;
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -319,7 +332,7 @@ public final class IterativeHeatEquation
 			computeResidual(); // @2.0
 		
 			// Evaluate loop condition with variables at time n
-			continueLoop = (residual > options.epsilon && k + 1 < options.option_max_iterations_k);
+			continueLoop = (residual > options.epsilon && check(k + 1 < options.option_max_iterations_k));
 		
 			if (continueLoop)
 			{
@@ -414,7 +427,7 @@ public final class IterativeHeatEquation
 					final int dCells = dId;
 					final int fId = mesh.getCommonFace(cId, dId);
 					final int fFaces = fId;
-					double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions.norm(ArrayOperations.minus(Xc[cCells], Xc[dCells]));
+					final double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions.norm(ArrayOperations.minus(Xc[cCells], Xc[dCells]));
 					alpha[cCells][dCells] = alphaExtraDiag;
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
@@ -456,6 +469,14 @@ public final class IterativeHeatEquation
 				u_nplus1 = tmp_u_n;
 			} 
 		} while (continueLoop);
+	}
+
+	private boolean check(boolean a)
+	{
+		if (a)
+			return true;
+		else
+			throw new RuntimeException("Assertion failed");
 	}
 
 	private double[] sumR1(double[] a, double[] b)

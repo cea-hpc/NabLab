@@ -28,53 +28,15 @@ class AttributesContentProvider
 		PvdFileWriter2D writer;
 		«FOR c : m.usedConnectivities BEFORE 'size_t ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
 		«ENDIF»
-		«getGlobalVariablesContent(m)»
-		«getConnectivityVariablesContent(m)»
-		«getLinearAlgebraVariablesContent(m)»
+		«FOR v : m.variables»
+		«IF v.const»const «ENDIF»«v.cppType» «v.name»;
+		«ENDFOR»
+		«IF m.linearAlgebra»LinearAlgebraFunctions::CGInfo cg_info; // CG details«ENDIF»
 		utils::Timer globalTimer;
 		utils::Timer cpuTimer;
 		utils::Timer ioTimer;
 		«IF additionalContent !== null»
 		«additionalContent»
-		«ENDIF»
-	'''
-
-	private def getGlobalVariablesContent(IrModule m)
-	'''
-		«val globals = m.globalVariables»
-		«IF !globals.empty»
-
-		// Global Variables
-		«val globalsByType = globals.groupBy[cppType]»
-		«FOR type : globalsByType.keySet»
-		«type» «FOR v : globalsByType.get(type) SEPARATOR ', '»«v.name»«ENDFOR»;
-		«ENDFOR»
-		«ENDIF»
-	'''
-
-	private def getConnectivityVariablesContent(IrModule m)
-	'''
-		«val connectivityVars = m.connectivityVariables»
-		«IF !connectivityVars.empty»
-
-		// Connectivity Variables
-		«FOR v : connectivityVars»
-		«v.cppType» «v.name»;
-		«ENDFOR»
-		«ENDIF»
-	'''
-
-	private def getLinearAlgebraVariablesContent(IrModule m)
-	'''
-		«val linearAlgebraVars = m.linearAlgebraVariables»
-		«IF !linearAlgebraVars.empty»
-
-		// Linear Algebra Variables
-		«FOR v : linearAlgebraVars»
-		«v.cppType» «v.name»;
-		«ENDFOR»
-		// CG details
-		LinearAlgebraFunctions::CGInfo cg_info;
 		«ENDIF»
 	'''
 }

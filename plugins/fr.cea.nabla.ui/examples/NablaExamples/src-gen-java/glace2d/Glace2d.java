@@ -36,14 +36,36 @@ public final class Glace2d
 	private final int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
 
 	// Global Variables
-	private int n, lastDump;
-	private double t_n, t_nplus1, deltat_n, deltat_nplus1;
-
-	// Connectivity Variables
-	private double[][] X_n, X_nplus1, X_n0, b, bt, ur, uj_n, uj_nplus1, l;
-	private double[][][] Ar, Mt, Cjr_ic, C, F;
-	private double[] c, m, p, rho, e, E_n, E_nplus1, V, deltatj;
+	private int n;
+	private double t_n;
+	private double t_nplus1;
+	private double deltat_n;
+	private double deltat_nplus1;
+	private double[][] X_n;
+	private double[][] X_nplus1;
+	private double[][] X_n0;
+	private double[][] b;
+	private double[][] bt;
+	private double[][][] Ar;
+	private double[][][] Mt;
+	private double[][] ur;
+	private double[] c;
+	private double[] m;
+	private double[] p;
+	private double[] rho;
+	private double[] e;
+	private double[] E_n;
+	private double[] E_nplus1;
+	private double[] V;
+	private double[] deltatj;
+	private double[][] uj_n;
+	private double[][] uj_nplus1;
+	private double[][] l;
+	private double[][][] Cjr_ic;
+	private double[][][] C;
+	private double[][][] F;
 	private double[][][][] Ajr;
+	private int lastDump;
 
 	public Glace2d(Options aOptions, CartesianMesh2D aCartesianMesh2D)
 	{
@@ -58,13 +80,11 @@ public final class Glace2d
 		nbOuterFaces = mesh.getNbOuterFaces();
 		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 
-		lastDump = Integer.MIN_VALUE;
+		// Initialize variables
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat_n = options.option_deltat_ini;
 		deltat_nplus1 = options.option_deltat_ini;
-
-		// Allocate arrays
 		X_n = new double[nbNodes][2];
 		X_nplus1 = new double[nbNodes][2];
 		X_n0 = new double[nbNodes][2];
@@ -89,6 +109,7 @@ public final class Glace2d
 		C = new double[nbCells][nbNodesOfCell][2];
 		F = new double[nbCells][nbNodesOfCell][2];
 		Ajr = new double[nbCells][nbNodesOfCell][2][2];
+		lastDump = Integer.MIN_VALUE;
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -262,7 +283,7 @@ public final class Glace2d
 					reduction0 = sumR1(reduction0, X_n0[rNodes]);
 				}
 			}
-			double[] center = ArrayOperations.multiply(0.25, reduction0);
+			final double[] center = ArrayOperations.multiply(0.25, reduction0);
 			if (center[0] < options.option_x_interface)
 			{
 				rho_ic = options.option_rho_ini_zg;
@@ -284,7 +305,7 @@ public final class Glace2d
 					reduction1 = sumR0(reduction1, MathFunctions.dot(Cjr_ic[jCells][rNodesOfCellJ], X_n0[rNodes]));
 				}
 			}
-			double V_ic = 0.5 * reduction1;
+			final double V_ic = 0.5 * reduction1;
 			m[jCells] = rho_ic * V_ic;
 			p[jCells] = p_ic;
 			rho[jCells] = rho_ic;
@@ -523,12 +544,12 @@ public final class Glace2d
 			{
 				final int fId = outerFaces[fOuterFaces];
 				final double epsilon = 1.0E-10;
-				double[][] I = new double[][] {new double[] {1.0, 0.0}, new double[] {0.0, 1.0}};
-				double X_MIN = 0.0;
-				double X_MAX = options.X_EDGE_ELEMS * options.X_EDGE_LENGTH;
-				double Y_MIN = 0.0;
-				double Y_MAX = options.Y_EDGE_ELEMS * options.Y_EDGE_LENGTH;
-				double[] nY = new double[] {0.0, 1.0};
+				final double[][] I = new double[][] {new double[] {1.0, 0.0}, new double[] {0.0, 1.0}};
+				final double X_MIN = 0.0;
+				final double X_MAX = options.X_EDGE_ELEMS * options.X_EDGE_LENGTH;
+				final double Y_MIN = 0.0;
+				final double Y_MAX = options.Y_EDGE_ELEMS * options.Y_EDGE_LENGTH;
+				final double[] nY = new double[] {0.0, 1.0};
 				{
 					final int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
 					final int nbNodesOfFaceF = nodesOfFaceF.length;
@@ -543,9 +564,9 @@ public final class Glace2d
 								sign = -1.0;
 							else
 								sign = 1.0;
-							double[] N = ArrayOperations.multiply(sign, nY);
-							double[][] NxN = tensProduct(N, N);
-							double[][] IcP = ArrayOperations.minus(I, NxN);
+							final double[] N = ArrayOperations.multiply(sign, nY);
+							final double[][] NxN = tensProduct(N, N);
+							final double[][] IcP = ArrayOperations.minus(I, NxN);
 							bt[rNodes] = MathFunctions.matVectProduct(IcP, b[rNodes]);
 							Mt[rNodes] = ArrayOperations.plus(ArrayOperations.multiply(IcP, (ArrayOperations.multiply(Ar[rNodes], IcP))), ArrayOperations.multiply(NxN, trace(Ar[rNodes])));
 						}
@@ -737,7 +758,7 @@ public final class Glace2d
 
 	private double[][] inverse(double[][] a)
 	{
-		double alpha = 1.0 / MathFunctions.det(a);
+		final double alpha = 1.0 / MathFunctions.det(a);
 		return new double[][] {new double[] {a[1][1] * alpha, -a[0][1] * alpha}, new double[] {-a[1][0] * alpha, a[0][0] * alpha}};
 	}
 

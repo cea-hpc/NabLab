@@ -14,7 +14,9 @@ import fr.cea.nabla.ir.ir.BeforeTimeLoopJob
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.JobContainer
 import fr.cea.nabla.ir.ir.TimeLoop
+import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import java.util.ArrayList
 import java.util.HashSet
@@ -139,16 +141,25 @@ class FillJobHLTs implements IrTransformationStep
 	private def void dispatchJobsInTimeLoops(IrModule it)
 	{
 		// distribute TimeLoopJob instances
-		if (mainTimeLoop !== null) distributeTimeLoopJobs(it, mainTimeLoop)
-
-		// distribute other jobs in time loop jobs
-		for (tlJob : jobs.filter(TimeLoopJob))
+		if (mainTimeLoop !== null)
 		{
-			val tlInVariables = tlJob.copies.map[destination]
-			val tlNextJobs = new HashSet<Job>
-			tlInVariables.forEach[v | tlNextJobs += v.nextJobs]
-			for (next : tlNextJobs.reject(TimeLoopJob))
-				distributeJobsInTimeLoops(tlJob.timeLoop, next)
+			distributeTimeLoopJobs(jobs.filter(TimeLoopCopyJob), it, mainTimeLoop)
+
+			var tl = mainTimeLoop
+			// Begin with the most inner time loop
+			while (tl.innerTimeLoop !== null) tl = tl.innerTimeLoop
+			do
+			{
+				val tlJob = tl.associatedJob
+				//println("distribute jobs of time loop : " + tlJob.name)
+				val tlInVariables = tlJob.copies.map[destination]
+				val tlNextJobs = new HashSet<Job>
+				tlInVariables.forEach[v | tlNextJobs += v.nextJobs]
+				for (next : tlNextJobs.filterJobs)
+					distributeJobsInTimeLoops(tl, next, '')
+				tl = tl.outerTimeLoop
+			}
+			while (tl !== null)
 		}
 
 		// job with no container depends on module
@@ -156,44 +167,42 @@ class FillJobHLTs implements IrTransformationStep
 		for (j : jobsWithNoContainer) j.jobContainer = it
 	}
 
-	private def void distributeTimeLoopJobs(IrModule m, TimeLoop tl)
+	private def void distributeTimeLoopJobs(Iterable<TimeLoopCopyJob> jobs, JobContainer container, TimeLoop tl)
 	{
-		if (tl.outerTimeLoop === null)
-		{
-			m.innerJobs += m.jobs.filter(TimeLoopJob).filter[timeLoop == tl]
-			m.innerJobs += m.jobs.filter(BeforeTimeLoopJob).filter[timeLoop == tl]
-			m.innerJobs += m.jobs.filter(AfterTimeLoopJob).filter[timeLoop == tl]
-		}
+		//println("distributeJobsInTimeLoops 1(" + container + ", " + tl.name + ")")
+		//println("   inner jobs before : " + container.innerJobs.map[name].join(', '))
+		container.innerJobs += jobs.filter[timeLoop === tl]
+		//println("   inner jobs after : " + container.innerJobs.map[name].join(', '))
 
 		if (tl.innerTimeLoop !== null)
-		{
-			tl.associatedJob.innerJobs += m.jobs.filter(TimeLoopJob).filter[timeLoop == tl.innerTimeLoop]
-			tl.associatedJob.innerJobs += m.jobs.filter(BeforeTimeLoopJob).filter[timeLoop == tl.innerTimeLoop]
-			tl.associatedJob.innerJobs += m.jobs.filter(AfterTimeLoopJob).filter[timeLoop == tl.innerTimeLoop]
-			distributeTimeLoopJobs(m, tl.innerTimeLoop)
-		}
+			distributeTimeLoopJobs(jobs, tl.associatedJob, tl.innerTimeLoop)
 	}
 
-	private def void distributeJobsInTimeLoops(TimeLoop tl, Job j)
+	private def void distributeJobsInTimeLoops(TimeLoop tl, Job j, String prefix)
 	{
-		//println("distributeJobsInTimeLoops(" + tlj + ", " + j.name)
+		//println(prefix + "distributeJobsInTimeLoops 2(" + tl.name + ", " + j.name + ")")
 		switch j
 		{
-			BeforeTimeLoopJob: 
+			BeforeTimeLoopJob:
 			{
 				// Start of another time loop. Do not follow next.
 			}
 			AfterTimeLoopJob:
 			{
 				if (tl.outerTimeLoop !== null)
-					j.nextJobs.reject(TimeLoopJob).forEach[x | distributeJobsInTimeLoops(tl.outerTimeLoop, x)]
+					j.nextJobs.filterJobs.forEach[x | distributeJobsInTimeLoops(tl.outerTimeLoop, x, prefix + '\t')]
 			}
 			default:
 			{
 				tl.associatedJob.innerJobs += j
-				j.nextJobs.reject(TimeLoopJob).forEach[x | distributeJobsInTimeLoops(tl, x)]
+				j.nextJobs.filterJobs.forEach[x | distributeJobsInTimeLoops(tl, x, prefix + '\t')]
 			}
 		}
+	}
+
+	private def Iterable<Job> filterJobs(Iterable<Job> l)
+	{
+		l.filter[x | !(x instanceof TimeLoopJob) && x.jobContainer === null]
 	}
 
 	/*

@@ -73,7 +73,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.AFTER_TIME_LOOP_JOB: return createAfterTimeLoopJob();
 			case IrPackage.TIME_LOOP_COPY: return createTimeLoopCopy();
 			case IrPackage.INSTRUCTION_BLOCK: return createInstructionBlock();
-			case IrPackage.VARIABLES_DEFINITION: return createVariablesDefinition();
+			case IrPackage.VARIABLE_DEFINITION: return createVariableDefinition();
 			case IrPackage.AFFECTATION: return createAffectation();
 			case IrPackage.REDUCTION_INSTRUCTION: return createReductionInstruction();
 			case IrPackage.LOOP: return createLoop();
@@ -82,6 +82,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.SET_DEFINITION: return createSetDefinition();
 			case IrPackage.IF: return createIf();
 			case IrPackage.RETURN: return createReturn();
+			case IrPackage.EXIT: return createExit();
 			case IrPackage.ITERATOR: return createIterator();
 			case IrPackage.INTERVAL: return createInterval();
 			case IrPackage.CONTRACTED_IF: return createContractedIf();
@@ -327,9 +328,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public VariablesDefinition createVariablesDefinition() {
-		VariablesDefinitionImpl variablesDefinition = new VariablesDefinitionImpl();
-		return variablesDefinition;
+	public VariableDefinition createVariableDefinition() {
+		VariableDefinitionImpl variableDefinition = new VariableDefinitionImpl();
+		return variableDefinition;
 	}
 
 	/**
@@ -418,6 +419,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public Return createReturn() {
 		ReturnImpl return_ = new ReturnImpl();
 		return return_;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Exit createExit() {
+		ExitImpl exit = new ExitImpl();
+		return exit;
 	}
 
 	/**

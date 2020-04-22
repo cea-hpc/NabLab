@@ -13,7 +13,6 @@ import com.google.inject.Inject
 import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.ExpressionExtensions
 import fr.cea.nabla.nabla.Affectation
-import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.SimpleVarDefinition
@@ -29,15 +28,11 @@ class InstructionValidator extends FunctionOrReductionValidator
 
 	public static val AFFECTATION_TYPE = "Instructions::AffectationType"
 	public static val IF_CONDITION_BOOL = "Instructions::IfConditionBool"
-	public static val AFFECTATION_CONST = "Instructions::AffectationConst"
-	public static val GLOBAL_DEFAULT_VALUE = "Instructions::GlobalDefaultValue"
-	public static val CONST_DEFAULT_VALUE = "Instructions::ConstDefaultValue"
+	public static val GLOBAL_VAR_VALUE = "Instructions::GlobalVarValue"
 
 	static def getAffectationTypeMsg(String actualTypeName, String expectedTypeName) { "Expected " + expectedTypeName + ", but was " + actualTypeName }
 	static def getIfConditionBoolMsg(String actualTypeName) { "Expected " + ValidationUtils::BOOL.label + ", but was " + actualTypeName }
-	static def getAffectationConstMsg() { "Affectation to constant element" }
-	static def getGlobalDefaultValueMsg() { "Assignment with reduction not allowed in global variables" }
-	static def getConstDefaultValueMsg() { "Assignment with non constant variables" }
+	static def getGlobalVarValueMsg() { "Assignment with reduction not allowed in global variables" }
 
 
 	@Check
@@ -55,23 +50,13 @@ class InstructionValidator extends FunctionOrReductionValidator
 	}
 
 	@Check
-	def checkAffectationConst(Affectation it)
+	def checkGlobalVarValue(SimpleVarDefinition it)
 	{
-		if (left.target !== null && !left.target.eIsProxy && left.target.isConst)
-			error(getAffectationConstMsg(), NablaPackage.Literals::AFFECTATION__LEFT, AFFECTATION_CONST)
-	}
-
-	@Check
-	def checkGlobalAndConstDefaultValue(SimpleVarDefinition it)
-	{
-		if (defaultValue !== null)
+		if (value !== null)
 		{
 			// no function or reduction in global variables initialisation
-			if (variable.global && !defaultValue.respectGlobalExprConstraints)
-				error(getGlobalDefaultValueMsg(), NablaPackage.Literals::SIMPLE_VAR_DEFINITION__DEFAULT_VALUE, GLOBAL_DEFAULT_VALUE)
-
-			if (const && defaultValue.eAllContents.filter(ArgOrVarRef).exists[x|!x.target.const])
-				error(getConstDefaultValueMsg(), NablaPackage.Literals::SIMPLE_VAR_DEFINITION__DEFAULT_VALUE, CONST_DEFAULT_VALUE)
+			if (variable.global && !value.respectGlobalExprConstraints)
+				error(getGlobalVarValueMsg(), NablaPackage.Literals::SIMPLE_VAR_DEFINITION__VALUE, GLOBAL_VAR_VALUE)
 		}
 	}
 }

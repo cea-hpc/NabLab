@@ -75,8 +75,7 @@ class StlThreadIncludesContentProvider extends IncludesContentProvider
 	{
 		val includes = new LinkedHashSet<String>
 		includes += "utils/stl/Parallel.h"
-		if (!m.linearAlgebraVariables.empty)
-			includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
+		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
 		return includes
 	}
 }
@@ -92,8 +91,7 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 	{
 		val includes = new LinkedHashSet<String>
 		includes += "utils/kokkos/Parallel.h"
-		if (!m.linearAlgebraVariables.empty)
-			includes += "linearalgebra/kokkos/LinearAlgebraFunctions.h"
+		if (m.linearAlgebra) includes += "linearalgebra/kokkos/LinearAlgebraFunctions.h"
 		return includes
 	}
 }

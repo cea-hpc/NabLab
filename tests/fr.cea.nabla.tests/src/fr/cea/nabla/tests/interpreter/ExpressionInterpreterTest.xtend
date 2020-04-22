@@ -50,6 +50,8 @@ class ExpressionInterpreterTest
 		'''	
 		let r1 = true ? 1.0 : 2.0; // -> 1.0
 		let r2 = false ? 1.0 : 2.0; // -> 1.0
+
+		ℝ[2] X{nodes};
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
@@ -82,13 +84,15 @@ class ExpressionInterpreterTest
 		let n4 = -n3; // -> [[0, -1],[-1, -2]]
 		let r3 = [[0., 1.],[1., 2.]];
 		let r4 = -r3; // -> [[-0., -1.],[-1., -2.]]*/
+
+		ℝ[2] X{nodes};
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 		val context = moduleInterpreter.interprete
-		
+
 		assertVariableValueInContext(irModule, context, "b0", new NV0Bool(true))
 		assertVariableValueInContext(irModule, context, "n0", new NV0Int(-1))
 		assertVariableValueInContext(irModule, context, "r0", new NV0Real(-1))
@@ -110,6 +114,7 @@ class ExpressionInterpreterTest
 		+
 		'''
 		let b = (true);
+		ℝ[2] X{nodes};
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
@@ -128,6 +133,8 @@ class ExpressionInterpreterTest
 		let r1 = 2.0;
 		let b1 = true;
 		let b2 = false;
+
+		ℝ[2] X{nodes};
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
@@ -146,6 +153,8 @@ class ExpressionInterpreterTest
 		'''
 		let nMin = ℕ.MinValue;
 		let rMin = ℝ.MinValue;
+
+		ℝ[2] X{nodes};
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
@@ -162,6 +171,8 @@ class ExpressionInterpreterTest
 		'''
 		let nMax = ℕ.MaxValue;
 		let rMax = ℝ.MaxValue;
+
+		ℝ[2] X{nodes};
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
@@ -187,6 +198,8 @@ class ExpressionInterpreterTest
 		let b1 = ℾ(true);
 		let b2 = ℾ[2](true);
 		let b3 = ℾ[2,3](true);
+
+		ℝ[2] X{nodes};
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
@@ -211,6 +224,7 @@ class ExpressionInterpreterTest
 		+
 		'''
 		let n = [1, 2];
+		ℝ[2] X{nodes};
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
@@ -225,6 +239,7 @@ class ExpressionInterpreterTest
 		+
 		'''
 		let n = [[0, 1, 2],[1, 2, 3]];
+		ℝ[2] X{nodes};
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
@@ -239,6 +254,7 @@ class ExpressionInterpreterTest
 		+
 		'''
 		let r = [1.0, 2.0];
+		ℝ[2] X{nodes};
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
@@ -253,6 +269,7 @@ class ExpressionInterpreterTest
 		+
 		'''
 		let r = [[0., 1., 2.],[1., 2., 3.]];
+		ℝ[2] X{nodes};
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(ExpressionInterpreterTest.name))
@@ -266,6 +283,7 @@ class ExpressionInterpreterTest
 		val model = testModuleForSimulation +
 		'''
 		let c = card(nodes());
+		ℝ[2] X{nodes};
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
@@ -314,6 +332,8 @@ class ExpressionInterpreterTest
 		let δ = ℝ[2,2](1.);
 		let ρ = ℝ[2,2](2.);
 		let res2 = add(δ,ρ); //-> [3., 3][3., 3.]
+
+		ℝ[2] X{nodes};
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
@@ -365,6 +385,7 @@ class ExpressionInterpreterTest
 		ℝ[2] w4;
 		ℝ[3] w5;
 		ℝ[2] w6;
+		ℝ[2] X{nodes};
 
 		j1: w1 = h(u);
 		j2: w2 = i(u);
@@ -413,6 +434,8 @@ class ExpressionInterpreterTest
 		let r6 = [[2.,3.],[4.,5.],[6.,7.]];
 		let r7 = r6; // -> [[2.,3.],[4.,5.],[6.,7.]]
 		let r8 = r6[1,1]; // -> 5.
+
+		ℝ[2] X{nodes};
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, testGenModel)

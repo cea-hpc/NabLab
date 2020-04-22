@@ -15,11 +15,13 @@ import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
+import fr.cea.nabla.nabla.Cardinality
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.CurrentTimeIteratorRef
 import fr.cea.nabla.nabla.Div
 import fr.cea.nabla.nabla.Equality
+import fr.cea.nabla.nabla.Exit
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
@@ -40,6 +42,7 @@ import fr.cea.nabla.nabla.Mul
 import fr.cea.nabla.nabla.MultipleConnectivityCall
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Not
+import fr.cea.nabla.nabla.OptDefinition
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
@@ -60,13 +63,13 @@ import fr.cea.nabla.nabla.VectorConstant
 import java.util.List
 
 import static extension fr.cea.nabla.ir.Utils.*
-import fr.cea.nabla.nabla.Cardinality
 
 class LabelServices
 {
 	/* JOBS & INSTRUCTIONS ***********************************/
 	static def dispatch String getLabel(Job it) { name + ' : ' + instruction?.label }
-	static def dispatch String getLabel(SimpleVarDefinition it) { 'let ' + variable?.name + '=' + defaultValue?.label }
+	static def dispatch String getLabel(OptDefinition it) { 'option ' + variable?.name + '=' + value?.label }
+	static def dispatch String getLabel(SimpleVarDefinition it) { 'let ' + variable?.name + '=' + value?.label }
 	static def dispatch String getLabel(VarGroupDeclaration it) { type?.label + ' ' + variables?.map[x|x?.name].join(', ') }
 	static def dispatch String getLabel(InstructionBlock it) { '{ }' }
 	static def dispatch String getLabel(Loop it) { '\u2200 ' + iterationBlock?.label + ', ' + body?.label }
@@ -75,6 +78,7 @@ class LabelServices
 	static def dispatch String getLabel(ItemDefinition it) { 'item ' + item?.name + '=' + value?.label }
 	static def dispatch String getLabel(SetDefinition it) { 'set ' + name + '=' + value?.label }
 	static def dispatch String getLabel(Return it) { 'return ' + expression?.label }
+	static def dispatch String getLabel(Exit it) { 'Exit "' + message + '"'}
 
 	/* ITERATEURS ********************************************/
 	static def dispatch String getLabel(SpaceIterator it) { item?.name + '\u2208 ' + container?.label }

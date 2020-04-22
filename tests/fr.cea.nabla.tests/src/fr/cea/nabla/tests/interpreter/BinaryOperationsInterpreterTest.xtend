@@ -54,6 +54,8 @@ class BinaryOperationsInterpreterTest
 		let b10 = true <= false; // -> false
 		let b11 = true > false; // -> true
 		let b12 = true < false; // -> false
+
+		ℝ[2] X{nodes};
 		'''
 
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
@@ -105,6 +107,8 @@ class BinaryOperationsInterpreterTest
 		let n4 = 6 / 3; // -> 2
 		let n5 = 7 / 3; // -> 2
 		let n6 = 7 % 3; // -> 1
+
+		ℝ[2] X{nodes};
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
@@ -159,6 +163,8 @@ class BinaryOperationsInterpreterTest
 		let n3 = 2 * 3.; // -> 6.
 		let n4 = 6 / 3.; // -> 2.
 		let n5 = 7 / 2.; // -> 3.5.
+
+		ℝ[2] X{nodes};
 		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
@@ -192,7 +198,10 @@ class BinaryOperationsInterpreterTest
 		let n1 = [1,2];
 		let n2 = 3 + n1;
 		let n3 = 3 * n1;
+
+		ℝ[2] X{nodes};
 		'''
+
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF

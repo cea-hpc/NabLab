@@ -12,6 +12,7 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.Exit
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -25,7 +26,7 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.SimpleVariable
-import fr.cea.nabla.ir.ir.VariablesDefinition
+import fr.cea.nabla.ir.ir.VariableDefinition
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
@@ -41,14 +42,14 @@ abstract class InstructionContentProvider
 	protected abstract def CharSequence getReductionContent(ReductionInstruction it)
 	protected abstract def CharSequence getLoopContent(Loop it)
 
-	def dispatch CharSequence getContent(VariablesDefinition it) 
+	def dispatch CharSequence getContent(VariableDefinition it)
+	// Should be the following line but does not compile because of MultiArray operations
+	// «IF variable.const»const «ENDIF»«variable.cppType» «variable.name»«variable.defaultValueContent»; ???
 	'''
-		«FOR v : variables»
-		«IF v.const»const «ENDIF»«v.cppType» «v.name»«v.defaultValueContent»;
-		«ENDFOR»
+		«variable.cppType» «variable.name»«variable.defaultValueContent»;
 	'''
 
-	def dispatch CharSequence getContent(InstructionBlock it) 
+	def dispatch CharSequence getContent(InstructionBlock it)
 	'''
 		{
 			«FOR i : instructions»
@@ -56,7 +57,7 @@ abstract class InstructionContentProvider
 			«ENDFOR»
 		}'''
 
-	def dispatch CharSequence getContent(Affectation it) 
+	def dispatch CharSequence getContent(Affectation it)
 	'''«left.content» = «right.content»;'''
 
 	def dispatch CharSequence getContent(ReductionInstruction it)
@@ -64,7 +65,7 @@ abstract class InstructionContentProvider
 		reductionContent
 	}
 
-	def dispatch CharSequence getContent(Loop it) 
+	def dispatch CharSequence getContent(Loop it)
 	{
 		if (parallel)
 			iterationBlock.defineInterval(loopContent)
@@ -78,7 +79,7 @@ abstract class InstructionContentProvider
 			''')
 	}
 
-	def dispatch CharSequence getContent(If it) 
+	def dispatch CharSequence getContent(If it)
 	'''
 		if («condition.content») 
 		«val thenContent = thenInstruction.content»
@@ -105,12 +106,17 @@ abstract class InstructionContentProvider
 		getSetDefinitionContent(name, value)
 	}
 
-	def dispatch CharSequence getContent(Return it) 
+	def dispatch CharSequence getContent(Return it)
 	'''
 		return «expression.content»;
 	'''
 
-	def dispatch getInnerContent(Instruction it) 
+	def dispatch CharSequence getContent(Exit it)
+	'''
+		throw std::runtime_error("«message»");
+	'''
+
+	def dispatch getInnerContent(Instruction it)
 	{ 
 		content
 	}
@@ -166,7 +172,7 @@ class SequentialInstructionContentProvider extends InstructionContentProvider
 {
 	override isParallel(Loop it) { false }
 
-	override protected getReductionContent(ReductionInstruction it) 
+	override protected getReductionContent(ReductionInstruction it)
 	{
 		throw new UnsupportedOperationException("ReductionInstruction must have been replaced before using this code generator")
 	}

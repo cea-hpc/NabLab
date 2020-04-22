@@ -15,11 +15,13 @@ import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
+import fr.cea.nabla.nabla.Cardinality
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.CurrentTimeIteratorRef
 import fr.cea.nabla.nabla.Div
 import fr.cea.nabla.nabla.Equality
+import fr.cea.nabla.nabla.Exit
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
@@ -40,6 +42,7 @@ import fr.cea.nabla.nabla.Mul
 import fr.cea.nabla.nabla.MultipleConnectivityCall
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Not
+import fr.cea.nabla.nabla.OptDefinition
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
@@ -47,6 +50,8 @@ import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
+import fr.cea.nabla.nabla.SetDefinition
+import fr.cea.nabla.nabla.SetRef
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingleConnectivityCall
@@ -56,15 +61,13 @@ import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
 import java.util.List
-import fr.cea.nabla.nabla.SetRef
-import fr.cea.nabla.nabla.SetDefinition
-import fr.cea.nabla.nabla.Cardinality
 
 class LatexLabelServices
 {
 	/* JOBS & INSTRUCTIONS ***********************************/
 	static def dispatch String getLatex(Job it) { '\\texttt{' + name.pu + '} : '+ instruction.latex }
-	static def dispatch String getLatex(SimpleVarDefinition it) { 'let~' + variable.name.pu + '=' + defaultValue.latex }
+	static def dispatch String getLatex(OptDefinition it) { 'option~' + variable.name.pu + '=' + value.latex }
+	static def dispatch String getLatex(SimpleVarDefinition it) { 'let~' + variable.name.pu + '=' + value.latex }
 	static def dispatch String getLatex(VarGroupDeclaration it) { type.latex + '~' + variables.map[x|x.name.pu].join(', ') }
 	static def dispatch String getLatex(InstructionBlock it) { '\\{ \\}' }
 	static def dispatch String getLatex(Loop it) { '\\forall{' + iterationBlock.latex + '}, \\ ' + body.latex }
@@ -72,7 +75,8 @@ class LatexLabelServices
 	static def dispatch String getLatex(If it) { 'if~\\left(' + condition.latex + '\\right)'}
 	static def dispatch String getLatex(ItemDefinition it) { 'item~' + item.name + '=' + value?.latex }
 	static def dispatch String getLatex(SetDefinition it) { 'set~' + name + '=' + value?.latex }
-	static def dispatch String getLatex(Return it) { 'return \\left(' + expression.latex + '\\right)'}
+	static def dispatch String getLatex(Return it) { 'return~' + expression.latex }
+	static def dispatch String getLatex(Exit it) { 'exit~' + message }
 
 	/* ITERATEURS ********************************************/
 	static def dispatch String getLatex(SpaceIterator it) { item.name.pu + '\\in ' + container.latex }

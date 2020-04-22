@@ -33,6 +33,8 @@
         eType="#//Function" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="connectivities" upperBound="-1"
         eType="#//Connectivity" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="options" upperBound="-1"
+        eType="#//SimpleVariable" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//Variable" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="initNodeCoordVariable"
@@ -164,9 +166,9 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="instructions" lowerBound="1"
         upperBound="-1" eType="#//Instruction" containment="true" resolveProxies="false"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="VariablesDefinition" eSuperTypes="#//Instruction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" lowerBound="1"
-        upperBound="-1" eType="#//Variable" containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="VariableDefinition" eSuperTypes="#//Instruction">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
+        eType="#//Variable" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Affectation" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="#//ArgOrVarRef"
@@ -223,6 +225,10 @@
   <eClassifiers xsi:type="ecore:EClass" name="Return" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
         eType="#//Expression" containment="true" resolveProxies="false"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Exit" eSuperTypes="#//Instruction">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="message" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IterationBlock" abstract="true" eSuperTypes="#//IrAnnotable"/>
   <eClassifiers xsi:type="ecore:EClass" name="Iterator" eSuperTypes="#//IterationBlock">

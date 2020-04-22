@@ -18,6 +18,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getItemTypes <em>Item Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getFunctions <em>Functions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getConnectivities <em>Connectivities</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getOptions <em>Options</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
@@ -102,6 +103,18 @@ public interface IrModule extends JobContainer {
 	 * @generated
 	 */
 	EList<Connectivity> getConnectivities();
+
+	/**
+	 * Returns the value of the '<em><b>Options</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.SimpleVariable}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Options</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Options()
+	 * @model containment="true"
+	 * @generated
+	 */
+	EList<SimpleVariable> getOptions();
 
 	/**
 	 * Returns the value of the '<em><b>Variables</b></em>' containment reference list.

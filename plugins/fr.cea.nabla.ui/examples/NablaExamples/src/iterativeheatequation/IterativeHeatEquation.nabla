@@ -22,22 +22,24 @@ set cellsOfFace: face → {cell};
 set nodesOfCell: cell → {node};
 item commonFace: cell × cell → face;
 
-const X_LENGTH = 2.0;
-const Y_LENGTH = 2.0;
-const u0 = 1.0;
-const vectOne = ℝ[2](1.0);
+def check: ℾ → ℾ, (a) → if (a) return true; else exit "Assertion failed";
+
+option X_LENGTH = 2.0;
+option Y_LENGTH = 2.0;
+option u0 = 1.0;
+option vectOne = ℝ[2](1.0);
 
 // Mesh options
-const X_EDGE_ELEMS = 40;
-const Y_EDGE_ELEMS = 40;
-const X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
-const Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
+option X_EDGE_ELEMS = 40;
+option Y_EDGE_ELEMS = 40;
+option X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
+option Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 
 // Simulation options
-const option_stoptime = 0.1;
-const option_max_iterations = 500000000;
-const option_max_iterations_k = 1000;
-const ε =  1.0e-8;
+option option_stoptime = 0.1;
+option option_max_iterations = 500000000;
+option option_max_iterations_k = 1000;
+option ε =  1.0e-8;
 
 let t=0.0;
 let δt=0.001;
@@ -51,7 +53,7 @@ let δt=0.001;
 ℝ residual;
 
 iterate	n while (t^{n+1} < option_stoptime && n+1 < option_max_iterations),
-		k while (residual > ε && k+1 < option_max_iterations_k);
+		k while (residual > ε && check(k+1 < option_max_iterations_k));
 
 InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
 

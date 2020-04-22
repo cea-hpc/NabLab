@@ -105,42 +105,7 @@ class InstructionValidatorTest
 	}
 
 	@Test
-	def void testCheckAffectationConst() 
-	{
-		val moduleKo = parseHelper.parse(testModule +
-			'''
-			computeX : X_EDGE_LENGTH = Y_EDGE_LENGTH;
-			'''
-		)
-		Assert.assertNotNull(moduleKo)
-
-		moduleKo.assertError(NablaPackage.eINSTANCE.affectation,
-			InstructionValidator::AFFECTATION_CONST,
-			InstructionValidator::getAffectationConstMsg)
-
-		val moduleKo2 = parseHelper.parse(testModule +
-			'''
-			initXXX: { const xxx = 0.0; xxx = 0.01; }
-			'''
-		)
-		Assert.assertNotNull(moduleKo2)
-
-		moduleKo2.assertError(NablaPackage.eINSTANCE.affectation,
-			InstructionValidator::AFFECTATION_CONST,
-			InstructionValidator::getAffectationConstMsg)
-
-		val moduleOk =  parseHelper.parse(testModule +
-			'''
-			computeX1 : let X1 = Y_EDGE_LENGTH;
-			initYYY: { const xxx = 0.0; let yyy = xxx; }
-			'''
-		)
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
-	@Test
-	def void testCheckGlobalAndConstDefaultValue()
+	def void testCheckGlobalVarValue()
 	{
 		val moduleKo1 = parseHelper.parse(getTestModule('', '''def mySum, 0.0: ℕ, (a, b) → return a + b;''') +
 			'''
@@ -150,24 +115,13 @@ class InstructionValidatorTest
 		)
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
-			InstructionValidator::GLOBAL_DEFAULT_VALUE,
-			InstructionValidator::getGlobalDefaultValueMsg)
-
-		val moduleKo2 = parseHelper.parse(testModule +
-			'''
-			let coef = 2;
-			const DOUBLE_LENGTH = X_EDGE_LENGTH * coef;
-			'''
-		)
-		Assert.assertNotNull(moduleKo2)
-		moduleKo2.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
-			InstructionValidator::CONST_DEFAULT_VALUE,
-			InstructionValidator::getConstDefaultValueMsg)
+			InstructionValidator::GLOBAL_VAR_VALUE,
+			InstructionValidator::getGlobalVarValueMsg)
 
 		val moduleOk =  parseHelper.parse(testModule +
 			'''
-			const coef = 2;
-			const DOUBLE_LENGTH = X_EDGE_LENGTH * coef;
+			let coef = 2;
+			let DOUBLE_LENGTH = X_EDGE_LENGTH * coef;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

@@ -39,6 +39,7 @@ class InstructionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
+		ℝ[2] X{nodes};
 		Job1: { let r = 1.0; t = r; }
 		'''
 
@@ -57,6 +58,7 @@ class InstructionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
+		ℝ[2] X{nodes};
 		Job1: { let r = 1.0; t = r; }
 		'''
 
@@ -75,6 +77,7 @@ class InstructionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
+		ℝ[2] X{nodes};
 		Job1: { let r = 1.0; t = r; }
 		'''
 
@@ -96,11 +99,11 @@ class InstructionInterpreterTest
 		+
 		'''
 		ℝ U{cells};
-		ℝ[2] C{cells, nodesOfCell};
+		ℝ[2] X{nodes}, C{cells, nodesOfCell};
 		InitU : ∀r∈cells(), U{r} = 1.0;
 		ComputeCjr: ∀j∈ cells(), {
 			set rCellsJ = nodesOfCell(j);
-			const cardRCellsJ = card(rCellsJ);
+			let cardRCellsJ = card(rCellsJ);
 			ℝ[cardRCellsJ] tmp;
 			∀r, countr ∈ rCellsJ, {
 				tmp[countr] = 0.5; // stupid but test countr
@@ -145,6 +148,7 @@ class InstructionInterpreterTest
 		val model = getTestModule(xQuads, yQuads)
 		+
 		'''
+		ℝ[2] X{nodes};
 		ℝ U{cells};
 		InitU : {
 			set myCells = cells();
@@ -164,5 +168,32 @@ class InstructionInterpreterTest
 			u.set(i, 1.0)
 
 		assertVariableValueInContext(irModule, context, "U", new NV1Real(u))
+	}
+
+	@Test
+	def void testInterpreteExit()
+	{
+		val xQuads = 100
+		val yQuads = 100
+		val model = getTestModule(xQuads, yQuads)
+		+
+		'''
+		let V=100;
+		ℝ[2] X{nodes};
+
+		Test : if (V < 100) V = V+1; else exit "V must be less than 100";
+		'''
+
+		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val handler = new ConsoleHandler
+		handler.level = Level::OFF
+		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
+
+		try {
+			moduleInterpreter.interprete
+			Assert::fail("Should throw exception")
+		} catch (RuntimeException e) {
+			Assert.assertEquals("V must be less than 100", e.message)
+		}
 	}
 }

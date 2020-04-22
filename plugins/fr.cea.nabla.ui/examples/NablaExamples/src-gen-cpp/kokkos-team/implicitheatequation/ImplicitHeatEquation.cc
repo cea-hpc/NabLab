@@ -431,7 +431,7 @@ private:
 						const size_t dCells(dId);
 						const Id fId(mesh->getCommonFace(cId, dId));
 						const size_t fFaces(fId);
-						double alphaExtraDiag(-deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / MathFunctions::norm(Xc(cCells) - Xc(dCells)));
+						const double alphaExtraDiag(-deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / MathFunctions::norm(Xc(cCells) - Xc(dCells)));
 						alpha(cCells,dCells) = alphaExtraDiag;
 						alphaDiag = alphaDiag + alphaExtraDiag;
 					}

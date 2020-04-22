@@ -48,7 +48,7 @@ double trace(RealArray2D<l,l> a)
 
 RealArray2D<2,2> inverse(RealArray2D<2,2> a)
 {
-	double alpha(1.0 / MathFunctions::det(a));
+	const double alpha(1.0 / MathFunctions::det(a));
 	return {a[1][1] * alpha, -a[0][1] * alpha, -a[1][0] * alpha, a[0][0] * alpha};
 }
 
@@ -328,7 +328,7 @@ private:
 					reduction0 = sumR1(reduction0, X_n0[rNodes]);
 				}
 			}
-			RealArray1D<2> center(0.25 * reduction0);
+			const RealArray1D<2> center(0.25 * reduction0);
 			if (center[0] < options->option_x_interface) 
 			{
 				rho_ic = options->option_rho_ini_zg;
@@ -350,7 +350,7 @@ private:
 					reduction1 = sumR0(reduction1, MathFunctions::dot(Cjr_ic[jCells][rNodesOfCellJ], X_n0[rNodes]));
 				}
 			}
-			double V_ic(0.5 * reduction1);
+			const double V_ic(0.5 * reduction1);
 			m[jCells] = rho_ic * V_ic;
 			p[jCells] = p_ic;
 			rho[jCells] = rho_ic;
@@ -599,13 +599,13 @@ private:
 			parallel::parallel_exec(nbOuterFaces, [&](const size_t& fOuterFaces)
 			{
 				const Id fId(outerFaces[fOuterFaces]);
-				double epsilon(1.0E-10);
-				RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
-				double X_MIN(0.0);
-				double X_MAX(options->X_EDGE_ELEMS * options->X_EDGE_LENGTH);
-				double Y_MIN(0.0);
-				double Y_MAX(options->Y_EDGE_ELEMS * options->Y_EDGE_LENGTH);
-				RealArray1D<2> nY({0.0, 1.0});
+				const double epsilon(1.0E-10);
+				const RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
+				const double X_MIN(0.0);
+				const double X_MAX(options->X_EDGE_ELEMS * options->X_EDGE_LENGTH);
+				const double Y_MIN(0.0);
+				const double Y_MAX(options->Y_EDGE_ELEMS * options->Y_EDGE_LENGTH);
+				const RealArray1D<2> nY({0.0, 1.0});
 				{
 					const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
 					const size_t nbNodesOfFaceF(nodesOfFaceF.size());
@@ -620,9 +620,9 @@ private:
 								sign = -1.0;
 							else
 								sign = 1.0;
-							RealArray1D<2> N(sign * nY);
-							RealArray2D<2,2> NxN(tensProduct(N, N));
-							RealArray2D<2,2> IcP(I - NxN);
+							const RealArray1D<2> N(sign * nY);
+							const RealArray2D<2,2> NxN(tensProduct(N, N));
+							const RealArray2D<2,2> IcP(I - NxN);
 							bt[rNodes] = MathFunctions::matVectProduct(IcP, b[rNodes]);
 							Mt[rNodes] = IcP * (Ar[rNodes] * IcP) + NxN * trace(Ar[rNodes]);
 						}

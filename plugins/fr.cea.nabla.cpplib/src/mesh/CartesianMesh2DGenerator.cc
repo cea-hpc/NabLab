@@ -12,6 +12,16 @@
 
 namespace nablalib
 {
+  
+  /*
+   *  15---16---17---18---19          |-27-|-28-|-29-|-30-|
+   *   | 8  | 9  | 10 | 11 |         19   21   23   25   26
+   *  10---11---12---13---14          |-18-|-20-|-22-|-24-|
+   *   | 4  | 5  | 6  | 7  |         10   12   14   16   17
+   *   5----6----7----8----9          |--9-|-11-|-13-|-15-|
+   *   | 0  | 1  | 2  | 3  |          1    3    5    7    8
+   *   0----1----2----3----4          |-0--|-2--|-4--|-6--|
+   */
 
 CartesianMesh2D*
 CartesianMesh2DGenerator::generate(size_t nbXQuads, size_t nbYQuads, double xSize, double ySize)
@@ -60,15 +70,15 @@ CartesianMesh2DGenerator::generate(size_t nbXQuads, size_t nbYQuads, double xSiz
 	}
 
 	// edge creation
-	const int nb_x_nodes_(nbXQuads + 1);
+	const size_t nb_x_nodes_(nbXQuads + 1);
 	Id edge_id_(0);
 	for(size_t i(0); i < nodes_.size(); ++i)	{
 		const size_t right_node_index_(i + 1);
 		if (right_node_index_ % nb_x_nodes_ != 0)
 		  edges_[edge_id_++] = move(Edge(static_cast<Id>(i), right_node_index_));
-		const size_t below_node_index_(i + static_cast<size_t>(nb_x_nodes_));
-		if (below_node_index_ < nodes_.size())
-		  edges_[edge_id_++] = Edge(static_cast<Id>(i), below_node_index_);
+		const size_t above_node_index_(i + nb_x_nodes_);
+		if (above_node_index_ < nodes_.size())
+		  edges_[edge_id_++] = Edge(static_cast<Id>(i), above_node_index_);
 	}
 
 	// quad creation

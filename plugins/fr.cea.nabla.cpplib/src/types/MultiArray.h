@@ -54,7 +54,7 @@ struct MultiArray : public std::array<MultiArray<T, dimN...>, dim1>
     return result;
   }
 
-  // +
+  // Binary +
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
   MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator+(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::plus<>());
@@ -64,7 +64,11 @@ struct MultiArray : public std::array<MultiArray<T, dimN...>, dim1>
     return arrayOp(a, std::plus<>());
   }
   
-  // -
+  // Unary -
+  MultiArray operator-() {
+    return scalarOp(-1.0, std::multiplies<>());
+  }
+  // Binary -
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
   MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator-(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::minus<>());
@@ -74,7 +78,7 @@ struct MultiArray : public std::array<MultiArray<T, dimN...>, dim1>
     return arrayOp(a, std::minus<>());
   }
   
-  // *
+  // Binary *
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
   MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator*(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::multiplies<>());
@@ -84,7 +88,7 @@ struct MultiArray : public std::array<MultiArray<T, dimN...>, dim1>
     return arrayOp(a, std::multiplies<>());
   }
   
-  // /
+  // Binary /
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
   MultiArray<RES_TYPE(T, ScalarT), dim1, dimN...> operator/(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::divides<>());
@@ -175,7 +179,7 @@ struct MultiArray<T, dim> : public std::array<T, dim>
     return result;
   }
   
-  // +
+  // Binary +
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
   MultiArray<RES_TYPE(T, ScalarT), dim> operator+(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::plus<>());
@@ -185,7 +189,11 @@ struct MultiArray<T, dim> : public std::array<T, dim>
     return arrayOp(a, std::plus<>());
   }
   
-  // -
+  // Unary -
+  MultiArray operator-() {
+    return scalarOp(-1.0, std::multiplies<>());
+  }
+  // Binary -
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
   MultiArray<RES_TYPE(T, ScalarT), dim> operator-(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::minus<>());
@@ -195,7 +203,7 @@ struct MultiArray<T, dim> : public std::array<T, dim>
     return arrayOp(a, std::minus<>());
   }
   
-  // *
+  // Binary *
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
   MultiArray<RES_TYPE(T, ScalarT), dim> operator*(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::multiplies<>());
@@ -205,7 +213,7 @@ struct MultiArray<T, dim> : public std::array<T, dim>
     return arrayOp(a, std::multiplies<>());
   }
   
-  // /
+  // Binary /
   template <typename ScalarT, TYPE_CHECK(T, ScalarT)>
   MultiArray<RES_TYPE(T, ScalarT), dim> operator/(ScalarT x) {
     return scalarOp(static_cast<RES_TYPE(T, ScalarT)>(x), std::divides<>());

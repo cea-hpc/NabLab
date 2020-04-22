@@ -118,6 +118,22 @@ CartesianMesh2D::getCellsOfFace(const Id& faceId) const
 	  cells.emplace_back(index2IdCell(i_f-1, k_f));
 	}
   return cells;
+  /*
+   * Old code just in case there are still flaws in new code...
+   * 
+  std::vector<Id> cellsOfFace;
+	const auto& nodes(getNodesOfFace(faceId));
+	for (auto nodeId : nodes)
+	{
+		auto adjacentCells(getCellsOfNode(nodeId));
+		for(auto quadId : adjacentCells)
+			if (getNbCommonIds(nodes, m_geometry->getQuads()[quadId].getNodeIds()) == 2)
+				cellsOfFace.emplace_back(quadId);
+	}
+	std::sort(cellsOfFace.begin(), cellsOfFace.end());
+	cellsOfFace.erase(std::unique(cellsOfFace.begin(), cellsOfFace.end()), cellsOfFace.end());
+	return cellsOfFace;
+  */
 }
 
 vector<Id>
@@ -164,9 +180,9 @@ Id
 CartesianMesh2D::getBackCell(const Id& faceId) const
 {
   vector<Id> cells(move(getCellsOfFace(faceId)));
-  if (cells.empty()) {
+  if (cells.size() < 2) {
     stringstream msg;
-    msg << "Can't get back cell of face " << faceId << endl;
+    msg << "Error in getBackCell(" << faceId << "): please consider using this method with inner face only." << endl;
 	  throw runtime_error(msg.str());
   } else {
     return cells[0];
@@ -177,9 +193,9 @@ Id
 CartesianMesh2D::getFrontCell(const Id& faceId) const
 {
   vector<Id> cells(move(getCellsOfFace(faceId)));
-  if (cells.size() < 1) {
+  if (cells.size() < 2) {
     stringstream msg;
-    msg << "Can't get front cell of face " << faceId << endl;
+    msg << "Error in getFrontCell(" << faceId << "): please consider using this method with inner face only." << endl;
 	  throw runtime_error(msg.str());
   } else {
     return cells[1];

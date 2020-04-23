@@ -53,7 +53,10 @@ workflow Glace2dGenerationChain transforms Glace2d
 		{
 			maxIterationVariable = option_max_iterations;
 			stopTimeVariable = option_stoptime;
-			programmingModel = StlThread
+			programmingModel = StlThread;
+			compiler = GNU;
+			// compiler = LLVM;
+			// compilerPath = "/home/letiercef/Utils/clang-9.0.0/bin/clang++";
 		}
 		outputDir = "/NablaExamples/src-gen-cpp/stl-thread";
 	}
@@ -64,7 +67,8 @@ workflow Glace2dGenerationChain transforms Glace2d
 		{
 			maxIterationVariable = option_max_iterations;
 			stopTimeVariable = option_stoptime;
-			programmingModel = Kokkos
+			programmingModel = Kokkos;
+			compiler = GNU;
 		}
 		outputDir = "/NablaExamples/src-gen-cpp/kokkos";
 	}
@@ -75,7 +79,8 @@ workflow Glace2dGenerationChain transforms Glace2d
 		{
 			maxIterationVariable = option_max_iterations;
 			stopTimeVariable = option_stoptime;
-			programmingModel = KokkosTeamThread
+			programmingModel = KokkosTeamThread;
+			compiler = GNU;
 		}
 		outputDir = "/NablaExamples/src-gen-cpp/kokkos-team";
 	}

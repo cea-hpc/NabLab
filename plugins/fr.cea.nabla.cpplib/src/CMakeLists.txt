@@ -10,12 +10,24 @@
 
 cmake_minimum_required(VERSION 3.15)
 set(CMAKE_VERBOSE_MAKEFILE FALSE)
-set(CMAKE_CXX_COMPILER /usr/bin/g++ CACHE STRING "")
+
+# Standalone build of the library is made with system default GCC, change it if you want.
+if(NOT DEFINED NABLA_CXX_COMPILER)
+  set(CMAKE_CXX_COMPILER /usr/bin/g++ CACHE STRING "")
+else()
+  set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
+endif()
+
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.4.0")
 		message(FATAL_ERROR "GCC minimum required version is 7.4.0. Please upgrade.")
 	endif()
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0.0")
+		message(FATAL_ERROR "Clang minimum required version is 9.0.0. Please upgrade.")
+	endif()
 endif()
+
 project(nablacpplibs CXX)
 
 ### LIBCPPNABLA
@@ -28,8 +40,6 @@ target_link_directories(cppnabla PUBLIC)
 target_link_libraries(cppnabla PUBLIC stdc++fs)
 target_compile_options(cppnabla PUBLIC -g -Wall -O3 --std=c++17 -march=native -mtune=native)
 
-
-
 ### LIBCPPNABLASTL
 if(NOT DEFINED LIBCPPNABLA_BACKEND OR LIBCPPNABLA_BACKEND STREQUAL "STL")
 message(STATUS "Building library with STL.")
@@ -40,7 +50,6 @@ target_link_directories(cppnablastl PUBLIC)
 target_link_libraries(cppnablastl PUBLIC)
 target_compile_options(cppnablastl PUBLIC -g -Wall -O3 --std=c++17 -march=native -mtune=native)
 endif()
-
 
 ### LIBCPPNABLAKOKKOS
 if(NOT DEFINED LIBCPPNABLA_BACKEND OR LIBCPPNABLA_BACKEND STREQUAL "KOKKOS")

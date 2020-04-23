@@ -53,7 +53,8 @@ workflow ExplicitHeatEquationGenerationChain transforms ExplicitHeatEquation
 		{
 			maxIterationVariable = option_max_iterations;
 			stopTimeVariable = option_stoptime;
-			programmingModel = StlThread
+			programmingModel = StlThread;
+			compiler = GNU;
 		}
 		outputDir = "/NablaExamples/src-gen-cpp/stl-thread";
 	}
@@ -63,7 +64,8 @@ workflow ExplicitHeatEquationGenerationChain transforms ExplicitHeatEquation
 		{
 			maxIterationVariable = option_max_iterations;
 			stopTimeVariable = option_stoptime;
-			programmingModel = Kokkos
+			programmingModel = Kokkos;
+			compiler = GNU;
 		}
 		outputDir = "/NablaExamples/src-gen-cpp/kokkos";
 	}
@@ -74,7 +76,8 @@ workflow ExplicitHeatEquationGenerationChain transforms ExplicitHeatEquation
 		{
 			maxIterationVariable = option_max_iterations;
 			stopTimeVariable = option_stoptime;
-			programmingModel = KokkosTeamThread
+			programmingModel = KokkosTeamThread;
+			compiler = GNU;
 		}
 		outputDir = "/NablaExamples/src-gen-cpp/kokkos-team";
 	}

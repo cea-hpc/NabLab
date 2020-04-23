@@ -23,26 +23,17 @@ import java.util.logging.Level
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
-class InstructionInterpreterTest 
+class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 {
 	@Inject CompilationChainHelper compilationHelper
 	@Inject extension TestUtils
 
-	@Test
-	def void testInterpreteVarDefinition()
+	override assertInterpreteVarDefinition(String model)
 	{
-		val model = testModuleForSimulation
-		+
-		'''
-		ℝ[2] X{nodes};
-		Job1: { let r = 1.0; t = r; }
-		'''
-
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
@@ -52,16 +43,8 @@ class InstructionInterpreterTest
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(1.0))
 	}
 
-	@Test
-	def void testInterpreteInstructionBlock()
+	override assertInterpreteInstructionBlock(String model)
 	{
-		val model = testModuleForSimulation
-		+
-		'''
-		ℝ[2] X{nodes};
-		Job1: { let r = 1.0; t = r; }
-		'''
-
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
@@ -71,16 +54,8 @@ class InstructionInterpreterTest
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(1.0))
 	}
 
-	@Test
-	def void testInterpreteAffectation()
+	override assertInterpreteAffectation(String model)
 	{
-		val model = testModuleForSimulation
-		+
-		'''
-		ℝ[2] X{nodes};
-		Job1: { let r = 1.0; t = r; }
-		'''
-
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
@@ -90,28 +65,8 @@ class InstructionInterpreterTest
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(1.0))
 	}
 
-	@Test
-	def void testInterpreteLoop()
+	override assertInterpreteLoop(String model, int xQuads, int yQuads)
 	{
-		val xQuads = 100
-		val yQuads = 100
-		val model = getTestModule(xQuads, yQuads)
-		+
-		'''
-		ℝ U{cells};
-		ℝ[2] X{nodes}, C{cells, nodesOfCell};
-		InitU : ∀r∈cells(), U{r} = 1.0;
-		ComputeCjr: ∀j∈ cells(), {
-			set rCellsJ = nodesOfCell(j);
-			let cardRCellsJ = card(rCellsJ);
-			ℝ[cardRCellsJ] tmp;
-			∀r, countr ∈ rCellsJ, {
-				tmp[countr] = 0.5; // stupid but test countr
-				C{j,r} = tmp[countr] * (X{r+1} - X{r-1});
-			}
-		}
-		'''
-
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
@@ -140,22 +95,8 @@ class InstructionInterpreterTest
 		}
 	}
 
-	@Test
-	def void testInterpreteSetDefinition()
+	override assertInterpreteSetDefinition(String model, int xQuads, int yQuads)
 	{
-		val xQuads = 100
-		val yQuads = 100
-		val model = getTestModule(xQuads, yQuads)
-		+
-		'''
-		ℝ[2] X{nodes};
-		ℝ U{cells};
-		InitU : {
-			set myCells = cells();
-			∀r∈myCells, U{r} = 1.0;
-		}
-		'''
-
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
@@ -170,20 +111,8 @@ class InstructionInterpreterTest
 		assertVariableValueInContext(irModule, context, "U", new NV1Real(u))
 	}
 
-	@Test
-	def void testInterpreteExit()
+	override assertInterpreteExit(String model)
 	{
-		val xQuads = 100
-		val yQuads = 100
-		val model = getTestModule(xQuads, yQuads)
-		+
-		'''
-		let V=100;
-		ℝ[2] X{nodes};
-
-		Test : if (V < 100) V = V+1; else exit "V must be less than 100";
-		'''
-
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF

@@ -24,40 +24,17 @@ import java.util.logging.Level
 import java.util.logging.Logger
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
-import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
-class BinaryOperationsInterpreterTest
+class BinaryOperationsInterpreterTest extends AbstractBinaryOperationsInterpreterTest
 {
 	@Inject CompilationChainHelper compilationHelper
 	@Inject extension TestUtils
 
-	@Test
-	def void testGetValueOfNV0Bool_NV0Bool()
+	override assertGetValueOfNV0Bool_NV0Bool(String model)
 	{
-		val model = testModuleForSimulation
-		+
-		'''
-		let b1 = true || false; // -> true
-		let b2 = true || true; // -> true
-		let b3 = false || false; // -> false
-
-		let b4 = true && false; // -> false
-		let b5 = true && true; // -> true
-		let b6 = false && false; // -> false
-
-		let b7 = true == false; // -> false
-		let b8 = true != false; // -> true
-		let b9 = true >= false; // -> true
-		let b10 = true <= false; // -> false
-		let b11 = true > false; // -> true
-		let b12 = true < false; // -> false
-
-		ℝ[2] X{nodes};
-		'''
-
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
 
@@ -77,39 +54,8 @@ class BinaryOperationsInterpreterTest
 		assertVariableDefaultValue(irModule, context, "b12", new NV0Bool(false))
 	}
 
-	@Test
-	def void testGetValueOfNV0Int_NV0Int()
+	override assertGetValueOfNV0Int_NV0Int(String model)
 	{
-		val model = testModuleForSimulation
-		+
-		'''
-		let b1 = 1 == 2; // -> false
-		let b2 = 1 == 1; // -> true
-
-		let b3 = 1 != 2; // -> true
-		let b4 = 2 != 2; // -> false
-
-		let b5 = 1 >= 2; // -> false
-		let b6 = 2 >= 2; // -> true
-
-		let b7 = 1 <= 2; // -> true
-		let b8 = 2 <= 2; // -> true
-
-		let b9 = 1 > 2; // -> false
-		let b10 = 2 > 1; // -> true
-
-		let b11 = 1 < 2; // -> true
-		let b12 = 2 < 1; // -> false
-
-		let n1 = 1 + 2; // -> 3
-		let n2 = 2 - 1; // -> 1
-		let n3 = 2 * 3; // -> 6
-		let n4 = 6 / 3; // -> 2
-		let n5 = 7 / 3; // -> 2
-		let n6 = 7 % 3; // -> 1
-
-		ℝ[2] X{nodes};
-		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
 
@@ -134,38 +80,8 @@ class BinaryOperationsInterpreterTest
 		assertVariableDefaultValue(irModule, context, "n6", new NV0Int(1))
 	}
 
-	@Test
-	def void testGetValueOfNV0Int_NV0Real()
+	override assertGetValueOfNV0Int_NV0Real(String model)
 	{
-		val model = testModuleForSimulation
-		+
-		'''
-		let b1 = 1 == 2.; // -> false
-		let b2 = 1 == 1; // -> true
-
-		let b3 = 1 != 2.; // -> true
-		let b4 = 2 != 2.; // -> false
-
-		let b5 = 1 >= 2.; // -> false
-		let b6 = 2 >= 2.; // -> true
-
-		let b7 = 1 <= 2.; // -> true
-		let b8 = 2 <= 2.; // -> true
-
-		let b9 = 1 > 2.; // -> false
-		let b10 = 2 > 1.; // -> true
-
-		let b11 = 1 < 2.; // -> true
-		let b12 = 2 < 1.; // -> false
-
-		let n1 = 1 + 2.; // -> 3.
-		let n2 = 2 - 1.; // -> 1.
-		let n3 = 2 * 3.; // -> 6.
-		let n4 = 6 / 3.; // -> 2.
-		let n5 = 7 / 2.; // -> 3.5.
-
-		ℝ[2] X{nodes};
-		'''
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
 
@@ -189,19 +105,8 @@ class BinaryOperationsInterpreterTest
 		assertVariableDefaultValue(irModule, context, "n5", new NV0Real(3.5))
 	}
 
-	@Test
-	def void testGetValueOfNV0Int_NV1Int()
+	override assertGetValueOfNV0Int_NV1Int(String model)
 	{
-		val model = testModuleForSimulation
-		+
-		'''
-		let n1 = [1,2];
-		let n2 = 3 + n1;
-		let n3 = 3 * n1;
-
-		ℝ[2] X{nodes};
-		'''
-
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF

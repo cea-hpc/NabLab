@@ -17,6 +17,32 @@
 
 using namespace nablalib;
 
+
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
+{
+	return a + b;
+}
+
+KOKKOS_INLINE_FUNCTION
+double minR0(double a, double b)
+{
+	return MathFunctions::min(a, b);
+}
+
+KOKKOS_INLINE_FUNCTION
+double sumR0(double a, double b)
+{
+	return a + b;
+}
+
+KOKKOS_INLINE_FUNCTION
+double prodR0(double a, double b)
+{
+	return a * b;
+}
+
 class ExplicitHeatEquation
 {
 public:
@@ -394,7 +420,7 @@ private:
 		Kokkos::parallel_reduce(Kokkos::TeamThreadRange(teamMember, nbCells), KOKKOS_LAMBDA(const size_t& cCells, double& accu)
 		{
 			accu = minR0(accu, options->X_EDGE_LENGTH * options->Y_EDGE_LENGTH / D(cCells));
-		}, KokkosJoiner<double>(reduction1, numeric_limits<double>::max(), std::bind(&ExplicitHeatEquation::minR0, this, std::placeholders::_1, std::placeholders::_2)));
+		}, KokkosJoiner<double>(reduction1, numeric_limits<double>::max(), &minR0));
 		deltat = reduction1 * 0.24;
 	}
 	
@@ -425,7 +451,7 @@ private:
 						const size_t dCells(dId);
 						const Id fId(mesh->getCommonFace(cId, dId));
 						const size_t fFaces(fId);
-						double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / MathFunctions::norm(Xc(cCells) - Xc(dCells)));
+						const double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / MathFunctions::norm(Xc(cCells) - Xc(dCells)));
 						alpha(cCells,dCells) = alphaExtraDiag;
 						alphaDiag = alphaDiag + alphaExtraDiag;
 					}
@@ -497,31 +523,6 @@ private:
 			cpuTimer.reset();
 			ioTimer.reset();
 		} while (continueLoop);
-	}
-	
-	template<size_t x>
-	KOKKOS_INLINE_FUNCTION
-	RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b) 
-	{
-		return a + b;
-	}
-	
-	KOKKOS_INLINE_FUNCTION
-	double minR0(double a, double b) 
-	{
-		return MathFunctions::min(a, b);
-	}
-	
-	KOKKOS_INLINE_FUNCTION
-	double sumR0(double a, double b) 
-	{
-		return a + b;
-	}
-	
-	KOKKOS_INLINE_FUNCTION
-	double prodR0(double a, double b) 
-	{
-		return a * b;
 	}
 
 	void dumpVariables(int iteration)

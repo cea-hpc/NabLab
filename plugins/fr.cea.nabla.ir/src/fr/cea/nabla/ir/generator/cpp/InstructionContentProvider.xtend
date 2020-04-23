@@ -30,7 +30,6 @@ import fr.cea.nabla.ir.ir.VariableDefinition
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
-import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
 
@@ -192,7 +191,7 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 			{
 				return (accu = «binaryFunction.getCodeName('.')»(accu, «lambda.content»));
 			},
-			std::bind(&«irModule.name»::«binaryFunction.name», this, std::placeholders::_1, std::placeholders::_2));''')»
+			&«binaryFunction.name»);''')»
 	'''
 
 	override getLoopContent(Loop it)
@@ -217,7 +216,7 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 			«innerInstruction.content»
 			«ENDFOR»
 			accu = «binaryFunction.getCodeName('.')»(accu, «lambda.content»);
-		}, KokkosJoiner<«result.cppType»>(«result.name», «result.defaultValue.content», std::bind(&«irModule.name»::«binaryFunction.name», this, std::placeholders::_1, std::placeholders::_2)));''')»
+		}, KokkosJoiner<«result.cppType»>(«result.name», «result.defaultValue.content», &«binaryFunction.name»));''')»
 	'''
 
 	override getLoopContent(Loop it)

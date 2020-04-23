@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import org.eclipse.xtend.lib.annotations.Data
 
@@ -19,16 +18,11 @@ import static extension fr.cea.nabla.ir.Utils.*
 class PrivateMethodsContentProvider 
 {
 	protected val extension JobContentProvider
-	protected val extension FunctionContentProvider
 
 	def getContentFor(IrModule it)
 	'''
 		«FOR j : jobs.sortByAtAndName SEPARATOR '\n'»
 			«j.content»
-		«ENDFOR»			
-		«FOR f : functions.filter(Function).filter[body !== null]»
-
-			«f.content»
 		«ENDFOR»
 	'''
 }

@@ -15,6 +15,18 @@
 
 using namespace nablalib;
 
+
+template<size_t x>
+RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
+{
+	return a + b;
+}
+
+double sumR0(double a, double b)
+{
+	return a + b;
+}
+
 class HeatEquation
 {
 public:
@@ -292,17 +304,6 @@ private:
 			cpuTimer.reset();
 			ioTimer.reset();
 		} while (continueLoop);
-	}
-	
-	template<size_t x>
-	RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b) 
-	{
-		return a + b;
-	}
-	
-	double sumR0(double a, double b) 
-	{
-		return a + b;
 	}
 
 	void dumpVariables(int iteration)

@@ -23,7 +23,7 @@ class FunctionContentProvider
 	'''
 		«FOR v : variables BEFORE "template<" SEPARATOR ", " AFTER ">"»size_t «v.name»«ENDFOR»
 		«IF macro !== null»«macro»«ENDIF»
-		«returnType.cppType» «name.toFirstLower»(«FOR a : inArgs SEPARATOR ', '»«a.type.cppType» «a.name»«ENDFOR») 
+		«returnType.cppType» «name.toFirstLower»(«FOR a : inArgs SEPARATOR ', '»«a.type.cppType» «a.name»«ENDFOR»)
 		{
 			«body.innerContent»
 		}

@@ -15,6 +15,65 @@
 
 using namespace nablalib;
 
+
+RealArray1D<2> perp(RealArray1D<2> a)
+{
+	return {a[1], -a[0]};
+}
+
+template<size_t l>
+RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b)
+{
+	RealArray2D<l,l> result;
+	for (size_t ia=0; ia<l; ia++)
+	{
+		for (size_t ib=0; ib<l; ib++)
+		{
+			result[ia][ib] = a[ia] * b[ib];
+		}
+	}
+	return result;
+}
+
+template<size_t l>
+double trace(RealArray2D<l,l> a)
+{
+	double result(0.0);
+	for (size_t ia=0; ia<l; ia++)
+	{
+		result = result + a[ia][ia];
+	}
+	return result;
+}
+
+RealArray2D<2,2> inverse(RealArray2D<2,2> a)
+{
+	const double alpha(1.0 / MathFunctions::det(a));
+	return {a[1][1] * alpha, -a[0][1] * alpha, -a[1][0] * alpha, a[0][0] * alpha};
+}
+
+template<size_t x>
+RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
+{
+	return a + b;
+}
+
+double sumR0(double a, double b)
+{
+	return a + b;
+}
+
+template<size_t x>
+RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b)
+{
+	return a + b;
+}
+
+double minR0(double a, double b)
+{
+	return MathFunctions::min(a, b);
+}
+
 class Glace2d
 {
 public:
@@ -269,7 +328,7 @@ private:
 					reduction0 = sumR1(reduction0, X_n0[rNodes]);
 				}
 			}
-			RealArray1D<2> center(0.25 * reduction0);
+			const RealArray1D<2> center(0.25 * reduction0);
 			if (center[0] < options->option_x_interface) 
 			{
 				rho_ic = options->option_rho_ini_zg;
@@ -291,7 +350,7 @@ private:
 					reduction1 = sumR0(reduction1, MathFunctions::dot(Cjr_ic[jCells][rNodesOfCellJ], X_n0[rNodes]));
 				}
 			}
-			double V_ic(0.5 * reduction1);
+			const double V_ic(0.5 * reduction1);
 			m[jCells] = rho_ic * V_ic;
 			p[jCells] = p_ic;
 			rho[jCells] = rho_ic;
@@ -523,7 +582,7 @@ private:
 			{
 				return (accu = minR0(accu, deltatj[jCells]));
 			},
-			std::bind(&Glace2d::minR0, this, std::placeholders::_1, std::placeholders::_2));
+			&minR0);
 		deltat_nplus1 = options->option_deltat_cfl * reduction8;
 	}
 	
@@ -540,13 +599,13 @@ private:
 			parallel::parallel_exec(nbOuterFaces, [&](const size_t& fOuterFaces)
 			{
 				const Id fId(outerFaces[fOuterFaces]);
-				double epsilon(1.0E-10);
-				RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
-				double X_MIN(0.0);
-				double X_MAX(options->X_EDGE_ELEMS * options->X_EDGE_LENGTH);
-				double Y_MIN(0.0);
-				double Y_MAX(options->Y_EDGE_ELEMS * options->Y_EDGE_LENGTH);
-				RealArray1D<2> nY({0.0, 1.0});
+				const double epsilon(1.0E-10);
+				const RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
+				const double X_MIN(0.0);
+				const double X_MAX(options->X_EDGE_ELEMS * options->X_EDGE_LENGTH);
+				const double Y_MIN(0.0);
+				const double Y_MAX(options->Y_EDGE_ELEMS * options->Y_EDGE_LENGTH);
+				const RealArray1D<2> nY({0.0, 1.0});
 				{
 					const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
 					const size_t nbNodesOfFaceF(nodesOfFaceF.size());
@@ -561,9 +620,9 @@ private:
 								sign = -1.0;
 							else
 								sign = 1.0;
-							RealArray1D<2> N(sign * nY);
-							RealArray2D<2,2> NxN(tensProduct(N, N));
-							RealArray2D<2,2> IcP(I - NxN);
+							const RealArray1D<2> N(sign * nY);
+							const RealArray2D<2,2> NxN(tensProduct(N, N));
+							const RealArray2D<2,2> IcP(I - NxN);
 							bt[rNodes] = MathFunctions::matVectProduct(IcP, b[rNodes]);
 							Mt[rNodes] = IcP * (Ar[rNodes] * IcP) + NxN * trace(Ar[rNodes]);
 						}
@@ -721,64 +780,6 @@ private:
 			}
 			uj_nplus1[jCells] = uj_n[jCells] - (deltat_n / m[jCells]) * reduction6;
 		});
-	}
-	
-	RealArray1D<2> perp(RealArray1D<2> a) 
-	{
-		return {a[1], -a[0]};
-	}
-	
-	template<size_t l>
-	RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b) 
-	{
-		RealArray2D<l,l> result;
-		for (size_t ia=0; ia<l; ia++)
-		{
-			for (size_t ib=0; ib<l; ib++)
-			{
-				result[ia][ib] = a[ia] * b[ib];
-			}
-		}
-		return result;
-	}
-	
-	template<size_t l>
-	double trace(RealArray2D<l,l> a) 
-	{
-		double result(0.0);
-		for (size_t ia=0; ia<l; ia++)
-		{
-			result = result + a[ia][ia];
-		}
-		return result;
-	}
-	
-	RealArray2D<2,2> inverse(RealArray2D<2,2> a) 
-	{
-		double alpha(1.0 / MathFunctions::det(a));
-		return {a[1][1] * alpha, -a[0][1] * alpha, -a[1][0] * alpha, a[0][0] * alpha};
-	}
-	
-	template<size_t x>
-	RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b) 
-	{
-		return a + b;
-	}
-	
-	double sumR0(double a, double b) 
-	{
-		return a + b;
-	}
-	
-	template<size_t x>
-	RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b) 
-	{
-		return a + b;
-	}
-	
-	double minR0(double a, double b) 
-	{
-		return MathFunctions::min(a, b);
 	}
 
 	void dumpVariables(int iteration)

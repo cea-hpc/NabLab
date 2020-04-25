@@ -1,8 +1,13 @@
 package iterativeheatequation;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.stream.IntStream;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 
 import fr.cea.nabla.javalib.types.*;
 import fr.cea.nabla.javalib.mesh.*;
@@ -12,18 +17,25 @@ public final class IterativeHeatEquation
 {
 	public final static class Options
 	{
-		public final double X_LENGTH = 2.0;
-		public final double Y_LENGTH = 2.0;
-		public final double u0 = 1.0;
-		public final double[] vectOne = new double[] {1.0, 1.0};
-		public final int X_EDGE_ELEMS = 40;
-		public final int Y_EDGE_ELEMS = 40;
-		public final double X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
-		public final double Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
-		public final double option_stoptime = 0.1;
-		public final int option_max_iterations = 500000000;
-		public final int option_max_iterations_k = 1000;
-		public final double epsilon = 1.0E-8;
+		public double X_LENGTH;
+		public double Y_LENGTH;
+		public double u0;
+		public double[] vectOne;
+		public int X_EDGE_ELEMS;
+		public int Y_EDGE_ELEMS;
+		public double X_EDGE_LENGTH;
+		public double Y_EDGE_LENGTH;
+		public double option_stoptime;
+		public int option_max_iterations;
+		public int option_max_iterations_k;
+		public double epsilon;
+
+		public static Options createOptions(String jsonFileName) throws FileNotFoundException
+		{
+			Gson gson = new Gson();
+			JsonReader reader = new JsonReader(new FileReader(jsonFileName));
+			return gson.fromJson(reader, Options.class);
+		}
 	}
 
 	private final Options options;
@@ -111,12 +123,21 @@ public final class IterativeHeatEquation
 		System.out.println("End of execution of module IterativeHeatEquation");
 	}
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws FileNotFoundException
 	{
-		IterativeHeatEquation.Options o = new IterativeHeatEquation.Options();
-		CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
-		IterativeHeatEquation i = new IterativeHeatEquation(o, mesh);
-		i.simulate();
+		if (args.length == 1)
+		{
+			String dataFileName = args[0];
+			IterativeHeatEquation.Options o = IterativeHeatEquation.Options.createOptions(dataFileName);
+			CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
+			IterativeHeatEquation i = new IterativeHeatEquation(o, mesh);
+			i.simulate();
+		}
+		else
+		{
+			System.out.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
+			System.out.println("        Expecting user data file name, for example IterativeHeatEquationDefaultOptions.json");
+		}
 	}
 
 	/**

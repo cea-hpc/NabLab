@@ -1,9 +1,11 @@
-#include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <type_traits>
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
 #include "mesh/CartesianMesh2DGenerator.h"
@@ -36,16 +38,65 @@ class HeatEquation
 public:
 	struct Options
 	{
-		// Should be const but usefull to set them from main args
-		double X_EDGE_LENGTH = 0.1;
-		double Y_EDGE_LENGTH = X_EDGE_LENGTH;
-		size_t X_EDGE_ELEMS = 20;
-		size_t Y_EDGE_ELEMS = 20;
-		double option_stoptime = 0.1;
-		size_t option_max_iterations = 500;
-		double PI = 3.1415926;
-		double alpha = 1.0;
+		double X_EDGE_LENGTH;
+		double Y_EDGE_LENGTH;
+		size_t X_EDGE_ELEMS;
+		size_t Y_EDGE_ELEMS;
+		double option_stoptime;
+		size_t option_max_iterations;
+		double PI;
+		double alpha;
+
+		Options(const std::string& fileName)
+		{
+			ifstream ifs(fileName);
+			rapidjson::IStreamWrapper isw(ifs);
+			rapidjson::Document d;
+			d.ParseStream(isw);
+			assert(d.IsObject());
+			// X_EDGE_LENGTH
+			assert(d.HasMember("X_EDGE_LENGTH"));
+			const rapidjson::Value& valueof_X_EDGE_LENGTH = d["X_EDGE_LENGTH"];
+			assert(valueof_X_EDGE_LENGTH.IsDouble());
+			X_EDGE_LENGTH = valueof_X_EDGE_LENGTH.GetDouble();
+			// Y_EDGE_LENGTH
+			assert(d.HasMember("Y_EDGE_LENGTH"));
+			const rapidjson::Value& valueof_Y_EDGE_LENGTH = d["Y_EDGE_LENGTH"];
+			assert(valueof_Y_EDGE_LENGTH.IsDouble());
+			Y_EDGE_LENGTH = valueof_Y_EDGE_LENGTH.GetDouble();
+			// X_EDGE_ELEMS
+			assert(d.HasMember("X_EDGE_ELEMS"));
+			const rapidjson::Value& valueof_X_EDGE_ELEMS = d["X_EDGE_ELEMS"];
+			assert(valueof_X_EDGE_ELEMS.IsInt());
+			X_EDGE_ELEMS = valueof_X_EDGE_ELEMS.GetInt();
+			// Y_EDGE_ELEMS
+			assert(d.HasMember("Y_EDGE_ELEMS"));
+			const rapidjson::Value& valueof_Y_EDGE_ELEMS = d["Y_EDGE_ELEMS"];
+			assert(valueof_Y_EDGE_ELEMS.IsInt());
+			Y_EDGE_ELEMS = valueof_Y_EDGE_ELEMS.GetInt();
+			// option_stoptime
+			assert(d.HasMember("option_stoptime"));
+			const rapidjson::Value& valueof_option_stoptime = d["option_stoptime"];
+			assert(valueof_option_stoptime.IsDouble());
+			option_stoptime = valueof_option_stoptime.GetDouble();
+			// option_max_iterations
+			assert(d.HasMember("option_max_iterations"));
+			const rapidjson::Value& valueof_option_max_iterations = d["option_max_iterations"];
+			assert(valueof_option_max_iterations.IsInt());
+			option_max_iterations = valueof_option_max_iterations.GetInt();
+			// PI
+			assert(d.HasMember("PI"));
+			const rapidjson::Value& valueof_PI = d["PI"];
+			assert(valueof_PI.IsDouble());
+			PI = valueof_PI.GetDouble();
+			// alpha
+			assert(d.HasMember("alpha"));
+			const rapidjson::Value& valueof_alpha = d["alpha"];
+			assert(valueof_alpha.IsDouble());
+			alpha = valueof_alpha.GetDouble();
+		}
 	};
+
 	Options* options;
 
 private:
@@ -376,27 +427,38 @@ public:
 int main(int argc, char* argv[]) 
 {
 	Kokkos::initialize(argc, argv);
-	auto o = new HeatEquation::Options();
-	string output;
-	if (argc == 5)
+	HeatEquation::Options* o = nullptr;
+	string dataFile, output;
+	
+	if (argc == 2)
 	{
-		o->X_EDGE_ELEMS = std::atoi(argv[1]);
-		o->Y_EDGE_ELEMS = std::atoi(argv[2]);
-		o->X_EDGE_LENGTH = std::atof(argv[3]);
-		o->Y_EDGE_LENGTH = std::atof(argv[4]);
+		dataFile = argv[1];
+		o = new HeatEquation::Options(dataFile);
 	}
 	else if (argc == 6)
 	{
-		o->X_EDGE_ELEMS = std::atoi(argv[1]);
-		o->Y_EDGE_ELEMS = std::atoi(argv[2]);
-		o->X_EDGE_LENGTH = std::atof(argv[3]);
-		o->Y_EDGE_LENGTH = std::atof(argv[4]);
-		output = argv[5];
+		dataFile = argv[1];
+		o = new HeatEquation::Options(dataFile);
+		o->X_EDGE_ELEMS = std::atoi(argv[2]);
+		o->Y_EDGE_ELEMS = std::atoi(argv[3]);
+		o->X_EDGE_LENGTH = std::atof(argv[4]);
+		o->Y_EDGE_LENGTH = std::atof(argv[5]);
 	}
-	else if (argc != 1)
+	else if (argc == 7)
 	{
-		std::cerr << "[ERROR] Wrong number of arguments. Expecting 4 or 5 args: X Y Xlength Ylength (output)." << std::endl;
-		std::cerr << "(X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
+		dataFile = argv[1];
+		o = new HeatEquation::Options(dataFile);
+		o->X_EDGE_ELEMS = std::atoi(argv[2]);
+		o->Y_EDGE_ELEMS = std::atoi(argv[3]);
+		o->X_EDGE_LENGTH = std::atof(argv[4]);
+		o->Y_EDGE_LENGTH = std::atof(argv[5]);
+		output = argv[6];
+	}
+	else
+	{
+		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1, 5 or 6 args: dataFile [X Y Xlength Ylength [output]]." << std::endl;
+		std::cerr << "(HeatEquationDefaultOptions.json, X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
+		return -1;
 	}
 	auto nm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
 	auto c = new HeatEquation(o, nm, output);

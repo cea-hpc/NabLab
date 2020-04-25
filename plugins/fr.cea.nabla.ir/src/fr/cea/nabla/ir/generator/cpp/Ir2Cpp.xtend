@@ -31,6 +31,7 @@ class Ir2Cpp extends CodeGenerator
 
 	val extension ArgOrVarContentProvider argOrVarContentProvider
 	val extension ExpressionContentProvider expressionContentProvider
+	val extension JsonContentProvider jsonContentProvider
 	val extension FunctionContentProvider functionContentProvider
 	val extension JobContainerContentProvider jobContainerContentProvider
 
@@ -41,6 +42,7 @@ class Ir2Cpp extends CodeGenerator
 
 		argOrVarContentProvider = backend.argOrVarContentProvider
 		expressionContentProvider = backend.expressionContentProvider
+		jsonContentProvider = backend.jsonContentProvider
 		jobContainerContentProvider = backend.jobContainerContentProvider
 		functionContentProvider = backend.functionContentProvider
 
@@ -81,11 +83,23 @@ class Ir2Cpp extends CodeGenerator
 	public:
 		struct Options
 		{
-			// Should be const but usefull to set them from main args
 			«FOR v : options»
-			«IF v.type.primitive == PrimitiveType.INT»size_t«ELSE»«v.cppType»«ENDIF» «v.name» = «v.defaultValue.content.toString.replaceAll('options->', '')»;
+			«IF v.type.primitive == PrimitiveType.INT»size_t«ELSE»«v.cppType»«ENDIF» «v.name»;
 			«ENDFOR»
+
+			Options(const std::string& fileName)
+			{
+				ifstream ifs(fileName);
+				rapidjson::IStreamWrapper isw(ifs);
+				rapidjson::Document d;
+				d.ParseStream(isw);
+				assert(d.IsObject());
+				«FOR v : options»
+				«v.jsonContent»
+				«ENDFOR»
+			}
 		};
+
 		Options* options;
 
 	private:

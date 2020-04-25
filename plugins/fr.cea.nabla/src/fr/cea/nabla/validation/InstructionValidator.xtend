@@ -15,6 +15,7 @@ import fr.cea.nabla.ExpressionExtensions
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.NablaPackage
+import fr.cea.nabla.nabla.OptDefinition
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import org.eclipse.xtext.validation.Check
@@ -29,10 +30,12 @@ class InstructionValidator extends FunctionOrReductionValidator
 	public static val AFFECTATION_TYPE = "Instructions::AffectationType"
 	public static val IF_CONDITION_BOOL = "Instructions::IfConditionBool"
 	public static val GLOBAL_VAR_VALUE = "Instructions::GlobalVarValue"
+	public static val OPTION_VALUE = "Instructions::OptionValue"
 
 	static def getAffectationTypeMsg(String actualTypeName, String expectedTypeName) { "Expected " + expectedTypeName + ", but was " + actualTypeName }
 	static def getIfConditionBoolMsg(String actualTypeName) { "Expected " + ValidationUtils::BOOL.label + ", but was " + actualTypeName }
 	static def getGlobalVarValueMsg() { "Assignment with reduction not allowed in global variables" }
+	static def getOptionValueMsg() { "Assignment with function/reduction not allowed in options" }
 
 
 	@Check
@@ -57,6 +60,17 @@ class InstructionValidator extends FunctionOrReductionValidator
 			// no function or reduction in global variables initialisation
 			if (variable.global && !value.respectGlobalExprConstraints)
 				error(getGlobalVarValueMsg(), NablaPackage.Literals::SIMPLE_VAR_DEFINITION__VALUE, GLOBAL_VAR_VALUE)
+		}
+	}
+
+	@Check
+	def checkOptionValue(OptDefinition it)
+	{
+		if (value !== null)
+		{
+			// no function or reduction in global variables initialisation
+			if (!value.respectOptionConstraints)
+				error(getOptionValueMsg(), NablaPackage.Literals::OPT_DEFINITION__VALUE, OPTION_VALUE)
 		}
 	}
 }

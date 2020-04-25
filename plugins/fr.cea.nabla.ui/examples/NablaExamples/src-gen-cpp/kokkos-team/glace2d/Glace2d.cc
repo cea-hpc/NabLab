@@ -1,9 +1,11 @@
-#include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <type_traits>
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
 #include "mesh/CartesianMesh2DGenerator.h"
@@ -89,22 +91,101 @@ class Glace2d
 public:
 	struct Options
 	{
-		// Should be const but usefull to set them from main args
-		double X_EDGE_LENGTH = 0.01;
-		double Y_EDGE_LENGTH = X_EDGE_LENGTH;
-		size_t X_EDGE_ELEMS = 100;
-		size_t Y_EDGE_ELEMS = 10;
-		double option_stoptime = 0.2;
-		size_t option_max_iterations = 20000;
-		double gamma = 1.4;
-		double option_x_interface = 0.5;
-		double option_deltat_ini = 1.0E-5;
-		double option_deltat_cfl = 0.4;
-		double option_rho_ini_zg = 1.0;
-		double option_rho_ini_zd = 0.125;
-		double option_p_ini_zg = 1.0;
-		double option_p_ini_zd = 0.1;
+		double X_EDGE_LENGTH;
+		double Y_EDGE_LENGTH;
+		size_t X_EDGE_ELEMS;
+		size_t Y_EDGE_ELEMS;
+		double option_stoptime;
+		size_t option_max_iterations;
+		double gamma;
+		double option_x_interface;
+		double option_deltat_ini;
+		double option_deltat_cfl;
+		double option_rho_ini_zg;
+		double option_rho_ini_zd;
+		double option_p_ini_zg;
+		double option_p_ini_zd;
+
+		Options(const std::string& fileName)
+		{
+			ifstream ifs(fileName);
+			rapidjson::IStreamWrapper isw(ifs);
+			rapidjson::Document d;
+			d.ParseStream(isw);
+			assert(d.IsObject());
+			// X_EDGE_LENGTH
+			assert(d.HasMember("X_EDGE_LENGTH"));
+			const rapidjson::Value& valueof_X_EDGE_LENGTH = d["X_EDGE_LENGTH"];
+			assert(valueof_X_EDGE_LENGTH.IsDouble());
+			X_EDGE_LENGTH = valueof_X_EDGE_LENGTH.GetDouble();
+			// Y_EDGE_LENGTH
+			assert(d.HasMember("Y_EDGE_LENGTH"));
+			const rapidjson::Value& valueof_Y_EDGE_LENGTH = d["Y_EDGE_LENGTH"];
+			assert(valueof_Y_EDGE_LENGTH.IsDouble());
+			Y_EDGE_LENGTH = valueof_Y_EDGE_LENGTH.GetDouble();
+			// X_EDGE_ELEMS
+			assert(d.HasMember("X_EDGE_ELEMS"));
+			const rapidjson::Value& valueof_X_EDGE_ELEMS = d["X_EDGE_ELEMS"];
+			assert(valueof_X_EDGE_ELEMS.IsInt());
+			X_EDGE_ELEMS = valueof_X_EDGE_ELEMS.GetInt();
+			// Y_EDGE_ELEMS
+			assert(d.HasMember("Y_EDGE_ELEMS"));
+			const rapidjson::Value& valueof_Y_EDGE_ELEMS = d["Y_EDGE_ELEMS"];
+			assert(valueof_Y_EDGE_ELEMS.IsInt());
+			Y_EDGE_ELEMS = valueof_Y_EDGE_ELEMS.GetInt();
+			// option_stoptime
+			assert(d.HasMember("option_stoptime"));
+			const rapidjson::Value& valueof_option_stoptime = d["option_stoptime"];
+			assert(valueof_option_stoptime.IsDouble());
+			option_stoptime = valueof_option_stoptime.GetDouble();
+			// option_max_iterations
+			assert(d.HasMember("option_max_iterations"));
+			const rapidjson::Value& valueof_option_max_iterations = d["option_max_iterations"];
+			assert(valueof_option_max_iterations.IsInt());
+			option_max_iterations = valueof_option_max_iterations.GetInt();
+			// gamma
+			assert(d.HasMember("gamma"));
+			const rapidjson::Value& valueof_gamma = d["gamma"];
+			assert(valueof_gamma.IsDouble());
+			gamma = valueof_gamma.GetDouble();
+			// option_x_interface
+			assert(d.HasMember("option_x_interface"));
+			const rapidjson::Value& valueof_option_x_interface = d["option_x_interface"];
+			assert(valueof_option_x_interface.IsDouble());
+			option_x_interface = valueof_option_x_interface.GetDouble();
+			// option_deltat_ini
+			assert(d.HasMember("option_deltat_ini"));
+			const rapidjson::Value& valueof_option_deltat_ini = d["option_deltat_ini"];
+			assert(valueof_option_deltat_ini.IsDouble());
+			option_deltat_ini = valueof_option_deltat_ini.GetDouble();
+			// option_deltat_cfl
+			assert(d.HasMember("option_deltat_cfl"));
+			const rapidjson::Value& valueof_option_deltat_cfl = d["option_deltat_cfl"];
+			assert(valueof_option_deltat_cfl.IsDouble());
+			option_deltat_cfl = valueof_option_deltat_cfl.GetDouble();
+			// option_rho_ini_zg
+			assert(d.HasMember("option_rho_ini_zg"));
+			const rapidjson::Value& valueof_option_rho_ini_zg = d["option_rho_ini_zg"];
+			assert(valueof_option_rho_ini_zg.IsDouble());
+			option_rho_ini_zg = valueof_option_rho_ini_zg.GetDouble();
+			// option_rho_ini_zd
+			assert(d.HasMember("option_rho_ini_zd"));
+			const rapidjson::Value& valueof_option_rho_ini_zd = d["option_rho_ini_zd"];
+			assert(valueof_option_rho_ini_zd.IsDouble());
+			option_rho_ini_zd = valueof_option_rho_ini_zd.GetDouble();
+			// option_p_ini_zg
+			assert(d.HasMember("option_p_ini_zg"));
+			const rapidjson::Value& valueof_option_p_ini_zg = d["option_p_ini_zg"];
+			assert(valueof_option_p_ini_zg.IsDouble());
+			option_p_ini_zg = valueof_option_p_ini_zg.GetDouble();
+			// option_p_ini_zd
+			assert(d.HasMember("option_p_ini_zd"));
+			const rapidjson::Value& valueof_option_p_ini_zd = d["option_p_ini_zd"];
+			assert(valueof_option_p_ini_zd.IsDouble());
+			option_p_ini_zd = valueof_option_p_ini_zd.GetDouble();
+		}
 	};
+
 	Options* options;
 
 private:
@@ -1125,27 +1206,38 @@ public:
 int main(int argc, char* argv[]) 
 {
 	Kokkos::initialize(argc, argv);
-	auto o = new Glace2d::Options();
-	string output;
-	if (argc == 5)
+	Glace2d::Options* o = nullptr;
+	string dataFile, output;
+	
+	if (argc == 2)
 	{
-		o->X_EDGE_ELEMS = std::atoi(argv[1]);
-		o->Y_EDGE_ELEMS = std::atoi(argv[2]);
-		o->X_EDGE_LENGTH = std::atof(argv[3]);
-		o->Y_EDGE_LENGTH = std::atof(argv[4]);
+		dataFile = argv[1];
+		o = new Glace2d::Options(dataFile);
 	}
 	else if (argc == 6)
 	{
-		o->X_EDGE_ELEMS = std::atoi(argv[1]);
-		o->Y_EDGE_ELEMS = std::atoi(argv[2]);
-		o->X_EDGE_LENGTH = std::atof(argv[3]);
-		o->Y_EDGE_LENGTH = std::atof(argv[4]);
-		output = argv[5];
+		dataFile = argv[1];
+		o = new Glace2d::Options(dataFile);
+		o->X_EDGE_ELEMS = std::atoi(argv[2]);
+		o->Y_EDGE_ELEMS = std::atoi(argv[3]);
+		o->X_EDGE_LENGTH = std::atof(argv[4]);
+		o->Y_EDGE_LENGTH = std::atof(argv[5]);
 	}
-	else if (argc != 1)
+	else if (argc == 7)
 	{
-		std::cerr << "[ERROR] Wrong number of arguments. Expecting 4 or 5 args: X Y Xlength Ylength (output)." << std::endl;
-		std::cerr << "(X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
+		dataFile = argv[1];
+		o = new Glace2d::Options(dataFile);
+		o->X_EDGE_ELEMS = std::atoi(argv[2]);
+		o->Y_EDGE_ELEMS = std::atoi(argv[3]);
+		o->X_EDGE_LENGTH = std::atof(argv[4]);
+		o->Y_EDGE_LENGTH = std::atof(argv[5]);
+		output = argv[6];
+	}
+	else
+	{
+		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1, 5 or 6 args: dataFile [X Y Xlength Ylength [output]]." << std::endl;
+		std::cerr << "(Glace2dDefaultOptions.json, X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
+		return -1;
 	}
 	auto nm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
 	auto c = new Glace2d(o, nm, output);

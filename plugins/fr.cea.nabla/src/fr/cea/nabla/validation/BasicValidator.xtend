@@ -32,6 +32,7 @@ import org.eclipse.xtext.validation.Check
 
 import static extension fr.cea.nabla.ConnectivityCallExtensions.*
 
+// Caution: OptDefinition validation with InstructionValidator
 class BasicValidator extends UnusedValidator
 {
 	@Inject extension ItemExtensions

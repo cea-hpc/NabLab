@@ -10,4 +10,5 @@ Export-Package: test
 Require-Bundle: fr.cea.nabla,
  fr.cea.nabla.ir,
  fr.cea.nabla.javalib,
- org.eclipse.xtext.xbase.lib
+ org.eclipse.xtext.xbase.lib,
+ com.google.gson

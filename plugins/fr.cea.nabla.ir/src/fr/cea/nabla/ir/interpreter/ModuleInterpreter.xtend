@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.logging.Logger
 import java.util.logging.StreamHandler
+import org.eclipse.xtend.lib.annotations.Accessors
 
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
@@ -25,11 +26,11 @@ class ModuleInterpreter
 {
 	public static String ITERATION_VARIABLE_NAME = "InterpreterIteration"
 
+	@Accessors val Context context
 	val IrModule module
-	var Context context
 	val PvdFileWriter2D writer
-	var JobInterpreter jobInterpreter
-	var Logger logger
+	val JobInterpreter jobInterpreter
+	val Logger logger
 
 	new(IrModule module, StreamHandler handler)
 	{
@@ -43,20 +44,21 @@ class ModuleInterpreter
 		this.module = module
 		this.context = new Context(module, logger)
 		this.writer = new PvdFileWriter2D(module.name)
-		this.jobInterpreter = null
+		this.jobInterpreter = new JobInterpreter(writer)
+	}
+
+	def interpreteModuleOptions()
+	{
+		for (v : module.options)
+			context.addVariableValue(v, interprete(v.defaultValue, context))
 	}
 
 	def interprete()
 	{
 		context.logInfo(" Start interpreting " + module.name + " module ")
 
-		jobInterpreter = new JobInterpreter(writer)
 		module.functions.filter[body === null].forEach[f | context.resolveFunction(f)]
-
-		// Interprete options
-		for (v : module.options)
-			context.addVariableValue(v, interprete(v.defaultValue, context))
-
+		interpreteModuleOptions
 		if (module.withMesh)
 		{
 			// Create mesh

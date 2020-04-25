@@ -1,8 +1,13 @@
 package glace2d;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.stream.IntStream;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 
 import fr.cea.nabla.javalib.types.*;
 import fr.cea.nabla.javalib.mesh.*;
@@ -12,20 +17,27 @@ public final class Glace2d
 {
 	public final static class Options
 	{
-		public final double X_EDGE_LENGTH = 0.01;
-		public final double Y_EDGE_LENGTH = X_EDGE_LENGTH;
-		public final int X_EDGE_ELEMS = 100;
-		public final int Y_EDGE_ELEMS = 10;
-		public final double option_stoptime = 0.2;
-		public final int option_max_iterations = 20000;
-		public final double gamma = 1.4;
-		public final double option_x_interface = 0.5;
-		public final double option_deltat_ini = 1.0E-5;
-		public final double option_deltat_cfl = 0.4;
-		public final double option_rho_ini_zg = 1.0;
-		public final double option_rho_ini_zd = 0.125;
-		public final double option_p_ini_zg = 1.0;
-		public final double option_p_ini_zd = 0.1;
+		public double X_EDGE_LENGTH;
+		public double Y_EDGE_LENGTH;
+		public int X_EDGE_ELEMS;
+		public int Y_EDGE_ELEMS;
+		public double option_stoptime;
+		public int option_max_iterations;
+		public double gamma;
+		public double option_x_interface;
+		public double option_deltat_ini;
+		public double option_deltat_cfl;
+		public double option_rho_ini_zg;
+		public double option_rho_ini_zd;
+		public double option_p_ini_zg;
+		public double option_p_ini_zd;
+
+		public static Options createOptions(String jsonFileName) throws FileNotFoundException
+		{
+			Gson gson = new Gson();
+			JsonReader reader = new JsonReader(new FileReader(jsonFileName));
+			return gson.fromJson(reader, Options.class);
+		}
 	}
 
 	private final Options options;
@@ -129,12 +141,21 @@ public final class Glace2d
 		System.out.println("End of execution of module Glace2d");
 	}
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws FileNotFoundException
 	{
-		Glace2d.Options o = new Glace2d.Options();
-		CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
-		Glace2d i = new Glace2d(o, mesh);
-		i.simulate();
+		if (args.length == 1)
+		{
+			String dataFileName = args[0];
+			Glace2d.Options o = Glace2d.Options.createOptions(dataFileName);
+			CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
+			Glace2d i = new Glace2d(o, mesh);
+			i.simulate();
+		}
+		else
+		{
+			System.out.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
+			System.out.println("        Expecting user data file name, for example Glace2dDefaultOptions.json");
+		}
 	}
 
 	/**

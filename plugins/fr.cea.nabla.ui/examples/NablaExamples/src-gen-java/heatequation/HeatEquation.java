@@ -1,8 +1,13 @@
 package heatequation;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.stream.IntStream;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 
 import fr.cea.nabla.javalib.types.*;
 import fr.cea.nabla.javalib.mesh.*;
@@ -12,14 +17,21 @@ public final class HeatEquation
 {
 	public final static class Options
 	{
-		public final double X_EDGE_LENGTH = 0.1;
-		public final double Y_EDGE_LENGTH = X_EDGE_LENGTH;
-		public final int X_EDGE_ELEMS = 20;
-		public final int Y_EDGE_ELEMS = 20;
-		public final double option_stoptime = 0.1;
-		public final int option_max_iterations = 500;
-		public final double PI = 3.1415926;
-		public final double alpha = 1.0;
+		public double X_EDGE_LENGTH;
+		public double Y_EDGE_LENGTH;
+		public int X_EDGE_ELEMS;
+		public int Y_EDGE_ELEMS;
+		public double option_stoptime;
+		public int option_max_iterations;
+		public double PI;
+		public double alpha;
+
+		public static Options createOptions(String jsonFileName) throws FileNotFoundException
+		{
+			Gson gson = new Gson();
+			JsonReader reader = new JsonReader(new FileReader(jsonFileName));
+			return gson.fromJson(reader, Options.class);
+		}
 	}
 
 	private final Options options;
@@ -90,12 +102,21 @@ public final class HeatEquation
 		System.out.println("End of execution of module HeatEquation");
 	}
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws FileNotFoundException
 	{
-		HeatEquation.Options o = new HeatEquation.Options();
-		CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
-		HeatEquation i = new HeatEquation(o, mesh);
-		i.simulate();
+		if (args.length == 1)
+		{
+			String dataFileName = args[0];
+			HeatEquation.Options o = HeatEquation.Options.createOptions(dataFileName);
+			CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
+			HeatEquation i = new HeatEquation(o, mesh);
+			i.simulate();
+		}
+		else
+		{
+			System.out.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
+			System.out.println("        Expecting user data file name, for example HeatEquationDefaultOptions.json");
+		}
 	}
 
 	/**

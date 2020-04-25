@@ -18,29 +18,40 @@ class MainContentProvider
 {
 	def getContentFor(IrModule it)
 	'''
-		auto o = new «name»::Options();
-		string output;
-		«IF withMesh»
-		if (argc == 5)
+		«name»::Options* o = nullptr;
+		string dataFile, output;
+
+		if (argc == 2)
 		{
-			o->«MandatoryOptions::X_EDGE_ELEMS» = std::atoi(argv[1]);
-			o->«MandatoryOptions::Y_EDGE_ELEMS» = std::atoi(argv[2]);
-			o->«MandatoryOptions::X_EDGE_LENGTH» = std::atof(argv[3]);
-			o->«MandatoryOptions::Y_EDGE_LENGTH» = std::atof(argv[4]);
+			dataFile = argv[1];
+			o = new «name»::Options(dataFile);
 		}
 		else if (argc == 6)
 		{
-			o->«MandatoryOptions::X_EDGE_ELEMS» = std::atoi(argv[1]);
-			o->«MandatoryOptions::Y_EDGE_ELEMS» = std::atoi(argv[2]);
-			o->«MandatoryOptions::X_EDGE_LENGTH» = std::atof(argv[3]);
-			o->«MandatoryOptions::Y_EDGE_LENGTH» = std::atof(argv[4]);
-			output = argv[5];
+			dataFile = argv[1];
+			o = new «name»::Options(dataFile);
+			o->«MandatoryOptions::X_EDGE_ELEMS» = std::atoi(argv[2]);
+			o->«MandatoryOptions::Y_EDGE_ELEMS» = std::atoi(argv[3]);
+			o->«MandatoryOptions::X_EDGE_LENGTH» = std::atof(argv[4]);
+			o->«MandatoryOptions::Y_EDGE_LENGTH» = std::atof(argv[5]);
 		}
-		else if (argc != 1)
+		else if (argc == 7)
 		{
-			std::cerr << "[ERROR] Wrong number of arguments. Expecting 4 or 5 args: X Y Xlength Ylength (output)." << std::endl;
-			std::cerr << "(X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
+			dataFile = argv[1];
+			o = new «name»::Options(dataFile);
+			o->«MandatoryOptions::X_EDGE_ELEMS» = std::atoi(argv[2]);
+			o->«MandatoryOptions::Y_EDGE_ELEMS» = std::atoi(argv[3]);
+			o->«MandatoryOptions::X_EDGE_LENGTH» = std::atof(argv[4]);
+			o->«MandatoryOptions::Y_EDGE_LENGTH» = std::atof(argv[5]);
+			output = argv[6];
 		}
+		else
+		{
+			std::cerr << "[ERROR] Wrong number of arguments. Expecting 1, 5 or 6 args: dataFile [X Y Xlength Ylength [output]]." << std::endl;
+			std::cerr << "(«name»DefaultOptions.json, X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
+			return -1;
+		}
+		«IF withMesh»
 		auto nm = CartesianMesh2DGenerator::generate(o->«MandatoryOptions::X_EDGE_ELEMS», o->«MandatoryOptions::Y_EDGE_ELEMS», o->«MandatoryOptions::X_EDGE_LENGTH», o->«MandatoryOptions::Y_EDGE_LENGTH»);
 		«ENDIF»
 		auto c = new «name»(o, «IF withMesh»nm,«ENDIF» output);

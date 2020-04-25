@@ -13,6 +13,7 @@ import com.google.common.base.Function
 import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.generator.ir.Nabla2Ir
+import fr.cea.nabla.ir.generator.json.Ir2Json
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nablagen.Ir2CodeComponent
@@ -34,6 +35,7 @@ import org.eclipse.xtext.resource.SaveOptions
 import static com.google.common.collect.Maps.uniqueIndex
 
 import static extension fr.cea.nabla.workflow.WorkflowComponentExtensions.*
+import java.util.LinkedHashMap
 
 class WorkflowInterpreter 
 {
@@ -41,6 +43,7 @@ class WorkflowInterpreter
 	String projectDir
 	val traceListeners = new ArrayList<IWorkflowTraceListener>
 	val modelChangedListeners = new ArrayList<IWorkflowModelChangedListener>
+	val ir2Json = new Ir2Json
 	@Inject Provider<JavaIoFileSystemAccess> fsaProvider
 	@Inject Nabla2Ir nabla2Ir
 	@Inject IOutputConfigurationProvider outputConfigurationProvider
@@ -141,7 +144,9 @@ class WorkflowInterpreter
 			else
 			{
 				val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
-				val fileContentsByName = g.getFileContentsByName(irModule)
+				val fileContentsByName = new LinkedHashMap<String, CharSequence>
+				fileContentsByName += ir2Json.getFileContentsByName(irModule)
+				fileContentsByName += g.getFileContentsByName(irModule)
 				for (fileName : fileContentsByName.keySet)
 				{
 					val fullFileName = irModule.name.toLowerCase + '/' + fileName
@@ -160,11 +165,11 @@ class WorkflowInterpreter
 	{
 		val fileName = irModule.name.toLowerCase + '/' + irModule.name + '.' +  fileExtensionPart + '.' + IrExtension
 		val fsa = getConfiguredFileSystemAccess(projectAbsolutePath, true)
-		
+
 		val uri =  fsa.getURI(fileName)
 		val rSet = new ResourceSetImpl
 		rSet.resourceFactoryRegistry.extensionToFactoryMap.put(IrExtension, new XMIResourceFactoryImpl) 
-		
+
 		val resource = rSet.createResource(uri)
 		resource.contents += irModule
 		resource.save(xmlSaveOptions)

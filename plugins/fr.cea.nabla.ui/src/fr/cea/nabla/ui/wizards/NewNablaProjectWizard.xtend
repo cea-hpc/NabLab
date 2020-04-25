@@ -361,16 +361,17 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 	'''
 		Manifest-Version: 1.0
 		Bundle-ManifestVersion: 2
-		Bundle-Name: nabla.project
-		Bundle-SymbolicName: nabla.project
+		Bundle-Name: «newProjectPage.projectName»
+		Bundle-SymbolicName: «newProjectPage.projectName»
 		Bundle-Version: 0.1.0.qualifier
 		Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-		Automatic-Module-Name: nabla.project
+		Automatic-Module-Name: «newProjectPage.projectName»
 		Require-Bundle: fr.cea.nabla,
 		   fr.cea.nabla.ir,
 		   fr.cea.nabla.sirius,
 		   fr.cea.nabla.javalib,
-		   org.eclipse.xtext.xbase.lib
+		   org.eclipse.xtext.xbase.lib,
+		   com.google.gson
 		Export-Package: «newProjectPage.moduleName.toLowerCase»
 	'''
 

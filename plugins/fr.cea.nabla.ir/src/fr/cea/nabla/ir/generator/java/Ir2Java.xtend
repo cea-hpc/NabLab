@@ -41,9 +41,14 @@ class Ir2Java extends CodeGenerator
 	'''
 		package «name.toLowerCase»;
 
+		import java.io.FileNotFoundException;
+		import java.io.FileReader;
 		import java.util.HashMap;
-		import java.util.ArrayList;
 		import java.util.stream.IntStream;
+
+		import com.google.gson.Gson;
+		import com.google.gson.GsonBuilder;
+		import com.google.gson.stream.JsonReader;
 
 		import fr.cea.nabla.javalib.types.*;
 		«IF withMesh»
@@ -60,8 +65,15 @@ class Ir2Java extends CodeGenerator
 			public final static class Options
 			{
 				«FOR v : options»
-				public final «v.javaType» «v.name» = «v.defaultValue.content.toString.replaceAll('options.', '')»;
+				public «v.javaType» «v.name»;
 				«ENDFOR»
+		
+				public static Options createOptions(String jsonFileName) throws FileNotFoundException
+				{
+					Gson gson = new Gson();
+					JsonReader reader = new JsonReader(new FileReader(jsonFileName));
+					return gson.fromJson(reader, Options.class);
+				}
 			}
 
 			private final Options options;
@@ -121,14 +133,23 @@ class Ir2Java extends CodeGenerator
 				System.out.println("End of execution of module «name»");
 			}
 
-			public static void main(String[] args)
+			public static void main(String[] args) throws FileNotFoundException
 			{
-				«name».Options o = new «name».Options();
-				«IF withMesh»
-				CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.«MandatoryOptions::X_EDGE_ELEMS», o.«MandatoryOptions::Y_EDGE_ELEMS», o.«MandatoryOptions::X_EDGE_LENGTH», o.«MandatoryOptions::Y_EDGE_LENGTH»);
-				«ENDIF»
-				«name» i = new «name»(o«IF withMesh», mesh«ENDIF»);
-				i.simulate();
+				if (args.length == 1)
+				{
+					String dataFileName = args[0];
+					«name».Options o = «name».Options.createOptions(dataFileName);
+					«IF withMesh»
+					CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.«MandatoryOptions::X_EDGE_ELEMS», o.«MandatoryOptions::Y_EDGE_ELEMS», o.«MandatoryOptions::X_EDGE_LENGTH», o.«MandatoryOptions::Y_EDGE_LENGTH»);
+					«ENDIF»
+					«name» i = new «name»(o«IF withMesh», mesh«ENDIF»);
+					i.simulate();
+				}
+				else
+				{
+					System.out.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
+					System.out.println("        Expecting user data file name, for example «name»DefaultOptions.json");
+				}
 			}
 			«FOR j : jobs.sortByAtAndName»
 

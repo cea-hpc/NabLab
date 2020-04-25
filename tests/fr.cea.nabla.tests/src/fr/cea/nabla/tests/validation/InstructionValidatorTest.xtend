@@ -127,4 +127,26 @@ class InstructionValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
+
+	@Test
+	def void testOptionValue()
+	{
+		val moduleKo1 = parseHelper.parse(getTestModule('', '''def inc: ℕ → ℕ, (a) → return a + 1;''') +
+			'''
+			option coef = inc(2);
+			'''
+		)
+		Assert.assertNotNull(moduleKo1)
+		moduleKo1.assertError(NablaPackage.eINSTANCE.optDefinition,
+			InstructionValidator::OPTION_VALUE,
+			InstructionValidator::getOptionValueMsg)
+
+		val moduleOk =  parseHelper.parse(testModule +
+			'''
+			option coef = 3;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
 }

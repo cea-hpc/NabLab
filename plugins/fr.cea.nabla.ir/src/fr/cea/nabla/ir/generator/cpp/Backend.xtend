@@ -19,6 +19,7 @@ abstract class Backend
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IncludesContentProvider includesContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) TypeContentProvider typeContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) ExpressionContentProvider expressionContentProvider
+	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JsonContentProvider jsonContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) ArgOrVarContentProvider argOrVarContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) AttributesContentProvider attributesContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) InstructionContentProvider instructionContentProvider
@@ -40,6 +41,7 @@ class SequentialBackend extends Backend
 		typeContentProvider = new StlTypeContentProvider
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider)
 		instructionContentProvider = new SequentialInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
@@ -61,6 +63,7 @@ class StlThreadBackend extends Backend
 		typeContentProvider = new StlTypeContentProvider
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider)
 		instructionContentProvider = new StlThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
@@ -82,6 +85,7 @@ class KokkosBackend extends Backend
 		typeContentProvider = new KokkosTypeContentProvider
 		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider)
 		instructionContentProvider = new KokkosInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)
@@ -103,6 +107,7 @@ class KokkosTeamThreadBackend extends Backend
 		typeContentProvider = new KokkosTypeContentProvider
 		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		attributesContentProvider = new KokkosTeamThreadAttributesContentProvider(argOrVarContentProvider)
 		instructionContentProvider = new KokkosTeamThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)

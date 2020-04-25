@@ -1,9 +1,11 @@
-#include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <type_traits>
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
 #include "mesh/CartesianMesh2DGenerator.h"
 #include "mesh/CartesianMesh2D.h"
 #include "mesh/PvdFileWriter2D.h"
@@ -55,20 +57,94 @@ class IterativeHeatEquation
 public:
 	struct Options
 	{
-		// Should be const but usefull to set them from main args
-		double X_LENGTH = 2.0;
-		double Y_LENGTH = 2.0;
-		double u0 = 1.0;
-		RealArray1D<2> vectOne = {1.0, 1.0};
-		size_t X_EDGE_ELEMS = 40;
-		size_t Y_EDGE_ELEMS = 40;
-		double X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
-		double Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
-		double option_stoptime = 0.1;
-		size_t option_max_iterations = 500000000;
-		size_t option_max_iterations_k = 1000;
-		double epsilon = 1.0E-8;
+		double X_LENGTH;
+		double Y_LENGTH;
+		double u0;
+		RealArray1D<2> vectOne;
+		size_t X_EDGE_ELEMS;
+		size_t Y_EDGE_ELEMS;
+		double X_EDGE_LENGTH;
+		double Y_EDGE_LENGTH;
+		double option_stoptime;
+		size_t option_max_iterations;
+		size_t option_max_iterations_k;
+		double epsilon;
+
+		Options(const std::string& fileName)
+		{
+			ifstream ifs(fileName);
+			rapidjson::IStreamWrapper isw(ifs);
+			rapidjson::Document d;
+			d.ParseStream(isw);
+			assert(d.IsObject());
+			// X_LENGTH
+			assert(d.HasMember("X_LENGTH"));
+			const rapidjson::Value& valueof_X_LENGTH = d["X_LENGTH"];
+			assert(valueof_X_LENGTH.IsDouble());
+			X_LENGTH = valueof_X_LENGTH.GetDouble();
+			// Y_LENGTH
+			assert(d.HasMember("Y_LENGTH"));
+			const rapidjson::Value& valueof_Y_LENGTH = d["Y_LENGTH"];
+			assert(valueof_Y_LENGTH.IsDouble());
+			Y_LENGTH = valueof_Y_LENGTH.GetDouble();
+			// u0
+			assert(d.HasMember("u0"));
+			const rapidjson::Value& valueof_u0 = d["u0"];
+			assert(valueof_u0.IsDouble());
+			u0 = valueof_u0.GetDouble();
+			// vectOne
+			assert(d.HasMember("vectOne"));
+			const rapidjson::Value& valueof_vectOne = d["vectOne"];
+			assert(valueof_vectOne.IsArray());
+			assert(valueof_vectOne.Size() == 2);
+			for (size_t i1=0 ; i1<2 ; i1++)
+			{
+				assert(valueof_vectOne[i1].IsDouble());
+				vectOne[i1] = valueof_vectOne[i1].GetDouble();
+			}
+			// X_EDGE_ELEMS
+			assert(d.HasMember("X_EDGE_ELEMS"));
+			const rapidjson::Value& valueof_X_EDGE_ELEMS = d["X_EDGE_ELEMS"];
+			assert(valueof_X_EDGE_ELEMS.IsInt());
+			X_EDGE_ELEMS = valueof_X_EDGE_ELEMS.GetInt();
+			// Y_EDGE_ELEMS
+			assert(d.HasMember("Y_EDGE_ELEMS"));
+			const rapidjson::Value& valueof_Y_EDGE_ELEMS = d["Y_EDGE_ELEMS"];
+			assert(valueof_Y_EDGE_ELEMS.IsInt());
+			Y_EDGE_ELEMS = valueof_Y_EDGE_ELEMS.GetInt();
+			// X_EDGE_LENGTH
+			assert(d.HasMember("X_EDGE_LENGTH"));
+			const rapidjson::Value& valueof_X_EDGE_LENGTH = d["X_EDGE_LENGTH"];
+			assert(valueof_X_EDGE_LENGTH.IsDouble());
+			X_EDGE_LENGTH = valueof_X_EDGE_LENGTH.GetDouble();
+			// Y_EDGE_LENGTH
+			assert(d.HasMember("Y_EDGE_LENGTH"));
+			const rapidjson::Value& valueof_Y_EDGE_LENGTH = d["Y_EDGE_LENGTH"];
+			assert(valueof_Y_EDGE_LENGTH.IsDouble());
+			Y_EDGE_LENGTH = valueof_Y_EDGE_LENGTH.GetDouble();
+			// option_stoptime
+			assert(d.HasMember("option_stoptime"));
+			const rapidjson::Value& valueof_option_stoptime = d["option_stoptime"];
+			assert(valueof_option_stoptime.IsDouble());
+			option_stoptime = valueof_option_stoptime.GetDouble();
+			// option_max_iterations
+			assert(d.HasMember("option_max_iterations"));
+			const rapidjson::Value& valueof_option_max_iterations = d["option_max_iterations"];
+			assert(valueof_option_max_iterations.IsInt());
+			option_max_iterations = valueof_option_max_iterations.GetInt();
+			// option_max_iterations_k
+			assert(d.HasMember("option_max_iterations_k"));
+			const rapidjson::Value& valueof_option_max_iterations_k = d["option_max_iterations_k"];
+			assert(valueof_option_max_iterations_k.IsInt());
+			option_max_iterations_k = valueof_option_max_iterations_k.GetInt();
+			// epsilon
+			assert(d.HasMember("epsilon"));
+			const rapidjson::Value& valueof_epsilon = d["epsilon"];
+			assert(valueof_epsilon.IsDouble());
+			epsilon = valueof_epsilon.GetDouble();
+		}
 	};
+
 	Options* options;
 
 private:
@@ -547,27 +623,38 @@ public:
 
 int main(int argc, char* argv[]) 
 {
-	auto o = new IterativeHeatEquation::Options();
-	string output;
-	if (argc == 5)
+	IterativeHeatEquation::Options* o = nullptr;
+	string dataFile, output;
+	
+	if (argc == 2)
 	{
-		o->X_EDGE_ELEMS = std::atoi(argv[1]);
-		o->Y_EDGE_ELEMS = std::atoi(argv[2]);
-		o->X_EDGE_LENGTH = std::atof(argv[3]);
-		o->Y_EDGE_LENGTH = std::atof(argv[4]);
+		dataFile = argv[1];
+		o = new IterativeHeatEquation::Options(dataFile);
 	}
 	else if (argc == 6)
 	{
-		o->X_EDGE_ELEMS = std::atoi(argv[1]);
-		o->Y_EDGE_ELEMS = std::atoi(argv[2]);
-		o->X_EDGE_LENGTH = std::atof(argv[3]);
-		o->Y_EDGE_LENGTH = std::atof(argv[4]);
-		output = argv[5];
+		dataFile = argv[1];
+		o = new IterativeHeatEquation::Options(dataFile);
+		o->X_EDGE_ELEMS = std::atoi(argv[2]);
+		o->Y_EDGE_ELEMS = std::atoi(argv[3]);
+		o->X_EDGE_LENGTH = std::atof(argv[4]);
+		o->Y_EDGE_LENGTH = std::atof(argv[5]);
 	}
-	else if (argc != 1)
+	else if (argc == 7)
 	{
-		std::cerr << "[ERROR] Wrong number of arguments. Expecting 4 or 5 args: X Y Xlength Ylength (output)." << std::endl;
-		std::cerr << "(X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
+		dataFile = argv[1];
+		o = new IterativeHeatEquation::Options(dataFile);
+		o->X_EDGE_ELEMS = std::atoi(argv[2]);
+		o->Y_EDGE_ELEMS = std::atoi(argv[3]);
+		o->X_EDGE_LENGTH = std::atof(argv[4]);
+		o->Y_EDGE_LENGTH = std::atof(argv[5]);
+		output = argv[6];
+	}
+	else
+	{
+		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1, 5 or 6 args: dataFile [X Y Xlength Ylength [output]]." << std::endl;
+		std::cerr << "(IterativeHeatEquationDefaultOptions.json, X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
+		return -1;
 	}
 	auto nm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
 	auto c = new IterativeHeatEquation(o, nm, output);

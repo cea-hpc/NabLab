@@ -50,7 +50,7 @@ class NablaExamplesInterpreterTest
 		val examplesProjectSubPath = "plugins/fr.cea.nabla.ui/examples/NablaExamples/"
 		examplesProjectPath = wsPath + examplesProjectSubPath
 		git = new GitUtils(wsPath)
-		
+
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s %n")
 		System.setProperty("java.util.logging.FileHandler.limit", "1024000")
 		System.setProperty("java.util.logging.FileHandler.count", "3")

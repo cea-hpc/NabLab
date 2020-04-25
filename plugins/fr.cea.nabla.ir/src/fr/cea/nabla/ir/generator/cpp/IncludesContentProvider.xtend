@@ -34,12 +34,14 @@ class IncludesContentProvider
 	{
 		val systemIncludes = new LinkedHashSet<String>
 
-		systemIncludes += "iostream"
+		systemIncludes += "fstream"
 		systemIncludes += "iomanip"
 		systemIncludes += "type_traits"
 		systemIncludes += "limits"
 		systemIncludes += "utility"
 		systemIncludes += "cmath"
+		systemIncludes += "rapidjson/document.h"
+		systemIncludes += "rapidjson/istreamwrapper.h"
 		systemIncludes += m.additionalSystemIncludes
 
 		return systemIncludes

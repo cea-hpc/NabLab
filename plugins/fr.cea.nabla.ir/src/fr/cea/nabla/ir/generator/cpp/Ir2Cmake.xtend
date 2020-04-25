@@ -58,12 +58,12 @@ abstract class Ir2Cmake
 	private def getCompilerPath(String compiler, String compilerPath)
 	{
 		if (compilerPath.nullOrEmpty)
-		  if (compiler == "GNU")
-		    "/usr/bin/g++"
-		  else  // (compiler == "LLVM")
-		    "/usr/bin/clang++"
+			if (compiler == "GNU")
+				"/usr/bin/g++"
+			else // (compiler == "LLVM")
+				"/usr/bin/clang++"
 		else
-		  compilerPath
+			compilerPath
 	}
 }
 
@@ -74,7 +74,7 @@ class StlIr2Cmake extends Ir2Cmake
 		libraryBackend = "set(LIBCPPNABLA_BACKEND \"STL\")"
 		targetLinkLibraries += "cppnablastl pthread"
 		this.compiler = compiler
-	    this.compilerPath = compilerPath
+		this.compilerPath = compilerPath
 	}
 }
 
@@ -85,6 +85,6 @@ class KokkosIr2Cmake extends Ir2Cmake
 		libraryBackend = libraryBackend = "set(LIBCPPNABLA_BACKEND \"KOKKOS\")"
 		targetLinkLibraries += "cppnablakokkos"
 		this.compiler = compiler
-	    this.compilerPath = compilerPath
+		this.compilerPath = compilerPath
 	}
 }

@@ -4,7 +4,7 @@ Bundle-Name: fr.cea.library.jlatexmath
 Bundle-SymbolicName: jlatexmath
 Bundle-Version: 1.0.7
 Bundle-ClassPath: jlatexmath-1.0.7.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: jlatexmath
 Export-Package: org.scilab.forge.jlatexmath,
  org.scilab.forge.jlatexmath.cache,

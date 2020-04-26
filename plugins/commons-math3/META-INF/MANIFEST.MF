@@ -81,5 +81,5 @@ Export-Package: assets.org.apache.commons.math3.exception.util,
  org.apache.commons.math3.stat.regression,
  org.apache.commons.math3.transform,
  org.apache.commons.math3.util
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: commons-math3

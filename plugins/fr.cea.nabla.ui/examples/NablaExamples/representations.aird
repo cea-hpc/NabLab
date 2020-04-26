@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:diagram="http://www.eclipse.org/sirius/diagram/1.1.0" xmlns:ir="http://www.cea.fr/nabla/ir" xmlns:nablagen="http://www.cea.fr/nabla/Nablagen" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" xmlns:viewpoint="http://www.eclipse.org/sirius/1.1.0" xsi:schemaLocation="http://www.eclipse.org/sirius/description/1.1.0 http://www.eclipse.org/sirius/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/style/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description/style">
-  <viewpoint:DAnalysis uid="_-p1ZcFh3EeqcatjF_pwWvg" selectedViews="_AjwvgFh4EeqcatjF_pwWvg _A1Z5IFh4EeqcatjF_pwWvg" version="14.1.0.201810161215">
+  <viewpoint:DAnalysis uid="_-p1ZcFh3EeqcatjF_pwWvg" selectedViews="_AjwvgFh4EeqcatjF_pwWvg _A1Z5IFh4EeqcatjF_pwWvg" version="14.3.0.201909031200">
     <semanticResources>src/explicitheatequation/ExplicitHeatEquation.nabla</semanticResources>
     <semanticResources>platform:/resource/fr.cea.nabla/mathfunctions.nabla</semanticResources>
     <semanticResources>src/explicitheatequation/ExplicitHeatEquation.nablagen</semanticResources>
@@ -14,7 +14,6 @@
     <semanticResources>src/iterativeheatequation/IterativeHeatEquation.nabla</semanticResources>
     <semanticResources>src/iterativeheatequation/IterativeHeatEquation.nablagen</semanticResources>
     <semanticResources>src-gen/glace2d/Glace2d.fillHlts.nablair</semanticResources>
-    <semanticResources>src-gen/iterativeheatequation/IterativeHeatEquation.fillHlts.nablair</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_AjwvgFh4EeqcatjF_pwWvg">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_AqjUAFh4EeqcatjF_pwWvg" name="ExplicitHeatEquationGenerationChainDiagram" repPath="#_ApAb4Fh4EeqcatjF_pwWvg">
@@ -82,7 +81,7 @@
       </ownedRepresentationDescriptors>
     </ownedViews>
   </viewpoint:DAnalysis>
-  <diagram:DSemanticDiagram uid="_ApAb4Fh4EeqcatjF_pwWvg" name="ExplicitHeatEquationGenerationChainDiagram">
+  <diagram:DSemanticDiagram uid="_ApAb4Fh4EeqcatjF_pwWvg">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_AqGoEFh4EeqcatjF_pwWvg" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_AqHPIFh4EeqcatjF_pwWvg">
         <computedStyleDescriptions xmi:type="style:SquareDescription" xmi:id="_AqgQsFh4EeqcatjF_pwWvg" labelSize="12" labelExpression="aql:self.name.replaceUpperCaseWithSpace()" iconPath="/fr.cea.nabla.sirius/icons/java.png" labelPosition="node" resizeKind="NSEW" width="20" height="5">
@@ -464,7 +463,7 @@
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer"/>
     <target xmi:type="nablagen:Workflow" href="src/explicitheatequation/ExplicitHeatEquation.nablagen#//@workflow"/>
   </diagram:DSemanticDiagram>
-  <diagram:DSemanticDiagram uid="_Asra8Fh4EeqcatjF_pwWvg" name="Glace2dGenerationChainDiagram">
+  <diagram:DSemanticDiagram uid="_Asra8Fh4EeqcatjF_pwWvg">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_AsxhkFh4EeqcatjF_pwWvg" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_AsxhkVh4EeqcatjF_pwWvg">
         <computedStyleDescriptions xmi:type="style:SquareDescription" xmi:id="_As6rgFh4EeqcatjF_pwWvg" labelSize="12" labelExpression="aql:self.name.replaceUpperCaseWithSpace()" iconPath="/fr.cea.nabla.sirius/icons/java.png" labelPosition="node" resizeKind="NSEW" width="20" height="5">
@@ -846,7 +845,7 @@
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer"/>
     <target xmi:type="nablagen:Workflow" href="src/glace2d/Glace2d.nablagen#//@workflow"/>
   </diagram:DSemanticDiagram>
-  <diagram:DSemanticDiagram uid="_AuxssFh4EeqcatjF_pwWvg" name="HeatEquationGenerationChainDiagram">
+  <diagram:DSemanticDiagram uid="_AuxssFh4EeqcatjF_pwWvg">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_Au3MQVh4EeqcatjF_pwWvg" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_Au3MQlh4EeqcatjF_pwWvg">
         <computedStyleDescriptions xmi:type="style:SquareDescription" xmi:id="_AvBkUFh4EeqcatjF_pwWvg" labelSize="12" labelExpression="aql:self.name.replaceUpperCaseWithSpace()" iconPath="/fr.cea.nabla.sirius/icons/java.png" labelPosition="node" resizeKind="NSEW" width="20" height="5">
@@ -1228,7 +1227,7 @@
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer"/>
     <target xmi:type="nablagen:Workflow" href="src/heatequation/HeatEquation.nablagen#//@workflow"/>
   </diagram:DSemanticDiagram>
-  <diagram:DSemanticDiagram uid="_AvxLMFh4EeqcatjF_pwWvg" name="ImplicitHeatEquationGenerationChainDiagram">
+  <diagram:DSemanticDiagram uid="_AvxLMFh4EeqcatjF_pwWvg">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_Av5uEFh4EeqcatjF_pwWvg" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_Av5uEVh4EeqcatjF_pwWvg">
         <computedStyleDescriptions xmi:type="style:SquareDescription" xmi:id="_AwHJcFh4EeqcatjF_pwWvg" labelSize="12" labelExpression="aql:self.name.replaceUpperCaseWithSpace()" iconPath="/fr.cea.nabla.sirius/icons/java.png" labelPosition="node" resizeKind="NSEW" width="20" height="5">
@@ -1610,7 +1609,7 @@
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer"/>
     <target xmi:type="nablagen:Workflow" href="src/implicitheatequation/ImplicitHeatEquation.nablagen#//@workflow"/>
   </diagram:DSemanticDiagram>
-  <diagram:DSemanticDiagram uid="_AwrKIFh4EeqcatjF_pwWvg" name="IterativeHeatEquationGenerationChainDiagram">
+  <diagram:DSemanticDiagram uid="_AwrKIFh4EeqcatjF_pwWvg">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_Awx30Fh4EeqcatjF_pwWvg" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_Awx30Vh4EeqcatjF_pwWvg">
         <computedStyleDescriptions xmi:type="style:SquareDescription" xmi:id="_Aw5zoFh4EeqcatjF_pwWvg" labelSize="12" labelExpression="aql:self.name.replaceUpperCaseWithSpace()" iconPath="/fr.cea.nabla.sirius/icons/java.png" labelPosition="node" resizeKind="NSEW" width="20" height="5">
@@ -1992,7 +1991,7 @@
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer"/>
     <target xmi:type="nablagen:Workflow" href="src/iterativeheatequation/IterativeHeatEquation.nablagen#//@workflow"/>
   </diagram:DSemanticDiagram>
-  <diagram:DSemanticDiagram uid="_A2Sp8Fh4EeqcatjF_pwWvg" name="Glace2d  Ir Graph">
+  <diagram:DSemanticDiagram uid="_A2Sp8Fh4EeqcatjF_pwWvg">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_A33XQlh4EeqcatjF_pwWvg" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_A33XQ1h4EeqcatjF_pwWvg"/>
     </ownedAnnotationEntries>
@@ -2250,7 +2249,7 @@
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer"/>
     <target xmi:type="ir:IrModule" href="src-gen/glace2d/Glace2d.fillHltAlls.nablair#/"/>
   </diagram:DSemanticDiagram>
-  <diagram:DSemanticDiagram uid="_A4oMQFh4EeqcatjF_pwWvg" name="ExecuteTimeLoopN  Ir Graph">
+  <diagram:DSemanticDiagram uid="_A4oMQFh4EeqcatjF_pwWvg">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_A5qHBFh4EeqcatjF_pwWvg" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_A5qHBVh4EeqcatjF_pwWvg"/>
     </ownedAnnotationEntries>
@@ -3881,7 +3880,7 @@
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer"/>
     <target xmi:type="ir:TimeLoopJob" href="src-gen/glace2d/Glace2d.fillHltAlls.nablair#//@jobs.0"/>
   </diagram:DSemanticDiagram>
-  <diagram:DSemanticDiagram uid="_A7wYwFh4EeqcatjF_pwWvg" name="Glace2d  Ir Graph">
+  <diagram:DSemanticDiagram uid="_A7wYwFh4EeqcatjF_pwWvg">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_A7yN8Fh4EeqcatjF_pwWvg" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_A7yN8Vh4EeqcatjF_pwWvg"/>
     </ownedAnnotationEntries>
@@ -3895,7 +3894,7 @@
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer"/>
     <target xmi:type="ir:IrModule" href="src-gen/glace2d/Glace2d.replaceReductionAlls.nablair#/"/>
   </diagram:DSemanticDiagram>
-  <diagram:DSemanticDiagram uid="_A8A3cFh4EeqcatjF_pwWvg" name="ExecuteTimeLoopN  Ir Graph">
+  <diagram:DSemanticDiagram uid="_A8A3cFh4EeqcatjF_pwWvg">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_A8BegFh4EeqcatjF_pwWvg" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_A8BegVh4EeqcatjF_pwWvg"/>
     </ownedAnnotationEntries>
@@ -3909,7 +3908,7 @@
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer"/>
     <target xmi:type="ir:TimeLoopJob" href="src-gen/glace2d/Glace2d.replaceReductionAlls.nablair#//@jobs.0"/>
   </diagram:DSemanticDiagram>
-  <diagram:DSemanticDiagram uid="_A8vQMFh4EeqcatjF_pwWvg" name="Glace2d  Ir Graph">
+  <diagram:DSemanticDiagram uid="_A8vQMFh4EeqcatjF_pwWvg">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_A8v3QFh4EeqcatjF_pwWvg" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_A8v3QVh4EeqcatjF_pwWvg"/>
     </ownedAnnotationEntries>
@@ -3923,7 +3922,7 @@
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer"/>
     <target xmi:type="ir:IrModule" href="src-gen/glace2d/Glace2d.replaceReductions.nablair#/"/>
   </diagram:DSemanticDiagram>
-  <diagram:DSemanticDiagram uid="_A86PUFh4EeqcatjF_pwWvg" name="ExecuteTimeLoopN  Ir Graph">
+  <diagram:DSemanticDiagram uid="_A86PUFh4EeqcatjF_pwWvg">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_A862YFh4EeqcatjF_pwWvg" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_A862YVh4EeqcatjF_pwWvg"/>
     </ownedAnnotationEntries>
@@ -3937,7 +3936,7 @@
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer"/>
     <target xmi:type="ir:TimeLoopJob" href="src-gen/glace2d/Glace2d.replaceReductions.nablair#//@jobs.0"/>
   </diagram:DSemanticDiagram>
-  <diagram:DSemanticDiagram uid="_Ko5aMFh9EeqcatjF_pwWvg" name="Glace2dGenerationChainDiagram">
+  <diagram:DSemanticDiagram uid="_Ko5aMFh9EeqcatjF_pwWvg">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_KpCkIFh9EeqcatjF_pwWvg" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_KpCkIVh9EeqcatjF_pwWvg">
         <computedStyleDescriptions xmi:type="style:SquareDescription" xmi:id="_tgoOEFh9EeqcatjF_pwWvg" labelSize="12" labelExpression="aql:self.name.replaceUpperCaseWithSpace()" iconPath="/fr.cea.nabla.sirius/icons/java.png" labelPosition="node" resizeKind="NSEW" width="20" height="5">
@@ -4278,7 +4277,7 @@
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']/@ownedRepresentations[name='WorflowDiagram']/@defaultLayer"/>
     <target xmi:type="nablagen:Workflow" href="src/glace2d/Glace2d.test.nablagen#//@workflow"/>
   </diagram:DSemanticDiagram>
-  <diagram:DSemanticDiagram uid="_K6kMUIYMEeqZTo59StRvpA" name="IterativeHeatEquation  Ir Graph">
+  <diagram:DSemanticDiagram uid="_K6kMUIYMEeqZTo59StRvpA">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_K9PF0IYMEeqZTo59StRvpA" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_K9PF0YYMEeqZTo59StRvpA"/>
     </ownedAnnotationEntries>
@@ -4974,7 +4973,7 @@
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer"/>
     <target xmi:type="ir:IrModule" href="src-gen/iterativeheatequation/IterativeHeatEquation.fillHlts.nablair#/"/>
   </diagram:DSemanticDiagram>
-  <diagram:DSemanticDiagram uid="_P8DwQIYMEeqZTo59StRvpA" name="ExecuteTimeLoopN  Ir Graph">
+  <diagram:DSemanticDiagram uid="_P8DwQIYMEeqZTo59StRvpA">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_P8sCYIYMEeqZTo59StRvpA" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_P8sCYYYMEeqZTo59StRvpA"/>
     </ownedAnnotationEntries>
@@ -5208,7 +5207,7 @@
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer"/>
     <target xmi:type="ir:TimeLoopJob" href="src-gen/iterativeheatequation/IterativeHeatEquation.fillHlts.nablair#//@jobs.0"/>
   </diagram:DSemanticDiagram>
-  <diagram:DSemanticDiagram uid="_SFWYAIYMEeqZTo59StRvpA" name="ExecuteTimeLoopK  Ir Graph">
+  <diagram:DSemanticDiagram uid="_SFWYAIYMEeqZTo59StRvpA">
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_SFsWQIYMEeqZTo59StRvpA" source="DANNOTATION_CUSTOMIZATION_KEY">
       <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_SFsWQYYMEeqZTo59StRvpA"/>
     </ownedAnnotationEntries>

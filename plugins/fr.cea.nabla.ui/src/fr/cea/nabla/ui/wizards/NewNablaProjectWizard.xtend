@@ -238,7 +238,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 	{
 		val javaProject = JavaCore.create(project)
 		val entries = new ArrayList<IClasspathEntry>()
-		entries.add(JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8")))
+		entries.add(JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11")))
 		entries.add(JavaCore.newContainerEntry(new Path("org.eclipse.pde.core.requiredPlugins")))
 		for (srcFolder : srcFolders)
 		{
@@ -364,7 +364,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		Bundle-Name: «newProjectPage.projectName»
 		Bundle-SymbolicName: «newProjectPage.projectName»
 		Bundle-Version: 0.1.0.qualifier
-		Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+		Bundle-RequiredExecutionEnvironment: JavaSE-11
 		Automatic-Module-Name: «newProjectPage.projectName»
 		Require-Bundle: fr.cea.nabla,
 		   fr.cea.nabla.ir,

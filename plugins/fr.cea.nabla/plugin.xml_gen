@@ -2,13 +2,13 @@
 <?eclipse version="3.0"?>
 <plugin>
 	<extension point="org.eclipse.emf.ecore.generated_package">
-		<package 
+		<package
 			uri = "http://www.cea.fr/nabla/Nabla"
 			class = "fr.cea.nabla.nabla.NablaPackage"
 			genModel = "model/generated/Nabla.genmodel" />
 	</extension>
 	<extension point="org.eclipse.emf.ecore.generated_package">
-		<package 
+		<package
 			uri = "http://www.cea.fr/nabla/Nablagen"
 			class = "fr.cea.nabla.nablagen.NablagenPackage"
 			genModel = "model/generated/Nablagen.genmodel" />

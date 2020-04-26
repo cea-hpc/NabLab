@@ -37,5 +37,5 @@ Export-Package: org.jgrapht,
  org.jgrapht.graph.specifics,
  org.jgrapht.traverse,
  org.jgrapht.util
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: jgrapht-core

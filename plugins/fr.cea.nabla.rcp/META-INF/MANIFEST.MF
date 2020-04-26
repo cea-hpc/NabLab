@@ -4,7 +4,7 @@ Bundle-SymbolicName: fr.cea.nabla.rcp;singleton:=true
 Bundle-Version: 0.1.3.qualifier
 Bundle-Vendor: CEA
 Automatic-Module-Name: fr.cea.nabla.product
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Name: fr.cea.nabla.rcp
 Require-Bundle: org.eclipse.equinox.app,
  fr.cea.nabla.ui

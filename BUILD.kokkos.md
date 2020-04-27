@@ -41,10 +41,9 @@ The version installed is 3.0.0.
 If you choose a generation target that does not need Kokkos, the compilation of NabLab examples will produce libcppnabla and libcppnablastl.
 A warning alerts the user to the fact that the library libcppnablakokkos will not be built but it is not a problem.
 
-If you choose a generation target that needs Kokkos, you can set (for example, several ways) this environment variable before running CMake:
-```
-	export KOKKOS_HOME=~/kokkos/kokkos-install
-```
+If you choose a generation target that needs Kokkos, you must set the kokkos install path in your nablagen file.
+
 Then the libcppnablakokkos will be produced and the examples can be compiled.
 
  
+NB: when creating the standalone version of the library, default kokkos install path will be ~/kokkos/kokkos-install.

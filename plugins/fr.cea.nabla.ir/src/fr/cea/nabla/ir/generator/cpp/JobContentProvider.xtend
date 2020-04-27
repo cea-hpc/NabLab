@@ -33,10 +33,14 @@ class JobContentProvider
 	protected val extension InstructionContentProvider
 	protected val extension JobContainerContentProvider
 
-	def getContent(Job it)
+	def getDeclarationContent(Job it)
+	'''
+		void «codeName»() noexcept;'''
+
+	def getDefinitionContent(Job it)
 	'''
 		«comment»
-		void «codeName»() noexcept
+		void «irModule.name»::«codeName»() noexcept
 		{
 			«innerContent»
 		}
@@ -133,11 +137,15 @@ class JobContentProvider
 @Data
 class KokkosJobContentProvider extends JobContentProvider
 {
-	override getContent(Job it)
+	override getDeclarationContent(Job it)
+	'''
+		KOKKOS_INLINE_FUNCTION
+		void «codeName»(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept;'''
+
+	override getDefinitionContent(Job it)
 	'''
 		«comment»
-		KOKKOS_INLINE_FUNCTION
-		void «codeName»(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept
+		void «irModule.name»::«codeName»(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept
 		{
 			«innerContent»
 		}

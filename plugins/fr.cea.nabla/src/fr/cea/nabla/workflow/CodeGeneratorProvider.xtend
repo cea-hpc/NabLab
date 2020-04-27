@@ -35,13 +35,15 @@ class CodeGeneratorProvider
 
 	private static def getBackend(Cpp it)
 	{
+		// FIXME: kokkosPath should be a keyword in nablagen for KOKKOS and KOKKOS_TEAM_THREAD CppPprogrammingModel
+		// val kokkosPath = "$ENV{HOME}/kokkos/kokkos-install"
 		switch programmingModel
 		{
 			case SEQUENTIAL: new SequentialBackend(maxIterationVar.name , stopTimeVar.name, compiler.literal, compilerPath)
 			case STL_THREAD: new StlThreadBackend(maxIterationVar.name , stopTimeVar.name, compiler.literal, compilerPath)
 			case OPEN_MP: throw new RuntimeException('Not yet implemented')
-			case KOKKOS: new KokkosBackend(maxIterationVar.name , stopTimeVar.name, compiler.literal, compilerPath)
-			case KOKKOS_TEAM_THREAD: new KokkosTeamThreadBackend(maxIterationVar.name , stopTimeVar.name, compiler.literal, compilerPath)
+			case KOKKOS: new KokkosBackend(maxIterationVar.name , stopTimeVar.name, compiler.literal, compilerPath, kokkosPath)
+			case KOKKOS_TEAM_THREAD: new KokkosTeamThreadBackend(maxIterationVar.name , stopTimeVar.name, compiler.literal, compilerPath, kokkosPath)
 		}
 	}
 }

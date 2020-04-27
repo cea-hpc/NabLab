@@ -61,6 +61,9 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="maxIterationVar" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="stopTimeVar" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="programmingModel" eType="#//CppProgrammingModel"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kokkosPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="compiler" eType="#//CppCompiler"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="compilerPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="CppProgrammingModel">
     <eLiterals name="Sequential" literal="Sequential"/>
@@ -68,5 +71,9 @@
     <eLiterals name="OpenMP" value="2" literal="OpenMP"/>
     <eLiterals name="Kokkos" value="3" literal="Kokkos"/>
     <eLiterals name="KokkosTeamThread" value="4" literal="KokkosTeamThread"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="CppCompiler">
+    <eLiterals name="GNU" literal="GNU"/>
+    <eLiterals name="LLVM" value="1" literal="LLVM"/>
   </eClassifiers>
 </ecore:EPackage>

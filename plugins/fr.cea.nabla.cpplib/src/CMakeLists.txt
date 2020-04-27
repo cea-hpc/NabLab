@@ -54,7 +54,11 @@ endif()
 ### LIBCPPNABLAKOKKOS
 if(NOT DEFINED LIBCPPNABLA_BACKEND OR LIBCPPNABLA_BACKEND STREQUAL "KOKKOS")
 message(STATUS "Building library with KOKKOS.")
-set(CMAKE_FIND_ROOT_PATH "$ENV{KOKKOS_HOME}")
+if (DEFINED NABLA_KOKKOS_PATH)
+	set(CMAKE_FIND_ROOT_PATH ${NABLA_KOKKOS_PATH})
+else()
+	set(CMAKE_FIND_ROOT_PATH $ENV{HOME}/kokkos/kokkos-install)
+endif()
 find_package(Kokkos)
 find_package(KokkosKernels)
 

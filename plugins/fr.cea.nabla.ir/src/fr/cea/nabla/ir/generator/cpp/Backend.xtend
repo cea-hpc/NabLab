@@ -73,10 +73,10 @@ class StlThreadBackend extends Backend
 
 class KokkosBackend extends Backend
 {
-	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath)
+	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String kokkosPath)
 	{
 		name = 'Kokkos'
-		ir2Cmake = new KokkosIr2Cmake(compiler, compilerPath)
+		ir2Cmake = new KokkosIr2Cmake(compiler, compilerPath, kokkosPath)
 		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new KokkosIncludesContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
@@ -94,10 +94,10 @@ class KokkosBackend extends Backend
 
 class KokkosTeamThreadBackend extends Backend
 {
-	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath)
+	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String kokkosPath)
 	{
 		name = 'Kokkos Team Thread'
-		ir2Cmake = new KokkosIr2Cmake(compiler, compilerPath)
+		ir2Cmake = new KokkosIr2Cmake(compiler, compilerPath, kokkosPath)
 		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new KokkosIncludesContentProvider
 		typeContentProvider = new KokkosTypeContentProvider

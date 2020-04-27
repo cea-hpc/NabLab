@@ -25,9 +25,9 @@
 
     <!-- Add a specific pom.xml to be able to generate plugins/fr.cea.nabla/src/fr/cea/nabla/GenerateNabla.mwe2 only once -->
     <properties>
-        <emf-mwe2-version>2.11.0</emf-mwe2-version>
+        <emf-mwe2-version>2.11.2</emf-mwe2-version>
         <emf-codegen-version>2.19.0</emf-codegen-version>
-        <xtext-version>2.19.0</xtext-version>
+        <xtext-version>2.21.0</xtext-version>
         <xtext-antlr-version>[2.1.1, 3)</xtext-antlr-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

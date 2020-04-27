@@ -19,7 +19,7 @@
 
     <properties>
         <tycho-version>1.5.1</tycho-version>
-        <xtend-version>2.19.0</xtend-version>
+        <xtend-version>2.21.0</xtend-version>
         <maven-clean-version>3.1.0</maven-clean-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>

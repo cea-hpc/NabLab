@@ -52,6 +52,10 @@ location "http://www.pydev.org/update_sites/7.4.0" {
 	org.python.pydev.feature.feature.group
 }
 
+location jsoneditor "http://boothen.github.io/Json-Eclipse-Plugin" {
+	jsonedit-feature.feature.group
+}
+
 location orbit "https://download.eclipse.org/tools/orbit/downloads/drops/R20200224183213/repository" {
 	org.hamcrest.core
 	org.apache.commons.lang3

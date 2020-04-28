@@ -51,5 +51,12 @@ if grep -q "Version $OLD_VERSION" $f; then
    sed "s/Version $OLD_VERSION/Version $NEW_VERSION/g" $f.old > $f
 fi
 
+f=./releng/fr.cea.nabla.updatesite/NabLab.product
+if grep -q "$OLD_VERSION.qualifier" $f; then
+   echo "   Changing version of:" $f
+   cp $f $f.old
+   sed "s/$OLD_VERSION.qualifier/$NEW_VERSION.qualifier/g" $f.old > $f
+fi
+
 echo "DONE. All that remains is to change the SPLASH SCREEN (BMP 459x347)."
 

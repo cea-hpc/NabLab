@@ -13,7 +13,6 @@ import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.util.regex.Pattern
 import javax.imageio.ImageIO
-import javax.xml.bind.DatatypeConverter
 import org.scilab.forge.jlatexmath.TeXConstants
 import org.scilab.forge.jlatexmath.TeXFormula
 
@@ -41,7 +40,8 @@ class LatexImageServices
 	{
 		val output = new ByteArrayOutputStream
 		ImageIO::write(texFormula.createImage(15), "png", output)
-		DatatypeConverter.printBase64Binary(output.toByteArray).addHtmlTags
+		val outputString = new String(output.toByteArray, "UTF-8");
+		outputString.addHtmlTags
 	}
 	
 	/** Fabrique une image png à partir d'une formule Latex */

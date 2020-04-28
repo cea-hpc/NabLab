@@ -80,9 +80,10 @@ class StlIr2Cmake extends Ir2Cmake
 
 class KokkosIr2Cmake extends Ir2Cmake
 {
-	new(String compiler, String compilerPath)
+	new(String compiler, String compilerPath, String kokkosPath)
 	{
-		libraryBackend = libraryBackend = "set(LIBCPPNABLA_BACKEND \"KOKKOS\")"
+		libraryBackend = "set(LIBCPPNABLA_BACKEND \"KOKKOS\")" + "\n"
+						 + "set(NABLA_KOKKOS_PATH \"" + kokkosPath + "\")"
 		targetLinkLibraries += "cppnablakokkos"
 		this.compiler = compiler
 		this.compilerPath = compilerPath

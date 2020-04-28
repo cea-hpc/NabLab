@@ -66,6 +66,7 @@ workflow ImplicitHeatEquationGenerationChain transforms ImplicitHeatEquation
 			maxIterationVariable = option_max_iterations;
 			stopTimeVariable = option_stoptime;
 			programmingModel = Kokkos;
+			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
 			compiler = GNU;
 		}
 		outputDir = "/NablaExamples/src-gen-cpp/kokkos";
@@ -78,6 +79,7 @@ workflow ImplicitHeatEquationGenerationChain transforms ImplicitHeatEquation
 			maxIterationVariable = option_max_iterations;
 			stopTimeVariable = option_stoptime;
 			programmingModel = KokkosTeamThread;
+			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
 			compiler = GNU;
 		}
 		outputDir = "/NablaExamples/src-gen-cpp/kokkos-team";

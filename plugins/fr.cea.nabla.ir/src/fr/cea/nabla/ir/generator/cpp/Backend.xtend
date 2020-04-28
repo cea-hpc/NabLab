@@ -32,10 +32,10 @@ abstract class Backend
 
 class SequentialBackend extends Backend
 {
-	new(String maxIterationVarName, String stopTimeVarName)
+	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath)
 	{
 		name = 'Sequential'
-		ir2Cmake = new StlIr2Cmake
+		ir2Cmake = new StlIr2Cmake(compiler, compilerPath)
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new IncludesContentProvider
 		typeContentProvider = new StlTypeContentProvider
@@ -54,10 +54,10 @@ class SequentialBackend extends Backend
 
 class StlThreadBackend extends Backend
 {
-	new(String maxIterationVarName, String stopTimeVarName)
+	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath)
 	{
 		name = 'StlThread'
-		ir2Cmake = new StlIr2Cmake
+		ir2Cmake = new StlIr2Cmake(compiler, compilerPath)
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new StlThreadIncludesContentProvider
 		typeContentProvider = new StlTypeContentProvider
@@ -76,10 +76,10 @@ class StlThreadBackend extends Backend
 
 class KokkosBackend extends Backend
 {
-	new(String maxIterationVarName, String stopTimeVarName)
+	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String kokkosPath)
 	{
 		name = 'Kokkos'
-		ir2Cmake = new KokkosIr2Cmake
+		ir2Cmake = new KokkosIr2Cmake(compiler, compilerPath, kokkosPath)
 		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new KokkosIncludesContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
@@ -98,10 +98,10 @@ class KokkosBackend extends Backend
 
 class KokkosTeamThreadBackend extends Backend
 {
-	new(String maxIterationVarName, String stopTimeVarName)
+	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String kokkosPath)
 	{
 		name = 'Kokkos Team Thread'
-		ir2Cmake = new KokkosIr2Cmake
+		ir2Cmake = new KokkosIr2Cmake(compiler, compilerPath, kokkosPath)
 		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new KokkosIncludesContentProvider
 		typeContentProvider = new KokkosTypeContentProvider

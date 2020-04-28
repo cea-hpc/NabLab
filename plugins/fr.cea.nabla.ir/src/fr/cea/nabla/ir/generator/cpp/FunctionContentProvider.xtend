@@ -13,17 +13,21 @@ import fr.cea.nabla.ir.ir.Function
 import org.eclipse.xtend.lib.annotations.Data
 
 @Data
-class FunctionContentProvider 
+class FunctionContentProvider
 {
 	protected val extension TypeContentProvider typeContentProvider
 	protected val extension InstructionContentProvider instructionContentProvider
 	protected def String getMacro() { null }
 
-	def getContent(Function it)
+	def getDeclarationContent(Function it)
 	'''
 		«FOR v : variables BEFORE "template<" SEPARATOR ", " AFTER ">"»size_t «v.name»«ENDFOR»
 		«IF macro !== null»«macro»«ENDIF»
-		«returnType.cppType» «name.toFirstLower»(«FOR a : inArgs SEPARATOR ', '»«a.type.cppType» «a.name»«ENDFOR»)
+		«returnType.cppType» «name»(«FOR a : inArgs SEPARATOR ', '»«a.type.cppType» «a.name»«ENDFOR»)'''
+
+	def getDefinitionContent(Function it)
+	'''
+		«getDeclarationContent»
 		{
 			«body.innerContent»
 		}

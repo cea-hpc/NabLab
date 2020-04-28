@@ -12,6 +12,7 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.SimpleVariable
@@ -23,7 +24,6 @@ import org.eclipse.core.runtime.Platform
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import fr.cea.nabla.ir.ir.Function
 
 class Ir2Cpp extends CodeGenerator
 {
@@ -64,19 +64,25 @@ class Ir2Cpp extends CodeGenerator
 
 	override getFileContentsByName(IrModule it)
 	{
-		#{ name + '.cc' -> ccFileContent, 'CMakeLists.txt' -> backend.ir2Cmake.getContentFor(it)}
+		#{ name + '.h' -> headerFileContent, name + '.cc' -> sourceFileContent, 'CMakeLists.txt' -> backend.ir2Cmake.getContentFor(it)}
 	}
 
-	private def getCcFileContent(IrModule it)
+	private def getHeaderFileContent(IrModule it)
 	'''
 	«backend.includesContentProvider.getContentFor(it)»
 
 	using namespace nablalib;
 
-	«FOR f : functions.filter(Function).filter[body !== null]»
+	«IF !functions.empty»
+	/******************** Free functions declarations ********************/
 
-		«f.content»
+	«FOR f : functions.filter(Function).filter[body !== null]»
+		«f.declarationContent»;
 	«ENDFOR»
+	«ENDIF»
+
+
+	/******************** Module declaration ********************/
 
 	class «name»
 	{
@@ -84,7 +90,7 @@ class Ir2Cpp extends CodeGenerator
 		struct Options
 		{
 			«FOR v : options»
-			«IF v.type.primitive == PrimitiveType.INT»size_t«ELSE»«v.cppType»«ENDIF» «v.name»;
+			«IF v.type.primitive == PrimitiveType.INT && v.type.sizes.empty»size_t«ELSE»«v.cppType»«ENDIF» «v.name»;
 			«ENDFOR»
 
 			Options(const std::string& fileName)
@@ -102,71 +108,101 @@ class Ir2Cpp extends CodeGenerator
 
 		Options* options;
 
+		«name»(Options* aOptions, «IF withMesh»CartesianMesh2D* aCartesianMesh2D,«ENDIF» string output);
+
 	private:
 		«backend.attributesContentProvider.getContentFor(it)»
 
-	public:
-		«name»(Options* aOptions, «IF withMesh»CartesianMesh2D* aCartesianMesh2D,«ENDIF» string output)
-		: options(aOptions)
-		«IF withMesh»
-		, mesh(aCartesianMesh2D)
-		, writer("«name»", output)
-		«FOR c : usedConnectivities»
-		, «c.nbElemsVar»(«c.connectivityAccessor»)
-		«ENDFOR»
-		«ENDIF»
-		«FOR v : variables»
-			«IF v instanceof SimpleVariable && (v as SimpleVariable).defaultValue !== null»
-				, «v.name»(«(v as SimpleVariable).defaultValue.content»)
-			«ELSEIF v instanceof ConnectivityVariable»
-				, «v.name»(«v.cstrInit»)
-			«ENDIF»
-		«ENDFOR»
-		{
-			«IF withMesh»
-			// Copy node coordinates
-			const auto& gNodes = mesh->getGeometry()->getNodes();
-			«val iterator = backend.argOrVarContentProvider.formatIterators(initNodeCoordVariable, #["rNodes"])»
-			for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-				«initNodeCoordVariable.name»«iterator» = gNodes[rNodes];
-			«ENDIF»
-		}
-
-	private:
-		«backend.privateMethodsContentProvider.getContentFor(it)»
+		«backend.privateMethodsContentProvider.getDeclarationContentFor(it)»
 		«IF postProcessingInfo !== null»
 
-		void dumpVariables(int iteration)
-		{
-			if (!writer.isDisabled() && «postProcessingInfo.periodVariable.name» >= «postProcessingInfo.lastDumpVariable.name» + «postProcessingInfo.periodValue»)
-			{
-				cpuTimer.stop();
-				ioTimer.start();
-				std::map<string, double*> cellVariables;
-				std::map<string, double*> nodeVariables;
-				«FOR v : postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable)»
-				«v.type.connectivities.head.returnType.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
-				«ENDFOR»
-				auto quads = mesh->getGeometry()->getQuads();
-				writer.writeFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);
-				«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodVariable.name»;
-				ioTimer.stop();
-				cpuTimer.start();
-			}
-		}
+		void dumpVariables(int iteration);
 		«ENDIF»
 
 	public:
-		void simulate()
-		{
-			«backend.traceContentProvider.getBeginOfSimuTrace(name, withMesh)»
-
-			«callsHeader»
-			«callsContent»
-			«backend.traceContentProvider.endOfSimuTrace»
-			«IF linearAlgebra && mainTimeLoop !== null»«backend.traceContentProvider.getCGInfoTrace(mainTimeLoop.iterationCounter.name)»«ENDIF»
-		}
+		void simulate();
 	};
+	'''
+	
+	private def getSourceFileContent(IrModule it)
+	'''
+	#include "«name».h"
+
+	using namespace nablalib;
+
+	«IF !functions.empty»
+	/******************** Free functions definitions ********************/
+
+	«FOR f : functions.filter(Function).filter[body !== null]»
+		«f.definitionContent»
+
+	«ENDFOR»
+	«ENDIF»
+
+
+	/******************** Module definition ********************/
+
+	«name»::«name»(Options* aOptions, «IF withMesh»CartesianMesh2D* aCartesianMesh2D,«ENDIF» string output)
+	: options(aOptions)
+	«IF withMesh»
+	, mesh(aCartesianMesh2D)
+	, writer("«name»", output)
+	«FOR c : usedConnectivities»
+	, «c.nbElemsVar»(«c.connectivityAccessor»)
+	«ENDFOR»
+	«ENDIF»
+	«FOR v : variables»
+		«IF v instanceof SimpleVariable && (v as SimpleVariable).defaultValue !== null»
+			, «v.name»(«(v as SimpleVariable).defaultValue.content»)
+		«ELSEIF v instanceof ConnectivityVariable»
+			, «v.name»(«v.cstrInit»)
+		«ENDIF»
+	«ENDFOR»
+	{
+		«IF withMesh»
+		// Copy node coordinates
+		const auto& gNodes = mesh->getGeometry()->getNodes();
+		«val iterator = backend.argOrVarContentProvider.formatIterators(initNodeCoordVariable, #["rNodes"])»
+		for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+			«initNodeCoordVariable.name»«iterator» = gNodes[rNodes];
+		«ENDIF»
+	}
+
+	«backend.privateMethodsContentProvider.getDefinitionContentFor(it)»
+	«IF postProcessingInfo !== null»
+
+	void «name»::dumpVariables(int iteration)
+	{
+		if (!writer.isDisabled() && («postProcessingInfo.lastDumpVariable.name» < 0 || «postProcessingInfo.periodVariable.name» >= «postProcessingInfo.lastDumpVariable.name» + «postProcessingInfo.periodValue»))
+		{
+			cpuTimer.stop();
+			ioTimer.start();
+			std::map<string, double*> cellVariables;
+			std::map<string, double*> nodeVariables;
+			«FOR v : postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable)»
+			«v.type.connectivities.head.returnType.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
+			«ENDFOR»
+			auto quads = mesh->getGeometry()->getQuads();
+			writer.writeFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);
+			«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodVariable.name»;
+			ioTimer.stop();
+			cpuTimer.start();
+		}
+	}
+	«ENDIF»
+
+	void «name»::simulate()
+	{
+		«backend.traceContentProvider.getBeginOfSimuTrace(name, withMesh)»
+
+		«callsHeader»
+		«callsContent»
+		«backend.traceContentProvider.endOfSimuTrace»
+		«IF linearAlgebra && mainTimeLoop !== null»«backend.traceContentProvider.getCGInfoTrace(mainTimeLoop.iterationCounter.name)»«ENDIF»
+	}
+
+
+	/******************** Module definition ********************/
 
 	int main(int argc, char* argv[]) 
 	{

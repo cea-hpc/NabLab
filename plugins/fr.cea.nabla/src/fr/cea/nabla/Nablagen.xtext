@@ -101,7 +101,11 @@ Java: activated?='Java' ';';
 Cpp: 'Cpp' '{'
 		'maxIterationVariable' '=' maxIterationVar=[nabla::SimpleVar] ';'
 		'stopTimeVariable' '=' stopTimeVar=[nabla::SimpleVar] ';'
-		'programmingModel' '=' programmingModel=CppProgrammingModel
+		'programmingModel' '=' programmingModel=CppProgrammingModel ';'
+		('kokkosPath' '=' kokkosPath = STRING ';')? 
+		'compiler' '=' compiler=CppCompiler ';'
+		('compilerPath' '=' compilerPath = STRING ';')? 
 	'}';
 
 enum CppProgrammingModel: Sequential | StlThread | OpenMP | Kokkos | KokkosTeamThread;
+enum CppCompiler: GNU | LLVM;

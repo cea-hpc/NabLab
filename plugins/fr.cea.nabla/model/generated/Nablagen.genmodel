@@ -15,6 +15,10 @@
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppProgrammingModel/Kokkos"/>
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppProgrammingModel/KokkosTeamThread"/>
     </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Nablagen.ecore#//CppCompiler">
+      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppCompiler/GNU"/>
+      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppCompiler/LLVM"/>
+    </genEnums>
     <genClasses ecoreClass="Nablagen.ecore#//NablagenModule">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenModule/imports"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenModule/workflow"/>
@@ -69,6 +73,9 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Cpp/maxIterationVar"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Cpp/stopTimeVar"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Cpp/programmingModel"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Cpp/kokkosPath"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Cpp/compiler"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Cpp/compilerPath"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

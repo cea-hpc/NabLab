@@ -53,7 +53,8 @@ workflow IterativeHeatEquationGenerationChain transforms IterativeHeatEquation
 		{
 			maxIterationVariable = option_max_iterations;
 			stopTimeVariable = option_stoptime;
-			programmingModel = StlThread
+			programmingModel = StlThread;
+			compiler = GNU;
 		}
 		outputDir = "/NablaExamples/src-gen-cpp/stl-thread";
 	}
@@ -64,7 +65,9 @@ workflow IterativeHeatEquationGenerationChain transforms IterativeHeatEquation
 		{
 			maxIterationVariable = option_max_iterations;
 			stopTimeVariable = option_stoptime;
-			programmingModel = Kokkos
+			programmingModel = Kokkos;
+			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+			compiler = GNU;
 		}
 		outputDir = "/NablaExamples/src-gen-cpp/kokkos";
 	}
@@ -75,7 +78,9 @@ workflow IterativeHeatEquationGenerationChain transforms IterativeHeatEquation
 		{
 			maxIterationVariable = option_max_iterations;
 			stopTimeVariable = option_stoptime;
-			programmingModel = KokkosTeamThread
+			programmingModel = KokkosTeamThread;
+			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+			compiler = GNU;
 		}
 		outputDir = "/NablaExamples/src-gen-cpp/kokkos-team";
 	}

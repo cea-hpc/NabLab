@@ -19,10 +19,17 @@ class PrivateMethodsContentProvider
 {
 	protected val extension JobContentProvider
 
-	def getContentFor(IrModule it)
+	def getDeclarationContentFor(IrModule it)
 	'''
 		«FOR j : jobs.sortByAtAndName SEPARATOR '\n'»
-			«j.content»
+			«j.declarationContent»
+		«ENDFOR»
+	'''
+
+	def getDefinitionContentFor(IrModule it)
+	'''
+		«FOR j : jobs.sortByAtAndName SEPARATOR '\n'»
+			«j.definitionContent»
 		«ENDFOR»
 	'''
 }
@@ -30,14 +37,14 @@ class PrivateMethodsContentProvider
 @Data
 class KokkosTeamThreadPrivateMethodsContentProvider extends PrivateMethodsContentProvider
 {
-	override getContentFor(IrModule it)
+	override getDefinitionContentFor(IrModule it)
 	'''
 		/**
 		 * Utility function to get work load for each team of threads
 		 * In  : thread and number of element to use for computation
 		 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
 		 */
-		const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
+		const std::pair<size_t, size_t> «irModule.name»::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
 		{
 			/*
 			if (nb_elmt % thread.team_size())
@@ -60,6 +67,6 @@ class KokkosTeamThreadPrivateMethodsContentProvider extends PrivateMethodsConten
 			return std::pair<size_t, size_t>(team_offset, team_chunk);
 		}
 
-		«super.getContentFor(it)»
+		«super.getDefinitionContentFor(it)»
 	'''
 }

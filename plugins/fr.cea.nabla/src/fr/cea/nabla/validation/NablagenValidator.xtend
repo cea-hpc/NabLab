@@ -14,6 +14,8 @@ import fr.cea.nabla.nablagen.TagPersistentVariablesComponent
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nablagen.NablagenPackage
+import fr.cea.nabla.nablagen.Cpp
+import fr.cea.nabla.nablagen.CppProgrammingModel
 
 /**
  * This class contains custom validation rules. 
@@ -23,13 +25,22 @@ import fr.cea.nabla.nablagen.NablagenPackage
 class NablagenValidator extends AbstractNablagenValidator 
 {
 	public static val PERIOD_VAR_TYPE = "TagPersistentVariablesComponent::PeriodVarType"
+	public static val KOKKOS_PATH = "Cpp::KokkosPath"
 
 	static def getPeriodVarTypeMsg() { "Invalid variable type: only scalar types accepted" }
+	static def getKokkosPathMsg() { "Kokkos path is required when KOKKOS programming model is selected" }
 
 	@Check
 	def void checkPeriodVarType(TagPersistentVariablesComponent it)
 	{
 		if (periodVar !== null && !(periodVar instanceof SimpleVar || periodVar instanceof TimeIterator))
 			error(getPeriodVarTypeMsg(), NablagenPackage.Literals::TAG_PERSISTENT_VARIABLES_COMPONENT__PERIOD_VAR, PERIOD_VAR_TYPE)
+	}
+
+	@Check
+	def void checkKokkosPath(Cpp it)
+	{
+		if ((programmingModel == CppProgrammingModel::KOKKOS || programmingModel == CppProgrammingModel::KOKKOS_TEAM_THREAD) && kokkosPath.nullOrEmpty)
+			error(getKokkosPathMsg(), NablagenPackage.Literals::CPP__PROGRAMMING_MODEL, KOKKOS_PATH)
 	}
 }

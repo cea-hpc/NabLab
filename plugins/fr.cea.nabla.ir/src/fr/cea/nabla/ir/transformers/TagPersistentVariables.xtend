@@ -85,7 +85,8 @@ class TagPersistentVariables implements IrTransformationStep
 		switch t
 		{
 			case BOOL: f.createBoolConstant => [ value = false ]
-			default: f.createMinConstant => [ type = f.createBaseType => [ primitive = t] ]
+			case REAL: f.createRealConstant => [ value = -1.0 ]
+			case INT: f.createIntConstant => [ value = -1 ]
 		}
 	}
 }

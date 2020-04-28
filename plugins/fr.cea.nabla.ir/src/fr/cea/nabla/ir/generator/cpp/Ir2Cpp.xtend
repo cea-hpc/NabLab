@@ -89,7 +89,7 @@ class Ir2Cpp extends CodeGenerator
 		{
 			// Should be const but usefull to set them from main args
 			«FOR v : options»
-			«IF v.type.primitive == PrimitiveType.INT»size_t«ELSE»«v.cppType»«ENDIF» «v.name» = «v.defaultValue.content.toString.replaceAll('options->', '')»;
+			«IF v.type.primitive == PrimitiveType.INT && v.type.sizes.empty»size_t«ELSE»«v.cppType»«ENDIF» «v.name» = «v.defaultValue.content.toString.replaceAll('options->', '')»;
 			«ENDFOR»
 		};
 		Options* options;
@@ -159,7 +159,7 @@ class Ir2Cpp extends CodeGenerator
 
 	void «name»::dumpVariables(int iteration)
 	{
-		if (!writer.isDisabled() && «postProcessingInfo.periodVariable.name» >= «postProcessingInfo.lastDumpVariable.name» + «postProcessingInfo.periodValue»)
+		if (!writer.isDisabled() && («postProcessingInfo.lastDumpVariable.name» < 0 || «postProcessingInfo.periodVariable.name» >= «postProcessingInfo.lastDumpVariable.name» + «postProcessingInfo.periodValue»))
 		{
 			cpuTimer.stop();
 			ioTimer.start();

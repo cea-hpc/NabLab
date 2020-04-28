@@ -12,12 +12,6 @@ package fr.cea.nabla.tests.interpreter;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import fr.cea.nabla.tests.interpreter.BinaryOperationsInterpreterTest;
-import fr.cea.nabla.tests.interpreter.ExpressionInterpreterTest;
-import fr.cea.nabla.tests.interpreter.InstructionInterpreterTest;
-import fr.cea.nabla.tests.interpreter.JobInterpreterTest;
-import fr.cea.nabla.tests.interpreter.ModuleInterpreterTest;
-
 @RunWith(Suite.class)
 
 @Suite.SuiteClasses

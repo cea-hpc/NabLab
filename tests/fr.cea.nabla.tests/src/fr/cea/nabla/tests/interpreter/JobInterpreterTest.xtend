@@ -21,26 +21,17 @@ import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
-import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
-class JobInterpreterTest 
+class JobInterpreterTest extends AbstractJobInterpreterTest
 {
 	@Inject CompilationChainHelper compilationHelper
 	@Inject extension TestUtils
 
-	@Test
-	def void testInterpreteInstructionJob()
+	override assertInterpreteInstructionJob(String model)
 	{
-		val model = testModuleForSimulation
-		+
-		'''
-		ℝ[2] X{nodes};
-		initT : t = 5.;
-		'''
-
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
@@ -50,23 +41,8 @@ class JobInterpreterTest
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(5.0))
 	}
 
-	@Test
-	def void testInterpreteTimeLoopJob()
+	override assertInterpreteTimeLoopJob(String model)
 	{
-		val model = testModuleForSimulation
-		+
-		'''
-		// Simulation options
-		let option_stoptime = 0.2;
-		let option_max_iterations = 10;
-		ℝ[2] X{nodes};
-
-		iterate n while (t^{n} < option_stoptime && n < option_max_iterations);
-
-		InitT: t^{n=0} = 0.;
-		ComputeTn: t^{n+1} = t^{n} + 0.01;
-		'''
-
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
@@ -78,24 +54,8 @@ class JobInterpreterTest
 		assertVariableValueInContext(irModule, context, "t_nplus1", new NV0Real(0.1))
 	}
 
-	@Test
-	def void testInterpreteTimeLoopCopyJob()
+	override assertInterpreteTimeLoopCopyJob(String model)
 	{
-		val model = getTestModule(10,10)
-		+
-		'''
-		// Simulation options
-		let option_stoptime = 0.2;
-		let option_max_iterations = 10;
-		ℝ[2] u, X{nodes}, center{cells};
-
-		iterate n while (t^{n} < option_stoptime && n < option_max_iterations);
-
-		ComputeUx : u^{n}[0] = u^{n=0}[0] + 1.0;
-		ComputeUy : u^{n}[1] = u^{n=0}[1] + 2.0;
-		IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X^{n=0}{r});
-		'''
-
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF

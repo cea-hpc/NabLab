@@ -89,7 +89,7 @@ public final class ExplicitHeatEquation
 		faceLength = new double[nbFaces];
 		faceConductivity = new double[nbFaces];
 		alpha = new double[nbCells][nbCells];
-		lastDump = Integer.MIN_VALUE;
+		lastDump = -1;
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -430,7 +430,7 @@ public final class ExplicitHeatEquation
 
 	private void dumpVariables(int iteration)
 	{
-		if (n >= lastDump + 1.0)
+		if (lastDump < 0 || n >= lastDump + 1.0)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();

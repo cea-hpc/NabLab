@@ -91,7 +91,7 @@ public final class ImplicitHeatEquation
 		faceLength = new double[nbFaces];
 		faceConductivity = new double[nbFaces];
 		alpha = Matrix.createDenseMatrix(nbCells, nbCells);
-		lastDump = Integer.MIN_VALUE;
+		lastDump = -1;
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -417,7 +417,7 @@ public final class ImplicitHeatEquation
 
 	private void dumpVariables(int iteration)
 	{
-		if (n >= lastDump + 1.0)
+		if (lastDump < 0 || n >= lastDump + 1.0)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();

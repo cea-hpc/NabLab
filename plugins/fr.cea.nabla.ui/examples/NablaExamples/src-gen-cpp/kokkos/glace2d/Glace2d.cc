@@ -1,24 +1,8 @@
-#include <fstream>
-#include <iomanip>
-#include <type_traits>
-#include <limits>
-#include <utility>
-#include <cmath>
-#include <rapidjson/document.h>
-#include <rapidjson/istreamwrapper.h>
-#include <Kokkos_Core.hpp>
-#include <Kokkos_hwloc.hpp>
-#include "mesh/CartesianMesh2DGenerator.h"
-#include "mesh/CartesianMesh2D.h"
-#include "mesh/PvdFileWriter2D.h"
-#include "utils/Utils.h"
-#include "utils/Timer.h"
-#include "types/Types.h"
-#include "types/MathFunctions.h"
-#include "utils/kokkos/Parallel.h"
+#include "Glace2d.h"
 
 using namespace nablalib;
 
+/******************** Free functions definitions ********************/
 
 KOKKOS_INLINE_FUNCTION
 RealArray1D<2> perp(RealArray1D<2> a)
@@ -86,866 +70,704 @@ double minR0(double a, double b)
 	return MathFunctions::min(a, b);
 }
 
-class Glace2d
+
+
+/******************** Module definition ********************/
+
+Glace2d::Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string output)
+: options(aOptions)
+, mesh(aCartesianMesh2D)
+, writer("Glace2d", output)
+, nbNodes(mesh->getNbNodes())
+, nbCells(mesh->getNbCells())
+, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, nbCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
+, nbInnerNodes(mesh->getNbInnerNodes())
+, nbOuterFaces(mesh->getNbOuterFaces())
+, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
+, t_n(0.0)
+, t_nplus1(0.0)
+, deltat_n(options->option_deltat_ini)
+, deltat_nplus1(options->option_deltat_ini)
+, X_n("X_n", nbNodes)
+, X_nplus1("X_nplus1", nbNodes)
+, X_n0("X_n0", nbNodes)
+, b("b", nbNodes)
+, bt("bt", nbNodes)
+, Ar("Ar", nbNodes)
+, Mt("Mt", nbNodes)
+, ur("ur", nbNodes)
+, c("c", nbCells)
+, m("m", nbCells)
+, p("p", nbCells)
+, rho("rho", nbCells)
+, e("e", nbCells)
+, E_n("E_n", nbCells)
+, E_nplus1("E_nplus1", nbCells)
+, V("V", nbCells)
+, deltatj("deltatj", nbCells)
+, uj_n("uj_n", nbCells)
+, uj_nplus1("uj_nplus1", nbCells)
+, l("l", nbCells, nbNodesOfCell)
+, Cjr_ic("Cjr_ic", nbCells, nbNodesOfCell)
+, C("C", nbCells, nbNodesOfCell)
+, F("F", nbCells, nbNodesOfCell)
+, Ajr("Ajr", nbCells, nbNodesOfCell)
+, lastDump(-1)
 {
-public:
-	struct Options
-	{
-		double X_EDGE_LENGTH;
-		double Y_EDGE_LENGTH;
-		size_t X_EDGE_ELEMS;
-		size_t Y_EDGE_ELEMS;
-		double option_stoptime;
-		size_t option_max_iterations;
-		double gamma;
-		double option_x_interface;
-		double option_deltat_ini;
-		double option_deltat_cfl;
-		double option_rho_ini_zg;
-		double option_rho_ini_zd;
-		double option_p_ini_zg;
-		double option_p_ini_zd;
+	// Copy node coordinates
+	const auto& gNodes = mesh->getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+		X_n0(rNodes) = gNodes[rNodes];
+}
 
-		Options(const std::string& fileName)
+/**
+ * Job ComputeCjr called @1.0 in executeTimeLoopN method.
+ * In variables: X_n
+ * Out variables: C
+ */
+void Glace2d::computeCjr() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
+	{
+		const Id jId(jCells);
 		{
-			ifstream ifs(fileName);
-			rapidjson::IStreamWrapper isw(ifs);
-			rapidjson::Document d;
-			d.ParseStream(isw);
-			assert(d.IsObject());
-			// X_EDGE_LENGTH
-			assert(d.HasMember("X_EDGE_LENGTH"));
-			const rapidjson::Value& valueof_X_EDGE_LENGTH = d["X_EDGE_LENGTH"];
-			assert(valueof_X_EDGE_LENGTH.IsDouble());
-			X_EDGE_LENGTH = valueof_X_EDGE_LENGTH.GetDouble();
-			// Y_EDGE_LENGTH
-			assert(d.HasMember("Y_EDGE_LENGTH"));
-			const rapidjson::Value& valueof_Y_EDGE_LENGTH = d["Y_EDGE_LENGTH"];
-			assert(valueof_Y_EDGE_LENGTH.IsDouble());
-			Y_EDGE_LENGTH = valueof_Y_EDGE_LENGTH.GetDouble();
-			// X_EDGE_ELEMS
-			assert(d.HasMember("X_EDGE_ELEMS"));
-			const rapidjson::Value& valueof_X_EDGE_ELEMS = d["X_EDGE_ELEMS"];
-			assert(valueof_X_EDGE_ELEMS.IsInt());
-			X_EDGE_ELEMS = valueof_X_EDGE_ELEMS.GetInt();
-			// Y_EDGE_ELEMS
-			assert(d.HasMember("Y_EDGE_ELEMS"));
-			const rapidjson::Value& valueof_Y_EDGE_ELEMS = d["Y_EDGE_ELEMS"];
-			assert(valueof_Y_EDGE_ELEMS.IsInt());
-			Y_EDGE_ELEMS = valueof_Y_EDGE_ELEMS.GetInt();
-			// option_stoptime
-			assert(d.HasMember("option_stoptime"));
-			const rapidjson::Value& valueof_option_stoptime = d["option_stoptime"];
-			assert(valueof_option_stoptime.IsDouble());
-			option_stoptime = valueof_option_stoptime.GetDouble();
-			// option_max_iterations
-			assert(d.HasMember("option_max_iterations"));
-			const rapidjson::Value& valueof_option_max_iterations = d["option_max_iterations"];
-			assert(valueof_option_max_iterations.IsInt());
-			option_max_iterations = valueof_option_max_iterations.GetInt();
-			// gamma
-			assert(d.HasMember("gamma"));
-			const rapidjson::Value& valueof_gamma = d["gamma"];
-			assert(valueof_gamma.IsDouble());
-			gamma = valueof_gamma.GetDouble();
-			// option_x_interface
-			assert(d.HasMember("option_x_interface"));
-			const rapidjson::Value& valueof_option_x_interface = d["option_x_interface"];
-			assert(valueof_option_x_interface.IsDouble());
-			option_x_interface = valueof_option_x_interface.GetDouble();
-			// option_deltat_ini
-			assert(d.HasMember("option_deltat_ini"));
-			const rapidjson::Value& valueof_option_deltat_ini = d["option_deltat_ini"];
-			assert(valueof_option_deltat_ini.IsDouble());
-			option_deltat_ini = valueof_option_deltat_ini.GetDouble();
-			// option_deltat_cfl
-			assert(d.HasMember("option_deltat_cfl"));
-			const rapidjson::Value& valueof_option_deltat_cfl = d["option_deltat_cfl"];
-			assert(valueof_option_deltat_cfl.IsDouble());
-			option_deltat_cfl = valueof_option_deltat_cfl.GetDouble();
-			// option_rho_ini_zg
-			assert(d.HasMember("option_rho_ini_zg"));
-			const rapidjson::Value& valueof_option_rho_ini_zg = d["option_rho_ini_zg"];
-			assert(valueof_option_rho_ini_zg.IsDouble());
-			option_rho_ini_zg = valueof_option_rho_ini_zg.GetDouble();
-			// option_rho_ini_zd
-			assert(d.HasMember("option_rho_ini_zd"));
-			const rapidjson::Value& valueof_option_rho_ini_zd = d["option_rho_ini_zd"];
-			assert(valueof_option_rho_ini_zd.IsDouble());
-			option_rho_ini_zd = valueof_option_rho_ini_zd.GetDouble();
-			// option_p_ini_zg
-			assert(d.HasMember("option_p_ini_zg"));
-			const rapidjson::Value& valueof_option_p_ini_zg = d["option_p_ini_zg"];
-			assert(valueof_option_p_ini_zg.IsDouble());
-			option_p_ini_zg = valueof_option_p_ini_zg.GetDouble();
-			// option_p_ini_zd
-			assert(d.HasMember("option_p_ini_zd"));
-			const rapidjson::Value& valueof_option_p_ini_zd = d["option_p_ini_zd"];
-			assert(valueof_option_p_ini_zd.IsDouble());
-			option_p_ini_zd = valueof_option_p_ini_zd.GetDouble();
+			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+			{
+				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
+				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
+				const size_t rPlus1Nodes(rPlus1Id);
+				const size_t rMinus1Nodes(rMinus1Id);
+				C(jCells,rNodesOfCellJ) = 0.5 * perp(X_n(rPlus1Nodes) - X_n(rMinus1Nodes));
+			}
 		}
-	};
+	});
+}
 
-	Options* options;
-
-private:
-	CartesianMesh2D* mesh;
-	PvdFileWriter2D writer;
-	size_t nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
-	int n;
-	double t_n;
-	double t_nplus1;
-	double deltat_n;
-	double deltat_nplus1;
-	Kokkos::View<RealArray1D<2>*> X_n;
-	Kokkos::View<RealArray1D<2>*> X_nplus1;
-	Kokkos::View<RealArray1D<2>*> X_n0;
-	Kokkos::View<RealArray1D<2>*> b;
-	Kokkos::View<RealArray1D<2>*> bt;
-	Kokkos::View<RealArray2D<2,2>*> Ar;
-	Kokkos::View<RealArray2D<2,2>*> Mt;
-	Kokkos::View<RealArray1D<2>*> ur;
-	Kokkos::View<double*> c;
-	Kokkos::View<double*> m;
-	Kokkos::View<double*> p;
-	Kokkos::View<double*> rho;
-	Kokkos::View<double*> e;
-	Kokkos::View<double*> E_n;
-	Kokkos::View<double*> E_nplus1;
-	Kokkos::View<double*> V;
-	Kokkos::View<double*> deltatj;
-	Kokkos::View<RealArray1D<2>*> uj_n;
-	Kokkos::View<RealArray1D<2>*> uj_nplus1;
-	Kokkos::View<double**> l;
-	Kokkos::View<RealArray1D<2>**> Cjr_ic;
-	Kokkos::View<RealArray1D<2>**> C;
-	Kokkos::View<RealArray1D<2>**> F;
-	Kokkos::View<RealArray2D<2,2>**> Ajr;
-	int lastDump;
-	utils::Timer globalTimer;
-	utils::Timer cpuTimer;
-	utils::Timer ioTimer;
-
-public:
-	Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string output)
-	: options(aOptions)
-	, mesh(aCartesianMesh2D)
-	, writer("Glace2d", output)
-	, nbNodes(mesh->getNbNodes())
-	, nbCells(mesh->getNbCells())
-	, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-	, nbCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
-	, nbInnerNodes(mesh->getNbInnerNodes())
-	, nbOuterFaces(mesh->getNbOuterFaces())
-	, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
-	, t_n(0.0)
-	, t_nplus1(0.0)
-	, deltat_n(options->option_deltat_ini)
-	, deltat_nplus1(options->option_deltat_ini)
-	, X_n("X_n", nbNodes)
-	, X_nplus1("X_nplus1", nbNodes)
-	, X_n0("X_n0", nbNodes)
-	, b("b", nbNodes)
-	, bt("bt", nbNodes)
-	, Ar("Ar", nbNodes)
-	, Mt("Mt", nbNodes)
-	, ur("ur", nbNodes)
-	, c("c", nbCells)
-	, m("m", nbCells)
-	, p("p", nbCells)
-	, rho("rho", nbCells)
-	, e("e", nbCells)
-	, E_n("E_n", nbCells)
-	, E_nplus1("E_nplus1", nbCells)
-	, V("V", nbCells)
-	, deltatj("deltatj", nbCells)
-	, uj_n("uj_n", nbCells)
-	, uj_nplus1("uj_nplus1", nbCells)
-	, l("l", nbCells, nbNodesOfCell)
-	, Cjr_ic("Cjr_ic", nbCells, nbNodesOfCell)
-	, C("C", nbCells, nbNodesOfCell)
-	, F("F", nbCells, nbNodesOfCell)
-	, Ajr("Ajr", nbCells, nbNodesOfCell)
-	, lastDump(numeric_limits<int>::min())
+/**
+ * Job ComputeInternalEnergy called @1.0 in executeTimeLoopN method.
+ * In variables: E_n, uj_n
+ * Out variables: e
+ */
+void Glace2d::computeInternalEnergy() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
-		// Copy node coordinates
-		const auto& gNodes = mesh->getGeometry()->getNodes();
-		for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-			X_n0(rNodes) = gNodes[rNodes];
-	}
+		e(jCells) = E_n(jCells) - 0.5 * MathFunctions::dot(uj_n(jCells), uj_n(jCells));
+	});
+}
 
-private:
-	/**
-	 * Job ComputeCjr called @1.0 in executeTimeLoopN method.
-	 * In variables: X_n
-	 * Out variables: C
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeCjr() noexcept
+/**
+ * Job IniCjrIc called @1.0 in simulate method.
+ * In variables: X_n0
+ * Out variables: Cjr_ic
+ */
+void Glace2d::iniCjrIc() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
+		const Id jId(jCells);
 		{
-			const Id jId(jCells);
+			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
-				{
-					const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
-					const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
-					const size_t rPlus1Nodes(rPlus1Id);
-					const size_t rMinus1Nodes(rMinus1Id);
-					C(jCells,rNodesOfCellJ) = 0.5 * perp(X_n(rPlus1Nodes) - X_n(rMinus1Nodes));
-				}
+				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
+				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
+				const size_t rPlus1Nodes(rPlus1Id);
+				const size_t rMinus1Nodes(rMinus1Id);
+				Cjr_ic(jCells,rNodesOfCellJ) = 0.5 * perp(X_n0(rPlus1Nodes) - X_n0(rMinus1Nodes));
 			}
-		});
-	}
-	
-	/**
-	 * Job ComputeInternalEnergy called @1.0 in executeTimeLoopN method.
-	 * In variables: E_n, uj_n
-	 * Out variables: e
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeInternalEnergy() noexcept
+		}
+	});
+}
+
+/**
+ * Job SetUpTimeLoopN called @1.0 in simulate method.
+ * In variables: X_n0
+ * Out variables: X_n
+ */
+void Glace2d::setUpTimeLoopN() noexcept
+{
+	deep_copy(X_n, X_n0);
+}
+
+/**
+ * Job ComputeLjr called @2.0 in executeTimeLoopN method.
+ * In variables: C
+ * Out variables: l
+ */
+void Glace2d::computeLjr() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
+		const Id jId(jCells);
 		{
-			e(jCells) = E_n(jCells) - 0.5 * MathFunctions::dot(uj_n(jCells), uj_n(jCells));
-		});
-	}
-	
-	/**
-	 * Job IniCjrIc called @1.0 in simulate method.
-	 * In variables: X_n0
-	 * Out variables: Cjr_ic
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void iniCjrIc() noexcept
-	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
-		{
-			const Id jId(jCells);
+			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
-				{
-					const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
-					const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
-					const size_t rPlus1Nodes(rPlus1Id);
-					const size_t rMinus1Nodes(rMinus1Id);
-					Cjr_ic(jCells,rNodesOfCellJ) = 0.5 * perp(X_n0(rPlus1Nodes) - X_n0(rMinus1Nodes));
-				}
+				l(jCells,rNodesOfCellJ) = MathFunctions::norm(C(jCells,rNodesOfCellJ));
 			}
-		});
-	}
-	
-	/**
-	 * Job SetUpTimeLoopN called @1.0 in simulate method.
-	 * In variables: X_n0
-	 * Out variables: X_n
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void setUpTimeLoopN() noexcept
+		}
+	});
+}
+
+/**
+ * Job ComputeV called @2.0 in executeTimeLoopN method.
+ * In variables: C, X_n
+ * Out variables: V
+ */
+void Glace2d::computeV() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
-		deep_copy(X_n, X_n0);
-	}
-	
-	/**
-	 * Job ComputeLjr called @2.0 in executeTimeLoopN method.
-	 * In variables: C
-	 * Out variables: l
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeLjr() noexcept
-	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
+		const Id jId(jCells);
+		double reduction5(0.0);
 		{
-			const Id jId(jCells);
+			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
-				{
-					l(jCells,rNodesOfCellJ) = MathFunctions::norm(C(jCells,rNodesOfCellJ));
-				}
+				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
+				const size_t rNodes(rId);
+				reduction5 = sumR0(reduction5, MathFunctions::dot(C(jCells,rNodesOfCellJ), X_n(rNodes)));
 			}
-		});
-	}
-	
-	/**
-	 * Job ComputeV called @2.0 in executeTimeLoopN method.
-	 * In variables: C, X_n
-	 * Out variables: V
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeV() noexcept
+		}
+		V(jCells) = 0.5 * reduction5;
+	});
+}
+
+/**
+ * Job Initialize called @2.0 in simulate method.
+ * In variables: Cjr_ic, X_n0, gamma, option_p_ini_zd, option_p_ini_zg, option_rho_ini_zd, option_rho_ini_zg, option_x_interface
+ * Out variables: E_n, m, p, rho, uj_n
+ */
+void Glace2d::initialize() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
+		const Id jId(jCells);
+		double rho_ic;
+		double p_ic;
+		RealArray1D<2> reduction0({0.0, 0.0});
 		{
-			const Id jId(jCells);
-			double reduction5(0.0);
+			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
+				const size_t rNodes(rId);
+				reduction0 = sumR1(reduction0, X_n0(rNodes));
+			}
+		}
+		const RealArray1D<2> center(0.25 * reduction0);
+		if (center[0] < options->option_x_interface) 
+		{
+			rho_ic = options->option_rho_ini_zg;
+			p_ic = options->option_p_ini_zg;
+		}
+		else
+		{
+			rho_ic = options->option_rho_ini_zd;
+			p_ic = options->option_p_ini_zd;
+		}
+		double reduction1(0.0);
+		{
+			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+			{
+				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
+				const size_t rNodes(rId);
+				reduction1 = sumR0(reduction1, MathFunctions::dot(Cjr_ic(jCells,rNodesOfCellJ), X_n0(rNodes)));
+			}
+		}
+		const double V_ic(0.5 * reduction1);
+		m(jCells) = rho_ic * V_ic;
+		p(jCells) = p_ic;
+		rho(jCells) = rho_ic;
+		E_n(jCells) = p_ic / ((options->gamma - 1.0) * rho_ic);
+		uj_n(jCells) = {0.0, 0.0};
+	});
+}
+
+/**
+ * Job ComputeDensity called @3.0 in executeTimeLoopN method.
+ * In variables: V, m
+ * Out variables: rho
+ */
+void Glace2d::computeDensity() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
+	{
+		rho(jCells) = m(jCells) / V(jCells);
+	});
+}
+
+/**
+ * Job ExecuteTimeLoopN called @3.0 in simulate method.
+ * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b, bt, c, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, option_deltat_cfl, p, rho, t_n, uj_n, ur
+ * Out variables: Ajr, Ar, C, E_nplus1, F, Mt, V, X_nplus1, b, bt, c, deltat_nplus1, deltatj, e, l, p, rho, t_nplus1, uj_nplus1, ur
+ */
+void Glace2d::executeTimeLoopN() noexcept
+{
+	n = 0;
+	bool continueLoop = true;
+	do
+	{
+		globalTimer.start();
+		cpuTimer.start();
+		n++;
+		dumpVariables(n);
+		if (n!=1)
+			std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
+				<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
+	
+		computeCjr(); // @1.0
+		computeInternalEnergy(); // @1.0
+		computeLjr(); // @2.0
+		computeV(); // @2.0
+		computeDensity(); // @3.0
+		computeEOSp(); // @4.0
+		computeEOSc(); // @5.0
+		computeAjr(); // @6.0
+		computedeltatj(); // @6.0
+		computeAr(); // @7.0
+		computeBr(); // @7.0
+		computeDt(); // @7.0
+		computeBoundaryConditions(); // @8.0
+		computeBt(); // @8.0
+		computeMt(); // @8.0
+		computeTn(); // @8.0
+		computeU(); // @9.0
+		computeFjr(); // @10.0
+		computeXn(); // @10.0
+		computeEn(); // @11.0
+		computeUn(); // @11.0
+		
+	
+		// Evaluate loop condition with variables at time n
+		continueLoop = (t_nplus1 < options->option_stoptime && n + 1 < options->option_max_iterations);
+	
+		if (continueLoop)
+		{
+			// Switch variables to prepare next iteration
+			std::swap(t_nplus1, t_n);
+			std::swap(deltat_nplus1, deltat_n);
+			std::swap(X_nplus1, X_n);
+			std::swap(E_nplus1, E_n);
+			std::swap(uj_nplus1, uj_n);
+		}
+	
+		cpuTimer.stop();
+		globalTimer.stop();
+	
+		// Timers display
+		if (!writer.isDisabled())
+			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __BLUE__ << ioTimer.print(true) << __RESET__ "} ";
+		else
+			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
+		
+		// Progress
+		std::cout << utils::progress_bar(n, options->option_max_iterations, t_n, options->option_stoptime, 25);
+		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
+			utils::eta(n, options->option_max_iterations, t_n, options->option_stoptime, deltat_n, globalTimer), true)
+			<< __RESET__ << "\r";
+		std::cout.flush();
+	
+		cpuTimer.reset();
+		ioTimer.reset();
+	} while (continueLoop);
+}
+
+/**
+ * Job ComputeEOSp called @4.0 in executeTimeLoopN method.
+ * In variables: e, gamma, rho
+ * Out variables: p
+ */
+void Glace2d::computeEOSp() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
+	{
+		p(jCells) = (options->gamma - 1.0) * rho(jCells) * e(jCells);
+	});
+}
+
+/**
+ * Job ComputeEOSc called @5.0 in executeTimeLoopN method.
+ * In variables: gamma, p, rho
+ * Out variables: c
+ */
+void Glace2d::computeEOSc() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
+	{
+		c(jCells) = MathFunctions::sqrt(options->gamma * p(jCells) / rho(jCells));
+	});
+}
+
+/**
+ * Job ComputeAjr called @6.0 in executeTimeLoopN method.
+ * In variables: C, c, l, rho
+ * Out variables: Ajr
+ */
+void Glace2d::computeAjr() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
+	{
+		const Id jId(jCells);
+		{
+			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+			{
+				Ajr(jCells,rNodesOfCellJ) = ((rho(jCells) * c(jCells)) / l(jCells,rNodesOfCellJ)) * tensProduct(C(jCells,rNodesOfCellJ), C(jCells,rNodesOfCellJ));
+			}
+		}
+	});
+}
+
+/**
+ * Job Computedeltatj called @6.0 in executeTimeLoopN method.
+ * In variables: V, c, l
+ * Out variables: deltatj
+ */
+void Glace2d::computedeltatj() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
+	{
+		const Id jId(jCells);
+		double reduction2(0.0);
+		{
+			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+			{
+				reduction2 = sumR0(reduction2, l(jCells,rNodesOfCellJ));
+			}
+		}
+		deltatj(jCells) = 2.0 * V(jCells) / (c(jCells) * reduction2);
+	});
+}
+
+/**
+ * Job ComputeAr called @7.0 in executeTimeLoopN method.
+ * In variables: Ajr
+ * Out variables: Ar
+ */
+void Glace2d::computeAr() noexcept
+{
+	Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& rNodes)
+	{
+		const Id rId(rNodes);
+		RealArray2D<2,2> reduction3({0.0, 0.0,  0.0, 0.0});
+		{
+			const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
+			const size_t nbCellsOfNodeR(cellsOfNodeR.size());
+			for (size_t jCellsOfNodeR=0; jCellsOfNodeR<nbCellsOfNodeR; jCellsOfNodeR++)
+			{
+				const Id jId(cellsOfNodeR[jCellsOfNodeR]);
+				const size_t jCells(jId);
+				const size_t rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
+				reduction3 = sumR2(reduction3, Ajr(jCells,rNodesOfCellJ));
+			}
+		}
+		Ar(rNodes) = reduction3;
+	});
+}
+
+/**
+ * Job ComputeBr called @7.0 in executeTimeLoopN method.
+ * In variables: Ajr, C, p, uj_n
+ * Out variables: b
+ */
+void Glace2d::computeBr() noexcept
+{
+	Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& rNodes)
+	{
+		const Id rId(rNodes);
+		RealArray1D<2> reduction4({0.0, 0.0});
+		{
+			const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
+			const size_t nbCellsOfNodeR(cellsOfNodeR.size());
+			for (size_t jCellsOfNodeR=0; jCellsOfNodeR<nbCellsOfNodeR; jCellsOfNodeR++)
+			{
+				const Id jId(cellsOfNodeR[jCellsOfNodeR]);
+				const size_t jCells(jId);
+				const size_t rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
+				reduction4 = sumR1(reduction4, p(jCells) * C(jCells,rNodesOfCellJ) + MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells)));
+			}
+		}
+		b(rNodes) = reduction4;
+	});
+}
+
+/**
+ * Job ComputeDt called @7.0 in executeTimeLoopN method.
+ * In variables: deltatj, option_deltat_cfl
+ * Out variables: deltat_nplus1
+ */
+void Glace2d::computeDt() noexcept
+{
+	double reduction8;
+	Kokkos::parallel_reduce(nbCells, KOKKOS_LAMBDA(const size_t& jCells, double& accu)
+	{
+		accu = minR0(accu, deltatj(jCells));
+	}, KokkosJoiner<double>(reduction8, numeric_limits<double>::max(), &minR0));
+	deltat_nplus1 = options->option_deltat_cfl * reduction8;
+}
+
+/**
+ * Job ComputeBoundaryConditions called @8.0 in executeTimeLoopN method.
+ * In variables: Ar, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b
+ * Out variables: Mt, bt
+ */
+void Glace2d::computeBoundaryConditions() noexcept
+{
+	{
+		const auto outerFaces(mesh->getOuterFaces());
+		const size_t nbOuterFaces(outerFaces.size());
+		Kokkos::parallel_for(nbOuterFaces, KOKKOS_LAMBDA(const size_t& fOuterFaces)
+		{
+			const Id fId(outerFaces[fOuterFaces]);
+			const double epsilon(1.0E-10);
+			const RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
+			const double X_MIN(0.0);
+			const double X_MAX(options->X_EDGE_ELEMS * options->X_EDGE_LENGTH);
+			const double Y_MIN(0.0);
+			const double Y_MAX(options->Y_EDGE_ELEMS * options->Y_EDGE_LENGTH);
+			const RealArray1D<2> nY({0.0, 1.0});
+			{
+				const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
+				const size_t nbNodesOfFaceF(nodesOfFaceF.size());
+				for (size_t rNodesOfFaceF=0; rNodesOfFaceF<nbNodesOfFaceF; rNodesOfFaceF++)
 				{
-					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
+					const Id rId(nodesOfFaceF[rNodesOfFaceF]);
 					const size_t rNodes(rId);
-					reduction5 = sumR0(reduction5, MathFunctions::dot(C(jCells,rNodesOfCellJ), X_n(rNodes)));
-				}
-			}
-			V(jCells) = 0.5 * reduction5;
-		});
-	}
-	
-	/**
-	 * Job Initialize called @2.0 in simulate method.
-	 * In variables: Cjr_ic, X_n0, gamma, option_p_ini_zd, option_p_ini_zg, option_rho_ini_zd, option_rho_ini_zg, option_x_interface
-	 * Out variables: E_n, m, p, rho, uj_n
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void initialize() noexcept
-	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
-		{
-			const Id jId(jCells);
-			double rho_ic;
-			double p_ic;
-			RealArray1D<2> reduction0({0.0, 0.0});
-			{
-				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
-				{
-					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
-					const size_t rNodes(rId);
-					reduction0 = sumR1(reduction0, X_n0(rNodes));
-				}
-			}
-			const RealArray1D<2> center(0.25 * reduction0);
-			if (center[0] < options->option_x_interface) 
-			{
-				rho_ic = options->option_rho_ini_zg;
-				p_ic = options->option_p_ini_zg;
-			}
-			else
-			{
-				rho_ic = options->option_rho_ini_zd;
-				p_ic = options->option_p_ini_zd;
-			}
-			double reduction1(0.0);
-			{
-				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
-				{
-					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
-					const size_t rNodes(rId);
-					reduction1 = sumR0(reduction1, MathFunctions::dot(Cjr_ic(jCells,rNodesOfCellJ), X_n0(rNodes)));
-				}
-			}
-			const double V_ic(0.5 * reduction1);
-			m(jCells) = rho_ic * V_ic;
-			p(jCells) = p_ic;
-			rho(jCells) = rho_ic;
-			E_n(jCells) = p_ic / ((options->gamma - 1.0) * rho_ic);
-			uj_n(jCells) = {0.0, 0.0};
-		});
-	}
-	
-	/**
-	 * Job ComputeDensity called @3.0 in executeTimeLoopN method.
-	 * In variables: V, m
-	 * Out variables: rho
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeDensity() noexcept
-	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
-		{
-			rho(jCells) = m(jCells) / V(jCells);
-		});
-	}
-	
-	/**
-	 * Job ExecuteTimeLoopN called @3.0 in simulate method.
-	 * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b, bt, c, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, option_deltat_cfl, p, rho, t_n, uj_n, ur
-	 * Out variables: Ajr, Ar, C, E_nplus1, F, Mt, V, X_nplus1, b, bt, c, deltat_nplus1, deltatj, e, l, p, rho, t_nplus1, uj_nplus1, ur
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void executeTimeLoopN() noexcept
-	{
-		n = 0;
-		bool continueLoop = true;
-		do
-		{
-			globalTimer.start();
-			cpuTimer.start();
-			n++;
-			dumpVariables(n);
-			if (n!=1)
-				std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
-					<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
-		
-			computeCjr(); // @1.0
-			computeInternalEnergy(); // @1.0
-			computeLjr(); // @2.0
-			computeV(); // @2.0
-			computeDensity(); // @3.0
-			computeEOSp(); // @4.0
-			computeEOSc(); // @5.0
-			computeAjr(); // @6.0
-			computedeltatj(); // @6.0
-			computeAr(); // @7.0
-			computeBr(); // @7.0
-			computeDt(); // @7.0
-			computeBoundaryConditions(); // @8.0
-			computeBt(); // @8.0
-			computeMt(); // @8.0
-			computeTn(); // @8.0
-			computeU(); // @9.0
-			computeFjr(); // @10.0
-			computeXn(); // @10.0
-			computeEn(); // @11.0
-			computeUn(); // @11.0
-			
-		
-			// Evaluate loop condition with variables at time n
-			continueLoop = (t_nplus1 < options->option_stoptime && n + 1 < options->option_max_iterations);
-		
-			if (continueLoop)
-			{
-				// Switch variables to prepare next iteration
-				std::swap(t_nplus1, t_n);
-				std::swap(deltat_nplus1, deltat_n);
-				std::swap(X_nplus1, X_n);
-				std::swap(E_nplus1, E_n);
-				std::swap(uj_nplus1, uj_n);
-			}
-		
-			cpuTimer.stop();
-			globalTimer.stop();
-		
-			// Timers display
-			if (!writer.isDisabled())
-				std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __BLUE__ << ioTimer.print(true) << __RESET__ "} ";
-			else
-				std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
-			
-			// Progress
-			std::cout << utils::progress_bar(n, options->option_max_iterations, t_n, options->option_stoptime, 25);
-			std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-				utils::eta(n, options->option_max_iterations, t_n, options->option_stoptime, deltat_n, globalTimer), true)
-				<< __RESET__ << "\r";
-			std::cout.flush();
-		
-			cpuTimer.reset();
-			ioTimer.reset();
-		} while (continueLoop);
-	}
-	
-	/**
-	 * Job ComputeEOSp called @4.0 in executeTimeLoopN method.
-	 * In variables: e, gamma, rho
-	 * Out variables: p
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeEOSp() noexcept
-	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
-		{
-			p(jCells) = (options->gamma - 1.0) * rho(jCells) * e(jCells);
-		});
-	}
-	
-	/**
-	 * Job ComputeEOSc called @5.0 in executeTimeLoopN method.
-	 * In variables: gamma, p, rho
-	 * Out variables: c
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeEOSc() noexcept
-	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
-		{
-			c(jCells) = MathFunctions::sqrt(options->gamma * p(jCells) / rho(jCells));
-		});
-	}
-	
-	/**
-	 * Job ComputeAjr called @6.0 in executeTimeLoopN method.
-	 * In variables: C, c, l, rho
-	 * Out variables: Ajr
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeAjr() noexcept
-	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
-		{
-			const Id jId(jCells);
-			{
-				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
-				{
-					Ajr(jCells,rNodesOfCellJ) = ((rho(jCells) * c(jCells)) / l(jCells,rNodesOfCellJ)) * tensProduct(C(jCells,rNodesOfCellJ), C(jCells,rNodesOfCellJ));
-				}
-			}
-		});
-	}
-	
-	/**
-	 * Job Computedeltatj called @6.0 in executeTimeLoopN method.
-	 * In variables: V, c, l
-	 * Out variables: deltatj
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computedeltatj() noexcept
-	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
-		{
-			const Id jId(jCells);
-			double reduction2(0.0);
-			{
-				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
-				{
-					reduction2 = sumR0(reduction2, l(jCells,rNodesOfCellJ));
-				}
-			}
-			deltatj(jCells) = 2.0 * V(jCells) / (c(jCells) * reduction2);
-		});
-	}
-	
-	/**
-	 * Job ComputeAr called @7.0 in executeTimeLoopN method.
-	 * In variables: Ajr
-	 * Out variables: Ar
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeAr() noexcept
-	{
-		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& rNodes)
-		{
-			const Id rId(rNodes);
-			RealArray2D<2,2> reduction3({0.0, 0.0,  0.0, 0.0});
-			{
-				const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
-				const size_t nbCellsOfNodeR(cellsOfNodeR.size());
-				for (size_t jCellsOfNodeR=0; jCellsOfNodeR<nbCellsOfNodeR; jCellsOfNodeR++)
-				{
-					const Id jId(cellsOfNodeR[jCellsOfNodeR]);
-					const size_t jCells(jId);
-					const size_t rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
-					reduction3 = sumR2(reduction3, Ajr(jCells,rNodesOfCellJ));
-				}
-			}
-			Ar(rNodes) = reduction3;
-		});
-	}
-	
-	/**
-	 * Job ComputeBr called @7.0 in executeTimeLoopN method.
-	 * In variables: Ajr, C, p, uj_n
-	 * Out variables: b
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeBr() noexcept
-	{
-		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& rNodes)
-		{
-			const Id rId(rNodes);
-			RealArray1D<2> reduction4({0.0, 0.0});
-			{
-				const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
-				const size_t nbCellsOfNodeR(cellsOfNodeR.size());
-				for (size_t jCellsOfNodeR=0; jCellsOfNodeR<nbCellsOfNodeR; jCellsOfNodeR++)
-				{
-					const Id jId(cellsOfNodeR[jCellsOfNodeR]);
-					const size_t jCells(jId);
-					const size_t rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
-					reduction4 = sumR1(reduction4, p(jCells) * C(jCells,rNodesOfCellJ) + MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells)));
-				}
-			}
-			b(rNodes) = reduction4;
-		});
-	}
-	
-	/**
-	 * Job ComputeDt called @7.0 in executeTimeLoopN method.
-	 * In variables: deltatj, option_deltat_cfl
-	 * Out variables: deltat_nplus1
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeDt() noexcept
-	{
-		double reduction8;
-		Kokkos::parallel_reduce(nbCells, KOKKOS_LAMBDA(const size_t& jCells, double& accu)
-		{
-			accu = minR0(accu, deltatj(jCells));
-		}, KokkosJoiner<double>(reduction8, numeric_limits<double>::max(), &minR0));
-		deltat_nplus1 = options->option_deltat_cfl * reduction8;
-	}
-	
-	/**
-	 * Job ComputeBoundaryConditions called @8.0 in executeTimeLoopN method.
-	 * In variables: Ar, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b
-	 * Out variables: Mt, bt
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeBoundaryConditions() noexcept
-	{
-		{
-			const auto outerFaces(mesh->getOuterFaces());
-			const size_t nbOuterFaces(outerFaces.size());
-			Kokkos::parallel_for(nbOuterFaces, KOKKOS_LAMBDA(const size_t& fOuterFaces)
-			{
-				const Id fId(outerFaces[fOuterFaces]);
-				const double epsilon(1.0E-10);
-				const RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
-				const double X_MIN(0.0);
-				const double X_MAX(options->X_EDGE_ELEMS * options->X_EDGE_LENGTH);
-				const double Y_MIN(0.0);
-				const double Y_MAX(options->Y_EDGE_ELEMS * options->Y_EDGE_LENGTH);
-				const RealArray1D<2> nY({0.0, 1.0});
-				{
-					const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
-					const size_t nbNodesOfFaceF(nodesOfFaceF.size());
-					for (size_t rNodesOfFaceF=0; rNodesOfFaceF<nbNodesOfFaceF; rNodesOfFaceF++)
+					if ((X_n(rNodes)[1] - Y_MIN < epsilon) || (X_n(rNodes)[1] - Y_MAX < epsilon)) 
 					{
-						const Id rId(nodesOfFaceF[rNodesOfFaceF]);
-						const size_t rNodes(rId);
-						if ((X_n(rNodes)[1] - Y_MIN < epsilon) || (X_n(rNodes)[1] - Y_MAX < epsilon)) 
-						{
-							double sign(0.0);
-							if (X_n(rNodes)[1] - Y_MIN < epsilon) 
-								sign = -1.0;
-							else
-								sign = 1.0;
-							const RealArray1D<2> N(sign * nY);
-							const RealArray2D<2,2> NxN(tensProduct(N, N));
-							const RealArray2D<2,2> IcP(I - NxN);
-							bt(rNodes) = MathFunctions::matVectProduct(IcP, b(rNodes));
-							Mt(rNodes) = IcP * (Ar(rNodes) * IcP) + NxN * trace(Ar(rNodes));
-						}
-						if ((MathFunctions::fabs(X_n(rNodes)[0] - X_MIN) < epsilon) || ((MathFunctions::fabs(X_n(rNodes)[0] - X_MAX) < epsilon))) 
-						{
-							Mt(rNodes) = I;
-							bt(rNodes) = {0.0, 0.0};
-						}
+						double sign(0.0);
+						if (X_n(rNodes)[1] - Y_MIN < epsilon) 
+							sign = -1.0;
+						else
+							sign = 1.0;
+						const RealArray1D<2> N(sign * nY);
+						const RealArray2D<2,2> NxN(tensProduct(N, N));
+						const RealArray2D<2,2> IcP(I - NxN);
+						bt(rNodes) = MathFunctions::matVectProduct(IcP, b(rNodes));
+						Mt(rNodes) = IcP * (Ar(rNodes) * IcP) + NxN * trace(Ar(rNodes));
+					}
+					if ((MathFunctions::fabs(X_n(rNodes)[0] - X_MIN) < epsilon) || ((MathFunctions::fabs(X_n(rNodes)[0] - X_MAX) < epsilon))) 
+					{
+						Mt(rNodes) = I;
+						bt(rNodes) = {0.0, 0.0};
 					}
 				}
-			});
-		}
+			}
+		});
 	}
-	
-	/**
-	 * Job ComputeBt called @8.0 in executeTimeLoopN method.
-	 * In variables: b
-	 * Out variables: bt
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeBt() noexcept
+}
+
+/**
+ * Job ComputeBt called @8.0 in executeTimeLoopN method.
+ * In variables: b
+ * Out variables: bt
+ */
+void Glace2d::computeBt() noexcept
+{
 	{
+		const auto innerNodes(mesh->getInnerNodes());
+		const size_t nbInnerNodes(innerNodes.size());
+		Kokkos::parallel_for(nbInnerNodes, KOKKOS_LAMBDA(const size_t& rInnerNodes)
 		{
-			const auto innerNodes(mesh->getInnerNodes());
-			const size_t nbInnerNodes(innerNodes.size());
-			Kokkos::parallel_for(nbInnerNodes, KOKKOS_LAMBDA(const size_t& rInnerNodes)
+			const Id rId(innerNodes[rInnerNodes]);
+			const size_t rNodes(rId);
+			bt(rNodes) = b(rNodes);
+		});
+	}
+}
+
+/**
+ * Job ComputeMt called @8.0 in executeTimeLoopN method.
+ * In variables: Ar
+ * Out variables: Mt
+ */
+void Glace2d::computeMt() noexcept
+{
+	{
+		const auto innerNodes(mesh->getInnerNodes());
+		const size_t nbInnerNodes(innerNodes.size());
+		Kokkos::parallel_for(nbInnerNodes, KOKKOS_LAMBDA(const size_t& rInnerNodes)
+		{
+			const Id rId(innerNodes[rInnerNodes]);
+			const size_t rNodes(rId);
+			Mt(rNodes) = Ar(rNodes);
+		});
+	}
+}
+
+/**
+ * Job ComputeTn called @8.0 in executeTimeLoopN method.
+ * In variables: deltat_nplus1, t_n
+ * Out variables: t_nplus1
+ */
+void Glace2d::computeTn() noexcept
+{
+	t_nplus1 = t_n + deltat_nplus1;
+}
+
+/**
+ * Job ComputeU called @9.0 in executeTimeLoopN method.
+ * In variables: Mt, bt
+ * Out variables: ur
+ */
+void Glace2d::computeU() noexcept
+{
+	Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& rNodes)
+	{
+		ur(rNodes) = MathFunctions::matVectProduct(inverse(Mt(rNodes)), bt(rNodes));
+	});
+}
+
+/**
+ * Job ComputeFjr called @10.0 in executeTimeLoopN method.
+ * In variables: Ajr, C, p, uj_n, ur
+ * Out variables: F
+ */
+void Glace2d::computeFjr() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
+	{
+		const Id jId(jCells);
+		{
+			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				const Id rId(innerNodes[rInnerNodes]);
+				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 				const size_t rNodes(rId);
-				bt(rNodes) = b(rNodes);
-			});
+				F(jCells,rNodesOfCellJ) = p(jCells) * C(jCells,rNodesOfCellJ) + MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), (uj_n(jCells) - ur(rNodes)));
+			}
 		}
-	}
-	
-	/**
-	 * Job ComputeMt called @8.0 in executeTimeLoopN method.
-	 * In variables: Ar
-	 * Out variables: Mt
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeMt() noexcept
+	});
+}
+
+/**
+ * Job ComputeXn called @10.0 in executeTimeLoopN method.
+ * In variables: X_n, deltat_n, ur
+ * Out variables: X_nplus1
+ */
+void Glace2d::computeXn() noexcept
+{
+	Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& rNodes)
 	{
+		X_nplus1(rNodes) = X_n(rNodes) + deltat_n * ur(rNodes);
+	});
+}
+
+/**
+ * Job ComputeEn called @11.0 in executeTimeLoopN method.
+ * In variables: E_n, F, deltat_n, m, ur
+ * Out variables: E_nplus1
+ */
+void Glace2d::computeEn() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
+	{
+		const Id jId(jCells);
+		double reduction7(0.0);
 		{
-			const auto innerNodes(mesh->getInnerNodes());
-			const size_t nbInnerNodes(innerNodes.size());
-			Kokkos::parallel_for(nbInnerNodes, KOKKOS_LAMBDA(const size_t& rInnerNodes)
+			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				const Id rId(innerNodes[rInnerNodes]);
+				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 				const size_t rNodes(rId);
-				Mt(rNodes) = Ar(rNodes);
-			});
-		}
-	}
-	
-	/**
-	 * Job ComputeTn called @8.0 in executeTimeLoopN method.
-	 * In variables: deltat_nplus1, t_n
-	 * Out variables: t_nplus1
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeTn() noexcept
-	{
-		t_nplus1 = t_n + deltat_nplus1;
-	}
-	
-	/**
-	 * Job ComputeU called @9.0 in executeTimeLoopN method.
-	 * In variables: Mt, bt
-	 * Out variables: ur
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeU() noexcept
-	{
-		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& rNodes)
-		{
-			ur(rNodes) = MathFunctions::matVectProduct(inverse(Mt(rNodes)), bt(rNodes));
-		});
-	}
-	
-	/**
-	 * Job ComputeFjr called @10.0 in executeTimeLoopN method.
-	 * In variables: Ajr, C, p, uj_n, ur
-	 * Out variables: F
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeFjr() noexcept
-	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
-		{
-			const Id jId(jCells);
-			{
-				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
-				{
-					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
-					const size_t rNodes(rId);
-					F(jCells,rNodesOfCellJ) = p(jCells) * C(jCells,rNodesOfCellJ) + MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), (uj_n(jCells) - ur(rNodes)));
-				}
+				reduction7 = sumR0(reduction7, MathFunctions::dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
 			}
-		});
-	}
-	
-	/**
-	 * Job ComputeXn called @10.0 in executeTimeLoopN method.
-	 * In variables: X_n, deltat_n, ur
-	 * Out variables: X_nplus1
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeXn() noexcept
+		}
+		E_nplus1(jCells) = E_n(jCells) - (deltat_n / m(jCells)) * reduction7;
+	});
+}
+
+/**
+ * Job ComputeUn called @11.0 in executeTimeLoopN method.
+ * In variables: F, deltat_n, m, uj_n
+ * Out variables: uj_nplus1
+ */
+void Glace2d::computeUn() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
-		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& rNodes)
+		const Id jId(jCells);
+		RealArray1D<2> reduction6({0.0, 0.0});
 		{
-			X_nplus1(rNodes) = X_n(rNodes) + deltat_n * ur(rNodes);
-		});
-	}
-	
-	/**
-	 * Job ComputeEn called @11.0 in executeTimeLoopN method.
-	 * In variables: E_n, F, deltat_n, m, ur
-	 * Out variables: E_nplus1
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeEn() noexcept
-	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
-		{
-			const Id jId(jCells);
-			double reduction7(0.0);
+			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
-				{
-					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
-					const size_t rNodes(rId);
-					reduction7 = sumR0(reduction7, MathFunctions::dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
-				}
+				reduction6 = sumR1(reduction6, F(jCells,rNodesOfCellJ));
 			}
-			E_nplus1(jCells) = E_n(jCells) - (deltat_n / m(jCells)) * reduction7;
-		});
+		}
+		uj_nplus1(jCells) = uj_n(jCells) - (deltat_n / m(jCells)) * reduction6;
+	});
+}
+
+void Glace2d::dumpVariables(int iteration)
+{
+	if (!writer.isDisabled() && (lastDump < 0 || n >= lastDump + 1.0))
+	{
+		cpuTimer.stop();
+		ioTimer.start();
+		std::map<string, double*> cellVariables;
+		std::map<string, double*> nodeVariables;
+		cellVariables.insert(pair<string,double*>("Density", rho.data()));
+		auto quads = mesh->getGeometry()->getQuads();
+		writer.writeFile(iteration, t_n, nbNodes, X_n.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+		lastDump = n;
+		ioTimer.stop();
+		cpuTimer.start();
+	}
+}
+
+void Glace2d::simulate()
+{
+	std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting Glace2d ..." << __RESET__ << "\n\n";
+	
+	std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
+		<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
+	
+	if (Kokkos::hwloc::available())
+	{
+		std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_numa_count()
+			<< __RESET__ << ", Cores/NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_cores_per_numa()
+			<< __RESET__ << ", Threads/Core=" << __BOLD__ << Kokkos::hwloc::get_available_threads_per_core() << __RESET__ << std::endl;
+	}
+	else
+	{
+		std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 	}
 	
-	/**
-	 * Job ComputeUn called @11.0 in executeTimeLoopN method.
-	 * In variables: F, deltat_n, m, uj_n
-	 * Out variables: uj_nplus1
-	 */
-	KOKKOS_INLINE_FUNCTION
-	void computeUn() noexcept
-	{
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
-		{
-			const Id jId(jCells);
-			RealArray1D<2> reduction6({0.0, 0.0});
-			{
-				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
-				{
-					reduction6 = sumR1(reduction6, F(jCells,rNodesOfCellJ));
-				}
-			}
-			uj_nplus1(jCells) = uj_n(jCells) - (deltat_n / m(jCells)) * reduction6;
-		});
-	}
+	// std::cout << "[" << __GREEN__ << "KOKKOS" << __RESET__ << "]    " << __BOLD__ << (is_same<MyLayout,Kokkos::LayoutLeft>::value?"Left":"Right")" << __RESET__ << " layout" << std::endl;
+	
+	if (!writer.isDisabled())
+		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
+	else
+		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
-	void dumpVariables(int iteration)
-	{
-		if (!writer.isDisabled() && n >= lastDump + 1.0)
-		{
-			cpuTimer.stop();
-			ioTimer.start();
-			std::map<string, double*> cellVariables;
-			std::map<string, double*> nodeVariables;
-			cellVariables.insert(pair<string,double*>("Density", rho.data()));
-			auto quads = mesh->getGeometry()->getQuads();
-			writer.writeFile(iteration, t_n, nbNodes, X_n.data(), nbCells, quads.data(), cellVariables, nodeVariables);
-			lastDump = n;
-			ioTimer.stop();
-			cpuTimer.start();
-		}
-	}
+	iniCjrIc(); // @1.0
+	setUpTimeLoopN(); // @1.0
+	initialize(); // @2.0
+	executeTimeLoopN(); // @3.0
+	
+	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
+}
 
-public:
-	void simulate()
-	{
-		std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting Glace2d ..." << __RESET__ << "\n\n";
-		
-		std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
-			<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
-		
-		if (Kokkos::hwloc::available())
-		{
-			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_numa_count()
-				<< __RESET__ << ", Cores/NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_cores_per_numa()
-				<< __RESET__ << ", Threads/Core=" << __BOLD__ << Kokkos::hwloc::get_available_threads_per_core() << __RESET__ << std::endl;
-		}
-		else
-		{
-			std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
-		}
-		
-		// std::cout << "[" << __GREEN__ << "KOKKOS" << __RESET__ << "]    " << __BOLD__ << (is_same<MyLayout,Kokkos::LayoutLeft>::value?"Left":"Right")" << __RESET__ << " layout" << std::endl;
-		
-		if (!writer.isDisabled())
-			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
-		else
-			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
-		iniCjrIc(); // @1.0
-		setUpTimeLoopN(); // @1.0
-		initialize(); // @2.0
-		executeTimeLoopN(); // @3.0
-		
-		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
-	}
-};
+/******************** Module definition ********************/
 
 int main(int argc, char* argv[]) 
 {

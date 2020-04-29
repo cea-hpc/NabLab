@@ -93,17 +93,7 @@ class Ir2Cpp extends CodeGenerator
 			«IF v.type.primitive == PrimitiveType.INT && v.type.sizes.empty»size_t«ELSE»«v.cppType»«ENDIF» «v.name»;
 			«ENDFOR»
 
-			Options(const std::string& fileName)
-			{
-				ifstream ifs(fileName);
-				rapidjson::IStreamWrapper isw(ifs);
-				rapidjson::Document d;
-				d.ParseStream(isw);
-				assert(d.IsObject());
-				«FOR v : options»
-				«v.jsonContent»
-				«ENDFOR»
-			}
+			Options(const std::string& fileName);
 		};
 
 		Options* options;
@@ -139,6 +129,19 @@ class Ir2Cpp extends CodeGenerator
 	«ENDFOR»
 	«ENDIF»
 
+	/******************** Options definition ********************/
+
+	«name»::Options::Options(const std::string& fileName)
+	{
+		ifstream ifs(fileName);
+		rapidjson::IStreamWrapper isw(ifs);
+		rapidjson::Document d;
+		d.ParseStream(isw);
+		assert(d.IsObject());
+		«FOR v : options»
+		«v.jsonContent»
+		«ENDFOR»
+	}
 
 	/******************** Module definition ********************/
 

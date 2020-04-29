@@ -80,7 +80,7 @@ public final class HeatEquation
 		f = new double[nbCells];
 		outgoingFlux = new double[nbCells];
 		surface = new double[nbFaces];
-		lastDump = Integer.MIN_VALUE;
+		lastDump = -1;
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -321,7 +321,7 @@ public final class HeatEquation
 
 	private void dumpVariables(int iteration)
 	{
-		if (n >= lastDump + 1.0)
+		if (lastDump < 0 || n >= lastDump + 1.0)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();

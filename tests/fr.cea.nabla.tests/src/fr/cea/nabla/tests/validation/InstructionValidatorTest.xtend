@@ -131,7 +131,7 @@ class InstructionValidatorTest
 	@Test
 	def void testOptionValue()
 	{
-		val moduleKo1 = parseHelper.parse(getTestModule('', '''def inc: ℕ → ℕ, (a) → return a + 1;''') +
+		val moduleKo1 = parseHelper.parse(getTestModule('', '''def inc: ℕ → ℕ;''') +
 			'''
 			option coef = inc(2);
 			'''

@@ -43,7 +43,8 @@ class ExpressionExtensions
 	{
 		switch e
 		{
-			ReductionCall, FunctionCall: false
+			ReductionCall: false
+			FunctionCall case (e.function.external): false
 			default: true
 		}
 	}

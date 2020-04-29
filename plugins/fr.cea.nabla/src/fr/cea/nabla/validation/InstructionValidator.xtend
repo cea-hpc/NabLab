@@ -35,7 +35,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 	static def getAffectationTypeMsg(String actualTypeName, String expectedTypeName) { "Expected " + expectedTypeName + ", but was " + actualTypeName }
 	static def getIfConditionBoolMsg(String actualTypeName) { "Expected " + ValidationUtils::BOOL.label + ", but was " + actualTypeName }
 	static def getGlobalVarValueMsg() { "Assignment with reduction not allowed in global variables" }
-	static def getOptionValueMsg() { "Assignment with function/reduction not allowed in options" }
+	static def getOptionValueMsg() { "Assignment with reduction or external function not allowed in options" }
 
 
 	@Check

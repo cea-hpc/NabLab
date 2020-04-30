@@ -108,6 +108,9 @@ class NablaExamplesInterpreterTest
 		// We use a dedicated genmodel to replaceAllreductions and not to generate code
 		val genmodelFile = String.format("src/%1$s/%2$s.nablagen", moduleName.toLowerCase, moduleName)
 		val genmodel = readFileAsString(genmodelFile)
+		// We use the default json datafile generated for the java backend
+		val jsonOptionsFile = String.format("src-gen-java/%1$s/%2$sDefaultOptions.json", moduleName.toLowerCase, moduleName)
+		val jsonOptions = readFileAsString(jsonOptionsFile)
 
 		val irModule = compilationHelper.getIrModule(model, genmodel)
 		//val handler = new ConsoleHandler
@@ -119,7 +122,7 @@ class NablaExamplesInterpreterTest
 		handler.setFormatter(formatter)
 		handler.level = Level::FINE
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		moduleInterpreter.interprete
+		moduleInterpreter.interprete(jsonOptions)
 		handler.close
 
 		testNoGitDiff("/"+moduleName.toLowerCase)

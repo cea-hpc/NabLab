@@ -49,7 +49,7 @@ class Ir2Json extends CodeGenerator
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(it, handler)
-		moduleInterpreter.interpreteModuleOptions
+		moduleInterpreter.interpreteOptionsDefaultValues
 		return moduleInterpreter.context
 	}
 

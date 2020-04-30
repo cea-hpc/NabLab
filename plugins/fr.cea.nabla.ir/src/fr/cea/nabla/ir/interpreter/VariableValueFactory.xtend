@@ -19,6 +19,7 @@ import static fr.cea.nabla.ir.interpreter.NablaValueFactory.*
 import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 
 class VariableValueFactory
 {
@@ -44,13 +45,14 @@ class VariableValueFactory
 	{
 		if (defaultValue === null)
 		{
-			var sizes = getIntSizes(type, context)
+			val sizes = getIntSizes(type, context)
+			val p = type.primitive
 			switch sizes.size
 			{
-				case 1: createValue(type, sizes.get(0), linearAlgebra)
-				case 2: createValue(type, sizes.get(0), sizes.get(1), linearAlgebra)
-				case 3: createValue(type, sizes.get(0), sizes.get(1), sizes.get(2))
-				case 4: createValue(type, sizes.get(0), sizes.get(1), sizes.get(2), sizes.get(3))
+				case 1: createValue(p, sizes.get(0), linearAlgebra)
+				case 2: createValue(p, sizes.get(0), sizes.get(1), linearAlgebra)
+				case 3: createValue(p, sizes.get(0), sizes.get(1), sizes.get(2))
+				case 4: createValue(p, sizes.get(0), sizes.get(1), sizes.get(2), sizes.get(3))
 				default: throw new RuntimeException("Dimension not yet implemented: " + sizes.size + " for variable " + name)
 			}
 		}

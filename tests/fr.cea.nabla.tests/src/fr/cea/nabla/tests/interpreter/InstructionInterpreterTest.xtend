@@ -38,7 +38,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interprete
+		val context = moduleInterpreter.interpreteWithOptionDefaultValues
 
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(1.0))
 	}
@@ -49,7 +49,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interprete
+		val context = moduleInterpreter.interpreteWithOptionDefaultValues
 
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(1.0))
 	}
@@ -60,7 +60,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interprete
+		val context = moduleInterpreter.interpreteWithOptionDefaultValues
 
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(1.0))
 	}
@@ -71,7 +71,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interprete
+		val context = moduleInterpreter.interpreteWithOptionDefaultValues
 
 		val nbCells = xQuads * yQuads
 		val double[] u = newDoubleArrayOfSize(nbCells)
@@ -101,7 +101,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interprete
+		val context = moduleInterpreter.interpreteWithOptionDefaultValues
 
 		val nbCells = xQuads * yQuads
 		val double[] u = newDoubleArrayOfSize(nbCells)
@@ -119,7 +119,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 
 		try {
-			moduleInterpreter.interprete
+			moduleInterpreter.interpreteWithOptionDefaultValues
 			Assert::fail("Should throw exception")
 		} catch (RuntimeException e) {
 			Assert.assertEquals("V must be less than 100", e.message)

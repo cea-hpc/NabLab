@@ -40,7 +40,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interprete
+		val context = moduleInterpreter.interpreteWithOptionDefaultValues
 
 		assertVariableValueInContext(irModule, context, "b0", new NV0Bool(true))
 		assertVariableValueInContext(irModule, context, "n0", new NV0Int(-1))
@@ -149,7 +149,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interprete
+		val context = moduleInterpreter.interpreteWithOptionDefaultValues
 		val variableValue = context.getVariableValue(irModule.getVariableByName("c"))
 		Assert.assertNotNull(variableValue)
 		Assert.assertTrue(variableValue instanceof NV0Int)
@@ -162,7 +162,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interprete
+		val context = moduleInterpreter.interpreteWithOptionDefaultValues
 
 		assertVariableValueInContext(irModule, context, "n0", new NV0Int(0))
 		assertVariableValueInContext(irModule, context, "n1", new NV0Int(1))
@@ -184,7 +184,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interprete
+		val context = moduleInterpreter.interpreteWithOptionDefaultValues
 
 		assertVariableValueInContext(irModule, context, "w1", new NV1Real(#[0.0, 0.2]))
 		assertVariableValueInContext(irModule, context, "w2", new NV1Real(#[0.0, 0.2]))
@@ -200,7 +200,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interprete
+		val context = moduleInterpreter.interpreteWithOptionDefaultValues
 
 		assertVariableValueInContext(irModule, context, "b2", new NV0Bool(true))
 
@@ -214,5 +214,4 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 		assertVariableValueInContext(irModule, context, "r7", new NV2Real(#[#[2.0,3.0],#[4.0,5.0],#[6.0,7.0]]))
 		assertVariableValueInContext(irModule, context, "r8", new NV0Real(5.0))
 	}
-	
 }

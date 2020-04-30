@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.interpreter.ModuleInterpreter
 import fr.cea.nabla.ir.interpreter.NV0Int
 import fr.cea.nabla.ir.interpreter.NV0Real
 import fr.cea.nabla.ir.interpreter.NV1Real
+import fr.cea.nabla.ir.interpreter.NV2Real
 import fr.cea.nabla.tests.CompilationChainHelper
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
@@ -25,46 +26,38 @@ import org.junit.runner.RunWith
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
-class JobInterpreterTest extends AbstractJobInterpreterTest
+class OptionsInterpreterTest extends AbstractOptionsInterpreterTest
 {
 	@Inject CompilationChainHelper compilationHelper
 	@Inject extension TestUtils
 
-	override assertInterpreteInstructionJob(String model)
+	override assertInterpreteDefaultOptions(String model)
 	{
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
 
-		assertVariableValueInContext(irModule, context, "t", new NV0Real(5.0))
+		val context = moduleInterpreter.interpreteWithOptionDefaultValues
+		assertVariableValueInContext(irModule, context, "A", new NV0Int(10))
+		assertVariableValueInContext(irModule, context, "B", new NV0Int(9))
+		assertVariableValueInContext(irModule, context, "C", new NV0Real(25.0))
+		assertVariableValueInContext(irModule, context, "D", new NV1Real(#[25.0, 25.0, 25.0]))
+		assertVariableValueInContext(irModule, context, "M", new NV2Real(#[#[25.0, 25.0, 25.0],#[25.0, 25.0, 25.0]]))
 	}
 
-	override assertInterpreteTimeLoopJob(String model)
+	override assertInterpreteJsonOptions(String model, String jsonOptions)
 	{
 		val irModule = compilationHelper.getIrModule(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
-		assertVariableValueInContext(irModule, context, "t_n0", new NV0Real(0.0))
-		assertVariableValueInContext(irModule, context, "n", new NV0Int(10))
-		assertVariableValueInContext(irModule, context, "t_n", new NV0Real(0.09))
-		assertVariableValueInContext(irModule, context, "t_nplus1", new NV0Real(0.1))
-	}
 
-	override assertInterpreteTimeLoopCopyJob(String model)
-	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
-		context.logVariables("After")
-		assertVariableValueInContext(irModule, context, "u_n0", new NV1Real(#[0.0 , 0.0]))
-		assertVariableValueInContext(irModule, context, "u_n", new NV1Real(#[1.0 , 2.0]))
-		val X_n0 = context.getVariableValue("X_n0")
-		assertVariableValueInContext(irModule, context, "X_n", X_n0)
+		val context = moduleInterpreter.interprete(jsonOptions)
+		assertVariableValueInContext(irModule, context, "A", new NV0Int(10))
+		assertVariableValueInContext(irModule, context, "B", new NV0Int(2))
+		assertVariableValueInContext(irModule, context, "C", new NV0Real(27.0))
+		assertVariableValueInContext(irModule, context, "D", new NV1Real(#[25.0, 12.12, 25.0]))
+		assertVariableValueInContext(irModule, context, "M", new NV2Real(#[#[25.0, 13.13, 25.0],#[25.0, 25.0, 5.4]]))
 	}
 }

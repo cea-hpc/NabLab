@@ -35,17 +35,20 @@ class NablaValueSetter
 
 	private static def dispatch set(NV1Bool it, NV1Bool value)
 	{
-		for (i : 0..<data.size) data.set(i, value.data.get(i))
+		for (i : 0..<data.size)
+			data.set(i, value.data.get(i))
 	}
 
 	private static def dispatch set(NV1Int it, NV1Int value)
 	{
-		for (i : 0..<data.size) data.set(i, value.data.get(i))
+		for (i : 0..<data.size)
+			data.set(i, value.data.get(i))
 	}
 
 	private static def dispatch set(NV1Real it, NV1Real value)
 	{
-		for (i : 0..<data.size) data.set(i, value.data.get(i))
+		for (i : 0..<data.size)
+			data.set(i, value.data.get(i))
 	}
 
 	private static def dispatch set(NVVector it, NVVector value)
@@ -107,10 +110,28 @@ class NablaValueSetter
 						data.get(i).get(j).get(k).set(l, value.data.get(i).get(j).get(k).get(l))
 	}
 
+	private static def dispatch set(NV4Int it, NV4Int value)
+	{
+		for (i : 0..<data.size)
+			for (j : 0..<data.get(i).size)
+				for (k : 0..<data.get(i).get(j).size)
+					for (l : 0..<data.get(i).get(j).get(k).size)
+						data.get(i).get(j).get(k).set(l, value.data.get(i).get(j).get(k).get(l))
+	}
+
+	private static def dispatch set(NV4Real it, NV4Real value)
+	{
+		for (i : 0..<data.size)
+			for (j : 0..<data.get(i).size)
+				for (k : 0..<data.get(i).get(j).size)
+					for (l : 0..<data.get(i).get(j).get(k).size)
+						data.get(i).get(j).get(k).set(l, value.data.get(i).get(j).get(k).get(l))
+	}
+
 	private static def dispatch subSet(NV1Bool it, int indice, NV0Bool value) { data.set(indice, value.data) }
 	private static def dispatch subSet(NV1Int it, int indice, NV0Int value) { data.set(indice, value.data) }
-	private static def dispatch subSet(NV1Real it, int indice, NV0Real value)  { data.set(indice, value.data) }
-	private static def dispatch subSet(NVVector it, int indice, NV0Real value)  { data.set(indice, value.data) }
+	private static def dispatch subSet(NV1Real it, int indice, NV0Real value) { data.set(indice, value.data) }
+	private static def dispatch subSet(NVVector it, int indice, NV0Real value) { data.set(indice, value.data) }
 
 	private static def dispatch subSet(NV2Bool it, int indice, NV1Bool value)
 	{

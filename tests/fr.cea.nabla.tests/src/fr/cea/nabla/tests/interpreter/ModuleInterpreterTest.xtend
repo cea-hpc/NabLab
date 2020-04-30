@@ -34,7 +34,7 @@ class ModuleInterpreterTest extends AbstractModuleInterpreterTest
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interprete
+		val context = moduleInterpreter.interpreteWithOptionDefaultValues
 		assertVariableValueInContext(irModule, context, "t_n", new NV0Real(0.2))
 	}
 }

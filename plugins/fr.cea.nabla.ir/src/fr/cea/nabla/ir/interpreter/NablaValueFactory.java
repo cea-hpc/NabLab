@@ -9,16 +9,14 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter;
 
-import fr.cea.nabla.ir.ir.IrType;
 import fr.cea.nabla.ir.ir.PrimitiveType;
 import fr.cea.nabla.javalib.types.Matrix;
 import fr.cea.nabla.javalib.types.Vector;
 
 public class NablaValueFactory
 {
-	static NablaValue createValue(IrType t)
+	static NablaValue createValue(PrimitiveType p )
 	{
-		PrimitiveType p = IrTypeExtensions.getPrimitive(t);
 		NablaValue result = null;
 		switch (p)
 		{
@@ -29,9 +27,8 @@ public class NablaValueFactory
 		return result;
 	}
 
-	static NablaValue createValue(IrType t, int size, boolean linearAlgebra)
+	static NablaValue createValue(PrimitiveType p , int size, boolean linearAlgebra)
 	{
-		PrimitiveType p = IrTypeExtensions.getPrimitive(t);
 		NablaValue result = null;
 		switch (p)
 		{
@@ -43,9 +40,8 @@ public class NablaValueFactory
 		return result;
 	}
 
-	static NablaValue createValue(IrType t, int size1, int size2, boolean linearAlgebra)
+	static NablaValue createValue(PrimitiveType p, int size1, int size2, boolean linearAlgebra)
 	{ 
-		PrimitiveType p = IrTypeExtensions.getPrimitive(t);
 		NablaValue result = null;
 		switch (p)
 		{
@@ -57,9 +53,8 @@ public class NablaValueFactory
 		return result;
 	}
 
-	static NablaValue createValue(IrType t, int size1, int size2, int size3)
+	static NablaValue createValue(PrimitiveType p, int size1, int size2, int size3)
 	{ 
-		PrimitiveType p = IrTypeExtensions.getPrimitive(t);
 		NablaValue result = null;
 		switch (p)
 		{
@@ -70,9 +65,8 @@ public class NablaValueFactory
 		return result;
 	}
 
-	static NablaValue createValue(IrType t, int size1, int size2, int size3, int size4)
+	static NablaValue createValue(PrimitiveType p, int size1, int size2, int size3, int size4)
 	{
-		PrimitiveType p = IrTypeExtensions.getPrimitive(t);
 		NablaValue result = null;
 		switch (p)
 		{

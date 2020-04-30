@@ -9,6 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import fr.cea.nabla.ir.MandatoryOptions
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
@@ -47,18 +49,36 @@ class ModuleInterpreter
 		this.jobInterpreter = new JobInterpreter(writer)
 	}
 
-	def interpreteModuleOptions()
+	def interpreteOptionsDefaultValues() { interpreteOptions(null) }
+
+	def interpreteOptions(String jsonOptionsContent)
 	{
+		// Options must be created with their default values to get the right NablaValue type
 		for (v : module.options)
 			context.addVariableValue(v, interprete(v.defaultValue, context))
+
+		// Then, the type of each option is used to read the json values
+		if (!jsonOptionsContent.nullOrEmpty)
+		{
+			val gson = new Gson
+			val jsonOptions = gson.fromJson(jsonOptionsContent, JsonObject)
+			for (v : module.options)
+			{
+				val vValue = context.getVariableValue(v)
+				val jsonElt = jsonOptions.get(v.name)
+				NablaValueJsonSetter::setValue(vValue, jsonElt)
+			}
+		}
 	}
 
-	def interprete()
+	def interpreteWithOptionDefaultValues() { interprete(null) }
+
+	def interprete(String jsonOptionsContent)
 	{
 		context.logInfo(" Start interpreting " + module.name + " module ")
 
+		interpreteOptions(jsonOptionsContent)
 		module.functions.filter[body === null].forEach[f | context.resolveFunction(f)]
-		interpreteModuleOptions
 		if (module.withMesh)
 		{
 			// Create mesh

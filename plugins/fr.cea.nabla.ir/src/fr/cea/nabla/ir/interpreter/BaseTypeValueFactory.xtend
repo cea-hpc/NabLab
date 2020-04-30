@@ -20,9 +20,9 @@ class BaseTypeValueFactory
 		val sizes = getIntSizes(t, context)
 		switch sizes.size
 		{
-			case 0: NablaValueFactory::createValue(t)
-			case 1: NablaValueFactory::createValue(t, sizes.get(0), linearAlgrebra)
-			case 2: NablaValueFactory::createValue(t, sizes.get(0), sizes.get(1), linearAlgrebra)
+			case 0: NablaValueFactory::createValue(t.primitive)
+			case 1: NablaValueFactory::createValue(t.primitive, sizes.get(0), linearAlgrebra)
+			case 2: NablaValueFactory::createValue(t.primitive, sizes.get(0), sizes.get(1), linearAlgrebra)
 			default: throw new RuntimeException('Dimension not supported: ' + sizes.size)
 		}
 	}

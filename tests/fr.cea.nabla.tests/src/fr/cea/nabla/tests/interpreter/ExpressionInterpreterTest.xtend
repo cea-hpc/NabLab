@@ -81,7 +81,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 		val context = new Context(irModule, Logger.getLogger(AbstractExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "nMin", new NV0Int(Integer.MIN_VALUE))
-		assertVariableDefaultValue(irModule, context, "rMin", new NV0Real(Double.MIN_VALUE))
+		assertVariableDefaultValue(irModule, context, "rMin", new NV0Real(-Double.MAX_VALUE))
 	}
 
 	override assertInterpreteMaxConstant(String model)

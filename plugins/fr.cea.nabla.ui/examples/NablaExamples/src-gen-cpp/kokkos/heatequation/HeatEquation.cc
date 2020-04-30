@@ -92,7 +92,7 @@ HeatEquation::HeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D,
 , f("f", nbCells)
 , outgoingFlux("outgoingFlux", nbCells)
 , surface("surface", nbFaces)
-, lastDump(-1)
+, lastDump(numeric_limits<int>::min())
 {
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
@@ -312,7 +312,7 @@ void HeatEquation::executeTimeLoopN() noexcept
 
 void HeatEquation::dumpVariables(int iteration)
 {
-	if (!writer.isDisabled() && (lastDump < 0 || n >= lastDump + 1.0))
+	if (!writer.isDisabled() && n >= lastDump + 1.0)
 	{
 		cpuTimer.stop();
 		ioTimer.start();

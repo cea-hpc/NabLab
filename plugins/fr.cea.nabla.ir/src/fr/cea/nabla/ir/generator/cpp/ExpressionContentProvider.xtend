@@ -67,7 +67,8 @@ class ExpressionContentProvider
 		switch t
 		{
 			case (t.scalar && t.primitive == PrimitiveType::INT): '''numeric_limits<int>::min()'''
-			case (t.scalar && t.primitive == PrimitiveType::REAL): '''numeric_limits<double>::min()'''
+			// Be careful at MIN_VALUE which is a positive value for double.
+			case (t.scalar && t.primitive == PrimitiveType::REAL): '''-numeric_limits<double>::max()'''
 			default: throw new Exception('Invalid expression Min for type: ' + t.label)
 		}
 	}

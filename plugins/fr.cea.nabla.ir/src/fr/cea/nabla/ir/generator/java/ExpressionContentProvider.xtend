@@ -59,7 +59,8 @@ class ExpressionContentProvider
 		switch t
 		{
 			case (t.scalar && t.primitive == PrimitiveType::INT): '''Integer.MIN_VALUE'''
-			case (t.scalar && t.primitive == PrimitiveType::REAL): '''Double.MIN_VALUE'''
+			// Be careful at MIN_VALUE which is a positive value for double.
+			case (t.scalar && t.primitive == PrimitiveType::REAL): '''-Double.MAX_VALUE'''
 			default: throw new Exception('Invalid expression Min for type: ' + t.label)
 		}
 	}

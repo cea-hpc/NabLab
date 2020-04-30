@@ -163,7 +163,7 @@ class Ir2Java extends CodeGenerator
 
 			private void dumpVariables(int iteration)
 			{
-				if («postProcessingInfo.lastDumpVariable.name» < 0 || «postProcessingInfo.periodVariable.name» >= «postProcessingInfo.lastDumpVariable.name» + «postProcessingInfo.periodValue»)
+				if («postProcessingInfo.periodVariable.name» >= «postProcessingInfo.lastDumpVariable.name» + «postProcessingInfo.periodValue»)
 				{
 					HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 					HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();

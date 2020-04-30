@@ -193,7 +193,7 @@ Glace2d::Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string ou
 , C("C", nbCells, nbNodesOfCell)
 , F("F", nbCells, nbNodesOfCell)
 , Ajr("Ajr", nbCells, nbNodesOfCell)
-, lastDump(-1)
+, lastDump(numeric_limits<int>::min())
 {
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
@@ -798,7 +798,7 @@ void Glace2d::computeUn() noexcept
 
 void Glace2d::dumpVariables(int iteration)
 {
-	if (!writer.isDisabled() && (lastDump < 0 || n >= lastDump + 1.0))
+	if (!writer.isDisabled() && n >= lastDump + 1.0)
 	{
 		cpuTimer.stop();
 		ioTimer.start();

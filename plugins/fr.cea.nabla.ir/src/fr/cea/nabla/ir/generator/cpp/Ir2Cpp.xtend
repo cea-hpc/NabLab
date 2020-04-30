@@ -176,7 +176,7 @@ class Ir2Cpp extends CodeGenerator
 
 	void «name»::dumpVariables(int iteration)
 	{
-		if (!writer.isDisabled() && («postProcessingInfo.lastDumpVariable.name» < 0 || «postProcessingInfo.periodVariable.name» >= «postProcessingInfo.lastDumpVariable.name» + «postProcessingInfo.periodValue»))
+		if (!writer.isDisabled() && «postProcessingInfo.periodVariable.name» >= «postProcessingInfo.lastDumpVariable.name» + «postProcessingInfo.periodValue»)
 		{
 			cpuTimer.stop();
 			ioTimer.start();

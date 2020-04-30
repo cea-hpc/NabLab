@@ -144,7 +144,7 @@ IterativeHeatEquation::IterativeHeatEquation(Options* aOptions, CartesianMesh2D*
 , faceLength(nbFaces)
 , faceConductivity(nbFaces)
 , alpha(nbCells, std::vector<double>(nbCells))
-, lastDump(-1)
+, lastDump(numeric_limits<int>::min())
 {
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
@@ -334,7 +334,7 @@ void IterativeHeatEquation::computeFaceConductivity() noexcept
 void IterativeHeatEquation::computeResidual() noexcept
 {
 	double reduction7;
-	reduction7 = parallel::parallel_reduce(nbCells, numeric_limits<double>::min(), [&](double& accu, const size_t& jCells)
+	reduction7 = parallel::parallel_reduce(nbCells, -numeric_limits<double>::max(), [&](double& accu, const size_t& jCells)
 		{
 			return (accu = maxR0(accu, MathFunctions::fabs(u_nplus1_kplus1[jCells] - u_nplus1_k[jCells])));
 		},
@@ -516,7 +516,7 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 
 void IterativeHeatEquation::dumpVariables(int iteration)
 {
-	if (!writer.isDisabled() && (lastDump < 0 || n >= lastDump + 1.0))
+	if (!writer.isDisabled() && n >= lastDump + 1.0)
 	{
 		cpuTimer.stop();
 		ioTimer.start();

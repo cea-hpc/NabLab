@@ -97,7 +97,7 @@ public final class IterativeHeatEquation
 		faceLength = new double[nbFaces];
 		faceConductivity = new double[nbFaces];
 		alpha = new double[nbCells][nbCells];
-		lastDump = -1;
+		lastDump = Integer.MIN_VALUE;
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -323,10 +323,10 @@ public final class IterativeHeatEquation
 	 */
 	private void computeResidual()
 	{
-		double reduction7 = Double.MIN_VALUE;
+		double reduction7 = -Double.MAX_VALUE;
 		reduction7 = IntStream.range(0, nbCells).boxed().parallel().reduce
 		(
-			Double.MIN_VALUE,
+			-Double.MAX_VALUE,
 			(accu, jCells) ->
 			{
 				return maxR0(accu, MathFunctions.fabs(u_nplus1_kplus1[jCells] - u_nplus1_k[jCells]));
@@ -528,7 +528,7 @@ public final class IterativeHeatEquation
 
 	private void dumpVariables(int iteration)
 	{
-		if (lastDump < 0 || n >= lastDump + 1.0)
+		if (n >= lastDump + 1.0)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();

@@ -150,7 +150,7 @@ IterativeHeatEquation::IterativeHeatEquation(Options* aOptions, CartesianMesh2D*
 , faceLength("faceLength", nbFaces)
 , faceConductivity("faceConductivity", nbFaces)
 , alpha("alpha", nbCells, nbCells)
-, lastDump(-1)
+, lastDump(numeric_limits<int>::min())
 {
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
@@ -342,7 +342,7 @@ void IterativeHeatEquation::computeResidual() noexcept
 	Kokkos::parallel_reduce(nbCells, KOKKOS_LAMBDA(const size_t& jCells, double& accu)
 	{
 		accu = maxR0(accu, MathFunctions::fabs(u_nplus1_kplus1(jCells) - u_nplus1_k(jCells)));
-	}, KokkosJoiner<double>(reduction7, numeric_limits<double>::min(), &maxR0));
+	}, KokkosJoiner<double>(reduction7, -numeric_limits<double>::max(), &maxR0));
 	residual = reduction7;
 }
 
@@ -518,7 +518,7 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 
 void IterativeHeatEquation::dumpVariables(int iteration)
 {
-	if (!writer.isDisabled() && (lastDump < 0 || n >= lastDump + 1.0))
+	if (!writer.isDisabled() && n >= lastDump + 1.0)
 	{
 		cpuTimer.stop();
 		ioTimer.start();

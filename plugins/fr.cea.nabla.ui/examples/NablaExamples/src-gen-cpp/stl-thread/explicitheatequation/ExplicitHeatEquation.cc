@@ -119,7 +119,7 @@ ExplicitHeatEquation::ExplicitHeatEquation(Options* aOptions, CartesianMesh2D* a
 , faceLength(nbFaces)
 , faceConductivity(nbFaces)
 , alpha(nbCells, std::vector<double>(nbCells))
-, lastDump(-1)
+, lastDump(numeric_limits<int>::min())
 {
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
@@ -421,7 +421,7 @@ void ExplicitHeatEquation::executeTimeLoopN() noexcept
 
 void ExplicitHeatEquation::dumpVariables(int iteration)
 {
-	if (!writer.isDisabled() && (lastDump < 0 || n >= lastDump + 1.0))
+	if (!writer.isDisabled() && n >= lastDump + 1.0)
 	{
 		cpuTimer.stop();
 		ioTimer.start();

@@ -148,7 +148,8 @@ class ExpressionInterpreter
 		{
 			case BOOL: throw new RuntimeException('No min constant on bool')
 			case INT: new NV0Int(Integer.MIN_VALUE)
-			case REAL: new NV0Real(Double.MIN_VALUE)
+			// Be careful at MIN_VALUE which is a positive value for double.
+			case REAL: new NV0Real(-Double.MAX_VALUE)
 		}
 	}
 

@@ -122,10 +122,10 @@ class JobInterpreter
 	{
 		val time = context.getReal(irModule.timeVariable.name)
 		val ppInfo = irModule.postProcessingInfo
-		val period = context.getNumber(ppInfo.periodVariable.name)
+		val currentPeriodVariableValue = context.getNumber(ppInfo.periodVariable.name)
 		val lastDump = context.getNumber(ppInfo.lastDumpVariable.name)
 
-		if (period >= lastDump)
+		if (currentPeriodVariableValue >= lastDump + ppInfo.periodValue)
 		{
 			val cellVariables = new HashMap<String, double[]>
 			val nodeVariables = new HashMap<String, double[]>
@@ -138,7 +138,7 @@ class JobInterpreter
 			val coord = (context.getVariableValue(coordVariable) as NV2Real).data
 			val quads = context.meshWrapper.quads
 			writer.writeFile(iteration, time, coord, quads, cellVariables, nodeVariables)
-			context.setVariableValue(ppInfo.lastDumpVariable, new NV0Real(period))
+			context.setVariableValue(ppInfo.lastDumpVariable, new NV0Real(currentPeriodVariableValue))
 		}
 	}
 

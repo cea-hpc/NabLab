@@ -107,9 +107,9 @@ class UnusedValidator extends UniqueNameValidator
 	def checkUnusedFunction(Function it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
-		// If the module does not contain jobs, no unused warning.
+		// If the module does not contain options and jobs, no unused warning.
 		// It avoids warning on libraries: module with only functions.
-		if (!m.jobs.empty)
+		if (! (m.options.empty && m.jobs.empty))
 		{
 			val allCalls = m.eAllContents.filter(FunctionCall)
 			var referenced = false

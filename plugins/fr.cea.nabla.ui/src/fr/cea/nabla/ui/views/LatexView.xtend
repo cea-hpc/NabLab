@@ -12,6 +12,12 @@ package fr.cea.nabla.ui.views
 import com.google.inject.Inject
 import fr.cea.nabla.LatexImageServices
 import fr.cea.nabla.LatexLabelServices
+import fr.cea.nabla.nabla.Expression
+import fr.cea.nabla.nabla.Function
+import fr.cea.nabla.nabla.Instruction
+import fr.cea.nabla.nabla.InstructionBlock
+import fr.cea.nabla.nabla.Job
+import fr.cea.nabla.nabla.Reduction
 import java.io.ByteArrayInputStream
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.swt.SWT
@@ -23,15 +29,13 @@ import org.eclipse.ui.part.ViewPart
 
 class LatexView extends ViewPart
 {
-	@Inject LatexViewListener listener
+	@Inject NablaSelectionListener listener
 	Label label
 
 	override createPartControl(Composite parent)
 	{
 		label = new Label(parent, SWT.NONE)
-
-		// reaction a la selection dans l'editeur ou dans l'outline 
-		listener.addNablaTextListener([x | label.image = x.latexImage])
+		listener.addModelListener([x | x.fireSelectionChanged])
 		site.page.addPostSelectionListener(listener)
 	}
 
@@ -54,5 +58,39 @@ class LatexView extends ViewPart
 			}
 		}
 		return null
+	}
+
+	private def void fireSelectionChanged(EObject o)
+	{
+		val displayableObject = o.closestDisplayableNablaElt
+		if (displayableObject !== null) label.image = displayableObject.latexImage
+	}
+
+	/** Return the highest displayable object, Job, Instruction or Expression */
+	private def EObject getClosestDisplayableNablaElt(EObject elt)
+	{
+		switch elt
+		{
+			case null: null
+			Job: elt
+			Function: elt
+			Reduction: elt
+			InstructionBlock: null
+			Instruction:
+				if (elt.eContainer === null)
+					null
+				else 
+					elt.eContainer.closestDisplayableNablaElt ?: elt
+			Expression:
+				if (elt.eContainer === null)
+					null
+				else 
+					elt.eContainer.closestDisplayableNablaElt ?: elt
+			default:
+				if (elt.eContainer === null)
+					null 
+				else 
+					elt.eContainer.closestDisplayableNablaElt
+		}
 	}
 }

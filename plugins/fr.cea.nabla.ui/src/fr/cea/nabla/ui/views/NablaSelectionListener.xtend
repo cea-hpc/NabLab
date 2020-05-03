@@ -12,10 +12,6 @@ package fr.cea.nabla.ui.views
 import com.google.inject.Inject
 import fr.cea.nabla.generator.ir.IrAnnotationHelper
 import fr.cea.nabla.ir.ir.IrAnnotable
-import fr.cea.nabla.nabla.Expression
-import fr.cea.nabla.nabla.Instruction
-import fr.cea.nabla.nabla.InstructionBlock
-import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.ui.NablaDslEditor
 import fr.cea.nabla.ui.internal.NablaActivator
 import java.util.ArrayList
@@ -31,17 +27,15 @@ import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.ui.PlatformUI
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 import org.eclipse.xtext.ui.editor.XtextEditor
-import fr.cea.nabla.nabla.Function
-import fr.cea.nabla.nabla.Reduction
 
-class LatexViewListener implements ISelectionListener
+class NablaSelectionListener implements ISelectionListener
 {
 	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
 	@Inject extension IrAnnotationHelper
 
 	val modelListeners = new ArrayList<(EObject)=>void>
 
-	def void addNablaTextListener((EObject)=>void f)
+	def void addModelListener((EObject)=>void f)
 	{
 		modelListeners += f
 	}
@@ -105,35 +99,6 @@ class LatexViewListener implements ISelectionListener
 	private def getObjectAndFireNotification(XtextEditor editor, int offset)
 	{
 		val obj = editor.document.readOnly([state | eObjectAtOffsetHelper.resolveContainedElementAt(state, offset)])
-		val nablaElt = obj.closestDisplayableNablaElt
-		if (nablaElt !== null) modelListeners.forEach[x | x.apply(nablaElt)]
-	}
-
-	/** Return the highest displayable object, Job, Instruction or Expression */
-	private def EObject getClosestDisplayableNablaElt(EObject elt)
-	{
-		switch elt
-		{
-			case null: null
-			Job: elt
-			Function: elt
-			Reduction: elt
-			InstructionBlock: null
-			Instruction:
-				if (elt.eContainer === null)
-					null
-				else 
-					elt.eContainer.closestDisplayableNablaElt ?: elt
-			Expression:
-				if (elt.eContainer === null)
-					null
-				else 
-					elt.eContainer.closestDisplayableNablaElt ?: elt
-			default:
-				if (elt.eContainer === null)
-					null 
-				else 
-					elt.eContainer.closestDisplayableNablaElt
-		}
+		if (obj !== null) modelListeners.forEach[x | x.apply(obj)]
 	}
 }

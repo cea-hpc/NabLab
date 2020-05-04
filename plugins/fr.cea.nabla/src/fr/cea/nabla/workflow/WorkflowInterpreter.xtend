@@ -23,6 +23,7 @@ import fr.cea.nabla.nablagen.Workflow
 import fr.cea.nabla.nablagen.WorkflowComponent
 import java.io.File
 import java.util.ArrayList
+import java.util.LinkedHashMap
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.emf.ecore.xmi.XMLResource
@@ -35,7 +36,6 @@ import org.eclipse.xtext.resource.SaveOptions
 import static com.google.common.collect.Maps.uniqueIndex
 
 import static extension fr.cea.nabla.workflow.WorkflowComponentExtensions.*
-import java.util.LinkedHashMap
 
 class WorkflowInterpreter 
 {
@@ -85,7 +85,7 @@ class WorkflowInterpreter
 	{
 		val msg = '  Nabla -> IR - ' + c.name
 		traceListeners.forEach[write(msg)]
-		val irModule = nabla2Ir.toIrModule(nablaModule, c.timeVar, c.deltatVar, c.nodeCoordVar)
+		val irModule = nabla2Ir.toIrModule(nablaModule)
 		if (c.dumpIr)
 			createAndSaveResource(irModule, projectDir, c.name)
 		val msgEnd = "... ok\n"

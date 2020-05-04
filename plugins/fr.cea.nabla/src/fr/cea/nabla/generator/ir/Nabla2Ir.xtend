@@ -10,21 +10,16 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.TimeLoop
-import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.overloading.DeclarationProvider
 import java.util.LinkedHashSet
 import org.eclipse.emf.ecore.EObject
-
-import static fr.cea.nabla.ir.Utils.*
 
 class Nabla2Ir
 {
@@ -37,7 +32,7 @@ class Nabla2Ir
 	@Inject extension IrAnnotationHelper
 	@Inject extension DeclarationProvider
 
-	def create IrFactory::eINSTANCE.createIrModule toIrModule(NablaModule nablaModule, SimpleVar nablaTimeVariable, SimpleVar nablaDeltatVariable, ConnectivityVar nablaNodeCoordVariable)
+	def create IrFactory::eINSTANCE.createIrModule toIrModule(NablaModule nablaModule)
 	{
 		annotations += nablaModule.toIrAnnotation
 		name = nablaModule.name
@@ -77,13 +72,6 @@ class Nabla2Ir
 		for (d : nablaModule.declarations)
 			for (v : d.variables)
 				variables += createIrVariablesFor(nablaModule, v)
-
-		// Special variables initialization
-		initNodeCoordVariable = getInitIrVariable(it, nablaNodeCoordVariable.name) as ConnectivityVariable
-		nodeCoordVariable = getCurrentIrVariable(it, nablaNodeCoordVariable.name) as ConnectivityVariable
-		nodeCoordVariable.const = false
-		timeVariable = getCurrentIrVariable(it, nablaTimeVariable.name) as SimpleVariable
-		deltatVariable = getCurrentIrVariable(it, nablaDeltatVariable.name) as SimpleVariable
 
 		// TimeLoop jobs creation
 		if (mainTimeLoop !== null) jobs += mainTimeLoop.createTimeLoopJobs

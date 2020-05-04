@@ -9,27 +9,75 @@
  *******************************************************************************/
 package fr.cea.nabla.generator
 
+import com.google.inject.Inject
+import fr.cea.nabla.generator.ir.Nabla2Ir
+import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.transformers.FillJobHLTs
+import fr.cea.nabla.ir.transformers.ReplaceReductions
+import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import fr.cea.nabla.nabla.NablaModule
 import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
+import org.eclipse.emf.ecore.xmi.XMLResource
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import org.eclipse.xtext.resource.SaveOptions
 
 import static extension fr.cea.nabla.LatexLabelServices.*
 
 class NablaGenerator extends AbstractGenerator
 {
+	@Inject Nabla2Ir nabla2Ir
+	@Inject NablaGeneratorMessageDispatcher dispatcher
+	static val IrExtension = 'nablair'
+	val transformations = #[new ReplaceUtf8Chars, new ReplaceReductions(false), new FillJobHLTs]
+
 	override doGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context)
 	{
-		val module = input.contents.filter(NablaModule).head
-		println("Model size (eAllContents.size): " + module.eAllContents.size)
-
-		if (!module.jobs.empty)
+		try
 		{
-			val fileName = module.name.toLowerCase + '/' + module.name + '.tex'
+			val module = input.contents.filter(NablaModule).head
+			dispatcher.post('Model size (eAllContents.size): ' + module.eAllContents.size + '\n')
 
-			println('Generating Latex document')
-			fsa.generateFile(fileName, module.latexContent)
+			if (!module.jobs.empty)
+			{
+				val latexFileName = module.name.toLowerCase + '/' + module.name + '.tex'
+				dispatcher.post('Generating LaTeX: ' + latexFileName)
+				fsa.generateFile(latexFileName, module.latexContent)
+				dispatcher.post('... ok\n')
+
+				dispatcher.post('Nabla -> IR')
+				val irModule = nabla2Ir.toIrModule(module)
+				dispatcher.post('... ok\n')
+
+				for (t : transformations)
+				{
+					dispatcher.post('IR -> IR: ' + t.description)
+					val ok = t.transform(irModule)
+					if (ok)
+						dispatcher.post('... ok\n')
+					else
+					{
+						dispatcher.post('... ko\n*** Error in IR transformation step\n')
+						for (trace : t.outputTraces) dispatcher.post(trace + '\n')
+						createAndSaveResource(fsa, irModule)
+						throw new RuntimeException('Exception in IR transformation step: ' + t.description)
+					}
+				}
+				createAndSaveResource(fsa, irModule)
+			}
+		}
+		catch(Exception e)
+		{
+			dispatcher.post('\n***' + e.class.name + ': ' + e.message + '\n')
+			if (e.stackTrace !== null && !e.stackTrace.empty)
+			{
+				val s = e.stackTrace.head
+				dispatcher.post('at ' + s.className + '.' + s.methodName + '(' + s.fileName + ':' + s.lineNumber + ')\n')
+			}
+			throw(e)
 		}
 	}
 
@@ -58,4 +106,27 @@ class NablaGenerator extends AbstractGenerator
 		«ENDFOR»
 		\end{document}
 	'''
+
+	private def createAndSaveResource(IFileSystemAccess2 fsa, IrModule irModule)
+	{
+		dispatcher.post('Writing nablair file')
+		val fileName = irModule.name.toLowerCase + '/' + irModule.name + '.' + IrExtension
+		val uri =  fsa.getURI(fileName)
+		val rSet = new ResourceSetImpl
+		rSet.resourceFactoryRegistry.extensionToFactoryMap.put(IrExtension, new XMIResourceFactoryImpl)
+
+		val resource = rSet.createResource(uri)
+		resource.contents += irModule
+		resource.save(xmlSaveOptions)
+		dispatcher.post('... ok\n')
+	}
+
+	private def getXmlSaveOptions()
+	{
+		val builder = SaveOptions::newBuilder
+		builder.format
+		val so = builder.options.toOptionsMap
+		so.put(XMLResource::OPTION_LINE_WIDTH, 160)
+		return so
+	}
 }

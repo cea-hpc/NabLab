@@ -12,9 +12,7 @@ package fr.cea.nabla.generator
 import com.google.inject.Inject
 import fr.cea.nabla.generator.ir.Nabla2Ir
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.transformers.FillJobHLTs
-import fr.cea.nabla.ir.transformers.ReplaceReductions
-import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
+import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.nabla.NablaModule
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
@@ -32,7 +30,6 @@ class NablaGenerator extends AbstractGenerator
 	@Inject Nabla2Ir nabla2Ir
 	@Inject NablaGeneratorMessageDispatcher dispatcher
 	static val IrExtension = 'nablair'
-	val transformations = #[new ReplaceUtf8Chars, new ReplaceReductions(false), new FillJobHLTs]
 
 	override doGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context)
 	{
@@ -52,21 +49,10 @@ class NablaGenerator extends AbstractGenerator
 				val irModule = nabla2Ir.toIrModule(module)
 				dispatcher.post('... ok\n')
 
-				for (t : transformations)
-				{
-					dispatcher.post('IR -> IR: ' + t.description)
-					val ok = t.transform(irModule)
-					if (ok)
-						dispatcher.post('... ok\n')
-					else
-					{
-						dispatcher.post('... ko\n*** Error in IR transformation step\n')
-						for (trace : t.outputTraces) dispatcher.post(trace + '\n')
-						createAndSaveResource(fsa, irModule)
-						throw new RuntimeException('Exception in IR transformation step: ' + t.description)
-					}
-				}
+				val t = CompositeTransformationStep.createCommonTransformationSteps([x | dispatcher.post(x)])
+				val ok = CompositeTransformationStep.PHASE1.transform(irModule)
 				createAndSaveResource(fsa, irModule)
+				if (!ok) throw new RuntimeException('Exception in IR transformation step: ' + t.description)
 			}
 		}
 		catch(Exception e)

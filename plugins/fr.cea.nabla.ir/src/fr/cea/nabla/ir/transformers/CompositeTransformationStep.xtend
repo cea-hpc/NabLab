@@ -1,0 +1,44 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+package fr.cea.nabla.ir.transformers
+
+import fr.cea.nabla.ir.ir.IrModule
+import org.eclipse.xtend.lib.annotations.Data
+
+@Data
+class CompositeTransformationStep extends IrTransformationStep
+{
+	public static val PHASE1 = new CompositeTransformationStep('Phase1', #[new ReplaceUtf8Chars, new OptimizeConnectivities(#['cells', 'nodes']), new ReplaceReductions(false), new FillJobHLTs])
+
+	val IrTransformationStep[] steps
+
+	override transform(IrModule m) 
+	{
+		for (s : steps)
+		{
+			val ok = s.transform(m)
+			if (!ok) return false
+		}
+		return true
+	}
+
+	override addTraceListener((String)=>void listener)
+	{
+		steps.forEach[s | s.addTraceListener(listener)]
+	}
+
+	static def createCommonTransformationSteps((String)=>void traceListener)
+	{
+		val steps = #[new ReplaceUtf8Chars, new OptimizeConnectivities(#['cells', 'nodes']), new ReplaceReductions(false), new FillJobHLTs]
+		val composite = new CompositeTransformationStep('Container of common transformation steps', steps)
+		composite.addTraceListener(traceListener)
+		return composite
+	}
+}

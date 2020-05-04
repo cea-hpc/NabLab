@@ -15,7 +15,7 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static fr.cea.nabla.ir.Utils.*
 
-class SetSimulationVariables implements IrTransformationStep
+class SetSimulationVariables extends IrTransformationStep
 {
 	val String timeVariableName
 	val String timeStepVariableName
@@ -23,28 +23,20 @@ class SetSimulationVariables implements IrTransformationStep
 
 	new(String timeVariableName, String timeStepVariableName, String nodeCoordVariableName)
 	{
+		super('Set simulation variables (time, time step and node coordinates)')
 		this.timeVariableName = timeVariableName
 		this.timeStepVariableName = timeStepVariableName
 		this.nodeCoordVariableName = nodeCoordVariableName
 	}
 
-	override getDescription()
-	{
-		'Set simulation variables (time, time step and node coordinates)'
-	}
-
 	override transform(IrModule m)
 	{
+		trace('IR -> IR: ' + description + '\n')
 		m.initNodeCoordVariable = getInitIrVariable(m, nodeCoordVariableName) as ConnectivityVariable
 		m.nodeCoordVariable = getCurrentIrVariable(m, nodeCoordVariableName) as ConnectivityVariable
 		m.nodeCoordVariable.const = false
 		m.timeVariable = getCurrentIrVariable(m, timeVariableName) as SimpleVariable
 		m.deltatVariable = getCurrentIrVariable(m, timeStepVariableName) as SimpleVariable
 		return true
-	}
-
-	override getOutputTraces()
-	{
-		#[]
 	}
 }

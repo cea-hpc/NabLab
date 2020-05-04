@@ -18,7 +18,6 @@ import fr.cea.nabla.ir.ir.JobContainer
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
-import java.util.ArrayList
 import java.util.HashSet
 import org.jgrapht.alg.cycle.CycleDetector
 import org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths
@@ -28,14 +27,13 @@ import org.jgrapht.graph.DirectedWeightedPseudograph
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 
-class FillJobHLTs implements IrTransformationStep
+class FillJobHLTs extends IrTransformationStep
 {
 	static val SourceNodeLabel = 'SourceNode'
-	val outputTraces = new ArrayList<String>
 
-	override getDescription() 
+	new()
 	{
-		'Compute Hierarchical Logical Time (HLT) of each jobs'
+		super('Compute Hierarchical Logical Time (HLT) of each jobs')
 	}
 
 	/**
@@ -46,6 +44,7 @@ class FillJobHLTs implements IrTransformationStep
 	 */
 	override transform(IrModule m)
 	{
+		trace('IR -> IR: ' + description + '\n')
 		if (m.jobs.empty) return true
 
 		// check that IrModule has no job cycles (except timestep cycles)
@@ -68,11 +67,6 @@ class FillJobHLTs implements IrTransformationStep
 		return true
 	}
 
-	override getOutputTraces()
-	{
-		outputTraces
-	}
-
 //	private def print(DirectedWeightedPseudograph<Job, DefaultWeightedEdge> g)
 //	{
 //		println('Graph nodes : ')
@@ -90,8 +84,8 @@ class FillJobHLTs implements IrTransformationStep
 		val hasCycles = (cycles !== null)
 		if (hasCycles)
 		{
-			outputTraces += '*** HLT impossible calculation: graph contains cycles.'
-			outputTraces += '*** ' + cycles.map[name].join(' -> ')
+			trace('*** HLT error: graph contains cycles.\n')
+			trace('*** ' + cycles.map[name].join(' -> ') + '\n')
 		}
 
 		return hasCycles

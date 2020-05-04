@@ -13,35 +13,31 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.SimpleVariable
-import java.util.ArrayList
 import java.util.HashMap
 import org.eclipse.emf.ecore.util.EcoreUtil
 
 import static fr.cea.nabla.ir.Utils.getCurrentIrVariable
 
-class TagPersistentVariables implements IrTransformationStep
+class TagOutputVariables extends IrTransformationStep
 {
-	val HashMap<String, String> dumpedVariables // variable name, persistence name (name displayed in visualisation)
+	public static val ANNOTATION_SOURCE = "output"
+	public static val ANNOTATION_DETAIL = "output-name"
+
+	val HashMap<String, String> outputVariables // variable name, output name
 	val double periodValue
 	val String periodVariableName
-	val ArrayList<String> traces
 
-	new(HashMap<String, String> dumpedVariables, double periodValue, String periodVariableName)
+	new(HashMap<String, String> outputVariables, double periodValue, String periodVariableName)
 	{
-		this.dumpedVariables = dumpedVariables
+		super('Tag output variables')
+		this.outputVariables = outputVariables
 		this.periodValue = periodValue
 		this.periodVariableName = periodVariableName
-		this.traces = new ArrayList<String>
-	}
-
-	override getDescription()
-	{
-		'Tag variables as persistent'
 	}
 
 	override transform(IrModule m)
 	{
-		// Create PostProcessingInfo instance
+		trace('IR -> IR: ' + description + '\n')
 		val ppInfo = IrFactory.eINSTANCE.createPostProcessingInfo
 		ppInfo.periodValue = periodValue
 
@@ -49,13 +45,13 @@ class TagPersistentVariables implements IrTransformationStep
 		if (periodVariable === null) return false
 		ppInfo.periodVariable = periodVariable as SimpleVariable
 
-		for (key : dumpedVariables.keySet)
+		for (key : outputVariables.keySet)
 		{
 			val v = getCurrentIrVariable(m, key)
 			if (v !== null) 
 			{
-				v.persistenceName = dumpedVariables.get(key)
-				ppInfo.postProcessedVariables += v
+				v.outputName = outputVariables.get(key)
+				ppInfo.outputVariables += v
 			}
 		}
 		m.postProcessingInfo = ppInfo
@@ -72,11 +68,6 @@ class TagPersistentVariables implements IrTransformationStep
 		ppInfo.lastDumpVariable = lastDumpVariable
 
 		return true
-	}
-
-	override getOutputTraces()
-	{
-		traces
 	}
 
 	private def getDefaultValue(PrimitiveType t)

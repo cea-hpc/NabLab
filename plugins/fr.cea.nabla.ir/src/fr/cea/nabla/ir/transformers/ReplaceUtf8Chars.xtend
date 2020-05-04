@@ -13,15 +13,16 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.VariableDefinition
 
-class ReplaceUtf8Chars implements IrTransformationStep
+class ReplaceUtf8Chars extends IrTransformationStep
 {
-	override getDescription()
+	new()
 	{
-		'Replace UTF8 characters in function, variable and job names by ASCII characters'
+		super('Replace UTF8 characters in function, variable and job names by ASCII characters')
 	}
 
 	override transform(IrModule m)
 	{
+		trace('IR -> IR: ' + description + '\n')
 		m.options.forEach[x | x.name = x.name.noUtf8]
 		m.variables.forEach[x | x.name = x.name.noUtf8]
 		m.eAllContents.filter(VariableDefinition).forEach[x | x.variable.name = x.variable.name.noUtf8]
@@ -45,10 +46,5 @@ class ReplaceUtf8Chars implements IrTransformationStep
 		.replace('\u221A', 'sqrt')
 		.replace('∑', 'sum')
 		.replace('∏', 'prod')
-	}
-
-	override getOutputTraces()
-	{
-		#[]
 	}
 }

@@ -182,8 +182,8 @@ class Ir2Cpp extends CodeGenerator
 			ioTimer.start();
 			std::map<string, double*> cellVariables;
 			std::map<string, double*> nodeVariables;
-			«FOR v : postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable)»
-			«v.type.connectivities.head.returnType.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
+			«FOR v : postProcessingInfo.outputVariables.filter(ConnectivityVariable)»
+			«v.type.connectivities.head.returnType.name»Variables.insert(pair<string,double*>("«v.outputName»", «v.name».data()));
 			«ENDFOR»
 			auto quads = mesh->getGeometry()->getQuads();
 			writer.writeFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);

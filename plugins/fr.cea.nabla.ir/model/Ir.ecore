@@ -57,8 +57,8 @@
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PostProcessingInfo" eSuperTypes="#//IrAnnotable">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="postProcessedVariables"
-        upperBound="-1" eType="#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="outputVariables" upperBound="-1"
+        eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="periodValue" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" defaultValueLiteral="-1.0"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="periodVariable" lowerBound="1"
@@ -89,7 +89,7 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Variable" abstract="true" eSuperTypes="#//ArgOrVar">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="persistenceName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="const" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         defaultValueLiteral="false"/>
   </eClassifiers>

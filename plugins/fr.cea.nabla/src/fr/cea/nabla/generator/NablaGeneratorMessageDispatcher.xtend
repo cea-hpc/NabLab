@@ -6,15 +6,15 @@ import java.util.ArrayList
 @Singleton
 class NablaGeneratorMessageDispatcher
 {
-	val traceListeners = new ArrayList<(String) => void>
+	val listeners = new ArrayList<(String) => void>
 
-	def addWorkflowTraceListener((String) => void listener)
+	def addListener((String) => void listener)
 	{
-		traceListeners += listener
+		listeners += listener
 	}
 
 	def post(String msg)
 	{
-		traceListeners.forEach[apply(msg)]
+		listeners.forEach[apply(msg)]
 	}
 }

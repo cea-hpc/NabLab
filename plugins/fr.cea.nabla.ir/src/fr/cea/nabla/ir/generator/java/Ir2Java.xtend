@@ -167,8 +167,8 @@ class Ir2Java extends CodeGenerator
 				{
 					HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 					HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-					«FOR v : postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable)»
-					«v.type.connectivities.head.returnType.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
+					«FOR v : postProcessingInfo.outputVariables.filter(ConnectivityVariable)»
+					«v.type.connectivities.head.returnType.name»Variables.put("«v.outputName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 					«ENDFOR»
 					writer.writeFile(iteration, «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
 					«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodVariable.name»;

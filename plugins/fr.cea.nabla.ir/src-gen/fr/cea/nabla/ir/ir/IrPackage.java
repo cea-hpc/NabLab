@@ -424,13 +424,13 @@ public interface IrPackage extends EPackage {
 	int POST_PROCESSING_INFO__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
 
 	/**
-	 * The feature id for the '<em><b>Post Processed Variables</b></em>' reference list.
+	 * The feature id for the '<em><b>Output Variables</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 0;
+	int POST_PROCESSING_INFO__OUTPUT_VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Period Value</b></em>' attribute.
@@ -707,13 +707,13 @@ public interface IrPackage extends EPackage {
 	int VARIABLE__NAME = ARG_OR_VAR__NAME;
 
 	/**
-	 * The feature id for the '<em><b>Persistence Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Output Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE__PERSISTENCE_NAME = ARG_OR_VAR_FEATURE_COUNT + 0;
+	int VARIABLE__OUTPUT_NAME = ARG_OR_VAR_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Const</b></em>' attribute.
@@ -771,13 +771,13 @@ public interface IrPackage extends EPackage {
 	int SIMPLE_VARIABLE__NAME = VARIABLE__NAME;
 
 	/**
-	 * The feature id for the '<em><b>Persistence Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Output Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SIMPLE_VARIABLE__PERSISTENCE_NAME = VARIABLE__PERSISTENCE_NAME;
+	int SIMPLE_VARIABLE__OUTPUT_NAME = VARIABLE__OUTPUT_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Const</b></em>' attribute.
@@ -853,13 +853,13 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY_VARIABLE__NAME = VARIABLE__NAME;
 
 	/**
-	 * The feature id for the '<em><b>Persistence Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Output Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY_VARIABLE__PERSISTENCE_NAME = VARIABLE__PERSISTENCE_NAME;
+	int CONNECTIVITY_VARIABLE__OUTPUT_NAME = VARIABLE__OUTPUT_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Const</b></em>' attribute.
@@ -4382,15 +4382,15 @@ public interface IrPackage extends EPackage {
 	EClass getPostProcessingInfo();
 
 	/**
-	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPostProcessedVariables <em>Post Processed Variables</em>}'.
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getOutputVariables <em>Output Variables</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Post Processed Variables</em>'.
-	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo#getPostProcessedVariables()
+	 * @return the meta object for the reference list '<em>Output Variables</em>'.
+	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo#getOutputVariables()
 	 * @see #getPostProcessingInfo()
 	 * @generated
 	 */
-	EReference getPostProcessingInfo_PostProcessedVariables();
+	EReference getPostProcessingInfo_OutputVariables();
 
 	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodValue <em>Period Value</em>}'.
@@ -4565,15 +4565,15 @@ public interface IrPackage extends EPackage {
 	EClass getVariable();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Variable#getPersistenceName <em>Persistence Name</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Variable#getOutputName <em>Output Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Persistence Name</em>'.
-	 * @see fr.cea.nabla.ir.ir.Variable#getPersistenceName()
+	 * @return the meta object for the attribute '<em>Output Name</em>'.
+	 * @see fr.cea.nabla.ir.ir.Variable#getOutputName()
 	 * @see #getVariable()
 	 * @generated
 	 */
-	EAttribute getVariable_PersistenceName();
+	EAttribute getVariable_OutputName();
 
 	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Variable#isConst <em>Const</em>}'.
@@ -6426,12 +6426,12 @@ public interface IrPackage extends EPackage {
 		EClass POST_PROCESSING_INFO = eINSTANCE.getPostProcessingInfo();
 
 		/**
-		 * The meta object literal for the '<em><b>Post Processed Variables</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Output Variables</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES = eINSTANCE.getPostProcessingInfo_PostProcessedVariables();
+		EReference POST_PROCESSING_INFO__OUTPUT_VARIABLES = eINSTANCE.getPostProcessingInfo_OutputVariables();
 
 		/**
 		 * The meta object literal for the '<em><b>Period Value</b></em>' attribute feature.
@@ -6570,12 +6570,12 @@ public interface IrPackage extends EPackage {
 		EClass VARIABLE = eINSTANCE.getVariable();
 
 		/**
-		 * The meta object literal for the '<em><b>Persistence Name</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Output Name</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute VARIABLE__PERSISTENCE_NAME = eINSTANCE.getVariable_PersistenceName();
+		EAttribute VARIABLE__OUTPUT_NAME = eINSTANCE.getVariable_OutputName();
 
 		/**
 		 * The meta object literal for the '<em><b>Const</b></em>' attribute feature.

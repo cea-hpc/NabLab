@@ -151,7 +151,7 @@ ComputeBoundaryConditions: ∀f∈outerFaces(), {
 			Mt{r} = IcP * (Ar{r} * IcP) + NxN*trace(Ar{r});
 		}
 		// X boundary conditions
-		if ((fabs(X^{n}{r}[0] - X_MIN) < epsilon) || ( (fabs(X^{n}{r}[0] - X_MAX) < epsilon) )) {
+		if ((abs(X^{n}{r}[0] - X_MIN) < epsilon) || ( (abs(X^{n}{r}[0] - X_MAX) < epsilon) )) {
 			Mt{r} = I;
 			bt{r} = [0.0, 0.0];
 		}

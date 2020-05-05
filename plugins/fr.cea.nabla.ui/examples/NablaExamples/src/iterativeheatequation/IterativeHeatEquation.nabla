@@ -87,5 +87,5 @@ computeAlphaCoeff: ∀c∈cells(), {
 	α{c, c} = -αDiag;
 }
 UpdateU: ∀c∈cells(), u^{n+1, k+1}{c} = u^{n}{c} + α{c, c} * u^{n+1, k}{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u^{n+1, k}{d});
-ComputeResidual: residual = Max{j ∈ cells()}(fabs(u^{n+1,k+1}{j} - u^{n+1,k}{j}));
+ComputeResidual: residual = Max{j ∈ cells()}(abs(u^{n+1,k+1}{j} - u^{n+1,k}{j}));
 ComputeTn: t^{n+1} = t^{n} + δt;

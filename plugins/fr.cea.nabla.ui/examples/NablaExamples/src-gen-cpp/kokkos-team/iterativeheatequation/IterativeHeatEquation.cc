@@ -15,6 +15,31 @@ bool check(bool a)
 
 template<size_t x>
 KOKKOS_INLINE_FUNCTION
+double norm(RealArray1D<x> a)
+{
+	return std::sqrt(dot(a, a));
+}
+
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+double dot(RealArray1D<x> a, RealArray1D<x> b)
+{
+	double result(0.0);
+	for (size_t i=0; i<x; i++)
+	{
+		result = result + a[i] * b[i];
+	}
+	return result;
+}
+
+KOKKOS_INLINE_FUNCTION
+double det(RealArray1D<2> a, RealArray1D<2> b)
+{
+	return (a[0] * b[1] - a[1] * b[0]);
+}
+
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
 	return a + b;
@@ -23,7 +48,7 @@ RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 KOKKOS_INLINE_FUNCTION
 double minR0(double a, double b)
 {
-	return MathFunctions::min(a, b);
+	return std::min(a, b);
 }
 
 KOKKOS_INLINE_FUNCTION
@@ -41,7 +66,7 @@ double prodR0(double a, double b)
 KOKKOS_INLINE_FUNCTION
 double maxR0(double a, double b)
 {
-	return MathFunctions::max(a, b);
+	return std::max(a, b);
 }
 
 
@@ -158,11 +183,6 @@ IterativeHeatEquation::IterativeHeatEquation(Options* aOptions, CartesianMesh2D*
 		X(rNodes) = gNodes[rNodes];
 }
 
-/**
- * Utility function to get work load for each team of threads
- * In  : thread and number of element to use for computation
- * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
- */
 const std::pair<size_t, size_t> IterativeHeatEquation::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
 {
 	/*
@@ -212,7 +232,7 @@ void IterativeHeatEquation::computeFaceLength(const member_type& teamMember) noe
 					const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 					const size_t pNodes(pId);
 					const size_t pPlus1Nodes(pPlus1Id);
-					reduction3 = sumR0(reduction3, MathFunctions::norm(X(pNodes) - X(pPlus1Nodes)));
+					reduction3 = sumR0(reduction3, norm(X(pNodes) - X(pPlus1Nodes)));
 				}
 			}
 			faceLength(fFaces) = 0.5 * reduction3;
@@ -256,7 +276,7 @@ void IterativeHeatEquation::computeV(const member_type& teamMember) noexcept
 					const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 					const size_t pNodes(pId);
 					const size_t pPlus1Nodes(pPlus1Id);
-					reduction2 = sumR0(reduction2, MathFunctions::det(X(pNodes), X(pPlus1Nodes)));
+					reduction2 = sumR0(reduction2, det(X(pNodes), X(pPlus1Nodes)));
 				}
 			}
 			V(jCells) = 0.5 * reduction2;
@@ -411,7 +431,7 @@ void IterativeHeatEquation::computeResidual(const member_type& teamMember) noexc
 	double reduction7;
 	Kokkos::parallel_reduce(Kokkos::TeamThreadRange(teamMember, nbCells), KOKKOS_LAMBDA(const size_t& jCells, double& accu)
 	{
-		accu = maxR0(accu, MathFunctions::fabs(u_nplus1_kplus1(jCells) - u_nplus1_k(jCells)));
+		accu = maxR0(accu, std::abs(u_nplus1_kplus1(jCells) - u_nplus1_k(jCells)));
 	}, KokkosJoiner<double>(reduction7, -numeric_limits<double>::max(), &maxR0));
 	residual = reduction7;
 }
@@ -475,7 +495,7 @@ void IterativeHeatEquation::initU(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
 		{
 			int cCells(cCellsTeam + teamWork.first);
-			if (MathFunctions::norm(Xc(cCells) - options->vectOne) < 0.5) 
+			if (norm(Xc(cCells) - options->vectOne) < 0.5) 
 				u_n(cCells) = options->u0;
 			else
 				u_n(cCells) = 0.0;
@@ -555,7 +575,7 @@ void IterativeHeatEquation::computeAlphaCoeff(const member_type& teamMember) noe
 					const size_t dCells(dId);
 					const Id fId(mesh->getCommonFace(cId, dId));
 					const size_t fFaces(fId);
-					const double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / MathFunctions::norm(Xc(cCells) - Xc(dCells)));
+					const double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / norm(Xc(cCells) - Xc(dCells)));
 					alpha(cCells,dCells) = alphaExtraDiag;
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}

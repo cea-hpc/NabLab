@@ -95,7 +95,7 @@ class ExpressionContentProvider
 	'''«container.uniqueName».length'''
 
 	static def dispatch CharSequence getContent(FunctionCall it) 
-	'''«function.getCodeName('.')»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+	'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 
 	static def dispatch CharSequence getContent(ArgOrVarRef it)
 	'''«target.getCodeName('.')»«FOR r : iterators BEFORE '[' SEPARATOR '][' AFTER ']'»«r.name»«ENDFOR»«FOR d:indices»[«d.content»]«ENDFOR»'''

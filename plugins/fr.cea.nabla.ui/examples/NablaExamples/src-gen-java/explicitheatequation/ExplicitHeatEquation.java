@@ -152,7 +152,7 @@ public final class ExplicitHeatEquation
 					final int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
 					final int pNodes = pId;
 					final int pPlus1Nodes = pPlus1Id;
-					reduction3 = sumR0(reduction3, MathFunctions.norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
+					reduction3 = sumR0(reduction3, norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
 				}
 			}
 			faceLength[fFaces] = 0.5 * reduction3;
@@ -189,7 +189,7 @@ public final class ExplicitHeatEquation
 					final int pPlus1Id = nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					final int pNodes = pId;
 					final int pPlus1Nodes = pPlus1Id;
-					reduction2 = sumR0(reduction2, MathFunctions.det(X[pNodes], X[pPlus1Nodes]));
+					reduction2 = sumR0(reduction2, det(X[pNodes], X[pPlus1Nodes]));
 				}
 			}
 			V[jCells] = 0.5 * reduction2;
@@ -304,7 +304,7 @@ public final class ExplicitHeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			if (MathFunctions.norm(ArrayOperations.minus(Xc[cCells], options.vectOne)) < 0.5)
+			if (norm(ArrayOperations.minus(Xc[cCells], options.vectOne)) < 0.5)
 				u_n[cCells] = options.u0;
 			else
 				u_n[cCells] = 0.0;
@@ -365,7 +365,7 @@ public final class ExplicitHeatEquation
 					final int dCells = dId;
 					final int fId = mesh.getCommonFace(cId, dId);
 					final int fFaces = fId;
-					final double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions.norm(ArrayOperations.minus(Xc[cCells], Xc[dCells]));
+					final double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(ArrayOperations.minus(Xc[cCells], Xc[dCells]));
 					alpha[cCells][dCells] = alphaExtraDiag;
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
@@ -407,6 +407,28 @@ public final class ExplicitHeatEquation
 		} while (continueLoop);
 	}
 
+	private double norm(double[] a)
+	{
+		final int x = a.length;
+		return Math.sqrt(dot(a, a));
+	}
+
+	private double dot(double[] a, double[] b)
+	{
+		final int x = a.length;
+		double result = 0.0;
+		for (int i=0; i<x; i++)
+		{
+			result = result + a[i] * b[i];
+		}
+		return result;
+	}
+
+	private double det(double[] a, double[] b)
+	{
+		return (a[0] * b[1] - a[1] * b[0]);
+	}
+
 	private double[] sumR1(double[] a, double[] b)
 	{
 		final int x = a.length;
@@ -415,7 +437,7 @@ public final class ExplicitHeatEquation
 
 	private double minR0(double a, double b)
 	{
-		return MathFunctions.min(a, b);
+		return Math.min(a, b);
 	}
 
 	private double sumR0(double a, double b)

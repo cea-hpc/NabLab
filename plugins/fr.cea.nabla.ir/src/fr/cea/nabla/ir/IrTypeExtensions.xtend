@@ -30,6 +30,9 @@ import static extension fr.cea.nabla.ir.Utils.*
 
 class IrTypeExtensions
 {
+	static def dispatch boolean hasDynamicDimension(ConnectivityType it) { base.hasDynamicDimension }
+	static def dispatch boolean hasDynamicDimension(BaseType it) { false /*sizes.empty || sizes.forall[x | x instanceof IntConstant]*/ }
+
 	static def dispatch String getLabel(ConnectivityType it)
 	{
 		if (it === null) null

@@ -5,9 +5,34 @@ using namespace nablalib;
 /******************** Free functions definitions ********************/
 
 KOKKOS_INLINE_FUNCTION
+double det(RealArray2D<2,2> a)
+{
+	return a[0][0] * a[1][1] - a[0][1] * a[1][0];
+}
+
+KOKKOS_INLINE_FUNCTION
 RealArray1D<2> perp(RealArray1D<2> a)
 {
 	return {a[1], -a[0]};
+}
+
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+double dot(RealArray1D<x> a, RealArray1D<x> b)
+{
+	double result(0.0);
+	for (size_t i=0; i<x; i++)
+	{
+		result = result + a[i] * b[i];
+	}
+	return result;
+}
+
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+double norm(RealArray1D<x> a)
+{
+	return std::sqrt(dot(a, a));
 }
 
 template<size_t l>
@@ -21,6 +46,23 @@ RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b)
 		{
 			result[ia][ib] = a[ia] * b[ib];
 		}
+	}
+	return result;
+}
+
+template<size_t x, size_t y>
+KOKKOS_INLINE_FUNCTION
+RealArray1D<x> matVectProduct(RealArray2D<x,y> a, RealArray1D<y> b)
+{
+	RealArray1D<x> result;
+	for (size_t ix=0; ix<x; ix++)
+	{
+		RealArray1D<y> tmp;
+		for (size_t iy=0; iy<y; iy++)
+		{
+			tmp[iy] = a[ix][iy];
+		}
+		result[ix] = dot(tmp, b);
 	}
 	return result;
 }
@@ -40,7 +82,7 @@ double trace(RealArray2D<l,l> a)
 KOKKOS_INLINE_FUNCTION
 RealArray2D<2,2> inverse(RealArray2D<2,2> a)
 {
-	const double alpha(1.0 / MathFunctions::det(a));
+	const double alpha(1.0 / det(a));
 	return {a[1][1] * alpha, -a[0][1] * alpha, -a[1][0] * alpha, a[0][0] * alpha};
 }
 
@@ -67,7 +109,7 @@ RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b)
 KOKKOS_INLINE_FUNCTION
 double minR0(double a, double b)
 {
-	return MathFunctions::min(a, b);
+	return std::min(a, b);
 }
 
 
@@ -235,7 +277,7 @@ void Glace2d::computeInternalEnergy() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
-		e(jCells) = E_n(jCells) - 0.5 * MathFunctions::dot(uj_n(jCells), uj_n(jCells));
+		e(jCells) = E_n(jCells) - 0.5 * dot(uj_n(jCells), uj_n(jCells));
 	});
 }
 
@@ -289,7 +331,7 @@ void Glace2d::computeLjr() noexcept
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				l(jCells,rNodesOfCellJ) = MathFunctions::norm(C(jCells,rNodesOfCellJ));
+				l(jCells,rNodesOfCellJ) = norm(C(jCells,rNodesOfCellJ));
 			}
 		}
 	});
@@ -313,7 +355,7 @@ void Glace2d::computeV() noexcept
 			{
 				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 				const size_t rNodes(rId);
-				reduction5 = sumR0(reduction5, MathFunctions::dot(C(jCells,rNodesOfCellJ), X_n(rNodes)));
+				reduction5 = sumR0(reduction5, dot(C(jCells,rNodesOfCellJ), X_n(rNodes)));
 			}
 		}
 		V(jCells) = 0.5 * reduction5;
@@ -362,7 +404,7 @@ void Glace2d::initialize() noexcept
 			{
 				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 				const size_t rNodes(rId);
-				reduction1 = sumR0(reduction1, MathFunctions::dot(Cjr_ic(jCells,rNodesOfCellJ), X_n0(rNodes)));
+				reduction1 = sumR0(reduction1, dot(Cjr_ic(jCells,rNodesOfCellJ), X_n0(rNodes)));
 			}
 		}
 		const double V_ic(0.5 * reduction1);
@@ -485,7 +527,7 @@ void Glace2d::computeEOSc() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
-		c(jCells) = MathFunctions::sqrt(options->gamma * p(jCells) / rho(jCells));
+		c(jCells) = std::sqrt(options->gamma * p(jCells) / rho(jCells));
 	});
 }
 
@@ -578,7 +620,7 @@ void Glace2d::computeBr() noexcept
 				const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 				const size_t jCells(jId);
 				const size_t rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
-				reduction4 = sumR1(reduction4, p(jCells) * C(jCells,rNodesOfCellJ) + MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells)));
+				reduction4 = sumR1(reduction4, p(jCells) * C(jCells,rNodesOfCellJ) + matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells)));
 			}
 		}
 		b(rNodes) = reduction4;
@@ -637,10 +679,10 @@ void Glace2d::computeBoundaryConditions() noexcept
 						const RealArray1D<2> N(sign * nY);
 						const RealArray2D<2,2> NxN(tensProduct(N, N));
 						const RealArray2D<2,2> IcP(I - NxN);
-						bt(rNodes) = MathFunctions::matVectProduct(IcP, b(rNodes));
+						bt(rNodes) = matVectProduct(IcP, b(rNodes));
 						Mt(rNodes) = IcP * (Ar(rNodes) * IcP) + NxN * trace(Ar(rNodes));
 					}
-					if ((MathFunctions::fabs(X_n(rNodes)[0] - X_MIN) < epsilon) || ((MathFunctions::fabs(X_n(rNodes)[0] - X_MAX) < epsilon))) 
+					if ((std::abs(X_n(rNodes)[0] - X_MIN) < epsilon) || ((std::abs(X_n(rNodes)[0] - X_MAX) < epsilon))) 
 					{
 						Mt(rNodes) = I;
 						bt(rNodes) = {0.0, 0.0};
@@ -708,7 +750,7 @@ void Glace2d::computeU() noexcept
 {
 	Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& rNodes)
 	{
-		ur(rNodes) = MathFunctions::matVectProduct(inverse(Mt(rNodes)), bt(rNodes));
+		ur(rNodes) = matVectProduct(inverse(Mt(rNodes)), bt(rNodes));
 	});
 }
 
@@ -729,7 +771,7 @@ void Glace2d::computeFjr() noexcept
 			{
 				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 				const size_t rNodes(rId);
-				F(jCells,rNodesOfCellJ) = p(jCells) * C(jCells,rNodesOfCellJ) + MathFunctions::matVectProduct(Ajr(jCells,rNodesOfCellJ), (uj_n(jCells) - ur(rNodes)));
+				F(jCells,rNodesOfCellJ) = p(jCells) * C(jCells,rNodesOfCellJ) + matVectProduct(Ajr(jCells,rNodesOfCellJ), (uj_n(jCells) - ur(rNodes)));
 			}
 		}
 	});
@@ -766,7 +808,7 @@ void Glace2d::computeEn() noexcept
 			{
 				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 				const size_t rNodes(rId);
-				reduction7 = sumR0(reduction7, MathFunctions::dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
+				reduction7 = sumR0(reduction7, dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
 			}
 		}
 		E_nplus1(jCells) = E_n(jCells) - (deltat_n / m(jCells)) * reduction7;

@@ -29,9 +29,12 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.VariableDefinition
 import org.eclipse.xtend.lib.annotations.Data
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
+import fr.cea.nabla.ir.ir.BaseType
 
 @Data
 abstract class InstructionContentProvider
@@ -42,9 +45,10 @@ abstract class InstructionContentProvider
 	protected abstract def CharSequence getLoopContent(Loop it)
 
 	def dispatch CharSequence getContent(VariableDefinition it)
-	'''
-		«IF variable.const»const «ENDIF»«variable.cppType» «variable.name»«variable.defaultValueContent»;
-	'''
+	{
+		if (variable.type.hasDynamicDimension) dynamicArrayContent
+		else defaultContent
+	}
 
 	def dispatch CharSequence getContent(InstructionBlock it)
 	'''
@@ -162,6 +166,18 @@ abstract class InstructionContentProvider
 	'''
 		const auto «setName»(mesh->«call.accessor»);
 	'''
+
+	private def CharSequence getDynamicArrayContent(VariableDefinition it)
+	'''
+		«IF variable.const»const «ENDIF»«variable.cppType»;
+		initSize(«(variable.type as BaseType).sizes.map[content].join(', ')»);
+	'''
+
+	private def CharSequence getDefaultContent(VariableDefinition it)
+	'''
+		«IF variable.const»const «ENDIF»«variable.cppType» «variable.name»«variable.defaultValueContent»;
+	'''
+
 }
 
 @Data
@@ -189,7 +205,7 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 		«iterationBlock.defineInterval('''
 		«result.name» = parallel::parallel_reduce(«iterationBlock.nbElems», «result.defaultValue.content», [&](«result.cppType»& accu, const size_t& «iterationBlock.indexName»)
 			{
-				return (accu = «binaryFunction.getCodeName('.')»(accu, «lambda.content»));
+				return (accu = «binaryFunction.codeName»(accu, «lambda.content»));
 			},
 			&«binaryFunction.name»);''')»
 	'''
@@ -215,7 +231,7 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 			«FOR innerInstruction : innerInstructions»
 			«innerInstruction.content»
 			«ENDFOR»
-			accu = «binaryFunction.getCodeName('.')»(accu, «lambda.content»);
+			accu = «binaryFunction.codeName»(accu, «lambda.content»);
 		}, KokkosJoiner<«result.cppType»>(«result.name», «result.defaultValue.content», &«binaryFunction.name»));''')»
 	'''
 

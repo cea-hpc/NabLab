@@ -4,6 +4,31 @@ using namespace nablalib;
 
 /******************** Free functions definitions ********************/
 
+KOKKOS_INLINE_FUNCTION
+double det(RealArray1D<2> a, RealArray1D<2> b)
+{
+	return (a[0] * b[1] - a[1] * b[0]);
+}
+
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+double norm(RealArray1D<x> a)
+{
+	return std::sqrt(dot(a, a));
+}
+
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+double dot(RealArray1D<x> a, RealArray1D<x> b)
+{
+	double result(0.0);
+	for (size_t i=0; i<x; i++)
+	{
+		result = result + a[i] * b[i];
+	}
+	return result;
+}
+
 template<size_t x>
 KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
@@ -120,7 +145,7 @@ void HeatEquation::computeOutgoingFlux() noexcept
 				const size_t j2Cells(j2Id);
 				const Id cfId(mesh->getCommonFace(j1Id, j2Id));
 				const size_t cfFaces(cfId);
-				reduction3 = sumR0(reduction3, (u_n(j2Cells) - u_n(j1Cells)) / MathFunctions::norm(center(j2Cells) - center(j1Cells)) * surface(cfFaces));
+				reduction3 = sumR0(reduction3, (u_n(j2Cells) - u_n(j1Cells)) / norm(center(j2Cells) - center(j1Cells)) * surface(cfFaces));
 			}
 		}
 		outgoingFlux(j1Cells) = deltat / V(j1Cells) * reduction3;
@@ -147,7 +172,7 @@ void HeatEquation::computeSurface() noexcept
 				const Id rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 				const size_t rNodes(rId);
 				const size_t rPlus1Nodes(rPlus1Id);
-				reduction2 = sumR0(reduction2, MathFunctions::norm(X(rNodes) - X(rPlus1Nodes)));
+				reduction2 = sumR0(reduction2, norm(X(rNodes) - X(rPlus1Nodes)));
 			}
 		}
 		surface(fFaces) = 0.5 * reduction2;
@@ -184,7 +209,7 @@ void HeatEquation::computeV() noexcept
 				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 				const size_t rNodes(rId);
 				const size_t rPlus1Nodes(rPlus1Id);
-				reduction1 = sumR0(reduction1, MathFunctions::det(X(rNodes), X(rPlus1Nodes)));
+				reduction1 = sumR0(reduction1, det(X(rNodes), X(rPlus1Nodes)));
 			}
 		}
 		V(jCells) = 0.5 * reduction1;
@@ -251,7 +276,7 @@ void HeatEquation::iniUn() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
-		u_n(jCells) = MathFunctions::cos(2 * options->PI * options->alpha * center(jCells)[0]);
+		u_n(jCells) = std::cos(2 * options->PI * options->alpha * center(jCells)[0]);
 	});
 }
 

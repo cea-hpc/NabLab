@@ -14,7 +14,6 @@
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
-#include "types/MathFunctions.h"
 #include "utils/kokkos/Parallel.h"
 
 using namespace nablalib;
@@ -23,6 +22,14 @@ using namespace nablalib;
 
 KOKKOS_INLINE_FUNCTION
 bool check(bool a);
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+double norm(RealArray1D<x> a);
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+double dot(RealArray1D<x> a, RealArray1D<x> b);
+KOKKOS_INLINE_FUNCTION
+double det(RealArray1D<2> a, RealArray1D<2> b);
 template<size_t x>
 KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
@@ -92,6 +99,12 @@ private:
 	utils::Timer ioTimer;
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
+	/**
+	 * Utility function to get work load for each team of threads
+	 * In  : thread and number of element to use for computation
+	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
+	 */
+	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void computeFaceLength(const member_type& teamMember) noexcept;
 	

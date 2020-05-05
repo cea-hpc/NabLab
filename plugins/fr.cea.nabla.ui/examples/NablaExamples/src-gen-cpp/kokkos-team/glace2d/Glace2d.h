@@ -14,7 +14,6 @@
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
-#include "types/MathFunctions.h"
 #include "utils/kokkos/Parallel.h"
 
 using namespace nablalib;
@@ -22,10 +21,21 @@ using namespace nablalib;
 /******************** Free functions declarations ********************/
 
 KOKKOS_INLINE_FUNCTION
+double det(RealArray2D<2,2> a);
+KOKKOS_INLINE_FUNCTION
 RealArray1D<2> perp(RealArray1D<2> a);
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+double dot(RealArray1D<x> a, RealArray1D<x> b);
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+double norm(RealArray1D<x> a);
 template<size_t l>
 KOKKOS_INLINE_FUNCTION
 RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b);
+template<size_t x, size_t y>
+KOKKOS_INLINE_FUNCTION
+RealArray1D<x> matVectProduct(RealArray2D<x,y> a, RealArray1D<y> b);
 template<size_t l>
 KOKKOS_INLINE_FUNCTION
 double trace(RealArray2D<l,l> a);
@@ -111,6 +121,12 @@ private:
 	utils::Timer ioTimer;
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
+	/**
+	 * Utility function to get work load for each team of threads
+	 * In  : thread and number of element to use for computation
+	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
+	 */
+	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void computeCjr(const member_type& teamMember) noexcept;
 	

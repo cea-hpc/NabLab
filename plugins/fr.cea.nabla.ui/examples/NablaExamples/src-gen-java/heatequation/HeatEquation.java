@@ -139,7 +139,7 @@ public final class HeatEquation
 					final int j2Cells = j2Id;
 					final int cfId = mesh.getCommonFace(j1Id, j2Id);
 					final int cfFaces = cfId;
-					reduction3 = sumR0(reduction3, (u_n[j2Cells] - u_n[j1Cells]) / MathFunctions.norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
+					reduction3 = sumR0(reduction3, (u_n[j2Cells] - u_n[j1Cells]) / norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
 				}
 			}
 			outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction3;
@@ -166,7 +166,7 @@ public final class HeatEquation
 					final int rPlus1Id = nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
 					final int rNodes = rId;
 					final int rPlus1Nodes = rPlus1Id;
-					reduction2 = sumR0(reduction2, MathFunctions.norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
+					reduction2 = sumR0(reduction2, norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
 				}
 			}
 			surface[fFaces] = 0.5 * reduction2;
@@ -203,7 +203,7 @@ public final class HeatEquation
 					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					final int rNodes = rId;
 					final int rPlus1Nodes = rPlus1Id;
-					reduction1 = sumR0(reduction1, MathFunctions.det(X[rNodes], X[rPlus1Nodes]));
+					reduction1 = sumR0(reduction1, det(X[rNodes], X[rPlus1Nodes]));
 				}
 			}
 			V[jCells] = 0.5 * reduction1;
@@ -270,7 +270,7 @@ public final class HeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			u_n[jCells] = MathFunctions.cos(2 * options.PI * options.alpha * center[jCells][0]);
+			u_n[jCells] = Math.cos(2 * options.PI * options.alpha * center[jCells][0]);
 		});
 	}
 
@@ -306,6 +306,28 @@ public final class HeatEquation
 				u_nplus1 = tmp_u_n;
 			} 
 		} while (continueLoop);
+	}
+
+	private double det(double[] a, double[] b)
+	{
+		return (a[0] * b[1] - a[1] * b[0]);
+	}
+
+	private double norm(double[] a)
+	{
+		final int x = a.length;
+		return Math.sqrt(dot(a, a));
+	}
+
+	private double dot(double[] a, double[] b)
+	{
+		final int x = a.length;
+		double result = 0.0;
+		for (int i=0; i<x; i++)
+		{
+			result = result + a[i] * b[i];
+		}
+		return result;
 	}
 
 	private double[] sumR1(double[] a, double[] b)

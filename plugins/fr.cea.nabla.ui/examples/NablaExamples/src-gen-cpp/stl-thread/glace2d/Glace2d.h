@@ -12,16 +12,22 @@
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
-#include "types/MathFunctions.h"
 #include "utils/stl/Parallel.h"
 
 using namespace nablalib;
 
 /******************** Free functions declarations ********************/
 
+double det(RealArray2D<2,2> a);
 RealArray1D<2> perp(RealArray1D<2> a);
+template<size_t x>
+double dot(RealArray1D<x> a, RealArray1D<x> b);
+template<size_t x>
+double norm(RealArray1D<x> a);
 template<size_t l>
 RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b);
+template<size_t x, size_t y>
+RealArray1D<x> matVectProduct(RealArray2D<x,y> a, RealArray1D<y> b);
 template<size_t l>
 double trace(RealArray2D<l,l> a);
 RealArray2D<2,2> inverse(RealArray2D<2,2> a);

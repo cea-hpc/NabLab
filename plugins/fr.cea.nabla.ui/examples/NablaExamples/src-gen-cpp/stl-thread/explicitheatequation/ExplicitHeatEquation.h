@@ -12,13 +12,17 @@
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
-#include "types/MathFunctions.h"
 #include "utils/stl/Parallel.h"
 
 using namespace nablalib;
 
 /******************** Free functions declarations ********************/
 
+template<size_t x>
+double norm(RealArray1D<x> a);
+template<size_t x>
+double dot(RealArray1D<x> a, RealArray1D<x> b);
+double det(RealArray1D<2> a, RealArray1D<2> b);
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
 double minR0(double a, double b);

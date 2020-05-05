@@ -192,7 +192,7 @@ public final class Glace2d
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			e[jCells] = E_n[jCells] - 0.5 * MathFunctions.dot(uj_n[jCells], uj_n[jCells]);
+			e[jCells] = E_n[jCells] - 0.5 * dot(uj_n[jCells], uj_n[jCells]);
 		});
 	}
 
@@ -250,7 +250,7 @@ public final class Glace2d
 				final int nbNodesOfCellJ = nodesOfCellJ.length;
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
-					l[jCells][rNodesOfCellJ] = MathFunctions.norm(C[jCells][rNodesOfCellJ]);
+					l[jCells][rNodesOfCellJ] = norm(C[jCells][rNodesOfCellJ]);
 				}
 			}
 		});
@@ -274,7 +274,7 @@ public final class Glace2d
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;
-					reduction5 = sumR0(reduction5, MathFunctions.dot(C[jCells][rNodesOfCellJ], X_n[rNodes]));
+					reduction5 = sumR0(reduction5, dot(C[jCells][rNodesOfCellJ], X_n[rNodes]));
 				}
 			}
 			V[jCells] = 0.5 * reduction5;
@@ -323,7 +323,7 @@ public final class Glace2d
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;
-					reduction1 = sumR0(reduction1, MathFunctions.dot(Cjr_ic[jCells][rNodesOfCellJ], X_n0[rNodes]));
+					reduction1 = sumR0(reduction1, dot(Cjr_ic[jCells][rNodesOfCellJ], X_n0[rNodes]));
 				}
 			}
 			final double V_ic = 0.5 * reduction1;
@@ -431,7 +431,7 @@ public final class Glace2d
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			c[jCells] = MathFunctions.sqrt(options.gamma * p[jCells] / rho[jCells]);
+			c[jCells] = Math.sqrt(options.gamma * p[jCells] / rho[jCells]);
 		});
 	}
 
@@ -524,7 +524,7 @@ public final class Glace2d
 					final int jId = cellsOfNodeR[jCellsOfNodeR];
 					final int jCells = jId;
 					final int rNodesOfCellJ = Utils.indexOf(mesh.getNodesOfCell(jId), rId);
-					reduction4 = sumR1(reduction4, ArrayOperations.plus(ArrayOperations.multiply(p[jCells], C[jCells][rNodesOfCellJ]), MathFunctions.matVectProduct(Ajr[jCells][rNodesOfCellJ], uj_n[jCells])));
+					reduction4 = sumR1(reduction4, ArrayOperations.plus(ArrayOperations.multiply(p[jCells], C[jCells][rNodesOfCellJ]), matVectProduct(Ajr[jCells][rNodesOfCellJ], uj_n[jCells])));
 				}
 			}
 			b[rNodes] = reduction4;
@@ -588,10 +588,10 @@ public final class Glace2d
 							final double[] N = ArrayOperations.multiply(sign, nY);
 							final double[][] NxN = tensProduct(N, N);
 							final double[][] IcP = ArrayOperations.minus(I, NxN);
-							bt[rNodes] = MathFunctions.matVectProduct(IcP, b[rNodes]);
+							bt[rNodes] = matVectProduct(IcP, b[rNodes]);
 							Mt[rNodes] = ArrayOperations.plus(ArrayOperations.multiply(IcP, (ArrayOperations.multiply(Ar[rNodes], IcP))), ArrayOperations.multiply(NxN, trace(Ar[rNodes])));
 						}
-						if ((MathFunctions.fabs(X_n[rNodes][0] - X_MIN) < epsilon) || ((MathFunctions.fabs(X_n[rNodes][0] - X_MAX) < epsilon)))
+						if ((Math.abs(X_n[rNodes][0] - X_MIN) < epsilon) || ((Math.abs(X_n[rNodes][0] - X_MAX) < epsilon)))
 						{
 							Mt[rNodes] = I;
 							bt[rNodes] = new double[] {0.0, 0.0};
@@ -659,7 +659,7 @@ public final class Glace2d
 	{
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
-			ur[rNodes] = MathFunctions.matVectProduct(inverse(Mt[rNodes]), bt[rNodes]);
+			ur[rNodes] = matVectProduct(inverse(Mt[rNodes]), bt[rNodes]);
 		});
 	}
 
@@ -680,7 +680,7 @@ public final class Glace2d
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;
-					F[jCells][rNodesOfCellJ] = ArrayOperations.plus(ArrayOperations.multiply(p[jCells], C[jCells][rNodesOfCellJ]), MathFunctions.matVectProduct(Ajr[jCells][rNodesOfCellJ], (ArrayOperations.minus(uj_n[jCells], ur[rNodes]))));
+					F[jCells][rNodesOfCellJ] = ArrayOperations.plus(ArrayOperations.multiply(p[jCells], C[jCells][rNodesOfCellJ]), matVectProduct(Ajr[jCells][rNodesOfCellJ], (ArrayOperations.minus(uj_n[jCells], ur[rNodes]))));
 				}
 			}
 		});
@@ -717,7 +717,7 @@ public final class Glace2d
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;
-					reduction7 = sumR0(reduction7, MathFunctions.dot(F[jCells][rNodesOfCellJ], ur[rNodes]));
+					reduction7 = sumR0(reduction7, dot(F[jCells][rNodesOfCellJ], ur[rNodes]));
 				}
 			}
 			E_nplus1[jCells] = E_n[jCells] - (deltat_n / m[jCells]) * reduction7;
@@ -747,9 +747,31 @@ public final class Glace2d
 		});
 	}
 
+	private double det(double[][] a)
+	{
+		return a[0][0] * a[1][1] - a[0][1] * a[1][0];
+	}
+
 	private double[] perp(double[] a)
 	{
 		return new double[] {a[1], -a[0]};
+	}
+
+	private double dot(double[] a, double[] b)
+	{
+		final int x = a.length;
+		double result = 0.0;
+		for (int i=0; i<x; i++)
+		{
+			result = result + a[i] * b[i];
+		}
+		return result;
+	}
+
+	private double norm(double[] a)
+	{
+		final int x = a.length;
+		return Math.sqrt(dot(a, a));
 	}
 
 	private double[][] tensProduct(double[] a, double[] b)
@@ -762,6 +784,23 @@ public final class Glace2d
 			{
 				result[ia][ib] = a[ia] * b[ib];
 			}
+		}
+		return result;
+	}
+
+	private double[] matVectProduct(double[][] a, double[] b)
+	{
+		final int x = a.length;
+		final int y = a[0].length;
+		double[] result = new double[x];
+		for (int ix=0; ix<x; ix++)
+		{
+			double[] tmp = new double[y];
+			for (int iy=0; iy<y; iy++)
+			{
+				tmp[iy] = a[ix][iy];
+			}
+			result[ix] = dot(tmp, b);
 		}
 		return result;
 	}
@@ -779,7 +818,7 @@ public final class Glace2d
 
 	private double[][] inverse(double[][] a)
 	{
-		final double alpha = 1.0 / MathFunctions.det(a);
+		final double alpha = 1.0 / det(a);
 		return new double[][] {new double[] {a[1][1] * alpha, -a[0][1] * alpha}, new double[] {-a[1][0] * alpha, a[0][0] * alpha}};
 	}
 
@@ -802,7 +841,7 @@ public final class Glace2d
 
 	private double minR0(double a, double b)
 	{
-		return MathFunctions.min(a, b);
+		return Math.min(a, b);
 	}
 
 	private void dumpVariables(int iteration)

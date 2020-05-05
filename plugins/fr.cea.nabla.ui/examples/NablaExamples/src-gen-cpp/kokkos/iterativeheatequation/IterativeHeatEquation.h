@@ -14,7 +14,6 @@
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
-#include "types/MathFunctions.h"
 #include "utils/kokkos/Parallel.h"
 
 using namespace nablalib;
@@ -23,6 +22,14 @@ using namespace nablalib;
 
 KOKKOS_INLINE_FUNCTION
 bool check(bool a);
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+double norm(RealArray1D<x> a);
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+double dot(RealArray1D<x> a, RealArray1D<x> b);
+KOKKOS_INLINE_FUNCTION
+double det(RealArray1D<2> a, RealArray1D<2> b);
 template<size_t x>
 KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);

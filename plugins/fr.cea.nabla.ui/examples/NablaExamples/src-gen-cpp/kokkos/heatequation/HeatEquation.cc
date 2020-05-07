@@ -109,6 +109,7 @@ HeatEquation::HeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D,
 , t_n(0.0)
 , t_nplus1(0.0)
 , deltat(0.001)
+, lastDump(numeric_limits<int>::min())
 , X("X", nbNodes)
 , center("center", nbCells)
 , u_n("u_n", nbCells)
@@ -117,7 +118,6 @@ HeatEquation::HeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D,
 , f("f", nbCells)
 , outgoingFlux("outgoingFlux", nbCells)
 , surface("surface", nbFaces)
-, lastDump(numeric_limits<int>::min())
 {
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();

@@ -42,10 +42,11 @@ public final class HeatEquation
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
 
 	// Global Variables
-	private int n;
 	private double t_n;
 	private double t_nplus1;
 	private final double deltat;
+	private int lastDump;
+	private int n;
 	private double[][] X;
 	private double[][] center;
 	private double[] u_n;
@@ -54,7 +55,6 @@ public final class HeatEquation
 	private double[] f;
 	private double[] outgoingFlux;
 	private double[] surface;
-	private int lastDump;
 
 	public HeatEquation(Options aOptions, CartesianMesh2D aCartesianMesh2D)
 	{
@@ -72,6 +72,7 @@ public final class HeatEquation
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat = 0.001;
+		lastDump = Integer.MIN_VALUE;
 		X = new double[nbNodes][2];
 		center = new double[nbCells][2];
 		u_n = new double[nbCells];
@@ -80,7 +81,6 @@ public final class HeatEquation
 		f = new double[nbCells];
 		outgoingFlux = new double[nbCells];
 		surface = new double[nbFaces];
-		lastDump = Integer.MIN_VALUE;
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();

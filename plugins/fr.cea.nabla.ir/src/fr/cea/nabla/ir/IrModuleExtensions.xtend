@@ -9,11 +9,10 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.Variable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
@@ -26,28 +25,13 @@ class IrModuleExtensions
 
 	static def getVariablesWithDefaultValue(IrModule it)
 	{
-		variables.filter(SimpleVariable).filter[x|x.defaultValue!==null]
+		definitions.filter[x | !x.option && x.defaultValue!==null]
 	}
 
 	static def isLinearAlgebra(IrModule it)
 	{
-		variables.filter(ConnectivityVariable).exists[x | x.linearAlgebra]
+		declarations.filter(ConnectivityVariable).exists[x | x.linearAlgebra]
 	}
-
-//	static def getSimpleVariables(IrModule it)
-//	{
-//		variables.filter(SimpleVariable)
-//	}
-//
-//	static def getConnectivityVariables(IrModule it)
-//	{
-//		variables.filter(ConnectivityVariable).filter[!linearAlgebra]
-//	}
-//
-//	static def getLinearAlgebraVariables(IrModule it)
-//	{
-//		variables.filter(ConnectivityVariable).filter[linearAlgebra]
-//	}
 
 	/**
 	 * Return the list of connectivities used by the module
@@ -55,17 +39,37 @@ class IrModuleExtensions
 	 */
 	static def getUsedConnectivities(IrModule it)
 	{
-		val connectivities = variables.filter(ConnectivityVariable).map[type.connectivities].flatten.toSet
+		val connectivities = declarations.filter(ConnectivityVariable).map[type.connectivities].flatten.toSet
 		jobs.forEach[j | connectivities += j.eAllContents.filter(ConnectivityCall).map[connectivity].toSet]
 		return connectivities.filter[c | c.multiple]
 	}
 
 	static def getVariableByName(IrModule it, String varName)
 	{
-		var ArgOrVar variable = options.findFirst[j | j.name == varName]
-		if (variable === null) variable = variables.findFirst[j | j.name == varName]
+		var Variable variable = definitions.findFirst[j | j.name == varName]
+		if (variable === null) variable = declarations.findFirst[j | j.name == varName]
 		return variable
 	}
 
 	static def withMesh(IrModule it) { !itemTypes.empty }
+
+	static def getCurrentIrVariable(IrModule m, String nablaVariableName) { getIrVariable(m, nablaVariableName, false) }
+	static def getInitIrVariable(IrModule m, String nablaVariableName) { getIrVariable(m, nablaVariableName, true) }
+
+	private static def getIrVariable(IrModule m, String nablaVariableName, boolean initTimeIterator)
+	{
+		var irVariable = getVariableByName(m, nablaVariableName)
+		if (irVariable === null && m.mainTimeLoop !== null) 
+		{
+			val timeLoopVariable = m.mainTimeLoop.variables.findFirst[x | x.name == nablaVariableName]
+			if (timeLoopVariable !== null) 
+			{
+				if (initTimeIterator && timeLoopVariable.init !== null) 
+					irVariable = timeLoopVariable.init
+				else
+					irVariable = timeLoopVariable.current
+			}
+		}
+		return irVariable
+	}
 }

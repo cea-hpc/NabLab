@@ -74,11 +74,12 @@ private:
 	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
 	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
-	int n;
-	int k;
 	double t_n;
 	double t_nplus1;
 	double deltat;
+	int lastDump;
+	int n;
+	int k;
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> Xc;
 	Kokkos::View<double*> xc;
@@ -93,7 +94,6 @@ private:
 	Kokkos::View<double*> faceConductivity;
 	Kokkos::View<double**> alpha;
 	double residual;
-	int lastDump;
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;

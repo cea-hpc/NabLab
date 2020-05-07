@@ -25,6 +25,8 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#getType <em>Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#getDefaultValue <em>Default Value</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#isOption <em>Option</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#isConstexpr <em>Constexpr</em>}</li>
  * </ul>
  *
  * @generated
@@ -49,6 +51,46 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	 * @ordered
 	 */
 	protected Expression defaultValue;
+
+	/**
+	 * The default value of the '{@link #isOption() <em>Option</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isOption()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean OPTION_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isOption() <em>Option</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isOption()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean option = OPTION_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isConstexpr() <em>Constexpr</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isConstexpr()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean CONSTEXPR_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isConstexpr() <em>Constexpr</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isConstexpr()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean constexpr = CONSTEXPR_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -188,6 +230,52 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	 * @generated
 	 */
 	@Override
+	public boolean isOption() {
+		return option;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setOption(boolean newOption) {
+		boolean oldOption = option;
+		option = newOption;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.SIMPLE_VARIABLE__OPTION, oldOption, option));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public boolean isConstexpr() {
+		return constexpr;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setConstexpr(boolean newConstexpr) {
+		boolean oldConstexpr = constexpr;
+		constexpr = newConstexpr;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.SIMPLE_VARIABLE__CONSTEXPR, oldConstexpr, constexpr));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.SIMPLE_VARIABLE__TYPE:
@@ -211,6 +299,10 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 				return basicGetType();
 			case IrPackage.SIMPLE_VARIABLE__DEFAULT_VALUE:
 				return getDefaultValue();
+			case IrPackage.SIMPLE_VARIABLE__OPTION:
+				return isOption();
+			case IrPackage.SIMPLE_VARIABLE__CONSTEXPR:
+				return isConstexpr();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -228,6 +320,12 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 				return;
 			case IrPackage.SIMPLE_VARIABLE__DEFAULT_VALUE:
 				setDefaultValue((Expression)newValue);
+				return;
+			case IrPackage.SIMPLE_VARIABLE__OPTION:
+				setOption((Boolean)newValue);
+				return;
+			case IrPackage.SIMPLE_VARIABLE__CONSTEXPR:
+				setConstexpr((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -247,6 +345,12 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 			case IrPackage.SIMPLE_VARIABLE__DEFAULT_VALUE:
 				setDefaultValue((Expression)null);
 				return;
+			case IrPackage.SIMPLE_VARIABLE__OPTION:
+				setOption(OPTION_EDEFAULT);
+				return;
+			case IrPackage.SIMPLE_VARIABLE__CONSTEXPR:
+				setConstexpr(CONSTEXPR_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -263,8 +367,30 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 				return type != null;
 			case IrPackage.SIMPLE_VARIABLE__DEFAULT_VALUE:
 				return defaultValue != null;
+			case IrPackage.SIMPLE_VARIABLE__OPTION:
+				return option != OPTION_EDEFAULT;
+			case IrPackage.SIMPLE_VARIABLE__CONSTEXPR:
+				return constexpr != CONSTEXPR_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuilder result = new StringBuilder(super.toString());
+		result.append(" (option: ");
+		result.append(option);
+		result.append(", constexpr: ");
+		result.append(constexpr);
+		result.append(')');
+		return result.toString();
 	}
 
 } //SimpleVariableImpl

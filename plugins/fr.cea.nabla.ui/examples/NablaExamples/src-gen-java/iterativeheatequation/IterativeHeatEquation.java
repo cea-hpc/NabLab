@@ -46,11 +46,12 @@ public final class IterativeHeatEquation
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
 
 	// Global Variables
-	private int n;
-	private int k;
 	private double t_n;
 	private double t_nplus1;
 	private double deltat;
+	private int lastDump;
+	private int n;
+	private int k;
 	private double[][] X;
 	private double[][] Xc;
 	private double[] xc;
@@ -65,7 +66,6 @@ public final class IterativeHeatEquation
 	private double[] faceConductivity;
 	private double[][] alpha;
 	private double residual;
-	private int lastDump;
 
 	public IterativeHeatEquation(Options aOptions, CartesianMesh2D aCartesianMesh2D)
 	{
@@ -84,6 +84,7 @@ public final class IterativeHeatEquation
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat = 0.001;
+		lastDump = Integer.MIN_VALUE;
 		X = new double[nbNodes][2];
 		Xc = new double[nbCells][2];
 		xc = new double[nbCells];
@@ -97,7 +98,6 @@ public final class IterativeHeatEquation
 		faceLength = new double[nbFaces];
 		faceConductivity = new double[nbFaces];
 		alpha = new double[nbCells][nbCells];
-		lastDump = Integer.MIN_VALUE;
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();

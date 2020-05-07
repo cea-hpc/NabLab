@@ -199,6 +199,7 @@ Glace2d::Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string ou
 , t_nplus1(0.0)
 , deltat_n(options->option_deltat_ini)
 , deltat_nplus1(options->option_deltat_ini)
+, lastDump(numeric_limits<int>::min())
 , X_n(nbNodes)
 , X_nplus1(nbNodes)
 , X_n0(nbNodes)
@@ -223,7 +224,6 @@ Glace2d::Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string ou
 , C(nbCells, std::vector<RealArray1D<2>>(nbNodesOfCell))
 , F(nbCells, std::vector<RealArray1D<2>>(nbNodesOfCell))
 , Ajr(nbCells, std::vector<RealArray2D<2,2>>(nbNodesOfCell))
-, lastDump(numeric_limits<int>::min())
 {
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();

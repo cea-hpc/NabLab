@@ -46,8 +46,8 @@ abstract class InstructionContentProvider
 
 	def dispatch CharSequence getContent(VariableDefinition it)
 	{
-		if (variable.type.hasDynamicDimension) dynamicArrayContent
-		else defaultContent
+		if (variable.type.static) defaultContent
+		else dynamicArrayContent
 	}
 
 	def dispatch CharSequence getContent(InstructionBlock it)

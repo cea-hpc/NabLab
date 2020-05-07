@@ -15,7 +15,6 @@ import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.PrimitiveType
-import fr.cea.nabla.ir.ir.SimpleVariable
 import java.io.File
 import java.net.URI
 import org.eclipse.core.runtime.FileLocator
@@ -89,7 +88,7 @@ class Ir2Cpp extends CodeGenerator
 	public:
 		struct Options
 		{
-			«FOR v : options»
+			«FOR v : definitions.filter[option]»
 			«IF v.type.primitive == PrimitiveType.INT && v.type.sizes.empty»size_t«ELSE»«v.cppType»«ENDIF» «v.name»;
 			«ENDFOR»
 
@@ -138,7 +137,7 @@ class Ir2Cpp extends CodeGenerator
 		rapidjson::Document d;
 		d.ParseStream(isw);
 		assert(d.IsObject());
-		«FOR v : options»
+		«FOR v : definitions.filter[option]»
 		«v.jsonContent»
 		«ENDFOR»
 	}
@@ -154,12 +153,11 @@ class Ir2Cpp extends CodeGenerator
 	, «c.nbElemsVar»(«c.connectivityAccessor»)
 	«ENDFOR»
 	«ENDIF»
-	«FOR v : variables»
-		«IF v instanceof SimpleVariable && (v as SimpleVariable).defaultValue !== null»
-			, «v.name»(«(v as SimpleVariable).defaultValue.content»)
-		«ELSEIF v instanceof ConnectivityVariable»
-			, «v.name»(«v.cstrInit»)
-		«ENDIF»
+	«FOR v : definitions.filter[!option]»
+	, «v.name»(«v.defaultValue.content»)
+	«ENDFOR»
+	«FOR v : declarations.filter(ConnectivityVariable)»
+	, «v.name»(«v.cstrInit»)
 	«ENDFOR»
 	{
 		«IF withMesh»

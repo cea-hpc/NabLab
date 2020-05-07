@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExpressionImpl#getType <em>Type</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ExpressionImpl#isConstexpr <em>Constexpr</em>}</li>
  * </ul>
  *
  * @generated
@@ -37,6 +38,25 @@ public abstract class ExpressionImpl extends IrAnnotableImpl implements Expressi
 	 * @ordered
 	 */
 	protected IrType type;
+
+	/**
+	 * The default value of the '{@link #isConstexpr() <em>Constexpr</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isConstexpr()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean CONSTEXPR_EDEFAULT = false;
+	/**
+	 * The cached value of the '{@link #isConstexpr() <em>Constexpr</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isConstexpr()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean constexpr = CONSTEXPR_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -108,6 +128,29 @@ public abstract class ExpressionImpl extends IrAnnotableImpl implements Expressi
 	 * @generated
 	 */
 	@Override
+	public boolean isConstexpr() {
+		return constexpr;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setConstexpr(boolean newConstexpr) {
+		boolean oldConstexpr = constexpr;
+		constexpr = newConstexpr;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXPRESSION__CONSTEXPR, oldConstexpr, constexpr));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.EXPRESSION__TYPE:
@@ -126,6 +169,8 @@ public abstract class ExpressionImpl extends IrAnnotableImpl implements Expressi
 		switch (featureID) {
 			case IrPackage.EXPRESSION__TYPE:
 				return getType();
+			case IrPackage.EXPRESSION__CONSTEXPR:
+				return isConstexpr();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -140,6 +185,9 @@ public abstract class ExpressionImpl extends IrAnnotableImpl implements Expressi
 		switch (featureID) {
 			case IrPackage.EXPRESSION__TYPE:
 				setType((IrType)newValue);
+				return;
+			case IrPackage.EXPRESSION__CONSTEXPR:
+				setConstexpr((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -156,6 +204,9 @@ public abstract class ExpressionImpl extends IrAnnotableImpl implements Expressi
 			case IrPackage.EXPRESSION__TYPE:
 				setType((IrType)null);
 				return;
+			case IrPackage.EXPRESSION__CONSTEXPR:
+				setConstexpr(CONSTEXPR_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -170,8 +221,26 @@ public abstract class ExpressionImpl extends IrAnnotableImpl implements Expressi
 		switch (featureID) {
 			case IrPackage.EXPRESSION__TYPE:
 				return type != null;
+			case IrPackage.EXPRESSION__CONSTEXPR:
+				return constexpr != CONSTEXPR_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuilder result = new StringBuilder(super.toString());
+		result.append(" (constexpr: ");
+		result.append(constexpr);
+		result.append(')');
+		return result.toString();
 	}
 
 } //ExpressionImpl

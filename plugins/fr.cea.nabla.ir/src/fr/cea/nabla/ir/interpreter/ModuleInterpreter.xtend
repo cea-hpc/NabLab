@@ -49,12 +49,14 @@ class ModuleInterpreter
 		this.jobInterpreter = new JobInterpreter(writer)
 	}
 
-	def interpreteOptionsDefaultValues() { interpreteOptions(null) }
+	// interprete variable with default values
+	def interpreteDefinitionsDefaultValues() { interpreteDefinitions(null) }
 
-	def interpreteOptions(String jsonOptionsContent)
+	// interprete variable with option file
+	def interpreteDefinitions(String jsonOptionsContent)
 	{
-		// Options must be created with their default values to get the right NablaValue type
-		for (v : module.options)
+		// Variables must be created with their default values to get the right NablaValue type
+		for (v : module.definitions)
 			context.addVariableValue(v, interprete(v.defaultValue, context))
 
 		// Then, the type of each option is used to read the json values
@@ -62,7 +64,7 @@ class ModuleInterpreter
 		{
 			val gson = new Gson
 			val jsonOptions = gson.fromJson(jsonOptionsContent, JsonObject)
-			for (v : module.options)
+			for (v : module.definitions.filter[option])
 			{
 				val vValue = context.getVariableValue(v)
 				val jsonElt = jsonOptions.get(v.name)
@@ -77,7 +79,8 @@ class ModuleInterpreter
 	{
 		context.logInfo(" Start interpreting " + module.name + " module ")
 
-		interpreteOptions(jsonOptionsContent)
+		// Interprete definitions
+		interpreteDefinitions(jsonOptionsContent)
 		module.functions.filter[body === null].forEach[f | context.resolveFunction(f)]
 		if (module.withMesh)
 		{
@@ -96,8 +99,8 @@ class ModuleInterpreter
 				context.connectivitySizes.put(c, context.meshWrapper.getMaxNbElems(c.name))
 		}
 
-		// Interprete variables
-		for (v : module.variables)
+		// Interprete declarations
+		for (v : module.declarations)
 			context.addVariableValue(v, createValue(v, context))
 
 		// Copy Node Cooords

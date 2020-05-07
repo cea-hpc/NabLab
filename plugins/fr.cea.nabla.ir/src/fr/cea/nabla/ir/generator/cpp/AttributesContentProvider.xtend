@@ -28,7 +28,7 @@ class AttributesContentProvider
 		PvdFileWriter2D writer;
 		«FOR c : m.usedConnectivities BEFORE 'size_t ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
 		«ENDIF»
-		«FOR v : m.variables»
+		«FOR v : m.definitions.filter[!option] + m.declarations»
 		«IF v.const»const «ENDIF»«v.cppType» «v.name»;
 		«ENDFOR»
 		«IF m.linearAlgebra»LinearAlgebraFunctions::CGInfo cg_info; // CG details«ENDIF»

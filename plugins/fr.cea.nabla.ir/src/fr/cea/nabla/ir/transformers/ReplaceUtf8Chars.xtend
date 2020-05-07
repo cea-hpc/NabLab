@@ -22,8 +22,8 @@ class ReplaceUtf8Chars implements IrTransformationStep
 
 	override transform(IrModule m)
 	{
-		m.options.forEach[x | x.name = x.name.noUtf8]
-		m.variables.forEach[x | x.name = x.name.noUtf8]
+		m.definitions.forEach[x | x.name = x.name.noUtf8]
+		m.declarations.forEach[x | x.name = x.name.noUtf8]
 		m.eAllContents.filter(VariableDefinition).forEach[x | x.variable.name = x.variable.name.noUtf8]
 		m.eAllContents.filter(ReductionInstruction).forEach[x | x.result.name = x.result.name.noUtf8]
 		m.connectivities.forEach[x | x.name = x.name.noUtf8]

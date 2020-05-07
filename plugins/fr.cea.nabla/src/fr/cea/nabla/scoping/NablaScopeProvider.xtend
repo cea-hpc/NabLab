@@ -24,7 +24,6 @@ import fr.cea.nabla.nabla.Iterable
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.OptDefinition
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SetDefinition
 import fr.cea.nabla.nabla.SimpleVarDefinition
@@ -190,14 +189,6 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		return s
 	}
 
-	def IScope scope_ArgOrVarRef_target(OptDefinition context, EReference r)
-	{
-		//println('scope_ArgOrVarRef_target(' + context.class.simpleName + ', ' + r.name + ')')
-		val s = variablesDefinedBefore(context.eContainer, context, '\t')
-		//println('--> ' + s)
-		return s
-	}
-
 	def IScope scope_ArgOrVarRef_target(Instruction context, EReference r)
 	{
 		//println('scope_ArgOrVarRef_target(' + context.class.simpleName + ', ' + r.name + ')')
@@ -261,15 +252,12 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		val variables = new ArrayList<ArgOrVar>
 		switch o
 		{
-			OptDefinition: subList(context.options, o).forEach[x | variables += x.variable]
 			SimpleVarDefinition:
 			{
-				context.options.forEach[x | variables += x.variable]
 				subList(context.definitions, o).forEach[x | variables += x.variable]
 			}
 			VarGroupDeclaration:
 			{
-				context.options.forEach[x | variables += x.variable]
 				context.definitions.forEach[x | variables += x.variable]
 				subList(context.declarations, o).forEach[x | variables += x.variables]
 			}

@@ -9,61 +9,49 @@
  *******************************************************************************/
 package fr.cea.nabla
 
+import com.google.inject.Inject
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.Cardinality
-import fr.cea.nabla.nabla.Div
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
-import fr.cea.nabla.nabla.IntConstant
-import fr.cea.nabla.nabla.Minus
-import fr.cea.nabla.nabla.Modulo
-import fr.cea.nabla.nabla.Mul
-import fr.cea.nabla.nabla.Parenthesis
-import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.ReductionCall
 
 class ExpressionExtensions
 {
-	def boolean respectOptionConstraints(Expression e)
+	@Inject extension ArgOrVarExtensions
+
+	def boolean isReductionLess(Expression e) { check(e, [checkReductionLess]) }
+	def boolean isNablaEvaluable(Expression e) { check(e, [checkNablaEvaluable]) }
+	def boolean isConstExpr(Expression e) { check(e, [checkConstExpr]) }
+
+	private def check(Expression e, (Expression) => boolean checker)
 	{
-		e.respectOptionExpr && e.eAllContents.filter(Expression).forall[respectOptionExpr]
+		checker.apply(e) && e.eAllContents.filter(Expression).forall[x | checker.apply(x)]
 	}
 
-	def boolean respectGlobalExprConstraints(Expression e)
+	private def boolean checkReductionLess(Expression e) 
 	{
-		e.respectGlobalExpr && e.eAllContents.filter(Expression).forall[respectGlobalExpr]
+		!(e instanceof ReductionCall)
 	}
 
-	def boolean respectIntConstExprConstraints(Expression e)
-	{
-		e.respectIntConstExpr && e.eAllContents.filter(Expression).forall[respectIntConstExpr]
-	}
-
-	private def respectOptionExpr(Expression e)
+	private def boolean checkNablaEvaluable(Expression e) 
 	{
 		switch e
 		{
-			ReductionCall: false
-			FunctionCall case (e.function.external): false
+			ReductionCall, Cardinality: false
+			FunctionCall: !e.function.external
+			ArgOrVarRef: e.timeIterators.empty && e.spaceIterators.empty && e.target.nablaEvaluable
 			default: true
 		}
 	}
 
-	private def respectGlobalExpr(Expression e)
+	private def boolean checkConstExpr(Expression e)
 	{
 		switch e
 		{
-			ReductionCall: false
+			ReductionCall, FunctionCall, Cardinality: false
+			ArgOrVarRef: e.timeIterators.empty && e.spaceIterators.empty && e.target.constExpr
 			default: true
-		}
-	}
-
-	private def respectIntConstExpr(Expression e)
-	{
-		switch e
-		{
-			Plus, Minus, Mul, Div, Modulo, Parenthesis, IntConstant, Cardinality, ArgOrVarRef: true
-			default: false
 		}
 	}
 }

@@ -31,6 +31,9 @@ class ReductionCallExtensions
 		val d = rc.declaration
 		val vType = d.type.toIrBaseType
 		type = vType
+		const = false
+		constexpr = false
+		option = false
 
 		val seedExpression = d.model.seed.toIrExpression
 		if (vType.sizes.empty) // scalar type

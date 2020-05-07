@@ -55,10 +55,11 @@ private:
 	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
 	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
-	int n;
 	double t_n;
 	double t_nplus1;
 	const double deltat;
+	int lastDump;
+	int n;
 	std::vector<RealArray1D<2>> X;
 	std::vector<RealArray1D<2>> center;
 	std::vector<double> u_n;
@@ -67,7 +68,6 @@ private:
 	std::vector<double> f;
 	std::vector<double> outgoingFlux;
 	std::vector<double> surface;
-	int lastDump;
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;

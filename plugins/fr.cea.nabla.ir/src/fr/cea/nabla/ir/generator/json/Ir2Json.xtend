@@ -31,7 +31,8 @@ class Ir2Json extends CodeGenerator
 	private def getJsonFileContent(IrModule it)
 	{
 		// Create the interpreter and interprete option values
-		val context = interpreteOptions
+		val context = interpreteDefinitions
+		val options = definitions.filter[option]
 
 		// Create Json
 		'''
@@ -44,12 +45,12 @@ class Ir2Json extends CodeGenerator
 		'''
 	}
 
-	private def interpreteOptions(IrModule it)
+	private def interpreteDefinitions(IrModule it)
 	{
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(it, handler)
-		moduleInterpreter.interpreteOptionsDefaultValues
+		moduleInterpreter.interpreteDefinitionsDefaultValues
 		return moduleInterpreter.context
 	}
 

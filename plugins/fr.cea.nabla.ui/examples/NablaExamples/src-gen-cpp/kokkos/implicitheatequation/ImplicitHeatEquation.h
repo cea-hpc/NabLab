@@ -69,10 +69,11 @@ private:
 	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
 	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
-	int n;
 	double t_n;
 	double t_nplus1;
 	double deltat;
+	int lastDump;
+	int n;
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> Xc;
 	Kokkos::View<double*> xc;
@@ -84,7 +85,6 @@ private:
 	Kokkos::View<double*> faceLength;
 	Kokkos::View<double*> faceConductivity;
 	NablaSparseMatrix alpha;
-	int lastDump;
 	LinearAlgebraFunctions::CGInfo cg_info; // CG details
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;

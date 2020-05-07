@@ -86,11 +86,12 @@ private:
 	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
 	size_t nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
-	int n;
 	double t_n;
 	double t_nplus1;
 	double deltat_n;
 	double deltat_nplus1;
+	int lastDump;
+	int n;
 	Kokkos::View<RealArray1D<2>*> X_n;
 	Kokkos::View<RealArray1D<2>*> X_nplus1;
 	Kokkos::View<RealArray1D<2>*> X_n0;
@@ -115,7 +116,6 @@ private:
 	Kokkos::View<RealArray1D<2>**> C;
 	Kokkos::View<RealArray1D<2>**> F;
 	Kokkos::View<RealArray2D<2,2>**> Ajr;
-	int lastDump;
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;

@@ -48,11 +48,12 @@ public final class Glace2d
 	private final int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
 
 	// Global Variables
-	private int n;
 	private double t_n;
 	private double t_nplus1;
 	private double deltat_n;
 	private double deltat_nplus1;
+	private int lastDump;
+	private int n;
 	private double[][] X_n;
 	private double[][] X_nplus1;
 	private double[][] X_n0;
@@ -77,7 +78,6 @@ public final class Glace2d
 	private double[][][] C;
 	private double[][][] F;
 	private double[][][][] Ajr;
-	private int lastDump;
 
 	public Glace2d(Options aOptions, CartesianMesh2D aCartesianMesh2D)
 	{
@@ -97,6 +97,7 @@ public final class Glace2d
 		t_nplus1 = 0.0;
 		deltat_n = options.option_deltat_ini;
 		deltat_nplus1 = options.option_deltat_ini;
+		lastDump = Integer.MIN_VALUE;
 		X_n = new double[nbNodes][2];
 		X_nplus1 = new double[nbNodes][2];
 		X_n0 = new double[nbNodes][2];
@@ -121,7 +122,6 @@ public final class Glace2d
 		C = new double[nbCells][nbNodesOfCell][2];
 		F = new double[nbCells][nbNodesOfCell][2];
 		Ajr = new double[nbCells][nbNodesOfCell][2][2];
-		lastDump = Integer.MIN_VALUE;
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();

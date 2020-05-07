@@ -17,7 +17,7 @@ import java.util.ArrayList
 import java.util.HashMap
 import org.eclipse.emf.ecore.util.EcoreUtil
 
-import static fr.cea.nabla.ir.Utils.getCurrentIrVariable
+import static fr.cea.nabla.ir.IrModuleExtensions.getCurrentIrVariable
 
 class TagPersistentVariables implements IrTransformationStep
 {
@@ -66,9 +66,12 @@ class TagPersistentVariables implements IrTransformationStep
 		[
 			name = "lastDump"
 			type = EcoreUtil::copy(periodVariableType)
+			const = false
+			constexpr = false
+			option = false
 			defaultValue = periodVariableType.primitive.defaultValue
 		]
-		m.variables += lastDumpVariable
+		m.definitions += lastDumpVariable
 		ppInfo.lastDumpVariable = lastDumpVariable
 
 		return true

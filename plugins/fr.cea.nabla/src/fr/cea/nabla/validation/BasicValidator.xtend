@@ -71,10 +71,10 @@ class BasicValidator extends UnusedValidator
 	def checkMandatoryOptions(NablaModule it)
 	{
 		if (itemTypes.empty) return; // no mesh
-		val scalarConsts = options.map[variable.name].toList
-		val missingConsts = MandatoryOptions::NAMES.filter[x | !scalarConsts.contains(x)]
-		if (missingConsts.size > 0)
-			error(getMandatoryOptionsMsg(missingConsts), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_OPTION)
+		val options = definitions.filter[option].map[variable.name].toList
+		val missingOptions = MandatoryOptions::NAMES.filter[x | !options.contains(x)]
+		if (missingOptions.size > 0)
+			error(getMandatoryOptionsMsg(missingOptions), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_OPTION)
 	}
 
 	@Check
@@ -92,7 +92,7 @@ class BasicValidator extends UnusedValidator
 
 	static def getInitValueMsg(int actualValue) { "Expected 0, but was " + actualValue }
 	static def getNextValueMsg(int actualValue) { "Expected 1, but was " + actualValue }
-	static def getConditionConstraintsMsg() { "Unsupported condition in time iterator" }
+	static def getConditionConstraintsMsg() { "Reductions not allowed in time iterator condition" }
 
 	@Check 
 	def checkInitValue(InitTimeIteratorRef it)
@@ -111,7 +111,7 @@ class BasicValidator extends UnusedValidator
 	@Check
 	def checkConditionConstraints(TimeIterator it)
 	{
-		if (cond !== null && !cond.respectGlobalExprConstraints)
+		if (cond !== null && !cond.reductionLess)
 			error(getConditionConstraintsMsg(), NablaPackage.Literals.TIME_ITERATOR__COND, CONDITION_CONSTRAINTS)
 	}
 
@@ -195,31 +195,31 @@ class BasicValidator extends UnusedValidator
 			error(getShiftValidityMsg(), NablaPackage.Literals::ITEM_REF__TARGET, SHIFT_VALIDITY)
 	}
 
-	// ===== Tools to share const int expression validation                =====
+	// ===== Tools to share expression validation                          =====
 	// ===== Used by BaseType sizes, Interval nbElems, ArgOrVarRef indices =====
-	public static val CONST_INT_EXPRESSION_MSG = "Expressions::ConstIntExpressionMsg"
-	public static val CONST_INT_EXPRESSION_TYPE_MSG = "Expressions::ConstIntExpressionTypeMsg"
+	public static val VALIDITY_EXPRESSION = "Expressions::ValidityExpression"
+	public static val TYPE_EXPRESSION_TYPE = "Expressions::TypeExpression"
 
-	static def getConstIntExpressionMsg() { "Unsupported expression for this context" }
-	static def getConstIntExpressionTypeMsg(String actualType) { "Expected " + ValidationUtils::INT.label + " type, but was " + actualType }
+	static def getValidityExpressionMsg() { "Reductions not allowed in types" }
+	static def getTypeExpressionMsg(String actualType) { "Expected " + ValidationUtils::INT.label + " type, but was " + actualType }
 
 	protected def void checkExpressionValidityAndType(Expression it, EStructuralFeature feature)
 	{
-		if (!respectIntConstExprConstraints)
-			error(getConstIntExpressionMsg(), feature, CONST_INT_EXPRESSION_MSG);
+		if (!reductionLess)
+			error(getValidityExpressionMsg(), feature, VALIDITY_EXPRESSION);
 
 		val t = typeFor
 		if (t !== null && !(t instanceof NSTIntScalar))
-			error(getConstIntExpressionTypeMsg(t.label), feature, CONST_INT_EXPRESSION_TYPE_MSG);
+			error(getTypeExpressionMsg(t.label), feature, TYPE_EXPRESSION_TYPE);
 	}
 
 	protected def void checkExpressionValidityAndType(Expression it, EStructuralFeature feature, int index)
 	{
-		if (!respectIntConstExprConstraints)
-			error(getConstIntExpressionMsg(), feature, index, CONST_INT_EXPRESSION_MSG);
+		if (!reductionLess)
+			error(getValidityExpressionMsg(), feature, index, VALIDITY_EXPRESSION);
 
 		val t = typeFor
 		if (t !== null && !(t instanceof NSTIntScalar))
-			error(getConstIntExpressionTypeMsg(t.label), feature, index, CONST_INT_EXPRESSION_TYPE_MSG);
+			error(getTypeExpressionMsg(t.label), feature, index, TYPE_EXPRESSION_TYPE);
 	}
 }

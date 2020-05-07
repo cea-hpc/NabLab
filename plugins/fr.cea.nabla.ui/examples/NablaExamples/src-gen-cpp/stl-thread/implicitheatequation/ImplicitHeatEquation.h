@@ -60,10 +60,11 @@ private:
 	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
 	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
-	int n;
 	double t_n;
 	double t_nplus1;
 	double deltat;
+	int lastDump;
+	int n;
 	std::vector<RealArray1D<2>> X;
 	std::vector<RealArray1D<2>> Xc;
 	std::vector<double> xc;
@@ -75,7 +76,6 @@ private:
 	std::vector<double> faceLength;
 	std::vector<double> faceConductivity;
 	NablaSparseMatrix alpha;
-	int lastDump;
 	LinearAlgebraFunctions::CGInfo cg_info; // CG details
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;

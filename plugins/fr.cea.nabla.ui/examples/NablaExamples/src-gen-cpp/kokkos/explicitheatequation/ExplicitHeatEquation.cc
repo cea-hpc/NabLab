@@ -137,6 +137,7 @@ ExplicitHeatEquation::ExplicitHeatEquation(Options* aOptions, CartesianMesh2D* a
 , t_n(0.0)
 , t_nplus1(0.0)
 , deltat(0.001)
+, lastDump(numeric_limits<int>::min())
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
 , xc("xc", nbCells)
@@ -148,7 +149,6 @@ ExplicitHeatEquation::ExplicitHeatEquation(Options* aOptions, CartesianMesh2D* a
 , faceLength("faceLength", nbFaces)
 , faceConductivity("faceConductivity", nbFaces)
 , alpha("alpha", nbCells, nbCells)
-, lastDump(numeric_limits<int>::min())
 {
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();

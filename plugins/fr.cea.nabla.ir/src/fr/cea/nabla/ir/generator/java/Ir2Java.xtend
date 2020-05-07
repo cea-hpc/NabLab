@@ -15,7 +15,6 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -64,7 +63,7 @@ class Ir2Java extends CodeGenerator
 		{
 			public final static class Options
 			{
-				«FOR v : options»
+				«FOR v : definitions.filter[option]»
 				public «v.javaType» «v.name»;
 				«ENDFOR»
 		
@@ -86,7 +85,7 @@ class Ir2Java extends CodeGenerator
 			«ENDIF»
 
 			// Global Variables
-			«FOR v : variables»
+			«FOR v : definitions.filter[!option] + declarations»
 			private «IF v.const»final «ENDIF»«v.javaType» «v.name»;
 			«ENDFOR»
 
@@ -102,15 +101,14 @@ class Ir2Java extends CodeGenerator
 				«ENDIF»
 
 				// Initialize variables
-				«FOR v : variables»
-					«IF v instanceof SimpleVariable && (v as SimpleVariable).defaultValue !== null»
-						«v.name» = «(v as SimpleVariable).defaultValue.content»;
-					«ELSEIF !v.type.scalar»
-						«IF v.linearAlgebra»
-							«v.name» = «(v as ConnectivityVariable).linearAlgebraDefinition»;
-						«ELSE»
-							«v.name»«v.javaAllocation»;
-						«ENDIF»
+				«FOR v : definitions.filter[!option]»
+					«v.name» = «v.defaultValue.content»;
+				«ENDFOR»
+				«FOR v : declarations.filter[!type.scalar]»
+					«IF v.linearAlgebra»
+						«v.name» = «(v as ConnectivityVariable).linearAlgebraDefinition»;
+					«ELSE»
+						«v.name»«v.javaAllocation»;
 					«ENDIF»
 				«ENDFOR»
 				«IF withMesh»

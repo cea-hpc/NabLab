@@ -109,7 +109,7 @@ class UnusedValidator extends UniqueNameValidator
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
 		// If the module does not contain options and jobs, no unused warning.
 		// It avoids warning on libraries: module with only functions/reductions.
-		if (! (m.options.empty && m.jobs.empty))
+		if (! (m.definitions.filter[option].empty && m.jobs.empty))
 		{
 			val allCalls = m.eAllContents.filter(FunctionCall)
 			var referenced = false
@@ -130,7 +130,7 @@ class UnusedValidator extends UniqueNameValidator
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
 		// If the module does not contain options and jobs, no unused warning.
 		// It avoids warning on libraries: module with only functions/reductions.
-		if (! (m.options.empty && m.jobs.empty))
+		if (! (m.definitions.filter[option].empty && m.jobs.empty))
 		{
 			val allCalls = m.eAllContents.filter(ReductionCall)
 			val allMatchingDeclarations = allCalls.map[declaration]

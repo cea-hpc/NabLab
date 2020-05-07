@@ -23,7 +23,6 @@ NablaModule:
 	connectivities+=Connectivity*)?
 	reductions+=Reduction*
 	functions+=Function*
-	options+=OptDefinition*
 	definitions+=SimpleVarDefinition*
 	declarations+=VarGroupDeclaration*
 	// Only one block of iteration (don't know how to manage several blocks on node variable X)
@@ -31,7 +30,6 @@ NablaModule:
 	jobs+=Job*;
 
 Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';
-OptDefinition: 'option' variable=SimpleVar '=' value=Expression ';';
 
 
 /* ITEMS & CONNECTIVITES *********************************/
@@ -46,7 +44,7 @@ Job: name=ID ':' instruction=Instruction;
 Iterable: Loop | ReductionCall;
 Instruction: SimpleVarDefinition | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | ItemDefinition | SetDefinition | Return | Exit;
 
-SimpleVarDefinition: 'let' variable=SimpleVar '=' value=Expression ';';
+SimpleVarDefinition: ('let'|option?='option') variable=SimpleVar '=' value=Expression ';';
 VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
 InstructionBlock: '{' instructions+=Instruction+ '}';
 Loop: '\u2200' iterationBlock=IterationBlock ',' body=Instruction;

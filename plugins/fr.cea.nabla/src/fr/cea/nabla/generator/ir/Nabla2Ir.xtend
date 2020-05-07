@@ -24,7 +24,7 @@ import fr.cea.nabla.overloading.DeclarationProvider
 import java.util.LinkedHashSet
 import org.eclipse.emf.ecore.EObject
 
-import static fr.cea.nabla.ir.Utils.*
+import static fr.cea.nabla.ir.IrModuleExtensions.*
 
 class Nabla2Ir
 {
@@ -54,14 +54,14 @@ class Nabla2Ir
 			val timeIterators = nablaModule.iteration.iterators
 			val firstTimeIterator = timeIterators.head
 			val mainIC = firstTimeIterator.toIrIterationCounter
-			variables += mainIC
+			declarations += mainIC
 			mainTimeLoop = firstTimeIterator.toIrTimeLoop
 			mainTimeLoop.iterationCounter = mainIC
 			var TimeLoop outerTL = mainTimeLoop
 			for (ti : timeIterators.tail)
 			{
 				val ic = ti.toIrIterationCounter
-				variables += ic
+				declarations += ic
 				val tl = ti.toIrTimeLoop
 				tl.iterationCounter = ic
 				outerTL.innerTimeLoop = tl
@@ -70,13 +70,12 @@ class Nabla2Ir
 		}
 
 		// Option and global variables creation
-		for (o : nablaModule.options)
-			options += o.variable.toIrVariable as SimpleVariable
 		for (d : nablaModule.definitions)
-			variables += createIrVariablesFor(nablaModule, d.variable)
+			for (v : createIrVariablesFor(nablaModule, d.variable))
+				definitions += v as SimpleVariable
 		for (d : nablaModule.declarations)
 			for (v : d.variables)
-				variables += createIrVariablesFor(nablaModule, v)
+				declarations += createIrVariablesFor(nablaModule, v)
 
 		// Special variables initialization
 		initNodeCoordVariable = getInitIrVariable(it, nablaNodeCoordVariable.name) as ConnectivityVariable

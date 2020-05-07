@@ -80,8 +80,8 @@ class BasicValidatorTest
 			'''))
 
 		moduleKo1.assertError(NablaPackage.eINSTANCE.interval,
-			BasicValidator::CONST_INT_EXPRESSION_MSG,
-			BasicValidator::getConstIntExpressionMsg())
+			BasicValidator::TYPE_EXPRESSION_TYPE,
+			BasicValidator::getTypeExpressionMsg("ℝ"))
 
 		val moduleKo2 = parseHelper.parse(getTestModule( '',
 			'''
@@ -95,8 +95,8 @@ class BasicValidatorTest
 			'''))
 
 		moduleKo2.assertError(NablaPackage.eINSTANCE.interval,
-			BasicValidator::CONST_INT_EXPRESSION_TYPE_MSG,
-			BasicValidator::getConstIntExpressionTypeMsg("ℝ"))
+			BasicValidator::TYPE_EXPRESSION_TYPE,
+			BasicValidator::getTypeExpressionMsg("ℝ"))
 
 		val moduleOk = parseHelper.parse(getTestModule( '',
 			'''
@@ -274,12 +274,12 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseType,
-			BasicValidator::CONST_INT_EXPRESSION_MSG,
-			BasicValidator::getConstIntExpressionMsg())
+			BasicValidator::TYPE_EXPRESSION_TYPE,
+			BasicValidator::getTypeExpressionMsg("ℝ"))
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseType,
-			BasicValidator::CONST_INT_EXPRESSION_TYPE_MSG,
-			BasicValidator::getConstIntExpressionTypeMsg("ℝ"))
+			BasicValidator::TYPE_EXPRESSION_TYPE,
+			BasicValidator::getTypeExpressionMsg("ℝ"))
 
 		val moduleOk = parseHelper.parse(testModule +
 			'''

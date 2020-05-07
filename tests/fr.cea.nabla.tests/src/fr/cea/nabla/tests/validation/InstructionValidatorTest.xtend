@@ -45,8 +45,7 @@ class InstructionValidatorTest
 					U{j} = e * 4;
 			}
 			ComputeV: V = U;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.affectation,
@@ -54,7 +53,6 @@ class InstructionValidatorTest
 			InstructionValidator::getAffectationTypeMsg(PrimitiveType::REAL.literal,
 				PrimitiveType::INT.literal
 			))
-
 		moduleKo.assertError(NablaPackage.eINSTANCE.affectation,
 			InstructionValidator::AFFECTATION_TYPE,
 			InstructionValidator::getAffectationTypeMsg("ℕ{cells}", "ℕ{nodes}"))
@@ -69,8 +67,7 @@ class InstructionValidatorTest
 					U{j} = e * 4;
 			}
 			ComputeV: V = U;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -84,10 +81,8 @@ class InstructionValidatorTest
 			ℕ cond;
 			ℕ a;
 			jobIf: if (cond) { a = a + 1 ; } else { a = a -1 ; }
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
-
 		moduleKo.assertError(NablaPackage.eINSTANCE.^if,
 			InstructionValidator::IF_CONDITION_BOOL,
 			InstructionValidator::getIfConditionBoolMsg(PrimitiveType::INT.literal))
@@ -98,8 +93,7 @@ class InstructionValidatorTest
 			ℾ cond;
 			ℕ a;
 			jobIf: if (cond) { a = a + 1 ; } else { a = a -1 ; }
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -111,10 +105,19 @@ class InstructionValidatorTest
 			'''
 			let coef = [2, 3, 4];
 			let DOUBLE_LENGTH = mySum{k∈[0;3[}(X_EDGE_LENGTH, coef[k]);
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
+			InstructionValidator::GLOBAL_VAR_VALUE,
+			InstructionValidator::getGlobalVarValueMsg)
+
+		val moduleKo2 = parseHelper.parse(getTestModule(nodesConnectivity, '') +
+			'''
+			let c = card(nodes());
+			option d = c;
+			''')
+		Assert.assertNotNull(moduleKo2)
+		moduleKo2.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
 			InstructionValidator::GLOBAL_VAR_VALUE,
 			InstructionValidator::getGlobalVarValueMsg)
 
@@ -122,30 +125,43 @@ class InstructionValidatorTest
 			'''
 			let coef = 2;
 			let DOUBLE_LENGTH = X_EDGE_LENGTH * coef;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
 
 	@Test
-	def void testOptionValue()
+	def void testLocalOption()
 	{
-		val moduleKo1 = parseHelper.parse(getTestModule('', '''def inc: ℕ → ℕ;''') +
+		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '')
+			+
 			'''
-			option coef = inc(2);
-			'''
-		)
-		Assert.assertNotNull(moduleKo1)
-		moduleKo1.assertError(NablaPackage.eINSTANCE.optDefinition,
-			InstructionValidator::OPTION_VALUE,
-			InstructionValidator::getOptionValueMsg)
+			option alpha = 1;
+			ℕ U{cells}; 
+			ℕ V{cells};
+			ComputeU: ∀ j∈cells(), {
+					option e = 1;
+					U{j} = e * alpha * 4;
+			}
+			ComputeV: V = U;
+			''')
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
+			InstructionValidator::LOCAL_OPTION,
+			InstructionValidator::getLocalOptionMsg())
 
-		val moduleOk =  parseHelper.parse(testModule +
+		val moduleOk = parseHelper.parse(getTestModule(defaultConnectivities, '')
+			+
 			'''
-			option coef = 3;
-			'''
-		)
+			option alpha = 1;
+			ℕ U{cells}; 
+			ℕ V{cells};
+			ComputeU: ∀ j∈cells(), {
+					let e = 1;
+					U{j} = e * alpha * 4;
+			}
+			ComputeV: V = U;
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}

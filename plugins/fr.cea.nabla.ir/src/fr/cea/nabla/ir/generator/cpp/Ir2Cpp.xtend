@@ -14,7 +14,6 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.PrimitiveType
 import java.io.File
 import java.net.URI
 import org.eclipse.core.runtime.FileLocator
@@ -89,7 +88,7 @@ class Ir2Cpp extends CodeGenerator
 		struct Options
 		{
 			«FOR v : definitions.filter[option]»
-			«IF v.type.primitive == PrimitiveType.INT && v.type.sizes.empty»size_t«ELSE»«v.cppType»«ENDIF» «v.name»;
+			«v.cppType» «v.name»;
 			«ENDFOR»
 
 			Options(const std::string& fileName);
@@ -153,7 +152,7 @@ class Ir2Cpp extends CodeGenerator
 	, «c.nbElemsVar»(«c.connectivityAccessor»)
 	«ENDFOR»
 	«ENDIF»
-	«FOR v : definitions.filter[!option]»
+	«FOR v : definitions.filter[x | !(x.option || x.constExpr)]»
 	, «v.name»(«v.defaultValue.content»)
 	«ENDFOR»
 	«FOR v : declarations.filter(ConnectivityVariable)»

@@ -13,7 +13,7 @@ package fr.cea.nabla.ir.ir;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.Expression#getType <em>Type</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Expression#isConstexpr <em>Constexpr</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Expression#isConstExpr <em>Const Expr</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getExpression()
@@ -44,25 +44,25 @@ public interface Expression extends IrAnnotable {
 	void setType(IrType value);
 
 	/**
-	 * Returns the value of the '<em><b>Constexpr</b></em>' attribute.
+	 * Returns the value of the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Constexpr</em>' attribute.
-	 * @see #setConstexpr(boolean)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getExpression_Constexpr()
+	 * @return the value of the '<em>Const Expr</em>' attribute.
+	 * @see #setConstExpr(boolean)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getExpression_ConstExpr()
 	 * @model required="true"
 	 * @generated
 	 */
-	boolean isConstexpr();
+	boolean isConstExpr();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Expression#isConstexpr <em>Constexpr</em>}' attribute.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Expression#isConstExpr <em>Const Expr</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Constexpr</em>' attribute.
-	 * @see #isConstexpr()
+	 * @param value the new value of the '<em>Const Expr</em>' attribute.
+	 * @see #isConstExpr()
 	 * @generated
 	 */
-	void setConstexpr(boolean value);
+	void setConstExpr(boolean value);
 
 } // Expression

@@ -108,7 +108,6 @@ HeatEquation::HeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D,
 , nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
 , t_n(0.0)
 , t_nplus1(0.0)
-, deltat(0.001)
 , lastDump(numeric_limits<int>::min())
 , X("X", nbNodes)
 , center("center", nbCells)

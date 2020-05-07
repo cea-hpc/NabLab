@@ -19,6 +19,7 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 class AttributesContentProvider
 {
 	protected val extension ArgOrVarContentProvider
+	protected val extension ExpressionContentProvider
 	protected def CharSequence getAdditionalContent() { null }
 
 	def getContentFor(IrModule m)
@@ -28,8 +29,15 @@ class AttributesContentProvider
 		PvdFileWriter2D writer;
 		«FOR c : m.usedConnectivities BEFORE 'size_t ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
 		«ENDIF»
-		«FOR v : m.definitions.filter[!option] + m.declarations»
-		«IF v.const»const «ENDIF»«v.cppType» «v.name»;
+		«FOR v : m.definitions.filter[!option]»
+			«IF v.constExpr»
+				static constexpr «v.cppType» «v.name» = «v.defaultValue.content»;
+			«ELSE»
+				«IF v.const»const «ENDIF»«v.cppType» «v.name»;
+			«ENDIF»
+		«ENDFOR»
+		«FOR v : m.declarations»
+			«IF v.const»const «ENDIF»«v.cppType» «v.name»;
 		«ENDFOR»
 		«IF m.linearAlgebra»LinearAlgebraFunctions::CGInfo cg_info; // CG details«ENDIF»
 		utils::Timer globalTimer;

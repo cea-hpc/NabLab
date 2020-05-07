@@ -39,7 +39,8 @@ template<size_t l>
 KOKKOS_INLINE_FUNCTION
 RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b)
 {
-	RealArray2D<l,l> result;
+	RealArray2D<l,l>;
+	initSize(l, l);
 	for (size_t ia=0; ia<l; ia++)
 	{
 		for (size_t ib=0; ib<l; ib++)
@@ -54,10 +55,12 @@ template<size_t x, size_t y>
 KOKKOS_INLINE_FUNCTION
 RealArray1D<x> matVectProduct(RealArray2D<x,y> a, RealArray1D<y> b)
 {
-	RealArray1D<x> result;
+	RealArray1D<x>;
+	initSize(x);
 	for (size_t ix=0; ix<x; ix++)
 	{
-		RealArray1D<y> tmp;
+		RealArray1D<y>;
+		initSize(y);
 		for (size_t iy=0; iy<y; iy++)
 		{
 			tmp[iy] = a[ix][iy];

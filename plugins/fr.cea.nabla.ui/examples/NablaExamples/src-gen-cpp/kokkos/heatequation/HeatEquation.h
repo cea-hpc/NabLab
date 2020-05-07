@@ -64,7 +64,7 @@ private:
 	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
 	double t_n;
 	double t_nplus1;
-	const double deltat;
+	static constexpr double deltat = 0.001;
 	int lastDump;
 	int n;
 	Kokkos::View<RealArray1D<2>*> X;

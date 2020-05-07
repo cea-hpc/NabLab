@@ -133,7 +133,7 @@ Atomic returns Expression:
 	{MaxConstant} type=PrimitiveType '.MaxValue'|
 	{FunctionCall} function=[Function|QualifiedName] '(' (args+=Expression (',' args+=Expression)*)? ')' | 
 	ReductionCall |
-	{BaseTypeConstant} type=BaseType '(' value=Expression ')'| 
+	{BaseTypeConstant} type=BaseType '(' value=Expression ')'| // type.sizes.forall[x | x instanceof IntConstant]
 	{VectorConstant} '[' values+=Expression (',' values+=Expression)* ']' |
 	{Cardinality} 'card' '(' container=Container ')' |
 	ArgOrVarRef;

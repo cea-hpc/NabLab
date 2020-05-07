@@ -15,7 +15,7 @@ package fr.cea.nabla.ir.ir;
  *   <li>{@link fr.cea.nabla.ir.ir.SimpleVariable#getType <em>Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.SimpleVariable#getDefaultValue <em>Default Value</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.SimpleVariable#isOption <em>Option</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.SimpleVariable#isConstexpr <em>Constexpr</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.SimpleVariable#isConstExpr <em>Const Expr</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getSimpleVariable()
@@ -91,25 +91,25 @@ public interface SimpleVariable extends Variable {
 	void setOption(boolean value);
 
 	/**
-	 * Returns the value of the '<em><b>Constexpr</b></em>' attribute.
+	 * Returns the value of the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Constexpr</em>' attribute.
-	 * @see #setConstexpr(boolean)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getSimpleVariable_Constexpr()
+	 * @return the value of the '<em>Const Expr</em>' attribute.
+	 * @see #setConstExpr(boolean)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getSimpleVariable_ConstExpr()
 	 * @model required="true"
 	 * @generated
 	 */
-	boolean isConstexpr();
+	boolean isConstExpr();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.SimpleVariable#isConstexpr <em>Constexpr</em>}' attribute.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.SimpleVariable#isConstExpr <em>Const Expr</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Constexpr</em>' attribute.
-	 * @see #isConstexpr()
+	 * @param value the new value of the '<em>Const Expr</em>' attribute.
+	 * @see #isConstExpr()
 	 * @generated
 	 */
-	void setConstexpr(boolean value);
+	void setConstExpr(boolean value);
 
 } // SimpleVariable

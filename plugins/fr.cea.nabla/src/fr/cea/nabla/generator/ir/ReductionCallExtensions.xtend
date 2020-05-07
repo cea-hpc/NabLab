@@ -32,7 +32,7 @@ class ReductionCallExtensions
 		val vType = d.type.toIrBaseType
 		type = vType
 		const = false
-		constexpr = false
+		constExpr = false
 		option = false
 
 		val seedExpression = d.model.seed.toIrExpression

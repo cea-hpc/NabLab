@@ -816,13 +816,13 @@ public interface IrPackage extends EPackage {
 	int SIMPLE_VARIABLE__OPTION = VARIABLE_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SIMPLE_VARIABLE__CONSTEXPR = VARIABLE_FEATURE_COUNT + 3;
+	int SIMPLE_VARIABLE__CONST_EXPR = VARIABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>Simple Variable</em>' class.
@@ -2571,13 +2571,13 @@ public interface IrPackage extends EPackage {
 	int EXPRESSION__TYPE = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXPRESSION__CONSTEXPR = IR_ANNOTABLE_FEATURE_COUNT + 1;
+	int EXPRESSION__CONST_EXPR = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Expression</em>' class.
@@ -2626,13 +2626,13 @@ public interface IrPackage extends EPackage {
 	int CONTRACTED_IF__TYPE = EXPRESSION__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONTRACTED_IF__CONSTEXPR = EXPRESSION__CONSTEXPR;
+	int CONTRACTED_IF__CONST_EXPR = EXPRESSION__CONST_EXPR;
 
 	/**
 	 * The feature id for the '<em><b>Condition</b></em>' containment reference.
@@ -2708,13 +2708,13 @@ public interface IrPackage extends EPackage {
 	int BINARY_EXPRESSION__TYPE = EXPRESSION__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BINARY_EXPRESSION__CONSTEXPR = EXPRESSION__CONSTEXPR;
+	int BINARY_EXPRESSION__CONST_EXPR = EXPRESSION__CONST_EXPR;
 
 	/**
 	 * The feature id for the '<em><b>Operator</b></em>' attribute.
@@ -2790,13 +2790,13 @@ public interface IrPackage extends EPackage {
 	int UNARY_EXPRESSION__TYPE = EXPRESSION__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int UNARY_EXPRESSION__CONSTEXPR = EXPRESSION__CONSTEXPR;
+	int UNARY_EXPRESSION__CONST_EXPR = EXPRESSION__CONST_EXPR;
 
 	/**
 	 * The feature id for the '<em><b>Operator</b></em>' attribute.
@@ -2863,13 +2863,13 @@ public interface IrPackage extends EPackage {
 	int PARENTHESIS__TYPE = EXPRESSION__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PARENTHESIS__CONSTEXPR = EXPRESSION__CONSTEXPR;
+	int PARENTHESIS__CONST_EXPR = EXPRESSION__CONST_EXPR;
 
 	/**
 	 * The feature id for the '<em><b>Expression</b></em>' containment reference.
@@ -2927,13 +2927,13 @@ public interface IrPackage extends EPackage {
 	int INT_CONSTANT__TYPE = EXPRESSION__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INT_CONSTANT__CONSTEXPR = EXPRESSION__CONSTEXPR;
+	int INT_CONSTANT__CONST_EXPR = EXPRESSION__CONST_EXPR;
 
 	/**
 	 * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -2991,13 +2991,13 @@ public interface IrPackage extends EPackage {
 	int REAL_CONSTANT__TYPE = EXPRESSION__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int REAL_CONSTANT__CONSTEXPR = EXPRESSION__CONSTEXPR;
+	int REAL_CONSTANT__CONST_EXPR = EXPRESSION__CONST_EXPR;
 
 	/**
 	 * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3055,13 +3055,13 @@ public interface IrPackage extends EPackage {
 	int BOOL_CONSTANT__TYPE = EXPRESSION__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BOOL_CONSTANT__CONSTEXPR = EXPRESSION__CONSTEXPR;
+	int BOOL_CONSTANT__CONST_EXPR = EXPRESSION__CONST_EXPR;
 
 	/**
 	 * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3119,13 +3119,13 @@ public interface IrPackage extends EPackage {
 	int MIN_CONSTANT__TYPE = EXPRESSION__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MIN_CONSTANT__CONSTEXPR = EXPRESSION__CONSTEXPR;
+	int MIN_CONSTANT__CONST_EXPR = EXPRESSION__CONST_EXPR;
 
 	/**
 	 * The number of structural features of the '<em>Min Constant</em>' class.
@@ -3174,13 +3174,13 @@ public interface IrPackage extends EPackage {
 	int MAX_CONSTANT__TYPE = EXPRESSION__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MAX_CONSTANT__CONSTEXPR = EXPRESSION__CONSTEXPR;
+	int MAX_CONSTANT__CONST_EXPR = EXPRESSION__CONST_EXPR;
 
 	/**
 	 * The number of structural features of the '<em>Max Constant</em>' class.
@@ -3259,13 +3259,13 @@ public interface IrPackage extends EPackage {
 	int FUNCTION_CALL__TYPE = EXPRESSION__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_CALL__CONSTEXPR = EXPRESSION__CONSTEXPR;
+	int FUNCTION_CALL__CONST_EXPR = EXPRESSION__CONST_EXPR;
 
 	/**
 	 * The feature id for the '<em><b>Function</b></em>' reference.
@@ -3322,13 +3322,13 @@ public interface IrPackage extends EPackage {
 	int BASE_TYPE_CONSTANT__TYPE = EXPRESSION__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BASE_TYPE_CONSTANT__CONSTEXPR = EXPRESSION__CONSTEXPR;
+	int BASE_TYPE_CONSTANT__CONST_EXPR = EXPRESSION__CONST_EXPR;
 
 	/**
 	 * The feature id for the '<em><b>Value</b></em>' containment reference.
@@ -3376,13 +3376,13 @@ public interface IrPackage extends EPackage {
 	int VECTOR_CONSTANT__TYPE = EXPRESSION__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int VECTOR_CONSTANT__CONSTEXPR = EXPRESSION__CONSTEXPR;
+	int VECTOR_CONSTANT__CONST_EXPR = EXPRESSION__CONST_EXPR;
 
 	/**
 	 * The feature id for the '<em><b>Values</b></em>' containment reference list.
@@ -3430,13 +3430,13 @@ public interface IrPackage extends EPackage {
 	int CARDINALITY__TYPE = EXPRESSION__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CARDINALITY__CONSTEXPR = EXPRESSION__CONSTEXPR;
+	int CARDINALITY__CONST_EXPR = EXPRESSION__CONST_EXPR;
 
 	/**
 	 * The feature id for the '<em><b>Container</b></em>' containment reference.
@@ -3494,13 +3494,13 @@ public interface IrPackage extends EPackage {
 	int ARG_OR_VAR_REF__TYPE = EXPRESSION__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Constexpr</b></em>' attribute.
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ARG_OR_VAR_REF__CONSTEXPR = EXPRESSION__CONSTEXPR;
+	int ARG_OR_VAR_REF__CONST_EXPR = EXPRESSION__CONST_EXPR;
 
 	/**
 	 * The feature id for the '<em><b>Target</b></em>' reference.
@@ -4783,15 +4783,15 @@ public interface IrPackage extends EPackage {
 	EAttribute getSimpleVariable_Option();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.SimpleVariable#isConstexpr <em>Constexpr</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.SimpleVariable#isConstExpr <em>Const Expr</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Constexpr</em>'.
-	 * @see fr.cea.nabla.ir.ir.SimpleVariable#isConstexpr()
+	 * @return the meta object for the attribute '<em>Const Expr</em>'.
+	 * @see fr.cea.nabla.ir.ir.SimpleVariable#isConstExpr()
 	 * @see #getSimpleVariable()
 	 * @generated
 	 */
-	EAttribute getSimpleVariable_Constexpr();
+	EAttribute getSimpleVariable_ConstExpr();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ConnectivityVariable <em>Connectivity Variable</em>}'.
@@ -5625,15 +5625,15 @@ public interface IrPackage extends EPackage {
 	EReference getExpression_Type();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Expression#isConstexpr <em>Constexpr</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Expression#isConstExpr <em>Const Expr</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Constexpr</em>'.
-	 * @see fr.cea.nabla.ir.ir.Expression#isConstexpr()
+	 * @return the meta object for the attribute '<em>Const Expr</em>'.
+	 * @see fr.cea.nabla.ir.ir.Expression#isConstExpr()
 	 * @see #getExpression()
 	 * @generated
 	 */
-	EAttribute getExpression_Constexpr();
+	EAttribute getExpression_ConstExpr();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ContractedIf <em>Contracted If</em>}'.
@@ -6806,12 +6806,12 @@ public interface IrPackage extends EPackage {
 		EAttribute SIMPLE_VARIABLE__OPTION = eINSTANCE.getSimpleVariable_Option();
 
 		/**
-		 * The meta object literal for the '<em><b>Constexpr</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Const Expr</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute SIMPLE_VARIABLE__CONSTEXPR = eINSTANCE.getSimpleVariable_Constexpr();
+		EAttribute SIMPLE_VARIABLE__CONST_EXPR = eINSTANCE.getSimpleVariable_ConstExpr();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ConnectivityVariableImpl <em>Connectivity Variable</em>}' class.
@@ -7492,12 +7492,12 @@ public interface IrPackage extends EPackage {
 		EReference EXPRESSION__TYPE = eINSTANCE.getExpression_Type();
 
 		/**
-		 * The meta object literal for the '<em><b>Constexpr</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Const Expr</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute EXPRESSION__CONSTEXPR = eINSTANCE.getExpression_Constexpr();
+		EAttribute EXPRESSION__CONST_EXPR = eINSTANCE.getExpression_ConstExpr();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ContractedIfImpl <em>Contracted If</em>}' class.

@@ -67,7 +67,7 @@ class TagPersistentVariables implements IrTransformationStep
 			name = "lastDump"
 			type = EcoreUtil::copy(periodVariableType)
 			const = false
-			constexpr = false
+			constExpr = false
 			option = false
 			defaultValue = periodVariableType.primitive.defaultValue
 		]

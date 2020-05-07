@@ -40,6 +40,7 @@ KOKKOS_INLINE_FUNCTION
 RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b)
 {
 	RealArray2D<l,l> result;
+	result.initSize(l, l);
 	for (size_t ia=0; ia<l; ia++)
 	{
 		for (size_t ib=0; ib<l; ib++)
@@ -55,9 +56,11 @@ KOKKOS_INLINE_FUNCTION
 RealArray1D<x> matVectProduct(RealArray2D<x,y> a, RealArray1D<y> b)
 {
 	RealArray1D<x> result;
+	result.initSize(x);
 	for (size_t ix=0; ix<x; ix++)
 	{
 		RealArray1D<y> tmp;
+		tmp.initSize(y);
 		for (size_t iy=0; iy<y; iy++)
 		{
 			tmp[iy] = a[ix][iy];
@@ -374,7 +377,8 @@ void Glace2d::initialize() noexcept
 		const Id jId(jCells);
 		double rho_ic;
 		double p_ic;
-		RealArray1D<2> reduction0({0.0, 0.0});
+		RealArray1D<2> reduction0;
+		reduction0.initSize(2);
 		{
 			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
@@ -385,7 +389,8 @@ void Glace2d::initialize() noexcept
 				reduction0 = sumR1(reduction0, X_n0(rNodes));
 			}
 		}
-		const RealArray1D<2> center(0.25 * reduction0);
+		const RealArray1D<2> center;
+		center.initSize(2);
 		if (center[0] < options->option_x_interface) 
 		{
 			rho_ic = options->option_rho_ini_zg;
@@ -585,7 +590,8 @@ void Glace2d::computeAr() noexcept
 	Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& rNodes)
 	{
 		const Id rId(rNodes);
-		RealArray2D<2,2> reduction3({0.0, 0.0,  0.0, 0.0});
+		RealArray2D<2,2> reduction3;
+		reduction3.initSize(2, 2);
 		{
 			const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
 			const size_t nbCellsOfNodeR(cellsOfNodeR.size());
@@ -611,7 +617,8 @@ void Glace2d::computeBr() noexcept
 	Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& rNodes)
 	{
 		const Id rId(rNodes);
-		RealArray1D<2> reduction4({0.0, 0.0});
+		RealArray1D<2> reduction4;
+		reduction4.initSize(2);
 		{
 			const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
 			const size_t nbCellsOfNodeR(cellsOfNodeR.size());
@@ -656,12 +663,14 @@ void Glace2d::computeBoundaryConditions() noexcept
 		{
 			const Id fId(outerFaces[fOuterFaces]);
 			const double epsilon(1.0E-10);
-			const RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
+			const RealArray2D<2,2> I;
+			I.initSize(2, 2);
 			const double X_MIN(0.0);
 			const double X_MAX(options->X_EDGE_ELEMS * options->X_EDGE_LENGTH);
 			const double Y_MIN(0.0);
 			const double Y_MAX(options->Y_EDGE_ELEMS * options->Y_EDGE_LENGTH);
-			const RealArray1D<2> nY({0.0, 1.0});
+			const RealArray1D<2> nY;
+			nY.initSize(2);
 			{
 				const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
 				const size_t nbNodesOfFaceF(nodesOfFaceF.size());
@@ -676,9 +685,12 @@ void Glace2d::computeBoundaryConditions() noexcept
 							sign = -1.0;
 						else
 							sign = 1.0;
-						const RealArray1D<2> N(sign * nY);
-						const RealArray2D<2,2> NxN(tensProduct(N, N));
-						const RealArray2D<2,2> IcP(I - NxN);
+						const RealArray1D<2> N;
+						N.initSize(2);
+						const RealArray2D<2,2> NxN;
+						NxN.initSize(2, 2);
+						const RealArray2D<2,2> IcP;
+						IcP.initSize(2, 2);
 						bt(rNodes) = matVectProduct(IcP, b(rNodes));
 						Mt(rNodes) = IcP * (Ar(rNodes) * IcP) + NxN * trace(Ar(rNodes));
 					}
@@ -825,7 +837,8 @@ void Glace2d::computeUn() noexcept
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
 		const Id jId(jCells);
-		RealArray1D<2> reduction6({0.0, 0.0});
+		RealArray1D<2> reduction6;
+		reduction6.initSize(2);
 		{
 			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());

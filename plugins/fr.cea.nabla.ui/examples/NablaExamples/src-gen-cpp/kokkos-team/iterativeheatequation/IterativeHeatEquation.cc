@@ -320,7 +320,8 @@ void IterativeHeatEquation::initXc(const member_type& teamMember) noexcept
 		{
 			int cCells(cCellsTeam + teamWork.first);
 			const Id cId(cCells);
-			RealArray1D<2> reduction0({0.0, 0.0});
+			RealArray1D<2> reduction0;
+			reduction0.initSize(2);
 			{
 				const auto nodesOfCellC(mesh->getNodesOfCell(cId));
 				const size_t nbNodesOfCellC(nodesOfCellC.size());

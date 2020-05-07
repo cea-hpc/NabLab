@@ -62,10 +62,10 @@ public:
 	{
 		double X_EDGE_LENGTH;
 		double Y_EDGE_LENGTH;
-		size_t X_EDGE_ELEMS;
-		size_t Y_EDGE_ELEMS;
+		int X_EDGE_ELEMS;
+		int Y_EDGE_ELEMS;
 		double option_stoptime;
-		size_t option_max_iterations;
+		int option_max_iterations;
 		double gamma;
 		double option_x_interface;
 		double option_deltat_ini;

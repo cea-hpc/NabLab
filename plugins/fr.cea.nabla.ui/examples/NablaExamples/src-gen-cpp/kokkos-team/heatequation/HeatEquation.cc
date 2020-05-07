@@ -276,7 +276,8 @@ void HeatEquation::iniCenter(const member_type& teamMember) noexcept
 		{
 			int jCells(jCellsTeam + teamWork.first);
 			const Id jId(jCells);
-			RealArray1D<2> reduction0({0.0, 0.0});
+			RealArray1D<2> reduction0;
+			reduction0.initSize(2);
 			{
 				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				const size_t nbNodesOfCellJ(nodesOfCellJ.size());

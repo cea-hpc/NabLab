@@ -226,7 +226,8 @@ void HeatEquation::iniCenter() noexcept
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
 		const Id jId(jCells);
-		RealArray1D<2> reduction0({0.0, 0.0});
+		RealArray1D<2> reduction0;
+		reduction0.initSize(2);
 		{
 			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());

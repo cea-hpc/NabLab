@@ -14,18 +14,23 @@ import java.util.Map
 
 abstract class FileWriter 
 {
-	protected static val OutputDir = 'output'
 	protected val String moduleName
+	protected val String outputDirName
 
-	protected new(String moduleName)
+	def isDisabled() { outputDirName.nullOrEmpty }
+
+	protected new(String moduleName, String outputDirName)
 	{ 
 		this.moduleName = moduleName
-		val outputDir = new File(OutputDir)
-		if (outputDir.exists)
-			outputDir.listFiles.forEach[x | x.delete]
-		else
-			outputDir.mkdir
+		this.outputDirName = outputDirName
+
+		if (!disabled)
+		{
+			val outputDir = new File(outputDirName)
+			if (!outputDir.exists)
+				throw new RuntimeException("Output directory does not exist: " + outputDir.absolutePath)
+		}
 	}
 
-	abstract def void writeFile(int iteration, double time, double[][] nodes, Quad[] cells, Map<String, double[]> cellVariables, Map<String, double[]> nodeVariables)	
+	abstract def void writeFile(int iteration, double time, double[][] nodes, Quad[] cells, Map<String, double[]> cellVariables, Map<String, double[]> nodeVariables)
 }

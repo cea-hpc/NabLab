@@ -122,6 +122,26 @@ Glace2d::Options::Options(const std::string& fileName)
 	rapidjson::Document d;
 	d.ParseStream(isw);
 	assert(d.IsObject());
+	// outputPath
+	assert(d.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = d["outputPath"];
+	assert(valueof_outputPath.IsString());
+	outputPath = valueof_outputPath.GetString();
+	// outputPeriod
+	assert(d.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = d["outputPeriod"];
+	assert(valueof_outputPeriod.IsInt());
+	outputPeriod = valueof_outputPeriod.GetInt();
+	// stopTime
+	assert(d.HasMember("stopTime"));
+	const rapidjson::Value& valueof_stopTime = d["stopTime"];
+	assert(valueof_stopTime.IsDouble());
+	stopTime = valueof_stopTime.GetDouble();
+	// maxIterations
+	assert(d.HasMember("maxIterations"));
+	const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
+	assert(valueof_maxIterations.IsInt());
+	maxIterations = valueof_maxIterations.GetInt();
 	// X_EDGE_LENGTH
 	assert(d.HasMember("X_EDGE_LENGTH"));
 	const rapidjson::Value& valueof_X_EDGE_LENGTH = d["X_EDGE_LENGTH"];
@@ -142,64 +162,54 @@ Glace2d::Options::Options(const std::string& fileName)
 	const rapidjson::Value& valueof_Y_EDGE_ELEMS = d["Y_EDGE_ELEMS"];
 	assert(valueof_Y_EDGE_ELEMS.IsInt());
 	Y_EDGE_ELEMS = valueof_Y_EDGE_ELEMS.GetInt();
-	// option_stoptime
-	assert(d.HasMember("option_stoptime"));
-	const rapidjson::Value& valueof_option_stoptime = d["option_stoptime"];
-	assert(valueof_option_stoptime.IsDouble());
-	option_stoptime = valueof_option_stoptime.GetDouble();
-	// option_max_iterations
-	assert(d.HasMember("option_max_iterations"));
-	const rapidjson::Value& valueof_option_max_iterations = d["option_max_iterations"];
-	assert(valueof_option_max_iterations.IsInt());
-	option_max_iterations = valueof_option_max_iterations.GetInt();
 	// gamma
 	assert(d.HasMember("gamma"));
 	const rapidjson::Value& valueof_gamma = d["gamma"];
 	assert(valueof_gamma.IsDouble());
 	gamma = valueof_gamma.GetDouble();
-	// option_x_interface
-	assert(d.HasMember("option_x_interface"));
-	const rapidjson::Value& valueof_option_x_interface = d["option_x_interface"];
-	assert(valueof_option_x_interface.IsDouble());
-	option_x_interface = valueof_option_x_interface.GetDouble();
-	// option_deltat_ini
-	assert(d.HasMember("option_deltat_ini"));
-	const rapidjson::Value& valueof_option_deltat_ini = d["option_deltat_ini"];
-	assert(valueof_option_deltat_ini.IsDouble());
-	option_deltat_ini = valueof_option_deltat_ini.GetDouble();
-	// option_deltat_cfl
-	assert(d.HasMember("option_deltat_cfl"));
-	const rapidjson::Value& valueof_option_deltat_cfl = d["option_deltat_cfl"];
-	assert(valueof_option_deltat_cfl.IsDouble());
-	option_deltat_cfl = valueof_option_deltat_cfl.GetDouble();
-	// option_rho_ini_zg
-	assert(d.HasMember("option_rho_ini_zg"));
-	const rapidjson::Value& valueof_option_rho_ini_zg = d["option_rho_ini_zg"];
-	assert(valueof_option_rho_ini_zg.IsDouble());
-	option_rho_ini_zg = valueof_option_rho_ini_zg.GetDouble();
-	// option_rho_ini_zd
-	assert(d.HasMember("option_rho_ini_zd"));
-	const rapidjson::Value& valueof_option_rho_ini_zd = d["option_rho_ini_zd"];
-	assert(valueof_option_rho_ini_zd.IsDouble());
-	option_rho_ini_zd = valueof_option_rho_ini_zd.GetDouble();
-	// option_p_ini_zg
-	assert(d.HasMember("option_p_ini_zg"));
-	const rapidjson::Value& valueof_option_p_ini_zg = d["option_p_ini_zg"];
-	assert(valueof_option_p_ini_zg.IsDouble());
-	option_p_ini_zg = valueof_option_p_ini_zg.GetDouble();
-	// option_p_ini_zd
-	assert(d.HasMember("option_p_ini_zd"));
-	const rapidjson::Value& valueof_option_p_ini_zd = d["option_p_ini_zd"];
-	assert(valueof_option_p_ini_zd.IsDouble());
-	option_p_ini_zd = valueof_option_p_ini_zd.GetDouble();
+	// xInterface
+	assert(d.HasMember("xInterface"));
+	const rapidjson::Value& valueof_xInterface = d["xInterface"];
+	assert(valueof_xInterface.IsDouble());
+	xInterface = valueof_xInterface.GetDouble();
+	// deltatIni
+	assert(d.HasMember("deltatIni"));
+	const rapidjson::Value& valueof_deltatIni = d["deltatIni"];
+	assert(valueof_deltatIni.IsDouble());
+	deltatIni = valueof_deltatIni.GetDouble();
+	// deltatCfl
+	assert(d.HasMember("deltatCfl"));
+	const rapidjson::Value& valueof_deltatCfl = d["deltatCfl"];
+	assert(valueof_deltatCfl.IsDouble());
+	deltatCfl = valueof_deltatCfl.GetDouble();
+	// rhoIniZg
+	assert(d.HasMember("rhoIniZg"));
+	const rapidjson::Value& valueof_rhoIniZg = d["rhoIniZg"];
+	assert(valueof_rhoIniZg.IsDouble());
+	rhoIniZg = valueof_rhoIniZg.GetDouble();
+	// rhoIniZd
+	assert(d.HasMember("rhoIniZd"));
+	const rapidjson::Value& valueof_rhoIniZd = d["rhoIniZd"];
+	assert(valueof_rhoIniZd.IsDouble());
+	rhoIniZd = valueof_rhoIniZd.GetDouble();
+	// pIniZg
+	assert(d.HasMember("pIniZg"));
+	const rapidjson::Value& valueof_pIniZg = d["pIniZg"];
+	assert(valueof_pIniZg.IsDouble());
+	pIniZg = valueof_pIniZg.GetDouble();
+	// pIniZd
+	assert(d.HasMember("pIniZd"));
+	const rapidjson::Value& valueof_pIniZd = d["pIniZd"];
+	assert(valueof_pIniZd.IsDouble());
+	pIniZd = valueof_pIniZd.GetDouble();
 }
 
 /******************** Module definition ********************/
 
-Glace2d::Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string output)
+Glace2d::Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D)
 : options(aOptions)
 , mesh(aCartesianMesh2D)
-, writer("Glace2d", output)
+, writer("Glace2d", options->outputPath)
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
 , nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
@@ -209,8 +219,8 @@ Glace2d::Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string ou
 , nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , t_n(0.0)
 , t_nplus1(0.0)
-, deltat_n(options->option_deltat_ini)
-, deltat_nplus1(options->option_deltat_ini)
+, deltat_n(options->deltatIni)
+, deltat_nplus1(options->deltatIni)
 , lastDump(numeric_limits<int>::min())
 , X_n("X_n", nbNodes)
 , X_nplus1("X_nplus1", nbNodes)
@@ -426,7 +436,7 @@ void Glace2d::computeV(const member_type& teamMember) noexcept
 
 /**
  * Job Initialize called @2.0 in simulate method.
- * In variables: Cjr_ic, X_n0, gamma, option_p_ini_zd, option_p_ini_zg, option_rho_ini_zd, option_rho_ini_zg, option_x_interface
+ * In variables: Cjr_ic, X_n0, gamma, pIniZd, pIniZg, rhoIniZd, rhoIniZg, xInterface
  * Out variables: E_n, m, p, rho, uj_n
  */
 void Glace2d::initialize(const member_type& teamMember) noexcept
@@ -454,15 +464,15 @@ void Glace2d::initialize(const member_type& teamMember) noexcept
 				}
 			}
 			const RealArray1D<2> center(0.25 * reduction0);
-			if (center[0] < options->option_x_interface) 
+			if (center[0] < options->xInterface) 
 			{
-				rho_ic = options->option_rho_ini_zg;
-				p_ic = options->option_p_ini_zg;
+				rho_ic = options->rhoIniZg;
+				p_ic = options->pIniZg;
 			}
 			else
 			{
-				rho_ic = options->option_rho_ini_zd;
-				p_ic = options->option_p_ini_zd;
+				rho_ic = options->rhoIniZd;
+				p_ic = options->pIniZd;
 			}
 			double reduction1(0.0);
 			{
@@ -507,7 +517,7 @@ void Glace2d::computeDensity(const member_type& teamMember) noexcept
 
 /**
  * Job ExecuteTimeLoopN called @3.0 in simulate method.
- * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b, bt, c, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, option_deltat_cfl, p, rho, t_n, uj_n, ur
+ * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b, bt, c, deltatCfl, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, p, rho, t_n, uj_n, ur
  * Out variables: Ajr, Ar, C, E_nplus1, F, Mt, V, X_nplus1, b, bt, c, deltat_nplus1, deltatj, e, l, p, rho, t_nplus1, uj_nplus1, ur
  */
 void Glace2d::executeTimeLoopN() noexcept
@@ -608,7 +618,7 @@ void Glace2d::executeTimeLoopN() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (t_nplus1 < options->option_stoptime && n + 1 < options->option_max_iterations);
+		continueLoop = (t_nplus1 < options->stopTime && n + 1 < options->maxIterations);
 	
 		if (continueLoop)
 		{
@@ -630,9 +640,9 @@ void Glace2d::executeTimeLoopN() noexcept
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << utils::progress_bar(n, options->option_max_iterations, t_n, options->option_stoptime, 25);
+		std::cout << utils::progress_bar(n, options->maxIterations, t_n, options->stopTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(n, options->option_max_iterations, t_n, options->option_stoptime, deltat_n, globalTimer), true)
+			utils::eta(n, options->maxIterations, t_n, options->stopTime, deltat_n, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
@@ -807,7 +817,7 @@ void Glace2d::computeBr(const member_type& teamMember) noexcept
 
 /**
  * Job ComputeDt called @7.0 in executeTimeLoopN method.
- * In variables: deltatj, option_deltat_cfl
+ * In variables: deltatCfl, deltatj
  * Out variables: deltat_nplus1
  */
 void Glace2d::computeDt(const member_type& teamMember) noexcept
@@ -817,7 +827,7 @@ void Glace2d::computeDt(const member_type& teamMember) noexcept
 	{
 		accu = minR0(accu, deltatj(jCells));
 	}, KokkosJoiner<double>(reduction8, numeric_limits<double>::max(), &minR0));
-	deltat_nplus1 = options->option_deltat_cfl * reduction8;
+	deltat_nplus1 = options->deltatCfl * reduction8;
 }
 
 /**
@@ -1074,7 +1084,7 @@ void Glace2d::computeUn(const member_type& teamMember) noexcept
 
 void Glace2d::dumpVariables(int iteration)
 {
-	if (!writer.isDisabled() && n >= lastDump + 1.0)
+	if (!writer.isDisabled() && n >= lastDump + options->outputPeriod)
 	{
 		cpuTimer.stop();
 		ioTimer.start();
@@ -1148,41 +1158,22 @@ void Glace2d::simulate()
 int main(int argc, char* argv[]) 
 {
 	Kokkos::initialize(argc, argv);
-	Glace2d::Options* o = nullptr;
-	string dataFile, output;
+	string dataFile;
 	
 	if (argc == 2)
 	{
 		dataFile = argv[1];
-		o = new Glace2d::Options(dataFile);
-	}
-	else if (argc == 6)
-	{
-		dataFile = argv[1];
-		o = new Glace2d::Options(dataFile);
-		o->X_EDGE_ELEMS = std::atoi(argv[2]);
-		o->Y_EDGE_ELEMS = std::atoi(argv[3]);
-		o->X_EDGE_LENGTH = std::atof(argv[4]);
-		o->Y_EDGE_LENGTH = std::atof(argv[5]);
-	}
-	else if (argc == 7)
-	{
-		dataFile = argv[1];
-		o = new Glace2d::Options(dataFile);
-		o->X_EDGE_ELEMS = std::atoi(argv[2]);
-		o->Y_EDGE_ELEMS = std::atoi(argv[3]);
-		o->X_EDGE_LENGTH = std::atof(argv[4]);
-		o->Y_EDGE_LENGTH = std::atof(argv[5]);
-		output = argv[6];
 	}
 	else
 	{
-		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1, 5 or 6 args: dataFile [X Y Xlength Ylength [output]]." << std::endl;
-		std::cerr << "(Glace2dDefaultOptions.json, X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
+		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1 arg: dataFile." << std::endl;
+		std::cerr << "(Glace2dDefaultOptions.json)" << std::endl;
 		return -1;
 	}
+	
+	auto o = new Glace2d::Options(dataFile);
 	auto nm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
-	auto c = new Glace2d(o, nm, output);
+	auto c = new Glace2d(o, nm);
 	c->simulate();
 	delete c;
 	delete nm;

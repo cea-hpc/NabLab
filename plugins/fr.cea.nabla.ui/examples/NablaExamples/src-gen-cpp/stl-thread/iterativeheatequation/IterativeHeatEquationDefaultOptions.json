@@ -1,15 +1,17 @@
 {
 	"_comment": "Generated file - Do not overwrite",
-	"X_LENGTH":2.0,
-	"Y_LENGTH":2.0,
+	"outputPath":"output", 
+	"outputPeriod":1,
 	"u0":1.0,
 	"vectOne":[1.0,1.0],
+	"X_LENGTH":2.0,
+	"Y_LENGTH":2.0,
 	"X_EDGE_ELEMS":40,
 	"Y_EDGE_ELEMS":40,
 	"X_EDGE_LENGTH":0.05,
 	"Y_EDGE_LENGTH":0.05,
-	"option_stoptime":0.1,
-	"option_max_iterations":500000000,
-	"option_max_iterations_k":1000,
+	"stopTime":0.1,
+	"maxIterations":500000000,
+	"maxIterationsK":1000,
 	"epsilon":1.0E-8
 }

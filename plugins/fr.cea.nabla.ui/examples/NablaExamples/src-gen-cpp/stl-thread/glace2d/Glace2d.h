@@ -46,27 +46,29 @@ class Glace2d
 public:
 	struct Options
 	{
+		std::string outputPath;
+		int outputPeriod;
+		double stopTime;
+		int maxIterations;
 		double X_EDGE_LENGTH;
 		double Y_EDGE_LENGTH;
 		int X_EDGE_ELEMS;
 		int Y_EDGE_ELEMS;
-		double option_stoptime;
-		int option_max_iterations;
 		double gamma;
-		double option_x_interface;
-		double option_deltat_ini;
-		double option_deltat_cfl;
-		double option_rho_ini_zg;
-		double option_rho_ini_zd;
-		double option_p_ini_zg;
-		double option_p_ini_zd;
+		double xInterface;
+		double deltatIni;
+		double deltatCfl;
+		double rhoIniZg;
+		double rhoIniZd;
+		double pIniZg;
+		double pIniZd;
 
 		Options(const std::string& fileName);
 	};
 
 	Options* options;
 
-	Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string output);
+	Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D);
 
 private:
 	CartesianMesh2D* mesh;

@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.transformers.TagPersistentVariables
 import java.io.File
 import java.net.URI
 import org.eclipse.core.runtime.FileLocator
@@ -89,6 +90,7 @@ class Ir2Cpp extends CodeGenerator
 	public:
 		struct Options
 		{
+			«IF postProcessingInfo !== null»std::string «TagPersistentVariables.OutputPathNameAndValue.key»;«ENDIF»
 			«FOR v : definitions.filter[option]»
 			«v.cppType» «v.name»;
 			«ENDFOR»
@@ -98,7 +100,7 @@ class Ir2Cpp extends CodeGenerator
 
 		Options* options;
 
-		«name»(Options* aOptions, «IF withMesh»CartesianMesh2D* aCartesianMesh2D,«ENDIF» string output);
+		«name»(Options* aOptions«IF withMesh», CartesianMesh2D* aCartesianMesh2D«ENDIF»);
 
 	private:
 		«backend.attributesContentProvider.getContentFor(it)»
@@ -138,6 +140,14 @@ class Ir2Cpp extends CodeGenerator
 		rapidjson::Document d;
 		d.ParseStream(isw);
 		assert(d.IsObject());
+		«IF postProcessingInfo !== null»
+		// outputPath
+		«val opName = TagPersistentVariables.OutputPathNameAndValue.key»
+		assert(d.HasMember("«opName»"));
+		const rapidjson::Value& valueof_«opName» = d["«opName»"];
+		assert(valueof_«opName».IsString());
+		«opName» = valueof_«opName».GetString();
+		«ENDIF»
 		«FOR v : definitions.filter[option]»
 		«v.jsonContent»
 		«ENDFOR»
@@ -145,11 +155,11 @@ class Ir2Cpp extends CodeGenerator
 
 	/******************** Module definition ********************/
 
-	«name»::«name»(Options* aOptions, «IF withMesh»CartesianMesh2D* aCartesianMesh2D,«ENDIF» string output)
+	«name»::«name»(Options* aOptions«IF withMesh», CartesianMesh2D* aCartesianMesh2D«ENDIF»)
 	: options(aOptions)
 	«IF withMesh»
 	, mesh(aCartesianMesh2D)
-	, writer("«name»", output)
+	, writer("«name»", options->«TagPersistentVariables.OutputPathNameAndValue.key»)
 	«FOR c : usedConnectivities»
 	, «c.nbElemsVar»(«c.connectivityAccessor»)
 	«ENDFOR»
@@ -186,7 +196,7 @@ class Ir2Cpp extends CodeGenerator
 
 	void «name»::dumpVariables(int iteration)
 	{
-		if (!writer.isDisabled() && «postProcessingInfo.periodVariable.name» >= «postProcessingInfo.lastDumpVariable.name» + «postProcessingInfo.periodValue»)
+		if (!writer.isDisabled() && «postProcessingInfo.periodReference.getCodeName('->')» >= «postProcessingInfo.lastDumpVariable.getCodeName('->')» + «postProcessingInfo.periodValue.getCodeName('->')»)
 		{
 			cpuTimer.stop();
 			ioTimer.start();
@@ -197,7 +207,7 @@ class Ir2Cpp extends CodeGenerator
 			«ENDFOR»
 			auto quads = mesh->getGeometry()->getQuads();
 			writer.writeFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);
-			«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodVariable.name»;
+			«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodReference.name»;
 			ioTimer.stop();
 			cpuTimer.start();
 		}

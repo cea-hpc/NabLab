@@ -25,7 +25,7 @@ namespace nablalib
 class FileWriter
 {
 protected:
-	FileWriter(const string& moduleName, const string& baseDirName);
+	FileWriter(const string& moduleName, const string& outputDirName);
 	virtual ~FileWriter();
 
 public:
@@ -39,14 +39,12 @@ public:
 			const map<string, double*> cellVariables,
 			const map<string, double*> nodeVariables)=0;
 
-	bool isDisabled() { return m_disabled; }
+	bool isDisabled() { return m_directory_name.empty(); }
 	const std::string& outputDirectory() { return m_directory_name; }
 
 protected:
-	static const string OutputDir;
 	string m_module_name;
 	string m_directory_name;
-	bool m_disabled;
 };
 
 }

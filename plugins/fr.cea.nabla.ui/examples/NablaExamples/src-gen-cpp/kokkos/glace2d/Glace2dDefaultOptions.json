@@ -1,17 +1,19 @@
 {
 	"_comment": "Generated file - Do not overwrite",
+	"outputPath":"output", 
+	"outputPeriod":1,
+	"stopTime":0.2,
+	"maxIterations":20000,
 	"X_EDGE_LENGTH":0.01,
 	"Y_EDGE_LENGTH":0.01,
 	"X_EDGE_ELEMS":100,
 	"Y_EDGE_ELEMS":10,
-	"option_stoptime":0.2,
-	"option_max_iterations":20000,
 	"gamma":1.4,
-	"option_x_interface":0.5,
-	"option_deltat_ini":1.0E-5,
-	"option_deltat_cfl":0.4,
-	"option_rho_ini_zg":1.0,
-	"option_rho_ini_zd":0.125,
-	"option_p_ini_zg":1.0,
-	"option_p_ini_zd":0.1
+	"xInterface":0.5,
+	"deltatIni":1.0E-5,
+	"deltatCfl":0.4,
+	"rhoIniZg":1.0,
+	"rhoIniZd":0.125,
+	"pIniZg":1.0,
+	"pIniZd":0.1
 }

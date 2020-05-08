@@ -37,23 +37,25 @@ class ExplicitHeatEquation
 public:
 	struct Options
 	{
-		double X_LENGTH;
-		double Y_LENGTH;
+		std::string outputPath;
+		int outputPeriod;
 		double u0;
 		RealArray1D<2> vectOne;
+		double X_LENGTH;
+		double Y_LENGTH;
 		int X_EDGE_ELEMS;
 		int Y_EDGE_ELEMS;
 		double X_EDGE_LENGTH;
 		double Y_EDGE_LENGTH;
-		double option_stoptime;
-		int option_max_iterations;
+		double stopTime;
+		int maxIterations;
 
 		Options(const std::string& fileName);
 	};
 
 	Options* options;
 
-	ExplicitHeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string output);
+	ExplicitHeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D);
 
 private:
 	CartesianMesh2D* mesh;

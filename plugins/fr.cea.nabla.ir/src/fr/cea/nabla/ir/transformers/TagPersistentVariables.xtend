@@ -21,16 +21,18 @@ import static fr.cea.nabla.ir.IrModuleExtensions.getCurrentIrVariable
 
 class TagPersistentVariables implements IrTransformationStep
 {
+	public static val OutputPathNameAndValue = new Pair<String, String>("outputPath", "output")
+
 	val HashMap<String, String> dumpedVariables // variable name, persistence name (name displayed in visualisation)
-	val double periodValue
-	val String periodVariableName
+	val String periodValueVarName
+	val String periodReferenceVarName
 	val ArrayList<String> traces
 
-	new(HashMap<String, String> dumpedVariables, double periodValue, String periodVariableName)
+	new(HashMap<String, String> dumpedVariables, String periodValueVarName, String periodReferenceVarName)
 	{
 		this.dumpedVariables = dumpedVariables
-		this.periodValue = periodValue
-		this.periodVariableName = periodVariableName
+		this.periodValueVarName = periodValueVarName
+		this.periodReferenceVarName = periodReferenceVarName
 		this.traces = new ArrayList<String>
 	}
 
@@ -41,13 +43,15 @@ class TagPersistentVariables implements IrTransformationStep
 
 	override transform(IrModule m)
 	{
-		// Create PostProcessingInfo instance
 		val ppInfo = IrFactory.eINSTANCE.createPostProcessingInfo
-		ppInfo.periodValue = periodValue
 
-		val periodVariable = getCurrentIrVariable(m, periodVariableName)
-		if (periodVariable === null) return false
-		ppInfo.periodVariable = periodVariable as SimpleVariable
+		val periodValueVar = getCurrentIrVariable(m, periodValueVarName)
+		if (periodValueVar === null) return false
+		ppInfo.periodValue = periodValueVar as SimpleVariable
+
+		val periodReferenceVar = getCurrentIrVariable(m, periodReferenceVarName)
+		if (periodReferenceVar === null) return false
+		ppInfo.periodReference = periodReferenceVar as SimpleVariable
 
 		for (key : dumpedVariables.keySet)
 		{
@@ -61,7 +65,7 @@ class TagPersistentVariables implements IrTransformationStep
 		m.postProcessingInfo = ppInfo
 
 		// Create a variable to store the last write time
-		val periodVariableType = (periodVariable as SimpleVariable).type
+		val periodVariableType = ppInfo.periodReference.type
 		val lastDumpVariable = IrFactory.eINSTANCE.createSimpleVariable =>
 		[
 			name = "lastDump"

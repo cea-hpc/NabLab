@@ -17,20 +17,22 @@ public final class Glace2d
 {
 	public final static class Options
 	{
+		public String outputPath;
+		public int outputPeriod;
+		public double stopTime;
+		public int maxIterations;
 		public double X_EDGE_LENGTH;
 		public double Y_EDGE_LENGTH;
 		public int X_EDGE_ELEMS;
 		public int Y_EDGE_ELEMS;
-		public double option_stoptime;
-		public int option_max_iterations;
 		public double gamma;
-		public double option_x_interface;
-		public double option_deltat_ini;
-		public double option_deltat_cfl;
-		public double option_rho_ini_zg;
-		public double option_rho_ini_zd;
-		public double option_p_ini_zg;
-		public double option_p_ini_zd;
+		public double xInterface;
+		public double deltatIni;
+		public double deltatCfl;
+		public double rhoIniZg;
+		public double rhoIniZd;
+		public double pIniZg;
+		public double pIniZd;
 
 		public static Options createOptions(String jsonFileName) throws FileNotFoundException
 		{
@@ -83,7 +85,7 @@ public final class Glace2d
 	{
 		options = aOptions;
 		mesh = aCartesianMesh2D;
-		writer = new PvdFileWriter2D("Glace2d");
+		writer = new PvdFileWriter2D("Glace2d", options.outputPath);
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
@@ -95,8 +97,8 @@ public final class Glace2d
 		// Initialize variables
 		t_n = 0.0;
 		t_nplus1 = 0.0;
-		deltat_n = options.option_deltat_ini;
-		deltat_nplus1 = options.option_deltat_ini;
+		deltat_n = options.deltatIni;
+		deltat_nplus1 = options.deltatIni;
 		lastDump = Integer.MIN_VALUE;
 		X_n = new double[nbNodes][2];
 		X_nplus1 = new double[nbNodes][2];
@@ -284,7 +286,7 @@ public final class Glace2d
 
 	/**
 	 * Job Initialize called @2.0 in simulate method.
-	 * In variables: Cjr_ic, X_n0, gamma, option_p_ini_zd, option_p_ini_zg, option_rho_ini_zd, option_rho_ini_zg, option_x_interface
+	 * In variables: Cjr_ic, X_n0, gamma, pIniZd, pIniZg, rhoIniZd, rhoIniZg, xInterface
 	 * Out variables: E_n, m, p, rho, uj_n
 	 */
 	private void initialize()
@@ -306,15 +308,15 @@ public final class Glace2d
 				}
 			}
 			final double[] center = ArrayOperations.multiply(0.25, reduction0);
-			if (center[0] < options.option_x_interface)
+			if (center[0] < options.xInterface)
 			{
-				rho_ic = options.option_rho_ini_zg;
-				p_ic = options.option_p_ini_zg;
+				rho_ic = options.rhoIniZg;
+				p_ic = options.pIniZg;
 			}
 			else
 			{
-				rho_ic = options.option_rho_ini_zd;
-				p_ic = options.option_p_ini_zd;
+				rho_ic = options.rhoIniZd;
+				p_ic = options.pIniZd;
 			}
 			double reduction1 = 0.0;
 			{
@@ -351,7 +353,7 @@ public final class Glace2d
 
 	/**
 	 * Job ExecuteTimeLoopN called @3.0 in simulate method.
-	 * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b, bt, c, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, option_deltat_cfl, p, rho, t_n, uj_n, ur
+	 * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b, bt, c, deltatCfl, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, p, rho, t_n, uj_n, ur
 	 * Out variables: Ajr, Ar, C, E_nplus1, F, Mt, V, X_nplus1, b, bt, c, deltat_nplus1, deltatj, e, l, p, rho, t_nplus1, uj_nplus1, ur
 	 */
 	private void executeTimeLoopN()
@@ -386,7 +388,7 @@ public final class Glace2d
 			computeUn(); // @11.0
 		
 			// Evaluate loop condition with variables at time n
-			continueLoop = (t_nplus1 < options.option_stoptime && n + 1 < options.option_max_iterations);
+			continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
 		
 			if (continueLoop)
 			{
@@ -534,7 +536,7 @@ public final class Glace2d
 
 	/**
 	 * Job ComputeDt called @7.0 in executeTimeLoopN method.
-	 * In variables: deltatj, option_deltat_cfl
+	 * In variables: deltatCfl, deltatj
 	 * Out variables: deltat_nplus1
 	 */
 	private void computeDt()
@@ -549,7 +551,7 @@ public final class Glace2d
 			},
 			(r1, r2) -> minR0(r1, r2)
 		);
-		deltat_nplus1 = options.option_deltat_cfl * reduction8;
+		deltat_nplus1 = options.deltatCfl * reduction8;
 	}
 
 	/**
@@ -847,7 +849,7 @@ public final class Glace2d
 
 	private void dumpVariables(int iteration)
 	{
-		if (n >= lastDump + 1.0)
+		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();

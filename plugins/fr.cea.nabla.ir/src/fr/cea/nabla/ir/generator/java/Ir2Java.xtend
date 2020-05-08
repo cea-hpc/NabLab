@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.transformers.TagPersistentVariables
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -63,6 +64,7 @@ class Ir2Java extends CodeGenerator
 		{
 			public final static class Options
 			{
+				«IF postProcessingInfo !== null»public String «TagPersistentVariables.OutputPathNameAndValue.key»;«ENDIF»
 				«FOR v : definitions.filter[option]»
 				public «v.javaType» «v.name»;
 				«ENDFOR»
@@ -97,7 +99,7 @@ class Ir2Java extends CodeGenerator
 				options = aOptions;
 				«IF withMesh»
 				mesh = aCartesianMesh2D;
-				writer = new PvdFileWriter2D("«name»");
+				writer = new PvdFileWriter2D("«name»", options.«TagPersistentVariables.OutputPathNameAndValue.key»);
 				«FOR c : usedConnectivities»
 				«c.nbElemsVar» = «c.connectivityAccessor»;
 				«ENDFOR»
@@ -165,7 +167,7 @@ class Ir2Java extends CodeGenerator
 
 			private void dumpVariables(int iteration)
 			{
-				if («postProcessingInfo.periodVariable.name» >= «postProcessingInfo.lastDumpVariable.name» + «postProcessingInfo.periodValue»)
+				if (!writer.isDisabled() && «postProcessingInfo.periodReference.getCodeName('.')» >= «postProcessingInfo.lastDumpVariable.getCodeName('.')» + «postProcessingInfo.periodValue.getCodeName('.')»)
 				{
 					HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 					HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
@@ -173,7 +175,7 @@ class Ir2Java extends CodeGenerator
 					«v.type.connectivities.head.returnType.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 					«ENDFOR»
 					writer.writeFile(iteration, «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
-					«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodVariable.name»;
+					«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodReference.name»;
 				}
 			}
 			«ENDIF»

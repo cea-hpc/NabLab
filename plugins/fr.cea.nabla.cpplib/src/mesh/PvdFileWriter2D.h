@@ -26,7 +26,7 @@ namespace nablalib
 class PvdFileWriter2D : public FileWriter
 {
 public:
-	PvdFileWriter2D(const string& moduleName, const string& baseDirName = string());
+	PvdFileWriter2D(const string& moduleName, const string& outputDirName);
 	~PvdFileWriter2D();
 
 	void writeFile(

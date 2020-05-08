@@ -59,8 +59,8 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//PostProcessingInfo">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessingInfo/postProcessedVariables"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//PostProcessingInfo/periodValue"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessingInfo/periodVariable"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessingInfo/periodValue"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessingInfo/periodReference"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessingInfo/lastDumpVariable"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//TimeLoop">

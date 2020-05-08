@@ -433,7 +433,7 @@ public interface IrPackage extends EPackage {
 	int POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Period Value</b></em>' attribute.
+	 * The feature id for the '<em><b>Period Value</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -442,13 +442,13 @@ public interface IrPackage extends EPackage {
 	int POST_PROCESSING_INFO__PERIOD_VALUE = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Period Variable</b></em>' reference.
+	 * The feature id for the '<em><b>Period Reference</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int POST_PROCESSING_INFO__PERIOD_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 2;
+	int POST_PROCESSING_INFO__PERIOD_REFERENCE = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Last Dump Variable</b></em>' reference.
@@ -4528,26 +4528,26 @@ public interface IrPackage extends EPackage {
 	EReference getPostProcessingInfo_PostProcessedVariables();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodValue <em>Period Value</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodValue <em>Period Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Period Value</em>'.
+	 * @return the meta object for the reference '<em>Period Value</em>'.
 	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodValue()
 	 * @see #getPostProcessingInfo()
 	 * @generated
 	 */
-	EAttribute getPostProcessingInfo_PeriodValue();
+	EReference getPostProcessingInfo_PeriodValue();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodVariable <em>Period Variable</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodReference <em>Period Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Period Variable</em>'.
-	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodVariable()
+	 * @return the meta object for the reference '<em>Period Reference</em>'.
+	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodReference()
 	 * @see #getPostProcessingInfo()
 	 * @generated
 	 */
-	EReference getPostProcessingInfo_PeriodVariable();
+	EReference getPostProcessingInfo_PeriodReference();
 
 	/**
 	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getLastDumpVariable <em>Last Dump Variable</em>}'.
@@ -6602,20 +6602,20 @@ public interface IrPackage extends EPackage {
 		EReference POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES = eINSTANCE.getPostProcessingInfo_PostProcessedVariables();
 
 		/**
-		 * The meta object literal for the '<em><b>Period Value</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Period Value</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute POST_PROCESSING_INFO__PERIOD_VALUE = eINSTANCE.getPostProcessingInfo_PeriodValue();
+		EReference POST_PROCESSING_INFO__PERIOD_VALUE = eINSTANCE.getPostProcessingInfo_PeriodValue();
 
 		/**
-		 * The meta object literal for the '<em><b>Period Variable</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Period Reference</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference POST_PROCESSING_INFO__PERIOD_VARIABLE = eINSTANCE.getPostProcessingInfo_PeriodVariable();
+		EReference POST_PROCESSING_INFO__PERIOD_REFERENCE = eINSTANCE.getPostProcessingInfo_PeriodReference();
 
 		/**
 		 * The meta object literal for the '<em><b>Last Dump Variable</b></em>' reference feature.

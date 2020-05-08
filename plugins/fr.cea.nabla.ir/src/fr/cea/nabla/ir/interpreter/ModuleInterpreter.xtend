@@ -36,6 +36,11 @@ class ModuleInterpreter
 
 	new(IrModule module, StreamHandler handler)
 	{
+		this(module, handler, "")
+	}
+
+	new(IrModule module, StreamHandler handler, String outputDirName)
+	{
 		// create a Logger and a Handler
 		logger = Logger.getLogger(ModuleInterpreter.name)
 		logger.setLevel(handler.level)  //Create only logs if needed by handler
@@ -45,7 +50,7 @@ class ModuleInterpreter
 
 		this.module = module
 		this.context = new Context(module, logger)
-		this.writer = new PvdFileWriter2D(module.name)
+		this.writer = new PvdFileWriter2D(module.name, outputDirName)
 		this.jobInterpreter = new JobInterpreter(writer)
 	}
 

@@ -50,17 +50,19 @@ class IterativeHeatEquation
 public:
 	struct Options
 	{
-		double X_LENGTH;
-		double Y_LENGTH;
+		std::string outputPath;
+		int outputPeriod;
 		double u0;
 		RealArray1D<2> vectOne;
+		double X_LENGTH;
+		double Y_LENGTH;
 		int X_EDGE_ELEMS;
 		int Y_EDGE_ELEMS;
 		double X_EDGE_LENGTH;
 		double Y_EDGE_LENGTH;
-		double option_stoptime;
-		int option_max_iterations;
-		int option_max_iterations_k;
+		double stopTime;
+		int maxIterations;
+		int maxIterationsK;
 		double epsilon;
 
 		Options(const std::string& fileName);
@@ -68,7 +70,7 @@ public:
 
 	Options* options;
 
-	IterativeHeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string output);
+	IterativeHeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D);
 
 private:
 	CartesianMesh2D* mesh;

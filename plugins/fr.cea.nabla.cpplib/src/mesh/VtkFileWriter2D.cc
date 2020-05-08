@@ -33,8 +33,7 @@ VtkFileWriter2D::writeFile(
 					const map<string, double*> cellVariables,
 					const map<string, double*> nodeVariables)
 {
-  if (m_disabled)
-    return;
+	if (isDisabled()) return;
 
 	ofstream writer;
 	writer.open(m_directory_name + "/" + m_module_name + "." + to_string(iteration) + ".vtk");

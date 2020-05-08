@@ -47,6 +47,26 @@ HeatEquation::Options::Options(const std::string& fileName)
 	rapidjson::Document d;
 	d.ParseStream(isw);
 	assert(d.IsObject());
+	// outputPath
+	assert(d.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = d["outputPath"];
+	assert(valueof_outputPath.IsString());
+	outputPath = valueof_outputPath.GetString();
+	// outputPeriod
+	assert(d.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = d["outputPeriod"];
+	assert(valueof_outputPeriod.IsInt());
+	outputPeriod = valueof_outputPeriod.GetInt();
+	// stopTime
+	assert(d.HasMember("stopTime"));
+	const rapidjson::Value& valueof_stopTime = d["stopTime"];
+	assert(valueof_stopTime.IsDouble());
+	stopTime = valueof_stopTime.GetDouble();
+	// maxIterations
+	assert(d.HasMember("maxIterations"));
+	const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
+	assert(valueof_maxIterations.IsInt());
+	maxIterations = valueof_maxIterations.GetInt();
 	// X_EDGE_LENGTH
 	assert(d.HasMember("X_EDGE_LENGTH"));
 	const rapidjson::Value& valueof_X_EDGE_LENGTH = d["X_EDGE_LENGTH"];
@@ -67,16 +87,6 @@ HeatEquation::Options::Options(const std::string& fileName)
 	const rapidjson::Value& valueof_Y_EDGE_ELEMS = d["Y_EDGE_ELEMS"];
 	assert(valueof_Y_EDGE_ELEMS.IsInt());
 	Y_EDGE_ELEMS = valueof_Y_EDGE_ELEMS.GetInt();
-	// option_stoptime
-	assert(d.HasMember("option_stoptime"));
-	const rapidjson::Value& valueof_option_stoptime = d["option_stoptime"];
-	assert(valueof_option_stoptime.IsDouble());
-	option_stoptime = valueof_option_stoptime.GetDouble();
-	// option_max_iterations
-	assert(d.HasMember("option_max_iterations"));
-	const rapidjson::Value& valueof_option_max_iterations = d["option_max_iterations"];
-	assert(valueof_option_max_iterations.IsInt());
-	option_max_iterations = valueof_option_max_iterations.GetInt();
 	// PI
 	assert(d.HasMember("PI"));
 	const rapidjson::Value& valueof_PI = d["PI"];
@@ -91,10 +101,10 @@ HeatEquation::Options::Options(const std::string& fileName)
 
 /******************** Module definition ********************/
 
-HeatEquation::HeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string output)
+HeatEquation::HeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D)
 : options(aOptions)
 , mesh(aCartesianMesh2D)
-, writer("HeatEquation", output)
+, writer("HeatEquation", options->outputPath)
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
 , nbFaces(mesh->getNbFaces())
@@ -303,7 +313,7 @@ void HeatEquation::executeTimeLoopN() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (t_nplus1 < options->option_stoptime && n + 1 < options->option_max_iterations);
+		continueLoop = (t_nplus1 < options->stopTime && n + 1 < options->maxIterations);
 	
 		if (continueLoop)
 		{
@@ -322,9 +332,9 @@ void HeatEquation::executeTimeLoopN() noexcept
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << utils::progress_bar(n, options->option_max_iterations, t_n, options->option_stoptime, 25);
+		std::cout << utils::progress_bar(n, options->maxIterations, t_n, options->stopTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(n, options->option_max_iterations, t_n, options->option_stoptime, deltat, globalTimer), true)
+			utils::eta(n, options->maxIterations, t_n, options->stopTime, deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
@@ -335,7 +345,7 @@ void HeatEquation::executeTimeLoopN() noexcept
 
 void HeatEquation::dumpVariables(int iteration)
 {
-	if (!writer.isDisabled() && n >= lastDump + 1.0)
+	if (!writer.isDisabled() && n >= lastDump + options->outputPeriod)
 	{
 		cpuTimer.stop();
 		ioTimer.start();
@@ -379,41 +389,22 @@ void HeatEquation::simulate()
 
 int main(int argc, char* argv[]) 
 {
-	HeatEquation::Options* o = nullptr;
-	string dataFile, output;
+	string dataFile;
 	
 	if (argc == 2)
 	{
 		dataFile = argv[1];
-		o = new HeatEquation::Options(dataFile);
-	}
-	else if (argc == 6)
-	{
-		dataFile = argv[1];
-		o = new HeatEquation::Options(dataFile);
-		o->X_EDGE_ELEMS = std::atoi(argv[2]);
-		o->Y_EDGE_ELEMS = std::atoi(argv[3]);
-		o->X_EDGE_LENGTH = std::atof(argv[4]);
-		o->Y_EDGE_LENGTH = std::atof(argv[5]);
-	}
-	else if (argc == 7)
-	{
-		dataFile = argv[1];
-		o = new HeatEquation::Options(dataFile);
-		o->X_EDGE_ELEMS = std::atoi(argv[2]);
-		o->Y_EDGE_ELEMS = std::atoi(argv[3]);
-		o->X_EDGE_LENGTH = std::atof(argv[4]);
-		o->Y_EDGE_LENGTH = std::atof(argv[5]);
-		output = argv[6];
 	}
 	else
 	{
-		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1, 5 or 6 args: dataFile [X Y Xlength Ylength [output]]." << std::endl;
-		std::cerr << "(HeatEquationDefaultOptions.json, X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
+		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1 arg: dataFile." << std::endl;
+		std::cerr << "(HeatEquationDefaultOptions.json)" << std::endl;
 		return -1;
 	}
+	
+	auto o = new HeatEquation::Options(dataFile);
 	auto nm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
-	auto c = new HeatEquation(o, nm, output);
+	auto c = new HeatEquation(o, nm);
 	c->simulate();
 	delete c;
 	delete nm;

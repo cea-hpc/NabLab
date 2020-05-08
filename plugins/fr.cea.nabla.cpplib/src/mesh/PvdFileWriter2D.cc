@@ -33,8 +33,7 @@ PvdFileWriter2D::writeFile(
 					const map<string, double*> cellVariables,
 					const map<string, double*> nodeVariables)
 {
-  if (m_disabled)
-    return;
+	if (isDisabled()) return;
 
 	const string fileName = m_module_name + "." + to_string(iteration) + ".vtp";
 	ofstream vtpWriter;

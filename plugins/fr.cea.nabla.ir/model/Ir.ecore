@@ -59,9 +59,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="PostProcessingInfo" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="postProcessedVariables"
         upperBound="-1" eType="#//Variable"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="periodValue" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" defaultValueLiteral="-1.0"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="periodVariable" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="periodValue" lowerBound="1"
+        eType="#//SimpleVariable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="periodReference" lowerBound="1"
         eType="#//SimpleVariable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="lastDumpVariable" lowerBound="1"
         eType="#//SimpleVariable"/>

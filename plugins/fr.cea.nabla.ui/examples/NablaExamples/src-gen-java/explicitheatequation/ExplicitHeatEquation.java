@@ -17,16 +17,18 @@ public final class ExplicitHeatEquation
 {
 	public final static class Options
 	{
-		public double X_LENGTH;
-		public double Y_LENGTH;
+		public String outputPath;
+		public int outputPeriod;
 		public double u0;
 		public double[] vectOne;
+		public double X_LENGTH;
+		public double Y_LENGTH;
 		public int X_EDGE_ELEMS;
 		public int Y_EDGE_ELEMS;
 		public double X_EDGE_LENGTH;
 		public double Y_EDGE_LENGTH;
-		public double option_stoptime;
-		public int option_max_iterations;
+		public double stopTime;
+		public int maxIterations;
 
 		public static Options createOptions(String jsonFileName) throws FileNotFoundException
 		{
@@ -65,7 +67,7 @@ public final class ExplicitHeatEquation
 	{
 		options = aOptions;
 		mesh = aCartesianMesh2D;
-		writer = new PvdFileWriter2D("ExplicitHeatEquation");
+		writer = new PvdFileWriter2D("ExplicitHeatEquation", options.outputPath);
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
@@ -393,7 +395,7 @@ public final class ExplicitHeatEquation
 			updateU(); // @1.0
 		
 			// Evaluate loop condition with variables at time n
-			continueLoop = (t_nplus1 < options.option_stoptime && n + 1 < options.option_max_iterations);
+			continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
 		
 			if (continueLoop)
 			{
@@ -453,7 +455,7 @@ public final class ExplicitHeatEquation
 
 	private void dumpVariables(int iteration)
 	{
-		if (n >= lastDump + 1.0)
+		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
 		{
 			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
 			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();

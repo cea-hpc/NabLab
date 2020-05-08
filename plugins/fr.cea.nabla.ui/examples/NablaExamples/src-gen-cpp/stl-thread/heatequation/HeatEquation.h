@@ -35,12 +35,14 @@ class HeatEquation
 public:
 	struct Options
 	{
+		std::string outputPath;
+		int outputPeriod;
+		double stopTime;
+		int maxIterations;
 		double X_EDGE_LENGTH;
 		double Y_EDGE_LENGTH;
 		int X_EDGE_ELEMS;
 		int Y_EDGE_ELEMS;
-		double option_stoptime;
-		int option_max_iterations;
 		double PI;
 		double alpha;
 
@@ -49,7 +51,7 @@ public:
 
 	Options* options;
 
-	HeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string output);
+	HeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D);
 
 private:
 	CartesianMesh2D* mesh;

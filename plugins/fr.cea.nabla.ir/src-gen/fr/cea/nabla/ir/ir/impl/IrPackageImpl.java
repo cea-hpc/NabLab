@@ -882,8 +882,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EAttribute getPostProcessingInfo_PeriodValue() {
-		return (EAttribute)postProcessingInfoEClass.getEStructuralFeatures().get(1);
+	public EReference getPostProcessingInfo_PeriodValue() {
+		return (EReference)postProcessingInfoEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -892,7 +892,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getPostProcessingInfo_PeriodVariable() {
+	public EReference getPostProcessingInfo_PeriodReference() {
 		return (EReference)postProcessingInfoEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -2656,8 +2656,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		postProcessingInfoEClass = createEClass(POST_PROCESSING_INFO);
 		createEReference(postProcessingInfoEClass, POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES);
-		createEAttribute(postProcessingInfoEClass, POST_PROCESSING_INFO__PERIOD_VALUE);
-		createEReference(postProcessingInfoEClass, POST_PROCESSING_INFO__PERIOD_VARIABLE);
+		createEReference(postProcessingInfoEClass, POST_PROCESSING_INFO__PERIOD_VALUE);
+		createEReference(postProcessingInfoEClass, POST_PROCESSING_INFO__PERIOD_REFERENCE);
 		createEReference(postProcessingInfoEClass, POST_PROCESSING_INFO__LAST_DUMP_VARIABLE);
 
 		timeLoopEClass = createEClass(TIME_LOOP);
@@ -3018,8 +3018,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(postProcessingInfoEClass, PostProcessingInfo.class, "PostProcessingInfo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getPostProcessingInfo_PostProcessedVariables(), this.getVariable(), null, "postProcessedVariables", null, 0, -1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getPostProcessingInfo_PeriodValue(), ecorePackage.getEDouble(), "periodValue", "-1.0", 1, 1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getPostProcessingInfo_PeriodVariable(), this.getSimpleVariable(), null, "periodVariable", null, 1, 1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getPostProcessingInfo_PeriodValue(), this.getSimpleVariable(), null, "periodValue", null, 1, 1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getPostProcessingInfo_PeriodReference(), this.getSimpleVariable(), null, "periodReference", null, 1, 1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPostProcessingInfo_LastDumpVariable(), this.getSimpleVariable(), null, "lastDumpVariable", null, 1, 1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(timeLoopEClass, TimeLoop.class, "TimeLoop", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

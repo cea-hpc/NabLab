@@ -21,7 +21,7 @@ workflow Glace2dGenerationChain transforms Glace2d
 	TagPersistentVariables tagPersistentVariables follows nabla2ir 
 	{
 		dumpedVariables = ρ as "Density";
-		period = 1.0 for n;
+		period = outputPeriod for n;
 	}
 	
 	ReplaceUtf replaceUtf follows tagPersistentVariables
@@ -51,8 +51,8 @@ workflow Glace2dGenerationChain transforms Glace2d
 	{
 		language = Cpp
 		{
-			maxIterationVariable = option_max_iterations;
-			stopTimeVariable = option_stoptime;
+			maxIterationVariable = maxIterations;
+			stopTimeVariable = stopTime;
 			programmingModel = StlThread;
 			compiler = GNU;
 //			compiler = LLVM;
@@ -65,8 +65,8 @@ workflow Glace2dGenerationChain transforms Glace2d
 	{
 		language = Cpp
 		{
-			maxIterationVariable = option_max_iterations;
-			stopTimeVariable = option_stoptime;
+			maxIterationVariable = maxIterations;
+			stopTimeVariable = stopTime;
 			programmingModel = Kokkos;
 			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
 			compiler = GNU;
@@ -78,8 +78,8 @@ workflow Glace2dGenerationChain transforms Glace2d
 	{
 		language = Cpp
 		{
-			maxIterationVariable = option_max_iterations;
-			stopTimeVariable = option_stoptime;
+			maxIterationVariable = maxIterations;
+			stopTimeVariable = stopTime;
 			programmingModel = KokkosTeamThread;
 			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
 			compiler = GNU;

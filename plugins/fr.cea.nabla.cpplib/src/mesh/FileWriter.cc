@@ -15,23 +15,12 @@ using namespace std;
 
 namespace nablalib
 {
-const string FileWriter::OutputDir = "output";
-
-FileWriter::FileWriter(const string& moduleName, const string& baseDirName)
-: m_module_name(moduleName), m_disabled(false)
+FileWriter::FileWriter(const string& moduleName, const string& outputDirName)
+: m_module_name(moduleName)
 {
-  if (baseDirName.empty())
-    m_directory_name = OutputDir;
-  else if (baseDirName == "none" || baseDirName == "NONE")
-    m_disabled = true;
-  else
-    m_directory_name = baseDirName + "/" + OutputDir;
-
-  if (!m_disabled) {
-    if (experimental::filesystem::exists(m_directory_name))
-    	experimental::filesystem::remove_all(m_directory_name);
-    experimental::filesystem::create_directory(m_directory_name);
-  }
+	m_directory_name = outputDirName;
+	if (!isDisabled() && !experimental::filesystem::exists(m_directory_name))
+		throw std::invalid_argument("Output directory does not exist: " + m_directory_name);
 }
 
 FileWriter::~FileWriter() {}

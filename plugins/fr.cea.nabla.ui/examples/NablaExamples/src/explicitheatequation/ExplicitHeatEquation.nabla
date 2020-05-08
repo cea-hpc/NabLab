@@ -22,20 +22,21 @@ set cellsOfFace: face → {cell};
 set nodesOfCell: cell → {node};
 item commonFace: cell × cell → face;
 
-option X_LENGTH = 2.0;
-option Y_LENGTH = 2.0;
+option outputPeriod = 1;
 option u0 = 1.0;
 option vectOne = ℝ[2](1.0);
 
 // Mesh options
+option X_LENGTH = 2.0;
+option Y_LENGTH = 2.0;
 option X_EDGE_ELEMS = 40;
 option Y_EDGE_ELEMS = 40;
 option X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
 option Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 
 // Simulation options
-option option_stoptime = 1.0;
-option option_max_iterations = 500000000;
+option stopTime = 1.0;
+option maxIterations = 500000000;
 
 // User options
 let t=0.0;
@@ -48,7 +49,7 @@ let δt=0.001;
 ℝ faceLength{faces}, faceConductivity{faces};
 ℝ α{cells, cells}; 
 
-iterate n while (t^{n+1} < option_stoptime && n+1 < option_max_iterations);
+iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
 
 InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
 

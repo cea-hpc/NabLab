@@ -16,6 +16,7 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
+import fr.cea.nabla.ir.transformers.TagPersistentVariables
 
 class Ir2Json extends CodeGenerator 
 {
@@ -38,6 +39,7 @@ class Ir2Json extends CodeGenerator
 		'''
 		{
 			"_comment": "Generated file - Do not overwrite"«IF !options.empty»,«ENDIF»
+			«IF postProcessingInfo !== null»"«TagPersistentVariables.OutputPathNameAndValue.key»":"«TagPersistentVariables.OutputPathNameAndValue.value»"«IF !options.empty», «ENDIF»«ENDIF»
 			«FOR o : options SEPARATOR ","»
 			"«o.name»":«getValue(o, context).content»
 			«ENDFOR»

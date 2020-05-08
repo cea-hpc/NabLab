@@ -21,15 +21,16 @@ set nodesOfFace: face → {node};
 set nodesOfCell: cell → {node};
 item commonFace: cell × cell → face;
 
+// Simulation options
+option outputPeriod = 1;
+option stopTime = 0.1;
+option maxIterations = 500;
+
 // Mesh options
 option X_EDGE_LENGTH = 0.1;
 option Y_EDGE_LENGTH = X_EDGE_LENGTH;
 option X_EDGE_ELEMS = 20;
 option Y_EDGE_ELEMS = 20;
-
-// Simulation options
-option option_stoptime = 0.1;
-option option_max_iterations = 500;
 
 // User options
 option PI = 3.1415926;
@@ -40,7 +41,7 @@ let δt=0.001;
 ℝ[2] X{nodes}, center{cells};
 ℝ u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
 
-iterate n while (t^{n+1} < option_stoptime && n+1 < option_max_iterations);
+iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
 
 IniF: ∀j∈cells(), f{j} = 0.0;
 IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});  // only on parallelograms

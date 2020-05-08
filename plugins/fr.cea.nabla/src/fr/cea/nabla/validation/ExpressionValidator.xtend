@@ -18,6 +18,7 @@ import fr.cea.nabla.nabla.Div
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.Mul
@@ -39,7 +40,8 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	@Inject extension ValidationUtils
 	@Inject extension ExpressionTypeProvider
 
-	public static val BASE_TYPE_CONSTANT_VALUE_TYPE = "Expressions::BaseTypeConstantValueType"
+	public static val BASE_TYPE_CONSTANT_VALUE = "Expressions::BaseTypeConstantValue"
+	public static val BASE_TYPE_CONSTANT_TYPE = "Expressions::BaseTypeConstantType"
 	public static val FUNCTION_CALL_CONNECTIVITY_ARG = "Expressions::FunctionCallConnectivityArg"
 	public static val FUNCTION_CALL_MIXED_ARGS = "Expressions::FunctionCallMixedArgs"
 	public static val FUNCTION_CALL_ARGS = "Expressions::FunctionCallArgs"
@@ -61,7 +63,8 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	public static val VECTOR_CONSTANT_INCONSISTENT_TYPE = "Expressions::VectorConstantInconsistentType"
 	public static val VECTOR_CONSTANT_TYPE = "Expressions::VectorConstantType"
 
-	static def getBaseTypeConstantValueTypeMsg(String expectedTypeName) { "Initialization value type must be " + expectedTypeName }
+	static def getBaseTypeConstantValueMsg(String expectedTypeName) { "Initialization value must be of type " + expectedTypeName }
+	static def getBaseTypeConstantTypeMsg() { "Only integer constant allowed for initialization" }
 	static def getFunctionCallConnectivityArgMsg() { "Connectivity type arguments must be scalar" }
 	static def getFunctionCallMixedArgsMsg() { "Can not mix types of arguments (connectivity and simple types)" }
 	static def getFunctionCallArgsMsg(List<String> inTypes) { "No candidate function found. Wrong arguments : " + inTypes.join(', ') }
@@ -79,11 +82,19 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	static def getVectorConstantTypeMsg(String actualType)  { "Expected only scalar and vector types, but was " + actualType }
 
 	@Check
-	def checkBaseTypeConstantValueType(BaseTypeConstant it)
+	def checkBaseTypeConstantValue(BaseTypeConstant it)
 	{
 		val vType = value.typeFor
 		if (vType !== null && !(vType instanceof NSTScalar && vType.primitive == type.primitive))
-			error(getBaseTypeConstantValueTypeMsg(type.primitive.literal), NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE, BASE_TYPE_CONSTANT_VALUE_TYPE)
+			error(getBaseTypeConstantValueMsg(type.primitive.literal), NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE, BASE_TYPE_CONSTANT_VALUE)
+	}
+
+	@Check
+	def checkBaseTypeConstantType(BaseTypeConstant it)
+	{
+		for (i : 0..<type.sizes.size)
+			if (! (type.sizes.get(i) instanceof IntConstant))
+			error(getBaseTypeConstantTypeMsg(), NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE, i, BASE_TYPE_CONSTANT_TYPE)
 	}
 
 	@Check

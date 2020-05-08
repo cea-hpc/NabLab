@@ -39,7 +39,7 @@ class ExpressionValidatorTest
 	@Inject extension TestUtils
 
 	@Test
-	def void testCheckBaseTypeConstantValueType()
+	def void testCheckBaseTypeConstantValue()
 	{
 		val moduleKo = parseHelper.parse(testModule
 			+
@@ -54,16 +54,16 @@ class ExpressionValidatorTest
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseTypeConstant,
-			ExpressionValidator::BASE_TYPE_CONSTANT_VALUE_TYPE, 
-			ExpressionValidator::getBaseTypeConstantValueTypeMsg(PrimitiveType::REAL.literal))
+			ExpressionValidator::BASE_TYPE_CONSTANT_VALUE, 
+			ExpressionValidator::getBaseTypeConstantValueMsg(PrimitiveType::REAL.literal))
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseTypeConstant,
-			ExpressionValidator::BASE_TYPE_CONSTANT_VALUE_TYPE, 
-			ExpressionValidator::getBaseTypeConstantValueTypeMsg(PrimitiveType::INT.literal))
+			ExpressionValidator::BASE_TYPE_CONSTANT_VALUE, 
+			ExpressionValidator::getBaseTypeConstantValueMsg(PrimitiveType::INT.literal))
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseTypeConstant,
-			ExpressionValidator::BASE_TYPE_CONSTANT_VALUE_TYPE,
-			ExpressionValidator::getBaseTypeConstantValueTypeMsg(PrimitiveType::BOOL.literal))
+			ExpressionValidator::BASE_TYPE_CONSTANT_VALUE,
+			ExpressionValidator::getBaseTypeConstantValueMsg(PrimitiveType::BOOL.literal))
 
 		val moduleOk = parseHelper.parse(testModule
 			+
@@ -78,6 +78,30 @@ class ExpressionValidatorTest
 		moduleOk.assertNoErrors
 	}
 
+	@Test
+	def void testCheckBaseTypeConstantType()
+	{
+		val moduleKo = parseHelper.parse(testModule
+			+
+			'''
+			let two = 2;
+			let realOne = ℝ[two](1.0);
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.baseTypeConstant,
+			ExpressionValidator::BASE_TYPE_CONSTANT_TYPE, 
+			ExpressionValidator::getBaseTypeConstantTypeMsg())
+
+		val moduleOk = parseHelper.parse(testModule
+			+
+			'''
+			let realOne = ℝ[2](1.0);
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
 
 	@Test
 	def void testCheckFunctionCallArgs()

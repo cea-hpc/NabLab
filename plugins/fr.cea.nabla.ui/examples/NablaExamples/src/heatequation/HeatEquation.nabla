@@ -22,7 +22,6 @@ set nodesOfCell: cell → {node};
 item commonFace: cell × cell → face;
 
 // Simulation options
-option outputPeriod = 1;
 option stopTime = 0.1;
 option maxIterations = 500;
 

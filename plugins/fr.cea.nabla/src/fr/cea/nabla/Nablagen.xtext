@@ -47,7 +47,7 @@ TagPersistentVariablesComponent:
 	'TagPersistentVariables' name=ID 'follows' parent=[WorkflowComponent] 
 	'{' 
 		'dumpedVariables' '=' dumpedVars+=PersistentVar (',' dumpedVars+=PersistentVar)* ';'
-		'period' '=' periodValue=[nabla::ArgOrVar] 'for' periodReference=[nabla::ArgOrVar]';'
+		'periodReferenceVariable' '=' periodReference=[nabla::ArgOrVar]';'
 		(disabled?='disabled' ';')?
 		(dumpIr?='dumpIr' ';')?
 	'}';

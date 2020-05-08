@@ -21,7 +21,7 @@ workflow HeatEquationGenerationChain transforms HeatEquation
 	TagPersistentVariables tagPersistentVariables follows nabla2ir 
 	{ 
 		dumpedVariables = u as "Temperature";
-		period = outputPeriod for n;
+		periodReferenceVariable = n;
 	}
 	
 	ReplaceUtf replaceUtf follows tagPersistentVariables

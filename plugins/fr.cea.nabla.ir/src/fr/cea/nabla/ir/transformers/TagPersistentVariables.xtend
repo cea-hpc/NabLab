@@ -24,14 +24,12 @@ class TagPersistentVariables implements IrTransformationStep
 	public static val OutputPathNameAndValue = new Pair<String, String>("outputPath", "output")
 
 	val HashMap<String, String> dumpedVariables // variable name, persistence name (name displayed in visualisation)
-	val String periodValueVarName
 	val String periodReferenceVarName
 	val ArrayList<String> traces
 
-	new(HashMap<String, String> dumpedVariables, String periodValueVarName, String periodReferenceVarName)
+	new(HashMap<String, String> dumpedVariables, String periodReferenceVarName)
 	{
 		this.dumpedVariables = dumpedVariables
-		this.periodValueVarName = periodValueVarName
 		this.periodReferenceVarName = periodReferenceVarName
 		this.traces = new ArrayList<String>
 	}
@@ -43,12 +41,8 @@ class TagPersistentVariables implements IrTransformationStep
 
 	override transform(IrModule m)
 	{
-		val ppInfo = IrFactory.eINSTANCE.createPostProcessingInfo
-
-		val periodValueVar = getCurrentIrVariable(m, periodValueVarName)
-		if (periodValueVar === null) return false
-		ppInfo.periodValue = periodValueVar as SimpleVariable
-
+		val f = IrFactory.eINSTANCE
+		val ppInfo = f.createPostProcessingInfo
 		val periodReferenceVar = getCurrentIrVariable(m, periodReferenceVarName)
 		if (periodReferenceVar === null) return false
 		ppInfo.periodReference = periodReferenceVar as SimpleVariable
@@ -66,17 +60,30 @@ class TagPersistentVariables implements IrTransformationStep
 
 		// Create a variable to store the last write time
 		val periodVariableType = ppInfo.periodReference.type
-		val lastDumpVariable = IrFactory.eINSTANCE.createSimpleVariable =>
+		val lastDumpVariable = f.createSimpleVariable =>
 		[
 			name = "lastDump"
 			type = EcoreUtil::copy(periodVariableType)
 			const = false
 			constExpr = false
 			option = false
-			defaultValue = periodVariableType.primitive.defaultValue
+			defaultValue = periodVariableType.primitive.lastDumpDefaultValue
 		]
 		m.definitions += lastDumpVariable
 		ppInfo.lastDumpVariable = lastDumpVariable
+
+		// Create an option to store the output period
+		val periodValueVariable = f.createSimpleVariable =>
+		[
+			name = "outputPeriod"
+			type = EcoreUtil::copy(periodVariableType)
+			const = false
+			constExpr = false
+			option = true
+			defaultValue = periodVariableType.primitive.outputPeriodDefaultValue
+		]
+		m.definitions.add(0, periodValueVariable)
+		ppInfo.periodValue = periodValueVariable
 
 		return true
 	}
@@ -86,13 +93,24 @@ class TagPersistentVariables implements IrTransformationStep
 		traces
 	}
 
-	private def getDefaultValue(PrimitiveType t)
+	private def getLastDumpDefaultValue(PrimitiveType t)
 	{
 		val f =  IrFactory.eINSTANCE
 		switch t
 		{
 			case BOOL: f.createBoolConstant => [ value = false ]
 			default: f.createMinConstant => [ type = f.createBaseType => [ primitive = t] ]
+		}
+	}
+
+	private def getOutputPeriodDefaultValue(PrimitiveType t)
+	{
+		val f =  IrFactory.eINSTANCE
+		switch t
+		{
+			case INT: f.createIntConstant => [value = 1]
+			case REAL: f.createRealConstant => [value = 1.0]
+			default: throw new RuntimeException("Unsupported type for output period variable")
 		}
 	}
 }

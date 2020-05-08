@@ -22,7 +22,6 @@ set cellsOfFace: face → {cell};
 set nodesOfCell: cell → {node};
 item commonFace: cell × cell → face;
 
-option outputPeriod = 1;
 option u0 = 1.0;
 option vectOne = ℝ[2](1.0);
 

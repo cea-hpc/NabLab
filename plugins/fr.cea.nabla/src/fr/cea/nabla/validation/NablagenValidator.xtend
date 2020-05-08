@@ -33,9 +33,6 @@ class NablagenValidator extends AbstractNablagenValidator
 	@Check
 	def void checkPeriodVariablesType(TagPersistentVariablesComponent it)
 	{
-		if (periodValue !== null && !(periodValue instanceof SimpleVar || periodValue instanceof TimeIterator))
-			error(getPeriodVariablesTypeMsg(), NablagenPackage.Literals::TAG_PERSISTENT_VARIABLES_COMPONENT__PERIOD_VALUE, PERIOD_VARIABLES_TYPE)
-
 		if (periodReference !== null && !(periodReference instanceof SimpleVar || periodReference instanceof TimeIterator))
 			error(getPeriodVariablesTypeMsg(), NablagenPackage.Literals::TAG_PERSISTENT_VARIABLES_COMPONENT__PERIOD_REFERENCE, PERIOD_VARIABLES_TYPE)
 	}

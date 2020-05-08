@@ -21,7 +21,7 @@ workflow Glace2dGenerationChain transforms Glace2d
 	TagPersistentVariables tagPersistentVariables follows nabla2ir 
 	{
 		dumpedVariables = ρ as "Density";
-		period = outputPeriod for n;
+		periodReferenceVariable = n;
 	}
 	
 	ReplaceUtf replaceUtf follows tagPersistentVariables

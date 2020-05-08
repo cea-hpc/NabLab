@@ -46,7 +46,6 @@ def inverse: ℝ[2,2] → ℝ[2,2], (a) → {
 }
 
 // Simulation options
-option outputPeriod = 1;
 option stopTime = 0.2;
 option maxIterations = 20000;
   

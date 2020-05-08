@@ -32,7 +32,6 @@
   <eClassifiers xsi:type="ecore:EClass" name="TagPersistentVariablesComponent" eSuperTypes="#//Ir2IrComponent">
     <eStructuralFeatures xsi:type="ecore:EReference" name="dumpedVars" upperBound="-1"
         eType="#//PersistentVar" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="periodValue" eType="ecore:EClass Nabla.ecore#//ArgOrVar"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="periodReference" eType="ecore:EClass Nabla.ecore#//ArgOrVar"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PersistentVar">

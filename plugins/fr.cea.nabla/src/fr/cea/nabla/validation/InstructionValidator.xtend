@@ -18,6 +18,8 @@ import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import org.eclipse.xtext.validation.Check
+import fr.cea.nabla.nabla.VarGroupDeclaration
+import fr.cea.nabla.nabla.ConnectivityVar
 
 class InstructionValidator extends FunctionOrReductionValidator
 {
@@ -25,15 +27,29 @@ class InstructionValidator extends FunctionOrReductionValidator
 	@Inject extension ExpressionTypeProvider
 	@Inject extension ExpressionExtensions
 
+	public static val LOCAL_CONNECTIVITY_VAR = "Instructions::LocalConnectivityVar"
 	public static val AFFECTATION_TYPE = "Instructions::AffectationType"
 	public static val IF_CONDITION_BOOL = "Instructions::IfConditionBool"
 	public static val GLOBAL_VAR_VALUE = "Instructions::GlobalVarValue"
 	public static val LOCAL_OPTION = "Instructions::Local Option"
 
+	static def getLocalConnectivityVarMsg() { "Local variables not allowed on connectivities"}
 	static def getAffectationTypeMsg(String actualTypeName, String expectedTypeName) { "Expected " + expectedTypeName + ", but was " + actualTypeName }
 	static def getIfConditionBoolMsg(String actualTypeName) { "Expected " + ValidationUtils::BOOL.label + ", but was " + actualTypeName }
 	static def getGlobalVarValueMsg() { "Assignment with reduction, external function or card not allowed in options and global variables" }
 	static def getLocalOptionMsg() { "Option definition not allowed in jobs and functions (options are global)" }
+
+	@Check
+	def checkLocalConnectivitityVar(VarGroupDeclaration it)
+	{
+		// Global or local variable ?
+		if (eContainer !== null && !(eContainer instanceof NablaModule))
+		{
+			for (i : 0..<variables.size)
+				if (variables.get(i) instanceof ConnectivityVar)
+					error(getLocalConnectivityVarMsg(), NablaPackage.Literals::VAR_GROUP_DECLARATION__VARIABLES, i, LOCAL_CONNECTIVITY_VAR)
+		}
+	}
 
 	@Check
 	def checkAffectationType(Affectation it)

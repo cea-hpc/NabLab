@@ -140,12 +140,10 @@ class BasicValidator extends UnusedValidator
 
 	public static val CONNECTIVITY_CALL_INDEX = "Connectivities::ConnectivityCallIndex"
 	public static val CONNECTIVITY_CALL_TYPE = "Connectivities::ConnectivityCallType"
-	public static val NOT_IN_INSTRUCTIONS = "Connectivities::NotInInstructions"
 	public static val DIMENSION_ARG = "Connectivities::DimensionArg"
 
 	static def getConnectivityCallIndexMsg(int expectedSize, int actualSize) { "Wrong number of arguments. Expected " + expectedSize + ", but was " + actualSize }
 	static def getConnectivityCallTypeMsg(String expectedType, String actualType) { "Expected " + expectedType + ', but was ' + actualType }
-	static def getNotInInstructionsMsg() { "Local variables can only be scalar (no connectivity arrays)" }
 	static def getDimensionArgMsg() { "First dimension must be on connectivities taking no argument" }
 
 	@Check
@@ -163,14 +161,6 @@ class BasicValidator extends UnusedValidator
 					error(getConnectivityCallTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::CONNECTIVITY_CALL__ARGS, i, CONNECTIVITY_CALL_TYPE)
 			}
 		}
-	}
-
-	@Check
-	def checkNotInInstructions(ConnectivityVar it)
-	{
-		val varGroupDeclaration = eContainer
-		if (varGroupDeclaration !== null && !(varGroupDeclaration.eContainer instanceof NablaModule))
-			error(getNotInInstructionsMsg(), NablaPackage.Literals::ARG_OR_VAR__NAME, NOT_IN_INSTRUCTIONS)
 	}
 
 	@Check

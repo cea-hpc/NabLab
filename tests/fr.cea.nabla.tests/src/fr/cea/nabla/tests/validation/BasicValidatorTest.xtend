@@ -331,38 +331,6 @@ class BasicValidatorTest
 	}
 
 	@Test
-	def void testCheckNotInInstructions() 
-	{
-		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '') +
-			'''
-			ℝ[2] X{nodes};
-			UpdateX: 
-			{
-				ℝ[2] a{nodes};
-				∀r∈nodes(), X{r} = a{r};
-			}
-			'''
-		)
-		Assert.assertNotNull(moduleKo)
-		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar,
-			BasicValidator::NOT_IN_INSTRUCTIONS,
-			BasicValidator::getNotInInstructionsMsg)
-
-		val moduleOk =  parseHelper.parse(getTestModule(defaultConnectivities, '') +
-			'''
-			ℝ[2] X{nodes};
-			UpdateX: 
-			{
-				ℝ[2] a;
-				∀r∈nodes(), X{r} = a;
-			}
-			'''
-		)
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
-	@Test
 	def testCheckDimensionArg()
 	{
 		val moduleKo =  parseHelper.parse(getTestModule(defaultConnectivities, '') +

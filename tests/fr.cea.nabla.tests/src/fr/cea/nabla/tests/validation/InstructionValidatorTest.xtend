@@ -33,6 +33,38 @@ class InstructionValidatorTest
 	@Inject extension TestUtils
 
 	@Test
+	def void testCheckLocalConnectivityVars() 
+	{
+		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '') +
+			'''
+			ℝ[2] X{nodes};
+			UpdateX: 
+			{
+				ℝ[2] a{nodes};
+				∀r∈nodes(), X{r} = a{r};
+			}
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.varGroupDeclaration,
+			InstructionValidator::LOCAL_CONNECTIVITY_VAR,
+			InstructionValidator::getLocalConnectivityVarMsg)
+
+		val moduleOk =  parseHelper.parse(getTestModule(defaultConnectivities, '') +
+			'''
+			ℝ[2] X{nodes};
+			UpdateX: 
+			{
+				ℝ[2] a;
+				∀r∈nodes(), X{r} = a;
+			}
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
 	def void testCheckAffectationType()
 	{
 		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '')

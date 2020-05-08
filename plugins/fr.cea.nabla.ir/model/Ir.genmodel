@@ -80,12 +80,12 @@
     </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//Variable">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/persistenceName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/const"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//SimpleVariable">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SimpleVariable/type"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SimpleVariable/defaultValue"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SimpleVariable/option"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SimpleVariable/const"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SimpleVariable/constExpr"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ConnectivityVariable">

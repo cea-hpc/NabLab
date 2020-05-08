@@ -27,7 +27,7 @@ double dot(RealArray1D<x> a, RealArray1D<x> b)
 }
 
 template<size_t x>
-RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
+RealArray1D<0> sumR1(RealArray1D<0> a, RealArray1D<0> b)
 {
 	return a + b;
 }
@@ -113,10 +113,14 @@ HeatEquation::HeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D,
 , outgoingFlux(nbCells)
 , surface(nbFaces)
 {
+
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-		X[rNodes] = gNodes[rNodes];
+	{
+		X[rNodes][0] = gNodes[rNodes][0];
+		X[rNodes][1] = gNodes[rNodes][1];
+	}
 }
 
 /**

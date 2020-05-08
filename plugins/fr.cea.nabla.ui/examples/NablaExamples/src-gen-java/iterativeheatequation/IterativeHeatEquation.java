@@ -101,7 +101,8 @@ public final class IterativeHeatEquation
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
-		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> {
+		IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
+		{
 			X[rNodes][0] = gNodes[rNodes][0];
 			X[rNodes][1] = gNodes[rNodes][1];
 		});

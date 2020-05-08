@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#getType <em>Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#getDefaultValue <em>Default Value</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#isOption <em>Option</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#isConst <em>Const</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#isConstExpr <em>Const Expr</em>}</li>
  * </ul>
  *
@@ -71,6 +72,26 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	 * @ordered
 	 */
 	protected boolean option = OPTION_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isConst() <em>Const</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isConst()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean CONST_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isConst() <em>Const</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isConst()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean const_ = CONST_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #isConstExpr() <em>Const Expr</em>}' attribute.
@@ -253,6 +274,29 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	 * @generated
 	 */
 	@Override
+	public boolean isConst() {
+		return const_;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setConst(boolean newConst) {
+		boolean oldConst = const_;
+		const_ = newConst;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.SIMPLE_VARIABLE__CONST, oldConst, const_));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public boolean isConstExpr() {
 		return constExpr;
 	}
@@ -301,6 +345,8 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 				return getDefaultValue();
 			case IrPackage.SIMPLE_VARIABLE__OPTION:
 				return isOption();
+			case IrPackage.SIMPLE_VARIABLE__CONST:
+				return isConst();
 			case IrPackage.SIMPLE_VARIABLE__CONST_EXPR:
 				return isConstExpr();
 		}
@@ -323,6 +369,9 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 				return;
 			case IrPackage.SIMPLE_VARIABLE__OPTION:
 				setOption((Boolean)newValue);
+				return;
+			case IrPackage.SIMPLE_VARIABLE__CONST:
+				setConst((Boolean)newValue);
 				return;
 			case IrPackage.SIMPLE_VARIABLE__CONST_EXPR:
 				setConstExpr((Boolean)newValue);
@@ -348,6 +397,9 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 			case IrPackage.SIMPLE_VARIABLE__OPTION:
 				setOption(OPTION_EDEFAULT);
 				return;
+			case IrPackage.SIMPLE_VARIABLE__CONST:
+				setConst(CONST_EDEFAULT);
+				return;
 			case IrPackage.SIMPLE_VARIABLE__CONST_EXPR:
 				setConstExpr(CONST_EXPR_EDEFAULT);
 				return;
@@ -369,6 +421,8 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 				return defaultValue != null;
 			case IrPackage.SIMPLE_VARIABLE__OPTION:
 				return option != OPTION_EDEFAULT;
+			case IrPackage.SIMPLE_VARIABLE__CONST:
+				return const_ != CONST_EDEFAULT;
 			case IrPackage.SIMPLE_VARIABLE__CONST_EXPR:
 				return constExpr != CONST_EXPR_EDEFAULT;
 		}
@@ -387,6 +441,8 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (option: ");
 		result.append(option);
+		result.append(", const: ");
+		result.append(const_);
 		result.append(", constExpr: ");
 		result.append(constExpr);
 		result.append(')');

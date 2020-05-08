@@ -37,7 +37,7 @@ class AttributesContentProvider
 			«ENDIF»
 		«ENDFOR»
 		«FOR v : m.declarations»
-			«IF v.const»const «ENDIF»«v.cppType» «v.name»;
+			«v.cppType» «v.name»;
 		«ENDFOR»
 		«IF m.linearAlgebra»LinearAlgebraFunctions::CGInfo cg_info; // CG details«ENDIF»
 		utils::Timer globalTimer;

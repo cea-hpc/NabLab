@@ -85,8 +85,11 @@ class Ir2Java extends CodeGenerator
 			«ENDIF»
 
 			// Global Variables
-			«FOR v : definitions.filter[!option] + declarations»
+			«FOR v : definitions.filter[!option]»
 			private «IF v.const»final «ENDIF»«v.javaType» «v.name»;
+			«ENDFOR»
+			«FOR v : declarations»
+			private «v.javaType» «v.name»;
 			«ENDFOR»
 
 			public «name»(Options aOptions«IF withMesh», CartesianMesh2D aCartesianMesh2D«ENDIF»)
@@ -115,7 +118,8 @@ class Ir2Java extends CodeGenerator
 
 				// Copy node coordinates
 				double[][] gNodes = mesh.getGeometry().getNodes();
-				IntStream.range(0, nbNodes).parallel().forEach(rNodes -> {
+				IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
+				{
 					«initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
 					«initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
 				});

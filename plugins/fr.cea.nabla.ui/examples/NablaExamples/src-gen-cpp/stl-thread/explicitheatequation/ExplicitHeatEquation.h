@@ -24,7 +24,7 @@ template<size_t x>
 double dot(RealArray1D<x> a, RealArray1D<x> b);
 double det(RealArray1D<2> a, RealArray1D<2> b);
 template<size_t x>
-RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
+RealArray1D<0> sumR1(RealArray1D<0> a, RealArray1D<0> b);
 double minR0(double a, double b);
 double sumR0(double a, double b);
 double prodR0(double a, double b);
@@ -41,12 +41,12 @@ public:
 		double Y_LENGTH;
 		double u0;
 		RealArray1D<2> vectOne;
-		size_t X_EDGE_ELEMS;
-		size_t Y_EDGE_ELEMS;
+		int X_EDGE_ELEMS;
+		int Y_EDGE_ELEMS;
 		double X_EDGE_LENGTH;
 		double Y_EDGE_LENGTH;
 		double option_stoptime;
-		size_t option_max_iterations;
+		int option_max_iterations;
 
 		Options(const std::string& fileName);
 	};

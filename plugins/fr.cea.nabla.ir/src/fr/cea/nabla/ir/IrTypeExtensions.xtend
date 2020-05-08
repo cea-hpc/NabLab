@@ -30,9 +30,6 @@ import static extension fr.cea.nabla.ir.Utils.*
 
 class IrTypeExtensions
 {
-	static def dispatch boolean isStatic(ConnectivityType it) { false }
-	static def dispatch boolean isStatic(BaseType it) { sizes.empty || sizes.forall[x | x.constExpr] }
-
 	static def dispatch String getLabel(ConnectivityType it)
 	{
 		if (it === null) null

@@ -12,6 +12,7 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
+import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.PrimitiveType
 import org.eclipse.xtend.lib.annotations.Accessors
 
@@ -29,7 +30,7 @@ abstract class TypeContentProvider
 		else if (sizes.empty)
 			primitive.cppType
 		else
-			getCppArrayType(primitive, sizes.size) + '<' + sizes.map[content].join(',') + '>'
+			getCppArrayType(primitive, sizes.size) + '<' + sizes.map[arraySizeContent].join(',') + '>'
 	}
 
 	def dispatch String getCppType(PrimitiveType it)
@@ -56,8 +57,14 @@ abstract class TypeContentProvider
 			case INT: 'IntArray' + dim + 'D'
 			case REAL: 'RealArray' + dim + 'D'
 		}
- 	}
- }
+	}
+
+	private def getArraySizeContent(Expression e)
+	{
+		if (e.constExpr) e.content
+		else '0'
+	}
+}
 
 class StlTypeContentProvider extends TypeContentProvider
 {

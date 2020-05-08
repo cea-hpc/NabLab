@@ -80,7 +80,6 @@ class Nabla2Ir
 		// Special variables initialization
 		initNodeCoordVariable = getInitIrVariable(it, nablaNodeCoordVariable.name) as ConnectivityVariable
 		nodeCoordVariable = getCurrentIrVariable(it, nablaNodeCoordVariable.name) as ConnectivityVariable
-		nodeCoordVariable.const = false
 		timeVariable = getCurrentIrVariable(it, nablaTimeVariable.name) as SimpleVariable
 		deltatVariable = getCurrentIrVariable(it, nablaDeltatVariable.name) as SimpleVariable
 

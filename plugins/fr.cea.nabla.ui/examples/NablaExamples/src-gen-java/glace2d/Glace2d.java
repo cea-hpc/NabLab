@@ -125,7 +125,8 @@ public final class Glace2d
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
-		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> {
+		IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
+		{
 			X_n0[rNodes][0] = gNodes[rNodes][0];
 			X_n0[rNodes][1] = gNodes[rNodes][1];
 		});

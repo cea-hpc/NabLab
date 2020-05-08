@@ -716,22 +716,13 @@ public interface IrPackage extends EPackage {
 	int VARIABLE__PERSISTENCE_NAME = ARG_OR_VAR_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Const</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int VARIABLE__CONST = ARG_OR_VAR_FEATURE_COUNT + 1;
-
-	/**
 	 * The number of structural features of the '<em>Variable</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE_FEATURE_COUNT = ARG_OR_VAR_FEATURE_COUNT + 2;
+	int VARIABLE_FEATURE_COUNT = ARG_OR_VAR_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Variable</em>' class.
@@ -780,15 +771,6 @@ public interface IrPackage extends EPackage {
 	int SIMPLE_VARIABLE__PERSISTENCE_NAME = VARIABLE__PERSISTENCE_NAME;
 
 	/**
-	 * The feature id for the '<em><b>Const</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIMPLE_VARIABLE__CONST = VARIABLE__CONST;
-
-	/**
 	 * The feature id for the '<em><b>Type</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -816,13 +798,22 @@ public interface IrPackage extends EPackage {
 	int SIMPLE_VARIABLE__OPTION = VARIABLE_FEATURE_COUNT + 2;
 
 	/**
+	 * The feature id for the '<em><b>Const</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SIMPLE_VARIABLE__CONST = VARIABLE_FEATURE_COUNT + 3;
+
+	/**
 	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SIMPLE_VARIABLE__CONST_EXPR = VARIABLE_FEATURE_COUNT + 3;
+	int SIMPLE_VARIABLE__CONST_EXPR = VARIABLE_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of structural features of the '<em>Simple Variable</em>' class.
@@ -831,7 +822,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SIMPLE_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 4;
+	int SIMPLE_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of operations of the '<em>Simple Variable</em>' class.
@@ -878,15 +869,6 @@ public interface IrPackage extends EPackage {
 	 * @ordered
 	 */
 	int CONNECTIVITY_VARIABLE__PERSISTENCE_NAME = VARIABLE__PERSISTENCE_NAME;
-
-	/**
-	 * The feature id for the '<em><b>Const</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY_VARIABLE__CONST = VARIABLE__CONST;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -4729,17 +4711,6 @@ public interface IrPackage extends EPackage {
 	EAttribute getVariable_PersistenceName();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Variable#isConst <em>Const</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Const</em>'.
-	 * @see fr.cea.nabla.ir.ir.Variable#isConst()
-	 * @see #getVariable()
-	 * @generated
-	 */
-	EAttribute getVariable_Const();
-
-	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SimpleVariable <em>Simple Variable</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4781,6 +4752,17 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getSimpleVariable_Option();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.SimpleVariable#isConst <em>Const</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Const</em>'.
+	 * @see fr.cea.nabla.ir.ir.SimpleVariable#isConst()
+	 * @see #getSimpleVariable()
+	 * @generated
+	 */
+	EAttribute getSimpleVariable_Const();
 
 	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.SimpleVariable#isConstExpr <em>Const Expr</em>}'.
@@ -6764,14 +6746,6 @@ public interface IrPackage extends EPackage {
 		EAttribute VARIABLE__PERSISTENCE_NAME = eINSTANCE.getVariable_PersistenceName();
 
 		/**
-		 * The meta object literal for the '<em><b>Const</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute VARIABLE__CONST = eINSTANCE.getVariable_Const();
-
-		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl <em>Simple Variable</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6804,6 +6778,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute SIMPLE_VARIABLE__OPTION = eINSTANCE.getSimpleVariable_Option();
+
+		/**
+		 * The meta object literal for the '<em><b>Const</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SIMPLE_VARIABLE__CONST = eINSTANCE.getSimpleVariable_Const();
 
 		/**
 		 * The meta object literal for the '<em><b>Const Expr</b></em>' attribute feature.

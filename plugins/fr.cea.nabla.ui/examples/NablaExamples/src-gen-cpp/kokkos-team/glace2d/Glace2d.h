@@ -43,12 +43,12 @@ KOKKOS_INLINE_FUNCTION
 RealArray2D<2,2> inverse(RealArray2D<2,2> a);
 template<size_t x>
 KOKKOS_INLINE_FUNCTION
-RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
+RealArray1D<0> sumR1(RealArray1D<0> a, RealArray1D<0> b);
 KOKKOS_INLINE_FUNCTION
 double sumR0(double a, double b);
 template<size_t x>
 KOKKOS_INLINE_FUNCTION
-RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b);
+RealArray2D<0,0> sumR2(RealArray2D<0,0> a, RealArray2D<0,0> b);
 KOKKOS_INLINE_FUNCTION
 double minR0(double a, double b);
 
@@ -62,10 +62,10 @@ public:
 	{
 		double X_EDGE_LENGTH;
 		double Y_EDGE_LENGTH;
-		size_t X_EDGE_ELEMS;
-		size_t Y_EDGE_ELEMS;
+		int X_EDGE_ELEMS;
+		int Y_EDGE_ELEMS;
 		double option_stoptime;
-		size_t option_max_iterations;
+		int option_max_iterations;
 		double gamma;
 		double option_x_interface;
 		double option_deltat_ini;

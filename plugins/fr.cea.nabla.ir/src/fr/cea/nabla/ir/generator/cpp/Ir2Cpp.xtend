@@ -19,9 +19,11 @@ import java.net.URI
 import org.eclipse.core.runtime.FileLocator
 import org.eclipse.core.runtime.Platform
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
 
 class Ir2Cpp extends CodeGenerator
 {
@@ -159,12 +161,23 @@ class Ir2Cpp extends CodeGenerator
 	, «v.name»(«v.cstrInit»)
 	«ENDFOR»
 	{
+		«val dynamicArrayVariables = declarations.filter[!type.baseTypeStatic]»
+		«IF !dynamicArrayVariables.empty»
+			// Allocate dynamic arrays (RealArrays with at least a dynamic dimension)
+			«FOR v : dynamicArrayVariables»
+				«v.initCppTypeContent»
+			«ENDFOR»
+		«ENDIF»
 		«IF withMesh»
+
 		// Copy node coordinates
 		const auto& gNodes = mesh->getGeometry()->getNodes();
 		«val iterator = backend.argOrVarContentProvider.formatIterators(initNodeCoordVariable, #["rNodes"])»
 		for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-			«initNodeCoordVariable.name»«iterator» = gNodes[rNodes];
+		{
+			«initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
+			«initNodeCoordVariable.name»«iterator»[1] = gNodes[rNodes][1];
+		}
 		«ENDIF»
 	}
 

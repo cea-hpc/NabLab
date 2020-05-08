@@ -20,12 +20,9 @@ import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import org.eclipse.xtext.EcoreUtil2
-import fr.cea.nabla.nabla.Interval
-import fr.cea.nabla.nabla.SpaceIterator
 
 /**
  * Allow to access the type of ArgOrVar except SimpleVar
@@ -55,33 +52,33 @@ class ArgOrVarExtensions
 		}
 	}
 
-	def boolean isConst(Var it)
+	def boolean isConst(SimpleVar it)
 	{
-		switch it
+		// Only SimpleVar defined with a value can be const
+		if (eContainer !== null && eContainer instanceof SimpleVarDefinition && (eContainer as SimpleVarDefinition).value !== null)
 		{
-			Arg: true
-			TimeIterator: false
-			default:
-			{
-				if (eContainer === null || eContainer instanceof Interval || eContainer instanceof SpaceIterator)
-					false
-				else
-				{
-					val module = EcoreUtil2::getContainerOfType(it, NablaModule)
-					module.eAllContents.filter(Affectation).forall[x | x.left.target !== it]
-				}
-			}
+			val module = EcoreUtil2::getContainerOfType(it, NablaModule)
+			module.eAllContents.filter(Affectation).forall[x | x.left.target !== it]
 		}
+		else
+			false
 	}
 
 	def boolean isConstExpr(ArgOrVar it)
 	{
-		switch it
+		if (eContainer !== null)
 		{
-			// options are not constexpr because they are initialized by a file in the generated code
-			SimpleVar: (!option && value !== null && const && value.constExpr)
-			default: false
+			val c = eContainer
+			switch c
+			{
+				// options are not constexpr because they are initialized by a file in the generated code
+				SimpleVarDefinition: (!c.option && c.value !== null && c.variable.const && c.value.constExpr)
+				Function: true
+				default: false
+			}
 		}
+		else
+			false
 	}
 
 	def boolean isNablaEvaluable(ArgOrVar it)

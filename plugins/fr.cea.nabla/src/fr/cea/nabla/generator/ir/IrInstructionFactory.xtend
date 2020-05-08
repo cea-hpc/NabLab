@@ -23,6 +23,7 @@ import fr.cea.nabla.nabla.ItemDefinition
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SetDefinition
+import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
@@ -52,7 +53,7 @@ class IrInstructionFactory
 		val irInstr = IrFactory::eINSTANCE.createVariableDefinition =>
 		[
 			annotations += v.toIrAnnotation
-			variable = v.variable.toIrVariable
+			variable = v.variable.toIrSimpleVariable(v.variable.name)
 		]
 
 		return irInstr.transformReductions(v.value)
@@ -61,12 +62,12 @@ class IrInstructionFactory
 	private def dispatch List<Instruction> toIrInstructions(VarGroupDeclaration v)
 	{
 		val instructions = new ArrayList<Instruction>
-		for (nablaVar : v.variables)
+		for (nablaVar : v.variables.filter(SimpleVar))
 		{
 			instructions += IrFactory::eINSTANCE.createVariableDefinition =>
 			[
 				annotations += nablaVar.toIrAnnotation
-				variable = nablaVar.toIrVariable
+				variable = nablaVar.toIrSimpleVariable(nablaVar.name)
 			]
 		}
 		return instructions

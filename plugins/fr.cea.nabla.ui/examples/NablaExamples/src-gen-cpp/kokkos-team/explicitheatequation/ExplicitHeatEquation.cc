@@ -31,7 +31,7 @@ double det(RealArray1D<2> a, RealArray1D<2> b)
 
 template<size_t x>
 KOKKOS_INLINE_FUNCTION
-RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
+RealArray1D<0> sumR1(RealArray1D<0> a, RealArray1D<0> b)
 {
 	return a + b;
 }
@@ -150,10 +150,14 @@ ExplicitHeatEquation::ExplicitHeatEquation(Options* aOptions, CartesianMesh2D* a
 , faceConductivity("faceConductivity", nbFaces)
 , alpha("alpha", nbCells, nbCells)
 {
+
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-		X(rNodes) = gNodes[rNodes];
+	{
+		X(rNodes)[0] = gNodes[rNodes][0];
+		X(rNodes)[1] = gNodes[rNodes][1];
+	}
 }
 
 const std::pair<size_t, size_t> ExplicitHeatEquation::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept

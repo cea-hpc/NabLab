@@ -34,8 +34,7 @@ double norm(RealArray1D<x> a)
 template<size_t l>
 RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b)
 {
-	RealArray2D<l,l>;
-	initSize(l, l);
+	RealArray2D<l,l> result;
 	for (size_t ia=0; ia<l; ia++)
 	{
 		for (size_t ib=0; ib<l; ib++)
@@ -49,12 +48,10 @@ RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b)
 template<size_t x, size_t y>
 RealArray1D<x> matVectProduct(RealArray2D<x,y> a, RealArray1D<y> b)
 {
-	RealArray1D<x>;
-	initSize(x);
+	RealArray1D<x> result;
 	for (size_t ix=0; ix<x; ix++)
 	{
-		RealArray1D<y>;
-		initSize(y);
+		RealArray1D<y> tmp;
 		for (size_t iy=0; iy<y; iy++)
 		{
 			tmp[iy] = a[ix][iy];
@@ -82,7 +79,7 @@ RealArray2D<2,2> inverse(RealArray2D<2,2> a)
 }
 
 template<size_t x>
-RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
+RealArray1D<0> sumR1(RealArray1D<0> a, RealArray1D<0> b)
 {
 	return a + b;
 }
@@ -93,7 +90,7 @@ double sumR0(double a, double b)
 }
 
 template<size_t x>
-RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b)
+RealArray2D<0,0> sumR2(RealArray2D<0,0> a, RealArray2D<0,0> b)
 {
 	return a + b;
 }
@@ -228,10 +225,14 @@ Glace2d::Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string ou
 , F(nbCells, std::vector<RealArray1D<2>>(nbNodesOfCell))
 , Ajr(nbCells, std::vector<RealArray2D<2,2>>(nbNodesOfCell))
 {
+
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-		X_n0[rNodes] = gNodes[rNodes];
+	{
+		X_n0[rNodes][0] = gNodes[rNodes][0];
+		X_n0[rNodes][1] = gNodes[rNodes][1];
+	}
 }
 
 /**

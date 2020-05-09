@@ -26,7 +26,7 @@ namespace nablalib
 class VtkFileWriter2D : public FileWriter
 {
 public:
-	VtkFileWriter2D(const string& moduleName, const string& baseDirName = string());
+	VtkFileWriter2D(const string& moduleName, const string& outputDirName);
 	~VtkFileWriter2D();
 
 	void writeFile(

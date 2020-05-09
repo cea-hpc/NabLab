@@ -15,8 +15,8 @@ using namespace std;
 
 namespace nablalib
 {
-PvdFileWriter2D::PvdFileWriter2D(const string& moduleName, const string& baseDirName)
-: FileWriter(moduleName, baseDirName)
+PvdFileWriter2D::PvdFileWriter2D(const string& moduleName, const string& outputDirName)
+: FileWriter(moduleName, outputDirName)
 {
 }
 

@@ -15,8 +15,8 @@ using namespace std;
 
 namespace nablalib
 {
-VtkFileWriter2D::VtkFileWriter2D(const string& moduleName, const string& baseDirName)
-: FileWriter(moduleName, baseDirName)
+VtkFileWriter2D::VtkFileWriter2D(const string& moduleName, const string& outputDirName)
+: FileWriter(moduleName, outputDirName)
 {
 }
 

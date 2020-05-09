@@ -1,6 +1,7 @@
 {
 	"_comment": "Generated file - Do not overwrite",
-	"outputPath":"output", 
+	"_outputPath_comment":"empty outputPath to disabled output",
+	"outputPath":"output",
 	"outputPeriod":1,
 	"stopTime":0.1,
 	"maxIterations":500,

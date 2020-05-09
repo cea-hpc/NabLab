@@ -1,6 +1,7 @@
 {
 	"_comment": "Generated file - Do not overwrite",
-	"outputPath":"output", 
+	"_outputPath_comment":"empty outputPath to disabled output",
+	"outputPath":"output",
 	"outputPeriod":1,
 	"u0":1.0,
 	"vectOne":[1.0,1.0],

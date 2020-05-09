@@ -73,7 +73,7 @@ class ArgOrVarExtensions
 			{
 				// options are not constexpr because they are initialized by a file in the generated code
 				SimpleVarDefinition: (!c.option && c.value !== null && c.variable.const && c.value.constExpr)
-				Function: true
+				Function, Reduction: true
 				default: false
 			}
 		}

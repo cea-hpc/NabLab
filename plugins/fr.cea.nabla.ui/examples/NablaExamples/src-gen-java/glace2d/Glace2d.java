@@ -17,20 +17,22 @@ public final class Glace2d
 {
 	public final static class Options
 	{
+		public String outputPath;
+		public int outputPeriod;
+		public double stopTime;
+		public int maxIterations;
 		public double X_EDGE_LENGTH;
 		public double Y_EDGE_LENGTH;
 		public int X_EDGE_ELEMS;
 		public int Y_EDGE_ELEMS;
-		public double option_stoptime;
-		public int option_max_iterations;
 		public double gamma;
-		public double option_x_interface;
-		public double option_deltat_ini;
-		public double option_deltat_cfl;
-		public double option_rho_ini_zg;
-		public double option_rho_ini_zd;
-		public double option_p_ini_zg;
-		public double option_p_ini_zd;
+		public double xInterface;
+		public double deltatIni;
+		public double deltatCfl;
+		public double rhoIniZg;
+		public double rhoIniZd;
+		public double pIniZg;
+		public double pIniZd;
 
 		public static Options createOptions(String jsonFileName) throws FileNotFoundException
 		{
@@ -48,11 +50,12 @@ public final class Glace2d
 	private final int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
 
 	// Global Variables
-	private int n;
 	private double t_n;
 	private double t_nplus1;
 	private double deltat_n;
 	private double deltat_nplus1;
+	private int lastDump;
+	private int n;
 	private double[][] X_n;
 	private double[][] X_nplus1;
 	private double[][] X_n0;
@@ -77,13 +80,12 @@ public final class Glace2d
 	private double[][][] C;
 	private double[][][] F;
 	private double[][][][] Ajr;
-	private int lastDump;
 
 	public Glace2d(Options aOptions, CartesianMesh2D aCartesianMesh2D)
 	{
 		options = aOptions;
 		mesh = aCartesianMesh2D;
-		writer = new PvdFileWriter2D("Glace2d");
+		writer = new PvdFileWriter2D("Glace2d", options.outputPath);
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
@@ -95,8 +97,9 @@ public final class Glace2d
 		// Initialize variables
 		t_n = 0.0;
 		t_nplus1 = 0.0;
-		deltat_n = options.option_deltat_ini;
-		deltat_nplus1 = options.option_deltat_ini;
+		deltat_n = options.deltatIni;
+		deltat_nplus1 = options.deltatIni;
+		lastDump = Integer.MIN_VALUE;
 		X_n = new double[nbNodes][2];
 		X_nplus1 = new double[nbNodes][2];
 		X_n0 = new double[nbNodes][2];
@@ -121,11 +124,11 @@ public final class Glace2d
 		C = new double[nbCells][nbNodesOfCell][2];
 		F = new double[nbCells][nbNodesOfCell][2];
 		Ajr = new double[nbCells][nbNodesOfCell][2][2];
-		lastDump = Integer.MIN_VALUE;
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
-		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> {
+		IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
+		{
 			X_n0[rNodes][0] = gNodes[rNodes][0];
 			X_n0[rNodes][1] = gNodes[rNodes][1];
 		});
@@ -192,7 +195,7 @@ public final class Glace2d
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			e[jCells] = E_n[jCells] - 0.5 * MathFunctions.dot(uj_n[jCells], uj_n[jCells]);
+			e[jCells] = E_n[jCells] - 0.5 * dot(uj_n[jCells], uj_n[jCells]);
 		});
 	}
 
@@ -250,7 +253,7 @@ public final class Glace2d
 				final int nbNodesOfCellJ = nodesOfCellJ.length;
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
-					l[jCells][rNodesOfCellJ] = MathFunctions.norm(C[jCells][rNodesOfCellJ]);
+					l[jCells][rNodesOfCellJ] = norm(C[jCells][rNodesOfCellJ]);
 				}
 			}
 		});
@@ -274,7 +277,7 @@ public final class Glace2d
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;
-					reduction5 = sumR0(reduction5, MathFunctions.dot(C[jCells][rNodesOfCellJ], X_n[rNodes]));
+					reduction5 = sumR0(reduction5, dot(C[jCells][rNodesOfCellJ], X_n[rNodes]));
 				}
 			}
 			V[jCells] = 0.5 * reduction5;
@@ -283,7 +286,7 @@ public final class Glace2d
 
 	/**
 	 * Job Initialize called @2.0 in simulate method.
-	 * In variables: Cjr_ic, X_n0, gamma, option_p_ini_zd, option_p_ini_zg, option_rho_ini_zd, option_rho_ini_zg, option_x_interface
+	 * In variables: Cjr_ic, X_n0, gamma, pIniZd, pIniZg, rhoIniZd, rhoIniZg, xInterface
 	 * Out variables: E_n, m, p, rho, uj_n
 	 */
 	private void initialize()
@@ -305,15 +308,15 @@ public final class Glace2d
 				}
 			}
 			final double[] center = ArrayOperations.multiply(0.25, reduction0);
-			if (center[0] < options.option_x_interface)
+			if (center[0] < options.xInterface)
 			{
-				rho_ic = options.option_rho_ini_zg;
-				p_ic = options.option_p_ini_zg;
+				rho_ic = options.rhoIniZg;
+				p_ic = options.pIniZg;
 			}
 			else
 			{
-				rho_ic = options.option_rho_ini_zd;
-				p_ic = options.option_p_ini_zd;
+				rho_ic = options.rhoIniZd;
+				p_ic = options.pIniZd;
 			}
 			double reduction1 = 0.0;
 			{
@@ -323,7 +326,7 @@ public final class Glace2d
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;
-					reduction1 = sumR0(reduction1, MathFunctions.dot(Cjr_ic[jCells][rNodesOfCellJ], X_n0[rNodes]));
+					reduction1 = sumR0(reduction1, dot(Cjr_ic[jCells][rNodesOfCellJ], X_n0[rNodes]));
 				}
 			}
 			final double V_ic = 0.5 * reduction1;
@@ -350,7 +353,7 @@ public final class Glace2d
 
 	/**
 	 * Job ExecuteTimeLoopN called @3.0 in simulate method.
-	 * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b, bt, c, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, option_deltat_cfl, p, rho, t_n, uj_n, ur
+	 * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b, bt, c, deltatCfl, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, p, rho, t_n, uj_n, ur
 	 * Out variables: Ajr, Ar, C, E_nplus1, F, Mt, V, X_nplus1, b, bt, c, deltat_nplus1, deltatj, e, l, p, rho, t_nplus1, uj_nplus1, ur
 	 */
 	private void executeTimeLoopN()
@@ -385,7 +388,7 @@ public final class Glace2d
 			computeUn(); // @11.0
 		
 			// Evaluate loop condition with variables at time n
-			continueLoop = (t_nplus1 < options.option_stoptime && n + 1 < options.option_max_iterations);
+			continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
 		
 			if (continueLoop)
 			{
@@ -431,7 +434,7 @@ public final class Glace2d
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			c[jCells] = MathFunctions.sqrt(options.gamma * p[jCells] / rho[jCells]);
+			c[jCells] = Math.sqrt(options.gamma * p[jCells] / rho[jCells]);
 		});
 	}
 
@@ -524,7 +527,7 @@ public final class Glace2d
 					final int jId = cellsOfNodeR[jCellsOfNodeR];
 					final int jCells = jId;
 					final int rNodesOfCellJ = Utils.indexOf(mesh.getNodesOfCell(jId), rId);
-					reduction4 = sumR1(reduction4, ArrayOperations.plus(ArrayOperations.multiply(p[jCells], C[jCells][rNodesOfCellJ]), MathFunctions.matVectProduct(Ajr[jCells][rNodesOfCellJ], uj_n[jCells])));
+					reduction4 = sumR1(reduction4, ArrayOperations.plus(ArrayOperations.multiply(p[jCells], C[jCells][rNodesOfCellJ]), matVectProduct(Ajr[jCells][rNodesOfCellJ], uj_n[jCells])));
 				}
 			}
 			b[rNodes] = reduction4;
@@ -533,7 +536,7 @@ public final class Glace2d
 
 	/**
 	 * Job ComputeDt called @7.0 in executeTimeLoopN method.
-	 * In variables: deltatj, option_deltat_cfl
+	 * In variables: deltatCfl, deltatj
 	 * Out variables: deltat_nplus1
 	 */
 	private void computeDt()
@@ -548,7 +551,7 @@ public final class Glace2d
 			},
 			(r1, r2) -> minR0(r1, r2)
 		);
-		deltat_nplus1 = options.option_deltat_cfl * reduction8;
+		deltat_nplus1 = options.deltatCfl * reduction8;
 	}
 
 	/**
@@ -588,10 +591,10 @@ public final class Glace2d
 							final double[] N = ArrayOperations.multiply(sign, nY);
 							final double[][] NxN = tensProduct(N, N);
 							final double[][] IcP = ArrayOperations.minus(I, NxN);
-							bt[rNodes] = MathFunctions.matVectProduct(IcP, b[rNodes]);
+							bt[rNodes] = matVectProduct(IcP, b[rNodes]);
 							Mt[rNodes] = ArrayOperations.plus(ArrayOperations.multiply(IcP, (ArrayOperations.multiply(Ar[rNodes], IcP))), ArrayOperations.multiply(NxN, trace(Ar[rNodes])));
 						}
-						if ((MathFunctions.fabs(X_n[rNodes][0] - X_MIN) < epsilon) || ((MathFunctions.fabs(X_n[rNodes][0] - X_MAX) < epsilon)))
+						if ((Math.abs(X_n[rNodes][0] - X_MIN) < epsilon) || ((Math.abs(X_n[rNodes][0] - X_MAX) < epsilon)))
 						{
 							Mt[rNodes] = I;
 							bt[rNodes] = new double[] {0.0, 0.0};
@@ -659,7 +662,7 @@ public final class Glace2d
 	{
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
-			ur[rNodes] = MathFunctions.matVectProduct(inverse(Mt[rNodes]), bt[rNodes]);
+			ur[rNodes] = matVectProduct(inverse(Mt[rNodes]), bt[rNodes]);
 		});
 	}
 
@@ -680,7 +683,7 @@ public final class Glace2d
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;
-					F[jCells][rNodesOfCellJ] = ArrayOperations.plus(ArrayOperations.multiply(p[jCells], C[jCells][rNodesOfCellJ]), MathFunctions.matVectProduct(Ajr[jCells][rNodesOfCellJ], (ArrayOperations.minus(uj_n[jCells], ur[rNodes]))));
+					F[jCells][rNodesOfCellJ] = ArrayOperations.plus(ArrayOperations.multiply(p[jCells], C[jCells][rNodesOfCellJ]), matVectProduct(Ajr[jCells][rNodesOfCellJ], (ArrayOperations.minus(uj_n[jCells], ur[rNodes]))));
 				}
 			}
 		});
@@ -717,7 +720,7 @@ public final class Glace2d
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;
-					reduction7 = sumR0(reduction7, MathFunctions.dot(F[jCells][rNodesOfCellJ], ur[rNodes]));
+					reduction7 = sumR0(reduction7, dot(F[jCells][rNodesOfCellJ], ur[rNodes]));
 				}
 			}
 			E_nplus1[jCells] = E_n[jCells] - (deltat_n / m[jCells]) * reduction7;
@@ -747,9 +750,31 @@ public final class Glace2d
 		});
 	}
 
+	private double det(double[][] a)
+	{
+		return a[0][0] * a[1][1] - a[0][1] * a[1][0];
+	}
+
 	private double[] perp(double[] a)
 	{
 		return new double[] {a[1], -a[0]};
+	}
+
+	private double dot(double[] a, double[] b)
+	{
+		final int x = a.length;
+		double result = 0.0;
+		for (int i=0; i<x; i++)
+		{
+			result = result + a[i] * b[i];
+		}
+		return result;
+	}
+
+	private double norm(double[] a)
+	{
+		final int x = a.length;
+		return Math.sqrt(dot(a, a));
 	}
 
 	private double[][] tensProduct(double[] a, double[] b)
@@ -762,6 +787,23 @@ public final class Glace2d
 			{
 				result[ia][ib] = a[ia] * b[ib];
 			}
+		}
+		return result;
+	}
+
+	private double[] matVectProduct(double[][] a, double[] b)
+	{
+		final int x = a.length;
+		final int y = a[0].length;
+		double[] result = new double[x];
+		for (int ix=0; ix<x; ix++)
+		{
+			double[] tmp = new double[y];
+			for (int iy=0; iy<y; iy++)
+			{
+				tmp[iy] = a[ix][iy];
+			}
+			result[ix] = dot(tmp, b);
 		}
 		return result;
 	}
@@ -779,7 +821,7 @@ public final class Glace2d
 
 	private double[][] inverse(double[][] a)
 	{
-		final double alpha = 1.0 / MathFunctions.det(a);
+		final double alpha = 1.0 / det(a);
 		return new double[][] {new double[] {a[1][1] * alpha, -a[0][1] * alpha}, new double[] {-a[1][0] * alpha, a[0][0] * alpha}};
 	}
 
@@ -802,17 +844,17 @@ public final class Glace2d
 
 	private double minR0(double a, double b)
 	{
-		return MathFunctions.min(a, b);
+		return Math.min(a, b);
 	}
 
 	private void dumpVariables(int iteration)
 	{
-		if (n >= lastDump + 1.0)
+		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
 		{
-			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-			cellVariables.put("Density", rho);
-			writer.writeFile(iteration, t_n, X_n, mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
+			VtkFileContent content = new VtkFileContent(iteration, t_n, X_n, mesh.getGeometry().getQuads());
+			content.addCellVariable("Density", rho);
+			content.addNodeVariable("Vitesse", ur);
+			writer.writeFile(content);
 			lastDump = n;
 		}
 	}

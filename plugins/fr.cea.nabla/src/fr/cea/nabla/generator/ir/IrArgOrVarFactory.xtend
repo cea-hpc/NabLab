@@ -81,6 +81,8 @@ class IrArgOrVarFactory
 		name = varName
 		type = nablaType2IrType.toIrBaseType(v.typeFor as NablaSimpleType)
 		const = v.const
+		constExpr = v.constExpr
+		option = v.option
 		val value = v.value
 		if (value !== null) defaultValue = value.toIrExpression
 	}
@@ -90,7 +92,6 @@ class IrArgOrVarFactory
 		annotations += v.toIrAnnotation
 		name = varName
 		type = toIrConnectivityType(v.type, v.supports)
-		const = v.const
 	}
 
 	def create 	IrFactory::eINSTANCE.createSimpleVariable toIrIterationCounter(TimeIterator t)
@@ -99,5 +100,7 @@ class IrArgOrVarFactory
 		name = t.name
 		type = IrFactory.eINSTANCE.createBaseType => [ primitive = PrimitiveType::INT ]
 		const = false
+		constExpr = false
+		option = false
 	}
 }

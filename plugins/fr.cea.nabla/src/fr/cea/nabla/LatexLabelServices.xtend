@@ -42,7 +42,6 @@ import fr.cea.nabla.nabla.Mul
 import fr.cea.nabla.nabla.MultipleConnectivityCall
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Not
-import fr.cea.nabla.nabla.OptDefinition
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
@@ -66,7 +65,6 @@ class LatexLabelServices
 {
 	/* JOBS & INSTRUCTIONS ***********************************/
 	static def dispatch String getLatex(Job it) { '\\texttt{' + name.pu + '} : '+ instruction.latex }
-	static def dispatch String getLatex(OptDefinition it) { 'option~' + variable.name.pu + '=' + value.latex }
 	static def dispatch String getLatex(SimpleVarDefinition it) { 'let~' + variable.name.pu + '=' + value.latex }
 	static def dispatch String getLatex(VarGroupDeclaration it) { type.latex + '~' + variables.map[x|x.name.pu].join(', ') }
 	static def dispatch String getLatex(InstructionBlock it) { '\\{ \\}' }

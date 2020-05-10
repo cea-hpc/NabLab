@@ -12,11 +12,11 @@ package fr.cea.nabla.ir.generator
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.Container
-import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
+import fr.cea.nabla.ir.ir.SimpleVariable
 import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
@@ -27,12 +27,6 @@ class Utils
 {
 	public static val FunctionReductionPrefix = 'Functions'
 
-	static def getCodeName(Function it, String separator)
-	{
-		if (body === null) provider + FunctionReductionPrefix + separator + name
-		else name
-	}
-
 	static def getCodeName(Job it)
 	{
 		name.toFirstLower
@@ -40,7 +34,7 @@ class Utils
 
 	static def getCodeName(ArgOrVar it, String separator)
 	{
-		if (option)
+		if (it instanceof SimpleVariable && (it as SimpleVariable).option)
 			'options' + separator + name
 		else if (iteratorCounter)
 			(eContainer as Iterator).index.name

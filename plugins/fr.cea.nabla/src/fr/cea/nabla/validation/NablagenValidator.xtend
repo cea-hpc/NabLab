@@ -9,13 +9,13 @@
  *******************************************************************************/
 package fr.cea.nabla.validation
 
-import org.eclipse.xtext.validation.Check
-import fr.cea.nabla.nablagen.TagPersistentVariablesComponent
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.TimeIterator
-import fr.cea.nabla.nablagen.NablagenPackage
 import fr.cea.nabla.nablagen.Cpp
 import fr.cea.nabla.nablagen.CppProgrammingModel
+import fr.cea.nabla.nablagen.NablagenPackage
+import fr.cea.nabla.nablagen.TagPersistentVariablesComponent
+import org.eclipse.xtext.validation.Check
 
 /**
  * This class contains custom validation rules. 
@@ -24,17 +24,17 @@ import fr.cea.nabla.nablagen.CppProgrammingModel
  */
 class NablagenValidator extends AbstractNablagenValidator 
 {
-	public static val PERIOD_VAR_TYPE = "TagPersistentVariablesComponent::PeriodVarType"
+	public static val PERIOD_VARIABLES_TYPE = "TagPersistentVariablesComponent::PeriodVariablesType"
 	public static val KOKKOS_PATH = "Cpp::KokkosPath"
 
-	static def getPeriodVarTypeMsg() { "Invalid variable type: only scalar types accepted" }
+	static def getPeriodVariablesTypeMsg() { "Invalid variable type: only scalar types accepted" }
 	static def getKokkosPathMsg() { "Kokkos path is required when KOKKOS programming model is selected" }
 
 	@Check
-	def void checkPeriodVarType(TagPersistentVariablesComponent it)
+	def void checkPeriodVariablesType(TagPersistentVariablesComponent it)
 	{
-		if (periodVar !== null && !(periodVar instanceof SimpleVar || periodVar instanceof TimeIterator))
-			error(getPeriodVarTypeMsg(), NablagenPackage.Literals::TAG_PERSISTENT_VARIABLES_COMPONENT__PERIOD_VAR, PERIOD_VAR_TYPE)
+		if (periodReference !== null && !(periodReference instanceof SimpleVar || periodReference instanceof TimeIterator))
+			error(getPeriodVariablesTypeMsg(), NablagenPackage.Literals::TAG_PERSISTENT_VARIABLES_COMPONENT__PERIOD_REFERENCE, PERIOD_VARIABLES_TYPE)
 	}
 
 	@Check

@@ -10,12 +10,12 @@
 package fr.cea.nabla.typing
 
 import com.google.inject.Inject
+import fr.cea.nabla.ExpressionExtensions
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.PrimitiveType
 
 import static extension fr.cea.nabla.LabelServices.*
-import fr.cea.nabla.ExpressionExtensions
 
 class BaseTypeTypeProvider
 {
@@ -31,7 +31,7 @@ class BaseTypeTypeProvider
 			{
 				val size = sizes.get(0)
 				// if the label is null, the expression is not consistent
-				if (size === null || !size.respectIntConstExprConstraints)
+				if (size === null || !size.reductionLess)
 					null
 				else
 					getArray1DTypeFor(primitive, sizes.get(0))
@@ -40,7 +40,7 @@ class BaseTypeTypeProvider
 			{
 				val nbRows = sizes.get(0)
 				val nbCols = sizes.get(1)
-				if (nbRows === null || nbCols === null || !nbRows.respectIntConstExprConstraints || !nbCols.respectIntConstExprConstraints)
+				if (nbRows === null || nbCols === null || !nbRows.reductionLess || !nbCols.reductionLess)
 					null
 				else 
 					getArray2DTypeFor(primitive, nbRows, nbCols)

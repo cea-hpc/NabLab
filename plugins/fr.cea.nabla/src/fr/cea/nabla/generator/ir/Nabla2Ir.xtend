@@ -49,14 +49,14 @@ class Nabla2Ir
 			val timeIterators = nablaModule.iteration.iterators
 			val firstTimeIterator = timeIterators.head
 			val mainIC = firstTimeIterator.toIrIterationCounter
-			variables += mainIC
+			declarations += mainIC
 			mainTimeLoop = firstTimeIterator.toIrTimeLoop
 			mainTimeLoop.iterationCounter = mainIC
 			var TimeLoop outerTL = mainTimeLoop
 			for (ti : timeIterators.tail)
 			{
 				val ic = ti.toIrIterationCounter
-				variables += ic
+				declarations += ic
 				val tl = ti.toIrTimeLoop
 				tl.iterationCounter = ic
 				outerTL.innerTimeLoop = tl
@@ -65,13 +65,12 @@ class Nabla2Ir
 		}
 
 		// Option and global variables creation
-		for (o : nablaModule.options)
-			options += o.variable.toIrVariable as SimpleVariable
 		for (d : nablaModule.definitions)
-			variables += createIrVariablesFor(nablaModule, d.variable)
+			for (v : createIrVariablesFor(nablaModule, d.variable))
+				definitions += v as SimpleVariable
 		for (d : nablaModule.declarations)
 			for (v : d.variables)
-				variables += createIrVariablesFor(nablaModule, v)
+				declarations += createIrVariablesFor(nablaModule, v)
 
 		// TimeLoop jobs creation
 		if (mainTimeLoop !== null) jobs += mainTimeLoop.createTimeLoopJobs

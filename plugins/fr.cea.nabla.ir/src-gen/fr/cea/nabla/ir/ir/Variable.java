@@ -13,7 +13,6 @@ package fr.cea.nabla.ir.ir;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getOutputName <em>Output Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Variable#isConst <em>Const</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getVariable()
@@ -42,28 +41,5 @@ public interface Variable extends ArgOrVar {
 	 * @generated
 	 */
 	void setOutputName(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Const</b></em>' attribute.
-	 * The default value is <code>"false"</code>.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Const</em>' attribute.
-	 * @see #setConst(boolean)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getVariable_Const()
-	 * @model default="false" required="true"
-	 * @generated
-	 */
-	boolean isConst();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Variable#isConst <em>Const</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Const</em>' attribute.
-	 * @see #isConst()
-	 * @generated
-	 */
-	void setConst(boolean value);
 
 } // Variable

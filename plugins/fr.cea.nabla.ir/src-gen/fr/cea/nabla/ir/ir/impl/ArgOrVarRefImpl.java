@@ -132,17 +132,12 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated NOT 
-	 * FIXME workaround BUG 89325
+	 * @generated
 	 */
 	@Override
-	@SuppressWarnings("serial")
 	public EList<ItemIndex> getIterators() {
 		if (iterators == null) {
-			iterators = new EObjectEList<ItemIndex>(ItemIndex.class, this, IrPackage.ARG_OR_VAR_REF__ITERATORS) {
-				@Override
-				protected boolean isUnique() { return false; }
-			};
+			iterators = new EObjectEList<ItemIndex>(ItemIndex.class, this, IrPackage.ARG_OR_VAR_REF__ITERATORS);
 		}
 		return iterators;
 	}

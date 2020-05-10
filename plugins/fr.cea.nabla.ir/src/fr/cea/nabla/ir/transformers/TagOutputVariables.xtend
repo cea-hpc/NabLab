@@ -16,34 +16,30 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import java.util.HashMap
 import org.eclipse.emf.ecore.util.EcoreUtil
 
-import static fr.cea.nabla.ir.Utils.getCurrentIrVariable
+import static fr.cea.nabla.ir.IrModuleExtensions.getCurrentIrVariable
 
 class TagOutputVariables extends IrTransformationStep
 {
-	public static val ANNOTATION_SOURCE = "output"
-	public static val ANNOTATION_DETAIL = "output-name"
+	public static val OutputPathNameAndValue = new Pair<String, String>("outputPath", "output")
 
 	val HashMap<String, String> outputVariables // variable name, output name
-	val double periodValue
-	val String periodVariableName
+	val String periodReferenceVarName
 
-	new(HashMap<String, String> outputVariables, double periodValue, String periodVariableName)
+	new(HashMap<String, String> outputVariables, String periodReferenceVarName)
 	{
 		super('Tag output variables')
 		this.outputVariables = outputVariables
-		this.periodValue = periodValue
-		this.periodVariableName = periodVariableName
+		this.periodReferenceVarName = periodReferenceVarName
 	}
 
 	override transform(IrModule m)
 	{
 		trace('IR -> IR: ' + description + '\n')
-		val ppInfo = IrFactory.eINSTANCE.createPostProcessingInfo
-		ppInfo.periodValue = periodValue
-
-		val periodVariable = getCurrentIrVariable(m, periodVariableName)
-		if (periodVariable === null) return false
-		ppInfo.periodVariable = periodVariable as SimpleVariable
+		val f = IrFactory.eINSTANCE
+		val ppInfo = f.createPostProcessingInfo
+		val periodReferenceVar = getCurrentIrVariable(m, periodReferenceVarName)
+		if (periodReferenceVar === null) return false
+		ppInfo.periodReference = periodReferenceVar as SimpleVariable
 
 		for (key : outputVariables.keySet)
 		{
@@ -57,26 +53,53 @@ class TagOutputVariables extends IrTransformationStep
 		m.postProcessingInfo = ppInfo
 
 		// Create a variable to store the last write time
-		val periodVariableType = (periodVariable as SimpleVariable).type
-		val lastDumpVariable = IrFactory.eINSTANCE.createSimpleVariable =>
+		val periodVariableType = ppInfo.periodReference.type
+		val lastDumpVariable = f.createSimpleVariable =>
 		[
 			name = "lastDump"
 			type = EcoreUtil::copy(periodVariableType)
-			defaultValue = periodVariableType.primitive.defaultValue
+			const = false
+			constExpr = false
+			option = false
+			defaultValue = periodVariableType.primitive.lastDumpDefaultValue
 		]
-		m.variables += lastDumpVariable
+		m.definitions += lastDumpVariable
 		ppInfo.lastDumpVariable = lastDumpVariable
+
+		// Create an option to store the output period
+		val periodValueVariable = f.createSimpleVariable =>
+		[
+			name = "outputPeriod"
+			type = EcoreUtil::copy(periodVariableType)
+			const = false
+			constExpr = false
+			option = true
+			defaultValue = periodVariableType.primitive.outputPeriodDefaultValue
+		]
+		m.definitions.add(0, periodValueVariable)
+		ppInfo.periodValue = periodValueVariable
 
 		return true
 	}
 
-	private def getDefaultValue(PrimitiveType t)
+	private def getLastDumpDefaultValue(PrimitiveType t)
 	{
 		val f =  IrFactory.eINSTANCE
 		switch t
 		{
 			case BOOL: f.createBoolConstant => [ value = false ]
 			default: f.createMinConstant => [ type = f.createBaseType => [ primitive = t] ]
+		}
+	}
+
+	private def getOutputPeriodDefaultValue(PrimitiveType t)
+	{
+		val f =  IrFactory.eINSTANCE
+		switch t
+		{
+			case INT: f.createIntConstant => [value = 1]
+			case REAL: f.createRealConstant => [value = 1.0]
+			default: throw new RuntimeException("Unsupported type for output period variable")
 		}
 	}
 }

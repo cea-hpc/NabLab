@@ -12,69 +12,75 @@ package fr.cea.nabla.javalib.mesh
 import java.io.FileNotFoundException
 import java.io.PrintWriter
 import java.io.UnsupportedEncodingException
-import java.util.Map
 
 class VtkFileWriter2D extends FileWriter
 {
-	new(String moduleName) 
+	new(String moduleName, String directoryName)
 	{
-		super(moduleName) 
+		super(moduleName, directoryName)
 	}
 
-	override writeFile(int iteration, double time, double[][] nodes, Quad[] cells, Map<String, double[]> cellVariables, Map<String, double[]> nodeVariables)
+	override writeFile(VtkFileContent it)
 	{
-		try 
+		if (!disabled)
 		{
-			val writer = new PrintWriter(OutputDir + '/' + moduleName + '.' + iteration + '.vtk', 'UTF-8')
-			
-			writer.println('# vtk DataFile Version 2.0')
-			writer.println(moduleName + ' at iteration ' + iteration)
-			writer.println('ASCII')
-			writer.println('DATASET POLYDATA')
-
-			writer.println('FIELD FieldData 1')
-			writer.println('TIME 1 1 double')
-			writer.println(time)
-
-			writer.println('POINTS ' + nodes.size + ' float')
-			nodes.forEach[n | writer.println(n.get(0) + "\t" + n.get(1) + "\t" + 0.0)]
-
-			writer.println('POLYGONS ' + cells.size + ' ' + cells.size * 5)
-			cells.forEach[writer.println('4\t' + nodeIds.join('\t'))]
-
-			// POINT DATA
-			if (! (nodeVariables === null || nodeVariables.empty))
+			try
 			{
-				writer.println('\nDATA_DATA ' + nodes.size)
-				for (nodeVariableName : nodeVariables.keySet)
-				{
-					writer.println('SCALARS ' + nodeVariableName + ' float 1')
-					writer.println('LOOKUP_TABLE default')
-					nodeVariables.get(nodeVariableName).forEach[x | writer.println(x)]
-				}
-			}
+				val writer = new PrintWriter(directoryName + '/' + moduleName + '.' + iteration + '.vtk', 'UTF-8')
 
-			// CELL DATA
-			if (! (cellVariables === null || cellVariables.empty))
+				writer.println('# vtk DataFile Version 2.0')
+				writer.println(moduleName + ' at iteration ' + iteration)
+				writer.println('ASCII')
+				writer.println('DATASET POLYDATA')
+
+				writer.println('FIELD FieldData 1')
+				writer.println('TIME 1 1 double')
+				writer.println(time)
+
+				writer.println('POINTS ' + nodes.size + ' float')
+				nodes.forEach[n | writer.println(n.get(0) + "\t" + n.get(1) + "\t" + 0.0)]
+
+				writer.println('POLYGONS ' + cells.size + ' ' + cells.size * 5)
+				cells.forEach[writer.println('4\t' + nodeIds.join('\t'))]
+
+				// POINT DATA
+				if (hasNodeData)
+				{
+					writer.println('\nDATA_DATA ' + nodes.size)
+					for (nodeVariableName : nodeScalars.keySet)
+					{
+						writer.println('SCALARS ' + nodeVariableName + ' float 1')
+						writer.println('LOOKUP_TABLE default')
+						nodeScalars.get(nodeVariableName).forEach[x | writer.println(x)]
+					}
+					if (!nodeVectors.empty)
+						println("* Warning: vectors serialization not yet implemented. Use pvd format.")
+				}
+
+				// CELL DATA
+				if (hasCellData)
+				{
+					writer.println('\nCELL_DATA ' + cells.size)
+					for (cellVariableName : cellScalars.keySet)
+					{
+						writer.println('SCALARS ' + cellVariableName + ' float 1')
+						writer.println('LOOKUP_TABLE default')
+						cellScalars.get(cellVariableName).forEach[x | writer.println(x)]
+					}
+					if (!cellVectors.empty)
+						println("* Warning: vectors serialization not yet implemented. Use pvd format.")
+				}
+
+				writer.close
+			}
+			catch (FileNotFoundException e)
 			{
-				writer.println('\nCELL_DATA ' + cells.size)
-				for (cellVariableName : cellVariables.keySet)
-				{
-					writer.println('SCALARS ' + cellVariableName + ' float 1')
-					writer.println('LOOKUP_TABLE default')
-					cellVariables.get(cellVariableName).forEach[x | writer.println(x)]
-				}
+				e.printStackTrace
+			} 
+			catch (UnsupportedEncodingException e)
+			{
+				e.printStackTrace
 			}
-
-			writer.close
-		}
-		catch (FileNotFoundException e)
-		{
-			e.printStackTrace
-		} 
-		catch (UnsupportedEncodingException e)
-		{
-			e.printStackTrace
 		}
 	}
 }

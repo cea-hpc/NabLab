@@ -32,7 +32,7 @@ project(nablacpplibs CXX)
 
 ### LIBCPPNABLA
 add_library(cppnabla 
-    mesh/CartesianMesh2D.cc mesh/CartesianMesh2DGenerator.cc mesh/FileWriter.cc mesh/PvdFileWriter2D.cc mesh/VtkFileWriter2D.cc
+    mesh/CartesianMesh2D.cc mesh/CartesianMesh2DGenerator.cc mesh/AbstractPvdFileWriter2D.cc
     types/MultiArray.cc
     utils/Timer.cc utils/Utils.cc)
 target_include_directories(cppnabla PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

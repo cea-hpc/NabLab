@@ -10,17 +10,24 @@
 #include <Kokkos_hwloc.hpp>
 #include "mesh/CartesianMesh2DGenerator.h"
 #include "mesh/CartesianMesh2D.h"
-#include "mesh/PvdFileWriter2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
-#include "types/MathFunctions.h"
+#include "mesh/kokkos/PvdFileWriter2D.h"
 #include "utils/kokkos/Parallel.h"
 
 using namespace nablalib;
 
 /******************** Free functions declarations ********************/
 
+KOKKOS_INLINE_FUNCTION
+double det(RealArray1D<2> a, RealArray1D<2> b);
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+double norm(RealArray1D<x> a);
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+double dot(RealArray1D<x> a, RealArray1D<x> b);
 template<size_t x>
 KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
@@ -35,12 +42,14 @@ class HeatEquation
 public:
 	struct Options
 	{
+		std::string outputPath;
+		int outputPeriod;
+		double stopTime;
+		int maxIterations;
 		double X_EDGE_LENGTH;
 		double Y_EDGE_LENGTH;
-		size_t X_EDGE_ELEMS;
-		size_t Y_EDGE_ELEMS;
-		double option_stoptime;
-		size_t option_max_iterations;
+		int X_EDGE_ELEMS;
+		int Y_EDGE_ELEMS;
 		double PI;
 		double alpha;
 
@@ -49,16 +58,17 @@ public:
 
 	Options* options;
 
-	HeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string output);
+	HeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D);
 
 private:
 	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
 	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
-	int n;
 	double t_n;
 	double t_nplus1;
-	const double deltat;
+	static constexpr double deltat = 0.001;
+	int lastDump;
+	int n;
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> center;
 	Kokkos::View<double*> u_n;
@@ -67,7 +77,6 @@ private:
 	Kokkos::View<double*> f;
 	Kokkos::View<double*> outgoingFlux;
 	Kokkos::View<double*> surface;
-	int lastDump;
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;

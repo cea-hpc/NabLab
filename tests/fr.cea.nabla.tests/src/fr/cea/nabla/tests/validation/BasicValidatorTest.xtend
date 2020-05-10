@@ -80,8 +80,8 @@ class BasicValidatorTest
 			'''))
 
 		moduleKo1.assertError(NablaPackage.eINSTANCE.interval,
-			BasicValidator::CONST_INT_EXPRESSION_MSG,
-			BasicValidator::getConstIntExpressionMsg())
+			BasicValidator::TYPE_EXPRESSION_TYPE,
+			BasicValidator::getTypeExpressionMsg("ℝ"))
 
 		val moduleKo2 = parseHelper.parse(getTestModule( '',
 			'''
@@ -95,8 +95,8 @@ class BasicValidatorTest
 			'''))
 
 		moduleKo2.assertError(NablaPackage.eINSTANCE.interval,
-			BasicValidator::CONST_INT_EXPRESSION_TYPE_MSG,
-			BasicValidator::getConstIntExpressionTypeMsg("ℝ"))
+			BasicValidator::TYPE_EXPRESSION_TYPE,
+			BasicValidator::getTypeExpressionMsg("ℝ"))
 
 		val moduleOk = parseHelper.parse(getTestModule( '',
 			'''
@@ -274,12 +274,12 @@ class BasicValidatorTest
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseType,
-			BasicValidator::CONST_INT_EXPRESSION_MSG,
-			BasicValidator::getConstIntExpressionMsg())
+			BasicValidator::TYPE_EXPRESSION_TYPE,
+			BasicValidator::getTypeExpressionMsg("ℝ"))
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseType,
-			BasicValidator::CONST_INT_EXPRESSION_TYPE_MSG,
-			BasicValidator::getConstIntExpressionTypeMsg("ℝ"))
+			BasicValidator::TYPE_EXPRESSION_TYPE,
+			BasicValidator::getTypeExpressionMsg("ℝ"))
 
 		val moduleOk = parseHelper.parse(testModule +
 			'''
@@ -324,38 +324,6 @@ class BasicValidatorTest
 			ℝ[2] X{nodes};
 			IniX1: ∀j∈cells(), ∀r∈nodes(), X{r} = orig; 
 			IniX2: ∀j∈cells(), ∀r∈nodesOfCell(j), X{r} = orig; 
-			'''
-		)
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
-	@Test
-	def void testCheckNotInInstructions() 
-	{
-		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '') +
-			'''
-			ℝ[2] X{nodes};
-			UpdateX: 
-			{
-				ℝ[2] a{nodes};
-				∀r∈nodes(), X{r} = a{r};
-			}
-			'''
-		)
-		Assert.assertNotNull(moduleKo)
-		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar,
-			BasicValidator::NOT_IN_INSTRUCTIONS,
-			BasicValidator::getNotInInstructionsMsg)
-
-		val moduleOk =  parseHelper.parse(getTestModule(defaultConnectivities, '') +
-			'''
-			ℝ[2] X{nodes};
-			UpdateX: 
-			{
-				ℝ[2] a;
-				∀r∈nodes(), X{r} = a;
-			}
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

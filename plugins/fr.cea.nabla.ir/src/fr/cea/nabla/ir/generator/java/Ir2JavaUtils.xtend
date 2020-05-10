@@ -12,9 +12,18 @@ package fr.cea.nabla.ir.generator.java
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.PrimitiveType
+import fr.cea.nabla.ir.ir.Function
 
 class Ir2JavaUtils 
 {
+	static def getCodeName(Function it)
+	{
+		if (body === null)
+			if (provider == "Math") 'Math.' + name
+			else provider + 'Functions.' + name
+		else name
+	}
+
 	static def dispatch String getJavaType(BaseType it)
 	{
 		if (it === null) return 'null'

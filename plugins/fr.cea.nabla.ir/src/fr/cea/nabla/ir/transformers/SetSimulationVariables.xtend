@@ -13,7 +13,7 @@ import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
 
-import static fr.cea.nabla.ir.Utils.*
+import static fr.cea.nabla.ir.IrModuleExtensions.*
 
 class SetSimulationVariables extends IrTransformationStep
 {
@@ -34,7 +34,6 @@ class SetSimulationVariables extends IrTransformationStep
 		trace('IR -> IR: ' + description + '\n')
 		m.initNodeCoordVariable = getInitIrVariable(m, nodeCoordVariableName) as ConnectivityVariable
 		m.nodeCoordVariable = getCurrentIrVariable(m, nodeCoordVariableName) as ConnectivityVariable
-		m.nodeCoordVariable.const = false
 		m.timeVariable = getCurrentIrVariable(m, timeVariableName) as SimpleVariable
 		m.deltatVariable = getCurrentIrVariable(m, timeStepVariableName) as SimpleVariable
 		return true

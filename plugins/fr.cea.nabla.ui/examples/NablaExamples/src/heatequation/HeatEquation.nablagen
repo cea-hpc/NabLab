@@ -21,7 +21,7 @@ workflow HeatEquationGenerationChain transforms HeatEquation
 	TagPersistentVariables tagPersistentVariables follows nabla2ir 
 	{ 
 		dumpedVariables = u as "Temperature";
-		period = 1.0 for n;
+		periodReferenceVariable = n;
 	}
 	
 	ReplaceUtf replaceUtf follows tagPersistentVariables
@@ -51,8 +51,8 @@ workflow HeatEquationGenerationChain transforms HeatEquation
 	{
 		language = Cpp
 		{
-			maxIterationVariable = option_max_iterations;
-			stopTimeVariable = option_stoptime;
+			maxIterationVariable = maxIterations;
+			stopTimeVariable = stopTime;
 			programmingModel = StlThread;
 			compiler = GNU;
 		}
@@ -63,8 +63,8 @@ workflow HeatEquationGenerationChain transforms HeatEquation
 	{
 		language = Cpp
 		{
-			maxIterationVariable = option_max_iterations;
-			stopTimeVariable = option_stoptime;
+			maxIterationVariable = maxIterations;
+			stopTimeVariable = stopTime;
 			programmingModel = Kokkos;
 			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
 			compiler = GNU;
@@ -76,8 +76,8 @@ workflow HeatEquationGenerationChain transforms HeatEquation
 	{
 		language = Cpp
 		{
-			maxIterationVariable = option_max_iterations;
-			stopTimeVariable = option_stoptime;
+			maxIterationVariable = maxIterations;
+			stopTimeVariable = stopTime;
 			programmingModel = KokkosTeamThread;
 			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
 			compiler = GNU;

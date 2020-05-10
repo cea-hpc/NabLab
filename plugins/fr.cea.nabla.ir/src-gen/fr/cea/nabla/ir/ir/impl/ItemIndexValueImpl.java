@@ -9,8 +9,10 @@ import fr.cea.nabla.ir.ir.ItemIndexValue;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
@@ -37,6 +39,7 @@ public class ItemIndexValueImpl extends IrAnnotableImpl implements ItemIndexValu
 	 * @ordered
 	 */
 	protected ItemId id;
+
 	/**
 	 * The cached value of the '{@link #getContainer() <em>Container</em>}' containment reference.
 	 * <!-- begin-user-doc -->

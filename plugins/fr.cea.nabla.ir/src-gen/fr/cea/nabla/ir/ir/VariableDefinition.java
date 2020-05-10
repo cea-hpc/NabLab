@@ -25,12 +25,12 @@ public interface VariableDefinition extends Instruction {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Variable</em>' containment reference.
-	 * @see #setVariable(Variable)
+	 * @see #setVariable(SimpleVariable)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getVariableDefinition_Variable()
 	 * @model containment="true" resolveProxies="true" required="true"
 	 * @generated
 	 */
-	Variable getVariable();
+	SimpleVariable getVariable();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.VariableDefinition#getVariable <em>Variable</em>}' containment reference.
@@ -40,6 +40,6 @@ public interface VariableDefinition extends Instruction {
 	 * @see #getVariable()
 	 * @generated
 	 */
-	void setVariable(Variable value);
+	void setVariable(SimpleVariable value);
 
 } // VariableDefinition

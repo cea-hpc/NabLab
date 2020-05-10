@@ -355,6 +355,15 @@ public interface IrFactory extends EFactory {
 	MaxConstant createMaxConstant();
 
 	/**
+	 * Returns a new object of class '<em>Function Call</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Function Call</em>'.
+	 * @generated
+	 */
+	FunctionCall createFunctionCall();
+
+	/**
 	 * Returns a new object of class '<em>Base Type Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -380,15 +389,6 @@ public interface IrFactory extends EFactory {
 	 * @generated
 	 */
 	Cardinality createCardinality();
-
-	/**
-	 * Returns a new object of class '<em>Function Call</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Function Call</em>'.
-	 * @generated
-	 */
-	FunctionCall createFunctionCall();
 
 	/**
 	 * Returns a new object of class '<em>Arg Or Var Ref</em>'.

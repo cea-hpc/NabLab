@@ -31,7 +31,7 @@ Config:
 	'}';
 
 VtkOutput:
-	'vtkoutput' periodVar=[nabla::ArgOrVar] '%' periodValue=REAL
+	'vtkoutput' 'reference' periodReferenceVar=[nabla::ArgOrVar]
 	'{'
 		vars += OutputVar*
 	'}';

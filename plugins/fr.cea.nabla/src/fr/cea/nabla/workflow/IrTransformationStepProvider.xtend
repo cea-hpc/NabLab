@@ -13,7 +13,7 @@ import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
-import fr.cea.nabla.ir.transformers.TagPersistentVariables
+import fr.cea.nabla.ir.transformers.TagOutputVariables
 import fr.cea.nabla.nablagen.FillHLTsComponent
 import fr.cea.nabla.nablagen.OptimizeConnectivitiesComponent
 import fr.cea.nabla.nablagen.ReplaceReductionsComponent
@@ -29,7 +29,7 @@ class IrTransformationStepProvider
 	{
 		val outVars = new HashMap<String, String>
 		dumpedVars.forEach[x | outVars.put(x.varRef.name, x.varName)]
-		return new TagPersistentVariables(outVars, periodValue, periodVar.name)
+		return new TagOutputVariables(outVars, periodReference.name)
 	}
 
 	static def dispatch get(ReplaceUtfComponent it)

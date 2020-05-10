@@ -10,11 +10,10 @@
 #include <Kokkos_hwloc.hpp>
 #include "mesh/CartesianMesh2DGenerator.h"
 #include "mesh/CartesianMesh2D.h"
-#include "mesh/PvdFileWriter2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
-#include "types/MathFunctions.h"
+#include "mesh/kokkos/PvdFileWriter2D.h"
 #include "utils/kokkos/Parallel.h"
 
 using namespace nablalib;
@@ -22,10 +21,21 @@ using namespace nablalib;
 /******************** Free functions declarations ********************/
 
 KOKKOS_INLINE_FUNCTION
+double det(RealArray2D<2,2> a);
+KOKKOS_INLINE_FUNCTION
 RealArray1D<2> perp(RealArray1D<2> a);
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+double dot(RealArray1D<x> a, RealArray1D<x> b);
+template<size_t x>
+KOKKOS_INLINE_FUNCTION
+double norm(RealArray1D<x> a);
 template<size_t l>
 KOKKOS_INLINE_FUNCTION
 RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b);
+template<size_t x, size_t y>
+KOKKOS_INLINE_FUNCTION
+RealArray1D<x> matVectProduct(RealArray2D<x,y> a, RealArray1D<y> b);
 template<size_t l>
 KOKKOS_INLINE_FUNCTION
 double trace(RealArray2D<l,l> a);
@@ -50,37 +60,40 @@ class Glace2d
 public:
 	struct Options
 	{
+		std::string outputPath;
+		int outputPeriod;
+		double stopTime;
+		int maxIterations;
 		double X_EDGE_LENGTH;
 		double Y_EDGE_LENGTH;
-		size_t X_EDGE_ELEMS;
-		size_t Y_EDGE_ELEMS;
-		double option_stoptime;
-		size_t option_max_iterations;
+		int X_EDGE_ELEMS;
+		int Y_EDGE_ELEMS;
 		double gamma;
-		double option_x_interface;
-		double option_deltat_ini;
-		double option_deltat_cfl;
-		double option_rho_ini_zg;
-		double option_rho_ini_zd;
-		double option_p_ini_zg;
-		double option_p_ini_zd;
+		double xInterface;
+		double deltatIni;
+		double deltatCfl;
+		double rhoIniZg;
+		double rhoIniZd;
+		double pIniZg;
+		double pIniZd;
 
 		Options(const std::string& fileName);
 	};
 
 	Options* options;
 
-	Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string output);
+	Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D);
 
 private:
 	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
 	size_t nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
-	int n;
 	double t_n;
 	double t_nplus1;
 	double deltat_n;
 	double deltat_nplus1;
+	int lastDump;
+	int n;
 	Kokkos::View<RealArray1D<2>*> X_n;
 	Kokkos::View<RealArray1D<2>*> X_nplus1;
 	Kokkos::View<RealArray1D<2>*> X_n0;
@@ -105,12 +118,17 @@ private:
 	Kokkos::View<RealArray1D<2>**> C;
 	Kokkos::View<RealArray1D<2>**> F;
 	Kokkos::View<RealArray2D<2,2>**> Ajr;
-	int lastDump;
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
+	/**
+	 * Utility function to get work load for each team of threads
+	 * In  : thread and number of element to use for computation
+	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
+	 */
+	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void computeCjr(const member_type& teamMember) noexcept;
 	

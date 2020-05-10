@@ -13,13 +13,12 @@ import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.PostProcessingInfo
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
+import fr.cea.nabla.javalib.mesh.VtkFileContent
 import java.util.Arrays
-import java.util.HashMap
 import java.util.Locale
 
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
@@ -120,34 +119,43 @@ class JobInterpreter
 
 	private def void dumpVariables(IrModule irModule, int iteration, Context context)
 	{
-		val time = context.getReal(irModule.timeVariable.name)
 		val ppInfo = irModule.postProcessingInfo
-		val currentPeriodVariableValue = context.getNumber(ppInfo.periodVariable.name)
+		val periodValue = context.getNumber(ppInfo.periodValue.name)
+		val periodReference = context.getNumber(ppInfo.periodReference.name)
 		val lastDump = context.getNumber(ppInfo.lastDumpVariable.name)
 
-		if (currentPeriodVariableValue >= lastDump + ppInfo.periodValue)
+		if (periodReference >= lastDump + periodValue)
 		{
-			val cellVariables = new HashMap<String, double[]>
-			val nodeVariables = new HashMap<String, double[]>
-
-			//TODO deal with linearAlgebra
-			setItemVariables(ppInfo, context, irModule, "cell", cellVariables)
-			setItemVariables(ppInfo, context, irModule, "node", nodeVariables)
-
+			val time = context.getReal(irModule.timeVariable.name)
 			val coordVariable = irModule.getVariableByName(irModule.nodeCoordVariable.name)
 			val coord = (context.getVariableValue(coordVariable) as NV2Real).data
 			val quads = context.meshWrapper.quads
-			writer.writeFile(iteration, time, coord, quads, cellVariables, nodeVariables)
-			context.setVariableValue(ppInfo.lastDumpVariable, new NV0Real(currentPeriodVariableValue))
-		}
-	}
+			val vtkFileContent = new VtkFileContent(iteration, time, coord, quads);
 
-	private def setItemVariables(PostProcessingInfo it, Context context, IrModule module, String itemName, HashMap<String, double[]> map)
-	{
-		for (v : outputVariables.filter(ConnectivityVariable).filter(v | v.type.connectivities.head.returnType.name == itemName))
-		{
-			val value = context.getVariableValue(module.getVariableByName(v.name))
-			if (value instanceof NV1Real) map.put(v.outputName, value.data)
+			//TODO deal with linearAlgebra
+			val connectivityVars = ppInfo.outputVariables.filter(ConnectivityVariable)
+			for (v : connectivityVars.filter(v | v.type.connectivities.head.returnType.name == "cell"))
+			{
+				val value = context.getVariableValue(irModule.getVariableByName(v.name))
+				switch value
+				{
+					NV1Real: vtkFileContent.addCellVariable(v.outputName, value.data)
+					NV2Real: vtkFileContent.addCellVariable(v.outputName, value.data)
+					default: throw new RuntimeException("Vtk writer not yet implemented for type: " + value.class.name)
+				}
+			}
+			for (v : connectivityVars.filter(v | v.type.connectivities.head.returnType.name == "node"))
+			{
+				val value = context.getVariableValue(irModule.getVariableByName(v.name))
+				switch value
+				{
+					NV1Real: vtkFileContent.addNodeVariable(v.outputName, value.data)
+					NV2Real: vtkFileContent.addNodeVariable(v.outputName, value.data)
+					default: throw new RuntimeException("Vtk writer not yet implemented for type: " + value.class.name)
+				}
+			}
+			writer.writeFile(vtkFileContent)
+			context.setVariableValue(ppInfo.lastDumpVariable, new NV0Real(periodReference))
 		}
 	}
 

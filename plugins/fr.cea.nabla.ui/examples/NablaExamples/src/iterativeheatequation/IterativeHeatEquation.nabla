@@ -24,21 +24,21 @@ item commonFace: cell × cell → face;
 
 def check: ℾ → ℾ, (a) → if (a) return true; else exit "Assertion failed";
 
-option X_LENGTH = 2.0;
-option Y_LENGTH = 2.0;
 option u0 = 1.0;
 option vectOne = ℝ[2](1.0);
 
 // Mesh options
+option X_LENGTH = 2.0;
+option Y_LENGTH = 2.0;
 option X_EDGE_ELEMS = 40;
 option Y_EDGE_ELEMS = 40;
 option X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
 option Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 
 // Simulation options
-option option_stoptime = 0.1;
-option option_max_iterations = 500000000;
-option option_max_iterations_k = 1000;
+option stopTime = 0.1;
+option maxIterations = 500000000;
+option maxIterationsK = 1000;
 option ε =  1.0e-8;
 
 let t=0.0;
@@ -52,8 +52,8 @@ let δt=0.001;
 ℝ α{cells, cells};
 ℝ residual;
 
-iterate	n while (t^{n+1} < option_stoptime && n+1 < option_max_iterations),
-		k while (residual > ε && check(k+1 < option_max_iterations_k));
+iterate	n while (t^{n+1} < stopTime && n+1 < maxIterations),
+		k while (residual > ε && check(k+1 < maxIterationsK));
 
 InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
 
@@ -87,5 +87,5 @@ computeAlphaCoeff: ∀c∈cells(), {
 	α{c, c} = -αDiag;
 }
 UpdateU: ∀c∈cells(), u^{n+1, k+1}{c} = u^{n}{c} + α{c, c} * u^{n+1, k}{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u^{n+1, k}{d});
-ComputeResidual: residual = Max{j ∈ cells()}(fabs(u^{n+1,k+1}{j} - u^{n+1,k}{j}));
+ComputeResidual: residual = Max{j ∈ cells()}(abs(u^{n+1,k+1}{j} - u^{n+1,k}{j}));
 ComputeTn: t^{n+1} = t^{n} + δt;

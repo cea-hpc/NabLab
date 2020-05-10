@@ -27,7 +27,6 @@ import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
-import fr.cea.nabla.ir.ir.IrPackage
 
 class ArgOrVarExtensions
 {
@@ -67,11 +66,6 @@ class ArgOrVarExtensions
 	static def isGlobal(Variable it)
 	{
 		(eContainer instanceof IrModule)
-	}
-
-	static def isOption(ArgOrVar it)
-	{
-		(eContainingFeature === IrPackage::Literals.IR_MODULE__OPTIONS)
 	}
 
 	static def isLinearAlgebra(Function it)

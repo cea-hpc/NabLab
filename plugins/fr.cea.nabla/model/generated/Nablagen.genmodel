@@ -46,8 +46,7 @@
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//TagPersistentVariablesComponent">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//TagPersistentVariablesComponent/dumpedVars"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//TagPersistentVariablesComponent/periodValue"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//TagPersistentVariablesComponent/periodVar"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//TagPersistentVariablesComponent/periodReference"/>
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//PersistentVar">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//PersistentVar/varRef"/>

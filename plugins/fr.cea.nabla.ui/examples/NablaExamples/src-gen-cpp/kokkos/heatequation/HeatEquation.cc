@@ -31,7 +31,7 @@ double dot(RealArray1D<x> a, RealArray1D<x> b)
 
 template<size_t x>
 KOKKOS_INLINE_FUNCTION
-RealArray1D<0> sumR1(RealArray1D<0> a, RealArray1D<0> b)
+RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
 	return a + b;
 }
@@ -354,11 +354,12 @@ void HeatEquation::dumpVariables(int iteration)
 	{
 		cpuTimer.stop();
 		ioTimer.start();
-		std::map<string, double*> cellVariables;
-		std::map<string, double*> nodeVariables;
-		cellVariables.insert(pair<string,double*>("Temperature", u_n.data()));
 		auto quads = mesh->getGeometry()->getQuads();
-		writer.writeFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+		writer.startVtpFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data());
+		writer.openCellData();
+		writer.write("Temperature", u_n);
+		writer.closeCellData();
+		writer.closeVtpFile();
 		lastDump = n;
 		ioTimer.stop();
 		cpuTimer.start();

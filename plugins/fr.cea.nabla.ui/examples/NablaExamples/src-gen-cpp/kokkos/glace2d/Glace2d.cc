@@ -88,7 +88,7 @@ RealArray2D<2,2> inverse(RealArray2D<2,2> a)
 
 template<size_t x>
 KOKKOS_INLINE_FUNCTION
-RealArray1D<0> sumR1(RealArray1D<0> a, RealArray1D<0> b)
+RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
 	return a + b;
 }
@@ -101,7 +101,7 @@ double sumR0(double a, double b)
 
 template<size_t x>
 KOKKOS_INLINE_FUNCTION
-RealArray2D<0,0> sumR2(RealArray2D<0,0> a, RealArray2D<0,0> b)
+RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b)
 {
 	return a + b;
 }
@@ -858,11 +858,15 @@ void Glace2d::dumpVariables(int iteration)
 	{
 		cpuTimer.stop();
 		ioTimer.start();
-		std::map<string, double*> cellVariables;
-		std::map<string, double*> nodeVariables;
-		cellVariables.insert(pair<string,double*>("Density", rho.data()));
 		auto quads = mesh->getGeometry()->getQuads();
-		writer.writeFile(iteration, t_n, nbNodes, X_n.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+		writer.startVtpFile(iteration, t_n, nbNodes, X_n.data(), nbCells, quads.data());
+		writer.openNodeData();
+		writer.write<2>("Vitesse", ur);
+		writer.closeNodeData();
+		writer.openCellData();
+		writer.write("Density", rho);
+		writer.closeCellData();
+		writer.closeVtpFile();
 		lastDump = n;
 		ioTimer.stop();
 		cpuTimer.start();

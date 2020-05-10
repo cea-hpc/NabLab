@@ -10,10 +10,10 @@
 #include <Kokkos_hwloc.hpp>
 #include "mesh/CartesianMesh2DGenerator.h"
 #include "mesh/CartesianMesh2D.h"
-#include "mesh/PvdFileWriter2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
+#include "mesh/kokkos/PvdFileWriter2D.h"
 #include "utils/kokkos/Parallel.h"
 #include "linearalgebra/kokkos/LinearAlgebraFunctions.h"
 
@@ -31,7 +31,7 @@ KOKKOS_INLINE_FUNCTION
 double det(RealArray1D<2> a, RealArray1D<2> b);
 template<size_t x>
 KOKKOS_INLINE_FUNCTION
-RealArray1D<0> sumR1(RealArray1D<0> a, RealArray1D<0> b);
+RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
 KOKKOS_INLINE_FUNCTION
 double minR0(double a, double b);
 KOKKOS_INLINE_FUNCTION

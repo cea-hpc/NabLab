@@ -19,20 +19,20 @@ class PvdFileWriter2D extends FileWriter
 {
 	val fileNameByTimes = new LinkedHashMap<Double, String>
 
-	new(String moduleName, String outputDirName)
+	new(String moduleName, String directoryName)
 	{ 
-		super(moduleName, outputDirName)
+		super(moduleName, directoryName)
 	}
 
 	// Points in 3D needed for Paraview
-	override writeFile(int iteration, double time, double[][] nodes, Quad[] cells, Map<String, double[]> cellVariables, Map<String, double[]> nodeVariables)
+	override writeFile(VtkFileContent it)
 	{
 		if (!disabled)
 		{
 			try
 			{
 				val fileName = moduleName + '.' + iteration + '.vtp'
-				val vtpWriter = new PrintWriter(outputDirName + '/' + fileName, 'UTF-8')
+				val vtpWriter = new PrintWriter(directoryName + '/' + fileName, 'UTF-8')
 				vtpWriter.println('<?xml version="1.0"?>')
 				vtpWriter.println('<VTKFile type="PolyData">')
 				vtpWriter.println('	<PolyData>')
@@ -55,13 +55,22 @@ class PvdFileWriter2D extends FileWriter
 				vtpWriter.println('			</Polys>')
 
 				// POINT DATA
-				if (! (nodeVariables === null || nodeVariables.empty))
+				if (hasNodeData)
 				{
-					vtpWriter.println('			<PointData Scalars="' + nodeVariables.keySet.get(0) + '">')
-					for (nodeVariableName : nodeVariables.keySet)
+					vtpWriter.println('			<PointData' + nodeScalars.activeScalarIfExist + '>')
+					for (nodeVariableName : nodeScalars.keySet)
 					{
 						vtpWriter.println('				<DataArray Name="' + nodeVariableName + '" type="Float32" format="ascii">')
-						nodeVariables.get(nodeVariableName).forEach[x | vtpWriter.print(' ' + x)]
+						nodeScalars.get(nodeVariableName).forEach[x | vtpWriter.print(' ' + x)]
+						vtpWriter.println('')
+						vtpWriter.println('				</DataArray>')
+					}
+					for (nodeVariableName : nodeVectors.keySet)
+					{
+						val vectors = nodeVectors.get(nodeVariableName)
+						vtpWriter.println('				<DataArray Name="' + nodeVariableName + '" type="Float32" NumberOfComponents="' + vectors.get(0).size + '" format="ascii">')
+						for (vector : vectors)
+							vector.forEach[x | vtpWriter.print(' ' + x)]
 						vtpWriter.println('')
 						vtpWriter.println('				</DataArray>')
 					}
@@ -69,13 +78,22 @@ class PvdFileWriter2D extends FileWriter
 				}
 
 				// CELL DATA
-				if (! (cellVariables === null || cellVariables.empty))
+				if (hasCellData)
 				{
-					vtpWriter.println('			<CellData Scalars="' + cellVariables.keySet.get(0) + '">')
-					for (cellVariableName : cellVariables.keySet)
+					vtpWriter.println('			<CellData' + cellScalars.activeScalarIfExist + '>')
+					for (cellVariableName : cellScalars.keySet)
 					{
 						vtpWriter.println('				<DataArray Name="' + cellVariableName + '" type="Float32" format="ascii">')
-						cellVariables.get(cellVariableName).forEach[x | vtpWriter.print(' ' + x)]
+						cellScalars.get(cellVariableName).forEach[x | vtpWriter.print(' ' + x)]
+						vtpWriter.println('')
+						vtpWriter.println('				</DataArray>')
+					}
+					for (cellVariableName : cellVectors.keySet)
+					{
+						val vectors = cellVectors.get(cellVariableName)
+						vtpWriter.println('				<DataArray Name="' + cellVariableName + '" type="Float32" NumberOfComponents="' + vectors.get(0).size + '" format="ascii">')
+						for (vector : vectors)
+							vector.forEach[x | vtpWriter.print(' ' + x)]
 						vtpWriter.println('')
 						vtpWriter.println('				</DataArray>')
 					}
@@ -87,7 +105,7 @@ class PvdFileWriter2D extends FileWriter
 				vtpWriter.close
 				fileNameByTimes.put(time, fileName)
 
-				val pvdWriter = new PrintWriter(outputDirName + '/' + moduleName + '.pvd', 'UTF-8')
+				val pvdWriter = new PrintWriter(directoryName + '/' + moduleName + '.pvd', 'UTF-8')
 				pvdWriter.println('<?xml version="1.0"?>')
 				pvdWriter.println('<VTKFile type="Collection" version="0.1">')
 				pvdWriter.println('		<Collection>')
@@ -102,5 +120,11 @@ class PvdFileWriter2D extends FileWriter
 				e.printStackTrace
 			}
 		}
+	}
+
+	private def String getActiveScalarIfExist(Map<String, double[]> data)
+	{
+		if (data.empty) ""
+		else ' Scalars="' + data.keySet.get(0) + '"'
 	}
 }

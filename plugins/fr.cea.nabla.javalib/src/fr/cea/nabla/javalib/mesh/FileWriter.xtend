@@ -10,27 +10,26 @@
 package fr.cea.nabla.javalib.mesh
 
 import java.io.File
-import java.util.Map
 
 abstract class FileWriter 
 {
 	protected val String moduleName
-	protected val String outputDirName
+	protected val String directoryName
 
-	def isDisabled() { outputDirName.nullOrEmpty }
+	def isDisabled() { directoryName.nullOrEmpty }
 
-	protected new(String moduleName, String outputDirName)
+	protected new(String moduleName, String directoryName)
 	{ 
 		this.moduleName = moduleName
-		this.outputDirName = outputDirName
+		this.directoryName = directoryName
 
 		if (!disabled)
 		{
-			val outputDir = new File(outputDirName)
+			val outputDir = new File(directoryName)
 			if (!outputDir.exists)
 				throw new RuntimeException("Output directory does not exist: " + outputDir.absolutePath)
 		}
 	}
 
-	abstract def void writeFile(int iteration, double time, double[][] nodes, Quad[] cells, Map<String, double[]> cellVariables, Map<String, double[]> nodeVariables)
+	abstract def void writeFile(VtkFileContent content)
 }

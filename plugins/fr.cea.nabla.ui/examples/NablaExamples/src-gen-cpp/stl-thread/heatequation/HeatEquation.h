@@ -8,10 +8,10 @@
 #include <rapidjson/istreamwrapper.h>
 #include "mesh/CartesianMesh2DGenerator.h"
 #include "mesh/CartesianMesh2D.h"
-#include "mesh/PvdFileWriter2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
+#include "mesh/stl/PvdFileWriter2D.h"
 #include "utils/stl/Parallel.h"
 
 using namespace nablalib;
@@ -24,7 +24,7 @@ double norm(RealArray1D<x> a);
 template<size_t x>
 double dot(RealArray1D<x> a, RealArray1D<x> b);
 template<size_t x>
-RealArray1D<0> sumR1(RealArray1D<0> a, RealArray1D<0> b);
+RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
 double sumR0(double a, double b);
 
 

@@ -555,10 +555,9 @@ public final class IterativeHeatEquation
 	{
 		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
 		{
-			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-			cellVariables.put("Temperature", u_n);
-			writer.writeFile(iteration, t_n, X, mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
+			VtkFileContent content = new VtkFileContent(iteration, t_n, X, mesh.getGeometry().getQuads());
+			content.addCellVariable("Temperature", u_n);
+			writer.writeFile(content);
 			lastDump = n;
 		}
 	}

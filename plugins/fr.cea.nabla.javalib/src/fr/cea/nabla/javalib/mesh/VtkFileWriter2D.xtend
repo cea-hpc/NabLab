@@ -12,22 +12,21 @@ package fr.cea.nabla.javalib.mesh
 import java.io.FileNotFoundException
 import java.io.PrintWriter
 import java.io.UnsupportedEncodingException
-import java.util.Map
 
 class VtkFileWriter2D extends FileWriter
 {
-	new(String moduleName, String outputDirName)
+	new(String moduleName, String directoryName)
 	{
-		super(moduleName, outputDirName)
+		super(moduleName, directoryName)
 	}
 
-	override writeFile(int iteration, double time, double[][] nodes, Quad[] cells, Map<String, double[]> cellVariables, Map<String, double[]> nodeVariables)
+	override writeFile(VtkFileContent it)
 	{
 		if (!disabled)
 		{
 			try
 			{
-				val writer = new PrintWriter(outputDirName + '/' + moduleName + '.' + iteration + '.vtk', 'UTF-8')
+				val writer = new PrintWriter(directoryName + '/' + moduleName + '.' + iteration + '.vtk', 'UTF-8')
 
 				writer.println('# vtk DataFile Version 2.0')
 				writer.println(moduleName + ' at iteration ' + iteration)
@@ -45,27 +44,31 @@ class VtkFileWriter2D extends FileWriter
 				cells.forEach[writer.println('4\t' + nodeIds.join('\t'))]
 
 				// POINT DATA
-				if (! (nodeVariables === null || nodeVariables.empty))
+				if (hasNodeData)
 				{
 					writer.println('\nDATA_DATA ' + nodes.size)
-					for (nodeVariableName : nodeVariables.keySet)
+					for (nodeVariableName : nodeScalars.keySet)
 					{
 						writer.println('SCALARS ' + nodeVariableName + ' float 1')
 						writer.println('LOOKUP_TABLE default')
-						nodeVariables.get(nodeVariableName).forEach[x | writer.println(x)]
+						nodeScalars.get(nodeVariableName).forEach[x | writer.println(x)]
 					}
+					if (!nodeVectors.empty)
+						println("* Warning: vectors serialization not yet implemented. Use pvd format.")
 				}
 
 				// CELL DATA
-				if (! (cellVariables === null || cellVariables.empty))
+				if (hasCellData)
 				{
 					writer.println('\nCELL_DATA ' + cells.size)
-					for (cellVariableName : cellVariables.keySet)
+					for (cellVariableName : cellScalars.keySet)
 					{
 						writer.println('SCALARS ' + cellVariableName + ' float 1')
 						writer.println('LOOKUP_TABLE default')
-						cellVariables.get(cellVariableName).forEach[x | writer.println(x)]
+						cellScalars.get(cellVariableName).forEach[x | writer.println(x)]
 					}
+					if (!cellVectors.empty)
+						println("* Warning: vectors serialization not yet implemented. Use pvd format.")
 				}
 
 				writer.close

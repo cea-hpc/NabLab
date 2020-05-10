@@ -8,10 +8,10 @@
 #include <rapidjson/istreamwrapper.h>
 #include "mesh/CartesianMesh2DGenerator.h"
 #include "mesh/CartesianMesh2D.h"
-#include "mesh/PvdFileWriter2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
+#include "mesh/stl/PvdFileWriter2D.h"
 #include "utils/stl/Parallel.h"
 
 using namespace nablalib;
@@ -32,10 +32,10 @@ template<size_t l>
 double trace(RealArray2D<l,l> a);
 RealArray2D<2,2> inverse(RealArray2D<2,2> a);
 template<size_t x>
-RealArray1D<0> sumR1(RealArray1D<0> a, RealArray1D<0> b);
+RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
 double sumR0(double a, double b);
 template<size_t x>
-RealArray2D<0,0> sumR2(RealArray2D<0,0> a, RealArray2D<0,0> b);
+RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b);
 double minR0(double a, double b);
 
 

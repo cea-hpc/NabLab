@@ -55,7 +55,6 @@ class IncludesContentProvider
 		{
 			userIncludes += "mesh/CartesianMesh2DGenerator.h"
 			userIncludes += "mesh/CartesianMesh2D.h"
-			userIncludes += "mesh/PvdFileWriter2D.h"
 		}
 
 		userIncludes +=  "utils/Utils.h"
@@ -75,6 +74,7 @@ class StlThreadIncludesContentProvider extends IncludesContentProvider
 	override getAdditionalUserIncludes(IrModule m)
 	{
 		val includes = new LinkedHashSet<String>
+		if (m.withMesh) includes += "mesh/stl/PvdFileWriter2D.h"
 		includes += "utils/stl/Parallel.h"
 		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
 		return includes
@@ -91,6 +91,7 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 	override getAdditionalUserIncludes(IrModule m)
 	{
 		val includes = new LinkedHashSet<String>
+		if (m.withMesh) includes += "mesh/kokkos/PvdFileWriter2D.h"
 		includes += "utils/kokkos/Parallel.h"
 		if (m.linearAlgebra) includes += "linearalgebra/kokkos/LinearAlgebraFunctions.h"
 		return includes

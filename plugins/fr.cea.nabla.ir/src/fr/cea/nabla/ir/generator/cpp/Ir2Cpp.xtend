@@ -200,13 +200,26 @@ class Ir2Cpp extends CodeGenerator
 		{
 			cpuTimer.stop();
 			ioTimer.start();
-			std::map<string, double*> cellVariables;
-			std::map<string, double*> nodeVariables;
-			«FOR v : postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable)»
-			«v.type.connectivities.head.returnType.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
-			«ENDFOR»
 			auto quads = mesh->getGeometry()->getQuads();
-			writer.writeFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);
+			writer.startVtpFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data());
+			«val outputVarsByConnectivities = postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable).groupBy(x | x.type.connectivities.head.returnType.name)»
+			«val nodeVariables = outputVarsByConnectivities.get("node")»
+			«IF !nodeVariables.nullOrEmpty»
+				writer.openNodeData();
+				«FOR v : nodeVariables»
+					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«s.content»«ENDFOR»("«v.persistenceName»", «v.name»);
+				«ENDFOR»
+				writer.closeNodeData();
+			«ENDIF»
+			«val cellVariables = outputVarsByConnectivities.get("cell")»
+			«IF !cellVariables.nullOrEmpty»
+				writer.openCellData();
+				«FOR v : cellVariables»
+					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«s.content»«ENDFOR»("«v.persistenceName»", «v.name»);
+				«ENDFOR»
+				writer.closeCellData();
+			«ENDIF»
+			writer.closeVtpFile();
 			«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodReference.name»;
 			ioTimer.stop();
 			cpuTimer.start();

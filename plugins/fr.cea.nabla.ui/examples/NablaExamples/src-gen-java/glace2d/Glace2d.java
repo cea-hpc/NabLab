@@ -851,10 +851,10 @@ public final class Glace2d
 	{
 		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
 		{
-			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-			cellVariables.put("Density", rho);
-			writer.writeFile(iteration, t_n, X_n, mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
+			VtkFileContent content = new VtkFileContent(iteration, t_n, X_n, mesh.getGeometry().getQuads());
+			content.addCellVariable("Density", rho);
+			content.addNodeVariable("Vitesse", ur);
+			writer.writeFile(content);
 			lastDump = n;
 		}
 	}

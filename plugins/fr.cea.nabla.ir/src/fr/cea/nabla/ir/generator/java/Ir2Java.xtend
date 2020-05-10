@@ -169,12 +169,11 @@ class Ir2Java extends CodeGenerator
 			{
 				if (!writer.isDisabled() && «postProcessingInfo.periodReference.getCodeName('.')» >= «postProcessingInfo.lastDumpVariable.getCodeName('.')» + «postProcessingInfo.periodValue.getCodeName('.')»)
 				{
-					HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-					HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
+					VtkFileContent content = new VtkFileContent(iteration, «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometry().getQuads());
 					«FOR v : postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable)»
-					«v.type.connectivities.head.returnType.name»Variables.put("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
+					content.add«v.type.connectivities.head.returnType.name.toFirstUpper»Variable("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 					«ENDFOR»
-					writer.writeFile(iteration, «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
+					writer.writeFile(content);
 					«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodReference.name»;
 				}
 			}

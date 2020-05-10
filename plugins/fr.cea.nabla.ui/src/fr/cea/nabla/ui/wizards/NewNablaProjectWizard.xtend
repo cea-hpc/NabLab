@@ -285,19 +285,19 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 		set nodes: → { node };
 
-		const X_EDGE_LENGTH = 0.1;
-		const Y_EDGE_LENGTH = X_EDGE_LENGTH;
-		const X_EDGE_ELEMS = 20;
-		const Y_EDGE_ELEMS = 20;
+		option X_EDGE_LENGTH = 0.1;
+		option Y_EDGE_LENGTH = X_EDGE_LENGTH;
+		option X_EDGE_ELEMS = 20;
+		option Y_EDGE_ELEMS = 20;
 
-		const max_iter = 200;
-		const max_time = 1.0;
+		option maxIter = 200;
+		option maxTime = 1.0;
 
 		ℝ t, δt;
 		ℝ[2] X{nodes};
 		ℝ e{nodes};
 
-		iterate n while (n+1 < max_iter && t^{n+1} < max_time);
+		iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 	'''
 
 	private def getNablagenModelContent(String nablaModuleName, IFolder srcGenJavaFolder, HashMap<String, IFolder> cppFoldersByProgrammingModel)
@@ -316,7 +316,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 			TagPersistentVariables tagPersistentVariables follows nabla2ir
 			{ 
 				dumpedVariables = e as "Energy";
-				period = 1.0 for n;
+				periodReferenceVariable = n;
 			}
 
 			ReplaceUtf replaceUtf follows tagPersistentVariables
@@ -347,9 +347,12 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 			{
 				language = Cpp
 				{
-					maxIterationVariable = max_iter;
-					stopTimeVariable = max_time;
-					programmingModel = «cppProgrammingModel»
+					maxIterationVariable = maxIter;
+					stopTimeVariable = maxTime;
+					programmingModel = «cppProgrammingModel»;
+					«IF cppProgrammingModel.contains("Kokkos")»kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";«ENDIF»
+					compiler = GNU;
+					
 				}
 				outputDir = "«cppFoldersByProgrammingModel.get(cppProgrammingModel).fullPath»";
 			}

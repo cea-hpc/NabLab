@@ -860,9 +860,6 @@ void Glace2d::dumpVariables(int iteration)
 		ioTimer.start();
 		auto quads = mesh->getGeometry()->getQuads();
 		writer.startVtpFile(iteration, t_n, nbNodes, X_n.data(), nbCells, quads.data());
-		writer.openNodeData();
-		writer.write<2>("Vitesse", ur);
-		writer.closeNodeData();
 		writer.openCellData();
 		writer.write("Density", rho);
 		writer.closeCellData();

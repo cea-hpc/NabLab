@@ -84,8 +84,8 @@ void dummy() {
   std::cout << mix_array.dimensions << " matrix mix_array, dynamic dimension will be 3:\n";
 
   int k(0);
-  for (auto i(0); i < mix_array.size(); ++i) {
-    for (auto j(0); j < mix_array[i].size(); ++j) {
+  for (size_t i(0); i < mix_array.size(); ++i) {
+    for (size_t j(0); j < mix_array[i].size(); ++j) {
       mix_array[i][j] = k++;
     }
   }
@@ -95,9 +95,10 @@ void dummy() {
   mix_array2.initSize(nb_elmt, 6);
   std::cout << mix_array2.dimensions << " matrix mix_array2, dynamic dimension will be 3:\n";
 
-  for (auto i(0); i < mix_array2.size(); ++i) {
-    for (auto j(0); j < mix_array2[i].size(); ++j) {
-      mix_array2[i][j] = static_cast<double>(k++) + (k / 10.0);
+  for (size_t i(0); i < mix_array2.size(); ++i) {
+    for (size_t j(0); j < mix_array2[i].size(); ++j) {
+      mix_array2[i][j] = static_cast<double>(k) + (k / 10.0);
+      ++k;
     }
   }
   std::cout << mix_array2 << std::endl << std::endl;
@@ -107,9 +108,9 @@ void dummy() {
   const size_t nb_nodes(4);
   MultiArray<double, 0, 2, 0> mix_array3;
   mix_array3.initSize(nb_cells, 2, nb_nodes);
-  for (auto i(0); i < mix_array3.size(); ++i) {
-    for (auto j(0); j < mix_array3[i].size(); ++j) {
-      for (auto z(0); z < mix_array3[i][j].size(); ++z) {
+  for (size_t i(0); i < mix_array3.size(); ++i) {
+    for (size_t j(0); j < mix_array3[i].size(); ++j) {
+      for (size_t z(0); z < mix_array3[i][j].size(); ++z) {
         mix_array3[i][j][z] = k++;
       }
     }

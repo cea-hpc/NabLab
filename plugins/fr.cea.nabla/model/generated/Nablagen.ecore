@@ -9,9 +9,11 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NablagenConfig">
     <eStructuralFeatures xsi:type="ecore:EReference" name="nablaModule" eType="ecore:EClass Nabla.ecore#//NablaModule"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="timeVar" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="deltatVar" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="nodeCoordVar" eType="ecore:EClass Nabla.ecore#//ConnectivityVar"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nodeCoord" eType="ecore:EClass Nabla.ecore#//ConnectivityVar"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="time" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="timeStep" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="iterationMax" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="timeMax" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="vtkOutput" eType="#//VtkOutput"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="targets" upperBound="-1"
@@ -29,21 +31,19 @@
   <eClassifiers xsi:type="ecore:EClass" name="Target">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputDir" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Java" eSuperTypes="#//Target"/>
   <eClassifiers xsi:type="ecore:EClass" name="Cpp" eSuperTypes="#//Target">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="maxIterationVar" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="stopTimeVar" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="programmingModel" eType="#//CppProgrammingModel"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kokkosPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="compiler" eType="#//CppCompiler"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="compilerPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="CppProgrammingModel">
-    <eLiterals name="Sequential" literal="Sequential"/>
-    <eLiterals name="StlThread" value="1" literal="StlThread"/>
-    <eLiterals name="OpenMP" value="2" literal="OpenMP"/>
-    <eLiterals name="Kokkos" value="3" literal="Kokkos"/>
-    <eLiterals name="KokkosTeamThread" value="4" literal="KokkosTeamThread"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Java" eSuperTypes="#//Target"/>
+  <eClassifiers xsi:type="ecore:EClass" name="CppSequential" eSuperTypes="#//Cpp"/>
+  <eClassifiers xsi:type="ecore:EClass" name="CppStlThread" eSuperTypes="#//Cpp"/>
+  <eClassifiers xsi:type="ecore:EClass" name="CppOpenMP" eSuperTypes="#//Cpp"/>
+  <eClassifiers xsi:type="ecore:EClass" name="CppKokkos" eSuperTypes="#//Cpp">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kokkosPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CppKokkosTeamThread" eSuperTypes="#//Cpp">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kokkosPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="CppCompiler">
     <eLiterals name="GNU" literal="GNU"/>

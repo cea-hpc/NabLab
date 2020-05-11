@@ -9,79 +9,38 @@
  *******************************************************************************/
 with IterativeHeatEquation.*;
 
-workflow IterativeHeatEquationGenerationChain transforms IterativeHeatEquation
+nablagen for IterativeHeatEquation
 {
-	Nabla2Ir nabla2ir
+	nodeCoord = X;
+	time = t;
+	timeStep = δt;
+	iterationMax = maxIterations;
+	timeMax = stopTime;
+	output reference n
 	{
-		timeVariable = t;
-		deltatVariable = δt;
-		nodeCoordVariable = X;
+		u as "Temperature";
 	}
-
-	TagPersistentVariables tagPersistentVariables follows nabla2ir 
-	{ 
-		dumpedVariables = u as "Temperature";
-		periodReferenceVariable = n;
-	}
-	
-	ReplaceUtf replaceUtf follows tagPersistentVariables
+	Java
 	{
+		outputPath = "/NablaExamples/src-gen-java";
 	}
-	
-	ReplaceReductions replaceReductions follows replaceUtf
+	StlThread
 	{
+		outputPath = "/NablaExamples/src-gen-cpp/stl-thread";
+		compiler = GNU;
+//		compiler = LLVM;
+//		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
 	}
-	
-	OptimizeConnectivities optimizeConnectivities follows replaceReductions
+	Kokkos
 	{
-		connectivities = cells, nodes, faces;
+		outputPath = "/NablaExamples/src-gen-cpp/kokkos";
+		kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+		compiler = GNU;
 	}
-	
-	FillHLTs fillHlts follows optimizeConnectivities
+	KokkosTeamThread
 	{
-	}
-	
-	Ir2Code javaGenerator follows fillHlts
-	{
-		language = Java;
-		outputDir = "/NablaExamples/src-gen-java";
-	}
-
-	Ir2Code stlGenerator follows fillHlts
-	{
-		language = Cpp
-		{
-			maxIterationVariable = maxIterations;
-			stopTimeVariable = stopTime;
-			programmingModel = StlThread;
-			compiler = GNU;
-		}
-		outputDir = "/NablaExamples/src-gen-cpp/stl-thread";
-	}
-
-	Ir2Code kokkosGenerator follows fillHlts
-	{
-		language = Cpp
-		{
-			maxIterationVariable = maxIterations;
-			stopTimeVariable = stopTime;
-			programmingModel = Kokkos;
-			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
-			compiler = GNU;
-		}
-		outputDir = "/NablaExamples/src-gen-cpp/kokkos";
-	}
-
-	Ir2Code kokkosTeamThreadGenerator follows fillHlts
-	{
-		language = Cpp
-		{
-			maxIterationVariable = maxIterations;
-			stopTimeVariable = stopTime;
-			programmingModel = KokkosTeamThread;
-			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
-			compiler = GNU;
-		}
-		outputDir = "/NablaExamples/src-gen-cpp/kokkos-team";
+		outputPath = "/NablaExamples/src-gen-cpp/kokkos-team";
+		kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+		compiler = GNU;
 	}
 }

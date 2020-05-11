@@ -11,46 +11,36 @@ with Glace2d.*;
 
 nablagen for Glace2d
 {
+	nodeCoord = X;
 	time = t;
 	timeStep = δt;
-	nodeCoord = X;
+	iterationMax = maxIterations;
+	timeMax = stopTime;
 	output reference n
 	{
 		ρ as "Density";
 	}
-	java in "/NablaExamples/src-gen-java";
-	cpp in "/NablaExamples/src-gen-cpp/stl-thread"
+	Java
 	{
-		iterationMax = maxIterations;
-		maxTime = stopTime;
-		programmingModel = StlThread;
+		outputPath = "/NablaExamples/src-gen-java";
+	}
+	StlThread
+	{
+		outputPath = "/NablaExamples/src-gen-cpp/stl-thread";
 		compiler = GNU;
 //		compiler = LLVM;
 //		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
 	}
-	Ir2Code kokkosGenerator follows fillHlts
+	Kokkos
 	{
-		language = Cpp
-		{
-			maxIterationVariable = maxIterations;
-			stopTimeVariable = stopTime;
-			programmingModel = Kokkos;
-			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
-			compiler = GNU;
-		}
-		outputDir = "/NablaExamples/src-gen-cpp/kokkos";
+		outputPath = "/NablaExamples/src-gen-cpp/kokkos";
+		kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+		compiler = GNU;
 	}
-
-	Ir2Code kokkosTeamThreadGenerator follows fillHlts
+	KokkosTeamThread
 	{
-		language = Cpp
-		{
-			maxIterationVariable = maxIterations;
-			stopTimeVariable = stopTime;
-			programmingModel = KokkosTeamThread;
-			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
-			compiler = GNU;
-		}
-		outputDir = "/NablaExamples/src-gen-cpp/kokkos-team";
+		outputPath = "/NablaExamples/src-gen-cpp/kokkos-team";
+		kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+		compiler = GNU;
 	}
 }

@@ -13,10 +13,10 @@ import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.NablaStandaloneSetup
 import fr.cea.nabla.NablagenStandaloneSetup
+import fr.cea.nabla.generator.NablagenInterpreter
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nablagen.NablagenModule
-import fr.cea.nabla.workflow.NablagenInterpreter
 import java.nio.file.Files
 import java.nio.file.Paths
 import org.eclipse.emf.ecore.resource.ResourceSet

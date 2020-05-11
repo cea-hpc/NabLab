@@ -12,10 +12,10 @@ package fr.cea.nabla.ui.launchconfig
 import com.google.inject.Inject
 import com.google.inject.Provider
 import com.google.inject.Singleton
+import fr.cea.nabla.generator.NablagenInterpreter
 import fr.cea.nabla.nablagen.NablagenConfig
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.ui.UiUtils
-import fr.cea.nabla.workflow.NablagenInterpreter
 import org.eclipse.core.resources.IResource
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.ResourceSet

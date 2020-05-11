@@ -7,23 +7,37 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.workflow
+package fr.cea.nabla.generator
 
 import com.google.common.base.Function
 import com.google.inject.Inject
 import com.google.inject.Provider
-import fr.cea.nabla.generator.NablaGenerator
 import fr.cea.nabla.generator.ir.Nabla2Ir
+import fr.cea.nabla.ir.generator.cpp.Ir2Cpp
+import fr.cea.nabla.ir.generator.cpp.KokkosBackend
+import fr.cea.nabla.ir.generator.cpp.KokkosTeamThreadBackend
+import fr.cea.nabla.ir.generator.cpp.SequentialBackend
+import fr.cea.nabla.ir.generator.cpp.StlThreadBackend
+import fr.cea.nabla.ir.generator.java.Ir2Java
 import fr.cea.nabla.ir.generator.json.Ir2Json
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.transformers.IrTransformationStep
+import fr.cea.nabla.ir.transformers.SetSimulationVariables
 import fr.cea.nabla.ir.transformers.TagOutputVariables
+import fr.cea.nabla.nablagen.Cpp
+import fr.cea.nabla.nablagen.CppKokkos
+import fr.cea.nabla.nablagen.CppKokkosTeamThread
+import fr.cea.nabla.nablagen.CppOpenMP
+import fr.cea.nabla.nablagen.CppSequential
+import fr.cea.nabla.nablagen.CppStlThread
+import fr.cea.nabla.nablagen.Java
 import fr.cea.nabla.nablagen.NablagenConfig
 import fr.cea.nabla.nablagen.Target
 import java.io.File
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.LinkedHashMap
+import java.util.List
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.generator.IOutputConfigurationProvider
@@ -42,35 +56,38 @@ class NablagenInterpreter
 	@Inject Nabla2Ir nabla2Ir
 	@Inject IOutputConfigurationProvider outputConfigurationProvider
 
-	def launch(NablagenConfig config, String projectDir)
+	def launch(NablagenConfig it, String projectDir)
 	{
 		try
 		{
 			this.projectDir = projectDir
-			trace('Starting generation of ' + config.nablaModule.name + '\n')
+			trace('Starting generation of ' + nablaModule.name + '\n')
 			trace('Nabla -> IR\n')
-			val irModule = nabla2Ir.toIrModule(config.nablaModule)
+			val irModule = nabla2Ir.toIrModule(nablaModule)
 
 			// IR -> IR with HLT
 			transformIr(NablaGenerator.hltIrTransformer, irModule)
 
 			// Tag output variables
-			if (config.vtkOutput !== null && !config.vtkOutput.vars.empty)
+			if (vtkOutput !== null && !vtkOutput.vars.empty)
 			{
 				val outVars = new HashMap<String, String>
-				config.vtkOutput.vars.forEach[x | outVars.put(x.varRef.name, x.varName)]
-				transformIr(new TagOutputVariables(outVars, config.vtkOutput.periodReference.name), irModule)
+				vtkOutput.vars.forEach[x | outVars.put(x.varRef.name, x.varName)]
+				transformIr(new TagOutputVariables(outVars, vtkOutput.periodReference.name), irModule)
 			}
 
+			// Set simulation variables
+			transformIr(new SetSimulationVariables(time.name, timeStep.name, nodeCoord.name), irModule)
+
 			// IR with HLT -> IR for generation -> code generation
-			val models = getModels(config.targets.size, irModule)
+			val models = getModels(targets.size, irModule)
 			for (i : 0..<models.size)
 			{
-				val target = config.targets.get(i)
+				val target = targets.get(i)
 				val model = models.get(i)
 
 				// Code generation
-				generateCode(target, model)
+				generateCode(target, model, iterationMax.name, timeMax.name)
 			}
 		}
 		catch(Exception e)
@@ -85,10 +102,10 @@ class NablagenInterpreter
 		}
 	}
 
-	private def void generateCode(Target target, IrModule irModule)
+	private def void generateCode(Target target, IrModule irModule, String iterationMax, String timeMax)
 	{
 		val baseDir =  projectDir + "/.."
-		val g = TargetCodeGeneratorProvider::get(target, baseDir)
+		val g = getCodeGenerator(target, baseDir, iterationMax, timeMax)
 		trace(g.name + " code generator\n")
 		val outputFolderName = baseDir + target.outputDir
 		val outputFolder = new File(outputFolderName)
@@ -146,7 +163,7 @@ class NablagenInterpreter
 			case 1: return #[module]
 			default:
 			{
-				val models = new ArrayList<IrModule>(nbTargets)
+				val List<IrModule> models = newArrayOfSize(nbTargets)
 				models.set(0, module)
 				for (i : 1..<nbTargets) models.set(i, EcoreUtil::copy(module))
 				return models
@@ -164,6 +181,28 @@ class NablagenInterpreter
 		step.addTraceListener([x | trace(x)])
 		val ok = step.transform(module)
 		if (!ok) throw new RuntimeException('Exception in IR transformation step: ' + step.description)
+	}
+
+	private def getCodeGenerator(Target it, String baseDir, String iterationMax, String timeMax)
+	{
+		switch it
+		{
+			Java: return new Ir2Java
+			Cpp:
+			{
+				val backend = switch it
+				{
+					CppSequential: new SequentialBackend(iterationMax , timeMax, compiler.literal, compilerPath)
+					CppStlThread: new StlThreadBackend(iterationMax , timeMax, compiler.literal, compilerPath)
+					CppOpenMP: throw new RuntimeException('Not yet implemented')
+					CppKokkos: new KokkosBackend(iterationMax , timeMax, compiler.literal, compilerPath, kokkosPath)
+					CppKokkosTeamThread: new KokkosTeamThreadBackend(iterationMax , timeMax, compiler.literal, compilerPath, kokkosPath)
+					default: throw new RuntimeException("Unsupported language " + class.name)
+				}
+				return new Ir2Cpp(new File(baseDir + outputDir), backend)
+			}
+			default : throw new RuntimeException("Unsupported language " + class.name)
+		}
 	}
 }
 

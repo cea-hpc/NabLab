@@ -853,7 +853,6 @@ public final class Glace2d
 		{
 			VtkFileContent content = new VtkFileContent(iteration, t_n, X_n, mesh.getGeometry().getQuads());
 			content.addCellVariable("Density", rho);
-			content.addNodeVariable("Vitesse", ur);
 			writer.writeFile(content);
 			lastDump = n;
 		}

@@ -8,13 +8,6 @@
     runtimeVersion="2.20" usedGenPackages="Nabla.genmodel#//nabla">
   <genPackages prefix="Nablagen" basePackage="fr.cea.nabla" disposableProviderFactory="true"
       fileExtensions="nablagen" ecorePackage="Nablagen.ecore#/">
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Nablagen.ecore#//CppProgrammingModel">
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppProgrammingModel/Sequential"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppProgrammingModel/StlThread"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppProgrammingModel/OpenMP"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppProgrammingModel/Kokkos"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppProgrammingModel/KokkosTeamThread"/>
-    </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="Nablagen.ecore#//CppCompiler">
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppCompiler/GNU"/>
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppCompiler/LLVM"/>
@@ -25,9 +18,11 @@
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//NablagenConfig">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/nablaModule"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/timeVar"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/deltatVar"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/nodeCoordVar"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/nodeCoord"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/time"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/timeStep"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/iterationMax"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/timeMax"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/vtkOutput"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/targets"/>
     </genClasses>
@@ -42,14 +37,19 @@
     <genClasses ecoreClass="Nablagen.ecore#//Target">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Target/outputDir"/>
     </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//Java"/>
     <genClasses ecoreClass="Nablagen.ecore#//Cpp">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Cpp/maxIterationVar"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Cpp/stopTimeVar"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Cpp/programmingModel"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Cpp/kokkosPath"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Cpp/compiler"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Cpp/compilerPath"/>
+    </genClasses>
+    <genClasses ecoreClass="Nablagen.ecore#//Java"/>
+    <genClasses ecoreClass="Nablagen.ecore#//CppSequential"/>
+    <genClasses ecoreClass="Nablagen.ecore#//CppStlThread"/>
+    <genClasses ecoreClass="Nablagen.ecore#//CppOpenMP"/>
+    <genClasses ecoreClass="Nablagen.ecore#//CppKokkos">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//CppKokkos/kokkosPath"/>
+    </genClasses>
+    <genClasses ecoreClass="Nablagen.ecore#//CppKokkosTeamThread">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//CppKokkosTeamThread/kokkosPath"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

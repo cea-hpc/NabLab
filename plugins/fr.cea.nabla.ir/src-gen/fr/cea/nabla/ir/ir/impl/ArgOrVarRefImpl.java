@@ -2,27 +2,23 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
+import java.util.Collection;
+
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.EObjectEList;
+import org.eclipse.emf.ecore.util.InternalEList;
+
 import fr.cea.nabla.ir.ir.ArgOrVar;
 import fr.cea.nabla.ir.ir.ArgOrVarRef;
 import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.ItemIndex;
-
-import java.util.Collection;
-
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
-
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.EObjectEList;
-import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -132,12 +128,17 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * @generated NOT 
+	 * FIXME workaround BUG 89325
 	 */
+	@SuppressWarnings("serial")
 	@Override
 	public EList<ItemIndex> getIterators() {
 		if (iterators == null) {
-			iterators = new EObjectEList<ItemIndex>(ItemIndex.class, this, IrPackage.ARG_OR_VAR_REF__ITERATORS);
+			iterators = new EObjectEList<ItemIndex>(ItemIndex.class, this, IrPackage.ARG_OR_VAR_REF__ITERATORS) {
+				@Override
+			protected boolean isUnique() { return false; }
+			};
 		}
 		return iterators;
 	}

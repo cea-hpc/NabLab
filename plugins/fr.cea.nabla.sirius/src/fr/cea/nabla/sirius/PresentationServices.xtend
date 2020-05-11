@@ -10,7 +10,11 @@
 package fr.cea.nabla.sirius
 
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.nablagen.Cpp
+import fr.cea.nabla.nablagen.CppKokkos
+import fr.cea.nabla.nablagen.CppKokkosTeamThread
+import fr.cea.nabla.nablagen.CppOpenMP
+import fr.cea.nabla.nablagen.CppSequential
+import fr.cea.nabla.nablagen.CppStlThread
 import fr.cea.nabla.nablagen.Java
 import fr.cea.nabla.nablagen.Target
 import org.eclipse.core.resources.IFile
@@ -42,14 +46,11 @@ class PresentationServices
 		'/fr.cea.nabla.sirius/icons/' + switch target
 		{
 			Java: "java.png"
-			Cpp: switch target.programmingModel
-			{
-				case SEQUENTIAL: "sequentialcpp.png"
-				case OPEN_MP: "openmp.png"
-				case STL_THREAD: "stl.png"
-				case KOKKOS: "kokkos.png"
-				case KOKKOS_TEAM_THREAD: "kokkos.png"
-			}
+			CppSequential: "sequentialcpp.png"
+			CppOpenMP: "openmp.png"
+			CppStlThread: "stl.png"
+			CppKokkos: "kokkos.png"
+			CppKokkosTeamThread: "kokkos.png"
 		}
 	}
 

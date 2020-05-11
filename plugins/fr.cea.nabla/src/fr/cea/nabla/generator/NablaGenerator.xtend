@@ -41,7 +41,7 @@ class NablaGenerator extends AbstractGenerator
 	{
 		val transformations = new ArrayList<IrTransformationStep>
 		transformations += new ReplaceUtf8Chars
-		transformations += new OptimizeConnectivities(#['cells', 'nodes'])
+		transformations += new OptimizeConnectivities(#['cells', 'nodes', 'faces'])
 		transformations += new ReplaceReductions(false)
 		transformations += new FillJobHLTs
 		new CompositeTransformationStep('Nabla2Hlt', transformations)

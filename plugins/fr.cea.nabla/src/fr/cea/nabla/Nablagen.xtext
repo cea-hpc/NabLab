@@ -23,9 +23,12 @@ NablagenModule:
 NablagenConfig:
 	'nablagen' 'for' nablaModule=[nabla::NablaModule] 
 	'{'
-		'time' '=' timeVar=[nabla::SimpleVar]';'
-		'timeStep' '=' deltatVar=[nabla::SimpleVar]';'
-		'nodeCoord' '=' nodeCoordVar=[nabla::ConnectivityVar]';'
+		'nodeCoord' '=' nodeCoord=[nabla::ConnectivityVar]';'
+		'time' '=' time=[nabla::SimpleVar]';'
+		'timeStep' '=' timeStep=[nabla::SimpleVar]';'
+		// The two following variables are just needed for the C++ display (progression bar)
+		'iterationMax' '=' iterationMax=[nabla::SimpleVar] ';'
+		'timeMax' '=' timeMax=[nabla::SimpleVar] ';'
 		(vtkOutput = VtkOutput)?
 		targets += Target*
 	'}';
@@ -40,17 +43,48 @@ OutputVar:
 	varRef=[nabla::ConnectivityVar] 'as' varName=STRING ';';
 
 Target: Java | Cpp;
+Cpp: CppSequential | CppStlThread | CppOpenMP | CppKokkos | CppKokkosTeamThread;
 
-Java: 'java' 'in' outputDir=STRING ';';
-Cpp: 'cpp' 'in' outputDir=STRING
-	'{'
-		'iterationMax' '=' maxIterationVar=[nabla::SimpleVar] ';'
-		'timeMax' '=' stopTimeVar=[nabla::SimpleVar] ';'
-		'programmingModel' '=' programmingModel=CppProgrammingModel ';'
-		('kokkosPath' '=' kokkosPath = STRING ';')? 
-		'compiler' '=' compiler=CppCompiler ';'
-		('compilerPath' '=' compilerPath = STRING ';')? 
-	'}';
+Java: 'Java'
+'{'
+	'outputPath' '=' outputDir=STRING ';'
+'}';
 
-enum CppProgrammingModel: Sequential | StlThread | OpenMP | Kokkos | KokkosTeamThread;
+CppSequential: 'CppSequential'
+'{'
+	'outputPath' '=' outputDir=STRING ';'
+	'compiler' '=' compiler=CppCompiler ';'
+	('compilerPath' '=' compilerPath = STRING ';')? 
+'}';
+
+CppStlThread: 'StlThread'
+'{'
+	'outputPath' '=' outputDir=STRING ';'
+	'compiler' '=' compiler=CppCompiler ';'
+	('compilerPath' '=' compilerPath = STRING ';')? 
+'}';
+
+CppOpenMP: 'OpenMP'
+'{'
+	'outputPath' '=' outputDir=STRING ';'
+	'compiler' '=' compiler=CppCompiler ';'
+	('compilerPath' '=' compilerPath = STRING ';')? 
+'}';
+
+CppKokkos: 'Kokkos'
+'{'
+	'outputPath' '=' outputDir=STRING ';'
+	'kokkosPath' '=' kokkosPath = STRING ';' 
+	'compiler' '=' compiler=CppCompiler ';'
+	('compilerPath' '=' compilerPath = STRING ';')? 
+'}';
+
+CppKokkosTeamThread: 'KokkosTeamThread'
+'{'
+	'outputPath' '=' outputDir=STRING ';'
+	'kokkosPath' '=' kokkosPath = STRING ';' 
+	'compiler' '=' compiler=CppCompiler ';'
+	('compilerPath' '=' compilerPath = STRING ';')? 
+'}';
+
 enum CppCompiler: GNU | LLVM;

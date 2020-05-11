@@ -14,7 +14,7 @@ import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nablagen.Cpp
 import fr.cea.nabla.nablagen.CppProgrammingModel
 import fr.cea.nabla.nablagen.NablagenPackage
-import fr.cea.nabla.nablagen.TagPersistentVariablesComponent
+import fr.cea.nabla.nablagen.VtkOutput
 import org.eclipse.xtext.validation.Check
 
 /**
@@ -31,10 +31,10 @@ class NablagenValidator extends AbstractNablagenValidator
 	static def getKokkosPathMsg() { "Kokkos path is required when KOKKOS programming model is selected" }
 
 	@Check
-	def void checkPeriodVariablesType(TagPersistentVariablesComponent it)
+	def void checkPeriodVariablesType(VtkOutput it)
 	{
 		if (periodReference !== null && !(periodReference instanceof SimpleVar || periodReference instanceof TimeIterator))
-			error(getPeriodVariablesTypeMsg(), NablagenPackage.Literals::TAG_PERSISTENT_VARIABLES_COMPONENT__PERIOD_REFERENCE, PERIOD_VARIABLES_TYPE)
+			error(getPeriodVariablesTypeMsg(), NablagenPackage.Literals::VTK_OUTPUT__PERIOD_REFERENCE, PERIOD_VARIABLES_TYPE)
 	}
 
 	@Check

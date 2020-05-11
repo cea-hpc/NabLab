@@ -11,8 +11,8 @@ package fr.cea.nabla.sirius
 
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.nablagen.Cpp
-import fr.cea.nabla.nablagen.Ir2CodeComponent
 import fr.cea.nabla.nablagen.Java
+import fr.cea.nabla.nablagen.Target
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.ResourcesPlugin
@@ -37,14 +37,12 @@ class PresentationServices
 		inVarNames + "  \u21E8  " + name + "  \u21E8  " + outVarNames
 	}
 
-	static def String getIconPath(Ir2CodeComponent o)
+	static def String getIconPath(Target target)
 	{
-		val prefix = '/fr.cea.nabla.sirius/icons/'
-		val l = o.language
-		prefix + switch l
+		'/fr.cea.nabla.sirius/icons/' + switch target
 		{
 			Java: "java.png"
-			Cpp: switch l.programmingModel
+			Cpp: switch target.programmingModel
 			{
 				case SEQUENTIAL: "sequentialcpp.png"
 				case OPEN_MP: "openmp.png"

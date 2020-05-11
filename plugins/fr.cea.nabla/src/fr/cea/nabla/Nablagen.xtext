@@ -18,20 +18,20 @@ generate nablagen "http://www.cea.fr/nabla/Nablagen"
 
 NablagenModule:
 	imports+=Import*
-	config=Config;
+	config=NablagenConfig;
 
-Config:
+NablagenConfig:
 	'nablagen' 'for' nablaModule=[nabla::NablaModule] 
 	'{'
 		'time' '=' timeVar=[nabla::SimpleVar]';'
-		'time-step' '=' deltatVar=[nabla::SimpleVar]';'
-		'node-coord' '=' nodeCoordVar=[nabla::ConnectivityVar]';'
-		dump = VtkOutput
+		'timeStep' '=' deltatVar=[nabla::SimpleVar]';'
+		'nodeCoord' '=' nodeCoordVar=[nabla::ConnectivityVar]';'
+		(vtkOutput = VtkOutput)?
 		targets += Target*
 	'}';
 
 VtkOutput:
-	'vtkoutput' 'reference' periodReferenceVar=[nabla::ArgOrVar]
+	'output' 'reference' periodReference=[nabla::ArgOrVar]
 	'{'
 		vars += OutputVar*
 	'}';
@@ -41,11 +41,11 @@ OutputVar:
 
 Target: Java | Cpp;
 
-Java: 'Java' 'in' outputDir=STRING ';';
-Cpp: 'Cpp' 'in' outputDir=STRING
+Java: 'java' 'in' outputDir=STRING ';';
+Cpp: 'cpp' 'in' outputDir=STRING
 	'{'
-		'max-iteration' '=' maxIterationVar=[nabla::SimpleVar] ';'
-		'stop-time' '=' stopTimeVar=[nabla::SimpleVar] ';'
+		'iterationMax' '=' maxIterationVar=[nabla::SimpleVar] ';'
+		'timeMax' '=' stopTimeVar=[nabla::SimpleVar] ';'
 		'programmingModel' '=' programmingModel=CppProgrammingModel ';'
 		('kokkosPath' '=' kokkosPath = STRING ';')? 
 		'compiler' '=' compiler=CppCompiler ';'

@@ -31,7 +31,7 @@ class NabLabConsoleFactory implements IConsoleFactory
 			val image = if (imageDescriptor.present) imageDescriptor.get else null
 			console = new MessageConsole(ConsoleName, image)
 			defaultStream = console.newMessageStream
-			dispatcher.addListener([msg | defaultStream.print(msg)])
+			dispatcher.listeners += [msg | defaultStream.print(msg)]
 		}
 		return console
 	}

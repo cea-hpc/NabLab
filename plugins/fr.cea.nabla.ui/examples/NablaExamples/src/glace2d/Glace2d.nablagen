@@ -9,58 +9,25 @@
  *******************************************************************************/
 with Glace2d.*;
 
-workflow Glace2dGenerationChain transforms Glace2d
+nablagen for Glace2d
 {
-	Nabla2Ir nabla2ir
+	time = t;
+	timeStep = δt;
+	nodeCoord = X;
+	output reference n
 	{
-		timeVariable = t;
-		deltatVariable = δt;
-		nodeCoordVariable = X;
+		ρ as "Density";
 	}
-
-	TagPersistentVariables tagPersistentVariables follows nabla2ir 
+	java in "/NablaExamples/src-gen-java";
+	cpp in "/NablaExamples/src-gen-cpp/stl-thread"
 	{
-		dumpedVariables = ρ as "Density";
-		periodReferenceVariable = n;
+		iterationMax = maxIterations;
+		maxTime = stopTime;
+		programmingModel = StlThread;
+		compiler = GNU;
+//		compiler = LLVM;
+//		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
 	}
-	
-	ReplaceUtf replaceUtf follows tagPersistentVariables
-	{
-	}
-	
-	ReplaceReductions replaceReductions follows replaceUtf
-	{
-	}
-	
-	OptimizeConnectivities optimizeConnectivities follows replaceReductions
-	{
-		connectivities = cells, nodes;
-	}
-	
-	FillHLTs fillHlts follows optimizeConnectivities
-	{
-	}
-	
-	Ir2Code javaGenerator follows fillHlts
-	{
-		language = Java;
-		outputDir = "/NablaExamples/src-gen-java";
-	}
-
-	Ir2Code stlGenerator follows fillHlts
-	{
-		language = Cpp
-		{
-			maxIterationVariable = maxIterations;
-			stopTimeVariable = stopTime;
-			programmingModel = StlThread;
-			compiler = GNU;
-//			compiler = LLVM;
-//			compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
-		}
-		outputDir = "/NablaExamples/src-gen-cpp/stl-thread";
-	}
-
 	Ir2Code kokkosGenerator follows fillHlts
 	{
 		language = Cpp

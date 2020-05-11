@@ -24,12 +24,28 @@ import org.eclipse.xtext.generator.IGeneratorContext
 import org.eclipse.xtext.resource.SaveOptions
 
 import static extension fr.cea.nabla.LatexLabelServices.*
+import java.util.ArrayList
+import fr.cea.nabla.ir.transformers.IrTransformationStep
+import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
+import fr.cea.nabla.ir.transformers.OptimizeConnectivities
+import fr.cea.nabla.ir.transformers.ReplaceReductions
+import fr.cea.nabla.ir.transformers.FillJobHLTs
 
 class NablaGenerator extends AbstractGenerator
 {
 	@Inject Nabla2Ir nabla2Ir
 	@Inject NablaGeneratorMessageDispatcher dispatcher
 	static val IrExtension = 'nablair'
+
+	static def getHltIrTransformer()
+	{
+		val transformations = new ArrayList<IrTransformationStep>
+		transformations += new ReplaceUtf8Chars
+		transformations += new OptimizeConnectivities(#['cells', 'nodes'])
+		transformations += new ReplaceReductions(false)
+		transformations += new FillJobHLTs
+		new CompositeTransformationStep('Nabla2Hlt', transformations)
+	}
 
 	override doGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context)
 	{
@@ -41,16 +57,16 @@ class NablaGenerator extends AbstractGenerator
 			if (!module.jobs.empty)
 			{
 				val latexFileName = module.name.toLowerCase + '/' + module.name + '.tex'
-				dispatcher.post('Generating LaTeX: ' + latexFileName)
+				dispatcher.post('Generating LaTeX: ' + latexFileName + '\n')
 				fsa.generateFile(latexFileName, module.latexContent)
-				dispatcher.post('... ok\n')
 
-				dispatcher.post('Nabla -> IR')
+				dispatcher.post('Nabla -> IR\n')
 				val irModule = nabla2Ir.toIrModule(module)
-				dispatcher.post('... ok\n')
 
-				val t = CompositeTransformationStep.createCommonTransformationSteps([x | dispatcher.post(x)])
-				val ok = CompositeTransformationStep.PHASE1.transform(irModule)
+				val t = hltIrTransformer
+				t.addTraceListener([x | dispatcher.post(x)])
+				val ok = t.transform(irModule)
+
 				createAndSaveResource(fsa, irModule)
 				if (!ok) throw new RuntimeException('Exception in IR transformation step: ' + t.description)
 			}

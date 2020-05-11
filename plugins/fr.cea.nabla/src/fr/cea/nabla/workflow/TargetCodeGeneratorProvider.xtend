@@ -16,20 +16,19 @@ import fr.cea.nabla.ir.generator.cpp.SequentialBackend
 import fr.cea.nabla.ir.generator.cpp.StlThreadBackend
 import fr.cea.nabla.ir.generator.java.Ir2Java
 import fr.cea.nabla.nablagen.Cpp
-import fr.cea.nabla.nablagen.Ir2CodeComponent
 import fr.cea.nabla.nablagen.Java
+import fr.cea.nabla.nablagen.Target
 import java.io.File
 
-class CodeGeneratorProvider
+class TargetCodeGeneratorProvider
 {
-	static def get(Ir2CodeComponent it, String baseDir)
+	static def get(Target it, String baseDir)
 	{
-		val l = language
-		switch l
+		switch it
 		{
 			Java: new Ir2Java
-			Cpp: new Ir2Cpp(new File(baseDir + outputDir), l.backend)
-			default : throw new RuntimeException("Unsupported language " + language.class.name)
+			Cpp: new Ir2Cpp(new File(baseDir + outputDir), backend)
+			default : throw new RuntimeException("Unsupported language " + class.name)
 		}
 	}
 

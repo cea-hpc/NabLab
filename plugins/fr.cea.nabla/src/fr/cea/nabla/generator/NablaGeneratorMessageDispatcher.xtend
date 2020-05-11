@@ -2,16 +2,12 @@ package fr.cea.nabla.generator
 
 import com.google.inject.Singleton
 import java.util.ArrayList
+import org.eclipse.xtend.lib.annotations.Accessors
 
 @Singleton
 class NablaGeneratorMessageDispatcher
 {
-	val listeners = new ArrayList<(String) => void>
-
-	def addListener((String) => void listener)
-	{
-		listeners += listener
-	}
+	@Accessors val listeners = new ArrayList<(String) => void>
 
 	def post(String msg)
 	{

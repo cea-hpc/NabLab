@@ -21,53 +21,28 @@
     </genEnums>
     <genClasses ecoreClass="Nablagen.ecore#//NablagenModule">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenModule/imports"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenModule/workflow"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenModule/config"/>
     </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//Workflow">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Workflow/name"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Workflow/nablaModule"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Workflow/components"/>
+    <genClasses ecoreClass="Nablagen.ecore#//NablagenConfig">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/nablaModule"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/timeVar"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/deltatVar"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/nodeCoordVar"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/vtkOutput"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenConfig/targets"/>
     </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//WorkflowComponent">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//WorkflowComponent/name"/>
+    <genClasses ecoreClass="Nablagen.ecore#//VtkOutput">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//VtkOutput/periodReference"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//VtkOutput/vars"/>
     </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//ChildComponent">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//ChildComponent/parent"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//ChildComponent/disabled"/>
+    <genClasses ecoreClass="Nablagen.ecore#//OutputVar">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//OutputVar/varRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//OutputVar/varName"/>
     </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//Ir2IrComponent">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Ir2IrComponent/dumpIr"/>
+    <genClasses ecoreClass="Nablagen.ecore#//Target">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Target/outputDir"/>
     </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//Nabla2IrComponent">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Nabla2IrComponent/timeVar"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Nabla2IrComponent/deltatVar"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Nabla2IrComponent/nodeCoordVar"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Nabla2IrComponent/dumpIr"/>
-    </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//TagPersistentVariablesComponent">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//TagPersistentVariablesComponent/dumpedVars"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//TagPersistentVariablesComponent/periodReference"/>
-    </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//PersistentVar">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//PersistentVar/varRef"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//PersistentVar/varName"/>
-    </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//ReplaceUtfComponent"/>
-    <genClasses ecoreClass="Nablagen.ecore#//ReplaceReductionsComponent">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//ReplaceReductionsComponent/replaceAllReductions"/>
-    </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//OptimizeConnectivitiesComponent">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//OptimizeConnectivitiesComponent/connectivities"/>
-    </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//FillHLTsComponent"/>
-    <genClasses ecoreClass="Nablagen.ecore#//Ir2CodeComponent">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Ir2CodeComponent/language"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Ir2CodeComponent/outputDir"/>
-    </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//Language"/>
-    <genClasses ecoreClass="Nablagen.ecore#//Java">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Java/activated"/>
-    </genClasses>
+    <genClasses ecoreClass="Nablagen.ecore#//Java"/>
     <genClasses ecoreClass="Nablagen.ecore#//Cpp">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Cpp/maxIterationVar"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Cpp/stopTimeVar"/>

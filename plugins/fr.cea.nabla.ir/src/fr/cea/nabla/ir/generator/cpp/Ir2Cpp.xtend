@@ -203,22 +203,22 @@ class Ir2Cpp extends CodeGenerator
 			auto quads = mesh->getGeometry()->getQuads();
 			writer.startVtpFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data());
 			«val outputVarsByConnectivities = postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable).groupBy(x | x.type.connectivities.head.returnType.name)»
+			writer.openNodeData();
 			«val nodeVariables = outputVarsByConnectivities.get("node")»
 			«IF !nodeVariables.nullOrEmpty»
-				writer.openNodeData();
 				«FOR v : nodeVariables»
 					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«s.content»«ENDFOR»("«v.persistenceName»", «v.name»);
 				«ENDFOR»
-				writer.closeNodeData();
 			«ENDIF»
+			writer.closeNodeData();
+			writer.openCellData();
 			«val cellVariables = outputVarsByConnectivities.get("cell")»
 			«IF !cellVariables.nullOrEmpty»
-				writer.openCellData();
 				«FOR v : cellVariables»
 					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«s.content»«ENDFOR»("«v.persistenceName»", «v.name»);
 				«ENDFOR»
-				writer.closeCellData();
 			«ENDIF»
+			writer.closeCellData();
 			writer.closeVtpFile();
 			«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodReference.name»;
 			ioTimer.stop();

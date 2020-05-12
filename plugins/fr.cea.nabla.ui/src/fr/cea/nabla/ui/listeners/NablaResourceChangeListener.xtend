@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ui.views
+package fr.cea.nabla.ui.listeners
 
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.ui.UiUtils
@@ -19,15 +19,11 @@ import org.eclipse.core.resources.IResourceDelta
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.swt.widgets.Display
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
+import org.eclipse.xtend.lib.annotations.Accessors
 
 class NablaResourceChangeListener implements IResourceChangeListener
 {
-	val modelListeners = new ArrayList<(NablaModule)=>void>
-
-	def void addModelListener((NablaModule)=>void f)
-	{
-		modelListeners += f
-	}
+	@Accessors val nablaModuleListeners = new ArrayList<(NablaModule)=>void>
 
 	/* fire an event when a resource in save in the NabLab editor */
 	override resourceChanged(IResourceChangeEvent event) 
@@ -62,8 +58,8 @@ class NablaResourceChangeListener implements IResourceChangeListener
 		if (obj !== null && obj instanceof NablaModule)
 		{
 			val module = obj as NablaModule
-			if (Display::^default === null) modelListeners.forEach[x | x.apply(module)]
-			else Display::^default.asyncExec([modelListeners.forEach[x | x.apply(module)]])
+			if (Display::^default === null) nablaModuleListeners.forEach[x | x.apply(module)]
+			else Display::^default.asyncExec([nablaModuleListeners.forEach[x | x.apply(module)]])
 		}
 	}
 }

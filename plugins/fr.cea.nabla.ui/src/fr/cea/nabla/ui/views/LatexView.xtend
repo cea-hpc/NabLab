@@ -18,6 +18,7 @@ import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Reduction
+import fr.cea.nabla.ui.listeners.NablaDslEditorSelectionListener
 import java.io.ByteArrayInputStream
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.swt.SWT
@@ -29,35 +30,19 @@ import org.eclipse.ui.part.ViewPart
 
 class LatexView extends ViewPart
 {
-	@Inject NablaSelectionListener listener
+	@Inject NablaDslEditorSelectionListener listener
 	Label label
 
 	override createPartControl(Composite parent)
 	{
 		label = new Label(parent, SWT.NONE)
-		listener.addModelListener([x | x.fireSelectionChanged])
+		listener.nablaObjectSelectionListeners +=  [EObject o | o.fireSelectionChanged]
 		site.page.addPostSelectionListener(listener)
 	}
 
 	override setFocus()
 	{
 		label.setFocus
-	}
-
-	private def getLatexImage(EObject element)
-	{
-		if (element !== null && !element.eIsProxy)
-		{
-			val latexLabel = LatexLabelServices.getLatex(element)
-			if (latexLabel !== null)
-			{
-				//println("LATEX : " + latexLabel)
-				val image = LatexImageServices.createPngImage(latexLabel, 25)
-				val swtImage = new Image(Display.^default, new ByteArrayInputStream(image))
-				return swtImage
-			}
-		}
-		return null
 	}
 
 	private def void fireSelectionChanged(EObject o)
@@ -92,5 +77,21 @@ class LatexView extends ViewPart
 				else 
 					elt.eContainer.closestDisplayableNablaElt
 		}
+	}
+
+	private def getLatexImage(EObject element)
+	{
+		if (element !== null && !element.eIsProxy)
+		{
+			val latexLabel = LatexLabelServices.getLatex(element)
+			if (latexLabel !== null)
+			{
+				//println("LATEX : " + latexLabel)
+				val image = LatexImageServices.createPngImage(latexLabel, 25)
+				val swtImage = new Image(Display.^default, new ByteArrayInputStream(image))
+				return swtImage
+			}
+		}
+		return null
 	}
 }

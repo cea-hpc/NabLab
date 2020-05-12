@@ -29,7 +29,6 @@ import org.eclipse.zest.core.viewers.IZoomableWorkbenchPart
 class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 {
 	@Inject extension IrAnnotationHelper
-	@Inject NablaResourceChangeListener listener
 	@Accessors(PUBLIC_GETTER,PRIVATE_SETTER) JobContainer jobContainer
 	JogGraphViewer viewer
 
@@ -80,11 +79,6 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 				else viewer.zoomManager.zoomIn()
 		])
 
-		// Mettre un adapter sur la resource ne permet pas de recevoir un evenement quand elle change sur disque.
-		// C'est pour cette raison qu'il y a le code ci-dessous (ResourcesPlugin.getWorkspace().addResourceChangeListener).
-		// Cela permet de detecter un changement du modele en cours d'edition a la sauvegarde
-		ResourcesPlugin::workspace.addResourceChangeListener(listener)
-
 		// Si le Mood éditeur est ouvert, on affiche le diagramme de l'éditeur
 //		val editor = UiUtils.activeNablaEditor
 //		if (editor !== null)
@@ -98,12 +92,6 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 
 	override dispose()
 	{
-		if (listener !== null)
-		{
-			ResourcesPlugin::workspace.removeResourceChangeListener(listener)
-			listener = null
-		}
-
 		viewer = null
 	}
 

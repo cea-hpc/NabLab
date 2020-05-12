@@ -454,6 +454,8 @@ void ImplicitHeatEquation::dumpVariables(int iteration)
 		ioTimer.start();
 		auto quads = mesh->getGeometry()->getQuads();
 		writer.startVtpFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data());
+		writer.openNodeData();
+		writer.closeNodeData();
 		writer.openCellData();
 		writer.write("Temperature", u_n);
 		writer.closeCellData();

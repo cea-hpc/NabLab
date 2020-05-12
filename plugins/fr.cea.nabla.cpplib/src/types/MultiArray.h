@@ -329,7 +329,7 @@ std::ostream& operator<<(std::ostream& os, const std::array<T, N>& array) {
 // Pretty printer helper function for 1 dimension MultiArray
 template<typename T, size_t DIM>
 std::ostream& operator<<(std::ostream& os, const MultiArray<T, DIM>& array) {
-  for (auto i(0); i < array.size(); ++i)
+  for (typename MultiArray<T, DIM>::size_type i(0); i < array.size(); ++i)
     std::cout << (i==0?"| ":"") << array[i] << (i==array.size()-1?" |":" ");
   return os;
 }

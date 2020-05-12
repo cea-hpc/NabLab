@@ -115,9 +115,10 @@ abstract class AbstractInstructionInterpreterTest
 		+
 		'''
 		let V=100;
+		let W=0;
 		ℝ[2] X{nodes};
 
-		Test : if (V < 100) V = V+1; else exit "V must be less than 100";
+		Test : if (V < 100) W = V+1; else exit "V must be less than 100";
 		'''
 
 		assertInterpreteExit(model)

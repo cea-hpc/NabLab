@@ -136,27 +136,11 @@ class TestUtils
 		'''
 		with Test.*;
 
-		workflow TestDefaultGenerationChain transforms Test
+		nablagen for Test
 		{
-			Nabla2Ir nabla2ir
-			{
-				timeVariable = t;
-				deltatVariable = δt;
-				nodeCoordVariable = X;
-			}
-			ReplaceUtf replaceUtf follows nabla2ir
-			{
-			}
-			ReplaceReductions replaceReductions follows replaceUtf
-			{
-			}
-			OptimizeConnectivities optimizeConnectivities follows replaceReductions
-			{
-				connectivities = nodes;
-			}
-			FillHLTs fillHlts follows optimizeConnectivities
-			{
-			}
+			nodeCoord = X;
+			time = t;
+			timeStep = δt;
 		}
 		'''
 	}

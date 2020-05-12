@@ -27,8 +27,8 @@ NablagenConfig:
 		'time' '=' time=[nabla::SimpleVar]';'
 		'timeStep' '=' timeStep=[nabla::SimpleVar]';'
 		// The two following variables are just needed for the C++ display (progression bar)
-		'iterationMax' '=' iterationMax=[nabla::SimpleVar] ';'
-		'timeMax' '=' timeMax=[nabla::SimpleVar] ';'
+		('iterationMax' '=' iterationMax=[nabla::SimpleVar] ';'
+		'timeMax' '=' timeMax=[nabla::SimpleVar] ';')?
 		(vtkOutput = VtkOutput)?
 		targets += Target*
 	'}';

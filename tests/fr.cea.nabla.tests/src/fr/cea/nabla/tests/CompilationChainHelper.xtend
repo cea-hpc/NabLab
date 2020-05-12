@@ -14,7 +14,6 @@ import com.google.inject.Provider
 import fr.cea.nabla.NablaStandaloneSetup
 import fr.cea.nabla.NablagenStandaloneSetup
 import fr.cea.nabla.generator.NablagenInterpreter
-import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nablagen.NablagenModule
 import java.nio.file.Files
@@ -42,8 +41,6 @@ class CompilationChainHelper
 	var nablagenInjector = nablagenSetup.createInjectorAndDoEMFRegistration
 	var ParseHelper<NablagenModule> nablagenParseHelper = nablagenInjector.getInstance(ParseHelper)
 
-	var IrModule irModule
-
 	def getIrModule(CharSequence model, CharSequence genModel)
 	{
 		val testProjectPath = System.getProperty("user.dir")
@@ -65,12 +62,13 @@ class CompilationChainHelper
 		var nablaGenModule = nablagenParseHelper.parse(genModel, rs)
 		nablaGenModule.assertNoErrors
 
-		if (nablaGenModule.config!== null)
+		if (nablaGenModule.config !== null)
 		{
 			var interpreter = interpreterProvider.get
-			interpreter.irModelListeners += [module | irModule = module]
-			interpreter.launch(nablaGenModule.config, pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples")
+			val irModule = interpreter.launch(nablaGenModule.config, pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples")
+			return irModule
 		}
-		return irModule
+		else
+			return null
 	}
 }

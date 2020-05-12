@@ -50,13 +50,12 @@ class NablagenInterpreter
 {
 	String projectDir
 	@Accessors val traceListeners = new ArrayList<(String)=>void>
-	@Accessors val irModelListeners = new ArrayList<(IrModule)=>void>
 	val ir2Json = new Ir2Json
 	@Inject Provider<JavaIoFileSystemAccess> fsaProvider
 	@Inject Nabla2Ir nabla2Ir
 	@Inject IOutputConfigurationProvider outputConfigurationProvider
 
-	def launch(NablagenConfig it, String projectDir)
+	def IrModule launch(NablagenConfig it, String projectDir)
 	{
 		try
 		{
@@ -64,7 +63,6 @@ class NablagenInterpreter
 			trace('Starting generation of ' + nablaModule.name + '\n')
 			trace('Nabla -> IR\n')
 			val irModule = nabla2Ir.toIrModule(nablaModule)
-
 			// IR -> IR with HLT
 			transformIr(NablaGenerator.hltIrTransformer, irModule)
 
@@ -89,6 +87,8 @@ class NablagenInterpreter
 				// Code generation
 				generateCode(target, model, iterationMax.name, timeMax.name)
 			}
+
+			return irModule
 		}
 		catch(Exception e)
 		{

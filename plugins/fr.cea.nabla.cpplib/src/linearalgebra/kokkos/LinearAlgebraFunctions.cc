@@ -162,20 +162,24 @@ VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorT
 
 /*
  * \brief Call to conjugate gradient to solve A x = b
- * \param A:         [in] Kokkos sparse matrix
- * \param b:         [in] Kokkos vector
+ * \param A:         [in] Sparse matrix
+ * \param b:         [in] Vector
  * \param info:      [in/out] Misc. informations on computation result
+ * \param x0:        [in/out] Initial guess of the solution. If none is provided, a null vector is used.
  * \return: Solution vector
- * \note: Initial guess is null vector, default iteration threshold is 100),
- *        default convergence threshold is 1.e-8
+ * \note: Iteration threshold is 100, convergence threshold is 1.e-8
  */
-VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info)
+VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info, VectorType* x0)
 {
   const size_t count(b.extent(0));
-  VectorType x0("x0", count);
-  for (size_t i(0); i < count; ++i)
-    x0(i) = 0.0;
-  return CGSolve(A.crsMatrix(), b, x0, info, 100, 1.e-8);
+  if (!x0) {
+    VectorType x("x", count);
+    for (size_t i(0); i < count; ++i)
+      x(i) = 0.0;
+    return CGSolve(A.crsMatrix(), b, x, info, 100, 1.e-8);
+  } else {
+    return CGSolve(A.crsMatrix(), b, *x0, info, 100, 1.e-8);
+  }
 }
 
 }  // LinearAlgebraFunctions

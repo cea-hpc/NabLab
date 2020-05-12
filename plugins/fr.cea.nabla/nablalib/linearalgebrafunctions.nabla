@@ -10,9 +10,7 @@
 module LinearAlgebra;
 
 /*
- * It would be better to use the solveInPlace method to avoid
- * a new allocation of the solution. 
- * solveLinearSystem: x | ℝ[x, x] × ℝ[x] × ℝ[x] → ℝ[x];
- * Problem: no way to call a function without an affectation instruction.
+ *  Initial guess API is not provided for JAVA backend
  */
 def solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x];
+def solveLinearSystem: x | ℝ[x, x] × ℝ[x] × ℝ[x] → ℝ[x];

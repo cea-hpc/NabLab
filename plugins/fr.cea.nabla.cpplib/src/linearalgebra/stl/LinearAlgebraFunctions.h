@@ -28,7 +28,7 @@ namespace LinearAlgebraFunctions
   std::string print(const VectorType& v);
   void CGSolve(const SparseMatrixType& A, const VectorType& b, VectorType& x, CGInfo& info,
                const size_t max_it = 200, const double tolerance = std::numeric_limits<double>::epsilon());
-  VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info);
+  VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info, VectorType* x0 = nullptr);
 }
 }
 

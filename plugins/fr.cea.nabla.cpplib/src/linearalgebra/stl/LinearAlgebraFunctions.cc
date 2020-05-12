@@ -137,16 +137,21 @@ void CGSolve(const SparseMatrixType& A, const VectorType& b, VectorType& x, CGIn
  * \param A:         [in] Sparse matrix
  * \param b:         [in] Vector
  * \param info:      [in/out] Misc. informations on computation result
+ * \param x0:        [in/out] Initial guess of the solution. If none is provided, a null vector is used.
  * \return: Solution vector
- * \note: Initial guess is null vector, default iteration threshold is 100),
- *        default convergence threshold is 1.e-8
+ * \note: Iteration threshold is 100, convergence threshold is 1.e-8
  */
-VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info)
+VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info, VectorType* x0)
 {
   const size_t count(b.size());
-  VectorType x(count, 0.0);
-  CGSolve(A.crsMatrix(), b, x, info, 100, 1.e-8);
-  return x;
+  if (!x0) {
+    VectorType x(count, 0.0);
+    CGSolve(A.crsMatrix(), b, x, info, 100, 1.e-8);
+    return x;
+  } else {
+    CGSolve(A.crsMatrix(), b, *x0, info, 100, 1.e-8);
+    return *x0;
+  }
 }
 
 }  // LinearAlgebraFunctions

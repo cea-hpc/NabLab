@@ -130,9 +130,9 @@ AbstractPvdFileWriter2D::changeState(const State& expectedState, const State& ne
 	if (m_state != expectedState)
 	{
 		ostringstream stringStream;
-		stringStream << "Unexpected pvd file writer m_state. Expected: ";
+		stringStream << "Unexpected pvd file writer state. Expected: ";
 		stringStream << expectedState;
-		stringStream << ", but was";
+		stringStream << ", but was: ";
 		stringStream << m_state;
 		throw runtime_error(stringStream.str());
 	}

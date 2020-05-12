@@ -137,21 +137,18 @@ class ArgOrVarRefValidatorTest
 	@Test
 	def void testCheckIndicesExpressionAndType()
 	{
-		val function = '''def g: ℝ[2] → ℝ;'''
-
-		val moduleKo1 = parseHelper.parse(getTestModule('', function) +
+		val moduleKo1 = parseHelper.parse(getTestModule('', '') +
 			'''
 			let a = ℕ[2](0);
 			let m = a[2.3];
 			'''
 		)
 		Assert.assertNotNull(moduleKo1)
-
 		moduleKo1.assertError(NablaPackage.eINSTANCE.argOrVarRef,
-			BasicValidator::CONST_INT_EXPRESSION_MSG,
-			BasicValidator::getConstIntExpressionMsg())
+			BasicValidator::TYPE_EXPRESSION_TYPE,
+			BasicValidator::getTypeExpressionMsg("ℝ"))
 
-		val moduleKo2 = parseHelper.parse(getTestModule('', function) +
+		val moduleKo2 = parseHelper.parse(getTestModule('', '') +
 			'''
 			let a = ℕ[2](0);
 			let b = 1.2;
@@ -159,12 +156,11 @@ class ArgOrVarRefValidatorTest
 			'''
 		)
 		Assert.assertNotNull(moduleKo2)
-
 		moduleKo2.assertError(NablaPackage.eINSTANCE.argOrVarRef,
-			BasicValidator::CONST_INT_EXPRESSION_TYPE_MSG,
-			BasicValidator::getConstIntExpressionTypeMsg("ℝ"))
+			BasicValidator::TYPE_EXPRESSION_TYPE,
+			BasicValidator::getTypeExpressionMsg("ℝ"))
 
-		val moduleOk =  parseHelper.parse(getTestModule('', function) +
+		val moduleOk =  parseHelper.parse(getTestModule('', '') +
 			'''
 			let a = ℕ[2](0);
 			let b = 1;

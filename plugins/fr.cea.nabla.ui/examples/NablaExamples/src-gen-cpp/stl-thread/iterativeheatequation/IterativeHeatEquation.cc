@@ -13,6 +13,28 @@ bool check(bool a)
 }
 
 template<size_t x>
+double norm(RealArray1D<x> a)
+{
+	return std::sqrt(dot(a, a));
+}
+
+template<size_t x>
+double dot(RealArray1D<x> a, RealArray1D<x> b)
+{
+	double result(0.0);
+	for (size_t i=0; i<x; i++)
+	{
+		result = result + a[i] * b[i];
+	}
+	return result;
+}
+
+double det(RealArray1D<2> a, RealArray1D<2> b)
+{
+	return (a[0] * b[1] - a[1] * b[0]);
+}
+
+template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
 	return a + b;
@@ -20,7 +42,7 @@ RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 
 double minR0(double a, double b)
 {
-	return MathFunctions::min(a, b);
+	return std::min(a, b);
 }
 
 double sumR0(double a, double b)
@@ -35,7 +57,7 @@ double prodR0(double a, double b)
 
 double maxR0(double a, double b)
 {
-	return MathFunctions::max(a, b);
+	return std::max(a, b);
 }
 
 
@@ -48,16 +70,16 @@ IterativeHeatEquation::Options::Options(const std::string& fileName)
 	rapidjson::Document d;
 	d.ParseStream(isw);
 	assert(d.IsObject());
-	// X_LENGTH
-	assert(d.HasMember("X_LENGTH"));
-	const rapidjson::Value& valueof_X_LENGTH = d["X_LENGTH"];
-	assert(valueof_X_LENGTH.IsDouble());
-	X_LENGTH = valueof_X_LENGTH.GetDouble();
-	// Y_LENGTH
-	assert(d.HasMember("Y_LENGTH"));
-	const rapidjson::Value& valueof_Y_LENGTH = d["Y_LENGTH"];
-	assert(valueof_Y_LENGTH.IsDouble());
-	Y_LENGTH = valueof_Y_LENGTH.GetDouble();
+	// outputPath
+	assert(d.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = d["outputPath"];
+	assert(valueof_outputPath.IsString());
+	outputPath = valueof_outputPath.GetString();
+	// outputPeriod
+	assert(d.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = d["outputPeriod"];
+	assert(valueof_outputPeriod.IsInt());
+	outputPeriod = valueof_outputPeriod.GetInt();
 	// u0
 	assert(d.HasMember("u0"));
 	const rapidjson::Value& valueof_u0 = d["u0"];
@@ -73,6 +95,16 @@ IterativeHeatEquation::Options::Options(const std::string& fileName)
 		assert(valueof_vectOne[i1].IsDouble());
 		vectOne[i1] = valueof_vectOne[i1].GetDouble();
 	}
+	// X_LENGTH
+	assert(d.HasMember("X_LENGTH"));
+	const rapidjson::Value& valueof_X_LENGTH = d["X_LENGTH"];
+	assert(valueof_X_LENGTH.IsDouble());
+	X_LENGTH = valueof_X_LENGTH.GetDouble();
+	// Y_LENGTH
+	assert(d.HasMember("Y_LENGTH"));
+	const rapidjson::Value& valueof_Y_LENGTH = d["Y_LENGTH"];
+	assert(valueof_Y_LENGTH.IsDouble());
+	Y_LENGTH = valueof_Y_LENGTH.GetDouble();
 	// X_EDGE_ELEMS
 	assert(d.HasMember("X_EDGE_ELEMS"));
 	const rapidjson::Value& valueof_X_EDGE_ELEMS = d["X_EDGE_ELEMS"];
@@ -93,21 +125,21 @@ IterativeHeatEquation::Options::Options(const std::string& fileName)
 	const rapidjson::Value& valueof_Y_EDGE_LENGTH = d["Y_EDGE_LENGTH"];
 	assert(valueof_Y_EDGE_LENGTH.IsDouble());
 	Y_EDGE_LENGTH = valueof_Y_EDGE_LENGTH.GetDouble();
-	// option_stoptime
-	assert(d.HasMember("option_stoptime"));
-	const rapidjson::Value& valueof_option_stoptime = d["option_stoptime"];
-	assert(valueof_option_stoptime.IsDouble());
-	option_stoptime = valueof_option_stoptime.GetDouble();
-	// option_max_iterations
-	assert(d.HasMember("option_max_iterations"));
-	const rapidjson::Value& valueof_option_max_iterations = d["option_max_iterations"];
-	assert(valueof_option_max_iterations.IsInt());
-	option_max_iterations = valueof_option_max_iterations.GetInt();
-	// option_max_iterations_k
-	assert(d.HasMember("option_max_iterations_k"));
-	const rapidjson::Value& valueof_option_max_iterations_k = d["option_max_iterations_k"];
-	assert(valueof_option_max_iterations_k.IsInt());
-	option_max_iterations_k = valueof_option_max_iterations_k.GetInt();
+	// stopTime
+	assert(d.HasMember("stopTime"));
+	const rapidjson::Value& valueof_stopTime = d["stopTime"];
+	assert(valueof_stopTime.IsDouble());
+	stopTime = valueof_stopTime.GetDouble();
+	// maxIterations
+	assert(d.HasMember("maxIterations"));
+	const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
+	assert(valueof_maxIterations.IsInt());
+	maxIterations = valueof_maxIterations.GetInt();
+	// maxIterationsK
+	assert(d.HasMember("maxIterationsK"));
+	const rapidjson::Value& valueof_maxIterationsK = d["maxIterationsK"];
+	assert(valueof_maxIterationsK.IsInt());
+	maxIterationsK = valueof_maxIterationsK.GetInt();
 	// epsilon
 	assert(d.HasMember("epsilon"));
 	const rapidjson::Value& valueof_epsilon = d["epsilon"];
@@ -117,10 +149,10 @@ IterativeHeatEquation::Options::Options(const std::string& fileName)
 
 /******************** Module definition ********************/
 
-IterativeHeatEquation::IterativeHeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D, string output)
+IterativeHeatEquation::IterativeHeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D)
 : options(aOptions)
 , mesh(aCartesianMesh2D)
-, writer("IterativeHeatEquation", output)
+, writer("IterativeHeatEquation", options->outputPath)
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
 , nbFaces(mesh->getNbFaces())
@@ -131,6 +163,7 @@ IterativeHeatEquation::IterativeHeatEquation(Options* aOptions, CartesianMesh2D*
 , t_n(0.0)
 , t_nplus1(0.0)
 , deltat(0.001)
+, lastDump(numeric_limits<int>::min())
 , X(nbNodes)
 , Xc(nbCells)
 , xc(nbCells)
@@ -144,12 +177,15 @@ IterativeHeatEquation::IterativeHeatEquation(Options* aOptions, CartesianMesh2D*
 , faceLength(nbFaces)
 , faceConductivity(nbFaces)
 , alpha(nbCells, std::vector<double>(nbCells))
-, lastDump(numeric_limits<int>::min())
 {
+
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-		X[rNodes] = gNodes[rNodes];
+	{
+		X[rNodes][0] = gNodes[rNodes][0];
+		X[rNodes][1] = gNodes[rNodes][1];
+	}
 }
 
 /**
@@ -172,7 +208,7 @@ void IterativeHeatEquation::computeFaceLength() noexcept
 				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction3 = sumR0(reduction3, MathFunctions::norm(X[pNodes] - X[pPlus1Nodes]));
+				reduction3 = sumR0(reduction3, norm(X[pNodes] - X[pPlus1Nodes]));
 			}
 		}
 		faceLength[fFaces] = 0.5 * reduction3;
@@ -209,7 +245,7 @@ void IterativeHeatEquation::computeV() noexcept
 				const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction2 = sumR0(reduction2, MathFunctions::det(X[pNodes], X[pPlus1Nodes]));
+				reduction2 = sumR0(reduction2, det(X[pNodes], X[pPlus1Nodes]));
 			}
 		}
 		V[jCells] = 0.5 * reduction2;
@@ -336,7 +372,7 @@ void IterativeHeatEquation::computeResidual() noexcept
 	double reduction7;
 	reduction7 = parallel::parallel_reduce(nbCells, -numeric_limits<double>::max(), [&](double& accu, const size_t& jCells)
 		{
-			return (accu = maxR0(accu, MathFunctions::fabs(u_nplus1_kplus1[jCells] - u_nplus1_k[jCells])));
+			return (accu = maxR0(accu, std::abs(u_nplus1_kplus1[jCells] - u_nplus1_k[jCells])));
 		},
 		&maxR0);
 	residual = reduction7;
@@ -360,7 +396,7 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (residual > options->epsilon && check(k + 1 < options->option_max_iterations_k));
+		continueLoop = (residual > options->epsilon && check(k + 1 < options->maxIterationsK));
 	
 		if (continueLoop)
 		{
@@ -381,7 +417,7 @@ void IterativeHeatEquation::initU() noexcept
 {
 	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		if (MathFunctions::norm(Xc[cCells] - options->vectOne) < 0.5) 
+		if (norm(Xc[cCells] - options->vectOne) < 0.5) 
 			u_n[cCells] = options->u0;
 		else
 			u_n[cCells] = 0.0;
@@ -449,7 +485,7 @@ void IterativeHeatEquation::computeAlphaCoeff() noexcept
 				const size_t dCells(dId);
 				const Id fId(mesh->getCommonFace(cId, dId));
 				const size_t fFaces(fId);
-				const double alphaExtraDiag(deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / MathFunctions::norm(Xc[cCells] - Xc[dCells]));
+				const double alphaExtraDiag(deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(Xc[cCells] - Xc[dCells]));
 				alpha[cCells][dCells] = alphaExtraDiag;
 				alphaDiag = alphaDiag + alphaExtraDiag;
 			}
@@ -484,7 +520,7 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (t_nplus1 < options->option_stoptime && n + 1 < options->option_max_iterations);
+		continueLoop = (t_nplus1 < options->stopTime && n + 1 < options->maxIterations);
 	
 		if (continueLoop)
 		{
@@ -503,9 +539,9 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << utils::progress_bar(n, options->option_max_iterations, t_n, options->option_stoptime, 25);
+		std::cout << utils::progress_bar(n, options->maxIterations, t_n, options->stopTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(n, options->option_max_iterations, t_n, options->option_stoptime, deltat, globalTimer), true)
+			utils::eta(n, options->maxIterations, t_n, options->stopTime, deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
@@ -516,15 +552,18 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 
 void IterativeHeatEquation::dumpVariables(int iteration)
 {
-	if (!writer.isDisabled() && n >= lastDump + 1.0)
+	if (!writer.isDisabled() && n >= lastDump + options->outputPeriod)
 	{
 		cpuTimer.stop();
 		ioTimer.start();
-		std::map<string, double*> cellVariables;
-		std::map<string, double*> nodeVariables;
-		cellVariables.insert(pair<string,double*>("Temperature", u_n.data()));
 		auto quads = mesh->getGeometry()->getQuads();
-		writer.writeFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data(), cellVariables, nodeVariables);
+		writer.startVtpFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data());
+		writer.openNodeData();
+		writer.closeNodeData();
+		writer.openCellData();
+		writer.write("Temperature", u_n);
+		writer.closeCellData();
+		writer.closeVtpFile();
 		lastDump = n;
 		ioTimer.stop();
 		cpuTimer.start();
@@ -564,41 +603,22 @@ void IterativeHeatEquation::simulate()
 
 int main(int argc, char* argv[]) 
 {
-	IterativeHeatEquation::Options* o = nullptr;
-	string dataFile, output;
+	string dataFile;
 	
 	if (argc == 2)
 	{
 		dataFile = argv[1];
-		o = new IterativeHeatEquation::Options(dataFile);
-	}
-	else if (argc == 6)
-	{
-		dataFile = argv[1];
-		o = new IterativeHeatEquation::Options(dataFile);
-		o->X_EDGE_ELEMS = std::atoi(argv[2]);
-		o->Y_EDGE_ELEMS = std::atoi(argv[3]);
-		o->X_EDGE_LENGTH = std::atof(argv[4]);
-		o->Y_EDGE_LENGTH = std::atof(argv[5]);
-	}
-	else if (argc == 7)
-	{
-		dataFile = argv[1];
-		o = new IterativeHeatEquation::Options(dataFile);
-		o->X_EDGE_ELEMS = std::atoi(argv[2]);
-		o->Y_EDGE_ELEMS = std::atoi(argv[3]);
-		o->X_EDGE_LENGTH = std::atof(argv[4]);
-		o->Y_EDGE_LENGTH = std::atof(argv[5]);
-		output = argv[6];
 	}
 	else
 	{
-		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1, 5 or 6 args: dataFile [X Y Xlength Ylength [output]]." << std::endl;
-		std::cerr << "(IterativeHeatEquationDefaultOptions.json, X=100, Y=10, Xlength=0.01, Ylength=0.01 output=current directory with no args)" << std::endl;
+		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1 arg: dataFile." << std::endl;
+		std::cerr << "(IterativeHeatEquationDefaultOptions.json)" << std::endl;
 		return -1;
 	}
+	
+	auto o = new IterativeHeatEquation::Options(dataFile);
 	auto nm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
-	auto c = new IterativeHeatEquation(o, nm, output);
+	auto c = new IterativeHeatEquation(o, nm);
 	c->simulate();
 	delete c;
 	delete nm;

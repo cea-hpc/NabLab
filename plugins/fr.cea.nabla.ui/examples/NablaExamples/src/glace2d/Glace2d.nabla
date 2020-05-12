@@ -45,28 +45,28 @@ def inverse: ℝ[2,2] → ℝ[2,2], (a) → {
 			[-a[1,0] * alpha,  a[0,0] * alpha ]];
 }
 
+// Simulation options
+option stopTime = 0.2;
+option maxIterations = 20000;
+  
 // Mesh options
 option X_EDGE_LENGTH = 0.01;
 option Y_EDGE_LENGTH = X_EDGE_LENGTH;
 option X_EDGE_ELEMS = 100;
 option Y_EDGE_ELEMS = 10;
 
-// Simulation options
-option option_stoptime = 0.2;
-option option_max_iterations = 20000;
-  
 // User options
 option γ = 1.4;
-option option_x_interface = 0.5;
-option option_δt_ini = 1.0e-5;
-option option_δt_cfl = 0.4;
-option option_ρ_ini_zg = 1.0;
-option option_ρ_ini_zd = 0.125;
-option option_p_ini_zg = 1.0;
-option option_p_ini_zd = 0.1;
+option xInterface = 0.5;
+option δtIni = 1.0e-5;
+option δtCfl = 0.4;
+option ρIniZg = 1.0;
+option ρIniZd = 0.125;
+option pIniZg = 1.0;
+option pIniZd = 0.1;
 
 let t=0.0;
-let δt=option_δt_ini;
+let δt=δtIni;
 
 ℝ[2] X{nodes}, b{nodes}, bt{nodes};
 ℝ[2,2] Ar{nodes}, Mt{nodes};
@@ -78,7 +78,7 @@ let δt=option_δt_ini;
 ℝ[2] Cjr_ic{cells, nodesOfCell}, C{cells, nodesOfCell}, F{cells, nodesOfCell};
 ℝ[2,2] Ajr{cells, nodesOfCell};
 
-iterate n while (t^{n+1} < option_stoptime && n+1 < option_max_iterations);
+iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
 
 // *************************************************************
 // * Initialization
@@ -89,12 +89,12 @@ IniCjrIc: ∀j∈cells(), ∀r∈nodesOfCell(j),
 Initialize: ∀j∈cells(), {
 	ℝ ρ_ic, p_ic;
 	let center = 0.25 * ∑{r∈nodesOfCell(j)}(X^{n=0}{r});
-	if (center[0] < option_x_interface) {
-		ρ_ic = option_ρ_ini_zg;
-		p_ic = option_p_ini_zg;
+	if (center[0] < xInterface) {
+		ρ_ic = ρIniZg;
+		p_ic = pIniZg;
 	} else {
-  		ρ_ic = option_ρ_ini_zd;
-  		p_ic = option_p_ini_zd;
+  		ρ_ic = ρIniZd;
+  		p_ic = pIniZd;
   	}
   	let V_ic = 0.5 * ∑{r∈nodesOfCell(j)}(dot(Cjr_ic{j,r}, X^{n=0}{r}));
   	m{j} = ρ_ic * V_ic; // m is a constant
@@ -151,7 +151,7 @@ ComputeBoundaryConditions: ∀f∈outerFaces(), {
 			Mt{r} = IcP * (Ar{r} * IcP) + NxN*trace(Ar{r});
 		}
 		// X boundary conditions
-		if ((fabs(X^{n}{r}[0] - X_MIN) < epsilon) || ( (fabs(X^{n}{r}[0] - X_MAX) < epsilon) )) {
+		if ((abs(X^{n}{r}[0] - X_MIN) < epsilon) || ( (abs(X^{n}{r}[0] - X_MAX) < epsilon) )) {
 			Mt{r} = I;
 			bt{r} = [0.0, 0.0];
 		}
@@ -167,5 +167,5 @@ ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C{j,r}, X^{n}
 ComputeXn: ∀r∈nodes(), X^{n+1}{r} = X^{n}{r} + δt^{n} * ur{r};
 ComputeUn: ∀j∈cells(), uj^{n+1}{j} = uj^{n}{j} - (δt^{n}/m{j}) * ∑{r∈nodesOfCell(j)}(F{j,r});
 ComputeEn: ∀j∈cells(), E^{n+1}{j} = E^{n}{j} - (δt^{n} / m{j}) * ∑{r∈nodesOfCell(j)}(dot(F{j,r}, ur{r}));
-ComputeDt: δt^{n+1} = option_δt_cfl * Min{j∈cells()}(δtj{j});
+ComputeDt: δt^{n+1} = δtCfl * Min{j∈cells()}(δtj{j});
 ComputeTn: t^{n+1} = t^{n} + δt^{n+1};

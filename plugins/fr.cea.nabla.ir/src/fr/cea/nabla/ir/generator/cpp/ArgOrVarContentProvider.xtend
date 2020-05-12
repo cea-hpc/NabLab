@@ -15,11 +15,14 @@ import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.Variable
+import java.util.ArrayList
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
 
 @Data
 abstract class ArgOrVarContentProvider
@@ -53,6 +56,37 @@ abstract class ArgOrVarContentProvider
 			(linearAlgebra && type.connectivities.size == 2)
 		else
 			false
+	}
+
+	def initCppTypeContent(Variable v)
+	{
+		if (v.type.baseTypeStatic)
+			throw new RuntimeException("No need to init static type for variable: " + v.name)
+		else
+			initCppType(v)
+	}
+
+	private def dispatch initCppType(SimpleVariable v)
+	'''«v.name».initSize(«v.type.sizes.map[x | expressionContentProvider.getContent(x)].join(', ')»);'''
+
+	private def dispatch initCppType(ConnectivityVariable v)
+	{
+		initCppType(v, new ArrayList<String>, v.type.connectivities)
+	}
+
+	private def CharSequence initCppType(ConnectivityVariable v, List<String> accessors, Iterable<Connectivity> connectivities)
+	{
+		if (connectivities.empty)
+			'''«v.name»«formatIterators(v, accessors)».initSize(«v.type.base.sizes.map[x | expressionContentProvider.getContent(x)].join(', ')»);'''
+		else
+		{
+			val indexName = "i" + connectivities.size
+			accessors += indexName
+			'''
+				for (size_t «indexName»=0; «indexName»<«connectivities.head.nbElemsVar»; «indexName»++)
+					«initCppType(v, accessors, connectivities.tail)»
+			'''
+		}
 	}
 }
 

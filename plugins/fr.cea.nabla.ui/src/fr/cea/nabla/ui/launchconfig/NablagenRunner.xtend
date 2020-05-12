@@ -12,10 +12,10 @@ package fr.cea.nabla.ui.launchconfig
 import com.google.inject.Inject
 import com.google.inject.Provider
 import com.google.inject.Singleton
+import fr.cea.nabla.generator.NablagenInterpreter
+import fr.cea.nabla.nablagen.NablagenConfig
 import fr.cea.nabla.nablagen.NablagenModule
-import fr.cea.nabla.nablagen.Workflow
 import fr.cea.nabla.ui.UiUtils
-import fr.cea.nabla.workflow.WorkflowInterpreter
 import org.eclipse.core.resources.IResource
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.ResourceSet
@@ -29,7 +29,7 @@ class NablagenRunner
 {
 	val MessageConsoleStream stream
 	@Inject Provider<ResourceSet> resourceSetProvider
-	@Inject Provider<WorkflowInterpreter> interpretorProvider
+	@Inject Provider<NablagenInterpreter> interpreterProvider
 
 	new()
 	{
@@ -41,11 +41,11 @@ class NablagenRunner
 		stream = console.newMessageStream
 	}
 
-	def launch(Workflow workflow, String baseDir)
+	def launch(NablagenConfig config, String baseDir)
 	{
-		val interpretor = interpretorProvider.get
-		interpretor.addWorkflowTraceListener([msg | stream.print(msg)])
-		interpretor.launch(workflow, baseDir)
+		val interpretor = interpreterProvider.get
+		interpretor.traceListeners += [String msg | stream.print(msg)]
+		interpretor.launch(config, baseDir)
 	}
 
 	package def launch(IResource eclipseResource)
@@ -58,8 +58,8 @@ class NablagenRunner
 		EcoreUtil::resolveAll(resourceSet)
 		emfResource.load(null)
 		for (module : emfResource.contents.filter(NablagenModule))
-			if (module.workflow !== null) 
-				launch(module.workflow, eclipseResource.project.location.toString)
+			if (module.config !== null) 
+				launch(module.config, eclipseResource.project.location.toString)
 
 		eclipseResource.project.refreshLocal(IResource::DEPTH_INFINITE, null)
 	}

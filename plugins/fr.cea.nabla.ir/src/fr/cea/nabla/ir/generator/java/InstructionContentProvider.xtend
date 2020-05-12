@@ -32,6 +32,7 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 import static extension fr.cea.nabla.ir.generator.java.ItemIndexAndIdValueContentProvider.*
 
 class InstructionContentProvider 
@@ -70,9 +71,9 @@ class InstructionContentProvider
 				«FOR innerInstruction : innerInstructions»
 				«innerInstruction.content»
 				«ENDFOR»
-				return «binaryFunction.getCodeName('.')»(accu, «lambda.content»);
+				return «binaryFunction.codeName»(accu, «lambda.content»);
 			},
-			(r1, r2) -> «binaryFunction.getCodeName('.')»(r1, r2)
+			(r1, r2) -> «binaryFunction.codeName»(r1, r2)
 		);''')»
 	'''
 

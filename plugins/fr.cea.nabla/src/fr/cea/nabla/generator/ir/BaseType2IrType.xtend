@@ -11,6 +11,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Connectivity
@@ -33,7 +34,7 @@ class BaseType2IrType
 		]
 	}
 
-	def fr.cea.nabla.ir.ir.ConnectivityType toIrConnectivityType(BaseType t, List<? extends Connectivity> supports)
+	def ConnectivityType toIrConnectivityType(BaseType t, List<? extends Connectivity> supports)
 	{
 		IrFactory::eINSTANCE.createConnectivityType => 
 		[

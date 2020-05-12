@@ -42,7 +42,7 @@ class SequentialBackend extends Backend
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
-		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider)
+		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider, expressionContentProvider)
 		instructionContentProvider = new SequentialInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobContainerContentProvider = new JobContainerContentProvider
@@ -64,7 +64,7 @@ class StlThreadBackend extends Backend
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
-		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider)
+		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider, expressionContentProvider)
 		instructionContentProvider = new StlThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobContainerContentProvider = new JobContainerContentProvider
@@ -86,7 +86,7 @@ class KokkosBackend extends Backend
 		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
-		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider)
+		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider, expressionContentProvider)
 		instructionContentProvider = new KokkosInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobContainerContentProvider = new JobContainerContentProvider
@@ -108,7 +108,7 @@ class KokkosTeamThreadBackend extends Backend
 		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
-		attributesContentProvider = new KokkosTeamThreadAttributesContentProvider(argOrVarContentProvider)
+		attributesContentProvider = new KokkosTeamThreadAttributesContentProvider(argOrVarContentProvider, expressionContentProvider)
 		instructionContentProvider = new KokkosTeamThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobContainerContentProvider = new KokkosTeamThreadJobContainerContentProvider

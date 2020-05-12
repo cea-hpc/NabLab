@@ -11,20 +11,21 @@ package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ReductionInstruction
-import fr.cea.nabla.ir.ir.VariableDefinition
+import fr.cea.nabla.ir.ir.Variable
+import fr.cea.nabla.ir.ir.TimeLoopVariable
 
-class ReplaceUtf8Chars implements IrTransformationStep
+class ReplaceUtf8Chars extends IrTransformationStep
 {
-	override getDescription()
+	new()
 	{
-		'Replace UTF8 characters in function, variable and job names by ASCII characters'
+		super('Replace UTF8 characters in function, variable and job names by ASCII characters')
 	}
 
 	override transform(IrModule m)
 	{
-		m.options.forEach[x | x.name = x.name.noUtf8]
-		m.variables.forEach[x | x.name = x.name.noUtf8]
-		m.eAllContents.filter(VariableDefinition).forEach[x | x.variable.name = x.variable.name.noUtf8]
+		trace('IR -> IR: ' + description + '\n')
+		m.eAllContents.filter(Variable).forEach[x | x.name = x.name.noUtf8]
+		m.eAllContents.filter(TimeLoopVariable).forEach[x | x.name = x.name.noUtf8]
 		m.eAllContents.filter(ReductionInstruction).forEach[x | x.result.name = x.result.name.noUtf8]
 		m.connectivities.forEach[x | x.name = x.name.noUtf8]
 		m.functions.forEach[x | x.name = x.name.noUtf8]
@@ -32,7 +33,7 @@ class ReplaceUtf8Chars implements IrTransformationStep
 		return true
 	}
 
-	private def getNoUtf8(String name)
+	static def getNoUtf8(String name)
 	{
 		name.replace('\u03B1', 'alpha')
 		.replace('\u03B2', 'beta')
@@ -45,10 +46,5 @@ class ReplaceUtf8Chars implements IrTransformationStep
 		.replace('\u221A', 'sqrt')
 		.replace('∑', 'sum')
 		.replace('∏', 'prod')
-	}
-
-	override getOutputTraces()
-	{
-		#[]
 	}
 }

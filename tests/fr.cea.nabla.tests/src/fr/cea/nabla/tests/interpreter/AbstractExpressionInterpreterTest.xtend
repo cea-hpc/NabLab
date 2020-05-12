@@ -204,8 +204,9 @@ abstract class AbstractExpressionInterpreterTest
 	{
 		val model = testModuleForSimulation +
 		'''
-		let c = card(nodes());
+		ℕ c;
 		ℝ[2] X{nodes};
+		j: c = card(nodes());
 		'''
 
 		assertInterpreteCardinality(model)
@@ -216,14 +217,14 @@ abstract class AbstractExpressionInterpreterTest
 	{
 		val model = getTestModule(defaultConnectivities,
 		'''
-		def getOne:  → ℕ;
-		def addOne: ℕ → ℕ;
-		def addOne: ℝ → ℝ;
-		def add: ℕ × ℕ → ℕ;
-		def add: ℝ × ℕ → ℝ;
-		def add: ℝ × ℝ → ℝ;
-		def add: x | ℝ[x] × ℝ[x] → ℝ[x];
-		def add: x,y | ℝ[x,y] × ℝ[x,y] → ℝ[x,y];
+		def getOne:  → ℕ, () → return 1;
+		def addOne: ℕ → ℕ, (a) → return a + 1;
+		def addOne: ℝ → ℝ, (a) → return a + 1.0;
+		def add: ℕ × ℕ → ℕ, (a, b) → return a + b;
+		def add: ℝ × ℕ → ℝ, (a, b) → return a + b;
+		def add: ℝ × ℝ → ℝ, (a, b) → return a + b;
+		def add: x | ℝ[x] × ℝ[x] → ℝ[x], (a, b) → return a + b;
+		def add: x,y | ℝ[x,y] × ℝ[x,y] → ℝ[x,y], (a, b) → return a + b;
 		''')
 		+ simulationVariables +
 		'''
@@ -266,7 +267,7 @@ abstract class AbstractExpressionInterpreterTest
 			return 2 * x;
 		}
 
-		def	j: a | ℝ[a] → ℝ[a], (x) → {
+		def j: a | ℝ[a] → ℝ[a], (x) → {
 			ℝ[a] y;
 			∀i∈[0;a[, y[i] = 2 * x[i];
 			return y;
@@ -332,7 +333,7 @@ abstract class AbstractExpressionInterpreterTest
 	}
 
 	def void assertInterpreteContractedIf(String model)
-	
+
 	def void assertInterpreteUnaryExpression(String model)
 
 	def void assertInterpreteParenthesis(String model)
@@ -344,7 +345,7 @@ abstract class AbstractExpressionInterpreterTest
 	def void assertInterpreteMaxConstant(String model)
 
 	def void assertInterpreteBaseTypeConstant(String model)
-	
+
 	def void assertInterpreteIntVectorConstant(String model)
 
 	def void assertInterpreteIntMatrixConstant(String model)

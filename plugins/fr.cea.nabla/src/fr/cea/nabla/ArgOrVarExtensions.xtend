@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla
 
+import com.google.inject.Inject
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVar
@@ -16,10 +17,9 @@ import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.OptDefinition
 import fr.cea.nabla.nabla.Reduction
+import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import org.eclipse.xtext.EcoreUtil2
@@ -30,6 +30,8 @@ import org.eclipse.xtext.EcoreUtil2
  */
 class ArgOrVarExtensions 
 {
+	@Inject extension ExpressionExtensions
+
 	def BaseType getType(ConnectivityVar it)
 	{
 		(eContainer as VarGroupDeclaration).type
@@ -50,31 +52,60 @@ class ArgOrVarExtensions
 		}
 	}
 
-	def boolean isConst(ArgOrVar it)
+	def boolean isConst(SimpleVar it)
+	{
+		// Only SimpleVar defined with a value can be const
+		if (eContainer !== null && eContainer instanceof SimpleVarDefinition && (eContainer as SimpleVarDefinition).value !== null)
+		{
+			val module = EcoreUtil2::getContainerOfType(it, NablaModule)
+			module.eAllContents.filter(Affectation).forall[x | x.left.target !== it]
+		}
+		else
+			false
+	}
+
+	def boolean isConstExpr(ArgOrVar it)
+	{
+		if (eContainer !== null)
+		{
+			val c = eContainer
+			switch c
+			{
+				// options are not constexpr because they are initialized by a file in the generated code
+				SimpleVarDefinition: (!c.option && c.value !== null && c.variable.const && c.value.constExpr)
+				Function, Reduction: true
+				default: false
+			}
+		}
+		else
+			false
+	}
+
+	def boolean isNablaEvaluable(ArgOrVar it)
 	{
 		switch it
 		{
-			Arg: true
-			TimeIterator: false
-			default: 
-			{
-				val module = EcoreUtil2::getContainerOfType(it, NablaModule)
-				module.eAllContents.filter(Affectation).forall[x | x.left.target !== it]
-			}
+			SimpleVar: (value !== null && value.nablaEvaluable)
+			default: false
 		}
 	}
 
 	def isGlobal(Var it) 
-	{ 
+	{
 		(eContainer !== null && eContainer.eContainer !== null && eContainer.eContainer instanceof NablaModule)
+	}
+
+	def boolean isOption(ArgOrVar it) 
+	{
+		(eContainer !== null && eContainer instanceof SimpleVarDefinition && (eContainer as SimpleVarDefinition).option)
 	}
 
 	def getValue(Var it)
 	{
 		val decl = eContainer
-		switch decl
+		if (decl === null) null
+		else switch decl
 		{
-			OptDefinition: decl.value
 			SimpleVarDefinition : decl.value
 			default : null
 		}

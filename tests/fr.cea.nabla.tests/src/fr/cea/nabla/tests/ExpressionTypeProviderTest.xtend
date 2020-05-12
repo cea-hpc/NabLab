@@ -60,7 +60,7 @@ class ExpressionTypeProviderTest
 
 	def reduceMin, ℝ.MaxValue: ℝ, (a, b) → return a;
 
-	def perp: ℝ[2] → ℝ[2];
+	def perp: ℝ[2] → ℝ[2], (a) → return a;
 	def norm: x | ℝ[x] → ℝ;
 	def solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x];
 
@@ -103,7 +103,6 @@ class ExpressionTypeProviderTest
 	let d3 = ℝ[2](0.);
 
 	let e = [1.0, 2.0, 3.0];
-	let f = card(cells());
 
 	let g = [ [1.0, 0.0], [0.0, 1.0] ];
 	let h = (a1 == 1 ? 0.0 : 1.0);
@@ -182,7 +181,6 @@ class ExpressionTypeProviderTest
 		assertTypesFor(new NSTRealArray1D(createIntConstant(2)), module, "d3")
 
 		assertTypesFor(new NSTRealArray1D(createIntConstant(3)), module, "e")
-		assertTypesFor(new NSTIntScalar, module, "f")
 
 		assertTypesFor(new NSTRealArray2D(createIntConstant(2), createIntConstant(2)), module, "g")
 		assertTypesFor(new NSTRealScalar, module, "h")

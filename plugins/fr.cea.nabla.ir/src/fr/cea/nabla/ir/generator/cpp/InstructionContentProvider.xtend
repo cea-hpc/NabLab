@@ -31,6 +31,7 @@ import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
 
 @Data
@@ -43,7 +44,12 @@ abstract class InstructionContentProvider
 
 	def dispatch CharSequence getContent(VariableDefinition it)
 	'''
-		«IF variable.const»const «ENDIF»«variable.cppType» «variable.name»«variable.defaultValueContent»;
+		«IF variable.type.baseTypeStatic»
+			«IF variable.const»const «ENDIF»«variable.cppType» «variable.name»«variable.defaultValueContent»;
+		«ELSE»
+			«IF variable.const»const «ENDIF»«variable.cppType» «variable.name»;
+			«variable.initCppTypeContent»
+		«ENDIF»
 	'''
 
 	def dispatch CharSequence getContent(InstructionBlock it)
@@ -173,7 +179,7 @@ class SequentialInstructionContentProvider extends InstructionContentProvider
 	{
 		throw new UnsupportedOperationException("ReductionInstruction must have been replaced before using this code generator")
 	}
-	
+
 	override protected getLoopContent(Loop it) 
 	{
 		throw new UnsupportedOperationException("No parallel loop... bad path")
@@ -189,7 +195,7 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 		«iterationBlock.defineInterval('''
 		«result.name» = parallel::parallel_reduce(«iterationBlock.nbElems», «result.defaultValue.content», [&](«result.cppType»& accu, const size_t& «iterationBlock.indexName»)
 			{
-				return (accu = «binaryFunction.getCodeName('.')»(accu, «lambda.content»));
+				return (accu = «binaryFunction.codeName»(accu, «lambda.content»));
 			},
 			&«binaryFunction.name»);''')»
 	'''
@@ -215,7 +221,7 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 			«FOR innerInstruction : innerInstructions»
 			«innerInstruction.content»
 			«ENDFOR»
-			accu = «binaryFunction.getCodeName('.')»(accu, «lambda.content»);
+			accu = «binaryFunction.codeName»(accu, «lambda.content»);
 		}, KokkosJoiner<«result.cppType»>(«result.name», «result.defaultValue.content», &«binaryFunction.name»));''')»
 	'''
 

@@ -18,94 +18,73 @@ generate nablagen "http://www.cea.fr/nabla/Nablagen"
 
 NablagenModule:
 	imports+=Import*
-	workflow=Workflow;
+	config=NablagenConfig;
 
-Workflow:
-	'workflow' name=ID 'transforms' nablaModule=[nabla::NablaModule] 
+NablagenConfig:
+	'nablagen' 'for' nablaModule=[nabla::NablaModule] 
 	'{'
-		components+=WorkflowComponent*
+		'nodeCoord' '=' nodeCoord=[nabla::ConnectivityVar]';'
+		'time' '=' time=[nabla::SimpleVar]';'
+		'timeStep' '=' timeStep=[nabla::SimpleVar]';'
+		// The two following variables are just needed for the C++ display (progression bar)
+		('iterationMax' '=' iterationMax=[nabla::SimpleVar] ';'
+		'timeMax' '=' timeMax=[nabla::SimpleVar] ';')?
+		(vtkOutput = VtkOutput)?
+		targets += Target*
 	'}';
 
-WorkflowComponent: Nabla2IrComponent | ChildComponent;
-
-ChildComponent: Ir2CodeComponent | Ir2IrComponent;
-
-Ir2IrComponent: TagPersistentVariablesComponent | ReplaceUtfComponent | 
-				ReplaceReductionsComponent | OptimizeConnectivitiesComponent |
-				FillHLTsComponent;
-
-Nabla2IrComponent:
-	'Nabla2Ir' name=ID 
-	'{' 
-		'timeVariable' '=' timeVar=[nabla::SimpleVar]';'
-		'deltatVariable' '=' deltatVar=[nabla::SimpleVar]';'
-		'nodeCoordVariable' '=' nodeCoordVar=[nabla::ConnectivityVar]';'
-		(dumpIr?='dumpIr' ';')?	
+VtkOutput:
+	'output' 'reference' periodReference=[nabla::ArgOrVar]
+	'{'
+		vars += OutputVar*
 	'}';
 
-TagPersistentVariablesComponent:
-	'TagPersistentVariables' name=ID 'follows' parent=[WorkflowComponent] 
-	'{' 
-		'dumpedVariables' '=' dumpedVars+=PersistentVar (',' dumpedVars+=PersistentVar)* ';'
-		'period' '=' periodValue=REAL 'for' periodVar=[nabla::ArgOrVar]';'
-		(disabled?='disabled' ';')?
-		(dumpIr?='dumpIr' ';')?
-	'}';
+OutputVar:
+	varRef=[nabla::ConnectivityVar] 'as' varName=STRING ';';
 
-PersistentVar:
-	varRef=[nabla::ConnectivityVar]
-	'as' varName=STRING;
+Target: Java | Cpp;
+Cpp: CppSequential | CppStlThread | CppOpenMP | CppKokkos | CppKokkosTeamThread;
 
-ReplaceUtfComponent:
-	'ReplaceUtf' name=ID 'follows' parent=[WorkflowComponent] 
-	'{' 
-		(disabled?='disabled' ';')?
-		(dumpIr?='dumpIr' ';')?
-	'}';
+Java: 'Java'
+'{'
+	'outputPath' '=' outputDir=STRING ';'
+'}';
 
-ReplaceReductionsComponent:
-	'ReplaceReductions' name=ID 'follows' parent=[WorkflowComponent]
-	'{' 
-		(replaceAllReductions?='replaceAllReductions' ';')?
-		(disabled?='disabled' ';')?
-		(dumpIr?='dumpIr' ';')?
-	'}';
+CppSequential: 'CppSequential'
+'{'
+	'outputPath' '=' outputDir=STRING ';'
+	'compiler' '=' compiler=CppCompiler ';'
+	('compilerPath' '=' compilerPath = STRING ';')? 
+'}';
 
-OptimizeConnectivitiesComponent:
-	'OptimizeConnectivities' name=ID 'follows' parent=[WorkflowComponent] 
-	'{' 
-		'connectivities' '=' connectivities+=[nabla::Connectivity] (',' connectivities+=[nabla::Connectivity])* ';'
-		(disabled?='disabled' ';')?
-		(dumpIr?='dumpIr' ';')?
-	'}';
+CppStlThread: 'StlThread'
+'{'
+	'outputPath' '=' outputDir=STRING ';'
+	'compiler' '=' compiler=CppCompiler ';'
+	('compilerPath' '=' compilerPath = STRING ';')? 
+'}';
 
-FillHLTsComponent:
-	'FillHLTs' name=ID 'follows' parent=[WorkflowComponent]
-	'{' 
-		(disabled?='disabled' ';')?
-		(dumpIr?='dumpIr' ';')?
-	'}';
+CppOpenMP: 'OpenMP'
+'{'
+	'outputPath' '=' outputDir=STRING ';'
+	'compiler' '=' compiler=CppCompiler ';'
+	('compilerPath' '=' compilerPath = STRING ';')? 
+'}';
 
-Ir2CodeComponent:
-	'Ir2Code' name=ID 'follows' parent=[WorkflowComponent]
-	'{' 
-		'language' '=' language=Language
-		'outputDir' '=' outputDir=STRING ';'
-		(disabled?='disabled' ';')?
-	'}';
+CppKokkos: 'Kokkos'
+'{'
+	'outputPath' '=' outputDir=STRING ';'
+	'kokkosPath' '=' kokkosPath = STRING ';' 
+	'compiler' '=' compiler=CppCompiler ';'
+	('compilerPath' '=' compilerPath = STRING ';')? 
+'}';
 
-Language: Java | Cpp;
+CppKokkosTeamThread: 'KokkosTeamThread'
+'{'
+	'outputPath' '=' outputDir=STRING ';'
+	'kokkosPath' '=' kokkosPath = STRING ';' 
+	'compiler' '=' compiler=CppCompiler ';'
+	('compilerPath' '=' compilerPath = STRING ';')? 
+'}';
 
-Java: activated?='Java' ';';
-
-Cpp: 'Cpp' '{'
-		'maxIterationVariable' '=' maxIterationVar=[nabla::SimpleVar] ';'
-		'stopTimeVariable' '=' stopTimeVar=[nabla::SimpleVar] ';'
-		'programmingModel' '=' programmingModel=CppProgrammingModel ';'
-		('kokkosPath' '=' kokkosPath = STRING ';')? 
-		'compiler' '=' compiler=CppCompiler ';'
-		('compilerPath' '=' compilerPath = STRING ';')? 
-	'}';
-
-enum CppProgrammingModel: Sequential | StlThread | OpenMP | Kokkos | KokkosTeamThread;
 enum CppCompiler: GNU | LLVM;

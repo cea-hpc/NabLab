@@ -33,9 +33,9 @@
         eType="#//Function" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="connectivities" upperBound="-1"
         eType="#//Connectivity" containment="true" resolveProxies="false"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="options" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="definitions" upperBound="-1"
         eType="#//SimpleVariable" containment="true" resolveProxies="false"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="declarations" upperBound="-1"
         eType="#//Variable" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="initNodeCoordVariable"
         lowerBound="1" eType="#//ConnectivityVariable"/>
@@ -57,11 +57,11 @@
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PostProcessingInfo" eSuperTypes="#//IrAnnotable">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="postProcessedVariables"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="outputVariables"
         upperBound="-1" eType="#//Variable"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="periodValue" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" defaultValueLiteral="-1.0"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="periodVariable" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="periodValue" lowerBound="1"
+        eType="#//SimpleVariable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="periodReference" lowerBound="1"
         eType="#//SimpleVariable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="lastDumpVariable" lowerBound="1"
         eType="#//SimpleVariable"/>
@@ -89,15 +89,19 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Variable" abstract="true" eSuperTypes="#//ArgOrVar">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="persistenceName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="const" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-        defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SimpleVariable" eSuperTypes="#//Variable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//BaseType"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValue" eType="#//Expression"
         containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="option" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="const" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="constExpr" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConnectivityVariable" eSuperTypes="#//Variable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//ConnectivityType"
@@ -168,7 +172,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VariableDefinition" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
-        eType="#//Variable" containment="true"/>
+        eType="#//SimpleVariable" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Affectation" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="#//ArgOrVarRef"
@@ -248,6 +252,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="Expression" abstract="true" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//IrType"
         containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="constExpr" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ContractedIf" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"

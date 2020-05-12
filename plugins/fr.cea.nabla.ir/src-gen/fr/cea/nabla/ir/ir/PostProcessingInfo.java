@@ -13,9 +13,9 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPostProcessedVariables <em>Post Processed Variables</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getOutputVariables <em>Output Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodValue <em>Period Value</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodVariable <em>Period Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodReference <em>Period Reference</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getLastDumpVariable <em>Last Dump Variable</em>}</li>
  * </ul>
  *
@@ -25,61 +25,60 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface PostProcessingInfo extends IrAnnotable {
 	/**
-	 * Returns the value of the '<em><b>Post Processed Variables</b></em>' reference list.
+	 * Returns the value of the '<em><b>Output Variables</b></em>' reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Variable}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Post Processed Variables</em>' reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getPostProcessingInfo_PostProcessedVariables()
+	 * @return the value of the '<em>Output Variables</em>' reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getPostProcessingInfo_OutputVariables()
 	 * @model
 	 * @generated
 	 */
-	EList<Variable> getPostProcessedVariables();
+	EList<Variable> getOutputVariables();
 
 	/**
-	 * Returns the value of the '<em><b>Period Value</b></em>' attribute.
-	 * The default value is <code>"-1.0"</code>.
+	 * Returns the value of the '<em><b>Period Value</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Period Value</em>' attribute.
-	 * @see #setPeriodValue(double)
+	 * @return the value of the '<em>Period Value</em>' reference.
+	 * @see #setPeriodValue(SimpleVariable)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getPostProcessingInfo_PeriodValue()
-	 * @model default="-1.0" required="true"
-	 * @generated
-	 */
-	double getPeriodValue();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodValue <em>Period Value</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Period Value</em>' attribute.
-	 * @see #getPeriodValue()
-	 * @generated
-	 */
-	void setPeriodValue(double value);
-
-	/**
-	 * Returns the value of the '<em><b>Period Variable</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Period Variable</em>' reference.
-	 * @see #setPeriodVariable(SimpleVariable)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getPostProcessingInfo_PeriodVariable()
 	 * @model required="true"
 	 * @generated
 	 */
-	SimpleVariable getPeriodVariable();
+	SimpleVariable getPeriodValue();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodVariable <em>Period Variable</em>}' reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodValue <em>Period Value</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Period Variable</em>' reference.
-	 * @see #getPeriodVariable()
+	 * @param value the new value of the '<em>Period Value</em>' reference.
+	 * @see #getPeriodValue()
 	 * @generated
 	 */
-	void setPeriodVariable(SimpleVariable value);
+	void setPeriodValue(SimpleVariable value);
+
+	/**
+	 * Returns the value of the '<em><b>Period Reference</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Period Reference</em>' reference.
+	 * @see #setPeriodReference(SimpleVariable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getPostProcessingInfo_PeriodReference()
+	 * @model required="true"
+	 * @generated
+	 */
+	SimpleVariable getPeriodReference();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodReference <em>Period Reference</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Period Reference</em>' reference.
+	 * @see #getPeriodReference()
+	 * @generated
+	 */
+	void setPeriodReference(SimpleVariable value);
 
 	/**
 	 * Returns the value of the '<em><b>Last Dump Variable</b></em>' reference.

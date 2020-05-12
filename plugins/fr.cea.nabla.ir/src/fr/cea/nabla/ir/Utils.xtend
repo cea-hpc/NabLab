@@ -46,9 +46,6 @@ class Utils
 		return utfExponent
 	}
 
-	static def getCurrentIrVariable(IrModule m, String nablaVariableName) { getIrVariable(m, nablaVariableName, false) }
-	static def getInitIrVariable(IrModule m, String nablaVariableName) { getIrVariable(m, nablaVariableName, true) }
-
 	/** Return a list of jobs sorted by at and name for the generation to be reproductible */
 	static def sortByAtAndName(Iterable<Job> jobs)
 	{
@@ -58,22 +55,5 @@ class Utils
 		for (k : orderedKeys)
 			sortedJobs += jobsByAt.get(k).sortBy[name]
 		return sortedJobs
-	}
-
-	private static def getIrVariable(IrModule m, String nablaVariableName, boolean initTimeIterator)
-	{
-		var irVariable = m.variables.findFirst[x | x.name == nablaVariableName]
-		if (irVariable === null && m.mainTimeLoop !== null) 
-		{
-			val timeLoopVariable = m.mainTimeLoop.variables.findFirst[x | x.name == nablaVariableName]
-			if (timeLoopVariable !== null) 
-			{
-				if (initTimeIterator && timeLoopVariable.init !== null) 
-					irVariable = timeLoopVariable.init
-				else
-					irVariable = timeLoopVariable.current
-			}
-		}
-		return irVariable
 	}
 }

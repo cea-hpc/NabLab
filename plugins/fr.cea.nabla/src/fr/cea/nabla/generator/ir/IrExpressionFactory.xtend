@@ -10,8 +10,10 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
+import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseTypeConstant
@@ -61,6 +63,7 @@ class IrExpressionFactory
 			condition = e.condition.toIrExpression
 			thenExpression = e.then.toIrExpression
 			elseExpression = e.^else.toIrExpression
+			constExpr = condition.constExpr && thenExpression.constExpr && elseExpression.constExpr
 		]
 	}
 
@@ -81,6 +84,7 @@ class IrExpressionFactory
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
 			expression = e.expression.toIrExpression
+			constExpr = expression.constExpr
 		]
 	}
 
@@ -94,6 +98,7 @@ class IrExpressionFactory
 			annotations += e.toIrAnnotation 
 			type = e.typeFor?.toIrType
 			value = e.value
+			constExpr = true
 		]
 	}
 
@@ -104,6 +109,7 @@ class IrExpressionFactory
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
 			value = e.value
+			constExpr = true
 		]
 	}
 
@@ -114,6 +120,7 @@ class IrExpressionFactory
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
 			value = e.value
+			constExpr = true
 		]
 	}
 
@@ -123,6 +130,7 @@ class IrExpressionFactory
 		[ 
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
+			constExpr = true
 		]
 	}
 
@@ -132,6 +140,7 @@ class IrExpressionFactory
 		[ 
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
+			constExpr = true
 		]
 	}
 
@@ -143,6 +152,7 @@ class IrExpressionFactory
 			type = e.typeFor?.toIrType
 			function = e.declaration.model.toIrFunction
 			args += e.args.map[toIrExpression]
+			constExpr = false
 		]
 	}
 
@@ -154,6 +164,7 @@ class IrExpressionFactory
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
 			target = irVariable
+			constExpr = true
 		]
 	}
 
@@ -162,8 +173,9 @@ class IrExpressionFactory
 		IrFactory::eINSTANCE.createBaseTypeConstant => 
 		[ 
 			annotations += e.toIrAnnotation
-			type = e.typeFor?.toIrType
-			value = e.value.toIrExpression
+			type = e.typeFor?.toIrType // for arrays, only IntConstants in sizes
+			value = e.value.toIrExpression 
+			constExpr = true // because for arrays only IntConstants in sizes
 		]
 	}
 
@@ -174,6 +186,7 @@ class IrExpressionFactory
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
 			e.values.forEach[x | values += x.toIrExpression]
+			constExpr = values.forall[constExpr]
 		]
 	}
 
@@ -183,6 +196,7 @@ class IrExpressionFactory
 		[ 
 			annotations += e.toIrAnnotation
 			container = e.container.toIrContainer
+			constExpr = false
 		]
 	}
 
@@ -196,6 +210,7 @@ class IrExpressionFactory
 			e.indices.forEach[x | indices += x.toIrExpression]
 			for (i : 0..<e.spaceIterators.size)
 				iterators += toIrIndex(new IndexInfo(e, e.spaceIterators.get(i)))
+			constExpr = (iterators.empty && target.constExpr)
 		]
 	}
 
@@ -206,6 +221,7 @@ class IrExpressionFactory
 		operator = op
 		left = l.toIrExpression
 		right = r.toIrExpression
+		constExpr = left.constExpr && right.constExpr
 	}
 
 	private def create IrFactory::eINSTANCE.createUnaryExpression toIrUnaryExpr(fr.cea.nabla.nabla.Expression container, fr.cea.nabla.nabla.Expression e, String op)
@@ -214,5 +230,14 @@ class IrExpressionFactory
 		type = container.typeFor?.toIrType
 		operator = op
 		expression = e.toIrExpression
+		constExpr = expression.constExpr
+	}
+
+	private def boolean isConstExpr(ArgOrVar v)
+	{
+		if (v instanceof SimpleVariable)
+			v.constExpr
+		else
+			false
 	}
 }

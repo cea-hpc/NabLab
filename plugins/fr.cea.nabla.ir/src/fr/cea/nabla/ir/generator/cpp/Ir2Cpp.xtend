@@ -14,16 +14,17 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.PrimitiveType
-import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.transformers.TagOutputVariables
 import java.io.File
 import java.net.URI
 import org.eclipse.core.runtime.FileLocator
 import org.eclipse.core.runtime.Platform
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
 
 class Ir2Cpp extends CodeGenerator
 {
@@ -89,8 +90,9 @@ class Ir2Cpp extends CodeGenerator
 	public:
 		struct Options
 		{
-			«FOR v : options»
-			«IF v.type.primitive == PrimitiveType.INT && v.type.sizes.empty»size_t«ELSE»«v.cppType»«ENDIF» «v.name»;
+			«IF postProcessingInfo !== null»std::string «TagOutputVariables.OutputPathNameAndValue.key»;«ENDIF»
+			«FOR v : definitions.filter[option]»
+			«v.cppType» «v.name»;
 			«ENDFOR»
 
 			Options(const std::string& fileName);
@@ -98,7 +100,7 @@ class Ir2Cpp extends CodeGenerator
 
 		Options* options;
 
-		«name»(Options* aOptions, «IF withMesh»CartesianMesh2D* aCartesianMesh2D,«ENDIF» string output);
+		«name»(Options* aOptions«IF withMesh», CartesianMesh2D* aCartesianMesh2D«ENDIF»);
 
 	private:
 		«backend.attributesContentProvider.getContentFor(it)»
@@ -138,36 +140,54 @@ class Ir2Cpp extends CodeGenerator
 		rapidjson::Document d;
 		d.ParseStream(isw);
 		assert(d.IsObject());
-		«FOR v : options»
+		«IF postProcessingInfo !== null»
+		// outputPath
+		«val opName = TagOutputVariables.OutputPathNameAndValue.key»
+		assert(d.HasMember("«opName»"));
+		const rapidjson::Value& valueof_«opName» = d["«opName»"];
+		assert(valueof_«opName».IsString());
+		«opName» = valueof_«opName».GetString();
+		«ENDIF»
+		«FOR v : definitions.filter[option]»
 		«v.jsonContent»
 		«ENDFOR»
 	}
 
 	/******************** Module definition ********************/
 
-	«name»::«name»(Options* aOptions, «IF withMesh»CartesianMesh2D* aCartesianMesh2D,«ENDIF» string output)
+	«name»::«name»(Options* aOptions«IF withMesh», CartesianMesh2D* aCartesianMesh2D«ENDIF»)
 	: options(aOptions)
 	«IF withMesh»
 	, mesh(aCartesianMesh2D)
-	, writer("«name»", output)
+	, writer("«name»", options->«TagOutputVariables.OutputPathNameAndValue.key»)
 	«FOR c : usedConnectivities»
 	, «c.nbElemsVar»(«c.connectivityAccessor»)
 	«ENDFOR»
 	«ENDIF»
-	«FOR v : variables»
-		«IF v instanceof SimpleVariable && (v as SimpleVariable).defaultValue !== null»
-			, «v.name»(«(v as SimpleVariable).defaultValue.content»)
-		«ELSEIF v instanceof ConnectivityVariable»
-			, «v.name»(«v.cstrInit»)
-		«ENDIF»
+	«FOR v : definitions.filter[x | !(x.option || x.constExpr)]»
+	, «v.name»(«v.defaultValue.content»)
+	«ENDFOR»
+	«FOR v : declarations.filter(ConnectivityVariable)»
+	, «v.name»(«v.cstrInit»)
 	«ENDFOR»
 	{
+		«val dynamicArrayVariables = declarations.filter[!type.baseTypeStatic]»
+		«IF !dynamicArrayVariables.empty»
+			// Allocate dynamic arrays (RealArrays with at least a dynamic dimension)
+			«FOR v : dynamicArrayVariables»
+				«v.initCppTypeContent»
+			«ENDFOR»
+		«ENDIF»
 		«IF withMesh»
+
 		// Copy node coordinates
 		const auto& gNodes = mesh->getGeometry()->getNodes();
 		«val iterator = backend.argOrVarContentProvider.formatIterators(initNodeCoordVariable, #["rNodes"])»
 		for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-			«initNodeCoordVariable.name»«iterator» = gNodes[rNodes];
+		{
+			«initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
+			«initNodeCoordVariable.name»«iterator»[1] = gNodes[rNodes][1];
+		}
 		«ENDIF»
 	}
 
@@ -176,18 +196,31 @@ class Ir2Cpp extends CodeGenerator
 
 	void «name»::dumpVariables(int iteration)
 	{
-		if (!writer.isDisabled() && «postProcessingInfo.periodVariable.name» >= «postProcessingInfo.lastDumpVariable.name» + «postProcessingInfo.periodValue»)
+		if (!writer.isDisabled() && «postProcessingInfo.periodReference.getCodeName('->')» >= «postProcessingInfo.lastDumpVariable.getCodeName('->')» + «postProcessingInfo.periodValue.getCodeName('->')»)
 		{
 			cpuTimer.stop();
 			ioTimer.start();
-			std::map<string, double*> cellVariables;
-			std::map<string, double*> nodeVariables;
-			«FOR v : postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable)»
-			«v.type.connectivities.head.returnType.name»Variables.insert(pair<string,double*>("«v.persistenceName»", «v.name».data()));
-			«ENDFOR»
 			auto quads = mesh->getGeometry()->getQuads();
-			writer.writeFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data(), cellVariables, nodeVariables);
-			«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodVariable.name»;
+			writer.startVtpFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data());
+			«val outputVarsByConnectivities = postProcessingInfo.outputVariables.filter(ConnectivityVariable).groupBy(x | x.type.connectivities.head.returnType.name)»
+			writer.openNodeData();
+			«val nodeVariables = outputVarsByConnectivities.get("node")»
+			«IF !nodeVariables.nullOrEmpty»
+				«FOR v : nodeVariables»
+					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«s.content»«ENDFOR»("«v.outputName»", «v.name»);
+				«ENDFOR»
+			«ENDIF»
+			writer.closeNodeData();
+			writer.openCellData();
+			«val cellVariables = outputVarsByConnectivities.get("cell")»
+			«IF !cellVariables.nullOrEmpty»
+				«FOR v : cellVariables»
+					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«s.content»«ENDFOR»("«v.outputName»", «v.name»);
+				«ENDFOR»
+			«ENDIF»
+			writer.closeCellData();
+			writer.closeVtpFile();
+			«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodReference.name»;
 			ioTimer.stop();
 			cpuTimer.start();
 		}

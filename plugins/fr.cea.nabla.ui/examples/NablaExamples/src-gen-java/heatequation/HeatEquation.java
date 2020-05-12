@@ -17,12 +17,14 @@ public final class HeatEquation
 {
 	public final static class Options
 	{
+		public String outputPath;
+		public int outputPeriod;
+		public double stopTime;
+		public int maxIterations;
 		public double X_EDGE_LENGTH;
 		public double Y_EDGE_LENGTH;
 		public int X_EDGE_ELEMS;
 		public int Y_EDGE_ELEMS;
-		public double option_stoptime;
-		public int option_max_iterations;
 		public double PI;
 		public double alpha;
 
@@ -42,10 +44,11 @@ public final class HeatEquation
 	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
 
 	// Global Variables
-	private int n;
 	private double t_n;
 	private double t_nplus1;
 	private final double deltat;
+	private int lastDump;
+	private int n;
 	private double[][] X;
 	private double[][] center;
 	private double[] u_n;
@@ -54,13 +57,12 @@ public final class HeatEquation
 	private double[] f;
 	private double[] outgoingFlux;
 	private double[] surface;
-	private int lastDump;
 
 	public HeatEquation(Options aOptions, CartesianMesh2D aCartesianMesh2D)
 	{
 		options = aOptions;
 		mesh = aCartesianMesh2D;
-		writer = new PvdFileWriter2D("HeatEquation");
+		writer = new PvdFileWriter2D("HeatEquation", options.outputPath);
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
@@ -72,6 +74,7 @@ public final class HeatEquation
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat = 0.001;
+		lastDump = Integer.MIN_VALUE;
 		X = new double[nbNodes][2];
 		center = new double[nbCells][2];
 		u_n = new double[nbCells];
@@ -80,11 +83,11 @@ public final class HeatEquation
 		f = new double[nbCells];
 		outgoingFlux = new double[nbCells];
 		surface = new double[nbFaces];
-		lastDump = Integer.MIN_VALUE;
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
-		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> {
+		IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
+		{
 			X[rNodes][0] = gNodes[rNodes][0];
 			X[rNodes][1] = gNodes[rNodes][1];
 		});
@@ -139,7 +142,7 @@ public final class HeatEquation
 					final int j2Cells = j2Id;
 					final int cfId = mesh.getCommonFace(j1Id, j2Id);
 					final int cfFaces = cfId;
-					reduction3 = sumR0(reduction3, (u_n[j2Cells] - u_n[j1Cells]) / MathFunctions.norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
+					reduction3 = sumR0(reduction3, (u_n[j2Cells] - u_n[j1Cells]) / norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
 				}
 			}
 			outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction3;
@@ -166,7 +169,7 @@ public final class HeatEquation
 					final int rPlus1Id = nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
 					final int rNodes = rId;
 					final int rPlus1Nodes = rPlus1Id;
-					reduction2 = sumR0(reduction2, MathFunctions.norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
+					reduction2 = sumR0(reduction2, norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
 				}
 			}
 			surface[fFaces] = 0.5 * reduction2;
@@ -203,7 +206,7 @@ public final class HeatEquation
 					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					final int rNodes = rId;
 					final int rPlus1Nodes = rPlus1Id;
-					reduction1 = sumR0(reduction1, MathFunctions.det(X[rNodes], X[rPlus1Nodes]));
+					reduction1 = sumR0(reduction1, det(X[rNodes], X[rPlus1Nodes]));
 				}
 			}
 			V[jCells] = 0.5 * reduction1;
@@ -270,7 +273,7 @@ public final class HeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			u_n[jCells] = MathFunctions.cos(2 * options.PI * options.alpha * center[jCells][0]);
+			u_n[jCells] = Math.cos(2 * options.PI * options.alpha * center[jCells][0]);
 		});
 	}
 
@@ -293,7 +296,7 @@ public final class HeatEquation
 			computeUn(); // @2.0
 		
 			// Evaluate loop condition with variables at time n
-			continueLoop = (t_nplus1 < options.option_stoptime && n + 1 < options.option_max_iterations);
+			continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
 		
 			if (continueLoop)
 			{
@@ -306,6 +309,28 @@ public final class HeatEquation
 				u_nplus1 = tmp_u_n;
 			} 
 		} while (continueLoop);
+	}
+
+	private double det(double[] a, double[] b)
+	{
+		return (a[0] * b[1] - a[1] * b[0]);
+	}
+
+	private double norm(double[] a)
+	{
+		final int x = a.length;
+		return Math.sqrt(dot(a, a));
+	}
+
+	private double dot(double[] a, double[] b)
+	{
+		final int x = a.length;
+		double result = 0.0;
+		for (int i=0; i<x; i++)
+		{
+			result = result + a[i] * b[i];
+		}
+		return result;
 	}
 
 	private double[] sumR1(double[] a, double[] b)
@@ -321,12 +346,11 @@ public final class HeatEquation
 
 	private void dumpVariables(int iteration)
 	{
-		if (n >= lastDump + 1.0)
+		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
 		{
-			HashMap<String, double[]> cellVariables = new HashMap<String, double[]>();
-			HashMap<String, double[]> nodeVariables = new HashMap<String, double[]>();
-			cellVariables.put("Temperature", u_n);
-			writer.writeFile(iteration, t_n, X, mesh.getGeometry().getQuads(), cellVariables, nodeVariables);
+			VtkFileContent content = new VtkFileContent(iteration, t_n, X, mesh.getGeometry().getQuads());
+			content.addCellVariable("Temperature", u_n);
+			writer.writeFile(content);
 			lastDump = n;
 		}
 	}

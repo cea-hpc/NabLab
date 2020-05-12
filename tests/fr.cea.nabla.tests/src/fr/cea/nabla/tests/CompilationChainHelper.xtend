@@ -13,10 +13,9 @@ import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.NablaStandaloneSetup
 import fr.cea.nabla.NablagenStandaloneSetup
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.generator.NablagenInterpreter
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nablagen.NablagenModule
-import fr.cea.nabla.workflow.WorkflowInterpreter
 import java.nio.file.Files
 import java.nio.file.Paths
 import org.eclipse.emf.ecore.resource.ResourceSet
@@ -31,7 +30,7 @@ import org.junit.runner.RunWith
 class CompilationChainHelper 
 {
 	@Inject extension ValidationTestHelper
-	@Inject Provider<WorkflowInterpreter> workflowInterpreterProvider
+	@Inject Provider<NablagenInterpreter> interpreterProvider
 	@Inject Provider<ResourceSet> resourceSetProvider
 
 	var nablaSetup = new NablaStandaloneSetup
@@ -41,8 +40,6 @@ class CompilationChainHelper
 	var nablagenSetup = new NablagenStandaloneSetup
 	var nablagenInjector = nablagenSetup.createInjectorAndDoEMFRegistration
 	var ParseHelper<NablagenModule> nablagenParseHelper = nablagenInjector.getInstance(ParseHelper)
-
-	var IrModule irModule
 
 	def getIrModule(CharSequence model, CharSequence genModel)
 	{
@@ -65,13 +62,13 @@ class CompilationChainHelper
 		var nablaGenModule = nablagenParseHelper.parse(genModel, rs)
 		nablaGenModule.assertNoErrors
 
-		var workflow = nablaGenModule.workflow
-		if (workflow!== null)
+		if (nablaGenModule.config !== null)
 		{
-			var interpretor = workflowInterpreterProvider.get
-			interpretor.addWorkflowModelChangedListener([module|irModule = module])
-			interpretor.launch(workflow, pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples")
+			var interpreter = interpreterProvider.get
+			val irModule = interpreter.launch(nablaGenModule.config, pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples")
+			return irModule
 		}
-		return irModule
+		else
+			return null
 	}
 }

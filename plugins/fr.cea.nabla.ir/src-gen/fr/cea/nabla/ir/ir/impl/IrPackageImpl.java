@@ -420,6 +420,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	private EClass functionCallEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	private EClass baseTypeConstantEClass = null;
 
 	/**
@@ -435,13 +442,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass cardinalityEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass functionCallEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -752,7 +752,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIrModule_Options() {
+	public EReference getIrModule_Definitions() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(5);
 	}
 
@@ -762,7 +762,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIrModule_Variables() {
+	public EReference getIrModule_Declarations() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(6);
 	}
 
@@ -872,7 +872,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getPostProcessingInfo_PostProcessedVariables() {
+	public EReference getPostProcessingInfo_OutputVariables() {
 		return (EReference)postProcessingInfoEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -882,8 +882,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EAttribute getPostProcessingInfo_PeriodValue() {
-		return (EAttribute)postProcessingInfoEClass.getEStructuralFeatures().get(1);
+	public EReference getPostProcessingInfo_PeriodValue() {
+		return (EReference)postProcessingInfoEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -892,7 +892,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getPostProcessingInfo_PeriodVariable() {
+	public EReference getPostProcessingInfo_PeriodReference() {
 		return (EReference)postProcessingInfoEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -1042,18 +1042,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EAttribute getVariable_PersistenceName() {
+	public EAttribute getVariable_OutputName() {
 		return (EAttribute)variableEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getVariable_Const() {
-		return (EAttribute)variableEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1084,6 +1074,36 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EReference getSimpleVariable_DefaultValue() {
 		return (EReference)simpleVariableEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getSimpleVariable_Option() {
+		return (EAttribute)simpleVariableEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getSimpleVariable_Const() {
+		return (EAttribute)simpleVariableEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getSimpleVariable_ConstExpr() {
+		return (EAttribute)simpleVariableEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -1872,6 +1892,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EAttribute getExpression_ConstExpr() {
+		return (EAttribute)expressionEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getContractedIf() {
 		return contractedIfEClass;
 	}
@@ -2082,6 +2112,36 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EClass getFunctionCall() {
+		return functionCallEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getFunctionCall_Function() {
+		return (EReference)functionCallEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getFunctionCall_Args() {
+		return (EReference)functionCallEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getBaseTypeConstant() {
 		return baseTypeConstantEClass;
 	}
@@ -2134,36 +2194,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EReference getCardinality_Container() {
 		return (EReference)cardinalityEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getFunctionCall() {
-		return functionCallEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getFunctionCall_Function() {
-		return (EReference)functionCallEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getFunctionCall_Args() {
-		return (EReference)functionCallEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -2611,8 +2641,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(irModuleEClass, IR_MODULE__ITEM_TYPES);
 		createEReference(irModuleEClass, IR_MODULE__FUNCTIONS);
 		createEReference(irModuleEClass, IR_MODULE__CONNECTIVITIES);
-		createEReference(irModuleEClass, IR_MODULE__OPTIONS);
-		createEReference(irModuleEClass, IR_MODULE__VARIABLES);
+		createEReference(irModuleEClass, IR_MODULE__DEFINITIONS);
+		createEReference(irModuleEClass, IR_MODULE__DECLARATIONS);
 		createEReference(irModuleEClass, IR_MODULE__INIT_NODE_COORD_VARIABLE);
 		createEReference(irModuleEClass, IR_MODULE__NODE_COORD_VARIABLE);
 		createEReference(irModuleEClass, IR_MODULE__TIME_VARIABLE);
@@ -2625,9 +2655,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEAttribute(importEClass, IMPORT__IMPORTED_NAMESPACE);
 
 		postProcessingInfoEClass = createEClass(POST_PROCESSING_INFO);
-		createEReference(postProcessingInfoEClass, POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES);
-		createEAttribute(postProcessingInfoEClass, POST_PROCESSING_INFO__PERIOD_VALUE);
-		createEReference(postProcessingInfoEClass, POST_PROCESSING_INFO__PERIOD_VARIABLE);
+		createEReference(postProcessingInfoEClass, POST_PROCESSING_INFO__OUTPUT_VARIABLES);
+		createEReference(postProcessingInfoEClass, POST_PROCESSING_INFO__PERIOD_VALUE);
+		createEReference(postProcessingInfoEClass, POST_PROCESSING_INFO__PERIOD_REFERENCE);
 		createEReference(postProcessingInfoEClass, POST_PROCESSING_INFO__LAST_DUMP_VARIABLE);
 
 		timeLoopEClass = createEClass(TIME_LOOP);
@@ -2646,12 +2676,14 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(argEClass, ARG__TYPE);
 
 		variableEClass = createEClass(VARIABLE);
-		createEAttribute(variableEClass, VARIABLE__PERSISTENCE_NAME);
-		createEAttribute(variableEClass, VARIABLE__CONST);
+		createEAttribute(variableEClass, VARIABLE__OUTPUT_NAME);
 
 		simpleVariableEClass = createEClass(SIMPLE_VARIABLE);
 		createEReference(simpleVariableEClass, SIMPLE_VARIABLE__TYPE);
 		createEReference(simpleVariableEClass, SIMPLE_VARIABLE__DEFAULT_VALUE);
+		createEAttribute(simpleVariableEClass, SIMPLE_VARIABLE__OPTION);
+		createEAttribute(simpleVariableEClass, SIMPLE_VARIABLE__CONST);
+		createEAttribute(simpleVariableEClass, SIMPLE_VARIABLE__CONST_EXPR);
 
 		connectivityVariableEClass = createEClass(CONNECTIVITY_VARIABLE);
 		createEReference(connectivityVariableEClass, CONNECTIVITY_VARIABLE__TYPE);
@@ -2757,6 +2789,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		expressionEClass = createEClass(EXPRESSION);
 		createEReference(expressionEClass, EXPRESSION__TYPE);
+		createEAttribute(expressionEClass, EXPRESSION__CONST_EXPR);
 
 		contractedIfEClass = createEClass(CONTRACTED_IF);
 		createEReference(contractedIfEClass, CONTRACTED_IF__CONDITION);
@@ -2970,8 +3003,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getIrModule_ItemTypes(), this.getItemType(), null, "itemTypes", null, 0, -1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_Functions(), this.getFunction(), null, "functions", null, 0, -1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_Connectivities(), this.getConnectivity(), null, "connectivities", null, 0, -1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIrModule_Options(), this.getSimpleVariable(), null, "options", null, 0, -1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIrModule_Variables(), this.getVariable(), null, "variables", null, 0, -1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIrModule_Definitions(), this.getSimpleVariable(), null, "definitions", null, 0, -1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIrModule_Declarations(), this.getVariable(), null, "declarations", null, 0, -1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_InitNodeCoordVariable(), this.getConnectivityVariable(), null, "initNodeCoordVariable", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_NodeCoordVariable(), this.getConnectivityVariable(), null, "nodeCoordVariable", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_TimeVariable(), this.getSimpleVariable(), null, "timeVariable", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2984,9 +3017,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEAttribute(getImport_ImportedNamespace(), ecorePackage.getEString(), "importedNamespace", null, 1, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(postProcessingInfoEClass, PostProcessingInfo.class, "PostProcessingInfo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getPostProcessingInfo_PostProcessedVariables(), this.getVariable(), null, "postProcessedVariables", null, 0, -1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getPostProcessingInfo_PeriodValue(), ecorePackage.getEDouble(), "periodValue", "-1.0", 1, 1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getPostProcessingInfo_PeriodVariable(), this.getSimpleVariable(), null, "periodVariable", null, 1, 1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getPostProcessingInfo_OutputVariables(), this.getVariable(), null, "outputVariables", null, 0, -1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getPostProcessingInfo_PeriodValue(), this.getSimpleVariable(), null, "periodValue", null, 1, 1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getPostProcessingInfo_PeriodReference(), this.getSimpleVariable(), null, "periodReference", null, 1, 1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPostProcessingInfo_LastDumpVariable(), this.getSimpleVariable(), null, "lastDumpVariable", null, 1, 1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(timeLoopEClass, TimeLoop.class, "TimeLoop", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3005,12 +3038,14 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getArg_Type(), this.getBaseType(), null, "type", null, 1, 1, Arg.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(variableEClass, Variable.class, "Variable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getVariable_PersistenceName(), ecorePackage.getEString(), "persistenceName", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getVariable_Const(), ecorePackage.getEBoolean(), "const", "false", 1, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getVariable_OutputName(), ecorePackage.getEString(), "outputName", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(simpleVariableEClass, SimpleVariable.class, "SimpleVariable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getSimpleVariable_Type(), this.getBaseType(), null, "type", null, 1, 1, SimpleVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getSimpleVariable_DefaultValue(), this.getExpression(), null, "defaultValue", null, 0, 1, SimpleVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getSimpleVariable_Option(), ecorePackage.getEBoolean(), "option", "false", 1, 1, SimpleVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getSimpleVariable_Const(), ecorePackage.getEBoolean(), "const", "false", 1, 1, SimpleVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getSimpleVariable_ConstExpr(), ecorePackage.getEBoolean(), "constExpr", null, 1, 1, SimpleVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(connectivityVariableEClass, ConnectivityVariable.class, "ConnectivityVariable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConnectivityVariable_Type(), this.getConnectivityType(), null, "type", null, 1, 1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3061,7 +3096,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getInstructionBlock_Instructions(), this.getInstruction(), null, "instructions", null, 1, -1, InstructionBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(variableDefinitionEClass, VariableDefinition.class, "VariableDefinition", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getVariableDefinition_Variable(), this.getVariable(), null, "variable", null, 1, 1, VariableDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getVariableDefinition_Variable(), this.getSimpleVariable(), null, "variable", null, 1, 1, VariableDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(affectationEClass, Affectation.class, "Affectation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getAffectation_Left(), this.getArgOrVarRef(), null, "left", null, 1, 1, Affectation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3116,6 +3151,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(expressionEClass, Expression.class, "Expression", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getExpression_Type(), this.getIrType(), null, "type", null, 1, 1, Expression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getExpression_ConstExpr(), ecorePackage.getEBoolean(), "constExpr", null, 1, 1, Expression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(contractedIfEClass, ContractedIf.class, "ContractedIf", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getContractedIf_Condition(), this.getExpression(), null, "condition", null, 1, 1, ContractedIf.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

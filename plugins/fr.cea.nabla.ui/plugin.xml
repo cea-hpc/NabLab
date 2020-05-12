@@ -519,7 +519,7 @@
  <extension
        point="org.eclipse.ui.perspectives">
     <perspective
-          class="fr.cea.nabla.ui.perspectives.NabLabPerspective"
+          class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.perspectives.NabLabPerspective"
           icon="icons/Nabla.gif"
           id="fr.cea.nabla.ui.NabLabPerpective"
           name="%NablaPerspective">
@@ -650,5 +650,13 @@
           activityId="fr.cea.nabla.ui.activity"
           pattern="org.eclipse.sirius.ui.ext/org.eclipse.sirius.ui.modelingproject.wizard">
     </activityPatternBinding>
+ </extension>
+ <!-- Create a NabLab console factory -->
+ <extension point="org.eclipse.ui.console.consoleFactories">
+   <consoleFactory 
+      label="NabLab Console"
+      class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.NabLabConsoleFactory"
+      icon="icons/Nabla.gif">
+   </consoleFactory>
  </extension>
 </plugin>

@@ -67,8 +67,7 @@ class NablagenInterpreter
 	{
 		try
 		{
-			trace('Starting generation of ' + nablaModule.name + '\n')
-			trace('Nabla -> IR\n')
+			trace('Starting transformation of ' + nablaModule.name + " to intermediate representation (IR)\n")
 
 			// Nabla -> IR
 			val irModule = nabla2Ir.toIrModule(nablaModule)
@@ -128,6 +127,7 @@ class NablagenInterpreter
 					fsa.generateFile(fullFileName, fileContent)
 				}
 			}
+			trace('Generation of ' + irModule.name + ' completed successfully\n\n')
 		}
 		catch(Exception e)
 		{

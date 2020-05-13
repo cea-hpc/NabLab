@@ -8,16 +8,21 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NablagenConfig">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="writeIR" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="nablaModule" eType="ecore:EClass Nabla.ecore#//NablaModule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="simulation" eType="#//Simulation"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vtkOutput" eType="#//VtkOutput"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targets" upperBound="-1"
+        eType="#//Target" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Simulation">
     <eStructuralFeatures xsi:type="ecore:EReference" name="nodeCoord" eType="ecore:EClass Nabla.ecore#//ConnectivityVar"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="time" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeStep" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterationMax" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeMax" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="vtkOutput" eType="#//VtkOutput"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="targets" upperBound="-1"
-        eType="#//Target" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VtkOutput">
     <eStructuralFeatures xsi:type="ecore:EReference" name="periodReference" eType="ecore:EClass Nabla.ecore#//ArgOrVar"/>

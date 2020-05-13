@@ -136,7 +136,9 @@ class TestUtils
 		'''
 		with Test.*;
 
-		nablagen for Test
+		nablagen for Test;
+
+		SimulationVariables
 		{
 			nodeCoord = X;
 			time = t;

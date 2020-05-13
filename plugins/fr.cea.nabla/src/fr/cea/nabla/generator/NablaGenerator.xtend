@@ -11,41 +11,23 @@ package fr.cea.nabla.generator
 
 import com.google.inject.Inject
 import fr.cea.nabla.generator.ir.Nabla2Ir
-import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
+import fr.cea.nabla.ir.transformers.FillJobHLTs
+import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nabla.NablaModule
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
-import org.eclipse.emf.ecore.xmi.XMLResource
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-import org.eclipse.xtext.resource.SaveOptions
 
 import static extension fr.cea.nabla.LatexLabelServices.*
-import java.util.ArrayList
-import fr.cea.nabla.ir.transformers.IrTransformationStep
-import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
-import fr.cea.nabla.ir.transformers.OptimizeConnectivities
-import fr.cea.nabla.ir.transformers.ReplaceReductions
-import fr.cea.nabla.ir.transformers.FillJobHLTs
 
 class NablaGenerator extends AbstractGenerator
 {
 	@Inject Nabla2Ir nabla2Ir
 	@Inject NablaGeneratorMessageDispatcher dispatcher
-	static val IrExtension = 'nablair'
-
-	static def getHltIrTransformer()
-	{
-		val transformations = new ArrayList<IrTransformationStep>
-		transformations += new ReplaceUtf8Chars
-		transformations += new OptimizeConnectivities(#['cells', 'nodes', 'faces'])
-		transformations += new ReplaceReductions(false)
-		transformations += new FillJobHLTs
-		new CompositeTransformationStep('Nabla2Hlt', transformations)
-	}
+	@Inject IrModuleTransformer transformer
+	val traceNotifier = [String msg | dispatcher.post(msg)]
 
 	override doGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context)
 	{
@@ -60,15 +42,13 @@ class NablaGenerator extends AbstractGenerator
 				dispatcher.post('Generating LaTeX: ' + latexFileName + '\n')
 				fsa.generateFile(latexFileName, module.latexContent)
 
+				// Nabla -> IR
 				dispatcher.post('Nabla -> IR\n')
 				val irModule = nabla2Ir.toIrModule(module)
 
-				val t = hltIrTransformer
-				t.addTraceListener([x | dispatcher.post(x)])
-				val ok = t.transform(irModule)
-
-				createAndSaveResource(fsa, irModule)
-				if (!ok) throw new RuntimeException('Exception in IR transformation step: ' + t.description)
+				// IR -> IR
+				transformer.transformIr(irTransformation, irModule, traceNotifier)
+				dispatcher.post(irModule)
 			}
 		}
 		catch(Exception e)
@@ -81,6 +61,12 @@ class NablaGenerator extends AbstractGenerator
 			}
 			throw(e)
 		}
+	}
+
+	private def getIrTransformation()
+	{
+		val description = 'Minimal IR->IR transformations to check job cycles'
+		new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
 	}
 
 	private def getLatexContent(NablaModule m)
@@ -108,27 +94,4 @@ class NablaGenerator extends AbstractGenerator
 		«ENDFOR»
 		\end{document}
 	'''
-
-	private def createAndSaveResource(IFileSystemAccess2 fsa, IrModule irModule)
-	{
-		dispatcher.post('Writing nablair file')
-		val fileName = irModule.name.toLowerCase + '/' + irModule.name + '.' + IrExtension
-		val uri =  fsa.getURI(fileName)
-		val rSet = new ResourceSetImpl
-		rSet.resourceFactoryRegistry.extensionToFactoryMap.put(IrExtension, new XMIResourceFactoryImpl)
-
-		val resource = rSet.createResource(uri)
-		resource.contents += irModule
-		resource.save(xmlSaveOptions)
-		dispatcher.post('... ok\n')
-	}
-
-	private def getXmlSaveOptions()
-	{
-		val builder = SaveOptions::newBuilder
-		builder.format
-		val so = builder.options.toOptionsMap
-		so.put(XMLResource::OPTION_LINE_WIDTH, 160)
-		return so
-	}
 }

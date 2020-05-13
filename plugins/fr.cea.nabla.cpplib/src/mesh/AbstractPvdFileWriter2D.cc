@@ -20,7 +20,7 @@ AbstractPvdFileWriter2D::AbstractPvdFileWriter2D(const string& moduleName, const
 , m_state(closed)
 {
 	if (!isDisabled() && !experimental::filesystem::exists(m_directory_name))
-		throw std::invalid_argument("Output directory does not exist: " + m_directory_name);
+		experimental::filesystem::create_directory(m_directory_name);
 }
 
 AbstractPvdFileWriter2D::~AbstractPvdFileWriter2D() {}

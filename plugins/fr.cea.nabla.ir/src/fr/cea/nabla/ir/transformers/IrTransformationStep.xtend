@@ -11,22 +11,18 @@ package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.IrModule
 import java.util.ArrayList
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtend.lib.annotations.Data
 
 @Data
 abstract class IrTransformationStep
 {
-	val listeners = new ArrayList<(String) => void>
+	@Accessors val traceListeners = new ArrayList<(String) => void>
 	val String description
-
-	def void addTraceListener((String) => void listener)
-	{
-		listeners += listener
-	}
 
 	def void trace(String msg)
 	{
-		listeners.forEach[apply(msg)]
+		traceListeners.forEach[apply(msg)]
 	}
 
 	abstract def boolean transform(IrModule m)

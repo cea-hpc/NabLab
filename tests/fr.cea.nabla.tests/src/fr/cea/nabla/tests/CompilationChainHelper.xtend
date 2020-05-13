@@ -13,7 +13,9 @@ import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.NablaStandaloneSetup
 import fr.cea.nabla.NablagenStandaloneSetup
+import fr.cea.nabla.generator.IrModuleTransformer
 import fr.cea.nabla.generator.NablagenInterpreter
+import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nablagen.NablagenModule
 import java.nio.file.Files
@@ -32,6 +34,7 @@ class CompilationChainHelper
 	@Inject extension ValidationTestHelper
 	@Inject Provider<NablagenInterpreter> interpreterProvider
 	@Inject Provider<ResourceSet> resourceSetProvider
+	@Inject IrModuleTransformer transformer
 
 	var nablaSetup = new NablaStandaloneSetup
 	var nablaInjector = nablaSetup.createInjectorAndDoEMFRegistration
@@ -65,7 +68,9 @@ class CompilationChainHelper
 		if (nablaGenModule.config !== null)
 		{
 			var interpreter = interpreterProvider.get
-			val irModule = interpreter.launch(nablaGenModule.config, pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples")
+			val irModule = interpreter.buildIrModule(nablaGenModule.config, pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples")
+			// Suppress all reductions (replaced by loops)
+			transformer.transformIr(new ReplaceReductions(true), irModule, [msg | println(msg)])
 			return irModule
 		}
 		else

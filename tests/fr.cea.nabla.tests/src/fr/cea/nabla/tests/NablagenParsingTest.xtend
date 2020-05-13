@@ -29,7 +29,9 @@ class NablagenParsingTest
 	def void loadModel() 
 	{
 		val result = parseHelper.parse('''
-			nablagen for Test
+			nablagen for Test;
+
+			SimulationVariables
 			{
 				nodeCoord = X;
 				time = t;

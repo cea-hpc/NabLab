@@ -105,11 +105,10 @@ class NablaExamplesInterpreterTest
 		println("test" + moduleName)
 		val modelFile = String.format("%1$ssrc/%2$s/%3$s.nabla", examplesProjectPath, moduleName.toLowerCase, moduleName)
 		val model = readFileAsString(modelFile)
-		// We use a dedicated genmodel to replaceAllreductions and not to generate code
-		val genmodelFile = String.format("src/%1$s/%2$s.nablagen", moduleName.toLowerCase, moduleName)
+		val genmodelFile = String.format("%1$ssrc/%2$s/%3$s.nablagen", examplesProjectPath, moduleName.toLowerCase, moduleName)
 		val genmodel = readFileAsString(genmodelFile)
 		// We use the default json datafile generated for the java backend
-		val jsonOptionsFile = String.format("src-gen-java/%1$s/%2$sDefaultOptions.json", moduleName.toLowerCase, moduleName)
+		val jsonOptionsFile = String.format("%1$ssrc-gen-java/%2$s/%3$sDefaultOptions.json", examplesProjectPath, moduleName.toLowerCase, moduleName)
 		val jsonOptions = readFileAsString(jsonOptionsFile)
 
 		val irModule = compilationHelper.getIrModule(model, genmodel)

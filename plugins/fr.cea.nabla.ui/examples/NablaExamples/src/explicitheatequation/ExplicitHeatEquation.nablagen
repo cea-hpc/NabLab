@@ -9,38 +9,46 @@
  *******************************************************************************/
 with ExplicitHeatEquation.*;
 
-nablagen for ExplicitHeatEquation
+nablagen for ExplicitHeatEquation;
+
+SimulationVariables
 {
 	nodeCoord = X;
 	time = t;
 	timeStep = δt;
 	iterationMax = maxIterations;
 	timeMax = stopTime;
-	output reference n
-	{
-		u as "Temperature";
-	}
-	Java
-	{
-		outputPath = "/NablaExamples/src-gen-java";
-	}
-	StlThread
-	{
-		outputPath = "/NablaExamples/src-gen-cpp/stl-thread";
-		compiler = GNU;
+}
+
+VtkOutput
+{
+	periodReferenceVariable = n;
+	outputVariables = u as "Temperature";
+}
+
+Java
+{
+	outputPath = "/NablaExamples/src-gen-java";
+}
+
+StlThread
+{
+	outputPath = "/NablaExamples/src-gen-cpp/stl-thread";
+	compiler = GNU;
 //		compiler = LLVM;
 //		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
-	}
-	Kokkos
-	{
-		outputPath = "/NablaExamples/src-gen-cpp/kokkos";
-		kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
-		compiler = GNU;
-	}
-	KokkosTeamThread
-	{
-		outputPath = "/NablaExamples/src-gen-cpp/kokkos-team";
-		kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
-		compiler = GNU;
-	}
+}
+
+Kokkos
+{
+	outputPath = "/NablaExamples/src-gen-cpp/kokkos";
+	kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+	compiler = GNU;
+}
+
+KokkosTeamThread
+{
+	outputPath = "/NablaExamples/src-gen-cpp/kokkos-team";
+	kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+	compiler = GNU;
 }

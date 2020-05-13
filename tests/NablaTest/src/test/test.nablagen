@@ -1,68 +1,44 @@
 with Test.*;
 
-workflow TestDefaultGenerationChain transforms Test
+nablagen for Test;
+SimulationVariables
 {
-	Nabla2Ir nabla2ir
-	{
-		timeVariable = t;
-		deltatVariable = δt;
-		nodeCoordVariable = X;
-	}
-
-	ReplaceUtf replaceUtf follows nabla2ir
-	{
-	}
-	
-	ReplaceReductions replaceReductions follows replaceUtf
-	{
-	}
-	
-	OptimizeConnectivities optimizeConnectivities follows replaceReductions
-	{
-		connectivities = nodes;
-	}
-	
-	FillHLTs fillHlts follows optimizeConnectivities
-	{
-		dumpIr;
-	}
-	
-	Ir2Code javaGenerator follows fillHlts
-	{
-		language = Java;
-		outputDir = "/NablaTest/src-gen-java";
-	}
-
-	Ir2Code stlGenerator follows fillHlts
-	{
-		language = Cpp
-		{
-			maxIterationVariable = max_time_iterations;
-			stopTimeVariable = final_time;
-			programmingModel = StlThread
-		}
-		outputDir = "/NablaTest/src-gen-cpp/stl-thread";
-	}
-
-	Ir2Code kokkosGenerator follows fillHlts
-	{
-		language = Cpp
-		{
-			maxIterationVariable = max_time_iterations;
-			stopTimeVariable = final_time;
-			programmingModel = Kokkos
-		}
-		outputDir = "/NablaTest/src-gen-cpp/kokkos";
-	}
-
-	Ir2Code kokkosTeamThreadGenerator follows fillHlts
-	{
-		language = Cpp
-		{
-			maxIterationVariable = max_time_iterations;
-			stopTimeVariable = final_time;
-			programmingModel = KokkosTeamThread
-		}
-		outputDir = "/NablaTest/src-gen-cpp/kokkos-team";
-	}
+	nodeCoord = X;
+	time = t;
+	timeStep = δt;
+	iterationMax = maxIterations;
+	timeMax = stopTime;
 }
+
+VtkOutput
+{
+	periodReferenceVariable = n;
+	outputVariables = u as "Temperature";
+}
+
+Java
+{
+	outputPath = "/NablaTest/src-gen-java";
+}
+
+//StlThread
+//{
+//	outputPath = "/NablaExamples/src-gen-cpp/stl-thread";
+//	compiler = GNU;
+////		compiler = LLVM;
+////		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
+//}
+//
+//Kokkos
+//{
+//	outputPath = "/NablaExamples/src-gen-cpp/kokkos";
+//	kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+//	compiler = GNU;
+//}
+//
+//KokkosTeamThread
+//{
+//	outputPath = "/NablaExamples/src-gen-cpp/kokkos-team";
+//	kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+//	compiler = GNU;
+//}

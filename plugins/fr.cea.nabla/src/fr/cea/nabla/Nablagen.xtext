@@ -21,7 +21,14 @@ NablagenModule:
 	config=NablagenConfig;
 
 NablagenConfig:
-	'nablagen' 'for' nablaModule=[nabla::NablaModule] 
+	(writeIR?='[WriteIr]')?
+	'nablagen' 'for' nablaModule=[nabla::NablaModule] ';'
+	simulation = Simulation
+	(vtkOutput = VtkOutput)?
+	targets += Target*;
+
+Simulation:
+	'SimulationVariables'
 	'{'
 		'nodeCoord' '=' nodeCoord=[nabla::ConnectivityVar]';'
 		'time' '=' time=[nabla::SimpleVar]';'
@@ -29,18 +36,17 @@ NablagenConfig:
 		// The two following variables are just needed for the C++ display (progression bar)
 		('iterationMax' '=' iterationMax=[nabla::SimpleVar] ';'
 		'timeMax' '=' timeMax=[nabla::SimpleVar] ';')?
-		(vtkOutput = VtkOutput)?
-		targets += Target*
 	'}';
 
 VtkOutput:
-	'output' 'reference' periodReference=[nabla::ArgOrVar]
+	'VtkOutput'
 	'{'
-		vars += OutputVar*
+		'periodReferenceVariable' '=' periodReference=[nabla::ArgOrVar] ';'
+		'outputVariables' '=' vars += OutputVar (',' vars += OutputVar)* ';'
 	'}';
 
 OutputVar:
-	varRef=[nabla::ConnectivityVar] 'as' varName=STRING ';';
+	varRef=[nabla::ConnectivityVar] 'as' varName=STRING;
 
 Target: Java | Cpp;
 Cpp: CppSequential | CppStlThread | CppOpenMP | CppKokkos | CppKokkosTeamThread;

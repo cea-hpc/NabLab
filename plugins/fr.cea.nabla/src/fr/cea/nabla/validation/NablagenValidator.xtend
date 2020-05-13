@@ -40,7 +40,7 @@ class NablagenValidator extends AbstractNablagenValidator
 	@Check
 	def void checkCppMandatoryVariables(NablagenConfig it)
 	{
-		if (targets.exists[x | x instanceof Cpp] && (iterationMax === null || timeMax === null))
-			error(getCppMandatoryVariablesMsg(), NablagenPackage.Literals::NABLAGEN_CONFIG__TIME_STEP, CPP_MANDATORY_VARIABLES)
+		if (targets.exists[x | x instanceof Cpp] && (simulation.iterationMax === null || simulation.timeMax === null))
+			error(getCppMandatoryVariablesMsg(), NablagenPackage.Literals::NABLAGEN_CONFIG__SIMULATION, CPP_MANDATORY_VARIABLES)
 	}
 }

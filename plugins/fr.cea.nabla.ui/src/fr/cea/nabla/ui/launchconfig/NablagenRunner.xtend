@@ -45,7 +45,8 @@ class NablagenRunner
 	{
 		val interpretor = interpreterProvider.get
 		interpretor.traceListeners += [String msg | stream.print(msg)]
-		interpretor.launch(config, baseDir)
+		val irModule = interpretor.buildIrModule(config, baseDir)
+		interpretor.generateCode(irModule, config.targets, config.simulation.iterationMax.name, config.simulation.timeMax.name, baseDir)
 	}
 
 	package def launch(IResource eclipseResource)

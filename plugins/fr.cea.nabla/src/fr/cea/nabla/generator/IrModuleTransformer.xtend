@@ -7,25 +7,18 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.transformers
+package fr.cea.nabla.generator
 
 import fr.cea.nabla.ir.ir.IrModule
-import org.eclipse.xtend.lib.annotations.Data
+import fr.cea.nabla.ir.transformers.IrTransformationStep
 
-@Data
-class CompositeTransformationStep extends IrTransformationStep
+class IrModuleTransformer
 {
-	val IrTransformationStep[] steps
-
-	override transform(IrModule m) 
+	def void transformIr(IrTransformationStep step, IrModule module, (String)=>void traceNotifier) throws RuntimeException
 	{
-		for (s : steps)
-		{
-			s.traceListeners += traceListeners
-			val ok = s.transform(m)
-			s.traceListeners -= traceListeners
-			if (!ok) return false
-		}
-		return true
+		step.traceListeners += traceNotifier
+		val ok = step.transform(module)
+		step.traceListeners -= traceNotifier
+		if (!ok) throw new RuntimeException('Exception in IR transformation step: ' + step.description)
 	}
 }

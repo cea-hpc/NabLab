@@ -29,9 +29,14 @@ class NablagenParsingTest
 	def void loadModel() 
 	{
 		val result = parseHelper.parse('''
-			workflow TestDefaultGenerationChain transforms Test
-				{
-				}
+			nablagen for Test;
+
+			SimulationVariables
+			{
+				nodeCoord = X;
+				time = t;
+				timeStep = δt;
+			}
 		''')
 		Assert.assertNotNull(result)
 		val errors = result.eResource.errors

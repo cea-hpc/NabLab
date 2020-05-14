@@ -14,7 +14,7 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.transformers.TagPersistentVariables
+import fr.cea.nabla.ir.transformers.TagOutputVariables
 import java.io.File
 import java.net.URI
 import org.eclipse.core.runtime.FileLocator
@@ -90,7 +90,7 @@ class Ir2Cpp extends CodeGenerator
 	public:
 		struct Options
 		{
-			«IF postProcessingInfo !== null»std::string «TagPersistentVariables.OutputPathNameAndValue.key»;«ENDIF»
+			«IF postProcessingInfo !== null»std::string «TagOutputVariables.OutputPathNameAndValue.key»;«ENDIF»
 			«FOR v : definitions.filter[option]»
 			«v.cppType» «v.name»;
 			«ENDFOR»
@@ -142,7 +142,7 @@ class Ir2Cpp extends CodeGenerator
 		assert(d.IsObject());
 		«IF postProcessingInfo !== null»
 		// outputPath
-		«val opName = TagPersistentVariables.OutputPathNameAndValue.key»
+		«val opName = TagOutputVariables.OutputPathNameAndValue.key»
 		assert(d.HasMember("«opName»"));
 		const rapidjson::Value& valueof_«opName» = d["«opName»"];
 		assert(valueof_«opName».IsString());
@@ -159,7 +159,7 @@ class Ir2Cpp extends CodeGenerator
 	: options(aOptions)
 	«IF withMesh»
 	, mesh(aCartesianMesh2D)
-	, writer("«name»", options->«TagPersistentVariables.OutputPathNameAndValue.key»)
+	, writer("«name»", options->«TagOutputVariables.OutputPathNameAndValue.key»)
 	«FOR c : usedConnectivities»
 	, «c.nbElemsVar»(«c.connectivityAccessor»)
 	«ENDFOR»
@@ -202,12 +202,12 @@ class Ir2Cpp extends CodeGenerator
 			ioTimer.start();
 			auto quads = mesh->getGeometry()->getQuads();
 			writer.startVtpFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data());
-			«val outputVarsByConnectivities = postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable).groupBy(x | x.type.connectivities.head.returnType.name)»
+			«val outputVarsByConnectivities = postProcessingInfo.outputVariables.filter(ConnectivityVariable).groupBy(x | x.type.connectivities.head.returnType.name)»
 			writer.openNodeData();
 			«val nodeVariables = outputVarsByConnectivities.get("node")»
 			«IF !nodeVariables.nullOrEmpty»
 				«FOR v : nodeVariables»
-					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«s.content»«ENDFOR»("«v.persistenceName»", «v.name»);
+					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«s.content»«ENDFOR»("«v.outputName»", «v.name»);
 				«ENDFOR»
 			«ENDIF»
 			writer.closeNodeData();
@@ -215,7 +215,7 @@ class Ir2Cpp extends CodeGenerator
 			«val cellVariables = outputVarsByConnectivities.get("cell")»
 			«IF !cellVariables.nullOrEmpty»
 				«FOR v : cellVariables»
-					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«s.content»«ENDFOR»("«v.persistenceName»", «v.name»);
+					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«s.content»«ENDFOR»("«v.outputName»", «v.name»);
 				«ENDFOR»
 			«ENDIF»
 			writer.closeCellData();

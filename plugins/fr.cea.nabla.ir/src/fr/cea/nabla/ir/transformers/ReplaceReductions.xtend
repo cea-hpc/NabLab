@@ -27,18 +27,14 @@ import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
-class ReplaceReductions implements IrTransformationStep
+class ReplaceReductions extends IrTransformationStep
 {
 	val boolean replaceAllReductions
 
 	new(boolean replaceAllReductions)
 	{
+		super('Replace reductions by loops')
 		this.replaceAllReductions = replaceAllReductions
-	}
-
-	override getDescription()
-	{
-		'Replace reductions by loops'
 	}
 
 	/**
@@ -47,6 +43,7 @@ class ReplaceReductions implements IrTransformationStep
 	 */
 	override transform(IrModule m)
 	{
+		trace('IR -> IR: ' + description + '\n')
 		var reductions = m.eAllContents.filter(ReductionInstruction)
 		if (!replaceAllReductions) reductions = reductions.filter[!external]
 
@@ -64,11 +61,6 @@ class ReplaceReductions implements IrTransformationStep
 			replace(reduction, #[variableDefinition, loop])
 		}
 		return true
-	}
-
-	override getOutputTraces()
-	{
-		#[]
 	}
 
 	private def Expression createFunctionCall(ReductionInstruction reduction)

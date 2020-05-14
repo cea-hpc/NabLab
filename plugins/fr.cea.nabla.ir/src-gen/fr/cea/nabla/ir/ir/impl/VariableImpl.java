@@ -19,31 +19,31 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getPersistenceName <em>Persistence Name</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getOutputName <em>Output Name</em>}</li>
  * </ul>
  *
  * @generated
  */
 public abstract class VariableImpl extends ArgOrVarImpl implements Variable {
 	/**
-	 * The default value of the '{@link #getPersistenceName() <em>Persistence Name</em>}' attribute.
+	 * The default value of the '{@link #getOutputName() <em>Output Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getPersistenceName()
+	 * @see #getOutputName()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String PERSISTENCE_NAME_EDEFAULT = null;
+	protected static final String OUTPUT_NAME_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getPersistenceName() <em>Persistence Name</em>}' attribute.
+	 * The cached value of the '{@link #getOutputName() <em>Output Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getPersistenceName()
+	 * @see #getOutputName()
 	 * @generated
 	 * @ordered
 	 */
-	protected String persistenceName = PERSISTENCE_NAME_EDEFAULT;
+	protected String outputName = OUTPUT_NAME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -70,8 +70,8 @@ public abstract class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * @generated
 	 */
 	@Override
-	public String getPersistenceName() {
-		return persistenceName;
+	public String getOutputName() {
+		return outputName;
 	}
 
 	/**
@@ -80,11 +80,11 @@ public abstract class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * @generated
 	 */
 	@Override
-	public void setPersistenceName(String newPersistenceName) {
-		String oldPersistenceName = persistenceName;
-		persistenceName = newPersistenceName;
+	public void setOutputName(String newOutputName) {
+		String oldOutputName = outputName;
+		outputName = newOutputName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.VARIABLE__PERSISTENCE_NAME, oldPersistenceName, persistenceName));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.VARIABLE__OUTPUT_NAME, oldOutputName, outputName));
 	}
 
 	/**
@@ -95,8 +95,8 @@ public abstract class VariableImpl extends ArgOrVarImpl implements Variable {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.VARIABLE__PERSISTENCE_NAME:
-				return getPersistenceName();
+			case IrPackage.VARIABLE__OUTPUT_NAME:
+				return getOutputName();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -109,8 +109,8 @@ public abstract class VariableImpl extends ArgOrVarImpl implements Variable {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.VARIABLE__PERSISTENCE_NAME:
-				setPersistenceName((String)newValue);
+			case IrPackage.VARIABLE__OUTPUT_NAME:
+				setOutputName((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -124,8 +124,8 @@ public abstract class VariableImpl extends ArgOrVarImpl implements Variable {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.VARIABLE__PERSISTENCE_NAME:
-				setPersistenceName(PERSISTENCE_NAME_EDEFAULT);
+			case IrPackage.VARIABLE__OUTPUT_NAME:
+				setOutputName(OUTPUT_NAME_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -139,8 +139,8 @@ public abstract class VariableImpl extends ArgOrVarImpl implements Variable {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.VARIABLE__PERSISTENCE_NAME:
-				return PERSISTENCE_NAME_EDEFAULT == null ? persistenceName != null : !PERSISTENCE_NAME_EDEFAULT.equals(persistenceName);
+			case IrPackage.VARIABLE__OUTPUT_NAME:
+				return OUTPUT_NAME_EDEFAULT == null ? outputName != null : !OUTPUT_NAME_EDEFAULT.equals(outputName);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -155,8 +155,8 @@ public abstract class VariableImpl extends ArgOrVarImpl implements Variable {
 		if (eIsProxy()) return super.toString();
 
 		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (persistenceName: ");
-		result.append(persistenceName);
+		result.append(" (outputName: ");
+		result.append(outputName);
 		result.append(')');
 		return result.toString();
 	}

@@ -21,7 +21,6 @@ package fr.cea.nabla.ir.ir;
  * @generated
  */
 public interface ItemIndexValue extends IrAnnotable {
-
 	/**
 	 * Returns the value of the '<em><b>Id</b></em>' reference.
 	 * <!-- begin-user-doc -->
@@ -65,4 +64,5 @@ public interface ItemIndexValue extends IrAnnotable {
 	 * @generated
 	 */
 	void setContainer(ConnectivityCall value);
+
 } // ItemIndexValue

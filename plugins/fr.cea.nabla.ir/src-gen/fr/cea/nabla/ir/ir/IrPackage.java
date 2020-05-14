@@ -424,13 +424,13 @@ public interface IrPackage extends EPackage {
 	int POST_PROCESSING_INFO__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
 
 	/**
-	 * The feature id for the '<em><b>Post Processed Variables</b></em>' reference list.
+	 * The feature id for the '<em><b>Output Variables</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 0;
+	int POST_PROCESSING_INFO__OUTPUT_VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Period Value</b></em>' reference.
@@ -707,13 +707,13 @@ public interface IrPackage extends EPackage {
 	int VARIABLE__NAME = ARG_OR_VAR__NAME;
 
 	/**
-	 * The feature id for the '<em><b>Persistence Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Output Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE__PERSISTENCE_NAME = ARG_OR_VAR_FEATURE_COUNT + 0;
+	int VARIABLE__OUTPUT_NAME = ARG_OR_VAR_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Variable</em>' class.
@@ -762,13 +762,13 @@ public interface IrPackage extends EPackage {
 	int SIMPLE_VARIABLE__NAME = VARIABLE__NAME;
 
 	/**
-	 * The feature id for the '<em><b>Persistence Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Output Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SIMPLE_VARIABLE__PERSISTENCE_NAME = VARIABLE__PERSISTENCE_NAME;
+	int SIMPLE_VARIABLE__OUTPUT_NAME = VARIABLE__OUTPUT_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -862,13 +862,13 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY_VARIABLE__NAME = VARIABLE__NAME;
 
 	/**
-	 * The feature id for the '<em><b>Persistence Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Output Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY_VARIABLE__PERSISTENCE_NAME = VARIABLE__PERSISTENCE_NAME;
+	int CONNECTIVITY_VARIABLE__OUTPUT_NAME = VARIABLE__OUTPUT_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -3183,36 +3183,6 @@ public interface IrPackage extends EPackage {
 	int MAX_CONSTANT_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.BaseTypeConstantImpl <em>Base Type Constant</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.BaseTypeConstantImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getBaseTypeConstant()
-	 * @generated
-	 */
-	int BASE_TYPE_CONSTANT = 48;
-
-	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.VectorConstantImpl <em>Vector Constant</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.VectorConstantImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getVectorConstant()
-	 * @generated
-	 */
-	int VECTOR_CONSTANT = 49;
-
-	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.CardinalityImpl <em>Cardinality</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.CardinalityImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getCardinality()
-	 * @generated
-	 */
-	int CARDINALITY = 50;
-
-	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.FunctionCallImpl <em>Function Call</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3286,6 +3256,16 @@ public interface IrPackage extends EPackage {
 	int FUNCTION_CALL_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
 	/**
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.BaseTypeConstantImpl <em>Base Type Constant</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.cea.nabla.ir.ir.impl.BaseTypeConstantImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getBaseTypeConstant()
+	 * @generated
+	 */
+	int BASE_TYPE_CONSTANT = 48;
+
+	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3340,6 +3320,16 @@ public interface IrPackage extends EPackage {
 	int BASE_TYPE_CONSTANT_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
 	/**
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.VectorConstantImpl <em>Vector Constant</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.cea.nabla.ir.ir.impl.VectorConstantImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getVectorConstant()
+	 * @generated
+	 */
+	int VECTOR_CONSTANT = 49;
+
+	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3392,6 +3382,16 @@ public interface IrPackage extends EPackage {
 	 * @ordered
 	 */
 	int VECTOR_CONSTANT_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.CardinalityImpl <em>Cardinality</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.cea.nabla.ir.ir.impl.CardinalityImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getCardinality()
+	 * @generated
+	 */
+	int CARDINALITY = 50;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4517,15 +4517,15 @@ public interface IrPackage extends EPackage {
 	EClass getPostProcessingInfo();
 
 	/**
-	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPostProcessedVariables <em>Post Processed Variables</em>}'.
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getOutputVariables <em>Output Variables</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Post Processed Variables</em>'.
-	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo#getPostProcessedVariables()
+	 * @return the meta object for the reference list '<em>Output Variables</em>'.
+	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo#getOutputVariables()
 	 * @see #getPostProcessingInfo()
 	 * @generated
 	 */
-	EReference getPostProcessingInfo_PostProcessedVariables();
+	EReference getPostProcessingInfo_OutputVariables();
 
 	/**
 	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodValue <em>Period Value</em>}'.
@@ -4700,15 +4700,15 @@ public interface IrPackage extends EPackage {
 	EClass getVariable();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Variable#getPersistenceName <em>Persistence Name</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Variable#getOutputName <em>Output Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Persistence Name</em>'.
-	 * @see fr.cea.nabla.ir.ir.Variable#getPersistenceName()
+	 * @return the meta object for the attribute '<em>Output Name</em>'.
+	 * @see fr.cea.nabla.ir.ir.Variable#getOutputName()
 	 * @see #getVariable()
 	 * @generated
 	 */
-	EAttribute getVariable_PersistenceName();
+	EAttribute getVariable_OutputName();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SimpleVariable <em>Simple Variable</em>}'.
@@ -5840,6 +5840,38 @@ public interface IrPackage extends EPackage {
 	EClass getMaxConstant();
 
 	/**
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.FunctionCall <em>Function Call</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Function Call</em>'.
+	 * @see fr.cea.nabla.ir.ir.FunctionCall
+	 * @generated
+	 */
+	EClass getFunctionCall();
+
+	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.FunctionCall#getFunction <em>Function</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Function</em>'.
+	 * @see fr.cea.nabla.ir.ir.FunctionCall#getFunction()
+	 * @see #getFunctionCall()
+	 * @generated
+	 */
+	EReference getFunctionCall_Function();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.FunctionCall#getArgs <em>Args</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Args</em>'.
+	 * @see fr.cea.nabla.ir.ir.FunctionCall#getArgs()
+	 * @see #getFunctionCall()
+	 * @generated
+	 */
+	EReference getFunctionCall_Args();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.BaseTypeConstant <em>Base Type Constant</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -5901,38 +5933,6 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getCardinality_Container();
-
-	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.FunctionCall <em>Function Call</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Function Call</em>'.
-	 * @see fr.cea.nabla.ir.ir.FunctionCall
-	 * @generated
-	 */
-	EClass getFunctionCall();
-
-	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.FunctionCall#getFunction <em>Function</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Function</em>'.
-	 * @see fr.cea.nabla.ir.ir.FunctionCall#getFunction()
-	 * @see #getFunctionCall()
-	 * @generated
-	 */
-	EReference getFunctionCall_Function();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.FunctionCall#getArgs <em>Args</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Args</em>'.
-	 * @see fr.cea.nabla.ir.ir.FunctionCall#getArgs()
-	 * @see #getFunctionCall()
-	 * @generated
-	 */
-	EReference getFunctionCall_Args();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ArgOrVarRef <em>Arg Or Var Ref</em>}'.
@@ -6594,12 +6594,12 @@ public interface IrPackage extends EPackage {
 		EClass POST_PROCESSING_INFO = eINSTANCE.getPostProcessingInfo();
 
 		/**
-		 * The meta object literal for the '<em><b>Post Processed Variables</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Output Variables</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES = eINSTANCE.getPostProcessingInfo_PostProcessedVariables();
+		EReference POST_PROCESSING_INFO__OUTPUT_VARIABLES = eINSTANCE.getPostProcessingInfo_OutputVariables();
 
 		/**
 		 * The meta object literal for the '<em><b>Period Value</b></em>' reference feature.
@@ -6738,12 +6738,12 @@ public interface IrPackage extends EPackage {
 		EClass VARIABLE = eINSTANCE.getVariable();
 
 		/**
-		 * The meta object literal for the '<em><b>Persistence Name</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Output Name</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute VARIABLE__PERSISTENCE_NAME = eINSTANCE.getVariable_PersistenceName();
+		EAttribute VARIABLE__OUTPUT_NAME = eINSTANCE.getVariable_OutputName();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl <em>Simple Variable</em>}' class.
@@ -7668,6 +7668,32 @@ public interface IrPackage extends EPackage {
 		EClass MAX_CONSTANT = eINSTANCE.getMaxConstant();
 
 		/**
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.FunctionCallImpl <em>Function Call</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.cea.nabla.ir.ir.impl.FunctionCallImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getFunctionCall()
+		 * @generated
+		 */
+		EClass FUNCTION_CALL = eINSTANCE.getFunctionCall();
+
+		/**
+		 * The meta object literal for the '<em><b>Function</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference FUNCTION_CALL__FUNCTION = eINSTANCE.getFunctionCall_Function();
+
+		/**
+		 * The meta object literal for the '<em><b>Args</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference FUNCTION_CALL__ARGS = eINSTANCE.getFunctionCall_Args();
+
+		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.BaseTypeConstantImpl <em>Base Type Constant</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -7720,32 +7746,6 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference CARDINALITY__CONTAINER = eINSTANCE.getCardinality_Container();
-
-		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.FunctionCallImpl <em>Function Call</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.FunctionCallImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getFunctionCall()
-		 * @generated
-		 */
-		EClass FUNCTION_CALL = eINSTANCE.getFunctionCall();
-
-		/**
-		 * The meta object literal for the '<em><b>Function</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference FUNCTION_CALL__FUNCTION = eINSTANCE.getFunctionCall_Function();
-
-		/**
-		 * The meta object literal for the '<em><b>Args</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference FUNCTION_CALL__ARGS = eINSTANCE.getFunctionCall_Args();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ArgOrVarRefImpl <em>Arg Or Var Ref</em>}' class.

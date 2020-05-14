@@ -8,7 +8,9 @@ import fr.cea.nabla.ir.ir.SimpleVariable;
 import fr.cea.nabla.ir.ir.Variable;
 
 import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
@@ -26,7 +28,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl#getPostProcessedVariables <em>Post Processed Variables</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl#getOutputVariables <em>Output Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl#getPeriodValue <em>Period Value</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl#getPeriodReference <em>Period Reference</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl#getLastDumpVariable <em>Last Dump Variable</em>}</li>
@@ -36,14 +38,14 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  */
 public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProcessingInfo {
 	/**
-	 * The cached value of the '{@link #getPostProcessedVariables() <em>Post Processed Variables</em>}' reference list.
+	 * The cached value of the '{@link #getOutputVariables() <em>Output Variables</em>}' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getPostProcessedVariables()
+	 * @see #getOutputVariables()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Variable> postProcessedVariables;
+	protected EList<Variable> outputVariables;
 
 	/**
 	 * The cached value of the '{@link #getPeriodValue() <em>Period Value</em>}' reference.
@@ -100,11 +102,11 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 	 * @generated
 	 */
 	@Override
-	public EList<Variable> getPostProcessedVariables() {
-		if (postProcessedVariables == null) {
-			postProcessedVariables = new EObjectResolvingEList<Variable>(Variable.class, this, IrPackage.POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES);
+	public EList<Variable> getOutputVariables() {
+		if (outputVariables == null) {
+			outputVariables = new EObjectResolvingEList<Variable>(Variable.class, this, IrPackage.POST_PROCESSING_INFO__OUTPUT_VARIABLES);
 		}
-		return postProcessedVariables;
+		return outputVariables;
 	}
 
 	/**
@@ -235,8 +237,8 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES:
-				return getPostProcessedVariables();
+			case IrPackage.POST_PROCESSING_INFO__OUTPUT_VARIABLES:
+				return getOutputVariables();
 			case IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE:
 				if (resolve) return getPeriodValue();
 				return basicGetPeriodValue();
@@ -259,9 +261,9 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES:
-				getPostProcessedVariables().clear();
-				getPostProcessedVariables().addAll((Collection<? extends Variable>)newValue);
+			case IrPackage.POST_PROCESSING_INFO__OUTPUT_VARIABLES:
+				getOutputVariables().clear();
+				getOutputVariables().addAll((Collection<? extends Variable>)newValue);
 				return;
 			case IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE:
 				setPeriodValue((SimpleVariable)newValue);
@@ -284,8 +286,8 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES:
-				getPostProcessedVariables().clear();
+			case IrPackage.POST_PROCESSING_INFO__OUTPUT_VARIABLES:
+				getOutputVariables().clear();
 				return;
 			case IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE:
 				setPeriodValue((SimpleVariable)null);
@@ -308,8 +310,8 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.POST_PROCESSING_INFO__POST_PROCESSED_VARIABLES:
-				return postProcessedVariables != null && !postProcessedVariables.isEmpty();
+			case IrPackage.POST_PROCESSING_INFO__OUTPUT_VARIABLES:
+				return outputVariables != null && !outputVariables.isEmpty();
 			case IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE:
 				return periodValue != null;
 			case IrPackage.POST_PROCESSING_INFO__PERIOD_REFERENCE:

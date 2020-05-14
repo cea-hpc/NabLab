@@ -9,6 +9,16 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.outline
 
+import fr.cea.nabla.nabla.Import
+import fr.cea.nabla.nablagen.CppKokkos
+import fr.cea.nabla.nablagen.CppKokkosTeamThread
+import fr.cea.nabla.nablagen.CppOpenMP
+import fr.cea.nabla.nablagen.CppSequential
+import fr.cea.nabla.nablagen.CppStlThread
+import fr.cea.nabla.nablagen.Java
+import fr.cea.nabla.nablagen.NablagenConfig
+import fr.cea.nabla.nablagen.Simulation
+import fr.cea.nabla.nablagen.Target
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
 
 /**
@@ -18,4 +28,31 @@ import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
  */
 class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 {
+	def _image(Import it) { null }
+	def _image(NablagenConfig it) { null }
+
+	def _text(Import it) { 'import ' + importedNamespace}
+	def _text(Simulation it) { 'Simulation Variables' }
+
+	def _text(NablagenConfig it)
+	{
+		val text = 'Nablagen configuration'
+		if (nablaModule !== null && nablaModule.name  !== null)
+			text + ' for ' + nablaModule.name
+		else
+			text
+	}
+
+	def _text(Target it)
+	{
+		switch it
+		{
+			Java: 'Multi-thread Java'
+			CppKokkos: 'Kokkos C++'
+			CppKokkosTeamThread: 'Kokkos C++ with teams of threads'
+			CppOpenMP: 'OpenMP C++'
+			CppSequential: 'Sequential C++'
+			CppStlThread: 'Multi-thread STL C++'
+		}
+	}
 }

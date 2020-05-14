@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Variable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 
 class IrModuleExtensions
 {
@@ -44,10 +45,10 @@ class IrModuleExtensions
 		return connectivities.filter[c | c.multiple]
 	}
 
-	static def getVariableByName(IrModule it, String varName)
+	static def getVariableByName(IrModule it, String irVarName)
 	{
-		var Variable variable = definitions.findFirst[j | j.name == varName]
-		if (variable === null) variable = declarations.findFirst[j | j.name == varName]
+		var Variable variable = definitions.findFirst[j | j.name == irVarName]
+		if (variable === null) variable = declarations.findFirst[j | j.name == irVarName]
 		return variable
 	}
 
@@ -58,10 +59,11 @@ class IrModuleExtensions
 
 	private static def getIrVariable(IrModule m, String nablaVariableName, boolean initTimeIterator)
 	{
-		var irVariable = getVariableByName(m, nablaVariableName)
+		val irVariableName = ReplaceUtf8Chars.getNoUtf8(nablaVariableName)
+		var irVariable = getVariableByName(m, irVariableName)
 		if (irVariable === null && m.mainTimeLoop !== null) 
 		{
-			val timeLoopVariable = m.mainTimeLoop.variables.findFirst[x | x.name == nablaVariableName]
+			val timeLoopVariable = m.mainTimeLoop.variables.findFirst[x | x.name == irVariableName]
 			if (timeLoopVariable !== null) 
 			{
 				if (initTimeIterator && timeLoopVariable.init !== null) 

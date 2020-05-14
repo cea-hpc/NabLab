@@ -15,7 +15,7 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.transformers.TagPersistentVariables
+import fr.cea.nabla.ir.transformers.TagOutputVariables
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -64,7 +64,7 @@ class Ir2Java extends CodeGenerator
 		{
 			public final static class Options
 			{
-				«IF postProcessingInfo !== null»public String «TagPersistentVariables.OutputPathNameAndValue.key»;«ENDIF»
+				«IF postProcessingInfo !== null»public String «TagOutputVariables.OutputPathNameAndValue.key»;«ENDIF»
 				«FOR v : definitions.filter[option]»
 				public «v.javaType» «v.name»;
 				«ENDFOR»
@@ -99,7 +99,7 @@ class Ir2Java extends CodeGenerator
 				options = aOptions;
 				«IF withMesh»
 				mesh = aCartesianMesh2D;
-				writer = new PvdFileWriter2D("«name»", options.«TagPersistentVariables.OutputPathNameAndValue.key»);
+				writer = new PvdFileWriter2D("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»);
 				«FOR c : usedConnectivities»
 				«c.nbElemsVar» = «c.connectivityAccessor»;
 				«ENDFOR»
@@ -170,8 +170,8 @@ class Ir2Java extends CodeGenerator
 				if (!writer.isDisabled() && «postProcessingInfo.periodReference.getCodeName('.')» >= «postProcessingInfo.lastDumpVariable.getCodeName('.')» + «postProcessingInfo.periodValue.getCodeName('.')»)
 				{
 					VtkFileContent content = new VtkFileContent(iteration, «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometry().getQuads());
-					«FOR v : postProcessingInfo.postProcessedVariables.filter(ConnectivityVariable)»
-					content.add«v.type.connectivities.head.returnType.name.toFirstUpper»Variable("«v.persistenceName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
+					«FOR v : postProcessingInfo.outputVariables.filter(ConnectivityVariable)»
+					content.add«v.type.connectivities.head.returnType.name.toFirstUpper»Variable("«v.outputName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 					«ENDFOR»
 					writer.writeFile(content);
 					«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodReference.name»;

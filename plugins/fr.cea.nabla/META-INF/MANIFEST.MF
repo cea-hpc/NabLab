@@ -39,7 +39,6 @@ Export-Package: fr.cea.nabla,
  fr.cea.nabla.services,
  fr.cea.nabla.typing,
  fr.cea.nabla.validation,
- fr.cea.nabla.workflow,
  nablalib
 Import-Package: com.google.inject,
  org.apache.log4j

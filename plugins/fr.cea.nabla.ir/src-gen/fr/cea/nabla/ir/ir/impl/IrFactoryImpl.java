@@ -559,6 +559,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
+	public FunctionCall createFunctionCall() {
+		FunctionCallImpl functionCall = new FunctionCallImpl();
+		return functionCall;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public BaseTypeConstant createBaseTypeConstant() {
 		BaseTypeConstantImpl baseTypeConstant = new BaseTypeConstantImpl();
 		return baseTypeConstant;
@@ -584,17 +595,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public Cardinality createCardinality() {
 		CardinalityImpl cardinality = new CardinalityImpl();
 		return cardinality;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public FunctionCall createFunctionCall() {
-		FunctionCallImpl functionCall = new FunctionCallImpl();
-		return functionCall;
 	}
 
 	/**

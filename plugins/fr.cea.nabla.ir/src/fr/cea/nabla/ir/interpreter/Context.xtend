@@ -268,7 +268,8 @@ class Context
 	def resolveFunction(Function it)
 	{
 		val tccl = Thread.currentThread().getContextClassLoader()
-		val providerClassName = module.name.toLowerCase + '.' + provider + Utils::FunctionReductionPrefix
+		val providerClassName = if (provider == "Math") 'java.lang.Math'
+			else module.name.toLowerCase + '.' + provider + Utils::FunctionReductionPrefix
 		val providerClass = Class.forName(providerClassName, true, tccl)
 		val javaTypes = inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension, linearAlgebra)]
 		try 

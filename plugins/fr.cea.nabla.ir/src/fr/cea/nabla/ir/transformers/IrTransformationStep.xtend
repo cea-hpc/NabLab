@@ -10,11 +10,20 @@
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.IrModule
+import java.util.ArrayList
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtend.lib.annotations.Data
 
-interface IrTransformationStep
+@Data
+abstract class IrTransformationStep
 {
-	def String getDescription()
-	/** Return true if the transformation step succeeds false otherwise */
-	def boolean transform(IrModule m)
-	def String[] getOutputTraces()
+	@Accessors val traceListeners = new ArrayList<(String) => void>
+	val String description
+
+	def void trace(String msg)
+	{
+		traceListeners.forEach[apply(msg)]
+	}
+
+	abstract def boolean transform(IrModule m)
 }

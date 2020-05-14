@@ -13,7 +13,7 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPostProcessedVariables <em>Post Processed Variables</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getOutputVariables <em>Output Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodValue <em>Period Value</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodReference <em>Period Reference</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getLastDumpVariable <em>Last Dump Variable</em>}</li>
@@ -25,16 +25,16 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface PostProcessingInfo extends IrAnnotable {
 	/**
-	 * Returns the value of the '<em><b>Post Processed Variables</b></em>' reference list.
+	 * Returns the value of the '<em><b>Output Variables</b></em>' reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Variable}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Post Processed Variables</em>' reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getPostProcessingInfo_PostProcessedVariables()
+	 * @return the value of the '<em>Output Variables</em>' reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getPostProcessingInfo_OutputVariables()
 	 * @model
 	 * @generated
 	 */
-	EList<Variable> getPostProcessedVariables();
+	EList<Variable> getOutputVariables();
 
 	/**
 	 * Returns the value of the '<em><b>Period Value</b></em>' reference.

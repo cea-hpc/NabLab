@@ -9,79 +9,46 @@
  *******************************************************************************/
 with HeatEquation.*;
 
-workflow HeatEquationGenerationChain transforms HeatEquation
+nablagen for HeatEquation;
+
+SimulationVariables
 {
-	Nabla2Ir nabla2ir
-	{
-		timeVariable = t;
-		deltatVariable = δt;
-		nodeCoordVariable = X;
-	}
+	nodeCoord = X;
+	time = t;
+	timeStep = δt;
+	iterationMax = maxIterations;
+	timeMax = stopTime;
+}
 
-	TagPersistentVariables tagPersistentVariables follows nabla2ir 
-	{ 
-		dumpedVariables = u as "Temperature";
-		periodReferenceVariable = n;
-	}
-	
-	ReplaceUtf replaceUtf follows tagPersistentVariables
-	{
-	}
-	
-	ReplaceReductions replaceReductions follows replaceUtf
-	{
-	}
-	
-	OptimizeConnectivities optimizeConnectivities follows replaceReductions
-	{
-		connectivities = cells, nodes, faces;
-	}
-	
-	FillHLTs fillHlts follows optimizeConnectivities
-	{
-	}
-	
-	Ir2Code javaGenerator follows fillHlts
-	{
-		language = Java;
-		outputDir = "/NablaExamples/src-gen-java";
-	}
+VtkOutput
+{
+	periodReferenceVariable = n;
+	outputVariables = u as "Temperature";
+}
 
-	Ir2Code stlGenerator follows fillHlts
-	{
-		language = Cpp
-		{
-			maxIterationVariable = maxIterations;
-			stopTimeVariable = stopTime;
-			programmingModel = StlThread;
-			compiler = GNU;
-		}
-		outputDir = "/NablaExamples/src-gen-cpp/stl-thread";
-	}
+Java
+{
+	outputPath = "/NablaExamples/src-gen-java";
+}
 
-	Ir2Code kokkosGenerator follows fillHlts
-	{
-		language = Cpp
-		{
-			maxIterationVariable = maxIterations;
-			stopTimeVariable = stopTime;
-			programmingModel = Kokkos;
-			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
-			compiler = GNU;
-		}
-		outputDir = "/NablaExamples/src-gen-cpp/kokkos";
-	}
+StlThread
+{
+	outputPath = "/NablaExamples/src-gen-cpp/stl-thread";
+	compiler = GNU;
+//		compiler = LLVM;
+//		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
+}
 
-	Ir2Code kokkosTeamThreadGenerator follows fillHlts
-	{
-		language = Cpp
-		{
-			maxIterationVariable = maxIterations;
-			stopTimeVariable = stopTime;
-			programmingModel = KokkosTeamThread;
-			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
-			compiler = GNU;
-		}
-		outputDir = "/NablaExamples/src-gen-cpp/kokkos-team";
-	}
+Kokkos
+{
+	outputPath = "/NablaExamples/src-gen-cpp/kokkos";
+	kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+	compiler = GNU;
+}
+
+KokkosTeamThread
+{
+	outputPath = "/NablaExamples/src-gen-cpp/kokkos-team";
+	kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+	compiler = GNU;
 }

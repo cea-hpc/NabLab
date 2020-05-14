@@ -26,8 +26,7 @@ abstract class FileWriter
 		if (!disabled)
 		{
 			val outputDir = new File(directoryName)
-			if (!outputDir.exists)
-				throw new RuntimeException("Output directory does not exist: " + outputDir.absolutePath)
+			if (!outputDir.exists) outputDir.mkdir
 		}
 	}
 

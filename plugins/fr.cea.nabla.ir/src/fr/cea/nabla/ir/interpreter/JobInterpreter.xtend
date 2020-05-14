@@ -133,14 +133,14 @@ class JobInterpreter
 			val vtkFileContent = new VtkFileContent(iteration, time, coord, quads);
 
 			//TODO deal with linearAlgebra
-			val connectivityVars = ppInfo.postProcessedVariables.filter(ConnectivityVariable)
+			val connectivityVars = ppInfo.outputVariables.filter(ConnectivityVariable)
 			for (v : connectivityVars.filter(v | v.type.connectivities.head.returnType.name == "cell"))
 			{
 				val value = context.getVariableValue(irModule.getVariableByName(v.name))
 				switch value
 				{
-					NV1Real: vtkFileContent.addCellVariable(v.persistenceName, value.data)
-					NV2Real: vtkFileContent.addCellVariable(v.persistenceName, value.data)
+					NV1Real: vtkFileContent.addCellVariable(v.outputName, value.data)
+					NV2Real: vtkFileContent.addCellVariable(v.outputName, value.data)
 					default: throw new RuntimeException("Vtk writer not yet implemented for type: " + value.class.name)
 				}
 			}
@@ -149,8 +149,8 @@ class JobInterpreter
 				val value = context.getVariableValue(irModule.getVariableByName(v.name))
 				switch value
 				{
-					NV1Real: vtkFileContent.addNodeVariable(v.persistenceName, value.data)
-					NV2Real: vtkFileContent.addNodeVariable(v.persistenceName, value.data)
+					NV1Real: vtkFileContent.addNodeVariable(v.outputName, value.data)
+					NV2Real: vtkFileContent.addNodeVariable(v.outputName, value.data)
 					default: throw new RuntimeException("Vtk writer not yet implemented for type: " + value.class.name)
 				}
 			}

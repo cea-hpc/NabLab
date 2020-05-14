@@ -105,7 +105,12 @@ class ExpressionContentProvider
 	def dispatch CharSequence getContent(FunctionCall it)
 	{
 		if (function.name == 'solveLinearSystem')
-			'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR», cg_info)'''
+			switch (args.length)
+			{
+				case 2: '''«function.codeName»(«args.get(0).content», «args.get(1).content», cg_info)'''
+				case 3: '''«function.codeName»(«args.get(0).content», «args.get(1).content», cg_info, &«args.get(2).content»)'''
+				default: throw new RuntimeException("Wrong numbers of arguments for solveLinearSystem")
+			}
 		else
 			'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	}

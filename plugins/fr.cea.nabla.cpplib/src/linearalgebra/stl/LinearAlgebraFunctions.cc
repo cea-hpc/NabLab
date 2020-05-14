@@ -8,6 +8,8 @@
  * Contributors: see AUTHORS file
  *******************************************************************************/
 #include "linearalgebra/stl/LinearAlgebraFunctions.h"
+#include <iostream>
+#include <algorithm>
 
 namespace nablalib
 {
@@ -15,7 +17,7 @@ namespace nablalib
 namespace LinearAlgebraFunctions
 {
 /*
- * Simple pretty printing function for Sparse Matrix
+ * Simple pretty printing function for Nabla Sparse Matrix
  */
  std::string print(const NablaSparseMatrix& M) {
    if (!M.m_matrix) {
@@ -46,7 +48,32 @@ namespace LinearAlgebraFunctions
    } else {
      return M.m_matrix->print();
    }
- }  
+ }
+
+/*
+ * Matlab style printing function for Nabla Sparse Matrix
+ */
+std::string printMatlabStyle(const NablaSparseMatrix& M, std::string A) {
+  if (!M.m_matrix) {
+    std::stringstream ss;
+    ss << "\n"<< A <<" = sparse(" << M.m_nb_row << ", " << M.m_nb_col << ");\n";
+    for (auto i(0); i < M.m_nb_row; ++i) {
+      for (auto j(0); j < M.m_nb_col; ++j) {
+        auto pos_line(std::find_if(M.m_building_struct.begin(), M.m_building_struct.end(),
+                                   [&](const std::pair<int, std::list<std::pair<int, double>>>& line){return (line.first == i);}));
+        if (pos_line != M.m_building_struct.end()) {
+          auto pos_col(std::find_if(pos_line->second.begin(), pos_line->second.end(),
+                                    [&](const std::pair<int, double>& col){return col.first == j;}));
+          if (pos_col != pos_line->second.end())
+            ss <<  A << "(" << i+1 << ", " << j+1 << ") = "   <<pos_col->second << ";\n";
+        }
+      }
+    }
+    return std::string(ss.str());
+  } else {
+    return M.m_matrix->printMatlabStyle(A);
+  } 
+}
 
 /*
  * Simple pretty printing function for Vector
@@ -64,19 +91,34 @@ std::string print(const VectorType& v) {
 }
 
 /*
+ * Matlab style pretty printing function for Vector
+ */
+std::string printMatlabStyle(const VectorType& v, std::string A) {
+  std::stringstream ss;
+  ss << "\n"<< A <<" = zeros(" << v.size() << ", 1);\n";
+  for (size_t i(0); i < v.size(); ++i) {
+    ss << A << "(" << i+1 << ") = "<< v.at(i) << ";\n";
+  }
+  return std::string(ss.str());
+}
+
+/*
  * \brief Conjugate Gradient function (solves A x = b)
  * \param A:         [in] sparse matrix
  * \param b:         [in] vector
- * \param x:         [in/out] vector (initial guess, can be null vector)
+ * \param x0:        [in] initial guess vector, can be null vector
  * \param info:      [in/out] Misc. informations on computation result
  * \param max_it:    [in] Iteration threshold (default = 200)
  * \param tolerance: [in] Convergence threshold (default = std::numeric_limits<double>::epsilon)
+ * \return:          Solution vector
  */
-void CGSolve(const SparseMatrixType& A, const VectorType& b, VectorType& x, CGInfo& info,
-             const size_t max_it, const double tolerance) {
+VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x0, CGInfo& info,
+                   const size_t max_it, const double tolerance) {
   size_t it(0);
   double norm_res(0.0);
-  const size_t count(x.size());
+  const size_t count(x0.size());
+  // Copy initial guess solution
+  VectorType x(x0.begin(), x0.end());
 
   ///* r = b - A * x ;*/
 
@@ -130,6 +172,8 @@ void CGSolve(const SparseMatrixType& A, const VectorType& b, VectorType& x, CGIn
   info.m_display << "----------------------------" << std::endl;
   info.m_nb_it += it;
   info.m_norm_res += norm_res;
+  
+  return x;
 }
 
 /*
@@ -137,20 +181,17 @@ void CGSolve(const SparseMatrixType& A, const VectorType& b, VectorType& x, CGIn
  * \param A:         [in] Sparse matrix
  * \param b:         [in] Vector
  * \param info:      [in/out] Misc. informations on computation result
- * \param x0:        [in/out] Initial guess of the solution. If none is provided, a null vector is used.
+ * \param x0:        [in] Initial guess of the solution. If none is provided, null vector is used.
  * \return: Solution vector
  * \note: Iteration threshold is 100, convergence threshold is 1.e-8
  */
 VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info, VectorType* x0)
 {
-  const size_t count(b.size());
   if (!x0) {
-    VectorType x(count, 0.0);
-    CGSolve(A.crsMatrix(), b, x, info, 100, 1.e-8);
-    return x;
+    VectorType default_x0(b.size(), 0.0);
+    return CGSolve(A.crsMatrix(), b, default_x0, info, 100, 1.e-8);
   } else {
-    CGSolve(A.crsMatrix(), b, *x0, info, 100, 1.e-8);
-    return *x0;
+    return CGSolve(A.crsMatrix(), b, *x0, info, 100, 1.e-8);
   }
 }
 

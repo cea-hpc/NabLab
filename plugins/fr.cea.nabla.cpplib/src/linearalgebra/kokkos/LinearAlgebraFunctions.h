@@ -24,8 +24,14 @@ namespace LinearAlgebraFunctions
   };
 
   std::string print(const NablaSparseMatrix& M);
+  std::string printMatlabStyle(const NablaSparseMatrix& M, std::string A);
+  
   std::string print(const SparseMatrixType& M);
+  std::string printMatlabStyle(const SparseMatrixType& M, std::string A);
+  
   std::string print(const VectorType& v);
+  std::string printMatlabStyle(const VectorType& v, std::string A);
+  
   VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x, CGInfo& info,
 		                 const size_t max_it = 200, const double tolerance = std::numeric_limits<double>::epsilon());
   VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info, VectorType* x0 = nullptr);

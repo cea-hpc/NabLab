@@ -66,14 +66,14 @@ InitU: ∀c∈cells(),
 InitD: ∀c∈cells(), D{c} = 1.0; 
 
 // Computing time step with cfl = 0.96
-computeDeltaTn: δt = Min{c∈cells()}(X_EDGE_LENGTH*Y_EDGE_LENGTH/D{c}) * 0.24;
+ComputeDeltaTn: δt = Min{c∈cells()}(X_EDGE_LENGTH*Y_EDGE_LENGTH/D{c}) * 0.24;
 
 ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{p∈nodesOfCell(j)}(det(X{p}, X{p+1}));
 ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p} - X{p+1}));
 ComputeFaceConductivity: ∀f∈faces(), faceConductivity{f} = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1}) / ∑{c2∈cellsOfFace(f)}(D{c2});
 
 // Assembling of the diffusion matrix
-computeAlphaCoeff: ∀c∈cells(), {
+ComputeAlphaCoeff: ∀c∈cells(), {
 	let αDiag = 0.0;
 	∀d∈neighbourCells(c), f=commonFace(c,d), {
 		let αExtraDiag = δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c} - Xc{d});

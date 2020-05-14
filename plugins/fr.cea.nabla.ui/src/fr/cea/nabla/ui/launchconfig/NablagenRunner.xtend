@@ -15,36 +15,32 @@ import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablagenInterpreter
 import fr.cea.nabla.nablagen.NablagenConfig
 import fr.cea.nabla.nablagen.NablagenModule
-import fr.cea.nabla.ui.UiUtils
+import fr.cea.nabla.ui.NabLabConsoleFactory
 import org.eclipse.core.resources.IResource
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.ui.console.ConsolePlugin
 import org.eclipse.ui.console.MessageConsole
-import org.eclipse.ui.console.MessageConsoleStream
 
 @Singleton
 class NablagenRunner
 {
-	val MessageConsoleStream stream
 	@Inject Provider<ResourceSet> resourceSetProvider
 	@Inject Provider<NablagenInterpreter> interpreterProvider
-
-	new()
-	{
-		val imageDescriptor = UiUtils::getImageDescriptor("icons/Nabla.gif")
-		val image = if (imageDescriptor.present) imageDescriptor.get else null
-		val console = new MessageConsole("Nabla Console", image)
-		console.activate
-		ConsolePlugin.^default.consoleManager.addConsoles(#[console])
-		stream = console.newMessageStream
-	}
+	@Inject NabLabConsoleFactory consoleFactory
 
 	def launch(NablagenConfig config, String baseDir)
 	{
 		val interpretor = interpreterProvider.get
-		interpretor.traceListeners += [String msg | stream.print(msg)]
+		consoleFactory.openConsole
+		val console = ConsolePlugin.^default.consoleManager.consoles.filter(MessageConsole).findFirst[x | x.name == NabLabConsoleFactory.ConsoleName]
+		if (console !== null)
+		{
+			console.activate
+			val stream = console.newMessageStream
+			interpretor.traceListeners += [String msg | stream.print(msg)]
+		}
 		val irModule = interpretor.buildIrModule(config, baseDir)
 		interpretor.generateCode(irModule, config.targets, config.simulation.iterationMax.name, config.simulation.timeMax.name, baseDir)
 	}

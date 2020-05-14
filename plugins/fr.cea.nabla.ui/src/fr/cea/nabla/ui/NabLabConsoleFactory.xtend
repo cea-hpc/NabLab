@@ -11,7 +11,7 @@ import org.eclipse.ui.console.MessageConsoleStream
 @Singleton
 class NabLabConsoleFactory implements IConsoleFactory
 {
-	static val ConsoleName = "NabLab Console"
+	public static val ConsoleName = "NabLab Console"
 	@Inject NablaGeneratorMessageDispatcher dispatcher
 	MessageConsole console
 	MessageConsoleStream defaultStream

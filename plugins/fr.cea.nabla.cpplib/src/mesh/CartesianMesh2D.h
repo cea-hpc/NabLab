@@ -58,10 +58,36 @@ public:
 	size_t getNbRightNodes() const noexcept { return m_right_nodes.size(); }
 	const vector<Id>& getRightNodes() const noexcept { return m_right_nodes; }
 
+
+	size_t getNbTopCells() const noexcept { return m_top_cells.size(); }
+	const vector<Id>& getTopCells() const noexcept { return m_top_cells; }
+
+	size_t getNbBottomCells() const noexcept { return m_bottom_cells.size(); }
+	const vector<Id>& getBottomCells() const noexcept { return m_bottom_cells; }
+
+	size_t getNbLeftCells() const noexcept { return m_left_cells.size(); }
+	const vector<Id>& getLeftCells() const noexcept { return m_left_cells; }
+
+	size_t getNbRightCells() const noexcept { return m_right_cells.size(); }
+	const vector<Id>& getRightCells() const noexcept { return m_right_cells; }
+
+	size_t getNbTopFaces() const noexcept { return m_top_faces.size(); }
+	const vector<Id>& getTopFaces() const noexcept { return m_top_faces; }
+
+	size_t getNbBottomFaces() const noexcept { return m_bottom_faces.size(); }
+	const vector<Id>& getBottomFaces() const noexcept { return m_bottom_faces; }
+
+	size_t getNbLeftFaces() const noexcept { return m_left_faces.size(); }
+	const vector<Id>& getLeftFaces() const noexcept { return m_left_faces; }
+
+	size_t getNbRightFaces() const noexcept { return m_right_faces.size(); }
+	const vector<Id>& getRightFaces() const noexcept { return m_right_faces; }
+	
+	
 	size_t getNbOuterFaces() const noexcept { return m_outer_faces.size(); }
 	vector<Id> getOuterFaces() const noexcept { return m_outer_faces; }
   
-  size_t getNbInnerFaces() const noexcept { return m_inner_faces.size(); }
+	size_t getNbInnerFaces() const noexcept { return m_inner_faces.size(); }
 	vector<Id> getInnerFaces() const noexcept { return m_inner_faces; }
 	
 	size_t getNbInnerHorizontalFaces() const noexcept { return m_inner_horizontal_faces.size(); }
@@ -70,19 +96,19 @@ public:
 	size_t getNbInnerVerticalFaces() const noexcept { return m_inner_vertical_faces.size(); }
 	vector<Id> getInnerVerticalFaces() const noexcept { return m_inner_vertical_faces; }
 
-  // TODO: Temporary until single item is available in grammar
+	// TODO: Temporary until single item is available in grammar
 	size_t getNbTopLeftNode() const noexcept { return 1; }
 	vector<Id> getTopLeftNode() const noexcept { return vector<Id>({ m_top_left_node}); }
 
-  // TODO: Temporary until single item is available in grammar
+	// TODO: Temporary until single item is available in grammar
 	size_t getNbTopRightNode() const noexcept { return 1; }
 	vector<Id> getTopRightNode() const noexcept { return vector<Id>({ m_top_right_node}); }
 
-  // TODO: Temporary until single item is available in grammar
+	// TODO: Temporary until single item is available in grammar
 	size_t getNbBottomLeftNode() const noexcept { return 1; }
 	vector<Id> getBottomLeftNode() const noexcept { return vector<Id>({ m_bottom_left_node}); }
 
-  // TODO: Temporary until single item is available in grammar
+	// TODO: Temporary until single item is available in grammar
 	size_t getNbBottomRightNode() const noexcept { return 1; }
 	vector<Id> getBottomRightNode() const noexcept { return vector<Id>({ m_bottom_right_node}); }
 		
@@ -98,9 +124,9 @@ public:
  	Id getFirstNodeOfFace(const Id& faceId) const noexcept;
 	Id getSecondNodeOfFace(const Id& faceId) const noexcept;
 
-  Id getBackCell(const Id& faceId) const;
+	Id getBackCell(const Id& faceId) const;
 	Id getFrontCell(const Id& faceId) const;
-  Id getBottomFaceOfCell(const Id& cellId) const noexcept;
+	Id getBottomFaceOfCell(const Id& cellId) const noexcept;
 	Id getLeftFaceOfCell(const Id& cellId) const noexcept;
 	Id getRightFaceOfCell(const Id& cellId) const noexcept;
 	Id getTopFaceOfCell(const Id& cellId) const noexcept;
@@ -126,6 +152,8 @@ private:
 		return nbCommonIds;
 	}
 
+	inline vector<Id> cellsOfNodeCollection(const vector<Id>& nodes);
+	
 private:
 	MeshGeometry<2>* m_geometry;
     
@@ -134,18 +162,27 @@ private:
 	vector<Id> m_bottom_nodes;
 	vector<Id> m_left_nodes;
 	vector<Id> m_right_nodes;
-	vector<Id> m_outer_faces;
-	vector<Id> m_faces;
-	vector<Id> m_inner_horizontal_faces;
-	vector<Id> m_inner_vertical_faces;
-	vector<Id> m_inner_faces;
-
 	Id m_top_left_node;
 	Id m_top_right_node;
 	Id m_bottom_left_node;
 	Id m_bottom_right_node;
   
-  size_t m_nb_x_quads;
+	vector<Id> m_top_cells;
+	vector<Id> m_bottom_cells;
+	vector<Id> m_left_cells;
+	vector<Id> m_right_cells;
+
+	vector<Id> m_faces;
+	vector<Id> m_outer_faces;
+	vector<Id> m_inner_faces;
+	vector<Id> m_inner_horizontal_faces;
+	vector<Id> m_inner_vertical_faces;
+	vector<Id> m_top_faces;
+	vector<Id> m_bottom_faces;
+	vector<Id> m_left_faces;
+	vector<Id> m_right_faces;
+
+	size_t m_nb_x_quads;
 	size_t m_nb_y_quads;
 };
 

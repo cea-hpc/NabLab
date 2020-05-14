@@ -30,6 +30,10 @@ CartesianMesh2D::CartesianMesh2D(
 , m_top_right_node(top_right_node_id)
 , m_bottom_left_node(bottom_left_node_id)
 , m_bottom_right_node(bottom_right_node_id)
+, m_top_faces(0)
+, m_bottom_faces(0)
+, m_left_faces(0)
+, m_right_faces(0)
 , m_nb_x_quads(bottom_nodes_ids.size() - 1)
 , m_nb_y_quads(left_nodes_ids.size() - 1)
 {
@@ -52,6 +56,18 @@ CartesianMesh2D::CartesianMesh2D(
 			}
 		}
 	}
+
+	// Construction of boundary cell sets
+	m_top_cells = cellsOfNodeCollection(m_top_nodes);
+	m_bottom_cells = cellsOfNodeCollection(m_bottom_nodes);
+	m_left_cells = cellsOfNodeCollection(m_left_nodes);
+	m_right_cells = cellsOfNodeCollection(m_right_nodes);
+
+	// Construction of boundary cell faces
+	for(auto&& cellId: m_top_cells)    m_top_faces.emplace_back(getTopFaceOfCell(cellId));
+	for(auto&& cellId: m_bottom_cells) m_bottom_faces.emplace_back(getBottomFaceOfCell(cellId));
+	for(auto&& cellId: m_left_cells)   m_left_faces.emplace_back(getLeftFaceOfCell(cellId));
+	for(auto&& cellId: m_right_cells)  m_right_faces.emplace_back(getRightFaceOfCell(cellId));
 }
 
 const array<Id, 4>&
@@ -297,6 +313,20 @@ CartesianMesh2D::id2IndexNode(const Id& k) const noexcept
   size_t i(static_cast<size_t>(k) / (m_nb_x_quads + 1));
   size_t j(static_cast<size_t>(k) - i * (m_nb_x_quads + 1));
   return make_pair(i, j); 
+}
+
+
+inline vector<Id>
+CartesianMesh2D::cellsOfNodeCollection(const vector<Id>& nodes)
+{
+  vector<Id> cells(0);
+  for (auto&& node_id : nodes)
+    for (auto&& cell_id : getCellsOfNode(node_id))
+      cells.emplace_back(cell_id);
+  // Deleting duplicates
+  std::sort(cells.begin(), cells.end());
+  cells.erase(std::unique(cells.begin(), cells.end()), cells.end());
+  return cells;
 }
 
 }

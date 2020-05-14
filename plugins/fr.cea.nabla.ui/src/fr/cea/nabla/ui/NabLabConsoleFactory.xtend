@@ -27,7 +27,7 @@ class NabLabConsoleFactory implements IConsoleFactory
 	{
 		if (console === null)
 		{
-			val imageDescriptor = UiUtils::getImageDescriptor("icons/Nabla.gif")
+			val imageDescriptor = UiUtils::getImageDescriptor("icons/NabLab.gif")
 			val image = if (imageDescriptor.present) imageDescriptor.get else null
 			console = new MessageConsole(ConsoleName, image)
 			defaultStream = console.newMessageStream

@@ -11,6 +11,7 @@ package fr.cea.nabla.ui
 
 import com.google.inject.Inject
 import fr.cea.nabla.generator.ir.IrAnnotationHelper
+import fr.cea.nabla.ir.ir.IrAnnotable
 import fr.cea.nabla.ui.listeners.GraphicalEditPartSelectionListener
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.xtext.ui.editor.XtextEditor
@@ -25,7 +26,7 @@ class NablaDslEditor extends XtextEditor
 	override createPartControl(Composite parent)
 	{
 		super.createPartControl(parent)
-		siriusListener.irAnnotatableSelectionListeners += [offset, length, uri | openInEditor(offset, length, uri)]
+		siriusListener.irAnnotatableEventListeners += [annotable, offset, length, uri | openInEditor(annotable, offset, length, uri)]
 		site.page.addPostSelectionListener(siriusListener)
 	}
 
@@ -34,7 +35,7 @@ class NablaDslEditor extends XtextEditor
 		site.page.removePostSelectionListener(siriusListener)
 	}
 
-	private def void openInEditor(int offset, int length, String uri) 
+	private def void openInEditor(IrAnnotable annotable, int offset, int length, String uri)
 	{
 		val editorResourceUri = resource.fullPath.toString
 		if (uri.endsWith(editorResourceUri))

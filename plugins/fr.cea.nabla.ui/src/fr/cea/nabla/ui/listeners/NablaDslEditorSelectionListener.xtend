@@ -15,7 +15,6 @@ import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.jface.text.TextSelection
 import org.eclipse.jface.viewers.ISelection
-import org.eclipse.swt.widgets.Display
 import org.eclipse.ui.ISelectionListener
 import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -41,10 +40,6 @@ class NablaDslEditorSelectionListener implements ISelectionListener
 	private def getObjectAndFireNotification(XtextEditor editor, int offset)
 	{
 		val obj = editor.document.readOnly([state | eObjectAtOffsetHelper.resolveContainedElementAt(state, offset)])
-		if (obj !== null) 
-		{
-			if (Display::^default === null) nablaObjectSelectionListeners.forEach[x | x.apply(obj)]
-			else Display::^default.asyncExec([nablaObjectSelectionListeners.forEach[x | x.apply(obj)]])
-		}
+		if (obj !== null) nablaObjectSelectionListeners.forEach[x | x.apply(obj)]
 	}
 }

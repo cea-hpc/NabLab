@@ -78,7 +78,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		newProjectPage.initialModuleName = DEFAULT_MODULE_NAME
 		newProjectPage.title = NEW_PROJECT_PAGE_TITLE
 		newProjectPage.description = NEW_PROJECT_PAGE_DESCRIPTION
-		val imageDescriptor = UiUtils.getImageDescriptor("icons/Nabla.gif")
+		val imageDescriptor = UiUtils.getImageDescriptor("icons/NabLab.gif")
 		if (imageDescriptor.present)
 		{
 			newProjectPage.imageDescriptor = imageDescriptor.get

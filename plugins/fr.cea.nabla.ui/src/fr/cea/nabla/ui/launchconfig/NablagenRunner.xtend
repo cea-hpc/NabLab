@@ -33,7 +33,7 @@ class NablagenRunner
 
 	new()
 	{
-		val imageDescriptor = UiUtils::getImageDescriptor("icons/Nabla.gif")
+		val imageDescriptor = UiUtils::getImageDescriptor("icons/NabLab.gif")
 		val image = if (imageDescriptor.present) imageDescriptor.get else null
 		val console = new MessageConsole("Nabla Console", image)
 		console.activate

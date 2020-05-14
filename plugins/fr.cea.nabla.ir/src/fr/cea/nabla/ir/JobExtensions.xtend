@@ -42,6 +42,19 @@ class JobExtensions
 		!eAllContents.filter(Loop).empty
 	}
 
+	static def getPreviousJobs(Job to)
+	{
+		val toSourceJobs = new HashSet<Job>
+		val irModule = to.eContainer as IrModule
+		val toInVars = to.inVars
+		for (from : irModule.jobs)
+			for (inVar : toInVars)
+				if (from.outVars.exists[x | x === inVar])
+					toSourceJobs += from
+
+		return toSourceJobs
+	}
+
 	static def getNextJobs(Job from)
 	{
 		val fromTargetJobs = new HashSet<Job>

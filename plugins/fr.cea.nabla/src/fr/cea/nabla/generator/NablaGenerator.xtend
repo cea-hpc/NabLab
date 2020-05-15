@@ -11,6 +11,7 @@ package fr.cea.nabla.generator
 
 import com.google.inject.Inject
 import fr.cea.nabla.generator.ir.Nabla2Ir
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.ReplaceReductions
@@ -41,14 +42,7 @@ class NablaGenerator extends AbstractGenerator
 				val latexFileName = module.name.toLowerCase + '/' + module.name + '.tex'
 				dispatcher.post('Generating LaTeX: ' + latexFileName + '\n')
 				fsa.generateFile(latexFileName, module.latexContent)
-
-				// Nabla -> IR
-				dispatcher.post('Nabla -> IR\n')
-				val irModule = nabla2Ir.toIrModule(module)
-
-				// IR -> IR
-				transformer.transformIr(irTransformation, irModule, traceNotifier)
-				dispatcher.post(irModule)
+				buildIrModule(module)
 			}
 		}
 		catch(Exception e)
@@ -63,10 +57,16 @@ class NablaGenerator extends AbstractGenerator
 		}
 	}
 
-	private def getIrTransformation()
+	def IrModule buildIrModule(NablaModule nablaModule)
 	{
+		dispatcher.post('Nabla -> IR\n')
+		val irModule = nabla2Ir.toIrModule(nablaModule)
+		// IR -> IR
 		val description = 'Minimal IR->IR transformations to check job cycles'
-		new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
+		val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
+		transformer.transformIr(t, irModule, traceNotifier)
+		dispatcher.post(irModule)
+		return irModule
 	}
 
 	private def getLatexContent(NablaModule m)

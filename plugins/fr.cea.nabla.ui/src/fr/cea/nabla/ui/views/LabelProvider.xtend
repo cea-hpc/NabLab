@@ -25,7 +25,7 @@ implements ISelfStyleProvider
 	override getText(Object o)
 	{
 		if (o instanceof Job)
-			o.name
+			Math.round(o.at) + ". " + o.name
 	}
 
 	// ISelfStyleProvider
@@ -35,12 +35,15 @@ implements ISelfStyleProvider
 
 	override selfStyleNode(Object element, GraphNode node)
 	{
-		println("selfStyleNode: " + element)
 		if (element instanceof Job)
 		{
-			if (element.previousJobs.empty) node.backgroundColor = ColorConstants.lightGreen
-			else if (element.nextJobs.empty) node.backgroundColor = ColorConstants.lightBlue
-			else node.backgroundColor = ColorConstants.white
+			node.backgroundColor = ColorConstants.white
+			node.tooltip = new JobTooltipFigure(element)
+
+			if (element.previousJobs.empty) node.borderColor = ColorConstants.green
+			else if (element.nextJobs.empty) node.borderColor = ColorConstants.blue
+
+			if (element.onCycle) node.borderColor = ColorConstants.red
 		}
 	}
 }

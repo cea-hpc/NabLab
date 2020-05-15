@@ -23,8 +23,7 @@ Require-Bundle: fr.cea.nabla,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.eclipse.sirius.common.tools.api.interpreter
-Export-Package: fr.cea.nabla.sirius,
- fr.cea.nabla.sirius.nablagen
+Export-Package: fr.cea.nabla.sirius
 Bundle-ClassPath: .
 Bundle-Vendor: CEA
 

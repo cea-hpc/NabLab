@@ -17,7 +17,7 @@ import org.eclipse.ui.ISelectionListener
 import org.eclipse.ui.IWorkbenchPart
 
 class GraphicalEditPartSelectionListener
-extends IrAnnotableEvent
+extends IrAnnotableListener
 implements ISelectionListener
 {
 	override selectionChanged(IWorkbenchPart part, ISelection selection)

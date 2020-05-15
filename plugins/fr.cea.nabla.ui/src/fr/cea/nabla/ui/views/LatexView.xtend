@@ -18,7 +18,7 @@ import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Reduction
-import fr.cea.nabla.ui.listeners.NablaDslEditorSelectionListener
+import fr.cea.nabla.ui.listeners.TextSelectionListener
 import java.io.ByteArrayInputStream
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.swt.SWT
@@ -30,13 +30,13 @@ import org.eclipse.ui.part.ViewPart
 
 class LatexView extends ViewPart
 {
-	@Inject NablaDslEditorSelectionListener listener
+	@Inject TextSelectionListener listener
 	Label label
 
 	override createPartControl(Composite parent)
 	{
 		label = new Label(parent, SWT.NONE)
-		listener.nablaObjectSelectionListeners +=  [EObject o | o.fireSelectionChanged]
+		listener.nablaObjectSelectionNotifier = [EObject o | o.fireSelectionChanged]
 		site.page.addPostSelectionListener(listener)
 	}
 

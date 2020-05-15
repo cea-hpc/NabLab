@@ -11,7 +11,6 @@ package fr.cea.nabla.ui.listeners
 
 import com.google.inject.Inject
 import fr.cea.nabla.ui.internal.NablaActivator
-import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.jface.text.TextSelection
 import org.eclipse.jface.viewers.ISelection
@@ -21,14 +20,14 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 import org.eclipse.xtext.ui.editor.XtextEditor
 
-class NablaDslEditorSelectionListener implements ISelectionListener
+class TextSelectionListener implements ISelectionListener
 {
 	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
-	@Accessors val nablaObjectSelectionListeners = new ArrayList<(EObject) => void>
+	@Accessors var (EObject) => void nablaObjectSelectionNotifier
 
 	override selectionChanged(IWorkbenchPart part, ISelection selection)
 	{
-		if (selection instanceof TextSelection && part instanceof XtextEditor)
+		if (nablaObjectSelectionNotifier !== null && selection instanceof TextSelection && part instanceof XtextEditor)
 		{
 			val xtextEditor = part as XtextEditor
 			val textSelection = selection as TextSelection
@@ -40,6 +39,6 @@ class NablaDslEditorSelectionListener implements ISelectionListener
 	private def getObjectAndFireNotification(XtextEditor editor, int offset)
 	{
 		val obj = editor.document.readOnly([state | eObjectAtOffsetHelper.resolveContainedElementAt(state, offset)])
-		if (obj !== null) nablaObjectSelectionListeners.forEach[x | x.apply(obj)]
+		if (obj !== null) nablaObjectSelectionNotifier.apply(obj)
 	}
 }

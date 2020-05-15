@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ui
 
+import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ui.internal.NablaActivator
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
@@ -17,6 +18,8 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.jface.resource.ResourceLocator
 import org.eclipse.ui.PlatformUI
 import org.eclipse.xtext.ui.editor.XtextEditor
+
+import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class UiUtils
 {
@@ -29,6 +32,13 @@ class UiUtils
 	{
 		val imageDescriptor = getImageDescriptor(path)
 		if (imageDescriptor.present) imageDescriptor.get.createImage
+	}
+
+	static def String getTooltip(Job it)
+	{
+		val inVarNames = "[" + inVars.map[name].join(', ') + "]"
+		val outVarNames = "[" + outVars.map[name].join(', ') + "]"
+		inVarNames + "  \u21E8  " + name + "  \u21E8  " + outVarNames
 	}
 
 	static def getActiveNablaEditor()

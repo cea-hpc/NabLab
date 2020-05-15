@@ -14,9 +14,6 @@ import org.eclipse.swt.widgets.Composite
 import org.eclipse.zest.core.viewers.GraphViewer
 import org.eclipse.zest.core.widgets.ZestStyles
 import org.eclipse.zest.layouts.LayoutStyles
-import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm
-import org.eclipse.zest.layouts.algorithms.HorizontalLayoutAlgorithm
-import org.eclipse.zest.layouts.algorithms.DirectedGraphLayoutAlgorithm
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm
 
 class JobGraphViewer extends GraphViewer
@@ -35,7 +32,6 @@ class JobGraphViewer extends GraphViewer
 		labelProvider = new LabelProvider
 		nodeStyle = ZestStyles::NODES_NO_ANIMATION
 		connectionStyle = ZestStyles::CONNECTIONS_DIRECTED
-		//setLayoutAlgorithm(new SpringLayoutAlgorithm(LayoutStyles::NO_LAYOUT_NODE_RESIZING), true)
-		layoutAlgorithm = new TreeLayoutAlgorithm(LayoutStyles::NO_LAYOUT_NODE_RESIZING)
+		setLayoutAlgorithm(new TreeLayoutAlgorithm(LayoutStyles::NO_LAYOUT_NODE_RESIZING), true)
 	}
 }

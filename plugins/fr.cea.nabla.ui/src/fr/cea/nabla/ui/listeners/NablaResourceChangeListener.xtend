@@ -11,26 +11,25 @@ package fr.cea.nabla.ui.listeners
 
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.ui.UiUtils
-import java.util.ArrayList
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.IResourceChangeEvent
 import org.eclipse.core.resources.IResourceChangeListener
 import org.eclipse.core.resources.IResourceDelta
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.swt.widgets.Display
-import org.eclipse.xtext.ui.editor.model.IXtextDocument
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtext.ui.editor.model.IXtextDocument
 
 class NablaResourceChangeListener implements IResourceChangeListener
 {
-	@Accessors val nablaModuleListeners = new ArrayList<(NablaModule)=>void>
+	@Accessors var (NablaModule)=>void nablaModuleChangeNotifier
 
 	/* fire an event when a resource in save in the NabLab editor */
 	override resourceChanged(IResourceChangeEvent event) 
 	{
 		try
 		{
-			if (event !== null && event.delta !== null)
+			if (nablaModuleChangeNotifier !== null && event !== null && event.delta !== null)
 			{
 				event.delta.accept([ IResourceDelta delta |
 					val r = delta.resource
@@ -58,8 +57,8 @@ class NablaResourceChangeListener implements IResourceChangeListener
 		if (obj !== null && obj instanceof NablaModule)
 		{
 			val module = obj as NablaModule
-			if (Display::^default === null) nablaModuleListeners.forEach[x | x.apply(module)]
-			else Display::^default.asyncExec([nablaModuleListeners.forEach[x | x.apply(module)]])
+			if (Display::^default === null) nablaModuleChangeNotifier.apply(module)
+			else Display::^default.asyncExec([nablaModuleChangeNotifier.apply(module)])
 		}
 	}
 }

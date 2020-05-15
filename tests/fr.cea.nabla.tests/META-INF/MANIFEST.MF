@@ -3,7 +3,7 @@ Automatic-Module-Name: fr.cea.nabla.tests
 Bundle-ManifestVersion: 2
 Bundle-Name: fr.cea.nabla.tests
 Bundle-Vendor: CEA
-Bundle-Version: 0.1.3.qualifier
+Bundle-Version: 0.2.0.qualifier
 Bundle-SymbolicName: fr.cea.nabla.tests; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: fr.cea.nabla,

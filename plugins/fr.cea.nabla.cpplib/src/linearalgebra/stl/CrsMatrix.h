@@ -117,7 +117,21 @@ class CrsMatrix
 	    }
     }
     return std::string(ss.str());
-   }
+  }
+  // Pretty printing for Matlab
+  std::string printMatlabStyle(std::string A) const {
+    std::stringstream ss;
+    ss << "\n"<< A <<" = sparse(" << numRows() << ", " << numCols() << ");\n";
+    for (auto i(0); i < numRows(); ++i) {
+      for (auto j(0), k(0); j < numCols(); ++j) {
+        if (rowConst(i).length && j == rowConst(i).colidx(k)) {
+	        ss <<  A << "(" << i+1 << ", " << j+1 << ") = " << rowConst(i).value(k) << ";\n";
+          ++k;
+        }
+      }
+    }
+    return std::string(ss.str());
+  }
 
    // Matrix vector product
    // return by value semantic

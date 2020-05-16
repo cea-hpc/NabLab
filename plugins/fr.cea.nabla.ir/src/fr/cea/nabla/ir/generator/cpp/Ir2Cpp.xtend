@@ -110,7 +110,7 @@ class Ir2Cpp extends CodeGenerator
 		«backend.privateMethodsContentProvider.getDeclarationContentFor(it)»
 		«IF postProcessingInfo !== null»
 
-		void dumpVariables(int iteration);
+		void dumpVariables(int iteration, bool useTimer=true);
 		«ENDIF»
 
 	public:
@@ -205,12 +205,15 @@ class Ir2Cpp extends CodeGenerator
 	«backend.privateMethodsContentProvider.getDefinitionContentFor(it)»
 	«IF postProcessingInfo !== null»
 
-	void «name»::dumpVariables(int iteration)
+	void «name»::dumpVariables(int iteration, bool useTimer)
 	{
-		if (!writer.isDisabled() && «postProcessingInfo.periodReference.codeName» >= «postProcessingInfo.lastDumpVariable.codeName» + «postProcessingInfo.periodValue.codeName»)
+		if (!writer.isDisabled())
 		{
-			cpuTimer.stop();
-			ioTimer.start();
+			if (useTimer)
+			{
+				cpuTimer.stop();
+				ioTimer.start();
+			}
 			auto quads = mesh->getGeometry()->getQuads();
 			writer.startVtpFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data());
 			«val outputVarsByConnectivities = postProcessingInfo.outputVariables.filter(ConnectivityVariable).groupBy(x | x.type.connectivities.head.returnType.name)»
@@ -232,8 +235,11 @@ class Ir2Cpp extends CodeGenerator
 			writer.closeCellData();
 			writer.closeVtpFile();
 			«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodReference.name»;
-			ioTimer.stop();
-			cpuTimer.start();
+			if (useTimer)
+			{
+				ioTimer.stop();
+				cpuTimer.start();
+			}
 		}
 	}
 	«ENDIF»

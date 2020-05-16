@@ -517,7 +517,8 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 		globalTimer.start();
 		cpuTimer.start();
 		n++;
-		dumpVariables(n);
+		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+			dumpVariables(n);
 		if (n!=1)
 			std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
 				<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
@@ -557,14 +558,19 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 		cpuTimer.reset();
 		ioTimer.reset();
 	} while (continueLoop);
+	// force a last output at the end
+	dumpVariables(n, false);
 }
 
-void IterativeHeatEquation::dumpVariables(int iteration)
+void IterativeHeatEquation::dumpVariables(int iteration, bool useTimer)
 {
-	if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+	if (!writer.isDisabled())
 	{
-		cpuTimer.stop();
-		ioTimer.start();
+		if (useTimer)
+		{
+			cpuTimer.stop();
+			ioTimer.start();
+		}
 		auto quads = mesh->getGeometry()->getQuads();
 		writer.startVtpFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data());
 		writer.openNodeData();
@@ -574,8 +580,11 @@ void IterativeHeatEquation::dumpVariables(int iteration)
 		writer.closeCellData();
 		writer.closeVtpFile();
 		lastDump = n;
-		ioTimer.stop();
-		cpuTimer.start();
+		if (useTimer)
+		{
+			ioTimer.stop();
+			cpuTimer.start();
+		}
 	}
 }
 

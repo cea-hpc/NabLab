@@ -295,7 +295,8 @@ public final class HeatEquation
 		{
 			n++;
 			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
-			dumpVariables(n);
+			if (n >= lastDump + options.outputPeriod)
+				dumpVariables(n);
 			computeOutgoingFlux(); // @1.0
 			computeTn(); // @1.0
 			computeUn(); // @2.0
@@ -314,6 +315,8 @@ public final class HeatEquation
 				u_nplus1 = tmp_u_n;
 			} 
 		} while (continueLoop);
+		// force a last output at the end
+		dumpVariables(n);
 	}
 
 	private double det(double[] a, double[] b)
@@ -351,7 +354,7 @@ public final class HeatEquation
 
 	private void dumpVariables(int iteration)
 	{
-		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+		if (!writer.isDisabled())
 		{
 			VtkFileContent content = new VtkFileContent(iteration, t_n, X, mesh.getGeometry().getQuads());
 			content.addCellVariable("Temperature", u_n);

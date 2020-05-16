@@ -210,7 +210,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeUn(const member_type& teamMember) noexcept;
 
-	void dumpVariables(int iteration);
+	void dumpVariables(int iteration, bool useTimer=true);
 
 public:
 	void simulate();

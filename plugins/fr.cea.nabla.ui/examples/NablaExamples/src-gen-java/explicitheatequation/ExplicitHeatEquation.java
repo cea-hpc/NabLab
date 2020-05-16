@@ -395,7 +395,8 @@ public final class ExplicitHeatEquation
 		{
 			n++;
 			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
-			dumpVariables(n);
+			if (n >= lastDump + options.outputPeriod)
+				dumpVariables(n);
 			computeTn(); // @1.0
 			updateU(); // @1.0
 		
@@ -413,6 +414,8 @@ public final class ExplicitHeatEquation
 				u_nplus1 = tmp_u_n;
 			} 
 		} while (continueLoop);
+		// force a last output at the end
+		dumpVariables(n);
 	}
 
 	private double norm(double[] a)
@@ -460,7 +463,7 @@ public final class ExplicitHeatEquation
 
 	private void dumpVariables(int iteration)
 	{
-		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+		if (!writer.isDisabled())
 		{
 			VtkFileContent content = new VtkFileContent(iteration, t_n, X, mesh.getGeometry().getQuads());
 			content.addCellVariable("Temperature", u_n);

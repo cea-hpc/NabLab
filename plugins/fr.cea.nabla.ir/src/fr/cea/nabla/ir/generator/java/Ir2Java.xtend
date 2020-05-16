@@ -174,7 +174,7 @@ class Ir2Java extends CodeGenerator
 
 			private void dumpVariables(int iteration)
 			{
-				if (!writer.isDisabled() && «postProcessingInfo.periodReference.codeName» >= «postProcessingInfo.lastDumpVariable.codeName» + «postProcessingInfo.periodValue.codeName»)
+				if (!writer.isDisabled())
 				{
 					VtkFileContent content = new VtkFileContent(iteration, «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometry().getQuads());
 					«FOR v : postProcessingInfo.outputVariables.filter(ConnectivityVariable)»

@@ -113,7 +113,7 @@ private:
 	
 	void executeTimeLoopN() noexcept;
 
-	void dumpVariables(int iteration);
+	void dumpVariables(int iteration, bool useTimer=true);
 
 public:
 	void simulate();

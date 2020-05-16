@@ -14,13 +14,13 @@
     <parent>
         <groupId>fr.cea.nabla</groupId>
         <artifactId>parent</artifactId>
-        <version>0.2.0-SNAPSHOT</version>
+        <version>0.2.1-SNAPSHOT</version>
         <relativePath>../../</relativePath>
     </parent>
 
     <groupId>fr.cea.nabla</groupId>
     <artifactId>fr.cea.nabla</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.2.1-SNAPSHOT</version>
     <packaging>eclipse-plugin</packaging>
 
     <!-- Add a specific pom.xml to be able to generate plugins/fr.cea.nabla/src/fr/cea/nabla/GenerateNabla.mwe2 only once -->

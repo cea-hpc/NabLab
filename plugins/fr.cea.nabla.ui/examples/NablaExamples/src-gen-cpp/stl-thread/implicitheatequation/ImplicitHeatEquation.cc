@@ -126,10 +126,14 @@ ImplicitHeatEquation::Options::Options(const std::string& fileName)
 
 /******************** Module definition ********************/
 
-ImplicitHeatEquation::ImplicitHeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D)
+ImplicitHeatEquation::ImplicitHeatEquation(const Options& aOptions)
 : options(aOptions)
-, mesh(aCartesianMesh2D)
-, writer("ImplicitHeatEquation", options->outputPath)
+, t_n(0.0)
+, t_nplus1(0.0)
+, deltat(0.001)
+, lastDump(numeric_limits<int>::min())
+, mesh(CartesianMesh2DGenerator::generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH))
+, writer("ImplicitHeatEquation", options.outputPath)
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
 , nbFaces(mesh->getNbFaces())
@@ -137,10 +141,6 @@ ImplicitHeatEquation::ImplicitHeatEquation(Options* aOptions, CartesianMesh2D* a
 , nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , nbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
 , nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-, t_n(0.0)
-, t_nplus1(0.0)
-, deltat(0.001)
-, lastDump(numeric_limits<int>::min())
 , X(nbNodes)
 , Xc(nbCells)
 , xc(nbCells)
@@ -153,7 +153,6 @@ ImplicitHeatEquation::ImplicitHeatEquation(Options* aOptions, CartesianMesh2D* a
 , faceConductivity(nbFaces)
 , alpha("alpha", nbCells, nbCells)
 {
-
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
@@ -161,6 +160,11 @@ ImplicitHeatEquation::ImplicitHeatEquation(Options* aOptions, CartesianMesh2D* a
 		X[rNodes][0] = gNodes[rNodes][0];
 		X[rNodes][1] = gNodes[rNodes][1];
 	}
+}
+
+ImplicitHeatEquation::~ImplicitHeatEquation()
+{
+	delete mesh;
 }
 
 /**
@@ -276,6 +280,22 @@ void ImplicitHeatEquation::updateU() noexcept
 }
 
 /**
+ * Job ComputeDeltaTn called @2.0 in simulate method.
+ * In variables: D, X_EDGE_LENGTH, Y_EDGE_LENGTH
+ * Out variables: deltat
+ */
+void ImplicitHeatEquation::computeDeltaTn() noexcept
+{
+	double reduction1;
+	reduction1 = parallel::parallel_reduce(nbCells, numeric_limits<double>::max(), [&](double& accu, const size_t& cCells)
+		{
+			return (accu = minR0(accu, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]));
+		},
+		&minR0);
+	deltat = reduction1 * 0.24;
+}
+
+/**
  * Job ComputeFaceConductivity called @2.0 in simulate method.
  * In variables: D
  * Out variables: faceConductivity
@@ -320,8 +340,8 @@ void ImplicitHeatEquation::initU() noexcept
 {
 	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		if (norm(Xc[cCells] - options->vectOne) < 0.5) 
-			u_n[cCells] = options->u0;
+		if (norm(Xc[cCells] - options.vectOne) < 0.5) 
+			u_n[cCells] = options.u0;
 		else
 			u_n[cCells] = 0.0;
 	});
@@ -342,23 +362,7 @@ void ImplicitHeatEquation::initXcAndYc() noexcept
 }
 
 /**
- * Job computeDeltaTn called @2.0 in simulate method.
- * In variables: D, X_EDGE_LENGTH, Y_EDGE_LENGTH
- * Out variables: deltat
- */
-void ImplicitHeatEquation::computeDeltaTn() noexcept
-{
-	double reduction1;
-	reduction1 = parallel::parallel_reduce(nbCells, numeric_limits<double>::max(), [&](double& accu, const size_t& cCells)
-		{
-			return (accu = minR0(accu, options->X_EDGE_LENGTH * options->Y_EDGE_LENGTH / D[cCells]));
-		},
-		&minR0);
-	deltat = reduction1 * 0.24;
-}
-
-/**
- * Job computeAlphaCoeff called @3.0 in simulate method.
+ * Job ComputeAlphaCoeff called @3.0 in simulate method.
  * In variables: V, Xc, deltat, faceConductivity, faceLength
  * Out variables: alpha
  */
@@ -410,7 +414,7 @@ void ImplicitHeatEquation::executeTimeLoopN() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (t_nplus1 < options->stopTime && n + 1 < options->maxIterations);
+		continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
 	
 		if (continueLoop)
 		{
@@ -429,9 +433,9 @@ void ImplicitHeatEquation::executeTimeLoopN() noexcept
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << utils::progress_bar(n, options->maxIterations, t_n, options->stopTime, 25);
+		std::cout << utils::progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(n, options->maxIterations, t_n, options->stopTime, deltat, globalTimer), true)
+			utils::eta(n, options.maxIterations, t_n, options.stopTime, deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
@@ -442,7 +446,7 @@ void ImplicitHeatEquation::executeTimeLoopN() noexcept
 
 void ImplicitHeatEquation::dumpVariables(int iteration)
 {
-	if (!writer.isDisabled() && n >= lastDump + options->outputPeriod)
+	if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
 	{
 		cpuTimer.stop();
 		ioTimer.start();
@@ -464,8 +468,8 @@ void ImplicitHeatEquation::simulate()
 {
 	std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting ImplicitHeatEquation ..." << __RESET__ << "\n\n";
 	
-	std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
-		<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
+	std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options.X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options.Y_EDGE_ELEMS
+		<< __RESET__ << ", X length=" << __BOLD__ << options.X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options.Y_EDGE_LENGTH << __RESET__ << std::endl;
 	
 	std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 	
@@ -478,10 +482,10 @@ void ImplicitHeatEquation::simulate()
 	computeV(); // @1.0
 	initD(); // @1.0
 	initXc(); // @1.0
+	computeDeltaTn(); // @2.0
 	computeFaceConductivity(); // @2.0
 	initU(); // @2.0
 	initXcAndYc(); // @2.0
-	computeDeltaTn(); // @2.0
 	computeAlphaCoeff(); // @3.0
 	executeTimeLoopN(); // @4.0
 	
@@ -507,12 +511,11 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	
-	auto o = new ImplicitHeatEquation::Options(dataFile);
-	auto nm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
-	auto c = new ImplicitHeatEquation(o, nm);
-	c->simulate();
-	delete c;
-	delete nm;
-	delete o;
+	ImplicitHeatEquation::Options options(dataFile);
+	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
+	auto simulator = new ImplicitHeatEquation(options);
+	simulator->simulate();
+	// simulator must be deleted before calling finalize
+	delete simulator;
 	return 0;
 }

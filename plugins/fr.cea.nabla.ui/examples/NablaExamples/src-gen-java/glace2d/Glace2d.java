@@ -44,17 +44,19 @@ public final class Glace2d
 
 	private final Options options;
 
-	// Mesh
-	private final CartesianMesh2D mesh;
-	private final FileWriter writer;
-	private final int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
-
-	// Global Variables
+	// Global definitions
 	private double t_n;
 	private double t_nplus1;
 	private double deltat_n;
 	private double deltat_nplus1;
 	private int lastDump;
+
+	// Mesh (can depend on previous definitions)
+	private final CartesianMesh2D mesh;
+	private final FileWriter writer;
+	private final int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
+
+	// Global declarations
 	private int n;
 	private double[][] X_n;
 	private double[][] X_nplus1;
@@ -81,10 +83,19 @@ public final class Glace2d
 	private double[][][] F;
 	private double[][][][] Ajr;
 
-	public Glace2d(Options aOptions, CartesianMesh2D aCartesianMesh2D)
+	public Glace2d(Options aOptions)
 	{
 		options = aOptions;
-		mesh = aCartesianMesh2D;
+
+		// Initialize variables with default values
+		t_n = 0.0;
+		t_nplus1 = 0.0;
+		deltat_n = options.deltatIni;
+		deltat_nplus1 = options.deltatIni;
+		lastDump = Integer.MIN_VALUE;
+
+		// Initialize mesh variables
+		mesh = CartesianMesh2DGenerator.generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH);
 		writer = new PvdFileWriter2D("Glace2d", options.outputPath);
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
@@ -94,12 +105,7 @@ public final class Glace2d
 		nbOuterFaces = mesh.getNbOuterFaces();
 		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 
-		// Initialize variables
-		t_n = 0.0;
-		t_nplus1 = 0.0;
-		deltat_n = options.deltatIni;
-		deltat_nplus1 = options.deltatIni;
-		lastDump = Integer.MIN_VALUE;
+		// Allocate arrays
 		X_n = new double[nbNodes][2];
 		X_nplus1 = new double[nbNodes][2];
 		X_n0 = new double[nbNodes][2];
@@ -149,10 +155,9 @@ public final class Glace2d
 		if (args.length == 1)
 		{
 			String dataFileName = args[0];
-			Glace2d.Options o = Glace2d.Options.createOptions(dataFileName);
-			CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
-			Glace2d i = new Glace2d(o, mesh);
-			i.simulate();
+			Glace2d.Options options = Glace2d.Options.createOptions(dataFileName);
+			Glace2d simulator = new Glace2d(options);
+			simulator.simulate();
 		}
 		else
 		{

@@ -30,7 +30,7 @@ class ModuleInterpreterTest extends AbstractModuleInterpreterTest
 
 	override assertInterpreteModule(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)

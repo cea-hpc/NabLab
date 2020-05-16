@@ -116,7 +116,7 @@ class ExpressionContentProvider
 	}
 
 	def dispatch CharSequence getContent(ArgOrVarRef it)
-	'''«target.getCodeName('->')»«iteratorsContent»«FOR d:indices BEFORE '['  SEPARATOR '][' AFTER ']'»«d.content»«ENDFOR»'''
+	'''«target.codeName»«iteratorsContent»«FOR d:indices BEFORE '['  SEPARATOR '][' AFTER ']'»«d.content»«ENDFOR»'''
 
 	def getCodeName(Function it)
 	{

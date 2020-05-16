@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import fr.cea.nabla.ir.MandatoryOptions
+import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
@@ -79,36 +79,46 @@ class Ir2Java extends CodeGenerator
 
 			private final Options options;
 
-			«IF withMesh»
-			// Mesh
-			private final CartesianMesh2D mesh;
-			private final FileWriter writer;
-			«FOR c : usedConnectivities BEFORE 'private final int ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
-			«ENDIF»
-
-			// Global Variables
+			// Global definitions
 			«FOR v : definitions.filter[!option]»
 			private «IF v.const»final «ENDIF»«v.javaType» «v.name»;
 			«ENDFOR»
+
+			«IF withMesh»
+			// Mesh (can depend on previous definitions)
+			private final CartesianMesh2D mesh;
+			private final FileWriter writer;
+			«FOR c : usedConnectivities BEFORE 'private final int ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
+
+			«ENDIF»
+			// Global declarations
 			«FOR v : declarations»
 			private «v.javaType» «v.name»;
 			«ENDFOR»
 
-			public «name»(Options aOptions«IF withMesh», CartesianMesh2D aCartesianMesh2D«ENDIF»)
+			public «name»(Options aOptions)
 			{
 				options = aOptions;
-				«IF withMesh»
-				mesh = aCartesianMesh2D;
-				writer = new PvdFileWriter2D("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»);
-				«FOR c : usedConnectivities»
-				«c.nbElemsVar» = «c.connectivityAccessor»;
-				«ENDFOR»
-				«ENDIF»
 
-				// Initialize variables
+				// Initialize variables with default values
 				«FOR v : definitions.filter[!option]»
 					«v.name» = «v.defaultValue.content»;
 				«ENDFOR»
+
+				«IF withMesh»
+					«val xee = getVariableByName(MandatoryVariables.X_EDGE_ELEMS).codeName»
+					«val yee = getVariableByName(MandatoryVariables.Y_EDGE_ELEMS).codeName»
+					«val xel = getVariableByName(MandatoryVariables.X_EDGE_LENGTH).codeName»
+					«val yel = getVariableByName(MandatoryVariables.Y_EDGE_LENGTH).codeName»
+					// Initialize mesh variables
+					mesh = CartesianMesh2DGenerator.generate(«xee», «yee», «xel», «yel»);
+					writer = new PvdFileWriter2D("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»);
+					«FOR c : usedConnectivities»
+					«c.nbElemsVar» = «c.connectivityAccessor»;
+					«ENDFOR»
+
+				«ENDIF»
+				// Allocate arrays
 				«FOR v : declarations.filter[!type.scalar]»
 					«IF v.linearAlgebra»
 						«v.name» = «(v as ConnectivityVariable).linearAlgebraDefinition»;
@@ -118,13 +128,13 @@ class Ir2Java extends CodeGenerator
 				«ENDFOR»
 				«IF withMesh»
 
-				// Copy node coordinates
-				double[][] gNodes = mesh.getGeometry().getNodes();
-				IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
-				{
-					«initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
-					«initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
-				});
+					// Copy node coordinates
+					double[][] gNodes = mesh.getGeometry().getNodes();
+					IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
+					{
+						«initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
+						«initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
+					});
 				«ENDIF»
 			}
 
@@ -142,12 +152,9 @@ class Ir2Java extends CodeGenerator
 				if (args.length == 1)
 				{
 					String dataFileName = args[0];
-					«name».Options o = «name».Options.createOptions(dataFileName);
-					«IF withMesh»
-					CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.«MandatoryOptions::X_EDGE_ELEMS», o.«MandatoryOptions::Y_EDGE_ELEMS», o.«MandatoryOptions::X_EDGE_LENGTH», o.«MandatoryOptions::Y_EDGE_LENGTH»);
-					«ENDIF»
-					«name» i = new «name»(o«IF withMesh», mesh«ENDIF»);
-					i.simulate();
+					«name».Options options = «name».Options.createOptions(dataFileName);
+					«name» simulator = new «name»(options);
+					simulator.simulate();
 				}
 				else
 				{
@@ -167,7 +174,7 @@ class Ir2Java extends CodeGenerator
 
 			private void dumpVariables(int iteration)
 			{
-				if (!writer.isDisabled() && «postProcessingInfo.periodReference.getCodeName('.')» >= «postProcessingInfo.lastDumpVariable.getCodeName('.')» + «postProcessingInfo.periodValue.getCodeName('.')»)
+				if (!writer.isDisabled() && «postProcessingInfo.periodReference.codeName» >= «postProcessingInfo.lastDumpVariable.codeName» + «postProcessingInfo.periodValue.codeName»)
 				{
 					VtkFileContent content = new VtkFileContent(iteration, «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometry().getQuads());
 					«FOR v : postProcessingInfo.outputVariables.filter(ConnectivityVariable)»

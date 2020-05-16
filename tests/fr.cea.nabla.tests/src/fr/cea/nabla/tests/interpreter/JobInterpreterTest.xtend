@@ -32,7 +32,7 @@ class JobInterpreterTest extends AbstractJobInterpreterTest
 
 	override assertInterpreteInstructionJob(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -43,7 +43,7 @@ class JobInterpreterTest extends AbstractJobInterpreterTest
 
 	override assertInterpreteTimeLoopJob(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -56,7 +56,7 @@ class JobInterpreterTest extends AbstractJobInterpreterTest
 
 	override assertInterpreteTimeLoopCopyJob(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)

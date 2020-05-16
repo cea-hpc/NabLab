@@ -42,16 +42,18 @@ public final class ImplicitHeatEquation
 
 	private final Options options;
 
-	// Mesh
-	private final CartesianMesh2D mesh;
-	private final FileWriter writer;
-	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
-
-	// Global Variables
+	// Global definitions
 	private double t_n;
 	private double t_nplus1;
 	private double deltat;
 	private int lastDump;
+
+	// Mesh (can depend on previous definitions)
+	private final CartesianMesh2D mesh;
+	private final FileWriter writer;
+	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
+
+	// Global declarations
 	private int n;
 	private double[][] X;
 	private double[][] Xc;
@@ -65,10 +67,18 @@ public final class ImplicitHeatEquation
 	private double[] faceConductivity;
 	private Matrix alpha;
 
-	public ImplicitHeatEquation(Options aOptions, CartesianMesh2D aCartesianMesh2D)
+	public ImplicitHeatEquation(Options aOptions)
 	{
 		options = aOptions;
-		mesh = aCartesianMesh2D;
+
+		// Initialize variables with default values
+		t_n = 0.0;
+		t_nplus1 = 0.0;
+		deltat = 0.001;
+		lastDump = Integer.MIN_VALUE;
+
+		// Initialize mesh variables
+		mesh = CartesianMesh2DGenerator.generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH);
 		writer = new PvdFileWriter2D("ImplicitHeatEquation", options.outputPath);
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
@@ -78,11 +88,7 @@ public final class ImplicitHeatEquation
 		nbCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
 		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 
-		// Initialize variables
-		t_n = 0.0;
-		t_nplus1 = 0.0;
-		deltat = 0.001;
-		lastDump = Integer.MIN_VALUE;
+		// Allocate arrays
 		X = new double[nbNodes][2];
 		Xc = new double[nbCells][2];
 		xc = new double[nbCells];
@@ -111,10 +117,10 @@ public final class ImplicitHeatEquation
 		computeV(); // @1.0
 		initD(); // @1.0
 		initXc(); // @1.0
+		computeDeltaTn(); // @2.0
 		computeFaceConductivity(); // @2.0
 		initU(); // @2.0
 		initXcAndYc(); // @2.0
-		computeDeltaTn(); // @2.0
 		computeAlphaCoeff(); // @3.0
 		executeTimeLoopN(); // @4.0
 		System.out.println("End of execution of module ImplicitHeatEquation");
@@ -125,10 +131,9 @@ public final class ImplicitHeatEquation
 		if (args.length == 1)
 		{
 			String dataFileName = args[0];
-			ImplicitHeatEquation.Options o = ImplicitHeatEquation.Options.createOptions(dataFileName);
-			CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
-			ImplicitHeatEquation i = new ImplicitHeatEquation(o, mesh);
-			i.simulate();
+			ImplicitHeatEquation.Options options = ImplicitHeatEquation.Options.createOptions(dataFileName);
+			ImplicitHeatEquation simulator = new ImplicitHeatEquation(options);
+			simulator.simulate();
 		}
 		else
 		{
@@ -250,6 +255,26 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
+	 * Job ComputeDeltaTn called @2.0 in simulate method.
+	 * In variables: D, X_EDGE_LENGTH, Y_EDGE_LENGTH
+	 * Out variables: deltat
+	 */
+	private void computeDeltaTn()
+	{
+		double reduction1 = Double.MAX_VALUE;
+		reduction1 = IntStream.range(0, nbCells).boxed().parallel().reduce
+		(
+			Double.MAX_VALUE,
+			(accu, cCells) ->
+			{
+				return minR0(accu, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]);
+			},
+			(r1, r2) -> minR0(r1, r2)
+		);
+		deltat = reduction1 * 0.24;
+	}
+
+	/**
 	 * Job ComputeFaceConductivity called @2.0 in simulate method.
 	 * In variables: D
 	 * Out variables: faceConductivity
@@ -316,27 +341,7 @@ public final class ImplicitHeatEquation
 	}
 
 	/**
-	 * Job computeDeltaTn called @2.0 in simulate method.
-	 * In variables: D, X_EDGE_LENGTH, Y_EDGE_LENGTH
-	 * Out variables: deltat
-	 */
-	private void computeDeltaTn()
-	{
-		double reduction1 = Double.MAX_VALUE;
-		reduction1 = IntStream.range(0, nbCells).boxed().parallel().reduce
-		(
-			Double.MAX_VALUE,
-			(accu, cCells) ->
-			{
-				return minR0(accu, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]);
-			},
-			(r1, r2) -> minR0(r1, r2)
-		);
-		deltat = reduction1 * 0.24;
-	}
-
-	/**
-	 * Job computeAlphaCoeff called @3.0 in simulate method.
+	 * Job ComputeAlphaCoeff called @3.0 in simulate method.
 	 * In variables: V, Xc, deltat, faceConductivity, faceLength
 	 * Out variables: alpha
 	 */

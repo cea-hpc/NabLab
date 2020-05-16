@@ -38,16 +38,18 @@ public final class HeatEquation
 
 	private final Options options;
 
-	// Mesh
-	private final CartesianMesh2D mesh;
-	private final FileWriter writer;
-	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
-
-	// Global Variables
+	// Global definitions
 	private double t_n;
 	private double t_nplus1;
 	private final double deltat;
 	private int lastDump;
+
+	// Mesh (can depend on previous definitions)
+	private final CartesianMesh2D mesh;
+	private final FileWriter writer;
+	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
+
+	// Global declarations
 	private int n;
 	private double[][] X;
 	private double[][] center;
@@ -58,10 +60,18 @@ public final class HeatEquation
 	private double[] outgoingFlux;
 	private double[] surface;
 
-	public HeatEquation(Options aOptions, CartesianMesh2D aCartesianMesh2D)
+	public HeatEquation(Options aOptions)
 	{
 		options = aOptions;
-		mesh = aCartesianMesh2D;
+
+		// Initialize variables with default values
+		t_n = 0.0;
+		t_nplus1 = 0.0;
+		deltat = 0.001;
+		lastDump = Integer.MIN_VALUE;
+
+		// Initialize mesh variables
+		mesh = CartesianMesh2DGenerator.generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH);
 		writer = new PvdFileWriter2D("HeatEquation", options.outputPath);
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
@@ -70,11 +80,7 @@ public final class HeatEquation
 		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 
-		// Initialize variables
-		t_n = 0.0;
-		t_nplus1 = 0.0;
-		deltat = 0.001;
-		lastDump = Integer.MIN_VALUE;
+		// Allocate arrays
 		X = new double[nbNodes][2];
 		center = new double[nbCells][2];
 		u_n = new double[nbCells];
@@ -110,10 +116,9 @@ public final class HeatEquation
 		if (args.length == 1)
 		{
 			String dataFileName = args[0];
-			HeatEquation.Options o = HeatEquation.Options.createOptions(dataFileName);
-			CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
-			HeatEquation i = new HeatEquation(o, mesh);
-			i.simulate();
+			HeatEquation.Options options = HeatEquation.Options.createOptions(dataFileName);
+			HeatEquation simulator = new HeatEquation(options);
+			simulator.simulate();
 		}
 		else
 		{

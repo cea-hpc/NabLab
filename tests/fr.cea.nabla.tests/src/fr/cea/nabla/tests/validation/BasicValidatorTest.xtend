@@ -11,7 +11,7 @@ package fr.cea.nabla.tests.validation
 
 import com.google.inject.Inject
 import fr.cea.nabla.NablaModuleExtensions
-import fr.cea.nabla.ir.MandatoryOptions
+import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.tests.NablaInjectorProvider
@@ -129,8 +129,8 @@ class BasicValidatorTest
 		''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
-			BasicValidator::MANDATORY_OPTION,
-			BasicValidator::getMandatoryOptionsMsg(MandatoryOptions::NAMES))
+			BasicValidator::MANDATORY_VARS,
+			BasicValidator::getMandatoryVarsMsg(MandatoryVariables::NAMES))
 
 		val moduleOk2 = parseHelper.parse(getTestModule)
 		Assert.assertNotNull(moduleOk2)

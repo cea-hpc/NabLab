@@ -32,17 +32,17 @@ class NablagenRunner
 
 	def launch(NablagenConfig config, String baseDir)
 	{
-		val interpretor = interpreterProvider.get
+		val interpreter = interpreterProvider.get
 		consoleFactory.openConsole
 		val console = ConsolePlugin.^default.consoleManager.consoles.filter(MessageConsole).findFirst[x | x.name == NabLabConsoleFactory.ConsoleName]
 		if (console !== null)
 		{
 			console.activate
 			val stream = console.newMessageStream
-			interpretor.traceListeners += [String msg | stream.print(msg)]
+			interpreter.traceListeners += [String msg | stream.print(msg)]
 		}
-		val irModule = interpretor.buildIrModule(config, baseDir)
-		interpretor.generateCode(irModule, config.targets, config.simulation.iterationMax.name, config.simulation.timeMax.name, baseDir)
+		val irModule = interpreter.buildIrModule(config, baseDir)
+		interpreter.generateCode(irModule, config.targets, config.simulation.iterationMax.name, config.simulation.timeMax.name, baseDir)
 	}
 
 	package def launch(IResource eclipseResource)

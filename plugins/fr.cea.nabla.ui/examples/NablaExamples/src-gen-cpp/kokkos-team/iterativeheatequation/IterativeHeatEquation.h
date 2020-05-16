@@ -68,18 +68,24 @@ public:
 		Options(const std::string& fileName);
 	};
 
-	Options* options;
+	const Options& options;
 
-	IterativeHeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D);
+	IterativeHeatEquation(const Options& aOptions);
+	~IterativeHeatEquation();
 
 private:
-	CartesianMesh2D* mesh;
-	PvdFileWriter2D writer;
-	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
+	// Global definitions
 	double t_n;
 	double t_nplus1;
 	double deltat;
 	int lastDump;
+	
+	// Mesh (can depend on previous definitions)
+	CartesianMesh2D* mesh;
+	PvdFileWriter2D writer;
+	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
+	
+	// Global declarations
 	int n;
 	int k;
 	Kokkos::View<RealArray1D<2>*> X;
@@ -129,6 +135,9 @@ private:
 	void updateU(const member_type& teamMember) noexcept;
 	
 	KOKKOS_INLINE_FUNCTION
+	void computeDeltaTn(const member_type& teamMember) noexcept;
+	
+	KOKKOS_INLINE_FUNCTION
 	void computeFaceConductivity(const member_type& teamMember) noexcept;
 	
 	KOKKOS_INLINE_FUNCTION
@@ -144,13 +153,10 @@ private:
 	void initXcAndYc(const member_type& teamMember) noexcept;
 	
 	KOKKOS_INLINE_FUNCTION
-	void computeDeltaTn(const member_type& teamMember) noexcept;
+	void computeAlphaCoeff(const member_type& teamMember) noexcept;
 	
 	KOKKOS_INLINE_FUNCTION
 	void tearDownTimeLoopK() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeAlphaCoeff(const member_type& teamMember) noexcept;
 	
 	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept;

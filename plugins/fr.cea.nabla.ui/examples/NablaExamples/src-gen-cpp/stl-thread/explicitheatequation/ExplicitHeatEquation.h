@@ -53,18 +53,24 @@ public:
 		Options(const std::string& fileName);
 	};
 
-	Options* options;
+	const Options& options;
 
-	ExplicitHeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D);
+	ExplicitHeatEquation(const Options& aOptions);
+	~ExplicitHeatEquation();
 
 private:
-	CartesianMesh2D* mesh;
-	PvdFileWriter2D writer;
-	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
+	// Global definitions
 	double t_n;
 	double t_nplus1;
 	double deltat;
 	int lastDump;
+	
+	// Mesh (can depend on previous definitions)
+	CartesianMesh2D* mesh;
+	PvdFileWriter2D writer;
+	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
+	
+	// Global declarations
 	int n;
 	std::vector<RealArray1D<2>> X;
 	std::vector<RealArray1D<2>> Xc;
@@ -93,13 +99,13 @@ private:
 	
 	void updateU() noexcept;
 	
+	void computeDeltaTn() noexcept;
+	
 	void computeFaceConductivity() noexcept;
 	
 	void initU() noexcept;
 	
 	void initXcAndYc() noexcept;
-	
-	void computeDeltaTn() noexcept;
 	
 	void computeAlphaCoeff() noexcept;
 	

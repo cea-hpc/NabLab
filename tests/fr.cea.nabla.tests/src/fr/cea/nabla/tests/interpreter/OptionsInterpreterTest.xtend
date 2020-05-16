@@ -33,7 +33,7 @@ class OptionsInterpreterTest extends AbstractOptionsInterpreterTest
 
 	override assertInterpreteDefaultOptions(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -48,7 +48,7 @@ class OptionsInterpreterTest extends AbstractOptionsInterpreterTest
 
 	override assertInterpreteJsonOptions(String model, String jsonOptions)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)

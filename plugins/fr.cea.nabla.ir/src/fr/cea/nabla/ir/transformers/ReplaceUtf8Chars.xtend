@@ -23,7 +23,7 @@ class ReplaceUtf8Chars extends IrTransformationStep
 
 	override transform(IrModule m)
 	{
-		trace('IR -> IR: ' + description + '\n')
+		trace('IR -> IR: ' + description)
 		m.eAllContents.filter(Variable).forEach[x | x.name = x.name.noUtf8]
 		m.eAllContents.filter(TimeLoopVariable).forEach[x | x.name = x.name.noUtf8]
 		m.eAllContents.filter(ReductionInstruction).forEach[x | x.result.name = x.result.name.noUtf8]

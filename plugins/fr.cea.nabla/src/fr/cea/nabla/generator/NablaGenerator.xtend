@@ -21,43 +21,46 @@ import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 
 import static extension fr.cea.nabla.LatexLabelServices.*
+import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 
 class NablaGenerator extends AbstractGenerator
 {
 	@Inject Nabla2Ir nabla2Ir
 	@Inject NablaGeneratorMessageDispatcher dispatcher
 	@Inject IrModuleTransformer transformer
-	val traceNotifier = [String msg | dispatcher.post(msg)]
 
 	override doGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context)
 	{
 		try
 		{
 			val module = input.contents.filter(NablaModule).head
-			dispatcher.post('Model size (eAllContents.size): ' + module.eAllContents.size + '\n')
+			dispatcher.post(MessageType.Start, 'Starting validation: ' + module.name)
+			dispatcher.post(MessageType.Exec, 'Model size (eAllContents.size): ' + module.eAllContents.size)
 
 			if (!module.jobs.empty)
 			{
 				val latexFileName = module.name.toLowerCase + '/' + module.name + '.tex'
-				dispatcher.post('Generating LaTeX: ' + latexFileName + '\n')
+				dispatcher.post(MessageType.Exec, 'Writing LaTeX formula in: ' + latexFileName)
 				fsa.generateFile(latexFileName, module.latexContent)
 
 				// Nabla -> IR
-				dispatcher.post('Nabla -> IR\n')
+				dispatcher.post(MessageType.Exec, 'Nabla -> IR')
 				val irModule = nabla2Ir.toIrModule(module)
 
 				// IR -> IR
-				transformer.transformIr(irTransformation, irModule, traceNotifier)
+				transformer.transformIr(irTransformation, irModule, [msg | dispatcher.post(MessageType.Exec, msg)])
 				dispatcher.post(irModule)
 			}
+
+			dispatcher.post(MessageType.End, 'End of validation: ' + module.name)
 		}
 		catch(Exception e)
 		{
-			dispatcher.post('\n***' + e.class.name + ': ' + e.message + '\n')
+			dispatcher.post(MessageType.Exec, '\n***' + e.class.name + ': ' + e.message)
 			if (e.stackTrace !== null && !e.stackTrace.empty)
 			{
 				val s = e.stackTrace.head
-				dispatcher.post('at ' + s.className + '.' + s.methodName + '(' + s.fileName + ':' + s.lineNumber + ')\n')
+				dispatcher.post(MessageType.Exec, 'at ' + s.className + '.' + s.methodName + '(' + s.fileName + ':' + s.lineNumber + ')')
 			}
 			throw(e)
 		}

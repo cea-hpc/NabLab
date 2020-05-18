@@ -31,7 +31,7 @@ class SetSimulationVariables extends IrTransformationStep
 
 	override transform(IrModule m)
 	{
-		trace('IR -> IR: ' + description + '\n')
+		trace('IR -> IR: ' + description)
 		m.initNodeCoordVariable = getInitIrVariable(m, nodeCoordVariableName) as ConnectivityVariable
 		m.nodeCoordVariable = getCurrentIrVariable(m, nodeCoordVariableName) as ConnectivityVariable
 		m.timeVariable = getCurrentIrVariable(m, timeVariableName) as SimpleVariable

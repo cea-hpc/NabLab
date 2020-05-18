@@ -61,32 +61,37 @@ class NablagenInterpreter
 
 	@Accessors val traceListeners = new ArrayList<(String)=>void>
 	val ir2Json = new Ir2Json
-	val traceNotifier = [String msg | trace(msg)]
 
 	def IrModule buildIrModule(NablagenConfig it, String projectDir)
 	{
 		try
 		{
-			trace('Starting transformation of ' + nablaModule.name + " to intermediate representation (IR)\n")
-
 			// Nabla -> IR
+			trace('Nabla -> IR')
 			val irModule = nabla2Ir.toIrModule(nablaModule)
 
-			// IR -> IR 
-			transformer.transformIr(commonIrTransformation, irModule, traceNotifier)
+			// IR -> IR
+			transformer.transformIr(commonIrTransformation, irModule, [msg | trace(msg)])
 
 			if (writeIR)
-				irWriter.createAndSaveResource(getConfiguredFileSystemAccess(projectDir, true), irModule)
+			{
+				val fileName = irWriter.createAndSaveResource(getConfiguredFileSystemAccess(projectDir, true), irModule)
+				trace('Resource saved: ' + fileName)
+			}
 
 			return irModule
 		}
 		catch(Exception e)
 		{
-			trace('\n***' + e.class.name + ': ' + e.message + '\n')
+			trace('\n***' + e.class.name + ': ' + e.message)
 			if (e.stackTrace !== null && !e.stackTrace.empty)
 			{
 				val stack = e.stackTrace.head
-				trace('at ' + stack.className + '.' + stack.methodName + '(' + stack.fileName + ':' + stack.lineNumber + ')\n')
+				trace('at ' + stack.className + '.' + stack.methodName + '(' + stack.fileName + ':' + stack.lineNumber + ')')
+			}
+			if (e instanceof NullPointerException)
+			{
+				trace("Try to rebuild the entire project (Project menu in main menu bar) and to relaunch the generation")
 			}
 			throw(e)
 		}
@@ -102,7 +107,7 @@ class NablagenInterpreter
 			{
 				// Code generation
 				val g = getCodeGenerator(target, baseDir, iterationMaxVarName, timeMaxVarName)
-				trace(g.name + " code generator\n")
+				trace("Starting " + g.name + " code generator")
 				val outputFolderName = baseDir + target.outputDir
 				val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
 				val fileContentsByName = new LinkedHashMap<String, CharSequence>
@@ -111,7 +116,7 @@ class NablagenInterpreter
 				if (g.needIrTransformation)
 				{
 					val duplicatedIrModule = EcoreUtil::copy(irModule)
-					transformer.transformIr(g.irTransformationStep, duplicatedIrModule, traceNotifier)
+					transformer.transformIr(g.irTransformationStep, duplicatedIrModule, [msg | trace(msg)])
 					fileContentsByName += g.getFileContentsByName(duplicatedIrModule)
 				}
 				else
@@ -123,19 +128,18 @@ class NablagenInterpreter
 				{
 					val fullFileName = irModule.name.toLowerCase + '/' + fileName
 					val fileContent = fileContentsByName.get(fileName)
-					trace("    Generating '" + fullFileName + "\n")
+					trace("    Generating: " + fullFileName)
 					fsa.generateFile(fullFileName, fileContent)
 				}
 			}
-			trace('Generation of ' + irModule.name + ' completed successfully\n\n')
 		}
 		catch(Exception e)
 		{
-			trace('\n***' + e.class.name + ': ' + e.message + '\n')
+			trace('\n***' + e.class.name + ': ' + e.message)
 			if (e.stackTrace !== null && !e.stackTrace.empty)
 			{
 				val stack = e.stackTrace.head
-				trace('at ' + stack.className + '.' + stack.methodName + '(' + stack.fileName + ':' + stack.lineNumber + ')\n')
+				trace('at ' + stack.className + '.' + stack.methodName + '(' + stack.fileName + ':' + stack.lineNumber + ')')
 			}
 			throw(e)
 		}
@@ -145,7 +149,7 @@ class NablagenInterpreter
 	{
 		val baseFolder = new File(absoluteBasePath)
 		if (!baseFolder.exists || !(baseFolder.isDirectory))
-			throw new RuntimeException('** Invalid outputDir: ' + absoluteBasePath + '\n')
+			throw new RuntimeException('** Invalid outputDir: ' + absoluteBasePath)
 
 		val fsa = fsaProvider.get
 		fsa.outputConfigurations = outputConfigurations
@@ -168,7 +172,10 @@ class NablagenInterpreter
 		})
 	}
 
-	private def void trace(String msg) { traceListeners.forEach[apply(msg)] }
+	private def void trace(String msg)
+	{
+		traceListeners.forEach[apply(msg)]
+	}
 
 	private def getCodeGenerator(Target it, String baseDir, String iterationMax, String timeMax)
 	{

@@ -24,6 +24,7 @@ import org.eclipse.xtext.ui.editor.XtextEditor
 class NablaDslEditor extends XtextEditor
 {
 	@Inject IrAnnotationHelper annotationHelper
+	@Inject NabLabConsoleFactory consoleFactory
 
 	val listener = new NablaDslListener(this)
 
@@ -33,6 +34,7 @@ class NablaDslEditor extends XtextEditor
 	{
 		super.createPartControl(parent)
 		site.page.addPostSelectionListener(listener)
+		consoleFactory.openConsole
 	}
 
 	override dispose()

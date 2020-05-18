@@ -44,7 +44,7 @@ class FillJobHLTs extends IrTransformationStep
 	 */
 	override transform(IrModule m)
 	{
-		trace('IR -> IR: ' + description + '\n')
+		trace('IR -> IR: ' + description)
 		if (m.jobs.empty) return true
 
 		// check that IrModule has no job cycles (except timestep cycles)
@@ -84,8 +84,8 @@ class FillJobHLTs extends IrTransformationStep
 		val hasCycles = (cycles !== null)
 		if (hasCycles)
 		{
-			trace('*** HLT error: graph contains cycles.\n')
-			trace('*** ' + cycles.map[name].join(' -> ') + '\n')
+			trace('*** HLT error: graph contains cycles.')
+			trace('*** ' + cycles.map[name].join(' -> '))
 		}
 
 		return hasCycles

@@ -38,16 +38,18 @@ public final class Test
 
 	private final Options options;
 
-	// Mesh
-	private final CartesianMesh2D mesh;
-	private final FileWriter writer;
-	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
-
-	// Global Variables
+	// Global definitions
 	private double t_n;
 	private double t_nplus1;
 	private final double deltat;
 	private int lastDump;
+
+	// Mesh (can depend on previous definitions)
+	private final CartesianMesh2D mesh;
+	private final FileWriter writer;
+	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
+
+	// Global declarations
 	private int n;
 	private double[][] X;
 	private double[][] center;
@@ -58,10 +60,18 @@ public final class Test
 	private double[] outgoingFlux;
 	private double[] surface;
 
-	public Test(Options aOptions, CartesianMesh2D aCartesianMesh2D)
+	public Test(Options aOptions)
 	{
 		options = aOptions;
-		mesh = aCartesianMesh2D;
+
+		// Initialize variables with default values
+		t_n = 0.0;
+		t_nplus1 = 0.0;
+		deltat = 0.001;
+		lastDump = Integer.MIN_VALUE;
+
+		// Initialize mesh variables
+		mesh = CartesianMesh2DGenerator.generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH);
 		writer = new PvdFileWriter2D("Test", options.outputPath);
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
@@ -70,11 +80,7 @@ public final class Test
 		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 
-		// Initialize variables
-		t_n = 0.0;
-		t_nplus1 = 0.0;
-		deltat = 0.001;
-		lastDump = Integer.MIN_VALUE;
+		// Allocate arrays
 		X = new double[nbNodes][2];
 		center = new double[nbCells][2];
 		u_n = new double[nbCells];
@@ -110,10 +116,9 @@ public final class Test
 		if (args.length == 1)
 		{
 			String dataFileName = args[0];
-			Test.Options o = Test.Options.createOptions(dataFileName);
-			CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
-			Test i = new Test(o, mesh);
-			i.simulate();
+			Test.Options options = Test.Options.createOptions(dataFileName);
+			Test simulator = new Test(options);
+			simulator.simulate();
 		}
 		else
 		{
@@ -290,7 +295,8 @@ public final class Test
 		{
 			n++;
 			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
-			dumpVariables(n);
+			if (n >= lastDump + options.outputPeriod)
+				dumpVariables(n);
 			computeOutgoingFlux(); // @1.0
 			computeTn(); // @1.0
 			computeUn(); // @2.0
@@ -309,6 +315,8 @@ public final class Test
 				u_nplus1 = tmp_u_n;
 			} 
 		} while (continueLoop);
+		// force a last output at the end
+		dumpVariables(n);
 	}
 
 	private double det(double[] a, double[] b)
@@ -346,7 +354,7 @@ public final class Test
 
 	private void dumpVariables(int iteration)
 	{
-		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+		if (!writer.isDisabled())
 		{
 			VtkFileContent content = new VtkFileContent(iteration, t_n, X, mesh.getGeometry().getQuads());
 			content.addCellVariable("Temperature", u_n);

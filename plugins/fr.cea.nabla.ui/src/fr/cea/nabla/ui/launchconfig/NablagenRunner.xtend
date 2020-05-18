@@ -12,16 +12,14 @@ package fr.cea.nabla.ui.launchconfig
 import com.google.inject.Inject
 import com.google.inject.Provider
 import com.google.inject.Singleton
+import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.NablagenInterpreter
-import fr.cea.nabla.nablagen.NablagenConfig
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.ui.NabLabConsoleFactory
 import org.eclipse.core.resources.IResource
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.ui.console.ConsolePlugin
-import org.eclipse.ui.console.MessageConsole
 
 @Singleton
 class NablagenRunner
@@ -30,44 +28,35 @@ class NablagenRunner
 	@Inject Provider<NablagenInterpreter> interpreterProvider
 	@Inject NabLabConsoleFactory consoleFactory
 
-	def launch(NablagenConfig config, String baseDir)
-	{
-		val interpreter = interpreterProvider.get
-		consoleFactory.openConsole
-		val console = ConsolePlugin.^default.consoleManager.consoles.filter(MessageConsole).findFirst[x | x.name == NabLabConsoleFactory.ConsoleName]
-		if (console !== null)
-		{
-			console.activate
-			val stream = console.newMessageStream
-			interpreter.traceListeners += [String msg | stream.print(msg)]
-		}
-		val irModule = interpreter.buildIrModule(config, baseDir)
-		interpreter.generateCode(irModule, config.targets, config.simulation.iterationMax.name, config.simulation.timeMax.name, baseDir)
-	}
-
 	package def launch(IResource eclipseResource)
 	{
-		val plaftormUri = URI::createPlatformResourceURI(eclipseResource.project.name + '/' + eclipseResource.projectRelativePath, true)
-		val resourceSet = resourceSetProvider.get
-		val uriMap = resourceSet.URIConverter.URIMap
-		uriMap.put(URI::createURI('platform:/resource/fr.cea.nabla/'), URI::createURI('platform:/plugin/fr.cea.nabla/'))
-		val emfResource = resourceSet.createResource(plaftormUri)
-		EcoreUtil::resolveAll(resourceSet)
-		emfResource.load(null)
-		for (module : emfResource.contents.filter(NablagenModule))
-			if (module.config !== null) 
-				launch(module.config, eclipseResource.project.location.toString)
+		val interpreter = interpreterProvider.get
 
-		eclipseResource.project.refreshLocal(IResource::DEPTH_INFINITE, null)
+		consoleFactory.openConsole
+		interpreter.traceListeners += [String msg | consoleFactory.printConsole(MessageType.Exec, msg)]
+
+		new Thread
+		([
+			consoleFactory.printConsole(MessageType.Start, "Starting generation: " + eclipseResource.name)
+			consoleFactory.printConsole(MessageType.Exec, "Loading nablagen and nabla resources")
+			val plaftormUri = URI::createPlatformResourceURI(eclipseResource.project.name + '/' + eclipseResource.projectRelativePath, true)
+			val resourceSet = resourceSetProvider.get
+			val uriMap = resourceSet.URIConverter.URIMap
+			uriMap.put(URI::createURI('platform:/resource/fr.cea.nabla/'), URI::createURI('platform:/plugin/fr.cea.nabla/'))
+			val emfResource = resourceSet.createResource(plaftormUri)
+			EcoreUtil::resolveAll(resourceSet)
+			emfResource.load(null)
+			for (module : emfResource.contents.filter(NablagenModule))
+				if (module.config !== null)
+				{
+					val c = module.config
+					val baseDir = eclipseResource.project.location.toString
+					consoleFactory.printConsole(MessageType.Exec, "Starting model transformation")
+					val irModule = interpreter.buildIrModule(c, baseDir)
+					interpreter.generateCode(irModule, c.targets, c.simulation.iterationMax.name, c.simulation.timeMax.name, baseDir)
+				}
+			eclipseResource.project.refreshLocal(IResource::DEPTH_INFINITE, null)
+			consoleFactory.printConsole(MessageType.End, "End of generation: " + eclipseResource.name)
+		]).start
 	}
-
-//	/** Refresh du répertoire s'il est contenu dans la resource (évite le F5) */
-//	private static def refreshResourceDir(IProject p, String fileAbsolutePath)
-//	{
-//		p.refreshLocal(IResource::DEPTH_INFINITE, null)
-//		val uri = java.net.URI::create(fileAbsolutePath)
-//		val files = p.workspace.root.findFilesForLocationURI(uri)
-//		if (files !== null && files.size == 1) files.head.parent.refreshLocal(IResource::DEPTH_INFINITE, null)
-//	}
-
 }

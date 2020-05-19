@@ -55,7 +55,7 @@ To launch the java and kokkos source code generations corresponding to the nabla
 
 <img src="./README_images/NabLab_nablagen_launch_generation.png" alt="NabLab Launch Generation" title="NabLab Launch Generation" width="50%" height="50%" />
 
-The java and kokkos source code files are generated in *src-gen-java* and *src-gen-kokkos* folders respectively.
+The java and kokkos source code files are generated in *src-gen-java* and *src-gen-cpp* folders respectively.
 
 <img src="./README_images/NabLab_nablagen_generated_files.png" alt="NabLab Generated Files" title="NabLab Generated Files" width="30%" height="30%" />
 
@@ -98,27 +98,27 @@ The products resulting from the build will be accessible in */releng/fr.cea.nabl
 
 The Eclipse update-site resulting from the build will be accessible in */releng/fr.cea.nabla.updatesite/target/fr.cea.nabla.updatesite-1.0.0.yyyymmddHHMM.zip*.
 
-Just install this update-site in an Eclipse 2019-09 with Sirius 6.2.2 and Xtext 2.19.0 already installed to use NabLab.
+Just install this update-site in an Eclipse 2020-03 with Sirius 6.3.0 and Xtext 2.21.0 already installed to use NabLab.
 
 If you want to skip tests execution, you can run the following command:
 `mvn clean; mvn verify -Dmaven.test.skip=true`
 
 ## Dependencies
 
-NabLab requires Java 1.8 or later to build & run. 
+NabLab requires Java 11 or later to build & run. 
 
 It as based on:
 
-Eclipse 2019-09
+Eclipse 2020-03
  * License: EPL-2.0
- * Project: https://www.eclipse.org/downloads/packages/release/2019-09/r
+ * Project: https://www.eclipse.org/downloads/packages/release/2020-03/r
 
-Xtext (2.19)
+Xtext (2.21)
  * License: EPL-2.0
  * Project: http://projects.eclipse.org/projects/modeling.tmf.xtext
  * Source: https://github.com/eclipse/xtext
 
-Sirius (6.2.2)
+Sirius (6.3.0)
  * License: EPL-2.0
  * Project: http://projects.eclipse.org/projects/modeling.sirius
  * Source: https://git.eclipse.org/c/sirius/org.eclipse.sirius.git

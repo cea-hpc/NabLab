@@ -21,13 +21,14 @@ import org.junit.Assert
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
-class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
-	
+class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest
+{
 	@Inject CompilationChainHelper compilationHelper
 	@Inject extension TestUtils
-	
-	override assertInterpreteContractedIf(String model) {
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+
+	override assertInterpreteContractedIf(String model)
+	{
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(AbstractExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "r1", new NV0Real(1.0))
@@ -36,7 +37,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 
 	override assertInterpreteUnaryExpression(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -58,7 +59,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 
 	override assertInterpreteParenthesis(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(AbstractExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "b", new NV0Bool(true))
@@ -66,7 +67,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 
 	override assertInterpreteConstant(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(AbstractExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "n1", new NV0Int(1))
@@ -77,7 +78,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 
 	override assertInterpreteMinConstant(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(AbstractExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "nMin", new NV0Int(Integer.MIN_VALUE))
@@ -86,7 +87,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 
 	override assertInterpreteMaxConstant(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(AbstractExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "nMax", new NV0Int(Integer.MAX_VALUE))
@@ -95,7 +96,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 
 	override assertInterpreteBaseTypeConstant(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(AbstractExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "n1", new NV0Int(1))
@@ -113,7 +114,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 	
 	override assertInterpreteIntVectorConstant(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(AbstractExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "n", new NV1Int(#[1,2]))
@@ -121,7 +122,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 
 	override assertInterpreteIntMatrixConstant(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(AbstractExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "n", new NV2Int(#[#[0, 1, 2],#[1, 2, 3]]))
@@ -129,7 +130,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 
 	override assertInterpreteRealVectorConstant(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(AbstractExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "r", new NV1Real(#[1.0, 2.0]))
@@ -137,7 +138,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 
 	override assertInterpreteRealMatrixConstant(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(AbstractExpressionInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "r", new NV2Real(#[#[0.0, 1.0, 2.0],#[1.0, 2.0, 3.0]]))
@@ -145,7 +146,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 
 	override assertInterpreteCardinality(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -158,7 +159,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 
 	override assertInterpreteFunctionCall(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -180,7 +181,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 
 	override assertInterpreteFunctionCallWithBody(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -196,7 +197,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest {
 
 	override assertInterpreteVarRef(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)

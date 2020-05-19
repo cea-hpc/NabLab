@@ -10,14 +10,12 @@
 package fr.cea.nabla.ui
 
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ui.internal.NablaActivator
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.jface.resource.ResourceLocator
 import org.eclipse.ui.PlatformUI
-import org.eclipse.xtext.ui.editor.XtextEditor
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
 
@@ -41,13 +39,11 @@ class UiUtils
 		inVarNames + "  \u21E8  " + name + "  \u21E8  " + outVarNames
 	}
 
-	static def getActiveNablaEditor()
+	static def getActiveNablaDslEditor()
 	{
 		val w = PlatformUI::workbench.activeWorkbenchWindow
-		if (w !== null && w.activePage !== null && w.activePage.activeEditor !== null
-			&& (w.activePage.activeEditor instanceof XtextEditor)
-			&& (w.activePage.activeEditor as XtextEditor).languageName == NablaActivator::FR_CEA_NABLA_NABLA)
-			w.activePage.activeEditor as XtextEditor
+		if (w !== null && w.activePage !== null && w.activePage.activeEditor !== null && w.activePage.activeEditor instanceof NablaDslEditor)
+			w.activePage.activeEditor as NablaDslEditor
 		else
 			null
 	}

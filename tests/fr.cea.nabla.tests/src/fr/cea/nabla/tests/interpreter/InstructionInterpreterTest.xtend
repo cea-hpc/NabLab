@@ -10,7 +10,7 @@
 package fr.cea.nabla.tests.interpreter
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.MandatoryOptions
+import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.ir.interpreter.ModuleInterpreter
 import fr.cea.nabla.ir.interpreter.NV0Real
 import fr.cea.nabla.ir.interpreter.NV1Real
@@ -34,7 +34,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 
 	override assertInterpreteVarDefinition(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -45,7 +45,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 
 	override assertInterpreteInstructionBlock(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -56,7 +56,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 
 	override assertInterpreteAffectation(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -67,7 +67,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 
 	override assertInterpreteLoop(String model, int xQuads, int yQuads)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -83,8 +83,8 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 		val cjr = (context.getVariableValue("C") as NV3Real).data
 
 		val nbNodesOfCell = 4
-		val xEdgeLength = (context.getVariableValue(MandatoryOptions::X_EDGE_LENGTH) as NV0Real).data
-		val yEdgeLength = (context.getVariableValue(MandatoryOptions::Y_EDGE_LENGTH) as NV0Real).data
+		val xEdgeLength = (context.getVariableValue(MandatoryVariables::X_EDGE_LENGTH) as NV0Real).data
+		val yEdgeLength = (context.getVariableValue(MandatoryVariables::Y_EDGE_LENGTH) as NV0Real).data
 		for (var j = 0 ; j < nbCells ; j++)
 		{
 			for (var r = 0 ; r < nbNodesOfCell; r++)
@@ -97,7 +97,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 
 	override assertInterpreteSetDefinition(String model, int xQuads, int yQuads)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -113,7 +113,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 
 	override assertInterpreteExit(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)

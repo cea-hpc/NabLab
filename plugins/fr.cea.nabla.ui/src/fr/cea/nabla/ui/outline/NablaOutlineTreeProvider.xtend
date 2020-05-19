@@ -82,12 +82,12 @@ class NablaOutlineTreeProvider extends DefaultOutlineTreeProvider
 
 	def _createChildren(IOutlineNode parentNode, Function it)
 	{
-		if (body !== null) body.findChildren.forEach[x | createNode(parentNode, x)]
+		if (body !== null) body.findChildren.forEach[x | if (x !== null) createNode(parentNode, x)]
 	}
 
 	def _createChildren(IOutlineNode parentNode, Instruction it)
 	{
-		findChildren.forEach[x | createNode(parentNode, x)]
+		findChildren.forEach[x | if (x !== null) createNode(parentNode, x)]
 	}
 
 	private def List<Instruction> findChildren(Instruction it)

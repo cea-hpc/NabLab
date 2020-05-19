@@ -34,7 +34,7 @@ class TagOutputVariables extends IrTransformationStep
 
 	override transform(IrModule m)
 	{
-		trace('IR -> IR: ' + description + '\n')
+		trace('IR -> IR: ' + description)
 		val f = IrFactory.eINSTANCE
 		val ppInfo = f.createPostProcessingInfo
 		val periodReferenceVar = getCurrentIrVariable(m, periodReferenceVarName)

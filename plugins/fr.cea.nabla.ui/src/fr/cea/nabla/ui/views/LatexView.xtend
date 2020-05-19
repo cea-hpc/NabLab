@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.views
 
-import com.google.inject.Inject
 import fr.cea.nabla.LatexImageServices
 import fr.cea.nabla.LatexLabelServices
 import fr.cea.nabla.nabla.Expression
@@ -18,7 +17,6 @@ import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Reduction
-import fr.cea.nabla.ui.listeners.TextSelectionListener
 import java.io.ByteArrayInputStream
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.swt.SWT
@@ -30,14 +28,14 @@ import org.eclipse.ui.part.ViewPart
 
 class LatexView extends ViewPart
 {
-	@Inject TextSelectionListener listener
+	//@Inject TextSelectionListener listener
 	Label label
 
 	override createPartControl(Composite parent)
 	{
 		label = new Label(parent, SWT.NONE)
-		listener.nablaObjectSelectionNotifier = [EObject o | o.fireSelectionChanged]
-		site.page.addPostSelectionListener(listener)
+//		listener.nablaObjectSelectionNotifier = [EObject o | o.fireSelectionChanged]
+//		site.page.addPostSelectionListener(listener)
 	}
 
 	override setFocus()

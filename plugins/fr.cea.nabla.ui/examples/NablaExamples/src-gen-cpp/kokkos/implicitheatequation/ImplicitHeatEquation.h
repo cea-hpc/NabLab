@@ -63,18 +63,24 @@ public:
 		Options(const std::string& fileName);
 	};
 
-	Options* options;
+	const Options& options;
 
-	ImplicitHeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D);
+	ImplicitHeatEquation(const Options& aOptions);
+	~ImplicitHeatEquation();
 
 private:
-	CartesianMesh2D* mesh;
-	PvdFileWriter2D writer;
-	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
+	// Global definitions
 	double t_n;
 	double t_nplus1;
 	double deltat;
 	int lastDump;
+	
+	// Mesh (can depend on previous definitions)
+	CartesianMesh2D* mesh;
+	PvdFileWriter2D writer;
+	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
+	
+	// Global declarations
 	int n;
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> Xc;
@@ -111,6 +117,9 @@ private:
 	void updateU() noexcept;
 	
 	KOKKOS_INLINE_FUNCTION
+	void computeDeltaTn() noexcept;
+	
+	KOKKOS_INLINE_FUNCTION
 	void computeFaceConductivity() noexcept;
 	
 	KOKKOS_INLINE_FUNCTION
@@ -120,15 +129,12 @@ private:
 	void initXcAndYc() noexcept;
 	
 	KOKKOS_INLINE_FUNCTION
-	void computeDeltaTn() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
 	void computeAlphaCoeff() noexcept;
 	
 	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept;
 
-	void dumpVariables(int iteration);
+	void dumpVariables(int iteration, bool useTimer=true);
 
 public:
 	void simulate();

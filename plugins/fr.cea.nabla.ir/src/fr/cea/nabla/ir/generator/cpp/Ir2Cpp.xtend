@@ -25,6 +25,7 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
+import fr.cea.nabla.ir.MandatoryVariables
 
 class Ir2Cpp extends CodeGenerator
 {
@@ -98,9 +99,10 @@ class Ir2Cpp extends CodeGenerator
 			Options(const std::string& fileName);
 		};
 
-		Options* options;
+		const Options& options;
 
-		«name»(Options* aOptions«IF withMesh», CartesianMesh2D* aCartesianMesh2D«ENDIF»);
+		«name»(const Options& aOptions);
+		~«name»();
 
 	private:
 		«backend.attributesContentProvider.getContentFor(it)»
@@ -108,14 +110,14 @@ class Ir2Cpp extends CodeGenerator
 		«backend.privateMethodsContentProvider.getDeclarationContentFor(it)»
 		«IF postProcessingInfo !== null»
 
-		void dumpVariables(int iteration);
+		void dumpVariables(int iteration, bool useTimer=true);
 		«ENDIF»
 
 	public:
 		void simulate();
 	};
 	'''
-	
+
 	private def getSourceFileContent(IrModule it)
 	'''
 	#include "«name».h"
@@ -155,18 +157,22 @@ class Ir2Cpp extends CodeGenerator
 
 	/******************** Module definition ********************/
 
-	«name»::«name»(Options* aOptions«IF withMesh», CartesianMesh2D* aCartesianMesh2D«ENDIF»)
+	«name»::«name»(const Options& aOptions)
 	: options(aOptions)
-	«IF withMesh»
-	, mesh(aCartesianMesh2D)
-	, writer("«name»", options->«TagOutputVariables.OutputPathNameAndValue.key»)
-	«FOR c : usedConnectivities»
-	, «c.nbElemsVar»(«c.connectivityAccessor»)
-	«ENDFOR»
-	«ENDIF»
 	«FOR v : definitions.filter[x | !(x.option || x.constExpr)]»
 	, «v.name»(«v.defaultValue.content»)
 	«ENDFOR»
+	«IF withMesh»
+		«val xee = getVariableByName(MandatoryVariables.X_EDGE_ELEMS).codeName»
+		«val yee = getVariableByName(MandatoryVariables.Y_EDGE_ELEMS).codeName»
+		«val xel = getVariableByName(MandatoryVariables.X_EDGE_LENGTH).codeName»
+		«val yel = getVariableByName(MandatoryVariables.Y_EDGE_LENGTH).codeName»
+		, mesh(CartesianMesh2DGenerator::generate(«xee», «yee», «xel», «yel»))
+		, writer("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»)
+		«FOR c : usedConnectivities»
+		, «c.nbElemsVar»(«c.connectivityAccessor»)
+		«ENDFOR»
+	«ENDIF»
 	«FOR v : declarations.filter(ConnectivityVariable)»
 	, «v.name»(«v.cstrInit»)
 	«ENDFOR»
@@ -177,29 +183,37 @@ class Ir2Cpp extends CodeGenerator
 			«FOR v : dynamicArrayVariables»
 				«v.initCppTypeContent»
 			«ENDFOR»
+
 		«ENDIF»
 		«IF withMesh»
-
-		// Copy node coordinates
-		const auto& gNodes = mesh->getGeometry()->getNodes();
-		«val iterator = backend.argOrVarContentProvider.formatIterators(initNodeCoordVariable, #["rNodes"])»
-		for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-		{
-			«initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
-			«initNodeCoordVariable.name»«iterator»[1] = gNodes[rNodes][1];
-		}
+			// Copy node coordinates
+			const auto& gNodes = mesh->getGeometry()->getNodes();
+			«val iterator = backend.argOrVarContentProvider.formatIterators(initNodeCoordVariable, #["rNodes"])»
+			for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+			{
+				«initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
+				«initNodeCoordVariable.name»«iterator»[1] = gNodes[rNodes][1];
+			}
 		«ENDIF»
+	}
+
+	«name»::~«name»()
+	{
+		delete mesh;
 	}
 
 	«backend.privateMethodsContentProvider.getDefinitionContentFor(it)»
 	«IF postProcessingInfo !== null»
 
-	void «name»::dumpVariables(int iteration)
+	void «name»::dumpVariables(int iteration, bool useTimer)
 	{
-		if (!writer.isDisabled() && «postProcessingInfo.periodReference.getCodeName('->')» >= «postProcessingInfo.lastDumpVariable.getCodeName('->')» + «postProcessingInfo.periodValue.getCodeName('->')»)
+		if (!writer.isDisabled())
 		{
-			cpuTimer.stop();
-			ioTimer.start();
+			if (useTimer)
+			{
+				cpuTimer.stop();
+				ioTimer.start();
+			}
 			auto quads = mesh->getGeometry()->getQuads();
 			writer.startVtpFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data());
 			«val outputVarsByConnectivities = postProcessingInfo.outputVariables.filter(ConnectivityVariable).groupBy(x | x.type.connectivities.head.returnType.name)»
@@ -221,15 +235,18 @@ class Ir2Cpp extends CodeGenerator
 			writer.closeCellData();
 			writer.closeVtpFile();
 			«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodReference.name»;
-			ioTimer.stop();
-			cpuTimer.start();
+			if (useTimer)
+			{
+				ioTimer.stop();
+				cpuTimer.start();
+			}
 		}
 	}
 	«ENDIF»
 
 	void «name»::simulate()
 	{
-		«backend.traceContentProvider.getBeginOfSimuTrace(name, withMesh)»
+		«backend.traceContentProvider.getBeginOfSimuTrace(it, name, withMesh)»
 
 		«callsHeader»
 		«callsContent»

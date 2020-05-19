@@ -49,7 +49,11 @@ class JobContentProvider
 		{
 			«itVar»++;
 			System.out.printf("«timeLoop.indentation»[%5d] t: %5.5f - deltat: %5.5f\n", «itVar», «irModule.timeVariable.name», «irModule.deltatVariable.name»);
-			«IF topLevel && irModule.postProcessingInfo !== null»dumpVariables(«itVar»);«ENDIF»
+			«IF topLevel && irModule.postProcessingInfo !== null»
+				«val ppInfo = irModule.postProcessingInfo»
+				if («ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
+					dumpVariables(«itVar»);
+			«ENDIF»
 			«FOR j : innerJobs.sortByAtAndName»
 				«j.codeName»(); // @«j.at»
 			«ENDFOR»
@@ -67,6 +71,10 @@ class JobContentProvider
 				«ENDFOR»
 			} 
 		} while (continueLoop);
+		«IF topLevel && irModule.postProcessingInfo !== null»
+			// force a last output at the end
+			dumpVariables(«itVar»);
+		«ENDIF»
 	'''
 
 	private static def dispatch CharSequence getInnerContent(TimeLoopCopyJob it)

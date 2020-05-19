@@ -69,7 +69,11 @@ class JobContentProvider
 			cpuTimer.start();
 			«ENDIF»
 			«itVar»++;
-			«IF topLevel && irModule.postProcessingInfo !== null»dumpVariables(«itVar»);«ENDIF»
+			«IF topLevel && irModule.postProcessingInfo !== null»
+				«val ppInfo = irModule.postProcessingInfo»
+				if (!writer.isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
+					dumpVariables(«itVar»);
+			«ENDIF»
 			«traceContentProvider.getBeginOfLoopTrace(itVar, timeVarName, isTopLevel)»
 
 			«callsContent»
@@ -97,6 +101,10 @@ class JobContentProvider
 			ioTimer.reset();
 			«ENDIF»
 		} while (continueLoop);
+		«IF topLevel && irModule.postProcessingInfo !== null»
+			// force a last output at the end
+			dumpVariables(«itVar», false);
+		«ENDIF»
 	'''
 
 	protected def dispatch CharSequence getInnerContent(TimeLoopCopyJob it)

@@ -8,12 +8,14 @@ import org.eclipse.xtend.lib.annotations.Accessors
 @Singleton
 class NablaGeneratorMessageDispatcher
 {
-	@Accessors val traceListeners = new ArrayList<(String) => void>
+	enum MessageType { Start, Exec, End }
+
+	@Accessors val traceListeners = new ArrayList<(MessageType, String) => void>
 	@Accessors val irModuleListeners = new ArrayList<(IrModule) => void>
 
-	def post(String msg)
+	def post(MessageType msgType, String msg)
 	{
-		traceListeners.forEach[apply(msg)]
+		traceListeners.forEach[apply(msgType, msg)]
 	}
 
 	def post(IrModule module)

@@ -80,19 +80,25 @@ public:
 		Options(const std::string& fileName);
 	};
 
-	Options* options;
+	const Options& options;
 
-	Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D);
+	Glace2d(const Options& aOptions);
+	~Glace2d();
 
 private:
-	CartesianMesh2D* mesh;
-	PvdFileWriter2D writer;
-	size_t nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
+	// Global definitions
 	double t_n;
 	double t_nplus1;
 	double deltat_n;
 	double deltat_nplus1;
 	int lastDump;
+	
+	// Mesh (can depend on previous definitions)
+	CartesianMesh2D* mesh;
+	PvdFileWriter2D writer;
+	size_t nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
+	
+	// Global declarations
 	int n;
 	Kokkos::View<RealArray1D<2>*> X_n;
 	Kokkos::View<RealArray1D<2>*> X_nplus1;
@@ -204,7 +210,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void computeUn(const member_type& teamMember) noexcept;
 
-	void dumpVariables(int iteration);
+	void dumpVariables(int iteration, bool useTimer=true);
 
 public:
 	void simulate();

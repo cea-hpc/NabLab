@@ -10,9 +10,6 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.MandatoryOptions
-
-import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
 class MainContentProvider 
 {
@@ -31,17 +28,12 @@ class MainContentProvider
 			return -1;
 		}
 
-		auto o = new «name»::Options(dataFile);
-		«IF withMesh»
-		auto nm = CartesianMesh2DGenerator::generate(o->«MandatoryOptions::X_EDGE_ELEMS», o->«MandatoryOptions::Y_EDGE_ELEMS», o->«MandatoryOptions::X_EDGE_LENGTH», o->«MandatoryOptions::Y_EDGE_LENGTH»);
-		«ENDIF»
-		auto c = new «name»(o«IF withMesh», nm«ENDIF»);
-		c->simulate();
-		delete c;
-		«IF withMesh»
-		delete nm;
-		«ENDIF»
-		delete o;
+		«name»::Options options(dataFile);
+		// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
+		auto simulator = new «name»(options);
+		simulator->simulate();
+		// simulator must be deleted before calling finalize
+		delete simulator;
 	'''
 }
 

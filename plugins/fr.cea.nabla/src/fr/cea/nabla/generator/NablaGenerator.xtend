@@ -10,6 +10,7 @@
 package fr.cea.nabla.generator
 
 import com.google.inject.Inject
+import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.ir.Nabla2Ir
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
@@ -28,30 +29,34 @@ class NablaGenerator extends AbstractGenerator
 	@Inject Nabla2Ir nabla2Ir
 	@Inject NablaGeneratorMessageDispatcher dispatcher
 	@Inject IrModuleTransformer transformer
-	val traceNotifier = [String msg | dispatcher.post(msg)]
 
 	override doGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context)
 	{
 		try
 		{
 			val module = input.contents.filter(NablaModule).head
-			dispatcher.post('Model size (eAllContents.size): ' + module.eAllContents.size + '\n')
+			dispatcher.post(MessageType.Start, 'Starting validation: ' + module.name)
+			dispatcher.post(MessageType.Exec, 'Model size (eAllContents.size): ' + module.eAllContents.size)
 
 			if (!module.jobs.empty)
 			{
 				val latexFileName = module.name.toLowerCase + '/' + module.name + '.tex'
-				dispatcher.post('Generating LaTeX: ' + latexFileName + '\n')
+				dispatcher.post(MessageType.Exec, 'Writing LaTeX formula in: ' + latexFileName)
 				fsa.generateFile(latexFileName, module.latexContent)
+
+				// Nabla -> IR
 				buildIrModule(module)
 			}
+
+			dispatcher.post(MessageType.End, 'End of validation: ' + module.name)
 		}
 		catch(Exception e)
 		{
-			dispatcher.post('\n***' + e.class.name + ': ' + e.message + '\n')
+			dispatcher.post(MessageType.Exec, '\n***' + e.class.name + ': ' + e.message)
 			if (e.stackTrace !== null && !e.stackTrace.empty)
 			{
 				val s = e.stackTrace.head
-				dispatcher.post('at ' + s.className + '.' + s.methodName + '(' + s.fileName + ':' + s.lineNumber + ')\n')
+				dispatcher.post(MessageType.Exec, 'at ' + s.className + '.' + s.methodName + '(' + s.fileName + ':' + s.lineNumber + ')')
 			}
 			throw(e)
 		}
@@ -59,12 +64,13 @@ class NablaGenerator extends AbstractGenerator
 
 	def IrModule buildIrModule(NablaModule nablaModule)
 	{
-		dispatcher.post('Nabla -> IR\n')
+		// Nabla -> IR
+		dispatcher.post(MessageType.Exec, 'Nabla -> IR')
 		val irModule = nabla2Ir.toIrModule(nablaModule)
 		// IR -> IR
 		val description = 'Minimal IR->IR transformations to check job cycles'
 		val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
-		transformer.transformIr(t, irModule, traceNotifier)
+		transformer.transformIr(t, irModule, [msg | dispatcher.post(MessageType.Exec, msg)])
 		dispatcher.post(irModule)
 		return irModule
 	}

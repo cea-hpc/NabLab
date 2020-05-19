@@ -43,7 +43,7 @@ class ReplaceReductions extends IrTransformationStep
 	 */
 	override transform(IrModule m)
 	{
-		trace('IR -> IR: ' + description + '\n')
+		trace('IR -> IR: ' + description)
 		var reductions = m.eAllContents.filter(ReductionInstruction)
 		if (!replaceAllReductions) reductions = reductions.filter[!external]
 

@@ -10,37 +10,52 @@
 package fr.cea.nabla.ui
 
 import com.google.inject.Inject
-import fr.cea.nabla.generator.ir.IrAnnotationHelper
 import fr.cea.nabla.ir.ir.IrAnnotable
-import fr.cea.nabla.ui.listeners.GraphicalEditPartSelectionListener
+import org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart
+import org.eclipse.jface.viewers.ISelection
+import org.eclipse.jface.viewers.IStructuredSelection
+import org.eclipse.sirius.viewpoint.DRepresentationElement
 import org.eclipse.swt.widgets.Composite
+import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.xtext.ui.editor.XtextEditor
 
-class NablaDslEditor extends XtextEditor
-{
-	@Inject IrAnnotationHelper annotationHelper
-	@Inject GraphicalEditPartSelectionListener siriusListener
+import static extension fr.cea.nabla.ir.IrAnnotableExtensions.*
 
-	def getAnnotationHelper() { annotationHelper }
+class NablaDslEditor 
+extends XtextEditor
+{
+	@Inject NabLabConsoleFactory consoleFactory
 
 	override createPartControl(Composite parent)
 	{
 		super.createPartControl(parent)
-		siriusListener.irAnnotatableEventListeners += [annotable, offset, length, uri | openInEditor(annotable, offset, length, uri)]
-		site.page.addPostSelectionListener(siriusListener)
+
+		// Listen to the selection of an IrAnnotable object in the Sirius editor
+		site.page.addPostSelectionListener
+		([IWorkbenchPart part, ISelection selection |
+			if (selection instanceof IStructuredSelection)
+			{
+				val firstElement = selection.firstElement
+				if (firstElement instanceof IGraphicalEditPart)
+				{
+					val se = firstElement.resolveSemanticElement
+					if (se instanceof DRepresentationElement)
+					{
+						val modelObject = se.semanticElements.get(0)
+						if (modelObject !== null && modelObject instanceof IrAnnotable)
+							selectIfDisplayed(modelObject as IrAnnotable)
+					}
+				}
+			}
+		])
+		consoleFactory.openConsole
 	}
 
-	override dispose()
-	{
-		site.page.removePostSelectionListener(siriusListener)
-	}
-
-	private def void openInEditor(IrAnnotable annotable, int offset, int length, String uri)
+	def void selectIfDisplayed(IrAnnotable it)
 	{
 		val editorResourceUri = resource.fullPath.toString
-		if (uri.endsWith(editorResourceUri))
+		val uri = uriDetail
+		if (uri !== null && uri.endsWith(editorResourceUri))
 			selectAndReveal(offset, length)
-		else
-			selectAndReveal(0,0)
 	}
 }

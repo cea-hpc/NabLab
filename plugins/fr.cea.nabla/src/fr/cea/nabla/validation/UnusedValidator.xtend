@@ -10,7 +10,7 @@
 package fr.cea.nabla.validation
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.MandatoryOptions
+import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
@@ -60,7 +60,7 @@ class UnusedValidator extends UniqueNameValidator
 	def checkUnusedVariable(Var it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
-		val mandatories = (MandatoryOptions::NAMES).toList
+		val mandatories = (MandatoryVariables::NAMES).toList
 		val referenced = mandatories.contains(name) || m.eAllContents.filter(ArgOrVarRef).exists[x | x.target===it]
 		if (!referenced)
 			warning(getUnusedMsg(NablaPackage.Literals.VAR, name), NablaPackage.Literals::ARG_OR_VAR__NAME, UNUSED)

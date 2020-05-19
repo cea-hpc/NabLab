@@ -3,7 +3,7 @@ Automatic-Module-Name: fr.cea.nabla.sirius
 Bundle-ManifestVersion: 2
 Bundle-Name: fr.cea.nabla.sirius
 Bundle-SymbolicName: fr.cea.nabla.sirius;singleton:=true
-Bundle-Version: 0.2.0.qualifier
+Bundle-Version: 0.2.1.qualifier
 Bundle-Activator: fr.cea.nabla.sirius.Activator
 Require-Bundle: fr.cea.nabla,
  fr.cea.nabla.edit,

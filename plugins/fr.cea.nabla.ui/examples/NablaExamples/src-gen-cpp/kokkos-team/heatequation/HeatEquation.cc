@@ -106,19 +106,19 @@ HeatEquation::Options::Options(const std::string& fileName)
 
 /******************** Module definition ********************/
 
-HeatEquation::HeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D)
+HeatEquation::HeatEquation(const Options& aOptions)
 : options(aOptions)
-, mesh(aCartesianMesh2D)
-, writer("HeatEquation", options->outputPath)
+, t_n(0.0)
+, t_nplus1(0.0)
+, lastDump(numeric_limits<int>::min())
+, mesh(CartesianMesh2DGenerator::generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH))
+, writer("HeatEquation", options.outputPath)
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
 , nbFaces(mesh->getNbFaces())
 , nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-, t_n(0.0)
-, t_nplus1(0.0)
-, lastDump(numeric_limits<int>::min())
 , X("X", nbNodes)
 , center("center", nbCells)
 , u_n("u_n", nbCells)
@@ -128,7 +128,6 @@ HeatEquation::HeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D)
 , outgoingFlux("outgoingFlux", nbCells)
 , surface("surface", nbFaces)
 {
-
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
@@ -136,6 +135,11 @@ HeatEquation::HeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D)
 		X(rNodes)[0] = gNodes[rNodes][0];
 		X(rNodes)[1] = gNodes[rNodes][1];
 	}
+}
+
+HeatEquation::~HeatEquation()
+{
+	delete mesh;
 }
 
 const std::pair<size_t, size_t> HeatEquation::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
@@ -360,7 +364,7 @@ void HeatEquation::iniUn(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& jCellsTeam)
 		{
 			int jCells(jCellsTeam + teamWork.first);
-			u_n(jCells) = std::cos(2 * options->PI * options->alpha * center(jCells)[0]);
+			u_n(jCells) = std::cos(2 * options.PI * options.alpha * center(jCells)[0]);
 		});
 	}
 }
@@ -383,7 +387,8 @@ void HeatEquation::executeTimeLoopN() noexcept
 		globalTimer.start();
 		cpuTimer.start();
 		n++;
-		dumpVariables(n);
+		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+			dumpVariables(n);
 		if (n!=1)
 			std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
 				<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
@@ -404,7 +409,7 @@ void HeatEquation::executeTimeLoopN() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (t_nplus1 < options->stopTime && n + 1 < options->maxIterations);
+		continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
 	
 		if (continueLoop)
 		{
@@ -423,23 +428,28 @@ void HeatEquation::executeTimeLoopN() noexcept
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << utils::progress_bar(n, options->maxIterations, t_n, options->stopTime, 25);
+		std::cout << utils::progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(n, options->maxIterations, t_n, options->stopTime, deltat, globalTimer), true)
+			utils::eta(n, options.maxIterations, t_n, options.stopTime, deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
 		cpuTimer.reset();
 		ioTimer.reset();
 	} while (continueLoop);
+	// force a last output at the end
+	dumpVariables(n, false);
 }
 
-void HeatEquation::dumpVariables(int iteration)
+void HeatEquation::dumpVariables(int iteration, bool useTimer)
 {
-	if (!writer.isDisabled() && n >= lastDump + options->outputPeriod)
+	if (!writer.isDisabled())
 	{
-		cpuTimer.stop();
-		ioTimer.start();
+		if (useTimer)
+		{
+			cpuTimer.stop();
+			ioTimer.start();
+		}
 		auto quads = mesh->getGeometry()->getQuads();
 		writer.startVtpFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data());
 		writer.openNodeData();
@@ -449,8 +459,11 @@ void HeatEquation::dumpVariables(int iteration)
 		writer.closeCellData();
 		writer.closeVtpFile();
 		lastDump = n;
-		ioTimer.stop();
-		cpuTimer.start();
+		if (useTimer)
+		{
+			ioTimer.stop();
+			cpuTimer.start();
+		}
 	}
 }
 
@@ -458,8 +471,8 @@ void HeatEquation::simulate()
 {
 	std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting HeatEquation ..." << __RESET__ << "\n\n";
 	
-	std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
-		<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
+	std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options.X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options.Y_EDGE_ELEMS
+		<< __RESET__ << ", X length=" << __BOLD__ << options.X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options.Y_EDGE_LENGTH << __RESET__ << std::endl;
 	
 	if (Kokkos::hwloc::available())
 	{
@@ -527,13 +540,12 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	
-	auto o = new HeatEquation::Options(dataFile);
-	auto nm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
-	auto c = new HeatEquation(o, nm);
-	c->simulate();
-	delete c;
-	delete nm;
-	delete o;
+	HeatEquation::Options options(dataFile);
+	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
+	auto simulator = new HeatEquation(options);
+	simulator->simulate();
+	// simulator must be deleted before calling finalize
+	delete simulator;
 	Kokkos::finalize();
 	return 0;
 }

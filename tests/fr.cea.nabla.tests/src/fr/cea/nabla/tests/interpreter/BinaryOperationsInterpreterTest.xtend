@@ -35,7 +35,7 @@ class BinaryOperationsInterpreterTest extends AbstractBinaryOperationsInterprete
 
 	override assertGetValueOfNV0Bool_NV0Bool(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "b1", new NV0Bool(true))
@@ -56,7 +56,7 @@ class BinaryOperationsInterpreterTest extends AbstractBinaryOperationsInterprete
 
 	override assertGetValueOfNV0Int_NV0Int(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "b1", new NV0Bool(false))
@@ -82,7 +82,7 @@ class BinaryOperationsInterpreterTest extends AbstractBinaryOperationsInterprete
 
 	override assertGetValueOfNV0Int_NV0Real(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val context = new Context(irModule, Logger.getLogger(BinaryOperationsInterpreterTest.name))
 
 		assertVariableDefaultValue(irModule, context, "b1", new NV0Bool(false))
@@ -107,7 +107,7 @@ class BinaryOperationsInterpreterTest extends AbstractBinaryOperationsInterprete
 
 	override assertGetValueOfNV0Int_NV1Int(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)

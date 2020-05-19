@@ -9,8 +9,12 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.MandatoryOptions
+import fr.cea.nabla.ir.MandatoryVariables
+import fr.cea.nabla.ir.ir.IrModule
 import org.eclipse.xtend.lib.annotations.Data
+
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.generator.Utils.*
 
 @Data
 class TraceContentProvider
@@ -23,13 +27,17 @@ class TraceContentProvider
 		std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 	'''
 
-	def getBeginOfSimuTrace(String simuName, boolean useMesh)
+	def getBeginOfSimuTrace(IrModule it, String simuName, boolean useMesh)
 	'''
 		std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting «simuName» ..." << __RESET__ << "\n\n";
 
 		«IF useMesh»
-		std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->«MandatoryOptions::X_EDGE_ELEMS» << __RESET__ << ", Y=" << __BOLD__ << options->«MandatoryOptions::Y_EDGE_ELEMS»
-			<< __RESET__ << ", X length=" << __BOLD__ << options->«MandatoryOptions::X_EDGE_LENGTH» << __RESET__ << ", Y length=" << __BOLD__ << options->«MandatoryOptions::Y_EDGE_LENGTH» << __RESET__ << std::endl;
+		«val xee = getVariableByName(MandatoryVariables.X_EDGE_ELEMS).codeName»
+		«val yee = getVariableByName(MandatoryVariables.Y_EDGE_ELEMS).codeName»
+		«val xel = getVariableByName(MandatoryVariables.X_EDGE_LENGTH).codeName»
+		«val yel = getVariableByName(MandatoryVariables.Y_EDGE_LENGTH).codeName»
+		std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << «xee» << __RESET__ << ", Y=" << __BOLD__ << «yee»
+			<< __RESET__ << ", X length=" << __BOLD__ << «xel» << __RESET__ << ", Y length=" << __BOLD__ << «yel» << __RESET__ << std::endl;
 		«ENDIF»
 
 		«hwlocTraceContent»
@@ -61,9 +69,9 @@ class TraceContentProvider
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 
 		// Progress
-		std::cout << utils::progress_bar(«iterationVarName», options->«maxIterationsVarName», «timeVarName», options->«stopTimeVarName», 25);
+		std::cout << utils::progress_bar(«iterationVarName», options.«maxIterationsVarName», «timeVarName», options.«stopTimeVarName», 25);
 		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(«iterationVarName», options->«maxIterationsVarName», «timeVarName», options->«stopTimeVarName», «deltatVarName», globalTimer), true)
+			utils::eta(«iterationVarName», options.«maxIterationsVarName», «timeVarName», options.«stopTimeVarName», «deltatVarName», globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 		«ENDIF»

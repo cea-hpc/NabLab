@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-class MandatoryOptions
+class MandatoryVariables
 {
 	public static val X_EDGE_LENGTH = 'X_EDGE_LENGTH'
 	public static val Y_EDGE_LENGTH = 'Y_EDGE_LENGTH'

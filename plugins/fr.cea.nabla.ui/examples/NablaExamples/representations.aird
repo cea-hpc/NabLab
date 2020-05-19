@@ -2,18 +2,15 @@
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:diagram="http://www.eclipse.org/sirius/diagram/1.1.0" xmlns:ir="http://www.cea.fr/nabla/ir" xmlns:nablagen="http://www.cea.fr/nabla/Nablagen" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" xmlns:viewpoint="http://www.eclipse.org/sirius/1.1.0" xsi:schemaLocation="http://www.eclipse.org/sirius/description/1.1.0 http://www.eclipse.org/sirius/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/style/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description/style">
   <viewpoint:DAnalysis uid="_-p1ZcFh3EeqcatjF_pwWvg" selectedViews="_AjwvgFh4EeqcatjF_pwWvg _A1Z5IFh4EeqcatjF_pwWvg" version="14.3.0.201909031200">
     <semanticResources>src/explicitheatequation/ExplicitHeatEquation.nabla</semanticResources>
-    <semanticResources>platform:/resource/fr.cea.nabla/mathfunctions.nabla</semanticResources>
     <semanticResources>src/explicitheatequation/ExplicitHeatEquation.nablagen</semanticResources>
     <semanticResources>src/glace2d/Glace2d.nabla</semanticResources>
     <semanticResources>src/glace2d/Glace2d.nablagen</semanticResources>
     <semanticResources>src/heatequation/HeatEquation.nabla</semanticResources>
     <semanticResources>src/heatequation/HeatEquation.nablagen</semanticResources>
     <semanticResources>src/implicitheatequation/ImplicitHeatEquation.nabla</semanticResources>
-    <semanticResources>platform:/resource/fr.cea.nabla/linearalgebrafunctions.nabla</semanticResources>
     <semanticResources>src/implicitheatequation/ImplicitHeatEquation.nablagen</semanticResources>
     <semanticResources>src/iterativeheatequation/IterativeHeatEquation.nabla</semanticResources>
     <semanticResources>src/iterativeheatequation/IterativeHeatEquation.nablagen</semanticResources>
-    <semanticResources>src-gen/glace2d/Glace2d.fillHlts.nablair</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_AjwvgFh4EeqcatjF_pwWvg">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/fr.cea.nabla.sirius/description/i1.odesign#//@ownedViewpoints[name='NablagenViewpoint']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_AqjUAFh4EeqcatjF_pwWvg" name="ExplicitHeatEquationGenerationChainDiagram" repPath="#_ApAb4Fh4EeqcatjF_pwWvg">

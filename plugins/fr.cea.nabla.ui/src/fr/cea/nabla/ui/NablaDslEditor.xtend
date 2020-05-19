@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.ISelection
 import org.eclipse.jface.viewers.IStructuredSelection
 import org.eclipse.sirius.viewpoint.DRepresentationElement
 import org.eclipse.swt.widgets.Composite
+import org.eclipse.ui.ISelectionListener
 import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.xtext.ui.editor.XtextEditor
 
@@ -26,13 +27,8 @@ extends XtextEditor
 {
 	@Inject NabLabConsoleFactory consoleFactory
 
-	override createPartControl(Composite parent)
-	{
-		super.createPartControl(parent)
-
-		// Listen to the selection of an IrAnnotable object in the Sirius editor
-		site.page.addPostSelectionListener
-		([IWorkbenchPart part, ISelection selection |
+	val ISelectionListener selectionListener = 
+		[IWorkbenchPart part, ISelection selection |
 			if (selection instanceof IStructuredSelection)
 			{
 				val firstElement = selection.firstElement
@@ -47,8 +43,19 @@ extends XtextEditor
 					}
 				}
 			}
-		])
+		]
+
+	override createPartControl(Composite parent)
+	{
+		super.createPartControl(parent)
+		// Listen to the selection of an IrAnnotable object in the Sirius editor
+		site.page.addPostSelectionListener(selectionListener)
 		consoleFactory.openConsole
+	}
+
+	override dispose()
+	{
+		site.page.removePostSelectionListener(selectionListener)
 	}
 
 	def void selectIfDisplayed(IrAnnotable it)

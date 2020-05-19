@@ -19,12 +19,14 @@ import fr.cea.nabla.ir.ir.JobContainer
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.ui.NabLabConsoleFactory
+import fr.cea.nabla.ui.NablaDslEditor
 import fr.cea.nabla.ui.UiUtils
 import org.eclipse.jface.viewers.DoubleClickEvent
 import org.eclipse.jface.viewers.IDoubleClickListener
 import org.eclipse.jface.viewers.StructuredSelection
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.MouseEvent
+import org.eclipse.swt.events.MouseWheelListener
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Display
 import org.eclipse.ui.IPartListener
@@ -32,48 +34,43 @@ import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.ui.part.ViewPart
 import org.eclipse.zest.core.viewers.IZoomableWorkbenchPart
 
+import static extension fr.cea.nabla.ir.Utils.*
+
 class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 {
 	static class NablaDslEditorViewPartListener implements IPartListener
 	{
-		override partActivated(IWorkbenchPart part) { println("activated : " + part) }
-		override partDeactivated(IWorkbenchPart part) { println("deactivated" + part) }
-		override partBroughtToTop(IWorkbenchPart part) { println("brought to top" + part) }
-		override partOpened(IWorkbenchPart part) { println("opened" + part) }
-		override partClosed(IWorkbenchPart part) { println("closed" + part) }
+		val JobGraphView view
+
+		new(JobGraphView view) { this.view = view }
+
+		override partActivated(IWorkbenchPart part)
+		{
+			if (part instanceof NablaDslEditor)
+				view.displayIrModuleFrom(part)
+		}
+
+		override partDeactivated(IWorkbenchPart part) {}
+		override partBroughtToTop(IWorkbenchPart part) {}
+		override partOpened(IWorkbenchPart part) {}
+		override partClosed(IWorkbenchPart part) {}
 	}
 
 	@Inject NablaGenerator nablaGenerator
 	@Inject NabLabConsoleFactory consoleFactory
 	@Inject NablaGeneratorMessageDispatcher dispatcher
 
-	// listeners
-	IDoubleClickListener doubleClickListener
-	(IrModule) => void irModuleListener
-	NablaDslEditorViewPartListener partListener
-
-	JobGraphViewer viewer
-	JobContainer displayedContainer = null
-
-	override setFocus() {}
-	override getZoomableViewer() { viewer }
-
-	override createPartControl(Composite parent)
-	{
-		viewer = new JobGraphViewer(parent)
-
-		// Zoom with mouse wheel
-		viewer.graphControl.addMouseWheelListener
-		([ MouseEvent event |
+	// Zoom with mouse wheel
+	val MouseWheelListener mouseWheelListener = [ MouseEvent event |
 			if (event.stateMask.bitwiseAnd(SWT::CTRL) != 0)
 			{
 				if (event.count > 0) viewer.zoomManager.zoomOut()
 				else viewer.zoomManager.zoomIn()
 			}
-		])
+		]
 
-		// Double click on jobs and background
-		doubleClickListener = 
+	// Listen to double click on jobs and background
+	val IDoubleClickListener doubleClickListener =
 		([DoubleClickEvent event |
 			val selection = event.selection
 			if (selection instanceof StructuredSelection)
@@ -95,38 +92,39 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 				}
 			}
 		])
-		viewer.addDoubleClickListener(doubleClickListener)
 
-		// listen to generation (CTRL-S on NabLab editor)
-		irModuleListener = 
-		[IrModule module |
+	// Listen to generation (CTRL-S on NabLab editor)
+	val (IrModule) => void irModuleListener = [IrModule module |
 			if (Display::^default === null) viewerJobContainer = module
 			else Display::^default.asyncExec([viewerJobContainer = module])
 		]
-		dispatcher.irModuleListeners += irModuleListener
 
-		// listen to editor open/close
-		partListener = new NablaDslEditorViewPartListener
+	// Listen to editor open/close
+	val NablaDslEditorViewPartListener partListener = new NablaDslEditorViewPartListener(this)
+
+	JobGraphViewer viewer
+	JobContainer displayedContainer = null
+
+	override setFocus() {}
+	override getZoomableViewer() { viewer }
+
+	override createPartControl(Composite parent)
+	{
+		viewer = new JobGraphViewer(parent)
+		viewer.graphControl.addMouseWheelListener(mouseWheelListener)
+		viewer.addDoubleClickListener(doubleClickListener)
+		dispatcher.irModuleListeners += irModuleListener
 		site.page.addPartListener(partListener)
 
 		// When view is opening, if NabLab editor is open, IR is calculated and displayed
-		val editor = UiUtils.activeNablaDslEditor
-		if (editor !== null && editor.document !== null)
-		{
-			val obj = editor.document.readOnly([ state | state.contents.get(0)])
-			if (obj !== null && obj instanceof NablaModule)
-			{
-				consoleFactory.printConsole(MessageType.Start, "Building IR to initialize job graph view")
-				val irModule = nablaGenerator.buildIrModule(obj as NablaModule)
-				consoleFactory.printConsole(MessageType.End, "Job graph view initialized")
-				if (parent.display === null) viewerJobContainer = irModule
-				else parent.display.asyncExec([viewerJobContainer = irModule])
-			}
-		}
+		displayIrModuleFrom(UiUtils.activeNablaDslEditor)
 	}
 
 	override dispose()
 	{
+		println("dispose")
+		// seems to throw an exception...
+		// viewer.graphControl.removeMouseWheelListener(mouseWheelListener)
 		site.page.removePartListener(partListener)
 		dispatcher.irModuleListeners -= irModuleListener
 		viewer.removeDoubleClickListener(doubleClickListener)
@@ -136,12 +134,38 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 	private def setViewerJobContainer(JobContainer container)
 	{
 		displayedContainer = container
-		contentDescription = switch (container)
-		{
-			TimeLoopJob: container.name
-			IrModule: container.name
-		}
+		if (container === null) 
+			contentDescription = ''
+		else
+			contentDescription = switch (container)
+			{
+				TimeLoopJob: container.irModule.name + '::' + container.name
+				IrModule: container.name
+			}
 		viewer.input = container
+	}
+
+	private def void displayIrModuleFrom(NablaDslEditor editor)
+	{
+		if (editor !== null && editor.document !== null)
+		{
+			val obj = editor.document.readOnly([ state | state.contents.get(0)])
+			if (obj !== null && obj instanceof NablaModule)
+			{
+				consoleFactory.printConsole(MessageType.Start, "Building IR to initialize job graph view")
+				try 
+				{
+					val irModule = nablaGenerator.buildIrModule(obj as NablaModule)
+					consoleFactory.printConsole(MessageType.End, "Job graph view initialized")
+					viewerJobContainer = irModule
+				}
+				catch (Exception e)
+				{
+					// An exception can occured during IR building if environment is not configured,
+					// for example compilation not done. Whatever... we will display the graph later
+				}
+			}
+		}
 	}
 }
 

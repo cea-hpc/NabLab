@@ -67,11 +67,17 @@ class NablaGenerator extends AbstractGenerator
 		// Nabla -> IR
 		dispatcher.post(MessageType.Exec, 'Nabla -> IR')
 		val irModule = nabla2Ir.toIrModule(nablaModule)
-		// IR -> IR
-		val description = 'Minimal IR->IR transformations to check job cycles'
-		val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
-		transformer.transformIr(t, irModule, [msg | dispatcher.post(MessageType.Exec, msg)])
-		dispatcher.post(irModule)
+
+		// buildIrModule can be call several times for the same nablaModule,
+		// for example by a view. Transformations must not be done in this case
+		if (irModule.jobs.forall[at == 0.0])
+		{
+			// IR -> IR
+			val description = 'Minimal IR->IR transformations to check job cycles'
+			val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
+			transformer.transformIr(t, irModule, [msg | dispatcher.post(MessageType.Exec, msg)])
+			dispatcher.post(irModule)
+		}
 		return irModule
 	}
 

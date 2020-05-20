@@ -317,7 +317,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 				VarGroupDeclaration : variables += i.variables
 				SimpleVarDefinition : variables += i.variable
 				Iterable case (i.iterationBlock instanceof Interval):
-					Scopes.scopeFor(#[(i.iterationBlock as Interval).index])
+					variables += (i.iterationBlock as Interval).index
 			}
 		return variables
 	}

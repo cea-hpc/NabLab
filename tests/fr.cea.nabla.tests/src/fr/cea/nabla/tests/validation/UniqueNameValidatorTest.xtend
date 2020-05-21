@@ -124,7 +124,7 @@ class UniqueNameValidatorTest
 		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, '') +
 		'''
 			ℝ X{nodes, nodes};
-			j1: ∀r1∈nodes(), ∀r2∈nodes(), let d = X{r1, r2} * 2.0;
+			j1: ∀r1∈nodes(), ∀r2∈nodes(), let ℝ d = X{r1, r2} * 2.0;
 		''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -150,7 +150,7 @@ class UniqueNameValidatorTest
 			ℝ X{nodes, nodes};
 			j1: {
 				set myNodes = nodes();
-				∀r1∈myNodes, ∀r2∈myNodes, let d = X{r1, r2} * 2.0;
+				∀r1∈myNodes, ∀r2∈myNodes, let ℝ d = X{r1, r2} * 2.0;
 			}
 		''')
 		Assert.assertNotNull(moduleOk)
@@ -167,10 +167,10 @@ class UniqueNameValidatorTest
 
 			set nodes: → {node};
 
-			option X_EDGE_LENGTH = 0.01;
-			option Y_EDGE_LENGTH = X_EDGE_LENGTH;
-			option X_EDGE_ELEMS = 100;
-			option Y_EDGE_ELEMS = 10;
+			option ℝ X_EDGE_LENGTH = 0.01;
+			option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			option ℕ X_EDGE_ELEMS = 100;
+			option ℕ Y_EDGE_ELEMS = 10;
 		''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.itemType,
@@ -184,10 +184,10 @@ class UniqueNameValidatorTest
 
 			set nodes: → {node};
 
-			option X_EDGE_LENGTH = 0.01;
-			option Y_EDGE_LENGTH = X_EDGE_LENGTH;
-			option X_EDGE_ELEMS = 100;
-			option Y_EDGE_ELEMS = 10;
+			option ℝ X_EDGE_LENGTH = 0.01;
+			option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			option ℕ X_EDGE_ELEMS = 100;
+			option ℕ Y_EDGE_ELEMS = 10;
 		''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -204,10 +204,10 @@ class UniqueNameValidatorTest
 			set nodes: → {node};
 			set nodes: → {node};
 
-			option X_EDGE_LENGTH = 0.01;
-			option Y_EDGE_LENGTH = X_EDGE_LENGTH;
-			option X_EDGE_ELEMS = 100;
-			option Y_EDGE_ELEMS = 10;
+			option ℝ X_EDGE_LENGTH = 0.01;
+			option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			option ℕ X_EDGE_ELEMS = 100;
+			option ℕ Y_EDGE_ELEMS = 10;
 		''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.connectivity,
@@ -221,10 +221,10 @@ class UniqueNameValidatorTest
 
 			set nodes: → {node};
 
-			option X_EDGE_LENGTH = 0.01;
-			option Y_EDGE_LENGTH = X_EDGE_LENGTH;
-			option X_EDGE_ELEMS = 100;
-			option Y_EDGE_ELEMS = 10;
+			option ℝ X_EDGE_LENGTH = 0.01;
+			option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+			option ℕ X_EDGE_ELEMS = 100;
+			option ℕ Y_EDGE_ELEMS = 10;
 		''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors

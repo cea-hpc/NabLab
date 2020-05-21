@@ -43,8 +43,8 @@ abstract class AbstractJobInterpreterTest
 		+
 		'''
 		// Simulation options
-		let option_stoptime = 0.2;
-		let option_max_iterations = 10;
+		let ℝ option_stoptime = 0.2;
+		let ℕ option_max_iterations = 10;
 		ℝ[2] X{nodes};
 
 		iterate n while (t^{n} < option_stoptime && n < option_max_iterations);
@@ -63,8 +63,8 @@ abstract class AbstractJobInterpreterTest
 		+
 		'''
 		// Simulation options
-		let option_stoptime = 0.2;
-		let option_max_iterations = 10;
+		let ℝ option_stoptime = 0.2;
+		let ℕ option_max_iterations = 10;
 		ℝ[2] u, X{nodes}, center{cells};
 
 		iterate n while (t^{n} < option_stoptime && n < option_max_iterations);

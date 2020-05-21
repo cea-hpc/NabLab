@@ -226,10 +226,10 @@ class UnusedValidatorTest
 
 		val modelOk = getTestModule('', '''def f: x | ℝ[x] → ℝ;''') +
 			'''
-			let orig = [0.0 , 0.0];
+			let ℝ[2] orig = [0.0 , 0.0];
 			ComputeV:
 			{ 
-				let v = f(orig);
+				let ℝ v = f(orig);
 				v = v + 1;
 			}
 			'''
@@ -251,7 +251,7 @@ class UnusedValidatorTest
 
 		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, reduc) +
 			'''
-			let orig = [0.0 , 0.0];
+			let ℝ[2] orig = [0.0 , 0.0];
 			ℝ[2] X{nodes};
 			ComputeU: orig = sum{r∈nodes()}(X{r});
 			'''

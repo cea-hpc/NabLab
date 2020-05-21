@@ -22,21 +22,21 @@ set nodesOfCell: cell → {node};
 item commonFace: cell × cell → face;
 
 // Simulation options
-option stopTime = 0.1;
-option maxIterations = 500;
+option ℝ stopTime = 0.1;
+option ℕ maxIterations = 500;
 
 // Mesh options
-option X_EDGE_LENGTH = 0.1;
-option Y_EDGE_LENGTH = X_EDGE_LENGTH;
-option X_EDGE_ELEMS = 20;
-option Y_EDGE_ELEMS = 20;
+option ℝ X_EDGE_LENGTH = 0.1;
+option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+option ℕ X_EDGE_ELEMS = 20;
+option ℕ Y_EDGE_ELEMS = 20;
 
 // User options
-option PI = 3.1415926;
-option α = 1.0;
+option ℝ PI = 3.1415926;
+option ℝ α = 1.0;
 
-let t=0.0;
-let δt=0.001;
+let ℝ t = 0.0;
+let ℝ δt = 0.001;
 ℝ[2] X{nodes}, center{cells};
 ℝ u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
 

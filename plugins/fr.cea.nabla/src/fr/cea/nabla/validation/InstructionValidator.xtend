@@ -12,23 +12,26 @@ package fr.cea.nabla.validation
 import com.google.inject.Inject
 import fr.cea.nabla.ExpressionExtensions
 import fr.cea.nabla.nabla.Affectation
+import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.SimpleVarDefinition
+import fr.cea.nabla.nabla.VarGroupDeclaration
+import fr.cea.nabla.typing.BaseTypeTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import org.eclipse.xtext.validation.Check
-import fr.cea.nabla.nabla.VarGroupDeclaration
-import fr.cea.nabla.nabla.ConnectivityVar
 
 class InstructionValidator extends FunctionOrReductionValidator
 {
 	@Inject extension ValidationUtils
+	@Inject extension BaseTypeTypeProvider
 	@Inject extension ExpressionTypeProvider
 	@Inject extension ExpressionExtensions
 
 	public static val LOCAL_CONNECTIVITY_VAR = "Instructions::LocalConnectivityVar"
 	public static val AFFECTATION_TYPE = "Instructions::AffectationType"
+	public static val SIMPLE_VAR_TYPE = "Instructions::SimpleVarType"
 	public static val IF_CONDITION_BOOL = "Instructions::IfConditionBool"
 	public static val GLOBAL_VAR_VALUE = "Instructions::GlobalVarValue"
 	public static val LOCAL_OPTION = "Instructions::Local Option"
@@ -54,36 +57,43 @@ class InstructionValidator extends FunctionOrReductionValidator
 	@Check
 	def checkAffectationType(Affectation it)
 	{
-		if (!checkExpectedType(right?.typeFor, left?.typeFor))
-			error(getAffectationTypeMsg(right?.typeFor.label, left?.typeFor.label), NablaPackage.Literals.AFFECTATION__RIGHT, AFFECTATION_TYPE)
+		if (right !== null&& left !== null)
+		{
+			val leftType = left.typeFor
+			val rightType = right.typeFor
+			if (!checkExpectedType(rightType, leftType))
+				error(getAffectationTypeMsg(rightType.label, leftType.label), NablaPackage.Literals.AFFECTATION__RIGHT, AFFECTATION_TYPE)
+		}
 	}
 
 	@Check
 	def checkIfConditionBoolType(If it)
 	{
-		if (!checkExpectedType(condition?.typeFor, ValidationUtils::BOOL))
-			error(getIfConditionBoolMsg(condition?.typeFor.label), NablaPackage.Literals.IF__CONDITION, IF_CONDITION_BOOL)
-	}
-
-	@Check
-	def checkGlobalVarValue(SimpleVarDefinition it)
-	{
-		if (value !== null)
+		if (condition !== null)
 		{
-			val global = (eContainer !== null && eContainer instanceof NablaModule)
-			if (global && !value.nablaEvaluable)
-				error(getGlobalVarValueMsg(), NablaPackage.Literals::SIMPLE_VAR_DEFINITION__VALUE, GLOBAL_VAR_VALUE)
+			val condType = condition.typeFor
+			if (!checkExpectedType(condType, ValidationUtils::BOOL))
+				error(getIfConditionBoolMsg(condType.label), NablaPackage.Literals.IF__CONDITION, IF_CONDITION_BOOL)
 		}
 	}
 
 	@Check
-	def checkLocalOption(SimpleVarDefinition it)
+	def checkVarType(SimpleVarDefinition it)
 	{
-		if (value !== null && option)
+		if (value !== null)
 		{
-			val global = (eContainer !== null && eContainer instanceof NablaModule)
-			if (!global)
-				error(getLocalOptionMsg(), NablaPackage.Literals::SIMPLE_VAR_DEFINITION__VALUE, LOCAL_OPTION)
+			val valueType = value.typeFor
+			val varType = type.typeFor
+			if (!checkExpectedType(valueType, varType))
+				error(getAffectationTypeMsg(valueType.label, varType.label), NablaPackage.Literals.SIMPLE_VAR_DEFINITION__VALUE, SIMPLE_VAR_TYPE)
+			else
+			{
+				val global = (eContainer !== null && eContainer instanceof NablaModule)
+				if (global && !value.nablaEvaluable)
+					error(getGlobalVarValueMsg(), NablaPackage.Literals::SIMPLE_VAR_DEFINITION__VALUE, GLOBAL_VAR_VALUE)
+				else if (!global && option)
+					error(getLocalOptionMsg(), NablaPackage.Literals::SIMPLE_VAR_DEFINITION__VALUE, LOCAL_OPTION)
+			}
 		}
 	}
 }

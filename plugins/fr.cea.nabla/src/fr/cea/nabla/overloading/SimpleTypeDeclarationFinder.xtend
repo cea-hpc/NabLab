@@ -59,7 +59,8 @@ class SimpleTypeDeclarationFinder implements IDeclarationFinder
 
 		val inTypes = f.inTypes.map[computeExpressionType]
 		val returnType = f.returnType.computeExpressionType
-		return new FunctionDeclaration(f, inTypes, returnType)
+		val fd = new FunctionDeclaration(f, inTypes, returnType)
+		return fd
 	}
 
 	private def  Iterable<Expression> getSizeExpressions(NablaSimpleType it) 
@@ -131,9 +132,9 @@ class SimpleTypeDeclarationFinder implements IDeclarationFinder
 	 * Replace known size values in expression it and apply possible
 	 * binary operations (i.e. operations on IntConstants).
 	 */
-	private def Expression replaceValuesAndCompact(Expression it)
+	private def Expression replaceValuesAndCompact(Expression e)
 	{
-		var resultExpr = EcoreUtil.copy(it)
+		var resultExpr = EcoreUtil.copy(e)
 		for (t : transformers)
 			resultExpr = t.transform(resultExpr)
 		return resultExpr

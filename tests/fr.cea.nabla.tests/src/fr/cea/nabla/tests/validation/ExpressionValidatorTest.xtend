@@ -44,11 +44,11 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			let one = [1.0, 1.0];
-			let int = ℕ(1.2);
-			let bool = ℾ(1);
-			let real = ℝ(true);
-			let realOne = ℝ[2](one);
+			let ℝ[2] one = [1.0, 1.0];
+			let ℕ int = ℕ(1.2);
+			let ℾ bool = ℾ(1);
+			let ℝ real = ℝ(true);
+			let ℝ[2] realOne = ℝ[2](one);
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -68,10 +68,10 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			let int = ℕ(1);
-			let bool = ℾ(true);
-			let real = ℝ(1.2);
-			let realOne = ℝ[2](1.0);
+			let ℕ int = ℕ(1);
+			let ℾ bool = ℾ(true);
+			let ℝ real = ℝ(1.2);
+			let ℝ[2] realOne = ℝ[2](1.0);
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -84,8 +84,8 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			let two = 2;
-			let realOne = ℝ[two](1.0);
+			let ℕ two = 2;
+			let ℝ[2] realOne = ℝ[two](1.0);
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -96,7 +96,7 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			let realOne = ℝ[2](1.0);
+			let ℝ[2] realOne = ℝ[2](1.0);
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -114,8 +114,8 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(getTestModule('', functions)
 			+
 			'''
-			let opt = [0., 1.];
-			j1: let x = test(true, 0, opt);
+			let ℝ[2] opt = [0., 1.];
+			j1: let ℝ x = test(true, 0, opt);
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -131,8 +131,8 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(getTestModule('', functions)
 			+
 			'''
-			let opt = [0., 1.];
-			j1: let x = test(true, 0., opt);
+			let ℝ[2] opt = [0., 1.];
+			j1: let ℝ x = test(true, 0., opt);
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -152,8 +152,8 @@ class ExpressionValidatorTest
 			'''
 			ℝ D{cells}; 
 			ℝ[2] E{cells}; 
-			computeU: let u = sum{c∈cells()}(D);
-			computeV: let v = sum{c∈cells()}(E{c});
+			computeU: let ℝ u = sum{c∈cells()}(D);
+			computeV: let ℝ[2] v = sum{c∈cells()}(E{c});
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -177,8 +177,8 @@ class ExpressionValidatorTest
 			'''
 			ℝ D{cells};
 			ℝ[2] E{cells};
-			computeT: let u = sum{c∈cells()}(D{c});
-			computeV: let v = sum{c∈cells()}(E{c});
+			computeT: let ℝ u = sum{c∈cells()}(D{c});
+			computeV: let ℝ[2] v = sum{c∈cells()}(E{c});
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -191,10 +191,10 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			let cond = 0.0;
-			let U = 1.1;
-			let V = 2;
-			let W = (cond ? U : V);
+			let ℝ cond = 0.0;
+			let ℝ U = 1.1;
+			let ℕ V = 2;
+			let ℝ W = (cond ? U : V);
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -213,10 +213,10 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			let cond = true;
-			let U = 0.0;
-			let V = 1.1;
-			let W = (cond ? U : V);
+			let ℾ cond = true;
+			let ℝ U = 0.0;
+			let ℝ V = 1.1;
+			let ℝ W = (cond ? U : V);
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -229,8 +229,8 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			let cond = 0.0;
-			let ok = !cond; 
+			let ℝ cond = 0.0;
+			let ℾ ok = !cond; 
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -243,8 +243,8 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			let cond = true;
-			let ok = !cond; 
+			let ℾ cond = true;
+			let ℾ ok = !cond; 
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -257,9 +257,9 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			let a = true; 
-			let b = 0.0;
-			let c = a * b;
+			let ℾ  a = true; 
+			let ℝ b = 0.0;
+			let ℝ c = a * b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -274,9 +274,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			let a = 1.1;
-			let b = 0.0;
-			let c = a * b;
+			let ℝ a = 1.1;
+			let ℝ b = 0.0;
+			let ℝ c = a * b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -290,9 +290,9 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			let a = true; 
-			let b = 0.0;
-			let c = a / b;
+			let ℾ a = true; 
+			let ℝ b = 0.0;
+			let ℝ c = a / b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -307,9 +307,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			let a = 1.1;
-			let b = 0.0;
-			let c = a / b;
+			let ℝ a = 1.1;
+			let ℝ b = 0.0;
+			let ℝ c = a / b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -321,9 +321,9 @@ class ExpressionValidatorTest
 	{
 		val moduleKo = parseHelper.parse(testModule +
 			'''
-			let a = true; 
-			let b = 0;
-			let c = a + b;
+			let ℾ a = true; 
+			let ℕ b = 0;
+			let ℝ c = a + b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -338,9 +338,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			let a = 1.1;
-			let b = 0;
-			let c = a + b;
+			let ℝ a = 1.1;
+			let ℕ b = 0;
+			let ℝ c = a + b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -353,9 +353,9 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			let a = ℝ[2](0.0);
-			let b = ℝ[3](0.0);
-			let c = a - b;
+			let ℝ[2] a = ℝ[2](0.0);
+			let ℝ[3] b = ℝ[3](0.0);
+			let ℝ[2] c = a - b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -371,9 +371,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			let a = ℝ[2](0.0);
-			let b = ℝ[2](1.1);
-			let c = a - b;
+			let ℝ[2] a = ℝ[2](0.0);
+			let ℝ[2] b = ℝ[2](1.1);
+			let ℝ[2] c = a - b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -386,9 +386,9 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			let a = 0.0;
-			let b = ℝ[2](1.1);
-			let c = a > b;
+			let ℝ a = 0.0;
+			let ℝ[2] b = ℝ[2](1.1);
+			let ℾ c = a > b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -403,9 +403,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			let a = 0.0;
-			let b = 1.1;
-			let c = a > b;
+			let ℝ a = 0.0;
+			let ℝ b = 1.1;
+			let ℾ c = a > b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -418,9 +418,9 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			let a = 0.0;
-			let b = ℝ[2](1.1);
-			let c = a == b;
+			let ℝ a = 0.0;
+			let ℝ[2] b = ℝ[2](1.1);
+			let ℾ c = a == b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -435,9 +435,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			let a = 0.0; 
-			let b = 1.1;
-			let c = a == b;
+			let ℝ a = 0.0; 
+			let ℝ b = 1.1;
+			let ℾ c = a == b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -450,9 +450,9 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			let a = 0.0;
-			let b = ℝ[2](1.1);
-			let c = a % b;
+			let ℝ a = 0.0;
+			let ℝ[2] b = ℝ[2](1.1);
+			let ℕ c = a % b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -468,9 +468,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			let a = 0;
-			let b = 1;
-			let c = a % b;
+			let ℕ a = 0;
+			let ℕ b = 1;
+			let ℕ c = a % b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -483,9 +483,9 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			let a = 0;
-			let b = 1.1; 
-			let c = a && b;
+			let ℕ a = 0;
+			let ℝ b = 1.1; 
+			let ℾ c = a && b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -501,9 +501,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			let a = true;
-			let b = false; 
-			let c = a && b;
+			let ℾ a = true;
+			let ℾ b = false; 
+			let ℾ c = a && b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -516,9 +516,9 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			let a = 0;
-			let b = 1.1;
-			let c = a || b;
+			let ℕ a = 0;
+			let ℝ b = 1.1;
+			let ℾ c = a || b;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -534,9 +534,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			let a = true;
-			let b = false;
-			let c = a || b;
+			let ℾ a = true;
+			let ℾ b = false;
+			let ℾ c = a || b;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -549,7 +549,7 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			let V = [0];
+			let ℕ[1] V = [0];
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -560,7 +560,7 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			let V = [0, 1];
+			letℕ[2] V = [0, 1];
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -572,7 +572,7 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(testModule
 			+
 			'''
-			let V = [0, 3.4];
+			let ℕ[2] V = [0, 3.4];
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -583,7 +583,7 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
-			let V = [0, 3];
+			let ℕ[2] V = [0, 3];
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

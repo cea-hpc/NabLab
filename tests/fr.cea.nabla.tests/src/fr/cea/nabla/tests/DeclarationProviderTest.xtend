@@ -56,12 +56,12 @@ class DeclarationProviderTest
 		set cells: → {cell};
 		set nodes: → {node};
 
-		def	f: → ℕ;
+		def f: → ℕ;
 		def f: ℕ → ℕ;
 		def f: ℝ → ℝ;
 		def f: ℝ[2] → ℝ[2];
 
-		def	g: a | ℝ[a] → ℝ[a];
+		def g: a | ℝ[a] → ℝ[a];
 		def g: a, b | ℝ[a, b] → ℝ[a*b];
 		def g: a, b | ℝ[a] × ℝ[b] → ℝ[a+b];
 		'''
@@ -73,28 +73,28 @@ class DeclarationProviderTest
 		ℝ[2] x2{cells};
 
 		// --- TEST DE F ---
-		J0: { let y = f(); }
-		J1: { let y = f(2); }
-		J2: { let y = f(3.0); }
+		J0: { let ℕ y = f(); }
+		J1: { let ℕ y = f(2); }
+		J2: { let ℝ y = f(3.0); }
 		J3: {
-				let b = [1.1, 2.2];
-				let y = f(b);
+				let ℝ[2] b = [1.1, 2.2];
+				let ℝ[2] y = f(b);
 		}
-		J4: { let y = f(3.0, true); } // Wrong arguments : ℝ, ℾ
+		J4: { let ℝ y = f(3.0, true); } // Wrong arguments : ℝ, ℾ
 
 		// --- TEST DE G ---
 		J5: {
-				let b = [1.1, 2.2];
-				let y = g(b);
+				let ℝ[2] b = [1.1, 2.2];
+				let ℝ[2] y = g(b);
 		}
 		J6: {
-				let b = [[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]];
-				let y = g(b);
+				let ℝ[2,3] b = [[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]];
+				let ℝ[6] y = g(b);
 		}
 		J7: {
-				let b = [1.1, 2.2];
-				let c = [3.3, 4.4, 5.5];
-				let y = g(b, c);
+				let ℝ[2] b = [1.1, 2.2];
+				let ℝ[3] c = [3.3, 4.4, 5.5];
+				let ℝ[5] y = g(b, c);
 		}
 		J8: { a = g(x); }
 		J9: { a = g(x, x); } // Wrong arguments : ℝ{cells}, ℝ{cells}
@@ -170,7 +170,7 @@ class DeclarationProviderTest
 		}
 
 		def j: a | ℝ[a] → ℝ[a], (x) → {
-			let y = g(x);
+			let ℝ[a] y = g(x);
 			∀i∈[0;a[, y[i] = f(x[i]);
 			return y;
 		}
@@ -224,9 +224,9 @@ class DeclarationProviderTest
 		ℕ bidon{cells};
 
 		// --- TEST DE F ---
-		J0: { let x = f{j ∈ cells()}(u{j}); }
-		J1: { let x = f{j ∈ cells()}(u2{j}); }
-		J2: { let x = f{j ∈ cells()}(bidon{j}); } // Wrong arguments : ℕ
+		J0: { let ℝ x = f{j ∈ cells()}(u{j}); }
+		J1: { let ℝ[2] x = f{j ∈ cells()}(u2{j}); }
+		J2: { let ℝ x = f{j ∈ cells()}(bidon{j}); } // Wrong arguments : ℕ
 		'''
 
 		val module = model.parse

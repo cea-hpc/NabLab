@@ -66,7 +66,8 @@ class DeclarationProvider
 	 * All the types must be either NablaSimpleType or NablaConnectivityType.
 	 * If they are instance of NablaSimpleType it is a "classical function call"
 	 * and a SimpleDeclarationFinder is returned else it is a "linear algebra call". 
-	 * In this case, the associated base type must be scalar and a ConnectivityDeclarationFinder
+	 * In this case, the associated base type must be scalar and 
+	 * a ConnectivityDeclarationFinder is returned.
 	 */
 	private def getDeclarationFinder(List<NablaType> argTypes)
 	{

@@ -335,7 +335,7 @@ class NablaScopeProviderTest
 			def inverse: ℝ[2,2] → ℝ[2,2];
 			def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
 			{
-				let c = 2.0;
+				let ℝ c = 2.0;
 				c = a * 2.0;
 				return c + 4.0;
 			}

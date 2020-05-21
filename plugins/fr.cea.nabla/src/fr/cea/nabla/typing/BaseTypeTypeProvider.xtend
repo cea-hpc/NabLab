@@ -34,7 +34,7 @@ class BaseTypeTypeProvider
 				else
 					getArray1DTypeFor(primitive, sizes.get(0))
 			}
-			case 2: 
+			case 2:
 			{
 				val nbRows = sizes.get(0)
 				val nbCols = sizes.get(1)
@@ -43,7 +43,7 @@ class BaseTypeTypeProvider
 				else 
 					getArray2DTypeFor(primitive, nbRows, nbCols)
 			}
-			default: throw new RuntimeException("Unmanaged type")
+			default: null
 		}
 	}
 

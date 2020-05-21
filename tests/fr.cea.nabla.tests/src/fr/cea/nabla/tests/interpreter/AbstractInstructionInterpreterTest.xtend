@@ -30,7 +30,7 @@ abstract class AbstractInstructionInterpreterTest
 		+
 		'''
 		ℝ[2] X{nodes};
-		Job1: { let r = 1.0; t = r; }
+		Job1: { let ℝ r = 1.0; t = r; }
 		'''
 		
 		assertInterpreteVarDefinition(model)
@@ -43,7 +43,7 @@ abstract class AbstractInstructionInterpreterTest
 		+
 		'''
 		ℝ[2] X{nodes};
-		Job1: { let r = 1.0; t = r; }
+		Job1: { let ℝ r = 1.0; t = r; }
 		'''
 
 		assertInterpreteInstructionBlock(model)
@@ -56,7 +56,7 @@ abstract class AbstractInstructionInterpreterTest
 		+
 		'''
 		ℝ[2] X{nodes};
-		Job1: { let r = 1.0; t = r; }
+		Job1: { let ℝ r = 1.0; t = r; }
 		'''
 
 		assertInterpreteAffectation(model)
@@ -75,7 +75,7 @@ abstract class AbstractInstructionInterpreterTest
 		InitU : ∀r∈cells(), U{r} = 1.0;
 		ComputeCjr: ∀j∈ cells(), {
 			set rCellsJ = nodesOfCell(j);
-			let cardRCellsJ = card(rCellsJ);
+			let ℕ cardRCellsJ = card(rCellsJ);
 			ℝ[cardRCellsJ] tmp;
 			∀r, countr ∈ rCellsJ, {
 				tmp[countr] = 0.5; // stupid but test countr
@@ -114,8 +114,8 @@ abstract class AbstractInstructionInterpreterTest
 		val model = getTestModule(xQuads, yQuads)
 		+
 		'''
-		let V=100;
-		let W=0;
+		let ℕ V=100;
+		let ℕ W=0;
 		ℝ[2] X{nodes};
 
 		Test : if (V < 100) W = V+1; else exit "V must be less than 100";

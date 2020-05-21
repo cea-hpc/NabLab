@@ -21,6 +21,7 @@ import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.SimpleVar
 import java.util.HashMap
+import org.eclipse.emf.ecore.util.EcoreUtil
 
 interface ExpressionTransformer
 {
@@ -30,7 +31,7 @@ interface ExpressionTransformer
 /**
  * Replace size variables by their value in argument expr.
  */
-class ReplaceKnownSizeValues implements ExpressionTransformer 
+class ReplaceKnownSizeValues implements ExpressionTransformer
 {
 	val HashMap<SimpleVar, Expression> sizeVarValues
 
@@ -94,7 +95,7 @@ class ReplaceKnownSizeValues implements ExpressionTransformer
 			val v = target as SimpleVar
 			val vValue = sizeVarValues.get(v)
 			if (vValue === null) null
-			else vValue
+			else EcoreUtil::copy(vValue)
 		}
 	}
 }

@@ -41,7 +41,7 @@ class FunctionOrReductionValidatorTest
 			'''
 			ℕ U{cells};
 			ComputeU: ∀ j∈cells(), {
-					let e = 1;
+					let ℕ e = 1;
 					U{j} = e * 4;
 					return e;
 			}
@@ -57,7 +57,7 @@ class FunctionOrReductionValidatorTest
 			'''
 			ℕ U{cells};
 			ComputeU: ∀ j∈cells(), {
-					let e = 1;
+					let ℕ e = 1;
 					U{j} = e * 4;
 			}
 			'''
@@ -99,7 +99,7 @@ class FunctionOrReductionValidatorTest
 		def f: ℝ → ℝ, (a) → 
 		{
 			return 1.0;
-			let x = 1;
+			let ℕ x = 1;
 		}
 		''')
 		Assert.assertNotNull(moduleKo)

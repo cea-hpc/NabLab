@@ -84,7 +84,7 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	@Check
 	def checkBaseTypeConstantValue(BaseTypeConstant it)
 	{
-		val vType = value.typeFor
+		val vType = value?.typeFor
 		if (vType !== null && !(vType instanceof NSTScalar && vType.primitive == type.primitive))
 			error(getBaseTypeConstantValueMsg(type.primitive.literal), NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE, BASE_TYPE_CONSTANT_VALUE)
 	}

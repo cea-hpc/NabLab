@@ -64,24 +64,24 @@ class ExpressionTypeProvider
 			null
 	}
 
-	def dispatch NablaType getTypeFor(ContractedIf it) { then.typeFor }
+	def dispatch NablaType getTypeFor(ContractedIf it) { then?.typeFor }
 	def dispatch NablaType getTypeFor(Or it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(And it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(Equality it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(Comparison it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(Plus it) { getTypeFor(left, right, op) }
 	def dispatch NablaType getTypeFor(Minus it) { getTypeFor(left, right, op) }
-	def dispatch NablaType getTypeFor(Mul it)  { getTypeFor(left, right, op) }
-	def dispatch NablaType getTypeFor(Div it)  { getTypeFor(left, right, op) }
-	def dispatch NablaType getTypeFor(Modulo it)  { new NSTIntScalar }
+	def dispatch NablaType getTypeFor(Mul it) { getTypeFor(left, right, op) }
+	def dispatch NablaType getTypeFor(Div it) { getTypeFor(left, right, op) }
+	def dispatch NablaType getTypeFor(Modulo it) { new NSTIntScalar }
 	def dispatch NablaType getTypeFor(Parenthesis it) { expression?.typeFor }
 	def dispatch NablaType getTypeFor(UnaryMinus it) { expression?.typeFor }
 	def dispatch NablaType getTypeFor(Not it) { expression?.typeFor }
 	def dispatch NablaType getTypeFor(IntConstant it) { new NSTIntScalar }
 	def dispatch NablaType getTypeFor(RealConstant it) { new NSTRealScalar }
 	def dispatch NablaType getTypeFor(BoolConstant it)  { new NSTBoolScalar }
-	def dispatch NablaType getTypeFor(MinConstant it) { type.typeFor }
-	def dispatch NablaType getTypeFor(MaxConstant it) { type.typeFor }
+	def dispatch NablaType getTypeFor(MinConstant it) { type?.typeFor }
+	def dispatch NablaType getTypeFor(MaxConstant it) { type?.typeFor }
 
 	def dispatch NablaType getTypeFor(FunctionCall it)
 	{
@@ -99,7 +99,7 @@ class ExpressionTypeProvider
 
 	def dispatch NablaType getTypeFor(BaseTypeConstant it)
 	{
-		type.typeFor
+		type?.typeFor
 	}
 
 	def dispatch NablaType getTypeFor(VectorConstant it)

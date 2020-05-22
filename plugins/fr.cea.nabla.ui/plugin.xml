@@ -667,4 +667,28 @@
       icon="icons/NabLab.gif">
    </consoleFactory>
  </extension>
+ <!-- Create a key binding to notiy Latex ang Graph views -->
+ <extension
+       point="org.eclipse.ui.commands">
+    <command
+          id="fr.cea.nabla.ui.NotifyViewsId"
+          name="Notify view">
+    </command>
+ </extension>
+ <extension
+       point="org.eclipse.ui.bindings">
+    <key
+          commandId="fr.cea.nabla.ui.NotifyViewsId"
+          contextId="org.eclipse.xtext.ui.XtextEditorScope"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+          sequence="F1">
+    </key>
+ </extension>
+ <extension
+       point="org.eclipse.ui.handlers">
+    <handler
+          class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.views.NotifyViewsHandler"
+          commandId="fr.cea.nabla.ui.NotifyViewsId">
+    </handler>
+ </extension>
 </plugin>

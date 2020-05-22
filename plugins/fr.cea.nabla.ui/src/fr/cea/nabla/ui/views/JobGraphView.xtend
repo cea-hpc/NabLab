@@ -10,17 +10,20 @@
 package fr.cea.nabla.ui.views
 
 import com.google.inject.Inject
-import fr.cea.nabla.generator.NablaGenerator
-import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher
+import fr.cea.nabla.generator.IrModuleTransformer
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
+import fr.cea.nabla.generator.ir.Nabla2Ir
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobContainer
 import fr.cea.nabla.ir.ir.TimeLoopJob
+import fr.cea.nabla.ir.transformers.CompositeTransformationStep
+import fr.cea.nabla.ir.transformers.FillJobHLTs
+import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.ui.NabLabConsoleFactory
-import fr.cea.nabla.ui.NablaDslEditor
 import fr.cea.nabla.ui.UiUtils
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.jface.viewers.DoubleClickEvent
 import org.eclipse.jface.viewers.IDoubleClickListener
 import org.eclipse.jface.viewers.StructuredSelection
@@ -29,36 +32,32 @@ import org.eclipse.swt.events.MouseEvent
 import org.eclipse.swt.events.MouseWheelListener
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Display
-import org.eclipse.ui.IPartListener
-import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.ui.part.ViewPart
+import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.zest.core.viewers.IZoomableWorkbenchPart
 
 import static extension fr.cea.nabla.ir.Utils.*
 
 class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 {
-	static class NablaDslEditorViewPartListener implements IPartListener
-	{
-		val JobGraphView view
-
-		new(JobGraphView view) { this.view = view }
-
-		override partActivated(IWorkbenchPart part)
-		{
-			if (part instanceof NablaDslEditor)
-				view.displayIrModuleFrom(part)
-		}
-
-		override partDeactivated(IWorkbenchPart part) {}
-		override partBroughtToTop(IWorkbenchPart part) {}
-		override partOpened(IWorkbenchPart part) {}
-		override partClosed(IWorkbenchPart part) {}
-	}
-
-	@Inject NablaGenerator nablaGenerator
+	@Inject NotifyViewsHandler notifyViewsHandler
 	@Inject NabLabConsoleFactory consoleFactory
-	@Inject NablaGeneratorMessageDispatcher dispatcher
+	@Inject IrModuleTransformer transformer
+	@Inject Nabla2Ir nabla2Ir
+
+	// F1 key pressed in NablaDslEditor
+	val keyNotificationListener =
+		[EObject selectedNablaObject |
+			val display = Display::^default
+			if (display !== null && selectedNablaObject !== null)
+			{
+				val nablaModule = EcoreUtil2.getContainerOfType(selectedNablaObject, NablaModule)
+				if (nablaModule !== null)
+				{
+					display.asyncExec([displayIrModuleFrom(nablaModule)])
+				}
+			}
+		]
 
 	// Zoom with mouse wheel
 	val MouseWheelListener mouseWheelListener = [ MouseEvent event |
@@ -93,15 +92,6 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 			}
 		])
 
-	// Listen to generation (CTRL-S on NabLab editor)
-	val (IrModule) => void irModuleListener = [IrModule module |
-			if (Display::^default === null) viewerJobContainer = module
-			else Display::^default.asyncExec([viewerJobContainer = module])
-		]
-
-	// Listen to editor open/close
-	val NablaDslEditorViewPartListener partListener = new NablaDslEditorViewPartListener(this)
-
 	JobGraphViewer viewer
 	JobContainer displayedContainer = null
 
@@ -113,21 +103,15 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		viewer = new JobGraphViewer(parent)
 		viewer.graphControl.addMouseWheelListener(mouseWheelListener)
 		viewer.addDoubleClickListener(doubleClickListener)
-		dispatcher.irModuleListeners += irModuleListener
-		site.page.addPartListener(partListener)
-
-		// When view is opening, if NabLab editor is open, IR is calculated and displayed
-		displayIrModuleFrom(UiUtils.activeNablaDslEditor)
+		notifyViewsHandler.keyNotificationListeners += keyNotificationListener
 	}
 
 	override dispose()
 	{
-		println("dispose")
+		notifyViewsHandler.keyNotificationListeners -= keyNotificationListener
+		viewer.removeDoubleClickListener(doubleClickListener)
 		// seems to throw an exception...
 		// viewer.graphControl.removeMouseWheelListener(mouseWheelListener)
-		site.page.removePartListener(partListener)
-		dispatcher.irModuleListeners -= irModuleListener
-		viewer.removeDoubleClickListener(doubleClickListener)
 		viewer = null
 	}
 
@@ -145,26 +129,29 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		viewer.input = container
 	}
 
-	private def void displayIrModuleFrom(NablaDslEditor editor)
+	private def void displayIrModuleFrom(NablaModule nablaModule)
 	{
-		if (editor !== null && editor.document !== null)
+		try 
 		{
-			val obj = editor.document.readOnly([ state | state.contents.get(0)])
-			if (obj !== null && obj instanceof NablaModule)
+			consoleFactory.printConsole(MessageType.Start, "Building IR to initialize job graph view")
+			val irModule = nabla2Ir.toIrModule(nablaModule)
+	
+			// buildIrModule can be call several times for the same nablaModule,
+			// for example by a view. Transformations must not be done in this case
+			if (irModule.jobs.forall[at == 0.0])
 			{
-				consoleFactory.printConsole(MessageType.Start, "Building IR to initialize job graph view")
-				try 
-				{
-					val irModule = nablaGenerator.buildIrModule(obj as NablaModule)
-					consoleFactory.printConsole(MessageType.End, "Job graph view initialized")
-					viewerJobContainer = irModule
-				}
-				catch (Exception e)
-				{
-					// An exception can occured during IR building if environment is not configured,
-					// for example compilation not done. Whatever... we will display the graph later
-				}
+				// IR -> IR
+				val description = 'Minimal IR->IR transformations to check job cycles'
+				val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
+				transformer.transformIr(t, irModule, [msg | consoleFactory.printConsole(MessageType.Exec, msg)])
 			}
+			consoleFactory.printConsole(MessageType.End, "Job graph view initialized")
+			viewerJobContainer = irModule
+		}
+		catch (Exception e)
+		{
+			// An exception can occured during IR building if environment is not configured,
+			// for example compilation not done. Whatever... we will display the graph later
 		}
 	}
 }

@@ -18,55 +18,40 @@ import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Reduction
-import fr.cea.nabla.ui.NablaDslEditor
 import java.io.ByteArrayInputStream
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.jface.text.ITextSelection
-import org.eclipse.jface.viewers.ISelection
 import org.eclipse.swt.SWT
 import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Display
 import org.eclipse.swt.widgets.Label
-import org.eclipse.ui.ISelectionListener
-import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.ui.part.ViewPart
-import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 
 class LatexView extends ViewPart
 {
-	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
-	Label label
+	@Inject NotifyViewsHandler notifyViewsHandler
 
-	val ISelectionListener selectionListener = 
-		[IWorkbenchPart part, ISelection selection |
-			if (part instanceof NablaDslEditor && selection instanceof ITextSelection)
+	Label label
+	val keyNotificationListener =
+		[EObject selectedNablaObject |
+			val display = Display::^default
+			if (display !== null && selectedNablaObject !== null)
 			{
-				val nablaDslEditor = part as NablaDslEditor
-				val textSelection = selection as ITextSelection
-				val display = Display::^default
-				if (display !== null)
-				{
-					display.asyncExec
-					([
-						val o = nablaDslEditor.document.readOnly([state | eObjectAtOffsetHelper.resolveContainedElementAt(state, textSelection.offset)])
-						val displayableObject = o.closestDisplayableNablaElt
-						if (displayableObject !== null) label.image = displayableObject.latexImage
-					])
-				}
+				val displayableObject = selectedNablaObject.closestDisplayableNablaElt
+				if (displayableObject !== null)
+					display.asyncExec([label.image = displayableObject.latexImage])
 			}
 		]
 
 	override createPartControl(Composite parent)
 	{
 		label = new Label(parent, SWT.NONE)
-		// listen to NablaDslEditor selection
-		site.page.addPostSelectionListener(selectionListener)
+		notifyViewsHandler.keyNotificationListeners += keyNotificationListener
 	}
 
 	override dispose()
 	{
-		site.page.removePostSelectionListener(selectionListener)
+		notifyViewsHandler.keyNotificationListeners -= keyNotificationListener
 	}
 
 	override setFocus()

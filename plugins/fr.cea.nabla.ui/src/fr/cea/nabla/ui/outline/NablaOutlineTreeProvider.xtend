@@ -31,8 +31,8 @@ class NablaOutlineTreeProvider extends DefaultOutlineTreeProvider
 	def _image(Reduction it) { null }
 	def _image(Job it) { null }
 
-	def _text(Function it) { 'Function' + name }
-	def _text(Reduction it) { 'Reduction' + name }
+	def _text(Function it) { 'Function ' + name }
+	def _text(Reduction it) { 'Reduction ' + name }
 	def _text(Job it) { 'Job ' + name }
 
 	def _createChildren(DocumentRootNode parentNode, NablaModule it)

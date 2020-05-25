@@ -12,9 +12,9 @@ package fr.cea.nabla.scoping
 import com.google.inject.Inject
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.ArgOrVar
-import fr.cea.nabla.nabla.ArgOrVarRef
-import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionOrReduction
+import fr.cea.nabla.nabla.FunctionTypeDeclaration
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Interval
@@ -24,7 +24,9 @@ import fr.cea.nabla.nabla.Iterable
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.nabla.ReductionTypeDeclaration
 import fr.cea.nabla.nabla.SetDefinition
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.SingletonDefinition
@@ -61,6 +63,24 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		return s
 	}
 
+	def scope_ItemRef_target(ReductionCall context, EReference r)
+	{
+		//println('scope_ItemRef_target(' + context.class.simpleName + ', ' + r.name + ')')
+		val containerScope = itemsDefinedBefore(context.eContainer, context, '\t')
+		val s = if (context.iterationBlock instanceof SpaceIterator)
+			{
+				val spaceIt = context.iterationBlock as SpaceIterator
+				val items = new ArrayList<Item>
+				items += spaceIt.item
+				items += spaceIt.singletons.map[item]
+				Scopes::scopeFor(items, containerScope)
+			}
+			else
+				containerScope
+		//println('--> ' + s)
+		return s
+	}
+
 	def scope_ItemRef_target(SingletonDefinition context, EReference r)
 	{
 		//println('scope_ItemRef_target(' + context.class.simpleName + ', ' + r.name + ')')
@@ -75,14 +95,6 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	}
 
 	def scope_ItemRef_target(Instruction context, EReference r)
-	{
-		//println('scope_ItemRef_target(' + context.class.simpleName + ', ' + r.name + ')')
-		val s = itemsDefinedBefore(context.eContainer, context, '\t')
-		//println('--> ' + s)
-		return s
-	}
-
-	def scope_ItemRef_target(ArgOrVarRef context, EReference r)
 	{
 		//println('scope_ItemRef_target(' + context.class.simpleName + ', ' + r.name + ')')
 		val s = itemsDefinedBefore(context.eContainer, context, '\t')
@@ -177,14 +189,47 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 
 
 	/*** Scope for variables *************************************************/
-	/**
-	 * ArgOrVarRef must be intercepted because they can be arguments of ReductionCall.
-	 * The ReductionCall interval must be intercepted.
-	 */ 
-	def IScope scope_ArgOrVarRef_target(ArgOrVarRef context, EReference r)
+	def IScope scope_ArgOrVarRef_target(FunctionOrReduction context, EReference r)
 	{
 		//println('scope_ArgOrVarRef_target(' + context.class.simpleName + ', ' + r.name + ')')
-		val s = variablesDefinedBefore(context.eContainer, context, '\t')
+		val s = IScope::NULLSCOPE
+		//println('--> ' + s)
+		return s
+	}
+
+	def IScope scope_ArgOrVarRef_target(FunctionTypeDeclaration context, EReference r)
+	{
+		//println('scope_ArgOrVarRef_target(' + context.class.simpleName + ', ' + r.name + ')')
+		val s = Scopes::scopeFor((context.eContainer as Function).vars)
+		//println('--> ' + s)
+		return s
+	}
+
+	def IScope scope_ArgOrVarRef_target(ReductionTypeDeclaration context, EReference r)
+	{
+		//println('scope_ArgOrVarRef_target(' + context.class.simpleName + ', ' + r.name + ')')
+		val s = Scopes::scopeFor((context.eContainer as Reduction).vars)
+		//println('--> ' + s)
+		return s
+	}
+
+	def IScope scope_ArgOrVarRef_target(ReductionCall context, EReference r)
+	{
+		//println('scope_ArgOrVarRef_target(' + context.class.simpleName + ', ' + r.name + ')')
+		val containerScope = variablesDefinedBefore(context.eContainer, context, '\t')
+		val s = if (context.iterationBlock instanceof Interval)
+				Scopes::scopeFor(#[(context.iterationBlock as Interval).index], containerScope)
+			else
+				containerScope
+		//println('--> ' + s)
+		return s
+	}
+
+	def IScope scope_ArgOrVarRef_target(Interval context, EReference r)
+	{
+		//println('scope_ArgOrVarRef_target(' + context.class.simpleName + ', ' + r.name + ')')
+		val iterable = context.eContainer as Iterable
+		val s = variablesDefinedBefore(iterable.eContainer, context, '\t')
 		//println('--> ' + s)
 		return s
 	}
@@ -206,15 +251,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		iteratorsAndVars += module.allVars
 		iteratorsAndVars += subList(definition.iterators, context)
 		iteratorsAndVars += context
-		val s = Scopes::scopeFor(iteratorsAndVars)
-		//println('--> ' + s)
-		return s
-	}
-
-	def IScope scope_ArgOrVarRef_target(BaseType context, EReference r)
-	{
-		//println('scope_ArgOrVarRef_target(' + context.class.simpleName + ', ' + r.name + ')')
-		val s = variablesDefinedBefore(context.eContainer, context, '\t')
+		val s = if (iteratorsAndVars.empty) IScope.NULLSCOPE else Scopes::scopeFor(iteratorsAndVars)
 		//println('--> ' + s)
 		return s
 	}
@@ -243,7 +280,9 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 	private def dispatch IScope variablesDefinedBefore(Job context, EObject o, String prefix)
 	{
 		//println(prefix + 'variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
-		Scopes::scopeFor((context.eContainer as NablaModule).allVars)
+		val variables = (context.eContainer as NablaModule).allVars
+		if (variables.empty) IScope::NULLSCOPE
+		else Scopes::scopeFor(variables)
 	}
 
 	private def dispatch IScope variablesDefinedBefore(NablaModule context, EObject o, String prefix)
@@ -262,17 +301,13 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 				subList(context.declarations, o).forEach[x | variables += x.variables]
 			}
 		}
-		Scopes::scopeFor(variables)
+		if (variables.empty) IScope::NULLSCOPE
+		else Scopes::scopeFor(variables)
 	}
 
 	private def dispatch IScope variablesDefinedBefore(FunctionOrReduction context, EObject o, String prefix)
 	{
-		//println(prefix + 'variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
-		if (o instanceof BaseType)
-			// it is the function header, args are not yet visible
-			Scopes::scopeFor(context.vars)
-		else 
-			Scopes::scopeFor(context.vars + context.inArgs)
+		Scopes::scopeFor(context.vars + context.inArgs)
 	}
 
 	/**

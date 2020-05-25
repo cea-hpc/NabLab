@@ -83,7 +83,6 @@ abstract class AbstractInstructionInterpreterTest
 			}
 		}
 		'''
-
 		assertInterpreteLoop(model, xQuads, yQuads)
 	}
 

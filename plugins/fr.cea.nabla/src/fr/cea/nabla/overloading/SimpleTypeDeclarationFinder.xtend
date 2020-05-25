@@ -41,29 +41,29 @@ class SimpleTypeDeclarationFinder implements IDeclarationFinder
 
 	override ReductionDeclaration findReduction(Iterable<Reduction> candidates)
 	{
-		val r = candidates.findFirst[x | sizesMatch(x, x.type.sizes, callerInTypes.head.sizeExpressions)]
+		val r = candidates.findFirst[x | sizesMatch(x, x.typeDeclaration.type.sizes, callerInTypes.head.sizeExpressions)]
 		if (r === null) return null
 
-		val type = r.type.computeExpressionType
+		val type = r.typeDeclaration.type.computeExpressionType
 		return new ReductionDeclaration(r, type)
 	}
 
 	override FunctionDeclaration findFunction(Iterable<Function> candidates)
 	{
 		val f = candidates.findFirst[x |
-			for (i : 0..<x.inTypes.size)
-				if (!sizesMatch(x, x.inTypes.get(i).sizes, callerInTypes.get(i).sizeExpressions)) return false
+			for (i : 0..<x.typeDeclaration.inTypes.size)
+				if (!sizesMatch(x, x.typeDeclaration.inTypes.get(i).sizes, callerInTypes.get(i).sizeExpressions)) return false
 			return true
 		]
 		if (f === null) return null
 
-		val inTypes = f.inTypes.map[computeExpressionType]
-		val returnType = f.returnType.computeExpressionType
+		val inTypes = f.typeDeclaration.inTypes.map[computeExpressionType]
+		val returnType = f.typeDeclaration.returnType.computeExpressionType
 		val fd = new FunctionDeclaration(f, inTypes, returnType)
 		return fd
 	}
 
-	private def  Iterable<Expression> getSizeExpressions(NablaSimpleType it) 
+	private def  Iterable<Expression> getSizeExpressions(NablaSimpleType it)
 	{
 		switch it
 		{

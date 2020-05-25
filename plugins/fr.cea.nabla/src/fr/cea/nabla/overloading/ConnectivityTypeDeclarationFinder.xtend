@@ -43,14 +43,14 @@ class ConnectivityTypeDeclarationFinder implements IDeclarationFinder
 	override FunctionDeclaration findFunction(Iterable<Function> candidates)
 	{
 		val f = candidates.findFirst[x |
-			for (i : 0..<x.inTypes.size)
-				if (!sizesMatch(x, x.inTypes.get(i).sizes, callerInTypes.get(i).supports)) return false
+			for (i : 0..<x.typeDeclaration.inTypes.size)
+				if (!sizesMatch(x, x.typeDeclaration.inTypes.get(i).sizes, callerInTypes.get(i).supports)) return false
 			return true
 		]
 		if (f === null) return null
 
-		val inTypes = f.inTypes.map[computeExpressionType]
-		val returnType = f.returnType.computeExpressionType
+		val inTypes = f.typeDeclaration.inTypes.map[computeExpressionType]
+		val returnType = f.typeDeclaration.returnType.computeExpressionType
 		return new FunctionDeclaration(f, inTypes, returnType)
 	}
 

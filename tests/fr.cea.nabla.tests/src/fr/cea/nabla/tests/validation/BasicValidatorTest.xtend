@@ -48,7 +48,6 @@ class BasicValidatorTest
 				return 4.0;
 			}
 			'''))
-
 		moduleKo.assertError(NablaPackage.eINSTANCE.interval,
 			BasicValidator::ZERO_FROM,
 			BasicValidator::getZeroFromMsg())

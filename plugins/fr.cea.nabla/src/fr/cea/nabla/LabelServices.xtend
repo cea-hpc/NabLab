@@ -25,6 +25,7 @@ import fr.cea.nabla.nabla.Exit
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.FunctionTypeDeclaration
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.InstructionBlock
@@ -48,6 +49,7 @@ import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.nabla.ReductionTypeDeclaration
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SetDefinition
 import fr.cea.nabla.nabla.SetRef
@@ -97,13 +99,36 @@ class LabelServices
 	static def dispatch String getLabel(NextTimeIteratorRef it) { target?.name + '+' + value }
 
 	/* FONCTIONS / REDUCTIONS ********************************/
-	static def dispatch String getLabel(Function it) { 'def ' + name + ' : ' + vars?.labelForVars + inTypes?.map[label].join(' \u00D7 ') + ' \u2192 ' + returnType?.label }
-	static def dispatch String getLabel(Reduction it) { 'def ' + name + ' : ' + vars?.labelForVars + '(' + seed?.label + ', ' + type?.label + ')' }
+	static def dispatch String getLabel(Function it) { 'def ' + name + ' : ' + getLabel(vars, typeDeclaration) }
+	static def dispatch String getLabel(Reduction it) { 'def ' + name + ', ' + seed?.label + ' : ' + getLabel(vars, typeDeclaration) }
 
-	private static def getLabelForVars(List<SimpleVar> symbols)
+	private static def String getLabel(List<SimpleVar> vars, FunctionTypeDeclaration td)
 	{
-		if (symbols.empty) ''
-		else symbols.map[name].join(', ') + ' | '
+		var ret = ''
+		if (vars !== null)
+		{
+			ret += vars.map[name].join(', ')
+			if (!vars.empty) ret += ' | '
+		}
+		if (td !== null)
+		{
+			ret += td.inTypes?.map[label].join(' \u00D7 ')
+			ret += ' \u2192 ' + td.returnType?.label
+		}
+		return ret
+	}
+
+	private static def String getLabel(List<SimpleVar> vars, ReductionTypeDeclaration td)
+	{
+		var ret = ''
+		if (vars !== null)
+		{
+			ret += vars.map[name].join(', ')
+			if (!vars.empty) ret += ' | '
+		}
+		if (td !== null)
+			ret += td.type?.label
+		return ret
 	}
 
 	/* EXPRESSIONS ******************************************/

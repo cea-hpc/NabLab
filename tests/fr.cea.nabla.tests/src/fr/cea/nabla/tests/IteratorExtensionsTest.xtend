@@ -82,10 +82,9 @@ class IteratorExtensionsTest
 		J5: ∀j1∈cells(), f{j1} = a * ∑{j2∈neighbourCells(j1), cf=commonFace(j1,j2)}( (x{j2}-x{j1}) / surface{cf});
 		J6: ∀j1∈cells(), ∀j2∈neighbourCells(j1), {
 				item cf = commonFace(j1,j2);
-				let bidon = (x{j2}-x{j1}) / surface{cf});
+				let ℝ bidon = (x{j2}-x{j1}) / surface{cf});
 			}
 		'''
-
 		val nablaModule = parseHelper.parse(model)
 
 		j1 = nablaModule.getJobByName("J1")

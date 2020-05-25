@@ -90,7 +90,7 @@ class DeclarationProvider
 		val module = EcoreUtil2.getContainerOfType(r, NablaModule)
 		if (module === null) return #[]
 		val candidates = module.reductions.filter[x | x.name == r.name]
-		return candidates.filter[argsMatch(#[type], #[callerInType])]
+		return candidates.filter[argsMatch(#[typeDeclaration.type], #[callerInType])]
 	}
 
 	/**
@@ -101,7 +101,7 @@ class DeclarationProvider
 	{
 		val module = EcoreUtil2.getContainerOfType(f, NablaModule)
 		val candidates = module.functions.filter[x | x.name == f.name]
-		return candidates.filter[argsMatch(inTypes, callerInTypes)]
+		return candidates.filter[argsMatch(typeDeclaration.inTypes, callerInTypes)]
 	}
 
 	private def boolean argsMatch(List<BaseType> la, List<NablaType> lb) 

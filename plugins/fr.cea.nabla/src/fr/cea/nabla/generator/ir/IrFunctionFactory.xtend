@@ -35,8 +35,8 @@ class IrFunctionFactory
 		if (f.external)
 		{
 			// f is external. No inArgs only inArgTypes
-			for (i : 0..<f.inTypes.size)
-				inArgs += toIrArg(f.inTypes.get(i), "x" + i)
+			for (i : 0..<f.typeDeclaration.inTypes.size)
+				inArgs += toIrArg(f.typeDeclaration.inTypes.get(i), "x" + i)
 		}
 		else
 		{
@@ -44,18 +44,19 @@ class IrFunctionFactory
 			f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
 			body = f.body.toIrInstruction
 		}
-		returnType = f.returnType.toIrBaseType
+		returnType = f.typeDeclaration.returnType.toIrBaseType
 	}
 
 	def dispatch create IrFactory::eINSTANCE.createFunction toIrFunction(Reduction f)
 	{
+		val t = f.typeDeclaration.type
 		annotations += f.toIrAnnotation
 		// build a unique name with name and type
-		name = f.name.toFirstLower + f.type.primitive.getName().charAt(0) + f.type.sizes.size
+		name = f.name.toFirstLower + t.primitive.getName().charAt(0) + t.sizes.size
 		provider = f.moduleName
 		f.vars.forEach[x | variables += toIrSimpleVariable(x, x.name)]
 		f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
-		returnType = f.type.toIrBaseType
+		returnType = t.toIrBaseType
 		body = f.body.toIrInstruction
 	}
 

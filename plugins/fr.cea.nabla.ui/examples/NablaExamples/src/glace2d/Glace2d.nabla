@@ -83,7 +83,7 @@ iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
 // *************************************************************
 // * Initialization
 // *************************************************************
-IniCjrIc: ∀j∈cells(), ∀r∈nodesOfCell(j), 
+IniCjrIc: ∀j∈cells(), ∀r∈nodesOfCell(j),
 	Cjr_ic{j,r} = 0.5 * perp(X^{n=0}{r+1} - X^{n=0}{r-1});
 
 Initialize: ∀j∈cells(), {

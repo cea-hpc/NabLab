@@ -25,6 +25,7 @@ import fr.cea.nabla.nabla.Exit
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.FunctionTypeDeclaration
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.InstructionBlock
@@ -48,6 +49,7 @@ import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.nabla.ReductionTypeDeclaration
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SetDefinition
 import fr.cea.nabla.nabla.SetRef
@@ -95,13 +97,36 @@ class LatexLabelServices
 	static def dispatch String getLatex(NextTimeIteratorRef it) { target.name.pu + '+' + value }
 
 	/* FONCTIONS / REDUCTIONS ********************************/
-	static def dispatch String getLatex(Function it) { 'def~' + name.pu + '~:~' + vars.latexForVars + inTypes.map[latex].join(' \u00D7 ') + ' \u2192 ' + returnType.latex }
-	static def dispatch String getLatex(Reduction it) { 'def~' + name.pu + '~:~' + vars.latexForVars + '(' + seed.latex + ', ' + type.latex + ')' }
+	static def dispatch String getLatex(Function it) { 'def ' + name.pu + '~:~' + getLatex(vars, typeDeclaration) }
+	static def dispatch String getLatex(Reduction it) { 'def ' + name.pu + ',~' + seed?.latex + '~:~' + getLatex(vars, typeDeclaration) }
 
-	private static def getLatexForVars(List<SimpleVar> symbols)
+	private static def String getLatex(List<SimpleVar> vars, FunctionTypeDeclaration td)
 	{
-		if (symbols.empty) ''
-		else symbols.map[name].join(', ') + '~|~'
+		var ret = ''
+		if (vars !== null)
+		{
+			ret += vars.map[name.pu].join(', ')
+			if (!vars.empty) ret += '~|~'
+		}
+		if (td !== null)
+		{
+			ret += td.inTypes?.map[latex].join(' \u00D7 ')
+			ret += ' \u2192 ' + td.returnType?.latex
+		}
+		return ret
+	}
+
+	private static def String getLatex(List<SimpleVar> vars, ReductionTypeDeclaration td)
+	{
+		var ret = ''
+		if (vars !== null)
+		{
+			ret += vars.map[name.pu].join(', ')
+			if (!vars.empty) ret += '~|~'
+		}
+		if (td !== null)
+			ret += td.type?.latex
+		return ret
 	}
 
 	/* EXPRESSIONS ******************************************/

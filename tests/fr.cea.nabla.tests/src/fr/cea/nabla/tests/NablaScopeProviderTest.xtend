@@ -389,10 +389,10 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForSizeVarInInstruction()
 	{
-		val module = parseHelper.parse(getTestModule(defaultConnectivities, '')
+		val model = getTestModule(defaultConnectivities, '')
 		+
 		'''
-		ℝ[2] X{nodes}
+		ℝ[2] X{nodes};
 		ℝ c1 {cells};
 		
 		j1: ∀ j∈cells(), {
@@ -410,10 +410,11 @@ class NablaScopeProviderTest
 		}
 
 		j3: {
-			let z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{k∈[0;1]}(X{r}[k+1])));
+			let ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{k∈[0;1[}(X{r}[k+1])));
 			z = z + 1;
 		}
-		''')
+		'''
+		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
 

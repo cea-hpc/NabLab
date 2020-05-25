@@ -86,10 +86,10 @@ ConnectivityVar: name=ID '{' supports+=[MultipleConnectivity] (',' supports+=[Mu
 
 /* FONCTIONS / REDUCTIONS ********************************/
 FunctionOrReduction: Function | Reduction;
-Function: 'def' name=ID ':' (vars+=SimpleVar (',' vars+=SimpleVar)* '|')? (inTypes+=BaseType ('\u00D7' inTypes+=BaseType)*)? '\u2192' returnType=BaseType
-	((',' '(' (inArgs+=Arg (',' inArgs+=Arg)*)? ')' '\u2192' body=Instruction) | external?=';');
-Reduction: 'def' name=ID ',' seed=Expression ':' (vars+=SimpleVar (',' vars+=SimpleVar)* '|')? type=BaseType
-	',' '(' inArgs+=Arg ',' inArgs+=Arg ')' '\u2192' body=Instruction;
+Function: 'def' name=ID ':' (vars+=SimpleVar (',' vars+=SimpleVar)* '|')? typeDeclaration=FunctionTypeDeclaration ((',' '(' (inArgs+=Arg (',' inArgs+=Arg)*)? ')' '\u2192' body=Instruction) | external?=';');
+Reduction: 'def' name=ID ',' seed=Expression ':' (vars+=SimpleVar (',' vars+=SimpleVar)* '|')? typeDeclaration=ReductionTypeDeclaration ',' '(' inArgs+=Arg ',' inArgs+=Arg ')' '\u2192' body=Instruction;
+FunctionTypeDeclaration: (inTypes+=BaseType ('\u00D7' inTypes+=BaseType)*)? '\u2192' returnType=BaseType;
+ReductionTypeDeclaration: type=BaseType;
 Arg: name=ID;
 
 /* EXPRESSIONS ******************************************/

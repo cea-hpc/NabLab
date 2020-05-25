@@ -13,9 +13,9 @@ import com.google.inject.Inject
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Exit
-import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionOrReduction
+import fr.cea.nabla.nabla.FunctionTypeDeclaration
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
@@ -109,22 +109,22 @@ class FunctionOrReductionValidator extends BasicValidator
 	@Check
 	def checkOnlyIntAndVarInFunctionInTypes(Function it)
 	{
-		for (inType : inTypes)
-			if (!inType.sizes.forall[x | isAllowedInFunctionOrReduction(it, x)])
-				error(getOnlyIntAndVarInFunctionInTypesMsg(vars.map[name]), NablaPackage.Literals::FUNCTION__IN_TYPES, ONLY_INT_AND_VAR_IN_FUNCTION_IN_TYPES)
+		for (inType : typeDeclaration.inTypes)
+			if (!inType.sizes.forall[x | x instanceof IntConstant || (x instanceof ArgOrVarRef && (x as ArgOrVarRef).target.eContainer === it)])
+				error(getOnlyIntAndVarInFunctionInTypesMsg(vars.map[name]), NablaPackage.Literals::FUNCTION__TYPE_DECLARATION, ONLY_INT_AND_VAR_IN_FUNCTION_IN_TYPES)
 	}
 
 	@Check
 	def checkOnlyIntAndVarInReductionType(Reduction it)
 	{
-		if (!type.sizes.forall[x | isAllowedInFunctionOrReduction(it, x)])
-			error(getOnlyIntAndVarInReductionTypeMsg(vars.map[name]), NablaPackage.Literals::REDUCTION__TYPE, ONLY_INT_AND_VAR_IN_REDUCTION_TYPE)
+		if (!typeDeclaration.type.sizes.forall[x | x instanceof IntConstant || (x instanceof ArgOrVarRef && (x as ArgOrVarRef).target.eContainer === it)])
+			error(getOnlyIntAndVarInReductionTypeMsg(vars.map[name]), NablaPackage.Literals::REDUCTION__TYPE_DECLARATION, ONLY_INT_AND_VAR_IN_REDUCTION_TYPE)
 	}
 
 	@Check
 	def checkFunctionIncompatibleInTypes(Function it)
 	{
-		if (!external && inTypes.size !== inArgs.size)
+		if (!external && typeDeclaration.inTypes.size !== inArgs.size)
 		{
 			error(getFunctionInvalidArgNumberMsg(), NablaPackage.Literals::FUNCTION_OR_REDUCTION__IN_ARGS, FUNCTION_INVALID_ARG_NUMBER)
 			return
@@ -132,30 +132,31 @@ class FunctionOrReductionValidator extends BasicValidator
 
 		val module = eContainer as NablaModule
 		val otherFunctionArgs = module.functions.filter(Function).filter[x | x.name == name && x !== it]
-		val conflictingFunctionArg = otherFunctionArgs.findFirst[x | !areCompatible(x, it)]
+		val conflictingFunctionArg = otherFunctionArgs.findFirst[x | !areCompatible(x.typeDeclaration, typeDeclaration)]
 		if (conflictingFunctionArg !== null)
 			error(getFunctionIncompatibleInTypesMsg(), NablaPackage.Literals::FUNCTION_OR_REDUCTION__NAME, FUNCTION_INCOMPATIBLE_IN_TYPES)
 	}
 
 	@Check
-	def checkFunctionReturnType(Function it)
+	def checkFunctionReturnType(FunctionTypeDeclaration it)
 	{
-		if (!external && body !== null)
+		val f = eContainer as Function
+		if (!f.external && f.body !== null)
 		{
-			val returnInstruction = if (body instanceof Return) body as Return else body.eAllContents.findFirst[x | x instanceof Return]
+			val returnInstruction = if (f.body instanceof Return) f.body as Return else f.body.eAllContents.findFirst[x | x instanceof Return]
 			if (returnInstruction !== null)
 			{
 				val ri = returnInstruction as Return
 				val expressionType = ri.expression?.typeFor
 				val fType = returnType.typeFor
 				if (expressionType !== null && !checkExpectedType(expressionType, fType))
-					error(getFunctionReturnTypeMsg(expressionType.label, fType.label), NablaPackage.Literals.FUNCTION__RETURN_TYPE, FUNCTION_RETURN_TYPE)
+					error(getFunctionReturnTypeMsg(expressionType.label, fType.label), NablaPackage.Literals.FUNCTION_TYPE_DECLARATION__RETURN_TYPE, FUNCTION_RETURN_TYPE)
 			}
 		}
 	}
 
 	@Check
-	def checkFunctionReturnTypeVar(Function it)
+	def checkFunctionReturnTypeVar(FunctionTypeDeclaration it)
 	{
 		val inTypeVars = new HashSet<SimpleVar>
 		for (inType : inTypes)
@@ -170,16 +171,16 @@ class FunctionOrReductionValidator extends BasicValidator
 
 		val x = returnTypeVars.findFirst[x | !inTypeVars.contains(x)]
 		if (x !== null)
-			error(getFunctionReturnTypeVarMsg(x.name), NablaPackage.Literals::FUNCTION__RETURN_TYPE, FUNCTION_RETURN_TYPE_VAR)
+			error(getFunctionReturnTypeVarMsg(x.name), NablaPackage.Literals::FUNCTION_TYPE_DECLARATION__RETURN_TYPE, FUNCTION_RETURN_TYPE_VAR)
 	}
 
 	@Check
 	def checkReductionIncompatibleTypes(Reduction it)
 	{
 		val otherReductionArgs = eContainer.eAllContents.filter(Reduction).filter[x | x.name == name && x !== it]
-		val conflictingReductionArg = otherReductionArgs.findFirst[x | !areCompatible(x.type, type)]
+		val conflictingReductionArg = otherReductionArgs.findFirst[x | !areCompatible(x.typeDeclaration.type, typeDeclaration.type)]
 		if (conflictingReductionArg !== null)
-			error(getReductionIncompatibleTypesMsg(), NablaPackage.Literals::REDUCTION__TYPE, REDUCTION_INCOMPATIBLE_TYPES)
+			error(getReductionIncompatibleTypesMsg(), NablaPackage.Literals::REDUCTION__TYPE_DECLARATION, REDUCTION_INCOMPATIBLE_TYPES)
 	}
 
 	@Check
@@ -191,7 +192,7 @@ class FunctionOrReductionValidator extends BasicValidator
 		// Ex (ℕ.MaxValue, ℝ])→ℕ[2]; -> we will use (ℕ.MaxValue, ℕ.MaxValue) as reduction seed
 		if (seedType !== null)
 		{
-			val rType = type.primitive
+			val rType = typeDeclaration.type.primitive
 			if (!(seedType instanceof NSTScalar))
 				error(getReductionSeedTypeMsg(), NablaPackage.Literals.REDUCTION__SEED, REDUCTION_SEED_TYPE)
 			else if (seedType.label != rType.literal)
@@ -203,7 +204,7 @@ class FunctionOrReductionValidator extends BasicValidator
 	 * Returns true if a and b can be declared together, false otherwise. 
 	 * For example, false for R[2]->R and R[n]->R
 	 */
-	private def areCompatible(Function a, Function b)
+	private def areCompatible(FunctionTypeDeclaration a, FunctionTypeDeclaration b)
 	{
 		if (a.inTypes.size != b.inTypes.size)
 			return true
@@ -218,21 +219,6 @@ class FunctionOrReductionValidator extends BasicValidator
 	private def areCompatible(BaseType a, BaseType b)
 	{
 		(a.primitive != b.primitive || a.sizes.size != b.sizes.size)
-	}
-
-	/**
-	 * Returns true if the expression expr is an IntConstant
-	 * or an ArgOrVarRef referencing a variable defined
-	 * in f, else otherwise
-	 */
-	private def isAllowedInFunctionOrReduction(FunctionOrReduction f, Expression expr)
-	{
-		switch expr
-		{
-			IntConstant: true
-			ArgOrVarRef case expr.target.eContainer === f: true
-			default: false
-		}
 	}
 
 	private static def buildMsg(String prefix, String[] allowedVarNames) 

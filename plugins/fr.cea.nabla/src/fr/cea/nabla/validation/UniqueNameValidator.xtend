@@ -29,6 +29,7 @@ import org.eclipse.xtext.scoping.IScopeProvider
 import org.eclipse.xtext.util.SimpleAttributeResolver
 import org.eclipse.xtext.validation.Check
 import fr.cea.nabla.nabla.SetDefinition
+import fr.cea.nabla.nabla.FunctionOrReduction
 
 class UniqueNameValidator extends AbstractNablaValidator
 {
@@ -54,7 +55,14 @@ class UniqueNameValidator extends AbstractNablaValidator
 	{
 		if (eContainer instanceof VarGroupDeclaration)
 		{
-			val variables = (eContainer as VarGroupDeclaration).variables
+			val variables = (eContainer as VarGroupDeclaration).vars
+			val duplicate = variables.findFirst[x | x.name == name && x != it]
+			if (duplicate !== null)
+				error(getDuplicateNameMsg(NablaPackage.Literals.VAR, duplicate.name), NablaPackage.Literals.ARG_OR_VAR__NAME, DUPLICATE_NAME);
+		}
+		else if (eContainer instanceof FunctionOrReduction)
+		{
+			val variables = (eContainer as FunctionOrReduction).vars
 			val duplicate = variables.findFirst[x | x.name == name && x != it]
 			if (duplicate !== null)
 				error(getDuplicateNameMsg(NablaPackage.Literals.VAR, duplicate.name), NablaPackage.Literals.ARG_OR_VAR__NAME, DUPLICATE_NAME);

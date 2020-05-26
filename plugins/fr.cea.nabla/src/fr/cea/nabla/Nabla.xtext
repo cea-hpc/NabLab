@@ -45,7 +45,7 @@ Iterable: Loop | ReductionCall;
 Instruction: SimpleVarDefinition | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | ItemDefinition | SetDefinition | Return | Exit;
 
 SimpleVarDefinition: ('let'|option?='option') type=BaseType variable=SimpleVar '=' value=Expression ';';
-VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
+VarGroupDeclaration: type=BaseType vars+=Var (',' vars+=Var)* ';';
 InstructionBlock: '{' instructions+=Instruction+ '}';
 Loop: '\u2200' iterationBlock=IterationBlock ',' body=Instruction;
 Affectation: left=ArgOrVarRef '=' right=Expression ';';

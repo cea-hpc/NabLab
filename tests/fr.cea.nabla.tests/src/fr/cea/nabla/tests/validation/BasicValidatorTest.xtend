@@ -68,7 +68,7 @@ class BasicValidatorTest
 	@Test
 	def void testCheckNbElems()
 	{
-		val moduleKo1 = parseHelper.parse(getTestModule( '',
+		val moduleKo1 = parseHelper.parse(getTestModule('',
 			'''
 			def g: → ℝ, () →
 			{
@@ -77,21 +77,29 @@ class BasicValidatorTest
 				return 4.0;
 			}
 			'''))
-
 		moduleKo1.assertError(NablaPackage.eINSTANCE.interval,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
 			BasicValidator::getTypeExpressionMsg("ℝ"))
 
-		val moduleKo2 = parseHelper.parse(getTestModule( '',
+		val moduleKo2 = parseHelper.parse(getTestModule('',
 			'''
 			def g: → ℝ, () →
 			{
-				let ℝ x = 6.7
+				let ℝ x = 6.7;
 				ℝ[4] n;
 				∀ i∈[0;x[, n[i] = 0.0;
 				return 4.0;
 			}
 			'''))
+			println(getTestModule('',
+			'''
+			def g: → ℝ, () →
+			{
+				let ℝ x = 6.7;
+				ℝ[4] n;
+				∀ i∈[0;x[, n[i] = 0.0;
+				return 4.0;
+			}'''))
 
 		moduleKo2.assertError(NablaPackage.eINSTANCE.interval,
 			BasicValidator::TYPE_EXPRESSION_TYPE,

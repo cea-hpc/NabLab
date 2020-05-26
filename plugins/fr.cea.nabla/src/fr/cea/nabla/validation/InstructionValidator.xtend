@@ -48,9 +48,9 @@ class InstructionValidator extends FunctionOrReductionValidator
 		// Global or local variable ?
 		if (eContainer !== null && !(eContainer instanceof NablaModule))
 		{
-			for (i : 0..<variables.size)
-				if (variables.get(i) instanceof ConnectivityVar)
-					error(getLocalConnectivityVarMsg(), NablaPackage.Literals::VAR_GROUP_DECLARATION__VARIABLES, i, LOCAL_CONNECTIVITY_VAR)
+			for (i : 0..<vars.size)
+				if (vars.get(i) instanceof ConnectivityVar)
+					error(getLocalConnectivityVarMsg(), NablaPackage.Literals::VAR_GROUP_DECLARATION__VARS, i, LOCAL_CONNECTIVITY_VAR)
 		}
 	}
 

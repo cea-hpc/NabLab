@@ -133,7 +133,7 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	@Check
 	def checkReductionCallArgs(ReductionCall it)
 	{
-		val inType = arg.typeFor
+		val inType = arg?.typeFor
 		if (inType !== null && inType instanceof NablaConnectivityType)
 			error(getReductionCallOnConnectivitiesVariableMsg, NablaPackage.Literals::REDUCTION_CALL__REDUCTION, REDUCTION_CALL_ON_CONNECTIVITIES_VARIABLE)
 		else if (typeFor === null)

@@ -120,7 +120,6 @@ class ExpressionTypeProvider
 		}
 		else
 			null
-		
 	}
 
 	def dispatch NablaType getTypeFor(Cardinality it) { new NSTIntScalar }

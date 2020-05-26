@@ -69,7 +69,7 @@ class Nabla2Ir
 			for (v : createIrVariablesFor(nablaModule, d.variable))
 				definitions += v as SimpleVariable
 		for (d : nablaModule.declarations)
-			for (v : d.variables)
+			for (v : d.vars)
 				declarations += createIrVariablesFor(nablaModule, v)
 
 		// TimeLoop jobs creation

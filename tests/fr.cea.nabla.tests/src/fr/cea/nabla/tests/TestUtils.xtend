@@ -41,7 +41,7 @@ class TestUtils
 		for (i : eAllContents.toIterable)
 			switch i
 			{
-				VarGroupDeclaration : allVariables += i.variables
+				VarGroupDeclaration : allVariables += i.vars
 				SimpleVarDefinition : allVariables += i.variable
 			}
 		return allVariables

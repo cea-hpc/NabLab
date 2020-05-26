@@ -54,7 +54,7 @@ class NablaScopeProviderTest
 			j2 : ∀j ∈ cells(), c{j} = 0.25 * ∑{r ∈ nodes()}(d{r});
 			j3 : ∀j ∈ cells(), ∀r ∈ nodesOfCell(j), b{j,r} = 0.;
 			j4 : ∀j ∈ cells(), a{j} = ∑{r∈nodesOfCell(j)}(b{j, r});
-			j5 : let z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(X{r}));
+			j5 : let ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(X{r}));
 			j6 : ∀j ∈ cells(), rj = rightCell(j), lj = leftCell(j), c{j} = a{rj};
 			j7 : ∀j ∈ cells(), {
 					item lj = leftCell(j);
@@ -230,12 +230,12 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForArgOrVarRefInInstruction()
 	{
-		val module = parseHelper.parse(getTestModule(defaultConnectivities, '')
+		val model = getTestModule(defaultConnectivities, '')
 		+
 		'''
-		let a = 4.0;
-		let b1 = 0.0;
-		let b2 = b1;
+		let ℝ a = 4.0;
+		let ℝ b1 = 0.0;
+		let ℝ b2 = b1;
 		ℝ[2] X{nodes};
 		ℝ c1 {cells}, c2 {cells};
 
@@ -243,31 +243,33 @@ class NablaScopeProviderTest
 
 		j1: ∀ j∈cells(), {
 			c1{j} = a * 2;
-			let d = 6.0;
+			let ℝ d = 6.0;
 			c2{j} = 2 * d;
-			∀ r, countr ∈ nodesOfCell(j) {
-				let e = 3.3;
+			∀ r, countr ∈ nodesOfCell(j), {
+				let ℝ e = 3.3;
 				ℝ f;
 				f = e + 1.0;
 			}
 		}
 
 		j2: {
-			ℝ[4] n;
-			ℝ[4, 2] m;
+			ℝ[4] o;
+			ℝ[4, 2] p;
 			∀ i∈[0;4[, 
 			{
-				n[i] = 4.0;
-				∀ j∈[0;2[, m[i,j] = 3.0;
+				o[i] = 4.0;
+				∀ j∈[0;2[, p[i,j] = 3.0;
 			}
 		}
 
 		j3: {
-			let z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{k∈[0;1]}(X{r}[k])));
+			let ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{i∈[0;2[}(X{r}[i])));
 			z = z + 1;
 		}
-		''')
+		'''
 
+		println(model)
+		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
 
@@ -299,15 +301,15 @@ class NablaScopeProviderTest
 		affectationf.assertScope(eref, "e, f, countr, d, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
 
 		val j2 = module.getJobByName("j2")
-		val affectationn = j2.getVarAffectationByName("n")
-		affectationn.assertScope(eref, "i, n, m, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
+		val affectationn = j2.getVarAffectationByName("o")
+		affectationn.assertScope(eref, "i, o, p, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
 
-		val affectationm = j2.getVarAffectationByName("m")
-		affectationm.assertScope(eref, "j, i, n, m, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
+		val affectationm = j2.getVarAffectationByName("p")
+		affectationm.assertScope(eref, "j, i, o, p, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
 
 		val j3 = module.getJobByName("j3")
 		val j3_xvarref = j3.instruction.eAllContents.filter(ArgOrVarRef).findFirst[x | x.target.name == 'X']
-		j3_xvarref.assertScope(eref, "k, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
+		j3_xvarref.assertScope(eref, "i, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
 	}
 
 	@Test

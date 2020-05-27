@@ -103,7 +103,7 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForItemRefInConnectivityCall()
 	{
-		val module = parseHelper.parse(getTestModule(defaultConnectivities + '''
+		val model = getTestModule(defaultConnectivities + '''
 			item leftCell: cell → cell;
 			item rightCell: cell → cell;
 			''', '')
@@ -119,11 +119,12 @@ class NablaScopeProviderTest
 			j5 : ∀j ∈ cells(), rj = rightCell(j), lj = leftCell(j), c{j} = a{rj} + a{lj};
 			j6 : ∀j ∈ cells(), {
 					item rj = rightCell(j);
-					item lj = leftCell(rj)
+					item lj = leftCell(rj);
 					c{j} = a{rj} + a{lj};
 				}
 			'''
-		)
+
+		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 
 		val eref = NablaPackage::eINSTANCE.itemRef_Target
@@ -195,7 +196,7 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForSet()
 	{
-		val module = parseHelper.parse(getTestModule(defaultConnectivities, '')
+		val model = getTestModule(defaultConnectivities, '')
 			+
 			'''
 			ℝ a{cells}, b{cells, nodesOfCell};
@@ -210,7 +211,7 @@ class NablaScopeProviderTest
 				a{j} = ∑{r∈nOfCells}(b{j, r});
 			}
 			'''
-		)
+		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 
 		val eref = NablaPackage::eINSTANCE.setRef_Target
@@ -268,7 +269,6 @@ class NablaScopeProviderTest
 		}
 		'''
 
-		println(model)
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target

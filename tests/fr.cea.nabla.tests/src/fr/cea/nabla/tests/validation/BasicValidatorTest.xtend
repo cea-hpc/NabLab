@@ -91,15 +91,6 @@ class BasicValidatorTest
 				return 4.0;
 			}
 			'''))
-			println(getTestModule('',
-			'''
-			def g: → ℝ, () →
-			{
-				let ℝ x = 6.7;
-				ℝ[4] n;
-				∀ i∈[0;x[, n[i] = 0.0;
-				return 4.0;
-			}'''))
 
 		moduleKo2.assertError(NablaPackage.eINSTANCE.interval,
 			BasicValidator::TYPE_EXPRESSION_TYPE,

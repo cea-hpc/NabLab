@@ -82,8 +82,8 @@ class ArgOrVarRefValidator extends InstructionValidator
 		if (timeIterators.empty)
 		{
 			val module = EcoreUtil2::getContainerOfType(it, NablaModule)
-			val otherSameVarRefs = module.eAllContents.filter(ArgOrVarRef).filter[x | x.target == target]
-			if (otherSameVarRefs.exists[x | !x.timeIterators.empty])
+			val argOrVarRefs = EcoreUtil2.getAllContentsOfType(module, ArgOrVarRef)
+			if (argOrVarRefs.exists[x | !x.timeIterators.empty && x.target === target])
 				error(getTimeIteratorUsageMsg(), NablaPackage.Literals::ARG_OR_VAR_REF__TIME_ITERATORS, TIME_ITERATOR_USAGE)
 		}
 	}

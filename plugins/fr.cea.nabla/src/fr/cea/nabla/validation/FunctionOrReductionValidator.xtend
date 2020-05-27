@@ -130,8 +130,8 @@ class FunctionOrReductionValidator extends BasicValidator
 			return
 		}
 
-		val module = eContainer as NablaModule
-		val otherFunctionArgs = module.functions.filter(Function).filter[x | x.name == name && x !== it]
+		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
+		val otherFunctionArgs = module.functions.filter[x | x.name == name && x !== it]
 		val conflictingFunctionArg = otherFunctionArgs.findFirst[x | !areCompatible(x.typeDeclaration, typeDeclaration)]
 		if (conflictingFunctionArg !== null)
 			error(getFunctionIncompatibleInTypesMsg(), NablaPackage.Literals::FUNCTION_OR_REDUCTION__NAME, FUNCTION_INCOMPATIBLE_IN_TYPES)
@@ -160,12 +160,12 @@ class FunctionOrReductionValidator extends BasicValidator
 	{
 		val inTypeVars = new HashSet<SimpleVar>
 		for (inType : inTypes)
-			for (dim : inType.eAllContents.filter(ArgOrVarRef).toIterable)
+			for (dim : EcoreUtil2.getAllContentsOfType(inType, ArgOrVarRef))
 				if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof SimpleVar)
 					inTypeVars += dim.target as SimpleVar
 
 		val returnTypeVars = new HashSet<SimpleVar>
-		for (dim : returnType.eAllContents.filter(ArgOrVarRef).toIterable)
+		for (dim : EcoreUtil2.getAllContentsOfType(returnType, ArgOrVarRef))
 			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof SimpleVar)
 				returnTypeVars += dim.target as SimpleVar
 
@@ -177,7 +177,8 @@ class FunctionOrReductionValidator extends BasicValidator
 	@Check
 	def checkReductionIncompatibleTypes(Reduction it)
 	{
-		val otherReductionArgs = eContainer.eAllContents.filter(Reduction).filter[x | x.name == name && x !== it]
+		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
+		val otherReductionArgs = module.reductions.filter[x | x.name == name && x !== it]
 		val conflictingReductionArg = otherReductionArgs.findFirst[x | !areCompatible(x.typeDeclaration.type, typeDeclaration.type)]
 		if (conflictingReductionArg !== null)
 			error(getReductionIncompatibleTypesMsg(), NablaPackage.Literals::REDUCTION__TYPE_DECLARATION, REDUCTION_INCOMPATIBLE_TYPES)

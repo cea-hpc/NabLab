@@ -49,7 +49,7 @@ class UnusedValidator extends UniqueNameValidator
 		val m = EcoreUtil2::getContainerOfType(it, NablaModule)
 		if (m !== null)
 		{
-			val timeIterRefs =  m.eAllContents.filter(TimeIteratorRef).toList
+			val timeIterRefs = EcoreUtil2.getAllContentsOfType(m, TimeIteratorRef)
 			val hasItRef = timeIterRefs.exists[x | x.target === it]
 			if (!hasItRef)
 				warning(getUnusedMsg(NablaPackage.Literals.TIME_ITERATOR, name), NablaPackage.Literals.ARG_OR_VAR__NAME, UNUSED)
@@ -59,9 +59,10 @@ class UnusedValidator extends UniqueNameValidator
 	@Check
 	def checkUnusedVariable(Var it)
 	{
-		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
 		val mandatories = (MandatoryVariables::NAMES).toList
-		val referenced = mandatories.contains(name) || m.eAllContents.filter(ArgOrVarRef).exists[x | x.target===it]
+		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
+		val argOrVarRefs = EcoreUtil2.getAllContentsOfType(module, ArgOrVarRef)
+		val referenced = mandatories.contains(name) || argOrVarRefs.exists[x | x.target === it]
 		if (!referenced)
 			warning(getUnusedMsg(NablaPackage.Literals.VAR, name), NablaPackage.Literals::ARG_OR_VAR__NAME, UNUSED)
 	}
@@ -69,9 +70,10 @@ class UnusedValidator extends UniqueNameValidator
 	@Check
 	def checkUnusedConnectivity(Connectivity it)
 	{
-		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
-		val referenced = m.eAllContents.filter(ConnectivityCall).exists[x | x.connectivity===it]
-			|| m.eAllContents.filter(ConnectivityVar).exists[x | x.supports.contains(it)]
+		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
+		val cCalls = EcoreUtil2.getAllContentsOfType(module, ConnectivityCall)
+		val cVars = EcoreUtil2.getAllContentsOfType(module, ConnectivityVar)
+		val referenced = cCalls.exists[x | x.connectivity === it] || cVars.exists[x | x.supports.contains(it)]
 		if (!referenced)
 			warning(getUnusedMsg(NablaPackage.Literals.CONNECTIVITY, name), NablaPackage.Literals::CONNECTIVITY__NAME, UNUSED)
 	}
@@ -80,7 +82,7 @@ class UnusedValidator extends UniqueNameValidator
 	def checkUnusedItemType(ItemType it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
-		val referenced = m.eAllContents.filter(Connectivity).exists[x | x.inTypes.contains(it) || x.returnType === it]
+		val referenced = EcoreUtil2.getAllContentsOfType(m, Connectivity).exists[x | x.inTypes.contains(it) || x.returnType === it]
 		if (!referenced)
 			warning(getUnusedMsg(NablaPackage.Literals.ITEM_TYPE, name), NablaPackage.Literals::ITEM_TYPE__NAME, UNUSED)
 	}
@@ -89,7 +91,7 @@ class UnusedValidator extends UniqueNameValidator
 	def checkUnusedItem(Item it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
-		val referenced = m.eAllContents.filter(ItemRef).exists[x|x.target === it]
+		val referenced = EcoreUtil2.getAllContentsOfType(m, ItemRef).exists[x|x.target === it]
 		if (!referenced)
 			warning(getUnusedMsg(NablaPackage.Literals.ITEM, name), NablaPackage.Literals::ITEM__NAME, UNUSED)
 	}
@@ -98,7 +100,7 @@ class UnusedValidator extends UniqueNameValidator
 	def checkUnusedSet(SetDefinition it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
-		val referenced = m.eAllContents.filter(SetRef).exists[x|x.target === it]
+		val referenced = EcoreUtil2.getAllContentsOfType(m, SetRef).exists[x|x.target === it]
 		if (!referenced)
 			warning(getUnusedMsg(NablaPackage.Literals.SET_DEFINITION, name), NablaPackage.Literals::SET_DEFINITION__NAME, UNUSED)
 	}
@@ -111,9 +113,9 @@ class UnusedValidator extends UniqueNameValidator
 		// It avoids warning on libraries: module with only functions/reductions.
 		if (! (m.definitions.filter[option].empty && m.jobs.empty))
 		{
-			val allCalls = m.eAllContents.filter(FunctionCall)
+			val allCalls = EcoreUtil2.getAllContentsOfType(m, FunctionCall)
 			var referenced = false
-			for (c : allCalls.toIterable)
+			for (c : allCalls)
 			{
 				val matchingDeclaration = c.declaration
 				if (matchingDeclaration !== null && matchingDeclaration.model === it)
@@ -132,9 +134,8 @@ class UnusedValidator extends UniqueNameValidator
 		// It avoids warning on libraries: module with only functions/reductions.
 		if (! (m.definitions.filter[option].empty && m.jobs.empty))
 		{
-			val allCalls = m.eAllContents.filter(ReductionCall)
-			val allMatchingDeclarations = allCalls.map[declaration]
-			val referenced = allMatchingDeclarations.exists[x | x !== null && x.model===it]
+			val allMatchingDeclarations = EcoreUtil2.getAllContentsOfType(m, ReductionCall).map[declaration]
+			val referenced = allMatchingDeclarations.exists[x | x !== null && x.model === it]
 			if (!referenced)
 				warning(getUnusedMsg(NablaPackage.Literals.REDUCTION, name), NablaPackage.Literals::FUNCTION_OR_REDUCTION__NAME, UNUSED)
 		}

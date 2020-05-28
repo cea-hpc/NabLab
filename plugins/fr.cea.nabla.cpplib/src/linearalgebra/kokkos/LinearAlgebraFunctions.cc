@@ -87,7 +87,7 @@ std::string print(const SparseMatrixType& M) {
 	    ss << std::setw(2) << "0";
 	  } else {
 	    ss << std::setw(2) << M.rowConst(i).value(k);
-		++k;
+		  ++k;
 	  }
 	  ss << " ";
 	  if (j == M.numCols() - 1)

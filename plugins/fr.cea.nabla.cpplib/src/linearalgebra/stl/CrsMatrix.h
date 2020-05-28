@@ -106,9 +106,9 @@ class CrsMatrix
 	      if (!j)
 	        ss << "|";
 	      if (!rowConst(i).length || j != rowConst(i).colidx(k)) {
-	        ss << std::setw(2) << "0";
+	        ss << std::setprecision(2) << std::setw(6) << "0";
 	      } else {
-	        ss << std::setw(2) << rowConst(i).value(k);
+	        ss << std::setprecision(2) << std::setw(6) << rowConst(i).value(k);
 		      ++k;
 	      }
 	      ss << " ";

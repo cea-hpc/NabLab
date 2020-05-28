@@ -12,7 +12,7 @@
 
 #include <functional>
 // Kokkos headers
-#include <Kokkos_Core.hpp>
+#include "Kokkos_Core.hpp"
 
 namespace nablalib { 
 

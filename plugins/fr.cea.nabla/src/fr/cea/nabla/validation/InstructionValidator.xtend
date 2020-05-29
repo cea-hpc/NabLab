@@ -21,6 +21,7 @@ import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.typing.BaseTypeTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import org.eclipse.xtext.validation.Check
+import org.eclipse.xtext.validation.CheckType
 
 class InstructionValidator extends FunctionOrReductionValidator
 {
@@ -42,7 +43,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 	static def getGlobalVarValueMsg() { "Assignment with reduction, external function or card not allowed in options and global variables" }
 	static def getLocalOptionMsg() { "Option definition not allowed in jobs and functions (options are global)" }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkLocalConnectivitityVar(VarGroupDeclaration it)
 	{
 		// Global or local variable ?
@@ -54,7 +55,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 		}
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkAffectationType(Affectation it)
 	{
 		if (right !== null&& left !== null)
@@ -66,7 +67,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 		}
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkIfConditionBoolType(If it)
 	{
 		if (condition !== null)
@@ -77,7 +78,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 		}
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkVarType(SimpleVarDefinition it)
 	{
 		if (value !== null)

@@ -29,6 +29,7 @@ import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.NSTIntScalar
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.validation.Check
+import org.eclipse.xtext.validation.CheckType
 
 import static extension fr.cea.nabla.ConnectivityCallExtensions.*
 
@@ -45,14 +46,14 @@ class BasicValidator extends UnusedValidator
 
 	static def getZeroFromMsg() { "Lower bound must be 0" }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def void checkFrom(Interval it)
 	{
 		if (from != 0)
 			error(getZeroFromMsg(), NablaPackage.Literals.INTERVAL__FROM, ZERO_FROM);
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def void checkNbElems(Interval it)
 	{
 		if (nbElems !== null) 
@@ -67,7 +68,7 @@ class BasicValidator extends UnusedValidator
 	static def getMandatoryVarsMsg(String[] missingVars) { "Missing mandatory mesh variable(s): " + missingVars.join(", ") }
 	static def getModuleNameMsg() { "Module name must start with an upper case" }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkMandatoryVars(NablaModule it)
 	{
 		if (itemTypes.empty) return; // no mesh
@@ -77,7 +78,7 @@ class BasicValidator extends UnusedValidator
 			error(getMandatoryVarsMsg(missingOptions), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_VARS)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkName(NablaModule it)
 	{
 		if (!name.nullOrEmpty && Character::isLowerCase(name.charAt(0)))
@@ -94,21 +95,21 @@ class BasicValidator extends UnusedValidator
 	static def getNextValueMsg(int actualValue) { "Expected 1, but was " + actualValue }
 	static def getConditionConstraintsMsg() { "Reductions not allowed in time iterator condition" }
 
-	@Check 
+	@Check(CheckType.NORMAL)
 	def checkInitValue(InitTimeIteratorRef it)
 	{
 		if (value !== 0)
 			error(getInitValueMsg(value), NablaPackage.Literals.INIT_TIME_ITERATOR_REF__VALUE, INIT_VALUE)
 	}
 
-	@Check 
+	@Check(CheckType.NORMAL)
 	def checkNextValue(NextTimeIteratorRef it)
 	{
 		if (value !== 1)
 			error(getNextValueMsg(value), NablaPackage.Literals.NEXT_TIME_ITERATOR_REF__VALUE, NEXT_VALUE)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkConditionConstraints(TimeIterator it)
 	{
 		if (cond !== null && !cond.reductionLess)
@@ -121,14 +122,14 @@ class BasicValidator extends UnusedValidator
 
 	static def getUnsupportedDimensionMsg(int dimension) { "Unsupported dimension: " + dimension }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkUnsupportedDimension(BaseType it)
 	{
 		if (sizes.size > 2)
 			error(getUnsupportedDimensionMsg(sizes.size), NablaPackage.Literals.BASE_TYPE__SIZES, UNSUPPORTED_DIMENSION)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkSizeExpression(BaseType it)
 	{
 		for (i : 0..<sizes.size)
@@ -146,7 +147,7 @@ class BasicValidator extends UnusedValidator
 	static def getConnectivityCallTypeMsg(String expectedType, String actualType) { "Expected " + expectedType + ', but was ' + actualType }
 	static def getDimensionArgMsg() { "First dimension must be on connectivities taking no argument" }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkConnectivityCallIndexAndType(ConnectivityCall it)
 	{
 		if (args.size != connectivity.inTypes.size)
@@ -163,7 +164,7 @@ class BasicValidator extends UnusedValidator
 		}
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkDimensionArg(ConnectivityVar it)
 	{
 		if (supports.empty) return;
@@ -178,7 +179,7 @@ class BasicValidator extends UnusedValidator
 
 	static def getShiftValidityMsg() { "Shift only valid for an iteration on a connectivity set" }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkShiftValidity(ItemRef it)
 	{
 		if ((inc>0 || dec>0) && target !== null && !(target.eContainer instanceof SpaceIterator))

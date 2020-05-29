@@ -13,11 +13,13 @@ import com.google.inject.Inject
 import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.Function
+import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.Item
 import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
+import fr.cea.nabla.nabla.SetDefinition
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -28,8 +30,7 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScopeProvider
 import org.eclipse.xtext.util.SimpleAttributeResolver
 import org.eclipse.xtext.validation.Check
-import fr.cea.nabla.nabla.SetDefinition
-import fr.cea.nabla.nabla.FunctionOrReduction
+import org.eclipse.xtext.validation.CheckType
 
 class UniqueNameValidator extends AbstractNablaValidator
 {
@@ -38,7 +39,7 @@ class UniqueNameValidator extends AbstractNablaValidator
 	public static val DUPLICATE_NAME = "DuplicateName"
 	static def getDuplicateNameMsg(EClass objectClass, String objectName) { "Duplicate " + objectClass.name + ": " + objectName }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def void checkDuplicate(Arg it)
 	{
 		if (eContainer instanceof Function && (eContainer as Function).inArgs.size>0)
@@ -50,7 +51,7 @@ class UniqueNameValidator extends AbstractNablaValidator
 		}
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def void checkDuplicate(Var it) 
 	{
 		if (eContainer instanceof VarGroupDeclaration)
@@ -82,7 +83,7 @@ class UniqueNameValidator extends AbstractNablaValidator
 		}
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def void checkDuplicate(Item it)
 	{
 		val scope = scopeProvider.getScope(it, NablaPackage.Literals.ITEM_REF__TARGET)
@@ -92,7 +93,7 @@ class UniqueNameValidator extends AbstractNablaValidator
 			error(getDuplicateNameMsg(NablaPackage.Literals.ITEM, name), NablaPackage.Literals.ITEM__NAME, DUPLICATE_NAME);
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def void checkDuplicate(SetDefinition it)
 	{
 		val scope = scopeProvider.getScope(it, NablaPackage.Literals.SET_REF__TARGET)
@@ -102,16 +103,16 @@ class UniqueNameValidator extends AbstractNablaValidator
 			error(getDuplicateNameMsg(NablaPackage.Literals.SET_DEFINITION, name), NablaPackage.Literals.SET_DEFINITION__NAME, DUPLICATE_NAME);
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def void checkDuplicate(ItemType it) { checkDuplicates(NablaPackage.Literals.ITEM_TYPE__NAME) }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def void checkDuplicate(Connectivity it) { checkDuplicates(NablaPackage.Literals.CONNECTIVITY__NAME) }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def void checkDuplicate(Job it) { checkDuplicates(NablaPackage.Literals.JOB__NAME) }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def void checkDuplicate(TimeIterator it) {  checkDuplicates(NablaPackage.Literals.ARG_OR_VAR__NAME) }
 
 	private def <T extends EObject> checkDuplicates(T t, EStructuralFeature f)

@@ -20,6 +20,7 @@ import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.typing.NablaSimpleType
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
+import org.eclipse.xtext.validation.CheckType
 
 class ArgOrVarRefValidator extends InstructionValidator
 {
@@ -36,7 +37,7 @@ class ArgOrVarRefValidator extends InstructionValidator
 	static def getSpaceIteratorTypeMsg(String expectedType, String actualType) { "Expected " + expectedType + ", but was " + actualType }
 	static def getTimeIteratorUsageMsg() { "Time iterator must be specified" }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkIndicesNumber(ArgOrVarRef it)
 	{
 		if (target === null || target.eIsProxy) return
@@ -47,7 +48,7 @@ class ArgOrVarRefValidator extends InstructionValidator
 			error(getIndicesNumberMsg(dimension, indices.size), NablaPackage.Literals::ARG_OR_VAR_REF__INDICES, INDICES_NUMBER)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkSpaceIteratorNumberAndType(ArgOrVarRef it)
 	{
 		if (target instanceof ConnectivityVar)
@@ -76,7 +77,7 @@ class ArgOrVarRefValidator extends InstructionValidator
 		}
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkTimeIteratorUsage(ArgOrVarRef it)
 	{
 		if (timeIterators.empty)
@@ -88,7 +89,7 @@ class ArgOrVarRefValidator extends InstructionValidator
 		}
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkIndicesExpressionAndType(ArgOrVarRef it)
 	{
 		for (i : 0..<indices.size)

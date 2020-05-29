@@ -31,6 +31,7 @@ import fr.cea.nabla.typing.NSTScalar
 import java.util.HashSet
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
+import org.eclipse.xtext.validation.CheckType
 
 class FunctionOrReductionValidator extends BasicValidator
 {
@@ -64,7 +65,7 @@ class FunctionOrReductionValidator extends BasicValidator
 	static def getReductionSeedTypeMsg() { "Seed type must be scalar" }
 	static def getReductionTypesCompatibilityMsg(String seedType, String type) { "Seed type and reduction type are incompatible: " + seedType + " and " + type }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkForbiddenReturn(Return it)
 	{
 		val function = EcoreUtil2.getContainerOfType(it, FunctionOrReduction)
@@ -72,7 +73,7 @@ class FunctionOrReductionValidator extends BasicValidator
 			error(getForbiddenReturnMsg(), NablaPackage.Literals.RETURN__EXPRESSION, FORBIDDEN_RETURN)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkMissingReturn(FunctionOrReduction it)
 	{
 		if (body !== null && !body.hasReturn)
@@ -89,7 +90,7 @@ class FunctionOrReductionValidator extends BasicValidator
 		else then.hasReturn && ^else.hasReturn
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkUnreachableCode(FunctionOrReduction it)
 	{
 		if (body === null) return;
@@ -106,7 +107,7 @@ class FunctionOrReductionValidator extends BasicValidator
 		}
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkOnlyIntAndVarInFunctionInTypes(Function it)
 	{
 		for (inType : typeDeclaration.inTypes)
@@ -114,14 +115,14 @@ class FunctionOrReductionValidator extends BasicValidator
 				error(getOnlyIntAndVarInFunctionInTypesMsg(vars.map[name]), NablaPackage.Literals::FUNCTION__TYPE_DECLARATION, ONLY_INT_AND_VAR_IN_FUNCTION_IN_TYPES)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkOnlyIntAndVarInReductionType(Reduction it)
 	{
 		if (!typeDeclaration.type.sizes.forall[x | x instanceof IntConstant || (x instanceof ArgOrVarRef && (x as ArgOrVarRef).target.eContainer === it)])
 			error(getOnlyIntAndVarInReductionTypeMsg(vars.map[name]), NablaPackage.Literals::REDUCTION__TYPE_DECLARATION, ONLY_INT_AND_VAR_IN_REDUCTION_TYPE)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkFunctionIncompatibleInTypes(Function it)
 	{
 		if (!external && typeDeclaration.inTypes.size !== inArgs.size)
@@ -137,7 +138,7 @@ class FunctionOrReductionValidator extends BasicValidator
 			error(getFunctionIncompatibleInTypesMsg(), NablaPackage.Literals::FUNCTION_OR_REDUCTION__NAME, FUNCTION_INCOMPATIBLE_IN_TYPES)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkFunctionReturnType(FunctionTypeDeclaration it)
 	{
 		val f = eContainer as Function
@@ -155,7 +156,7 @@ class FunctionOrReductionValidator extends BasicValidator
 		}
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkFunctionReturnTypeVar(FunctionTypeDeclaration it)
 	{
 		val inTypeVars = new HashSet<SimpleVar>
@@ -174,7 +175,7 @@ class FunctionOrReductionValidator extends BasicValidator
 			error(getFunctionReturnTypeVarMsg(x.name), NablaPackage.Literals::FUNCTION_TYPE_DECLARATION__RETURN_TYPE, FUNCTION_RETURN_TYPE_VAR)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkReductionIncompatibleTypes(Reduction it)
 	{
 		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
@@ -184,7 +185,7 @@ class FunctionOrReductionValidator extends BasicValidator
 			error(getReductionIncompatibleTypesMsg(), NablaPackage.Literals::REDUCTION__TYPE_DECLARATION, REDUCTION_INCOMPATIBLE_TYPES)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkSeedAndType(Reduction it)
 	{
 		val seedType = seed?.typeFor

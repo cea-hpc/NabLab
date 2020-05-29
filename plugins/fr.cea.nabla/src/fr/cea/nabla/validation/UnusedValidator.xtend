@@ -33,6 +33,7 @@ import fr.cea.nabla.overloading.DeclarationProvider
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
+import org.eclipse.xtext.validation.CheckType
 
 import static extension fr.cea.nabla.ConnectivityCallExtensions.*
 
@@ -43,7 +44,7 @@ class UnusedValidator extends UniqueNameValidator
 	public static val UNUSED = "Unused"
 	static def getUnusedMsg(EClass objectClass, String objectName) { "Unused " + objectClass.name + ": " + objectName }
 
-	@Check 
+	@Check(CheckType.NORMAL)
 	def checkUnusedTimeIterator(TimeIterator it)
 	{
 		val m = EcoreUtil2::getContainerOfType(it, NablaModule)
@@ -56,7 +57,7 @@ class UnusedValidator extends UniqueNameValidator
 		}
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkUnusedVariable(Var it)
 	{
 		val mandatories = (MandatoryVariables::NAMES).toList
@@ -67,7 +68,7 @@ class UnusedValidator extends UniqueNameValidator
 			warning(getUnusedMsg(NablaPackage.Literals.VAR, name), NablaPackage.Literals::ARG_OR_VAR__NAME, UNUSED)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkUnusedConnectivity(Connectivity it)
 	{
 		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
@@ -78,7 +79,7 @@ class UnusedValidator extends UniqueNameValidator
 			warning(getUnusedMsg(NablaPackage.Literals.CONNECTIVITY, name), NablaPackage.Literals::CONNECTIVITY__NAME, UNUSED)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkUnusedItemType(ItemType it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
@@ -87,7 +88,7 @@ class UnusedValidator extends UniqueNameValidator
 			warning(getUnusedMsg(NablaPackage.Literals.ITEM_TYPE, name), NablaPackage.Literals::ITEM_TYPE__NAME, UNUSED)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkUnusedItem(Item it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
@@ -96,7 +97,7 @@ class UnusedValidator extends UniqueNameValidator
 			warning(getUnusedMsg(NablaPackage.Literals.ITEM, name), NablaPackage.Literals::ITEM__NAME, UNUSED)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkUnusedSet(SetDefinition it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
@@ -105,7 +106,7 @@ class UnusedValidator extends UniqueNameValidator
 			warning(getUnusedMsg(NablaPackage.Literals.SET_DEFINITION, name), NablaPackage.Literals::SET_DEFINITION__NAME, UNUSED)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkUnusedFunction(Function it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
@@ -126,7 +127,7 @@ class UnusedValidator extends UniqueNameValidator
 		}
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkUnusedReduction(Reduction it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)

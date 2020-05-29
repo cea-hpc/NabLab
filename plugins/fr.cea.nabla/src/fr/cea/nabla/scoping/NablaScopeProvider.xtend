@@ -44,6 +44,7 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
+import org.eclipse.xtext.util.IResourceScopeCache
 
 /**
  * This class contains custom scoping description.
@@ -53,7 +54,8 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
  */
 class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 {
-	@Inject extension NablaModuleExtensions
+	@Inject NablaModuleExtensions nablaModuleExtensions
+	@Inject IResourceScopeCache scopeCache
 
 	override IScope getScope(EObject context, EReference r)
 	{
@@ -248,6 +250,11 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 			default:
 				throw new RuntimeException("Unexpected type in scope provider: " + context.class.name)
 		}
+	}
+
+	private def getAllVars(NablaModule module)
+	{
+		scopeCache.get(module, module.eResource, [nablaModuleExtensions.getAllVars(module)])
 	}
 
 	private def getAllVars(List<? extends Instruction> instructions)

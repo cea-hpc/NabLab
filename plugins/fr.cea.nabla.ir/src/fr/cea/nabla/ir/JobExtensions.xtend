@@ -9,21 +9,12 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.Affectation
-import fr.cea.nabla.ir.ir.ArgOrVarRef
-import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
-import fr.cea.nabla.ir.ir.TimeLoopCopyJob
-import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.ir.Variable
-import java.util.HashSet
-
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
 class JobExtensions
 {
@@ -40,69 +31,6 @@ class JobExtensions
 	static def hasLoop(Job it)
 	{
 		!eAllContents.filter(Loop).empty
-	}
-
-	static def getPreviousJobs(Job to)
-	{
-		val toSourceJobs = new HashSet<Job>
-		val irModule = to.eContainer as IrModule
-		val toInVars = to.inVars
-		for (from : irModule.jobs)
-			for (inVar : toInVars)
-				if (from.outVars.exists[x | x === inVar])
-					toSourceJobs += from
-
-		return toSourceJobs
-	}
-
-	static def getNextJobs(Job from)
-	{
-		val fromTargetJobs = new HashSet<Job>
-		val irModule = from.eContainer as IrModule
-		val fromOutVars = from.outVars
-		for (to : irModule.jobs)
-			for (outVar : fromOutVars)
-				if (to.inVars.exists[x | x === outVar])
-					fromTargetJobs += to
-
-		return fromTargetJobs
-	}
-
-	static def dispatch Iterable<Variable> getOutVars(TimeLoopJob it)
-	{
-		val outVars = new HashSet<Variable>
-		innerJobs.forEach[x | outVars += x.outVars]
-		return outVars
-	}
-
-	static def dispatch Iterable<Variable> getOutVars(TimeLoopCopyJob it)
-	{
-		copies.map[destination]
-	}
-
-	static def dispatch Iterable<Variable> getOutVars(InstructionJob it)
-	{
-		eAllContents.filter(Affectation).map[left.target].filter(Variable).filter[global].toSet
-	}
-
-	/** For TimeLoopJob, copies are ignored to avoid cycles */
-	static def dispatch Iterable<Variable> getInVars(TimeLoopJob it)
-	{
-		val inVars = new HashSet<Variable>
-		innerJobs.forEach[x | inVars += x.inVars]
-		return inVars
-	}
-
-	static def dispatch Iterable<Variable> getInVars(TimeLoopCopyJob it)
-	{
-		copies.map[source]
-	}
-
-	static def dispatch Iterable<Variable> getInVars(InstructionJob it)
-	{
-		val allVars = eAllContents.filter(ArgOrVarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[target]
-		val inVars = allVars.filter(Variable).filter[global].toSet
-		return inVars
 	}
 
 	static def getIteratorByName(Job it, String itName)

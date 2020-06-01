@@ -23,6 +23,7 @@ import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.ui.NabLabConsoleFactory
 import fr.cea.nabla.ui.UiUtils
+import javax.inject.Provider
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.jface.viewers.DoubleClickEvent
 import org.eclipse.jface.viewers.IDoubleClickListener
@@ -43,7 +44,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 	@Inject NotifyViewsHandler notifyViewsHandler
 	@Inject NabLabConsoleFactory consoleFactory
 	@Inject IrModuleTransformer transformer
-	@Inject Nabla2Ir nabla2Ir
+	@Inject Provider<Nabla2Ir> nabla2IrProvider
 
 	// F1 key pressed in NablaDslEditor
 	val keyNotificationListener =
@@ -134,8 +135,9 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		try 
 		{
 			consoleFactory.printConsole(MessageType.Start, "Building IR to initialize job graph view")
+			val nabla2Ir = nabla2IrProvider.get // force a new instance to ensure a new IR
 			val irModule = nabla2Ir.toIrModule(nablaModule)
-	
+
 			// buildIrModule can be call several times for the same nablaModule,
 			// for example by a view. Transformations must not be done in this case
 			if (irModule.jobs.forall[at == 0.0])
@@ -150,6 +152,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace
 			// An exception can occured during IR building if environment is not configured,
 			// for example compilation not done. Whatever... we will display the graph later
 		}

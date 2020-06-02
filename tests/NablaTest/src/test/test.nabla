@@ -11,19 +11,14 @@ module Test;
 
 with Math.*;
 
-itemtypes { node, cell, face }
+itemtypes { node, cell }
 
 set nodes: → {node};
 set cells: → {cell};
-set faces: → {face};
-set neighbourCells: cell → {cell};
-set nodesOfFace: face → {node};
-set nodesOfCell: cell → {node};
-item commonFace: cell × cell → face;
 
 // Simulation options
-option ℝ stopTime = 0.1;
-option ℕ maxIterations = 500;
+option ℝ maxTime = 0.1;
+option ℕ maxIter = 500;
 
 // Mesh options
 option ℝ X_EDGE_LENGTH = 0.1;
@@ -31,22 +26,15 @@ option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
 option ℕ X_EDGE_ELEMS = 20;
 option ℕ Y_EDGE_ELEMS = 20;
 
-// User options
-option ℝ PI = 3.1415926;
-option ℝ α = 1.0;
-
 let ℝ t=0.0;
-let ℝ δt=0.001;
-ℝ[2] X{nodes}, center{cells};
-ℝ u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
+ℝ[2] X{nodes};
+ℝ e1{cells}, e2{cells}, e{cells};
 
-iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
+iterate n while (n+1 < maxIter && t^{n+1} < maxTime) ,
+      k while (k+1 < 10)  ;
 
-IniF: ∀j∈cells(), f{j} = 0.0;
-IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});  // only on parallelograms
-IniUn: ∀j∈cells(), u^{n}{j} = cos(2 * PI * α * center{j}[0]);
-ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(det(X{r}, X{r+1}));
-ComputeSurface: ∀f∈faces(), surface{f} = 0.5 * ∑{r∈nodesOfFace(f)}(norm(X{r}-X{r+1}));
-ComputeOutgoingFlux: ∀j1∈cells(), outgoingFlux{j1} = δt/V{j1} * ∑{j2∈neighbourCells(j1), cf=commonFace(j1,j2)}( (u^{n}{j2}-u^{n}{j1}) / norm(center{j2}-center{j1}) * surface{cf});
-ComputeUn: ∀j∈cells(), u^{n+1}{j} = f{j} * δt + u^{n}{j} + outgoingFlux{j};
-ComputeTn: t^{n+1} = t^{n} + δt;
+initE     : ∀c ∈cells(), e^{n=0}{c} = 0.;
+computeE1 : ∀c ∈cells(), e1{c} = e^{n}{c} + 3.;
+InitE2    : ∀c ∈cells(), e2^{n+1, k=0}{c} = e1{c};
+computeE2 : ∀c ∈cells(), e2^{n+1, k+1}{c} = e2^{n+1, k}{c} + 0.4;
+updateE   : ∀c ∈cells(), e^{n+1}{c} = e2^{n+1}{c} - 3;

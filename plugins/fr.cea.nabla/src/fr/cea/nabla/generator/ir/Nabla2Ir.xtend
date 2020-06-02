@@ -69,7 +69,7 @@ class Nabla2Ir
 			for (v : createIrVariablesFor(nablaModule, d.variable))
 				definitions += v as SimpleVariable
 		for (d : nablaModule.declarations)
-			for (v : d.vars)
+			for (v : d.variables)
 				declarations += createIrVariablesFor(nablaModule, v)
 
 		// TimeLoop jobs creation
@@ -77,12 +77,6 @@ class Nabla2Ir
 
 		// Job creation
 		nablaModule.jobs.forEach[x | jobs += x.toIrInstructionJob]
-
-		// Create a unique name for reduction instruction variable
-		var i = 0
-		for (v : eAllContents.filter(SimpleVariable).toIterable)
-			if (v.name == ReductionCallExtensions.ReductionVariableName)
-				v.name = v.name.replace("<NUMBER>", (i++).toString)
 	}
 
 	/**

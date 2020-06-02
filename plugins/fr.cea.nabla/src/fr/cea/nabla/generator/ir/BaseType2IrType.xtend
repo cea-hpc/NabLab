@@ -18,7 +18,7 @@ import fr.cea.nabla.nabla.Connectivity
 import java.util.List
 
 @Singleton
-class BaseType2IrType 
+class BaseType2IrType
 {
 	@Inject extension Nabla2IrUtils
 	@Inject extension IrConnectivityFactory
@@ -27,7 +27,7 @@ class BaseType2IrType
 	// No create method to ensure a new instance every time (for n+1 time variables)
 	def fr.cea.nabla.ir.ir.BaseType toIrBaseType(BaseType t)
 	{
-		IrFactory::eINSTANCE.createBaseType => 
+		IrFactory::eINSTANCE.createBaseType =>
 		[
 			primitive = t.primitive.toIrPrimitiveType
 			t.sizes.forEach[x | sizes += x.toIrExpression]
@@ -36,7 +36,7 @@ class BaseType2IrType
 
 	def ConnectivityType toIrConnectivityType(BaseType t, List<? extends Connectivity> supports)
 	{
-		IrFactory::eINSTANCE.createConnectivityType => 
+		IrFactory::eINSTANCE.createConnectivityType =>
 		[
 			base = t.toIrBaseType
 			supports.forEach[x | connectivities += x.toIrConnectivity]

@@ -187,9 +187,9 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 			FunctionOrReduction, NablaModule:
 				IScope::NULLSCOPE
 			FunctionTypeDeclaration:
-				Scopes::scopeFor((context.eContainer as Function).vars)
+				Scopes::scopeFor((context.eContainer as Function).variables)
 			ReductionTypeDeclaration:
-				Scopes::scopeFor((context.eContainer as Reduction).vars)
+				Scopes::scopeFor((context.eContainer as Reduction).variables)
 			IterationBlock:
 			{
 				val c = context.eContainer as Iterable
@@ -242,7 +242,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 			Instruction:
 				#[]
 			FunctionOrReduction:
-				(context.vars + context.inArgs)
+				(context.variables + context.inArgs)
 			Job:
 				(context.eContainer as NablaModule).allVars
 			NablaModule:
@@ -263,7 +263,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		for (i : instructions)
 			switch i
 			{
-				VarGroupDeclaration : variables += i.vars
+				VarGroupDeclaration : variables += i.variables
 				SimpleVarDefinition : variables += i.variable
 			}
 		return variables

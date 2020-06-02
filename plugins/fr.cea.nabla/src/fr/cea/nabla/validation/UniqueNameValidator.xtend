@@ -52,18 +52,18 @@ class UniqueNameValidator extends AbstractNablaValidator
 	}
 
 	@Check(CheckType.NORMAL)
-	def void checkDuplicate(Var it) 
+	def void checkDuplicate(Var it)
 	{
 		if (eContainer instanceof VarGroupDeclaration)
 		{
-			val variables = (eContainer as VarGroupDeclaration).vars
+			val variables = (eContainer as VarGroupDeclaration).variables
 			val duplicate = variables.findFirst[x | x.name == name && x != it]
 			if (duplicate !== null)
 				error(getDuplicateNameMsg(NablaPackage.Literals.VAR, duplicate.name), NablaPackage.Literals.ARG_OR_VAR__NAME, DUPLICATE_NAME);
 		}
 		else if (eContainer instanceof FunctionOrReduction)
 		{
-			val variables = (eContainer as FunctionOrReduction).vars
+			val variables = (eContainer as FunctionOrReduction).variables
 			val duplicate = variables.findFirst[x | x.name == name && x != it]
 			if (duplicate !== null)
 				error(getDuplicateNameMsg(NablaPackage.Literals.VAR, duplicate.name), NablaPackage.Literals.ARG_OR_VAR__NAME, DUPLICATE_NAME);

@@ -62,7 +62,7 @@ class IrInstructionFactory
 	private def dispatch List<Instruction> toIrInstructions(VarGroupDeclaration v)
 	{
 		val instructions = new ArrayList<Instruction>
-		for (nablaVar : v.vars.filter(SimpleVar))
+		for (nablaVar : v.variables.filter(SimpleVar))
 		{
 			instructions += IrFactory::eINSTANCE.createVariableDefinition =>
 			[

@@ -19,7 +19,7 @@ class NablaModuleExtensions
 	{
 		val allVars = new ArrayList<Var>
 		definitions.forEach[x | allVars += x.variable]
-		declarations.forEach[x | allVars += x.vars]
+		declarations.forEach[x | allVars += x.variables]
 		return allVars
 	}
 

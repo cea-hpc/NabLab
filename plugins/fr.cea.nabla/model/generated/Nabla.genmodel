@@ -54,7 +54,7 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//VarGroupDeclaration">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarGroupDeclaration/type"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarGroupDeclaration/vars"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarGroupDeclaration/variables"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//InstructionBlock">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//InstructionBlock/instructions"/>
@@ -148,7 +148,7 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//FunctionOrReduction">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//FunctionOrReduction/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//FunctionOrReduction/vars"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//FunctionOrReduction/variables"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//FunctionOrReduction/inArgs"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//FunctionOrReduction/body"/>
     </genClasses>

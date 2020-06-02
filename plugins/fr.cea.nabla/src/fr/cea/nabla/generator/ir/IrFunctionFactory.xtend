@@ -31,7 +31,7 @@ class IrFunctionFactory
 		annotations += f.toIrAnnotation
 		name = f.name
 		provider = f.moduleName
-		f.vars.forEach[x | variables += toIrSimpleVariable(x, x.name)]
+		f.variables.forEach[x | variables += toIrSimpleVariable(x, x.name)]
 		if (f.external)
 		{
 			// f is external. No inArgs only inArgTypes
@@ -54,7 +54,7 @@ class IrFunctionFactory
 		// build a unique name with name and type
 		name = f.name.toFirstLower + t.primitive.getName().charAt(0) + t.sizes.size
 		provider = f.moduleName
-		f.vars.forEach[x | variables += toIrSimpleVariable(x, x.name)]
+		f.variables.forEach[x | variables += toIrSimpleVariable(x, x.name)]
 		f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
 		returnType = t.toIrBaseType
 		body = f.body.toIrInstruction

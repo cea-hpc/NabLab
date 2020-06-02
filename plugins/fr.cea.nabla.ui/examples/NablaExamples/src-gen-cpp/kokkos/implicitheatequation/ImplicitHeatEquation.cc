@@ -184,7 +184,7 @@ void ImplicitHeatEquation::computeFaceLength() noexcept
 	Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const size_t& fFaces)
 	{
 		const Id fId(fFaces);
-		double reduction3(0.0);
+		double reduction0(0.0);
 		{
 			const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
 			const size_t nbNodesOfFaceF(nodesOfFaceF.size());
@@ -194,10 +194,10 @@ void ImplicitHeatEquation::computeFaceLength() noexcept
 				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction3 = sumR0(reduction3, norm(X(pNodes) - X(pPlus1Nodes)));
+				reduction0 = sumR0(reduction0, norm(X(pNodes) - X(pPlus1Nodes)));
 			}
 		}
-		faceLength(fFaces) = 0.5 * reduction3;
+		faceLength(fFaces) = 0.5 * reduction0;
 	});
 }
 
@@ -221,7 +221,7 @@ void ImplicitHeatEquation::computeV() noexcept
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
 		const Id jId(jCells);
-		double reduction2(0.0);
+		double reduction0(0.0);
 		{
 			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
@@ -231,10 +231,10 @@ void ImplicitHeatEquation::computeV() noexcept
 				const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction2 = sumR0(reduction2, det(X(pNodes), X(pPlus1Nodes)));
+				reduction0 = sumR0(reduction0, det(X(pNodes), X(pPlus1Nodes)));
 			}
 		}
-		V(jCells) = 0.5 * reduction2;
+		V(jCells) = 0.5 * reduction0;
 	});
 }
 
@@ -293,12 +293,12 @@ void ImplicitHeatEquation::updateU() noexcept
  */
 void ImplicitHeatEquation::computeDeltaTn() noexcept
 {
-	double reduction1;
+	double reduction0;
 	Kokkos::parallel_reduce(nbCells, KOKKOS_LAMBDA(const size_t& cCells, double& accu)
 	{
 		accu = minR0(accu, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D(cCells));
-	}, KokkosJoiner<double>(reduction1, numeric_limits<double>::max(), &minR0));
-	deltat = reduction1 * 0.24;
+	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &minR0));
+	deltat = reduction0 * 0.24;
 }
 
 /**
@@ -311,7 +311,7 @@ void ImplicitHeatEquation::computeFaceConductivity() noexcept
 	Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const size_t& fFaces)
 	{
 		const Id fId(fFaces);
-		double reduction4(1.0);
+		double reduction0(1.0);
 		{
 			const auto cellsOfFaceF(mesh->getCellsOfFace(fId));
 			const size_t nbCellsOfFaceF(cellsOfFaceF.size());
@@ -319,10 +319,10 @@ void ImplicitHeatEquation::computeFaceConductivity() noexcept
 			{
 				const Id c1Id(cellsOfFaceF[c1CellsOfFaceF]);
 				const size_t c1Cells(c1Id);
-				reduction4 = prodR0(reduction4, D(c1Cells));
+				reduction0 = prodR0(reduction0, D(c1Cells));
 			}
 		}
-		double reduction5(0.0);
+		double reduction1(0.0);
 		{
 			const auto cellsOfFaceF(mesh->getCellsOfFace(fId));
 			const size_t nbCellsOfFaceF(cellsOfFaceF.size());
@@ -330,10 +330,10 @@ void ImplicitHeatEquation::computeFaceConductivity() noexcept
 			{
 				const Id c2Id(cellsOfFaceF[c2CellsOfFaceF]);
 				const size_t c2Cells(c2Id);
-				reduction5 = sumR0(reduction5, D(c2Cells));
+				reduction1 = sumR0(reduction1, D(c2Cells));
 			}
 		}
-		faceConductivity(fFaces) = 2.0 * reduction4 / reduction5;
+		faceConductivity(fFaces) = 2.0 * reduction0 / reduction1;
 	});
 }
 

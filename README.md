@@ -7,7 +7,7 @@
 
 Written by CEA and Contributors
 
-(C) Copyright 2019, by CEA. All rights reserved.
+(C) Copyright 2020, by CEA. All rights reserved.
 
 All content is the property of the respective authors or their employers.
 For more information regarding authorship of content, please consult the
@@ -73,7 +73,7 @@ A new wizard is launched:
 
 Just click on the *Finish* button to import the examples project. The examples project is available in the *Model Explorer View*:
 
-<img src="./README_images/NabLab_nabla_examples_generated_files.png" alt="NabLab Examples Generated Files" title="NabLab Examples Generated Files" width="70%" height="70%" />
+<img src="./README_images/NabLab_nabla_examples_generated_files.png" alt="NabLab Examples Generated Files" title="NabLab Examples Generated Files" width="100%" height="100%" />
 
 It contains a set of Nabla examples including Glace2D, HeatEquation, ImplicitHeatEquation, and ExplicitHeatEquation.
 
@@ -85,7 +85,7 @@ The *Latex View* is accessible through the *Window > Show View > Other... > Nabl
 
 This view is automatically updated and synchronized with the selection in the current nabla model editor.
 
-<img src="./README_images/NabLab_latex_view.png" alt="NabLab Latex View" title="NabLab Latex View" width="80%" height="80%" />
+<img src="./README_images/NabLab_latex_view.png" alt="NabLab Latex View" title="NabLab Latex View" width="100%" height="100%" />
 
 ## Build via Maven 3.x
 

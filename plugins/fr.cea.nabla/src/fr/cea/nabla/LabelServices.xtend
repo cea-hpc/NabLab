@@ -70,7 +70,7 @@ class LabelServices
 	/* JOBS & INSTRUCTIONS ***********************************/
 	static def dispatch String getLabel(Job it) { name + ' : ' + instruction?.label }
 	static def dispatch String getLabel(SimpleVarDefinition it) { 'let ' + variable?.name + '=' + value?.label }
-	static def dispatch String getLabel(VarGroupDeclaration it) { type?.label + ' ' + vars?.map[x|x?.name].join(', ') }
+	static def dispatch String getLabel(VarGroupDeclaration it) { type?.label + ' ' + variables?.map[x|x?.name].join(', ') }
 	static def dispatch String getLabel(InstructionBlock it) { '{ }' }
 	static def dispatch String getLabel(Loop it) { '\u2200 ' + iterationBlock?.label + ', ' + body?.label }
 	static def dispatch String getLabel(Affectation it) { left?.label + ' = ' + right?.label }
@@ -99,8 +99,8 @@ class LabelServices
 	static def dispatch String getLabel(NextTimeIteratorRef it) { target?.name + '+' + value }
 
 	/* FONCTIONS / REDUCTIONS ********************************/
-	static def dispatch String getLabel(Function it) { 'def ' + name + ' : ' + getLabel(vars, typeDeclaration) }
-	static def dispatch String getLabel(Reduction it) { 'def ' + name + ', ' + seed?.label + ' : ' + getLabel(vars, typeDeclaration) }
+	static def dispatch String getLabel(Function it) { 'def ' + name + ' : ' + getLabel(variables, typeDeclaration) }
+	static def dispatch String getLabel(Reduction it) { 'def ' + name + ', ' + seed?.label + ' : ' + getLabel(variables, typeDeclaration) }
 
 	private static def String getLabel(List<SimpleVar> vars, FunctionTypeDeclaration td)
 	{

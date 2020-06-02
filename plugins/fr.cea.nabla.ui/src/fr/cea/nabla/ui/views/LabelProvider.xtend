@@ -9,18 +9,19 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.views
 
+import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.ir.Job
 import org.eclipse.draw2d.ColorConstants
 import org.eclipse.zest.core.viewers.ISelfStyleProvider
 import org.eclipse.zest.core.widgets.GraphConnection
 import org.eclipse.zest.core.widgets.GraphNode
 
-import static extension fr.cea.nabla.ir.JobExtensions.*
-
 class LabelProvider
 extends org.eclipse.jface.viewers.LabelProvider 
 implements ISelfStyleProvider
 {
+	static val extension JobDependencies = new JobDependencies
+
 	// Label Provider
 	override getText(Object o)
 	{

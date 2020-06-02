@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ui
 
+import fr.cea.nabla.ir.DefaultVarDependencies
 import fr.cea.nabla.ir.ir.Job
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
@@ -17,10 +18,10 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.jface.resource.ResourceLocator
 import org.eclipse.ui.PlatformUI
 
-import static extension fr.cea.nabla.ir.JobExtensions.*
-
 class UiUtils
 {
+	static val extension DefaultVarDependencies = new DefaultVarDependencies
+
 	static def getImageDescriptor(String path)
 	{
 		ResourceLocator::imageDescriptorFromBundle("fr.cea.nabla.ui", path)

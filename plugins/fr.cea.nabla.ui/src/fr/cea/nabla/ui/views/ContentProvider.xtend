@@ -9,17 +9,18 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.views
 
+import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobContainer
 import org.eclipse.jface.viewers.ArrayContentProvider
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider
 
-import static extension fr.cea.nabla.ir.JobExtensions.*
-
 class ContentProvider
 extends ArrayContentProvider
 implements IGraphEntityContentProvider
 {
+	static val extension JobDependencies = new JobDependencies
+
 	override Object[] getElements(Object inputElement)
 	{
 		if (inputElement instanceof JobContainer)

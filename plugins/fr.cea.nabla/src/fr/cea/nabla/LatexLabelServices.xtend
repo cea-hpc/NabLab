@@ -95,8 +95,8 @@ class LatexLabelServices
 	static def dispatch String getLatex(NextTimeIteratorRef it) { target.name.pu + '+' + value }
 
 	/* FONCTIONS / REDUCTIONS ********************************/
-	static def dispatch String getLatex(Function it) { 'def~' + name.pu + '~:~' + vars.latexForVars + inTypes.map[latex].join(' \u00D7 ') + ' \u2192 ' + returnType.latex }
-	static def dispatch String getLatex(Reduction it) { 'def~' + name.pu + '~:~' + vars.latexForVars + '(' + seed.latex + ', ' + type.latex + ')' }
+	static def dispatch String getLatex(Function it) { 'def~' + name.pu + '~:~' + variables.latexForVars + inTypes.map[latex].join(' \u00D7 ') + ' \u2192 ' + returnType.latex }
+	static def dispatch String getLatex(Reduction it) { 'def~' + name.pu + '~:~' + variables.latexForVars + '(' + seed.latex + ', ' + type.latex + ')' }
 
 	private static def getLatexForVars(List<SimpleVar> symbols)
 	{

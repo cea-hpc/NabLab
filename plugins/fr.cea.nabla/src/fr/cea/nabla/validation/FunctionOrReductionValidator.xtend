@@ -111,14 +111,14 @@ class FunctionOrReductionValidator extends BasicValidator
 	{
 		for (inType : inTypes)
 			if (!inType.sizes.forall[x | isAllowedInFunctionOrReduction(it, x)])
-				error(getOnlyIntAndVarInFunctionInTypesMsg(vars.map[name]), NablaPackage.Literals::FUNCTION__IN_TYPES, ONLY_INT_AND_VAR_IN_FUNCTION_IN_TYPES)
+				error(getOnlyIntAndVarInFunctionInTypesMsg(variables.map[name]), NablaPackage.Literals::FUNCTION__IN_TYPES, ONLY_INT_AND_VAR_IN_FUNCTION_IN_TYPES)
 	}
 
 	@Check
 	def checkOnlyIntAndVarInReductionType(Reduction it)
 	{
 		if (!type.sizes.forall[x | isAllowedInFunctionOrReduction(it, x)])
-			error(getOnlyIntAndVarInReductionTypeMsg(vars.map[name]), NablaPackage.Literals::REDUCTION__TYPE, ONLY_INT_AND_VAR_IN_REDUCTION_TYPE)
+			error(getOnlyIntAndVarInReductionTypeMsg(variables.map[name]), NablaPackage.Literals::REDUCTION__TYPE, ONLY_INT_AND_VAR_IN_REDUCTION_TYPE)
 	}
 
 	@Check

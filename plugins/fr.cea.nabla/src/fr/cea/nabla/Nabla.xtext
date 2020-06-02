@@ -86,9 +86,9 @@ ConnectivityVar: name=ID '{' supports+=[MultipleConnectivity] (',' supports+=[Mu
 
 /* FONCTIONS / REDUCTIONS ********************************/
 FunctionOrReduction: Function | Reduction;
-Function: 'def' name=ID ':' (vars+=SimpleVar (',' vars+=SimpleVar)* '|')? (inTypes+=BaseType ('\u00D7' inTypes+=BaseType)*)? '\u2192' returnType=BaseType
+Function: 'def' name=ID ':' (variables+=SimpleVar (',' variables+=SimpleVar)* '|')? (inTypes+=BaseType ('\u00D7' inTypes+=BaseType)*)? '\u2192' returnType=BaseType
 	((',' '(' (inArgs+=Arg (',' inArgs+=Arg)*)? ')' '\u2192' body=Instruction) | external?=';');
-Reduction: 'def' name=ID ',' seed=Expression ':' (vars+=SimpleVar (',' vars+=SimpleVar)* '|')? type=BaseType
+Reduction: 'def' name=ID ',' seed=Expression ':' (variables+=SimpleVar (',' variables+=SimpleVar)* '|')? type=BaseType
 	',' '(' inArgs+=Arg ',' inArgs+=Arg ')' '\u2192' body=Instruction;
 Arg: name=ID;
 

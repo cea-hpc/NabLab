@@ -270,9 +270,9 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		//println(prefix + 'variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
 		if (o instanceof BaseType)
 			// it is the function header, args are not yet visible
-			Scopes::scopeFor(context.vars)
+			Scopes::scopeFor(context.variables)
 		else 
-			Scopes::scopeFor(context.vars + context.inArgs)
+			Scopes::scopeFor(context.variables + context.inArgs)
 	}
 
 	/**

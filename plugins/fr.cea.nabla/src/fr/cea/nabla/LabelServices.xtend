@@ -97,8 +97,8 @@ class LabelServices
 	static def dispatch String getLabel(NextTimeIteratorRef it) { target?.name + '+' + value }
 
 	/* FONCTIONS / REDUCTIONS ********************************/
-	static def dispatch String getLabel(Function it) { 'def ' + name + ' : ' + vars?.labelForVars + inTypes?.map[label].join(' \u00D7 ') + ' \u2192 ' + returnType?.label }
-	static def dispatch String getLabel(Reduction it) { 'def ' + name + ' : ' + vars?.labelForVars + '(' + seed?.label + ', ' + type?.label + ')' }
+	static def dispatch String getLabel(Function it) { 'def ' + name + ' : ' + variables?.labelForVars + inTypes?.map[label].join(' \u00D7 ') + ' \u2192 ' + returnType?.label }
+	static def dispatch String getLabel(Reduction it) { 'def ' + name + ' : ' + variables?.labelForVars + '(' + seed?.label + ', ' + type?.label + ')' }
 
 	private static def getLabelForVars(List<SimpleVar> symbols)
 	{

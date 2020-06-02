@@ -169,7 +169,7 @@ class Ir2Cpp extends CodeGenerator
 		«val yel = getVariableByName(MandatoryVariables.Y_EDGE_LENGTH).codeName»
 		, mesh(CartesianMesh2DGenerator::generate(«xee», «yee», «xel», «yel»))
 		, writer("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»)
-		«FOR c : usedConnectivities»
+		«FOR c : connectivities.filter[multiple]»
 		, «c.nbElemsVar»(«c.connectivityAccessor»)
 		«ENDFOR»
 	«ENDIF»

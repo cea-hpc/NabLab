@@ -47,7 +47,7 @@ public final class HeatEquation
 	// Mesh (can depend on previous definitions)
 	private final CartesianMesh2D mesh;
 	private final FileWriter writer;
-	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
+	private final int nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbNodesOfCell;
 
 	// Global declarations
 	private int n;
@@ -76,9 +76,9 @@ public final class HeatEquation
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
-		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
+		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
+		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];

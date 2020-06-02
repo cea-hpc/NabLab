@@ -13,7 +13,10 @@ import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.JobContainer
 import fr.cea.nabla.ir.ir.TimeLoopJob
+import org.eclipse.emf.common.util.ECollections
+import org.eclipse.emf.common.util.EList
 import org.jgrapht.alg.cycle.CycleDetector
 import org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths
 import org.jgrapht.graph.DefaultWeightedEdge
@@ -58,6 +61,10 @@ class FillJobHLTs extends IrTransformationStep
 		for (subGraph : subGraphs.values)
 			subGraph.fillAt
 
+		// sort jobs by @at in IR
+		m.jobs.sortByAtAndName
+		m.innerJobs.sortByAtAndName
+		m.jobs.filter(JobContainer).forEach[x | x.innerJobs.sortByAtAndName]
 		return true
 	}
 
@@ -144,5 +151,15 @@ class FillJobHLTs extends IrTransformationStep
 				if (atValue > maxAtValue) maxAtValue = atValue
 			}
 		}
+	}
+
+	private def void sortByAtAndName(EList<Job> l)
+	{
+		ECollections.sort(l, [a, b | 
+			if (a.at == b.at)
+				a.name.compareTo(b.name)
+			else // ascending order of at
+				(a.at - b.at) as int
+		])
 	}
 }

@@ -51,7 +51,7 @@ public final class ImplicitHeatEquation
 	// Mesh (can depend on previous definitions)
 	private final CartesianMesh2D mesh;
 	private final FileWriter writer;
-	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
+	private final int nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
 
 	// Global declarations
 	private int n;
@@ -83,10 +83,10 @@ public final class ImplicitHeatEquation
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
-		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 		nbCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
-		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
+		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];

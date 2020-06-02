@@ -22,7 +22,6 @@ import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class ModuleInterpreter
 {
@@ -104,11 +103,11 @@ class ModuleInterpreter
 			context.initMesh(nbXQuads, nbYQuads, xSize, ySize)
 
 			// Create mesh nbElems
-			for (c : module.usedConnectivities)
-			if (c.inTypes.empty)
-				context.connectivitySizes.put(c, context.meshWrapper.getNbElems(c.name))
-			else
-				context.connectivitySizes.put(c, context.meshWrapper.getMaxNbElems(c.name))
+			for (c : module.connectivities.filter[multiple])
+				if (c.inTypes.empty)
+					context.connectivitySizes.put(c, context.meshWrapper.getNbElems(c.name))
+				else
+					context.connectivitySizes.put(c, context.meshWrapper.getMaxNbElems(c.name))
 		}
 
 		// Interprete declarations
@@ -119,7 +118,7 @@ class ModuleInterpreter
 		context.addVariableValue(module.initNodeCoordVariable, new NV2Real(context.meshWrapper.nodes))
 
 		// Interprete Top level jobs
-		for (j : module.jobs.filter[topLevel].sortBy[at])
+		for (j : module.innerJobs.sortBy[at])
 			jobInterpreter.interprete(j, context)
 
 		context.logVariables("At the end")

@@ -54,7 +54,7 @@ class JobContentProvider
 				if («ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
 					dumpVariables(«itVar»);
 			«ENDIF»
-			«FOR j : innerJobs.sortByAtAndName»
+			«FOR j : innerJobs»
 				«j.codeName»(); // @«j.at»
 			«ENDFOR»
 

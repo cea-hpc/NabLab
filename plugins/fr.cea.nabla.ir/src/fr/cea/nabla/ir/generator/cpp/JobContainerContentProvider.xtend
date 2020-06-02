@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.ir.JobContainer
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
-import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class JobContainerContentProvider
@@ -21,7 +20,7 @@ class JobContainerContentProvider
 
 	def getCallsContent(JobContainer it)
 	'''
-		«FOR j : innerJobs.sortByAtAndName»
+		«FOR j : innerJobs»
 		«j.codeName»(); // @«j.at»
 		«ENDFOR»
 

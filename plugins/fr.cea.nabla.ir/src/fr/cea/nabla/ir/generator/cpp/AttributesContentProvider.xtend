@@ -37,7 +37,7 @@ class AttributesContentProvider
 			// Mesh (can depend on previous definitions)
 			CartesianMesh2D* mesh;
 			PvdFileWriter2D writer;
-			«FOR c : m.usedConnectivities BEFORE 'size_t ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
+			«FOR c : m.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
 
 		«ENDIF»
 		// Global declarations

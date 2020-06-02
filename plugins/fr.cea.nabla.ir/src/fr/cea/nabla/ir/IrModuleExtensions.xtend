@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
@@ -52,17 +51,6 @@ class IrModuleExtensions
 	static def isLinearAlgebra(IrModule it)
 	{
 		declarations.filter(ConnectivityVariable).exists[x | x.linearAlgebra]
-	}
-
-	/**
-	 * Return the list of connectivities used by the module
-	 * during variables and iterators definition.
-	 */
-	static def getUsedConnectivities(IrModule it)
-	{
-		val connectivities = declarations.filter(ConnectivityVariable).map[type.connectivities].flatten.toSet
-		jobs.forEach[j | connectivities += j.eAllContents.filter(ConnectivityCall).map[connectivity].toSet]
-		return connectivities.filter[c | c.multiple]
 	}
 
 	static def getVariableByName(IrModule it, String irVarName)

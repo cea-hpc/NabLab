@@ -65,18 +65,19 @@ abstract class AbstractJobInterpreterTest
 		// Simulation options
 		let ℝ option_stoptime = 0.2;
 		let ℕ option_max_iterations = 10;
-		ℝ[2] u, X{nodes}, center{cells};
+		ℝ u;
+		ℝ[2] X{nodes}, center{cells};
 
 		iterate n while (t^{n} < option_stoptime && n < option_max_iterations);
 
-		ComputeUx : u^{n}[0] = u^{n=0}[0] + 1.0;
-		ComputeUy : u^{n}[1] = u^{n=0}[1] + 2.0;
+		IniU : u^{n=0} = 4.0;
 		IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X^{n=0}{r});
+		UpdateU: u^{n+1} = u^{n} + 1;
 		'''
 
 		assertInterpreteTimeLoopCopyJob(model)
 	}
-	
+
 	def void assertInterpreteInstructionJob(String model)
 
 	def void assertInterpreteTimeLoopJob(String model)

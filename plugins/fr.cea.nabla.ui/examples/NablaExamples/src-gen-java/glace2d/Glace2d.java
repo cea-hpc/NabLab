@@ -54,7 +54,7 @@ public final class Glace2d
 	// Mesh (can depend on previous definitions)
 	private final CartesianMesh2D mesh;
 	private final FileWriter writer;
-	private final int nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
+	private final int nbNodes, nbCells, nbOuterFaces, nbInnerNodes, nbNodesOfCell, nbCellsOfNode, nbNodesOfFace;
 
 	// Global declarations
 	private int n;
@@ -99,10 +99,10 @@ public final class Glace2d
 		writer = new PvdFileWriter2D("Glace2d", options.outputPath);
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
+		nbOuterFaces = mesh.getNbOuterFaces();
+		nbInnerNodes = mesh.getNbInnerNodes();
 		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
 		nbCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
-		nbInnerNodes = mesh.getNbInnerNodes();
-		nbOuterFaces = mesh.getNbOuterFaces();
 		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 
 		// Allocate arrays

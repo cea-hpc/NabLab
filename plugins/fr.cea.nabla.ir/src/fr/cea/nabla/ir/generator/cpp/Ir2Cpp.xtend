@@ -92,7 +92,7 @@ class Ir2Cpp extends CodeGenerator
 		struct Options
 		{
 			«IF postProcessingInfo !== null»std::string «TagOutputVariables.OutputPathNameAndValue.key»;«ENDIF»
-			«FOR v : definitions.filter[option]»
+			«FOR v : allOptions»
 			«v.cppType» «v.name»;
 			«ENDFOR»
 
@@ -150,7 +150,7 @@ class Ir2Cpp extends CodeGenerator
 		assert(valueof_«opName».IsString());
 		«opName» = valueof_«opName».GetString();
 		«ENDIF»
-		«FOR v : definitions.filter[option]»
+		«FOR v : allOptions»
 		«v.jsonContent»
 		«ENDFOR»
 	}
@@ -159,7 +159,7 @@ class Ir2Cpp extends CodeGenerator
 
 	«name»::«name»(const Options& aOptions)
 	: options(aOptions)
-	«FOR v : definitions.filter[x | !(x.option || x.constExpr)]»
+	«FOR v : allDefinitions.filter[x | !x.constExpr]»
 	, «v.name»(«v.defaultValue.content»)
 	«ENDFOR»
 	«IF withMesh»

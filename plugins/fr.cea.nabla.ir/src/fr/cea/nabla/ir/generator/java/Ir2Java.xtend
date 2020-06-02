@@ -64,8 +64,10 @@ class Ir2Java extends CodeGenerator
 		{
 			public final static class Options
 			{
-				«IF postProcessingInfo !== null»public String «TagOutputVariables.OutputPathNameAndValue.key»;«ENDIF»
-				«FOR v : definitions.filter[option]»
+				«IF postProcessingInfo !== null»
+				public String «TagOutputVariables.OutputPathNameAndValue.key»;
+				«ENDIF»
+				«FOR v : allOptions»
 				public «v.javaType» «v.name»;
 				«ENDFOR»
 		
@@ -80,7 +82,7 @@ class Ir2Java extends CodeGenerator
 			private final Options options;
 
 			// Global definitions
-			«FOR v : definitions.filter[!option]»
+			«FOR v : allDefinitions»
 			private «IF v.const»final «ENDIF»«v.javaType» «v.name»;
 			«ENDFOR»
 
@@ -101,7 +103,7 @@ class Ir2Java extends CodeGenerator
 				options = aOptions;
 
 				// Initialize variables with default values
-				«FOR v : definitions.filter[!option]»
+				«FOR v : allDefinitions»
 					«v.name» = «v.defaultValue.content»;
 				«ENDFOR»
 

@@ -61,6 +61,13 @@ class ModuleInterpreter
 	def interpreteDefinitions(String jsonOptionsContent)
 	{
 		// Variables must be created with their default values to get the right NablaValue type
+		if (module.postProcessingInfo !== null)
+		{
+			val lastDump = module.postProcessingInfo.lastDumpVariable
+			context.addVariableValue(lastDump, interprete(lastDump.defaultValue, context))
+			val periodValue = module.postProcessingInfo.periodValue
+			context.addVariableValue(periodValue, interprete(periodValue.defaultValue, context))
+		}
 		for (v : module.definitions)
 			context.addVariableValue(v, interprete(v.defaultValue, context))
 
@@ -69,7 +76,7 @@ class ModuleInterpreter
 		{
 			val gson = new Gson
 			val jsonOptions = gson.fromJson(jsonOptionsContent, JsonObject)
-			for (v : module.definitions.filter[option])
+			for (v : module.allOptions)
 			{
 				val vValue = context.getVariableValue(v)
 				val jsonElt = jsonOptions.get(v.name)

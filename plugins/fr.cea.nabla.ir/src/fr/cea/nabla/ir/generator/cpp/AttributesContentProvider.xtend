@@ -25,7 +25,7 @@ class AttributesContentProvider
 	def getContentFor(IrModule m)
 	'''
 		// Global definitions
-		«FOR v : m.definitions.filter[!option]»
+		«FOR v : m.allDefinitions»
 			«IF v.constExpr»
 				static constexpr «v.cppType» «v.name» = «v.defaultValue.content»;
 			«ELSE»

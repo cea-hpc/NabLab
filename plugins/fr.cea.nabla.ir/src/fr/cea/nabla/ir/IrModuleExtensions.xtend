@@ -12,13 +12,33 @@ package fr.cea.nabla.ir
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
+import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
+import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 
 class IrModuleExtensions
 {
+	static def getAllOptions(IrModule it)
+	{
+		val options = new ArrayList<SimpleVariable>
+		if (postProcessingInfo !== null)
+			options.add(postProcessingInfo.periodValue)
+		options.addAll(definitions.filter[option])
+		return options
+	}
+
+	static def getAllDefinitions(IrModule it)
+	{
+		val options = new ArrayList<SimpleVariable>
+		options.addAll(definitions.filter[!option])
+		if (postProcessingInfo !== null)
+			options.add(postProcessingInfo.lastDumpVariable)
+		return options
+	}
+
 	static def getJobByName(IrModule it, String jobName)
 	{
 		jobs.findFirst[j | j.name == jobName]

@@ -106,13 +106,13 @@ class JobDispatcher
 		}
 	}
 
-	private def String getName(JobContainer jc)
-	{
-		if (jc === null) "null"
-		else switch jc
-		{
-			TimeLoopJob: jc.name
-			IrModule: jc.name
-		}
-	}
+//	private def String getName(JobContainer jc)
+//	{
+//		if (jc === null) "null"
+//		else switch jc
+//		{
+//			TimeLoopJob: jc.name
+//			IrModule: jc.name
+//		}
+//	}
 }

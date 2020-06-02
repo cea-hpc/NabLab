@@ -152,7 +152,7 @@ public final class ImplicitHeatEquation
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			final int fId = fFaces;
-			double reduction3 = 0.0;
+			double reduction0 = 0.0;
 			{
 				final int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
 				final int nbNodesOfFaceF = nodesOfFaceF.length;
@@ -162,10 +162,10 @@ public final class ImplicitHeatEquation
 					final int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
 					final int pNodes = pId;
 					final int pPlus1Nodes = pPlus1Id;
-					reduction3 = sumR0(reduction3, norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
+					reduction0 = sumR0(reduction0, norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
 				}
 			}
-			faceLength[fFaces] = 0.5 * reduction3;
+			faceLength[fFaces] = 0.5 * reduction0;
 		});
 	}
 
@@ -189,7 +189,7 @@ public final class ImplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			final int jId = jCells;
-			double reduction2 = 0.0;
+			double reduction0 = 0.0;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				final int nbNodesOfCellJ = nodesOfCellJ.length;
@@ -199,10 +199,10 @@ public final class ImplicitHeatEquation
 					final int pPlus1Id = nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					final int pNodes = pId;
 					final int pPlus1Nodes = pPlus1Id;
-					reduction2 = sumR0(reduction2, det(X[pNodes], X[pPlus1Nodes]));
+					reduction0 = sumR0(reduction0, det(X[pNodes], X[pPlus1Nodes]));
 				}
 			}
-			V[jCells] = 0.5 * reduction2;
+			V[jCells] = 0.5 * reduction0;
 		});
 	}
 
@@ -261,8 +261,8 @@ public final class ImplicitHeatEquation
 	 */
 	private void computeDeltaTn()
 	{
-		double reduction1 = Double.MAX_VALUE;
-		reduction1 = IntStream.range(0, nbCells).boxed().parallel().reduce
+		double reduction0 = Double.MAX_VALUE;
+		reduction0 = IntStream.range(0, nbCells).boxed().parallel().reduce
 		(
 			Double.MAX_VALUE,
 			(accu, cCells) ->
@@ -271,7 +271,7 @@ public final class ImplicitHeatEquation
 			},
 			(r1, r2) -> minR0(r1, r2)
 		);
-		deltat = reduction1 * 0.24;
+		deltat = reduction0 * 0.24;
 	}
 
 	/**
@@ -284,7 +284,7 @@ public final class ImplicitHeatEquation
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			final int fId = fFaces;
-			double reduction4 = 1.0;
+			double reduction0 = 1.0;
 			{
 				final int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				final int nbCellsOfFaceF = cellsOfFaceF.length;
@@ -292,10 +292,10 @@ public final class ImplicitHeatEquation
 				{
 					final int c1Id = cellsOfFaceF[c1CellsOfFaceF];
 					final int c1Cells = c1Id;
-					reduction4 = prodR0(reduction4, D[c1Cells]);
+					reduction0 = prodR0(reduction0, D[c1Cells]);
 				}
 			}
-			double reduction5 = 0.0;
+			double reduction1 = 0.0;
 			{
 				final int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				final int nbCellsOfFaceF = cellsOfFaceF.length;
@@ -303,10 +303,10 @@ public final class ImplicitHeatEquation
 				{
 					final int c2Id = cellsOfFaceF[c2CellsOfFaceF];
 					final int c2Cells = c2Id;
-					reduction5 = sumR0(reduction5, D[c2Cells]);
+					reduction1 = sumR0(reduction1, D[c2Cells]);
 				}
 			}
-			faceConductivity[fFaces] = 2.0 * reduction4 / reduction5;
+			faceConductivity[fFaces] = 2.0 * reduction0 / reduction1;
 		});
 	}
 

@@ -77,12 +77,6 @@ class Nabla2Ir
 
 		// Job creation
 		nablaModule.jobs.forEach[x | jobs += x.toIrInstructionJob]
-
-		// Create a unique name for reduction instruction variable
-		var i = 0
-		for (v : eAllContents.filter(SimpleVariable).toIterable)
-			if (v.name == ReductionCallExtensions.ReductionVariableName)
-				v.name = v.name.replace("<NUMBER>", (i++).toString)
 	}
 
 	/**

@@ -137,7 +137,7 @@ public final class HeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(j1Cells -> 
 		{
 			final int j1Id = j1Cells;
-			double reduction3 = 0.0;
+			double reduction0 = 0.0;
 			{
 				final int[] neighbourCellsJ1 = mesh.getNeighbourCells(j1Id);
 				final int nbNeighbourCellsJ1 = neighbourCellsJ1.length;
@@ -147,10 +147,10 @@ public final class HeatEquation
 					final int j2Cells = j2Id;
 					final int cfId = mesh.getCommonFace(j1Id, j2Id);
 					final int cfFaces = cfId;
-					reduction3 = sumR0(reduction3, (u_n[j2Cells] - u_n[j1Cells]) / norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
+					reduction0 = sumR0(reduction0, (u_n[j2Cells] - u_n[j1Cells]) / norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
 				}
 			}
-			outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction3;
+			outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction0;
 		});
 	}
 
@@ -164,7 +164,7 @@ public final class HeatEquation
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			final int fId = fFaces;
-			double reduction2 = 0.0;
+			double reduction0 = 0.0;
 			{
 				final int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
 				final int nbNodesOfFaceF = nodesOfFaceF.length;
@@ -174,10 +174,10 @@ public final class HeatEquation
 					final int rPlus1Id = nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
 					final int rNodes = rId;
 					final int rPlus1Nodes = rPlus1Id;
-					reduction2 = sumR0(reduction2, norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
+					reduction0 = sumR0(reduction0, norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
 				}
 			}
-			surface[fFaces] = 0.5 * reduction2;
+			surface[fFaces] = 0.5 * reduction0;
 		});
 	}
 
@@ -201,7 +201,7 @@ public final class HeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			final int jId = jCells;
-			double reduction1 = 0.0;
+			double reduction0 = 0.0;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				final int nbNodesOfCellJ = nodesOfCellJ.length;
@@ -211,10 +211,10 @@ public final class HeatEquation
 					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					final int rNodes = rId;
 					final int rPlus1Nodes = rPlus1Id;
-					reduction1 = sumR0(reduction1, det(X[rNodes], X[rPlus1Nodes]));
+					reduction0 = sumR0(reduction0, det(X[rNodes], X[rPlus1Nodes]));
 				}
 			}
-			V[jCells] = 0.5 * reduction1;
+			V[jCells] = 0.5 * reduction0;
 		});
 	}
 

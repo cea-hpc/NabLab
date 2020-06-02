@@ -30,6 +30,7 @@ extends XtextEditor
 	@Inject NabLabConsoleFactory consoleFactory
 	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
 
+	// Listen to the selection of an IrAnnotable object in the Sirius editor
 	val ISelectionListener selectionListener = 
 		[IWorkbenchPart part, ISelection selection |
 			if (selection instanceof IStructuredSelection)
@@ -51,7 +52,6 @@ extends XtextEditor
 	override createPartControl(Composite parent)
 	{
 		super.createPartControl(parent)
-		// Listen to the selection of an IrAnnotable object in the Sirius editor
 		site.page.addPostSelectionListener(selectionListener)
 		consoleFactory.openConsole
 	}

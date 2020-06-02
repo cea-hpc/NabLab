@@ -66,25 +66,25 @@ import java.util.List
 class LatexLabelServices
 {
 	/* JOBS & INSTRUCTIONS ***********************************/
-	static def dispatch String getLatex(Job it) { '\\texttt{' + name.pu + '} : '+ instruction.latex }
-	static def dispatch String getLatex(SimpleVarDefinition it) { 'let~' + variable.name.pu + '=' + value.latex }
+	static def dispatch String getLatex(Job it) { '\\texttt{' + name.pu + '} : '+ instruction?.latex }
+	static def dispatch String getLatex(SimpleVarDefinition it) { 'let~' + variable?.name.pu + '=' + value.latex }
 	static def dispatch String getLatex(VarGroupDeclaration it) { type.latex + '~' + variables.map[x|x.name.pu].join(', ') }
 	static def dispatch String getLatex(InstructionBlock it) { '\\{ \\}' }
-	static def dispatch String getLatex(Loop it) { '\\forall{' + iterationBlock.latex + '}, \\ ' + body.latex }
+	static def dispatch String getLatex(Loop it) { '\\forall{' + iterationBlock?.latex + '}, \\ ' + body.latex }
 	static def dispatch String getLatex(Affectation it) { left?.latex + ' = ' + right?.latex }
-	static def dispatch String getLatex(If it) { 'if~\\left(' + condition.latex + '\\right)'}
-	static def dispatch String getLatex(ItemDefinition it) { 'item~' + item.name + '=' + value?.latex }
+	static def dispatch String getLatex(If it) { 'if~\\left(' + condition?.latex + '\\right)'}
+	static def dispatch String getLatex(ItemDefinition it) { 'item~' + item?.name + '=' + value?.latex }
 	static def dispatch String getLatex(SetDefinition it) { 'set~' + name + '=' + value?.latex }
-	static def dispatch String getLatex(Return it) { 'return~' + expression.latex }
+	static def dispatch String getLatex(Return it) { 'return~' + expression?.latex }
 	static def dispatch String getLatex(Exit it) { 'exit~' + message }
 
 	/* ITERATEURS ********************************************/
-	static def dispatch String getLatex(SpaceIterator it) { item.name.pu + '\\in ' + container.latex }
-	static def dispatch String getLatex(SingletonDefinition it) { item.name + '=' + value?.latex }
-	static def dispatch String getLatex(Interval it) { index.name + '\\in ' + nbElems.latex }
-	static def dispatch String getLatex(SetRef it) { target.name }
-	static def dispatch String getLatex(MultipleConnectivityCall it) { connectivity.name.pu + '(' + args.map[latex].join(',') + ')' }
-	static def dispatch String getLatex(SingleConnectivityCall it) { connectivity.name.pu + '(' + args.map[latex].join(',') + ')' }
+	static def dispatch String getLatex(SpaceIterator it) { item?.name.pu + '\\in ' + container?.latex }
+	static def dispatch String getLatex(SingletonDefinition it) { item?.name + '=' + value?.latex }
+	static def dispatch String getLatex(Interval it) { index?.name + '\\in ' + nbElems.latex }
+	static def dispatch String getLatex(SetRef it) { target?.name }
+	static def dispatch String getLatex(MultipleConnectivityCall it) { connectivity?.name.pu + '(' + args.map[latex].join(',') + ')' }
+	static def dispatch String getLatex(SingleConnectivityCall it) { connectivity?.name.pu + '(' + args.map[latex].join(',') + ')' }
 	static def dispatch String getLatex(ItemRef it) 
 	{ 
 		if (inc > 0) target.name.pu + '+' + inc
@@ -92,9 +92,9 @@ class LatexLabelServices
 		else target.name.pu
 	}
 
-	static def dispatch String getLatex(CurrentTimeIteratorRef it) { target.name.pu }
-	static def dispatch String getLatex(InitTimeIteratorRef it) { target.name.pu + '=' + value }
-	static def dispatch String getLatex(NextTimeIteratorRef it) { target.name.pu + '+' + value }
+	static def dispatch String getLatex(CurrentTimeIteratorRef it) { target?.name.pu }
+	static def dispatch String getLatex(InitTimeIteratorRef it) { target?.name.pu + '=' + value }
+	static def dispatch String getLatex(NextTimeIteratorRef it) { target?.name.pu + '+' + value }
 
 	/* FONCTIONS / REDUCTIONS ********************************/
 	static def dispatch String getLatex(Function it) { 'def ' + name.pu + '~:~' + getLatex(variables, typeDeclaration) }

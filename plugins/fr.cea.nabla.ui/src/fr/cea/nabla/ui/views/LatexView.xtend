@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.views
 
-import com.google.inject.Inject
 import fr.cea.nabla.LatexImageServices
 import fr.cea.nabla.LatexLabelServices
 import fr.cea.nabla.nabla.Expression
@@ -18,40 +17,56 @@ import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Reduction
+import fr.cea.nabla.ui.NablaDslEditor
 import java.io.ByteArrayInputStream
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.jface.text.ITextSelection
+import org.eclipse.jface.viewers.ISelection
 import org.eclipse.swt.SWT
 import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Display
 import org.eclipse.swt.widgets.Label
+import org.eclipse.ui.ISelectionListener
+import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.ui.part.ViewPart
 
 class LatexView extends ViewPart
 {
-	@Inject NotifyViewsHandler notifyViewsHandler
-
 	Label label
-	val keyNotificationListener =
-		[EObject selectedNablaObject |
-			val display = Display::^default
-			if (display !== null && selectedNablaObject !== null)
+
+	// Listen to Nabla Editor selection
+	val ISelectionListener selectionListener = 
+		[IWorkbenchPart part, ISelection selection |
+			if (part instanceof NablaDslEditor && selection instanceof ITextSelection)
 			{
-				val displayableObject = selectedNablaObject.closestDisplayableNablaElt
-				if (displayableObject !== null)
-					display.asyncExec([label.image = displayableObject.latexImage])
+				val nablaDslEditor = part as NablaDslEditor
+				val textSelection = selection as ITextSelection
+				val display = Display::^default
+				if (display !== null)
+				{
+					display.asyncExec
+					([
+						val o = nablaDslEditor.getObjectAtPosition(textSelection.offset)
+						if (o !== null)
+						{
+							val displayableObject = nablaDslEditor.getObjectAtPosition(textSelection.offset).closestDisplayableNablaElt
+							if (displayableObject !== null) label.image = displayableObject.latexImage
+						}
+					])
+				}
 			}
 		]
 
 	override createPartControl(Composite parent)
 	{
 		label = new Label(parent, SWT.NONE)
-		notifyViewsHandler.keyNotificationListeners += keyNotificationListener
+		site.page.addPostSelectionListener(selectionListener)
 	}
 
 	override dispose()
 	{
-		notifyViewsHandler.keyNotificationListeners -= keyNotificationListener
+		site.page.removePostSelectionListener(selectionListener)
 	}
 
 	override setFocus()

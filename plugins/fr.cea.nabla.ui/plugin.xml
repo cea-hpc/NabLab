@@ -467,7 +467,7 @@
           class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.views.LatexView"
           icon="icons/NabLab.gif"
           id="fr.cea.nabla.ui.views.NablaLatexView"
-          name="Latex">
+          name="LaTeX">
     </view>
     <view
           category="fr.cea.nabla.ui.category"

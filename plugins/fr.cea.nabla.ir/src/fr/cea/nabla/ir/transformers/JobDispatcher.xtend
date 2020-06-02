@@ -39,15 +39,15 @@ class JobDispatcher
 
 		if (tl.innerTimeLoop !== null)
 			distributeTimeLoopJobs(jobs, tl.associatedJob, tl.innerTimeLoop)
-		println
+		//println
 	}
 
 	private def void ditl(JobContainer jc, Job job, String prefix)
 	{
-		println(prefix + "ditl(" + jc.name + ", " + job.name + ")")
+		//println(prefix + "ditl(" + jc.name + ", " + job.name + ")")
 		if (! (job instanceof TimeLoopCopyJob))
 		{
-			println(prefix + jc.name + " <-- " + job.name)
+			//println(prefix + jc.name + " <-- " + job.name)
 			jc.innerJobs += job
 		}
 		switch job
@@ -78,7 +78,7 @@ class JobDispatcher
 
 	private def boolean shouldCrossJob(Job job, JobContainer container, String prefix)
 	{
-		println(prefix + "shouldCross(" + job.name + ", " + container.name + ")")
+		//println(prefix + "shouldCross(" + job.name + ", " + container.name + ")")
 		(job instanceof TimeLoopCopyJob)
 		|| (job.jobContainer === null)
 		|| (job.jobContainer.timeLoop.includes(container.timeLoop, prefix))
@@ -86,7 +86,7 @@ class JobDispatcher
 
 	private def boolean includes(TimeLoop a, TimeLoop b, String prefix)
 	{
-		println(prefix + "includes(" + a + ", " + b + ")")
+		//println(prefix + "includes(" + a + ", " + b + ")")
 		if (a === b || b === null) return false
 		if (a === null) return true
 		var itl = a.innerTimeLoop

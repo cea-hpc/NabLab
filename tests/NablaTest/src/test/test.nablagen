@@ -15,13 +15,13 @@ Java
 	outputPath = "/NablaTest/src-gen-java";
 }
 
-//StlThread
-//{
-//	outputPath = "/NablaExamples/src-gen-cpp/stl-thread";
-//	compiler = GNU;
-////		compiler = LLVM;
-////		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
-//}
+StlThread
+{
+	outputPath = "/NablaTest/src-gen-cpp/stl-thread";
+	compiler = GNU;
+//		compiler = LLVM;
+//		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
+}
 //
 //Kokkos
 //{

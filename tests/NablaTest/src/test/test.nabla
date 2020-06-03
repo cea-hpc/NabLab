@@ -31,8 +31,7 @@ let ℝ δt = 1.0;
 ℝ[2] X{nodes};
 ℝ e1{cells}, e2{cells}, e{cells};
 
-iterate n while (n+1 < maxIter && t^{n+1} < maxTime) ,
-      k while (k+1 < 10)  ;
+iterate n while (n+1 < maxIter && t^{n+1} < maxTime), k while (k+1 < 10);
 
 initE     : ∀c ∈cells(), e^{n=0}{c} = 0.;
 computeE1 : ∀c ∈cells(), e1{c} = e^{n}{c} + 3.;

@@ -214,7 +214,7 @@ public final class Test
 			updateE(); // @6.0
 		
 			// Evaluate loop condition with variables at time n
-			continueLoop = (n + 1 < options.maxIter && t_nplus1 < options.maxTime);
+			continueLoop = n + 1 < options.maxIter && t_nplus1 < options.maxTime;
 		
 			if (continueLoop)
 			{
@@ -261,7 +261,7 @@ public final class Test
 			computeE2(); // @1.0
 		
 			// Evaluate loop condition with variables at time n
-			continueLoop = (k + 1 < 10);
+			continueLoop = k + 1 < 10;
 		
 			if (continueLoop)
 			{

@@ -131,11 +131,13 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 
 	private def void displayIrModuleFrom(NablaModule nablaModule)
 	{
+		var IrModule irModule = null
+		consoleFactory.printConsole(MessageType.Start, "Building IR to initialize job graph view")
+
 		try 
 		{
-			consoleFactory.printConsole(MessageType.Start, "Building IR to initialize job graph view")
 			val nabla2Ir = nabla2IrProvider.get // force a new instance to ensure a new IR
-			val irModule = nabla2Ir.toIrModule(nablaModule)
+			irModule = nabla2Ir.toIrModule(nablaModule)
 
 			// buildIrModule can be call several times for the same nablaModule,
 			// for example by a view. Transformations must not be done in this case
@@ -146,14 +148,20 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 				val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
 				transformer.transformIr(t, irModule, [msg | consoleFactory.printConsole(MessageType.Exec, msg)])
 			}
-			viewerJobContainer = irModule
-			consoleFactory.printConsole(MessageType.End, "Job graph view initialized")
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace
 			// An exception can occured during IR building if environment is not configured,
-			// for example compilation not done. Whatever... we will display the graph later
+			// for example compilation not done, or during transformation step. Whatever... 
+			// e.printStackTrace
+		}
+
+		if (irModule === null)
+			consoleFactory.printConsole(MessageType.End, "Job graph view not initialized: IR module can not be built")
+		else
+		{
+			viewerJobContainer = irModule
+			consoleFactory.printConsole(MessageType.End, "Job graph view initialized")
 		}
 	}
 

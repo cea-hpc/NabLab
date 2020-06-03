@@ -41,10 +41,13 @@ implements ISelfStyleProvider
 			node.backgroundColor = ColorConstants.white
 			node.tooltip = new JobTooltipFigure(element)
 
-			if (element.previousJobs.empty) node.borderColor = ColorConstants.green
-			else if (element.nextJobs.empty) node.borderColor = ColorConstants.blue
+			if (element.previousJobs.empty)
+				node.borderColor = ColorConstants.green
+			else if (element.nextJobs.empty)
+				node.borderColor = ColorConstants.blue
 
-			if (element.onCycle) node.borderColor = ColorConstants.red
+			if (element.onCycle)
+				node.borderColor = ColorConstants.red
 		}
 	}
 }

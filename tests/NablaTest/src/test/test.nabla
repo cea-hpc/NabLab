@@ -26,7 +26,8 @@ option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
 option ℕ X_EDGE_ELEMS = 20;
 option ℕ Y_EDGE_ELEMS = 20;
 
-let ℝ t=0.0;
+let ℝ t = 0.0;
+let ℝ δt = 1.0;
 ℝ[2] X{nodes};
 ℝ e1{cells}, e2{cells}, e{cells};
 
@@ -38,3 +39,4 @@ computeE1 : ∀c ∈cells(), e1{c} = e^{n}{c} + 3.;
 InitE2    : ∀c ∈cells(), e2^{n+1, k=0}{c} = e1{c};
 computeE2 : ∀c ∈cells(), e2^{n+1, k+1}{c} = e2^{n+1, k}{c} + 0.4;
 updateE   : ∀c ∈cells(), e^{n+1}{c} = e2^{n+1}{c} - 3;
+updateT   : t^{n+1} = t^{n} + δt;

@@ -49,14 +49,10 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 	// F1 key pressed in NablaDslEditor
 	val keyNotificationListener =
 		[EObject selectedNablaObject |
-			val display = Display::^default
-			if (display !== null && selectedNablaObject !== null)
+			if (selectedNablaObject !== null)
 			{
 				val nablaModule = EcoreUtil2.getContainerOfType(selectedNablaObject, NablaModule)
-				if (nablaModule !== null)
-				{
-					display.asyncExec([displayIrModuleFrom(nablaModule)])
-				}
+				if (nablaModule !== null) busyExec([displayIrModuleFrom(nablaModule)])
 			}
 		]
 
@@ -78,11 +74,11 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 				if (selection.firstElement === null)
 				{
 					if (displayedContainer !== null && displayedContainer instanceof Job)
-						viewerJobContainer = (displayedContainer as Job).jobContainer
+						busyExec([viewerJobContainer = (displayedContainer as Job).jobContainer])
 				}
 				else if (selection.firstElement instanceof JobContainer)
 				{
-					viewerJobContainer = selection.firstElement as JobContainer
+					busyExec([viewerJobContainer = selection.firstElement as JobContainer])
 				}
 				else if (selection.firstElement instanceof Job)
 				{
@@ -118,16 +114,19 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 
 	private def setViewerJobContainer(JobContainer container)
 	{
-		displayedContainer = container
-		if (container === null) 
-			contentDescription = ''
-		else
-			contentDescription = switch (container)
-			{
-				TimeLoopJob: container.irModule.name + '::' + container.name
-				IrModule: container.name
-			}
-		viewer.input = container
+		val d = Display::^default
+		d.asyncExec([
+			displayedContainer = container
+			if (container === null) 
+				contentDescription = ''
+			else
+				contentDescription = switch (container)
+				{
+					TimeLoopJob: container.irModule.name + '::' + container.name
+					IrModule: container.name
+				}
+			viewer.input = container
+		])
 	}
 
 	private def void displayIrModuleFrom(NablaModule nablaModule)
@@ -147,8 +146,8 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 				val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
 				transformer.transformIr(t, irModule, [msg | consoleFactory.printConsole(MessageType.Exec, msg)])
 			}
-			consoleFactory.printConsole(MessageType.End, "Job graph view initialized")
 			viewerJobContainer = irModule
+			consoleFactory.printConsole(MessageType.End, "Job graph view initialized")
 		}
 		catch (Exception e)
 		{
@@ -156,6 +155,19 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 			// An exception can occured during IR building if environment is not configured,
 			// for example compilation not done. Whatever... we will display the graph later
 		}
+	}
+
+	private def void busyExec(Runnable r)
+	{
+		new Thread([
+			val d = Display::^default
+			d.syncExec([
+				val cursor = d.getSystemCursor(SWT.CURSOR_WAIT)
+				viewer.control.cursor = cursor
+			])
+			r.run
+			d.syncExec([viewer.control.cursor = null])
+		]).start
 	}
 }
 

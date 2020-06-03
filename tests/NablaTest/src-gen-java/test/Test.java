@@ -23,6 +23,7 @@ public final class Test
 		public double Y_EDGE_LENGTH;
 		public int X_EDGE_ELEMS;
 		public int Y_EDGE_ELEMS;
+		public double deltat;
 
 		public static Options createOptions(String jsonFileName) throws FileNotFoundException
 		{
@@ -37,7 +38,6 @@ public final class Test
 	// Global definitions
 	private double t_n;
 	private double t_nplus1;
-	private final double deltat;
 
 	// Mesh (can depend on previous definitions)
 	private final CartesianMesh2D mesh;
@@ -64,7 +64,6 @@ public final class Test
 		// Initialize variables with default values
 		t_n = 0.0;
 		t_nplus1 = 0.0;
-		deltat = 1.0;
 
 		// Initialize mesh variables
 		mesh = CartesianMesh2DGenerator.generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH);
@@ -163,7 +162,7 @@ public final class Test
 	 */
 	private void updateT()
 	{
-		t_nplus1 = t_n + deltat;
+		t_nplus1 = t_n + options.deltat;
 	}
 
 	/**
@@ -204,7 +203,7 @@ public final class Test
 		do
 		{
 			n++;
-			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
+			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, options.deltat);
 			computeE1(); // @1.0
 			updateT(); // @1.0
 			initE2(); // @2.0
@@ -214,7 +213,7 @@ public final class Test
 			updateE(); // @6.0
 		
 			// Evaluate loop condition with variables at time n
-			continueLoop = n + 1 < options.maxIter && t_nplus1 < options.maxTime;
+			continueLoop = (n + 1 < options.maxIter && t_nplus1 < options.maxTime);
 		
 			if (continueLoop)
 			{
@@ -257,11 +256,11 @@ public final class Test
 		do
 		{
 			k++;
-			System.out.printf("	[%5d] t: %5.5f - deltat: %5.5f\n", k, t_n, deltat);
+			System.out.printf("	[%5d] t: %5.5f - deltat: %5.5f\n", k, t_n, options.deltat);
 			computeE2(); // @1.0
 		
 			// Evaluate loop condition with variables at time n
-			continueLoop = k + 1 < 10;
+			continueLoop = (k + 1 < 10);
 		
 			if (continueLoop)
 			{

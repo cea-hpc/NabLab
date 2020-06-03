@@ -31,6 +31,7 @@ public:
 		double Y_EDGE_LENGTH;
 		int X_EDGE_ELEMS;
 		int Y_EDGE_ELEMS;
+		double deltat;
 
 		Options(const std::string& fileName);
 	};
@@ -44,7 +45,6 @@ private:
 	// Global definitions
 	double t_n;
 	double t_nplus1;
-	static constexpr double deltat = 1.0;
 	
 	// Mesh (can depend on previous definitions)
 	CartesianMesh2D* mesh;

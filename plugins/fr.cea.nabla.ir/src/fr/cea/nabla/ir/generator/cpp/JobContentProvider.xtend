@@ -11,7 +11,6 @@ package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.InstructionJob
-import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
@@ -59,7 +58,7 @@ class JobContentProvider
 	protected def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
 		«callsHeader»
-		«val itVar = timeLoop.iterationCounter.name»
+		«val itVar = timeLoop.iterationCounter.codeName»
 		«itVar» = 0;
 		bool continueLoop = true;
 		do
@@ -74,7 +73,7 @@ class JobContentProvider
 				if (!writer.isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
 					dumpVariables(«itVar»);
 			«ENDIF»
-			«traceContentProvider.getBeginOfLoopTrace(itVar, timeVarName, isTopLevel)»
+			«traceContentProvider.getBeginOfLoopTrace(irModule, itVar, isTopLevel)»
 
 			«callsContent»
 
@@ -94,7 +93,7 @@ class JobContentProvider
 			globalTimer.stop();
 			«ENDIF»
 
-			«traceContentProvider.getEndOfLoopTrace(itVar, timeVarName, deltatVarName, isTopLevel, (ppInfo !== null))»
+			«traceContentProvider.getEndOfLoopTrace(irModule, itVar, isTopLevel, (ppInfo !== null))»
 
 			«IF isTopLevel»
 			cpuTimer.reset();
@@ -127,18 +126,6 @@ class JobContentProvider
 					«copy(left + suffix, right + suffix, dimension-1)»
 			'''
 		}
-	}
-
-	private def getTimeVarName(TimeLoopJob it)
-	{
-		val irModule = eContainer as IrModule
-		irModule.timeVariable.name
-	}
-
-	private def getDeltatVarName(TimeLoopJob it)
-	{
-		val irModule = eContainer as IrModule
-		irModule.deltatVariable.name
 	}
 }
 

@@ -186,7 +186,7 @@ class NablagenInterpreter
 			{
 				val backend = switch it
 				{
-					CppSequential: new SequentialBackend(iterationMax , timeMax, compiler.literal, compilerPath)
+					CppSequential: new SequentialBackend(iterationMax, timeMax, compiler.literal, compilerPath)
 					CppStlThread: new StlThreadBackend(iterationMax , timeMax, compiler.literal, compilerPath)
 					CppOpenMP: throw new RuntimeException('Not yet implemented')
 					CppKokkos: new KokkosBackend(iterationMax , timeMax, compiler.literal, compilerPath, kokkosPath)

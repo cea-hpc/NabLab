@@ -52,17 +52,19 @@ class TraceContentProvider
 		«ENDIF»
 	'''
 
-	def getBeginOfLoopTrace(String iterationVarName, String timeVarName, boolean isTopLoop)
+	def getBeginOfLoopTrace(IrModule it, String iterationVarName, boolean isTopLoop)
 	'''
 		«IF isTopLoop»
 		if («iterationVarName»!=1)
 			std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << «iterationVarName» << __RESET__ "] t = " << __BOLD__
-				<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << «timeVarName» << __RESET__;
+				<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << «timeVariable.codeName» << __RESET__;
 		«ENDIF»
 	'''
 
-	def getEndOfLoopTrace(String iterationVarName, String timeVarName, String deltatVarName, boolean isTopLoop, boolean hasWriter)
+	def getEndOfLoopTrace(IrModule it, String iterationVarName, boolean isTopLoop, boolean hasWriter)
 	'''
+		«val maxIterationsVar = getVariableByName(maxIterationsVarName)»
+		«val stopTimeVar = getVariableByName(stopTimeVarName)»
 		«IF isTopLoop»
 		// Timers display
 		«IF hasWriter»
@@ -73,9 +75,9 @@ class TraceContentProvider
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 
 		// Progress
-		std::cout << utils::progress_bar(«iterationVarName», options.«maxIterationsVarName», «timeVarName», options.«stopTimeVarName», 25);
+		std::cout << utils::progress_bar(«iterationVarName», «maxIterationsVar.codeName», «timeVariable.codeName», «stopTimeVar.codeName», 25);
 		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(«iterationVarName», options.«maxIterationsVarName», «timeVarName», options.«stopTimeVarName», «deltatVarName», globalTimer), true)
+			utils::eta(«iterationVarName», «maxIterationsVar.codeName», «timeVariable.codeName», «stopTimeVar.codeName», «deltatVariable.codeName», globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 		«ENDIF»

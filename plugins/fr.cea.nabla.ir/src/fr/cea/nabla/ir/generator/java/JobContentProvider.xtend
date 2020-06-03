@@ -42,13 +42,13 @@ class JobContentProvider
 
 	private static def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
-		«val itVar = timeLoop.iterationCounter.name»
+		«val itVar = timeLoop.iterationCounter.codeName»
 		«itVar» = 0;
 		boolean continueLoop = true;
 		do
 		{
 			«itVar»++;
-			System.out.printf("«timeLoop.indentation»[%5d] t: %5.5f - deltat: %5.5f\n", «itVar», «irModule.timeVariable.name», «irModule.deltatVariable.name»);
+			System.out.printf("«timeLoop.indentation»[%5d] t: %5.5f - deltat: %5.5f\n", «itVar», «irModule.timeVariable.codeName», «irModule.deltatVariable.codeName»);
 			«IF topLevel && irModule.postProcessingInfo !== null»
 				«val ppInfo = irModule.postProcessingInfo»
 				if («ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)

@@ -42,6 +42,11 @@ Test::Options::Options(const std::string& fileName)
 	const rapidjson::Value& valueof_Y_EDGE_ELEMS = d["Y_EDGE_ELEMS"];
 	assert(valueof_Y_EDGE_ELEMS.IsInt());
 	Y_EDGE_ELEMS = valueof_Y_EDGE_ELEMS.GetInt();
+	// deltat
+	assert(d.HasMember("deltat"));
+	const rapidjson::Value& valueof_deltat = d["deltat"];
+	assert(valueof_deltat.IsDouble());
+	deltat = valueof_deltat.GetDouble();
 }
 
 /******************** Module definition ********************/
@@ -124,7 +129,7 @@ void Test::initE() noexcept
  */
 void Test::updateT() noexcept
 {
-	t_nplus1 = t_n + deltat;
+	t_nplus1 = t_n + options.deltat;
 }
 
 /**
@@ -179,7 +184,7 @@ void Test::executeTimeLoopN() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = n + 1 < options.maxIter && t_nplus1 < options.maxTime;
+		continueLoop = (n + 1 < options.maxIter && t_nplus1 < options.maxTime);
 	
 		if (continueLoop)
 		{
@@ -192,13 +197,14 @@ void Test::executeTimeLoopN() noexcept
 		cpuTimer.stop();
 		globalTimer.stop();
 	
+		
 		// Timers display
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
 		std::cout << utils::progress_bar(n, options.maxIter, t_n, options.maxTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(n, options.maxIter, t_n, options.maxTime, deltat, globalTimer), true)
+			utils::eta(n, options.maxIter, t_n, options.maxTime, options.deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
@@ -235,7 +241,7 @@ void Test::executeTimeLoopK() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = k + 1 < 10;
+		continueLoop = (k + 1 < 10);
 	
 		if (continueLoop)
 		{
@@ -243,6 +249,7 @@ void Test::executeTimeLoopK() noexcept
 			std::swap(e2_nplus1_kplus1, e2_nplus1_k);
 		}
 	
+		
 	
 	} while (continueLoop);
 }

@@ -88,7 +88,7 @@ class Ir2Java extends CodeGenerator
 			«IF withMesh»
 			// Mesh (can depend on previous definitions)
 			private final CartesianMesh2D mesh;
-			private final FileWriter writer;
+			«IF postProcessingInfo !== null»private final FileWriter writer;«ENDIF»
 			«FOR c : connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
 
 			«ENDIF»
@@ -113,7 +113,7 @@ class Ir2Java extends CodeGenerator
 					«val yel = getVariableByName(MandatoryVariables.Y_EDGE_LENGTH).codeName»
 					// Initialize mesh variables
 					mesh = CartesianMesh2DGenerator.generate(«xee», «yee», «xel», «yel»);
-					writer = new PvdFileWriter2D("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»);
+					«IF postProcessingInfo !== null»writer = new PvdFileWriter2D("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»);«ENDIF»
 					«FOR c : connectivities.filter[multiple]»
 					«c.nbElemsVar» = «c.connectivityAccessor»;
 					«ENDFOR»

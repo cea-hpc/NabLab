@@ -36,7 +36,7 @@ class AttributesContentProvider
 		«IF m.withMesh»
 			// Mesh (can depend on previous definitions)
 			CartesianMesh2D* mesh;
-			PvdFileWriter2D writer;
+			«IF m.postProcessingInfo !== null»PvdFileWriter2D writer;«ENDIF»
 			«FOR c : m.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
 
 		«ENDIF»

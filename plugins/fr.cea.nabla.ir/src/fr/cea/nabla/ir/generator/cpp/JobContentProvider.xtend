@@ -69,8 +69,8 @@ class JobContentProvider
 			cpuTimer.start();
 			«ENDIF»
 			«itVar»++;
-			«IF topLevel && irModule.postProcessingInfo !== null»
-				«val ppInfo = irModule.postProcessingInfo»
+			«val ppInfo = irModule.postProcessingInfo»
+			«IF topLevel && ppInfo !== null»
 				if (!writer.isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
 					dumpVariables(«itVar»);
 			«ENDIF»
@@ -79,7 +79,7 @@ class JobContentProvider
 			«callsContent»
 
 			// Evaluate loop condition with variables at time n
-			continueLoop = «timeLoop.whileCondition.content»;
+			continueLoop = («timeLoop.whileCondition.content»);
 
 			if (continueLoop)
 			{
@@ -94,7 +94,7 @@ class JobContentProvider
 			globalTimer.stop();
 			«ENDIF»
 
-			«traceContentProvider.getEndOfLoopTrace(itVar, timeVarName, deltatVarName, isTopLevel)»
+			«traceContentProvider.getEndOfLoopTrace(itVar, timeVarName, deltatVarName, isTopLevel, (ppInfo !== null))»
 
 			«IF isTopLevel»
 			cpuTimer.reset();

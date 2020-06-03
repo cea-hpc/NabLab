@@ -20,6 +20,7 @@ import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import fr.cea.nabla.typing.NSTRealArray1D
 import fr.cea.nabla.typing.NSTRealScalar
 import fr.cea.nabla.validation.ExpressionValidator
+import fr.cea.nabla.validation.ValidationUtils
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -33,6 +34,7 @@ import org.junit.runner.RunWith
 class ExpressionValidatorTest 
 {
 	@Inject ParseHelper<NablaModule> parseHelper
+	@Inject extension ValidationUtils
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
 	@Inject extension ArgOrVarTypeProvider
@@ -204,11 +206,11 @@ class ExpressionValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.contractedIf,
 			ExpressionValidator::CONTRACTED_IF_CONDITION_TYPE,
-			ExpressionValidator::getContractedIfConditionTypeMsg(cond.typeFor.label))
+			getTypeMsg(cond.typeFor.label, "ℾ"))
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.contractedIf,
 			ExpressionValidator::CONTRACTED_IF_ELSE_TYPE,
-			ExpressionValidator::getContractedIfElseTypeMsg(v.typeFor.label, u.typeFor.label))
+			getTypeMsg(v.typeFor.label, u.typeFor.label))
 
 		val moduleOk = parseHelper.parse(testModule
 			+
@@ -238,7 +240,7 @@ class ExpressionValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.not,
 			ExpressionValidator::NOT_EXPRESSION_TYPE,
-			ExpressionValidator::getNotExpressionTypeMsg(cond.typeFor.label))
+			getTypeMsg(cond.typeFor.label, "ℾ"))
 
 		val moduleOk = parseHelper.parse(testModule
 			+
@@ -459,11 +461,11 @@ class ExpressionValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.modulo,
 			ExpressionValidator::MODULO_TYPE,
-			ExpressionValidator::getModuloTypeMsg(PrimitiveType::REAL.literal))
+			getTypeMsg(PrimitiveType::REAL.literal, "ℕ"))
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.modulo,
 			ExpressionValidator::MODULO_TYPE,
-			ExpressionValidator::getModuloTypeMsg(new NSTRealArray1D(createIntConstant(2)).label))
+			getTypeMsg(new NSTRealArray1D(createIntConstant(2)).label, "ℕ"))
 
 		val moduleOk = parseHelper.parse(testModule
 			+
@@ -492,11 +494,11 @@ class ExpressionValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.and,
 			ExpressionValidator::AND_TYPE,
-			ExpressionValidator::getAndTypeMsg(PrimitiveType::REAL.literal))
+			getTypeMsg(PrimitiveType::REAL.literal, "ℾ"))
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.and,
 			ExpressionValidator::AND_TYPE,
-			ExpressionValidator::getAndTypeMsg(PrimitiveType::INT.literal))
+			getTypeMsg(PrimitiveType::INT.literal, "ℾ"))
 
 		val moduleOk = parseHelper.parse(testModule
 			+
@@ -525,11 +527,11 @@ class ExpressionValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.or,
 			ExpressionValidator::OR_TYPE,
-			ExpressionValidator::getOrTypeMsg(PrimitiveType::REAL.literal))
+			getTypeMsg(PrimitiveType::REAL.literal, "ℾ"))
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.or,
 			ExpressionValidator::OR_TYPE,
-			ExpressionValidator::getOrTypeMsg(PrimitiveType::INT.literal))
+			getTypeMsg(PrimitiveType::INT.literal, "ℾ"))
 
 		val moduleOk = parseHelper.parse(testModule
 			+

@@ -79,6 +79,10 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SetDefinition/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SetDefinition/value"/>
     </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//While">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//While/condition"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//While/instruction"/>
+    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Return">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//Return/expression"/>
     </genClasses>
@@ -126,7 +130,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeIteratorDefinition/iterators"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//TimeIterator">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeIterator/cond"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeIterator/condition"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//TimeIteratorRef">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeIteratorRef/target"/>

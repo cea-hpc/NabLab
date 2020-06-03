@@ -37,7 +37,7 @@ class IrTimeLoopFactory
 	{
 		annotations += ti.toIrAnnotation
 		name = ti.name
-		whileCondition = ti.cond.toIrExpression
+		whileCondition = ti.condition.toIrExpression
 	}
 
 	/**

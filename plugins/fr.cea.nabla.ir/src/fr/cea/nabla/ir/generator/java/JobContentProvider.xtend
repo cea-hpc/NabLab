@@ -59,7 +59,7 @@ class JobContentProvider
 			«ENDFOR»
 
 			// Evaluate loop condition with variables at time n
-			continueLoop = «timeLoop.whileCondition.content»;
+			continueLoop = («timeLoop.whileCondition.content»);
 
 			if (continueLoop)
 			{

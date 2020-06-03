@@ -24,6 +24,7 @@ import org.eclipse.xtext.validation.CheckType
 
 class ArgOrVarRefValidator extends InstructionValidator
 {
+	@Inject extension ValidationUtils
 	@Inject extension ItemExtensions
 	@Inject extension ArgOrVarTypeProvider
 
@@ -34,7 +35,6 @@ class ArgOrVarRefValidator extends InstructionValidator
 
 	static def getIndicesNumberMsg(int expectedSize, int actualSize) { "Wrong number of indices. Expected " + expectedSize + ", but was " + actualSize }
 	static def getSpaceIteratorNumberMsg(int expectedSize, int actualSize) { "Wrong number of space iterators. Expected " + expectedSize + ", but was " + actualSize }
-	static def getSpaceIteratorTypeMsg(String expectedType, String actualType) { "Expected " + expectedType + ", but was " + actualType }
 	static def getTimeIteratorUsageMsg() { "Time iterator must be specified" }
 
 	@Check(CheckType.NORMAL)
@@ -66,7 +66,7 @@ class ArgOrVarRefValidator extends InstructionValidator
 					val actualT = spaceIteratorRefI.target.type
 					val expectedT = dimensionI.returnType
 					if (actualT != expectedT)
-						error(getSpaceIteratorTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, i, SPACE_ITERATOR_TYPE)
+						error(getTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, i, SPACE_ITERATOR_TYPE)
 				}
 			}
 		}

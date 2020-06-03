@@ -17,6 +17,7 @@ import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
 import fr.cea.nabla.validation.ArgOrVarRefValidator
 import fr.cea.nabla.validation.BasicValidator
+import fr.cea.nabla.validation.ValidationUtils
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -30,6 +31,7 @@ import org.junit.runner.RunWith
 class ArgOrVarRefValidatorTest
 {
 	@Inject ParseHelper<NablaModule> parseHelper
+	@Inject extension ValidationUtils
 	@Inject extension TestUtils
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
@@ -91,7 +93,7 @@ class ArgOrVarRefValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
 			ArgOrVarRefValidator::SPACE_ITERATOR_TYPE, 
-			ArgOrVarRefValidator::getSpaceIteratorTypeMsg(node, cell))
+			getTypeMsg(node, cell))
 
 		val moduleOk =  parseHelper.parse(getTestModule(defaultConnectivities, '') +
 			'''
@@ -146,7 +148,7 @@ class ArgOrVarRefValidatorTest
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertError(NablaPackage.eINSTANCE.argOrVarRef,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
-			BasicValidator::getTypeExpressionMsg("ℝ"))
+			getTypeMsg("ℝ", "ℕ"))
 
 		val moduleKo2 = parseHelper.parse(getTestModule('', '') +
 			'''
@@ -158,7 +160,7 @@ class ArgOrVarRefValidatorTest
 		Assert.assertNotNull(moduleKo2)
 		moduleKo2.assertError(NablaPackage.eINSTANCE.argOrVarRef,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
-			BasicValidator::getTypeExpressionMsg("ℝ"))
+			getTypeMsg("ℝ", "ℕ"))
 
 		val moduleOk =  parseHelper.parse(getTestModule('', '') +
 			'''

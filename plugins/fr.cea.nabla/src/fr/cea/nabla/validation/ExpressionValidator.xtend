@@ -69,15 +69,9 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	static def getFunctionCallConnectivityArgMsg() { "Connectivity type arguments must be scalar" }
 	static def getFunctionCallMixedArgsMsg() { "Can not mix types of arguments (connectivity and simple types)" }
 	static def getFunctionCallArgsMsg(List<String> inTypes) { "No candidate function found. Wrong arguments : " + inTypes.join(', ') }
-	static def getReductionCallOnConnectivitiesVariableMsg() { "No reduction on connectivities variable" }	
-	static def getReductionCallArgsMsg(String inType) { "No candidate reduction found. Wrong arguments : " + inType }	
-	static def getContractedIfConditionTypeMsg(String actualType) { "Expected " + ValidationUtils::BOOL.label + " type, but was " + actualType }
-	static def getContractedIfElseTypeMsg(String actualType, String expectedType) { "Expected " + expectedType + " type, but was " + actualType }
-	static def getNotExpressionTypeMsg(String actualType) { "Expected " + ValidationUtils::BOOL.label + " type, but was " + actualType }	
+	static def getReductionCallOnConnectivitiesVariableMsg() { "No reduction on connectivities variable" }
+	static def getReductionCallArgsMsg(String inType) { "No candidate reduction found. Wrong arguments : " + inType }
 	static def getBinaryOpTypeMsg(String op, String leftType, String rightType) { "Binary operator " + op + " undefined on types " + leftType + " and " + rightType }
-	static def getModuloTypeMsg(String actualType) { "Expected " + ValidationUtils::INT.label + " type, but was " + actualType }
-	static def getAndTypeMsg(String actualType) { "Expected " + ValidationUtils::BOOL.label + " type, but was " + actualType }
-	static def getOrTypeMsg(String actualType) { "Expected " + ValidationUtils::BOOL.label + " type, but was " + actualType }
 	static def getVectorConstantSizeMsg(int size) { "Unsupported vector size: " + size }
 	static def getVectorConstantInconsistentTypeMsg() { "All values must have the same type" }
 	static def getVectorConstantTypeMsg(String actualType)  { "Expected only scalar and vector types, but was " + actualType }
@@ -149,16 +143,16 @@ class ExpressionValidator extends ArgOrVarRefValidator
 		val elseType = ^else?.typeFor
 
 		if (!checkExpectedType(condType, ValidationUtils::BOOL))
-			error(getContractedIfConditionTypeMsg(condType.label), NablaPackage.Literals::CONTRACTED_IF__CONDITION, CONTRACTED_IF_CONDITION_TYPE)
+			error(getTypeMsg(condType.label, ValidationUtils::BOOL.label), NablaPackage.Literals::CONTRACTED_IF__CONDITION, CONTRACTED_IF_CONDITION_TYPE)
 		if (!checkExpectedType(elseType, thenType))
-			error(getContractedIfElseTypeMsg(elseType.label, thenType.label), NablaPackage.Literals::CONTRACTED_IF__ELSE, CONTRACTED_IF_ELSE_TYPE)
+			error(getTypeMsg(elseType.label, thenType.label), NablaPackage.Literals::CONTRACTED_IF__ELSE, CONTRACTED_IF_ELSE_TYPE)
 	}
 
 	@Check(CheckType.NORMAL)
 	def checkNotExpressionType(Not it)
 	{
 		if (!checkExpectedType(expression?.typeFor, ValidationUtils::BOOL))
-		error(getNotExpressionTypeMsg(expression?.typeFor?.label), NablaPackage.Literals::NOT__EXPRESSION, NOT_EXPRESSION_TYPE)
+		error(getTypeMsg(expression?.typeFor?.label, ValidationUtils::BOOL.label), NablaPackage.Literals::NOT__EXPRESSION, NOT_EXPRESSION_TYPE)
 	}
 
 	// UnaryMinus fonctionne avec tous les types
@@ -209,27 +203,27 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	def checkModuloType(Modulo it)
 	{
 		if (!checkExpectedType(left?.typeFor, ValidationUtils::INT))
-			error(getModuloTypeMsg(left?.typeFor.label), NablaPackage.Literals.MODULO__LEFT, MODULO_TYPE)
+			error(getTypeMsg(left?.typeFor.label, ValidationUtils::INT.label), NablaPackage.Literals.MODULO__LEFT, MODULO_TYPE)
 		if (!checkExpectedType(right?.typeFor, ValidationUtils::INT))
-			error(getModuloTypeMsg(right?.typeFor.label), NablaPackage.Literals.MODULO__RIGHT, MODULO_TYPE)
+			error(getTypeMsg(right?.typeFor.label, ValidationUtils::INT.label), NablaPackage.Literals.MODULO__RIGHT, MODULO_TYPE)
 	}
 
 	@Check(CheckType.NORMAL)
 	def checkAndType(And it)
 	{
 		if (!checkExpectedType(left?.typeFor, ValidationUtils::BOOL))
-			error(getAndTypeMsg(left?.typeFor.label), NablaPackage.Literals.AND__LEFT, AND_TYPE)
+			error(getTypeMsg(left?.typeFor.label, ValidationUtils::BOOL.label), NablaPackage.Literals.AND__LEFT, AND_TYPE)
 		if (!checkExpectedType(right?.typeFor, ValidationUtils::BOOL))
-			error(getAndTypeMsg(right?.typeFor.label), NablaPackage.Literals.AND__RIGHT, AND_TYPE)
+			error(getTypeMsg(right?.typeFor.label, ValidationUtils::BOOL.label), NablaPackage.Literals.AND__RIGHT, AND_TYPE)
 	}
 
 	@Check(CheckType.NORMAL)
 	def checkOrType(Or it)
 	{
 		if (!checkExpectedType(left?.typeFor, ValidationUtils::BOOL))
-			error(getAndTypeMsg(left?.typeFor.label), NablaPackage.Literals.OR__LEFT, OR_TYPE)
+			error(getTypeMsg(left?.typeFor.label, ValidationUtils::BOOL.label), NablaPackage.Literals.OR__LEFT, OR_TYPE)
 		if (!checkExpectedType(right?.typeFor, ValidationUtils::BOOL))
-			error(getAndTypeMsg(right?.typeFor.label), NablaPackage.Literals.OR__RIGHT, OR_TYPE)
+			error(getTypeMsg(right?.typeFor.label, ValidationUtils::BOOL.label), NablaPackage.Literals.OR__RIGHT, OR_TYPE)
 	}
 
 	@Check(CheckType.NORMAL)

@@ -169,6 +169,10 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//If/thenInstruction"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//If/elseInstruction"/>
     </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//While">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//While/condition"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//While/instruction"/>
+    </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Return">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Return/expression"/>
     </genClasses>

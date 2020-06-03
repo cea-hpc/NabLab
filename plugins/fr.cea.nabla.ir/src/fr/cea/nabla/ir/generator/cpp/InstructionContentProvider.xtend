@@ -33,6 +33,7 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
+import fr.cea.nabla.ir.ir.While
 
 @Data
 abstract class InstructionContentProvider
@@ -108,6 +109,13 @@ abstract class InstructionContentProvider
 	{
 		getSetDefinitionContent(name, value)
 	}
+
+	def dispatch CharSequence getContent(While it)
+	'''
+		while («condition.content»)
+		«val iContent = instruction.content»
+		«IF !(iContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«iContent»
+	'''
 
 	def dispatch CharSequence getContent(Return it)
 	'''

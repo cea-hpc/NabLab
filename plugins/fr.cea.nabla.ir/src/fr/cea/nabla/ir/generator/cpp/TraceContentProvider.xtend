@@ -43,9 +43,11 @@ class TraceContentProvider
 		«hwlocTraceContent»
 		«IF useMesh»
 
+		«IF postProcessingInfo !== null»
 		if (!writer.isDisabled())
 			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
 		else
+		«ENDIF»
 			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 		«ENDIF»
 	'''
@@ -59,13 +61,15 @@ class TraceContentProvider
 		«ENDIF»
 	'''
 
-	def getEndOfLoopTrace(String iterationVarName, String timeVarName, String deltatVarName, boolean isTopLoop)
+	def getEndOfLoopTrace(String iterationVarName, String timeVarName, String deltatVarName, boolean isTopLoop, boolean hasWriter)
 	'''
 		«IF isTopLoop»
 		// Timers display
+		«IF hasWriter»
 		if (!writer.isDisabled())
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __BLUE__ << ioTimer.print(true) << __RESET__ "} ";
 		else
+		«ENDIF»
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 
 		// Progress

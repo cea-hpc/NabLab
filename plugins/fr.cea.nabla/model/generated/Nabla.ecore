@@ -93,6 +93,12 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//MultipleConnectivityCall"
         containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="While" eSuperTypes="#//Instruction">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//Expression"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" eType="#//Instruction"
+        containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Return" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
         containment="true"/>
@@ -149,7 +155,7 @@
         eType="#//TimeIterator" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeIterator" eSuperTypes="#//ArgOrVar">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cond" eType="#//Expression"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeIteratorRef">

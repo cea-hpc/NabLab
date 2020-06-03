@@ -36,6 +36,7 @@ import static extension fr.cea.nabla.ConnectivityCallExtensions.*
 // Caution: OptDefinition validation with InstructionValidator
 class BasicValidator extends UnusedValidator
 {
+	@Inject extension ValidationUtils
 	@Inject extension ItemExtensions
 	@Inject extension ExpressionExtensions
 	@Inject extension ExpressionTypeProvider
@@ -90,6 +91,7 @@ class BasicValidator extends UnusedValidator
 	public static val INIT_VALUE = "TimeIterator::InitValue"
 	public static val NEXT_VALUE = "TimeIterator::NextValue"
 	public static val CONDITION_CONSTRAINTS = "TimeIterator::ConditionConstraints"
+	public static val CONDITION_BOOL = "TimeIterator::ConditionBool"
 
 	static def getInitValueMsg(int actualValue) { "Expected 0, but was " + actualValue }
 	static def getNextValueMsg(int actualValue) { "Expected 1, but was " + actualValue }
@@ -112,8 +114,15 @@ class BasicValidator extends UnusedValidator
 	@Check(CheckType.NORMAL)
 	def checkConditionConstraints(TimeIterator it)
 	{
-		if (cond !== null && !cond.reductionLess)
-			error(getConditionConstraintsMsg(), NablaPackage.Literals.TIME_ITERATOR__COND, CONDITION_CONSTRAINTS)
+		if (condition !== null)
+		{
+			val condType = condition.typeFor
+			if (!checkExpectedType(condType, ValidationUtils::BOOL))
+				error(getTypeMsg(condType.label, ValidationUtils::BOOL.label), NablaPackage.Literals.TIME_ITERATOR__CONDITION, CONDITION_BOOL)
+
+			if (!condition.reductionLess)
+				error(getConditionConstraintsMsg(), NablaPackage.Literals.TIME_ITERATOR__CONDITION, CONDITION_CONSTRAINTS)
+		}
 	}
 
 	// ===== BaseType =====
@@ -144,7 +153,6 @@ class BasicValidator extends UnusedValidator
 	public static val DIMENSION_ARG = "Connectivities::DimensionArg"
 
 	static def getConnectivityCallIndexMsg(int expectedSize, int actualSize) { "Wrong number of arguments. Expected " + expectedSize + ", but was " + actualSize }
-	static def getConnectivityCallTypeMsg(String expectedType, String actualType) { "Expected " + expectedType + ', but was ' + actualType }
 	static def getDimensionArgMsg() { "First dimension must be on connectivities taking no argument" }
 
 	@Check(CheckType.NORMAL)
@@ -159,7 +167,7 @@ class BasicValidator extends UnusedValidator
 				val actualT = args.get(i).target.type
 				val expectedT = connectivity.inTypes.get(i)
 				if (actualT != expectedT)
-					error(getConnectivityCallTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::CONNECTIVITY_CALL__ARGS, i, CONNECTIVITY_CALL_TYPE)
+					error(getTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::CONNECTIVITY_CALL__ARGS, i, CONNECTIVITY_CALL_TYPE)
 			}
 		}
 	}
@@ -192,7 +200,6 @@ class BasicValidator extends UnusedValidator
 	public static val TYPE_EXPRESSION_TYPE = "Expressions::TypeExpression"
 
 	static def getValidityExpressionMsg() { "Reductions not allowed in types" }
-	static def getTypeExpressionMsg(String actualType) { "Expected " + ValidationUtils::INT.label + " type, but was " + actualType }
 
 	protected def void checkExpressionValidityAndType(Expression it, EStructuralFeature feature)
 	{
@@ -201,7 +208,7 @@ class BasicValidator extends UnusedValidator
 
 		val t = typeFor
 		if (t !== null && !(t instanceof NSTIntScalar))
-			error(getTypeExpressionMsg(t.label), feature, TYPE_EXPRESSION_TYPE);
+			error(getTypeMsg(t.label, ValidationUtils::INT.label), feature, TYPE_EXPRESSION_TYPE);
 	}
 
 	protected def void checkExpressionValidityAndType(Expression it, EStructuralFeature feature, int index)
@@ -211,6 +218,6 @@ class BasicValidator extends UnusedValidator
 
 		val t = typeFor
 		if (t !== null && !(t instanceof NSTIntScalar))
-			error(getTypeExpressionMsg(t.label), feature, index, TYPE_EXPRESSION_TYPE);
+			error(getTypeMsg(t.label, ValidationUtils::INT.label), feature, index, TYPE_EXPRESSION_TYPE);
 	}
 }

@@ -87,6 +87,47 @@ abstract class AbstractInstructionInterpreterTest
 	}
 
 	@Test
+	def void testInterpreteIf()
+	{
+		val xQuads = 100
+		val yQuads = 100
+		val model = getTestModule(xQuads, yQuads)
+		+
+		'''
+		ℝ U{cells};
+		ℝ[2] X{nodes};
+		InitU : ∀r, countr ∈ cells(), {
+			if (countr % 2 == 0)
+				U{r} = 0.0;
+			else
+				U{r} = 1.0;
+		}
+		'''
+		assertInterpreteIf(model, xQuads, yQuads)
+	}
+
+	@Test
+	def void testInterpreteWhile()
+	{
+		val xQuads = 100
+		val yQuads = 100
+		val model = getTestModule(xQuads, yQuads)
+		+
+		'''
+		ℝ U{cells};
+		ℝ[2] X{nodes}, C{cells, nodesOfCell};
+		InitU : {
+			let ℕ i = 0;
+			while (i<3) {
+				∀r ∈ cells(), U{r} = 1.0 * i;
+				i = i +1;
+			}
+		}
+		'''
+		assertInterpreteWhile(model, xQuads, yQuads)
+	}
+
+	@Test
 	def void testInterpreteSetDefinition()
 	{
 		val xQuads = 100
@@ -130,6 +171,10 @@ abstract class AbstractInstructionInterpreterTest
 	def void assertInterpreteAffectation(String model)
 
 	def void assertInterpreteLoop(String model, int xQuads, int yQuads)
+
+	def void assertInterpreteIf(String model, int xQuads, int yQuads)
+
+	def void assertInterpreteWhile(String model, int xQuads, int yQuads)
 
 	def void assertInterpreteSetDefinition(String model, int xQuads, int yQuads)
 

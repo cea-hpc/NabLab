@@ -316,6 +316,14 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.WHILE: {
+				While while_ = (While)theEObject;
+				T result = caseWhile(while_);
+				if (result == null) result = caseInstruction(while_);
+				if (result == null) result = caseIrAnnotable(while_);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.RETURN: {
 				Return return_ = (Return)theEObject;
 				T result = caseReturn(return_);
@@ -1059,6 +1067,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseIf(If object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>While</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>While</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseWhile(While object) {
 		return null;
 	}
 

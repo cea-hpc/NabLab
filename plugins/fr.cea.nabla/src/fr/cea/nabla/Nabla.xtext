@@ -42,7 +42,7 @@ SingleConnectivity: 'item' name=ID ':' (inTypes+=[ItemType] ('\u00D7' inTypes+=[
 /* JOBS & INSTRUCTIONS ***********************************/
 Job: name=ID ':' instruction=Instruction;
 Iterable: Loop | ReductionCall;
-Instruction: SimpleVarDefinition | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | ItemDefinition | SetDefinition | Return | Exit;
+Instruction: SimpleVarDefinition | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | ItemDefinition | SetDefinition | While | Return | Exit;
 
 SimpleVarDefinition: ('let'|option?='option') type=BaseType variable=SimpleVar '=' value=Expression ';';
 VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
@@ -52,6 +52,7 @@ Affectation: left=ArgOrVarRef '=' right=Expression ';';
 If: 'if' '(' condition=Expression ')' then=Instruction (=>'else' else=Instruction)?;
 ItemDefinition: 'item' item=Item '=' value=SingleConnectivityCall ';';
 SetDefinition: 'set' name=ID '=' value=MultipleConnectivityCall ';';
+While: 'while' '(' condition=Expression ')' instruction = Instruction;
 Return: 'return' expression=Expression ';';
 Exit: 'exit' message=STRING ';';
 
@@ -70,7 +71,7 @@ ItemRef: target=[Item] (('+' inc=INT) | ('-' dec=INT))?;
 Item: name=ID;
 
 TimeIteratorDefinition: 'iterate' iterators+=TimeIterator (',' iterators+=TimeIterator)* ';';
-TimeIterator: name=ID 'while' cond=Expression;
+TimeIterator: name=ID 'while' '(' condition=Expression ')';
 TimeIteratorRef: CurrentTimeIteratorRef | InitTimeIteratorRef | NextTimeIteratorRef;
 CurrentTimeIteratorRef: target=[TimeIterator];
 InitTimeIteratorRef: target=[TimeIterator] '=' value=INT;

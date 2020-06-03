@@ -196,6 +196,10 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createIfAdapter();
 			}
 			@Override
+			public Adapter caseWhile(While object) {
+				return createWhileAdapter();
+			}
+			@Override
 			public Adapter caseReturn(Return object) {
 				return createReturnAdapter();
 			}
@@ -796,6 +800,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createIfAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.While <em>While</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.While
+	 * @generated
+	 */
+	public Adapter createWhileAdapter() {
 		return null;
 	}
 

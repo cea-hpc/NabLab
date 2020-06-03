@@ -274,10 +274,10 @@ class NablaScopeProviderTest
 		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
 
 		val iterate = module.iteration
-		val nRefInCondOfN = iterate.iterators.head.cond.eAllContents.filter(ArgOrVarRef).head
+		val nRefInCondOfN = iterate.iterators.head.condition.eAllContents.filter(ArgOrVarRef).head
 		Assert.assertNotNull(nRefInCondOfN)
 		nRefInCondOfN.assertScope(eref, defaultOptionsScope + ", a, b1, b2, X, c1, c2, n")
-		val nRefInCondOfK = iterate.iterators.last.cond.eAllContents.filter(ArgOrVarRef).head
+		val nRefInCondOfK = iterate.iterators.last.condition.eAllContents.filter(ArgOrVarRef).head
 		Assert.assertNotNull(nRefInCondOfK)
 		nRefInCondOfK.assertScope(eref, defaultOptionsScope + ", a, b1, b2, X, c1, c2, n, k")
 

@@ -59,7 +59,6 @@ class FunctionOrReductionValidator extends BasicValidator
 	static def getOnlyIntAndVarInReductionTypeMsg(String[] allowedVarNames) { buildMsg("Type", allowedVarNames) }
 	static def getFunctionInvalidArgNumberMsg() { "Number of arguments must be equal to number of input types" }
 	static def getFunctionIncompatibleInTypesMsg() { "Declaration conflicts" }
-	static def getFunctionReturnTypeMsg(String actualTypeName, String expectedTypeName) { "Wrong return type. Expected " + expectedTypeName + ", but was " + actualTypeName }
 	static def getFunctionReturnTypeVarMsg(String variableName) { "Only input type variables can be used for return types. Invalid variable: " + variableName }
 	static def getReductionIncompatibleTypesMsg() { "Declaration conflicts" }
 	static def getReductionSeedTypeMsg() { "Seed type must be scalar" }
@@ -151,7 +150,7 @@ class FunctionOrReductionValidator extends BasicValidator
 				val expressionType = ri.expression?.typeFor
 				val fType = returnType.typeFor
 				if (expressionType !== null && !checkExpectedType(expressionType, fType))
-					error(getFunctionReturnTypeMsg(expressionType.label, fType.label), NablaPackage.Literals.FUNCTION_TYPE_DECLARATION__RETURN_TYPE, FUNCTION_RETURN_TYPE)
+					error(getTypeMsg(expressionType.label, fType.label), NablaPackage.Literals.FUNCTION_TYPE_DECLARATION__RETURN_TYPE, FUNCTION_RETURN_TYPE)
 			}
 		}
 	}

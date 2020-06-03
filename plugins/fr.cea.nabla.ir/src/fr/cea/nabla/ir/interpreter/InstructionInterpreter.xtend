@@ -25,6 +25,7 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.VariableDefinition
+import fr.cea.nabla.ir.ir.While
 import java.util.Arrays
 import java.util.stream.IntStream
 
@@ -51,6 +52,8 @@ class InstructionInterpreter
 			return interpreteIf(context)
 		} else if (it instanceof InstructionBlock) {
 			return interpreteInstructionBlock(context)
+		} else if (it instanceof While) {
+			return interpreteWhile(context)
 		} else if (it instanceof Return) {
 			return interpreteReturn(context)
 		} else if (it instanceof Exit) {
@@ -190,6 +193,18 @@ class InstructionInterpreter
 	{
 		context.logFinest("Interprete Return")
 		context.addSetValue(name, value)
+		return null
+	}
+
+	static def NablaValue interpreteWhile(While it, Context context)
+	{
+		context.logFinest("Interprete While")
+		var cond = interprete(condition, context) as NV0Bool
+		while (cond.data)
+		{
+			interprete(instruction, context)
+			cond = interprete(condition, context) as NV0Bool
+		}
 		return null
 	}
 

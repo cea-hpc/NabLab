@@ -18,6 +18,7 @@ import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
+import fr.cea.nabla.nabla.While
 import fr.cea.nabla.typing.BaseTypeTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import org.eclipse.xtext.validation.Check
@@ -33,13 +34,11 @@ class InstructionValidator extends FunctionOrReductionValidator
 	public static val LOCAL_CONNECTIVITY_VAR = "Instructions::LocalConnectivityVar"
 	public static val AFFECTATION_TYPE = "Instructions::AffectationType"
 	public static val SIMPLE_VAR_TYPE = "Instructions::SimpleVarType"
-	public static val IF_CONDITION_BOOL = "Instructions::IfConditionBool"
+	public static val CONDITION_BOOL = "Instructions::ConditionBool"
 	public static val GLOBAL_VAR_VALUE = "Instructions::GlobalVarValue"
 	public static val LOCAL_OPTION = "Instructions::Local Option"
 
 	static def getLocalConnectivityVarMsg() { "Local variables not allowed on connectivities"}
-	static def getAffectationTypeMsg(String actualTypeName, String expectedTypeName) { "Expected " + expectedTypeName + ", but was " + actualTypeName }
-	static def getIfConditionBoolMsg(String actualTypeName) { "Expected " + ValidationUtils::BOOL.label + ", but was " + actualTypeName }
 	static def getGlobalVarValueMsg() { "Assignment with reduction, external function or card not allowed in options and global variables" }
 	static def getLocalOptionMsg() { "Option definition not allowed in jobs and functions (options are global)" }
 
@@ -63,7 +62,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 			val leftType = left.typeFor
 			val rightType = right.typeFor
 			if (!checkExpectedType(rightType, leftType))
-				error(getAffectationTypeMsg(rightType.label, leftType.label), NablaPackage.Literals.AFFECTATION__RIGHT, AFFECTATION_TYPE)
+				error(getTypeMsg(rightType.label, leftType.label), NablaPackage.Literals.AFFECTATION__RIGHT, AFFECTATION_TYPE)
 		}
 	}
 
@@ -74,7 +73,18 @@ class InstructionValidator extends FunctionOrReductionValidator
 		{
 			val condType = condition.typeFor
 			if (!checkExpectedType(condType, ValidationUtils::BOOL))
-				error(getIfConditionBoolMsg(condType.label), NablaPackage.Literals.IF__CONDITION, IF_CONDITION_BOOL)
+				error(getTypeMsg(condType.label, ValidationUtils::BOOL.label), NablaPackage.Literals.IF__CONDITION, CONDITION_BOOL)
+		}
+	}
+
+	@Check(CheckType.NORMAL)
+	def checkWhileConditionBoolType(While it)
+	{
+		if (condition !== null)
+		{
+			val condType = condition.typeFor
+			if (!checkExpectedType(condType, ValidationUtils::BOOL))
+				error(getTypeMsg(condType.label, ValidationUtils::BOOL.label), NablaPackage.Literals.WHILE__CONDITION, CONDITION_BOOL)
 		}
 	}
 
@@ -86,7 +96,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 			val valueType = value.typeFor
 			val varType = type.typeFor
 			if (!checkExpectedType(valueType, varType))
-				error(getAffectationTypeMsg(valueType.label, varType.label), NablaPackage.Literals.SIMPLE_VAR_DEFINITION__VALUE, SIMPLE_VAR_TYPE)
+				error(getTypeMsg(valueType.label, varType.label), NablaPackage.Literals.SIMPLE_VAR_DEFINITION__VALUE, SIMPLE_VAR_TYPE)
 			else
 			{
 				val global = (eContainer !== null && eContainer instanceof NablaModule)

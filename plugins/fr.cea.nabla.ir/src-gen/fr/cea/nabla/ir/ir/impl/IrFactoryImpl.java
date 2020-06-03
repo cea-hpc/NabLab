@@ -81,6 +81,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.ITEM_ID_DEFINITION: return createItemIdDefinition();
 			case IrPackage.SET_DEFINITION: return createSetDefinition();
 			case IrPackage.IF: return createIf();
+			case IrPackage.WHILE: return createWhile();
 			case IrPackage.RETURN: return createReturn();
 			case IrPackage.EXIT: return createExit();
 			case IrPackage.ITERATOR: return createIterator();
@@ -408,6 +409,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public If createIf() {
 		IfImpl if_ = new IfImpl();
 		return if_;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public While createWhile() {
+		WhileImpl while_ = new WhileImpl();
+		return while_;
 	}
 
 	/**

@@ -26,6 +26,7 @@ import fr.cea.nabla.nabla.SetDefinition
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
 import fr.cea.nabla.nabla.VarGroupDeclaration
+import fr.cea.nabla.nabla.While
 import java.util.ArrayList
 import java.util.List
 
@@ -130,6 +131,17 @@ class IrInstructionFactory
 	private def dispatch List<Instruction> toIrInstructions(SetDefinition v)
 	{
 		#[v.toIrSetDefinition]
+	}
+
+	private def dispatch List<Instruction> toIrInstructions(While v)
+	{
+		val irInstr = IrFactory::eINSTANCE.createWhile =>
+		[
+			annotations += v.toIrAnnotation
+			condition = v.condition.toIrExpression
+			instruction = v.instruction.toIrInstruction
+		]
+		return irInstr.transformReductions(v.condition)
 	}
 
 	private def dispatch List<Instruction> toIrInstructions(Return v)

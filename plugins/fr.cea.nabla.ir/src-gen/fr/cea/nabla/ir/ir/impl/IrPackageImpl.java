@@ -71,6 +71,7 @@ import fr.cea.nabla.ir.ir.Variable;
 import fr.cea.nabla.ir.ir.VariableDefinition;
 import fr.cea.nabla.ir.ir.VectorConstant;
 
+import fr.cea.nabla.ir.ir.While;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
@@ -309,6 +310,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass ifEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass whileEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -1752,6 +1760,36 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EClass getWhile() {
+		return whileEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getWhile_Condition() {
+		return (EReference)whileEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getWhile_Instruction() {
+		return (EReference)whileEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getReturn() {
 		return returnEClass;
 	}
@@ -2770,6 +2808,10 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(ifEClass, IF__THEN_INSTRUCTION);
 		createEReference(ifEClass, IF__ELSE_INSTRUCTION);
 
+		whileEClass = createEClass(WHILE);
+		createEReference(whileEClass, WHILE__CONDITION);
+		createEReference(whileEClass, WHILE__INSTRUCTION);
+
 		returnEClass = createEClass(RETURN);
 		createEReference(returnEClass, RETURN__EXPRESSION);
 
@@ -2951,6 +2993,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		itemIdDefinitionEClass.getESuperTypes().add(this.getInstruction());
 		setDefinitionEClass.getESuperTypes().add(this.getInstruction());
 		ifEClass.getESuperTypes().add(this.getInstruction());
+		whileEClass.getESuperTypes().add(this.getInstruction());
 		returnEClass.getESuperTypes().add(this.getInstruction());
 		exitEClass.getESuperTypes().add(this.getInstruction());
 		iterationBlockEClass.getESuperTypes().add(this.getIrAnnotable());
@@ -3131,6 +3174,10 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getIf_Condition(), this.getExpression(), null, "condition", null, 1, 1, If.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIf_ThenInstruction(), this.getInstruction(), null, "thenInstruction", null, 1, 1, If.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIf_ElseInstruction(), this.getInstruction(), null, "elseInstruction", null, 0, 1, If.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(whileEClass, While.class, "While", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getWhile_Condition(), this.getExpression(), null, "condition", null, 1, 1, While.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getWhile_Instruction(), this.getInstruction(), null, "instruction", null, 1, 1, While.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(returnEClass, Return.class, "Return", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getReturn_Expression(), this.getExpression(), null, "expression", null, 1, 1, Return.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

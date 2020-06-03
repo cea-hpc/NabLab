@@ -16,6 +16,7 @@ import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
 import fr.cea.nabla.validation.FunctionOrReductionValidator
+import fr.cea.nabla.validation.ValidationUtils
 import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
@@ -30,6 +31,7 @@ import org.junit.runner.RunWith
 class FunctionOrReductionValidatorTest
 {
 	@Inject ParseHelper<NablaModule> parseHelper
+	@Inject extension ValidationUtils
 	@Inject extension TestUtils
 	@Inject extension ValidationTestHelper
 
@@ -221,7 +223,7 @@ class FunctionOrReductionValidatorTest
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 		Assert.assertEquals(1, module.validate.filter(i | i.severity == Severity.ERROR).size)
-		module.assertError(NablaPackage.eINSTANCE.functionTypeDeclaration, FunctionOrReductionValidator::FUNCTION_RETURN_TYPE, FunctionOrReductionValidator::getFunctionReturnTypeMsg("ℕ", "ℝ"))
+		module.assertError(NablaPackage.eINSTANCE.functionTypeDeclaration, FunctionOrReductionValidator::FUNCTION_RETURN_TYPE, getTypeMsg("ℕ", "ℝ"))
 	}
 
 	@Test

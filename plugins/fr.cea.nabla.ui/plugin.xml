@@ -443,18 +443,6 @@
 	</extension>
  
  <!-- la vue Latex -->
-  <extension
-       point="org.eclipse.ui.perspectiveExtensions">
-    <perspectiveExtension
-          targetID="org.eclipse.jdt.ui.JavaPerspective">
-       <view
-             id="fr.cea.nabla.ui.views.NablaLatexView"
-             ratio="0.5"
-             relationship="right"
-             relative="org.eclipse.ui.views.ProblemView">
-       </view>
-    </perspectiveExtension>
- </extension>
  
  <extension
        point="org.eclipse.ui.views">
@@ -473,9 +461,8 @@
           category="fr.cea.nabla.ui.category"
           class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.views.JobGraphView"
           icon="icons/NabLab.gif"
-          id="fr.cea.nabla.ui.views.JobGraphView"
-          name="Job Graph"
-          restorable="false">
+          id="fr.cea.nabla.ui.views.NablaJobGraphView"
+          name="Job Graph">
     </view>
  </extension>
  <!-- Shortcut pour lancer la génération sur fichier nablagen -->

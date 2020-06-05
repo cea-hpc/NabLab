@@ -118,3 +118,25 @@ class KokkosTeamThreadBackend extends Backend
 	}
 }
 
+class OpenMpBackend extends Backend
+{
+	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath)
+	{
+		name = 'OpenMP'
+		ir2Cmake = new OpenMpCmake(compiler, compilerPath)
+		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
+		includesContentProvider = new OpenMpIncludesContentProvider
+		typeContentProvider = new StlTypeContentProvider
+		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
+		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
+		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider, expressionContentProvider)
+		instructionContentProvider = new OpenMpInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
+		jobContainerContentProvider = new JobContainerContentProvider
+		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)
+		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider)
+		mainContentProvider = new MainContentProvider
+	}
+}
+

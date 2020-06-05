@@ -98,3 +98,19 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 	}
 }
 
+class OpenMpIncludesContentProvider extends IncludesContentProvider
+{
+	override getAdditionalSystemIncludes(IrModule m)
+	{
+		#["omp.h"]
+	}
+
+	override getAdditionalUserIncludes(IrModule m)
+	{
+		val includes = new LinkedHashSet<String>
+		if (m.withMesh) includes += "mesh/stl/PvdFileWriter2D.h"
+		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
+		return includes
+	}
+}
+

@@ -42,9 +42,9 @@ class ArgOrVarExtensions
 		}
 	}
 
-	static def isGlobal(Variable it)
+	static def isGlobal(ArgOrVar it)
 	{
-		(eContainer instanceof IrModule)
+		(it instanceof Variable && eContainer instanceof IrModule)
 	}
 
 	static def isLinearAlgebra(Function it)

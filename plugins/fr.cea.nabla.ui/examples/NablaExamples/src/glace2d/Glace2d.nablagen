@@ -31,14 +31,6 @@ Java
 	outputPath = "/NablaExamples/src-gen-java";
 }
 
-StlThread
-{
-	outputPath = "/NablaExamples/src-gen-cpp/stl-thread";
-	compiler = GNU;
-//		compiler = LLVM;
-//		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
-}
-
 Kokkos
 {
 	outputPath = "/NablaExamples/src-gen-cpp/kokkos";
@@ -52,3 +44,19 @@ KokkosTeamThread
 	kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
 	compiler = GNU;
 }
+
+OpenMP
+{
+	outputPath = "/NablaExamples/src-gen-cpp/openmp";
+	compiler = GNU;
+}
+
+StlThread
+{
+	outputPath = "/NablaExamples/src-gen-cpp/stl-thread";
+	compiler = GNU;
+//		compiler = LLVM;
+//		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
+}
+
+

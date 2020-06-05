@@ -27,13 +27,14 @@ import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.VariableDefinition
+import fr.cea.nabla.ir.ir.While
 import org.eclipse.xtend.lib.annotations.Data
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
-import fr.cea.nabla.ir.ir.While
 
 @Data
 abstract class InstructionContentProvider
@@ -41,7 +42,7 @@ abstract class InstructionContentProvider
 	protected val extension ArgOrVarContentProvider
 	protected val extension ExpressionContentProvider
 	protected abstract def CharSequence getReductionContent(ReductionInstruction it)
-	protected abstract def CharSequence getLoopContent(Loop it)
+	protected abstract def CharSequence getParallelLoopContent(Loop it)
 
 	def dispatch CharSequence getContent(VariableDefinition it)
 	'''
@@ -72,15 +73,9 @@ abstract class InstructionContentProvider
 	def dispatch CharSequence getContent(Loop it)
 	{
 		if (parallel)
-			iterationBlock.defineInterval(loopContent)
+			iterationBlock.defineInterval(parallelLoopContent)
 		else
-			iterationBlock.defineInterval(
-			'''
-				for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
-				{
-					«body.innerContent»
-				}
-			''')
+			iterationBlock.defineInterval(sequentialLoopContent)
 	}
 
 	def dispatch CharSequence getContent(If it)
@@ -141,6 +136,14 @@ abstract class InstructionContentProvider
 
 	protected def boolean isParallel(Loop it) { topLevelLoop }
 
+	protected def CharSequence getSequentialLoopContent(Loop it)
+	'''
+		for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
+		{
+			«body.innerContent»
+		}
+	'''
+
 	protected def dispatch getDefaultValueContent(SimpleVariable it)
 	'''«IF defaultValue !== null»(«defaultValue.content»)«ENDIF»'''
 	
@@ -188,9 +191,9 @@ class SequentialInstructionContentProvider extends InstructionContentProvider
 		throw new UnsupportedOperationException("ReductionInstruction must have been replaced before using this code generator")
 	}
 
-	override protected getLoopContent(Loop it) 
+	override protected getParallelLoopContent(Loop it)
 	{
-		throw new UnsupportedOperationException("No parallel loop... bad path")
+		sequentialLoopContent
 	}
 }
 
@@ -203,12 +206,15 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 		«iterationBlock.defineInterval('''
 		«result.name» = parallel::parallel_reduce(«iterationBlock.nbElems», «result.defaultValue.content», [&](«result.cppType»& accu, const size_t& «iterationBlock.indexName»)
 			{
+				«FOR innerInstruction : innerInstructions»
+				«innerInstruction.content»
+				«ENDFOR»
 				return (accu = «binaryFunction.codeName»(accu, «lambda.content»));
 			},
 			&«binaryFunction.name»);''')»
 	'''
 
-	override getLoopContent(Loop it)
+	override getParallelLoopContent(Loop it)
 	'''
 		parallel::parallel_exec(«iterationBlock.nbElems», [&](const size_t& «iterationBlock.indexName»)
 		{
@@ -233,7 +239,7 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 		}, KokkosJoiner<«result.cppType»>(«result.name», «result.defaultValue.content», &«binaryFunction.name»));''')»
 	'''
 
-	override getLoopContent(Loop it)
+	override getParallelLoopContent(Loop it)
 	'''
 		Kokkos::parallel_for(«iterationBlock.nbElems», KOKKOS_LAMBDA(const size_t& «iterationBlock.indexName»)
 		{
@@ -255,7 +261,7 @@ class KokkosTeamThreadInstructionContentProvider extends KokkosInstructionConten
 		"Kokkos::TeamThreadRange(teamMember, " + iterationBlock.nbElems + ")"
 	}
 
-	override getLoopContent(Loop it)
+	override getParallelLoopContent(Loop it)
 	'''
 		{
 			«iterationBlock.autoTeamWork»
@@ -274,4 +280,32 @@ class KokkosTeamThreadInstructionContentProvider extends KokkosInstructionConten
 		if (!teamWork.second)
 			return;
 	'''
+}
+
+@Data
+class OpenMpInstructionContentProvider extends InstructionContentProvider
+{
+	override getReductionContent(ReductionInstruction it)
+	'''
+		«result.cppType» «result.name»(«result.defaultValue.content»);
+		#pragma omp parallel for reduction(min:«result.name»)
+		«iterationBlock.defineInterval('''
+		for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
+		{
+			«result.name» = «binaryFunction.codeName»(«result.name», «lambda.content»);
+		}''')»
+	'''
+
+	override getParallelLoopContent(Loop it)
+	'''
+		«val vars = modifiedVariables»
+		#pragma omp parallel«IF !vars.empty» for shared(«vars.map[codeName].join(', ')»«ENDIF»)
+		«sequentialLoopContent»
+	'''
+
+	private def getModifiedVariables(Loop l)
+	{
+		val modifiedVars = l.eAllContents.filter(Affectation).map[left.target].toSet
+		modifiedVars.filter[global]
+	}
 }

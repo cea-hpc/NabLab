@@ -18,15 +18,14 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	endif()
 endif()
 
-project(HeatEquationProject CXX)
+project(ExplicitHeatEquationProject CXX)
 
 set(LIBCPPNABLA_BACKEND "NONE")
-find_package(OpenMP)
 add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
 
-add_executable(heatequation HeatEquation.cc)
-target_include_directories(heatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(heatequation cppnabla OpenMP::OpenMP_CXX)
+add_executable(explicitheatequation ExplicitHeatEquation.cc)
+target_include_directories(explicitheatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(explicitheatequation cppnabla)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 include(Project.cmake)

@@ -18,15 +18,15 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	endif()
 endif()
 
-project(HeatEquationProject CXX)
+project(ImplicitHeatEquationProject CXX)
 
-set(LIBCPPNABLA_BACKEND "NONE")
-find_package(OpenMP)
+# libcppnabla for linear algebra
+set(LIBCPPNABLA_BACKEND "STL")
 add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
 
-add_executable(heatequation HeatEquation.cc)
-target_include_directories(heatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(heatequation cppnabla OpenMP::OpenMP_CXX)
+add_executable(implicitheatequation ImplicitHeatEquation.cc)
+target_include_directories(implicitheatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(implicitheatequation cppnabla cppnablastl pthread)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 include(Project.cmake)

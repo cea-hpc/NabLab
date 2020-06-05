@@ -51,6 +51,12 @@ OpenMP
 	compiler = GNU;
 }
 
+CppSequential
+{
+	outputPath = "/NablaExamples/src-gen-cpp/sequential";
+	compiler = GNU;
+}
+
 StlThread
 {
 	outputPath = "/NablaExamples/src-gen-cpp/stl-thread";

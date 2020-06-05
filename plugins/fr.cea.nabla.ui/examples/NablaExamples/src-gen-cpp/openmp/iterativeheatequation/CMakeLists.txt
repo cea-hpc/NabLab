@@ -20,6 +20,7 @@ endif()
 
 project(IterativeHeatEquationProject CXX)
 
+set(LIBCPPNABLA_BACKEND "NONE")
 find_package(OpenMP)
 add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
 

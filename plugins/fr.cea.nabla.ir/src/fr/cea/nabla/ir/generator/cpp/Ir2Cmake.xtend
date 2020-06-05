@@ -109,6 +109,34 @@ class KokkosIr2Cmake extends Ir2Cmake
 	}
 }
 
+class SequentialIr2Cmake extends Ir2Cmake
+{
+	new(String compiler, String compilerPath)
+	{
+		this.compiler = compiler
+		this.compilerPath = compilerPath
+	}
+
+	override getLibraryBackend(IrModule m)
+	{
+		if (m.linearAlgebra)
+			'''
+				# libcppnabla for linear algebra
+				set(LIBCPPNABLA_BACKEND "STL")
+			'''
+		else
+			'''set(LIBCPPNABLA_BACKEND "NONE")'''
+	}
+
+	override getTargetLinkLibraries(IrModule m)
+	{
+		if (m.linearAlgebra)
+			#["cppnablastl", "pthread"]
+		else
+			#[]
+	}
+}
+
 class OpenMpCmake extends Ir2Cmake
 {
 	new(String compiler, String compilerPath)
@@ -121,11 +149,15 @@ class OpenMpCmake extends Ir2Cmake
 	{
 		if (m.linearAlgebra)
 			'''
+				# libcppnabla for linear algebra
 				set(LIBCPPNABLA_BACKEND "STL")
 				find_package(OpenMP)
 			'''
 		else
-			'''find_package(OpenMP)'''
+			'''
+				set(LIBCPPNABLA_BACKEND "NONE")
+				find_package(OpenMP)
+			'''
 	}
 
 	override getTargetLinkLibraries(IrModule m)

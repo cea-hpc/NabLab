@@ -9,11 +9,13 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.transformers.IrTransformationStep
 import fr.cea.nabla.ir.transformers.TagOutputVariables
 import java.io.File
 import java.net.URI
@@ -25,7 +27,6 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
-import fr.cea.nabla.ir.MandatoryVariables
 
 class Ir2Cpp extends CodeGenerator
 {
@@ -67,6 +68,11 @@ class Ir2Cpp extends CodeGenerator
 	override getFileContentsByName(IrModule it)
 	{
 		#{ name + '.h' -> headerFileContent, name + '.cc' -> sourceFileContent, 'CMakeLists.txt' -> backend.ir2Cmake.getContentFor(it)}
+	}
+
+	override IrTransformationStep getIrTransformationStep()
+	{
+		backend.irTransformationStep
 	}
 
 	private def getHeaderFileContent(IrModule it)

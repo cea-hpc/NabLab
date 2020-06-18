@@ -42,7 +42,7 @@ class Ir2Json extends CodeGenerator
 		{
 			"_comment": "Generated file - Do not overwrite"«IF !options.empty»,«ENDIF»
 			«IF postProcessingInfo !== null»
-			"_outputPath_comment":"empty outputPath to disabled output",
+			"_outputPath_comment":"empty outputPath to disable output",
 			"«TagOutputVariables.OutputPathNameAndValue.key»":"«TagOutputVariables.OutputPathNameAndValue.value»"«IF !options.empty»,«ENDIF»
 			«ENDIF»
 			«FOR o : options SEPARATOR ","»

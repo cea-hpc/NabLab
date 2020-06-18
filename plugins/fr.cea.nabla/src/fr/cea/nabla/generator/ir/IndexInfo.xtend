@@ -12,12 +12,12 @@ package fr.cea.nabla.generator.ir
 import fr.cea.nabla.UniqueNameHelper
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.ConnectivityVar
-import fr.cea.nabla.nabla.Item
-import fr.cea.nabla.nabla.ItemRef
+import fr.cea.nabla.nabla.SpaceIterator
+import fr.cea.nabla.nabla.SpaceIteratorRef
 import java.util.Arrays
 import org.eclipse.xtend.lib.annotations.Data
 
-import static extension fr.cea.nabla.ItemRefExtensions.*
+import static extension fr.cea.nabla.SpaceIteratorRefExtensions.*
 
 /**
  * Class to store a list of items.
@@ -27,7 +27,7 @@ import static extension fr.cea.nabla.ItemRefExtensions.*
 @Data
 class DependentItemList
 {
-	val Item[] items
+	val SpaceIterator[] items
 
 	override boolean equals(Object obj)
 	{
@@ -49,10 +49,10 @@ class DependentItemList
 class IndexInfo
 {
 	val ArgOrVarRef varRef
-	val ItemRef itemRef
+	val SpaceIteratorRef itemRef
 	val int iteratorIndexInVarIterators
 
-	new(ArgOrVarRef varRef, ItemRef itemRef)
+	new(ArgOrVarRef varRef, SpaceIteratorRef itemRef)
 	{
 		this.varRef = varRef
 		this.itemRef = itemRef

@@ -18,8 +18,7 @@ import fr.cea.nabla.nabla.FunctionTypeDeclaration
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Interval
-import fr.cea.nabla.nabla.Item
-import fr.cea.nabla.nabla.ItemDefinition
+import fr.cea.nabla.nabla.ItemSet
 import fr.cea.nabla.nabla.Iterable
 import fr.cea.nabla.nabla.IterationBlock
 import fr.cea.nabla.nabla.Job
@@ -29,9 +28,7 @@ import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ReductionTypeDeclaration
-import fr.cea.nabla.nabla.SetDefinition
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.nabla.SingletonDefinition
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorDefinition
@@ -62,17 +59,17 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		switch r
 		{
 			case NablaPackage.Literals.ARG_OR_VAR_REF__TARGET: getArgOrVarRefScope(context)
-			case NablaPackage.Literals.ITEM_REF__TARGET: getItemRefScope(context)
-			case NablaPackage.Literals.SET_REF__TARGET: getSetRefScope(context)
+			case NablaPackage.Literals.SPACE_ITERATOR_REF__TARGET: getSpaceIteratorRefScope(context)
+			case NablaPackage.Literals.ITEM_SET_REF__TARGET: getItemSetRefScope(context)
 			default: super.getScope(context, r)
 		}
 	}
 
 
 	/*** Scope for items *****************************************************/
-	private def IScope getItemRefScope(EObject context)
+	private def IScope getSpaceIteratorRefScope(EObject context)
 	{
-		//println('getItemRefScope(' + context.class.simpleName + ') ' + context)
+		//println('getSpaceIteratorRefScope(' + context.class.simpleName + ') ' + context)
 		val s = switch context
 		{
 			FunctionOrReduction, NablaModule, Job:
@@ -80,68 +77,27 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 			IterationBlock:
 			{
 				val c = context.eContainer as Iterable
-				val cOuterScope = getItemRefScope(c.eContainer)
-				switch c
-				{
-					Loop: Scopes::scopeFor(itemsDefinedBefore(c.eContainer, c), cOuterScope)
-					ReductionCall: cOuterScope
-				}
-			}
-			SingletonDefinition:
-			{
-				val spaceIterator = context.eContainer as SpaceIterator
-				val iterable = spaceIterator.eContainer as Iterable
-				val itemList = new ArrayList<Item>
-				itemList += subList(spaceIterator.singletons, context).allItems
-				itemList += spaceIterator.item
-				if (iterable instanceof Loop)
-					itemList += itemsDefinedBefore(iterable.eContainer, iterable)
-				Scopes::scopeFor(itemList, getItemRefScope(iterable.eContainer))
+				getSpaceIteratorRefScope(c.eContainer)
 			}
 			Iterable case (context.iterationBlock instanceof SpaceIterator):
 			{
-				val itemList = new ArrayList<Item>
 				val block = context.iterationBlock
 				if (block instanceof SpaceIterator)
-				{
-					val spaceIt = context.iterationBlock as SpaceIterator
-					itemList += spaceIt.item
-					itemList += spaceIt.singletons.map[item]
-				}
-				if (context instanceof Loop)
-					itemList += itemsDefinedBefore(context.eContainer, context)
-				Scopes::scopeFor(itemList, getItemRefScope(context.eContainer))
+					Scopes::scopeFor(#[context.iterationBlock as SpaceIterator], getSpaceIteratorRefScope(context.eContainer))
+				else
+					getSpaceIteratorRefScope(context.eContainer)
 			}
-			Instruction:
-				Scopes::scopeFor(itemsDefinedBefore(context.eContainer, context), getItemRefScope(context.eContainer))
 			default:
-				getItemRefScope(context.eContainer)
+				getSpaceIteratorRefScope(context.eContainer)
 		}
 		//println('--> ' + s)
 		return s
 	}
 
-	private def java.lang.Iterable<Item> itemsDefinedBefore(Object context, Instruction i)
-	{
-		//println('itemsDefinedBefore(' + context.class.simpleName + ', ' + i.class.simpleName + ')')
-		switch context
-		{
-			InstructionBlock:
-				subList(context.instructions, i).allItems
-			Instruction, Job, NablaModule, FunctionOrReduction:
-				#[]
-			default:
-				throw new RuntimeException("Unexpected type in scope provider: " + context.class.name)
-		}
-	}
-
-	private def getAllItems(SingletonDefinition[] list) { list.map[item] }
-	private def getAllItems(Instruction[] list) { list.filter(ItemDefinition).map[item] }
-
 
 
 	/*** Scope for sets ******************************************************/
-	private def IScope getSetRefScope(EObject context)
+	private def IScope getItemSetRefScope(EObject context)
 	{
 		//println('getItemRefScope(' + context.class.simpleName + ') ' + context)
 		val s = switch context
@@ -149,31 +105,26 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 			FunctionOrReduction, NablaModule, Job:
 				IScope::NULLSCOPE
 			Instruction:
-				Scopes::scopeFor(setsDefinedBefore(context.eContainer, context), getSetRefScope(context.eContainer))
+				Scopes::scopeFor(setsDefinedBefore(context.eContainer, context), getItemSetRefScope(context.eContainer))
 			default:
-				getSetRefScope(context.eContainer)
+				getItemSetRefScope(context.eContainer)
 		}
 		//println('--> ' + s)
 		return s
 	}
 
-	private def java.lang.Iterable<SetDefinition> setsDefinedBefore(EObject context, Instruction i)
+	private def java.lang.Iterable<ItemSet> setsDefinedBefore(EObject context, Instruction i)
 	{
 		//println('setsDefinedBefore(' + context.class.simpleName + ', ' + i.class.simpleName + ')')
 		switch context
 		{
 			InstructionBlock:
-				subList(context.instructions, i).allSets
+				subList(context.instructions, i).filter(ItemSet)
 			Instruction, Job, NablaModule, FunctionOrReduction:
 				#[]
 			default:
 				throw new RuntimeException("Unexpected type in scope provider: " + context.class.name)
 		}
-	}
-
-	private def getAllSets(List<? extends Instruction> list)
-	{
-		list.filter(SetDefinition)
 	}
 
 

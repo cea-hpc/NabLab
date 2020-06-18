@@ -14,12 +14,12 @@ import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionOrReduction
-import fr.cea.nabla.nabla.Item
+import fr.cea.nabla.nabla.ItemSet
 import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
-import fr.cea.nabla.nabla.SetDefinition
+import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -84,23 +84,23 @@ class UniqueNameValidator extends AbstractNablaValidator
 	}
 
 	@Check(CheckType.NORMAL)
-	def void checkDuplicate(Item it)
+	def void checkDuplicate(SpaceIterator it)
 	{
-		val scope = scopeProvider.getScope(it, NablaPackage.Literals.ITEM_REF__TARGET)
+		val scope = scopeProvider.getScope(it, NablaPackage.Literals.SPACE_ITERATOR_REF__TARGET)
 		//println('checkDuplicate(' + it + ') : ' + scope.allElements.map[name.segments.join('.')].join(', '))
 		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
 		if (duplicated)
-			error(getDuplicateNameMsg(NablaPackage.Literals.ITEM, name), NablaPackage.Literals.ITEM__NAME, DUPLICATE_NAME);
+			error(getDuplicateNameMsg(NablaPackage.Literals.SPACE_ITERATOR, name), NablaPackage.Literals.SPACE_ITERATOR__NAME, DUPLICATE_NAME);
 	}
 
 	@Check(CheckType.NORMAL)
-	def void checkDuplicate(SetDefinition it)
+	def void checkDuplicate(ItemSet it)
 	{
-		val scope = scopeProvider.getScope(it, NablaPackage.Literals.SET_REF__TARGET)
+		val scope = scopeProvider.getScope(it, NablaPackage.Literals.ITEM_SET_REF__TARGET)
 		//println('checkDuplicate(' + it + ') : ' + scope.allElements.map[name.segments.join('.')].join(', '))
 		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
 		if (duplicated)
-			error(getDuplicateNameMsg(NablaPackage.Literals.SET_DEFINITION, name), NablaPackage.Literals.SET_DEFINITION__NAME, DUPLICATE_NAME);
+			error(getDuplicateNameMsg(NablaPackage.Literals.ITEM_SET, name), NablaPackage.Literals.ITEM_SET__NAME, DUPLICATE_NAME);
 	}
 
 	@Check(CheckType.NORMAL)

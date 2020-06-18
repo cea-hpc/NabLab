@@ -4136,14 +4136,14 @@ public interface IrPackage extends EPackage {
 	int ITEM_ID_VALUE_ITERATOR_OPERATION_COUNT = ITEM_ID_VALUE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ItemIdValueCallImpl <em>Item Id Value Call</em>}' class.
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ItemIdValueContainerImpl <em>Item Id Value Container</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.ItemIdValueCallImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIdValueCall()
+	 * @see fr.cea.nabla.ir.ir.impl.ItemIdValueContainerImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIdValueContainer()
 	 * @generated
 	 */
-	int ITEM_ID_VALUE_CALL = 64;
+	int ITEM_ID_VALUE_CONTAINER = 64;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4152,34 +4152,34 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ITEM_ID_VALUE_CALL__ANNOTATIONS = ITEM_ID_VALUE__ANNOTATIONS;
+	int ITEM_ID_VALUE_CONTAINER__ANNOTATIONS = ITEM_ID_VALUE__ANNOTATIONS;
 
 	/**
-	 * The feature id for the '<em><b>Call</b></em>' containment reference.
+	 * The feature id for the '<em><b>Container</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ITEM_ID_VALUE_CALL__CALL = ITEM_ID_VALUE_FEATURE_COUNT + 0;
+	int ITEM_ID_VALUE_CONTAINER__CONTAINER = ITEM_ID_VALUE_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Item Id Value Call</em>' class.
+	 * The number of structural features of the '<em>Item Id Value Container</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ITEM_ID_VALUE_CALL_FEATURE_COUNT = ITEM_ID_VALUE_FEATURE_COUNT + 1;
+	int ITEM_ID_VALUE_CONTAINER_FEATURE_COUNT = ITEM_ID_VALUE_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of operations of the '<em>Item Id Value Call</em>' class.
+	 * The number of operations of the '<em>Item Id Value Container</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ITEM_ID_VALUE_CALL_OPERATION_COUNT = ITEM_ID_VALUE_OPERATION_COUNT + 0;
+	int ITEM_ID_VALUE_CONTAINER_OPERATION_COUNT = ITEM_ID_VALUE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ItemIndexImpl <em>Item Index</em>}' class.
@@ -6351,25 +6351,25 @@ public interface IrPackage extends EPackage {
 	EAttribute getItemIdValueIterator_Shift();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ItemIdValueCall <em>Item Id Value Call</em>}'.
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ItemIdValueContainer <em>Item Id Value Container</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Item Id Value Call</em>'.
-	 * @see fr.cea.nabla.ir.ir.ItemIdValueCall
+	 * @return the meta object for class '<em>Item Id Value Container</em>'.
+	 * @see fr.cea.nabla.ir.ir.ItemIdValueContainer
 	 * @generated
 	 */
-	EClass getItemIdValueCall();
+	EClass getItemIdValueContainer();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.ItemIdValueCall#getCall <em>Call</em>}'.
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.ItemIdValueContainer#getContainer <em>Container</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Call</em>'.
-	 * @see fr.cea.nabla.ir.ir.ItemIdValueCall#getCall()
-	 * @see #getItemIdValueCall()
+	 * @return the meta object for the containment reference '<em>Container</em>'.
+	 * @see fr.cea.nabla.ir.ir.ItemIdValueContainer#getContainer()
+	 * @see #getItemIdValueContainer()
 	 * @generated
 	 */
-	EReference getItemIdValueCall_Call();
+	EReference getItemIdValueContainer_Container();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ItemIndex <em>Item Index</em>}'.
@@ -8133,22 +8133,22 @@ public interface IrPackage extends EPackage {
 		EAttribute ITEM_ID_VALUE_ITERATOR__SHIFT = eINSTANCE.getItemIdValueIterator_Shift();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ItemIdValueCallImpl <em>Item Id Value Call</em>}' class.
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ItemIdValueContainerImpl <em>Item Id Value Container</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.ItemIdValueCallImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIdValueCall()
+		 * @see fr.cea.nabla.ir.ir.impl.ItemIdValueContainerImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIdValueContainer()
 		 * @generated
 		 */
-		EClass ITEM_ID_VALUE_CALL = eINSTANCE.getItemIdValueCall();
+		EClass ITEM_ID_VALUE_CONTAINER = eINSTANCE.getItemIdValueContainer();
 
 		/**
-		 * The meta object literal for the '<em><b>Call</b></em>' containment reference feature.
+		 * The meta object literal for the '<em><b>Container</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference ITEM_ID_VALUE_CALL__CALL = eINSTANCE.getItemIdValueCall_Call();
+		EReference ITEM_ID_VALUE_CONTAINER__CONTAINER = eINSTANCE.getItemIdValueContainer_Container();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ItemIndexImpl <em>Item Index</em>}' class.

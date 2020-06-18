@@ -39,11 +39,11 @@ class NablaScopeProviderTest
 	/*** Scope for items *****************************************************/
 
 	@Test
-	def void testScopeProviderForItemRefInVarRef()
+	def void testScopeProviderForSpaceIteratorRefInVarRef()
 	{
 		val module = parseHelper.parse(getTestModule(defaultConnectivities + '''
-			item leftCell: cell → cell;
-			item rightCell: cell → cell;
+			connectivity leftCell: cell → cell;
+			connectivity rightCell: cell → cell;
 			''', '')
 			+
 			'''
@@ -55,16 +55,16 @@ class NablaScopeProviderTest
 			j3 : ∀j ∈ cells(), ∀r ∈ nodesOfCell(j), b{j,r} = 0.;
 			j4 : ∀j ∈ cells(), a{j} = ∑{r∈nodesOfCell(j)}(b{j, r});
 			j5 : let ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(X{r}));
-			j6 : ∀j ∈ cells(), rj = rightCell(j), lj = leftCell(j), c{j} = a{rj};
+			j6 : ∀j ∈ cells(), ∀ rj ∈ rightCell(j), ∀ lj ∈ leftCell(j), c{j} = a{rj};
 			j7 : ∀j ∈ cells(), {
-					item lj = leftCell(j);
-					c{j} = a{lj};
+					set rjset = rightCell(j);
+					∀ rj ∈ rjset, c{j} = a{rj};
 				}
 			'''
 		)
 		Assert.assertNotNull(module)
 
-		val eref = NablaPackage::eINSTANCE.itemRef_Target
+		val eref = NablaPackage::eINSTANCE.spaceIteratorRef_Target
 		val j1 = module.getJobByName("j1")
 		val j1_a = j1.getVarAffectationByName("a")
 		j1_a.left.assertScope(eref, "j")
@@ -93,19 +93,19 @@ class NablaScopeProviderTest
 
 		val j6 = module.getJobByName("j6")
 		val j6_a = j6.eAllContents.filter(ArgOrVarRef).head
-		j6_a.assertScope(eref, "j, rj, lj")
+		j6_a.assertScope(eref, "lj, rj, j")
 
 		val j7 = module.getJobByName("j7")
 		val j7_a = j7.eAllContents.filter(ArgOrVarRef).head
-		j7_a.assertScope(eref, "lj, j")
+		j7_a.assertScope(eref, "rj, j")
 	}
 
 	@Test
-	def void testScopeProviderForItemRefInConnectivityCall()
+	def void testScopeProviderForSpaceIteratorRefInConnectivityCall()
 	{
 		val model = getTestModule(defaultConnectivities + '''
-			item leftCell: cell → cell;
-			item rightCell: cell → cell;
+			connectivity leftCell: cell → cell;
+			connectivity rightCell: cell → cell;
 			''', '')
 			+
 			'''
@@ -116,18 +116,17 @@ class NablaScopeProviderTest
 			j2 : ∀j ∈ cells(), c{j} = 0.25 * ∑{r ∈ nodes()}(d{r});
 			j3 : ∀j ∈ cells(), ∀r ∈ nodesOfCell(j), b{j,r} = 0.;
 			j4 : ∀j ∈ cells(), a{j} = ∑{r∈nodesOfCell(j)}(b{j, r});
-			j5 : ∀j ∈ cells(), rj = rightCell(j), lj = leftCell(j), c{j} = a{rj} + a{lj};
+			j5 : ∀j ∈ cells(), ∀ rj ∈ rightCell(j), ∀ lj ∈ leftCell(j), c{j} = a{rj} + a{lj};
 			j6 : ∀j ∈ cells(), {
-					item rj = rightCell(j);
-					item lj = leftCell(rj);
-					c{j} = a{rj} + a{lj};
+					set rjset = rightCell(j);
+					∀ rj ∈ rjset, c{j} = a{rj};
 				}
 			'''
 
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 
-		val eref = NablaPackage::eINSTANCE.itemRef_Target
+		val eref = NablaPackage::eINSTANCE.spaceIteratorRef_Target
 		val cells = module.getConnectivityByName("cells")
 		val nodes = module.getConnectivityByName("nodes")
 		val nodesOfCell = module.getConnectivityByName("nodesOfCell")
@@ -180,9 +179,6 @@ class NablaScopeProviderTest
 		val j6_rightCell = j6.getConnectivityCallFor(rightCell)
 		Assert.assertNotNull(j6_rightCell)
 		j6_rightCell.assertScope(eref, "j")
-		val j6_leftCell = j6.getConnectivityCallFor(leftCell)
-		Assert.assertNotNull(j6_leftCell)
-		j6_leftCell.assertScope(eref, "rj, j")
 	}
 
 	def private assertScope(EObject context, EReference reference, CharSequence expected)
@@ -214,7 +210,7 @@ class NablaScopeProviderTest
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 
-		val eref = NablaPackage::eINSTANCE.setRef_Target
+		val eref = NablaPackage::eINSTANCE.itemSetRef_Target
 		val j1 = module.getJobByName("j1")
 		val j1_a = j1.getVarAffectationByName("a")
 		j1_a.assertScope(eref, "")

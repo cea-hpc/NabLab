@@ -158,7 +158,8 @@ void HeatEquation::computeOutgoingFlux() noexcept
 				const size_t j2Cells(j2Id);
 				const Id cfId(mesh->getCommonFace(j1Id, j2Id));
 				const size_t cfFaces(cfId);
-				reduction0 = sumR0(reduction0, (u_n[j2Cells] - u_n[j1Cells]) / norm(center[j2Cells] - center[j1Cells]) * surface[cfFaces]);
+				double reduction1((u_n[j2Cells] - u_n[j1Cells]) / norm(center[j2Cells] - center[j1Cells]) * surface[cfFaces]);
+				reduction0 = sumR0(reduction0, reduction1);
 			}
 		}
 		outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction0;

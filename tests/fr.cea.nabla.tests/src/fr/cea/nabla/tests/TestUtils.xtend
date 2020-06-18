@@ -27,7 +27,6 @@ import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 import org.junit.Assert
 
-import static extension fr.cea.nabla.ConnectivityCallExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 
@@ -100,15 +99,15 @@ class TestUtils
 	'''
 	itemtypes { node, cell }
 
-	set nodes: → {node};
-	set cells: → {cell};
-	set nodesOfCell: cell → {node};
+	connectivity nodes: → {node};
+	connectivity cells: → {cell};
+	connectivity nodesOfCell: cell → {node};
 	'''
 
 	def CharSequence getNodesConnectivity()
 	'''
 	itemtypes { node }
-	set nodes: → {node};
+	connectivity nodes: → {node};
 	'''
 
 	def CharSequence getTestModule()

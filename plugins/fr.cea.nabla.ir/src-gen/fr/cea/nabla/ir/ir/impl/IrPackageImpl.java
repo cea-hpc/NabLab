@@ -38,7 +38,7 @@ import fr.cea.nabla.ir.ir.IrType;
 import fr.cea.nabla.ir.ir.ItemId;
 import fr.cea.nabla.ir.ir.ItemIdDefinition;
 import fr.cea.nabla.ir.ir.ItemIdValue;
-import fr.cea.nabla.ir.ir.ItemIdValueCall;
+import fr.cea.nabla.ir.ir.ItemIdValueContainer;
 import fr.cea.nabla.ir.ir.ItemIdValueIterator;
 import fr.cea.nabla.ir.ir.ItemIndex;
 import fr.cea.nabla.ir.ir.ItemIndexDefinition;
@@ -540,7 +540,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass itemIdValueCallEClass = null;
+	private EClass itemIdValueContainerEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -2550,8 +2550,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EClass getItemIdValueCall() {
-		return itemIdValueCallEClass;
+	public EClass getItemIdValueContainer() {
+		return itemIdValueContainerEClass;
 	}
 
 	/**
@@ -2560,8 +2560,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getItemIdValueCall_Call() {
-		return (EReference)itemIdValueCallEClass.getEStructuralFeatures().get(0);
+	public EReference getItemIdValueContainer_Container() {
+		return (EReference)itemIdValueContainerEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -2919,8 +2919,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(itemIdValueIteratorEClass, ITEM_ID_VALUE_ITERATOR__ITERATOR);
 		createEAttribute(itemIdValueIteratorEClass, ITEM_ID_VALUE_ITERATOR__SHIFT);
 
-		itemIdValueCallEClass = createEClass(ITEM_ID_VALUE_CALL);
-		createEReference(itemIdValueCallEClass, ITEM_ID_VALUE_CALL__CALL);
+		itemIdValueContainerEClass = createEClass(ITEM_ID_VALUE_CONTAINER);
+		createEReference(itemIdValueContainerEClass, ITEM_ID_VALUE_CONTAINER__CONTAINER);
 
 		itemIndexEClass = createEClass(ITEM_INDEX);
 		createEAttribute(itemIndexEClass, ITEM_INDEX__NAME);
@@ -3025,7 +3025,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		itemIdEClass.getESuperTypes().add(this.getIrAnnotable());
 		itemIdValueEClass.getESuperTypes().add(this.getIrAnnotable());
 		itemIdValueIteratorEClass.getESuperTypes().add(this.getItemIdValue());
-		itemIdValueCallEClass.getESuperTypes().add(this.getItemIdValue());
+		itemIdValueContainerEClass.getESuperTypes().add(this.getItemIdValue());
 		itemIndexEClass.getESuperTypes().add(this.getIrAnnotable());
 		itemIndexValueEClass.getESuperTypes().add(this.getIrAnnotable());
 
@@ -3286,8 +3286,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getItemIdValueIterator_Iterator(), this.getIterator(), null, "iterator", null, 1, 1, ItemIdValueIterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getItemIdValueIterator_Shift(), ecorePackage.getEInt(), "shift", "0", 1, 1, ItemIdValueIterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(itemIdValueCallEClass, ItemIdValueCall.class, "ItemIdValueCall", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getItemIdValueCall_Call(), this.getConnectivityCall(), null, "call", null, 1, 1, ItemIdValueCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(itemIdValueContainerEClass, ItemIdValueContainer.class, "ItemIdValueContainer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getItemIdValueContainer_Container(), this.getContainer(), null, "container", null, 1, 1, ItemIdValueContainer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(itemIndexEClass, ItemIndex.class, "ItemIndex", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getItemIndex_Name(), ecorePackage.getEString(), "name", null, 1, 1, ItemIndex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -14,14 +14,14 @@ with LinearAlgebra.*;
 
 itemtypes { node, cell, face }
 
-set nodes: → {node};
-set cells: → {cell};
-set faces: → {face};
-set neighbourCells: cell → {cell};
-set nodesOfFace: face → {node};
-set cellsOfFace: face → {cell};
-set nodesOfCell: cell → {node};
-item commonFace: cell × cell → face;
+connectivity nodes: → {node};
+connectivity cells: → {cell};
+connectivity faces: → {face};
+connectivity neighbourCells: cell → {cell};
+connectivity nodesOfFace: face → {node};
+connectivity cellsOfFace: face → {cell};
+connectivity nodesOfCell: cell → {node};
+connectivity commonFace: cell × cell → face;
 
 option ℝ u0 = 1.0;
 option ℝ[2] vectOne = ℝ[2](1.0);
@@ -75,7 +75,7 @@ ComputeFaceConductivity: ∀f∈faces(), faceConductivity{f} = 2.0 * ∏{c1∈ce
 // Assembling of the diffusion matrix
 ComputeAlphaCoeff: ∀c∈cells(), {
 	let ℝ αDiag = 0.0;
-	∀d∈neighbourCells(c), f=commonFace(c,d), {
+	∀d∈neighbourCells(c), ∀f∈commonFace(c,d), {
 		let ℝ αExtraDiag = - δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c} - Xc{d});
 		α{c, d} = αExtraDiag;
 		αDiag = αDiag + αExtraDiag;

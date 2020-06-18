@@ -9,9 +9,9 @@
  *******************************************************************************/
 package fr.cea.nabla.typing
 
+import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.IntConstant
-import fr.cea.nabla.nabla.MultipleConnectivity
 import fr.cea.nabla.nabla.PrimitiveType
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtend.lib.annotations.Data
@@ -29,7 +29,7 @@ abstract class NablaType
 @Data
 class NablaConnectivityType extends NablaType
 {
-	val MultipleConnectivity[] supports
+	val Connectivity[] supports
 	val NablaSimpleType simple
 	override getPrimitive() { simple.primitive }
 

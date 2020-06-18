@@ -56,11 +56,6 @@ class IrIterationBlockFactory
 		val instructions = new ArrayList<Instruction>
 		instructions += b.neededIdDefinitions
 		instructions += b.neededIndexDefinitions
-		for (s : b.singletons)
-		{
-			instructions += s.toIrIdDefinition
-			instructions += s.item.neededIndexDefinitions
-		}
 		return instructions
 	}
 

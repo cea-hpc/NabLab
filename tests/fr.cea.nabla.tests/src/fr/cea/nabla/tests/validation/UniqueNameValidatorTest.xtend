@@ -87,39 +87,21 @@ class UniqueNameValidatorTest
 	}
 
 	@Test
-	def void checkDuplicateItem()
+	def void checkDuplicateSpaceIterator()
 	{
 		val moduleKo1 = parseHelper.parse(getTestModule(
 		'''
 		itemtypes { node }
-		set nodes: → {node};
+		connectivity nodes: → {node};
 		''', '') +
 		'''
 			ℝ X{nodes, nodes};
 			j1: ∀r∈nodes(), ∀r∈nodes(), let d = X{r, r} * 2.0;
 		''')
 		Assert.assertNotNull(moduleKo1)
-		moduleKo1.assertError(NablaPackage.eINSTANCE.item,
+		moduleKo1.assertError(NablaPackage.eINSTANCE.spaceIterator,
 			UniqueNameValidator::DUPLICATE_NAME,
-			UniqueNameValidator::getDuplicateNameMsg(NablaPackage.Literals.ITEM, "r"))
-
-		val moduleKo2 = parseHelper.parse(getTestModule(
-		'''
-		itemtypes { node }
-		set nodes: → {node};
-		item topLeftNode: → node;
-		''', '') +
-		'''
-			ℝ X{nodes, nodes};
-			j1: {
-				item r1 = topLeftNode();
-				∀r1∈nodes(), ∀r2∈nodes(), let d = X{r1, r2} * 2.0;
-			}
-		''')
-		Assert.assertNotNull(moduleKo2)
-		moduleKo2.assertError(NablaPackage.eINSTANCE.item,
-			UniqueNameValidator::DUPLICATE_NAME,
-			UniqueNameValidator::getDuplicateNameMsg(NablaPackage.Literals.ITEM, "r1"))
+			UniqueNameValidator::getDuplicateNameMsg(NablaPackage.Literals.SPACE_ITERATOR, "r"))
 
 		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, '') +
 		'''
@@ -141,9 +123,9 @@ class UniqueNameValidatorTest
 			}
 		''')
 		Assert.assertNotNull(moduleKo)
-		moduleKo.assertError(NablaPackage.eINSTANCE.setDefinition,
+		moduleKo.assertError(NablaPackage.eINSTANCE.itemSet,
 			UniqueNameValidator::DUPLICATE_NAME,
-			UniqueNameValidator::getDuplicateNameMsg(NablaPackage.Literals.SET_DEFINITION, "myNodes"))
+			UniqueNameValidator::getDuplicateNameMsg(NablaPackage.Literals.ITEM_SET, "myNodes"))
 
 		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, '') +
 		'''
@@ -165,7 +147,7 @@ class UniqueNameValidatorTest
 
 			itemtypes { node, node }
 
-			set nodes: → {node};
+			connectivity nodes: → {node};
 
 			option ℝ X_EDGE_LENGTH = 0.01;
 			option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
@@ -182,7 +164,7 @@ class UniqueNameValidatorTest
 
 			itemtypes { node }
 
-			set nodes: → {node};
+			connectivity nodes: → {node};
 
 			option ℝ X_EDGE_LENGTH = 0.01;
 			option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
@@ -201,8 +183,8 @@ class UniqueNameValidatorTest
 
 			itemtypes { node }
 
-			set nodes: → {node};
-			set nodes: → {node};
+			connectivity nodes: → {node};
+			connectivity nodes: → {node};
 
 			option ℝ X_EDGE_LENGTH = 0.01;
 			option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
@@ -212,14 +194,14 @@ class UniqueNameValidatorTest
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.connectivity,
 			UniqueNameValidator::DUPLICATE_NAME,
-			UniqueNameValidator::getDuplicateNameMsg(NablaPackage.Literals.MULTIPLE_CONNECTIVITY, "nodes"))
+			UniqueNameValidator::getDuplicateNameMsg(NablaPackage.Literals.CONNECTIVITY, "nodes"))
 
 		val moduleOk = parseHelper.parse('''
 			module Test;
 
 			itemtypes { node }
 
-			set nodes: → {node};
+			connectivity nodes: → {node};
 
 			option ℝ X_EDGE_LENGTH = 0.01;
 			option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;

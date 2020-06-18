@@ -109,7 +109,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.SET_REF: return createSetRef();
 			case IrPackage.ITEM_ID: return createItemId();
 			case IrPackage.ITEM_ID_VALUE_ITERATOR: return createItemIdValueIterator();
-			case IrPackage.ITEM_ID_VALUE_CALL: return createItemIdValueCall();
+			case IrPackage.ITEM_ID_VALUE_CONTAINER: return createItemIdValueContainer();
 			case IrPackage.ITEM_INDEX: return createItemIndex();
 			case IrPackage.ITEM_INDEX_VALUE: return createItemIndexValue();
 			default:
@@ -725,9 +725,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public ItemIdValueCall createItemIdValueCall() {
-		ItemIdValueCallImpl itemIdValueCall = new ItemIdValueCallImpl();
-		return itemIdValueCall;
+	public ItemIdValueContainer createItemIdValueContainer() {
+		ItemIdValueContainerImpl itemIdValueContainer = new ItemIdValueContainerImpl();
+		return itemIdValueContainer;
 	}
 
 	/**

@@ -370,20 +370,20 @@ class BasicValidatorTest
 		val connectivities =
 			'''
 			itemtypes { node }
-			set nodes: → {node};
-			item leftNode: node → node;
+			connectivity nodes: → {node};
+			connectivity leftNode: node → node;
 			'''
 
 		val moduleKo = parseHelper.parse(getTestModule(connectivities, '')
 			+
 			'''
 			ℝ[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), r2 = leftNode(r1), X{r2} = X{r2-1} - 1;
+			UpdateX: ∀r1∈nodes(), ∀r2∈leftNode(r1), X{r2} = X{r2-1} - 1;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.itemRef,
+		moduleKo.assertError(NablaPackage.eINSTANCE.spaceIteratorRef,
 			BasicValidator::SHIFT_VALIDITY,
 			BasicValidator::getShiftValidityMsg)
 
@@ -391,7 +391,7 @@ class BasicValidatorTest
 			+
 			'''
 			ℝ[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), r2 = leftNode(r1), X{r2} = X{r1-1} - 1;
+			UpdateX: ∀r1∈nodes(), ∀r2∈leftNode(r1), X{r2} = X{r1-1} - 1;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

@@ -17,6 +17,7 @@ import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Cardinality
 import fr.cea.nabla.nabla.Comparison
+import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.CurrentTimeIteratorRef
 import fr.cea.nabla.nabla.Div
@@ -31,8 +32,8 @@ import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.Interval
-import fr.cea.nabla.nabla.ItemDefinition
-import fr.cea.nabla.nabla.ItemRef
+import fr.cea.nabla.nabla.ItemSet
+import fr.cea.nabla.nabla.ItemSetRef
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.MaxConstant
@@ -40,7 +41,6 @@ import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.Mul
-import fr.cea.nabla.nabla.MultipleConnectivityCall
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
@@ -51,13 +51,10 @@ import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ReductionTypeDeclaration
 import fr.cea.nabla.nabla.Return
-import fr.cea.nabla.nabla.SetDefinition
-import fr.cea.nabla.nabla.SetRef
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.nabla.SingleConnectivityCall
-import fr.cea.nabla.nabla.SingletonDefinition
 import fr.cea.nabla.nabla.SpaceIterator
+import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
@@ -73,19 +70,16 @@ class LatexLabelServices
 	static def dispatch String getLatex(Loop it) { '\\forall{' + iterationBlock?.latex + '}, \\ ' + body.latex }
 	static def dispatch String getLatex(Affectation it) { left?.latex + ' = ' + right?.latex }
 	static def dispatch String getLatex(If it) { 'if~\\left(' + condition?.latex + '\\right)'}
-	static def dispatch String getLatex(ItemDefinition it) { 'item~' + item?.name + '=' + value?.latex }
-	static def dispatch String getLatex(SetDefinition it) { 'set~' + name + '=' + value?.latex }
+	static def dispatch String getLatex(ItemSet it) { 'set~' + name + '=' + value?.latex }
 	static def dispatch String getLatex(Return it) { 'return~' + expression?.latex }
 	static def dispatch String getLatex(Exit it) { 'exit~' + message }
 
 	/* ITERATEURS ********************************************/
-	static def dispatch String getLatex(SpaceIterator it) { item?.name.pu + '\\in ' + container?.latex }
-	static def dispatch String getLatex(SingletonDefinition it) { item?.name + '=' + value?.latex }
+	static def dispatch String getLatex(SpaceIterator it) { name.pu + '\\in ' + container?.latex }
 	static def dispatch String getLatex(Interval it) { index?.name + '\\in ' + nbElems.latex }
-	static def dispatch String getLatex(SetRef it) { target?.name }
-	static def dispatch String getLatex(MultipleConnectivityCall it) { connectivity?.name.pu + '(' + args.map[latex].join(',') + ')' }
-	static def dispatch String getLatex(SingleConnectivityCall it) { connectivity?.name.pu + '(' + args.map[latex].join(',') + ')' }
-	static def dispatch String getLatex(ItemRef it) 
+	static def dispatch String getLatex(ItemSetRef it) { target?.name }
+	static def dispatch String getLatex(ConnectivityCall it) { connectivity?.name.pu + '(' + args.map[latex].join(',') + ')' }
+	static def dispatch String getLatex(SpaceIteratorRef it) 
 	{ 
 		if (inc > 0) target.name.pu + '+' + inc
 		else if (dec > 0) target.name.pu + '-' + dec

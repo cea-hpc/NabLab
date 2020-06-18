@@ -274,8 +274,8 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ItemIdValueIterator/iterator"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ItemIdValueIterator/shift"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//ItemIdValueCall">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ItemIdValueCall/call"/>
+    <genClasses ecoreClass="Ir.ecore#//ItemIdValueContainer">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ItemIdValueContainer/container"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ItemIndex">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ItemIndex/name"/>

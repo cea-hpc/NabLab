@@ -11,26 +11,27 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import fr.cea.nabla.SpaceIteratorExtensions
+import fr.cea.nabla.ir.ir.IrAnnotation
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.ItemId
 import fr.cea.nabla.ir.ir.ItemIdDefinition
-import fr.cea.nabla.ir.ir.ItemIdValueIterator
+import fr.cea.nabla.ir.ir.ItemIdValue
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.ConnectivityCall
-import fr.cea.nabla.nabla.ItemDefinition
-import fr.cea.nabla.nabla.ItemRef
 import fr.cea.nabla.nabla.Iterable
-import fr.cea.nabla.nabla.SingletonDefinition
 import fr.cea.nabla.nabla.SpaceIterator
+import fr.cea.nabla.nabla.SpaceIteratorRef
 import java.util.ArrayList
 import org.eclipse.xtext.EcoreUtil2
 
-import static extension fr.cea.nabla.ItemRefExtensions.*
+import static extension fr.cea.nabla.SpaceIteratorRefExtensions.*
 
 @Singleton
 class IrItemIdDefinitionFactory
 {
 	@Inject extension IrAnnotationHelper
+	@Inject extension SpaceIteratorExtensions
 	@Inject extension IrItemIdFactory
 	@Inject extension IrItemIndexFactory
 
@@ -46,7 +47,7 @@ class IrItemIdDefinitionFactory
 		//println("[" + item.name + "] Recherche des ids")
 		val neededDefinitions = new ArrayList<ItemIdDefinition>
 		val iterable = EcoreUtil2::getContainerOfType(it, Iterable)
-		for (referencer : iterable.eAllContents.filter(ItemRef).filter[x | x.target == item].toIterable)
+		for (referencer : iterable.eAllContents.filter(SpaceIteratorRef).filter[x | x.target == it].toIterable)
 		{
 			val c = referencer.eContainer
 			//println("[" + item.name + "] referencer : " + referencer + " - " + c)
@@ -65,21 +66,7 @@ class IrItemIdDefinitionFactory
 		return neededDefinitions
 	}
 
-	def create IrFactory::eINSTANCE.createItemIdDefinition toIrIdDefinition(SingletonDefinition d)
-	{
-		annotations += d.toIrAnnotation
-		id = d.item.toIrId
-		value = d.value.toIrIdValue
-	}
-
-	def create IrFactory::eINSTANCE.createItemIdDefinition toIrIdDefinition(ItemDefinition d)
-	{
-		annotations += d.toIrAnnotation
-		id = d.item.toIrId
-		value = d.value.toIrIdValue
-	}
-
-	private def addIdDefinitionIfNotExists(ArrayList<ItemIdDefinition> definitions, ItemRef itemRef, SpaceIterator si)
+	private def addIdDefinitionIfNotExists(ArrayList<ItemIdDefinition> definitions, SpaceIteratorRef itemRef, SpaceIterator si)
 	{
 		val id = itemRef.toIrId 
 		if (!definitions.exists[x  | x.id === id])
@@ -88,12 +75,15 @@ class IrItemIdDefinitionFactory
 
 	private def toIrIdDefinition(ItemId id, int shift, SpaceIterator si)
 	{
-		val value = toIrIdValue(si, shift)
-		createItemIdDefinition(id, value)
+		if (si.multiple)
+			createItemIdDefinition(si.toIrAnnotation, id, toIrIdValue(si, shift))
+		else
+			createItemIdDefinition(si.toIrAnnotation, id, si.container.toIrIdValue)
 	}
 
-	private def create IrFactory::eINSTANCE.createItemIdDefinition createItemIdDefinition(ItemId _id, ItemIdValueIterator _value)
+	private def create IrFactory::eINSTANCE.createItemIdDefinition createItemIdDefinition(IrAnnotation annotation, ItemId _id, ItemIdValue _value)
 	{
+		annotations += annotation
 		id = _id
 		value = _value
 	}

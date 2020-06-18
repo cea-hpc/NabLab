@@ -324,8 +324,8 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createItemIdValueIteratorAdapter();
 			}
 			@Override
-			public Adapter caseItemIdValueCall(ItemIdValueCall object) {
-				return createItemIdValueCallAdapter();
+			public Adapter caseItemIdValueContainer(ItemIdValueContainer object) {
+				return createItemIdValueContainerAdapter();
 			}
 			@Override
 			public Adapter caseItemIndex(ItemIndex object) {
@@ -1252,16 +1252,16 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemIdValueCall <em>Item Id Value Call</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ItemIdValueContainer <em>Item Id Value Container</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.ItemIdValueCall
+	 * @see fr.cea.nabla.ir.ir.ItemIdValueContainer
 	 * @generated
 	 */
-	public Adapter createItemIdValueCallAdapter() {
+	public Adapter createItemIdValueContainerAdapter() {
 		return null;
 	}
 

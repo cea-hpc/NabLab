@@ -9,18 +9,18 @@
  *******************************************************************************/
 package fr.cea.nabla
 
-import fr.cea.nabla.nabla.ItemRef
+import fr.cea.nabla.nabla.SpaceIteratorRef
 
-class ItemRefExtensions
+class SpaceIteratorRefExtensions
 {
-	static def getShift(ItemRef it)
+	static def getShift(SpaceIteratorRef it)
 	{
 		if (dec > 0) -dec
 		else if (inc > 0) inc
 		else 0
 	}
 
-	static def getName(ItemRef it)
+	static def getName(SpaceIteratorRef it)
 	{
 		if (dec > 0) target.name + 'Minus' + dec
 		else if (inc > 0) target.name + 'Plus' + inc

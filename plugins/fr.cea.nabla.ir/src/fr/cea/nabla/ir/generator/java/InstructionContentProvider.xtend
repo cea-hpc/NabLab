@@ -200,6 +200,6 @@ class InstructionContentProvider
 
 	private static def getSetDefinitionContent(String setName, ConnectivityCall call)
 	'''
-		final int[] «setName» = mesh.«call.accessor»;
+		final int«IF call.connectivity.multiple»[]«ENDIF» «setName» = mesh.«call.accessor»;
 	'''
 }

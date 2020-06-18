@@ -23,7 +23,7 @@ abstract class AbstractOptionsInterpreterTest
 		module Test;
 		
 		itemtypes { node }
-		set nodes: → {node};
+		connectivity nodes: → {node};
 
 		def square: ℝ → ℝ, (a) → return a * a;
 

@@ -564,11 +564,11 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.ITEM_ID_VALUE_CALL: {
-				ItemIdValueCall itemIdValueCall = (ItemIdValueCall)theEObject;
-				T result = caseItemIdValueCall(itemIdValueCall);
-				if (result == null) result = caseItemIdValue(itemIdValueCall);
-				if (result == null) result = caseIrAnnotable(itemIdValueCall);
+			case IrPackage.ITEM_ID_VALUE_CONTAINER: {
+				ItemIdValueContainer itemIdValueContainer = (ItemIdValueContainer)theEObject;
+				T result = caseItemIdValueContainer(itemIdValueContainer);
+				if (result == null) result = caseItemIdValue(itemIdValueContainer);
+				if (result == null) result = caseIrAnnotable(itemIdValueContainer);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -1551,17 +1551,17 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Item Id Value Call</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Item Id Value Container</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Item Id Value Call</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Item Id Value Container</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseItemIdValueCall(ItemIdValueCall object) {
+	public T caseItemIdValueContainer(ItemIdValueContainer object) {
 		return null;
 	}
 

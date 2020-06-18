@@ -490,13 +490,13 @@ public interface IrFactory extends EFactory {
 	ItemIdValueIterator createItemIdValueIterator();
 
 	/**
-	 * Returns a new object of class '<em>Item Id Value Call</em>'.
+	 * Returns a new object of class '<em>Item Id Value Container</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Item Id Value Call</em>'.
+	 * @return a new object of class '<em>Item Id Value Container</em>'.
 	 * @generated
 	 */
-	ItemIdValueCall createItemIdValueCall();
+	ItemIdValueContainer createItemIdValueContainer();
 
 	/**
 	 * Returns a new object of class '<em>Item Index</em>'.

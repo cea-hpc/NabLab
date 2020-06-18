@@ -13,7 +13,6 @@ import com.google.inject.Inject
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
-import fr.cea.nabla.nabla.MultipleConnectivity
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.PrimitiveType
@@ -53,8 +52,8 @@ class DeclarationProviderTest
 
 		itemtypes { cell, node }
 
-		set cells: → {cell};
-		set nodes: → {node};
+		connectivity cells: → {cell};
+		connectivity nodes: → {node};
 
 		def f: → ℕ;
 		def f: ℕ → ℕ;
@@ -107,7 +106,7 @@ class DeclarationProviderTest
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		ExpressionValidator::FUNCTION_CALL_ARGS,
 		ExpressionValidator::getFunctionCallArgsMsg(#[PrimitiveType::REAL.literal, PrimitiveType::BOOL.literal]))
-		val cells = module.getConnectivityByName("cells") as MultipleConnectivity
+		val cells = module.getConnectivityByName("cells")
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		ExpressionValidator::FUNCTION_CALL_ARGS,
 		ExpressionValidator::getFunctionCallArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealArray1D(createIntConstant(2))).label]))
@@ -155,7 +154,7 @@ class DeclarationProviderTest
 		module Test;
 
 		itemtypes { node }
-		set nodes: → {node};
+		connectivity nodes: → {node};
 
 		def f: ℝ → ℝ;
 		def f: ℝ[2] → ℝ[2];
@@ -183,10 +182,10 @@ class DeclarationProviderTest
 		module.assertError(NablaPackage.eINSTANCE.functionCall, ExpressionValidator::FUNCTION_CALL_ARGS, ExpressionValidator::getFunctionCallArgsMsg(#["ℝ[a]"]))
 
 		Assert.assertEquals(4, module.validate.filter(i | i.severity == Severity.WARNING).size)
-		module.assertWarning(NablaPackage.eINSTANCE.connectivity, UnusedValidator::UNUSED, 37, 5, BasicValidator::getUnusedMsg(NablaPackage.Literals.CONNECTIVITY, 'nodes'))
-		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 118, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'h'))
-		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 170, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'i'))
-		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 243, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'j'))
+		module.assertWarning(NablaPackage.eINSTANCE.connectivity, UnusedValidator::UNUSED, 46, 5, BasicValidator::getUnusedMsg(NablaPackage.Literals.CONNECTIVITY, 'nodes'))
+		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 127, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'h'))
+		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 179, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'i'))
+		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 252, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'j'))
 
 		val functions = module.functions
 		val h = functions.findFirst[name == 'h']
@@ -211,8 +210,8 @@ class DeclarationProviderTest
 
 		itemtypes { cell, node }
 
-		set cells: → {cell}; 
-		set nodes: → {node};
+		connectivity cells: → {cell}; 
+		connectivity nodes: → {node};
 
 		def f, 0.0: ℝ, (a , b) → return a;
 		def f, 0.0: x | ℝ[x], (a , b) → return a;

@@ -17,6 +17,7 @@ import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Cardinality
 import fr.cea.nabla.nabla.Comparison
+import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.CurrentTimeIteratorRef
 import fr.cea.nabla.nabla.Div
@@ -31,8 +32,8 @@ import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.Interval
-import fr.cea.nabla.nabla.ItemDefinition
-import fr.cea.nabla.nabla.ItemRef
+import fr.cea.nabla.nabla.ItemSet
+import fr.cea.nabla.nabla.ItemSetRef
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.MaxConstant
@@ -40,7 +41,6 @@ import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.Mul
-import fr.cea.nabla.nabla.MultipleConnectivityCall
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
@@ -51,13 +51,10 @@ import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ReductionTypeDeclaration
 import fr.cea.nabla.nabla.Return
-import fr.cea.nabla.nabla.SetDefinition
-import fr.cea.nabla.nabla.SetRef
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.nabla.SingleConnectivityCall
-import fr.cea.nabla.nabla.SingletonDefinition
 import fr.cea.nabla.nabla.SpaceIterator
+import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
@@ -75,19 +72,16 @@ class LabelServices
 	static def dispatch String getLabel(Loop it) { '\u2200 ' + iterationBlock?.label + ', ' + body?.label }
 	static def dispatch String getLabel(Affectation it) { left?.label + ' = ' + right?.label }
 	static def dispatch String getLabel(If it) { 'if ' + condition?.label }
-	static def dispatch String getLabel(ItemDefinition it) { 'item ' + item?.name + '=' + value?.label }
-	static def dispatch String getLabel(SetDefinition it) { 'set ' + name + '=' + value?.label }
+	static def dispatch String getLabel(ItemSet it) { 'set ' + name + '=' + value?.label }
 	static def dispatch String getLabel(Return it) { 'return ' + expression?.label }
 	static def dispatch String getLabel(Exit it) { 'Exit "' + message + '"'}
 
 	/* ITERATEURS ********************************************/
-	static def dispatch String getLabel(SpaceIterator it) { item?.name + '\u2208 ' + container?.label }
-	static def dispatch String getLabel(SingletonDefinition it) { item?.name + '=' + value?.label }
+	static def dispatch String getLabel(SpaceIterator it) { name + '\u2208 ' + container?.label }
 	static def dispatch String getLabel(Interval it) { index?.name + '\u2208' + nbElems?.label }
-	static def dispatch String getLabel(SetRef it) { target?.name }
-	static def dispatch String getLabel(MultipleConnectivityCall it) { connectivity?.name + '(' + args?.map[label].join(',') + ')' }
-	static def dispatch String getLabel(SingleConnectivityCall it) { connectivity?.name + '(' + args?.map[label].join(',') + ')' }
-	static def dispatch String getLabel(ItemRef it) 
+	static def dispatch String getLabel(ItemSetRef it) { target?.name }
+	static def dispatch String getLabel(ConnectivityCall it) { connectivity?.name + '(' + args?.map[label].join(',') + ')' }
+	static def dispatch String getLabel(SpaceIteratorRef it) 
 	{ 
 		if (inc > 0) target?.name + '+' + inc
 		else if (dec > 0) target?.name + '-' + dec

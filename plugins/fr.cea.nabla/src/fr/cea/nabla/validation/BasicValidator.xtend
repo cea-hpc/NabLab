@@ -11,7 +11,7 @@ package fr.cea.nabla.validation
 
 import com.google.inject.Inject
 import fr.cea.nabla.ExpressionExtensions
-import fr.cea.nabla.ItemExtensions
+import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityCall
@@ -19,11 +19,10 @@ import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.Interval
-import fr.cea.nabla.nabla.ItemRef
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.NextTimeIteratorRef
-import fr.cea.nabla.nabla.SpaceIterator
+import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.NSTIntScalar
@@ -31,13 +30,11 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
 
-import static extension fr.cea.nabla.ConnectivityCallExtensions.*
-
 // Caution: OptDefinition validation with InstructionValidator
 class BasicValidator extends UnusedValidator
 {
 	@Inject extension ValidationUtils
-	@Inject extension ItemExtensions
+	@Inject extension SpaceIteratorExtensions
 	@Inject extension ExpressionExtensions
 	@Inject extension ExpressionTypeProvider
 
@@ -185,13 +182,13 @@ class BasicValidator extends UnusedValidator
 
 	public static val SHIFT_VALIDITY = "Items::ShiftValidity"
 
-	static def getShiftValidityMsg() { "Shift only valid for an iteration on a connectivity set" }
+	static def getShiftValidityMsg() { "Shift invalid on a singleton set" }
 
 	@Check(CheckType.NORMAL)
-	def checkShiftValidity(ItemRef it)
+	def checkShiftValidity(SpaceIteratorRef it)
 	{
-		if ((inc>0 || dec>0) && target !== null && !(target.eContainer instanceof SpaceIterator))
-			error(getShiftValidityMsg(), NablaPackage.Literals::ITEM_REF__TARGET, SHIFT_VALIDITY)
+		if ((inc>0 || dec>0) && target !== null && !(target.multiple))
+			error(getShiftValidityMsg(), NablaPackage.Literals::SPACE_ITERATOR_REF__TARGET, SHIFT_VALIDITY)
 	}
 
 	// ===== Tools to share expression validation                          =====

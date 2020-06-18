@@ -14,7 +14,6 @@ import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Job
-import fr.cea.nabla.nabla.MultipleConnectivity
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
@@ -54,9 +53,9 @@ class ExpressionTypeProviderTest
 
 	itemtypes { node, cell }
 
-	set cells: → {cell};
-	set nodesOfCell: cell → {node};
-	set nodes: → {node};
+	connectivity cells: → {cell};
+	connectivity nodesOfCell: cell → {node};
+	connectivity nodes: → {node};
 
 	def reduceMin, ℝ.MaxValue: ℝ, (a, b) → return a;
 
@@ -143,8 +142,8 @@ class ExpressionTypeProviderTest
 	def void testGetTypeFor() 
 	{
  		val module = model.parse
- 		val cells = module.getConnectivityByName("cells") as MultipleConnectivity
- 		val nodesOfCell = module.getConnectivityByName("nodesOfCell") as MultipleConnectivity
+ 		val cells = module.getConnectivityByName("cells")
+ 		val nodesOfCell = module.getConnectivityByName("nodesOfCell")
 		val updateU = module.getJobByName("UpdateU")
 		val computeV = module.getJobByName("ComputeV")
 		val computeX = module.getJobByName("ComputeX")

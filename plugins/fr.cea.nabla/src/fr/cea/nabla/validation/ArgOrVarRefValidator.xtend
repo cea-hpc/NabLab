@@ -10,7 +10,7 @@
 package fr.cea.nabla.validation
 
 import com.google.inject.Inject
-import fr.cea.nabla.ItemExtensions
+import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.NablaModule
@@ -25,8 +25,8 @@ import org.eclipse.xtext.validation.CheckType
 class ArgOrVarRefValidator extends InstructionValidator
 {
 	@Inject extension ValidationUtils
-	@Inject extension ItemExtensions
 	@Inject extension ArgOrVarTypeProvider
+	@Inject extension SpaceIteratorExtensions
 
 	public static val INDICES_NUMBER = "ArgOrVarRef::IndicesNumber"
 	public static val SPACE_ITERATOR_NUMBER = "ArgOrVarRef::SpaceIteratorNumber"

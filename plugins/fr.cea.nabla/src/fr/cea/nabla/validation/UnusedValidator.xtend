@@ -17,15 +17,15 @@ import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
-import fr.cea.nabla.nabla.Item
-import fr.cea.nabla.nabla.ItemRef
+import fr.cea.nabla.nabla.ItemSet
+import fr.cea.nabla.nabla.ItemSetRef
 import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.nabla.SetDefinition
-import fr.cea.nabla.nabla.SetRef
+import fr.cea.nabla.nabla.SpaceIterator
+import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorRef
 import fr.cea.nabla.nabla.Var
@@ -34,8 +34,6 @@ import org.eclipse.emf.ecore.EClass
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
-
-import static extension fr.cea.nabla.ConnectivityCallExtensions.*
 
 class UnusedValidator extends UniqueNameValidator
 {
@@ -89,21 +87,21 @@ class UnusedValidator extends UniqueNameValidator
 	}
 
 	@Check(CheckType.NORMAL)
-	def checkUnusedItem(Item it)
+	def checkUnusedSpaceIterator(SpaceIterator it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
-		val referenced = EcoreUtil2.getAllContentsOfType(m, ItemRef).exists[x|x.target === it]
+		val referenced = EcoreUtil2.getAllContentsOfType(m, SpaceIteratorRef).exists[x|x.target === it]
 		if (!referenced)
-			warning(getUnusedMsg(NablaPackage.Literals.ITEM, name), NablaPackage.Literals::ITEM__NAME, UNUSED)
+			warning(getUnusedMsg(NablaPackage.Literals.SPACE_ITERATOR, name), NablaPackage.Literals::SPACE_ITERATOR__NAME, UNUSED)
 	}
 
 	@Check(CheckType.NORMAL)
-	def checkUnusedSet(SetDefinition it)
+	def checkUnusedItemSet(ItemSet it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
-		val referenced = EcoreUtil2.getAllContentsOfType(m, SetRef).exists[x|x.target === it]
+		val referenced = EcoreUtil2.getAllContentsOfType(m, ItemSetRef).exists[x|x.target === it]
 		if (!referenced)
-			warning(getUnusedMsg(NablaPackage.Literals.SET_DEFINITION, name), NablaPackage.Literals::SET_DEFINITION__NAME, UNUSED)
+			warning(getUnusedMsg(NablaPackage.Literals.ITEM_SET, name), NablaPackage.Literals::ITEM_SET__NAME, UNUSED)
 	}
 
 	@Check(CheckType.NORMAL)

@@ -13,12 +13,11 @@ import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.ItemId
+import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
-import fr.cea.nabla.nabla.Item
-import fr.cea.nabla.nabla.ItemRef
-import fr.cea.nabla.nabla.MultipleConnectivity
-import fr.cea.nabla.nabla.SetRef
+import fr.cea.nabla.nabla.ItemSetRef
 import fr.cea.nabla.nabla.SpaceIterator
+import fr.cea.nabla.nabla.SpaceIteratorRef
 import java.util.List
 
 import static extension fr.cea.nabla.UniqueNameHelper.*
@@ -35,8 +34,8 @@ class IrItemIndexFactory
 
 	def toIrIndex(SpaceIterator si)
 	{
-		val name = si.item.name + si.container.uniqueName.toFirstUpper
-		createItemIndex(name, si.item, si.container.dependentItems)
+		val name = si.name + si.container.uniqueName.toFirstUpper
+		createItemIndex(name, si, si.container.dependentItems)
 	}
 
 	def toIrIndexValue(IndexInfo info, ItemId id)
@@ -57,19 +56,19 @@ class IrItemIndexFactory
 	 * send during the creation of the index. Then Xtend creates the
 	 * index.
 	 */
-	private def create IrFactory::eINSTANCE.createItemIndex createItemIndex(String indexName, Item item, DependentItemList dependantItems)
+	private def create IrFactory::eINSTANCE.createItemIndex createItemIndex(String indexName, SpaceIterator si, DependentItemList dependantItems)
 	{
 		name = indexName
-		itemName = item.name
+		itemName = si.name
 	}
 
-	private def create IrFactory::eINSTANCE.createItemIndexValue createItemIndexValue(ItemId _id, MultipleConnectivity _container, List<ItemRef> _args)
+	private def create IrFactory::eINSTANCE.createItemIndexValue createItemIndexValue(ItemId _id, Connectivity _container, List<SpaceIteratorRef> _args)
 	{
 		id = _id
 		container = toIrConnectivityCall(_container, _args)
 	}
 
-	private def dispatch getDependentItems(SetRef it)
+	private def dispatch getDependentItems(ItemSetRef it)
 	{
 		new DependentItemList(target.value.args.map[target])
 	}

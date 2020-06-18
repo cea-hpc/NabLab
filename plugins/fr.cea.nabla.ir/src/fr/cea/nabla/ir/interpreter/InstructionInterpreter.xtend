@@ -10,13 +10,14 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Exit
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.Interval
 import fr.cea.nabla.ir.ir.ItemIdDefinition
-import fr.cea.nabla.ir.ir.ItemIdValueCall
+import fr.cea.nabla.ir.ir.ItemIdValueContainer
 import fr.cea.nabla.ir.ir.ItemIdValueIterator
 import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.Iterator
@@ -24,6 +25,7 @@ import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
+import fr.cea.nabla.ir.ir.SetRef
 import fr.cea.nabla.ir.ir.VariableDefinition
 import fr.cea.nabla.ir.ir.While
 import java.util.Arrays
@@ -192,7 +194,9 @@ class InstructionInterpreter
 	static def NablaValue interpreteSetDefinition(SetDefinition it, Context context)
 	{
 		context.logFinest("Interprete Return")
-		context.addSetValue(name, value)
+		if (value.connectivity.multiple)
+			context.addSetValue(name, value)
+		// else nothing to do for singleton
 		return null
 	}
 
@@ -220,9 +224,14 @@ class InstructionInterpreter
 		throw new RuntimeException(message)
 	}
 
-	private static dispatch def getIdValue(ItemIdValueCall it, Context context)
+	private static dispatch def getIdValue(ItemIdValueContainer it, Context context)
 	{
-		context.getSingleton(call)
+		val c = container
+		switch c
+		{
+			ConnectivityCall: context.getSingleton(c)
+			SetRef: context.getSingleton(c.target.value)
+		}
 	}
 
 	private static dispatch def getIdValue(ItemIdValueIterator it, Context context)

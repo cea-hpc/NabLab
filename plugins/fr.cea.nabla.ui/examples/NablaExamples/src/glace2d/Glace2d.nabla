@@ -13,13 +13,13 @@ with Math.*;
 
 itemtypes { node, cell, face }
 
-set nodes: → {node};
-set cells: → {cell};
-set outerFaces: → {face};
-set innerNodes: → {node};
-set nodesOfCell: cell → {node};
-set cellsOfNode: node → {cell};
-set nodesOfFace: face → {node};
+connectivity nodes: → {node};
+connectivity cells: → {cell};
+connectivity outerFaces: → {face};
+connectivity innerNodes: → {node};
+connectivity nodesOfCell: cell → {node};
+connectivity cellsOfNode: node → {cell};
+connectivity nodesOfFace: face → {node};
 
 // Only for 2D vectors
 def perp: ℝ[2] → ℝ[2], (a) → return [ a[1], -a[0] ];

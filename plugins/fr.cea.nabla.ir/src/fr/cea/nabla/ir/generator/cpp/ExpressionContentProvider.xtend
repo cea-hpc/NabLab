@@ -100,7 +100,12 @@ class ExpressionContentProvider
 	'''{«innerContent»}'''
 
 	def dispatch CharSequence getContent(Cardinality it)
-	'''«container.uniqueName».size()'''
+	{
+		if (container.connectivity.multiple)
+			'''«container.uniqueName».size()'''
+		else
+			'''1'''
+	}
 
 	def dispatch CharSequence getContent(FunctionCall it)
 	{

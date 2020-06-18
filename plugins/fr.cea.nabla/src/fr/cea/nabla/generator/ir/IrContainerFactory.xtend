@@ -12,13 +12,11 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.Connectivity
-import fr.cea.nabla.nabla.ItemRef
-import java.util.List
-
-import static extension fr.cea.nabla.ConnectivityCallExtensions.*
-import fr.cea.nabla.nabla.Container
 import fr.cea.nabla.nabla.ConnectivityCall
-import fr.cea.nabla.nabla.SetRef
+import fr.cea.nabla.nabla.Container
+import fr.cea.nabla.nabla.ItemSetRef
+import fr.cea.nabla.nabla.SpaceIteratorRef
+import java.util.List
 
 class IrContainerFactory
 {
@@ -33,7 +31,7 @@ class IrContainerFactory
 		switch c
 		{
 			ConnectivityCall: toIrConnectivityCall(c)
-			SetRef: IrFactory::eINSTANCE.createSetRef => [ target = c.target.toIrSetDefinition ]
+			ItemSetRef: IrFactory::eINSTANCE.createSetRef => [ target = c.target.toIrSetDefinition ]
 		}
 	}
 
@@ -43,7 +41,7 @@ class IrContainerFactory
 		toIrConnectivityCall(cc.connectivity, cc.args)
 	}
 
-	def fr.cea.nabla.ir.ir.ConnectivityCall toIrConnectivityCall(Connectivity c, List<ItemRef> largs)
+	def fr.cea.nabla.ir.ir.ConnectivityCall toIrConnectivityCall(Connectivity c, List<SpaceIteratorRef> largs)
 	{
 		IrFactory::eINSTANCE.createConnectivityCall =>
 		[

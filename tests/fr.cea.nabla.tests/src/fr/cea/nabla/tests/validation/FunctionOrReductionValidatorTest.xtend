@@ -214,7 +214,7 @@ class FunctionOrReductionValidatorTest
 		module Test;
 
 		itemtypes { node }
-		set nodes: → {node};
+		connectivity nodes: → {node};
 
 		def f: ℝ → ℝ, (a) → { return 1; }
 		def g: ℝ → ℝ, (a) → { return 1.0; }

@@ -147,7 +147,8 @@ public final class HeatEquation
 					final int j2Cells = j2Id;
 					final int cfId = mesh.getCommonFace(j1Id, j2Id);
 					final int cfFaces = cfId;
-					reduction0 = sumR0(reduction0, (u_n[j2Cells] - u_n[j1Cells]) / norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
+					double reduction1 = (u_n[j2Cells] - u_n[j1Cells]) / norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces];
+					reduction0 = sumR0(reduction0, reduction1);
 				}
 			}
 			outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction0;

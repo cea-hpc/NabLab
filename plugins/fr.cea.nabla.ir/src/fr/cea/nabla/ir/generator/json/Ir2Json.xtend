@@ -17,6 +17,7 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.transformers.TagOutputVariables
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
+import fr.cea.nabla.ir.Utils
 
 class Ir2Json extends CodeGenerator 
 {
@@ -38,11 +39,13 @@ class Ir2Json extends CodeGenerator
 		// Create Json
 		'''
 		{
-			"_comment": "Generated file - Do not overwrite"«IF !options.empty»,«ENDIF»
+			"_comment": "Generated file - Do not overwrite"
 			«IF postProcessingInfo !== null»
-			"_outputPath_comment":"empty outputPath to disabled output",
-			"«TagOutputVariables.OutputPathNameAndValue.key»":"«TagOutputVariables.OutputPathNameAndValue.value»"«IF !options.empty»,«ENDIF»
+			"_outputPath_comment":"empty outputPath to disable output",
+			"«TagOutputVariables.OutputPathNameAndValue.key»":"«TagOutputVariables.OutputPathNameAndValue.value»"
 			«ENDIF»
+			"_nonRegression_comment":"empty value to disable, CreateReference or CompareToReference to take action",
+			"«Utils.NonRegressionNameAndValue.key»":"«Utils.NonRegressionNameAndValue.value»"«IF !options.empty»,«ENDIF»
 			«FOR o : options SEPARATOR ","»
 			"«o.name»":«getValue(o, context).content»
 			«ENDFOR»

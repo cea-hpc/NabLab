@@ -16,6 +16,8 @@ import org.eclipse.emf.ecore.EObject
 
 class Utils 
 {
+	public static val NonRegressionNameAndValue = new Pair<String, String>("nonRegression", "")
+	
 	static def IrModule getIrModule(EObject o)
 	{
 		if (o === null) null

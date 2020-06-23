@@ -13,6 +13,7 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.MandatoryOptions
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import fr.cea.nabla.ir.Utils
 
 class MainContentProvider 
 {
@@ -37,6 +38,17 @@ class MainContentProvider
 		«ENDIF»
 		auto c = new «name»(o«IF withMesh», nm«ENDIF»);
 		c->simulate();
+		
+		«val nrName = Utils.NonRegressionNameAndValue.key»
+		// Non regression testing
+		if (o->«nrName» == "CreateReference")
+		  c->createDB("«name»DB.ref");
+		if (o->«nrName» == "CompareToReference") {
+			c->createDB("«name»DB.current");
+			compareDB("«name»DB.current", "«name»DB.ref");
+			leveldb::DestroyDB("«name»DB.current", leveldb::Options());
+		}
+		
 		delete c;
 		«IF withMesh»
 		delete nm;

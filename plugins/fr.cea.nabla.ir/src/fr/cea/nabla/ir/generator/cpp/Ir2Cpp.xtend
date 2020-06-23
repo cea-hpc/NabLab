@@ -25,6 +25,7 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
+import fr.cea.nabla.ir.Utils
 
 class Ir2Cpp extends CodeGenerator
 {
@@ -91,6 +92,7 @@ class Ir2Cpp extends CodeGenerator
 		struct Options
 		{
 			«IF postProcessingInfo !== null»std::string «TagOutputVariables.OutputPathNameAndValue.key»;«ENDIF»
+			std::string «Utils.NonRegressionNameAndValue.key»;
 			«FOR v : definitions.filter[option]»
 			«v.cppType» «v.name»;
 			«ENDFOR»
@@ -109,6 +111,8 @@ class Ir2Cpp extends CodeGenerator
 		«IF postProcessingInfo !== null»
 
 		void dumpVariables(int iteration);
+		
+		void createDB(const std::string db_name&);
 		«ENDIF»
 
 	public:
@@ -148,6 +152,12 @@ class Ir2Cpp extends CodeGenerator
 		assert(valueof_«opName».IsString());
 		«opName» = valueof_«opName».GetString();
 		«ENDIF»
+		// Non regression
+		«val nrName = Utils.NonRegressionNameAndValue.key»
+		assert(d.HasMember("«nrName»"));
+		const rapidjson::Value& valueof_«nrName» = d["«nrName»"];
+		assert(valueof_«nrName».IsString());
+		«nrName» = valueof_«nrName».GetString();
 		«FOR v : definitions.filter[option]»
 		«v.jsonContent»
 		«ENDFOR»
@@ -226,6 +236,26 @@ class Ir2Cpp extends CodeGenerator
 		}
 	}
 	«ENDIF»
+	
+	void «name»::createDB(const std::string& db_name)
+	{
+		// Creating data base
+		leveldb::DB* db;
+		leveldb::Options options;
+		options.create_if_missing = true;
+		leveldb::Status status = leveldb::DB::Open(options, db_name, &db);
+		assert(status.ok());
+		// Batch to write all data at once
+		leveldb::WriteBatch batch;
+		«FOR v : declarations»
+		batch.Put("«v.name»", nablalib::serialize(«v.name»));
+		«ENDFOR»
+		status = db->Write(leveldb::WriteOptions(), &batch);
+		// Checking everything was ok
+		assert(status.ok());
+		// Freeing memory
+		delete db;
+	}
 
 	void «name»::simulate()
 	{
@@ -237,6 +267,39 @@ class Ir2Cpp extends CodeGenerator
 		«IF linearAlgebra && mainTimeLoop !== null»«backend.traceContentProvider.getCGInfoTrace(mainTimeLoop.iterationCounter.name)»«ENDIF»
 	}
 
+	/******************** Non regression testing ********************/
+	
+	bool compareDB(const std::string& current, const std::string& ref)
+	{
+		// Final result
+		bool result = true;
+		
+		// Loading ref DB
+		leveldb::DB* db_ref;
+		leveldb::Options options_ref;
+		options_ref.create_if_missing = false;
+		status = leveldb::DB::Open(options_ref, ref, &db_ref);
+		assert(status.ok());
+		
+		// Loading current DB
+		leveldb::DB* db;
+		leveldb::Options options;
+		options.create_if_missing = false;
+		leveldb::Status status = leveldb::DB::Open(options, current, &db);
+		assert(status.ok());
+		
+		// Results comparison
+		std::cout << "# Compairing results ..." << std::endl;
+		leveldb::Iterator* it_ref = db_ref->NewIterator(leveldb::ReadOptions());
+		for (it_ref->SeekToFirst(), it->SeekToFirst(); it_ref->Valid() && it->Valid(); it_ref->Next(), it->Next()) {
+			assert(it_ref->key().ToString() == it->key().ToString());
+			std::cout << it->key().ToString() << ": " << (it_ref->value().ToString()==it->value().ToString()?"OK":"ERROR") << std::endl;
+			if (it_ref->value().ToString() != it->value().ToString())
+				result = false;
+		}
+		
+		return result;
+	}
 
 	/******************** Module definition ********************/
 

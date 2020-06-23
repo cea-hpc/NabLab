@@ -18,7 +18,7 @@ namespace nablalib {
  * Collection of free functions to serialize variables build over STL backend into strings.
  * Values are space separated.
  */
- 
+
 std::string serialize(const SparseMatrixType& M) {
   std::stringstream ss;
   for (auto i(0); i < M.numRows(); ++i) {

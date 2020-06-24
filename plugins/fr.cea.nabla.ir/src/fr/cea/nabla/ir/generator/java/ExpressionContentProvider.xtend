@@ -92,7 +92,12 @@ class ExpressionContentProvider
 	'''new «type.javaType» «FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
 
 	static def dispatch CharSequence getContent(Cardinality it)
-	'''«container.uniqueName».length'''
+	{
+		if (container.connectivity.multiple)
+			'''«container.uniqueName».length'''
+		else
+			'''1'''
+	}
 
 	static def dispatch CharSequence getContent(FunctionCall it) 
 	'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''

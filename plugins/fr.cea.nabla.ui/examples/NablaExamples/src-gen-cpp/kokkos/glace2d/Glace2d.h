@@ -96,7 +96,7 @@ private:
 	// Mesh (can depend on previous definitions)
 	CartesianMesh2D* mesh;
 	PvdFileWriter2D writer;
-	size_t nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
+	size_t nbNodes, nbCells, nbOuterFaces, nbInnerNodes, nbNodesOfCell, nbCellsOfNode, nbNodesOfFace;
 	
 	// Global declarations
 	int n;

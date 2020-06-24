@@ -25,7 +25,6 @@ import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.IntConstant
-import fr.cea.nabla.nabla.ItemRef
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
@@ -39,6 +38,7 @@ import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVar
+import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VectorConstant
@@ -64,24 +64,24 @@ class ExpressionTypeProvider
 			null
 	}
 
-	def dispatch NablaType getTypeFor(ContractedIf it) { then.typeFor }
+	def dispatch NablaType getTypeFor(ContractedIf it) { then?.typeFor }
 	def dispatch NablaType getTypeFor(Or it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(And it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(Equality it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(Comparison it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(Plus it) { getTypeFor(left, right, op) }
 	def dispatch NablaType getTypeFor(Minus it) { getTypeFor(left, right, op) }
-	def dispatch NablaType getTypeFor(Mul it)  { getTypeFor(left, right, op) }
-	def dispatch NablaType getTypeFor(Div it)  { getTypeFor(left, right, op) }
-	def dispatch NablaType getTypeFor(Modulo it)  { new NSTIntScalar }
+	def dispatch NablaType getTypeFor(Mul it) { getTypeFor(left, right, op) }
+	def dispatch NablaType getTypeFor(Div it) { getTypeFor(left, right, op) }
+	def dispatch NablaType getTypeFor(Modulo it) { new NSTIntScalar }
 	def dispatch NablaType getTypeFor(Parenthesis it) { expression?.typeFor }
 	def dispatch NablaType getTypeFor(UnaryMinus it) { expression?.typeFor }
 	def dispatch NablaType getTypeFor(Not it) { expression?.typeFor }
 	def dispatch NablaType getTypeFor(IntConstant it) { new NSTIntScalar }
 	def dispatch NablaType getTypeFor(RealConstant it) { new NSTRealScalar }
 	def dispatch NablaType getTypeFor(BoolConstant it)  { new NSTBoolScalar }
-	def dispatch NablaType getTypeFor(MinConstant it) { type.typeFor }
-	def dispatch NablaType getTypeFor(MaxConstant it) { type.typeFor }
+	def dispatch NablaType getTypeFor(MinConstant it) { type?.typeFor }
+	def dispatch NablaType getTypeFor(MaxConstant it) { type?.typeFor }
 
 	def dispatch NablaType getTypeFor(FunctionCall it)
 	{
@@ -99,7 +99,7 @@ class ExpressionTypeProvider
 
 	def dispatch NablaType getTypeFor(BaseTypeConstant it)
 	{
-		type.typeFor
+		type?.typeFor
 	}
 
 	def dispatch NablaType getTypeFor(VectorConstant it)
@@ -120,7 +120,6 @@ class ExpressionTypeProvider
 		}
 		else
 			null
-		
 	}
 
 	def dispatch NablaType getTypeFor(Cardinality it) { new NSTIntScalar }
@@ -131,7 +130,7 @@ class ExpressionTypeProvider
 		else getTypeForVar(target, spaceIterators, indices.size)
 	}
 
-	private def dispatch NablaType getTypeForVar(SimpleVar v, List<ItemRef> spaceIterators, int nbIndices)
+	private def dispatch NablaType getTypeForVar(SimpleVar v, List<SpaceIteratorRef> spaceIterators, int nbIndices)
 	{
 		if (spaceIterators.empty)
 		{
@@ -141,13 +140,13 @@ class ExpressionTypeProvider
 		else null
 	}
 
-	private def dispatch NablaType getTypeForVar(TimeIterator v, List<ItemRef> spaceIterators, int nbIndices)
+	private def dispatch NablaType getTypeForVar(TimeIterator v, List<SpaceIteratorRef> spaceIterators, int nbIndices)
 	{
 		if (spaceIterators.empty && nbIndices==0) v.typeFor
 		else null
 	}
 
-	private def dispatch NablaType getTypeForVar(ConnectivityVar v, List<ItemRef> spaceIterators, int nbIndices)
+	private def dispatch NablaType getTypeForVar(ConnectivityVar v, List<SpaceIteratorRef> spaceIterators, int nbIndices)
 	{
 		if (spaceIterators.empty)
 			if (nbIndices== 0) v.typeFor
@@ -161,7 +160,7 @@ class ExpressionTypeProvider
 		}
 	}
 
-	private def dispatch NablaType getTypeForVar(Arg v, List<ItemRef> spaceIterators, int nbIndices)
+	private def dispatch NablaType getTypeForVar(Arg v, List<SpaceIteratorRef> spaceIterators, int nbIndices)
 	{
 		if (spaceIterators.empty)
 		{

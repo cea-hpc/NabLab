@@ -17,6 +17,7 @@ import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
 import fr.cea.nabla.validation.BasicValidator
+import fr.cea.nabla.validation.ValidationUtils
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -30,6 +31,7 @@ import org.junit.runner.RunWith
 class BasicValidatorTest
 {
 	@Inject ParseHelper<NablaModule> parseHelper
+	@Inject extension ValidationUtils
 	@Inject extension TestUtils
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
@@ -48,7 +50,6 @@ class BasicValidatorTest
 				return 4.0;
 			}
 			'''))
-
 		moduleKo.assertError(NablaPackage.eINSTANCE.interval,
 			BasicValidator::ZERO_FROM,
 			BasicValidator::getZeroFromMsg())
@@ -69,7 +70,7 @@ class BasicValidatorTest
 	@Test
 	def void testCheckNbElems()
 	{
-		val moduleKo1 = parseHelper.parse(getTestModule( '',
+		val moduleKo1 = parseHelper.parse(getTestModule('',
 			'''
 			def g: → ℝ, () →
 			{
@@ -78,16 +79,15 @@ class BasicValidatorTest
 				return 4.0;
 			}
 			'''))
-
 		moduleKo1.assertError(NablaPackage.eINSTANCE.interval,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
-			BasicValidator::getTypeExpressionMsg("ℝ"))
+			getTypeMsg("ℝ", "ℕ"))
 
-		val moduleKo2 = parseHelper.parse(getTestModule( '',
+		val moduleKo2 = parseHelper.parse(getTestModule('',
 			'''
 			def g: → ℝ, () →
 			{
-				let x = 6.7
+				let ℝ x = 6.7;
 				ℝ[4] n;
 				∀ i∈[0;x[, n[i] = 0.0;
 				return 4.0;
@@ -96,7 +96,7 @@ class BasicValidatorTest
 
 		moduleKo2.assertError(NablaPackage.eINSTANCE.interval,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
-			BasicValidator::getTypeExpressionMsg("ℝ"))
+			getTypeMsg("ℝ", "ℕ"))
 
 		val moduleOk = parseHelper.parse(getTestModule( '',
 			'''
@@ -214,17 +214,27 @@ class BasicValidatorTest
 	@Test
 	def testCheckConditionConstraints()
 	{
-		val moduleKo = parseHelper.parse(testModule +
+		val moduleKo1 = parseHelper.parse(testModule +
 			'''
 				ℝ[3] x;
 				iterate n while(∑{x∈[0;3[}(x[i]]));
 			'''
 		)
-		Assert.assertNotNull(moduleKo)
-
-		moduleKo.assertError(NablaPackage.eINSTANCE.timeIterator,
+		Assert.assertNotNull(moduleKo1)
+		moduleKo1.assertError(NablaPackage.eINSTANCE.timeIterator,
 			BasicValidator::CONDITION_CONSTRAINTS,
 			BasicValidator::getConditionConstraintsMsg())
+
+		val moduleKo2 = parseHelper.parse(testModule +
+			'''
+				ℝ[3] x;
+				iterate n while(x[0]);
+			'''
+		)
+		Assert.assertNotNull(moduleKo2)
+		moduleKo2.assertError(NablaPackage.eINSTANCE.timeIterator,
+			BasicValidator::CONDITION_BOOL,
+			getTypeMsg("ℝ", "ℾ"))
 
 		val moduleOk = parseHelper.parse(testModule +
 			'''
@@ -266,7 +276,7 @@ class BasicValidatorTest
 	{
 		val moduleKo = parseHelper.parse(testModule +
 			'''
-			let x = 2.2;
+			let ℝ x = 2.2;
 			ℝ[1.1] a;
 			ℕ[x] b;
 			'''
@@ -275,15 +285,15 @@ class BasicValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseType,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
-			BasicValidator::getTypeExpressionMsg("ℝ"))
+			getTypeMsg("ℝ", "ℕ"))
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseType,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
-			BasicValidator::getTypeExpressionMsg("ℝ"))
+			getTypeMsg("ℝ", "ℕ"))
 
 		val moduleOk = parseHelper.parse(testModule +
 			'''
-			let x = 2;
+			let ℕ x = 2;
 			ℝ[2] a;
 			ℕ[x] b;
 			'''
@@ -316,11 +326,11 @@ class BasicValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityCall,
 			BasicValidator::CONNECTIVITY_CALL_TYPE,
-			BasicValidator::getConnectivityCallTypeMsg(cell,node))
+			getTypeMsg(cell, node))
 
 		val moduleOk =  parseHelper.parse(getTestModule(defaultConnectivities, '') +
 			'''
-			let orig = [0.0 , 0.0] ;
+			let ℝ[2] orig = [0.0 , 0.0] ;
 			ℝ[2] X{nodes};
 			IniX1: ∀j∈cells(), ∀r∈nodes(), X{r} = orig; 
 			IniX2: ∀j∈cells(), ∀r∈nodesOfCell(j), X{r} = orig; 
@@ -360,20 +370,20 @@ class BasicValidatorTest
 		val connectivities =
 			'''
 			itemtypes { node }
-			set nodes: → {node};
-			item leftNode: node → node;
+			connectivity nodes: → {node};
+			connectivity leftNode: node → node;
 			'''
 
 		val moduleKo = parseHelper.parse(getTestModule(connectivities, '')
 			+
 			'''
 			ℝ[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), r2 = leftNode(r1), X{r2} = X{r2-1} - 1;
+			UpdateX: ∀r1∈nodes(), ∀r2∈leftNode(r1), X{r2} = X{r2-1} - 1;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.itemRef,
+		moduleKo.assertError(NablaPackage.eINSTANCE.spaceIteratorRef,
 			BasicValidator::SHIFT_VALIDITY,
 			BasicValidator::getShiftValidityMsg)
 
@@ -381,7 +391,7 @@ class BasicValidatorTest
 			+
 			'''
 			ℝ[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), r2 = leftNode(r1), X{r2} = X{r1-1} - 1;
+			UpdateX: ∀r1∈nodes(), ∀r2∈leftNode(r1), X{r2} = X{r1-1} - 1;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

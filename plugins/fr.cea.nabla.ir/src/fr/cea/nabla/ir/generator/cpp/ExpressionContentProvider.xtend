@@ -18,8 +18,10 @@ import fr.cea.nabla.ir.ir.Cardinality
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.Expression
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
+import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
@@ -33,7 +35,6 @@ import org.eclipse.xtend.lib.annotations.Data
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import fr.cea.nabla.ir.ir.Function
 
 @Data
 class ExpressionContentProvider
@@ -100,7 +101,12 @@ class ExpressionContentProvider
 	'''{«innerContent»}'''
 
 	def dispatch CharSequence getContent(Cardinality it)
-	'''«container.uniqueName».size()'''
+	{
+		if (container.connectivity.multiple)
+			'''«container.uniqueName».size()'''
+		else
+			'''1'''
+	}
 
 	def dispatch CharSequence getContent(FunctionCall it)
 	{
@@ -116,7 +122,16 @@ class ExpressionContentProvider
 	}
 
 	def dispatch CharSequence getContent(ArgOrVarRef it)
-	'''«target.codeName»«iteratorsContent»«FOR d:indices BEFORE '['  SEPARATOR '][' AFTER ']'»«d.content»«ENDFOR»'''
+	'''«codeName»«iteratorsContent»«FOR d:indices BEFORE '['  SEPARATOR '][' AFTER ']'»«d.content»«ENDFOR»'''
+
+	private def CharSequence getCodeName(ArgOrVarRef it)
+	{
+		// operator() on matrix must use constant object
+		if (target.matrix && !iterators.empty && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
+			'''std::cref(«target.codeName»)'''
+		else
+			target.codeName
+	}
 
 	def getCodeName(Function it)
 	{

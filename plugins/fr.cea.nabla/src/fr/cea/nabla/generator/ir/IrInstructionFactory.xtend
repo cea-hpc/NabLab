@@ -11,6 +11,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrFactory
@@ -19,26 +20,26 @@ import fr.cea.nabla.nabla.Exit
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InstructionBlock
-import fr.cea.nabla.nabla.ItemDefinition
+import fr.cea.nabla.nabla.ItemSet
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.Return
-import fr.cea.nabla.nabla.SetDefinition
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
+import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.VarGroupDeclaration
+import fr.cea.nabla.nabla.While
 import java.util.ArrayList
 import java.util.List
 
 @Singleton
 class IrInstructionFactory
 {
+	@Inject extension SpaceIteratorExtensions
 	@Inject extension IrArgOrVarFactory
 	@Inject extension IrExpressionFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrReductionInstructionFactory
 	@Inject extension IrIterationBlockFactory
-	@Inject extension IrItemIdDefinitionFactory
-	@Inject extension IrItemIndexDefinitionFactory
 	@Inject extension IrSetDefinitionFactory
 
 	def Instruction toIrInstruction(fr.cea.nabla.nabla.Instruction nablaInstruction)
@@ -85,14 +86,23 @@ class IrInstructionFactory
 
 	private def dispatch List<Instruction> toIrInstructions(Loop v)
 	{
-		val irInstr = IrFactory::eINSTANCE.createLoop =>
-		[
-			annotations += v.toIrAnnotation
-			iterationBlock = v.iterationBlock.toIrIterationBlock
-			body = flatten(v.body.toIrInstruction, v.iterationBlock.neededIndexAndIdDefinitions)
-			multithreadable = true
-		]
-		#[irInstr]
+		if (v.iterationBlock instanceof SpaceIterator && !(v.iterationBlock as SpaceIterator).multiple)
+		{
+			val irInstr = flatten(v.body.toIrInstruction, v.iterationBlock.neededIndexAndIdDefinitions)
+			irInstr.annotations += v.toIrAnnotation
+			#[irInstr]
+		}
+		else
+		{
+			val irInstr = IrFactory::eINSTANCE.createLoop =>
+			[
+				annotations += v.toIrAnnotation
+				iterationBlock = v.iterationBlock.toIrIterationBlock
+				body = flatten(v.body.toIrInstruction, v.iterationBlock.neededIndexAndIdDefinitions)
+				multithreadable = true
+			]
+			#[irInstr]
+		}
 	}
 
 	private def dispatch List<Instruction> toIrInstructions(Affectation v)
@@ -119,17 +129,20 @@ class IrInstructionFactory
 		return irInstr.transformReductions(v.condition)
 	}
 
-	private def dispatch List<Instruction> toIrInstructions(ItemDefinition v)
-	{
-		val instructions = new ArrayList<Instruction>
-		instructions += v.toIrIdDefinition
-		instructions += v.item.neededIndexDefinitions
-		return instructions
-	}
-
-	private def dispatch List<Instruction> toIrInstructions(SetDefinition v)
+	private def dispatch List<Instruction> toIrInstructions(ItemSet v)
 	{
 		#[v.toIrSetDefinition]
+	}
+
+	private def dispatch List<Instruction> toIrInstructions(While v)
+	{
+		val irInstr = IrFactory::eINSTANCE.createWhile =>
+		[
+			annotations += v.toIrAnnotation
+			condition = v.condition.toIrExpression
+			instruction = v.instruction.toIrInstruction
+		]
+		return irInstr.transformReductions(v.condition)
 	}
 
 	private def dispatch List<Instruction> toIrInstructions(Return v)

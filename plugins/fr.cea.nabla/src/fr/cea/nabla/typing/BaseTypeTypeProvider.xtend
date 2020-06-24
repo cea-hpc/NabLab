@@ -15,8 +15,6 @@ import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.PrimitiveType
 
-import static extension fr.cea.nabla.LabelServices.*
-
 class BaseTypeTypeProvider
 {
 	@Inject extension PrimitiveTypeTypeProvider
@@ -36,7 +34,7 @@ class BaseTypeTypeProvider
 				else
 					getArray1DTypeFor(primitive, sizes.get(0))
 			}
-			case 2: 
+			case 2:
 			{
 				val nbRows = sizes.get(0)
 				val nbCols = sizes.get(1)
@@ -45,7 +43,7 @@ class BaseTypeTypeProvider
 				else 
 					getArray2DTypeFor(primitive, nbRows, nbCols)
 			}
-			default: throw new RuntimeException("Unmanaged type")
+			default: null
 		}
 	}
 
@@ -62,8 +60,7 @@ class BaseTypeTypeProvider
 
 	def NablaSimpleType getArray2DTypeFor(PrimitiveType primitive, Expression nbRows, Expression nbCols)
 	{
-		// if the label is null, the expression is not consistent
-		if (nbRows === null || nbCols === null || nbRows.label === null || nbCols.label === null) null
+		if (nbRows === null || nbCols === null) null
 		else switch primitive
 		{
 			case INT: new NSTIntArray2D(nbRows, nbCols)

@@ -13,7 +13,7 @@ import fr.cea.nabla.typing.NSTBoolScalar
 import fr.cea.nabla.typing.NSTIntScalar
 import fr.cea.nabla.typing.NablaType
 
-class ValidationUtils 
+class ValidationUtils
 {
 	public static val BOOL = new NSTBoolScalar
 	public static val INT = new NSTIntScalar
@@ -23,4 +23,6 @@ class ValidationUtils
 		// si un des 2 types est indéfini, il ne faut rien vérifier pour éviter les erreurs multiples due à la récursion
 		return (actualType === null || expectedType === null || actualType == expectedType)
 	}
+
+	def getTypeMsg(String actualType, String expectedType) { "Expected " + expectedType + " type, but was " + actualType }
 }

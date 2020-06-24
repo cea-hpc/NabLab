@@ -45,10 +45,10 @@ class ArgOrVarExtensions
 			Function: 
 			{
 				val i = fOrR.inArgs.indexOf(it)
-				fOrR.inTypes.get(i)
+				fOrR.typeDeclaration.inTypes.get(i)
 			}
 			Reduction:
-				fOrR.type
+				fOrR.typeDeclaration.type
 		}
 	}
 

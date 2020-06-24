@@ -16,6 +16,7 @@ import fr.cea.nabla.generator.ir.Nabla2Ir
 import fr.cea.nabla.ir.generator.cpp.Ir2Cpp
 import fr.cea.nabla.ir.generator.cpp.KokkosBackend
 import fr.cea.nabla.ir.generator.cpp.KokkosTeamThreadBackend
+import fr.cea.nabla.ir.generator.cpp.OpenMpBackend
 import fr.cea.nabla.ir.generator.cpp.SequentialBackend
 import fr.cea.nabla.ir.generator.cpp.StlThreadBackend
 import fr.cea.nabla.ir.generator.java.Ir2Java
@@ -186,9 +187,9 @@ class NablagenInterpreter
 			{
 				val backend = switch it
 				{
-					CppSequential: new SequentialBackend(iterationMax , timeMax, compiler.literal, compilerPath)
+					CppSequential: new SequentialBackend(iterationMax, timeMax, compiler.literal, compilerPath)
 					CppStlThread: new StlThreadBackend(iterationMax , timeMax, compiler.literal, compilerPath)
-					CppOpenMP: throw new RuntimeException('Not yet implemented')
+					CppOpenMP:new OpenMpBackend(iterationMax , timeMax, compiler.literal, compilerPath)
 					CppKokkos: new KokkosBackend(iterationMax , timeMax, compiler.literal, compilerPath, kokkosPath)
 					CppKokkosTeamThread: new KokkosTeamThreadBackend(iterationMax , timeMax, compiler.literal, compilerPath, kokkosPath)
 					default: throw new RuntimeException("Unsupported language " + class.name)

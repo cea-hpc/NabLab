@@ -14,32 +14,32 @@ with LinearAlgebra.*;
 
 itemtypes { node, cell, face }
 
-set nodes: → {node};
-set cells: → {cell};
-set faces: → {face};
-set neighbourCells: cell → {cell};
-set nodesOfFace: face → {node};
-set cellsOfFace: face → {cell};
-set nodesOfCell: cell → {node};
-item commonFace: cell × cell → face;
+connectivity nodes: → {node};
+connectivity cells: → {cell};
+connectivity faces: → {face};
+connectivity neighbourCells: cell → {cell};
+connectivity nodesOfFace: face → {node};
+connectivity cellsOfFace: face → {cell};
+connectivity nodesOfCell: cell → {node};
+connectivity commonFace: cell × cell → face;
 
-option u0 = 1.0;
-option vectOne = ℝ[2](1.0);
+option ℝ u0 = 1.0;
+option ℝ[2] vectOne = ℝ[2](1.0);
 
 // Mesh options
-option X_LENGTH = 2.0;
-option Y_LENGTH = 2.0;
-option X_EDGE_ELEMS = 40;
-option Y_EDGE_ELEMS = 40;
-option X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
-option Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
+option ℝ X_LENGTH = 2.0;
+option ℝ Y_LENGTH = 2.0;
+option ℕ X_EDGE_ELEMS = 40;
+option ℕ Y_EDGE_ELEMS = 40;
+option ℝ X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
+option ℝ Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 
 // Simulation options
-option stopTime = 1.0;
-option maxIterations = 500000000;
+option ℝ stopTime = 1.0;
+option ℕ maxIterations = 500000000;
 
-let t=0.0;
-let δt=0.001;
+let ℝ t = 0.0;
+let ℝ δt = 0.001;
 ℝ[2] X{nodes}, Xc{cells}; // Position of nodes and cells center of gravity 
 ℝ xc{cells}, yc{cells}; // Abscissa and ordinate of cells center of gravity so they can be plotted in vtk file
 ℝ u{cells}; // Temperature
@@ -74,9 +74,9 @@ ComputeFaceConductivity: ∀f∈faces(), faceConductivity{f} = 2.0 * ∏{c1∈ce
 
 // Assembling of the diffusion matrix
 ComputeAlphaCoeff: ∀c∈cells(), {
-	let αDiag = 0.0;
-	∀d∈neighbourCells(c), f=commonFace(c,d), {
-		let αExtraDiag = - δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c} - Xc{d});
+	let ℝ αDiag = 0.0;
+	∀d∈neighbourCells(c), ∀f∈commonFace(c,d), {
+		let ℝ αExtraDiag = - δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c} - Xc{d});
 		α{c, d} = αExtraDiag;
 		αDiag = αDiag + αExtraDiag;
 	}

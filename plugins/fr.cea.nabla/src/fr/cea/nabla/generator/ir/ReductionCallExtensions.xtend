@@ -12,22 +12,26 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.nabla.FunctionOrReduction
+import fr.cea.nabla.nabla.Job
+import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.overloading.DeclarationProvider
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
 
 @Singleton	// Must be singleton because contains create methods
 class ReductionCallExtensions 
 {
-	public static val ReductionVariableName = "reduction<NUMBER>"
-
+	@Inject extension IrAnnotationHelper
 	@Inject extension DeclarationProvider
 	@Inject extension NablaType2IrType
 	@Inject extension IrExpressionFactory
 
 	def create IrFactory::eINSTANCE.createSimpleVariable toIrLocalVariable(ReductionCall rc)
 	{
-		name = ReductionVariableName
+		annotations += rc.toIrAnnotation
+		name = "reduction" + rc.number
 		val d = rc.declaration
 		val vType = d.type.toIrBaseType
 		type = vType
@@ -44,5 +48,19 @@ class ReductionCallExtensions
 				type = EcoreUtil::copy(vType)
 				value = seedExpression
 			]
+	}
+
+	private def getNumber(ReductionCall it)
+	{
+		container.eAllContents.filter(ReductionCall).toList.indexOf(it)
+	}
+
+	private def EObject getContainer(EObject o)
+	{
+		switch o
+		{
+			Job, NablaModule, FunctionOrReduction: o
+			default: o.eContainer.container
+		}
 	}
 }

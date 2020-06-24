@@ -15,7 +15,7 @@ import java.util.LinkedHashSet
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
-class IncludesContentProvider
+abstract class IncludesContentProvider
 {
 	protected def Iterable<String> getAdditionalSystemIncludes(IrModule m) { #[] }
 	protected def Iterable<String> getAdditionalUserIncludes(IrModule m) { #[] }
@@ -94,6 +94,33 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 		if (m.withMesh) includes += "mesh/kokkos/PvdFileWriter2D.h"
 		includes += "utils/kokkos/Parallel.h"
 		if (m.linearAlgebra) includes += "linearalgebra/kokkos/LinearAlgebraFunctions.h"
+		return includes
+	}
+}
+
+class SequentialIncludesContentProvider extends IncludesContentProvider
+{
+	override getAdditionalUserIncludes(IrModule m)
+	{
+		val includes = new LinkedHashSet<String>
+		if (m.withMesh) includes += "mesh/stl/PvdFileWriter2D.h"
+		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
+		return includes
+	}
+}
+
+class OpenMpIncludesContentProvider extends IncludesContentProvider
+{
+	override getAdditionalSystemIncludes(IrModule m)
+	{
+		#["omp.h"]
+	}
+
+	override getAdditionalUserIncludes(IrModule m)
+	{
+		val includes = new LinkedHashSet<String>
+		if (m.withMesh) includes += "mesh/stl/PvdFileWriter2D.h"
+		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
 		return includes
 	}
 }

@@ -30,7 +30,7 @@ abstract class AbstractInstructionInterpreterTest
 		+
 		'''
 		ℝ[2] X{nodes};
-		Job1: { let r = 1.0; t = r; }
+		Job1: { let ℝ r = 1.0; t = r; }
 		'''
 		
 		assertInterpreteVarDefinition(model)
@@ -43,7 +43,7 @@ abstract class AbstractInstructionInterpreterTest
 		+
 		'''
 		ℝ[2] X{nodes};
-		Job1: { let r = 1.0; t = r; }
+		Job1: { let ℝ r = 1.0; t = r; }
 		'''
 
 		assertInterpreteInstructionBlock(model)
@@ -56,7 +56,7 @@ abstract class AbstractInstructionInterpreterTest
 		+
 		'''
 		ℝ[2] X{nodes};
-		Job1: { let r = 1.0; t = r; }
+		Job1: { let ℝ r = 1.0; t = r; }
 		'''
 
 		assertInterpreteAffectation(model)
@@ -75,7 +75,7 @@ abstract class AbstractInstructionInterpreterTest
 		InitU : ∀r∈cells(), U{r} = 1.0;
 		ComputeCjr: ∀j∈ cells(), {
 			set rCellsJ = nodesOfCell(j);
-			let cardRCellsJ = card(rCellsJ);
+			let ℕ cardRCellsJ = card(rCellsJ);
 			ℝ[cardRCellsJ] tmp;
 			∀r, countr ∈ rCellsJ, {
 				tmp[countr] = 0.5; // stupid but test countr
@@ -83,8 +83,48 @@ abstract class AbstractInstructionInterpreterTest
 			}
 		}
 		'''
-
 		assertInterpreteLoop(model, xQuads, yQuads)
+	}
+
+	@Test
+	def void testInterpreteIf()
+	{
+		val xQuads = 100
+		val yQuads = 100
+		val model = getTestModule(xQuads, yQuads)
+		+
+		'''
+		ℝ U{cells};
+		ℝ[2] X{nodes};
+		InitU : ∀r, countr ∈ cells(), {
+			if (countr % 2 == 0)
+				U{r} = 0.0;
+			else
+				U{r} = 1.0;
+		}
+		'''
+		assertInterpreteIf(model, xQuads, yQuads)
+	}
+
+	@Test
+	def void testInterpreteWhile()
+	{
+		val xQuads = 100
+		val yQuads = 100
+		val model = getTestModule(xQuads, yQuads)
+		+
+		'''
+		ℝ U{cells};
+		ℝ[2] X{nodes}, C{cells, nodesOfCell};
+		InitU : {
+			let ℕ i = 0;
+			while (i<3) {
+				∀r ∈ cells(), U{r} = 1.0 * i;
+				i = i +1;
+			}
+		}
+		'''
+		assertInterpreteWhile(model, xQuads, yQuads)
 	}
 
 	@Test
@@ -114,8 +154,8 @@ abstract class AbstractInstructionInterpreterTest
 		val model = getTestModule(xQuads, yQuads)
 		+
 		'''
-		let V=100;
-		let W=0;
+		let ℕ V=100;
+		let ℕ W=0;
 		ℝ[2] X{nodes};
 
 		Test : if (V < 100) W = V+1; else exit "V must be less than 100";
@@ -131,6 +171,10 @@ abstract class AbstractInstructionInterpreterTest
 	def void assertInterpreteAffectation(String model)
 
 	def void assertInterpreteLoop(String model, int xQuads, int yQuads)
+
+	def void assertInterpreteIf(String model, int xQuads, int yQuads)
+
+	def void assertInterpreteWhile(String model, int xQuads, int yQuads)
 
 	def void assertInterpreteSetDefinition(String model, int xQuads, int yQuads)
 

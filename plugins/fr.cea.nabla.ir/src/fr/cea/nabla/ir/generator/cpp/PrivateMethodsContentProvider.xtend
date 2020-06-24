@@ -21,14 +21,14 @@ class PrivateMethodsContentProvider
 
 	def getDeclarationContentFor(IrModule it)
 	'''
-		«FOR j : jobs.sortByAtAndName SEPARATOR '\n'»
+		«FOR j : jobs SEPARATOR '\n'»
 			«j.declarationContent»
 		«ENDFOR»
 	'''
 
 	def getDefinitionContentFor(IrModule it)
 	'''
-		«FOR j : jobs.sortByAtAndName SEPARATOR '\n'»
+		«FOR j : jobs SEPARATOR '\n'»
 			«j.definitionContent»
 		«ENDFOR»
 	'''

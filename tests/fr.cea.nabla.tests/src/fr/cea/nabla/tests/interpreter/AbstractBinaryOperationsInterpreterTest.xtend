@@ -29,20 +29,20 @@ abstract class AbstractBinaryOperationsInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		let b1 = true || false; // -> true
-		let b2 = true || true; // -> true
-		let b3 = false || false; // -> false
+		let ℾ b1 = true || false; // -> true
+		let ℾ b2 = true || true; // -> true
+		let ℾ b3 = false || false; // -> false
 
-		let b4 = true && false; // -> false
-		let b5 = true && true; // -> true
-		let b6 = false && false; // -> false
+		let ℾ b4 = true && false; // -> false
+		let ℾ b5 = true && true; // -> true
+		let ℾ b6 = false && false; // -> false
 
-		let b7 = true == false; // -> false
-		let b8 = true != false; // -> true
-		let b9 = true >= false; // -> true
-		let b10 = true <= false; // -> false
-		let b11 = true > false; // -> true
-		let b12 = true < false; // -> false
+		let ℾ b7 = true == false; // -> false
+		let ℾ b8 = true != false; // -> true
+		let ℾ b9 = true >= false; // -> true
+		let ℾ b10 = true <= false; // -> false
+		let ℾ b11 = true > false; // -> true
+		let ℾ b12 = true < false; // -> false
 
 		ℝ[2] X{nodes};
 		'''
@@ -56,30 +56,30 @@ abstract class AbstractBinaryOperationsInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		let b1 = 1 == 2; // -> false
-		let b2 = 1 == 1; // -> true
+		let ℾ b1 = 1 == 2; // -> false
+		let ℾ b2 = 1 == 1; // -> true
 
-		let b3 = 1 != 2; // -> true
-		let b4 = 2 != 2; // -> false
+		let ℾ b3 = 1 != 2; // -> true
+		let ℾ b4 = 2 != 2; // -> false
 
-		let b5 = 1 >= 2; // -> false
-		let b6 = 2 >= 2; // -> true
+		let ℾ b5 = 1 >= 2; // -> false
+		let ℾ b6 = 2 >= 2; // -> true
 
-		let b7 = 1 <= 2; // -> true
-		let b8 = 2 <= 2; // -> true
+		let ℾ b7 = 1 <= 2; // -> true
+		let ℾ b8 = 2 <= 2; // -> true
 
-		let b9 = 1 > 2; // -> false
-		let b10 = 2 > 1; // -> true
+		let ℾ b9 = 1 > 2; // -> false
+		let ℾ b10 = 2 > 1; // -> true
 
-		let b11 = 1 < 2; // -> true
-		let b12 = 2 < 1; // -> false
+		let ℾ b11 = 1 < 2; // -> true
+		let ℾ b12 = 2 < 1; // -> false
 
-		let n1 = 1 + 2; // -> 3
-		let n2 = 2 - 1; // -> 1
-		let n3 = 2 * 3; // -> 6
-		let n4 = 6 / 3; // -> 2
-		let n5 = 7 / 3; // -> 2
-		let n6 = 7 % 3; // -> 1
+		let ℕ n1 = 1 + 2; // -> 3
+		let ℕ n2 = 2 - 1; // -> 1
+		let ℕ n3 = 2 * 3; // -> 6
+		let ℕ n4 = 6 / 3; // -> 2
+		let ℕ n5 = 7 / 3; // -> 2
+		let ℕ n6 = 7 % 3; // -> 1
 
 		ℝ[2] X{nodes};
 		'''
@@ -93,29 +93,29 @@ abstract class AbstractBinaryOperationsInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		let b1 = 1 == 2.; // -> false
-		let b2 = 1 == 1; // -> true
+		let ℾ b1 = 1 == 2.; // -> false
+		let ℾ b2 = 1 == 1; // -> true
 
-		let b3 = 1 != 2.; // -> true
-		let b4 = 2 != 2.; // -> false
+		let ℾ b3 = 1 != 2.; // -> true
+		let ℾ b4 = 2 != 2.; // -> false
 
-		let b5 = 1 >= 2.; // -> false
-		let b6 = 2 >= 2.; // -> true
+		let ℾ b5 = 1 >= 2.; // -> false
+		let ℾ b6 = 2 >= 2.; // -> true
 
-		let b7 = 1 <= 2.; // -> true
-		let b8 = 2 <= 2.; // -> true
+		let ℾ b7 = 1 <= 2.; // -> true
+		let ℾ b8 = 2 <= 2.; // -> true
 
-		let b9 = 1 > 2.; // -> false
-		let b10 = 2 > 1.; // -> true
+		let ℾ b9 = 1 > 2.; // -> false
+		let ℾ b10 = 2 > 1.; // -> true
 
-		let b11 = 1 < 2.; // -> true
-		let b12 = 2 < 1.; // -> false
+		let ℾ b11 = 1 < 2.; // -> true
+		let ℾ b12 = 2 < 1.; // -> false
 
-		let n1 = 1 + 2.; // -> 3.
-		let n2 = 2 - 1.; // -> 1.
-		let n3 = 2 * 3.; // -> 6.
-		let n4 = 6 / 3.; // -> 2.
-		let n5 = 7 / 2.; // -> 3.5.
+		let ℝ n1 = 1 + 2.; // -> 3.
+		let ℝ n2 = 2 - 1.; // -> 1.
+		let ℝ n3 = 2 * 3.; // -> 6.
+		let ℝ n4 = 6 / 3.; // -> 2.
+		let ℝ n5 = 7 / 2.; // -> 3.5.
 
 		ℝ[2] X{nodes};
 		'''
@@ -129,9 +129,9 @@ abstract class AbstractBinaryOperationsInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		let n1 = [1,2];
-		let n2 = 3 + n1;
-		let n3 = 3 * n1;
+		let ℕ[2] n1 = [1,2];
+		let ℕ[2] n2 = 3 + n1;
+		let ℕ[2] n3 = 3 * n1;
 
 		ℝ[2] X{nodes};
 		'''

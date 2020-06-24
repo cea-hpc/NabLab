@@ -144,10 +144,10 @@ ExplicitHeatEquation::ExplicitHeatEquation(const Options& aOptions)
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
 , nbFaces(mesh->getNbFaces())
-, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
 , nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , nbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
-, nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
+, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
 , xc("xc", nbCells)
@@ -213,7 +213,7 @@ void ExplicitHeatEquation::computeFaceLength(const member_type& teamMember) noex
 		{
 			int fFaces(fFacesTeam + teamWork.first);
 			const Id fId(fFaces);
-			double reduction3(0.0);
+			double reduction0(0.0);
 			{
 				const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
 				const size_t nbNodesOfFaceF(nodesOfFaceF.size());
@@ -223,10 +223,10 @@ void ExplicitHeatEquation::computeFaceLength(const member_type& teamMember) noex
 					const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 					const size_t pNodes(pId);
 					const size_t pPlus1Nodes(pPlus1Id);
-					reduction3 = sumR0(reduction3, norm(X(pNodes) - X(pPlus1Nodes)));
+					reduction0 = sumR0(reduction0, norm(X(pNodes) - X(pPlus1Nodes)));
 				}
 			}
-			faceLength(fFaces) = 0.5 * reduction3;
+			faceLength(fFaces) = 0.5 * reduction0;
 		});
 	}
 }
@@ -257,7 +257,7 @@ void ExplicitHeatEquation::computeV(const member_type& teamMember) noexcept
 		{
 			int jCells(jCellsTeam + teamWork.first);
 			const Id jId(jCells);
-			double reduction2(0.0);
+			double reduction0(0.0);
 			{
 				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
@@ -267,10 +267,10 @@ void ExplicitHeatEquation::computeV(const member_type& teamMember) noexcept
 					const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 					const size_t pNodes(pId);
 					const size_t pPlus1Nodes(pPlus1Id);
-					reduction2 = sumR0(reduction2, det(X(pNodes), X(pPlus1Nodes)));
+					reduction0 = sumR0(reduction0, det(X(pNodes), X(pPlus1Nodes)));
 				}
 			}
-			V(jCells) = 0.5 * reduction2;
+			V(jCells) = 0.5 * reduction0;
 		});
 	}
 }
@@ -343,7 +343,7 @@ void ExplicitHeatEquation::updateU(const member_type& teamMember) noexcept
 		{
 			int cCells(cCellsTeam + teamWork.first);
 			const Id cId(cCells);
-			double reduction6(0.0);
+			double reduction0(0.0);
 			{
 				const auto neighbourCellsC(mesh->getNeighbourCells(cId));
 				const size_t nbNeighbourCellsC(neighbourCellsC.size());
@@ -351,10 +351,10 @@ void ExplicitHeatEquation::updateU(const member_type& teamMember) noexcept
 				{
 					const Id dId(neighbourCellsC[dNeighbourCellsC]);
 					const size_t dCells(dId);
-					reduction6 = sumR0(reduction6, alpha(cCells,dCells) * u_n(dCells));
+					reduction0 = sumR0(reduction0, alpha(cCells,dCells) * u_n(dCells));
 				}
 			}
-			u_nplus1(cCells) = alpha(cCells,cCells) * u_n(cCells) + reduction6;
+			u_nplus1(cCells) = alpha(cCells,cCells) * u_n(cCells) + reduction0;
 		});
 	}
 }
@@ -366,12 +366,12 @@ void ExplicitHeatEquation::updateU(const member_type& teamMember) noexcept
  */
 void ExplicitHeatEquation::computeDeltaTn(const member_type& teamMember) noexcept
 {
-	double reduction1;
+	double reduction0;
 	Kokkos::parallel_reduce(Kokkos::TeamThreadRange(teamMember, nbCells), KOKKOS_LAMBDA(const size_t& cCells, double& accu)
 	{
 		accu = minR0(accu, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D(cCells));
-	}, KokkosJoiner<double>(reduction1, numeric_limits<double>::max(), &minR0));
-	deltat = reduction1 * 0.24;
+	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &minR0));
+	deltat = reduction0 * 0.24;
 }
 
 /**
@@ -390,7 +390,7 @@ void ExplicitHeatEquation::computeFaceConductivity(const member_type& teamMember
 		{
 			int fFaces(fFacesTeam + teamWork.first);
 			const Id fId(fFaces);
-			double reduction4(1.0);
+			double reduction0(1.0);
 			{
 				const auto cellsOfFaceF(mesh->getCellsOfFace(fId));
 				const size_t nbCellsOfFaceF(cellsOfFaceF.size());
@@ -398,10 +398,10 @@ void ExplicitHeatEquation::computeFaceConductivity(const member_type& teamMember
 				{
 					const Id c1Id(cellsOfFaceF[c1CellsOfFaceF]);
 					const size_t c1Cells(c1Id);
-					reduction4 = prodR0(reduction4, D(c1Cells));
+					reduction0 = prodR0(reduction0, D(c1Cells));
 				}
 			}
-			double reduction5(0.0);
+			double reduction1(0.0);
 			{
 				const auto cellsOfFaceF(mesh->getCellsOfFace(fId));
 				const size_t nbCellsOfFaceF(cellsOfFaceF.size());
@@ -409,10 +409,10 @@ void ExplicitHeatEquation::computeFaceConductivity(const member_type& teamMember
 				{
 					const Id c2Id(cellsOfFaceF[c2CellsOfFaceF]);
 					const size_t c2Cells(c2Id);
-					reduction5 = sumR0(reduction5, D(c2Cells));
+					reduction1 = sumR0(reduction1, D(c2Cells));
 				}
 			}
-			faceConductivity(fFaces) = 2.0 * reduction4 / reduction5;
+			faceConductivity(fFaces) = 2.0 * reduction0 / reduction1;
 		});
 	}
 }

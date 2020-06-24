@@ -75,7 +75,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 
 		val nbCells = xQuads * yQuads
 		val double[] u = newDoubleArrayOfSize(nbCells)
-		for (var i = 0 ; i < u.length ; i++)
+		for (i : 0..<u.length)
 			u.set(i, 1.0)
 
 		assertVariableValueInContext(irModule, context, "U", new NV1Real(u))
@@ -85,14 +85,49 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 		val nbNodesOfCell = 4
 		val xEdgeLength = (context.getVariableValue(MandatoryVariables::X_EDGE_LENGTH) as NV0Real).data
 		val yEdgeLength = (context.getVariableValue(MandatoryVariables::Y_EDGE_LENGTH) as NV0Real).data
-		for (var j = 0 ; j < nbCells ; j++)
+		for (j : 0..<nbCells)
 		{
-			for (var r = 0 ; r < nbNodesOfCell; r++)
+			for (r : 0..<nbNodesOfCell)
 			{
 				Assert.assertEquals(0.5*(xEdgeLength), Math.abs(cjr.get(j,r).get(0)), TestUtils.DoubleTolerance)
 				Assert.assertEquals(0.5*(yEdgeLength), Math.abs(cjr.get(j,r).get(1)), TestUtils.DoubleTolerance)
 			}
 		}
+	}
+
+	override assertInterpreteIf(String model, int xQuads, int yQuads)
+	{
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
+		val handler = new ConsoleHandler
+		handler.level = Level::OFF
+		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
+		val context = moduleInterpreter.interpreteWithOptionDefaultValues
+
+		val nbCells = xQuads * yQuads
+		val double[] u = newDoubleArrayOfSize(nbCells)
+		for (i : 0..<u.length)
+			if (i % 2 == 0)
+				u.set(i, 0.0)
+			else
+				u.set(i, 1.0)
+
+		assertVariableValueInContext(irModule, context, "U", new NV1Real(u))
+	}
+
+	override assertInterpreteWhile(String model, int xQuads, int yQuads)
+	{
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
+		val handler = new ConsoleHandler
+		handler.level = Level::OFF
+		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
+		val context = moduleInterpreter.interpreteWithOptionDefaultValues
+
+		val nbCells = xQuads * yQuads
+		val double[] u = newDoubleArrayOfSize(nbCells)
+		for (i : 0..<u.length)
+			u.set(i, 2.0)
+
+		assertVariableValueInContext(irModule, context, "U", new NV1Real(u))
 	}
 
 	override assertInterpreteSetDefinition(String model, int xQuads, int yQuads)
@@ -105,7 +140,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 
 		val nbCells = xQuads * yQuads
 		val double[] u = newDoubleArrayOfSize(nbCells)
-		for (var i = 0 ; i < u.length ; i++)
+		for (i : 0..<u.length)
 			u.set(i, 1.0)
 
 		assertVariableValueInContext(irModule, context, "U", new NV1Real(u))

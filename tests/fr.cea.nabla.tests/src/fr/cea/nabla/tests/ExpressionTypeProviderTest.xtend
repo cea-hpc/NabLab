@@ -14,7 +14,6 @@ import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Job
-import fr.cea.nabla.nabla.MultipleConnectivity
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
@@ -54,9 +53,9 @@ class ExpressionTypeProviderTest
 
 	itemtypes { node, cell }
 
-	set cells: → {cell};
-	set nodesOfCell: cell → {node};
-	set nodes: → {node};
+	connectivity cells: → {cell};
+	connectivity nodesOfCell: cell → {node};
+	connectivity nodes: → {node};
 
 	def reduceMin, ℝ.MaxValue: ℝ, (a, b) → return a;
 
@@ -64,48 +63,48 @@ class ExpressionTypeProviderTest
 	def norm: x | ℝ[x] → ℝ;
 	def solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x];
 
-	option X_EDGE_LENGTH = 1.;
-	option Y_EDGE_LENGTH = X_EDGE_LENGTH;
-	option X_EDGE_ELEMS = 2;
-	option Y_EDGE_ELEMS = 2;
-	option option_stoptime = 0.1;
-	option option_max_iterations = 500;
+	option ℝ X_EDGE_LENGTH = 1.;
+	option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+	option ℕ X_EDGE_ELEMS = 2;
+	option ℕ Y_EDGE_ELEMS = 2;
+	option ℝ option_stoptime = 0.1;
+	option ℕ option_max_iterations = 500;
 
-	let a1 = 1;
-	let a2 = 9 % 4;
-	let a3 = ℕ.MinValue;
-	let a4 = [1,1];
-	let a5 = ℕ[2](1);
-	let a6 = ℕ[2,2](1);
-	let a7 = a6[0,2];
+	let ℕ a1 = 1;
+	let ℕ a2 = 9 % 4;
+	let ℕ a3 = ℕ.MinValue;
+	let ℕ[2] a4 = [1,1];
+	let ℕ[2] a5 = ℕ[2](1);
+	let ℕ[2,2] a6 = ℕ[2,2](1);
+	let ℕ a7 = a6[0,2];
 
-	let b1 = true;
-	let b2 = false || true;
-	let b3 = false && true;
-	let b4 = (a1 == 2);
-	let b5 = (a1 != 2);
-	let b6 = (a1 > 2);
-	let b7 = (a1 >= 2);
-	let b8 = (a1 <= 2);
-	let b9 = (a1 < 2);
-	let b10 = !(a1 < 2);
+	let ℾ b1 = true;
+	let ℾ b2 = false || true;
+	let ℾ b3 = false && true;
+	let ℾ b4 = (a1 == 2);
+	let ℾ b5 = (a1 != 2);
+	let ℾ b6 = (a1 > 2);
+	let ℾ b7 = (a1 >= 2);
+	let ℾ b8 = (a1 <= 2);
+	let ℾ b9 = (a1 < 2);
+	let ℾ b10 = !(a1 < 2);
 
-	let c1 = 2.0 + 1.0;
-	let c2 = 2.0 - 1.0;
-	let c3 = 2.0 * 1.0;
-	let c4 = 2.0 / 1.0;
-	let c5 = -c1;
-	let c6 = ℝ.MaxValue;
-	let c7 = 1.0e-10;
+	let ℝ c1 = 2.0 + 1.0;
+	let ℝ c2 = 2.0 - 1.0;
+	let ℝ c3 = 2.0 * 1.0;
+	let ℝ c4 = 2.0 / 1.0;
+	let ℝ c5 = -c1;
+	let ℝ c6 = ℝ.MaxValue;
+	let ℝ c7 = 1.0e-10;
 
-	let d1 = [1.0, 2.0];
-	let d2 = perp(d1);
-	let d3 = ℝ[2](0.);
+	let ℝ[2] d1 = [1.0, 2.0];
+	let ℝ[2] d2 = perp(d1);
+	let ℝ[2] d3 = ℝ[2](0.);
 
-	let e = [1.0, 2.0, 3.0];
+	let ℝ[3] e = [1.0, 2.0, 3.0];
 
-	let g = [ [1.0, 0.0], [0.0, 1.0] ];
-	let h = (a1 == 1 ? 0.0 : 1.0);
+	let ℝ[2,2] g = [ [1.0, 0.0], [0.0, 1.0] ];
+	let ℝ h = (a1 == 1 ? 0.0 : 1.0);
 
 	ℕ i1;
 	ℕ[2] i2;
@@ -126,7 +125,7 @@ class ExpressionTypeProviderTest
 	ComputeV: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r} + s{j});
 
 	ComputeX: ∀ j∈cells(), {
-		let ee = 1.0;
+		let ℝ ee = 1.0;
 		u^{n}{j} = ee * 4;
 		∀r∈nodesOfCell(j), x{j,r} = norm(w{j,r});
 	}
@@ -143,8 +142,8 @@ class ExpressionTypeProviderTest
 	def void testGetTypeFor() 
 	{
  		val module = model.parse
- 		val cells = module.getConnectivityByName("cells") as MultipleConnectivity
- 		val nodesOfCell = module.getConnectivityByName("nodesOfCell") as MultipleConnectivity
+ 		val cells = module.getConnectivityByName("cells")
+ 		val nodesOfCell = module.getConnectivityByName("nodesOfCell")
 		val updateU = module.getJobByName("UpdateU")
 		val computeV = module.getJobByName("ComputeV")
 		val computeX = module.getJobByName("ComputeX")

@@ -217,10 +217,10 @@ Glace2d::Glace2d(const Options& aOptions)
 , writer("Glace2d", options.outputPath)
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
+, nbOuterFaces(mesh->getNbOuterFaces())
+, nbInnerNodes(mesh->getNbInnerNodes())
 , nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , nbCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
-, nbInnerNodes(mesh->getNbInnerNodes())
-, nbOuterFaces(mesh->getNbOuterFaces())
 , nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , X_n("X_n", nbNodes)
 , X_nplus1("X_nplus1", nbNodes)
@@ -422,7 +422,7 @@ void Glace2d::computeV(const member_type& teamMember) noexcept
 		{
 			int jCells(jCellsTeam + teamWork.first);
 			const Id jId(jCells);
-			double reduction5(0.0);
+			double reduction0(0.0);
 			{
 				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
@@ -430,10 +430,10 @@ void Glace2d::computeV(const member_type& teamMember) noexcept
 				{
 					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 					const size_t rNodes(rId);
-					reduction5 = sumR0(reduction5, dot(C(jCells,rNodesOfCellJ), X_n(rNodes)));
+					reduction0 = sumR0(reduction0, dot(C(jCells,rNodesOfCellJ), X_n(rNodes)));
 				}
 			}
-			V(jCells) = 0.5 * reduction5;
+			V(jCells) = 0.5 * reduction0;
 		});
 	}
 }
@@ -742,16 +742,16 @@ void Glace2d::computedeltatj(const member_type& teamMember) noexcept
 		{
 			int jCells(jCellsTeam + teamWork.first);
 			const Id jId(jCells);
-			double reduction2(0.0);
+			double reduction0(0.0);
 			{
 				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
-					reduction2 = sumR0(reduction2, l(jCells,rNodesOfCellJ));
+					reduction0 = sumR0(reduction0, l(jCells,rNodesOfCellJ));
 				}
 			}
-			deltatj(jCells) = 2.0 * V(jCells) / (c(jCells) * reduction2);
+			deltatj(jCells) = 2.0 * V(jCells) / (c(jCells) * reduction0);
 		});
 	}
 }
@@ -772,7 +772,7 @@ void Glace2d::computeAr(const member_type& teamMember) noexcept
 		{
 			int rNodes(rNodesTeam + teamWork.first);
 			const Id rId(rNodes);
-			RealArray2D<2,2> reduction3({0.0, 0.0,  0.0, 0.0});
+			RealArray2D<2,2> reduction0({0.0, 0.0,  0.0, 0.0});
 			{
 				const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
 				const size_t nbCellsOfNodeR(cellsOfNodeR.size());
@@ -781,10 +781,10 @@ void Glace2d::computeAr(const member_type& teamMember) noexcept
 					const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 					const size_t jCells(jId);
 					const size_t rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
-					reduction3 = sumR2(reduction3, Ajr(jCells,rNodesOfCellJ));
+					reduction0 = sumR2(reduction0, Ajr(jCells,rNodesOfCellJ));
 				}
 			}
-			Ar(rNodes) = reduction3;
+			Ar(rNodes) = reduction0;
 		});
 	}
 }
@@ -805,7 +805,7 @@ void Glace2d::computeBr(const member_type& teamMember) noexcept
 		{
 			int rNodes(rNodesTeam + teamWork.first);
 			const Id rId(rNodes);
-			RealArray1D<2> reduction4({0.0, 0.0});
+			RealArray1D<2> reduction0({0.0, 0.0});
 			{
 				const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
 				const size_t nbCellsOfNodeR(cellsOfNodeR.size());
@@ -814,10 +814,10 @@ void Glace2d::computeBr(const member_type& teamMember) noexcept
 					const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 					const size_t jCells(jId);
 					const size_t rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
-					reduction4 = sumR1(reduction4, p(jCells) * C(jCells,rNodesOfCellJ) + matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells)));
+					reduction0 = sumR1(reduction0, p(jCells) * C(jCells,rNodesOfCellJ) + matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells)));
 				}
 			}
-			b(rNodes) = reduction4;
+			b(rNodes) = reduction0;
 		});
 	}
 }
@@ -829,12 +829,12 @@ void Glace2d::computeBr(const member_type& teamMember) noexcept
  */
 void Glace2d::computeDt(const member_type& teamMember) noexcept
 {
-	double reduction8;
+	double reduction0;
 	Kokkos::parallel_reduce(Kokkos::TeamThreadRange(teamMember, nbCells), KOKKOS_LAMBDA(const size_t& jCells, double& accu)
 	{
 		accu = minR0(accu, deltatj(jCells));
-	}, KokkosJoiner<double>(reduction8, numeric_limits<double>::max(), &minR0));
-	deltat_nplus1 = options.deltatCfl * reduction8;
+	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &minR0));
+	deltat_nplus1 = options.deltatCfl * reduction0;
 }
 
 /**
@@ -1043,7 +1043,7 @@ void Glace2d::computeEn(const member_type& teamMember) noexcept
 		{
 			int jCells(jCellsTeam + teamWork.first);
 			const Id jId(jCells);
-			double reduction7(0.0);
+			double reduction0(0.0);
 			{
 				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
@@ -1051,10 +1051,10 @@ void Glace2d::computeEn(const member_type& teamMember) noexcept
 				{
 					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 					const size_t rNodes(rId);
-					reduction7 = sumR0(reduction7, dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
+					reduction0 = sumR0(reduction0, dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
 				}
 			}
-			E_nplus1(jCells) = E_n(jCells) - (deltat_n / m(jCells)) * reduction7;
+			E_nplus1(jCells) = E_n(jCells) - (deltat_n / m(jCells)) * reduction0;
 		});
 	}
 }
@@ -1075,16 +1075,16 @@ void Glace2d::computeUn(const member_type& teamMember) noexcept
 		{
 			int jCells(jCellsTeam + teamWork.first);
 			const Id jId(jCells);
-			RealArray1D<2> reduction6({0.0, 0.0});
+			RealArray1D<2> reduction0({0.0, 0.0});
 			{
 				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
-					reduction6 = sumR1(reduction6, F(jCells,rNodesOfCellJ));
+					reduction0 = sumR1(reduction0, F(jCells,rNodesOfCellJ));
 				}
 			}
-			uj_nplus1(jCells) = uj_n(jCells) - (deltat_n / m(jCells)) * reduction6;
+			uj_nplus1(jCells) = uj_n(jCells) - (deltat_n / m(jCells)) * reduction0;
 		});
 	}
 }

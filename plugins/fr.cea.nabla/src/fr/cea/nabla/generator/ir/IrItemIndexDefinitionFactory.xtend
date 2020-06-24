@@ -16,11 +16,10 @@ import fr.cea.nabla.ir.ir.ItemIndex
 import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.ItemIndexValue
 import fr.cea.nabla.nabla.ArgOrVarRef
-import fr.cea.nabla.nabla.Item
-import fr.cea.nabla.nabla.ItemRef
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.SpaceIterator
+import fr.cea.nabla.nabla.SpaceIteratorRef
 import java.util.ArrayList
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScopeProvider
@@ -32,15 +31,9 @@ class IrItemIndexDefinitionFactory
 	@Inject extension IrItemIndexFactory
 	@Inject IScopeProvider scopeProvider
 
-	def getNeededIndexDefinitions(SpaceIterator si)
+	def getNeededIndexDefinitions(SpaceIterator item)
 	{
-		val indexExists = [String indexName | si.toIrIndex.name == indexName]
-		createIndexDefinitions(si.item, indexExists)
-	}
-
-	def getNeededIndexDefinitions(Item item)
-	{
-		val indexExists = [String indexName | false]
+		val indexExists = [String indexName | item.toIrIndex.name == indexName]
 		createIndexDefinitions(item, indexExists)
 	}
 
@@ -60,7 +53,7 @@ class IrItemIndexDefinitionFactory
 	 * it is referenced by X but rNodes is automatically created by r iterator.
 	 * indexExists will then return true to prevent from creating the index two times.
 	 */
-	private def createIndexDefinitions(Item item, (String)=>boolean indexExists)
+	private def createIndexDefinitions(SpaceIterator item, (String)=>boolean indexExists)
 	{
 		//println("[" + item.name + "] Recherche des indices")
 		// Only one instance with the same index name.
@@ -68,12 +61,12 @@ class IrItemIndexDefinitionFactory
 
 		// get all variable iterators of the context
 		val module = EcoreUtil2::getContainerOfType(item, NablaModule)
-		val allVarRefIterators = module.eAllContents.filter(ItemRef).filter[x | x.eContainer instanceof ArgOrVarRef].toSet
+		val allVarRefIterators = module.eAllContents.filter(SpaceIteratorRef).filter[x | x.eContainer instanceof ArgOrVarRef].toSet
 
-		val scope = scopeProvider.getScope(item, NablaPackage.Literals.ITEM_REF__TARGET)
-		val definedItems = new ArrayList<Item>
+		val scope = scopeProvider.getScope(item, NablaPackage.Literals.SPACE_ITERATOR_REF__TARGET)
+		val definedItems = new ArrayList<SpaceIterator>
 		definedItems += item
-		definedItems += scope.allElements.map[EObjectOrProxy as Item]
+		definedItems += scope.allElements.map[EObjectOrProxy as SpaceIterator]
 		//println("  [" + item.name + "] definedItems " + definedItems.map[name].join(', '))
 
 		for (varRefIterator : allVarRefIterators)

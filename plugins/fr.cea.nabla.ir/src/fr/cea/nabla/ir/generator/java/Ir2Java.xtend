@@ -20,7 +20,6 @@ import fr.cea.nabla.ir.transformers.TagOutputVariables
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
@@ -64,8 +63,10 @@ class Ir2Java extends CodeGenerator
 		{
 			public final static class Options
 			{
-				«IF postProcessingInfo !== null»public String «TagOutputVariables.OutputPathNameAndValue.key»;«ENDIF»
-				«FOR v : definitions.filter[option]»
+				«IF postProcessingInfo !== null»
+				public String «TagOutputVariables.OutputPathNameAndValue.key»;
+				«ENDIF»
+				«FOR v : allOptions»
 				public «v.javaType» «v.name»;
 				«ENDFOR»
 		
@@ -80,15 +81,15 @@ class Ir2Java extends CodeGenerator
 			private final Options options;
 
 			// Global definitions
-			«FOR v : definitions.filter[!option]»
+			«FOR v : allDefinitions»
 			private «IF v.const»final «ENDIF»«v.javaType» «v.name»;
 			«ENDFOR»
 
 			«IF withMesh»
 			// Mesh (can depend on previous definitions)
 			private final CartesianMesh2D mesh;
-			private final FileWriter writer;
-			«FOR c : usedConnectivities BEFORE 'private final int ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
+			«IF postProcessingInfo !== null»private final FileWriter writer;«ENDIF»
+			«FOR c : connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
 
 			«ENDIF»
 			// Global declarations
@@ -101,7 +102,7 @@ class Ir2Java extends CodeGenerator
 				options = aOptions;
 
 				// Initialize variables with default values
-				«FOR v : definitions.filter[!option]»
+				«FOR v : allDefinitions»
 					«v.name» = «v.defaultValue.content»;
 				«ENDFOR»
 
@@ -112,8 +113,8 @@ class Ir2Java extends CodeGenerator
 					«val yel = getVariableByName(MandatoryVariables.Y_EDGE_LENGTH).codeName»
 					// Initialize mesh variables
 					mesh = CartesianMesh2DGenerator.generate(«xee», «yee», «xel», «yel»);
-					writer = new PvdFileWriter2D("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»);
-					«FOR c : usedConnectivities»
+					«IF postProcessingInfo !== null»writer = new PvdFileWriter2D("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»);«ENDIF»
+					«FOR c : connectivities.filter[multiple]»
 					«c.nbElemsVar» = «c.connectivityAccessor»;
 					«ENDFOR»
 
@@ -141,7 +142,7 @@ class Ir2Java extends CodeGenerator
 			public void simulate()
 			{
 				System.out.println("Start execution of module «name»");
-				«FOR j : jobs.filter[topLevel].sortByAtAndName»
+				«FOR j : innerJobs»
 					«j.codeName»(); // @«j.at»
 				«ENDFOR»
 				System.out.println("End of execution of module «name»");
@@ -162,7 +163,7 @@ class Ir2Java extends CodeGenerator
 					System.out.println("        Expecting user data file name, for example «name»DefaultOptions.json");
 				}
 			}
-			«FOR j : jobs.sortByAtAndName»
+			«FOR j : jobs»
 
 				«j.content»
 			«ENDFOR»

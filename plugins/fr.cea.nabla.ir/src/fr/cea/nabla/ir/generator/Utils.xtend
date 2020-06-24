@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator
 
+import fr.cea.nabla.ir.DefaultVarDependencies
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.Container
@@ -26,6 +27,7 @@ import static extension fr.cea.nabla.ir.JobExtensions.*
 class Utils 
 {
 	public static val FunctionReductionPrefix = 'Functions'
+	static val extension DefaultVarDependencies = new DefaultVarDependencies
 
 	static def getCodeName(Job it)
 	{

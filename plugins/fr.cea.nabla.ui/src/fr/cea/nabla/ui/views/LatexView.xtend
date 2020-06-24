@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.views
 
-import com.google.inject.Inject
 import fr.cea.nabla.LatexImageServices
 import fr.cea.nabla.LatexLabelServices
 import fr.cea.nabla.nabla.Expression
@@ -31,13 +30,12 @@ import org.eclipse.swt.widgets.Label
 import org.eclipse.ui.ISelectionListener
 import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.ui.part.ViewPart
-import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 
 class LatexView extends ViewPart
 {
-	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
 	Label label
 
+	// Listen to Nabla Editor selection
 	val ISelectionListener selectionListener = 
 		[IWorkbenchPart part, ISelection selection |
 			if (part instanceof NablaDslEditor && selection instanceof ITextSelection)
@@ -49,9 +47,12 @@ class LatexView extends ViewPart
 				{
 					display.asyncExec
 					([
-						val o = nablaDslEditor.document.readOnly([state | eObjectAtOffsetHelper.resolveContainedElementAt(state, textSelection.offset)])
-						val displayableObject = o.closestDisplayableNablaElt
-						if (displayableObject !== null) label.image = displayableObject.latexImage
+						val o = nablaDslEditor.getObjectAtPosition(textSelection.offset)
+						if (o !== null)
+						{
+							val displayableObject = nablaDslEditor.getObjectAtPosition(textSelection.offset).closestDisplayableNablaElt
+							if (displayableObject !== null) label.image = displayableObject.latexImage
+						}
 					])
 				}
 			}
@@ -60,7 +61,6 @@ class LatexView extends ViewPart
 	override createPartControl(Composite parent)
 	{
 		label = new Label(parent, SWT.NONE)
-		// listen to NablaDslEditor selection
 		site.page.addPostSelectionListener(selectionListener)
 	}
 

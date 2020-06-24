@@ -18,6 +18,8 @@ import fr.cea.nabla.ir.transformers.TagOutputVariables
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+
 class Ir2Json extends CodeGenerator 
 {
 	val extension NablaValueExtensions nve = new NablaValueExtensions
@@ -33,14 +35,14 @@ class Ir2Json extends CodeGenerator
 	{
 		// Create the interpreter and interprete option values
 		val context = interpreteDefinitions
-		val options = definitions.filter[option]
+		val options = allOptions
 
 		// Create Json
 		'''
 		{
 			"_comment": "Generated file - Do not overwrite"«IF !options.empty»,«ENDIF»
 			«IF postProcessingInfo !== null»
-			"_outputPath_comment":"empty outputPath to disabled output",
+			"_outputPath_comment":"empty outputPath to disable output",
 			"«TagOutputVariables.OutputPathNameAndValue.key»":"«TagOutputVariables.OutputPathNameAndValue.value»"«IF !options.empty»,«ENDIF»
 			«ENDIF»
 			«FOR o : options SEPARATOR ","»

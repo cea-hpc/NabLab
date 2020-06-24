@@ -11,11 +11,6 @@ package fr.cea.nabla.generator
 
 import com.google.inject.Inject
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
-import fr.cea.nabla.generator.ir.Nabla2Ir
-import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.transformers.CompositeTransformationStep
-import fr.cea.nabla.ir.transformers.FillJobHLTs
-import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nabla.NablaModule
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
@@ -26,29 +21,19 @@ import static extension fr.cea.nabla.LatexLabelServices.*
 
 class NablaGenerator extends AbstractGenerator
 {
-	@Inject Nabla2Ir nabla2Ir
 	@Inject NablaGeneratorMessageDispatcher dispatcher
-	@Inject IrModuleTransformer transformer
 
 	override doGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context)
 	{
 		try
 		{
 			val module = input.contents.filter(NablaModule).head
-			dispatcher.post(MessageType.Start, 'Starting validation: ' + module.name)
-			dispatcher.post(MessageType.Exec, 'Model size (eAllContents.size): ' + module.eAllContents.size)
-
 			if (!module.jobs.empty)
 			{
 				val latexFileName = module.name.toLowerCase + '/' + module.name + '.tex'
-				dispatcher.post(MessageType.Exec, 'Writing LaTeX formula in: ' + latexFileName)
 				fsa.generateFile(latexFileName, module.latexContent)
-
-				// Nabla -> IR
-				buildIrModule(module)
+				dispatcher.post(MessageType.Start, 'LaTeX formula written in: ' + latexFileName)
 			}
-
-			dispatcher.post(MessageType.End, 'End of validation: ' + module.name)
 		}
 		catch(Exception e)
 		{
@@ -60,25 +45,6 @@ class NablaGenerator extends AbstractGenerator
 			}
 			throw(e)
 		}
-	}
-
-	def IrModule buildIrModule(NablaModule nablaModule)
-	{
-		// Nabla -> IR
-		dispatcher.post(MessageType.Exec, 'Nabla -> IR')
-		val irModule = nabla2Ir.toIrModule(nablaModule)
-
-		// buildIrModule can be call several times for the same nablaModule,
-		// for example by a view. Transformations must not be done in this case
-		if (irModule.jobs.forall[at == 0.0])
-		{
-			// IR -> IR
-			val description = 'Minimal IR->IR transformations to check job cycles'
-			val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
-			transformer.transformIr(t, irModule, [msg | dispatcher.post(MessageType.Exec, msg)])
-			dispatcher.post(irModule)
-		}
-		return irModule
 	}
 
 	private def getLatexContent(NablaModule m)

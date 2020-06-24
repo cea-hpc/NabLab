@@ -11,10 +11,10 @@ package fr.cea.nabla.overloading
 
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionOrReduction
-import fr.cea.nabla.nabla.MultipleConnectivity
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.typing.NablaConnectivityType
@@ -26,7 +26,7 @@ class ConnectivityTypeDeclarationFinder implements IDeclarationFinder
 	val extension PrimitiveTypeTypeProvider primitiveTypeTP
 
 	val Iterable<NablaConnectivityType> callerInTypes
-	val sizeVarValues = new HashMap<SimpleVar, MultipleConnectivity>
+	val sizeVarValues = new HashMap<SimpleVar, Connectivity>
 
 	new(PrimitiveTypeTypeProvider primitiveTypeTP, Iterable<NablaConnectivityType> callerInTypes)
 	{
@@ -43,18 +43,18 @@ class ConnectivityTypeDeclarationFinder implements IDeclarationFinder
 	override FunctionDeclaration findFunction(Iterable<Function> candidates)
 	{
 		val f = candidates.findFirst[x |
-			for (i : 0..<x.inTypes.size)
-				if (!sizesMatch(x, x.inTypes.get(i).sizes, callerInTypes.get(i).supports)) return false
+			for (i : 0..<x.typeDeclaration.inTypes.size)
+				if (!sizesMatch(x, x.typeDeclaration.inTypes.get(i).sizes, callerInTypes.get(i).supports)) return false
 			return true
 		]
 		if (f === null) return null
 
-		val inTypes = f.inTypes.map[computeExpressionType]
-		val returnType = f.returnType.computeExpressionType
+		val inTypes = f.typeDeclaration.inTypes.map[computeExpressionType]
+		val returnType = f.typeDeclaration.returnType.computeExpressionType
 		return new FunctionDeclaration(f, inTypes, returnType)
 	}
 
-	private def boolean sizesMatch(FunctionOrReduction f, Iterable<Expression> expectedSizes, Iterable<MultipleConnectivity> actualSizes)
+	private def boolean sizesMatch(FunctionOrReduction f, Iterable<Expression> expectedSizes, Iterable<Connectivity> actualSizes)
 	{
 		if (expectedSizes.size != actualSizes.size) return false
 
@@ -102,12 +102,12 @@ class ConnectivityTypeDeclarationFinder implements IDeclarationFinder
 			new NablaConnectivityType(supports, argType.primitive.typeFor)
 	}
 
-	private def dispatch MultipleConnectivity getValue(Expression it)
+	private def dispatch Connectivity getValue(Expression it)
 	{
 		null
 	}
 
-	private def dispatch MultipleConnectivity getValue(ArgOrVarRef it)
+	private def dispatch Connectivity getValue(ArgOrVarRef it)
 	{
 		if (timeIterators.empty && spaceIterators.empty && indices.empty && target instanceof SimpleVar)
 		{

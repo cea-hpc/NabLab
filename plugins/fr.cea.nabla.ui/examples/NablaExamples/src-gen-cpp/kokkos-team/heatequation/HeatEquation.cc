@@ -116,9 +116,9 @@ HeatEquation::HeatEquation(const Options& aOptions)
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
 , nbFaces(mesh->getNbFaces())
-, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
+, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
+, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , X("X", nbNodes)
 , center("center", nbCells)
 , u_n("u_n", nbCells)
@@ -181,7 +181,7 @@ void HeatEquation::computeOutgoingFlux(const member_type& teamMember) noexcept
 		{
 			int j1Cells(j1CellsTeam + teamWork.first);
 			const Id j1Id(j1Cells);
-			double reduction3(0.0);
+			double reduction0(0.0);
 			{
 				const auto neighbourCellsJ1(mesh->getNeighbourCells(j1Id));
 				const size_t nbNeighbourCellsJ1(neighbourCellsJ1.size());
@@ -191,10 +191,11 @@ void HeatEquation::computeOutgoingFlux(const member_type& teamMember) noexcept
 					const size_t j2Cells(j2Id);
 					const Id cfId(mesh->getCommonFace(j1Id, j2Id));
 					const size_t cfFaces(cfId);
-					reduction3 = sumR0(reduction3, (u_n(j2Cells) - u_n(j1Cells)) / norm(center(j2Cells) - center(j1Cells)) * surface(cfFaces));
+					double reduction1((u_n(j2Cells) - u_n(j1Cells)) / norm(center(j2Cells) - center(j1Cells)) * surface(cfFaces));
+					reduction0 = sumR0(reduction0, reduction1);
 				}
 			}
-			outgoingFlux(j1Cells) = deltat / V(j1Cells) * reduction3;
+			outgoingFlux(j1Cells) = deltat / V(j1Cells) * reduction0;
 		});
 	}
 }
@@ -215,7 +216,7 @@ void HeatEquation::computeSurface(const member_type& teamMember) noexcept
 		{
 			int fFaces(fFacesTeam + teamWork.first);
 			const Id fId(fFaces);
-			double reduction2(0.0);
+			double reduction0(0.0);
 			{
 				const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
 				const size_t nbNodesOfFaceF(nodesOfFaceF.size());
@@ -225,10 +226,10 @@ void HeatEquation::computeSurface(const member_type& teamMember) noexcept
 					const Id rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 					const size_t rNodes(rId);
 					const size_t rPlus1Nodes(rPlus1Id);
-					reduction2 = sumR0(reduction2, norm(X(rNodes) - X(rPlus1Nodes)));
+					reduction0 = sumR0(reduction0, norm(X(rNodes) - X(rPlus1Nodes)));
 				}
 			}
-			surface(fFaces) = 0.5 * reduction2;
+			surface(fFaces) = 0.5 * reduction0;
 		});
 	}
 }
@@ -259,7 +260,7 @@ void HeatEquation::computeV(const member_type& teamMember) noexcept
 		{
 			int jCells(jCellsTeam + teamWork.first);
 			const Id jId(jCells);
-			double reduction1(0.0);
+			double reduction0(0.0);
 			{
 				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
@@ -269,10 +270,10 @@ void HeatEquation::computeV(const member_type& teamMember) noexcept
 					const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 					const size_t rNodes(rId);
 					const size_t rPlus1Nodes(rPlus1Id);
-					reduction1 = sumR0(reduction1, det(X(rNodes), X(rPlus1Nodes)));
+					reduction0 = sumR0(reduction0, det(X(rNodes), X(rPlus1Nodes)));
 				}
 			}
-			V(jCells) = 0.5 * reduction1;
+			V(jCells) = 0.5 * reduction0;
 		});
 	}
 }

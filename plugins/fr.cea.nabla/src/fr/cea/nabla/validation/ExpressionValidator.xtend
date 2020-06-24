@@ -34,6 +34,7 @@ import fr.cea.nabla.typing.NSTScalar
 import fr.cea.nabla.typing.NablaConnectivityType
 import java.util.List
 import org.eclipse.xtext.validation.Check
+import org.eclipse.xtext.validation.CheckType
 
 class ExpressionValidator extends ArgOrVarRefValidator
 {
@@ -68,28 +69,22 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	static def getFunctionCallConnectivityArgMsg() { "Connectivity type arguments must be scalar" }
 	static def getFunctionCallMixedArgsMsg() { "Can not mix types of arguments (connectivity and simple types)" }
 	static def getFunctionCallArgsMsg(List<String> inTypes) { "No candidate function found. Wrong arguments : " + inTypes.join(', ') }
-	static def getReductionCallOnConnectivitiesVariableMsg() { "No reduction on connectivities variable" }	
-	static def getReductionCallArgsMsg(String inType) { "No candidate reduction found. Wrong arguments : " + inType }	
-	static def getContractedIfConditionTypeMsg(String actualType) { "Expected " + ValidationUtils::BOOL.label + " type, but was " + actualType }
-	static def getContractedIfElseTypeMsg(String actualType, String expectedType) { "Expected " + expectedType + " type, but was " + actualType }
-	static def getNotExpressionTypeMsg(String actualType) { "Expected " + ValidationUtils::BOOL.label + " type, but was " + actualType }	
+	static def getReductionCallOnConnectivitiesVariableMsg() { "No reduction on connectivities variable" }
+	static def getReductionCallArgsMsg(String inType) { "No candidate reduction found. Wrong arguments : " + inType }
 	static def getBinaryOpTypeMsg(String op, String leftType, String rightType) { "Binary operator " + op + " undefined on types " + leftType + " and " + rightType }
-	static def getModuloTypeMsg(String actualType) { "Expected " + ValidationUtils::INT.label + " type, but was " + actualType }
-	static def getAndTypeMsg(String actualType) { "Expected " + ValidationUtils::BOOL.label + " type, but was " + actualType }
-	static def getOrTypeMsg(String actualType) { "Expected " + ValidationUtils::BOOL.label + " type, but was " + actualType }
 	static def getVectorConstantSizeMsg(int size) { "Unsupported vector size: " + size }
 	static def getVectorConstantInconsistentTypeMsg() { "All values must have the same type" }
 	static def getVectorConstantTypeMsg(String actualType)  { "Expected only scalar and vector types, but was " + actualType }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkBaseTypeConstantValue(BaseTypeConstant it)
 	{
-		val vType = value.typeFor
+		val vType = value?.typeFor
 		if (vType !== null && !(vType instanceof NSTScalar && vType.primitive == type.primitive))
 			error(getBaseTypeConstantValueMsg(type.primitive.literal), NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE, BASE_TYPE_CONSTANT_VALUE)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkBaseTypeConstantType(BaseTypeConstant it)
 	{
 		for (i : 0..<type.sizes.size)
@@ -97,7 +92,7 @@ class ExpressionValidator extends ArgOrVarRefValidator
 			error(getBaseTypeConstantTypeMsg(), NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE, i, BASE_TYPE_CONSTANT_TYPE)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkFunctionCallArgs(FunctionCall it)
 	{
 		val inTypes = args.map[typeFor]
@@ -130,17 +125,17 @@ class ExpressionValidator extends ArgOrVarRefValidator
 			error(getFunctionCallArgsMsg(inTypes.map[label]), NablaPackage.Literals::FUNCTION_CALL__FUNCTION, FUNCTION_CALL_ARGS)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkReductionCallArgs(ReductionCall it)
 	{
-		val inType = arg.typeFor
+		val inType = arg?.typeFor
 		if (inType !== null && inType instanceof NablaConnectivityType)
 			error(getReductionCallOnConnectivitiesVariableMsg, NablaPackage.Literals::REDUCTION_CALL__REDUCTION, REDUCTION_CALL_ON_CONNECTIVITIES_VARIABLE)
 		else if (typeFor === null)
 			error(getReductionCallArgsMsg(inType.label), NablaPackage.Literals::REDUCTION_CALL__REDUCTION, REDUCTION_CALL_ARGS)
 	}
 
-	@Check 
+	@Check(CheckType.NORMAL)
 	def checkContractedIfType(ContractedIf it)
 	{
 		val condType = condition?.typeFor
@@ -148,95 +143,97 @@ class ExpressionValidator extends ArgOrVarRefValidator
 		val elseType = ^else?.typeFor
 
 		if (!checkExpectedType(condType, ValidationUtils::BOOL))
-			error(getContractedIfConditionTypeMsg(condType.label), NablaPackage.Literals::CONTRACTED_IF__CONDITION, CONTRACTED_IF_CONDITION_TYPE)
+			error(getTypeMsg(condType.label, ValidationUtils::BOOL.label), NablaPackage.Literals::CONTRACTED_IF__CONDITION, CONTRACTED_IF_CONDITION_TYPE)
 		if (!checkExpectedType(elseType, thenType))
-			error(getContractedIfElseTypeMsg(elseType.label, thenType.label), NablaPackage.Literals::CONTRACTED_IF__ELSE, CONTRACTED_IF_ELSE_TYPE)
+			error(getTypeMsg(elseType.label, thenType.label), NablaPackage.Literals::CONTRACTED_IF__ELSE, CONTRACTED_IF_ELSE_TYPE)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkNotExpressionType(Not it)
 	{
 		if (!checkExpectedType(expression?.typeFor, ValidationUtils::BOOL))
-		error(getNotExpressionTypeMsg(expression?.typeFor?.label), NablaPackage.Literals::NOT__EXPRESSION, NOT_EXPRESSION_TYPE)
+		error(getTypeMsg(expression?.typeFor?.label, ValidationUtils::BOOL.label), NablaPackage.Literals::NOT__EXPRESSION, NOT_EXPRESSION_TYPE)
 	}
 
 	// UnaryMinus fonctionne avec tous les types
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkMulType(Mul it)
 	{
 		if (!checkBinaryOp(left, right, op))
 			error(getBinaryOpTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.MUL__OP, MUL_TYPE)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkDivType(Div it)
 	{
 		if (!checkBinaryOp(left, right, op))
 			error(getBinaryOpTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.DIV__OP, DIV_TYPE)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkPlusType(Plus it)
 	{
 		if (!checkBinaryOp(left, right, op))
 			error(getBinaryOpTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.PLUS__OP, PLUS_TYPE)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkMinusType(Minus it)
 	{
 		if (!checkBinaryOp(left, right, op))
 			error(getBinaryOpTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.MINUS__OP, MINUS_TYPE)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkComparisonType(Comparison it)
 	{
 		if (!checkBinaryOp(left, right, op))
 			error(getBinaryOpTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.COMPARISON__OP, COMPARISON_TYPE)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkEqualityType(Equality it)
 	{
 		if (!checkBinaryOp(left, right, op))
 			error(getBinaryOpTypeMsg(op, left?.typeFor.label, right?.typeFor.label), NablaPackage.Literals.EQUALITY__OP, EQUALITY_TYPE)
 	}
 
-	@Check def checkModuloType(Modulo it)
+	@Check(CheckType.NORMAL)
+	def checkModuloType(Modulo it)
 	{
 		if (!checkExpectedType(left?.typeFor, ValidationUtils::INT))
-			error(getModuloTypeMsg(left?.typeFor.label), NablaPackage.Literals.MODULO__LEFT, MODULO_TYPE)
+			error(getTypeMsg(left?.typeFor.label, ValidationUtils::INT.label), NablaPackage.Literals.MODULO__LEFT, MODULO_TYPE)
 		if (!checkExpectedType(right?.typeFor, ValidationUtils::INT))
-			error(getModuloTypeMsg(right?.typeFor.label), NablaPackage.Literals.MODULO__RIGHT, MODULO_TYPE)
+			error(getTypeMsg(right?.typeFor.label, ValidationUtils::INT.label), NablaPackage.Literals.MODULO__RIGHT, MODULO_TYPE)
 	}
 
-	@Check def checkAndType(And it)
+	@Check(CheckType.NORMAL)
+	def checkAndType(And it)
 	{
 		if (!checkExpectedType(left?.typeFor, ValidationUtils::BOOL))
-			error(getAndTypeMsg(left?.typeFor.label), NablaPackage.Literals.AND__LEFT, AND_TYPE)
+			error(getTypeMsg(left?.typeFor.label, ValidationUtils::BOOL.label), NablaPackage.Literals.AND__LEFT, AND_TYPE)
 		if (!checkExpectedType(right?.typeFor, ValidationUtils::BOOL))
-			error(getAndTypeMsg(right?.typeFor.label), NablaPackage.Literals.AND__RIGHT, AND_TYPE)
+			error(getTypeMsg(right?.typeFor.label, ValidationUtils::BOOL.label), NablaPackage.Literals.AND__RIGHT, AND_TYPE)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkOrType(Or it)
 	{
 		if (!checkExpectedType(left?.typeFor, ValidationUtils::BOOL))
-			error(getAndTypeMsg(left?.typeFor.label), NablaPackage.Literals.OR__LEFT, OR_TYPE)
+			error(getTypeMsg(left?.typeFor.label, ValidationUtils::BOOL.label), NablaPackage.Literals.OR__LEFT, OR_TYPE)
 		if (!checkExpectedType(right?.typeFor, ValidationUtils::BOOL))
-			error(getAndTypeMsg(right?.typeFor.label), NablaPackage.Literals.OR__RIGHT, OR_TYPE)
+			error(getTypeMsg(right?.typeFor.label, ValidationUtils::BOOL.label), NablaPackage.Literals.OR__RIGHT, OR_TYPE)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkVectorConstantSize(VectorConstant it)
 	{
 		if (values.size < 2)
 			error(getVectorConstantSizeMsg(values.size), NablaPackage.Literals.VECTOR_CONSTANT__VALUES, VECTOR_CONSTANT_SIZE)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkVectorConstantType(VectorConstant it)
 	{
 		if (!values.empty)

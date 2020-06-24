@@ -9,11 +9,13 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.transformers.IrTransformationStep
 import fr.cea.nabla.ir.transformers.TagOutputVariables
 import java.io.File
 import java.net.URI
@@ -25,7 +27,6 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
-import fr.cea.nabla.ir.MandatoryVariables
 
 class Ir2Cpp extends CodeGenerator
 {
@@ -69,6 +70,11 @@ class Ir2Cpp extends CodeGenerator
 		#{ name + '.h' -> headerFileContent, name + '.cc' -> sourceFileContent, 'CMakeLists.txt' -> backend.ir2Cmake.getContentFor(it)}
 	}
 
+	override IrTransformationStep getIrTransformationStep()
+	{
+		backend.irTransformationStep
+	}
+
 	private def getHeaderFileContent(IrModule it)
 	'''
 	«backend.includesContentProvider.getContentFor(it)»
@@ -92,7 +98,7 @@ class Ir2Cpp extends CodeGenerator
 		struct Options
 		{
 			«IF postProcessingInfo !== null»std::string «TagOutputVariables.OutputPathNameAndValue.key»;«ENDIF»
-			«FOR v : definitions.filter[option]»
+			«FOR v : allOptions»
 			«v.cppType» «v.name»;
 			«ENDFOR»
 
@@ -150,7 +156,7 @@ class Ir2Cpp extends CodeGenerator
 		assert(valueof_«opName».IsString());
 		«opName» = valueof_«opName».GetString();
 		«ENDIF»
-		«FOR v : definitions.filter[option]»
+		«FOR v : allOptions»
 		«v.jsonContent»
 		«ENDFOR»
 	}
@@ -159,7 +165,7 @@ class Ir2Cpp extends CodeGenerator
 
 	«name»::«name»(const Options& aOptions)
 	: options(aOptions)
-	«FOR v : definitions.filter[x | !(x.option || x.constExpr)]»
+	«FOR v : allDefinitions.filter[x | !x.constExpr]»
 	, «v.name»(«v.defaultValue.content»)
 	«ENDFOR»
 	«IF withMesh»
@@ -168,8 +174,8 @@ class Ir2Cpp extends CodeGenerator
 		«val xel = getVariableByName(MandatoryVariables.X_EDGE_LENGTH).codeName»
 		«val yel = getVariableByName(MandatoryVariables.Y_EDGE_LENGTH).codeName»
 		, mesh(CartesianMesh2DGenerator::generate(«xee», «yee», «xel», «yel»))
-		, writer("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»)
-		«FOR c : usedConnectivities»
+		«IF postProcessingInfo !== null», writer("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»)«ENDIF»
+		«FOR c : connectivities.filter[multiple]»
 		, «c.nbElemsVar»(«c.connectivityAccessor»)
 		«ENDFOR»
 	«ENDIF»

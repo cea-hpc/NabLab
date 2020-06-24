@@ -289,13 +289,13 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 		set nodes: → { node };
 
-		option X_EDGE_LENGTH = 0.1;
-		option Y_EDGE_LENGTH = X_EDGE_LENGTH;
-		option X_EDGE_ELEMS = 20;
-		option Y_EDGE_ELEMS = 20;
+		option ℝ X_EDGE_LENGTH = 0.1;
+		option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+		option ℕ X_EDGE_ELEMS = 20;
+		option ℕ Y_EDGE_ELEMS = 20;
 
-		option maxIter = 200;
-		option maxTime = 1.0;
+		option ℕ maxIter = 200;
+		option ℝ maxTime = 1.0;
 
 		ℝ t, δt;
 		ℝ[2] X{nodes};

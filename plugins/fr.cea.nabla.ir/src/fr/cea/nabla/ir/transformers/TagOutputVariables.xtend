@@ -63,7 +63,6 @@ class TagOutputVariables extends IrTransformationStep
 			option = false
 			defaultValue = periodVariableType.primitive.lastDumpDefaultValue
 		]
-		m.definitions += lastDumpVariable
 		ppInfo.lastDumpVariable = lastDumpVariable
 
 		// Create an option to store the output period
@@ -76,7 +75,6 @@ class TagOutputVariables extends IrTransformationStep
 			option = true
 			defaultValue = periodVariableType.primitive.outputPeriodDefaultValue
 		]
-		m.definitions.add(0, periodValueVariable)
 		ppInfo.periodValue = periodValueVariable
 
 		return true

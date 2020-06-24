@@ -25,7 +25,7 @@ class AttributesContentProvider
 	def getContentFor(IrModule m)
 	'''
 		// Global definitions
-		«FOR v : m.definitions.filter[!option]»
+		«FOR v : m.allDefinitions»
 			«IF v.constExpr»
 				static constexpr «v.cppType» «v.name» = «v.defaultValue.content»;
 			«ELSE»
@@ -36,8 +36,8 @@ class AttributesContentProvider
 		«IF m.withMesh»
 			// Mesh (can depend on previous definitions)
 			CartesianMesh2D* mesh;
-			PvdFileWriter2D writer;
-			«FOR c : m.usedConnectivities BEFORE 'size_t ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
+			«IF m.postProcessingInfo !== null»PvdFileWriter2D writer;«ENDIF»
+			«FOR c : m.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
 
 		«ENDIF»
 		// Global declarations

@@ -9,11 +9,14 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.transformers.IrTransformationStep
+import fr.cea.nabla.ir.transformers.ReplaceReductions
 import org.eclipse.xtend.lib.annotations.Accessors
 
 abstract class Backend
 {
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) String name
+	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IrTransformationStep irTransformationStep = null
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) Ir2Cmake ir2Cmake
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) TraceContentProvider traceContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IncludesContentProvider includesContentProvider
@@ -35,9 +38,10 @@ class SequentialBackend extends Backend
 	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath)
 	{
 		name = 'Sequential'
-		ir2Cmake = new StlIr2Cmake(compiler, compilerPath)
+		irTransformationStep = new ReplaceReductions(true)
+		ir2Cmake = new SequentialIr2Cmake(compiler, compilerPath)
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
-		includesContentProvider = new IncludesContentProvider
+		includesContentProvider = new SequentialIncludesContentProvider
 		typeContentProvider = new StlTypeContentProvider
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
@@ -115,6 +119,28 @@ class KokkosTeamThreadBackend extends Backend
 		jobContentProvider = new KokkosTeamThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)
 		privateMethodsContentProvider = new KokkosTeamThreadPrivateMethodsContentProvider(jobContentProvider)
 		mainContentProvider = new KokkosMainContentProvider
+	}
+}
+
+class OpenMpBackend extends Backend
+{
+	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath)
+	{
+		name = 'OpenMP'
+		ir2Cmake = new OpenMpCmake(compiler, compilerPath)
+		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
+		includesContentProvider = new OpenMpIncludesContentProvider
+		typeContentProvider = new StlTypeContentProvider
+		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
+		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
+		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider, expressionContentProvider)
+		instructionContentProvider = new OpenMpInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
+		jobContainerContentProvider = new JobContainerContentProvider
+		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)
+		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider)
+		mainContentProvider = new MainContentProvider
 	}
 }
 

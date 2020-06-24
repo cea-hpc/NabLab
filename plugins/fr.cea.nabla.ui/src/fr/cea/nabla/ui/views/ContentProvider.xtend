@@ -9,21 +9,26 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.views
 
+import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobContainer
 import org.eclipse.jface.viewers.ArrayContentProvider
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider
-
-import static extension fr.cea.nabla.ir.JobExtensions.*
+import fr.cea.nabla.ir.ir.IrModule
 
 class ContentProvider
 extends ArrayContentProvider
 implements IGraphEntityContentProvider
 {
+	static val extension JobDependencies = new JobDependencies
+
 	override Object[] getElements(Object inputElement)
 	{
-		if (inputElement instanceof JobContainer)
-			inputElement.innerJobs
+		switch inputElement
+		{
+			IrModule case inputElement.hasCycle: inputElement.jobs.filter[onCycle]
+			JobContainer: inputElement.innerJobs
+		}
 	}
 
 	/**
@@ -35,5 +40,10 @@ implements IGraphEntityContentProvider
 	{
 		if (entity instanceof Job)
 			entity.nextJobs.filter[x | x.jobContainer == entity.jobContainer]
+	}
+
+	private def hasCycle(IrModule it)
+	{
+		jobs.exists[x | x.onCycle]
 	}
 }

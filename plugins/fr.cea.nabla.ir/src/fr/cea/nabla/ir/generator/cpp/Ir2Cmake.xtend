@@ -10,14 +10,16 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.IrModule
-import java.util.LinkedHashSet
+
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
 abstract class Ir2Cmake
 {
-	protected String libraryBackend
-	protected val LinkedHashSet<String> targetLinkLibraries = new LinkedHashSet<String>
 	protected String compiler
 	protected String compilerPath
+
+	abstract def CharSequence getLibraryBackend(IrModule m)
+	abstract def Iterable<String> getTargetLinkLibraries(IrModule m)
 
 	def getContentFor(IrModule it)
 	'''
@@ -71,21 +73,98 @@ class StlIr2Cmake extends Ir2Cmake
 {
 	new(String compiler, String compilerPath)
 	{
-		libraryBackend = "set(LIBCPPNABLA_BACKEND \"STL\")"
-		targetLinkLibraries += "cppnablastl pthread"
 		this.compiler = compiler
 		this.compilerPath = compilerPath
+	}
+
+	override getLibraryBackend(IrModule m)
+	'''set(LIBCPPNABLA_BACKEND "STL")'''
+
+	override getTargetLinkLibraries(IrModule m)
+	{
+		#["cppnablastl", "pthread"]
 	}
 }
 
 class KokkosIr2Cmake extends Ir2Cmake
 {
+	val String kokkosPath
+
 	new(String compiler, String compilerPath, String kokkosPath)
 	{
-		libraryBackend = "set(LIBCPPNABLA_BACKEND \"KOKKOS\")" + "\n"
-						 + "set(NABLA_KOKKOS_PATH \"" + kokkosPath + "\")"
-		targetLinkLibraries += "cppnablakokkos"
+		this.kokkosPath = kokkosPath
 		this.compiler = compiler
 		this.compilerPath = compilerPath
+	}
+
+	override getLibraryBackend(IrModule m)
+	'''
+		set(LIBCPPNABLA_BACKEND "KOKKOS")
+		set(NABLA_KOKKOS_PATH "«kokkosPath»")
+	'''
+
+	override getTargetLinkLibraries(IrModule m)
+	{
+		#["cppnablakokkos"]
+	}
+}
+
+class SequentialIr2Cmake extends Ir2Cmake
+{
+	new(String compiler, String compilerPath)
+	{
+		this.compiler = compiler
+		this.compilerPath = compilerPath
+	}
+
+	override getLibraryBackend(IrModule m)
+	{
+		if (m.linearAlgebra)
+			'''
+				# libcppnabla for linear algebra
+				set(LIBCPPNABLA_BACKEND "STL")
+			'''
+		else
+			'''set(LIBCPPNABLA_BACKEND "NONE")'''
+	}
+
+	override getTargetLinkLibraries(IrModule m)
+	{
+		if (m.linearAlgebra)
+			#["cppnablastl", "pthread"]
+		else
+			#[]
+	}
+}
+
+class OpenMpCmake extends Ir2Cmake
+{
+	new(String compiler, String compilerPath)
+	{
+		this.compiler = compiler
+		this.compilerPath = compilerPath
+	}
+
+	override getLibraryBackend(IrModule m)
+	{
+		if (m.linearAlgebra)
+			'''
+				# libcppnabla for linear algebra
+				set(LIBCPPNABLA_BACKEND "STL")
+				find_package(OpenMP)
+			'''
+		else
+			'''
+				set(LIBCPPNABLA_BACKEND "NONE")
+				find_package(OpenMP)
+			'''
+	}
+
+	override getTargetLinkLibraries(IrModule m)
+	{
+		if (m.linearAlgebra)
+			#["OpenMP::OpenMP_CXX", "cppnablastl", "pthread"]
+		else
+			#["OpenMP::OpenMP_CXX"]
 	}
 }

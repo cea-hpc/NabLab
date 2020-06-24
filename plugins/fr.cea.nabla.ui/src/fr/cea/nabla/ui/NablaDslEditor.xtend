@@ -11,6 +11,7 @@ package fr.cea.nabla.ui
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.IrAnnotable
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart
 import org.eclipse.jface.viewers.ISelection
 import org.eclipse.jface.viewers.IStructuredSelection
@@ -18,6 +19,7 @@ import org.eclipse.sirius.viewpoint.DRepresentationElement
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.ISelectionListener
 import org.eclipse.ui.IWorkbenchPart
+import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 import org.eclipse.xtext.ui.editor.XtextEditor
 
 import static extension fr.cea.nabla.ir.IrAnnotableExtensions.*
@@ -26,7 +28,9 @@ class NablaDslEditor
 extends XtextEditor
 {
 	@Inject NabLabConsoleFactory consoleFactory
+	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
 
+	// Listen to the selection of an IrAnnotable object in the Sirius editor
 	val ISelectionListener selectionListener = 
 		[IWorkbenchPart part, ISelection selection |
 			if (selection instanceof IStructuredSelection)
@@ -48,7 +52,6 @@ extends XtextEditor
 	override createPartControl(Composite parent)
 	{
 		super.createPartControl(parent)
-		// Listen to the selection of an IrAnnotable object in the Sirius editor
 		site.page.addPostSelectionListener(selectionListener)
 		consoleFactory.openConsole
 	}
@@ -56,6 +59,11 @@ extends XtextEditor
 	override dispose()
 	{
 		site.page.removePostSelectionListener(selectionListener)
+	}
+
+	def EObject getObjectAtPosition(int offset)
+	{
+		document.readOnly([state | eObjectAtOffsetHelper.resolveContainedElementAt(state, offset)])
 	}
 
 	def void selectIfDisplayed(IrAnnotable it)

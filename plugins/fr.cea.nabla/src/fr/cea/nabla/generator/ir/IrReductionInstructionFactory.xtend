@@ -10,8 +10,9 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
+import fr.cea.nabla.SpaceIteratorExtensions
+import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.Comparison
@@ -28,11 +29,14 @@ import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.overloading.DeclarationProvider
+import java.util.ArrayList
 
 class IrReductionInstructionFactory 
 {
+	@Inject extension SpaceIteratorExtensions
 	@Inject extension ReductionCallExtensions
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrFunctionFactory
@@ -40,40 +44,54 @@ class IrReductionInstructionFactory
 	@Inject extension IrIterationBlockFactory
 	@Inject extension IrExpressionFactory
 
-	def dispatch Iterable<ReductionInstruction> toIrReductions(Expression it) { #[] }  // by default...
-	def dispatch Iterable<ReductionInstruction> toIrReductions(ContractedIf it) { then.toIrReductions + ^else.toIrReductions }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(Or it) { left.toIrReductions + right.toIrReductions }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(And it) { left.toIrReductions + right.toIrReductions }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(Equality it) { left.toIrReductions + right.toIrReductions }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(Comparison it) { left.toIrReductions + right.toIrReductions }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(Plus it) { left.toIrReductions + right.toIrReductions }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(Minus it) { left.toIrReductions + right.toIrReductions }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(Mul it) { left.toIrReductions + right.toIrReductions }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(Div it) { left.toIrReductions + right.toIrReductions }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(Modulo it) { left.toIrReductions + right.toIrReductions }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(Parenthesis it) { expression.toIrReductions }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(UnaryMinus it) { expression.toIrReductions }
-	def dispatch Iterable<ReductionInstruction> toIrReductions(Not it) { expression.toIrReductions }
+	def dispatch Iterable<Instruction> toIrReductions(Expression it) { #[] }  // by default...
+	def dispatch Iterable<Instruction> toIrReductions(ContractedIf it) { then.toIrReductions + ^else.toIrReductions }
+	def dispatch Iterable<Instruction> toIrReductions(Or it) { left.toIrReductions + right.toIrReductions }
+	def dispatch Iterable<Instruction> toIrReductions(And it) { left.toIrReductions + right.toIrReductions }
+	def dispatch Iterable<Instruction> toIrReductions(Equality it) { left.toIrReductions + right.toIrReductions }
+	def dispatch Iterable<Instruction> toIrReductions(Comparison it) { left.toIrReductions + right.toIrReductions }
+	def dispatch Iterable<Instruction> toIrReductions(Plus it) { left.toIrReductions + right.toIrReductions }
+	def dispatch Iterable<Instruction> toIrReductions(Minus it) { left.toIrReductions + right.toIrReductions }
+	def dispatch Iterable<Instruction> toIrReductions(Mul it) { left.toIrReductions + right.toIrReductions }
+	def dispatch Iterable<Instruction> toIrReductions(Div it) { left.toIrReductions + right.toIrReductions }
+	def dispatch Iterable<Instruction> toIrReductions(Modulo it) { left.toIrReductions + right.toIrReductions }
+	def dispatch Iterable<Instruction> toIrReductions(Parenthesis it) { expression.toIrReductions }
+	def dispatch Iterable<Instruction> toIrReductions(UnaryMinus it) { expression.toIrReductions }
+	def dispatch Iterable<Instruction> toIrReductions(Not it) { expression.toIrReductions }
 
-	def dispatch Iterable<ReductionInstruction> toIrReductions(FunctionCall it)
+	def dispatch Iterable<Instruction> toIrReductions(FunctionCall it)
 	{
 		args.map[a | a.toIrReductions].flatten
 	}
 
-	def dispatch Iterable<ReductionInstruction> toIrReductions(ReductionCall it) 
+	def dispatch Iterable<Instruction> toIrReductions(ReductionCall it) 
 	{
-		val irInstruction = IrFactory::eINSTANCE.createReductionInstruction
-		irInstruction.annotations += toIrAnnotation
-		irInstruction.innerInstructions += iterationBlock.neededIndexAndIdDefinitions
-		irInstruction.innerInstructions += arg.toIrReductions
-		irInstruction.binaryFunction = declaration.model.toIrFunction
-		irInstruction.iterationBlock = iterationBlock.toIrIterationBlock
-		irInstruction.lambda = arg.toIrExpression
-		irInstruction.result = toIrLocalVariable
-		return #[irInstruction]
+		if (iterationBlock instanceof SpaceIterator && !(iterationBlock as SpaceIterator).multiple)
+		{
+			val irInstructions = new ArrayList<Instruction>
+			irInstructions += iterationBlock.neededIndexAndIdDefinitions
+			irInstructions += arg.toIrReductions
+			val definition = IrFactory::eINSTANCE.createVariableDefinition
+			definition.variable = toIrLocalVariable
+			definition.variable.defaultValue = arg.toIrExpression
+			irInstructions += definition
+			irInstructions
+		}
+		else
+		{
+			val irInstruction = IrFactory::eINSTANCE.createReductionInstruction
+			irInstruction.annotations += toIrAnnotation
+			irInstruction.innerInstructions += iterationBlock.neededIndexAndIdDefinitions
+			irInstruction.innerInstructions += arg.toIrReductions
+			irInstruction.binaryFunction = declaration.model.toIrFunction
+			irInstruction.iterationBlock = iterationBlock.toIrIterationBlock
+			irInstruction.lambda = arg.toIrExpression
+			irInstruction.result = toIrLocalVariable
+			#[irInstruction]
+		}
 	}
 
-	def dispatch Iterable<ReductionInstruction> toIrReductions(BaseTypeConstant it)
+	def dispatch Iterable<Instruction> toIrReductions(BaseTypeConstant it)
 	{
 		value.toIrReductions
 	}

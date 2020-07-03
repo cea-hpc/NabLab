@@ -26,10 +26,10 @@ VtkOutput
 	outputVariables = ρ as "Density";
 }
 
-LevelDB
-{
-  levelDBPath = "/home/letiercef/Utils/leveldb-install";
-}
+//LevelDB
+//{
+//  levelDBPath = "$ENV{HOME}/Utils/leveldb-install";
+//}
 
 Java
 {

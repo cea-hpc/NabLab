@@ -24,7 +24,7 @@ set(LIBCPPNABLA_BACKEND "NONE")
 add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
 
 add_executable(explicitheatequation ExplicitHeatEquation.cc)
-target_include_directories(explicitheatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(explicitheatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 target_link_libraries(explicitheatequation cppnabla)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

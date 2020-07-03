@@ -25,7 +25,7 @@ set(NABLA_KOKKOS_PATH "$ENV{HOME}/kokkos/kokkos-install")
 add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
 
 add_executable(implicitheatequation ImplicitHeatEquation.cc)
-target_include_directories(implicitheatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(implicitheatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 target_link_libraries(implicitheatequation cppnabla cppnablakokkos)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

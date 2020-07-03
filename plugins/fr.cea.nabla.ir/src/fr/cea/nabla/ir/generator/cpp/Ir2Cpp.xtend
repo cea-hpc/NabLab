@@ -126,7 +126,7 @@ class Ir2Cpp extends CodeGenerator
 
 	private def getSourceFileContent(IrModule it)
 	'''
-	#include "«name».h"
+	#include "«name.toLowerCase»/«name».h"
 
 	using namespace nablalib;
 

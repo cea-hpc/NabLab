@@ -49,7 +49,7 @@ abstract class Ir2Cmake
 		add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
 
 		add_executable(«name.toLowerCase» «name + '.cc'»)
-		target_include_directories(«name.toLowerCase» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+		target_include_directories(«name.toLowerCase» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 		target_link_libraries(«name.toLowerCase» cppnabla«FOR tll : targetLinkLibraries» «tll»«ENDFOR»)
 
 		if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

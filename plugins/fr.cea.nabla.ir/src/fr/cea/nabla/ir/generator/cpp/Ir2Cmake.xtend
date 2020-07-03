@@ -61,7 +61,7 @@ abstract class Ir2Cmake
 		«ENDIF»
 
 		add_executable(«name.toLowerCase» «name + '.cc'»)
-		target_include_directories(«name.toLowerCase» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+		target_include_directories(«name.toLowerCase» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 		target_link_libraries(«name.toLowerCase» PUBLIC cppnabla«FOR tll : targetLinkLibraries» «tll»«ENDFOR»«IF !levelDBPath.nullOrEmpty» leveldb::leveldb Threads::Threads«ENDIF»)
 
 		if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

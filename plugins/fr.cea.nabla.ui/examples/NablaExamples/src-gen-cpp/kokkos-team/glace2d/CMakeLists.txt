@@ -34,7 +34,7 @@ else()
 endif()
 
 add_executable(glace2d Glace2d.cc)
-target_include_directories(glace2d PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(glace2d PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 target_link_libraries(glace2d PUBLIC cppnabla cppnablakokkos leveldb::leveldb Threads::Threads)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

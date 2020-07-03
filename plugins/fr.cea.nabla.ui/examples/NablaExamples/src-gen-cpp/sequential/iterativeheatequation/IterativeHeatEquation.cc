@@ -1,4 +1,4 @@
-#include "IterativeHeatEquation.h"
+#include "iterativeheatequation/IterativeHeatEquation.h"
 
 using namespace nablalib;
 

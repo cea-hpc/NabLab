@@ -3,7 +3,7 @@
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
@@ -14,38 +14,44 @@ import org.junit.Test
 
 import static org.junit.Assert.*
 
-class CartesianMesh2DGeneratorTest
-{
+/* Numbering nodes and cells			Numbering faces
+ *
+ *  15---16---17---18---19          |-27-|-28-|-29-|-30-|
+ *   | 8  | 9  | 10 | 11 |         19   21   23   25   26
+ *  10---11---12---13---14          |-18-|-20-|-22-|-24-|
+ *   | 4  | 5  | 6  | 7  |         10   12   14   16   17
+ *   5----6----7----8----9          |--9-|-11-|-13-|-15-|
+ *   | 0  | 1  | 2  | 3  |          1    3    5    7    8
+ *   0----1----2----3----4          |-0--|-2--|-4--|-6--|
+ */
+class CartesianMesh2DGeneratorTest {
 	val nbXQuads = 4
 	val nbYQuads = 3
 	val xSize = 5.0
 	val ySize = 10.0
-	val mesh = CartesianMesh2DGenerator::generate(nbXQuads, nbYQuads, xSize, ySize)
 
 	@Test
-	def void testGeometry()
-	{
+	def void testGeometry() {
+		val mesh = CartesianMesh2DGenerator::generate(nbXQuads, nbYQuads, xSize, ySize)
 		mesh.dump
 
 		val nbQuads = nbXQuads * nbYQuads
-		assertEquals(nbQuads, mesh.geometry.quads.size)
+		assertEquals(nbQuads, mesh.geometry.getQuads.size)
 
-		val nbNodes = (nbXQuads+1) * (nbYQuads+1)
-		assertEquals(nbNodes, mesh.geometry.nodes.size)
+		val nbNodes = (nbXQuads + 1) * (nbYQuads + 1)
+		assertEquals(nbNodes, mesh.geometry.getNodes.size)
 
-		val nbEdges = ((nbXQuads+1) * nbYQuads) + ((nbYQuads+1) * nbXQuads)
-		assertEquals(nbEdges, mesh.geometry.edges.size)
+		val nbEdges = ((nbXQuads + 1) * nbYQuads) + ((nbYQuads + 1) * nbXQuads)
+		assertEquals(nbEdges, mesh.geometry.getEdges.size)
 
 		var quadIndex = 0
 		var double xUpperLeftNode
 		var double yUpperLeftNode = 0
-		for (j : 0..<nbYQuads)
-		{
+		for (j : 0 ..< nbYQuads) {
 			xUpperLeftNode = 0
-			for (i : 0..<nbXQuads)
-			{
-				val currentQuad = mesh.geometry.quads.get(quadIndex)
-				val upperLeftNode = mesh.geometry.nodes.get(currentQuad.nodeIds.get(0))
+			for (i : 0 ..< nbXQuads) {
+				val currentQuad = mesh.geometry.getQuads.get(quadIndex)
+				val upperLeftNode = mesh.geometry.getNodes.get(currentQuad.nodeIds.get(0))
 				assertEquals(xUpperLeftNode, upperLeftNode.get(0), 0.0)
 				assertEquals(yUpperLeftNode, upperLeftNode.get(1), 0.0)
 				xUpperLeftNode += xSize
@@ -56,19 +62,106 @@ class CartesianMesh2DGeneratorTest
 	}
 
 	@Test
-	def void testTopology()
-	{
-		assertArrayEquals(mesh.innerNodes, #[6, 7, 8, 11, 12, 13])
-		assertArrayEquals(mesh.bottomNodes, #[0, 1, 2, 3, 4])
-		assertArrayEquals(mesh.topNodes, #[15, 16, 17, 18, 19])
-		assertArrayEquals(mesh.leftNodes, #[0, 5, 10, 15])
-		assertArrayEquals(mesh.rightNodes, #[4, 9, 14, 19])
-		assertArrayEquals(mesh.outerFaces, #[0, 1, 2, 4, 6, 8, 10, 17, 19, 26, 27, 28, 29, 30])
+	def void testTopology() {
+		val mesh = CartesianMesh2DGenerator::generate(nbXQuads, nbYQuads, xSize, ySize)
 
-		assertEquals(mesh.bottomLeftNode, 0)
-		assertEquals(mesh.bottomRightNode, 4)
-		assertEquals(mesh.topLeftNode, 15)
-		assertEquals(mesh.topRightNode, 19)
+		assertEquals((nbXQuads + 1) * (nbYQuads + 1), mesh.nbNodes)
+		assertEquals(nbXQuads * nbYQuads, mesh.nbCells)
+		assertEquals(2 * nbXQuads * nbYQuads + nbXQuads + nbYQuads, mesh.nbFaces);
+
+		assertArrayEquals(#[6, 7, 8, 11, 12, 13], mesh.innerNodes)
+		assertArrayEquals(#[15, 16, 17, 18, 19], mesh.topNodes)
+		assertArrayEquals(#[0, 1, 2, 3, 4], mesh.bottomNodes)
+		assertArrayEquals(#[0, 5, 10, 15], mesh.leftNodes)
+		assertArrayEquals(#[4, 9, 14, 19], mesh.rightNodes)
+
+		assertArrayEquals(#[8, 9, 10, 11], mesh.topCells)
+		assertArrayEquals(#[0, 1, 2, 3], mesh.bottomCells)
+		assertArrayEquals(#[0, 4, 8], mesh.leftCells)
+		assertArrayEquals(#[3, 7, 11], mesh.rightCells)
+
+		assertArrayEquals(#[27, 28, 29, 30], mesh.topFaces)
+		assertArrayEquals(#[0, 2, 4, 6], mesh.bottomFaces)
+		assertArrayEquals(#[1, 10, 19], mesh.leftFaces)
+		assertArrayEquals(#[8, 17, 26], mesh.rightFaces)
+		assertArrayEquals(#[0, 1, 2, 4, 6, 8, 10, 17, 19, 26, 27, 28, 29, 30], mesh.outerFaces)
+		assertArrayEquals(#[3, 5, 7, 9, 11, 12, 13, 14, 15, 16, 18, 20, 21, 22, 23, 24, 25], mesh.innerFaces)
+		//println(mesh.innerHorizontalFaces.map[i | i.toString].join(' '))
+		assertArrayEquals(#[9, 11, 13, 15, 18, 20, 22, 24], mesh.innerHorizontalFaces)
+		assertArrayEquals(#[3, 5, 7, 12, 14, 16, 21, 23, 25], mesh.innerVerticalFaces)
+
+		assertEquals(0, mesh.bottomLeftNode.get(0))
+		assertEquals(4, mesh.bottomRightNode.get(0))
+		assertEquals(15, mesh.topLeftNode.get(0))
+		assertEquals(19, mesh.topRightNode.get(0))
 	}
 
+	@Test
+	def void testConnectivity() {
+		val mesh = CartesianMesh2DGenerator::generate(nbXQuads, nbYQuads, xSize, ySize)
+
+		assertArrayEquals(#[0, 1, 6, 5], mesh.getNodesOfCell(0))
+
+		assertArrayEquals(#[0, 1], mesh.getNodesOfFace(0))
+		assertArrayEquals(#[0, 5], mesh.getNodesOfFace(1))
+
+		assertEquals(0, mesh.getFirstNodeOfFace(0))
+		assertEquals(1, mesh.getSecondNodeOfFace(0))
+
+		assertArrayEquals(#[0], mesh.getCellsOfNode(0))
+		assertArrayEquals(#[0, 4], mesh.getCellsOfNode(5))
+		assertArrayEquals(#[0, 1, 4, 5], mesh.getCellsOfNode(6))
+
+		assertArrayEquals(#[0], mesh.getCellsOfFace(0))
+		assertArrayEquals(#[0, 1], mesh.getCellsOfFace(3))
+
+		assertArrayEquals(#[1, 4], mesh.getNeighbourCells(0))
+		assertArrayEquals(#[0, 2, 5], mesh.getNeighbourCells(1))
+		assertArrayEquals(#[1, 4, 6, 9], mesh.getNeighbourCells(5))
+
+		assertArrayEquals(#[0, 1, 3, 9], mesh.getFacesOfCell(0))
+
+		assertEquals(3, mesh.getCommonFace(0, 1))
+		assertEquals(-1, mesh.getCommonFace(0, 5))
+
+		assertEquals(0, mesh.getBackCell(3))
+		assertEquals(1, mesh.getFrontCell(3))
+		try {
+			assertEquals(-1, mesh.getBackCell(1))
+			fail()
+		} catch (Exception e1) {
+		}
+		try {
+			assertEquals(-1, mesh.getFrontCell(1))
+			fail()
+		} catch (Exception e2) {
+		}
+
+		assertEquals(9, mesh.getTopFaceOfCell(0))
+		assertEquals(0, mesh.getBottomFaceOfCell(0))
+		assertEquals(1, mesh.getLeftFaceOfCell(0))
+		assertEquals(3, mesh.getRightFaceOfCell(0))
+	}
+
+	@Test
+	def void testConnectivityOnBigMesh() {
+		// var startTime = LocalDateTime.now
+		val mesh = CartesianMesh2DGenerator::generate(40, 30, xSize, ySize)
+
+//		var endTime = LocalDateTime.now()
+//		var duration = Duration.between(startTime, endTime);
+//		println("  Elapsed time : " + duration.toMillis + "ms")
+		assertArrayEquals(#[182, 183, 185, 263], mesh.getFacesOfCell(90))
+	}
+
+	@Test
+	def void testConnectivityOnHugeMesh() {
+		// var startTime = LocalDateTime.now
+		val mesh = CartesianMesh2DGenerator::generate(400, 300, xSize, ySize)
+
+//		var endTime = LocalDateTime.now()
+//		var duration = Duration.between(startTime, endTime);
+//		println("  Elapsed time : " + duration.toMillis + "ms")
+		assertArrayEquals(#[1742, 1743, 1745, 2543], mesh.getFacesOfCell(870))
+	}
 }

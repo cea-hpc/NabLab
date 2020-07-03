@@ -1,4 +1,4 @@
-#include "ImplicitHeatEquation.h"
+#include "implicitheatequation/ImplicitHeatEquation.h"
 
 using namespace nablalib;
 

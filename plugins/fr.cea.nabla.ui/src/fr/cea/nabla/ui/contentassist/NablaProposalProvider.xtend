@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.Assignment
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
+import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 
 /**
  * See https://www.eclipse.org/Xtext/documentation/304_ide_concepts.html#content-assist
@@ -20,17 +21,14 @@ import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
  */
 class NablaProposalProvider extends AbstractNablaProposalProvider
 {
-	// alpha, beta, gamma, delta, epsilon, lambda, rho, omega
-	static val GreekLetters = #['\u03B1', '\u03B2', '\u03B3', '\u03B4', '\u03B5', '\u03BB', '\u03C1', '\u03A9']
-
 	override completeSimpleVar_Name(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor)
 	{
-		proposeCompletion(acceptor, GreekLetters, context)
+		proposeCompletion(acceptor, ReplaceUtf8Chars.UTF8Chars.keySet, context)
 	}
 
 	override completeConnectivityVar_Name(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor)
 	{
-		proposeCompletion(acceptor, GreekLetters, context)
+		proposeCompletion(acceptor, ReplaceUtf8Chars.UTF8Chars.keySet, context)
 	}
 
 	private def proposeCompletion(ICompletionProposalAcceptor acceptor, Iterable<String> proposals, ContentAssistContext context)

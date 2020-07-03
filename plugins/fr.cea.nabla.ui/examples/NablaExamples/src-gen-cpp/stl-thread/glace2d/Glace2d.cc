@@ -1,4 +1,4 @@
-#include "Glace2d.h"
+#include "glace2d/Glace2d.h"
 
 using namespace nablalib;
 

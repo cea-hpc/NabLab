@@ -1,4 +1,4 @@
-#include "Test.h"
+#include "test/Test.h"
 
 using namespace nablalib;
 
@@ -197,7 +197,6 @@ void Test::executeTimeLoopN() noexcept
 		cpuTimer.stop();
 		globalTimer.stop();
 	
-		
 		// Timers display
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
@@ -249,7 +248,6 @@ void Test::executeTimeLoopK() noexcept
 			std::swap(e2_nplus1_kplus1, e2_nplus1_k);
 		}
 	
-		
 	
 	} while (continueLoop);
 }
@@ -296,7 +294,6 @@ void Test::simulate()
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
 
-
 /******************** Module definition ********************/
 
 int main(int argc, char* argv[]) 
@@ -318,6 +315,7 @@ int main(int argc, char* argv[])
 	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
 	auto simulator = new Test(options);
 	simulator->simulate();
+	
 	// simulator must be deleted before calling finalize
 	delete simulator;
 	return 0;

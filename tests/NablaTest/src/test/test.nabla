@@ -13,8 +13,8 @@ with Math.*;
 
 itemtypes { node, cell }
 
-set nodes: → {node};
-set cells: → {cell};
+connectivity nodes: → {node};
+connectivity cells: → {cell};
 
 // Simulation options
 option ℝ maxTime = 0.1;

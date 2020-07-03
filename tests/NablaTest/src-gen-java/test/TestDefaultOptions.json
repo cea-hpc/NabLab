@@ -1,5 +1,7 @@
 {
 	"_comment": "Generated file - Do not overwrite",
+	"_nonRegression_comment":"empty value to disable, CreateReference or CompareToReference to take action",
+	"nonRegression":"",
 	"maxTime":0.1,
 	"maxIter":500,
 	"X_EDGE_LENGTH":0.1,

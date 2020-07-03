@@ -10,14 +10,17 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.IrModule
-import java.util.LinkedHashSet
+
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
 abstract class Ir2Cmake
 {
-	protected String libraryBackend
-	protected val LinkedHashSet<String> targetLinkLibraries = new LinkedHashSet<String>
 	protected String compiler
 	protected String compilerPath
+	protected String levelDBPath
+
+	abstract def CharSequence getLibraryBackend(IrModule m)
+	abstract def Iterable<String> getTargetLinkLibraries(IrModule m)
 
 	def getContentFor(IrModule it)
 	'''
@@ -45,10 +48,21 @@ abstract class Ir2Cmake
 
 		«libraryBackend»
 		add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
+		
+		«IF !levelDBPath.nullOrEmpty»
+		set(CMAKE_FIND_ROOT_PATH «levelDBPath»)
+		find_package(leveldb)
+		find_package(Threads REQUIRED)
+		if(TARGET leveldb::leveldb)
+			message(STATUS "levelDB found")
+		else()
+			message(STATUS "levelDB NOT found !!!")
+		endif()
+		«ENDIF»
 
 		add_executable(«name.toLowerCase» «name + '.cc'»)
 		target_include_directories(«name.toLowerCase» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-		target_link_libraries(«name.toLowerCase» cppnabla«FOR tll : targetLinkLibraries» «tll»«ENDFOR»)
+		target_link_libraries(«name.toLowerCase» PUBLIC cppnabla«FOR tll : targetLinkLibraries» «tll»«ENDFOR»«IF !levelDBPath.nullOrEmpty» leveldb::leveldb Threads::Threads«ENDIF»)
 
 		if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 		include(Project.cmake)
@@ -69,23 +83,104 @@ abstract class Ir2Cmake
 
 class StlIr2Cmake extends Ir2Cmake
 {
-	new(String compiler, String compilerPath)
+	new(String compiler, String compilerPath, String levelDBPath)
 	{
-		libraryBackend = "set(LIBCPPNABLA_BACKEND \"STL\")"
-		targetLinkLibraries += "cppnablastl pthread"
 		this.compiler = compiler
 		this.compilerPath = compilerPath
+		this.levelDBPath = levelDBPath
+	}
+
+	override getLibraryBackend(IrModule m)
+	'''set(LIBCPPNABLA_BACKEND "STL")'''
+
+	override getTargetLinkLibraries(IrModule m)
+	{
+		#["cppnablastl", "pthread"]
 	}
 }
 
 class KokkosIr2Cmake extends Ir2Cmake
 {
-	new(String compiler, String compilerPath, String kokkosPath)
+	val String kokkosPath
+
+	new(String compiler, String compilerPath, String kokkosPath, String levelDBPath)
 	{
-		libraryBackend = "set(LIBCPPNABLA_BACKEND \"KOKKOS\")" + "\n"
-						 + "set(NABLA_KOKKOS_PATH \"" + kokkosPath + "\")"
-		targetLinkLibraries += "cppnablakokkos"
+		this.kokkosPath = kokkosPath
 		this.compiler = compiler
 		this.compilerPath = compilerPath
+		this.levelDBPath = levelDBPath
+	}
+
+	override getLibraryBackend(IrModule m)
+	'''
+		set(LIBCPPNABLA_BACKEND "KOKKOS")
+		set(NABLA_KOKKOS_PATH "«kokkosPath»")
+	'''
+
+	override getTargetLinkLibraries(IrModule m)
+	{
+		#["cppnablakokkos"]
+	}
+}
+
+class SequentialIr2Cmake extends Ir2Cmake
+{
+	new(String compiler, String compilerPath, String levelDBPath)
+	{
+		this.compiler = compiler
+		this.compilerPath = compilerPath
+		this.levelDBPath = levelDBPath
+	}
+
+	override getLibraryBackend(IrModule m)
+	{
+		if (m.linearAlgebra)
+			'''
+				# libcppnabla for linear algebra
+				set(LIBCPPNABLA_BACKEND "STL")
+			'''
+		else
+			'''set(LIBCPPNABLA_BACKEND "NONE")'''
+	}
+
+	override getTargetLinkLibraries(IrModule m)
+	{
+		if (m.linearAlgebra)
+			#["cppnablastl", "pthread"]
+		else
+			#[]
+	}
+}
+
+class OpenMpCmake extends Ir2Cmake
+{
+	new(String compiler, String compilerPath, String levelDBPath)
+	{
+		this.compiler = compiler
+		this.compilerPath = compilerPath
+		this.levelDBPath = levelDBPath
+	}
+
+	override getLibraryBackend(IrModule m)
+	{
+		if (m.linearAlgebra)
+			'''
+				# libcppnabla for linear algebra
+				set(LIBCPPNABLA_BACKEND "STL")
+				find_package(OpenMP)
+			'''
+		else
+			'''
+				set(LIBCPPNABLA_BACKEND "NONE")
+				find_package(OpenMP)
+			'''
+	}
+
+	override getTargetLinkLibraries(IrModule m)
+	{
+		if (m.linearAlgebra)
+			#["OpenMP::OpenMP_CXX", "cppnablastl", "pthread"]
+		else
+			#["OpenMP::OpenMP_CXX"]
 	}
 }

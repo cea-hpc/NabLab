@@ -23,9 +23,10 @@ project(IterativeHeatEquationProject CXX)
 set(LIBCPPNABLA_BACKEND "STL")
 add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
 
+
 add_executable(iterativeheatequation IterativeHeatEquation.cc)
 target_include_directories(iterativeheatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(iterativeheatequation cppnabla cppnablastl pthread)
+target_link_libraries(iterativeheatequation PUBLIC cppnabla cppnablastl pthread)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 include(Project.cmake)

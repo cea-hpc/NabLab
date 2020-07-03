@@ -2,8 +2,8 @@
 #!/bin/bash
 #
 
-OLD_VERSION=0.1.2
-NEW_VERSION=0.1.3
+OLD_VERSION=0.2.1
+NEW_VERSION=0.3.0
 
 echo "Looking for MANIFEST.MF files"
 FIND_RES=`find . -path ./.metadata -prune -o -name "MANIFEST.MF" -print`
@@ -56,6 +56,13 @@ if grep -q "$OLD_VERSION.qualifier" $f; then
    echo "   Changing version of:" $f
    cp $f $f.old
    sed "s/$OLD_VERSION.qualifier/$NEW_VERSION.qualifier/g" $f.old > $f
+fi
+
+f=./README.md
+if grep -q "https://github.com/cea-hpc/NabLab/releases/tag/v$OLD_VERSION" $f; then
+   echo "   Changing version of:" $f
+   cp $f $f.old
+   sed "s%https://github.com/cea-hpc/NabLab/releases/tag/v$OLD_VERSION%https://github.com/cea-hpc/NabLab/releases/tag/v$NEW_VERSION%g" $f.old > $f
 fi
 
 echo "DONE. All that remains is to change the SPLASH SCREEN (BMP 459x347)."

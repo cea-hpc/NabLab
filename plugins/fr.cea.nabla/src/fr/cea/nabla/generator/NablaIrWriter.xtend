@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.generator
 
-import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.IrModule
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.ecore.xmi.XMLResource
@@ -20,11 +19,9 @@ import org.eclipse.xtext.resource.SaveOptions
 class NablaIrWriter
 {
 	static val IrExtension = 'nablair'
-	@Inject NablaGeneratorMessageDispatcher dispatcher
 
 	def createAndSaveResource(IFileSystemAccess2 fsa, IrModule irModule)
 	{
-		dispatcher.post('Writing nablair file')
 		val fileName = irModule.name.toLowerCase + '/' + irModule.name + '.' + IrExtension
 		val uri =  fsa.getURI(fileName)
 		val rSet = new ResourceSetImpl
@@ -33,7 +30,7 @@ class NablaIrWriter
 		val resource = rSet.createResource(uri)
 		resource.contents += irModule
 		resource.save(xmlSaveOptions)
-		dispatcher.post('... ok\n')
+		return fileName
 	}
 
 	private def getXmlSaveOptions()

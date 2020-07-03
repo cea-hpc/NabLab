@@ -28,9 +28,9 @@ abstract class AbstractExpressionInterpreterTest
 	{
 		val model = testModuleForSimulation
 		+
-		'''	
-		let r1 = true ? 1.0 : 2.0; // -> 1.0
-		let r2 = false ? 1.0 : 2.0; // -> 1.0
+		'''
+		let ℝ r1 = true ? 1.0 : 2.0; // -> 1.0
+		let ℝ r2 = false ? 1.0 : 2.0; // -> 1.0
 
 		ℝ[2] X{nodes};
 		'''
@@ -44,17 +44,17 @@ abstract class AbstractExpressionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		let b0 = !false; // -> true
-		let n0 = -(1); // -> -1
-		let r0 = -(1.); // -> -1.
-		let n1 = [1, 2];
-		let n2 = -n1; // -> [-1, -2]
-		let r1 = [1., 2.];
-		let r2 = -r1; // -> [-1., -2
-		let n3 = [[0, 1],[1, 2]];
-		let n4 = -n3; // -> [[0, -1],[-1, -2]]
-		let r3 = [[0., 1.],[1., 2.]];
-		let r4 = -r3; // -> [[-0., -1.],[-1., -2.]]*/
+		let ℾ b0 = !false; // -> true
+		let ℕ n0 = -(1); // -> -1
+		let ℝ r0 = -(1.); // -> -1.
+		let ℕ[2]n1 = [1, 2];
+		let ℕ[2] n2 = -n1; // -> [-1, -2]
+		let ℝ[2] r1 = [1., 2.];
+		let ℝ[2] r2 = -r1; // -> [-1., -2]
+		let ℕ[2,2] n3 = [[0, 1],[1, 2]];
+		let ℕ[2,2] n4 = -n3; // -> [[0, -1],[-1, -2]]
+		let ℝ[2,2] r3 = [[0., 1.],[1., 2.]];
+		let ℝ[2,2] r4 = -r3; // -> [[-0., -1.],[-1., -2.]]*/
 
 		ℝ[2] X{nodes};
 		'''
@@ -68,7 +68,7 @@ abstract class AbstractExpressionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		let b = (true);
+		let ℾ b = (true);
 		ℝ[2] X{nodes};
 		'''
 		
@@ -82,10 +82,10 @@ abstract class AbstractExpressionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		let n1 = 1;
-		let r1 = 2.0;
-		let b1 = true;
-		let b2 = false;
+		let ℕ n1 = 1;
+		let ℝ r1 = 2.0;
+		let ℾ b1 = true;
+		let ℾ b2 = false;
 
 		ℝ[2] X{nodes};
 		'''
@@ -99,8 +99,8 @@ abstract class AbstractExpressionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		let nMin = ℕ.MinValue;
-		let rMin = ℝ.MinValue;
+		let ℕ nMin = ℕ.MinValue;
+		let ℝ rMin = ℝ.MinValue;
 
 		ℝ[2] X{nodes};
 		'''
@@ -114,8 +114,8 @@ abstract class AbstractExpressionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		let nMax = ℕ.MaxValue;
-		let rMax = ℝ.MaxValue;
+		let ℕ nMax = ℕ.MaxValue;
+		let ℝ rMax = ℝ.MaxValue;
 
 		ℝ[2] X{nodes};
 		'''
@@ -129,17 +129,17 @@ abstract class AbstractExpressionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		let n1 = ℕ(1);
-		let n2 = ℕ[2](1);
-		let n3 = ℕ[2,3](1);
+		let ℕ n1 = ℕ(1);
+		let ℕ[2] n2 = ℕ[2](1);
+		let ℕ[2,3] n3 = ℕ[2,3](1);
 
-		let r1 = ℝ(1.);
-		let r2 = ℝ[2](1.);
-		let r3 = ℝ[2,3](1.);
+		let ℝ r1 = ℝ(1.);
+		let ℝ[2] r2 = ℝ[2](1.);
+		let ℝ[2,3] r3 = ℝ[2,3](1.);
 		
-		let b1 = ℾ(true);
-		let b2 = ℾ[2](true);
-		let b3 = ℾ[2,3](true);
+		let ℾ b1 = ℾ(true);
+		let ℾ[2] b2 = ℾ[2](true);
+		let ℾ[2,3] b3 = ℾ[2,3](true);
 
 		ℝ[2] X{nodes};
 		'''
@@ -153,7 +153,7 @@ abstract class AbstractExpressionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		let n = [1, 2];
+		let ℕ[2] n = [1, 2];
 		ℝ[2] X{nodes};
 		'''
 
@@ -166,7 +166,7 @@ abstract class AbstractExpressionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		let n = [[0, 1, 2],[1, 2, 3]];
+		let ℕ[2,3] n = [[0, 1, 2],[1, 2, 3]];
 		ℝ[2] X{nodes};
 		'''
 
@@ -179,7 +179,7 @@ abstract class AbstractExpressionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		let r = [1.0, 2.0];
+		let ℝ[2] r = [1.0, 2.0];
 		ℝ[2] X{nodes};
 		'''
 
@@ -192,7 +192,7 @@ abstract class AbstractExpressionInterpreterTest
 		val model = testModuleForSimulation
 		+
 		'''
-		let r = [[0., 1., 2.],[1., 2., 3.]];
+		let ℝ[2,3] r = [[0., 1., 2.],[1., 2., 3.]];
 		ℝ[2] X{nodes};
 		'''
 
@@ -228,26 +228,26 @@ abstract class AbstractExpressionInterpreterTest
 		''')
 		+ simulationVariables +
 		'''
-		let n0 = 0;
-		let n1 = getOne(); 	//-> 1
-		let n2 = addOne(n1); 	//-> 2
-		let n3 = add(n1, n2); //-> 3
-		let r0 = 0. ;
-		let r1 = addOne(r0); 	//-> 1.
-		let r2 = add(r1, n1); //-> 2.
-		let r3 = add(r2, r1); //-> 3.
+		let ℕ n0 = 0;
+		let ℕ n1 = getOne(); 	//-> 1
+		let ℕ n2 = addOne(n1); 	//-> 2
+		let ℕ n3 = add(n1, n2); //-> 3
+		let ℝ r0 = 0. ;
+		let ℝ r1 = addOne(r0); 	//-> 1.
+		let ℝ r2 = add(r1, n1); //-> 2.
+		let ℝ r3 = add(r2, r1); //-> 3.
 
-		let u = ℝ[2](1.);
-		let v = ℝ[2](2.);
-		let w = add(u,v); //-> [3., 3.]
+		let ℝ[2] u = ℝ[2](1.);
+		let ℝ[2] v = ℝ[2](2.);
+		let ℝ[2] w = add(u,v); //-> [3., 3.]
 
-		let α = ℝ[3](1.);
-		let β = ℝ[3](2.);
-		let res1 = add(α,β); //-> [3., 3., 3.]
+		let ℝ[3] α = ℝ[3](1.);
+		let ℝ[3] β = ℝ[3](2.);
+		let ℝ[3] res1 = add(α,β); //-> [3., 3., 3.]
 
-		let δ = ℝ[2,2](1.);
-		let ρ = ℝ[2,2](2.);
-		let res2 = add(δ,ρ); //-> [3., 3][3., 3.]
+		let ℝ[2,2] δ = ℝ[2,2](1.);
+		let ℝ[2,2] ρ = ℝ[2,2](2.);
+		let ℝ[2,2] res2 = add(δ,ρ); //-> [3., 3][3., 3.]
 
 		ℝ[2] X{nodes};
 		'''
@@ -277,8 +277,8 @@ abstract class AbstractExpressionInterpreterTest
 		''')
 		+ simulationVariables +
 		'''
-		let u = [0.0, 0.1];
-		let v = [0.0, 0.1, 0.2];
+		let ℝ[2] u = [0.0, 0.1];
+		let ℝ[3] v = [0.0, 0.1, 0.2];
 		ℝ[2] w1;
 		ℝ[2] w2;
 		ℝ[3] w3;
@@ -304,26 +304,26 @@ abstract class AbstractExpressionInterpreterTest
 		val model = getTestModuleForSimulation
 		+
 		'''
-		let b1 = true;
-		let b2 = b1; // -> true
+		let ℾ b1 = true;
+		let ℾ b2 = b1; // -> true
 
-		let n1 = 1;
-		let n2 = n1; // -> 1
-		let n3 = [2,3];
-		let n4 = n3; // -> [2,3]
-		let n5 = n3[0]; // -> 2
-		let n6 = [[2,3],[4,5],[6,7]];
-		let n7 = n6; // -> [[2,3],[4,5],[6,7]]
-		let n8 = n6[1,1]; // -> 5
+		let ℕ n1 = 1;
+		let ℕ n2 = n1; // -> 1
+		let ℕ[2] n3 = [2,3];
+		let ℕ[2] n4 = n3; // -> [2,3]
+		let ℕ n5 = n3[0]; // -> 2
+		let ℕ[3,2] n6 = [[2,3],[4,5],[6,7]];
+		let ℕ[3,2] n7 = n6; // -> [[2,3],[4,5],[6,7]]
+		let ℕ n8 = n6[1,1]; // -> 5
 
-		let r1 = 1.;
-		let r2 = r1; // -> 1.
-		let r3 = [2.,3.];
-		let r4 = r3; // -> [2.,3.]
-		let r5 = r3[0]; // -> 2.
-		let r6 = [[2.,3.],[4.,5.],[6.,7.]];
-		let r7 = r6; // -> [[2.,3.],[4.,5.],[6.,7.]]
-		let r8 = r6[1,1]; // -> 5.
+		let ℝ r1 = 1.;
+		let ℝ r2 = r1; // -> 1.
+		let ℝ[2] r3 = [2.,3.];
+		let ℝ[2] r4 = r3; // -> [2.,3.]
+		let ℝ r5 = r3[0]; // -> 2.
+		let ℝ[3,2] r6 = [[2.,3.],[4.,5.],[6.,7.]];
+		let ℝ[3,2] r7 = r6; // -> [[2.,3.],[4.,5.],[6.,7.]]
+		let ℝ r8 = r6[1,1]; // -> 5.
 
 		ℝ[2] X{nodes};
 		'''

@@ -33,7 +33,7 @@ namespace nablalib {
     // return std::to_string(v);
   }
   
-  // For containers with operator*(), begin() (and implicitly/hopefully end())
+  // For containers which has iterators with operator*(), begin() (and implicitly/hopefully end())
   template <typename T, typename std::enable_if_t<std::is_same_v<typename T::value_type, typename std::decay_t<decltype(*begin(std::declval<T>()))>>>* = nullptr>
   std::string serialize(const T& v) {
     std::string str;

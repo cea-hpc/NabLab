@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator
 
+import fr.cea.nabla.ir.DefaultVarDependencies
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.Container
@@ -26,16 +27,17 @@ import static extension fr.cea.nabla.ir.JobExtensions.*
 class Utils 
 {
 	public static val FunctionReductionPrefix = 'Functions'
+	static val extension DefaultVarDependencies = new DefaultVarDependencies
 
 	static def getCodeName(Job it)
 	{
 		name.toFirstLower
 	}
 
-	static def getCodeName(ArgOrVar it, String separator)
+	static def getCodeName(ArgOrVar it)
 	{
 		if (it instanceof SimpleVariable && (it as SimpleVariable).option)
-			'options' + separator + name
+			'options.' + name
 		else if (iteratorCounter)
 			(eContainer as Iterator).index.name
 		else

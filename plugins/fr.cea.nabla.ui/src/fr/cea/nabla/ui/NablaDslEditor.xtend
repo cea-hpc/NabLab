@@ -10,8 +10,8 @@
 package fr.cea.nabla.ui
 
 import com.google.inject.Inject
-import fr.cea.nabla.generator.ir.IrAnnotationHelper
 import fr.cea.nabla.ir.ir.IrAnnotable
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart
 import org.eclipse.jface.viewers.ISelection
 import org.eclipse.jface.viewers.IStructuredSelection
@@ -19,82 +19,58 @@ import org.eclipse.sirius.viewpoint.DRepresentationElement
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.ISelectionListener
 import org.eclipse.ui.IWorkbenchPart
+import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 import org.eclipse.xtext.ui.editor.XtextEditor
 
-class NablaDslEditor extends XtextEditor
+import static extension fr.cea.nabla.ir.IrAnnotableExtensions.*
+
+class NablaDslEditor 
+extends XtextEditor
 {
-	@Inject IrAnnotationHelper annotationHelper
+	@Inject NabLabConsoleFactory consoleFactory
+	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
 
-	val listener = new NablaDslListener(this)
-
-	def getAnnotationHelper() { annotationHelper }
+	// Listen to the selection of an IrAnnotable object in the Sirius editor
+	val ISelectionListener selectionListener = 
+		[IWorkbenchPart part, ISelection selection |
+			if (selection instanceof IStructuredSelection)
+			{
+				val firstElement = selection.firstElement
+				if (firstElement instanceof IGraphicalEditPart)
+				{
+					val se = firstElement.resolveSemanticElement
+					if (se instanceof DRepresentationElement)
+					{
+						val modelObject = se.semanticElements.get(0)
+						if (modelObject !== null && modelObject instanceof IrAnnotable)
+							selectIfDisplayed(modelObject as IrAnnotable)
+					}
+				}
+			}
+		]
 
 	override createPartControl(Composite parent)
 	{
 		super.createPartControl(parent)
-		site.page.addPostSelectionListener(listener)
+		site.page.addPostSelectionListener(selectionListener)
+		consoleFactory.openConsole
 	}
 
 	override dispose()
 	{
-		site.page.removePostSelectionListener(listener)
-	}
-}
-
-class NablaDslListener implements ISelectionListener
-{
-	val NablaDslEditor editor
-
-	new(NablaDslEditor editor) 
-	{ 
-		this.editor = editor
+		site.page.removePostSelectionListener(selectionListener)
 	}
 
-	override selectionChanged(IWorkbenchPart part, ISelection selection) 
+	def EObject getObjectAtPosition(int offset)
 	{
-		val modelObject = selection.modelObject
-
-		if (modelObject !== null && modelObject instanceof IrAnnotable) 
-			openInDslEditor(modelObject as IrAnnotable)
+		document.readOnly([state | eObjectAtOffsetHelper.resolveContainedElementAt(state, offset)])
 	}
 
-	private def getModelObject(ISelection selection)
+	def void selectIfDisplayed(IrAnnotable it)
 	{
-		//println("selection : " + selection.class.name)
-		if (selection instanceof IStructuredSelection)
-		{
-			val firstElement = selection.firstElement
-			if (firstElement instanceof IGraphicalEditPart)
-			{
-				val se = firstElement.resolveSemanticElement
-				if (se instanceof DRepresentationElement)
-					return se.semanticElements.head
-			} 
-		}
-		return null
-	}
-
-	/** 
-	 * Select the any argument in the editor if it is present.
-	 * Do not open the file if it is not: this action is reserved for double click.
-	 */
-	private def void openInDslEditor(IrAnnotable any) 
-	{
-		val annotation = any.annotations.findFirst[x | x.source == IrAnnotationHelper::ANNOTATION_NABLA_ORIGIN_SOURCE]
-		if (annotation !== null)
-		{
-			val uri = editor.annotationHelper.getUriDetail(any)
-			val editorResourceUri = editor.resource.fullPath.toString
-			if (any !== null && uri.endsWith(editorResourceUri))
-			{
-				val offset = Integer::parseInt(annotation.details.get(IrAnnotationHelper::ANNOTATION_OFFSET_DETAIL))
-				val length = Integer::parseInt(annotation.details.get(IrAnnotationHelper::ANNOTATION_LENGTH_DETAIL))
-				editor.selectAndReveal(offset, length)
-			}
-			else
-				editor.selectAndReveal(0,0)
-		}
-		else
-			editor.selectAndReveal(0,0)
+		val editorResourceUri = resource.fullPath.toString
+		val uri = uriDetail
+		if (uri !== null && uri.endsWith(editorResourceUri))
+			selectAndReveal(offset, length)
 	}
 }

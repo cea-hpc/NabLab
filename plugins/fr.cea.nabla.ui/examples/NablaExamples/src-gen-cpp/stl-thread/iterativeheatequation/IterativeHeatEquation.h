@@ -57,18 +57,24 @@ public:
 		Options(const std::string& fileName);
 	};
 
-	Options* options;
+	const Options& options;
 
-	IterativeHeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D);
+	IterativeHeatEquation(const Options& aOptions);
+	~IterativeHeatEquation();
 
 private:
-	CartesianMesh2D* mesh;
-	PvdFileWriter2D writer;
-	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
+	// Global definitions
 	double t_n;
 	double t_nplus1;
 	double deltat;
 	int lastDump;
+	
+	// Mesh (can depend on previous definitions)
+	CartesianMesh2D* mesh;
+	PvdFileWriter2D writer;
+	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
+	
+	// Global declarations
 	int n;
 	int k;
 	std::vector<RealArray1D<2>> X;
@@ -103,6 +109,8 @@ private:
 	
 	void updateU() noexcept;
 	
+	void computeDeltaTn() noexcept;
+	
 	void computeFaceConductivity() noexcept;
 	
 	void computeResidual() noexcept;
@@ -113,15 +121,13 @@ private:
 	
 	void initXcAndYc() noexcept;
 	
-	void computeDeltaTn() noexcept;
+	void computeAlphaCoeff() noexcept;
 	
 	void tearDownTimeLoopK() noexcept;
 	
-	void computeAlphaCoeff() noexcept;
-	
 	void executeTimeLoopN() noexcept;
 
-	void dumpVariables(int iteration);
+	void dumpVariables(int iteration, bool useTimer=true);
 
 public:
 	void simulate();

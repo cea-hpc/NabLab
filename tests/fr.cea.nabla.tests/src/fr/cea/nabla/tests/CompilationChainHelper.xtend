@@ -44,7 +44,23 @@ class CompilationChainHelper
 	var nablagenInjector = nablagenSetup.createInjectorAndDoEMFRegistration
 	var ParseHelper<NablagenModule> nablagenParseHelper = nablagenInjector.getInstance(ParseHelper)
 
-	def getIrModule(CharSequence model, CharSequence genModel)
+	/** 
+	 * Returns a module ready for interpretation i.e. with no reduction instruction.
+	 */
+	def getIrModuleForInterpretation(CharSequence model, CharSequence genModel)
+	{
+		val irModule = getIrModule(model, genModel, false)
+		// Suppress all reductions (replaced by loops)
+		transformer.transformIr(new ReplaceReductions(true), irModule, [msg | println(msg)])
+		return irModule
+	}
+
+	def void generateCode(CharSequence model, CharSequence genModel)
+	{
+		getIrModule(model, genModel, true)
+	}
+
+	private def getIrModule(CharSequence model, CharSequence genModel, boolean generateCode)
 	{
 		val testProjectPath = System.getProperty("user.dir")
 		val pluginsPath = testProjectPath + "/../../plugins/"
@@ -65,15 +81,16 @@ class CompilationChainHelper
 		var nablaGenModule = nablagenParseHelper.parse(genModel, rs)
 		nablaGenModule.assertNoErrors
 
-		if (nablaGenModule.config !== null)
-		{
-			var interpreter = interpreterProvider.get
-			val irModule = interpreter.buildIrModule(nablaGenModule.config, pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples")
-			// Suppress all reductions (replaced by loops)
-			transformer.transformIr(new ReplaceReductions(true), irModule, [msg | println(msg)])
-			return irModule
-		}
-		else
-			return null
+		if (nablaGenModule.config === null)
+			throw new RuntimeException("Problem with nablagen configuration file")
+
+		val interpreter = interpreterProvider.get
+		val projectDir = pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples"
+		val irModule = interpreter.buildIrModule(nablaGenModule.config, projectDir)
+
+		if (generateCode)
+			interpreter.generateCode(irModule, nablaGenModule.config.targets, nablaGenModule.config.simulation.iterationMax.name, nablaGenModule.config.simulation.timeMax.name, projectDir, nablaGenModule.config.levelDB)
+
+		return irModule
 	}
 }

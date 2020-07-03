@@ -1,23 +1,18 @@
 package fr.cea.nabla.generator
 
 import com.google.inject.Singleton
-import fr.cea.nabla.ir.ir.IrModule
 import java.util.ArrayList
 import org.eclipse.xtend.lib.annotations.Accessors
 
 @Singleton
 class NablaGeneratorMessageDispatcher
 {
-	@Accessors val traceListeners = new ArrayList<(String) => void>
-	@Accessors val irModuleListeners = new ArrayList<(IrModule) => void>
+	enum MessageType { Start, Exec, End }
 
-	def post(String msg)
-	{
-		traceListeners.forEach[apply(msg)]
-	}
+	@Accessors val traceListeners = new ArrayList<(MessageType, String) => void>
 
-	def post(IrModule module)
+	def post(MessageType msgType, String msg)
 	{
-		irModuleListeners.forEach[apply(module)]
+		traceListeners.forEach[apply(msgType, msg)]
 	}
 }

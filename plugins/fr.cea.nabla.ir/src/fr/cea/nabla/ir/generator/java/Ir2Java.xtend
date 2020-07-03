@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import fr.cea.nabla.ir.MandatoryOptions
+import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
@@ -20,7 +20,6 @@ import fr.cea.nabla.ir.transformers.TagOutputVariables
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
@@ -64,8 +63,10 @@ class Ir2Java extends CodeGenerator
 		{
 			public final static class Options
 			{
-				«IF postProcessingInfo !== null»public String «TagOutputVariables.OutputPathNameAndValue.key»;«ENDIF»
-				«FOR v : definitions.filter[option]»
+				«IF postProcessingInfo !== null»
+				public String «TagOutputVariables.OutputPathNameAndValue.key»;
+				«ENDIF»
+				«FOR v : allOptions»
 				public «v.javaType» «v.name»;
 				«ENDFOR»
 		
@@ -79,36 +80,46 @@ class Ir2Java extends CodeGenerator
 
 			private final Options options;
 
-			«IF withMesh»
-			// Mesh
-			private final CartesianMesh2D mesh;
-			private final FileWriter writer;
-			«FOR c : usedConnectivities BEFORE 'private final int ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
-			«ENDIF»
-
-			// Global Variables
-			«FOR v : definitions.filter[!option]»
+			// Global definitions
+			«FOR v : allDefinitions»
 			private «IF v.const»final «ENDIF»«v.javaType» «v.name»;
 			«ENDFOR»
+
+			«IF withMesh»
+			// Mesh (can depend on previous definitions)
+			private final CartesianMesh2D mesh;
+			«IF postProcessingInfo !== null»private final FileWriter writer;«ENDIF»
+			«FOR c : connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
+
+			«ENDIF»
+			// Global declarations
 			«FOR v : declarations»
 			private «v.javaType» «v.name»;
 			«ENDFOR»
 
-			public «name»(Options aOptions«IF withMesh», CartesianMesh2D aCartesianMesh2D«ENDIF»)
+			public «name»(Options aOptions)
 			{
 				options = aOptions;
-				«IF withMesh»
-				mesh = aCartesianMesh2D;
-				writer = new PvdFileWriter2D("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»);
-				«FOR c : usedConnectivities»
-				«c.nbElemsVar» = «c.connectivityAccessor»;
-				«ENDFOR»
-				«ENDIF»
 
-				// Initialize variables
-				«FOR v : definitions.filter[!option]»
+				// Initialize variables with default values
+				«FOR v : allDefinitions»
 					«v.name» = «v.defaultValue.content»;
 				«ENDFOR»
+
+				«IF withMesh»
+					«val xee = getVariableByName(MandatoryVariables.X_EDGE_ELEMS).codeName»
+					«val yee = getVariableByName(MandatoryVariables.Y_EDGE_ELEMS).codeName»
+					«val xel = getVariableByName(MandatoryVariables.X_EDGE_LENGTH).codeName»
+					«val yel = getVariableByName(MandatoryVariables.Y_EDGE_LENGTH).codeName»
+					// Initialize mesh variables
+					mesh = CartesianMesh2DGenerator.generate(«xee», «yee», «xel», «yel»);
+					«IF postProcessingInfo !== null»writer = new PvdFileWriter2D("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»);«ENDIF»
+					«FOR c : connectivities.filter[multiple]»
+					«c.nbElemsVar» = «c.connectivityAccessor»;
+					«ENDFOR»
+
+				«ENDIF»
+				// Allocate arrays
 				«FOR v : declarations.filter[!type.scalar]»
 					«IF v.linearAlgebra»
 						«v.name» = «(v as ConnectivityVariable).linearAlgebraDefinition»;
@@ -118,20 +129,20 @@ class Ir2Java extends CodeGenerator
 				«ENDFOR»
 				«IF withMesh»
 
-				// Copy node coordinates
-				double[][] gNodes = mesh.getGeometry().getNodes();
-				IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
-				{
-					«initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
-					«initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
-				});
+					// Copy node coordinates
+					double[][] gNodes = mesh.getGeometry().getNodes();
+					IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
+					{
+						«initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
+						«initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
+					});
 				«ENDIF»
 			}
 
 			public void simulate()
 			{
 				System.out.println("Start execution of module «name»");
-				«FOR j : jobs.filter[topLevel].sortByAtAndName»
+				«FOR j : innerJobs»
 					«j.codeName»(); // @«j.at»
 				«ENDFOR»
 				System.out.println("End of execution of module «name»");
@@ -142,12 +153,9 @@ class Ir2Java extends CodeGenerator
 				if (args.length == 1)
 				{
 					String dataFileName = args[0];
-					«name».Options o = «name».Options.createOptions(dataFileName);
-					«IF withMesh»
-					CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.«MandatoryOptions::X_EDGE_ELEMS», o.«MandatoryOptions::Y_EDGE_ELEMS», o.«MandatoryOptions::X_EDGE_LENGTH», o.«MandatoryOptions::Y_EDGE_LENGTH»);
-					«ENDIF»
-					«name» i = new «name»(o«IF withMesh», mesh«ENDIF»);
-					i.simulate();
+					«name».Options options = «name».Options.createOptions(dataFileName);
+					«name» simulator = new «name»(options);
+					simulator.simulate();
 				}
 				else
 				{
@@ -155,7 +163,7 @@ class Ir2Java extends CodeGenerator
 					System.out.println("        Expecting user data file name, for example «name»DefaultOptions.json");
 				}
 			}
-			«FOR j : jobs.sortByAtAndName»
+			«FOR j : jobs»
 
 				«j.content»
 			«ENDFOR»
@@ -167,7 +175,7 @@ class Ir2Java extends CodeGenerator
 
 			private void dumpVariables(int iteration)
 			{
-				if (!writer.isDisabled() && «postProcessingInfo.periodReference.getCodeName('.')» >= «postProcessingInfo.lastDumpVariable.getCodeName('.')» + «postProcessingInfo.periodValue.getCodeName('.')»)
+				if (!writer.isDisabled())
 				{
 					VtkFileContent content = new VtkFileContent(iteration, «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometry().getQuads());
 					«FOR v : postProcessingInfo.outputVariables.filter(ConnectivityVariable)»

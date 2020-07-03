@@ -158,21 +158,21 @@ IterativeHeatEquation::Options::Options(const std::string& fileName)
 
 /******************** Module definition ********************/
 
-IterativeHeatEquation::IterativeHeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D)
+IterativeHeatEquation::IterativeHeatEquation(const Options& aOptions)
 : options(aOptions)
-, mesh(aCartesianMesh2D)
-, writer("IterativeHeatEquation", options->outputPath)
-, nbNodes(mesh->getNbNodes())
-, nbCells(mesh->getNbCells())
-, nbFaces(mesh->getNbFaces())
-, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
-, nbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
-, nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
 , t_n(0.0)
 , t_nplus1(0.0)
 , deltat(0.001)
 , lastDump(numeric_limits<int>::min())
+, mesh(CartesianMesh2DGenerator::generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH))
+, writer("IterativeHeatEquation", options.outputPath)
+, nbNodes(mesh->getNbNodes())
+, nbCells(mesh->getNbCells())
+, nbFaces(mesh->getNbFaces())
+, nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
+, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
+, nbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
+, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
 , xc("xc", nbCells)
@@ -187,7 +187,6 @@ IterativeHeatEquation::IterativeHeatEquation(Options* aOptions, CartesianMesh2D*
 , faceConductivity("faceConductivity", nbFaces)
 , alpha("alpha", nbCells, nbCells)
 {
-
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
@@ -195,6 +194,11 @@ IterativeHeatEquation::IterativeHeatEquation(Options* aOptions, CartesianMesh2D*
 		X(rNodes)[0] = gNodes[rNodes][0];
 		X(rNodes)[1] = gNodes[rNodes][1];
 	}
+}
+
+IterativeHeatEquation::~IterativeHeatEquation()
+{
+	delete mesh;
 }
 
 /**
@@ -207,7 +211,7 @@ void IterativeHeatEquation::computeFaceLength() noexcept
 	Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const size_t& fFaces)
 	{
 		const Id fId(fFaces);
-		double reduction3(0.0);
+		double reduction0(0.0);
 		{
 			const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
 			const size_t nbNodesOfFaceF(nodesOfFaceF.size());
@@ -217,10 +221,10 @@ void IterativeHeatEquation::computeFaceLength() noexcept
 				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction3 = sumR0(reduction3, norm(X(pNodes) - X(pPlus1Nodes)));
+				reduction0 = sumR0(reduction0, norm(X(pNodes) - X(pPlus1Nodes)));
 			}
 		}
-		faceLength(fFaces) = 0.5 * reduction3;
+		faceLength(fFaces) = 0.5 * reduction0;
 	});
 }
 
@@ -244,7 +248,7 @@ void IterativeHeatEquation::computeV() noexcept
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
 		const Id jId(jCells);
-		double reduction2(0.0);
+		double reduction0(0.0);
 		{
 			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
@@ -254,10 +258,10 @@ void IterativeHeatEquation::computeV() noexcept
 				const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction2 = sumR0(reduction2, det(X(pNodes), X(pPlus1Nodes)));
+				reduction0 = sumR0(reduction0, det(X(pNodes), X(pPlus1Nodes)));
 			}
 		}
-		V(jCells) = 0.5 * reduction2;
+		V(jCells) = 0.5 * reduction0;
 	});
 }
 
@@ -319,7 +323,7 @@ void IterativeHeatEquation::updateU() noexcept
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
 	{
 		const Id cId(cCells);
-		double reduction6(0.0);
+		double reduction0(0.0);
 		{
 			const auto neighbourCellsC(mesh->getNeighbourCells(cId));
 			const size_t nbNeighbourCellsC(neighbourCellsC.size());
@@ -327,11 +331,26 @@ void IterativeHeatEquation::updateU() noexcept
 			{
 				const Id dId(neighbourCellsC[dNeighbourCellsC]);
 				const size_t dCells(dId);
-				reduction6 = sumR0(reduction6, alpha(cCells,dCells) * u_nplus1_k(dCells));
+				reduction0 = sumR0(reduction0, alpha(cCells,dCells) * u_nplus1_k(dCells));
 			}
 		}
-		u_nplus1_kplus1(cCells) = u_n(cCells) + alpha(cCells,cCells) * u_nplus1_k(cCells) + reduction6;
+		u_nplus1_kplus1(cCells) = u_n(cCells) + alpha(cCells,cCells) * u_nplus1_k(cCells) + reduction0;
 	});
+}
+
+/**
+ * Job ComputeDeltaTn called @2.0 in simulate method.
+ * In variables: D, X_EDGE_LENGTH, Y_EDGE_LENGTH
+ * Out variables: deltat
+ */
+void IterativeHeatEquation::computeDeltaTn() noexcept
+{
+	double reduction0;
+	Kokkos::parallel_reduce(nbCells, KOKKOS_LAMBDA(const size_t& cCells, double& accu)
+	{
+		accu = minR0(accu, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D(cCells));
+	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &minR0));
+	deltat = reduction0 * 0.1;
 }
 
 /**
@@ -344,7 +363,7 @@ void IterativeHeatEquation::computeFaceConductivity() noexcept
 	Kokkos::parallel_for(nbFaces, KOKKOS_LAMBDA(const size_t& fFaces)
 	{
 		const Id fId(fFaces);
-		double reduction4(1.0);
+		double reduction0(1.0);
 		{
 			const auto cellsOfFaceF(mesh->getCellsOfFace(fId));
 			const size_t nbCellsOfFaceF(cellsOfFaceF.size());
@@ -352,10 +371,10 @@ void IterativeHeatEquation::computeFaceConductivity() noexcept
 			{
 				const Id c1Id(cellsOfFaceF[c1CellsOfFaceF]);
 				const size_t c1Cells(c1Id);
-				reduction4 = prodR0(reduction4, D(c1Cells));
+				reduction0 = prodR0(reduction0, D(c1Cells));
 			}
 		}
-		double reduction5(0.0);
+		double reduction1(0.0);
 		{
 			const auto cellsOfFaceF(mesh->getCellsOfFace(fId));
 			const size_t nbCellsOfFaceF(cellsOfFaceF.size());
@@ -363,10 +382,10 @@ void IterativeHeatEquation::computeFaceConductivity() noexcept
 			{
 				const Id c2Id(cellsOfFaceF[c2CellsOfFaceF]);
 				const size_t c2Cells(c2Id);
-				reduction5 = sumR0(reduction5, D(c2Cells));
+				reduction1 = sumR0(reduction1, D(c2Cells));
 			}
 		}
-		faceConductivity(fFaces) = 2.0 * reduction4 / reduction5;
+		faceConductivity(fFaces) = 2.0 * reduction0 / reduction1;
 	});
 }
 
@@ -377,12 +396,12 @@ void IterativeHeatEquation::computeFaceConductivity() noexcept
  */
 void IterativeHeatEquation::computeResidual() noexcept
 {
-	double reduction7;
+	double reduction0;
 	Kokkos::parallel_reduce(nbCells, KOKKOS_LAMBDA(const size_t& jCells, double& accu)
 	{
 		accu = maxR0(accu, std::abs(u_nplus1_kplus1(jCells) - u_nplus1_k(jCells)));
-	}, KokkosJoiner<double>(reduction7, -numeric_limits<double>::max(), &maxR0));
-	residual = reduction7;
+	}, KokkosJoiner<double>(reduction0, -numeric_limits<double>::max(), &maxR0));
+	residual = reduction0;
 }
 
 /**
@@ -403,7 +422,7 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (residual > options->epsilon && check(k + 1 < options->maxIterationsK));
+		continueLoop = (residual > options.epsilon && check(k + 1 < options.maxIterationsK));
 	
 		if (continueLoop)
 		{
@@ -424,8 +443,8 @@ void IterativeHeatEquation::initU() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
 	{
-		if (norm(Xc(cCells) - options->vectOne) < 0.5) 
-			u_n(cCells) = options->u0;
+		if (norm(Xc(cCells) - options.vectOne) < 0.5) 
+			u_n(cCells) = options.u0;
 		else
 			u_n(cCells) = 0.0;
 	});
@@ -446,32 +465,7 @@ void IterativeHeatEquation::initXcAndYc() noexcept
 }
 
 /**
- * Job computeDeltaTn called @2.0 in simulate method.
- * In variables: D, X_EDGE_LENGTH, Y_EDGE_LENGTH
- * Out variables: deltat
- */
-void IterativeHeatEquation::computeDeltaTn() noexcept
-{
-	double reduction1;
-	Kokkos::parallel_reduce(nbCells, KOKKOS_LAMBDA(const size_t& cCells, double& accu)
-	{
-		accu = minR0(accu, options->X_EDGE_LENGTH * options->Y_EDGE_LENGTH / D(cCells));
-	}, KokkosJoiner<double>(reduction1, numeric_limits<double>::max(), &minR0));
-	deltat = reduction1 * 0.1;
-}
-
-/**
- * Job TearDownTimeLoopK called @3.0 in executeTimeLoopN method.
- * In variables: u_nplus1_kplus1
- * Out variables: u_nplus1
- */
-void IterativeHeatEquation::tearDownTimeLoopK() noexcept
-{
-	deep_copy(u_nplus1, u_nplus1_kplus1);
-}
-
-/**
- * Job computeAlphaCoeff called @3.0 in simulate method.
+ * Job ComputeAlphaCoeff called @3.0 in simulate method.
  * In variables: V, Xc, deltat, faceConductivity, faceLength
  * Out variables: alpha
  */
@@ -500,6 +494,16 @@ void IterativeHeatEquation::computeAlphaCoeff() noexcept
 }
 
 /**
+ * Job TearDownTimeLoopK called @3.0 in executeTimeLoopN method.
+ * In variables: u_nplus1_kplus1
+ * Out variables: u_nplus1
+ */
+void IterativeHeatEquation::tearDownTimeLoopK() noexcept
+{
+	deep_copy(u_nplus1, u_nplus1_kplus1);
+}
+
+/**
  * Job ExecuteTimeLoopN called @4.0 in simulate method.
  * In variables: alpha, deltat, t_n, u_n, u_nplus1_k, u_nplus1_kplus1
  * Out variables: residual, t_nplus1, u_nplus1, u_nplus1_k, u_nplus1_kplus1
@@ -513,7 +517,8 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 		globalTimer.start();
 		cpuTimer.start();
 		n++;
-		dumpVariables(n);
+		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+			dumpVariables(n);
 		if (n!=1)
 			std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
 				<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
@@ -525,7 +530,7 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (t_nplus1 < options->stopTime && n + 1 < options->maxIterations);
+		continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
 	
 		if (continueLoop)
 		{
@@ -544,23 +549,28 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << utils::progress_bar(n, options->maxIterations, t_n, options->stopTime, 25);
+		std::cout << utils::progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(n, options->maxIterations, t_n, options->stopTime, deltat, globalTimer), true)
+			utils::eta(n, options.maxIterations, t_n, options.stopTime, deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
 		cpuTimer.reset();
 		ioTimer.reset();
 	} while (continueLoop);
+	// force a last output at the end
+	dumpVariables(n, false);
 }
 
-void IterativeHeatEquation::dumpVariables(int iteration)
+void IterativeHeatEquation::dumpVariables(int iteration, bool useTimer)
 {
-	if (!writer.isDisabled() && n >= lastDump + options->outputPeriod)
+	if (!writer.isDisabled())
 	{
-		cpuTimer.stop();
-		ioTimer.start();
+		if (useTimer)
+		{
+			cpuTimer.stop();
+			ioTimer.start();
+		}
 		auto quads = mesh->getGeometry()->getQuads();
 		writer.startVtpFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data());
 		writer.openNodeData();
@@ -570,8 +580,11 @@ void IterativeHeatEquation::dumpVariables(int iteration)
 		writer.closeCellData();
 		writer.closeVtpFile();
 		lastDump = n;
-		ioTimer.stop();
-		cpuTimer.start();
+		if (useTimer)
+		{
+			ioTimer.stop();
+			cpuTimer.start();
+		}
 	}
 }
 
@@ -579,8 +592,8 @@ void IterativeHeatEquation::simulate()
 {
 	std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting IterativeHeatEquation ..." << __RESET__ << "\n\n";
 	
-	std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
-		<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
+	std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options.X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options.Y_EDGE_ELEMS
+		<< __RESET__ << ", X length=" << __BOLD__ << options.X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options.Y_EDGE_LENGTH << __RESET__ << std::endl;
 	
 	if (Kokkos::hwloc::available())
 	{
@@ -604,16 +617,15 @@ void IterativeHeatEquation::simulate()
 	computeV(); // @1.0
 	initD(); // @1.0
 	initXc(); // @1.0
+	computeDeltaTn(); // @2.0
 	computeFaceConductivity(); // @2.0
 	initU(); // @2.0
 	initXcAndYc(); // @2.0
-	computeDeltaTn(); // @2.0
 	computeAlphaCoeff(); // @3.0
 	executeTimeLoopN(); // @4.0
 	
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
-
 
 /******************** Module definition ********************/
 
@@ -633,13 +645,13 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	
-	auto o = new IterativeHeatEquation::Options(dataFile);
-	auto nm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
-	auto c = new IterativeHeatEquation(o, nm);
-	c->simulate();
-	delete c;
-	delete nm;
-	delete o;
+	IterativeHeatEquation::Options options(dataFile);
+	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
+	auto simulator = new IterativeHeatEquation(options);
+	simulator->simulate();
+	
+	// simulator must be deleted before calling finalize
+	delete simulator;
 	Kokkos::finalize();
 	return 0;
 }

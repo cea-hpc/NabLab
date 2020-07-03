@@ -9,17 +9,19 @@
  *******************************************************************************/
 package fr.cea.nabla.ui
 
-import fr.cea.nabla.ui.internal.NablaActivator
+import fr.cea.nabla.ir.DefaultVarDependencies
+import fr.cea.nabla.ir.ir.Job
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.jface.resource.ResourceLocator
 import org.eclipse.ui.PlatformUI
-import org.eclipse.xtext.ui.editor.XtextEditor
 
 class UiUtils
 {
+	static val extension DefaultVarDependencies = new DefaultVarDependencies
+
 	static def getImageDescriptor(String path)
 	{
 		ResourceLocator::imageDescriptorFromBundle("fr.cea.nabla.ui", path)
@@ -31,13 +33,18 @@ class UiUtils
 		if (imageDescriptor.present) imageDescriptor.get.createImage
 	}
 
-	static def getActiveNablaEditor()
+	static def String getTooltip(Job it)
+	{
+		val inVarNames = "[" + inVars.map[name].join(', ') + "]"
+		val outVarNames = "[" + outVars.map[name].join(', ') + "]"
+		inVarNames + "  \u21E8  " + name + "  \u21E8  " + outVarNames
+	}
+
+	static def getActiveNablaDslEditor()
 	{
 		val w = PlatformUI::workbench.activeWorkbenchWindow
-		if (w!==null && w.activePage!==null && w.activePage.activeEditor!==null
-			&& (w.activePage.activeEditor instanceof XtextEditor)
-			&& (w.activePage.activeEditor as XtextEditor).languageName == NablaActivator::FR_CEA_NABLA_NABLA)
-			w.activePage.activeEditor as XtextEditor
+		if (w !== null && w.activePage !== null && w.activePage.activeEditor !== null && w.activePage.activeEditor instanceof NablaDslEditor)
+			w.activePage.activeEditor as NablaDslEditor
 		else
 			null
 	}

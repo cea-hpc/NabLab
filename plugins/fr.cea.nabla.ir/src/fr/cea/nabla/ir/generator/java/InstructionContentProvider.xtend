@@ -34,6 +34,7 @@ import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 import static extension fr.cea.nabla.ir.generator.java.ItemIndexAndIdValueContentProvider.*
+import fr.cea.nabla.ir.ir.While
 
 class InstructionContentProvider 
 {
@@ -53,7 +54,7 @@ class InstructionContentProvider
 	static def dispatch CharSequence getContent(Affectation it)
 	'''
 		«IF left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty)»
-			«left.target.getCodeName('.')».set(«FOR r : left.iterators SEPARATOR ', ' AFTER ', '»«r.name»«ENDFOR»«FOR d : left.indices SEPARATOR ', ' AFTER ', '»«d»«ENDFOR»«right.content»);
+			«left.target.codeName».set(«FOR r : left.iterators SEPARATOR ', ' AFTER ', '»«r.name»«ENDFOR»«FOR d : left.indices SEPARATOR ', ' AFTER ', '»«d»«ENDFOR»«right.content»);
 		«ELSE»
 			«left.content» = «right.content»;
 		«ENDIF»
@@ -118,6 +119,13 @@ class InstructionContentProvider
 	{
 		getSetDefinitionContent(name, value)
 	}
+
+	static def dispatch CharSequence getContent(While it)
+	'''
+		while («condition.content»)
+		«val iContent = instruction.content»
+		«IF !(iContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«iContent»
+	'''
 
 	static def dispatch CharSequence getContent(Return it)
 	'''
@@ -192,6 +200,6 @@ class InstructionContentProvider
 
 	private static def getSetDefinitionContent(String setName, ConnectivityCall call)
 	'''
-		final int[] «setName» = mesh.«call.accessor»;
+		final int«IF call.connectivity.multiple»[]«ENDIF» «setName» = mesh.«call.accessor»;
 	'''
 }

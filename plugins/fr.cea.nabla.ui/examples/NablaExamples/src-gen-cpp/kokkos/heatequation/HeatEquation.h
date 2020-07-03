@@ -56,18 +56,24 @@ public:
 		Options(const std::string& fileName);
 	};
 
-	Options* options;
+	const Options& options;
 
-	HeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D);
+	HeatEquation(const Options& aOptions);
+	~HeatEquation();
 
 private:
-	CartesianMesh2D* mesh;
-	PvdFileWriter2D writer;
-	size_t nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
+	// Global definitions
 	double t_n;
 	double t_nplus1;
 	static constexpr double deltat = 0.001;
 	int lastDump;
+	
+	// Mesh (can depend on previous definitions)
+	CartesianMesh2D* mesh;
+	PvdFileWriter2D writer;
+	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbNodesOfCell;
+	
+	// Global declarations
 	int n;
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> center;
@@ -108,7 +114,7 @@ private:
 	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept;
 
-	void dumpVariables(int iteration);
+	void dumpVariables(int iteration, bool useTimer=true);
 
 public:
 	void simulate();

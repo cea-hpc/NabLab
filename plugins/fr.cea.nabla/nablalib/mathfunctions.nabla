@@ -56,11 +56,11 @@ def matVectProduct: x, y  | ℝ[x,y] × ℝ[y] → ℝ[x], (a, b) →
 // scalar product
 def dot: x | ℝ[x] × ℝ[x] → ℝ, (a , b) →
 {
-	let result = 0.0;
+	let ℝ result = 0.0;
 	∀ i ∈ [0;x[,
 		result = result + a[i]*b[i];
 	return result;
-}	
+}
 
 // determinant = produit vectoriel en 2D
 def det: ℝ[2] × ℝ[2] → ℝ, (a ,b) → return (a[0]*b[1] - a[1]*b[0]);

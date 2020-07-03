@@ -13,33 +13,33 @@ with Math.*;
 
 itemtypes { node, cell, face }
 
-set nodes: → {node};
-set cells: → {cell};
-set faces: → {face};
-set neighbourCells: cell → {cell};
-set nodesOfFace: face → {node};
-set cellsOfFace: face → {cell};
-set nodesOfCell: cell → {node};
-item commonFace: cell × cell → face;
+connectivity nodes: → {node};
+connectivity cells: → {cell};
+connectivity faces: → {face};
+connectivity neighbourCells: cell → {cell};
+connectivity nodesOfFace: face → {node};
+connectivity cellsOfFace: face → {cell};
+connectivity nodesOfCell: cell → {node};
+connectivity commonFace: cell × cell → face;
 
-option u0 = 1.0;
-option vectOne = ℝ[2](1.0);
+option ℝ u0 = 1.0;
+option ℝ[2] vectOne = ℝ[2](1.0);
 
 // Mesh options
-option X_LENGTH = 2.0;
-option Y_LENGTH = 2.0;
-option X_EDGE_ELEMS = 40;
-option Y_EDGE_ELEMS = 40;
-option X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
-option Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
+option ℝ X_LENGTH = 2.0;
+option ℝ Y_LENGTH = 2.0;
+option ℕ X_EDGE_ELEMS = 40;
+option ℕ Y_EDGE_ELEMS = 40;
+option ℝ X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
+option ℝ Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 
 // Simulation options
-option stopTime = 1.0;
-option maxIterations = 500000000;
+option ℝ stopTime = 1.0;
+option ℕ maxIterations = 500000000;
 
 // User options
-let t=0.0;
-let δt=0.001;
+let ℝ t = 0.0;
+let ℝ δt = 0.001;
 ℝ[2] X{nodes}, Xc{cells}; // Position of nodes and cells center of gravity 
 ℝ xc{cells}, yc{cells}; // Abscissa and ordinate of cells center of gravity so they can be plotted in vtk file
 ℝ u{cells}; // Temperature
@@ -66,22 +66,22 @@ InitU: ∀c∈cells(),
 InitD: ∀c∈cells(), D{c} = 1.0; 
 
 // Computing time step with cfl = 0.96
-computeDeltaTn: δt = Min{c∈cells()}(X_EDGE_LENGTH*Y_EDGE_LENGTH/D{c}) * 0.24;
+ComputeDeltaTn: δt = Min{c∈cells()}(X_EDGE_LENGTH*Y_EDGE_LENGTH/D{c}) * 0.24;
 
 ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{p∈nodesOfCell(j)}(det(X{p}, X{p+1}));
 ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p} - X{p+1}));
 ComputeFaceConductivity: ∀f∈faces(), faceConductivity{f} = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1}) / ∑{c2∈cellsOfFace(f)}(D{c2});
 
 // Assembling of the diffusion matrix
-computeAlphaCoeff: ∀c∈cells(), {
-	let αDiag = 0.0;
-	∀d∈neighbourCells(c), f=commonFace(c,d), {
-		let αExtraDiag = δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c} - Xc{d});
+ComputeAlphaCoeff: ∀c∈cells(), {
+	let ℝ αDiag = 0.0;
+	∀d∈neighbourCells(c), ∀f∈commonFace(c,d), {
+		let ℝ αExtraDiag = δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c} - Xc{d});
 		α{c, d} = αExtraDiag;
 		αDiag = αDiag + αExtraDiag;
 	}
 	α{c, c} = 1 - αDiag;
 }
-UpdateU: ∀c∈cells(), u^{n+1}{c} = α{c, c} * u^{n}{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u^{n}{d});
 
+UpdateU: ∀c∈cells(), u^{n+1}{c} = α{c, c} * u^{n}{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u^{n}{d});
 ComputeTn: t^{n+1} = t^{n} + δt;

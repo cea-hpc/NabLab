@@ -12,7 +12,6 @@ package fr.cea.nabla.tests
 import com.google.inject.Inject
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
-
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,7 +43,7 @@ class NablaExamplesTest
 		val model = readFileAsString(examplesProjectPath + "src/explicitheatequation/ExplicitHeatEquation.nabla")
 		val genmodel = readFileAsString(examplesProjectPath + "src/explicitheatequation/ExplicitHeatEquation.nablagen")
 
-		compilationHelper.getIrModule(model, genmodel)
+		compilationHelper.generateCode(model, genmodel)
 		testNoGitDiff("explicitheatequation")
 	}
 
@@ -54,7 +53,7 @@ class NablaExamplesTest
 		val model = readFileAsString(examplesProjectPath + "src/glace2d/Glace2d.nabla")
 		val genmodel = readFileAsString(examplesProjectPath + "src/glace2d/Glace2d.nablagen")
 
-		compilationHelper.getIrModule(model, genmodel)
+		compilationHelper.generateCode(model, genmodel)
 		testNoGitDiff("glace2d")
 	}
 
@@ -64,7 +63,7 @@ class NablaExamplesTest
 		val model = readFileAsString(examplesProjectPath + "src/heatequation/HeatEquation.nabla")
 		val genmodel = readFileAsString(examplesProjectPath + "src/heatequation/HeatEquation.nablagen")
 
-		compilationHelper.getIrModule(model, genmodel)
+		compilationHelper.generateCode(model, genmodel)
 		testNoGitDiff("/heatequation") // To avoid a false positiv on explicitheatequation fail or implicitheatequation
 	}
 
@@ -74,7 +73,7 @@ class NablaExamplesTest
 		val model = readFileAsString(examplesProjectPath + "src/implicitheatequation/ImplicitHeatEquation.nabla")
 		val genmodel = readFileAsString(examplesProjectPath + "src/implicitheatequation/ImplicitHeatEquation.nablagen")
 
-		compilationHelper.getIrModule(model, genmodel)
+		compilationHelper.generateCode(model, genmodel)
 		testNoGitDiff("implicitheatequation")
 	}
 
@@ -84,7 +83,7 @@ class NablaExamplesTest
 		val model = readFileAsString(examplesProjectPath + "src/iterativeheatequation/IterativeHeatEquation.nabla")
 		val genmodel = readFileAsString(examplesProjectPath + "src/iterativeheatequation/IterativeHeatEquation.nablagen")
 
-		compilationHelper.getIrModule(model, genmodel)
+		compilationHelper.generateCode(model, genmodel)
 		testNoGitDiff("iterativeheatequation")
 	}
 

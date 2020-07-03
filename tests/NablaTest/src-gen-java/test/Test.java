@@ -17,16 +17,13 @@ public final class Test
 {
 	public final static class Options
 	{
-		public String outputPath;
-		public int outputPeriod;
-		public double stopTime;
-		public int maxIterations;
+		public double maxTime;
+		public int maxIter;
 		public double X_EDGE_LENGTH;
 		public double Y_EDGE_LENGTH;
 		public int X_EDGE_ELEMS;
 		public int Y_EDGE_ELEMS;
-		public double PI;
-		public double alpha;
+		public double deltat;
 
 		public static Options createOptions(String jsonFileName) throws FileNotFoundException
 		{
@@ -38,51 +35,52 @@ public final class Test
 
 	private final Options options;
 
-	// Mesh
-	private final CartesianMesh2D mesh;
-	private final FileWriter writer;
-	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
-
-	// Global Variables
+	// Global definitions
 	private double t_n;
 	private double t_nplus1;
-	private final double deltat;
-	private int lastDump;
-	private int n;
-	private double[][] X;
-	private double[][] center;
-	private double[] u_n;
-	private double[] u_nplus1;
-	private double[] V;
-	private double[] f;
-	private double[] outgoingFlux;
-	private double[] surface;
 
-	public Test(Options aOptions, CartesianMesh2D aCartesianMesh2D)
+	// Mesh (can depend on previous definitions)
+	private final CartesianMesh2D mesh;
+	private final int nbNodes, nbCells;
+
+	// Global declarations
+	private int n;
+	private int k;
+	private double[][] X;
+	private double[] e1;
+	private double[] e2_n;
+	private double[] e2_nplus1;
+	private double[] e2_nplus1_k;
+	private double[] e2_nplus1_kplus1;
+	private double[] e2_nplus1_k0;
+	private double[] e_n;
+	private double[] e_nplus1;
+	private double[] e_n0;
+
+	public Test(Options aOptions)
 	{
 		options = aOptions;
-		mesh = aCartesianMesh2D;
-		writer = new PvdFileWriter2D("Test", options.outputPath);
-		nbNodes = mesh.getNbNodes();
-		nbCells = mesh.getNbCells();
-		nbFaces = mesh.getNbFaces();
-		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
-		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 
-		// Initialize variables
+		// Initialize variables with default values
 		t_n = 0.0;
 		t_nplus1 = 0.0;
-		deltat = 0.001;
-		lastDump = Integer.MIN_VALUE;
+
+		// Initialize mesh variables
+		mesh = CartesianMesh2DGenerator.generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH);
+		nbNodes = mesh.getNbNodes();
+		nbCells = mesh.getNbCells();
+
+		// Allocate arrays
 		X = new double[nbNodes][2];
-		center = new double[nbCells][2];
-		u_n = new double[nbCells];
-		u_nplus1 = new double[nbCells];
-		V = new double[nbCells];
-		f = new double[nbCells];
-		outgoingFlux = new double[nbCells];
-		surface = new double[nbFaces];
+		e1 = new double[nbCells];
+		e2_n = new double[nbCells];
+		e2_nplus1 = new double[nbCells];
+		e2_nplus1_k = new double[nbCells];
+		e2_nplus1_kplus1 = new double[nbCells];
+		e2_nplus1_k0 = new double[nbCells];
+		e_n = new double[nbCells];
+		e_nplus1 = new double[nbCells];
+		e_n0 = new double[nbCells];
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -96,11 +94,8 @@ public final class Test
 	public void simulate()
 	{
 		System.out.println("Start execution of module Test");
-		computeSurface(); // @1.0
-		computeV(); // @1.0
-		iniCenter(); // @1.0
-		iniF(); // @1.0
-		iniUn(); // @2.0
+		initE(); // @1.0
+		setUpTimeLoopN(); // @2.0
 		executeTimeLoopN(); // @3.0
 		System.out.println("End of execution of module Test");
 	}
@@ -110,10 +105,9 @@ public final class Test
 		if (args.length == 1)
 		{
 			String dataFileName = args[0];
-			Test.Options o = Test.Options.createOptions(dataFileName);
-			CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
-			Test i = new Test(o, mesh);
-			i.simulate();
+			Test.Options options = Test.Options.createOptions(dataFileName);
+			Test simulator = new Test(options);
+			simulator.simulate();
 		}
 		else
 		{
@@ -123,164 +117,84 @@ public final class Test
 	}
 
 	/**
-	 * Job ComputeOutgoingFlux called @1.0 in executeTimeLoopN method.
-	 * In variables: V, center, deltat, surface, u_n
-	 * Out variables: outgoingFlux
+	 * Job computeE1 called @1.0 in executeTimeLoopN method.
+	 * In variables: e_n
+	 * Out variables: e1
 	 */
-	private void computeOutgoingFlux()
+	private void computeE1()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(j1Cells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			final int j1Id = j1Cells;
-			double reduction3 = 0.0;
-			{
-				final int[] neighbourCellsJ1 = mesh.getNeighbourCells(j1Id);
-				final int nbNeighbourCellsJ1 = neighbourCellsJ1.length;
-				for (int j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<nbNeighbourCellsJ1; j2NeighbourCellsJ1++)
-				{
-					final int j2Id = neighbourCellsJ1[j2NeighbourCellsJ1];
-					final int j2Cells = j2Id;
-					final int cfId = mesh.getCommonFace(j1Id, j2Id);
-					final int cfFaces = cfId;
-					reduction3 = sumR0(reduction3, (u_n[j2Cells] - u_n[j1Cells]) / norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
-				}
-			}
-			outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction3;
+			e1[cCells] = e_n[cCells] + 3.0;
 		});
 	}
 
 	/**
-	 * Job ComputeSurface called @1.0 in simulate method.
-	 * In variables: X
-	 * Out variables: surface
+	 * Job computeE2 called @1.0 in executeTimeLoopK method.
+	 * In variables: e2_nplus1_k
+	 * Out variables: e2_nplus1_kplus1
 	 */
-	private void computeSurface()
+	private void computeE2()
 	{
-		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			final int fId = fFaces;
-			double reduction2 = 0.0;
-			{
-				final int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
-				final int nbNodesOfFaceF = nodesOfFaceF.length;
-				for (int rNodesOfFaceF=0; rNodesOfFaceF<nbNodesOfFaceF; rNodesOfFaceF++)
-				{
-					final int rId = nodesOfFaceF[rNodesOfFaceF];
-					final int rPlus1Id = nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
-					final int rNodes = rId;
-					final int rPlus1Nodes = rPlus1Id;
-					reduction2 = sumR0(reduction2, norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
-				}
-			}
-			surface[fFaces] = 0.5 * reduction2;
+			e2_nplus1_kplus1[cCells] = e2_nplus1_k[cCells] + 0.4;
 		});
 	}
 
 	/**
-	 * Job ComputeTn called @1.0 in executeTimeLoopN method.
+	 * Job initE called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: e_n0
+	 */
+	private void initE()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			e_n0[cCells] = 0.0;
+		});
+	}
+
+	/**
+	 * Job updateT called @1.0 in executeTimeLoopN method.
 	 * In variables: deltat, t_n
 	 * Out variables: t_nplus1
 	 */
-	private void computeTn()
+	private void updateT()
 	{
-		t_nplus1 = t_n + deltat;
+		t_nplus1 = t_n + options.deltat;
 	}
 
 	/**
-	 * Job ComputeV called @1.0 in simulate method.
-	 * In variables: X
-	 * Out variables: V
+	 * Job InitE2 called @2.0 in executeTimeLoopN method.
+	 * In variables: e1
+	 * Out variables: e2_nplus1_k0
 	 */
-	private void computeV()
+	private void initE2()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			final int jId = jCells;
-			double reduction1 = 0.0;
-			{
-				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbNodesOfCellJ = nodesOfCellJ.length;
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
-				{
-					final int rId = nodesOfCellJ[rNodesOfCellJ];
-					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
-					final int rNodes = rId;
-					final int rPlus1Nodes = rPlus1Id;
-					reduction1 = sumR0(reduction1, det(X[rNodes], X[rPlus1Nodes]));
-				}
-			}
-			V[jCells] = 0.5 * reduction1;
+			e2_nplus1_k0[cCells] = e1[cCells];
 		});
 	}
 
 	/**
-	 * Job IniCenter called @1.0 in simulate method.
-	 * In variables: X
-	 * Out variables: center
+	 * Job SetUpTimeLoopN called @2.0 in simulate method.
+	 * In variables: e_n0
+	 * Out variables: e_n
 	 */
-	private void iniCenter()
+	private void setUpTimeLoopN()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, e_n.length).parallel().forEach(i1 -> 
 		{
-			final int jId = jCells;
-			double[] reduction0 = new double[] {0.0, 0.0};
-			{
-				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
-				final int nbNodesOfCellJ = nodesOfCellJ.length;
-				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
-				{
-					final int rId = nodesOfCellJ[rNodesOfCellJ];
-					final int rNodes = rId;
-					reduction0 = sumR1(reduction0, X[rNodes]);
-				}
-			}
-			center[jCells] = ArrayOperations.multiply(0.25, reduction0);
-		});
-	}
-
-	/**
-	 * Job IniF called @1.0 in simulate method.
-	 * In variables: 
-	 * Out variables: f
-	 */
-	private void iniF()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			f[jCells] = 0.0;
-		});
-	}
-
-	/**
-	 * Job ComputeUn called @2.0 in executeTimeLoopN method.
-	 * In variables: deltat, f, outgoingFlux, u_n
-	 * Out variables: u_nplus1
-	 */
-	private void computeUn()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			u_nplus1[jCells] = f[jCells] * deltat + u_n[jCells] + outgoingFlux[jCells];
-		});
-	}
-
-	/**
-	 * Job IniUn called @2.0 in simulate method.
-	 * In variables: PI, alpha, center
-	 * Out variables: u_n
-	 */
-	private void iniUn()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
-		{
-			u_n[jCells] = Math.cos(2 * options.PI * options.alpha * center[jCells][0]);
+			e_n[i1] = e_n0[i1];
 		});
 	}
 
 	/**
 	 * Job ExecuteTimeLoopN called @3.0 in simulate method.
-	 * In variables: V, center, deltat, f, outgoingFlux, surface, t_n, u_n
-	 * Out variables: outgoingFlux, t_nplus1, u_nplus1
+	 * In variables: deltat, e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_n, t_n
+	 * Out variables: e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_nplus1, t_nplus1
 	 */
 	private void executeTimeLoopN()
 	{
@@ -289,14 +203,17 @@ public final class Test
 		do
 		{
 			n++;
-			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
-			dumpVariables(n);
-			computeOutgoingFlux(); // @1.0
-			computeTn(); // @1.0
-			computeUn(); // @2.0
+			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, options.deltat);
+			computeE1(); // @1.0
+			updateT(); // @1.0
+			initE2(); // @2.0
+			setUpTimeLoopK(); // @3.0
+			executeTimeLoopK(); // @4.0
+			tearDownTimeLoopK(); // @5.0
+			updateE(); // @6.0
 		
 			// Evaluate loop condition with variables at time n
-			continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
+			continueLoop = (n + 1 < options.maxIter && t_nplus1 < options.maxTime);
 		
 			if (continueLoop)
 			{
@@ -304,54 +221,80 @@ public final class Test
 				double tmp_t_n = t_n;
 				t_n = t_nplus1;
 				t_nplus1 = tmp_t_n;
-				double[] tmp_u_n = u_n;
-				u_n = u_nplus1;
-				u_nplus1 = tmp_u_n;
+				double[] tmp_e2_n = e2_n;
+				e2_n = e2_nplus1;
+				e2_nplus1 = tmp_e2_n;
+				double[] tmp_e_n = e_n;
+				e_n = e_nplus1;
+				e_nplus1 = tmp_e_n;
 			} 
 		} while (continueLoop);
 	}
 
-	private double det(double[] a, double[] b)
+	/**
+	 * Job SetUpTimeLoopK called @3.0 in executeTimeLoopN method.
+	 * In variables: e2_nplus1_k0
+	 * Out variables: e2_nplus1_k
+	 */
+	private void setUpTimeLoopK()
 	{
-		return (a[0] * b[1] - a[1] * b[0]);
-	}
-
-	private double norm(double[] a)
-	{
-		final int x = a.length;
-		return Math.sqrt(dot(a, a));
-	}
-
-	private double dot(double[] a, double[] b)
-	{
-		final int x = a.length;
-		double result = 0.0;
-		for (int i=0; i<x; i++)
+		IntStream.range(0, e2_nplus1_k.length).parallel().forEach(i1 -> 
 		{
-			result = result + a[i] * b[i];
-		}
-		return result;
+			e2_nplus1_k[i1] = e2_nplus1_k0[i1];
+		});
 	}
 
-	private double[] sumR1(double[] a, double[] b)
+	/**
+	 * Job ExecuteTimeLoopK called @4.0 in executeTimeLoopN method.
+	 * In variables: e2_nplus1_k
+	 * Out variables: e2_nplus1_kplus1
+	 */
+	private void executeTimeLoopK()
 	{
-		final int x = a.length;
-		return ArrayOperations.plus(a, b);
-	}
-
-	private double sumR0(double a, double b)
-	{
-		return a + b;
-	}
-
-	private void dumpVariables(int iteration)
-	{
-		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+		k = 0;
+		boolean continueLoop = true;
+		do
 		{
-			VtkFileContent content = new VtkFileContent(iteration, t_n, X, mesh.getGeometry().getQuads());
-			content.addCellVariable("Temperature", u_n);
-			writer.writeFile(content);
-			lastDump = n;
-		}
+			k++;
+			System.out.printf("	[%5d] t: %5.5f - deltat: %5.5f\n", k, t_n, options.deltat);
+			computeE2(); // @1.0
+		
+			// Evaluate loop condition with variables at time n
+			continueLoop = (k + 1 < 10);
+		
+			if (continueLoop)
+			{
+				// Switch variables to prepare next iteration
+				double[] tmp_e2_nplus1_k = e2_nplus1_k;
+				e2_nplus1_k = e2_nplus1_kplus1;
+				e2_nplus1_kplus1 = tmp_e2_nplus1_k;
+			} 
+		} while (continueLoop);
+	}
+
+	/**
+	 * Job TearDownTimeLoopK called @5.0 in executeTimeLoopN method.
+	 * In variables: e2_nplus1_kplus1
+	 * Out variables: e2_nplus1
+	 */
+	private void tearDownTimeLoopK()
+	{
+		IntStream.range(0, e2_nplus1.length).parallel().forEach(i1 -> 
+		{
+			e2_nplus1[i1] = e2_nplus1_kplus1[i1];
+		});
+	}
+
+	/**
+	 * Job updateE called @6.0 in executeTimeLoopN method.
+	 * In variables: e2_nplus1
+	 * Out variables: e_nplus1
+	 */
+	private void updateE()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			e_nplus1[cCells] = e2_nplus1[cCells] - 3;
+		});
 	}
 };

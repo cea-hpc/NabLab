@@ -24,7 +24,7 @@ class OptimizeConnectivities extends IrTransformationStep
 
 	override transform(IrModule m)
 	{
-		trace('IR -> IR: ' + description + '\n')
+		trace('IR -> IR: ' + description)
 		for (c : m.connectivities)
 		{
 			if (!c.multiple) c.indexEqualId = true

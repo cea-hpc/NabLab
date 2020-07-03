@@ -9,11 +9,13 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.transformers.IrTransformationStep
 import fr.cea.nabla.ir.transformers.TagOutputVariables
 import java.io.File
 import java.net.URI
@@ -69,6 +71,11 @@ class Ir2Cpp extends CodeGenerator
 		#{ name + '.h' -> headerFileContent, name + '.cc' -> sourceFileContent, 'CMakeLists.txt' -> backend.ir2Cmake.getContentFor(it)}
 	}
 
+	override IrTransformationStep getIrTransformationStep()
+	{
+		backend.irTransformationStep
+	}
+
 	private def getHeaderFileContent(IrModule it)
 	'''
 	«backend.includesContentProvider.getContentFor(it)»
@@ -92,17 +99,18 @@ class Ir2Cpp extends CodeGenerator
 		struct Options
 		{
 			«IF postProcessingInfo !== null»std::string «TagOutputVariables.OutputPathNameAndValue.key»;«ENDIF»
-			std::string «Utils.NonRegressionNameAndValue.key»;
-			«FOR v : definitions.filter[option]»
+			«IF levelDB»std::string «Utils.NonRegressionNameAndValue.key»;«ENDIF»
+			«FOR v : allOptions»
 			«v.cppType» «v.name»;
 			«ENDFOR»
 
 			Options(const std::string& fileName);
 		};
 
-		Options* options;
+		const Options& options;
 
-		«name»(Options* aOptions«IF withMesh», CartesianMesh2D* aCartesianMesh2D«ENDIF»);
+		«name»(const Options& aOptions);
+		~«name»();
 
 	private:
 		«backend.attributesContentProvider.getContentFor(it)»
@@ -110,16 +118,19 @@ class Ir2Cpp extends CodeGenerator
 		«backend.privateMethodsContentProvider.getDeclarationContentFor(it)»
 		«IF postProcessingInfo !== null»
 
-		void dumpVariables(int iteration);
-		
-		void createDB(const std::string db_name&);
+		void dumpVariables(int iteration, bool useTimer=true);
+		«ENDIF»
+		«IF levelDB»
+
+	public:
+		void createDB(const std::string& db_name);
 		«ENDIF»
 
 	public:
 		void simulate();
 	};
 	'''
-	
+
 	private def getSourceFileContent(IrModule it)
 	'''
 	#include "«name».h"
@@ -152,31 +163,37 @@ class Ir2Cpp extends CodeGenerator
 		assert(valueof_«opName».IsString());
 		«opName» = valueof_«opName».GetString();
 		«ENDIF»
+		«IF levelDB»
 		// Non regression
 		«val nrName = Utils.NonRegressionNameAndValue.key»
 		assert(d.HasMember("«nrName»"));
 		const rapidjson::Value& valueof_«nrName» = d["«nrName»"];
 		assert(valueof_«nrName».IsString());
 		«nrName» = valueof_«nrName».GetString();
-		«FOR v : definitions.filter[option]»
+		«ENDIF»
+		«FOR v : allOptions»
 		«v.jsonContent»
 		«ENDFOR»
 	}
 
 	/******************** Module definition ********************/
 
-	«name»::«name»(Options* aOptions«IF withMesh», CartesianMesh2D* aCartesianMesh2D«ENDIF»)
+	«name»::«name»(const Options& aOptions)
 	: options(aOptions)
-	«IF withMesh»
-	, mesh(aCartesianMesh2D)
-	, writer("«name»", options->«TagOutputVariables.OutputPathNameAndValue.key»)
-	«FOR c : usedConnectivities»
-	, «c.nbElemsVar»(«c.connectivityAccessor»)
-	«ENDFOR»
-	«ENDIF»
-	«FOR v : definitions.filter[x | !(x.option || x.constExpr)]»
+	«FOR v : allDefinitions.filter[x | !x.constExpr]»
 	, «v.name»(«v.defaultValue.content»)
 	«ENDFOR»
+	«IF withMesh»
+		«val xee = getVariableByName(MandatoryVariables.X_EDGE_ELEMS).codeName»
+		«val yee = getVariableByName(MandatoryVariables.Y_EDGE_ELEMS).codeName»
+		«val xel = getVariableByName(MandatoryVariables.X_EDGE_LENGTH).codeName»
+		«val yel = getVariableByName(MandatoryVariables.Y_EDGE_LENGTH).codeName»
+		, mesh(CartesianMesh2DGenerator::generate(«xee», «yee», «xel», «yel»))
+		«IF postProcessingInfo !== null», writer("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»)«ENDIF»
+		«FOR c : connectivities.filter[multiple]»
+		, «c.nbElemsVar»(«c.connectivityAccessor»)
+		«ENDFOR»
+	«ENDIF»
 	«FOR v : declarations.filter(ConnectivityVariable)»
 	, «v.name»(«v.cstrInit»)
 	«ENDFOR»
@@ -187,29 +204,37 @@ class Ir2Cpp extends CodeGenerator
 			«FOR v : dynamicArrayVariables»
 				«v.initCppTypeContent»
 			«ENDFOR»
+
 		«ENDIF»
 		«IF withMesh»
-
-		// Copy node coordinates
-		const auto& gNodes = mesh->getGeometry()->getNodes();
-		«val iterator = backend.argOrVarContentProvider.formatIterators(initNodeCoordVariable, #["rNodes"])»
-		for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-		{
-			«initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
-			«initNodeCoordVariable.name»«iterator»[1] = gNodes[rNodes][1];
-		}
+			// Copy node coordinates
+			const auto& gNodes = mesh->getGeometry()->getNodes();
+			«val iterator = backend.argOrVarContentProvider.formatIterators(initNodeCoordVariable, #["rNodes"])»
+			for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+			{
+				«initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
+				«initNodeCoordVariable.name»«iterator»[1] = gNodes[rNodes][1];
+			}
 		«ENDIF»
+	}
+
+	«name»::~«name»()
+	{
+		delete mesh;
 	}
 
 	«backend.privateMethodsContentProvider.getDefinitionContentFor(it)»
 	«IF postProcessingInfo !== null»
 
-	void «name»::dumpVariables(int iteration)
+	void «name»::dumpVariables(int iteration, bool useTimer)
 	{
-		if (!writer.isDisabled() && «postProcessingInfo.periodReference.getCodeName('->')» >= «postProcessingInfo.lastDumpVariable.getCodeName('->')» + «postProcessingInfo.periodValue.getCodeName('->')»)
+		if (!writer.isDisabled())
 		{
-			cpuTimer.stop();
-			ioTimer.start();
+			if (useTimer)
+			{
+				cpuTimer.stop();
+				ioTimer.start();
+			}
 			auto quads = mesh->getGeometry()->getQuads();
 			writer.startVtpFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data());
 			«val outputVarsByConnectivities = postProcessingInfo.outputVariables.filter(ConnectivityVariable).groupBy(x | x.type.connectivities.head.returnType.name)»
@@ -231,11 +256,15 @@ class Ir2Cpp extends CodeGenerator
 			writer.closeCellData();
 			writer.closeVtpFile();
 			«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodReference.name»;
-			ioTimer.stop();
-			cpuTimer.start();
+			if (useTimer)
+			{
+				ioTimer.stop();
+				cpuTimer.start();
+			}
 		}
 	}
 	«ENDIF»
+	«IF levelDB»
 	
 	void «name»::createDB(const std::string& db_name)
 	{
@@ -248,7 +277,7 @@ class Ir2Cpp extends CodeGenerator
 		// Batch to write all data at once
 		leveldb::WriteBatch batch;
 		«FOR v : declarations»
-		batch.Put("«v.name»", nablalib::serialize(«v.name»));
+		batch.Put("«v.name»", serialize(«v.name»));
 		«ENDFOR»
 		status = db->Write(leveldb::WriteOptions(), &batch);
 		// Checking everything was ok
@@ -256,16 +285,18 @@ class Ir2Cpp extends CodeGenerator
 		// Freeing memory
 		delete db;
 	}
+	«ENDIF»
 
 	void «name»::simulate()
 	{
-		«backend.traceContentProvider.getBeginOfSimuTrace(name, withMesh)»
+		«backend.traceContentProvider.getBeginOfSimuTrace(it, name, withMesh)»
 
 		«callsHeader»
 		«callsContent»
 		«backend.traceContentProvider.endOfSimuTrace»
 		«IF linearAlgebra && mainTimeLoop !== null»«backend.traceContentProvider.getCGInfoTrace(mainTimeLoop.iterationCounter.name)»«ENDIF»
 	}
+	«IF levelDB»
 
 	/******************** Non regression testing ********************/
 	
@@ -278,19 +309,21 @@ class Ir2Cpp extends CodeGenerator
 		leveldb::DB* db_ref;
 		leveldb::Options options_ref;
 		options_ref.create_if_missing = false;
-		status = leveldb::DB::Open(options_ref, ref, &db_ref);
+		leveldb::Status status = leveldb::DB::Open(options_ref, ref, &db_ref);
 		assert(status.ok());
+		leveldb::Iterator* it_ref = db_ref->NewIterator(leveldb::ReadOptions());
+		
 		
 		// Loading current DB
 		leveldb::DB* db;
 		leveldb::Options options;
 		options.create_if_missing = false;
-		leveldb::Status status = leveldb::DB::Open(options, current, &db);
+		status = leveldb::DB::Open(options, current, &db);
 		assert(status.ok());
+		leveldb::Iterator* it = db->NewIterator(leveldb::ReadOptions());
 		
 		// Results comparison
 		std::cout << "# Compairing results ..." << std::endl;
-		leveldb::Iterator* it_ref = db_ref->NewIterator(leveldb::ReadOptions());
 		for (it_ref->SeekToFirst(), it->SeekToFirst(); it_ref->Valid() && it->Valid(); it_ref->Next(), it->Next()) {
 			assert(it_ref->key().ToString() == it->key().ToString());
 			std::cout << it->key().ToString() << ": " << (it_ref->value().ToString()==it->value().ToString()?"OK":"ERROR") << std::endl;
@@ -300,6 +333,7 @@ class Ir2Cpp extends CodeGenerator
 		
 		return result;
 	}
+	«ENDIF»
 
 	/******************** Module definition ********************/
 
@@ -316,5 +350,10 @@ class Ir2Cpp extends CodeGenerator
 			'''mesh->getNb«c.name.toFirstUpper»()'''
 		else
 			'''CartesianMesh2D::MaxNb«c.name.toFirstUpper»'''
+	}
+	
+	private def isLevelDB()
+	{
+		!backend.includesContentProvider.levelDBPath.nullOrEmpty
 	}
 }

@@ -11,31 +11,30 @@ package fr.cea.nabla.validation
 
 import com.google.inject.Inject
 import fr.cea.nabla.ExpressionExtensions
-import fr.cea.nabla.ItemExtensions
-import fr.cea.nabla.ir.MandatoryOptions
+import fr.cea.nabla.SpaceIteratorExtensions
+import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.Interval
-import fr.cea.nabla.nabla.ItemRef
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.NextTimeIteratorRef
-import fr.cea.nabla.nabla.SpaceIterator
+import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.NSTIntScalar
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.validation.Check
-
-import static extension fr.cea.nabla.ConnectivityCallExtensions.*
+import org.eclipse.xtext.validation.CheckType
 
 // Caution: OptDefinition validation with InstructionValidator
 class BasicValidator extends UnusedValidator
 {
-	@Inject extension ItemExtensions
+	@Inject extension ValidationUtils
+	@Inject extension SpaceIteratorExtensions
 	@Inject extension ExpressionExtensions
 	@Inject extension ExpressionTypeProvider
 
@@ -45,14 +44,14 @@ class BasicValidator extends UnusedValidator
 
 	static def getZeroFromMsg() { "Lower bound must be 0" }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def void checkFrom(Interval it)
 	{
 		if (from != 0)
 			error(getZeroFromMsg(), NablaPackage.Literals.INTERVAL__FROM, ZERO_FROM);
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def void checkNbElems(Interval it)
 	{
 		if (nbElems !== null) 
@@ -61,23 +60,23 @@ class BasicValidator extends UnusedValidator
 
 	// ===== NablaModule =====
 
-	public static val MANDATORY_OPTION = "NablaModule::MandatoryOption"
+	public static val MANDATORY_VARS = "NablaModule::MandatoryVars"
 	public static val MODULE_NAME = "NablaModule::ModuleName"
 
-	static def getMandatoryOptionsMsg(String[] missingOptions) { "Missing mandatory mesh option(s): " + missingOptions.join(", ") }
+	static def getMandatoryVarsMsg(String[] missingVars) { "Missing mandatory mesh variable(s): " + missingVars.join(", ") }
 	static def getModuleNameMsg() { "Module name must start with an upper case" }
 
-	@Check
-	def checkMandatoryOptions(NablaModule it)
+	@Check(CheckType.NORMAL)
+	def checkMandatoryVars(NablaModule it)
 	{
 		if (itemTypes.empty) return; // no mesh
-		val options = definitions.filter[option].map[variable.name].toList
-		val missingOptions = MandatoryOptions::NAMES.filter[x | !options.contains(x)]
+		val varNames = definitions.map[variable.name].toList
+		val missingOptions = MandatoryVariables::NAMES.filter[x | !varNames.contains(x)]
 		if (missingOptions.size > 0)
-			error(getMandatoryOptionsMsg(missingOptions), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_OPTION)
+			error(getMandatoryVarsMsg(missingOptions), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_VARS)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkName(NablaModule it)
 	{
 		if (!name.nullOrEmpty && Character::isLowerCase(name.charAt(0)))
@@ -89,30 +88,38 @@ class BasicValidator extends UnusedValidator
 	public static val INIT_VALUE = "TimeIterator::InitValue"
 	public static val NEXT_VALUE = "TimeIterator::NextValue"
 	public static val CONDITION_CONSTRAINTS = "TimeIterator::ConditionConstraints"
+	public static val CONDITION_BOOL = "TimeIterator::ConditionBool"
 
 	static def getInitValueMsg(int actualValue) { "Expected 0, but was " + actualValue }
 	static def getNextValueMsg(int actualValue) { "Expected 1, but was " + actualValue }
 	static def getConditionConstraintsMsg() { "Reductions not allowed in time iterator condition" }
 
-	@Check 
+	@Check(CheckType.NORMAL)
 	def checkInitValue(InitTimeIteratorRef it)
 	{
 		if (value !== 0)
 			error(getInitValueMsg(value), NablaPackage.Literals.INIT_TIME_ITERATOR_REF__VALUE, INIT_VALUE)
 	}
 
-	@Check 
+	@Check(CheckType.NORMAL)
 	def checkNextValue(NextTimeIteratorRef it)
 	{
 		if (value !== 1)
 			error(getNextValueMsg(value), NablaPackage.Literals.NEXT_TIME_ITERATOR_REF__VALUE, NEXT_VALUE)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkConditionConstraints(TimeIterator it)
 	{
-		if (cond !== null && !cond.reductionLess)
-			error(getConditionConstraintsMsg(), NablaPackage.Literals.TIME_ITERATOR__COND, CONDITION_CONSTRAINTS)
+		if (condition !== null)
+		{
+			val condType = condition.typeFor
+			if (!checkExpectedType(condType, ValidationUtils::BOOL))
+				error(getTypeMsg(condType.label, ValidationUtils::BOOL.label), NablaPackage.Literals.TIME_ITERATOR__CONDITION, CONDITION_BOOL)
+
+			if (!condition.reductionLess)
+				error(getConditionConstraintsMsg(), NablaPackage.Literals.TIME_ITERATOR__CONDITION, CONDITION_CONSTRAINTS)
+		}
 	}
 
 	// ===== BaseType =====
@@ -121,14 +128,14 @@ class BasicValidator extends UnusedValidator
 
 	static def getUnsupportedDimensionMsg(int dimension) { "Unsupported dimension: " + dimension }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkUnsupportedDimension(BaseType it)
 	{
 		if (sizes.size > 2)
 			error(getUnsupportedDimensionMsg(sizes.size), NablaPackage.Literals.BASE_TYPE__SIZES, UNSUPPORTED_DIMENSION)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkSizeExpression(BaseType it)
 	{
 		for (i : 0..<sizes.size)
@@ -143,10 +150,9 @@ class BasicValidator extends UnusedValidator
 	public static val DIMENSION_ARG = "Connectivities::DimensionArg"
 
 	static def getConnectivityCallIndexMsg(int expectedSize, int actualSize) { "Wrong number of arguments. Expected " + expectedSize + ", but was " + actualSize }
-	static def getConnectivityCallTypeMsg(String expectedType, String actualType) { "Expected " + expectedType + ', but was ' + actualType }
 	static def getDimensionArgMsg() { "First dimension must be on connectivities taking no argument" }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkConnectivityCallIndexAndType(ConnectivityCall it)
 	{
 		if (args.size != connectivity.inTypes.size)
@@ -158,12 +164,12 @@ class BasicValidator extends UnusedValidator
 				val actualT = args.get(i).target.type
 				val expectedT = connectivity.inTypes.get(i)
 				if (actualT != expectedT)
-					error(getConnectivityCallTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::CONNECTIVITY_CALL__ARGS, i, CONNECTIVITY_CALL_TYPE)
+					error(getTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::CONNECTIVITY_CALL__ARGS, i, CONNECTIVITY_CALL_TYPE)
 			}
 		}
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkDimensionArg(ConnectivityVar it)
 	{
 		if (supports.empty) return;
@@ -176,13 +182,13 @@ class BasicValidator extends UnusedValidator
 
 	public static val SHIFT_VALIDITY = "Items::ShiftValidity"
 
-	static def getShiftValidityMsg() { "Shift only valid for an iteration on a connectivity set" }
+	static def getShiftValidityMsg() { "Shift invalid on a singleton set" }
 
-	@Check
-	def checkShiftValidity(ItemRef it)
+	@Check(CheckType.NORMAL)
+	def checkShiftValidity(SpaceIteratorRef it)
 	{
-		if ((inc>0 || dec>0) && target !== null && !(target.eContainer instanceof SpaceIterator))
-			error(getShiftValidityMsg(), NablaPackage.Literals::ITEM_REF__TARGET, SHIFT_VALIDITY)
+		if ((inc>0 || dec>0) && target !== null && !(target.multiple))
+			error(getShiftValidityMsg(), NablaPackage.Literals::SPACE_ITERATOR_REF__TARGET, SHIFT_VALIDITY)
 	}
 
 	// ===== Tools to share expression validation                          =====
@@ -191,7 +197,6 @@ class BasicValidator extends UnusedValidator
 	public static val TYPE_EXPRESSION_TYPE = "Expressions::TypeExpression"
 
 	static def getValidityExpressionMsg() { "Reductions not allowed in types" }
-	static def getTypeExpressionMsg(String actualType) { "Expected " + ValidationUtils::INT.label + " type, but was " + actualType }
 
 	protected def void checkExpressionValidityAndType(Expression it, EStructuralFeature feature)
 	{
@@ -200,7 +205,7 @@ class BasicValidator extends UnusedValidator
 
 		val t = typeFor
 		if (t !== null && !(t instanceof NSTIntScalar))
-			error(getTypeExpressionMsg(t.label), feature, TYPE_EXPRESSION_TYPE);
+			error(getTypeMsg(t.label, ValidationUtils::INT.label), feature, TYPE_EXPRESSION_TYPE);
 	}
 
 	protected def void checkExpressionValidityAndType(Expression it, EStructuralFeature feature, int index)
@@ -210,6 +215,6 @@ class BasicValidator extends UnusedValidator
 
 		val t = typeFor
 		if (t !== null && !(t instanceof NSTIntScalar))
-			error(getTypeExpressionMsg(t.label), feature, index, TYPE_EXPRESSION_TYPE);
+			error(getTypeMsg(t.label, ValidationUtils::INT.label), feature, index, TYPE_EXPRESSION_TYPE);
 	}
 }

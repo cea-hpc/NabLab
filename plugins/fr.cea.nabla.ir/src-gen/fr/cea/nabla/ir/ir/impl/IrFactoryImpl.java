@@ -81,6 +81,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.ITEM_ID_DEFINITION: return createItemIdDefinition();
 			case IrPackage.SET_DEFINITION: return createSetDefinition();
 			case IrPackage.IF: return createIf();
+			case IrPackage.WHILE: return createWhile();
 			case IrPackage.RETURN: return createReturn();
 			case IrPackage.EXIT: return createExit();
 			case IrPackage.ITERATOR: return createIterator();
@@ -108,7 +109,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.SET_REF: return createSetRef();
 			case IrPackage.ITEM_ID: return createItemId();
 			case IrPackage.ITEM_ID_VALUE_ITERATOR: return createItemIdValueIterator();
-			case IrPackage.ITEM_ID_VALUE_CALL: return createItemIdValueCall();
+			case IrPackage.ITEM_ID_VALUE_CONTAINER: return createItemIdValueContainer();
 			case IrPackage.ITEM_INDEX: return createItemIndex();
 			case IrPackage.ITEM_INDEX_VALUE: return createItemIndexValue();
 			default:
@@ -416,6 +417,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
+	public While createWhile() {
+		WhileImpl while_ = new WhileImpl();
+		return while_;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Return createReturn() {
 		ReturnImpl return_ = new ReturnImpl();
 		return return_;
@@ -713,9 +725,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public ItemIdValueCall createItemIdValueCall() {
-		ItemIdValueCallImpl itemIdValueCall = new ItemIdValueCallImpl();
-		return itemIdValueCall;
+	public ItemIdValueContainer createItemIdValueContainer() {
+		ItemIdValueContainerImpl itemIdValueContainer = new ItemIdValueContainerImpl();
+		return itemIdValueContainer;
 	}
 
 	/**

@@ -41,28 +41,29 @@ class SimpleTypeDeclarationFinder implements IDeclarationFinder
 
 	override ReductionDeclaration findReduction(Iterable<Reduction> candidates)
 	{
-		val r = candidates.findFirst[x | sizesMatch(x, x.type.sizes, callerInTypes.head.sizeExpressions)]
+		val r = candidates.findFirst[x | sizesMatch(x, x.typeDeclaration.type.sizes, callerInTypes.head.sizeExpressions)]
 		if (r === null) return null
 
-		val type = r.type.computeExpressionType
+		val type = r.typeDeclaration.type.computeExpressionType
 		return new ReductionDeclaration(r, type)
 	}
 
 	override FunctionDeclaration findFunction(Iterable<Function> candidates)
 	{
 		val f = candidates.findFirst[x |
-			for (i : 0..<x.inTypes.size)
-				if (!sizesMatch(x, x.inTypes.get(i).sizes, callerInTypes.get(i).sizeExpressions)) return false
+			for (i : 0..<x.typeDeclaration.inTypes.size)
+				if (!sizesMatch(x, x.typeDeclaration.inTypes.get(i).sizes, callerInTypes.get(i).sizeExpressions)) return false
 			return true
 		]
 		if (f === null) return null
 
-		val inTypes = f.inTypes.map[computeExpressionType]
-		val returnType = f.returnType.computeExpressionType
-		return new FunctionDeclaration(f, inTypes, returnType)
+		val inTypes = f.typeDeclaration.inTypes.map[computeExpressionType]
+		val returnType = f.typeDeclaration.returnType.computeExpressionType
+		val fd = new FunctionDeclaration(f, inTypes, returnType)
+		return fd
 	}
 
-	private def  Iterable<Expression> getSizeExpressions(NablaSimpleType it) 
+	private def  Iterable<Expression> getSizeExpressions(NablaSimpleType it)
 	{
 		switch it
 		{
@@ -131,9 +132,9 @@ class SimpleTypeDeclarationFinder implements IDeclarationFinder
 	 * Replace known size values in expression it and apply possible
 	 * binary operations (i.e. operations on IntConstants).
 	 */
-	private def Expression replaceValuesAndCompact(Expression it)
+	private def Expression replaceValuesAndCompact(Expression e)
 	{
-		var resultExpr = EcoreUtil.copy(it)
+		var resultExpr = EcoreUtil.copy(e)
 		for (t : transformers)
 			resultExpr = t.transform(resultExpr)
 		return resultExpr

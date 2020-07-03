@@ -9,35 +9,97 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.views
 
-import com.google.inject.Inject
 import fr.cea.nabla.LatexImageServices
 import fr.cea.nabla.LatexLabelServices
+import fr.cea.nabla.nabla.Expression
+import fr.cea.nabla.nabla.Function
+import fr.cea.nabla.nabla.Instruction
+import fr.cea.nabla.nabla.InstructionBlock
+import fr.cea.nabla.nabla.Job
+import fr.cea.nabla.nabla.Reduction
+import fr.cea.nabla.ui.NablaDslEditor
 import java.io.ByteArrayInputStream
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.jface.text.ITextSelection
+import org.eclipse.jface.viewers.ISelection
 import org.eclipse.swt.SWT
 import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Display
 import org.eclipse.swt.widgets.Label
+import org.eclipse.ui.ISelectionListener
+import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.ui.part.ViewPart
 
 class LatexView extends ViewPart
 {
-	@Inject LatexViewListener listener
 	Label label
+
+	// Listen to Nabla Editor selection
+	val ISelectionListener selectionListener = 
+		[IWorkbenchPart part, ISelection selection |
+			if (part instanceof NablaDslEditor && selection instanceof ITextSelection)
+			{
+				val nablaDslEditor = part as NablaDslEditor
+				val textSelection = selection as ITextSelection
+				val display = Display::^default
+				if (display !== null)
+				{
+					display.asyncExec
+					([
+						val o = nablaDslEditor.getObjectAtPosition(textSelection.offset)
+						if (o !== null)
+						{
+							val displayableObject = nablaDslEditor.getObjectAtPosition(textSelection.offset).closestDisplayableNablaElt
+							if (displayableObject !== null) label.image = displayableObject.latexImage
+						}
+					])
+				}
+			}
+		]
 
 	override createPartControl(Composite parent)
 	{
 		label = new Label(parent, SWT.NONE)
+		site.page.addPostSelectionListener(selectionListener)
+	}
 
-		// reaction a la selection dans l'editeur ou dans l'outline 
-		listener.addNablaTextListener([x | label.image = x.latexImage])
-		site.page.addPostSelectionListener(listener)
+	override dispose()
+	{
+		site.page.removePostSelectionListener(selectionListener)
 	}
 
 	override setFocus()
 	{
 		label.setFocus
+	}
+
+	/** Return the highest displayable object, Job, Instruction or Expression */
+	private def EObject getClosestDisplayableNablaElt(EObject elt)
+	{
+		switch elt
+		{
+			case null: null
+			Job: elt
+			Function: elt
+			Reduction: elt
+			InstructionBlock: null
+			Instruction:
+				if (elt.eContainer === null)
+					null
+				else 
+					elt.eContainer.closestDisplayableNablaElt ?: elt
+			Expression:
+				if (elt.eContainer === null)
+					null
+				else 
+					elt.eContainer.closestDisplayableNablaElt ?: elt
+			default:
+				if (elt.eContainer === null)
+					null 
+				else 
+					elt.eContainer.closestDisplayableNablaElt
+		}
 	}
 
 	private def getLatexImage(EObject element)

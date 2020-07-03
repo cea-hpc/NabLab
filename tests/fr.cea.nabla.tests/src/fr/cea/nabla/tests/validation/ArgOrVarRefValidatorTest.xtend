@@ -17,6 +17,7 @@ import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
 import fr.cea.nabla.validation.ArgOrVarRefValidator
 import fr.cea.nabla.validation.BasicValidator
+import fr.cea.nabla.validation.ValidationUtils
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -30,6 +31,7 @@ import org.junit.runner.RunWith
 class ArgOrVarRefValidatorTest
 {
 	@Inject ParseHelper<NablaModule> parseHelper
+	@Inject extension ValidationUtils
 	@Inject extension TestUtils
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
@@ -39,10 +41,10 @@ class ArgOrVarRefValidatorTest
 	{
 		val moduleKo = parseHelper.parse(testModule +
 			'''
-			let a = ℕ[2,2](0);
-			let b = a[0];
-			let c = ℕ[2](0);
-			let d = c[0,1];
+			let ℕ[2,2] a = ℕ[2,2](0);
+			let ℕ[2] b = a[0];
+			let ℕ[2] c = ℕ[2](0);
+			let ℕ d = c[0,1];
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -57,8 +59,8 @@ class ArgOrVarRefValidatorTest
 
 		val moduleOk =  parseHelper.parse(testModule +
 			'''
-			let a = ℕ[2,2](0);
-			let b = a[0,0];
+			let ℕ[2,2] a = ℕ[2,2](0);
+			let ℕ b = a[0,0];
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -91,7 +93,7 @@ class ArgOrVarRefValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
 			ArgOrVarRefValidator::SPACE_ITERATOR_TYPE, 
-			ArgOrVarRefValidator::getSpaceIteratorTypeMsg(node, cell))
+			getTypeMsg(node, cell))
 
 		val moduleOk =  parseHelper.parse(getTestModule(defaultConnectivities, '') +
 			'''
@@ -139,35 +141,35 @@ class ArgOrVarRefValidatorTest
 	{
 		val moduleKo1 = parseHelper.parse(getTestModule('', '') +
 			'''
-			let a = ℕ[2](0);
-			let m = a[2.3];
+			let ℕ[2] a = ℕ[2](0);
+			let ℕ m = a[2.3];
 			'''
 		)
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertError(NablaPackage.eINSTANCE.argOrVarRef,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
-			BasicValidator::getTypeExpressionMsg("ℝ"))
+			getTypeMsg("ℝ", "ℕ"))
 
 		val moduleKo2 = parseHelper.parse(getTestModule('', '') +
 			'''
-			let a = ℕ[2](0);
-			let b = 1.2;
-			let o = a[b];
+			let ℕ[2] a = ℕ[2](0);
+			let ℝ b = 1.2;
+			let ℕ o = a[b];
 			'''
 		)
 		Assert.assertNotNull(moduleKo2)
 		moduleKo2.assertError(NablaPackage.eINSTANCE.argOrVarRef,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
-			BasicValidator::getTypeExpressionMsg("ℝ"))
+			getTypeMsg("ℝ", "ℕ"))
 
 		val moduleOk =  parseHelper.parse(getTestModule('', '') +
 			'''
-			let a = ℕ[2](0);
-			let b = 1;
+			let ℕ[2] a = ℕ[2](0);
+			let ℕ b = 1;
 
-			let m = a[2];
-			let o = a[b];
-			let p = a[b + 4];
+			let ℕ m = a[2];
+			let ℕ o = a[b];
+			let ℕ p = a[b + 4];
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

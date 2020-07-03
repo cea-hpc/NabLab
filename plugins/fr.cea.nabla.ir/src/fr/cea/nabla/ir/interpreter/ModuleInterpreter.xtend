@@ -11,7 +11,7 @@ package fr.cea.nabla.ir.interpreter
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import fr.cea.nabla.ir.MandatoryOptions
+import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.logging.Logger
@@ -22,7 +22,6 @@ import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class ModuleInterpreter
 {
@@ -61,6 +60,13 @@ class ModuleInterpreter
 	def interpreteDefinitions(String jsonOptionsContent)
 	{
 		// Variables must be created with their default values to get the right NablaValue type
+		if (module.postProcessingInfo !== null)
+		{
+			val lastDump = module.postProcessingInfo.lastDumpVariable
+			context.addVariableValue(lastDump, interprete(lastDump.defaultValue, context))
+			val periodValue = module.postProcessingInfo.periodValue
+			context.addVariableValue(periodValue, interprete(periodValue.defaultValue, context))
+		}
 		for (v : module.definitions)
 			context.addVariableValue(v, interprete(v.defaultValue, context))
 
@@ -69,7 +75,7 @@ class ModuleInterpreter
 		{
 			val gson = new Gson
 			val jsonOptions = gson.fromJson(jsonOptionsContent, JsonObject)
-			for (v : module.definitions.filter[option])
+			for (v : module.allOptions)
 			{
 				val vValue = context.getVariableValue(v)
 				val jsonElt = jsonOptions.get(v.name)
@@ -90,18 +96,18 @@ class ModuleInterpreter
 		if (module.withMesh)
 		{
 			// Create mesh
-			val nbXQuads = context.getInt(MandatoryOptions::X_EDGE_ELEMS)
-			val nbYQuads = context.getInt(MandatoryOptions::Y_EDGE_ELEMS)
-			val xSize = context.getReal(MandatoryOptions::X_EDGE_LENGTH)
-			val ySize = context.getReal(MandatoryOptions::Y_EDGE_LENGTH)
+			val nbXQuads = context.getInt(MandatoryVariables::X_EDGE_ELEMS)
+			val nbYQuads = context.getInt(MandatoryVariables::Y_EDGE_ELEMS)
+			val xSize = context.getReal(MandatoryVariables::X_EDGE_LENGTH)
+			val ySize = context.getReal(MandatoryVariables::Y_EDGE_LENGTH)
 			context.initMesh(nbXQuads, nbYQuads, xSize, ySize)
 
 			// Create mesh nbElems
-			for (c : module.usedConnectivities)
-			if (c.inTypes.empty)
-				context.connectivitySizes.put(c, context.meshWrapper.getNbElems(c.name))
-			else
-				context.connectivitySizes.put(c, context.meshWrapper.getMaxNbElems(c.name))
+			for (c : module.connectivities.filter[multiple])
+				if (c.inTypes.empty)
+					context.connectivitySizes.put(c, context.meshWrapper.getNbElems(c.name))
+				else
+					context.connectivitySizes.put(c, context.meshWrapper.getMaxNbElems(c.name))
 		}
 
 		// Interprete declarations
@@ -112,7 +118,7 @@ class ModuleInterpreter
 		context.addVariableValue(module.initNodeCoordVariable, new NV2Real(context.meshWrapper.nodes))
 
 		// Interprete Top level jobs
-		for (j : module.jobs.filter[topLevel].sortBy[at])
+		for (j : module.innerJobs.sortBy[at])
 			jobInterpreter.interprete(j, context)
 
 		context.logVariables("At the end")

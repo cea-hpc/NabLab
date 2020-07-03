@@ -13,7 +13,6 @@ import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.Connectivity
-import fr.cea.nabla.nabla.MultipleConnectivity
 
 @Singleton
 class IrConnectivityFactory 
@@ -27,6 +26,6 @@ class IrConnectivityFactory
 		name = c.name
 		returnType = c.returnType.toIrItemType
 		inTypes += c.inTypes.map[toIrItemType]
-		multiple = (c instanceof MultipleConnectivity)
+		multiple = c.multiple
 	}
 }

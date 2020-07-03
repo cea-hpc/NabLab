@@ -118,7 +118,7 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 		{
 			Expression: o.typeFor?.label
 			ArgOrVar: o.typeFor?.label
-			Function: LabelServices.getLabel(o.returnType)
+			Function: LabelServices.getLabel(o.typeDeclaration.returnType)
 		}
 	}
 }

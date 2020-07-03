@@ -24,9 +24,10 @@ set(LIBCPPNABLA_BACKEND "KOKKOS")
 set(NABLA_KOKKOS_PATH "$ENV{HOME}/kokkos/kokkos-install")
 add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
 
+
 add_executable(iterativeheatequation IterativeHeatEquation.cc)
 target_include_directories(iterativeheatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(iterativeheatequation cppnabla cppnablakokkos)
+target_link_libraries(iterativeheatequation PUBLIC cppnabla cppnablakokkos)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 include(Project.cmake)

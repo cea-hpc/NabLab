@@ -66,7 +66,8 @@ class DeclarationProvider
 	 * All the types must be either NablaSimpleType or NablaConnectivityType.
 	 * If they are instance of NablaSimpleType it is a "classical function call"
 	 * and a SimpleDeclarationFinder is returned else it is a "linear algebra call". 
-	 * In this case, the associated base type must be scalar and a ConnectivityDeclarationFinder
+	 * In this case, the associated base type must be scalar and 
+	 * a ConnectivityDeclarationFinder is returned.
 	 */
 	private def getDeclarationFinder(List<NablaType> argTypes)
 	{
@@ -89,7 +90,7 @@ class DeclarationProvider
 		val module = EcoreUtil2.getContainerOfType(r, NablaModule)
 		if (module === null) return #[]
 		val candidates = module.reductions.filter[x | x.name == r.name]
-		return candidates.filter[argsMatch(#[type], #[callerInType])]
+		return candidates.filter[argsMatch(#[typeDeclaration.type], #[callerInType])]
 	}
 
 	/**
@@ -100,7 +101,7 @@ class DeclarationProvider
 	{
 		val module = EcoreUtil2.getContainerOfType(f, NablaModule)
 		val candidates = module.functions.filter[x | x.name == f.name]
-		return candidates.filter[argsMatch(inTypes, callerInTypes)]
+		return candidates.filter[argsMatch(typeDeclaration.inTypes, callerInTypes)]
 	}
 
 	private def boolean argsMatch(List<BaseType> la, List<NablaType> lb) 

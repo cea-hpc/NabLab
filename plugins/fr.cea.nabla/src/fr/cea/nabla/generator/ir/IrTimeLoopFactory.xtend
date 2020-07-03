@@ -12,6 +12,7 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.ArgOrVarRef
@@ -36,7 +37,7 @@ class IrTimeLoopFactory
 	{
 		annotations += ti.toIrAnnotation
 		name = ti.name
-		whileCondition = ti.cond.toIrExpression
+		whileCondition = ti.condition.toIrExpression
 	}
 
 	/**
@@ -111,6 +112,10 @@ class IrTimeLoopFactory
 		timeLoopVariable.next = v.toIrVar(getIrTimeSuffix(tl, nextName))
 		createdVariables += timeLoopVariable.current
 		createdVariables += timeLoopVariable.next
+
+		// The time variables can have no explicit affectation and consequently be created const
+		// But at the end of time loop, the variable will be affected by the time loop job => must be non const
+		if (timeLoopVariable.current instanceof SimpleVariable) (timeLoopVariable.current as SimpleVariable).const = false
 
 		// Init time variable created on demand (if v is referenced with '=0')
 		if (mustCreateInitVariable)

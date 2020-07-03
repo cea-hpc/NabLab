@@ -9,14 +9,15 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.MandatoryOptions
-
-import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.ir.IrModule
+import org.eclipse.xtend.lib.annotations.Data
 
+@Data
 class MainContentProvider 
 {
+	val String levelDBPath
+	
 	def getContentFor(IrModule it)
 	'''
 		string dataFile;
@@ -32,31 +33,29 @@ class MainContentProvider
 			return -1;
 		}
 
-		auto o = new «name»::Options(dataFile);
-		«IF withMesh»
-		auto nm = CartesianMesh2DGenerator::generate(o->«MandatoryOptions::X_EDGE_ELEMS», o->«MandatoryOptions::Y_EDGE_ELEMS», o->«MandatoryOptions::X_EDGE_LENGTH», o->«MandatoryOptions::Y_EDGE_LENGTH»);
-		«ENDIF»
-		auto c = new «name»(o«IF withMesh», nm«ENDIF»);
-		c->simulate();
+		«name»::Options options(dataFile);
+		// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
+		auto simulator = new «name»(options);
+		simulator->simulate();
+		«IF !levelDBPath.nullOrEmpty»
 		
 		«val nrName = Utils.NonRegressionNameAndValue.key»
 		// Non regression testing
-		if (o->«nrName» == "CreateReference")
-		  c->createDB("«name»DB.ref");
-		if (o->«nrName» == "CompareToReference") {
-			c->createDB("«name»DB.current");
+		if (options.«nrName» == "CreateReference")
+		  simulator->createDB("«name»DB.ref");
+		if (options.«nrName» == "CompareToReference") {
+			simulator->createDB("«name»DB.current");
 			compareDB("«name»DB.current", "«name»DB.ref");
 			leveldb::DestroyDB("«name»DB.current", leveldb::Options());
 		}
-		
-		delete c;
-		«IF withMesh»
-		delete nm;
 		«ENDIF»
-		delete o;
+		
+		// simulator must be deleted before calling finalize
+		delete simulator;
 	'''
 }
 
+@Data
 class KokkosMainContentProvider extends MainContentProvider
 {
 	override getContentFor(IrModule it)

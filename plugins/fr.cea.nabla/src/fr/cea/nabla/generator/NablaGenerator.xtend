@@ -10,10 +10,7 @@
 package fr.cea.nabla.generator
 
 import com.google.inject.Inject
-import fr.cea.nabla.generator.ir.Nabla2Ir
-import fr.cea.nabla.ir.transformers.CompositeTransformationStep
-import fr.cea.nabla.ir.transformers.FillJobHLTs
-import fr.cea.nabla.ir.transformers.ReplaceReductions
+import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.nabla.NablaModule
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
@@ -24,49 +21,30 @@ import static extension fr.cea.nabla.LatexLabelServices.*
 
 class NablaGenerator extends AbstractGenerator
 {
-	@Inject Nabla2Ir nabla2Ir
 	@Inject NablaGeneratorMessageDispatcher dispatcher
-	@Inject IrModuleTransformer transformer
-	val traceNotifier = [String msg | dispatcher.post(msg)]
 
 	override doGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context)
 	{
 		try
 		{
 			val module = input.contents.filter(NablaModule).head
-			dispatcher.post('Model size (eAllContents.size): ' + module.eAllContents.size + '\n')
-
 			if (!module.jobs.empty)
 			{
 				val latexFileName = module.name.toLowerCase + '/' + module.name + '.tex'
-				dispatcher.post('Generating LaTeX: ' + latexFileName + '\n')
 				fsa.generateFile(latexFileName, module.latexContent)
-
-				// Nabla -> IR
-				dispatcher.post('Nabla -> IR\n')
-				val irModule = nabla2Ir.toIrModule(module)
-
-				// IR -> IR
-				transformer.transformIr(irTransformation, irModule, traceNotifier)
-				dispatcher.post(irModule)
+				dispatcher.post(MessageType.Start, 'LaTeX formula written in: ' + latexFileName)
 			}
 		}
 		catch(Exception e)
 		{
-			dispatcher.post('\n***' + e.class.name + ': ' + e.message + '\n')
+			dispatcher.post(MessageType.Exec, '\n***' + e.class.name + ': ' + e.message)
 			if (e.stackTrace !== null && !e.stackTrace.empty)
 			{
 				val s = e.stackTrace.head
-				dispatcher.post('at ' + s.className + '.' + s.methodName + '(' + s.fileName + ':' + s.lineNumber + ')\n')
+				dispatcher.post(MessageType.Exec, 'at ' + s.className + '.' + s.methodName + '(' + s.fileName + ':' + s.lineNumber + ')')
 			}
 			throw(e)
 		}
-	}
-
-	private def getIrTransformation()
-	{
-		val description = 'Minimal IR->IR transformations to check job cycles'
-		new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
 	}
 
 	private def getLatexContent(NablaModule m)

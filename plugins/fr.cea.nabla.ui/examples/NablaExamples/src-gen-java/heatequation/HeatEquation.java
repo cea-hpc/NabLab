@@ -38,16 +38,18 @@ public final class HeatEquation
 
 	private final Options options;
 
-	// Mesh
-	private final CartesianMesh2D mesh;
-	private final FileWriter writer;
-	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbNeighbourCells;
-
-	// Global Variables
+	// Global definitions
 	private double t_n;
 	private double t_nplus1;
 	private final double deltat;
 	private int lastDump;
+
+	// Mesh (can depend on previous definitions)
+	private final CartesianMesh2D mesh;
+	private final FileWriter writer;
+	private final int nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbNodesOfCell;
+
+	// Global declarations
 	private int n;
 	private double[][] X;
 	private double[][] center;
@@ -58,23 +60,27 @@ public final class HeatEquation
 	private double[] outgoingFlux;
 	private double[] surface;
 
-	public HeatEquation(Options aOptions, CartesianMesh2D aCartesianMesh2D)
+	public HeatEquation(Options aOptions)
 	{
 		options = aOptions;
-		mesh = aCartesianMesh2D;
-		writer = new PvdFileWriter2D("HeatEquation", options.outputPath);
-		nbNodes = mesh.getNbNodes();
-		nbCells = mesh.getNbCells();
-		nbFaces = mesh.getNbFaces();
-		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
-		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 
-		// Initialize variables
+		// Initialize variables with default values
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat = 0.001;
 		lastDump = Integer.MIN_VALUE;
+
+		// Initialize mesh variables
+		mesh = CartesianMesh2DGenerator.generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH);
+		writer = new PvdFileWriter2D("HeatEquation", options.outputPath);
+		nbNodes = mesh.getNbNodes();
+		nbCells = mesh.getNbCells();
+		nbFaces = mesh.getNbFaces();
+		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
+		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
+		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+
+		// Allocate arrays
 		X = new double[nbNodes][2];
 		center = new double[nbCells][2];
 		u_n = new double[nbCells];
@@ -110,10 +116,9 @@ public final class HeatEquation
 		if (args.length == 1)
 		{
 			String dataFileName = args[0];
-			HeatEquation.Options o = HeatEquation.Options.createOptions(dataFileName);
-			CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
-			HeatEquation i = new HeatEquation(o, mesh);
-			i.simulate();
+			HeatEquation.Options options = HeatEquation.Options.createOptions(dataFileName);
+			HeatEquation simulator = new HeatEquation(options);
+			simulator.simulate();
 		}
 		else
 		{
@@ -132,7 +137,7 @@ public final class HeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(j1Cells -> 
 		{
 			final int j1Id = j1Cells;
-			double reduction3 = 0.0;
+			double reduction0 = 0.0;
 			{
 				final int[] neighbourCellsJ1 = mesh.getNeighbourCells(j1Id);
 				final int nbNeighbourCellsJ1 = neighbourCellsJ1.length;
@@ -142,10 +147,11 @@ public final class HeatEquation
 					final int j2Cells = j2Id;
 					final int cfId = mesh.getCommonFace(j1Id, j2Id);
 					final int cfFaces = cfId;
-					reduction3 = sumR0(reduction3, (u_n[j2Cells] - u_n[j1Cells]) / norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
+					double reduction1 = (u_n[j2Cells] - u_n[j1Cells]) / norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces];
+					reduction0 = sumR0(reduction0, reduction1);
 				}
 			}
-			outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction3;
+			outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction0;
 		});
 	}
 
@@ -159,7 +165,7 @@ public final class HeatEquation
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			final int fId = fFaces;
-			double reduction2 = 0.0;
+			double reduction0 = 0.0;
 			{
 				final int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
 				final int nbNodesOfFaceF = nodesOfFaceF.length;
@@ -169,10 +175,10 @@ public final class HeatEquation
 					final int rPlus1Id = nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
 					final int rNodes = rId;
 					final int rPlus1Nodes = rPlus1Id;
-					reduction2 = sumR0(reduction2, norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
+					reduction0 = sumR0(reduction0, norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
 				}
 			}
-			surface[fFaces] = 0.5 * reduction2;
+			surface[fFaces] = 0.5 * reduction0;
 		});
 	}
 
@@ -196,7 +202,7 @@ public final class HeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			final int jId = jCells;
-			double reduction1 = 0.0;
+			double reduction0 = 0.0;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				final int nbNodesOfCellJ = nodesOfCellJ.length;
@@ -206,10 +212,10 @@ public final class HeatEquation
 					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					final int rNodes = rId;
 					final int rPlus1Nodes = rPlus1Id;
-					reduction1 = sumR0(reduction1, det(X[rNodes], X[rPlus1Nodes]));
+					reduction0 = sumR0(reduction0, det(X[rNodes], X[rPlus1Nodes]));
 				}
 			}
-			V[jCells] = 0.5 * reduction1;
+			V[jCells] = 0.5 * reduction0;
 		});
 	}
 
@@ -290,7 +296,8 @@ public final class HeatEquation
 		{
 			n++;
 			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
-			dumpVariables(n);
+			if (n >= lastDump + options.outputPeriod)
+				dumpVariables(n);
 			computeOutgoingFlux(); // @1.0
 			computeTn(); // @1.0
 			computeUn(); // @2.0
@@ -309,6 +316,8 @@ public final class HeatEquation
 				u_nplus1 = tmp_u_n;
 			} 
 		} while (continueLoop);
+		// force a last output at the end
+		dumpVariables(n);
 	}
 
 	private double det(double[] a, double[] b)
@@ -346,7 +355,7 @@ public final class HeatEquation
 
 	private void dumpVariables(int iteration)
 	{
-		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+		if (!writer.isDisabled())
 		{
 			VtkFileContent content = new VtkFileContent(iteration, t_n, X, mesh.getGeometry().getQuads());
 			content.addCellVariable("Temperature", u_n);

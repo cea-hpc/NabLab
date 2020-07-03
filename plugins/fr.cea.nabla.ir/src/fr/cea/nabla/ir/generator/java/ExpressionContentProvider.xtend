@@ -92,13 +92,18 @@ class ExpressionContentProvider
 	'''new «type.javaType» «FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
 
 	static def dispatch CharSequence getContent(Cardinality it)
-	'''«container.uniqueName».length'''
+	{
+		if (container.connectivity.multiple)
+			'''«container.uniqueName».length'''
+		else
+			'''1'''
+	}
 
 	static def dispatch CharSequence getContent(FunctionCall it) 
 	'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 
 	static def dispatch CharSequence getContent(ArgOrVarRef it)
-	'''«target.getCodeName('.')»«FOR r : iterators BEFORE '[' SEPARATOR '][' AFTER ']'»«r.name»«ENDFOR»«FOR d:indices»[«d.content»]«ENDFOR»'''
+	'''«target.codeName»«FOR r : iterators BEFORE '[' SEPARATOR '][' AFTER ']'»«r.name»«ENDFOR»«FOR d:indices»[«d.content»]«ENDFOR»'''
 
 	private static def CharSequence initArray(int[] sizes, CharSequence value)
 	{

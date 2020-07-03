@@ -35,6 +35,7 @@ import static fr.cea.nabla.ir.interpreter.NablaValueGetter.*
 import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class ExpressionInterpreter
@@ -194,8 +195,13 @@ class ExpressionInterpreter
 	static def NablaValue interpreteCardinality(Cardinality it, Context context)
 	{
 		context.logFinest("Interprete Cardinality")
-		val container = context.getContainerValue(container)
-		new NV0Int(container.size)
+		if (container.connectivity.multiple)
+		{
+			val container = context.getContainerValue(container)
+			new NV0Int(container.size)
+		}
+		else
+			new NV0Int(1)
 	}
 
 	static def NablaValue interpreteFunctionCall(FunctionCall it, Context context)

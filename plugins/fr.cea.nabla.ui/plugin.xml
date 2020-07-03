@@ -18,7 +18,7 @@
         contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
         default="true"
         extensions="nabla"
-        icon="icons/Nabla.gif"
+        icon="icons/NabLab.gif"
         id="fr.cea.nabla.Nabla"
         name="Nabla Editor">
 		</editor>
@@ -443,18 +443,6 @@
 	</extension>
  
  <!-- la vue Latex -->
-  <extension
-       point="org.eclipse.ui.perspectiveExtensions">
-    <perspectiveExtension
-          targetID="org.eclipse.jdt.ui.JavaPerspective">
-       <view
-             id="fr.cea.nabla.ui.views.NablaLatexView"
-             ratio="0.5"
-             relationship="right"
-             relative="org.eclipse.ui.views.ProblemView">
-       </view>
-    </perspectiveExtension>
- </extension>
  
  <extension
        point="org.eclipse.ui.views">
@@ -465,9 +453,16 @@
     <view
           category="fr.cea.nabla.ui.category"
           class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.views.LatexView"
-          icon="icons/Nabla.gif"
+          icon="icons/NabLab.gif"
           id="fr.cea.nabla.ui.views.NablaLatexView"
-          name="Latex View">
+          name="LaTeX">
+    </view>
+    <view
+          category="fr.cea.nabla.ui.category"
+          class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.views.JobGraphView"
+          icon="icons/NabLab.gif"
+          id="fr.cea.nabla.ui.views.NablaJobGraphView"
+          name="Job Graph">
     </view>
  </extension>
  <!-- Shortcut pour lancer la génération sur fichier nablagen -->
@@ -475,7 +470,7 @@
        point="org.eclipse.debug.ui.launchShortcuts">
     <shortcut
           class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:fr.cea.nabla.ui.launchconfig.NablagenShortcut"
-          icon="icons/Nabla.gif"
+          icon="icons/NabLab.gif"
           id="fr.cea.nabla.ui.launchconfig.NablagenShortcut"
           label="Launch Generation"
           modes="run">
@@ -520,7 +515,7 @@
        point="org.eclipse.ui.perspectives">
     <perspective
           class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.perspectives.NabLabPerspective"
-          icon="icons/Nabla.gif"
+          icon="icons/NabLab.gif"
           id="fr.cea.nabla.ui.NabLabPerpective"
           name="%NablaPerspective">
     </perspective>
@@ -564,7 +559,7 @@
     <wizard
           category="fr.cea.nabla.ui.category"
           class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:fr.cea.nabla.ui.wizards.NewNablaProjectWizard"
-          icon="icons/Nabla.gif"
+          icon="icons/NabLab.gif"
           id="fr.cea.nabla.ui.new.project.wizard"
           name="%NablaProjectWizardName"
           project="true">
@@ -575,7 +570,7 @@
     <wizard
           category="org.eclipse.ui.Examples/fr.cea.nabla.ui.examples.category"
           class="org.eclipse.emf.common.ui.wizard.ExampleInstallerWizard"
-          icon="icons/Nabla.gif"
+          icon="icons/NabLab.gif"
           id="fr.cea.nabla.ui.examples.project.wizard"
           name="%NablaExamplesWizardName"
           project="true">
@@ -588,7 +583,7 @@
        point="org.eclipse.emf.common.ui.examples">
     <example
           id="fr.cea.nabla.ui.examples.project.example"
-          pageImage="icons/Nabla.gif"
+          pageImage="icons/NabLab.gif"
           wizardID="fr.cea.nabla.ui.examples.project.wizard">
        <projectDescriptor
              contentURI="examples/NablaExamples/"
@@ -656,7 +651,31 @@
    <consoleFactory 
       label="NabLab Console"
       class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.NabLabConsoleFactory"
-      icon="icons/Nabla.gif">
+      icon="icons/NabLab.gif">
    </consoleFactory>
+ </extension>
+ <!-- Create a key binding to notiy Latex ang Graph views -->
+ <extension
+       point="org.eclipse.ui.commands">
+    <command
+          id="fr.cea.nabla.ui.NotifyViewsId"
+          name="Notify view">
+    </command>
+ </extension>
+ <extension
+       point="org.eclipse.ui.bindings">
+    <key
+          commandId="fr.cea.nabla.ui.NotifyViewsId"
+          contextId="org.eclipse.xtext.ui.XtextEditorScope"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+          sequence="F1">
+    </key>
+ </extension>
+ <extension
+       point="org.eclipse.ui.handlers">
+    <handler
+          class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.views.NotifyViewsHandler"
+          commandId="fr.cea.nabla.ui.NotifyViewsId">
+    </handler>
  </extension>
 </plugin>

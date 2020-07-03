@@ -13,7 +13,6 @@ import com.google.inject.Inject
 import fr.cea.nabla.ir.interpreter.ModuleInterpreter
 import fr.cea.nabla.ir.interpreter.NV0Int
 import fr.cea.nabla.ir.interpreter.NV0Real
-import fr.cea.nabla.ir.interpreter.NV1Real
 import fr.cea.nabla.tests.CompilationChainHelper
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
@@ -32,7 +31,7 @@ class JobInterpreterTest extends AbstractJobInterpreterTest
 
 	override assertInterpreteInstructionJob(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -43,7 +42,7 @@ class JobInterpreterTest extends AbstractJobInterpreterTest
 
 	override assertInterpreteTimeLoopJob(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
@@ -56,15 +55,13 @@ class JobInterpreterTest extends AbstractJobInterpreterTest
 
 	override assertInterpreteTimeLoopCopyJob(String model)
 	{
-		val irModule = compilationHelper.getIrModule(model, testGenModel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
 		val context = moduleInterpreter.interpreteWithOptionDefaultValues
 		context.logVariables("After")
-		assertVariableValueInContext(irModule, context, "u_n0", new NV1Real(#[0.0 , 0.0]))
-		assertVariableValueInContext(irModule, context, "u_n", new NV1Real(#[1.0 , 2.0]))
-		val X_n0 = context.getVariableValue("X_n0")
-		assertVariableValueInContext(irModule, context, "X_n", X_n0)
+		assertVariableValueInContext(irModule, context, "u_n0", new NV0Real(4.0))
+		assertVariableValueInContext(irModule, context, "u_n", new NV0Real(13.0))
 	}
 }

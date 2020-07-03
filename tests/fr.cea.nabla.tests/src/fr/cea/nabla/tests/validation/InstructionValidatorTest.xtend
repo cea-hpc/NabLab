@@ -16,6 +16,7 @@ import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
 import fr.cea.nabla.validation.InstructionValidator
+import fr.cea.nabla.validation.ValidationUtils
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -29,6 +30,7 @@ import org.junit.runner.RunWith
 class InstructionValidatorTest 
 {
 	@Inject ParseHelper<NablaModule> parseHelper
+	@Inject extension ValidationUtils
 	@Inject extension ValidationTestHelper
 	@Inject extension TestUtils
 
@@ -73,7 +75,7 @@ class InstructionValidatorTest
 			ℕ U{cells};
 			ℕ V{nodes};
 			ComputeU: ∀ j∈cells(), {
-					let e = 1.0;
+					let ℝ e = 1.0;
 					U{j} = e * 4;
 			}
 			ComputeV: V = U;
@@ -82,12 +84,10 @@ class InstructionValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.affectation,
 			InstructionValidator::AFFECTATION_TYPE,
-			InstructionValidator::getAffectationTypeMsg(PrimitiveType::REAL.literal,
-				PrimitiveType::INT.literal
-			))
+			getTypeMsg(PrimitiveType::REAL.literal, PrimitiveType::INT.literal))
 		moduleKo.assertError(NablaPackage.eINSTANCE.affectation,
 			InstructionValidator::AFFECTATION_TYPE,
-			InstructionValidator::getAffectationTypeMsg("ℕ{cells}", "ℕ{nodes}"))
+			getTypeMsg("ℕ{cells}", "ℕ{nodes}"))
 
 		val moduleOk = parseHelper.parse(getTestModule(defaultConnectivities, '')
 			+
@@ -95,7 +95,7 @@ class InstructionValidatorTest
 			ℕ U{cells}; 
 			ℕ V{cells};
 			ComputeU: ∀ j∈cells(), {
-					let e = 1;
+					let ℕ e = 1;
 					U{j} = e * 4;
 			}
 			ComputeV: V = U;
@@ -112,19 +112,45 @@ class InstructionValidatorTest
 			'''
 			ℕ cond;
 			ℕ a;
-			jobIf: if (cond) { a = a + 1 ; } else { a = a -1 ; }
+			job: if (cond) { a = a + 1 ; } else { a = a -1 ; }
 			''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.^if,
-			InstructionValidator::IF_CONDITION_BOOL,
-			InstructionValidator::getIfConditionBoolMsg(PrimitiveType::INT.literal))
+			InstructionValidator::CONDITION_BOOL,
+			getTypeMsg(PrimitiveType::INT.literal, "ℾ"))
 
 		val moduleOk = parseHelper.parse(testModule
 			+
 			'''
 			ℾ cond;
 			ℕ a;
-			jobIf: if (cond) { a = a + 1 ; } else { a = a -1 ; }
+			job: if (cond) { a = a + 1 ; } else { a = a -1 ; }
+			''')
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void testCheckWhileConditionBoolType() 
+	{
+		val moduleKo = parseHelper.parse(testModule
+			+
+			'''
+			ℕ cond;
+			ℕ a;
+			job: while (cond) { a = a + 1 ; }
+			''')
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.^while,
+			InstructionValidator::CONDITION_BOOL,
+			getTypeMsg(PrimitiveType::INT.literal, "ℾ"))
+
+		val moduleOk = parseHelper.parse(testModule
+			+
+			'''
+			ℾ cond;
+			ℕ a;
+			job: while (cond) { a = a + 1 ; }
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -135,8 +161,8 @@ class InstructionValidatorTest
 	{
 		val moduleKo1 = parseHelper.parse(getTestModule('', '''def mySum, 0.0: ℕ, (a, b) → return a + b;''') +
 			'''
-			let coef = [2, 3, 4];
-			let DOUBLE_LENGTH = mySum{k∈[0;3[}(X_EDGE_LENGTH, coef[k]);
+			let ℕ[3] coef = [2, 3, 4];
+			let ℝ DOUBLE_LENGTH = mySum{k∈[0;3[}(X_EDGE_LENGTH, coef[k]);
 			''')
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
@@ -145,8 +171,8 @@ class InstructionValidatorTest
 
 		val moduleKo2 = parseHelper.parse(getTestModule(nodesConnectivity, '') +
 			'''
-			let c = card(nodes());
-			option d = c;
+			let ℕ c = card(nodes());
+			option ℕ d = c;
 			''')
 		Assert.assertNotNull(moduleKo2)
 		moduleKo2.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
@@ -155,8 +181,8 @@ class InstructionValidatorTest
 
 		val moduleOk =  parseHelper.parse(testModule +
 			'''
-			let coef = 2;
-			let DOUBLE_LENGTH = X_EDGE_LENGTH * coef;
+			let ℕ coef = 2;
+			let ℝ DOUBLE_LENGTH = X_EDGE_LENGTH * coef;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -168,11 +194,11 @@ class InstructionValidatorTest
 		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '')
 			+
 			'''
-			option alpha = 1;
+			option ℕ alpha = 1;
 			ℕ U{cells}; 
 			ℕ V{cells};
 			ComputeU: ∀ j∈cells(), {
-					option e = 1;
+					option ℕ e = 1;
 					U{j} = e * alpha * 4;
 			}
 			ComputeV: V = U;
@@ -185,11 +211,11 @@ class InstructionValidatorTest
 		val moduleOk = parseHelper.parse(getTestModule(defaultConnectivities, '')
 			+
 			'''
-			option alpha = 1;
+			option ℕ alpha = 1;
 			ℕ U{cells}; 
 			ℕ V{cells};
 			ComputeU: ∀ j∈cells(), {
-					let e = 1;
+					let ℕ e = 1;
 					U{j} = e * alpha * 4;
 			}
 			ComputeV: V = U;

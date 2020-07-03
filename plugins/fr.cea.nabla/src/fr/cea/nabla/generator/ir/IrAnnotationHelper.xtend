@@ -10,20 +10,16 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.NablaModule
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.resource.ILocationInFileProvider
 
+import static fr.cea.nabla.ir.IrAnnotableExtensions.*
+
 class IrAnnotationHelper 
 {
 	@Inject ILocationInFileProvider locationProvider
-
-	public static val ANNOTATION_NABLA_ORIGIN_SOURCE = "nabla-origin"
-	public static val ANNOTATION_URI_DETAIL = 'uri'
-	public static val ANNOTATION_OFFSET_DETAIL = 'offset'
-	public static val ANNOTATION_LENGTH_DETAIL = 'length'
 
 	def dispatch toIrAnnotation(NablaModule it)
 	{
@@ -35,13 +31,6 @@ class IrAnnotationHelper
 	def dispatch toIrAnnotation(EObject it)
 	{
 		createIrAnnot
-	}
-
-	def getUriDetail(EObject o)
-	{
-		val irFile = Utils::getIrModule(o)
-		if (irFile === null) null
-		else irFile.annotations.head.details.get(ANNOTATION_URI_DETAIL)
 	}
 
 	private def createIrAnnot(EObject nablaElt)

@@ -133,21 +133,21 @@ ExplicitHeatEquation::Options::Options(const std::string& fileName)
 
 /******************** Module definition ********************/
 
-ExplicitHeatEquation::ExplicitHeatEquation(Options* aOptions, CartesianMesh2D* aCartesianMesh2D)
+ExplicitHeatEquation::ExplicitHeatEquation(const Options& aOptions)
 : options(aOptions)
-, mesh(aCartesianMesh2D)
-, writer("ExplicitHeatEquation", options->outputPath)
-, nbNodes(mesh->getNbNodes())
-, nbCells(mesh->getNbCells())
-, nbFaces(mesh->getNbFaces())
-, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
-, nbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
-, nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
 , t_n(0.0)
 , t_nplus1(0.0)
 , deltat(0.001)
 , lastDump(numeric_limits<int>::min())
+, mesh(CartesianMesh2DGenerator::generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH))
+, writer("ExplicitHeatEquation", options.outputPath)
+, nbNodes(mesh->getNbNodes())
+, nbCells(mesh->getNbCells())
+, nbFaces(mesh->getNbFaces())
+, nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
+, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
+, nbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
+, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
 , xc("xc", nbCells)
@@ -160,7 +160,6 @@ ExplicitHeatEquation::ExplicitHeatEquation(Options* aOptions, CartesianMesh2D* a
 , faceConductivity("faceConductivity", nbFaces)
 , alpha("alpha", nbCells, nbCells)
 {
-
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
@@ -168,6 +167,11 @@ ExplicitHeatEquation::ExplicitHeatEquation(Options* aOptions, CartesianMesh2D* a
 		X(rNodes)[0] = gNodes[rNodes][0];
 		X(rNodes)[1] = gNodes[rNodes][1];
 	}
+}
+
+ExplicitHeatEquation::~ExplicitHeatEquation()
+{
+	delete mesh;
 }
 
 const std::pair<size_t, size_t> ExplicitHeatEquation::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
@@ -209,7 +213,7 @@ void ExplicitHeatEquation::computeFaceLength(const member_type& teamMember) noex
 		{
 			int fFaces(fFacesTeam + teamWork.first);
 			const Id fId(fFaces);
-			double reduction3(0.0);
+			double reduction0(0.0);
 			{
 				const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
 				const size_t nbNodesOfFaceF(nodesOfFaceF.size());
@@ -219,10 +223,10 @@ void ExplicitHeatEquation::computeFaceLength(const member_type& teamMember) noex
 					const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 					const size_t pNodes(pId);
 					const size_t pPlus1Nodes(pPlus1Id);
-					reduction3 = sumR0(reduction3, norm(X(pNodes) - X(pPlus1Nodes)));
+					reduction0 = sumR0(reduction0, norm(X(pNodes) - X(pPlus1Nodes)));
 				}
 			}
-			faceLength(fFaces) = 0.5 * reduction3;
+			faceLength(fFaces) = 0.5 * reduction0;
 		});
 	}
 }
@@ -253,7 +257,7 @@ void ExplicitHeatEquation::computeV(const member_type& teamMember) noexcept
 		{
 			int jCells(jCellsTeam + teamWork.first);
 			const Id jId(jCells);
-			double reduction2(0.0);
+			double reduction0(0.0);
 			{
 				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
@@ -263,10 +267,10 @@ void ExplicitHeatEquation::computeV(const member_type& teamMember) noexcept
 					const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 					const size_t pNodes(pId);
 					const size_t pPlus1Nodes(pPlus1Id);
-					reduction2 = sumR0(reduction2, det(X(pNodes), X(pPlus1Nodes)));
+					reduction0 = sumR0(reduction0, det(X(pNodes), X(pPlus1Nodes)));
 				}
 			}
-			V(jCells) = 0.5 * reduction2;
+			V(jCells) = 0.5 * reduction0;
 		});
 	}
 }
@@ -339,7 +343,7 @@ void ExplicitHeatEquation::updateU(const member_type& teamMember) noexcept
 		{
 			int cCells(cCellsTeam + teamWork.first);
 			const Id cId(cCells);
-			double reduction6(0.0);
+			double reduction0(0.0);
 			{
 				const auto neighbourCellsC(mesh->getNeighbourCells(cId));
 				const size_t nbNeighbourCellsC(neighbourCellsC.size());
@@ -347,12 +351,27 @@ void ExplicitHeatEquation::updateU(const member_type& teamMember) noexcept
 				{
 					const Id dId(neighbourCellsC[dNeighbourCellsC]);
 					const size_t dCells(dId);
-					reduction6 = sumR0(reduction6, alpha(cCells,dCells) * u_n(dCells));
+					reduction0 = sumR0(reduction0, alpha(cCells,dCells) * u_n(dCells));
 				}
 			}
-			u_nplus1(cCells) = alpha(cCells,cCells) * u_n(cCells) + reduction6;
+			u_nplus1(cCells) = alpha(cCells,cCells) * u_n(cCells) + reduction0;
 		});
 	}
+}
+
+/**
+ * Job ComputeDeltaTn called @2.0 in simulate method.
+ * In variables: D, X_EDGE_LENGTH, Y_EDGE_LENGTH
+ * Out variables: deltat
+ */
+void ExplicitHeatEquation::computeDeltaTn(const member_type& teamMember) noexcept
+{
+	double reduction0;
+	Kokkos::parallel_reduce(Kokkos::TeamThreadRange(teamMember, nbCells), KOKKOS_LAMBDA(const size_t& cCells, double& accu)
+	{
+		accu = minR0(accu, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D(cCells));
+	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &minR0));
+	deltat = reduction0 * 0.24;
 }
 
 /**
@@ -371,7 +390,7 @@ void ExplicitHeatEquation::computeFaceConductivity(const member_type& teamMember
 		{
 			int fFaces(fFacesTeam + teamWork.first);
 			const Id fId(fFaces);
-			double reduction4(1.0);
+			double reduction0(1.0);
 			{
 				const auto cellsOfFaceF(mesh->getCellsOfFace(fId));
 				const size_t nbCellsOfFaceF(cellsOfFaceF.size());
@@ -379,10 +398,10 @@ void ExplicitHeatEquation::computeFaceConductivity(const member_type& teamMember
 				{
 					const Id c1Id(cellsOfFaceF[c1CellsOfFaceF]);
 					const size_t c1Cells(c1Id);
-					reduction4 = prodR0(reduction4, D(c1Cells));
+					reduction0 = prodR0(reduction0, D(c1Cells));
 				}
 			}
-			double reduction5(0.0);
+			double reduction1(0.0);
 			{
 				const auto cellsOfFaceF(mesh->getCellsOfFace(fId));
 				const size_t nbCellsOfFaceF(cellsOfFaceF.size());
@@ -390,10 +409,10 @@ void ExplicitHeatEquation::computeFaceConductivity(const member_type& teamMember
 				{
 					const Id c2Id(cellsOfFaceF[c2CellsOfFaceF]);
 					const size_t c2Cells(c2Id);
-					reduction5 = sumR0(reduction5, D(c2Cells));
+					reduction1 = sumR0(reduction1, D(c2Cells));
 				}
 			}
-			faceConductivity(fFaces) = 2.0 * reduction4 / reduction5;
+			faceConductivity(fFaces) = 2.0 * reduction0 / reduction1;
 		});
 	}
 }
@@ -413,8 +432,8 @@ void ExplicitHeatEquation::initU(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
 		{
 			int cCells(cCellsTeam + teamWork.first);
-			if (norm(Xc(cCells) - options->vectOne) < 0.5) 
-				u_n(cCells) = options->u0;
+			if (norm(Xc(cCells) - options.vectOne) < 0.5) 
+				u_n(cCells) = options.u0;
 			else
 				u_n(cCells) = 0.0;
 		});
@@ -443,22 +462,7 @@ void ExplicitHeatEquation::initXcAndYc(const member_type& teamMember) noexcept
 }
 
 /**
- * Job computeDeltaTn called @2.0 in simulate method.
- * In variables: D, X_EDGE_LENGTH, Y_EDGE_LENGTH
- * Out variables: deltat
- */
-void ExplicitHeatEquation::computeDeltaTn(const member_type& teamMember) noexcept
-{
-	double reduction1;
-	Kokkos::parallel_reduce(Kokkos::TeamThreadRange(teamMember, nbCells), KOKKOS_LAMBDA(const size_t& cCells, double& accu)
-	{
-		accu = minR0(accu, options->X_EDGE_LENGTH * options->Y_EDGE_LENGTH / D(cCells));
-	}, KokkosJoiner<double>(reduction1, numeric_limits<double>::max(), &minR0));
-	deltat = reduction1 * 0.24;
-}
-
-/**
- * Job computeAlphaCoeff called @3.0 in simulate method.
+ * Job ComputeAlphaCoeff called @3.0 in simulate method.
  * In variables: V, Xc, deltat, faceConductivity, faceLength
  * Out variables: alpha
  */
@@ -511,7 +515,8 @@ void ExplicitHeatEquation::executeTimeLoopN() noexcept
 		globalTimer.start();
 		cpuTimer.start();
 		n++;
-		dumpVariables(n);
+		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+			dumpVariables(n);
 		if (n!=1)
 			std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
 				<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
@@ -526,7 +531,7 @@ void ExplicitHeatEquation::executeTimeLoopN() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (t_nplus1 < options->stopTime && n + 1 < options->maxIterations);
+		continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
 	
 		if (continueLoop)
 		{
@@ -545,23 +550,28 @@ void ExplicitHeatEquation::executeTimeLoopN() noexcept
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << utils::progress_bar(n, options->maxIterations, t_n, options->stopTime, 25);
+		std::cout << utils::progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(n, options->maxIterations, t_n, options->stopTime, deltat, globalTimer), true)
+			utils::eta(n, options.maxIterations, t_n, options.stopTime, deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
 		cpuTimer.reset();
 		ioTimer.reset();
 	} while (continueLoop);
+	// force a last output at the end
+	dumpVariables(n, false);
 }
 
-void ExplicitHeatEquation::dumpVariables(int iteration)
+void ExplicitHeatEquation::dumpVariables(int iteration, bool useTimer)
 {
-	if (!writer.isDisabled() && n >= lastDump + options->outputPeriod)
+	if (!writer.isDisabled())
 	{
-		cpuTimer.stop();
-		ioTimer.start();
+		if (useTimer)
+		{
+			cpuTimer.stop();
+			ioTimer.start();
+		}
 		auto quads = mesh->getGeometry()->getQuads();
 		writer.startVtpFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data());
 		writer.openNodeData();
@@ -571,8 +581,11 @@ void ExplicitHeatEquation::dumpVariables(int iteration)
 		writer.closeCellData();
 		writer.closeVtpFile();
 		lastDump = n;
-		ioTimer.stop();
-		cpuTimer.start();
+		if (useTimer)
+		{
+			ioTimer.stop();
+			cpuTimer.start();
+		}
 	}
 }
 
@@ -580,8 +593,8 @@ void ExplicitHeatEquation::simulate()
 {
 	std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting ExplicitHeatEquation ..." << __RESET__ << "\n\n";
 	
-	std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
-		<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
+	std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options.X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options.Y_EDGE_ELEMS
+		<< __RESET__ << ", X length=" << __BOLD__ << options.X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options.Y_EDGE_LENGTH << __RESET__ << std::endl;
 	
 	if (Kokkos::hwloc::available())
 	{
@@ -621,11 +634,11 @@ void ExplicitHeatEquation::simulate()
 	// @2.0
 	Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 	{
+		if (thread.league_rank() == 0)
+			computeDeltaTn(thread);
 		computeFaceConductivity(thread);
 		initU(thread);
 		initXcAndYc(thread);
-		if (thread.league_rank() == 0)
-			computeDeltaTn(thread);
 	});
 	
 	// @3.0
@@ -639,7 +652,6 @@ void ExplicitHeatEquation::simulate()
 	
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
-
 
 /******************** Module definition ********************/
 
@@ -659,13 +671,13 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	
-	auto o = new ExplicitHeatEquation::Options(dataFile);
-	auto nm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
-	auto c = new ExplicitHeatEquation(o, nm);
-	c->simulate();
-	delete c;
-	delete nm;
-	delete o;
+	ExplicitHeatEquation::Options options(dataFile);
+	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
+	auto simulator = new ExplicitHeatEquation(options);
+	simulator->simulate();
+	
+	// simulator must be deleted before calling finalize
+	delete simulator;
 	Kokkos::finalize();
 	return 0;
 }

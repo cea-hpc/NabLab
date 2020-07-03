@@ -57,14 +57,14 @@
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PostProcessingInfo" eSuperTypes="#//IrAnnotable">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="outputVariables"
-        upperBound="-1" eType="#//Variable"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="periodValue" lowerBound="1"
-        eType="#//SimpleVariable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="outputVariables" upperBound="-1"
+        eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="periodReference" lowerBound="1"
         eType="#//SimpleVariable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="periodValue" lowerBound="1"
+        eType="#//SimpleVariable" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="lastDumpVariable" lowerBound="1"
-        eType="#//SimpleVariable"/>
+        eType="#//SimpleVariable" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeLoop" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -226,6 +226,12 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="elseInstruction" eType="#//Instruction"
         containment="true" resolveProxies="false"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="While" eSuperTypes="#//Instruction">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"
+        eType="#//Expression" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" lowerBound="1"
+        eType="#//Instruction" containment="true" resolveProxies="false"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Return" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
         eType="#//Expression" containment="true" resolveProxies="false"/>
@@ -373,9 +379,9 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="shift" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
         defaultValueLiteral="0"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ItemIdValueCall" eSuperTypes="#//ItemIdValue">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="call" lowerBound="1" eType="#//ConnectivityCall"
-        containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ItemIdValueContainer" eSuperTypes="#//ItemIdValue">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="container" lowerBound="1"
+        eType="#//Container" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ItemIndex" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

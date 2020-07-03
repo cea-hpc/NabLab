@@ -25,6 +25,7 @@ NablagenConfig:
 	'nablagen' 'for' nablaModule=[nabla::NablaModule] ';'
 	simulation = Simulation
 	(vtkOutput = VtkOutput)?
+	(levelDB = LevelDB)?
 	targets += Target*;
 
 Simulation:
@@ -43,6 +44,12 @@ VtkOutput:
 	'{'
 		'periodReferenceVariable' '=' periodReference=[nabla::ArgOrVar] ';'
 		'outputVariables' '=' vars += OutputVar (',' vars += OutputVar)* ';'
+	'}';
+	
+LevelDB:
+	'LevelDB'
+	'{'
+		'levelDBPath' '=' levelDBPath = STRING ';'
 	'}';
 
 OutputVar:

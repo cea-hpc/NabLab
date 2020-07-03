@@ -26,17 +26,14 @@ VtkOutput
 	outputVariables = ρ as "Density";
 }
 
+LevelDB
+{
+  levelDBPath = "/home/letiercef/Utils/leveldb-install";
+}
+
 Java
 {
 	outputPath = "/NablaExamples/src-gen-java";
-}
-
-StlThread
-{
-	outputPath = "/NablaExamples/src-gen-cpp/stl-thread";
-	compiler = GNU;
-//		compiler = LLVM;
-//		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
 }
 
 Kokkos
@@ -52,3 +49,25 @@ KokkosTeamThread
 	kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
 	compiler = GNU;
 }
+
+OpenMP
+{
+	outputPath = "/NablaExamples/src-gen-cpp/openmp";
+	compiler = GNU;
+}
+
+CppSequential
+{
+	outputPath = "/NablaExamples/src-gen-cpp/sequential";
+	compiler = GNU;
+}
+
+StlThread
+{
+	outputPath = "/NablaExamples/src-gen-cpp/stl-thread";
+	compiler = GNU;
+//		compiler = LLVM;
+//		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
+}
+
+

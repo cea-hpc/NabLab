@@ -111,7 +111,7 @@ class NablaExamplesInterpreterTest
 		val jsonOptionsFile = String.format("%1$ssrc-gen-java/%2$s/%3$sDefaultOptions.json", examplesProjectPath, moduleName.toLowerCase, moduleName)
 		val jsonOptions = readFileAsString(jsonOptionsFile)
 
-		val irModule = compilationHelper.getIrModule(model, genmodel)
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, genmodel)
 		//val handler = new ConsoleHandler
 
 		val logFile = String.format("src/%1$s/Interprete%2$s.log", moduleName.toLowerCase, moduleName)

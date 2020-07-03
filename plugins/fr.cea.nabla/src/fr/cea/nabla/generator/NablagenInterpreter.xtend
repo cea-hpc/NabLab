@@ -16,6 +16,7 @@ import fr.cea.nabla.generator.ir.Nabla2Ir
 import fr.cea.nabla.ir.generator.cpp.Ir2Cpp
 import fr.cea.nabla.ir.generator.cpp.KokkosBackend
 import fr.cea.nabla.ir.generator.cpp.KokkosTeamThreadBackend
+import fr.cea.nabla.ir.generator.cpp.OpenMpBackend
 import fr.cea.nabla.ir.generator.cpp.SequentialBackend
 import fr.cea.nabla.ir.generator.cpp.StlThreadBackend
 import fr.cea.nabla.ir.generator.java.Ir2Java
@@ -50,6 +51,7 @@ import org.eclipse.xtext.generator.JavaIoFileSystemAccess
 import org.eclipse.xtext.generator.OutputConfiguration
 
 import static com.google.common.collect.Maps.uniqueIndex
+import fr.cea.nabla.nablagen.LevelDB
 
 class NablagenInterpreter
 {
@@ -61,38 +63,43 @@ class NablagenInterpreter
 
 	@Accessors val traceListeners = new ArrayList<(String)=>void>
 	val ir2Json = new Ir2Json
-	val traceNotifier = [String msg | trace(msg)]
 
 	def IrModule buildIrModule(NablagenConfig it, String projectDir)
 	{
 		try
 		{
-			trace('Starting transformation of ' + nablaModule.name + " to intermediate representation (IR)\n")
-
 			// Nabla -> IR
+			trace('Nabla -> IR')
 			val irModule = nabla2Ir.toIrModule(nablaModule)
 
-			// IR -> IR 
-			transformer.transformIr(commonIrTransformation, irModule, traceNotifier)
+			// IR -> IR
+			transformer.transformIr(commonIrTransformation, irModule, [msg | trace(msg)])
 
 			if (writeIR)
-				irWriter.createAndSaveResource(getConfiguredFileSystemAccess(projectDir, true), irModule)
+			{
+				val fileName = irWriter.createAndSaveResource(getConfiguredFileSystemAccess(projectDir, true), irModule)
+				trace('Resource saved: ' + fileName)
+			}
 
 			return irModule
 		}
 		catch(Exception e)
 		{
-			trace('\n***' + e.class.name + ': ' + e.message + '\n')
+			trace('\n***' + e.class.name + ': ' + e.message)
 			if (e.stackTrace !== null && !e.stackTrace.empty)
 			{
 				val stack = e.stackTrace.head
-				trace('at ' + stack.className + '.' + stack.methodName + '(' + stack.fileName + ':' + stack.lineNumber + ')\n')
+				trace('at ' + stack.className + '.' + stack.methodName + '(' + stack.fileName + ':' + stack.lineNumber + ')')
+			}
+			if (e instanceof NullPointerException)
+			{
+				trace("Try to rebuild the entire project (Project menu in main menu bar) and to relaunch the generation")
 			}
 			throw(e)
 		}
 	}
 
-	def void generateCode(IrModule irModule, List<Target> targets, String iterationMaxVarName, String timeMaxVarName, String projectDir)
+	def void generateCode(IrModule irModule, List<Target> targets, String iterationMaxVarName, String timeMaxVarName, String projectDir, LevelDB levelDB)
 	{
 		try
 		{
@@ -101,8 +108,8 @@ class NablagenInterpreter
 			for (target : targets)
 			{
 				// Code generation
-				val g = getCodeGenerator(target, baseDir, iterationMaxVarName, timeMaxVarName)
-				trace(g.name + " code generator\n")
+				val g = getCodeGenerator(target, baseDir, iterationMaxVarName, timeMaxVarName, levelDB)
+				trace("Starting " + g.name + " code generator")
 				val outputFolderName = baseDir + target.outputDir
 				val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
 				val fileContentsByName = new LinkedHashMap<String, CharSequence>
@@ -111,7 +118,7 @@ class NablagenInterpreter
 				if (g.needIrTransformation)
 				{
 					val duplicatedIrModule = EcoreUtil::copy(irModule)
-					transformer.transformIr(g.irTransformationStep, duplicatedIrModule, traceNotifier)
+					transformer.transformIr(g.irTransformationStep, duplicatedIrModule, [msg | trace(msg)])
 					fileContentsByName += g.getFileContentsByName(duplicatedIrModule)
 				}
 				else
@@ -123,19 +130,18 @@ class NablagenInterpreter
 				{
 					val fullFileName = irModule.name.toLowerCase + '/' + fileName
 					val fileContent = fileContentsByName.get(fileName)
-					trace("    Generating '" + fullFileName + "\n")
+					trace("    Generating: " + fullFileName)
 					fsa.generateFile(fullFileName, fileContent)
 				}
 			}
-			trace('Generation of ' + irModule.name + ' completed successfully\n\n')
 		}
 		catch(Exception e)
 		{
-			trace('\n***' + e.class.name + ': ' + e.message + '\n')
+			trace('\n***' + e.class.name + ': ' + e.message)
 			if (e.stackTrace !== null && !e.stackTrace.empty)
 			{
 				val stack = e.stackTrace.head
-				trace('at ' + stack.className + '.' + stack.methodName + '(' + stack.fileName + ':' + stack.lineNumber + ')\n')
+				trace('at ' + stack.className + '.' + stack.methodName + '(' + stack.fileName + ':' + stack.lineNumber + ')')
 			}
 			throw(e)
 		}
@@ -145,7 +151,7 @@ class NablagenInterpreter
 	{
 		val baseFolder = new File(absoluteBasePath)
 		if (!baseFolder.exists || !(baseFolder.isDirectory))
-			throw new RuntimeException('** Invalid outputDir: ' + absoluteBasePath + '\n')
+			throw new RuntimeException('** Invalid outputDir: ' + absoluteBasePath)
 
 		val fsa = fsaProvider.get
 		fsa.outputConfigurations = outputConfigurations
@@ -168,10 +174,15 @@ class NablagenInterpreter
 		})
 	}
 
-	private def void trace(String msg) { traceListeners.forEach[apply(msg)] }
-
-	private def getCodeGenerator(Target it, String baseDir, String iterationMax, String timeMax)
+	private def void trace(String msg)
 	{
+		traceListeners.forEach[apply(msg)]
+	}
+
+	private def getCodeGenerator(Target it, String baseDir, String iterationMax, String timeMax, LevelDB levelDB)
+	{
+		val levelDBPath = if (levelDB === null) null else levelDB.levelDBPath
+		
 		switch it
 		{
 			Java: return new Ir2Java
@@ -179,11 +190,11 @@ class NablagenInterpreter
 			{
 				val backend = switch it
 				{
-					CppSequential: new SequentialBackend(iterationMax , timeMax, compiler.literal, compilerPath)
-					CppStlThread: new StlThreadBackend(iterationMax , timeMax, compiler.literal, compilerPath)
-					CppOpenMP: throw new RuntimeException('Not yet implemented')
-					CppKokkos: new KokkosBackend(iterationMax , timeMax, compiler.literal, compilerPath, kokkosPath)
-					CppKokkosTeamThread: new KokkosTeamThreadBackend(iterationMax , timeMax, compiler.literal, compilerPath, kokkosPath)
+					CppSequential: new SequentialBackend(iterationMax, timeMax, compiler.literal, compilerPath, levelDBPath)
+					CppStlThread: new StlThreadBackend(iterationMax , timeMax, compiler.literal, compilerPath, levelDBPath)
+					CppOpenMP:new OpenMpBackend(iterationMax , timeMax, compiler.literal, compilerPath, levelDBPath)
+					CppKokkos: new KokkosBackend(iterationMax , timeMax, compiler.literal, compilerPath, kokkosPath, levelDBPath)
+					CppKokkosTeamThread: new KokkosTeamThreadBackend(iterationMax , timeMax, compiler.literal, compilerPath, kokkosPath, levelDBPath)
 					default: throw new RuntimeException("Unsupported language " + class.name)
 				}
 				return new Ir2Cpp(new File(baseDir + outputDir), backend)

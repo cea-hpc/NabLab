@@ -10,7 +10,7 @@
 package fr.cea.nabla.validation
 
 import com.google.inject.Inject
-import fr.cea.nabla.ItemExtensions
+import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.NablaModule
@@ -20,11 +20,13 @@ import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.typing.NablaSimpleType
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
+import org.eclipse.xtext.validation.CheckType
 
 class ArgOrVarRefValidator extends InstructionValidator
 {
-	@Inject extension ItemExtensions
+	@Inject extension ValidationUtils
 	@Inject extension ArgOrVarTypeProvider
+	@Inject extension SpaceIteratorExtensions
 
 	public static val INDICES_NUMBER = "ArgOrVarRef::IndicesNumber"
 	public static val SPACE_ITERATOR_NUMBER = "ArgOrVarRef::SpaceIteratorNumber"
@@ -33,10 +35,9 @@ class ArgOrVarRefValidator extends InstructionValidator
 
 	static def getIndicesNumberMsg(int expectedSize, int actualSize) { "Wrong number of indices. Expected " + expectedSize + ", but was " + actualSize }
 	static def getSpaceIteratorNumberMsg(int expectedSize, int actualSize) { "Wrong number of space iterators. Expected " + expectedSize + ", but was " + actualSize }
-	static def getSpaceIteratorTypeMsg(String expectedType, String actualType) { "Expected " + expectedType + ", but was " + actualType }
 	static def getTimeIteratorUsageMsg() { "Time iterator must be specified" }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkIndicesNumber(ArgOrVarRef it)
 	{
 		if (target === null || target.eIsProxy) return
@@ -47,7 +48,7 @@ class ArgOrVarRefValidator extends InstructionValidator
 			error(getIndicesNumberMsg(dimension, indices.size), NablaPackage.Literals::ARG_OR_VAR_REF__INDICES, INDICES_NUMBER)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkSpaceIteratorNumberAndType(ArgOrVarRef it)
 	{
 		if (target instanceof ConnectivityVar)
@@ -65,7 +66,7 @@ class ArgOrVarRefValidator extends InstructionValidator
 					val actualT = spaceIteratorRefI.target.type
 					val expectedT = dimensionI.returnType
 					if (actualT != expectedT)
-						error(getSpaceIteratorTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, i, SPACE_ITERATOR_TYPE)
+						error(getTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, i, SPACE_ITERATOR_TYPE)
 				}
 			}
 		}
@@ -76,19 +77,19 @@ class ArgOrVarRefValidator extends InstructionValidator
 		}
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkTimeIteratorUsage(ArgOrVarRef it)
 	{
 		if (timeIterators.empty)
 		{
 			val module = EcoreUtil2::getContainerOfType(it, NablaModule)
-			val otherSameVarRefs = module.eAllContents.filter(ArgOrVarRef).filter[x | x.target == target]
-			if (otherSameVarRefs.exists[x | !x.timeIterators.empty])
+			val argOrVarRefs = EcoreUtil2.getAllContentsOfType(module, ArgOrVarRef)
+			if (argOrVarRefs.exists[x | !x.timeIterators.empty && x.target === target])
 				error(getTimeIteratorUsageMsg(), NablaPackage.Literals::ARG_OR_VAR_REF__TIME_ITERATORS, TIME_ITERATOR_USAGE)
 		}
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def checkIndicesExpressionAndType(ArgOrVarRef it)
 	{
 		for (i : 0..<indices.size)

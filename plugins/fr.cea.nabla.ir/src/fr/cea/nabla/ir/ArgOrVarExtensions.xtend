@@ -19,13 +19,10 @@ import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.Iterator
-import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
-import java.util.HashSet
 import org.eclipse.emf.ecore.EObject
 
-import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 
 class ArgOrVarExtensions
@@ -45,27 +42,9 @@ class ArgOrVarExtensions
 		}
 	}
 
-	static def getNextJobs(Variable it)
+	static def isGlobal(ArgOrVar it)
 	{
-		val nextJobs = new HashSet<Job>
-		for (j : irModule.jobs)
-			if (j.inVars.exists[x | x === it])
-				nextJobs += j
-		return nextJobs
-	}
-
-	static def getPreviousJobs(Variable it)
-	{
-		val previousJobs = new HashSet<Job>
-		for (j : irModule.jobs)
-			if (j.outVars.exists[x | x === it])
-				previousJobs += j
-		return previousJobs
-	}
-
-	static def isGlobal(Variable it)
-	{
-		(eContainer instanceof IrModule)
+		(it instanceof Variable && eContainer instanceof IrModule)
 	}
 
 	static def isLinearAlgebra(Function it)

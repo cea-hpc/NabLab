@@ -11,16 +11,15 @@ package fr.cea.nabla
 
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
-import fr.cea.nabla.nabla.ItemRef
-import fr.cea.nabla.nabla.SetRef
+import fr.cea.nabla.nabla.ItemSetRef
+import fr.cea.nabla.nabla.SpaceIteratorRef
 import java.util.List
 
-import static extension fr.cea.nabla.ConnectivityCallExtensions.*
-import static extension fr.cea.nabla.ItemRefExtensions.*
+import static extension fr.cea.nabla.SpaceIteratorRefExtensions.*
 
 class UniqueNameHelper 
 {
-	static def dispatch getUniqueName(SetRef it)
+	static def dispatch getUniqueName(ItemSetRef it)
 	{
 		target.name
 	}
@@ -30,7 +29,7 @@ class UniqueNameHelper
 		getUniqueName(connectivity, args)
 	}
 
-	static def getUniqueName(Connectivity c, List<ItemRef> args)
+	static def getUniqueName(Connectivity c, List<SpaceIteratorRef> args)
 	{
 		c.name + args.map[x | x.name.toFirstUpper].join('')
 	}

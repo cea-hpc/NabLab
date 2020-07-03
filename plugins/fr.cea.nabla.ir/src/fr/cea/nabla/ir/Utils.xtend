@@ -10,8 +10,6 @@
 package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.Job
-import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 
 class Utils 
@@ -46,16 +44,5 @@ class Utils
 			}
 		}
 		return utfExponent
-	}
-
-	/** Return a list of jobs sorted by at and name for the generation to be reproductible */
-	static def sortByAtAndName(Iterable<Job> jobs)
-	{
-		val jobsByAt = jobs.groupBy[at]
-		val orderedKeys = jobsByAt.keySet.sort
-		val sortedJobs = new ArrayList<Job>
-		for (k : orderedKeys)
-			sortedJobs += jobsByAt.get(k).sortBy[name]
-		return sortedJobs
 	}
 }

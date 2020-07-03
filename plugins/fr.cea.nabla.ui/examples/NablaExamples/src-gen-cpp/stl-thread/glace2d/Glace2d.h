@@ -6,6 +6,8 @@
 #include <cmath>
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
+#include <leveldb/db.h>
+#include <leveldb/write_batch.h>
 #include "mesh/CartesianMesh2DGenerator.h"
 #include "mesh/CartesianMesh2D.h"
 #include "utils/Utils.h"
@@ -13,6 +15,7 @@
 #include "types/Types.h"
 #include "mesh/stl/PvdFileWriter2D.h"
 #include "utils/stl/Parallel.h"
+#include "utils/stl/Serializer.h"
 
 using namespace nablalib;
 
@@ -47,6 +50,7 @@ public:
 	struct Options
 	{
 		std::string outputPath;
+		std::string nonRegression;
 		int outputPeriod;
 		double stopTime;
 		int maxIterations;
@@ -66,19 +70,25 @@ public:
 		Options(const std::string& fileName);
 	};
 
-	Options* options;
+	const Options& options;
 
-	Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D);
+	Glace2d(const Options& aOptions);
+	~Glace2d();
 
 private:
-	CartesianMesh2D* mesh;
-	PvdFileWriter2D writer;
-	size_t nbNodes, nbCells, nbNodesOfCell, nbCellsOfNode, nbInnerNodes, nbOuterFaces, nbNodesOfFace;
+	// Global definitions
 	double t_n;
 	double t_nplus1;
 	double deltat_n;
 	double deltat_nplus1;
 	int lastDump;
+	
+	// Mesh (can depend on previous definitions)
+	CartesianMesh2D* mesh;
+	PvdFileWriter2D writer;
+	size_t nbNodes, nbCells, nbOuterFaces, nbInnerNodes, nbNodesOfCell, nbCellsOfNode, nbNodesOfFace;
+	
+	// Global declarations
 	int n;
 	std::vector<RealArray1D<2>> X_n;
 	std::vector<RealArray1D<2>> X_nplus1;
@@ -158,7 +168,10 @@ private:
 	
 	void computeUn() noexcept;
 
-	void dumpVariables(int iteration);
+	void dumpVariables(int iteration, bool useTimer=true);
+
+public:
+	void createDB(const std::string& db_name);
 
 public:
 	void simulate();

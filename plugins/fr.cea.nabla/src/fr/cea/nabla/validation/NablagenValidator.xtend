@@ -16,6 +16,7 @@ import fr.cea.nabla.nablagen.VtkOutput
 import org.eclipse.xtext.validation.Check
 import fr.cea.nabla.nablagen.Cpp
 import fr.cea.nabla.nablagen.NablagenConfig
+import org.eclipse.xtext.validation.CheckType
 
 /**
  * This class contains custom validation rules. 
@@ -30,14 +31,14 @@ class NablagenValidator extends AbstractNablagenValidator
 	static def getPeriodVariablesTypeMsg() { "Invalid variable type: only scalar types accepted" }
 	static def getCppMandatoryVariablesMsg() { "'iterationMax' and 'timeMax' simulation variables must be defined (after timeStep) when using C++ code generator" }
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def void checkPeriodVariablesType(VtkOutput it)
 	{
 		if (periodReference !== null && !(periodReference instanceof SimpleVar || periodReference instanceof TimeIterator))
 			error(getPeriodVariablesTypeMsg(), NablagenPackage.Literals::VTK_OUTPUT__PERIOD_REFERENCE, PERIOD_VARIABLES_TYPE)
 	}
 
-	@Check
+	@Check(CheckType.NORMAL)
 	def void checkCppMandatoryVariables(NablagenConfig it)
 	{
 		if (targets.exists[x | x instanceof Cpp] && (simulation.iterationMax === null || simulation.timeMax === null))

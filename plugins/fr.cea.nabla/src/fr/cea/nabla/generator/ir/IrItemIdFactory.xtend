@@ -12,12 +12,11 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.nabla.ConnectivityCall
-import fr.cea.nabla.nabla.Item
-import fr.cea.nabla.nabla.ItemRef
+import fr.cea.nabla.nabla.Container
 import fr.cea.nabla.nabla.SpaceIterator
+import fr.cea.nabla.nabla.SpaceIteratorRef
 
-import static extension fr.cea.nabla.ItemRefExtensions.*
+import static extension fr.cea.nabla.SpaceIteratorRefExtensions.*
 
 @Singleton
 class IrItemIdFactory
@@ -25,19 +24,19 @@ class IrItemIdFactory
 	@Inject extension IrContainerFactory
 	@Inject extension IrIterationBlockFactory
 
-	def toIrId(ItemRef itemRef)
+	def toIrId(SpaceIteratorRef itemRef)
 	{
 		createItemId(itemRef.name + 'Id', itemRef.target)
 	}
 
-	def toIrId(Item item)
+	def toIrId(SpaceIterator item)
 	{
 		createItemId(item.name + 'Id', item)
 	}
 
-	def toIrIdValue(ConnectivityCall call)
+	def toIrIdValue(Container container)
 	{
-		createItemIdValueCall(call)
+		createItemIdValueContainer(container)
 	}
 
 	def toIrIdValue(SpaceIterator iterator, int shift)
@@ -45,15 +44,15 @@ class IrItemIdFactory
 		createItemIdValueIterator(iterator, shift)
 	}
 
-	private def create IrFactory::eINSTANCE.createItemId createItemId(String idName, Item item)
+	private def create IrFactory::eINSTANCE.createItemId createItemId(String idName, SpaceIterator item)
 	{
 		name = idName
 		itemName = item.name
 	}
 
-	private def create IrFactory::eINSTANCE.createItemIdValueCall createItemIdValueCall(ConnectivityCall _call)
+	private def create IrFactory::eINSTANCE.createItemIdValueContainer createItemIdValueContainer(Container _container)
 	{
-		call = _call.toIrConnectivityCall
+		container = _container.toIrContainer
 	}
 
 	private def create IrFactory::eINSTANCE.createItemIdValueIterator createItemIdValueIterator(SpaceIterator _iterator, int _shift)

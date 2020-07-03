@@ -42,16 +42,18 @@ public final class IterativeHeatEquation
 
 	private final Options options;
 
-	// Mesh
-	private final CartesianMesh2D mesh;
-	private final FileWriter writer;
-	private final int nbNodes, nbCells, nbFaces, nbNodesOfCell, nbNodesOfFace, nbCellsOfFace, nbNeighbourCells;
-
-	// Global Variables
+	// Global definitions
 	private double t_n;
 	private double t_nplus1;
 	private double deltat;
 	private int lastDump;
+
+	// Mesh (can depend on previous definitions)
+	private final CartesianMesh2D mesh;
+	private final FileWriter writer;
+	private final int nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
+
+	// Global declarations
 	private int n;
 	private int k;
 	private double[][] X;
@@ -69,24 +71,28 @@ public final class IterativeHeatEquation
 	private double[][] alpha;
 	private double residual;
 
-	public IterativeHeatEquation(Options aOptions, CartesianMesh2D aCartesianMesh2D)
+	public IterativeHeatEquation(Options aOptions)
 	{
 		options = aOptions;
-		mesh = aCartesianMesh2D;
-		writer = new PvdFileWriter2D("IterativeHeatEquation", options.outputPath);
-		nbNodes = mesh.getNbNodes();
-		nbCells = mesh.getNbCells();
-		nbFaces = mesh.getNbFaces();
-		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
-		nbCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
-		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 
-		// Initialize variables
+		// Initialize variables with default values
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat = 0.001;
 		lastDump = Integer.MIN_VALUE;
+
+		// Initialize mesh variables
+		mesh = CartesianMesh2DGenerator.generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH);
+		writer = new PvdFileWriter2D("IterativeHeatEquation", options.outputPath);
+		nbNodes = mesh.getNbNodes();
+		nbCells = mesh.getNbCells();
+		nbFaces = mesh.getNbFaces();
+		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
+		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
+		nbCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
+		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+
+		// Allocate arrays
 		X = new double[nbNodes][2];
 		Xc = new double[nbCells][2];
 		xc = new double[nbCells];
@@ -117,10 +123,10 @@ public final class IterativeHeatEquation
 		computeV(); // @1.0
 		initD(); // @1.0
 		initXc(); // @1.0
+		computeDeltaTn(); // @2.0
 		computeFaceConductivity(); // @2.0
 		initU(); // @2.0
 		initXcAndYc(); // @2.0
-		computeDeltaTn(); // @2.0
 		computeAlphaCoeff(); // @3.0
 		executeTimeLoopN(); // @4.0
 		System.out.println("End of execution of module IterativeHeatEquation");
@@ -131,10 +137,9 @@ public final class IterativeHeatEquation
 		if (args.length == 1)
 		{
 			String dataFileName = args[0];
-			IterativeHeatEquation.Options o = IterativeHeatEquation.Options.createOptions(dataFileName);
-			CartesianMesh2D mesh = CartesianMesh2DGenerator.generate(o.X_EDGE_ELEMS, o.Y_EDGE_ELEMS, o.X_EDGE_LENGTH, o.Y_EDGE_LENGTH);
-			IterativeHeatEquation i = new IterativeHeatEquation(o, mesh);
-			i.simulate();
+			IterativeHeatEquation.Options options = IterativeHeatEquation.Options.createOptions(dataFileName);
+			IterativeHeatEquation simulator = new IterativeHeatEquation(options);
+			simulator.simulate();
 		}
 		else
 		{
@@ -153,7 +158,7 @@ public final class IterativeHeatEquation
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			final int fId = fFaces;
-			double reduction3 = 0.0;
+			double reduction0 = 0.0;
 			{
 				final int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
 				final int nbNodesOfFaceF = nodesOfFaceF.length;
@@ -163,10 +168,10 @@ public final class IterativeHeatEquation
 					final int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
 					final int pNodes = pId;
 					final int pPlus1Nodes = pPlus1Id;
-					reduction3 = sumR0(reduction3, norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
+					reduction0 = sumR0(reduction0, norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
 				}
 			}
-			faceLength[fFaces] = 0.5 * reduction3;
+			faceLength[fFaces] = 0.5 * reduction0;
 		});
 	}
 
@@ -190,7 +195,7 @@ public final class IterativeHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
 			final int jId = jCells;
-			double reduction2 = 0.0;
+			double reduction0 = 0.0;
 			{
 				final int[] nodesOfCellJ = mesh.getNodesOfCell(jId);
 				final int nbNodesOfCellJ = nodesOfCellJ.length;
@@ -200,10 +205,10 @@ public final class IterativeHeatEquation
 					final int pPlus1Id = nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
 					final int pNodes = pId;
 					final int pPlus1Nodes = pPlus1Id;
-					reduction2 = sumR0(reduction2, det(X[pNodes], X[pPlus1Nodes]));
+					reduction0 = sumR0(reduction0, det(X[pNodes], X[pPlus1Nodes]));
 				}
 			}
-			V[jCells] = 0.5 * reduction2;
+			V[jCells] = 0.5 * reduction0;
 		});
 	}
 
@@ -268,7 +273,7 @@ public final class IterativeHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			final int cId = cCells;
-			double reduction6 = 0.0;
+			double reduction0 = 0.0;
 			{
 				final int[] neighbourCellsC = mesh.getNeighbourCells(cId);
 				final int nbNeighbourCellsC = neighbourCellsC.length;
@@ -276,11 +281,31 @@ public final class IterativeHeatEquation
 				{
 					final int dId = neighbourCellsC[dNeighbourCellsC];
 					final int dCells = dId;
-					reduction6 = sumR0(reduction6, alpha[cCells][dCells] * u_nplus1_k[dCells]);
+					reduction0 = sumR0(reduction0, alpha[cCells][dCells] * u_nplus1_k[dCells]);
 				}
 			}
-			u_nplus1_kplus1[cCells] = u_n[cCells] + alpha[cCells][cCells] * u_nplus1_k[cCells] + reduction6;
+			u_nplus1_kplus1[cCells] = u_n[cCells] + alpha[cCells][cCells] * u_nplus1_k[cCells] + reduction0;
 		});
+	}
+
+	/**
+	 * Job ComputeDeltaTn called @2.0 in simulate method.
+	 * In variables: D, X_EDGE_LENGTH, Y_EDGE_LENGTH
+	 * Out variables: deltat
+	 */
+	private void computeDeltaTn()
+	{
+		double reduction0 = Double.MAX_VALUE;
+		reduction0 = IntStream.range(0, nbCells).boxed().parallel().reduce
+		(
+			Double.MAX_VALUE,
+			(accu, cCells) ->
+			{
+				return minR0(accu, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]);
+			},
+			(r1, r2) -> minR0(r1, r2)
+		);
+		deltat = reduction0 * 0.1;
 	}
 
 	/**
@@ -293,7 +318,7 @@ public final class IterativeHeatEquation
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
 			final int fId = fFaces;
-			double reduction4 = 1.0;
+			double reduction0 = 1.0;
 			{
 				final int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				final int nbCellsOfFaceF = cellsOfFaceF.length;
@@ -301,10 +326,10 @@ public final class IterativeHeatEquation
 				{
 					final int c1Id = cellsOfFaceF[c1CellsOfFaceF];
 					final int c1Cells = c1Id;
-					reduction4 = prodR0(reduction4, D[c1Cells]);
+					reduction0 = prodR0(reduction0, D[c1Cells]);
 				}
 			}
-			double reduction5 = 0.0;
+			double reduction1 = 0.0;
 			{
 				final int[] cellsOfFaceF = mesh.getCellsOfFace(fId);
 				final int nbCellsOfFaceF = cellsOfFaceF.length;
@@ -312,10 +337,10 @@ public final class IterativeHeatEquation
 				{
 					final int c2Id = cellsOfFaceF[c2CellsOfFaceF];
 					final int c2Cells = c2Id;
-					reduction5 = sumR0(reduction5, D[c2Cells]);
+					reduction1 = sumR0(reduction1, D[c2Cells]);
 				}
 			}
-			faceConductivity[fFaces] = 2.0 * reduction4 / reduction5;
+			faceConductivity[fFaces] = 2.0 * reduction0 / reduction1;
 		});
 	}
 
@@ -326,8 +351,8 @@ public final class IterativeHeatEquation
 	 */
 	private void computeResidual()
 	{
-		double reduction7 = -Double.MAX_VALUE;
-		reduction7 = IntStream.range(0, nbCells).boxed().parallel().reduce
+		double reduction0 = -Double.MAX_VALUE;
+		reduction0 = IntStream.range(0, nbCells).boxed().parallel().reduce
 		(
 			-Double.MAX_VALUE,
 			(accu, jCells) ->
@@ -336,7 +361,7 @@ public final class IterativeHeatEquation
 			},
 			(r1, r2) -> maxR0(r1, r2)
 		);
-		residual = reduction7;
+		residual = reduction0;
 	}
 
 	/**
@@ -399,40 +424,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job computeDeltaTn called @2.0 in simulate method.
-	 * In variables: D, X_EDGE_LENGTH, Y_EDGE_LENGTH
-	 * Out variables: deltat
-	 */
-	private void computeDeltaTn()
-	{
-		double reduction1 = Double.MAX_VALUE;
-		reduction1 = IntStream.range(0, nbCells).boxed().parallel().reduce
-		(
-			Double.MAX_VALUE,
-			(accu, cCells) ->
-			{
-				return minR0(accu, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]);
-			},
-			(r1, r2) -> minR0(r1, r2)
-		);
-		deltat = reduction1 * 0.1;
-	}
-
-	/**
-	 * Job TearDownTimeLoopK called @3.0 in executeTimeLoopN method.
-	 * In variables: u_nplus1_kplus1
-	 * Out variables: u_nplus1
-	 */
-	private void tearDownTimeLoopK()
-	{
-		IntStream.range(0, u_nplus1.length).parallel().forEach(i1 -> 
-		{
-			u_nplus1[i1] = u_nplus1_kplus1[i1];
-		});
-	}
-
-	/**
-	 * Job computeAlphaCoeff called @3.0 in simulate method.
+	 * Job ComputeAlphaCoeff called @3.0 in simulate method.
 	 * In variables: V, Xc, deltat, faceConductivity, faceLength
 	 * Out variables: alpha
 	 */
@@ -461,6 +453,19 @@ public final class IterativeHeatEquation
 	}
 
 	/**
+	 * Job TearDownTimeLoopK called @3.0 in executeTimeLoopN method.
+	 * In variables: u_nplus1_kplus1
+	 * Out variables: u_nplus1
+	 */
+	private void tearDownTimeLoopK()
+	{
+		IntStream.range(0, u_nplus1.length).parallel().forEach(i1 -> 
+		{
+			u_nplus1[i1] = u_nplus1_kplus1[i1];
+		});
+	}
+
+	/**
 	 * Job ExecuteTimeLoopN called @4.0 in simulate method.
 	 * In variables: alpha, deltat, t_n, u_n, u_nplus1_k, u_nplus1_kplus1
 	 * Out variables: residual, t_nplus1, u_nplus1, u_nplus1_k, u_nplus1_kplus1
@@ -473,7 +478,8 @@ public final class IterativeHeatEquation
 		{
 			n++;
 			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
-			dumpVariables(n);
+			if (n >= lastDump + options.outputPeriod)
+				dumpVariables(n);
 			computeTn(); // @1.0
 			setUpTimeLoopK(); // @1.0
 			executeTimeLoopK(); // @2.0
@@ -493,6 +499,8 @@ public final class IterativeHeatEquation
 				u_nplus1 = tmp_u_n;
 			} 
 		} while (continueLoop);
+		// force a last output at the end
+		dumpVariables(n);
 	}
 
 	private boolean check(boolean a)
@@ -553,7 +561,7 @@ public final class IterativeHeatEquation
 
 	private void dumpVariables(int iteration)
 	{
-		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+		if (!writer.isDisabled())
 		{
 			VtkFileContent content = new VtkFileContent(iteration, t_n, X, mesh.getGeometry().getQuads());
 			content.addCellVariable("Temperature", u_n);

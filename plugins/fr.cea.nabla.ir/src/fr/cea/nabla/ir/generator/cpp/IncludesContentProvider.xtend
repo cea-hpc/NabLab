@@ -12,13 +12,20 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.IrModule
 import java.util.LinkedHashSet
+import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
-class IncludesContentProvider
+abstract class IncludesContentProvider
 {
 	protected def Iterable<String> getAdditionalSystemIncludes(IrModule m) { #[] }
 	protected def Iterable<String> getAdditionalUserIncludes(IrModule m) { #[] }
+	@Accessors val String levelDBPath
+	
+	new(String levelDBPath)
+	{
+		this.levelDBPath = levelDBPath
+	}
 
 	def getContentFor(IrModule m)
 	'''
@@ -42,6 +49,11 @@ class IncludesContentProvider
 		systemIncludes += "cmath"
 		systemIncludes += "rapidjson/document.h"
 		systemIncludes += "rapidjson/istreamwrapper.h"
+		if (!levelDBPath.nullOrEmpty)
+		{
+			systemIncludes += "leveldb/db.h"
+			systemIncludes += "leveldb/write_batch.h"			
+		}
 		systemIncludes += m.additionalSystemIncludes
 
 		return systemIncludes
@@ -71,18 +83,29 @@ class IncludesContentProvider
 
 class StlThreadIncludesContentProvider extends IncludesContentProvider
 {
+	new(String levelDBPath)
+	{
+		super(levelDBPath)
+	}
+	
 	override getAdditionalUserIncludes(IrModule m)
 	{
 		val includes = new LinkedHashSet<String>
 		if (m.withMesh) includes += "mesh/stl/PvdFileWriter2D.h"
 		includes += "utils/stl/Parallel.h"
 		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
+		if (!levelDBPath.nullOrEmpty) includes += "utils/stl/Serializer.h"
 		return includes
 	}
 }
 
 class KokkosIncludesContentProvider extends IncludesContentProvider
 {
+	new(String levelDBPath)
+	{
+		super(levelDBPath)
+	}
+	
 	override getAdditionalSystemIncludes(IrModule m)
 	{
 		#["Kokkos_Core.hpp", "Kokkos_hwloc.hpp"]
@@ -94,6 +117,44 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 		if (m.withMesh) includes += "mesh/kokkos/PvdFileWriter2D.h"
 		includes += "utils/kokkos/Parallel.h"
 		if (m.linearAlgebra) includes += "linearalgebra/kokkos/LinearAlgebraFunctions.h"
+		if (!levelDBPath.nullOrEmpty) includes += "utils/kokkos/Serializer.h"
+		return includes
+	}
+}
+
+class SequentialIncludesContentProvider extends IncludesContentProvider
+{
+	new(String levelDBPath)
+	{
+		super(levelDBPath)
+	}
+	
+	override getAdditionalUserIncludes(IrModule m)
+	{
+		val includes = new LinkedHashSet<String>
+		if (m.withMesh) includes += "mesh/stl/PvdFileWriter2D.h"
+		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
+		return includes
+	}
+}
+
+class OpenMpIncludesContentProvider extends IncludesContentProvider
+{
+	new(String levelDBPath)
+	{
+		super(levelDBPath)
+	}
+	
+	override getAdditionalSystemIncludes(IrModule m)
+	{
+		#["omp.h"]
+	}
+
+	override getAdditionalUserIncludes(IrModule m)
+	{
+		val includes = new LinkedHashSet<String>
+		if (m.withMesh) includes += "mesh/stl/PvdFileWriter2D.h"
+		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
 		return includes
 	}
 }

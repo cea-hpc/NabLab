@@ -89,8 +89,8 @@ class UnusedValidatorTest
 		val connectivities =
 			'''
 			itemtypes { node }
-			set nodes: → {node};
-			set borderNodes: → {node};
+			connectivity nodes: → {node};
+			connectivity borderNodes: → {node};
 			'''
 		val moduleKo = parseHelper.parse(getTestModule(connectivities, ''))
 		Assert.assertNotNull(moduleKo)
@@ -129,7 +129,7 @@ class UnusedValidatorTest
 		val moduleOk = parseHelper.parse(getTestModule(
 			'''
 			itemtypes { node }
-			set nodes: → {node};
+			connectivity nodes: → {node};
 			''', '') + 
 			'''
 			ℝ[2] X{nodes};
@@ -141,7 +141,7 @@ class UnusedValidatorTest
 	}
 
 	@Test
-	def void testCheckUnusedItem()
+	def void testCheckUnusedSpaceIterator()
 	{
 		val moduleKo1 = parseHelper.parse(getTestModule(nodesConnectivity, '') +
 			'''
@@ -149,29 +149,25 @@ class UnusedValidatorTest
 			'''
 		)
 		Assert.assertNotNull(moduleKo1)
-		moduleKo1.assertWarning(NablaPackage.eINSTANCE.item,
+		moduleKo1.assertWarning(NablaPackage.eINSTANCE.spaceIterator,
 			UnusedValidator::UNUSED,
-			UnusedValidator::getUnusedMsg(NablaPackage.Literals.ITEM, 'r2'))
+			UnusedValidator::getUnusedMsg(NablaPackage.Literals.SPACE_ITERATOR, 'r2'))
 
 		val moduleKo2 = parseHelper.parse(getTestModule(
 			'''
 			itemtypes { node }
-			set nodes: → {node};
-			item topLeftNode: → node;
+			connectivity nodes: → {node};
+			connectivity topLeftNode: → node;
 			''', '') +
 			'''
 			ℝ[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), r2=topLeftNode(), X{r1} = X{r1} + 1;
-			Bidon: item r3 = topLeftNode();
+			UpdateX: ∀r1∈nodes(), ∀r2∈topLeftNode(), X{r1} = X{r1} + 1;
 			'''
 		)
 		Assert.assertNotNull(moduleKo1)
-		moduleKo2.assertWarning(NablaPackage.eINSTANCE.item,
+		moduleKo2.assertWarning(NablaPackage.eINSTANCE.spaceIterator,
 			UnusedValidator::UNUSED,
-			UnusedValidator::getUnusedMsg(NablaPackage.Literals.ITEM, 'r2'))
-		moduleKo2.assertWarning(NablaPackage.eINSTANCE.item,
-			UnusedValidator::UNUSED,
-			UnusedValidator::getUnusedMsg(NablaPackage.Literals.ITEM, 'r3'))
+			UnusedValidator::getUnusedMsg(NablaPackage.Literals.SPACE_ITERATOR, 'r2'))
 
 		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, '') +
 			'''
@@ -184,7 +180,7 @@ class UnusedValidatorTest
 	}
 
 	@Test
-	def void testCheckUnusedSet()
+	def void testCheckUnusedItemSet()
 	{
 		val moduleKo = parseHelper.parse(getTestModule(nodesConnectivity, '') +
 			'''
@@ -196,9 +192,9 @@ class UnusedValidatorTest
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
-		moduleKo.assertWarning(NablaPackage.eINSTANCE.setDefinition,
+		moduleKo.assertWarning(NablaPackage.eINSTANCE.itemSet,
 			UnusedValidator::UNUSED,
-			UnusedValidator::getUnusedMsg(NablaPackage.Literals.SET_DEFINITION, 'myNodes'))
+			UnusedValidator::getUnusedMsg(NablaPackage.Literals.ITEM_SET, 'myNodes'))
 
 		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, '') +
 			'''
@@ -226,10 +222,10 @@ class UnusedValidatorTest
 
 		val modelOk = getTestModule('', '''def f: x | ℝ[x] → ℝ;''') +
 			'''
-			let orig = [0.0 , 0.0];
+			let ℝ[2] orig = [0.0 , 0.0];
 			ComputeV:
 			{ 
-				let v = f(orig);
+				let ℝ v = f(orig);
 				v = v + 1;
 			}
 			'''
@@ -251,7 +247,7 @@ class UnusedValidatorTest
 
 		val moduleOk = parseHelper.parse(getTestModule(nodesConnectivity, reduc) +
 			'''
-			let orig = [0.0 , 0.0];
+			let ℝ[2] orig = [0.0 , 0.0];
 			ℝ[2] X{nodes};
 			ComputeU: orig = sum{r∈nodes()}(X{r});
 			'''

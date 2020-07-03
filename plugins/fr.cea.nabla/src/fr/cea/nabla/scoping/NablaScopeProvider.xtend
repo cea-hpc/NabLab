@@ -12,22 +12,23 @@ package fr.cea.nabla.scoping
 import com.google.inject.Inject
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.ArgOrVar
-import fr.cea.nabla.nabla.ArgOrVarRef
-import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionOrReduction
+import fr.cea.nabla.nabla.FunctionTypeDeclaration
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Interval
-import fr.cea.nabla.nabla.Item
-import fr.cea.nabla.nabla.ItemDefinition
+import fr.cea.nabla.nabla.ItemSet
 import fr.cea.nabla.nabla.Iterable
+import fr.cea.nabla.nabla.IterationBlock
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.NablaPackage
+import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
-import fr.cea.nabla.nabla.SetDefinition
+import fr.cea.nabla.nabla.ReductionTypeDeclaration
 import fr.cea.nabla.nabla.SimpleVarDefinition
-import fr.cea.nabla.nabla.SingletonDefinition
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorDefinition
@@ -40,6 +41,7 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
+import org.eclipse.xtext.util.IResourceScopeCache
 
 /**
  * This class contains custom scoping description.
@@ -49,266 +51,164 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
  */
 class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 {
-	@Inject extension NablaModuleExtensions
+	@Inject NablaModuleExtensions nablaModuleExtensions
+	@Inject IResourceScopeCache scopeCache
+
+	override IScope getScope(EObject context, EReference r)
+	{
+		switch r
+		{
+			case NablaPackage.Literals.ARG_OR_VAR_REF__TARGET: getArgOrVarRefScope(context)
+			case NablaPackage.Literals.SPACE_ITERATOR_REF__TARGET: getSpaceIteratorRefScope(context)
+			case NablaPackage.Literals.ITEM_SET_REF__TARGET: getItemSetRefScope(context)
+			default: super.getScope(context, r)
+		}
+	}
+
 
 	/*** Scope for items *****************************************************/
-	def scope_ItemRef_target(SpaceIterator context, EReference r)
+	private def IScope getSpaceIteratorRefScope(EObject context)
 	{
-		//println('scope_ItemRef_target(' + context.class.simpleName + ', ' + r.name + ')')
-		val iterable = context.eContainer as Iterable
-		val s = itemsDefinedBefore(iterable.eContainer, iterable, '\t')
-		//println('--> ' + s)
-		return s
-	}
-
-	def scope_ItemRef_target(SingletonDefinition context, EReference r)
-	{
-		//println('scope_ItemRef_target(' + context.class.simpleName + ', ' + r.name + ')')
-		val spaceIterator = context.eContainer as SpaceIterator
-		val iterable = spaceIterator.eContainer as Iterable
-		val items = new ArrayList<Item>
-		items += itemsDeclaredBefore(spaceIterator.singletons, context)
-		items += spaceIterator.item
-		val s = Scopes::scopeFor(items, itemsDefinedBefore(iterable.eContainer, iterable, '\t'))
-		//println('--> ' + s)
-		return s
-	}
-
-	def scope_ItemRef_target(Instruction context, EReference r)
-	{
-		//println('scope_ItemRef_target(' + context.class.simpleName + ', ' + r.name + ')')
-		val s = itemsDefinedBefore(context.eContainer, context, '\t')
-		//println('--> ' + s)
-		return s
-	}
-
-	def scope_ItemRef_target(ArgOrVarRef context, EReference r)
-	{
-		//println('scope_ItemRef_target(' + context.class.simpleName + ', ' + r.name + ')')
-		val s = itemsDefinedBefore(context.eContainer, context, '\t')
-		//println('--> ' + s)
-		return s
-	}
-
-	private def dispatch IScope itemsDefinedBefore(Iterable context, Object o, String prefix)
-	{
-		//println(prefix + 'itemsDefinedBefore(' + context.class.simpleName + ')')
-		val spaceIterator = context.iterationBlock as SpaceIterator
-		val items = new ArrayList<Item>
-		items += spaceIterator.item
-		items += spaceIterator.singletons.map[item]
-		val s = Scopes::scopeFor(items, itemsDefinedBefore(context.eContainer, context, prefix + '\t'))
-		//println(prefix + '--> ' + s)
-		return s
-	}
-
-	private def dispatch IScope itemsDefinedBefore(InstructionBlock context, Object o, String prefix)
-	{
-		//println(prefix + 'itemsDefinedBefore IB(' + context.class.simpleName + ')')
-		val outerScope = itemsDefinedBefore(context.eContainer, context, prefix + '\t')
-		val s = if (o !== null && o instanceof Instruction) 
-					Scopes::scopeFor(itemsDeclaredBefore(context.instructions, o as Instruction), outerScope)
+		//println('getSpaceIteratorRefScope(' + context.class.simpleName + ') ' + context)
+		val s = switch context
+		{
+			FunctionOrReduction, NablaModule, Job:
+				IScope::NULLSCOPE
+			IterationBlock:
+			{
+				val c = context.eContainer as Iterable
+				getSpaceIteratorRefScope(c.eContainer)
+			}
+			Iterable case (context.iterationBlock instanceof SpaceIterator):
+			{
+				val block = context.iterationBlock
+				if (block instanceof SpaceIterator)
+					Scopes::scopeFor(#[context.iterationBlock as SpaceIterator], getSpaceIteratorRefScope(context.eContainer))
 				else
-					outerScope
-		//println(prefix + '--> ' + s)
+					getSpaceIteratorRefScope(context.eContainer)
+			}
+			default:
+				getSpaceIteratorRefScope(context.eContainer)
+		}
+		//println('--> ' + s)
 		return s
-	}
-
-	private def dispatch IScope itemsDefinedBefore(EObject context, Object o, String prefix)
-	{
-		//println(prefix + 'itemsDefinedBefore O(' + context.class.simpleName + ')')
-		val s = if (context === null || context instanceof Job || context instanceof NablaModule)
-					IScope::NULLSCOPE
-				else 
-					itemsDefinedBefore(context.eContainer, context, prefix + '\t')
-		//println(prefix + '--> ' + s)
-		return s
-	}
-
-	private def itemsDeclaredBefore(List<? extends SingletonDefinition> list, SingletonDefinition i)
-	{
-		subList(list, i).map[item]
-	}
-
-	private def itemsDeclaredBefore(List<? extends Instruction> list, Instruction i)
-	{
-		subList(list, i).filter(ItemDefinition).map[item]
 	}
 
 
 
 	/*** Scope for sets ******************************************************/
-	def IScope scope_SetRef_target(SpaceIterator context, EReference r)
+	private def IScope getItemSetRefScope(EObject context)
 	{
-		val instruction = EcoreUtil2::getContainerOfType(context, Instruction)
-		setsDefinedBefore(instruction.eContainer, instruction, '\t')
+		//println('getItemRefScope(' + context.class.simpleName + ') ' + context)
+		val s = switch context
+		{
+			FunctionOrReduction, NablaModule, Job:
+				IScope::NULLSCOPE
+			Instruction:
+				Scopes::scopeFor(setsDefinedBefore(context.eContainer, context), getItemSetRefScope(context.eContainer))
+			default:
+				getItemSetRefScope(context.eContainer)
+		}
+		//println('--> ' + s)
+		return s
 	}
 
-	def IScope scope_SetRef_target(Instruction context, EReference r)
+	private def java.lang.Iterable<ItemSet> setsDefinedBefore(EObject context, Instruction i)
 	{
-		setsDefinedBefore(context.eContainer, context, '\t')
-	}
-
-	private def dispatch IScope setsDefinedBefore(InstructionBlock context, EObject o, String prefix)
-	{
-		//println(prefix + 'setsDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
-		val containerScope = setsDefinedBefore(context.eContainer, context, prefix + '\t')
-		Scopes::scopeFor(setsDeclaredBefore(context.instructions, o as Instruction), containerScope)
-	}
-
-	private def dispatch IScope setsDefinedBefore(Instruction context, EObject o, String prefix)
-	{
-		//println(prefix + 'setsDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
-		setsDefinedBefore(context.eContainer, context, prefix + '\t')
-	}
-
-	private def dispatch IScope setsDefinedBefore(EObject context, EObject o, String prefix)
-	{
-		//println(prefix + 'setsDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
-		IScope::NULLSCOPE
-	}
-
-	private def setsDeclaredBefore(List<? extends Instruction> list, Instruction i)
-	{
-		val upperInstructions = subList(list, i)
-		upperInstructions.filter(SetDefinition)
+		//println('setsDefinedBefore(' + context.class.simpleName + ', ' + i.class.simpleName + ')')
+		switch context
+		{
+			InstructionBlock:
+				subList(context.instructions, i).filter(ItemSet)
+			Instruction, Job, NablaModule, FunctionOrReduction:
+				#[]
+			default:
+				throw new RuntimeException("Unexpected type in scope provider: " + context.class.name)
+		}
 	}
 
 
 
 	/*** Scope for variables *************************************************/
-	/**
-	 * ArgOrVarRef must be intercepted because they can be arguments of ReductionCall.
-	 * The ReductionCall interval must be intercepted.
-	 */ 
-	def IScope scope_ArgOrVarRef_target(ArgOrVarRef context, EReference r)
+	private def IScope getArgOrVarRefScope(EObject context)
 	{
-		//println('scope_ArgOrVarRef_target(' + context.class.simpleName + ', ' + r.name + ')')
-		val s = variablesDefinedBefore(context.eContainer, context, '\t')
-		//println('--> ' + s)
-		return s
-	}
-
-	def IScope scope_ArgOrVarRef_target(Instruction context, EReference r)
-	{
-		//println('scope_ArgOrVarRef_target(' + context.class.simpleName + ', ' + r.name + ')')
-		val s = variablesDefinedBefore(context.eContainer, context, '\t')
-		//println('--> ' + s)
-		return s
-	}
-
-	def IScope scope_ArgOrVarRef_target(TimeIterator context, EReference r)
-	{
-		//println('scope_ArgOrVarRef_target(' + context.class.simpleName + ', ' + r.name + ')')
-		val definition = context.eContainer as TimeIteratorDefinition 
-		val iteratorsAndVars = new ArrayList<ArgOrVar>
-		val module = EcoreUtil2.getContainerOfType(context, NablaModule)
-		iteratorsAndVars += module.allVars
-		iteratorsAndVars += subList(definition.iterators, context)
-		iteratorsAndVars += context
-		val s = Scopes::scopeFor(iteratorsAndVars)
-		//println('--> ' + s)
-		return s
-	}
-
-	def IScope scope_ArgOrVarRef_target(BaseType context, EReference r)
-	{
-		//println('scope_ArgOrVarRef_target(' + context.class.simpleName + ', ' + r.name + ')')
-		val s = variablesDefinedBefore(context.eContainer, context, '\t')
-		//println('--> ' + s)
-		return s
-	}
-
-	def IScope scope_ArgOrVarRef_target(NablaModule context, EReference r)
-	{
-		//println('scope_ArgOrVarRef_target(' + context.class.simpleName + ', ' + r.name + ')')
-		val s = IScope::NULLSCOPE
-		//println('--> ' + s)
-		return s
-	}
-
-	private def dispatch IScope variablesDefinedBefore(InstructionBlock context, EObject o, String prefix)
-	{
-		//println(prefix + 'variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
-		val containerScope = variablesDefinedBefore(context.eContainer, context, prefix + '\t')
-		Scopes::scopeFor(variablesDeclaredBefore(context.instructions, o as Instruction), containerScope)
-	}
-
-	private def dispatch IScope variablesDefinedBefore(Instruction context, EObject o, String prefix)
-	{
-		//println(prefix + 'variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
-		variablesDefinedBefore(context.eContainer, context, prefix + '\t')
-	}
-
-	private def dispatch IScope variablesDefinedBefore(Job context, EObject o, String prefix)
-	{
-		//println(prefix + 'variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
-		Scopes::scopeFor((context.eContainer as NablaModule).allVars)
-	}
-
-	private def dispatch IScope variablesDefinedBefore(NablaModule context, EObject o, String prefix)
-	{
-		//println(prefix + 'variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
-		val variables = new ArrayList<ArgOrVar>
-		switch o
+		//println('getArgOrVarRefScope(' + context.class.simpleName + ')')
+		val scope = switch context
 		{
-			SimpleVarDefinition:
+			FunctionOrReduction, NablaModule:
+				IScope::NULLSCOPE
+			FunctionTypeDeclaration:
+				Scopes::scopeFor((context.eContainer as Function).variables)
+			ReductionTypeDeclaration:
+				Scopes::scopeFor((context.eContainer as Reduction).variables)
+			IterationBlock:
 			{
-				subList(context.definitions, o).forEach[x | variables += x.variable]
+				val c = context.eContainer as Iterable
+				val cOuterScope = getArgOrVarRefScope(c.eContainer)
+				switch c
+				{
+					Loop: Scopes::scopeFor(variablesDefinedBefore(c.eContainer, c), cOuterScope)
+					ReductionCall: cOuterScope
+				}
 			}
-			VarGroupDeclaration:
+			Iterable:
 			{
-				context.definitions.forEach[x | variables += x.variable]
-				subList(context.declarations, o).forEach[x | variables += x.variables]
+				val varList = new ArrayList<ArgOrVar>
+				val block = context.iterationBlock
+				switch block
+				{
+					Interval: varList += block.index
+					SpaceIterator case block.counter !== null: varList += block.counter
+				}
+				if (context instanceof Loop)
+					varList += variablesDefinedBefore(context.eContainer, context)
+				Scopes::scopeFor(varList, getArgOrVarRefScope(context.eContainer))
 			}
+			Instruction:
+				Scopes::scopeFor(variablesDefinedBefore(context.eContainer, context), getArgOrVarRefScope(context.eContainer))
+			TimeIterator:
+			{
+				val definition = context.eContainer as TimeIteratorDefinition 
+				val module = EcoreUtil2.getContainerOfType(context, NablaModule)
+				val iteratorsAndVars = new ArrayList<ArgOrVar>
+				iteratorsAndVars += module.allVars
+				iteratorsAndVars += subList(definition.iterators, context)
+				iteratorsAndVars += context
+				Scopes::scopeFor(iteratorsAndVars)
+			}
+			default:
+				getArgOrVarRefScope(context.eContainer)
 		}
-		Scopes::scopeFor(variables)
+		//println('--> ' + scope)
+		return scope
 	}
 
-	private def dispatch IScope variablesDefinedBefore(FunctionOrReduction context, EObject o, String prefix)
+	private def java.lang.Iterable<? extends ArgOrVar> variablesDefinedBefore(Object context, Instruction i)
 	{
-		//println(prefix + 'variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
-		if (o instanceof BaseType)
-			// it is the function header, args are not yet visible
-			Scopes::scopeFor(context.vars)
-		else 
-			Scopes::scopeFor(context.vars + context.inArgs)
-	}
-
-	/**
-	 * Dispatch does not work if Iterable is used in this function.
-	 * Xtend generates code that tests "instanceof Instruction" before "instanceof Iterable".
-	 * Loop matches Instruction before Iterable.
-	 */
-	private def dispatch IScope variablesDefinedBefore(Loop context, EObject o, String prefix)
-	{
-		variablesDefinedBeforeIterable(context, o, prefix)
-	}
-
-	private def dispatch IScope variablesDefinedBefore(ReductionCall context, EObject o, String prefix)
-	{
-		variablesDefinedBeforeIterable(context, o, prefix)
-	}
-
-	private def IScope variablesDefinedBeforeIterable(Iterable context, EObject o, String prefix)
-	{
-		//println(prefix + 'variablesDefinedBefore(' + context.class.simpleName + ', ' + o.class.simpleName + ')')
-		val block = context.iterationBlock
-		val containerScope = variablesDefinedBefore(context.eContainer, context, prefix + '\t')
-		switch block
+		//println('variablesDefinedBefore(' + context.class.simpleName + ', ' + i.class.simpleName + ')')
+		switch context
 		{
-			Interval: Scopes::scopeFor(#[block.index], containerScope)
-			SpaceIterator case block.counter !== null: Scopes::scopeFor(#[block.counter], containerScope)
-			default: containerScope
+			InstructionBlock:
+				subList(context.instructions, i).allVars
+			Instruction:
+				#[]
+			FunctionOrReduction:
+				(context.variables + context.inArgs)
+			Job:
+				(context.eContainer as NablaModule).allVars
+			NablaModule:
+				subList((context.definitions + context.declarations).toList, i).allVars
+			default:
+				throw new RuntimeException("Unexpected type in scope provider: " + context.class.name)
 		}
 	}
 
-	private def variablesDeclaredBefore(List<? extends Instruction> list, Instruction i)
+	private def getAllVars(NablaModule module)
 	{
-		getAllVariables(subList(list, i))
+		scopeCache.get(module, module.eResource, [nablaModuleExtensions.getAllVars(module)])
 	}
 
-	private def getAllVariables(List<? extends Instruction> instructions)
+	private def getAllVars(List<? extends Instruction> instructions)
 	{
 		val variables = new ArrayList<ArgOrVar>
 		for (i : instructions)
@@ -316,8 +216,6 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 			{
 				VarGroupDeclaration : variables += i.variables
 				SimpleVarDefinition : variables += i.variable
-				Iterable case (i.iterationBlock instanceof Interval):
-					Scopes.scopeFor(#[(i.iterationBlock as Interval).index])
 			}
 		return variables
 	}

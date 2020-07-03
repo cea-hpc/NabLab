@@ -9,11 +9,14 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.transformers.IrTransformationStep
+import fr.cea.nabla.ir.transformers.ReplaceReductions
 import org.eclipse.xtend.lib.annotations.Accessors
 
 abstract class Backend
 {
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) String name
+	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IrTransformationStep irTransformationStep = null
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) Ir2Cmake ir2Cmake
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) TraceContentProvider traceContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IncludesContentProvider includesContentProvider
@@ -32,12 +35,13 @@ abstract class Backend
 
 class SequentialBackend extends Backend
 {
-	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath)
+	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String levelDBPath)
 	{
 		name = 'Sequential'
-		ir2Cmake = new StlIr2Cmake(compiler, compilerPath)
+		irTransformationStep = new ReplaceReductions(true)
+		ir2Cmake = new SequentialIr2Cmake(compiler, compilerPath, levelDBPath)
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
-		includesContentProvider = new IncludesContentProvider
+		includesContentProvider = new SequentialIncludesContentProvider(levelDBPath)
 		typeContentProvider = new StlTypeContentProvider
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
@@ -48,18 +52,18 @@ class SequentialBackend extends Backend
 		jobContainerContentProvider = new JobContainerContentProvider
 		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)
 		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider)
-		mainContentProvider = new MainContentProvider
+		mainContentProvider = new MainContentProvider(levelDBPath)
 	}
 }
 
 class StlThreadBackend extends Backend
 {
-	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath)
+	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String levelDBPath)
 	{
 		name = 'StlThread'
-		ir2Cmake = new StlIr2Cmake(compiler, compilerPath)
+		ir2Cmake = new StlIr2Cmake(compiler, compilerPath, levelDBPath)
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
-		includesContentProvider = new StlThreadIncludesContentProvider
+		includesContentProvider = new StlThreadIncludesContentProvider(levelDBPath)
 		typeContentProvider = new StlTypeContentProvider
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
@@ -70,18 +74,18 @@ class StlThreadBackend extends Backend
 		jobContainerContentProvider = new JobContainerContentProvider
 		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)
 		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider)
-		mainContentProvider = new MainContentProvider
+		mainContentProvider = new MainContentProvider(levelDBPath)
 	}
 }
 
 class KokkosBackend extends Backend
 {
-	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String kokkosPath)
+	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String kokkosPath, String levelDBPath)
 	{
 		name = 'Kokkos'
-		ir2Cmake = new KokkosIr2Cmake(compiler, compilerPath, kokkosPath)
+		ir2Cmake = new KokkosIr2Cmake(compiler, compilerPath, kokkosPath, levelDBPath)
 		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
-		includesContentProvider = new KokkosIncludesContentProvider
+		includesContentProvider = new KokkosIncludesContentProvider(levelDBPath)
 		typeContentProvider = new KokkosTypeContentProvider
 		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
@@ -92,18 +96,18 @@ class KokkosBackend extends Backend
 		jobContainerContentProvider = new JobContainerContentProvider
 		jobContentProvider = new KokkosJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)
 		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider)
-		mainContentProvider = new KokkosMainContentProvider
+		mainContentProvider = new KokkosMainContentProvider(levelDBPath)
 	}
 }
 
 class KokkosTeamThreadBackend extends Backend
 {
-	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String kokkosPath)
+	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String kokkosPath, String levelDBPath)
 	{
 		name = 'Kokkos Team Thread'
-		ir2Cmake = new KokkosIr2Cmake(compiler, compilerPath, kokkosPath)
+		ir2Cmake = new KokkosIr2Cmake(compiler, compilerPath, kokkosPath, levelDBPath)
 		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
-		includesContentProvider = new KokkosIncludesContentProvider
+		includesContentProvider = new KokkosIncludesContentProvider(levelDBPath)
 		typeContentProvider = new KokkosTypeContentProvider
 		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
@@ -114,7 +118,29 @@ class KokkosTeamThreadBackend extends Backend
 		jobContainerContentProvider = new KokkosTeamThreadJobContainerContentProvider
 		jobContentProvider = new KokkosTeamThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)
 		privateMethodsContentProvider = new KokkosTeamThreadPrivateMethodsContentProvider(jobContentProvider)
-		mainContentProvider = new KokkosMainContentProvider
+		mainContentProvider = new KokkosMainContentProvider(levelDBPath)
+	}
+}
+
+class OpenMpBackend extends Backend
+{
+	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String levelDBPath)
+	{
+		name = 'OpenMP'
+		ir2Cmake = new OpenMpCmake(compiler, compilerPath, levelDBPath)
+		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
+		includesContentProvider = new OpenMpIncludesContentProvider(levelDBPath)
+		typeContentProvider = new StlTypeContentProvider
+		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
+		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
+		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider, expressionContentProvider)
+		instructionContentProvider = new OpenMpInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
+		jobContainerContentProvider = new JobContainerContentProvider
+		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)
+		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider)
+		mainContentProvider = new MainContentProvider(levelDBPath)
 	}
 }
 

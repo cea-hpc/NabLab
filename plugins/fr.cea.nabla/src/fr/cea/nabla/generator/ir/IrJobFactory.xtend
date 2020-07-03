@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.Job
+import org.eclipse.emf.ecore.util.EcoreUtil
 
 class IrJobFactory 
 {
@@ -30,6 +31,7 @@ class IrJobFactory
 
 	def create IrFactory::eINSTANCE.createBeforeTimeLoopJob toIrBeforeTimeLoopJob(TimeLoop tl)
 	{
+		annotations += EcoreUtil::copyAll(tl.annotations)
 		name = "SetUpTimeLoop" + tl.name.toFirstUpper
 		timeLoop = tl
 
@@ -49,6 +51,7 @@ class IrJobFactory
 
 	def create IrFactory::eINSTANCE.createAfterTimeLoopJob toIrAfterTimeLoopJob(TimeLoop tl)
 	{ 
+		annotations += EcoreUtil::copyAll(tl.annotations)
 		name = "TearDownTimeLoop" + tl.name.toFirstUpper
 		timeLoop = tl
 
@@ -63,6 +66,7 @@ class IrJobFactory
 
 	def create IrFactory::eINSTANCE.createTimeLoopJob toIrTimeLoopJob(TimeLoop tl)
 	{
+		annotations += EcoreUtil::copyAll(tl.annotations)
 		name = "ExecuteTimeLoop" + tl.name.toFirstUpper
 		timeLoop= tl
 		tl.associatedJob = it

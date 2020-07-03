@@ -64,6 +64,7 @@ class JobInterpreter
 		context.logFiner("Interprete TimeLoopJob " + name + " @ " + at)
 		val irModule = eContainer as IrModule
 		val iterationVariable = timeLoop.iterationCounter
+		val ppInfo = irModule.postProcessingInfo
 		var iteration = 0
 		context.logVariables("Before timeLoop " + timeLoop.name)
 		context.addVariableValue(iterationVariable, new NV0Int(iteration))
@@ -79,7 +80,14 @@ class JobInterpreter
 					context.getReal(irModule.timeVariable.name),
 					context.getReal(irModule.deltatVariable.name))
 			context.logFine(log)
-			if (topLevel && irModule.postProcessingInfo !== null) dumpVariables(irModule, iteration, context);
+			if (topLevel && ppInfo !== null)
+			{
+				val periodValue = context.getNumber(ppInfo.periodValue.name)
+				val periodReference = context.getNumber(ppInfo.periodReference.name)
+				val lastDump = context.getNumber(ppInfo.lastDumpVariable.name)
+				if (periodReference >= lastDump + periodValue)
+					dumpVariables(irModule, iteration, context, periodReference);
+			}
 			for (j : innerJobs.filter[x | x.at > 0].sortBy[at])
 				interprete(j, context)
 			context.logVariables("After iteration = " + iteration)
@@ -117,14 +125,10 @@ class JobInterpreter
 		}
 	}
 
-	private def void dumpVariables(IrModule irModule, int iteration, Context context)
+	private def void dumpVariables(IrModule irModule, int iteration, Context context, double periodReference)
 	{
 		val ppInfo = irModule.postProcessingInfo
-		val periodValue = context.getNumber(ppInfo.periodValue.name)
-		val periodReference = context.getNumber(ppInfo.periodReference.name)
-		val lastDump = context.getNumber(ppInfo.lastDumpVariable.name)
-
-		if (periodReference >= lastDump + periodValue)
+		if (!writer.disabled)
 		{
 			val time = context.getReal(irModule.timeVariable.name)
 			val coordVariable = irModule.getVariableByName(irModule.nodeCoordVariable.name)

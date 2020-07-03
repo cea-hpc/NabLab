@@ -7,7 +7,7 @@
 
 Written by CEA and Contributors
 
-(C) Copyright 2019, by CEA. All rights reserved.
+(C) Copyright 2020, by CEA. All rights reserved.
 
 All content is the property of the respective authors or their employers.
 For more information regarding authorship of content, please consult the
@@ -25,7 +25,7 @@ Please refer to the license for details.
 
 ## Getting started
 
-The latest NabLab environment can be downloaded [here](https://github.com/cea-hpc/NabLab/releases/tag/v0.1.2). For Mac users, depending on your security configuration, you have to enter the following command to execute NabLab: `xattr -d com.apple.quarantine NabLab.app`.
+The latest NabLab environment can be downloaded [here](https://github.com/cea-hpc/NabLab/releases/tag/v0.3.0). For Mac users, depending on your security configuration, you have to enter the following command to execute NabLab: `xattr -d com.apple.quarantine NabLab.app`.
 
 Once the NabLab environment has been launched, the NabLab perspective should be selected. If it is not the case, just select the NabLab perspective from the *Window > Perspective > Open Perspective > Other ... > NabLab* menu.
 
@@ -55,7 +55,7 @@ To launch the java and kokkos source code generations corresponding to the nabla
 
 <img src="./README_images/NabLab_nablagen_launch_generation.png" alt="NabLab Launch Generation" title="NabLab Launch Generation" width="50%" height="50%" />
 
-The java and kokkos source code files are generated in *src-gen-java* and *src-gen-kokkos* folders respectively.
+The java and kokkos source code files are generated in *src-gen-java* and *src-gen-cpp* folders respectively.
 
 <img src="./README_images/NabLab_nablagen_generated_files.png" alt="NabLab Generated Files" title="NabLab Generated Files" width="30%" height="30%" />
 
@@ -73,7 +73,7 @@ A new wizard is launched:
 
 Just click on the *Finish* button to import the examples project. The examples project is available in the *Model Explorer View*:
 
-<img src="./README_images/NabLab_nabla_examples_generated_files.png" alt="NabLab Examples Generated Files" title="NabLab Examples Generated Files" width="70%" height="70%" />
+<img src="./README_images/NabLab_nabla_examples_generated_files.png" alt="NabLab Examples Generated Files" title="NabLab Examples Generated Files" width="100%" height="100%" />
 
 It contains a set of Nabla examples including Glace2D, HeatEquation, ImplicitHeatEquation, and ExplicitHeatEquation.
 
@@ -85,7 +85,7 @@ The *Latex View* is accessible through the *Window > Show View > Other... > Nabl
 
 This view is automatically updated and synchronized with the selection in the current nabla model editor.
 
-<img src="./README_images/NabLab_latex_view.png" alt="NabLab Latex View" title="NabLab Latex View" width="80%" height="80%" />
+<img src="./README_images/NabLab_latex_view.png" alt="NabLab Latex View" title="NabLab Latex View" width="100%" height="100%" />
 
 ## Build via Maven 3.x
 
@@ -98,27 +98,27 @@ The products resulting from the build will be accessible in */releng/fr.cea.nabl
 
 The Eclipse update-site resulting from the build will be accessible in */releng/fr.cea.nabla.updatesite/target/fr.cea.nabla.updatesite-1.0.0.yyyymmddHHMM.zip*.
 
-Just install this update-site in an Eclipse 2019-09 with Sirius 6.2.2 and Xtext 2.19.0 already installed to use NabLab.
+Just install this update-site in an Eclipse 2020-03 with Sirius 6.3.0 and Xtext 2.21.0 already installed to use NabLab.
 
 If you want to skip tests execution, you can run the following command:
 `mvn clean; mvn verify -Dmaven.test.skip=true`
 
 ## Dependencies
 
-NabLab requires Java 1.8 or later to build & run. 
+NabLab requires Java 11 or later to build & run. 
 
 It as based on:
 
-Eclipse 2019-09
+Eclipse 2020-03
  * License: EPL-2.0
- * Project: https://www.eclipse.org/downloads/packages/release/2019-09/r
+ * Project: https://www.eclipse.org/downloads/packages/release/2020-03/r
 
-Xtext (2.19)
+Xtext (2.21)
  * License: EPL-2.0
  * Project: http://projects.eclipse.org/projects/modeling.tmf.xtext
  * Source: https://github.com/eclipse/xtext
 
-Sirius (6.2.2)
+Sirius (6.3.0)
  * License: EPL-2.0
  * Project: http://projects.eclipse.org/projects/modeling.sirius
  * Source: https://git.eclipse.org/c/sirius/org.eclipse.sirius.git

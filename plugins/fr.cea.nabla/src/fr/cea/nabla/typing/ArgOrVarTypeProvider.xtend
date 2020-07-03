@@ -25,7 +25,6 @@ class ArgOrVarTypeProvider
 {
 	@Inject extension ArgOrVarExtensions
 	@Inject extension BaseTypeTypeProvider
-	@Inject extension ExpressionTypeProvider
 
 	def dispatch NablaType getTypeFor(SimpleVar it)
 	{
@@ -33,8 +32,8 @@ class ArgOrVarTypeProvider
 		switch c
 		{
 			FunctionOrReduction, Interval, SpaceIterator: new NSTIntScalar
-			SimpleVarDefinition: c.value.typeFor
-			VarGroupDeclaration: c.type.typeFor
+			SimpleVarDefinition case c.type !== null: c.type.typeFor
+			VarGroupDeclaration case c.type !== null: c.type.typeFor
 			default: null
 		}
 	}

@@ -127,6 +127,11 @@ Glace2d::Options::Options(const std::string& fileName)
 	const rapidjson::Value& valueof_outputPath = d["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
+	// Non regression
+	assert(d.HasMember("nonRegression"));
+	const rapidjson::Value& valueof_nonRegression = d["nonRegression"];
+	assert(valueof_nonRegression.IsString());
+	nonRegression = valueof_nonRegression.GetString();
 	// outputPeriod
 	assert(d.HasMember("outputPeriod"));
 	const rapidjson::Value& valueof_outputPeriod = d["outputPeriod"];
@@ -206,22 +211,22 @@ Glace2d::Options::Options(const std::string& fileName)
 
 /******************** Module definition ********************/
 
-Glace2d::Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D)
+Glace2d::Glace2d(const Options& aOptions)
 : options(aOptions)
-, mesh(aCartesianMesh2D)
-, writer("Glace2d", options->outputPath)
-, nbNodes(mesh->getNbNodes())
-, nbCells(mesh->getNbCells())
-, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, nbCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
-, nbInnerNodes(mesh->getNbInnerNodes())
-, nbOuterFaces(mesh->getNbOuterFaces())
-, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , t_n(0.0)
 , t_nplus1(0.0)
-, deltat_n(options->deltatIni)
-, deltat_nplus1(options->deltatIni)
+, deltat_n(options.deltatIni)
+, deltat_nplus1(options.deltatIni)
 , lastDump(numeric_limits<int>::min())
+, mesh(CartesianMesh2DGenerator::generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH))
+, writer("Glace2d", options.outputPath)
+, nbNodes(mesh->getNbNodes())
+, nbCells(mesh->getNbCells())
+, nbOuterFaces(mesh->getNbOuterFaces())
+, nbInnerNodes(mesh->getNbInnerNodes())
+, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, nbCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
+, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , X_n("X_n", nbNodes)
 , X_nplus1("X_nplus1", nbNodes)
 , X_n0("X_n0", nbNodes)
@@ -247,7 +252,6 @@ Glace2d::Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D)
 , F("F", nbCells, nbNodesOfCell)
 , Ajr("Ajr", nbCells, nbNodesOfCell)
 {
-
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
@@ -255,6 +259,11 @@ Glace2d::Glace2d(Options* aOptions, CartesianMesh2D* aCartesianMesh2D)
 		X_n0(rNodes)[0] = gNodes[rNodes][0];
 		X_n0(rNodes)[1] = gNodes[rNodes][1];
 	}
+}
+
+Glace2d::~Glace2d()
+{
+	delete mesh;
 }
 
 /**
@@ -361,7 +370,7 @@ void Glace2d::computeV() noexcept
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
 		const Id jId(jCells);
-		double reduction5(0.0);
+		double reduction0(0.0);
 		{
 			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
@@ -369,10 +378,10 @@ void Glace2d::computeV() noexcept
 			{
 				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 				const size_t rNodes(rId);
-				reduction5 = sumR0(reduction5, dot(C(jCells,rNodesOfCellJ), X_n(rNodes)));
+				reduction0 = sumR0(reduction0, dot(C(jCells,rNodesOfCellJ), X_n(rNodes)));
 			}
 		}
-		V(jCells) = 0.5 * reduction5;
+		V(jCells) = 0.5 * reduction0;
 	});
 }
 
@@ -400,15 +409,15 @@ void Glace2d::initialize() noexcept
 			}
 		}
 		const RealArray1D<2> center(0.25 * reduction0);
-		if (center[0] < options->xInterface) 
+		if (center[0] < options.xInterface) 
 		{
-			rho_ic = options->rhoIniZg;
-			p_ic = options->pIniZg;
+			rho_ic = options.rhoIniZg;
+			p_ic = options.pIniZg;
 		}
 		else
 		{
-			rho_ic = options->rhoIniZd;
-			p_ic = options->pIniZd;
+			rho_ic = options.rhoIniZd;
+			p_ic = options.pIniZd;
 		}
 		double reduction1(0.0);
 		{
@@ -425,7 +434,7 @@ void Glace2d::initialize() noexcept
 		m(jCells) = rho_ic * V_ic;
 		p(jCells) = p_ic;
 		rho(jCells) = rho_ic;
-		E_n(jCells) = p_ic / ((options->gamma - 1.0) * rho_ic);
+		E_n(jCells) = p_ic / ((options.gamma - 1.0) * rho_ic);
 		uj_n(jCells) = {0.0, 0.0};
 	});
 }
@@ -457,7 +466,8 @@ void Glace2d::executeTimeLoopN() noexcept
 		globalTimer.start();
 		cpuTimer.start();
 		n++;
-		dumpVariables(n);
+		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+			dumpVariables(n);
 		if (n!=1)
 			std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
 				<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
@@ -486,7 +496,7 @@ void Glace2d::executeTimeLoopN() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (t_nplus1 < options->stopTime && n + 1 < options->maxIterations);
+		continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
 	
 		if (continueLoop)
 		{
@@ -508,15 +518,17 @@ void Glace2d::executeTimeLoopN() noexcept
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << utils::progress_bar(n, options->maxIterations, t_n, options->stopTime, 25);
+		std::cout << utils::progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(n, options->maxIterations, t_n, options->stopTime, deltat_n, globalTimer), true)
+			utils::eta(n, options.maxIterations, t_n, options.stopTime, deltat_n, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
 		cpuTimer.reset();
 		ioTimer.reset();
 	} while (continueLoop);
+	// force a last output at the end
+	dumpVariables(n, false);
 }
 
 /**
@@ -528,7 +540,7 @@ void Glace2d::computeEOSp() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
-		p(jCells) = (options->gamma - 1.0) * rho(jCells) * e(jCells);
+		p(jCells) = (options.gamma - 1.0) * rho(jCells) * e(jCells);
 	});
 }
 
@@ -541,7 +553,7 @@ void Glace2d::computeEOSc() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
-		c(jCells) = std::sqrt(options->gamma * p(jCells) / rho(jCells));
+		c(jCells) = std::sqrt(options.gamma * p(jCells) / rho(jCells));
 	});
 }
 
@@ -576,16 +588,16 @@ void Glace2d::computedeltatj() noexcept
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
 		const Id jId(jCells);
-		double reduction2(0.0);
+		double reduction0(0.0);
 		{
 			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				reduction2 = sumR0(reduction2, l(jCells,rNodesOfCellJ));
+				reduction0 = sumR0(reduction0, l(jCells,rNodesOfCellJ));
 			}
 		}
-		deltatj(jCells) = 2.0 * V(jCells) / (c(jCells) * reduction2);
+		deltatj(jCells) = 2.0 * V(jCells) / (c(jCells) * reduction0);
 	});
 }
 
@@ -599,7 +611,7 @@ void Glace2d::computeAr() noexcept
 	Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& rNodes)
 	{
 		const Id rId(rNodes);
-		RealArray2D<2,2> reduction3({0.0, 0.0,  0.0, 0.0});
+		RealArray2D<2,2> reduction0({0.0, 0.0,  0.0, 0.0});
 		{
 			const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
 			const size_t nbCellsOfNodeR(cellsOfNodeR.size());
@@ -608,10 +620,10 @@ void Glace2d::computeAr() noexcept
 				const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 				const size_t jCells(jId);
 				const size_t rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
-				reduction3 = sumR2(reduction3, Ajr(jCells,rNodesOfCellJ));
+				reduction0 = sumR2(reduction0, Ajr(jCells,rNodesOfCellJ));
 			}
 		}
-		Ar(rNodes) = reduction3;
+		Ar(rNodes) = reduction0;
 	});
 }
 
@@ -625,7 +637,7 @@ void Glace2d::computeBr() noexcept
 	Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& rNodes)
 	{
 		const Id rId(rNodes);
-		RealArray1D<2> reduction4({0.0, 0.0});
+		RealArray1D<2> reduction0({0.0, 0.0});
 		{
 			const auto cellsOfNodeR(mesh->getCellsOfNode(rId));
 			const size_t nbCellsOfNodeR(cellsOfNodeR.size());
@@ -634,10 +646,10 @@ void Glace2d::computeBr() noexcept
 				const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 				const size_t jCells(jId);
 				const size_t rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
-				reduction4 = sumR1(reduction4, p(jCells) * C(jCells,rNodesOfCellJ) + matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells)));
+				reduction0 = sumR1(reduction0, p(jCells) * C(jCells,rNodesOfCellJ) + matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells)));
 			}
 		}
-		b(rNodes) = reduction4;
+		b(rNodes) = reduction0;
 	});
 }
 
@@ -648,12 +660,12 @@ void Glace2d::computeBr() noexcept
  */
 void Glace2d::computeDt() noexcept
 {
-	double reduction8;
+	double reduction0;
 	Kokkos::parallel_reduce(nbCells, KOKKOS_LAMBDA(const size_t& jCells, double& accu)
 	{
 		accu = minR0(accu, deltatj(jCells));
-	}, KokkosJoiner<double>(reduction8, numeric_limits<double>::max(), &minR0));
-	deltat_nplus1 = options->deltatCfl * reduction8;
+	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &minR0));
+	deltat_nplus1 = options.deltatCfl * reduction0;
 }
 
 /**
@@ -672,9 +684,9 @@ void Glace2d::computeBoundaryConditions() noexcept
 			const double epsilon(1.0E-10);
 			const RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
 			const double X_MIN(0.0);
-			const double X_MAX(options->X_EDGE_ELEMS * options->X_EDGE_LENGTH);
+			const double X_MAX(options.X_EDGE_ELEMS * options.X_EDGE_LENGTH);
 			const double Y_MIN(0.0);
-			const double Y_MAX(options->Y_EDGE_ELEMS * options->Y_EDGE_LENGTH);
+			const double Y_MAX(options.Y_EDGE_ELEMS * options.Y_EDGE_LENGTH);
 			const RealArray1D<2> nY({0.0, 1.0});
 			{
 				const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
@@ -814,7 +826,7 @@ void Glace2d::computeEn() noexcept
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
 		const Id jId(jCells);
-		double reduction7(0.0);
+		double reduction0(0.0);
 		{
 			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
@@ -822,10 +834,10 @@ void Glace2d::computeEn() noexcept
 			{
 				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 				const size_t rNodes(rId);
-				reduction7 = sumR0(reduction7, dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
+				reduction0 = sumR0(reduction0, dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
 			}
 		}
-		E_nplus1(jCells) = E_n(jCells) - (deltat_n / m(jCells)) * reduction7;
+		E_nplus1(jCells) = E_n(jCells) - (deltat_n / m(jCells)) * reduction0;
 	});
 }
 
@@ -839,25 +851,28 @@ void Glace2d::computeUn() noexcept
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
 		const Id jId(jCells);
-		RealArray1D<2> reduction6({0.0, 0.0});
+		RealArray1D<2> reduction0({0.0, 0.0});
 		{
 			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				reduction6 = sumR1(reduction6, F(jCells,rNodesOfCellJ));
+				reduction0 = sumR1(reduction0, F(jCells,rNodesOfCellJ));
 			}
 		}
-		uj_nplus1(jCells) = uj_n(jCells) - (deltat_n / m(jCells)) * reduction6;
+		uj_nplus1(jCells) = uj_n(jCells) - (deltat_n / m(jCells)) * reduction0;
 	});
 }
 
-void Glace2d::dumpVariables(int iteration)
+void Glace2d::dumpVariables(int iteration, bool useTimer)
 {
-	if (!writer.isDisabled() && n >= lastDump + options->outputPeriod)
+	if (!writer.isDisabled())
 	{
-		cpuTimer.stop();
-		ioTimer.start();
+		if (useTimer)
+		{
+			cpuTimer.stop();
+			ioTimer.start();
+		}
 		auto quads = mesh->getGeometry()->getQuads();
 		writer.startVtpFile(iteration, t_n, nbNodes, X_n.data(), nbCells, quads.data());
 		writer.openNodeData();
@@ -867,17 +882,62 @@ void Glace2d::dumpVariables(int iteration)
 		writer.closeCellData();
 		writer.closeVtpFile();
 		lastDump = n;
-		ioTimer.stop();
-		cpuTimer.start();
+		if (useTimer)
+		{
+			ioTimer.stop();
+			cpuTimer.start();
+		}
 	}
+}
+
+void Glace2d::createDB(const std::string& db_name)
+{
+	// Creating data base
+	leveldb::DB* db;
+	leveldb::Options options;
+	options.create_if_missing = true;
+	leveldb::Status status = leveldb::DB::Open(options, db_name, &db);
+	assert(status.ok());
+	// Batch to write all data at once
+	leveldb::WriteBatch batch;
+	batch.Put("n", serialize(n));
+	batch.Put("X_n", serialize(X_n));
+	batch.Put("X_nplus1", serialize(X_nplus1));
+	batch.Put("X_n0", serialize(X_n0));
+	batch.Put("b", serialize(b));
+	batch.Put("bt", serialize(bt));
+	batch.Put("Ar", serialize(Ar));
+	batch.Put("Mt", serialize(Mt));
+	batch.Put("ur", serialize(ur));
+	batch.Put("c", serialize(c));
+	batch.Put("m", serialize(m));
+	batch.Put("p", serialize(p));
+	batch.Put("rho", serialize(rho));
+	batch.Put("e", serialize(e));
+	batch.Put("E_n", serialize(E_n));
+	batch.Put("E_nplus1", serialize(E_nplus1));
+	batch.Put("V", serialize(V));
+	batch.Put("deltatj", serialize(deltatj));
+	batch.Put("uj_n", serialize(uj_n));
+	batch.Put("uj_nplus1", serialize(uj_nplus1));
+	batch.Put("l", serialize(l));
+	batch.Put("Cjr_ic", serialize(Cjr_ic));
+	batch.Put("C", serialize(C));
+	batch.Put("F", serialize(F));
+	batch.Put("Ajr", serialize(Ajr));
+	status = db->Write(leveldb::WriteOptions(), &batch);
+	// Checking everything was ok
+	assert(status.ok());
+	// Freeing memory
+	delete db;
 }
 
 void Glace2d::simulate()
 {
 	std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting Glace2d ..." << __RESET__ << "\n\n";
 	
-	std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options->X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options->Y_EDGE_ELEMS
-		<< __RESET__ << ", X length=" << __BOLD__ << options->X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options->Y_EDGE_LENGTH << __RESET__ << std::endl;
+	std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options.X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options.Y_EDGE_ELEMS
+		<< __RESET__ << ", X length=" << __BOLD__ << options.X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options.Y_EDGE_LENGTH << __RESET__ << std::endl;
 	
 	if (Kokkos::hwloc::available())
 	{
@@ -905,6 +965,41 @@ void Glace2d::simulate()
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
 
+/******************** Non regression testing ********************/
+
+bool compareDB(const std::string& current, const std::string& ref)
+{
+	// Final result
+	bool result = true;
+	
+	// Loading ref DB
+	leveldb::DB* db_ref;
+	leveldb::Options options_ref;
+	options_ref.create_if_missing = false;
+	leveldb::Status status = leveldb::DB::Open(options_ref, ref, &db_ref);
+	assert(status.ok());
+	leveldb::Iterator* it_ref = db_ref->NewIterator(leveldb::ReadOptions());
+	
+	
+	// Loading current DB
+	leveldb::DB* db;
+	leveldb::Options options;
+	options.create_if_missing = false;
+	status = leveldb::DB::Open(options, current, &db);
+	assert(status.ok());
+	leveldb::Iterator* it = db->NewIterator(leveldb::ReadOptions());
+	
+	// Results comparison
+	std::cout << "# Compairing results ..." << std::endl;
+	for (it_ref->SeekToFirst(), it->SeekToFirst(); it_ref->Valid() && it->Valid(); it_ref->Next(), it->Next()) {
+		assert(it_ref->key().ToString() == it->key().ToString());
+		std::cout << it->key().ToString() << ": " << (it_ref->value().ToString()==it->value().ToString()?"OK":"ERROR") << std::endl;
+		if (it_ref->value().ToString() != it->value().ToString())
+			result = false;
+	}
+	
+	return result;
+}
 
 /******************** Module definition ********************/
 
@@ -924,13 +1019,22 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	
-	auto o = new Glace2d::Options(dataFile);
-	auto nm = CartesianMesh2DGenerator::generate(o->X_EDGE_ELEMS, o->Y_EDGE_ELEMS, o->X_EDGE_LENGTH, o->Y_EDGE_LENGTH);
-	auto c = new Glace2d(o, nm);
-	c->simulate();
-	delete c;
-	delete nm;
-	delete o;
+	Glace2d::Options options(dataFile);
+	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
+	auto simulator = new Glace2d(options);
+	simulator->simulate();
+	
+	// Non regression testing
+	if (options.nonRegression == "CreateReference")
+	  simulator->createDB("Glace2dDB.ref");
+	if (options.nonRegression == "CompareToReference") {
+		simulator->createDB("Glace2dDB.current");
+		compareDB("Glace2dDB.current", "Glace2dDB.ref");
+		leveldb::DestroyDB("Glace2dDB.current", leveldb::Options());
+	}
+	
+	// simulator must be deleted before calling finalize
+	delete simulator;
 	Kokkos::finalize();
 	return 0;
 }

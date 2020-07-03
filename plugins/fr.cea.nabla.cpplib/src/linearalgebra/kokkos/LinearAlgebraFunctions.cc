@@ -345,7 +345,7 @@ VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& 
  * \return: Solution vector
  */
 VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, NablaSparseMatrix& C_minus_1, CGInfo& info,
-                             VectorType* x0, const size_t max_it, const double tolerance))
+                             VectorType* x0, const size_t max_it, const double tolerance)
 {
   if (!x0) {
     VectorType default_x0("x0", b.extent(0));

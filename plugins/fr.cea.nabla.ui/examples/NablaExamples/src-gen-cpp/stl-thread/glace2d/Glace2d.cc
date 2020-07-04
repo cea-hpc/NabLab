@@ -115,11 +115,6 @@ Glace2d::Options::Options(const std::string& fileName)
 	const rapidjson::Value& valueof_outputPath = d["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
-	// Non regression
-	assert(d.HasMember("nonRegression"));
-	const rapidjson::Value& valueof_nonRegression = d["nonRegression"];
-	assert(valueof_nonRegression.IsString());
-	nonRegression = valueof_nonRegression.GetString();
 	// outputPeriod
 	assert(d.HasMember("outputPeriod"));
 	const rapidjson::Value& valueof_outputPeriod = d["outputPeriod"];
@@ -881,48 +876,6 @@ void Glace2d::dumpVariables(int iteration, bool useTimer)
 	}
 }
 
-void Glace2d::createDB(const std::string& db_name)
-{
-	// Creating data base
-	leveldb::DB* db;
-	leveldb::Options options;
-	options.create_if_missing = true;
-	leveldb::Status status = leveldb::DB::Open(options, db_name, &db);
-	assert(status.ok());
-	// Batch to write all data at once
-	leveldb::WriteBatch batch;
-	batch.Put("n", serialize(n));
-	batch.Put("X_n", serialize(X_n));
-	batch.Put("X_nplus1", serialize(X_nplus1));
-	batch.Put("X_n0", serialize(X_n0));
-	batch.Put("b", serialize(b));
-	batch.Put("bt", serialize(bt));
-	batch.Put("Ar", serialize(Ar));
-	batch.Put("Mt", serialize(Mt));
-	batch.Put("ur", serialize(ur));
-	batch.Put("c", serialize(c));
-	batch.Put("m", serialize(m));
-	batch.Put("p", serialize(p));
-	batch.Put("rho", serialize(rho));
-	batch.Put("e", serialize(e));
-	batch.Put("E_n", serialize(E_n));
-	batch.Put("E_nplus1", serialize(E_nplus1));
-	batch.Put("V", serialize(V));
-	batch.Put("deltatj", serialize(deltatj));
-	batch.Put("uj_n", serialize(uj_n));
-	batch.Put("uj_nplus1", serialize(uj_nplus1));
-	batch.Put("l", serialize(l));
-	batch.Put("Cjr_ic", serialize(Cjr_ic));
-	batch.Put("C", serialize(C));
-	batch.Put("F", serialize(F));
-	batch.Put("Ajr", serialize(Ajr));
-	status = db->Write(leveldb::WriteOptions(), &batch);
-	// Checking everything was ok
-	assert(status.ok());
-	// Freeing memory
-	delete db;
-}
-
 void Glace2d::simulate()
 {
 	std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting Glace2d ..." << __RESET__ << "\n\n";
@@ -943,42 +896,6 @@ void Glace2d::simulate()
 	executeTimeLoopN(); // @3.0
 	
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
-}
-
-/******************** Non regression testing ********************/
-
-bool compareDB(const std::string& current, const std::string& ref)
-{
-	// Final result
-	bool result = true;
-	
-	// Loading ref DB
-	leveldb::DB* db_ref;
-	leveldb::Options options_ref;
-	options_ref.create_if_missing = false;
-	leveldb::Status status = leveldb::DB::Open(options_ref, ref, &db_ref);
-	assert(status.ok());
-	leveldb::Iterator* it_ref = db_ref->NewIterator(leveldb::ReadOptions());
-	
-	
-	// Loading current DB
-	leveldb::DB* db;
-	leveldb::Options options;
-	options.create_if_missing = false;
-	status = leveldb::DB::Open(options, current, &db);
-	assert(status.ok());
-	leveldb::Iterator* it = db->NewIterator(leveldb::ReadOptions());
-	
-	// Results comparison
-	std::cout << "# Compairing results ..." << std::endl;
-	for (it_ref->SeekToFirst(), it->SeekToFirst(); it_ref->Valid() && it->Valid(); it_ref->Next(), it->Next()) {
-		assert(it_ref->key().ToString() == it->key().ToString());
-		std::cout << it->key().ToString() << ": " << (it_ref->value().ToString()==it->value().ToString()?"OK":"ERROR") << std::endl;
-		if (it_ref->value().ToString() != it->value().ToString())
-			result = false;
-	}
-	
-	return result;
 }
 
 /******************** Module definition ********************/
@@ -1002,15 +919,6 @@ int main(int argc, char* argv[])
 	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
 	auto simulator = new Glace2d(options);
 	simulator->simulate();
-	
-	// Non regression testing
-	if (options.nonRegression == "CreateReference")
-	  simulator->createDB("Glace2dDB.ref");
-	if (options.nonRegression == "CompareToReference") {
-		simulator->createDB("Glace2dDB.current");
-		compareDB("Glace2dDB.current", "Glace2dDB.ref");
-		leveldb::DestroyDB("Glace2dDB.current", leveldb::Options());
-	}
 	
 	// simulator must be deleted before calling finalize
 	delete simulator;

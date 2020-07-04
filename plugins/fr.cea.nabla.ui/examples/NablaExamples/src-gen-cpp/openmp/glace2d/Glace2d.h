@@ -6,8 +6,6 @@
 #include <cmath>
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
-#include <leveldb/db.h>
-#include <leveldb/write_batch.h>
 #include <omp.h>
 #include "mesh/CartesianMesh2DGenerator.h"
 #include "mesh/CartesianMesh2D.h"
@@ -49,7 +47,6 @@ public:
 	struct Options
 	{
 		std::string outputPath;
-		std::string nonRegression;
 		int outputPeriod;
 		double stopTime;
 		int maxIterations;
@@ -168,9 +165,6 @@ private:
 	void computeUn() noexcept;
 
 	void dumpVariables(int iteration, bool useTimer=true);
-
-public:
-	void createDB(const std::string& db_name);
 
 public:
 	void simulate();

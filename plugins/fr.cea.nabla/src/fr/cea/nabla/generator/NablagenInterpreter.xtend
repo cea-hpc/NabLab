@@ -62,7 +62,6 @@ class NablagenInterpreter
 	@Inject NablaIrWriter irWriter
 
 	@Accessors val traceListeners = new ArrayList<(String)=>void>
-	val ir2Json = new Ir2Json
 
 	def IrModule buildIrModule(NablagenConfig it, String projectDir)
 	{
@@ -103,6 +102,7 @@ class NablagenInterpreter
 	{
 		try
 		{
+			val ir2Json = new Ir2Json(levelDB!==null)
 			val jsonFileContentsByName = ir2Json.getFileContentsByName(irModule)
 			val baseDir =  projectDir + "/.."
 			for (target : targets)
@@ -182,7 +182,7 @@ class NablagenInterpreter
 	private def getCodeGenerator(Target it, String baseDir, String iterationMax, String timeMax, LevelDB levelDB)
 	{
 		val levelDBPath = if (levelDB === null) null else levelDB.levelDBPath
-		
+
 		switch it
 		{
 			Java: return new Ir2Java

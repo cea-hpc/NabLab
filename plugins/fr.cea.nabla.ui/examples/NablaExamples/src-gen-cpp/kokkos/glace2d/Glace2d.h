@@ -6,8 +6,6 @@
 #include <cmath>
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
-#include <leveldb/db.h>
-#include <leveldb/write_batch.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
 #include "mesh/CartesianMesh2DGenerator.h"
@@ -17,7 +15,6 @@
 #include "types/Types.h"
 #include "mesh/kokkos/PvdFileWriter2D.h"
 #include "utils/kokkos/Parallel.h"
-#include "utils/kokkos/Serializer.h"
 
 using namespace nablalib;
 
@@ -64,7 +61,6 @@ public:
 	struct Options
 	{
 		std::string outputPath;
-		std::string nonRegression;
 		int outputPeriod;
 		double stopTime;
 		int maxIterations;
@@ -208,9 +204,6 @@ private:
 	void computeUn() noexcept;
 
 	void dumpVariables(int iteration, bool useTimer=true);
-
-public:
-	void createDB(const std::string& db_name);
 
 public:
 	void simulate();

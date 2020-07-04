@@ -29,11 +29,11 @@ abstract class Ir2Cmake
 		#
 
 		cmake_minimum_required(VERSION 3.15)
-		
+
 		set(NABLA_CXX_COMPILER «getCompilerPath(compiler, compilerPath)»)
 
 		set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
-		
+
 		if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 			if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.4.0")
 				message(FATAL_ERROR "GCC minimum required version is 7.4.0. Please upgrade.")
@@ -43,12 +43,12 @@ abstract class Ir2Cmake
 				message(FATAL_ERROR "Clang minimum required version is 9.0.0. Please upgrade.")
 			endif()
 		endif()
-		
+
 		project(«name.toFirstUpper»Project CXX)
 
 		«libraryBackend»
 		add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
-		
+
 		«IF !levelDBPath.nullOrEmpty»
 		set(CMAKE_FIND_ROOT_PATH «levelDBPath»)
 		find_package(leveldb)
@@ -68,7 +68,7 @@ abstract class Ir2Cmake
 		include(Project.cmake)
 		endif()
 	'''
-	
+
 	private def getCompilerPath(String compiler, String compilerPath)
 	{
 		if (compilerPath.nullOrEmpty)

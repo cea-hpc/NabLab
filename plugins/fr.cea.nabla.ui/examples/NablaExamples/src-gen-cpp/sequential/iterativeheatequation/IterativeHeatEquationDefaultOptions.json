@@ -2,8 +2,6 @@
 	"_comment": "Generated file - Do not overwrite",
 	"_outputPath_comment":"empty outputPath to disable output",
 	"outputPath":"output",
-	"_nonRegression_comment":"empty value to disable, CreateReference or CompareToReference to take action",
-	"nonRegression":"",
 	"outputPeriod":1,
 	"u0":1.0,
 	"vectOne":[1.0,1.0],

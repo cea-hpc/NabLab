@@ -86,10 +86,11 @@ class CompilationChainHelper
 
 		val interpreter = interpreterProvider.get
 		val projectDir = pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples"
-		val irModule = interpreter.buildIrModule(nablaGenModule.config, projectDir)
+		val c = nablaGenModule.config
+		val irModule = interpreter.buildIrModule(c, projectDir)
 
 		if (generateCode)
-			interpreter.generateCode(irModule, nablaGenModule.config.targets, nablaGenModule.config.simulation.iterationMax.name, nablaGenModule.config.simulation.timeMax.name, projectDir, nablaGenModule.config.levelDB)
+			interpreter.generateCode(irModule, c.targets, c.simulation.iterationMax.name, c.simulation.timeMax.name, projectDir, c.levelDB)
 
 		return irModule
 	}

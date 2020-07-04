@@ -24,8 +24,13 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 class Ir2Json extends CodeGenerator 
 {
 	val extension NablaValueExtensions nve = new NablaValueExtensions
+	val boolean levelDB
 
-	new() { super('Json') }
+	new(boolean levelDB)
+	{
+		super('Json')
+		this.levelDB = levelDB
+	}
 
 	override getFileContentsByName(IrModule it)
 	{
@@ -46,8 +51,10 @@ class Ir2Json extends CodeGenerator
 			"_outputPath_comment":"empty outputPath to disable output",
 			"«TagOutputVariables.OutputPathNameAndValue.key»":"«TagOutputVariables.OutputPathNameAndValue.value»",
 			«ENDIF»
+			«IF levelDB»
 			"_nonRegression_comment":"empty value to disable, CreateReference or CompareToReference to take action",
 			"«Utils.NonRegressionNameAndValue.key»":"«Utils.NonRegressionNameAndValue.value»"«IF !options.empty»,«ENDIF»
+			«ENDIF»
 			«FOR o : options SEPARATOR ","»
 			"«o.name»":«getValue(o, context).content»
 			«ENDFOR»

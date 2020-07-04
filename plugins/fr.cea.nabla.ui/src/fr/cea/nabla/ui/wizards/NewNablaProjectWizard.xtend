@@ -287,7 +287,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 		itemtypes { node }
 
-		set nodes: → { node };
+		connectivity nodes: → { node };
 
 		option ℝ X_EDGE_LENGTH = 0.1;
 		option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;

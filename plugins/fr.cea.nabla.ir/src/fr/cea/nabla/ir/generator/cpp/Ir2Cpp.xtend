@@ -301,12 +301,12 @@ class Ir2Cpp extends CodeGenerator
 	«IF levelDB»
 
 	/******************** Non regression testing ********************/
-	
+
 	bool compareDB(const std::string& current, const std::string& ref)
 	{
 		// Final result
 		bool result = true;
-		
+
 		// Loading ref DB
 		leveldb::DB* db_ref;
 		leveldb::Options options_ref;
@@ -314,8 +314,8 @@ class Ir2Cpp extends CodeGenerator
 		leveldb::Status status = leveldb::DB::Open(options_ref, ref, &db_ref);
 		assert(status.ok());
 		leveldb::Iterator* it_ref = db_ref->NewIterator(leveldb::ReadOptions());
-		
-		
+
+
 		// Loading current DB
 		leveldb::DB* db;
 		leveldb::Options options;
@@ -323,7 +323,7 @@ class Ir2Cpp extends CodeGenerator
 		status = leveldb::DB::Open(options, current, &db);
 		assert(status.ok());
 		leveldb::Iterator* it = db->NewIterator(leveldb::ReadOptions());
-		
+
 		// Results comparison
 		std::cout << "# Compairing results ..." << std::endl;
 		for (it_ref->SeekToFirst(), it->SeekToFirst(); it_ref->Valid() && it->Valid(); it_ref->Next(), it->Next()) {
@@ -332,7 +332,7 @@ class Ir2Cpp extends CodeGenerator
 			if (it_ref->value().ToString() != it->value().ToString())
 				result = false;
 		}
-		
+
 		return result;
 	}
 	«ENDIF»

@@ -18,7 +18,6 @@ import fr.cea.nabla.ir.ir.Cardinality
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.Expression
-import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.IrPackage
@@ -35,6 +34,7 @@ import org.eclipse.xtend.lib.annotations.Data
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
 
 @Data
 class ExpressionContentProvider
@@ -142,14 +142,6 @@ class ExpressionContentProvider
 			'''std::cref(«target.codeName»)'''
 		else
 			target.codeName
-	}
-
-	def getCodeName(Function it)
-	{
-		if (body === null)
-			if (provider == "Math") 'std::' + name
-			else provider + 'Functions::' + name
-		else name
 	}
 
 	private def dispatch CharSequence getInnerContent(Expression it) { content }

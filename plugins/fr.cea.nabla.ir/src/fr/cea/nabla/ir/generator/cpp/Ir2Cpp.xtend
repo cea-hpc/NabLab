@@ -104,12 +104,15 @@ class Ir2Cpp extends CodeGenerator
 			«v.cppType» «v.name»;
 			«ENDFOR»
 
-			Options(const std::string& fileName);
+			void jsonInit(const rapidjson::Value::ConstObject& d);
 		};
 
 		const Options& options;
+		«FOR s : allProviders»
+		«s»Functions& «s.toFirstLower»;
+		«ENDFOR»
 
-		«name»(const Options& aOptions);
+		«name»(const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»Functions& a«s»«ENDFOR»);
 		~«name»();
 
 	private:
@@ -148,13 +151,9 @@ class Ir2Cpp extends CodeGenerator
 
 	/******************** Options definition ********************/
 
-	«name»::Options::Options(const std::string& fileName)
+	void
+	«name»::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 	{
-		ifstream ifs(fileName);
-		rapidjson::IStreamWrapper isw(ifs);
-		rapidjson::Document d;
-		d.ParseStream(isw);
-		assert(d.IsObject());
 		«IF postProcessingInfo !== null»
 		// outputPath
 		«val opName = TagOutputVariables.OutputPathNameAndValue.key»
@@ -178,8 +177,11 @@ class Ir2Cpp extends CodeGenerator
 
 	/******************** Module definition ********************/
 
-	«name»::«name»(const Options& aOptions)
+	«name»::«name»(const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»Functions& a«s»«ENDFOR»)
 	: options(aOptions)
+	«FOR s : allProviders»
+	, «s.toFirstLower»(a«s»)
+	«ENDFOR»
 	«FOR v : allDefinitions.filter[x | !x.constExpr]»
 	, «v.name»(«v.defaultValue.content»)
 	«ENDFOR»

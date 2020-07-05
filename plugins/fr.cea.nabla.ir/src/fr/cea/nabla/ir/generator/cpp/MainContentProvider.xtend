@@ -13,6 +13,8 @@ import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.IrModule
 import org.eclipse.xtend.lib.annotations.Data
 
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+
 @Data
 class MainContentProvider 
 {
@@ -33,23 +35,49 @@ class MainContentProvider
 			return -1;
 		}
 
-		«name»::Options options(dataFile);
+		// read json dataFile
+		ifstream ifs(dataFile);
+		rapidjson::IStreamWrapper isw(ifs);
+		rapidjson::Document d;
+		d.ParseStream(isw);
+		assert(d.IsObject());
+
+		// options
+		«name»::Options options;
+		if (d.HasMember("options"))
+		{
+			const rapidjson::Value& valueof_options = d["options"];
+			assert(valueof_options.IsObject());
+			options.jsonInit(valueof_options.GetObject());
+		}
+
+		«FOR s : allProviders»
+		// «s.toFirstLower»
+		«s»Functions «s.toFirstLower»;
+		if (d.HasMember("«s.toFirstLower»"))
+		{
+			const rapidjson::Value& valueof_«s.toFirstLower» = d["«s.toFirstLower»"];
+			assert(valueof_«s.toFirstLower».IsObject());
+			«s.toFirstLower».jsonInit(valueof_«s.toFirstLower».GetObject());
+		}
+		«ENDFOR»
+
 		// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-		auto simulator = new «name»(options);
+		auto simulator = new «name»(options«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s.toFirstLower»«ENDFOR»);
 		simulator->simulate();
+
 		«IF !levelDBPath.nullOrEmpty»
-		
 		«val nrName = Utils.NonRegressionNameAndValue.key»
 		// Non regression testing
 		if (options.«nrName» == "CreateReference")
-		  simulator->createDB("«name»DB.ref");
+			simulator->createDB("«name»DB.ref");
 		if (options.«nrName» == "CompareToReference") {
 			simulator->createDB("«name»DB.current");
 			compareDB("«name»DB.current", "«name»DB.ref");
 			leveldb::DestroyDB("«name»DB.current", leveldb::Options());
 		}
+
 		«ENDIF»
-		
 		// simulator must be deleted before calling finalize
 		delete simulator;
 	'''

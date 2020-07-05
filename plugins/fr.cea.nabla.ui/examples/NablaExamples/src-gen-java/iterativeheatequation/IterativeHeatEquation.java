@@ -7,6 +7,8 @@ import java.util.stream.IntStream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 import fr.cea.nabla.javalib.types.*;
@@ -31,13 +33,6 @@ public final class IterativeHeatEquation
 		public int maxIterations;
 		public int maxIterationsK;
 		public double epsilon;
-
-		public static Options createOptions(String jsonFileName) throws FileNotFoundException
-		{
-			Gson gson = new Gson();
-			JsonReader reader = new JsonReader(new FileReader(jsonFileName));
-			return gson.fromJson(reader, Options.class);
-		}
 	}
 
 	private final Options options;
@@ -137,7 +132,12 @@ public final class IterativeHeatEquation
 		if (args.length == 1)
 		{
 			String dataFileName = args[0];
-			IterativeHeatEquation.Options options = IterativeHeatEquation.Options.createOptions(dataFileName);
+			JsonParser parser = new JsonParser();
+			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
+			Gson gson = new Gson();
+
+			IterativeHeatEquation.Options options = (o.has("options") ? gson.fromJson(o.get("options"), IterativeHeatEquation.Options.class) : new IterativeHeatEquation.Options());
+
 			IterativeHeatEquation simulator = new IterativeHeatEquation(options);
 			simulator.simulate();
 		}

@@ -7,6 +7,8 @@ import java.util.stream.IntStream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 import fr.cea.nabla.javalib.types.*;
@@ -33,13 +35,6 @@ public final class Glace2d
 		public double rhoIniZd;
 		public double pIniZg;
 		public double pIniZd;
-
-		public static Options createOptions(String jsonFileName) throws FileNotFoundException
-		{
-			Gson gson = new Gson();
-			JsonReader reader = new JsonReader(new FileReader(jsonFileName));
-			return gson.fromJson(reader, Options.class);
-		}
 	}
 
 	private final Options options;
@@ -155,7 +150,12 @@ public final class Glace2d
 		if (args.length == 1)
 		{
 			String dataFileName = args[0];
-			Glace2d.Options options = Glace2d.Options.createOptions(dataFileName);
+			JsonParser parser = new JsonParser();
+			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
+			Gson gson = new Gson();
+
+			Glace2d.Options options = (o.has("options") ? gson.fromJson(o.get("options"), Glace2d.Options.class) : new Glace2d.Options());
+
 			Glace2d simulator = new Glace2d(options);
 			simulator.simulate();
 		}

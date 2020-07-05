@@ -50,13 +50,9 @@ double prodR0(double a, double b)
 
 /******************** Options definition ********************/
 
-ExplicitHeatEquation::Options::Options(const std::string& fileName)
+void
+ExplicitHeatEquation::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 {
-	ifstream ifs(fileName);
-	rapidjson::IStreamWrapper isw(ifs);
-	rapidjson::Document d;
-	d.ParseStream(isw);
-	assert(d.IsObject());
 	// outputPath
 	assert(d.HasMember("outputPath"));
 	const rapidjson::Value& valueof_outputPath = d["outputPath"];
@@ -532,7 +528,23 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	
-	ExplicitHeatEquation::Options options(dataFile);
+	// read json dataFile
+	ifstream ifs(dataFile);
+	rapidjson::IStreamWrapper isw(ifs);
+	rapidjson::Document d;
+	d.ParseStream(isw);
+	assert(d.IsObject());
+	
+	// options
+	ExplicitHeatEquation::Options options;
+	if (d.HasMember("options"))
+	{
+		const rapidjson::Value& valueof_options = d["options"];
+		assert(valueof_options.IsObject());
+		options.jsonInit(valueof_options.GetObject());
+	}
+	
+	
 	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
 	auto simulator = new ExplicitHeatEquation(options);
 	simulator->simulate();

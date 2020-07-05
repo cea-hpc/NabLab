@@ -10,19 +10,22 @@
 #ifndef LINEARALGEBRA_STL_LINEARALGEBRAFUNCTIONS_H_
 #define LINEARALGEBRA_STL_LINEARALGEBRAFUNCTIONS_H_
 
+#include <rapidjson/document.h>
 #include "linearalgebra/stl/Matrix.h"
 
 namespace nablalib
 {
 
-namespace LinearAlgebraFunctions
+class LinearAlgebraFunctions
 {
+public:
   struct CGInfo {
     int m_nb_it;
     double m_norm_res;
     std::stringstream m_display;
   };
 
+  void jsonInit(const rapidjson::Value::ConstObject& d) {}
   std::string print(const NablaSparseMatrix& M);
   std::string printMatlabStyle(const NablaSparseMatrix& M, std::string A);
   
@@ -32,7 +35,7 @@ namespace LinearAlgebraFunctions
   VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x0, CGInfo& info,
                      const size_t max_it = 200, const double tolerance = std::numeric_limits<double>::epsilon());
   VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info, VectorType* x0 = nullptr);
-}
+};
 }
 
 #endif /* LINEARALGEBRA_STL_LINEARALGEBRAFUNCTIONS_H_ */

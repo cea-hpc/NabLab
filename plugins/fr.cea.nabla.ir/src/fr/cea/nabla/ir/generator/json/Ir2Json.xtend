@@ -47,16 +47,22 @@ class Ir2Json extends CodeGenerator
 		'''
 		{
 			"_comment": "Generated file - Do not overwrite",
-			«IF postProcessingInfo !== null»
-			"_outputPath_comment":"empty outputPath to disable output",
-			"«TagOutputVariables.OutputPathNameAndValue.key»":"«TagOutputVariables.OutputPathNameAndValue.value»",
-			«ENDIF»
-			«IF levelDB»
-			"_nonRegression_comment":"empty value to disable, CreateReference or CompareToReference to take action",
-			"«Utils.NonRegressionNameAndValue.key»":"«Utils.NonRegressionNameAndValue.value»"«IF !options.empty»,«ENDIF»
-			«ENDIF»
-			«FOR o : options SEPARATOR ","»
-			"«o.name»":«getValue(o, context).content»
+			"options":
+			{
+				«IF postProcessingInfo !== null»
+				"_outputPath_comment":"empty outputPath to disable output",
+				"«TagOutputVariables.OutputPathNameAndValue.key»":"«TagOutputVariables.OutputPathNameAndValue.value»"«IF levelDB || !options.empty»,«ENDIF»
+				«ENDIF»
+				«IF levelDB»
+				"_nonRegression_comment":"empty value to disable, CreateReference or CompareToReference to take action",
+				"«Utils.NonRegressionNameAndValue.key»":"«Utils.NonRegressionNameAndValue.value»"«IF !options.empty»,«ENDIF»
+				«ENDIF»
+				«FOR o : options SEPARATOR ","»
+				"«o.name»":«getValue(o, context).content»
+				«ENDFOR»
+			}«IF !allProviders.empty»,«ENDIF»
+			«FOR s : allProviders SEPARATOR ","»
+			"«s.toFirstLower»":{}
 			«ENDFOR»
 		}
 		'''

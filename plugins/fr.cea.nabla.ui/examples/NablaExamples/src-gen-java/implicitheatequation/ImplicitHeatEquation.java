@@ -7,6 +7,8 @@ import java.util.stream.IntStream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 import fr.cea.nabla.javalib.types.*;
@@ -31,16 +33,10 @@ public final class ImplicitHeatEquation
 		public double Y_EDGE_LENGTH;
 		public double stopTime;
 		public int maxIterations;
-
-		public static Options createOptions(String jsonFileName) throws FileNotFoundException
-		{
-			Gson gson = new Gson();
-			JsonReader reader = new JsonReader(new FileReader(jsonFileName));
-			return gson.fromJson(reader, Options.class);
-		}
 	}
 
 	private final Options options;
+	private LinearAlgebraFunctions linearAlgebra;
 
 	// Global definitions
 	private double t_n;
@@ -67,9 +63,10 @@ public final class ImplicitHeatEquation
 	private double[] faceConductivity;
 	private Matrix alpha;
 
-	public ImplicitHeatEquation(Options aOptions)
+	public ImplicitHeatEquation(Options aOptions, LinearAlgebraFunctions aLinearAlgebra)
 	{
 		options = aOptions;
+		linearAlgebra = aLinearAlgebra;
 
 		// Initialize variables with default values
 		t_n = 0.0;
@@ -131,8 +128,14 @@ public final class ImplicitHeatEquation
 		if (args.length == 1)
 		{
 			String dataFileName = args[0];
-			ImplicitHeatEquation.Options options = ImplicitHeatEquation.Options.createOptions(dataFileName);
-			ImplicitHeatEquation simulator = new ImplicitHeatEquation(options);
+			JsonParser parser = new JsonParser();
+			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
+			Gson gson = new Gson();
+
+			ImplicitHeatEquation.Options options = (o.has("options") ? gson.fromJson(o.get("options"), ImplicitHeatEquation.Options.class) : new ImplicitHeatEquation.Options());
+			LinearAlgebraFunctions linearAlgebra = (o.has("linearAlgebra") ? gson.fromJson(o.get("linearAlgebra"), LinearAlgebraFunctions.class) : new LinearAlgebraFunctions());
+
+			ImplicitHeatEquation simulator = new ImplicitHeatEquation(options, linearAlgebra);
 			simulator.simulate();
 		}
 		else
@@ -251,7 +254,7 @@ public final class ImplicitHeatEquation
 	 */
 	private void updateU()
 	{
-		u_nplus1 = LinearAlgebraFunctions.solveLinearSystem(alpha, u_n);
+		u_nplus1 = linearAlgebra.solveLinearSystem(alpha, u_n);
 	}
 
 	/**

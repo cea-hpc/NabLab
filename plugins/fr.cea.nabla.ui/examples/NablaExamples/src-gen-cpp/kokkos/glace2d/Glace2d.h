@@ -77,7 +77,7 @@ public:
 		double pIniZg;
 		double pIniZd;
 
-		Options(const std::string& fileName);
+		void jsonInit(const rapidjson::Value::ConstObject& d);
 	};
 
 	const Options& options;

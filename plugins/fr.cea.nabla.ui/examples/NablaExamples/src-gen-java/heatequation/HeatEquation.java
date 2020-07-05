@@ -7,6 +7,8 @@ import java.util.stream.IntStream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 import fr.cea.nabla.javalib.types.*;
@@ -27,13 +29,6 @@ public final class HeatEquation
 		public int Y_EDGE_ELEMS;
 		public double PI;
 		public double alpha;
-
-		public static Options createOptions(String jsonFileName) throws FileNotFoundException
-		{
-			Gson gson = new Gson();
-			JsonReader reader = new JsonReader(new FileReader(jsonFileName));
-			return gson.fromJson(reader, Options.class);
-		}
 	}
 
 	private final Options options;
@@ -116,7 +111,12 @@ public final class HeatEquation
 		if (args.length == 1)
 		{
 			String dataFileName = args[0];
-			HeatEquation.Options options = HeatEquation.Options.createOptions(dataFileName);
+			JsonParser parser = new JsonParser();
+			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
+			Gson gson = new Gson();
+
+			HeatEquation.Options options = (o.has("options") ? gson.fromJson(o.get("options"), HeatEquation.Options.class) : new HeatEquation.Options());
+
 			HeatEquation simulator = new HeatEquation(options);
 			simulator.simulate();
 		}

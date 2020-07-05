@@ -14,12 +14,11 @@
 namespace nablalib
 {
 
-namespace LinearAlgebraFunctions
-{
 /*
  * Simple pretty printing function for Nabla Sparse Matrix
  */
- std::string print(const NablaSparseMatrix& M) {
+ std::string
+ LinearAlgebraFunctions::print(const NablaSparseMatrix& M) {
    if (!M.m_matrix) {
      std::stringstream ss;
      for (auto i(0); i < M.m_nb_row; ++i) {
@@ -53,7 +52,8 @@ namespace LinearAlgebraFunctions
 /*
  * Matlab style printing function for Nabla Sparse Matrix
  */
-std::string printMatlabStyle(const NablaSparseMatrix& M, std::string A) {
+std::string
+LinearAlgebraFunctions::printMatlabStyle(const NablaSparseMatrix& M, std::string A) {
   if (!M.m_matrix) {
     std::stringstream ss;
     ss << "\n"<< A <<" = sparse(" << M.m_nb_row << ", " << M.m_nb_col << ");\n";
@@ -78,7 +78,8 @@ std::string printMatlabStyle(const NablaSparseMatrix& M, std::string A) {
 /*
  * Simple pretty printing function for Vector
  */
-std::string print(const VectorType& v) {
+std::string
+LinearAlgebraFunctions::print(const VectorType& v) {
   std::stringstream ss;
   for (size_t i(0); i < v.size(); ++i) {
   if (!i)
@@ -93,7 +94,8 @@ std::string print(const VectorType& v) {
 /*
  * Matlab style pretty printing function for Vector
  */
-std::string printMatlabStyle(const VectorType& v, std::string A) {
+std::string
+LinearAlgebraFunctions::printMatlabStyle(const VectorType& v, std::string A) {
   std::stringstream ss;
   ss << "\n"<< A <<" = zeros(" << v.size() << ", 1);\n";
   for (size_t i(0); i < v.size(); ++i) {
@@ -112,8 +114,9 @@ std::string printMatlabStyle(const VectorType& v, std::string A) {
  * \param tolerance: [in] Convergence threshold (default = std::numeric_limits<double>::epsilon)
  * \return:          Solution vector
  */
-VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x0, CGInfo& info,
-                   const size_t max_it, const double tolerance) {
+VectorType
+LinearAlgebraFunctions::CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x0, CGInfo& info,
+                                const size_t max_it, const double tolerance) {
   size_t it(0);
   double norm_res(0.0);
   const size_t count(x0.size());
@@ -185,7 +188,8 @@ VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorT
  * \return: Solution vector
  * \note: Iteration threshold is 100, convergence threshold is 1.e-8
  */
-VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info, VectorType* x0)
+VectorType
+LinearAlgebraFunctions::solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info, VectorType* x0)
 {
   if (!x0) {
     VectorType default_x0(b.size(), 0.0);
@@ -194,8 +198,6 @@ VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& 
     return CGSolve(A.crsMatrix(), b, *x0, info, 100, 1.e-8);
   }
 }
-
-}  // LinearAlgebraFunctions
 
 }  // nablalib
 

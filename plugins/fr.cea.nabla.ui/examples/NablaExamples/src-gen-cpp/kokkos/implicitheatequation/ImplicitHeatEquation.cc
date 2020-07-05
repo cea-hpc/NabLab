@@ -57,13 +57,9 @@ double prodR0(double a, double b)
 
 /******************** Options definition ********************/
 
-ImplicitHeatEquation::Options::Options(const std::string& fileName)
+void
+ImplicitHeatEquation::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 {
-	ifstream ifs(fileName);
-	rapidjson::IStreamWrapper isw(ifs);
-	rapidjson::Document d;
-	d.ParseStream(isw);
-	assert(d.IsObject());
 	// outputPath
 	assert(d.HasMember("outputPath"));
 	const rapidjson::Value& valueof_outputPath = d["outputPath"];
@@ -133,8 +129,9 @@ ImplicitHeatEquation::Options::Options(const std::string& fileName)
 
 /******************** Module definition ********************/
 
-ImplicitHeatEquation::ImplicitHeatEquation(const Options& aOptions)
+ImplicitHeatEquation::ImplicitHeatEquation(const Options& aOptions, LinearAlgebraFunctions& aLinearAlgebra)
 : options(aOptions)
+, linearAlgebra(aLinearAlgebra)
 , t_n(0.0)
 , t_nplus1(0.0)
 , deltat(0.001)
@@ -283,7 +280,7 @@ void ImplicitHeatEquation::initXc() noexcept
  */
 void ImplicitHeatEquation::updateU() noexcept
 {
-	u_nplus1 = LinearAlgebraFunctions::solveLinearSystem(alpha, u_n, cg_info);
+	u_nplus1 = linearAlgebra.solveLinearSystem(alpha, u_n, cg_info);
 }
 
 /**
@@ -537,9 +534,33 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	
-	ImplicitHeatEquation::Options options(dataFile);
+	// read json dataFile
+	ifstream ifs(dataFile);
+	rapidjson::IStreamWrapper isw(ifs);
+	rapidjson::Document d;
+	d.ParseStream(isw);
+	assert(d.IsObject());
+	
+	// options
+	ImplicitHeatEquation::Options options;
+	if (d.HasMember("options"))
+	{
+		const rapidjson::Value& valueof_options = d["options"];
+		assert(valueof_options.IsObject());
+		options.jsonInit(valueof_options.GetObject());
+	}
+	
+	// linearAlgebra
+	LinearAlgebraFunctions linearAlgebra;
+	if (d.HasMember("linearAlgebra"))
+	{
+		const rapidjson::Value& valueof_linearAlgebra = d["linearAlgebra"];
+		assert(valueof_linearAlgebra.IsObject());
+		linearAlgebra.jsonInit(valueof_linearAlgebra.GetObject());
+	}
+	
 	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-	auto simulator = new ImplicitHeatEquation(options);
+	auto simulator = new ImplicitHeatEquation(options, linearAlgebra);
 	simulator->simulate();
 	
 	// simulator must be deleted before calling finalize

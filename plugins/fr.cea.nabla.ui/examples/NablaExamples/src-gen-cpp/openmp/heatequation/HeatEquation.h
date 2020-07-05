@@ -46,7 +46,7 @@ public:
 		double PI;
 		double alpha;
 
-		Options(const std::string& fileName);
+		void jsonInit(const rapidjson::Value::ConstObject& d);
 	};
 
 	const Options& options;

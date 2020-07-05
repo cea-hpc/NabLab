@@ -13,12 +13,11 @@
 namespace nablalib
 {
 
-namespace LinearAlgebraFunctions
-{
 /*
  * Simple pretty printing function for Sparse Matrix
  */
- std::string print(const NablaSparseMatrix& M) {
+ std::string
+ LinearAlgebraFunctions::print(const NablaSparseMatrix& M) {
    if (!M.m_matrix) {
      std::stringstream ss;
      for (auto i(0); i < M.m_nb_row; ++i) {
@@ -52,7 +51,8 @@ namespace LinearAlgebraFunctions
 /*
  * Matlab style printing function for Kokkos Sparse Matrix
  */
-std::string printMatlabStyle(const NablaSparseMatrix& M, std::string A) {
+std::string
+LinearAlgebraFunctions::printMatlabStyle(const NablaSparseMatrix& M, std::string A) {
   if (!M.m_matrix) {
     std::stringstream ss;
     ss << "\n"<< A <<" = sparse(" << M.m_nb_row << ", " << M.m_nb_col << ");\n";
@@ -70,7 +70,8 @@ std::string printMatlabStyle(const NablaSparseMatrix& M, std::string A) {
 /*
  * Simple pretty printing function for Kokkos Sparse Matrix
  */
-std::string print(const SparseMatrixType& M) {
+std::string
+LinearAlgebraFunctions::print(const SparseMatrixType& M) {
   std::stringstream ss;
   for (auto i(0); i < M.numRows(); ++i) {
     for (auto j(0), k(0); j < M.numCols(); ++j) {
@@ -93,7 +94,8 @@ std::string print(const SparseMatrixType& M) {
 /*
  * Returns the element (i,j) of a Kokkos Sparse Matrix
  */
-double getMatrixElement(const SparseMatrixType& M, const size_t& i, const size_t& j) {
+double
+LinearAlgebraFunctions::getMatrixElement(const SparseMatrixType& M, const size_t& i, const size_t& j) {
   for (auto k(0) ; k < M.rowConst(i).length ; k++)
     if (j == static_cast<size_t>(M.rowConst(i).colidx(k)))
       return M.rowConst(i).value(k);
@@ -104,7 +106,8 @@ double getMatrixElement(const SparseMatrixType& M, const size_t& i, const size_t
 /*
  * Simple pretty printing function for Nabla Sparse Matrix
  */
-  std::string printMatlabStyle(const SparseMatrixType& M, std::string A) {
+std::string
+LinearAlgebraFunctions::printMatlabStyle(const SparseMatrixType& M, std::string A) {
   std::stringstream ss;
   ss << "\n"<< A <<" = sparse(" << M.numRows() << ", " << M.numCols() << ");\n";
   for (auto i(0); i < M.numRows(); ++i) {
@@ -120,7 +123,8 @@ double getMatrixElement(const SparseMatrixType& M, const size_t& i, const size_t
 /*
  * Simple pretty printing function for Kokkos Vector
  */
-std::string print(const VectorType& v) {
+std::string
+LinearAlgebraFunctions::print(const VectorType& v) {
   std::stringstream ss;
 
   for (size_t i(0); i < v.extent(0); ++i) {
@@ -136,7 +140,8 @@ std::string print(const VectorType& v) {
 /*
  * Matlab style pretty printing function for Kokkos Vector
  */
-std::string printMatlabStyle(const VectorType& v, std::string A) {
+std::string
+LinearAlgebraFunctions::printMatlabStyle(const VectorType& v, std::string A) {
   std::stringstream ss;
   ss << "\n"<< A <<" = zeros(" << v.extent(0) << ", 1);\n";
   for (size_t i(0); i < v.extent(0); ++i) {
@@ -155,8 +160,9 @@ std::string printMatlabStyle(const VectorType& v, std::string A) {
  * \param tolerance: [in] Convergence threshold (default = std::numeric_limits<double>::epsilon)
  * \return: Solution vector
  */
-VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x0, CGInfo& info,
-		               const size_t max_it, const double tolerance) {
+VectorType
+LinearAlgebraFunctions::CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x0, CGInfo& info,
+                                const size_t max_it, const double tolerance) {
 
   size_t it(0);
   double norm_res(0.0);
@@ -232,9 +238,10 @@ VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorT
  * \param tolerance: [in] Convergence threshold (default = std::numeric_limits<double>::epsilon)
  * \return: Solution vector
  */
-VectorType CGSolve(const SparseMatrixType& A, const VectorType& b,
-                   const SparseMatrixType& C_minus_1, const VectorType& x0,
-                   CGInfo& info, const size_t max_it, const double tolerance) {
+VectorType
+LinearAlgebraFunctions::CGSolve(const SparseMatrixType& A, const VectorType& b,
+                                const SparseMatrixType& C_minus_1, const VectorType& x0,
+                                CGInfo& info, const size_t max_it, const double tolerance) {
   
   size_t it(0);
   double norm_res(0.0);
@@ -319,8 +326,9 @@ VectorType CGSolve(const SparseMatrixType& A, const VectorType& b,
  * \param tolerance: [in] Convergence threshold (default = 1.e-8)
  * \return: Solution vector
  */
-VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info,
-                             VectorType* x0, const size_t max_it, const double tolerance)
+VectorType
+LinearAlgebraFunctions::solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info,
+                                          VectorType* x0, const size_t max_it, const double tolerance)
 {
   if (!x0) {
     VectorType default_x0("x0", b.extent(0));
@@ -344,8 +352,9 @@ VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& 
  * \param tolerance: [in] Convergence threshold (default = 1.e-8)
  * \return: Solution vector
  */
-VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, NablaSparseMatrix& C_minus_1, CGInfo& info,
-                             VectorType* x0, const size_t max_it, const double tolerance)
+VectorType
+LinearAlgebraFunctions::solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, NablaSparseMatrix& C_minus_1, CGInfo& info,
+                                          VectorType* x0, const size_t max_it, const double tolerance)
 {
   if (!x0) {
     VectorType default_x0("x0", b.extent(0));
@@ -357,6 +366,4 @@ VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, NablaSpa
   }
 }
   
-}  // LinearAlgebraFunctions
-
 }  // nablalib

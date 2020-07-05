@@ -47,6 +47,8 @@ class Ir2Java extends CodeGenerator
 
 		import com.google.gson.Gson;
 		import com.google.gson.GsonBuilder;
+		import com.google.gson.JsonObject;
+		import com.google.gson.JsonParser;
 		import com.google.gson.stream.JsonReader;
 
 		import fr.cea.nabla.javalib.types.*;
@@ -69,16 +71,12 @@ class Ir2Java extends CodeGenerator
 				«FOR v : allOptions»
 				public «v.javaType» «v.name»;
 				«ENDFOR»
-		
-				public static Options createOptions(String jsonFileName) throws FileNotFoundException
-				{
-					Gson gson = new Gson();
-					JsonReader reader = new JsonReader(new FileReader(jsonFileName));
-					return gson.fromJson(reader, Options.class);
-				}
 			}
 
 			private final Options options;
+			«FOR s : allProviders»
+			private «s»Functions «s.toFirstLower»;
+			«ENDFOR»
 
 			// Global definitions
 			«FOR v : allDefinitions»
@@ -97,9 +95,12 @@ class Ir2Java extends CodeGenerator
 			private «v.javaType» «v.name»;
 			«ENDFOR»
 
-			public «name»(Options aOptions)
+			public «name»(Options aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»Functions a«s»«ENDFOR»)
 			{
 				options = aOptions;
+				«FOR s : allProviders»
+					«s.toFirstLower» = a«s»;
+				«ENDFOR»
 
 				// Initialize variables with default values
 				«FOR v : allDefinitions»
@@ -153,8 +154,16 @@ class Ir2Java extends CodeGenerator
 				if (args.length == 1)
 				{
 					String dataFileName = args[0];
-					«name».Options options = «name».Options.createOptions(dataFileName);
-					«name» simulator = new «name»(options);
+					JsonParser parser = new JsonParser();
+					JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
+					Gson gson = new Gson();
+
+					«name».Options options = (o.has("options") ? gson.fromJson(o.get("options"), «name».Options.class) : new «name».Options());
+					«FOR s : allProviders»
+					«s»Functions «s.toFirstLower» = (o.has("«s.toFirstLower»") ? gson.fromJson(o.get("«s.toFirstLower»"), «s»Functions.class) : new «s»Functions());
+					«ENDFOR»
+
+					«name» simulator = new «name»(options«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s.toFirstLower»«ENDFOR»);
 					simulator.simulate();
 				}
 				else

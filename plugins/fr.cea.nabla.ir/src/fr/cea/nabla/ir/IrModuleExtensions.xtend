@@ -38,6 +38,11 @@ class IrModuleExtensions
 		return options
 	}
 
+	static def String[] getAllProviders(IrModule it)
+	{
+		functions.filter[x | x.provider!='Math' && x.body===null].map[provider].toSet
+	}
+
 	static def getJobByName(IrModule it, String jobName)
 	{
 		jobs.findFirst[j | j.name == jobName]

@@ -65,7 +65,7 @@ public:
 		int maxIterationsK;
 		double epsilon;
 
-		Options(const std::string& fileName);
+		void jsonInit(const rapidjson::Value::ConstObject& d);
 	};
 
 	const Options& options;

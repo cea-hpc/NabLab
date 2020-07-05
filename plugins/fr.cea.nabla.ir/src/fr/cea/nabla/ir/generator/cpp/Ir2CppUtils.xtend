@@ -11,9 +11,18 @@ package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
+import fr.cea.nabla.ir.ir.Function
 
 class Ir2CppUtils 
 {
+	static def getCodeName(Function it)
+	{
+		if (body === null)
+			if (provider == "Math") 'std::' + name
+			else provider.toFirstLower + '.' + name
+		else name
+	}
+
 	static def dispatch boolean isBaseTypeStatic(ConnectivityType it)
 	{ 
 		base.baseTypeStatic

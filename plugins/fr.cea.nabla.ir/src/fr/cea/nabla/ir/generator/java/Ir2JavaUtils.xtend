@@ -20,7 +20,14 @@ class Ir2JavaUtils
 	static def getCodeName(Function it)
 	{
 		if (body === null)
-			if (provider == "Math") 'Math.' + name
+			if (provider == "Math")
+			{
+				if (name == 'erf')
+					// no erf function in java Math
+					'org.apache.commons.math3.special.Erf.erf'
+				else
+					'Math.' + name
+			}
 			else provider.toFirstLower + Utils::FunctionReductionPrefix + '.' + name
 		else name
 	}

@@ -37,6 +37,7 @@ def atan2: ℝ × ℝ → ℝ;
 def exp: ℝ → ℝ;
 def log: ℝ → ℝ;
 def log10: ℝ → ℝ;
+def erf: ℝ → ℝ;
 
 def pow: ℝ × ℝ → ℝ;
 def √: ℝ → ℝ;

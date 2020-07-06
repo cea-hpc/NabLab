@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityCall
@@ -23,6 +22,8 @@ import java.lang.reflect.Method
 import java.util.HashMap
 import java.util.logging.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
+
+import static fr.cea.nabla.ir.Utils.FunctionReductionPrefix
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -269,7 +270,7 @@ class Context
 	{
 		val tccl = Thread.currentThread().getContextClassLoader()
 		val providerClassName = if (provider == "Math") 'java.lang.Math'
-			else module.name.toLowerCase + '.' + provider + Utils::FunctionReductionPrefix
+			else module.name.toLowerCase + '.' + provider + FunctionReductionPrefix
 		val providerClass = Class.forName(providerClassName, true, tccl)
 		val javaTypes = inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension, linearAlgebra)]
 		try 

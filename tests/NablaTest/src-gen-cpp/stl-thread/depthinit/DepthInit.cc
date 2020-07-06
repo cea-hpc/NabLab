@@ -49,9 +49,9 @@ DepthInit::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 
 /******************** Module definition ********************/
 
-DepthInit::DepthInit(const Options& aOptions, DepthInitFunctions& aDepthInit)
+DepthInit::DepthInit(const Options& aOptions, DepthInitFunctions& aDepthInitFunctions)
 : options(aOptions)
-, depthInit(aDepthInit)
+, depthInitFunctions(aDepthInitFunctions)
 , mesh(CartesianMesh2DGenerator::generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH))
 , nbCells(mesh->getNbCells())
 , nbNodes(mesh->getNbNodes())
@@ -81,7 +81,7 @@ void DepthInit::initFromFile() noexcept
 {
 	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		eta[jCells] = depthInit.nextWaveHeight();
+		eta[jCells] = depthInitFunctions.nextWaveHeight();
 	});
 }
 
@@ -134,17 +134,17 @@ int main(int argc, char* argv[])
 		options.jsonInit(valueof_options.GetObject());
 	}
 	
-	// depthInit
-	DepthInitFunctions depthInit;
-	if (d.HasMember("depthInit"))
+	// depthInitFunctions
+	DepthInitFunctions depthInitFunctions;
+	if (d.HasMember("depthInitFunctions"))
 	{
-		const rapidjson::Value& valueof_depthInit = d["depthInit"];
-		assert(valueof_depthInit.IsObject());
-		depthInit.jsonInit(valueof_depthInit.GetObject());
+		const rapidjson::Value& valueof_depthInitFunctions = d["depthInitFunctions"];
+		assert(valueof_depthInitFunctions.IsObject());
+		depthInitFunctions.jsonInit(valueof_depthInitFunctions.GetObject());
 	}
 	
 	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-	auto simulator = new DepthInit(options, depthInit);
+	auto simulator = new DepthInit(options, depthInitFunctions);
 	simulator->simulate();
 	
 	// simulator must be deleted before calling finalize

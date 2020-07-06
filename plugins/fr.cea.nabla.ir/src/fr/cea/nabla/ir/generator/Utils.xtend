@@ -26,7 +26,6 @@ import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class Utils 
 {
-	public static val FunctionReductionPrefix = 'Functions'
 	static val extension DefaultVarDependencies = new DefaultVarDependencies
 
 	static def getCodeName(Job it)

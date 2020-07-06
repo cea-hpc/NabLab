@@ -10,5 +10,5 @@
 		"maxIter":500,
 		"deltat":1.0
 	},
-	"depthInit":{}
+	"depthInitFunctions":{}
 }

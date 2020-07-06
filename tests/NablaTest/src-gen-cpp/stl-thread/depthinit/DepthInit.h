@@ -40,9 +40,9 @@ public:
 	};
 
 	const Options& options;
-	DepthInitFunctions& depthInit;
+	DepthInitFunctions& depthInitFunctions;
 
-	DepthInit(const Options& aOptions, DepthInitFunctions& aDepthInit);
+	DepthInit(const Options& aOptions, DepthInitFunctions& aDepthInitFunctions);
 	~DepthInit();
 
 private:

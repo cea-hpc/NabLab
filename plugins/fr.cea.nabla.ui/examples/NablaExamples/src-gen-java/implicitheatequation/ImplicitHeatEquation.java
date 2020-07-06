@@ -36,7 +36,7 @@ public final class ImplicitHeatEquation
 	}
 
 	private final Options options;
-	private LinearAlgebraFunctions linearAlgebra;
+	private LinearAlgebraFunctions linearAlgebraFunctions;
 
 	// Global definitions
 	private double t_n;
@@ -63,10 +63,10 @@ public final class ImplicitHeatEquation
 	private double[] faceConductivity;
 	private Matrix alpha;
 
-	public ImplicitHeatEquation(Options aOptions, LinearAlgebraFunctions aLinearAlgebra)
+	public ImplicitHeatEquation(Options aOptions, LinearAlgebraFunctions aLinearAlgebraFunctions)
 	{
 		options = aOptions;
-		linearAlgebra = aLinearAlgebra;
+		linearAlgebraFunctions = aLinearAlgebraFunctions;
 
 		// Initialize variables with default values
 		t_n = 0.0;
@@ -133,9 +133,9 @@ public final class ImplicitHeatEquation
 			Gson gson = new Gson();
 
 			ImplicitHeatEquation.Options options = (o.has("options") ? gson.fromJson(o.get("options"), ImplicitHeatEquation.Options.class) : new ImplicitHeatEquation.Options());
-			LinearAlgebraFunctions linearAlgebra = (o.has("linearAlgebra") ? gson.fromJson(o.get("linearAlgebra"), LinearAlgebraFunctions.class) : new LinearAlgebraFunctions());
+			LinearAlgebraFunctions linearAlgebraFunctions = (o.has("linearAlgebraFunctions") ? gson.fromJson(o.get("linearAlgebraFunctions"), LinearAlgebraFunctions.class) : new LinearAlgebraFunctions());
 
-			ImplicitHeatEquation simulator = new ImplicitHeatEquation(options, linearAlgebra);
+			ImplicitHeatEquation simulator = new ImplicitHeatEquation(options, linearAlgebraFunctions);
 			simulator.simulate();
 		}
 		else
@@ -254,7 +254,7 @@ public final class ImplicitHeatEquation
 	 */
 	private void updateU()
 	{
-		u_nplus1 = linearAlgebra.solveLinearSystem(alpha, u_n);
+		u_nplus1 = linearAlgebraFunctions.solveLinearSystem(alpha, u_n);
 	}
 
 	/**

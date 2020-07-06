@@ -53,7 +53,7 @@ class MainContentProvider
 
 		«FOR s : allProviders»
 		// «s.toFirstLower»
-		«s»Functions «s.toFirstLower»;
+		«s» «s.toFirstLower»;
 		if (d.HasMember("«s.toFirstLower»"))
 		{
 			const rapidjson::Value& valueof_«s.toFirstLower» = d["«s.toFirstLower»"];

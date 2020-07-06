@@ -29,7 +29,7 @@ public final class DepthInit
 	}
 
 	private final Options options;
-	private DepthInitFunctions depthInit;
+	private DepthInitFunctions depthInitFunctions;
 
 	// Global definitions
 	private final double t;
@@ -42,10 +42,10 @@ public final class DepthInit
 	private double[][] X;
 	private double[] eta;
 
-	public DepthInit(Options aOptions, DepthInitFunctions aDepthInit)
+	public DepthInit(Options aOptions, DepthInitFunctions aDepthInitFunctions)
 	{
 		options = aOptions;
-		depthInit = aDepthInit;
+		depthInitFunctions = aDepthInitFunctions;
 
 		// Initialize variables with default values
 		t = 0.0;
@@ -85,9 +85,9 @@ public final class DepthInit
 			Gson gson = new Gson();
 
 			DepthInit.Options options = (o.has("options") ? gson.fromJson(o.get("options"), DepthInit.Options.class) : new DepthInit.Options());
-			DepthInitFunctions depthInit = (o.has("depthInit") ? gson.fromJson(o.get("depthInit"), DepthInitFunctions.class) : new DepthInitFunctions());
+			DepthInitFunctions depthInitFunctions = (o.has("depthInitFunctions") ? gson.fromJson(o.get("depthInitFunctions"), DepthInitFunctions.class) : new DepthInitFunctions());
 
-			DepthInit simulator = new DepthInit(options, depthInit);
+			DepthInit simulator = new DepthInit(options, depthInitFunctions);
 			simulator.simulate();
 		}
 		else
@@ -106,7 +106,7 @@ public final class DepthInit
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			eta[jCells] = depthInit.nextWaveHeight();
+			eta[jCells] = depthInitFunctions.nextWaveHeight();
 		});
 	}
 };

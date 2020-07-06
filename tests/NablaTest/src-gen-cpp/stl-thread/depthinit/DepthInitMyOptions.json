@@ -10,7 +10,7 @@
 		"maxIter":500,
 		"deltat":1.0
 	},
-	"depthInit":
+	"depthInitFunctions":
 	{
 		"fileName":"toto",
 		"depth":4.5

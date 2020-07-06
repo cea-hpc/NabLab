@@ -16,5 +16,5 @@
 		"stopTime":1.0,
 		"maxIterations":500000000
 	},
-	"linearAlgebra":{}
+	"linearAlgebraFunctions":{}
 }

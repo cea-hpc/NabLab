@@ -40,7 +40,7 @@ class IrModuleExtensions
 
 	static def String[] getAllProviders(IrModule it)
 	{
-		functions.filter[x | x.provider!='Math' && x.body===null].map[provider].toSet
+		functions.filter[x | x.provider!='Math' && x.body===null].map[provider + Utils::FunctionReductionPrefix].toSet
 	}
 
 	static def getJobByName(IrModule it, String jobName)

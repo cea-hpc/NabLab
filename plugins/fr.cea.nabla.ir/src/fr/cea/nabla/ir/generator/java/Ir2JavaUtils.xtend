@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
+import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.Function
@@ -20,7 +21,7 @@ class Ir2JavaUtils
 	{
 		if (body === null)
 			if (provider == "Math") 'Math.' + name
-			else provider.toFirstLower + '.' + name
+			else provider.toFirstLower + Utils::FunctionReductionPrefix + '.' + name
 		else name
 	}
 

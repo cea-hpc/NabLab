@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.MandatoryVariables
+import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
@@ -27,7 +28,6 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
-import fr.cea.nabla.ir.Utils
 
 class Ir2Cpp extends CodeGenerator
 {
@@ -109,10 +109,10 @@ class Ir2Cpp extends CodeGenerator
 
 		const Options& options;
 		«FOR s : allProviders»
-		«s»Functions& «s.toFirstLower»;
+		«s»& «s.toFirstLower»;
 		«ENDFOR»
 
-		«name»(const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»Functions& a«s»«ENDFOR»);
+		«name»(const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»& a«s»«ENDFOR»);
 		~«name»();
 
 	private:
@@ -177,7 +177,7 @@ class Ir2Cpp extends CodeGenerator
 
 	/******************** Module definition ********************/
 
-	«name»::«name»(const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»Functions& a«s»«ENDFOR»)
+	«name»::«name»(const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»& a«s»«ENDFOR»)
 	: options(aOptions)
 	«FOR s : allProviders»
 	, «s.toFirstLower»(a«s»)

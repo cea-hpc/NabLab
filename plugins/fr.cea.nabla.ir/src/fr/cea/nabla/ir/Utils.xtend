@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.EObject
 
 class Utils 
 {
+	public static val FunctionReductionPrefix = 'Functions'
 	public static val NonRegressionNameAndValue = new Pair<String, String>("nonRegression", "")
 	
 	static def IrModule getIrModule(EObject o)

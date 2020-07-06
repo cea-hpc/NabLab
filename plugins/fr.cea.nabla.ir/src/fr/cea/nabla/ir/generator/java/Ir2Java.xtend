@@ -75,7 +75,7 @@ class Ir2Java extends CodeGenerator
 
 			private final Options options;
 			«FOR s : allProviders»
-			private «s»Functions «s.toFirstLower»;
+			private «s» «s.toFirstLower»;
 			«ENDFOR»
 
 			// Global definitions
@@ -95,7 +95,7 @@ class Ir2Java extends CodeGenerator
 			private «v.javaType» «v.name»;
 			«ENDFOR»
 
-			public «name»(Options aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»Functions a«s»«ENDFOR»)
+			public «name»(Options aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s» a«s»«ENDFOR»)
 			{
 				options = aOptions;
 				«FOR s : allProviders»
@@ -160,7 +160,7 @@ class Ir2Java extends CodeGenerator
 
 					«name».Options options = (o.has("options") ? gson.fromJson(o.get("options"), «name».Options.class) : new «name».Options());
 					«FOR s : allProviders»
-					«s»Functions «s.toFirstLower» = (o.has("«s.toFirstLower»") ? gson.fromJson(o.get("«s.toFirstLower»"), «s»Functions.class) : new «s»Functions());
+					«s» «s.toFirstLower» = (o.has("«s.toFirstLower»") ? gson.fromJson(o.get("«s.toFirstLower»"), «s».class) : new «s»());
 					«ENDFOR»
 
 					«name» simulator = new «name»(options«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s.toFirstLower»«ENDFOR»);

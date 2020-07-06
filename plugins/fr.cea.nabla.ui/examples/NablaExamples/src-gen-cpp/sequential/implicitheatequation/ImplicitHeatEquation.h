@@ -54,9 +54,9 @@ public:
 	};
 
 	const Options& options;
-	LinearAlgebraFunctions& linearAlgebra;
+	LinearAlgebraFunctions& linearAlgebraFunctions;
 
-	ImplicitHeatEquation(const Options& aOptions, LinearAlgebraFunctions& aLinearAlgebra);
+	ImplicitHeatEquation(const Options& aOptions, LinearAlgebraFunctions& aLinearAlgebraFunctions);
 	~ImplicitHeatEquation();
 
 private:

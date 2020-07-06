@@ -9,10 +9,11 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.IrModule
 import java.util.LinkedHashSet
 import org.eclipse.xtend.lib.annotations.Accessors
+
+import static fr.cea.nabla.ir.Utils.FunctionReductionPrefix
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
@@ -74,7 +75,7 @@ abstract class IncludesContentProvider
 		userIncludes +=  "types/Types.h"
 
 		if (m.functions.exists[f | f.body === null && f.provider == m.name]) 
-			userIncludes += m.name.toLowerCase + "/" + m.name + Utils::FunctionReductionPrefix + ".h"
+			userIncludes += m.name.toLowerCase + "/" + m.name + FunctionReductionPrefix + ".h"
 
 		userIncludes += m.additionalUserIncludes
 		return userIncludes

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: NablaExamples
 Bundle-SymbolicName: NablaExamples
-Bundle-Version: 0.3.1.qualifier
+Bundle-Version: 0.3.2.qualifier
 Bundle-Vendor: CEA
 Automatic-Module-Name: NablaExamples
 Bundle-RequiredExecutionEnvironment: JavaSE-11

@@ -18,7 +18,7 @@
             name="NabLab">
             <property name="windowImages" value="icons/logo_16.png,icons/logo_32.png,icons/logo_64.png,icons/logo_128.png,icons/logo_256.png"/>
             <property name="appName" value="NabLab"/>
-            <property name="aboutText" value="NabLab&#x0A;&#x0A;Version 0.3.1&#x0A;&#x0A;&#x0A;Copyright CEA 2020.  All rights reserved."/>
+            <property name="aboutText" value="NabLab&#x0A;&#x0A;Version 0.3.2&#x0A;&#x0A;&#x0A;Copyright CEA 2020.  All rights reserved."/>
             <property name="startupForegroundColor" value="FFFFFF"/>
             <property name="startupMessageRect" value="7,308,458,18"/>
             <property name="startupProgressRect" value="0,328,458,18"/>

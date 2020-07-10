@@ -34,30 +34,33 @@ public class CartesianMesh2D
 	private  int[] leftNodes;
 	private  int[] rightNodes;
 
-	private  int topLeftNode;
-	private  int topRightNode;
-	private  int bottomLeftNode;
-	private  int bottomRightNode;
+	private int[] innerCells;
+	private int[] outerCells;
 
-	private  int[] topCells;
-	private  int[] bottomCells;
-	private  int[] leftCells;
-	private  int[] rightCells;
+	private int topLeftNode;
+	private int topRightNode;
+	private int bottomLeftNode;
+	private int bottomRightNode;
 
-	private  ArrayList<Integer> outerFaces = new ArrayList<Integer>();
-	private  ArrayList<Integer> innerFaces = new ArrayList<Integer>();
-	private  ArrayList<Integer> innerHorizontalFaces = new ArrayList<Integer>();
-	private  ArrayList<Integer> innerVerticalFaces = new ArrayList<Integer>();
+	private int[] topCells;
+	private int[] bottomCells;
+	private int[] leftCells;
+	private int[] rightCells;
 
-	private  ArrayList<Integer> topFaces = new ArrayList<Integer>();
-	private  ArrayList<Integer> bottomFaces = new ArrayList<Integer>();
-	private  ArrayList<Integer> leftFaces = new ArrayList<Integer>();
-	private  ArrayList<Integer> rightFaces = new ArrayList<Integer>();
+	private ArrayList<Integer> outerFaces = new ArrayList<Integer>();
+	private ArrayList<Integer> innerFaces = new ArrayList<Integer>();
+	private ArrayList<Integer> innerHorizontalFaces = new ArrayList<Integer>();
+	private ArrayList<Integer> innerVerticalFaces = new ArrayList<Integer>();
 
-	private  int xQuads;
-	private  int yQuads;
+	private ArrayList<Integer> topFaces = new ArrayList<Integer>();
+	private ArrayList<Integer> bottomFaces = new ArrayList<Integer>();
+	private ArrayList<Integer> leftFaces = new ArrayList<Integer>();
+	private ArrayList<Integer> rightFaces = new ArrayList<Integer>();
 
-	public CartesianMesh2D(MeshGeometry meshGeometry, int[] innerNodeIds, int[] topNodeIds, int[] bottomNodeIds, int[] leftNodeIds, int[] rightNodeIds)
+	private int xQuads;
+	private int yQuads;
+
+	public CartesianMesh2D(MeshGeometry meshGeometry, int[] innerNodeIds, int[] topNodeIds, int[] bottomNodeIds, int[] leftNodeIds, int[] rightNodeIds, int[] innerCellIds, int[] outerCellIds)
 	{
 		this.geometry = meshGeometry;
 		this.innerNodes = innerNodeIds;
@@ -65,6 +68,9 @@ public class CartesianMesh2D
 		this.bottomNodes = bottomNodeIds;
 		this.leftNodes = leftNodeIds;
 		this.rightNodes = rightNodeIds;
+
+		this.innerCells = innerCellIds;
+		this.outerCells = outerCellIds;
 
 		this.xQuads = bottomNodeIds.length -1;
 		this.yQuads = leftNodeIds.length -1;
@@ -128,6 +134,11 @@ public class CartesianMesh2D
 	public int[] getLeftNodes() { return leftNodes; }
 	public int getNbRightNodes() { return rightNodes.length;}
 	public int[] getRightNodes() { return rightNodes; }
+
+	public int getNbInnerCells() { return innerCells.length;}
+	public int[] getInnerCells() { return innerCells; }
+	public int getNbOuterCells() { return outerCells.length;}
+	public int[] getOuterCells() { return outerCells; }
 
 	public int getNbTopCells() { return topCells.length; }
 	public int[] getTopCells() { return topCells; }
@@ -251,7 +262,6 @@ public class CartesianMesh2D
 		return neighbourCells.stream().mapToInt(x->x).toArray();
 	}
 
-	
 	public int[] getFacesOfCell(int cellId)
 	{
 		Map.Entry<Integer, Integer> index = id2IndexCell(cellId);
@@ -262,19 +272,19 @@ public class CartesianMesh2D
 		int rightFace = bottomFace + (j == xQuads-1 ? 2 : 3);
 		int topFace = bottomFace + (i < yQuads-1 ? 2 * xQuads + 1 : 2 * xQuads + 1 - j);
 		return new int[] {bottomFace, leftFace, rightFace, topFace};
-  	}
-	
+	}
+
 	public int getCommonFace(int cell1, int cell2)
 	{
 		int[] cell1Faces = getFacesOfCell(cell1);
 		int[] cell2Faces = getFacesOfCell(cell2);
-		
+
 		Set<Integer> set = new HashSet<>(Arrays.stream(cell1Faces).boxed().collect(Collectors.toList()));
-	    set.retainAll(Arrays.stream(cell2Faces).boxed().collect(Collectors.toList()));
-	    if (set.isEmpty()) 
-	    	return -1;
-	    else 
-	    	return new ArrayList<>(set).get(0);
+		set.retainAll(Arrays.stream(cell2Faces).boxed().collect(Collectors.toList()));
+		if (set.isEmpty()) 
+			return -1;
+		else 
+			return new ArrayList<>(set).get(0);
 	}
 
 	public int getBackCell(int faceId) throws Exception
@@ -313,7 +323,7 @@ public class CartesianMesh2D
 		int bottomFace = 2 * j + i * (2 * xQuads + 1);
 		return bottomFace;
 	}
-	
+
 	public int getLeftFaceOfCell(int cellId)
 	{
 		int bottomFace = this.getBottomFaceOfCell(cellId);
@@ -340,7 +350,195 @@ public class CartesianMesh2D
 		dumpItemCollection("	bottom nodes	:	", bottomNodes);
 		dumpItemCollection("	left nodes	:	", leftNodes);
 		dumpItemCollection("	right nodes	:	", rightNodes);
-		dumpItemCollection("	outer faces	:	", getOuterFaces());		
+		dumpItemCollection("	outer faces	:	", getOuterFaces());
+	}
+
+	// ON innerCell only
+	public int getBottomCell(int cellId) throws Exception { return getBackCell(getBottomFaceOfCell(cellId)); }
+	public int getTopCell(int cellId) throws Exception { return getFrontCell(getTopFaceOfCell(cellId)); }
+	public int getLeftCell(int cellId) throws Exception { return getBackCell(getLeftFaceOfCell(cellId)); }
+	public int getRightCell(int cellId) throws Exception { return getFrontCell(getRightFaceOfCell(cellId)); }
+
+	//each following function consider the cases HorizontalFace and VerticalFace
+	//work only on TOTALLY inner faces
+	public int getBottomFaceNeighbour(int faceId) throws Exception 
+	{
+		Edge[] edges = geometry.getEdges();
+		if(isCompletelyInnerVerticalEdge(edges[faceId]))
+		{
+			int rightCell = getFrontCell(faceId);
+			int bottomRightCell = getBottomCell(rightCell);
+			int bottomFace = getLeftFaceOfCell(bottomRightCell);
+			return bottomFace;
+		}
+		else if (isCompletelyInnerHorizontalEdge(edges[faceId]))
+		{
+			int bottomCell = getBackCell(faceId);
+			int bottomFace = getBottomFaceOfCell(bottomCell);
+			return bottomFace;
+		}
+		else
+		{
+			String msg = "Error in getBottomFaceNeighbour(" + faceId + "): please consider using this method with completely inner face only.";
+			throw new RuntimeException(msg);
+		}
+	}
+
+	public int getBottomLeftFaceNeighbour(int faceId) throws Exception
+	{
+		Edge[] edges = geometry.getEdges();
+		if(isCompletelyInnerVerticalEdge(edges[faceId]))
+		{
+			int leftCell = getBackCell(faceId);
+			int bottomLeftFace = getBottomFaceOfCell(leftCell);
+			return bottomLeftFace;
+		}
+		else if(isCompletelyInnerHorizontalEdge(edges[faceId]))//isInnerHorizontalFace -> mettre else if isCompletelyInnerHorizontaleFAce, puis else "error msg"
+		{
+			int bottomCell = getBackCell(faceId);
+			int bottomLeftFace = getLeftFaceOfCell(bottomCell);
+			return bottomLeftFace;
+		}
+		else
+		{
+			String msg = "Error in getBottomLeftFaceNeighbour(" + faceId + "): please consider using this method with completely inner face only.";
+			throw new RuntimeException(msg);
+		}
+	}
+
+	public int getBottomRightFaceNeighbour(int faceId) throws Exception 
+	{
+		Edge[] edges = geometry.getEdges();
+		if(isCompletelyInnerVerticalEdge(edges[faceId]))
+		{
+			int rightCell = getFrontCell(faceId);
+			int bottomRightFace = getBottomFaceOfCell(rightCell);
+			return bottomRightFace;
+		}
+		else if(isCompletelyInnerHorizontalEdge(edges[faceId])) //isInnerHorizontalFace -> mettre else if isCompletelyInnerHorizontaleFAce, puis else "error msg"
+		{
+			int bottomCell = getBackCell(faceId);
+			int bottomRightFace = getRightFaceOfCell(bottomCell);
+			return bottomRightFace;
+		}
+		else
+		{
+			String msg = "Error in getBottomRightFaceNeighbour(" + faceId + "): please consider using this method with completely inner face only.";
+			throw new RuntimeException(msg);
+		}
+	}
+
+	public int getTopFaceNeighbour(int faceId) throws Exception
+	{
+		Edge[] edges = geometry.getEdges();
+		if(isCompletelyInnerVerticalEdge(edges[faceId]))
+		{
+			int rightCell = getFrontCell(faceId);
+			int topRightCell = getTopCell(rightCell);
+			int topFace = getLeftFaceOfCell(topRightCell);
+			return topFace;
+		}
+		else if(isCompletelyInnerHorizontalEdge(edges[faceId]))//isInnerHorizontalFace -> mettre else if isCompletelyInnerHorizontaleFAce, puis else "error msg"
+		{
+			int topCell = getFrontCell(faceId);
+			int topFace = getTopFaceOfCell(topCell);
+			return topFace;
+		}
+		else
+		{
+			String msg = "Error in getTopFaceNeighbour(" + faceId + "): please consider using this method with completely inner face only.";
+			throw new RuntimeException(msg);
+		}
+	}
+
+	public int getTopLeftFaceNeighbour(int faceId) throws Exception
+	{
+		Edge[] edges = geometry.getEdges();
+		if(isCompletelyInnerVerticalEdge(edges[faceId]))
+		{
+			int leftCell = getBackCell(faceId);
+			int topLeftFace = getTopFaceOfCell(leftCell);
+			return topLeftFace;
+		}
+		else if(isCompletelyInnerHorizontalEdge(edges[faceId]))//isInnerHorizontalFace -> mettre else if isCompletelyInnerHorizontaleFAce, puis else "error msg"
+		{
+			int topCell = getFrontCell(faceId);
+			int topLeftFace = getLeftFaceOfCell(topCell);
+			return topLeftFace;
+		}
+		else
+		{
+			String msg = "Error in getTopLeftFaceNeighbour(" + faceId + "): please consider using this method with completely inner face only.";
+			throw new RuntimeException(msg);
+		}
+	}
+
+	public int getTopRightFaceNeighbour(int faceId) throws Exception
+	{
+		Edge[] edges = geometry.getEdges();
+		if(isCompletelyInnerVerticalEdge(edges[faceId]))
+		{
+			int rightCell = getFrontCell(faceId);
+			int topRightFace = getTopFaceOfCell(rightCell);
+			return topRightFace;
+		}
+		else if(isCompletelyInnerHorizontalEdge(edges[faceId])) //isInnerHorizontalFace -> mettre else if isCompletelyInnerHorizontaleFAce, puis else "error msg"
+		{
+			int topCell = getFrontCell(faceId);
+			int topRightFace = getRightFaceOfCell(topCell);
+			return topRightFace;
+		}
+		else
+		{
+			String msg = "Error in getTopRightFaceNeighbour(" + faceId + "): please consider using this method with completely inner face only.";
+			throw new RuntimeException(msg);
+		}
+	}
+
+	public int getRightFaceNeighbour(int faceId) throws Exception
+	{
+		Edge[] edges = geometry.getEdges();
+		if(isCompletelyInnerVerticalEdge(edges[faceId]))
+		{
+			int rightCell = getFrontCell(faceId);
+			int rightFace = getRightFaceOfCell(rightCell);
+			return rightFace;
+		}
+		else if(isCompletelyInnerHorizontalEdge(edges[faceId])) //isInnerHorizontalFace -> mettre else if isCompletelyInnerHorizontaleFAce, puis else "error msg"
+		{
+			int bottomCell = getBackCell(faceId);
+			int bottomLeftCell = getRightCell(bottomCell);
+			int rightFace = getTopFaceOfCell(bottomLeftCell);
+			return rightFace;
+		}
+		else
+		{
+			String msg = "Error in getRightFaceNeighbour(" + faceId + "): please consider using this method with completely inner face only.";
+			throw new RuntimeException(msg);
+		}
+	}
+
+	public int getLeftFaceNeighbour(int faceId) throws Exception
+	{
+		Edge[] edges = geometry.getEdges();
+		if(isCompletelyInnerVerticalEdge(edges[faceId]))
+		{
+			int leftCell = getBackCell(faceId);
+			int leftFace = getLeftFaceOfCell(leftCell);
+			return leftFace;
+		}
+		else if (isCompletelyInnerHorizontalEdge(edges[faceId])) //isInnerHorizontalFace -> mettre else if isCompletelyInnerHorizontaleFAce, puis else "error msg"
+		{
+			int bottomCell = getBackCell(faceId);
+			int bottomLeftCell = getLeftCell(bottomCell);
+			int leftFace = getTopFaceOfCell(bottomLeftCell);
+			return leftFace;
+		}
+		else
+		{
+			String msg = "Error in getLeftFaceNeighbour(" + faceId + "): please consider using this method with completely inner face only.";
+			throw new RuntimeException(msg);
+		}
 	}
 
 	private void dumpItemCollection(String desc, int[] collection)
@@ -349,7 +547,7 @@ public class CartesianMesh2D
 		for (int i=0; i < collection.length; i++)
 				System.out.print(collection[i] + (i < collection.length -1 ? ", " : "\n"));
 	}
-	
+
 	private boolean isInnerEdge(Edge edge)
 	{
 		int firstNode = edge.getNodeIds()[0];
@@ -365,6 +563,24 @@ public class CartesianMesh2D
 				return false;
 		}
 		return false;
+	}
+
+	private boolean isCompletelyInnerEdge(Edge e)
+	{
+		IntStream in = IntStream.of(innerNodes);
+		return in.anyMatch(x -> x == e.getNodeIds()[0]) && in.anyMatch(x -> x == e.getNodeIds()[1]);
+	}
+
+	private boolean isCompletelyInnerVerticalEdge(Edge e)
+	{
+		if (!isCompletelyInnerEdge(e)) return false;
+		return (e.getNodeIds()[0] == e.getNodeIds()[1] + xQuads + 1 || e.getNodeIds()[1] == e.getNodeIds()[0] + xQuads + 1);
+	}
+
+	private boolean isCompletelyInnerHorizontalEdge(Edge e)
+	{
+		if (!isCompletelyInnerEdge(e)) return false;
+		return (e.getNodeIds()[0] == e.getNodeIds()[1] + 1 || e.getNodeIds()[1] == e.getNodeIds()[0] + 1);
 	}
 
 	private boolean isInnerVerticalEdge(Edge edge)

@@ -9,8 +9,10 @@
  */
 package fr.cea.nabla.javalib.mesh;
 
-public class Quad extends NodeIdContainer {
-	public Quad( int id1,  int id2,  int id3,  int id4) {
+public class Quad extends NodeIdContainer
+{
+	public Quad( int id1,  int id2,  int id3,  int id4)
+	{
 		super(new int[] { id1, id2, id3, id4 });
 	}
 }

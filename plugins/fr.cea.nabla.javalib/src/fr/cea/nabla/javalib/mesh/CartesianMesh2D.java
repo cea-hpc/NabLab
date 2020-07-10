@@ -101,17 +101,17 @@ public class CartesianMesh2D
 				outFaces.add(edgeId);
 			else
 			{
-				if (isCompletelyInnerEdge(edges[edgeId])) completelyInFaces.add(edgeId);
+				if (isCompletelyInnerEdge(edge)) completelyInFaces.add(edgeId);
 				inFaces.add(edgeId);
 				if (isInnerVerticalEdge(edge))
 				{
 					inVFaces.add(edgeId);
-					if (isCompletelyInnerVerticalEdge(edges[edgeId])) completelyInVFaces.add(edgeId);
+					if (isCompletelyInnerVerticalEdge(edge)) completelyInVFaces.add(edgeId);
 				}
 				else if (isInnerHorizontalEdge(edge))
 				{
 					inHFaces.add(edgeId);
-					if (isCompletelyInnerHorizontalEdge(edges[edgeId])) completelyInHFaces.add(edgeId);
+					if (isCompletelyInnerHorizontalEdge(edge)) completelyInHFaces.add(edgeId);
 				}
 				else
 					throw new RuntimeException("The inner edge " + edgeId + " should be either vertical or horizontal");
@@ -135,7 +135,7 @@ public class CartesianMesh2D
 		topFaces = new int[topCells.length];
 		bottomFaces = new int[bottomCells.length];
 		leftFaces = new int[leftCells.length];
-		rightFaces = new int[rightFaces.length];
+		rightFaces = new int[rightCells.length];
 
 		for (int i=0 ; i<topCells.length ; i++) topFaces[i] = getTopFaceOfCell(topCells[i]);
 		for (int i=0 ; i<bottomCells.length ; i++) bottomFaces[i] = getBottomFaceOfCell(bottomCells[i]);
@@ -608,8 +608,9 @@ public class CartesianMesh2D
 
 	private boolean isCompletelyInnerEdge(Edge e)
 	{
-		IntStream in = IntStream.of(innerNodes);
-		return in.anyMatch(x -> x == e.getNodeIds()[0]) && in.anyMatch(x -> x == e.getNodeIds()[1]);
+		IntStream in1 = IntStream.of(innerNodes);
+		IntStream in2 = IntStream.of(innerNodes);
+		return in1.anyMatch(x -> x == e.getNodeIds()[0]) && in2.anyMatch(x -> x == e.getNodeIds()[1]);
 	}
 
 	private boolean isCompletelyInnerVerticalEdge(Edge e)

@@ -6,14 +6,11 @@ float Schema_chap2Functions::nextWaveHeight()
 	if(data != NULL)
 	{
 		depth = data[count++];
-		if(count != count_max){
-		   std::cout << "depth -> " << depth << "  count -> "<< count << std::endl;
-		  return depth;
-		 }
+		if(count != count_max)
+		   return depth;
 		else
 		{
 			free(data);
-			std::cout << "free(data) depth -> " << depth << "  count -> "<< count << std::endl;
 			return depth;
 		}
 	}

@@ -14,7 +14,7 @@ SimulationVariables
 VtkOutput
 {
 	periodReferenceVariable = n;
-	outputVariables = H as "hauteur";//, Dij as "profondeur", Rij as "bottommotion";
+	outputVariables = H as "hauteur", Dij as "profondeur", Rij as "bottommotion";
 }
 /* 
 Java

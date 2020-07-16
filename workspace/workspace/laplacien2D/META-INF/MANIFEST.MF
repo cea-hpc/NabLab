@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: laplacien2D
+Bundle-SymbolicName: laplacien2D
+Bundle-Version: 0.1.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: laplacien2D
+Require-Bundle: fr.cea.nabla,
+ fr.cea.nabla.ir,
+ fr.cea.nabla.sirius,
+ fr.cea.nabla.javalib,
+ org.eclipse.xtext.xbase.lib,
+ com.google.gson,
+ commons-math3
+Export-Package: mymodule

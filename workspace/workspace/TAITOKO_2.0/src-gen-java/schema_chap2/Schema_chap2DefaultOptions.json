@@ -1,0 +1,17 @@
+{
+	"_comment": "Generated file - Do not overwrite",
+	"options":
+	{
+		"_outputPath_comment":"empty outputPath to disable output",
+		"outputPath":"output",
+		"outputPeriod":1,
+		"X_LENGTH":50000.0,
+		"Y_LENGTH":50000.0,
+		"X_EDGE_ELEMS":60,
+		"Y_EDGE_ELEMS":60,
+		"X_EDGE_LENGTH":833.3333333333334,
+		"Y_EDGE_LENGTH":833.3333333333334,
+		"maxIter":8000,
+		"stopTime":20.0
+	}
+}

@@ -1,0 +1,48 @@
+with Schema_chap2.*;
+
+nablagen for Schema_chap2;
+
+SimulationVariables
+{
+	nodeCoord = X;
+	time = t;
+	timeStep = δt;
+	iterationMax = maxIter;
+	timeMax = stopTime;
+}
+
+VtkOutput
+{
+	periodReferenceVariable = n;
+	outputVariables = H as "hauteur";//, Dij as "profondeur", Rij as "bottommotion";
+}
+/* 
+Java
+{
+	outputPath = "/TAITOKO_2.0/src-gen-java";
+}
+*/
+CppSequential
+{
+	outputPath = "/TAITOKO_2.0/src-gen-cpp/stl-thread";
+	compiler = GNU;
+//		compiler = LLVM;
+//		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
+}
+
+/*
+
+Kokkos
+{
+	outputPath = "/TAITOKO_2.0/src-gen-cpp/kokkos";
+	kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+	compiler = GNU;
+}
+
+KokkosTeamThread
+{
+	outputPath = "/TAITOKO_2.0/src-gen-cpp/kokkos-team";
+	kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+	compiler = GNU;
+}
+*/

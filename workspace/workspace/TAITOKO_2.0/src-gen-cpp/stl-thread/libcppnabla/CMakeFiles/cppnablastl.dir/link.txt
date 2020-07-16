@@ -1,0 +1,2 @@
+/usr/bin/ar qc libcppnablastl.a  CMakeFiles/cppnablastl.dir/linearalgebra/stl/LinearAlgebraFunctions.cc.o CMakeFiles/cppnablastl.dir/linearalgebra/stl/Matrix.cc.o
+/usr/bin/ranlib libcppnablastl.a

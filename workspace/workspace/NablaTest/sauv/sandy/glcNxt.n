@@ -1,0 +1,316 @@
+///////////////////////////////////////////////////////////////////////////////
+// NABLA - a Numerical Analysis Based LAnguage                               //
+//                                                                           //
+// Copyright (C) 2014~2017 CEA/DAM/DIF                                       //
+// IDDN.FR.001.520002.000.S.P.2014.000.10500                                 //
+//                                                                           //
+// Contributor(s): CAMIER Jean-Sylvain - Jean-Sylvain.Camier@cea.fr          //
+//                 LELANDAIS Benoit - benoit.lelandais@cea.fr                //
+//                 OUDOT Marie-Pierre - marie-pierre.oudot@cea.fr            //
+//                 LABOURASSE Emmanuel - Emmanuel.Labourasse@cea.fr          //
+//                 DEL PINO Stephane - stephane.delpino@cea.fr               //
+//                                                                           //
+// This software is a computer program whose purpose is to translate         //
+// numerical-analysis specific sources and to generate optimized code        //
+// for different targets and architectures.                                  //
+//                                                                           //
+// This software is governed by the CeCILL license under French law and      //
+// abiding by the rules of distribution of free software. You can  use,      //
+// modify and/or redistribute the software under the terms of the CeCILL     //
+// license as circulated by CEA, CNRS and INRIA at the following URL:        //
+// "http://www.cecill.info".                                                 //
+//                                                                           //
+// The CeCILL is a free software license, explicitly compatible with         //
+// the GNU GPL.                                                              //
+//                                                                           //
+// As a counterpart to the access to the source code and rights to copy,     //
+// modify and redistribute granted by the license, users are provided only   //
+// with a limited warranty and the software's author, the holder of the      //
+// economic rights, and the successive licensors have only limited liability.//
+//                                                                           //
+// In this respect, the user's attention is drawn to the risks associated    //
+// with loading, using, modifying and/or developing or reproducing the       //
+// software by the user in light of its specific status of free software,    //
+// that may mean that it is complicated to manipulate, and that also         //
+// therefore means that it is reserved for developers and experienced        //
+// professionals having in-depth computer knowledge. Users are therefore     //
+// encouraged to load and test the software's suitability as regards their   //
+// requirements in conditions enabling the security of their systems and/or  //
+// data to be ensured and, more generally, to use and operate it in the      //
+// same conditions as regards security.                                      //
+//                                                                           //
+// The fact that you are presently reading this means that you have had      //
+// knowledge of the CeCILL license and that you accept its terms.            //
+//                                                                           //
+// See the LICENSE file for details.                                         //
+///////////////////////////////////////////////////////////////////////////////
+with ℝ²;
+
+options {
+  ℾ DEBUG = false;
+  ℕ X_EDGE_ELEMS = 8;
+  ℕ Y_EDGE_ELEMS = 8;
+  ℕ Z_EDGE_ELEMS = 1;
+  
+  ℝ LENGTH = 1.0;
+  ℝ option_x_interface = 0.5;
+
+  ℝ option_stoptime = 0.1;
+  ℕ option_max_iterations = 48;
+  
+  ℝ γ = 1.4;
+  ℝ option_p_ini_zg = 1.0;
+  ℝ option_ρ_ini_zg = 1.0;
+  
+  ℝ option_p_ini_zd = 0.1;
+  ℝ option_ρ_ini_zd = 0.125;
+  
+  ℝ option_δt_ini = 1.0e-4;
+  ℝ option_δt_min = 1.e-12;
+  ℝ option_δt_max = 0.01;
+  ℝ option_δt_cfl = 0.1;
+  ℝ option_δt_min_variation = 0.9;
+  ℝ option_δt_max_variation = 0.1;
+};
+
+cells {
+  ℝ p,p_ic;
+  ℝ ρ,ρ_ic;
+  ℝ³ center;
+  ℝ absC [nodes];
+  ℝ³ C_ic[nodes],C[nodes],F[nodes];
+  ℝ V_ic,V;
+  ℝ³ˣ³ A[nodes];
+  ℝ δtj;
+  ℝ³ u, u_n_plus_1;
+  ℝ m, c, e, E, E_n_plus_1;
+};
+
+nodes {
+	ℝ³ X_ic,X,X_n_plus_1;
+	ℝ³ˣ³ M,Mt;
+	ℝ³ u_node;
+	ℝ³ b,bt;
+};
+
+global {
+  ℝ δt_n_plus_1;
+  ℝ t,t_n_plus_1;
+  ℝ δtmin;
+  ℕ chkC,chkU,chkV;
+};
+
+∀ nodes @ -40 { X_ic = coord; }
+
+∀ cells @ -10 { u = 0.0; }
+
+iniT @ -10 { t = 0.0; }
+
+∀ cells IniCenter @ -9 {
+  ℝ³ tmp = 0;
+  ∀ nodes tmp += X_ic;
+  center = ¼ * tmp;
+}
+
+∀ cells ComputeCjrIc @ -9 {
+  ∀ nodes C_ic = ½ * perp(X_ic[#-1], X_ic[#+1]);
+}
+
+∀ nodes @ -9 {	X = X_ic;  }
+
+iniDeltaT@ -9 {  δt = option_δt_ini; }
+
+∀ cells IniIcTrue @ -7 {
+  if (center.x < option_x_interface) {
+    ρ_ic = option_ρ_ini_zg;
+    p_ic = option_p_ini_zg;
+  }
+}
+
+∀ cells IniIcFalse @ -7 {
+  if (!(center.x < option_x_interface)) {
+    ρ_ic = option_ρ_ini_zd;
+    p_ic = option_p_ini_zd;
+  }
+}
+
+∀ cells IniVIc @ -7 {
+  ℝ tmp = 0;
+  ∀ nodes tmp += X_ic⋅C_ic;
+  V_ic = ½*fabs(tmp);
+}
+
+
+∀ cells IniM @ -5 { m = ρ_ic * V_ic; }
+
+∀ cells @ -5 { E = p_ic / ((γ - 1.0) * ρ_ic); }
+
+
+// ****************************************************************************
+// * Partie boucle de calcul ]+0.0,+∞[ 
+// ****************************************************************************
+computeLoop @ 0.0 { printf("\n[37m[#%d] %f[0m",iteration, time);}
+
+∀ cells ComputeCjr @ 5 { ∀ nodes C = ½ * perp(X[#-1], X[#+1]); }
+
+∀ cells ComputeAbsjr @ 7 { ∀ nodes absC = norm(C); }
+
+∀ cells ComputeV @ 7 {
+  ℝ tmp = 0;
+  ∀ nodes tmp += X⋅C;
+  V = ½ * fabs(tmp);
+}
+
+∀ cells ComputeDensity @ 9 { assert(V>0.0); ρ = m / V; }
+
+∀ cells ComputeInternalEngergy @ 9 { e = E - ½*(u⋅u); }
+
+∀ cells ComputeEOSp @ 11 {	p = (γ - 1.0) * ρ * e; }
+
+∀ cells ComputeEOSc @ 13 { assert(ρ>0.0); c = √(γ * p / ρ);}
+
+∀ cells Computeδtj @ 15 {
+  ℝ tmp = 0;
+  ∀ nodes tmp += absC;
+  assert(tmp>0.0);
+  δtj = 2.0 * V / (c * tmp);
+}
+
+∀ cells ComputeAjr @ 15 { ∀ nodes A = ρ*c*(C⊗C)/absC; }
+
+∀ nodes ComputeMr @ 17 {
+  ℝ³ˣ³ tmp; tmp.z = ℝ³(0.0,0.0,1.0);
+  ∀ cells tmp += A;
+  M = tmp;
+}
+
+∀ nodes ComputeBr @ 17 {
+  ℝ³ tmp = 0;
+  ∀ cells tmp += C*p + A⨂u;
+  b = tmp;
+}
+
+∀ cells δtmin <?= δtj @ 15.1;
+
+hydroTimeStepCtrl @ 17.0{
+  ℝ new_δt=option_δt_cfl*δtmin;
+  const ℝ max_time_step = (1.0+option_δt_max_variation)*δt;
+  const ℝ min_time_step = (1.0-option_δt_min_variation)*δt;
+  if (new_δt > max_time_step) new_δt=max_time_step;
+  if (new_δt < min_time_step) new_δt=min_time_step;
+  new_δt = fmin(new_δt, option_δt_max);
+  new_δt = fmax(new_δt, option_δt_min);
+  δt_n_plus_1 = new_δt;
+}
+
+∀ /*inner*/ nodes ComputeMt @ 19 { Mt = M; }
+
+∀ /*inner*/ nodes ComputeBt @ 19 { bt = b; }
+
+∀ outer faces OuterFacesComputations @ 19.1{
+  ℝ Y_MIN = 0.0; 
+  ℝ Y_MAX = LENGTH;
+  ℝ³ˣ³ I = matrix3x3Id();
+  ℝ³ nY={0.0,1.0,0.0};
+  ∀ node{
+    if ((X.y==Y_MIN)||(X.y==Y_MAX)){
+      ℝ sign = (X.y==Y_MIN)?-1.0:1.0;
+      ℝ³ n = sign*nY;
+      ℝ³ˣ³ nxn = n⊗n;
+      ℝ³ˣ³ P = I-nxn;
+      Mt = M⊛P;
+      Mt = P⊛Mt;
+      Mt += nxn*(Mt.x.x+Mt.y.y+Mt.z.z);
+      bt = P⨂b;
+    }
+  }
+}
+∀ outer faces @ 19.2 {
+  ℝ X_MIN = 0.0;
+  ℝ X_MAX = LENGTH;
+  ℝ³ˣ³ I = matrix3x3Id();
+  ∀ node{
+    if (!((fabs(X.x-X_MIN)<1.e-10) ||
+          ((fabs(X.x-X_MAX)<1.e-10)))) continue;
+    Mt = I;
+    bt = 0.0;
+  }
+}
+
+calc_t_n_plus_1 @ 19 { t_n_plus_1 = t + δt_n_plus_1; }
+
+∀ nodes ComputeU @ 21 {
+  const ℝ det = matrixDeterminant(Mt);
+  if (det==0.0){
+    printf("\n[ComputeU] node %d: matrixDeterminant NULL!",uid);
+    assert(det!=0.0);
+  }
+  u_node = inverseMatrix(Mt,det) ⨂ bt;
+  u_node.z=0.0;
+}
+
+∀ cells ComputeFjr @ 23 { ∀ nodes F = p*C + A ⨂ (u-u_node); }
+
+∀ nodes @ 23 {	X_n_plus_1 = X + δt * u_node; }
+
+∀ cells @ 25 {
+  ℝ³ tmp = 0;
+  ∀ nodes tmp += F;
+  u_n_plus_1 = u - δt * tmp / m;
+}
+
+∀ cells @ 25 {
+  ℝ tmp = 0;
+  ∀ nodes tmp += F⋅u_node;
+  E_n_plus_1 = E - δt * tmp / m;
+}
+
+
+// *************************************************************
+// * Recopies
+// *************************************************************
+∀ cells @ 30 {u = u_n_plus_1;}
+∀ cells @ 30 {E = E_n_plus_1;}
+∀ nodes @ 30 {X = X_n_plus_1;}
+  loopT @ 30 {t = t_n_plus_1;}
+ loopDT @ 30 {δt=δt_n_plus_1;}
+
+
+// ***************************************************************************
+// * Checksum on velocity
+// ***************************************************************************
+chkIni @ 31.0 if (iteration==(option_max_iterations-1)) { chkC=chkU=chkV=0; }
+∀ inner cells @ 31.1 if (iteration==(option_max_iterations-1)) {
+  const long int chl=*(long int*)&c;
+  chkC ^= (int)(chl>>32);
+  chkC |= (int)(chl&((1l<<32)-1));
+}
+∀ inner cells @ 31.1 if (iteration==(option_max_iterations-1)) {
+  const long int uhl=*(long int*)&u;
+  chkU ^= (int)(uhl>>32);
+  chkU |= (int)(uhl&((1l<<32)-1));
+}
+∀ inner cells @ 31.1 if (iteration==(option_max_iterations-1)) {
+  const long int vhl=*(long int*)&V;
+  chkV ^= (int)(vhl>>32);
+  chkV |= (int)(vhl&((1l<<32)-1));
+}
+chk8x8x1 @ 31.2 if (iteration==(option_max_iterations-1) &&
+                      X_EDGE_ELEMS==8 && Y_EDGE_ELEMS==8 && Z_EDGE_ELEMS==1 &&
+                      LENGTH==1.0 && option_x_interface==0.5 &&
+                      option_stoptime==0.1 && option_max_iterations==48 &&
+                      option_p_ini_zg==1.0 && option_ρ_ini_zg==1.0 &&
+                      option_p_ini_zd==0.1 && option_ρ_ini_zd==0.125 &&
+                      option_δt_ini==1.e-4 && option_δt_min==1.e-12 &&
+                      option_δt_max==0.01 && option_δt_cfl==0.1 &&
+                      option_δt_min_variation==0.9 && option_δt_max_variation==0.1) {
+  assert((unsigned int)chkC==0xD77F6A77u &&
+         (unsigned int)chkU==0xFDB1F8BFu &&
+         (unsigned int)chkV==0xF57FF3F7u);
+  printf("\n[1;32m[checked] 0x%X,0x%X,0x%X ![m",chkC,chkU,chkV);
+}
+
+// *************************************************************
+// * Fonctions
+// *************************************************************
+ℝ³ perp(ℝ³ α, ℝ³ β){ return ℝ³(β.y-α.y,-β.x+α.x,0.0);}

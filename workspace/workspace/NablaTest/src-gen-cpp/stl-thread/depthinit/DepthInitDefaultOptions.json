@@ -1,0 +1,14 @@
+{
+	"_comment": "Generated file - Do not overwrite",
+	"options":
+	{
+		"X_EDGE_LENGTH":0.01,
+		"Y_EDGE_LENGTH":0.01,
+		"X_EDGE_ELEMS":1101,
+		"Y_EDGE_ELEMS":42,
+		"maxTime":0.1,
+		"maxIter":500,
+		"deltat":1.0
+	},
+	"depthInitFunctions":{}
+}

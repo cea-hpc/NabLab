@@ -1,0 +1,363 @@
+module Schema_chap2;
+
+with LinearAlgebra.*;
+with Math.*;
+
+itemtypes { node, cell , face}
+
+// nodes collection
+connectivity nodes: → {node};
+
+// faces collection
+connectivity faces: → {face};
+connectivity innerFaces: → {face};
+connectivity outerFaces: → {face};
+connectivity innerVerticalFaces: → {face};
+connectivity innerHorizontalFaces: → {face};
+connectivity completelyInnerFaces: → {face};
+connectivity completelyInnerVerticalFaces: → {face};
+connectivity completelyInnerHorizontalFaces: → {face};
+
+// cells collection
+connectivity cells: → {cell};
+connectivity innerCells: → {cell};
+connectivity outerCells: → {cell};
+connectivity topCells: → {cell};
+connectivity bottomCells: → {cell};
+connectivity leftCells: → {cell};
+connectivity rightCells: → {cell};
+
+// cell related collection
+connectivity neighbourCells: cell → {cell};
+connectivity nodesOfCell: cell → {node};
+connectivity facesOfCell: cell → {face};
+connectivity commonFace: cell × cell → face;
+connectivity rightFaceOfCell: cell → face;
+connectivity leftFaceOfCell : cell → face;
+connectivity topFaceOfCell : cell → face;
+connectivity bottomFaceOfCell: cell → face;
+connectivity rightCell: cell → cell;
+connectivity leftCell: cell → cell;
+connectivity topCell: cell → cell;
+connectivity bottomCell: cell → cell;
+
+// face related collection
+connectivity nodesOfFace: face → {node};
+connectivity cellsOfFace: face → {cell};
+connectivity backCell: face → cell;
+connectivity frontCell: face → cell;
+connectivity bottomFaceNeighbour: face → face;
+connectivity bottomLeftFaceNeighbour: face → face;
+connectivity bottomRightFaceNeighbour: face → face;
+connectivity topFaceNeighbour: face → face;
+connectivity topLeftFaceNeighbour: face → face;
+connectivity topRightFaceNeighbour: face → face;
+connectivity rightFaceNeighbour: face → face;
+connectivity leftFaceNeighbour: face → face;
+
+// options
+option ℝ X_LENGTH = 50000.0;
+option ℝ Y_LENGTH = 50000.0;
+option ℕ X_EDGE_ELEMS = 60;
+option ℕ Y_EDGE_ELEMS = 60;
+option ℝ X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
+option ℝ Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
+option ℕ maxIter = 20000;
+option ℝ stopTime =1.0;
+let ℝ t = 0.0;
+let ℝ δt = 0.1;
+let ℝ δx = X_EDGE_LENGTH;
+let ℝ δy = Y_EDGE_LENGTH;
+let ℝ g = -9.8; // -9.8
+let ℝ C = 40.0; // De Chezy coefficient, value :  [20, 80]
+let ℝ F = 0.00001; // Coriolis parameter
+
+ℝ[2] X{nodes},Xc{cells};
+ℝ xc{cells}, yc{cells}; // Abscissa and ordinate of cells center of gravity so they can be plotted in vtk file
+
+ℝ U{faces}; // velocity in x direction
+ℝ V{faces}; // velocity in y direction
+ℝ H{cells}; // wave height above mean water level
+ℝ Rij{cells}; // bottom motion
+ℝ Fx{cells}; // forcing function of wind stress and barometric pressure in x direction  
+ℝ Fy{cells}; // forcing function of wind stress and barometric pressure in y direction
+ℝ Dij{cells}; // depth ( < 0)
+
+iterate n while (t^{n+1} < stopTime && n < maxIter);
+
+InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
+
+InitXcAndYc: ∀c∈cells(), {
+	xc{c} = Xc{c}[0]; 
+	yc{c} = Xc{c}[1];
+}
+
+ // forcing functions initialization
+InitFxy: ∀c∈cells(), 
+{
+	Fx{c} = 0.0;
+	Fy{c} = 0.0;
+}
+
+// depth initialization
+InitDij: 
+{
+	∀c∈cells(),
+		Dij{c} = -4000.0;
+}
+
+// wave initialization
+InitH1: ∀c∈cells(),
+{	
+	if(xc{c} < 5000 )
+		H^{n=0}{c} = 1.0;
+	else
+		H^{n=0}{c} = 0.0;
+		
+
+}
+
+/*
+ * Il faut trouver un moyen de faire ça, il faut la condition au bord à t=0 aussi !
+ * Idem pour les vitesses 
+InitBoundaryCondition: 
+{
+	∀t∈topCells(), ∀bt∈bottomCell(t), H^{n=0}{t} = H^{n=0}{bt};
+	∀b∈bottomCells(), ∀tb∈topCell(b), H^{n=0}{b} = H^{n=0}{tb};
+	∀l∈leftCells(), ∀rl∈rightCell(l), H^{n=0}{l} = H^{n=0}{rl};
+	∀r∈rightCells(), ∀lr∈leftCell(r), H^{n=0}{r} = H^{n=0}{lr};
+}
+*/
+// x velocity initialization
+InitU: ∀f∈innerFaces(),
+{
+		U^{n=0}{f} = 0.0;
+}
+
+// y velocity initialization
+InitV: ∀f∈innerFaces(), 
+{
+		V^{n=0}{f} = 0.0;
+}
+
+// bottom motion
+InitRij: ∀c∈cells(),
+{
+	Rij^{n=0}{c} = 0.0;
+}
+
+// compute new wave height using the numerical schema 
+UpdateHinner:∀c∈innerCells(), 
+{
+	let ℝ TD1 = 0.0;
+	let ℝ TD2 = 0.0;
+	let ℝ TV1 = 0.0;
+	let ℝ TV2 = 0.0;
+	
+	// computeTD1;
+	∀ rf ∈ rightFaceOfCell(c),
+		if (U^{n}{rf} < 0)
+		{
+			∀ rc ∈ rightCell(c), 
+				TD1 = Dij{rc} + H^{n}{rc} - Rij^{n}{rc};
+		}
+		else
+			TD1 = Dij{c} + H^{n}{c}  - Rij^{n}{c};
+			
+	// computeTD2;
+	∀ lf ∈ leftFaceOfCell(c),
+		if( U^{n}{lf} < 0)
+			TD2 = Dij{c} + H^{n}{c} - Rij^{n}{c};
+		else
+		{
+			∀ lc ∈ leftCell(c),
+				TD2 = Dij{lc} + H^{n}{lc} - Rij^{n}{lc};
+		}
+		
+	// computeTV1;
+	∀ tf ∈ topFaceOfCell(c),
+		if( V^{n}{tf} < 0)
+		{
+			∀ tc ∈ topCell(c),
+			TV1 = Dij{tc} + H^{n}{tc} - Rij^{n}{tc};
+		}
+		else
+			TV1 = Dij{c} + H^{n}{c} - Rij^{n}{c};
+	
+	// computeTV2;	
+	∀ bf ∈ bottomFaceOfCell(c),
+		if( V^{n}{bf} < 0)
+			TV2 = Dij{c} + H^{n}{c} - Rij^{n}{c};
+		else
+		{
+			∀ bc ∈ bottomCell(c),
+			TV2 = Dij{bc} + H^{n}{bc} - Rij^{n}{bc};
+		}
+	
+	// computeH^{n+1}
+	∀rf∈rightFaceOfCell(c), ∀lf∈leftFaceOfCell(c), ∀ tf ∈ topFaceOfCell(c), ∀bf∈bottomFaceOfCell(c), 
+		H^{n+1}{c} = H^{n}{c} - δt*(U^{n}{rf} * TD1 / δx - U^{n}{lf} * TD2 / δx + V^{n}{tf} * TV1 / δy - V^{n}{bf} * TV2 / δy) + Rij^{n+1}{c} - Rij^{n}{c};
+}
+
+// boundary condition for wave height
+UpdateHouter:  
+{
+	∀tc∈topCells(), ∀bc∈bottomCell(tc),
+		H^{n+1}{tc} = H^{n}{bc};
+	∀bc∈bottomCells(), ∀tc∈topCell(bc),
+		H^{n+1}{bc} = H^{n}{tc};
+	∀lc∈leftCells(), ∀rc∈rightCell(lc),
+		H^{n+1}{lc} = H^{n}{rc};
+	∀rc∈rightCells(), ∀lc∈leftCell(rc),
+		H^{n+1}{rc} = H^{n}{lc};
+}
+
+// compute new x velocity using the numerical schema
+UpdateUinner:∀civf∈completelyInnerVerticalFaces(),
+{
+	let ℝ TV = 0.0;
+	let ℝ TU1 = 0.0;
+	let ℝ TU2 = 0.0;
+	let ℝ THU = 0.0;
+	let ℝ SB = 0.0;
+	
+	// compute TV
+	∀fij∈bottomRightFaceNeighbour(civf),
+	∀fijplus1∈topRightFaceNeighbour(civf),
+	∀fimoins1jplus1∈topLeftFaceNeighbour(civf),
+	∀fimoins1j∈bottomLeftFaceNeighbour(civf),
+	{
+		TV = 0.25 * (V^{n}{fij} + V^{n}{fijplus1} + V^{n}{fimoins1jplus1} + V^{n}{fimoins1j});
+	}
+	
+	// compute TU1
+	if(U^{n}{civf} < 0)
+	{
+		∀fiplus1j∈rightFaceNeighbour(civf),
+			TU1  = U^{n}{fiplus1j} -U^{n}{civf};
+	}
+	else
+	{
+		∀fimoins1j∈leftFaceNeighbour(civf),
+			TU1 = U^{n}{civf} - U^{n}{fimoins1j};
+	}
+		
+	// compute TU2
+	if(TV < 0)
+	{
+		∀fijplus1∈topFaceNeighbour(civf),
+			TU2 = U^{n}{fijplus1} - U^{n}{civf};
+	}
+	else
+	{
+		∀fijmoins1∈bottomFaceNeighbour(civf),
+			TU2 = U^{n}{civf} - U^{n}{fijmoins1};
+	}	
+	
+	// compute THU
+	∀cij∈frontCell(civf), ∀cimoins1j∈leftCell(cij),
+		THU = H^{n}{cij} - H^{n}{cimoins1j};
+	
+	// compute SB
+	∀cij∈frontCell(civf), ∀fijv∈bottomRightFaceNeighbour(civf),
+		SB = g * U^{n}{civf} * ( √(U^{n}{civf}*U^{n}{civf} + V^{n}{fijv} * V^{n}{fijv})) / (C * C * (Dij{cij} + H^{n}{cij}));
+
+	// compute U^{n+1}
+	∀fijv∈bottomRightFaceNeighbour(civf),
+	∀cij∈frontCell(civf),
+		U^{n+1}{civf} = U^{n}{civf} - δt*(U^{n}{civf} * TU1 / δx + TV * TU2 / δy) - g * δt / δx * THU + δt * ( - F * V^{n}{fijv} - Fx{cij} + SB);
+}
+
+// boundary condition for x velocity
+UpdateUouter:
+{
+	∀tc∈topCells(), ∀rf∈rightFaceOfCell(tc), ∀bf∈bottomFaceOfCell(tc), ∀bc∈frontCell(bf), ∀brf∈rightFaceOfCell(bc),
+		U^{n+1}{rf} = U^{n}{brf};
+	∀bc∈bottomCells(), ∀rf∈rightFaceOfCell(bc), ∀tf∈topFaceOfCell(bc), ∀bcf∈backCell(tf), ∀trf∈rightFaceOfCell(bcf),
+		U^{n+1}{rf} = U^{n}{trf};
+	∀lc∈leftCells(), ∀lf∈leftFaceOfCell(lc), ∀rf∈rightFaceOfCell(lc),
+		U^{n+1}{lf} = U^{n}{rf};
+	∀rc∈rightCells(), ∀rf∈rightFaceOfCell(rc), ∀lf∈leftFaceOfCell(rc),
+		U^{n+1}{rf} = U^{n}{lf};
+}
+
+// compute new y velocity using the numerical schema
+UpdateVinner:∀cihf∈completelyInnerHorizontalFaces(),
+{
+	let ℝ TU = 0.0;
+	let ℝ TV1 = 0.0;
+	let ℝ TV2 = 0.0;
+	let ℝ THV = 0.0;
+	let ℝ SB = 0.0;
+	
+	// compute TU
+	∀fij∈topLeftFaceNeighbour(cihf),
+	∀fiplus1j∈topRightFaceNeighbour(cihf),
+	∀fijmoins1∈bottomLeftFaceNeighbour(cihf),
+	∀fiplus1jmoins1∈bottomRightFaceNeighbour(cihf),
+	{
+		TU = 0.25 * (U^{n}{fij} + U^{n}{fiplus1j} + U^{n}{fijmoins1} + U^{n}{fiplus1jmoins1});
+	}
+	
+	// compute TV1
+	if(TU < 0)
+	{
+		∀fiplus1j∈rightFaceNeighbour(cihf),
+			TV1  = V^{n}{fiplus1j} - V^{n}{cihf};
+	}
+	else
+	{
+		∀fimoins1j∈leftFaceNeighbour(cihf),
+			TV1 = V^{n}{cihf} - V^{n}{fimoins1j};
+	}
+		
+	// compute TV2
+	if(V^{n}{cihf} < 0)
+	{
+		∀fijplus1∈topFaceNeighbour(cihf),
+			TV2 = V^{n}{fijplus1} - V^{n}{cihf};
+	}
+	else
+	{
+		∀fijmoins1∈bottomFaceNeighbour(cihf),
+			TV2 = V^{n}{cihf} - V^{n}{fijmoins1};
+	}	
+	
+	// compute THV
+	∀cij∈backCell(cihf), ∀cijmoins1∈frontCell(cihf),
+		THV = H^{n}{cij} - H^{n}{cijmoins1};
+	
+	// compute SB
+	∀cij∈backCell(cihf), ∀fijv∈topLeftFaceNeighbour(cihf),
+		SB = g * U^{n}{fijv} * ( √(U^{n}{fijv}*U^{n}{fijv} + V^{n}{cihf} * V^{n}{cihf})) / (C*C * (Dij{cij} + H^{n}{cij}));
+	
+	// compute V^{n+1}
+	∀fijv∈topLeftFaceNeighbour(cihf),
+	∀cij∈backCell(cihf),
+		V^{n+1}{cihf} = V^{n}{cihf} - δt*(V^{n}{cihf} * TV1 / δx + TU * TV2 / δy) - g * δt / δx * THV + δt * ( - F * U^{n}{fijv} - Fx{cij} + SB);
+}
+
+// boundary condition for y velocity
+UpdateVouter:
+{
+	∀tc∈topCells(), ∀bf∈bottomFaceOfCell(tc), ∀tf∈topFaceOfCell(tc),
+		V^{n+1}{tf} = V^{n}{bf};
+	∀bc∈bottomCells(), ∀bf∈bottomFaceOfCell(bc), ∀tf∈topFaceOfCell(bc),
+		V^{n+1}{bf} = V^{n}{tf};
+	∀lc∈leftCells(), ∀bf∈bottomFaceOfCell(lc), ∀rf∈rightFaceOfCell(lc), ∀rc∈frontCell(rf), ∀bfrc∈bottomFaceOfCell(rc),
+		V^{n+1}{bf} = V^{n}{bfrc};
+	∀rc∈rightCells(), ∀bf∈bottomFaceOfCell(rc), ∀lf∈leftFaceOfCell(rc), ∀lc∈backCell(lf), ∀bflc∈bottomFaceOfCell(lc),
+		V^{n+1}{bf} = V^{n}{bflc};
+		
+}
+
+// update bottom motion
+UpdateRij: ∀c∈cells(),
+{
+	if( t^{n} < 1 && xc{c} < 5000) 
+		Rij^{n+1}{c} = Rij^{n}{c} - 0.1;
+	else 
+		Rij^{n+1}{c} = Rij^{n}{c} + 0.0;
+}
+
+ComputeTn: t^{n+1} = t^{n} + δt;

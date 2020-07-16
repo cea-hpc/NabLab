@@ -1,0 +1,65 @@
+// resolution eq diffusion du/dt = D * laplacien( u ) en x,y
+//schema implicite
+
+//commençons par une edp 1D + temps -> ça marche !
+
+//refaisons ça avec une edp 2D + temps -> ça marche !! :D
+
+module MyModule;
+
+with LinearAlgebra.*;
+with Math.*;
+
+itemtypes { node, cell }
+
+set nodes: → { node };
+set cells: → {cell};
+set nodesOfCell: cell → {node};
+set neighbourCells: cell → {cell};
+
+
+option ℝ X_LENGTH = 2.0;
+option ℝ Y_LENGTH = 2.0;
+option ℕ X_EDGE_ELEMS = 40;
+option ℕ Y_EDGE_ELEMS = 40;
+option ℝ X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
+option ℝ Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
+
+option ℕ maxIterations = 20000000;
+option ℝ stopTime = 100.0;
+option ℝ[2] vectOne = ℝ[2](1.0);
+
+let ℝ t = 0.0;
+let ℝ δt = 0.01;
+let ℝ ρ = 1.0; // constant de diffusion thermique
+let ℝ lambda = ρ * δt / (X_EDGE_LENGTH) * (X_EDGE_LENGTH);
+ℝ[2] X{nodes},Xc{cells};
+ℝ xc{cells}, yc{cells}; // Abscissa and ordinate of cells center of gravity so they can be plotted in vtk file
+ℝ e{cells};
+ℝ α{cells, cells}; //je suppose que c'est une matrice, qui se rempli comme il faut, tout seul comme un grand, on a juste a parler des "voisins"
+
+
+iterate n while (t^{n+1} < stopTime && n < maxIterations);
+
+InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
+
+InitE: ∀c∈cells(),
+	if (norm(Xc{c} - vectOne) < 0.5)
+		e^{n}{c} = 5.0;
+	else 
+		e^{n}{c} = 0.0; // Initial circle in the center with value u0
+
+
+InitXcAndYc: ∀c∈cells(), {
+	xc{c} = Xc{c}[0]; 
+	yc{c} = Xc{c}[1];
+}
+
+ComputealphaMatrix: ∀c∈cells(), { //remplir la matrice, admettons que alpha place correctement les coefficients pour ensuite pouvoir inverser un systeme -> ça marche !
+	∀v∈neighbourCells(c), α{c,v} = -lambda;
+	α{c,c} = 4 * lambda + 1;
+}
+
+UpdateE: e^{n+1} = solveLinearSystem(α, e^{n});
+
+ComputeTn: t^{n+1} = t^{n} + δt;

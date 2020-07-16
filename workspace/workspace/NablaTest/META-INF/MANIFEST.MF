@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: NablaTest
+Bundle-ManifestVersion: 2
+Bundle-Name: NablaTest
+Bundle-SymbolicName: NablaTest
+Bundle-Version: 0.3.1.qualifier
+Bundle-Vendor: CEA
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: test
+Require-Bundle: fr.cea.nabla,
+ fr.cea.nabla.ir,
+ fr.cea.nabla.javalib,
+ org.eclipse.xtext.xbase.lib,
+ com.google.gson

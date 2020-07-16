@@ -1,0 +1,288 @@
+with ℝ²; // On est en 2D!!!
+
+// Il nous faut ca
+ℝ³ perp(ℝ³ α, ℝ³ β){ return ℝ³(β.y-α.y,-β.x+α.x,0.0);}
+ℝ trace(ℝ³ˣ³ M){return M.x.x+M.y.y+M.z.z;}
+
+// Et ca
+#define tensProduct opProdTens
+#define matVectProduct opProdTensVec
+//#define id3 matrix3x3Id();
+
+options {
+  // Options obligatoires pour compiler
+  ℝ LENGTH = 1.0;
+  ℕ X_EDGE_ELEMS = 8;
+  ℕ Y_EDGE_ELEMS = 8;
+  ℕ Z_EDGE_ELEMS = 1;
+  ℝ option_stoptime = 0.1;
+  ℕ option_max_iterations = 48;
+  
+  // Autres options
+	ℝ γ = 1.4;
+	ℝ option_p_ini_zg = 1.0;
+	ℝ option_ρ_ini_zg = 1.0;
+	ℝ option_p_ini_zd = 0.1;
+	ℝ option_ρ_ini_zd = 0.125;
+  
+	ℝ option_x_interface = 0.5;
+  ℝ option_deltat_ini = 1.0E-5;
+  ℝ option_deltat_max = 0.01;
+	ℝ option_deltat_cfl = 0.1;
+  ℝ option_deltat_min_variation = 0.9;
+  ℝ option_deltat_max_variation = 0.1;
+
+};
+
+global {
+	ℝ t, t_n_plus_1;
+  //ℝ deltat; // deltat est pour l'instant declare par le backend, *pas beau*
+  ℝ deltat_n_plus_1;
+  ℝ Min6f4a6c1c;
+};
+
+nodes {
+	ℝ³ X, X_n_plus_1, coord, b, bt, fu;
+	ℝ³ˣ³ M, Mt;
+};
+
+cells {
+	ℝ p_ic, ρ_ic, V_ic, c, m, p, ρ, e, E, E_n_plus_1, V, deltatj, absC[nodes];
+	ℝ³ u, u_n_plus_1, center, C_ic[nodes], C[nodes], F[nodes];
+	ℝ³ˣ³ A[nodes];
+};
+
+Init_Min6f4a6c1c @ -3.0 {
+	Min6f4a6c1c = ∞;
+}
+
+∀ cells IniCenter @ -3.0 {
+	ℝ³ Sum957dad8 = 0;
+	∀ nodes {
+		Sum957dad8 += coord;
+	}
+	center = (1.0 / 4.0) * Sum957dad8;
+}
+
+∀ cells ComputeCjrIc @ -3.0 {
+	∀ nodes {
+		C_ic = 0.5 * perp(coord[#-1], coord[#+1]);
+	}
+}
+
+Init_t @ -3.0 {
+	t = 0.0;
+}
+
+Init_deltat @ -3.0 {
+	deltat = 0.0;
+}
+
+
+
+∀ nodes Init_ComputeXn @ -3.0 {
+	X = coord;
+}
+
+∀ cells Init_ComputeUn @ -3.0 {
+	u = ℝ³(0.0, 0.0, 0.0);
+}
+
+Init_ComputeDt @ -3.0 {
+	deltat = option_deltat_ini;
+}
+
+Init_ComputeTn @ -3.0 {	t = 0.0; }
+
+∀ cells IniIc @ -2.0 {
+	if (center.x < option_x_interface) {
+		ρ_ic = option_ρ_ini_zg;
+		p_ic = option_p_ini_zg;
+	}
+	else {
+		ρ_ic = option_ρ_ini_zd;
+		p_ic = option_p_ini_zd;
+	}
+}
+
+∀ cells IniVIc @ -2.0 {
+	ℝ Sum49fbd39 = 0;
+	∀ nodes {
+		Sum49fbd39 += dot(C_ic, coord);
+	}
+	V_ic = 0.5 * Sum49fbd39;
+}
+
+∀ cells IniM @ -1.0 {
+	m = ρ_ic * V_ic;
+}
+
+∀ cells Init_ComputeEn @ -1.0 {
+  assert(γ!=0.0);
+	E = p_ic / ((γ - 1.0) * ρ_ic);
+}
+
+// ****************************************************************************
+// * Partie boucle de calcul ]+0.0,+∞[ 
+// ****************************************************************************
+computeLoop @ 0.0 { printf("\n[37m[#%d] %f[0m",iteration, time);}
+
+∀ cells ComputeCjr @ 1.0 {
+	∀ nodes {
+		C = 0.5 * perp(X[#-1], X[#+1]);
+	}
+}
+
+∀ cells ComputeInternalEngergy @ 1.0 {
+	e = E - 0.5 * dot(u, u);
+}
+
+∀ cells ComputeAbsjr @ 2.0 {
+	∀ nodes {
+		absC = norm(C);
+	}
+}
+
+∀ cells ComputeV @ 2.0 {
+	ℝ Sum4da90722 = 0;
+	∀ nodes {
+		Sum4da90722 += dot(C, X);
+	}
+	V = 0.5 * Sum4da90722;
+}
+
+∀ cells ComputeDensity @ 3.0 {
+	ρ = m / V;
+}
+
+∀ cells ComputeEOSp @ 4.0 {
+	p = (γ - 1.0) * ρ * e;
+}
+
+∀ cells ComputeEOSc @ 5.0 {
+	c = sqrt(γ * p / ρ);
+}
+
+∀ cells Computedeltatj @ 6.0 {
+	ℝ Sum369f5f84 = 0;
+	∀ nodes {
+		Sum369f5f84 += absC;
+	}
+	deltatj = 2.0 * V / (c * Sum369f5f84);
+}
+
+∀ cells ComputeAjr @ 6.0 {
+  ∀ nodes A = ((ρ * c) / absC) * tensProduct(C, C);
+}
+
+∀ nodes ComputeMr @ 7.0 {
+  // C'est lui qui te foutait la zone!
+	ℝ³ˣ³ Sum17c4ec2b = ℝ³(0.0,0.0,1.0); // Vachtre on est en 2D!
+	∀ cells {
+		Sum17c4ec2b += A;
+	}
+	M = Sum17c4ec2b;
+}
+
+∀ nodes ComputeBr @ 7.0 {
+	ℝ³ Sum3f9840de = 0;
+	∀ cells {
+		Sum3f9840de += C * p + matVectProduct(A, u);
+	}
+	b = Sum3f9840de;
+}
+
+∀ cells Min6f4a6c1c <?= deltatj @ 7.0;
+
+∀ inner nodes ComputeMt @ 8.0 {
+	Mt = M;
+}
+
+∀ inner nodes ComputeBt @ 8.0 {
+	bt = b;
+}
+
+∀ outer faces YOuterFacesComputations @ 8.0{
+  ℝ Y_MIN = 0.0; 
+  ℝ Y_MAX = LENGTH;
+  ℝ³ˣ³ I = matrix3x3Id();
+  ℝ³ nY={0.0,1.0,0.0};
+	∀ nodes {
+    if ((X.y==Y_MIN)||(X.y==Y_MAX)){
+      ℝ sign = (X.y==Y_MIN)?-1.0:1.0;
+      ℝ³ n = sign*nY;
+      ℝ³ˣ³ nxn = tensProduct(n,n);
+      ℝ³ˣ³ IcP = I - nxn;
+			bt = matVectProduct(IcP, b);
+			Mt = IcP * (M * IcP) + nxn*trace(Mt);
+		}
+	}
+}
+∀ outer faces XOuterFacesComputations @ 8.0 {
+  ℝ X_MIN = 0.0;
+  ℝ X_MAX = LENGTH;
+  ℝ³ˣ³ I = matrix3x3Id();
+	∀ nodes {
+    if (!((fabs(X.x-X_MIN)<1.e-10) ||
+          ((fabs(X.x-X_MAX)<1.e-10)))) continue;
+    Mt = I;
+    bt = ℝ³(0.0, 0.0, 0.0);
+  }
+}
+
+Compute_ComputeDt @ 8.0 {
+	deltat_n_plus_1 = option_deltat_cfl * Min6f4a6c1c;
+}
+
+Copydeltat_n_plus_1 @ 9.0 { 
+	deltat = deltat_n_plus_1;
+}
+
+∀ nodes ComputeU @ 9.0 {
+  ℝ det = matrixDeterminant(Mt);
+  assert(det!=0.0);
+	fu = matVectProduct(inverseMatrix(Mt,det), bt);
+}
+
+Compute_ComputeTn @ 9.0 { t_n_plus_1 = t + deltat_n_plus_1; }
+
+Copyt_n_plus_1 @ 10.0 {  t = t_n_plus_1; }
+
+∀ cells ComputeFjr @ 10.0 {
+	∀ nodes {
+		F = p * C + matVectProduct(A, (u - fu));
+	}
+}
+
+∀ nodes Compute_ComputeXn @ 10.0 {
+	X_n_plus_1 = X + deltat * fu;
+}
+
+∀ nodes CopyX_n_plus_1 @ 11.0 { 
+	X = X_n_plus_1;
+}
+
+∀ cells Compute_ComputeUn @ 11.0 {
+	ℝ³ Sum20e1e014 = 0;
+	∀ nodes {
+		Sum20e1e014 += F;
+	}
+	u_n_plus_1 = u - (deltat / m )* Sum20e1e014;
+}
+
+∀ cells Compute_ComputeEn @ 11.0 {
+	ℝ Sum3fd117d8 = 0;
+	∀ nodes {
+		Sum3fd117d8 += dot(F, fu);
+	}
+	E_n_plus_1 = E -(deltat / m )* Sum3fd117d8;
+}
+
+∀ cells CopyE_n_plus_1 @ 12.0 { 
+	E = E_n_plus_1;
+}
+
+∀ cells Copyu_n_plus_1 @ 12.0 { 
+	u = u_n_plus_1;
+}
+

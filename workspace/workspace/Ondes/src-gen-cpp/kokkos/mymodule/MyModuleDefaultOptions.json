@@ -1,0 +1,12 @@
+{
+	"_comment": "Generated file - Do not overwrite",
+	"_outputPath_comment":"empty outputPath to disabled output",
+	"outputPath":"output",
+	"outputPeriod":1,
+	"X_EDGE_LENGTH":2.0,
+	"Y_EDGE_LENGTH":2.0,
+	"X_EDGE_ELEMS":40,
+	"Y_EDGE_ELEMS":40,
+	"maxIter":200000,
+	"maxTime":10.0
+}

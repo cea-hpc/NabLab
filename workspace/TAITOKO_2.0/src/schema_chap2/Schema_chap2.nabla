@@ -69,10 +69,10 @@ option ℝ Y_LENGTH = Y_EDGE_LENGTH * Y_EDGE_ELEMS;
 //option ℝ X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
 //option ℝ Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 
-option ℕ maxIter = 1;
+option ℕ maxIter = 50000;
 option ℝ stopTime =1.0;
 let ℝ t = 0.0;
-let ℝ δt = 0.1;
+let ℝ δt = 0.001;
 let ℝ δx = X_EDGE_LENGTH;
 let ℝ δy = Y_EDGE_LENGTH;
 let ℝ g = -9.8; // -9.8
@@ -110,7 +110,7 @@ InitFxy: ∀c∈cells(),
 InitDij: 
 {
 	∀c∈cells(),
-		Dij{c} = -4000.0;
+		Dij{c} = -100.0;
 }
 
 // wave initialization
@@ -357,8 +357,8 @@ UpdateVouter:
 UpdateRij: ∀c∈cells(),
 {
 	if( t^{n} < 1 && xc{c} < 5000) 
-		Rij^{n+1}{c} = Rij^{n}{c} - 0.1;
+		Rij^{n+1}{c} = Rij^{n}{c} ;
 	else 
-		Rij^{n+1}{c} = Rij^{n}{c} + 0.0;
+		Rij^{n+1}{c} = Rij^{n}{c} ;
 }
 ComputeTn: t^{n+1} = t^{n} + δt;

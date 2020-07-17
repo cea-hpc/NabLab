@@ -13,6 +13,7 @@
 #include "types/Types.h"
 #include "schema_chap2/Schema_chap2Functions.h"
 #include "mesh/stl/PvdFileWriter2D.h"
+#include "utils/stl/Parallel.h"
 
 using namespace nablalib;
 
@@ -53,7 +54,7 @@ private:
 	// Global definitions
 	double t_n;
 	double t_nplus1;
-	static constexpr double deltat = 0.1;
+	static constexpr double deltat = 0.001;
 	const double deltax;
 	const double deltay;
 	static constexpr double g = -9.8;

@@ -11,7 +11,7 @@
 		"Y_EDGE_ELEMS":44,
 		"X_LENGTH":110.30000000000001,
 		"Y_LENGTH":4.4,
-		"maxIter":1,
+		"maxIter":50000,
 		"stopTime":1.0
 	},
 	"schema_chap2Functions":{"fileName":"surf0mm.grd",

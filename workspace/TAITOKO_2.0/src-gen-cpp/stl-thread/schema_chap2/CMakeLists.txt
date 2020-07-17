@@ -20,13 +20,13 @@ endif()
 
 project(Schema_chap2Project CXX)
 
-set(LIBCPPNABLA_BACKEND "NONE")
+set(LIBCPPNABLA_BACKEND "STL")
 add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
 
 
 add_executable(schema_chap2 Schema_chap2.cc)
 target_include_directories(schema_chap2 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
-target_link_libraries(schema_chap2 PUBLIC cppnabla)
+target_link_libraries(schema_chap2 PUBLIC cppnabla cppnablastl pthread)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 include(Project.cmake)

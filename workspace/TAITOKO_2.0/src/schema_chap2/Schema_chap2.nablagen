@@ -22,7 +22,8 @@ Java
 	outputPath = "/TAITOKO_2.0/src-gen-java";
 }
 */
-CppSequential
+StlThread
+
 {
 	outputPath = "/TAITOKO_2.0/src-gen-cpp/stl-thread";
 	compiler = GNU;

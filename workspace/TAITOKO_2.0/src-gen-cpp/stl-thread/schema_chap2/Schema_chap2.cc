@@ -152,10 +152,10 @@ void Schema_chap2::computeTn() noexcept
  */
 void Schema_chap2::initDij() noexcept
 {
-	for (size_t cCells=0; cCells<nbCells; cCells++)
+	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		Dij[cCells] = -4000.0;
-	}
+		Dij[cCells] = -100.0;
+	});
 }
 
 /**
@@ -165,11 +165,11 @@ void Schema_chap2::initDij() noexcept
  */
 void Schema_chap2::initFxy() noexcept
 {
-	for (size_t cCells=0; cCells<nbCells; cCells++)
+	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		Fx[cCells] = 0.0;
 		Fy[cCells] = 0.0;
-	}
+	});
 }
 
 /**
@@ -198,10 +198,10 @@ void Schema_chap2::initH1() noexcept
  */
 void Schema_chap2::initRij() noexcept
 {
-	for (size_t cCells=0; cCells<nbCells; cCells++)
+	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		Rij_n0[cCells] = 0.0;
-	}
+	});
 }
 
 /**
@@ -214,12 +214,12 @@ void Schema_chap2::initU() noexcept
 	{
 		const auto innerFaces(mesh->getInnerFaces());
 		const size_t nbInnerFaces(innerFaces.size());
-		for (size_t fInnerFaces=0; fInnerFaces<nbInnerFaces; fInnerFaces++)
+		parallel::parallel_exec(nbInnerFaces, [&](const size_t& fInnerFaces)
 		{
 			const Id fId(innerFaces[fInnerFaces]);
 			const size_t fFaces(fId);
 			U_n0[fFaces] = 0.0;
-		}
+		});
 	}
 }
 
@@ -233,12 +233,12 @@ void Schema_chap2::initV() noexcept
 	{
 		const auto innerFaces(mesh->getInnerFaces());
 		const size_t nbInnerFaces(innerFaces.size());
-		for (size_t fInnerFaces=0; fInnerFaces<nbInnerFaces; fInnerFaces++)
+		parallel::parallel_exec(nbInnerFaces, [&](const size_t& fInnerFaces)
 		{
 			const Id fId(innerFaces[fInnerFaces]);
 			const size_t fFaces(fId);
 			V_n0[fFaces] = 0.0;
-		}
+		});
 	}
 }
 
@@ -249,7 +249,7 @@ void Schema_chap2::initV() noexcept
  */
 void Schema_chap2::initXc() noexcept
 {
-	for (size_t cCells=0; cCells<nbCells; cCells++)
+	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		const Id cId(cCells);
 		RealArray1D<2> reduction0({0.0, 0.0});
@@ -264,7 +264,7 @@ void Schema_chap2::initXc() noexcept
 			}
 		}
 		Xc[cCells] = 0.25 * reduction0;
-	}
+	});
 }
 
 /**
@@ -277,50 +277,50 @@ void Schema_chap2::updateHouter() noexcept
 	{
 		const auto topCells(mesh->getTopCells());
 		const size_t nbTopCells(topCells.size());
-		for (size_t tcTopCells=0; tcTopCells<nbTopCells; tcTopCells++)
+		parallel::parallel_exec(nbTopCells, [&](const size_t& tcTopCells)
 		{
 			const Id tcId(topCells[tcTopCells]);
 			const size_t tcCells(tcId);
 			const Id bcId(mesh->getBottomCell(tcId));
 			const size_t bcCells(bcId);
 			H_nplus1[tcCells] = H_n[bcCells];
-		}
+		});
 	}
 	{
 		const auto bottomCells(mesh->getBottomCells());
 		const size_t nbBottomCells(bottomCells.size());
-		for (size_t bcBottomCells=0; bcBottomCells<nbBottomCells; bcBottomCells++)
+		parallel::parallel_exec(nbBottomCells, [&](const size_t& bcBottomCells)
 		{
 			const Id bcId(bottomCells[bcBottomCells]);
 			const size_t bcCells(bcId);
 			const Id tcId(mesh->getTopCell(bcId));
 			const size_t tcCells(tcId);
 			H_nplus1[bcCells] = H_n[tcCells];
-		}
+		});
 	}
 	{
 		const auto leftCells(mesh->getLeftCells());
 		const size_t nbLeftCells(leftCells.size());
-		for (size_t lcLeftCells=0; lcLeftCells<nbLeftCells; lcLeftCells++)
+		parallel::parallel_exec(nbLeftCells, [&](const size_t& lcLeftCells)
 		{
 			const Id lcId(leftCells[lcLeftCells]);
 			const size_t lcCells(lcId);
 			const Id rcId(mesh->getRightCell(lcId));
 			const size_t rcCells(rcId);
 			H_nplus1[lcCells] = H_n[rcCells];
-		}
+		});
 	}
 	{
 		const auto rightCells(mesh->getRightCells());
 		const size_t nbRightCells(rightCells.size());
-		for (size_t rcRightCells=0; rcRightCells<nbRightCells; rcRightCells++)
+		parallel::parallel_exec(nbRightCells, [&](const size_t& rcRightCells)
 		{
 			const Id rcId(rightCells[rcRightCells]);
 			const size_t rcCells(rcId);
 			const Id lcId(mesh->getLeftCell(rcId));
 			const size_t lcCells(lcId);
 			H_nplus1[rcCells] = H_n[lcCells];
-		}
+		});
 	}
 }
 
@@ -331,13 +331,13 @@ void Schema_chap2::updateHouter() noexcept
  */
 void Schema_chap2::updateRij() noexcept
 {
-	for (size_t cCells=0; cCells<nbCells; cCells++)
+	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		if (t_n < 1 && xc[cCells] < 5000) 
-			Rij_nplus1[cCells] = Rij_n[cCells] - 0.1;
+			Rij_nplus1[cCells] = Rij_n[cCells];
 		else
-			Rij_nplus1[cCells] = Rij_n[cCells] + 0.0;
-	}
+			Rij_nplus1[cCells] = Rij_n[cCells];
+	});
 }
 
 /**
@@ -350,7 +350,7 @@ void Schema_chap2::updateUinner() noexcept
 	{
 		const auto completelyInnerVerticalFaces(mesh->getCompletelyInnerVerticalFaces());
 		const size_t nbCompletelyInnerVerticalFaces(completelyInnerVerticalFaces.size());
-		for (size_t civfCompletelyInnerVerticalFaces=0; civfCompletelyInnerVerticalFaces<nbCompletelyInnerVerticalFaces; civfCompletelyInnerVerticalFaces++)
+		parallel::parallel_exec(nbCompletelyInnerVerticalFaces, [&](const size_t& civfCompletelyInnerVerticalFaces)
 		{
 			const Id civfId(completelyInnerVerticalFaces[civfCompletelyInnerVerticalFaces]);
 			const size_t civfFaces(civfId);
@@ -423,7 +423,7 @@ void Schema_chap2::updateUinner() noexcept
 				const size_t cijCells(cijId);
 				U_nplus1[civfFaces] = U_n[civfFaces] - deltat * (U_n[civfFaces] * TU1 / deltax + TV * TU2 / deltay) - g * deltat / deltax * THU + deltat * (-F * V_n[fijvFaces] - Fx[cijCells] + SB);
 			}
-		}
+		});
 	}
 }
 
@@ -437,7 +437,7 @@ void Schema_chap2::updateUouter() noexcept
 	{
 		const auto topCells(mesh->getTopCells());
 		const size_t nbTopCells(topCells.size());
-		for (size_t tcTopCells=0; tcTopCells<nbTopCells; tcTopCells++)
+		parallel::parallel_exec(nbTopCells, [&](const size_t& tcTopCells)
 		{
 			const Id tcId(topCells[tcTopCells]);
 			const Id rfId(mesh->getRightFaceOfCell(tcId));
@@ -447,12 +447,12 @@ void Schema_chap2::updateUouter() noexcept
 			const Id brfId(mesh->getRightFaceOfCell(bcId));
 			const size_t brfFaces(brfId);
 			U_nplus1[rfFaces] = U_n[brfFaces];
-		}
+		});
 	}
 	{
 		const auto bottomCells(mesh->getBottomCells());
 		const size_t nbBottomCells(bottomCells.size());
-		for (size_t bcBottomCells=0; bcBottomCells<nbBottomCells; bcBottomCells++)
+		parallel::parallel_exec(nbBottomCells, [&](const size_t& bcBottomCells)
 		{
 			const Id bcId(bottomCells[bcBottomCells]);
 			const Id rfId(mesh->getRightFaceOfCell(bcId));
@@ -462,12 +462,12 @@ void Schema_chap2::updateUouter() noexcept
 			const Id trfId(mesh->getRightFaceOfCell(bcfId));
 			const size_t trfFaces(trfId);
 			U_nplus1[rfFaces] = U_n[trfFaces];
-		}
+		});
 	}
 	{
 		const auto leftCells(mesh->getLeftCells());
 		const size_t nbLeftCells(leftCells.size());
-		for (size_t lcLeftCells=0; lcLeftCells<nbLeftCells; lcLeftCells++)
+		parallel::parallel_exec(nbLeftCells, [&](const size_t& lcLeftCells)
 		{
 			const Id lcId(leftCells[lcLeftCells]);
 			const Id lfId(mesh->getLeftFaceOfCell(lcId));
@@ -475,12 +475,12 @@ void Schema_chap2::updateUouter() noexcept
 			const Id rfId(mesh->getRightFaceOfCell(lcId));
 			const size_t rfFaces(rfId);
 			U_nplus1[lfFaces] = U_n[rfFaces];
-		}
+		});
 	}
 	{
 		const auto rightCells(mesh->getRightCells());
 		const size_t nbRightCells(rightCells.size());
-		for (size_t rcRightCells=0; rcRightCells<nbRightCells; rcRightCells++)
+		parallel::parallel_exec(nbRightCells, [&](const size_t& rcRightCells)
 		{
 			const Id rcId(rightCells[rcRightCells]);
 			const Id rfId(mesh->getRightFaceOfCell(rcId));
@@ -488,7 +488,7 @@ void Schema_chap2::updateUouter() noexcept
 			const Id lfId(mesh->getLeftFaceOfCell(rcId));
 			const size_t lfFaces(lfId);
 			U_nplus1[rfFaces] = U_n[lfFaces];
-		}
+		});
 	}
 }
 
@@ -502,7 +502,7 @@ void Schema_chap2::updateVinner() noexcept
 	{
 		const auto completelyInnerHorizontalFaces(mesh->getCompletelyInnerHorizontalFaces());
 		const size_t nbCompletelyInnerHorizontalFaces(completelyInnerHorizontalFaces.size());
-		for (size_t cihfCompletelyInnerHorizontalFaces=0; cihfCompletelyInnerHorizontalFaces<nbCompletelyInnerHorizontalFaces; cihfCompletelyInnerHorizontalFaces++)
+		parallel::parallel_exec(nbCompletelyInnerHorizontalFaces, [&](const size_t& cihfCompletelyInnerHorizontalFaces)
 		{
 			const Id cihfId(completelyInnerHorizontalFaces[cihfCompletelyInnerHorizontalFaces]);
 			const size_t cihfFaces(cihfId);
@@ -575,7 +575,7 @@ void Schema_chap2::updateVinner() noexcept
 				const size_t cijCells(cijId);
 				V_nplus1[cihfFaces] = V_n[cihfFaces] - deltat * (V_n[cihfFaces] * TV1 / deltax + TU * TV2 / deltay) - g * deltat / deltax * THV + deltat * (-F * U_n[fijvFaces] - Fx[cijCells] + SB);
 			}
-		}
+		});
 	}
 }
 
@@ -589,7 +589,7 @@ void Schema_chap2::updateVouter() noexcept
 	{
 		const auto topCells(mesh->getTopCells());
 		const size_t nbTopCells(topCells.size());
-		for (size_t tcTopCells=0; tcTopCells<nbTopCells; tcTopCells++)
+		parallel::parallel_exec(nbTopCells, [&](const size_t& tcTopCells)
 		{
 			const Id tcId(topCells[tcTopCells]);
 			const Id bfId(mesh->getBottomFaceOfCell(tcId));
@@ -597,12 +597,12 @@ void Schema_chap2::updateVouter() noexcept
 			const Id tfId(mesh->getTopFaceOfCell(tcId));
 			const size_t tfFaces(tfId);
 			V_nplus1[tfFaces] = V_n[bfFaces];
-		}
+		});
 	}
 	{
 		const auto bottomCells(mesh->getBottomCells());
 		const size_t nbBottomCells(bottomCells.size());
-		for (size_t bcBottomCells=0; bcBottomCells<nbBottomCells; bcBottomCells++)
+		parallel::parallel_exec(nbBottomCells, [&](const size_t& bcBottomCells)
 		{
 			const Id bcId(bottomCells[bcBottomCells]);
 			const Id bfId(mesh->getBottomFaceOfCell(bcId));
@@ -610,12 +610,12 @@ void Schema_chap2::updateVouter() noexcept
 			const Id tfId(mesh->getTopFaceOfCell(bcId));
 			const size_t tfFaces(tfId);
 			V_nplus1[bfFaces] = V_n[tfFaces];
-		}
+		});
 	}
 	{
 		const auto leftCells(mesh->getLeftCells());
 		const size_t nbLeftCells(leftCells.size());
-		for (size_t lcLeftCells=0; lcLeftCells<nbLeftCells; lcLeftCells++)
+		parallel::parallel_exec(nbLeftCells, [&](const size_t& lcLeftCells)
 		{
 			const Id lcId(leftCells[lcLeftCells]);
 			const Id bfId(mesh->getBottomFaceOfCell(lcId));
@@ -625,12 +625,12 @@ void Schema_chap2::updateVouter() noexcept
 			const Id bfrcId(mesh->getBottomFaceOfCell(rcId));
 			const size_t bfrcFaces(bfrcId);
 			V_nplus1[bfFaces] = V_n[bfrcFaces];
-		}
+		});
 	}
 	{
 		const auto rightCells(mesh->getRightCells());
 		const size_t nbRightCells(rightCells.size());
-		for (size_t rcRightCells=0; rcRightCells<nbRightCells; rcRightCells++)
+		parallel::parallel_exec(nbRightCells, [&](const size_t& rcRightCells)
 		{
 			const Id rcId(rightCells[rcRightCells]);
 			const Id bfId(mesh->getBottomFaceOfCell(rcId));
@@ -640,7 +640,7 @@ void Schema_chap2::updateVouter() noexcept
 			const Id bflcId(mesh->getBottomFaceOfCell(lcId));
 			const size_t bflcFaces(bflcId);
 			V_nplus1[bfFaces] = V_n[bflcFaces];
-		}
+		});
 	}
 }
 
@@ -651,11 +651,11 @@ void Schema_chap2::updateVouter() noexcept
  */
 void Schema_chap2::initXcAndYc() noexcept
 {
-	for (size_t cCells=0; cCells<nbCells; cCells++)
+	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		xc[cCells] = Xc[cCells][0];
 		yc[cCells] = Xc[cCells][1];
-	}
+	});
 }
 
 /**
@@ -685,7 +685,7 @@ void Schema_chap2::updateHinner() noexcept
 	{
 		const auto innerCells(mesh->getInnerCells());
 		const size_t nbInnerCells(innerCells.size());
-		for (size_t cInnerCells=0; cInnerCells<nbInnerCells; cInnerCells++)
+		parallel::parallel_exec(nbInnerCells, [&](const size_t& cInnerCells)
 		{
 			const Id cId(innerCells[cInnerCells]);
 			const size_t cCells(cId);
@@ -760,7 +760,7 @@ void Schema_chap2::updateHinner() noexcept
 				const size_t bfFaces(bfId);
 				H_nplus1[cCells] = H_n[cCells] - deltat * (U_n[rfFaces] * TD1 / deltax - U_n[lfFaces] * TD2 / deltax + V_n[tfFaces] * TV1 / deltay - V_n[bfFaces] * TV2 / deltay) + Rij_nplus1[cCells] - Rij_n[cCells];
 			}
-		}
+		});
 	}
 }
 
@@ -844,6 +844,8 @@ void Schema_chap2::dumpVariables(int iteration, bool useTimer)
 		writer.openNodeData();
 		writer.closeNodeData();
 		writer.openCellData();
+		writer.write("bottommotion", Rij_n);
+		writer.write("profondeur", Dij);
 		writer.write("hauteur", H_n);
 		writer.closeCellData();
 		writer.closeVtpFile();

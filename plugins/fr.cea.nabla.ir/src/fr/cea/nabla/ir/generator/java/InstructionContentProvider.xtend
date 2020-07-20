@@ -82,14 +82,14 @@ class InstructionContentProvider
 	{
 		iterationBlock.defineInterval(
 		'''
-			«IF topLevelLoop»
+			«IF parallelLoop»
 			IntStream.range(0, «iterationBlock.nbElems»).parallel().forEach(«iterationBlock.indexName» -> 
 			«ELSE»
 			for (int «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
 			«ENDIF»
 			{
 				«body.innerContent»
-			}«IF topLevelLoop»);«ENDIF»
+			}«IF parallelLoop»);«ENDIF»
 		''')
 	}
 

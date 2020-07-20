@@ -79,10 +79,10 @@ DepthInit::~DepthInit()
  */
 void DepthInit::initFromFile() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		eta[jCells] = depthInitFunctions.nextWaveHeight();
-	});
+	}
 }
 
 void DepthInit::simulate()

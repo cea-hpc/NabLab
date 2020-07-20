@@ -18,10 +18,13 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Exit
 import fr.cea.nabla.nabla.Expression
+import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.ItemSet
 import fr.cea.nabla.nabla.Loop
+import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDefinition
@@ -30,6 +33,7 @@ import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.While
 import java.util.ArrayList
 import java.util.List
+import org.eclipse.xtext.EcoreUtil2
 
 @Singleton
 class IrInstructionFactory
@@ -99,7 +103,7 @@ class IrInstructionFactory
 				annotations += v.toIrAnnotation
 				iterationBlock = v.iterationBlock.toIrIterationBlock
 				body = flatten(v.body.toIrInstruction, v.iterationBlock.neededIndexAndIdDefinitions)
-				multithreadable = true
+				multithreadable = !v.eAllContents.filter(FunctionCall).exists[x | x.function.external && !x.function.nablaLibFunction]
 			]
 			#[irInstr]
 		}
@@ -188,5 +192,11 @@ class IrInstructionFactory
 			instructions.addAll(0, definitions)
 			instructions.add(instruction)
 		]
+	}
+
+	private def isNablaLibFunction(FunctionOrReduction it) 
+	{
+		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
+		return (module.name == 'LinearAlgebra' || module.name == 'Math')
 	}
 }

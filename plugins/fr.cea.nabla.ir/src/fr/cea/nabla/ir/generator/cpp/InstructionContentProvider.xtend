@@ -134,7 +134,7 @@ abstract class InstructionContentProvider
 		«ENDFOR»
 	'''
 
-	protected def boolean isParallel(Loop it) { topLevelLoop }
+	protected def boolean isParallel(Loop it) { parallelLoop }
 
 	protected def CharSequence getSequentialLoopContent(Loop it)
 	'''

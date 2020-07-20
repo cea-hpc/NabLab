@@ -104,9 +104,9 @@ public final class DepthInit
 	 */
 	private void initFromFile()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		for (int jCells=0; jCells<nbCells; jCells++)
 		{
 			eta[jCells] = depthInitFunctions.nextWaveHeight();
-		});
+		}
 	}
 };

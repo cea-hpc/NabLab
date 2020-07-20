@@ -62,16 +62,9 @@ class Utils
 		 */
 	'''
 
-	static def boolean isTopLevelLoop(EObject it)
+	static def boolean isParallelLoop(Loop it)
 	{
-		if (eContainer === null) false
-		else switch eContainer
-		{
-			Loop : false
-			ReductionInstruction : false
-			Job : true
-			default : eContainer.topLevelLoop
-		}
+		isTopLevelLoop && multithreadable
 	}
 
 	static def getOperatorName(String op)
@@ -82,6 +75,18 @@ class Utils
 			case '-': 'minus'
 			case '*': 'multiply'
 			case '+': 'plus'
+		}
+	}
+
+	private static def boolean isTopLevelLoop(EObject it)
+	{
+		if (eContainer === null) false
+		else switch eContainer
+		{
+			Loop : false
+			ReductionInstruction : false
+			Job : true
+			default : eContainer.topLevelLoop
 		}
 	}
 }

@@ -11,7 +11,6 @@
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
-#include "schema_chap2/Schema_chap2Functions.h"
 #include "mesh/stl/PvdFileWriter2D.h"
 #include "utils/stl/Parallel.h"
 
@@ -45,16 +44,15 @@ public:
 	};
 
 	const Options& options;
-	Schema_chap2Functions& schema_chap2Functions;
 
-	Schema_chap2(const Options& aOptions, Schema_chap2Functions& aSchema_chap2Functions);
+	Schema_chap2(const Options& aOptions);
 	~Schema_chap2();
 
 private:
 	// Global definitions
 	double t_n;
 	double t_nplus1;
-	static constexpr double deltat = 0.001;
+	static constexpr double deltat = 0.005;
 	const double deltax;
 	const double deltay;
 	static constexpr double g = -9.8;
@@ -98,8 +96,6 @@ private:
 	
 	void initFxy() noexcept;
 	
-	void initH1() noexcept;
-	
 	void initRij() noexcept;
 	
 	void initU() noexcept;
@@ -122,9 +118,11 @@ private:
 	
 	void initXcAndYc() noexcept;
 	
-	void setUpTimeLoopN() noexcept;
-	
 	void updateHinner() noexcept;
+	
+	void initH1() noexcept;
+	
+	void setUpTimeLoopN() noexcept;
 	
 	void executeTimeLoopN() noexcept;
 

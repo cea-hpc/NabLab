@@ -59,8 +59,8 @@ connectivity leftFaceNeighbour: face → face;
 def nextWaveHeight: → ℝ;
 
 // options
-option ℝ X_EDGE_LENGTH = 0.1;
-option ℝ Y_EDGE_LENGTH = 0.1;
+option ℝ X_EDGE_LENGTH = 200.0;
+option ℝ Y_EDGE_LENGTH = 200.0;
 option ℕ X_EDGE_ELEMS = 1103; //input data has 1101
 option ℕ Y_EDGE_ELEMS = 44; //input data has 42
 option ℝ X_LENGTH = X_EDGE_LENGTH * X_EDGE_ELEMS;
@@ -69,10 +69,10 @@ option ℝ Y_LENGTH = Y_EDGE_LENGTH * Y_EDGE_ELEMS;
 //option ℝ X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
 //option ℝ Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
 
-option ℕ maxIter = 50000;
-option ℝ stopTime =1.0;
+option ℕ maxIter = 500000;
+option ℝ stopTime = 50.0;
 let ℝ t = 0.0;
-let ℝ δt = 0.001;
+let ℝ δt = 0.02;
 let ℝ δx = X_EDGE_LENGTH;
 let ℝ δy = Y_EDGE_LENGTH;
 let ℝ g = -9.8; // -9.8
@@ -99,7 +99,7 @@ InitXcAndYc: ∀c∈cells(), {
 	yc{c} = Xc{c}[1];
 }
 
- // forcing functions initialization
+// forcing functions initialization
 InitFxy: ∀c∈cells(), 
 {
 	Fx{c} = 0.0;
@@ -110,19 +110,19 @@ InitFxy: ∀c∈cells(),
 InitDij: 
 {
 	∀c∈cells(),
-		Dij{c} = -100.0;
+		Dij{c} = -1000.0;
 }
 
 // wave initialization
-InitH1: ∀c∈innerCells(),
+InitH: ∀c∈innerCells(),
 {
 	H^{n=0}{c} = nextWaveHeight();
 }
 
 /*
  * Il faut trouver un moyen de faire ça, il faut la condition au bord à t=0 aussi !
- * Idem pour les vitesses 
-InitBoundaryCondition: 
+ * Idem pour les vitesses !!
+InitHBoundaryCondition: 
 {
 	∀t∈topCells(), ∀bt∈bottomCell(t), H^{n=0}{t} = H^{n=0}{bt};
 	∀b∈bottomCells(), ∀tb∈topCell(b), H^{n=0}{b} = H^{n=0}{tb};
@@ -131,13 +131,13 @@ InitBoundaryCondition:
 }
 */
 // x velocity initialization
-InitU: ∀f∈innerFaces(),
+InitU: ∀f∈innerFaces(), //don't forget the boundary condition on U
 {
 		U^{n=0}{f} = 0.0;
 }
 
 // y velocity initialization
-InitV: ∀f∈innerFaces(), 
+InitV: ∀f∈innerFaces(), //don't forget the boundary condition on V
 {
 		V^{n=0}{f} = 0.0;
 }
@@ -274,13 +274,13 @@ UpdateUinner:∀civf∈completelyInnerVerticalFaces(),
 UpdateUouter:
 {
 	∀tc∈topCells(), ∀rf∈rightFaceOfCell(tc), ∀bf∈bottomFaceOfCell(tc), ∀bc∈frontCell(bf), ∀brf∈rightFaceOfCell(bc),
-		U^{n+1}{rf} = U^{n}{brf};
+		U^{n+1}{rf} = 0.0;//U^{n}{brf};
 	∀bc∈bottomCells(), ∀rf∈rightFaceOfCell(bc), ∀tf∈topFaceOfCell(bc), ∀bcf∈backCell(tf), ∀trf∈rightFaceOfCell(bcf),
-		U^{n+1}{rf} = U^{n}{trf};
+		U^{n+1}{rf} = 0.0;//U^{n}{trf};
 	∀lc∈leftCells(), ∀lf∈leftFaceOfCell(lc), ∀rf∈rightFaceOfCell(lc),
-		U^{n+1}{lf} = U^{n}{rf};
+		U^{n+1}{lf} = 0.0;//U^{n}{rf};
 	∀rc∈rightCells(), ∀rf∈rightFaceOfCell(rc), ∀lf∈leftFaceOfCell(rc),
-		U^{n+1}{rf} = U^{n}{lf};
+		U^{n+1}{rf} = 0.0;//U^{n}{lf};
 }
 
 // compute new y velocity using the numerical schema
@@ -343,13 +343,13 @@ UpdateVinner:∀cihf∈completelyInnerHorizontalFaces(),
 UpdateVouter:
 {
 	∀tc∈topCells(), ∀bf∈bottomFaceOfCell(tc), ∀tf∈topFaceOfCell(tc),
-		V^{n+1}{tf} = V^{n}{bf};
+		V^{n+1}{tf} = 0.0;//V^{n}{bf};
 	∀bc∈bottomCells(), ∀bf∈bottomFaceOfCell(bc), ∀tf∈topFaceOfCell(bc),
-		V^{n+1}{bf} = V^{n}{tf};
+		V^{n+1}{bf} = 0.0;//V^{n}{tf};
 	∀lc∈leftCells(), ∀bf∈bottomFaceOfCell(lc), ∀rf∈rightFaceOfCell(lc), ∀rc∈frontCell(rf), ∀bfrc∈bottomFaceOfCell(rc),
-		V^{n+1}{bf} = V^{n}{bfrc};
+		V^{n+1}{bf} = 0.0;//V^{n}{bfrc};
 	∀rc∈rightCells(), ∀bf∈bottomFaceOfCell(rc), ∀lf∈leftFaceOfCell(rc), ∀lc∈backCell(lf), ∀bflc∈bottomFaceOfCell(lc),
-		V^{n+1}{bf} = V^{n}{bflc};
+		V^{n+1}{bf} = 0.0;//V^{n}{bflc};
 		
 }
 

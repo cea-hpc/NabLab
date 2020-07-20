@@ -5,14 +5,13 @@
 		"_outputPath_comment":"empty outputPath to disable output",
 		"outputPath":"output",
 		"outputPeriod":1,
-		"X_EDGE_LENGTH":0.1,
-		"Y_EDGE_LENGTH":0.1,
-		"X_EDGE_ELEMS":1103,
-		"Y_EDGE_ELEMS":44,
-		"X_LENGTH":110.30000000000001,
-		"Y_LENGTH":4.4,
-		"maxIter":50000,
-		"stopTime":1.0
-	},
-	"schema_chap2Functions":{}
+		"X_EDGE_LENGTH":200.0,
+		"Y_EDGE_LENGTH":200.0,
+		"X_EDGE_ELEMS":60,
+		"Y_EDGE_ELEMS":60,
+		"X_LENGTH":12000.0,
+		"Y_LENGTH":12000.0,
+		"maxIter":500000,
+		"stopTime":50.0
+	}
 }

@@ -70,9 +70,8 @@ Schema_chap2::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 
 /******************** Module definition ********************/
 
-Schema_chap2::Schema_chap2(const Options& aOptions, Schema_chap2Functions& aSchema_chap2Functions)
+Schema_chap2::Schema_chap2(const Options& aOptions)
 : options(aOptions)
-, schema_chap2Functions(aSchema_chap2Functions)
 , t_n(0.0)
 , t_nplus1(0.0)
 , deltax(options.X_EDGE_LENGTH)
@@ -170,25 +169,6 @@ void Schema_chap2::initFxy() noexcept
 		Fx[cCells] = 0.0;
 		Fy[cCells] = 0.0;
 	});
-}
-
-/**
- * Job InitH1 called @1.0 in simulate method.
- * In variables: 
- * Out variables: H_n0
- */
-void Schema_chap2::initH1() noexcept
-{
-	{
-		const auto innerCells(mesh->getInnerCells());
-		const size_t nbInnerCells(innerCells.size());
-		for (size_t cInnerCells=0; cInnerCells<nbInnerCells; cInnerCells++)
-		{
-			const Id cId(innerCells[cInnerCells]);
-			const size_t cCells(cId);
-			H_n0[cCells] = schema_chap2Functions.nextWaveHeight();
-		}
-	}
 }
 
 /**
@@ -428,8 +408,8 @@ void Schema_chap2::updateUinner() noexcept
 }
 
 /**
- * Job UpdateUouter called @1.0 in executeTimeLoopN method.
- * In variables: U_n
+ * Job UpdateUouter called @1.0 in simulate method.
+ * In variables: 
  * Out variables: U_nplus1
  */
 void Schema_chap2::updateUouter() noexcept
@@ -444,9 +424,7 @@ void Schema_chap2::updateUouter() noexcept
 			const size_t rfFaces(rfId);
 			const Id bfId(mesh->getBottomFaceOfCell(tcId));
 			const Id bcId(mesh->getFrontCell(bfId));
-			const Id brfId(mesh->getRightFaceOfCell(bcId));
-			const size_t brfFaces(brfId);
-			U_nplus1[rfFaces] = U_n[brfFaces];
+			U_nplus1[rfFaces] = 0.0;
 		});
 	}
 	{
@@ -459,9 +437,7 @@ void Schema_chap2::updateUouter() noexcept
 			const size_t rfFaces(rfId);
 			const Id tfId(mesh->getTopFaceOfCell(bcId));
 			const Id bcfId(mesh->getBackCell(tfId));
-			const Id trfId(mesh->getRightFaceOfCell(bcfId));
-			const size_t trfFaces(trfId);
-			U_nplus1[rfFaces] = U_n[trfFaces];
+			U_nplus1[rfFaces] = 0.0;
 		});
 	}
 	{
@@ -472,9 +448,7 @@ void Schema_chap2::updateUouter() noexcept
 			const Id lcId(leftCells[lcLeftCells]);
 			const Id lfId(mesh->getLeftFaceOfCell(lcId));
 			const size_t lfFaces(lfId);
-			const Id rfId(mesh->getRightFaceOfCell(lcId));
-			const size_t rfFaces(rfId);
-			U_nplus1[lfFaces] = U_n[rfFaces];
+			U_nplus1[lfFaces] = 0.0;
 		});
 	}
 	{
@@ -485,9 +459,7 @@ void Schema_chap2::updateUouter() noexcept
 			const Id rcId(rightCells[rcRightCells]);
 			const Id rfId(mesh->getRightFaceOfCell(rcId));
 			const size_t rfFaces(rfId);
-			const Id lfId(mesh->getLeftFaceOfCell(rcId));
-			const size_t lfFaces(lfId);
-			U_nplus1[rfFaces] = U_n[lfFaces];
+			U_nplus1[rfFaces] = 0.0;
 		});
 	}
 }
@@ -580,8 +552,8 @@ void Schema_chap2::updateVinner() noexcept
 }
 
 /**
- * Job UpdateVouter called @1.0 in executeTimeLoopN method.
- * In variables: V_n
+ * Job UpdateVouter called @1.0 in simulate method.
+ * In variables: 
  * Out variables: V_nplus1
  */
 void Schema_chap2::updateVouter() noexcept
@@ -592,11 +564,9 @@ void Schema_chap2::updateVouter() noexcept
 		parallel::parallel_exec(nbTopCells, [&](const size_t& tcTopCells)
 		{
 			const Id tcId(topCells[tcTopCells]);
-			const Id bfId(mesh->getBottomFaceOfCell(tcId));
-			const size_t bfFaces(bfId);
 			const Id tfId(mesh->getTopFaceOfCell(tcId));
 			const size_t tfFaces(tfId);
-			V_nplus1[tfFaces] = V_n[bfFaces];
+			V_nplus1[tfFaces] = 0.0;
 		});
 	}
 	{
@@ -607,9 +577,7 @@ void Schema_chap2::updateVouter() noexcept
 			const Id bcId(bottomCells[bcBottomCells]);
 			const Id bfId(mesh->getBottomFaceOfCell(bcId));
 			const size_t bfFaces(bfId);
-			const Id tfId(mesh->getTopFaceOfCell(bcId));
-			const size_t tfFaces(tfId);
-			V_nplus1[bfFaces] = V_n[tfFaces];
+			V_nplus1[bfFaces] = 0.0;
 		});
 	}
 	{
@@ -622,9 +590,7 @@ void Schema_chap2::updateVouter() noexcept
 			const size_t bfFaces(bfId);
 			const Id rfId(mesh->getRightFaceOfCell(lcId));
 			const Id rcId(mesh->getFrontCell(rfId));
-			const Id bfrcId(mesh->getBottomFaceOfCell(rcId));
-			const size_t bfrcFaces(bfrcId);
-			V_nplus1[bfFaces] = V_n[bfrcFaces];
+			V_nplus1[bfFaces] = 0.0;
 		});
 	}
 	{
@@ -637,9 +603,7 @@ void Schema_chap2::updateVouter() noexcept
 			const size_t bfFaces(bfId);
 			const Id lfId(mesh->getLeftFaceOfCell(rcId));
 			const Id lcId(mesh->getBackCell(lfId));
-			const Id bflcId(mesh->getBottomFaceOfCell(lcId));
-			const size_t bflcFaces(bflcId);
-			V_nplus1[bfFaces] = V_n[bflcFaces];
+			V_nplus1[bfFaces] = 0.0;
 		});
 	}
 }
@@ -656,23 +620,6 @@ void Schema_chap2::initXcAndYc() noexcept
 		xc[cCells] = Xc[cCells][0];
 		yc[cCells] = Xc[cCells][1];
 	});
-}
-
-/**
- * Job SetUpTimeLoopN called @2.0 in simulate method.
- * In variables: H_n0, Rij_n0, U_n0, V_n0
- * Out variables: H_n, Rij_n, U_n, V_n
- */
-void Schema_chap2::setUpTimeLoopN() noexcept
-{
-	for (size_t i1(0) ; i1<U_n.size() ; i1++)
-		U_n[i1] = U_n0[i1];
-	for (size_t i1(0) ; i1<V_n.size() ; i1++)
-		V_n[i1] = V_n0[i1];
-	for (size_t i1(0) ; i1<H_n.size() ; i1++)
-		H_n[i1] = H_n0[i1];
-	for (size_t i1(0) ; i1<Rij_n.size() ; i1++)
-		Rij_n[i1] = Rij_n0[i1];
 }
 
 /**
@@ -765,7 +712,40 @@ void Schema_chap2::updateHinner() noexcept
 }
 
 /**
- * Job ExecuteTimeLoopN called @3.0 in simulate method.
+ * Job InitH1 called @3.0 in simulate method.
+ * In variables: xc
+ * Out variables: H_n0
+ */
+void Schema_chap2::initH1() noexcept
+{
+	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	{
+		if (xc[cCells] < 5000) 
+			H_n0[cCells] = 3.0;
+		else
+			H_n0[cCells] = 0.0;
+	});
+}
+
+/**
+ * Job SetUpTimeLoopN called @4.0 in simulate method.
+ * In variables: H_n0, Rij_n0, U_n0, V_n0
+ * Out variables: H_n, Rij_n, U_n, V_n
+ */
+void Schema_chap2::setUpTimeLoopN() noexcept
+{
+	for (size_t i1(0) ; i1<U_n.size() ; i1++)
+		U_n[i1] = U_n0[i1];
+	for (size_t i1(0) ; i1<V_n.size() ; i1++)
+		V_n[i1] = V_n0[i1];
+	for (size_t i1(0) ; i1<H_n.size() ; i1++)
+		H_n[i1] = H_n0[i1];
+	for (size_t i1(0) ; i1<Rij_n.size() ; i1++)
+		Rij_n[i1] = Rij_n0[i1];
+}
+
+/**
+ * Job ExecuteTimeLoopN called @5.0 in simulate method.
  * In variables: C, Dij, F, Fx, H_n, Rij_n, Rij_nplus1, U_n, V_n, deltat, deltax, deltay, g, t_n, xc
  * Out variables: H_nplus1, Rij_nplus1, U_nplus1, V_nplus1, t_nplus1
  */
@@ -788,9 +768,7 @@ void Schema_chap2::executeTimeLoopN() noexcept
 		updateHouter(); // @1.0
 		updateRij(); // @1.0
 		updateUinner(); // @1.0
-		updateUouter(); // @1.0
 		updateVinner(); // @1.0
-		updateVouter(); // @1.0
 		updateHinner(); // @2.0
 		
 	
@@ -874,14 +852,16 @@ void Schema_chap2::simulate()
 
 	initDij(); // @1.0
 	initFxy(); // @1.0
-	initH1(); // @1.0
 	initRij(); // @1.0
 	initU(); // @1.0
 	initV(); // @1.0
 	initXc(); // @1.0
+	updateUouter(); // @1.0
+	updateVouter(); // @1.0
 	initXcAndYc(); // @2.0
-	setUpTimeLoopN(); // @2.0
-	executeTimeLoopN(); // @3.0
+	initH1(); // @3.0
+	setUpTimeLoopN(); // @4.0
+	executeTimeLoopN(); // @5.0
 	
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
@@ -919,17 +899,9 @@ int main(int argc, char* argv[])
 		options.jsonInit(valueof_options.GetObject());
 	}
 	
-	// schema_chap2Functions
-	Schema_chap2Functions schema_chap2Functions;
-	if (d.HasMember("schema_chap2Functions"))
-	{
-		const rapidjson::Value& valueof_schema_chap2Functions = d["schema_chap2Functions"];
-		assert(valueof_schema_chap2Functions.IsObject());
-		schema_chap2Functions.jsonInit(valueof_schema_chap2Functions.GetObject());
-	}
 	
 	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-	auto simulator = new Schema_chap2(options, schema_chap2Functions);
+	auto simulator = new Schema_chap2(options);
 	simulator->simulate();
 	
 	// simulator must be deleted before calling finalize

@@ -34,9 +34,7 @@ public:
                   const vector<Id>& left_nodes_ids, const vector<Id>& right_nodes_ids,
                   const Id top_left_node_id, const Id top_right_node_id,
                   const Id bottom_left_node_id, const Id bottom_right_node_id,
-				  const vector<Id>& inner_cells_ids_ , const vector<Id>& outer_cells_ids_,
-				  const vector<Id>& top_row_cells_, const vector<Id>& bottom_row_cells_,
-				  const vector<Id>& left_column_cells_, const vector<Id>& right_column_cells_);
+				  const vector<Id>& inner_cells_ids_ , const vector<Id>& outer_cells_ids_);
 
 	MeshGeometry<2>* getGeometry() noexcept { return m_geometry; }
 
@@ -172,19 +170,6 @@ public:
 
 	size_t getNbCompletelyInnerHorizontalFaces() const noexcept { return m_completely_inner_horizontal_faces.size(); }
 	const vector<Id>& getCompletelyInnerHorizontalFaces() const noexcept { return m_completely_inner_horizontal_faces; }
-
-	size_t getNbTopRowCells() const noexcept { return m_top_row_cells.size(); }
-	const vector<Id>& getTopRowCells() const noexcept { return m_top_row_cells; }
-
-	size_t getNbBottomRowCells() const noexcept { return m_bottom_row_cells.size(); }
-	const vector<Id>& getBottomRowCells() const noexcept { return m_bottom_row_cells; }
-
-	size_t getNbLeftColumnCells() const noexcept { return m_left_column_cells.size(); }
-	const vector<Id>& getLeftColumnCells() const noexcept { return m_left_column_cells;}
-
-	size_t getNbRightColumnCells() const noexcept { return m_right_column_cells.size(); }
-	const vector<Id>& getRightColumnCells() const noexcept { return m_right_column_cells; }
-	//fin test
   
 private:
 	inline Id index2IdCell(const size_t& i, const size_t& j) const noexcept;
@@ -231,7 +216,7 @@ private:
 	Id m_top_right_node;
 	Id m_bottom_left_node;
 	Id m_bottom_right_node;
-
+  
 	vector<Id> m_top_cells;
 	vector<Id> m_bottom_cells;
 	vector<Id> m_left_cells;
@@ -254,11 +239,6 @@ private:
 	vector<Id> m_completely_inner_horizontal_faces;
 	vector<Id> m_completely_inner_vertical_faces;
 	vector<Id> m_completely_inner_faces;
-
-	vector<Id> m_top_row_cells;
-	vector<Id> m_bottom_row_cells;
-	vector<Id> m_left_column_cells;
-	vector<Id> m_right_column_cells;
 
 	//fin test
 

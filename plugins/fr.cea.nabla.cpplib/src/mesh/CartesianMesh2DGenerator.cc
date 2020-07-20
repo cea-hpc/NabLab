@@ -41,11 +41,6 @@ CartesianMesh2DGenerator::generate(size_t nbXQuads, size_t nbYQuads, double xSiz
 
 	vector<Id> inner_cells_ids_((nbXQuads - 2)*(nbYQuads - 2));
 	vector<Id> outer_cells_ids_( 2 * nbXQuads + 2 * (nbYQuads - 2));
-
-	vector<Id> top_row_cells_(nbXQuads);
-	vector<Id> bottom_row_cells_(nbXQuads);
-	vector<Id> left_column_cells_(nbYQuads);
-	vector<Id> right_column_cells_(nbYQuads);
 	//fin test
 
 	// node creation
@@ -96,10 +91,6 @@ CartesianMesh2DGenerator::generate(size_t nbXQuads, size_t nbYQuads, double xSiz
 	Id quad_id_(0);
 	Id inner_id_(0);
 	Id outer_id_(0);
-	Id left_id_(0);
-	Id right_id_(0);
-	Id top_id_(0);
-	Id bottom_id_(0);
 	for(size_t j(0); j < nbYQuads; ++j) {
 		for(size_t i(0); i < nbXQuads; ++i) {
 			if( (i != 0) && (i != nbXQuads - 1) && (j != 0) && (j!= nbYQuads - 1) )
@@ -109,10 +100,6 @@ CartesianMesh2DGenerator::generate(size_t nbXQuads, size_t nbYQuads, double xSiz
 			else
 			{
 				outer_cells_ids_[outer_id_++] = quad_id_;
-				if (i == 0) {left_column_cells_[left_id_++] = quad_id_;}
-				if (i == nbXQuads - 1) {right_column_cells_[right_id_++] = quad_id_;}
-				if (j == 0) {bottom_row_cells_[bottom_id_++] = quad_id_;}
-				if (j == nbYQuads - 1) {top_row_cells_[top_id_++] = quad_id_;}
 			}
 			const size_t upper_left_node_index_((j * static_cast<size_t>(nb_x_nodes_)) + i);
 			const size_t lower_left_node_index_(upper_left_node_index_ + static_cast<size_t>(nb_x_nodes_));
@@ -127,9 +114,7 @@ CartesianMesh2DGenerator::generate(size_t nbXQuads, size_t nbYQuads, double xSiz
 		                         left_node_ids_, right_node_ids_,
 		                         top_left_node_id_, top_right_node_id_,
 		                         bottom_left_node_id_, bottom_right_node_id_,
-								 inner_cells_ids_, outer_cells_ids_,
-								 top_row_cells_, bottom_row_cells_,
-								 left_column_cells_,right_column_cells_);
+								 inner_cells_ids_, outer_cells_ids_);
 }
 
 }

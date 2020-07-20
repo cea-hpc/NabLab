@@ -30,6 +30,7 @@ public:
 	const vector<Edge>& getEdges() noexcept { return m_edges; }
 	const vector<Quad>& getQuads() noexcept { return m_quads; }
 
+
 private:
 	vector<RealArray1D<N>> m_nodes;
 	vector<Edge> m_edges;

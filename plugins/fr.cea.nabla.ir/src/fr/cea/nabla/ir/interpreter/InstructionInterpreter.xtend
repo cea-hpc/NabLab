@@ -121,7 +121,7 @@ class InstructionInterpreter
 			{
 				context.logFinest("We deal with loop " + b.container.uniqueName)
 				val container = context.getContainerValue(b.container)
-				if (topLevelLoop && isMultithreadable)
+				if (parallelLoop)
 				{
 					//NB Can't return in parallelForEach
 					IntStream.range(0, container.size).parallel().forEach([loopIteratorValue |

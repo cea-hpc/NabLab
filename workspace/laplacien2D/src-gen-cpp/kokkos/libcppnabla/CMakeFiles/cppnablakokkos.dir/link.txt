@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcppnablakokkos.a  CMakeFiles/cppnablakokkos.dir/linearalgebra/kokkos/LinearAlgebraFunctions.cc.o CMakeFiles/cppnablakokkos.dir/linearalgebra/kokkos/Matrix.cc.o
-/usr/bin/ranlib libcppnablakokkos.a

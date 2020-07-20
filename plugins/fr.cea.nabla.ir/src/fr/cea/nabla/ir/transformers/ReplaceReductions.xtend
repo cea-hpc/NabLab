@@ -100,7 +100,7 @@ class ReplaceReductions extends IrTransformationStep
 				instructions += _instructions
 			]
 		}
-		// A reduction cannot be executed in //
+		// A reduction cannot be executed in // (because of +=)
 		multithreadable = false
 	}
 

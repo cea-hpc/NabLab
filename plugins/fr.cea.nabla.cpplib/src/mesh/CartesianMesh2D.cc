@@ -251,7 +251,33 @@ CartesianMesh2D::isInnerEdge(const Edge& e) const noexcept
 	       (find(m_inner_nodes.begin(), m_inner_nodes.end(), e.getNodeIds()[1]) != m_inner_nodes.end());
 }
 
-//test guillaume
+bool
+CartesianMesh2D::isVerticalEdge(const Edge& e) const noexcept
+{
+	return (e.getNodeIds()[0] == e.getNodeIds()[1] + m_nb_x_quads + 1 ||
+			    e.getNodeIds()[1] == e.getNodeIds()[0] + m_nb_x_quads + 1);
+}
+
+bool
+CartesianMesh2D::isHorizontalEdge(const Edge& e) const noexcept
+{
+	return (e.getNodeIds()[0] == e.getNodeIds()[1] + 1 ||
+			    e.getNodeIds()[1] == e.getNodeIds()[0] + 1);
+}
+
+bool
+CartesianMesh2D::isInnerVerticalEdge(const Edge& e) const noexcept
+{
+  return isInnerEdge(e) && isVerticalEdge(e);
+}
+
+bool
+CartesianMesh2D::isInnerHorizontalEdge(const Edge& e) const noexcept
+{
+  return isInnerEdge(e) && isHorizontalEdge(e);
+}
+
+// TODO : regarder si ce ne serait pas la vrai semantique de isInnerEdge
 bool
 CartesianMesh2D::isCompletelyInnerEdge(const Edge& e) const noexcept
 {
@@ -262,33 +288,13 @@ CartesianMesh2D::isCompletelyInnerEdge(const Edge& e) const noexcept
 bool
 CartesianMesh2D::isCompletelyInnerVerticalEdge(const Edge& e) const noexcept
 {
-	if (!isCompletelyInnerEdge(e)) return false;
-	return (e.getNodeIds()[0] == e.getNodeIds()[1] + m_nb_x_quads + 1 ||
-			    e.getNodeIds()[1] == e.getNodeIds()[0] + m_nb_x_quads + 1);
+  return isCompletelyInnerEdge(e) && isVerticalEdge(e);
 }
 
 bool
 CartesianMesh2D::isCompletelyInnerHorizontalEdge(const Edge& e) const noexcept
 {
-	if (!isCompletelyInnerEdge(e)) return false;
-	return (e.getNodeIds()[0] == e.getNodeIds()[1] + 1 ||
-			    e.getNodeIds()[1] == e.getNodeIds()[0] + 1);
-}
-//fin test
-bool
-CartesianMesh2D::isInnerVerticalEdge(const Edge& e) const noexcept
-{
-	if (!isInnerEdge(e)) return false;
-	return (e.getNodeIds()[0] == e.getNodeIds()[1] + m_nb_x_quads + 1 ||
-			    e.getNodeIds()[1] == e.getNodeIds()[0] + m_nb_x_quads + 1);
-}
-
-bool
-CartesianMesh2D::isInnerHorizontalEdge(const Edge& e) const noexcept
-{
-	if (!isInnerEdge(e)) return false;
-	return (e.getNodeIds()[0] == e.getNodeIds()[1] + 1 ||
-			    e.getNodeIds()[1] == e.getNodeIds()[0] + 1);
+  return isCompletelyInnerEdge(e) && isHorizontalEdge(e);
 }
 
 Id
@@ -371,32 +377,42 @@ Id CartesianMesh2D::getBottomFaceNeighbour(const Id& faceId) const
 }
 Id CartesianMesh2D::getBottomLeftFaceNeighbour(const Id& faceId) const
 {
-	auto edges = m_geometry->getEdges();
-	assert(isCompletelyInnerEdge(edges[faceId]));
-	if(isCompletelyInnerVerticalEdge(edges[faceId])){
-		auto left_cell = getBackCell(faceId);
-		auto bottom_left_face = getBottomFaceOfCell(left_cell);
-		return bottom_left_face;
-	} else{ // isCompletelyInnerHorizontalEdge(edges[faceId])
-		auto bottom_cell = getFrontCell(faceId);
-		auto bottom_left_face = getLeftFaceOfCell(bottom_cell);
-		return bottom_left_face;
-	}
+  const Edge& face(m_geometry->getEdges()[faceId]);
+	assert(isCompletelyInnerEdge(face));
+	//if(isCompletelyInnerVerticalEdge(edges[faceId])){
+		//auto left_cell = getBackCell(faceId);
+		//auto bottom_left_face = getBottomFaceOfCell(left_cell);
+		//return bottom_left_face;
+	//} else{ // isCompletelyInnerHorizontalEdge(edges[faceId])
+		//auto bottom_cell = getFrontCell(faceId);
+		//auto bottom_left_face = getLeftFaceOfCell(bottom_cell);
+		//return bottom_left_face;
+	//}
+  if (isVerticalEdge(face))
+    return (faceId - 3);
+  else  // horizontal
+    return ((faceId + 1) - 2 * m_nb_x_quads + 1);
 }
+
 Id CartesianMesh2D::getBottomRightFaceNeighbour(const Id& faceId) const
 {
-	auto edges = m_geometry->getEdges();
-	assert(isCompletelyInnerEdge(edges[faceId]));
-	if(isCompletelyInnerVerticalEdge(edges[faceId])){
-		auto right_cell = getFrontCell(faceId);
-		auto bottom_right_face = getBottomFaceOfCell(right_cell);
-		return bottom_right_face;
-	} else {//isCompletelyInnerHorizontalEdge(edges[faceId])
-		auto bottom_cell = getFrontCell(faceId);
-		auto bottom_right_face = getRightFaceOfCell(bottom_cell);
-		return bottom_right_face;
-	}
+  const Edge& face(m_geometry->getEdges()[faceId]);
+	assert(isCompletelyInnerEdge(face));
+	//if(isCompletelyInnerVerticalEdge(edges[faceId])){
+		//auto right_cell = getFrontCell(faceId);
+		//auto bottom_right_face = getBottomFaceOfCell(right_cell);
+		//return bottom_right_face;
+	//} else {//isCompletelyInnerHorizontalEdge(edges[faceId])
+		//auto bottom_cell = getFrontCell(faceId);
+		//auto bottom_right_face = getRightFaceOfCell(bottom_cell);
+		//return bottom_right_face;
+	//}
+  if (isVerticalEdge(face))
+    return (faceId - 1);
+  else  // horizontal
+    return ((faceId + 3) - 2 * m_nb_x_quads + 1);
 }
+
 Id CartesianMesh2D::getTopFaceNeighbour(const Id& faceId) const
 {
 	auto edges = m_geometry->getEdges();
@@ -411,34 +427,45 @@ Id CartesianMesh2D::getTopFaceNeighbour(const Id& faceId) const
 		return top_face;
 	}
 }
+
 Id CartesianMesh2D::getTopLeftFaceNeighbour(const Id& faceId) const
 {
-	auto edges = m_geometry->getEdges();
-	assert(isCompletelyInnerEdge(edges[faceId]));
-	if(isCompletelyInnerVerticalEdge(edges[faceId])){
-		auto left_cell = getBackCell(faceId);
-		auto top_left_face = getTopFaceOfCell(left_cell);
-		return top_left_face;
-	}  else { //isCompletelyInnerHorizontalEdge(edges[faceId])
-		auto top_cell = getBackCell(faceId);
-		auto top_left_face = getLeftFaceOfCell(top_cell);
-		return top_left_face;
-	}
+  const Edge& face(m_geometry->getEdges()[faceId]);
+ 	assert(isCompletelyInnerEdge(face));
+	//if(isCompletelyInnerVerticalEdge(edges[faceId])){
+		//auto left_cell = getBackCell(faceId);
+		//auto top_left_face = getTopFaceOfCell(left_cell);
+		//return top_left_face;
+	//}  else { //isCompletelyInnerHorizontalEdge(edges[faceId])
+		//auto top_cell = getBackCell(faceId);
+		//auto top_left_face = getLeftFaceOfCell(top_cell);
+		//return top_left_face;
+	//}
+  if (isVerticalEdge(face))
+    return ((faceId - 3) + 2 * m_nb_x_quads + 1);
+  else  // horizontal
+    return (faceId + 1);
 }
+
 Id CartesianMesh2D::getTopRightFaceNeighbour(const Id& faceId) const
 {
-	auto edges = m_geometry->getEdges();
-	assert(isCompletelyInnerEdge(edges[faceId]));
-	if(isCompletelyInnerVerticalEdge(edges[faceId])){
-			auto right_cell = getFrontCell(faceId);
-			auto top_right_face = getTopFaceOfCell(right_cell);
-			return top_right_face;
-	}  else {//isCompletelyInnerHorizontalEdge(edges[faceId])
-			auto top_cell = getBackCell(faceId);
-			auto top_right_face = getRightFaceOfCell(top_cell);
-			return top_right_face;
-	}
+  const Edge& face(m_geometry->getEdges()[faceId]);
+	assert(isCompletelyInnerEdge(face));
+	//if(isCompletelyInnerVerticalEdge(edges[faceId])){
+			//auto right_cell = getFrontCell(faceId);
+			//auto top_right_face = getTopFaceOfCell(right_cell);
+			//return top_right_face;
+	//}  else {//isCompletelyInnerHorizontalEdge(edges[faceId])
+			//auto top_cell = getBackCell(faceId);
+			//auto top_right_face = getRightFaceOfCell(top_cell);
+			//return top_right_face;
+	//}
+  if (isVerticalEdge(face))
+    return ((faceId - 1) + 2 * m_nb_x_quads + 1);
+  else  // horizontal
+    return (faceId + 3);
 }
+
 Id CartesianMesh2D::getRightFaceNeighbour(const Id& faceId) const
 {
 	auto edges = m_geometry->getEdges();

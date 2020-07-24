@@ -177,17 +177,15 @@ private:
 	inline pair<size_t, size_t> id2IndexCell(const Id& k) const noexcept;
 	inline pair<size_t, size_t> id2IndexNode(const Id& k) const noexcept;
   
-	bool isInnerEdge(const Edge& e) const noexcept;
-	bool isInnerVerticalEdge(const Edge& e) const noexcept;
-	bool isInnerHorizontalEdge(const Edge& e) const noexcept;
+  bool isInnerEdge(const Edge& e) const noexcept;
+  bool isVerticalEdge(const Edge& e) const noexcept;
+  bool isHorizontalEdge(const Edge& e) const noexcept;
+  bool isInnerVerticalEdge(const Edge& e) const noexcept;
+  bool isInnerHorizontalEdge(const Edge& e) const noexcept;
 
 	//test guillaume
 	bool isCompletelyInnerEdge(const Edge& e) const noexcept;
-
-
 	bool isCompletelyInnerVerticalEdge(const Edge& e) const noexcept;
-
-
 	bool isCompletelyInnerHorizontalEdge(const Edge& e) const noexcept;
 	//fin test
   

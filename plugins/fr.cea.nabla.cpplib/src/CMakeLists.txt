@@ -8,7 +8,7 @@
 # Contributors: see AUTHORS file
 ###############################################################################
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.10)
 set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
 # Standalone build of the library is made with system default GCC, change it if you want.

@@ -42,7 +42,7 @@ class IrItemIdDefinitionFactory
 	 *   is then used to go from the iterator index to the variable index
 	 * Several ids can be necessary for a single iterator due to shifted reference (ex: X{r+1} can need rPlus1Id).
 	 */
-	def getNeededIdDefinitions(SpaceIterator it)
+	def ArrayList<ItemIdDefinition> getNeededIdDefinitions(SpaceIterator it)
 	{
 		//println("[" + item.name + "] Recherche des ids")
 		val neededDefinitions = new ArrayList<ItemIdDefinition>

@@ -10,7 +10,6 @@
 package fr.cea.nabla.ui.syntaxcoloring
 
 import org.eclipse.swt.SWT
-import org.eclipse.swt.graphics.FontData
 import org.eclipse.swt.graphics.RGB
 import org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConfiguration
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfigurationAcceptor
@@ -41,13 +40,6 @@ class NablaHighlightingConfiguration extends DefaultHighlightingConfiguration
 	{
 		val textStyle = new TextStyle
 		textStyle.color = new RGB(65,106,203)
-		textStyle
-	}
-
-	override TextStyle keywordTextStyle()
-	{
-		val textStyle = super.keywordTextStyle
-		textStyle.fontData = #[new FontData('Segoe_UI_Symbol', 10, SWT.BOLD)]
 		textStyle
 	}
 }

@@ -205,7 +205,7 @@ public class CartesianMesh2D
 	public int getNbBottomLeftNode() { return 1; }
 	public int[] getBottomLeftNode() { return new int[] {bottomLeftNode}; }
 	// TODO: Temporary until single item is available in grammar
-	public int getNbTopRighttNode() { return 1; }
+	public int getNbTopRightNode() { return 1; }
 	public int[] getTopRightNode() { return new int[] {topRightNode}; }
 	// TODO: Temporary until single item is available in grammar
 	public int getNbBottomRightNode() { return 1; }

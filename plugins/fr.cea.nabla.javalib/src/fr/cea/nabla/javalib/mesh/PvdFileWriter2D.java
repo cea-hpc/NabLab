@@ -12,8 +12,9 @@ package fr.cea.nabla.javalib.mesh;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class PvdFileWriter2D extends FileWriter
 {
@@ -28,6 +29,7 @@ public class PvdFileWriter2D extends FileWriter
 	public void writeFile( VtkFileContent it) {
 		if (!isDisabled())
 		{
+			NumberFormat formatter = new DecimalFormat("#0.######");     
 			try {
 				String fileName = moduleName + "." + it.getIteration() + ".vtp";
 				PrintWriter vtpWriter = new PrintWriter(directoryName + "/" + fileName, "UTF-8");
@@ -61,7 +63,7 @@ public class PvdFileWriter2D extends FileWriter
 
 				// POINT DATA
 				if (it.hasNodeData()) {
-					vtpWriter.println("\t\t\t<PointData" + getActiveScalarIfExist(it.getNodeScalars()));
+					vtpWriter.println("\t\t\t<PointData>");
 					for (String nodeVariableName : it.getNodeScalars().keySet()) {
 						{
 							vtpWriter.println("\t\t\t\t<DataArray Name=\"" + nodeVariableName + "\" type=\"Float32\" format=\"ascii\">");
@@ -87,7 +89,7 @@ public class PvdFileWriter2D extends FileWriter
 
 				// CELL DATA
 				if (it.hasCellData()) {
-					vtpWriter.println("\t\t\t<CellData" + getActiveScalarIfExist(it.getCellScalars()) + ">");
+					vtpWriter.println("\t\t\t<CellData>");
 					for ( String cellVariableName : it.getCellScalars().keySet()) {
 						{
 							vtpWriter.println("\t\t\t\t<DataArray Name=\"" + cellVariableName + "\" type=\"Float32\" format=\"ascii\">");
@@ -122,20 +124,12 @@ public class PvdFileWriter2D extends FileWriter
 				pvdWriter.println("<VTKFile type=\"Collection\" version=\"0.1\">");
 				pvdWriter.println("\t\t<Collection>");
 				for ( Double t : fileNameByTimes.keySet())
-					pvdWriter.println("\t\t\t<DataSet timestep=\"" + t + "\" group=\"\" part=\"0\" file=\"" + fileNameByTimes.get(t) + "\"/>");
+					pvdWriter.println("\t\t\t<DataSet timestep=\"" + formatter.format(t) + "\" group=\"\" part=\"0\" file=\"" + fileNameByTimes.get(t) + "\"/>");
 				pvdWriter.println("\t\t</Collection>");
 				pvdWriter.println("</VTKFile>");
 				pvdWriter.close();
 			} 
 			catch (FileNotFoundException | UnsupportedEncodingException e) { e.printStackTrace(); }
 		}
-	}
-
-	private String getActiveScalarIfExist(Map<String, double[]> data)
-	{
-		if (data.isEmpty()) 
-			return "";
-		else
-			return " Scalars=\"" + data.keySet().iterator().next() + "\"";
 	}
 }

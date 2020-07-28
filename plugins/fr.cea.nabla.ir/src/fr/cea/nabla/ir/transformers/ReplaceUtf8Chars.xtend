@@ -68,8 +68,8 @@ class ReplaceUtf8Chars extends IrTransformationStep
 			n = n.replace(c.key, c.value)
 
 		n = n.replace('\u221A', 'sqrt')
-		n = n.replace('∑', 'sum')
-		n = n.replace('∏', 'prod')
+		n = n.replace('\u2211', 'sum')
+		n = n.replace('\u220f', 'prod')
 		return n
 	}
 }

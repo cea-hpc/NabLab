@@ -24,6 +24,7 @@ public class CartesianMesh2D
 	public static  int MaxNbNodesOfFace = 2; 
 	public static  int MaxNbCellsOfNode = 4;
 	public static  int MaxNbCellsOfFace = 2;
+	public static  int MaxNbFacesOfCell = 4;
 	public static  int MaxNbNeighbourCells = 4;
 
 	private  MeshGeometry geometry;
@@ -162,7 +163,7 @@ public class CartesianMesh2D
 	public int getNbBottomLeftNode() { return 1; }
 	public int[] getBottomLeftNode() { return new int[] {bottomLeftNode}; }
 	// TODO: Temporary until single item is available in grammar
-	public int getNbTopRighttNode() { return 1; }
+	public int getNbTopRightNode() { return 1; }
 	public int[] getTopRightNode() { return new int[] {topRightNode}; }
 	// TODO: Temporary until single item is available in grammar
 	public int getNbBottomRightNode() { return 1; }
@@ -277,20 +278,20 @@ public class CartesianMesh2D
 	    	return new ArrayList<>(set).get(0);
 	}
 
-	public int getBackCell(int faceId) throws Exception
+	public int getBackCell(int faceId)
 	{
 		int[] cells = getCellsOfFace(faceId);
 		if ( cells.length < 2) 
-			throw new Exception("Error in getBackCell(" + faceId + "): please consider using this method with inner face only.");
+			throw new RuntimeException("Error in getBackCell(" + faceId + "): please consider using this method with inner face only.");
 		else
 			return cells[0];
 	}
 
-	public int getFrontCell(int faceId) throws Exception 
+	public int getFrontCell(int faceId) 
 	{
 		int[] cells = getCellsOfFace(faceId);
 		if ( cells.length < 2) 
-			throw new Exception("Error in getFrontCell(" + faceId + "): please consider using this method with inner face only.");
+			throw new RuntimeException("Error in getFrontCell(" + faceId + "): please consider using this method with inner face only.");
 		else
 			return cells[1];
 	}

@@ -123,51 +123,129 @@ LinearAlgebraFunctions::CGSolve(const SparseMatrixType& A, const VectorType& b, 
   // Copy initial guess solution
   VectorType x(x0.begin(), x0.end());
 
-  ///* r = b - A * x ;*/
+  /* r = b - A * x ;*/
 
-  ///* p = x */
+  /* p = x */
   VectorType p(x.begin(), x.end());
-  ///* Ap = A * p */
+  /* Ap = A * p */
   VectorType Ap(std::move(A * p));
-  ///* b - Ap => r */
+  /* b - Ap => r */
   VectorType r(count);
   std::transform(b.begin(), b.end(), Ap.begin(), r.begin(),
                  [&](const double& lhs, const double& rhs){return (lhs - rhs);});
-  ///* p = r */
+  /* p = r */
   std::copy(r.begin(), r.end(), p.begin());
   double old_rdot(std::inner_product(r.begin(), r.end(), r.begin(), 0.0));
   norm_res = std::sqrt(old_rdot);
 
   while (tolerance < norm_res && it < max_it) {
-    ///* pAp_dot = dot(p, Ap = A * p) */ 
+    /* pAp_dot = dot(p, Ap = A * p) */ 
   
-    ///* Ap = A * p */
+    /* Ap = A * p */
     Ap = std::move(A * p);
-  
-    //VectorType::execution_space().fence();
-	
+
     const double pAp_dot(std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0));
     const double alpha(old_rdot / pAp_dot);
   
-    ///* x += alpha * p */
+    /* x += alpha * p */
     std::transform(x.begin(), x.end(), p.begin(), x.begin(),
                    [&](const double& x_i, const double& p_i){return (x_i + alpha * p_i);});
-    ///* r += -alpha * Ap */
+    /* r += -alpha * Ap */
     std::transform(r.begin(), r.end(), Ap.begin(), r.begin(),
                    [&](const double& r_i, const double& Ap_i){return (r_i - alpha * Ap_i);});
   
     const double r_dot(std::inner_product(r.begin(), r.end(), r.begin(), 0.0));
     const double beta(r_dot / old_rdot);
 
-    ///* p = r + beta * p */
+    /* p = r + beta * p */
     std::transform(p.begin(), p.end(), r.begin(), p.begin(),
                    [&](const double& p_i, const double& r_i){return (r_i + beta * p_i);});
 
     norm_res = std::sqrt(old_rdot = r_dot);
     ++it;
   }
-  //VectorType::execution_space().fence();
+
+  // fill infos
+  info.m_display << "---== Solved A * x = b ==---" << std::endl;
+  info.m_display << "Nb it = " << it << std::endl;
+  info.m_display << "Res = " << norm_res << std::endl;
+  info.m_display << "----------------------------" << std::endl;
+  info.m_nb_it += it;
+  info.m_norm_res += norm_res;
   
+  return x;
+}
+
+/*
+ * \brief Preconditioned Conjugate Gradient function (solves C^-1(Ax)=C^-1 b)
+ * \param A:         [in] Kokkos sparse matrix
+ * \param b:         [in] Kokkos vector
+ * \param C_minus_1: [in] Kokkos sparse matrix (preconditioner matrix)
+ * \param x0:        [in] Kokkos vector (initial guess, can be null vector)
+ * \param info:      [in/out] Misc. informations on computation result
+ * \param max_it:    [in] Iteration threshold (default = 200)
+ * \param tolerance: [in] Convergence threshold (default = std::numeric_limits<double>::epsilon)
+ * \return: Solution vector
+ */
+VectorType
+LinearAlgebraFunctions::CGSolve(const SparseMatrixType& A, const VectorType& b,
+                                const SparseMatrixType& C_minus_1, const VectorType& x0,
+                                CGInfo& info, const size_t max_it, const double tolerance) {
+  size_t it(0);
+  double norm_res(0.0);
+  const size_t count(x0.size());
+  // Copy initial guess solution
+  VectorType x(x0.begin(), x0.end());
+
+  /* r = b - A * x ;*/
+
+  /* p = x */
+  VectorType p(x.begin(), x.end());
+  /* Ap = A * p */
+  VectorType Ap(std::move(A * p));
+  /* b - Ap => r */
+  VectorType r(count);
+  std::transform(b.begin(), b.end(), Ap.begin(), r.begin(),
+                 [&](const double& lhs, const double& rhs){return (lhs - rhs);});
+                 
+  /* z = C^-1 * r */
+  VectorType z(std::move(C_minus_1 * r));
+  
+  /* p = z */
+  std::copy(z.begin(), z.end(), p.begin());
+  double old_rTz(std::inner_product(r.begin(), r.end(), z.begin(), 0.0));
+  norm_res = std::sqrt(old_rTz);
+
+  while (tolerance < norm_res && it < max_it) {
+    /* pAp_dot = dot(p, Ap = A * p) */ 
+  
+    /* Ap = A * p */
+    Ap = std::move(A * p);
+	
+    const double pAp_dot(std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0));
+    const double alpha(old_rTz / pAp_dot);
+  
+    /* x += alpha * p */
+    std::transform(x.begin(), x.end(), p.begin(), x.begin(),
+                   [&](const double& x_i, const double& p_i){return (x_i + alpha * p_i);});
+    /* r += -alpha * Ap */
+    std::transform(r.begin(), r.end(), Ap.begin(), r.begin(),
+                   [&](const double& r_i, const double& Ap_i){return (r_i - alpha * Ap_i);});
+
+    /* z = C^-1 * r */
+    z = std::move(C_minus_1 * r);
+
+    const double rTz(std::inner_product(r.begin(), r.end(), z.begin(), 0.0));
+    const double beta(rTz / old_rTz);
+
+    /* p = z + beta * p */
+    std::transform(p.begin(), p.end(), z.begin(), p.begin(),
+                   [&](const double& p_i, const double& z_i){return (z_i + beta * p_i);});
+
+    norm_res = std::sqrt(old_rTz = rTz);
+    ++it;
+  }
+
   // fill infos
   info.m_display << "---== Solved A * x = b ==---" << std::endl;
   info.m_display << "Nb it = " << it << std::endl;
@@ -184,18 +262,44 @@ LinearAlgebraFunctions::CGSolve(const SparseMatrixType& A, const VectorType& b, 
  * \param A:         [in] Sparse matrix
  * \param b:         [in] Vector
  * \param info:      [in/out] Misc. informations on computation result
- * \param x0:        [in] Initial guess of the solution. If none is provided, null vector is used.
+ * \param x0:        [in/out] Initial guess of the solution. If none is provided, a null vector is used.
+ * \param max_it:    [in] Iteration threshold (default = 100)
+ * \param tolerance: [in] Convergence threshold (default = 1.e-8)
  * \return: Solution vector
- * \note: Iteration threshold is 100, convergence threshold is 1.e-8
  */
 VectorType
-LinearAlgebraFunctions::solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info, VectorType* x0)
+LinearAlgebraFunctions::solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info,
+                                          VectorType* x0, const size_t max_it, const double tolerance)
 {
   if (!x0) {
     VectorType default_x0(b.size(), 0.0);
-    return CGSolve(A.crsMatrix(), b, default_x0, info, 100, 1.e-8);
+    return CGSolve(A.crsMatrix(), b, default_x0, info, max_it, tolerance);
   } else {
-    return CGSolve(A.crsMatrix(), b, *x0, info, 100, 1.e-8);
+    return CGSolve(A.crsMatrix(), b, *x0, info, max_it, tolerance);
+  }
+}
+
+/*
+ * \brief Call to conjugate gradient to solve A x = b with a preconditioner
+ *        Actually solves C^-1(Ax)=C^-1 b
+ * \param A:         [in] Sparse matrix
+ * \param b:         [in] Vector
+ * \param C_minus_1: [in] Sparse matrix used as preconditioner
+ * \param info:      [in/out] Misc. informations on computation result
+ * \param x0:        [in/out] Initial guess of the solution. If none is provided, a null vector is used.
+ * \param max_it:    [in] Iteration threshold (default = 100)
+ * \param tolerance: [in] Convergence threshold (default = 1.e-8)
+ * \return: Solution vector
+ */
+VectorType
+LinearAlgebraFunctions::solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, NablaSparseMatrix& C_minus_1, CGInfo& info,
+                                          VectorType* x0, const size_t max_it, const double tolerance)
+{
+  if (!x0) {
+    VectorType default_x0(b.size(), 0.0);
+    return CGSolve(A.crsMatrix(), b, C_minus_1.crsMatrix(), default_x0, info, max_it, tolerance);
+  } else {
+    return CGSolve(A.crsMatrix(), b, C_minus_1.crsMatrix(), *x0, info, max_it, tolerance);
   }
 }
 

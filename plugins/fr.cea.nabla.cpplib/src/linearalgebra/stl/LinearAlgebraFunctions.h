@@ -34,8 +34,16 @@ public:
 
   VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x0, CGInfo& info,
                      const size_t max_it = 200, const double tolerance = std::numeric_limits<double>::epsilon());
-  VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info, VectorType* x0 = nullptr);
+  VectorType CGSolve(const SparseMatrixType& A, const VectorType& b,
+                     const SparseMatrixType& C_minus_1, const VectorType& x0,
+                     CGInfo& info, const size_t max_it, const double tolerance);
+
+  VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info,
+                               VectorType* x0 = nullptr, const size_t max_it = 100, const double tolerance = 1.e-8);
+  VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, NablaSparseMatrix& C_minus_1, CGInfo& info,
+                               VectorType* x0 = nullptr, const size_t max_it = 100, const double tolerance = 1.e-8);
 };
+
 }
 
 #endif /* LINEARALGEBRA_STL_LINEARALGEBRAFUNCTIONS_H_ */

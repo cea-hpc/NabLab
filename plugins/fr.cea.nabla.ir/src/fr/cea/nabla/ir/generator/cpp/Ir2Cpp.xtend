@@ -278,6 +278,9 @@ class Ir2Cpp extends CodeGenerator
 		assert(status.ok());
 		// Batch to write all data at once
 		leveldb::WriteBatch batch;
+		batch.Put("__Iteration number", serialize(n));
+		batch.Put("__Simulation time", serialize(t_n));
+		batch.Put("__Timestep", serialize(deltat_n));
 		«FOR v : declarations»
 		batch.Put("«v.name»", serialize(«v.name»));
 		«ENDFOR»

@@ -20,6 +20,7 @@ class NablaHighlightingConfiguration extends DefaultHighlightingConfiguration
 	public static val ID_ID = "ID"
 	public static val REAL_ID = "REAL"
 	public static val ITERATOR_ID = "Iterator"
+	public static val LATEX_ID = "LaTeX"
 
 	override configure(IHighlightingConfigurationAcceptor acceptor)
 	{
@@ -27,6 +28,7 @@ class NablaHighlightingConfiguration extends DefaultHighlightingConfiguration
 		acceptor.acceptDefaultHighlighting(ID_ID, ID_ID, IDTextStyle)
 		acceptor.acceptDefaultHighlighting(REAL_ID, REAL_ID, numberTextStyle)
 		acceptor.acceptDefaultHighlighting(ITERATOR_ID, ITERATOR_ID, setIteratorTextStyle)
+		acceptor.acceptDefaultHighlighting(LATEX_ID, LATEX_ID, defaultTextStyle)
 	}
 
 	def TextStyle getIDTextStyle()
@@ -41,5 +43,10 @@ class NablaHighlightingConfiguration extends DefaultHighlightingConfiguration
 		val textStyle = new TextStyle
 		textStyle.color = new RGB(65,106,203)
 		textStyle
+	}
+
+	def TextStyle getLatexFormulaStyle()
+	{
+		defaultTextStyle
 	}
 }

@@ -74,12 +74,16 @@ class ModuleInterpreter
 		if (!jsonOptionsContent.nullOrEmpty)
 		{
 			val gson = new Gson
-			val jsonOptions = gson.fromJson(jsonOptionsContent, JsonObject)
-			for (v : module.allOptions)
+			val jsonObject = gson.fromJson(jsonOptionsContent, JsonObject)
+			if (jsonObject.has("options"))
 			{
-				val vValue = context.getVariableValue(v)
-				val jsonElt = jsonOptions.get(v.name)
-				NablaValueJsonSetter::setValue(vValue, jsonElt)
+				val jsonOptions = jsonObject.get("options").asJsonObject
+				for (v : module.allOptions)
+				{
+					val vValue = context.getVariableValue(v)
+					val jsonElt = jsonOptions.get(v.name)
+					NablaValueJsonSetter::setValue(vValue, jsonElt)
+				}
 			}
 		}
 	}

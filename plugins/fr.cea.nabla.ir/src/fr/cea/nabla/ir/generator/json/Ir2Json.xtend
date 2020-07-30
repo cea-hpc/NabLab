@@ -9,15 +9,13 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.json
 
+import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.generator.CodeGenerator
-import fr.cea.nabla.ir.interpreter.Context
 import fr.cea.nabla.ir.interpreter.ModuleInterpreter
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.transformers.TagOutputVariables
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
-import fr.cea.nabla.ir.Utils
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
@@ -58,7 +56,7 @@ class Ir2Json extends CodeGenerator
 				"«Utils.NonRegressionNameAndValue.key»":"«Utils.NonRegressionNameAndValue.value»"«IF !options.empty»,«ENDIF»
 				«ENDIF»
 				«FOR o : options SEPARATOR ","»
-				"«o.name»":«getValue(o, context).content»
+				"«o.name»":«context.getVariableValue(o).content»
 				«ENDFOR»
 			}«IF !allProviders.empty»,«ENDIF»
 			«FOR s : allProviders SEPARATOR ","»
@@ -75,10 +73,5 @@ class Ir2Json extends CodeGenerator
 		val moduleInterpreter = new ModuleInterpreter(it, handler)
 		moduleInterpreter.interpreteDefinitionsDefaultValues
 		return moduleInterpreter.context
-	}
-
-	private def getValue(SimpleVariable option, Context context)
-	{
-		context.getVariableValue(option)
 	}
 }

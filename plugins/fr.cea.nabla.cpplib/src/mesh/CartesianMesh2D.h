@@ -116,16 +116,16 @@ public:
 	// TODO: Temporary until single item is available in grammar
 	size_t getNbBottomRightNode() const noexcept { return 1; }
 	vector<Id> getBottomRightNode() const noexcept { return vector<Id>({ m_bottom_right_node}); }
-		
+
 	const array<Id, 4>& getNodesOfCell(const Id& cellId) const noexcept;
 	const array<Id, 2>& getNodesOfFace(const Id& faceId) const noexcept;
 	vector<Id> getCellsOfNode(const Id& nodeId) const noexcept;
 	vector<Id> getCellsOfFace(const Id& faceId) const;
 	vector<Id> getNeighbourCells(const Id& cellId) const;
 	vector<Id> getFacesOfCell(const Id& cellId) const;
-  
+
 	Id getCommonFace(const Id& cellId1, const Id& cellId2) const;
-  
+
  	Id getFirstNodeOfFace(const Id& faceId) const noexcept;
 	Id getSecondNodeOfFace(const Id& faceId) const noexcept;
 
@@ -136,10 +136,10 @@ public:
 	Id getRightFaceOfCell(const Id& cellId) const noexcept;
 	Id getTopFaceOfCell(const Id& cellId) const noexcept;
 
-	Id getLeftCell(const Id& cellId) const noexcept;
-  Id getRightCell(const Id& cellId) const noexcept;
-	Id getTopCell(const Id& cellId) const noexcept;
-	Id getBottomCell(const Id& cellId) const noexcept;
+        Id getLeftCell(const Id& cellId) const noexcept;
+        Id getRightCell(const Id& cellId) const noexcept;
+        Id getTopCell(const Id& cellId) const noexcept;
+        Id getBottomCell(const Id& cellId) const noexcept;
 
 	Id getBottomFaceNeighbour(const Id& faceId) const;
 	Id getBottomLeftFaceNeighbour(const Id& faceId) const;
@@ -158,11 +158,11 @@ public:
 	inline pair<size_t, size_t> id2IndexCell(const Id& k) const noexcept;
 	inline pair<size_t, size_t> id2IndexNode(const Id& k) const noexcept;
   
-  bool isInnerEdge(const Edge& e) const noexcept;
-  bool isVerticalEdge(const Edge& e) const noexcept;
-  bool isHorizontalEdge(const Edge& e) const noexcept;
-  bool isInnerVerticalEdge(const Edge& e) const noexcept;
-  bool isInnerHorizontalEdge(const Edge& e) const noexcept;
+        bool isInnerEdge(const Edge& e) const noexcept;
+        bool isVerticalEdge(const Edge& e) const noexcept;
+        bool isHorizontalEdge(const Edge& e) const noexcept;
+        bool isInnerVerticalEdge(const Edge& e) const noexcept;
+        bool isInnerHorizontalEdge(const Edge& e) const noexcept;
 
 	size_t getNbCommonIds(const vector<Id>& a, const vector<Id>& b) const noexcept;
 	template <size_t N, size_t M>
@@ -176,7 +176,7 @@ public:
 	}
 
 	inline vector<Id> cellsOfNodeCollection(const vector<Id>& nodes);
-	
+
 private:
 	MeshGeometry<2>* m_geometry;
 
@@ -189,7 +189,7 @@ private:
 	Id m_top_right_node;
 	Id m_bottom_left_node;
 	Id m_bottom_right_node;
-  
+
 	vector<Id> m_top_cells;
 	vector<Id> m_bottom_cells;
 	vector<Id> m_left_cells;
@@ -213,5 +213,4 @@ private:
 };
 
 }
-
-#endif
+#endif /* MESH_CARTESIANMESH2D_H_ */

@@ -37,11 +37,8 @@ CartesianMesh2DGenerator::generate(size_t nbXQuads, size_t nbYQuads, double xSiz
 	vector<Id> left_node_ids_(nbYQuads + 1);
 	vector<Id> right_node_ids_(nbYQuads + 1);
 
-	//test guillaume
-
 	vector<Id> inner_cells_ids_((nbXQuads - 2)*(nbYQuads - 2));
 	vector<Id> outer_cells_ids_( 2 * nbXQuads + 2 * (nbYQuads - 2));
-	//fin test
 
 	// node creation
 	Id node_id_(0);
@@ -114,7 +111,7 @@ CartesianMesh2DGenerator::generate(size_t nbXQuads, size_t nbYQuads, double xSiz
 		                         left_node_ids_, right_node_ids_,
 		                         top_left_node_id_, top_right_node_id_,
 		                         bottom_left_node_id_, bottom_right_node_id_,
-								 inner_cells_ids_, outer_cells_ids_);
+					 inner_cells_ids_, outer_cells_ids_);
 }
 
 }

@@ -27,7 +27,7 @@ public:
 	static constexpr int MaxNbCellsOfNode = 4;
 	static constexpr int MaxNbCellsOfFace = 2;
 	static constexpr int MaxNbFacesOfCell = 4;
-	static constexpr int MaxNbNeighbourCells = 2;
+	static constexpr int MaxNbNeighbourCells = 4;
 
 	CartesianMesh2D(MeshGeometry<2>* geometry, const vector<Id>& inner_nodes_ids,
                   const vector<Id>& top_nodes_ids, const vector<Id>& bottom_nodes_ids,

@@ -9,22 +9,26 @@
  */
 package fr.cea.nabla.javalib.mesh;
 
-public abstract class NodeIdContainer {
-  private int[] nodeIds;
-   
-  public NodeIdContainer(int[] nodeIds) {
-    this.nodeIds = nodeIds;
-  }
-  
-  public int[] getNodeIds() {
-    return this.nodeIds;
-  }
-  
-  @Override
-  public String toString() {
-	  String s = "[";
-	  for (int i = 0; i < nodeIds.length; i++)
-		  s += nodeIds[i] + (i < nodeIds.length -1 ? "," : "");
-	  return s + "]";
-  }
+public abstract class NodeIdContainer
+{
+	private int[] nodeIds;
+
+	public NodeIdContainer(int[] nodeIds)
+	{
+		this.nodeIds = nodeIds;
+	}
+
+	public int[] getNodeIds()
+	{
+		return this.nodeIds;
+	}
+
+	@Override
+	public String toString()
+	{
+		String s = "[";
+		for (int i = 0; i < nodeIds.length; i++)
+			s += nodeIds[i] + (i < nodeIds.length -1 ? "," : "");
+		return s + "]";
+	}
 }

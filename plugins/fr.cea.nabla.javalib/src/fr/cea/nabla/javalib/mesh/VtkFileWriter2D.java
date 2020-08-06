@@ -13,14 +13,15 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
-
-public class VtkFileWriter2D extends FileWriter {
-	public VtkFileWriter2D( String moduleName,  String directoryName) {
+public class VtkFileWriter2D extends FileWriter
+{
+	public VtkFileWriter2D( String moduleName,  String directoryName)
+	{
 		super(moduleName, directoryName);
 	}
 
 	@Override
-	public void writeFile( VtkFileContent it) 
+	public void writeFile( VtkFileContent it)
 	{
 		if (!isDisabled()) 
 		{
@@ -65,8 +66,8 @@ public class VtkFileWriter2D extends FileWriter {
 						System.out.println("* Warning: vectors serialization not yet implemented. Use pvd format.");
 				}
 
-				// CELL DATA        
-				if (it.hasCellData()) 
+				// CELL DATA
+				if (it.hasCellData())
 				{
 					writer.println("\nCELL_DATA " + it.getCells().length);
 					for ( String cellVariableName :  it.getCellScalars().keySet()) 
@@ -81,8 +82,9 @@ public class VtkFileWriter2D extends FileWriter {
 					System.out.println("* Warning: vectors serialization not yet implemented. Use pvd format.");
 
 				writer.close();
-			} 
-			catch ( FileNotFoundException | UnsupportedEncodingException e) {
+			}
+			catch ( FileNotFoundException | UnsupportedEncodingException e)
+			{
 				e.printStackTrace();
 			}
 		}

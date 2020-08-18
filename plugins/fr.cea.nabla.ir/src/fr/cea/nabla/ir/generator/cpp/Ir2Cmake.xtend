@@ -28,7 +28,7 @@ abstract class Ir2Cmake
 		# Generated file - Do not overwrite
 		#
 
-		cmake_minimum_required(VERSION 3.15)
+		cmake_minimum_required(VERSION 3.10)
 
 		set(NABLA_CXX_COMPILER «getCompilerPath(compiler, compilerPath)»)
 

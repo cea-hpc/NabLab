@@ -8,7 +8,7 @@
 # Contributors: see AUTHORS file
 ###############################################################################
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.10)
 set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
 # Standalone build of the library is made with system default GCC, change it if you want.
@@ -38,7 +38,7 @@ add_library(cppnabla
 target_include_directories(cppnabla PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_directories(cppnabla PUBLIC)
 target_link_libraries(cppnabla PUBLIC stdc++fs)
-target_compile_options(cppnabla PUBLIC -g -Wall -O3 --std=c++17 -march=native -mtune=native)
+target_compile_options(cppnabla PUBLIC -g -Wall -O3 --std=c++17 -march=native -mtune=native -DNDEBUG)
 
 ### LIBCPPNABLASTL
 if(NOT DEFINED LIBCPPNABLA_BACKEND OR LIBCPPNABLA_BACKEND STREQUAL "STL")
@@ -48,7 +48,7 @@ add_library(cppnablastl
 target_include_directories(cppnablastl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_directories(cppnablastl PUBLIC)
 target_link_libraries(cppnablastl PUBLIC)
-target_compile_options(cppnablastl PUBLIC -g -Wall -O3 --std=c++17 -march=native -mtune=native)
+target_compile_options(cppnablastl PUBLIC -g -Wall -O3 --std=c++17 -march=native -mtune=native -DNDEBUG)
 endif()
 
 ### LIBCPPNABLAKOKKOS
@@ -68,7 +68,7 @@ if(TARGET Kokkos::kokkos AND TARGET Kokkos::kokkoskernels)
     target_include_directories(cppnablakokkos PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
     target_link_directories(cppnablakokkos PUBLIC)
     target_link_libraries(cppnablakokkos PUBLIC Kokkos::kokkos Kokkos::kokkoskernels)
-    target_compile_options(cppnablakokkos PUBLIC -g -Wall -O3 --std=c++17 -fopenmp -march=native -mtune=native)
+    target_compile_options(cppnablakokkos PUBLIC -g -Wall -O3 --std=c++17 -fopenmp -march=native -mtune=native -DNDEBUG)
 else()
     message(STATUS "Kokkos::kokkos/Kokkos::kokkoskernels not found: libcppnablakokkos will not be built (only libcppnabla)")
 endif()

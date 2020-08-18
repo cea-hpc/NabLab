@@ -68,7 +68,7 @@ class ModuleInterpreter
 			context.addVariableValue(periodValue, interprete(periodValue.defaultValue, context))
 		}
 		for (v : module.definitions)
-			context.addVariableValue(v, interprete(v.defaultValue, context))
+			context.addVariableValue(v, createValue(v, context))
 
 		// Then, the type of each option is used to read the json values
 		if (!jsonOptionsContent.nullOrEmpty)

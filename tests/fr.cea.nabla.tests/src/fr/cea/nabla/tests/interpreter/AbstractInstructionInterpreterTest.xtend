@@ -70,8 +70,14 @@ abstract class AbstractInstructionInterpreterTest
 		val model = getTestModule(xQuads, yQuads)
 		+
 		'''
+		option ℕ maxIter = 10;
+		option ℝ maxTime = 1.0;
 		ℝ U{cells};
-		ℝ[2] X{nodes}, C{cells, nodesOfCell};
+		ℝ[2] X{nodes}, B{nodes}, C{cells, nodesOfCell};
+		ℝ Bmin, Bmax;
+
+		iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
+
 		InitU : ∀r∈cells(), U{r} = 1.0;
 		ComputeCjr: ∀j∈ cells(), {
 			set rCellsJ = nodesOfCell(j);
@@ -82,6 +88,18 @@ abstract class AbstractInstructionInterpreterTest
 				C{j,r} = tmp[countr] * (X{r+1} - X{r-1});
 			}
 		}
+
+		InitB: ∀r∈nodes(),
+		{
+			B^{n=0}{r}[0] = -X{r}[0];
+			B^{n=0}{r}[1] = -X{r}[1];
+		}
+		ComputeB: ∀r∈nodes(), B^{n+1}{r} = B^{n}{r} / 2;
+		ComputeBmin: Bmin = Min{r∈nodes()}(B^{n}{r}[0]);
+		ComputeBmax: Bmax = Max{r∈nodes()}(B^{n}{r}[0]);
+
+		InitT: t^{n=0} = 0.0;
+		ComputeTn: t^{n+1} = t^{n} + δt;
 		'''
 		assertInterpreteLoop(model, xQuads, yQuads)
 	}

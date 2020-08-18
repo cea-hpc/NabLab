@@ -39,9 +39,8 @@ class LatexImageServices
 	/** Return an HTML image from a LaTeX formula between '$' characters */
 	static def String createHtmlBase64Image(String texFormula)
 	{
-		val output = new ByteArrayOutputStream
-		ImageIO::write(texFormula.createImage(15, null), "png", output)
-		val outputString = new String(output.toByteArray, "UTF-8");
+		val byteArray = createPngImage(texFormula, 15, null)
+		val outputString = new String(byteArray, "UTF-8");
 		outputString.addHtmlTags
 	}
 
@@ -49,7 +48,8 @@ class LatexImageServices
 	static def byte[] createPngImage(String texFormula, float size, Color color)
 	{
 		val output = new ByteArrayOutputStream
-		ImageIO::write(texFormula.createImage(size, color), "png", output)
+		val bufferedImage = texFormula.createImage(size, color)
+		ImageIO::write(bufferedImage, "png", output)
 		output.toByteArray
 	}
 

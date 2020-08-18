@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.jface.text.ITextSelection
 import org.eclipse.jface.viewers.ISelection
 import org.eclipse.swt.SWT
+import org.eclipse.swt.custom.ScrolledComposite
 import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Display
@@ -38,6 +39,7 @@ import org.eclipse.xtext.ui.editor.syntaxcoloring.TextAttributeProvider
 class LatexView extends ViewPart
 {
 	@Inject TextAttributeProvider tap
+	ScrolledComposite sc
 	Label label
 
 	// Listen to Nabla Editor selection
@@ -56,7 +58,12 @@ class LatexView extends ViewPart
 						if (o !== null)
 						{
 							val displayableObject = nablaDslEditor.getObjectAtPosition(textSelection.offset).closestDisplayableNablaElt
-							if (displayableObject !== null) label.image = displayableObject.latexImage
+							if (displayableObject !== null)
+							{
+								val image = displayableObject.latexImage
+								label.image = image
+								sc.setMinSize(label.computeSize(image.bounds.width, image.bounds.height))
+							}
 						}
 					])
 				}
@@ -65,7 +72,11 @@ class LatexView extends ViewPart
 
 	override createPartControl(Composite parent)
 	{
-		label = new Label(parent, SWT.NONE)
+		sc = new ScrolledComposite(parent, SWT.H_SCROLL.bitwiseOr(SWT.V_SCROLL))
+		label = new Label(sc, SWT.WRAP)
+		sc.setContent(label)
+		sc.setExpandVertical(true)
+		sc.setExpandHorizontal(true)
 		site.page.addPostSelectionListener(selectionListener)
 	}
 

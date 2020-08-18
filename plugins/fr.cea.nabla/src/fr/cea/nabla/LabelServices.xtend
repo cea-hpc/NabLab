@@ -68,10 +68,15 @@ class LabelServices
 	static def dispatch String getLabel(Job it) { name + ' : ' + instruction?.label }
 	static def dispatch String getLabel(SimpleVarDefinition it) { 'let ' + variable?.name + '=' + value?.label }
 	static def dispatch String getLabel(VarGroupDeclaration it) { type?.label + ' ' + variables?.map[x|x?.name].join(', ') }
-	static def dispatch String getLabel(InstructionBlock it) { '{ }' }
+	static def dispatch String getLabel(InstructionBlock it) { '{ ... }' }
 	static def dispatch String getLabel(Loop it) { '\u2200 ' + iterationBlock?.label + ', ' + body?.label }
 	static def dispatch String getLabel(Affectation it) { left?.label + ' = ' + right?.label }
-	static def dispatch String getLabel(If it) { 'if ' + condition?.label }
+	static def dispatch String getLabel(If it)
+	{
+		var txt = 'if ' + condition?.label
+		if (^else !== null) txt += ' else ' + ^else.label
+		return txt
+	}
 	static def dispatch String getLabel(ItemSet it) { 'set ' + name + '=' + value?.label }
 	static def dispatch String getLabel(Return it) { 'return ' + expression?.label }
 	static def dispatch String getLabel(Exit it) { 'Exit "' + message + '"'}

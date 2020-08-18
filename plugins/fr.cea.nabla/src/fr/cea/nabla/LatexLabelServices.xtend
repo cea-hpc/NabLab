@@ -66,10 +66,15 @@ class LatexLabelServices
 	static def dispatch String getLatex(Job it) { '\\texttt{' + name.pu + '} : '+ instruction?.latex }
 	static def dispatch String getLatex(SimpleVarDefinition it) { 'let~' + variable?.name.pu + '=' + value.latex }
 	static def dispatch String getLatex(VarGroupDeclaration it) { type.latex + '~' + variables.map[x|x.name.pu].join(', ') }
-	static def dispatch String getLatex(InstructionBlock it) { '\\{ \\}' }
+	static def dispatch String getLatex(InstructionBlock it) { '\\{ ... \\}' }
 	static def dispatch String getLatex(Loop it) { '\\forall{' + iterationBlock?.latex + '}, \\ ' + body.latex }
 	static def dispatch String getLatex(Affectation it) { left?.latex + ' = ' + right?.latex }
-	static def dispatch String getLatex(If it) { 'if~\\left(' + condition?.latex + '\\right)'}
+	static def dispatch String getLatex(If it)
+	{
+		var txt = 'if~\\left(' + condition?.latex + '\\right)~' + then?.latex
+		if (^else !== null) txt += '~else~' + ^else.latex
+		return txt
+	}
 	static def dispatch String getLatex(ItemSet it) { 'set~' + name + '=' + value?.latex }
 	static def dispatch String getLatex(Return it) { 'return~' + expression?.latex }
 	static def dispatch String getLatex(Exit it) { 'exit~' + message }

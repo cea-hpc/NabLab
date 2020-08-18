@@ -30,5 +30,5 @@ target_include_directories(heatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 target_link_libraries(heatequation PUBLIC cppnabla cppnablakokkos)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
-include(Project.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 endif()

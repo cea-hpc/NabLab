@@ -30,5 +30,5 @@ target_include_directories(iterativeheatequation PUBLIC ${CMAKE_CURRENT_SOURCE_D
 target_link_libraries(iterativeheatequation PUBLIC cppnabla OpenMP::OpenMP_CXX)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
-include(Project.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 endif()

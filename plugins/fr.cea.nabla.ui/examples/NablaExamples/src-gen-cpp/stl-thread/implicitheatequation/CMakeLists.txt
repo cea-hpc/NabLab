@@ -29,5 +29,5 @@ target_include_directories(implicitheatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DI
 target_link_libraries(implicitheatequation PUBLIC cppnabla cppnablastl pthread)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
-include(Project.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 endif()

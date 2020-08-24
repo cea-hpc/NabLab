@@ -10,14 +10,16 @@ an EMF bug that not allows duplicated elements even if the ecore unique attribut
 	 * FIXME workaround BUG 89325
 	 */
 	@SuppressWarnings("serial")
+	@Override
 	public EList<Connectivity> getConnectivities() {
 		if (connectivities == null) {
 			connectivities = new EObjectResolvingEList<Connectivity>(Connectivity.class, this, IrPackage.CONNECTIVITY_TYPE__CONNECTIVITIES) {
 				@Override
-	    		protected boolean isUnique() { return false; }
+				protected boolean isUnique() { return false; }
 			};
 		}
 		return connectivities;
 	}
 
 Same problem for method getIterators of ArgOrVarRefImpl.
+Same problem for method getInTypes of ConnectivityImpl.

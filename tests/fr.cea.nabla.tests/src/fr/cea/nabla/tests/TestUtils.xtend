@@ -69,82 +69,65 @@ class TestUtils
 	}
 
 	// ===== CharSequence utils =====
-	private def String getEmptyTestModule()
+	def String getJsonDefaultContent() { getJsonContent(10,10) }
+	def String getJsonContent(int nbXQuads, int nbYQuads)
 	'''
-	module Test;
-	with Math.*;
-	'''
-
-	//TODO These options should be filled in nablagen
-	private def String getMandatoryOptions(int xQuads, int yQuads)
-	'''
-	option ℝ X_EDGE_LENGTH = 0.01;
-	option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-	option ℕ X_EDGE_ELEMS = «xQuads»;
-	option ℕ Y_EDGE_ELEMS = «yQuads»;
-	'''
-
-	def String getSimulationVariables()
-	'''
-	let ℝ t = 0.0;
-	let ℝ δt = 0.001;
+		{
+			"options":
+			{
+			},
+			"mesh":
+			{
+				"nbXQuads":«nbXQuads»,
+				"nbYQuads":«nbYQuads»,
+				"xSize":0.01,
+				"ySize":0.01
+			}
+		}
 	'''
 
-	def String getMandatoryOptions()
-	{
-		return getMandatoryOptions(10, 10)
-	}
-
-	def CharSequence getDefaultConnectivities()
+	def getSimulationVariables()
 	'''
-	itemtypes { node, cell }
-
-	connectivity nodes: → {node};
-	connectivity cells: → {cell};
-	connectivity nodesOfCell: cell → {node};
+		let ℝ t = 0.0;
+		let ℝ δt = 0.001;
 	'''
 
-	def CharSequence getNodesConnectivity()
+	def getDefaultConnectivities()
 	'''
-	itemtypes { node }
-	connectivity nodes: → {node};
+		itemtypes { node, cell }
+
+		connectivity nodes: → {node};
+		connectivity cells: → {cell};
+		connectivity nodesOfCell: cell → {node};
 	'''
 
-	def CharSequence getTestModule()
-	{
-		emptyTestModule + mandatoryOptions
-	}
+	def getEmptyTestModule()
+	'''
+		module Test;
+		with Math.*;
+	'''
 
-	def CharSequence getTestModuleForSimulation()
-	{
-		emptyTestModule + nodesConnectivity + mandatoryOptions + getSimulationVariables
-	}
-
-	def CharSequence getTestModule(CharSequence connectivities, CharSequence functions)
-	{
-		emptyTestModule + connectivities + functions + mandatoryOptions
-	}
-
-	def CharSequence getTestModule(int xQuads, int yQuads)
-	{
-		emptyTestModule + defaultConnectivities + getMandatoryOptions(xQuads, yQuads) + getSimulationVariables
-	}
+	def getTestModuleForSimulation()
+	'''
+		«emptyTestModule»
+		«defaultConnectivities»
+		«simulationVariables»
+	'''
 
 	def getTestGenModel()
-	{
-		'''
+	'''
 		with Test.*;
 
 		nablagen for Test;
 
 		SimulationVariables
 		{
+			meshClassName = "CartesianMesh2D";
 			nodeCoord = X;
 			time = t;
 			timeStep = δt;
 		}
-		'''
-	}
+	'''
 
 	// Interpreter asserts
 	def assertVariableDefaultValue(IrModule irModule, Context context, String variableName, NablaValue value)

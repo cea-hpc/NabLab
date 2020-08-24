@@ -6,12 +6,11 @@
 #include <cmath>
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
-#include "mesh/CartesianMesh2DGenerator.h"
+#include "mesh/CartesianMesh2DFactory.h"
 #include "mesh/CartesianMesh2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
-#include "mesh/stl/PvdFileWriter2D.h"
 #include "utils/stl/Parallel.h"
 
 using namespace nablalib;
@@ -27,28 +26,25 @@ public:
 	{
 		double maxTime;
 		int maxIter;
-		double X_EDGE_LENGTH;
-		double Y_EDGE_LENGTH;
-		int X_EDGE_ELEMS;
-		int Y_EDGE_ELEMS;
 		double deltat;
 
 		void jsonInit(const rapidjson::Value::ConstObject& d);
 	};
 
-	const Options& options;
-
-	Test(const Options& aOptions);
+	Test(CartesianMesh2D* aMesh, const Options& aOptions);
 	~Test();
 
 private:
+	// Mesh and mesh variables
+	CartesianMesh2D* mesh;
+	size_t nbNodes, nbCells;
+	
+	// User options and external classes
+	const Options& options;
+	
 	// Global definitions
 	double t_n;
 	double t_nplus1;
-	
-	// Mesh (can depend on previous definitions)
-	CartesianMesh2D* mesh;
-	size_t nbNodes, nbCells;
 	
 	// Global declarations
 	int n;

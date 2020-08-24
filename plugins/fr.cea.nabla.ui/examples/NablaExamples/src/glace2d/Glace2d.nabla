@@ -11,15 +11,17 @@ module Glace2d;
 
 with Math.*;
 
-itemtypes { node, cell, face }
+itemtypes { node, cell }
 
 connectivity nodes: → {node};
 connectivity cells: → {cell};
-connectivity outerFaces: → {face};
 connectivity innerNodes: → {node};
+connectivity topNodes: → {node};
+connectivity bottomNodes: → {node};
+connectivity leftNodes: → {node};
+connectivity rightNodes: → {node};
 connectivity nodesOfCell: cell → {node};
 connectivity cellsOfNode: node → {cell};
-connectivity nodesOfFace: face → {node};
 
 // Only for 2D vectors
 def perp: ℝ[2] → ℝ[2], (a) → return [ a[1], -a[0] ];
@@ -48,12 +50,6 @@ def inverse: ℝ[2,2] → ℝ[2,2], (a) → {
 // Simulation options
 option ℝ stopTime = 0.2;
 option ℕ maxIterations = 20000;
-  
-// Mesh options
-option ℝ X_EDGE_LENGTH = 0.01;
-option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-option ℕ X_EDGE_ELEMS = 100;
-option ℕ Y_EDGE_ELEMS = 10;
 
 // User options
 option ℝ γ = 1.4;
@@ -93,13 +89,13 @@ Initialize: ∀j∈cells(), {
 		ρ_ic = ρIniZg;
 		p_ic = pIniZg;
 	} else {
-  		ρ_ic = ρIniZd;
-  		p_ic = pIniZd;
-  	}
-  	let ℝ V_ic = 0.5 * ∑{r∈nodesOfCell(j)}(dot(Cjr_ic{j,r}, X^{n=0}{r}));
-  	m{j} = ρ_ic * V_ic; // m is a constant
-  	p{j} = p_ic;
-  	ρ{j} = ρ_ic;
+		ρ_ic = ρIniZd;
+		p_ic = pIniZd;
+	}
+	let ℝ V_ic = 0.5 * ∑{r∈nodesOfCell(j)}(dot(Cjr_ic{j,r}, X^{n=0}{r}));
+	m{j} = ρ_ic * V_ic; // m is a constant
+	p{j} = p_ic;
+	ρ{j} = ρ_ic;
 	E^{n}{j} = p_ic / ((γ-1.0) * ρ_ic);
 	uj^{n}{j} = [0.0, 0.0];
 }
@@ -129,32 +125,33 @@ ComputeBr: ∀r∈nodes(), b{r} = ∑{j∈cellsOfNode(r)}(p{j} * C{j,r} + matVec
 ComputeMt: ∀r∈innerNodes(), Mt{r} = Ar{r};
 ComputeBt: ∀r∈innerNodes(), bt{r} = b{r};
 
-ComputeBoundaryConditions: ∀f∈outerFaces(), {
-	let ℝ epsilon = 1.0e-10;
+ComputeBoundaryConditions: {
 	let ℝ[2,2] I = [ [1.0, 0.0], [0.0, 1.0] ];
-	let ℝ X_MIN = 0.0;
-	let ℝ X_MAX = X_EDGE_ELEMS * X_EDGE_LENGTH;
-	let ℝ Y_MIN = 0.0; 
-	let ℝ Y_MAX = Y_EDGE_ELEMS * Y_EDGE_LENGTH;
-	let ℝ[2] nY = [0.0, 1.0];
-	
-	∀r∈nodesOfFace(f), {
-		// Y boundary conditions (must be done before X)
-		if ((X^{n}{r}[1] - Y_MIN < epsilon) || (X^{n}{r}[1] - Y_MAX < epsilon)) {
-			let ℝ sign = 0.0;
-			if (X^{n}{r}[1] - Y_MIN < epsilon) sign = -1.0;
-			else sign = 1.0;
-			let ℝ[2] N = sign * nY;
-      		let ℝ[2,2] NxN = tensProduct(N,N);
-      		let ℝ[2,2] IcP = I - NxN;
-			bt{r} = matVectProduct(IcP, b{r});
-			Mt{r} = IcP * (Ar{r} * IcP) + NxN*trace(Ar{r});
-		}
-		// X boundary conditions
-		if ((abs(X^{n}{r}[0] - X_MIN) < epsilon) || ( (abs(X^{n}{r}[0] - X_MAX) < epsilon) )) {
-			Mt{r} = I;
-			bt{r} = [0.0, 0.0];
-		}
+
+	// Y boundary conditions (must be done before X)
+	∀r∈topNodes(), {
+		let ℝ[2] N = [0.0, 1.0];
+		let ℝ[2,2] NxN = tensProduct(N,N);
+		let ℝ[2,2] IcP = I - NxN;
+		bt{r} = matVectProduct(IcP, b{r});
+		Mt{r} = IcP * (Ar{r} * IcP) + NxN*trace(Ar{r});
+	}
+	∀r∈bottomNodes(), {
+		let ℝ[2] N = [0.0, -1.0];
+		let ℝ[2,2] NxN = tensProduct(N,N);
+		let ℝ[2,2] IcP = I - NxN;
+		bt{r} = matVectProduct(IcP, b{r});
+		Mt{r} = IcP * (Ar{r} * IcP) + NxN*trace(Ar{r});
+	}
+
+	// X boundary conditions
+	∀r∈leftNodes(),{
+		Mt{r} = I;
+		bt{r} = [0.0, 0.0];
+	}
+	∀r∈rightNodes(),{
+		Mt{r} = I;
+		bt{r} = [0.0, 0.0];
 	}
 }
 

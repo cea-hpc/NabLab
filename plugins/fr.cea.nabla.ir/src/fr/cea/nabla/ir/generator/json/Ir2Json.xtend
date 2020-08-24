@@ -32,7 +32,7 @@ class Ir2Json extends CodeGenerator
 
 	override getFileContentsByName(IrModule it)
 	{
-		#{ name + 'DefaultOptions.json' -> jsonFileContent }
+		#{ name + 'Default.json' -> jsonFileContent }
 	}
 
 	private def getJsonFileContent(IrModule it)
@@ -58,7 +58,8 @@ class Ir2Json extends CodeGenerator
 				«FOR o : options SEPARATOR ","»
 				"«o.name»":«context.getVariableValue(o).content»
 				«ENDFOR»
-			}«IF !allProviders.empty»,«ENDIF»
+			},
+			"mesh":{}«IF !allProviders.empty»,«ENDIF»
 			«FOR s : allProviders SEPARATOR ","»
 			"«s.toFirstLower»":{}
 			«ENDFOR»

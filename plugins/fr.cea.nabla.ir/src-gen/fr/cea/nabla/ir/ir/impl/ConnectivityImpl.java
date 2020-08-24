@@ -161,12 +161,17 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * @generated NOT 
+	 * FIXME workaround BUG 89325
 	 */
+	@SuppressWarnings("serial")
 	@Override
 	public EList<ItemType> getInTypes() {
 		if (inTypes == null) {
-			inTypes = new EObjectResolvingEList<ItemType>(ItemType.class, this, IrPackage.CONNECTIVITY__IN_TYPES);
+			inTypes = new EObjectResolvingEList<ItemType>(ItemType.class, this, IrPackage.CONNECTIVITY__IN_TYPES) {
+				@Override
+				protected boolean isUnique() { return false; }
+			};
 		}
 		return inTypes;
 	}

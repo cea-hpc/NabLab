@@ -18,10 +18,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class CartesianMesh2D 
+public class CartesianMesh2D
 {
 	public static int MaxNbNodesOfCell = 4;
-	public static int MaxNbNodesOfFace = 2; 
+	public static int MaxNbNodesOfFace = 2;
 	public static int MaxNbCellsOfNode = 4;
 	public static int MaxNbCellsOfFace = 2;
 	public static int MaxNbFacesOfCell = 4;
@@ -90,19 +90,19 @@ public class CartesianMesh2D
 		ArrayList<Integer> bFaces = new ArrayList<Integer>();
 		ArrayList<Integer> lFaces = new ArrayList<Integer>();
 		ArrayList<Integer> rFaces = new ArrayList<Integer>();
-		
+
 		for (int edgeId = 0; edgeId <edges.length; edgeId ++)
 		{
 			// Top boundary faces
-		    if (edgeId >= 2 * xQuads * yQuads + yQuads) tFaces.add(edgeId);
-		    // Bottom boundary faces
-		    if ((edgeId < 2 * xQuads) && (edgeId % 2 == 0)) bFaces.add(edgeId);
-		    // Left boundary faces
-		    if ((edgeId % (2 * xQuads + 1) == 1) && edgeId < 2 * xQuads * yQuads + yQuads) lFaces.add(edgeId);
-		    // Right boundary faces
-		    if (edgeId % (2 * xQuads + 1) == 2 * xQuads) rFaces.add(edgeId);
+			if (edgeId >= 2 * xQuads * yQuads + yQuads) tFaces.add(edgeId);
+			// Bottom boundary faces
+			if ((edgeId < 2 * xQuads) && (edgeId % 2 == 0)) bFaces.add(edgeId);
+			// Left boundary faces
+			if ((edgeId % (2 * xQuads + 1) == 1) && edgeId < 2 * xQuads * yQuads + yQuads) lFaces.add(edgeId);
+			// Right boundary faces
+			if (edgeId % (2 * xQuads + 1) == 2 * xQuads) rFaces.add(edgeId);
 
-		    Edge edge = edges[edgeId];
+			Edge edge = edges[edgeId];
 			if (!isInnerEdge(edge))
 				outFaces.add(edgeId);
 			else

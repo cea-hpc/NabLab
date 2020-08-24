@@ -39,8 +39,9 @@ class ArgOrVarRefValidatorTest
 	@Test
 	def void testCheckIndicesNumber()
 	{
-		val moduleKo = parseHelper.parse(testModule +
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℕ[2,2] a = ℕ[2,2](0);
 			let ℕ[2] b = a[0];
 			let ℕ[2] c = ℕ[2](0);
@@ -57,8 +58,9 @@ class ArgOrVarRefValidatorTest
 			ArgOrVarRefValidator::INDICES_NUMBER,
 			ArgOrVarRefValidator::getIndicesNumberMsg(1,2))
 
-		val moduleOk =  parseHelper.parse(testModule +
+		val moduleOk =  parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℕ[2,2] a = ℕ[2,2](0);
 			let ℕ b = a[0,0];
 			'''
@@ -70,8 +72,9 @@ class ArgOrVarRefValidatorTest
 	@Test
 	def void testCheckSpaceIteratorNumberAndType() 
 	{
-		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '') +
+		val moduleKo = parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			ℝ u{cells}, v{cells, nodesOfCell}, w{nodes};
 			ComputeU: ∀ j∈cells(), ∀r∈nodesOfCell(j), u{j,r} = 1.;
 			ComputeV: ∀ j∈cells(), ∀r∈nodesOfCell(j), v{j} = 1.;
@@ -95,8 +98,9 @@ class ArgOrVarRefValidatorTest
 			ArgOrVarRefValidator::SPACE_ITERATOR_TYPE, 
 			getTypeMsg(node, cell))
 
-		val moduleOk =  parseHelper.parse(getTestModule(defaultConnectivities, '') +
+		val moduleOk =  parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			ℝ u{cells}, v{cells, nodesOfCell}, w{nodes};
 			ComputeU: ∀ j∈cells(), ∀r∈nodesOfCell(j), u{j} = 1.;
 			ComputeV: ∀ j∈cells(), ∀r∈nodesOfCell(j), v{j,r} = 1.;
@@ -110,8 +114,9 @@ class ArgOrVarRefValidatorTest
 	@Test
 	def void testCheckTimeIteratorUsage() 
 	{
-		val moduleKo = parseHelper.parse(getTestModule('', '') +
+		val moduleKo = parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			ℝ u, v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
@@ -124,8 +129,9 @@ class ArgOrVarRefValidatorTest
 			ArgOrVarRefValidator::TIME_ITERATOR_USAGE,
 			ArgOrVarRefValidator::getTimeIteratorUsageMsg())
 
-		val moduleOk =  parseHelper.parse(getTestModule('', '') +
+		val moduleOk =  parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			ℝ u, v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
@@ -139,8 +145,9 @@ class ArgOrVarRefValidatorTest
 	@Test
 	def void testCheckIndicesExpressionAndType()
 	{
-		val moduleKo1 = parseHelper.parse(getTestModule('', '') +
+		val moduleKo1 = parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			let ℕ[2] a = ℕ[2](0);
 			let ℕ m = a[2.3];
 			'''
@@ -150,8 +157,9 @@ class ArgOrVarRefValidatorTest
 			BasicValidator::TYPE_EXPRESSION_TYPE,
 			getTypeMsg("ℝ", "ℕ"))
 
-		val moduleKo2 = parseHelper.parse(getTestModule('', '') +
+		val moduleKo2 = parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			let ℕ[2] a = ℕ[2](0);
 			let ℝ b = 1.2;
 			let ℕ o = a[b];
@@ -162,8 +170,9 @@ class ArgOrVarRefValidatorTest
 			BasicValidator::TYPE_EXPRESSION_TYPE,
 			getTypeMsg("ℝ", "ℕ"))
 
-		val moduleOk =  parseHelper.parse(getTestModule('', '') +
+		val moduleOk =  parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			let ℕ[2] a = ℕ[2](0);
 			let ℕ b = 1;
 

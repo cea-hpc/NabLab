@@ -7,7 +7,7 @@
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
 #include <omp.h>
-#include "mesh/CartesianMesh2DGenerator.h"
+#include "mesh/CartesianMesh2DFactory.h"
 #include "mesh/CartesianMesh2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
@@ -41,43 +41,36 @@ public:
 		std::string outputPath;
 		int outputPeriod;
 		double u0;
-		RealArray1D<2> vectOne;
-		double X_LENGTH;
-		double Y_LENGTH;
-		int X_EDGE_ELEMS;
-		int Y_EDGE_ELEMS;
-		double X_EDGE_LENGTH;
-		double Y_EDGE_LENGTH;
 		double stopTime;
 		int maxIterations;
 
 		void jsonInit(const rapidjson::Value::ConstObject& d);
 	};
 
-	const Options& options;
-	LinearAlgebraFunctions& linearAlgebraFunctions;
-
-	ImplicitHeatEquation(const Options& aOptions, LinearAlgebraFunctions& aLinearAlgebraFunctions);
+	ImplicitHeatEquation(CartesianMesh2D* aMesh, const Options& aOptions, LinearAlgebraFunctions& aLinearAlgebraFunctions);
 	~ImplicitHeatEquation();
 
 private:
+	// Mesh and mesh variables
+	CartesianMesh2D* mesh;
+	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
+	
+	// User options and external classes
+	const Options& options;
+	LinearAlgebraFunctions& linearAlgebraFunctions;
+	PvdFileWriter2D writer;
+	
 	// Global definitions
+	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
 	double t_n;
 	double t_nplus1;
 	double deltat;
 	int lastDump;
 	
-	// Mesh (can depend on previous definitions)
-	CartesianMesh2D* mesh;
-	PvdFileWriter2D writer;
-	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
-	
 	// Global declarations
 	int n;
 	std::vector<RealArray1D<2>> X;
 	std::vector<RealArray1D<2>> Xc;
-	std::vector<double> xc;
-	std::vector<double> yc;
 	VectorType u_n;
 	VectorType u_nplus1;
 	std::vector<double> V;
@@ -107,8 +100,6 @@ private:
 	void computeFaceConductivity() noexcept;
 	
 	void initU() noexcept;
-	
-	void initXcAndYc() noexcept;
 	
 	void computeAlphaCoeff() noexcept;
 	

@@ -65,8 +65,6 @@ class IrModuleExtensions
 		return variable
 	}
 
-	static def withMesh(IrModule it) { !itemTypes.empty }
-
 	static def getCurrentIrVariable(IrModule m, String nablaVariableName) { getIrVariable(m, nablaVariableName, false) }
 	static def getInitIrVariable(IrModule m, String nablaVariableName) { getIrVariable(m, nablaVariableName, true) }
 

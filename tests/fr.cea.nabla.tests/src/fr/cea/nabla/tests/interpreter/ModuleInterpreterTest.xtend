@@ -10,13 +10,10 @@
 package fr.cea.nabla.tests.interpreter
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.interpreter.ModuleInterpreter
 import fr.cea.nabla.ir.interpreter.NV0Real
 import fr.cea.nabla.tests.CompilationChainHelper
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
-import java.util.logging.ConsoleHandler
-import java.util.logging.Level
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.runner.RunWith
@@ -31,10 +28,7 @@ class ModuleInterpreterTest extends AbstractModuleInterpreterTest
 	override assertInterpreteModule(String model)
 	{
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
+		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
 		assertVariableValueInContext(irModule, context, "t_n", new NV0Real(0.2))
 	}
 }

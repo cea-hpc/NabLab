@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
@@ -52,9 +51,7 @@ class Ir2Java extends CodeGenerator
 		import com.google.gson.stream.JsonReader;
 
 		import fr.cea.nabla.javalib.types.*;
-		«IF withMesh»
 		import fr.cea.nabla.javalib.mesh.*;
-		«ENDIF»
 
 		«IF linearAlgebra»
 		import org.apache.commons.math3.linear.*;
@@ -73,53 +70,47 @@ class Ir2Java extends CodeGenerator
 				«ENDFOR»
 			}
 
+			// Mesh and mesh variables
+			private final «javaMeshClassName» mesh;
+			«FOR c : connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
+
+			// User options and external classes
 			private final Options options;
 			«FOR s : allProviders»
 			private «s» «s.toFirstLower»;
 			«ENDFOR»
+			«IF postProcessingInfo !== null»private final FileWriter writer;«ENDIF»
 
 			// Global definitions
 			«FOR v : allDefinitions»
 			private «IF v.const»final «ENDIF»«v.javaType» «v.name»;
 			«ENDFOR»
 
-			«IF withMesh»
-			// Mesh (can depend on previous definitions)
-			private final CartesianMesh2D mesh;
-			«IF postProcessingInfo !== null»private final FileWriter writer;«ENDIF»
-			«FOR c : connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
-
-			«ENDIF»
 			// Global declarations
 			«FOR v : declarations»
 			private «v.javaType» «v.name»;
 			«ENDFOR»
 
-			public «name»(Options aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s» a«s»«ENDFOR»)
+			public «name»(«javaMeshClassName» aMesh, Options aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s» a«s»«ENDFOR»)
 			{
+				// Mesh and mesh variables initialization
+				mesh = aMesh;
+				«FOR c : connectivities.filter[multiple]»
+				«c.nbElemsVar» = «c.connectivityAccessor»;
+				«ENDFOR»
+
+				// User options and external classes initialization
 				options = aOptions;
 				«FOR s : allProviders»
 					«s.toFirstLower» = a«s»;
 				«ENDFOR»
+				«IF postProcessingInfo !== null»writer = new PvdFileWriter2D("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»);«ENDIF»
 
 				// Initialize variables with default values
 				«FOR v : allDefinitions»
 					«v.name» = «v.defaultValue.content»;
 				«ENDFOR»
 
-				«IF withMesh»
-					«val xee = getVariableByName(MandatoryVariables.X_EDGE_ELEMS).codeName»
-					«val yee = getVariableByName(MandatoryVariables.Y_EDGE_ELEMS).codeName»
-					«val xel = getVariableByName(MandatoryVariables.X_EDGE_LENGTH).codeName»
-					«val yel = getVariableByName(MandatoryVariables.Y_EDGE_LENGTH).codeName»
-					// Initialize mesh variables
-					mesh = CartesianMesh2DGenerator.generate(«xee», «yee», «xel», «yel»);
-					«IF postProcessingInfo !== null»writer = new PvdFileWriter2D("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»);«ENDIF»
-					«FOR c : connectivities.filter[multiple]»
-					«c.nbElemsVar» = «c.connectivityAccessor»;
-					«ENDFOR»
-
-				«ENDIF»
 				// Allocate arrays
 				«FOR v : declarations.filter[!type.scalar]»
 					«IF v.linearAlgebra»
@@ -128,16 +119,14 @@ class Ir2Java extends CodeGenerator
 						«v.name»«v.javaAllocation»;
 					«ENDIF»
 				«ENDFOR»
-				«IF withMesh»
 
-					// Copy node coordinates
-					double[][] gNodes = mesh.getGeometry().getNodes();
-					IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
-					{
-						«initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
-						«initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
-					});
-				«ENDIF»
+				// Copy node coordinates
+				double[][] gNodes = mesh.getGeometry().getNodes();
+				IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
+				{
+					«initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
+					«initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
+				});
 			}
 
 			public void simulate()
@@ -158,12 +147,16 @@ class Ir2Java extends CodeGenerator
 					JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
 					Gson gson = new Gson();
 
-					«name».Options options = (o.has("options") ? gson.fromJson(o.get("options"), «name».Options.class) : new «name».Options());
+					assert(o.has("mesh"));
+					«javaMeshClassName»Factory meshFactory = gson.fromJson(o.get("mesh"), «javaMeshClassName»Factory.class);
+					«javaMeshClassName» mesh = meshFactory.create();
+					assert(o.has("options"));
+					«name».Options options = gson.fromJson(o.get("options"), «name».Options.class);
 					«FOR s : allProviders»
 					«s» «s.toFirstLower» = (o.has("«s.toFirstLower»") ? gson.fromJson(o.get("«s.toFirstLower»"), «s».class) : new «s»());
 					«ENDFOR»
 
-					«name» simulator = new «name»(options«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s.toFirstLower»«ENDFOR»);
+					«name» simulator = new «name»(mesh, options«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s.toFirstLower»«ENDFOR»);
 					simulator.simulate();
 				}
 				else
@@ -214,5 +207,10 @@ class Ir2Java extends CodeGenerator
 			case 2: 'Matrix.createDenseMatrix(' + v.type.connectivities.map[nbElemsVar].join(', ') + ')'
 			default: throw new RuntimeException("Not implemented exception")
 		}
+	}
+
+	private def String getJavaMeshClassName(IrModule it)
+	{
+		meshClassName.replace('::', '.')
 	}
 }

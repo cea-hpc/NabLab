@@ -17,13 +17,15 @@ import static fr.cea.nabla.ir.IrModuleExtensions.*
 
 class SetSimulationVariables extends IrTransformationStep
 {
+	val String meshClassName
 	val String timeVariableName
 	val String timeStepVariableName
 	val String nodeCoordVariableName
 
-	new(String timeVariableName, String timeStepVariableName, String nodeCoordVariableName)
+	new(String meshClassName, String timeVariableName, String timeStepVariableName, String nodeCoordVariableName)
 	{
 		super('Set simulation variables (time, time step and node coordinates)')
+		this.meshClassName = meshClassName
 		this.timeVariableName = timeVariableName
 		this.timeStepVariableName = timeStepVariableName
 		this.nodeCoordVariableName = nodeCoordVariableName
@@ -32,6 +34,7 @@ class SetSimulationVariables extends IrTransformationStep
 	override transform(IrModule m)
 	{
 		trace('IR -> IR: ' + description)
+		m.meshClassName = meshClassName
 		m.initNodeCoordVariable = getInitIrVariable(m, nodeCoordVariableName) as ConnectivityVariable
 		m.nodeCoordVariable = getCurrentIrVariable(m, nodeCoordVariableName) as ConnectivityVariable
 		m.timeVariable = getCurrentIrVariable(m, timeVariableName) as SimpleVariable

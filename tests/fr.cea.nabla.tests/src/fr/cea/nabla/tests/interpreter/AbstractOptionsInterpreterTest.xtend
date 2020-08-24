@@ -19,31 +19,28 @@ import org.junit.runner.RunWith
 @InjectWith(NablaInjectorProvider)
 abstract class AbstractOptionsInterpreterTest
 {
-	val model = '''
-		module Test;
-		
-		itemtypes { node }
-		connectivity nodes: → {node};
+	val model =
+	'''
+	module Test;
 
-		def square: ℝ → ℝ, (a) → return a * a;
+	itemtypes { node }
+	connectivity nodes: → {node};
 
-		option A = 10;
-		option B = A / 2 + 4;
-		option C = square(5.0);
-		option D = [C , C , C];
-		option M = [D, D];
+	def square: ℝ → ℝ, (a) → return a * a;
 
-		option X_EDGE_LENGTH = 0.01;
-		option Y_EDGE_LENGTH = X_EDGE_LENGTH;
-		option X_EDGE_ELEMS = 4;
-		option Y_EDGE_ELEMS = 4;
-		option max_time_iterations = 500000000;
-		option final_time = 1.;
+	option ℕ A = 10;
+	option ℕ B = A / 2 + 4;
+	option ℝ C = square(5.0);
+	option ℝ[3] D = [C , C , C];
+	option ℝ[2, 3] M = [D, D];
 
-		let t = 0.0;
-		let δt = 0.001;
-		
-		ℝ[2] X{nodes};
+	option ℕ max_time_iterations = 500000000;
+	option ℝ final_time = 1.;
+
+	let ℝ t = 0.0;
+	let ℝ δt = 0.001;
+
+	ℝ[2] X{nodes};
 	'''
 
 	@Test
@@ -55,25 +52,31 @@ abstract class AbstractOptionsInterpreterTest
 	@Test
 	def void testInterpreteJsonOptions()
 	{
-		val jsonOptions = '
+		val jsonContent =
+		'
 		{
-			"_comment": "Generated file - Do not overwrite",
-			"A":10,
-			"B":2,
-			"C":27.0,
-			"D":[25.0,12.12,25.0],
-			"M":[[25.0,13.13,25.0],[25.0,25.0,5.4]],
-			"X_EDGE_LENGTH":0.01,
-			"Y_EDGE_LENGTH":0.01,
-			"X_EDGE_ELEMS":4,
-			"Y_EDGE_ELEMS":4,
-			"max_time_iterations":500000000,
-			"final_time":1.0
+			"options":
+			{
+				"_comment": "Generated file - Do not overwrite",
+				"A":8,
+				"B":2,
+				"C":27.0,
+				"D":[25.0,12.12,25.0],
+				"M":[[25.0,13.13,25.0],[25.0,25.0,5.4]],
+				"max_time_iterations":500000000,
+				"final_time":1.0
+			},
+			"mesh":
+			{
+				"nbXQuads":10,
+				"nbYQuads":10,
+				"xSize":0.05,
+				"ySize":0.05
+			}
 		}'
-
-		assertInterpreteJsonOptions(model, jsonOptions)
+		assertInterpreteJsonOptions(model, jsonContent)
 	}
 
 	def void assertInterpreteDefaultOptions(String model)
-	def void assertInterpreteJsonOptions(String model, String jsonOptions)
+	def void assertInterpreteJsonOptions(String model, String jsonContent)
 }

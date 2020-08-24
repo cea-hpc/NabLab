@@ -1,0 +1,25 @@
+{
+	"options":
+	{
+		"_outputPath_comment":"empty outputPath to disable output",
+		"outputPath":"output",
+		"outputPeriod":1,
+		"stopTime":0.2,
+		"maxIterations":20000,
+		"gamma":1.4,
+		"xInterface":0.5,
+		"deltatIni":1.0E-5,
+		"deltatCfl":0.4,
+		"rhoIniZg":1.0,
+		"rhoIniZd":0.125,
+		"pIniZg":1.0,
+		"pIniZd":0.1
+	},
+	"mesh":
+	{
+		"nbXQuads":100,
+		"nbYQuads":10,
+		"xSize":0.01,
+		"ySize":0.01
+	}
+}

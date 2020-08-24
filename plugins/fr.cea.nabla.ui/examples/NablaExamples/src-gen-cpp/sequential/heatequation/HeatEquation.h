@@ -6,7 +6,7 @@
 #include <cmath>
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
-#include "mesh/CartesianMesh2DGenerator.h"
+#include "mesh/CartesianMesh2DFactory.h"
 #include "mesh/CartesianMesh2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
@@ -38,32 +38,29 @@ public:
 		int outputPeriod;
 		double stopTime;
 		int maxIterations;
-		double X_EDGE_LENGTH;
-		double Y_EDGE_LENGTH;
-		int X_EDGE_ELEMS;
-		int Y_EDGE_ELEMS;
 		double PI;
 		double alpha;
 
 		void jsonInit(const rapidjson::Value::ConstObject& d);
 	};
 
-	const Options& options;
-
-	HeatEquation(const Options& aOptions);
+	HeatEquation(CartesianMesh2D* aMesh, const Options& aOptions);
 	~HeatEquation();
 
 private:
+	// Mesh and mesh variables
+	CartesianMesh2D* mesh;
+	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbNodesOfCell;
+	
+	// User options and external classes
+	const Options& options;
+	PvdFileWriter2D writer;
+	
 	// Global definitions
 	double t_n;
 	double t_nplus1;
 	static constexpr double deltat = 0.001;
 	int lastDump;
-	
-	// Mesh (can depend on previous definitions)
-	CartesianMesh2D* mesh;
-	PvdFileWriter2D writer;
-	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbNodesOfCell;
 	
 	// Global declarations
 	int n;

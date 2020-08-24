@@ -20,12 +20,6 @@ connectivity cells: → {cell};
 option ℝ maxTime = 0.1;
 option ℕ maxIter = 500;
 
-// Mesh options
-option ℝ X_EDGE_LENGTH = 0.1;
-option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-option ℕ X_EDGE_ELEMS = 20;
-option ℕ Y_EDGE_ELEMS = 20;
-
 let ℝ t = 0.0;
 option ℝ δt = 1.0;
 ℝ[2] X{nodes};

@@ -23,15 +23,7 @@ connectivity nodesOfCell: cell → {node};
 connectivity commonFace: cell × cell → face;
 
 option ℝ u0 = 1.0;
-option ℝ[2] vectOne = ℝ[2](1.0);
-
-// Mesh options
-option ℝ X_LENGTH = 2.0;
-option ℝ Y_LENGTH = 2.0;
-option ℕ X_EDGE_ELEMS = 40;
-option ℕ Y_EDGE_ELEMS = 40;
-option ℝ X_EDGE_LENGTH = X_LENGTH / X_EDGE_ELEMS;
-option ℝ Y_EDGE_LENGTH = Y_LENGTH / Y_EDGE_ELEMS;
+let ℝ[2] vectOne = ℝ[2](1.0);
 
 // Simulation options
 option ℝ stopTime = 1.0;
@@ -41,7 +33,6 @@ option ℕ maxIterations = 500000000;
 let ℝ t = 0.0;
 let ℝ δt = 0.001;
 ℝ[2] X{nodes}, Xc{cells}; // Position of nodes and cells center of gravity 
-ℝ xc{cells}, yc{cells}; // Abscissa and ordinate of cells center of gravity so they can be plotted in vtk file
 ℝ u{cells}; // Temperature
 ℝ V{cells}; // Volume of cells
 ℝ D{cells}; // Cell centered conductivity
@@ -52,11 +43,6 @@ iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
 
 InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
 
-InitXcAndYc: ∀c∈cells(), {
-	xc{c} = Xc{c}[0]; 
-	yc{c} = Xc{c}[1];
-}
-
 InitU: ∀c∈cells(),
 	if (norm(Xc{c} - vectOne) < 0.5)
 		u^{n}{c} = u0;
@@ -65,9 +51,7 @@ InitU: ∀c∈cells(),
 
 InitD: ∀c∈cells(), D{c} = 1.0; 
 
-// Computing time step with cfl = 0.96
-ComputeDeltaTn: δt = Min{c∈cells()}(X_EDGE_LENGTH*Y_EDGE_LENGTH/D{c}) * 0.24;
-
+ComputeDeltaTn: δt = Min{c∈cells()}(V{c}/D{c}) * 0.24;
 ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{p∈nodesOfCell(j)}(det(X{p}, X{p+1}));
 ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p} - X{p+1}));
 ComputeFaceConductivity: ∀f∈faces(), faceConductivity{f} = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1}) / ∑{c2∈cellsOfFace(f)}(D{c2});

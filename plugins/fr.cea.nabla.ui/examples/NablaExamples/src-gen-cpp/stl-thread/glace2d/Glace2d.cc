@@ -126,26 +126,6 @@ Glace2d::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 	const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
 	assert(valueof_maxIterations.IsInt());
 	maxIterations = valueof_maxIterations.GetInt();
-	// X_EDGE_LENGTH
-	assert(d.HasMember("X_EDGE_LENGTH"));
-	const rapidjson::Value& valueof_X_EDGE_LENGTH = d["X_EDGE_LENGTH"];
-	assert(valueof_X_EDGE_LENGTH.IsDouble());
-	X_EDGE_LENGTH = valueof_X_EDGE_LENGTH.GetDouble();
-	// Y_EDGE_LENGTH
-	assert(d.HasMember("Y_EDGE_LENGTH"));
-	const rapidjson::Value& valueof_Y_EDGE_LENGTH = d["Y_EDGE_LENGTH"];
-	assert(valueof_Y_EDGE_LENGTH.IsDouble());
-	Y_EDGE_LENGTH = valueof_Y_EDGE_LENGTH.GetDouble();
-	// X_EDGE_ELEMS
-	assert(d.HasMember("X_EDGE_ELEMS"));
-	const rapidjson::Value& valueof_X_EDGE_ELEMS = d["X_EDGE_ELEMS"];
-	assert(valueof_X_EDGE_ELEMS.IsInt());
-	X_EDGE_ELEMS = valueof_X_EDGE_ELEMS.GetInt();
-	// Y_EDGE_ELEMS
-	assert(d.HasMember("Y_EDGE_ELEMS"));
-	const rapidjson::Value& valueof_Y_EDGE_ELEMS = d["Y_EDGE_ELEMS"];
-	assert(valueof_Y_EDGE_ELEMS.IsInt());
-	Y_EDGE_ELEMS = valueof_Y_EDGE_ELEMS.GetInt();
 	// gamma
 	assert(d.HasMember("gamma"));
 	const rapidjson::Value& valueof_gamma = d["gamma"];
@@ -190,22 +170,24 @@ Glace2d::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 
 /******************** Module definition ********************/
 
-Glace2d::Glace2d(const Options& aOptions)
-: options(aOptions)
+Glace2d::Glace2d(CartesianMesh2D* aMesh, const Options& aOptions)
+: mesh(aMesh)
+, nbNodes(mesh->getNbNodes())
+, nbCells(mesh->getNbCells())
+, nbInnerNodes(mesh->getNbInnerNodes())
+, nbTopNodes(mesh->getNbTopNodes())
+, nbBottomNodes(mesh->getNbBottomNodes())
+, nbLeftNodes(mesh->getNbLeftNodes())
+, nbRightNodes(mesh->getNbRightNodes())
+, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, nbCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
+, options(aOptions)
+, writer("Glace2d", options.outputPath)
 , t_n(0.0)
 , t_nplus1(0.0)
 , deltat_n(options.deltatIni)
 , deltat_nplus1(options.deltatIni)
 , lastDump(numeric_limits<int>::min())
-, mesh(CartesianMesh2DGenerator::generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH))
-, writer("Glace2d", options.outputPath)
-, nbNodes(mesh->getNbNodes())
-, nbCells(mesh->getNbCells())
-, nbOuterFaces(mesh->getNbOuterFaces())
-, nbInnerNodes(mesh->getNbInnerNodes())
-, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, nbCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
-, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , X_n(nbNodes)
 , X_nplus1(nbNodes)
 , X_n0(nbNodes)
@@ -242,7 +224,6 @@ Glace2d::Glace2d(const Options& aOptions)
 
 Glace2d::~Glace2d()
 {
-	delete mesh;
 }
 
 /**
@@ -435,7 +416,7 @@ void Glace2d::computeDensity() noexcept
 
 /**
  * Job ExecuteTimeLoopN called @3.0 in simulate method.
- * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b, bt, c, deltatCfl, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, p, rho, t_n, uj_n, ur
+ * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_n, b, bt, c, deltatCfl, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, p, rho, t_n, uj_n, ur
  * Out variables: Ajr, Ar, C, E_nplus1, F, Mt, V, X_nplus1, b, bt, c, deltat_nplus1, deltatj, e, l, p, rho, t_nplus1, uj_nplus1, ur
  */
 void Glace2d::executeTimeLoopN() noexcept
@@ -652,51 +633,60 @@ void Glace2d::computeDt() noexcept
 
 /**
  * Job ComputeBoundaryConditions called @8.0 in executeTimeLoopN method.
- * In variables: Ar, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b
+ * In variables: Ar, b
  * Out variables: Mt, bt
  */
 void Glace2d::computeBoundaryConditions() noexcept
 {
+	const RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
 	{
-		const auto outerFaces(mesh->getOuterFaces());
-		const size_t nbOuterFaces(outerFaces.size());
-		parallel::parallel_exec(nbOuterFaces, [&](const size_t& fOuterFaces)
+		const auto topNodes(mesh->getTopNodes());
+		const size_t nbTopNodes(topNodes.size());
+		parallel::parallel_exec(nbTopNodes, [&](const size_t& rTopNodes)
 		{
-			const Id fId(outerFaces[fOuterFaces]);
-			const double epsilon(1.0E-10);
-			const RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
-			const double X_MIN(0.0);
-			const double X_MAX(options.X_EDGE_ELEMS * options.X_EDGE_LENGTH);
-			const double Y_MIN(0.0);
-			const double Y_MAX(options.Y_EDGE_ELEMS * options.Y_EDGE_LENGTH);
-			const RealArray1D<2> nY({0.0, 1.0});
-			{
-				const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
-				const size_t nbNodesOfFaceF(nodesOfFaceF.size());
-				for (size_t rNodesOfFaceF=0; rNodesOfFaceF<nbNodesOfFaceF; rNodesOfFaceF++)
-				{
-					const Id rId(nodesOfFaceF[rNodesOfFaceF]);
-					const size_t rNodes(rId);
-					if ((X_n[rNodes][1] - Y_MIN < epsilon) || (X_n[rNodes][1] - Y_MAX < epsilon)) 
-					{
-						double sign(0.0);
-						if (X_n[rNodes][1] - Y_MIN < epsilon) 
-							sign = -1.0;
-						else
-							sign = 1.0;
-						const RealArray1D<2> N(sign * nY);
-						const RealArray2D<2,2> NxN(tensProduct(N, N));
-						const RealArray2D<2,2> IcP(I - NxN);
-						bt[rNodes] = matVectProduct(IcP, b[rNodes]);
-						Mt[rNodes] = IcP * (Ar[rNodes] * IcP) + NxN * trace(Ar[rNodes]);
-					}
-					if ((std::abs(X_n[rNodes][0] - X_MIN) < epsilon) || ((std::abs(X_n[rNodes][0] - X_MAX) < epsilon))) 
-					{
-						Mt[rNodes] = I;
-						bt[rNodes] = {0.0, 0.0};
-					}
-				}
-			}
+			const Id rId(topNodes[rTopNodes]);
+			const size_t rNodes(rId);
+			const RealArray1D<2> N({0.0, 1.0});
+			const RealArray2D<2,2> NxN(tensProduct(N, N));
+			const RealArray2D<2,2> IcP(I - NxN);
+			bt[rNodes] = matVectProduct(IcP, b[rNodes]);
+			Mt[rNodes] = IcP * (Ar[rNodes] * IcP) + NxN * trace(Ar[rNodes]);
+		});
+	}
+	{
+		const auto bottomNodes(mesh->getBottomNodes());
+		const size_t nbBottomNodes(bottomNodes.size());
+		parallel::parallel_exec(nbBottomNodes, [&](const size_t& rBottomNodes)
+		{
+			const Id rId(bottomNodes[rBottomNodes]);
+			const size_t rNodes(rId);
+			const RealArray1D<2> N({0.0, -1.0});
+			const RealArray2D<2,2> NxN(tensProduct(N, N));
+			const RealArray2D<2,2> IcP(I - NxN);
+			bt[rNodes] = matVectProduct(IcP, b[rNodes]);
+			Mt[rNodes] = IcP * (Ar[rNodes] * IcP) + NxN * trace(Ar[rNodes]);
+		});
+	}
+	{
+		const auto leftNodes(mesh->getLeftNodes());
+		const size_t nbLeftNodes(leftNodes.size());
+		parallel::parallel_exec(nbLeftNodes, [&](const size_t& rLeftNodes)
+		{
+			const Id rId(leftNodes[rLeftNodes]);
+			const size_t rNodes(rId);
+			Mt[rNodes] = I;
+			bt[rNodes] = {0.0, 0.0};
+		});
+	}
+	{
+		const auto rightNodes(mesh->getRightNodes());
+		const size_t nbRightNodes(rightNodes.size());
+		parallel::parallel_exec(nbRightNodes, [&](const size_t& rRightNodes)
+		{
+			const Id rId(rightNodes[rRightNodes]);
+			const size_t rNodes(rId);
+			Mt[rNodes] = I;
+			bt[rNodes] = {0.0, 0.0};
 		});
 	}
 }
@@ -876,9 +866,6 @@ void Glace2d::simulate()
 {
 	std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting Glace2d ..." << __RESET__ << "\n\n";
 	
-	std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options.X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options.Y_EDGE_ELEMS
-		<< __RESET__ << ", X length=" << __BOLD__ << options.X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options.Y_EDGE_LENGTH << __RESET__ << std::endl;
-	
 	std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 	
 	if (!writer.isDisabled())
@@ -918,21 +905,27 @@ int main(int argc, char* argv[])
 	d.ParseStream(isw);
 	assert(d.IsObject());
 	
+	// mesh
+	assert(d.HasMember("mesh"));
+	const rapidjson::Value& valueof_mesh = d["mesh"];
+	assert(valueof_mesh.IsObject());
+	CartesianMesh2DFactory meshFactory;
+	meshFactory.jsonInit(valueof_mesh.GetObject());
+	CartesianMesh2D* mesh = meshFactory.create();
+	
 	// options
 	Glace2d::Options options;
-	if (d.HasMember("options"))
-	{
-		const rapidjson::Value& valueof_options = d["options"];
-		assert(valueof_options.IsObject());
-		options.jsonInit(valueof_options.GetObject());
-	}
-	
+	assert(d.HasMember("options"));
+	const rapidjson::Value& valueof_options = d["options"];
+	assert(valueof_options.IsObject());
+	options.jsonInit(valueof_options.GetObject());
 	
 	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-	auto simulator = new Glace2d(options);
+	auto simulator = new Glace2d(mesh, options);
 	simulator->simulate();
 	
 	// simulator must be deleted before calling finalize
 	delete simulator;
+	delete mesh;
 	return 0;
 }

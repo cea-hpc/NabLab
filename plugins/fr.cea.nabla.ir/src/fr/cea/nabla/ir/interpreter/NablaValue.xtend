@@ -30,6 +30,11 @@ class NV0Bool implements NablaValue
 		if (other.data !== this.data) return false
 		return true
 	}
+
+	override String toString()
+	{
+		data.toString
+	}
 }
 
 class NV0Int implements NablaValue
@@ -45,6 +50,11 @@ class NV0Int implements NablaValue
 		val other = obj as NV0Int
 		if (other.data !== this.data) return false
 		return true
+	}
+
+	override String toString()
+	{
+		data.toString
 	}
 }
 
@@ -62,33 +72,156 @@ class NV0Real implements NablaValue
 		if (other.data !== this.data) return false
 		return true
 	}
+
+	override String toString()
+	{
+		data.toString
+	}
 }
 
-@Data class NV1Bool implements NablaValue { boolean[] data }
-@Data class NV1Int implements NablaValue { int[] data }
-@Data class NV1Real implements NablaValue { double[] data }
+@Data class NV1Bool implements NablaValue
+{ 
+	boolean[] data
+
+	override String toString()
+	{
+		'[' + data.join(', ') + ']'
+	}
+}
+
+@Data class NV1Int implements NablaValue
+{ 
+	int[] data
+
+	override String toString()
+	{
+		'[' + data.join(', ') + ']'
+	}
+}
+
+@Data class NV1Real implements NablaValue
+{ 
+	double[] data
+
+	override String toString()
+	{
+		'[' + data.join(', ') + ']'
+	}
+}
 class NVVector implements NablaValue
 {
 	@Accessors Vector data
-	new(Vector data) { this.data = data }
+
+	new(Vector data)
+	{
+		this.data = data
+	}
+
+	override String toString()
+	{
+		data.toArray.map[d | d].toString
+	}
 }
 
-@Data class NV2Bool implements NablaValue { boolean[][] data }
-@Data class NV2Int implements NablaValue { int[][] data }
-@Data class NV2Real implements NablaValue { double[][] data }
+@Data class NV2Bool implements NablaValue
+{ 
+	boolean[][] data
+
+	override String toString()
+	{
+		data.map[d | d.map[ dd | dd]].toString
+	}
+}
+
+@Data class NV2Int implements NablaValue
+{ 
+	int[][] data
+
+	override String toString()
+	{
+		data.map[d | d.map[ dd | dd]].toString
+	}
+}
+
+@Data class NV2Real implements NablaValue
+{
+	double[][] data
+
+	override String toString()
+	{
+		data.map[d | d.map[ dd | dd]].toString
+	}
+}
+
 class NVMatrix implements NablaValue
 {
 	@Accessors Matrix data
-	new(Matrix data) { this.data = data }
+
+	new(Matrix data)
+	{
+		this.data = data
+	}
 }
 
-@Data class NV3Bool implements NablaValue { boolean[][][] data }
-@Data class NV3Int implements NablaValue { int[][][] data }
-@Data class NV3Real implements NablaValue { double[][][] data }
+@Data class NV3Bool implements NablaValue
+{ 
+	boolean[][][] data
 
-@Data class NV4Bool implements NablaValue { boolean[][][][] data }
-@Data class NV4Int implements NablaValue { int[][][][] data }
-@Data class NV4Real implements NablaValue { double[][][][] data }
+	override String toString()
+	{
+		data.map[d | d.map[ dd | dd.map[ddd | ddd]]].toString
+	}
+}
+
+@Data class NV3Int implements NablaValue
+{
+	int[][][] data
+
+	override String toString()
+	{
+		data.map[d | d.map[ dd | dd.map[ddd | ddd]]].toString
+	}
+}
+
+@Data class NV3Real implements NablaValue
+{
+	double[][][] data
+
+	override String toString()
+	{
+		data.map[d | d.map[ dd | dd.map[ddd | ddd]]].toString
+	}
+}
+
+@Data class NV4Bool implements NablaValue
+{
+	boolean[][][][] data
+
+	override String toString()
+	{
+		data.map[d | d.map[ dd | dd.map[ddd | ddd.map[dddd | dddd]]]].toString
+	}
+}
+
+@Data class NV4Int implements NablaValue
+{
+	int[][][][] data
+
+	override String toString()
+	{
+		data.map[d | d.map[ dd | dd.map[ddd | ddd.map[dddd | dddd]]]].toString
+	}
+}
+
+@Data class NV4Real implements NablaValue
+{
+	double[][][][] data
+
+	override String toString()
+	{
+		data.map[d | d.map[ dd | dd.map[ddd | ddd.map[dddd | dddd]]]].toString
+	}
+}
 
 /*
  * Should test it... 

@@ -8,7 +8,7 @@
 #include <rapidjson/istreamwrapper.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
-#include "mesh/CartesianMesh2DGenerator.h"
+#include "mesh/CartesianMesh2DFactory.h"
 #include "mesh/CartesianMesh2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
@@ -64,10 +64,6 @@ public:
 		int outputPeriod;
 		double stopTime;
 		int maxIterations;
-		double X_EDGE_LENGTH;
-		double Y_EDGE_LENGTH;
-		int X_EDGE_ELEMS;
-		int Y_EDGE_ELEMS;
 		double gamma;
 		double xInterface;
 		double deltatIni;
@@ -80,23 +76,24 @@ public:
 		void jsonInit(const rapidjson::Value::ConstObject& d);
 	};
 
-	const Options& options;
-
-	Glace2d(const Options& aOptions);
+	Glace2d(CartesianMesh2D* aMesh, const Options& aOptions);
 	~Glace2d();
 
 private:
+	// Mesh and mesh variables
+	CartesianMesh2D* mesh;
+	size_t nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, nbNodesOfCell, nbCellsOfNode;
+	
+	// User options and external classes
+	const Options& options;
+	PvdFileWriter2D writer;
+	
 	// Global definitions
 	double t_n;
 	double t_nplus1;
 	double deltat_n;
 	double deltat_nplus1;
 	int lastDump;
-	
-	// Mesh (can depend on previous definitions)
-	CartesianMesh2D* mesh;
-	PvdFileWriter2D writer;
-	size_t nbNodes, nbCells, nbOuterFaces, nbInnerNodes, nbNodesOfCell, nbCellsOfNode, nbNodesOfFace;
 	
 	// Global declarations
 	int n;

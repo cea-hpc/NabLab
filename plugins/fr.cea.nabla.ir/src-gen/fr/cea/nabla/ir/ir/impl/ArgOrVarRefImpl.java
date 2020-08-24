@@ -137,7 +137,7 @@ public class ArgOrVarRefImpl extends ExpressionImpl implements ArgOrVarRef {
 		if (iterators == null) {
 			iterators = new EObjectEList<ItemIndex>(ItemIndex.class, this, IrPackage.ARG_OR_VAR_REF__ITERATORS) {
 				@Override
-			protected boolean isUnique() { return false; }
+				protected boolean isUnique() { return false; }
 			};
 		}
 		return iterators;

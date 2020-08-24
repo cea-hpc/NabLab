@@ -4,6 +4,7 @@ nablagen for DepthInit;
 
 SimulationVariables
 {
+	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
 	time = t;
 	timeStep = δt;

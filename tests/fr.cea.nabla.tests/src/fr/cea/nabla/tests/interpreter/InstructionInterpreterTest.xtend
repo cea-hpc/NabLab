@@ -10,16 +10,12 @@
 package fr.cea.nabla.tests.interpreter
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.MandatoryVariables
-import fr.cea.nabla.ir.interpreter.ModuleInterpreter
 import fr.cea.nabla.ir.interpreter.NV0Real
 import fr.cea.nabla.ir.interpreter.NV1Real
 import fr.cea.nabla.ir.interpreter.NV3Real
 import fr.cea.nabla.tests.CompilationChainHelper
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
-import java.util.logging.ConsoleHandler
-import java.util.logging.Level
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Assert
@@ -35,56 +31,39 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 	override assertInterpreteVarDefinition(String model)
 	{
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
-
+		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(1.0))
 	}
 
 	override assertInterpreteInstructionBlock(String model)
 	{
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
-
+		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(1.0))
 	}
 
 	override assertInterpreteAffectation(String model)
 	{
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
-
+		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
 		assertVariableValueInContext(irModule, context, "t", new NV0Real(1.0))
 	}
 
 	override assertInterpreteLoop(String model, int xQuads, int yQuads)
 	{
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
-
+		val context = compilationHelper.getInterpreterContext(irModule, getJsonContent(xQuads, yQuads))
 		val nbCells = xQuads * yQuads
 		val double[] u = newDoubleArrayOfSize(nbCells)
 		for (i : 0..<u.length)
 			u.set(i, 1.0)
-
 		assertVariableValueInContext(irModule, context, "U", new NV1Real(u))
 
 		val cjr = (context.getVariableValue("C") as NV3Real).data
 
 		val nbNodesOfCell = 4
-		val xEdgeLength = (context.getVariableValue(MandatoryVariables::X_EDGE_LENGTH) as NV0Real).data
-		val yEdgeLength = (context.getVariableValue(MandatoryVariables::Y_EDGE_LENGTH) as NV0Real).data
+		val xEdgeLength = 0.01 // TestUtils::getJsonContent
+		val yEdgeLength = xEdgeLength
 		for (j : 0..<nbCells)
 		{
 			for (r : 0..<nbNodesOfCell)
@@ -102,10 +81,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 	override assertInterpreteIf(String model, int xQuads, int yQuads)
 	{
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
+		val context = compilationHelper.getInterpreterContext(irModule, getJsonContent(xQuads, yQuads))
 
 		val nbCells = xQuads * yQuads
 		val double[] u = newDoubleArrayOfSize(nbCells)
@@ -121,10 +97,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 	override assertInterpreteWhile(String model, int xQuads, int yQuads)
 	{
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
+		val context = compilationHelper.getInterpreterContext(irModule, getJsonContent(xQuads, yQuads))
 
 		val nbCells = xQuads * yQuads
 		val double[] u = newDoubleArrayOfSize(nbCells)
@@ -137,10 +110,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 	override assertInterpreteSetDefinition(String model, int xQuads, int yQuads)
 	{
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
+		val context = compilationHelper.getInterpreterContext(irModule, getJsonContent(xQuads, yQuads))
 
 		val nbCells = xQuads * yQuads
 		val double[] u = newDoubleArrayOfSize(nbCells)
@@ -153,14 +123,13 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 	override assertInterpreteExit(String model)
 	{
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-
-		try {
-			moduleInterpreter.interpreteWithOptionDefaultValues
+		try
+		{
+			compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
 			Assert::fail("Should throw exception")
-		} catch (RuntimeException e) {
+		} 
+		catch (RuntimeException e)
+		{
 			Assert.assertEquals("V must be less than 100", e.message)
 		}
 	}

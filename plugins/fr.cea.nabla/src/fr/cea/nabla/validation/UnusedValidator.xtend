@@ -10,7 +10,6 @@
 package fr.cea.nabla.validation
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
@@ -58,10 +57,9 @@ class UnusedValidator extends UniqueNameValidator
 	@Check(CheckType.NORMAL)
 	def checkUnusedVariable(Var it)
 	{
-		val mandatories = (MandatoryVariables::NAMES).toList
 		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
 		val argOrVarRefs = EcoreUtil2.getAllContentsOfType(module, ArgOrVarRef)
-		val referenced = mandatories.contains(name) || argOrVarRefs.exists[x | x.target === it]
+		val referenced = argOrVarRefs.exists[x | x.target === it]
 		if (!referenced)
 			warning(getUnusedMsg(NablaPackage.Literals.VAR, name), NablaPackage.Literals::ARG_OR_VAR__NAME, UNUSED)
 	}
@@ -108,9 +106,9 @@ class UnusedValidator extends UniqueNameValidator
 	def checkUnusedFunction(Function it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
-		// If the module does not contain options and jobs, no unused warning.
+		// If the module does not contains only functions & reductions, no unused warning.
 		// It avoids warning on libraries: module with only functions/reductions.
-		if (! (m.definitions.filter[option].empty && m.jobs.empty))
+		if (! (m.definitions.empty && m.jobs.empty && m.itemTypes.empty && m.connectivities.empty))
 		{
 			val allCalls = EcoreUtil2.getAllContentsOfType(m, FunctionCall)
 			var referenced = false
@@ -129,9 +127,9 @@ class UnusedValidator extends UniqueNameValidator
 	def checkUnusedReduction(Reduction it)
 	{
 		val m = EcoreUtil2.getContainerOfType(it, NablaModule)
-		// If the module does not contain options and jobs, no unused warning.
+		// If the module does not contains only functions & reductions, no unused warning.
 		// It avoids warning on libraries: module with only functions/reductions.
-		if (! (m.definitions.filter[option].empty && m.jobs.empty))
+		if (! (m.definitions.empty && m.jobs.empty && m.itemTypes.empty && m.connectivities.empty))
 		{
 			val allMatchingDeclarations = EcoreUtil2.getAllContentsOfType(m, ReductionCall).map[declaration]
 			val referenced = allMatchingDeclarations.exists[x | x !== null && x.model === it]

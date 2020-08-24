@@ -90,46 +90,6 @@ IterativeHeatEquation::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 	const rapidjson::Value& valueof_u0 = d["u0"];
 	assert(valueof_u0.IsDouble());
 	u0 = valueof_u0.GetDouble();
-	// vectOne
-	assert(d.HasMember("vectOne"));
-	const rapidjson::Value& valueof_vectOne = d["vectOne"];
-	assert(valueof_vectOne.IsArray());
-	assert(valueof_vectOne.Size() == 2);
-	for (size_t i1=0 ; i1<2 ; i1++)
-	{
-		assert(valueof_vectOne[i1].IsDouble());
-		vectOne[i1] = valueof_vectOne[i1].GetDouble();
-	}
-	// X_LENGTH
-	assert(d.HasMember("X_LENGTH"));
-	const rapidjson::Value& valueof_X_LENGTH = d["X_LENGTH"];
-	assert(valueof_X_LENGTH.IsDouble());
-	X_LENGTH = valueof_X_LENGTH.GetDouble();
-	// Y_LENGTH
-	assert(d.HasMember("Y_LENGTH"));
-	const rapidjson::Value& valueof_Y_LENGTH = d["Y_LENGTH"];
-	assert(valueof_Y_LENGTH.IsDouble());
-	Y_LENGTH = valueof_Y_LENGTH.GetDouble();
-	// X_EDGE_ELEMS
-	assert(d.HasMember("X_EDGE_ELEMS"));
-	const rapidjson::Value& valueof_X_EDGE_ELEMS = d["X_EDGE_ELEMS"];
-	assert(valueof_X_EDGE_ELEMS.IsInt());
-	X_EDGE_ELEMS = valueof_X_EDGE_ELEMS.GetInt();
-	// Y_EDGE_ELEMS
-	assert(d.HasMember("Y_EDGE_ELEMS"));
-	const rapidjson::Value& valueof_Y_EDGE_ELEMS = d["Y_EDGE_ELEMS"];
-	assert(valueof_Y_EDGE_ELEMS.IsInt());
-	Y_EDGE_ELEMS = valueof_Y_EDGE_ELEMS.GetInt();
-	// X_EDGE_LENGTH
-	assert(d.HasMember("X_EDGE_LENGTH"));
-	const rapidjson::Value& valueof_X_EDGE_LENGTH = d["X_EDGE_LENGTH"];
-	assert(valueof_X_EDGE_LENGTH.IsDouble());
-	X_EDGE_LENGTH = valueof_X_EDGE_LENGTH.GetDouble();
-	// Y_EDGE_LENGTH
-	assert(d.HasMember("Y_EDGE_LENGTH"));
-	const rapidjson::Value& valueof_Y_EDGE_LENGTH = d["Y_EDGE_LENGTH"];
-	assert(valueof_Y_EDGE_LENGTH.IsDouble());
-	Y_EDGE_LENGTH = valueof_Y_EDGE_LENGTH.GetDouble();
 	// stopTime
 	assert(d.HasMember("stopTime"));
 	const rapidjson::Value& valueof_stopTime = d["stopTime"];
@@ -154,14 +114,8 @@ IterativeHeatEquation::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 
 /******************** Module definition ********************/
 
-IterativeHeatEquation::IterativeHeatEquation(const Options& aOptions)
-: options(aOptions)
-, t_n(0.0)
-, t_nplus1(0.0)
-, deltat(0.001)
-, lastDump(numeric_limits<int>::min())
-, mesh(CartesianMesh2DGenerator::generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH))
-, writer("IterativeHeatEquation", options.outputPath)
+IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D* aMesh, const Options& aOptions)
+: mesh(aMesh)
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
 , nbFaces(mesh->getNbFaces())
@@ -169,10 +123,14 @@ IterativeHeatEquation::IterativeHeatEquation(const Options& aOptions)
 , nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , nbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
 , nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, options(aOptions)
+, writer("IterativeHeatEquation", options.outputPath)
+, t_n(0.0)
+, t_nplus1(0.0)
+, deltat(0.001)
+, lastDump(numeric_limits<int>::min())
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
-, xc("xc", nbCells)
-, yc("yc", nbCells)
 , u_n("u_n", nbCells)
 , u_nplus1("u_nplus1", nbCells)
 , u_nplus1_k("u_nplus1_k", nbCells)
@@ -194,7 +152,6 @@ IterativeHeatEquation::IterativeHeatEquation(const Options& aOptions)
 
 IterativeHeatEquation::~IterativeHeatEquation()
 {
-	delete mesh;
 }
 
 const std::pair<size_t, size_t> IterativeHeatEquation::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
@@ -394,7 +351,7 @@ void IterativeHeatEquation::updateU(const member_type& teamMember) noexcept
 
 /**
  * Job ComputeDeltaTn called @2.0 in simulate method.
- * In variables: D, X_EDGE_LENGTH, Y_EDGE_LENGTH
+ * In variables: D, V
  * Out variables: deltat
  */
 void IterativeHeatEquation::computeDeltaTn(const member_type& teamMember) noexcept
@@ -402,7 +359,7 @@ void IterativeHeatEquation::computeDeltaTn(const member_type& teamMember) noexce
 	double reduction0;
 	Kokkos::parallel_reduce(Kokkos::TeamThreadRange(teamMember, nbCells), KOKKOS_LAMBDA(const size_t& cCells, double& accu)
 	{
-		accu = minR0(accu, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D(cCells));
+		accu = minR0(accu, V(cCells) / D(cCells));
 	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &minR0));
 	deltat = reduction0 * 0.1;
 }
@@ -524,31 +481,10 @@ void IterativeHeatEquation::initU(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
 		{
 			int cCells(cCellsTeam + teamWork.first);
-			if (norm(Xc(cCells) - options.vectOne) < 0.5) 
+			if (norm(Xc(cCells) - vectOne) < 0.5) 
 				u_n(cCells) = options.u0;
 			else
 				u_n(cCells) = 0.0;
-		});
-	}
-}
-
-/**
- * Job InitXcAndYc called @2.0 in simulate method.
- * In variables: Xc
- * Out variables: xc, yc
- */
-void IterativeHeatEquation::initXcAndYc(const member_type& teamMember) noexcept
-{
-	{
-		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
-		if (!teamWork.second)
-			return;
-	
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
-		{
-			int cCells(cCellsTeam + teamWork.first);
-			xc(cCells) = Xc(cCells)[0];
-			yc(cCells) = Xc(cCells)[1];
 		});
 	}
 }
@@ -693,9 +629,6 @@ void IterativeHeatEquation::simulate()
 {
 	std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting IterativeHeatEquation ..." << __RESET__ << "\n\n";
 	
-	std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options.X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options.Y_EDGE_ELEMS
-		<< __RESET__ << ", X length=" << __BOLD__ << options.X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options.Y_EDGE_LENGTH << __RESET__ << std::endl;
-	
 	if (Kokkos::hwloc::available())
 	{
 		std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  NUMA=" << __BOLD__ << Kokkos::hwloc::get_available_numa_count()
@@ -738,7 +671,6 @@ void IterativeHeatEquation::simulate()
 			computeDeltaTn(thread);
 		computeFaceConductivity(thread);
 		initU(thread);
-		initXcAndYc(thread);
 	});
 	
 	// @3.0
@@ -778,22 +710,28 @@ int main(int argc, char* argv[])
 	d.ParseStream(isw);
 	assert(d.IsObject());
 	
+	// mesh
+	assert(d.HasMember("mesh"));
+	const rapidjson::Value& valueof_mesh = d["mesh"];
+	assert(valueof_mesh.IsObject());
+	CartesianMesh2DFactory meshFactory;
+	meshFactory.jsonInit(valueof_mesh.GetObject());
+	CartesianMesh2D* mesh = meshFactory.create();
+	
 	// options
 	IterativeHeatEquation::Options options;
-	if (d.HasMember("options"))
-	{
-		const rapidjson::Value& valueof_options = d["options"];
-		assert(valueof_options.IsObject());
-		options.jsonInit(valueof_options.GetObject());
-	}
-	
+	assert(d.HasMember("options"));
+	const rapidjson::Value& valueof_options = d["options"];
+	assert(valueof_options.IsObject());
+	options.jsonInit(valueof_options.GetObject());
 	
 	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-	auto simulator = new IterativeHeatEquation(options);
+	auto simulator = new IterativeHeatEquation(mesh, options);
 	simulator->simulate();
 	
 	// simulator must be deleted before calling finalize
 	delete simulator;
+	delete mesh;
 	Kokkos::finalize();
 	return 0;
 }

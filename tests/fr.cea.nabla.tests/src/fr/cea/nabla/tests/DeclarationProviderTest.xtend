@@ -63,10 +63,7 @@ class DeclarationProviderTest
 		def g: a | ℝ[a] → ℝ[a];
 		def g: a, b | ℝ[a, b] → ℝ[a*b];
 		def g: a, b | ℝ[a] × ℝ[b] → ℝ[a+b];
-		'''
-		+ mandatoryOptions +
-		'''
-			
+
 		ℝ a{cells};
 		ℝ x{cells};
 		ℝ[2] x2{cells};
@@ -174,7 +171,6 @@ class DeclarationProviderTest
 			return y;
 		}
 		'''
-		+ mandatoryOptions
 
 		val module = model.parse
 		Assert.assertNotNull(module)
@@ -215,9 +211,7 @@ class DeclarationProviderTest
 
 		def f, 0.0: ℝ, (a , b) → return a;
 		def f, 0.0: x | ℝ[x], (a , b) → return a;
-		'''
-		+ mandatoryOptions +
-		'''
+
 		ℝ u{cells};
 		ℝ[2] u2{cells};
 		ℕ bidon{cells};

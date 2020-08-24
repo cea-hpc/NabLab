@@ -108,7 +108,7 @@ class NablaExamplesInterpreterTest
 		val genmodelFile = String.format("%1$ssrc/%2$s/%3$s.nablagen", examplesProjectPath, moduleName.toLowerCase, moduleName)
 		val genmodel = readFileAsString(genmodelFile)
 		// We use the default json datafile generated for the java backend
-		val jsonOptionsFile = String.format("%1$ssrc-gen-java/%2$s/%3$sDefaultOptions.json", examplesProjectPath, moduleName.toLowerCase, moduleName)
+		val jsonOptionsFile = String.format("%1$ssrc/%2$s/%3$s.json", examplesProjectPath, moduleName.toLowerCase, moduleName)
 		val jsonOptions = readFileAsString(jsonOptionsFile)
 
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, genmodel)

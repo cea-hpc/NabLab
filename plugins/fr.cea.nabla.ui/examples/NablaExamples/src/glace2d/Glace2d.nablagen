@@ -13,6 +13,7 @@ nablagen for Glace2d;
 
 SimulationVariables
 {
+	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
 	time = t;
 	timeStep = δt;

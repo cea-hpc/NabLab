@@ -278,13 +278,22 @@ public interface IrPackage extends EPackage {
 	int IR_MODULE__DECLARATIONS = JOB_CONTAINER_FEATURE_COUNT + 6;
 
 	/**
+	 * The feature id for the '<em><b>Mesh Class Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_MODULE__MESH_CLASS_NAME = JOB_CONTAINER_FEATURE_COUNT + 7;
+
+	/**
 	 * The feature id for the '<em><b>Init Node Coord Variable</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__INIT_NODE_COORD_VARIABLE = JOB_CONTAINER_FEATURE_COUNT + 7;
+	int IR_MODULE__INIT_NODE_COORD_VARIABLE = JOB_CONTAINER_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Node Coord Variable</b></em>' reference.
@@ -293,7 +302,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__NODE_COORD_VARIABLE = JOB_CONTAINER_FEATURE_COUNT + 8;
+	int IR_MODULE__NODE_COORD_VARIABLE = JOB_CONTAINER_FEATURE_COUNT + 9;
 
 	/**
 	 * The feature id for the '<em><b>Time Variable</b></em>' reference.
@@ -302,7 +311,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__TIME_VARIABLE = JOB_CONTAINER_FEATURE_COUNT + 9;
+	int IR_MODULE__TIME_VARIABLE = JOB_CONTAINER_FEATURE_COUNT + 10;
 
 	/**
 	 * The feature id for the '<em><b>Deltat Variable</b></em>' reference.
@@ -311,7 +320,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__DELTAT_VARIABLE = JOB_CONTAINER_FEATURE_COUNT + 10;
+	int IR_MODULE__DELTAT_VARIABLE = JOB_CONTAINER_FEATURE_COUNT + 11;
 
 	/**
 	 * The feature id for the '<em><b>Jobs</b></em>' containment reference list.
@@ -320,7 +329,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__JOBS = JOB_CONTAINER_FEATURE_COUNT + 11;
+	int IR_MODULE__JOBS = JOB_CONTAINER_FEATURE_COUNT + 12;
 
 	/**
 	 * The feature id for the '<em><b>Main Time Loop</b></em>' containment reference.
@@ -329,7 +338,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__MAIN_TIME_LOOP = JOB_CONTAINER_FEATURE_COUNT + 12;
+	int IR_MODULE__MAIN_TIME_LOOP = JOB_CONTAINER_FEATURE_COUNT + 13;
 
 	/**
 	 * The feature id for the '<em><b>Post Processing Info</b></em>' containment reference.
@@ -338,7 +347,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__POST_PROCESSING_INFO = JOB_CONTAINER_FEATURE_COUNT + 13;
+	int IR_MODULE__POST_PROCESSING_INFO = JOB_CONTAINER_FEATURE_COUNT + 14;
 
 	/**
 	 * The number of structural features of the '<em>Module</em>' class.
@@ -347,7 +356,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE_FEATURE_COUNT = JOB_CONTAINER_FEATURE_COUNT + 14;
+	int IR_MODULE_FEATURE_COUNT = JOB_CONTAINER_FEATURE_COUNT + 15;
 
 	/**
 	 * The number of operations of the '<em>Module</em>' class.
@@ -4464,6 +4473,17 @@ public interface IrPackage extends EPackage {
 	EReference getIrModule_Declarations();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.IrModule#getMeshClassName <em>Mesh Class Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Mesh Class Name</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrModule#getMeshClassName()
+	 * @see #getIrModule()
+	 * @generated
+	 */
+	EAttribute getIrModule_MeshClassName();
+
+	/**
 	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrModule#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -6595,6 +6615,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference IR_MODULE__DECLARATIONS = eINSTANCE.getIrModule_Declarations();
+
+		/**
+		 * The meta object literal for the '<em><b>Mesh Class Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IR_MODULE__MESH_CLASS_NAME = eINSTANCE.getIrModule_MeshClassName();
 
 		/**
 		 * The meta object literal for the '<em><b>Init Node Coord Variable</b></em>' reference feature.

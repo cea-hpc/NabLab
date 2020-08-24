@@ -38,9 +38,9 @@ class FunctionOrReductionValidatorTest
 	@Test
 	def void testCheckForbiddenReturn()
 	{
-		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '')
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			ℕ U{cells};
 			ComputeU: ∀ j∈cells(), {
 					let ℕ e = 1;
@@ -54,9 +54,9 @@ class FunctionOrReductionValidatorTest
 			FunctionOrReductionValidator::FORBIDDEN_RETURN,
 			FunctionOrReductionValidator::getForbiddenReturnMsg())
 
-		val moduleOk = parseHelper.parse(getTestModule(defaultConnectivities, '')
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			ℕ U{cells};
 			ComputeU: ∀ j∈cells(), {
 					let ℕ e = 1;
@@ -124,14 +124,22 @@ class FunctionOrReductionValidatorTest
 	@Test
 	def void testCheckOnlyIntAndVarInFunctionInTypes()
 	{
-		val modulekO = parseHelper.parse(getTestModule('', '''def f: x | ℝ[x+1] → ℝ[x];'''))
+		val modulekO = parseHelper.parse(
+		'''
+		«emptyTestModule»
+		def f: x | ℝ[x+1] → ℝ[x];
+		''')
 		Assert.assertNotNull(modulekO)
 
 		modulekO.assertError(NablaPackage.eINSTANCE.function,
 			FunctionOrReductionValidator::ONLY_INT_AND_VAR_IN_FUNCTION_IN_TYPES,
 			FunctionOrReductionValidator::getOnlyIntAndVarInFunctionInTypesMsg(#["x"]))
 
-		val moduleOk = parseHelper.parse(getTestModule('', '''def f: x | ℝ[x] → ℝ[x+1];'''))
+		val moduleOk = parseHelper.parse(
+		'''
+		«emptyTestModule»
+		def f: x | ℝ[x] → ℝ[x+1];
+		''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -139,14 +147,22 @@ class FunctionOrReductionValidatorTest
 	@Test
 	def testCheckOnlyIntAndVarInReductionType()
 	{
-		val modulekO = parseHelper.parse(getTestModule('', '''def sum, 0.0: x,y | ℝ[x+y], (a,b) → return a + b;'''))
+		val modulekO = parseHelper.parse(
+		'''
+		«emptyTestModule»
+		def sum, 0.0: x,y | ℝ[x+y], (a,b) → return a + b;
+		''')
 		Assert.assertNotNull(modulekO)
 
 		modulekO.assertError(NablaPackage.eINSTANCE.reduction,
 			FunctionOrReductionValidator::ONLY_INT_AND_VAR_IN_REDUCTION_TYPE,
 			FunctionOrReductionValidator::getOnlyIntAndVarInReductionTypeMsg(#["x, y"]))
 
-		val moduleOk = parseHelper.parse(getTestModule('', '''def sum, 0.0: x | ℝ[x], (a,b) → return a + b;'''))
+		val moduleOk = parseHelper.parse(
+		'''
+		«emptyTestModule»
+		def sum, 0.0: x | ℝ[x], (a,b) → return a + b;
+		''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -183,26 +199,24 @@ class FunctionOrReductionValidatorTest
 	@Test
 	def void testCheckFunctionIncompatibleInTypes() 
 	{
-		var functions =
+		val modulekO = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			def g: ℝ[2] → ℝ;
 			def g: x | ℝ[x] → ℝ;
-			'''
-
-		val modulekO = parseHelper.parse(getTestModule('', functions))
+			''')
 		Assert.assertNotNull(modulekO)
 
 		modulekO.assertError(NablaPackage.eINSTANCE.function,
 			FunctionOrReductionValidator::FUNCTION_INCOMPATIBLE_IN_TYPES,
 			FunctionOrReductionValidator::getFunctionIncompatibleInTypesMsg())
 
-		functions =
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			def g: ℝ → ℝ;
 			def g: x | ℝ[x] → ℝ;
-			'''
-
-		val moduleOk = parseHelper.parse(getTestModule('', functions))
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -219,7 +233,6 @@ class FunctionOrReductionValidatorTest
 		def f: ℝ → ℝ, (a) → { return 1; }
 		def g: ℝ → ℝ, (a) → { return 1.0; }
 		'''
-		+ mandatoryOptions
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 		Assert.assertEquals(1, module.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -229,23 +242,22 @@ class FunctionOrReductionValidatorTest
 	@Test
 	def void testCheckFunctionReturnTypeVar() 
 	{
-		var functions =
+		val modulekO = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			def f: x | ℝ → ℝ[x];
-			'''
-		val modulekO = parseHelper.parse(getTestModule('', functions))
+			''')
 		Assert.assertNotNull(modulekO)
 		modulekO.assertError(NablaPackage.eINSTANCE.functionTypeDeclaration, 
 			FunctionOrReductionValidator::FUNCTION_RETURN_TYPE_VAR, 
 			FunctionOrReductionValidator::getFunctionReturnTypeVarMsg("x"))
 
-
-		functions =
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			def f: x | ℝ[x] → ℝ[x];
 			def g: y | ℝ[y] → ℝ[x, y];
-			'''
-		val moduleOk = parseHelper.parse(getTestModule('', functions))
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors(NablaPackage.eINSTANCE.functionTypeDeclaration, FunctionOrReductionValidator::FUNCTION_RETURN_TYPE_VAR)
 	}
@@ -253,23 +265,24 @@ class FunctionOrReductionValidatorTest
 	@Test
 	def void testCheckReductionIncompatibleTypes() 
 	{
-		var reductions =
+		val modulekO = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			def g, 0.0: ℝ[2], (a, b) → return a;
 			def g, 0.0: x | ℝ[x], (a, b) → return a;
 			'''
-		val modulekO = parseHelper.parse(getTestModule('', reductions))
+		)
 		Assert.assertNotNull(modulekO)
 		modulekO.assertError(NablaPackage.eINSTANCE.reduction,
 			FunctionOrReductionValidator::REDUCTION_INCOMPATIBLE_TYPES,
 			FunctionOrReductionValidator::getReductionIncompatibleTypesMsg())
 
-		reductions =
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			def g, 0.0: ℝ, (a, b) → return a;
 			def g, 0.0: x | ℝ[x], (a, b) → return a;
-			'''
-		val moduleOk = parseHelper.parse(getTestModule('', reductions))
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -277,12 +290,12 @@ class FunctionOrReductionValidatorTest
 	@Test
 	def void testCheckSeedAndTypes()
 	{
-		val moduleKo = parseHelper.parse(getTestModule ('',
-				'''
-				def sum1, [0.0, 0.0]: ℝ[2], (a, b) → return a + b;
-				def sum1, 0.0: ℕ, (a, b) → return a + b;
-				'''
-			)
+		val moduleKo = parseHelper.parse(
+			'''
+			«emptyTestModule»
+			def sum1, [0.0, 0.0]: ℝ[2], (a, b) → return a + b;
+			def sum1, 0.0: ℕ, (a, b) → return a + b;
+			'''
 		)
 		Assert.assertNotNull(moduleKo)
 
@@ -294,12 +307,12 @@ class FunctionOrReductionValidatorTest
 			FunctionOrReductionValidator::REDUCTION_TYPES_COMPATIBILITY,
 			FunctionOrReductionValidator::getReductionTypesCompatibilityMsg(PrimitiveType::REAL.literal, PrimitiveType::INT.literal))
 
-		val moduleOk = parseHelper.parse(getTestModule( '',
-				'''
-				def sum1, 0.0: ℝ[2], (a, b) → return a + b;
-				def sum1, 0: ℕ, (a, b) → return a + b;
-				'''
-			)
+		val moduleOk = parseHelper.parse(
+			'''
+			«emptyTestModule»
+			def sum1, 0.0: ℝ[2], (a, b) → return a + b;
+			def sum1, 0: ℕ, (a, b) → return a + b;
+			'''
 		)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors

@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.ir.ir.IrModule
 import org.eclipse.xtend.lib.annotations.Data
 
@@ -27,27 +26,18 @@ class TraceContentProvider
 		std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 	'''
 
-	def getBeginOfSimuTrace(IrModule it, String simuName, boolean useMesh)
+	def getBeginOfSimuTrace(IrModule it, String simuName)
 	'''
 		std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting «simuName» ..." << __RESET__ << "\n\n";
 
-		«IF useMesh»
-		«val xee = getVariableByName(MandatoryVariables.X_EDGE_ELEMS).codeName»
-		«val yee = getVariableByName(MandatoryVariables.Y_EDGE_ELEMS).codeName»
-		«val xel = getVariableByName(MandatoryVariables.X_EDGE_LENGTH).codeName»
-		«val yel = getVariableByName(MandatoryVariables.Y_EDGE_LENGTH).codeName»
-		std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << «xee» << __RESET__ << ", Y=" << __BOLD__ << «yee»
-			<< __RESET__ << ", X length=" << __BOLD__ << «xel» << __RESET__ << ", Y length=" << __BOLD__ << «yel» << __RESET__ << std::endl;
-		«ENDIF»
-
 		«hwlocTraceContent»
-		«IF useMesh»
 
-		«IF postProcessingInfo !== null»
+		«IF postProcessingInfo === null»
+		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
+		«ELSE»
 		if (!writer.isDisabled())
 			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
 		else
-		«ENDIF»
 			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 		«ENDIF»
 	'''

@@ -1,0 +1,14 @@
+{
+	"_comment": "Generated file - Do not overwrite",
+	"options":
+	{
+		"_outputPath_comment":"empty outputPath to disable output",
+		"outputPath":"output",
+		"outputPeriod":1,
+		"u0":1.0,
+		"stopTime":1.0,
+		"maxIterations":500000000
+	},
+	"mesh":{},
+	"linearAlgebraFunctions":{}
+}

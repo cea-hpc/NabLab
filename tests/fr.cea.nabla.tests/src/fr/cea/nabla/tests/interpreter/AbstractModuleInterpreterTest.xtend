@@ -26,9 +26,9 @@ abstract class AbstractModuleInterpreterTest
 	@Test
 	def void testInterpreteModule()
 	{
-		val model = getTestModule(10, 10)
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
 		// Simulation options
 		let ℝ option_stoptime = 0.2;
 		let ℕ option_max_iterations = 20000;
@@ -39,9 +39,8 @@ abstract class AbstractModuleInterpreterTest
 		InitT: t^{n=0} = 0.;
 		ComputeTn: t^{n+1} = t^{n} + 0.01;
 		'''
-
 		assertInterpreteModule(model)
 	}
-	
+
 	def void assertInterpreteModule(String model)
 }

@@ -21,22 +21,19 @@ public final class Test
 	{
 		public double maxTime;
 		public int maxIter;
-		public double X_EDGE_LENGTH;
-		public double Y_EDGE_LENGTH;
-		public int X_EDGE_ELEMS;
-		public int Y_EDGE_ELEMS;
 		public double deltat;
 	}
 
+	// Mesh and mesh variables
+	private final CartesianMesh2D mesh;
+	private final int nbNodes, nbCells;
+
+	// User options and external classes
 	private final Options options;
 
 	// Global definitions
 	private double t_n;
 	private double t_nplus1;
-
-	// Mesh (can depend on previous definitions)
-	private final CartesianMesh2D mesh;
-	private final int nbNodes, nbCells;
 
 	// Global declarations
 	private int n;
@@ -52,18 +49,19 @@ public final class Test
 	private double[] e_nplus1;
 	private double[] e_n0;
 
-	public Test(Options aOptions)
+	public Test(CartesianMesh2D aMesh, Options aOptions)
 	{
+		// Mesh and mesh variables initialization
+		mesh = aMesh;
+		nbNodes = mesh.getNbNodes();
+		nbCells = mesh.getNbCells();
+
+		// User options and external classes initialization
 		options = aOptions;
 
 		// Initialize variables with default values
 		t_n = 0.0;
 		t_nplus1 = 0.0;
-
-		// Initialize mesh variables
-		mesh = CartesianMesh2DGenerator.generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH);
-		nbNodes = mesh.getNbNodes();
-		nbCells = mesh.getNbCells();
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
@@ -104,9 +102,13 @@ public final class Test
 			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
 			Gson gson = new Gson();
 
-			Test.Options options = (o.has("options") ? gson.fromJson(o.get("options"), Test.Options.class) : new Test.Options());
+			assert(o.has("mesh"));
+			CartesianMesh2DFactory meshFactory = gson.fromJson(o.get("mesh"), CartesianMesh2DFactory.class);
+			CartesianMesh2D mesh = meshFactory.create();
+			assert(o.has("options"));
+			Test.Options options = gson.fromJson(o.get("options"), Test.Options.class);
 
-			Test simulator = new Test(options);
+			Test simulator = new Test(mesh, options);
 			simulator.simulate();
 		}
 		else

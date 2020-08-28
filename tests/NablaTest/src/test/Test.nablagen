@@ -3,6 +3,7 @@ with Test.*;
 nablagen for Test;
 SimulationVariables
 {
+	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
 	time = t;
 	timeStep = δt;

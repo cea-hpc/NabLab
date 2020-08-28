@@ -26,50 +26,45 @@ abstract class AbstractInstructionInterpreterTest
 	@Test
 	def void testInterpreteVarDefinition()
 	{
-		val model = testModuleForSimulation
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
 		ℝ[2] X{nodes};
 		Job1: { let ℝ r = 1.0; t = r; }
 		'''
-		
 		assertInterpreteVarDefinition(model)
 	}
 
 	@Test
 	def void testInterpreteInstructionBlock()
 	{
-		val model = testModuleForSimulation
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
 		ℝ[2] X{nodes};
 		Job1: { let ℝ r = 1.0; t = r; }
 		'''
-
 		assertInterpreteInstructionBlock(model)
 	}
 
 	@Test
 	def void testInterpreteAffectation()
 	{
-		val model = testModuleForSimulation
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
 		ℝ[2] X{nodes};
 		Job1: { let ℝ r = 1.0; t = r; }
 		'''
-
 		assertInterpreteAffectation(model)
 	}
 
 	@Test
 	def void testInterpreteLoop()
 	{
-		val xQuads = 100
-		val yQuads = 100
-		val model = getTestModule(xQuads, yQuads)
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
 		option ℕ maxIter = 10;
 		option ℝ maxTime = 1.0;
 		ℝ U{cells};
@@ -101,17 +96,16 @@ abstract class AbstractInstructionInterpreterTest
 		InitT: t^{n=0} = 0.0;
 		ComputeTn: t^{n+1} = t^{n} + δt;
 		'''
-		assertInterpreteLoop(model, xQuads, yQuads)
+
+		assertInterpreteLoop(model, 100, 100)
 	}
 
 	@Test
 	def void testInterpreteIf()
 	{
-		val xQuads = 100
-		val yQuads = 100
-		val model = getTestModule(xQuads, yQuads)
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
 		ℝ U{cells};
 		ℝ[2] X{nodes};
 		InitU : ∀r, countr ∈ cells(), {
@@ -121,17 +115,15 @@ abstract class AbstractInstructionInterpreterTest
 				U{r} = 1.0;
 		}
 		'''
-		assertInterpreteIf(model, xQuads, yQuads)
+		assertInterpreteIf(model, 100, 100)
 	}
 
 	@Test
 	def void testInterpreteWhile()
 	{
-		val xQuads = 100
-		val yQuads = 100
-		val model = getTestModule(xQuads, yQuads)
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
 		ℝ U{cells};
 		ℝ[2] X{nodes}, C{cells, nodesOfCell};
 		InitU : {
@@ -142,17 +134,16 @@ abstract class AbstractInstructionInterpreterTest
 			}
 		}
 		'''
-		assertInterpreteWhile(model, xQuads, yQuads)
+		assertInterpreteWhile(model, 100, 100)
 	}
 
 	@Test
 	def void testInterpreteSetDefinition()
 	{
-		val xQuads = 100
-		val yQuads = 100
-		val model = getTestModule(xQuads, yQuads)
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
+
 		ℝ[2] X{nodes};
 		ℝ U{cells};
 		InitU : {
@@ -160,41 +151,30 @@ abstract class AbstractInstructionInterpreterTest
 			∀r∈myCells, U{r} = 1.0;
 		}
 		'''
-
-		assertInterpreteSetDefinition(model, xQuads, yQuads)
+		assertInterpreteSetDefinition(model, 100, 100)
 	}
 
 	@Test
 	def void testInterpreteExit()
 	{
-		val xQuads = 100
-		val yQuads = 100
-		val model = getTestModule(xQuads, yQuads)
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
 		let ℕ V=100;
 		let ℕ W=0;
 		ℝ[2] X{nodes};
 
 		Test : if (V < 100) W = V+1; else exit "V must be less than 100";
 		'''
-
 		assertInterpreteExit(model)
 	}
-	
+
 	def void assertInterpreteVarDefinition(String model)
-
 	def void assertInterpreteInstructionBlock(String model)
-
 	def void assertInterpreteAffectation(String model)
-
 	def void assertInterpreteLoop(String model, int xQuads, int yQuads)
-
 	def void assertInterpreteIf(String model, int xQuads, int yQuads)
-
 	def void assertInterpreteWhile(String model, int xQuads, int yQuads)
-
 	def void assertInterpreteSetDefinition(String model, int xQuads, int yQuads)
-
 	def void assertInterpreteExit(String model)
 }

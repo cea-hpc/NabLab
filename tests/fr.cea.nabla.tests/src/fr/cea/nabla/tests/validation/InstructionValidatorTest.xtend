@@ -37,8 +37,9 @@ class InstructionValidatorTest
 	@Test
 	def void testCheckLocalConnectivityVars() 
 	{
-		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '') +
+		val moduleKo = parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			ℝ[2] X{nodes};
 			UpdateX: 
 			{
@@ -52,8 +53,9 @@ class InstructionValidatorTest
 			InstructionValidator::LOCAL_CONNECTIVITY_VAR,
 			InstructionValidator::getLocalConnectivityVarMsg)
 
-		val moduleOk =  parseHelper.parse(getTestModule(defaultConnectivities, '') +
+		val moduleOk =  parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			ℝ[2] X{nodes};
 			UpdateX: 
 			{
@@ -69,9 +71,9 @@ class InstructionValidatorTest
 	@Test
 	def void testCheckAffectationType()
 	{
-		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '')
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			ℕ U{cells};
 			ℕ V{nodes};
 			ComputeU: ∀ j∈cells(), {
@@ -89,9 +91,9 @@ class InstructionValidatorTest
 			InstructionValidator::AFFECTATION_TYPE,
 			getTypeMsg("ℕ{cells}", "ℕ{nodes}"))
 
-		val moduleOk = parseHelper.parse(getTestModule(defaultConnectivities, '')
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			ℕ U{cells}; 
 			ℕ V{cells};
 			ComputeU: ∀ j∈cells(), {
@@ -107,9 +109,9 @@ class InstructionValidatorTest
 	@Test
 	def void testCheckIfConditionBoolType() 
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			ℕ cond;
 			ℕ a;
 			job: if (cond) { a = a + 1 ; } else { a = a -1 ; }
@@ -119,9 +121,9 @@ class InstructionValidatorTest
 			InstructionValidator::CONDITION_BOOL,
 			getTypeMsg(PrimitiveType::INT.literal, "ℾ"))
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			ℾ cond;
 			ℕ a;
 			job: if (cond) { a = a + 1 ; } else { a = a -1 ; }
@@ -133,9 +135,9 @@ class InstructionValidatorTest
 	@Test
 	def void testCheckWhileConditionBoolType() 
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			ℕ cond;
 			ℕ a;
 			job: while (cond) { a = a + 1 ; }
@@ -145,9 +147,9 @@ class InstructionValidatorTest
 			InstructionValidator::CONDITION_BOOL,
 			getTypeMsg(PrimitiveType::INT.literal, "ℾ"))
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			ℾ cond;
 			ℕ a;
 			job: while (cond) { a = a + 1 ; }
@@ -159,18 +161,21 @@ class InstructionValidatorTest
 	@Test
 	def void testCheckGlobalVarValue()
 	{
-		val moduleKo1 = parseHelper.parse(getTestModule('', '''def mySum, 0.0: ℕ, (a, b) → return a + b;''') +
+		val moduleKo1 = parseHelper.parse(
 			'''
+			«emptyTestModule»
+			def mySum, 0: ℕ, (a, b) → return a + b;
 			let ℕ[3] coef = [2, 3, 4];
-			let ℝ DOUBLE_LENGTH = mySum{k∈[0;3[}(X_EDGE_LENGTH, coef[k]);
+			let ℕ c = mySum{k∈[0;3[}(coef[k]);
 			''')
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
 			InstructionValidator::GLOBAL_VAR_VALUE,
 			InstructionValidator::getGlobalVarValueMsg)
 
-		val moduleKo2 = parseHelper.parse(getTestModule(nodesConnectivity, '') +
+		val moduleKo2 = parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			let ℕ c = card(nodes());
 			option ℕ d = c;
 			''')
@@ -179,10 +184,11 @@ class InstructionValidatorTest
 			InstructionValidator::GLOBAL_VAR_VALUE,
 			InstructionValidator::getGlobalVarValueMsg)
 
-		val moduleOk =  parseHelper.parse(testModule +
+		val moduleOk =  parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℕ coef = 2;
-			let ℝ DOUBLE_LENGTH = X_EDGE_LENGTH * coef;
+			let ℝ DOUBLE_LENGTH = 0.1 * coef;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -191,9 +197,9 @@ class InstructionValidatorTest
 	@Test
 	def void testLocalOption()
 	{
-		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '')
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			option ℕ alpha = 1;
 			ℕ U{cells}; 
 			ℕ V{cells};
@@ -208,9 +214,9 @@ class InstructionValidatorTest
 			InstructionValidator::LOCAL_OPTION,
 			InstructionValidator::getLocalOptionMsg())
 
-		val moduleOk = parseHelper.parse(getTestModule(defaultConnectivities, '')
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			option ℕ alpha = 1;
 			ℕ U{cells}; 
 			ℕ V{cells};

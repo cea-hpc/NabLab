@@ -42,16 +42,22 @@ class MainContentProvider
 		d.ParseStream(isw);
 		assert(d.IsObject());
 
+		// mesh
+		assert(d.HasMember("mesh"));
+		const rapidjson::Value& valueof_mesh = d["mesh"];
+		assert(valueof_mesh.IsObject());
+		«meshClassName»Factory meshFactory;
+		meshFactory.jsonInit(valueof_mesh.GetObject());
+		«meshClassName»* mesh = meshFactory.create();
+
 		// options
 		«name»::Options options;
-		if (d.HasMember("options"))
-		{
-			const rapidjson::Value& valueof_options = d["options"];
-			assert(valueof_options.IsObject());
-			options.jsonInit(valueof_options.GetObject());
-		}
-
+		assert(d.HasMember("options"));
+		const rapidjson::Value& valueof_options = d["options"];
+		assert(valueof_options.IsObject());
+		options.jsonInit(valueof_options.GetObject());
 		«FOR s : allProviders»
+
 		// «s.toFirstLower»
 		«s» «s.toFirstLower»;
 		if (d.HasMember("«s.toFirstLower»"))
@@ -63,7 +69,7 @@ class MainContentProvider
 		«ENDFOR»
 
 		// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-		auto simulator = new «name»(options«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s.toFirstLower»«ENDFOR»);
+		auto simulator = new «name»(mesh, options«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s.toFirstLower»«ENDFOR»);
 		simulator->simulate();
 
 		«IF !levelDBPath.nullOrEmpty»
@@ -80,6 +86,7 @@ class MainContentProvider
 		«ENDIF»
 		// simulator must be deleted before calling finalize
 		delete simulator;
+		delete mesh;
 	'''
 }
 

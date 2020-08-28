@@ -24,37 +24,30 @@ public final class ImplicitHeatEquation
 		public String outputPath;
 		public int outputPeriod;
 		public double u0;
-		public double[] vectOne;
-		public double X_LENGTH;
-		public double Y_LENGTH;
-		public int X_EDGE_ELEMS;
-		public int Y_EDGE_ELEMS;
-		public double X_EDGE_LENGTH;
-		public double Y_EDGE_LENGTH;
 		public double stopTime;
 		public int maxIterations;
 	}
 
+	// Mesh and mesh variables
+	private final CartesianMesh2D mesh;
+	private final int nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
+
+	// User options and external classes
 	private final Options options;
 	private LinearAlgebraFunctions linearAlgebraFunctions;
+	private final FileWriter writer;
 
 	// Global definitions
+	private final double[] vectOne;
 	private double t_n;
 	private double t_nplus1;
 	private double deltat;
 	private int lastDump;
 
-	// Mesh (can depend on previous definitions)
-	private final CartesianMesh2D mesh;
-	private final FileWriter writer;
-	private final int nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
-
 	// Global declarations
 	private int n;
 	private double[][] X;
 	private double[][] Xc;
-	private double[] xc;
-	private double[] yc;
 	private Vector u_n;
 	private Vector u_nplus1;
 	private double[] V;
@@ -63,20 +56,10 @@ public final class ImplicitHeatEquation
 	private double[] faceConductivity;
 	private Matrix alpha;
 
-	public ImplicitHeatEquation(Options aOptions, LinearAlgebraFunctions aLinearAlgebraFunctions)
+	public ImplicitHeatEquation(CartesianMesh2D aMesh, Options aOptions, LinearAlgebraFunctions aLinearAlgebraFunctions)
 	{
-		options = aOptions;
-		linearAlgebraFunctions = aLinearAlgebraFunctions;
-
-		// Initialize variables with default values
-		t_n = 0.0;
-		t_nplus1 = 0.0;
-		deltat = 0.001;
-		lastDump = Integer.MIN_VALUE;
-
-		// Initialize mesh variables
-		mesh = CartesianMesh2DGenerator.generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH);
-		writer = new PvdFileWriter2D("ImplicitHeatEquation", options.outputPath);
+		// Mesh and mesh variables initialization
+		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
@@ -85,11 +68,21 @@ public final class ImplicitHeatEquation
 		nbCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
 		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
 
+		// User options and external classes initialization
+		options = aOptions;
+		linearAlgebraFunctions = aLinearAlgebraFunctions;
+		writer = new PvdFileWriter2D("ImplicitHeatEquation", options.outputPath);
+
+		// Initialize variables with default values
+		vectOne = new double[] {1.0, 1.0};
+		t_n = 0.0;
+		t_nplus1 = 0.0;
+		deltat = 0.001;
+		lastDump = Integer.MIN_VALUE;
+
 		// Allocate arrays
 		X = new double[nbNodes][2];
 		Xc = new double[nbCells][2];
-		xc = new double[nbCells];
-		yc = new double[nbCells];
 		u_n = Vector.createDenseVector(nbCells);
 		u_nplus1 = Vector.createDenseVector(nbCells);
 		V = new double[nbCells];
@@ -117,7 +110,6 @@ public final class ImplicitHeatEquation
 		computeDeltaTn(); // @2.0
 		computeFaceConductivity(); // @2.0
 		initU(); // @2.0
-		initXcAndYc(); // @2.0
 		computeAlphaCoeff(); // @3.0
 		executeTimeLoopN(); // @4.0
 		System.out.println("End of execution of module ImplicitHeatEquation");
@@ -132,10 +124,14 @@ public final class ImplicitHeatEquation
 			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
 			Gson gson = new Gson();
 
-			ImplicitHeatEquation.Options options = (o.has("options") ? gson.fromJson(o.get("options"), ImplicitHeatEquation.Options.class) : new ImplicitHeatEquation.Options());
+			assert(o.has("mesh"));
+			CartesianMesh2DFactory meshFactory = gson.fromJson(o.get("mesh"), CartesianMesh2DFactory.class);
+			CartesianMesh2D mesh = meshFactory.create();
+			assert(o.has("options"));
+			ImplicitHeatEquation.Options options = gson.fromJson(o.get("options"), ImplicitHeatEquation.Options.class);
 			LinearAlgebraFunctions linearAlgebraFunctions = (o.has("linearAlgebraFunctions") ? gson.fromJson(o.get("linearAlgebraFunctions"), LinearAlgebraFunctions.class) : new LinearAlgebraFunctions());
 
-			ImplicitHeatEquation simulator = new ImplicitHeatEquation(options, linearAlgebraFunctions);
+			ImplicitHeatEquation simulator = new ImplicitHeatEquation(mesh, options, linearAlgebraFunctions);
 			simulator.simulate();
 		}
 		else
@@ -259,7 +255,7 @@ public final class ImplicitHeatEquation
 
 	/**
 	 * Job ComputeDeltaTn called @2.0 in simulate method.
-	 * In variables: D, X_EDGE_LENGTH, Y_EDGE_LENGTH
+	 * In variables: D, V
 	 * Out variables: deltat
 	 */
 	private void computeDeltaTn()
@@ -270,7 +266,7 @@ public final class ImplicitHeatEquation
 			Double.MAX_VALUE,
 			(accu, cCells) ->
 			{
-				return minR0(accu, options.X_EDGE_LENGTH * options.Y_EDGE_LENGTH / D[cCells]);
+				return minR0(accu, V[cCells] / D[cCells]);
 			},
 			(r1, r2) -> minR0(r1, r2)
 		);
@@ -322,24 +318,10 @@ public final class ImplicitHeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			if (norm(ArrayOperations.minus(Xc[cCells], options.vectOne)) < 0.5)
+			if (norm(ArrayOperations.minus(Xc[cCells], vectOne)) < 0.5)
 				u_n.set(cCells, options.u0);
 			else
 				u_n.set(cCells, 0.0);
-		});
-	}
-
-	/**
-	 * Job InitXcAndYc called @2.0 in simulate method.
-	 * In variables: Xc
-	 * Out variables: xc, yc
-	 */
-	private void initXcAndYc()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
-		{
-			xc[cCells] = Xc[cCells][0];
-			yc[cCells] = Xc[cCells][1];
 		});
 	}
 

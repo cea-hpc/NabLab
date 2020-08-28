@@ -63,26 +63,6 @@ HeatEquation::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 	const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
 	assert(valueof_maxIterations.IsInt());
 	maxIterations = valueof_maxIterations.GetInt();
-	// X_EDGE_LENGTH
-	assert(d.HasMember("X_EDGE_LENGTH"));
-	const rapidjson::Value& valueof_X_EDGE_LENGTH = d["X_EDGE_LENGTH"];
-	assert(valueof_X_EDGE_LENGTH.IsDouble());
-	X_EDGE_LENGTH = valueof_X_EDGE_LENGTH.GetDouble();
-	// Y_EDGE_LENGTH
-	assert(d.HasMember("Y_EDGE_LENGTH"));
-	const rapidjson::Value& valueof_Y_EDGE_LENGTH = d["Y_EDGE_LENGTH"];
-	assert(valueof_Y_EDGE_LENGTH.IsDouble());
-	Y_EDGE_LENGTH = valueof_Y_EDGE_LENGTH.GetDouble();
-	// X_EDGE_ELEMS
-	assert(d.HasMember("X_EDGE_ELEMS"));
-	const rapidjson::Value& valueof_X_EDGE_ELEMS = d["X_EDGE_ELEMS"];
-	assert(valueof_X_EDGE_ELEMS.IsInt());
-	X_EDGE_ELEMS = valueof_X_EDGE_ELEMS.GetInt();
-	// Y_EDGE_ELEMS
-	assert(d.HasMember("Y_EDGE_ELEMS"));
-	const rapidjson::Value& valueof_Y_EDGE_ELEMS = d["Y_EDGE_ELEMS"];
-	assert(valueof_Y_EDGE_ELEMS.IsInt());
-	Y_EDGE_ELEMS = valueof_Y_EDGE_ELEMS.GetInt();
 	// PI
 	assert(d.HasMember("PI"));
 	const rapidjson::Value& valueof_PI = d["PI"];
@@ -97,19 +77,19 @@ HeatEquation::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 
 /******************** Module definition ********************/
 
-HeatEquation::HeatEquation(const Options& aOptions)
-: options(aOptions)
-, t_n(0.0)
-, t_nplus1(0.0)
-, lastDump(numeric_limits<int>::min())
-, mesh(CartesianMesh2DGenerator::generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH))
-, writer("HeatEquation", options.outputPath)
+HeatEquation::HeatEquation(CartesianMesh2D* aMesh, const Options& aOptions)
+: mesh(aMesh)
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
 , nbFaces(mesh->getNbFaces())
 , nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
 , nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, options(aOptions)
+, writer("HeatEquation", options.outputPath)
+, t_n(0.0)
+, t_nplus1(0.0)
+, lastDump(numeric_limits<int>::min())
 , X(nbNodes)
 , center(nbCells)
 , u_n(nbCells)
@@ -130,7 +110,6 @@ HeatEquation::HeatEquation(const Options& aOptions)
 
 HeatEquation::~HeatEquation()
 {
-	delete mesh;
 }
 
 /**
@@ -384,9 +363,6 @@ void HeatEquation::simulate()
 {
 	std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting HeatEquation ..." << __RESET__ << "\n\n";
 	
-	std::cout << "[" << __GREEN__ << "MESH" << __RESET__ << "]      X=" << __BOLD__ << options.X_EDGE_ELEMS << __RESET__ << ", Y=" << __BOLD__ << options.Y_EDGE_ELEMS
-		<< __RESET__ << ", X length=" << __BOLD__ << options.X_EDGE_LENGTH << __RESET__ << ", Y length=" << __BOLD__ << options.Y_EDGE_LENGTH << __RESET__ << std::endl;
-	
 	std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 	
 	if (!writer.isDisabled())
@@ -428,21 +404,27 @@ int main(int argc, char* argv[])
 	d.ParseStream(isw);
 	assert(d.IsObject());
 	
+	// mesh
+	assert(d.HasMember("mesh"));
+	const rapidjson::Value& valueof_mesh = d["mesh"];
+	assert(valueof_mesh.IsObject());
+	CartesianMesh2DFactory meshFactory;
+	meshFactory.jsonInit(valueof_mesh.GetObject());
+	CartesianMesh2D* mesh = meshFactory.create();
+	
 	// options
 	HeatEquation::Options options;
-	if (d.HasMember("options"))
-	{
-		const rapidjson::Value& valueof_options = d["options"];
-		assert(valueof_options.IsObject());
-		options.jsonInit(valueof_options.GetObject());
-	}
-	
+	assert(d.HasMember("options"));
+	const rapidjson::Value& valueof_options = d["options"];
+	assert(valueof_options.IsObject());
+	options.jsonInit(valueof_options.GetObject());
 	
 	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-	auto simulator = new HeatEquation(options);
+	auto simulator = new HeatEquation(mesh, options);
 	simulator->simulate();
 	
 	// simulator must be deleted before calling finalize
 	delete simulator;
+	delete mesh;
 	return 0;
 }

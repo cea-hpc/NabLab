@@ -26,9 +26,9 @@ abstract class AbstractBinaryOperationsInterpreterTest
 	@Test
 	def void testGetValueOfNV0Bool_NV0Bool()
 	{
-		val model = testModuleForSimulation
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
 		let ℾ b1 = true || false; // -> true
 		let ℾ b2 = true || true; // -> true
 		let ℾ b3 = false || false; // -> false
@@ -46,16 +46,15 @@ abstract class AbstractBinaryOperationsInterpreterTest
 
 		ℝ[2] X{nodes};
 		'''
-
 		assertGetValueOfNV0Bool_NV0Bool(model)
 	}
 
 	@Test
 	def void testGetValueOfNV0Int_NV0Int()
 	{
-		val model = testModuleForSimulation
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
 		let ℾ b1 = 1 == 2; // -> false
 		let ℾ b2 = 1 == 1; // -> true
 
@@ -83,16 +82,15 @@ abstract class AbstractBinaryOperationsInterpreterTest
 
 		ℝ[2] X{nodes};
 		'''
-		
 		assertGetValueOfNV0Int_NV0Int(model)
 	}
 
 	@Test
 	def void testGetValueOfNV0Int_NV0Real()
 	{
-		val model = testModuleForSimulation
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
 		let ℾ b1 = 1 == 2.; // -> false
 		let ℾ b2 = 1 == 1; // -> true
 
@@ -119,31 +117,26 @@ abstract class AbstractBinaryOperationsInterpreterTest
 
 		ℝ[2] X{nodes};
 		'''
-		
 		assertGetValueOfNV0Int_NV0Real(model)
 	}
 
 	@Test
 	def void testGetValueOfNV0Int_NV1Int()
 	{
-		val model = testModuleForSimulation
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
 		let ℕ[2] n1 = [1,2];
 		let ℕ[2] n2 = 3 + n1;
 		let ℕ[2] n3 = 3 * n1;
 
 		ℝ[2] X{nodes};
 		'''
-
 		assertGetValueOfNV0Int_NV1Int(model)
 	}
-	
+
 	def void assertGetValueOfNV0Bool_NV0Bool(String model)
-
 	def void assertGetValueOfNV0Int_NV0Int(String model)
-
 	def void assertGetValueOfNV0Int_NV0Real(String model)
-
 	def void assertGetValueOfNV0Int_NV1Int(String model)
 }

@@ -2,7 +2,6 @@ package fr.cea.nabla.tests.interpreter
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.interpreter.Context
-import fr.cea.nabla.ir.interpreter.ModuleInterpreter
 import fr.cea.nabla.ir.interpreter.NV0Bool
 import fr.cea.nabla.ir.interpreter.NV0Int
 import fr.cea.nabla.ir.interpreter.NV0Real
@@ -14,8 +13,6 @@ import fr.cea.nabla.ir.interpreter.NV2Int
 import fr.cea.nabla.ir.interpreter.NV2Real
 import fr.cea.nabla.tests.CompilationChainHelper
 import fr.cea.nabla.tests.TestUtils
-import java.util.logging.ConsoleHandler
-import java.util.logging.Level
 import java.util.logging.Logger
 import org.junit.Assert
 
@@ -38,10 +35,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest
 	override assertInterpreteUnaryExpression(String model)
 	{
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
+		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
 
 		assertVariableValueInContext(irModule, context, "b0", new NV0Bool(true))
 		assertVariableValueInContext(irModule, context, "n0", new NV0Int(-1))
@@ -147,10 +141,8 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest
 	override assertInterpreteCardinality(String model)
 	{
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
+		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
+
 		val variableValue = context.getVariableValue(irModule.getVariableByName("c"))
 		Assert.assertNotNull(variableValue)
 		Assert.assertTrue(variableValue instanceof NV0Int)
@@ -160,10 +152,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest
 	override assertInterpreteFunctionCall(String model)
 	{
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
+		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
 
 		assertVariableValueInContext(irModule, context, "n0", new NV0Int(0))
 		assertVariableValueInContext(irModule, context, "n1", new NV0Int(1))
@@ -182,10 +171,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest
 	override assertInterpreteFunctionCallWithBody(String model)
 	{
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
+		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
 
 		assertVariableValueInContext(irModule, context, "w1", new NV1Real(#[0.0, 0.2]))
 		assertVariableValueInContext(irModule, context, "w2", new NV1Real(#[0.0, 0.2]))
@@ -198,10 +184,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest
 	override assertInterpreteVarRef(String model)
 	{
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
+		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
 
 		assertVariableValueInContext(irModule, context, "b2", new NV0Bool(true))
 

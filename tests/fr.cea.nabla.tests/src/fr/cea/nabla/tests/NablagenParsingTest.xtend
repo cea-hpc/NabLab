@@ -22,22 +22,13 @@ import org.junit.runner.RunWith
 @InjectWith(NablagenInjectorProvider)
 class NablagenParsingTest
 {
-	@Inject
-	ParseHelper<NablagenModule> parseHelper
+	@Inject ParseHelper<NablagenModule> parseHelper
+	@Inject extension TestUtils
 
 	@Test
 	def void loadModel() 
 	{
-		val result = parseHelper.parse('''
-			nablagen for Test;
-
-			SimulationVariables
-			{
-				nodeCoord = X;
-				time = t;
-				timeStep = δt;
-			}
-		''')
+		val result = parseHelper.parse(testGenModel)
 		Assert.assertNotNull(result)
 		val errors = result.eResource.errors
 		Assert.assertTrue('''Unexpected errors: «errors.join(", ")»''', errors.isEmpty)

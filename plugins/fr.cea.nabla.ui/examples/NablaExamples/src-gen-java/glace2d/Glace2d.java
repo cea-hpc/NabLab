@@ -23,10 +23,6 @@ public final class Glace2d
 		public int outputPeriod;
 		public double stopTime;
 		public int maxIterations;
-		public double X_EDGE_LENGTH;
-		public double Y_EDGE_LENGTH;
-		public int X_EDGE_ELEMS;
-		public int Y_EDGE_ELEMS;
 		public double gamma;
 		public double xInterface;
 		public double deltatIni;
@@ -37,7 +33,13 @@ public final class Glace2d
 		public double pIniZd;
 	}
 
+	// Mesh and mesh variables
+	private final CartesianMesh2D mesh;
+	private final int nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, nbNodesOfCell, nbCellsOfNode;
+
+	// User options and external classes
 	private final Options options;
+	private final FileWriter writer;
 
 	// Global definitions
 	private double t_n;
@@ -45,11 +47,6 @@ public final class Glace2d
 	private double deltat_n;
 	private double deltat_nplus1;
 	private int lastDump;
-
-	// Mesh (can depend on previous definitions)
-	private final CartesianMesh2D mesh;
-	private final FileWriter writer;
-	private final int nbNodes, nbCells, nbOuterFaces, nbInnerNodes, nbNodesOfCell, nbCellsOfNode, nbNodesOfFace;
 
 	// Global declarations
 	private int n;
@@ -78,9 +75,23 @@ public final class Glace2d
 	private double[][][] F;
 	private double[][][][] Ajr;
 
-	public Glace2d(Options aOptions)
+	public Glace2d(CartesianMesh2D aMesh, Options aOptions)
 	{
+		// Mesh and mesh variables initialization
+		mesh = aMesh;
+		nbNodes = mesh.getNbNodes();
+		nbCells = mesh.getNbCells();
+		nbInnerNodes = mesh.getNbInnerNodes();
+		nbTopNodes = mesh.getNbTopNodes();
+		nbBottomNodes = mesh.getNbBottomNodes();
+		nbLeftNodes = mesh.getNbLeftNodes();
+		nbRightNodes = mesh.getNbRightNodes();
+		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+		nbCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
+
+		// User options and external classes initialization
 		options = aOptions;
+		writer = new PvdFileWriter2D("Glace2d", options.outputPath);
 
 		// Initialize variables with default values
 		t_n = 0.0;
@@ -88,17 +99,6 @@ public final class Glace2d
 		deltat_n = options.deltatIni;
 		deltat_nplus1 = options.deltatIni;
 		lastDump = Integer.MIN_VALUE;
-
-		// Initialize mesh variables
-		mesh = CartesianMesh2DGenerator.generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH);
-		writer = new PvdFileWriter2D("Glace2d", options.outputPath);
-		nbNodes = mesh.getNbNodes();
-		nbCells = mesh.getNbCells();
-		nbOuterFaces = mesh.getNbOuterFaces();
-		nbInnerNodes = mesh.getNbInnerNodes();
-		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		nbCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
-		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 
 		// Allocate arrays
 		X_n = new double[nbNodes][2];
@@ -154,9 +154,13 @@ public final class Glace2d
 			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
 			Gson gson = new Gson();
 
-			Glace2d.Options options = (o.has("options") ? gson.fromJson(o.get("options"), Glace2d.Options.class) : new Glace2d.Options());
+			assert(o.has("mesh"));
+			CartesianMesh2DFactory meshFactory = gson.fromJson(o.get("mesh"), CartesianMesh2DFactory.class);
+			CartesianMesh2D mesh = meshFactory.create();
+			assert(o.has("options"));
+			Glace2d.Options options = gson.fromJson(o.get("options"), Glace2d.Options.class);
 
-			Glace2d simulator = new Glace2d(options);
+			Glace2d simulator = new Glace2d(mesh, options);
 			simulator.simulate();
 		}
 		else
@@ -358,7 +362,7 @@ public final class Glace2d
 
 	/**
 	 * Job ExecuteTimeLoopN called @3.0 in simulate method.
-	 * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b, bt, c, deltatCfl, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, p, rho, t_n, uj_n, ur
+	 * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_n, b, bt, c, deltatCfl, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, p, rho, t_n, uj_n, ur
 	 * Out variables: Ajr, Ar, C, E_nplus1, F, Mt, V, X_nplus1, b, bt, c, deltat_nplus1, deltatj, e, l, p, rho, t_nplus1, uj_nplus1, ur
 	 */
 	private void executeTimeLoopN()
@@ -564,51 +568,60 @@ public final class Glace2d
 
 	/**
 	 * Job ComputeBoundaryConditions called @8.0 in executeTimeLoopN method.
-	 * In variables: Ar, X_EDGE_ELEMS, X_EDGE_LENGTH, X_n, Y_EDGE_ELEMS, Y_EDGE_LENGTH, b
+	 * In variables: Ar, b
 	 * Out variables: Mt, bt
 	 */
 	private void computeBoundaryConditions()
 	{
+		final double[][] I = new double[][] {new double[] {1.0, 0.0}, new double[] {0.0, 1.0}};
 		{
-			final int[] outerFaces = mesh.getOuterFaces();
-			final int nbOuterFaces = outerFaces.length;
-			IntStream.range(0, nbOuterFaces).parallel().forEach(fOuterFaces -> 
+			final int[] topNodes = mesh.getTopNodes();
+			final int nbTopNodes = topNodes.length;
+			IntStream.range(0, nbTopNodes).parallel().forEach(rTopNodes -> 
 			{
-				final int fId = outerFaces[fOuterFaces];
-				final double epsilon = 1.0E-10;
-				final double[][] I = new double[][] {new double[] {1.0, 0.0}, new double[] {0.0, 1.0}};
-				final double X_MIN = 0.0;
-				final double X_MAX = options.X_EDGE_ELEMS * options.X_EDGE_LENGTH;
-				final double Y_MIN = 0.0;
-				final double Y_MAX = options.Y_EDGE_ELEMS * options.Y_EDGE_LENGTH;
-				final double[] nY = new double[] {0.0, 1.0};
-				{
-					final int[] nodesOfFaceF = mesh.getNodesOfFace(fId);
-					final int nbNodesOfFaceF = nodesOfFaceF.length;
-					for (int rNodesOfFaceF=0; rNodesOfFaceF<nbNodesOfFaceF; rNodesOfFaceF++)
-					{
-						final int rId = nodesOfFaceF[rNodesOfFaceF];
-						final int rNodes = rId;
-						if ((X_n[rNodes][1] - Y_MIN < epsilon) || (X_n[rNodes][1] - Y_MAX < epsilon))
-						{
-							double sign = 0.0;
-							if (X_n[rNodes][1] - Y_MIN < epsilon)
-								sign = -1.0;
-							else
-								sign = 1.0;
-							final double[] N = ArrayOperations.multiply(sign, nY);
-							final double[][] NxN = tensProduct(N, N);
-							final double[][] IcP = ArrayOperations.minus(I, NxN);
-							bt[rNodes] = matVectProduct(IcP, b[rNodes]);
-							Mt[rNodes] = ArrayOperations.plus(ArrayOperations.multiply(IcP, (ArrayOperations.multiply(Ar[rNodes], IcP))), ArrayOperations.multiply(NxN, trace(Ar[rNodes])));
-						}
-						if ((Math.abs(X_n[rNodes][0] - X_MIN) < epsilon) || ((Math.abs(X_n[rNodes][0] - X_MAX) < epsilon)))
-						{
-							Mt[rNodes] = I;
-							bt[rNodes] = new double[] {0.0, 0.0};
-						}
-					}
-				}
+				final int rId = topNodes[rTopNodes];
+				final int rNodes = rId;
+				final double[] N = new double[] {0.0, 1.0};
+				final double[][] NxN = tensProduct(N, N);
+				final double[][] IcP = ArrayOperations.minus(I, NxN);
+				bt[rNodes] = matVectProduct(IcP, b[rNodes]);
+				Mt[rNodes] = ArrayOperations.plus(ArrayOperations.multiply(IcP, (ArrayOperations.multiply(Ar[rNodes], IcP))), ArrayOperations.multiply(NxN, trace(Ar[rNodes])));
+			});
+		}
+		{
+			final int[] bottomNodes = mesh.getBottomNodes();
+			final int nbBottomNodes = bottomNodes.length;
+			IntStream.range(0, nbBottomNodes).parallel().forEach(rBottomNodes -> 
+			{
+				final int rId = bottomNodes[rBottomNodes];
+				final int rNodes = rId;
+				final double[] N = new double[] {0.0, -1.0};
+				final double[][] NxN = tensProduct(N, N);
+				final double[][] IcP = ArrayOperations.minus(I, NxN);
+				bt[rNodes] = matVectProduct(IcP, b[rNodes]);
+				Mt[rNodes] = ArrayOperations.plus(ArrayOperations.multiply(IcP, (ArrayOperations.multiply(Ar[rNodes], IcP))), ArrayOperations.multiply(NxN, trace(Ar[rNodes])));
+			});
+		}
+		{
+			final int[] leftNodes = mesh.getLeftNodes();
+			final int nbLeftNodes = leftNodes.length;
+			IntStream.range(0, nbLeftNodes).parallel().forEach(rLeftNodes -> 
+			{
+				final int rId = leftNodes[rLeftNodes];
+				final int rNodes = rId;
+				Mt[rNodes] = I;
+				bt[rNodes] = new double[] {0.0, 0.0};
+			});
+		}
+		{
+			final int[] rightNodes = mesh.getRightNodes();
+			final int nbRightNodes = rightNodes.length;
+			IntStream.range(0, nbRightNodes).parallel().forEach(rRightNodes -> 
+			{
+				final int rId = rightNodes[rRightNodes];
+				final int rNodes = rId;
+				Mt[rNodes] = I;
+				bt[rNodes] = new double[] {0.0, 0.0};
 			});
 		}
 	}

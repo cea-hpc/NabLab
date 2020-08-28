@@ -45,6 +45,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getConnectivities <em>Connectivities</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getDefinitions <em>Definitions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getDeclarations <em>Declarations</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getMeshClassName <em>Mesh Class Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getTimeVariable <em>Time Variable</em>}</li>
@@ -136,6 +137,26 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * @ordered
 	 */
 	protected EList<Variable> declarations;
+
+	/**
+	 * The default value of the '{@link #getMeshClassName() <em>Mesh Class Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getMeshClassName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String MESH_CLASS_NAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getMeshClassName() <em>Mesh Class Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getMeshClassName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String meshClassName = MESH_CLASS_NAME_EDEFAULT;
 
 	/**
 	 * The cached value of the '{@link #getInitNodeCoordVariable() <em>Init Node Coord Variable</em>}' reference.
@@ -325,6 +346,29 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			declarations = new EObjectContainmentEList<Variable>(Variable.class, this, IrPackage.IR_MODULE__DECLARATIONS);
 		}
 		return declarations;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getMeshClassName() {
+		return meshClassName;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setMeshClassName(String newMeshClassName) {
+		String oldMeshClassName = meshClassName;
+		meshClassName = newMeshClassName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__MESH_CLASS_NAME, oldMeshClassName, meshClassName));
 	}
 
 	/**
@@ -688,6 +732,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return getDefinitions();
 			case IrPackage.IR_MODULE__DECLARATIONS:
 				return getDeclarations();
+			case IrPackage.IR_MODULE__MESH_CLASS_NAME:
+				return getMeshClassName();
 			case IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE:
 				if (resolve) return getInitNodeCoordVariable();
 				return basicGetInitNodeCoordVariable();
@@ -748,6 +794,9 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				getDeclarations().clear();
 				getDeclarations().addAll((Collection<? extends Variable>)newValue);
 				return;
+			case IrPackage.IR_MODULE__MESH_CLASS_NAME:
+				setMeshClassName((String)newValue);
+				return;
 			case IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE:
 				setInitNodeCoordVariable((ConnectivityVariable)newValue);
 				return;
@@ -803,6 +852,9 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__DECLARATIONS:
 				getDeclarations().clear();
 				return;
+			case IrPackage.IR_MODULE__MESH_CLASS_NAME:
+				setMeshClassName(MESH_CLASS_NAME_EDEFAULT);
+				return;
 			case IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE:
 				setInitNodeCoordVariable((ConnectivityVariable)null);
 				return;
@@ -850,6 +902,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return definitions != null && !definitions.isEmpty();
 			case IrPackage.IR_MODULE__DECLARATIONS:
 				return declarations != null && !declarations.isEmpty();
+			case IrPackage.IR_MODULE__MESH_CLASS_NAME:
+				return MESH_CLASS_NAME_EDEFAULT == null ? meshClassName != null : !MESH_CLASS_NAME_EDEFAULT.equals(meshClassName);
 			case IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE:
 				return initNodeCoordVariable != null;
 			case IrPackage.IR_MODULE__NODE_COORD_VARIABLE:
@@ -880,6 +934,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (name: ");
 		result.append(name);
+		result.append(", meshClassName: ");
+		result.append(meshClassName);
 		result.append(')');
 		return result.toString();
 	}

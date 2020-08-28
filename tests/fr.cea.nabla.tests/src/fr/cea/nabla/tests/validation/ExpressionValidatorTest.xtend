@@ -43,9 +43,9 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckBaseTypeConstantValue()
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℝ[2] one = [1.0, 1.0];
 			let ℕ int = ℕ(1.2);
 			let ℾ bool = ℾ(1);
@@ -67,9 +67,9 @@ class ExpressionValidatorTest
 			ExpressionValidator::BASE_TYPE_CONSTANT_VALUE,
 			ExpressionValidator::getBaseTypeConstantValueMsg(PrimitiveType::BOOL.literal))
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℕ int = ℕ(1);
 			let ℾ bool = ℾ(true);
 			let ℝ real = ℝ(1.2);
@@ -83,9 +83,9 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckBaseTypeConstantType()
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℕ two = 2;
 			let ℝ[2] realOne = ℝ[two](1.0);
 			'''
@@ -95,9 +95,9 @@ class ExpressionValidatorTest
 			ExpressionValidator::BASE_TYPE_CONSTANT_TYPE, 
 			ExpressionValidator::getBaseTypeConstantTypeMsg())
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℝ[2] realOne = ℝ[2](1.0);
 			'''
 		)
@@ -108,15 +108,16 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckFunctionCallArgs()
 	{
-		val functions =
+		val model =
 			'''
+			«emptyTestModule»
 			def test: ℾ × ℝ × ℝ[2] → ℝ;
+			let ℝ[2] opt = [0., 1.];
 			'''
 
-		val moduleKo = parseHelper.parse(getTestModule('', functions)
-			+
+		val moduleKo = parseHelper.parse(
 			'''
-			let ℝ[2] opt = [0., 1.];
+			«model»
 			j1: let ℝ x = test(true, 0, opt);
 			'''
 		)
@@ -130,10 +131,9 @@ class ExpressionValidatorTest
 				new NSTRealArray1D(createIntConstant(2)).label]
 		))
 
-		val moduleOk = parseHelper.parse(getTestModule('', functions)
-			+
+		val moduleOk = parseHelper.parse(
 			'''
-			let ℝ[2] opt = [0., 1.];
+			«model»
 			j1: let ℝ x = test(true, 0., opt);
 			'''
 		)
@@ -144,14 +144,11 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckReductionCallArgs()
 	{
-		var functions =
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
+			«defaultConnectivities»
 			def sum, 0.0: ℝ, (a, b) → return a + b;
-			'''
-
-		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, functions)
-			+
-			'''
 			ℝ D{cells}; 
 			ℝ[2] E{cells}; 
 			computeU: let ℝ u = sum{c∈cells()}(D);
@@ -168,18 +165,15 @@ class ExpressionValidatorTest
 			ExpressionValidator::REDUCTION_CALL_ARGS,
 			ExpressionValidator::getReductionCallArgsMsg(new NSTRealScalar().label))
 
-		functions =
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
+			«defaultConnectivities»
 			def sum, 0.0: ℝ, (a,b) → return a + b;
 			def sum, 0.0: x | ℝ[x], (a,b) → return a + b;
-			'''
-
-		val moduleOk = parseHelper.parse(getTestModule(defaultConnectivities, functions)
-			+
-			'''
 			ℝ D{cells};
 			ℝ[2] E{cells};
-			computeT: let ℝ u = sum{c∈cells()}(D{c});
+			computeU: let ℝ u = sum{c∈cells()}(D{c});
 			computeV: let ℝ[2] v = sum{c∈cells()}(E{c});
 			'''
 		)
@@ -190,9 +184,9 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckContractedIfType() 
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℝ cond = 0.0;
 			let ℝ U = 1.1;
 			let ℕ V = 2;
@@ -212,9 +206,9 @@ class ExpressionValidatorTest
 			ExpressionValidator::CONTRACTED_IF_ELSE_TYPE,
 			getTypeMsg(v.typeFor.label, u.typeFor.label))
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℾ cond = true;
 			let ℝ U = 0.0;
 			let ℝ V = 1.1;
@@ -228,9 +222,9 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckNotExpressionType()
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℝ cond = 0.0;
 			let ℾ ok = !cond; 
 			'''
@@ -242,9 +236,9 @@ class ExpressionValidatorTest
 			ExpressionValidator::NOT_EXPRESSION_TYPE,
 			getTypeMsg(cond.typeFor.label, "ℾ"))
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℾ cond = true;
 			let ℾ ok = !cond; 
 			'''
@@ -256,9 +250,9 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckMulType()
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℾ  a = true; 
 			let ℝ b = 0.0;
 			let ℝ c = a * b;
@@ -273,9 +267,9 @@ class ExpressionValidatorTest
 				PrimitiveType::REAL.literal
 			))
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℝ a = 1.1;
 			let ℝ b = 0.0;
 			let ℝ c = a * b;
@@ -289,9 +283,9 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckDivType()
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℾ a = true; 
 			let ℝ b = 0.0;
 			let ℝ c = a / b;
@@ -306,9 +300,9 @@ class ExpressionValidatorTest
 				PrimitiveType::REAL.literal
 			))
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℝ a = 1.1;
 			let ℝ b = 0.0;
 			let ℝ c = a / b;
@@ -321,8 +315,9 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckPlusType() 
 	{
-		val moduleKo = parseHelper.parse(testModule +
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℾ a = true; 
 			let ℕ b = 0;
 			let ℝ c = a + b;
@@ -337,9 +332,9 @@ class ExpressionValidatorTest
 				PrimitiveType::INT.literal
 			))
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℝ a = 1.1;
 			let ℕ b = 0;
 			let ℝ c = a + b;
@@ -352,9 +347,9 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckMinusType()
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℝ[2] a = ℝ[2](0.0);
 			let ℝ[3] b = ℝ[3](0.0);
 			let ℝ[2] c = a - b;
@@ -370,9 +365,9 @@ class ExpressionValidatorTest
 				new NSTRealArray1D(createIntConstant(3)).label
 			))
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℝ[2] a = ℝ[2](0.0);
 			let ℝ[2] b = ℝ[2](1.1);
 			let ℝ[2] c = a - b;
@@ -385,9 +380,9 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckComparisonType()
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℝ a = 0.0;
 			let ℝ[2] b = ℝ[2](1.1);
 			let ℾ c = a > b;
@@ -402,9 +397,9 @@ class ExpressionValidatorTest
 				new NSTRealArray1D(createIntConstant(2)).label
 			))
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℝ a = 0.0;
 			let ℝ b = 1.1;
 			let ℾ c = a > b;
@@ -417,9 +412,9 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckEqualityType()
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℝ a = 0.0;
 			let ℝ[2] b = ℝ[2](1.1);
 			let ℾ c = a == b;
@@ -434,9 +429,9 @@ class ExpressionValidatorTest
 				new NSTRealArray1D(createIntConstant(2)).label
 			))
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℝ a = 0.0; 
 			let ℝ b = 1.1;
 			let ℾ c = a == b;
@@ -449,9 +444,9 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckModuloType()
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℝ a = 0.0;
 			let ℝ[2] b = ℝ[2](1.1);
 			let ℕ c = a % b;
@@ -467,9 +462,9 @@ class ExpressionValidatorTest
 			ExpressionValidator::MODULO_TYPE,
 			getTypeMsg(new NSTRealArray1D(createIntConstant(2)).label, "ℕ"))
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℕ a = 0;
 			let ℕ b = 1;
 			let ℕ c = a % b;
@@ -482,9 +477,9 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckAndType() 
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℕ a = 0;
 			let ℝ b = 1.1; 
 			let ℾ c = a && b;
@@ -500,9 +495,9 @@ class ExpressionValidatorTest
 			ExpressionValidator::AND_TYPE,
 			getTypeMsg(PrimitiveType::INT.literal, "ℾ"))
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℾ a = true;
 			let ℾ b = false; 
 			let ℾ c = a && b;
@@ -515,9 +510,9 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckOrType()
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℕ a = 0;
 			let ℝ b = 1.1;
 			let ℾ c = a || b;
@@ -533,9 +528,9 @@ class ExpressionValidatorTest
 			ExpressionValidator::OR_TYPE,
 			getTypeMsg(PrimitiveType::INT.literal, "ℾ"))
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℾ a = true;
 			let ℾ b = false;
 			let ℾ c = a || b;
@@ -548,9 +543,9 @@ class ExpressionValidatorTest
 	@Test
 	def void testVectorConstantSize()
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℕ[1] V = [0];
 			'''
 		)
@@ -559,9 +554,9 @@ class ExpressionValidatorTest
 			ExpressionValidator::VECTOR_CONSTANT_SIZE,
 			ExpressionValidator::getVectorConstantSizeMsg(1))
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			letℕ[2] V = [0, 1];
 			'''
 		)
@@ -571,9 +566,9 @@ class ExpressionValidatorTest
 	@Test
 	def void testVectorConstantType()
 	{
-		val moduleKo = parseHelper.parse(testModule
-			+
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℕ[2] V = [0, 3.4];
 			'''
 		)
@@ -582,9 +577,9 @@ class ExpressionValidatorTest
 			ExpressionValidator::VECTOR_CONSTANT_INCONSISTENT_TYPE,
 			ExpressionValidator::getVectorConstantInconsistentTypeMsg())
 
-		val moduleOk = parseHelper.parse(testModule
-			+
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℕ[2] V = [0, 3];
 			'''
 		)

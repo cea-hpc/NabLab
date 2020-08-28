@@ -12,7 +12,6 @@ package fr.cea.nabla.validation
 import com.google.inject.Inject
 import fr.cea.nabla.ExpressionExtensions
 import fr.cea.nabla.SpaceIteratorExtensions
-import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
@@ -60,21 +59,9 @@ class BasicValidator extends UnusedValidator
 
 	// ===== NablaModule =====
 
-	public static val MANDATORY_VARS = "NablaModule::MandatoryVars"
 	public static val MODULE_NAME = "NablaModule::ModuleName"
 
-	static def getMandatoryVarsMsg(String[] missingVars) { "Missing mandatory mesh variable(s): " + missingVars.join(", ") }
 	static def getModuleNameMsg() { "Module name must start with an upper case" }
-
-	@Check(CheckType.NORMAL)
-	def checkMandatoryVars(NablaModule it)
-	{
-		if (itemTypes.empty) return; // no mesh
-		val varNames = definitions.map[variable.name].toList
-		val missingOptions = MandatoryVariables::NAMES.filter[x | !varNames.contains(x)]
-		if (missingOptions.size > 0)
-			error(getMandatoryVarsMsg(missingOptions), NablaPackage.Literals.NABLA_MODULE__NAME, MANDATORY_VARS)
-	}
 
 	@Check(CheckType.NORMAL)
 	def checkName(NablaModule it)

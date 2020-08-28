@@ -9,6 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityCall
@@ -28,7 +30,6 @@ import static fr.cea.nabla.ir.Utils.FunctionReductionPrefix
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class Context
 {
@@ -40,15 +41,13 @@ class Context
 	val indexValues = new HashMap<ItemIndex, Integer>
 	val idValues = new HashMap<ItemId, Integer>
 	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Function, Method> functionToMethod
-	@Accessors val HashMap<Connectivity, Integer> connectivitySizes
-	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) MeshWrapper meshWrapper
+	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) CartesianMesh2DMeshWrapper meshWrapper
 
 	new(IrModule module, Logger logger)
 	{
 		this.outerContext = null
 		this.module = module
 		this.logger = logger
-		this.connectivitySizes = new HashMap<Connectivity, Integer>
 		this.meshWrapper = null
 		this.functionToMethod = new HashMap<Function, Method>
 	}
@@ -58,14 +57,19 @@ class Context
 		this.outerContext = outerContext
 		this.module = outerContext.module
 		this.logger = outerContext.logger
-		this.connectivitySizes = outerContext.connectivitySizes
 		this.meshWrapper = outerContext.meshWrapper
 		this.functionToMethod = outerContext.functionToMethod
 	}
 
-	def initMesh(int nbXQuads, int nbYQuads, double xSize, double ySize)
+	def HashMap<Connectivity, Integer> getConnectivitySizes()
+	{ 
+		meshWrapper.connectivitySizes
+	}
+
+	def initMesh(Gson gson, JsonObject jsonMesh, Connectivity[] connectivities)
 	{
-		meshWrapper = new MeshWrapper(nbXQuads, nbYQuads, xSize, ySize)
+		meshWrapper = new CartesianMesh2DMeshWrapper(gson, jsonMesh)
+		meshWrapper.init(connectivities)
 	}
 
 	// VariableValues
@@ -138,16 +142,15 @@ class Context
 
 	def void addSetValue(String setName, ConnectivityCall value) 
 	{ 
-		val connectivityName = value.connectivity.name
 		val argIds =  value.args.map[x | getIdValue(x)]
-		val containerValue = meshWrapper.getElements(connectivityName, argIds)
+		val containerValue = meshWrapper.getElements(value.connectivity, argIds)
 		setValues.put(setName, containerValue)
 	}
 
 	def int[] getConnectivityCallValue(ConnectivityCall it)
 	{
 		val argIds =  args.map[x | getIdValue(x)]
-		meshWrapper.getElements(connectivity.name, argIds)
+		meshWrapper.getElements(connectivity, argIds)
 	}
 
 	// IndexValues
@@ -197,7 +200,7 @@ class Context
 
 	def int getSingleton(ConnectivityCall it)
 	{
-		meshWrapper.getSingleton(connectivity.name, args.map[x | getIdValue(x)])
+		meshWrapper.getSingleton(connectivity, args.map[x | getIdValue(x)])
 	}
 
 	def logVariables(String message)
@@ -205,7 +208,7 @@ class Context
 		if (logger.level.intValue <= Context.Level::FINER.intValue)
 		{
 			if (message !== null) logger.log(Context.Level::FINER, message)
-			variableValues.keySet.forEach[v | logger.log(Context.Level::FINER,"	Variable " + v.name + " = " + variableValues.get(v).displayValue)]
+			variableValues.keySet.forEach[v | logger.log(Context.Level::FINER,"	Variable " + v.name + " = " + variableValues.get(v))]
 		}
 	}
 

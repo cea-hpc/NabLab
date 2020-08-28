@@ -211,7 +211,7 @@ class NablagenInterpreter
 		transformations += new OptimizeConnectivities(#['cells', 'nodes', 'faces'])
 		transformations += new ReplaceReductions(false)
 		transformations += new FillJobHLTs
-		transformations += new SetSimulationVariables(simulation.time.name, simulation.timeStep.name, simulation.nodeCoord.name)
+		transformations += new SetSimulationVariables(simulation.meshClassName, simulation.time.name, simulation.timeStep.name, simulation.nodeCoord.name)
 
 		if (vtkOutput !== null && !vtkOutput.vars.empty)
 		{

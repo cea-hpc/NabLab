@@ -19,29 +19,28 @@ import org.junit.runner.RunWith
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
-abstract class AbstractJobInterpreterTest 
+abstract class AbstractJobInterpreterTest
 {
 	@Inject extension TestUtils
 
 	@Test
 	def void testInterpreteInstructionJob()
 	{
-		val model = testModuleForSimulation
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
 		ℝ[2] X{nodes};
 		initT : t = 5.;
 		'''
-
 		assertInterpreteInstructionJob(model)
 	}
 
 	@Test
 	def void testInterpreteTimeLoopJob()
 	{
-		val model = testModuleForSimulation
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
 		// Simulation options
 		let ℝ option_stoptime = 0.2;
 		let ℕ option_max_iterations = 10;
@@ -52,16 +51,15 @@ abstract class AbstractJobInterpreterTest
 		InitT: t^{n=0} = 0.;
 		ComputeTn: t^{n+1} = t^{n} + 0.01;
 		'''
-
 		assertInterpreteTimeLoopJob(model)
 	}
 
 	@Test
 	def void testInterpreteTimeLoopCopyJob()
 	{
-		val model = getTestModule(10,10)
-		+
+		val model =
 		'''
+		«testModuleForSimulation»
 		// Simulation options
 		let ℝ option_stoptime = 0.2;
 		let ℕ option_max_iterations = 10;
@@ -74,13 +72,10 @@ abstract class AbstractJobInterpreterTest
 		IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X^{n=0}{r});
 		UpdateU: u^{n+1} = u^{n} + 1;
 		'''
-
 		assertInterpreteTimeLoopCopyJob(model)
 	}
 
 	def void assertInterpreteInstructionJob(String model)
-
 	def void assertInterpreteTimeLoopJob(String model)
-
 	def void assertInterpreteTimeLoopCopyJob(String model)
 }

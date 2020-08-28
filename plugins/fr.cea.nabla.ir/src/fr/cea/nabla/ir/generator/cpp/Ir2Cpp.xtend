@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
@@ -107,12 +106,7 @@ class Ir2Cpp extends CodeGenerator
 			void jsonInit(const rapidjson::Value::ConstObject& d);
 		};
 
-		const Options& options;
-		«FOR s : allProviders»
-		«s»& «s.toFirstLower»;
-		«ENDFOR»
-
-		«name»(const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»& a«s»«ENDFOR»);
+		«name»(«meshClassName»* aMesh, const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»& a«s»«ENDFOR»);
 		~«name»();
 
 	private:
@@ -177,25 +171,19 @@ class Ir2Cpp extends CodeGenerator
 
 	/******************** Module definition ********************/
 
-	«name»::«name»(const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»& a«s»«ENDFOR»)
-	: options(aOptions)
+	«name»::«name»(«meshClassName»* aMesh, const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»& a«s»«ENDFOR»)
+	: mesh(aMesh)
+	«FOR c : connectivities.filter[multiple]»
+	, «c.nbElemsVar»(«c.connectivityAccessor»)
+	«ENDFOR»
+	, options(aOptions)
 	«FOR s : allProviders»
 	, «s.toFirstLower»(a«s»)
 	«ENDFOR»
+	«IF postProcessingInfo !== null», writer("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»)«ENDIF»
 	«FOR v : allDefinitions.filter[x | !x.constExpr]»
 	, «v.name»(«v.defaultValue.content»)
 	«ENDFOR»
-	«IF withMesh»
-		«val xee = getVariableByName(MandatoryVariables.X_EDGE_ELEMS).codeName»
-		«val yee = getVariableByName(MandatoryVariables.Y_EDGE_ELEMS).codeName»
-		«val xel = getVariableByName(MandatoryVariables.X_EDGE_LENGTH).codeName»
-		«val yel = getVariableByName(MandatoryVariables.Y_EDGE_LENGTH).codeName»
-		, mesh(CartesianMesh2DGenerator::generate(«xee», «yee», «xel», «yel»))
-		«IF postProcessingInfo !== null», writer("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»)«ENDIF»
-		«FOR c : connectivities.filter[multiple]»
-		, «c.nbElemsVar»(«c.connectivityAccessor»)
-		«ENDFOR»
-	«ENDIF»
 	«FOR v : declarations.filter(ConnectivityVariable)»
 	, «v.name»(«v.cstrInit»)
 	«ENDFOR»
@@ -208,21 +196,18 @@ class Ir2Cpp extends CodeGenerator
 			«ENDFOR»
 
 		«ENDIF»
-		«IF withMesh»
-			// Copy node coordinates
-			const auto& gNodes = mesh->getGeometry()->getNodes();
-			«val iterator = backend.argOrVarContentProvider.formatIterators(initNodeCoordVariable, #["rNodes"])»
-			for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-			{
-				«initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
-				«initNodeCoordVariable.name»«iterator»[1] = gNodes[rNodes][1];
-			}
-		«ENDIF»
+		// Copy node coordinates
+		const auto& gNodes = mesh->getGeometry()->getNodes();
+		«val iterator = backend.argOrVarContentProvider.formatIterators(initNodeCoordVariable, #["rNodes"])»
+		for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+		{
+			«initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
+			«initNodeCoordVariable.name»«iterator»[1] = gNodes[rNodes][1];
+		}
 	}
 
 	«name»::~«name»()
 	{
-		delete mesh;
 	}
 
 	«backend.privateMethodsContentProvider.getDefinitionContentFor(it)»
@@ -294,7 +279,7 @@ class Ir2Cpp extends CodeGenerator
 
 	void «name»::simulate()
 	{
-		«backend.traceContentProvider.getBeginOfSimuTrace(it, name, withMesh)»
+		«backend.traceContentProvider.getBeginOfSimuTrace(it, name)»
 
 		«callsHeader»
 		«callsContent»

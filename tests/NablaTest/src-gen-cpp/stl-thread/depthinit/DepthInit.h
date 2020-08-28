@@ -6,13 +6,12 @@
 #include <cmath>
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
-#include "mesh/CartesianMesh2DGenerator.h"
+#include "mesh/CartesianMesh2DFactory.h"
 #include "mesh/CartesianMesh2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
 #include "depthinit/DepthInitFunctions.h"
-#include "mesh/stl/PvdFileWriter2D.h"
 #include "utils/stl/Parallel.h"
 
 using namespace nablalib;
@@ -28,10 +27,6 @@ class DepthInit
 public:
 	struct Options
 	{
-		double X_EDGE_LENGTH;
-		double Y_EDGE_LENGTH;
-		int X_EDGE_ELEMS;
-		int Y_EDGE_ELEMS;
 		double maxTime;
 		int maxIter;
 		double deltat;
@@ -39,19 +34,20 @@ public:
 		void jsonInit(const rapidjson::Value::ConstObject& d);
 	};
 
-	const Options& options;
-	DepthInitFunctions& depthInitFunctions;
-
-	DepthInit(const Options& aOptions, DepthInitFunctions& aDepthInitFunctions);
+	DepthInit(CartesianMesh2D* aMesh, const Options& aOptions, DepthInitFunctions& aDepthInitFunctions);
 	~DepthInit();
 
 private:
-	// Global definitions
-	static constexpr double t = 0.0;
-	
-	// Mesh (can depend on previous definitions)
+	// Mesh and mesh variables
 	CartesianMesh2D* mesh;
 	size_t nbCells, nbNodes;
+	
+	// User options and external classes
+	const Options& options;
+	DepthInitFunctions& depthInitFunctions;
+	
+	// Global definitions
+	static constexpr double t = 0.0;
 	
 	// Global declarations
 	std::vector<RealArray1D<2>> X;

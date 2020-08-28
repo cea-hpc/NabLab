@@ -22,7 +22,7 @@ abstract class IncludesContentProvider
 	protected def Iterable<String> getAdditionalSystemIncludes(IrModule m) { #[] }
 	protected def Iterable<String> getAdditionalUserIncludes(IrModule m) { #[] }
 	@Accessors val String levelDBPath
-	
+
 	new(String levelDBPath)
 	{
 		this.levelDBPath = levelDBPath
@@ -63,13 +63,8 @@ abstract class IncludesContentProvider
 	private def getUserIncludesFor(IrModule m)
 	{
 		val userIncludes = new LinkedHashSet<String>
-
-		if (m.withMesh)
-		{
-			userIncludes += "mesh/CartesianMesh2DGenerator.h"
-			userIncludes += "mesh/CartesianMesh2D.h"
-		}
-
+		userIncludes += "mesh/CartesianMesh2DFactory.h"
+		userIncludes += "mesh/CartesianMesh2D.h"
 		userIncludes +=  "utils/Utils.h"
 		userIncludes +=  "utils/Timer.h"
 		userIncludes +=  "types/Types.h"
@@ -88,11 +83,11 @@ class StlThreadIncludesContentProvider extends IncludesContentProvider
 	{
 		super(levelDBPath)
 	}
-	
+
 	override getAdditionalUserIncludes(IrModule m)
 	{
 		val includes = new LinkedHashSet<String>
-		if (m.withMesh) includes += "mesh/stl/PvdFileWriter2D.h"
+		if (m.postProcessingInfo !== null) includes += "mesh/stl/PvdFileWriter2D.h"
 		includes += "utils/stl/Parallel.h"
 		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
 		if (!levelDBPath.nullOrEmpty) includes += "utils/stl/Serializer.h"
@@ -106,7 +101,7 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 	{
 		super(levelDBPath)
 	}
-	
+
 	override getAdditionalSystemIncludes(IrModule m)
 	{
 		#["Kokkos_Core.hpp", "Kokkos_hwloc.hpp"]
@@ -115,7 +110,7 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 	override getAdditionalUserIncludes(IrModule m)
 	{
 		val includes = new LinkedHashSet<String>
-		if (m.withMesh) includes += "mesh/kokkos/PvdFileWriter2D.h"
+		if (m.postProcessingInfo !== null) includes += "mesh/kokkos/PvdFileWriter2D.h"
 		includes += "utils/kokkos/Parallel.h"
 		if (m.linearAlgebra) includes += "linearalgebra/kokkos/LinearAlgebraFunctions.h"
 		if (!levelDBPath.nullOrEmpty) includes += "utils/kokkos/Serializer.h"
@@ -129,11 +124,11 @@ class SequentialIncludesContentProvider extends IncludesContentProvider
 	{
 		super(levelDBPath)
 	}
-	
+
 	override getAdditionalUserIncludes(IrModule m)
 	{
 		val includes = new LinkedHashSet<String>
-		if (m.withMesh) includes += "mesh/stl/PvdFileWriter2D.h"
+		if (m.postProcessingInfo !== null) includes += "mesh/stl/PvdFileWriter2D.h"
 		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
 		return includes
 	}
@@ -145,7 +140,7 @@ class OpenMpIncludesContentProvider extends IncludesContentProvider
 	{
 		super(levelDBPath)
 	}
-	
+
 	override getAdditionalSystemIncludes(IrModule m)
 	{
 		#["omp.h"]
@@ -154,7 +149,7 @@ class OpenMpIncludesContentProvider extends IncludesContentProvider
 	override getAdditionalUserIncludes(IrModule m)
 	{
 		val includes = new LinkedHashSet<String>
-		if (m.withMesh) includes += "mesh/stl/PvdFileWriter2D.h"
+		if (m.postProcessingInfo !== null) includes += "mesh/stl/PvdFileWriter2D.h"
 		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
 		return includes
 	}

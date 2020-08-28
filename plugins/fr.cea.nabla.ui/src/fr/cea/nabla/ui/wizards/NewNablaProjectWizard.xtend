@@ -289,11 +289,6 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 		connectivity nodes: → { node };
 
-		option ℝ X_EDGE_LENGTH = 0.1;
-		option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-		option ℕ X_EDGE_ELEMS = 20;
-		option ℕ Y_EDGE_ELEMS = 20;
-
 		option ℕ maxIter = 200;
 		option ℝ maxTime = 1.0;
 
@@ -312,6 +307,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 		SimulationVariables
 		{
+			meshClassName = "CartesianMesh2D";
 			nodeCoord = X;
 			time = t;
 			timeStep = δt;

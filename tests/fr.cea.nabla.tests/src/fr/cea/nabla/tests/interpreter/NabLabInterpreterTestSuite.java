@@ -20,7 +20,8 @@ import org.junit.runners.Suite;
 	ExpressionInterpreterTest.class,
 	InstructionInterpreterTest.class,
 	JobInterpreterTest.class,
-	ModuleInterpreterTest.class
+	ModuleInterpreterTest.class,
+	OptionsInterpreterTest.class
 })
 
 public class NabLabInterpreterTestSuite {}

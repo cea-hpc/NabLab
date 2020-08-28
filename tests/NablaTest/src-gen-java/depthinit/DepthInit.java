@@ -19,41 +19,39 @@ public final class DepthInit
 {
 	public final static class Options
 	{
-		public double X_EDGE_LENGTH;
-		public double Y_EDGE_LENGTH;
-		public int X_EDGE_ELEMS;
-		public int Y_EDGE_ELEMS;
 		public double maxTime;
 		public int maxIter;
 		public double deltat;
 	}
 
+	// Mesh and mesh variables
+	private final CartesianMesh2D mesh;
+	private final int nbCells, nbNodes;
+
+	// User options and external classes
 	private final Options options;
 	private DepthInitFunctions depthInitFunctions;
 
 	// Global definitions
 	private final double t;
 
-	// Mesh (can depend on previous definitions)
-	private final CartesianMesh2D mesh;
-	private final int nbCells, nbNodes;
-
 	// Global declarations
 	private double[][] X;
 	private double[] eta;
 
-	public DepthInit(Options aOptions, DepthInitFunctions aDepthInitFunctions)
+	public DepthInit(CartesianMesh2D aMesh, Options aOptions, DepthInitFunctions aDepthInitFunctions)
 	{
+		// Mesh and mesh variables initialization
+		mesh = aMesh;
+		nbCells = mesh.getNbCells();
+		nbNodes = mesh.getNbNodes();
+
+		// User options and external classes initialization
 		options = aOptions;
 		depthInitFunctions = aDepthInitFunctions;
 
 		// Initialize variables with default values
 		t = 0.0;
-
-		// Initialize mesh variables
-		mesh = CartesianMesh2DGenerator.generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH);
-		nbCells = mesh.getNbCells();
-		nbNodes = mesh.getNbNodes();
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
@@ -84,10 +82,14 @@ public final class DepthInit
 			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
 			Gson gson = new Gson();
 
-			DepthInit.Options options = (o.has("options") ? gson.fromJson(o.get("options"), DepthInit.Options.class) : new DepthInit.Options());
+			assert(o.has("mesh"));
+			CartesianMesh2DFactory meshFactory = gson.fromJson(o.get("mesh"), CartesianMesh2DFactory.class);
+			CartesianMesh2D mesh = meshFactory.create();
+			assert(o.has("options"));
+			DepthInit.Options options = gson.fromJson(o.get("options"), DepthInit.Options.class);
 			DepthInitFunctions depthInitFunctions = (o.has("depthInitFunctions") ? gson.fromJson(o.get("depthInitFunctions"), DepthInitFunctions.class) : new DepthInitFunctions());
 
-			DepthInit simulator = new DepthInit(options, depthInitFunctions);
+			DepthInit simulator = new DepthInit(mesh, options, depthInitFunctions);
 			simulator.simulate();
 		}
 		else

@@ -31,7 +31,10 @@ endif()
 project(nablacpplibs CXX)
 
 ### LIBCPPNABLA
-add_library(cppnabla mesh/CartesianMesh2D.cc mesh/CartesianMesh2DGenerator.cc mesh/AbstractPvdFileWriter2D.cc types/MultiArray.cc utils/Timer.cc utils/Utils.cc)
+add_library(cppnabla 
+    mesh/CartesianMesh2D.cc mesh/CartesianMesh2DFactory.cc mesh/AbstractPvdFileWriter2D.cc
+    types/MultiArray.cc
+    utils/Timer.cc utils/Utils.cc)
 target_include_directories(cppnabla PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_directories(cppnabla PUBLIC)
 target_link_libraries(cppnabla PUBLIC stdc++fs)
@@ -39,12 +42,13 @@ target_compile_options(cppnabla PUBLIC -fPIC -g -Wall -O3 --std=c++17 -march=nat
 
 ### LIBCPPNABLASTL
 if(NOT DEFINED LIBCPPNABLA_BACKEND OR LIBCPPNABLA_BACKEND STREQUAL "STL")
-  message(STATUS "Building library with STL.")
-  add_library(cppnablastl linearalgebra/stl/LinearAlgebraFunctions.cc linearalgebra/stl/Matrix.cc)
-  target_include_directories(cppnablastl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-  target_link_directories(cppnablastl PUBLIC)
-  target_link_libraries(cppnablastl PUBLIC)
-  target_compile_options(cppnablastl PUBLIC -fPIC -g -Wall -O3 --std=c++17 -march=native -mtune=native)
+message(STATUS "Building library with STL.")
+add_library(cppnablastl 
+    linearalgebra/stl/LinearAlgebraFunctions.cc linearalgebra/stl/Matrix.cc)
+target_include_directories(cppnablastl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(cppnablastl PUBLIC)
+target_link_libraries(cppnablastl PUBLIC)
+target_compile_options(cppnablastl PUBLIC -fPIC -g -Wall -O3 --std=c++17 -march=native -mtune=native)
 endif()
 
 ### LIBCPPNABLAKOKKOS
@@ -60,7 +64,8 @@ find_package(KokkosKernels)
 
 if(TARGET Kokkos::kokkos AND TARGET Kokkos::kokkoskernels)
   message(STATUS "Kokkos::kokkos/Kokkos::kokkoskernels found")
-  add_library(cppnablakokkos linearalgebra/kokkos/LinearAlgebraFunctions.cc linearalgebra/kokkos/Matrix.cc)
+  add_library(cppnablakokkos
+      linearalgebra/kokkos/LinearAlgebraFunctions.cc linearalgebra/kokkos/Matrix.cc)
   target_include_directories(cppnablakokkos PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
   target_link_directories(cppnablakokkos PUBLIC)
   target_link_libraries(cppnablakokkos PUBLIC Kokkos::kokkos Kokkos::kokkoskernels)

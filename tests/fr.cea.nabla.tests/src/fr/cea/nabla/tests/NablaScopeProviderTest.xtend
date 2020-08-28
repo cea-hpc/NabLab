@@ -41,27 +41,28 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForSpaceIteratorRefInVarRef()
 	{
-		val module = parseHelper.parse(getTestModule(defaultConnectivities + '''
-			connectivity leftCell: cell → cell;
-			connectivity rightCell: cell → cell;
-			''', '')
-			+
-			'''
-			ℝ a{cells}, b{cells, nodesOfCell}, c{cells};
-			ℝ d{nodes};
+		val model = 
+		'''
+		«emptyTestModule»
+		«defaultConnectivities»
+		connectivity leftCell: cell → cell;
+		connectivity rightCell: cell → cell;
 
-			j1 : ∀j ∈ cells(), a{j} = 0.0;
-			j2 : ∀j ∈ cells(), c{j} = 0.25 * ∑{r ∈ nodes()}(d{r});
-			j3 : ∀j ∈ cells(), ∀r ∈ nodesOfCell(j), b{j,r} = 0.;
-			j4 : ∀j ∈ cells(), a{j} = ∑{r∈nodesOfCell(j)}(b{j, r});
-			j5 : let ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(X{r}));
-			j6 : ∀j ∈ cells(), ∀ rj ∈ rightCell(j), ∀ lj ∈ leftCell(j), c{j} = a{rj};
-			j7 : ∀j ∈ cells(), {
-					set rjset = rightCell(j);
-					∀ rj ∈ rjset, c{j} = a{rj};
-				}
-			'''
-		)
+		ℝ a{cells}, b{cells, nodesOfCell}, c{cells};
+		ℝ d{nodes};
+
+		j1 : ∀j ∈ cells(), a{j} = 0.0;
+		j2 : ∀j ∈ cells(), c{j} = 0.25 * ∑{r ∈ nodes()}(d{r});
+		j3 : ∀j ∈ cells(), ∀r ∈ nodesOfCell(j), b{j,r} = 0.;
+		j4 : ∀j ∈ cells(), a{j} = ∑{r∈nodesOfCell(j)}(b{j, r});
+		j5 : let ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(X{r}));
+		j6 : ∀j ∈ cells(), ∀ rj ∈ rightCell(j), ∀ lj ∈ leftCell(j), c{j} = a{rj};
+		j7 : ∀j ∈ cells(), {
+				set rjset = rightCell(j);
+				∀ rj ∈ rjset, c{j} = a{rj};
+			}
+		'''
+		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 
 		val eref = NablaPackage::eINSTANCE.spaceIteratorRef_Target
@@ -103,25 +104,25 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForSpaceIteratorRefInConnectivityCall()
 	{
-		val model = getTestModule(defaultConnectivities + '''
-			connectivity leftCell: cell → cell;
-			connectivity rightCell: cell → cell;
-			''', '')
-			+
-			'''
-			ℝ a{cells}, b{cells, nodesOfCell}, c{cells};
-			ℝ d{nodes};
+		val model = 
+		'''
+		«emptyTestModule»
+		«defaultConnectivities»
+		connectivity leftCell: cell → cell;
+		connectivity rightCell: cell → cell;
+		ℝ a{cells}, b{cells, nodesOfCell}, c{cells};
+		ℝ d{nodes};
 
-			j1 : ∀j ∈ cells(), a{j} = 0.0;
-			j2 : ∀j ∈ cells(), c{j} = 0.25 * ∑{r ∈ nodes()}(d{r});
-			j3 : ∀j ∈ cells(), ∀r ∈ nodesOfCell(j), b{j,r} = 0.;
-			j4 : ∀j ∈ cells(), a{j} = ∑{r∈nodesOfCell(j)}(b{j, r});
-			j5 : ∀j ∈ cells(), ∀ rj ∈ rightCell(j), ∀ lj ∈ leftCell(j), c{j} = a{rj} + a{lj};
-			j6 : ∀j ∈ cells(), {
-					set rjset = rightCell(j);
-					∀ rj ∈ rjset, c{j} = a{rj};
-				}
-			'''
+		j1 : ∀j ∈ cells(), a{j} = 0.0;
+		j2 : ∀j ∈ cells(), c{j} = 0.25 * ∑{r ∈ nodes()}(d{r});
+		j3 : ∀j ∈ cells(), ∀r ∈ nodesOfCell(j), b{j,r} = 0.;
+		j4 : ∀j ∈ cells(), a{j} = ∑{r∈nodesOfCell(j)}(b{j, r});
+		j5 : ∀j ∈ cells(), ∀ rj ∈ rightCell(j), ∀ lj ∈ leftCell(j), c{j} = a{rj} + a{lj};
+		j6 : ∀j ∈ cells(), {
+				set rjset = rightCell(j);
+				∀ rj ∈ rjset, c{j} = a{rj};
+			}
+		'''
 
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
@@ -192,21 +193,22 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForSet()
 	{
-		val model = getTestModule(defaultConnectivities, '')
-			+
-			'''
-			ℝ a{cells}, b{cells, nodesOfCell};
+		val model =
+		'''
+		«emptyTestModule»
+		«defaultConnectivities»
+		ℝ a{cells}, b{cells, nodesOfCell};
 
-			j1 : ∀j ∈ cells(), a{j} = 0.0;
-			j2 : {
-				set myCells = cells();
-				∀j ∈ myCells, a{j} = 0.0;
-			}
-			j3 : ∀j ∈ cells(), {
-				set nOfCells = nodesOfCell(j);
-				a{j} = ∑{r∈nOfCells}(b{j, r});
-			}
-			'''
+		j1 : ∀j ∈ cells(), a{j} = 0.0;
+		j2 : {
+			set myCells = cells();
+			∀j ∈ myCells, a{j} = 0.0;
+		}
+		j3 : ∀j ∈ cells(), {
+			set nOfCells = nodesOfCell(j);
+			a{j} = ∑{r∈nOfCells}(b{j, r});
+		}
+		'''
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 
@@ -227,9 +229,10 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForArgOrVarRefInInstruction()
 	{
-		val model = getTestModule(defaultConnectivities, '')
-		+
+		val model =
 		'''
+		«emptyTestModule»
+		«defaultConnectivities»
 		let ℝ a = 4.0;
 		let ℝ b1 = 0.0;
 		let ℝ b2 = b1;
@@ -272,50 +275,51 @@ class NablaScopeProviderTest
 		val iterate = module.iteration
 		val nRefInCondOfN = iterate.iterators.head.condition.eAllContents.filter(ArgOrVarRef).head
 		Assert.assertNotNull(nRefInCondOfN)
-		nRefInCondOfN.assertScope(eref, defaultOptionsScope + ", a, b1, b2, X, c1, c2, n")
+		nRefInCondOfN.assertScope(eref, "a, b1, b2, X, c1, c2, n")
 		val nRefInCondOfK = iterate.iterators.last.condition.eAllContents.filter(ArgOrVarRef).head
 		Assert.assertNotNull(nRefInCondOfK)
-		nRefInCondOfK.assertScope(eref, defaultOptionsScope + ", a, b1, b2, X, c1, c2, n, k")
+		nRefInCondOfK.assertScope(eref, "a, b1, b2, X, c1, c2, n, k")
 
 		val aDeclaration = module.getVariableByName("a").eContainer as SimpleVarDefinition
-		aDeclaration.assertScope(eref, defaultOptionsScope)
+		aDeclaration.assertScope(eref, "")
 
 		val b1Declaration = module.getVariableByName("b1").eContainer as SimpleVarDefinition
-		b1Declaration.assertScope(eref, defaultOptionsScope + ", a")
+		b1Declaration.assertScope(eref, "a")
 
 		val b2Declaration = module.getVariableByName("b2").eContainer as SimpleVarDefinition
-		b2Declaration.assertScope(eref, defaultOptionsScope + ", a, b1")
+		b2Declaration.assertScope(eref, "a, b1")
 		
 		val j1 = module.getJobByName("j1")
 		val affectationc1 = j1.getVarAffectationByName("c1")
-		affectationc1.assertScope(eref, defaultOptionsScope + ", a, b1, b2, X, c1, c2")
+		affectationc1.assertScope(eref, "a, b1, b2, X, c1, c2")
 
 		val affectationc2 = j1.getVarAffectationByName("c2")
-		affectationc2.assertScope(eref, "d, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
+		affectationc2.assertScope(eref, "d, " + "a, b1, b2, X, c1, c2")
 
 		val affectationf = j1.getVarAffectationByName("f")
-		affectationf.assertScope(eref, "e, f, countr, d, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
+		affectationf.assertScope(eref, "e, f, countr, d, " + "a, b1, b2, X, c1, c2")
 
 		val j2 = module.getJobByName("j2")
 		val affectationn = j2.getVarAffectationByName("o")
-		affectationn.assertScope(eref, "i, o, p, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
+		affectationn.assertScope(eref, "i, o, p, " + "a, b1, b2, X, c1, c2")
 
 		val affectationm = j2.getVarAffectationByName("p")
-		affectationm.assertScope(eref, "j, i, o, p, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
+		affectationm.assertScope(eref, "j, i, o, p, " + "a, b1, b2, X, c1, c2")
 
 		val j3 = module.getJobByName("j3")
 		val j3_xvarref = j3.instruction.eAllContents.filter(ArgOrVarRef).findFirst[x | x.target.name == 'X']
-		j3_xvarref.assertScope(eref, "i, " + defaultOptionsScope + ", a, b1, b2, X, c1, c2")
+		j3_xvarref.assertScope(eref, "i, " + "a, b1, b2, X, c1, c2")
 	}
 
 	@Test
 	def void testScopeProviderForArgOrVarRefInReduction()
 	{
-		val module = parseHelper.parse(getTestModule('',
-			'''
-			def reduceMin, ℝ.MaxValue: ℝ, (a, b) → return min(a, b);
-			''')
-		)
+		val model =
+		'''
+		«emptyTestModule»
+		def reduceMin, ℝ.MaxValue: ℝ, (a, b) → return min(a, b);
+		'''
+		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 
 		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
@@ -328,27 +332,28 @@ class NablaScopeProviderTest
 	@Test
 	def void testScopeProviderForArgOrVarRefInFunction()
 	{
-		val model = getTestModule( '',
-			'''
-			def inverse: ℝ[2,2] → ℝ[2,2];
-			def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
+		val model =
+		'''
+		«emptyTestModule»
+		def inverse: ℝ[2,2] → ℝ[2,2];
+		def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
+		{
+			let ℝ c = 2.0;
+			c = a * 2.0;
+			return c + 4.0;
+		}
+		def g: → ℝ, () →
+		{
+			ℝ[4] n;
+			ℝ[4, 2] m;
+			∀ i∈[0;4[, 
 			{
-				let ℝ c = 2.0;
-				c = a * 2.0;
-				return c + 4.0;
+				n[i] = 4.0;
+				∀ j∈[0;2[, m[i,j] = 3.0;
 			}
-			def g: → ℝ, () →
-			{
-				ℝ[4] n;
-				ℝ[4, 2] m;
-				∀ i∈[0;4[, 
-				{
-					n[i] = 4.0;
-					∀ j∈[0;2[, m[i,j] = 3.0;
-				}
-				return 4.0;
-			}
-			''')
+			return 4.0;
+		}
+		'''
 
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
@@ -377,19 +382,15 @@ class NablaScopeProviderTest
 		gReturnInstruction.assertScope(eref, "n, m")
 	}
 
-	private def defaultOptionsScope()
-	{
-		return "X_EDGE_LENGTH, Y_EDGE_LENGTH, X_EDGE_ELEMS, Y_EDGE_ELEMS"
-	}
-
 	/*** Scope for dimension symbols **********************************/
 
 	@Test
 	def void testScopeProviderForSizeVarInInstruction()
 	{
-		val model = getTestModule(defaultConnectivities, '')
-		+
+		val model =
 		'''
+		«emptyTestModule»
+		«defaultConnectivities»
 		ℝ[2] X{nodes};
 		ℝ c1 {cells};
 		
@@ -417,47 +418,48 @@ class NablaScopeProviderTest
 		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
 
 		val c1Decl = module.declarations.get(1)
-		c1Decl.assertScope(eref, defaultOptionsScope + ", X")
+		c1Decl.assertScope(eref, "X")
 
 		val j1 = module.getJobByName("j1")
 		val affectationc1 = j1.getVarAffectationByName("c1")
-		affectationc1.assertScope(eref, defaultOptionsScope + ", X, c1")
+		affectationc1.assertScope(eref, "X, c1")
 
 		val j2 = module.getJobByName("j2")
 		val affectationn = j2.getVarAffectationByName("n")
-		affectationn.left.assertScope(eref, "i, n, m, " + defaultOptionsScope + ", X, c1")
+		affectationn.left.assertScope(eref, "i, n, m, " + "X, c1")
 
 		val affectationm = j2.getVarAffectationByName("m")
-		affectationm.left.assertScope(eref, "j, i, n, m, " + defaultOptionsScope + ", X, c1")
+		affectationm.left.assertScope(eref, "j, i, n, m, " + "X, c1")
 
 		val j3 = module.getJobByName("j3")
 		val j3_xvarref = j3.instruction.eAllContents.filter(ArgOrVarRef).findFirst[x | x.target.name == 'X']
-		j3_xvarref.assertScope(eref, "k, " + defaultOptionsScope + ", X, c1")
+		j3_xvarref.assertScope(eref, "k, " + "X, c1")
 	}
 
 	@Test
 	def void testScopeProviderForSizeVarInFunction()
 	{
-		val model = getTestModule( '',
-			'''
+		val model =
+		'''
+		«emptyTestModule»
 			def inverse: ℝ[2,2] → ℝ[2,2];
-			def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
+		def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
+		{
+			ℝ[x,y] c;
+			return c;
+		}
+		def g: → ℝ, () →
+		{
+			ℝ[4] n;
+			ℝ[4, 2] m;
+			∀ i∈[0;4[, 
 			{
-				ℝ[x,y] c;
-				return c;
+				n[i] = 4.0;
+				∀ j∈[0;2[, m[i,j] = 3.0;
 			}
-			def g: → ℝ, () →
-			{
-				ℝ[4] n;
-				ℝ[4, 2] m;
-				∀ i∈[0;4[, 
-				{
-					n[i] = 4.0;
-					∀ j∈[0;2[, m[i,j] = 3.0;
-				}
-				return 4.0;
-			}
-			''')
+			return 4.0;
+		}
+		'''
 
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)

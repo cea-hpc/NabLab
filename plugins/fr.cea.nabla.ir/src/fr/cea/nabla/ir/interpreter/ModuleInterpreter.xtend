@@ -11,7 +11,6 @@ package fr.cea.nabla.ir.interpreter
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.logging.Logger
@@ -53,13 +52,12 @@ class ModuleInterpreter
 		this.jobInterpreter = new JobInterpreter(writer)
 	}
 
-	// interprete variable with default values
-	def interpreteDefinitionsDefaultValues() { interpreteDefinitions(null) }
-
-	// interprete variable with option file
-	def interpreteDefinitions(String jsonOptionsContent)
+	/**
+	 * Interpret variable with default values.
+	 * This method is public to be used by default Json file generation.
+	 */
+	def interpreteDefinitionsDefaultValues()
 	{
-		// Variables must be created with their default values to get the right NablaValue type
 		if (module.postProcessingInfo !== null)
 		{
 			val lastDump = module.postProcessingInfo.lastDumpVariable
@@ -69,50 +67,37 @@ class ModuleInterpreter
 		}
 		for (v : module.definitions)
 			context.addVariableValue(v, createValue(v, context))
-
-		// Then, the type of each option is used to read the json values
-		if (!jsonOptionsContent.nullOrEmpty)
-		{
-			val gson = new Gson
-			val jsonObject = gson.fromJson(jsonOptionsContent, JsonObject)
-			if (jsonObject.has("options"))
-			{
-				val jsonOptions = jsonObject.get("options").asJsonObject
-				for (v : module.allOptions)
-				{
-					val vValue = context.getVariableValue(v)
-					val jsonElt = jsonOptions.get(v.name)
-					NablaValueJsonSetter::setValue(vValue, jsonElt)
-				}
-			}
-		}
 	}
 
-	def interpreteWithOptionDefaultValues() { interprete(null) }
-
-	def interprete(String jsonOptionsContent)
+	def interprete(String jsonContent)
 	{
 		context.logInfo(" Start interpreting " + module.name + " module ")
 
-		// Interprete definitions
-		interpreteDefinitions(jsonOptionsContent)
-		module.functions.filter[body === null].forEach[f | context.resolveFunction(f)]
-		if (module.withMesh)
-		{
-			// Create mesh
-			val nbXQuads = context.getInt(MandatoryVariables::X_EDGE_ELEMS)
-			val nbYQuads = context.getInt(MandatoryVariables::Y_EDGE_ELEMS)
-			val xSize = context.getReal(MandatoryVariables::X_EDGE_LENGTH)
-			val ySize = context.getReal(MandatoryVariables::Y_EDGE_LENGTH)
-			context.initMesh(nbXQuads, nbYQuads, xSize, ySize)
+		// Start initialising the variables with default values
+		interpreteDefinitionsDefaultValues
 
-			// Create mesh nbElems
-			for (c : module.connectivities.filter[multiple])
-				if (c.inTypes.empty)
-					context.connectivitySizes.put(c, context.meshWrapper.getNbElems(c.name))
-				else
-					context.connectivitySizes.put(c, context.meshWrapper.getMaxNbElems(c.name))
+		val gson = new Gson
+		val jsonObject = gson.fromJson(jsonContent, JsonObject)
+
+		// Create mesh and mesh variables
+		if (!jsonObject.has("mesh")) throw new RuntimeException("Mesh block missing in Json")
+		val jsonMesh = jsonObject.get("mesh").asJsonObject
+		context.initMesh(gson, jsonMesh, module.connectivities)
+
+		// Read options in Json
+		if (!jsonObject.has("options")) throw new RuntimeException("Options block missing in Json")
+		val jsonOptions = jsonObject.get("options").asJsonObject
+		for (v : module.allOptions)
+		{
+			if (jsonOptions.has(v.name))
+			{
+				val vValue = context.getVariableValue(v)
+				val jsonElt = jsonOptions.get(v.name)
+				NablaValueJsonSetter::setValue(vValue, jsonElt)
+			}
 		}
+
+		module.functions.filter[body === null].forEach[f | context.resolveFunction(f)]
 
 		// Interprete declarations
 		for (v : module.declarations)

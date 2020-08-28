@@ -1,0 +1,19 @@
+{
+	"options":
+	{
+		"_outputPath_comment":"empty outputPath to disable output",
+		"outputPath":"output",
+		"outputPeriod":1,
+		"stopTime":0.1,
+		"maxIterations":500,
+		"PI":3.1415926,
+		"alpha":1.0
+	},
+	"mesh":
+	{
+		"nbXQuads":20,
+		"nbYQuads":20,
+		"xSize":0.1,
+		"ySize":0.1
+	}
+}

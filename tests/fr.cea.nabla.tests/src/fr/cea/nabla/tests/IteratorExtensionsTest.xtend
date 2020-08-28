@@ -65,9 +65,9 @@ class IteratorExtensionsTest
 		def ∑, 0.0: ℝ, (a, b) → return a + b;
 		def ∑, 0.0: x | ℝ[x], (a, b) → return a + b;
 		def ∑, 0.0: x | ℝ[x, x], (a, b) → return a + b;
-		'''
-		+ mandatoryOptions + simulationVariables +
-		'''
+
+		«simulationVariables»
+
 		ℝ x{cells}, f{cells}, Cjr{cells,nodesOfCell};
 		ℝ[2] X{nodes}, u{cells};
 		ℝ surface{faces};

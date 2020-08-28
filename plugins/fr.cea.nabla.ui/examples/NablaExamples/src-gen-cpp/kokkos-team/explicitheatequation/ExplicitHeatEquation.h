@@ -8,7 +8,7 @@
 #include <rapidjson/istreamwrapper.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
-#include "mesh/CartesianMesh2DGenerator.h"
+#include "mesh/CartesianMesh2DFactory.h"
 #include "mesh/CartesianMesh2D.h"
 #include "utils/Utils.h"
 #include "utils/Timer.h"
@@ -49,42 +49,35 @@ public:
 		std::string outputPath;
 		int outputPeriod;
 		double u0;
-		RealArray1D<2> vectOne;
-		double X_LENGTH;
-		double Y_LENGTH;
-		int X_EDGE_ELEMS;
-		int Y_EDGE_ELEMS;
-		double X_EDGE_LENGTH;
-		double Y_EDGE_LENGTH;
 		double stopTime;
 		int maxIterations;
 
 		void jsonInit(const rapidjson::Value::ConstObject& d);
 	};
 
-	const Options& options;
-
-	ExplicitHeatEquation(const Options& aOptions);
+	ExplicitHeatEquation(CartesianMesh2D* aMesh, const Options& aOptions);
 	~ExplicitHeatEquation();
 
 private:
+	// Mesh and mesh variables
+	CartesianMesh2D* mesh;
+	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
+	
+	// User options and external classes
+	const Options& options;
+	PvdFileWriter2D writer;
+	
 	// Global definitions
+	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
 	double t_n;
 	double t_nplus1;
 	double deltat;
 	int lastDump;
 	
-	// Mesh (can depend on previous definitions)
-	CartesianMesh2D* mesh;
-	PvdFileWriter2D writer;
-	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
-	
 	// Global declarations
 	int n;
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> Xc;
-	Kokkos::View<double*> xc;
-	Kokkos::View<double*> yc;
 	Kokkos::View<double*> u_n;
 	Kokkos::View<double*> u_nplus1;
 	Kokkos::View<double*> V;
@@ -129,9 +122,6 @@ private:
 	
 	KOKKOS_INLINE_FUNCTION
 	void initU(const member_type& teamMember) noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void initXcAndYc(const member_type& teamMember) noexcept;
 	
 	KOKKOS_INLINE_FUNCTION
 	void computeAlphaCoeff(const member_type& teamMember) noexcept;

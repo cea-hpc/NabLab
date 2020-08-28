@@ -23,26 +23,23 @@ public final class HeatEquation
 		public int outputPeriod;
 		public double stopTime;
 		public int maxIterations;
-		public double X_EDGE_LENGTH;
-		public double Y_EDGE_LENGTH;
-		public int X_EDGE_ELEMS;
-		public int Y_EDGE_ELEMS;
 		public double PI;
 		public double alpha;
 	}
 
+	// Mesh and mesh variables
+	private final CartesianMesh2D mesh;
+	private final int nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbNodesOfCell;
+
+	// User options and external classes
 	private final Options options;
+	private final FileWriter writer;
 
 	// Global definitions
 	private double t_n;
 	private double t_nplus1;
 	private final double deltat;
 	private int lastDump;
-
-	// Mesh (can depend on previous definitions)
-	private final CartesianMesh2D mesh;
-	private final FileWriter writer;
-	private final int nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbNodesOfCell;
 
 	// Global declarations
 	private int n;
@@ -55,25 +52,26 @@ public final class HeatEquation
 	private double[] outgoingFlux;
 	private double[] surface;
 
-	public HeatEquation(Options aOptions)
+	public HeatEquation(CartesianMesh2D aMesh, Options aOptions)
 	{
-		options = aOptions;
-
-		// Initialize variables with default values
-		t_n = 0.0;
-		t_nplus1 = 0.0;
-		deltat = 0.001;
-		lastDump = Integer.MIN_VALUE;
-
-		// Initialize mesh variables
-		mesh = CartesianMesh2DGenerator.generate(options.X_EDGE_ELEMS, options.Y_EDGE_ELEMS, options.X_EDGE_LENGTH, options.Y_EDGE_LENGTH);
-		writer = new PvdFileWriter2D("HeatEquation", options.outputPath);
+		// Mesh and mesh variables initialization
+		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
 		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+
+		// User options and external classes initialization
+		options = aOptions;
+		writer = new PvdFileWriter2D("HeatEquation", options.outputPath);
+
+		// Initialize variables with default values
+		t_n = 0.0;
+		t_nplus1 = 0.0;
+		deltat = 0.001;
+		lastDump = Integer.MIN_VALUE;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
@@ -115,9 +113,13 @@ public final class HeatEquation
 			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
 			Gson gson = new Gson();
 
-			HeatEquation.Options options = (o.has("options") ? gson.fromJson(o.get("options"), HeatEquation.Options.class) : new HeatEquation.Options());
+			assert(o.has("mesh"));
+			CartesianMesh2DFactory meshFactory = gson.fromJson(o.get("mesh"), CartesianMesh2DFactory.class);
+			CartesianMesh2D mesh = meshFactory.create();
+			assert(o.has("options"));
+			HeatEquation.Options options = gson.fromJson(o.get("options"), HeatEquation.Options.class);
 
-			HeatEquation simulator = new HeatEquation(options);
+			HeatEquation simulator = new HeatEquation(mesh, options);
 			simulator.simulate();
 		}
 		else

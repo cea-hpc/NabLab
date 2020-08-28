@@ -11,7 +11,6 @@ package fr.cea.nabla.tests.validation
 
 import com.google.inject.Inject
 import fr.cea.nabla.NablaModuleExtensions
-import fr.cea.nabla.ir.MandatoryVariables
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.tests.NablaInjectorProvider
@@ -41,28 +40,32 @@ class BasicValidatorTest
 	@Test
 	def void testCheckFrom()
 	{
-		val moduleKo = parseHelper.parse(getTestModule( '',
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
+			«defaultConnectivities»
 			def g: → ℝ, () →
 			{
 				ℝ[4] n;
 				∀ i∈[1;3[, n[i] = 0.0;
 				return 4.0;
 			}
-			'''))
+			''')
 		moduleKo.assertError(NablaPackage.eINSTANCE.interval,
 			BasicValidator::ZERO_FROM,
 			BasicValidator::getZeroFromMsg())
 
-		val moduleOk = parseHelper.parse(getTestModule( '',
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
+			«defaultConnectivities»
 			def g: → ℝ, () →
 			{
 				ℝ[4] n;
 				∀ i∈[0;3[, n[i] = 0.0;
 				return 4.0;
 			}
-			'''))
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -70,21 +73,25 @@ class BasicValidatorTest
 	@Test
 	def void testCheckNbElems()
 	{
-		val moduleKo1 = parseHelper.parse(getTestModule('',
+		val moduleKo1 = parseHelper.parse(
 			'''
+			«emptyTestModule»
+			«defaultConnectivities»
 			def g: → ℝ, () →
 			{
 				ℝ[4] n;
 				∀ i∈[0;3.2[, n[i] = 0.0;
 				return 4.0;
 			}
-			'''))
+			''')
 		moduleKo1.assertError(NablaPackage.eINSTANCE.interval,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
 			getTypeMsg("ℝ", "ℕ"))
 
-		val moduleKo2 = parseHelper.parse(getTestModule('',
+		val moduleKo2 = parseHelper.parse(
 			'''
+			«emptyTestModule»
+			«defaultConnectivities»
 			def g: → ℝ, () →
 			{
 				let ℝ x = 6.7;
@@ -92,50 +99,28 @@ class BasicValidatorTest
 				∀ i∈[0;x[, n[i] = 0.0;
 				return 4.0;
 			}
-			'''))
+			''')
 
 		moduleKo2.assertError(NablaPackage.eINSTANCE.interval,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
 			getTypeMsg("ℝ", "ℕ"))
 
-		val moduleOk = parseHelper.parse(getTestModule( '',
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
+			«defaultConnectivities»
 			def g: → ℝ, () →
 			{
 				ℝ[4] n;
 				∀ i∈[0;4[, n[i] = 0.0;
 				return 4.0;
 			}
-			'''))
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
 
 	// ===== NablaModule =====
-
-	@Test
-	def void testCheckMandatoryOptions()
-	{
-		// no item => no mesh => no mandatory variables
-		val moduleOk1 = parseHelper.parse('''module Test;''')
-		Assert.assertNotNull(moduleOk1)
-		moduleOk1.assertNoErrors
-
-		// item => mesh => mandatory variables
-		val moduleKo = parseHelper.parse(
-		'''
-			module Test;
-			itemtypes { node }
-		''')
-		Assert.assertNotNull(moduleKo)
-		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
-			BasicValidator::MANDATORY_VARS,
-			BasicValidator::getMandatoryVarsMsg(MandatoryVariables::NAMES))
-
-		val moduleOk2 = parseHelper.parse(getTestModule)
-		Assert.assertNotNull(moduleOk2)
-		moduleOk2.assertNoErrors
-	}
 
 	@Test
 	def void testCheckName()
@@ -157,8 +142,9 @@ class BasicValidatorTest
 	@Test
 	def testCheckInitValue()
 	{
-		val moduleKo = parseHelper.parse(testModule +
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			ℝ u, v;
 			iterate n while(true);
 			ComputeUinit: u^{n=1} = 0.0;
@@ -171,8 +157,9 @@ class BasicValidatorTest
 			BasicValidator::INIT_VALUE,
 			BasicValidator::getInitValueMsg(1))
 
-		val moduleOk = parseHelper.parse(testModule +
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			ℝ u, v;
 			iterate n while(true);
 			ComputeUinit: u^{n=0} = 0.0;
@@ -180,14 +167,15 @@ class BasicValidatorTest
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors		
+		moduleOk.assertNoErrors
 	}
 
 	@Test
 	def testCheckNextValue()
 	{
-		val moduleKo = parseHelper.parse(testModule +
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			ℝ u, v;
 			ℕ ni;
 			iterate n counter ni while(true);
@@ -200,24 +188,26 @@ class BasicValidatorTest
 			BasicValidator::NEXT_VALUE,
 			BasicValidator::getNextValueMsg(2))
 
-		val moduleOk = parseHelper.parse(testModule +
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			ℝ u, v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors		
+		moduleOk.assertNoErrors
 	}
 
 	@Test
 	def testCheckConditionConstraints()
 	{
-		val moduleKo1 = parseHelper.parse(testModule +
+		val moduleKo1 = parseHelper.parse(
 			'''
-				ℝ[3] x;
-				iterate n while(∑{x∈[0;3[}(x[i]]));
+			«emptyTestModule»
+			ℝ[3] x;
+			iterate n while(∑{x∈[0;3[}(x[i]]));
 			'''
 		)
 		Assert.assertNotNull(moduleKo1)
@@ -225,10 +215,11 @@ class BasicValidatorTest
 			BasicValidator::CONDITION_CONSTRAINTS,
 			BasicValidator::getConditionConstraintsMsg())
 
-		val moduleKo2 = parseHelper.parse(testModule +
+		val moduleKo2 = parseHelper.parse(
 			'''
-				ℝ[3] x;
-				iterate n while(x[0]);
+			«emptyTestModule»
+			ℝ[3] x;
+			iterate n while(x[0]);
 			'''
 		)
 		Assert.assertNotNull(moduleKo2)
@@ -236,10 +227,11 @@ class BasicValidatorTest
 			BasicValidator::CONDITION_BOOL,
 			getTypeMsg("ℝ", "ℾ"))
 
-		val moduleOk = parseHelper.parse(testModule +
+		val moduleOk = parseHelper.parse(
 			'''
-				ℝ[3] x;
-				iterate n while(x[0] > 0.0);
+			«emptyTestModule»
+			ℝ[3] x;
+			iterate n while(x[0] > 0.0);
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -252,8 +244,9 @@ class BasicValidatorTest
 	@Test
 	def void testCheckUnsupportedDimension()
 	{
-		val moduleKo = parseHelper.parse(testModule +
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			ℝ[1, 2, 3] a;
 			''')
 
@@ -262,8 +255,9 @@ class BasicValidatorTest
 			BasicValidator::UNSUPPORTED_DIMENSION,
 			BasicValidator::getUnsupportedDimensionMsg(3))
 
-		val moduleOk = parseHelper.parse(testModule +
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			ℝ[1, 2] a;
 			'''
 		)
@@ -274,8 +268,9 @@ class BasicValidatorTest
 	@Test
 	def void testCheckSizeExpression()
 	{
-		val moduleKo = parseHelper.parse(testModule +
+		val moduleKo = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℝ x = 2.2;
 			ℝ[1.1] a;
 			ℕ[x] b;
@@ -291,8 +286,9 @@ class BasicValidatorTest
 			BasicValidator::TYPE_EXPRESSION_TYPE,
 			getTypeMsg("ℝ", "ℕ"))
 
-		val moduleOk = parseHelper.parse(testModule +
+		val moduleOk = parseHelper.parse(
 			'''
+			«emptyTestModule»
 			let ℕ x = 2;
 			ℝ[2] a;
 			ℕ[x] b;
@@ -308,9 +304,11 @@ class BasicValidatorTest
 	@Test
 	def void testCheckConnectivityCallIndexAndType()
 	{
-		val moduleKo = parseHelper.parse(getTestModule(defaultConnectivities, '') +
+		val moduleKo = parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			let orig = [0.0 , 0.0] ;
+			ℝ[2] X{nodes};
 			IniX1: ∀j∈cells(), ∀r∈nodes(j), X{r} = orig; 
 			IniX2: ∀r∈nodes(), ∀j∈nodesOfCell(r), X{r} = orig; 
 			'''
@@ -323,14 +321,14 @@ class BasicValidatorTest
 
 		val node = moduleKo.getItemTypeByName("node").name
 		val cell = moduleKo.getItemTypeByName("cell").name
-
 		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityCall,
 			BasicValidator::CONNECTIVITY_CALL_TYPE,
 			getTypeMsg(cell, node))
 
-		val moduleOk =  parseHelper.parse(getTestModule(defaultConnectivities, '') +
+		val moduleOk =  parseHelper.parse(
 			'''
-			let ℝ[2] orig = [0.0 , 0.0] ;
+			«testModuleForSimulation»
+			let ℝ[2] orig = [0.0 , 0.0];
 			ℝ[2] X{nodes};
 			IniX1: ∀j∈cells(), ∀r∈nodes(), X{r} = orig; 
 			IniX2: ∀j∈cells(), ∀r∈nodesOfCell(j), X{r} = orig; 
@@ -343,8 +341,9 @@ class BasicValidatorTest
 	@Test
 	def testCheckDimensionArg()
 	{
-		val moduleKo =  parseHelper.parse(getTestModule(defaultConnectivities, '') +
+		val moduleKo =  parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			ℝ[2] X{nodesOfCell};
 			'''
 		)
@@ -353,8 +352,9 @@ class BasicValidatorTest
 			BasicValidator::DIMENSION_ARG,
 			BasicValidator::getDimensionArgMsg())
 
-		val moduleOk =  parseHelper.parse(getTestModule(defaultConnectivities, '') +
+		val moduleOk =  parseHelper.parse(
 			'''
+			«testModuleForSimulation»
 			ℝ[2] X{nodes};
 			'''
 		)
@@ -367,17 +367,18 @@ class BasicValidatorTest
 	@Test
 	def void testCheckShiftValidity()
 	{
-		val connectivities =
+		val model =
 			'''
+			«emptyTestModule»
 			itemtypes { node }
 			connectivity nodes: → {node};
 			connectivity leftNode: node → node;
+			ℝ[2] X{nodes};
 			'''
 
-		val moduleKo = parseHelper.parse(getTestModule(connectivities, '')
-			+
+		val moduleKo = parseHelper.parse(
 			'''
-			ℝ[2] X{nodes};
+			«model»
 			UpdateX: ∀r1∈nodes(), ∀r2∈leftNode(r1), X{r2} = X{r2-1} - 1;
 			'''
 		)
@@ -387,10 +388,9 @@ class BasicValidatorTest
 			BasicValidator::SHIFT_VALIDITY,
 			BasicValidator::getShiftValidityMsg)
 
-		val moduleOk =  parseHelper.parse(getTestModule(connectivities, '')
-			+
+		val moduleOk =  parseHelper.parse(
 			'''
-			ℝ[2] X{nodes};
+			«model»
 			UpdateX: ∀r1∈nodes(), ∀r2∈leftNode(r1), X{r2} = X{r1-1} - 1;
 			'''
 		)

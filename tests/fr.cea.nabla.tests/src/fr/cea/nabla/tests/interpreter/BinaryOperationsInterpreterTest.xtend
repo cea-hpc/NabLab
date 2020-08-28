@@ -11,7 +11,6 @@ package fr.cea.nabla.tests.interpreter
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.interpreter.Context
-import fr.cea.nabla.ir.interpreter.ModuleInterpreter
 import fr.cea.nabla.ir.interpreter.NV0Bool
 import fr.cea.nabla.ir.interpreter.NV0Int
 import fr.cea.nabla.ir.interpreter.NV0Real
@@ -19,8 +18,6 @@ import fr.cea.nabla.ir.interpreter.NV1Int
 import fr.cea.nabla.tests.CompilationChainHelper
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
-import java.util.logging.ConsoleHandler
-import java.util.logging.Level
 import java.util.logging.Logger
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
@@ -108,10 +105,7 @@ class BinaryOperationsInterpreterTest extends AbstractBinaryOperationsInterprete
 	override assertGetValueOfNV0Int_NV1Int(String model)
 	{
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		val context = moduleInterpreter.interpreteWithOptionDefaultValues
+		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
 
 		assertVariableDefaultValue(irModule, context, "n1", new NV1Int(#[1, 2]))
 		assertVariableValueInContext(irModule, context, "n1", new NV1Int(#[1, 2]))

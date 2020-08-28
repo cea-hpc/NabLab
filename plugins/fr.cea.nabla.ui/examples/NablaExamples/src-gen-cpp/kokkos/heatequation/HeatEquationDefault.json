@@ -1,0 +1,14 @@
+{
+	"_comment": "Generated file - Do not overwrite",
+	"options":
+	{
+		"_outputPath_comment":"empty outputPath to disable output",
+		"outputPath":"output",
+		"outputPeriod":1,
+		"stopTime":0.1,
+		"maxIterations":500,
+		"PI":3.1415926,
+		"alpha":1.0
+	},
+	"mesh":{}
+}

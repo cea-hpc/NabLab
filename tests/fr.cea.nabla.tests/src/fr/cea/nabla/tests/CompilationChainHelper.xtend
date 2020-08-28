@@ -15,11 +15,15 @@ import fr.cea.nabla.NablaStandaloneSetup
 import fr.cea.nabla.NablagenStandaloneSetup
 import fr.cea.nabla.generator.IrModuleTransformer
 import fr.cea.nabla.generator.NablagenInterpreter
+import fr.cea.nabla.ir.interpreter.ModuleInterpreter
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nablagen.NablagenModule
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.logging.ConsoleHandler
+import java.util.logging.Level
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
@@ -53,6 +57,14 @@ class CompilationChainHelper
 		// Suppress all reductions (replaced by loops)
 		transformer.transformIr(new ReplaceReductions(true), irModule, [msg | println(msg)])
 		return irModule
+	}
+
+	def getInterpreterContext(IrModule irModule, String jsonContent)
+	{
+		val handler = new ConsoleHandler
+		handler.level = Level::OFF
+		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
+		return moduleInterpreter.interprete(jsonContent)
 	}
 
 	def void generateCode(CharSequence model, CharSequence genModel)

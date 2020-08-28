@@ -10,7 +10,6 @@
 package fr.cea.nabla.ui.syntaxcoloring
 
 import org.eclipse.swt.SWT
-import org.eclipse.swt.graphics.FontData
 import org.eclipse.swt.graphics.RGB
 import org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConfiguration
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfigurationAcceptor
@@ -21,6 +20,7 @@ class NablaHighlightingConfiguration extends DefaultHighlightingConfiguration
 	public static val ID_ID = "ID"
 	public static val REAL_ID = "REAL"
 	public static val ITERATOR_ID = "Iterator"
+	public static val LATEX_ID = "LaTeX"
 
 	override configure(IHighlightingConfigurationAcceptor acceptor)
 	{
@@ -28,6 +28,7 @@ class NablaHighlightingConfiguration extends DefaultHighlightingConfiguration
 		acceptor.acceptDefaultHighlighting(ID_ID, ID_ID, IDTextStyle)
 		acceptor.acceptDefaultHighlighting(REAL_ID, REAL_ID, numberTextStyle)
 		acceptor.acceptDefaultHighlighting(ITERATOR_ID, ITERATOR_ID, setIteratorTextStyle)
+		acceptor.acceptDefaultHighlighting(LATEX_ID, LATEX_ID, defaultTextStyle)
 	}
 
 	def TextStyle getIDTextStyle()
@@ -44,10 +45,8 @@ class NablaHighlightingConfiguration extends DefaultHighlightingConfiguration
 		textStyle
 	}
 
-	override TextStyle keywordTextStyle()
+	def TextStyle getLatexFormulaStyle()
 	{
-		val textStyle = super.keywordTextStyle
-		textStyle.fontData = #[new FontData('Segoe_UI_Symbol', 10, SWT.BOLD)]
-		textStyle
+		defaultTextStyle
 	}
 }

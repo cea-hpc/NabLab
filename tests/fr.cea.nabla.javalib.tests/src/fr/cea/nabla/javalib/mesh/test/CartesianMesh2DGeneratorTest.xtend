@@ -75,6 +75,8 @@ class CartesianMesh2DGeneratorTest {
 		assertArrayEquals(#[0, 5, 10, 15], mesh.leftNodes)
 		assertArrayEquals(#[4, 9, 14, 19], mesh.rightNodes)
 
+		assertArrayEquals(#[5, 6], mesh.innerCells)
+		assertArrayEquals(#[0, 1, 2, 3, 4, 7, 8, 9, 10, 11], mesh.outerCells)
 		assertArrayEquals(#[8, 9, 10, 11], mesh.topCells)
 		assertArrayEquals(#[0, 1, 2, 3], mesh.bottomCells)
 		assertArrayEquals(#[0, 4, 8], mesh.leftCells)
@@ -86,7 +88,6 @@ class CartesianMesh2DGeneratorTest {
 		assertArrayEquals(#[8, 17, 26], mesh.rightFaces)
 		assertArrayEquals(#[0, 1, 2, 4, 6, 8, 10, 17, 19, 26, 27, 28, 29, 30], mesh.outerFaces)
 		assertArrayEquals(#[3, 5, 7, 9, 11, 12, 13, 14, 15, 16, 18, 20, 21, 22, 23, 24, 25], mesh.innerFaces)
-		//println(mesh.innerHorizontalFaces.map[i | i.toString].join(' '))
 		assertArrayEquals(#[9, 11, 13, 15, 18, 20, 22, 24], mesh.innerHorizontalFaces)
 		assertArrayEquals(#[3, 5, 7, 12, 14, 16, 21, 23, 25], mesh.innerVerticalFaces)
 
@@ -141,6 +142,32 @@ class CartesianMesh2DGeneratorTest {
 		assertEquals(0, mesh.getBottomFaceOfCell(0))
 		assertEquals(1, mesh.getLeftFaceOfCell(0))
 		assertEquals(3, mesh.getRightFaceOfCell(0))
+
+		assertEquals(4, mesh.getTopCell(0))
+		assertEquals(11, mesh.getTopCell(11))
+		assertEquals(4, mesh.getBottomCell(8))
+		assertEquals(0, mesh.getBottomCell(0))
+		assertEquals(0, mesh.getLeftCell(1))
+		assertEquals(8, mesh.getLeftCell(8))
+		assertEquals(3, mesh.getRightCell(2))
+		assertEquals(11, mesh.getRightCell(11))
+
+		assertEquals(2, mesh.getBottomFaceNeighbour(11))
+		assertEquals(3, mesh.getBottomLeftFaceNeighbour(11))
+		assertEquals(5, mesh.getBottomRightFaceNeighbour(11))
+		assertEquals(20, mesh.getTopFaceNeighbour(11))
+		assertEquals(12, mesh.getTopLeftFaceNeighbour(11))
+		assertEquals(14, mesh.getTopRightFaceNeighbour(11))
+
+		assertEquals(3, mesh.getBottomFaceNeighbour(12))
+		assertEquals(9, mesh.getBottomLeftFaceNeighbour(12))
+		assertEquals(11, mesh.getBottomRightFaceNeighbour(12))
+		assertEquals(21, mesh.getTopFaceNeighbour(12))
+		assertEquals(18, mesh.getTopLeftFaceNeighbour(12))
+		assertEquals(20, mesh.getTopRightFaceNeighbour(12))
+
+		assertEquals(1, mesh.getLeftFaceNeighbour(3))
+		assertEquals(5, mesh.getRightFaceNeighbour(3))
 	}
 
 	@Test

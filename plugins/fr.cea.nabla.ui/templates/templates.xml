@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<templates>
+	<template context="fr.cea.nabla.Nabla.kw_ℝ" id="NablaReal" description="real type" enabled="true" name="real">ℝ ${cursor}</template>
+	<template context="fr.cea.nabla.Nabla.kw_ℕ" id="NablaInt" description="int type" enabled="true" name="int">ℕ ${cursor}</template>
+	<template context="fr.cea.nabla.Nabla.kw_ℾ" id="NablaBool" description="bool type" enabled="true" name="bool">ℾ ${cursor}</template>
+	<template context="fr.cea.nabla.Nabla.kw_∀" id="NablaForall" description="for all on connectivity" enabled="true" name="forall">∀x∈${cursor}(), </template>
+	<template context="fr.cea.nabla.Nabla.Expression" id="NablaSum" description="sum function on connectivity" enabled="true" name="sum">∑{x∈${cursor}()}()</template>
+	<template context="fr.cea.nabla.Nabla.Expression" id="NablaProd" description="prod function on connectivity" enabled="true" name="prod">∏{x∈${cursor}()}()</template>
+	<template context="fr.cea.nabla.Nabla.kw_∀" id="NablaForallInterval" description="for all on interval" enabled="true" name="forall_interval">∀${cursor}x∈[0;n[, </template>
+	<template context="fr.cea.nabla.Nabla.Expression" id="NablaSumInterval" description="sum function on interval" enabled="true" name="sum_interval">∑{${cursor}x∈[0;n[}()</template>
+	<template context="fr.cea.nabla.Nabla.Expression" id="NablaProdInterval" description="prod function on interval" enabled="true" name="prod_interval">∏{${cursor}x∈[0;n[}()</template>
+</templates>

@@ -2,7 +2,7 @@
 # Generated file - Do not overwrite
 #
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.10)
 
 set(NABLA_CXX_COMPILER /usr/bin/g++)
 
@@ -30,5 +30,5 @@ target_include_directories(glace2d PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 target_link_libraries(glace2d PUBLIC cppnabla OpenMP::OpenMP_CXX)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
-include(Project.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 endif()

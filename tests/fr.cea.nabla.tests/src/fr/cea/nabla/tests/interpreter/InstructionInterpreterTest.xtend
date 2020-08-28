@@ -93,6 +93,10 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 				Assert.assertEquals(0.5*(yEdgeLength), Math.abs(cjr.get(j,r).get(1)), TestUtils.DoubleTolerance)
 			}
 		}
+
+		// Test reduction
+		val bmin = (context.getVariableValue("Bmin") as NV0Real).data
+		Assert.assertEquals(-0.00390625, bmin, TestUtils.DoubleTolerance)
 	}
 
 	override assertInterpreteIf(String model, int xQuads, int yQuads)

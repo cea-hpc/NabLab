@@ -2,7 +2,7 @@
 # Generated file - Do not overwrite
 #
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.10)
 
 set(NABLA_CXX_COMPILER /usr/bin/g++)
 
@@ -31,5 +31,5 @@ target_include_directories(implicitheatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DI
 target_link_libraries(implicitheatequation PUBLIC cppnabla OpenMP::OpenMP_CXX cppnablastl pthread)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
-include(Project.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 endif()

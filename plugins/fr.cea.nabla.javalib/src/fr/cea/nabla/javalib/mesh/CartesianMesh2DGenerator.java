@@ -18,14 +18,17 @@ public class CartesianMesh2DGenerator
 		double[][] nodes = new double[(nbXQuads + 1) * (nbYQuads + 1)][2];
 		Quad[] quads = new Quad[nbXQuads * nbYQuads];
 		Edge[] edges = new Edge[2 * quads.length + nbXQuads + nbYQuads];
-		
+
 		int[] outerNodesIds = new int[2 * (nbXQuads + nbYQuads)];
 		int[] innerNodeIds = new int[nodes.length - outerNodesIds.length];
 		int[] topNodeIds = new int[nbXQuads + 1];
 		int[] bottomNodeIds = new int[nbXQuads + 1];
 		int[] leftNodeIds = new int[nbYQuads + 1];
 		int[] rightNodeIds = new int[nbYQuads + 1];
-		
+
+		int[] innerCellIds = new int[(nbXQuads - 2)*(nbYQuads - 2)];
+		int[] outerCellIds = new int[2 * nbXQuads + 2 * (nbYQuads - 2)];
+
 		int nodeId = 0;
 		int innerNodeId = 0;
 		int topNodeId = 0;
@@ -33,8 +36,8 @@ public class CartesianMesh2DGenerator
 		int leftNodeId = 0;
 		int rightNodeId = 0;
 
-	    // node creation
-		for ( int j = 0; j <=nbYQuads; j++)
+		// node creation
+		for (int j = 0; j <=nbYQuads; j++)
 			for (int i = 0; i<=nbXQuads; i++)
 			{
 				nodes[nodeId][0] = xSize * i;
@@ -64,15 +67,22 @@ public class CartesianMesh2DGenerator
 
 		// quad creation
 		int quadId = 0;
+		int innerCellId = 0;
+		int outerCellId = 0;
 		for (int j = 0; j < nbYQuads; j++)
 			for (int i = 0; i < nbXQuads; i++)
 			{
+				if( (i != 0) && (i != nbXQuads - 1) && (j != 0) && (j!= nbYQuads - 1) )
+					innerCellIds[innerCellId++] = quadId;
+				else
+					outerCellIds[outerCellId++] = quadId;
+
 				int upperLeftNodeIndex = (j*nbXNodes)+i;
 				int lowerLeftNodeIndex = upperLeftNodeIndex + nbXNodes;
 				quads[quadId++] = new Quad(upperLeftNodeIndex, upperLeftNodeIndex+1, lowerLeftNodeIndex+1, lowerLeftNodeIndex);
 			}
 
 		MeshGeometry meshGeometry = new MeshGeometry(nodes, edges, quads);
-		return new CartesianMesh2D(meshGeometry, innerNodeIds, topNodeIds, bottomNodeIds, leftNodeIds, rightNodeIds);
+		return new CartesianMesh2D(meshGeometry, innerNodeIds, topNodeIds, bottomNodeIds, leftNodeIds, rightNodeIds, innerCellIds, outerCellIds);
 	}
 }

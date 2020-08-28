@@ -68,18 +68,22 @@ class ModuleInterpreter
 			context.addVariableValue(periodValue, interprete(periodValue.defaultValue, context))
 		}
 		for (v : module.definitions)
-			context.addVariableValue(v, interprete(v.defaultValue, context))
+			context.addVariableValue(v, createValue(v, context))
 
 		// Then, the type of each option is used to read the json values
 		if (!jsonOptionsContent.nullOrEmpty)
 		{
 			val gson = new Gson
-			val jsonOptions = gson.fromJson(jsonOptionsContent, JsonObject)
-			for (v : module.allOptions)
+			val jsonObject = gson.fromJson(jsonOptionsContent, JsonObject)
+			if (jsonObject.has("options"))
 			{
-				val vValue = context.getVariableValue(v)
-				val jsonElt = jsonOptions.get(v.name)
-				NablaValueJsonSetter::setValue(vValue, jsonElt)
+				val jsonOptions = jsonObject.get("options").asJsonObject
+				for (v : module.allOptions)
+				{
+					val vValue = context.getVariableValue(v)
+					val jsonElt = jsonOptions.get(v.name)
+					NablaValueJsonSetter::setValue(vValue, jsonElt)
+				}
 			}
 		}
 	}

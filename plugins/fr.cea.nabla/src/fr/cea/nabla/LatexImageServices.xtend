@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla
 
+import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.util.regex.Pattern
@@ -18,7 +19,7 @@ import org.scilab.forge.jlatexmath.TeXFormula
 
 class LatexImageServices
 {
-	/** Extrait les formules Latex (entourées de '$') de la documentation et les remplaces par des images */
+	/** Extract LaTeX formula (between '$') from the documentation and replace them by images */
 	static def String interpretLatexInsertions(String documentation)
 	{
 		var transformedDoc = documentation
@@ -35,24 +36,24 @@ class LatexImageServices
 		return transformedDoc
 	}
 
-	/** Retourne une image HTML à partir d'une formule Latex (sans les '$') */
+	/** Return an HTML image from a LaTeX formula between '$' characters */
 	static def String createHtmlBase64Image(String texFormula)
 	{
-		val output = new ByteArrayOutputStream
-		ImageIO::write(texFormula.createImage(15), "png", output)
-		val outputString = new String(output.toByteArray, "UTF-8");
+		val byteArray = createPngImage(texFormula, 15, null)
+		val outputString = new String(byteArray, "UTF-8");
 		outputString.addHtmlTags
 	}
 
-	/** Fabrique une image png à partir d'une formule Latex */
-	static def byte[] createPngImage(String texFormula, float size)
+	/** Build a png image from a LaTeX formula between '$' characters */
+	static def byte[] createPngImage(String texFormula, float size, Color color)
 	{
 		val output = new ByteArrayOutputStream
-		ImageIO::write(texFormula.createImage(size), "png", output)
+		val bufferedImage = texFormula.createImage(size, color)
+		ImageIO::write(bufferedImage, "png", output)
 		output.toByteArray
 	}
 
-	/** Enlève les '$' autour d'une formule Latex */
+	/** Remove '$' chars around LaTeX formula */
 	private static def String removeDollars(String texFormulaWithDollars)
 	{
 		val l = texFormulaWithDollars.length
@@ -60,11 +61,12 @@ class LatexImageServices
 			texFormulaWithDollars.substring(1, l-1)
 	}
 
-	/** Retourne une instance de BufferedImage à partir d'une formule Latex (sans les '$') */
-	private static def BufferedImage createImage(String texFormula, float size)
+	/** Retuen a BufferedImage instance from a LaTeX (without '$' characters) */
+	private static def BufferedImage createImage(String texFormula, float size, Color color)
 	{
 		val formula = new TeXFormula(texFormula)
 		val icon = formula.createTeXIcon(TeXConstants::STYLE_DISPLAY, size)
+		if (color !== null) icon.foreground = color
 		val b = new BufferedImage(icon.iconWidth, icon.iconHeight, BufferedImage::TYPE_4BYTE_ABGR)
 		icon.paintIcon(null, b.graphics, 0, 0)
 		return b

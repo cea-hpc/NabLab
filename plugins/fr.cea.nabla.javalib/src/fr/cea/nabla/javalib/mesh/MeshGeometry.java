@@ -36,20 +36,20 @@ public class MeshGeometry
 		return this.quads;
 	}
 
-	public void dump() {
-
+	public void dump()
+	{
 		System.out.println("Mesh Geometry");
 		String nodesList = "";
 		String edgesList = "";
 		String quadsList = "";
 		for (int i = 0; i < nodes.length; i++)
-			nodesList += nodes.toString() + (i < nodes.length-1 ? ", " : "");
+			nodesList += nodes[i].toString() + (i < nodes.length-1 ? ", " : "");
 		System.out.println("  nodes (" + nodes.length + ") : " + nodesList);
 		for (int i = 0; i < edges.length; i++)
-			edgesList += edges.toString() + (i < edges.length-1 ? ", " : "");
+			edgesList += edges[i].toString() + (i < edges.length-1 ? ", " : "");
 		System.out.println("  edges (" + edges.length + ") : " + edgesList);
 		for (int i = 0; i < quads.length; i++)
-			quadsList += quads.toString() + (i < quads.length-1 ? ", " : "");
+			quadsList += quads[i].toString() + (i < quads.length-1 ? ", " : "");
 		System.out.println("  quads (" + quads.length + ") : " + quadsList);
 	}
 }

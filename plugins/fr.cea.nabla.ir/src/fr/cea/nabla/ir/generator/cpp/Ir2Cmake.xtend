@@ -28,7 +28,7 @@ abstract class Ir2Cmake
 		# Generated file - Do not overwrite
 		#
 
-		cmake_minimum_required(VERSION 3.15)
+		cmake_minimum_required(VERSION 3.10)
 
 		set(NABLA_CXX_COMPILER «getCompilerPath(compiler, compilerPath)»)
 
@@ -65,7 +65,7 @@ abstract class Ir2Cmake
 		target_link_libraries(«name.toLowerCase» PUBLIC cppnabla«FOR tll : targetLinkLibraries» «tll»«ENDFOR»«IF !levelDBPath.nullOrEmpty» leveldb::leveldb Threads::Threads«ENDIF»)
 
 		if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
-		include(Project.cmake)
+		include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 		endif()
 	'''
 

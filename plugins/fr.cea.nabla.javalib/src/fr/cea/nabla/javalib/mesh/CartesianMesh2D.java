@@ -98,7 +98,7 @@ public class CartesianMesh2D
 		    // Bottom boundary faces
 		    if ((edgeId < 2 * xQuads) && (edgeId % 2 == 0)) bFaces.add(edgeId);
 		    // Left boundary faces
-		    if ((edgeId % (2 * xQuads + 1) == 1) && (edgeId < (2 * xQuads + 1) * yQuads) lFaces.add(edgeId);
+		    if ((edgeId % (2 * xQuads + 1) == 1) && (edgeId < (2 * xQuads + 1) * yQuads)) lFaces.add(edgeId);
 		    // Right boundary faces
 		    if (edgeId % (2 * xQuads + 1) == 2 * xQuads) rFaces.add(edgeId);
 

@@ -50,7 +50,7 @@ CartesianMesh2D::CartesianMesh2D(
     // Bottom boundary faces
     if ((edgeId < 2 * m_nb_x_quads) && (edgeId % 2 == 0)) m_bottom_faces.emplace_back(edgeId);
     // Left boundary faces
-    if ((edgeId % (2 * m_nb_x_quads + 1) == 1) &&  (edgeId < (2 * m_nb_x_quads + 1) * m_nb_y_quads) m_left_faces.emplace_back(edgeId);
+    if ((edgeId % (2 * m_nb_x_quads + 1) == 1) &&  (edgeId < (2 * m_nb_x_quads + 1) * m_nb_y_quads)) m_left_faces.emplace_back(edgeId);
     // Right boundary faces
     if (edgeId % (2 * m_nb_x_quads + 1) == 2 * m_nb_x_quads) m_right_faces.emplace_back(edgeId);
     // Outer Faces

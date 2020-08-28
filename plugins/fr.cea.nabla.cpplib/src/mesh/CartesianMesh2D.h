@@ -145,8 +145,8 @@ public:
 	bool isInnerEdge(const Edge& e) const noexcept;
 	bool isVerticalEdge(const Edge& e) const noexcept;
 	bool isHorizontalEdge(const Edge& e) const noexcept;
-//	bool isInnerVerticalEdge(const Edge& e) const noexcept;
-//	bool isInnerHorizontalEdge(const Edge& e) const noexcept;
+	bool isInnerVerticalEdge(const Edge& e) const noexcept;
+	bool isInnerHorizontalEdge(const Edge& e) const noexcept;
 
 	size_t getNbCommonIds(const vector<Id>& a, const vector<Id>& b) const noexcept;
 	template <size_t N, size_t M>

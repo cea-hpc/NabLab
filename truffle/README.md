@@ -25,7 +25,7 @@ The first time you create a launch configuration, you need to indicate the direc
 Subsequently created launch configurations will have this setting pre-filled automatically, but you can always change it.
 
 You then need to provide the nabla source file that you want to execute, together with its accompanying nablagen file.
-Finally, you can include monilogger definitions as a .mnlg file (information and examples on how to define moniloggers can be found [here](https://github.com/gemoc/monilogger)).
+Finally, you can include monilogger definitions as a .mnlg file (information and examples on how to define moniloggers can be found [here](https://github.com/gemoc/monilog)).
 
 Click on **Apply** to save your configuration, and **Run** to start the execution.
 

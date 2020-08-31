@@ -1,0 +1,25 @@
+default-language mnxpr
+
+monilog "negativePressure" [SEVERE] {
+	events {
+		after computePressure
+	}
+	conditions {
+		"p < 0"
+	}
+	actions {
+		append console("Negative pressure: p={0}", "p")
+	}
+}
+
+monilog "lowPressure" [WARNING] {
+	events {
+		after computePressure
+	}
+	conditions {
+		"p <= 0.1"
+	}
+	actions {
+		append console("Low pressure: p={0}", "p")
+	}
+}

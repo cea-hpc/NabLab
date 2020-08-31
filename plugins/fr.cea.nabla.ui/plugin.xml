@@ -525,6 +525,41 @@
 			type="fr.cea.nabla.ui.launchconfig.NablagenLaunchConfigurationType">
 		</launchConfigurationTabGroup>
 	</extension>
+	<extension
+        point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+	    <launchConfigurationTypeImage
+	            id="fr.cea.nabla.ui.launchconfig.NablagenLaunchConfigurationTypeImage"
+	            configTypeID="fr.cea.nabla.ui.launchconfig.NablagenLaunchConfigurationType"
+	            icon="icons/NabLab.gif">
+	    </launchConfigurationTypeImage>
+	</extension>
+	
+	<!-- Launch configuration for nabla interpreter -->
+	<extension
+		point="org.eclipse.debug.core.launchConfigurationTypes">
+		<launchConfigurationType
+			delegate="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.launchconfig.NablaLaunchConfigurationDelegate"
+			id="fr.cea.nabla.ui.launchconfig.NablaLaunchConfigurationType"
+			modes="run, debug"
+			name="Nabla Interpreter Launch">
+		</launchConfigurationType>
+	</extension>
+	<extension
+		point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+		<launchConfigurationTabGroup
+			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.launchconfig.NablaLaunchConfigurationTabGroup"
+			id="fr.cea.nabla.ui.launchconfig.NablaLaunchConfigurationTabGroup"
+			type="fr.cea.nabla.ui.launchconfig.NablaLaunchConfigurationType">
+		</launchConfigurationTabGroup>
+	</extension>
+	<extension
+        point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+	    <launchConfigurationTypeImage
+	            id="fr.cea.nabla.ui.launchconfig.NablaLaunchConfigurationTypeImage"
+	            configTypeID="fr.cea.nabla.ui.launchconfig.NablaLaunchConfigurationType"
+	            icon="icons/NabLab.gif">
+	    </launchConfigurationTypeImage>
+	</extension>
 
 	<!-- NabLab perspective -->
 	<extension
@@ -559,6 +594,9 @@
 			<hiddenToolBarItem
 				id="org.eclipse.ui.externaltools.ExternalToolMenuDelegateToolbar">
 			</hiddenToolBarItem>
+			<actionSet
+				id="org.eclipse.debug.ui.launchActionSet">
+			</actionSet>
 		</perspectiveExtension>
 </extension>
 <extension
@@ -570,6 +608,11 @@
     <category
           id="fr.cea.nabla.ui.examples.category"
           name="%NablaExamplesCategory"
+          parentCategory="org.eclipse.ui.Examples">
+    </category>
+    <category
+          id="fr.cea.nabla.ui.monilogger.examples.category"
+          name="%MoniloggerExamplesCategory"
           parentCategory="org.eclipse.ui.Examples">
     </category>
     <wizard
@@ -594,6 +637,17 @@
           %NablaExamplesWizardDescription
        </description>
     </wizard>
+    <wizard
+          category="org.eclipse.ui.Examples/fr.cea.nabla.ui.monilogger.examples.category"
+          class="org.eclipse.emf.common.ui.wizard.ExampleInstallerWizard"
+          icon="icons/NabLab.gif"
+          id="fr.cea.nabla.ui.monilogger.examples.project.wizard"
+          name="%MoniloggerExamplesWizardName"
+          project="true">
+       <description>
+          %MoniloggerExamplesWizardDescription
+       </description>
+    </wizard>
  </extension>
  <extension
        point="org.eclipse.emf.common.ui.examples">
@@ -608,12 +662,37 @@
        </projectDescriptor>
     </example>
  </extension>
+ <extension
+       point="org.eclipse.emf.common.ui.examples">
+    <example
+          id="fr.cea.nabla.ui.monilogger.examples.project.example"
+          pageImage="icons/NabLab.gif"
+          wizardID="fr.cea.nabla.ui.monilogger.examples.project.wizard">
+       <projectDescriptor
+             contentURI="examples/MoniloggerExamples/"
+             description="%MoniloggerExamplesWizardFullDescription"
+             name="MoniloggerExamples">
+       </projectDescriptor>
+    </example>
+ </extension>
  <!-- Add NabLab wizard shortcuts into Model Explorer View (only when NabLab perspective is active) -->
  <extension
        point="org.eclipse.ui.navigator.navigatorContent">
     <commonWizard
           type="new"
           wizardId="fr.cea.nabla.ui.examples.project.wizard">
+       <enablement>
+          <with
+                variable="activeWorkbenchWindow.activePerspective">
+             <equals
+                   value="fr.cea.nabla.ui.NabLabPerpective">
+             </equals>
+          </with>
+       </enablement>
+    </commonWizard>
+    <commonWizard
+          type="new"
+          wizardId="fr.cea.nabla.ui.monilogger.examples.project.wizard">
        <enablement>
           <with
                 variable="activeWorkbenchWindow.activePerspective">

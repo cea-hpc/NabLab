@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Display
 import org.eclipse.ui.console.ConsolePlugin
 import org.eclipse.ui.console.IConsoleFactory
 import org.eclipse.ui.console.MessageConsole
+import org.eclipse.ui.console.MessageConsoleStream
 
 @Singleton
 class NabLabConsoleFactory implements IConsoleFactory
@@ -19,6 +20,7 @@ class NabLabConsoleFactory implements IConsoleFactory
 
 	@Inject NablaGeneratorMessageDispatcher dispatcher
 	MessageConsole console
+	MessageConsoleStream stream
 
 	override openConsole() 
 	{
@@ -47,10 +49,12 @@ class NabLabConsoleFactory implements IConsoleFactory
 	{
 		if (console !== null)
 		{
+			if (stream === null) {
+				stream = console.newMessageStream
+			}
 			val display = Display.^default
 			display.syncExec
 			([
-				val stream = console.newMessageStream
 				stream.color = switch type
 				{
 					case MessageType.Exec: BLUE

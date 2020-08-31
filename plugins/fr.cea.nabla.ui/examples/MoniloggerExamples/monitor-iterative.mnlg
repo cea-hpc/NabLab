@@ -1,0 +1,15 @@
+default-language mnxpr
+
+monilog "logU" {
+	events {
+		after ComputeTn
+	}
+	actions {
+		append console("u[0]={0}; u[{1}]={2} ; u[{3}]={4}",
+				"u_nplus1[0]",
+				"|u_nplus1| / 2",
+				"u_nplus1[|u_nplus1| / 2]",
+				"|u_nplus1| - 1",
+				"u_nplus1[|u_nplus1| - 1]")
+	}
+}

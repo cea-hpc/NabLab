@@ -40,6 +40,9 @@
                 <module>plugins/fr.cea.nabla.edit</module>
                 <module>plugins/fr.cea.nabla.editor</module>
                 <module>plugins/fr.cea.nabla.ir</module>
+                <module>truffle/language</module>
+                <module>truffle/launcher</module>
+                <module>truffle/component</module>
                 <module>plugins/fr.cea.nabla.ide</module>
                 <module>plugins/fr.cea.nabla.javalib</module>
                 <module>plugins/fr.cea.nabla.sirius</module>

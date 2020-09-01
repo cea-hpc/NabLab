@@ -670,7 +670,7 @@
       icon="icons/NabLab.gif">
    </consoleFactory>
  </extension>
- <!-- Create a key binding to notiy Latex ang Graph views -->
+ <!-- Create a key binding to notiy Graph views -->
  <extension
        point="org.eclipse.ui.commands">
     <command

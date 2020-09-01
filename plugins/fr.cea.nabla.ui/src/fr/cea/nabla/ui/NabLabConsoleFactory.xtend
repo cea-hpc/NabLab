@@ -35,8 +35,8 @@ class NabLabConsoleFactory implements IConsoleFactory
 		console = consoleMng.consoles.filter(MessageConsole).findFirst[x | x.name == ConsoleName]
 		if (console === null)
 		{
-			val imageDescriptor = UiUtils::getImageDescriptor("icons/NabLab.gif")
-			val image = if (imageDescriptor.present) imageDescriptor.get else null
+			val id = NablaUiUtils::getImageDescriptor("icons/NabLab.gif")
+			val image = if (id.present) id.get else null
 			console = new MessageConsole(ConsoleName, image)
 			consoleMng.addConsoles(#[console])
 			dispatcher.traceListeners += [type, msg | printConsole(type, msg)]

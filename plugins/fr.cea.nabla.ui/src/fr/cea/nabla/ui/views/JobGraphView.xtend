@@ -22,7 +22,7 @@ import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.ui.NabLabConsoleFactory
-import fr.cea.nabla.ui.UiUtils
+import fr.cea.nabla.ui.NablaUiUtils
 import javax.inject.Provider
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.jface.viewers.DoubleClickEvent
@@ -82,7 +82,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 				}
 				else if (selection.firstElement instanceof Job)
 				{
-					val editor = UiUtils::activeNablaDslEditor
+					val editor = NablaUiUtils::activeNablaDslEditor
 					val j = selection.firstElement as Job
 					if (editor !== null) editor.selectIfDisplayed(j)
 				}

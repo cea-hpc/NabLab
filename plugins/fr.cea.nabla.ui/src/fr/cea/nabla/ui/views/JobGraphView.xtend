@@ -134,7 +134,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		var IrModule irModule = null
 		consoleFactory.printConsole(MessageType.Start, "Building IR to initialize job graph view")
 
-		try 
+		try
 		{
 			val nabla2Ir = nabla2IrProvider.get // force a new instance to ensure a new IR
 			irModule = nabla2Ir.toIrModule(nablaModule)

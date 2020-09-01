@@ -29,7 +29,7 @@ class NabLabConsoleFactory implements IConsoleFactory
 	@Inject NablaGeneratorMessageDispatcher dispatcher
 	MessageConsole console
 
-	override openConsole() 
+	override openConsole()
 	{
 		val consoleMng = ConsolePlugin.^default.consoleManager
 		console = consoleMng.consoles.filter(MessageConsole).findFirst[x | x.name == ConsoleName]

@@ -98,10 +98,10 @@ class Ir2Cpp extends CodeGenerator
 		struct Options
 		{
 			«IF postProcessingInfo !== null»std::string «TagOutputVariables.OutputPathNameAndValue.key»;«ENDIF»
-			«IF levelDB»std::string «Utils.NonRegressionNameAndValue.key»;«ENDIF»
 			«FOR v : allOptions»
 			«v.cppType» «v.name»;
 			«ENDFOR»
+			«IF levelDB»std::string «Utils.NonRegressionNameAndValue.key»;«ENDIF»
 
 			void jsonInit(const rapidjson::Value::ConstObject& d);
 		};

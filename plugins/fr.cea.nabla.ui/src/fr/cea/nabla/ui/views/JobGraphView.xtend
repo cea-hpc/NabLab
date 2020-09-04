@@ -153,11 +153,11 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		{
 			// An exception can occured during IR building if environment is not configured,
 			// for example compilation not done, or during transformation step. Whatever... 
-			// e.printStackTrace
+			// irModule stays null. Error message printed below.
 		}
 
 		if (irModule === null)
-			consoleFactory.printConsole(MessageType.End, "Job graph view not initialized: IR module can not be built")
+			consoleFactory.printConsole(MessageType.Error, "IR module can not be built. Try to clean and rebuild all projects and start again.")
 		else
 		{
 			viewerJobContainer = irModule

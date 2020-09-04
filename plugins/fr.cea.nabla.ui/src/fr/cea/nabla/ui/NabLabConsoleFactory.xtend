@@ -25,6 +25,8 @@ class NabLabConsoleFactory implements IConsoleFactory
 	public static val ConsoleName = "NabLab Console"
 	static val BLUE = new Color(null, 70, 30, 180)
 	static val BLACK = new Color(null, 0, 0, 0)
+	static val ORANGE = new Color(null, 255, 140, 0)
+	static val RED = new Color(null, 139, 0, 0)
 
 	@Inject NablaGeneratorMessageDispatcher dispatcher
 	MessageConsole console
@@ -63,6 +65,8 @@ class NabLabConsoleFactory implements IConsoleFactory
 				stream.color = switch type
 				{
 					case MessageType.Exec: BLUE
+					case MessageType.Warning: ORANGE
+					case MessageType.Error: RED
 					default: BLACK
 				}
 				stream.println(msg)

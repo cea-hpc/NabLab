@@ -16,7 +16,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 @Singleton
 class NablaGeneratorMessageDispatcher
 {
-	enum MessageType { Start, Exec, End }
+	enum MessageType { Start, Exec, End, Warning, Error }
 
 	@Accessors val traceListeners = new ArrayList<(MessageType, String) => void>
 

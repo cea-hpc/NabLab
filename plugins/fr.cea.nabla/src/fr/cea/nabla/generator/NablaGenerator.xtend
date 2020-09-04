@@ -18,6 +18,7 @@ import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 
 import static extension fr.cea.nabla.LatexLabelServices.*
+import fr.cea.nabla.ir.Utils
 
 class NablaGenerator extends AbstractGenerator
 {
@@ -37,12 +38,8 @@ class NablaGenerator extends AbstractGenerator
 		}
 		catch(Exception e)
 		{
-			dispatcher.post(MessageType.Exec, '\n***' + e.class.name + ': ' + e.message)
-			if (e.stackTrace !== null && !e.stackTrace.empty)
-			{
-				val s = e.stackTrace.head
-				dispatcher.post(MessageType.Exec, 'at ' + s.className + '.' + s.methodName + '(' + s.fileName + ':' + s.lineNumber + ')')
-			}
+			dispatcher.post(MessageType.Error, e.message)
+			dispatcher.post(MessageType.Error, Utils::getStackTrace(e))
 			throw(e)
 		}
 	}

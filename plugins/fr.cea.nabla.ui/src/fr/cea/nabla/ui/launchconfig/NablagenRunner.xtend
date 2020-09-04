@@ -14,10 +14,9 @@ import com.google.inject.Provider
 import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.NablagenInterpreter
+import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.ui.NabLabConsoleFactory
-import java.io.PrintWriter
-import java.io.StringWriter
 import org.eclipse.core.resources.IResource
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.ResourceSet
@@ -74,18 +73,10 @@ class NablagenRunner
 			}
 			catch (Exception e)
 			{
-				consoleFactory.printConsole(MessageType.End, "Generation failed for: " + eclipseResource.name)
-				consoleFactory.printConsole(MessageType.End, e.message)
-				consoleFactory.printConsole(MessageType.End, getStackTrace(e))
+				consoleFactory.printConsole(MessageType.Error, "Generation failed for: " + eclipseResource.name)
+				consoleFactory.printConsole(MessageType.Error, e.message)
+				consoleFactory.printConsole(MessageType.Error, Utils.getStackTrace(e))
 			}
 		]).start
-	}
-
-	static private def String getStackTrace(Exception e)
-	{
-		val result = new StringWriter()
-		val printWriter = new PrintWriter(result)
-		e.printStackTrace(printWriter)
-		return result.toString()
 	}
 }

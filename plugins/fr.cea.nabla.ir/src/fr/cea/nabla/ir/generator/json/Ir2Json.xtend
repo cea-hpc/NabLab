@@ -51,12 +51,12 @@ class Ir2Json extends CodeGenerator
 				"_outputPath_comment":"empty outputPath to disable output",
 				"«TagOutputVariables.OutputPathNameAndValue.key»":"«TagOutputVariables.OutputPathNameAndValue.value»"«IF levelDB || !options.empty»,«ENDIF»
 				«ENDIF»
-				«FOR o : options SEPARATOR ","»
-				"«o.name»":«context.getVariableValue(o).content»
+				«FOR i : 0..<options.length»
+				"«options.get(i).name»":«context.getVariableValue(options.get(i)).content»«IF i<options.length -1 || levelDB»,«ENDIF»
 				«ENDFOR»
 				«IF levelDB»
 				"_nonRegression_comment":"empty value to disable, CreateReference or CompareToReference to take action",
-				"«Utils.NonRegressionNameAndValue.key»":"«Utils.NonRegressionNameAndValue.value»"«IF !options.empty»,«ENDIF»
+				"«Utils.NonRegressionNameAndValue.key»":"«Utils.NonRegressionNameAndValue.value»"
 				«ENDIF»
 			},
 			"mesh":{}«IF !allProviders.empty»,«ENDIF»

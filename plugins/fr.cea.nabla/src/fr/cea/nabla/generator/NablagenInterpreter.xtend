@@ -37,13 +37,14 @@ import fr.cea.nabla.nablagen.CppOpenMP
 import fr.cea.nabla.nablagen.CppSequential
 import fr.cea.nabla.nablagen.CppStlThread
 import fr.cea.nabla.nablagen.Java
+import fr.cea.nabla.nablagen.LevelDB
 import fr.cea.nabla.nablagen.NablagenConfig
 import fr.cea.nabla.nablagen.Target
 import java.io.File
 import java.util.ArrayList
 import java.util.HashMap
-import java.util.LinkedHashMap
 import java.util.List
+import java.util.Map
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.generator.IOutputConfigurationProvider
@@ -51,7 +52,6 @@ import org.eclipse.xtext.generator.JavaIoFileSystemAccess
 import org.eclipse.xtext.generator.OutputConfiguration
 
 import static com.google.common.collect.Maps.uniqueIndex
-import fr.cea.nabla.nablagen.LevelDB
 
 class NablagenInterpreter
 {
@@ -102,36 +102,30 @@ class NablagenInterpreter
 	{
 		try
 		{
+			trace("Starting Json code generator")
 			val ir2Json = new Ir2Json(levelDB!==null)
 			val jsonFileContentsByName = ir2Json.getFileContentsByName(irModule)
+			var fsa = getConfiguredFileSystemAccess(projectDir, true)
+			generate(fsa, jsonFileContentsByName, irModule)
+
 			val baseDir =  projectDir + "/.."
 			for (target : targets)
 			{
 				// Code generation
 				val g = getCodeGenerator(target, baseDir, iterationMaxVarName, timeMaxVarName, levelDB)
 				trace("Starting " + g.name + " code generator")
-				val outputFolderName = baseDir + target.outputDir
-				val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
-				val fileContentsByName = new LinkedHashMap<String, CharSequence>
-				fileContentsByName += jsonFileContentsByName
 
+				val outputFolderName = baseDir + target.outputDir
+				fsa = getConfiguredFileSystemAccess(outputFolderName, false)
 				if (g.needIrTransformation)
 				{
 					val duplicatedIrModule = EcoreUtil::copy(irModule)
 					transformer.transformIr(g.irTransformationStep, duplicatedIrModule, [msg | trace(msg)])
-					fileContentsByName += g.getFileContentsByName(duplicatedIrModule)
+					generate(fsa, g.getFileContentsByName(duplicatedIrModule), irModule)
 				}
 				else
 				{
-					fileContentsByName += g.getFileContentsByName(irModule)
-				}
-
-				for (fileName : fileContentsByName.keySet)
-				{
-					val fullFileName = irModule.name.toLowerCase + '/' + fileName
-					val fileContent = fileContentsByName.get(fileName)
-					trace("    Generating: " + fullFileName)
-					fsa.generateFile(fullFileName, fileContent)
+					generate(fsa, g.getFileContentsByName(irModule), irModule)
 				}
 			}
 		}
@@ -144,6 +138,17 @@ class NablagenInterpreter
 				trace('at ' + stack.className + '.' + stack.methodName + '(' + stack.fileName + ':' + stack.lineNumber + ')')
 			}
 			throw(e)
+		}
+	}
+
+	private def generate(JavaIoFileSystemAccess fsa, Map<String, CharSequence> fileContentsByName, IrModule irModule)
+	{
+		for (fileName : fileContentsByName.keySet)
+		{
+			val fullFileName = irModule.name.toLowerCase + '/' + fileName
+			val fileContent = fileContentsByName.get(fileName)
+			trace("    Generating: " + fullFileName)
+			fsa.generateFile(fullFileName, fileContent)
 		}
 	}
 

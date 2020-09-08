@@ -11,7 +11,7 @@ import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.swt.SWT
 import org.eclipse.swt.graphics.Font
 
-import static extension fr.cea.nabla.ui.UiUtils.*
+import static extension fr.cea.nabla.ui.NablaUiUtils.*
 
 class JobTooltipFigure extends Figure
 {

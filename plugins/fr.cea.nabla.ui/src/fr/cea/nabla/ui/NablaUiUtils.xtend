@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.jface.resource.ResourceLocator
 import org.eclipse.ui.PlatformUI
 
-class UiUtils
+class NablaUiUtils
 {
 	static val extension DefaultVarDependencies = new DefaultVarDependencies
 

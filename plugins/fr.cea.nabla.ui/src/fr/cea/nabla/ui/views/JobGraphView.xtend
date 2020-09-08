@@ -22,7 +22,7 @@ import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.ui.NabLabConsoleFactory
-import fr.cea.nabla.ui.UiUtils
+import fr.cea.nabla.ui.NablaUiUtils
 import javax.inject.Provider
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.jface.viewers.DoubleClickEvent
@@ -82,7 +82,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 				}
 				else if (selection.firstElement instanceof Job)
 				{
-					val editor = UiUtils::activeNablaDslEditor
+					val editor = NablaUiUtils::activeNablaDslEditor
 					val j = selection.firstElement as Job
 					if (editor !== null) editor.selectIfDisplayed(j)
 				}
@@ -134,7 +134,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		var IrModule irModule = null
 		consoleFactory.printConsole(MessageType.Start, "Building IR to initialize job graph view")
 
-		try 
+		try
 		{
 			val nabla2Ir = nabla2IrProvider.get // force a new instance to ensure a new IR
 			irModule = nabla2Ir.toIrModule(nablaModule)
@@ -153,11 +153,11 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		{
 			// An exception can occured during IR building if environment is not configured,
 			// for example compilation not done, or during transformation step. Whatever... 
-			// e.printStackTrace
+			// irModule stays null. Error message printed below.
 		}
 
 		if (irModule === null)
-			consoleFactory.printConsole(MessageType.End, "Job graph view not initialized: IR module can not be built")
+			consoleFactory.printConsole(MessageType.Error, "IR module can not be built. Try to clean and rebuild all projects and start again.")
 		else
 		{
 			viewerJobContainer = irModule

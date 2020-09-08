@@ -10,6 +10,8 @@
 package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.IrModule
+import java.io.PrintWriter
+import java.io.StringWriter
 import org.eclipse.emf.ecore.EObject
 
 class Utils 
@@ -45,5 +47,13 @@ class Utils
 			}
 		}
 		return utfExponent
+	}
+
+	static def String getStackTrace(Exception e)
+	{
+		val result = new StringWriter()
+		val printWriter = new PrintWriter(result)
+		e.printStackTrace(printWriter)
+		return result.toString()
 	}
 }

@@ -14,6 +14,7 @@ import com.google.inject.Provider
 import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.NablagenInterpreter
+import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.ui.NabLabConsoleFactory
 import org.eclipse.core.resources.IResource
@@ -37,27 +38,45 @@ class NablagenRunner
 
 		new Thread
 		([
-			consoleFactory.clearAndActivateConsole
-			consoleFactory.printConsole(MessageType.Start, "Starting generation: " + eclipseResource.name)
-			consoleFactory.printConsole(MessageType.Exec, "Loading nablagen and nabla resources")
-			val plaftormUri = URI::createPlatformResourceURI(eclipseResource.project.name + '/' + eclipseResource.projectRelativePath, true)
-			val resourceSet = resourceSetProvider.get
-			val uriMap = resourceSet.URIConverter.URIMap
-			uriMap.put(URI::createURI('platform:/resource/fr.cea.nabla/'), URI::createURI('platform:/plugin/fr.cea.nabla/'))
-			val emfResource = resourceSet.createResource(plaftormUri)
-			EcoreUtil::resolveAll(resourceSet)
-			emfResource.load(null)
-			for (module : emfResource.contents.filter(NablagenModule))
-				if (module.config !== null)
-				{
-					val c = module.config
-					val baseDir = eclipseResource.project.location.toString
-					consoleFactory.printConsole(MessageType.Exec, "Starting model transformation")
-					val irModule = interpreter.buildIrModule(c, baseDir)
-					interpreter.generateCode(irModule, c.targets, c.simulation.iterationMax.name, c.simulation.timeMax.name, baseDir, c.levelDB)
-				}
-			eclipseResource.project.refreshLocal(IResource::DEPTH_INFINITE, null)
-			consoleFactory.printConsole(MessageType.End, "End of generation: " + eclipseResource.name)
+			try
+			{
+				consoleFactory.clearAndActivateConsole
+				consoleFactory.printConsole(MessageType.Start, "Starting generation process for: " + eclipseResource.name)
+				consoleFactory.printConsole(MessageType.Exec, "Loading nablagen and nabla resources")
+				val plaftormUri = URI::createPlatformResourceURI(eclipseResource.project.name + '/' + eclipseResource.projectRelativePath, true)
+				val resourceSet = resourceSetProvider.get
+				val uriMap = resourceSet.URIConverter.URIMap
+				uriMap.put(URI::createURI('platform:/resource/fr.cea.nabla/'), URI::createURI('platform:/plugin/fr.cea.nabla/'))
+				val emfResource = resourceSet.createResource(plaftormUri)
+				EcoreUtil::resolveAll(resourceSet)
+				emfResource.load(null)
+				for (module : emfResource.contents.filter(NablagenModule))
+					if (module.config !== null)
+					{
+						val c = module.config
+						val baseDir = eclipseResource.project.location.toString
+						consoleFactory.printConsole(MessageType.Exec, "Starting NabLab to IR model transformation")
+						val startTime = System.currentTimeMillis
+						val irModule = interpreter.buildIrModule(c, baseDir)
+						val afterConvertionTime = System.currentTimeMillis
+						consoleFactory.printConsole(MessageType.Exec, "NabLab to IR model transformation ended in " + (afterConvertionTime-startTime)/1000.0 + "s")
+
+						consoleFactory.printConsole(MessageType.Exec, "Starting code generation")
+						interpreter.generateCode(irModule, c.targets, c.simulation.iterationMax.name, c.simulation.timeMax.name, baseDir, c.levelDB)
+						val afterGenerationTime = System.currentTimeMillis
+						consoleFactory.printConsole(MessageType.Exec, "Code generation ended in " + (afterGenerationTime-afterConvertionTime)/1000.0 + "s")
+
+						consoleFactory.printConsole(MessageType.Exec, "Total time: " + (afterGenerationTime-startTime)/1000.0 + "s");
+					}
+				eclipseResource.project.refreshLocal(IResource::DEPTH_INFINITE, null)
+				consoleFactory.printConsole(MessageType.End, "Generation ended successfully for: " + eclipseResource.name)
+			}
+			catch (Exception e)
+			{
+				consoleFactory.printConsole(MessageType.Error, "Generation failed for: " + eclipseResource.name)
+				consoleFactory.printConsole(MessageType.Error, e.message)
+				consoleFactory.printConsole(MessageType.Error, Utils.getStackTrace(e))
+			}
 		]).start
 	}
 }

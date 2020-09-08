@@ -51,8 +51,8 @@ class NabLabPerspective implements IPerspectiveFactory
 		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE)
 		layout.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW)
 		layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET)
-		layout.addShowViewShortcut(ERROR_LOG_VIEW)
 		layout.addShowViewShortcut(IPageLayout.ID_PROBLEM_VIEW)
+		layout.addShowViewShortcut(ERROR_LOG_VIEW)
 
 		layout.addNewWizardShortcut(NEW_NABLA_PROJECT_WIZARD_ID)
 		layout.addNewWizardShortcut(NABLA_EXAMPLE_WIZARD_ID)

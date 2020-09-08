@@ -155,3 +155,20 @@ class OpenMpIncludesContentProvider extends IncludesContentProvider
 	}
 }
 
+class SyclIncludesContentProvider extends IncludesContentProvider
+{
+	new(String levelDBPath)
+	{
+		super(levelDBPath)
+	}
+
+	override getAdditionalUserIncludes(IrModule m)
+	{
+		val includes = new LinkedHashSet<String>
+		if (m.postProcessingInfo !== null) includes += "mesh/stl/PvdFileWriter2D.h"
+		includes += "utils/sycl/Parallel.h"
+		if (m.linearAlgebra) includes += "linearalgebra/sycl/LinearAlgebraFunctions.h"
+		if (!levelDBPath.nullOrEmpty) includes += "utils/sycl/Serializer.h"
+		return includes
+	}
+}

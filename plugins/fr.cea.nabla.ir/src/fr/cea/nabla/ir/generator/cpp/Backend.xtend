@@ -144,3 +144,24 @@ class OpenMpBackend extends Backend
 	}
 }
 
+class SyclBackend extends Backend
+{
+	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String syclPath, String levelDBPath)
+	{
+		name = 'SYCL'
+		ir2Cmake = new SyclIr2Cmake(compiler, compilerPath, syclPath, levelDBPath)
+		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
+		includesContentProvider = new SyclIncludesContentProvider(levelDBPath)
+		typeContentProvider = new StlTypeContentProvider  // TODO(FL): Change to its own type provider when/if needed
+		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)  // TODO(FL): Change to its own type provider when/if needed
+		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
+		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider, expressionContentProvider)
+		instructionContentProvider = new StlThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)  // TODO(FL): Change to its own type provider when/if needed
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)  // TODO(FL): Change to its own type provider when/if needed
+		jobContainerContentProvider = new JobContainerContentProvider
+		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobContainerContentProvider)  // TODO(FL): Change to its own type provider when/if needed
+		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider)
+		mainContentProvider = new MainContentProvider(levelDBPath)  // TODO(FL): Change to its own type provider when/if needed
+	}
+}

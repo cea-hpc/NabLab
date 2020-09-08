@@ -60,5 +60,8 @@
     <genClasses ecoreClass="Nablagen.ecore#//CppKokkosTeamThread">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//CppKokkosTeamThread/kokkosPath"/>
     </genClasses>
+    <genClasses ecoreClass="Nablagen.ecore#//CppSycl">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//CppSycl/syclPath"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>

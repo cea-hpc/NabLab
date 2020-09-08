@@ -56,6 +56,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="CppKokkosTeamThread" eSuperTypes="#//Cpp">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="kokkosPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CppSycl" eSuperTypes="#//Cpp">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="syclPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="CppCompiler">
     <eLiterals name="GNU" literal="GNU"/>
     <eLiterals name="LLVM" value="1" literal="LLVM"/>

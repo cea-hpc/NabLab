@@ -184,3 +184,27 @@ class OpenMpCmake extends Ir2Cmake
 			#["OpenMP::OpenMP_CXX"]
 	}
 }
+
+class SyclIr2Cmake extends Ir2Cmake
+{
+	val String syclPath
+
+	new(String compiler, String compilerPath, String syclPath, String levelDBPath)
+	{
+		this.syclPath = syclPath
+		this.compiler = compiler
+		this.compilerPath = compilerPath
+		this.levelDBPath = levelDBPath
+	}
+
+	override getLibraryBackend(IrModule m)
+	'''
+		set(LIBCPPNABLA_BACKEND "SYCL")
+		set(NABLA_SYCL_PATH "«syclPath»")
+	'''
+
+	override getTargetLinkLibraries(IrModule m)
+	{
+		#["cppnablasycl"]
+	}
+}

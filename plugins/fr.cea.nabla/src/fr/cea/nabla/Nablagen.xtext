@@ -57,7 +57,7 @@ OutputVar:
 	varRef=[nabla::ConnectivityVar] 'as' varName=STRING;
 
 Target: Java | Cpp;
-Cpp: CppSequential | CppStlThread | CppOpenMP | CppKokkos | CppKokkosTeamThread;
+Cpp: CppSequential | CppStlThread | CppOpenMP | CppKokkos | CppKokkosTeamThread | CppSycl;
 
 Java: 'Java'
 '{'
@@ -97,6 +97,14 @@ CppKokkosTeamThread: 'KokkosTeamThread'
 '{'
 	'outputPath' '=' outputDir=STRING ';'
 	'kokkosPath' '=' kokkosPath = STRING ';' 
+	'compiler' '=' compiler=CppCompiler ';'
+	('compilerPath' '=' compilerPath = STRING ';')? 
+'}';
+
+CppSycl: 'SYCL'
+'{'
+	'outputPath' '=' outputDir=STRING ';'
+	'syclPath' '=' syclPath = STRING ';' 
 	'compiler' '=' compiler=CppCompiler ';'
 	('compilerPath' '=' compilerPath = STRING ';')? 
 '}';

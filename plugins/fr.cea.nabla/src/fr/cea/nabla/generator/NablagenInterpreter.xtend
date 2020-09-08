@@ -19,6 +19,7 @@ import fr.cea.nabla.ir.generator.cpp.KokkosTeamThreadBackend
 import fr.cea.nabla.ir.generator.cpp.OpenMpBackend
 import fr.cea.nabla.ir.generator.cpp.SequentialBackend
 import fr.cea.nabla.ir.generator.cpp.StlThreadBackend
+import fr.cea.nabla.ir.generator.cpp.SyclBackend
 import fr.cea.nabla.ir.generator.java.Ir2Java
 import fr.cea.nabla.ir.generator.json.Ir2Json
 import fr.cea.nabla.ir.ir.IrModule
@@ -36,6 +37,7 @@ import fr.cea.nabla.nablagen.CppKokkosTeamThread
 import fr.cea.nabla.nablagen.CppOpenMP
 import fr.cea.nabla.nablagen.CppSequential
 import fr.cea.nabla.nablagen.CppStlThread
+import fr.cea.nabla.nablagen.CppSycl
 import fr.cea.nabla.nablagen.Java
 import fr.cea.nabla.nablagen.NablagenConfig
 import fr.cea.nabla.nablagen.Target
@@ -195,6 +197,7 @@ class NablagenInterpreter
 					CppOpenMP:new OpenMpBackend(iterationMax , timeMax, compiler.literal, compilerPath, levelDBPath)
 					CppKokkos: new KokkosBackend(iterationMax , timeMax, compiler.literal, compilerPath, kokkosPath, levelDBPath)
 					CppKokkosTeamThread: new KokkosTeamThreadBackend(iterationMax , timeMax, compiler.literal, compilerPath, kokkosPath, levelDBPath)
+					CppSycl: new SyclBackend(iterationMax , timeMax, compiler.literal, compilerPath, syclPath, levelDBPath)
 					default: throw new RuntimeException("Unsupported language " + class.name)
 				}
 				return new Ir2Cpp(new File(baseDir + outputDir), backend)

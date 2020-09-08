@@ -1,0 +1,63 @@
+Performing C++ SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /home/letiercef/workspace/NabLab/plugins/fr.cea.nabla.ui/examples/NablaExamples/src-gen-cpp/stl-thread/implicitheatequation/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_6b300/fast && /usr/bin/make -f CMakeFiles/cmTC_6b300.dir/build.make CMakeFiles/cmTC_6b300.dir/build
+make[1]: Entering directory '/home/letiercef/workspace/NabLab/plugins/fr.cea.nabla.ui/examples/NablaExamples/src-gen-cpp/stl-thread/implicitheatequation/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_6b300.dir/src.cxx.o
+/usr/bin/g++    -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_6b300.dir/src.cxx.o -c /home/letiercef/workspace/NabLab/plugins/fr.cea.nabla.ui/examples/NablaExamples/src-gen-cpp/stl-thread/implicitheatequation/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_6b300
+/home/letiercef/Utils/cmake3.15.1/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6b300.dir/link.txt --verbose=1
+/usr/bin/g++   -DCMAKE_HAVE_LIBC_PTHREAD    CMakeFiles/cmTC_6b300.dir/src.cxx.o  -o cmTC_6b300 
+CMakeFiles/cmTC_6b300.dir/src.cxx.o: In function `main':
+src.cxx:(.text+0x3e): undefined reference to `pthread_create'
+src.cxx:(.text+0x4a): undefined reference to `pthread_detach'
+src.cxx:(.text+0x5b): undefined reference to `pthread_join'
+src.cxx:(.text+0x6f): undefined reference to `pthread_atfork'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_6b300.dir/build.make:86: recipe for target 'cmTC_6b300' failed
+make[1]: *** [cmTC_6b300] Error 1
+make[1]: Leaving directory '/home/letiercef/workspace/NabLab/plugins/fr.cea.nabla.ui/examples/NablaExamples/src-gen-cpp/stl-thread/implicitheatequation/build/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_6b300/fast' failed
+make: *** [cmTC_6b300/fast] Error 2
+
+
+Source file was:
+#include <pthread.h>
+
+void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/letiercef/workspace/NabLab/plugins/fr.cea.nabla.ui/examples/NablaExamples/src-gen-cpp/stl-thread/implicitheatequation/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_caeef/fast && /usr/bin/make -f CMakeFiles/cmTC_caeef.dir/build.make CMakeFiles/cmTC_caeef.dir/build
+make[1]: Entering directory '/home/letiercef/workspace/NabLab/plugins/fr.cea.nabla.ui/examples/NablaExamples/src-gen-cpp/stl-thread/implicitheatequation/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_caeef.dir/CheckFunctionExists.cxx.o
+/usr/bin/g++    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_caeef.dir/CheckFunctionExists.cxx.o -c /home/letiercef/workspace/NabLab/plugins/fr.cea.nabla.ui/examples/NablaExamples/src-gen-cpp/stl-thread/implicitheatequation/build/CMakeFiles/CheckLibraryExists/CheckFunctionExists.cxx
+Linking CXX executable cmTC_caeef
+/home/letiercef/Utils/cmake3.15.1/bin/cmake -E cmake_link_script CMakeFiles/cmTC_caeef.dir/link.txt --verbose=1
+/usr/bin/g++   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_caeef.dir/CheckFunctionExists.cxx.o  -o cmTC_caeef -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_caeef.dir/build.make:86: recipe for target 'cmTC_caeef' failed
+make[1]: *** [cmTC_caeef] Error 1
+make[1]: Leaving directory '/home/letiercef/workspace/NabLab/plugins/fr.cea.nabla.ui/examples/NablaExamples/src-gen-cpp/stl-thread/implicitheatequation/build/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_caeef/fast' failed
+make: *** [cmTC_caeef/fast] Error 2
+
+
+

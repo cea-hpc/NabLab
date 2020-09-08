@@ -51,7 +51,7 @@ target_link_libraries(cppnablastl PUBLIC)
 target_compile_options(cppnablastl PUBLIC -fPIC -g -Wall -O3 --std=c++17 -march=native -mtune=native)
 endif()
 
-### LIBCPPNABLAKOKKOS
+### LIBCPPNABLAKOKKOS  --- cmake config mode only atm ...
 if(NOT DEFINED LIBCPPNABLA_BACKEND OR LIBCPPNABLA_BACKEND STREQUAL "KOKKOS")
   message(STATUS "Building library with KOKKOS.")
 if (DEFINED NABLA_KOKKOS_PATH)
@@ -72,5 +72,32 @@ if(TARGET Kokkos::kokkos AND TARGET Kokkos::kokkoskernels)
   target_compile_options(cppnablakokkos PUBLIC -fPIC -g -Wall -O3 --std=c++17 -fopenmp -march=native -mtune=native)
 else()
   message(STATUS "Kokkos::kokkos/Kokkos::kokkoskernels not found: libcppnablakokkos will not be built (only libcppnabla)")
+endif()
+endif()
+
+### LIBCPPNABLASYCL  --- cmake module mode only atm ...
+if(NOT DEFINED LIBCPPNABLA_BACKEND OR LIBCPPNABLA_BACKEND STREQUAL "SYCL")
+  message(STATUS "Building library with SYCL.")
+#if (DEFINED NABLA_SYCL_PATH)
+#	set(CMAKE_FIND_ROOT_PATH ${NABLA_SYCL_PATH})
+#  set(ComputeCpp_DIR ${NABLA_SYCL_PATH})
+#else()
+#	set(CMAKE_FIND_ROOT_PATH /home/letiercef/Utils/computecpp-sdk)
+#  set(ComputeCpp_DIR /home/letiercef/Téléchargements/ComputeCpp-CE-2.1.0-x86_64-linux-gnu)
+#endif()
+set(ComputeCpp_DIR /home/letiercef/Téléchargements/ComputeCpp-CE-2.1.0-x86_64-linux-gnu)
+list(APPEND CMAKE_MODULE_PATH /home/letiercef/Utils/computecpp-sdk/cmake/Modules)
+find_package(ComputeCpp REQUIRED)
+#option(COMPUTECPP_SDK_USE_OPENMP "Enable OpenMP support in samples" ON)
+
+if(ComputeCpp_FOUND)
+  add_library(cppnablasycl
+      linearalgebra/sycl/LinearAlgebraFunctions.cc linearalgebra/sycl/Matrix.cc)
+  target_include_directories(cppnablasycl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${ComputeCpp_INCLUDE_DIRS})
+  target_link_directories(cppnablasycl PUBLIC)
+  target_link_libraries(cppnablasycl PUBLIC ${COMPUTECPP_RUNTIME_LIBRARY})  # COMPUTECPP_RUNTIME_LIBRARY_DEBUG
+  target_compile_options(cppnablasycl PUBLIC -fPIC -g -Wall -O3 --std=c++17 -fopenmp -march=native -mtune=native)
+else()
+  message(STATUS "ComputeCpp not found: libcppnablasycl will not be built (only libcppnabla)")
 endif()
 endif()

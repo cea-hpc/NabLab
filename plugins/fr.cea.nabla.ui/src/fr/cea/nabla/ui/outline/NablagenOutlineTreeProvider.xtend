@@ -15,6 +15,7 @@ import fr.cea.nabla.nablagen.CppKokkosTeamThread
 import fr.cea.nabla.nablagen.CppOpenMP
 import fr.cea.nabla.nablagen.CppSequential
 import fr.cea.nabla.nablagen.CppStlThread
+import fr.cea.nabla.nablagen.CppSycl
 import fr.cea.nabla.nablagen.Java
 import fr.cea.nabla.nablagen.NablagenConfig
 import fr.cea.nabla.nablagen.Simulation
@@ -53,6 +54,7 @@ class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 			CppOpenMP: 'OpenMP C++'
 			CppSequential: 'Sequential C++'
 			CppStlThread: 'Multi-thread STL C++'
+			CppSycl:'SYCL C++'
 		}
 	}
 }

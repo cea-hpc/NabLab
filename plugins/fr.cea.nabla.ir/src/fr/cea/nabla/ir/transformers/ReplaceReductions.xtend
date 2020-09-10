@@ -57,7 +57,7 @@ class ReplaceReductions extends IrTransformationStep
 			val loop = createLoop(reduction.iterationBlock, innerInstructions)
 
 			// instantiate the VarDefinition at the end to prevent reduction.result from becoming null
-			val variableDefinition = IrFactory::eINSTANCE.createVariableDefinition => [ variable = reduction.result ]
+			val variableDefinition = IrFactory::eINSTANCE.createVariableDeclaration => [ variable = reduction.result ]
 			replace(reduction, #[variableDefinition, loop])
 		}
 		return true

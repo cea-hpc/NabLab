@@ -260,22 +260,22 @@ public interface IrPackage extends EPackage {
 	int IR_MODULE__CONNECTIVITIES = JOB_CONTAINER_FEATURE_COUNT + 4;
 
 	/**
-	 * The feature id for the '<em><b>Definitions</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Options</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__DEFINITIONS = JOB_CONTAINER_FEATURE_COUNT + 5;
+	int IR_MODULE__OPTIONS = JOB_CONTAINER_FEATURE_COUNT + 5;
 
 	/**
-	 * The feature id for the '<em><b>Declarations</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Variables</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__DECLARATIONS = JOB_CONTAINER_FEATURE_COUNT + 6;
+	int IR_MODULE__VARIABLES = JOB_CONTAINER_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Mesh Class Name</b></em>' attribute.
@@ -451,7 +451,7 @@ public interface IrPackage extends EPackage {
 	int POST_PROCESSING_INFO__PERIOD_REFERENCE = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Period Value</b></em>' containment reference.
+	 * The feature id for the '<em><b>Period Value</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -460,7 +460,7 @@ public interface IrPackage extends EPackage {
 	int POST_PROCESSING_INFO__PERIOD_VALUE = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Last Dump Variable</b></em>' containment reference.
+	 * The feature id for the '<em><b>Last Dump Variable</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -798,22 +798,13 @@ public interface IrPackage extends EPackage {
 	int SIMPLE_VARIABLE__DEFAULT_VALUE = VARIABLE_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Option</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SIMPLE_VARIABLE__OPTION = VARIABLE_FEATURE_COUNT + 2;
-
-	/**
 	 * The feature id for the '<em><b>Const</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SIMPLE_VARIABLE__CONST = VARIABLE_FEATURE_COUNT + 3;
+	int SIMPLE_VARIABLE__CONST = VARIABLE_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
@@ -822,7 +813,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SIMPLE_VARIABLE__CONST_EXPR = VARIABLE_FEATURE_COUNT + 4;
+	int SIMPLE_VARIABLE__CONST_EXPR = VARIABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>Simple Variable</em>' class.
@@ -831,7 +822,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SIMPLE_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 5;
+	int SIMPLE_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of operations of the '<em>Simple Variable</em>' class.
@@ -1764,14 +1755,14 @@ public interface IrPackage extends EPackage {
 	int INSTRUCTION_BLOCK_OPERATION_COUNT = INSTRUCTION_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.VariableDefinitionImpl <em>Variable Definition</em>}' class.
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.VariableDeclarationImpl <em>Variable Declaration</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.VariableDefinitionImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getVariableDefinition()
+	 * @see fr.cea.nabla.ir.ir.impl.VariableDeclarationImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getVariableDeclaration()
 	 * @generated
 	 */
-	int VARIABLE_DEFINITION = 23;
+	int VARIABLE_DECLARATION = 23;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -1780,7 +1771,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE_DEFINITION__ANNOTATIONS = INSTRUCTION__ANNOTATIONS;
+	int VARIABLE_DECLARATION__ANNOTATIONS = INSTRUCTION__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Variable</b></em>' containment reference.
@@ -1789,25 +1780,25 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE_DEFINITION__VARIABLE = INSTRUCTION_FEATURE_COUNT + 0;
+	int VARIABLE_DECLARATION__VARIABLE = INSTRUCTION_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Variable Definition</em>' class.
+	 * The number of structural features of the '<em>Variable Declaration</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE_DEFINITION_FEATURE_COUNT = INSTRUCTION_FEATURE_COUNT + 1;
+	int VARIABLE_DECLARATION_FEATURE_COUNT = INSTRUCTION_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of operations of the '<em>Variable Definition</em>' class.
+	 * The number of operations of the '<em>Variable Declaration</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE_DEFINITION_OPERATION_COUNT = INSTRUCTION_OPERATION_COUNT + 0;
+	int VARIABLE_DECLARATION_OPERATION_COUNT = INSTRUCTION_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.AffectationImpl <em>Affectation</em>}' class.
@@ -4451,26 +4442,26 @@ public interface IrPackage extends EPackage {
 	EReference getIrModule_Connectivities();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.IrModule#getDefinitions <em>Definitions</em>}'.
+	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.IrModule#getOptions <em>Options</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Definitions</em>'.
-	 * @see fr.cea.nabla.ir.ir.IrModule#getDefinitions()
+	 * @return the meta object for the containment reference list '<em>Options</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrModule#getOptions()
 	 * @see #getIrModule()
 	 * @generated
 	 */
-	EReference getIrModule_Definitions();
+	EReference getIrModule_Options();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.IrModule#getDeclarations <em>Declarations</em>}'.
+	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.IrModule#getVariables <em>Variables</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Declarations</em>'.
-	 * @see fr.cea.nabla.ir.ir.IrModule#getDeclarations()
+	 * @return the meta object for the containment reference list '<em>Variables</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrModule#getVariables()
 	 * @see #getIrModule()
 	 * @generated
 	 */
-	EReference getIrModule_Declarations();
+	EReference getIrModule_Variables();
 
 	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.IrModule#getMeshClassName <em>Mesh Class Name</em>}'.
@@ -4603,17 +4594,6 @@ public interface IrPackage extends EPackage {
 	EReference getPostProcessingInfo_OutputVariables();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodValue <em>Period Value</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Period Value</em>'.
-	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodValue()
-	 * @see #getPostProcessingInfo()
-	 * @generated
-	 */
-	EReference getPostProcessingInfo_PeriodValue();
-
-	/**
 	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodReference <em>Period Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4625,10 +4605,21 @@ public interface IrPackage extends EPackage {
 	EReference getPostProcessingInfo_PeriodReference();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getLastDumpVariable <em>Last Dump Variable</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodValue <em>Period Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Last Dump Variable</em>'.
+	 * @return the meta object for the reference '<em>Period Value</em>'.
+	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodValue()
+	 * @see #getPostProcessingInfo()
+	 * @generated
+	 */
+	EReference getPostProcessingInfo_PeriodValue();
+
+	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getLastDumpVariable <em>Last Dump Variable</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Last Dump Variable</em>'.
 	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo#getLastDumpVariable()
 	 * @see #getPostProcessingInfo()
 	 * @generated
@@ -4816,17 +4807,6 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getSimpleVariable_DefaultValue();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.SimpleVariable#isOption <em>Option</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Option</em>'.
-	 * @see fr.cea.nabla.ir.ir.SimpleVariable#isOption()
-	 * @see #getSimpleVariable()
-	 * @generated
-	 */
-	EAttribute getSimpleVariable_Option();
 
 	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.SimpleVariable#isConst <em>Const</em>}'.
@@ -5235,25 +5215,25 @@ public interface IrPackage extends EPackage {
 	EReference getInstructionBlock_Instructions();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.VariableDefinition <em>Variable Definition</em>}'.
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.VariableDeclaration <em>Variable Declaration</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Variable Definition</em>'.
-	 * @see fr.cea.nabla.ir.ir.VariableDefinition
+	 * @return the meta object for class '<em>Variable Declaration</em>'.
+	 * @see fr.cea.nabla.ir.ir.VariableDeclaration
 	 * @generated
 	 */
-	EClass getVariableDefinition();
+	EClass getVariableDeclaration();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.VariableDefinition#getVariable <em>Variable</em>}'.
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.VariableDeclaration#getVariable <em>Variable</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference '<em>Variable</em>'.
-	 * @see fr.cea.nabla.ir.ir.VariableDefinition#getVariable()
-	 * @see #getVariableDefinition()
+	 * @see fr.cea.nabla.ir.ir.VariableDeclaration#getVariable()
+	 * @see #getVariableDeclaration()
 	 * @generated
 	 */
-	EReference getVariableDefinition_Variable();
+	EReference getVariableDeclaration_Variable();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Affectation <em>Affectation</em>}'.
@@ -6601,20 +6581,20 @@ public interface IrPackage extends EPackage {
 		EReference IR_MODULE__CONNECTIVITIES = eINSTANCE.getIrModule_Connectivities();
 
 		/**
-		 * The meta object literal for the '<em><b>Definitions</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Options</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference IR_MODULE__DEFINITIONS = eINSTANCE.getIrModule_Definitions();
+		EReference IR_MODULE__OPTIONS = eINSTANCE.getIrModule_Options();
 
 		/**
-		 * The meta object literal for the '<em><b>Declarations</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Variables</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference IR_MODULE__DECLARATIONS = eINSTANCE.getIrModule_Declarations();
+		EReference IR_MODULE__VARIABLES = eINSTANCE.getIrModule_Variables();
 
 		/**
 		 * The meta object literal for the '<em><b>Mesh Class Name</b></em>' attribute feature.
@@ -6717,14 +6697,6 @@ public interface IrPackage extends EPackage {
 		EReference POST_PROCESSING_INFO__OUTPUT_VARIABLES = eINSTANCE.getPostProcessingInfo_OutputVariables();
 
 		/**
-		 * The meta object literal for the '<em><b>Period Value</b></em>' containment reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference POST_PROCESSING_INFO__PERIOD_VALUE = eINSTANCE.getPostProcessingInfo_PeriodValue();
-
-		/**
 		 * The meta object literal for the '<em><b>Period Reference</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6733,7 +6705,15 @@ public interface IrPackage extends EPackage {
 		EReference POST_PROCESSING_INFO__PERIOD_REFERENCE = eINSTANCE.getPostProcessingInfo_PeriodReference();
 
 		/**
-		 * The meta object literal for the '<em><b>Last Dump Variable</b></em>' containment reference feature.
+		 * The meta object literal for the '<em><b>Period Value</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference POST_PROCESSING_INFO__PERIOD_VALUE = eINSTANCE.getPostProcessingInfo_PeriodValue();
+
+		/**
+		 * The meta object literal for the '<em><b>Last Dump Variable</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -6885,14 +6865,6 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference SIMPLE_VARIABLE__DEFAULT_VALUE = eINSTANCE.getSimpleVariable_DefaultValue();
-
-		/**
-		 * The meta object literal for the '<em><b>Option</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SIMPLE_VARIABLE__OPTION = eINSTANCE.getSimpleVariable_Option();
 
 		/**
 		 * The meta object literal for the '<em><b>Const</b></em>' attribute feature.
@@ -7223,14 +7195,14 @@ public interface IrPackage extends EPackage {
 		EReference INSTRUCTION_BLOCK__INSTRUCTIONS = eINSTANCE.getInstructionBlock_Instructions();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.VariableDefinitionImpl <em>Variable Definition</em>}' class.
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.VariableDeclarationImpl <em>Variable Declaration</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.VariableDefinitionImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getVariableDefinition()
+		 * @see fr.cea.nabla.ir.ir.impl.VariableDeclarationImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getVariableDeclaration()
 		 * @generated
 		 */
-		EClass VARIABLE_DEFINITION = eINSTANCE.getVariableDefinition();
+		EClass VARIABLE_DECLARATION = eINSTANCE.getVariableDeclaration();
 
 		/**
 		 * The meta object literal for the '<em><b>Variable</b></em>' containment reference feature.
@@ -7238,7 +7210,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference VARIABLE_DEFINITION__VARIABLE = eINSTANCE.getVariableDefinition_Variable();
+		EReference VARIABLE_DECLARATION__VARIABLE = eINSTANCE.getVariableDeclaration_Variable();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.AffectationImpl <em>Affectation</em>}' class.

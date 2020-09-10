@@ -105,7 +105,7 @@ class FunctionOrReductionValidatorTest
 		}
 		''')
 		Assert.assertNotNull(moduleKo)
-		moduleKo.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
+		moduleKo.assertError(NablaPackage.eINSTANCE.simpleVarDeclaration,
 			FunctionOrReductionValidator::UNREACHABLE_CODE,
 			FunctionOrReductionValidator::getUnreachableReturnMsg())
 

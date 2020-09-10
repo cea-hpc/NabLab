@@ -43,8 +43,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getItemTypes <em>Item Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getFunctions <em>Functions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getConnectivities <em>Connectivities</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getDefinitions <em>Definitions</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getDeclarations <em>Declarations</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getOptions <em>Options</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getMeshClassName <em>Mesh Class Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
@@ -119,24 +119,24 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	protected EList<Connectivity> connectivities;
 
 	/**
-	 * The cached value of the '{@link #getDefinitions() <em>Definitions</em>}' containment reference list.
+	 * The cached value of the '{@link #getOptions() <em>Options</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getDefinitions()
+	 * @see #getOptions()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<SimpleVariable> definitions;
+	protected EList<SimpleVariable> options;
 
 	/**
-	 * The cached value of the '{@link #getDeclarations() <em>Declarations</em>}' containment reference list.
+	 * The cached value of the '{@link #getVariables() <em>Variables</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getDeclarations()
+	 * @see #getVariables()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Variable> declarations;
+	protected EList<Variable> variables;
 
 	/**
 	 * The default value of the '{@link #getMeshClassName() <em>Mesh Class Name</em>}' attribute.
@@ -328,11 +328,11 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
-	public EList<SimpleVariable> getDefinitions() {
-		if (definitions == null) {
-			definitions = new EObjectContainmentEList<SimpleVariable>(SimpleVariable.class, this, IrPackage.IR_MODULE__DEFINITIONS);
+	public EList<SimpleVariable> getOptions() {
+		if (options == null) {
+			options = new EObjectContainmentEList.Resolving<SimpleVariable>(SimpleVariable.class, this, IrPackage.IR_MODULE__OPTIONS);
 		}
-		return definitions;
+		return options;
 	}
 
 	/**
@@ -341,11 +341,11 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
-	public EList<Variable> getDeclarations() {
-		if (declarations == null) {
-			declarations = new EObjectContainmentEList<Variable>(Variable.class, this, IrPackage.IR_MODULE__DECLARATIONS);
+	public EList<Variable> getVariables() {
+		if (variables == null) {
+			variables = new EObjectContainmentEList<Variable>(Variable.class, this, IrPackage.IR_MODULE__VARIABLES);
 		}
-		return declarations;
+		return variables;
 	}
 
 	/**
@@ -696,10 +696,10 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return ((InternalEList<?>)getFunctions()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				return ((InternalEList<?>)getConnectivities()).basicRemove(otherEnd, msgs);
-			case IrPackage.IR_MODULE__DEFINITIONS:
-				return ((InternalEList<?>)getDefinitions()).basicRemove(otherEnd, msgs);
-			case IrPackage.IR_MODULE__DECLARATIONS:
-				return ((InternalEList<?>)getDeclarations()).basicRemove(otherEnd, msgs);
+			case IrPackage.IR_MODULE__OPTIONS:
+				return ((InternalEList<?>)getOptions()).basicRemove(otherEnd, msgs);
+			case IrPackage.IR_MODULE__VARIABLES:
+				return ((InternalEList<?>)getVariables()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__JOBS:
 				return ((InternalEList<?>)getJobs()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
@@ -728,10 +728,10 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return getFunctions();
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				return getConnectivities();
-			case IrPackage.IR_MODULE__DEFINITIONS:
-				return getDefinitions();
-			case IrPackage.IR_MODULE__DECLARATIONS:
-				return getDeclarations();
+			case IrPackage.IR_MODULE__OPTIONS:
+				return getOptions();
+			case IrPackage.IR_MODULE__VARIABLES:
+				return getVariables();
 			case IrPackage.IR_MODULE__MESH_CLASS_NAME:
 				return getMeshClassName();
 			case IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE:
@@ -786,13 +786,13 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				getConnectivities().clear();
 				getConnectivities().addAll((Collection<? extends Connectivity>)newValue);
 				return;
-			case IrPackage.IR_MODULE__DEFINITIONS:
-				getDefinitions().clear();
-				getDefinitions().addAll((Collection<? extends SimpleVariable>)newValue);
+			case IrPackage.IR_MODULE__OPTIONS:
+				getOptions().clear();
+				getOptions().addAll((Collection<? extends SimpleVariable>)newValue);
 				return;
-			case IrPackage.IR_MODULE__DECLARATIONS:
-				getDeclarations().clear();
-				getDeclarations().addAll((Collection<? extends Variable>)newValue);
+			case IrPackage.IR_MODULE__VARIABLES:
+				getVariables().clear();
+				getVariables().addAll((Collection<? extends Variable>)newValue);
 				return;
 			case IrPackage.IR_MODULE__MESH_CLASS_NAME:
 				setMeshClassName((String)newValue);
@@ -846,11 +846,11 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				getConnectivities().clear();
 				return;
-			case IrPackage.IR_MODULE__DEFINITIONS:
-				getDefinitions().clear();
+			case IrPackage.IR_MODULE__OPTIONS:
+				getOptions().clear();
 				return;
-			case IrPackage.IR_MODULE__DECLARATIONS:
-				getDeclarations().clear();
+			case IrPackage.IR_MODULE__VARIABLES:
+				getVariables().clear();
 				return;
 			case IrPackage.IR_MODULE__MESH_CLASS_NAME:
 				setMeshClassName(MESH_CLASS_NAME_EDEFAULT);
@@ -898,10 +898,10 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return functions != null && !functions.isEmpty();
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				return connectivities != null && !connectivities.isEmpty();
-			case IrPackage.IR_MODULE__DEFINITIONS:
-				return definitions != null && !definitions.isEmpty();
-			case IrPackage.IR_MODULE__DECLARATIONS:
-				return declarations != null && !declarations.isEmpty();
+			case IrPackage.IR_MODULE__OPTIONS:
+				return options != null && !options.isEmpty();
+			case IrPackage.IR_MODULE__VARIABLES:
+				return variables != null && !variables.isEmpty();
 			case IrPackage.IR_MODULE__MESH_CLASS_NAME:
 				return MESH_CLASS_NAME_EDEFAULT == null ? meshClassName != null : !MESH_CLASS_NAME_EDEFAULT.equals(meshClassName);
 			case IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE:

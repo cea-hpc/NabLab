@@ -2,21 +2,23 @@ package implicitheatequation;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.HashMap;
+import java.lang.reflect.Type;
 import java.util.stream.IntStream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 
 import fr.cea.nabla.javalib.types.*;
 import fr.cea.nabla.javalib.mesh.*;
 
 import org.apache.commons.math3.linear.*;
 
-@SuppressWarnings("all")
 public final class ImplicitHeatEquation
 {
 	public final static class Options
@@ -28,6 +30,49 @@ public final class ImplicitHeatEquation
 		public int maxIterations;
 	}
 
+	public final static class OptionsDeserializer implements JsonDeserializer<Options>
+	{
+		@Override
+		public Options deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		{
+			final JsonObject d = json.getAsJsonObject();
+			Options options = new Options();
+			// outputPath
+			assert(d.has("outputPath"));
+			final JsonElement valueof_outputPath = d.get("outputPath");
+			options.outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
+			// outputPeriod
+			assert(d.has("outputPeriod"));
+			final JsonElement valueof_outputPeriod = d.get("outputPeriod");
+			options.outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
+			// u0
+			if (d.has("u0"))
+			{
+				final JsonElement valueof_u0 = d.get("u0");
+				options.u0 = valueof_u0.getAsJsonPrimitive().getAsDouble();
+			}
+			else
+				options.u0 = 1.0;
+			// stopTime
+			if (d.has("stopTime"))
+			{
+				final JsonElement valueof_stopTime = d.get("stopTime");
+				options.stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
+			}
+			else
+				options.stopTime = 1.0;
+			// maxIterations
+			if (d.has("maxIterations"))
+			{
+				final JsonElement valueof_maxIterations = d.get("maxIterations");
+				options.maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
+			}
+			else
+				options.maxIterations = 500000000;
+			return options;
+		}
+	}
+
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	private final int nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
@@ -37,15 +82,13 @@ public final class ImplicitHeatEquation
 	private LinearAlgebraFunctions linearAlgebraFunctions;
 	private final FileWriter writer;
 
-	// Global definitions
+	// Global variables
+	private int lastDump;
+	private int n;
 	private final double[] vectOne;
 	private double t_n;
 	private double t_nplus1;
 	private double deltat;
-	private int lastDump;
-
-	// Global declarations
-	private int n;
 	private double[][] X;
 	private double[][] Xc;
 	private Vector u_n;
@@ -74,11 +117,11 @@ public final class ImplicitHeatEquation
 		writer = new PvdFileWriter2D("ImplicitHeatEquation", options.outputPath);
 
 		// Initialize variables with default values
+		lastDump = Integer.MIN_VALUE;
 		vectOne = new double[] {1.0, 1.0};
 		t_n = 0.0;
 		t_nplus1 = 0.0;
 		deltat = 0.001;
-		lastDump = Integer.MIN_VALUE;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
@@ -122,7 +165,9 @@ public final class ImplicitHeatEquation
 			String dataFileName = args[0];
 			JsonParser parser = new JsonParser();
 			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
-			Gson gson = new Gson();
+			GsonBuilder gsonBuilder = new GsonBuilder();
+			gsonBuilder.registerTypeAdapter(Options.class, new ImplicitHeatEquation.OptionsDeserializer());
+			Gson gson = gsonBuilder.create();
 
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = gson.fromJson(o.get("mesh"), CartesianMesh2DFactory.class);

@@ -17,10 +17,8 @@ import java.util.logging.Logger
 import java.util.logging.StreamHandler
 import org.eclipse.xtend.lib.annotations.Accessors
 
-import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
-
-import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 
 class ModuleInterpreter
 {
@@ -56,16 +54,9 @@ class ModuleInterpreter
 	 * Interpret variable with default values.
 	 * This method is public to be used by default Json file generation.
 	 */
-	def interpreteDefinitionsDefaultValues()
+	def interpreteOptionsDefaultValues()
 	{
-		if (module.postProcessingInfo !== null)
-		{
-			val lastDump = module.postProcessingInfo.lastDumpVariable
-			context.addVariableValue(lastDump, interprete(lastDump.defaultValue, context))
-			val periodValue = module.postProcessingInfo.periodValue
-			context.addVariableValue(periodValue, interprete(periodValue.defaultValue, context))
-		}
-		for (v : module.definitions)
+		for (v : module.options)
 			context.addVariableValue(v, createValue(v, context))
 	}
 
@@ -74,7 +65,7 @@ class ModuleInterpreter
 		context.logInfo(" Start interpreting " + module.name + " module ")
 
 		// Start initialising the variables with default values
-		interpreteDefinitionsDefaultValues
+		interpreteOptionsDefaultValues
 
 		val gson = new Gson
 		val jsonObject = gson.fromJson(jsonContent, JsonObject)
@@ -87,7 +78,7 @@ class ModuleInterpreter
 		// Read options in Json
 		if (!jsonObject.has("options")) throw new RuntimeException("Options block missing in Json")
 		val jsonOptions = jsonObject.get("options").asJsonObject
-		for (v : module.allOptions)
+		for (v : module.options)
 		{
 			if (jsonOptions.has(v.name))
 			{
@@ -95,12 +86,24 @@ class ModuleInterpreter
 				val jsonElt = jsonOptions.get(v.name)
 				NablaValueJsonSetter::setValue(vValue, jsonElt)
 			}
+			else
+			{
+				if (v.defaultValue === null)
+				{
+					// v is not present in json file and is mandatory
+					throw new IllegalStateException("Mandatory option missing in Json file: " + v.name)
+				}
+				else
+				{
+					context.setVariableValue(v, interprete(v.defaultValue, context))
+				}
+			}
 		}
 
 		module.functions.filter[body === null].forEach[f | context.resolveFunction(f)]
 
 		// Interprete declarations
-		for (v : module.declarations)
+		for (v : module.variables)
 			context.addVariableValue(v, createValue(v, context))
 
 		// Copy Node Cooords

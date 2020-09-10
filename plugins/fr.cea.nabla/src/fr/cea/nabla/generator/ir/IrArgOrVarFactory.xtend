@@ -82,7 +82,6 @@ class IrArgOrVarFactory
 		type = nablaType2IrType.toIrBaseType(v.typeFor as NablaSimpleType)
 		const = v.const
 		constExpr = v.constExpr
-		option = v.option
 		val value = v.value
 		if (value !== null) defaultValue = value.toIrExpression
 	}
@@ -101,6 +100,5 @@ class IrArgOrVarFactory
 		type = IrFactory.eINSTANCE.createBaseType => [ primitive = PrimitiveType::INT ]
 		const = false
 		constExpr = false
-		option = false
 	}
 }

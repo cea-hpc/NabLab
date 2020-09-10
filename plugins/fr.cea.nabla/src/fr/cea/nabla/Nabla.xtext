@@ -23,8 +23,7 @@ NablaModule:
 	connectivities+=Connectivity*)?
 	reductions+=Reduction*
 	functions+=Function*
-	definitions+=SimpleVarDefinition*
-	declarations+=VarGroupDeclaration*
+	declarations+=VarDeclaration*
 	// Only one block of iteration (don't know how to manage several blocks on node variable X)
 	(iteration=TimeIteratorDefinition)?
 	jobs+=Job*;
@@ -40,9 +39,11 @@ Connectivity: 'connectivity' name=ID ':' (inTypes+=[ItemType] ('\u00D7' inTypes+
 /* JOBS & INSTRUCTIONS ***********************************/
 Job: name=ID ':' instruction=Instruction;
 Iterable: Loop | ReductionCall;
-Instruction: SimpleVarDefinition | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | ItemSet | While | Return | Exit;
+VarDeclaration: OptionDeclaration | SimpleVarDeclaration | VarGroupDeclaration;
+Instruction: SimpleVarDeclaration | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | ItemSet | While | Return | Exit;
 
-SimpleVarDefinition: ('let'|option?='option') type=BaseType variable=SimpleVar '=' value=Expression ';';
+OptionDeclaration: 'option' type=BaseType variable=SimpleVar ('=' value=Expression)? ';';
+SimpleVarDeclaration: 'let' type=BaseType variable=SimpleVar '=' value=Expression ';';
 VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
 InstructionBlock: '{' instructions+=Instruction+ '}';
 Loop: '\u2200' iterationBlock=IterationBlock ',' body=Instruction;

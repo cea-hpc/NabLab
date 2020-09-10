@@ -129,55 +129,95 @@ Glace2d::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
 	// stopTime
-	assert(d.HasMember("stopTime"));
-	const rapidjson::Value& valueof_stopTime = d["stopTime"];
-	assert(valueof_stopTime.IsDouble());
-	stopTime = valueof_stopTime.GetDouble();
+	if (d.HasMember("stopTime"))
+	{
+		const rapidjson::Value& valueof_stopTime = d["stopTime"];
+		assert(valueof_stopTime.IsDouble());
+		stopTime = valueof_stopTime.GetDouble();
+	}
+	else
+		stopTime = 0.2;
 	// maxIterations
-	assert(d.HasMember("maxIterations"));
-	const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
-	assert(valueof_maxIterations.IsInt());
-	maxIterations = valueof_maxIterations.GetInt();
+	if (d.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
+		assert(valueof_maxIterations.IsInt());
+		maxIterations = valueof_maxIterations.GetInt();
+	}
+	else
+		maxIterations = 20000;
 	// gamma
-	assert(d.HasMember("gamma"));
-	const rapidjson::Value& valueof_gamma = d["gamma"];
-	assert(valueof_gamma.IsDouble());
-	gamma = valueof_gamma.GetDouble();
+	if (d.HasMember("gamma"))
+	{
+		const rapidjson::Value& valueof_gamma = d["gamma"];
+		assert(valueof_gamma.IsDouble());
+		gamma = valueof_gamma.GetDouble();
+	}
+	else
+		gamma = 1.4;
 	// xInterface
-	assert(d.HasMember("xInterface"));
-	const rapidjson::Value& valueof_xInterface = d["xInterface"];
-	assert(valueof_xInterface.IsDouble());
-	xInterface = valueof_xInterface.GetDouble();
+	if (d.HasMember("xInterface"))
+	{
+		const rapidjson::Value& valueof_xInterface = d["xInterface"];
+		assert(valueof_xInterface.IsDouble());
+		xInterface = valueof_xInterface.GetDouble();
+	}
+	else
+		xInterface = 0.5;
 	// deltatIni
-	assert(d.HasMember("deltatIni"));
-	const rapidjson::Value& valueof_deltatIni = d["deltatIni"];
-	assert(valueof_deltatIni.IsDouble());
-	deltatIni = valueof_deltatIni.GetDouble();
+	if (d.HasMember("deltatIni"))
+	{
+		const rapidjson::Value& valueof_deltatIni = d["deltatIni"];
+		assert(valueof_deltatIni.IsDouble());
+		deltatIni = valueof_deltatIni.GetDouble();
+	}
+	else
+		deltatIni = 1.0E-5;
 	// deltatCfl
-	assert(d.HasMember("deltatCfl"));
-	const rapidjson::Value& valueof_deltatCfl = d["deltatCfl"];
-	assert(valueof_deltatCfl.IsDouble());
-	deltatCfl = valueof_deltatCfl.GetDouble();
+	if (d.HasMember("deltatCfl"))
+	{
+		const rapidjson::Value& valueof_deltatCfl = d["deltatCfl"];
+		assert(valueof_deltatCfl.IsDouble());
+		deltatCfl = valueof_deltatCfl.GetDouble();
+	}
+	else
+		deltatCfl = 0.4;
 	// rhoIniZg
-	assert(d.HasMember("rhoIniZg"));
-	const rapidjson::Value& valueof_rhoIniZg = d["rhoIniZg"];
-	assert(valueof_rhoIniZg.IsDouble());
-	rhoIniZg = valueof_rhoIniZg.GetDouble();
+	if (d.HasMember("rhoIniZg"))
+	{
+		const rapidjson::Value& valueof_rhoIniZg = d["rhoIniZg"];
+		assert(valueof_rhoIniZg.IsDouble());
+		rhoIniZg = valueof_rhoIniZg.GetDouble();
+	}
+	else
+		rhoIniZg = 1.0;
 	// rhoIniZd
-	assert(d.HasMember("rhoIniZd"));
-	const rapidjson::Value& valueof_rhoIniZd = d["rhoIniZd"];
-	assert(valueof_rhoIniZd.IsDouble());
-	rhoIniZd = valueof_rhoIniZd.GetDouble();
+	if (d.HasMember("rhoIniZd"))
+	{
+		const rapidjson::Value& valueof_rhoIniZd = d["rhoIniZd"];
+		assert(valueof_rhoIniZd.IsDouble());
+		rhoIniZd = valueof_rhoIniZd.GetDouble();
+	}
+	else
+		rhoIniZd = 0.125;
 	// pIniZg
-	assert(d.HasMember("pIniZg"));
-	const rapidjson::Value& valueof_pIniZg = d["pIniZg"];
-	assert(valueof_pIniZg.IsDouble());
-	pIniZg = valueof_pIniZg.GetDouble();
+	if (d.HasMember("pIniZg"))
+	{
+		const rapidjson::Value& valueof_pIniZg = d["pIniZg"];
+		assert(valueof_pIniZg.IsDouble());
+		pIniZg = valueof_pIniZg.GetDouble();
+	}
+	else
+		pIniZg = 1.0;
 	// pIniZd
-	assert(d.HasMember("pIniZd"));
-	const rapidjson::Value& valueof_pIniZd = d["pIniZd"];
-	assert(valueof_pIniZd.IsDouble());
-	pIniZd = valueof_pIniZd.GetDouble();
+	if (d.HasMember("pIniZd"))
+	{
+		const rapidjson::Value& valueof_pIniZd = d["pIniZd"];
+		assert(valueof_pIniZd.IsDouble());
+		pIniZd = valueof_pIniZd.GetDouble();
+	}
+	else
+		pIniZd = 0.1;
 }
 
 /******************** Module definition ********************/
@@ -195,11 +235,11 @@ Glace2d::Glace2d(CartesianMesh2D* aMesh, const Options& aOptions)
 , nbCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
 , options(aOptions)
 , writer("Glace2d", options.outputPath)
+, lastDump(numeric_limits<int>::min())
 , t_n(0.0)
 , t_nplus1(0.0)
 , deltat_n(options.deltatIni)
 , deltat_nplus1(options.deltatIni)
-, lastDump(numeric_limits<int>::min())
 , X_n("X_n", nbNodes)
 , X_nplus1("X_nplus1", nbNodes)
 , X_n0("X_n0", nbNodes)

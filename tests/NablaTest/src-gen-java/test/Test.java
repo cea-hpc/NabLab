@@ -2,14 +2,17 @@ package test;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.HashMap;
+import java.lang.reflect.Type;
 import java.util.stream.IntStream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 
 import fr.cea.nabla.javalib.types.*;
 import fr.cea.nabla.javalib.mesh.*;
@@ -24,6 +27,41 @@ public final class Test
 		public double deltat;
 	}
 
+	public final static class OptionsDeserializer implements JsonDeserializer<Options>
+	{
+		@Override
+		public Options deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		{
+			final JsonObject d = json.getAsJsonObject();
+			Options options = new Options();
+			// maxTime
+			if (d.has("maxTime"))
+			{
+				final JsonElement valueof_maxTime = d.get("maxTime");
+				options.maxTime = valueof_maxTime.getAsJsonPrimitive().getAsDouble();
+			}
+			else
+				options.maxTime = 0.1;
+			// maxIter
+			if (d.has("maxIter"))
+			{
+				final JsonElement valueof_maxIter = d.get("maxIter");
+				options.maxIter = valueof_maxIter.getAsJsonPrimitive().getAsInt();
+			}
+			else
+				options.maxIter = 500;
+			// deltat
+			if (d.has("deltat"))
+			{
+				final JsonElement valueof_deltat = d.get("deltat");
+				options.deltat = valueof_deltat.getAsJsonPrimitive().getAsDouble();
+			}
+			else
+				options.deltat = 1.0;
+			return options;
+		}
+	}
+
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	private final int nbNodes, nbCells;
@@ -31,13 +69,11 @@ public final class Test
 	// User options and external classes
 	private final Options options;
 
-	// Global definitions
-	private double t_n;
-	private double t_nplus1;
-
-	// Global declarations
+	// Global variables
 	private int n;
 	private int k;
+	private double t_n;
+	private double t_nplus1;
 	private double[][] X;
 	private double[] e1;
 	private double[] e2_n;
@@ -100,7 +136,9 @@ public final class Test
 			String dataFileName = args[0];
 			JsonParser parser = new JsonParser();
 			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
-			Gson gson = new Gson();
+			GsonBuilder gsonBuilder = new GsonBuilder();
+			gsonBuilder.registerTypeAdapter(Options.class, new Test.OptionsDeserializer());
+			Gson gson = gsonBuilder.create();
 
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = gson.fromJson(o.get("mesh"), CartesianMesh2DFactory.class);

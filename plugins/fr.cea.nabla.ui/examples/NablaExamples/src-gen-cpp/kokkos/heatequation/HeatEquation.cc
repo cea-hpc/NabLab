@@ -59,25 +59,41 @@ HeatEquation::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
 	// stopTime
-	assert(d.HasMember("stopTime"));
-	const rapidjson::Value& valueof_stopTime = d["stopTime"];
-	assert(valueof_stopTime.IsDouble());
-	stopTime = valueof_stopTime.GetDouble();
+	if (d.HasMember("stopTime"))
+	{
+		const rapidjson::Value& valueof_stopTime = d["stopTime"];
+		assert(valueof_stopTime.IsDouble());
+		stopTime = valueof_stopTime.GetDouble();
+	}
+	else
+		stopTime = 0.1;
 	// maxIterations
-	assert(d.HasMember("maxIterations"));
-	const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
-	assert(valueof_maxIterations.IsInt());
-	maxIterations = valueof_maxIterations.GetInt();
+	if (d.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
+		assert(valueof_maxIterations.IsInt());
+		maxIterations = valueof_maxIterations.GetInt();
+	}
+	else
+		maxIterations = 500;
 	// PI
-	assert(d.HasMember("PI"));
-	const rapidjson::Value& valueof_PI = d["PI"];
-	assert(valueof_PI.IsDouble());
-	PI = valueof_PI.GetDouble();
+	if (d.HasMember("PI"))
+	{
+		const rapidjson::Value& valueof_PI = d["PI"];
+		assert(valueof_PI.IsDouble());
+		PI = valueof_PI.GetDouble();
+	}
+	else
+		PI = 3.1415926;
 	// alpha
-	assert(d.HasMember("alpha"));
-	const rapidjson::Value& valueof_alpha = d["alpha"];
-	assert(valueof_alpha.IsDouble());
-	alpha = valueof_alpha.GetDouble();
+	if (d.HasMember("alpha"))
+	{
+		const rapidjson::Value& valueof_alpha = d["alpha"];
+		assert(valueof_alpha.IsDouble());
+		alpha = valueof_alpha.GetDouble();
+	}
+	else
+		alpha = 1.0;
 }
 
 /******************** Module definition ********************/
@@ -92,9 +108,9 @@ HeatEquation::HeatEquation(CartesianMesh2D* aMesh, const Options& aOptions)
 , nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , options(aOptions)
 , writer("HeatEquation", options.outputPath)
+, lastDump(numeric_limits<int>::min())
 , t_n(0.0)
 , t_nplus1(0.0)
-, lastDump(numeric_limits<int>::min())
 , X("X", nbNodes)
 , center("center", nbCells)
 , u_n("u_n", nbCells)

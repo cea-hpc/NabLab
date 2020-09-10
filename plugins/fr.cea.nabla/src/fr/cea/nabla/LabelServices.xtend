@@ -43,6 +43,7 @@ import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.Mul
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Not
+import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
@@ -52,7 +53,7 @@ import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ReductionTypeDeclaration
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVar
-import fr.cea.nabla.nabla.SimpleVarDefinition
+import fr.cea.nabla.nabla.SimpleVarDeclaration
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
@@ -66,7 +67,8 @@ class LabelServices
 {
 	/* JOBS & INSTRUCTIONS ***********************************/
 	static def dispatch String getLabel(Job it) { name + ' : ' + instruction?.label }
-	static def dispatch String getLabel(SimpleVarDefinition it) { 'let ' + variable?.name + '=' + value?.label }
+	static def dispatch String getLabel(OptionDeclaration it) { if (value === null) variable?.name else variable?.name + '=' + value.label }
+	static def dispatch String getLabel(SimpleVarDeclaration it) { if (value === null) variable?.name else variable?.name + '=' + value.label }
 	static def dispatch String getLabel(VarGroupDeclaration it) { type?.label + ' ' + variables?.map[x|x?.name].join(', ') }
 	static def dispatch String getLabel(InstructionBlock it) { '{ ... }' }
 	static def dispatch String getLabel(Loop it) { '\u2200 ' + iterationBlock?.label + ', ' + body?.label }

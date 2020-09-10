@@ -44,8 +44,8 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/itemTypes"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/functions"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/connectivities"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/definitions"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/declarations"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/options"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/variables"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IrModule/meshClassName"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/initNodeCoordVariable"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/nodeCoordVariable"/>
@@ -85,7 +85,6 @@
     <genClasses ecoreClass="Ir.ecore#//SimpleVariable">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SimpleVariable/type"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SimpleVariable/defaultValue"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SimpleVariable/option"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SimpleVariable/const"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SimpleVariable/constExpr"/>
     </genClasses>
@@ -133,8 +132,8 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InstructionBlock/variables"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InstructionBlock/instructions"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//VariableDefinition">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//VariableDefinition/variable"/>
+    <genClasses ecoreClass="Ir.ecore#//VariableDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//VariableDeclaration/variable"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Affectation">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Affectation/left"/>

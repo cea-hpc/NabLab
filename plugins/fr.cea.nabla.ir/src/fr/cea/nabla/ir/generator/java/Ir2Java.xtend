@@ -14,6 +14,8 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.transformers.TagOutputVariables
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
@@ -25,6 +27,7 @@ import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.FunctionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
+import static extension fr.cea.nabla.ir.generator.java.JsonContentProvider.*
 
 class Ir2Java extends CodeGenerator
 {
@@ -41,14 +44,17 @@ class Ir2Java extends CodeGenerator
 
 		import java.io.FileNotFoundException;
 		import java.io.FileReader;
-		import java.util.HashMap;
+		import java.lang.reflect.Type;
 		import java.util.stream.IntStream;
 
 		import com.google.gson.Gson;
 		import com.google.gson.GsonBuilder;
+		import com.google.gson.JsonDeserializationContext;
+		import com.google.gson.JsonDeserializer;
+		import com.google.gson.JsonElement;
 		import com.google.gson.JsonObject;
+		import com.google.gson.JsonParseException;
 		import com.google.gson.JsonParser;
-		import com.google.gson.stream.JsonReader;
 
 		import fr.cea.nabla.javalib.types.*;
 		import fr.cea.nabla.javalib.mesh.*;
@@ -65,9 +71,30 @@ class Ir2Java extends CodeGenerator
 				«IF postProcessingInfo !== null»
 				public String «TagOutputVariables.OutputPathNameAndValue.key»;
 				«ENDIF»
-				«FOR v : allOptions»
+				«FOR v : options»
 				public «v.javaType» «v.name»;
 				«ENDFOR»
+			}
+
+			public final static class OptionsDeserializer implements JsonDeserializer<Options>
+			{
+				@Override
+				public Options deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+				{
+					final JsonObject d = json.getAsJsonObject();
+					Options options = new Options();
+					«IF postProcessingInfo !== null»
+					«val opName = TagOutputVariables.OutputPathNameAndValue.key»
+					// «opName»
+					assert(d.has("«opName»"));
+					final JsonElement «opName.jsonName» = d.get("«opName»");
+					options.«opName» = «opName.jsonName».getAsJsonPrimitive().getAsString();
+					«ENDIF»
+					«FOR v : options»
+					«v.jsonContent»
+					«ENDFOR»
+					return options;
+				}
 			}
 
 			// Mesh and mesh variables
@@ -81,14 +108,9 @@ class Ir2Java extends CodeGenerator
 			«ENDFOR»
 			«IF postProcessingInfo !== null»private final FileWriter writer;«ENDIF»
 
-			// Global definitions
-			«FOR v : allDefinitions»
-			private «IF v.const»final «ENDIF»«v.javaType» «v.name»;
-			«ENDFOR»
-
-			// Global declarations
-			«FOR v : declarations»
-			private «v.javaType» «v.name»;
+			// Global variables
+			«FOR v : variables»
+			private «IF v instanceof SimpleVariable && (v as SimpleVariable).const»final «ENDIF»«v.javaType» «v.name»;
 			«ENDFOR»
 
 			public «name»(«javaMeshClassName» aMesh, Options aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s» a«s»«ENDFOR»)
@@ -107,12 +129,12 @@ class Ir2Java extends CodeGenerator
 				«IF postProcessingInfo !== null»writer = new PvdFileWriter2D("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»);«ENDIF»
 
 				// Initialize variables with default values
-				«FOR v : allDefinitions»
+				«FOR v : variablesWithDefaultValue»
 					«v.name» = «v.defaultValue.content»;
 				«ENDFOR»
 
 				// Allocate arrays
-				«FOR v : declarations.filter[!type.scalar]»
+				«FOR v : variables.filter[defaultValue === null && !type.scalar]»
 					«IF v.linearAlgebra»
 						«v.name» = «(v as ConnectivityVariable).linearAlgebraDefinition»;
 					«ELSE»
@@ -145,7 +167,9 @@ class Ir2Java extends CodeGenerator
 					String dataFileName = args[0];
 					JsonParser parser = new JsonParser();
 					JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
-					Gson gson = new Gson();
+					GsonBuilder gsonBuilder = new GsonBuilder();
+					gsonBuilder.registerTypeAdapter(Options.class, new «name».OptionsDeserializer());
+					Gson gson = gsonBuilder.create();
 
 					assert(o.has("mesh"));
 					«javaMeshClassName»Factory meshFactory = gson.fromJson(o.get("mesh"), «javaMeshClassName»Factory.class);
@@ -212,5 +236,14 @@ class Ir2Java extends CodeGenerator
 	private def String getJavaMeshClassName(IrModule it)
 	{
 		meshClassName.replace('::', '.')
+	}
+
+	private def getDefaultValue(Variable v)
+	{
+		switch v
+		{
+			SimpleVariable : v.defaultValue
+			default : null
+		}
 	}
 }

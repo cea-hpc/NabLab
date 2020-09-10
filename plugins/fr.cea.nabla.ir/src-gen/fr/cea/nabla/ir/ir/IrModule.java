@@ -18,8 +18,8 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getItemTypes <em>Item Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getFunctions <em>Functions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getConnectivities <em>Connectivities</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getDefinitions <em>Definitions</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getDeclarations <em>Declarations</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getOptions <em>Options</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getMeshClassName <em>Mesh Class Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
@@ -106,28 +106,28 @@ public interface IrModule extends JobContainer {
 	EList<Connectivity> getConnectivities();
 
 	/**
-	 * Returns the value of the '<em><b>Definitions</b></em>' containment reference list.
+	 * Returns the value of the '<em><b>Options</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.SimpleVariable}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Definitions</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Definitions()
-	 * @model containment="true"
+	 * @return the value of the '<em>Options</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Options()
+	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	EList<SimpleVariable> getDefinitions();
+	EList<SimpleVariable> getOptions();
 
 	/**
-	 * Returns the value of the '<em><b>Declarations</b></em>' containment reference list.
+	 * Returns the value of the '<em><b>Variables</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Variable}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Declarations</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Declarations()
+	 * @return the value of the '<em>Variables</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Variables()
 	 * @model containment="true"
 	 * @generated
 	 */
-	EList<Variable> getDeclarations();
+	EList<Variable> getVariables();
 
 	/**
 	 * Returns the value of the '<em><b>Mesh Class Name</b></em>' attribute.

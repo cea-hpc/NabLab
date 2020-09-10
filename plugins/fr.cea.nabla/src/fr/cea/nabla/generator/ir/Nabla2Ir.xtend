@@ -16,7 +16,10 @@ import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.nabla.SimpleVarDeclaration
+import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.overloading.DeclarationProvider
 import java.util.LinkedHashSet
 import org.eclipse.emf.ecore.EObject
@@ -49,14 +52,14 @@ class Nabla2Ir
 			val timeIterators = nablaModule.iteration.iterators
 			val firstTimeIterator = timeIterators.head
 			val mainIC = firstTimeIterator.toIrIterationCounter
-			declarations += mainIC
+			variables += mainIC
 			mainTimeLoop = firstTimeIterator.toIrTimeLoop
 			mainTimeLoop.iterationCounter = mainIC
 			var TimeLoop outerTL = mainTimeLoop
 			for (ti : timeIterators.tail)
 			{
 				val ic = ti.toIrIterationCounter
-				declarations += ic
+				variables += ic
 				val tl = ti.toIrTimeLoop
 				tl.iterationCounter = ic
 				outerTL.innerTimeLoop = tl
@@ -65,12 +68,17 @@ class Nabla2Ir
 		}
 
 		// Option and global variables creation
-		for (d : nablaModule.definitions)
-			for (v : createIrVariablesFor(nablaModule, d.variable))
-				definitions += v as SimpleVariable
 		for (d : nablaModule.declarations)
-			for (v : d.variables)
-				declarations += createIrVariablesFor(nablaModule, v)
+			switch d
+			{
+				OptionDeclaration:
+					options += createIrVariablesFor(nablaModule, d.variable).filter(SimpleVariable)
+				SimpleVarDeclaration:
+					variables += createIrVariablesFor(nablaModule, d.variable).filter(SimpleVariable)
+				VarGroupDeclaration:
+					for (v : d.variables)
+						variables += createIrVariablesFor(nablaModule, v)
+			}
 
 		// TimeLoop jobs creation
 		if (mainTimeLoop !== null) jobs += mainTimeLoop.createTimeLoopJobs

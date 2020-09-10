@@ -19,29 +19,43 @@ class JsonContentProvider
 {
 	val extension ExpressionContentProvider
 
+	def getJsonName(SimpleVariable it) { name.jsonName }
+	def getJsonName(String varName) { 'valueof_' + varName }
+
 	def getJsonContent(SimpleVariable it)
 	'''
 		// «name»
-		assert(d.HasMember("«name»"));
-		const rapidjson::Value& valueof_«name» = d["«name»"];
-		«getJsonContent(type.sizes, type.primitive, name)»
+		«IF defaultValue === null»
+			assert(d.HasMember("«name»"));
+			const rapidjson::Value& «jsonName» = d["«name»"];
+			«getJsonContent(it, type.sizes, #[])»
+		«ELSE»
+			if (d.HasMember("«name»"))
+			{
+				const rapidjson::Value& «jsonName» = d["«name»"];
+				«getJsonContent(it, type.sizes, #[])»
+			}
+			else
+				«name» = «defaultValue.content»;
+		«ENDIF»
 	'''
 
-	private def CharSequence getJsonContent(Iterable<Expression> sizes, PrimitiveType primitive, String varName)
+	private def CharSequence getJsonContent(SimpleVariable v, Iterable<Expression> sizes, String[] indices)
 	{
+		val primitive = v.type.primitive
 		if (sizes.empty)
 		'''
-			assert(valueof_«varName».Is«primitive.jsonType»());
-			«varName» = valueof_«varName».Get«primitive.jsonType»();
+			assert(«v.jsonName».Is«primitive.jsonType»());
+			«v.name»«FOR i : indices»[«i»]«ENDFOR» = «v.jsonName»«FOR i : indices»[«i»]«ENDFOR».Get«primitive.jsonType»();
 		'''
 		else
 		'''
-			assert(valueof_«varName».IsArray());
-			assert(valueof_«varName».Size() == «sizes.head.content»);
+			assert(«v.jsonName».IsArray());
+			assert(«v.jsonName».Size() == «sizes.head.content»);
 			«val indexName = 'i' + sizes.size»
 			for (size_t «indexName»=0 ; «indexName»<«sizes.head.content» ; «indexName»++)
 			{
-				«getJsonContent(sizes.tail, primitive, varName + "[" + indexName + "]")»
+				«getJsonContent(v, sizes.tail, indices + #[indexName])»
 			}
 		'''
 	}

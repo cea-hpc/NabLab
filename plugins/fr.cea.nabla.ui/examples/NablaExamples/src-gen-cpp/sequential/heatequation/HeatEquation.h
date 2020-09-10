@@ -56,14 +56,12 @@ private:
 	const Options& options;
 	PvdFileWriter2D writer;
 	
-	// Global definitions
+	// Global variables
+	int lastDump;
+	int n;
 	double t_n;
 	double t_nplus1;
 	static constexpr double deltat = 0.001;
-	int lastDump;
-	
-	// Global declarations
-	int n;
 	std::vector<RealArray1D<2>> X;
 	std::vector<RealArray1D<2>> center;
 	std::vector<double> u_n;
@@ -72,6 +70,7 @@ private:
 	std::vector<double> f;
 	std::vector<double> outgoingFlux;
 	std::vector<double> surface;
+	
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;

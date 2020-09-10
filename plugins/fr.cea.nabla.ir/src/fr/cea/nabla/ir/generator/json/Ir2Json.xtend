@@ -39,7 +39,6 @@ class Ir2Json extends CodeGenerator
 	{
 		// Create the interpreter and interprete option values
 		val context = interpreteDefinitions
-		val options = allOptions
 
 		// Create Json
 		'''
@@ -72,7 +71,7 @@ class Ir2Json extends CodeGenerator
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val moduleInterpreter = new ModuleInterpreter(it, handler)
-		moduleInterpreter.interpreteDefinitionsDefaultValues
+		moduleInterpreter.interpreteOptionsDefaultValues
 		return moduleInterpreter.context
 	}
 }

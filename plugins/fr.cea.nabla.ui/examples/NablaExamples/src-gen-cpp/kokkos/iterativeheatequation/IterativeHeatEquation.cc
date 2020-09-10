@@ -86,30 +86,50 @@ IterativeHeatEquation::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
 	// u0
-	assert(d.HasMember("u0"));
-	const rapidjson::Value& valueof_u0 = d["u0"];
-	assert(valueof_u0.IsDouble());
-	u0 = valueof_u0.GetDouble();
+	if (d.HasMember("u0"))
+	{
+		const rapidjson::Value& valueof_u0 = d["u0"];
+		assert(valueof_u0.IsDouble());
+		u0 = valueof_u0.GetDouble();
+	}
+	else
+		u0 = 1.0;
 	// stopTime
-	assert(d.HasMember("stopTime"));
-	const rapidjson::Value& valueof_stopTime = d["stopTime"];
-	assert(valueof_stopTime.IsDouble());
-	stopTime = valueof_stopTime.GetDouble();
+	if (d.HasMember("stopTime"))
+	{
+		const rapidjson::Value& valueof_stopTime = d["stopTime"];
+		assert(valueof_stopTime.IsDouble());
+		stopTime = valueof_stopTime.GetDouble();
+	}
+	else
+		stopTime = 0.1;
 	// maxIterations
-	assert(d.HasMember("maxIterations"));
-	const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
-	assert(valueof_maxIterations.IsInt());
-	maxIterations = valueof_maxIterations.GetInt();
+	if (d.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
+		assert(valueof_maxIterations.IsInt());
+		maxIterations = valueof_maxIterations.GetInt();
+	}
+	else
+		maxIterations = 500000000;
 	// maxIterationsK
-	assert(d.HasMember("maxIterationsK"));
-	const rapidjson::Value& valueof_maxIterationsK = d["maxIterationsK"];
-	assert(valueof_maxIterationsK.IsInt());
-	maxIterationsK = valueof_maxIterationsK.GetInt();
+	if (d.HasMember("maxIterationsK"))
+	{
+		const rapidjson::Value& valueof_maxIterationsK = d["maxIterationsK"];
+		assert(valueof_maxIterationsK.IsInt());
+		maxIterationsK = valueof_maxIterationsK.GetInt();
+	}
+	else
+		maxIterationsK = 1000;
 	// epsilon
-	assert(d.HasMember("epsilon"));
-	const rapidjson::Value& valueof_epsilon = d["epsilon"];
-	assert(valueof_epsilon.IsDouble());
-	epsilon = valueof_epsilon.GetDouble();
+	if (d.HasMember("epsilon"))
+	{
+		const rapidjson::Value& valueof_epsilon = d["epsilon"];
+		assert(valueof_epsilon.IsDouble());
+		epsilon = valueof_epsilon.GetDouble();
+	}
+	else
+		epsilon = 1.0E-8;
 }
 
 /******************** Module definition ********************/
@@ -125,10 +145,10 @@ IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D* aMesh, const Optio
 , nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , options(aOptions)
 , writer("IterativeHeatEquation", options.outputPath)
+, lastDump(numeric_limits<int>::min())
 , t_n(0.0)
 , t_nplus1(0.0)
 , deltat(0.001)
-, lastDump(numeric_limits<int>::min())
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
 , u_n("u_n", nbCells)

@@ -27,7 +27,7 @@ import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVar
-import fr.cea.nabla.nabla.SimpleVarDefinition
+import fr.cea.nabla.nabla.SimpleVarDeclaration
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.While
@@ -53,9 +53,9 @@ class IrInstructionFactory
 		else IrFactory::eINSTANCE.createInstructionBlock => [ instructions.addAll(irInstructions) ]
 	}
 
-	private def dispatch List<Instruction> toIrInstructions(SimpleVarDefinition v)
+	private def dispatch List<Instruction> toIrInstructions(SimpleVarDeclaration v)
 	{
-		val irInstr = IrFactory::eINSTANCE.createVariableDefinition =>
+		val irInstr = IrFactory::eINSTANCE.createVariableDeclaration =>
 		[
 			annotations += v.toIrAnnotation
 			variable = v.variable.toIrSimpleVariable(v.variable.name)
@@ -69,7 +69,7 @@ class IrInstructionFactory
 		val instructions = new ArrayList<Instruction>
 		for (nablaVar : v.variables.filter(SimpleVar))
 		{
-			instructions += IrFactory::eINSTANCE.createVariableDefinition =>
+			instructions += IrFactory::eINSTANCE.createVariableDeclaration =>
 			[
 				annotations += nablaVar.toIrAnnotation
 				variable = nablaVar.toIrSimpleVariable(nablaVar.name)

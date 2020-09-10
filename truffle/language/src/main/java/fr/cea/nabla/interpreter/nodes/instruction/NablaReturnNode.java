@@ -2,6 +2,8 @@ package fr.cea.nabla.interpreter.nodes.instruction;
 
 import com.oracle.truffle.api.dsl.NodeChild;
 import com.oracle.truffle.api.dsl.Specialization;
+import com.oracle.truffle.api.instrumentation.GenerateWrapper;
+import com.oracle.truffle.api.instrumentation.ProbeNode;
 
 import fr.cea.nabla.interpreter.nodes.expression.NablaExpressionNode;
 import fr.cea.nabla.interpreter.values.NV0Bool;
@@ -14,6 +16,7 @@ import fr.cea.nabla.interpreter.values.NV2Bool;
 import fr.cea.nabla.interpreter.values.NV2Int;
 import fr.cea.nabla.interpreter.values.NV2Real;
 
+@GenerateWrapper
 @NodeChild(value = "value", type = NablaExpressionNode.class)
 public abstract class NablaReturnNode extends NablaInstructionNode {
 
@@ -60,5 +63,10 @@ public abstract class NablaReturnNode extends NablaInstructionNode {
 	@Specialization
 	protected NV2Real doReal2(NV2Real value) {
 		return value;
+	}
+	
+	@Override
+	public WrapperNode createWrapper(ProbeNode probe) {
+		return new NablaReturnNodeWrapper(this, probe);
 	}
 }

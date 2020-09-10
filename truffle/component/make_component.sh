@@ -57,5 +57,7 @@ jar uf ../nabla-component.jar META-INF/permissions
 )
 rm -rf $COMPONENT_DIR
 
+mkdir -p ../../features/fr.cea.nabla.feature/target/rootfiles/
+
 cp nabla-component.jar ../../features/fr.cea.nabla.feature/target/rootfiles/nabla-component.jar
 cp graalvm-setup.sh ../../features/fr.cea.nabla.feature/target/rootfiles/graalvm-setup.sh

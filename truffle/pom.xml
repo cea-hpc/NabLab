@@ -11,10 +11,9 @@
 	</parent>
 
 	<properties>
+	    <maven.compiler.release>11</maven.compiler.release>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<m2e.apt.activation>jdt_apt</m2e.apt.activation>
 		<graalvm.version>20.1.0</graalvm.version>
-		<nablab.version>0.3.2-SNAPSHOT</nablab.version>
 	</properties>
 
 	<groupId>fr.cea.nabla</groupId>
@@ -26,4 +25,6 @@
 		<module>launcher</module>
 		<module>component</module>
 	</modules>
+	
+	
 </project>

@@ -41,7 +41,7 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/org/eclipse/lsp4j/org.eclipse.lsp4j.jsonrpc/0.9.0/org.eclipse.lsp4j.jsonrpc-0.9.0.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/eclipse/emf/org.eclipse.emf.ecore/2.21.0/org.eclipse.emf.ecore-2.21.0.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/org/eclipse/emf/org.eclipse.emf.common/2.19.0/org.eclipse.emf.common-2.19.0.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/eclipse/emf/org.eclipse.emf.common/2.20.0/org.eclipse.emf.common-2.20.0.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/fr/cea/nabla/fr.cea.nabla/0.3.2-SNAPSHOT/fr.cea.nabla-0.3.2-SNAPSHOT.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/fr/cea/nabla/fr.cea.nabla.ir/0.3.2-SNAPSHOT/fr.cea.nabla.ir-0.3.2-SNAPSHOT.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/fr/cea/nabla/fr.cea.nabla.javalib/0.3.2-SNAPSHOT/fr.cea.nabla.javalib-0.3.2-SNAPSHOT.jar" enabled="true" runInBatchMode="false"/>

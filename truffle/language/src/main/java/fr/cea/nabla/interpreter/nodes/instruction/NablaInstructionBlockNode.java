@@ -12,14 +12,14 @@ import com.oracle.truffle.api.nodes.BlockNode;
 @GenerateWrapper
 public class NablaInstructionBlockNode extends NablaInstructionNode
 		implements BlockNode.ElementExecutor<NablaInstructionNode> {
-	
+
 	@Child
 	private BlockNode<NablaInstructionNode> block;
 
 	public NablaInstructionBlockNode(NablaInstructionNode[] bodyNodes) {
 		this.block = bodyNodes.length > 0 ? BlockNode.create(bodyNodes, this) : null;
 	}
-	
+
 	public NablaInstructionBlockNode() {
 	}
 
@@ -46,9 +46,9 @@ public class NablaInstructionBlockNode extends NablaInstructionNode
 	public void executeVoid(VirtualFrame frame, NablaInstructionNode node, int index, int argument) {
 		node.executeGeneric(frame);
 	}
-	
+
 	@Override
-	public WrapperNode createWrapper(ProbeNode probe) {
-		return new NablaInstructionBlockNodeWrapper(this, probe);
+	public WrapperNode createWrapper(ProbeNode probeNode) {
+		return new NablaInstructionBlockNodeWrapper(this, probeNode);
 	}
 }

@@ -98,10 +98,10 @@ class Ir2Cpp extends CodeGenerator
 		struct Options
 		{
 			«IF postProcessingInfo !== null»std::string «TagOutputVariables.OutputPathNameAndValue.key»;«ENDIF»
-			«IF levelDB»std::string «Utils.NonRegressionNameAndValue.key»;«ENDIF»
 			«FOR v : options»
 			«v.cppType» «v.name»;
 			«ENDFOR»
+			«IF levelDB»std::string «Utils.NonRegressionNameAndValue.key»;«ENDIF»
 
 			void jsonInit(const rapidjson::Value::ConstObject& d);
 		};
@@ -263,9 +263,6 @@ class Ir2Cpp extends CodeGenerator
 		assert(status.ok());
 		// Batch to write all data at once
 		leveldb::WriteBatch batch;
-		batch.Put("__Iteration number", serialize(n));
-		batch.Put("__Simulation time", serialize(t_n));
-		batch.Put("__Timestep", serialize(deltat_n));
 		«FOR v : variables»
 		batch.Put("«v.name»", serialize(«v.name»));
 		«ENDFOR»

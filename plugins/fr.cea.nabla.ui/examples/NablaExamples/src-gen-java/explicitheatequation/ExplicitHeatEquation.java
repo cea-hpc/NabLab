@@ -177,7 +177,7 @@ public final class ExplicitHeatEquation
 		else
 		{
 			System.out.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-			System.out.println("        Expecting user data file name, for example ExplicitHeatEquationDefaultOptions.json");
+			System.out.println("        Expecting user data file name, for example ExplicitHeatEquationDefault.json");
 		}
 	}
 

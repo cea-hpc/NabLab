@@ -579,7 +579,7 @@ int main(int argc, char* argv[])
 	else
 	{
 		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1 arg: dataFile." << std::endl;
-		std::cerr << "(ImplicitHeatEquationDefaultOptions.json)" << std::endl;
+		std::cerr << "(ImplicitHeatEquationDefault.json)" << std::endl;
 		return -1;
 	}
 	

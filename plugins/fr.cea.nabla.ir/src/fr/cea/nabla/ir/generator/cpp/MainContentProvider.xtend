@@ -31,7 +31,7 @@ class MainContentProvider
 		else
 		{
 			std::cerr << "[ERROR] Wrong number of arguments. Expecting 1 arg: dataFile." << std::endl;
-			std::cerr << "(«name»DefaultOptions.json)" << std::endl;
+			std::cerr << "(«name»Default.json)" << std::endl;
 			return -1;
 		}
 

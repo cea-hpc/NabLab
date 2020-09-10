@@ -137,8 +137,8 @@ class CrsMatrix
    // return by value semantic
    std::vector<T> operator*(const std::vector<T>& x) const {
     assert(static_cast<int>(x.size()) == m_nb_col);
-    std::vector<T> b(x.size(), 0.0);
-    for (size_t i(0); i < x.size(); ++i)
+    std::vector<T> b(m_nb_row, 0.0);
+    for (size_t i(0); i < b.size(); ++i)
       for (int j(m_row.at(i)); j < m_row.at(i + 1); ++j)
         b.at(i) += m_val.at(j) * x.at(m_col.at(j));
     return b;

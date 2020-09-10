@@ -596,7 +596,7 @@ int main(int argc, char* argv[])
 	else
 	{
 		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1 arg: dataFile." << std::endl;
-		std::cerr << "(IterativeHeatEquationDefaultOptions.json)" << std::endl;
+		std::cerr << "(IterativeHeatEquationDefault.json)" << std::endl;
 		return -1;
 	}
 	

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: fr.cea.library.leveldb
 Bundle-SymbolicName: leveldb
-Bundle-Version: 0.13
+Bundle-Version: 0.13.0
 Bundle-ClassPath: leveldb-0.13.jar,
  leveldb-api-0.13.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-11

@@ -27,6 +27,11 @@ VtkOutput
 	outputVariables = u as "Temperature";
 }
 
+//LevelDB
+//{
+//	levelDBPath = "$ENV{HOME}/leveldb/leveldb-install";
+//}
+
 Java
 {
 	outputPath = "/NablaExamples/src-gen-java";

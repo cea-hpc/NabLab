@@ -34,6 +34,7 @@
             </activation>
             <modules>
                 <module>plugins/commons-math3</module>
+                <module>plugins/leveldb</module>
                 <module>plugins/jlatexmath</module>
                 <module>plugins/jgrapht-core</module>
                 <module>plugins/fr.cea.nabla</module>

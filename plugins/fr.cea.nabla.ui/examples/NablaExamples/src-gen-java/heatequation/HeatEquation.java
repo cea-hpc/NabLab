@@ -1,18 +1,23 @@
 package heatequation;
 
-import java.io.FileNotFoundException;
+import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
+import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
+
+import java.io.File;
 import java.io.FileReader;
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.stream.IntStream;
 
+import org.iq80.leveldb.DB;
+import org.iq80.leveldb.WriteBatch;
+
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 
 import fr.cea.nabla.javalib.types.*;
 import fr.cea.nabla.javalib.mesh.*;
+import fr.cea.nabla.javalib.utils.*;
 
 @SuppressWarnings("all")
 public final class HeatEquation
@@ -20,6 +25,7 @@ public final class HeatEquation
 	public final static class Options
 	{
 		public String outputPath;
+		public String nonRegression;
 		public int outputPeriod;
 		public double stopTime;
 		public int maxIterations;
@@ -104,7 +110,7 @@ public final class HeatEquation
 		System.out.println("End of execution of module HeatEquation");
 	}
 
-	public static void main(String[] args) throws FileNotFoundException
+	public static void main(String[] args) throws IOException
 	{
 		if (args.length == 1)
 		{
@@ -121,6 +127,16 @@ public final class HeatEquation
 
 			HeatEquation simulator = new HeatEquation(mesh, options);
 			simulator.simulate();
+
+			// Non regression testing
+			if (options.nonRegression!=null &&  options.nonRegression.equals("CreateReference"))
+				simulator.createDB("HeatEquationDB.ref");
+			if (options.nonRegression!=null &&  options.nonRegression.equals("CompareToReference"))
+			{
+				simulator.createDB("HeatEquationDB.current");
+				LevelDBUtils.compareDB("HeatEquationDB.current", "HeatEquationDB.ref");
+				LevelDBUtils.destroyDB("HeatEquationDB.current");
+			}
 		}
 		else
 		{
@@ -364,5 +380,40 @@ public final class HeatEquation
 			writer.writeFile(content);
 			lastDump = n;
 		}
+	}
+
+	private void createDB(String db_name) throws IOException
+	{
+		org.iq80.leveldb.Options levelDBOptions = new org.iq80.leveldb.Options();
+
+		// Destroy if exists
+		factory.destroy(new File(db_name), levelDBOptions);
+
+		// Create data base
+		levelDBOptions.createIfMissing(true);
+		DB db = factory.open(new File(db_name), levelDBOptions);
+
+		WriteBatch batch = db.createWriteBatch();
+		try {
+			batch.put(bytes("t_n"), LevelDBUtils.serialize(t_n));
+			batch.put(bytes("t_nplus1"), LevelDBUtils.serialize(t_nplus1));
+			batch.put(bytes("deltat"), LevelDBUtils.serialize(deltat));
+			batch.put(bytes("n"), LevelDBUtils.serialize(n));
+			batch.put(bytes("X"), LevelDBUtils.serialize(X));
+			batch.put(bytes("center"), LevelDBUtils.serialize(center));
+			batch.put(bytes("u_n"), LevelDBUtils.serialize(u_n));
+			batch.put(bytes("u_nplus1"), LevelDBUtils.serialize(u_nplus1));
+			batch.put(bytes("V"), LevelDBUtils.serialize(V));
+			batch.put(bytes("f"), LevelDBUtils.serialize(f));
+			batch.put(bytes("outgoingFlux"), LevelDBUtils.serialize(outgoingFlux));
+			batch.put(bytes("surface"), LevelDBUtils.serialize(surface));
+
+			db.write(batch);
+		} finally {
+		  // Make sure you close the batch to avoid resource leaks.
+		  batch.close();
+		}
+		db.close();
+		System.out.println("Reference database " + db_name + " created.");
 	}
 };

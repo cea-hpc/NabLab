@@ -29,7 +29,7 @@ VtkOutput
 
 //LevelDB
 //{
-//  levelDBPath = "$ENV{HOME}/Utils/leveldb-install";
+//	levelDBPath = "$ENV{HOME}/leveldb/leveldb-install";
 //}
 
 Java

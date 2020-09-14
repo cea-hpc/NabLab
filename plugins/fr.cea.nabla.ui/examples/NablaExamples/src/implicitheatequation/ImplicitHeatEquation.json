@@ -6,7 +6,9 @@
 		"outputPeriod":1,
 		"u0":1.0,
 		"stopTime":1.0,
-		"maxIterations":500000000
+		"maxIterations":500000000,
+		"_nonRegression_comment":"empty value to disable, CreateReference or CompareToReference to take action",
+		"nonRegression":""
 	},
 	"mesh":
 	{

@@ -363,7 +363,9 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		   fr.cea.nabla.sirius,
 		   fr.cea.nabla.javalib,
 		   org.eclipse.xtext.xbase.lib,
-		   com.google.gson
+		   com.google.gson,
+		   commons-math3,
+		   leveldb
 		Export-Package: «newProjectPage.moduleName.toLowerCase»
 	'''
 

@@ -263,12 +263,13 @@ class Ir2Cpp extends CodeGenerator
 		assert(status.ok());
 		// Batch to write all data at once
 		leveldb::WriteBatch batch;
-		«FOR v : variables»
+		«FOR v : variables.filter[d | !d.linearAlgebra]»
 		batch.Put("«v.name»", serialize(«v.name»));
 		«ENDFOR»
 		status = db->Write(leveldb::WriteOptions(), &batch);
 		// Checking everything was ok
 		assert(status.ok());
+		std::cout << "Reference database " << db_name << " created." << std::endl;
 		// Freeing memory
 		delete db;
 	}
@@ -297,7 +298,11 @@ class Ir2Cpp extends CodeGenerator
 		leveldb::Options options_ref;
 		options_ref.create_if_missing = false;
 		leveldb::Status status = leveldb::DB::Open(options_ref, ref, &db_ref);
-		assert(status.ok());
+		if (!status.ok())
+		{
+			std::cout << "No ref database to compare with ! Looking for " << ref << std::endl;
+			return false;
+		}
 		leveldb::Iterator* it_ref = db_ref->NewIterator(leveldb::ReadOptions());
 
 

@@ -8,7 +8,9 @@
 		"stopTime":0.1,
 		"maxIterations":500000000,
 		"maxIterationsK":1000,
-		"epsilon":1.0E-8
+		"epsilon":1.0E-8,
+		"_nonRegression_comment":"empty value to disable, CreateReference or CompareToReference to take action",
+		"nonRegression":""
 	},
 	"mesh":
 	{

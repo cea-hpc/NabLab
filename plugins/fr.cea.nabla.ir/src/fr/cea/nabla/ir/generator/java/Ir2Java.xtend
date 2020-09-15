@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
+import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
@@ -42,10 +43,17 @@ class Ir2Java extends CodeGenerator
 	'''
 		package «name.toLowerCase»;
 
-		import java.io.FileNotFoundException;
+		import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
+		import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
+
+		import java.io.File;
 		import java.io.FileReader;
+		import java.io.IOException;
 		import java.lang.reflect.Type;
 		import java.util.stream.IntStream;
+
+		import org.iq80.leveldb.DB;
+		import org.iq80.leveldb.WriteBatch;
 
 		import com.google.gson.Gson;
 		import com.google.gson.GsonBuilder;
@@ -58,6 +66,7 @@ class Ir2Java extends CodeGenerator
 
 		import fr.cea.nabla.javalib.types.*;
 		import fr.cea.nabla.javalib.mesh.*;
+		import fr.cea.nabla.javalib.utils.*;
 
 		«IF linearAlgebra»
 		import org.apache.commons.math3.linear.*;
@@ -71,6 +80,7 @@ class Ir2Java extends CodeGenerator
 				«IF postProcessingInfo !== null»
 				public String «TagOutputVariables.OutputPathNameAndValue.key»;
 				«ENDIF»
+				public String «Utils.NonRegressionNameAndValue.key»;
 				«FOR v : options»
 				public «v.javaType» «v.name»;
 				«ENDFOR»
@@ -160,7 +170,7 @@ class Ir2Java extends CodeGenerator
 				System.out.println("End of execution of module «name»");
 			}
 
-			public static void main(String[] args) throws FileNotFoundException
+			public static void main(String[] args) throws IOException
 			{
 				if (args.length == 1)
 				{
@@ -182,6 +192,17 @@ class Ir2Java extends CodeGenerator
 
 					«name» simulator = new «name»(mesh, options«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s.toFirstLower»«ENDFOR»);
 					simulator.simulate();
+
+					«val nrName = Utils.NonRegressionNameAndValue.key»
+					// Non regression testing
+					if (options.«nrName»!=null &&  options.«nrName».equals("CreateReference"))
+						simulator.createDB("«name»DB.ref");
+					if (options.«nrName»!=null &&  options.«nrName».equals("CompareToReference"))
+					{
+						simulator.createDB("«name»DB.current");
+						LevelDBUtils.compareDB("«name»DB.current", "«name»DB.ref");
+						LevelDBUtils.destroyDB("«name»DB.current");
+					}
 				}
 				else
 				{
@@ -212,6 +233,35 @@ class Ir2Java extends CodeGenerator
 				}
 			}
 			«ENDIF»
+
+			private void createDB(String db_name) throws IOException
+			{
+				org.iq80.leveldb.Options levelDBOptions = new org.iq80.leveldb.Options();
+
+				// Destroy if exists
+				factory.destroy(new File(db_name), levelDBOptions);
+
+				// Create data base
+				levelDBOptions.createIfMissing(true);
+				DB db = factory.open(new File(db_name), levelDBOptions);
+
+				WriteBatch batch = db.createWriteBatch();
+				try
+				{
+					«FOR v : variables.filter[d | !d.linearAlgebra]»
+					batch.put(bytes("«v.name»"), LevelDBUtils.serialize(«v.name»));
+					«ENDFOR»
+
+					db.write(batch);
+				}
+				finally
+				{
+					// Make sure you close the batch to avoid resource leaks.
+					batch.close();
+				}
+				db.close();
+				System.out.println("Reference database " + db_name + " created.");
+			}
 		};
 	'''
 

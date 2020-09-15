@@ -13,7 +13,9 @@
 		"rhoIniZg":1.0,
 		"rhoIniZd":0.125,
 		"pIniZg":1.0,
-		"pIniZd":0.1
+		"pIniZd":0.1,
+		"_nonRegression_comment":"empty value to disable, CreateReference or CompareToReference to take action",
+		"nonRegression":""
 	},
 	"mesh":
 	{

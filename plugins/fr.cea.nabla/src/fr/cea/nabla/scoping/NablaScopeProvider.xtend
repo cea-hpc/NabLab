@@ -189,7 +189,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 				val iterators = module.iteration.eAllContents.filter(TimeIterator).toList
 				val iteratorsAndVars = new ArrayList<ArgOrVar>
 				iteratorsAndVars += module.allVars
-				iteratorsAndVars += iterators
+				iteratorsAndVars += subList(iterators, context)
 				iteratorsAndVars += context
 				Scopes::scopeFor(iteratorsAndVars)
 			}

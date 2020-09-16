@@ -464,7 +464,7 @@ void ImplicitHeatEquation::simulate()
 	executeTimeLoopN(); // @4.0
 	
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
-	std::cout << "[CG] average iteration: " << cg_info.m_nb_it / n << std::endl;
+	std::cout << "[CG] average iteration: " << cg_info.m_nb_it / cg_info.m_nb_call << std::endl;
 }
 
 /******************** Module definition ********************/

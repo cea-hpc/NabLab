@@ -1,0 +1,40 @@
+with DepthInit.*;
+
+nablagen for BugIter;
+
+SimulationVariables
+{
+	meshClassName = "CartesianMesh2D";
+	nodeCoord = X;
+	time = t;
+	timeStep = δt;
+	iterationMax = maxIter;
+	timeMax = maxTime;
+}
+
+Java
+{
+	outputPath = "/NablaTest/src-gen-java";
+}
+
+StlThread
+{
+	outputPath = "/NablaTest/src-gen-cpp/stl-thread";
+	compiler = GNU;
+//		compiler = LLVM;
+//		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
+}
+//
+//Kokkos
+//{
+//	outputPath = "/NablaExamples/src-gen-cpp/kokkos";
+//	kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+//	compiler = GNU;
+//}
+//
+//KokkosTeamThread
+//{
+//	outputPath = "/NablaExamples/src-gen-cpp/kokkos-team";
+//	kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
+//	compiler = GNU;
+//}

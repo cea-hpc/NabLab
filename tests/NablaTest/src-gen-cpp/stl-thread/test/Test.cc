@@ -291,7 +291,7 @@ int main(int argc, char* argv[])
 	else
 	{
 		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1 arg: dataFile." << std::endl;
-		std::cerr << "(TestDefaultOptions.json)" << std::endl;
+		std::cerr << "(TestDefault.json)" << std::endl;
 		return -1;
 	}
 	

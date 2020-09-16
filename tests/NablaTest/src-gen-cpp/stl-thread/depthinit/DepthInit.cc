@@ -11,20 +11,32 @@ void
 DepthInit::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 {
 	// maxTime
-	assert(d.HasMember("maxTime"));
-	const rapidjson::Value& valueof_maxTime = d["maxTime"];
-	assert(valueof_maxTime.IsDouble());
-	maxTime = valueof_maxTime.GetDouble();
+	if (d.HasMember("maxTime"))
+	{
+		const rapidjson::Value& valueof_maxTime = d["maxTime"];
+		assert(valueof_maxTime.IsDouble());
+		maxTime = valueof_maxTime.GetDouble();
+	}
+	else
+		maxTime = 0.1;
 	// maxIter
-	assert(d.HasMember("maxIter"));
-	const rapidjson::Value& valueof_maxIter = d["maxIter"];
-	assert(valueof_maxIter.IsInt());
-	maxIter = valueof_maxIter.GetInt();
+	if (d.HasMember("maxIter"))
+	{
+		const rapidjson::Value& valueof_maxIter = d["maxIter"];
+		assert(valueof_maxIter.IsInt());
+		maxIter = valueof_maxIter.GetInt();
+	}
+	else
+		maxIter = 500;
 	// deltat
-	assert(d.HasMember("deltat"));
-	const rapidjson::Value& valueof_deltat = d["deltat"];
-	assert(valueof_deltat.IsDouble());
-	deltat = valueof_deltat.GetDouble();
+	if (d.HasMember("deltat"))
+	{
+		const rapidjson::Value& valueof_deltat = d["deltat"];
+		assert(valueof_deltat.IsDouble());
+		deltat = valueof_deltat.GetDouble();
+	}
+	else
+		deltat = 1.0;
 }
 
 /******************** Module definition ********************/
@@ -90,7 +102,7 @@ int main(int argc, char* argv[])
 	else
 	{
 		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1 arg: dataFile." << std::endl;
-		std::cerr << "(DepthInitDefaultOptions.json)" << std::endl;
+		std::cerr << "(DepthInitDefault.json)" << std::endl;
 		return -1;
 	}
 	

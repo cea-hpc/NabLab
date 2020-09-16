@@ -18,15 +18,15 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   endif()
 endif()
 
-project(DepthInitProject CXX)
+project(BugIterProject CXX)
 
 set(LIBCPPNABLA_BACKEND "STL")
 add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
 
 
-add_executable(depthinit DepthInit.cc)
-target_include_directories(depthinit PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
-target_link_libraries(depthinit PUBLIC cppnabla cppnablastl pthread)
+add_executable(bugiter BugIter.cc)
+target_include_directories(bugiter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
+target_link_libraries(bugiter PUBLIC cppnabla cppnablastl pthread)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
   include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

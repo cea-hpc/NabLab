@@ -1,9 +1,0 @@
-{
-	"_comment": "Generated file - Do not overwrite",
-	"options":
-	{
-		"maxTime":0.1,
-		"maxIter":500,
-		"deltat":1.0
-	}
-}

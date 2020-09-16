@@ -14,8 +14,7 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getName <em>Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getInnerTimeLoop <em>Inner Time Loop</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getOuterTimeLoop <em>Outer Time Loop</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getContainer <em>Container</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getWhileCondition <em>While Condition</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getAssociatedJob <em>Associated Job</em>}</li>
@@ -26,7 +25,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface TimeLoop extends IrAnnotable {
+public interface TimeLoop extends TimeLoopContainer {
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -50,52 +49,28 @@ public interface TimeLoop extends IrAnnotable {
 	void setName(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Inner Time Loop</b></em>' containment reference.
-	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.TimeLoop#getOuterTimeLoop <em>Outer Time Loop</em>}'.
+	 * Returns the value of the '<em><b>Container</b></em>' container reference.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.TimeLoopContainer#getInnerTimeLoops <em>Inner Time Loops</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Inner Time Loop</em>' containment reference.
-	 * @see #setInnerTimeLoop(TimeLoop)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoop_InnerTimeLoop()
-	 * @see fr.cea.nabla.ir.ir.TimeLoop#getOuterTimeLoop
-	 * @model opposite="outerTimeLoop" containment="true" resolveProxies="true"
+	 * @return the value of the '<em>Container</em>' container reference.
+	 * @see #setContainer(TimeLoopContainer)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoop_Container()
+	 * @see fr.cea.nabla.ir.ir.TimeLoopContainer#getInnerTimeLoops
+	 * @model opposite="innerTimeLoops" transient="false"
 	 * @generated
 	 */
-	TimeLoop getInnerTimeLoop();
+	TimeLoopContainer getContainer();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.TimeLoop#getInnerTimeLoop <em>Inner Time Loop</em>}' containment reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.TimeLoop#getContainer <em>Container</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Inner Time Loop</em>' containment reference.
-	 * @see #getInnerTimeLoop()
+	 * @param value the new value of the '<em>Container</em>' container reference.
+	 * @see #getContainer()
 	 * @generated
 	 */
-	void setInnerTimeLoop(TimeLoop value);
-
-	/**
-	 * Returns the value of the '<em><b>Outer Time Loop</b></em>' container reference.
-	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.TimeLoop#getInnerTimeLoop <em>Inner Time Loop</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Outer Time Loop</em>' container reference.
-	 * @see #setOuterTimeLoop(TimeLoop)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoop_OuterTimeLoop()
-	 * @see fr.cea.nabla.ir.ir.TimeLoop#getInnerTimeLoop
-	 * @model opposite="innerTimeLoop" transient="false"
-	 * @generated
-	 */
-	TimeLoop getOuterTimeLoop();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.TimeLoop#getOuterTimeLoop <em>Outer Time Loop</em>}' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Outer Time Loop</em>' container reference.
-	 * @see #getOuterTimeLoop()
-	 * @generated
-	 */
-	void setOuterTimeLoop(TimeLoop value);
+	void setContainer(TimeLoopContainer value);
 
 	/**
 	 * Returns the value of the '<em><b>Variables</b></em>' containment reference list.

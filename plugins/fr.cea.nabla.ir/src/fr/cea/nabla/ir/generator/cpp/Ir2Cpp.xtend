@@ -281,8 +281,7 @@ class Ir2Cpp extends CodeGenerator
 
 		«callsHeader»
 		«callsContent»
-		«backend.traceContentProvider.endOfSimuTrace»
-		«IF linearAlgebra && mainTimeLoop !== null»«backend.traceContentProvider.getCGInfoTrace(mainTimeLoop.iterationCounter.name)»«ENDIF»
+		«backend.traceContentProvider.getEndOfSimuTrace(linearAlgebra)»
 	}
 	«IF levelDB»
 

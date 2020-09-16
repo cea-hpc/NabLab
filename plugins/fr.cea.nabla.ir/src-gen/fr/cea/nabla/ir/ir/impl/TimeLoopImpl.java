@@ -6,6 +6,7 @@ import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.SimpleVariable;
 import fr.cea.nabla.ir.ir.TimeLoop;
+import fr.cea.nabla.ir.ir.TimeLoopContainer;
 import fr.cea.nabla.ir.ir.TimeLoopJob;
 import fr.cea.nabla.ir.ir.TimeLoopVariable;
 
@@ -34,8 +35,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getName <em>Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getInnerTimeLoop <em>Inner Time Loop</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getOuterTimeLoop <em>Outer Time Loop</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getContainer <em>Container</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getWhileCondition <em>While Condition</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getAssociatedJob <em>Associated Job</em>}</li>
@@ -44,7 +44,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
+public class TimeLoopImpl extends TimeLoopContainerImpl implements TimeLoop {
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -64,16 +64,6 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 	 * @ordered
 	 */
 	protected String name = NAME_EDEFAULT;
-
-	/**
-	 * The cached value of the '{@link #getInnerTimeLoop() <em>Inner Time Loop</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getInnerTimeLoop()
-	 * @generated
-	 * @ordered
-	 */
-	protected TimeLoop innerTimeLoop;
 
 	/**
 	 * The cached value of the '{@link #getVariables() <em>Variables</em>}' containment reference list.
@@ -163,22 +153,9 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 	 * @generated
 	 */
 	@Override
-	public TimeLoop getInnerTimeLoop() {
-		if (innerTimeLoop != null && innerTimeLoop.eIsProxy()) {
-			InternalEObject oldInnerTimeLoop = (InternalEObject)innerTimeLoop;
-			innerTimeLoop = (TimeLoop)eResolveProxy(oldInnerTimeLoop);
-			if (innerTimeLoop != oldInnerTimeLoop) {
-				InternalEObject newInnerTimeLoop = (InternalEObject)innerTimeLoop;
-				NotificationChain msgs =  oldInnerTimeLoop.eInverseRemove(this, IrPackage.TIME_LOOP__OUTER_TIME_LOOP, TimeLoop.class, null);
-				if (newInnerTimeLoop.eInternalContainer() == null) {
-					msgs =  newInnerTimeLoop.eInverseAdd(this, IrPackage.TIME_LOOP__OUTER_TIME_LOOP, TimeLoop.class, msgs);
-				}
-				if (msgs != null) msgs.dispatch();
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.TIME_LOOP__INNER_TIME_LOOP, oldInnerTimeLoop, innerTimeLoop));
-			}
-		}
-		return innerTimeLoop;
+	public TimeLoopContainer getContainer() {
+		if (eContainerFeatureID() != IrPackage.TIME_LOOP__CONTAINER) return null;
+		return (TimeLoopContainer)eContainer();
 	}
 
 	/**
@@ -186,8 +163,9 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public TimeLoop basicGetInnerTimeLoop() {
-		return innerTimeLoop;
+	public TimeLoopContainer basicGetContainer() {
+		if (eContainerFeatureID() != IrPackage.TIME_LOOP__CONTAINER) return null;
+		return (TimeLoopContainer)eInternalContainer();
 	}
 
 	/**
@@ -195,13 +173,8 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetInnerTimeLoop(TimeLoop newInnerTimeLoop, NotificationChain msgs) {
-		TimeLoop oldInnerTimeLoop = innerTimeLoop;
-		innerTimeLoop = newInnerTimeLoop;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP__INNER_TIME_LOOP, oldInnerTimeLoop, newInnerTimeLoop);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
+	public NotificationChain basicSetContainer(TimeLoopContainer newContainer, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject)newContainer, IrPackage.TIME_LOOP__CONTAINER, msgs);
 		return msgs;
 	}
 
@@ -211,71 +184,20 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 	 * @generated
 	 */
 	@Override
-	public void setInnerTimeLoop(TimeLoop newInnerTimeLoop) {
-		if (newInnerTimeLoop != innerTimeLoop) {
-			NotificationChain msgs = null;
-			if (innerTimeLoop != null)
-				msgs = ((InternalEObject)innerTimeLoop).eInverseRemove(this, IrPackage.TIME_LOOP__OUTER_TIME_LOOP, TimeLoop.class, msgs);
-			if (newInnerTimeLoop != null)
-				msgs = ((InternalEObject)newInnerTimeLoop).eInverseAdd(this, IrPackage.TIME_LOOP__OUTER_TIME_LOOP, TimeLoop.class, msgs);
-			msgs = basicSetInnerTimeLoop(newInnerTimeLoop, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP__INNER_TIME_LOOP, newInnerTimeLoop, newInnerTimeLoop));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public TimeLoop getOuterTimeLoop() {
-		if (eContainerFeatureID() != IrPackage.TIME_LOOP__OUTER_TIME_LOOP) return null;
-		return (TimeLoop)eContainer();
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TimeLoop basicGetOuterTimeLoop() {
-		if (eContainerFeatureID() != IrPackage.TIME_LOOP__OUTER_TIME_LOOP) return null;
-		return (TimeLoop)eInternalContainer();
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetOuterTimeLoop(TimeLoop newOuterTimeLoop, NotificationChain msgs) {
-		msgs = eBasicSetContainer((InternalEObject)newOuterTimeLoop, IrPackage.TIME_LOOP__OUTER_TIME_LOOP, msgs);
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setOuterTimeLoop(TimeLoop newOuterTimeLoop) {
-		if (newOuterTimeLoop != eInternalContainer() || (eContainerFeatureID() != IrPackage.TIME_LOOP__OUTER_TIME_LOOP && newOuterTimeLoop != null)) {
-			if (EcoreUtil.isAncestor(this, newOuterTimeLoop))
+	public void setContainer(TimeLoopContainer newContainer) {
+		if (newContainer != eInternalContainer() || (eContainerFeatureID() != IrPackage.TIME_LOOP__CONTAINER && newContainer != null)) {
+			if (EcoreUtil.isAncestor(this, newContainer))
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
 			if (eInternalContainer() != null)
 				msgs = eBasicRemoveFromContainer(msgs);
-			if (newOuterTimeLoop != null)
-				msgs = ((InternalEObject)newOuterTimeLoop).eInverseAdd(this, IrPackage.TIME_LOOP__INNER_TIME_LOOP, TimeLoop.class, msgs);
-			msgs = basicSetOuterTimeLoop(newOuterTimeLoop, msgs);
+			if (newContainer != null)
+				msgs = ((InternalEObject)newContainer).eInverseAdd(this, IrPackage.TIME_LOOP_CONTAINER__INNER_TIME_LOOPS, TimeLoopContainer.class, msgs);
+			msgs = basicSetContainer(newContainer, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP__OUTER_TIME_LOOP, newOuterTimeLoop, newOuterTimeLoop));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP__CONTAINER, newContainer, newContainer));
 	}
 
 	/**
@@ -447,14 +369,10 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.TIME_LOOP__INNER_TIME_LOOP:
-				if (innerTimeLoop != null)
-					msgs = ((InternalEObject)innerTimeLoop).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.TIME_LOOP__INNER_TIME_LOOP, null, msgs);
-				return basicSetInnerTimeLoop((TimeLoop)otherEnd, msgs);
-			case IrPackage.TIME_LOOP__OUTER_TIME_LOOP:
+			case IrPackage.TIME_LOOP__CONTAINER:
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
-				return basicSetOuterTimeLoop((TimeLoop)otherEnd, msgs);
+				return basicSetContainer((TimeLoopContainer)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -467,10 +385,8 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.TIME_LOOP__INNER_TIME_LOOP:
-				return basicSetInnerTimeLoop(null, msgs);
-			case IrPackage.TIME_LOOP__OUTER_TIME_LOOP:
-				return basicSetOuterTimeLoop(null, msgs);
+			case IrPackage.TIME_LOOP__CONTAINER:
+				return basicSetContainer(null, msgs);
 			case IrPackage.TIME_LOOP__VARIABLES:
 				return ((InternalEList<?>)getVariables()).basicRemove(otherEnd, msgs);
 			case IrPackage.TIME_LOOP__WHILE_CONDITION:
@@ -487,8 +403,8 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 	@Override
 	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
 		switch (eContainerFeatureID()) {
-			case IrPackage.TIME_LOOP__OUTER_TIME_LOOP:
-				return eInternalContainer().eInverseRemove(this, IrPackage.TIME_LOOP__INNER_TIME_LOOP, TimeLoop.class, msgs);
+			case IrPackage.TIME_LOOP__CONTAINER:
+				return eInternalContainer().eInverseRemove(this, IrPackage.TIME_LOOP_CONTAINER__INNER_TIME_LOOPS, TimeLoopContainer.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
@@ -503,12 +419,9 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 		switch (featureID) {
 			case IrPackage.TIME_LOOP__NAME:
 				return getName();
-			case IrPackage.TIME_LOOP__INNER_TIME_LOOP:
-				if (resolve) return getInnerTimeLoop();
-				return basicGetInnerTimeLoop();
-			case IrPackage.TIME_LOOP__OUTER_TIME_LOOP:
-				if (resolve) return getOuterTimeLoop();
-				return basicGetOuterTimeLoop();
+			case IrPackage.TIME_LOOP__CONTAINER:
+				if (resolve) return getContainer();
+				return basicGetContainer();
 			case IrPackage.TIME_LOOP__VARIABLES:
 				return getVariables();
 			case IrPackage.TIME_LOOP__WHILE_CONDITION:
@@ -536,11 +449,8 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 			case IrPackage.TIME_LOOP__NAME:
 				setName((String)newValue);
 				return;
-			case IrPackage.TIME_LOOP__INNER_TIME_LOOP:
-				setInnerTimeLoop((TimeLoop)newValue);
-				return;
-			case IrPackage.TIME_LOOP__OUTER_TIME_LOOP:
-				setOuterTimeLoop((TimeLoop)newValue);
+			case IrPackage.TIME_LOOP__CONTAINER:
+				setContainer((TimeLoopContainer)newValue);
 				return;
 			case IrPackage.TIME_LOOP__VARIABLES:
 				getVariables().clear();
@@ -570,11 +480,8 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 			case IrPackage.TIME_LOOP__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case IrPackage.TIME_LOOP__INNER_TIME_LOOP:
-				setInnerTimeLoop((TimeLoop)null);
-				return;
-			case IrPackage.TIME_LOOP__OUTER_TIME_LOOP:
-				setOuterTimeLoop((TimeLoop)null);
+			case IrPackage.TIME_LOOP__CONTAINER:
+				setContainer((TimeLoopContainer)null);
 				return;
 			case IrPackage.TIME_LOOP__VARIABLES:
 				getVariables().clear();
@@ -602,10 +509,8 @@ public class TimeLoopImpl extends IrAnnotableImpl implements TimeLoop {
 		switch (featureID) {
 			case IrPackage.TIME_LOOP__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case IrPackage.TIME_LOOP__INNER_TIME_LOOP:
-				return innerTimeLoop != null;
-			case IrPackage.TIME_LOOP__OUTER_TIME_LOOP:
-				return basicGetOuterTimeLoop() != null;
+			case IrPackage.TIME_LOOP__CONTAINER:
+				return basicGetContainer() != null;
 			case IrPackage.TIME_LOOP__VARIABLES:
 				return variables != null && !variables.isEmpty();
 			case IrPackage.TIME_LOOP__WHILE_CONDITION:

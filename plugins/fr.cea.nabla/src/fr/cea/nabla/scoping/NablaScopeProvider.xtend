@@ -32,7 +32,6 @@ import fr.cea.nabla.nabla.ReductionTypeDeclaration
 import fr.cea.nabla.nabla.SimpleVarDeclaration
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.TimeIterator
-import fr.cea.nabla.nabla.TimeIteratorDefinition
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarDeclaration
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -64,6 +63,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 			case NablaPackage.Literals.ARG_OR_VAR_REF__TARGET: getArgOrVarRefScope(context)
 			case NablaPackage.Literals.SPACE_ITERATOR_REF__TARGET: getSpaceIteratorRefScope(context)
 			case NablaPackage.Literals.ITEM_SET_REF__TARGET: getItemSetRefScope(context)
+			case NablaPackage.Literals.TIME_ITERATOR_REF__TARGET: getTimeIteratorRefScope(context)
 			default: super.getScope(context, r)
 		}
 	}
@@ -132,6 +132,18 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 
 
 
+	/*** Scope for time iterators ********************************************/
+	private def IScope getTimeIteratorRefScope(EObject context)
+	{
+		//println('getTimeIteratorRefScope(' + context.class.simpleName + ')')
+		val module = EcoreUtil2.getContainerOfType(context, NablaModule)
+		if (module === null || module.iteration === null) return IScope::NULLSCOPE
+		val iterators = module.iteration.eAllContents.filter(TimeIterator).toList
+		Scopes::scopeFor(iterators)
+	}
+
+
+
 	/*** Scope for variables *************************************************/
 	private def IScope getArgOrVarRefScope(EObject context)
 	{
@@ -173,11 +185,11 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 				Scopes::scopeFor(subList((context.eContainer as NablaModule).declarations, context).declarationsVars)
 			TimeIterator:
 			{
-				val definition = context.eContainer as TimeIteratorDefinition 
 				val module = EcoreUtil2.getContainerOfType(context, NablaModule)
+				val iterators = module.iteration.eAllContents.filter(TimeIterator).toList
 				val iteratorsAndVars = new ArrayList<ArgOrVar>
 				iteratorsAndVars += module.allVars
-				iteratorsAndVars += subList(definition.iterators, context)
+				iteratorsAndVars += iterators
 				iteratorsAndVars += context
 				Scopes::scopeFor(iteratorsAndVars)
 			}

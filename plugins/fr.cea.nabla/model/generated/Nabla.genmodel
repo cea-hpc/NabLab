@@ -112,10 +112,15 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//SpaceIteratorRef/dec"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//TimeIteratorDefinition">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeIteratorDefinition/iterators"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeIteratorDefinition/iterator"/>
     </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//AbstractTimeIterator"/>
     <genClasses ecoreClass="Nabla.ecore#//TimeIterator">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeIterator/condition"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeIterator/innerIterator"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//TimeIteratorBlock">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeIteratorBlock/iterators"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//TimeIteratorRef">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//TimeIteratorRef/target"/>

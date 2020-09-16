@@ -22,7 +22,11 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="innerJobs" upperBound="-1"
         eType="#//Job" eOpposite="#//Job/jobContainer"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="IrModule" eSuperTypes="#//JobContainer">
+  <eClassifiers xsi:type="ecore:EClass" name="TimeLoopContainer" abstract="true" eSuperTypes="#//IrAnnotable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="innerTimeLoops" upperBound="-1"
+        eType="#//TimeLoop" containment="true" eOpposite="#//TimeLoop/container"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IrModule" eSuperTypes="#//JobContainer #//TimeLoopContainer">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="imports" upperBound="-1"
@@ -49,8 +53,6 @@
         eType="#//SimpleVariable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="jobs" upperBound="-1" eType="#//Job"
         containment="true" resolveProxies="false"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="mainTimeLoop" eType="#//TimeLoop"
-        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="postProcessingInfo" eType="#//PostProcessingInfo"
         containment="true"/>
   </eClassifiers>
@@ -68,12 +70,10 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="lastDumpVariable" lowerBound="1"
         eType="#//SimpleVariable"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeLoop" eSuperTypes="#//IrAnnotable">
+  <eClassifiers xsi:type="ecore:EClass" name="TimeLoop" eSuperTypes="#//TimeLoopContainer">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="innerTimeLoop" eType="#//TimeLoop"
-        containment="true" eOpposite="#//TimeLoop/outerTimeLoop"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="outerTimeLoop" eType="#//TimeLoop"
-        eOpposite="#//TimeLoop/innerTimeLoop"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="container" eType="#//TimeLoopContainer"
+        eOpposite="#//TimeLoopContainer/innerTimeLoops"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//TimeLoopVariable" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="whileCondition" lowerBound="1"

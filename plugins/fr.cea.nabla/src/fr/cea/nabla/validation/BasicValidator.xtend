@@ -12,6 +12,8 @@ package fr.cea.nabla.validation
 import com.google.inject.Inject
 import fr.cea.nabla.ExpressionExtensions
 import fr.cea.nabla.SpaceIteratorExtensions
+import fr.cea.nabla.nabla.AbstractTimeIterator
+import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
@@ -23,9 +25,14 @@ import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.TimeIterator
+import fr.cea.nabla.nabla.TimeIteratorBlock
+import fr.cea.nabla.nabla.TimeIteratorRef
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.NSTIntScalar
+import java.util.ArrayList
+import java.util.List
 import org.eclipse.emf.ecore.EStructuralFeature
+import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
 
@@ -76,10 +83,16 @@ class BasicValidator extends UnusedValidator
 	public static val NEXT_VALUE = "TimeIterator::NextValue"
 	public static val CONDITION_CONSTRAINTS = "TimeIterator::ConditionConstraints"
 	public static val CONDITION_BOOL = "TimeIterator::ConditionBool"
+	public static val REF_VALIDITY = "TimeIterator::RefValidity"
 
 	static def getInitValueMsg(int actualValue) { "Expected 0, but was " + actualValue }
 	static def getNextValueMsg(int actualValue) { "Expected 1, but was " + actualValue }
 	static def getConditionConstraintsMsg() { "Reductions not allowed in time iterator condition" }
+	static def getRefValidityMsg(String[] expecteds, String actual)
+	{
+		var expectedsMsg = if (expecteds.empty) "nothing" else expecteds.join(' or ')
+		"Wrong iterator. Expected " + expectedsMsg + ", but was " + actual
+	}
 
 	@Check(CheckType.NORMAL)
 	def checkInitValue(InitTimeIteratorRef it)
@@ -106,6 +119,43 @@ class BasicValidator extends UnusedValidator
 
 			if (!condition.reductionLess)
 				error(getConditionConstraintsMsg(), NablaPackage.Literals.TIME_ITERATOR__CONDITION, CONDITION_CONSTRAINTS)
+		}
+	}
+
+	@Check(CheckType.NORMAL)
+	def checkRefValidity(TimeIteratorRef it)
+	{
+		if (target !== null)
+		{
+			val referencerIterators = (eContainer as ArgOrVarRef).timeIterators
+			val i = referencerIterators.indexOf(it)
+			var List<TimeIterator> expectedIters
+			if (i > 0)
+				expectedIters = getTimeIterators(referencerIterators.get(i-1).target.innerIterator)
+			else
+			{
+				val m = EcoreUtil2.getContainerOfType(it, NablaModule)
+				if (m !== null && m.iteration !== null && m.iteration.iterator !== null)
+					expectedIters = m.iteration.iterator.timeIterators
+			}
+			if (!expectedIters.contains(target))
+				error(getRefValidityMsg(expectedIters.map[name], target.name), NablaPackage.Literals.TIME_ITERATOR_REF__TARGET, REF_VALIDITY)
+		}
+	}
+
+	private def List<TimeIterator> getTimeIterators(AbstractTimeIterator ti)
+	{
+		switch (ti)
+		{
+			case null: return #[]
+			TimeIterator: return #[ti]
+			TimeIteratorBlock:
+			{
+				val iters = new ArrayList<TimeIterator>
+				for (blockIt : ti.iterators)
+					iters += blockIt.timeIterators
+				return iters
+			}
 		}
 	}
 

@@ -16,7 +16,7 @@ import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.Job
 import org.eclipse.emf.ecore.util.EcoreUtil
 
-class IrJobFactory 
+class IrJobFactory
 {
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrInstructionFactory
@@ -41,9 +41,9 @@ class IrJobFactory
 		{
 			if (v.init !== null)
 				copies += toIrCopy(v.init, v.current)
-			else if (tl.outerTimeLoop !== null)
+			else if (tl.container instanceof TimeLoop) // inner loop
 			{
-				val outerV = tl.outerTimeLoop.variables.findFirst[name == v.name]
+				val outerV = (tl.container as TimeLoop).variables.findFirst[name == v.name]
 				copies += toIrCopy(outerV.current, v.current)
 			}
 		}
@@ -56,10 +56,10 @@ class IrJobFactory
 		timeLoop = tl
 
 		// x^{n+1} = x^{n+1, k+1}
-		if (tl.outerTimeLoop !== null)
+		if (tl.container instanceof TimeLoop) // inner loop
 			for (v : tl.variables)
 			{
-				val outerV = tl.outerTimeLoop.variables.findFirst[name == v.name]
+				val outerV = (tl.container as TimeLoop).variables.findFirst[name == v.name]
 				if (outerV !== null) copies += toIrCopy(v.next, outerV.next)
 			}
 	}

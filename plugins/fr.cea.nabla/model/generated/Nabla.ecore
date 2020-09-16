@@ -133,12 +133,19 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="dec" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeIteratorDefinition">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="iterators" upperBound="-1"
-        eType="#//TimeIterator" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="iterator" eType="#//AbstractTimeIterator"
+        containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeIterator" eSuperTypes="#//ArgOrVar">
+  <eClassifiers xsi:type="ecore:EClass" name="AbstractTimeIterator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeIterator" eSuperTypes="#//AbstractTimeIterator #//ArgOrVar">
     <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//Expression"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="innerIterator" eType="#//AbstractTimeIterator"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeIteratorBlock" eSuperTypes="#//AbstractTimeIterator">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="iterators" upperBound="-1"
+        eType="#//AbstractTimeIterator" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeIteratorRef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//TimeIterator"/>

@@ -26,7 +26,6 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getTimeVariable <em>Time Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getDeltatVariable <em>Deltat Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getJobs <em>Jobs</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getMainTimeLoop <em>Main Time Loop</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getPostProcessingInfo <em>Post Processing Info</em>}</li>
  * </ul>
  *
@@ -34,7 +33,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface IrModule extends JobContainer {
+public interface IrModule extends JobContainer, TimeLoopContainer {
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -250,28 +249,6 @@ public interface IrModule extends JobContainer {
 	 * @generated
 	 */
 	EList<Job> getJobs();
-
-	/**
-	 * Returns the value of the '<em><b>Main Time Loop</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Main Time Loop</em>' containment reference.
-	 * @see #setMainTimeLoop(TimeLoop)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_MainTimeLoop()
-	 * @model containment="true" resolveProxies="true"
-	 * @generated
-	 */
-	TimeLoop getMainTimeLoop();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getMainTimeLoop <em>Main Time Loop</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Main Time Loop</em>' containment reference.
-	 * @see #getMainTimeLoop()
-	 * @generated
-	 */
-	void setMainTimeLoop(TimeLoop value);
 
 	/**
 	 * Returns the value of the '<em><b>Post Processing Info</b></em>' containment reference.

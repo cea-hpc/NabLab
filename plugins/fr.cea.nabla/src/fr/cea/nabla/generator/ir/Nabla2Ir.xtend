@@ -12,11 +12,13 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.SimpleVariable
-import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.nabla.SimpleVarDeclaration
+import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.overloading.DeclarationProvider
 import java.util.LinkedHashSet
 import org.eclipse.emf.ecore.EObject
@@ -24,7 +26,6 @@ import org.eclipse.emf.ecore.EObject
 class Nabla2Ir
 {
 	@Inject extension Nabla2IrUtils
-	@Inject extension IrArgOrVarFactory
 	@Inject extension IrTimeLoopFactory
 	@Inject extension IrJobFactory
 	@Inject extension IrFunctionFactory
@@ -46,34 +47,25 @@ class Nabla2Ir
 		// Time loop creation
 		if (nablaModule.iteration !== null)
 		{
-			val timeIterators = nablaModule.iteration.iterators
-			val firstTimeIterator = timeIterators.head
-			val mainIC = firstTimeIterator.toIrIterationCounter
-			declarations += mainIC
-			mainTimeLoop = firstTimeIterator.toIrTimeLoop
-			mainTimeLoop.iterationCounter = mainIC
-			var TimeLoop outerTL = mainTimeLoop
-			for (ti : timeIterators.tail)
-			{
-				val ic = ti.toIrIterationCounter
-				declarations += ic
-				val tl = ti.toIrTimeLoop
-				tl.iterationCounter = ic
-				outerTL.innerTimeLoop = tl
-				outerTL = tl
-			}
+			val timeIt = nablaModule.iteration.iterator
+			variables += createTimeLoopsAndIterationCounters(it, timeIt)
 		}
 
 		// Option and global variables creation
-		for (d : nablaModule.definitions)
-			for (v : createIrVariablesFor(nablaModule, d.variable))
-				definitions += v as SimpleVariable
 		for (d : nablaModule.declarations)
-			for (v : d.variables)
-				declarations += createIrVariablesFor(nablaModule, v)
+			switch d
+			{
+				OptionDeclaration:
+					options += createIrVariablesFor(nablaModule, d.variable).filter(SimpleVariable)
+				SimpleVarDeclaration:
+					variables += createIrVariablesFor(nablaModule, d.variable).filter(SimpleVariable)
+				VarGroupDeclaration:
+					for (v : d.variables)
+						variables += createIrVariablesFor(nablaModule, v)
+			}
 
 		// TimeLoop jobs creation
-		if (mainTimeLoop !== null) jobs += mainTimeLoop.createTimeLoopJobs
+		jobs += createTimeLoopJobs
 
 		// Job creation
 		nablaModule.jobs.forEach[x | jobs += x.toIrInstructionJob]

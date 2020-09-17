@@ -1,27 +1,74 @@
 package test;
 
-import java.io.FileNotFoundException;
+import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
+import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
+
+import java.io.File;
 import java.io.FileReader;
-import java.util.HashMap;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.stream.IntStream;
+
+import org.iq80.leveldb.DB;
+import org.iq80.leveldb.WriteBatch;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 
 import fr.cea.nabla.javalib.types.*;
 import fr.cea.nabla.javalib.mesh.*;
+import fr.cea.nabla.javalib.utils.*;
 
 @SuppressWarnings("all")
 public final class Test
 {
 	public final static class Options
 	{
+		public String nonRegression;
 		public double maxTime;
 		public int maxIter;
 		public double deltat;
+	}
+
+	public final static class OptionsDeserializer implements JsonDeserializer<Options>
+	{
+		@Override
+		public Options deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		{
+			final JsonObject d = json.getAsJsonObject();
+			Options options = new Options();
+			// maxTime
+			if (d.has("maxTime"))
+			{
+				final JsonElement valueof_maxTime = d.get("maxTime");
+				options.maxTime = valueof_maxTime.getAsJsonPrimitive().getAsDouble();
+			}
+			else
+				options.maxTime = 0.1;
+			// maxIter
+			if (d.has("maxIter"))
+			{
+				final JsonElement valueof_maxIter = d.get("maxIter");
+				options.maxIter = valueof_maxIter.getAsJsonPrimitive().getAsInt();
+			}
+			else
+				options.maxIter = 500;
+			// deltat
+			if (d.has("deltat"))
+			{
+				final JsonElement valueof_deltat = d.get("deltat");
+				options.deltat = valueof_deltat.getAsJsonPrimitive().getAsDouble();
+			}
+			else
+				options.deltat = 1.0;
+			return options;
+		}
 	}
 
 	// Mesh and mesh variables
@@ -31,13 +78,11 @@ public final class Test
 	// User options and external classes
 	private final Options options;
 
-	// Global definitions
-	private double t_n;
-	private double t_nplus1;
-
-	// Global declarations
+	// Global variables
 	private int n;
 	private int k;
+	private double t_n;
+	private double t_nplus1;
 	private double[][] X;
 	private double[] e1;
 	private double[] e2_n;
@@ -93,14 +138,16 @@ public final class Test
 		System.out.println("End of execution of module Test");
 	}
 
-	public static void main(String[] args) throws FileNotFoundException
+	public static void main(String[] args) throws IOException
 	{
 		if (args.length == 1)
 		{
 			String dataFileName = args[0];
 			JsonParser parser = new JsonParser();
 			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
-			Gson gson = new Gson();
+			GsonBuilder gsonBuilder = new GsonBuilder();
+			gsonBuilder.registerTypeAdapter(Options.class, new Test.OptionsDeserializer());
+			Gson gson = gsonBuilder.create();
 
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = gson.fromJson(o.get("mesh"), CartesianMesh2DFactory.class);
@@ -110,11 +157,21 @@ public final class Test
 
 			Test simulator = new Test(mesh, options);
 			simulator.simulate();
+
+			// Non regression testing
+			if (options.nonRegression!=null &&  options.nonRegression.equals("CreateReference"))
+				simulator.createDB("TestDB.ref");
+			if (options.nonRegression!=null &&  options.nonRegression.equals("CompareToReference"))
+			{
+				simulator.createDB("TestDB.current");
+				LevelDBUtils.compareDB("TestDB.current", "TestDB.ref");
+				LevelDBUtils.destroyDB("TestDB.current");
+			}
 		}
 		else
 		{
 			System.out.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-			System.out.println("        Expecting user data file name, for example TestDefaultOptions.json");
+			System.out.println("        Expecting user data file name, for example TestDefault.json");
 		}
 	}
 
@@ -205,7 +262,7 @@ public final class Test
 		do
 		{
 			n++;
-			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, options.deltat);
+			System.out.printf("	[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, options.deltat);
 			computeE1(); // @1.0
 			updateT(); // @1.0
 			initE2(); // @2.0
@@ -258,7 +315,7 @@ public final class Test
 		do
 		{
 			k++;
-			System.out.printf("	[%5d] t: %5.5f - deltat: %5.5f\n", k, t_n, options.deltat);
+			System.out.printf("		[%5d] t: %5.5f - deltat: %5.5f\n", k, t_n, options.deltat);
 			computeE2(); // @1.0
 		
 			// Evaluate loop condition with variables at time n
@@ -298,5 +355,45 @@ public final class Test
 		{
 			e_nplus1[cCells] = e2_nplus1[cCells] - 3;
 		});
+	}
+
+	private void createDB(String db_name) throws IOException
+	{
+		org.iq80.leveldb.Options levelDBOptions = new org.iq80.leveldb.Options();
+
+		// Destroy if exists
+		factory.destroy(new File(db_name), levelDBOptions);
+
+		// Create data base
+		levelDBOptions.createIfMissing(true);
+		DB db = factory.open(new File(db_name), levelDBOptions);
+
+		WriteBatch batch = db.createWriteBatch();
+		try
+		{
+			batch.put(bytes("n"), LevelDBUtils.serialize(n));
+			batch.put(bytes("k"), LevelDBUtils.serialize(k));
+			batch.put(bytes("t_n"), LevelDBUtils.serialize(t_n));
+			batch.put(bytes("t_nplus1"), LevelDBUtils.serialize(t_nplus1));
+			batch.put(bytes("X"), LevelDBUtils.serialize(X));
+			batch.put(bytes("e1"), LevelDBUtils.serialize(e1));
+			batch.put(bytes("e2_n"), LevelDBUtils.serialize(e2_n));
+			batch.put(bytes("e2_nplus1"), LevelDBUtils.serialize(e2_nplus1));
+			batch.put(bytes("e2_nplus1_k"), LevelDBUtils.serialize(e2_nplus1_k));
+			batch.put(bytes("e2_nplus1_kplus1"), LevelDBUtils.serialize(e2_nplus1_kplus1));
+			batch.put(bytes("e2_nplus1_k0"), LevelDBUtils.serialize(e2_nplus1_k0));
+			batch.put(bytes("e_n"), LevelDBUtils.serialize(e_n));
+			batch.put(bytes("e_nplus1"), LevelDBUtils.serialize(e_nplus1));
+			batch.put(bytes("e_n0"), LevelDBUtils.serialize(e_n0));
+
+			db.write(batch);
+		}
+		finally
+		{
+			// Make sure you close the batch to avoid resource leaks.
+			batch.close();
+		}
+		db.close();
+		System.out.println("Reference database " + db_name + " created.");
 	}
 };

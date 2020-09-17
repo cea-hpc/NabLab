@@ -34,7 +34,7 @@ import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.overloading.DeclarationProvider
 import java.util.ArrayList
 
-class IrReductionInstructionFactory 
+class IrReductionInstructionFactory
 {
 	@Inject extension SpaceIteratorExtensions
 	@Inject extension ReductionCallExtensions
@@ -64,14 +64,14 @@ class IrReductionInstructionFactory
 		args.map[a | a.toIrReductions].flatten
 	}
 
-	def dispatch Iterable<Instruction> toIrReductions(ReductionCall it) 
+	def dispatch Iterable<Instruction> toIrReductions(ReductionCall it)
 	{
 		if (iterationBlock instanceof SpaceIterator && !(iterationBlock as SpaceIterator).multiple)
 		{
 			val irInstructions = new ArrayList<Instruction>
 			irInstructions += iterationBlock.neededIndexAndIdDefinitions
 			irInstructions += arg.toIrReductions
-			val definition = IrFactory::eINSTANCE.createVariableDefinition
+			val definition = IrFactory::eINSTANCE.createVariableDeclaration
 			definition.variable = toIrLocalVariable
 			definition.variable.defaultValue = arg.toIrExpression
 			irInstructions += definition

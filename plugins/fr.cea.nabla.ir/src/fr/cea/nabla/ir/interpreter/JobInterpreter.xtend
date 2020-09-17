@@ -165,7 +165,7 @@ class JobInterpreter
 
 	private static def String getIndentation(TimeLoop it)
 	{
-		if (outerTimeLoop === null) ''
-		else getIndentation(outerTimeLoop) + '\t\t'
+		if (container instanceof IrModule) ''
+		else getIndentation(container as TimeLoop) + '\t\t'
 	}
 }

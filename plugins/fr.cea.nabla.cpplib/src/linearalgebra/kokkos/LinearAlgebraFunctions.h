@@ -21,6 +21,7 @@ class LinearAlgebraFunctions
 public:
   struct CGInfo {
     int m_nb_it;
+    int m_nb_call;
     double m_norm_res;
     std::stringstream m_display;
   };
@@ -28,10 +29,10 @@ public:
   void jsonInit(const rapidjson::Value::ConstObject& d) {}
   std::string print(const NablaSparseMatrix& M);
   std::string printMatlabStyle(const NablaSparseMatrix& M, std::string A);
-  
+
   std::string print(const SparseMatrixType& M);
   std::string printMatlabStyle(const SparseMatrixType& M, std::string A);
-  
+
   std::string print(const VectorType& v);
   std::string printMatlabStyle(const VectorType& v, std::string A);
 

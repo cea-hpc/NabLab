@@ -43,6 +43,27 @@ abstract class AbstractOptionsInterpreterTest
 	ℝ[2] X{nodes};
 	'''
 
+	val modelWithMandatoryOptions =
+	'''
+	module Test;
+
+	itemtypes { node }
+	connectivity nodes: → {node};
+
+	option ℕ A = 10;
+	option ℕ[2] mandatory1;
+	option ℝ mandatory2;
+	option ℝ B = mandatory2 * 2;
+
+	option ℕ max_time_iterations = 500000000;
+	option ℝ final_time = 1.;
+
+	let ℝ t = 0.0;
+	let ℝ δt = 0.001;
+
+	ℝ[2] X{nodes};
+	'''
+
 	@Test
 	def void testInterpreteDefaultOptions()
 	{
@@ -52,14 +73,13 @@ abstract class AbstractOptionsInterpreterTest
 	@Test
 	def void testInterpreteJsonOptions()
 	{
+		// no B : default value used
 		val jsonContent =
 		'
 		{
 			"options":
 			{
-				"_comment": "Generated file - Do not overwrite",
 				"A":8,
-				"B":2,
 				"C":27.0,
 				"D":[25.0,12.12,25.0],
 				"M":[[25.0,13.13,25.0],[25.0,25.0,5.4]],
@@ -77,6 +97,37 @@ abstract class AbstractOptionsInterpreterTest
 		assertInterpreteJsonOptions(model, jsonContent)
 	}
 
+	@Test
+	def void testInterpreteDefaultMandatoryOptions()
+	{
+		assertInterpreteDefaultMandatoryOptions(modelWithMandatoryOptions)
+	}
+
+	@Test
+	def void testInterpreteJsonMandatoryOptions()
+	{
+		val jsonContent =
+		'
+		{
+			"options":
+			{
+				"A":8,
+				"mandatory1":[1,2],
+				"mandatory2":2.2
+			},
+			"mesh":
+			{
+				"nbXQuads":10,
+				"nbYQuads":10,
+				"xSize":0.05,
+				"ySize":0.05
+			}
+		}'
+		assertInterpreteJsonMandatoryOptions(modelWithMandatoryOptions, jsonContent)
+	}
+
 	def void assertInterpreteDefaultOptions(String model)
 	def void assertInterpreteJsonOptions(String model, String jsonContent)
+	def void assertInterpreteDefaultMandatoryOptions(String model)
+	def void assertInterpreteJsonMandatoryOptions(String model, String jsonContent)
 }

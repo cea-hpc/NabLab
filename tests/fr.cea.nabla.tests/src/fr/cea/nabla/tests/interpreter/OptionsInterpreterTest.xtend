@@ -12,6 +12,7 @@ package fr.cea.nabla.tests.interpreter
 import com.google.inject.Inject
 import fr.cea.nabla.ir.interpreter.NV0Int
 import fr.cea.nabla.ir.interpreter.NV0Real
+import fr.cea.nabla.ir.interpreter.NV1Int
 import fr.cea.nabla.ir.interpreter.NV1Real
 import fr.cea.nabla.ir.interpreter.NV2Real
 import fr.cea.nabla.tests.CompilationChainHelper
@@ -20,6 +21,7 @@ import fr.cea.nabla.tests.TestUtils
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.runner.RunWith
+import static org.junit.Assert.assertThrows
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -46,9 +48,26 @@ class OptionsInterpreterTest extends AbstractOptionsInterpreterTest
 		val context = compilationHelper.getInterpreterContext(irModule, jsonContent)
 
 		assertVariableValueInContext(irModule, context, "A", new NV0Int(8))
-		assertVariableValueInContext(irModule, context, "B", new NV0Int(2))
+		assertVariableValueInContext(irModule, context, "B", new NV0Int(8))
 		assertVariableValueInContext(irModule, context, "C", new NV0Real(27.0))
 		assertVariableValueInContext(irModule, context, "D", new NV1Real(#[25.0, 12.12, 25.0]))
 		assertVariableValueInContext(irModule, context, "M", new NV2Real(#[#[25.0, 13.13, 25.0],#[25.0, 25.0, 5.4]]))
+	}
+
+	override assertInterpreteDefaultMandatoryOptions(String model)
+	{
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
+		assertThrows(IllegalStateException, [compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)])
+	}
+
+	override assertInterpreteJsonMandatoryOptions(String model, String jsonContent)
+	{
+		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
+		val context = compilationHelper.getInterpreterContext(irModule, jsonContent)
+
+		assertVariableValueInContext(irModule, context, "A", new NV0Int(8))
+		assertVariableValueInContext(irModule, context, "mandatory1", new NV1Int(#[1, 2]))
+		assertVariableValueInContext(irModule, context, "mandatory2", new NV0Real(2.2))
+		assertVariableValueInContext(irModule, context, "B", new NV0Real(4.4))
 	}
 }

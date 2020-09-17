@@ -7,11 +7,12 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobContainer
 import fr.cea.nabla.ir.ir.TimeLoop
+import fr.cea.nabla.ir.ir.TimeLoopContainer
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
 
-/** 
- * Split jobs in their corresponding time loops 
+/**
+ * Dispatch jobs in their corresponding time loops
  * i.e. add them to 'jobs' of TimeLoopJob instance.
  * Warning: the module must not contain job cycles.
  */
@@ -20,31 +21,38 @@ class JobDispatcher
 	val extension JobDispatchVarDependencies jdvd = new JobDispatchVarDependencies
 	val extension JobDependencies  = new JobDependencies(jdvd)
 
+	/**
+	 * Dispacth IrModule jobs in their corresponding job containers.
+	 * First, TimeLoopCopyJob instances are dispatched in the container
+	 * associated to their TimeLoop.
+	 * Then, other jobs will be dispatched during a graph traversal.
+	 */
 	def void dispatchJobsInTimeLoops(IrModule it)
 	{
-		if (mainTimeLoop !== null)
-			distributeTimeLoopJobs(jobs.filter(TimeLoopCopyJob), it, mainTimeLoop)
+		// Dispatch TimeLoopCopyJob instances
+		dispatchTimeLoopCopyJobs(jobs.filter(TimeLoopCopyJob), it, '')
 
 		for (j : jobs.filter[x | !(x instanceof TimeLoopCopyJob) && x.previousJobs.empty])
-			if (shouldCrossJob(j, it, ''))
-				ditl(it, j, '')
+			if (continueToDispatch(it, j, ''))
+				dispatchJob(it, j, '')
 	}
 
-	private def void distributeTimeLoopJobs(Iterable<TimeLoopCopyJob> jobs, JobContainer container, TimeLoop tl)
+	private def void dispatchTimeLoopCopyJobs(Iterable<TimeLoopCopyJob> jobs, TimeLoopContainer timeLoopContainer, String prefix)
 	{
-		//println("distributeTimeLoopJobs " + tl.name)
-		//println("   inner jobs before : " + container.innerJobs.map[name].join(', '))
-		container.innerJobs += jobs.filter[timeLoop === tl]
-		//println("   inner jobs after : " + container.innerJobs.map[name].join(', '))
-
-		if (tl.innerTimeLoop !== null)
-			distributeTimeLoopJobs(jobs, tl.associatedJob, tl.innerTimeLoop)
-		//println
+		//println(prefix + "distributeTimeLoopJobs " + timeLoopContainer.name)
+		val innerJobs =  timeLoopContainer.jobContainer.innerJobs
+		//println(prefix + "   inner jobs before : " + innerJobs.map[name].join(', '))
+		for (containerTimeLoop : timeLoopContainer.innerTimeLoops)
+		{
+			innerJobs += jobs.filter[timeLoop === containerTimeLoop]
+			dispatchTimeLoopCopyJobs(jobs.filter[timeLoop !== containerTimeLoop], containerTimeLoop, prefix + '\t')
+		}
+		//println(prefix + "   inner jobs after : " + innerJobs.map[name].join(', '))
 	}
 
-	private def void ditl(JobContainer jc, Job job, String prefix)
+	private def void dispatchJob(JobContainer jc, Job job, String prefix)
 	{
-		//println(prefix + "ditl(" + jc.name + ", " + job.name + ")")
+		//println(prefix + "dispatchJob(" + jc.name + ", " + job.name + ")")
 		if (! (job instanceof TimeLoopCopyJob))
 		{
 			//println(prefix + jc.name + " <-- " + job.name)
@@ -58,30 +66,31 @@ class JobDispatcher
 				for (j : irModule.jobs.filter[x | x !== job])
 					for (startLoopVar : job.inVars)
 						if (j.inVars.exists[x | x === startLoopVar])
-							if (shouldCrossJob(j, job, prefix))
-								ditl(job, j, prefix + '\t')
+							if (continueToDispatch(job, j, prefix))
+								dispatchJob(job, j, prefix + '\t')
 			}
 			AfterTimeLoopJob:
 			{
 				for (next : job.nextJobs)
-					if (shouldCrossJob(next, job.jobContainer, prefix))
-						ditl(job.jobContainer, next, prefix + '\t')
+					if (continueToDispatch(job.jobContainer, next, prefix))
+						dispatchJob(job.jobContainer, next, prefix + '\t')
 			}
 			default:
 			{
+				//println(prefix + "next de " + job.name + " : " + job.nextJobs.map[name].join(', '))
 				for (next : job.nextJobs)
-					if (shouldCrossJob(next, jc, prefix))
-						ditl(jc, next, prefix + '\t')
+					if (continueToDispatch(jc, next, prefix))
+						dispatchJob(jc, next, prefix + '\t')
 			}
 		}
 	}
 
-	private def boolean shouldCrossJob(Job job, JobContainer container, String prefix)
+	private def boolean continueToDispatch(JobContainer container, Job job, String prefix)
 	{
-		//println(prefix + "shouldCross(" + job.name + ", " + container.name + ")")
+		//println(prefix + "continueToDispatch(" + container.name  + ", " + job.name + ")")
 		(job instanceof TimeLoopCopyJob)
 		|| (job.jobContainer === null)
-		|| (job.jobContainer.timeLoop.includes(container.timeLoop, prefix))
+		|| (includes(job.jobContainer.timeLoop, container.timeLoop, prefix))
 	}
 
 	private def boolean includes(TimeLoop a, TimeLoop b, String prefix)
@@ -89,10 +98,9 @@ class JobDispatcher
 		//println(prefix + "includes(" + a + ", " + b + ")")
 		if (a === b || b === null) return false
 		if (a === null) return true
-		var itl = a.innerTimeLoop
-		while (itl !== null)
-			if (itl === b) return true
-			else itl = itl.innerTimeLoop
+		for (tl : a.innerTimeLoops)
+			if (tl === b || includes(tl, b, prefix + '\t'))
+				return true
 		return false
 	}
 
@@ -106,13 +114,33 @@ class JobDispatcher
 		}
 	}
 
-//	private def String getName(JobContainer jc)
+	private def JobContainer getJobContainer(TimeLoopContainer elt)
+	{
+		if (elt === null) null
+		else switch elt
+		{
+			TimeLoop: elt.associatedJob
+			IrModule: elt
+		}
+	}
+
+//	private def String getName(JobContainer elt)
 //	{
-//		if (jc === null) "null"
-//		else switch jc
+//		if (elt === null) "null"
+//		else switch elt
 //		{
-//			TimeLoopJob: jc.name
-//			IrModule: jc.name
+//			TimeLoopJob: elt.name
+//			IrModule: elt.name
+//		}
+//	}
+//
+//	private def String getName(TimeLoopContainer elt)
+//	{
+//		if (elt === null) "null"
+//		else switch elt
+//		{
+//			TimeLoop: elt.name
+//			IrModule: elt.name
 //		}
 //	}
 }

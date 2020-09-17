@@ -222,6 +222,7 @@ LinearAlgebraFunctions::CGSolve(const SparseMatrixType& A, const VectorType& b, 
   info.m_display << "Res = " << norm_res << std::endl;
   info.m_display << "----------------------------" << std::endl;
   info.m_nb_it += it;
+  info.m_nb_call++;
   info.m_norm_res += norm_res;
 
   return x;
@@ -311,6 +312,7 @@ LinearAlgebraFunctions::CGSolve(const SparseMatrixType& A, const VectorType& b,
   info.m_display << "Res = " << norm_res << std::endl;
   info.m_display << "----------------------------" << std::endl;
   info.m_nb_it += it;
+  info.m_nb_call++;
   info.m_norm_res += norm_res;
 
   return x;

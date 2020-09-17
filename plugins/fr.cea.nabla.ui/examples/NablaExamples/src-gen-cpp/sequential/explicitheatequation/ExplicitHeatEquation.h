@@ -57,15 +57,13 @@ private:
 	const Options& options;
 	PvdFileWriter2D writer;
 	
-	// Global definitions
+	// Global variables
+	int lastDump;
+	int n;
 	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
 	double t_n;
 	double t_nplus1;
 	double deltat;
-	int lastDump;
-	
-	// Global declarations
-	int n;
 	std::vector<RealArray1D<2>> X;
 	std::vector<RealArray1D<2>> Xc;
 	std::vector<double> u_n;
@@ -75,6 +73,7 @@ private:
 	std::vector<double> faceLength;
 	std::vector<double> faceConductivity;
 	std::vector<std::vector<double>> alpha;
+	
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;

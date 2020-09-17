@@ -10,6 +10,8 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.Variable
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -35,19 +37,11 @@ class AttributesContentProvider
 		«ENDFOR»
 		«IF m.postProcessingInfo !== null»PvdFileWriter2D writer;«ENDIF»
 
-		// Global definitions
-		«FOR v : m.allDefinitions»
-			«IF v.constExpr»
-				static constexpr «v.cppType» «v.name» = «v.defaultValue.content»;
-			«ELSE»
-				«IF v.const»const «ENDIF»«v.cppType» «v.name»;
-			«ENDIF»
+		// Global variables
+		«FOR v : m.variables»
+			«v.variableDeclaration»
 		«ENDFOR»
 
-		// Global declarations
-		«FOR v : m.declarations»
-			«v.cppType» «v.name»;
-		«ENDFOR»
 		«IF m.linearAlgebra»LinearAlgebraFunctions::CGInfo cg_info; // CG details«ENDIF»
 		utils::Timer globalTimer;
 		utils::Timer cpuTimer;
@@ -56,6 +50,16 @@ class AttributesContentProvider
 		«additionalContent»
 		«ENDIF»
 	'''
+
+	private def CharSequence getVariableDeclaration(Variable v)
+	{
+		switch (v)
+		{
+			 SimpleVariable case v.constExpr: '''static constexpr «v.cppType» «v.name» = «v.defaultValue.content»;'''
+			 SimpleVariable case v.const: '''const «v.cppType» «v.name»;'''
+			 default: '''«v.cppType» «v.name»;'''
+		}
+	}
 }
 
 @Data

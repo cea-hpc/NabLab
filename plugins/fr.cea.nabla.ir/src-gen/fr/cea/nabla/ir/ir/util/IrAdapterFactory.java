@@ -80,6 +80,10 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createJobContainerAdapter();
 			}
 			@Override
+			public Adapter caseTimeLoopContainer(TimeLoopContainer object) {
+				return createTimeLoopContainerAdapter();
+			}
+			@Override
 			public Adapter caseIrModule(IrModule object) {
 				return createIrModuleAdapter();
 			}
@@ -160,8 +164,8 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createInstructionBlockAdapter();
 			}
 			@Override
-			public Adapter caseVariableDefinition(VariableDefinition object) {
-				return createVariableDefinitionAdapter();
+			public Adapter caseVariableDeclaration(VariableDeclaration object) {
+				return createVariableDeclarationAdapter();
 			}
 			@Override
 			public Adapter caseAffectation(Affectation object) {
@@ -394,6 +398,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createJobContainerAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.TimeLoopContainer <em>Time Loop Container</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.TimeLoopContainer
+	 * @generated
+	 */
+	public Adapter createTimeLoopContainerAdapter() {
 		return null;
 	}
 
@@ -678,16 +696,16 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.VariableDefinition <em>Variable Definition</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.VariableDeclaration <em>Variable Declaration</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.VariableDefinition
+	 * @see fr.cea.nabla.ir.ir.VariableDeclaration
 	 * @generated
 	 */
-	public Adapter createVariableDefinitionAdapter() {
+	public Adapter createVariableDeclarationAdapter() {
 		return null;
 	}
 

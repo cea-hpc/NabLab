@@ -26,7 +26,7 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.SimpleVariable
-import fr.cea.nabla.ir.ir.VariableDefinition
+import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.While
 import org.eclipse.xtend.lib.annotations.Data
 
@@ -44,7 +44,7 @@ abstract class InstructionContentProvider
 	protected abstract def CharSequence getReductionContent(ReductionInstruction it)
 	protected abstract def CharSequence getParallelLoopContent(Loop it)
 
-	def dispatch CharSequence getContent(VariableDefinition it)
+	def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
 		«IF variable.type.baseTypeStatic»
 			«IF variable.const»const «ENDIF»«variable.cppType» «variable.name»«variable.defaultValueContent»;

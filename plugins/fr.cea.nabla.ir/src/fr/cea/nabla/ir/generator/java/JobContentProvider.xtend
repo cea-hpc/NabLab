@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.InstructionJob
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
@@ -108,7 +109,7 @@ class JobContentProvider
 
 	private static def String getIndentation(TimeLoop it)
 	{
-		if (outerTimeLoop === null) ''
-		else getIndentation(outerTimeLoop) + '\t'
+		if (container instanceof IrModule) ''
+		else getIndentation(container as TimeLoop) + '\t'
 	}
 }

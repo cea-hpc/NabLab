@@ -78,7 +78,7 @@ class UniqueNameValidator extends AbstractNablaValidator
 		else
 		{
 			val module = EcoreUtil2.getContainerOfType(it, NablaModule)
-			if (module.iteration !== null && module.iteration.iterators.exists[x | x.name == name])
+			if (module.iteration !== null && module.iteration.eAllContents.filter(TimeIterator).exists[x | x.name == name])
 				error(getDuplicateNameMsg(NablaPackage.Literals.ARG_OR_VAR, name + " (iterator)"), NablaPackage.Literals.ARG_OR_VAR__NAME, DUPLICATE_NAME);
 		}
 	}

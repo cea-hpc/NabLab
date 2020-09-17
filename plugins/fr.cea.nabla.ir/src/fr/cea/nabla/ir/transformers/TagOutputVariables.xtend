@@ -60,10 +60,11 @@ class TagOutputVariables extends IrTransformationStep
 			type = EcoreUtil::copy(periodVariableType)
 			const = false
 			constExpr = false
-			option = false
 			defaultValue = periodVariableType.primitive.lastDumpDefaultValue
 		]
 		ppInfo.lastDumpVariable = lastDumpVariable
+		val pos = m.variables.indexOf(ppInfo.periodReference)
+		m.variables.add(pos, lastDumpVariable)
 
 		// Create an option to store the output period
 		val periodValueVariable = f.createSimpleVariable =>
@@ -72,10 +73,10 @@ class TagOutputVariables extends IrTransformationStep
 			type = EcoreUtil::copy(periodVariableType)
 			const = false
 			constExpr = false
-			option = true
-			defaultValue = periodVariableType.primitive.outputPeriodDefaultValue
+			// no default value : option is mandatory
 		]
 		ppInfo.periodValue = periodValueVariable
+		m.options.add(0, periodValueVariable)
 
 		return true
 	}
@@ -87,17 +88,6 @@ class TagOutputVariables extends IrTransformationStep
 		{
 			case BOOL: f.createBoolConstant => [ value = false ]
 			default: f.createMinConstant => [ type = f.createBaseType => [ primitive = t] ]
-		}
-	}
-
-	private def getOutputPeriodDefaultValue(PrimitiveType t)
-	{
-		val f =  IrFactory.eINSTANCE
-		switch t
-		{
-			case INT: f.createIntConstant => [value = 1]
-			case REAL: f.createRealConstant => [value = 1.0]
-			default: throw new RuntimeException("Unsupported type for output period variable")
 		}
 	}
 }

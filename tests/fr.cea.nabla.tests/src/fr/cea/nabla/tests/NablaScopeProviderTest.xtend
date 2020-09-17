@@ -16,7 +16,8 @@ import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.Return
-import fr.cea.nabla.nabla.SimpleVarDefinition
+import fr.cea.nabla.nabla.SimpleVarDeclaration
+import fr.cea.nabla.nabla.TimeIterator
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.scoping.IScopeProvider
@@ -272,21 +273,21 @@ class NablaScopeProviderTest
 		Assert.assertNotNull(module)
 		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
 
-		val iterate = module.iteration
-		val nRefInCondOfN = iterate.iterators.head.condition.eAllContents.filter(ArgOrVarRef).head
+		val iterators = module.iteration.eAllContents.filter(TimeIterator)
+		val nRefInCondOfN = iterators.head.condition.eAllContents.filter(ArgOrVarRef).head
 		Assert.assertNotNull(nRefInCondOfN)
 		nRefInCondOfN.assertScope(eref, "a, b1, b2, X, c1, c2, n")
-		val nRefInCondOfK = iterate.iterators.last.condition.eAllContents.filter(ArgOrVarRef).head
+		val nRefInCondOfK = iterators.last.condition.eAllContents.filter(ArgOrVarRef).head
 		Assert.assertNotNull(nRefInCondOfK)
 		nRefInCondOfK.assertScope(eref, "a, b1, b2, X, c1, c2, n, k")
 
-		val aDeclaration = module.getVariableByName("a").eContainer as SimpleVarDefinition
+		val aDeclaration = module.getVariableByName("a").eContainer as SimpleVarDeclaration
 		aDeclaration.assertScope(eref, "")
 
-		val b1Declaration = module.getVariableByName("b1").eContainer as SimpleVarDefinition
+		val b1Declaration = module.getVariableByName("b1").eContainer as SimpleVarDeclaration
 		b1Declaration.assertScope(eref, "a")
 
-		val b2Declaration = module.getVariableByName("b2").eContainer as SimpleVarDefinition
+		val b2Declaration = module.getVariableByName("b2").eContainer as SimpleVarDeclaration
 		b2Declaration.assertScope(eref, "a, b1")
 		
 		val j1 = module.getJobByName("j1")

@@ -238,6 +238,75 @@ class BasicValidatorTest
 		moduleOk.assertNoErrors
 	}
 
+	@Test
+	def void testCheckRefValidity()
+	{
+		val moduleKo1 = parseHelper.parse(
+			'''
+			«emptyTestModule»
+			ℝ u;
+			iterate n while(true),
+			{
+				k while (true);
+				l while (true), m while (true);
+			}
+			ComputeU: u^{k} = 6.0;
+			'''
+		)
+		Assert.assertNotNull(moduleKo1)
+		moduleKo1.assertError(NablaPackage.eINSTANCE.timeIteratorRef,
+			BasicValidator::REF_VALIDITY,
+			BasicValidator::getRefValidityMsg(#["n"], "k"))
+
+		val moduleKo2 = parseHelper.parse(
+			'''
+			«emptyTestModule»
+			ℝ u;
+			iterate n while(true),
+			{
+				k while (true);
+				l while (true), m while (true);
+			}
+			ComputeU: u^{n+1, m} = 6.0;
+			'''
+		)
+		Assert.assertNotNull(moduleKo2)
+		moduleKo2.assertError(NablaPackage.eINSTANCE.timeIteratorRef,
+			BasicValidator::REF_VALIDITY,
+			BasicValidator::getRefValidityMsg(#["k or l"], "m"))
+
+		val moduleKo3 = parseHelper.parse(
+			'''
+			«emptyTestModule»
+			ℝ u;
+			iterate n while(true),
+			{
+				k while (true);
+				l while (true), m while (true);
+			}
+			ComputeU: u^{n+1, k+1, m} = 6.0;
+			'''
+		)
+		Assert.assertNotNull(moduleKo3)
+		moduleKo3.assertError(NablaPackage.eINSTANCE.timeIteratorRef,
+			BasicValidator::REF_VALIDITY,
+			BasicValidator::getRefValidityMsg(#[], "m"))
+
+		val moduleOk = parseHelper.parse(
+			'''
+			«emptyTestModule»
+			ℝ u;
+			iterate n while(true),
+			{
+				k while (true);
+				l while (true), m while (true);
+			}
+			ComputeU: u^{n+1, l+1, m} = 6.0;
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
 
 	// ===== BaseType =====	
 

@@ -13,6 +13,7 @@ import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.PostProcessingInfo;
 import fr.cea.nabla.ir.ir.SimpleVariable;
 import fr.cea.nabla.ir.ir.TimeLoop;
+import fr.cea.nabla.ir.ir.TimeLoopContainer;
 import fr.cea.nabla.ir.ir.Variable;
 
 import java.util.Collection;
@@ -28,6 +29,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -38,26 +40,36 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getInnerTimeLoops <em>Inner Time Loops</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getImports <em>Imports</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getItemTypes <em>Item Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getFunctions <em>Functions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getConnectivities <em>Connectivities</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getDefinitions <em>Definitions</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getDeclarations <em>Declarations</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getOptions <em>Options</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getMeshClassName <em>Mesh Class Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getTimeVariable <em>Time Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getDeltatVariable <em>Deltat Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getJobs <em>Jobs</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getMainTimeLoop <em>Main Time Loop</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getPostProcessingInfo <em>Post Processing Info</em>}</li>
  * </ul>
  *
  * @generated
  */
 public class IrModuleImpl extends JobContainerImpl implements IrModule {
+	/**
+	 * The cached value of the '{@link #getInnerTimeLoops() <em>Inner Time Loops</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getInnerTimeLoops()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<TimeLoop> innerTimeLoops;
+
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -119,24 +131,24 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	protected EList<Connectivity> connectivities;
 
 	/**
-	 * The cached value of the '{@link #getDefinitions() <em>Definitions</em>}' containment reference list.
+	 * The cached value of the '{@link #getOptions() <em>Options</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getDefinitions()
+	 * @see #getOptions()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<SimpleVariable> definitions;
+	protected EList<SimpleVariable> options;
 
 	/**
-	 * The cached value of the '{@link #getDeclarations() <em>Declarations</em>}' containment reference list.
+	 * The cached value of the '{@link #getVariables() <em>Variables</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getDeclarations()
+	 * @see #getVariables()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Variable> declarations;
+	protected EList<Variable> variables;
 
 	/**
 	 * The default value of the '{@link #getMeshClassName() <em>Mesh Class Name</em>}' attribute.
@@ -209,16 +221,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	protected EList<Job> jobs;
 
 	/**
-	 * The cached value of the '{@link #getMainTimeLoop() <em>Main Time Loop</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getMainTimeLoop()
-	 * @generated
-	 * @ordered
-	 */
-	protected TimeLoop mainTimeLoop;
-
-	/**
 	 * The cached value of the '{@link #getPostProcessingInfo() <em>Post Processing Info</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -245,6 +247,19 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	@Override
 	protected EClass eStaticClass() {
 		return IrPackage.Literals.IR_MODULE;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EList<TimeLoop> getInnerTimeLoops() {
+		if (innerTimeLoops == null) {
+			innerTimeLoops = new EObjectContainmentWithInverseEList.Resolving<TimeLoop>(TimeLoop.class, this, IrPackage.IR_MODULE__INNER_TIME_LOOPS, IrPackage.TIME_LOOP__CONTAINER);
+		}
+		return innerTimeLoops;
 	}
 
 	/**
@@ -328,11 +343,11 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
-	public EList<SimpleVariable> getDefinitions() {
-		if (definitions == null) {
-			definitions = new EObjectContainmentEList<SimpleVariable>(SimpleVariable.class, this, IrPackage.IR_MODULE__DEFINITIONS);
+	public EList<SimpleVariable> getOptions() {
+		if (options == null) {
+			options = new EObjectContainmentEList.Resolving<SimpleVariable>(SimpleVariable.class, this, IrPackage.IR_MODULE__OPTIONS);
 		}
-		return definitions;
+		return options;
 	}
 
 	/**
@@ -341,11 +356,11 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
-	public EList<Variable> getDeclarations() {
-		if (declarations == null) {
-			declarations = new EObjectContainmentEList<Variable>(Variable.class, this, IrPackage.IR_MODULE__DECLARATIONS);
+	public EList<Variable> getVariables() {
+		if (variables == null) {
+			variables = new EObjectContainmentEList<Variable>(Variable.class, this, IrPackage.IR_MODULE__VARIABLES);
 		}
-		return declarations;
+		return variables;
 	}
 
 	/**
@@ -550,74 +565,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
-	public TimeLoop getMainTimeLoop() {
-		if (mainTimeLoop != null && mainTimeLoop.eIsProxy()) {
-			InternalEObject oldMainTimeLoop = (InternalEObject)mainTimeLoop;
-			mainTimeLoop = (TimeLoop)eResolveProxy(oldMainTimeLoop);
-			if (mainTimeLoop != oldMainTimeLoop) {
-				InternalEObject newMainTimeLoop = (InternalEObject)mainTimeLoop;
-				NotificationChain msgs = oldMainTimeLoop.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__MAIN_TIME_LOOP, null, null);
-				if (newMainTimeLoop.eInternalContainer() == null) {
-					msgs = newMainTimeLoop.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__MAIN_TIME_LOOP, null, msgs);
-				}
-				if (msgs != null) msgs.dispatch();
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_MODULE__MAIN_TIME_LOOP, oldMainTimeLoop, mainTimeLoop));
-			}
-		}
-		return mainTimeLoop;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TimeLoop basicGetMainTimeLoop() {
-		return mainTimeLoop;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetMainTimeLoop(TimeLoop newMainTimeLoop, NotificationChain msgs) {
-		TimeLoop oldMainTimeLoop = mainTimeLoop;
-		mainTimeLoop = newMainTimeLoop;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__MAIN_TIME_LOOP, oldMainTimeLoop, newMainTimeLoop);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setMainTimeLoop(TimeLoop newMainTimeLoop) {
-		if (newMainTimeLoop != mainTimeLoop) {
-			NotificationChain msgs = null;
-			if (mainTimeLoop != null)
-				msgs = ((InternalEObject)mainTimeLoop).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__MAIN_TIME_LOOP, null, msgs);
-			if (newMainTimeLoop != null)
-				msgs = ((InternalEObject)newMainTimeLoop).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__MAIN_TIME_LOOP, null, msgs);
-			msgs = basicSetMainTimeLoop(newMainTimeLoop, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__MAIN_TIME_LOOP, newMainTimeLoop, newMainTimeLoop));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public PostProcessingInfo getPostProcessingInfo() {
 		if (postProcessingInfo != null && postProcessingInfo.eIsProxy()) {
 			InternalEObject oldPostProcessingInfo = (InternalEObject)postProcessingInfo;
@@ -685,9 +632,26 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case IrPackage.IR_MODULE__INNER_TIME_LOOPS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getInnerTimeLoops()).basicAdd(otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
+			case IrPackage.IR_MODULE__INNER_TIME_LOOPS:
+				return ((InternalEList<?>)getInnerTimeLoops()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__IMPORTS:
 				return ((InternalEList<?>)getImports()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__ITEM_TYPES:
@@ -696,14 +660,12 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return ((InternalEList<?>)getFunctions()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				return ((InternalEList<?>)getConnectivities()).basicRemove(otherEnd, msgs);
-			case IrPackage.IR_MODULE__DEFINITIONS:
-				return ((InternalEList<?>)getDefinitions()).basicRemove(otherEnd, msgs);
-			case IrPackage.IR_MODULE__DECLARATIONS:
-				return ((InternalEList<?>)getDeclarations()).basicRemove(otherEnd, msgs);
+			case IrPackage.IR_MODULE__OPTIONS:
+				return ((InternalEList<?>)getOptions()).basicRemove(otherEnd, msgs);
+			case IrPackage.IR_MODULE__VARIABLES:
+				return ((InternalEList<?>)getVariables()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__JOBS:
 				return ((InternalEList<?>)getJobs()).basicRemove(otherEnd, msgs);
-			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
-				return basicSetMainTimeLoop(null, msgs);
 			case IrPackage.IR_MODULE__POST_PROCESSING_INFO:
 				return basicSetPostProcessingInfo(null, msgs);
 		}
@@ -718,6 +680,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
+			case IrPackage.IR_MODULE__INNER_TIME_LOOPS:
+				return getInnerTimeLoops();
 			case IrPackage.IR_MODULE__NAME:
 				return getName();
 			case IrPackage.IR_MODULE__IMPORTS:
@@ -728,10 +692,10 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return getFunctions();
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				return getConnectivities();
-			case IrPackage.IR_MODULE__DEFINITIONS:
-				return getDefinitions();
-			case IrPackage.IR_MODULE__DECLARATIONS:
-				return getDeclarations();
+			case IrPackage.IR_MODULE__OPTIONS:
+				return getOptions();
+			case IrPackage.IR_MODULE__VARIABLES:
+				return getVariables();
 			case IrPackage.IR_MODULE__MESH_CLASS_NAME:
 				return getMeshClassName();
 			case IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE:
@@ -748,9 +712,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return basicGetDeltatVariable();
 			case IrPackage.IR_MODULE__JOBS:
 				return getJobs();
-			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
-				if (resolve) return getMainTimeLoop();
-				return basicGetMainTimeLoop();
 			case IrPackage.IR_MODULE__POST_PROCESSING_INFO:
 				if (resolve) return getPostProcessingInfo();
 				return basicGetPostProcessingInfo();
@@ -767,6 +728,10 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
+			case IrPackage.IR_MODULE__INNER_TIME_LOOPS:
+				getInnerTimeLoops().clear();
+				getInnerTimeLoops().addAll((Collection<? extends TimeLoop>)newValue);
+				return;
 			case IrPackage.IR_MODULE__NAME:
 				setName((String)newValue);
 				return;
@@ -786,13 +751,13 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				getConnectivities().clear();
 				getConnectivities().addAll((Collection<? extends Connectivity>)newValue);
 				return;
-			case IrPackage.IR_MODULE__DEFINITIONS:
-				getDefinitions().clear();
-				getDefinitions().addAll((Collection<? extends SimpleVariable>)newValue);
+			case IrPackage.IR_MODULE__OPTIONS:
+				getOptions().clear();
+				getOptions().addAll((Collection<? extends SimpleVariable>)newValue);
 				return;
-			case IrPackage.IR_MODULE__DECLARATIONS:
-				getDeclarations().clear();
-				getDeclarations().addAll((Collection<? extends Variable>)newValue);
+			case IrPackage.IR_MODULE__VARIABLES:
+				getVariables().clear();
+				getVariables().addAll((Collection<? extends Variable>)newValue);
 				return;
 			case IrPackage.IR_MODULE__MESH_CLASS_NAME:
 				setMeshClassName((String)newValue);
@@ -813,9 +778,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				getJobs().clear();
 				getJobs().addAll((Collection<? extends Job>)newValue);
 				return;
-			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
-				setMainTimeLoop((TimeLoop)newValue);
-				return;
 			case IrPackage.IR_MODULE__POST_PROCESSING_INFO:
 				setPostProcessingInfo((PostProcessingInfo)newValue);
 				return;
@@ -831,6 +793,9 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
+			case IrPackage.IR_MODULE__INNER_TIME_LOOPS:
+				getInnerTimeLoops().clear();
+				return;
 			case IrPackage.IR_MODULE__NAME:
 				setName(NAME_EDEFAULT);
 				return;
@@ -846,11 +811,11 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				getConnectivities().clear();
 				return;
-			case IrPackage.IR_MODULE__DEFINITIONS:
-				getDefinitions().clear();
+			case IrPackage.IR_MODULE__OPTIONS:
+				getOptions().clear();
 				return;
-			case IrPackage.IR_MODULE__DECLARATIONS:
-				getDeclarations().clear();
+			case IrPackage.IR_MODULE__VARIABLES:
+				getVariables().clear();
 				return;
 			case IrPackage.IR_MODULE__MESH_CLASS_NAME:
 				setMeshClassName(MESH_CLASS_NAME_EDEFAULT);
@@ -870,9 +835,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__JOBS:
 				getJobs().clear();
 				return;
-			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
-				setMainTimeLoop((TimeLoop)null);
-				return;
 			case IrPackage.IR_MODULE__POST_PROCESSING_INFO:
 				setPostProcessingInfo((PostProcessingInfo)null);
 				return;
@@ -888,6 +850,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
+			case IrPackage.IR_MODULE__INNER_TIME_LOOPS:
+				return innerTimeLoops != null && !innerTimeLoops.isEmpty();
 			case IrPackage.IR_MODULE__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case IrPackage.IR_MODULE__IMPORTS:
@@ -898,10 +862,10 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return functions != null && !functions.isEmpty();
 			case IrPackage.IR_MODULE__CONNECTIVITIES:
 				return connectivities != null && !connectivities.isEmpty();
-			case IrPackage.IR_MODULE__DEFINITIONS:
-				return definitions != null && !definitions.isEmpty();
-			case IrPackage.IR_MODULE__DECLARATIONS:
-				return declarations != null && !declarations.isEmpty();
+			case IrPackage.IR_MODULE__OPTIONS:
+				return options != null && !options.isEmpty();
+			case IrPackage.IR_MODULE__VARIABLES:
+				return variables != null && !variables.isEmpty();
 			case IrPackage.IR_MODULE__MESH_CLASS_NAME:
 				return MESH_CLASS_NAME_EDEFAULT == null ? meshClassName != null : !MESH_CLASS_NAME_EDEFAULT.equals(meshClassName);
 			case IrPackage.IR_MODULE__INIT_NODE_COORD_VARIABLE:
@@ -914,12 +878,42 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return deltatVariable != null;
 			case IrPackage.IR_MODULE__JOBS:
 				return jobs != null && !jobs.isEmpty();
-			case IrPackage.IR_MODULE__MAIN_TIME_LOOP:
-				return mainTimeLoop != null;
 			case IrPackage.IR_MODULE__POST_PROCESSING_INFO:
 				return postProcessingInfo != null;
 		}
 		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
+		if (baseClass == TimeLoopContainer.class) {
+			switch (derivedFeatureID) {
+				case IrPackage.IR_MODULE__INNER_TIME_LOOPS: return IrPackage.TIME_LOOP_CONTAINER__INNER_TIME_LOOPS;
+				default: return -1;
+			}
+		}
+		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
+		if (baseClass == TimeLoopContainer.class) {
+			switch (baseFeatureID) {
+				case IrPackage.TIME_LOOP_CONTAINER__INNER_TIME_LOOPS: return IrPackage.IR_MODULE__INNER_TIME_LOOPS;
+				default: return -1;
+			}
+		}
+		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
 	}
 
 	/**

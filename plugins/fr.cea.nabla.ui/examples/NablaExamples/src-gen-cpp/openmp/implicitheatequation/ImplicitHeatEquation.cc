@@ -64,20 +64,32 @@ ImplicitHeatEquation::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
 	// u0
-	assert(d.HasMember("u0"));
-	const rapidjson::Value& valueof_u0 = d["u0"];
-	assert(valueof_u0.IsDouble());
-	u0 = valueof_u0.GetDouble();
+	if (d.HasMember("u0"))
+	{
+		const rapidjson::Value& valueof_u0 = d["u0"];
+		assert(valueof_u0.IsDouble());
+		u0 = valueof_u0.GetDouble();
+	}
+	else
+		u0 = 1.0;
 	// stopTime
-	assert(d.HasMember("stopTime"));
-	const rapidjson::Value& valueof_stopTime = d["stopTime"];
-	assert(valueof_stopTime.IsDouble());
-	stopTime = valueof_stopTime.GetDouble();
+	if (d.HasMember("stopTime"))
+	{
+		const rapidjson::Value& valueof_stopTime = d["stopTime"];
+		assert(valueof_stopTime.IsDouble());
+		stopTime = valueof_stopTime.GetDouble();
+	}
+	else
+		stopTime = 1.0;
 	// maxIterations
-	assert(d.HasMember("maxIterations"));
-	const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
-	assert(valueof_maxIterations.IsInt());
-	maxIterations = valueof_maxIterations.GetInt();
+	if (d.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
+		assert(valueof_maxIterations.IsInt());
+		maxIterations = valueof_maxIterations.GetInt();
+	}
+	else
+		maxIterations = 500000000;
 }
 
 /******************** Module definition ********************/
@@ -94,10 +106,10 @@ ImplicitHeatEquation::ImplicitHeatEquation(CartesianMesh2D* aMesh, const Options
 , options(aOptions)
 , linearAlgebraFunctions(aLinearAlgebraFunctions)
 , writer("ImplicitHeatEquation", options.outputPath)
+, lastDump(numeric_limits<int>::min())
 , t_n(0.0)
 , t_nplus1(0.0)
 , deltat(0.001)
-, lastDump(numeric_limits<int>::min())
 , X(nbNodes)
 , Xc(nbCells)
 , u_n(nbCells)
@@ -442,7 +454,7 @@ void ImplicitHeatEquation::simulate()
 	executeTimeLoopN(); // @4.0
 	
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
-	std::cout << "[CG] average iteration: " << cg_info.m_nb_it / n << std::endl;
+	std::cout << "[CG] average iteration: " << cg_info.m_nb_it / cg_info.m_nb_call << std::endl;
 }
 
 /******************** Module definition ********************/

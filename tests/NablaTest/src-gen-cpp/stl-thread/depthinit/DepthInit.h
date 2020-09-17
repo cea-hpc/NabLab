@@ -46,12 +46,11 @@ private:
 	const Options& options;
 	DepthInitFunctions& depthInitFunctions;
 	
-	// Global definitions
+	// Global variables
 	static constexpr double t = 0.0;
-	
-	// Global declarations
 	std::vector<RealArray1D<2>> X;
 	std::vector<double> eta;
+	
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;

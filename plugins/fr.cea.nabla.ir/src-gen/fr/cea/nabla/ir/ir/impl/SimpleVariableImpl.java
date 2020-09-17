@@ -25,7 +25,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#getType <em>Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#getDefaultValue <em>Default Value</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#isOption <em>Option</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#isConst <em>Const</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#isConstExpr <em>Const Expr</em>}</li>
  * </ul>
@@ -52,26 +51,6 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	 * @ordered
 	 */
 	protected Expression defaultValue;
-
-	/**
-	 * The default value of the '{@link #isOption() <em>Option</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isOption()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean OPTION_EDEFAULT = false;
-
-	/**
-	 * The cached value of the '{@link #isOption() <em>Option</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isOption()
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean option = OPTION_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #isConst() <em>Const</em>}' attribute.
@@ -251,29 +230,6 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	 * @generated
 	 */
 	@Override
-	public boolean isOption() {
-		return option;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setOption(boolean newOption) {
-		boolean oldOption = option;
-		option = newOption;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.SIMPLE_VARIABLE__OPTION, oldOption, option));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public boolean isConst() {
 		return const_;
 	}
@@ -343,8 +299,6 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 				return basicGetType();
 			case IrPackage.SIMPLE_VARIABLE__DEFAULT_VALUE:
 				return getDefaultValue();
-			case IrPackage.SIMPLE_VARIABLE__OPTION:
-				return isOption();
 			case IrPackage.SIMPLE_VARIABLE__CONST:
 				return isConst();
 			case IrPackage.SIMPLE_VARIABLE__CONST_EXPR:
@@ -366,9 +320,6 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 				return;
 			case IrPackage.SIMPLE_VARIABLE__DEFAULT_VALUE:
 				setDefaultValue((Expression)newValue);
-				return;
-			case IrPackage.SIMPLE_VARIABLE__OPTION:
-				setOption((Boolean)newValue);
 				return;
 			case IrPackage.SIMPLE_VARIABLE__CONST:
 				setConst((Boolean)newValue);
@@ -394,9 +345,6 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 			case IrPackage.SIMPLE_VARIABLE__DEFAULT_VALUE:
 				setDefaultValue((Expression)null);
 				return;
-			case IrPackage.SIMPLE_VARIABLE__OPTION:
-				setOption(OPTION_EDEFAULT);
-				return;
 			case IrPackage.SIMPLE_VARIABLE__CONST:
 				setConst(CONST_EDEFAULT);
 				return;
@@ -419,8 +367,6 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 				return type != null;
 			case IrPackage.SIMPLE_VARIABLE__DEFAULT_VALUE:
 				return defaultValue != null;
-			case IrPackage.SIMPLE_VARIABLE__OPTION:
-				return option != OPTION_EDEFAULT;
 			case IrPackage.SIMPLE_VARIABLE__CONST:
 				return const_ != CONST_EDEFAULT;
 			case IrPackage.SIMPLE_VARIABLE__CONST_EXPR:
@@ -439,9 +385,7 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 		if (eIsProxy()) return super.toString();
 
 		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (option: ");
-		result.append(option);
-		result.append(", const: ");
+		result.append(" (const: ");
 		result.append(const_);
 		result.append(", constExpr: ");
 		result.append(constExpr);

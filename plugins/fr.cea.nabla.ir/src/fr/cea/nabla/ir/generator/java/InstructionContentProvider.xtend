@@ -25,7 +25,8 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.SimpleVariable
-import fr.cea.nabla.ir.ir.VariableDefinition
+import fr.cea.nabla.ir.ir.VariableDeclaration
+import fr.cea.nabla.ir.ir.While
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
@@ -34,11 +35,10 @@ import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 import static extension fr.cea.nabla.ir.generator.java.ItemIndexAndIdValueContentProvider.*
-import fr.cea.nabla.ir.ir.While
 
 class InstructionContentProvider 
 {
-	static def dispatch CharSequence getContent(VariableDefinition it)
+	static def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
 		«IF variable.const»final «ENDIF»«variable.javaType» «variable.name»«variable.defaultValueContent»;
 	'''

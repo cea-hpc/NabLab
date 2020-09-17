@@ -18,15 +18,14 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getItemTypes <em>Item Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getFunctions <em>Functions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getConnectivities <em>Connectivities</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getDefinitions <em>Definitions</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getDeclarations <em>Declarations</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getOptions <em>Options</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getMeshClassName <em>Mesh Class Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getTimeVariable <em>Time Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getDeltatVariable <em>Deltat Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getJobs <em>Jobs</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getMainTimeLoop <em>Main Time Loop</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getPostProcessingInfo <em>Post Processing Info</em>}</li>
  * </ul>
  *
@@ -34,7 +33,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface IrModule extends JobContainer {
+public interface IrModule extends JobContainer, TimeLoopContainer {
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -106,28 +105,28 @@ public interface IrModule extends JobContainer {
 	EList<Connectivity> getConnectivities();
 
 	/**
-	 * Returns the value of the '<em><b>Definitions</b></em>' containment reference list.
+	 * Returns the value of the '<em><b>Options</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.SimpleVariable}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Definitions</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Definitions()
-	 * @model containment="true"
+	 * @return the value of the '<em>Options</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Options()
+	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	EList<SimpleVariable> getDefinitions();
+	EList<SimpleVariable> getOptions();
 
 	/**
-	 * Returns the value of the '<em><b>Declarations</b></em>' containment reference list.
+	 * Returns the value of the '<em><b>Variables</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Variable}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Declarations</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Declarations()
+	 * @return the value of the '<em>Variables</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Variables()
 	 * @model containment="true"
 	 * @generated
 	 */
-	EList<Variable> getDeclarations();
+	EList<Variable> getVariables();
 
 	/**
 	 * Returns the value of the '<em><b>Mesh Class Name</b></em>' attribute.
@@ -250,28 +249,6 @@ public interface IrModule extends JobContainer {
 	 * @generated
 	 */
 	EList<Job> getJobs();
-
-	/**
-	 * Returns the value of the '<em><b>Main Time Loop</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Main Time Loop</em>' containment reference.
-	 * @see #setMainTimeLoop(TimeLoop)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_MainTimeLoop()
-	 * @model containment="true" resolveProxies="true"
-	 * @generated
-	 */
-	TimeLoop getMainTimeLoop();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getMainTimeLoop <em>Main Time Loop</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Main Time Loop</em>' containment reference.
-	 * @see #getMainTimeLoop()
-	 * @generated
-	 */
-	void setMainTimeLoop(TimeLoop value);
 
 	/**
 	 * Returns the value of the '<em><b>Post Processing Info</b></em>' containment reference.

@@ -26,7 +26,7 @@ import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.SetRef
-import fr.cea.nabla.ir.ir.VariableDefinition
+import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.While
 import java.util.Arrays
 import java.util.stream.IntStream
@@ -60,8 +60,8 @@ class InstructionInterpreter
 			return interpreteReturn(context)
 		} else if (it instanceof Exit) {
 			return interpreteExit(context)
-		} else if (it instanceof VariableDefinition) {
-			return interpreteVariableDefinition(context)
+		} else if (it instanceof VariableDeclaration) {
+			return interpreteVariableDeclaration(context)
 		} else if (it instanceof ItemIdDefinition) {
 			return interpreteItemIdDefinition(context)
 		} else if (it instanceof ItemIndexDefinition) {
@@ -74,7 +74,7 @@ class InstructionInterpreter
 		}
 	}
 
-	static def NablaValue interpreteVariableDefinition(VariableDefinition it, Context context)
+	static def NablaValue interpreteVariableDeclaration(VariableDeclaration it, Context context)
 	{
 		context.logFinest("Interprete VarDefinition")
 		context.addVariableValue(variable, createValue(variable, context))

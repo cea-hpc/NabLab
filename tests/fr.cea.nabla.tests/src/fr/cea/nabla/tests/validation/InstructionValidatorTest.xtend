@@ -159,28 +159,27 @@ class InstructionValidatorTest
 	}
 
 	@Test
-	def void testCheckGlobalVarValue()
+	def void testVarTypeForSimpleVarDeclaration()
 	{
 		val moduleKo1 = parseHelper.parse(
+			'''
+			«emptyTestModule»
+			let ℕ coef = 2.0;
+			''')
+		Assert.assertNotNull(moduleKo1)
+		moduleKo1.assertError(NablaPackage.eINSTANCE.simpleVarDeclaration,
+			InstructionValidator::SIMPLE_VAR_TYPE,
+			getTypeMsg(PrimitiveType.REAL.literal, PrimitiveType.INT.literal))
+
+		val moduleKo2 = parseHelper.parse(
 			'''
 			«emptyTestModule»
 			def mySum, 0: ℕ, (a, b) → return a + b;
 			let ℕ[3] coef = [2, 3, 4];
 			let ℕ c = mySum{k∈[0;3[}(coef[k]);
 			''')
-		Assert.assertNotNull(moduleKo1)
-		moduleKo1.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
-			InstructionValidator::GLOBAL_VAR_VALUE,
-			InstructionValidator::getGlobalVarValueMsg)
-
-		val moduleKo2 = parseHelper.parse(
-			'''
-			«testModuleForSimulation»
-			let ℕ c = card(nodes());
-			option ℕ d = c;
-			''')
 		Assert.assertNotNull(moduleKo2)
-		moduleKo2.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
+		moduleKo2.assertError(NablaPackage.eINSTANCE.simpleVarDeclaration,
 			InstructionValidator::GLOBAL_VAR_VALUE,
 			InstructionValidator::getGlobalVarValueMsg)
 
@@ -195,24 +194,40 @@ class InstructionValidatorTest
 	}
 
 	@Test
-	def void testLocalOption()
+	def void testVarTypeForOption()
 	{
-		val moduleKo = parseHelper.parse(
+		val moduleKo1 = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
-			option ℕ alpha = 1;
-			ℕ U{cells}; 
-			ℕ V{cells};
-			ComputeU: ∀ j∈cells(), {
-					option ℕ e = 1;
-					U{j} = e * alpha * 4;
-			}
-			ComputeV: V = U;
+			«emptyTestModule»
+			option ℕ coef = 2.0;
 			''')
-		Assert.assertNotNull(moduleKo)
-		moduleKo.assertError(NablaPackage.eINSTANCE.simpleVarDefinition,
-			InstructionValidator::LOCAL_OPTION,
-			InstructionValidator::getLocalOptionMsg())
+		Assert.assertNotNull(moduleKo1)
+		moduleKo1.assertError(NablaPackage.eINSTANCE.optionDeclaration,
+			InstructionValidator::SIMPLE_VAR_TYPE,
+			getTypeMsg(PrimitiveType.REAL.literal, PrimitiveType.INT.literal))
+
+		val moduleKo2 = parseHelper.parse(
+			'''
+			«emptyTestModule»
+			def mySum, 0: ℕ, (a, b) → return a + b;
+			option ℕ[3] coef = [2, 3, 4];
+			option ℕ c = mySum{k∈[0;3[}(coef[k]);
+			''')
+		Assert.assertNotNull(moduleKo2)
+		moduleKo2.assertError(NablaPackage.eINSTANCE.optionDeclaration,
+			InstructionValidator::GLOBAL_VAR_VALUE,
+			InstructionValidator::getGlobalVarValueMsg)
+
+		val moduleKo3 = parseHelper.parse(
+			'''
+			«emptyTestModule»
+			let ℕ[3] coef = [2, 3, 4];
+			option ℕ c = coef[0];
+			''')
+		Assert.assertNotNull(moduleKo3)
+		moduleKo3.assertError(NablaPackage.eINSTANCE.optionDeclaration,
+			InstructionValidator::OPTION_DEFAULT_VALUE,
+			InstructionValidator::getOptionDefaultValueMsg)
 
 		val moduleOk = parseHelper.parse(
 			'''

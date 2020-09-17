@@ -73,16 +73,14 @@ private:
 	const Options& options;
 	PvdFileWriter2D writer;
 	
-	// Global definitions
+	// Global variables
+	int lastDump;
+	int n;
+	int k;
 	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
 	double t_n;
 	double t_nplus1;
 	double deltat;
-	int lastDump;
-	
-	// Global declarations
-	int n;
-	int k;
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> Xc;
 	Kokkos::View<double*> u_n;
@@ -95,6 +93,7 @@ private:
 	Kokkos::View<double*> faceConductivity;
 	Kokkos::View<double**> alpha;
 	double residual;
+	
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;

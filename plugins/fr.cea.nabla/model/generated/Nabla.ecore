@@ -13,10 +13,8 @@
         eType="#//Reduction" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="functions" upperBound="-1"
         eType="#//Function" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="definitions" upperBound="-1"
-        eType="#//SimpleVarDefinition" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="declarations" upperBound="-1"
-        eType="#//VarGroupDeclaration" containment="true"/>
+        eType="#//VarDeclaration" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="iteration" eType="#//TimeIteratorDefinition"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="jobs" upperBound="-1" eType="#//Job"
@@ -44,19 +42,24 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterationBlock" eType="#//IterationBlock"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Instruction"/>
-  <eClassifiers xsi:type="ecore:EClass" name="SimpleVarDefinition" eSuperTypes="#//Instruction">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="option" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  <eClassifiers xsi:type="ecore:EClass" name="VarDeclaration">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
         containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Instruction"/>
+  <eClassifiers xsi:type="ecore:EClass" name="OptionDeclaration" eSuperTypes="#//VarDeclaration">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//SimpleVar"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="VarGroupDeclaration" eSuperTypes="#//Instruction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
+  <eClassifiers xsi:type="ecore:EClass" name="SimpleVarDeclaration" eSuperTypes="#//VarDeclaration #//Instruction">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//SimpleVar"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//Expression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VarGroupDeclaration" eSuperTypes="#//VarDeclaration #//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//Var" containment="true"/>
   </eClassifiers>
@@ -130,12 +133,19 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="dec" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeIteratorDefinition">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="iterators" upperBound="-1"
-        eType="#//TimeIterator" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="iterator" eType="#//AbstractTimeIterator"
+        containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeIterator" eSuperTypes="#//ArgOrVar">
+  <eClassifiers xsi:type="ecore:EClass" name="AbstractTimeIterator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeIterator" eSuperTypes="#//AbstractTimeIterator #//ArgOrVar">
     <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//Expression"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="innerIterator" eType="#//AbstractTimeIterator"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeIteratorBlock" eSuperTypes="#//AbstractTimeIterator">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="iterators" upperBound="-1"
+        eType="#//AbstractTimeIterator" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeIteratorRef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//TimeIterator"/>

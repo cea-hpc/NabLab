@@ -42,13 +42,11 @@ private:
 	// User options and external classes
 	const Options& options;
 	
-	// Global definitions
-	double t_n;
-	double t_nplus1;
-	
-	// Global declarations
+	// Global variables
 	int n;
 	int k;
+	double t_n;
+	double t_nplus1;
 	std::vector<RealArray1D<2>> X;
 	std::vector<double> e1;
 	std::vector<double> e2_n;
@@ -59,6 +57,7 @@ private:
 	std::vector<double> e_n;
 	std::vector<double> e_nplus1;
 	std::vector<double> e_n0;
+	
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;

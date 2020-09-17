@@ -25,13 +25,15 @@ import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.Loop
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
+import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.ReductionTypeDeclaration
-import fr.cea.nabla.nabla.SimpleVarDefinition
+import fr.cea.nabla.nabla.SimpleVarDeclaration
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.TimeIterator
-import fr.cea.nabla.nabla.TimeIteratorDefinition
+import fr.cea.nabla.nabla.Var
+import fr.cea.nabla.nabla.VarDeclaration
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
 import java.util.List
@@ -61,6 +63,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 			case NablaPackage.Literals.ARG_OR_VAR_REF__TARGET: getArgOrVarRefScope(context)
 			case NablaPackage.Literals.SPACE_ITERATOR_REF__TARGET: getSpaceIteratorRefScope(context)
 			case NablaPackage.Literals.ITEM_SET_REF__TARGET: getItemSetRefScope(context)
+			case NablaPackage.Literals.TIME_ITERATOR_REF__TARGET: getTimeIteratorRefScope(context)
 			default: super.getScope(context, r)
 		}
 	}
@@ -129,6 +132,18 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 
 
 
+	/*** Scope for time iterators ********************************************/
+	private def IScope getTimeIteratorRefScope(EObject context)
+	{
+		//println('getTimeIteratorRefScope(' + context.class.simpleName + ')')
+		val module = EcoreUtil2.getContainerOfType(context, NablaModule)
+		if (module === null || module.iteration === null) return IScope::NULLSCOPE
+		val iterators = module.iteration.eAllContents.filter(TimeIterator).toList
+		Scopes::scopeFor(iterators)
+	}
+
+
+
 	/*** Scope for variables *************************************************/
 	private def IScope getArgOrVarRefScope(EObject context)
 	{
@@ -166,13 +181,15 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 			}
 			Instruction:
 				Scopes::scopeFor(variablesDefinedBefore(context.eContainer, context), getArgOrVarRefScope(context.eContainer))
+			OptionDeclaration:
+				Scopes::scopeFor(subList((context.eContainer as NablaModule).declarations, context).declarationsVars)
 			TimeIterator:
 			{
-				val definition = context.eContainer as TimeIteratorDefinition 
 				val module = EcoreUtil2.getContainerOfType(context, NablaModule)
+				val iterators = module.iteration.eAllContents.filter(TimeIterator).toList
 				val iteratorsAndVars = new ArrayList<ArgOrVar>
 				iteratorsAndVars += module.allVars
-				iteratorsAndVars += subList(definition.iterators, context)
+				iteratorsAndVars += subList(iterators, context)
 				iteratorsAndVars += context
 				Scopes::scopeFor(iteratorsAndVars)
 			}
@@ -189,7 +206,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		switch context
 		{
 			InstructionBlock:
-				subList(context.instructions, i).allVars
+				subList(context.instructions, i).instructionsVars
 			Instruction:
 				#[]
 			FunctionOrReduction:
@@ -197,7 +214,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 			Job:
 				(context.eContainer as NablaModule).allVars
 			NablaModule:
-				subList((context.definitions + context.declarations).toList, i).allVars
+				subList(context.declarations.toList, i as VarDeclaration).declarationsVars
 			default:
 				throw new RuntimeException("Unexpected type in scope provider: " + context.class.name)
 		}
@@ -208,16 +225,29 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		scopeCache.get(module, module.eResource, [nablaModuleExtensions.getAllVars(module)])
 	}
 
-	private def getAllVars(List<? extends Instruction> instructions)
+	private def getInstructionsVars(List<? extends Instruction> instructions)
 	{
 		val variables = new ArrayList<ArgOrVar>
 		for (i : instructions)
 			switch i
 			{
 				VarGroupDeclaration : variables += i.variables
-				SimpleVarDefinition : variables += i.variable
+				SimpleVarDeclaration : variables += i.variable
 			}
 		return variables
+	}
+
+	private def getDeclarationsVars(List<? extends VarDeclaration> declarations)
+	{
+		val allVars = new ArrayList<Var>
+		for (d : declarations)
+			switch d
+			{
+				OptionDeclaration: allVars += d.variable
+				SimpleVarDeclaration: allVars += d.variable
+				VarGroupDeclaration: allVars += d.variables
+			}
+		return allVars
 	}
 
 	private def <T extends EObject> subList(List<? extends T> listOfElts, T eltInList)

@@ -11,9 +11,11 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.TimeLoop
+import fr.cea.nabla.ir.ir.TimeLoopContainer
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.CurrentTimeIteratorRef
@@ -21,6 +23,7 @@ import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.TimeIterator
+import fr.cea.nabla.nabla.TimeIteratorBlock
 import fr.cea.nabla.nabla.TimeIteratorRef
 import fr.cea.nabla.nabla.Var
 import java.util.ArrayList
@@ -32,6 +35,28 @@ class IrTimeLoopFactory
 	@Inject extension IrExpressionFactory
 	@Inject extension IrArgOrVarFactory
 	@Inject extension IrAnnotationHelper
+
+	def dispatch ArrayList<SimpleVariable> createTimeLoopsAndIterationCounters(TimeLoopContainer tlContainer, TimeIteratorBlock nablaTimeIterator)
+	{
+		val timeLoopVariables = new ArrayList<SimpleVariable>
+		for (ti : nablaTimeIterator.iterators)
+			timeLoopVariables += createTimeLoopsAndIterationCounters(tlContainer, ti)
+		return timeLoopVariables
+	}
+
+	def dispatch ArrayList<SimpleVariable> createTimeLoopsAndIterationCounters(TimeLoopContainer tlContainer, TimeIterator nablaTimeIterator)
+	{
+		val timeLoopVariables = new ArrayList<SimpleVariable>
+		val ic = nablaTimeIterator.toIrIterationCounter
+		timeLoopVariables += ic
+		val timeLoop = nablaTimeIterator.toIrTimeLoop => [ iterationCounter = ic ]
+		tlContainer.innerTimeLoops += timeLoop
+		if (nablaTimeIterator.innerIterator !== null)
+		{
+			timeLoopVariables += createTimeLoopsAndIterationCounters(timeLoop, nablaTimeIterator.innerIterator)
+		}
+		return timeLoopVariables
+	}
 
 	def create IrFactory::eINSTANCE.createTimeLoop toIrTimeLoop(TimeIterator ti)
 	{
@@ -47,16 +72,17 @@ class IrTimeLoopFactory
 	 * - a set up job, instance of BeforeTimeLoopJob, to copy init variables if they exist,
 	 * - a tear down job, instance of AfterTimeLoopJob only if the loop is nested into another one.
 	 */
-	def List<Job> createTimeLoopJobs(TimeLoop tl)
+	def List<Job> createTimeLoopJobs(TimeLoopContainer tlContainer)
 	{
 		val createdJobs = new ArrayList<Job>
+		for (tl : tlContainer.innerTimeLoops)
+		{
+			createdJobs += tl.toIrTimeLoopJob
+			if (tlContainer instanceof TimeLoop || tl.variables.exists[init !== null]) createdJobs += tl.toIrBeforeTimeLoopJob
+			if (tlContainer instanceof TimeLoop) createdJobs += tl.toIrAfterTimeLoopJob
 
-		createdJobs += tl.toIrTimeLoopJob
-		if (tl.outerTimeLoop !== null || tl.variables.exists[init !== null]) createdJobs += tl.toIrBeforeTimeLoopJob
-		if (tl.outerTimeLoop !== null) createdJobs += tl.toIrAfterTimeLoopJob
-
-		if (tl.innerTimeLoop !== null) createdJobs += tl.innerTimeLoop.createTimeLoopJobs
-
+			createdJobs += tl.createTimeLoopJobs
+		}
 		return createdJobs
 	}
 
@@ -133,11 +159,8 @@ class IrTimeLoopFactory
 		else timeIterators.suffixes
 	}
 
-	private def String getIrTimeSuffix(TimeLoop it, String type) 
-	{ 
-		if (outerTimeLoop === null) '_' + name + type
-		else getIrTimeSuffix(outerTimeLoop, nextName) + '_' + name + type
-	}
+	private def dispatch String getIrTimeSuffix(IrModule it, String type) { '' }
+	private def dispatch String getIrTimeSuffix(TimeLoop it, String type) { getIrTimeSuffix(container, nextName) + '_' + name + type }
 
 	private def getSuffixes(Iterable<TimeIteratorRef> timeIterators)
 	{

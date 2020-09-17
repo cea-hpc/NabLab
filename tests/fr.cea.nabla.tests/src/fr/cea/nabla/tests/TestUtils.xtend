@@ -18,7 +18,7 @@ import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.NablaFactory
-import fr.cea.nabla.nabla.SimpleVarDefinition
+import fr.cea.nabla.nabla.SimpleVarDeclaration
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.nio.file.Files
@@ -30,7 +30,7 @@ import org.junit.Assert
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 
-class TestUtils 
+class TestUtils
 {
 	public static val DoubleTolerance = 1e-15
 
@@ -41,7 +41,7 @@ class TestUtils
 			switch i
 			{
 				VarGroupDeclaration : allVariables += i.variables
-				SimpleVarDefinition : allVariables += i.variable
+				SimpleVarDeclaration : allVariables += i.variable
 			}
 		return allVariables
 	}

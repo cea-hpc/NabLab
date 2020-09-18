@@ -33,7 +33,7 @@ Simulation:
 	'{'
 		'meshClassName' '=' meshClassName=STRING ';'
 		'nodeCoord' '=' nodeCoord=[nabla::ConnectivityVar]';'
-		'time' '=' time=[nabla::SimpleVar]';'
+		'time' '=' time=[nabla::SimpleVar|QualifiedName]';'
 		'timeStep' '=' timeStep=[nabla::SimpleVar]';'
 		// The two following variables are just needed for the C++ display (progression bar)
 		('iterationMax' '=' iterationMax=[nabla::SimpleVar] ';'

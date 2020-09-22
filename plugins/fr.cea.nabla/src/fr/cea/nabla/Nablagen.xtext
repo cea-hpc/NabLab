@@ -17,7 +17,6 @@ import "http://www.cea.fr/nabla/Nabla" as nabla
 generate nablagen "http://www.cea.fr/nabla/Nablagen"
 
 NablagenModule:
-	imports+=Import*
 	config=NablagenConfig;
 
 NablagenConfig:
@@ -33,7 +32,7 @@ Simulation:
 	'{'
 		'meshClassName' '=' meshClassName=STRING ';'
 		'nodeCoord' '=' nodeCoord=[nabla::ConnectivityVar]';'
-		'time' '=' time=[nabla::SimpleVar|QualifiedName]';'
+		'time' '=' time=[nabla::SimpleVar]';'
 		'timeStep' '=' timeStep=[nabla::SimpleVar]';'
 		// The two following variables are just needed for the C++ display (progression bar)
 		('iterationMax' '=' iterationMax=[nabla::SimpleVar] ';'

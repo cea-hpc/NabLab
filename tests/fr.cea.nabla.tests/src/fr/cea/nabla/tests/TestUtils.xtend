@@ -116,8 +116,6 @@ class TestUtils
 
 	def getTestGenModel()
 	'''
-		with Test.*;
-
 		nablagen for Test;
 
 		SimulationVariables

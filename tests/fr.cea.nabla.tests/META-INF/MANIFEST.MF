@@ -19,14 +19,9 @@ Require-Bundle: fr.cea.nabla,
  org.slf4j.api,
  commons-math3;bundle-version="3.6.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Export-Package: explicitheatequation,
- fr.cea.nabla.tests;x-internal=true,
+Export-Package: fr.cea.nabla.tests;x-internal=true,
  fr.cea.nabla.tests.interpreter,
  fr.cea.nabla.tests.validation,
- glace2d,
- heatequation,
- implicitheatequation,
- iterativeheatequation,
  test
 Import-Package: org.junit.runners;version="4.5.0",
  org.junit.runners.model;version="4.5.0",

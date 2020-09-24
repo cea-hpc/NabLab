@@ -34,6 +34,7 @@ class NablaExamplesInterpreterTest
 {
 	static String testsProjectSubPath
 	static String examplesProjectPath
+	static String logRelativPath
 	static GitUtils git
 	LocalDateTime startTime
 
@@ -50,6 +51,8 @@ class NablaExamplesInterpreterTest
 		val examplesProjectSubPath = "plugins/fr.cea.nabla.ui/examples/NablaExamples/"
 		examplesProjectPath = wsPath + examplesProjectSubPath
 		git = new GitUtils(wsPath)
+
+		logRelativPath = "fr/cea/nabla/tests/interpreter/"
 
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s %n")
 		System.setProperty("java.util.logging.FileHandler.limit", "1024000")
@@ -114,7 +117,7 @@ class NablaExamplesInterpreterTest
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, genmodel)
 		//val handler = new ConsoleHandler
 
-		val logFile = String.format("src/%1$s/Interprete%2$s.log", moduleName.toLowerCase, moduleName)
+		val logFile = String.format("src/%1$s/%2$s/Interprete%3$s.log", logRelativPath, moduleName.toLowerCase, moduleName)
 		val handler = new FileHandler(logFile, false)
 
 		val formatter = new SimpleFormatter

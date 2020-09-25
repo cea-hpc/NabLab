@@ -9,6 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
+import static org.iq80.leveldb.impl.Iq80DBFactory.bytes
+
 class NablaValueExtensions
 {
 	static def getSize(NV1Int it) { data.size }
@@ -18,4 +20,6 @@ class NablaValueExtensions
 	static def getNbCols(NV2Int it) { data.get(0).size }
 	static def getNbRows(NV2Real it) { data.size }
 	static def getNbCols(NV2Real it) { data.get(0).size }
+
+	static def serialize(NablaValue it) { bytes(it.toString) }
 }

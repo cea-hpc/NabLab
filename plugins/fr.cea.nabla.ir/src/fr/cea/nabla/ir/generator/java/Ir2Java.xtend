@@ -195,9 +195,9 @@ class Ir2Java extends CodeGenerator
 
 					«val nrName = Utils.NonRegressionNameAndValue.key»
 					// Non regression testing
-					if (options.«nrName»!=null &&  options.«nrName».equals("CreateReference"))
+					if (options.«nrName»!=null &&  options.«nrName».equals("«Utils.NonRegressionValues.CreateReference.toString»"))
 						simulator.createDB("«name»DB.ref");
-					if (options.«nrName»!=null &&  options.«nrName».equals("CompareToReference"))
+					if (options.«nrName»!=null &&  options.«nrName».equals("«Utils.NonRegressionValues.CompareToReference.toString»"))
 					{
 						simulator.createDB("«name»DB.current");
 						LevelDBUtils.compareDB("«name»DB.current", "«name»DB.ref");

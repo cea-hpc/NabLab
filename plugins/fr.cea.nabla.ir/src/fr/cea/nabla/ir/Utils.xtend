@@ -13,12 +13,15 @@ import fr.cea.nabla.ir.ir.IrModule
 import java.io.PrintWriter
 import java.io.StringWriter
 import org.eclipse.emf.ecore.EObject
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 
 class Utils 
 {
 	public static val FunctionReductionPrefix = 'Functions'
 	public static val NonRegressionNameAndValue = new Pair<String, String>("nonRegression", "")
-	
+	static enum NonRegressionValues { CreateReference, CompareToReference }
+
 	static def IrModule getIrModule(EObject o)
 	{
 		if (o === null) null
@@ -55,5 +58,17 @@ class Utils
 		val printWriter = new PrintWriter(result)
 		e.printStackTrace(printWriter)
 		return result.toString()
+	}
+
+	static def addNonRegressionTagToJsonFile(String jsonContent, String value)
+	{
+		val gson = new Gson
+		val jsonObject = gson.fromJson(jsonContent, JsonObject)
+		// Read options in Json
+		if (!jsonObject.has("options")) throw new RuntimeException("Options block missing in Json")
+		val jsonOptions = jsonObject.get("options").asJsonObject
+		val nrName = Utils.NonRegressionNameAndValue.key
+		jsonOptions.addProperty(nrName, value)
+		return gson.toJson(jsonObject)
 	}
 }

@@ -75,9 +75,9 @@ class MainContentProvider
 		«IF !levelDBPath.nullOrEmpty»
 		«val nrName = Utils.NonRegressionNameAndValue.key»
 		// Non regression testing
-		if (options.«nrName» == "CreateReference")
+		if (options.«nrName» == "«Utils.NonRegressionValues.CreateReference.toString»")
 			simulator->createDB("«name»DB.ref");
-		if (options.«nrName» == "CompareToReference") {
+		if (options.«nrName» == "«Utils.NonRegressionValues.CompareToReference.toString»") {
 			simulator->createDB("«name»DB.current");
 			compareDB("«name»DB.current", "«name»DB.ref");
 			leveldb::DestroyDB("«name»DB.current", leveldb::Options());

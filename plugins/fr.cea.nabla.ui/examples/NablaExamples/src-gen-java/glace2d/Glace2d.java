@@ -59,11 +59,13 @@ public final class Glace2d
 			// outputPeriod
 			assert(d.has("outputPeriod"));
 			final JsonElement valueof_outputPeriod = d.get("outputPeriod");
+			assert(valueof_outputPeriod.isJsonPrimitive());
 			options.outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
 			// stopTime
 			if (d.has("stopTime"))
 			{
 				final JsonElement valueof_stopTime = d.get("stopTime");
+				assert(valueof_stopTime.isJsonPrimitive());
 				options.stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
 			}
 			else
@@ -72,6 +74,7 @@ public final class Glace2d
 			if (d.has("maxIterations"))
 			{
 				final JsonElement valueof_maxIterations = d.get("maxIterations");
+				assert(valueof_maxIterations.isJsonPrimitive());
 				options.maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
 			}
 			else
@@ -80,6 +83,7 @@ public final class Glace2d
 			if (d.has("gamma"))
 			{
 				final JsonElement valueof_gamma = d.get("gamma");
+				assert(valueof_gamma.isJsonPrimitive());
 				options.gamma = valueof_gamma.getAsJsonPrimitive().getAsDouble();
 			}
 			else
@@ -88,6 +92,7 @@ public final class Glace2d
 			if (d.has("xInterface"))
 			{
 				final JsonElement valueof_xInterface = d.get("xInterface");
+				assert(valueof_xInterface.isJsonPrimitive());
 				options.xInterface = valueof_xInterface.getAsJsonPrimitive().getAsDouble();
 			}
 			else
@@ -96,6 +101,7 @@ public final class Glace2d
 			if (d.has("deltatIni"))
 			{
 				final JsonElement valueof_deltatIni = d.get("deltatIni");
+				assert(valueof_deltatIni.isJsonPrimitive());
 				options.deltatIni = valueof_deltatIni.getAsJsonPrimitive().getAsDouble();
 			}
 			else
@@ -104,6 +110,7 @@ public final class Glace2d
 			if (d.has("deltatCfl"))
 			{
 				final JsonElement valueof_deltatCfl = d.get("deltatCfl");
+				assert(valueof_deltatCfl.isJsonPrimitive());
 				options.deltatCfl = valueof_deltatCfl.getAsJsonPrimitive().getAsDouble();
 			}
 			else
@@ -112,6 +119,7 @@ public final class Glace2d
 			if (d.has("rhoIniZg"))
 			{
 				final JsonElement valueof_rhoIniZg = d.get("rhoIniZg");
+				assert(valueof_rhoIniZg.isJsonPrimitive());
 				options.rhoIniZg = valueof_rhoIniZg.getAsJsonPrimitive().getAsDouble();
 			}
 			else
@@ -120,6 +128,7 @@ public final class Glace2d
 			if (d.has("rhoIniZd"))
 			{
 				final JsonElement valueof_rhoIniZd = d.get("rhoIniZd");
+				assert(valueof_rhoIniZd.isJsonPrimitive());
 				options.rhoIniZd = valueof_rhoIniZd.getAsJsonPrimitive().getAsDouble();
 			}
 			else
@@ -128,6 +137,7 @@ public final class Glace2d
 			if (d.has("pIniZg"))
 			{
 				final JsonElement valueof_pIniZg = d.get("pIniZg");
+				assert(valueof_pIniZg.isJsonPrimitive());
 				options.pIniZg = valueof_pIniZg.getAsJsonPrimitive().getAsDouble();
 			}
 			else
@@ -136,6 +146,7 @@ public final class Glace2d
 			if (d.has("pIniZd"))
 			{
 				final JsonElement valueof_pIniZd = d.get("pIniZd");
+				assert(valueof_pIniZd.isJsonPrimitive());
 				options.pIniZd = valueof_pIniZd.getAsJsonPrimitive().getAsDouble();
 			}
 			else

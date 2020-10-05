@@ -53,11 +53,13 @@ public final class HeatEquation
 			// outputPeriod
 			assert(d.has("outputPeriod"));
 			final JsonElement valueof_outputPeriod = d.get("outputPeriod");
+			assert(valueof_outputPeriod.isJsonPrimitive());
 			options.outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
 			// stopTime
 			if (d.has("stopTime"))
 			{
 				final JsonElement valueof_stopTime = d.get("stopTime");
+				assert(valueof_stopTime.isJsonPrimitive());
 				options.stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
 			}
 			else
@@ -66,6 +68,7 @@ public final class HeatEquation
 			if (d.has("maxIterations"))
 			{
 				final JsonElement valueof_maxIterations = d.get("maxIterations");
+				assert(valueof_maxIterations.isJsonPrimitive());
 				options.maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
 			}
 			else
@@ -74,6 +77,7 @@ public final class HeatEquation
 			if (d.has("PI"))
 			{
 				final JsonElement valueof_PI = d.get("PI");
+				assert(valueof_PI.isJsonPrimitive());
 				options.PI = valueof_PI.getAsJsonPrimitive().getAsDouble();
 			}
 			else
@@ -82,6 +86,7 @@ public final class HeatEquation
 			if (d.has("alpha"))
 			{
 				final JsonElement valueof_alpha = d.get("alpha");
+				assert(valueof_alpha.isJsonPrimitive());
 				options.alpha = valueof_alpha.getAsJsonPrimitive().getAsDouble();
 			}
 			else

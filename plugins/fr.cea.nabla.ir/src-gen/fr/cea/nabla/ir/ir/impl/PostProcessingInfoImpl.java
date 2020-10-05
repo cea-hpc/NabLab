@@ -10,6 +10,7 @@ import fr.cea.nabla.ir.ir.Variable;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
@@ -114,46 +115,6 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 	 * @generated
 	 */
 	@Override
-	public SimpleVariable getPeriodValue() {
-		if (periodValue != null && periodValue.eIsProxy()) {
-			InternalEObject oldPeriodValue = (InternalEObject)periodValue;
-			periodValue = (SimpleVariable)eResolveProxy(oldPeriodValue);
-			if (periodValue != oldPeriodValue) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE, oldPeriodValue, periodValue));
-			}
-		}
-		return periodValue;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public SimpleVariable basicGetPeriodValue() {
-		return periodValue;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setPeriodValue(SimpleVariable newPeriodValue) {
-		SimpleVariable oldPeriodValue = periodValue;
-		periodValue = newPeriodValue;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE, oldPeriodValue, periodValue));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public SimpleVariable getPeriodReference() {
 		if (periodReference != null && periodReference.eIsProxy()) {
 			InternalEObject oldPeriodReference = (InternalEObject)periodReference;
@@ -186,6 +147,46 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 		periodReference = newPeriodReference;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.POST_PROCESSING_INFO__PERIOD_REFERENCE, oldPeriodReference, periodReference));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public SimpleVariable getPeriodValue() {
+		if (periodValue != null && periodValue.eIsProxy()) {
+			InternalEObject oldPeriodValue = (InternalEObject)periodValue;
+			periodValue = (SimpleVariable)eResolveProxy(oldPeriodValue);
+			if (periodValue != oldPeriodValue) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE, oldPeriodValue, periodValue));
+			}
+		}
+		return periodValue;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SimpleVariable basicGetPeriodValue() {
+		return periodValue;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setPeriodValue(SimpleVariable newPeriodValue) {
+		SimpleVariable oldPeriodValue = periodValue;
+		periodValue = newPeriodValue;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE, oldPeriodValue, periodValue));
 	}
 
 	/**

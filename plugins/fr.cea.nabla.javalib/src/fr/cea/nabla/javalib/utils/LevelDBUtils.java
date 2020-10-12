@@ -32,34 +32,34 @@ public class LevelDBUtils
 			DBIterator it = db.iterator();
 	
 			// Results comparison
-			System.out.println("# Compairing results ...");
+			System.err.println("# Compairing results ...");
 		
 			try 
 			{
-				for(it_ref.seekToFirst(), it.seekToFirst(); it_ref.hasNext() && it.hasNext(); it_ref.next(), it.next()) 
+				for(it_ref.seekToFirst(), it.seekToFirst(); it_ref.hasNext() && it.hasNext(); it_ref.next(), it.next())
 				{
 					String key = asString(it.peekNext().getKey());
 					if (!key.equals(asString(it_ref.peekNext().getKey())))
 					{
-						System.out.println("ERROR - Incompatible ref. Key : " + key + " not found.");						
+						System.err.println("ERROR - Incompatible ref. Key : " + key + " not found.");
 						result = false;
 						break;
 					}
 					String value = asString(it.peekNext().getValue());
 					String ref = asString(it_ref.peekNext().getValue());
-					System.out.println(key + ": " + (value.contentEquals(ref) ? "OK" : "ERROR"));
+					System.err.println(key + ": " + (value.contentEquals(ref) ? "OK" : "ERROR"));
 					if (!value.equals(ref))
 					{
 						result = false;
-						System.out.println("value = " + value);
-						System.out.println(" ref = " + ref);
+						System.err.println("value = " + value);
+						System.err.println(" ref = " + ref);
 
 					}
 				}
 			}
 			catch (Exception e)
 			{
-				System.out.println(e);
+				System.err.println(e);
 			}
 			finally {
 				// Make sure you close the iterator to avoid resource leaks.
@@ -74,7 +74,7 @@ public class LevelDBUtils
 		}
 		catch (Exception e)
 		{
-			System.out.println("No ref database to compare with ! Looking for " + refName);
+			System.err.println("No ref database to compare with ! Looking for " + refName);
 			destroyDB(refName);
 			return false;
 		}

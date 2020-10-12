@@ -114,7 +114,7 @@ class KokkosIr2Cmake extends Ir2Cmake
 	override getLibraryBackend(IrModule m)
 	'''
 		set(LIBCPPNABLA_BACKEND "KOKKOS")
-		set(NABLA_KOKKOS_PATH "«kokkosPath»")
+		set(NABLA_KOKKOS_PATH «kokkosPath»)
 	'''
 
 	override getTargetLinkLibraries(IrModule m)

@@ -120,7 +120,7 @@ class NablaExamplesInterpreterTest
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, genmodel)
 		//val handler = new ConsoleHandler
 
-		val logFile = String.format("results/%1$s/Interprete%2$s.log", moduleName.toLowerCase, moduleName)
+		val logFile = String.format("results/interpreter/%1$s/Interprete%2$s.log", moduleName.toLowerCase, moduleName)
 		val handler = new FileHandler(logFile, false)
 
 		val formatter = new SimpleFormatter
@@ -136,6 +136,6 @@ class NablaExamplesInterpreterTest
 
 	private def testNoGitDiff(String moduleName)
 	{
-		git.testNoGitDiff(testsProjectSubPath, moduleName)
+		Assert.assertTrue(git.noGitDiff(testsProjectSubPath, moduleName))
 	}
 }

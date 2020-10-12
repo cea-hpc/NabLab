@@ -269,7 +269,7 @@ class Ir2Cpp extends CodeGenerator
 		status = db->Write(leveldb::WriteOptions(), &batch);
 		// Checking everything was ok
 		assert(status.ok());
-		std::cout << "Reference database " << db_name << " created." << std::endl;
+		std::cerr << "Reference database " << db_name << " created." << std::endl;
 		// Freeing memory
 		delete db;
 	}
@@ -299,7 +299,7 @@ class Ir2Cpp extends CodeGenerator
 		leveldb::Status status = leveldb::DB::Open(options_ref, ref, &db_ref);
 		if (!status.ok())
 		{
-			std::cout << "No ref database to compare with ! Looking for " << ref << std::endl;
+			std::cerr << "No ref database to compare with ! Looking for " << ref << std::endl;
 			return false;
 		}
 		leveldb::Iterator* it_ref = db_ref->NewIterator(leveldb::ReadOptions());
@@ -314,13 +314,21 @@ class Ir2Cpp extends CodeGenerator
 		leveldb::Iterator* it = db->NewIterator(leveldb::ReadOptions());
 
 		// Results comparison
-		std::cout << "# Compairing results ..." << std::endl;
+		std::cerr << "# Compairing results ..." << std::endl;
 		for (it_ref->SeekToFirst(), it->SeekToFirst(); it_ref->Valid() && it->Valid(); it_ref->Next(), it->Next()) {
 			assert(it_ref->key().ToString() == it->key().ToString());
-			std::cout << it->key().ToString() << ": " << (it_ref->value().ToString()==it->value().ToString()?"OK":"ERROR") << std::endl;
-			if (it_ref->value().ToString() != it->value().ToString())
+			if (it_ref->value().ToString() == it->value().ToString())
+				std::cerr << it->key().ToString() << ": " << "OK" << std::endl;
+			else
+			{
+				std::cerr << it->key().ToString() << ": " << "ERROR" << std::endl;
 				result = false;
+			}
 		}
+
+		// Freeing memory
+		delete db;
+		delete db_ref;
 
 		return result;
 	}
@@ -331,7 +339,7 @@ class Ir2Cpp extends CodeGenerator
 	int main(int argc, char* argv[]) 
 	{
 		«backend.mainContentProvider.getContentFor(it)»
-		return 0;
+		return ret;
 	}
 	'''
 

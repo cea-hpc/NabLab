@@ -56,6 +56,12 @@ public final class Glace2d
 			assert(d.has("outputPath"));
 			final JsonElement valueof_outputPath = d.get("outputPath");
 			options.outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
+			// Non regression
+			if(d.has("nonRegression"))
+			{
+				final JsonElement valueof_nonRegression = d.get("nonRegression");
+				options.nonRegression = valueof_nonRegression.getAsJsonPrimitive().getAsString();
+			}
 			// outputPeriod
 			assert(d.has("outputPeriod"));
 			final JsonElement valueof_outputPeriod = d.get("outputPeriod");
@@ -264,6 +270,7 @@ public final class Glace2d
 			GsonBuilder gsonBuilder = new GsonBuilder();
 			gsonBuilder.registerTypeAdapter(Options.class, new Glace2d.OptionsDeserializer());
 			Gson gson = gsonBuilder.create();
+			int ret = 0;
 
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = gson.fromJson(o.get("mesh"), CartesianMesh2DFactory.class);
@@ -280,14 +287,17 @@ public final class Glace2d
 			if (options.nonRegression!=null &&  options.nonRegression.equals("CompareToReference"))
 			{
 				simulator.createDB("Glace2dDB.current");
-				LevelDBUtils.compareDB("Glace2dDB.current", "Glace2dDB.ref");
+				if (!LevelDBUtils.compareDB("Glace2dDB.current", "Glace2dDB.ref"))
+					ret = 1;
 				LevelDBUtils.destroyDB("Glace2dDB.current");
+				System.exit(ret);
 			}
 		}
 		else
 		{
-			System.out.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-			System.out.println("        Expecting user data file name, for example Glace2dDefault.json");
+			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
+			System.err.println("        Expecting user data file name, for example Glace2dDefault.json");
+			System.exit(1);
 		}
 	}
 

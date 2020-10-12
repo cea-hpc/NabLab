@@ -130,6 +130,7 @@ class SequentialIncludesContentProvider extends IncludesContentProvider
 		val includes = new LinkedHashSet<String>
 		if (m.postProcessingInfo !== null) includes += "mesh/stl/PvdFileWriter2D.h"
 		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
+		if (!levelDBPath.nullOrEmpty) includes += "utils/stl/Serializer.h"
 		return includes
 	}
 }
@@ -151,6 +152,7 @@ class OpenMpIncludesContentProvider extends IncludesContentProvider
 		val includes = new LinkedHashSet<String>
 		if (m.postProcessingInfo !== null) includes += "mesh/stl/PvdFileWriter2D.h"
 		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
+		if (!levelDBPath.nullOrEmpty) includes += "utils/stl/Serializer.h"
 		return includes
 	}
 }

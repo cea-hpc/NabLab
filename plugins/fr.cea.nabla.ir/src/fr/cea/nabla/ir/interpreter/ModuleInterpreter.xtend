@@ -59,7 +59,7 @@ class ModuleInterpreter
 		this.context = new Context(module, logger)
 		this.writer = new PvdFileWriter2D(module.name, outputDirName)
 		this.jobInterpreter = new JobInterpreter(writer)
-		this.levelDatabasePath = "results/" + module.name.toLowerCase + "/"
+		this.levelDatabasePath = "results/interpreter/" + module.name.toLowerCase + "/"
 		this.levelDBcompareResult = true
 	}
 

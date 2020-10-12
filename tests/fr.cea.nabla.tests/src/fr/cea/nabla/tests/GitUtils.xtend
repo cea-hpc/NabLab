@@ -9,18 +9,10 @@
  *******************************************************************************/
 package fr.cea.nabla.tests
 
-import java.io.ByteArrayOutputStream
 import java.io.File
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.diff.DiffEntry.ChangeType
-import org.eclipse.jgit.diff.DiffFormatter
-import org.eclipse.jgit.lib.ObjectId
-import org.eclipse.jgit.lib.Repository
-import org.eclipse.jgit.revwalk.RevWalk
-import org.eclipse.jgit.treewalk.CanonicalTreeParser
-import org.eclipse.jgit.treewalk.FileTreeIterator
 import org.eclipse.jgit.treewalk.filter.PathFilter
-import org.junit.Assert
 
 class GitUtils
 {
@@ -44,53 +36,14 @@ class GitUtils
 		return diffCommand.call.filter[d | d.changeType == ChangeType::MODIFY]
 	}
 
-	def printDiffFor(String relativeFilePath)
-	{
-		val head = git.repository.resolve("HEAD")
-		if(head === null) return
-
-		val diffOutputStream = new ByteArrayOutputStream
-		val formatter = new DiffFormatter(diffOutputStream)
-		formatter.repository = git.repository
-		formatter.setPathFilter(PathFilter.create(relativeFilePath.replaceAll("\\\\","/")));
-
-		val commitTreeIterator = prepareTreeParser(git.repository, head.getName())
-		val workTreeIterator = new FileTreeIterator(git.repository);
-
-		// Scan gets difference between the two iterators.
-		formatter.format(commitTreeIterator, workTreeIterator);
-
-		println(diffOutputStream.toString)
-	}
-
-	private def prepareTreeParser(Repository repository, String objectId)
-	{
-		// from the commit we can build the tree which allows us to construct the TreeParser
-		try (val walk = new RevWalk(repository))
-		{
-			val commit = walk.parseCommit(ObjectId.fromString(objectId))
-			val tree = walk.parseTree(commit.tree.id)
-
-			val oldTreeParser = new CanonicalTreeParser
-			try (val oldReader = repository.newObjectReader)
-			{
-				oldTreeParser.reset(oldReader, tree.id)
-			}
-
-			walk.dispose
-			return oldTreeParser
-		}
-	}
-
-	def testNoGitDiff(String subPath, String moduleName)
+	def Boolean noGitDiff(String subPath, String moduleName)
 	{
 		var diffs = getModifiedFiles(subPath)
 		diffs =	diffs.filter[d | d.newPath.contains(moduleName)]
 		for (diff : diffs)
 		{
 			println(diff.changeType + " " + diff.newPath)
-			//printDiffFor(diff.newPath)
 		}
-		Assert.assertTrue(diffs.empty)
+		return (diffs.empty)
 	}
 }

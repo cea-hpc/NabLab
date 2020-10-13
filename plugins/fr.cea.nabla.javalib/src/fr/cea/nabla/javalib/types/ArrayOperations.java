@@ -144,7 +144,15 @@ public class ArrayOperations
 			result[i] = a[i] / b[i];
 		return result;
 	}
-	
+
+	public static int[] minus(int[] a)
+	{
+		int[] result = new int[a.length];
+		for (int i=0 ; i<a.length ; ++i)
+			result[i] = -a[i];
+		return result;
+	}
+
 	// REAL ARRAY1D
 	public static double[] plus(double[] a, int b) 
 	{
@@ -229,7 +237,15 @@ public class ArrayOperations
 			result[i] = a[i] / b[i];
 		return result;
 	}
-	
+
+	public static double[] minus(double[] a)
+	{
+		double[] result = new double[a.length];
+		for (int i=0 ; i<a.length ; ++i)
+			result[i] = -a[i];
+		return result;
+	}
+
 	// REAL ARAY2D
 	public static double[][] multiply(double[][] a, int b) 
 	{ 

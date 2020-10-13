@@ -47,7 +47,15 @@ class ExpressionContentProvider
 			'''ArrayOperations.«operator.operatorName»(«lContent», «rContent»)'''
 	}
 
-	static def dispatch CharSequence getContent(UnaryExpression it) '''«operator»«expression.content»'''
+	static def dispatch CharSequence getContent(UnaryExpression it)
+	{
+		val content = expression.content
+		if (expression.type.scalar)
+			'''«operator»«expression.content»'''
+		else
+			'''ArrayOperations.«operator.operatorName»(«content»)'''
+	}
+
 	static def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
 	static def dispatch CharSequence getContent(IntConstant it) '''«value»'''
 	static def dispatch CharSequence getContent(RealConstant it) '''«value»'''

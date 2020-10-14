@@ -63,18 +63,18 @@ class NablagenInterpreter
 
 	@Accessors val traceListeners = new ArrayList<(String)=>void>
 
-	def IrModule buildIrModule(NablagenConfig it, String projectDir)
+	def IrModule buildIrModule(NablagenConfig nablagenConfig, String projectDir)
 	{
 		try
 		{
 			// Nabla -> IR
 			trace('Nabla -> IR')
-			val irModule = nabla2Ir.toIrModule(nablaModule)
+			val irModule = nabla2Ir.toIrModule(nablagenConfig.nablaModule)
 
 			// IR -> IR
-			transformer.transformIr(commonIrTransformation, irModule, [msg | trace(msg)])
+			transformer.transformIr(getCommonIrTransformation(nablagenConfig), irModule, [msg | trace(msg)])
 
-			if (writeIR)
+			if (nablagenConfig.writeIR)
 			{
 				val fileName = irWriter.createAndSaveResource(getConfiguredFileSystemAccess(projectDir, true), irModule)
 				trace('Resource saved: ' + fileName)

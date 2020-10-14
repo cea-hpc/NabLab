@@ -45,13 +45,13 @@ class JsonContentProvider
 		val primitive = v.type.primitive
 		if (sizes.empty)
 		'''
-			assert(«v.jsonName».Is«primitive.jsonType»());
+			assert(«v.jsonName»«FOR i : indices»[«i»]«ENDFOR».Is«primitive.jsonType»());
 			«v.name»«FOR i : indices»[«i»]«ENDFOR» = «v.jsonName»«FOR i : indices»[«i»]«ENDFOR».Get«primitive.jsonType»();
 		'''
 		else
 		'''
-			assert(«v.jsonName».IsArray());
-			assert(«v.jsonName».Size() == «sizes.head.content»);
+			assert(«v.jsonName»«FOR i : indices»[«i»]«ENDFOR».IsArray());
+			assert(«v.jsonName»«FOR i : indices»[«i»]«ENDFOR».Size() == «sizes.head.content»);
 			«val indexName = 'i' + sizes.size»
 			for (size_t «indexName»=0 ; «indexName»<«sizes.head.content» ; «indexName»++)
 			{

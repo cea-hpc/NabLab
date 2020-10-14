@@ -29,7 +29,7 @@ import org.eclipse.xtext.EcoreUtil2
  * Allow to access the type of ArgOrVar except SimpleVar
  * that needs a type provider to evaluate its defaultValue.
  */
-class ArgOrVarExtensions 
+class ArgOrVarExtensions
 {
 	@Inject extension ExpressionExtensions
 

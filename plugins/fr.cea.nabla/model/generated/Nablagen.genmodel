@@ -13,7 +13,6 @@
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//CppCompiler/LLVM"/>
     </genEnums>
     <genClasses ecoreClass="Nablagen.ecore#//NablagenModule">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenModule/imports"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenModule/config"/>
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//NablagenConfig">

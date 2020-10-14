@@ -17,7 +17,6 @@ import "http://www.cea.fr/nabla/Nabla" as nabla
 generate nablagen "http://www.cea.fr/nabla/Nablagen"
 
 NablagenModule:
-	imports+=Import*
 	config=NablagenConfig;
 
 NablagenConfig:

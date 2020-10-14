@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.SimpleVariable
 import org.eclipse.xtend.lib.annotations.Data
 
+import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 
 @Data
@@ -45,11 +46,14 @@ class JsonContentProvider
 		val primitive = v.type.primitive
 		if (sizes.empty)
 		'''
+			assert(«v.jsonName»«FOR i : indices».getAsJsonArray().get(«i»)«ENDFOR».isJsonPrimitive());
 			options.«v.name»«FOR i : indices»[«i»]«ENDFOR» = «v.jsonName»«FOR i : indices».getAsJsonArray().get(«i»)«ENDFOR».getAsJsonPrimitive().getAs«primitive.jsonType»();
 		'''
 		else
 		'''
-			assert(«v.jsonName».getAsJsonArray().size() == «sizes.head.content»);
+			assert(«v.jsonName»«FOR i : indices».getAsJsonArray().get(«i»)«ENDFOR».isJsonArray());
+			assert(«v.jsonName».getAsJsonArray()«FOR i : indices».get(«i»).getAsJsonArray()«ENDFOR».size() == «sizes.head.content»);
+			«IF indices.empty»options.«v.name»«v.javaAllocation»;«ENDIF»
 			«val indexName = 'i' + sizes.size»
 			for (int «indexName»=0 ; «indexName»<«sizes.head.content» ; «indexName»++)
 			{

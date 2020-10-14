@@ -301,8 +301,6 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 	private def getNablagenModelContent(String nablaModuleName, HashMap<String, IFolder> srcGenFoldersByLanguage)
 	'''
-		with «nablaModuleName».*;
-
 		nablagen for «nablaModuleName»;
 
 		SimulationVariables

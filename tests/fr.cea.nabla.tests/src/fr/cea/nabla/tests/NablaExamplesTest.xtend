@@ -24,7 +24,7 @@ import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import static extension fr.cea.nabla.tests.TestUtils.*
+import static fr.cea.nabla.tests.TestUtils.*
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)

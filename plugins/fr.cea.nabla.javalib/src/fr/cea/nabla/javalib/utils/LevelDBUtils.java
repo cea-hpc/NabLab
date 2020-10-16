@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
+import org.apache.commons.io.FileUtils;
 
 public class LevelDBUtils 
 {
@@ -16,24 +17,28 @@ public class LevelDBUtils
 	{
 		// Final result
 		Boolean result = true;
+		String copyRefName = refName + "Copy";
 
 		try 
 		{
+			// We have to copy ref not to modify it (for git repo)
+			File copyRef = new File(copyRefName);
+			File sourceLocation= new File(refName);
+			FileUtils.copyDirectory(sourceLocation, copyRef);
+
 			// Loading ref DB
-			org.iq80.leveldb.Options options_ref = new org.iq80.leveldb.Options();
-			options_ref.createIfMissing(false);
-			DB db_ref = factory.open(new File(refName), options_ref);
-			DBIterator it_ref = db_ref.iterator();
-		
-			// Loading current DB
 			org.iq80.leveldb.Options options = new org.iq80.leveldb.Options();
-			options.createIfMissing(true);
+			options.createIfMissing(false);
+
+			DB db_ref = factory.open(new File(copyRefName), options);
+			DBIterator it_ref = db_ref.iterator();
+
 			DB db = factory.open(new File(currentName), options);
 			DBIterator it = db.iterator();
 	
 			// Results comparison
 			System.err.println("# Compairing results ...");
-		
+
 			try 
 			{
 				for(it_ref.seekToFirst(), it.seekToFirst(); it_ref.hasNext() && it.hasNext(); it_ref.next(), it.next())
@@ -66,16 +71,16 @@ public class LevelDBUtils
 				it.close();
 				it_ref.close();
 			}
-			
+
 			db.close();
 			db_ref.close();
-			
+			destroyDB(copyRefName);
 			return result;
 		}
 		catch (Exception e)
 		{
 			System.err.println("No ref database to compare with ! Looking for " + refName);
-			destroyDB(refName);
+			destroyDB(copyRefName);
 			return false;
 		}
 	}

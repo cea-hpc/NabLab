@@ -74,8 +74,17 @@ class DeclarationProvider
 		if (argTypes.forall[x | x instanceof NablaSimpleType]) 
 			return new SimpleTypeDeclarationFinder(baseTypeTP, argTypes.map[ x | x as NablaSimpleType])
 
-		if (argTypes.forall[x | x instanceof NablaConnectivityType && (x as NablaConnectivityType).simple instanceof NSTScalar ]) 
-			return new ConnectivityTypeDeclarationFinder(primitiveTypeTP, argTypes.map[ x | x as NablaConnectivityType])
+		/*
+		 * Almost one argType is NablaConnectivityType =>
+		 * other NablaSimpleType elements must be scalar.
+		 * Because all arrays must be of the same type,
+		 * even NablaSimpleType or NablaConnectivityType.
+		 */
+		if (argTypes.filter(NablaSimpleType).exists[x | x.dimension > 0])
+			return null
+
+		if (argTypes.filter(NablaConnectivityType).forall[simple instanceof NSTScalar])
+			return new ConnectivityTypeDeclarationFinder(baseTypeTP, primitiveTypeTP, argTypes)
 
 		// no finder found
 		return null

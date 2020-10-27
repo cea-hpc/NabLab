@@ -19,6 +19,7 @@ import fr.cea.nabla.tests.TestUtils
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import fr.cea.nabla.typing.NSTRealArray1D
 import fr.cea.nabla.typing.NSTRealScalar
+import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.validation.ExpressionValidator
 import fr.cea.nabla.validation.ValidationUtils
 import org.eclipse.xtext.testing.InjectWith
@@ -31,7 +32,7 @@ import org.junit.runner.RunWith
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
-class ExpressionValidatorTest 
+class ExpressionValidatorTest
 {
 	@Inject ParseHelper<NablaModule> parseHelper
 	@Inject extension ValidationUtils
@@ -111,19 +112,23 @@ class ExpressionValidatorTest
 		val model =
 			'''
 			«emptyTestModule»
+			«defaultConnectivities»
 			def test: ℾ × ℝ × ℝ[2] → ℝ;
+			def solveBidon: x | ℝ[x] × ℝ[x] × ℕ → ℝ[x];
 			let ℝ[2] opt = [0., 1.];
+			let ℕ count = 1;
+			ℝ alpha{cells};
 			'''
 
-		val moduleKo = parseHelper.parse(
+		val moduleKo1 = parseHelper.parse(
 			'''
 			«model»
 			j1: let ℝ x = test(true, 0, opt);
 			'''
 		)
-		Assert.assertNotNull(moduleKo)
+		Assert.assertNotNull(moduleKo1)
 
-		moduleKo.assertError(NablaPackage.eINSTANCE.functionCall,
+		moduleKo1.assertError(NablaPackage.eINSTANCE.functionCall,
 			ExpressionValidator::FUNCTION_CALL_ARGS,
 			ExpressionValidator::getFunctionCallArgsMsg(
 				#[PrimitiveType::BOOL.literal,
@@ -131,10 +136,31 @@ class ExpressionValidatorTest
 				new NSTRealArray1D(createIntConstant(2)).label]
 		))
 
+		val moduleKo2 = parseHelper.parse(
+			'''
+			«model»
+			j1: alpha = solveBidon(alpha, opt, count);
+			'''
+		)
+		Assert.assertNotNull(moduleKo2)
+
+		moduleKo2.assertError(NablaPackage.eINSTANCE.functionCall,
+			ExpressionValidator::FUNCTION_CALL_MIXED_ARGS,
+			ExpressionValidator::getFunctionCallMixedArgsMsg())
+ 		val cells = moduleKo2.getConnectivityByName("cells")
+		moduleKo2.assertError(NablaPackage.eINSTANCE.functionCall,
+			ExpressionValidator::FUNCTION_CALL_ARGS,
+			ExpressionValidator::getFunctionCallArgsMsg(
+				#[new NablaConnectivityType(#[cells], new NSTRealScalar).label,
+				new NSTRealArray1D(createIntConstant(2)).label,
+				PrimitiveType::INT.literal]
+		))
+
 		val moduleOk = parseHelper.parse(
 			'''
 			«model»
 			j1: let ℝ x = test(true, 0., opt);
+			j2: alpha = solveBidon(alpha, alpha, count);
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -278,7 +304,6 @@ class ExpressionValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
-
 
 	@Test
 	def void testCheckDivType()

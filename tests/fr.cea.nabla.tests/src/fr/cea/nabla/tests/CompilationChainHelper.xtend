@@ -33,7 +33,7 @@ import org.junit.runner.RunWith
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
-class CompilationChainHelper 
+class CompilationChainHelper
 {
 	@Inject extension ValidationTestHelper
 	@Inject Provider<NablagenInterpreter> interpreterProvider

@@ -52,7 +52,8 @@ class SimpleTypeDeclarationFinder implements IDeclarationFinder
 	{
 		val f = candidates.findFirst[x |
 			for (i : 0..<x.typeDeclaration.inTypes.size)
-				if (!sizesMatch(x, x.typeDeclaration.inTypes.get(i).sizes, callerInTypes.get(i).sizeExpressions)) return false
+				if (!sizesMatch(x, x.typeDeclaration.inTypes.get(i).sizes, callerInTypes.get(i).sizeExpressions))
+					return false
 			return true
 		]
 		if (f === null) return null

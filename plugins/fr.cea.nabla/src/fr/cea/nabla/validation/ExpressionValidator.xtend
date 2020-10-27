@@ -35,6 +35,7 @@ import fr.cea.nabla.typing.NablaConnectivityType
 import java.util.List
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
+import fr.cea.nabla.typing.NablaSimpleType
 
 class ExpressionValidator extends ArgOrVarRefValidator
 {
@@ -67,7 +68,7 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	static def getBaseTypeConstantValueMsg(String expectedTypeName) { "Initialization value must be of type " + expectedTypeName }
 	static def getBaseTypeConstantTypeMsg() { "Only integer constant allowed for initialization" }
 	static def getFunctionCallConnectivityArgMsg() { "Connectivity type arguments must be scalar" }
-	static def getFunctionCallMixedArgsMsg() { "Can not mix types of arguments (connectivity and simple types)" }
+	static def getFunctionCallMixedArgsMsg() { "Can not mix array types in arguments (connectivity and simple types)" }
 	static def getFunctionCallArgsMsg(List<String> inTypes) { "No candidate function found. Wrong arguments : " + inTypes.join(', ') }
 	static def getReductionCallOnConnectivitiesVariableMsg() { "No reduction on connectivities variable" }
 	static def getReductionCallArgsMsg(String inType) { "No candidate reduction found. Wrong arguments : " + inType }
@@ -99,7 +100,7 @@ class ExpressionValidator extends ArgOrVarRefValidator
 
 		// if only connectivity types, their base type must be scalar
 		var containsConnectivityType = false
-		var containsSimpleType = false
+		var containsSimpleArrayType = false
 		for (i : 0..<inTypes.size)
 		{
 			val inType = inTypes.get(i)
@@ -111,13 +112,13 @@ class ExpressionValidator extends ArgOrVarRefValidator
 					if (! (inType.simple instanceof NSTScalar))
 						error(getFunctionCallConnectivityArgMsg(), NablaPackage.Literals::FUNCTION_CALL__ARGS, i, FUNCTION_CALL_CONNECTIVITY_ARG)
 				}
-				else
-					containsSimpleType = true
+				else if ((inType as NablaSimpleType).dimension > 0)
+					containsSimpleArrayType = true
 			}
 		}
 
 		// can not mix connectivity and simple type arguments
-		if (containsConnectivityType && containsSimpleType)
+		if (containsConnectivityType && containsSimpleArrayType)
 			error(getFunctionCallMixedArgsMsg(), NablaPackage.Literals::FUNCTION_CALL__ARGS, FUNCTION_CALL_MIXED_ARGS)
 
 		// check if the candidate function

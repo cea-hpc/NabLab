@@ -17,19 +17,28 @@ import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.SimpleVar
+import fr.cea.nabla.typing.BaseTypeTypeProvider
 import fr.cea.nabla.typing.NablaConnectivityType
+import fr.cea.nabla.typing.NablaType
 import fr.cea.nabla.typing.PrimitiveTypeTypeProvider
 import java.util.HashMap
 
+/**
+ * When this class is used, array arguments of the caller are of type NablaConnectivityType.
+ * But, caller args can be of type NablaSimpleType if scalar args exist. 
+ * Consequently callerInTypes can contains a NablaSimpleType instance if arg is scalar.
+ */
 class ConnectivityTypeDeclarationFinder implements IDeclarationFinder
 {
+	val extension BaseTypeTypeProvider baseTypeTP
 	val extension PrimitiveTypeTypeProvider primitiveTypeTP
 
-	val Iterable<NablaConnectivityType> callerInTypes
+	val Iterable<NablaType> callerInTypes
 	val sizeVarValues = new HashMap<SimpleVar, Connectivity>
 
-	new(PrimitiveTypeTypeProvider primitiveTypeTP, Iterable<NablaConnectivityType> callerInTypes)
+	new(BaseTypeTypeProvider baseTypeTP, PrimitiveTypeTypeProvider primitiveTypeTP, Iterable<NablaType> callerInTypes)
 	{
+		this.baseTypeTP = baseTypeTP
 		this.primitiveTypeTP = primitiveTypeTP
 		this.callerInTypes = callerInTypes
 	}
@@ -44,7 +53,12 @@ class ConnectivityTypeDeclarationFinder implements IDeclarationFinder
 	{
 		val f = candidates.findFirst[x |
 			for (i : 0..<x.typeDeclaration.inTypes.size)
-				if (!sizesMatch(x, x.typeDeclaration.inTypes.get(i).sizes, callerInTypes.get(i).supports)) return false
+			{
+				val callerInType = callerInTypes.get(i)
+				if (callerInType instanceof NablaConnectivityType)
+					if (!sizesMatch(x, x.typeDeclaration.inTypes.get(i).sizes, callerInType.supports))
+						return false
+			}
 			return true
 		]
 		if (f === null) return null
@@ -95,11 +109,20 @@ class ConnectivityTypeDeclarationFinder implements IDeclarationFinder
 		return true
 	}
 
-	private def NablaConnectivityType computeExpressionType(BaseType argType)
+	private def NablaType computeExpressionType(BaseType argType)
 	{
-		val supports = argType.sizes.map[value]
-		if (supports.forall[x | x !== null])
-			new NablaConnectivityType(supports, argType.primitive.typeFor)
+		switch argType.sizes.size
+		{
+			case 0: argType.typeFor
+			default:
+			{
+				val supports = argType.sizes.map[value]
+				if (supports.forall[x | x !== null])
+					new NablaConnectivityType(supports, argType.primitive.typeFor)
+				else
+					null				
+			}	
+		}
 	}
 
 	private def dispatch Connectivity getValue(Expression it)

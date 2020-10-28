@@ -251,6 +251,7 @@ class NablaExamplesTest
 		val gsonPath = Gson.protectionDomain.codeSource.location.toString
 		val levelDbRef = testProjectPath + "/results/compiler/" + targetName + "/" + packageName + "/" + moduleName + "DB.ref"
 		val guavaPath = PeekingIterator.protectionDomain.codeSource.location.toString
+		val apacheCommonIOPath = FileUtils.protectionDomain.codeSource.location.toString
 		val jsonFile = examplesProjectPath + "src/" + packageName + "/" + moduleName + ".json"
 		println("\n---------------------------------------------------------")
 		println("Configuration, compilation and execution of " + target.eClass.name)
@@ -265,8 +266,9 @@ class NablaExamplesTest
 //		println("$8= " + jsonFile)
 //		println("$9= " + guavaPath)
 //		println("$10= " + commonMath3Path)
+//		println("$11= " + apacheCommonIOPath)
 //		println("javac -classpath " + javaLibPath  + ":" + commonMath3Path + ":" + levelDBPath + ":" + gsonPath + " " + moduleName + ".java")
-//		println("java -classpath " + javaLibPath + ":" + commonMath3Path + ":" + guavaPath + ":" + levelDBPath + ":" + gsonPath + ":" + tmp 
+//		println("java -classpath " + javaLibPath + ":" + commonMath3Path + ":" + guavaPath + ":" + levelDBPath + ":" + gsonPath + ":" + apacheCommonIOPath + ":" + tmp 
 //					+ "/" + targetName + " " + packageName + "." + moduleName + " " + "test.json")
 		var pb = new ProcessBuilder("/bin/bash",
 			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeJavaNablaExample.sh",
@@ -279,7 +281,8 @@ class NablaExamplesTest
 			levelDbRef,
 			jsonFile,
 			guavaPath,
-			commonMath3Path)
+			commonMath3Path,
+			apacheCommonIOPath)
 		var process = pb.start
 		val exitVal = process.waitFor
 		if (exitVal.equals(0))

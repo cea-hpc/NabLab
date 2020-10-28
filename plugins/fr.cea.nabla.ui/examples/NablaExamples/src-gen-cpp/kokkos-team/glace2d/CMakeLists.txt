@@ -21,7 +21,7 @@ endif()
 project(Glace2dProject CXX)
 
 set(LIBCPPNABLA_BACKEND "KOKKOS")
-set(NABLA_KOKKOS_PATH "$ENV{HOME}/kokkos/kokkos-install")
+set(NABLA_KOKKOS_PATH $ENV{HOME}/kokkos/kokkos-install)
 add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
 
 

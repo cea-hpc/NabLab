@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
+import org.apache.commons.io.FileUtils;
 
 public class LevelDBUtils 
 {
@@ -16,66 +17,70 @@ public class LevelDBUtils
 	{
 		// Final result
 		Boolean result = true;
+		String copyRefName = refName + "Copy";
 
 		try 
 		{
+			// We have to copy ref not to modify it (for git repo)
+			File copyRef = new File(copyRefName);
+			File sourceLocation= new File(refName);
+			FileUtils.copyDirectory(sourceLocation, copyRef);
+
 			// Loading ref DB
-			org.iq80.leveldb.Options options_ref = new org.iq80.leveldb.Options();
-			options_ref.createIfMissing(false);
-			DB db_ref = factory.open(new File(refName), options_ref);
-			DBIterator it_ref = db_ref.iterator();
-		
-			// Loading current DB
 			org.iq80.leveldb.Options options = new org.iq80.leveldb.Options();
-			options.createIfMissing(true);
+			options.createIfMissing(false);
+
+			DB db_ref = factory.open(new File(copyRefName), options);
+			DBIterator it_ref = db_ref.iterator();
+
 			DB db = factory.open(new File(currentName), options);
 			DBIterator it = db.iterator();
 	
 			// Results comparison
-			System.out.println("# Compairing results ...");
-		
+			System.err.println("# Compairing results ...");
+
 			try 
 			{
-				for(it_ref.seekToFirst(), it.seekToFirst(); it_ref.hasNext() && it.hasNext(); it_ref.next(), it.next()) 
+				for(it_ref.seekToFirst(), it.seekToFirst(); it_ref.hasNext() && it.hasNext(); it_ref.next(), it.next())
 				{
 					String key = asString(it.peekNext().getKey());
 					if (!key.equals(asString(it_ref.peekNext().getKey())))
 					{
-						System.out.println("ERROR - Incompatible ref. Key : " + key + " not found.");						
+						System.err.println("ERROR - Incompatible ref. Key : " + key + " not found.");
 						result = false;
 						break;
 					}
 					String value = asString(it.peekNext().getValue());
 					String ref = asString(it_ref.peekNext().getValue());
-					System.out.println(key + ": " + (value.contentEquals(ref) ? "OK" : "ERROR"));
+					System.err.println(key + ": " + (value.contentEquals(ref) ? "OK" : "ERROR"));
 					if (!value.equals(ref))
 					{
 						result = false;
-						System.out.println("value = " + value);
-						System.out.println(" ref = " + ref);
+						System.err.println("value = " + value);
+						System.err.println(" ref = " + ref);
 
 					}
 				}
 			}
 			catch (Exception e)
 			{
-				System.out.println(e);
+				System.err.println(e);
 			}
 			finally {
 				// Make sure you close the iterator to avoid resource leaks.
 				it.close();
 				it_ref.close();
 			}
-			
+
 			db.close();
 			db_ref.close();
-			
+			destroyDB(copyRefName);
 			return result;
 		}
 		catch (Exception e)
 		{
-			System.out.println("No ref database to compare with ! Looking for " + refName);
-			destroyDB(refName);
+			System.err.println("No ref database to compare with ! Looking for " + refName);
+			destroyDB(copyRefName);
 			return false;
 		}
 	}

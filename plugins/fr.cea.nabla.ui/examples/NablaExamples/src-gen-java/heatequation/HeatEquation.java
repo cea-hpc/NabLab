@@ -50,6 +50,12 @@ public final class HeatEquation
 			assert(d.has("outputPath"));
 			final JsonElement valueof_outputPath = d.get("outputPath");
 			options.outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
+			// Non regression
+			if(d.has("nonRegression"))
+			{
+				final JsonElement valueof_nonRegression = d.get("nonRegression");
+				options.nonRegression = valueof_nonRegression.getAsJsonPrimitive().getAsString();
+			}
 			// outputPeriod
 			assert(d.has("outputPeriod"));
 			final JsonElement valueof_outputPeriod = d.get("outputPeriod");
@@ -180,6 +186,7 @@ public final class HeatEquation
 			GsonBuilder gsonBuilder = new GsonBuilder();
 			gsonBuilder.registerTypeAdapter(Options.class, new HeatEquation.OptionsDeserializer());
 			Gson gson = gsonBuilder.create();
+			int ret = 0;
 
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = gson.fromJson(o.get("mesh"), CartesianMesh2DFactory.class);
@@ -196,14 +203,17 @@ public final class HeatEquation
 			if (options.nonRegression!=null &&  options.nonRegression.equals("CompareToReference"))
 			{
 				simulator.createDB("HeatEquationDB.current");
-				LevelDBUtils.compareDB("HeatEquationDB.current", "HeatEquationDB.ref");
+				if (!LevelDBUtils.compareDB("HeatEquationDB.current", "HeatEquationDB.ref"))
+					ret = 1;
 				LevelDBUtils.destroyDB("HeatEquationDB.current");
+				System.exit(ret);
 			}
 		}
 		else
 		{
-			System.out.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-			System.out.println("        Expecting user data file name, for example HeatEquationDefault.json");
+			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
+			System.err.println("        Expecting user data file name, for example HeatEquationDefault.json");
+			System.exit(1);
 		}
 	}
 

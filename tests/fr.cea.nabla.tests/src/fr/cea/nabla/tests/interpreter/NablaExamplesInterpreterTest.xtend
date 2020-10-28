@@ -10,6 +10,7 @@
 package fr.cea.nabla.tests.interpreter
 
 import com.google.inject.Inject
+import fr.cea.nabla.ir.Utils.NonRegressionValues
 import fr.cea.nabla.ir.interpreter.ModuleInterpreter
 import fr.cea.nabla.tests.CompilationChainHelper
 import fr.cea.nabla.tests.GitUtils
@@ -23,10 +24,13 @@ import java.util.logging.SimpleFormatter
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.After
+import org.junit.Assert
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
+
+import static fr.cea.nabla.ir.Utils.*
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -102,33 +106,36 @@ class NablaExamplesInterpreterTest
 
 	private def void testInterpreteModule(String moduleName)
 	{
-		println("test" + moduleName)
+		println("\ntest" + moduleName)
 		val modelFile = String.format("%1$ssrc/%2$s/%3$s.nabla", examplesProjectPath, moduleName.toLowerCase, moduleName)
 		val model = readFileAsString(modelFile)
 		val genmodelFile = String.format("%1$ssrc/%2$s/%3$s.nablagen", examplesProjectPath, moduleName.toLowerCase, moduleName)
 		val genmodel = readFileAsString(genmodelFile)
-		// We use the default json datafile generated for the java backend
+		// We use the example json datafile provided by example source code
 		val jsonOptionsFile = String.format("%1$ssrc/%2$s/%3$s.json", examplesProjectPath, moduleName.toLowerCase, moduleName)
-		val jsonOptions = readFileAsString(jsonOptionsFile)
+		var jsonContent = readFileAsString(jsonOptionsFile)
+
+		jsonContent = addNonRegressionTagToJsonFile(jsonContent, NonRegressionValues.CompareToReference.toString)
 
 		val irModule = compilationHelper.getIrModuleForInterpretation(model, genmodel)
 		//val handler = new ConsoleHandler
 
-		val logFile = String.format("src/%1$s/Interprete%2$s.log", moduleName.toLowerCase, moduleName)
+		val logFile = String.format("results/interpreter/%1$s/Interprete%2$s.log", moduleName.toLowerCase, moduleName)
 		val handler = new FileHandler(logFile, false)
 
 		val formatter = new SimpleFormatter
 		handler.setFormatter(formatter)
 		handler.level = Level::FINE
 		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		moduleInterpreter.interprete(jsonOptions)
+		moduleInterpreter.interprete(jsonContent)
 		handler.close
 
+		Assert.assertTrue("LevelDB Compare Error", moduleInterpreter.levelDBCompareResult)
 		testNoGitDiff("/"+moduleName.toLowerCase)
 	}
 
 	private def testNoGitDiff(String moduleName)
 	{
-		git.testNoGitDiff(testsProjectSubPath, moduleName)
+		Assert.assertTrue(git.noGitDiff(testsProjectSubPath, moduleName))
 	}
 }

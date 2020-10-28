@@ -48,12 +48,15 @@ class CompilationChainHelper
 	var nablagenInjector = nablagenSetup.createInjectorAndDoEMFRegistration
 	var ParseHelper<NablagenModule> nablagenParseHelper = nablagenInjector.getInstance(ParseHelper)
 
+	val testProjectPath = System.getProperty("user.dir")
+	val pluginsPath = testProjectPath + "/../../plugins/"
+
 	/** 
 	 * Returns a module ready for interpretation i.e. with no reduction instruction.
 	 */
 	def getIrModuleForInterpretation(CharSequence model, CharSequence genModel)
 	{
-		val irModule = getIrModule(model, genModel, false)
+		val irModule = getIrModule(model, genModel)
 		// Suppress all reductions (replaced by loops)
 		transformer.transformIr(new ReplaceReductions(true), irModule, [msg | println(msg)])
 		return irModule
@@ -67,15 +70,30 @@ class CompilationChainHelper
 		return moduleInterpreter.interprete(jsonContent)
 	}
 
-	def void generateCode(CharSequence model, CharSequence genModel)
+	def void generateCode(CharSequence model, CharSequence genModel, String projectDir)
 	{
-		getIrModule(model, genModel, true)
+		val interpreter = interpreterProvider.get
+		val irModule = getIrModule(model, genModel)
+		val config = getnablaGenConfig(model, genModel)
+		interpreter.generateCode(irModule, config.targets, config.simulation.iterationMax.name, config.simulation.timeMax.name, projectDir, config.levelDB)
 	}
 
-	private def getIrModule(CharSequence model, CharSequence genModel, boolean generateCode)
+	def getTargets(CharSequence model, CharSequence genModel)
 	{
-		val testProjectPath = System.getProperty("user.dir")
-		val pluginsPath = testProjectPath + "/../../plugins/"
+		val config = getnablaGenConfig(model, genModel)
+		return config.targets
+	}
+
+	private def getIrModule(CharSequence model, CharSequence genModel)
+	{
+		val interpreter = interpreterProvider.get
+		val projectDir = pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples"
+		val config = getnablaGenConfig(model, genModel)
+		return interpreter.buildIrModule(config, projectDir)
+	}
+
+	private def getnablaGenConfig(CharSequence model, CharSequence genModel)
+	{
 		var rs = resourceSetProvider.get
 
 		// Read MathFunctions
@@ -96,14 +114,6 @@ class CompilationChainHelper
 		if (nablaGenModule.config === null)
 			throw new RuntimeException("Problem with nablagen configuration file")
 
-		val interpreter = interpreterProvider.get
-		val projectDir = pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples"
-		val c = nablaGenModule.config
-		val irModule = interpreter.buildIrModule(c, projectDir)
-
-		if (generateCode)
-			interpreter.generateCode(irModule, c.targets, c.simulation.iterationMax.name, c.simulation.timeMax.name, projectDir, c.levelDB)
-
-		return irModule
+		return nablaGenModule.config
 	}
 }

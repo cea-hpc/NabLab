@@ -100,6 +100,13 @@ class Ir2Java extends CodeGenerator
 					final JsonElement «opName.jsonName» = d.get("«opName»");
 					options.«opName» = «opName.jsonName».getAsJsonPrimitive().getAsString();
 					«ENDIF»
+					// Non regression
+					«val nrName = Utils.NonRegressionNameAndValue.key»
+					if(d.has("«nrName»"))
+					{
+						final JsonElement «nrName.jsonName» = d.get("«nrName»");
+						options.«nrName» = «nrName.jsonName».getAsJsonPrimitive().getAsString();
+					}
 					«FOR v : options»
 					«v.jsonContent»
 					«ENDFOR»
@@ -180,6 +187,7 @@ class Ir2Java extends CodeGenerator
 					GsonBuilder gsonBuilder = new GsonBuilder();
 					gsonBuilder.registerTypeAdapter(Options.class, new «name».OptionsDeserializer());
 					Gson gson = gsonBuilder.create();
+					int ret = 0;
 
 					assert(o.has("mesh"));
 					«javaMeshClassName»Factory meshFactory = gson.fromJson(o.get("mesh"), «javaMeshClassName»Factory.class);
@@ -193,21 +201,23 @@ class Ir2Java extends CodeGenerator
 					«name» simulator = new «name»(mesh, options«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s.toFirstLower»«ENDFOR»);
 					simulator.simulate();
 
-					«val nrName = Utils.NonRegressionNameAndValue.key»
 					// Non regression testing
-					if (options.«nrName»!=null &&  options.«nrName».equals("CreateReference"))
+					if (options.«nrName»!=null &&  options.«nrName».equals("«Utils.NonRegressionValues.CreateReference.toString»"))
 						simulator.createDB("«name»DB.ref");
-					if (options.«nrName»!=null &&  options.«nrName».equals("CompareToReference"))
+					if (options.«nrName»!=null &&  options.«nrName».equals("«Utils.NonRegressionValues.CompareToReference.toString»"))
 					{
 						simulator.createDB("«name»DB.current");
-						LevelDBUtils.compareDB("«name»DB.current", "«name»DB.ref");
+						if (!LevelDBUtils.compareDB("«name»DB.current", "«name»DB.ref"))
+							ret = 1;
 						LevelDBUtils.destroyDB("«name»DB.current");
+						System.exit(ret);
 					}
 				}
 				else
 				{
-					System.out.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-					System.out.println("        Expecting user data file name, for example «name»Default.json");
+					System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
+					System.err.println("        Expecting user data file name, for example «name»Default.json");
+					System.exit(1);
 				}
 			}
 			«FOR j : jobs»

@@ -516,6 +516,7 @@ int main(int argc, char* argv[])
 {
 	Kokkos::initialize(argc, argv);
 	string dataFile;
+	int ret = 0;
 	
 	if (argc == 2)
 	{
@@ -558,5 +559,5 @@ int main(int argc, char* argv[])
 	delete simulator;
 	delete mesh;
 	Kokkos::finalize();
-	return 0;
+	return ret;
 }

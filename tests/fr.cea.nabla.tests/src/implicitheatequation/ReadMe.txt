@@ -1,0 +1,2 @@
+LinearAlgebraFunctions.java is used by NablaExamplesInterpreterTest (implicitheatequation module)
+Linear algebra functions to be called from interpreted NabLab module, must be placed in a dedicated file called LinearAlgebraFunctions.java in $modulename package

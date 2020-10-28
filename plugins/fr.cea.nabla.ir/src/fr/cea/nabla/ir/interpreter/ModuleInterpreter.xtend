@@ -11,14 +11,23 @@ package fr.cea.nabla.ir.interpreter
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
+import fr.cea.nabla.javalib.utils.LevelDBUtils
+import java.io.File
 import java.util.logging.Logger
 import java.util.logging.StreamHandler
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.iq80.leveldb.Options
 
-import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
+import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
+import static org.iq80.leveldb.impl.Iq80DBFactory.bytes
+import static org.iq80.leveldb.impl.Iq80DBFactory.factory
+
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class ModuleInterpreter
 {
@@ -29,6 +38,8 @@ class ModuleInterpreter
 	val PvdFileWriter2D writer
 	val JobInterpreter jobInterpreter
 	val Logger logger
+	val String levelDatabasePath
+	var Boolean levelDBcompareResult
 
 	new(IrModule module, StreamHandler handler)
 	{
@@ -48,6 +59,8 @@ class ModuleInterpreter
 		this.context = new Context(module, logger)
 		this.writer = new PvdFileWriter2D(module.name, outputDirName)
 		this.jobInterpreter = new JobInterpreter(writer)
+		this.levelDatabasePath = "results/interpreter/" + module.name.toLowerCase + "/"
+		this.levelDBcompareResult = true
 	}
 
 	/**
@@ -113,6 +126,17 @@ class ModuleInterpreter
 		for (j : module.innerJobs.sortBy[at])
 			jobInterpreter.interprete(j, context)
 
+		// Non regression testing
+		val nrName = Utils.NonRegressionNameAndValue.key
+		if (jsonOptions.has(nrName) && (jsonOptions.get(nrName).asString).equals(Utils.NonRegressionValues.CreateReference.toString))
+			createDB(refDBName)
+		if (jsonOptions.has(nrName) && (jsonOptions.get(nrName).asString).equals(Utils.NonRegressionValues.CompareToReference.toString))
+		{
+			createDB(curDBName)
+			levelDBcompareResult = LevelDBUtils.compareDB(curDBName, refDBName)
+			LevelDBUtils.destroyDB(curDBName)
+		}
+
 		context.logVariables("At the end")
 		context.logInfo(" End interpreting")
 
@@ -123,4 +147,40 @@ class ModuleInterpreter
 	{
 		logger.info(message)
 	}
+
+	def getLevelDBCompareResult()
+	{
+		levelDBcompareResult
+	}
+	
+	private def createDB(String db_name)
+	{
+		val levelDBOptions = new Options()
+
+		// Destroy if exists
+		factory.destroy(new File(db_name), levelDBOptions)
+
+		// Create data base
+		levelDBOptions.createIfMissing(true)
+		val db = factory.open(new File(db_name), levelDBOptions);
+
+		val batch = db.createWriteBatch();
+		try
+		{
+			for (v : module.variables.filter[d | !d.linearAlgebra ])
+				batch.put(bytes(v.name), context.getVariableValue(v).serialize);
+
+			db.write(batch);
+		}
+		finally
+		{
+			// Make sure you close the batch to avoid resource leaks.
+			batch.close();
+		}
+		db.close();
+		System.out.println("Reference database " + db_name + " created.");
+	}
+
+	private def getRefDBName() { levelDatabasePath + module.name + "DB.ref" }
+	private def getCurDBName() { levelDatabasePath + module.name + "DB.current" }
 }

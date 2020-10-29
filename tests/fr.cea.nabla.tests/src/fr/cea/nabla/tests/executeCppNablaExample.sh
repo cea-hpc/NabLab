@@ -1,6 +1,6 @@
 cd $1 # cd target dir
 cp $2 . # Copy cpplib to tmp dir
-unzip libcppnabla.zip # Unzip cppdir
+unzip -nq libcppnabla.zip # Unzip cppdir
 cd $3 # cd module folder
 cp -r $4 . # Copy levelDbRef
 cmake . > CMake.log 2>&1 # Configure

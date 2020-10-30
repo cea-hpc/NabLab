@@ -14,11 +14,16 @@ import fr.cea.nabla.ir.transformers.IrTransformationStep
 
 class IrModuleTransformer
 {
+	def void transformIr(IrTransformationStep step, IrModule module) throws RuntimeException
+	{
+		transformIr(step, module, null)
+	}
+
 	def void transformIr(IrTransformationStep step, IrModule module, (String)=>void traceNotifier) throws RuntimeException
 	{
-		step.traceListeners += traceNotifier
+		if (traceNotifier !== null) step.traceListeners += traceNotifier
 		val ok = step.transform(module)
-		step.traceListeners -= traceNotifier
+		if (traceNotifier !== null) step.traceListeners -= traceNotifier
 		if (!ok) throw new RuntimeException('Exception in IR transformation step: ' + step.description)
 	}
 }

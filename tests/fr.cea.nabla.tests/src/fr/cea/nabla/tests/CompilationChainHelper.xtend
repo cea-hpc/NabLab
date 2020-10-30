@@ -58,7 +58,7 @@ class CompilationChainHelper
 	{
 		val irModule = getIrModule(model, genModel)
 		// Suppress all reductions (replaced by loops)
-		transformer.transformIr(new ReplaceReductions(true), irModule, [msg | println(msg)])
+		transformer.transformIr(new ReplaceReductions(true), irModule)
 		return irModule
 	}
 

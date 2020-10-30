@@ -21,13 +21,16 @@ import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Assert
 import org.junit.BeforeClass
+import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.junit.runners.MethodSorters
 
 import static fr.cea.nabla.tests.TestUtils.*
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class NablaExamplesTest
 {
 	static String examplesProjectSubPath
@@ -58,61 +61,61 @@ class NablaExamplesTest
 	}
 
 	@Test
-	def void testGenerateExplicitHeatEquation()
+	def void test1GenerateExplicitHeatEquation()
 	{
 		testGenerateModule("ExplicitHeatEquation")
 	}
 
 	@Test
-	def void testExecuteExplicitHeatEquation()
+	def void test2ExecuteExplicitHeatEquation()
 	{
 		testExecuteModule("ExplicitHeatEquation")
 	}
 
 	@Test
-	def void testGenerateGlace2d()
+	def void test1GenerateGlace2d()
 	{
 		testGenerateModule("Glace2d")
 	}
 
 	@Test
-	def void testExecuteGlace2d()
+	def void test2ExecuteGlace2d()
 	{
 		testExecuteModule("Glace2d")
 	}
 
 	@Test
-	def void testGenerateHeatEquation()
+	def void test1GenerateHeatEquation()
 	{
 		testGenerateModule("HeatEquation")
 	}
 
 	@Test
-	def void testExecuteHeatEquation()
+	def void test2ExecuteHeatEquation()
 	{
 		testExecuteModule("HeatEquation")
 	}
 
 	@Test
-	def void testGenerateImplicitHeatEquation()
+	def void test1GenerateImplicitHeatEquation()
 	{
 		testGenerateModule("ImplicitHeatEquation")
 	}
 
 	@Test
-	def void testExecuteImplicitHeatEquation()
+	def void test2ExecuteImplicitHeatEquation()
 	{
 		testExecuteModule("ImplicitHeatEquation")
 	}
 
 	@Test
-	def void testGenerateIterativeHeatEquation()
+	def void test1GenerateIterativeHeatEquation()
 	{
 		testGenerateModule("IterativeHeatEquation")
 	}
 
 	@Test
-	def void testExecuteIterativeHeatEquation()
+	def void test2ExecuteIterativeHeatEquation()
 	{
 		testExecuteModule("IterativeHeatEquation")
 	}
@@ -133,7 +136,7 @@ class NablaExamplesTest
 
 	private def testExecuteModule(String moduleName)
 	{
-		println("\nTest Execute " + moduleName)
+		println("\n" + moduleName)
 		// check Env Variables
 		val kokkosPath = System.getenv(kokkosENV)
 		val levelDbPath = System.getenv(levelDbEnv)
@@ -141,7 +144,7 @@ class NablaExamplesTest
 			Assert.fail("To execute this test, you have to set " + kokkosENV + " and " + levelDbEnv + " variables.")
 
 		val tmp = new File(Files.createTempDirectory("nablaTest-" + moduleName) + "/NablaExamples")
-		println("TempDirectory : " + tmp)
+		println("\tdir: " + tmp)
 		// We have to create output dir. Simpliest is to copy all NablaExamples tree in tmpDir
 		val sourceLocation= new File(examplesProjectPath)
 		FileUtils.copyDirectory(sourceLocation, tmp);
@@ -200,9 +203,7 @@ class NablaExamplesTest
 		val targetName = outputDir.split("/").last
 		val levelDbRef = testProjectPath + "/results/compiler/" + targetName + "/" + packageName + "/" + moduleName + "DB.ref"
 		val jsonFile = examplesProjectPath + "src/" + packageName + "/" + moduleName + ".json"
-		println("\n---------------------------------------------------------")
-		println("Configuration, compilation and execution of " + target.eClass.name)
-		println("---------------------------------------------------------")
+		print("\tStarting " + target.eClass.name)
 //		println("$1= " + outputDir)
 //		println("$2= " + cppLibPath)
 //		println("$3= " + packageName)
@@ -218,26 +219,26 @@ class NablaExamplesTest
 		var process = pb.start
 		val exitVal = process.waitFor
 		if (exitVal.equals(0))
-			println("	-> Execution Ok for " + target.eClass.name + ".")
+			println(" -> Ok")
 		if (exitVal.equals(10))
 		{
 			val logPath = simplifyPath(outputDir + "/" + packageName + "/CMake.log")
-			println("	-> Configure Error for " + target.eClass.name + ". See " + logPath)
-			println(readFileAsString(logPath))
+			println(" -> Configure Error. See " + logPath)
+			//println("\t" + readFileAsString(logPath))
 			Assert.fail()
 		}
 		if (exitVal.equals(20))
 		{
 			val logPath = simplifyPath(outputDir + "/" + packageName + "/make.log")
-			println("	-> Compile Error for " + target.eClass.name + ". See " + logPath)
-			println(readFileAsString(logPath))
+			println(" -> Compile Error. See " + logPath)
+			//println("\t" + readFileAsString(logPath))
 			Assert.fail()
 		}
 		if (exitVal.equals(30))
 		{
 			val logPath = simplifyPath(outputDir + "/" + packageName + "/exec.err")
-			println("	-> Execute Error for " + target.eClass.name + ". See " + logPath)
-			println(readFileAsString(logPath))
+			println(" -> Execute Error. See " + logPath)
+			//println("\t" + readFileAsString(logPath))
 			Assert.fail()
 		}
 	}
@@ -253,9 +254,7 @@ class NablaExamplesTest
 		val guavaPath = PeekingIterator.protectionDomain.codeSource.location.toString
 		val apacheCommonIOPath = FileUtils.protectionDomain.codeSource.location.toString
 		val jsonFile = examplesProjectPath + "src/" + packageName + "/" + moduleName + ".json"
-		println("\n---------------------------------------------------------")
-		println("Configuration, compilation and execution of " + target.eClass.name)
-		println("---------------------------------------------------------")
+		print("\tStarting " + target.eClass.name)
 //		println("$1= " + outputDir)
 //		println("$2= " + packageName)
 //		println("$3= " + moduleName)
@@ -286,19 +285,19 @@ class NablaExamplesTest
 		var process = pb.start
 		val exitVal = process.waitFor
 		if (exitVal.equals(0))
-			println("	-> Execution Ok for " + target.eClass.name + ".")
+			println(" -> Ok")
 		if (exitVal.equals(10))
 		{
 			val logPath = simplifyPath(tmp + "/" + targetName + "/" + packageName + "/javac.err")
-			println("	-> Compile Error for " + target.eClass.name + ". See " + logPath)
-			println(readFileAsString(logPath))
+			println(" -> Compile Error. See " + logPath)
+			//println("\t" + readFileAsString(logPath))
 			Assert.fail()
 		}
 		if (exitVal.equals(20))
 		{
 			val logPath = simplifyPath(tmp + "/" + targetName + "/" + packageName + "/exec.err")
-			println("	-> Execute Error for " + target.eClass.name + ". See " + logPath)
-			println(readFileAsString(logPath))
+			println(" -> Execute Error. See " + logPath)
+			//println("\t" + readFileAsString(logPath))
 			Assert.fail()
 		}
 	}

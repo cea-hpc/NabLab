@@ -144,7 +144,7 @@ class NablaExamplesTest
 			Assert.fail("To execute this test, you have to set " + kokkosENV + " and " + levelDbEnv + " variables.")
 
 		val tmp = new File(Files.createTempDirectory("nablaTest-" + moduleName) + "/NablaExamples")
-		println("\tdir: " + tmp)
+		println(tmp)
 		// We have to create output dir. Simpliest is to copy all NablaExamples tree in tmpDir
 		val sourceLocation= new File(examplesProjectPath)
 		FileUtils.copyDirectory(sourceLocation, tmp);
@@ -158,11 +158,12 @@ class NablaExamplesTest
 		compilationHelper.generateCode(model, genmodel, tmp.toPath.toString)
 
 		val targets = compilationHelper.getTargets(model, genmodel)
-
+		var nbErrors = 0
 		for (target : targets)
 		{
-			testExecute(target, moduleName, tmp.toString)
+			(!testExecute(target, moduleName, tmp.toString) ? nbErrors++)
 		}
+		(nbErrors > 0 ? Assert.fail(nbErrors + " error(s) !"))
 	}
 
 	private def adaptedGenModel(String genmodel, String kokkosPath, String levelDbPath)
@@ -225,22 +226,23 @@ class NablaExamplesTest
 			val logPath = simplifyPath(outputDir + "/" + packageName + "/CMake.log")
 			println(" -> Configure Error. See " + logPath)
 			//println("\t" + readFileAsString(logPath))
-			Assert.fail()
+			return false
 		}
 		if (exitVal.equals(20))
 		{
 			val logPath = simplifyPath(outputDir + "/" + packageName + "/make.log")
 			println(" -> Compile Error. See " + logPath)
 			//println("\t" + readFileAsString(logPath))
-			Assert.fail()
+			return false
 		}
 		if (exitVal.equals(30))
 		{
 			val logPath = simplifyPath(outputDir + "/" + packageName + "/exec.err")
 			println(" -> Execute Error. See " + logPath)
 			//println("\t" + readFileAsString(logPath))
-			Assert.fail()
+			return false
 		}
+		return true
 	}
 
 	private def dispatch testExecute(Java target, String moduleName, String tmp)
@@ -290,15 +292,14 @@ class NablaExamplesTest
 		{
 			val logPath = simplifyPath(tmp + "/" + targetName + "/" + packageName + "/javac.err")
 			println(" -> Compile Error. See " + logPath)
-			//println("\t" + readFileAsString(logPath))
-			Assert.fail()
+			return false
 		}
 		if (exitVal.equals(20))
 		{
 			val logPath = simplifyPath(tmp + "/" + targetName + "/" + packageName + "/exec.err")
 			println(" -> Execute Error. See " + logPath)
-			//println("\t" + readFileAsString(logPath))
-			Assert.fail()
+			return false
 		}
+		return true
 	}
 }

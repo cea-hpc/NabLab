@@ -36,16 +36,16 @@ public:
   std::string print(const VectorType& v);
   std::string printMatlabStyle(const VectorType& v, std::string A);
 
-  VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x, CGInfo& info,
+  VectorType CGSolve(CGInfo& info, const SparseMatrixType& A, const VectorType& b, const VectorType& x,
                      const size_t max_it = 200, const double tolerance = std::numeric_limits<double>::epsilon());
-  VectorType CGSolve(const SparseMatrixType& A, const VectorType& b,
+  VectorType CGSolve(CGInfo& info, const SparseMatrixType& A, const VectorType& b,
                      const SparseMatrixType& C_minus_1, const VectorType& x0,
-                     CGInfo& info, const size_t max_it, const double tolerance);
+                     const size_t max_it, const double tolerance);
 
-  VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, CGInfo& info,
+  VectorType solveLinearSystem(CGInfo& info, NablaSparseMatrix& A, const VectorType& b,
                                VectorType* x0 = nullptr, const size_t max_it = 100, const double tolerance = 1.e-8);
                                
-  VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, NablaSparseMatrix& C_minus_1, CGInfo& info,
+  VectorType solveLinearSystem(CGInfo& info, NablaSparseMatrix& A, const VectorType& b, NablaSparseMatrix& C_minus_1,
                                VectorType* x0 = nullptr, const size_t max_it = 100, const double tolerance = 1.e-8);
 
 private:

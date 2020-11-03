@@ -54,7 +54,7 @@ class NablaExamplesTest
 		examplesProjectSubPath = "plugins/fr.cea.nabla.ui/examples/NablaExamples/"
 		examplesProjectPath = wsPath + examplesProjectSubPath
 		cppLibPath = wsPath + "plugins/fr.cea.nabla.ir/cppresources/libcppnabla.zip"
-		javaLibPath = wsPath + "plugins/fr.cea.nabla.javalib/bin"
+		javaLibPath = wsPath + "plugins/fr.cea.nabla.javalib/bin/:" + wsPath + "plugins/fr.cea.nabla.javalib/target/*"
 		levelDBPath = wsPath + "plugins/leveldb/*"
 		commonMath3Path = wsPath + "plugins/commons-math3/*"
 		git = new GitUtils(wsPath)

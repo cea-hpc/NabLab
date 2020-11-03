@@ -300,7 +300,7 @@ void ImplicitHeatEquation::initXc(const member_type& teamMember) noexcept
  */
 void ImplicitHeatEquation::updateU() noexcept
 {
-	u_nplus1 = linearAlgebraFunctions.solveLinearSystem(alpha, u_n, cg_info);
+	u_nplus1 = linearAlgebraFunctions.solveLinearSystem(cg_info, alpha, u_n);
 }
 
 /**

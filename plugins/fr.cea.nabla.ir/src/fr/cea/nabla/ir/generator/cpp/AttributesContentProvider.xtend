@@ -42,7 +42,6 @@ class AttributesContentProvider
 			«v.variableDeclaration»
 		«ENDFOR»
 
-		«IF m.linearAlgebra»LinearAlgebraFunctions::CGInfo cg_info; // CG details«ENDIF»
 		utils::Timer globalTimer;
 		utils::Timer cpuTimer;
 		utils::Timer ioTimer;

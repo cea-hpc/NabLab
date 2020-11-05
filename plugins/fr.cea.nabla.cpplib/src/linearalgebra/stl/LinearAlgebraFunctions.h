@@ -18,13 +18,14 @@ namespace nablalib
 
 class LinearAlgebraFunctions
 {
-public:
+ public:
   struct CGInfo {
     int m_nb_it;
     int m_nb_call;
     double m_norm_res;
     std::stringstream m_display;
   };
+  CGInfo m_info;
 
   void jsonInit(const rapidjson::Value::ConstObject& d) {}
   std::string print(const NablaSparseMatrix& M);
@@ -33,15 +34,15 @@ public:
   std::string print(const VectorType& v);
   std::string printMatlabStyle(const VectorType& v, std::string A);
 
-  VectorType CGSolve(CGInfo& info, const SparseMatrixType& A, const VectorType& b, const VectorType& x0,
+  VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x0,
                      const size_t max_it = 200, const double tolerance = std::numeric_limits<double>::epsilon());
-  VectorType CGSolve(CGInfo& info, const SparseMatrixType& A, const VectorType& b,
+  VectorType CGSolve(const SparseMatrixType& A, const VectorType& b,
                      const SparseMatrixType& C_minus_1, const VectorType& x0,
                      const size_t max_it, const double tolerance);
 
-  VectorType solveLinearSystem(CGInfo& info, NablaSparseMatrix& A, const VectorType& b,
+  VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b,
                                VectorType* x0 = nullptr, const size_t max_it = 100, const double tolerance = 1.e-8);
-  VectorType solveLinearSystem(CGInfo& info, NablaSparseMatrix& A, const VectorType& b, NablaSparseMatrix& C_minus_1,
+  VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, NablaSparseMatrix& C_minus_1,
                                VectorType* x0 = nullptr, const size_t max_it = 100, const double tolerance = 1.e-8);
 };
 

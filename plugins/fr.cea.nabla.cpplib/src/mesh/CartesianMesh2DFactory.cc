@@ -61,8 +61,10 @@ CartesianMesh2DFactory::create()
 	vector<Id> left_node_ids_(nbYQuads + 1);
 	vector<Id> right_node_ids_(nbYQuads + 1);
 
-	vector<Id> inner_cells_ids_((nbXQuads - 2)*(nbYQuads - 2));
-	vector<Id> outer_cells_ids_( 2 * nbXQuads + 2 * (nbYQuads - 2));
+  size_t nb_inner_cells(nbXQuads>1&&nbYQuads>1?(nbXQuads-2)*(nbYQuads-2):0);  // 0 for mesh with only 1 cell
+  size_t nb_outer_cells(nbXQuads * nbYQuads - nb_inner_cells);
+  vector<Id> inner_cells_ids_(nb_inner_cells);
+  vector<Id> outer_cells_ids_(nb_outer_cells);
 
 	// node creation
 	Id node_id_(0);

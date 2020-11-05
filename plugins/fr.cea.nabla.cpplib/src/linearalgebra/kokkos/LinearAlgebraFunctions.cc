@@ -152,7 +152,6 @@ LinearAlgebraFunctions::printMatlabStyle(const VectorType& v, std::string A) {
 
 /*
  * \brief Conjugate Gradient function (solves A x = b)
- * \param info:      [in/out] Misc. informations on computation result
  * \param A:         [in] Kokkos sparse matrix
  * \param b:         [in] Kokkos vector
  * \param x0:        [in] Kokkos vector (initial guess, can be null vector)
@@ -161,7 +160,7 @@ LinearAlgebraFunctions::printMatlabStyle(const VectorType& v, std::string A) {
  * \return: Solution vector
  */
 VectorType
-LinearAlgebraFunctions::CGSolve(CGInfo& info, const SparseMatrixType& A, const VectorType& b, const VectorType& x0,
+LinearAlgebraFunctions::CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x0,
                                 const size_t max_it, const double tolerance) {
 
   size_t it(0);
@@ -217,20 +216,19 @@ LinearAlgebraFunctions::CGSolve(CGInfo& info, const SparseMatrixType& A, const V
   VectorType::execution_space().fence();
 
   // fill infos
-  info.m_display << "---== Solved A * x = b ==---" << std::endl;
-  info.m_display << "Nb it = " << it << std::endl;
-  info.m_display << "Res = " << norm_res << std::endl;
-  info.m_display << "----------------------------" << std::endl;
-  info.m_nb_it += it;
-  info.m_nb_call++;
-  info.m_norm_res += norm_res;
+  m_info.m_display << "---== Solved A * x = b ==---" << std::endl;
+  m_info.m_display << "Nb it = " << it << std::endl;
+  m_info.m_display << "Res = " << norm_res << std::endl;
+  m_info.m_display << "----------------------------" << std::endl;
+  m_info.m_nb_it += it;
+  m_info.m_nb_call++;
+  m_info.m_norm_res += norm_res;
 
   return x;
 }
 
 /*
  * \brief Preconditioned Conjugate Gradient function (solves C^-1(Ax)=C^-1 b)
- * \param info:      [in/out] Misc. informations on computation result
  * \param A:         [in] Kokkos sparse matrix
  * \param b:         [in] Kokkos vector
  * \param C_minus_1: [in] Kokkos sparse matrix (preconditioner matrix)
@@ -240,7 +238,7 @@ LinearAlgebraFunctions::CGSolve(CGInfo& info, const SparseMatrixType& A, const V
  * \return: Solution vector
  */
 VectorType
-LinearAlgebraFunctions::CGSolve(CGInfo& info, const SparseMatrixType& A, const VectorType& b,
+LinearAlgebraFunctions::CGSolve(const SparseMatrixType& A, const VectorType& b,
                                 const SparseMatrixType& C_minus_1, const VectorType& x0,
                                 const size_t max_it, const double tolerance) {
   
@@ -307,20 +305,19 @@ LinearAlgebraFunctions::CGSolve(CGInfo& info, const SparseMatrixType& A, const V
   VectorType::execution_space().fence();
 
   // fill infos
-  info.m_display << "---== Solved A * x = b ==---" << std::endl;
-  info.m_display << "Nb it = " << it << std::endl;
-  info.m_display << "Res = " << norm_res << std::endl;
-  info.m_display << "----------------------------" << std::endl;
-  info.m_nb_it += it;
-  info.m_nb_call++;
-  info.m_norm_res += norm_res;
+  m_info.m_display << "---== Solved A * x = b ==---" << std::endl;
+  m_info.m_display << "Nb it = " << it << std::endl;
+  m_info.m_display << "Res = " << norm_res << std::endl;
+  m_info.m_display << "----------------------------" << std::endl;
+  m_info.m_nb_it += it;
+  m_info.m_nb_call++;
+  m_info.m_norm_res += norm_res;
 
   return x;
 }
 
 /*
  * \brief Call to conjugate gradient to solve A x = b
- * \param info:      [in/out] Misc. informations on computation result
  * \param A:         [in] Sparse matrix
  * \param b:         [in] Vector
  * \param x0:        [in/out] Initial guess of the solution. If none is provided, a null vector is used.
@@ -329,23 +326,22 @@ LinearAlgebraFunctions::CGSolve(CGInfo& info, const SparseMatrixType& A, const V
  * \return: Solution vector
  */
 VectorType
-LinearAlgebraFunctions::solveLinearSystem(CGInfo& info, NablaSparseMatrix& A, const VectorType& b,
+LinearAlgebraFunctions::solveLinearSystem(NablaSparseMatrix& A, const VectorType& b,
                                           VectorType* x0, const size_t max_it, const double tolerance)
 {
   if (!x0) {
     VectorType default_x0("x0", b.extent(0));
     for (size_t i(0); i < b.extent(0); ++i)
       default_x0(i) = 0.0;
-    return CGSolve(info, A.crsMatrix(), b, default_x0, max_it, tolerance);
+    return CGSolve(A.crsMatrix(), b, default_x0, max_it, tolerance);
   } else {
-    return CGSolve(info, A.crsMatrix(), b, *x0, max_it, tolerance);
+    return CGSolve(A.crsMatrix(), b, *x0, max_it, tolerance);
   }
 }
 
 /*
  * \brief Call to conjugate gradient to solve A x = b with a preconditioner
  *        Actually solves C^-1(Ax)=C^-1 b
- * \param info:      [in/out] Misc. informations on computation result
  * \param A:         [in] Sparse matrix
  * \param b:         [in] Vector
  * \param C_minus_1: [in] Sparse matrix used as preconditioner
@@ -355,16 +351,16 @@ LinearAlgebraFunctions::solveLinearSystem(CGInfo& info, NablaSparseMatrix& A, co
  * \return: Solution vector
  */
 VectorType
-LinearAlgebraFunctions::solveLinearSystem(CGInfo& info, NablaSparseMatrix& A, const VectorType& b, NablaSparseMatrix& C_minus_1,
+LinearAlgebraFunctions::solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, NablaSparseMatrix& C_minus_1,
                                           VectorType* x0, const size_t max_it, const double tolerance)
 {
   if (!x0) {
     VectorType default_x0("x0", b.extent(0));
     for (size_t i(0); i < b.extent(0); ++i)
       default_x0(i) = 0.0;
-    return CGSolve(info, A.crsMatrix(), b, C_minus_1.crsMatrix(), default_x0, max_it, tolerance);
+    return CGSolve(A.crsMatrix(), b, C_minus_1.crsMatrix(), default_x0, max_it, tolerance);
   } else {
-    return CGSolve(info, A.crsMatrix(), b, C_minus_1.crsMatrix(), *x0, max_it, tolerance);
+    return CGSolve(A.crsMatrix(), b, C_minus_1.crsMatrix(), *x0, max_it, tolerance);
   }
 }
   

@@ -77,7 +77,6 @@ private:
 	std::vector<double> faceConductivity;
 	NablaSparseMatrix alpha;
 	
-	LinearAlgebraFunctions::CGInfo cg_info; // CG details
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;

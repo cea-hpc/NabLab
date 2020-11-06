@@ -16,4 +16,56 @@
 	       name="nabla">
     </component>
   </extension>
+  <extension
+        point="org.eclipse.ui.menus">
+     <menuContribution
+           allPopups="false"
+           locationURI="toolbar:org.eclipse.sirius.diagram.ui.tabbar?after=additions">
+        <command
+              commandId="fr.cea.nabla.sirius.nablair.back.to.parent.diagram.command"
+              icon="icons/backToParentDiagram.gif"
+              style="push"
+              tooltip="Back to parent diagram">
+           <visibleWhen
+                 checkEnabled="false">
+              <and>
+                 <with
+                       variable="activeEditorId">
+                       <equals value="org.eclipse.sirius.diagram.ui.part.SiriusDiagramEditorID"/>
+                 </with>
+                 <with
+                       variable="selection">
+                       <iterate ifEmpty="false" operator="or">
+                          <test property="fr.cea.nabla.sirius.nablair.property.tester.isNotRootDiagram"/>
+                       </iterate>
+                 </with>
+              </and>
+           </visibleWhen>
+        </command>
+     </menuContribution>
+  </extension>
+  <extension
+        point="org.eclipse.ui.commands">
+     <command
+           defaultHandler="fr.cea.nabla.sirius.BackToParentNablaIrDiagramCommand"
+           id="fr.cea.nabla.sirius.nablair.back.to.parent.diagram.command"
+           name="BackToParentNablaIrDiagramCommand">
+     </command>
+  </extension>
+  <extension
+        point="org.eclipse.core.expressions.propertyTesters">
+     <propertyTester
+           class="fr.cea.nabla.sirius.BackToParentNablaIrDiagramPropertyTester"
+           id="fr.cea.nabla.sirius.nablair.property.tester.no.root.diagram"
+           namespace="fr.cea.nabla.sirius.nablair.property.tester"
+           properties="isNotRootDiagram"
+           type="org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart">
+     </propertyTester>
+  </extension>
+  <extension
+        point="org.eclipse.sirius.diagram.elk.layout.extension">
+     <layoutExtension
+           class="fr.cea.nabla.sirius.NablaIrElkLayoutExtension">
+     </layoutExtension>
+  </extension>
 </plugin>

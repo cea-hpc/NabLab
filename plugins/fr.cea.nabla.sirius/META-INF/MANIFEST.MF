@@ -19,10 +19,20 @@ Require-Bundle: fr.cea.nabla,
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.macro,
  org.eclipse.xtext,
- org.eclipse.sirius.diagram
+ org.eclipse.sirius.diagram,
+ org.eclipse.sirius.ui,
+ org.eclipse.sirius.diagram.ui,
+ org.eclipse.emf.common.ui,
+ org.eclipse.emf.transaction,
+ org.eclipse.core.expressions,
+ org.eclipse.sirius.ext.base,
+ org.eclipse.gmf.runtime.diagram.ui,
+ org.eclipse.sirius.common,
+ org.eclipse.sirius.diagram.elk,
+ org.eclipse.elk.core.service,
+ org.eclipse.elk.graph
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Import-Package: org.eclipse.sirius.common.tools.api.interpreter
 Export-Package: fr.cea.nabla.sirius
 Bundle-ClassPath: .
 Bundle-Vendor: CEA

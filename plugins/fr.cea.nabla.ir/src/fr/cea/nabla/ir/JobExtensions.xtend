@@ -45,4 +45,9 @@ class JobExtensions
 	{
 		irModule.name + "::" + name
 	}
+
+	static def getDiagramDisplayName(Job it)
+	{
+		irModule.name + "::" + name
+	}
 }

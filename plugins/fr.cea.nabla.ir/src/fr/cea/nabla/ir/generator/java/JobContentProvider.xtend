@@ -9,12 +9,12 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
+import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.TimeLoop
-import fr.cea.nabla.ir.ir.TimeLoopCopyJob
-import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
+import fr.cea.nabla.ir.ir.TimeLoopJob
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
@@ -78,7 +78,7 @@ class JobContentProvider
 		«ENDIF»
 	'''
 
-	private static def dispatch CharSequence getInnerContent(TimeLoopCopyJob it)
+	private static def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
 		«FOR copy : copies»
 			«copy(copy.destination.name, copy.source.name, copy.destination.type.dimension, true)»

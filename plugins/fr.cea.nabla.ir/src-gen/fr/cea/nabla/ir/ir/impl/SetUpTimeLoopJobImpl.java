@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.EClass;
  *
  * @generated
  */
-public class SetUpTimeLoopJobImpl extends TimeLoopCopyJobImpl implements SetUpTimeLoopJob {
+public class SetUpTimeLoopJobImpl extends TimeLoopJobImpl implements SetUpTimeLoopJob {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

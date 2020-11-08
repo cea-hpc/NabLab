@@ -32,7 +32,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class ExecuteTimeLoopJobImpl extends TimeLoopCopyJobImpl implements ExecuteTimeLoopJob {
+public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTimeLoopJob {
 	/**
 	 * The cached value of the '{@link #getInnerJobs() <em>Inner Jobs</em>}' reference list.
 	 * <!-- begin-user-doc -->

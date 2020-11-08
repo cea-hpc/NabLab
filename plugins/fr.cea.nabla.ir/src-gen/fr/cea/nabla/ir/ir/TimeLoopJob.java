@@ -6,29 +6,29 @@ import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Time Loop Copy Job</b></em>'.
+ * A representation of the model object '<em><b>Time Loop Job</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.TimeLoopCopyJob#getCopies <em>Copies</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.TimeLoopCopyJob#getTimeLoop <em>Time Loop</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.TimeLoopJob#getCopies <em>Copies</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.TimeLoopJob#getTimeLoop <em>Time Loop</em>}</li>
  * </ul>
  *
- * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoopCopyJob()
+ * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoopJob()
  * @model abstract="true"
  * @generated
  */
-public interface TimeLoopCopyJob extends Job {
+public interface TimeLoopJob extends Job {
 	/**
 	 * Returns the value of the '<em><b>Copies</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.TimeLoopCopy}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Copies</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoopCopyJob_Copies()
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoopJob_Copies()
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
@@ -40,14 +40,14 @@ public interface TimeLoopCopyJob extends Job {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Time Loop</em>' reference.
 	 * @see #setTimeLoop(TimeLoop)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoopCopyJob_TimeLoop()
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoopJob_TimeLoop()
 	 * @model required="true"
 	 * @generated
 	 */
 	TimeLoop getTimeLoop();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.TimeLoopCopyJob#getTimeLoop <em>Time Loop</em>}' reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.TimeLoopJob#getTimeLoop <em>Time Loop</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Time Loop</em>' reference.
@@ -56,4 +56,4 @@ public interface TimeLoopCopyJob extends Job {
 	 */
 	void setTimeLoop(TimeLoop value);
 
-} // TimeLoopCopyJob
+} // TimeLoopJob

@@ -9,7 +9,7 @@ import fr.cea.nabla.ir.ir.JobContainer
 import fr.cea.nabla.ir.ir.TearDownTimeLoopJob
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopContainer
-import fr.cea.nabla.ir.ir.TimeLoopCopyJob
+import fr.cea.nabla.ir.ir.TimeLoopJob
 
 /**
  * Dispatch jobs in their corresponding time loops
@@ -29,15 +29,15 @@ class JobDispatcher
 	 */
 	def void dispatchJobsInTimeLoops(IrModule it)
 	{
-		// Dispatch TimeLoopCopyJob instances
-		dispatchTimeLoopCopyJobs(jobs.filter(TimeLoopCopyJob), it, '')
+		// Dispatch TimeLoopJob instances
+		dispatchTimeLoopJobs(jobs.filter(TimeLoopJob), it, '')
 
-		for (j : jobs.filter[x | !(x instanceof TimeLoopCopyJob) && x.previousJobs.empty])
+		for (j : jobs.filter[x | !(x instanceof TimeLoopJob) && x.previousJobs.empty])
 			if (continueToDispatch(it, j, ''))
 				dispatchJob(it, j, '')
 	}
 
-	private def void dispatchTimeLoopCopyJobs(Iterable<TimeLoopCopyJob> jobs, TimeLoopContainer timeLoopContainer, String prefix)
+	private def void dispatchTimeLoopJobs(Iterable<TimeLoopJob> jobs, TimeLoopContainer timeLoopContainer, String prefix)
 	{
 		//println(prefix + "distributeTimeLoopJobs " + timeLoopContainer.name)
 		val innerJobs =  timeLoopContainer.jobContainer.innerJobs
@@ -45,7 +45,7 @@ class JobDispatcher
 		for (containerTimeLoop : timeLoopContainer.innerTimeLoops)
 		{
 			innerJobs += jobs.filter[timeLoop === containerTimeLoop]
-			dispatchTimeLoopCopyJobs(jobs.filter[timeLoop !== containerTimeLoop], containerTimeLoop, prefix + '\t')
+			dispatchTimeLoopJobs(jobs.filter[timeLoop !== containerTimeLoop], containerTimeLoop, prefix + '\t')
 		}
 		//println(prefix + "   inner jobs after : " + innerJobs.map[name].join(', '))
 	}
@@ -53,7 +53,7 @@ class JobDispatcher
 	private def void dispatchJob(JobContainer jc, Job job, String prefix)
 	{
 		//println(prefix + "dispatchJob(" + jc.name + ", " + job.name + ")")
-		if (! (job instanceof TimeLoopCopyJob))
+		if (! (job instanceof TimeLoopJob))
 		{
 			//println(prefix + jc.name + " <-- " + job.name)
 			jc.innerJobs += job
@@ -88,7 +88,7 @@ class JobDispatcher
 	private def boolean continueToDispatch(JobContainer container, Job job, String prefix)
 	{
 		//println(prefix + "continueToDispatch(" + container.name  + ", " + job.name + ")")
-		(job instanceof TimeLoopCopyJob)
+		(job instanceof TimeLoopJob)
 		|| (job.jobContainer === null)
 		|| (includes(job.jobContainer.timeLoop, container.timeLoop, prefix))
 	}

@@ -15,7 +15,7 @@ import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.TimeLoop
-import fr.cea.nabla.ir.ir.TimeLoopCopyJob
+import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import fr.cea.nabla.javalib.mesh.VtkFileContent
 import java.util.Arrays
@@ -44,8 +44,8 @@ class JobInterpreter
 			interpreteExecuteTimeLoopJob(context)
 		} else if (it instanceof InstructionJob) {
 			interpreteInstructionJob(context)
-		} else if (it instanceof TimeLoopCopyJob) {
-			interpreteTimeLoopCopyJob(context)
+		} else if (it instanceof TimeLoopJob) {
+			interpreteTimeLoopJob(context)
 		} else {
 			throw new IllegalArgumentException("Unhandled parameter types: " +
 				Arrays.<Object>asList(it, context).toString())
@@ -113,7 +113,7 @@ class JobInterpreter
 		context.logVariables(msg)
 	}
 
-	def void interpreteTimeLoopCopyJob(TimeLoopCopyJob it, Context context)
+	def void interpreteTimeLoopJob(TimeLoopJob it, Context context)
 	{
 		context.logFiner("Interprete TimeLoopCopyJob " + name + " @ " + at)
 

@@ -1281,14 +1281,14 @@ public interface IrPackage extends EPackage {
 	int INSTRUCTION_JOB_OPERATION_COUNT = JOB_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.TimeLoopCopyJobImpl <em>Time Loop Copy Job</em>}' class.
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.TimeLoopJobImpl <em>Time Loop Job</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.TimeLoopCopyJobImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTimeLoopCopyJob()
+	 * @see fr.cea.nabla.ir.ir.impl.TimeLoopJobImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTimeLoopJob()
 	 * @generated
 	 */
-	int TIME_LOOP_COPY_JOB = 18;
+	int TIME_LOOP_JOB = 18;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -1297,7 +1297,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_LOOP_COPY_JOB__ANNOTATIONS = JOB__ANNOTATIONS;
+	int TIME_LOOP_JOB__ANNOTATIONS = JOB__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1306,7 +1306,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_LOOP_COPY_JOB__NAME = JOB__NAME;
+	int TIME_LOOP_JOB__NAME = JOB__NAME;
 
 	/**
 	 * The feature id for the '<em><b>At</b></em>' attribute.
@@ -1315,7 +1315,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_LOOP_COPY_JOB__AT = JOB__AT;
+	int TIME_LOOP_JOB__AT = JOB__AT;
 
 	/**
 	 * The feature id for the '<em><b>On Cycle</b></em>' attribute.
@@ -1324,7 +1324,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_LOOP_COPY_JOB__ON_CYCLE = JOB__ON_CYCLE;
+	int TIME_LOOP_JOB__ON_CYCLE = JOB__ON_CYCLE;
 
 	/**
 	 * The feature id for the '<em><b>Job Container</b></em>' reference.
@@ -1333,7 +1333,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_LOOP_COPY_JOB__JOB_CONTAINER = JOB__JOB_CONTAINER;
+	int TIME_LOOP_JOB__JOB_CONTAINER = JOB__JOB_CONTAINER;
 
 	/**
 	 * The feature id for the '<em><b>Copies</b></em>' containment reference list.
@@ -1342,7 +1342,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_LOOP_COPY_JOB__COPIES = JOB_FEATURE_COUNT + 0;
+	int TIME_LOOP_JOB__COPIES = JOB_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Time Loop</b></em>' reference.
@@ -1351,25 +1351,25 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_LOOP_COPY_JOB__TIME_LOOP = JOB_FEATURE_COUNT + 1;
+	int TIME_LOOP_JOB__TIME_LOOP = JOB_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of structural features of the '<em>Time Loop Copy Job</em>' class.
+	 * The number of structural features of the '<em>Time Loop Job</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_LOOP_COPY_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 2;
+	int TIME_LOOP_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 2;
 
 	/**
-	 * The number of operations of the '<em>Time Loop Copy Job</em>' class.
+	 * The number of operations of the '<em>Time Loop Job</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TIME_LOOP_COPY_JOB_OPERATION_COUNT = JOB_OPERATION_COUNT + 0;
+	int TIME_LOOP_JOB_OPERATION_COUNT = JOB_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ExecuteTimeLoopJobImpl <em>Execute Time Loop Job</em>}' class.
@@ -1388,7 +1388,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__ANNOTATIONS = TIME_LOOP_COPY_JOB__ANNOTATIONS;
+	int EXECUTE_TIME_LOOP_JOB__ANNOTATIONS = TIME_LOOP_JOB__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1397,7 +1397,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__NAME = TIME_LOOP_COPY_JOB__NAME;
+	int EXECUTE_TIME_LOOP_JOB__NAME = TIME_LOOP_JOB__NAME;
 
 	/**
 	 * The feature id for the '<em><b>At</b></em>' attribute.
@@ -1406,7 +1406,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__AT = TIME_LOOP_COPY_JOB__AT;
+	int EXECUTE_TIME_LOOP_JOB__AT = TIME_LOOP_JOB__AT;
 
 	/**
 	 * The feature id for the '<em><b>On Cycle</b></em>' attribute.
@@ -1415,7 +1415,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__ON_CYCLE = TIME_LOOP_COPY_JOB__ON_CYCLE;
+	int EXECUTE_TIME_LOOP_JOB__ON_CYCLE = TIME_LOOP_JOB__ON_CYCLE;
 
 	/**
 	 * The feature id for the '<em><b>Job Container</b></em>' reference.
@@ -1424,7 +1424,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__JOB_CONTAINER = TIME_LOOP_COPY_JOB__JOB_CONTAINER;
+	int EXECUTE_TIME_LOOP_JOB__JOB_CONTAINER = TIME_LOOP_JOB__JOB_CONTAINER;
 
 	/**
 	 * The feature id for the '<em><b>Copies</b></em>' containment reference list.
@@ -1433,7 +1433,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__COPIES = TIME_LOOP_COPY_JOB__COPIES;
+	int EXECUTE_TIME_LOOP_JOB__COPIES = TIME_LOOP_JOB__COPIES;
 
 	/**
 	 * The feature id for the '<em><b>Time Loop</b></em>' reference.
@@ -1442,7 +1442,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__TIME_LOOP = TIME_LOOP_COPY_JOB__TIME_LOOP;
+	int EXECUTE_TIME_LOOP_JOB__TIME_LOOP = TIME_LOOP_JOB__TIME_LOOP;
 
 	/**
 	 * The feature id for the '<em><b>Inner Jobs</b></em>' reference list.
@@ -1451,7 +1451,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__INNER_JOBS = TIME_LOOP_COPY_JOB_FEATURE_COUNT + 0;
+	int EXECUTE_TIME_LOOP_JOB__INNER_JOBS = TIME_LOOP_JOB_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Execute Time Loop Job</em>' class.
@@ -1460,7 +1460,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB_FEATURE_COUNT = TIME_LOOP_COPY_JOB_FEATURE_COUNT + 1;
+	int EXECUTE_TIME_LOOP_JOB_FEATURE_COUNT = TIME_LOOP_JOB_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Execute Time Loop Job</em>' class.
@@ -1469,7 +1469,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB_OPERATION_COUNT = TIME_LOOP_COPY_JOB_OPERATION_COUNT + 0;
+	int EXECUTE_TIME_LOOP_JOB_OPERATION_COUNT = TIME_LOOP_JOB_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.SetUpTimeLoopJobImpl <em>Set Up Time Loop Job</em>}' class.
@@ -1488,7 +1488,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SET_UP_TIME_LOOP_JOB__ANNOTATIONS = TIME_LOOP_COPY_JOB__ANNOTATIONS;
+	int SET_UP_TIME_LOOP_JOB__ANNOTATIONS = TIME_LOOP_JOB__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1497,7 +1497,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SET_UP_TIME_LOOP_JOB__NAME = TIME_LOOP_COPY_JOB__NAME;
+	int SET_UP_TIME_LOOP_JOB__NAME = TIME_LOOP_JOB__NAME;
 
 	/**
 	 * The feature id for the '<em><b>At</b></em>' attribute.
@@ -1506,7 +1506,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SET_UP_TIME_LOOP_JOB__AT = TIME_LOOP_COPY_JOB__AT;
+	int SET_UP_TIME_LOOP_JOB__AT = TIME_LOOP_JOB__AT;
 
 	/**
 	 * The feature id for the '<em><b>On Cycle</b></em>' attribute.
@@ -1515,7 +1515,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SET_UP_TIME_LOOP_JOB__ON_CYCLE = TIME_LOOP_COPY_JOB__ON_CYCLE;
+	int SET_UP_TIME_LOOP_JOB__ON_CYCLE = TIME_LOOP_JOB__ON_CYCLE;
 
 	/**
 	 * The feature id for the '<em><b>Job Container</b></em>' reference.
@@ -1524,7 +1524,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SET_UP_TIME_LOOP_JOB__JOB_CONTAINER = TIME_LOOP_COPY_JOB__JOB_CONTAINER;
+	int SET_UP_TIME_LOOP_JOB__JOB_CONTAINER = TIME_LOOP_JOB__JOB_CONTAINER;
 
 	/**
 	 * The feature id for the '<em><b>Copies</b></em>' containment reference list.
@@ -1533,7 +1533,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SET_UP_TIME_LOOP_JOB__COPIES = TIME_LOOP_COPY_JOB__COPIES;
+	int SET_UP_TIME_LOOP_JOB__COPIES = TIME_LOOP_JOB__COPIES;
 
 	/**
 	 * The feature id for the '<em><b>Time Loop</b></em>' reference.
@@ -1542,7 +1542,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SET_UP_TIME_LOOP_JOB__TIME_LOOP = TIME_LOOP_COPY_JOB__TIME_LOOP;
+	int SET_UP_TIME_LOOP_JOB__TIME_LOOP = TIME_LOOP_JOB__TIME_LOOP;
 
 	/**
 	 * The number of structural features of the '<em>Set Up Time Loop Job</em>' class.
@@ -1551,7 +1551,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SET_UP_TIME_LOOP_JOB_FEATURE_COUNT = TIME_LOOP_COPY_JOB_FEATURE_COUNT + 0;
+	int SET_UP_TIME_LOOP_JOB_FEATURE_COUNT = TIME_LOOP_JOB_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of operations of the '<em>Set Up Time Loop Job</em>' class.
@@ -1560,7 +1560,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SET_UP_TIME_LOOP_JOB_OPERATION_COUNT = TIME_LOOP_COPY_JOB_OPERATION_COUNT + 0;
+	int SET_UP_TIME_LOOP_JOB_OPERATION_COUNT = TIME_LOOP_JOB_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.TearDownTimeLoopJobImpl <em>Tear Down Time Loop Job</em>}' class.
@@ -1579,7 +1579,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TEAR_DOWN_TIME_LOOP_JOB__ANNOTATIONS = TIME_LOOP_COPY_JOB__ANNOTATIONS;
+	int TEAR_DOWN_TIME_LOOP_JOB__ANNOTATIONS = TIME_LOOP_JOB__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1588,7 +1588,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TEAR_DOWN_TIME_LOOP_JOB__NAME = TIME_LOOP_COPY_JOB__NAME;
+	int TEAR_DOWN_TIME_LOOP_JOB__NAME = TIME_LOOP_JOB__NAME;
 
 	/**
 	 * The feature id for the '<em><b>At</b></em>' attribute.
@@ -1597,7 +1597,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TEAR_DOWN_TIME_LOOP_JOB__AT = TIME_LOOP_COPY_JOB__AT;
+	int TEAR_DOWN_TIME_LOOP_JOB__AT = TIME_LOOP_JOB__AT;
 
 	/**
 	 * The feature id for the '<em><b>On Cycle</b></em>' attribute.
@@ -1606,7 +1606,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TEAR_DOWN_TIME_LOOP_JOB__ON_CYCLE = TIME_LOOP_COPY_JOB__ON_CYCLE;
+	int TEAR_DOWN_TIME_LOOP_JOB__ON_CYCLE = TIME_LOOP_JOB__ON_CYCLE;
 
 	/**
 	 * The feature id for the '<em><b>Job Container</b></em>' reference.
@@ -1615,7 +1615,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TEAR_DOWN_TIME_LOOP_JOB__JOB_CONTAINER = TIME_LOOP_COPY_JOB__JOB_CONTAINER;
+	int TEAR_DOWN_TIME_LOOP_JOB__JOB_CONTAINER = TIME_LOOP_JOB__JOB_CONTAINER;
 
 	/**
 	 * The feature id for the '<em><b>Copies</b></em>' containment reference list.
@@ -1624,7 +1624,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TEAR_DOWN_TIME_LOOP_JOB__COPIES = TIME_LOOP_COPY_JOB__COPIES;
+	int TEAR_DOWN_TIME_LOOP_JOB__COPIES = TIME_LOOP_JOB__COPIES;
 
 	/**
 	 * The feature id for the '<em><b>Time Loop</b></em>' reference.
@@ -1633,7 +1633,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TEAR_DOWN_TIME_LOOP_JOB__TIME_LOOP = TIME_LOOP_COPY_JOB__TIME_LOOP;
+	int TEAR_DOWN_TIME_LOOP_JOB__TIME_LOOP = TIME_LOOP_JOB__TIME_LOOP;
 
 	/**
 	 * The number of structural features of the '<em>Tear Down Time Loop Job</em>' class.
@@ -1642,7 +1642,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TEAR_DOWN_TIME_LOOP_JOB_FEATURE_COUNT = TIME_LOOP_COPY_JOB_FEATURE_COUNT + 0;
+	int TEAR_DOWN_TIME_LOOP_JOB_FEATURE_COUNT = TIME_LOOP_JOB_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of operations of the '<em>Tear Down Time Loop Job</em>' class.
@@ -1651,7 +1651,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TEAR_DOWN_TIME_LOOP_JOB_OPERATION_COUNT = TIME_LOOP_COPY_JOB_OPERATION_COUNT + 0;
+	int TEAR_DOWN_TIME_LOOP_JOB_OPERATION_COUNT = TIME_LOOP_JOB_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.TimeLoopCopyImpl <em>Time Loop Copy</em>}' class.
@@ -5134,36 +5134,36 @@ public interface IrPackage extends EPackage {
 	EClass getExecuteTimeLoopJob();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.TimeLoopCopyJob <em>Time Loop Copy Job</em>}'.
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.TimeLoopJob <em>Time Loop Job</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Time Loop Copy Job</em>'.
-	 * @see fr.cea.nabla.ir.ir.TimeLoopCopyJob
+	 * @return the meta object for class '<em>Time Loop Job</em>'.
+	 * @see fr.cea.nabla.ir.ir.TimeLoopJob
 	 * @generated
 	 */
-	EClass getTimeLoopCopyJob();
+	EClass getTimeLoopJob();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.TimeLoopCopyJob#getCopies <em>Copies</em>}'.
+	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.TimeLoopJob#getCopies <em>Copies</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference list '<em>Copies</em>'.
-	 * @see fr.cea.nabla.ir.ir.TimeLoopCopyJob#getCopies()
-	 * @see #getTimeLoopCopyJob()
+	 * @see fr.cea.nabla.ir.ir.TimeLoopJob#getCopies()
+	 * @see #getTimeLoopJob()
 	 * @generated
 	 */
-	EReference getTimeLoopCopyJob_Copies();
+	EReference getTimeLoopJob_Copies();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.TimeLoopCopyJob#getTimeLoop <em>Time Loop</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.TimeLoopJob#getTimeLoop <em>Time Loop</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Time Loop</em>'.
-	 * @see fr.cea.nabla.ir.ir.TimeLoopCopyJob#getTimeLoop()
-	 * @see #getTimeLoopCopyJob()
+	 * @see fr.cea.nabla.ir.ir.TimeLoopJob#getTimeLoop()
+	 * @see #getTimeLoopJob()
 	 * @generated
 	 */
-	EReference getTimeLoopCopyJob_TimeLoop();
+	EReference getTimeLoopJob_TimeLoop();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SetUpTimeLoopJob <em>Set Up Time Loop Job</em>}'.
@@ -7134,14 +7134,14 @@ public interface IrPackage extends EPackage {
 		EClass EXECUTE_TIME_LOOP_JOB = eINSTANCE.getExecuteTimeLoopJob();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.TimeLoopCopyJobImpl <em>Time Loop Copy Job</em>}' class.
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.TimeLoopJobImpl <em>Time Loop Job</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.TimeLoopCopyJobImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTimeLoopCopyJob()
+		 * @see fr.cea.nabla.ir.ir.impl.TimeLoopJobImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTimeLoopJob()
 		 * @generated
 		 */
-		EClass TIME_LOOP_COPY_JOB = eINSTANCE.getTimeLoopCopyJob();
+		EClass TIME_LOOP_JOB = eINSTANCE.getTimeLoopJob();
 
 		/**
 		 * The meta object literal for the '<em><b>Copies</b></em>' containment reference list feature.
@@ -7149,7 +7149,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference TIME_LOOP_COPY_JOB__COPIES = eINSTANCE.getTimeLoopCopyJob_Copies();
+		EReference TIME_LOOP_JOB__COPIES = eINSTANCE.getTimeLoopJob_Copies();
 
 		/**
 		 * The meta object literal for the '<em><b>Time Loop</b></em>' reference feature.
@@ -7157,7 +7157,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference TIME_LOOP_COPY_JOB__TIME_LOOP = eINSTANCE.getTimeLoopCopyJob_TimeLoop();
+		EReference TIME_LOOP_JOB__TIME_LOOP = eINSTANCE.getTimeLoopJob_TimeLoop();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SetUpTimeLoopJobImpl <em>Set Up Time Loop Job</em>}' class.

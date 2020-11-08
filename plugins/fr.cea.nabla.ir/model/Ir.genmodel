@@ -118,9 +118,9 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InstructionJob/instruction"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ExecuteTimeLoopJob"/>
-    <genClasses image="false" ecoreClass="Ir.ecore#//TimeLoopCopyJob">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopCopyJob/copies"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopCopyJob/timeLoop"/>
+    <genClasses image="false" ecoreClass="Ir.ecore#//TimeLoopJob">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopJob/copies"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopJob/timeLoop"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//SetUpTimeLoopJob"/>
     <genClasses ecoreClass="Ir.ecore#//TearDownTimeLoopJob"/>

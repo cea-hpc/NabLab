@@ -10,10 +10,10 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.TimeLoopCopyJob
-import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
+import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.ir.Variable
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Data
@@ -106,7 +106,7 @@ class JobContentProvider
 		«ENDIF»
 	'''
 
-	protected def dispatch CharSequence getInnerContent(TimeLoopCopyJob it)
+	protected def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
 		«FOR copy : copies»
 			«copy(copy.source, copy.destination)»

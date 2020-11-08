@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.EClass;
  *
  * @generated
  */
-public class TearDownTimeLoopJobImpl extends TimeLoopCopyJobImpl implements TearDownTimeLoopJob {
+public class TearDownTimeLoopJobImpl extends TimeLoopJobImpl implements TearDownTimeLoopJob {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -13,5 +13,5 @@ package fr.cea.nabla.ir.ir;
  * @model
  * @generated
  */
-public interface ExecuteTimeLoopJob extends TimeLoopCopyJob, JobContainer {
+public interface ExecuteTimeLoopJob extends TimeLoopJob, JobContainer {
 } // ExecuteTimeLoopJob

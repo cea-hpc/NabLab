@@ -29,7 +29,7 @@ class IrJobFactory
 		instruction = j.instruction.toIrInstruction
 	}
 
-	def create IrFactory::eINSTANCE.createBeforeTimeLoopJob toIrBeforeTimeLoopJob(TimeLoop tl)
+	def create IrFactory::eINSTANCE.createSetUpTimeLoopJob toIrSetUpTimeLoopJob(TimeLoop tl)
 	{
 		annotations += EcoreUtil::copyAll(tl.annotations)
 		name = "SetUpTimeLoop" + tl.name.toFirstUpper
@@ -49,7 +49,7 @@ class IrJobFactory
 		}
 	}
 
-	def create IrFactory::eINSTANCE.createAfterTimeLoopJob toIrAfterTimeLoopJob(TimeLoop tl)
+	def create IrFactory::eINSTANCE.createTearDownTimeLoopJob toIrTearDownTimeLoopJob(TimeLoop tl)
 	{ 
 		annotations += EcoreUtil::copyAll(tl.annotations)
 		name = "TearDownTimeLoop" + tl.name.toFirstUpper
@@ -64,7 +64,7 @@ class IrJobFactory
 			}
 	}
 
-	def create IrFactory::eINSTANCE.createTimeLoopJob toIrTimeLoopJob(TimeLoop tl)
+	def create IrFactory::eINSTANCE.createExecuteTimeLoopJob toIrExecuteTimeLoopJob(TimeLoop tl)
 	{
 		annotations += EcoreUtil::copyAll(tl.annotations)
 		name = "ExecuteTimeLoop" + tl.name.toFirstUpper

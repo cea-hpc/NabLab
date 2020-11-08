@@ -13,10 +13,10 @@ import com.google.inject.Inject
 import fr.cea.nabla.generator.IrModuleTransformer
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.ir.Nabla2Ir
+import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobContainer
-import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.ReplaceReductions
@@ -122,7 +122,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 			else
 				contentDescription = switch (container)
 				{
-					TimeLoopJob: container.irModule.name + '::' + container.name
+					ExecuteTimeLoopJob: container.irModule.name + '::' + container.name
 					IrModule: container.name
 				}
 			viewer.input = container

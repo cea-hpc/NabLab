@@ -14,7 +14,7 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
-import fr.cea.nabla.ir.ir.TimeLoopJob
+import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
@@ -41,7 +41,7 @@ class JobContentProvider
 		«instruction.innerContent»
 	'''
 
-	private static def dispatch CharSequence getInnerContent(TimeLoopJob it)
+	private static def dispatch CharSequence getInnerContent(ExecuteTimeLoopJob it)
 	'''
 		«val itVar = timeLoop.iterationCounter.codeName»
 		«itVar» = 0;

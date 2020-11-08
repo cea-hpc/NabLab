@@ -2,25 +2,25 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.BeforeTimeLoopJob;
 import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.SetUpTimeLoopJob;
 
 import org.eclipse.emf.ecore.EClass;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Before Time Loop Job</b></em>'.
+ * An implementation of the model object '<em><b>Set Up Time Loop Job</b></em>'.
  * <!-- end-user-doc -->
  *
  * @generated
  */
-public class BeforeTimeLoopJobImpl extends TimeLoopCopyJobImpl implements BeforeTimeLoopJob {
+public class SetUpTimeLoopJobImpl extends TimeLoopCopyJobImpl implements SetUpTimeLoopJob {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected BeforeTimeLoopJobImpl() {
+	protected SetUpTimeLoopJobImpl() {
 		super();
 	}
 
@@ -31,7 +31,7 @@ public class BeforeTimeLoopJobImpl extends TimeLoopCopyJobImpl implements Before
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return IrPackage.Literals.BEFORE_TIME_LOOP_JOB;
+		return IrPackage.Literals.SET_UP_TIME_LOOP_JOB;
 	}
 
-} //BeforeTimeLoopJobImpl
+} //SetUpTimeLoopJobImpl

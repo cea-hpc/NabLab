@@ -111,12 +111,12 @@ public interface TimeLoop extends TimeLoopContainer {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Associated Job</em>' reference.
-	 * @see #setAssociatedJob(TimeLoopJob)
+	 * @see #setAssociatedJob(ExecuteTimeLoopJob)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoop_AssociatedJob()
 	 * @model required="true"
 	 * @generated
 	 */
-	TimeLoopJob getAssociatedJob();
+	ExecuteTimeLoopJob getAssociatedJob();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.TimeLoop#getAssociatedJob <em>Associated Job</em>}' reference.
@@ -126,7 +126,7 @@ public interface TimeLoop extends TimeLoopContainer {
 	 * @see #getAssociatedJob()
 	 * @generated
 	 */
-	void setAssociatedJob(TimeLoopJob value);
+	void setAssociatedJob(ExecuteTimeLoopJob value);
 
 	/**
 	 * Returns the value of the '<em><b>Iteration Counter</b></em>' reference.

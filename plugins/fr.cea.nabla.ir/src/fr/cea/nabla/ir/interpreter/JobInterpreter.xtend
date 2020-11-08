@@ -10,12 +10,12 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
-import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import fr.cea.nabla.javalib.mesh.VtkFileContent
 import java.util.Arrays
@@ -40,8 +40,8 @@ class JobInterpreter
 	// Switch to more efficient dispatch (also clearer for profiling)
 	def void interprete(Job it, Context context)
 	{
-		if (it instanceof TimeLoopJob) {
-			interpreteTimeLoopJob(context)
+		if (it instanceof ExecuteTimeLoopJob) {
+			interpreteExecuteTimeLoopJob(context)
 		} else if (it instanceof InstructionJob) {
 			interpreteInstructionJob(context)
 		} else if (it instanceof TimeLoopCopyJob) {
@@ -59,7 +59,7 @@ class JobInterpreter
 		interprete(instruction, innerContext)
 	}
 
-	def void interpreteTimeLoopJob(TimeLoopJob it, Context context)
+	def void interpreteExecuteTimeLoopJob(ExecuteTimeLoopJob it, Context context)
 	{
 		context.logFiner("Interprete TimeLoopJob " + name + " @ " + at)
 		val irModule = eContainer as IrModule

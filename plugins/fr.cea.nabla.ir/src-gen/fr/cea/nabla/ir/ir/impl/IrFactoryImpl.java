@@ -68,9 +68,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.FUNCTION: return createFunction();
 			case IrPackage.CONNECTIVITY: return createConnectivity();
 			case IrPackage.INSTRUCTION_JOB: return createInstructionJob();
-			case IrPackage.TIME_LOOP_JOB: return createTimeLoopJob();
-			case IrPackage.BEFORE_TIME_LOOP_JOB: return createBeforeTimeLoopJob();
-			case IrPackage.AFTER_TIME_LOOP_JOB: return createAfterTimeLoopJob();
+			case IrPackage.EXECUTE_TIME_LOOP_JOB: return createExecuteTimeLoopJob();
+			case IrPackage.SET_UP_TIME_LOOP_JOB: return createSetUpTimeLoopJob();
+			case IrPackage.TEAR_DOWN_TIME_LOOP_JOB: return createTearDownTimeLoopJob();
 			case IrPackage.TIME_LOOP_COPY: return createTimeLoopCopy();
 			case IrPackage.INSTRUCTION_BLOCK: return createInstructionBlock();
 			case IrPackage.VARIABLE_DECLARATION: return createVariableDeclaration();
@@ -274,9 +274,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public TimeLoopJob createTimeLoopJob() {
-		TimeLoopJobImpl timeLoopJob = new TimeLoopJobImpl();
-		return timeLoopJob;
+	public ExecuteTimeLoopJob createExecuteTimeLoopJob() {
+		ExecuteTimeLoopJobImpl executeTimeLoopJob = new ExecuteTimeLoopJobImpl();
+		return executeTimeLoopJob;
 	}
 
 	/**
@@ -285,9 +285,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public BeforeTimeLoopJob createBeforeTimeLoopJob() {
-		BeforeTimeLoopJobImpl beforeTimeLoopJob = new BeforeTimeLoopJobImpl();
-		return beforeTimeLoopJob;
+	public SetUpTimeLoopJob createSetUpTimeLoopJob() {
+		SetUpTimeLoopJobImpl setUpTimeLoopJob = new SetUpTimeLoopJobImpl();
+		return setUpTimeLoopJob;
 	}
 
 	/**
@@ -296,9 +296,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public AfterTimeLoopJob createAfterTimeLoopJob() {
-		AfterTimeLoopJobImpl afterTimeLoopJob = new AfterTimeLoopJobImpl();
-		return afterTimeLoopJob;
+	public TearDownTimeLoopJob createTearDownTimeLoopJob() {
+		TearDownTimeLoopJobImpl tearDownTimeLoopJob = new TearDownTimeLoopJobImpl();
+		return tearDownTimeLoopJob;
 	}
 
 	/**

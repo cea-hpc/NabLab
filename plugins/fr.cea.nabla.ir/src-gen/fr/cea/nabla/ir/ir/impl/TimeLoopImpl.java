@@ -2,12 +2,12 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
+import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob;
 import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.SimpleVariable;
 import fr.cea.nabla.ir.ir.TimeLoop;
 import fr.cea.nabla.ir.ir.TimeLoopContainer;
-import fr.cea.nabla.ir.ir.TimeLoopJob;
 import fr.cea.nabla.ir.ir.TimeLoopVariable;
 
 import java.util.Collection;
@@ -93,7 +93,7 @@ public class TimeLoopImpl extends TimeLoopContainerImpl implements TimeLoop {
 	 * @generated
 	 * @ordered
 	 */
-	protected TimeLoopJob associatedJob;
+	protected ExecuteTimeLoopJob associatedJob;
 
 	/**
 	 * The cached value of the '{@link #getIterationCounter() <em>Iteration Counter</em>}' reference.
@@ -287,10 +287,10 @@ public class TimeLoopImpl extends TimeLoopContainerImpl implements TimeLoop {
 	 * @generated
 	 */
 	@Override
-	public TimeLoopJob getAssociatedJob() {
+	public ExecuteTimeLoopJob getAssociatedJob() {
 		if (associatedJob != null && associatedJob.eIsProxy()) {
 			InternalEObject oldAssociatedJob = (InternalEObject)associatedJob;
-			associatedJob = (TimeLoopJob)eResolveProxy(oldAssociatedJob);
+			associatedJob = (ExecuteTimeLoopJob)eResolveProxy(oldAssociatedJob);
 			if (associatedJob != oldAssociatedJob) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.TIME_LOOP__ASSOCIATED_JOB, oldAssociatedJob, associatedJob));
@@ -304,7 +304,7 @@ public class TimeLoopImpl extends TimeLoopContainerImpl implements TimeLoop {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public TimeLoopJob basicGetAssociatedJob() {
+	public ExecuteTimeLoopJob basicGetAssociatedJob() {
 		return associatedJob;
 	}
 
@@ -314,8 +314,8 @@ public class TimeLoopImpl extends TimeLoopContainerImpl implements TimeLoop {
 	 * @generated
 	 */
 	@Override
-	public void setAssociatedJob(TimeLoopJob newAssociatedJob) {
-		TimeLoopJob oldAssociatedJob = associatedJob;
+	public void setAssociatedJob(ExecuteTimeLoopJob newAssociatedJob) {
+		ExecuteTimeLoopJob oldAssociatedJob = associatedJob;
 		associatedJob = newAssociatedJob;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP__ASSOCIATED_JOB, oldAssociatedJob, associatedJob));
@@ -460,7 +460,7 @@ public class TimeLoopImpl extends TimeLoopContainerImpl implements TimeLoop {
 				setWhileCondition((Expression)newValue);
 				return;
 			case IrPackage.TIME_LOOP__ASSOCIATED_JOB:
-				setAssociatedJob((TimeLoopJob)newValue);
+				setAssociatedJob((ExecuteTimeLoopJob)newValue);
 				return;
 			case IrPackage.TIME_LOOP__ITERATION_COUNTER:
 				setIterationCounter((SimpleVariable)newValue);
@@ -490,7 +490,7 @@ public class TimeLoopImpl extends TimeLoopContainerImpl implements TimeLoop {
 				setWhileCondition((Expression)null);
 				return;
 			case IrPackage.TIME_LOOP__ASSOCIATED_JOB:
-				setAssociatedJob((TimeLoopJob)null);
+				setAssociatedJob((ExecuteTimeLoopJob)null);
 				return;
 			case IrPackage.TIME_LOOP__ITERATION_COUNTER:
 				setIterationCounter((SimpleVariable)null);

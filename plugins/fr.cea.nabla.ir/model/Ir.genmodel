@@ -117,13 +117,13 @@
     <genClasses ecoreClass="Ir.ecore#//InstructionJob">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InstructionJob/instruction"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//TimeLoopJob"/>
+    <genClasses ecoreClass="Ir.ecore#//ExecuteTimeLoopJob"/>
     <genClasses image="false" ecoreClass="Ir.ecore#//TimeLoopCopyJob">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopCopyJob/copies"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopCopyJob/timeLoop"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//BeforeTimeLoopJob"/>
-    <genClasses ecoreClass="Ir.ecore#//AfterTimeLoopJob"/>
+    <genClasses ecoreClass="Ir.ecore#//SetUpTimeLoopJob"/>
+    <genClasses ecoreClass="Ir.ecore#//TearDownTimeLoopJob"/>
     <genClasses ecoreClass="Ir.ecore#//TimeLoopCopy">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopCopy/destination"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopCopy/source"/>

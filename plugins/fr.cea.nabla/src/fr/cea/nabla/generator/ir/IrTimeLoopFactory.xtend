@@ -77,9 +77,9 @@ class IrTimeLoopFactory
 		val createdJobs = new ArrayList<Job>
 		for (tl : tlContainer.innerTimeLoops)
 		{
-			createdJobs += tl.toIrTimeLoopJob
-			if (tlContainer instanceof TimeLoop || tl.variables.exists[init !== null]) createdJobs += tl.toIrBeforeTimeLoopJob
-			if (tlContainer instanceof TimeLoop) createdJobs += tl.toIrAfterTimeLoopJob
+			createdJobs += tl.toIrExecuteTimeLoopJob
+			if (tlContainer instanceof TimeLoop || tl.variables.exists[init !== null]) createdJobs += tl.toIrSetUpTimeLoopJob
+			if (tlContainer instanceof TimeLoop) createdJobs += tl.toIrTearDownTimeLoopJob
 
 			createdJobs += tl.createTimeLoopJobs
 		}

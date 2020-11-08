@@ -2,25 +2,25 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.AfterTimeLoopJob;
 import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.TearDownTimeLoopJob;
 
 import org.eclipse.emf.ecore.EClass;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>After Time Loop Job</b></em>'.
+ * An implementation of the model object '<em><b>Tear Down Time Loop Job</b></em>'.
  * <!-- end-user-doc -->
  *
  * @generated
  */
-public class AfterTimeLoopJobImpl extends TimeLoopCopyJobImpl implements AfterTimeLoopJob {
+public class TearDownTimeLoopJobImpl extends TimeLoopCopyJobImpl implements TearDownTimeLoopJob {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected AfterTimeLoopJobImpl() {
+	protected TearDownTimeLoopJobImpl() {
 		super();
 	}
 
@@ -31,7 +31,7 @@ public class AfterTimeLoopJobImpl extends TimeLoopCopyJobImpl implements AfterTi
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return IrPackage.Literals.AFTER_TIME_LOOP_JOB;
+		return IrPackage.Literals.TEAR_DOWN_TIME_LOOP_JOB;
 	}
 
-} //AfterTimeLoopJobImpl
+} //TearDownTimeLoopJobImpl

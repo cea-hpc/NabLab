@@ -2,14 +2,14 @@ package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.JobDispatchVarDependencies
-import fr.cea.nabla.ir.ir.AfterTimeLoopJob
+import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobContainer
+import fr.cea.nabla.ir.ir.TearDownTimeLoopJob
 import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopContainer
 import fr.cea.nabla.ir.ir.TimeLoopCopyJob
-import fr.cea.nabla.ir.ir.TimeLoopJob
 
 /**
  * Dispatch jobs in their corresponding time loops
@@ -60,7 +60,7 @@ class JobDispatcher
 		}
 		switch job
 		{
-			TimeLoopJob:
+			ExecuteTimeLoopJob:
 			{
 				val irModule = job.eContainer as IrModule
 				for (j : irModule.jobs.filter[x | x !== job])
@@ -69,7 +69,7 @@ class JobDispatcher
 							if (continueToDispatch(job, j, prefix))
 								dispatchJob(job, j, prefix + '\t')
 			}
-			AfterTimeLoopJob:
+			TearDownTimeLoopJob:
 			{
 				for (next : job.nextJobs)
 					if (continueToDispatch(job.jobContainer, next, prefix))
@@ -109,7 +109,7 @@ class JobDispatcher
 		if (jc === null) null
 		else switch jc
 		{
-			TimeLoopJob: jc.timeLoop
+			ExecuteTimeLoopJob: jc.timeLoop
 			IrModule: null
 		}
 	}

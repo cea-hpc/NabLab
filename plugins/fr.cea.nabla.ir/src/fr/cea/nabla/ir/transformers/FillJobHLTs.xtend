@@ -14,7 +14,7 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobContainer
-import fr.cea.nabla.ir.ir.TimeLoopJob
+import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import org.eclipse.emf.common.util.ECollections
 import org.eclipse.emf.common.util.EList
 import org.jgrapht.alg.cycle.CycleDetector
@@ -79,7 +79,7 @@ class FillJobHLTs extends IrTransformationStep
 	/** Build the jgrapht graph corresponding to IrModule and check if it has cycles */
 	private def hasCycles(IrModule it)
 	{
-		val g = createGraph(jobs.reject(TimeLoopJob))
+		val g = createGraph(jobs.reject(ExecuteTimeLoopJob))
 
 		val cycles = g.findCycle
 		val hasCycles = (cycles !== null)

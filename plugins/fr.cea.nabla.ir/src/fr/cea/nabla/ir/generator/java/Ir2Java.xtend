@@ -17,7 +17,6 @@ import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
-import fr.cea.nabla.ir.transformers.TagOutputVariables
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -78,7 +77,7 @@ class Ir2Java extends CodeGenerator
 			public final static class Options
 			{
 				«IF postProcessingInfo !== null»
-				public String «TagOutputVariables.OutputPathNameAndValue.key»;
+				public String «Utils.OutputPathNameAndValue.key»;
 				«ENDIF»
 				public String «Utils.NonRegressionNameAndValue.key»;
 				«FOR v : options»
@@ -94,7 +93,7 @@ class Ir2Java extends CodeGenerator
 					final JsonObject d = json.getAsJsonObject();
 					Options options = new Options();
 					«IF postProcessingInfo !== null»
-					«val opName = TagOutputVariables.OutputPathNameAndValue.key»
+					«val opName = Utils.OutputPathNameAndValue.key»
 					// «opName»
 					assert(d.has("«opName»"));
 					final JsonElement «opName.jsonName» = d.get("«opName»");
@@ -143,7 +142,7 @@ class Ir2Java extends CodeGenerator
 				«FOR s : allProviders»
 					«s.toFirstLower» = a«s»;
 				«ENDFOR»
-				«IF postProcessingInfo !== null»writer = new PvdFileWriter2D("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»);«ENDIF»
+				«IF postProcessingInfo !== null»writer = new PvdFileWriter2D("«name»", options.«Utils.OutputPathNameAndValue.key»);«ENDIF»
 
 				// Initialize variables with default values
 				«FOR v : variablesWithDefaultValue»

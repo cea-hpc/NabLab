@@ -3495,6 +3495,16 @@ public interface IrPackage extends EPackage {
 	int CARDINALITY = 52;
 
 	/**
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ArgOrVarRefImpl <em>Arg Or Var Ref</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.cea.nabla.ir.ir.impl.ArgOrVarRefImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getArgOrVarRef()
+	 * @generated
+	 */
+	int ARG_OR_VAR_REF = 53;
+
+	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3547,16 +3557,6 @@ public interface IrPackage extends EPackage {
 	 * @ordered
 	 */
 	int CARDINALITY_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ArgOrVarRefImpl <em>Arg Or Var Ref</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.ArgOrVarRefImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getArgOrVarRef()
-	 * @generated
-	 */
-	int ARG_OR_VAR_REF = 53;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.

@@ -16,7 +16,6 @@ import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.transformers.IrTransformationStep
-import fr.cea.nabla.ir.transformers.TagOutputVariables
 import java.io.File
 import java.net.URI
 import org.eclipse.core.runtime.FileLocator
@@ -97,7 +96,7 @@ class Ir2Cpp extends CodeGenerator
 	public:
 		struct Options
 		{
-			«IF postProcessingInfo !== null»std::string «TagOutputVariables.OutputPathNameAndValue.key»;«ENDIF»
+			«IF postProcessingInfo !== null»std::string «Utils.OutputPathNameAndValue.key»;«ENDIF»
 			«FOR v : options»
 			«v.cppType» «v.name»;
 			«ENDFOR»
@@ -149,7 +148,7 @@ class Ir2Cpp extends CodeGenerator
 	«name»::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 	{
 		«IF postProcessingInfo !== null»
-		«val opName = TagOutputVariables.OutputPathNameAndValue.key»
+		«val opName = Utils.OutputPathNameAndValue.key»
 		// «opName»
 		assert(d.HasMember("«opName»"));
 		const rapidjson::Value& «opName.jsonName» = d["«opName»"];
@@ -180,7 +179,7 @@ class Ir2Cpp extends CodeGenerator
 	«FOR s : allProviders»
 	, «s.toFirstLower»(a«s»)
 	«ENDFOR»
-	«IF postProcessingInfo !== null», writer("«name»", options.«TagOutputVariables.OutputPathNameAndValue.key»)«ENDIF»
+	«IF postProcessingInfo !== null», writer("«name»", options.«Utils.OutputPathNameAndValue.key»)«ENDIF»
 	«FOR v : variablesWithDefaultValue.filter[x | !x.constExpr]»
 	, «v.name»(«v.defaultValue.content»)
 	«ENDFOR»

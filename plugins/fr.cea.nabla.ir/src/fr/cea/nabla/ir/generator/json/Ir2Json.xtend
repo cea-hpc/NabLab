@@ -13,7 +13,6 @@ import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.interpreter.ModuleInterpreter
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.transformers.TagOutputVariables
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 
@@ -48,7 +47,7 @@ class Ir2Json extends CodeGenerator
 			{
 				«IF postProcessingInfo !== null»
 				"_outputPath_comment":"empty outputPath to disable output",
-				"«TagOutputVariables.OutputPathNameAndValue.key»":"«TagOutputVariables.OutputPathNameAndValue.value»"«IF levelDB || !options.empty»,«ENDIF»
+				"«Utils.OutputPathNameAndValue.key»":"«Utils.OutputPathNameAndValue.value»"«IF levelDB || !options.empty»,«ENDIF»
 				«ENDIF»
 				«FOR i : 0..<options.length»
 				"«options.get(i).name»":«context.getVariableValue(options.get(i)).content»«IF i<options.length -1 || levelDB»,«ENDIF»

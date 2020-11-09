@@ -13,7 +13,6 @@ import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
-import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
@@ -44,27 +43,5 @@ class IrModuleExtensions
 		var Variable v = options.findFirst[j | j.name == irVarName]
 		if (v === null) v = variables.findFirst[j | j.name == irVarName]
 		return v
-	}
-
-	static def getCurrentIrVariable(IrModule m, String nablaVariableName) { getIrVariable(m, nablaVariableName, false) }
-	static def getInitIrVariable(IrModule m, String nablaVariableName) { getIrVariable(m, nablaVariableName, true) }
-
-	private static def getIrVariable(IrModule m, String nablaVariableName, boolean initTimeIterator)
-	{
-		val irVariableName = ReplaceUtf8Chars.getNoUtf8(nablaVariableName)
-		val irVariable = getVariableByName(m, irVariableName)
-		if (irVariable !== null) return irVariable
-		for (tl : m.innerTimeLoops)
-		{
-			val timeLoopVariable = tl.variables.findFirst[x | x.name == irVariableName]
-			if (timeLoopVariable !== null) 
-			{
-				if (initTimeIterator && timeLoopVariable.init !== null) 
-					return timeLoopVariable.init
-				else
-					return timeLoopVariable.current
-			}
-		}
-		return null
 	}
 }

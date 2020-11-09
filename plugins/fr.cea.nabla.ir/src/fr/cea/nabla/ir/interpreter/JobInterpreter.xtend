@@ -64,7 +64,7 @@ class JobInterpreter
 		context.logFiner("Interprete TimeLoopJob " + name + " @ " + at)
 		val irModule = eContainer as IrModule
 		val iterationVariable = timeLoop.iterationCounter
-		val ppInfo = irModule.postProcessingInfo
+		val ppInfo = irModule.postProcessing
 		var iteration = 0
 		context.logVariables("Before timeLoop " + timeLoop.name)
 		context.addVariableValue(iterationVariable, new NV0Int(iteration))
@@ -78,7 +78,7 @@ class JobInterpreter
 					timeLoop.indentation,
 					iteration,
 					context.getReal(irModule.timeVariable.name),
-					context.getReal(irModule.deltatVariable.name))
+					context.getReal(irModule.timeStepVariable.name))
 			context.logFine(log)
 			if (topLevel && ppInfo !== null)
 			{
@@ -127,7 +127,7 @@ class JobInterpreter
 
 	private def void dumpVariables(IrModule irModule, int iteration, Context context, double periodReference)
 	{
-		val ppInfo = irModule.postProcessingInfo
+		val ppInfo = irModule.postProcessing
 		if (!writer.disabled)
 		{
 			val time = context.getReal(irModule.timeVariable.name)

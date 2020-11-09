@@ -49,18 +49,18 @@
         eType="#//ConnectivityVariable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeVariable" lowerBound="1"
         eType="#//SimpleVariable"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="deltatVariable" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="timeStepVariable" lowerBound="1"
         eType="#//SimpleVariable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="jobs" upperBound="-1" eType="#//Job"
         containment="true" resolveProxies="false"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="postProcessingInfo" eType="#//PostProcessingInfo"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="postProcessing" eType="#//PostProcessing"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Import" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importedNamespace" unique="false"
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PostProcessingInfo" eSuperTypes="#//IrAnnotable">
+  <eClassifiers xsi:type="ecore:EClass" name="PostProcessing" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="outputVariables" upperBound="-1"
         eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="periodReference" lowerBound="1"

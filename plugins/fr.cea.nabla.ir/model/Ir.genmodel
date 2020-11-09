@@ -53,18 +53,18 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/initNodeCoordVariable"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/nodeCoordVariable"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/timeVariable"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/deltatVariable"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/timeStepVariable"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/jobs"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/postProcessingInfo"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/postProcessing"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Import">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Import/importedNamespace"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//PostProcessingInfo">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessingInfo/outputVariables"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessingInfo/periodReference"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessingInfo/periodValue"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessingInfo/lastDumpVariable"/>
+    <genClasses ecoreClass="Ir.ecore#//PostProcessing">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessing/outputVariables"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessing/periodReference"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessing/periodValue"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessing/lastDumpVariable"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//TimeLoop">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//TimeLoop/name"/>

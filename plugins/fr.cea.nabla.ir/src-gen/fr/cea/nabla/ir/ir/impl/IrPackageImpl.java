@@ -52,7 +52,7 @@ import fr.cea.nabla.ir.ir.Loop;
 import fr.cea.nabla.ir.ir.MaxConstant;
 import fr.cea.nabla.ir.ir.MinConstant;
 import fr.cea.nabla.ir.ir.Parenthesis;
-import fr.cea.nabla.ir.ir.PostProcessingInfo;
+import fr.cea.nabla.ir.ir.PostProcessing;
 import fr.cea.nabla.ir.ir.PrimitiveType;
 import fr.cea.nabla.ir.ir.RealConstant;
 import fr.cea.nabla.ir.ir.ReductionInstruction;
@@ -135,7 +135,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass postProcessingInfoEClass = null;
+	private EClass postProcessingEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -848,7 +848,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIrModule_DeltatVariable() {
+	public EReference getIrModule_TimeStepVariable() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(11);
 	}
 
@@ -868,7 +868,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIrModule_PostProcessingInfo() {
+	public EReference getIrModule_PostProcessing() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(13);
 	}
 
@@ -898,8 +898,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EClass getPostProcessingInfo() {
-		return postProcessingInfoEClass;
+	public EClass getPostProcessing() {
+		return postProcessingEClass;
 	}
 
 	/**
@@ -908,8 +908,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getPostProcessingInfo_OutputVariables() {
-		return (EReference)postProcessingInfoEClass.getEStructuralFeatures().get(0);
+	public EReference getPostProcessing_OutputVariables() {
+		return (EReference)postProcessingEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -918,8 +918,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getPostProcessingInfo_PeriodValue() {
-		return (EReference)postProcessingInfoEClass.getEStructuralFeatures().get(2);
+	public EReference getPostProcessing_PeriodReference() {
+		return (EReference)postProcessingEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -928,8 +928,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getPostProcessingInfo_PeriodReference() {
-		return (EReference)postProcessingInfoEClass.getEStructuralFeatures().get(1);
+	public EReference getPostProcessing_PeriodValue() {
+		return (EReference)postProcessingEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -938,8 +938,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getPostProcessingInfo_LastDumpVariable() {
-		return (EReference)postProcessingInfoEClass.getEStructuralFeatures().get(3);
+	public EReference getPostProcessing_LastDumpVariable() {
+		return (EReference)postProcessingEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -2696,18 +2696,18 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(irModuleEClass, IR_MODULE__INIT_NODE_COORD_VARIABLE);
 		createEReference(irModuleEClass, IR_MODULE__NODE_COORD_VARIABLE);
 		createEReference(irModuleEClass, IR_MODULE__TIME_VARIABLE);
-		createEReference(irModuleEClass, IR_MODULE__DELTAT_VARIABLE);
+		createEReference(irModuleEClass, IR_MODULE__TIME_STEP_VARIABLE);
 		createEReference(irModuleEClass, IR_MODULE__JOBS);
-		createEReference(irModuleEClass, IR_MODULE__POST_PROCESSING_INFO);
+		createEReference(irModuleEClass, IR_MODULE__POST_PROCESSING);
 
 		importEClass = createEClass(IMPORT);
 		createEAttribute(importEClass, IMPORT__IMPORTED_NAMESPACE);
 
-		postProcessingInfoEClass = createEClass(POST_PROCESSING_INFO);
-		createEReference(postProcessingInfoEClass, POST_PROCESSING_INFO__OUTPUT_VARIABLES);
-		createEReference(postProcessingInfoEClass, POST_PROCESSING_INFO__PERIOD_REFERENCE);
-		createEReference(postProcessingInfoEClass, POST_PROCESSING_INFO__PERIOD_VALUE);
-		createEReference(postProcessingInfoEClass, POST_PROCESSING_INFO__LAST_DUMP_VARIABLE);
+		postProcessingEClass = createEClass(POST_PROCESSING);
+		createEReference(postProcessingEClass, POST_PROCESSING__OUTPUT_VARIABLES);
+		createEReference(postProcessingEClass, POST_PROCESSING__PERIOD_REFERENCE);
+		createEReference(postProcessingEClass, POST_PROCESSING__PERIOD_VALUE);
+		createEReference(postProcessingEClass, POST_PROCESSING__LAST_DUMP_VARIABLE);
 
 		timeLoopEClass = createEClass(TIME_LOOP);
 		createEAttribute(timeLoopEClass, TIME_LOOP__NAME);
@@ -2976,7 +2976,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		irModuleEClass.getESuperTypes().add(this.getJobContainer());
 		irModuleEClass.getESuperTypes().add(this.getTimeLoopContainer());
 		importEClass.getESuperTypes().add(this.getIrAnnotable());
-		postProcessingInfoEClass.getESuperTypes().add(this.getIrAnnotable());
+		postProcessingEClass.getESuperTypes().add(this.getIrAnnotable());
 		timeLoopEClass.getESuperTypes().add(this.getTimeLoopContainer());
 		argOrVarEClass.getESuperTypes().add(this.getIrAnnotable());
 		argEClass.getESuperTypes().add(this.getArgOrVar());
@@ -3066,18 +3066,18 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getIrModule_InitNodeCoordVariable(), this.getConnectivityVariable(), null, "initNodeCoordVariable", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_NodeCoordVariable(), this.getConnectivityVariable(), null, "nodeCoordVariable", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_TimeVariable(), this.getSimpleVariable(), null, "timeVariable", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIrModule_DeltatVariable(), this.getSimpleVariable(), null, "deltatVariable", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIrModule_TimeStepVariable(), this.getSimpleVariable(), null, "timeStepVariable", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_Jobs(), this.getJob(), null, "jobs", null, 0, -1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIrModule_PostProcessingInfo(), this.getPostProcessingInfo(), null, "postProcessingInfo", null, 0, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIrModule_PostProcessing(), this.getPostProcessing(), null, "postProcessing", null, 0, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(importEClass, Import.class, "Import", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getImport_ImportedNamespace(), ecorePackage.getEString(), "importedNamespace", null, 1, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(postProcessingInfoEClass, PostProcessingInfo.class, "PostProcessingInfo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getPostProcessingInfo_OutputVariables(), this.getVariable(), null, "outputVariables", null, 0, -1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getPostProcessingInfo_PeriodReference(), this.getSimpleVariable(), null, "periodReference", null, 1, 1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getPostProcessingInfo_PeriodValue(), this.getSimpleVariable(), null, "periodValue", null, 1, 1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getPostProcessingInfo_LastDumpVariable(), this.getSimpleVariable(), null, "lastDumpVariable", null, 1, 1, PostProcessingInfo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(postProcessingEClass, PostProcessing.class, "PostProcessing", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getPostProcessing_OutputVariables(), this.getVariable(), null, "outputVariables", null, 0, -1, PostProcessing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getPostProcessing_PeriodReference(), this.getSimpleVariable(), null, "periodReference", null, 1, 1, PostProcessing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getPostProcessing_PeriodValue(), this.getSimpleVariable(), null, "periodValue", null, 1, 1, PostProcessing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getPostProcessing_LastDumpVariable(), this.getSimpleVariable(), null, "lastDumpVariable", null, 1, 1, PostProcessing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(timeLoopEClass, TimeLoop.class, "TimeLoop", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getTimeLoop_Name(), ecorePackage.getEString(), "name", null, 1, 1, TimeLoop.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

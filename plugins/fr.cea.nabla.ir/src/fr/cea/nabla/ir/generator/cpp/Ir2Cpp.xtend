@@ -96,7 +96,7 @@ class Ir2Cpp extends CodeGenerator
 	public:
 		struct Options
 		{
-			«IF postProcessingInfo !== null»std::string «Utils.OutputPathNameAndValue.key»;«ENDIF»
+			«IF postProcessing !== null»std::string «Utils.OutputPathNameAndValue.key»;«ENDIF»
 			«FOR v : options»
 			«v.cppType» «v.name»;
 			«ENDFOR»
@@ -112,7 +112,7 @@ class Ir2Cpp extends CodeGenerator
 		«backend.attributesContentProvider.getContentFor(it)»
 
 		«backend.privateMethodsContentProvider.getDeclarationContentFor(it)»
-		«IF postProcessingInfo !== null»
+		«IF postProcessing !== null»
 
 		void dumpVariables(int iteration, bool useTimer=true);
 		«ENDIF»
@@ -147,7 +147,7 @@ class Ir2Cpp extends CodeGenerator
 	void
 	«name»::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 	{
-		«IF postProcessingInfo !== null»
+		«IF postProcessing !== null»
 		«val opName = Utils.OutputPathNameAndValue.key»
 		// «opName»
 		assert(d.HasMember("«opName»"));
@@ -179,7 +179,7 @@ class Ir2Cpp extends CodeGenerator
 	«FOR s : allProviders»
 	, «s.toFirstLower»(a«s»)
 	«ENDFOR»
-	«IF postProcessingInfo !== null», writer("«name»", options.«Utils.OutputPathNameAndValue.key»)«ENDIF»
+	«IF postProcessing !== null», writer("«name»", options.«Utils.OutputPathNameAndValue.key»)«ENDIF»
 	«FOR v : variablesWithDefaultValue.filter[x | !x.constExpr]»
 	, «v.name»(«v.defaultValue.content»)
 	«ENDFOR»
@@ -210,7 +210,7 @@ class Ir2Cpp extends CodeGenerator
 	}
 
 	«backend.privateMethodsContentProvider.getDefinitionContentFor(it)»
-	«IF postProcessingInfo !== null»
+	«IF postProcessing !== null»
 
 	void «name»::dumpVariables(int iteration, bool useTimer)
 	{
@@ -223,7 +223,7 @@ class Ir2Cpp extends CodeGenerator
 			}
 			auto quads = mesh->getGeometry()->getQuads();
 			writer.startVtpFile(iteration, «irModule.timeVariable.name», nbNodes, «irModule.nodeCoordVariable.name».data(), nbCells, quads.data());
-			«val outputVarsByConnectivities = postProcessingInfo.outputVariables.filter(ConnectivityVariable).groupBy(x | x.type.connectivities.head.returnType.name)»
+			«val outputVarsByConnectivities = postProcessing.outputVariables.filter(ConnectivityVariable).groupBy(x | x.type.connectivities.head.returnType.name)»
 			writer.openNodeData();
 			«val nodeVariables = outputVarsByConnectivities.get("node")»
 			«IF !nodeVariables.nullOrEmpty»
@@ -241,7 +241,7 @@ class Ir2Cpp extends CodeGenerator
 			«ENDIF»
 			writer.closeCellData();
 			writer.closeVtpFile();
-			«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodReference.name»;
+			«postProcessing.lastDumpVariable.name» = «postProcessing.periodReference.name»;
 			if (useTimer)
 			{
 				ioTimer.stop();

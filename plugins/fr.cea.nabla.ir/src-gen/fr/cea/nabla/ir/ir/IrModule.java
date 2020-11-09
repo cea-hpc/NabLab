@@ -24,9 +24,9 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getTimeVariable <em>Time Variable</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getDeltatVariable <em>Deltat Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getTimeStepVariable <em>Time Step Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getJobs <em>Jobs</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getPostProcessingInfo <em>Post Processing Info</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getPostProcessing <em>Post Processing</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule()
@@ -217,26 +217,26 @@ public interface IrModule extends JobContainer, TimeLoopContainer {
 	void setTimeVariable(SimpleVariable value);
 
 	/**
-	 * Returns the value of the '<em><b>Deltat Variable</b></em>' reference.
+	 * Returns the value of the '<em><b>Time Step Variable</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Deltat Variable</em>' reference.
-	 * @see #setDeltatVariable(SimpleVariable)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_DeltatVariable()
+	 * @return the value of the '<em>Time Step Variable</em>' reference.
+	 * @see #setTimeStepVariable(SimpleVariable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_TimeStepVariable()
 	 * @model required="true"
 	 * @generated
 	 */
-	SimpleVariable getDeltatVariable();
+	SimpleVariable getTimeStepVariable();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getDeltatVariable <em>Deltat Variable</em>}' reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getTimeStepVariable <em>Time Step Variable</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Deltat Variable</em>' reference.
-	 * @see #getDeltatVariable()
+	 * @param value the new value of the '<em>Time Step Variable</em>' reference.
+	 * @see #getTimeStepVariable()
 	 * @generated
 	 */
-	void setDeltatVariable(SimpleVariable value);
+	void setTimeStepVariable(SimpleVariable value);
 
 	/**
 	 * Returns the value of the '<em><b>Jobs</b></em>' containment reference list.
@@ -251,25 +251,25 @@ public interface IrModule extends JobContainer, TimeLoopContainer {
 	EList<Job> getJobs();
 
 	/**
-	 * Returns the value of the '<em><b>Post Processing Info</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Post Processing</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Post Processing Info</em>' containment reference.
-	 * @see #setPostProcessingInfo(PostProcessingInfo)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_PostProcessingInfo()
+	 * @return the value of the '<em>Post Processing</em>' containment reference.
+	 * @see #setPostProcessing(PostProcessing)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_PostProcessing()
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	PostProcessingInfo getPostProcessingInfo();
+	PostProcessing getPostProcessing();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getPostProcessingInfo <em>Post Processing Info</em>}' containment reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getPostProcessing <em>Post Processing</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Post Processing Info</em>' containment reference.
-	 * @see #getPostProcessingInfo()
+	 * @param value the new value of the '<em>Post Processing</em>' containment reference.
+	 * @see #getPostProcessing()
 	 * @generated
 	 */
-	void setPostProcessingInfo(PostProcessingInfo value);
+	void setPostProcessing(PostProcessing value);
 
 } // IrModule

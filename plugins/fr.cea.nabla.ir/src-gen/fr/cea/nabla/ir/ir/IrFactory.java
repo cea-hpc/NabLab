@@ -49,13 +49,13 @@ public interface IrFactory extends EFactory {
 	Import createImport();
 
 	/**
-	 * Returns a new object of class '<em>Post Processing Info</em>'.
+	 * Returns a new object of class '<em>Post Processing</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Post Processing Info</em>'.
+	 * @return a new object of class '<em>Post Processing</em>'.
 	 * @generated
 	 */
-	PostProcessingInfo createPostProcessingInfo();
+	PostProcessing createPostProcessing();
 
 	/**
 	 * Returns a new object of class '<em>Time Loop</em>'.

@@ -35,7 +35,7 @@ class AttributesContentProvider
 		«FOR s : m.allProviders»
 		«s»& «s.toFirstLower»;
 		«ENDFOR»
-		«IF m.postProcessingInfo !== null»PvdFileWriter2D writer;«ENDIF»
+		«IF m.postProcessing !== null»PvdFileWriter2D writer;«ENDIF»
 
 		// Global variables
 		«FOR v : m.variables»

@@ -108,10 +108,10 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.POST_PROCESSING_INFO: {
-				PostProcessingInfo postProcessingInfo = (PostProcessingInfo)theEObject;
-				T result = casePostProcessingInfo(postProcessingInfo);
-				if (result == null) result = caseIrAnnotable(postProcessingInfo);
+			case IrPackage.POST_PROCESSING: {
+				PostProcessing postProcessing = (PostProcessing)theEObject;
+				T result = casePostProcessing(postProcessing);
+				if (result == null) result = caseIrAnnotable(postProcessing);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -690,17 +690,17 @@ public class IrSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Post Processing Info</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Post Processing</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Post Processing Info</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Post Processing</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T casePostProcessingInfo(PostProcessingInfo object) {
+	public T casePostProcessing(PostProcessing object) {
 		return null;
 	}
 

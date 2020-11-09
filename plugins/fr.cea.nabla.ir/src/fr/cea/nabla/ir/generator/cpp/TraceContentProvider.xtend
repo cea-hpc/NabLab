@@ -32,7 +32,7 @@ class TraceContentProvider
 
 		«hwlocTraceContent»
 
-		«IF postProcessingInfo === null»
+		«IF postProcessing === null»
 		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 		«ELSE»
 		if (!writer.isDisabled())
@@ -67,7 +67,7 @@ class TraceContentProvider
 		// Progress
 		std::cout << utils::progress_bar(«iterationVarName», «maxIterationsVar.codeName», «timeVariable.codeName», «stopTimeVar.codeName», 25);
 		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(«iterationVarName», «maxIterationsVar.codeName», «timeVariable.codeName», «stopTimeVar.codeName», «deltatVariable.codeName», globalTimer), true)
+			utils::eta(«iterationVarName», «maxIterationsVar.codeName», «timeVariable.codeName», «stopTimeVar.codeName», «timeStepVariable.codeName», globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 		«ENDIF»

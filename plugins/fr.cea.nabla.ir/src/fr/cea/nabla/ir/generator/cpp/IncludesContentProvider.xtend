@@ -87,7 +87,7 @@ class StlThreadIncludesContentProvider extends IncludesContentProvider
 	override getAdditionalUserIncludes(IrModule m)
 	{
 		val includes = new LinkedHashSet<String>
-		if (m.postProcessingInfo !== null) includes += "mesh/stl/PvdFileWriter2D.h"
+		if (m.postProcessing !== null) includes += "mesh/stl/PvdFileWriter2D.h"
 		includes += "utils/stl/Parallel.h"
 		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
 		if (!levelDBPath.nullOrEmpty) includes += "utils/stl/Serializer.h"
@@ -110,7 +110,7 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 	override getAdditionalUserIncludes(IrModule m)
 	{
 		val includes = new LinkedHashSet<String>
-		if (m.postProcessingInfo !== null) includes += "mesh/kokkos/PvdFileWriter2D.h"
+		if (m.postProcessing !== null) includes += "mesh/kokkos/PvdFileWriter2D.h"
 		includes += "utils/kokkos/Parallel.h"
 		if (m.linearAlgebra) includes += "linearalgebra/kokkos/LinearAlgebraFunctions.h"
 		if (!levelDBPath.nullOrEmpty) includes += "utils/kokkos/Serializer.h"
@@ -128,7 +128,7 @@ class SequentialIncludesContentProvider extends IncludesContentProvider
 	override getAdditionalUserIncludes(IrModule m)
 	{
 		val includes = new LinkedHashSet<String>
-		if (m.postProcessingInfo !== null) includes += "mesh/stl/PvdFileWriter2D.h"
+		if (m.postProcessing !== null) includes += "mesh/stl/PvdFileWriter2D.h"
 		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
 		if (!levelDBPath.nullOrEmpty) includes += "utils/stl/Serializer.h"
 		return includes
@@ -150,7 +150,7 @@ class OpenMpIncludesContentProvider extends IncludesContentProvider
 	override getAdditionalUserIncludes(IrModule m)
 	{
 		val includes = new LinkedHashSet<String>
-		if (m.postProcessingInfo !== null) includes += "mesh/stl/PvdFileWriter2D.h"
+		if (m.postProcessing !== null) includes += "mesh/stl/PvdFileWriter2D.h"
 		if (m.linearAlgebra) includes += "linearalgebra/stl/LinearAlgebraFunctions.h"
 		if (!levelDBPath.nullOrEmpty) includes += "utils/stl/Serializer.h"
 		return includes

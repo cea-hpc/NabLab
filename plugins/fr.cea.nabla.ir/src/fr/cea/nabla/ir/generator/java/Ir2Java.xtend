@@ -76,7 +76,7 @@ class Ir2Java extends CodeGenerator
 		{
 			public final static class Options
 			{
-				«IF postProcessingInfo !== null»
+				«IF postProcessing !== null»
 				public String «Utils.OutputPathNameAndValue.key»;
 				«ENDIF»
 				public String «Utils.NonRegressionNameAndValue.key»;
@@ -92,7 +92,7 @@ class Ir2Java extends CodeGenerator
 				{
 					final JsonObject d = json.getAsJsonObject();
 					Options options = new Options();
-					«IF postProcessingInfo !== null»
+					«IF postProcessing !== null»
 					«val opName = Utils.OutputPathNameAndValue.key»
 					// «opName»
 					assert(d.has("«opName»"));
@@ -122,7 +122,7 @@ class Ir2Java extends CodeGenerator
 			«FOR s : allProviders»
 			private «s» «s.toFirstLower»;
 			«ENDFOR»
-			«IF postProcessingInfo !== null»private final FileWriter writer;«ENDIF»
+			«IF postProcessing !== null»private final FileWriter writer;«ENDIF»
 
 			// Global variables
 			«FOR v : variables»
@@ -142,7 +142,7 @@ class Ir2Java extends CodeGenerator
 				«FOR s : allProviders»
 					«s.toFirstLower» = a«s»;
 				«ENDFOR»
-				«IF postProcessingInfo !== null»writer = new PvdFileWriter2D("«name»", options.«Utils.OutputPathNameAndValue.key»);«ENDIF»
+				«IF postProcessing !== null»writer = new PvdFileWriter2D("«name»", options.«Utils.OutputPathNameAndValue.key»);«ENDIF»
 
 				// Initialize variables with default values
 				«FOR v : variablesWithDefaultValue»
@@ -227,18 +227,18 @@ class Ir2Java extends CodeGenerator
 
 				«f.content»
 			«ENDFOR»
-			«IF postProcessingInfo !== null»
+			«IF postProcessing !== null»
 
 			private void dumpVariables(int iteration)
 			{
 				if (!writer.isDisabled())
 				{
 					VtkFileContent content = new VtkFileContent(iteration, «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometry().getQuads());
-					«FOR v : postProcessingInfo.outputVariables.filter(ConnectivityVariable)»
+					«FOR v : postProcessing.outputVariables.filter(ConnectivityVariable)»
 					content.add«v.type.connectivities.head.returnType.name.toFirstUpper»Variable("«v.outputName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 					«ENDFOR»
 					writer.writeFile(content);
-					«postProcessingInfo.lastDumpVariable.name» = «postProcessingInfo.periodReference.name»;
+					«postProcessing.lastDumpVariable.name» = «postProcessing.periodReference.name»;
 				}
 			}
 			«ENDIF»

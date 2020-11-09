@@ -60,7 +60,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.IR_ANNOTATION: return createIrAnnotation();
 			case IrPackage.IR_MODULE: return createIrModule();
 			case IrPackage.IMPORT: return createImport();
-			case IrPackage.POST_PROCESSING_INFO: return createPostProcessingInfo();
+			case IrPackage.POST_PROCESSING: return createPostProcessing();
 			case IrPackage.TIME_LOOP: return createTimeLoop();
 			case IrPackage.ARG: return createArg();
 			case IrPackage.SIMPLE_VARIABLE: return createSimpleVariable();
@@ -186,9 +186,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public PostProcessingInfo createPostProcessingInfo() {
-		PostProcessingInfoImpl postProcessingInfo = new PostProcessingInfoImpl();
-		return postProcessingInfo;
+	public PostProcessing createPostProcessing() {
+		PostProcessingImpl postProcessing = new PostProcessingImpl();
+		return postProcessing;
 	}
 
 	/**

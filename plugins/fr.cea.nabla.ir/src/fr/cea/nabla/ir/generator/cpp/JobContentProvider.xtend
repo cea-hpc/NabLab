@@ -68,7 +68,7 @@ class JobContentProvider
 			cpuTimer.start();
 			«ENDIF»
 			«itVar»++;
-			«val ppInfo = irModule.postProcessingInfo»
+			«val ppInfo = irModule.postProcessing»
 			«IF topLevel && ppInfo !== null»
 				if (!writer.isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
 					dumpVariables(«itVar»);
@@ -100,7 +100,7 @@ class JobContentProvider
 			ioTimer.reset();
 			«ENDIF»
 		} while (continueLoop);
-		«IF topLevel && irModule.postProcessingInfo !== null»
+		«IF topLevel && irModule.postProcessing !== null»
 			// force a last output at the end
 			dumpVariables(«itVar», false);
 		«ENDIF»

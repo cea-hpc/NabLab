@@ -231,7 +231,7 @@ class NablagenInterpreter
 		irModule.initNodeCoordVariable = getInitIrVariable(irModule, simulation.nodeCoord.name) as ConnectivityVariable
 		irModule.nodeCoordVariable = getCurrentIrVariable(irModule, simulation.nodeCoord.name) as ConnectivityVariable
 		irModule.timeVariable = getCurrentIrVariable(irModule, simulation.time.name) as SimpleVariable
-		irModule.deltatVariable = getCurrentIrVariable(irModule, simulation.timeStep.name) as SimpleVariable
+		irModule.timeStepVariable = getCurrentIrVariable(irModule, simulation.timeStep.name) as SimpleVariable
 	}
 
 	private def getCurrentIrVariable(IrModule m, String nablaVariableName) { getIrVariable(m, nablaVariableName, false) }
@@ -258,10 +258,10 @@ class NablagenInterpreter
 	private def setOutputVariables(IrModule irModule, VtkOutput vtkOutput)
 	{
 		val f = IrFactory.eINSTANCE
-		val ppInfo = f.createPostProcessingInfo
+		val postProcessing = f.createPostProcessing
 		val periodReferenceVar = getCurrentIrVariable(irModule, vtkOutput.periodReference.name)
 		if (periodReferenceVar === null) return false
-		ppInfo.periodReference = periodReferenceVar as SimpleVariable
+		postProcessing.periodReference = periodReferenceVar as SimpleVariable
 
 		for (outputVar : vtkOutput.vars)
 		{
@@ -269,13 +269,13 @@ class NablagenInterpreter
 			if (v !== null) 
 			{
 				v.outputName = outputVar.varName
-				ppInfo.outputVariables += v
+				postProcessing.outputVariables += v
 			}
 		}
-		irModule.postProcessingInfo = ppInfo
+		irModule.postProcessing = postProcessing
 
 		// Create a variable to store the last write time
-		val periodVariableType = ppInfo.periodReference.type
+		val periodVariableType = postProcessing.periodReference.type
 		val lastDumpVariable = f.createSimpleVariable =>
 		[
 			name = "lastDump"
@@ -284,8 +284,8 @@ class NablagenInterpreter
 			constExpr = false
 			defaultValue = periodVariableType.primitive.lastDumpDefaultValue
 		]
-		ppInfo.lastDumpVariable = lastDumpVariable
-		val pos = irModule.variables.indexOf(ppInfo.periodReference)
+		postProcessing.lastDumpVariable = lastDumpVariable
+		val pos = irModule.variables.indexOf(postProcessing.periodReference)
 		irModule.variables.add(pos, lastDumpVariable)
 
 		// Create an option to store the output period
@@ -297,7 +297,7 @@ class NablagenInterpreter
 			constExpr = false
 			// no default value : option is mandatory
 		]
-		ppInfo.periodValue = periodValueVariable
+		postProcessing.periodValue = periodValueVariable
 		irModule.options.add(0, periodValueVariable)
 
 		return true

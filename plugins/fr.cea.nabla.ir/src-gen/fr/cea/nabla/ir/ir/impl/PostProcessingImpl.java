@@ -3,7 +3,7 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.IrPackage;
-import fr.cea.nabla.ir.ir.PostProcessingInfo;
+import fr.cea.nabla.ir.ir.PostProcessing;
 import fr.cea.nabla.ir.ir.SimpleVariable;
 import fr.cea.nabla.ir.ir.Variable;
 
@@ -22,21 +22,21 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Post Processing Info</b></em>'.
+ * An implementation of the model object '<em><b>Post Processing</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl#getOutputVariables <em>Output Variables</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl#getPeriodReference <em>Period Reference</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl#getPeriodValue <em>Period Value</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl#getLastDumpVariable <em>Last Dump Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingImpl#getOutputVariables <em>Output Variables</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingImpl#getPeriodReference <em>Period Reference</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingImpl#getPeriodValue <em>Period Value</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.PostProcessingImpl#getLastDumpVariable <em>Last Dump Variable</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProcessingInfo {
+public class PostProcessingImpl extends IrAnnotableImpl implements PostProcessing {
 	/**
 	 * The cached value of the '{@link #getOutputVariables() <em>Output Variables</em>}' reference list.
 	 * <!-- begin-user-doc -->
@@ -82,7 +82,7 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected PostProcessingInfoImpl() {
+	protected PostProcessingImpl() {
 		super();
 	}
 
@@ -93,7 +93,7 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return IrPackage.Literals.POST_PROCESSING_INFO;
+		return IrPackage.Literals.POST_PROCESSING;
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 	@Override
 	public EList<Variable> getOutputVariables() {
 		if (outputVariables == null) {
-			outputVariables = new EObjectResolvingEList<Variable>(Variable.class, this, IrPackage.POST_PROCESSING_INFO__OUTPUT_VARIABLES);
+			outputVariables = new EObjectResolvingEList<Variable>(Variable.class, this, IrPackage.POST_PROCESSING__OUTPUT_VARIABLES);
 		}
 		return outputVariables;
 	}
@@ -121,7 +121,7 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 			periodReference = (SimpleVariable)eResolveProxy(oldPeriodReference);
 			if (periodReference != oldPeriodReference) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.POST_PROCESSING_INFO__PERIOD_REFERENCE, oldPeriodReference, periodReference));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.POST_PROCESSING__PERIOD_REFERENCE, oldPeriodReference, periodReference));
 			}
 		}
 		return periodReference;
@@ -146,7 +146,7 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 		SimpleVariable oldPeriodReference = periodReference;
 		periodReference = newPeriodReference;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.POST_PROCESSING_INFO__PERIOD_REFERENCE, oldPeriodReference, periodReference));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.POST_PROCESSING__PERIOD_REFERENCE, oldPeriodReference, periodReference));
 	}
 
 	/**
@@ -161,7 +161,7 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 			periodValue = (SimpleVariable)eResolveProxy(oldPeriodValue);
 			if (periodValue != oldPeriodValue) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE, oldPeriodValue, periodValue));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.POST_PROCESSING__PERIOD_VALUE, oldPeriodValue, periodValue));
 			}
 		}
 		return periodValue;
@@ -186,7 +186,7 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 		SimpleVariable oldPeriodValue = periodValue;
 		periodValue = newPeriodValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE, oldPeriodValue, periodValue));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.POST_PROCESSING__PERIOD_VALUE, oldPeriodValue, periodValue));
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 			lastDumpVariable = (SimpleVariable)eResolveProxy(oldLastDumpVariable);
 			if (lastDumpVariable != oldLastDumpVariable) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.POST_PROCESSING_INFO__LAST_DUMP_VARIABLE, oldLastDumpVariable, lastDumpVariable));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.POST_PROCESSING__LAST_DUMP_VARIABLE, oldLastDumpVariable, lastDumpVariable));
 			}
 		}
 		return lastDumpVariable;
@@ -226,7 +226,7 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 		SimpleVariable oldLastDumpVariable = lastDumpVariable;
 		lastDumpVariable = newLastDumpVariable;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.POST_PROCESSING_INFO__LAST_DUMP_VARIABLE, oldLastDumpVariable, lastDumpVariable));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.POST_PROCESSING__LAST_DUMP_VARIABLE, oldLastDumpVariable, lastDumpVariable));
 	}
 
 	/**
@@ -237,15 +237,15 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.POST_PROCESSING_INFO__OUTPUT_VARIABLES:
+			case IrPackage.POST_PROCESSING__OUTPUT_VARIABLES:
 				return getOutputVariables();
-			case IrPackage.POST_PROCESSING_INFO__PERIOD_REFERENCE:
+			case IrPackage.POST_PROCESSING__PERIOD_REFERENCE:
 				if (resolve) return getPeriodReference();
 				return basicGetPeriodReference();
-			case IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE:
+			case IrPackage.POST_PROCESSING__PERIOD_VALUE:
 				if (resolve) return getPeriodValue();
 				return basicGetPeriodValue();
-			case IrPackage.POST_PROCESSING_INFO__LAST_DUMP_VARIABLE:
+			case IrPackage.POST_PROCESSING__LAST_DUMP_VARIABLE:
 				if (resolve) return getLastDumpVariable();
 				return basicGetLastDumpVariable();
 		}
@@ -261,17 +261,17 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.POST_PROCESSING_INFO__OUTPUT_VARIABLES:
+			case IrPackage.POST_PROCESSING__OUTPUT_VARIABLES:
 				getOutputVariables().clear();
 				getOutputVariables().addAll((Collection<? extends Variable>)newValue);
 				return;
-			case IrPackage.POST_PROCESSING_INFO__PERIOD_REFERENCE:
+			case IrPackage.POST_PROCESSING__PERIOD_REFERENCE:
 				setPeriodReference((SimpleVariable)newValue);
 				return;
-			case IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE:
+			case IrPackage.POST_PROCESSING__PERIOD_VALUE:
 				setPeriodValue((SimpleVariable)newValue);
 				return;
-			case IrPackage.POST_PROCESSING_INFO__LAST_DUMP_VARIABLE:
+			case IrPackage.POST_PROCESSING__LAST_DUMP_VARIABLE:
 				setLastDumpVariable((SimpleVariable)newValue);
 				return;
 		}
@@ -286,16 +286,16 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.POST_PROCESSING_INFO__OUTPUT_VARIABLES:
+			case IrPackage.POST_PROCESSING__OUTPUT_VARIABLES:
 				getOutputVariables().clear();
 				return;
-			case IrPackage.POST_PROCESSING_INFO__PERIOD_REFERENCE:
+			case IrPackage.POST_PROCESSING__PERIOD_REFERENCE:
 				setPeriodReference((SimpleVariable)null);
 				return;
-			case IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE:
+			case IrPackage.POST_PROCESSING__PERIOD_VALUE:
 				setPeriodValue((SimpleVariable)null);
 				return;
-			case IrPackage.POST_PROCESSING_INFO__LAST_DUMP_VARIABLE:
+			case IrPackage.POST_PROCESSING__LAST_DUMP_VARIABLE:
 				setLastDumpVariable((SimpleVariable)null);
 				return;
 		}
@@ -310,16 +310,16 @@ public class PostProcessingInfoImpl extends IrAnnotableImpl implements PostProce
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.POST_PROCESSING_INFO__OUTPUT_VARIABLES:
+			case IrPackage.POST_PROCESSING__OUTPUT_VARIABLES:
 				return outputVariables != null && !outputVariables.isEmpty();
-			case IrPackage.POST_PROCESSING_INFO__PERIOD_REFERENCE:
+			case IrPackage.POST_PROCESSING__PERIOD_REFERENCE:
 				return periodReference != null;
-			case IrPackage.POST_PROCESSING_INFO__PERIOD_VALUE:
+			case IrPackage.POST_PROCESSING__PERIOD_VALUE:
 				return periodValue != null;
-			case IrPackage.POST_PROCESSING_INFO__LAST_DUMP_VARIABLE:
+			case IrPackage.POST_PROCESSING__LAST_DUMP_VARIABLE:
 				return lastDumpVariable != null;
 		}
 		return super.eIsSet(featureID);
 	}
 
-} //PostProcessingInfoImpl
+} //PostProcessingImpl

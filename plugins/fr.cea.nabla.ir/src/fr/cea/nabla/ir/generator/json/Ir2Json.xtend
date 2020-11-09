@@ -45,7 +45,7 @@ class Ir2Json extends CodeGenerator
 			"_comment": "Generated file - Do not overwrite",
 			"options":
 			{
-				«IF postProcessingInfo !== null»
+				«IF postProcessing !== null»
 				"_outputPath_comment":"empty outputPath to disable output",
 				"«Utils.OutputPathNameAndValue.key»":"«Utils.OutputPathNameAndValue.value»"«IF levelDB || !options.empty»,«ENDIF»
 				«ENDIF»

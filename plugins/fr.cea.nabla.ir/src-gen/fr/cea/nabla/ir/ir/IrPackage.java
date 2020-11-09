@@ -369,13 +369,13 @@ public interface IrPackage extends EPackage {
 	int IR_MODULE__TIME_VARIABLE = JOB_CONTAINER_FEATURE_COUNT + 11;
 
 	/**
-	 * The feature id for the '<em><b>Deltat Variable</b></em>' reference.
+	 * The feature id for the '<em><b>Time Step Variable</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__DELTAT_VARIABLE = JOB_CONTAINER_FEATURE_COUNT + 12;
+	int IR_MODULE__TIME_STEP_VARIABLE = JOB_CONTAINER_FEATURE_COUNT + 12;
 
 	/**
 	 * The feature id for the '<em><b>Jobs</b></em>' containment reference list.
@@ -387,13 +387,13 @@ public interface IrPackage extends EPackage {
 	int IR_MODULE__JOBS = JOB_CONTAINER_FEATURE_COUNT + 13;
 
 	/**
-	 * The feature id for the '<em><b>Post Processing Info</b></em>' containment reference.
+	 * The feature id for the '<em><b>Post Processing</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__POST_PROCESSING_INFO = JOB_CONTAINER_FEATURE_COUNT + 14;
+	int IR_MODULE__POST_PROCESSING = JOB_CONTAINER_FEATURE_COUNT + 14;
 
 	/**
 	 * The number of structural features of the '<em>Module</em>' class.
@@ -460,14 +460,14 @@ public interface IrPackage extends EPackage {
 	int IMPORT_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl <em>Post Processing Info</em>}' class.
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.PostProcessingImpl <em>Post Processing</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getPostProcessingInfo()
+	 * @see fr.cea.nabla.ir.ir.impl.PostProcessingImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getPostProcessing()
 	 * @generated
 	 */
-	int POST_PROCESSING_INFO = 6;
+	int POST_PROCESSING = 6;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -476,7 +476,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int POST_PROCESSING_INFO__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
+	int POST_PROCESSING__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Output Variables</b></em>' reference list.
@@ -485,7 +485,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int POST_PROCESSING_INFO__OUTPUT_VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 0;
+	int POST_PROCESSING__OUTPUT_VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Period Reference</b></em>' reference.
@@ -494,7 +494,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int POST_PROCESSING_INFO__PERIOD_REFERENCE = IR_ANNOTABLE_FEATURE_COUNT + 1;
+	int POST_PROCESSING__PERIOD_REFERENCE = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Period Value</b></em>' reference.
@@ -503,7 +503,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int POST_PROCESSING_INFO__PERIOD_VALUE = IR_ANNOTABLE_FEATURE_COUNT + 2;
+	int POST_PROCESSING__PERIOD_VALUE = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Last Dump Variable</b></em>' reference.
@@ -512,25 +512,25 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int POST_PROCESSING_INFO__LAST_DUMP_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 3;
+	int POST_PROCESSING__LAST_DUMP_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
-	 * The number of structural features of the '<em>Post Processing Info</em>' class.
+	 * The number of structural features of the '<em>Post Processing</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int POST_PROCESSING_INFO_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int POST_PROCESSING_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 4;
 
 	/**
-	 * The number of operations of the '<em>Post Processing Info</em>' class.
+	 * The number of operations of the '<em>Post Processing</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int POST_PROCESSING_INFO_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
+	int POST_PROCESSING_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl <em>Time Loop</em>}' class.
@@ -3495,16 +3495,6 @@ public interface IrPackage extends EPackage {
 	int CARDINALITY = 52;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ArgOrVarRefImpl <em>Arg Or Var Ref</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.ArgOrVarRefImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getArgOrVarRef()
-	 * @generated
-	 */
-	int ARG_OR_VAR_REF = 53;
-
-	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3557,6 +3547,16 @@ public interface IrPackage extends EPackage {
 	 * @ordered
 	 */
 	int CARDINALITY_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ArgOrVarRefImpl <em>Arg Or Var Ref</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.cea.nabla.ir.ir.impl.ArgOrVarRefImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getArgOrVarRef()
+	 * @generated
+	 */
+	int ARG_OR_VAR_REF = 53;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4575,15 +4575,15 @@ public interface IrPackage extends EPackage {
 	EReference getIrModule_TimeVariable();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrModule#getDeltatVariable <em>Deltat Variable</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrModule#getTimeStepVariable <em>Time Step Variable</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Deltat Variable</em>'.
-	 * @see fr.cea.nabla.ir.ir.IrModule#getDeltatVariable()
+	 * @return the meta object for the reference '<em>Time Step Variable</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrModule#getTimeStepVariable()
 	 * @see #getIrModule()
 	 * @generated
 	 */
-	EReference getIrModule_DeltatVariable();
+	EReference getIrModule_TimeStepVariable();
 
 	/**
 	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.IrModule#getJobs <em>Jobs</em>}'.
@@ -4597,15 +4597,15 @@ public interface IrPackage extends EPackage {
 	EReference getIrModule_Jobs();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.IrModule#getPostProcessingInfo <em>Post Processing Info</em>}'.
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.IrModule#getPostProcessing <em>Post Processing</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Post Processing Info</em>'.
-	 * @see fr.cea.nabla.ir.ir.IrModule#getPostProcessingInfo()
+	 * @return the meta object for the containment reference '<em>Post Processing</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrModule#getPostProcessing()
 	 * @see #getIrModule()
 	 * @generated
 	 */
-	EReference getIrModule_PostProcessingInfo();
+	EReference getIrModule_PostProcessing();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Import <em>Import</em>}'.
@@ -4629,58 +4629,58 @@ public interface IrPackage extends EPackage {
 	EAttribute getImport_ImportedNamespace();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.PostProcessingInfo <em>Post Processing Info</em>}'.
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.PostProcessing <em>Post Processing</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Post Processing Info</em>'.
-	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo
+	 * @return the meta object for class '<em>Post Processing</em>'.
+	 * @see fr.cea.nabla.ir.ir.PostProcessing
 	 * @generated
 	 */
-	EClass getPostProcessingInfo();
+	EClass getPostProcessing();
 
 	/**
-	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getOutputVariables <em>Output Variables</em>}'.
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.PostProcessing#getOutputVariables <em>Output Variables</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference list '<em>Output Variables</em>'.
-	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo#getOutputVariables()
-	 * @see #getPostProcessingInfo()
+	 * @see fr.cea.nabla.ir.ir.PostProcessing#getOutputVariables()
+	 * @see #getPostProcessing()
 	 * @generated
 	 */
-	EReference getPostProcessingInfo_OutputVariables();
+	EReference getPostProcessing_OutputVariables();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodReference <em>Period Reference</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.PostProcessing#getPeriodReference <em>Period Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Period Reference</em>'.
-	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodReference()
-	 * @see #getPostProcessingInfo()
+	 * @see fr.cea.nabla.ir.ir.PostProcessing#getPeriodReference()
+	 * @see #getPostProcessing()
 	 * @generated
 	 */
-	EReference getPostProcessingInfo_PeriodReference();
+	EReference getPostProcessing_PeriodReference();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodValue <em>Period Value</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.PostProcessing#getPeriodValue <em>Period Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Period Value</em>'.
-	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo#getPeriodValue()
-	 * @see #getPostProcessingInfo()
+	 * @see fr.cea.nabla.ir.ir.PostProcessing#getPeriodValue()
+	 * @see #getPostProcessing()
 	 * @generated
 	 */
-	EReference getPostProcessingInfo_PeriodValue();
+	EReference getPostProcessing_PeriodValue();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.PostProcessingInfo#getLastDumpVariable <em>Last Dump Variable</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.PostProcessing#getLastDumpVariable <em>Last Dump Variable</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Last Dump Variable</em>'.
-	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo#getLastDumpVariable()
-	 * @see #getPostProcessingInfo()
+	 * @see fr.cea.nabla.ir.ir.PostProcessing#getLastDumpVariable()
+	 * @see #getPostProcessing()
 	 * @generated
 	 */
-	EReference getPostProcessingInfo_LastDumpVariable();
+	EReference getPostProcessing_LastDumpVariable();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.TimeLoop <em>Time Loop</em>}'.
@@ -6692,12 +6692,12 @@ public interface IrPackage extends EPackage {
 		EReference IR_MODULE__TIME_VARIABLE = eINSTANCE.getIrModule_TimeVariable();
 
 		/**
-		 * The meta object literal for the '<em><b>Deltat Variable</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Time Step Variable</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference IR_MODULE__DELTAT_VARIABLE = eINSTANCE.getIrModule_DeltatVariable();
+		EReference IR_MODULE__TIME_STEP_VARIABLE = eINSTANCE.getIrModule_TimeStepVariable();
 
 		/**
 		 * The meta object literal for the '<em><b>Jobs</b></em>' containment reference list feature.
@@ -6708,12 +6708,12 @@ public interface IrPackage extends EPackage {
 		EReference IR_MODULE__JOBS = eINSTANCE.getIrModule_Jobs();
 
 		/**
-		 * The meta object literal for the '<em><b>Post Processing Info</b></em>' containment reference feature.
+		 * The meta object literal for the '<em><b>Post Processing</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference IR_MODULE__POST_PROCESSING_INFO = eINSTANCE.getIrModule_PostProcessingInfo();
+		EReference IR_MODULE__POST_PROCESSING = eINSTANCE.getIrModule_PostProcessing();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ImportImpl <em>Import</em>}' class.
@@ -6734,14 +6734,14 @@ public interface IrPackage extends EPackage {
 		EAttribute IMPORT__IMPORTED_NAMESPACE = eINSTANCE.getImport_ImportedNamespace();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl <em>Post Processing Info</em>}' class.
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.PostProcessingImpl <em>Post Processing</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.PostProcessingInfoImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getPostProcessingInfo()
+		 * @see fr.cea.nabla.ir.ir.impl.PostProcessingImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getPostProcessing()
 		 * @generated
 		 */
-		EClass POST_PROCESSING_INFO = eINSTANCE.getPostProcessingInfo();
+		EClass POST_PROCESSING = eINSTANCE.getPostProcessing();
 
 		/**
 		 * The meta object literal for the '<em><b>Output Variables</b></em>' reference list feature.
@@ -6749,7 +6749,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference POST_PROCESSING_INFO__OUTPUT_VARIABLES = eINSTANCE.getPostProcessingInfo_OutputVariables();
+		EReference POST_PROCESSING__OUTPUT_VARIABLES = eINSTANCE.getPostProcessing_OutputVariables();
 
 		/**
 		 * The meta object literal for the '<em><b>Period Reference</b></em>' reference feature.
@@ -6757,7 +6757,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference POST_PROCESSING_INFO__PERIOD_REFERENCE = eINSTANCE.getPostProcessingInfo_PeriodReference();
+		EReference POST_PROCESSING__PERIOD_REFERENCE = eINSTANCE.getPostProcessing_PeriodReference();
 
 		/**
 		 * The meta object literal for the '<em><b>Period Value</b></em>' reference feature.
@@ -6765,7 +6765,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference POST_PROCESSING_INFO__PERIOD_VALUE = eINSTANCE.getPostProcessingInfo_PeriodValue();
+		EReference POST_PROCESSING__PERIOD_VALUE = eINSTANCE.getPostProcessing_PeriodValue();
 
 		/**
 		 * The meta object literal for the '<em><b>Last Dump Variable</b></em>' reference feature.
@@ -6773,7 +6773,7 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference POST_PROCESSING_INFO__LAST_DUMP_VARIABLE = eINSTANCE.getPostProcessingInfo_LastDumpVariable();
+		EReference POST_PROCESSING__LAST_DUMP_VARIABLE = eINSTANCE.getPostProcessing_LastDumpVariable();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl <em>Time Loop</em>}' class.

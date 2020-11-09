@@ -10,7 +10,7 @@ import fr.cea.nabla.ir.ir.IrModule;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.ItemType;
 import fr.cea.nabla.ir.ir.Job;
-import fr.cea.nabla.ir.ir.PostProcessingInfo;
+import fr.cea.nabla.ir.ir.PostProcessing;
 import fr.cea.nabla.ir.ir.SimpleVariable;
 import fr.cea.nabla.ir.ir.TimeLoop;
 import fr.cea.nabla.ir.ir.TimeLoopContainer;
@@ -52,9 +52,9 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getTimeVariable <em>Time Variable</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getDeltatVariable <em>Deltat Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getTimeStepVariable <em>Time Step Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getJobs <em>Jobs</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getPostProcessingInfo <em>Post Processing Info</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getPostProcessing <em>Post Processing</em>}</li>
  * </ul>
  *
  * @generated
@@ -201,14 +201,14 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	protected SimpleVariable timeVariable;
 
 	/**
-	 * The cached value of the '{@link #getDeltatVariable() <em>Deltat Variable</em>}' reference.
+	 * The cached value of the '{@link #getTimeStepVariable() <em>Time Step Variable</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getDeltatVariable()
+	 * @see #getTimeStepVariable()
 	 * @generated
 	 * @ordered
 	 */
-	protected SimpleVariable deltatVariable;
+	protected SimpleVariable timeStepVariable;
 
 	/**
 	 * The cached value of the '{@link #getJobs() <em>Jobs</em>}' containment reference list.
@@ -221,14 +221,14 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	protected EList<Job> jobs;
 
 	/**
-	 * The cached value of the '{@link #getPostProcessingInfo() <em>Post Processing Info</em>}' containment reference.
+	 * The cached value of the '{@link #getPostProcessing() <em>Post Processing</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getPostProcessingInfo()
+	 * @see #getPostProcessing()
 	 * @generated
 	 * @ordered
 	 */
-	protected PostProcessingInfo postProcessingInfo;
+	protected PostProcessing postProcessing;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -512,16 +512,16 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
-	public SimpleVariable getDeltatVariable() {
-		if (deltatVariable != null && deltatVariable.eIsProxy()) {
-			InternalEObject oldDeltatVariable = (InternalEObject)deltatVariable;
-			deltatVariable = (SimpleVariable)eResolveProxy(oldDeltatVariable);
-			if (deltatVariable != oldDeltatVariable) {
+	public SimpleVariable getTimeStepVariable() {
+		if (timeStepVariable != null && timeStepVariable.eIsProxy()) {
+			InternalEObject oldTimeStepVariable = (InternalEObject)timeStepVariable;
+			timeStepVariable = (SimpleVariable)eResolveProxy(oldTimeStepVariable);
+			if (timeStepVariable != oldTimeStepVariable) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_MODULE__DELTAT_VARIABLE, oldDeltatVariable, deltatVariable));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_MODULE__TIME_STEP_VARIABLE, oldTimeStepVariable, timeStepVariable));
 			}
 		}
-		return deltatVariable;
+		return timeStepVariable;
 	}
 
 	/**
@@ -529,8 +529,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SimpleVariable basicGetDeltatVariable() {
-		return deltatVariable;
+	public SimpleVariable basicGetTimeStepVariable() {
+		return timeStepVariable;
 	}
 
 	/**
@@ -539,11 +539,11 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
-	public void setDeltatVariable(SimpleVariable newDeltatVariable) {
-		SimpleVariable oldDeltatVariable = deltatVariable;
-		deltatVariable = newDeltatVariable;
+	public void setTimeStepVariable(SimpleVariable newTimeStepVariable) {
+		SimpleVariable oldTimeStepVariable = timeStepVariable;
+		timeStepVariable = newTimeStepVariable;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__DELTAT_VARIABLE, oldDeltatVariable, deltatVariable));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__TIME_STEP_VARIABLE, oldTimeStepVariable, timeStepVariable));
 	}
 
 	/**
@@ -565,22 +565,22 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
-	public PostProcessingInfo getPostProcessingInfo() {
-		if (postProcessingInfo != null && postProcessingInfo.eIsProxy()) {
-			InternalEObject oldPostProcessingInfo = (InternalEObject)postProcessingInfo;
-			postProcessingInfo = (PostProcessingInfo)eResolveProxy(oldPostProcessingInfo);
-			if (postProcessingInfo != oldPostProcessingInfo) {
-				InternalEObject newPostProcessingInfo = (InternalEObject)postProcessingInfo;
-				NotificationChain msgs = oldPostProcessingInfo.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__POST_PROCESSING_INFO, null, null);
-				if (newPostProcessingInfo.eInternalContainer() == null) {
-					msgs = newPostProcessingInfo.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__POST_PROCESSING_INFO, null, msgs);
+	public PostProcessing getPostProcessing() {
+		if (postProcessing != null && postProcessing.eIsProxy()) {
+			InternalEObject oldPostProcessing = (InternalEObject)postProcessing;
+			postProcessing = (PostProcessing)eResolveProxy(oldPostProcessing);
+			if (postProcessing != oldPostProcessing) {
+				InternalEObject newPostProcessing = (InternalEObject)postProcessing;
+				NotificationChain msgs = oldPostProcessing.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__POST_PROCESSING, null, null);
+				if (newPostProcessing.eInternalContainer() == null) {
+					msgs = newPostProcessing.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__POST_PROCESSING, null, msgs);
 				}
 				if (msgs != null) msgs.dispatch();
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_MODULE__POST_PROCESSING_INFO, oldPostProcessingInfo, postProcessingInfo));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_MODULE__POST_PROCESSING, oldPostProcessing, postProcessing));
 			}
 		}
-		return postProcessingInfo;
+		return postProcessing;
 	}
 
 	/**
@@ -588,8 +588,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PostProcessingInfo basicGetPostProcessingInfo() {
-		return postProcessingInfo;
+	public PostProcessing basicGetPostProcessing() {
+		return postProcessing;
 	}
 
 	/**
@@ -597,11 +597,11 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetPostProcessingInfo(PostProcessingInfo newPostProcessingInfo, NotificationChain msgs) {
-		PostProcessingInfo oldPostProcessingInfo = postProcessingInfo;
-		postProcessingInfo = newPostProcessingInfo;
+	public NotificationChain basicSetPostProcessing(PostProcessing newPostProcessing, NotificationChain msgs) {
+		PostProcessing oldPostProcessing = postProcessing;
+		postProcessing = newPostProcessing;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__POST_PROCESSING_INFO, oldPostProcessingInfo, newPostProcessingInfo);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__POST_PROCESSING, oldPostProcessing, newPostProcessing);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -613,18 +613,18 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
-	public void setPostProcessingInfo(PostProcessingInfo newPostProcessingInfo) {
-		if (newPostProcessingInfo != postProcessingInfo) {
+	public void setPostProcessing(PostProcessing newPostProcessing) {
+		if (newPostProcessing != postProcessing) {
 			NotificationChain msgs = null;
-			if (postProcessingInfo != null)
-				msgs = ((InternalEObject)postProcessingInfo).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__POST_PROCESSING_INFO, null, msgs);
-			if (newPostProcessingInfo != null)
-				msgs = ((InternalEObject)newPostProcessingInfo).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__POST_PROCESSING_INFO, null, msgs);
-			msgs = basicSetPostProcessingInfo(newPostProcessingInfo, msgs);
+			if (postProcessing != null)
+				msgs = ((InternalEObject)postProcessing).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__POST_PROCESSING, null, msgs);
+			if (newPostProcessing != null)
+				msgs = ((InternalEObject)newPostProcessing).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__POST_PROCESSING, null, msgs);
+			msgs = basicSetPostProcessing(newPostProcessing, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__POST_PROCESSING_INFO, newPostProcessingInfo, newPostProcessingInfo));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__POST_PROCESSING, newPostProcessing, newPostProcessing));
 	}
 
 	/**
@@ -666,8 +666,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return ((InternalEList<?>)getVariables()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__JOBS:
 				return ((InternalEList<?>)getJobs()).basicRemove(otherEnd, msgs);
-			case IrPackage.IR_MODULE__POST_PROCESSING_INFO:
-				return basicSetPostProcessingInfo(null, msgs);
+			case IrPackage.IR_MODULE__POST_PROCESSING:
+				return basicSetPostProcessing(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -707,14 +707,14 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__TIME_VARIABLE:
 				if (resolve) return getTimeVariable();
 				return basicGetTimeVariable();
-			case IrPackage.IR_MODULE__DELTAT_VARIABLE:
-				if (resolve) return getDeltatVariable();
-				return basicGetDeltatVariable();
+			case IrPackage.IR_MODULE__TIME_STEP_VARIABLE:
+				if (resolve) return getTimeStepVariable();
+				return basicGetTimeStepVariable();
 			case IrPackage.IR_MODULE__JOBS:
 				return getJobs();
-			case IrPackage.IR_MODULE__POST_PROCESSING_INFO:
-				if (resolve) return getPostProcessingInfo();
-				return basicGetPostProcessingInfo();
+			case IrPackage.IR_MODULE__POST_PROCESSING:
+				if (resolve) return getPostProcessing();
+				return basicGetPostProcessing();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -771,15 +771,15 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__TIME_VARIABLE:
 				setTimeVariable((SimpleVariable)newValue);
 				return;
-			case IrPackage.IR_MODULE__DELTAT_VARIABLE:
-				setDeltatVariable((SimpleVariable)newValue);
+			case IrPackage.IR_MODULE__TIME_STEP_VARIABLE:
+				setTimeStepVariable((SimpleVariable)newValue);
 				return;
 			case IrPackage.IR_MODULE__JOBS:
 				getJobs().clear();
 				getJobs().addAll((Collection<? extends Job>)newValue);
 				return;
-			case IrPackage.IR_MODULE__POST_PROCESSING_INFO:
-				setPostProcessingInfo((PostProcessingInfo)newValue);
+			case IrPackage.IR_MODULE__POST_PROCESSING:
+				setPostProcessing((PostProcessing)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -829,14 +829,14 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__TIME_VARIABLE:
 				setTimeVariable((SimpleVariable)null);
 				return;
-			case IrPackage.IR_MODULE__DELTAT_VARIABLE:
-				setDeltatVariable((SimpleVariable)null);
+			case IrPackage.IR_MODULE__TIME_STEP_VARIABLE:
+				setTimeStepVariable((SimpleVariable)null);
 				return;
 			case IrPackage.IR_MODULE__JOBS:
 				getJobs().clear();
 				return;
-			case IrPackage.IR_MODULE__POST_PROCESSING_INFO:
-				setPostProcessingInfo((PostProcessingInfo)null);
+			case IrPackage.IR_MODULE__POST_PROCESSING:
+				setPostProcessing((PostProcessing)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -874,12 +874,12 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return nodeCoordVariable != null;
 			case IrPackage.IR_MODULE__TIME_VARIABLE:
 				return timeVariable != null;
-			case IrPackage.IR_MODULE__DELTAT_VARIABLE:
-				return deltatVariable != null;
+			case IrPackage.IR_MODULE__TIME_STEP_VARIABLE:
+				return timeStepVariable != null;
 			case IrPackage.IR_MODULE__JOBS:
 				return jobs != null && !jobs.isEmpty();
-			case IrPackage.IR_MODULE__POST_PROCESSING_INFO:
-				return postProcessingInfo != null;
+			case IrPackage.IR_MODULE__POST_PROCESSING:
+				return postProcessing != null;
 		}
 		return super.eIsSet(featureID);
 	}

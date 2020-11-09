@@ -92,8 +92,8 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createImportAdapter();
 			}
 			@Override
-			public Adapter casePostProcessingInfo(PostProcessingInfo object) {
-				return createPostProcessingInfoAdapter();
+			public Adapter casePostProcessing(PostProcessing object) {
+				return createPostProcessingAdapter();
 			}
 			@Override
 			public Adapter caseTimeLoop(TimeLoop object) {
@@ -444,16 +444,16 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.PostProcessingInfo <em>Post Processing Info</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.PostProcessing <em>Post Processing</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.PostProcessingInfo
+	 * @see fr.cea.nabla.ir.ir.PostProcessing
 	 * @generated
 	 */
-	public Adapter createPostProcessingInfoAdapter() {
+	public Adapter createPostProcessingAdapter() {
 		return null;
 	}
 

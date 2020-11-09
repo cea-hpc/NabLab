@@ -52,7 +52,7 @@ public class LevelDBUtils
 					}
 					String value = asString(it.peekNext().getValue());
 					String ref = asString(it_ref.peekNext().getValue());
-					System.err.println(key + ": " + (value.contentEquals(ref) ? "OK" : "ERROR"));
+					System.out.println(key + ": " + (value.contentEquals(ref) ? "OK" : "ERROR"));
 					if (!value.equals(ref))
 					{
 						result = false;

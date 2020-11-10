@@ -88,7 +88,7 @@ class JobInterpreter
 				if (periodReference >= lastDump + periodValue)
 					dumpVariables(irModule, iteration, context, periodReference);
 			}
-			for (j : innerJobs.filter[x | x.at > 0].sortBy[at])
+			for (j : innerJobs)
 				interprete(j, context)
 			context.logVariables("After iteration = " + iteration)
 

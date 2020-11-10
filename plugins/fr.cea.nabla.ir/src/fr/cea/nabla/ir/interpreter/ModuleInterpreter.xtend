@@ -123,7 +123,7 @@ class ModuleInterpreter
 		context.addVariableValue(module.initNodeCoordVariable, new NV2Real(context.meshWrapper.nodes))
 
 		// Interprete Top level jobs
-		for (j : module.innerJobs.sortBy[at])
+		for (j : module.innerJobs)
 			jobInterpreter.interprete(j, context)
 
 		// Non regression testing

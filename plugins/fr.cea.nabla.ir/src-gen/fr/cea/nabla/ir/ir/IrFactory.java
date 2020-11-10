@@ -445,15 +445,6 @@ public interface IrFactory extends EFactory {
 	ConnectivityType createConnectivityType();
 
 	/**
-	 * Returns a new object of class '<em>Time Loop Variable</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Time Loop Variable</em>'.
-	 * @generated
-	 */
-	TimeLoopVariable createTimeLoopVariable();
-
-	/**
 	 * Returns a new object of class '<em>Connectivity Call</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

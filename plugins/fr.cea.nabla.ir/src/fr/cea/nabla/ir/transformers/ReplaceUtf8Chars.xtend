@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.transformers
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Variable
-import fr.cea.nabla.ir.ir.TimeLoopVariable
 
 class ReplaceUtf8Chars extends IrTransformationStep
 {
@@ -53,7 +52,6 @@ class ReplaceUtf8Chars extends IrTransformationStep
 	{
 		trace('IR -> IR: ' + description)
 		m.eAllContents.filter(Variable).forEach[x | x.name = x.name.noUtf8]
-		m.eAllContents.filter(TimeLoopVariable).forEach[x | x.name = x.name.noUtf8]
 		m.eAllContents.filter(ReductionInstruction).forEach[x | x.result.name = x.result.name.noUtf8]
 		m.connectivities.forEach[x | x.name = x.name.noUtf8]
 		m.functions.forEach[x | x.name = x.name.noUtf8]

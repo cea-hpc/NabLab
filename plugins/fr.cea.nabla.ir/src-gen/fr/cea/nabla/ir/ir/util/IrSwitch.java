@@ -521,13 +521,6 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.TIME_LOOP_VARIABLE: {
-				TimeLoopVariable timeLoopVariable = (TimeLoopVariable)theEObject;
-				T result = caseTimeLoopVariable(timeLoopVariable);
-				if (result == null) result = caseIrAnnotable(timeLoopVariable);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case IrPackage.CONTAINER: {
 				Container container = (Container)theEObject;
 				T result = caseContainer(container);
@@ -1466,21 +1459,6 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseConnectivityType(ConnectivityType object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Time Loop Variable</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Time Loop Variable</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseTimeLoopVariable(TimeLoopVariable object) {
 		return null;
 	}
 

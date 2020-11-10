@@ -2,24 +2,19 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob;
 import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.SimpleVariable;
 import fr.cea.nabla.ir.ir.TimeLoop;
 import fr.cea.nabla.ir.ir.TimeLoopContainer;
-import fr.cea.nabla.ir.ir.TimeLoopVariable;
-import java.util.Collection;
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
-
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -31,7 +26,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getContainer <em>Container</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getWhileCondition <em>While Condition</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getAssociatedJob <em>Associated Job</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.TimeLoopImpl#getIterationCounter <em>Iteration Counter</em>}</li>
@@ -59,16 +53,6 @@ public class TimeLoopImpl extends TimeLoopContainerImpl implements TimeLoop {
 	 * @ordered
 	 */
 	protected String name = NAME_EDEFAULT;
-
-	/**
-	 * The cached value of the '{@link #getVariables() <em>Variables</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getVariables()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<TimeLoopVariable> variables;
 
 	/**
 	 * The cached value of the '{@link #getWhileCondition() <em>While Condition</em>}' containment reference.
@@ -193,19 +177,6 @@ public class TimeLoopImpl extends TimeLoopContainerImpl implements TimeLoop {
 		}
 		else if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.TIME_LOOP__CONTAINER, newContainer, newContainer));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EList<TimeLoopVariable> getVariables() {
-		if (variables == null) {
-			variables = new EObjectContainmentEList.Resolving<TimeLoopVariable>(TimeLoopVariable.class, this, IrPackage.TIME_LOOP__VARIABLES);
-		}
-		return variables;
 	}
 
 	/**
@@ -382,8 +353,6 @@ public class TimeLoopImpl extends TimeLoopContainerImpl implements TimeLoop {
 		switch (featureID) {
 			case IrPackage.TIME_LOOP__CONTAINER:
 				return basicSetContainer(null, msgs);
-			case IrPackage.TIME_LOOP__VARIABLES:
-				return ((InternalEList<?>)getVariables()).basicRemove(otherEnd, msgs);
 			case IrPackage.TIME_LOOP__WHILE_CONDITION:
 				return basicSetWhileCondition(null, msgs);
 		}
@@ -417,8 +386,6 @@ public class TimeLoopImpl extends TimeLoopContainerImpl implements TimeLoop {
 			case IrPackage.TIME_LOOP__CONTAINER:
 				if (resolve) return getContainer();
 				return basicGetContainer();
-			case IrPackage.TIME_LOOP__VARIABLES:
-				return getVariables();
 			case IrPackage.TIME_LOOP__WHILE_CONDITION:
 				if (resolve) return getWhileCondition();
 				return basicGetWhileCondition();
@@ -437,7 +404,6 @@ public class TimeLoopImpl extends TimeLoopContainerImpl implements TimeLoop {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -446,10 +412,6 @@ public class TimeLoopImpl extends TimeLoopContainerImpl implements TimeLoop {
 				return;
 			case IrPackage.TIME_LOOP__CONTAINER:
 				setContainer((TimeLoopContainer)newValue);
-				return;
-			case IrPackage.TIME_LOOP__VARIABLES:
-				getVariables().clear();
-				getVariables().addAll((Collection<? extends TimeLoopVariable>)newValue);
 				return;
 			case IrPackage.TIME_LOOP__WHILE_CONDITION:
 				setWhileCondition((Expression)newValue);
@@ -478,9 +440,6 @@ public class TimeLoopImpl extends TimeLoopContainerImpl implements TimeLoop {
 			case IrPackage.TIME_LOOP__CONTAINER:
 				setContainer((TimeLoopContainer)null);
 				return;
-			case IrPackage.TIME_LOOP__VARIABLES:
-				getVariables().clear();
-				return;
 			case IrPackage.TIME_LOOP__WHILE_CONDITION:
 				setWhileCondition((Expression)null);
 				return;
@@ -506,8 +465,6 @@ public class TimeLoopImpl extends TimeLoopContainerImpl implements TimeLoop {
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case IrPackage.TIME_LOOP__CONTAINER:
 				return basicGetContainer() != null;
-			case IrPackage.TIME_LOOP__VARIABLES:
-				return variables != null && !variables.isEmpty();
 			case IrPackage.TIME_LOOP__WHILE_CONDITION:
 				return whileCondition != null;
 			case IrPackage.TIME_LOOP__ASSOCIATED_JOB:

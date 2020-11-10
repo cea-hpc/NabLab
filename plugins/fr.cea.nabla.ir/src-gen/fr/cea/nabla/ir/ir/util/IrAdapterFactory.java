@@ -300,10 +300,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createConnectivityTypeAdapter();
 			}
 			@Override
-			public Adapter caseTimeLoopVariable(TimeLoopVariable object) {
-				return createTimeLoopVariableAdapter();
-			}
-			@Override
 			public Adapter caseContainer(Container object) {
 				return createContainerAdapter();
 			}
@@ -1168,20 +1164,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createConnectivityTypeAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.TimeLoopVariable <em>Time Loop Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.TimeLoopVariable
-	 * @generated
-	 */
-	public Adapter createTimeLoopVariableAdapter() {
 		return null;
 	}
 

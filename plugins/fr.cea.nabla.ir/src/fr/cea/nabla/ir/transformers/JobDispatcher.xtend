@@ -40,10 +40,11 @@ class JobDispatcher
 	private def void dispatchTimeLoopJobs(Iterable<TimeLoopJob> jobs, TimeLoopContainer timeLoopContainer, String prefix)
 	{
 		//println(prefix + "distributeTimeLoopJobs " + timeLoopContainer.name)
-		val innerJobs =  timeLoopContainer.jobContainer.innerJobs
+		val innerJobs = timeLoopContainer.jobContainer.innerJobs
 		//println(prefix + "   inner jobs before : " + innerJobs.map[name].join(', '))
 		for (containerTimeLoop : timeLoopContainer.innerTimeLoops)
 		{
+			//println("      containerTimeLoop : " + containerTimeLoop)
 			innerJobs += jobs.filter[timeLoop === containerTimeLoop]
 			dispatchTimeLoopJobs(jobs.filter[timeLoop !== containerTimeLoop], containerTimeLoop, prefix + '\t')
 		}

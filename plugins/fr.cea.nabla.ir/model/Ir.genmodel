@@ -69,7 +69,6 @@
     <genClasses ecoreClass="Ir.ecore#//TimeLoop">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//TimeLoop/name"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoop/container"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoop/variables"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoop/whileCondition"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoop/associatedJob"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoop/iterationCounter"/>
@@ -117,7 +116,10 @@
     <genClasses ecoreClass="Ir.ecore#//InstructionJob">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InstructionJob/instruction"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//ExecuteTimeLoopJob"/>
+    <genClasses ecoreClass="Ir.ecore#//ExecuteTimeLoopJob">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ExecuteTimeLoopJob/whileCondition"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ExecuteTimeLoopJob/iterationCounter"/>
+    </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//TimeLoopJob">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopJob/copies"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopJob/timeLoop"/>
@@ -251,12 +253,6 @@
     <genClasses ecoreClass="Ir.ecore#//ConnectivityType">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityType/connectivities"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityType/base"/>
-    </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//TimeLoopVariable">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopVariable/init"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopVariable/current"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopVariable/next"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//TimeLoopVariable/name"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//Container"/>
     <genClasses ecoreClass="Ir.ecore#//ConnectivityCall">

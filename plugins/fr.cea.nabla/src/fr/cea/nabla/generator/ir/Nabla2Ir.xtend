@@ -12,6 +12,7 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.NablaModule
@@ -26,12 +27,13 @@ import org.eclipse.emf.ecore.EObject
 class Nabla2Ir
 {
 	@Inject extension Nabla2IrUtils
-	@Inject extension IrTimeLoopFactory
+	@Inject extension IrArgOrVarFactory
 	@Inject extension IrJobFactory
 	@Inject extension IrFunctionFactory
 	@Inject extension IrConnectivityFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension DeclarationProvider
+	@Inject extension IrTimeLoopFactory
 
 	def create IrFactory::eINSTANCE.createIrModule toIrModule(NablaModule nablaModule)
 	{
@@ -44,28 +46,27 @@ class Nabla2Ir
 		// Function and reduction
 		nablaModule.allUsedFunctionAndReductions.forEach[x | functions += x.toIrFunction]
 
-		// Time loop creation
+		// Time loop jobs creation
 		if (nablaModule.iteration !== null)
 		{
 			val timeIt = nablaModule.iteration.iterator
 			variables += createTimeLoopsAndIterationCounters(it, timeIt)
+			jobs += createIrJobs(timeIt)
 		}
 
-		// Option and global variables creation
+		// Variables creation: order must be keep to ensure default values validity
+		val tlJobs = jobs.filter(TimeLoopJob)
 		for (d : nablaModule.declarations)
 			switch d
 			{
 				OptionDeclaration:
-					options += createIrVariablesFor(nablaModule, d.variable).filter(SimpleVariable)
+					options += createIrVariables(d.variable, tlJobs).filter(SimpleVariable)
 				SimpleVarDeclaration:
-					variables += createIrVariablesFor(nablaModule, d.variable).filter(SimpleVariable)
+					variables += createIrVariables(d.variable, tlJobs).filter(SimpleVariable)
 				VarGroupDeclaration:
 					for (v : d.variables)
-						variables += createIrVariablesFor(nablaModule, v)
+						variables += createIrVariables(v, tlJobs)
 			}
-
-		// TimeLoop jobs creation
-		jobs += createTimeLoopJobs
 
 		// Job creation
 		nablaModule.jobs.forEach[x | jobs += x.toIrInstructionJob]

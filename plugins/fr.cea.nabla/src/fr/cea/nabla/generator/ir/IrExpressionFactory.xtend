@@ -21,21 +21,25 @@ import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Cardinality
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ContractedIf
+import fr.cea.nabla.nabla.CurrentTimeIteratorRef
 import fr.cea.nabla.nabla.Div
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.Mul
+import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.nabla.TimeIteratorRef
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VectorConstant
 import fr.cea.nabla.overloading.DeclarationProvider
@@ -43,6 +47,7 @@ import fr.cea.nabla.typing.ExpressionTypeProvider
 
 class IrExpressionFactory
 {
+	@Inject extension TimeIteratorExtensions
 	@Inject extension ReductionCallExtensions
 	@Inject extension DeclarationProvider
 	@Inject extension ExpressionTypeProvider
@@ -50,7 +55,6 @@ class IrExpressionFactory
 	@Inject extension IrFunctionFactory
 	@Inject extension IrArgOrVarFactory
 	@Inject extension IrItemIndexFactory
-	@Inject extension IrTimeLoopFactory
 	@Inject extension IrContainerFactory
 	@Inject extension NablaType2IrType
 
@@ -206,7 +210,7 @@ class IrExpressionFactory
 		[ 
 			annotations += e.toIrAnnotation
 			type = e.typeFor?.toIrType
-			target = e.target.toIrArgOrVar(e.irTimeSuffix)
+			target = e.target.toIrArgOrVar(getIrTimeSuffix(e.timeIterators))
 			e.indices.forEach[x | indices += x.toIrExpression]
 			for (i : 0..<e.spaceIterators.size)
 				iterators += toIrIndex(new IndexInfo(e, e.spaceIterators.get(i)))
@@ -239,5 +243,21 @@ class IrExpressionFactory
 			v.constExpr
 		else
 			false
+	}
+
+	private def getIrTimeSuffix(Iterable<TimeIteratorRef> timeIterators)
+	{
+		if (timeIterators === null || timeIterators.empty) ''
+		else timeIterators.map['_' + target.name + typeName].join('')
+	}
+
+	private def getTypeName(TimeIteratorRef tiRef)
+	{
+		switch tiRef
+		{
+			CurrentTimeIteratorRef: currentTimeIteratorName
+			InitTimeIteratorRef: initTimeIteratorName
+			NextTimeIteratorRef: nextTimeIteratorName
+		}
 	}
 }

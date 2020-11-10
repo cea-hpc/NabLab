@@ -2,7 +2,6 @@
  */
 package fr.cea.nabla.ir.ir;
 
-import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -15,7 +14,6 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getContainer <em>Container</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getWhileCondition <em>While Condition</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getAssociatedJob <em>Associated Job</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoop#getIterationCounter <em>Iteration Counter</em>}</li>
@@ -71,18 +69,6 @@ public interface TimeLoop extends TimeLoopContainer {
 	 * @generated
 	 */
 	void setContainer(TimeLoopContainer value);
-
-	/**
-	 * Returns the value of the '<em><b>Variables</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.TimeLoopVariable}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Variables</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoop_Variables()
-	 * @model containment="true" resolveProxies="true"
-	 * @generated
-	 */
-	EList<TimeLoopVariable> getVariables();
 
 	/**
 	 * Returns the value of the '<em><b>While Condition</b></em>' containment reference.

@@ -104,7 +104,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.IR_TYPE: return createIrType();
 			case IrPackage.BASE_TYPE: return createBaseType();
 			case IrPackage.CONNECTIVITY_TYPE: return createConnectivityType();
-			case IrPackage.TIME_LOOP_VARIABLE: return createTimeLoopVariable();
 			case IrPackage.CONNECTIVITY_CALL: return createConnectivityCall();
 			case IrPackage.SET_REF: return createSetRef();
 			case IrPackage.ITEM_ID: return createItemId();
@@ -662,17 +661,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public ConnectivityType createConnectivityType() {
 		ConnectivityTypeImpl connectivityType = new ConnectivityTypeImpl();
 		return connectivityType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public TimeLoopVariable createTimeLoopVariable() {
-		TimeLoopVariableImpl timeLoopVariable = new TimeLoopVariableImpl();
-		return timeLoopVariable;
 	}
 
 	/**

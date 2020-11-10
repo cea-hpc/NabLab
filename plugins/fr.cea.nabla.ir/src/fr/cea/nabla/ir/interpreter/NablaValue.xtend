@@ -161,6 +161,11 @@ class NVMatrix implements NablaValue
 	{
 		this.data = data
 	}
+
+	override String toString()
+	{
+		data.toString
+	}
 }
 
 @Data class NV3Bool implements NablaValue

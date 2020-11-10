@@ -9,6 +9,10 @@ import java.io.IOException;
 
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
+
+import fr.cea.nabla.javalib.types.Matrix;
+import fr.cea.nabla.javalib.types.Vector;
+
 import org.apache.commons.io.FileUtils;
 
 public class LevelDBUtils 
@@ -37,7 +41,7 @@ public class LevelDBUtils
 			DBIterator it = db.iterator();
 	
 			// Results comparison
-			System.err.println("# Compairing results ...");
+			System.out.println("# Compairing results ...");
 
 			try 
 			{
@@ -90,12 +94,12 @@ public class LevelDBUtils
 		org.iq80.leveldb.Options leveldbOptions = new org.iq80.leveldb.Options();
 		factory.destroy(new File(name), leveldbOptions);
 	}
-	
+
 	public static byte[] serialize(final int i) 	
 	{
 	    return bytes(Integer.toString(i));
 	}
-	
+
 	public static byte[] serialize(final double d)
 	{
 	    return bytes(String.valueOf(d));
@@ -108,7 +112,12 @@ public class LevelDBUtils
 			sb.append(d).append(" ");
 		return bytes(sb.toString());
 	}
-	
+
+	public static byte[] serialize(final Vector vector)
+	{
+		return serialize(vector.toArray());
+	}
+
 	public static byte[] serialize(final double[][] data2d) 
 	{
 		StringBuilder sb = new StringBuilder();
@@ -120,7 +129,12 @@ public class LevelDBUtils
 		}
 		return bytes(sb.toString());
 	}
-	
+
+	public static byte[] serialize(final Matrix matrix)
+	{
+		return bytes(matrix.getNativeMatrix().toString());
+	}
+
 	public static byte[] serialize(final double[][][] data3d) 
 	{
 		StringBuilder sb = new StringBuilder();
@@ -136,7 +150,7 @@ public class LevelDBUtils
 		}
 		return bytes(sb.toString());
 	}
-	
+
 	public static byte[] serialize(final double[][][][] data4d) 
 	{
 		StringBuilder sb = new StringBuilder();

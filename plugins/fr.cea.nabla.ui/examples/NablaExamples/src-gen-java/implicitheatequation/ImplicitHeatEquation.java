@@ -545,10 +545,13 @@ public final class ImplicitHeatEquation
 			batch.put(bytes("deltat"), LevelDBUtils.serialize(deltat));
 			batch.put(bytes("X"), LevelDBUtils.serialize(X));
 			batch.put(bytes("Xc"), LevelDBUtils.serialize(Xc));
+			batch.put(bytes("u_n"), LevelDBUtils.serialize(u_n));
+			batch.put(bytes("u_nplus1"), LevelDBUtils.serialize(u_nplus1));
 			batch.put(bytes("V"), LevelDBUtils.serialize(V));
 			batch.put(bytes("D"), LevelDBUtils.serialize(D));
 			batch.put(bytes("faceLength"), LevelDBUtils.serialize(faceLength));
 			batch.put(bytes("faceConductivity"), LevelDBUtils.serialize(faceConductivity));
+			batch.put(bytes("alpha"), LevelDBUtils.serialize(alpha));
 
 			db.write(batch);
 		}

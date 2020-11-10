@@ -26,7 +26,6 @@ import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 import static org.iq80.leveldb.impl.Iq80DBFactory.bytes
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory
 
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class ModuleInterpreter
@@ -167,7 +166,7 @@ class ModuleInterpreter
 		val batch = db.createWriteBatch();
 		try
 		{
-			for (v : module.variables.filter[d | !d.linearAlgebra ])
+			for (v : module.variables)
 				batch.put(bytes(v.name), context.getVariableValue(v).serialize);
 
 			db.write(batch);

@@ -263,7 +263,7 @@ class Ir2Cpp extends CodeGenerator
 		assert(status.ok());
 		// Batch to write all data at once
 		leveldb::WriteBatch batch;
-		«FOR v : variables.filter[d | !d.linearAlgebra]»
+		«FOR v : variables»
 		batch.Put("«v.name»", serialize(«v.name»));
 		«ENDFOR»
 		status = db->Write(leveldb::WriteOptions(), &batch);

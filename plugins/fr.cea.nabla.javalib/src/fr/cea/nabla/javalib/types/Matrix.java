@@ -13,7 +13,7 @@ import org.apache.commons.math3.linear.AbstractRealMatrix;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.OpenMapRealMatrix;
 
-public class Matrix 
+public class Matrix
 {
 	private Object lock = new Object();
 	private AbstractRealMatrix nativeMatrix;
@@ -52,4 +52,17 @@ public class Matrix
 	{
 		synchronized(lock) { nativeMatrix.addToEntry(i, j, increment); }
 	}
+
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder("");
+		for (int i = 0; i < nativeMatrix.getColumnDimension(); i++)
+			for (int j = 0; j < nativeMatrix.getRowDimension(); j ++)
+			{
+				sb.append(nativeMatrix.getEntry(i, j));
+				sb.append(" ");
+			}
+		return sb.toString();
+	}
+
 }

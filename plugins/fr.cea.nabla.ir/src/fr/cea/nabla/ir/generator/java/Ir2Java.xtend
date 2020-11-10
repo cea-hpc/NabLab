@@ -257,7 +257,7 @@ class Ir2Java extends CodeGenerator
 				WriteBatch batch = db.createWriteBatch();
 				try
 				{
-					«FOR v : variables.filter[d | !d.linearAlgebra]»
+					«FOR v : variables»
 					batch.put(bytes("«v.name»"), LevelDBUtils.serialize(«v.name»));
 					«ENDFOR»
 

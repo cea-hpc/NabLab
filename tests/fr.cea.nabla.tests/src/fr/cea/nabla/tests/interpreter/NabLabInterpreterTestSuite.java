@@ -21,7 +21,8 @@ import org.junit.runners.Suite;
 	InstructionInterpreterTest.class,
 	JobInterpreterTest.class,
 	ModuleInterpreterTest.class,
-	OptionsInterpreterTest.class
+	OptionsInterpreterTest.class,
+	NablaExamplesInterpreterTest.class
 })
 
 public class NabLabInterpreterTestSuite {}

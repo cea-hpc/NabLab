@@ -39,7 +39,7 @@ class NablaExamplesTest
 	static String javaLibPath
 	static String levelDBPath
 	static String commonMath3Path
-	static String levelDbEnv = "LEVELDB_HOME"
+	static String levelDBEnv = "LEVELDB_HOME"
 	static String kokkosENV = "KOKKOS_HOME"
 	static GitUtils git
 
@@ -139,9 +139,9 @@ class NablaExamplesTest
 		println("\n" + moduleName)
 		// check Env Variables
 		val kokkosPath = System.getenv(kokkosENV)
-		val levelDbPath = System.getenv(levelDbEnv)
-		if (kokkosPath.nullOrEmpty || levelDbPath.nullOrEmpty)
-			Assert.fail("To execute this test, you have to set " + kokkosENV + " and " + levelDbEnv + " variables.")
+		val levelDBPath = System.getenv(levelDBEnv)
+		if (kokkosPath.nullOrEmpty || levelDBPath.nullOrEmpty)
+			Assert.fail("To execute this test, you have to set " + kokkosENV + " and " + levelDBEnv + " variables.")
 
 		val tmp = new File(Files.createTempDirectory("nablaTest-" + moduleName) + "/NablaExamples")
 		println(tmp)
@@ -154,7 +154,7 @@ class NablaExamplesTest
 		var genmodel = readFileAsString(tmp + "/src/" + packageName + "/" + moduleName + ".nablagen")
 
 		// Adapt genModel for LevelDBPath & KokkosPath & tmpOutputDir
-		genmodel = genmodel.adaptedGenModel(kokkosPath, levelDbPath)
+		genmodel = genmodel.adaptedGenModel(kokkosPath, levelDBPath)
 		compilationHelper.generateCode(model, genmodel, tmp.toPath.toString)
 
 		val targets = compilationHelper.getTargets(model, genmodel)
@@ -166,10 +166,10 @@ class NablaExamplesTest
 		(nbErrors > 0 ? Assert.fail(nbErrors + " error(s) !"))
 	}
 
-	private def adaptedGenModel(String genmodel, String kokkosPath, String levelDbPath)
+	private def adaptedGenModel(String genmodel, String kokkosPath, String levelDBPath)
 	{
 		// add LevelDBBlock before JavaBlock
-		var adaptedModel =  genmodel.replace(javaBlock.toString, levelDbPath.levelDbBlock.toString + javaBlock.toString)
+		var adaptedModel =  genmodel.replace(javaBlock.toString, levelDBPath.levelDBBlock.toString + javaBlock.toString)
 		// customize KokkosPath
 		val defaultKokkosPath = "$ENV{HOME}/kokkos/kokkos-install"
 		adaptedModel = adaptedModel.replace(defaultKokkosPath, kokkosPath)
@@ -185,12 +185,12 @@ class NablaExamplesTest
 		'''
 	}
 
-	private def getLevelDbBlock(String levelDbPath)
+	private def getLevelDBBlock(String levelDBPath)
 	{
 		'''
 		LevelDB
 		{
-			levelDBPath = "«levelDbPath»";
+			levelDBPath = "«levelDBPath»";
 		}
 
 		'''
@@ -202,20 +202,20 @@ class NablaExamplesTest
 		val packageName = moduleName.toLowerCase
 		val outputDir = tmp + "/.." + target.outputDir
 		val targetName = outputDir.split("/").last
-		val levelDbRef = testProjectPath + "/results/compiler/" + targetName + "/" + packageName + "/" + moduleName + "DB.ref"
+		val levelDBRef = testProjectPath + "/results/compiler/" + targetName + "/" + packageName + "/" + moduleName + "DB.ref"
 		val jsonFile = examplesProjectPath + "src/" + packageName + "/" + moduleName + ".json"
 		print("\tStarting " + target.eClass.name)
 //		println("$1= " + outputDir)
 //		println("$2= " + cppLibPath)
 //		println("$3= " + packageName)
-//		println("$4= " + levelDbRef)
+//		println("$4= " + levelDBRef)
 //		println("$5= " + jsonFile)
 		var pb = new ProcessBuilder("/bin/bash",
 			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeCppNablaExample.sh",
 			outputDir, // output src-gen path
 			cppLibPath, // cpp lib zip	 path
 			packageName,
-			levelDbRef,
+			levelDBRef,
 			jsonFile)
 		var process = pb.start
 		val exitVal = process.waitFor
@@ -252,7 +252,7 @@ class NablaExamplesTest
 		val outputDir = tmp + "/.." + target.outputDir
 		val targetName = outputDir.split("/").last
 		val gsonPath = Gson.protectionDomain.codeSource.location.toString
-		val levelDbRef = testProjectPath + "/results/compiler/" + targetName + "/" + packageName + "/" + moduleName + "DB.ref"
+		val levelDBRef = testProjectPath + "/results/compiler/" + targetName + "/" + packageName + "/" + moduleName + "DB.ref"
 		val guavaPath = PeekingIterator.protectionDomain.codeSource.location.toString
 		val apacheCommonIOPath = FileUtils.protectionDomain.codeSource.location.toString
 		val jsonFile = examplesProjectPath + "src/" + packageName + "/" + moduleName + ".json"
@@ -263,7 +263,7 @@ class NablaExamplesTest
 //		println("$4= " + javaLibPath)
 //		println("$5= " + levelDBPath)
 //		println("$6= " + gsonPath)
-//		println("$7= " + levelDbRef)
+//		println("$7= " + levelDBRef)
 //		println("$8= " + jsonFile)
 //		println("$9= " + guavaPath)
 //		println("$10= " + commonMath3Path)
@@ -279,7 +279,7 @@ class NablaExamplesTest
 			javaLibPath,
 			levelDBPath,
 			gsonPath,
-			levelDbRef,
+			levelDBRef,
 			jsonFile,
 			guavaPath,
 			commonMath3Path,

@@ -61,12 +61,12 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.IR_MODULE: return createIrModule();
 			case IrPackage.IMPORT: return createImport();
 			case IrPackage.POST_PROCESSING: return createPostProcessing();
-			case IrPackage.TIME_LOOP: return createTimeLoop();
 			case IrPackage.ARG: return createArg();
 			case IrPackage.SIMPLE_VARIABLE: return createSimpleVariable();
 			case IrPackage.CONNECTIVITY_VARIABLE: return createConnectivityVariable();
 			case IrPackage.FUNCTION: return createFunction();
 			case IrPackage.CONNECTIVITY: return createConnectivity();
+			case IrPackage.JOB_CALLER: return createJobCaller();
 			case IrPackage.INSTRUCTION_JOB: return createInstructionJob();
 			case IrPackage.EXECUTE_TIME_LOOP_JOB: return createExecuteTimeLoopJob();
 			case IrPackage.SET_UP_TIME_LOOP_JOB: return createSetUpTimeLoopJob();
@@ -196,17 +196,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public TimeLoop createTimeLoop() {
-		TimeLoopImpl timeLoop = new TimeLoopImpl();
-		return timeLoop;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public Arg createArg() {
 		ArgImpl arg = new ArgImpl();
 		return arg;
@@ -254,6 +243,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public Connectivity createConnectivity() {
 		ConnectivityImpl connectivity = new ConnectivityImpl();
 		return connectivity;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public JobCaller createJobCaller() {
+		JobCallerImpl jobCaller = new JobCallerImpl();
+		return jobCaller;
 	}
 
 	/**

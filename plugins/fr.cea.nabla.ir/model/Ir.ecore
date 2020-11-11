@@ -18,15 +18,7 @@
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EStringToStringMapEntry"
         containment="true" resolveProxies="false"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="JobContainer" abstract="true" eSuperTypes="#//IrAnnotable">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="innerJobs" upperBound="-1"
-        eType="#//Job" eOpposite="#//Job/jobContainer"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeLoopContainer" abstract="true" eSuperTypes="#//IrAnnotable">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="innerTimeLoops" upperBound="-1"
-        eType="#//TimeLoop" containment="true" eOpposite="#//TimeLoop/container"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="IrModule" eSuperTypes="#//JobContainer #//TimeLoopContainer">
+  <eClassifiers xsi:type="ecore:EClass" name="IrModule" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="imports" upperBound="-1"
@@ -55,6 +47,8 @@
         containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="postProcessing" eType="#//PostProcessing"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="main" eType="#//JobCaller"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Import" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importedNamespace" unique="false"
@@ -68,17 +62,6 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="periodValue" lowerBound="1"
         eType="#//SimpleVariable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="lastDumpVariable" lowerBound="1"
-        eType="#//SimpleVariable"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeLoop" eSuperTypes="#//TimeLoopContainer">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="container" eType="#//TimeLoopContainer"
-        eOpposite="#//TimeLoopContainer/innerTimeLoops"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="whileCondition" lowerBound="1"
-        eType="#//Expression" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="associatedJob" lowerBound="1"
-        eType="#//ExecuteTimeLoopJob"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="iterationCounter" lowerBound="1"
         eType="#//SimpleVariable"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ArgOrVar" abstract="true" eSuperTypes="#//IrAnnotable">
@@ -132,6 +115,10 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiple" unique="false"
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="JobCaller" eSuperTypes="#//IrAnnotable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="calls" upperBound="-1"
+        eType="#//Job" eOpposite="#//Job/caller"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Job" abstract="true" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -139,24 +126,22 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="onCycle" unique="false"
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="jobContainer" lowerBound="1"
-        eType="#//JobContainer" eOpposite="#//JobContainer/innerJobs"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="caller" eType="#//JobCaller"
+        eOpposite="#//JobCaller/calls"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InstructionJob" eSuperTypes="#//Job">
     <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" lowerBound="1"
         eType="#//Instruction" containment="true" resolveProxies="false"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ExecuteTimeLoopJob" eSuperTypes="#//TimeLoopJob #//JobContainer">
+  <eClassifiers xsi:type="ecore:EClass" name="TimeLoopJob" abstract="true" eSuperTypes="#//Job">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="copies" upperBound="-1"
+        eType="#//TimeLoopCopy" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ExecuteTimeLoopJob" eSuperTypes="#//TimeLoopJob #//JobCaller">
     <eStructuralFeatures xsi:type="ecore:EReference" name="whileCondition" lowerBound="1"
         eType="#//Expression" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterationCounter" lowerBound="1"
         eType="#//SimpleVariable"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeLoopJob" abstract="true" eSuperTypes="#//Job">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="copies" upperBound="-1"
-        eType="#//TimeLoopCopy" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="timeLoop" lowerBound="1"
-        eType="#//TimeLoop"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SetUpTimeLoopJob" eSuperTypes="#//TimeLoopJob"/>
   <eClassifiers xsi:type="ecore:EClass" name="TearDownTimeLoopJob" eSuperTypes="#//TimeLoopJob"/>

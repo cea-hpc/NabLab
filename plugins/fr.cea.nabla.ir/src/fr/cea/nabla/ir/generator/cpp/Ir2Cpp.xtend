@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.Platform
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
@@ -35,7 +36,7 @@ class Ir2Cpp extends CodeGenerator
 	val extension ExpressionContentProvider expressionContentProvider
 	val extension JsonContentProvider jsonContentProvider
 	val extension FunctionContentProvider functionContentProvider
-	val extension JobContainerContentProvider jobContainerContentProvider
+	val extension JobCallerContentProvider jobCallerContentProvider
 
 	new(File outputDirectory, Backend backend)
 	{
@@ -45,7 +46,7 @@ class Ir2Cpp extends CodeGenerator
 		argOrVarContentProvider = backend.argOrVarContentProvider
 		expressionContentProvider = backend.expressionContentProvider
 		jsonContentProvider = backend.jsonContentProvider
-		jobContainerContentProvider = backend.jobContainerContentProvider
+		jobCallerContentProvider = backend.getJobCallerContentProvider
 		functionContentProvider = backend.functionContentProvider
 
 		// check if c++ resources are available in the output folder
@@ -274,12 +275,12 @@ class Ir2Cpp extends CodeGenerator
 	}
 	«ENDIF»
 
-	void «name»::simulate()
+	void «name»::«main.name»()
 	{
 		«backend.traceContentProvider.getBeginOfSimuTrace(it, name)»
 
-		«callsHeader»
-		«callsContent»
+		«main.callsHeader»
+		«main.callsContent»
 		«backend.traceContentProvider.getEndOfSimuTrace(linearAlgebra)»
 	}
 	«IF levelDB»

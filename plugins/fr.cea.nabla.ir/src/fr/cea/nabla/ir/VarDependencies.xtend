@@ -56,14 +56,14 @@ class DefaultVarDependencies extends VarDependencies
 	override Iterable<Variable> getExecuteTimeLoopJobOutVars(ExecuteTimeLoopJob it)
 	{
 		val outVars = new HashSet<Variable>
-		innerJobs.forEach[x | outVars += x.outVars]
+		calls.forEach[x | outVars += x.outVars]
 		return outVars
 	}
 
 	override Iterable<Variable> getExecuteTimeLoopJobInVars(ExecuteTimeLoopJob it)
 	{
 		val inVars = new HashSet<Variable>
-		innerJobs.forEach[x | inVars += x.inVars]
+		calls.forEach[x | inVars += x.inVars]
 		return inVars
 	}
 }

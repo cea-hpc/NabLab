@@ -14,7 +14,6 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.TimeLoopJob#getCopies <em>Copies</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.TimeLoopJob#getTimeLoop <em>Time Loop</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoopJob()
@@ -33,27 +32,5 @@ public interface TimeLoopJob extends Job {
 	 * @generated
 	 */
 	EList<TimeLoopCopy> getCopies();
-
-	/**
-	 * Returns the value of the '<em><b>Time Loop</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Time Loop</em>' reference.
-	 * @see #setTimeLoop(TimeLoop)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeLoopJob_TimeLoop()
-	 * @model required="true"
-	 * @generated
-	 */
-	TimeLoop getTimeLoop();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.TimeLoopJob#getTimeLoop <em>Time Loop</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Time Loop</em>' reference.
-	 * @see #getTimeLoop()
-	 * @generated
-	 */
-	void setTimeLoop(TimeLoop value);
 
 } // TimeLoopJob

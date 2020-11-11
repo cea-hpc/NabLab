@@ -6,7 +6,7 @@ import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob;
 import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Job;
-import fr.cea.nabla.ir.ir.JobContainer;
+import fr.cea.nabla.ir.ir.JobCaller;
 import fr.cea.nabla.ir.ir.SimpleVariable;
 import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ExecuteTimeLoopJobImpl#getInnerJobs <em>Inner Jobs</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ExecuteTimeLoopJobImpl#getCalls <em>Calls</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExecuteTimeLoopJobImpl#getWhileCondition <em>While Condition</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExecuteTimeLoopJobImpl#getIterationCounter <em>Iteration Counter</em>}</li>
  * </ul>
@@ -37,14 +37,14 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTimeLoopJob {
 	/**
-	 * The cached value of the '{@link #getInnerJobs() <em>Inner Jobs</em>}' reference list.
+	 * The cached value of the '{@link #getCalls() <em>Calls</em>}' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getInnerJobs()
+	 * @see #getCalls()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Job> innerJobs;
+	protected EList<Job> calls;
 
 	/**
 	 * The cached value of the '{@link #getWhileCondition() <em>While Condition</em>}' containment reference.
@@ -90,11 +90,11 @@ public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTi
 	 * @generated
 	 */
 	@Override
-	public EList<Job> getInnerJobs() {
-		if (innerJobs == null) {
-			innerJobs = new EObjectWithInverseResolvingEList<Job>(Job.class, this, IrPackage.EXECUTE_TIME_LOOP_JOB__INNER_JOBS, IrPackage.JOB__JOB_CONTAINER);
+	public EList<Job> getCalls() {
+		if (calls == null) {
+			calls = new EObjectWithInverseResolvingEList<Job>(Job.class, this, IrPackage.EXECUTE_TIME_LOOP_JOB__CALLS, IrPackage.JOB__CALLER);
 		}
-		return innerJobs;
+		return calls;
 	}
 
 	/**
@@ -214,8 +214,8 @@ public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTi
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.EXECUTE_TIME_LOOP_JOB__INNER_JOBS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getInnerJobs()).basicAdd(otherEnd, msgs);
+			case IrPackage.EXECUTE_TIME_LOOP_JOB__CALLS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getCalls()).basicAdd(otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -228,8 +228,8 @@ public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTi
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.EXECUTE_TIME_LOOP_JOB__INNER_JOBS:
-				return ((InternalEList<?>)getInnerJobs()).basicRemove(otherEnd, msgs);
+			case IrPackage.EXECUTE_TIME_LOOP_JOB__CALLS:
+				return ((InternalEList<?>)getCalls()).basicRemove(otherEnd, msgs);
 			case IrPackage.EXECUTE_TIME_LOOP_JOB__WHILE_CONDITION:
 				return basicSetWhileCondition(null, msgs);
 		}
@@ -244,8 +244,8 @@ public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTi
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.EXECUTE_TIME_LOOP_JOB__INNER_JOBS:
-				return getInnerJobs();
+			case IrPackage.EXECUTE_TIME_LOOP_JOB__CALLS:
+				return getCalls();
 			case IrPackage.EXECUTE_TIME_LOOP_JOB__WHILE_CONDITION:
 				if (resolve) return getWhileCondition();
 				return basicGetWhileCondition();
@@ -265,9 +265,9 @@ public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTi
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.EXECUTE_TIME_LOOP_JOB__INNER_JOBS:
-				getInnerJobs().clear();
-				getInnerJobs().addAll((Collection<? extends Job>)newValue);
+			case IrPackage.EXECUTE_TIME_LOOP_JOB__CALLS:
+				getCalls().clear();
+				getCalls().addAll((Collection<? extends Job>)newValue);
 				return;
 			case IrPackage.EXECUTE_TIME_LOOP_JOB__WHILE_CONDITION:
 				setWhileCondition((Expression)newValue);
@@ -287,8 +287,8 @@ public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTi
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.EXECUTE_TIME_LOOP_JOB__INNER_JOBS:
-				getInnerJobs().clear();
+			case IrPackage.EXECUTE_TIME_LOOP_JOB__CALLS:
+				getCalls().clear();
 				return;
 			case IrPackage.EXECUTE_TIME_LOOP_JOB__WHILE_CONDITION:
 				setWhileCondition((Expression)null);
@@ -308,8 +308,8 @@ public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTi
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.EXECUTE_TIME_LOOP_JOB__INNER_JOBS:
-				return innerJobs != null && !innerJobs.isEmpty();
+			case IrPackage.EXECUTE_TIME_LOOP_JOB__CALLS:
+				return calls != null && !calls.isEmpty();
 			case IrPackage.EXECUTE_TIME_LOOP_JOB__WHILE_CONDITION:
 				return whileCondition != null;
 			case IrPackage.EXECUTE_TIME_LOOP_JOB__ITERATION_COUNTER:
@@ -325,9 +325,9 @@ public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTi
 	 */
 	@Override
 	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
-		if (baseClass == JobContainer.class) {
+		if (baseClass == JobCaller.class) {
 			switch (derivedFeatureID) {
-				case IrPackage.EXECUTE_TIME_LOOP_JOB__INNER_JOBS: return IrPackage.JOB_CONTAINER__INNER_JOBS;
+				case IrPackage.EXECUTE_TIME_LOOP_JOB__CALLS: return IrPackage.JOB_CALLER__CALLS;
 				default: return -1;
 			}
 		}
@@ -341,9 +341,9 @@ public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTi
 	 */
 	@Override
 	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
-		if (baseClass == JobContainer.class) {
+		if (baseClass == JobCaller.class) {
 			switch (baseFeatureID) {
-				case IrPackage.JOB_CONTAINER__INNER_JOBS: return IrPackage.EXECUTE_TIME_LOOP_JOB__INNER_JOBS;
+				case IrPackage.JOB_CALLER__CALLS: return IrPackage.EXECUTE_TIME_LOOP_JOB__CALLS;
 				default: return -1;
 			}
 		}

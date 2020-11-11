@@ -9,29 +9,30 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.ir.JobContainer
+import fr.cea.nabla.ir.ir.JobCaller
 
+import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
-class JobContainerContentProvider
+class JobCallerContentProvider
 {
-	def getCallsHeader(JobContainer it) ''''''
+	def getCallsHeader(JobCaller it) ''''''
 
-	def getCallsContent(JobContainer it)
+	def getCallsContent(JobCaller it)
 	'''
-		«FOR j : innerJobs»
+		«FOR j : calls»
 		«j.codeName»(); // @«j.at»
 		«ENDFOR»
 
 	'''
 }
 
-class KokkosTeamThreadJobContainerContentProvider extends JobContainerContentProvider
+class KokkosTeamThreadJobCallerContentProvider extends JobCallerContentProvider
 {
-	override getCallsHeader(JobContainer it)
+	override getCallsHeader(JobCaller it)
 	{
-		if (innerJobs.exists[x | x.hasIterable])
+		if (calls.exists[x | x.hasIterable])
 		'''
 		auto team_policy(Kokkos::TeamPolicy<>(
 			Kokkos::hwloc::get_available_numa_count(),
@@ -41,10 +42,10 @@ class KokkosTeamThreadJobContainerContentProvider extends JobContainerContentPro
 		else ''''''
 	}
 
-	override getCallsContent(JobContainer it)
+	override getCallsContent(JobCaller it)
 	'''
 		«var nbTimes = 0»
-		«val jobsByAt = innerJobs.groupBy[at]»
+		«val jobsByAt = calls.groupBy[at]»
 		«FOR at : jobsByAt.keySet.sort»
 			«val atJobs = jobsByAt.get(at)»
 			// @«at»
@@ -56,7 +57,7 @@ class KokkosTeamThreadJobContainerContentProvider extends JobContainerContentPro
 			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 			{
 				«FOR j : atJobs.sortBy[name]»
-					«IF nbTimes++==0 && j.topLevel»
+					«IF nbTimes++==0 && main»
 					if (thread.league_rank() == 0)
 						Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){
 							std::cout << "[" << __GREEN__ << "RUNTIME" << __RESET__ << "]   Using " << __BOLD__ << setw(3) << thread.league_size() << __RESET__ << " team(s) of "

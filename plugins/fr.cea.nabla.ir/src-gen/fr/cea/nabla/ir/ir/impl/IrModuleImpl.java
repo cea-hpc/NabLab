@@ -10,10 +10,9 @@ import fr.cea.nabla.ir.ir.IrModule;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.ItemType;
 import fr.cea.nabla.ir.ir.Job;
+import fr.cea.nabla.ir.ir.JobCaller;
 import fr.cea.nabla.ir.ir.PostProcessing;
 import fr.cea.nabla.ir.ir.SimpleVariable;
-import fr.cea.nabla.ir.ir.TimeLoop;
-import fr.cea.nabla.ir.ir.TimeLoopContainer;
 import fr.cea.nabla.ir.ir.Variable;
 
 import java.util.Collection;
@@ -29,7 +28,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -40,7 +38,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getInnerTimeLoops <em>Inner Time Loops</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getImports <em>Imports</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getItemTypes <em>Item Types</em>}</li>
@@ -55,21 +52,12 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getTimeStepVariable <em>Time Step Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getJobs <em>Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getPostProcessing <em>Post Processing</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getMain <em>Main</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class IrModuleImpl extends JobContainerImpl implements IrModule {
-	/**
-	 * The cached value of the '{@link #getInnerTimeLoops() <em>Inner Time Loops</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getInnerTimeLoops()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<TimeLoop> innerTimeLoops;
-
+public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -231,6 +219,16 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	protected PostProcessing postProcessing;
 
 	/**
+	 * The cached value of the '{@link #getMain() <em>Main</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getMain()
+	 * @generated
+	 * @ordered
+	 */
+	protected JobCaller main;
+
+	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -247,19 +245,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	@Override
 	protected EClass eStaticClass() {
 		return IrPackage.Literals.IR_MODULE;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EList<TimeLoop> getInnerTimeLoops() {
-		if (innerTimeLoops == null) {
-			innerTimeLoops = new EObjectContainmentWithInverseEList.Resolving<TimeLoop>(TimeLoop.class, this, IrPackage.IR_MODULE__INNER_TIME_LOOPS, IrPackage.TIME_LOOP__CONTAINER);
-		}
-		return innerTimeLoops;
 	}
 
 	/**
@@ -632,14 +617,67 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case IrPackage.IR_MODULE__INNER_TIME_LOOPS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getInnerTimeLoops()).basicAdd(otherEnd, msgs);
+	public JobCaller getMain() {
+		if (main != null && main.eIsProxy()) {
+			InternalEObject oldMain = (InternalEObject)main;
+			main = (JobCaller)eResolveProxy(oldMain);
+			if (main != oldMain) {
+				InternalEObject newMain = (InternalEObject)main;
+				NotificationChain msgs = oldMain.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__MAIN, null, null);
+				if (newMain.eInternalContainer() == null) {
+					msgs = newMain.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__MAIN, null, msgs);
+				}
+				if (msgs != null) msgs.dispatch();
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_MODULE__MAIN, oldMain, main));
+			}
 		}
-		return super.eInverseAdd(otherEnd, featureID, msgs);
+		return main;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public JobCaller basicGetMain() {
+		return main;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetMain(JobCaller newMain, NotificationChain msgs) {
+		JobCaller oldMain = main;
+		main = newMain;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__MAIN, oldMain, newMain);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setMain(JobCaller newMain) {
+		if (newMain != main) {
+			NotificationChain msgs = null;
+			if (main != null)
+				msgs = ((InternalEObject)main).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__MAIN, null, msgs);
+			if (newMain != null)
+				msgs = ((InternalEObject)newMain).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_MODULE__MAIN, null, msgs);
+			msgs = basicSetMain(newMain, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__MAIN, newMain, newMain));
 	}
 
 	/**
@@ -650,8 +688,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.IR_MODULE__INNER_TIME_LOOPS:
-				return ((InternalEList<?>)getInnerTimeLoops()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__IMPORTS:
 				return ((InternalEList<?>)getImports()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__ITEM_TYPES:
@@ -668,6 +704,8 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return ((InternalEList<?>)getJobs()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__POST_PROCESSING:
 				return basicSetPostProcessing(null, msgs);
+			case IrPackage.IR_MODULE__MAIN:
+				return basicSetMain(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -680,8 +718,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.IR_MODULE__INNER_TIME_LOOPS:
-				return getInnerTimeLoops();
 			case IrPackage.IR_MODULE__NAME:
 				return getName();
 			case IrPackage.IR_MODULE__IMPORTS:
@@ -715,6 +751,9 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__POST_PROCESSING:
 				if (resolve) return getPostProcessing();
 				return basicGetPostProcessing();
+			case IrPackage.IR_MODULE__MAIN:
+				if (resolve) return getMain();
+				return basicGetMain();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -728,10 +767,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.IR_MODULE__INNER_TIME_LOOPS:
-				getInnerTimeLoops().clear();
-				getInnerTimeLoops().addAll((Collection<? extends TimeLoop>)newValue);
-				return;
 			case IrPackage.IR_MODULE__NAME:
 				setName((String)newValue);
 				return;
@@ -781,6 +816,9 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__POST_PROCESSING:
 				setPostProcessing((PostProcessing)newValue);
 				return;
+			case IrPackage.IR_MODULE__MAIN:
+				setMain((JobCaller)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -793,9 +831,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.IR_MODULE__INNER_TIME_LOOPS:
-				getInnerTimeLoops().clear();
-				return;
 			case IrPackage.IR_MODULE__NAME:
 				setName(NAME_EDEFAULT);
 				return;
@@ -838,6 +873,9 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 			case IrPackage.IR_MODULE__POST_PROCESSING:
 				setPostProcessing((PostProcessing)null);
 				return;
+			case IrPackage.IR_MODULE__MAIN:
+				setMain((JobCaller)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -850,8 +888,6 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.IR_MODULE__INNER_TIME_LOOPS:
-				return innerTimeLoops != null && !innerTimeLoops.isEmpty();
 			case IrPackage.IR_MODULE__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case IrPackage.IR_MODULE__IMPORTS:
@@ -880,40 +916,10 @@ public class IrModuleImpl extends JobContainerImpl implements IrModule {
 				return jobs != null && !jobs.isEmpty();
 			case IrPackage.IR_MODULE__POST_PROCESSING:
 				return postProcessing != null;
+			case IrPackage.IR_MODULE__MAIN:
+				return main != null;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
-		if (baseClass == TimeLoopContainer.class) {
-			switch (derivedFeatureID) {
-				case IrPackage.IR_MODULE__INNER_TIME_LOOPS: return IrPackage.TIME_LOOP_CONTAINER__INNER_TIME_LOOPS;
-				default: return -1;
-			}
-		}
-		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
-		if (baseClass == TimeLoopContainer.class) {
-			switch (baseFeatureID) {
-				case IrPackage.TIME_LOOP_CONTAINER__INNER_TIME_LOOPS: return IrPackage.IR_MODULE__INNER_TIME_LOOPS;
-				default: return -1;
-			}
-		}
-		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
 	}
 
 	/**

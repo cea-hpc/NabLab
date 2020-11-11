@@ -10,11 +10,11 @@
 package fr.cea.nabla.ui.views
 
 import fr.cea.nabla.ir.JobDependencies
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.JobContainer
+import fr.cea.nabla.ir.ir.JobCaller
 import org.eclipse.jface.viewers.ArrayContentProvider
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider
-import fr.cea.nabla.ir.ir.IrModule
 
 class ContentProvider
 extends ArrayContentProvider
@@ -27,7 +27,7 @@ implements IGraphEntityContentProvider
 		switch inputElement
 		{
 			IrModule case inputElement.hasCycle: inputElement.jobs.filter[onCycle]
-			JobContainer: inputElement.innerJobs
+			JobCaller: inputElement.calls
 		}
 	}
 
@@ -39,7 +39,7 @@ implements IGraphEntityContentProvider
 	override Object[] getConnectedTo(Object entity)
 	{
 		if (entity instanceof Job)
-			entity.nextJobs.filter[x | x.jobContainer == entity.jobContainer]
+			entity.nextJobs.filter[x | x.caller == entity.caller]
 	}
 
 	private def hasCycle(IrModule it)

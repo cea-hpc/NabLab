@@ -27,13 +27,14 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getTimeStepVariable <em>Time Step Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getJobs <em>Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getPostProcessing <em>Post Processing</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getMain <em>Main</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule()
  * @model
  * @generated
  */
-public interface IrModule extends JobContainer, TimeLoopContainer {
+public interface IrModule extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -271,5 +272,27 @@ public interface IrModule extends JobContainer, TimeLoopContainer {
 	 * @generated
 	 */
 	void setPostProcessing(PostProcessing value);
+
+	/**
+	 * Returns the value of the '<em><b>Main</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Main</em>' containment reference.
+	 * @see #setMain(JobCaller)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Main()
+	 * @model containment="true" resolveProxies="true"
+	 * @generated
+	 */
+	JobCaller getMain();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getMain <em>Main</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Main</em>' containment reference.
+	 * @see #getMain()
+	 * @generated
+	 */
+	void setMain(JobCaller value);
 
 } // IrModule

@@ -58,15 +58,6 @@ public interface IrFactory extends EFactory {
 	PostProcessing createPostProcessing();
 
 	/**
-	 * Returns a new object of class '<em>Time Loop</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Time Loop</em>'.
-	 * @generated
-	 */
-	TimeLoop createTimeLoop();
-
-	/**
 	 * Returns a new object of class '<em>Arg</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -110,6 +101,15 @@ public interface IrFactory extends EFactory {
 	 * @generated
 	 */
 	Connectivity createConnectivity();
+
+	/**
+	 * Returns a new object of class '<em>Job Caller</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Job Caller</em>'.
+	 * @generated
+	 */
+	JobCaller createJobCaller();
 
 	/**
 	 * Returns a new object of class '<em>Instruction Job</em>'.

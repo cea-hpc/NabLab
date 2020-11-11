@@ -15,7 +15,7 @@ package fr.cea.nabla.ir.ir;
  *   <li>{@link fr.cea.nabla.ir.ir.Job#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Job#getAt <em>At</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Job#isOnCycle <em>On Cycle</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Job#getJobContainer <em>Job Container</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Job#getCaller <em>Caller</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getJob()
@@ -90,27 +90,27 @@ public interface Job extends IrAnnotable {
 	void setOnCycle(boolean value);
 
 	/**
-	 * Returns the value of the '<em><b>Job Container</b></em>' reference.
-	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.JobContainer#getInnerJobs <em>Inner Jobs</em>}'.
+	 * Returns the value of the '<em><b>Caller</b></em>' reference.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.JobCaller#getCalls <em>Calls</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Job Container</em>' reference.
-	 * @see #setJobContainer(JobContainer)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_JobContainer()
-	 * @see fr.cea.nabla.ir.ir.JobContainer#getInnerJobs
-	 * @model opposite="innerJobs" required="true"
+	 * @return the value of the '<em>Caller</em>' reference.
+	 * @see #setCaller(JobCaller)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_Caller()
+	 * @see fr.cea.nabla.ir.ir.JobCaller#getCalls
+	 * @model opposite="calls"
 	 * @generated
 	 */
-	JobContainer getJobContainer();
+	JobCaller getCaller();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Job#getJobContainer <em>Job Container</em>}' reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Job#getCaller <em>Caller</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Job Container</em>' reference.
-	 * @see #getJobContainer()
+	 * @param value the new value of the '<em>Caller</em>' reference.
+	 * @see #getCaller()
 	 * @generated
 	 */
-	void setJobContainer(JobContainer value);
+	void setCaller(JobCaller value);
 
 } // Job

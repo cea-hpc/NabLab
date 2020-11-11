@@ -14,7 +14,6 @@ import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.TimeLoop
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import fr.cea.nabla.javalib.mesh.VtkFileContent
@@ -25,7 +24,7 @@ import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.JobExtensions.isTopLevel
+import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
 class JobInterpreter
@@ -63,24 +62,23 @@ class JobInterpreter
 	{
 		context.logFiner("Interprete TimeLoopJob " + name + " @ " + at)
 		val irModule = eContainer as IrModule
-		val iterationVariable = timeLoop.iterationCounter
 		val ppInfo = irModule.postProcessing
 		var iteration = 0
-		context.logVariables("Before timeLoop " + timeLoop.name)
-		context.addVariableValue(iterationVariable, new NV0Int(iteration))
+		context.logVariables("Before timeLoop " + iterationCounter.name)
+		context.addVariableValue(iterationCounter, new NV0Int(iteration))
 		var continueLoop = true
 		do
 		{
 			iteration ++
-			context.setVariableValue(iterationVariable, new NV0Int(iteration))
+			context.setVariableValue(iterationCounter, new NV0Int(iteration))
 
 			val log = String.format(Locale::ENGLISH, "%1$s [%2$d] t: %3$.5f - deltat: %4$.5f",
-					timeLoop.indentation,
+					caller.indentation,
 					iteration,
 					context.getReal(irModule.timeVariable.name),
 					context.getReal(irModule.timeStepVariable.name))
 			context.logFine(log)
-			if (topLevel && ppInfo !== null)
+			if (main && ppInfo !== null)
 			{
 				val periodValue = context.getNumber(ppInfo.periodValue.name)
 				val periodReference = context.getNumber(ppInfo.periodReference.name)
@@ -88,11 +86,11 @@ class JobInterpreter
 				if (periodReference >= lastDump + periodValue)
 					dumpVariables(irModule, iteration, context, periodReference);
 			}
-			for (j : innerJobs)
+			for (j : calls)
 				interprete(j, context)
 			context.logVariables("After iteration = " + iteration)
 
-			continueLoop = (interprete(timeLoop.whileCondition, context) as NV0Bool).data
+			continueLoop = (interprete(whileCondition, context) as NV0Bool).data
 
 			if (continueLoop)
 			{
@@ -107,9 +105,9 @@ class JobInterpreter
 			}
 		}
 		while (continueLoop)
-		val log = String.format("%1$s Nb iteration %2$s = %3$d", timeLoop.indentation, timeLoop.name, iteration)
+		val log = String.format("%1$s Nb iteration %2$s = %3$d", caller.indentation, iterationCounter.name, iteration)
 		context.logInfo(log)
-		val msg = String.format("%1$s After timeLoop %2$s %3$d", timeLoop.indentation, timeLoop.name, iteration)
+		val msg = String.format("%1$s After timeLoop %2$s %3$d", caller.indentation, iterationCounter.name, iteration)
 		context.logVariables(msg)
 	}
 
@@ -161,11 +159,5 @@ class JobInterpreter
 			writer.writeFile(vtkFileContent)
 			context.setVariableValue(ppInfo.lastDumpVariable, new NV0Real(periodReference))
 		}
-	}
-
-	private static def String getIndentation(TimeLoop it)
-	{
-		if (container instanceof IrModule) ''
-		else getIndentation(container as TimeLoop) + '\t\t'
 	}
 }

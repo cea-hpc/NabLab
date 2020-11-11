@@ -20,8 +20,7 @@ package fr.cea.nabla.ir.ir;
  * @model
  * @generated
  */
-public interface ExecuteTimeLoopJob extends TimeLoopJob, JobContainer {
-
+public interface ExecuteTimeLoopJob extends TimeLoopJob, JobCaller {
 	/**
 	 * Returns the value of the '<em><b>While Condition</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
@@ -65,4 +64,5 @@ public interface ExecuteTimeLoopJob extends TimeLoopJob, JobContainer {
 	 * @generated
 	 */
 	void setIterationCounter(SimpleVariable value);
+
 } // ExecuteTimeLoopJob

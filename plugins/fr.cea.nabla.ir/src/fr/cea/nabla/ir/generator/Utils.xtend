@@ -22,9 +22,9 @@ import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
-import static extension fr.cea.nabla.ir.JobExtensions.*
+import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 
-class Utils 
+class Utils
 {
 	static val extension DefaultVarDependencies = new DefaultVarDependencies
 
@@ -56,7 +56,7 @@ class Utils
 	static def getComment(Job it)
 	'''
 		/**
-		 * Job «name» called @«at» in «IF topLevel»simulate«ELSE»«(jobContainer as Job).codeName»«ENDIF» method.
+		 * Job «name» called @«at» in «caller.name» method.
 		 * In variables: «FOR v : inVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
 		 * Out variables: «FOR v : outVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
 		 */

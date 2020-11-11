@@ -13,10 +13,9 @@ import com.google.inject.Inject
 import fr.cea.nabla.generator.IrModuleTransformer
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.ir.Nabla2Ir
-import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.JobContainer
+import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.ReplaceReductions
@@ -37,7 +36,7 @@ import org.eclipse.ui.part.ViewPart
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.zest.core.viewers.IZoomableWorkbenchPart
 
-import static extension fr.cea.nabla.ir.Utils.*
+import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 
 class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 {
@@ -73,12 +72,12 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 			{
 				if (selection.firstElement === null)
 				{
-					if (displayedContainer !== null && displayedContainer instanceof Job)
-						busyExec([viewerJobContainer = (displayedContainer as Job).jobContainer])
+					if (displayedCaller !== null && displayedCaller instanceof Job)
+						busyExec([viewerJobCaller = (displayedCaller as Job).caller])
 				}
-				else if (selection.firstElement instanceof JobContainer)
+				else if (selection.firstElement instanceof JobCaller)
 				{
-					busyExec([viewerJobContainer = selection.firstElement as JobContainer])
+					busyExec([viewerJobCaller = selection.firstElement as JobCaller])
 				}
 				else if (selection.firstElement instanceof Job)
 				{
@@ -90,7 +89,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		])
 
 	JobGraphViewer viewer
-	JobContainer displayedContainer = null
+	JobCaller displayedCaller = null
 
 	override setFocus() {}
 	override getZoomableViewer() { viewer }
@@ -112,20 +111,16 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		viewer = null
 	}
 
-	private def setViewerJobContainer(JobContainer container)
+	private def setViewerJobCaller(JobCaller jc)
 	{
 		val d = Display::^default
 		d.asyncExec([
-			displayedContainer = container
-			if (container === null) 
+			displayedCaller = jc
+			if (jc === null) 
 				contentDescription = ''
 			else
-				contentDescription = switch (container)
-				{
-					ExecuteTimeLoopJob: container.irModule.name + '::' + container.name
-					IrModule: container.name
-				}
-			viewer.input = container
+				contentDescription = jc.name
+			viewer.input = jc
 		])
 	}
 
@@ -160,7 +155,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 			consoleFactory.printConsole(MessageType.Error, "IR module can not be built. Try to clean and rebuild all projects and start again.")
 		else
 		{
-			viewerJobContainer = irModule
+			viewerJobCaller = irModule.main
 			consoleFactory.printConsole(MessageType.End, "Job graph view initialized")
 		}
 	}

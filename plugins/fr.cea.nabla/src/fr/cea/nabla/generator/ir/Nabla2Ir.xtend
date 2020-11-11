@@ -33,12 +33,13 @@ class Nabla2Ir
 	@Inject extension IrConnectivityFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension DeclarationProvider
-	@Inject extension IrTimeLoopFactory
+	@Inject extension TimeIteratorExtensions
 
 	def create IrFactory::eINSTANCE.createIrModule toIrModule(NablaModule nablaModule)
 	{
 		annotations += nablaModule.toIrAnnotation
 		name = nablaModule.name
+		main = IrFactory::eINSTANCE.createJobCaller
 		nablaModule.imports.forEach[x | imports += x.toIrImport]
 		nablaModule.itemTypes.forEach[x | itemTypes += x.toIrItemType]
 		nablaModule.connectivities.forEach[x | connectivities += x.toIrConnectivity]
@@ -48,11 +49,7 @@ class Nabla2Ir
 
 		// Time loop jobs creation
 		if (nablaModule.iteration !== null)
-		{
-			val timeIt = nablaModule.iteration.iterator
-			variables += createTimeLoopsAndIterationCounters(it, timeIt)
-			jobs += createIrJobs(timeIt)
-		}
+			addJobsAndCountersToModule(nablaModule.iteration.iterator, it)
 
 		// Variables creation: order must be keep to ensure default values validity
 		val tlJobs = jobs.filter(TimeLoopJob)

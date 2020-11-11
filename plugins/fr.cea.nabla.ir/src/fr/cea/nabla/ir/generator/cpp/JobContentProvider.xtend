@@ -20,6 +20,7 @@ import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
+import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
@@ -30,7 +31,7 @@ class JobContentProvider
 	protected val TraceContentProvider traceContentProvider
 	protected val extension ExpressionContentProvider
 	protected val extension InstructionContentProvider
-	protected val extension JobContainerContentProvider
+	protected val extension JobCallerContentProvider
 
 	def getDeclarationContent(Job it)
 	'''
@@ -58,27 +59,27 @@ class JobContentProvider
 	protected def dispatch CharSequence getInnerContent(ExecuteTimeLoopJob it)
 	'''
 		«callsHeader»
-		«val itVar = timeLoop.iterationCounter.codeName»
+		«val itVar = iterationCounter.codeName»
 		«itVar» = 0;
 		bool continueLoop = true;
 		do
 		{
-			«IF isTopLevel»
+			«IF caller.main»
 			globalTimer.start();
 			cpuTimer.start();
 			«ENDIF»
 			«itVar»++;
 			«val ppInfo = irModule.postProcessing»
-			«IF topLevel && ppInfo !== null»
+			«IF caller.main && ppInfo !== null»
 				if (!writer.isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
 					dumpVariables(«itVar»);
 			«ENDIF»
-			«traceContentProvider.getBeginOfLoopTrace(irModule, itVar, isTopLevel)»
+			«traceContentProvider.getBeginOfLoopTrace(irModule, itVar, caller.main)»
 
 			«callsContent»
 
 			// Evaluate loop condition with variables at time n
-			continueLoop = («timeLoop.whileCondition.content»);
+			continueLoop = («whileCondition.content»);
 
 			if (continueLoop)
 			{
@@ -87,20 +88,20 @@ class JobContentProvider
 					std::swap(«copy.source.name», «copy.destination.name»);
 				«ENDFOR»
 			}
-			«IF isTopLevel»
+			«IF caller.main»
 
 			cpuTimer.stop();
 			globalTimer.stop();
 			«ENDIF»
 
-			«traceContentProvider.getEndOfLoopTrace(irModule, itVar, isTopLevel, (ppInfo !== null))»
+			«traceContentProvider.getEndOfLoopTrace(irModule, itVar, caller.main, (ppInfo !== null))»
 
-			«IF isTopLevel»
+			«IF caller.main»
 			cpuTimer.reset();
 			ioTimer.reset();
 			«ENDIF»
 		} while (continueLoop);
-		«IF topLevel && irModule.postProcessing !== null»
+		«IF caller.main && irModule.postProcessing !== null»
 			// force a last output at the end
 			dumpVariables(«itVar», false);
 		«ENDIF»

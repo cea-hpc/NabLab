@@ -4,8 +4,7 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Job;
-import fr.cea.nabla.ir.ir.JobContainer;
-
+import fr.cea.nabla.ir.ir.JobCaller;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
@@ -25,7 +24,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getAt <em>At</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#isOnCycle <em>On Cycle</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getJobContainer <em>Job Container</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getCaller <em>Caller</em>}</li>
  * </ul>
  *
  * @generated
@@ -92,14 +91,14 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	protected boolean onCycle = ON_CYCLE_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getJobContainer() <em>Job Container</em>}' reference.
+	 * The cached value of the '{@link #getCaller() <em>Caller</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getJobContainer()
+	 * @see #getCaller()
 	 * @generated
 	 * @ordered
 	 */
-	protected JobContainer jobContainer;
+	protected JobCaller caller;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -195,16 +194,16 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * @generated
 	 */
 	@Override
-	public JobContainer getJobContainer() {
-		if (jobContainer != null && jobContainer.eIsProxy()) {
-			InternalEObject oldJobContainer = (InternalEObject)jobContainer;
-			jobContainer = (JobContainer)eResolveProxy(oldJobContainer);
-			if (jobContainer != oldJobContainer) {
+	public JobCaller getCaller() {
+		if (caller != null && caller.eIsProxy()) {
+			InternalEObject oldCaller = (InternalEObject)caller;
+			caller = (JobCaller)eResolveProxy(oldCaller);
+			if (caller != oldCaller) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.JOB__JOB_CONTAINER, oldJobContainer, jobContainer));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.JOB__CALLER, oldCaller, caller));
 			}
 		}
-		return jobContainer;
+		return caller;
 	}
 
 	/**
@@ -212,8 +211,8 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public JobContainer basicGetJobContainer() {
-		return jobContainer;
+	public JobCaller basicGetCaller() {
+		return caller;
 	}
 
 	/**
@@ -221,11 +220,11 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetJobContainer(JobContainer newJobContainer, NotificationChain msgs) {
-		JobContainer oldJobContainer = jobContainer;
-		jobContainer = newJobContainer;
+	public NotificationChain basicSetCaller(JobCaller newCaller, NotificationChain msgs) {
+		JobCaller oldCaller = caller;
+		caller = newCaller;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.JOB__JOB_CONTAINER, oldJobContainer, newJobContainer);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.JOB__CALLER, oldCaller, newCaller);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -237,18 +236,18 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * @generated
 	 */
 	@Override
-	public void setJobContainer(JobContainer newJobContainer) {
-		if (newJobContainer != jobContainer) {
+	public void setCaller(JobCaller newCaller) {
+		if (newCaller != caller) {
 			NotificationChain msgs = null;
-			if (jobContainer != null)
-				msgs = ((InternalEObject)jobContainer).eInverseRemove(this, IrPackage.JOB_CONTAINER__INNER_JOBS, JobContainer.class, msgs);
-			if (newJobContainer != null)
-				msgs = ((InternalEObject)newJobContainer).eInverseAdd(this, IrPackage.JOB_CONTAINER__INNER_JOBS, JobContainer.class, msgs);
-			msgs = basicSetJobContainer(newJobContainer, msgs);
+			if (caller != null)
+				msgs = ((InternalEObject)caller).eInverseRemove(this, IrPackage.JOB_CALLER__CALLS, JobCaller.class, msgs);
+			if (newCaller != null)
+				msgs = ((InternalEObject)newCaller).eInverseAdd(this, IrPackage.JOB_CALLER__CALLS, JobCaller.class, msgs);
+			msgs = basicSetCaller(newCaller, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.JOB__JOB_CONTAINER, newJobContainer, newJobContainer));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.JOB__CALLER, newCaller, newCaller));
 	}
 
 	/**
@@ -259,10 +258,10 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.JOB__JOB_CONTAINER:
-				if (jobContainer != null)
-					msgs = ((InternalEObject)jobContainer).eInverseRemove(this, IrPackage.JOB_CONTAINER__INNER_JOBS, JobContainer.class, msgs);
-				return basicSetJobContainer((JobContainer)otherEnd, msgs);
+			case IrPackage.JOB__CALLER:
+				if (caller != null)
+					msgs = ((InternalEObject)caller).eInverseRemove(this, IrPackage.JOB_CALLER__CALLS, JobCaller.class, msgs);
+				return basicSetCaller((JobCaller)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -275,8 +274,8 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.JOB__JOB_CONTAINER:
-				return basicSetJobContainer(null, msgs);
+			case IrPackage.JOB__CALLER:
+				return basicSetCaller(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -295,9 +294,9 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 				return getAt();
 			case IrPackage.JOB__ON_CYCLE:
 				return isOnCycle();
-			case IrPackage.JOB__JOB_CONTAINER:
-				if (resolve) return getJobContainer();
-				return basicGetJobContainer();
+			case IrPackage.JOB__CALLER:
+				if (resolve) return getCaller();
+				return basicGetCaller();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -319,8 +318,8 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 			case IrPackage.JOB__ON_CYCLE:
 				setOnCycle((Boolean)newValue);
 				return;
-			case IrPackage.JOB__JOB_CONTAINER:
-				setJobContainer((JobContainer)newValue);
+			case IrPackage.JOB__CALLER:
+				setCaller((JobCaller)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -343,8 +342,8 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 			case IrPackage.JOB__ON_CYCLE:
 				setOnCycle(ON_CYCLE_EDEFAULT);
 				return;
-			case IrPackage.JOB__JOB_CONTAINER:
-				setJobContainer((JobContainer)null);
+			case IrPackage.JOB__CALLER:
+				setCaller((JobCaller)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -364,8 +363,8 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 				return at != AT_EDEFAULT;
 			case IrPackage.JOB__ON_CYCLE:
 				return onCycle != ON_CYCLE_EDEFAULT;
-			case IrPackage.JOB__JOB_CONTAINER:
-				return jobContainer != null;
+			case IrPackage.JOB__CALLER:
+				return caller != null;
 		}
 		return super.eIsSet(featureID);
 	}

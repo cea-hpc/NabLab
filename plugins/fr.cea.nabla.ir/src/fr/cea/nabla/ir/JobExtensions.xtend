@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
@@ -18,11 +17,6 @@ import fr.cea.nabla.ir.ir.Variable
 
 class JobExtensions
 {
-	static def isTopLevel(Job it)
-	{
-		(jobContainer instanceof IrModule)
-	}
-
 	static def hasIterable(Job it)
 	{
 		!eAllContents.filter(IterableInstruction).empty

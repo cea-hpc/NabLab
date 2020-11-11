@@ -80,10 +80,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createIrModuleAdapter();
 			}
 			@Override
-			public Adapter caseImport(Import object) {
-				return createImportAdapter();
-			}
-			@Override
 			public Adapter casePostProcessing(PostProcessing object) {
 				return createPostProcessingAdapter();
 			}
@@ -386,20 +382,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createIrModuleAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Import <em>Import</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.Import
-	 * @generated
-	 */
-	public Adapter createImportAdapter() {
 		return null;
 	}
 

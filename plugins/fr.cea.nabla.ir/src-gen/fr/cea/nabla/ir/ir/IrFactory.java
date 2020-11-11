@@ -40,15 +40,6 @@ public interface IrFactory extends EFactory {
 	IrModule createIrModule();
 
 	/**
-	 * Returns a new object of class '<em>Import</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Import</em>'.
-	 * @generated
-	 */
-	Import createImport();
-
-	/**
 	 * Returns a new object of class '<em>Post Processing</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

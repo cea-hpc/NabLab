@@ -12,7 +12,6 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.nabla.Import
 import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.PrimitiveType
 
@@ -32,11 +31,5 @@ class Nabla2IrUtils
 	{
 		annotations += i.toIrAnnotation
 		name = i.name
-	}
-
-	def create IrFactory::eINSTANCE.createImport toIrImport(Import i)
-	{
-		importedNamespace = i.importedNamespace
-		annotations += i.toIrAnnotation
 	}
 }

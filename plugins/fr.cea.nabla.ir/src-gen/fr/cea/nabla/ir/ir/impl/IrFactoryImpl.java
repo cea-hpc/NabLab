@@ -59,7 +59,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 		switch (eClass.getClassifierID()) {
 			case IrPackage.IR_ANNOTATION: return createIrAnnotation();
 			case IrPackage.IR_MODULE: return createIrModule();
-			case IrPackage.IMPORT: return createImport();
 			case IrPackage.POST_PROCESSING: return createPostProcessing();
 			case IrPackage.ARG: return createArg();
 			case IrPackage.SIMPLE_VARIABLE: return createSimpleVariable();
@@ -166,17 +165,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public IrModule createIrModule() {
 		IrModuleImpl irModule = new IrModuleImpl();
 		return irModule;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Import createImport() {
-		ImportImpl import_ = new ImportImpl();
-		return import_;
 	}
 
 	/**

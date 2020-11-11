@@ -40,7 +40,6 @@ class Nabla2Ir
 		annotations += nablaModule.toIrAnnotation
 		name = nablaModule.name
 		main = IrFactory::eINSTANCE.createJobCaller
-		nablaModule.imports.forEach[x | imports += x.toIrImport]
 		nablaModule.itemTypes.forEach[x | itemTypes += x.toIrItemType]
 		nablaModule.connectivities.forEach[x | connectivities += x.toIrConnectivity]
 

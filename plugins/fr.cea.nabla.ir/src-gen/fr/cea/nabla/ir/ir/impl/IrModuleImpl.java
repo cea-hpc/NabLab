@@ -5,7 +5,6 @@ package fr.cea.nabla.ir.ir.impl;
 import fr.cea.nabla.ir.ir.Connectivity;
 import fr.cea.nabla.ir.ir.ConnectivityVariable;
 import fr.cea.nabla.ir.ir.Function;
-import fr.cea.nabla.ir.ir.Import;
 import fr.cea.nabla.ir.ir.IrModule;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.ItemType;
@@ -39,7 +38,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getName <em>Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getImports <em>Imports</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getItemTypes <em>Item Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getFunctions <em>Functions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getConnectivities <em>Connectivities</em>}</li>
@@ -77,16 +75,6 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * @ordered
 	 */
 	protected String name = NAME_EDEFAULT;
-
-	/**
-	 * The cached value of the '{@link #getImports() <em>Imports</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getImports()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Import> imports;
 
 	/**
 	 * The cached value of the '{@link #getItemTypes() <em>Item Types</em>}' containment reference list.
@@ -268,19 +256,6 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 		name = newName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__NAME, oldName, name));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EList<Import> getImports() {
-		if (imports == null) {
-			imports = new EObjectContainmentEList<Import>(Import.class, this, IrPackage.IR_MODULE__IMPORTS);
-		}
-		return imports;
 	}
 
 	/**
@@ -688,8 +663,6 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.IR_MODULE__IMPORTS:
-				return ((InternalEList<?>)getImports()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__ITEM_TYPES:
 				return ((InternalEList<?>)getItemTypes()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_MODULE__FUNCTIONS:
@@ -720,8 +693,6 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 		switch (featureID) {
 			case IrPackage.IR_MODULE__NAME:
 				return getName();
-			case IrPackage.IR_MODULE__IMPORTS:
-				return getImports();
 			case IrPackage.IR_MODULE__ITEM_TYPES:
 				return getItemTypes();
 			case IrPackage.IR_MODULE__FUNCTIONS:
@@ -769,10 +740,6 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 		switch (featureID) {
 			case IrPackage.IR_MODULE__NAME:
 				setName((String)newValue);
-				return;
-			case IrPackage.IR_MODULE__IMPORTS:
-				getImports().clear();
-				getImports().addAll((Collection<? extends Import>)newValue);
 				return;
 			case IrPackage.IR_MODULE__ITEM_TYPES:
 				getItemTypes().clear();
@@ -834,9 +801,6 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 			case IrPackage.IR_MODULE__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case IrPackage.IR_MODULE__IMPORTS:
-				getImports().clear();
-				return;
 			case IrPackage.IR_MODULE__ITEM_TYPES:
 				getItemTypes().clear();
 				return;
@@ -890,8 +854,6 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 		switch (featureID) {
 			case IrPackage.IR_MODULE__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case IrPackage.IR_MODULE__IMPORTS:
-				return imports != null && !imports.isEmpty();
 			case IrPackage.IR_MODULE__ITEM_TYPES:
 				return itemTypes != null && !itemTypes.isEmpty();
 			case IrPackage.IR_MODULE__FUNCTIONS:

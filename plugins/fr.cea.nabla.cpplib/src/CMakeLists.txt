@@ -38,7 +38,7 @@ add_library(cppnabla
 target_include_directories(cppnabla PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_directories(cppnabla PUBLIC)
 target_link_libraries(cppnabla PUBLIC stdc++fs)
-target_compile_options(cppnabla PUBLIC -fPIC -g -Wall -O3 --std=c++17 -march=native -mtune=native)
+target_compile_options(cppnabla PUBLIC -fPIC -g -Wall -O3 --std=c++17 -march=native -mtune=native ${NABLAB_TEST_SUITE_FLAGS})
 
 ### LIBCPPNABLASTL
 if(NOT DEFINED LIBCPPNABLA_BACKEND OR LIBCPPNABLA_BACKEND STREQUAL "STL")
@@ -48,7 +48,7 @@ add_library(cppnablastl
 target_include_directories(cppnablastl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_directories(cppnablastl PUBLIC)
 target_link_libraries(cppnablastl PUBLIC)
-target_compile_options(cppnablastl PUBLIC -fPIC -g -Wall -O3 --std=c++17 -march=native -mtune=native)
+target_compile_options(cppnablastl PUBLIC -fPIC -g -Wall -O3 --std=c++17 -march=native -mtune=native ${NABLAB_TEST_SUITE_FLAGS})
 endif()
 
 ### LIBCPPNABLAKOKKOS
@@ -69,7 +69,7 @@ if(TARGET Kokkos::kokkos AND TARGET Kokkos::kokkoskernels)
   target_include_directories(cppnablakokkos PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
   target_link_directories(cppnablakokkos PUBLIC)
   target_link_libraries(cppnablakokkos PUBLIC Kokkos::kokkos Kokkos::kokkoskernels)
-  target_compile_options(cppnablakokkos PUBLIC -fPIC -g -Wall -O3 --std=c++17 -fopenmp -march=native -mtune=native)
+  target_compile_options(cppnablakokkos PUBLIC -fPIC -g -Wall -O3 --std=c++17 -fopenmp -march=native -mtune=native ${NABLAB_TEST_SUITE_FLAGS})
 else()
   message(STATUS "Kokkos::kokkos/Kokkos::kokkoskernels not found: libcppnablakokkos will not be built (only libcppnabla)")
 endif()

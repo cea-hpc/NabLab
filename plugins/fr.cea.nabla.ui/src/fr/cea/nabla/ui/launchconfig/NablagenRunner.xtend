@@ -15,7 +15,7 @@ import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.NablagenInterpreter
 import fr.cea.nabla.ir.Utils
-import fr.cea.nabla.nablagen.NablagenModule
+import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.ui.NabLabConsoleFactory
 import org.eclipse.core.resources.IResource
 import org.eclipse.emf.common.util.URI
@@ -50,24 +50,22 @@ class NablagenRunner
 				val emfResource = resourceSet.createResource(plaftormUri)
 				EcoreUtil::resolveAll(resourceSet)
 				emfResource.load(null)
-				for (module : emfResource.contents.filter(NablagenModule))
-					if (module.config !== null)
-					{
-						val c = module.config
-						val baseDir = eclipseResource.project.location.toString
-						consoleFactory.printConsole(MessageType.Exec, "Starting NabLab to IR model transformation")
-						val startTime = System.currentTimeMillis
-						val ir = interpreter.buildIr(module, baseDir)
-						val afterConvertionTime = System.currentTimeMillis
-						consoleFactory.printConsole(MessageType.Exec, "NabLab to IR model transformation ended in " + (afterConvertionTime-startTime)/1000.0 + "s")
+				for (ngen : emfResource.contents.filter(NablagenRoot))
+				{
+					val baseDir = eclipseResource.project.location.toString
+					consoleFactory.printConsole(MessageType.Exec, "Starting NabLab to IR model transformation")
+					val startTime = System.currentTimeMillis
+					val ir = interpreter.buildIr(ngen, baseDir)
+					val afterConvertionTime = System.currentTimeMillis
+					consoleFactory.printConsole(MessageType.Exec, "NabLab to IR model transformation ended in " + (afterConvertionTime-startTime)/1000.0 + "s")
 
-						consoleFactory.printConsole(MessageType.Exec, "Starting code generation")
-						interpreter.generateCode(ir, c.targets, c.simulation.iterationMax.name, c.simulation.timeMax.name, baseDir, c.levelDB)
-						val afterGenerationTime = System.currentTimeMillis
-						consoleFactory.printConsole(MessageType.Exec, "Code generation ended in " + (afterGenerationTime-afterConvertionTime)/1000.0 + "s")
+					consoleFactory.printConsole(MessageType.Exec, "Starting code generation")
+					interpreter.generateCode(ir, ngen.targets, ngen.mainModule.iterationMax.name, ngen.mainModule.timeMax.name, baseDir, ngen.levelDB)
+					val afterGenerationTime = System.currentTimeMillis
+					consoleFactory.printConsole(MessageType.Exec, "Code generation ended in " + (afterGenerationTime-afterConvertionTime)/1000.0 + "s")
 
-						consoleFactory.printConsole(MessageType.Exec, "Total time: " + (afterGenerationTime-startTime)/1000.0 + "s");
-					}
+					consoleFactory.printConsole(MessageType.Exec, "Total time: " + (afterGenerationTime-startTime)/1000.0 + "s");
+				}
 				eclipseResource.project.refreshLocal(IResource::DEPTH_INFINITE, null)
 				consoleFactory.printConsole(MessageType.End, "Generation ended successfully for: " + eclipseResource.name)
 			}

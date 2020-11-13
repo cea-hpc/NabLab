@@ -1,0 +1,21 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+module Remap;
+
+itemtypes { node, cell }
+
+connectivity nodes: → {node};
+connectivity cells: → {cell};
+
+ℝ[2] X{nodes};
+ℝ v1{cells}, v2{cells}, v3{cells};
+
+j1: ∀c∈cells(), v2{c} = v1{c};
+j2: ∀c∈cells(), v3{c} = v2{c};

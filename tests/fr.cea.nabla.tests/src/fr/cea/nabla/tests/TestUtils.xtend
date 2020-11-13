@@ -116,9 +116,7 @@ class TestUtils
 
 	def getTestGenModel()
 	'''
-		nablagen for Test;
-
-		SimulationVariables
+		MainModule Test test
 		{
 			meshClassName = "CartesianMesh2D";
 			nodeCoord = X;

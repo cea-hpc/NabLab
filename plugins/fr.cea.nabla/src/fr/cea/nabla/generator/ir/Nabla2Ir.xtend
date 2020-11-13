@@ -15,11 +15,12 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.FunctionOrReduction
-import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVarDeclaration
 import fr.cea.nabla.nabla.VarGroupDeclaration
+import fr.cea.nabla.nablagen.MainModule
+import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.overloading.DeclarationProvider
 import java.util.LinkedHashSet
 import org.eclipse.emf.ecore.EObject
@@ -33,14 +34,14 @@ class Nabla2Ir
 	@Inject extension IrJobFactory
 	@Inject extension IrFunctionFactory
 
-	def create IrFactory::eINSTANCE.createIrModule toIrModule(String moduleInstanceName, NablaModule nablaModule)
+	def create IrFactory::eINSTANCE.createIrModule toIrModule(NablagenModule ngenModule)
 	{
-		annotations += nablaModule.toIrAnnotation
-		name = moduleInstanceName
-		type = nablaModule.name
-		main = false
+		annotations += ngenModule.toIrAnnotation
+		name = ngenModule.name.toFirstUpper
+		main = (ngenModule instanceof MainModule)
 
 		// Function and reduction
+		val nablaModule = ngenModule.type
 		nablaModule.allUsedFunctionAndReductions.forEach[x | functions += x.toIrFunction]
 
 		// Time loop jobs creation

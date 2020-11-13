@@ -158,7 +158,7 @@ class NablaExamplesTest
 		compilationHelper.generateCode(model, genmodel, tmp.toPath.toString)
 
 		var nbErrors = 0
-		for (target : compilationHelper.getNgen(model, genmodel).config.targets)
+		for (target : compilationHelper.getNgen(model, genmodel).targets)
 		{
 			(!testExecute(target, moduleName, tmp.toString) ? nbErrors++)
 		}

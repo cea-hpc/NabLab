@@ -94,7 +94,7 @@ class Ir2Cpp extends CodeGenerator
 
 	/******************** Module declaration ********************/
 
-	class «type»
+	class «name»
 	{
 	public:
 		struct Options
@@ -108,8 +108,8 @@ class Ir2Cpp extends CodeGenerator
 			void jsonInit(const rapidjson::Value::ConstObject& d);
 		};
 
-		«type»(«irRoot.meshClassName»* aMesh, const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»& a«s»«ENDFOR»);
-		~«type»();
+		«name»(«irRoot.meshClassName»* aMesh, const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»& a«s»«ENDFOR»);
+		~«name»();
 
 	private:
 		«backend.attributesContentProvider.getContentFor(it)»
@@ -132,7 +132,7 @@ class Ir2Cpp extends CodeGenerator
 
 	private def getSourceFileContent(IrModule it)
 	'''
-	#include "«type.toLowerCase»/«type».h"
+	#include "«name.toLowerCase»/«name».h"
 
 	using namespace nablalib;
 
@@ -148,7 +148,7 @@ class Ir2Cpp extends CodeGenerator
 	/******************** Options definition ********************/
 
 	void
-	«type»::Options::jsonInit(const rapidjson::Value::ConstObject& d)
+	«name»::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 	{
 		«IF irRoot.postProcessing !== null»
 		«val opName = Utils.OutputPathNameAndValue.key»
@@ -173,7 +173,7 @@ class Ir2Cpp extends CodeGenerator
 
 	/******************** Module definition ********************/
 
-	«type»::«type»(«irRoot.meshClassName»* aMesh, const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»& a«s»«ENDFOR»)
+	«name»::«name»(«irRoot.meshClassName»* aMesh, const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»& a«s»«ENDFOR»)
 	: mesh(aMesh)
 	«FOR c : irRoot.connectivities.filter[multiple]»
 	, «c.nbElemsVar»(«c.connectivityAccessor»)
@@ -182,7 +182,7 @@ class Ir2Cpp extends CodeGenerator
 	«FOR s : allProviders»
 	, «s.toFirstLower»(a«s»)
 	«ENDFOR»
-	«IF irRoot.postProcessing !== null», writer("«type»", options.«Utils.OutputPathNameAndValue.key»)«ENDIF»
+	«IF irRoot.postProcessing !== null», writer("«name»", options.«Utils.OutputPathNameAndValue.key»)«ENDIF»
 	«FOR v : variablesWithDefaultValue.filter[x | !x.constExpr]»
 	, «v.name»(«v.defaultValue.content»)
 	«ENDFOR»
@@ -208,14 +208,14 @@ class Ir2Cpp extends CodeGenerator
 		}
 	}
 
-	«type»::~«type»()
+	«name»::~«name»()
 	{
 	}
 
 	«backend.privateMethodsContentProvider.getDefinitionContentFor(it)»
 	«IF irRoot.postProcessing !== null»
 
-	void «type»::dumpVariables(int iteration, bool useTimer)
+	void «name»::dumpVariables(int iteration, bool useTimer)
 	{
 		if (!writer.isDisabled())
 		{
@@ -255,7 +255,7 @@ class Ir2Cpp extends CodeGenerator
 	«ENDIF»
 	«IF levelDB»
 	
-	void «type»::createDB(const std::string& db_name)
+	void «name»::createDB(const std::string& db_name)
 	{
 		// Creating data base
 		leveldb::DB* db;
@@ -277,7 +277,7 @@ class Ir2Cpp extends CodeGenerator
 	}
 	«ENDIF»
 
-	void «type»::«irRoot.main.name»()
+	void «name»::«irRoot.main.name»()
 	{
 		«backend.traceContentProvider.getBeginOfSimuTrace(it)»
 

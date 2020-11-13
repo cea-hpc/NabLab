@@ -7,9 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-nablagen for ExplicitHeatEquation;
-
-SimulationVariables
+MainModule ExplicitHeatEquation explicitHeatEquation
 {
 	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
@@ -21,8 +19,8 @@ SimulationVariables
 
 VtkOutput
 {
-	periodReferenceVariable = n;
-	outputVariables = u as "Temperature";
+	periodReferenceVariable = explicitHeatEquation.n;
+	outputVariables = explicitHeatEquation.u as "Temperature";
 }
 
 //LevelDB

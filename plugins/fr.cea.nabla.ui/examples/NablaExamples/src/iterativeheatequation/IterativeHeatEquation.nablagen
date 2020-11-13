@@ -7,9 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-nablagen for IterativeHeatEquation;
-
-SimulationVariables
+MainModule IterativeHeatEquation iterativeHeatEquation
 {
 	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
@@ -21,8 +19,8 @@ SimulationVariables
 
 VtkOutput
 {
-	periodReferenceVariable = n;
-	outputVariables = u as "Temperature";
+	periodReferenceVariable = iterativeHeatEquation.n;
+	outputVariables = iterativeHeatEquation.u as "Temperature";
 }
 
 //LevelDB

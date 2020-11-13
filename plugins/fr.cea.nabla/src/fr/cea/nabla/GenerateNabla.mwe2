@@ -9,6 +9,10 @@
  *******************************************************************************/
 module fr.cea.nabla.GenerateNabla
 
+// TODO Validate additional modules have no iterate
+// TODO Validate VarLink links variables of same type and connectivities
+// TODO Check vtk ouput variables can come from different modules
+
 import org.eclipse.xtext.xtext.generator.*
 import org.eclipse.xtext.xtext.generator.model.project.*
 

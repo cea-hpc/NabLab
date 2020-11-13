@@ -1,0 +1,32 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+module Hydro;
+
+itemtypes { node, cell }
+
+connectivity nodes: → {node};
+connectivity cells: → {cell};
+
+// Simulation options
+option ℝ maxTime = 0.1;
+option ℕ maxIter = 500;
+
+let ℝ t = 0.0;
+option ℝ δt = 1.0;
+ℝ[2] X{nodes};
+ℝ v1{cells}, v2{cells}, v3{cells}, v4{cells}, v5{cells}, v6{cells}, v7{cells};
+
+// iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
+
+j1: ∀c∈cells(), v3{c} = v2{c};
+j2: ∀c∈cells(), v5{c} = v3{c};
+j3: ∀c∈cells(), v7{c} = v4{c} + v5{c} + v6{c};
+
+

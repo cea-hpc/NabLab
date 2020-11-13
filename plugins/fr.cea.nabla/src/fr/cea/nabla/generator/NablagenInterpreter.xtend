@@ -36,8 +36,7 @@ import fr.cea.nabla.nablagen.CppSequential
 import fr.cea.nabla.nablagen.CppStlThread
 import fr.cea.nabla.nablagen.Java
 import fr.cea.nabla.nablagen.LevelDB
-import fr.cea.nabla.nablagen.NablagenConfig
-import fr.cea.nabla.nablagen.NablagenModule
+import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.nablagen.Target
 import java.io.File
 import java.util.ArrayList
@@ -60,18 +59,18 @@ class NablagenInterpreter
 
 	@Accessors val traceListeners = new ArrayList<(String)=>void>
 
-	def IrRoot buildIr(NablagenModule ngenModule, String projectDir)
+	def IrRoot buildIr(NablagenRoot ngen, String projectDir)
 	{
 		try
 		{
 			// Nabla -> IR
 			trace('Nabla -> IR')
-			val ir = nablagen2Ir.toIrRoot(ngenModule)
+			val ir = nablagen2Ir.toIrRoot(ngen)
 
 			// IR -> IR
-			getCommonIrTransformation(ngenModule.config).transformIr(ir, [msg | trace(msg)])
+			commonIrTransformation.transformIr(ir, [msg | trace(msg)])
 
-			if (ngenModule.config.writeIR)
+			if (ngen.writeIR)
 			{
 				val fileName = irWriter.createAndSaveResource(getConfiguredFileSystemAccess(projectDir, true), ir)
 				trace('Resource saved: ' + fileName)
@@ -205,7 +204,7 @@ class NablagenInterpreter
 		}
 	}
 
-	private def getCommonIrTransformation(NablagenConfig it)
+	private def getCommonIrTransformation()
 	{
 		val description = 'IR->IR transformations shared by all generators'
 		val transformations = new ArrayList<IrTransformationStep>

@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="nablagen" nsURI="http://www.cea.fr/nabla/Nablagen" nsPrefix="nablagen">
-  <eClassifiers xsi:type="ecore:EClass" name="NablagenModule">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="config" eType="#//NablagenConfig"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="NablagenConfig">
+  <eClassifiers xsi:type="ecore:EClass" name="NablagenRoot">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="writeIR" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="nablaModule" eType="ecore:EClass Nabla.ecore#//NablaModule"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="simulation" eType="#//Simulation"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mainModule" eType="#//MainModule"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="additionalModules" upperBound="-1"
+        eType="#//AdditionalModule" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="vtkOutput" eType="#//VtkOutput"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="levelDB" eType="#//LevelDB"
@@ -17,7 +14,11 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="targets" upperBound="-1"
         eType="#//Target" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Simulation">
+  <eClassifiers xsi:type="ecore:EClass" name="NablagenModule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="ecore:EClass Nabla.ecore#//NablaModule"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MainModule" eSuperTypes="#//NablagenModule">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="meshClassName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="nodeCoord" eType="ecore:EClass Nabla.ecore#//ConnectivityVar"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="time" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
@@ -25,17 +26,30 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterationMax" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeMax" eType="ecore:EClass Nabla.ecore#//SimpleVar"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AdditionalModule" eSuperTypes="#//NablagenModule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="varLinks" upperBound="-1"
+        eType="#//VarLink" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VarLink">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="additionalModule" eType="#//AdditionalModule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="additionalVariable" eType="ecore:EClass Nabla.ecore#//Var"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mainModule" eType="#//MainModule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mainVariable" eType="ecore:EClass Nabla.ecore#//Var"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VtkOutput">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="periodReference" eType="ecore:EClass Nabla.ecore#//ArgOrVar"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="periodReferenceModule"
+        eType="#//MainModule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="periodReferenceVar" eType="ecore:EClass Nabla.ecore#//ArgOrVar"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="vars" upperBound="-1" eType="#//OutputVar"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="LevelDB">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="levelDBPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OutputVar">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="moduleRef" eType="#//NablagenModule"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="varRef" eType="ecore:EClass Nabla.ecore#//ConnectivityVar"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="varName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LevelDB">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="levelDBPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Target">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputDir" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

@@ -10,7 +10,7 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
-import fr.cea.nabla.nablagen.NablagenModule
+import fr.cea.nabla.nablagen.NablagenRoot
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -22,7 +22,7 @@ import org.junit.runner.RunWith
 @InjectWith(NablagenInjectorProvider)
 class NablagenParsingTest
 {
-	@Inject ParseHelper<NablagenModule> parseHelper
+	@Inject ParseHelper<NablagenRoot> parseHelper
 	@Inject extension TestUtils
 
 	@Test

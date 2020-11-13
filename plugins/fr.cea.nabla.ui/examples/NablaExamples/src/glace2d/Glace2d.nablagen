@@ -7,9 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-nablagen for Glace2d;
-
-SimulationVariables
+MainModule Glace2d glace2d
 {
 	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
@@ -21,8 +19,8 @@ SimulationVariables
 
 VtkOutput
 {
-	periodReferenceVariable = n;
-	outputVariables = ρ as "Density";
+	periodReferenceVariable = glace2d.n;
+	outputVariables = glace2d.ρ as "Density";
 }
 
 //LevelDB

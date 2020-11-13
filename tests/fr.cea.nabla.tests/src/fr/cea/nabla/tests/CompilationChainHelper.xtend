@@ -18,7 +18,7 @@ import fr.cea.nabla.ir.interpreter.IrInterpreter
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nablagen.NablagenModule
+import fr.cea.nabla.nablagen.NablagenRoot
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.logging.ConsoleHandler
@@ -44,7 +44,7 @@ class CompilationChainHelper
 
 	var nablagenSetup = new NablagenStandaloneSetup
 	var nablagenInjector = nablagenSetup.createInjectorAndDoEMFRegistration
-	var ParseHelper<NablagenModule> nablagenParseHelper = nablagenInjector.getInstance(ParseHelper)
+	var ParseHelper<NablagenRoot> nablagenParseHelper = nablagenInjector.getInstance(ParseHelper)
 
 	val testProjectPath = System.getProperty("user.dir")
 	val pluginsPath = testProjectPath + "/../../plugins/"
@@ -63,7 +63,7 @@ class CompilationChainHelper
 
 	def getNgen(CharSequence model, CharSequence genModel)
 	{
-		var rs = resourceSetProvider.get
+		val rs = resourceSetProvider.get
 
 		// Read MathFunctions
 		val mathFunctionsPath = pluginsPath + "fr.cea.nabla/nablalib/mathfunctions.nabla"
@@ -73,14 +73,14 @@ class CompilationChainHelper
 		val linearAlgebraFunctionsPath = pluginsPath + "fr.cea.nabla/nablalib/linearalgebrafunctions.nabla"
 		nablaParseHelper.parse(new String(Files.readAllBytes(Paths.get(linearAlgebraFunctionsPath))), rs)
 
-		var nablaModule = nablaParseHelper.parse(model, rs)
+		val nablaModule = nablaParseHelper.parse(model, rs)
 		nablaModule.assertNoErrors
 
 		rs.resources.add(nablaModule.eResource)
-		var nablaGenModule = nablagenParseHelper.parse(genModel, rs)
-		nablaGenModule.assertNoErrors
+		val ngen = nablagenParseHelper.parse(genModel, rs)
+		ngen.assertNoErrors
 
-		return nablaGenModule
+		return ngen
 	}
 
 	def getInterpreterContext(IrRoot ir, String jsonContent)
@@ -96,7 +96,7 @@ class CompilationChainHelper
 		val interpreter = interpreterProvider.get
 		val ir = getIr(model, genModel)
 		val ngen = getNgen(model, genModel)
-		interpreter.generateCode(ir, ngen.config.targets, ngen.config.simulation.iterationMax.name, ngen.config.simulation.timeMax.name, projectDir, ngen.config.levelDB)
+		interpreter.generateCode(ir, ngen.targets, ngen.mainModule.iterationMax.name, ngen.mainModule.timeMax.name, projectDir, ngen.levelDB)
 	}
 
 	private def getIr(CharSequence model, CharSequence genModel)

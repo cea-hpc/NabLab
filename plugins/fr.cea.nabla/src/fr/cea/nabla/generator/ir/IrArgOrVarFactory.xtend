@@ -165,7 +165,7 @@ class IrArgOrVarFactory
 		type = toIrConnectivityType(v.type, v.supports)
 	}
 
-	def create 	IrFactory::eINSTANCE.createSimpleVariable toIrIterationCounter(TimeIterator t)
+	def create IrFactory::eINSTANCE.createSimpleVariable toIrIterationCounter(TimeIterator t)
 	{
 		annotations += t.toIrAnnotation
 		name = t.name

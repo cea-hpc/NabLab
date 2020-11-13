@@ -1,4 +1,4 @@
-MainModule DepthInit depthInit
+MainModule Hydro h
 {
 	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
@@ -8,18 +8,32 @@ MainModule DepthInit depthInit
 	timeMax = maxTime;
 }
 
-Java
+AdditionalModule Remap r1
 {
-	outputPath = "/NablaTest/src-gen-java";
+	r1.X = h.X;
+	r1.v1 = h.v1;
+	r1.v2 = h.v4;
 }
 
-StlThread
+AdditionalModule Remap r2
 {
-	outputPath = "/NablaTest/src-gen-cpp/stl-thread";
-	compiler = GNU;
+	r2.X = h.X;
+	r2.v1 = h.v3;
+	r2.v3 = h.v6;
+}
+
+//Java
+//{
+//	outputPath = "/NablaTest/src-gen-java";
+//}
+
+//StlThread
+//{
+//	outputPath = "/NablaTest/src-gen-cpp/stl-thread";
+//	compiler = GNU;
 //		compiler = LLVM;
 //		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
-}
+//}
 //
 //Kokkos
 //{

@@ -27,7 +27,6 @@ import java.util.Collection;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getName <em>Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getType <em>Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#isMain <em>Main</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getFunctions <em>Functions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getVariables <em>Variables</em>}</li>
@@ -56,26 +55,6 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * @ordered
 	 */
 	protected String name = NAME_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getType()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String TYPE_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getType()
-	 * @generated
-	 * @ordered
-	 */
-	protected String type = TYPE_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #isMain() <em>Main</em>}' attribute.
@@ -175,29 +154,6 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setType(String newType) {
-		String oldType = type;
-		type = newType;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_MODULE__TYPE, oldType, type));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public boolean isMain() {
 		return main;
 	}
@@ -282,8 +238,6 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 		switch (featureID) {
 			case IrPackage.IR_MODULE__NAME:
 				return getName();
-			case IrPackage.IR_MODULE__TYPE:
-				return getType();
 			case IrPackage.IR_MODULE__MAIN:
 				return isMain();
 			case IrPackage.IR_MODULE__FUNCTIONS:
@@ -307,9 +261,6 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 		switch (featureID) {
 			case IrPackage.IR_MODULE__NAME:
 				setName((String)newValue);
-				return;
-			case IrPackage.IR_MODULE__TYPE:
-				setType((String)newValue);
 				return;
 			case IrPackage.IR_MODULE__MAIN:
 				setMain((Boolean)newValue);
@@ -341,9 +292,6 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 			case IrPackage.IR_MODULE__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case IrPackage.IR_MODULE__TYPE:
-				setType(TYPE_EDEFAULT);
-				return;
 			case IrPackage.IR_MODULE__MAIN:
 				setMain(MAIN_EDEFAULT);
 				return;
@@ -370,8 +318,6 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 		switch (featureID) {
 			case IrPackage.IR_MODULE__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case IrPackage.IR_MODULE__TYPE:
-				return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
 			case IrPackage.IR_MODULE__MAIN:
 				return main != MAIN_EDEFAULT;
 			case IrPackage.IR_MODULE__FUNCTIONS:
@@ -396,8 +342,6 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (name: ");
 		result.append(name);
-		result.append(", type: ");
-		result.append(type);
 		result.append(", main: ");
 		result.append(main);
 		result.append(')');

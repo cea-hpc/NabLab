@@ -53,7 +53,6 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//IrModule">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IrModule/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IrModule/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IrModule/main"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/functions"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrModule/variables"/>

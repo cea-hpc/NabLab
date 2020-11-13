@@ -11,11 +11,11 @@ package fr.cea.nabla.validation
 
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.TimeIterator
+import fr.cea.nabla.nablagen.Cpp
 import fr.cea.nabla.nablagen.NablagenPackage
+import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.nablagen.VtkOutput
 import org.eclipse.xtext.validation.Check
-import fr.cea.nabla.nablagen.Cpp
-import fr.cea.nabla.nablagen.NablagenConfig
 import org.eclipse.xtext.validation.CheckType
 
 /**
@@ -34,14 +34,14 @@ class NablagenValidator extends AbstractNablagenValidator
 	@Check(CheckType.NORMAL)
 	def void checkPeriodVariablesType(VtkOutput it)
 	{
-		if (periodReference !== null && !(periodReference instanceof SimpleVar || periodReference instanceof TimeIterator))
-			error(getPeriodVariablesTypeMsg(), NablagenPackage.Literals::VTK_OUTPUT__PERIOD_REFERENCE, PERIOD_VARIABLES_TYPE)
+		if (periodReferenceVar !== null && !(periodReferenceVar instanceof SimpleVar || periodReferenceVar instanceof TimeIterator))
+			error(getPeriodVariablesTypeMsg(), NablagenPackage.Literals::VTK_OUTPUT__PERIOD_REFERENCE_VAR, PERIOD_VARIABLES_TYPE)
 	}
 
 	@Check(CheckType.NORMAL)
-	def void checkCppMandatoryVariables(NablagenConfig it)
+	def void checkCppMandatoryVariables(NablagenRoot it)
 	{
-		if (targets.exists[x | x instanceof Cpp] && (simulation.iterationMax === null || simulation.timeMax === null))
-			error(getCppMandatoryVariablesMsg(), NablagenPackage.Literals::NABLAGEN_CONFIG__SIMULATION, CPP_MANDATORY_VARIABLES)
+		if (targets.exists[x | x instanceof Cpp] && (mainModule !== null && mainModule.iterationMax === null || mainModule.timeMax === null))
+			error(getCppMandatoryVariablesMsg(), NablagenPackage.Literals::NABLAGEN_ROOT__MAIN_MODULE, CPP_MANDATORY_VARIABLES)
 	}
 }

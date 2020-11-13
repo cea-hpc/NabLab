@@ -1,6 +1,4 @@
-nablagen for BugIter;
-
-SimulationVariables
+MainModule BugIter bugIter
 {
 	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;

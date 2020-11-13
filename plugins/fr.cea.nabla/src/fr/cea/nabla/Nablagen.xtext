@@ -16,19 +16,18 @@ import "http://www.cea.fr/nabla/Nabla" as nabla
 
 generate nablagen "http://www.cea.fr/nabla/Nablagen"
 
-NablagenModule:
-	config=NablagenConfig;
-
-NablagenConfig:
+NablagenRoot:
 	(writeIR?='[WriteIr]')?
-	'nablagen' 'for' nablaModule=[nabla::NablaModule] ';'
-	simulation = Simulation
+	mainModule = MainModule
+	additionalModules += AdditionalModule*
 	(vtkOutput = VtkOutput)?
 	(levelDB = LevelDB)?
 	targets += Target*;
 
-Simulation:
-	'SimulationVariables'
+NablagenModule: MainModule | AdditionalModule;
+
+MainModule:
+	'MainModule' type=[nabla::NablaModule] name=ID
 	'{'
 		'meshClassName' '=' meshClassName=STRING ';'
 		'nodeCoord' '=' nodeCoord=[nabla::ConnectivityVar]';'
@@ -39,21 +38,30 @@ Simulation:
 		'timeMax' '=' timeMax=[nabla::SimpleVar] ';')?
 	'}';
 
+AdditionalModule:
+	'AdditionalModule' type=[nabla::NablaModule] name=ID
+	'{'
+		varLinks += VarLink*
+	'}';
+
+VarLink:
+	additionalModule=[AdditionalModule] '.' additionalVariable=[nabla::Var] '=' mainModule=[MainModule] '.' mainVariable=[nabla::Var] ';';
+
 VtkOutput:
 	'VtkOutput'
 	'{'
-		'periodReferenceVariable' '=' periodReference=[nabla::ArgOrVar] ';'
+		'periodReferenceVariable' '=' periodReferenceModule=[MainModule] '.'periodReferenceVar=[nabla::ArgOrVar] ';'
 		'outputVariables' '=' vars += OutputVar (',' vars += OutputVar)* ';'
 	'}';
-	
+
+OutputVar:
+	moduleRef=[NablagenModule] '.' varRef=[nabla::ConnectivityVar] 'as' varName=STRING;
+
 LevelDB:
 	'LevelDB'
 	'{'
 		'levelDBPath' '=' levelDBPath = STRING ';'
 	'}';
-
-OutputVar:
-	varRef=[nabla::ConnectivityVar] 'as' varName=STRING;
 
 Target: Java | Cpp;
 Cpp: CppSequential | CppStlThread | CppOpenMP | CppKokkos | CppKokkosTeamThread;
@@ -67,37 +75,37 @@ CppSequential: 'CppSequential'
 '{'
 	'outputPath' '=' outputDir=STRING ';'
 	'compiler' '=' compiler=CppCompiler ';'
-	('compilerPath' '=' compilerPath = STRING ';')? 
+	('compilerPath' '=' compilerPath = STRING ';')?
 '}';
 
 CppStlThread: 'StlThread'
 '{'
 	'outputPath' '=' outputDir=STRING ';'
 	'compiler' '=' compiler=CppCompiler ';'
-	('compilerPath' '=' compilerPath = STRING ';')? 
+	('compilerPath' '=' compilerPath = STRING ';')?
 '}';
 
 CppOpenMP: 'OpenMP'
 '{'
 	'outputPath' '=' outputDir=STRING ';'
 	'compiler' '=' compiler=CppCompiler ';'
-	('compilerPath' '=' compilerPath = STRING ';')? 
+	('compilerPath' '=' compilerPath = STRING ';')?
 '}';
 
 CppKokkos: 'Kokkos'
 '{'
 	'outputPath' '=' outputDir=STRING ';'
-	'kokkosPath' '=' kokkosPath = STRING ';' 
+	'kokkosPath' '=' kokkosPath = STRING ';'
 	'compiler' '=' compiler=CppCompiler ';'
-	('compilerPath' '=' compilerPath = STRING ';')? 
+	('compilerPath' '=' compilerPath = STRING ';')?
 '}';
 
 CppKokkosTeamThread: 'KokkosTeamThread'
 '{'
 	'outputPath' '=' outputDir=STRING ';'
-	'kokkosPath' '=' kokkosPath = STRING ';' 
+	'kokkosPath' '=' kokkosPath = STRING ';'
 	'compiler' '=' compiler=CppCompiler ';'
-	('compilerPath' '=' compilerPath = STRING ';')? 
+	('compilerPath' '=' compilerPath = STRING ';')?
 '}';
 
 enum CppCompiler: GNU | LLVM;

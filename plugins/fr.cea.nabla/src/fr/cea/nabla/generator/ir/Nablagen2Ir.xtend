@@ -16,15 +16,17 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorBlock
-import fr.cea.nabla.nablagen.NablagenModule
+import fr.cea.nabla.nablagen.NablagenRoot
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.EcoreUtil2
-import fr.cea.nabla.ir.ir.TimeLoopJob
+import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.nablagen.NablagenModule
 
 class Nablagen2Ir
 {
@@ -33,33 +35,31 @@ class Nablagen2Ir
 	@Inject extension TimeIteratorExtensions
 	@Inject extension Nabla2Ir
 
-	def create IrFactory::eINSTANCE.createIrRoot toIrRoot(NablagenModule ngen)
+	def create IrFactory::eINSTANCE.createIrRoot toIrRoot(NablagenRoot ngen)
 	{
 		annotations += ngen.toIrAnnotation
-		name = ngen.config.nablaModule.name
+		name = ngen.mainModule.name.toFirstUpper
 		main = IrFactory::eINSTANCE.createJobCaller
-		ngen.config.nablaModule.itemTypes.forEach[x | itemTypes += x.toIrItemType]
-		ngen.config.nablaModule.connectivities.forEach[x | connectivities += x.toIrConnectivity]
 
-		val mainIrModule = toIrModule(ngen.config.nablaModule.name.toFirstLower, ngen.config.nablaModule)
-		mainIrModule.main = true
-		modules += mainIrModule
+		addModuleToIr(it, ngen.mainModule)
+		ngen.additionalModules.forEach[x | addModuleToIr(it, x)]
 
 		// set simulation variables
-		meshClassName= ngen.config.simulation.meshClassName
-		initNodeCoordVariable = getInitIrVariable(mainIrModule, ngen.config.simulation.nodeCoord) as ConnectivityVariable
-		nodeCoordVariable = getCurrentIrVariable(mainIrModule, ngen.config.simulation.nodeCoord) as ConnectivityVariable
-		timeVariable = getCurrentIrVariable(mainIrModule, ngen.config.simulation.time) as SimpleVariable
-		timeStepVariable = getCurrentIrVariable(mainIrModule, ngen.config.simulation.timeStep) as SimpleVariable
+		val mainIrModule = modules.head
+		meshClassName= ngen.mainModule.meshClassName
+		initNodeCoordVariable = getInitIrVariable(mainIrModule, ngen.mainModule.nodeCoord) as ConnectivityVariable
+		nodeCoordVariable = getCurrentIrVariable(mainIrModule, ngen.mainModule.nodeCoord) as ConnectivityVariable
+		timeVariable = getCurrentIrVariable(mainIrModule, ngen.mainModule.time) as SimpleVariable
+		timeStepVariable = getCurrentIrVariable(mainIrModule, ngen.mainModule.timeStep) as SimpleVariable
 
 		// post processing
-		if (ngen.config.vtkOutput !== null)
+		if (ngen.vtkOutput !== null)
 		{
 			postProcessing = IrFactory.eINSTANCE.createPostProcessing
-			val periodReferenceVar = getCurrentIrVariable(mainIrModule, ngen.config.vtkOutput.periodReference)
+			val periodReferenceVar = getCurrentIrVariable(mainIrModule, ngen.vtkOutput.periodReferenceVar)
 			postProcessing.periodReference = periodReferenceVar as SimpleVariable
 
-			for (outputVar : ngen.config.vtkOutput.vars)
+			for (outputVar : ngen.vtkOutput.vars)
 			{
 				val v = getCurrentIrVariable(mainIrModule, outputVar.varRef)
 				v.outputName = outputVar.varName
@@ -97,6 +97,13 @@ class Nablagen2Ir
 		functions += mainIrModule.functions
 		jobs += mainIrModule.jobs
 		main.calls += jobs.filter(TimeLoopJob).filter[x | x.caller === null]
+	}
+
+	private def addModuleToIr(IrRoot root, NablagenModule ngenModule)
+	{
+		ngenModule.type.itemTypes.forEach[x | root.itemTypes += x.toIrItemType]
+		ngenModule.type.connectivities.forEach[x | root.connectivities += x.toIrConnectivity]
+		root.modules += toIrModule(ngenModule)
 	}
 
 	private def getCurrentIrVariable(IrModule m, ArgOrVar nablaVar) { getIrVariable(m, nablaVar, false) }

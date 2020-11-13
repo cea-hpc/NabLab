@@ -32,23 +32,16 @@ class JobDependencies
 	def getPreviousJobs(Job to)
 	{
 		val toSourceJobs = new HashSet<Job>
-		val toInVars = to.inVars
-		for (from : to.irRoot.jobs)
-			for (inVar : toInVars)
-				if (from.outVars.exists[x | x === inVar])
-					toSourceJobs += from
-
+		for (inVar : to.inVars)
+			toSourceJobs += inVar.previousJobs
 		return toSourceJobs
 	}
 
 	def getNextJobs(Job from)
 	{
 		val fromTargetJobs = new HashSet<Job>
-		val fromOutVars = from.outVars
-		for (to : from.irRoot.jobs)
-			for (outVar : fromOutVars)
-				if (to.inVars.exists[x | x === outVar])
-					fromTargetJobs += to
+		for (outVar : from.outVars)
+			fromTargetJobs += outVar.nextJobs
 		//println("###   module " + from.name + " : " + fromTargetJobs.map[name].join(', '))
 		return fromTargetJobs
 	}

@@ -12,7 +12,7 @@ package fr.cea.nabla.ir.transformers
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.IterationBlock
 import fr.cea.nabla.ir.ir.Job
@@ -41,10 +41,10 @@ class ReplaceReductions extends IrTransformationStep
 	 * Replace inner reductions by a variable definition (accumulator) and a Loop.
 	 * The loop contains an affectation with a call to the binary function of the reduction.
 	 */
-	override transform(IrModule m)
+	override transform(IrRoot ir)
 	{
 		trace('IR -> IR: ' + description)
-		var reductions = m.eAllContents.filter(ReductionInstruction)
+		var reductions = ir.eAllContents.filter(ReductionInstruction)
 		if (!replaceAllReductions) reductions = reductions.filter[!external]
 
 		for (reduction : reductions.toList)

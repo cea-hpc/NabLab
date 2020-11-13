@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.generator
 
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.ecore.xmi.XMLResource
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
@@ -20,15 +20,15 @@ class NablaIrWriter
 {
 	static val IrExtension = 'nablair'
 
-	def createAndSaveResource(IFileSystemAccess2 fsa, IrModule irModule)
+	def createAndSaveResource(IFileSystemAccess2 fsa, IrRoot ir)
 	{
-		val fileName = irModule.name.toLowerCase + '/' + irModule.name + '.' + IrExtension
+		val fileName = ir.name.toLowerCase + '/' + ir.name + '.' + IrExtension
 		val uri =  fsa.getURI(fileName)
 		val rSet = new ResourceSetImpl
 		rSet.resourceFactoryRegistry.extensionToFactoryMap.put(IrExtension, new XMIResourceFactoryImpl)
 
 		val resource = rSet.createResource(uri)
-		resource.contents += irModule
+		resource.contents += ir
 		resource.save(xmlSaveOptions)
 		return fileName
 	}

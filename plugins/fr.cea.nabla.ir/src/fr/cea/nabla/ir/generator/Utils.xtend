@@ -13,11 +13,11 @@ import fr.cea.nabla.ir.DefaultVarDependencies
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.Container
-import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
+import fr.cea.nabla.ir.ir.SimpleVariable
 import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
@@ -35,7 +35,7 @@ class Utils
 
 	static def getCodeName(ArgOrVar it)
 	{
-		if (eContainingFeature === IrPackage.Literals.IR_MODULE__OPTIONS)
+		if (it instanceof SimpleVariable && (it as SimpleVariable).option)
 			'options.' + name
 		else if (iteratorCounter)
 			(eContainer as Iterator).index.name

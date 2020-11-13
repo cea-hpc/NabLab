@@ -20,8 +20,7 @@ import java.util.List
 @Singleton
 class BaseType2IrType
 {
-	@Inject extension Nabla2IrUtils
-	@Inject extension IrConnectivityFactory
+	@Inject extension IrBasicFactory
 	@Inject extension IrExpressionFactory
 
 	// No create method to ensure a new instance every time (for n+1 time variables)

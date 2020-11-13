@@ -10,7 +10,7 @@
 package fr.cea.nabla.ui.views
 
 import fr.cea.nabla.ir.JobDependencies
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
 import org.eclipse.jface.viewers.ArrayContentProvider
@@ -26,7 +26,7 @@ implements IGraphEntityContentProvider
 	{
 		switch inputElement
 		{
-			IrModule case inputElement.hasCycle: inputElement.jobs.filter[onCycle]
+			IrRoot case inputElement.hasCycle: inputElement.jobs.filter[onCycle]
 			JobCaller: inputElement.calls
 		}
 	}
@@ -42,7 +42,7 @@ implements IGraphEntityContentProvider
 			entity.nextJobs.filter[x | x.caller == entity.caller]
 	}
 
-	private def hasCycle(IrModule it)
+	private def hasCycle(IrRoot it)
 	{
 		jobs.exists[x | x.onCycle]
 	}

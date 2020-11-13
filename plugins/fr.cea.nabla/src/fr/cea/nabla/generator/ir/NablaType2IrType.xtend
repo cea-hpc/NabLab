@@ -23,8 +23,7 @@ import fr.cea.nabla.typing.NablaType
 
 class NablaType2IrType 
 {
-	@Inject extension Nabla2IrUtils
-	@Inject extension IrConnectivityFactory
+	@Inject extension IrBasicFactory
 	@Inject extension IrExpressionFactory
 
 	def IrType toIrType(NablaType t)

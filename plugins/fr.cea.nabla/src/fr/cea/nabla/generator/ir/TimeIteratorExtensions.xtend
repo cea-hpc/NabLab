@@ -11,6 +11,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.nabla.AbstractTimeIterator
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.InitTimeIteratorRef
@@ -18,9 +19,8 @@ import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorBlock
 import fr.cea.nabla.nabla.TimeIteratorDefinition
-import org.eclipse.xtext.EcoreUtil2
 import java.util.ArrayList
-import fr.cea.nabla.ir.ir.TimeLoopJob
+import org.eclipse.xtext.EcoreUtil2
 
 class TimeIteratorExtensions
 {
@@ -43,7 +43,7 @@ class TimeIteratorExtensions
 		val tiArgOrVarRefs = nablaModule.eAllContents.filter(ArgOrVarRef).filter[x | !x.timeIterators.empty && x.timeIterators.last.target === ti]
 		val tiInitArgOrVarRefs = tiArgOrVarRefs.filter[x | x.timeIterators.last instanceof InitTimeIteratorRef]
 		val parentTi = ti.parentTimeIterator
-		val caller = (parentTi === null ? irModule.main : parentTi.toIrExecuteTimeLoopJob)
+		val caller = (parentTi === null ? null : parentTi.toIrExecuteTimeLoopJob)
 		val ic = ti.toIrIterationCounter
 
 		// Time loop job creation
@@ -58,7 +58,7 @@ class TimeIteratorExtensions
 
 		// Add created jobs to the module and in their caller
 		irModule.jobs += createdJobs
-		caller.calls += createdJobs
+		if (caller !== null) caller.calls += createdJobs
 		irModule.variables += ic
 
 		// Idem for inner time iterator if exists

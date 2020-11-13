@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.transformers
 
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import java.util.ArrayList
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtend.lib.annotations.Data
@@ -25,5 +25,18 @@ abstract class IrTransformationStep
 		traceListeners.forEach[apply(msg)]
 	}
 
-	abstract def boolean transform(IrModule m)
+	def void transformIr(IrRoot ir) throws RuntimeException
+	{
+		transformIr(ir, null)
+	}
+
+	def void transformIr(IrRoot ir, (String)=>void traceNotifier) throws RuntimeException
+	{
+		if (traceNotifier !== null) traceListeners += traceNotifier
+		val ok = transform(ir)
+		if (traceNotifier !== null) traceListeners -= traceNotifier
+		if (!ok) throw new RuntimeException('Exception in IR transformation step: ' + description)
+	}
+
+	protected abstract def boolean transform(IrRoot ir)
 }

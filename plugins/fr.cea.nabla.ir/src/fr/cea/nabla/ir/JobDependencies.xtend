@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Variable
 import java.util.HashSet
@@ -33,9 +32,8 @@ class JobDependencies
 	def getPreviousJobs(Job to)
 	{
 		val toSourceJobs = new HashSet<Job>
-		val irModule = to.eContainer as IrModule
 		val toInVars = to.inVars
-		for (from : irModule.jobs)
+		for (from : to.irRoot.jobs)
 			for (inVar : toInVars)
 				if (from.outVars.exists[x | x === inVar])
 					toSourceJobs += from
@@ -46,9 +44,8 @@ class JobDependencies
 	def getNextJobs(Job from)
 	{
 		val fromTargetJobs = new HashSet<Job>
-		val irModule = from.eContainer as IrModule
 		val fromOutVars = from.outVars
-		for (to : irModule.jobs)
+		for (to : from.irRoot.jobs)
 			for (outVar : fromOutVars)
 				if (to.inVars.exists[x | x === outVar])
 					fromTargetJobs += to
@@ -59,7 +56,7 @@ class JobDependencies
 	def getNextJobs(Variable it)
 	{
 		val nextJobs = new HashSet<Job>
-		for (j : irModule.jobs)
+		for (j : irRoot.jobs)
 			if (j.inVars.exists[x | x === it])
 				nextJobs += j
 		return nextJobs
@@ -68,7 +65,7 @@ class JobDependencies
 	def getPreviousJobs(Variable it)
 	{
 		val previousJobs = new HashSet<Job>
-		for (j : irModule.jobs)
+		for (j : irRoot.jobs)
 			if (j.outVars.exists[x | x === it])
 				previousJobs += j
 		return previousJobs

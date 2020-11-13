@@ -7,25 +7,28 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.transformers
+package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.IrRoot
-import org.eclipse.xtend.lib.annotations.Data
+import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 
-@Data
-class CompositeTransformationStep extends IrTransformationStep
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+
+class IrRootExtensions
 {
-	val IrTransformationStep[] steps
-
-	override transform(IrRoot ir) 
+	static def getOptions(IrRoot it)
 	{
-		for (s : steps)
-		{
-			s.traceListeners += traceListeners
-			val ok = s.transform(ir)
-			s.traceListeners -= traceListeners
-			if (!ok) return false
-		}
-		return true
+		variables.filter(SimpleVariable).filter[option]
+	}
+
+	static def getMainModule(IrRoot it)
+	{
+		modules.findFirst[main]
+	}
+
+	static def isLinearAlgebra(IrRoot it)
+	{
+		variables.filter(ConnectivityVariable).exists[x | x.linearAlgebra]
 	}
 }

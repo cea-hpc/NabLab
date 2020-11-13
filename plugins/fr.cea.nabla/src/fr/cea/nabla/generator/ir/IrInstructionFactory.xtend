@@ -15,6 +15,7 @@ import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Exit
 import fr.cea.nabla.nabla.Expression
@@ -58,7 +59,7 @@ class IrInstructionFactory
 		val irInstr = IrFactory::eINSTANCE.createVariableDeclaration =>
 		[
 			annotations += v.toIrAnnotation
-			variable = v.variable.toIrSimpleVariable(v.variable.name)
+			variable = v.variable.toIrVariable as SimpleVariable
 		]
 
 		return irInstr.transformReductions(v.value)
@@ -72,7 +73,7 @@ class IrInstructionFactory
 			instructions += IrFactory::eINSTANCE.createVariableDeclaration =>
 			[
 				annotations += nablaVar.toIrAnnotation
-				variable = nablaVar.toIrSimpleVariable(nablaVar.name)
+				variable = nablaVar.toIrVariable as SimpleVariable
 			]
 		}
 		return instructions

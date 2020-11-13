@@ -12,13 +12,23 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.PrimitiveType
 
 @Singleton
-class Nabla2IrUtils
+class IrBasicFactory
 {
 	@Inject extension IrAnnotationHelper
+
+	def create IrFactory::eINSTANCE.createConnectivity toIrConnectivity(Connectivity c)
+	{
+		annotations += c.toIrAnnotation
+		name = c.name
+		returnType = c.returnType.toIrItemType
+		inTypes += c.inTypes.map[toIrItemType]
+		multiple = c.multiple
+	}
 
 	def toIrPrimitiveType(PrimitiveType t)
 	{

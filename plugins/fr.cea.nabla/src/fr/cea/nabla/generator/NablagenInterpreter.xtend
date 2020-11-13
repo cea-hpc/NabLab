@@ -12,9 +12,7 @@ package fr.cea.nabla.generator
 import com.google.common.base.Function
 import com.google.inject.Inject
 import com.google.inject.Provider
-import fr.cea.nabla.generator.ir.Nabla2Ir
-import fr.cea.nabla.generator.ir.TimeIteratorExtensions
-import fr.cea.nabla.ir.IrModuleExtensions
+import fr.cea.nabla.generator.ir.Nablagen2Ir
 import fr.cea.nabla.ir.generator.cpp.Ir2Cpp
 import fr.cea.nabla.ir.generator.cpp.KokkosBackend
 import fr.cea.nabla.ir.generator.cpp.KokkosTeamThreadBackend
@@ -23,22 +21,13 @@ import fr.cea.nabla.ir.generator.cpp.SequentialBackend
 import fr.cea.nabla.ir.generator.cpp.StlThreadBackend
 import fr.cea.nabla.ir.generator.java.Ir2Java
 import fr.cea.nabla.ir.generator.json.Ir2Json
-import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.PrimitiveType
-import fr.cea.nabla.ir.ir.SimpleVariable
-import fr.cea.nabla.ir.ir.Variable
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.IrTransformationStep
 import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
-import fr.cea.nabla.nabla.ArgOrVar
-import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.TimeIterator
-import fr.cea.nabla.nabla.TimeIteratorBlock
 import fr.cea.nabla.nablagen.Cpp
 import fr.cea.nabla.nablagen.CppKokkos
 import fr.cea.nabla.nablagen.CppKokkosTeamThread
@@ -48,16 +37,14 @@ import fr.cea.nabla.nablagen.CppStlThread
 import fr.cea.nabla.nablagen.Java
 import fr.cea.nabla.nablagen.LevelDB
 import fr.cea.nabla.nablagen.NablagenConfig
-import fr.cea.nabla.nablagen.Simulation
+import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.Target
-import fr.cea.nabla.nablagen.VtkOutput
 import java.io.File
 import java.util.ArrayList
 import java.util.List
 import java.util.Map
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.generator.IOutputConfigurationProvider
 import org.eclipse.xtext.generator.JavaIoFileSystemAccess
 import org.eclipse.xtext.generator.OutputConfiguration
@@ -67,34 +54,30 @@ import static com.google.common.collect.Maps.uniqueIndex
 class NablagenInterpreter
 {
 	@Inject Provider<JavaIoFileSystemAccess> fsaProvider
-	@Inject Nabla2Ir nabla2Ir
+	@Inject Nablagen2Ir nablagen2Ir
 	@Inject IOutputConfigurationProvider outputConfigurationProvider
-	@Inject IrModuleTransformer transformer
 	@Inject NablaIrWriter irWriter
-	@Inject extension TimeIteratorExtensions
 
 	@Accessors val traceListeners = new ArrayList<(String)=>void>
 
-	def IrModule buildIrModule(NablagenConfig nablagenConfig, String projectDir)
+	def IrRoot buildIr(NablagenModule ngenModule, String projectDir)
 	{
 		try
 		{
 			// Nabla -> IR
 			trace('Nabla -> IR')
-			val irModule = nabla2Ir.toIrModule(nablagenConfig.nablaModule)
-			setSimulationVariables(irModule, nablagenConfig.simulation)
-			if (nablagenConfig.vtkOutput !== null) setOutputVariables(irModule, nablagenConfig.vtkOutput)
+			val ir = nablagen2Ir.toIrRoot(ngenModule)
 
 			// IR -> IR
-			transformer.transformIr(getCommonIrTransformation(nablagenConfig), irModule, [msg | trace(msg)])
+			getCommonIrTransformation(ngenModule.config).transformIr(ir, [msg | trace(msg)])
 
-			if (nablagenConfig.writeIR)
+			if (ngenModule.config.writeIR)
 			{
-				val fileName = irWriter.createAndSaveResource(getConfiguredFileSystemAccess(projectDir, true), irModule)
+				val fileName = irWriter.createAndSaveResource(getConfiguredFileSystemAccess(projectDir, true), ir)
 				trace('Resource saved: ' + fileName)
 			}
 
-			return irModule
+			return ir
 		}
 		catch(Exception e)
 		{
@@ -112,15 +95,15 @@ class NablagenInterpreter
 		}
 	}
 
-	def void generateCode(IrModule irModule, List<Target> targets, String iterationMaxVarName, String timeMaxVarName, String projectDir, LevelDB levelDB)
+	def void generateCode(IrRoot ir, List<Target> targets, String iterationMaxVarName, String timeMaxVarName, String projectDir, LevelDB levelDB)
 	{
 		try
 		{
 			trace("Starting Json code generator")
 			val ir2Json = new Ir2Json(levelDB!==null)
-			val jsonFileContentsByName = ir2Json.getFileContentsByName(irModule)
+			val jsonFileContentsByName = ir2Json.getFileContentsByName(ir)
 			var fsa = getConfiguredFileSystemAccess(projectDir, true)
-			generate(fsa, jsonFileContentsByName, irModule)
+			generate(fsa, jsonFileContentsByName, ir)
 
 			val baseDir =  projectDir + "/.."
 			for (target : targets)
@@ -133,13 +116,13 @@ class NablagenInterpreter
 				fsa = getConfiguredFileSystemAccess(outputFolderName, false)
 				if (g.needIrTransformation)
 				{
-					val duplicatedIrModule = EcoreUtil::copy(irModule)
-					transformer.transformIr(g.irTransformationStep, duplicatedIrModule, [msg | trace(msg)])
-					generate(fsa, g.getFileContentsByName(duplicatedIrModule), irModule)
+					val duplicatedIr = EcoreUtil::copy(ir)
+					g.irTransformationStep.transformIr(duplicatedIr, [msg | trace(msg)])
+					generate(fsa, g.getFileContentsByName(duplicatedIr), ir)
 				}
 				else
 				{
-					generate(fsa, g.getFileContentsByName(irModule), irModule)
+					generate(fsa, g.getFileContentsByName(ir), ir)
 				}
 			}
 		}
@@ -155,11 +138,11 @@ class NablagenInterpreter
 		}
 	}
 
-	private def generate(JavaIoFileSystemAccess fsa, Map<String, CharSequence> fileContentsByName, IrModule irModule)
+	private def generate(JavaIoFileSystemAccess fsa, Map<String, CharSequence> fileContentsByName, IrRoot ir)
 	{
 		for (fileName : fileContentsByName.keySet)
 		{
-			val fullFileName = irModule.name.toLowerCase + '/' + fileName
+			val fullFileName = ir.name.toLowerCase + '/' + fileName
 			val fileContent = fileContentsByName.get(fileName)
 			trace("    Generating: " + fullFileName)
 			fsa.generateFile(fullFileName, fileContent)
@@ -231,118 +214,6 @@ class NablagenInterpreter
 		transformations += new ReplaceReductions(false)
 		transformations += new FillJobHLTs
 		new CompositeTransformationStep(description, transformations)
-	}
-
-	private def setSimulationVariables(IrModule irModule, Simulation simulation)
-	{
-		irModule.meshClassName = simulation.meshClassName
-		irModule.initNodeCoordVariable = getInitIrVariable(irModule, simulation.nodeCoord) as ConnectivityVariable
-		irModule.nodeCoordVariable = getCurrentIrVariable(irModule, simulation.nodeCoord) as ConnectivityVariable
-		irModule.timeVariable = getCurrentIrVariable(irModule, simulation.time) as SimpleVariable
-		irModule.timeStepVariable = getCurrentIrVariable(irModule, simulation.timeStep) as SimpleVariable
-	}
-
-	private def getCurrentIrVariable(IrModule m, ArgOrVar nablaVar) { getIrVariable(m, nablaVar, false) }
-	private def getInitIrVariable(IrModule m, ArgOrVar nablaVar) { getIrVariable(m, nablaVar, true) }
-
-	private def getIrVariable(IrModule irModule, ArgOrVar nablaVar, boolean initTimeIterator)
-	{
-		// Look for an IR variable named "nablaVar.name"
-		val irVariable = IrModuleExtensions.getVariableByName(irModule, nablaVar.name)
-		if (irVariable !== null) return irVariable
-
-		// No IR variable named "nablaVar.name".
-		// Look for an IR variable named "nablaVar.name_n" or "nablaVar.name_n0" if initTimeIterator=true
-		val nablaModule = EcoreUtil2.getContainerOfType(nablaVar, NablaModule)
-		return getIrVariable(nablaModule.iteration.iterator, irModule, nablaVar, initTimeIterator)
-	}
-
-	private def dispatch Variable getIrVariable(TimeIteratorBlock ti, IrModule irModule, ArgOrVar nablaVar, boolean initTimeIterator)
-	{
-		for (childTi : ti.iterators)
-		{
-			val irVar = getIrVariable(childTi, irModule, nablaVar, initTimeIterator)
-			if (irVar !== null) return irVar
-		}
-	}
-
-	private def dispatch Variable getIrVariable(TimeIterator ti, IrModule irModule, ArgOrVar nablaVar, boolean initTimeIterator)
-	{
-		if (initTimeIterator)
-		{
-			// First try to find an init variable like "X_n0" if it exists
-			val irVarName = nablaVar.name + getIrVarTimeSuffix(ti, initTimeIteratorName)
-			val irVar = IrModuleExtensions.getVariableByName(irModule, irVarName)
-			if (irVar !== null) return irVar
-			// Variable not found. No init variable like "X_n0" => looking for "X_n"
-		}
-
-		// Try to find a current time step variable like "X_n" if it exists
-		val irVarName = nablaVar.name + getIrVarTimeSuffix(ti, currentTimeIteratorName)
-		val irVar = IrModuleExtensions.getVariableByName(irModule, irVarName)
-		if (irVar !== null) return irVar
-
-		// No variable found
-		if (ti.innerIterator === null) return null
-		else return getIrVariable(ti.innerIterator, irModule, nablaVar, initTimeIterator)
-	}
-
-	private def setOutputVariables(IrModule irModule, VtkOutput vtkOutput)
-	{
-		val f = IrFactory.eINSTANCE
-		val postProcessing = f.createPostProcessing
-		val periodReferenceVar = getCurrentIrVariable(irModule, vtkOutput.periodReference)
-		if (periodReferenceVar === null) return false
-		postProcessing.periodReference = periodReferenceVar as SimpleVariable
-
-		for (outputVar : vtkOutput.vars)
-		{
-			val v = getCurrentIrVariable(irModule, outputVar.varRef)
-			if (v !== null) 
-			{
-				v.outputName = outputVar.varName
-				postProcessing.outputVariables += v
-			}
-		}
-		irModule.postProcessing = postProcessing
-
-		// Create a variable to store the last write time
-		val periodVariableType = postProcessing.periodReference.type
-		val lastDumpVariable = f.createSimpleVariable =>
-		[
-			name = "lastDump"
-			type = EcoreUtil::copy(periodVariableType)
-			const = false
-			constExpr = false
-			defaultValue = periodVariableType.primitive.lastDumpDefaultValue
-		]
-		postProcessing.lastDumpVariable = lastDumpVariable
-		val pos = irModule.variables.indexOf(postProcessing.periodReference)
-		irModule.variables.add(pos, lastDumpVariable)
-
-		// Create an option to store the output period
-		val periodValueVariable = f.createSimpleVariable =>
-		[
-			name = "outputPeriod"
-			type = EcoreUtil::copy(periodVariableType)
-			const = false
-			constExpr = false
-			// no default value : option is mandatory
-		]
-		postProcessing.periodValue = periodValueVariable
-		irModule.options.add(0, periodValueVariable)
-
-		return true
-	}
-
-	private def getLastDumpDefaultValue(PrimitiveType t)
-	{
-		val f =  IrFactory.eINSTANCE
-		switch t
-		{
-			case BOOL: f.createBoolConstant => [ value = false ]
-			default: f.createMinConstant => [ type = f.createBaseType => [ primitive = t] ]
-		}
 	}
 }
 

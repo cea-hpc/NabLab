@@ -18,6 +18,8 @@ import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.runner.RunWith
 
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
+
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
 class ModuleInterpreterTest extends AbstractModuleInterpreterTest
@@ -27,8 +29,8 @@ class ModuleInterpreterTest extends AbstractModuleInterpreterTest
 
 	override assertInterpreteModule(String model)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
-		assertVariableValueInContext(irModule, context, "t_n", new NV0Real(0.2))
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
+		val context = compilationHelper.getInterpreterContext(ir, jsonDefaultContent)
+		assertVariableValueInContext(ir.mainModule, context, "t_n", new NV0Real(0.2))
 	}
 }

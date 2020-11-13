@@ -12,6 +12,7 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.NablaModule
@@ -30,8 +31,8 @@ class IrFunctionFactory
 	{
 		annotations += f.toIrAnnotation
 		name = f.name
-		provider = f.moduleName
-		f.variables.forEach[x | variables += toIrSimpleVariable(x, x.name)]
+		provider = f.nablaModuleName
+		f.variables.forEach[x | variables += x.toIrVariable as SimpleVariable]
 		if (f.external)
 		{
 			// f is external. No inArgs only inArgTypes
@@ -53,14 +54,14 @@ class IrFunctionFactory
 		annotations += f.toIrAnnotation
 		// build a unique name with name and type
 		name = f.name.toFirstLower + t.primitive.getName().charAt(0) + t.sizes.size
-		provider = f.moduleName
-		f.variables.forEach[x | variables += toIrSimpleVariable(x, x.name)]
+		provider = f.nablaModuleName
+		f.variables.forEach[x | variables += x.toIrVariable as SimpleVariable]
 		f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
 		returnType = t.toIrBaseType
 		body = f.body.toIrInstruction
 	}
 
-	private def getModuleName(FunctionOrReduction it) 
+	private def getNablaModuleName(FunctionOrReduction it) 
 	{
 		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
 		return module.name

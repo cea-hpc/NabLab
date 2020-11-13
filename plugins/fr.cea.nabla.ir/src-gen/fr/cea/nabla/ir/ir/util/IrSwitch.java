@@ -78,6 +78,13 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.IR_ROOT: {
+				IrRoot irRoot = (IrRoot)theEObject;
+				T result = caseIrRoot(irRoot);
+				if (result == null) result = caseIrAnnotable(irRoot);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.IR_MODULE: {
 				IrModule irModule = (IrModule)theEObject;
 				T result = caseIrModule(irModule);
@@ -595,6 +602,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseIrAnnotation(IrAnnotation object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Root</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Root</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIrRoot(IrRoot object) {
 		return null;
 	}
 

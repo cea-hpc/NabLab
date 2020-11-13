@@ -11,7 +11,7 @@ package fr.cea.nabla.tests.interpreter
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.Utils.NonRegressionValues
-import fr.cea.nabla.ir.interpreter.ModuleInterpreter
+import fr.cea.nabla.ir.interpreter.IrInterpreter
 import fr.cea.nabla.tests.CompilationChainHelper
 import fr.cea.nabla.tests.GitUtils
 import fr.cea.nabla.tests.NablaInjectorProvider
@@ -117,7 +117,7 @@ class NablaExamplesInterpreterTest
 
 		jsonContent = addNonRegressionTagToJsonFile(jsonContent, NonRegressionValues.CompareToReference.toString)
 
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, genmodel)
+		val ir = compilationHelper.getIrForInterpretation(model, genmodel)
 		//val handler = new ConsoleHandler
 
 		val logFile = String.format("results/interpreter/%1$s/Interprete%2$s.log", moduleName.toLowerCase, moduleName)
@@ -126,12 +126,12 @@ class NablaExamplesInterpreterTest
 		val formatter = new SimpleFormatter
 		handler.setFormatter(formatter)
 		handler.level = Level::FINE
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		moduleInterpreter.interprete(jsonContent)
+		val irInterpreter = new IrInterpreter(ir, handler)
+		irInterpreter.interprete(jsonContent)
 		handler.close
 
-		Assert.assertTrue("LevelDB Compare Error", moduleInterpreter.levelDBCompareResult)
-		testNoGitDiff("/"+moduleName.toLowerCase)
+		Assert.assertTrue("LevelDB Compare Error", irInterpreter.levelDBCompareResult)
+		testNoGitDiff("/" + moduleName.toLowerCase)
 	}
 
 	private def testNoGitDiff(String moduleName)

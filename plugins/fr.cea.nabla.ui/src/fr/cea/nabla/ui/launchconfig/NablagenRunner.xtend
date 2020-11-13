@@ -57,12 +57,12 @@ class NablagenRunner
 						val baseDir = eclipseResource.project.location.toString
 						consoleFactory.printConsole(MessageType.Exec, "Starting NabLab to IR model transformation")
 						val startTime = System.currentTimeMillis
-						val irModule = interpreter.buildIrModule(c, baseDir)
+						val ir = interpreter.buildIr(module, baseDir)
 						val afterConvertionTime = System.currentTimeMillis
 						consoleFactory.printConsole(MessageType.Exec, "NabLab to IR model transformation ended in " + (afterConvertionTime-startTime)/1000.0 + "s")
 
 						consoleFactory.printConsole(MessageType.Exec, "Starting code generation")
-						interpreter.generateCode(irModule, c.targets, c.simulation.iterationMax.name, c.simulation.timeMax.name, baseDir, c.levelDB)
+						interpreter.generateCode(ir, c.targets, c.simulation.iterationMax.name, c.simulation.timeMax.name, baseDir, c.levelDB)
 						val afterGenerationTime = System.currentTimeMillis
 						consoleFactory.printConsole(MessageType.Exec, "Code generation ended in " + (afterGenerationTime-afterConvertionTime)/1000.0 + "s")
 

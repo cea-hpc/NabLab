@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 import org.eclipse.xtend.lib.annotations.Data
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
@@ -27,18 +28,18 @@ class AttributesContentProvider
 	def getContentFor(IrModule m)
 	'''
 		// Mesh and mesh variables
-		«m.meshClassName»* mesh;
-		«FOR c : m.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
+		«m.irRoot.meshClassName»* mesh;
+		«FOR c : m.irRoot.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
 
 		// User options and external classes
 		const Options& options;
 		«FOR s : m.allProviders»
 		«s»& «s.toFirstLower»;
 		«ENDFOR»
-		«IF m.postProcessing !== null»PvdFileWriter2D writer;«ENDIF»
+		«IF m.irRoot.postProcessing !== null»PvdFileWriter2D writer;«ENDIF»
 
 		// Global variables
-		«FOR v : m.variables»
+		«FOR v : m.variables.filter[!option]»
 			«v.variableDeclaration»
 		«ENDFOR»
 

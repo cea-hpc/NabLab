@@ -14,7 +14,6 @@ import com.google.inject.Singleton
 import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.PrimitiveType
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.Arg
@@ -29,8 +28,8 @@ import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import fr.cea.nabla.typing.NablaSimpleType
-import java.util.LinkedHashSet
 import org.eclipse.xtext.EcoreUtil2
+import java.util.ArrayList
 
 @Singleton
 class IrArgOrVarFactory 
@@ -54,8 +53,7 @@ class IrArgOrVarFactory
 	 */
 	def Iterable<Variable> createIrVariables(Var v, Iterable<TimeLoopJob> tlJobs)
 	{
-		//println("createIrVariables(" + v.name + ")")
-		val createdVariables = new LinkedHashSet<Variable>
+		val createdVariables = new ArrayList<Variable>
 
 		// Find all v references with time iterators
 		val nablaModule = EcoreUtil2.getContainerOfType(v, NablaModule)
@@ -79,6 +77,11 @@ class IrArgOrVarFactory
 					val nextTiVar = createIrTimeVariable(v, ti, nextTimeIteratorName)
 					val initTiVar = (tiRef instanceof InitTimeIteratorRef ? createIrTimeVariable(v, ti, initTimeIteratorName) : null)
 
+					// Add variables to the list
+					createdVariables += currentTiVar
+					createdVariables += nextTiVar
+					if (initTiVar !== null) createdVariables += initTiVar
+
 					// Variable copy for SetUpTL job
 					// if x^{n+1, k=0} exists, x^{n+1, k} = x^{n+1, k=0}
 					// else x^{n+1, k} = x^{n}
@@ -93,12 +96,12 @@ class IrArgOrVarFactory
 							tiSetUpJob.copies += toIrCopy(parentCurrentTiVar, currentTiVar)
 						}
 					}
-		
+
 					// Variable copy for ExecuteTL job
 					// x^{n+1, k} <---> x^{n+1, k+1}
 					val tiExecuteJob = tlJobs.findFirst[name == ti.executeTimeLoopJobName] as TimeLoopJob
 					tiExecuteJob.copies += toIrCopy(nextTiVar, currentTiVar)
-		
+
 					// Variable copy for TearDownTL job
 					// x^{n+1} = x^{n+1, k+1}
 					val tiTearDownJob = tlJobs.findFirst[name == ti.tearDownTimeLoopJobName] as TimeLoopJob
@@ -107,15 +110,9 @@ class IrArgOrVarFactory
 						val parentNextTiVar = createIrTimeVariable(v, parentTi, nextTimeIteratorName)
 						tiTearDownJob.copies += toIrCopy(nextTiVar, parentNextTiVar)
 					}
-
-					// Add variables to the list
-					createdVariables += currentTiVar
-					createdVariables += nextTiVar
-					if (initTiVar !== null) createdVariables += initTiVar
 				}
 			}
 		}
-
 		return createdVariables
 	}
 
@@ -124,10 +121,10 @@ class IrArgOrVarFactory
 		val name = v.name + timeSuffix
 		switch v
 		{
-			SimpleVar : v.toIrSimpleVariable(name)
-			ConnectivityVar : v.toIrConnectivityVariable(name)
-			Arg: v.toIrArg(name)
-			TimeIterator: v.toIrIterationCounter
+			SimpleVar : toIrSimpleVariable(v, name)
+			ConnectivityVar : toIrConnectivityVariable(v, name)
+			Arg: toIrArg(v, name)
+			TimeIterator: toIrIterationCounter(v)
 		}
 	}
 
@@ -156,6 +153,7 @@ class IrArgOrVarFactory
 		type = nablaType2IrType.toIrBaseType(v.typeFor as NablaSimpleType)
 		const = v.const
 		constExpr = v.constExpr
+		option = false
 		val value = v.value
 		if (value !== null) defaultValue = value.toIrExpression
 	}
@@ -174,6 +172,7 @@ class IrArgOrVarFactory
 		type = IrFactory.eINSTANCE.createBaseType => [ primitive = PrimitiveType::INT ]
 		const = false
 		constExpr = false
+		option = false
 	}
 
 	private def create IrFactory::eINSTANCE.createTimeLoopCopy toIrCopy(Variable from, Variable to)
@@ -184,18 +183,11 @@ class IrArgOrVarFactory
 
 	private def createIrTimeVariable(Var v, TimeIterator ti, String timeIteratorSuffix)
 	{
-		val irVar = toIrVar(v, getIrVarTimeSuffix(ti, timeIteratorSuffix))
-		if (irVar instanceof SimpleVariable) irVar.const = false
-		return irVar
-	}
-
-	private def toIrVar(Var v, String timeSuffix)
-	{
-		val name = v.name + timeSuffix
-		switch v
+		val name = v.name + getIrVarTimeSuffix(ti, timeIteratorSuffix)
+		return switch v
 		{
-			SimpleVar : v.toIrSimpleVariable(name)
-			ConnectivityVar : v.toIrConnectivityVariable(name)
+			SimpleVar : toIrSimpleVariable(v, name) => [const = false]
+			ConnectivityVar : toIrConnectivityVariable(v, name)
 		}
 	}
 }

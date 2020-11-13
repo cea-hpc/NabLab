@@ -14,15 +14,15 @@ import fr.cea.nabla.ir.generator.CodeGenerator
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
-import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
@@ -34,14 +34,14 @@ class Ir2Java extends CodeGenerator
 {
 	new() { super('Java') }
 
-	override getFileContentsByName(IrModule it)
+	override getFileContentsByName(IrRoot ir)
 	{
-		#{ name + '.java' -> javaFileContent }
+		#{ ir.name + '.java' -> ir.javaFileContent }
 	}
 
-	private def getJavaFileContent(IrModule it)
+	private def getJavaFileContent(IrRoot ir)
 	'''
-		package «name.toLowerCase»;
+		package «ir.name.toLowerCase»;
 
 		import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 		import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
@@ -68,20 +68,20 @@ class Ir2Java extends CodeGenerator
 		import fr.cea.nabla.javalib.mesh.*;
 		import fr.cea.nabla.javalib.utils.*;
 
-		«IF linearAlgebra»
+		«IF ir.linearAlgebra»
 		import org.apache.commons.math3.linear.*;
 
 		«ENDIF»
 		@SuppressWarnings("all")
-		public final class «name»
+		public final class «ir.name»
 		{
 			public final static class Options
 			{
-				«IF postProcessing !== null»
+				«IF ir.postProcessing !== null»
 				public String «Utils.OutputPathNameAndValue.key»;
 				«ENDIF»
 				public String «Utils.NonRegressionNameAndValue.key»;
-				«FOR v : options»
+				«FOR v : ir.options»
 				public «v.javaType» «v.name»;
 				«ENDFOR»
 			}
@@ -93,7 +93,7 @@ class Ir2Java extends CodeGenerator
 				{
 					final JsonObject d = json.getAsJsonObject();
 					Options options = new Options();
-					«IF postProcessing !== null»
+					«IF ir.postProcessing !== null»
 					«val opName = Utils.OutputPathNameAndValue.key»
 					// «opName»
 					assert(d.has("«opName»"));
@@ -107,7 +107,7 @@ class Ir2Java extends CodeGenerator
 						final JsonElement «nrName.jsonName» = d.get("«nrName»");
 						options.«nrName» = «nrName.jsonName».getAsJsonPrimitive().getAsString();
 					}
-					«FOR v : options»
+					«FOR v : ir.options»
 					«v.jsonContent»
 					«ENDFOR»
 					return options;
@@ -115,43 +115,43 @@ class Ir2Java extends CodeGenerator
 			}
 
 			// Mesh and mesh variables
-			private final «javaMeshClassName» mesh;
-			«FOR c : connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
+			private final «ir.javaMeshClassName» mesh;
+			«FOR c : ir.connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
 
 			// User options and external classes
 			private final Options options;
-			«FOR s : allProviders»
+			«FOR s : ir.mainModule.allProviders»
 			private «s» «s.toFirstLower»;
 			«ENDFOR»
-			«IF postProcessing !== null»private final FileWriter writer;«ENDIF»
+			«IF ir.postProcessing !== null»private final FileWriter writer;«ENDIF»
 
 			// Global variables
-			«FOR v : variables»
+			«FOR v : ir.variables.filter[!option]»
 			private «IF v instanceof SimpleVariable && (v as SimpleVariable).const»final «ENDIF»«v.javaType» «v.name»;
 			«ENDFOR»
 
-			public «name»(«javaMeshClassName» aMesh, Options aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s» a«s»«ENDFOR»)
+			public «ir.name»(«ir.javaMeshClassName» aMesh, Options aOptions«FOR s : ir.mainModule.allProviders BEFORE ', ' SEPARATOR ', '»«s» a«s»«ENDFOR»)
 			{
 				// Mesh and mesh variables initialization
 				mesh = aMesh;
-				«FOR c : connectivities.filter[multiple]»
+				«FOR c : ir.connectivities.filter[multiple]»
 				«c.nbElemsVar» = «c.connectivityAccessor»;
 				«ENDFOR»
 
 				// User options and external classes initialization
 				options = aOptions;
-				«FOR s : allProviders»
+				«FOR s : ir.mainModule.allProviders»
 					«s.toFirstLower» = a«s»;
 				«ENDFOR»
-				«IF postProcessing !== null»writer = new PvdFileWriter2D("«name»", options.«Utils.OutputPathNameAndValue.key»);«ENDIF»
+				«IF ir.postProcessing !== null»writer = new PvdFileWriter2D("«ir.name»", options.«Utils.OutputPathNameAndValue.key»);«ENDIF»
 
 				// Initialize variables with default values
-				«FOR v : variablesWithDefaultValue»
+				«FOR v : ir.mainModule.variablesWithDefaultValue»
 					«v.name» = «v.defaultValue.content»;
 				«ENDFOR»
 
 				// Allocate arrays
-				«FOR v : variables.filter[defaultValue === null && !type.scalar]»
+				«FOR v : ir.variables.filter[!option && defaultValue === null && !type.scalar]»
 					«IF v.linearAlgebra»
 						«v.name» = «(v as ConnectivityVariable).linearAlgebraDefinition»;
 					«ELSE»
@@ -163,18 +163,18 @@ class Ir2Java extends CodeGenerator
 				double[][] gNodes = mesh.getGeometry().getNodes();
 				IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
 				{
-					«initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
-					«initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
+					«ir.initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
+					«ir.initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
 				});
 			}
 
-			public void «main.name»()
+			public void «ir.main.name»()
 			{
-				System.out.println("Start execution of module «name»");
-				«FOR j : main.calls»
+				System.out.println("Start execution of module «ir.name»");
+				«FOR j : ir.main.calls»
 					«j.codeName»(); // @«j.at»
 				«ENDFOR»
-				System.out.println("End of execution of module «name»");
+				System.out.println("End of execution of module «ir.name»");
 			}
 
 			public static void main(String[] args) throws IOException
@@ -185,61 +185,61 @@ class Ir2Java extends CodeGenerator
 					JsonParser parser = new JsonParser();
 					JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
 					GsonBuilder gsonBuilder = new GsonBuilder();
-					gsonBuilder.registerTypeAdapter(Options.class, new «name».OptionsDeserializer());
+					gsonBuilder.registerTypeAdapter(Options.class, new «ir.name».OptionsDeserializer());
 					Gson gson = gsonBuilder.create();
 					int ret = 0;
 
 					assert(o.has("mesh"));
-					«javaMeshClassName»Factory meshFactory = gson.fromJson(o.get("mesh"), «javaMeshClassName»Factory.class);
-					«javaMeshClassName» mesh = meshFactory.create();
+					«ir.javaMeshClassName»Factory meshFactory = gson.fromJson(o.get("mesh"), «ir.javaMeshClassName»Factory.class);
+					«ir.javaMeshClassName» mesh = meshFactory.create();
 					assert(o.has("options"));
-					«name».Options options = gson.fromJson(o.get("options"), «name».Options.class);
-					«FOR s : allProviders»
+					«ir.name».Options options = gson.fromJson(o.get("options"), «ir.name».Options.class);
+					«FOR s : ir.mainModule.allProviders»
 					«s» «s.toFirstLower» = (o.has("«s.toFirstLower»") ? gson.fromJson(o.get("«s.toFirstLower»"), «s».class) : new «s»());
 					«ENDFOR»
 
-					«name» simulator = new «name»(mesh, options«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s.toFirstLower»«ENDFOR»);
+					«ir.name» simulator = new «ir.name»(mesh, options«FOR s : ir.mainModule.allProviders BEFORE ', ' SEPARATOR ', '»«s.toFirstLower»«ENDFOR»);
 					simulator.simulate();
 
 					// Non regression testing
 					if (options.«nrName»!=null &&  options.«nrName».equals("«Utils.NonRegressionValues.CreateReference.toString»"))
-						simulator.createDB("«name»DB.ref");
+						simulator.createDB("«ir.name»DB.ref");
 					if (options.«nrName»!=null &&  options.«nrName».equals("«Utils.NonRegressionValues.CompareToReference.toString»"))
 					{
-						simulator.createDB("«name»DB.current");
-						if (!LevelDBUtils.compareDB("«name»DB.current", "«name»DB.ref"))
+						simulator.createDB("«ir.name»DB.current");
+						if (!LevelDBUtils.compareDB("«ir.name»DB.current", "«ir.name»DB.ref"))
 							ret = 1;
-						LevelDBUtils.destroyDB("«name»DB.current");
+						LevelDBUtils.destroyDB("«ir.name»DB.current");
 						System.exit(ret);
 					}
 				}
 				else
 				{
 					System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-					System.err.println("        Expecting user data file name, for example «name»Default.json");
+					System.err.println("        Expecting user data file name, for example «ir.name»Default.json");
 					System.exit(1);
 				}
 			}
-			«FOR j : jobs»
+			«FOR j : ir.jobs»
 
 				«j.content»
 			«ENDFOR»
-			«FOR f : functions.filter(Function).filter[body !== null]»
+			«FOR f : ir.functions.filter(Function).filter[body !== null]»
 
 				«f.content»
 			«ENDFOR»
-			«IF postProcessing !== null»
+			«IF ir.postProcessing !== null»
 
 			private void dumpVariables(int iteration)
 			{
 				if (!writer.isDisabled())
 				{
-					VtkFileContent content = new VtkFileContent(iteration, «irModule.timeVariable.name», «irModule.nodeCoordVariable.name», mesh.getGeometry().getQuads());
-					«FOR v : postProcessing.outputVariables.filter(ConnectivityVariable)»
+					VtkFileContent content = new VtkFileContent(iteration, «ir.timeVariable.name», «ir.nodeCoordVariable.name», mesh.getGeometry().getQuads());
+					«FOR v : ir.postProcessing.outputVariables.filter(ConnectivityVariable)»
 					content.add«v.type.connectivities.head.returnType.name.toFirstUpper»Variable("«v.outputName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
 					«ENDFOR»
 					writer.writeFile(content);
-					«postProcessing.lastDumpVariable.name» = «postProcessing.periodReference.name»;
+					«ir.postProcessing.lastDumpVariable.name» = «ir.postProcessing.periodReference.name»;
 				}
 			}
 			«ENDIF»
@@ -258,7 +258,7 @@ class Ir2Java extends CodeGenerator
 				WriteBatch batch = db.createWriteBatch();
 				try
 				{
-					«FOR v : variables»
+					«FOR v : ir.variables.filter[!option]»
 					batch.put(bytes("«v.name»"), LevelDBUtils.serialize(«v.name»));
 					«ENDFOR»
 
@@ -293,7 +293,7 @@ class Ir2Java extends CodeGenerator
 		}
 	}
 
-	private def String getJavaMeshClassName(IrModule it)
+	private def String getJavaMeshClassName(IrRoot it)
 	{
 		meshClassName.replace('::', '.')
 	}

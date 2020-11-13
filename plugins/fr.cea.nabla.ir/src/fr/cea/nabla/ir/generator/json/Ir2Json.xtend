@@ -11,12 +11,13 @@ package fr.cea.nabla.ir.generator.json
 
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.generator.CodeGenerator
-import fr.cea.nabla.ir.interpreter.ModuleInterpreter
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.interpreter.IrInterpreter
+import fr.cea.nabla.ir.ir.IrRoot
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
 class Ir2Json extends CodeGenerator 
 {
@@ -29,15 +30,16 @@ class Ir2Json extends CodeGenerator
 		this.levelDB = levelDB
 	}
 
-	override getFileContentsByName(IrModule it)
+	override getFileContentsByName(IrRoot ir)
 	{
-		#{ name + 'Default.json' -> jsonFileContent }
+		#{ name + 'Default.json' -> ir.jsonFileContent }
 	}
 
-	private def getJsonFileContent(IrModule it)
+	private def getJsonFileContent(IrRoot ir)
 	{
 		// Create the interpreter and interprete option values
-		val context = interpreteDefinitions
+		val context = ir.interpreteDefinitions
+		val options = ir.options
 
 		// Create Json
 		'''
@@ -45,7 +47,7 @@ class Ir2Json extends CodeGenerator
 			"_comment": "Generated file - Do not overwrite",
 			"options":
 			{
-				«IF postProcessing !== null»
+				«IF ir.postProcessing !== null»
 				"_outputPath_comment":"empty outputPath to disable output",
 				"«Utils.OutputPathNameAndValue.key»":"«Utils.OutputPathNameAndValue.value»"«IF levelDB || !options.empty»,«ENDIF»
 				«ENDIF»
@@ -57,20 +59,20 @@ class Ir2Json extends CodeGenerator
 				"«Utils.NonRegressionNameAndValue.key»":"«Utils.NonRegressionNameAndValue.value»"
 				«ENDIF»
 			},
-			"mesh":{}«IF !allProviders.empty»,«ENDIF»
-			«FOR s : allProviders SEPARATOR ","»
+			"mesh":{}«IF !ir.mainModule.allProviders.empty»,«ENDIF»
+			«FOR s : ir.mainModule.allProviders SEPARATOR ","»
 			"«s.toFirstLower»":{}
 			«ENDFOR»
 		}
 		'''
 	}
 
-	private def interpreteDefinitions(IrModule it)
+	private def interpreteDefinitions(IrRoot ir)
 	{
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(it, handler)
-		moduleInterpreter.interpreteOptionsDefaultValues
-		return moduleInterpreter.context
+		val irInterpreter = new IrInterpreter(ir, handler)
+		irInterpreter.interpreteOptionsDefaultValues
+		return irInterpreter.context
 	}
 }

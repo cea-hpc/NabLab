@@ -12,8 +12,6 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.ir.IrModule
 import org.eclipse.xtend.lib.annotations.Data
 
-import static extension fr.cea.nabla.ir.Utils.*
-
 @Data
 class PrivateMethodsContentProvider 
 {
@@ -50,7 +48,7 @@ class KokkosTeamThreadPrivateMethodsContentProvider extends PrivateMethodsConten
 
 	override getDefinitionContentFor(IrModule it)
 	'''
-		const std::pair<size_t, size_t> «irModule.name»::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
+		const std::pair<size_t, size_t> «type»::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
 		{
 			/*
 			if (nb_elmt % thread.team_size())

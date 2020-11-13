@@ -16,7 +16,7 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.Function
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.ItemId
 import fr.cea.nabla.ir.ir.ItemIndex
 import fr.cea.nabla.ir.ir.SetRef
@@ -27,26 +27,26 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 import static fr.cea.nabla.ir.Utils.FunctionReductionPrefix
 
+import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 
 class Context
 {
 	val Context outerContext
-	val IrModule module
 	val Logger logger
 	val variableValues = new HashMap<ArgOrVar, NablaValue>
 	val setValues = new HashMap<String, int[]>
 	val indexValues = new HashMap<ItemIndex, Integer>
 	val idValues = new HashMap<ItemId, Integer>
+	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val IrRoot ir
 	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Function, Method> functionToMethod
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) CartesianMesh2DMeshWrapper meshWrapper
 
-	new(IrModule module, Logger logger)
+	new(IrRoot ir, Logger logger)
 	{
 		this.outerContext = null
-		this.module = module
+		this.ir = ir
 		this.logger = logger
 		this.meshWrapper = null
 		this.functionToMethod = new HashMap<Function, Method>
@@ -55,7 +55,7 @@ class Context
 	new(Context outerContext)
 	{
 		this.outerContext = outerContext
-		this.module = outerContext.module
+		this.ir = outerContext.ir
 		this.logger = outerContext.logger
 		this.meshWrapper = outerContext.meshWrapper
 		this.functionToMethod = outerContext.functionToMethod
@@ -87,25 +87,14 @@ class Context
 		return (getVariableValue(variable) as NV0Int).data
 	}
 
-	def getVariableValue(String variableName)
+	def getReal(ArgOrVar variable)
 	{
-		val variable = module.getVariableByName(variableName)
-		getVariableValue(variable)
+		return (getVariableValue(variable) as NV0Real).data
 	}
 
-	def getInt(String variableName)
+	def double getNumber(ArgOrVar variable)
 	{
-		return (getVariableValue(variableName) as NV0Int).data
-	}
-
-	def getReal(String variableName)
-	{
-		return (getVariableValue(variableName) as NV0Real).data
-	}
-
-	def double getNumber(String variableName)
-	{
-		val vv = getVariableValue(variableName)
+		val vv = getVariableValue(variable)
 		switch vv
 		{
 			NV0Real : vv.data
@@ -273,7 +262,7 @@ class Context
 	{
 		val tccl = Thread.currentThread().getContextClassLoader()
 		val providerClassName = if (provider == "Math") 'java.lang.Math'
-			else module.name.toLowerCase + '.' + provider + FunctionReductionPrefix
+			else irModule.name.toLowerCase + '.' + provider + FunctionReductionPrefix
 		val providerClass = Class.forName(providerClassName, true, tccl)
 		val javaTypes = inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension, linearAlgebra)]
 		try 

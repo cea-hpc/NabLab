@@ -19,6 +19,8 @@ import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.runner.RunWith
 
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
+
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
 class JobInterpreterTest extends AbstractJobInterpreterTest
@@ -28,27 +30,27 @@ class JobInterpreterTest extends AbstractJobInterpreterTest
 
 	override assertInterpreteInstructionJob(String model)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
-		assertVariableValueInContext(irModule, context, "t", new NV0Real(5.0))
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
+		val context = compilationHelper.getInterpreterContext(ir, jsonDefaultContent)
+		assertVariableValueInContext(ir.mainModule, context, "t", new NV0Real(5.0))
 	}
 
 	override assertInterpreteTimeLoopJob(String model)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
-		assertVariableValueInContext(irModule, context, "t_n0", new NV0Real(0.0))
-		assertVariableValueInContext(irModule, context, "n", new NV0Int(10))
-		assertVariableValueInContext(irModule, context, "t_n", new NV0Real(0.09))
-		assertVariableValueInContext(irModule, context, "t_nplus1", new NV0Real(0.1))
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
+		val context = compilationHelper.getInterpreterContext(ir, jsonDefaultContent)
+		assertVariableValueInContext(ir.mainModule, context, "t_n0", new NV0Real(0.0))
+		assertVariableValueInContext(ir.mainModule, context, "n", new NV0Int(10))
+		assertVariableValueInContext(ir.mainModule, context, "t_n", new NV0Real(0.09))
+		assertVariableValueInContext(ir.mainModule, context, "t_nplus1", new NV0Real(0.1))
 	}
 
 	override assertInterpreteTimeLoopCopyJob(String model)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
+		val context = compilationHelper.getInterpreterContext(ir, jsonDefaultContent)
 		context.logVariables("After")
-		assertVariableValueInContext(irModule, context, "u_n0", new NV0Real(4.0))
-		assertVariableValueInContext(irModule, context, "u_n", new NV0Real(13.0))
+		assertVariableValueInContext(ir.mainModule, context, "u_n0", new NV0Real(4.0))
+		assertVariableValueInContext(ir.mainModule, context, "u_n", new NV0Real(13.0))
 	}
 }

@@ -32,10 +32,10 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getProvider <em>Provider</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getVariables <em>Variables</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getInArgs <em>In Args</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getBody <em>Body</em>}</li>
  * </ul>
@@ -43,6 +43,26 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public class FunctionImpl extends IrAnnotableImpl implements Function {
+	/**
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String NAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String name = NAME_EDEFAULT;
+
 	/**
 	 * The cached value of the '{@link #getReturnType() <em>Return Type</em>}' containment reference.
 	 * <!-- begin-user-doc -->
@@ -82,26 +102,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @ordered
 	 */
 	protected EList<SimpleVariable> variables;
-
-	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String name = NAME_EDEFAULT;
 
 	/**
 	 * The cached value of the '{@link #getInArgs() <em>In Args</em>}' containment reference list.
@@ -378,6 +378,8 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
+			case IrPackage.FUNCTION__NAME:
+				return getName();
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				if (resolve) return getReturnType();
 				return basicGetReturnType();
@@ -385,8 +387,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 				return getProvider();
 			case IrPackage.FUNCTION__VARIABLES:
 				return getVariables();
-			case IrPackage.FUNCTION__NAME:
-				return getName();
 			case IrPackage.FUNCTION__IN_ARGS:
 				return getInArgs();
 			case IrPackage.FUNCTION__BODY:
@@ -405,6 +405,9 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
+			case IrPackage.FUNCTION__NAME:
+				setName((String)newValue);
+				return;
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				setReturnType((BaseType)newValue);
 				return;
@@ -414,9 +417,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 			case IrPackage.FUNCTION__VARIABLES:
 				getVariables().clear();
 				getVariables().addAll((Collection<? extends SimpleVariable>)newValue);
-				return;
-			case IrPackage.FUNCTION__NAME:
-				setName((String)newValue);
 				return;
 			case IrPackage.FUNCTION__IN_ARGS:
 				getInArgs().clear();
@@ -437,6 +437,9 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
+			case IrPackage.FUNCTION__NAME:
+				setName(NAME_EDEFAULT);
+				return;
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				setReturnType((BaseType)null);
 				return;
@@ -445,9 +448,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 				return;
 			case IrPackage.FUNCTION__VARIABLES:
 				getVariables().clear();
-				return;
-			case IrPackage.FUNCTION__NAME:
-				setName(NAME_EDEFAULT);
 				return;
 			case IrPackage.FUNCTION__IN_ARGS:
 				getInArgs().clear();
@@ -467,14 +467,14 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
+			case IrPackage.FUNCTION__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				return returnType != null;
 			case IrPackage.FUNCTION__PROVIDER:
 				return PROVIDER_EDEFAULT == null ? provider != null : !PROVIDER_EDEFAULT.equals(provider);
 			case IrPackage.FUNCTION__VARIABLES:
 				return variables != null && !variables.isEmpty();
-			case IrPackage.FUNCTION__NAME:
-				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case IrPackage.FUNCTION__IN_ARGS:
 				return inArgs != null && !inArgs.isEmpty();
 			case IrPackage.FUNCTION__BODY:
@@ -493,10 +493,10 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 		if (eIsProxy()) return super.toString();
 
 		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (provider: ");
-		result.append(provider);
-		result.append(", name: ");
+		result.append(" (name: ");
 		result.append(name);
+		result.append(", provider: ");
+		result.append(provider);
 		result.append(')');
 		return result.toString();
 	}

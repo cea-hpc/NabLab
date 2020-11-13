@@ -3,13 +3,14 @@ package fr.cea.nabla.ir.transformers
 import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.JobDispatchVarDependencies
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.TearDownTimeLoopJob
 import fr.cea.nabla.ir.ir.TimeLoopJob
 
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
+import static extension fr.cea.nabla.ir.Utils.*
 
 /**
  * Dispatch jobs in their corresponding time loops
@@ -27,11 +28,11 @@ class JobDispatcher
 	 * associated to their TimeLoop.
 	 * Then, other jobs will be dispatched during a graph traversal.
 	 */
-	def void dispatchJobsInTimeLoops(IrModule irModule)
+	def void dispatchJobsInTimeLoops(IrRoot ir)
 	{
-		for (j : irModule.jobs.filter[x | !(x instanceof TimeLoopJob) && x.previousJobs.empty])
-			if (continueToDispatch(irModule.main, j, ''))
-				dispatchJob(irModule.main, j, '')
+		for (j : ir.jobs.filter[x | !(x instanceof TimeLoopJob) && x.previousJobs.empty])
+			if (continueToDispatch(ir.main, j, ''))
+				dispatchJob(ir.main, j, '')
 	}
 
 	private def void dispatchJob(JobCaller jc, Job job, String prefix)
@@ -46,8 +47,7 @@ class JobDispatcher
 		{
 			ExecuteTimeLoopJob:
 			{
-				val irModule = job.eContainer as IrModule
-				for (j : irModule.jobs.filter[x | x !== job])
+				for (j : job.irRoot.jobs.filter[x | x !== job])
 					for (startLoopVar : job.inVars)
 						if (j.inVars.exists[x | x === startLoopVar])
 							if (continueToDispatch(job, j, prefix))

@@ -21,7 +21,10 @@ import fr.cea.nabla.tests.TestUtils
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.runner.RunWith
+
 import static org.junit.Assert.assertThrows
+
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -32,42 +35,42 @@ class OptionsInterpreterTest extends AbstractOptionsInterpreterTest
 
 	override assertInterpreteDefaultOptions(String model)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
+		val context = compilationHelper.getInterpreterContext(ir, jsonDefaultContent)
 
-		assertVariableValueInContext(irModule, context, "A", new NV0Int(10))
-		assertVariableValueInContext(irModule, context, "B", new NV0Int(9))
-		assertVariableValueInContext(irModule, context, "C", new NV0Real(25.0))
-		assertVariableValueInContext(irModule, context, "D", new NV1Real(#[25.0, 25.0, 25.0]))
-		assertVariableValueInContext(irModule, context, "M", new NV2Real(#[#[25.0, 25.0, 25.0],#[25.0, 25.0, 25.0]]))
+		assertVariableValueInContext(ir.mainModule, context, "A", new NV0Int(10))
+		assertVariableValueInContext(ir.mainModule, context, "B", new NV0Int(9))
+		assertVariableValueInContext(ir.mainModule, context, "C", new NV0Real(25.0))
+		assertVariableValueInContext(ir.mainModule, context, "D", new NV1Real(#[25.0, 25.0, 25.0]))
+		assertVariableValueInContext(ir.mainModule, context, "M", new NV2Real(#[#[25.0, 25.0, 25.0],#[25.0, 25.0, 25.0]]))
 	}
 
 	override assertInterpreteJsonOptions(String model, String jsonContent)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val context = compilationHelper.getInterpreterContext(irModule, jsonContent)
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
+		val context = compilationHelper.getInterpreterContext(ir, jsonContent)
 
-		assertVariableValueInContext(irModule, context, "A", new NV0Int(8))
-		assertVariableValueInContext(irModule, context, "B", new NV0Int(8))
-		assertVariableValueInContext(irModule, context, "C", new NV0Real(27.0))
-		assertVariableValueInContext(irModule, context, "D", new NV1Real(#[25.0, 12.12, 25.0]))
-		assertVariableValueInContext(irModule, context, "M", new NV2Real(#[#[25.0, 13.13, 25.0],#[25.0, 25.0, 5.4]]))
+		assertVariableValueInContext(ir.mainModule, context, "A", new NV0Int(8))
+		assertVariableValueInContext(ir.mainModule, context, "B", new NV0Int(8))
+		assertVariableValueInContext(ir.mainModule, context, "C", new NV0Real(27.0))
+		assertVariableValueInContext(ir.mainModule, context, "D", new NV1Real(#[25.0, 12.12, 25.0]))
+		assertVariableValueInContext(ir.mainModule, context, "M", new NV2Real(#[#[25.0, 13.13, 25.0],#[25.0, 25.0, 5.4]]))
 	}
 
 	override assertInterpreteDefaultMandatoryOptions(String model)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		assertThrows(IllegalStateException, [compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)])
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
+		assertThrows(IllegalStateException, [compilationHelper.getInterpreterContext(ir, jsonDefaultContent)])
 	}
 
 	override assertInterpreteJsonMandatoryOptions(String model, String jsonContent)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val context = compilationHelper.getInterpreterContext(irModule, jsonContent)
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
+		val context = compilationHelper.getInterpreterContext(ir, jsonContent)
 
-		assertVariableValueInContext(irModule, context, "A", new NV0Int(8))
-		assertVariableValueInContext(irModule, context, "mandatory1", new NV1Int(#[1, 2]))
-		assertVariableValueInContext(irModule, context, "mandatory2", new NV0Real(2.2))
-		assertVariableValueInContext(irModule, context, "B", new NV0Real(4.4))
+		assertVariableValueInContext(ir.mainModule, context, "A", new NV0Int(8))
+		assertVariableValueInContext(ir.mainModule, context, "mandatory1", new NV1Int(#[1, 2]))
+		assertVariableValueInContext(ir.mainModule, context, "mandatory2", new NV0Real(2.2))
+		assertVariableValueInContext(ir.mainModule, context, "B", new NV0Real(4.4))
 	}
 }

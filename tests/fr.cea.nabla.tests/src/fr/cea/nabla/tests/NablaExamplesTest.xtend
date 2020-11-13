@@ -37,8 +37,8 @@ class NablaExamplesTest
 	static String examplesProjectPath
 	static String cppLibPath
 	static String javaLibPath
-	static String levelDBPath
 	static String commonMath3Path
+	static String levelDBPath
 	static String levelDBEnv = "LEVELDB_HOME"
 	static String kokkosENV = "KOKKOS_HOME"
 	static GitUtils git
@@ -55,8 +55,8 @@ class NablaExamplesTest
 		examplesProjectPath = wsPath + examplesProjectSubPath
 		cppLibPath = wsPath + "plugins/fr.cea.nabla.ir/cppresources/libcppnabla.zip"
 		javaLibPath = wsPath + "plugins/fr.cea.nabla.javalib/bin/:" + wsPath + "plugins/fr.cea.nabla.javalib/target/*"
-		levelDBPath = wsPath + "plugins/leveldb/*"
 		commonMath3Path = wsPath + "plugins/commons-math3/*"
+		levelDBPath = wsPath + "plugins/leveldb/*"
 		git = new GitUtils(wsPath)
 	}
 
@@ -157,9 +157,8 @@ class NablaExamplesTest
 		genmodel = genmodel.adaptedGenModel(kokkosPath, levelDBPath)
 		compilationHelper.generateCode(model, genmodel, tmp.toPath.toString)
 
-		val targets = compilationHelper.getTargets(model, genmodel)
 		var nbErrors = 0
-		for (target : targets)
+		for (target : compilationHelper.getNgen(model, genmodel).config.targets)
 		{
 			(!testExecute(target, moduleName, tmp.toString) ? nbErrors++)
 		}

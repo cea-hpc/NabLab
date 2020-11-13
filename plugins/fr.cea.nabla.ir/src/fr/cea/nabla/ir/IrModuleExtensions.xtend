@@ -11,13 +11,18 @@ package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.SimpleVariable
-import fr.cea.nabla.ir.ir.Variable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
 class IrModuleExtensions
 {
+	static def getIrRoot(IrModule it)
+	{
+		eContainer as IrRoot
+	}
+
 	static def String[] getAllProviders(IrModule it)
 	{
 		functions.filter[x | x.provider!='Math' && x.body===null].map[provider + Utils::FunctionReductionPrefix].toSet
@@ -28,9 +33,14 @@ class IrModuleExtensions
 		jobs.findFirst[j | j.name == jobName]
 	}
 
+	static def getOptions(IrModule it)
+	{
+		variables.filter(SimpleVariable).filter[option]
+	}
+
 	static def getVariablesWithDefaultValue(IrModule it)
 	{
-		variables.filter(SimpleVariable).filter[x | x.defaultValue !== null]
+		variables.filter(SimpleVariable).filter[x | !x.option && x.defaultValue !== null]
 	}
 
 	static def isLinearAlgebra(IrModule it)
@@ -40,8 +50,6 @@ class IrModuleExtensions
 
 	static def getVariableByName(IrModule it, String irVarName)
 	{
-		var Variable v = options.findFirst[j | j.name == irVarName]
-		if (v === null) v = variables.findFirst[j | j.name == irVarName]
-		return v
+		variables.findFirst[j | j.name == irVarName]
 	}
 }

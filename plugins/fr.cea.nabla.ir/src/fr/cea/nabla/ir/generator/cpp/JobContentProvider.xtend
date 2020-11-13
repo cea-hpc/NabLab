@@ -40,7 +40,7 @@ class JobContentProvider
 	def getDefinitionContent(Job it)
 	'''
 		«comment»
-		void «irModule.name»::«codeName»() noexcept
+		void «irModule.type»::«codeName»() noexcept
 		{
 			«innerContent»
 		}
@@ -69,7 +69,7 @@ class JobContentProvider
 			cpuTimer.start();
 			«ENDIF»
 			«itVar»++;
-			«val ppInfo = irModule.postProcessing»
+			«val ppInfo = irRoot.postProcessing»
 			«IF caller.main && ppInfo !== null»
 				if (!writer.isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
 					dumpVariables(«itVar»);
@@ -101,7 +101,7 @@ class JobContentProvider
 			ioTimer.reset();
 			«ENDIF»
 		} while (continueLoop);
-		«IF caller.main && irModule.postProcessing !== null»
+		«IF caller.main && irRoot.postProcessing !== null»
 			// force a last output at the end
 			dumpVariables(«itVar», false);
 		«ENDIF»
@@ -141,7 +141,7 @@ class KokkosJobContentProvider extends JobContentProvider
 	override getDefinitionContent(Job it)
 	'''
 		«comment»
-		void «irModule.name»::«codeName»(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept
+		void «irModule.type»::«codeName»(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept
 		{
 			«innerContent»
 		}

@@ -21,7 +21,7 @@ import java.util.List
 class IrContainerFactory
 {
 	@Inject extension IrAnnotationHelper
-	@Inject extension IrConnectivityFactory
+	@Inject extension IrBasicFactory
 	@Inject extension IrItemIdFactory
 	@Inject extension IrSetDefinitionFactory
 

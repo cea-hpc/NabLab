@@ -58,6 +58,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case IrPackage.IR_ANNOTATION: return createIrAnnotation();
+			case IrPackage.IR_ROOT: return createIrRoot();
 			case IrPackage.IR_MODULE: return createIrModule();
 			case IrPackage.POST_PROCESSING: return createPostProcessing();
 			case IrPackage.ARG: return createArg();
@@ -154,6 +155,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public IrAnnotation createIrAnnotation() {
 		IrAnnotationImpl irAnnotation = new IrAnnotationImpl();
 		return irAnnotation;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public IrRoot createIrRoot() {
+		IrRootImpl irRoot = new IrRootImpl();
+		return irRoot;
 	}
 
 	/**

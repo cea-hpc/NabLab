@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.transformers
 
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import java.util.List
 
 class OptimizeConnectivities extends IrTransformationStep
@@ -22,10 +22,10 @@ class OptimizeConnectivities extends IrTransformationStep
 		this.connectivities = connectivities
 	}
 
-	override transform(IrModule m)
+	override transform(IrRoot ir)
 	{
 		trace('IR -> IR: ' + description)
-		for (c : m.connectivities)
+		for (c : ir.connectivities)
 		{
 			if (!c.multiple) c.indexEqualId = true
 			else if (connectivities.contains(c.name)) c.indexEqualId = true

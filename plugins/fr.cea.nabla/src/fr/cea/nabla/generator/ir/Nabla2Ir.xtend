@@ -26,22 +26,19 @@ import org.eclipse.emf.ecore.EObject
 
 class Nabla2Ir
 {
-	@Inject extension Nabla2IrUtils
-	@Inject extension IrArgOrVarFactory
-	@Inject extension IrJobFactory
-	@Inject extension IrFunctionFactory
-	@Inject extension IrConnectivityFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension DeclarationProvider
 	@Inject extension TimeIteratorExtensions
+	@Inject extension IrArgOrVarFactory
+	@Inject extension IrJobFactory
+	@Inject extension IrFunctionFactory
 
-	def create IrFactory::eINSTANCE.createIrModule toIrModule(NablaModule nablaModule)
+	def create IrFactory::eINSTANCE.createIrModule toIrModule(String moduleInstanceName, NablaModule nablaModule)
 	{
 		annotations += nablaModule.toIrAnnotation
-		name = nablaModule.name
-		main = IrFactory::eINSTANCE.createJobCaller
-		nablaModule.itemTypes.forEach[x | itemTypes += x.toIrItemType]
-		nablaModule.connectivities.forEach[x | connectivities += x.toIrConnectivity]
+		name = moduleInstanceName
+		type = nablaModule.name
+		main = false
 
 		// Function and reduction
 		nablaModule.allUsedFunctionAndReductions.forEach[x | functions += x.toIrFunction]
@@ -56,9 +53,13 @@ class Nabla2Ir
 			switch d
 			{
 				OptionDeclaration:
-					options += createIrVariables(d.variable, tlJobs).filter(SimpleVariable)
+				{
+					val options = createIrVariables(d.variable, tlJobs)
+					options.filter(SimpleVariable).forEach[option = true]
+					variables += options
+				}
 				SimpleVarDeclaration:
-					variables += createIrVariables(d.variable, tlJobs).filter(SimpleVariable)
+					variables += createIrVariables(d.variable, tlJobs)
 				VarGroupDeclaration:
 					for (v : d.variables)
 						variables += createIrVariables(v, tlJobs)

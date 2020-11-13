@@ -16,6 +16,7 @@ package fr.cea.nabla.ir.ir;
  *   <li>{@link fr.cea.nabla.ir.ir.SimpleVariable#getDefaultValue <em>Default Value</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.SimpleVariable#isConst <em>Const</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.SimpleVariable#isConstExpr <em>Const Expr</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.SimpleVariable#isOption <em>Option</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getSimpleVariable()
@@ -111,5 +112,27 @@ public interface SimpleVariable extends Variable {
 	 * @generated
 	 */
 	void setConstExpr(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Option</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Option</em>' attribute.
+	 * @see #setOption(boolean)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getSimpleVariable_Option()
+	 * @model required="true"
+	 * @generated
+	 */
+	boolean isOption();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.SimpleVariable#isOption <em>Option</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Option</em>' attribute.
+	 * @see #isOption()
+	 * @generated
+	 */
+	void setOption(boolean value);
 
 } // SimpleVariable

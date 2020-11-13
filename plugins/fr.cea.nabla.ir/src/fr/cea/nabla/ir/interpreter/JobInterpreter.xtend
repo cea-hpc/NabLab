@@ -12,7 +12,7 @@ package fr.cea.nabla.ir.interpreter
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
@@ -23,7 +23,6 @@ import java.util.Locale
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
 
-import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
@@ -61,8 +60,7 @@ class JobInterpreter
 	def void interpreteExecuteTimeLoopJob(ExecuteTimeLoopJob it, Context context)
 	{
 		context.logFiner("Interprete TimeLoopJob " + name + " @ " + at)
-		val irModule = eContainer as IrModule
-		val ppInfo = irModule.postProcessing
+		val ppInfo = context.ir.postProcessing
 		var iteration = 0
 		context.logVariables("Before timeLoop " + iterationCounter.name)
 		context.addVariableValue(iterationCounter, new NV0Int(iteration))
@@ -75,16 +73,16 @@ class JobInterpreter
 			val log = String.format(Locale::ENGLISH, "%1$s [%2$d] t: %3$.5f - deltat: %4$.5f",
 					caller.indentation,
 					iteration,
-					context.getReal(irModule.timeVariable.name),
-					context.getReal(irModule.timeStepVariable.name))
+					context.getReal(context.ir.timeVariable),
+					context.getReal(context.ir.timeStepVariable))
 			context.logFine(log)
 			if (main && ppInfo !== null)
 			{
-				val periodValue = context.getNumber(ppInfo.periodValue.name)
-				val periodReference = context.getNumber(ppInfo.periodReference.name)
-				val lastDump = context.getNumber(ppInfo.lastDumpVariable.name)
+				val periodValue = context.getNumber(ppInfo.periodValue)
+				val periodReference = context.getNumber(ppInfo.periodReference)
+				val lastDump = context.getNumber(ppInfo.lastDumpVariable)
 				if (periodReference >= lastDump + periodValue)
-					dumpVariables(irModule, iteration, context, periodReference);
+					dumpVariables(context.ir, iteration, context, periodReference);
 			}
 			for (j : calls)
 				interprete(j, context)
@@ -123,14 +121,13 @@ class JobInterpreter
 		}
 	}
 
-	private def void dumpVariables(IrModule irModule, int iteration, Context context, double periodReference)
+	private def void dumpVariables(IrRoot ir, int iteration, Context context, double periodReference)
 	{
-		val ppInfo = irModule.postProcessing
+		val ppInfo = ir.postProcessing
 		if (!writer.disabled)
 		{
-			val time = context.getReal(irModule.timeVariable.name)
-			val coordVariable = irModule.getVariableByName(irModule.nodeCoordVariable.name)
-			val coord = (context.getVariableValue(coordVariable) as NV2Real).data
+			val time = context.getReal(ir.timeVariable)
+			val coord = (context.getVariableValue(ir.nodeCoordVariable) as NV2Real).data
 			val quads = context.meshWrapper.quads
 			val vtkFileContent = new VtkFileContent(iteration, time, coord, quads);
 
@@ -138,7 +135,7 @@ class JobInterpreter
 			val connectivityVars = ppInfo.outputVariables.filter(ConnectivityVariable)
 			for (v : connectivityVars.filter(v | v.type.connectivities.head.returnType.name == "cell"))
 			{
-				val value = context.getVariableValue(irModule.getVariableByName(v.name))
+				val value = context.getVariableValue(v)
 				switch value
 				{
 					NV1Real: vtkFileContent.addCellVariable(v.outputName, value.data)
@@ -148,7 +145,7 @@ class JobInterpreter
 			}
 			for (v : connectivityVars.filter(v | v.type.connectivities.head.returnType.name == "node"))
 			{
-				val value = context.getVariableValue(irModule.getVariableByName(v.name))
+				val value = context.getVariableValue(v)
 				switch value
 				{
 					NV1Real: vtkFileContent.addNodeVariable(v.outputName, value.data)

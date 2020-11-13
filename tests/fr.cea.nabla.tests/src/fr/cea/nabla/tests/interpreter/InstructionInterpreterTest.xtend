@@ -21,6 +21,9 @@ import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Assert
 import org.junit.runner.RunWith
 
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
+
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
 class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
@@ -30,36 +33,38 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 
 	override assertInterpreteVarDefinition(String model)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
-		assertVariableValueInContext(irModule, context, "t", new NV0Real(1.0))
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
+		val context = compilationHelper.getInterpreterContext(ir, jsonDefaultContent)
+		assertVariableValueInContext(ir.mainModule, context, "t", new NV0Real(1.0))
 	}
 
 	override assertInterpreteInstructionBlock(String model)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
-		assertVariableValueInContext(irModule, context, "t", new NV0Real(1.0))
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
+		val context = compilationHelper.getInterpreterContext(ir, jsonDefaultContent)
+		assertVariableValueInContext(ir.mainModule, context, "t", new NV0Real(1.0))
 	}
 
 	override assertInterpreteAffectation(String model)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val context = compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
-		assertVariableValueInContext(irModule, context, "t", new NV0Real(1.0))
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
+		val context = compilationHelper.getInterpreterContext(ir, jsonDefaultContent)
+		assertVariableValueInContext(ir.mainModule, context, "t", new NV0Real(1.0))
 	}
 
 	override assertInterpreteLoop(String model, int xQuads, int yQuads)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val context = compilationHelper.getInterpreterContext(irModule, getJsonContent(xQuads, yQuads))
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
+		val mainModule = ir.mainModule
+		val context = compilationHelper.getInterpreterContext(ir, getJsonContent(xQuads, yQuads))
 		val nbCells = xQuads * yQuads
 		val double[] u = newDoubleArrayOfSize(nbCells)
 		for (i : 0..<u.length)
 			u.set(i, 1.0)
-		assertVariableValueInContext(irModule, context, "U", new NV1Real(u))
+		assertVariableValueInContext(mainModule, context, "U", new NV1Real(u))
 
-		val cjr = (context.getVariableValue("C") as NV3Real).data
+		val cjrVar = mainModule.getVariableByName("C")
+		val cjr = (context.getVariableValue(cjrVar) as NV3Real).data
 
 		val nbNodesOfCell = 4
 		val xEdgeLength = 0.01 // TestUtils::getJsonContent
@@ -74,14 +79,15 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 		}
 
 		// Test reduction
-		val bmin = (context.getVariableValue("Bmin") as NV0Real).data
+		val bminVar = mainModule.getVariableByName("Bmin")
+		val bmin = (context.getVariableValue(bminVar) as NV0Real).data
 		Assert.assertEquals(-0.00390625, bmin, TestUtils.DoubleTolerance)
 	}
 
 	override assertInterpreteIf(String model, int xQuads, int yQuads)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val context = compilationHelper.getInterpreterContext(irModule, getJsonContent(xQuads, yQuads))
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
+		val context = compilationHelper.getInterpreterContext(ir, getJsonContent(xQuads, yQuads))
 
 		val nbCells = xQuads * yQuads
 		val double[] u = newDoubleArrayOfSize(nbCells)
@@ -91,41 +97,41 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 			else
 				u.set(i, 1.0)
 
-		assertVariableValueInContext(irModule, context, "U", new NV1Real(u))
+		assertVariableValueInContext(ir.mainModule, context, "U", new NV1Real(u))
 	}
 
 	override assertInterpreteWhile(String model, int xQuads, int yQuads)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val context = compilationHelper.getInterpreterContext(irModule, getJsonContent(xQuads, yQuads))
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
+		val context = compilationHelper.getInterpreterContext(ir, getJsonContent(xQuads, yQuads))
 
 		val nbCells = xQuads * yQuads
 		val double[] u = newDoubleArrayOfSize(nbCells)
 		for (i : 0..<u.length)
 			u.set(i, 2.0)
 
-		assertVariableValueInContext(irModule, context, "U", new NV1Real(u))
+		assertVariableValueInContext(ir.mainModule, context, "U", new NV1Real(u))
 	}
 
 	override assertInterpreteSetDefinition(String model, int xQuads, int yQuads)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
-		val context = compilationHelper.getInterpreterContext(irModule, getJsonContent(xQuads, yQuads))
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
+		val context = compilationHelper.getInterpreterContext(ir, getJsonContent(xQuads, yQuads))
 
 		val nbCells = xQuads * yQuads
 		val double[] u = newDoubleArrayOfSize(nbCells)
 		for (i : 0..<u.length)
 			u.set(i, 1.0)
 
-		assertVariableValueInContext(irModule, context, "U", new NV1Real(u))
+		assertVariableValueInContext(ir.mainModule, context, "U", new NV1Real(u))
 	}
 
 	override assertInterpreteExit(String model)
 	{
-		val irModule = compilationHelper.getIrModuleForInterpretation(model, testGenModel)
+		val ir = compilationHelper.getIrForInterpretation(model, testGenModel)
 		try
 		{
-			compilationHelper.getInterpreterContext(irModule, jsonDefaultContent)
+			compilationHelper.getInterpreterContext(ir, jsonDefaultContent)
 			Assert::fail("Should throw exception")
 		} 
 		catch (RuntimeException e)

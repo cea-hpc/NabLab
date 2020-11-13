@@ -42,6 +42,11 @@ class ArgOrVarExtensions
 		}
 	}
 
+	static def isOption(ArgOrVar it)
+	{
+		(it instanceof SimpleVariable && (it as SimpleVariable).option)
+	}
+
 	static def isGlobal(ArgOrVar it)
 	{
 		(it instanceof Variable && eContainer instanceof IrModule)

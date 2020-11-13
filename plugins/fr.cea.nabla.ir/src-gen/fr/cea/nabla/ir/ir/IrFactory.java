@@ -31,6 +31,15 @@ public interface IrFactory extends EFactory {
 	IrAnnotation createIrAnnotation();
 
 	/**
+	 * Returns a new object of class '<em>Root</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Root</em>'.
+	 * @generated
+	 */
+	IrRoot createIrRoot();
+
+	/**
 	 * Returns a new object of class '<em>Module</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

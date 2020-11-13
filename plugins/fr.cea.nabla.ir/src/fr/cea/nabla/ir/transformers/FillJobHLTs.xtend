@@ -11,7 +11,7 @@ package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.TimeLoopJob
@@ -39,32 +39,33 @@ class FillJobHLTs extends IrTransformationStep
 	 * Return false if the graph contains cycle (computing 'at' values is then impossible), true otherwise.
 	 * If the graph contains cycles, nodes on cycle have their 'onCyle' attribute set to true.
 	 */
-	override transform(IrModule it)
+	override transform(IrRoot ir)
 	{
 		trace('IR -> IR: ' + description)
-		if (jobs.empty) return true
+		if (ir.jobs.empty) return true
 
 		// check that IrModule has no job cycles (except timestep cycles)
-		if (hasCycles) 
+		if (ir.hasCycles) 
 		{
 			// All jobs belongs to the module. No dispatch possible.
 			// Jobs are put in module inner jobs for graph display...
-			main.calls.addAll(jobs)
+			ir.main.calls.addAll(ir.jobs)
 			return false
 		}
 
 		// No cycles => create subgraphs (i.e. JobContainer instances) corresponding to time loops
-		jobDispatcher.dispatchJobsInTimeLoops(it)
+		jobDispatcher.dispatchJobsInTimeLoops(ir)
 
 		// compute at for each subGraph
-		val subGraphs = jobs.groupBy[x | x.caller]
+		val subGraphs = ir.jobs.groupBy[x | x.caller]
 		for (subGraph : subGraphs.values)
 			subGraph.fillAt
 
 		// sort jobs by @at in IR
-		jobs.sortByAtAndName
-		main.calls.sortByAtAndName
-		jobs.filter(JobCaller).forEach[x | x.calls.sortByAtAndName]
+		ir.jobs.sortByAtAndName
+		ir.modules.forEach[x | x.jobs.sortByAtAndName]
+		ir.main.calls.sortByAtAndName
+		ir.jobs.filter(JobCaller).forEach[x | x.calls.sortByAtAndName]
 		return true
 	}
 
@@ -77,9 +78,9 @@ class FillJobHLTs extends IrTransformationStep
 //	}
 
 	/** Build the jgrapht graph corresponding to IrModule and check if it has cycles */
-	private def hasCycles(IrModule it)
+	private def hasCycles(IrRoot ir)
 	{
-		val g = createGraph(jobs.reject(TimeLoopJob))
+		val g = createGraph(ir.jobs.reject(TimeLoopJob))
 
 		val cycles = g.findCycle
 		val hasCycles = (cycles !== null)

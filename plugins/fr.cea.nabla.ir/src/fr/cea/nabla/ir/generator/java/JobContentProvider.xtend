@@ -47,9 +47,9 @@ class JobContentProvider
 		do
 		{
 			«itVar»++;
-			System.out.printf("«caller.indentation»[%5d] t: %5.5f - deltat: %5.5f\n", «itVar», «irModule.timeVariable.codeName», «irModule.timeStepVariable.codeName»);
-			«IF caller.main && irModule.postProcessing !== null»
-				«val ppInfo = irModule.postProcessing»
+			System.out.printf("«caller.indentation»[%5d] t: %5.5f - deltat: %5.5f\n", «itVar», «irRoot.timeVariable.codeName», «irRoot.timeStepVariable.codeName»);
+			«IF caller.main && irRoot.postProcessing !== null»
+				«val ppInfo = irRoot.postProcessing»
 				if («ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
 					dumpVariables(«itVar»);
 			«ENDIF»
@@ -70,7 +70,7 @@ class JobContentProvider
 				«ENDFOR»
 			} 
 		} while (continueLoop);
-		«IF caller.main && irModule.postProcessing !== null»
+		«IF caller.main && irRoot.postProcessing !== null»
 			// force a last output at the end
 			dumpVariables(«itVar»);
 		«ENDIF»

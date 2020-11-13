@@ -9,9 +9,9 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 
-import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
 abstract class Ir2Cmake
 {
@@ -19,10 +19,10 @@ abstract class Ir2Cmake
 	protected String compilerPath
 	protected String levelDBPath
 
-	abstract def CharSequence getLibraryBackend(IrModule m)
-	abstract def Iterable<String> getTargetLinkLibraries(IrModule m)
+	abstract def CharSequence getLibraryBackend(IrRoot ir)
+	abstract def Iterable<String> getTargetLinkLibraries(IrRoot ir)
 
-	def getContentFor(IrModule it)
+	def getContentFor(IrRoot it)
 	'''
 		#
 		# Generated file - Do not overwrite
@@ -90,10 +90,10 @@ class StlIr2Cmake extends Ir2Cmake
 		this.levelDBPath = levelDBPath
 	}
 
-	override getLibraryBackend(IrModule m)
+	override getLibraryBackend(IrRoot ir)
 	'''set(LIBCPPNABLA_BACKEND "STL")'''
 
-	override getTargetLinkLibraries(IrModule m)
+	override getTargetLinkLibraries(IrRoot ir)
 	{
 		#["cppnablastl", "pthread"]
 	}
@@ -111,13 +111,13 @@ class KokkosIr2Cmake extends Ir2Cmake
 		this.levelDBPath = levelDBPath
 	}
 
-	override getLibraryBackend(IrModule m)
+	override getLibraryBackend(IrRoot ir)
 	'''
 		set(LIBCPPNABLA_BACKEND "KOKKOS")
 		set(NABLA_KOKKOS_PATH «kokkosPath»)
 	'''
 
-	override getTargetLinkLibraries(IrModule m)
+	override getTargetLinkLibraries(IrRoot ir)
 	{
 		#["cppnablakokkos"]
 	}
@@ -132,9 +132,9 @@ class SequentialIr2Cmake extends Ir2Cmake
 		this.levelDBPath = levelDBPath
 	}
 
-	override getLibraryBackend(IrModule m)
+	override getLibraryBackend(IrRoot ir)
 	{
-		if (m.linearAlgebra)
+		if (ir.linearAlgebra)
 			'''
 				# libcppnabla for linear algebra
 				set(LIBCPPNABLA_BACKEND "STL")
@@ -143,9 +143,9 @@ class SequentialIr2Cmake extends Ir2Cmake
 			'''set(LIBCPPNABLA_BACKEND "NONE")'''
 	}
 
-	override getTargetLinkLibraries(IrModule m)
+	override getTargetLinkLibraries(IrRoot ir)
 	{
-		if (m.linearAlgebra)
+		if (ir.linearAlgebra)
 			#["cppnablastl", "pthread"]
 		else
 			#[]
@@ -161,9 +161,9 @@ class OpenMpCmake extends Ir2Cmake
 		this.levelDBPath = levelDBPath
 	}
 
-	override getLibraryBackend(IrModule m)
+	override getLibraryBackend(IrRoot ir)
 	{
-		if (m.linearAlgebra)
+		if (ir.linearAlgebra)
 			'''
 				# libcppnabla for linear algebra
 				set(LIBCPPNABLA_BACKEND "STL")
@@ -176,9 +176,9 @@ class OpenMpCmake extends Ir2Cmake
 			'''
 	}
 
-	override getTargetLinkLibraries(IrModule m)
+	override getTargetLinkLibraries(IrRoot ir)
 	{
-		if (m.linearAlgebra)
+		if (ir.linearAlgebra)
 			#["OpenMP::OpenMP_CXX", "cppnablastl", "pthread"]
 		else
 			#["OpenMP::OpenMP_CXX"]

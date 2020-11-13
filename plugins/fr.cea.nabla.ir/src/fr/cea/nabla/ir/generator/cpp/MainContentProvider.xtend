@@ -10,17 +10,18 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.Utils
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
 @Data
 class MainContentProvider 
 {
 	val String levelDBPath
 	
-	def getContentFor(IrModule it)
+	def getContentFor(IrRoot it)
 	'''
 		string dataFile;
 		int ret = 0;
@@ -57,7 +58,7 @@ class MainContentProvider
 		const rapidjson::Value& valueof_options = d["options"];
 		assert(valueof_options.IsObject());
 		options.jsonInit(valueof_options.GetObject());
-		«FOR s : allProviders»
+		«FOR s : mainModule.allProviders»
 
 		// «s.toFirstLower»
 		«s» «s.toFirstLower»;
@@ -70,7 +71,7 @@ class MainContentProvider
 		«ENDFOR»
 
 		// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-		auto simulator = new «name»(mesh, options«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s.toFirstLower»«ENDFOR»);
+		auto simulator = new «name»(mesh, options«FOR s : mainModule.allProviders BEFORE ', ' SEPARATOR ', '»«s.toFirstLower»«ENDFOR»);
 		simulator->simulate();
 
 		«IF !levelDBPath.nullOrEmpty»
@@ -95,7 +96,7 @@ class MainContentProvider
 @Data
 class KokkosMainContentProvider extends MainContentProvider
 {
-	override getContentFor(IrModule it)
+	override getContentFor(IrRoot it)
 	'''
 		Kokkos::initialize(argc, argv);
 		«super.getContentFor(it)»

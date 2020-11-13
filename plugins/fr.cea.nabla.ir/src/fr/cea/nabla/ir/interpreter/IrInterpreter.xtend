@@ -12,7 +12,7 @@ package fr.cea.nabla.ir.interpreter
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import fr.cea.nabla.ir.Utils
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import fr.cea.nabla.javalib.utils.LevelDBUtils
 import java.io.File
@@ -26,39 +26,41 @@ import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 import static org.iq80.leveldb.impl.Iq80DBFactory.bytes
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
-class ModuleInterpreter
+class IrInterpreter
 {
 	public static String ITERATION_VARIABLE_NAME = "InterpreterIteration"
 
 	@Accessors val Context context
-	val IrModule module
+	val IrRoot ir
 	val PvdFileWriter2D writer
 	val JobInterpreter jobInterpreter
 	val Logger logger
 	val String levelDatabasePath
 	var Boolean levelDBcompareResult
 
-	new(IrModule module, StreamHandler handler)
+	new(IrRoot ir, StreamHandler handler)
 	{
-		this(module, handler, "")
+		this(ir, handler, "")
 	}
 
-	new(IrModule module, StreamHandler handler, String outputDirName)
+	new(IrRoot ir, StreamHandler handler, String outputDirName)
 	{
 		// create a Logger and a Handler
-		logger = Logger.getLogger(ModuleInterpreter.name)
+		logger = Logger.getLogger(IrInterpreter.name)
 		logger.setLevel(handler.level)  //Create only logs if needed by handler
 		logger.setUseParentHandlers(false) // Suppress default console
 		logger.handlers.forEach(h | logger.removeHandler(h))
 		logger.addHandler(handler)
 
-		this.module = module
-		this.context = new Context(module, logger)
-		this.writer = new PvdFileWriter2D(module.name, outputDirName)
+		this.ir = ir
+		this.context = new Context(ir, logger)
+		this.writer = new PvdFileWriter2D(ir.name, outputDirName)
 		this.jobInterpreter = new JobInterpreter(writer)
-		this.levelDatabasePath = "results/interpreter/" + module.name.toLowerCase + "/"
+		this.levelDatabasePath = "results/interpreter/" + ir.name.toLowerCase + "/"
 		this.levelDBcompareResult = true
 	}
 
@@ -68,13 +70,13 @@ class ModuleInterpreter
 	 */
 	def interpreteOptionsDefaultValues()
 	{
-		for (v : module.options)
+		for (v : ir.options)
 			context.addVariableValue(v, createValue(v, context))
 	}
 
 	def interprete(String jsonContent)
 	{
-		context.logInfo(" Start interpreting " + module.name + " module ")
+		context.logInfo(" Start interpreting " + ir.name + " module ")
 
 		// Start initialising the variables with default values
 		interpreteOptionsDefaultValues
@@ -85,12 +87,12 @@ class ModuleInterpreter
 		// Create mesh and mesh variables
 		if (!jsonObject.has("mesh")) throw new RuntimeException("Mesh block missing in Json")
 		val jsonMesh = jsonObject.get("mesh").asJsonObject
-		context.initMesh(gson, jsonMesh, module.connectivities)
+		context.initMesh(gson, jsonMesh, ir.connectivities)
 
 		// Read options in Json
 		if (!jsonObject.has("options")) throw new RuntimeException("Options block missing in Json")
 		val jsonOptions = jsonObject.get("options").asJsonObject
-		for (v : module.options)
+		for (v : ir.options)
 		{
 			if (jsonOptions.has(v.name))
 			{
@@ -112,17 +114,17 @@ class ModuleInterpreter
 			}
 		}
 
-		module.functions.filter[body === null].forEach[f | context.resolveFunction(f)]
+		ir.functions.filter[body === null].forEach[f | context.resolveFunction(f)]
 
-		// Interprete declarations
-		for (v : module.variables)
+		// Interprete variables that are not options
+		for (v : ir.variables.filter[!option])
 			context.addVariableValue(v, createValue(v, context))
 
 		// Copy Node Cooords
-		context.addVariableValue(module.initNodeCoordVariable, new NV2Real(context.meshWrapper.nodes))
+		context.addVariableValue(ir.initNodeCoordVariable, new NV2Real(context.meshWrapper.nodes))
 
 		// Interprete Top level jobs
-		for (j : module.main.calls)
+		for (j : ir.main.calls)
 			jobInterpreter.interprete(j, context)
 
 		// Non regression testing
@@ -151,7 +153,7 @@ class ModuleInterpreter
 	{
 		levelDBcompareResult
 	}
-	
+
 	private def createDB(String db_name)
 	{
 		val levelDBOptions = new Options()
@@ -166,7 +168,7 @@ class ModuleInterpreter
 		val batch = db.createWriteBatch();
 		try
 		{
-			for (v : module.variables)
+			for (v : ir.variables.filter[!option])
 				batch.put(bytes(v.name), context.getVariableValue(v).serialize);
 
 			db.write(batch);
@@ -180,6 +182,6 @@ class ModuleInterpreter
 		System.out.println("Reference database " + db_name + " created.");
 	}
 
-	private def getRefDBName() { levelDatabasePath + module.name + "DB.ref" }
-	private def getCurDBName() { levelDatabasePath + module.name + "DB.current" }
+	private def getRefDBName() { levelDatabasePath + ir.name + "DB.ref" }
+	private def getCurDBName() { levelDatabasePath + ir.name + "DB.current" }
 }

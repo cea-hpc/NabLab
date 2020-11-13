@@ -13,10 +13,9 @@ import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.NablaStandaloneSetup
 import fr.cea.nabla.NablagenStandaloneSetup
-import fr.cea.nabla.generator.IrModuleTransformer
 import fr.cea.nabla.generator.NablagenInterpreter
-import fr.cea.nabla.ir.interpreter.ModuleInterpreter
-import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.interpreter.IrInterpreter
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nablagen.NablagenModule
@@ -38,7 +37,6 @@ class CompilationChainHelper
 	@Inject extension ValidationTestHelper
 	@Inject Provider<NablagenInterpreter> interpreterProvider
 	@Inject Provider<ResourceSet> resourceSetProvider
-	@Inject IrModuleTransformer transformer
 
 	var nablaSetup = new NablaStandaloneSetup
 	var nablaInjector = nablaSetup.createInjectorAndDoEMFRegistration
@@ -54,45 +52,16 @@ class CompilationChainHelper
 	/** 
 	 * Returns a module ready for interpretation i.e. with no reduction instruction.
 	 */
-	def getIrModuleForInterpretation(CharSequence model, CharSequence genModel)
+	def getIrForInterpretation(CharSequence model, CharSequence genModel)
 	{
-		val irModule = getIrModule(model, genModel)
+		val ir = getIr(model, genModel)
 		// Suppress all reductions (replaced by loops)
-		transformer.transformIr(new ReplaceReductions(true), irModule)
-		return irModule
+		val t = new ReplaceReductions(true)
+		t.transformIr(ir)
+		return ir
 	}
 
-	def getInterpreterContext(IrModule irModule, String jsonContent)
-	{
-		val handler = new ConsoleHandler
-		handler.level = Level::OFF
-		val moduleInterpreter = new ModuleInterpreter(irModule, handler)
-		return moduleInterpreter.interprete(jsonContent)
-	}
-
-	def void generateCode(CharSequence model, CharSequence genModel, String projectDir)
-	{
-		val interpreter = interpreterProvider.get
-		val irModule = getIrModule(model, genModel)
-		val config = getnablaGenConfig(model, genModel)
-		interpreter.generateCode(irModule, config.targets, config.simulation.iterationMax.name, config.simulation.timeMax.name, projectDir, config.levelDB)
-	}
-
-	def getTargets(CharSequence model, CharSequence genModel)
-	{
-		val config = getnablaGenConfig(model, genModel)
-		return config.targets
-	}
-
-	private def getIrModule(CharSequence model, CharSequence genModel)
-	{
-		val interpreter = interpreterProvider.get
-		val projectDir = pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples"
-		val config = getnablaGenConfig(model, genModel)
-		return interpreter.buildIrModule(config, projectDir)
-	}
-
-	private def getnablaGenConfig(CharSequence model, CharSequence genModel)
+	def getNgen(CharSequence model, CharSequence genModel)
 	{
 		var rs = resourceSetProvider.get
 
@@ -111,9 +80,30 @@ class CompilationChainHelper
 		var nablaGenModule = nablagenParseHelper.parse(genModel, rs)
 		nablaGenModule.assertNoErrors
 
-		if (nablaGenModule.config === null)
-			throw new RuntimeException("Problem with nablagen configuration file")
+		return nablaGenModule
+	}
 
-		return nablaGenModule.config
+	def getInterpreterContext(IrRoot ir, String jsonContent)
+	{
+		val handler = new ConsoleHandler
+		handler.level = Level::OFF
+		val moduleInterpreter = new IrInterpreter(ir, handler)
+		return moduleInterpreter.interprete(jsonContent)
+	}
+
+	def void generateCode(CharSequence model, CharSequence genModel, String projectDir)
+	{
+		val interpreter = interpreterProvider.get
+		val ir = getIr(model, genModel)
+		val ngen = getNgen(model, genModel)
+		interpreter.generateCode(ir, ngen.config.targets, ngen.config.simulation.iterationMax.name, ngen.config.simulation.timeMax.name, projectDir, ngen.config.levelDB)
+	}
+
+	private def getIr(CharSequence model, CharSequence genModel)
+	{
+		val interpreter = interpreterProvider.get
+		val projectDir = pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples"
+		val ngen = getNgen(model, genModel)
+		return interpreter.buildIr(ngen, projectDir)
 	}
 }

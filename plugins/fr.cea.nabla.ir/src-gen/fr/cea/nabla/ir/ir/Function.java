@@ -13,10 +13,10 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * </p>
  * <ul>
+ *   <li>{@link fr.cea.nabla.ir.ir.Function#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getProvider <em>Provider</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getVariables <em>Variables</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Function#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getInArgs <em>In Args</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getBody <em>Body</em>}</li>
  * </ul>

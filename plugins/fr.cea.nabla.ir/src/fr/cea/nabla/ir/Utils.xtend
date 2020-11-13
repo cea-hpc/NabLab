@@ -9,14 +9,15 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import java.io.PrintWriter
 import java.io.StringWriter
 import org.eclipse.emf.ecore.EObject
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 
-class Utils 
+class Utils
 {
 	public static val FunctionReductionPrefix = 'Functions'
 	public static val OutputPathNameAndValue = new Pair<String, String>("outputPath", "output")
@@ -28,6 +29,13 @@ class Utils
 		if (o === null) null
 		else if (o instanceof IrModule) o
 		else o.eContainer.irModule
+	}
+
+	static def IrRoot getIrRoot(EObject o)
+	{
+		if (o === null) null
+		else if (o instanceof IrRoot) o
+		else o.eContainer.irRoot
 	}
 
 	static def getUtfExponent(int x)

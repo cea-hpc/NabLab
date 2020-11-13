@@ -10,10 +10,12 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
+import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.TimeIterator
 
+@Singleton
 class IrJobFactory
 {
 	@Inject extension IrAnnotationHelper

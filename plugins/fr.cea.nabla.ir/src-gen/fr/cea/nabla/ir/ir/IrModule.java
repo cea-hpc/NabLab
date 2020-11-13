@@ -14,19 +14,11 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getName <em>Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getItemTypes <em>Item Types</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getType <em>Type</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#isMain <em>Main</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getFunctions <em>Functions</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getConnectivities <em>Connectivities</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getOptions <em>Options</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getVariables <em>Variables</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getMeshClassName <em>Mesh Class Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getTimeVariable <em>Time Variable</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getTimeStepVariable <em>Time Step Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getJobs <em>Jobs</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getPostProcessing <em>Post Processing</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getMain <em>Main</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule()
@@ -57,16 +49,48 @@ public interface IrModule extends IrAnnotable {
 	void setName(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Item Types</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ItemType}.
+	 * Returns the value of the '<em><b>Type</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Item Types</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_ItemTypes()
-	 * @model containment="true" resolveProxies="true"
+	 * @return the value of the '<em>Type</em>' attribute.
+	 * @see #setType(String)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Type()
+	 * @model unique="false" required="true"
 	 * @generated
 	 */
-	EList<ItemType> getItemTypes();
+	String getType();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getType <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Type</em>' attribute.
+	 * @see #getType()
+	 * @generated
+	 */
+	void setType(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Main</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Main</em>' attribute.
+	 * @see #setMain(boolean)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Main()
+	 * @model required="true"
+	 * @generated
+	 */
+	boolean isMain();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#isMain <em>Main</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Main</em>' attribute.
+	 * @see #isMain()
+	 * @generated
+	 */
+	void setMain(boolean value);
 
 	/**
 	 * Returns the value of the '<em><b>Functions</b></em>' containment reference list.
@@ -81,30 +105,6 @@ public interface IrModule extends IrAnnotable {
 	EList<Function> getFunctions();
 
 	/**
-	 * Returns the value of the '<em><b>Connectivities</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Connectivity}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Connectivities</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Connectivities()
-	 * @model containment="true"
-	 * @generated
-	 */
-	EList<Connectivity> getConnectivities();
-
-	/**
-	 * Returns the value of the '<em><b>Options</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.SimpleVariable}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Options</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Options()
-	 * @model containment="true" resolveProxies="true"
-	 * @generated
-	 */
-	EList<SimpleVariable> getOptions();
-
-	/**
 	 * Returns the value of the '<em><b>Variables</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Variable}.
 	 * <!-- begin-user-doc -->
@@ -117,116 +117,6 @@ public interface IrModule extends IrAnnotable {
 	EList<Variable> getVariables();
 
 	/**
-	 * Returns the value of the '<em><b>Mesh Class Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Mesh Class Name</em>' attribute.
-	 * @see #setMeshClassName(String)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_MeshClassName()
-	 * @model required="true"
-	 * @generated
-	 */
-	String getMeshClassName();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getMeshClassName <em>Mesh Class Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Mesh Class Name</em>' attribute.
-	 * @see #getMeshClassName()
-	 * @generated
-	 */
-	void setMeshClassName(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Init Node Coord Variable</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Init Node Coord Variable</em>' reference.
-	 * @see #setInitNodeCoordVariable(ConnectivityVariable)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_InitNodeCoordVariable()
-	 * @model required="true"
-	 * @generated
-	 */
-	ConnectivityVariable getInitNodeCoordVariable();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Init Node Coord Variable</em>' reference.
-	 * @see #getInitNodeCoordVariable()
-	 * @generated
-	 */
-	void setInitNodeCoordVariable(ConnectivityVariable value);
-
-	/**
-	 * Returns the value of the '<em><b>Node Coord Variable</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Node Coord Variable</em>' reference.
-	 * @see #setNodeCoordVariable(ConnectivityVariable)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_NodeCoordVariable()
-	 * @model required="true"
-	 * @generated
-	 */
-	ConnectivityVariable getNodeCoordVariable();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getNodeCoordVariable <em>Node Coord Variable</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Node Coord Variable</em>' reference.
-	 * @see #getNodeCoordVariable()
-	 * @generated
-	 */
-	void setNodeCoordVariable(ConnectivityVariable value);
-
-	/**
-	 * Returns the value of the '<em><b>Time Variable</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Time Variable</em>' reference.
-	 * @see #setTimeVariable(SimpleVariable)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_TimeVariable()
-	 * @model required="true"
-	 * @generated
-	 */
-	SimpleVariable getTimeVariable();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getTimeVariable <em>Time Variable</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Time Variable</em>' reference.
-	 * @see #getTimeVariable()
-	 * @generated
-	 */
-	void setTimeVariable(SimpleVariable value);
-
-	/**
-	 * Returns the value of the '<em><b>Time Step Variable</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Time Step Variable</em>' reference.
-	 * @see #setTimeStepVariable(SimpleVariable)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_TimeStepVariable()
-	 * @model required="true"
-	 * @generated
-	 */
-	SimpleVariable getTimeStepVariable();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getTimeStepVariable <em>Time Step Variable</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Time Step Variable</em>' reference.
-	 * @see #getTimeStepVariable()
-	 * @generated
-	 */
-	void setTimeStepVariable(SimpleVariable value);
-
-	/**
 	 * Returns the value of the '<em><b>Jobs</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Job}.
 	 * <!-- begin-user-doc -->
@@ -237,49 +127,5 @@ public interface IrModule extends IrAnnotable {
 	 * @generated
 	 */
 	EList<Job> getJobs();
-
-	/**
-	 * Returns the value of the '<em><b>Post Processing</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Post Processing</em>' containment reference.
-	 * @see #setPostProcessing(PostProcessing)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_PostProcessing()
-	 * @model containment="true" resolveProxies="true"
-	 * @generated
-	 */
-	PostProcessing getPostProcessing();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getPostProcessing <em>Post Processing</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Post Processing</em>' containment reference.
-	 * @see #getPostProcessing()
-	 * @generated
-	 */
-	void setPostProcessing(PostProcessing value);
-
-	/**
-	 * Returns the value of the '<em><b>Main</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Main</em>' containment reference.
-	 * @see #setMain(JobCaller)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Main()
-	 * @model containment="true" resolveProxies="true"
-	 * @generated
-	 */
-	JobCaller getMain();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrModule#getMain <em>Main</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Main</em>' containment reference.
-	 * @see #getMain()
-	 * @generated
-	 */
-	void setMain(JobCaller value);
 
 } // IrModule

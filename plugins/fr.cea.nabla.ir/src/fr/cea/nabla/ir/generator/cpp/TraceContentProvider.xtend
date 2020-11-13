@@ -26,13 +26,13 @@ class TraceContentProvider
 		std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 	'''
 
-	def getBeginOfSimuTrace(IrModule it, String simuName)
+	def getBeginOfSimuTrace(IrModule it)
 	'''
-		std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting «simuName» ..." << __RESET__ << "\n\n";
+		std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting «type» ..." << __RESET__ << "\n\n";
 
 		«hwlocTraceContent»
 
-		«IF postProcessing === null»
+		«IF irRoot.postProcessing === null»
 		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 		«ELSE»
 		if (!writer.isDisabled())
@@ -47,7 +47,7 @@ class TraceContentProvider
 		«IF isTopLoop»
 		if («iterationVarName»!=1)
 			std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << «iterationVarName» << __RESET__ "] t = " << __BOLD__
-				<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << «timeVariable.codeName» << __RESET__;
+				<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << «irRoot.timeVariable.codeName» << __RESET__;
 		«ENDIF»
 	'''
 
@@ -55,6 +55,7 @@ class TraceContentProvider
 	'''
 		«val maxIterationsVar = getVariableByName(maxIterationsVarName)»
 		«val stopTimeVar = getVariableByName(stopTimeVarName)»
+		«val ir = irRoot»
 		«IF isTopLoop»
 		// Timers display
 		«IF hasWriter»
@@ -65,9 +66,9 @@ class TraceContentProvider
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 
 		// Progress
-		std::cout << utils::progress_bar(«iterationVarName», «maxIterationsVar.codeName», «timeVariable.codeName», «stopTimeVar.codeName», 25);
+		std::cout << utils::progress_bar(«iterationVarName», «maxIterationsVar.codeName», «ir.timeVariable.codeName», «stopTimeVar.codeName», 25);
 		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(«iterationVarName», «maxIterationsVar.codeName», «timeVariable.codeName», «stopTimeVar.codeName», «timeStepVariable.codeName», globalTimer), true)
+			utils::eta(«iterationVarName», «maxIterationsVar.codeName», «ir.timeVariable.codeName», «stopTimeVar.codeName», «ir.timeStepVariable.codeName», globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 		«ENDIF»

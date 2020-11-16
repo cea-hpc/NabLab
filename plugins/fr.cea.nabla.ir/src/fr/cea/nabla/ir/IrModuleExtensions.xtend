@@ -23,7 +23,18 @@ class IrModuleExtensions
 		eContainer as IrRoot
 	}
 
-	static def String[] getAllProviders(IrModule it)
+	static def getPostProcessing(IrModule it)
+	{
+		if (main) irRoot.postProcessing
+		else null
+	}
+
+	static def getMeshClassName(IrModule it)
+	{
+		irRoot.meshClassName
+	}
+
+	static def String[] getFunctionProviderClasses(IrModule it)
 	{
 		functions.filter[x | x.provider!='Math' && x.body===null].map[provider + Utils::FunctionReductionPrefix].toSet
 	}

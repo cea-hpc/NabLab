@@ -19,7 +19,6 @@ using namespace nablalib;
 /******************** Free functions declarations ********************/
 
 
-
 /******************** Module declaration ********************/
 
 class DepthInit
@@ -30,11 +29,12 @@ public:
 		double maxTime;
 		int maxIter;
 		double deltat;
+		DepthInitFunctions depthInitFunctions;
 
-		void jsonInit(const rapidjson::Value::ConstObject& d);
+		void jsonInit(const rapidjson::Value& json);
 	};
 
-	DepthInit(CartesianMesh2D* aMesh, const Options& aOptions, DepthInitFunctions& aDepthInitFunctions);
+	DepthInit(CartesianMesh2D* aMesh, Options& aOptions);
 	~DepthInit();
 
 private:
@@ -42,9 +42,8 @@ private:
 	CartesianMesh2D* mesh;
 	size_t nbCells, nbNodes;
 	
-	// User options and external classes
-	const Options& options;
-	DepthInitFunctions& depthInitFunctions;
+	// User options
+	Options& options;
 	
 	// Global variables
 	static constexpr double t = 0.0;
@@ -55,8 +54,7 @@ private:
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;
 
-	void initFromFile() noexcept;
-
 public:
+	void initFromFile() noexcept;
 	void simulate();
 };

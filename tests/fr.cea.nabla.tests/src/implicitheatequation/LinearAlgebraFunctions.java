@@ -16,11 +16,15 @@ import org.apache.commons.math3.linear.ConjugateGradient;
 import org.apache.commons.math3.linear.IterativeLinearSolver;
 import org.apache.commons.math3.linear.RealVector;
 
+import com.google.gson.JsonElement;
+
 import fr.cea.nabla.javalib.types.Matrix;
 import fr.cea.nabla.javalib.types.Vector;
 
 public class LinearAlgebraFunctions 
 {
+	public void jsonInit(JsonElement json) {}
+
 	public static Vector solveLinearSystem(Matrix a, Vector b)
 	{
 		final RealVector x = solveLinearSystem(a.getNativeMatrix(), b.getNativeVector());

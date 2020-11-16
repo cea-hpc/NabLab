@@ -69,62 +69,63 @@ double maxR0(double a, double b)
 	return std::max(a, b);
 }
 
-
 /******************** Options definition ********************/
 
 void
-IterativeHeatEquation::Options::jsonInit(const rapidjson::Value::ConstObject& d)
+IterativeHeatEquation::Options::jsonInit(const rapidjson::Value& json)
 {
+	assert(json.IsObject());
+	const rapidjson::Value::ConstObject& o = json.GetObject();
 	// outputPath
-	assert(d.HasMember("outputPath"));
-	const rapidjson::Value& valueof_outputPath = d["outputPath"];
+	assert(o.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = o["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	// outputPeriod
-	assert(d.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = d["outputPeriod"];
+	assert(o.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
 	// u0
-	if (d.HasMember("u0"))
+	if (o.HasMember("u0"))
 	{
-		const rapidjson::Value& valueof_u0 = d["u0"];
+		const rapidjson::Value& valueof_u0 = o["u0"];
 		assert(valueof_u0.IsDouble());
 		u0 = valueof_u0.GetDouble();
 	}
 	else
 		u0 = 1.0;
 	// stopTime
-	if (d.HasMember("stopTime"))
+	if (o.HasMember("stopTime"))
 	{
-		const rapidjson::Value& valueof_stopTime = d["stopTime"];
+		const rapidjson::Value& valueof_stopTime = o["stopTime"];
 		assert(valueof_stopTime.IsDouble());
 		stopTime = valueof_stopTime.GetDouble();
 	}
 	else
 		stopTime = 0.1;
 	// maxIterations
-	if (d.HasMember("maxIterations"))
+	if (o.HasMember("maxIterations"))
 	{
-		const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
+		const rapidjson::Value& valueof_maxIterations = o["maxIterations"];
 		assert(valueof_maxIterations.IsInt());
 		maxIterations = valueof_maxIterations.GetInt();
 	}
 	else
 		maxIterations = 500000000;
 	// maxIterationsK
-	if (d.HasMember("maxIterationsK"))
+	if (o.HasMember("maxIterationsK"))
 	{
-		const rapidjson::Value& valueof_maxIterationsK = d["maxIterationsK"];
+		const rapidjson::Value& valueof_maxIterationsK = o["maxIterationsK"];
 		assert(valueof_maxIterationsK.IsInt());
 		maxIterationsK = valueof_maxIterationsK.GetInt();
 	}
 	else
 		maxIterationsK = 1000;
 	// epsilon
-	if (d.HasMember("epsilon"))
+	if (o.HasMember("epsilon"))
 	{
-		const rapidjson::Value& valueof_epsilon = d["epsilon"];
+		const rapidjson::Value& valueof_epsilon = o["epsilon"];
 		assert(valueof_epsilon.IsDouble());
 		epsilon = valueof_epsilon.GetDouble();
 	}
@@ -134,7 +135,7 @@ IterativeHeatEquation::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 
 /******************** Module definition ********************/
 
-IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D* aMesh, const Options& aOptions)
+IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D* aMesh, Options& aOptions)
 : mesh(aMesh)
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
@@ -705,8 +706,6 @@ void IterativeHeatEquation::simulate()
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
 
-/******************** Module definition ********************/
-
 int main(int argc, char* argv[]) 
 {
 	Kokkos::initialize(argc, argv);
@@ -733,21 +732,17 @@ int main(int argc, char* argv[])
 	
 	// mesh
 	assert(d.HasMember("mesh"));
-	const rapidjson::Value& valueof_mesh = d["mesh"];
-	assert(valueof_mesh.IsObject());
 	CartesianMesh2DFactory meshFactory;
-	meshFactory.jsonInit(valueof_mesh.GetObject());
+	meshFactory.jsonInit(d["mesh"]);
 	CartesianMesh2D* mesh = meshFactory.create();
 	
-	// options
-	IterativeHeatEquation::Options options;
-	assert(d.HasMember("options"));
-	const rapidjson::Value& valueof_options = d["options"];
-	assert(valueof_options.IsObject());
-	options.jsonInit(valueof_options.GetObject());
+	// iterativeHeatEquation
+	IterativeHeatEquation::Options IterativeHeatEquation_options;
+	if (d.HasMember("iterativeHeatEquation"))
+		IterativeHeatEquation_options.jsonInit(d["iterativeHeatEquation"]);
 	
 	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-	auto simulator = new IterativeHeatEquation(mesh, options);
+	auto simulator = new IterativeHeatEquation(mesh, IterativeHeatEquation_options);
 	simulator->simulate();
 	
 	// simulator must be deleted before calling finalize

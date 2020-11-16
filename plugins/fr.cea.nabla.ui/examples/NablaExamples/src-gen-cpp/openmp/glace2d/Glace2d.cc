@@ -100,107 +100,108 @@ double minR0(double a, double b)
 	return std::min(a, b);
 }
 
-
 /******************** Options definition ********************/
 
 void
-Glace2d::Options::jsonInit(const rapidjson::Value::ConstObject& d)
+Glace2d::Options::jsonInit(const rapidjson::Value& json)
 {
+	assert(json.IsObject());
+	const rapidjson::Value::ConstObject& o = json.GetObject();
 	// outputPath
-	assert(d.HasMember("outputPath"));
-	const rapidjson::Value& valueof_outputPath = d["outputPath"];
+	assert(o.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = o["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	// outputPeriod
-	assert(d.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = d["outputPeriod"];
+	assert(o.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
 	// stopTime
-	if (d.HasMember("stopTime"))
+	if (o.HasMember("stopTime"))
 	{
-		const rapidjson::Value& valueof_stopTime = d["stopTime"];
+		const rapidjson::Value& valueof_stopTime = o["stopTime"];
 		assert(valueof_stopTime.IsDouble());
 		stopTime = valueof_stopTime.GetDouble();
 	}
 	else
 		stopTime = 0.2;
 	// maxIterations
-	if (d.HasMember("maxIterations"))
+	if (o.HasMember("maxIterations"))
 	{
-		const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
+		const rapidjson::Value& valueof_maxIterations = o["maxIterations"];
 		assert(valueof_maxIterations.IsInt());
 		maxIterations = valueof_maxIterations.GetInt();
 	}
 	else
 		maxIterations = 20000;
 	// gamma
-	if (d.HasMember("gamma"))
+	if (o.HasMember("gamma"))
 	{
-		const rapidjson::Value& valueof_gamma = d["gamma"];
+		const rapidjson::Value& valueof_gamma = o["gamma"];
 		assert(valueof_gamma.IsDouble());
 		gamma = valueof_gamma.GetDouble();
 	}
 	else
 		gamma = 1.4;
 	// xInterface
-	if (d.HasMember("xInterface"))
+	if (o.HasMember("xInterface"))
 	{
-		const rapidjson::Value& valueof_xInterface = d["xInterface"];
+		const rapidjson::Value& valueof_xInterface = o["xInterface"];
 		assert(valueof_xInterface.IsDouble());
 		xInterface = valueof_xInterface.GetDouble();
 	}
 	else
 		xInterface = 0.5;
 	// deltatIni
-	if (d.HasMember("deltatIni"))
+	if (o.HasMember("deltatIni"))
 	{
-		const rapidjson::Value& valueof_deltatIni = d["deltatIni"];
+		const rapidjson::Value& valueof_deltatIni = o["deltatIni"];
 		assert(valueof_deltatIni.IsDouble());
 		deltatIni = valueof_deltatIni.GetDouble();
 	}
 	else
 		deltatIni = 1.0E-5;
 	// deltatCfl
-	if (d.HasMember("deltatCfl"))
+	if (o.HasMember("deltatCfl"))
 	{
-		const rapidjson::Value& valueof_deltatCfl = d["deltatCfl"];
+		const rapidjson::Value& valueof_deltatCfl = o["deltatCfl"];
 		assert(valueof_deltatCfl.IsDouble());
 		deltatCfl = valueof_deltatCfl.GetDouble();
 	}
 	else
 		deltatCfl = 0.4;
 	// rhoIniZg
-	if (d.HasMember("rhoIniZg"))
+	if (o.HasMember("rhoIniZg"))
 	{
-		const rapidjson::Value& valueof_rhoIniZg = d["rhoIniZg"];
+		const rapidjson::Value& valueof_rhoIniZg = o["rhoIniZg"];
 		assert(valueof_rhoIniZg.IsDouble());
 		rhoIniZg = valueof_rhoIniZg.GetDouble();
 	}
 	else
 		rhoIniZg = 1.0;
 	// rhoIniZd
-	if (d.HasMember("rhoIniZd"))
+	if (o.HasMember("rhoIniZd"))
 	{
-		const rapidjson::Value& valueof_rhoIniZd = d["rhoIniZd"];
+		const rapidjson::Value& valueof_rhoIniZd = o["rhoIniZd"];
 		assert(valueof_rhoIniZd.IsDouble());
 		rhoIniZd = valueof_rhoIniZd.GetDouble();
 	}
 	else
 		rhoIniZd = 0.125;
 	// pIniZg
-	if (d.HasMember("pIniZg"))
+	if (o.HasMember("pIniZg"))
 	{
-		const rapidjson::Value& valueof_pIniZg = d["pIniZg"];
+		const rapidjson::Value& valueof_pIniZg = o["pIniZg"];
 		assert(valueof_pIniZg.IsDouble());
 		pIniZg = valueof_pIniZg.GetDouble();
 	}
 	else
 		pIniZg = 1.0;
 	// pIniZd
-	if (d.HasMember("pIniZd"))
+	if (o.HasMember("pIniZd"))
 	{
-		const rapidjson::Value& valueof_pIniZd = d["pIniZd"];
+		const rapidjson::Value& valueof_pIniZd = o["pIniZd"];
 		assert(valueof_pIniZd.IsDouble());
 		pIniZd = valueof_pIniZd.GetDouble();
 	}
@@ -210,7 +211,7 @@ Glace2d::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 
 /******************** Module definition ********************/
 
-Glace2d::Glace2d(CartesianMesh2D* aMesh, const Options& aOptions)
+Glace2d::Glace2d(CartesianMesh2D* aMesh, Options& aOptions)
 : mesh(aMesh)
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
@@ -945,8 +946,6 @@ void Glace2d::simulate()
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
 
-/******************** Module definition ********************/
-
 int main(int argc, char* argv[]) 
 {
 	string dataFile;
@@ -972,21 +971,17 @@ int main(int argc, char* argv[])
 	
 	// mesh
 	assert(d.HasMember("mesh"));
-	const rapidjson::Value& valueof_mesh = d["mesh"];
-	assert(valueof_mesh.IsObject());
 	CartesianMesh2DFactory meshFactory;
-	meshFactory.jsonInit(valueof_mesh.GetObject());
+	meshFactory.jsonInit(d["mesh"]);
 	CartesianMesh2D* mesh = meshFactory.create();
 	
-	// options
-	Glace2d::Options options;
-	assert(d.HasMember("options"));
-	const rapidjson::Value& valueof_options = d["options"];
-	assert(valueof_options.IsObject());
-	options.jsonInit(valueof_options.GetObject());
+	// glace2d
+	Glace2d::Options Glace2d_options;
+	if (d.HasMember("glace2d"))
+		Glace2d_options.jsonInit(d["glace2d"]);
 	
 	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-	auto simulator = new Glace2d(mesh, options);
+	auto simulator = new Glace2d(mesh, Glace2d_options);
 	simulator->simulate();
 	
 	// simulator must be deleted before calling finalize

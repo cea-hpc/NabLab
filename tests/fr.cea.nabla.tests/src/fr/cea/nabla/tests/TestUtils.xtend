@@ -73,7 +73,7 @@ class TestUtils
 	def String getJsonContent(int nbXQuads, int nbYQuads)
 	'''
 		{
-			"options":
+			"test":
 			{
 			},
 			"mesh":

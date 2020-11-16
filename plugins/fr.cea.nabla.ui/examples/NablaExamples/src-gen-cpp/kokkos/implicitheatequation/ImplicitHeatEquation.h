@@ -39,7 +39,6 @@ double sumR0(double a, double b);
 KOKKOS_INLINE_FUNCTION
 double prodR0(double a, double b);
 
-
 /******************** Module declaration ********************/
 
 class ImplicitHeatEquation
@@ -52,11 +51,12 @@ public:
 		double u0;
 		double stopTime;
 		int maxIterations;
+		LinearAlgebraFunctions linearAlgebraFunctions;
 
-		void jsonInit(const rapidjson::Value::ConstObject& d);
+		void jsonInit(const rapidjson::Value& json);
 	};
 
-	ImplicitHeatEquation(CartesianMesh2D* aMesh, const Options& aOptions, LinearAlgebraFunctions& aLinearAlgebraFunctions);
+	ImplicitHeatEquation(CartesianMesh2D* aMesh, Options& aOptions);
 	~ImplicitHeatEquation();
 
 private:
@@ -64,9 +64,8 @@ private:
 	CartesianMesh2D* mesh;
 	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
 	
-	// User options and external classes
-	const Options& options;
-	LinearAlgebraFunctions& linearAlgebraFunctions;
+	// User options
+	Options& options;
 	PvdFileWriter2D writer;
 	
 	// Global variables
@@ -90,41 +89,30 @@ private:
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;
 
-	KOKKOS_INLINE_FUNCTION
-	void computeFaceLength() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeTn() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeV() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void initD() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void initXc() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void updateU() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeDeltaTn() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeFaceConductivity() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void initU() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeAlphaCoeff() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void executeTimeLoopN() noexcept;
-
 	void dumpVariables(int iteration, bool useTimer=true);
 
 public:
+	KOKKOS_INLINE_FUNCTION
+	void computeFaceLength() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeTn() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeV() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void initD() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void initXc() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void updateU() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeDeltaTn() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeFaceConductivity() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void initU() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeAlphaCoeff() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void executeTimeLoopN() noexcept;
 	void simulate();
 };

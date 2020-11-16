@@ -24,25 +24,28 @@ namespace nablalib
    */
 
 void
-CartesianMesh2DFactory::jsonInit(const rapidjson::Value::ConstObject& d)
+CartesianMesh2DFactory::jsonInit(const rapidjson::Value& json)
 {
-	assert(d.HasMember("nbXQuads"));
-	const rapidjson::Value& valueof_nbXQuads = d["nbXQuads"];
+	assert(json.IsObject());
+	const rapidjson::Value::ConstObject& o = json.GetObject();
+
+	assert(o.HasMember("nbXQuads"));
+	const rapidjson::Value& valueof_nbXQuads = o["nbXQuads"];
 	assert(valueof_nbXQuads.IsInt());
 	nbXQuads = valueof_nbXQuads.GetInt();
 
-	assert(d.HasMember("nbYQuads"));
-	const rapidjson::Value& valueof_nbYQuads = d["nbYQuads"];
+	assert(o.HasMember("nbYQuads"));
+	const rapidjson::Value& valueof_nbYQuads = o["nbYQuads"];
 	assert(valueof_nbYQuads.IsInt());
 	nbYQuads = valueof_nbYQuads.GetInt();
 
-	assert(d.HasMember("xSize"));
-	const rapidjson::Value& valueof_xSize = d["xSize"];
+	assert(o.HasMember("xSize"));
+	const rapidjson::Value& valueof_xSize = o["xSize"];
 	assert(valueof_xSize.IsDouble());
 	xSize = valueof_xSize.GetDouble();
 
-	assert(d.HasMember("ySize"));
-	const rapidjson::Value& valueof_ySize = d["ySize"];
+	assert(o.HasMember("ySize"));
+	const rapidjson::Value& valueof_ySize = o["ySize"];
 	assert(valueof_ySize.IsDouble());
 	ySize = valueof_ySize.GetDouble();
 }

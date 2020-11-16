@@ -38,7 +38,6 @@ double sumR0(double a, double b);
 KOKKOS_INLINE_FUNCTION
 double prodR0(double a, double b);
 
-
 /******************** Module declaration ********************/
 
 class ExplicitHeatEquation
@@ -52,10 +51,10 @@ public:
 		double stopTime;
 		int maxIterations;
 
-		void jsonInit(const rapidjson::Value::ConstObject& d);
+		void jsonInit(const rapidjson::Value& json);
 	};
 
-	ExplicitHeatEquation(CartesianMesh2D* aMesh, const Options& aOptions);
+	ExplicitHeatEquation(CartesianMesh2D* aMesh, Options& aOptions);
 	~ExplicitHeatEquation();
 
 private:
@@ -63,8 +62,8 @@ private:
 	CartesianMesh2D* mesh;
 	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
 	
-	// User options and external classes
-	const Options& options;
+	// User options
+	Options& options;
 	PvdFileWriter2D writer;
 	
 	// Global variables
@@ -89,47 +88,37 @@ private:
 	utils::Timer ioTimer;
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
+	void dumpVariables(int iteration, bool useTimer=true);
+
 	/**
 	 * Utility function to get work load for each team of threads
 	 * In  : thread and number of element to use for computation
 	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
 	 */
 	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void computeFaceLength(const member_type& teamMember) noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeTn() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeV(const member_type& teamMember) noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void initD(const member_type& teamMember) noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void initXc(const member_type& teamMember) noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void updateU(const member_type& teamMember) noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeDeltaTn(const member_type& teamMember) noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeFaceConductivity(const member_type& teamMember) noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void initU(const member_type& teamMember) noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeAlphaCoeff(const member_type& teamMember) noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void executeTimeLoopN() noexcept;
-
-	void dumpVariables(int iteration, bool useTimer=true);
 
 public:
+	KOKKOS_INLINE_FUNCTION
+	void computeFaceLength(const member_type& teamMember) noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeTn() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeV(const member_type& teamMember) noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void initD(const member_type& teamMember) noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void initXc(const member_type& teamMember) noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void updateU(const member_type& teamMember) noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeDeltaTn(const member_type& teamMember) noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeFaceConductivity(const member_type& teamMember) noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void initU(const member_type& teamMember) noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeAlphaCoeff(const member_type& teamMember) noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void executeTimeLoopN() noexcept;
 	void simulate();
 };

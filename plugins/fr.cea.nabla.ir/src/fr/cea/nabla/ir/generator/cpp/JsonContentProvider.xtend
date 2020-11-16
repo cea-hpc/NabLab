@@ -26,13 +26,13 @@ class JsonContentProvider
 	'''
 		// «name»
 		«IF defaultValue === null»
-			assert(d.HasMember("«name»"));
-			const rapidjson::Value& «jsonName» = d["«name»"];
+			assert(o.HasMember("«name»"));
+			const rapidjson::Value& «jsonName» = o["«name»"];
 			«getJsonContent(it, type.sizes, #[])»
 		«ELSE»
-			if (d.HasMember("«name»"))
+			if (o.HasMember("«name»"))
 			{
-				const rapidjson::Value& «jsonName» = d["«name»"];
+				const rapidjson::Value& «jsonName» = o["«name»"];
 				«getJsonContent(it, type.sizes, #[])»
 			}
 			else

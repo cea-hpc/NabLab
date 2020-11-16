@@ -6,19 +6,13 @@ import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.stream.IntStream;
 
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.WriteBatch;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
 import fr.cea.nabla.javalib.types.*;
@@ -30,44 +24,53 @@ public final class DepthInit
 {
 	public final static class Options
 	{
-		public String nonRegression;
 		public double maxTime;
 		public int maxIter;
 		public double deltat;
-	}
+		public DepthInitFunctions depthInitFunctions;
+		public String nonRegression;
 
-	public final static class OptionsDeserializer implements JsonDeserializer<Options>
-	{
-		@Override
-		public Options deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		public void jsonInit(JsonElement json)
 		{
-			final JsonObject d = json.getAsJsonObject();
-			Options options = new Options();
+			assert(json.isJsonObject());
+			final JsonObject o = json.getAsJsonObject();
 			// maxTime
-			if (d.has("maxTime"))
+			if (o.has("maxTime"))
 			{
-				final JsonElement valueof_maxTime = d.get("maxTime");
-				options.maxTime = valueof_maxTime.getAsJsonPrimitive().getAsDouble();
+				final JsonElement valueof_maxTime = o.get("maxTime");
+				assert(valueof_maxTime.isJsonPrimitive());
+				maxTime = valueof_maxTime.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.maxTime = 0.1;
+				maxTime = 0.1;
 			// maxIter
-			if (d.has("maxIter"))
+			if (o.has("maxIter"))
 			{
-				final JsonElement valueof_maxIter = d.get("maxIter");
-				options.maxIter = valueof_maxIter.getAsJsonPrimitive().getAsInt();
+				final JsonElement valueof_maxIter = o.get("maxIter");
+				assert(valueof_maxIter.isJsonPrimitive());
+				maxIter = valueof_maxIter.getAsJsonPrimitive().getAsInt();
 			}
 			else
-				options.maxIter = 500;
+				maxIter = 500;
 			// deltat
-			if (d.has("deltat"))
+			if (o.has("deltat"))
 			{
-				final JsonElement valueof_deltat = d.get("deltat");
-				options.deltat = valueof_deltat.getAsJsonPrimitive().getAsDouble();
+				final JsonElement valueof_deltat = o.get("deltat");
+				assert(valueof_deltat.isJsonPrimitive());
+				deltat = valueof_deltat.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.deltat = 1.0;
-			return options;
+				deltat = 1.0;
+			// depthInitFunctions
+			depthInitFunctions = new DepthInitFunctions();
+			if (o.has("depthInitFunctions"))
+				depthInitFunctions.jsonInit(o.get("depthInitFunctions"));
+			// Non regression
+			if (o.has("nonRegression"))
+			{
+				final JsonElement valueof_nonRegression = o.get("nonRegression");
+				nonRegression = valueof_nonRegression.getAsJsonPrimitive().getAsString();
+			}
 		}
 	}
 
@@ -75,25 +78,23 @@ public final class DepthInit
 	private final CartesianMesh2D mesh;
 	private final int nbCells, nbNodes;
 
-	// User options and external classes
-	private final Options options;
-	private DepthInitFunctions depthInitFunctions;
+	// User options
+	protected final Options options;
 
 	// Global variables
-	private final double t;
-	private double[][] X;
-	private double[] eta;
+	protected final double t;
+	protected double[][] X;
+	protected double[] eta;
 
-	public DepthInit(CartesianMesh2D aMesh, Options aOptions, DepthInitFunctions aDepthInitFunctions)
+	public DepthInit(CartesianMesh2D aMesh, Options aOptions)
 	{
 		// Mesh and mesh variables initialization
 		mesh = aMesh;
 		nbCells = mesh.getNbCells();
 		nbNodes = mesh.getNbNodes();
 
-		// User options and external classes initialization
+		// User options
 		options = aOptions;
-		depthInitFunctions = aDepthInitFunctions;
 
 		// Initialize variables with default values
 		t = 0.0;
@@ -111,51 +112,6 @@ public final class DepthInit
 		});
 	}
 
-	public void simulate()
-	{
-		System.out.println("Start execution of module DepthInit");
-		initFromFile(); // @1.0
-		System.out.println("End of execution of module DepthInit");
-	}
-
-	public static void main(String[] args) throws IOException
-	{
-		if (args.length == 1)
-		{
-			String dataFileName = args[0];
-			JsonParser parser = new JsonParser();
-			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
-			GsonBuilder gsonBuilder = new GsonBuilder();
-			gsonBuilder.registerTypeAdapter(Options.class, new DepthInit.OptionsDeserializer());
-			Gson gson = gsonBuilder.create();
-
-			assert(o.has("mesh"));
-			CartesianMesh2DFactory meshFactory = gson.fromJson(o.get("mesh"), CartesianMesh2DFactory.class);
-			CartesianMesh2D mesh = meshFactory.create();
-			assert(o.has("options"));
-			DepthInit.Options options = gson.fromJson(o.get("options"), DepthInit.Options.class);
-			DepthInitFunctions depthInitFunctions = (o.has("depthInitFunctions") ? gson.fromJson(o.get("depthInitFunctions"), DepthInitFunctions.class) : new DepthInitFunctions());
-
-			DepthInit simulator = new DepthInit(mesh, options, depthInitFunctions);
-			simulator.simulate();
-
-			// Non regression testing
-			if (options.nonRegression!=null &&  options.nonRegression.equals("CreateReference"))
-				simulator.createDB("DepthInitDB.ref");
-			if (options.nonRegression!=null &&  options.nonRegression.equals("CompareToReference"))
-			{
-				simulator.createDB("DepthInitDB.current");
-				LevelDBUtils.compareDB("DepthInitDB.current", "DepthInitDB.ref");
-				LevelDBUtils.destroyDB("DepthInitDB.current");
-			}
-		}
-		else
-		{
-			System.out.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-			System.out.println("        Expecting user data file name, for example DepthInitDefault.json");
-		}
-	}
-
 	/**
 	 * Job initFromFile called @1.0 in simulate method.
 	 * In variables: 
@@ -165,7 +121,55 @@ public final class DepthInit
 	{
 		for (int jCells=0; jCells<nbCells; jCells++)
 		{
-			eta[jCells] = depthInitFunctions.nextWaveHeight();
+			eta[jCells] = options.depthInitFunctions.nextWaveHeight();
+		}
+	}
+
+	public void simulate()
+	{
+		System.out.println("Start execution of DepthInit");
+		initFromFile(); // @1.0
+		System.out.println("End of execution of DepthInit");
+	}
+
+	public static void main(String[] args) throws IOException
+	{
+		if (args.length == 1)
+		{
+			String dataFileName = args[0];
+			JsonParser parser = new JsonParser();
+			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
+			int ret = 0;
+
+			assert(o.has("mesh"));
+			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
+			meshFactory.jsonInit(o.get("mesh"));
+			CartesianMesh2D mesh = meshFactory.create();
+
+			DepthInit.Options depthInitOptions = new DepthInit.Options();
+			if (o.has("depthInit"))
+				depthInitOptions.jsonInit(o.get("depthInit"));
+
+			DepthInit simulator = new DepthInit(mesh, depthInitOptions);
+			simulator.simulate();
+
+			// Non regression testing
+			if (depthInitOptions.nonRegression != null && depthInitOptions.nonRegression.equals("CreateReference"))
+				simulator.createDB("DepthInitDB.ref");
+			if (depthInitOptions.nonRegression != null && depthInitOptions.nonRegression.equals("CompareToReference"))
+			{
+				simulator.createDB("DepthInitDB.current");
+				if (!LevelDBUtils.compareDB("DepthInitDB.current", "DepthInitDB.ref"))
+					ret = 1;
+				LevelDBUtils.destroyDB("DepthInitDB.current");
+				System.exit(ret);
+			}
+		}
+		else
+		{
+			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
+			System.err.println("        Expecting user data file name, for example DepthInitDefault.json");
+			System.exit(1);
 		}
 	}
 

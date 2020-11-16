@@ -52,7 +52,6 @@ RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b);
 KOKKOS_INLINE_FUNCTION
 double minR0(double a, double b);
 
-
 /******************** Module declaration ********************/
 
 class Glace2d
@@ -73,10 +72,10 @@ public:
 		double pIniZg;
 		double pIniZd;
 
-		void jsonInit(const rapidjson::Value::ConstObject& d);
+		void jsonInit(const rapidjson::Value& json);
 	};
 
-	Glace2d(CartesianMesh2D* aMesh, const Options& aOptions);
+	Glace2d(CartesianMesh2D* aMesh, Options& aOptions);
 	~Glace2d();
 
 private:
@@ -84,8 +83,8 @@ private:
 	CartesianMesh2D* mesh;
 	size_t nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, nbNodesOfCell, nbCellsOfNode;
 	
-	// User options and external classes
-	const Options& options;
+	// User options
+	Options& options;
 	PvdFileWriter2D writer;
 	
 	// Global variables
@@ -124,83 +123,58 @@ private:
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;
 
-	KOKKOS_INLINE_FUNCTION
-	void computeCjr() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeInternalEnergy() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void iniCjrIc() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void setUpTimeLoopN() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeLjr() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeV() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void initialize() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeDensity() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void executeTimeLoopN() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeEOSp() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeEOSc() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeAjr() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computedeltatj() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeAr() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeBr() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeDt() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeBoundaryConditions() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeBt() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeMt() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeTn() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeU() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeFjr() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeXn() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeEn() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeUn() noexcept;
-
 	void dumpVariables(int iteration, bool useTimer=true);
 
 public:
+	KOKKOS_INLINE_FUNCTION
+	void computeCjr() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeInternalEnergy() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void iniCjrIc() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void setUpTimeLoopN() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeLjr() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeV() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void initialize() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeDensity() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void executeTimeLoopN() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeEOSp() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeEOSc() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeAjr() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computedeltatj() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeAr() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeBr() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeDt() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeBoundaryConditions() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeBt() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeMt() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeTn() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeU() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeFjr() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeXn() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeEn() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeUn() noexcept;
 	void simulate();
 };

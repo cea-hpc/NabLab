@@ -25,21 +25,18 @@ class AttributesContentProvider
 	protected val extension ExpressionContentProvider
 	protected def CharSequence getAdditionalContent() { null }
 
-	def getContentFor(IrModule m)
+	def getContentFor(IrModule it)
 	'''
 		// Mesh and mesh variables
-		«m.irRoot.meshClassName»* mesh;
-		«FOR c : m.irRoot.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
+		«meshClassName»* mesh;
+		«FOR c : irRoot.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
 
-		// User options and external classes
-		const Options& options;
-		«FOR s : m.allProviders»
-		«s»& «s.toFirstLower»;
-		«ENDFOR»
-		«IF m.irRoot.postProcessing !== null»PvdFileWriter2D writer;«ENDIF»
+		// User options
+		Options& options;
+		«IF postProcessing !== null»PvdFileWriter2D writer;«ENDIF»
 
 		// Global variables
-		«FOR v : m.variables.filter[!option]»
+		«FOR v : variables.filter[!option]»
 			«v.variableDeclaration»
 		«ENDFOR»
 

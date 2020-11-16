@@ -20,7 +20,7 @@ class Ir2CppUtils
 	{
 		if (body === null)
 			if (provider == "Math") 'std::' + name
-			else provider.toFirstLower + Utils::FunctionReductionPrefix + '.' + name
+			else 'options.' + provider.toFirstLower + Utils::FunctionReductionPrefix + '.' + name
 		else name
 	}
 

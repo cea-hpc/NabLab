@@ -1,5 +1,5 @@
 {
-	"options":
+	"implicitHeatEquation":
 	{
 		"_outputPath_comment":"empty outputPath to disable output",
 		"outputPath":"output",

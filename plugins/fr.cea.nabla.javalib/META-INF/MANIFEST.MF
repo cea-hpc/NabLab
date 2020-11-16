@@ -12,5 +12,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: CEA
 Require-Bundle: commons-math3;bundle-version="3.6.1",
  leveldb;bundle-version="0.13.0",
- org.apache.commons.io;bundle-version="2.6.0"
+ org.apache.commons.io;bundle-version="2.6.0",
+ com.google.gson
 

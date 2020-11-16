@@ -9,9 +9,9 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.SimpleVariable
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 

@@ -21,7 +21,7 @@ class CartesianMesh2D;
 class CartesianMesh2DFactory
 {
 public:
-	void jsonInit(const rapidjson::Value::ConstObject& d);
+	void jsonInit(const rapidjson::Value& json);
 	CartesianMesh2D* create();
 
 private:

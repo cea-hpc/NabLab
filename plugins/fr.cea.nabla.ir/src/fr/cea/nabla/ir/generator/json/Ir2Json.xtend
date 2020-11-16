@@ -11,13 +11,15 @@ package fr.cea.nabla.ir.generator.json
 
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.generator.CodeGenerator
+import fr.cea.nabla.ir.interpreter.Context
 import fr.cea.nabla.ir.interpreter.IrInterpreter
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
+import java.util.ArrayList
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
 class Ir2Json extends CodeGenerator 
 {
@@ -32,39 +34,46 @@ class Ir2Json extends CodeGenerator
 
 	override getFileContentsByName(IrRoot ir)
 	{
-		#{ name + 'Default.json' -> ir.jsonFileContent }
-	}
-
-	private def getJsonFileContent(IrRoot ir)
-	{
 		// Create the interpreter and interprete option values
 		val context = ir.interpreteDefinitions
-		val options = ir.options
+		#{ ir.name + 'Default.json' -> getJsonFileContent(context, ir) }
+	}
 
-		// Create Json
-		'''
+	private def getJsonFileContent(Context context, IrRoot rootModel)
+	'''
 		{
 			"_comment": "Generated file - Do not overwrite",
-			"options":
+			«FOR irModule : rootModel.modules»
+			"«irModule.name.toFirstLower»":
 			{
-				«IF ir.postProcessing !== null»
-				"_outputPath_comment":"empty outputPath to disable output",
-				"«Utils.OutputPathNameAndValue.key»":"«Utils.OutputPathNameAndValue.value»"«IF levelDB || !options.empty»,«ENDIF»
-				«ENDIF»
-				«FOR i : 0..<options.length»
-				"«options.get(i).name»":«context.getVariableValue(options.get(i)).content»«IF i<options.length -1 || levelDB»,«ENDIF»
+				«FOR jsonValue : getJsonValues(context, irModule) SEPARATOR ","»
+				"«jsonValue.key»":"«jsonValue.value»"
 				«ENDFOR»
-				«IF levelDB»
-				"_nonRegression_comment":"empty value to disable, «Utils.NonRegressionValues.CreateReference.toString» or «Utils.NonRegressionValues.CompareToReference.toString» to take action",
-				"«Utils.NonRegressionNameAndValue.key»":"«Utils.NonRegressionNameAndValue.value»"
-				«ENDIF»
 			},
-			"mesh":{}«IF !ir.mainModule.allProviders.empty»,«ENDIF»
-			«FOR s : ir.mainModule.allProviders SEPARATOR ","»
-			"«s.toFirstLower»":{}
 			«ENDFOR»
+			"mesh":{}
 		}
-		'''
+	'''
+
+	private def getJsonValues(Context context, IrModule irModule)
+	{
+		val values = new ArrayList<Pair<String, String>>
+		if (irModule.postProcessing !== null)
+		{
+			values += new Pair("_outputPath_comment", "empty outputPath to disable output")
+			values += Utils.OutputPathNameAndValue
+		}
+		for (option : irModule.options)
+			values += new Pair(option.name, context.getVariableValue(option).content)
+		for (providerClass : irModule.functionProviderClasses)
+			values += new Pair(providerClass.toFirstLower, "")
+		if (irModule.main && levelDB)
+		{
+			val value = "empty value to disable, " + Utils.NonRegressionValues.CreateReference.toString + " or " + Utils.NonRegressionValues.CompareToReference.toString + " to take action"
+			values += new Pair("_nonRegression_comment", value)
+			values += Utils.NonRegressionNameAndValue
+		}
+		return values
 	}
 
 	private def interpreteDefinitions(IrRoot ir)

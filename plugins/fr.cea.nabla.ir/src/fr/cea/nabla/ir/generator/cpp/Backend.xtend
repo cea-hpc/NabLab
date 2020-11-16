@@ -29,7 +29,6 @@ abstract class Backend
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) FunctionContentProvider functionContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JobCallerContentProvider jobCallerContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JobContentProvider jobContentProvider
-	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) PrivateMethodsContentProvider privateMethodsContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) MainContentProvider mainContentProvider
 }
 
@@ -51,8 +50,7 @@ class SequentialBackend extends Backend
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
 		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, getJobCallerContentProvider)
-		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider)
-		mainContentProvider = new MainContentProvider(levelDBPath)
+		mainContentProvider = new MainContentProvider(levelDBPath, jsonContentProvider)
 	}
 }
 
@@ -73,8 +71,7 @@ class StlThreadBackend extends Backend
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
 		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, getJobCallerContentProvider)
-		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider)
-		mainContentProvider = new MainContentProvider(levelDBPath)
+		mainContentProvider = new MainContentProvider(levelDBPath, jsonContentProvider)
 	}
 }
 
@@ -95,8 +92,7 @@ class KokkosBackend extends Backend
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
 		jobContentProvider = new KokkosJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, getJobCallerContentProvider)
-		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider)
-		mainContentProvider = new KokkosMainContentProvider(levelDBPath)
+		mainContentProvider = new KokkosMainContentProvider(levelDBPath, jsonContentProvider)
 	}
 }
 
@@ -117,8 +113,7 @@ class KokkosTeamThreadBackend extends Backend
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new KokkosTeamThreadJobCallerContentProvider
 		jobContentProvider = new KokkosTeamThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, getJobCallerContentProvider)
-		privateMethodsContentProvider = new KokkosTeamThreadPrivateMethodsContentProvider(jobContentProvider)
-		mainContentProvider = new KokkosMainContentProvider(levelDBPath)
+		mainContentProvider = new KokkosMainContentProvider(levelDBPath, jsonContentProvider)
 	}
 }
 
@@ -139,8 +134,7 @@ class OpenMpBackend extends Backend
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
 		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, getJobCallerContentProvider)
-		privateMethodsContentProvider = new PrivateMethodsContentProvider(jobContentProvider)
-		mainContentProvider = new MainContentProvider(levelDBPath)
+		mainContentProvider = new MainContentProvider(levelDBPath, jsonContentProvider)
 	}
 }
 

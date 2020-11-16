@@ -27,7 +27,7 @@ class LinearAlgebraFunctions
   };
   CGInfo m_info;
 
-  void jsonInit(const rapidjson::Value::ConstObject& d) {}
+  void jsonInit(const rapidjson::Value& json) {}
   std::string print(const NablaSparseMatrix& M);
   std::string printMatlabStyle(const NablaSparseMatrix& M, std::string A);
 

@@ -27,17 +27,17 @@ class JsonContentProvider
 	'''
 		// «name»
 		«IF defaultValue === null»
-			assert(d.has("«name»"));
-			final JsonElement «jsonName» = d.get("«name»");
+			assert(o.has("«name»"));
+			final JsonElement «jsonName» = o.get("«name»");
 			«getJsonContent(it, type.sizes, #[])»
 		«ELSE»
-			if (d.has("«name»"))
+			if (o.has("«name»"))
 			{
-				final JsonElement «name.jsonName» = d.get("«name»");
+				final JsonElement «name.jsonName» = o.get("«name»");
 				«getJsonContent(it, type.sizes, #[])»
 			}
 			else
-				options.«name» = «defaultValue.content»;
+				«name» = «defaultValue.content»;
 		«ENDIF»
 	'''
 
@@ -47,7 +47,7 @@ class JsonContentProvider
 		if (sizes.empty)
 		'''
 			assert(«v.jsonName»«FOR i : indices».getAsJsonArray().get(«i»)«ENDFOR».isJsonPrimitive());
-			options.«v.name»«FOR i : indices»[«i»]«ENDFOR» = «v.jsonName»«FOR i : indices».getAsJsonArray().get(«i»)«ENDFOR».getAsJsonPrimitive().getAs«primitive.jsonType»();
+			«v.name»«FOR i : indices»[«i»]«ENDFOR» = «v.jsonName»«FOR i : indices».getAsJsonArray().get(«i»)«ENDFOR».getAsJsonPrimitive().getAs«primitive.jsonType»();
 		'''
 		else
 		'''

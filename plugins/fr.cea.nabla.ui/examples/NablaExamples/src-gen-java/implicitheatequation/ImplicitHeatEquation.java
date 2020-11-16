@@ -6,19 +6,13 @@ import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.stream.IntStream;
 
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.WriteBatch;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
 import fr.cea.nabla.javalib.types.*;
@@ -33,63 +27,63 @@ public final class ImplicitHeatEquation
 	public final static class Options
 	{
 		public String outputPath;
-		public String nonRegression;
 		public int outputPeriod;
 		public double u0;
 		public double stopTime;
 		public int maxIterations;
-	}
+		public LinearAlgebraFunctions linearAlgebraFunctions;
+		public String nonRegression;
 
-	public final static class OptionsDeserializer implements JsonDeserializer<Options>
-	{
-		@Override
-		public Options deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		public void jsonInit(JsonElement json)
 		{
-			final JsonObject d = json.getAsJsonObject();
-			Options options = new Options();
+			assert(json.isJsonObject());
+			final JsonObject o = json.getAsJsonObject();
 			// outputPath
-			assert(d.has("outputPath"));
-			final JsonElement valueof_outputPath = d.get("outputPath");
-			options.outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
-			// Non regression
-			if(d.has("nonRegression"))
-			{
-				final JsonElement valueof_nonRegression = d.get("nonRegression");
-				options.nonRegression = valueof_nonRegression.getAsJsonPrimitive().getAsString();
-			}
+			assert(o.has("outputPath"));
+			final JsonElement valueof_outputPath = o.get("outputPath");
+			outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
 			// outputPeriod
-			assert(d.has("outputPeriod"));
-			final JsonElement valueof_outputPeriod = d.get("outputPeriod");
+			assert(o.has("outputPeriod"));
+			final JsonElement valueof_outputPeriod = o.get("outputPeriod");
 			assert(valueof_outputPeriod.isJsonPrimitive());
-			options.outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
+			outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
 			// u0
-			if (d.has("u0"))
+			if (o.has("u0"))
 			{
-				final JsonElement valueof_u0 = d.get("u0");
+				final JsonElement valueof_u0 = o.get("u0");
 				assert(valueof_u0.isJsonPrimitive());
-				options.u0 = valueof_u0.getAsJsonPrimitive().getAsDouble();
+				u0 = valueof_u0.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.u0 = 1.0;
+				u0 = 1.0;
 			// stopTime
-			if (d.has("stopTime"))
+			if (o.has("stopTime"))
 			{
-				final JsonElement valueof_stopTime = d.get("stopTime");
+				final JsonElement valueof_stopTime = o.get("stopTime");
 				assert(valueof_stopTime.isJsonPrimitive());
-				options.stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
+				stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.stopTime = 1.0;
+				stopTime = 1.0;
 			// maxIterations
-			if (d.has("maxIterations"))
+			if (o.has("maxIterations"))
 			{
-				final JsonElement valueof_maxIterations = d.get("maxIterations");
+				final JsonElement valueof_maxIterations = o.get("maxIterations");
 				assert(valueof_maxIterations.isJsonPrimitive());
-				options.maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
+				maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
 			}
 			else
-				options.maxIterations = 500000000;
-			return options;
+				maxIterations = 500000000;
+			// linearAlgebraFunctions
+			linearAlgebraFunctions = new LinearAlgebraFunctions();
+			if (o.has("linearAlgebraFunctions"))
+				linearAlgebraFunctions.jsonInit(o.get("linearAlgebraFunctions"));
+			// Non regression
+			if (o.has("nonRegression"))
+			{
+				final JsonElement valueof_nonRegression = o.get("nonRegression");
+				nonRegression = valueof_nonRegression.getAsJsonPrimitive().getAsString();
+			}
 		}
 	}
 
@@ -97,29 +91,28 @@ public final class ImplicitHeatEquation
 	private final CartesianMesh2D mesh;
 	private final int nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
 
-	// User options and external classes
-	private final Options options;
-	private LinearAlgebraFunctions linearAlgebraFunctions;
-	private final FileWriter writer;
+	// User options
+	protected final Options options;
+	protected final FileWriter writer;
 
 	// Global variables
-	private int lastDump;
-	private int n;
-	private final double[] vectOne;
-	private double t_n;
-	private double t_nplus1;
-	private double deltat;
-	private double[][] X;
-	private double[][] Xc;
-	private Vector u_n;
-	private Vector u_nplus1;
-	private double[] V;
-	private double[] D;
-	private double[] faceLength;
-	private double[] faceConductivity;
-	private Matrix alpha;
+	protected int lastDump;
+	protected int n;
+	protected final double[] vectOne;
+	protected double t_n;
+	protected double t_nplus1;
+	protected double deltat;
+	protected double[][] X;
+	protected double[][] Xc;
+	protected Vector u_n;
+	protected Vector u_nplus1;
+	protected double[] V;
+	protected double[] D;
+	protected double[] faceLength;
+	protected double[] faceConductivity;
+	protected Matrix alpha;
 
-	public ImplicitHeatEquation(CartesianMesh2D aMesh, Options aOptions, LinearAlgebraFunctions aLinearAlgebraFunctions)
+	public ImplicitHeatEquation(CartesianMesh2D aMesh, Options aOptions)
 	{
 		// Mesh and mesh variables initialization
 		mesh = aMesh;
@@ -131,9 +124,8 @@ public final class ImplicitHeatEquation
 		nbCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
 		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
 
-		// User options and external classes initialization
+		// User options
 		options = aOptions;
-		linearAlgebraFunctions = aLinearAlgebraFunctions;
 		writer = new PvdFileWriter2D("ImplicitHeatEquation", options.outputPath);
 
 		// Initialize variables with default values
@@ -161,63 +153,6 @@ public final class ImplicitHeatEquation
 			X[rNodes][0] = gNodes[rNodes][0];
 			X[rNodes][1] = gNodes[rNodes][1];
 		});
-	}
-
-	public void simulate()
-	{
-		System.out.println("Start execution of module ImplicitHeatEquation");
-		computeFaceLength(); // @1.0
-		computeV(); // @1.0
-		initD(); // @1.0
-		initXc(); // @1.0
-		computeDeltaTn(); // @2.0
-		computeFaceConductivity(); // @2.0
-		initU(); // @2.0
-		computeAlphaCoeff(); // @3.0
-		executeTimeLoopN(); // @4.0
-		System.out.println("End of execution of module ImplicitHeatEquation");
-	}
-
-	public static void main(String[] args) throws IOException
-	{
-		if (args.length == 1)
-		{
-			String dataFileName = args[0];
-			JsonParser parser = new JsonParser();
-			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
-			GsonBuilder gsonBuilder = new GsonBuilder();
-			gsonBuilder.registerTypeAdapter(Options.class, new ImplicitHeatEquation.OptionsDeserializer());
-			Gson gson = gsonBuilder.create();
-			int ret = 0;
-
-			assert(o.has("mesh"));
-			CartesianMesh2DFactory meshFactory = gson.fromJson(o.get("mesh"), CartesianMesh2DFactory.class);
-			CartesianMesh2D mesh = meshFactory.create();
-			assert(o.has("options"));
-			ImplicitHeatEquation.Options options = gson.fromJson(o.get("options"), ImplicitHeatEquation.Options.class);
-			LinearAlgebraFunctions linearAlgebraFunctions = (o.has("linearAlgebraFunctions") ? gson.fromJson(o.get("linearAlgebraFunctions"), LinearAlgebraFunctions.class) : new LinearAlgebraFunctions());
-
-			ImplicitHeatEquation simulator = new ImplicitHeatEquation(mesh, options, linearAlgebraFunctions);
-			simulator.simulate();
-
-			// Non regression testing
-			if (options.nonRegression!=null &&  options.nonRegression.equals("CreateReference"))
-				simulator.createDB("ImplicitHeatEquationDB.ref");
-			if (options.nonRegression!=null &&  options.nonRegression.equals("CompareToReference"))
-			{
-				simulator.createDB("ImplicitHeatEquationDB.current");
-				if (!LevelDBUtils.compareDB("ImplicitHeatEquationDB.current", "ImplicitHeatEquationDB.ref"))
-					ret = 1;
-				LevelDBUtils.destroyDB("ImplicitHeatEquationDB.current");
-				System.exit(ret);
-			}
-		}
-		else
-		{
-			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-			System.err.println("        Expecting user data file name, for example ImplicitHeatEquationDefault.json");
-			System.exit(1);
-		}
 	}
 
 	/**
@@ -329,7 +264,7 @@ public final class ImplicitHeatEquation
 	 */
 	private void updateU()
 	{
-		u_nplus1 = linearAlgebraFunctions.solveLinearSystem(alpha, u_n);
+		u_nplus1 = options.linearAlgebraFunctions.solveLinearSystem(alpha, u_n);
 	}
 
 	/**
@@ -510,6 +445,62 @@ public final class ImplicitHeatEquation
 	private double prodR0(double a, double b)
 	{
 		return a * b;
+	}
+
+	public void simulate()
+	{
+		System.out.println("Start execution of ImplicitHeatEquation");
+		computeFaceLength(); // @1.0
+		computeV(); // @1.0
+		initD(); // @1.0
+		initXc(); // @1.0
+		computeDeltaTn(); // @2.0
+		computeFaceConductivity(); // @2.0
+		initU(); // @2.0
+		computeAlphaCoeff(); // @3.0
+		executeTimeLoopN(); // @4.0
+		System.out.println("End of execution of ImplicitHeatEquation");
+	}
+
+	public static void main(String[] args) throws IOException
+	{
+		if (args.length == 1)
+		{
+			String dataFileName = args[0];
+			JsonParser parser = new JsonParser();
+			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
+			int ret = 0;
+
+			assert(o.has("mesh"));
+			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
+			meshFactory.jsonInit(o.get("mesh"));
+			CartesianMesh2D mesh = meshFactory.create();
+
+			ImplicitHeatEquation.Options implicitHeatEquationOptions = new ImplicitHeatEquation.Options();
+			if (o.has("implicitHeatEquation"))
+				implicitHeatEquationOptions.jsonInit(o.get("implicitHeatEquation"));
+
+			ImplicitHeatEquation simulator = new ImplicitHeatEquation(mesh, implicitHeatEquationOptions);
+			simulator.simulate();
+
+			// Non regression testing
+			if (implicitHeatEquationOptions.nonRegression != null && implicitHeatEquationOptions.nonRegression.equals("CreateReference"))
+				simulator.createDB("ImplicitHeatEquationDB.ref");
+			if (implicitHeatEquationOptions.nonRegression != null && implicitHeatEquationOptions.nonRegression.equals("CompareToReference"))
+			{
+				simulator.createDB("ImplicitHeatEquationDB.current");
+				if (!LevelDBUtils.compareDB("ImplicitHeatEquationDB.current", "ImplicitHeatEquationDB.ref"))
+					ret = 1;
+				LevelDBUtils.destroyDB("ImplicitHeatEquationDB.current");
+				System.exit(ret);
+			}
+		}
+		else
+		{
+			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
+			System.err.println("        Expecting user data file name, for example ImplicitHeatEquationDefault.json");
+			System.exit(1);
+		}
 	}
 
 	private void dumpVariables(int iteration)

@@ -6,19 +6,13 @@ import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.stream.IntStream;
 
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.WriteBatch;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
 import fr.cea.nabla.javalib.types.*;
@@ -31,7 +25,6 @@ public final class Glace2d
 	public final static class Options
 	{
 		public String outputPath;
-		public String nonRegression;
 		public int outputPeriod;
 		public double stopTime;
 		public int maxIterations;
@@ -43,121 +36,117 @@ public final class Glace2d
 		public double rhoIniZd;
 		public double pIniZg;
 		public double pIniZd;
-	}
+		public String nonRegression;
 
-	public final static class OptionsDeserializer implements JsonDeserializer<Options>
-	{
-		@Override
-		public Options deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		public void jsonInit(JsonElement json)
 		{
-			final JsonObject d = json.getAsJsonObject();
-			Options options = new Options();
+			assert(json.isJsonObject());
+			final JsonObject o = json.getAsJsonObject();
 			// outputPath
-			assert(d.has("outputPath"));
-			final JsonElement valueof_outputPath = d.get("outputPath");
-			options.outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
-			// Non regression
-			if(d.has("nonRegression"))
-			{
-				final JsonElement valueof_nonRegression = d.get("nonRegression");
-				options.nonRegression = valueof_nonRegression.getAsJsonPrimitive().getAsString();
-			}
+			assert(o.has("outputPath"));
+			final JsonElement valueof_outputPath = o.get("outputPath");
+			outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
 			// outputPeriod
-			assert(d.has("outputPeriod"));
-			final JsonElement valueof_outputPeriod = d.get("outputPeriod");
+			assert(o.has("outputPeriod"));
+			final JsonElement valueof_outputPeriod = o.get("outputPeriod");
 			assert(valueof_outputPeriod.isJsonPrimitive());
-			options.outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
+			outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
 			// stopTime
-			if (d.has("stopTime"))
+			if (o.has("stopTime"))
 			{
-				final JsonElement valueof_stopTime = d.get("stopTime");
+				final JsonElement valueof_stopTime = o.get("stopTime");
 				assert(valueof_stopTime.isJsonPrimitive());
-				options.stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
+				stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.stopTime = 0.2;
+				stopTime = 0.2;
 			// maxIterations
-			if (d.has("maxIterations"))
+			if (o.has("maxIterations"))
 			{
-				final JsonElement valueof_maxIterations = d.get("maxIterations");
+				final JsonElement valueof_maxIterations = o.get("maxIterations");
 				assert(valueof_maxIterations.isJsonPrimitive());
-				options.maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
+				maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
 			}
 			else
-				options.maxIterations = 20000;
+				maxIterations = 20000;
 			// gamma
-			if (d.has("gamma"))
+			if (o.has("gamma"))
 			{
-				final JsonElement valueof_gamma = d.get("gamma");
+				final JsonElement valueof_gamma = o.get("gamma");
 				assert(valueof_gamma.isJsonPrimitive());
-				options.gamma = valueof_gamma.getAsJsonPrimitive().getAsDouble();
+				gamma = valueof_gamma.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.gamma = 1.4;
+				gamma = 1.4;
 			// xInterface
-			if (d.has("xInterface"))
+			if (o.has("xInterface"))
 			{
-				final JsonElement valueof_xInterface = d.get("xInterface");
+				final JsonElement valueof_xInterface = o.get("xInterface");
 				assert(valueof_xInterface.isJsonPrimitive());
-				options.xInterface = valueof_xInterface.getAsJsonPrimitive().getAsDouble();
+				xInterface = valueof_xInterface.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.xInterface = 0.5;
+				xInterface = 0.5;
 			// deltatIni
-			if (d.has("deltatIni"))
+			if (o.has("deltatIni"))
 			{
-				final JsonElement valueof_deltatIni = d.get("deltatIni");
+				final JsonElement valueof_deltatIni = o.get("deltatIni");
 				assert(valueof_deltatIni.isJsonPrimitive());
-				options.deltatIni = valueof_deltatIni.getAsJsonPrimitive().getAsDouble();
+				deltatIni = valueof_deltatIni.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.deltatIni = 1.0E-5;
+				deltatIni = 1.0E-5;
 			// deltatCfl
-			if (d.has("deltatCfl"))
+			if (o.has("deltatCfl"))
 			{
-				final JsonElement valueof_deltatCfl = d.get("deltatCfl");
+				final JsonElement valueof_deltatCfl = o.get("deltatCfl");
 				assert(valueof_deltatCfl.isJsonPrimitive());
-				options.deltatCfl = valueof_deltatCfl.getAsJsonPrimitive().getAsDouble();
+				deltatCfl = valueof_deltatCfl.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.deltatCfl = 0.4;
+				deltatCfl = 0.4;
 			// rhoIniZg
-			if (d.has("rhoIniZg"))
+			if (o.has("rhoIniZg"))
 			{
-				final JsonElement valueof_rhoIniZg = d.get("rhoIniZg");
+				final JsonElement valueof_rhoIniZg = o.get("rhoIniZg");
 				assert(valueof_rhoIniZg.isJsonPrimitive());
-				options.rhoIniZg = valueof_rhoIniZg.getAsJsonPrimitive().getAsDouble();
+				rhoIniZg = valueof_rhoIniZg.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.rhoIniZg = 1.0;
+				rhoIniZg = 1.0;
 			// rhoIniZd
-			if (d.has("rhoIniZd"))
+			if (o.has("rhoIniZd"))
 			{
-				final JsonElement valueof_rhoIniZd = d.get("rhoIniZd");
+				final JsonElement valueof_rhoIniZd = o.get("rhoIniZd");
 				assert(valueof_rhoIniZd.isJsonPrimitive());
-				options.rhoIniZd = valueof_rhoIniZd.getAsJsonPrimitive().getAsDouble();
+				rhoIniZd = valueof_rhoIniZd.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.rhoIniZd = 0.125;
+				rhoIniZd = 0.125;
 			// pIniZg
-			if (d.has("pIniZg"))
+			if (o.has("pIniZg"))
 			{
-				final JsonElement valueof_pIniZg = d.get("pIniZg");
+				final JsonElement valueof_pIniZg = o.get("pIniZg");
 				assert(valueof_pIniZg.isJsonPrimitive());
-				options.pIniZg = valueof_pIniZg.getAsJsonPrimitive().getAsDouble();
+				pIniZg = valueof_pIniZg.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.pIniZg = 1.0;
+				pIniZg = 1.0;
 			// pIniZd
-			if (d.has("pIniZd"))
+			if (o.has("pIniZd"))
 			{
-				final JsonElement valueof_pIniZd = d.get("pIniZd");
+				final JsonElement valueof_pIniZd = o.get("pIniZd");
 				assert(valueof_pIniZd.isJsonPrimitive());
-				options.pIniZd = valueof_pIniZd.getAsJsonPrimitive().getAsDouble();
+				pIniZd = valueof_pIniZd.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.pIniZd = 0.1;
-			return options;
+				pIniZd = 0.1;
+			// Non regression
+			if (o.has("nonRegression"))
+			{
+				final JsonElement valueof_nonRegression = o.get("nonRegression");
+				nonRegression = valueof_nonRegression.getAsJsonPrimitive().getAsString();
+			}
 		}
 	}
 
@@ -165,41 +154,41 @@ public final class Glace2d
 	private final CartesianMesh2D mesh;
 	private final int nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, nbNodesOfCell, nbCellsOfNode;
 
-	// User options and external classes
-	private final Options options;
-	private final FileWriter writer;
+	// User options
+	protected final Options options;
+	protected final FileWriter writer;
 
 	// Global variables
-	private int lastDump;
-	private int n;
-	private double t_n;
-	private double t_nplus1;
-	private double deltat_n;
-	private double deltat_nplus1;
-	private double[][] X_n;
-	private double[][] X_nplus1;
-	private double[][] X_n0;
-	private double[][] b;
-	private double[][] bt;
-	private double[][][] Ar;
-	private double[][][] Mt;
-	private double[][] ur;
-	private double[] c;
-	private double[] m;
-	private double[] p;
-	private double[] rho;
-	private double[] e;
-	private double[] E_n;
-	private double[] E_nplus1;
-	private double[] V;
-	private double[] deltatj;
-	private double[][] uj_n;
-	private double[][] uj_nplus1;
-	private double[][] l;
-	private double[][][] Cjr_ic;
-	private double[][][] C;
-	private double[][][] F;
-	private double[][][][] Ajr;
+	protected int lastDump;
+	protected int n;
+	protected double t_n;
+	protected double t_nplus1;
+	protected double deltat_n;
+	protected double deltat_nplus1;
+	protected double[][] X_n;
+	protected double[][] X_nplus1;
+	protected double[][] X_n0;
+	protected double[][] b;
+	protected double[][] bt;
+	protected double[][][] Ar;
+	protected double[][][] Mt;
+	protected double[][] ur;
+	protected double[] c;
+	protected double[] m;
+	protected double[] p;
+	protected double[] rho;
+	protected double[] e;
+	protected double[] E_n;
+	protected double[] E_nplus1;
+	protected double[] V;
+	protected double[] deltatj;
+	protected double[][] uj_n;
+	protected double[][] uj_nplus1;
+	protected double[][] l;
+	protected double[][][] Cjr_ic;
+	protected double[][][] C;
+	protected double[][][] F;
+	protected double[][][][] Ajr;
 
 	public Glace2d(CartesianMesh2D aMesh, Options aOptions)
 	{
@@ -215,7 +204,7 @@ public final class Glace2d
 		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
 		nbCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
 
-		// User options and external classes initialization
+		// User options
 		options = aOptions;
 		writer = new PvdFileWriter2D("Glace2d", options.outputPath);
 
@@ -259,57 +248,6 @@ public final class Glace2d
 			X_n0[rNodes][0] = gNodes[rNodes][0];
 			X_n0[rNodes][1] = gNodes[rNodes][1];
 		});
-	}
-
-	public void simulate()
-	{
-		System.out.println("Start execution of module Glace2d");
-		iniCjrIc(); // @1.0
-		setUpTimeLoopN(); // @1.0
-		initialize(); // @2.0
-		executeTimeLoopN(); // @3.0
-		System.out.println("End of execution of module Glace2d");
-	}
-
-	public static void main(String[] args) throws IOException
-	{
-		if (args.length == 1)
-		{
-			String dataFileName = args[0];
-			JsonParser parser = new JsonParser();
-			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
-			GsonBuilder gsonBuilder = new GsonBuilder();
-			gsonBuilder.registerTypeAdapter(Options.class, new Glace2d.OptionsDeserializer());
-			Gson gson = gsonBuilder.create();
-			int ret = 0;
-
-			assert(o.has("mesh"));
-			CartesianMesh2DFactory meshFactory = gson.fromJson(o.get("mesh"), CartesianMesh2DFactory.class);
-			CartesianMesh2D mesh = meshFactory.create();
-			assert(o.has("options"));
-			Glace2d.Options options = gson.fromJson(o.get("options"), Glace2d.Options.class);
-
-			Glace2d simulator = new Glace2d(mesh, options);
-			simulator.simulate();
-
-			// Non regression testing
-			if (options.nonRegression!=null &&  options.nonRegression.equals("CreateReference"))
-				simulator.createDB("Glace2dDB.ref");
-			if (options.nonRegression!=null &&  options.nonRegression.equals("CompareToReference"))
-			{
-				simulator.createDB("Glace2dDB.current");
-				if (!LevelDBUtils.compareDB("Glace2dDB.current", "Glace2dDB.ref"))
-					ret = 1;
-				LevelDBUtils.destroyDB("Glace2dDB.current");
-				System.exit(ret);
-			}
-		}
-		else
-		{
-			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-			System.err.println("        Expecting user data file name, for example Glace2dDefault.json");
-			System.exit(1);
-		}
 	}
 
 	/**
@@ -1008,6 +946,57 @@ public final class Glace2d
 	private double minR0(double a, double b)
 	{
 		return Math.min(a, b);
+	}
+
+	public void simulate()
+	{
+		System.out.println("Start execution of Glace2d");
+		iniCjrIc(); // @1.0
+		setUpTimeLoopN(); // @1.0
+		initialize(); // @2.0
+		executeTimeLoopN(); // @3.0
+		System.out.println("End of execution of Glace2d");
+	}
+
+	public static void main(String[] args) throws IOException
+	{
+		if (args.length == 1)
+		{
+			String dataFileName = args[0];
+			JsonParser parser = new JsonParser();
+			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
+			int ret = 0;
+
+			assert(o.has("mesh"));
+			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
+			meshFactory.jsonInit(o.get("mesh"));
+			CartesianMesh2D mesh = meshFactory.create();
+
+			Glace2d.Options glace2dOptions = new Glace2d.Options();
+			if (o.has("glace2d"))
+				glace2dOptions.jsonInit(o.get("glace2d"));
+
+			Glace2d simulator = new Glace2d(mesh, glace2dOptions);
+			simulator.simulate();
+
+			// Non regression testing
+			if (glace2dOptions.nonRegression != null && glace2dOptions.nonRegression.equals("CreateReference"))
+				simulator.createDB("Glace2dDB.ref");
+			if (glace2dOptions.nonRegression != null && glace2dOptions.nonRegression.equals("CompareToReference"))
+			{
+				simulator.createDB("Glace2dDB.current");
+				if (!LevelDBUtils.compareDB("Glace2dDB.current", "Glace2dDB.ref"))
+					ret = 1;
+				LevelDBUtils.destroyDB("Glace2dDB.current");
+				System.exit(ret);
+			}
+		}
+		else
+		{
+			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
+			System.err.println("        Expecting user data file name, for example Glace2dDefault.json");
+			System.exit(1);
+		}
 	}
 
 	private void dumpVariables(int iteration)

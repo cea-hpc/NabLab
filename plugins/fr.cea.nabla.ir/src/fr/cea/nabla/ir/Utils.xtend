@@ -69,13 +69,13 @@ class Utils
 		return result.toString()
 	}
 
-	static def addNonRegressionTagToJsonFile(String jsonContent, String value)
+	static def addNonRegressionTagToJsonFile(String moduleName, String jsonContent, String value)
 	{
 		val gson = new Gson
 		val jsonObject = gson.fromJson(jsonContent, JsonObject)
 		// Read options in Json
-		if (!jsonObject.has("options")) throw new RuntimeException("Options block missing in Json")
-		val jsonOptions = jsonObject.get("options").asJsonObject
+		if (!jsonObject.has(moduleName.toFirstLower)) throw new RuntimeException("Options block missing in Json")
+		val jsonOptions = jsonObject.get(moduleName.toFirstLower).asJsonObject
 		val nrName = Utils.NonRegressionNameAndValue.key
 		jsonOptions.addProperty(nrName, value)
 		return gson.toJson(jsonObject)

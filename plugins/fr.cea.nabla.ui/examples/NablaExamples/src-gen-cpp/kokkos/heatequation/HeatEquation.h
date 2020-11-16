@@ -34,7 +34,6 @@ RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
 KOKKOS_INLINE_FUNCTION
 double sumR0(double a, double b);
 
-
 /******************** Module declaration ********************/
 
 class HeatEquation
@@ -49,10 +48,10 @@ public:
 		double PI;
 		double alpha;
 
-		void jsonInit(const rapidjson::Value::ConstObject& d);
+		void jsonInit(const rapidjson::Value& json);
 	};
 
-	HeatEquation(CartesianMesh2D* aMesh, const Options& aOptions);
+	HeatEquation(CartesianMesh2D* aMesh, Options& aOptions);
 	~HeatEquation();
 
 private:
@@ -60,8 +59,8 @@ private:
 	CartesianMesh2D* mesh;
 	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbNodesOfCell;
 	
-	// User options and external classes
-	const Options& options;
+	// User options
+	Options& options;
 	PvdFileWriter2D writer;
 	
 	// Global variables
@@ -83,35 +82,26 @@ private:
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;
 
-	KOKKOS_INLINE_FUNCTION
-	void computeOutgoingFlux() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeSurface() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeTn() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeV() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void iniCenter() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void iniF() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void computeUn() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void iniUn() noexcept;
-	
-	KOKKOS_INLINE_FUNCTION
-	void executeTimeLoopN() noexcept;
-
 	void dumpVariables(int iteration, bool useTimer=true);
 
 public:
+	KOKKOS_INLINE_FUNCTION
+	void computeOutgoingFlux() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeSurface() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeTn() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeV() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void iniCenter() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void iniF() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void computeUn() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void iniUn() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void executeTimeLoopN() noexcept;
 	void simulate();
 };

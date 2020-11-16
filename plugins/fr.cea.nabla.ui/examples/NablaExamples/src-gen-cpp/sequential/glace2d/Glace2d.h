@@ -37,7 +37,6 @@ template<size_t x>
 RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b);
 double minR0(double a, double b);
 
-
 /******************** Module declaration ********************/
 
 class Glace2d
@@ -58,10 +57,10 @@ public:
 		double pIniZg;
 		double pIniZd;
 
-		void jsonInit(const rapidjson::Value::ConstObject& d);
+		void jsonInit(const rapidjson::Value& json);
 	};
 
-	Glace2d(CartesianMesh2D* aMesh, const Options& aOptions);
+	Glace2d(CartesianMesh2D* aMesh, Options& aOptions);
 	~Glace2d();
 
 private:
@@ -69,8 +68,8 @@ private:
 	CartesianMesh2D* mesh;
 	size_t nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, nbNodesOfCell, nbCellsOfNode;
 	
-	// User options and external classes
-	const Options& options;
+	// User options
+	Options& options;
 	PvdFileWriter2D writer;
 	
 	// Global variables
@@ -109,58 +108,33 @@ private:
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;
 
-	void computeCjr() noexcept;
-	
-	void computeInternalEnergy() noexcept;
-	
-	void iniCjrIc() noexcept;
-	
-	void setUpTimeLoopN() noexcept;
-	
-	void computeLjr() noexcept;
-	
-	void computeV() noexcept;
-	
-	void initialize() noexcept;
-	
-	void computeDensity() noexcept;
-	
-	void executeTimeLoopN() noexcept;
-	
-	void computeEOSp() noexcept;
-	
-	void computeEOSc() noexcept;
-	
-	void computeAjr() noexcept;
-	
-	void computedeltatj() noexcept;
-	
-	void computeAr() noexcept;
-	
-	void computeBr() noexcept;
-	
-	void computeDt() noexcept;
-	
-	void computeBoundaryConditions() noexcept;
-	
-	void computeBt() noexcept;
-	
-	void computeMt() noexcept;
-	
-	void computeTn() noexcept;
-	
-	void computeU() noexcept;
-	
-	void computeFjr() noexcept;
-	
-	void computeXn() noexcept;
-	
-	void computeEn() noexcept;
-	
-	void computeUn() noexcept;
-
 	void dumpVariables(int iteration, bool useTimer=true);
 
 public:
+	void computeCjr() noexcept;
+	void computeInternalEnergy() noexcept;
+	void iniCjrIc() noexcept;
+	void setUpTimeLoopN() noexcept;
+	void computeLjr() noexcept;
+	void computeV() noexcept;
+	void initialize() noexcept;
+	void computeDensity() noexcept;
+	void executeTimeLoopN() noexcept;
+	void computeEOSp() noexcept;
+	void computeEOSc() noexcept;
+	void computeAjr() noexcept;
+	void computedeltatj() noexcept;
+	void computeAr() noexcept;
+	void computeBr() noexcept;
+	void computeDt() noexcept;
+	void computeBoundaryConditions() noexcept;
+	void computeBt() noexcept;
+	void computeMt() noexcept;
+	void computeTn() noexcept;
+	void computeU() noexcept;
+	void computeFjr() noexcept;
+	void computeXn() noexcept;
+	void computeEn() noexcept;
+	void computeUn() noexcept;
 	void simulate();
 };

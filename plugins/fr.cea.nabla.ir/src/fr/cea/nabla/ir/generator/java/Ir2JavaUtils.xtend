@@ -28,7 +28,7 @@ class Ir2JavaUtils
 				else
 					'Math.' + name
 			}
-			else provider.toFirstLower + Utils::FunctionReductionPrefix + '.' + name
+			else 'options.' + provider.toFirstLower + Utils::FunctionReductionPrefix + '.' + name
 		else name
 	}
 

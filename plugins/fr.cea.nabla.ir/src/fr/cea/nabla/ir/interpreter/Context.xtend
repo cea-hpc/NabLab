@@ -10,7 +10,7 @@
 package fr.cea.nabla.ir.interpreter
 
 import com.google.gson.Gson
-import com.google.gson.JsonObject
+import com.google.gson.JsonElement
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityCall
@@ -27,9 +27,9 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 import static fr.cea.nabla.ir.Utils.FunctionReductionPrefix
 
-import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
+import static extension fr.cea.nabla.ir.Utils.*
 
 class Context
 {
@@ -66,7 +66,7 @@ class Context
 		meshWrapper.connectivitySizes
 	}
 
-	def initMesh(Gson gson, JsonObject jsonMesh, Connectivity[] connectivities)
+	def initMesh(Gson gson, JsonElement jsonMesh, Connectivity[] connectivities)
 	{
 		meshWrapper = new CartesianMesh2DMeshWrapper(gson, jsonMesh)
 		meshWrapper.init(connectivities)

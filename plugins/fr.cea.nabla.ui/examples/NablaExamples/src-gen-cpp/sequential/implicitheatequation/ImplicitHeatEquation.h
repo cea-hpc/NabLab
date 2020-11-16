@@ -29,7 +29,6 @@ double minR0(double a, double b);
 double sumR0(double a, double b);
 double prodR0(double a, double b);
 
-
 /******************** Module declaration ********************/
 
 class ImplicitHeatEquation
@@ -42,11 +41,12 @@ public:
 		double u0;
 		double stopTime;
 		int maxIterations;
+		LinearAlgebraFunctions linearAlgebraFunctions;
 
-		void jsonInit(const rapidjson::Value::ConstObject& d);
+		void jsonInit(const rapidjson::Value& json);
 	};
 
-	ImplicitHeatEquation(CartesianMesh2D* aMesh, const Options& aOptions, LinearAlgebraFunctions& aLinearAlgebraFunctions);
+	ImplicitHeatEquation(CartesianMesh2D* aMesh, Options& aOptions);
 	~ImplicitHeatEquation();
 
 private:
@@ -54,9 +54,8 @@ private:
 	CartesianMesh2D* mesh;
 	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
 	
-	// User options and external classes
-	const Options& options;
-	LinearAlgebraFunctions& linearAlgebraFunctions;
+	// User options
+	Options& options;
 	PvdFileWriter2D writer;
 	
 	// Global variables
@@ -80,30 +79,19 @@ private:
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;
 
-	void computeFaceLength() noexcept;
-	
-	void computeTn() noexcept;
-	
-	void computeV() noexcept;
-	
-	void initD() noexcept;
-	
-	void initXc() noexcept;
-	
-	void updateU() noexcept;
-	
-	void computeDeltaTn() noexcept;
-	
-	void computeFaceConductivity() noexcept;
-	
-	void initU() noexcept;
-	
-	void computeAlphaCoeff() noexcept;
-	
-	void executeTimeLoopN() noexcept;
-
 	void dumpVariables(int iteration, bool useTimer=true);
 
 public:
+	void computeFaceLength() noexcept;
+	void computeTn() noexcept;
+	void computeV() noexcept;
+	void initD() noexcept;
+	void initXc() noexcept;
+	void updateU() noexcept;
+	void computeDeltaTn() noexcept;
+	void computeFaceConductivity() noexcept;
+	void initU() noexcept;
+	void computeAlphaCoeff() noexcept;
+	void executeTimeLoopN() noexcept;
 	void simulate();
 };

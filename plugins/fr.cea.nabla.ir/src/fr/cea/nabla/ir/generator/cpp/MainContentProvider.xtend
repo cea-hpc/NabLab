@@ -10,18 +10,18 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.Utils
-import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.IrModule
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
 @Data
-class MainContentProvider 
+class MainContentProvider
 {
 	val String levelDBPath
-	
-	def getContentFor(IrRoot it)
+	val extension JsonContentProvider jsonContentProvider
+
+	def getContentFor(IrModule it)
 	'''
 		string dataFile;
 		int ret = 0;
@@ -46,47 +46,32 @@ class MainContentProvider
 
 		// mesh
 		assert(d.HasMember("mesh"));
-		const rapidjson::Value& valueof_mesh = d["mesh"];
-		assert(valueof_mesh.IsObject());
 		«meshClassName»Factory meshFactory;
-		meshFactory.jsonInit(valueof_mesh.GetObject());
+		meshFactory.jsonInit(d["mesh"]);
 		«meshClassName»* mesh = meshFactory.create();
 
-		// options
-		«name»::Options options;
-		assert(d.HasMember("options"));
-		const rapidjson::Value& valueof_options = d["options"];
-		assert(valueof_options.IsObject());
-		options.jsonInit(valueof_options.GetObject());
-		«FOR s : mainModule.allProviders»
-
-		// «s.toFirstLower»
-		«s» «s.toFirstLower»;
-		if (d.HasMember("«s.toFirstLower»"))
-		{
-			const rapidjson::Value& valueof_«s.toFirstLower» = d["«s.toFirstLower»"];
-			assert(valueof_«s.toFirstLower».IsObject());
-			«s.toFirstLower».jsonInit(valueof_«s.toFirstLower».GetObject());
-		}
-		«ENDFOR»
+		// «name.toFirstLower»
+		«name»::Options «name»_options;
+		if (d.HasMember("«name.toFirstLower»"))
+			«name»_options.jsonInit(d["«name.toFirstLower»"]);
 
 		// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-		auto simulator = new «name»(mesh, options«FOR s : mainModule.allProviders BEFORE ', ' SEPARATOR ', '»«s.toFirstLower»«ENDFOR»);
+		auto simulator = new «name»(mesh, «name»_options);
 		simulator->simulate();
-
 		«IF !levelDBPath.nullOrEmpty»
+
 		«val nrName = Utils.NonRegressionNameAndValue.key»
 		// Non regression testing
-		if (options.«nrName» == "«Utils.NonRegressionValues.CreateReference.toString»")
+		if («name»_options.«nrName» == "«Utils.NonRegressionValues.CreateReference.toString»")
 			simulator->createDB("«name»DB.ref");
-		if (options.«nrName» == "«Utils.NonRegressionValues.CompareToReference.toString»") {
+		if («name»_options.«nrName» == "«Utils.NonRegressionValues.CompareToReference.toString»") {
 			simulator->createDB("«name»DB.current");
 			if (!compareDB("«name»DB.current", "«name»DB.ref"))
 				ret = 1;
 			leveldb::DestroyDB("«name»DB.current", leveldb::Options());
 		}
-
 		«ENDIF»
+
 		// simulator must be deleted before calling finalize
 		delete simulator;
 		delete mesh;
@@ -96,7 +81,7 @@ class MainContentProvider
 @Data
 class KokkosMainContentProvider extends MainContentProvider
 {
-	override getContentFor(IrRoot it)
+	override getContentFor(IrModule it)
 	'''
 		Kokkos::initialize(argc, argv);
 		«super.getContentFor(it)»

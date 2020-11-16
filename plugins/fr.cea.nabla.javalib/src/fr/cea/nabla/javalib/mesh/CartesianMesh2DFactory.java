@@ -9,6 +9,9 @@
  *******************************************************************************/
 package fr.cea.nabla.javalib.mesh;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 /* Numbering nodes and cells			Numbering faces
  * 
  *  15---16---17---18---19          |-27-|-28-|-29-|-30-|
@@ -35,6 +38,28 @@ public class CartesianMesh2DFactory
 		this.nbYQuads = nbYQuads;
 		this.xSize = xSize;
 		this.ySize = ySize;
+	}
+
+	public void jsonInit(JsonElement json)
+	{
+		assert(json.isJsonObject());
+		final JsonObject o = json.getAsJsonObject();
+		assert(o.has("nbXQuads"));
+		final JsonElement valueof_nbXQuads = o.get("nbXQuads");
+		assert(valueof_nbXQuads.isJsonPrimitive());
+		nbXQuads = valueof_nbXQuads.getAsJsonPrimitive().getAsInt();
+		assert(o.has("nbYQuads"));
+		final JsonElement valueof_nbYQuads = o.get("nbYQuads");
+		assert(valueof_nbYQuads.isJsonPrimitive());
+		nbYQuads = valueof_nbYQuads.getAsJsonPrimitive().getAsInt();
+		assert(o.has("xSize"));
+		final JsonElement valueof_xSize = o.get("xSize");
+		assert(valueof_xSize.isJsonPrimitive());
+		xSize = valueof_xSize.getAsJsonPrimitive().getAsDouble();
+		assert(o.has("ySize"));
+		final JsonElement valueof_ySize = o.get("ySize");
+		assert(valueof_ySize.isJsonPrimitive());
+		ySize = valueof_ySize.getAsJsonPrimitive().getAsDouble();
 	}
 
 	public CartesianMesh2D create()

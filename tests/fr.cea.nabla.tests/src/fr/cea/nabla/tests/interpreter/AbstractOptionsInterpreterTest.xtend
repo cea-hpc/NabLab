@@ -77,7 +77,7 @@ abstract class AbstractOptionsInterpreterTest
 		val jsonContent =
 		'
 		{
-			"options":
+			"test":
 			{
 				"A":8,
 				"C":27.0,
@@ -109,7 +109,7 @@ abstract class AbstractOptionsInterpreterTest
 		val jsonContent =
 		'
 		{
-			"options":
+			"test":
 			{
 				"A":8,
 				"mandatory1":[1,2],

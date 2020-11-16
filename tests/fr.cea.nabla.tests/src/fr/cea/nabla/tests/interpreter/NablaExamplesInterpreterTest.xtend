@@ -115,7 +115,7 @@ class NablaExamplesInterpreterTest
 		val jsonOptionsFile = String.format("%1$ssrc/%2$s/%3$s.json", examplesProjectPath, moduleName.toLowerCase, moduleName)
 		var jsonContent = readFileAsString(jsonOptionsFile)
 
-		jsonContent = addNonRegressionTagToJsonFile(jsonContent, NonRegressionValues.CompareToReference.toString)
+		jsonContent = addNonRegressionTagToJsonFile(moduleName, jsonContent, NonRegressionValues.CompareToReference.toString)
 
 		val ir = compilationHelper.getIrForInterpretation(model, genmodel)
 		//val handler = new ConsoleHandler

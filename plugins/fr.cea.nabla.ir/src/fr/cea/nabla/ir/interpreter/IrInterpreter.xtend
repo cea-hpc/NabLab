@@ -86,12 +86,12 @@ class IrInterpreter
 
 		// Create mesh and mesh variables
 		if (!jsonObject.has("mesh")) throw new RuntimeException("Mesh block missing in Json")
-		val jsonMesh = jsonObject.get("mesh").asJsonObject
-		context.initMesh(gson, jsonMesh, ir.connectivities)
+		context.initMesh(gson, jsonObject.get("mesh"), ir.connectivities)
 
 		// Read options in Json
-		if (!jsonObject.has("options")) throw new RuntimeException("Options block missing in Json")
-		val jsonOptions = jsonObject.get("options").asJsonObject
+		val optionsTagName = context.ir.mainModule.name.toFirstLower
+		if (!jsonObject.has(optionsTagName)) throw new RuntimeException("Options block missing in Json")
+		val jsonOptions = jsonObject.get(optionsTagName).asJsonObject
 		for (v : ir.options)
 		{
 			if (jsonOptions.has(v.name))

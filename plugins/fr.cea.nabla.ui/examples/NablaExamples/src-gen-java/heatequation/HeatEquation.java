@@ -6,19 +6,13 @@ import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.stream.IntStream;
 
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.WriteBatch;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
 import fr.cea.nabla.javalib.types.*;
@@ -31,73 +25,68 @@ public final class HeatEquation
 	public final static class Options
 	{
 		public String outputPath;
-		public String nonRegression;
 		public int outputPeriod;
 		public double stopTime;
 		public int maxIterations;
 		public double PI;
 		public double alpha;
-	}
+		public String nonRegression;
 
-	public final static class OptionsDeserializer implements JsonDeserializer<Options>
-	{
-		@Override
-		public Options deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		public void jsonInit(JsonElement json)
 		{
-			final JsonObject d = json.getAsJsonObject();
-			Options options = new Options();
+			assert(json.isJsonObject());
+			final JsonObject o = json.getAsJsonObject();
 			// outputPath
-			assert(d.has("outputPath"));
-			final JsonElement valueof_outputPath = d.get("outputPath");
-			options.outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
-			// Non regression
-			if(d.has("nonRegression"))
-			{
-				final JsonElement valueof_nonRegression = d.get("nonRegression");
-				options.nonRegression = valueof_nonRegression.getAsJsonPrimitive().getAsString();
-			}
+			assert(o.has("outputPath"));
+			final JsonElement valueof_outputPath = o.get("outputPath");
+			outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
 			// outputPeriod
-			assert(d.has("outputPeriod"));
-			final JsonElement valueof_outputPeriod = d.get("outputPeriod");
+			assert(o.has("outputPeriod"));
+			final JsonElement valueof_outputPeriod = o.get("outputPeriod");
 			assert(valueof_outputPeriod.isJsonPrimitive());
-			options.outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
+			outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
 			// stopTime
-			if (d.has("stopTime"))
+			if (o.has("stopTime"))
 			{
-				final JsonElement valueof_stopTime = d.get("stopTime");
+				final JsonElement valueof_stopTime = o.get("stopTime");
 				assert(valueof_stopTime.isJsonPrimitive());
-				options.stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
+				stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.stopTime = 0.1;
+				stopTime = 0.1;
 			// maxIterations
-			if (d.has("maxIterations"))
+			if (o.has("maxIterations"))
 			{
-				final JsonElement valueof_maxIterations = d.get("maxIterations");
+				final JsonElement valueof_maxIterations = o.get("maxIterations");
 				assert(valueof_maxIterations.isJsonPrimitive());
-				options.maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
+				maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
 			}
 			else
-				options.maxIterations = 500;
+				maxIterations = 500;
 			// PI
-			if (d.has("PI"))
+			if (o.has("PI"))
 			{
-				final JsonElement valueof_PI = d.get("PI");
+				final JsonElement valueof_PI = o.get("PI");
 				assert(valueof_PI.isJsonPrimitive());
-				options.PI = valueof_PI.getAsJsonPrimitive().getAsDouble();
+				PI = valueof_PI.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.PI = 3.1415926;
+				PI = 3.1415926;
 			// alpha
-			if (d.has("alpha"))
+			if (o.has("alpha"))
 			{
-				final JsonElement valueof_alpha = d.get("alpha");
+				final JsonElement valueof_alpha = o.get("alpha");
 				assert(valueof_alpha.isJsonPrimitive());
-				options.alpha = valueof_alpha.getAsJsonPrimitive().getAsDouble();
+				alpha = valueof_alpha.getAsJsonPrimitive().getAsDouble();
 			}
 			else
-				options.alpha = 1.0;
-			return options;
+				alpha = 1.0;
+			// Non regression
+			if (o.has("nonRegression"))
+			{
+				final JsonElement valueof_nonRegression = o.get("nonRegression");
+				nonRegression = valueof_nonRegression.getAsJsonPrimitive().getAsString();
+			}
 		}
 	}
 
@@ -105,24 +94,24 @@ public final class HeatEquation
 	private final CartesianMesh2D mesh;
 	private final int nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbNodesOfCell;
 
-	// User options and external classes
-	private final Options options;
-	private final FileWriter writer;
+	// User options
+	protected final Options options;
+	protected final FileWriter writer;
 
 	// Global variables
-	private int lastDump;
-	private int n;
-	private double t_n;
-	private double t_nplus1;
-	private final double deltat;
-	private double[][] X;
-	private double[][] center;
-	private double[] u_n;
-	private double[] u_nplus1;
-	private double[] V;
-	private double[] f;
-	private double[] outgoingFlux;
-	private double[] surface;
+	protected int lastDump;
+	protected int n;
+	protected double t_n;
+	protected double t_nplus1;
+	protected final double deltat;
+	protected double[][] X;
+	protected double[][] center;
+	protected double[] u_n;
+	protected double[] u_nplus1;
+	protected double[] V;
+	protected double[] f;
+	protected double[] outgoingFlux;
+	protected double[] surface;
 
 	public HeatEquation(CartesianMesh2D aMesh, Options aOptions)
 	{
@@ -135,7 +124,7 @@ public final class HeatEquation
 		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
 
-		// User options and external classes initialization
+		// User options
 		options = aOptions;
 		writer = new PvdFileWriter2D("HeatEquation", options.outputPath);
 
@@ -162,59 +151,6 @@ public final class HeatEquation
 			X[rNodes][0] = gNodes[rNodes][0];
 			X[rNodes][1] = gNodes[rNodes][1];
 		});
-	}
-
-	public void simulate()
-	{
-		System.out.println("Start execution of module HeatEquation");
-		computeSurface(); // @1.0
-		computeV(); // @1.0
-		iniCenter(); // @1.0
-		iniF(); // @1.0
-		iniUn(); // @2.0
-		executeTimeLoopN(); // @3.0
-		System.out.println("End of execution of module HeatEquation");
-	}
-
-	public static void main(String[] args) throws IOException
-	{
-		if (args.length == 1)
-		{
-			String dataFileName = args[0];
-			JsonParser parser = new JsonParser();
-			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
-			GsonBuilder gsonBuilder = new GsonBuilder();
-			gsonBuilder.registerTypeAdapter(Options.class, new HeatEquation.OptionsDeserializer());
-			Gson gson = gsonBuilder.create();
-			int ret = 0;
-
-			assert(o.has("mesh"));
-			CartesianMesh2DFactory meshFactory = gson.fromJson(o.get("mesh"), CartesianMesh2DFactory.class);
-			CartesianMesh2D mesh = meshFactory.create();
-			assert(o.has("options"));
-			HeatEquation.Options options = gson.fromJson(o.get("options"), HeatEquation.Options.class);
-
-			HeatEquation simulator = new HeatEquation(mesh, options);
-			simulator.simulate();
-
-			// Non regression testing
-			if (options.nonRegression!=null &&  options.nonRegression.equals("CreateReference"))
-				simulator.createDB("HeatEquationDB.ref");
-			if (options.nonRegression!=null &&  options.nonRegression.equals("CompareToReference"))
-			{
-				simulator.createDB("HeatEquationDB.current");
-				if (!LevelDBUtils.compareDB("HeatEquationDB.current", "HeatEquationDB.ref"))
-					ret = 1;
-				LevelDBUtils.destroyDB("HeatEquationDB.current");
-				System.exit(ret);
-			}
-		}
-		else
-		{
-			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-			System.err.println("        Expecting user data file name, for example HeatEquationDefault.json");
-			System.exit(1);
-		}
 	}
 
 	/**
@@ -441,6 +377,59 @@ public final class HeatEquation
 	private double sumR0(double a, double b)
 	{
 		return a + b;
+	}
+
+	public void simulate()
+	{
+		System.out.println("Start execution of HeatEquation");
+		computeSurface(); // @1.0
+		computeV(); // @1.0
+		iniCenter(); // @1.0
+		iniF(); // @1.0
+		iniUn(); // @2.0
+		executeTimeLoopN(); // @3.0
+		System.out.println("End of execution of HeatEquation");
+	}
+
+	public static void main(String[] args) throws IOException
+	{
+		if (args.length == 1)
+		{
+			String dataFileName = args[0];
+			JsonParser parser = new JsonParser();
+			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
+			int ret = 0;
+
+			assert(o.has("mesh"));
+			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
+			meshFactory.jsonInit(o.get("mesh"));
+			CartesianMesh2D mesh = meshFactory.create();
+
+			HeatEquation.Options heatEquationOptions = new HeatEquation.Options();
+			if (o.has("heatEquation"))
+				heatEquationOptions.jsonInit(o.get("heatEquation"));
+
+			HeatEquation simulator = new HeatEquation(mesh, heatEquationOptions);
+			simulator.simulate();
+
+			// Non regression testing
+			if (heatEquationOptions.nonRegression != null && heatEquationOptions.nonRegression.equals("CreateReference"))
+				simulator.createDB("HeatEquationDB.ref");
+			if (heatEquationOptions.nonRegression != null && heatEquationOptions.nonRegression.equals("CompareToReference"))
+			{
+				simulator.createDB("HeatEquationDB.current");
+				if (!LevelDBUtils.compareDB("HeatEquationDB.current", "HeatEquationDB.ref"))
+					ret = 1;
+				LevelDBUtils.destroyDB("HeatEquationDB.current");
+				System.exit(ret);
+			}
+		}
+		else
+		{
+			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
+			System.err.println("        Expecting user data file name, for example HeatEquationDefault.json");
+			System.exit(1);
+		}
 	}
 
 	private void dumpVariables(int iteration)

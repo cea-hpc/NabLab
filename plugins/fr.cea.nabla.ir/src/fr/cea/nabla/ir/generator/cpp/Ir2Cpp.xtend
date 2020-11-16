@@ -19,12 +19,12 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.IrTransformationStep
 import java.io.File
 import java.net.URI
+import java.util.HashMap
 import org.eclipse.core.runtime.FileLocator
 import org.eclipse.core.runtime.Platform
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
@@ -68,8 +68,14 @@ class Ir2Cpp extends CodeGenerator
 
 	override getFileContentsByName(IrRoot ir)
 	{
-		val m = ir.mainModule
-		#{ ir.name + '.h' -> m.headerFileContent, ir.name + '.cc' -> m.sourceFileContent, 'CMakeLists.txt' -> backend.ir2Cmake.getContentFor(ir)}
+		val fileContents = new HashMap<String, CharSequence>
+		for (module : ir.modules)
+		{
+			fileContents.put(module.name + '.h', module.headerFileContent)
+			fileContents.put(module.name + '.cc', module.sourceFileContent)
+		}
+		fileContents.put('CMakeLists.txt', backend.ir2Cmake.getContentFor(ir))
+		return fileContents
 	}
 
 	override IrTransformationStep getIrTransformationStep()
@@ -82,15 +88,14 @@ class Ir2Cpp extends CodeGenerator
 	«backend.includesContentProvider.getContentFor(it)»
 
 	using namespace nablalib;
-
 	«IF !functions.empty»
+
 	/******************** Free functions declarations ********************/
 
 	«FOR f : functions.filter(Function).filter[body !== null]»
 		«f.declarationContent»;
 	«ENDFOR»
 	«ENDIF»
-
 
 	/******************** Module declaration ********************/
 
@@ -103,30 +108,39 @@ class Ir2Cpp extends CodeGenerator
 			«FOR v : options»
 			«v.cppType» «v.name»;
 			«ENDFOR»
+			«FOR s : functionProviderClasses»
+			«s» «s.toFirstLower»;
+			«ENDFOR»
 			«IF levelDB»std::string «Utils.NonRegressionNameAndValue.key»;«ENDIF»
 
-			void jsonInit(const rapidjson::Value::ConstObject& d);
+			void jsonInit(const rapidjson::Value& json);
 		};
 
-		«name»(«irRoot.meshClassName»* aMesh, const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»& a«s»«ENDFOR»);
+		«name»(«meshClassName»* aMesh, Options& aOptions);
 		~«name»();
 
 	private:
 		«backend.attributesContentProvider.getContentFor(it)»
-
-		«backend.privateMethodsContentProvider.getDeclarationContentFor(it)»
-		«IF irRoot.postProcessing !== null»
+		«IF postProcessing !== null»
 
 		void dumpVariables(int iteration, bool useTimer=true);
 		«ENDIF»
-		«IF levelDB»
+		«IF backend instanceof KokkosTeamThreadBackend»
 
-	public:
-		void createDB(const std::string& db_name);
+		/**
+		 * Utility function to get work load for each team of threads
+		 * In  : thread and number of element to use for computation
+		 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
+		 */
+		const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
 		«ENDIF»
 
 	public:
+		«FOR j : jobs»
+		«backend.jobContentProvider.getDeclarationContent(j)»
+		«ENDFOR»
 		void simulate();
+		«IF levelDB»void createDB(const std::string& db_name);«ENDIF»
 	};
 	'''
 
@@ -135,54 +149,57 @@ class Ir2Cpp extends CodeGenerator
 	#include "«name.toLowerCase»/«name».h"
 
 	using namespace nablalib;
-
 	«IF !functions.empty»
+
 	/******************** Free functions definitions ********************/
 
-	«FOR f : functions.filter(Function).filter[body !== null]»
+	«FOR f : functions.filter(Function).filter[body !== null] SEPARATOR '\n'»
 		«f.definitionContent»
-
 	«ENDFOR»
 	«ENDIF»
 
 	/******************** Options definition ********************/
 
 	void
-	«name»::Options::jsonInit(const rapidjson::Value::ConstObject& d)
+	«name»::Options::jsonInit(const rapidjson::Value& json)
 	{
-		«IF irRoot.postProcessing !== null»
+		assert(json.IsObject());
+		const rapidjson::Value::ConstObject& o = json.GetObject();
+		«IF postProcessing !== null»
 		«val opName = Utils.OutputPathNameAndValue.key»
 		// «opName»
-		assert(d.HasMember("«opName»"));
-		const rapidjson::Value& «opName.jsonName» = d["«opName»"];
+		assert(o.HasMember("«opName»"));
+		const rapidjson::Value& «opName.jsonName» = o["«opName»"];
 		assert(«opName.jsonName».IsString());
 		«opName» = «opName.jsonName».GetString();
-		«ENDIF»
-		«IF levelDB»
-		// Non regression
-		«val nrName = Utils.NonRegressionNameAndValue.key»
-		assert(d.HasMember("«nrName»"));
-		const rapidjson::Value& «nrName.jsonName» = d["«nrName»"];
-		assert(«nrName.jsonName».IsString());
-		«nrName» = «nrName.jsonName».GetString();
 		«ENDIF»
 		«FOR v : options»
 		«v.jsonContent»
 		«ENDFOR»
+		«FOR v : functionProviderClasses»
+		// «v.toFirstLower»
+		if (o.HasMember("«v.toFirstLower»"))
+			«v.toFirstLower».jsonInit(o["«v.toFirstLower»"]);
+		«ENDFOR»
+		«IF levelDB»
+		// Non regression
+		«val nrName = Utils.NonRegressionNameAndValue.key»
+		assert(o.HasMember("«nrName»"));
+		const rapidjson::Value& «nrName.jsonName» = o["«nrName»"];
+		assert(«nrName.jsonName».IsString());
+		«nrName» = «nrName.jsonName».GetString();
+		«ENDIF»
 	}
 
 	/******************** Module definition ********************/
 
-	«name»::«name»(«irRoot.meshClassName»* aMesh, const Options& aOptions«FOR s : allProviders BEFORE ', ' SEPARATOR ', '»«s»& a«s»«ENDFOR»)
+	«name»::«name»(«meshClassName»* aMesh, Options& aOptions)
 	: mesh(aMesh)
 	«FOR c : irRoot.connectivities.filter[multiple]»
 	, «c.nbElemsVar»(«c.connectivityAccessor»)
 	«ENDFOR»
 	, options(aOptions)
-	«FOR s : allProviders»
-	, «s.toFirstLower»(a«s»)
-	«ENDFOR»
-	«IF irRoot.postProcessing !== null», writer("«name»", options.«Utils.OutputPathNameAndValue.key»)«ENDIF»
+	«IF postProcessing !== null», writer("«name»", options.«Utils.OutputPathNameAndValue.key»)«ENDIF»
 	«FOR v : variablesWithDefaultValue.filter[x | !x.constExpr]»
 	, «v.name»(«v.defaultValue.content»)
 	«ENDFOR»
@@ -198,6 +215,7 @@ class Ir2Cpp extends CodeGenerator
 			«ENDFOR»
 
 		«ENDIF»
+		«IF main»
 		// Copy node coordinates
 		const auto& gNodes = mesh->getGeometry()->getNodes();
 		«val iterator = backend.argOrVarContentProvider.formatIterators(irRoot.initNodeCoordVariable, #["rNodes"])»
@@ -206,14 +224,43 @@ class Ir2Cpp extends CodeGenerator
 			«irRoot.initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
 			«irRoot.initNodeCoordVariable.name»«iterator»[1] = gNodes[rNodes][1];
 		}
+		«ENDIF»
 	}
 
 	«name»::~«name»()
 	{
 	}
+	«IF backend instanceof KokkosTeamThreadBackend»
 
-	«backend.privateMethodsContentProvider.getDefinitionContentFor(it)»
-	«IF irRoot.postProcessing !== null»
+	const std::pair<size_t, size_t> «name»::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
+	{
+		/*
+		if (nb_elmt % thread.team_size())
+		{
+			std::cerr << "[ERROR] nb of elmt (" << nb_elmt << ") not multiple of nb of thread per team ("
+		              << thread.team_size() << ")" << std::endl;
+			std::terminate();
+		}
+		*/
+		// Size
+		size_t team_chunk(std::floor(nb_elmt / thread.league_size()));
+		// Offset
+		const size_t team_offset(thread.league_rank() * team_chunk);
+		// Last team get remaining work
+		if (thread.league_rank() == thread.league_size() - 1)
+		{
+			size_t left_over(nb_elmt - (team_chunk * thread.league_size()));
+			team_chunk += left_over;
+		}
+		return std::pair<size_t, size_t>(team_offset, team_chunk);
+	}
+	«ENDIF»
+
+	«FOR j : jobs SEPARATOR '\n'»
+		«backend.jobContentProvider.getDefinitionContent(j)»
+	«ENDFOR»
+	«IF main»
+	«IF postProcessing !== null»
 
 	void «name»::dumpVariables(int iteration, bool useTimer)
 	{
@@ -253,6 +300,15 @@ class Ir2Cpp extends CodeGenerator
 		}
 	}
 	«ENDIF»
+
+	void «name»::«irRoot.main.name»()
+	{
+		«backend.traceContentProvider.getBeginOfSimuTrace(it)»
+
+		«irRoot.main.callsHeader»
+		«irRoot.main.callsContent»
+		«backend.traceContentProvider.getEndOfSimuTrace(linearAlgebra)»
+	}
 	«IF levelDB»
 	
 	void «name»::createDB(const std::string& db_name)
@@ -275,17 +331,6 @@ class Ir2Cpp extends CodeGenerator
 		// Freeing memory
 		delete db;
 	}
-	«ENDIF»
-
-	void «name»::«irRoot.main.name»()
-	{
-		«backend.traceContentProvider.getBeginOfSimuTrace(it)»
-
-		«irRoot.main.callsHeader»
-		«irRoot.main.callsContent»
-		«backend.traceContentProvider.getEndOfSimuTrace(linearAlgebra)»
-	}
-	«IF levelDB»
 
 	/******************** Non regression testing ********************/
 
@@ -336,13 +381,12 @@ class Ir2Cpp extends CodeGenerator
 	}
 	«ENDIF»
 
-	/******************** Module definition ********************/
-
 	int main(int argc, char* argv[]) 
 	{
-		«backend.mainContentProvider.getContentFor(irRoot)»
+		«backend.mainContentProvider.getContentFor(it)»
 		return ret;
 	}
+	«ENDIF»
 	'''
 
 	private def getConnectivityAccessor(Connectivity c)
@@ -353,8 +397,8 @@ class Ir2Cpp extends CodeGenerator
 			'''CartesianMesh2D::MaxNb«c.name.toFirstUpper»'''
 	}
 
-	private def isLevelDB()
+	private def isLevelDB(IrModule it)
 	{
-		!backend.includesContentProvider.levelDBPath.nullOrEmpty
+		main && !backend.includesContentProvider.levelDBPath.nullOrEmpty
 	}
 }

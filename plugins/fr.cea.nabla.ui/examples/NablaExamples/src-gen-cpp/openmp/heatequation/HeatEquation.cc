@@ -37,53 +37,54 @@ double sumR0(double a, double b)
 	return a + b;
 }
 
-
 /******************** Options definition ********************/
 
 void
-HeatEquation::Options::jsonInit(const rapidjson::Value::ConstObject& d)
+HeatEquation::Options::jsonInit(const rapidjson::Value& json)
 {
+	assert(json.IsObject());
+	const rapidjson::Value::ConstObject& o = json.GetObject();
 	// outputPath
-	assert(d.HasMember("outputPath"));
-	const rapidjson::Value& valueof_outputPath = d["outputPath"];
+	assert(o.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = o["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	// outputPeriod
-	assert(d.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = d["outputPeriod"];
+	assert(o.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
 	// stopTime
-	if (d.HasMember("stopTime"))
+	if (o.HasMember("stopTime"))
 	{
-		const rapidjson::Value& valueof_stopTime = d["stopTime"];
+		const rapidjson::Value& valueof_stopTime = o["stopTime"];
 		assert(valueof_stopTime.IsDouble());
 		stopTime = valueof_stopTime.GetDouble();
 	}
 	else
 		stopTime = 0.1;
 	// maxIterations
-	if (d.HasMember("maxIterations"))
+	if (o.HasMember("maxIterations"))
 	{
-		const rapidjson::Value& valueof_maxIterations = d["maxIterations"];
+		const rapidjson::Value& valueof_maxIterations = o["maxIterations"];
 		assert(valueof_maxIterations.IsInt());
 		maxIterations = valueof_maxIterations.GetInt();
 	}
 	else
 		maxIterations = 500;
 	// PI
-	if (d.HasMember("PI"))
+	if (o.HasMember("PI"))
 	{
-		const rapidjson::Value& valueof_PI = d["PI"];
+		const rapidjson::Value& valueof_PI = o["PI"];
 		assert(valueof_PI.IsDouble());
 		PI = valueof_PI.GetDouble();
 	}
 	else
 		PI = 3.1415926;
 	// alpha
-	if (d.HasMember("alpha"))
+	if (o.HasMember("alpha"))
 	{
-		const rapidjson::Value& valueof_alpha = d["alpha"];
+		const rapidjson::Value& valueof_alpha = o["alpha"];
 		assert(valueof_alpha.IsDouble());
 		alpha = valueof_alpha.GetDouble();
 	}
@@ -93,7 +94,7 @@ HeatEquation::Options::jsonInit(const rapidjson::Value::ConstObject& d)
 
 /******************** Module definition ********************/
 
-HeatEquation::HeatEquation(CartesianMesh2D* aMesh, const Options& aOptions)
+HeatEquation::HeatEquation(CartesianMesh2D* aMesh, Options& aOptions)
 : mesh(aMesh)
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
@@ -396,8 +397,6 @@ void HeatEquation::simulate()
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
 
-/******************** Module definition ********************/
-
 int main(int argc, char* argv[]) 
 {
 	string dataFile;
@@ -423,21 +422,17 @@ int main(int argc, char* argv[])
 	
 	// mesh
 	assert(d.HasMember("mesh"));
-	const rapidjson::Value& valueof_mesh = d["mesh"];
-	assert(valueof_mesh.IsObject());
 	CartesianMesh2DFactory meshFactory;
-	meshFactory.jsonInit(valueof_mesh.GetObject());
+	meshFactory.jsonInit(d["mesh"]);
 	CartesianMesh2D* mesh = meshFactory.create();
 	
-	// options
-	HeatEquation::Options options;
-	assert(d.HasMember("options"));
-	const rapidjson::Value& valueof_options = d["options"];
-	assert(valueof_options.IsObject());
-	options.jsonInit(valueof_options.GetObject());
+	// heatEquation
+	HeatEquation::Options HeatEquation_options;
+	if (d.HasMember("heatEquation"))
+		HeatEquation_options.jsonInit(d["heatEquation"]);
 	
 	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-	auto simulator = new HeatEquation(mesh, options);
+	auto simulator = new HeatEquation(mesh, HeatEquation_options);
 	simulator->simulate();
 	
 	// simulator must be deleted before calling finalize

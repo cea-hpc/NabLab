@@ -77,7 +77,7 @@ class TraceContentProvider
 	def getEndOfSimuTrace(boolean isLinearAlgebra)
 	'''
 		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
-		«IF isLinearAlgebra»std::cout << "[CG] average iteration: " << linearAlgebraFunctions.m_info.m_nb_it / linearAlgebraFunctions.m_info.m_nb_call << std::endl;«ENDIF»
+		«IF isLinearAlgebra»std::cout << "[CG] average iteration: " << options.linearAlgebraFunctions.m_info.m_nb_it / options.linearAlgebraFunctions.m_info.m_nb_call << std::endl;«ENDIF»
 	'''
 }
 

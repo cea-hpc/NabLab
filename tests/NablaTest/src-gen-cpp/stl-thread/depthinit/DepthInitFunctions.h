@@ -4,20 +4,23 @@
 class DepthInitFunctions
 {
 public:
-	void jsonInit(const rapidjson::Value::ConstObject& d)
+	void jsonInit(const rapidjson::Value& json)
 	{
-		if (d.HasMember("depth"))
+		assert(json.IsObject());
+		const rapidjson::Value::ConstObject& o = json.GetObject();
+
+		if (o.HasMember("depth"))
 		{
-			const rapidjson::Value& valueof_depth = d["depth"];
+			const rapidjson::Value& valueof_depth = o["depth"];
 			assert(valueof_depth.IsDouble());
 			depth = valueof_depth.GetDouble();
 		}
 
 		// if the option is mandatory, the line should be:
-		// assert(d.HasMember("fileName"));
-		if (d.HasMember("fileName"))
+		// assert(o.HasMember("fileName"));
+		if (o.HasMember("fileName"))
 		{
-			const rapidjson::Value& valueof_fileName = d["fileName"];
+			const rapidjson::Value& valueof_fileName = o["fileName"];
 			assert(valueof_fileName.IsString());
 			fileName = valueof_fileName.GetString();
 		}

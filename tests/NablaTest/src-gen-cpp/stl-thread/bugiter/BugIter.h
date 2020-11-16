@@ -15,8 +15,6 @@
 
 using namespace nablalib;
 
-
-
 /******************** Module declaration ********************/
 
 class BugIter
@@ -30,10 +28,10 @@ public:
 		int maxIterL;
 		double deltat;
 
-		void jsonInit(const rapidjson::Value::ConstObject& d);
+		void jsonInit(const rapidjson::Value& json);
 	};
 
-	BugIter(CartesianMesh2D* aMesh, const Options& aOptions);
+	BugIter(CartesianMesh2D* aMesh, Options& aOptions);
 	~BugIter();
 
 private:
@@ -41,8 +39,8 @@ private:
 	CartesianMesh2D* mesh;
 	size_t nbCells, nbNodes;
 	
-	// User options and external classes
-	const Options& options;
+	// User options
+	Options& options;
 	
 	// Global variables
 	int n;
@@ -68,34 +66,20 @@ private:
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;
 
-	void computeTn() noexcept;
-	
-	void iniV() noexcept;
-	
-	void initU() noexcept;
-	
-	void updateV() noexcept;
-	
-	void updateW() noexcept;
-	
-	void executeTimeLoopN() noexcept;
-	
-	void setUpTimeLoopK() noexcept;
-	
-	void executeTimeLoopK() noexcept;
-	
-	void tearDownTimeLoopK() noexcept;
-	
-	void iniW() noexcept;
-	
-	void setUpTimeLoopL() noexcept;
-	
-	void executeTimeLoopL() noexcept;
-	
-	void tearDownTimeLoopL() noexcept;
-	
-	void updateU() noexcept;
-
 public:
+	void computeTn() noexcept;
+	void iniV() noexcept;
+	void initU() noexcept;
+	void updateV() noexcept;
+	void updateW() noexcept;
+	void executeTimeLoopN() noexcept;
+	void setUpTimeLoopK() noexcept;
+	void executeTimeLoopK() noexcept;
+	void tearDownTimeLoopK() noexcept;
+	void iniW() noexcept;
+	void setUpTimeLoopL() noexcept;
+	void executeTimeLoopL() noexcept;
+	void tearDownTimeLoopL() noexcept;
+	void updateU() noexcept;
 	void simulate();
 };

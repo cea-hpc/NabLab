@@ -26,7 +26,6 @@ template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
 double sumR0(double a, double b);
 
-
 /******************** Module declaration ********************/
 
 class HeatEquation
@@ -41,10 +40,10 @@ public:
 		double PI;
 		double alpha;
 
-		void jsonInit(const rapidjson::Value::ConstObject& d);
+		void jsonInit(const rapidjson::Value& json);
 	};
 
-	HeatEquation(CartesianMesh2D* aMesh, const Options& aOptions);
+	HeatEquation(CartesianMesh2D* aMesh, Options& aOptions);
 	~HeatEquation();
 
 private:
@@ -52,8 +51,8 @@ private:
 	CartesianMesh2D* mesh;
 	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbNodesOfCell;
 	
-	// User options and external classes
-	const Options& options;
+	// User options
+	Options& options;
 	PvdFileWriter2D writer;
 	
 	// Global variables
@@ -75,26 +74,17 @@ private:
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;
 
-	void computeOutgoingFlux() noexcept;
-	
-	void computeSurface() noexcept;
-	
-	void computeTn() noexcept;
-	
-	void computeV() noexcept;
-	
-	void iniCenter() noexcept;
-	
-	void iniF() noexcept;
-	
-	void computeUn() noexcept;
-	
-	void iniUn() noexcept;
-	
-	void executeTimeLoopN() noexcept;
-
 	void dumpVariables(int iteration, bool useTimer=true);
 
 public:
+	void computeOutgoingFlux() noexcept;
+	void computeSurface() noexcept;
+	void computeTn() noexcept;
+	void computeV() noexcept;
+	void iniCenter() noexcept;
+	void iniF() noexcept;
+	void computeUn() noexcept;
+	void iniUn() noexcept;
+	void executeTimeLoopN() noexcept;
 	void simulate();
 };

@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.EcoreUtil2
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.nablagen.NablagenModule
+import fr.cea.nabla.ir.ir.ArgOrVarRef
 
 class Nablagen2Ir
 {
@@ -44,8 +45,25 @@ class Nablagen2Ir
 		addModuleToIr(it, ngen.mainModule)
 		ngen.additionalModules.forEach[x | addModuleToIr(it, x)]
 
-		// set simulation variables
+		// variable dependencies: replace additional modules variable
+		// with main module referenced variable
 		val mainIrModule = modules.head
+		for (adModule : ngen.additionalModules)
+		{
+			val adIrModule = adModule.toIrModule
+			for (vLink : adModule.varLinks)
+			{
+				val adModuleIrVar = getCurrentIrVariable(adIrModule, vLink.additionalVariable)
+				val mainModuleIrVar = getCurrentIrVariable(mainIrModule, vLink.mainVariable)
+
+				for (vRef : eAllContents.filter(ArgOrVarRef).filter[x | x.target == adModuleIrVar].toIterable)
+					vRef.target = mainModuleIrVar
+
+				EcoreUtil.delete(adModuleIrVar)
+			}
+		}
+
+		// set simulation variables
 		meshClassName= ngen.mainModule.meshClassName
 		initNodeCoordVariable = getInitIrVariable(mainIrModule, ngen.mainModule.nodeCoord) as ConnectivityVariable
 		nodeCoordVariable = getCurrentIrVariable(mainIrModule, ngen.mainModule.nodeCoord) as ConnectivityVariable

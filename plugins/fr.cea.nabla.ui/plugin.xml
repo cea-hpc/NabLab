@@ -23,12 +23,13 @@
 			name="Nabla Editor">
 		</editor>
 		<editor
-			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
-			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
-			default="true"
-			extensions="nablagen"
-			id="fr.cea.nabla.Nablagen"
-			name="Nablagen Editor">
+        class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
+        contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+        default="true"
+        extensions="nablagen"
+        icon="icons/Nablagen.gif"
+        id="fr.cea.nabla.Nablagen"
+        name="Nablagen Editor">
 		</editor>
 	</extension>
 	<extension

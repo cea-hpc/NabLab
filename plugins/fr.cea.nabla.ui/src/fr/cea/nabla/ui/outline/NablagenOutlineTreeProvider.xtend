@@ -9,15 +9,16 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.outline
 
-import fr.cea.nabla.nablagen.AdditionalModule
 import fr.cea.nabla.nablagen.CppKokkos
 import fr.cea.nabla.nablagen.CppKokkosTeamThread
 import fr.cea.nabla.nablagen.CppOpenMP
 import fr.cea.nabla.nablagen.CppSequential
 import fr.cea.nabla.nablagen.CppStlThread
 import fr.cea.nabla.nablagen.Java
-import fr.cea.nabla.nablagen.MainModule
+import fr.cea.nabla.nablagen.LevelDB
 import fr.cea.nabla.nablagen.NablagenModule
+import fr.cea.nabla.nablagen.NablagenRoot
+import fr.cea.nabla.nablagen.OutputVar
 import fr.cea.nabla.nablagen.Target
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
 
@@ -28,11 +29,21 @@ import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
  */
 class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 {
-	def _image(NablagenModule it) { null }
+	def _text(NablagenRoot it)
+	{
+		'Generation options "' + eResource.URI.lastSegment + '"'
+	}
 
-	def _text(MainModule it) { "Main module: " + type + " " + name}
-	def _text(AdditionalModule it) { "Additional module: " + type + " " + name}
+	def _isLeaf(NablagenModule it) { true }
+	def _text(NablagenModule it) { name }
 
+	def _image(OutputVar it) { null }
+	def _text(OutputVar it) { varName }
+
+	def _isLeaf(LevelDB it) { true }
+	def _text(LevelDB it) { 'LevelDB activated' }
+
+	def _isLeaf(Target it) { true }
 	def _text(Target it)
 	{
 		switch it

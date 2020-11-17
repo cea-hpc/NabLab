@@ -175,7 +175,7 @@ class Ir2Java extends CodeGenerator
 			«ENDFOR»
 			«IF main»
 
-			public void «irRoot.main.name»()
+			public void «irRoot.main.name.toFirstLower»()
 			{
 				System.out.println("Start execution of «name»");
 				«FOR j : irRoot.main.calls»

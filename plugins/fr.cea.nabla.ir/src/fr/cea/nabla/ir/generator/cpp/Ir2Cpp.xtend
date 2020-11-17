@@ -301,7 +301,7 @@ class Ir2Cpp extends CodeGenerator
 	}
 	«ENDIF»
 
-	void «name»::«irRoot.main.name»()
+	void «name»::«irRoot.main.name.toFirstLower»()
 	{
 		«backend.traceContentProvider.getBeginOfSimuTrace(it)»
 

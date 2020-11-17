@@ -19,8 +19,8 @@ class JobCallerExtensions
 	static def getName(JobCaller jobCaller)
 	{
 		if (jobCaller instanceof ExecuteTimeLoopJob)
-			jobCaller.name.toFirstLower
+			jobCaller.name
 		else
-			"simulate"
+			"Simulate"
 	}
 }

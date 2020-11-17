@@ -15,6 +15,8 @@ import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Variable
 
+import static extension fr.cea.nabla.ir.Utils.*
+
 class JobExtensions
 {
 	static def hasIterable(Job it)
@@ -37,5 +39,10 @@ class JobExtensions
 	{
 		var variables = eAllContents.filter(Variable).toList
 		return variables.findFirst[x | x.name == varName]
+	}
+
+	static def getDisplayName(Job it)
+	{
+		irModule.name + "::" + name
 	}
 }

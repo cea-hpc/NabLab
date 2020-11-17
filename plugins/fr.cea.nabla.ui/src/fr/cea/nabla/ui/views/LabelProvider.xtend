@@ -16,6 +16,8 @@ import org.eclipse.zest.core.viewers.ISelfStyleProvider
 import org.eclipse.zest.core.widgets.GraphConnection
 import org.eclipse.zest.core.widgets.GraphNode
 
+import static extension fr.cea.nabla.ir.JobExtensions.*
+
 class LabelProvider
 extends org.eclipse.jface.viewers.LabelProvider 
 implements ISelfStyleProvider
@@ -26,7 +28,7 @@ implements ISelfStyleProvider
 	override getText(Object o)
 	{
 		if (o instanceof Job)
-			Math.round(o.at) + ". " + o.name
+			Math.round(o.at) + ". " + o.displayName
 	}
 
 	// ISelfStyleProvider

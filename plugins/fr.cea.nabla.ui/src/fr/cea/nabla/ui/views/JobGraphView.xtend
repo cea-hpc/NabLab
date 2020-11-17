@@ -117,7 +117,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 			if (jc === null) 
 				contentDescription = ''
 			else
-				contentDescription = jc.name
+				contentDescription = jc.displayName
 			viewer.input = jc
 		])
 	}
@@ -150,11 +150,15 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		}
 
 		if (ir === null)
+		{
+			viewerJobCaller = null
 			consoleFactory.printConsole(MessageType.Error, "IR can not be built. Try to clean and rebuild all projects and start again.")
+		}
 		else
 		{
 			viewerJobCaller = ir.main
-			consoleFactory.printConsole(MessageType.End, "Job graph view initialized")
+			val name = (ir.main === null ? 'null' : ir.main.displayName)
+			consoleFactory.printConsole(MessageType.End, "Job graph view initialized with: " + name)
 		}
 	}
 

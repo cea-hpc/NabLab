@@ -97,6 +97,7 @@ class Nablagen2Ir
 			]
 			val pos = mainIrModule.variables.indexOf(postProcessing.periodReference)
 			mainIrModule.variables.add(pos, postProcessing.lastDumpVariable)
+			variables.add(pos, postProcessing.lastDumpVariable)
 
 			// Create an option to store the output period
 			postProcessing.periodValue = IrFactory.eINSTANCE.createSimpleVariable =>
@@ -109,11 +110,9 @@ class Nablagen2Ir
 				// no default value : option is mandatory
 			]
 			mainIrModule.variables.add(0, postProcessing.periodValue)
+			variables.add(0, postProcessing.periodValue)
 		}
 
-		variables += mainIrModule.variables
-		functions += mainIrModule.functions
-		jobs += mainIrModule.jobs
 		main.calls += jobs.filter(TimeLoopJob).filter[x | x.caller === null]
 	}
 
@@ -121,7 +120,11 @@ class Nablagen2Ir
 	{
 		ngenModule.type.itemTypes.forEach[x | root.itemTypes += x.toIrItemType]
 		ngenModule.type.connectivities.forEach[x | root.connectivities += x.toIrConnectivity]
-		root.modules += toIrModule(ngenModule)
+		val m = toIrModule(ngenModule)
+		root.modules += m
+		root.variables += m.variables
+		root.functions += m.functions
+		root.jobs += m.jobs
 	}
 
 	private def getCurrentIrVariable(IrModule m, ArgOrVar nablaVar) { getIrVariable(m, nablaVar, false) }

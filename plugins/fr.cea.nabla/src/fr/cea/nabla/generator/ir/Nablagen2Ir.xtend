@@ -10,10 +10,13 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
+import com.google.inject.Provider
 import fr.cea.nabla.ir.IrModuleExtensions
+import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.TimeLoopJob
@@ -22,35 +25,34 @@ import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorBlock
+import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenRoot
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.EcoreUtil2
-import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.nablagen.NablagenModule
-import fr.cea.nabla.ir.ir.ArgOrVarRef
 
 class Nablagen2Ir
 {
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrBasicFactory
 	@Inject extension TimeIteratorExtensions
-	@Inject extension Nabla2Ir
+	@Inject Provider<Nabla2Ir> nabla2IrProvider
 
 	def create IrFactory::eINSTANCE.createIrRoot toIrRoot(NablagenRoot ngen)
 	{
 		annotations += ngen.toIrAnnotation
-		name = ngen.mainModule.name.toFirstUpper
+		name = ngen.name
 		main = IrFactory::eINSTANCE.createJobCaller
 
-		addModuleToIr(it, ngen.mainModule)
-		ngen.additionalModules.forEach[x | addModuleToIr(it, x)]
+		val nabla2ir = nabla2IrProvider.get
+		createIrModule(it, nabla2ir, ngen.mainModule)
+		ngen.additionalModules.forEach[x | createIrModule(it, nabla2ir, x)]
 
 		// variable dependencies: replace additional modules variable
 		// with main module referenced variable
 		val mainIrModule = modules.head
 		for (adModule : ngen.additionalModules)
 		{
-			val adIrModule = adModule.toIrModule
+			val adIrModule = modules.findFirst[x | x.name == adModule.name]
 			for (vLink : adModule.varLinks)
 			{
 				val adModuleIrVar = getCurrentIrVariable(adIrModule, vLink.additionalVariable)
@@ -116,11 +118,11 @@ class Nablagen2Ir
 		main.calls += jobs.filter(TimeLoopJob).filter[x | x.caller === null]
 	}
 
-	private def addModuleToIr(IrRoot root, NablagenModule ngenModule)
+	private def createIrModule(IrRoot root, Nabla2Ir nabla2ir, NablagenModule ngenModule)
 	{
 		ngenModule.type.itemTypes.forEach[x | root.itemTypes += x.toIrItemType]
 		ngenModule.type.connectivities.forEach[x | root.connectivities += x.toIrConnectivity]
-		val m = toIrModule(ngenModule)
+		val m = nabla2ir.createIrModule(ngenModule)
 		root.modules += m
 		root.variables += m.variables
 		root.functions += m.functions

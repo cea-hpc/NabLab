@@ -15,7 +15,7 @@ connectivity nodes: → {node};
 connectivity cells: → {cell};
 
 ℝ[2] X{nodes};
-ℝ v1{cells}, v2{cells}, v3{cells};
+ℝ rv1{cells}, rv2{cells}, rv3{cells};
 
-j1: ∀c∈cells(), v2{c} = v1{c};
-j2: ∀c∈cells(), v3{c} = v2{c};
+rj1: ∀c∈cells(), rv2{c} = rv1{c};
+rj2: ∀c∈cells(), rv3{c} = rv2{c};

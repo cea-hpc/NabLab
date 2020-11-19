@@ -1,3 +1,6 @@
+#ifndef IMPLICITHEATEQUATION_H_
+#define IMPLICITHEATEQUATION_H_
+
 #include <fstream>
 #include <iomanip>
 #include <type_traits>
@@ -95,3 +98,5 @@ public:
 	void executeTimeLoopN() noexcept;
 	void simulate();
 };
+
+#endif

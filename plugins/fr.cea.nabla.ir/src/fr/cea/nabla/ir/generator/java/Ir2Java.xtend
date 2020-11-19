@@ -22,8 +22,8 @@ import java.util.HashMap
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
@@ -39,13 +39,14 @@ class Ir2Java extends CodeGenerator
 	{
 		val fileContents = new HashMap<String, CharSequence>
 		for (module : ir.modules)
-			fileContents.put(module.name + '.java', module.fileContent)
+			fileContents.put(module.className + '.java', module.fileContent)
 		return fileContents
 	}
 
 	private def getFileContent(IrModule it)
 	'''
-		package «name.toLowerCase»;
+		«val mainModule = irRoot.mainModule»
+		package «irRoot.name.toLowerCase»;
 
 		import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 		import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
@@ -71,7 +72,7 @@ class Ir2Java extends CodeGenerator
 
 		«ENDIF»
 		@SuppressWarnings("all")
-		public final class «name»
+		public final class «className»
 		{
 			public final static class Options
 			{
@@ -124,12 +125,24 @@ class Ir2Java extends CodeGenerator
 			protected final Options options;
 			«IF postProcessing !== null»protected final FileWriter writer;«ENDIF»
 
+			«IF irRoot.modules.size > 1»
+				«IF main»
+					// Additional modules
+					«FOR m : irRoot.modules.filter[x | x !== it]»
+						protected «m.className» «m.name»;
+					«ENDFOR»
+				«ELSE»
+					// Main module
+					protected «mainModule.className» mainModule;
+				«ENDIF»
+
+			«ENDIF»
 			// Global variables
 			«FOR v : variables.filter[!option]»
 			protected «IF v instanceof SimpleVariable && (v as SimpleVariable).const»final «ENDIF»«v.javaType» «v.name»;
 			«ENDFOR»
 
-			public «name»(«javaMeshClassName» aMesh, Options aOptions)
+			public «className»(«javaMeshClassName» aMesh, Options aOptions)
 			{
 				// Mesh and mesh variables initialization
 				mesh = aMesh;
@@ -139,7 +152,7 @@ class Ir2Java extends CodeGenerator
 
 				// User options
 				options = aOptions;
-				«IF postProcessing !== null»writer = new PvdFileWriter2D("«name»", options.«Utils.OutputPathNameAndValue.key»);«ENDIF»
+				«IF postProcessing !== null»writer = new PvdFileWriter2D("«irRoot.name»", options.«Utils.OutputPathNameAndValue.key»);«ENDIF»
 
 				// Initialize variables with default values
 				«FOR v : variablesWithDefaultValue»
@@ -173,13 +186,13 @@ class Ir2Java extends CodeGenerator
 
 				«f.content»
 			«ENDFOR»
-			«IF main»
 
-			public void «irRoot.main.name.toFirstLower»()
+			«IF main»
+			public void «irRoot.main.codeName»()
 			{
 				System.out.println("Start execution of «name»");
 				«FOR j : irRoot.main.calls»
-					«j.codeName»(); // @«j.at»
+					«j.callName»(); // @«j.at»
 				«ENDFOR»
 				System.out.println("End of execution of «name»");
 			}
@@ -193,34 +206,37 @@ class Ir2Java extends CodeGenerator
 					JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
 					int ret = 0;
 
+					// Mesh instanciation
 					assert(o.has("mesh"));
 					«javaMeshClassName»Factory meshFactory = new «javaMeshClassName»Factory();
 					meshFactory.jsonInit(o.get("mesh"));
 					«javaMeshClassName» mesh = meshFactory.create();
 
-					«name».Options «name.toFirstLower»Options = new «name».Options();
-					if (o.has("«name.toFirstLower»"))
-						«name.toFirstLower»Options.jsonInit(o.get("«name.toFirstLower»"));
+					// Module instanciation(s)
+					«FOR m : irRoot.modules»
+						«m.instanciation»
+					«ENDFOR»
 
-					«name» simulator = new «name»(mesh, «name.toFirstLower»Options);
-					simulator.simulate();
+					// Start simulation
+					«name».simulate();
 
+					«val dbName = irRoot.name + "DB"»
 					// Non regression testing
-					if («name.toFirstLower»Options.«nrName» != null && «name.toFirstLower»Options.«nrName».equals("«Utils.NonRegressionValues.CreateReference.toString»"))
-						simulator.createDB("«name»DB.ref");
-					if («name.toFirstLower»Options.«nrName» != null && «name.toFirstLower»Options.«nrName».equals("«Utils.NonRegressionValues.CompareToReference.toString»"))
+					if («name»Options.«nrName» != null && «name»Options.«nrName».equals("«Utils.NonRegressionValues.CreateReference.toString»"))
+						«name».createDB("«dbName».ref");
+					if («name»Options.«nrName» != null && «name»Options.«nrName».equals("«Utils.NonRegressionValues.CompareToReference.toString»"))
 					{
-						simulator.createDB("«name»DB.current");
-						if (!LevelDBUtils.compareDB("«name»DB.current", "«name»DB.ref"))
+						«name».createDB("«dbName».current");
+						if (!LevelDBUtils.compareDB("«dbName».current", "«dbName».ref"))
 							ret = 1;
-						LevelDBUtils.destroyDB("«name»DB.current");
+						LevelDBUtils.destroyDB("«dbName».current");
 						System.exit(ret);
 					}
 				}
 				else
 				{
 					System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-					System.err.println("        Expecting user data file name, for example «name»Default.json");
+					System.err.println("        Expecting user data file name, for example «irRoot.name».json");
 					System.exit(1);
 				}
 			}
@@ -255,7 +271,7 @@ class Ir2Java extends CodeGenerator
 				try
 				{
 					«FOR v : variables.filter[!option]»
-					batch.put(bytes("«v.name»"), LevelDBUtils.serialize(«v.name»));
+					batch.put(bytes("«v.dbKey»"), LevelDBUtils.serialize(«v.name»));
 					«ENDFOR»
 
 					db.write(batch);
@@ -268,8 +284,22 @@ class Ir2Java extends CodeGenerator
 				db.close();
 				System.out.println("Reference database " + db_name + " created.");
 			}
+			«ELSE /* !main */»
+			public void setMainModule(«mainModule.className» aMainModule)
+			{
+				mainModule = aMainModule;
+				mainModule.«name» = this;
+			}
 			«ENDIF»
 		};
+	'''
+
+	private def getInstanciation(IrModule it)
+	'''
+		«className».Options «name»Options = new «className».Options();
+		if (o.has("«name»")) «name»Options.jsonInit(o.get("«name»"));
+		«className» «name» = new «className»(mesh, «name»Options);
+		«IF !main»«name».setMainModule(«irRoot.mainModule.name»);«ENDIF»
 	'''
 
 	private def getConnectivityAccessor(Connectivity c)

@@ -372,7 +372,7 @@ int main(int argc, char* argv[])
 	else
 	{
 		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1 arg: dataFile." << std::endl;
-		std::cerr << "(BugIterDefault.json)" << std::endl;
+		std::cerr << "(BugIter.json)" << std::endl;
 		return -1;
 	}
 	
@@ -383,23 +383,22 @@ int main(int argc, char* argv[])
 	d.ParseStream(isw);
 	assert(d.IsObject());
 	
-	// mesh
+	// Mesh instanciation
 	assert(d.HasMember("mesh"));
 	CartesianMesh2DFactory meshFactory;
 	meshFactory.jsonInit(d["mesh"]);
 	CartesianMesh2D* mesh = meshFactory.create();
 	
-	// bugIter
-	BugIter::Options BugIter_options;
-	if (d.HasMember("bugIter"))
-		BugIter_options.jsonInit(d["bugIter"]);
+	// Module instanciation(s)
+	BugIter::Options bugIterOptions;
+	if (d.HasMember("bugIter")) bugIterOptions.jsonInit(d["bugIter"]);
+	BugIter* bugIter = new BugIter(mesh, bugIterOptions);
 	
-	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-	auto simulator = new BugIter(mesh, BugIter_options);
-	simulator->simulate();
+	// Start simulation
+	// Simulator must be a pointer when a finalize is needed at the end (Kokkos, omp...)
+	bugIter->simulate();
 	
-	// simulator must be deleted before calling finalize
-	delete simulator;
+	delete bugIter;
 	delete mesh;
 	return ret;
 }

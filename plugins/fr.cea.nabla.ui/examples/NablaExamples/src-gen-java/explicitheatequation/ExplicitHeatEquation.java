@@ -153,7 +153,7 @@ public final class ExplicitHeatEquation
 	 * In variables: X
 	 * Out variables: faceLength
 	 */
-	private void computeFaceLength()
+	protected void computeFaceLength()
 	{
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
@@ -180,7 +180,7 @@ public final class ExplicitHeatEquation
 	 * In variables: deltat, t_n
 	 * Out variables: t_nplus1
 	 */
-	private void computeTn()
+	protected void computeTn()
 	{
 		t_nplus1 = t_n + deltat;
 	}
@@ -190,7 +190,7 @@ public final class ExplicitHeatEquation
 	 * In variables: X
 	 * Out variables: V
 	 */
-	private void computeV()
+	protected void computeV()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -217,7 +217,7 @@ public final class ExplicitHeatEquation
 	 * In variables: 
 	 * Out variables: D
 	 */
-	private void initD()
+	protected void initD()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -230,7 +230,7 @@ public final class ExplicitHeatEquation
 	 * In variables: X
 	 * Out variables: Xc
 	 */
-	private void initXc()
+	protected void initXc()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -255,7 +255,7 @@ public final class ExplicitHeatEquation
 	 * In variables: alpha, u_n
 	 * Out variables: u_nplus1
 	 */
-	private void updateU()
+	protected void updateU()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -280,7 +280,7 @@ public final class ExplicitHeatEquation
 	 * In variables: D, V
 	 * Out variables: deltat
 	 */
-	private void computeDeltaTn()
+	protected void computeDeltaTn()
 	{
 		double reduction0 = Double.MAX_VALUE;
 		reduction0 = IntStream.range(0, nbCells).boxed().parallel().reduce
@@ -300,7 +300,7 @@ public final class ExplicitHeatEquation
 	 * In variables: D
 	 * Out variables: faceConductivity
 	 */
-	private void computeFaceConductivity()
+	protected void computeFaceConductivity()
 	{
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
@@ -336,7 +336,7 @@ public final class ExplicitHeatEquation
 	 * In variables: Xc, u0, vectOne
 	 * Out variables: u_n
 	 */
-	private void initU()
+	protected void initU()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -352,7 +352,7 @@ public final class ExplicitHeatEquation
 	 * In variables: V, Xc, deltat, faceConductivity, faceLength
 	 * Out variables: alpha
 	 */
-	private void computeAlphaCoeff()
+	protected void computeAlphaCoeff()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -381,7 +381,7 @@ public final class ExplicitHeatEquation
 	 * In variables: alpha, deltat, t_n, u_n
 	 * Out variables: t_nplus1, u_nplus1
 	 */
-	private void executeTimeLoopN()
+	protected void executeTimeLoopN()
 	{
 		n = 0;
 		boolean continueLoop = true;
@@ -457,7 +457,7 @@ public final class ExplicitHeatEquation
 
 	public void simulate()
 	{
-		System.out.println("Start execution of ExplicitHeatEquation");
+		System.out.println("Start execution of explicitHeatEquation");
 		computeFaceLength(); // @1.0
 		computeV(); // @1.0
 		initD(); // @1.0
@@ -467,7 +467,7 @@ public final class ExplicitHeatEquation
 		initU(); // @2.0
 		computeAlphaCoeff(); // @3.0
 		executeTimeLoopN(); // @4.0
-		System.out.println("End of execution of ExplicitHeatEquation");
+		System.out.println("End of execution of explicitHeatEquation");
 	}
 
 	public static void main(String[] args) throws IOException
@@ -479,24 +479,26 @@ public final class ExplicitHeatEquation
 			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
 			int ret = 0;
 
+			// Mesh instanciation
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
 			meshFactory.jsonInit(o.get("mesh"));
 			CartesianMesh2D mesh = meshFactory.create();
 
+			// Module instanciation(s)
 			ExplicitHeatEquation.Options explicitHeatEquationOptions = new ExplicitHeatEquation.Options();
-			if (o.has("explicitHeatEquation"))
-				explicitHeatEquationOptions.jsonInit(o.get("explicitHeatEquation"));
+			if (o.has("explicitHeatEquation")) explicitHeatEquationOptions.jsonInit(o.get("explicitHeatEquation"));
+			ExplicitHeatEquation explicitHeatEquation = new ExplicitHeatEquation(mesh, explicitHeatEquationOptions);
 
-			ExplicitHeatEquation simulator = new ExplicitHeatEquation(mesh, explicitHeatEquationOptions);
-			simulator.simulate();
+			// Start simulation
+			explicitHeatEquation.simulate();
 
 			// Non regression testing
 			if (explicitHeatEquationOptions.nonRegression != null && explicitHeatEquationOptions.nonRegression.equals("CreateReference"))
-				simulator.createDB("ExplicitHeatEquationDB.ref");
+				explicitHeatEquation.createDB("ExplicitHeatEquationDB.ref");
 			if (explicitHeatEquationOptions.nonRegression != null && explicitHeatEquationOptions.nonRegression.equals("CompareToReference"))
 			{
-				simulator.createDB("ExplicitHeatEquationDB.current");
+				explicitHeatEquation.createDB("ExplicitHeatEquationDB.current");
 				if (!LevelDBUtils.compareDB("ExplicitHeatEquationDB.current", "ExplicitHeatEquationDB.ref"))
 					ret = 1;
 				LevelDBUtils.destroyDB("ExplicitHeatEquationDB.current");
@@ -506,7 +508,7 @@ public final class ExplicitHeatEquation
 		else
 		{
 			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-			System.err.println("        Expecting user data file name, for example ExplicitHeatEquationDefault.json");
+			System.err.println("        Expecting user data file name, for example ExplicitHeatEquation.json");
 			System.exit(1);
 		}
 	}

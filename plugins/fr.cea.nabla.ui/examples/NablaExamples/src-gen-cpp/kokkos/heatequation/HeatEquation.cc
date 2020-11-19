@@ -419,7 +419,7 @@ int main(int argc, char* argv[])
 	else
 	{
 		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1 arg: dataFile." << std::endl;
-		std::cerr << "(HeatEquationDefault.json)" << std::endl;
+		std::cerr << "(HeatEquation.json)" << std::endl;
 		return -1;
 	}
 	
@@ -430,24 +430,24 @@ int main(int argc, char* argv[])
 	d.ParseStream(isw);
 	assert(d.IsObject());
 	
-	// mesh
+	// Mesh instanciation
 	assert(d.HasMember("mesh"));
 	CartesianMesh2DFactory meshFactory;
 	meshFactory.jsonInit(d["mesh"]);
 	CartesianMesh2D* mesh = meshFactory.create();
 	
-	// heatEquation
-	HeatEquation::Options HeatEquation_options;
-	if (d.HasMember("heatEquation"))
-		HeatEquation_options.jsonInit(d["heatEquation"]);
+	// Module instanciation(s)
+	HeatEquation::Options heatEquationOptions;
+	if (d.HasMember("heatEquation")) heatEquationOptions.jsonInit(d["heatEquation"]);
+	HeatEquation* heatEquation = new HeatEquation(mesh, heatEquationOptions);
 	
-	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-	auto simulator = new HeatEquation(mesh, HeatEquation_options);
-	simulator->simulate();
+	// Start simulation
+	// Simulator must be a pointer when a finalize is needed at the end (Kokkos, omp...)
+	heatEquation->simulate();
 	
-	// simulator must be deleted before calling finalize
-	delete simulator;
+	delete heatEquation;
 	delete mesh;
+	// simulator must be deleted before calling finalize
 	Kokkos::finalize();
 	return ret;
 }

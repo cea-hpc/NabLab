@@ -958,7 +958,7 @@ int main(int argc, char* argv[])
 	else
 	{
 		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1 arg: dataFile." << std::endl;
-		std::cerr << "(Glace2dDefault.json)" << std::endl;
+		std::cerr << "(Glace2d.json)" << std::endl;
 		return -1;
 	}
 	
@@ -969,23 +969,22 @@ int main(int argc, char* argv[])
 	d.ParseStream(isw);
 	assert(d.IsObject());
 	
-	// mesh
+	// Mesh instanciation
 	assert(d.HasMember("mesh"));
 	CartesianMesh2DFactory meshFactory;
 	meshFactory.jsonInit(d["mesh"]);
 	CartesianMesh2D* mesh = meshFactory.create();
 	
-	// glace2d
-	Glace2d::Options Glace2d_options;
-	if (d.HasMember("glace2d"))
-		Glace2d_options.jsonInit(d["glace2d"]);
+	// Module instanciation(s)
+	Glace2d::Options glace2dOptions;
+	if (d.HasMember("glace2d")) glace2dOptions.jsonInit(d["glace2d"]);
+	Glace2d* glace2d = new Glace2d(mesh, glace2dOptions);
 	
-	// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-	auto simulator = new Glace2d(mesh, Glace2d_options);
-	simulator->simulate();
+	// Start simulation
+	// Simulator must be a pointer when a finalize is needed at the end (Kokkos, omp...)
+	glace2d->simulate();
 	
-	// simulator must be deleted before calling finalize
-	delete simulator;
+	delete glace2d;
 	delete mesh;
 	return ret;
 }

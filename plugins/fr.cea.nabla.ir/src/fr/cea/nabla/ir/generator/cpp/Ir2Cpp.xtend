@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.Platform
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.JobCallerExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
 
@@ -71,8 +71,8 @@ class Ir2Cpp extends CodeGenerator
 		val fileContents = new HashMap<String, CharSequence>
 		for (module : ir.modules)
 		{
-			fileContents.put(module.name + '.h', module.headerFileContent)
-			fileContents.put(module.name + '.cc', module.sourceFileContent)
+			fileContents.put(module.className + '.h', module.headerFileContent)
+			fileContents.put(module.className + '.cc', module.sourceFileContent)
 		}
 		fileContents.put('CMakeLists.txt', backend.ir2Cmake.getContentFor(ir))
 		return fileContents
@@ -85,9 +85,17 @@ class Ir2Cpp extends CodeGenerator
 
 	private def getHeaderFileContent(IrModule it)
 	'''
+	#ifndef «name.toUpperCase»_H_
+	#define «name.toUpperCase»_H_
+
 	«backend.includesContentProvider.getContentFor(it)»
 
 	using namespace nablalib;
+	«IF main && irRoot.modules.size > 1»
+		«FOR m : irRoot.modules.filter[x | x !== it]»
+			class «m.className»;
+		«ENDFOR»
+	«ENDIF»
 	«IF !functions.empty»
 
 	/******************** Free functions declarations ********************/
@@ -99,12 +107,18 @@ class Ir2Cpp extends CodeGenerator
 
 	/******************** Module declaration ********************/
 
-	class «name»
+	class «className»
 	{
+		«IF main && irRoot.modules.size > 1»
+			«FOR m : irRoot.modules.filter[x | x !== it]»
+				friend class «m.className»;
+			«ENDFOR»
+
+		«ENDIF»
 	public:
 		struct Options
 		{
-			«IF irRoot.postProcessing !== null»std::string «Utils.OutputPathNameAndValue.key»;«ENDIF»
+			«IF postProcessing !== null»std::string «Utils.OutputPathNameAndValue.key»;«ENDIF»
 			«FOR v : options»
 			«v.cppType» «v.name»;
 			«ENDFOR»
@@ -116,8 +130,16 @@ class Ir2Cpp extends CodeGenerator
 			void jsonInit(const rapidjson::Value& json);
 		};
 
-		«name»(«meshClassName»* aMesh, Options& aOptions);
-		~«name»();
+		«className»(«meshClassName»* aMesh, Options& aOptions);
+		~«className»();
+		«IF !main»
+
+		void setMainModule(«irRoot.mainModule.className»* value)
+		{
+			mainModule = value,
+			mainModule->«name» = this;
+		}
+		«ENDIF»
 
 	private:
 		«backend.attributesContentProvider.getContentFor(it)»
@@ -142,11 +164,18 @@ class Ir2Cpp extends CodeGenerator
 		void simulate();
 		«IF levelDB»void createDB(const std::string& db_name);«ENDIF»
 	};
+
+	#endif
 	'''
 
 	private def getSourceFileContent(IrModule it)
 	'''
-	#include "«name.toLowerCase»/«name».h"
+	#include "«irRoot.name.toLowerCase»/«className».h"
+	«IF main && irRoot.modules.size > 1»
+		«FOR m : irRoot.modules.filter[x | x !== it]»
+			#include "«irRoot.name.toLowerCase»/«m.className».h"
+		«ENDFOR»
+	«ENDIF»
 
 	using namespace nablalib;
 	«IF !functions.empty»
@@ -161,7 +190,7 @@ class Ir2Cpp extends CodeGenerator
 	/******************** Options definition ********************/
 
 	void
-	«name»::Options::jsonInit(const rapidjson::Value& json)
+	«className»::Options::jsonInit(const rapidjson::Value& json)
 	{
 		assert(json.IsObject());
 		const rapidjson::Value::ConstObject& o = json.GetObject();
@@ -193,13 +222,13 @@ class Ir2Cpp extends CodeGenerator
 
 	/******************** Module definition ********************/
 
-	«name»::«name»(«meshClassName»* aMesh, Options& aOptions)
+	«className»::«className»(«meshClassName»* aMesh, Options& aOptions)
 	: mesh(aMesh)
 	«FOR c : irRoot.connectivities.filter[multiple]»
 	, «c.nbElemsVar»(«c.connectivityAccessor»)
 	«ENDFOR»
 	, options(aOptions)
-	«IF postProcessing !== null», writer("«name»", options.«Utils.OutputPathNameAndValue.key»)«ENDIF»
+	«IF postProcessing !== null», writer("«irRoot.name»", options.«Utils.OutputPathNameAndValue.key»)«ENDIF»
 	«FOR v : variablesWithDefaultValue.filter[x | !x.constExpr]»
 	, «v.name»(«v.defaultValue.content»)
 	«ENDFOR»
@@ -227,12 +256,12 @@ class Ir2Cpp extends CodeGenerator
 		«ENDIF»
 	}
 
-	«name»::~«name»()
+	«className»::~«className»()
 	{
 	}
 	«IF backend instanceof KokkosTeamThreadBackend»
 
-	const std::pair<size_t, size_t> «name»::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
+	const std::pair<size_t, size_t> «className»::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
 	{
 		/*
 		if (nb_elmt % thread.team_size())
@@ -262,7 +291,7 @@ class Ir2Cpp extends CodeGenerator
 	«IF main»
 	«IF postProcessing !== null»
 
-	void «name»::dumpVariables(int iteration, bool useTimer)
+	void «className»::dumpVariables(int iteration, bool useTimer)
 	{
 		if (!writer.isDisabled())
 		{
@@ -301,7 +330,7 @@ class Ir2Cpp extends CodeGenerator
 	}
 	«ENDIF»
 
-	void «name»::«irRoot.main.name.toFirstLower»()
+	void «className»::«irRoot.main.codeName»()
 	{
 		«backend.traceContentProvider.getBeginOfSimuTrace(it)»
 
@@ -311,7 +340,7 @@ class Ir2Cpp extends CodeGenerator
 	}
 	«IF levelDB»
 	
-	void «name»::createDB(const std::string& db_name)
+	void «className»::createDB(const std::string& db_name)
 	{
 		// Creating data base
 		leveldb::DB* db;
@@ -322,7 +351,7 @@ class Ir2Cpp extends CodeGenerator
 		// Batch to write all data at once
 		leveldb::WriteBatch batch;
 		«FOR v : variables.filter[!option]»
-		batch.Put("«v.name»", serialize(«v.name»));
+		batch.Put("«v.dbKey»", serialize(«v.name»));
 		«ENDFOR»
 		status = db->Write(leveldb::WriteOptions(), &batch);
 		// Checking everything was ok

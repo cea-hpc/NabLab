@@ -47,11 +47,13 @@ class Ir2Json extends CodeGenerator
 			"«irModule.name.toFirstLower»":
 			{
 				«FOR jsonValue : getJsonValues(context, irModule) SEPARATOR ","»
-				"«jsonValue.key»":"«jsonValue.value»"
+				"«jsonValue.key»":«jsonValue.value»
 				«ENDFOR»
 			},
 			«ENDFOR»
-			"mesh":{}
+			"mesh":
+			{
+			}
 		}
 	'''
 
@@ -60,17 +62,17 @@ class Ir2Json extends CodeGenerator
 		val values = new ArrayList<Pair<String, String>>
 		if (irModule.postProcessing !== null)
 		{
-			values += new Pair("_outputPath_comment", "empty outputPath to disable output")
-			values += Utils.OutputPathNameAndValue
+			values += new Pair('_outputPath_comment', '"empty outputPath to disable output"')
+			values += new Pair(Utils.OutputPathNameAndValue.key, '"' + Utils.OutputPathNameAndValue.value + '"')
 		}
 		for (option : irModule.options)
 			values += new Pair(option.name, context.getVariableValue(option).content)
 		for (providerClass : irModule.functionProviderClasses)
-			values += new Pair(providerClass.toFirstLower, "")
+			values += new Pair(providerClass.toFirstLower, '{}')
 		if (irModule.main && levelDB)
 		{
-			val value = "empty value to disable, " + Utils.NonRegressionValues.CreateReference.toString + " or " + Utils.NonRegressionValues.CompareToReference.toString + " to take action"
-			values += new Pair("_nonRegression_comment", value)
+			val value = '"empty value to disable, " + Utils.NonRegressionValues.CreateReference.toString + " or " + Utils.NonRegressionValues.CompareToReference.toString + " to take action"'
+			values += new Pair('_nonRegression_comment', value)
 			values += Utils.NonRegressionNameAndValue
 		}
 		return values

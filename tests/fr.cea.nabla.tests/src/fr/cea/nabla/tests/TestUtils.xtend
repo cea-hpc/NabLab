@@ -116,6 +116,8 @@ class TestUtils
 
 	def getTestGenModel()
 	'''
+		Application Test;
+
 		MainModule Test test
 		{
 			meshClassName = "CartesianMesh2D";

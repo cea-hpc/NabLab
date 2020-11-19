@@ -159,7 +159,7 @@ public final class BugIter
 	 * In variables: deltat, t_n
 	 * Out variables: t_nplus1
 	 */
-	private void computeTn()
+	protected void computeTn()
 	{
 		t_nplus1 = t_n + options.deltat;
 	}
@@ -169,7 +169,7 @@ public final class BugIter
 	 * In variables: u_n
 	 * Out variables: v_nplus1_k0
 	 */
-	private void iniV()
+	protected void iniV()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -182,7 +182,7 @@ public final class BugIter
 	 * In variables: 
 	 * Out variables: u_n
 	 */
-	private void initU()
+	protected void initU()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -195,7 +195,7 @@ public final class BugIter
 	 * In variables: v_nplus1_k
 	 * Out variables: v_nplus1_kplus1
 	 */
-	private void updateV()
+	protected void updateV()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -208,7 +208,7 @@ public final class BugIter
 	 * In variables: w_nplus1_l
 	 * Out variables: w_nplus1_lplus1
 	 */
-	private void updateW()
+	protected void updateW()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -221,7 +221,7 @@ public final class BugIter
 	 * In variables: deltat, t_n, u_n, v_n, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_n, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
 	 * Out variables: t_nplus1, u_nplus1, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
 	 */
-	private void executeTimeLoopN()
+	protected void executeTimeLoopN()
 	{
 		n = 0;
 		boolean continueLoop = true;
@@ -267,7 +267,7 @@ public final class BugIter
 	 * In variables: v_n, v_nplus1_k0
 	 * Out variables: v_nplus1_k, v_nplus1_k
 	 */
-	private void setUpTimeLoopK()
+	protected void setUpTimeLoopK()
 	{
 		IntStream.range(0, v_nplus1_k.length).parallel().forEach(i1 -> 
 		{
@@ -284,7 +284,7 @@ public final class BugIter
 	 * In variables: v_nplus1_k
 	 * Out variables: v_nplus1_kplus1
 	 */
-	private void executeTimeLoopK()
+	protected void executeTimeLoopK()
 	{
 		k = 0;
 		boolean continueLoop = true;
@@ -312,7 +312,7 @@ public final class BugIter
 	 * In variables: v_nplus1_kplus1
 	 * Out variables: v_nplus1
 	 */
-	private void tearDownTimeLoopK()
+	protected void tearDownTimeLoopK()
 	{
 		IntStream.range(0, v_nplus1.length).parallel().forEach(i1 -> 
 		{
@@ -325,7 +325,7 @@ public final class BugIter
 	 * In variables: v_nplus1
 	 * Out variables: w_nplus1_l0
 	 */
-	private void iniW()
+	protected void iniW()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -338,7 +338,7 @@ public final class BugIter
 	 * In variables: w_n, w_nplus1_l0
 	 * Out variables: w_nplus1_l, w_nplus1_l
 	 */
-	private void setUpTimeLoopL()
+	protected void setUpTimeLoopL()
 	{
 		IntStream.range(0, w_nplus1_l.length).parallel().forEach(i1 -> 
 		{
@@ -355,7 +355,7 @@ public final class BugIter
 	 * In variables: w_nplus1_l
 	 * Out variables: w_nplus1_lplus1
 	 */
-	private void executeTimeLoopL()
+	protected void executeTimeLoopL()
 	{
 		l = 0;
 		boolean continueLoop = true;
@@ -383,7 +383,7 @@ public final class BugIter
 	 * In variables: w_nplus1_lplus1
 	 * Out variables: w_nplus1
 	 */
-	private void tearDownTimeLoopL()
+	protected void tearDownTimeLoopL()
 	{
 		IntStream.range(0, w_nplus1.length).parallel().forEach(i1 -> 
 		{
@@ -396,7 +396,7 @@ public final class BugIter
 	 * In variables: w_nplus1
 	 * Out variables: u_nplus1
 	 */
-	private void updateU()
+	protected void updateU()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -406,10 +406,10 @@ public final class BugIter
 
 	public void simulate()
 	{
-		System.out.println("Start execution of BugIter");
+		System.out.println("Start execution of bugIter");
 		initU(); // @1.0
 		executeTimeLoopN(); // @2.0
-		System.out.println("End of execution of BugIter");
+		System.out.println("End of execution of bugIter");
 	}
 
 	public static void main(String[] args) throws IOException
@@ -421,24 +421,26 @@ public final class BugIter
 			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
 			int ret = 0;
 
+			// Mesh instanciation
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
 			meshFactory.jsonInit(o.get("mesh"));
 			CartesianMesh2D mesh = meshFactory.create();
 
+			// Module instanciation(s)
 			BugIter.Options bugIterOptions = new BugIter.Options();
-			if (o.has("bugIter"))
-				bugIterOptions.jsonInit(o.get("bugIter"));
+			if (o.has("bugIter")) bugIterOptions.jsonInit(o.get("bugIter"));
+			BugIter bugIter = new BugIter(mesh, bugIterOptions);
 
-			BugIter simulator = new BugIter(mesh, bugIterOptions);
-			simulator.simulate();
+			// Start simulation
+			bugIter.simulate();
 
 			// Non regression testing
 			if (bugIterOptions.nonRegression != null && bugIterOptions.nonRegression.equals("CreateReference"))
-				simulator.createDB("BugIterDB.ref");
+				bugIter.createDB("BugIterDB.ref");
 			if (bugIterOptions.nonRegression != null && bugIterOptions.nonRegression.equals("CompareToReference"))
 			{
-				simulator.createDB("BugIterDB.current");
+				bugIter.createDB("BugIterDB.current");
 				if (!LevelDBUtils.compareDB("BugIterDB.current", "BugIterDB.ref"))
 					ret = 1;
 				LevelDBUtils.destroyDB("BugIterDB.current");
@@ -448,7 +450,7 @@ public final class BugIter
 		else
 		{
 			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-			System.err.println("        Expecting user data file name, for example BugIterDefault.json");
+			System.err.println("        Expecting user data file name, for example BugIter.json");
 			System.exit(1);
 		}
 	}

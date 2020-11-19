@@ -1,3 +1,5 @@
+Application DepthInit;
+
 MainModule DepthInit depthInit
 {
 	meshClassName = "CartesianMesh2D";

@@ -1,3 +1,6 @@
+#ifndef HEATEQUATION_H_
+#define HEATEQUATION_H_
+
 #include <fstream>
 #include <iomanip>
 #include <type_traits>
@@ -89,3 +92,5 @@ public:
 	void executeTimeLoopN() noexcept;
 	void simulate();
 };
+
+#endif

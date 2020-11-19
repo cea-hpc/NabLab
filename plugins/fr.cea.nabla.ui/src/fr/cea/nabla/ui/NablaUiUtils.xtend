@@ -11,12 +11,16 @@ package fr.cea.nabla.ui
 
 import fr.cea.nabla.ir.DefaultVarDependencies
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.Variable
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.jface.resource.ResourceLocator
 import org.eclipse.ui.PlatformUI
+
+import static extension fr.cea.nabla.ir.JobExtensions.*
+import static extension fr.cea.nabla.ir.Utils.*
 
 class NablaUiUtils
 {
@@ -35,9 +39,9 @@ class NablaUiUtils
 
 	static def String getTooltip(Job it)
 	{
-		val inVarNames = "[" + inVars.map[name].join(', ') + "]"
-		val outVarNames = "[" + outVars.map[name].join(', ') + "]"
-		inVarNames + "  \u21E8  " + name + "  \u21E8  " + outVarNames
+		val inVarNames = "[" + inVars.map[displayName].join(', ') + "]"
+		val outVarNames = "[" + outVars.map[displayName].join(', ') + "]"
+		inVarNames + "  \u21E8  " + displayName + "  \u21E8  " + outVarNames
 	}
 
 	static def getActiveNablaDslEditor()
@@ -61,5 +65,10 @@ class NablaUiUtils
 				return resource as IFile
 		}
 		return null
+	}
+
+	private static def String getDisplayName(Variable v)
+	{
+		v.irModule.name + "::" + v.name
 	}
 }

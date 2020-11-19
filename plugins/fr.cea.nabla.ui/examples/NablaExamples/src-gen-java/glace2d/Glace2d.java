@@ -255,7 +255,7 @@ public final class Glace2d
 	 * In variables: X_n
 	 * Out variables: C
 	 */
-	private void computeCjr()
+	protected void computeCjr()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -280,7 +280,7 @@ public final class Glace2d
 	 * In variables: E_n, uj_n
 	 * Out variables: e
 	 */
-	private void computeInternalEnergy()
+	protected void computeInternalEnergy()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -293,7 +293,7 @@ public final class Glace2d
 	 * In variables: X_n0
 	 * Out variables: Cjr_ic
 	 */
-	private void iniCjrIc()
+	protected void iniCjrIc()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -318,7 +318,7 @@ public final class Glace2d
 	 * In variables: X_n0
 	 * Out variables: X_n
 	 */
-	private void setUpTimeLoopN()
+	protected void setUpTimeLoopN()
 	{
 		IntStream.range(0, X_n.length).parallel().forEach(i2 -> 
 		{
@@ -332,7 +332,7 @@ public final class Glace2d
 	 * In variables: C
 	 * Out variables: l
 	 */
-	private void computeLjr()
+	protected void computeLjr()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -353,7 +353,7 @@ public final class Glace2d
 	 * In variables: C, X_n
 	 * Out variables: V
 	 */
-	private void computeV()
+	protected void computeV()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -378,7 +378,7 @@ public final class Glace2d
 	 * In variables: Cjr_ic, X_n0, gamma, pIniZd, pIniZg, rhoIniZd, rhoIniZg, xInterface
 	 * Out variables: E_n, m, p, rho, uj_n
 	 */
-	private void initialize()
+	protected void initialize()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -432,7 +432,7 @@ public final class Glace2d
 	 * In variables: V, m
 	 * Out variables: rho
 	 */
-	private void computeDensity()
+	protected void computeDensity()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -445,7 +445,7 @@ public final class Glace2d
 	 * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_n, b, bt, c, deltatCfl, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, p, rho, t_n, uj_n, ur
 	 * Out variables: Ajr, Ar, C, E_nplus1, F, Mt, V, X_nplus1, b, bt, c, deltat_nplus1, deltatj, e, l, p, rho, t_nplus1, uj_nplus1, ur
 	 */
-	private void executeTimeLoopN()
+	protected void executeTimeLoopN()
 	{
 		n = 0;
 		boolean continueLoop = true;
@@ -509,7 +509,7 @@ public final class Glace2d
 	 * In variables: e, gamma, rho
 	 * Out variables: p
 	 */
-	private void computeEOSp()
+	protected void computeEOSp()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -522,7 +522,7 @@ public final class Glace2d
 	 * In variables: gamma, p, rho
 	 * Out variables: c
 	 */
-	private void computeEOSc()
+	protected void computeEOSc()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -535,7 +535,7 @@ public final class Glace2d
 	 * In variables: C, c, l, rho
 	 * Out variables: Ajr
 	 */
-	private void computeAjr()
+	protected void computeAjr()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -556,7 +556,7 @@ public final class Glace2d
 	 * In variables: V, c, l
 	 * Out variables: deltatj
 	 */
-	private void computedeltatj()
+	protected void computedeltatj()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -579,7 +579,7 @@ public final class Glace2d
 	 * In variables: Ajr
 	 * Out variables: Ar
 	 */
-	private void computeAr()
+	protected void computeAr()
 	{
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
@@ -605,7 +605,7 @@ public final class Glace2d
 	 * In variables: Ajr, C, p, uj_n
 	 * Out variables: b
 	 */
-	private void computeBr()
+	protected void computeBr()
 	{
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
@@ -631,7 +631,7 @@ public final class Glace2d
 	 * In variables: deltatCfl, deltatj
 	 * Out variables: deltat_nplus1
 	 */
-	private void computeDt()
+	protected void computeDt()
 	{
 		double reduction0 = Double.MAX_VALUE;
 		reduction0 = IntStream.range(0, nbCells).boxed().parallel().reduce
@@ -651,7 +651,7 @@ public final class Glace2d
 	 * In variables: Ar, b
 	 * Out variables: Mt, bt
 	 */
-	private void computeBoundaryConditions()
+	protected void computeBoundaryConditions()
 	{
 		final double[][] I = new double[][] {new double[] {1.0, 0.0}, new double[] {0.0, 1.0}};
 		{
@@ -711,7 +711,7 @@ public final class Glace2d
 	 * In variables: b
 	 * Out variables: bt
 	 */
-	private void computeBt()
+	protected void computeBt()
 	{
 		{
 			final int[] innerNodes = mesh.getInnerNodes();
@@ -730,7 +730,7 @@ public final class Glace2d
 	 * In variables: Ar
 	 * Out variables: Mt
 	 */
-	private void computeMt()
+	protected void computeMt()
 	{
 		{
 			final int[] innerNodes = mesh.getInnerNodes();
@@ -749,7 +749,7 @@ public final class Glace2d
 	 * In variables: deltat_nplus1, t_n
 	 * Out variables: t_nplus1
 	 */
-	private void computeTn()
+	protected void computeTn()
 	{
 		t_nplus1 = t_n + deltat_nplus1;
 	}
@@ -759,7 +759,7 @@ public final class Glace2d
 	 * In variables: Mt, bt
 	 * Out variables: ur
 	 */
-	private void computeU()
+	protected void computeU()
 	{
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
@@ -772,7 +772,7 @@ public final class Glace2d
 	 * In variables: Ajr, C, p, uj_n, ur
 	 * Out variables: F
 	 */
-	private void computeFjr()
+	protected void computeFjr()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -795,7 +795,7 @@ public final class Glace2d
 	 * In variables: X_n, deltat_n, ur
 	 * Out variables: X_nplus1
 	 */
-	private void computeXn()
+	protected void computeXn()
 	{
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
@@ -808,7 +808,7 @@ public final class Glace2d
 	 * In variables: E_n, F, deltat_n, m, ur
 	 * Out variables: E_nplus1
 	 */
-	private void computeEn()
+	protected void computeEn()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -833,7 +833,7 @@ public final class Glace2d
 	 * In variables: F, deltat_n, m, uj_n
 	 * Out variables: uj_nplus1
 	 */
-	private void computeUn()
+	protected void computeUn()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -950,12 +950,12 @@ public final class Glace2d
 
 	public void simulate()
 	{
-		System.out.println("Start execution of Glace2d");
+		System.out.println("Start execution of glace2d");
 		iniCjrIc(); // @1.0
 		setUpTimeLoopN(); // @1.0
 		initialize(); // @2.0
 		executeTimeLoopN(); // @3.0
-		System.out.println("End of execution of Glace2d");
+		System.out.println("End of execution of glace2d");
 	}
 
 	public static void main(String[] args) throws IOException
@@ -967,24 +967,26 @@ public final class Glace2d
 			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
 			int ret = 0;
 
+			// Mesh instanciation
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
 			meshFactory.jsonInit(o.get("mesh"));
 			CartesianMesh2D mesh = meshFactory.create();
 
+			// Module instanciation(s)
 			Glace2d.Options glace2dOptions = new Glace2d.Options();
-			if (o.has("glace2d"))
-				glace2dOptions.jsonInit(o.get("glace2d"));
+			if (o.has("glace2d")) glace2dOptions.jsonInit(o.get("glace2d"));
+			Glace2d glace2d = new Glace2d(mesh, glace2dOptions);
 
-			Glace2d simulator = new Glace2d(mesh, glace2dOptions);
-			simulator.simulate();
+			// Start simulation
+			glace2d.simulate();
 
 			// Non regression testing
 			if (glace2dOptions.nonRegression != null && glace2dOptions.nonRegression.equals("CreateReference"))
-				simulator.createDB("Glace2dDB.ref");
+				glace2d.createDB("Glace2dDB.ref");
 			if (glace2dOptions.nonRegression != null && glace2dOptions.nonRegression.equals("CompareToReference"))
 			{
-				simulator.createDB("Glace2dDB.current");
+				glace2d.createDB("Glace2dDB.current");
 				if (!LevelDBUtils.compareDB("Glace2dDB.current", "Glace2dDB.ref"))
 					ret = 1;
 				LevelDBUtils.destroyDB("Glace2dDB.current");
@@ -994,7 +996,7 @@ public final class Glace2d
 		else
 		{
 			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-			System.err.println("        Expecting user data file name, for example Glace2dDefault.json");
+			System.err.println("        Expecting user data file name, for example Glace2d.json");
 			System.exit(1);
 		}
 	}

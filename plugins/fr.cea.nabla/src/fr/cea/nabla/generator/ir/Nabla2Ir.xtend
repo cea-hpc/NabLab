@@ -11,10 +11,12 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.FunctionOrReduction
+import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVarDeclaration
@@ -22,8 +24,10 @@ import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nablagen.MainModule
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.overloading.DeclarationProvider
+import java.util.HashMap
 import java.util.LinkedHashSet
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.util.EcoreUtil
 
 class Nabla2Ir
 {
@@ -34,14 +38,31 @@ class Nabla2Ir
 	@Inject extension IrJobFactory
 	@Inject extension IrFunctionFactory
 
-	def create IrFactory::eINSTANCE.createIrModule toIrModule(NablagenModule ngenModule)
-	{
-		annotations += ngenModule.toIrAnnotation
-		name = ngenModule.name.toFirstUpper
-		main = (ngenModule instanceof MainModule)
+	val irModuleModels = new HashMap<NablaModule, IrModule>
 
-		// Function and reduction
+	def createIrModule(NablagenModule ngenModule)
+	{
 		val nablaModule = ngenModule.type
+		var irModule = irModuleModels.get(nablaModule)
+		if (irModule === null)
+		{
+			irModule = nablaModule.toIrModule
+			irModuleModels.put(nablaModule, irModule)
+		}
+		else
+		{
+			irModule = EcoreUtil.copy(irModule)
+		}
+
+		irModule.annotations += ngenModule.toIrAnnotation
+		irModule.name = ngenModule.name
+		irModule.main = (ngenModule instanceof MainModule)
+
+		return irModule
+	}
+
+	private def create IrFactory::eINSTANCE.createIrModule toIrModule(NablaModule nablaModule)
+	{
 		nablaModule.allUsedFunctionAndReductions.forEach[x | functions += x.toIrFunction]
 
 		// Time loop jobs creation

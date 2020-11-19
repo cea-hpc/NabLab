@@ -28,17 +28,17 @@ import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import fr.cea.nabla.typing.NablaSimpleType
-import org.eclipse.xtext.EcoreUtil2
 import java.util.ArrayList
+import org.eclipse.xtext.EcoreUtil2
 
 @Singleton
-class IrArgOrVarFactory 
+class IrArgOrVarFactory
 {
 	@Inject extension ArgOrVarExtensions
 	@Inject extension TimeIteratorExtensions
 	@Inject extension IrExpressionFactory
 	@Inject extension IrJobFactory
-	@Inject extension BaseType2IrType
+	@Inject extension IrBasicFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension ArgOrVarTypeProvider
 	@Inject NablaType2IrType nablaType2IrType

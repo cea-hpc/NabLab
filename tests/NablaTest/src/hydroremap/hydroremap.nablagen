@@ -1,3 +1,6 @@
+[WriteIr]
+Application HydroRemap;
+
 MainModule Hydro h
 {
 	meshClassName = "CartesianMesh2D";
@@ -11,29 +14,27 @@ MainModule Hydro h
 AdditionalModule Remap r1
 {
 	r1.X = h.X;
-	r1.v1 = h.v1;
-	r1.v2 = h.v4;
+	r1.rv1 = h.hv1;
+	r1.rv2 = h.hv4;
 }
 
 AdditionalModule Remap r2
 {
 	r2.X = h.X;
-	r2.v1 = h.v3;
-	r2.v3 = h.v6;
+	r2.rv1 = h.hv3;
+	r2.rv3 = h.hv6;
 }
 
-//Java
-//{
-//	outputPath = "/NablaTest/src-gen-java";
-//}
+Java
+{
+	outputPath = "/NablaTest/src-gen-java";
+}
 
-//StlThread
-//{
-//	outputPath = "/NablaTest/src-gen-cpp/stl-thread";
-//	compiler = GNU;
-//		compiler = LLVM;
-//		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
-//}
+StlThread
+{
+	outputPath = "/NablaTest/src-gen-cpp/stl-thread";
+	compiler = GNU;
+}
 //
 //Kokkos
 //{

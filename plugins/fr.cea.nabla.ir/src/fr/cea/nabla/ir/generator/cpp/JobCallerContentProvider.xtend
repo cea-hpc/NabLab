@@ -22,7 +22,7 @@ class JobCallerContentProvider
 	def getCallsContent(JobCaller it)
 	'''
 		«FOR j : calls»
-		«j.codeName»(); // @«j.at»
+		«j.callName.replace('.', '->')»(); // @«j.at»
 		«ENDFOR»
 
 	'''
@@ -51,7 +51,7 @@ class KokkosTeamThreadJobCallerContentProvider extends JobCallerContentProvider
 			// @«at»
 			«IF (atJobs.forall[!hasIterable])»
 				«FOR j : atJobs.sortBy[name]»
-				«j.codeName»();
+				«j.callName.replace('.', '->')»();
 				«ENDFOR»
 			«ELSE»
 			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
@@ -66,12 +66,12 @@ class KokkosTeamThreadJobCallerContentProvider extends JobCallerContentProvider
 					«IF !j.hasLoop»
 					if (thread.league_rank() == 0)
 						«IF !j.hasIterable /* Only simple instruction jobs */»
-							Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){«j.codeName»();});
+							Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){«j.callName.replace('.', '->')»();});
 						«ELSE /* Only for jobs containing ReductionInstruction */»
-							«j.codeName»(thread);
+							«j.callName.replace('.', '->')»(thread);
 						«ENDIF»
 					«ELSE»
-						«j.codeName»(thread);
+						«j.callName.replace('.', '->')»(thread);
 					«ENDIF»
 				«ENDFOR»
 			});

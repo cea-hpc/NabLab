@@ -13,8 +13,11 @@ import fr.cea.nabla.ir.DefaultVarDependencies
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.Container
+import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.SimpleVariable
@@ -22,15 +25,41 @@ import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
+import static extension fr.cea.nabla.ir.Utils.*
+import fr.cea.nabla.ir.ir.Variable
 
 class Utils
 {
 	static val extension DefaultVarDependencies = new DefaultVarDependencies
 
+	static def getClassName(IrModule it)
+	{
+		name.toFirstUpper
+	}
+
 	static def getCodeName(Job it)
 	{
 		name.toFirstLower
+	}
+
+	static def getCodeName(JobCaller it)
+	{
+		name.toFirstLower
+	}
+
+	static def getCallName(Job it)
+	{
+		val jobModule = irModule
+		val callerModule = if (caller.eContainer instanceof IrRoot)
+				(caller.eContainer as IrRoot).mainModule
+			else
+				caller.irModule
+		if (jobModule === callerModule)
+			codeName
+		else
+			jobModule.name + '.' + codeName
 	}
 
 	static def getCodeName(ArgOrVar it)
@@ -39,6 +68,14 @@ class Utils
 			'options.' + name
 		else if (iteratorCounter)
 			(eContainer as Iterator).index.name
+		else
+			name
+	}
+
+	static def getDbKey(Variable it)
+	{
+		if (irRoot.modules.size > 1)
+			irModule.name + '::' + name
 		else
 			name
 	}
@@ -56,7 +93,7 @@ class Utils
 	static def getComment(Job it)
 	'''
 		/**
-		 * Job «name» called @«at» in «caller.name» method.
+		 * Job «name» called @«at» in «caller.codeName» method.
 		 * In variables: «FOR v : inVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
 		 * Out variables: «FOR v : outVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
 		 */

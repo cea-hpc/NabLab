@@ -20,10 +20,10 @@ import fr.cea.nabla.nabla.Reduction
 import org.eclipse.xtext.EcoreUtil2
 
 @Singleton
-class IrFunctionFactory 
+class IrFunctionFactory
 {
 	@Inject extension IrAnnotationHelper
-	@Inject extension BaseType2IrType
+	@Inject extension IrBasicFactory
 	@Inject extension IrArgOrVarFactory
 	@Inject extension IrInstructionFactory
 
@@ -61,7 +61,7 @@ class IrFunctionFactory
 		body = f.body.toIrInstruction
 	}
 
-	private def getNablaModuleName(FunctionOrReduction it) 
+	private def getNablaModuleName(FunctionOrReduction it)
 	{
 		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
 		return module.name

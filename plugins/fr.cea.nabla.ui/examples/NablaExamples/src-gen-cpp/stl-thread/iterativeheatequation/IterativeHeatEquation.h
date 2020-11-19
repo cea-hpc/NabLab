@@ -1,3 +1,6 @@
+#ifndef ITERATIVEHEATEQUATION_H_
+#define ITERATIVEHEATEQUATION_H_
+
 #include <fstream>
 #include <iomanip>
 #include <type_traits>
@@ -106,3 +109,5 @@ public:
 	void executeTimeLoopN() noexcept;
 	void simulate();
 };
+
+#endif

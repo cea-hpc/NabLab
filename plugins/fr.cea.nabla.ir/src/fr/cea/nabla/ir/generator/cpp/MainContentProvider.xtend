@@ -14,6 +14,8 @@ import fr.cea.nabla.ir.ir.IrModule
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
+import static extension fr.cea.nabla.ir.generator.Utils.*
 
 @Data
 class MainContentProvider
@@ -33,7 +35,7 @@ class MainContentProvider
 		else
 		{
 			std::cerr << "[ERROR] Wrong number of arguments. Expecting 1 arg: dataFile." << std::endl;
-			std::cerr << "(«name»Default.json)" << std::endl;
+			std::cerr << "(«irRoot.name».json)" << std::endl;
 			return -1;
 		}
 
@@ -44,37 +46,47 @@ class MainContentProvider
 		d.ParseStream(isw);
 		assert(d.IsObject());
 
-		// mesh
+		// Mesh instanciation
 		assert(d.HasMember("mesh"));
 		«meshClassName»Factory meshFactory;
 		meshFactory.jsonInit(d["mesh"]);
 		«meshClassName»* mesh = meshFactory.create();
 
-		// «name.toFirstLower»
-		«name»::Options «name»_options;
-		if (d.HasMember("«name.toFirstLower»"))
-			«name»_options.jsonInit(d["«name.toFirstLower»"]);
+		// Module instanciation(s)
+		«FOR m : irRoot.modules»
+			«m.instanciation»
+		«ENDFOR»
 
-		// simulator must be a pointer if there is a finalize at the end (Kokkos, omp...)
-		auto simulator = new «name»(mesh, «name»_options);
-		simulator->simulate();
+		// Start simulation
+		// Simulator must be a pointer when a finalize is needed at the end (Kokkos, omp...)
+		«name»->simulate();
 		«IF !levelDBPath.nullOrEmpty»
 
 		«val nrName = Utils.NonRegressionNameAndValue.key»
+		«val dbName = irRoot.name + "DB"»
 		// Non regression testing
-		if («name»_options.«nrName» == "«Utils.NonRegressionValues.CreateReference.toString»")
-			simulator->createDB("«name»DB.ref");
-		if («name»_options.«nrName» == "«Utils.NonRegressionValues.CompareToReference.toString»") {
-			simulator->createDB("«name»DB.current");
-			if (!compareDB("«name»DB.current", "«name»DB.ref"))
+		if («name»Options.«nrName» == "«Utils.NonRegressionValues.CreateReference.toString»")
+			«name»->createDB("«dbName».ref");
+		if («name»Options.«nrName» == "«Utils.NonRegressionValues.CompareToReference.toString»") {
+			«name»->createDB("«dbName».current");
+			if (!compareDB("«dbName».current", "«dbName».ref"))
 				ret = 1;
-			leveldb::DestroyDB("«name»DB.current", leveldb::Options());
+			leveldb::DestroyDB("«dbName».current", leveldb::Options());
 		}
 		«ENDIF»
 
-		// simulator must be deleted before calling finalize
-		delete simulator;
+		«FOR m : irRoot.modules.reverseView»
+		delete «m.name»;
+		«ENDFOR»
 		delete mesh;
+	'''
+
+	private def getInstanciation(IrModule it)
+	'''
+		«className»::Options «name»Options;
+		if (d.HasMember("«name»")) «name»Options.jsonInit(d["«name»"]);
+		«className»* «name» = new «className»(mesh, «name»Options);
+		«IF !main»«name»->setMainModule(«irRoot.mainModule.name»);«ENDIF»
 	'''
 }
 
@@ -85,6 +97,7 @@ class KokkosMainContentProvider extends MainContentProvider
 	'''
 		Kokkos::initialize(argc, argv);
 		«super.getContentFor(it)»
+		// simulator must be deleted before calling finalize
 		Kokkos::finalize();
 	'''
 }

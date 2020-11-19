@@ -16,6 +16,7 @@ import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 @Data
@@ -35,6 +36,18 @@ class AttributesContentProvider
 		Options& options;
 		«IF postProcessing !== null»PvdFileWriter2D writer;«ENDIF»
 
+		«IF irRoot.modules.size > 1»
+			«IF main»
+				// Additional modules
+				«FOR m : irRoot.modules.filter[x | x !== it]»
+					«m.className»* «m.name»;
+				«ENDFOR»
+			«ELSE»
+				// Main module
+				«irRoot.mainModule.className»* mainModule;
+			«ENDIF»
+
+		«ENDIF»
 		// Global variables
 		«FOR v : variables.filter[!option]»
 			«v.variableDeclaration»

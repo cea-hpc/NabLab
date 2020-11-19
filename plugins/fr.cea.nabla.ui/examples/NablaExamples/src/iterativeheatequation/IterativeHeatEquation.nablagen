@@ -7,6 +7,8 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
+Application IterativeHeatEquation;
+
 MainModule IterativeHeatEquation iterativeHeatEquation
 {
 	meshClassName = "CartesianMesh2D";

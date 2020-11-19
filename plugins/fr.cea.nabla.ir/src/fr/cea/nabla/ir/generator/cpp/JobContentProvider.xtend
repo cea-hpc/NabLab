@@ -40,7 +40,7 @@ class JobContentProvider
 	def getDefinitionContent(Job it)
 	'''
 		«comment»
-		void «irModule.name»::«codeName»() noexcept
+		void «irModule.className»::«codeName»() noexcept
 		{
 			«innerContent»
 		}
@@ -141,7 +141,7 @@ class KokkosJobContentProvider extends JobContentProvider
 	override getDefinitionContent(Job it)
 	'''
 		«comment»
-		void «irModule.name»::«codeName»(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept
+		void «irModule.className»::«codeName»(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept
 		{
 			«innerContent»
 		}

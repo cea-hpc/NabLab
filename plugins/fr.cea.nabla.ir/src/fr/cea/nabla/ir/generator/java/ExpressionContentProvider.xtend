@@ -28,6 +28,7 @@ import fr.cea.nabla.ir.ir.VectorConstant
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
+import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
 
@@ -111,7 +112,17 @@ class ExpressionContentProvider
 	'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 
 	static def dispatch CharSequence getContent(ArgOrVarRef it)
-	'''«target.codeName»«FOR r : iterators BEFORE '[' SEPARATOR '][' AFTER ']'»«r.name»«ENDFOR»«FOR d:indices»[«d.content»]«ENDFOR»'''
+	'''«codeName»«FOR r : iterators BEFORE '[' SEPARATOR '][' AFTER ']'»«r.name»«ENDFOR»«FOR d:indices»[«d.content»]«ENDFOR»'''
+
+	private static def getCodeName(ArgOrVarRef it)
+	{
+		val argOrVarRefModule = irModule
+		val varModule = target.irModule
+		if (argOrVarRefModule === varModule)
+			target.codeName
+		else
+			'mainModule.' + target.codeName
+	}
 
 	private static def CharSequence initArray(int[] sizes, CharSequence value)
 	{

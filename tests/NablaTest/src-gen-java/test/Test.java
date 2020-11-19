@@ -132,7 +132,7 @@ public final class Test
 	 * In variables: e_n
 	 * Out variables: e1
 	 */
-	private void computeE1()
+	protected void computeE1()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -145,7 +145,7 @@ public final class Test
 	 * In variables: e2_nplus1_k
 	 * Out variables: e2_nplus1_kplus1
 	 */
-	private void computeE2()
+	protected void computeE2()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -158,7 +158,7 @@ public final class Test
 	 * In variables: 
 	 * Out variables: e_n0
 	 */
-	private void initE()
+	protected void initE()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -171,7 +171,7 @@ public final class Test
 	 * In variables: deltat, t_n
 	 * Out variables: t_nplus1
 	 */
-	private void updateT()
+	protected void updateT()
 	{
 		t_nplus1 = t_n + options.deltat;
 	}
@@ -181,7 +181,7 @@ public final class Test
 	 * In variables: e1
 	 * Out variables: e2_nplus1_k0
 	 */
-	private void initE2()
+	protected void initE2()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -194,7 +194,7 @@ public final class Test
 	 * In variables: e_n0
 	 * Out variables: e_n
 	 */
-	private void setUpTimeLoopN()
+	protected void setUpTimeLoopN()
 	{
 		IntStream.range(0, e_n.length).parallel().forEach(i1 -> 
 		{
@@ -207,7 +207,7 @@ public final class Test
 	 * In variables: deltat, e1, e2_n, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_n, t_n
 	 * Out variables: e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_nplus1, t_nplus1
 	 */
-	private void executeTimeLoopN()
+	protected void executeTimeLoopN()
 	{
 		n = 0;
 		boolean continueLoop = true;
@@ -247,7 +247,7 @@ public final class Test
 	 * In variables: e2_n, e2_nplus1_k0
 	 * Out variables: e2_nplus1_k, e2_nplus1_k
 	 */
-	private void setUpTimeLoopK()
+	protected void setUpTimeLoopK()
 	{
 		IntStream.range(0, e2_nplus1_k.length).parallel().forEach(i1 -> 
 		{
@@ -264,7 +264,7 @@ public final class Test
 	 * In variables: e2_nplus1_k
 	 * Out variables: e2_nplus1_kplus1
 	 */
-	private void executeTimeLoopK()
+	protected void executeTimeLoopK()
 	{
 		k = 0;
 		boolean continueLoop = true;
@@ -292,7 +292,7 @@ public final class Test
 	 * In variables: e2_nplus1_kplus1
 	 * Out variables: e2_nplus1
 	 */
-	private void tearDownTimeLoopK()
+	protected void tearDownTimeLoopK()
 	{
 		IntStream.range(0, e2_nplus1.length).parallel().forEach(i1 -> 
 		{
@@ -305,7 +305,7 @@ public final class Test
 	 * In variables: e2_nplus1
 	 * Out variables: e_nplus1
 	 */
-	private void updateE()
+	protected void updateE()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
@@ -315,11 +315,11 @@ public final class Test
 
 	public void simulate()
 	{
-		System.out.println("Start execution of Test");
+		System.out.println("Start execution of test");
 		initE(); // @1.0
 		setUpTimeLoopN(); // @2.0
 		executeTimeLoopN(); // @3.0
-		System.out.println("End of execution of Test");
+		System.out.println("End of execution of test");
 	}
 
 	public static void main(String[] args) throws IOException
@@ -331,24 +331,26 @@ public final class Test
 			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
 			int ret = 0;
 
+			// Mesh instanciation
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
 			meshFactory.jsonInit(o.get("mesh"));
 			CartesianMesh2D mesh = meshFactory.create();
 
+			// Module instanciation(s)
 			Test.Options testOptions = new Test.Options();
-			if (o.has("test"))
-				testOptions.jsonInit(o.get("test"));
+			if (o.has("test")) testOptions.jsonInit(o.get("test"));
+			Test test = new Test(mesh, testOptions);
 
-			Test simulator = new Test(mesh, testOptions);
-			simulator.simulate();
+			// Start simulation
+			test.simulate();
 
 			// Non regression testing
 			if (testOptions.nonRegression != null && testOptions.nonRegression.equals("CreateReference"))
-				simulator.createDB("TestDB.ref");
+				test.createDB("TestDB.ref");
 			if (testOptions.nonRegression != null && testOptions.nonRegression.equals("CompareToReference"))
 			{
-				simulator.createDB("TestDB.current");
+				test.createDB("TestDB.current");
 				if (!LevelDBUtils.compareDB("TestDB.current", "TestDB.ref"))
 					ret = 1;
 				LevelDBUtils.destroyDB("TestDB.current");
@@ -358,7 +360,7 @@ public final class Test
 		else
 		{
 			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-			System.err.println("        Expecting user data file name, for example TestDefault.json");
+			System.err.println("        Expecting user data file name, for example Test.json");
 			System.exit(1);
 		}
 	}

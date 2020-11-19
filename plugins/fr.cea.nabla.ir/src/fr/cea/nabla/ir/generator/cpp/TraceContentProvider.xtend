@@ -28,7 +28,7 @@ class TraceContentProvider
 
 	def getBeginOfSimuTrace(IrModule it)
 	'''
-		std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting «name» ..." << __RESET__ << "\n\n";
+		std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting «irRoot.name» ..." << __RESET__ << "\n\n";
 
 		«hwlocTraceContent»
 

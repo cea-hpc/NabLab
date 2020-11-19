@@ -33,6 +33,7 @@ import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
+import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
 
@@ -137,11 +138,14 @@ class ExpressionContentProvider
 
 	private def CharSequence getCodeName(ArgOrVarRef it)
 	{
+		var result = target.codeName
+		val argOrVarRefModule = irModule
+		val varModule = target.irModule
+		if (argOrVarRefModule !== varModule) result = 'mainModule->' + result
 		// operator() on matrix must use constant object
 		if (target.matrix && !iterators.empty && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
-			'''std::cref(«target.codeName»)'''
-		else
-			target.codeName
+			result = '''std::cref(«result»)'''
+		return result
 	}
 
 	private def dispatch CharSequence getInnerContent(Expression it) { content }

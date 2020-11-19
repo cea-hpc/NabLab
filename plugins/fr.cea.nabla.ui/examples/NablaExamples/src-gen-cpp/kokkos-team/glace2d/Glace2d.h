@@ -1,3 +1,6 @@
+#ifndef GLACE2D_H_
+#define GLACE2D_H_
+
 #include <fstream>
 #include <iomanip>
 #include <type_traits>
@@ -186,3 +189,5 @@ public:
 	void computeUn(const member_type& teamMember) noexcept;
 	void simulate();
 };
+
+#endif

@@ -12,6 +12,7 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.ir.IrRoot
 
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
+import static extension fr.cea.nabla.ir.generator.Utils.*
 
 abstract class Ir2Cmake
 {
@@ -44,7 +45,7 @@ abstract class Ir2Cmake
 		  endif()
 		endif()
 
-		project(«name.toFirstUpper»Project CXX)
+		project(«name»Project CXX)
 
 		«libraryBackend»
 		add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
@@ -60,7 +61,7 @@ abstract class Ir2Cmake
 		endif()
 		«ENDIF»
 
-		add_executable(«name.toLowerCase» «name + '.cc'»)
+		add_executable(«name.toLowerCase»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
 		target_include_directories(«name.toLowerCase» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 		target_link_libraries(«name.toLowerCase» PUBLIC cppnabla«FOR tll : targetLinkLibraries» «tll»«ENDFOR»«IF !levelDBPath.nullOrEmpty» leveldb::leveldb Threads::Threads«ENDIF»)
 

@@ -1,3 +1,6 @@
+#ifndef EXPLICITHEATEQUATION_H_
+#define EXPLICITHEATEQUATION_H_
+
 #include <fstream>
 #include <iomanip>
 #include <type_traits>
@@ -93,3 +96,5 @@ public:
 	void executeTimeLoopN() noexcept;
 	void simulate();
 };
+
+#endif

@@ -16,6 +16,8 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import static fr.cea.nabla.ir.Utils.FunctionReductionPrefix
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
+import static extension fr.cea.nabla.ir.generator.Utils.*
 
 abstract class IncludesContentProvider
 {
@@ -70,7 +72,10 @@ abstract class IncludesContentProvider
 		userIncludes +=  "types/Types.h"
 
 		if (m.functions.exists[f | f.body === null && f.provider == m.name]) 
-			userIncludes += m.name.toLowerCase + "/" + m.name + FunctionReductionPrefix + ".h"
+			userIncludes += m.irRoot.name.toLowerCase + "/" + m.className + FunctionReductionPrefix + ".h"
+
+		if (!m.main)
+			userIncludes += m.irRoot.name.toLowerCase + "/" + m.irRoot.mainModule.className + ".h"
 
 		userIncludes += m.additionalUserIncludes
 		return userIncludes

@@ -117,7 +117,7 @@ public final class DepthInit
 	 * In variables: 
 	 * Out variables: eta
 	 */
-	private void initFromFile()
+	protected void initFromFile()
 	{
 		for (int jCells=0; jCells<nbCells; jCells++)
 		{
@@ -127,9 +127,9 @@ public final class DepthInit
 
 	public void simulate()
 	{
-		System.out.println("Start execution of DepthInit");
+		System.out.println("Start execution of depthInit");
 		initFromFile(); // @1.0
-		System.out.println("End of execution of DepthInit");
+		System.out.println("End of execution of depthInit");
 	}
 
 	public static void main(String[] args) throws IOException
@@ -141,24 +141,26 @@ public final class DepthInit
 			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
 			int ret = 0;
 
+			// Mesh instanciation
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
 			meshFactory.jsonInit(o.get("mesh"));
 			CartesianMesh2D mesh = meshFactory.create();
 
+			// Module instanciation(s)
 			DepthInit.Options depthInitOptions = new DepthInit.Options();
-			if (o.has("depthInit"))
-				depthInitOptions.jsonInit(o.get("depthInit"));
+			if (o.has("depthInit")) depthInitOptions.jsonInit(o.get("depthInit"));
+			DepthInit depthInit = new DepthInit(mesh, depthInitOptions);
 
-			DepthInit simulator = new DepthInit(mesh, depthInitOptions);
-			simulator.simulate();
+			// Start simulation
+			depthInit.simulate();
 
 			// Non regression testing
 			if (depthInitOptions.nonRegression != null && depthInitOptions.nonRegression.equals("CreateReference"))
-				simulator.createDB("DepthInitDB.ref");
+				depthInit.createDB("DepthInitDB.ref");
 			if (depthInitOptions.nonRegression != null && depthInitOptions.nonRegression.equals("CompareToReference"))
 			{
-				simulator.createDB("DepthInitDB.current");
+				depthInit.createDB("DepthInitDB.current");
 				if (!LevelDBUtils.compareDB("DepthInitDB.current", "DepthInitDB.ref"))
 					ret = 1;
 				LevelDBUtils.destroyDB("DepthInitDB.current");
@@ -168,7 +170,7 @@ public final class DepthInit
 		else
 		{
 			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-			System.err.println("        Expecting user data file name, for example DepthInitDefault.json");
+			System.err.println("        Expecting user data file name, for example DepthInit.json");
 			System.exit(1);
 		}
 	}

@@ -14,6 +14,7 @@
     </genEnums>
     <genClasses ecoreClass="Nablagen.ecore#//NablagenRoot">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//NablagenRoot/writeIR"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//NablagenRoot/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenRoot/mainModule"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenRoot/additionalModules"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenRoot/vtkOutput"/>

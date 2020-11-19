@@ -1,3 +1,6 @@
+#ifndef DEPTHINIT_H_
+#define DEPTHINIT_H_
+
 #include <fstream>
 #include <iomanip>
 #include <type_traits>
@@ -11,7 +14,6 @@
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
-#include "depthinit/DepthInitFunctions.h"
 #include "utils/stl/Parallel.h"
 
 using namespace nablalib;
@@ -58,3 +60,5 @@ public:
 	void initFromFile() noexcept;
 	void simulate();
 };
+
+#endif

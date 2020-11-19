@@ -28,7 +28,7 @@ class JobContentProvider
 	static def getContent(Job it)
 	'''
 		«comment»
-		private void «codeName»()
+		protected void «codeName»()
 		{
 			«innerContent»
 		}
@@ -54,7 +54,7 @@ class JobContentProvider
 					dumpVariables(«itVar»);
 			«ENDIF»
 			«FOR j : calls»
-				«j.codeName»(); // @«j.at»
+				«j.callName»(); // @«j.at»
 			«ENDFOR»
 
 			// Evaluate loop condition with variables at time n

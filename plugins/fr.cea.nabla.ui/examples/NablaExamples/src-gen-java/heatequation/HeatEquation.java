@@ -158,7 +158,7 @@ public final class HeatEquation
 	 * In variables: V, center, deltat, surface, u_n
 	 * Out variables: outgoingFlux
 	 */
-	private void computeOutgoingFlux()
+	protected void computeOutgoingFlux()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(j1Cells -> 
 		{
@@ -186,7 +186,7 @@ public final class HeatEquation
 	 * In variables: X
 	 * Out variables: surface
 	 */
-	private void computeSurface()
+	protected void computeSurface()
 	{
 		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
 		{
@@ -213,7 +213,7 @@ public final class HeatEquation
 	 * In variables: deltat, t_n
 	 * Out variables: t_nplus1
 	 */
-	private void computeTn()
+	protected void computeTn()
 	{
 		t_nplus1 = t_n + deltat;
 	}
@@ -223,7 +223,7 @@ public final class HeatEquation
 	 * In variables: X
 	 * Out variables: V
 	 */
-	private void computeV()
+	protected void computeV()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -250,7 +250,7 @@ public final class HeatEquation
 	 * In variables: X
 	 * Out variables: center
 	 */
-	private void iniCenter()
+	protected void iniCenter()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -275,7 +275,7 @@ public final class HeatEquation
 	 * In variables: 
 	 * Out variables: f
 	 */
-	private void iniF()
+	protected void iniF()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -288,7 +288,7 @@ public final class HeatEquation
 	 * In variables: deltat, f, outgoingFlux, u_n
 	 * Out variables: u_nplus1
 	 */
-	private void computeUn()
+	protected void computeUn()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -301,7 +301,7 @@ public final class HeatEquation
 	 * In variables: PI, alpha, center
 	 * Out variables: u_n
 	 */
-	private void iniUn()
+	protected void iniUn()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
@@ -314,7 +314,7 @@ public final class HeatEquation
 	 * In variables: V, center, deltat, f, outgoingFlux, surface, t_n, u_n
 	 * Out variables: outgoingFlux, t_nplus1, u_nplus1
 	 */
-	private void executeTimeLoopN()
+	protected void executeTimeLoopN()
 	{
 		n = 0;
 		boolean continueLoop = true;
@@ -381,14 +381,14 @@ public final class HeatEquation
 
 	public void simulate()
 	{
-		System.out.println("Start execution of HeatEquation");
+		System.out.println("Start execution of heatEquation");
 		computeSurface(); // @1.0
 		computeV(); // @1.0
 		iniCenter(); // @1.0
 		iniF(); // @1.0
 		iniUn(); // @2.0
 		executeTimeLoopN(); // @3.0
-		System.out.println("End of execution of HeatEquation");
+		System.out.println("End of execution of heatEquation");
 	}
 
 	public static void main(String[] args) throws IOException
@@ -400,24 +400,26 @@ public final class HeatEquation
 			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
 			int ret = 0;
 
+			// Mesh instanciation
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
 			meshFactory.jsonInit(o.get("mesh"));
 			CartesianMesh2D mesh = meshFactory.create();
 
+			// Module instanciation(s)
 			HeatEquation.Options heatEquationOptions = new HeatEquation.Options();
-			if (o.has("heatEquation"))
-				heatEquationOptions.jsonInit(o.get("heatEquation"));
+			if (o.has("heatEquation")) heatEquationOptions.jsonInit(o.get("heatEquation"));
+			HeatEquation heatEquation = new HeatEquation(mesh, heatEquationOptions);
 
-			HeatEquation simulator = new HeatEquation(mesh, heatEquationOptions);
-			simulator.simulate();
+			// Start simulation
+			heatEquation.simulate();
 
 			// Non regression testing
 			if (heatEquationOptions.nonRegression != null && heatEquationOptions.nonRegression.equals("CreateReference"))
-				simulator.createDB("HeatEquationDB.ref");
+				heatEquation.createDB("HeatEquationDB.ref");
 			if (heatEquationOptions.nonRegression != null && heatEquationOptions.nonRegression.equals("CompareToReference"))
 			{
-				simulator.createDB("HeatEquationDB.current");
+				heatEquation.createDB("HeatEquationDB.current");
 				if (!LevelDBUtils.compareDB("HeatEquationDB.current", "HeatEquationDB.ref"))
 					ret = 1;
 				LevelDBUtils.destroyDB("HeatEquationDB.current");
@@ -427,7 +429,7 @@ public final class HeatEquation
 		else
 		{
 			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
-			System.err.println("        Expecting user data file name, for example HeatEquationDefault.json");
+			System.err.println("        Expecting user data file name, for example HeatEquation.json");
 			System.exit(1);
 		}
 	}

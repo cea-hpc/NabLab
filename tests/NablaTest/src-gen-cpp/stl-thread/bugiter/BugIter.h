@@ -1,3 +1,6 @@
+#ifndef BUGITER_H_
+#define BUGITER_H_
+
 #include <fstream>
 #include <iomanip>
 #include <type_traits>
@@ -83,3 +86,5 @@ public:
 	void updateU() noexcept;
 	void simulate();
 };
+
+#endif

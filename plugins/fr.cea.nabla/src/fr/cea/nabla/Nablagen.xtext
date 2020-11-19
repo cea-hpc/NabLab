@@ -18,6 +18,7 @@ generate nablagen "http://www.cea.fr/nabla/Nablagen"
 
 NablagenRoot:
 	(writeIR?='[WriteIr]')?
+	'Application' name=ID ';'
 	mainModule = MainModule
 	additionalModules += AdditionalModule*
 	(vtkOutput = VtkOutput)?

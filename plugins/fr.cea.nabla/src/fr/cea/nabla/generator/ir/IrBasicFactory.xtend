@@ -12,22 +12,36 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.PrimitiveType
+import java.util.List
 
 @Singleton
 class IrBasicFactory
 {
 	@Inject extension IrAnnotationHelper
+	@Inject extension IrExpressionFactory
 
-	def create IrFactory::eINSTANCE.createConnectivity toIrConnectivity(Connectivity c)
+	// No create method to ensure a new instance every time (for n+1 time variables)
+	def toIrBaseType(BaseType t)
 	{
-		annotations += c.toIrAnnotation
-		name = c.name
-		returnType = c.returnType.toIrItemType
-		inTypes += c.inTypes.map[toIrItemType]
-		multiple = c.multiple
+		IrFactory::eINSTANCE.createBaseType =>
+		[
+			primitive = t.primitive.toIrPrimitiveType
+			t.sizes.forEach[x | sizes += x.toIrExpression]
+		]
+	}
+
+	// No create method to ensure a new instance every time (for n+1 time variables)
+	def toIrConnectivityType(BaseType t, List<? extends Connectivity> supports)
+	{
+		IrFactory::eINSTANCE.createConnectivityType =>
+		[
+			base = t.toIrBaseType
+			supports.forEach[x | connectivities += x.toIrConnectivity]
+		]
 	}
 
 	def toIrPrimitiveType(PrimitiveType t)
@@ -37,9 +51,39 @@ class IrBasicFactory
 		return type
 	}
 
-	def create IrFactory::eINSTANCE.createItemType toIrItemType(ItemType i)
+	def toIrConnectivity(Connectivity c)
 	{
-		annotations += i.toIrAnnotation
-		name = i.name
+		c.name.toIrConnectivity =>
+		[
+			if (annotations.empty) annotations += c.toIrAnnotation
+			returnType = c.returnType.toIrItemType
+			if (inTypes.empty) inTypes += c.inTypes.map[toIrItemType]
+			multiple = c.multiple
+		]
+	}
+
+	def toIrItemType(ItemType i)
+	{
+		i.name.toIrItemType => [annotations += i.toIrAnnotation]
+	}
+
+	/** 
+	 * Return an ItemType instance.
+	 * PK is name (instead of nabla.ItemType) to avoid 
+	 * multiple IR instances in case of multiple NablaModule.
+	 */
+	private def create IrFactory::eINSTANCE.createItemType toIrItemType(String itemTypeName)
+	{
+		name = itemTypeName
+	}
+
+	/** 
+	 * Return a Connectivity instance.
+	 * PK is name (instead of nabla.Connectivity) to avoid 
+	 * multiple IR instances in case of multiple NablaModule.
+	 */
+	private def create IrFactory::eINSTANCE.createConnectivity toIrConnectivity(String connectivityName)
+	{
+		name = connectivityName
 	}
 }

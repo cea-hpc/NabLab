@@ -21,12 +21,12 @@ option ℕ maxIter = 500;
 let ℝ t = 0.0;
 option ℝ δt = 1.0;
 ℝ[2] X{nodes};
-ℝ v1{cells}, v2{cells}, v3{cells}, v4{cells}, v5{cells}, v6{cells}, v7{cells};
+ℝ hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
 
 // iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 
-j1: ∀c∈cells(), v3{c} = v2{c};
-j2: ∀c∈cells(), v5{c} = v3{c};
-j3: ∀c∈cells(), v7{c} = v4{c} + v5{c} + v6{c};
+hj1: ∀c∈cells(), hv3{c} = hv2{c};
+hj2: ∀c∈cells(), hv5{c} = hv3{c};
+hj3: ∀c∈cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};
 
 

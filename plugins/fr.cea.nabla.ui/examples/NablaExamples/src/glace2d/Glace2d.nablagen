@@ -7,6 +7,8 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
+Application Glace2d;
+
 MainModule Glace2d glace2d
 {
 	meshClassName = "CartesianMesh2D";

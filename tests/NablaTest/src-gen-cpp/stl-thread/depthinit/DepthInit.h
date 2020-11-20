@@ -39,26 +39,27 @@ public:
 	DepthInit(CartesianMesh2D* aMesh, Options& aOptions);
 	~DepthInit();
 
+	void simulate();
+	void initFromFile() noexcept;
+
 private:
 	// Mesh and mesh variables
 	CartesianMesh2D* mesh;
 	size_t nbCells, nbNodes;
-	
+
 	// User options
 	Options& options;
-	
-	// Global variables
-	static constexpr double t = 0.0;
-	std::vector<RealArray1D<2>> X;
-	std::vector<double> eta;
-	
+
+	// Timers
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;
 
 public:
-	void initFromFile() noexcept;
-	void simulate();
+	// Global variables
+	static constexpr double t = 0.0;
+	std::vector<RealArray1D<2>> X;
+	std::vector<double> eta;
 };
 
 #endif

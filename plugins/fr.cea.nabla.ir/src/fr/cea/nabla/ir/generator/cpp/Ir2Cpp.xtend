@@ -28,6 +28,8 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
+import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.Variable
 
 class Ir2Cpp extends CodeGenerator
 {
@@ -109,10 +111,8 @@ class Ir2Cpp extends CodeGenerator
 
 	class «className»
 	{
-		«IF main && irRoot.modules.size > 1»
-			«FOR m : irRoot.modules.filter[x | x !== it]»
-				friend class «m.className»;
-			«ENDFOR»
+		«IF backend instanceof KokkosTeamThreadBackend»
+		typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 		«ENDIF»
 	public:
@@ -132,37 +132,72 @@ class Ir2Cpp extends CodeGenerator
 
 		«className»(«meshClassName»* aMesh, Options& aOptions);
 		~«className»();
-		«IF !main»
+		«IF main»
+			«IF irRoot.modules.size > 1»
 
-		void setMainModule(«irRoot.mainModule.className»* value)
+				«FOR adm : irRoot.modules.filter[x | x !== it]»
+				inline void set«adm.name.toFirstUpper»(«adm.className»* value) { «adm.name» = value; }
+				«ENDFOR»
+			«ENDIF»
+		«ELSE»
+
+		inline void setMainModule(«irRoot.mainModule.className»* value)
 		{
 			mainModule = value,
-			mainModule->«name» = this;
+			mainModule->set«name.toFirstUpper»(this);
 		}
 		«ENDIF»
 
-	private:
-		«backend.attributesContentProvider.getContentFor(it)»
-		«IF postProcessing !== null»
+		void simulate();
+		«FOR j : jobs»
+		«backend.jobContentProvider.getDeclarationContent(j)»
+		«ENDFOR»
+		«IF levelDB»void createDB(const std::string& db_name);«ENDIF»
 
+	private:
+		«IF postProcessing !== null»
 		void dumpVariables(int iteration, bool useTimer=true);
+
 		«ENDIF»
 		«IF backend instanceof KokkosTeamThreadBackend»
-
 		/**
 		 * Utility function to get work load for each team of threads
 		 * In  : thread and number of element to use for computation
 		 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
 		 */
 		const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
+
 		«ENDIF»
+		// Mesh and mesh variables
+		«meshClassName»* mesh;
+		«FOR c : irRoot.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
+
+		// User options
+		Options& options;
+		«IF postProcessing !== null»PvdFileWriter2D writer;«ENDIF»
+
+		«IF irRoot.modules.size > 1»
+			«IF main»
+				// Additional modules
+				«FOR m : irRoot.modules.filter[x | x !== it]»
+					«m.className»* «m.name»;
+				«ENDFOR»
+			«ELSE»
+				// Main module
+				«irRoot.mainModule.className»* mainModule;
+			«ENDIF»
+
+		«ENDIF»
+		// Timers
+		utils::Timer globalTimer;
+		utils::Timer cpuTimer;
+		utils::Timer ioTimer;
 
 	public:
-		«FOR j : jobs»
-		«backend.jobContentProvider.getDeclarationContent(j)»
+		// Global variables
+		«FOR v : variables.filter[!option]»
+			«v.variableDeclaration»
 		«ENDFOR»
-		void simulate();
-		«IF levelDB»void createDB(const std::string& db_name);«ENDIF»
 	};
 
 	#endif
@@ -350,8 +385,8 @@ class Ir2Cpp extends CodeGenerator
 		assert(status.ok());
 		// Batch to write all data at once
 		leveldb::WriteBatch batch;
-		«FOR v : variables.filter[!option]»
-		batch.Put("«v.dbKey»", serialize(«v.name»));
+		«FOR v : irRoot.variables.filter[!option]»
+		batch.Put("«v.dbKey»", serialize(«getDbValue(it, v, '->')»));
 		«ENDFOR»
 		status = db->Write(leveldb::WriteOptions(), &batch);
 		// Checking everything was ok
@@ -429,5 +464,15 @@ class Ir2Cpp extends CodeGenerator
 	private def isLevelDB(IrModule it)
 	{
 		main && !backend.includesContentProvider.levelDBPath.nullOrEmpty
+	}
+
+	private def CharSequence getVariableDeclaration(Variable v)
+	{
+		switch (v)
+		{
+			 SimpleVariable case v.constExpr: '''static constexpr «v.cppType» «v.name» = «v.defaultValue.content»;'''
+			 SimpleVariable case v.const: '''const «v.cppType» «v.name»;'''
+			 default: '''«v.cppType» «v.name»;'''
+		}
 	}
 }

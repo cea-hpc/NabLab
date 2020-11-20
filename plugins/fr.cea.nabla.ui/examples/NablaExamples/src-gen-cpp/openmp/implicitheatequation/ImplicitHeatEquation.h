@@ -53,15 +53,36 @@ public:
 	ImplicitHeatEquation(CartesianMesh2D* aMesh, Options& aOptions);
 	~ImplicitHeatEquation();
 
+	void simulate();
+	void computeFaceLength() noexcept;
+	void computeTn() noexcept;
+	void computeV() noexcept;
+	void initD() noexcept;
+	void initXc() noexcept;
+	void updateU() noexcept;
+	void computeDeltaTn() noexcept;
+	void computeFaceConductivity() noexcept;
+	void initU() noexcept;
+	void computeAlphaCoeff() noexcept;
+	void executeTimeLoopN() noexcept;
+
 private:
+	void dumpVariables(int iteration, bool useTimer=true);
+
 	// Mesh and mesh variables
 	CartesianMesh2D* mesh;
 	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
-	
+
 	// User options
 	Options& options;
 	PvdFileWriter2D writer;
-	
+
+	// Timers
+	utils::Timer globalTimer;
+	utils::Timer cpuTimer;
+	utils::Timer ioTimer;
+
+public:
 	// Global variables
 	int lastDump;
 	int n;
@@ -78,26 +99,6 @@ private:
 	std::vector<double> faceLength;
 	std::vector<double> faceConductivity;
 	NablaSparseMatrix alpha;
-	
-	utils::Timer globalTimer;
-	utils::Timer cpuTimer;
-	utils::Timer ioTimer;
-
-	void dumpVariables(int iteration, bool useTimer=true);
-
-public:
-	void computeFaceLength() noexcept;
-	void computeTn() noexcept;
-	void computeV() noexcept;
-	void initD() noexcept;
-	void initXc() noexcept;
-	void updateU() noexcept;
-	void computeDeltaTn() noexcept;
-	void computeFaceConductivity() noexcept;
-	void initU() noexcept;
-	void computeAlphaCoeff() noexcept;
-	void executeTimeLoopN() noexcept;
-	void simulate();
 };
 
 #endif

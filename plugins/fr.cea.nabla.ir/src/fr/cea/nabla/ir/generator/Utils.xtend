@@ -80,7 +80,19 @@ class Utils
 			name
 	}
 
-	static def getNbElemsVar(Connectivity it) { 'nb' + name.toFirstUpper }
+	static def getDbValue(IrModule m, Variable v, String separator)
+	{
+		val vModule = v.irModule
+		if (vModule == m)
+			v.name
+		else
+			vModule.name + separator + v.name
+	}
+
+	static def getNbElemsVar(Connectivity it)
+	{
+		'nb' + name.toFirstUpper
+	}
 
 	static def getNbElemsVar(Container it)
 	{

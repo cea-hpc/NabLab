@@ -41,6 +41,8 @@ double sumR0(double a, double b);
 
 class HeatEquation
 {
+	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
+
 public:
 	struct Options
 	{
@@ -57,45 +59,7 @@ public:
 	HeatEquation(CartesianMesh2D* aMesh, Options& aOptions);
 	~HeatEquation();
 
-private:
-	// Mesh and mesh variables
-	CartesianMesh2D* mesh;
-	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbNodesOfCell;
-	
-	// User options
-	Options& options;
-	PvdFileWriter2D writer;
-	
-	// Global variables
-	int lastDump;
-	int n;
-	double t_n;
-	double t_nplus1;
-	static constexpr double deltat = 0.001;
-	Kokkos::View<RealArray1D<2>*> X;
-	Kokkos::View<RealArray1D<2>*> center;
-	Kokkos::View<double*> u_n;
-	Kokkos::View<double*> u_nplus1;
-	Kokkos::View<double*> V;
-	Kokkos::View<double*> f;
-	Kokkos::View<double*> outgoingFlux;
-	Kokkos::View<double*> surface;
-	
-	utils::Timer globalTimer;
-	utils::Timer cpuTimer;
-	utils::Timer ioTimer;
-	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
-
-	void dumpVariables(int iteration, bool useTimer=true);
-
-	/**
-	 * Utility function to get work load for each team of threads
-	 * In  : thread and number of element to use for computation
-	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
-	 */
-	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
-
-public:
+	void simulate();
 	KOKKOS_INLINE_FUNCTION
 	void computeOutgoingFlux(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
@@ -114,7 +78,45 @@ public:
 	void iniUn(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept;
-	void simulate();
+
+private:
+	void dumpVariables(int iteration, bool useTimer=true);
+
+	/**
+	 * Utility function to get work load for each team of threads
+	 * In  : thread and number of element to use for computation
+	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
+	 */
+	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
+
+	// Mesh and mesh variables
+	CartesianMesh2D* mesh;
+	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbNodesOfCell;
+
+	// User options
+	Options& options;
+	PvdFileWriter2D writer;
+
+	// Timers
+	utils::Timer globalTimer;
+	utils::Timer cpuTimer;
+	utils::Timer ioTimer;
+
+public:
+	// Global variables
+	int lastDump;
+	int n;
+	double t_n;
+	double t_nplus1;
+	static constexpr double deltat = 0.001;
+	Kokkos::View<RealArray1D<2>*> X;
+	Kokkos::View<RealArray1D<2>*> center;
+	Kokkos::View<double*> u_n;
+	Kokkos::View<double*> u_nplus1;
+	Kokkos::View<double*> V;
+	Kokkos::View<double*> f;
+	Kokkos::View<double*> outgoingFlux;
+	Kokkos::View<double*> surface;
 };
 
 #endif

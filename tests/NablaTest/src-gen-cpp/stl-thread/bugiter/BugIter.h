@@ -37,14 +37,36 @@ public:
 	BugIter(CartesianMesh2D* aMesh, Options& aOptions);
 	~BugIter();
 
+	void simulate();
+	void computeTn() noexcept;
+	void iniV() noexcept;
+	void initU() noexcept;
+	void updateV() noexcept;
+	void updateW() noexcept;
+	void executeTimeLoopN() noexcept;
+	void setUpTimeLoopK() noexcept;
+	void executeTimeLoopK() noexcept;
+	void tearDownTimeLoopK() noexcept;
+	void iniW() noexcept;
+	void setUpTimeLoopL() noexcept;
+	void executeTimeLoopL() noexcept;
+	void tearDownTimeLoopL() noexcept;
+	void updateU() noexcept;
+
 private:
 	// Mesh and mesh variables
 	CartesianMesh2D* mesh;
 	size_t nbCells, nbNodes;
-	
+
 	// User options
 	Options& options;
-	
+
+	// Timers
+	utils::Timer globalTimer;
+	utils::Timer cpuTimer;
+	utils::Timer ioTimer;
+
+public:
 	// Global variables
 	int n;
 	int k;
@@ -64,27 +86,6 @@ private:
 	std::vector<double> w_nplus1_l;
 	std::vector<double> w_nplus1_lplus1;
 	std::vector<double> w_nplus1_l0;
-	
-	utils::Timer globalTimer;
-	utils::Timer cpuTimer;
-	utils::Timer ioTimer;
-
-public:
-	void computeTn() noexcept;
-	void iniV() noexcept;
-	void initU() noexcept;
-	void updateV() noexcept;
-	void updateW() noexcept;
-	void executeTimeLoopN() noexcept;
-	void setUpTimeLoopK() noexcept;
-	void executeTimeLoopK() noexcept;
-	void tearDownTimeLoopK() noexcept;
-	void iniW() noexcept;
-	void setUpTimeLoopL() noexcept;
-	void executeTimeLoopL() noexcept;
-	void tearDownTimeLoopL() noexcept;
-	void updateU() noexcept;
-	void simulate();
 };
 
 #endif

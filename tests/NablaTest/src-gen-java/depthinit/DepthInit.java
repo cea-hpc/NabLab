@@ -79,7 +79,7 @@ public final class DepthInit
 	private final int nbCells, nbNodes;
 
 	// User options
-	protected final Options options;
+	private final Options options;
 
 	// Global variables
 	protected final double t;

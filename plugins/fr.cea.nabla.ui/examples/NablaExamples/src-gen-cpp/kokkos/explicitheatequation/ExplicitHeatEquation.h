@@ -60,39 +60,7 @@ public:
 	ExplicitHeatEquation(CartesianMesh2D* aMesh, Options& aOptions);
 	~ExplicitHeatEquation();
 
-private:
-	// Mesh and mesh variables
-	CartesianMesh2D* mesh;
-	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
-	
-	// User options
-	Options& options;
-	PvdFileWriter2D writer;
-	
-	// Global variables
-	int lastDump;
-	int n;
-	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
-	double t_n;
-	double t_nplus1;
-	double deltat;
-	Kokkos::View<RealArray1D<2>*> X;
-	Kokkos::View<RealArray1D<2>*> Xc;
-	Kokkos::View<double*> u_n;
-	Kokkos::View<double*> u_nplus1;
-	Kokkos::View<double*> V;
-	Kokkos::View<double*> D;
-	Kokkos::View<double*> faceLength;
-	Kokkos::View<double*> faceConductivity;
-	Kokkos::View<double**> alpha;
-	
-	utils::Timer globalTimer;
-	utils::Timer cpuTimer;
-	utils::Timer ioTimer;
-
-	void dumpVariables(int iteration, bool useTimer=true);
-
-public:
+	void simulate();
 	KOKKOS_INLINE_FUNCTION
 	void computeFaceLength() noexcept;
 	KOKKOS_INLINE_FUNCTION
@@ -115,7 +83,40 @@ public:
 	void computeAlphaCoeff() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept;
-	void simulate();
+
+private:
+	void dumpVariables(int iteration, bool useTimer=true);
+
+	// Mesh and mesh variables
+	CartesianMesh2D* mesh;
+	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
+
+	// User options
+	Options& options;
+	PvdFileWriter2D writer;
+
+	// Timers
+	utils::Timer globalTimer;
+	utils::Timer cpuTimer;
+	utils::Timer ioTimer;
+
+public:
+	// Global variables
+	int lastDump;
+	int n;
+	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
+	double t_n;
+	double t_nplus1;
+	double deltat;
+	Kokkos::View<RealArray1D<2>*> X;
+	Kokkos::View<RealArray1D<2>*> Xc;
+	Kokkos::View<double*> u_n;
+	Kokkos::View<double*> u_nplus1;
+	Kokkos::View<double*> V;
+	Kokkos::View<double*> D;
+	Kokkos::View<double*> faceLength;
+	Kokkos::View<double*> faceConductivity;
+	Kokkos::View<double**> alpha;
 };
 
 #endif

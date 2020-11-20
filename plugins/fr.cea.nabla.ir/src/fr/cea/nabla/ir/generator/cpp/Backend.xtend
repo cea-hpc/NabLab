@@ -24,7 +24,6 @@ abstract class Backend
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) ExpressionContentProvider expressionContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JsonContentProvider jsonContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) ArgOrVarContentProvider argOrVarContentProvider
-	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) AttributesContentProvider attributesContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) InstructionContentProvider instructionContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) FunctionContentProvider functionContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JobCallerContentProvider jobCallerContentProvider
@@ -45,7 +44,6 @@ class SequentialBackend extends Backend
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
-		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider, expressionContentProvider)
 		instructionContentProvider = new SequentialInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
@@ -66,7 +64,6 @@ class StlThreadBackend extends Backend
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
-		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider, expressionContentProvider)
 		instructionContentProvider = new StlThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
@@ -87,7 +84,6 @@ class KokkosBackend extends Backend
 		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
-		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider, expressionContentProvider)
 		instructionContentProvider = new KokkosInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
@@ -108,7 +104,6 @@ class KokkosTeamThreadBackend extends Backend
 		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
-		attributesContentProvider = new KokkosTeamThreadAttributesContentProvider(argOrVarContentProvider, expressionContentProvider)
 		instructionContentProvider = new KokkosTeamThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new KokkosTeamThreadJobCallerContentProvider
@@ -129,7 +124,6 @@ class OpenMpBackend extends Backend
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
-		attributesContentProvider = new AttributesContentProvider(argOrVarContentProvider, expressionContentProvider)
 		instructionContentProvider = new OpenMpInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider

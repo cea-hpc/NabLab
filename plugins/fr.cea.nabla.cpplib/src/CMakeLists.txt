@@ -44,7 +44,7 @@ target_compile_options(cppnabla PUBLIC -fPIC -g -Wall -O3 --std=c++17 -march=nat
 if(NOT DEFINED LIBCPPNABLA_BACKEND OR LIBCPPNABLA_BACKEND STREQUAL "STL")
 message(STATUS "Building library with STL.")
 add_library(cppnablastl 
-    linearalgebra/stl/LinearAlgebraFunctions.cc linearalgebra/stl/Matrix.cc)
+    linearalgebra/stl/LinearAlgebraFunctions.cc linearalgebra/stl/Matrix.cc utils/stl/Serializer.cc)
 target_include_directories(cppnablastl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_directories(cppnablastl PUBLIC)
 target_link_libraries(cppnablastl PUBLIC)
@@ -65,7 +65,7 @@ find_package(KokkosKernels)
 if(TARGET Kokkos::kokkos AND TARGET Kokkos::kokkoskernels)
   message(STATUS "Kokkos::kokkos/Kokkos::kokkoskernels found")
   add_library(cppnablakokkos
-      linearalgebra/kokkos/LinearAlgebraFunctions.cc linearalgebra/kokkos/Matrix.cc)
+      linearalgebra/kokkos/LinearAlgebraFunctions.cc linearalgebra/kokkos/Matrix.cc utils/kokkos/Serializer.cc)
   target_include_directories(cppnablakokkos PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
   target_link_directories(cppnablakokkos PUBLIC)
   target_link_libraries(cppnablakokkos PUBLIC Kokkos::kokkos Kokkos::kokkoskernels)

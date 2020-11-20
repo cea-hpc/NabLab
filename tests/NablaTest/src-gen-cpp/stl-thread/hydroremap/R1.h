@@ -33,34 +33,35 @@ public:
 	R1(CartesianMesh2D* aMesh, Options& aOptions);
 	~R1();
 
-	void setMainModule(H* value)
+	inline void setMainModule(H* value)
 	{
 		mainModule = value,
-		mainModule->r1 = this;
+		mainModule->setR1(this);
 	}
+
+	void simulate();
+	void rj1() noexcept;
+	void rj2() noexcept;
 
 private:
 	// Mesh and mesh variables
 	CartesianMesh2D* mesh;
 	size_t nbNodes, nbCells;
-	
+
 	// User options
 	Options& options;
-	
+
 	// Main module
 	H* mainModule;
-	
-	// Global variables
-	std::vector<double> rv3;
-	
+
+	// Timers
 	utils::Timer globalTimer;
 	utils::Timer cpuTimer;
 	utils::Timer ioTimer;
 
 public:
-	void rj1() noexcept;
-	void rj2() noexcept;
-	void simulate();
+	// Global variables
+	std::vector<double> rv3;
 };
 
 #endif

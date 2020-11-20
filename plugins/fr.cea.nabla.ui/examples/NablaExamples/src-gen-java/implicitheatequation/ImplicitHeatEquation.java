@@ -92,8 +92,8 @@ public final class ImplicitHeatEquation
 	private final int nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
 
 	// User options
-	protected final Options options;
-	protected final FileWriter writer;
+	private final Options options;
+	private final FileWriter writer;
 
 	// Global variables
 	protected int lastDump;

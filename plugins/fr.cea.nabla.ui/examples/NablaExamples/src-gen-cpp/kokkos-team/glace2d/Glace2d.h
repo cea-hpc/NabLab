@@ -59,6 +59,8 @@ double minR0(double a, double b);
 
 class Glace2d
 {
+	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
+
 public:
 	struct Options
 	{
@@ -81,62 +83,7 @@ public:
 	Glace2d(CartesianMesh2D* aMesh, Options& aOptions);
 	~Glace2d();
 
-private:
-	// Mesh and mesh variables
-	CartesianMesh2D* mesh;
-	size_t nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, nbNodesOfCell, nbCellsOfNode;
-	
-	// User options
-	Options& options;
-	PvdFileWriter2D writer;
-	
-	// Global variables
-	int lastDump;
-	int n;
-	double t_n;
-	double t_nplus1;
-	double deltat_n;
-	double deltat_nplus1;
-	Kokkos::View<RealArray1D<2>*> X_n;
-	Kokkos::View<RealArray1D<2>*> X_nplus1;
-	Kokkos::View<RealArray1D<2>*> X_n0;
-	Kokkos::View<RealArray1D<2>*> b;
-	Kokkos::View<RealArray1D<2>*> bt;
-	Kokkos::View<RealArray2D<2,2>*> Ar;
-	Kokkos::View<RealArray2D<2,2>*> Mt;
-	Kokkos::View<RealArray1D<2>*> ur;
-	Kokkos::View<double*> c;
-	Kokkos::View<double*> m;
-	Kokkos::View<double*> p;
-	Kokkos::View<double*> rho;
-	Kokkos::View<double*> e;
-	Kokkos::View<double*> E_n;
-	Kokkos::View<double*> E_nplus1;
-	Kokkos::View<double*> V;
-	Kokkos::View<double*> deltatj;
-	Kokkos::View<RealArray1D<2>*> uj_n;
-	Kokkos::View<RealArray1D<2>*> uj_nplus1;
-	Kokkos::View<double**> l;
-	Kokkos::View<RealArray1D<2>**> Cjr_ic;
-	Kokkos::View<RealArray1D<2>**> C;
-	Kokkos::View<RealArray1D<2>**> F;
-	Kokkos::View<RealArray2D<2,2>**> Ajr;
-	
-	utils::Timer globalTimer;
-	utils::Timer cpuTimer;
-	utils::Timer ioTimer;
-	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
-
-	void dumpVariables(int iteration, bool useTimer=true);
-
-	/**
-	 * Utility function to get work load for each team of threads
-	 * In  : thread and number of element to use for computation
-	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
-	 */
-	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
-
-public:
+	void simulate();
 	KOKKOS_INLINE_FUNCTION
 	void computeCjr(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
@@ -187,7 +134,62 @@ public:
 	void computeEn(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void computeUn(const member_type& teamMember) noexcept;
-	void simulate();
+
+private:
+	void dumpVariables(int iteration, bool useTimer=true);
+
+	/**
+	 * Utility function to get work load for each team of threads
+	 * In  : thread and number of element to use for computation
+	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
+	 */
+	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
+
+	// Mesh and mesh variables
+	CartesianMesh2D* mesh;
+	size_t nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, nbNodesOfCell, nbCellsOfNode;
+
+	// User options
+	Options& options;
+	PvdFileWriter2D writer;
+
+	// Timers
+	utils::Timer globalTimer;
+	utils::Timer cpuTimer;
+	utils::Timer ioTimer;
+
+public:
+	// Global variables
+	int lastDump;
+	int n;
+	double t_n;
+	double t_nplus1;
+	double deltat_n;
+	double deltat_nplus1;
+	Kokkos::View<RealArray1D<2>*> X_n;
+	Kokkos::View<RealArray1D<2>*> X_nplus1;
+	Kokkos::View<RealArray1D<2>*> X_n0;
+	Kokkos::View<RealArray1D<2>*> b;
+	Kokkos::View<RealArray1D<2>*> bt;
+	Kokkos::View<RealArray2D<2,2>*> Ar;
+	Kokkos::View<RealArray2D<2,2>*> Mt;
+	Kokkos::View<RealArray1D<2>*> ur;
+	Kokkos::View<double*> c;
+	Kokkos::View<double*> m;
+	Kokkos::View<double*> p;
+	Kokkos::View<double*> rho;
+	Kokkos::View<double*> e;
+	Kokkos::View<double*> E_n;
+	Kokkos::View<double*> E_nplus1;
+	Kokkos::View<double*> V;
+	Kokkos::View<double*> deltatj;
+	Kokkos::View<RealArray1D<2>*> uj_n;
+	Kokkos::View<RealArray1D<2>*> uj_nplus1;
+	Kokkos::View<double**> l;
+	Kokkos::View<RealArray1D<2>**> Cjr_ic;
+	Kokkos::View<RealArray1D<2>**> C;
+	Kokkos::View<RealArray1D<2>**> F;
+	Kokkos::View<RealArray2D<2,2>**> Ajr;
 };
 
 #endif

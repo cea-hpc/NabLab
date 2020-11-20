@@ -44,10 +44,10 @@ public final class R1
 	private final int nbNodes, nbCells;
 
 	// User options
-	protected final Options options;
+	private final Options options;
 
 	// Main module
-	protected H mainModule;
+	private H mainModule;
 
 	// Global variables
 	protected double[] rv3;

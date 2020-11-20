@@ -35,14 +35,33 @@ public:
 	Test(CartesianMesh2D* aMesh, Options& aOptions);
 	~Test();
 
+	void simulate();
+	void computeE1() noexcept;
+	void computeE2() noexcept;
+	void initE() noexcept;
+	void updateT() noexcept;
+	void initE2() noexcept;
+	void setUpTimeLoopN() noexcept;
+	void executeTimeLoopN() noexcept;
+	void setUpTimeLoopK() noexcept;
+	void executeTimeLoopK() noexcept;
+	void tearDownTimeLoopK() noexcept;
+	void updateE() noexcept;
+
 private:
 	// Mesh and mesh variables
 	CartesianMesh2D* mesh;
 	size_t nbNodes, nbCells;
-	
+
 	// User options
 	Options& options;
-	
+
+	// Timers
+	utils::Timer globalTimer;
+	utils::Timer cpuTimer;
+	utils::Timer ioTimer;
+
+public:
 	// Global variables
 	int n;
 	int k;
@@ -58,24 +77,6 @@ private:
 	std::vector<double> e_n;
 	std::vector<double> e_nplus1;
 	std::vector<double> e_n0;
-	
-	utils::Timer globalTimer;
-	utils::Timer cpuTimer;
-	utils::Timer ioTimer;
-
-public:
-	void computeE1() noexcept;
-	void computeE2() noexcept;
-	void initE() noexcept;
-	void updateT() noexcept;
-	void initE2() noexcept;
-	void setUpTimeLoopN() noexcept;
-	void executeTimeLoopN() noexcept;
-	void setUpTimeLoopK() noexcept;
-	void executeTimeLoopK() noexcept;
-	void tearDownTimeLoopK() noexcept;
-	void updateE() noexcept;
-	void simulate();
 };
 
 #endif

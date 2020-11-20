@@ -155,8 +155,8 @@ public final class Glace2d
 	private final int nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, nbNodesOfCell, nbCellsOfNode;
 
 	// User options
-	protected final Options options;
-	protected final FileWriter writer;
+	private final Options options;
+	private final FileWriter writer;
 
 	// Global variables
 	protected int lastDump;

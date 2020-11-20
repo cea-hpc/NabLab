@@ -122,18 +122,18 @@ class Ir2Java extends CodeGenerator
 			«FOR c : irRoot.connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
 
 			// User options
-			protected final Options options;
-			«IF postProcessing !== null»protected final FileWriter writer;«ENDIF»
+			private final Options options;
+			«IF postProcessing !== null»private final FileWriter writer;«ENDIF»
 
 			«IF irRoot.modules.size > 1»
 				«IF main»
 					// Additional modules
 					«FOR m : irRoot.modules.filter[x | x !== it]»
-						protected «m.className» «m.name»;
+					protected «m.className» «m.name»;
 					«ENDFOR»
 				«ELSE»
 					// Main module
-					protected «mainModule.className» mainModule;
+					private «mainModule.className» mainModule;
 				«ENDIF»
 
 			«ENDIF»
@@ -270,8 +270,8 @@ class Ir2Java extends CodeGenerator
 				WriteBatch batch = db.createWriteBatch();
 				try
 				{
-					«FOR v : variables.filter[!option]»
-					batch.put(bytes("«v.dbKey»"), LevelDBUtils.serialize(«v.name»));
+					«FOR v : irRoot.variables.filter[!option]»
+					batch.put(bytes("«getDbKey(v)»"), LevelDBUtils.serialize(«getDbValue(it, v, '.')»));
 					«ENDFOR»
 
 					db.write(batch);

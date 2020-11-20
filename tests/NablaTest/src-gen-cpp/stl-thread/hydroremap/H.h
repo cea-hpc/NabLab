@@ -24,9 +24,6 @@ class R2;
 
 class H
 {
-	friend class R1;
-	friend class R2;
-
 public:
 	struct Options
 	{
@@ -40,18 +37,32 @@ public:
 	H(CartesianMesh2D* aMesh, Options& aOptions);
 	~H();
 
+	inline void setR1(R1* value) { r1 = value; }
+	inline void setR2(R2* value) { r2 = value; }
+
+	void simulate();
+	void hj1() noexcept;
+	void hj2() noexcept;
+	void hj3() noexcept;
+
 private:
 	// Mesh and mesh variables
 	CartesianMesh2D* mesh;
 	size_t nbNodes, nbCells;
-	
+
 	// User options
 	Options& options;
-	
+
 	// Additional modules
 	R1* r1;
 	R2* r2;
-	
+
+	// Timers
+	utils::Timer globalTimer;
+	utils::Timer cpuTimer;
+	utils::Timer ioTimer;
+
+public:
 	// Global variables
 	static constexpr double t = 0.0;
 	std::vector<RealArray1D<2>> X;
@@ -62,16 +73,6 @@ private:
 	std::vector<double> hv5;
 	std::vector<double> hv6;
 	std::vector<double> hv7;
-	
-	utils::Timer globalTimer;
-	utils::Timer cpuTimer;
-	utils::Timer ioTimer;
-
-public:
-	void hj1() noexcept;
-	void hj2() noexcept;
-	void hj3() noexcept;
-	void simulate();
 };
 
 #endif

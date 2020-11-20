@@ -94,7 +94,7 @@ public final class BugIter
 	private final int nbCells, nbNodes;
 
 	// User options
-	protected final Options options;
+	private final Options options;
 
 	// Global variables
 	protected int n;

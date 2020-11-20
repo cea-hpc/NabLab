@@ -74,7 +74,7 @@ public final class H
 	private final int nbNodes, nbCells;
 
 	// User options
-	protected final Options options;
+	private final Options options;
 
 	// Additional modules
 	protected R1 r1;
@@ -249,6 +249,8 @@ public final class H
 			batch.put(bytes("h::hv5"), LevelDBUtils.serialize(hv5));
 			batch.put(bytes("h::hv6"), LevelDBUtils.serialize(hv6));
 			batch.put(bytes("h::hv7"), LevelDBUtils.serialize(hv7));
+			batch.put(bytes("r1::rv3"), LevelDBUtils.serialize(r1.rv3));
+			batch.put(bytes("r2::rv2"), LevelDBUtils.serialize(r2.rv2));
 
 			db.write(batch);
 		}

@@ -66,15 +66,50 @@ public:
 	Glace2d(CartesianMesh2D* aMesh, Options& aOptions);
 	~Glace2d();
 
+	void simulate();
+	void computeCjr() noexcept;
+	void computeInternalEnergy() noexcept;
+	void iniCjrIc() noexcept;
+	void setUpTimeLoopN() noexcept;
+	void computeLjr() noexcept;
+	void computeV() noexcept;
+	void initialize() noexcept;
+	void computeDensity() noexcept;
+	void executeTimeLoopN() noexcept;
+	void computeEOSp() noexcept;
+	void computeEOSc() noexcept;
+	void computeAjr() noexcept;
+	void computedeltatj() noexcept;
+	void computeAr() noexcept;
+	void computeBr() noexcept;
+	void computeDt() noexcept;
+	void computeBoundaryConditions() noexcept;
+	void computeBt() noexcept;
+	void computeMt() noexcept;
+	void computeTn() noexcept;
+	void computeU() noexcept;
+	void computeFjr() noexcept;
+	void computeXn() noexcept;
+	void computeEn() noexcept;
+	void computeUn() noexcept;
+
 private:
+	void dumpVariables(int iteration, bool useTimer=true);
+
 	// Mesh and mesh variables
 	CartesianMesh2D* mesh;
 	size_t nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, nbNodesOfCell, nbCellsOfNode;
-	
+
 	// User options
 	Options& options;
 	PvdFileWriter2D writer;
-	
+
+	// Timers
+	utils::Timer globalTimer;
+	utils::Timer cpuTimer;
+	utils::Timer ioTimer;
+
+public:
 	// Global variables
 	int lastDump;
 	int n;
@@ -106,40 +141,6 @@ private:
 	std::vector<std::vector<RealArray1D<2>>> C;
 	std::vector<std::vector<RealArray1D<2>>> F;
 	std::vector<std::vector<RealArray2D<2,2>>> Ajr;
-	
-	utils::Timer globalTimer;
-	utils::Timer cpuTimer;
-	utils::Timer ioTimer;
-
-	void dumpVariables(int iteration, bool useTimer=true);
-
-public:
-	void computeCjr() noexcept;
-	void computeInternalEnergy() noexcept;
-	void iniCjrIc() noexcept;
-	void setUpTimeLoopN() noexcept;
-	void computeLjr() noexcept;
-	void computeV() noexcept;
-	void initialize() noexcept;
-	void computeDensity() noexcept;
-	void executeTimeLoopN() noexcept;
-	void computeEOSp() noexcept;
-	void computeEOSc() noexcept;
-	void computeAjr() noexcept;
-	void computedeltatj() noexcept;
-	void computeAr() noexcept;
-	void computeBr() noexcept;
-	void computeDt() noexcept;
-	void computeBoundaryConditions() noexcept;
-	void computeBt() noexcept;
-	void computeMt() noexcept;
-	void computeTn() noexcept;
-	void computeU() noexcept;
-	void computeFjr() noexcept;
-	void computeXn() noexcept;
-	void computeEn() noexcept;
-	void computeUn() noexcept;
-	void simulate();
 };
 
 #endif

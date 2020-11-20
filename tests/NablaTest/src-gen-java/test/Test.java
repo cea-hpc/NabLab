@@ -74,7 +74,7 @@ public final class Test
 	private final int nbNodes, nbCells;
 
 	// User options
-	protected final Options options;
+	private final Options options;
 
 	// Global variables
 	protected int n;

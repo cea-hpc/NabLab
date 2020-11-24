@@ -188,7 +188,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 				val module = EcoreUtil2.getContainerOfType(context, NablaModule)
 				val iterators = module.iteration.eAllContents.filter(TimeIterator).toList
 				val iteratorsAndVars = new ArrayList<ArgOrVar>
-				iteratorsAndVars += module.allVars
+				iteratorsAndVars += module.allVars.filter(Var) // filter TimeIterator
 				iteratorsAndVars += subList(iterators, context)
 				iteratorsAndVars += context
 				Scopes::scopeFor(iteratorsAndVars)

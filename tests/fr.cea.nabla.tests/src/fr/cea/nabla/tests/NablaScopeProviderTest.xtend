@@ -292,24 +292,24 @@ class NablaScopeProviderTest
 		
 		val j1 = module.getJobByName("j1")
 		val affectationc1 = j1.getVarAffectationByName("c1")
-		affectationc1.assertScope(eref, "a, b1, b2, X, c1, c2")
+		affectationc1.assertScope(eref, "a, b1, b2, X, c1, c2, n, k")
 
 		val affectationc2 = j1.getVarAffectationByName("c2")
-		affectationc2.assertScope(eref, "d, " + "a, b1, b2, X, c1, c2")
+		affectationc2.assertScope(eref, "d, " + "a, b1, b2, X, c1, c2, n, k")
 
 		val affectationf = j1.getVarAffectationByName("f")
-		affectationf.assertScope(eref, "e, f, countr, d, " + "a, b1, b2, X, c1, c2")
+		affectationf.assertScope(eref, "e, f, countr, d, " + "a, b1, b2, X, c1, c2, n, k")
 
 		val j2 = module.getJobByName("j2")
 		val affectationn = j2.getVarAffectationByName("o")
-		affectationn.assertScope(eref, "i, o, p, " + "a, b1, b2, X, c1, c2")
+		affectationn.assertScope(eref, "i, o, p, " + "a, b1, b2, X, c1, c2, n, k")
 
 		val affectationm = j2.getVarAffectationByName("p")
-		affectationm.assertScope(eref, "j, i, o, p, " + "a, b1, b2, X, c1, c2")
+		affectationm.assertScope(eref, "j, i, o, p, " + "a, b1, b2, X, c1, c2, n, k")
 
 		val j3 = module.getJobByName("j3")
 		val j3_xvarref = j3.instruction.eAllContents.filter(ArgOrVarRef).findFirst[x | x.target.name == 'X']
-		j3_xvarref.assertScope(eref, "i, " + "a, b1, b2, X, c1, c2")
+		j3_xvarref.assertScope(eref, "i, " + "a, b1, b2, X, c1, c2, n, k")
 	}
 
 	@Test

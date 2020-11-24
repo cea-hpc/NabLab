@@ -121,8 +121,13 @@ class NablagenScopeProvider extends AbstractNablagenScopeProvider
 		if (outputVar !== null && outputVar.moduleRef !== null)
 		{
 			val nablaModule = outputVar.moduleRef.type
-			val candidates = nablaModule.allVars.filter(ConnectivityVar).filter[x | x.supports.size == 1]
-			Scopes::scopeFor(candidates)
+			if (nablaModule !== null)
+			{
+				val candidates = nablaModule.allVars.filter(ConnectivityVar).filter[x | x.supports.size == 1]
+				Scopes::scopeFor(candidates)
+			}
+			else
+				IScope.NULLSCOPE
 		}
 		else
 			IScope.NULLSCOPE

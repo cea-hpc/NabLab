@@ -20,6 +20,7 @@ import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.SimpleVarDeclaration
 import fr.cea.nabla.nabla.TimeIterator
+import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nablagen.AdditionalModule
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenPackage
@@ -78,7 +79,7 @@ class NablagenScopeProvider extends AbstractNablagenScopeProvider
 			{
 				val additionalModule = EcoreUtil2.getContainerOfType(context, AdditionalModule)
 				if (additionalModule !== null && additionalModule.type !== null)
-					Scopes::scopeFor(additionalModule.type.allVars)
+					Scopes::scopeFor(additionalModule.type.allVars.filter(Var))
 				else
 					IScope.NULLSCOPE
 			}
@@ -94,7 +95,7 @@ class NablagenScopeProvider extends AbstractNablagenScopeProvider
 			{
 				val ngen = EcoreUtil2.getContainerOfType(context, NablagenRoot)
 				if (ngen !== null && ngen.mainModule !== null && ngen.mainModule.type !== null)
-					Scopes::scopeFor(ngen.mainModule.type.allVars)
+					Scopes::scopeFor(ngen.mainModule.type.allVars.filter(Var))
 				else
 					IScope.NULLSCOPE
 			}

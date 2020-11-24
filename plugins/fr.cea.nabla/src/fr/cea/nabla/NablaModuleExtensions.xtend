@@ -9,9 +9,11 @@
  *******************************************************************************/
 package fr.cea.nabla
 
+import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.SimpleVarDeclaration
+import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
@@ -20,7 +22,7 @@ class NablaModuleExtensions
 {
 	def getAllVars(NablaModule it)
 	{
-		val allVars = new ArrayList<Var>
+		val allVars = new ArrayList<ArgOrVar>
 		for (d : declarations)
 			switch d
 			{
@@ -28,6 +30,9 @@ class NablaModuleExtensions
 				SimpleVarDeclaration: allVars += d.variable
 				VarGroupDeclaration: allVars += d.variables
 			}
+		if (iteration !== null)
+			for (v : iteration.eAllContents.filter(TimeIterator).toIterable)
+				allVars += v
 		return allVars
 	}
 
@@ -58,6 +63,6 @@ class NablaModuleExtensions
 
 	def getVariableByName(NablaModule it, String variableName)
 	{
-		allVars.findFirst[v | v.name == variableName]
+		allVars.filter(Var).findFirst[v | v.name == variableName]
 	}
 }

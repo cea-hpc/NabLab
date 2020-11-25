@@ -38,13 +38,13 @@ class CompilationChainHelper
 	@Inject Provider<NablagenInterpreter> interpreterProvider
 	@Inject Provider<ResourceSet> resourceSetProvider
 
-	var nablaSetup = new NablaStandaloneSetup
-	var nablaInjector = nablaSetup.createInjectorAndDoEMFRegistration
-	var ParseHelper<NablaModule> nablaParseHelper = nablaInjector.getInstance(ParseHelper)
+	val nablaSetup = new NablaStandaloneSetup
+	val nablaInjector = nablaSetup.createInjectorAndDoEMFRegistration
+	val ParseHelper<NablaModule> nablaParseHelper = nablaInjector.getInstance(ParseHelper)
 
-	var nablagenSetup = new NablagenStandaloneSetup
-	var nablagenInjector = nablagenSetup.createInjectorAndDoEMFRegistration
-	var ParseHelper<NablagenRoot> nablagenParseHelper = nablagenInjector.getInstance(ParseHelper)
+	val nablagenSetup = new NablagenStandaloneSetup
+	val nablagenInjector = nablagenSetup.createInjectorAndDoEMFRegistration
+	val ParseHelper<NablagenRoot> nablagenParseHelper = nablagenInjector.getInstance(ParseHelper)
 
 	val testProjectPath = System.getProperty("user.dir")
 	val pluginsPath = testProjectPath + "/../../plugins/"

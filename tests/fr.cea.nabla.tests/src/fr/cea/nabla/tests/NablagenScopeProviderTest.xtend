@@ -54,7 +54,7 @@ class NablagenScopeProviderTest
 	ℝ[2] X{nodes};
 	ℝ hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
 
-	// iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
+	iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 
 	hj1: ∀c∈cells(), hv3{c} = hv2{c};
 	hj2: ∀c∈cells(), hv5{c} = hv3{c};
@@ -165,7 +165,7 @@ class NablagenScopeProviderTest
 	{
 		val eref = NablagenPackage::eINSTANCE.mainModule_IterationMax
 		val o = ngen.mainModule
-		o.assertScope(eref, "maxIter")
+		o.assertScope(eref, "maxIter, n")
 	}
 
 	@Test
@@ -181,7 +181,7 @@ class NablagenScopeProviderTest
 	{
 		val eref = NablagenPackage::eINSTANCE.vtkOutput_PeriodReferenceVar
 		val o = ngen.vtkOutput
-		o.assertScope(eref, "maxTime, maxIter, δt, t")
+		o.assertScope(eref, "maxTime, maxIter, δt, t, n")
 	}
 
 	@Test

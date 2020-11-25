@@ -9,16 +9,16 @@
  *******************************************************************************/
 package fr.cea.nabla.validation
 
+import com.google.inject.Inject
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.SimpleVar
-import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nablagen.AdditionalModule
 import fr.cea.nabla.nablagen.Cpp
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenPackage
 import fr.cea.nabla.nablagen.NablagenRoot
-import fr.cea.nabla.nablagen.VtkOutput
+import fr.cea.nabla.nablagen.VarLink
+import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import java.util.HashSet
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
@@ -28,19 +28,21 @@ import org.eclipse.xtext.validation.CheckType
  *
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
-class NablagenValidator extends AbstractNablagenValidator 
+class NablagenValidator extends AbstractNablagenValidator
 {
+	@Inject extension ArgOrVarTypeProvider
+
 	public static val NGEN_APPLICATION_NAME = "NablagenValidator::ApplicationName"
 	public static val NGEN_MODULE_NAME = "NablagenValidator::ModuleName"
-	public static val PERIOD_VARIABLES_TYPE = "NablagenValidator::PeriodVariablesType"
 	public static val CPP_MANDATORY_VARIABLES = "NablagenValidator::CppMandatoryVariables"
 	public static val CONNECTIVITY_CONSISTENCY = "NablagenValidator::ConnectivityConsistency"
+	public static val VAR_LINK_MAIN_VAR_TYPE = "NablagenValidator::VarLinkMainVarType"
 
 	static def getNgenApplicationNameMsg() { "Application name must start with an upper case" }
 	static def getNgenModuleNameMsg() { "Nabla module instance name must start with a lower case" }
-	static def getPeriodVariablesTypeMsg() { "Invalid variable type: only scalar types accepted" }
 	static def getCppMandatoryVariablesMsg() { "'iterationMax' and 'timeMax' simulation variables must be defined (after timeStep) when using C++ code generator" }
-	static def getConnectivityConsistencyMsg(String a, String b) { "Connectivities with same name must be identical: " + a + " !== " + b}
+	static def getConnectivityConsistencyMsg(String a, String b) { "Connectivities with same name must be identical: " + a + " \u2260 " + b}
+	static def getVarLinkMainVarTypeMsg(String v1Type, String v2Type) { "Variables must have the same type: " + v1Type + " \u2260 " + v2Type }
 
 	@Check(CheckType.FAST)
 	def checkName(NablagenRoot it)
@@ -57,17 +59,29 @@ class NablagenValidator extends AbstractNablagenValidator
 	}
 
 	@Check(CheckType.FAST)
-	def void checkPeriodVariablesType(VtkOutput it)
-	{
-		if (periodReferenceVar !== null && !(periodReferenceVar instanceof SimpleVar || periodReferenceVar instanceof TimeIterator))
-			error(getPeriodVariablesTypeMsg(), NablagenPackage.Literals::VTK_OUTPUT__PERIOD_REFERENCE_VAR, PERIOD_VARIABLES_TYPE)
-	}
-
-	@Check(CheckType.FAST)
 	def void checkCppMandatoryVariables(NablagenRoot it)
 	{
 		if (targets.exists[x | x instanceof Cpp] && (mainModule !== null && mainModule.iterationMax === null || mainModule.timeMax === null))
 			error(getCppMandatoryVariablesMsg(), NablagenPackage.Literals::NABLAGEN_ROOT__MAIN_MODULE, CPP_MANDATORY_VARIABLES)
+	}
+
+	@Check(CheckType.FAST)
+	def void checkVarLinkMainVarType(VarLink it)
+	{
+		if (additionalVariable !== null && mainVariable !== null)
+		{
+			val avType = additionalVariable.typeFor
+			val mvType = mainVariable.typeFor
+			if (avType !== null && mvType !== null)
+			{
+				// Types are different because they come from different NablaModule instances
+				// ==> comparing type labels
+				val avTypeLabel = avType.label
+				val mvTypeLabel = mvType.label
+				if (avTypeLabel != mvTypeLabel)
+					error(getVarLinkMainVarTypeMsg(avTypeLabel, mvTypeLabel), NablagenPackage.Literals::VAR_LINK__MAIN_VARIABLE, VAR_LINK_MAIN_VAR_TYPE)
+			}
+		}
 	}
 
 	@Check(CheckType.FAST)

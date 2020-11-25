@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
 	ExpressionValidatorTest.class,
 	FunctionOrReductionValidatorTest.class,
 	InstructionValidatorTest.class,
+	NablagenValidatorTest.class,
 	UniqueNameValidatorTest.class,
 	UnusedValidatorTest.class,
 })

@@ -66,25 +66,6 @@ class NablagenValidator extends AbstractNablagenValidator
 	}
 
 	@Check(CheckType.FAST)
-	def void checkVarLinkMainVarType(VarLink it)
-	{
-		if (additionalVariable !== null && mainVariable !== null)
-		{
-			val avType = additionalVariable.typeFor
-			val mvType = mainVariable.typeFor
-			if (avType !== null && mvType !== null)
-			{
-				// Types are different because they come from different NablaModule instances
-				// ==> comparing type labels
-				val avTypeLabel = avType.label
-				val mvTypeLabel = mvType.label
-				if (avTypeLabel != mvTypeLabel)
-					error(getVarLinkMainVarTypeMsg(avTypeLabel, mvTypeLabel), NablagenPackage.Literals::VAR_LINK__MAIN_VARIABLE, VAR_LINK_MAIN_VAR_TYPE)
-			}
-		}
-	}
-
-	@Check(CheckType.FAST)
 	def void checkConnectivityConsistency(AdditionalModule it)
 	{
 		// Look for all referenced NablaModule 
@@ -102,6 +83,25 @@ class NablagenValidator extends AbstractNablagenValidator
 				for (b : nablaModule.connectivities)
 					if (!areConsistent(a, b))
 						error(getConnectivityConsistencyMsg(a.msgId, b.msgId), NablagenPackage.Literals::NABLAGEN_MODULE__NAME, CONNECTIVITY_CONSISTENCY)
+	}
+
+	@Check(CheckType.FAST)
+	def void checkVarLinkMainVarType(VarLink it)
+	{
+		if (additionalVariable !== null && mainVariable !== null)
+		{
+			val avType = additionalVariable.typeFor
+			val mvType = mainVariable.typeFor
+			if (avType !== null && mvType !== null)
+			{
+				// Types are different because they come from different NablaModule instances
+				// ==> comparing type labels
+				val avTypeLabel = avType.label
+				val mvTypeLabel = mvType.label
+				if (avTypeLabel != mvTypeLabel)
+					error(getVarLinkMainVarTypeMsg(avTypeLabel, mvTypeLabel), NablagenPackage.Literals::VAR_LINK__MAIN_VARIABLE, VAR_LINK_MAIN_VAR_TYPE)
+			}
+		}
 	}
 
 	/**

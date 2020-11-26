@@ -30,8 +30,8 @@ let ℝ[2] vectOne = ℝ[2](1.0);
 option ℝ stopTime = 1.0;
 option ℕ maxIterations = 500000000;
 
-let ℝ t = 0.0;
 let ℝ δt = 0.001;
+ℝ t;
 ℝ[2] X{nodes}, Xc{cells}; // Position of nodes and cells center of gravity 
 ℝ u{cells}; // Temperature
 ℝ V{cells}; // Volume of cells
@@ -40,6 +40,8 @@ let ℝ δt = 0.001;
 ℝ α{cells, cells}; 
 
 iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
+
+InitTime: t^{n=0} = 0.0;
 
 InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
 

@@ -73,6 +73,7 @@ abstract class AbstractInstructionInterpreterTest
 
 		iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 
+		InitTime: t^{n=0} = 0.0;
 		InitU : ∀r∈cells(), U{r} = 1.0;
 		ComputeCjr: ∀j∈ cells(), {
 			set rCellsJ = nodesOfCell(j);

@@ -89,13 +89,17 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void iniCjrIc() noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void setUpTimeLoopN() noexcept;
+	void iniTime() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void iniTimeStep() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void computeLjr() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void computeV() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void initialize() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void setUpTimeLoopN() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void computeDensity() noexcept;
 	KOKKOS_INLINE_FUNCTION
@@ -155,8 +159,10 @@ public:
 	int n;
 	double t_n;
 	double t_nplus1;
+	double t_n0;
 	double deltat_n;
 	double deltat_nplus1;
+	double deltat_n0;
 	Kokkos::View<RealArray1D<2>*> X_n;
 	Kokkos::View<RealArray1D<2>*> X_nplus1;
 	Kokkos::View<RealArray1D<2>*> X_n0;

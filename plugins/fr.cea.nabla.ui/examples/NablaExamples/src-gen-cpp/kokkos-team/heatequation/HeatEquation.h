@@ -73,9 +73,13 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void iniF(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
+	void iniTime() noexcept;
+	KOKKOS_INLINE_FUNCTION
 	void computeUn(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void iniUn(const member_type& teamMember) noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void setUpTimeLoopN() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept;
 
@@ -106,9 +110,10 @@ public:
 	// Global variables
 	int lastDump;
 	int n;
+	static constexpr double deltat = 0.001;
 	double t_n;
 	double t_nplus1;
-	static constexpr double deltat = 0.001;
+	double t_n0;
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> center;
 	Kokkos::View<double*> u_n;

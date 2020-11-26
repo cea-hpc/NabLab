@@ -110,8 +110,6 @@ ImplicitHeatEquation::ImplicitHeatEquation(CartesianMesh2D* aMesh, Options& aOpt
 , options(aOptions)
 , writer("ImplicitHeatEquation", options.outputPath)
 , lastDump(numeric_limits<int>::min())
-, t_n(0.0)
-, t_nplus1(0.0)
 , deltat(0.001)
 , X(nbNodes)
 , Xc(nbCells)
@@ -214,6 +212,16 @@ void ImplicitHeatEquation::initD() noexcept
 }
 
 /**
+ * Job InitTime called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: t_n0
+ */
+void ImplicitHeatEquation::initTime() noexcept
+{
+	t_n0 = 0.0;
+}
+
+/**
  * Job InitXc called @1.0 in simulate method.
  * In variables: X
  * Out variables: Xc
@@ -313,6 +321,16 @@ void ImplicitHeatEquation::initU() noexcept
 		else
 			u_n[cCells] = 0.0;
 	}
+}
+
+/**
+ * Job SetUpTimeLoopN called @2.0 in simulate method.
+ * In variables: t_n0
+ * Out variables: t_n
+ */
+void ImplicitHeatEquation::setUpTimeLoopN() noexcept
+{
+	t_n = t_n0;
 }
 
 /**
@@ -441,10 +459,12 @@ void ImplicitHeatEquation::simulate()
 	computeFaceLength(); // @1.0
 	computeV(); // @1.0
 	initD(); // @1.0
+	initTime(); // @1.0
 	initXc(); // @1.0
 	computeDeltaTn(); // @2.0
 	computeFaceConductivity(); // @2.0
 	initU(); // @2.0
+	setUpTimeLoopN(); // @2.0
 	computeAlphaCoeff(); // @3.0
 	executeTimeLoopN(); // @4.0
 	

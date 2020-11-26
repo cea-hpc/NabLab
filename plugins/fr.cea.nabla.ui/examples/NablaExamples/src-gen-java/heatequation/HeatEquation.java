@@ -101,9 +101,10 @@ public final class HeatEquation
 	// Global variables
 	protected int lastDump;
 	protected int n;
+	protected final double deltat;
 	protected double t_n;
 	protected double t_nplus1;
-	protected final double deltat;
+	protected double t_n0;
 	protected double[][] X;
 	protected double[][] center;
 	protected double[] u_n;
@@ -130,8 +131,6 @@ public final class HeatEquation
 
 		// Initialize variables with default values
 		lastDump = Integer.MIN_VALUE;
-		t_n = 0.0;
-		t_nplus1 = 0.0;
 		deltat = 0.001;
 
 		// Allocate arrays
@@ -284,6 +283,16 @@ public final class HeatEquation
 	}
 
 	/**
+	 * Job IniTime called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: t_n0
+	 */
+	protected void iniTime()
+	{
+		t_n0 = 0.0;
+	}
+
+	/**
 	 * Job ComputeUn called @2.0 in executeTimeLoopN method.
 	 * In variables: deltat, f, outgoingFlux, u_n
 	 * Out variables: u_nplus1
@@ -307,6 +316,16 @@ public final class HeatEquation
 		{
 			u_n[jCells] = Math.cos(2 * options.PI * options.alpha * center[jCells][0]);
 		});
+	}
+
+	/**
+	 * Job SetUpTimeLoopN called @2.0 in simulate method.
+	 * In variables: t_n0
+	 * Out variables: t_n
+	 */
+	protected void setUpTimeLoopN()
+	{
+		t_n = t_n0;
 	}
 
 	/**
@@ -386,7 +405,9 @@ public final class HeatEquation
 		computeV(); // @1.0
 		iniCenter(); // @1.0
 		iniF(); // @1.0
+		iniTime(); // @1.0
 		iniUn(); // @2.0
+		setUpTimeLoopN(); // @2.0
 		executeTimeLoopN(); // @3.0
 		System.out.println("End of execution of heatEquation");
 	}
@@ -461,9 +482,10 @@ public final class HeatEquation
 		{
 			batch.put(bytes("lastDump"), LevelDBUtils.serialize(lastDump));
 			batch.put(bytes("n"), LevelDBUtils.serialize(n));
+			batch.put(bytes("deltat"), LevelDBUtils.serialize(deltat));
 			batch.put(bytes("t_n"), LevelDBUtils.serialize(t_n));
 			batch.put(bytes("t_nplus1"), LevelDBUtils.serialize(t_nplus1));
-			batch.put(bytes("deltat"), LevelDBUtils.serialize(deltat));
+			batch.put(bytes("t_n0"), LevelDBUtils.serialize(t_n0));
 			batch.put(bytes("X"), LevelDBUtils.serialize(X));
 			batch.put(bytes("center"), LevelDBUtils.serialize(center));
 			batch.put(bytes("u_n"), LevelDBUtils.serialize(u_n));

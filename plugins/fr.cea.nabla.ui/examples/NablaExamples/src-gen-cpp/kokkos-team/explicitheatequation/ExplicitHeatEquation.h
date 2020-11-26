@@ -72,6 +72,8 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void initD(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
+	void initTime() noexcept;
+	KOKKOS_INLINE_FUNCTION
 	void initXc(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void updateU(const member_type& teamMember) noexcept;
@@ -81,6 +83,8 @@ public:
 	void computeFaceConductivity(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void initU(const member_type& teamMember) noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void setUpTimeLoopN() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void computeAlphaCoeff(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
@@ -114,9 +118,10 @@ public:
 	int lastDump;
 	int n;
 	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
+	double deltat;
 	double t_n;
 	double t_nplus1;
-	double deltat;
+	double t_n0;
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> Xc;
 	Kokkos::View<double*> u_n;

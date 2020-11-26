@@ -88,8 +88,8 @@ class TestUtils
 
 	def getSimulationVariables()
 	'''
-		let ℝ t = 0.0;
 		let ℝ δt = 0.001;
+		ℝ t;
 	'''
 
 	def getDefaultConnectivities()

@@ -61,9 +61,7 @@ option ℝ ρIniZd = 0.125;
 option ℝ pIniZg = 1.0;
 option ℝ pIniZd = 0.1;
 
-let ℝ t = 0.0;
-let ℝ δt = δtIni;
-
+ℝ t, δt;
 ℝ[2] X{nodes}, b{nodes}, bt{nodes};
 ℝ[2,2] Ar{nodes}, Mt{nodes};
 ℝ[2] ur{nodes};
@@ -79,6 +77,8 @@ iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
 // *************************************************************
 // * Initialization
 // *************************************************************
+IniTime: t^{n=0} = 0.0;
+IniTimeStep: δt^{n=0} = δtIni;
 IniCjrIc: ∀j∈cells(), ∀r∈nodesOfCell(j),
 	Cjr_ic{j,r} = 0.5 * perp(X^{n=0}{r+1} - X^{n=0}{r-1});
 

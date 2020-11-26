@@ -10,11 +10,14 @@
 package fr.cea.nabla.validation
 
 import com.google.inject.Inject
+import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
+import fr.cea.nabla.nabla.Var
+import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.typing.NablaSimpleType
@@ -27,15 +30,18 @@ class ArgOrVarRefValidator extends InstructionValidator
 	@Inject extension ValidationUtils
 	@Inject extension ArgOrVarTypeProvider
 	@Inject extension SpaceIteratorExtensions
+	@Inject extension ArgOrVarExtensions
 
 	public static val INDICES_NUMBER = "ArgOrVarRef::IndicesNumber"
 	public static val SPACE_ITERATOR_NUMBER = "ArgOrVarRef::SpaceIteratorNumber"
 	public static val SPACE_ITERATOR_TYPE = "ArgOrVarRef::SpaceIteratorType"
-	public static val TIME_ITERATOR_USAGE = 'ArgOrVarRef::TimeIteratorUsage'
+	public static val REQUIRED_TIME_ITERATOR = 'ArgOrVarRef::RequiredTimeIterator'
+	public static val ILLEGAL_TIME_ITERATOR = 'ArgOrVarRef::IllegalTimeIterator'
 
 	static def getIndicesNumberMsg(int expectedSize, int actualSize) { "Wrong number of indices. Expected " + expectedSize + ", but was " + actualSize }
 	static def getSpaceIteratorNumberMsg(int expectedSize, int actualSize) { "Wrong number of space iterators. Expected " + expectedSize + ", but was " + actualSize }
-	static def getTimeIteratorUsageMsg() { "Time iterator must be specified" }
+	static def getRequiredTimeIteratorMsg() { "Time iterator must be specified" }
+	static def getIllegalTimeIteratorMsg() { "Time iterators only allowed on global variables with no default value" }
 
 	@Check(CheckType.NORMAL)
 	def checkIndicesNumber(ArgOrVarRef it)
@@ -78,14 +84,31 @@ class ArgOrVarRefValidator extends InstructionValidator
 	}
 
 	@Check(CheckType.NORMAL)
-	def checkTimeIteratorUsage(ArgOrVarRef it)
+	def checkRequiredTimeIterator(ArgOrVarRef it)
 	{
-		if (timeIterators.empty)
+		if (target !== null && timeIterators.empty)
 		{
 			val module = EcoreUtil2::getContainerOfType(it, NablaModule)
 			val argOrVarRefs = EcoreUtil2.getAllContentsOfType(module, ArgOrVarRef)
 			if (argOrVarRefs.exists[x | !x.timeIterators.empty && x.target === target])
-				error(getTimeIteratorUsageMsg(), NablaPackage.Literals::ARG_OR_VAR_REF__TIME_ITERATORS, TIME_ITERATOR_USAGE)
+				error(getRequiredTimeIteratorMsg(), NablaPackage.Literals::ARG_OR_VAR_REF__TIME_ITERATORS, REQUIRED_TIME_ITERATOR)
+		}
+	}
+
+	/**
+	 * Only global variables with no default value can have a time iterator.
+	 * A global variable with a default value can not because, 
+	 * if it is the only time variable, the job graph can not be built.
+	 */
+	@Check(CheckType.NORMAL)
+	def checkIllegalTimeIterator(ArgOrVarRef it)
+	{
+		if (target !== null && !timeIterators.empty)
+		{
+			if (!(target instanceof Var 
+				&& (target as Var).global 
+				&& (target.eContainer instanceof VarGroupDeclaration)))
+					error(getIllegalTimeIteratorMsg(), NablaPackage.Literals::ARG_OR_VAR_REF__TIME_ITERATORS, ILLEGAL_TIME_ITERATOR)
 		}
 	}
 

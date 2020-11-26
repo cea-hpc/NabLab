@@ -225,10 +225,6 @@ Glace2d::Glace2d(CartesianMesh2D* aMesh, Options& aOptions)
 , options(aOptions)
 , writer("Glace2d", options.outputPath)
 , lastDump(numeric_limits<int>::min())
-, t_n(0.0)
-, t_nplus1(0.0)
-, deltat_n(options.deltatIni)
-, deltat_nplus1(options.deltatIni)
 , X_n(nbNodes)
 , X_nplus1(nbNodes)
 , X_n0(nbNodes)
@@ -334,15 +330,23 @@ void Glace2d::iniCjrIc() noexcept
 }
 
 /**
- * Job SetUpTimeLoopN called @1.0 in simulate method.
- * In variables: X_n0
- * Out variables: X_n
+ * Job IniTime called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: t_n0
  */
-void Glace2d::setUpTimeLoopN() noexcept
+void Glace2d::iniTime() noexcept
 {
-	for (size_t i2(0) ; i2<X_n.size() ; i2++)
-		for (size_t i1(0) ; i1<X_n[i2].size() ; i1++)
-			X_n[i2][i1] = X_n0[i2][i1];
+	t_n0 = 0.0;
+}
+
+/**
+ * Job IniTimeStep called @1.0 in simulate method.
+ * In variables: deltatIni
+ * Out variables: deltat_n0
+ */
+void Glace2d::iniTimeStep() noexcept
+{
+	deltat_n0 = options.deltatIni;
 }
 
 /**
@@ -446,6 +450,20 @@ void Glace2d::initialize() noexcept
 		E_n[jCells] = p_ic / ((options.gamma - 1.0) * rho_ic);
 		uj_n[jCells] = {0.0, 0.0};
 	}
+}
+
+/**
+ * Job SetUpTimeLoopN called @2.0 in simulate method.
+ * In variables: X_n0, deltat_n0, t_n0
+ * Out variables: X_n, deltat_n, t_n
+ */
+void Glace2d::setUpTimeLoopN() noexcept
+{
+	t_n = t_n0;
+	deltat_n = deltat_n0;
+	for (size_t i2(0) ; i2<X_n.size() ; i2++)
+		for (size_t i1(0) ; i1<X_n[i2].size() ; i1++)
+			X_n[i2][i1] = X_n0[i2][i1];
 }
 
 /**
@@ -939,8 +957,10 @@ void Glace2d::simulate()
 		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
 	iniCjrIc(); // @1.0
-	setUpTimeLoopN(); // @1.0
+	iniTime(); // @1.0
+	iniTimeStep(); // @1.0
 	initialize(); // @2.0
+	setUpTimeLoopN(); // @2.0
 	executeTimeLoopN(); // @3.0
 	
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;

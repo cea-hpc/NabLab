@@ -29,13 +29,14 @@ option ℕ maxIterations = 500;
 option ℝ PI = 3.1415926;
 option ℝ α = 1.0;
 
-let ℝ t = 0.0;
 let ℝ δt = 0.001;
+ℝ t;
 ℝ[2] X{nodes}, center{cells};
 ℝ u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
 
 iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
 
+IniTime: t^{n=0} = 0.0;
 IniF: ∀j∈cells(), f{j} = 0.0;
 IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});  // only on parallelograms
 IniUn: ∀j∈cells(), u^{n}{j} = cos(2 * PI * α * center{j}[0]);

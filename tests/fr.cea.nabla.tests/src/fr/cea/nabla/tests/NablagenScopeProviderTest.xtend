@@ -149,7 +149,7 @@ class NablagenScopeProviderTest
 	{
 		val eref = NablagenPackage::eINSTANCE.mainModule_Time
 		val o = ngen.mainModule
-		o.assertScope(eref, "maxTime, δt, t")
+		o.assertScope(eref, "maxTime, t, δt")
 	}
 
 	@Test
@@ -157,7 +157,7 @@ class NablagenScopeProviderTest
 	{
 		val eref = NablagenPackage::eINSTANCE.mainModule_TimeStep
 		val o = ngen.mainModule
-		o.assertScope(eref, "maxTime, δt, t")
+		o.assertScope(eref, "maxTime, t, δt")
 	}
 
 	@Test
@@ -173,7 +173,7 @@ class NablagenScopeProviderTest
 	{
 		val eref = NablagenPackage::eINSTANCE.mainModule_TimeMax
 		val o = ngen.mainModule
-		o.assertScope(eref, "maxTime, δt, t")
+		o.assertScope(eref, "maxTime, t, δt")
 	}
 
 	@Test
@@ -181,7 +181,7 @@ class NablagenScopeProviderTest
 	{
 		val eref = NablagenPackage::eINSTANCE.vtkOutput_PeriodReferenceVar
 		val o = ngen.vtkOutput
-		o.assertScope(eref, "maxTime, maxIter, δt, t, n")
+		o.assertScope(eref, "maxTime, maxIter, t, δt, n")
 	}
 
 	@Test

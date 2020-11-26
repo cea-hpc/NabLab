@@ -15,7 +15,7 @@ import fr.cea.nabla.javalib.types.Vector;
 
 import org.apache.commons.io.FileUtils;
 
-public class LevelDBUtils 
+public class LevelDBUtils
 {
 	public static Boolean compareDB(String currentName, String refName) throws IOException
 	{
@@ -23,7 +23,7 @@ public class LevelDBUtils
 		Boolean result = true;
 		String copyRefName = refName + "Copy";
 
-		try 
+		try
 		{
 			// We have to copy ref not to modify it (for git repo)
 			File copyRef = new File(copyRefName);
@@ -34,35 +34,49 @@ public class LevelDBUtils
 			org.iq80.leveldb.Options options = new org.iq80.leveldb.Options();
 			options.createIfMissing(false);
 
-			DB db_ref = factory.open(new File(copyRefName), options);
-			DBIterator it_ref = db_ref.iterator();
+			DB dbRef = factory.open(new File(copyRefName), options);
+			DBIterator itRef = dbRef.iterator();
 
 			DB db = factory.open(new File(currentName), options);
 			DBIterator it = db.iterator();
-	
+
 			// Results comparison
 			System.out.println("# Compairing results ...");
 
 			try 
 			{
-				for(it_ref.seekToFirst(), it.seekToFirst(); it_ref.hasNext() && it.hasNext(); it_ref.next(), it.next())
+				for(itRef.seekToFirst() ; itRef.hasNext() ; itRef.next())
 				{
-					String key = asString(it.peekNext().getKey());
-					if (!key.equals(asString(it_ref.peekNext().getKey())))
+					byte[] byteKey = itRef.peekNext().getKey();
+					String key = asString(byteKey);
+					byte[] byteValue = db.get(byteKey);
+					if (byteValue == null)
 					{
-						System.err.println("ERROR - Incompatible ref. Key : " + key + " not found.");
+						System.err.println("ERROR - Key : " + key + " not found.");
 						result = false;
-						break;
 					}
-					String value = asString(it.peekNext().getValue());
-					String ref = asString(it_ref.peekNext().getValue());
-					System.out.println(key + ": " + (value.contentEquals(ref) ? "OK" : "ERROR"));
-					if (!value.equals(ref))
+					else
 					{
-						result = false;
-						System.err.println("value = " + value);
-						System.err.println(" ref = " + ref);
+						String ref = asString(itRef.peekNext().getValue());
+						String value = asString(byteValue);
+						System.out.println(key + ": " + (value.contentEquals(ref) ? "OK" : "ERROR"));
+						if (!value.equals(ref))
+						{
+							result = false;
+							System.err.println("value = " + value);
+							System.err.println(" ref = " + ref);
+						}
+					}
+				}
 
+				// looking for key in the db that are not in the ref (new variables)
+				for(it.seekToFirst() ; it.hasNext() ; it.next())
+				{
+					byte[] byteKey = it.peekNext().getKey();
+					if (dbRef.get(byteKey) == null)
+					{
+						System.err.println("ERROR - Key : " + asString(byteKey) + " can not be compared (not present in the ref).");
+						result = false;
 					}
 				}
 			}
@@ -73,11 +87,11 @@ public class LevelDBUtils
 			finally {
 				// Make sure you close the iterator to avoid resource leaks.
 				it.close();
-				it_ref.close();
+				itRef.close();
 			}
 
 			db.close();
-			db_ref.close();
+			dbRef.close();
 			destroyDB(copyRefName);
 			return result;
 		}
@@ -88,24 +102,24 @@ public class LevelDBUtils
 			return false;
 		}
 	}
-	
+
 	public static void destroyDB(String name) throws IOException
 	{
 		org.iq80.leveldb.Options leveldbOptions = new org.iq80.leveldb.Options();
 		factory.destroy(new File(name), leveldbOptions);
 	}
 
-	public static byte[] serialize(final int i) 	
+	public static byte[] serialize(final int i)
 	{
-	    return bytes(Integer.toString(i));
+		return bytes(Integer.toString(i));
 	}
 
 	public static byte[] serialize(final double d)
 	{
-	    return bytes(String.valueOf(d));
+		return bytes(String.valueOf(d));
 	}
 
-	public static byte[] serialize(final double[] data1d) 
+	public static byte[] serialize(final double[] data1d)
 	{
 		StringBuilder sb = new StringBuilder();
 		for (double d : data1d)
@@ -118,7 +132,7 @@ public class LevelDBUtils
 		return serialize(vector.toArray());
 	}
 
-	public static byte[] serialize(final double[][] data2d) 
+	public static byte[] serialize(final double[][] data2d)
 	{
 		StringBuilder sb = new StringBuilder();
 		for (double data1d[] : data2d)
@@ -135,7 +149,7 @@ public class LevelDBUtils
 		return bytes(matrix.getNativeMatrix().toString());
 	}
 
-	public static byte[] serialize(final double[][][] data3d) 
+	public static byte[] serialize(final double[][][] data3d)
 	{
 		StringBuilder sb = new StringBuilder();
 		for (double[][] data2d : data3d)
@@ -151,7 +165,7 @@ public class LevelDBUtils
 		return bytes(sb.toString());
 	}
 
-	public static byte[] serialize(final double[][][][] data4d) 
+	public static byte[] serialize(final double[][][][] data4d)
 	{
 		StringBuilder sb = new StringBuilder();
 		for (double[][][] data3d : data4d)

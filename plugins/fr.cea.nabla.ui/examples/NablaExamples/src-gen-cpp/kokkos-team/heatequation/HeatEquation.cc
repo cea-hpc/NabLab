@@ -110,8 +110,6 @@ HeatEquation::HeatEquation(CartesianMesh2D* aMesh, Options& aOptions)
 , options(aOptions)
 , writer("HeatEquation", options.outputPath)
 , lastDump(numeric_limits<int>::min())
-, t_n(0.0)
-, t_nplus1(0.0)
 , X("X", nbNodes)
 , center("center", nbCells)
 , u_n("u_n", nbCells)
@@ -323,6 +321,16 @@ void HeatEquation::iniF(const member_type& teamMember) noexcept
 }
 
 /**
+ * Job IniTime called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: t_n0
+ */
+void HeatEquation::iniTime() noexcept
+{
+	t_n0 = 0.0;
+}
+
+/**
  * Job ComputeUn called @2.0 in executeTimeLoopN method.
  * In variables: deltat, f, outgoingFlux, u_n
  * Out variables: u_nplus1
@@ -360,6 +368,16 @@ void HeatEquation::iniUn(const member_type& teamMember) noexcept
 			u_n(jCells) = std::cos(2 * options.PI * options.alpha * center(jCells)[0]);
 		});
 	}
+}
+
+/**
+ * Job SetUpTimeLoopN called @2.0 in simulate method.
+ * In variables: t_n0
+ * Out variables: t_n
+ */
+void HeatEquation::setUpTimeLoopN() noexcept
+{
+	t_n = t_n0;
 }
 
 /**
@@ -497,12 +515,16 @@ void HeatEquation::simulate()
 		computeV(thread);
 		iniCenter(thread);
 		iniF(thread);
+		if (thread.league_rank() == 0)
+			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){iniTime();});
 	});
 	
 	// @2.0
 	Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 	{
 		iniUn(thread);
+		if (thread.league_rank() == 0)
+			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){setUpTimeLoopN();});
 	});
 	
 	// @3.0

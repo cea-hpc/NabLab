@@ -18,9 +18,11 @@ import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.PrimitiveType
+import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDeclaration
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
+import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nablagen.AdditionalModule
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenPackage
@@ -153,12 +155,16 @@ class NablagenScopeProvider extends AbstractNablagenScopeProvider
 
 	private def getScalarVarScope(NablaModule nablaModule, List<PrimitiveType> primitiveTypes)
 	{
-		val declarations = nablaModule.declarations
-		val scalarRealOptionDeclarations = declarations.filter(OptionDeclaration).filter[checkScalar(type, primitiveTypes)]
-		val scalarRealSimpleVarDeclarations = declarations.filter(SimpleVarDeclaration).filter[checkScalar(type, primitiveTypes)]
 		val candidates = new ArrayList<ArgOrVar>
-		candidates += scalarRealOptionDeclarations.map[variable]
-		candidates += scalarRealSimpleVarDeclarations.map[variable]
+		for (d : nablaModule.declarations)
+		{
+			switch d
+			{
+				OptionDeclaration case checkScalar(d.type, primitiveTypes): candidates += d.variable
+				SimpleVarDeclaration case checkScalar(d.type, primitiveTypes): candidates += d.variable
+				VarGroupDeclaration case checkScalar(d.type, primitiveTypes): candidates += d.variables.filter(SimpleVar)
+			}
+		}
 		if (nablaModule.iteration !== null && primitiveTypes.exists[x | x == PrimitiveType::INT])
 		{
 				val iterators = nablaModule.iteration.eAllContents.filter(TimeIterator)

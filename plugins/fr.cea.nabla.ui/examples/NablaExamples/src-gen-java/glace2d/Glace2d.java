@@ -163,8 +163,10 @@ public final class Glace2d
 	protected int n;
 	protected double t_n;
 	protected double t_nplus1;
+	protected double t_n0;
 	protected double deltat_n;
 	protected double deltat_nplus1;
+	protected double deltat_n0;
 	protected double[][] X_n;
 	protected double[][] X_nplus1;
 	protected double[][] X_n0;
@@ -210,10 +212,6 @@ public final class Glace2d
 
 		// Initialize variables with default values
 		lastDump = Integer.MIN_VALUE;
-		t_n = 0.0;
-		t_nplus1 = 0.0;
-		deltat_n = options.deltatIni;
-		deltat_nplus1 = options.deltatIni;
 
 		// Allocate arrays
 		X_n = new double[nbNodes][2];
@@ -314,17 +312,23 @@ public final class Glace2d
 	}
 
 	/**
-	 * Job SetUpTimeLoopN called @1.0 in simulate method.
-	 * In variables: X_n0
-	 * Out variables: X_n
+	 * Job IniTime called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: t_n0
 	 */
-	protected void setUpTimeLoopN()
+	protected void iniTime()
 	{
-		IntStream.range(0, X_n.length).parallel().forEach(i2 -> 
-		{
-			for (int i1=0 ; i1<X_n[i2].length ; i1++)
-				X_n[i2][i1] = X_n0[i2][i1];
-		});
+		t_n0 = 0.0;
+	}
+
+	/**
+	 * Job IniTimeStep called @1.0 in simulate method.
+	 * In variables: deltatIni
+	 * Out variables: deltat_n0
+	 */
+	protected void iniTimeStep()
+	{
+		deltat_n0 = options.deltatIni;
 	}
 
 	/**
@@ -424,6 +428,22 @@ public final class Glace2d
 			rho[jCells] = rho_ic;
 			E_n[jCells] = p_ic / ((options.gamma - 1.0) * rho_ic);
 			uj_n[jCells] = new double[] {0.0, 0.0};
+		});
+	}
+
+	/**
+	 * Job SetUpTimeLoopN called @2.0 in simulate method.
+	 * In variables: X_n0, deltat_n0, t_n0
+	 * Out variables: X_n, deltat_n, t_n
+	 */
+	protected void setUpTimeLoopN()
+	{
+		t_n = t_n0;
+		deltat_n = deltat_n0;
+		IntStream.range(0, X_n.length).parallel().forEach(i2 -> 
+		{
+			for (int i1=0 ; i1<X_n[i2].length ; i1++)
+				X_n[i2][i1] = X_n0[i2][i1];
 		});
 	}
 
@@ -952,8 +972,10 @@ public final class Glace2d
 	{
 		System.out.println("Start execution of glace2d");
 		iniCjrIc(); // @1.0
-		setUpTimeLoopN(); // @1.0
+		iniTime(); // @1.0
+		iniTimeStep(); // @1.0
 		initialize(); // @2.0
+		setUpTimeLoopN(); // @2.0
 		executeTimeLoopN(); // @3.0
 		System.out.println("End of execution of glace2d");
 	}
@@ -1030,8 +1052,10 @@ public final class Glace2d
 			batch.put(bytes("n"), LevelDBUtils.serialize(n));
 			batch.put(bytes("t_n"), LevelDBUtils.serialize(t_n));
 			batch.put(bytes("t_nplus1"), LevelDBUtils.serialize(t_nplus1));
+			batch.put(bytes("t_n0"), LevelDBUtils.serialize(t_n0));
 			batch.put(bytes("deltat_n"), LevelDBUtils.serialize(deltat_n));
 			batch.put(bytes("deltat_nplus1"), LevelDBUtils.serialize(deltat_nplus1));
+			batch.put(bytes("deltat_n0"), LevelDBUtils.serialize(deltat_n0));
 			batch.put(bytes("X_n"), LevelDBUtils.serialize(X_n));
 			batch.put(bytes("X_nplus1"), LevelDBUtils.serialize(X_nplus1));
 			batch.put(bytes("X_n0"), LevelDBUtils.serialize(X_n0));

@@ -147,8 +147,6 @@ IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D* aMesh, Options& aO
 , options(aOptions)
 , writer("IterativeHeatEquation", options.outputPath)
 , lastDump(numeric_limits<int>::min())
-, t_n(0.0)
-, t_nplus1(0.0)
 , deltat(0.001)
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
@@ -294,6 +292,16 @@ void IterativeHeatEquation::initD(const member_type& teamMember) noexcept
 			D(cCells) = 1.0;
 		});
 	}
+}
+
+/**
+ * Job InitTime called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: t_n0
+ */
+void IterativeHeatEquation::initTime() noexcept
+{
+	t_n0 = 0.0;
 }
 
 /**
@@ -511,6 +519,16 @@ void IterativeHeatEquation::initU(const member_type& teamMember) noexcept
 }
 
 /**
+ * Job SetUpTimeLoopN called @2.0 in simulate method.
+ * In variables: t_n0
+ * Out variables: t_n
+ */
+void IterativeHeatEquation::setUpTimeLoopN() noexcept
+{
+	t_n = t_n0;
+}
+
+/**
  * Job ComputeAlphaCoeff called @3.0 in simulate method.
  * In variables: V, Xc, deltat, faceConductivity, faceLength
  * Out variables: alpha
@@ -682,6 +700,8 @@ void IterativeHeatEquation::simulate()
 		computeFaceLength(thread);
 		computeV(thread);
 		initD(thread);
+		if (thread.league_rank() == 0)
+			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){initTime();});
 		initXc(thread);
 	});
 	
@@ -692,6 +712,8 @@ void IterativeHeatEquation::simulate()
 			computeDeltaTn(thread);
 		computeFaceConductivity(thread);
 		initU(thread);
+		if (thread.league_rank() == 0)
+			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){setUpTimeLoopN();});
 	});
 	
 	// @3.0

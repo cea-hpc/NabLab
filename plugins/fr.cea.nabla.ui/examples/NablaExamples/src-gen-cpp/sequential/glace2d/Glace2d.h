@@ -70,10 +70,12 @@ public:
 	void computeCjr() noexcept;
 	void computeInternalEnergy() noexcept;
 	void iniCjrIc() noexcept;
-	void setUpTimeLoopN() noexcept;
+	void iniTime() noexcept;
+	void iniTimeStep() noexcept;
 	void computeLjr() noexcept;
 	void computeV() noexcept;
 	void initialize() noexcept;
+	void setUpTimeLoopN() noexcept;
 	void computeDensity() noexcept;
 	void executeTimeLoopN() noexcept;
 	void computeEOSp() noexcept;
@@ -115,8 +117,10 @@ public:
 	int n;
 	double t_n;
 	double t_nplus1;
+	double t_n0;
 	double deltat_n;
 	double deltat_nplus1;
+	double deltat_n0;
 	std::vector<RealArray1D<2>> X_n;
 	std::vector<RealArray1D<2>> X_nplus1;
 	std::vector<RealArray1D<2>> X_n0;

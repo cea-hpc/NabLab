@@ -114,8 +114,6 @@ ExplicitHeatEquation::ExplicitHeatEquation(CartesianMesh2D* aMesh, Options& aOpt
 , options(aOptions)
 , writer("ExplicitHeatEquation", options.outputPath)
 , lastDump(numeric_limits<int>::min())
-, t_n(0.0)
-, t_nplus1(0.0)
 , deltat(0.001)
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
@@ -262,6 +260,16 @@ void ExplicitHeatEquation::initD(const member_type& teamMember) noexcept
 }
 
 /**
+ * Job InitTime called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: t_n0
+ */
+void ExplicitHeatEquation::initTime() noexcept
+{
+	t_n0 = 0.0;
+}
+
+/**
  * Job InitXc called @1.0 in simulate method.
  * In variables: X
  * Out variables: Xc
@@ -404,6 +412,16 @@ void ExplicitHeatEquation::initU(const member_type& teamMember) noexcept
 				u_n(cCells) = 0.0;
 		});
 	}
+}
+
+/**
+ * Job SetUpTimeLoopN called @2.0 in simulate method.
+ * In variables: t_n0
+ * Out variables: t_n
+ */
+void ExplicitHeatEquation::setUpTimeLoopN() noexcept
+{
+	t_n = t_n0;
 }
 
 /**
@@ -570,6 +588,8 @@ void ExplicitHeatEquation::simulate()
 		computeFaceLength(thread);
 		computeV(thread);
 		initD(thread);
+		if (thread.league_rank() == 0)
+			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){initTime();});
 		initXc(thread);
 	});
 	
@@ -580,6 +600,8 @@ void ExplicitHeatEquation::simulate()
 			computeDeltaTn(thread);
 		computeFaceConductivity(thread);
 		initU(thread);
+		if (thread.league_rank() == 0)
+			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){setUpTimeLoopN();});
 	});
 	
 	// @3.0

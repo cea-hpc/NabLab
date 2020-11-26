@@ -59,6 +59,7 @@ public:
 	void computeTn() noexcept;
 	void computeV() noexcept;
 	void initD() noexcept;
+	void initTime() noexcept;
 	void initXc() noexcept;
 	void setUpTimeLoopK() noexcept;
 	void updateU() noexcept;
@@ -67,6 +68,7 @@ public:
 	void computeResidual() noexcept;
 	void executeTimeLoopK() noexcept;
 	void initU() noexcept;
+	void setUpTimeLoopN() noexcept;
 	void computeAlphaCoeff() noexcept;
 	void tearDownTimeLoopK() noexcept;
 	void executeTimeLoopN() noexcept;
@@ -93,9 +95,10 @@ public:
 	int n;
 	int k;
 	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
+	double deltat;
 	double t_n;
 	double t_nplus1;
-	double deltat;
+	double t_n0;
 	std::vector<RealArray1D<2>> X;
 	std::vector<RealArray1D<2>> Xc;
 	std::vector<double> u_n;

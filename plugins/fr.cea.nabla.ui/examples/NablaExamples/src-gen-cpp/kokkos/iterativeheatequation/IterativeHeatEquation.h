@@ -76,6 +76,8 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void initD() noexcept;
 	KOKKOS_INLINE_FUNCTION
+	void initTime() noexcept;
+	KOKKOS_INLINE_FUNCTION
 	void initXc() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopK() noexcept;
@@ -91,6 +93,8 @@ public:
 	void executeTimeLoopK() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void initU() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void setUpTimeLoopN() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void computeAlphaCoeff() noexcept;
 	KOKKOS_INLINE_FUNCTION
@@ -120,9 +124,10 @@ public:
 	int n;
 	int k;
 	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
+	double deltat;
 	double t_n;
 	double t_nplus1;
-	double deltat;
+	double t_n0;
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> Xc;
 	Kokkos::View<double*> u_n;

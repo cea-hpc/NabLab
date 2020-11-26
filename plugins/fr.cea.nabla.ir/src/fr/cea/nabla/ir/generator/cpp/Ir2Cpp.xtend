@@ -415,7 +415,6 @@ class Ir2Cpp extends CodeGenerator
 		}
 		leveldb::Iterator* it_ref = db_ref->NewIterator(leveldb::ReadOptions());
 
-
 		// Loading current DB
 		leveldb::DB* db;
 		leveldb::Options options;
@@ -426,13 +425,30 @@ class Ir2Cpp extends CodeGenerator
 
 		// Results comparison
 		std::cerr << "# Compairing results ..." << std::endl;
-		for (it_ref->SeekToFirst(), it->SeekToFirst(); it_ref->Valid() && it->Valid(); it_ref->Next(), it->Next()) {
-			assert(it_ref->key().ToString() == it->key().ToString());
-			if (it_ref->value().ToString() == it->value().ToString())
-				std::cerr << it->key().ToString() << ": " << "OK" << std::endl;
-			else
-			{
-				std::cerr << it->key().ToString() << ": " << "ERROR" << std::endl;
+		for (it_ref->SeekToFirst(); it_ref->Valid(); it_ref->Next()) {
+			auto key = it_ref->key();
+			std::string value;
+			auto status = db->Get(leveldb::ReadOptions(), key, &value);
+			if (status.IsNotFound()) {
+				std::cerr << "ERROR - Key : " << key.ToString() << " not found." << endl;
+				result = false;
+			}
+			else {
+				if (value == it_ref->value().ToString())
+					std::cerr << key.ToString() << ": " << "OK" << std::endl;
+				else {
+					std::cerr << key.ToString() << ": " << "ERROR" << std::endl;
+					result = false;
+				}
+			}
+		}
+
+		// looking for key in the db that are not in the ref (new variables)
+		for (it->SeekToFirst(); it->Valid(); it->Next()) {
+			auto key = it->key();
+			std::string value;
+			if (db_ref->Get(leveldb::ReadOptions(), key, &value).IsNotFound()) {
+				std::cerr << "ERROR - Key : " << key.ToString() << " can not be compared (not present in the ref)." << std::endl;
 				result = false;
 			}
 		}

@@ -114,8 +114,6 @@ ExplicitHeatEquation::ExplicitHeatEquation(CartesianMesh2D* aMesh, Options& aOpt
 , options(aOptions)
 , writer("ExplicitHeatEquation", options.outputPath)
 , lastDump(numeric_limits<int>::min())
-, t_n(0.0)
-, t_nplus1(0.0)
 , deltat(0.001)
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
@@ -215,6 +213,16 @@ void ExplicitHeatEquation::initD() noexcept
 	{
 		D(cCells) = 1.0;
 	});
+}
+
+/**
+ * Job InitTime called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: t_n0
+ */
+void ExplicitHeatEquation::initTime() noexcept
+{
+	t_n0 = 0.0;
 }
 
 /**
@@ -332,6 +340,16 @@ void ExplicitHeatEquation::initU() noexcept
 		else
 			u_n(cCells) = 0.0;
 	});
+}
+
+/**
+ * Job SetUpTimeLoopN called @2.0 in simulate method.
+ * In variables: t_n0
+ * Out variables: t_n
+ */
+void ExplicitHeatEquation::setUpTimeLoopN() noexcept
+{
+	t_n = t_n0;
 }
 
 /**
@@ -471,10 +489,12 @@ void ExplicitHeatEquation::simulate()
 	computeFaceLength(); // @1.0
 	computeV(); // @1.0
 	initD(); // @1.0
+	initTime(); // @1.0
 	initXc(); // @1.0
 	computeDeltaTn(); // @2.0
 	computeFaceConductivity(); // @2.0
 	initU(); // @2.0
+	setUpTimeLoopN(); // @2.0
 	computeAlphaCoeff(); // @3.0
 	executeTimeLoopN(); // @4.0
 	

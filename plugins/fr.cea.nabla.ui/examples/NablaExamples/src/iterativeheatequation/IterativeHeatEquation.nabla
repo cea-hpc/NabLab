@@ -33,8 +33,8 @@ option ℕ maxIterations = 500000000;
 option ℕ maxIterationsK = 1000;
 option ℝ ε =  1.0e-8;
 
-let ℝ t = 0.0;
 let ℝ δt = 0.001;
+ℝ t;
 ℝ[2] X{nodes}, Xc{cells}; // Position of nodes and cells center of gravity 
 ℝ u{cells}; // Temperature
 ℝ V{cells}; // Volume of cells
@@ -45,6 +45,8 @@ let ℝ δt = 0.001;
 
 iterate	n while (t^{n+1} < stopTime && n+1 < maxIterations),
 		k while (residual > ε && check(k+1 < maxIterationsK));
+
+InitTime: t^{n=0} = 0.0;
 
 InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
 

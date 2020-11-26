@@ -92,9 +92,10 @@ public final class ExplicitHeatEquation
 	protected int lastDump;
 	protected int n;
 	protected final double[] vectOne;
+	protected double deltat;
 	protected double t_n;
 	protected double t_nplus1;
-	protected double deltat;
+	protected double t_n0;
 	protected double[][] X;
 	protected double[][] Xc;
 	protected double[] u_n;
@@ -124,8 +125,6 @@ public final class ExplicitHeatEquation
 		// Initialize variables with default values
 		lastDump = Integer.MIN_VALUE;
 		vectOne = new double[] {1.0, 1.0};
-		t_n = 0.0;
-		t_nplus1 = 0.0;
 		deltat = 0.001;
 
 		// Allocate arrays
@@ -223,6 +222,16 @@ public final class ExplicitHeatEquation
 		{
 			D[cCells] = 1.0;
 		});
+	}
+
+	/**
+	 * Job InitTime called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: t_n0
+	 */
+	protected void initTime()
+	{
+		t_n0 = 0.0;
 	}
 
 	/**
@@ -348,6 +357,16 @@ public final class ExplicitHeatEquation
 	}
 
 	/**
+	 * Job SetUpTimeLoopN called @2.0 in simulate method.
+	 * In variables: t_n0
+	 * Out variables: t_n
+	 */
+	protected void setUpTimeLoopN()
+	{
+		t_n = t_n0;
+	}
+
+	/**
 	 * Job ComputeAlphaCoeff called @3.0 in simulate method.
 	 * In variables: V, Xc, deltat, faceConductivity, faceLength
 	 * Out variables: alpha
@@ -461,10 +480,12 @@ public final class ExplicitHeatEquation
 		computeFaceLength(); // @1.0
 		computeV(); // @1.0
 		initD(); // @1.0
+		initTime(); // @1.0
 		initXc(); // @1.0
 		computeDeltaTn(); // @2.0
 		computeFaceConductivity(); // @2.0
 		initU(); // @2.0
+		setUpTimeLoopN(); // @2.0
 		computeAlphaCoeff(); // @3.0
 		executeTimeLoopN(); // @4.0
 		System.out.println("End of execution of explicitHeatEquation");
@@ -541,9 +562,10 @@ public final class ExplicitHeatEquation
 			batch.put(bytes("lastDump"), LevelDBUtils.serialize(lastDump));
 			batch.put(bytes("n"), LevelDBUtils.serialize(n));
 			batch.put(bytes("vectOne"), LevelDBUtils.serialize(vectOne));
+			batch.put(bytes("deltat"), LevelDBUtils.serialize(deltat));
 			batch.put(bytes("t_n"), LevelDBUtils.serialize(t_n));
 			batch.put(bytes("t_nplus1"), LevelDBUtils.serialize(t_nplus1));
-			batch.put(bytes("deltat"), LevelDBUtils.serialize(deltat));
+			batch.put(bytes("t_n0"), LevelDBUtils.serialize(t_n0));
 			batch.put(bytes("X"), LevelDBUtils.serialize(X));
 			batch.put(bytes("Xc"), LevelDBUtils.serialize(Xc));
 			batch.put(bytes("u_n"), LevelDBUtils.serialize(u_n));

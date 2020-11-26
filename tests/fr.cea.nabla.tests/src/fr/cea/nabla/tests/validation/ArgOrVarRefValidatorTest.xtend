@@ -70,7 +70,7 @@ class ArgOrVarRefValidatorTest
 	}
 
 	@Test
-	def void testCheckSpaceIteratorNumberAndType() 
+	def void testCheckSpaceIteratorNumberAndType()
 	{
 		val moduleKo = parseHelper.parse(
 			'''
@@ -112,7 +112,7 @@ class ArgOrVarRefValidatorTest
 	}
 
 	@Test
-	def void testCheckTimeIteratorUsage() 
+	def void testCheckRequiredTimeIterator()
 	{
 		val moduleKo = parseHelper.parse(
 			'''
@@ -126,8 +126,68 @@ class ArgOrVarRefValidatorTest
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
-			ArgOrVarRefValidator::TIME_ITERATOR_USAGE,
-			ArgOrVarRefValidator::getTimeIteratorUsageMsg())
+			ArgOrVarRefValidator::REQUIRED_TIME_ITERATOR,
+			ArgOrVarRefValidator::getRequiredTimeIteratorMsg())
+
+		val moduleOk =  parseHelper.parse(
+			'''
+			«testModuleForSimulation»
+			ℝ u, v;
+			iterate n while(true);
+			ComputeU: u^{n+1} = u^{n} + 6.0;
+			ComputeV: v = u^{n} + 4.0; // Wrong: must be u^{n}
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void testCheckIllegalTimeIterator()
+	{
+		val moduleKo1 = parseHelper.parse(
+			'''
+			«testModuleForSimulation»
+			let ℝ u=0;
+			ℝ v;
+			iterate n while(true);
+			ComputeU: u^{n+1} = u^{n} + 6.0;
+			ComputeV: v = u + 4.0; // Wrong: must be u^{n}
+			'''
+		)
+		Assert.assertNotNull(moduleKo1)
+		moduleKo1.assertError(NablaPackage.eINSTANCE.argOrVarRef,
+			ArgOrVarRefValidator::ILLEGAL_TIME_ITERATOR,
+			ArgOrVarRefValidator::getIllegalTimeIteratorMsg())
+
+		val moduleKo2 = parseHelper.parse(
+			'''
+			«testModuleForSimulation»
+			option ℝ u;
+			ℝ v;
+			iterate n while(true);
+			ComputeU: u^{n+1} = u^{n} + 6.0;
+			ComputeV: v = u + 4.0; // Wrong: must be u^{n}
+			'''
+		)
+		Assert.assertNotNull(moduleKo2)
+		moduleKo2.assertError(NablaPackage.eINSTANCE.argOrVarRef,
+			ArgOrVarRefValidator::ILLEGAL_TIME_ITERATOR,
+			ArgOrVarRefValidator::getIllegalTimeIteratorMsg())
+
+		val moduleKo3 = parseHelper.parse(
+			'''
+			«testModuleForSimulation»
+			ℝ u, v;
+			iterate n while(true);
+			ComputeU: u^{n+1} = u^{n} + n^{n} + 6.0;
+			ComputeV: v = u + 4.0; // Wrong: must be u^{n}
+			'''
+		)
+		Assert.assertNotNull(moduleKo3)
+		moduleKo3.assertError(NablaPackage.eINSTANCE.argOrVarRef,
+			ArgOrVarRefValidator::ILLEGAL_TIME_ITERATOR,
+			ArgOrVarRefValidator::getIllegalTimeIteratorMsg())
 
 		val moduleOk =  parseHelper.parse(
 			'''

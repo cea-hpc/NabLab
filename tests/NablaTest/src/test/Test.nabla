@@ -20,16 +20,17 @@ connectivity cells: → {cell};
 option ℝ maxTime = 0.1;
 option ℕ maxIter = 500;
 
-let ℝ t = 0.0;
 option ℝ δt = 1.0;
+ℝ t;
 ℝ[2] X{nodes};
 ℝ e1{cells}, e2{cells}, e{cells};
 
 iterate n while (n+1 < maxIter && t^{n+1} < maxTime), k while (k+1 < 10);
 
-initE     : ∀c ∈cells(), e^{n=0}{c} = 0.;
-computeE1 : ∀c ∈cells(), e1{c} = e^{n}{c} + 3.;
+InitTime  : t^{n=0} = 0.0;
+InitE     : ∀c ∈cells(), e^{n=0}{c} = 0.;
+ComputeE1 : ∀c ∈cells(), e1{c} = e^{n}{c} + 3.;
 InitE2    : ∀c ∈cells(), e2^{n+1, k=0}{c} = e1{c};
-computeE2 : ∀c ∈cells(), e2^{n+1, k+1}{c} = e2^{n+1, k}{c} + 0.4;
-updateE   : ∀c ∈cells(), e^{n+1}{c} = e2^{n+1}{c} - 3;
-updateT   : t^{n+1} = t^{n} + δt;
+ComputeE2 : ∀c ∈cells(), e2^{n+1, k+1}{c} = e2^{n+1, k}{c} + 0.4;
+UpdateE   : ∀c ∈cells(), e^{n+1}{c} = e2^{n+1}{c} - 3;
+UpdateT   : t^{n+1} = t^{n} + δt;

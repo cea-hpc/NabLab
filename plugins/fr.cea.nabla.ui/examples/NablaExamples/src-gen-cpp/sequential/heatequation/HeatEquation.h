@@ -56,8 +56,10 @@ public:
 	void computeV() noexcept;
 	void iniCenter() noexcept;
 	void iniF() noexcept;
+	void iniTime() noexcept;
 	void computeUn() noexcept;
 	void iniUn() noexcept;
+	void setUpTimeLoopN() noexcept;
 	void executeTimeLoopN() noexcept;
 
 private:
@@ -80,9 +82,10 @@ public:
 	// Global variables
 	int lastDump;
 	int n;
+	static constexpr double deltat = 0.001;
 	double t_n;
 	double t_nplus1;
-	static constexpr double deltat = 0.001;
+	double t_n0;
 	std::vector<RealArray1D<2>> X;
 	std::vector<RealArray1D<2>> center;
 	std::vector<double> u_n;

@@ -45,8 +45,6 @@ Test::Test(CartesianMesh2D* aMesh, Options& aOptions)
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
 , options(aOptions)
-, t_n(0.0)
-, t_nplus1(0.0)
 , X(nbNodes)
 , e1(nbCells)
 , e2_n(nbCells)
@@ -72,7 +70,7 @@ Test::~Test()
 }
 
 /**
- * Job computeE1 called @1.0 in executeTimeLoopN method.
+ * Job ComputeE1 called @1.0 in executeTimeLoopN method.
  * In variables: e_n
  * Out variables: e1
  */
@@ -85,7 +83,7 @@ void Test::computeE1() noexcept
 }
 
 /**
- * Job computeE2 called @1.0 in executeTimeLoopK method.
+ * Job ComputeE2 called @1.0 in executeTimeLoopK method.
  * In variables: e2_nplus1_k
  * Out variables: e2_nplus1_kplus1
  */
@@ -98,7 +96,7 @@ void Test::computeE2() noexcept
 }
 
 /**
- * Job initE called @1.0 in simulate method.
+ * Job InitE called @1.0 in simulate method.
  * In variables: 
  * Out variables: e_n0
  */
@@ -111,7 +109,17 @@ void Test::initE() noexcept
 }
 
 /**
- * Job updateT called @1.0 in executeTimeLoopN method.
+ * Job InitTime called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: t_n0
+ */
+void Test::initTime() noexcept
+{
+	t_n0 = 0.0;
+}
+
+/**
+ * Job UpdateT called @1.0 in executeTimeLoopN method.
  * In variables: deltat, t_n
  * Out variables: t_nplus1
  */
@@ -135,11 +143,12 @@ void Test::initE2() noexcept
 
 /**
  * Job SetUpTimeLoopN called @2.0 in simulate method.
- * In variables: e_n0
- * Out variables: e_n
+ * In variables: e_n0, t_n0
+ * Out variables: e_n, t_n
  */
 void Test::setUpTimeLoopN() noexcept
 {
+	t_n = t_n0;
 	for (size_t i1(0) ; i1<e_n.size() ; i1++)
 		e_n[i1] = e_n0[i1];
 }
@@ -254,7 +263,7 @@ void Test::tearDownTimeLoopK() noexcept
 }
 
 /**
- * Job updateE called @6.0 in executeTimeLoopN method.
+ * Job UpdateE called @6.0 in executeTimeLoopN method.
  * In variables: e2_nplus1
  * Out variables: e_nplus1
  */
@@ -275,6 +284,7 @@ void Test::simulate()
 	std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
 	initE(); // @1.0
+	initTime(); // @1.0
 	setUpTimeLoopN(); // @2.0
 	executeTimeLoopN(); // @3.0
 	

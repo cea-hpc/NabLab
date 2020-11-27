@@ -39,13 +39,15 @@ public:
 
 	void simulate();
 	void computeTn() noexcept;
+	void iniTime() noexcept;
+	void iniU() noexcept;
 	void iniV() noexcept;
-	void initU() noexcept;
 	void updateV() noexcept;
 	void updateW() noexcept;
-	void executeTimeLoopN() noexcept;
 	void setUpTimeLoopK() noexcept;
+	void setUpTimeLoopN() noexcept;
 	void executeTimeLoopK() noexcept;
+	void executeTimeLoopN() noexcept;
 	void tearDownTimeLoopK() noexcept;
 	void iniW() noexcept;
 	void setUpTimeLoopL() noexcept;
@@ -73,6 +75,7 @@ public:
 	int l;
 	double t_n;
 	double t_nplus1;
+	double t_n0;
 	std::vector<RealArray1D<2>> X;
 	std::vector<double> u_n;
 	std::vector<double> u_nplus1;

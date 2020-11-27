@@ -81,6 +81,7 @@ public final class Test
 	protected int k;
 	protected double t_n;
 	protected double t_nplus1;
+	protected double t_n0;
 	protected double[][] X;
 	protected double[] e1;
 	protected double[] e2_n;
@@ -103,8 +104,6 @@ public final class Test
 		options = aOptions;
 
 		// Initialize variables with default values
-		t_n = 0.0;
-		t_nplus1 = 0.0;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
@@ -128,7 +127,7 @@ public final class Test
 	}
 
 	/**
-	 * Job computeE1 called @1.0 in executeTimeLoopN method.
+	 * Job ComputeE1 called @1.0 in executeTimeLoopN method.
 	 * In variables: e_n
 	 * Out variables: e1
 	 */
@@ -141,7 +140,7 @@ public final class Test
 	}
 
 	/**
-	 * Job computeE2 called @1.0 in executeTimeLoopK method.
+	 * Job ComputeE2 called @1.0 in executeTimeLoopK method.
 	 * In variables: e2_nplus1_k
 	 * Out variables: e2_nplus1_kplus1
 	 */
@@ -154,7 +153,7 @@ public final class Test
 	}
 
 	/**
-	 * Job initE called @1.0 in simulate method.
+	 * Job InitE called @1.0 in simulate method.
 	 * In variables: 
 	 * Out variables: e_n0
 	 */
@@ -167,7 +166,17 @@ public final class Test
 	}
 
 	/**
-	 * Job updateT called @1.0 in executeTimeLoopN method.
+	 * Job InitTime called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: t_n0
+	 */
+	protected void initTime()
+	{
+		t_n0 = 0.0;
+	}
+
+	/**
+	 * Job UpdateT called @1.0 in executeTimeLoopN method.
 	 * In variables: deltat, t_n
 	 * Out variables: t_nplus1
 	 */
@@ -191,11 +200,12 @@ public final class Test
 
 	/**
 	 * Job SetUpTimeLoopN called @2.0 in simulate method.
-	 * In variables: e_n0
-	 * Out variables: e_n
+	 * In variables: e_n0, t_n0
+	 * Out variables: e_n, t_n
 	 */
 	protected void setUpTimeLoopN()
 	{
+		t_n = t_n0;
 		IntStream.range(0, e_n.length).parallel().forEach(i1 -> 
 		{
 			e_n[i1] = e_n0[i1];
@@ -301,7 +311,7 @@ public final class Test
 	}
 
 	/**
-	 * Job updateE called @6.0 in executeTimeLoopN method.
+	 * Job UpdateE called @6.0 in executeTimeLoopN method.
 	 * In variables: e2_nplus1
 	 * Out variables: e_nplus1
 	 */
@@ -317,6 +327,7 @@ public final class Test
 	{
 		System.out.println("Start execution of test");
 		initE(); // @1.0
+		initTime(); // @1.0
 		setUpTimeLoopN(); // @2.0
 		executeTimeLoopN(); // @3.0
 		System.out.println("End of execution of test");
@@ -383,6 +394,7 @@ public final class Test
 			batch.put(bytes("k"), LevelDBUtils.serialize(k));
 			batch.put(bytes("t_n"), LevelDBUtils.serialize(t_n));
 			batch.put(bytes("t_nplus1"), LevelDBUtils.serialize(t_nplus1));
+			batch.put(bytes("t_n0"), LevelDBUtils.serialize(t_n0));
 			batch.put(bytes("X"), LevelDBUtils.serialize(X));
 			batch.put(bytes("e1"), LevelDBUtils.serialize(e1));
 			batch.put(bytes("e2_n"), LevelDBUtils.serialize(e2_n));

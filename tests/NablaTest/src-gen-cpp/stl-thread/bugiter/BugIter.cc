@@ -63,8 +63,6 @@ BugIter::BugIter(CartesianMesh2D* aMesh, Options& aOptions)
 , nbCells(mesh->getNbCells())
 , nbNodes(mesh->getNbNodes())
 , options(aOptions)
-, t_n(0.0)
-, t_nplus1(0.0)
 , X(nbNodes)
 , u_n(nbCells)
 , u_nplus1(nbCells)
@@ -103,6 +101,29 @@ void BugIter::computeTn() noexcept
 }
 
 /**
+ * Job IniTime called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: t_n0
+ */
+void BugIter::iniTime() noexcept
+{
+	t_n0 = 0.0;
+}
+
+/**
+ * Job IniU called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: u_n
+ */
+void BugIter::iniU() noexcept
+{
+	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	{
+		u_n[cCells] = 0.0;
+	});
+}
+
+/**
  * Job IniV called @1.0 in executeTimeLoopN method.
  * In variables: u_n
  * Out variables: v_nplus1_k0
@@ -112,19 +133,6 @@ void BugIter::iniV() noexcept
 	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		v_nplus1_k0[cCells] = u_n[cCells] + 1;
-	});
-}
-
-/**
- * Job InitU called @1.0 in simulate method.
- * In variables: 
- * Out variables: u_n
- */
-void BugIter::initU() noexcept
-{
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
-	{
-		u_n[cCells] = 0.0;
 	});
 }
 
@@ -155,7 +163,59 @@ void BugIter::updateW() noexcept
 }
 
 /**
- * Job ExecuteTimeLoopN called @2.0 in simulate method.
+ * Job SetUpTimeLoopK called @2.0 in executeTimeLoopN method.
+ * In variables: v_n, v_nplus1_k0
+ * Out variables: v_nplus1_k, v_nplus1_k
+ */
+void BugIter::setUpTimeLoopK() noexcept
+{
+	for (size_t i1(0) ; i1<v_nplus1_k.size() ; i1++)
+		v_nplus1_k[i1] = v_nplus1_k0[i1];
+	for (size_t i1(0) ; i1<v_nplus1_k.size() ; i1++)
+		v_nplus1_k[i1] = v_n[i1];
+}
+
+/**
+ * Job SetUpTimeLoopN called @2.0 in simulate method.
+ * In variables: t_n0
+ * Out variables: t_n
+ */
+void BugIter::setUpTimeLoopN() noexcept
+{
+	t_n = t_n0;
+}
+
+/**
+ * Job ExecuteTimeLoopK called @3.0 in executeTimeLoopN method.
+ * In variables: v_nplus1_k
+ * Out variables: v_nplus1_kplus1
+ */
+void BugIter::executeTimeLoopK() noexcept
+{
+	k = 0;
+	bool continueLoop = true;
+	do
+	{
+		k++;
+	
+		updateV(); // @1.0
+		
+	
+		// Evaluate loop condition with variables at time n
+		continueLoop = (k + 1 < options.maxIterK);
+	
+		if (continueLoop)
+		{
+			// Switch variables to prepare next iteration
+			std::swap(v_nplus1_kplus1, v_nplus1_k);
+		}
+	
+	
+	} while (continueLoop);
+}
+
+/**
+ * Job ExecuteTimeLoopN called @3.0 in simulate method.
  * In variables: deltat, t_n, u_n, v_n, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_n, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
  * Out variables: t_nplus1, u_nplus1, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
  */
@@ -211,48 +271,6 @@ void BugIter::executeTimeLoopN() noexcept
 	
 		cpuTimer.reset();
 		ioTimer.reset();
-	} while (continueLoop);
-}
-
-/**
- * Job SetUpTimeLoopK called @2.0 in executeTimeLoopN method.
- * In variables: v_n, v_nplus1_k0
- * Out variables: v_nplus1_k, v_nplus1_k
- */
-void BugIter::setUpTimeLoopK() noexcept
-{
-	for (size_t i1(0) ; i1<v_nplus1_k.size() ; i1++)
-		v_nplus1_k[i1] = v_nplus1_k0[i1];
-	for (size_t i1(0) ; i1<v_nplus1_k.size() ; i1++)
-		v_nplus1_k[i1] = v_n[i1];
-}
-
-/**
- * Job ExecuteTimeLoopK called @3.0 in executeTimeLoopN method.
- * In variables: v_nplus1_k
- * Out variables: v_nplus1_kplus1
- */
-void BugIter::executeTimeLoopK() noexcept
-{
-	k = 0;
-	bool continueLoop = true;
-	do
-	{
-		k++;
-	
-		updateV(); // @1.0
-		
-	
-		// Evaluate loop condition with variables at time n
-		continueLoop = (k + 1 < options.maxIterK);
-	
-		if (continueLoop)
-		{
-			// Switch variables to prepare next iteration
-			std::swap(v_nplus1_kplus1, v_nplus1_k);
-		}
-	
-	
 	} while (continueLoop);
 }
 
@@ -354,8 +372,10 @@ void BugIter::simulate()
 	
 	std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
-	initU(); // @1.0
-	executeTimeLoopN(); // @2.0
+	iniTime(); // @1.0
+	iniU(); // @1.0
+	setUpTimeLoopN(); // @2.0
+	executeTimeLoopN(); // @3.0
 	
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }

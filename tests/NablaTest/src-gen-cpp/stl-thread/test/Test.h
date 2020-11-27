@@ -39,6 +39,7 @@ public:
 	void computeE1() noexcept;
 	void computeE2() noexcept;
 	void initE() noexcept;
+	void initTime() noexcept;
 	void updateT() noexcept;
 	void initE2() noexcept;
 	void setUpTimeLoopN() noexcept;
@@ -67,6 +68,7 @@ public:
 	int k;
 	double t_n;
 	double t_nplus1;
+	double t_n0;
 	std::vector<RealArray1D<2>> X;
 	std::vector<double> e1;
 	std::vector<double> e2_n;

@@ -102,6 +102,7 @@ public final class BugIter
 	protected int l;
 	protected double t_n;
 	protected double t_nplus1;
+	protected double t_n0;
 	protected double[][] X;
 	protected double[] u_n;
 	protected double[] u_nplus1;
@@ -127,8 +128,6 @@ public final class BugIter
 		options = aOptions;
 
 		// Initialize variables with default values
-		t_n = 0.0;
-		t_nplus1 = 0.0;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
@@ -165,6 +164,29 @@ public final class BugIter
 	}
 
 	/**
+	 * Job IniTime called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: t_n0
+	 */
+	protected void iniTime()
+	{
+		t_n0 = 0.0;
+	}
+
+	/**
+	 * Job IniU called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: u_n
+	 */
+	protected void iniU()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			u_n[cCells] = 0.0;
+		});
+	}
+
+	/**
 	 * Job IniV called @1.0 in executeTimeLoopN method.
 	 * In variables: u_n
 	 * Out variables: v_nplus1_k0
@@ -174,19 +196,6 @@ public final class BugIter
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			v_nplus1_k0[cCells] = u_n[cCells] + 1;
-		});
-	}
-
-	/**
-	 * Job InitU called @1.0 in simulate method.
-	 * In variables: 
-	 * Out variables: u_n
-	 */
-	protected void initU()
-	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
-		{
-			u_n[cCells] = 0.0;
 		});
 	}
 
@@ -217,7 +226,62 @@ public final class BugIter
 	}
 
 	/**
-	 * Job ExecuteTimeLoopN called @2.0 in simulate method.
+	 * Job SetUpTimeLoopK called @2.0 in executeTimeLoopN method.
+	 * In variables: v_n, v_nplus1_k0
+	 * Out variables: v_nplus1_k, v_nplus1_k
+	 */
+	protected void setUpTimeLoopK()
+	{
+		IntStream.range(0, v_nplus1_k.length).parallel().forEach(i1 -> 
+		{
+			v_nplus1_k[i1] = v_nplus1_k0[i1];
+		});
+		IntStream.range(0, v_nplus1_k.length).parallel().forEach(i1 -> 
+		{
+			v_nplus1_k[i1] = v_n[i1];
+		});
+	}
+
+	/**
+	 * Job SetUpTimeLoopN called @2.0 in simulate method.
+	 * In variables: t_n0
+	 * Out variables: t_n
+	 */
+	protected void setUpTimeLoopN()
+	{
+		t_n = t_n0;
+	}
+
+	/**
+	 * Job ExecuteTimeLoopK called @3.0 in executeTimeLoopN method.
+	 * In variables: v_nplus1_k
+	 * Out variables: v_nplus1_kplus1
+	 */
+	protected void executeTimeLoopK()
+	{
+		k = 0;
+		boolean continueLoop = true;
+		do
+		{
+			k++;
+			System.out.printf("	[%5d] t: %5.5f - deltat: %5.5f\n", k, t_n, options.deltat);
+			updateV(); // @1.0
+		
+			// Evaluate loop condition with variables at time n
+			continueLoop = (k + 1 < options.maxIterK);
+		
+			if (continueLoop)
+			{
+				// Switch variables to prepare next iteration
+				double[] tmp_v_nplus1_k = v_nplus1_k;
+				v_nplus1_k = v_nplus1_kplus1;
+				v_nplus1_kplus1 = tmp_v_nplus1_k;
+			} 
+		} while (continueLoop);
+	}
+
+	/**
+	 * Job ExecuteTimeLoopN called @3.0 in simulate method.
 	 * In variables: deltat, t_n, u_n, v_n, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_n, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
 	 * Out variables: t_nplus1, u_nplus1, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
 	 */
@@ -258,51 +322,6 @@ public final class BugIter
 				double[] tmp_w_n = w_n;
 				w_n = w_nplus1;
 				w_nplus1 = tmp_w_n;
-			} 
-		} while (continueLoop);
-	}
-
-	/**
-	 * Job SetUpTimeLoopK called @2.0 in executeTimeLoopN method.
-	 * In variables: v_n, v_nplus1_k0
-	 * Out variables: v_nplus1_k, v_nplus1_k
-	 */
-	protected void setUpTimeLoopK()
-	{
-		IntStream.range(0, v_nplus1_k.length).parallel().forEach(i1 -> 
-		{
-			v_nplus1_k[i1] = v_nplus1_k0[i1];
-		});
-		IntStream.range(0, v_nplus1_k.length).parallel().forEach(i1 -> 
-		{
-			v_nplus1_k[i1] = v_n[i1];
-		});
-	}
-
-	/**
-	 * Job ExecuteTimeLoopK called @3.0 in executeTimeLoopN method.
-	 * In variables: v_nplus1_k
-	 * Out variables: v_nplus1_kplus1
-	 */
-	protected void executeTimeLoopK()
-	{
-		k = 0;
-		boolean continueLoop = true;
-		do
-		{
-			k++;
-			System.out.printf("	[%5d] t: %5.5f - deltat: %5.5f\n", k, t_n, options.deltat);
-			updateV(); // @1.0
-		
-			// Evaluate loop condition with variables at time n
-			continueLoop = (k + 1 < options.maxIterK);
-		
-			if (continueLoop)
-			{
-				// Switch variables to prepare next iteration
-				double[] tmp_v_nplus1_k = v_nplus1_k;
-				v_nplus1_k = v_nplus1_kplus1;
-				v_nplus1_kplus1 = tmp_v_nplus1_k;
 			} 
 		} while (continueLoop);
 	}
@@ -407,8 +426,10 @@ public final class BugIter
 	public void simulate()
 	{
 		System.out.println("Start execution of bugIter");
-		initU(); // @1.0
-		executeTimeLoopN(); // @2.0
+		iniTime(); // @1.0
+		iniU(); // @1.0
+		setUpTimeLoopN(); // @2.0
+		executeTimeLoopN(); // @3.0
 		System.out.println("End of execution of bugIter");
 	}
 
@@ -474,6 +495,7 @@ public final class BugIter
 			batch.put(bytes("l"), LevelDBUtils.serialize(l));
 			batch.put(bytes("t_n"), LevelDBUtils.serialize(t_n));
 			batch.put(bytes("t_nplus1"), LevelDBUtils.serialize(t_nplus1));
+			batch.put(bytes("t_n0"), LevelDBUtils.serialize(t_n0));
 			batch.put(bytes("X"), LevelDBUtils.serialize(X));
 			batch.put(bytes("u_n"), LevelDBUtils.serialize(u_n));
 			batch.put(bytes("u_nplus1"), LevelDBUtils.serialize(u_nplus1));

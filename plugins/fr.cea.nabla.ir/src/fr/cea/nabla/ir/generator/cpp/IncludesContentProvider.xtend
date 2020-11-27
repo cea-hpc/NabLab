@@ -55,7 +55,7 @@ abstract class IncludesContentProvider
 		if (!levelDBPath.nullOrEmpty)
 		{
 			systemIncludes += "leveldb/db.h"
-			systemIncludes += "leveldb/write_batch.h"			
+			systemIncludes += "leveldb/write_batch.h"
 		}
 		systemIncludes += m.additionalSystemIncludes
 
@@ -71,7 +71,7 @@ abstract class IncludesContentProvider
 		userIncludes +=  "utils/Timer.h"
 		userIncludes +=  "types/Types.h"
 
-		if (m.functions.exists[f | f.body === null && f.provider == m.name]) 
+		if (m.functions.exists[f | f.body === null && f.provider == m.className])
 			userIncludes += m.irRoot.name.toLowerCase + "/" + m.className + FunctionReductionPrefix + ".h"
 
 		if (!m.main)

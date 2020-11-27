@@ -14,6 +14,7 @@
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
+#include "depthinit/DepthInitFunctions.h"
 #include "utils/stl/Parallel.h"
 
 using namespace nablalib;

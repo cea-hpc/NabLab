@@ -26,13 +26,15 @@ public:
 		}
 	}
 
-	double nextWaveHeight() const
+	double nextWaveHeight()
 	{
-		std::cout << "fileName = " << fileName << ", depth = " << depth << std::endl;
+		counter++;
+		std::cout << counter << " " << fileName << ". Depth = " << depth << std::endl;
 		return depth;
 	}
 
 private:
+	int counter = 0;
 	double depth = 4.3;
 	std::string fileName = "";
 };

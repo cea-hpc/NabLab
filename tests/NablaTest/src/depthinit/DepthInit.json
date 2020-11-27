@@ -1,0 +1,20 @@
+{
+	"depthInit":
+	{
+		"maxTime":0.1,
+		"maxIter":500,
+		"deltat":1.0,
+		"depthInitFunctions":
+		{
+			"depth":3.3,
+			"fileName":"coucou"
+		}
+	},
+	"mesh":
+	{
+		"nbXQuads":2,
+		"nbYQuads":2,
+		"xSize":0.01,
+		"ySize":0.01
+	}
+}

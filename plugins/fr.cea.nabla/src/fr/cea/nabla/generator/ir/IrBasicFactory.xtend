@@ -11,6 +11,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Connectivity
@@ -25,7 +26,7 @@ class IrBasicFactory
 	@Inject extension IrExpressionFactory
 
 	// No create method to ensure a new instance every time (for n+1 time variables)
-	def toIrBaseType(BaseType t)
+	def fr.cea.nabla.ir.ir.BaseType toIrBaseType(BaseType t)
 	{
 		IrFactory::eINSTANCE.createBaseType =>
 		[
@@ -35,7 +36,7 @@ class IrBasicFactory
 	}
 
 	// No create method to ensure a new instance every time (for n+1 time variables)
-	def toIrConnectivityType(BaseType t, List<? extends Connectivity> supports)
+	def ConnectivityType toIrConnectivityType(BaseType t, List<? extends Connectivity> supports)
 	{
 		IrFactory::eINSTANCE.createConnectivityType =>
 		[

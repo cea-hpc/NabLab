@@ -141,7 +141,11 @@ class NablaExamplesTest
 		val kokkosPath = System.getenv(kokkosENV)
 		val levelDBPath = System.getenv(levelDBEnv)
 		if (kokkosPath.nullOrEmpty || levelDBPath.nullOrEmpty)
-			Assert.fail("To execute this test, you have to set " + kokkosENV + " and " + levelDBEnv + " variables.")
+		{
+			val envErr = "To execute this test, you have to set " + kokkosENV + " and " + levelDBEnv + " variables."
+			println(envErr)
+			Assert.fail(envErr)
+		}
 
 		val tmp = new File(Files.createTempDirectory("nablaTest-" + moduleName) + "/NablaExamples")
 		println(tmp)

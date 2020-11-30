@@ -9,4 +9,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: leveldb
 Export-Package: org.iq80.leveldb,
  org.iq80.leveldb.impl
+Require-Bundle: com.google.guava;bundle-version="27.1.0"
 

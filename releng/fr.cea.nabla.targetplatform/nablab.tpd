@@ -35,6 +35,10 @@ location eclipse "https://download.eclipse.org/releases/2020-03" {
 	org.eclipse.egit.feature.group
 	org.eclipse.zest.core
 	org.eclipse.zest.layouts
+	org.hamcrest.core
+	org.apache.commons.lang3
+	com.google.guava
+	com.google.gson
 }
 
 location sirius "https://download.eclipse.org/sirius/updates/releases/6.3.0/2019-06" {
@@ -56,11 +60,4 @@ location "http://www.pydev.org/update_sites/7.4.0" {
 
 location jsoneditor "http://boothen.github.io/Json-Eclipse-Plugin" {
 	jsonedit-feature.feature.group
-}
-
-location orbit "https://download.eclipse.org/tools/orbit/downloads/drops/R20200224183213/repository" {
-	org.hamcrest.core
-	org.apache.commons.lang3
-	com.google.guava
-	com.google.gson
 }

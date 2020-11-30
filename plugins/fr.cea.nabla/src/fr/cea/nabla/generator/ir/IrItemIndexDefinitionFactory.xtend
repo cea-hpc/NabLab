@@ -21,6 +21,7 @@ import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import java.util.ArrayList
+import java.util.List
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScopeProvider
 
@@ -31,7 +32,7 @@ class IrItemIndexDefinitionFactory
 	@Inject extension IrItemIndexFactory
 	@Inject IScopeProvider scopeProvider
 
-	def getNeededIndexDefinitions(SpaceIterator item)
+	def List<ItemIndexDefinition> getNeededIndexDefinitions(SpaceIterator item)
 	{
 		val indexExists = [String indexName | item.toIrIndex.name == indexName]
 		createIndexDefinitions(item, indexExists)
@@ -53,7 +54,7 @@ class IrItemIndexDefinitionFactory
 	 * it is referenced by X but rNodes is automatically created by r iterator.
 	 * indexExists will then return true to prevent from creating the index two times.
 	 */
-	private def createIndexDefinitions(SpaceIterator item, (String)=>boolean indexExists)
+	private def List<ItemIndexDefinition> createIndexDefinitions(SpaceIterator item, (String)=>boolean indexExists)
 	{
 		//println("[" + item.name + "] Recherche des indices")
 		// Only one instance with the same index name.

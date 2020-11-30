@@ -85,7 +85,7 @@ class IrArgOrVarFactory
 					// Variable copy for SetUpTL job
 					// if x^{n+1, k=0} exists, x^{n+1, k} = x^{n+1, k=0}
 					// else x^{n+1, k} = x^{n}
-					val tiSetUpJob = tlJobs.findFirst[name == ti.setUpTimeLoopJobName] as TimeLoopJob
+					val tiSetUpJob = tlJobs.findFirst[name == ti.setUpTimeLoopJobName]
 					if (tiSetUpJob !== null)
 					{
 						if (initTiVar !== null)
@@ -99,12 +99,12 @@ class IrArgOrVarFactory
 
 					// Variable copy for ExecuteTL job
 					// x^{n+1, k} <---> x^{n+1, k+1}
-					val tiExecuteJob = tlJobs.findFirst[name == ti.executeTimeLoopJobName] as TimeLoopJob
+					val tiExecuteJob = tlJobs.findFirst[name == ti.executeTimeLoopJobName]
 					tiExecuteJob.copies += toIrCopy(nextTiVar, currentTiVar)
 
 					// Variable copy for TearDownTL job
 					// x^{n+1} = x^{n+1, k+1}
-					val tiTearDownJob = tlJobs.findFirst[name == ti.tearDownTimeLoopJobName] as TimeLoopJob
+					val tiTearDownJob = tlJobs.findFirst[name == ti.tearDownTimeLoopJobName]
 					if (tiTearDownJob !== null && parentTi !== null)
 					{
 						val parentNextTiVar = createIrTimeVariable(v, parentTi, nextTimeIteratorName)

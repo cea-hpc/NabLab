@@ -41,7 +41,7 @@ public class LevelDBUtils
 			DBIterator it = db.iterator();
 
 			// Results comparison
-			System.out.println("# Compairing results ...");
+			System.out.println("# Comparing results ...");
 
 			try 
 			{

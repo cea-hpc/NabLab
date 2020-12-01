@@ -47,9 +47,14 @@ class MainContentProvider
 		assert(d.IsObject());
 
 		// Mesh instanciation
-		assert(d.HasMember("mesh"));
 		«meshClassName»Factory meshFactory;
-		meshFactory.jsonInit(d["mesh"]);
+		if (d.HasMember("mesh"))
+		{
+			rapidjson::StringBuffer strbuf;
+			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+			d["mesh"].Accept(writer);
+			meshFactory.jsonInit(strbuf.GetString());
+		}
 		«meshClassName»* mesh = meshFactory.create();
 
 		// Module instanciation(s)
@@ -84,7 +89,13 @@ class MainContentProvider
 	private def getInstanciation(IrModule it)
 	'''
 		«className»::Options «name»Options;
-		if (d.HasMember("«name»")) «name»Options.jsonInit(d["«name»"]);
+		if (d.HasMember("«name»"))
+		{
+			rapidjson::StringBuffer strbuf;
+			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+			d["«name»"].Accept(writer);
+			«name»Options.jsonInit(strbuf.GetString());
+		}
 		«className»* «name» = new «className»(mesh, «name»Options);
 		«IF !main»«name»->setMainModule(«irRoot.mainModule.name»);«ENDIF»
 	'''

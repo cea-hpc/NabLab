@@ -127,7 +127,7 @@ class Ir2Cpp extends CodeGenerator
 			«ENDFOR»
 			«IF levelDB»std::string «Utils.NonRegressionNameAndValue.key»;«ENDIF»
 
-			void jsonInit(const rapidjson::Value& json);
+			void jsonInit(const char* jsonContent);
 		};
 
 		«className»(«meshClassName»* aMesh, Options& aOptions);
@@ -206,6 +206,10 @@ class Ir2Cpp extends CodeGenerator
 	private def getSourceFileContent(IrModule it)
 	'''
 	#include "«irRoot.name.toLowerCase»/«className».h"
+	#include <rapidjson/document.h>
+	#include <rapidjson/istreamwrapper.h>
+	#include <rapidjson/stringbuffer.h>
+	#include <rapidjson/writer.h>
 	«IF main && irRoot.modules.size > 1»
 		«FOR m : irRoot.modules.filter[x | x !== it]»
 			#include "«irRoot.name.toLowerCase»/«m.className».h"
@@ -225,10 +229,13 @@ class Ir2Cpp extends CodeGenerator
 	/******************** Options definition ********************/
 
 	void
-	«className»::Options::jsonInit(const rapidjson::Value& json)
+	«className»::Options::jsonInit(const char* jsonContent)
 	{
-		assert(json.IsObject());
-		const rapidjson::Value::ConstObject& o = json.GetObject();
+		rapidjson::Document document;
+		assert(!document.Parse(jsonContent).HasParseError());
+		assert(document.IsObject());
+		const rapidjson::Value::Object& o = document.GetObject();
+
 		«IF postProcessing !== null»
 		«val opName = Utils.OutputPathNameAndValue.key»
 		// «opName»
@@ -243,7 +250,12 @@ class Ir2Cpp extends CodeGenerator
 		«FOR v : functionProviderClasses»
 		// «v.toFirstLower»
 		if (o.HasMember("«v.toFirstLower»"))
-			«v.toFirstLower».jsonInit(o["«v.toFirstLower»"]);
+		{
+			rapidjson::StringBuffer strbuf;
+			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+			o["«v.toFirstLower»"].Accept(writer);
+			«v.toFirstLower».jsonInit(strbug.GetString());
+		}
 		«ENDFOR»
 		«IF levelDB»
 		// Non regression

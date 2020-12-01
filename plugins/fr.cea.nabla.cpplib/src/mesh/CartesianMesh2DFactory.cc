@@ -8,6 +8,7 @@
  * Contributors: see AUTHORS file
  *******************************************************************************/
 #include "mesh/CartesianMesh2DFactory.h"
+#include <rapidjson/document.h>
 #include "mesh/CartesianMesh2D.h"
 
 namespace nablalib
@@ -24,10 +25,12 @@ namespace nablalib
    */
 
 void
-CartesianMesh2DFactory::jsonInit(const rapidjson::Value& json)
+CartesianMesh2DFactory::jsonInit(const char* jsonContent)
 {
-	assert(json.IsObject());
-	const rapidjson::Value::ConstObject& o = json.GetObject();
+	rapidjson::Document document;
+	assert(!document.Parse(jsonContent).HasParseError());
+	assert(document.IsObject());
+	const rapidjson::Value::Object& o = document.GetObject();
 
 	assert(o.HasMember("nbXQuads"));
 	const rapidjson::Value& valueof_nbXQuads = o["nbXQuads"];

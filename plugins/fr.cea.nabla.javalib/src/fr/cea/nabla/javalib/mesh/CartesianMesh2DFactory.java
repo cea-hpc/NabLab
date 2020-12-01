@@ -11,6 +11,7 @@ package fr.cea.nabla.javalib.mesh;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /* Numbering nodes and cells			Numbering faces
  * 
@@ -40,8 +41,10 @@ public class CartesianMesh2DFactory
 		this.ySize = ySize;
 	}
 
-	public void jsonInit(JsonElement json)
+	public void jsonInit(final String jsonContent)
 	{
+		final JsonParser parser = new JsonParser();
+		final JsonElement json = parser.parse(jsonContent);
 		assert(json.isJsonObject());
 		final JsonObject o = json.getAsJsonObject();
 		assert(o.has("nbXQuads"));

@@ -10,7 +10,6 @@
 #ifndef MESH_CARTESIANMESH2DFACTORY_H_
 #define MESH_CARTESIANMESH2DFACTORY_H_
 
-#include <rapidjson/document.h>
 #include "types/Types.h"
 
 namespace nablalib
@@ -21,7 +20,7 @@ class CartesianMesh2D;
 class CartesianMesh2DFactory
 {
 public:
-	void jsonInit(const rapidjson::Value& json);
+	void jsonInit(const char* jsonContent);
 	CartesianMesh2D* create();
 
 private:

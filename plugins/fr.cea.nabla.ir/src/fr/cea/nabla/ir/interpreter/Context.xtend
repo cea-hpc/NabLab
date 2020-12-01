@@ -10,7 +10,6 @@
 package fr.cea.nabla.ir.interpreter
 
 import com.google.gson.Gson
-import com.google.gson.JsonElement
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityCall
@@ -25,12 +24,6 @@ import java.util.HashMap
 import java.util.logging.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
 
-import static fr.cea.nabla.ir.Utils.FunctionReductionPrefix
-
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.Utils.*
-
 class Context
 {
 	val Context outerContext
@@ -39,8 +32,9 @@ class Context
 	val setValues = new HashMap<String, int[]>
 	val indexValues = new HashMap<ItemIndex, Integer>
 	val idValues = new HashMap<ItemId, Integer>
+	// the pair is composed of [provider instance, method instance]
+	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val HashMap<Function, Pair<Object,Method>> functionToMethod 
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val IrRoot ir
-	@Accessors(PRIVATE_GETTER, PRIVATE_SETTER) val HashMap<Function, Method> functionToMethod
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) CartesianMesh2DMeshWrapper meshWrapper
 
 	new(IrRoot ir, Logger logger)
@@ -49,7 +43,7 @@ class Context
 		this.ir = ir
 		this.logger = logger
 		this.meshWrapper = null
-		this.functionToMethod = new HashMap<Function, Method>
+		this.functionToMethod = new HashMap<Function, Pair<Object,Method>>
 	}
 
 	new(Context outerContext)
@@ -66,9 +60,9 @@ class Context
 		meshWrapper.connectivitySizes
 	}
 
-	def initMesh(Gson gson, JsonElement jsonMesh, Connectivity[] connectivities)
+	def initMesh(Gson gson, String jsonMeshContent, Connectivity[] connectivities)
 	{
-		meshWrapper = new CartesianMesh2DMeshWrapper(gson, jsonMesh)
+		meshWrapper = new CartesianMesh2DMeshWrapper(gson, jsonMeshContent)
 		meshWrapper.init(connectivities)
 	}
 
@@ -256,31 +250,6 @@ class Context
 	def logInfo(String message)
 	{
 		logger.log(Context.Level::INFO, message)
-	}
-
-	def resolveFunction(Function it)
-	{
-		val tccl = Thread.currentThread().getContextClassLoader()
-		val providerClassName = if (provider == "Math") 'java.lang.Math'
-			else irModule.name.toLowerCase + '.' + provider + FunctionReductionPrefix
-		val providerClass = Class.forName(providerClassName, true, tccl)
-		val javaTypes = inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension, linearAlgebra)]
-		try 
-		{
-			val result = providerClass.getDeclaredMethod(name, javaTypes)
-			result.setAccessible(true)
-			functionToMethod.put(it, result)
-		}
-		catch (NoSuchMethodException e)
-		{
-			println("** Method '" + providerClassName + "::" + name + "(" + inArgs.map[type.label + " " + name].join(", ") + ")' not found")
-			throw(e);
-		}
-	}
-
-	def Method getMethod(Function it)
-	{
-		functionToMethod.get(it)
 	}
 
 	static class Level extends java.util.logging.Level

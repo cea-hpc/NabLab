@@ -1,4 +1,8 @@
 #include "iterativeheatequation/IterativeHeatEquation.h"
+#include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 
 using namespace nablalib;
 
@@ -63,10 +67,13 @@ double maxR0(double a, double b)
 /******************** Options definition ********************/
 
 void
-IterativeHeatEquation::Options::jsonInit(const rapidjson::Value& json)
+IterativeHeatEquation::Options::jsonInit(const char* jsonContent)
 {
-	assert(json.IsObject());
-	const rapidjson::Value::ConstObject& o = json.GetObject();
+	rapidjson::Document document;
+	assert(!document.Parse(jsonContent).HasParseError());
+	assert(document.IsObject());
+	const rapidjson::Value::Object& o = document.GetObject();
+
 	// outputPath
 	assert(o.HasMember("outputPath"));
 	const rapidjson::Value& valueof_outputPath = o["outputPath"];
@@ -609,14 +616,25 @@ int main(int argc, char* argv[])
 	assert(d.IsObject());
 	
 	// Mesh instanciation
-	assert(d.HasMember("mesh"));
 	CartesianMesh2DFactory meshFactory;
-	meshFactory.jsonInit(d["mesh"]);
+	if (d.HasMember("mesh"))
+	{
+		rapidjson::StringBuffer strbuf;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		d["mesh"].Accept(writer);
+		meshFactory.jsonInit(strbuf.GetString());
+	}
 	CartesianMesh2D* mesh = meshFactory.create();
 	
 	// Module instanciation(s)
 	IterativeHeatEquation::Options iterativeHeatEquationOptions;
-	if (d.HasMember("iterativeHeatEquation")) iterativeHeatEquationOptions.jsonInit(d["iterativeHeatEquation"]);
+	if (d.HasMember("iterativeHeatEquation"))
+	{
+		rapidjson::StringBuffer strbuf;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		d["iterativeHeatEquation"].Accept(writer);
+		iterativeHeatEquationOptions.jsonInit(strbuf.GetString());
+	}
 	IterativeHeatEquation* iterativeHeatEquation = new IterativeHeatEquation(mesh, iterativeHeatEquationOptions);
 	
 	// Start simulation

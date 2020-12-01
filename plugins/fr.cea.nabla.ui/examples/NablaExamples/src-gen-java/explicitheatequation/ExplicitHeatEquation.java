@@ -31,8 +31,10 @@ public final class ExplicitHeatEquation
 		public int maxIterations;
 		public String nonRegression;
 
-		public void jsonInit(JsonElement json)
+		public void jsonInit(final String jsonContent)
 		{
+			final JsonParser parser = new JsonParser();
+			final JsonElement json = parser.parse(jsonContent);
 			assert(json.isJsonObject());
 			final JsonObject o = json.getAsJsonObject();
 			// outputPath
@@ -503,12 +505,12 @@ public final class ExplicitHeatEquation
 			// Mesh instanciation
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
-			meshFactory.jsonInit(o.get("mesh"));
+			meshFactory.jsonInit(o.get("mesh").toString());
 			CartesianMesh2D mesh = meshFactory.create();
 
 			// Module instanciation(s)
 			ExplicitHeatEquation.Options explicitHeatEquationOptions = new ExplicitHeatEquation.Options();
-			if (o.has("explicitHeatEquation")) explicitHeatEquationOptions.jsonInit(o.get("explicitHeatEquation"));
+			if (o.has("explicitHeatEquation")) explicitHeatEquationOptions.jsonInit(o.get("explicitHeatEquation").toString());
 			ExplicitHeatEquation explicitHeatEquation = new ExplicitHeatEquation(mesh, explicitHeatEquationOptions);
 
 			// Start simulation

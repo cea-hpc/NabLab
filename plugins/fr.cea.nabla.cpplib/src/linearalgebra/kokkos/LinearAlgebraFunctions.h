@@ -10,7 +10,6 @@
 #ifndef LINEARALGEBRA_KOKKOS_LINEARALGEBRAFUNCTIONS_H_
 #define LINEARALGEBRA_KOKKOS_LINEARALGEBRAFUNCTIONS_H_
 
-#include <rapidjson/document.h>
 #include "linearalgebra/kokkos/Matrix.h"
 
 namespace nablalib
@@ -27,7 +26,7 @@ class LinearAlgebraFunctions
   };
   CGInfo m_info;
 
-  void jsonInit(const rapidjson::Value& json) {}
+  void jsonInit(const char* jsonContent) {}
   std::string print(const NablaSparseMatrix& M);
   std::string printMatlabStyle(const NablaSparseMatrix& M, std::string A);
 

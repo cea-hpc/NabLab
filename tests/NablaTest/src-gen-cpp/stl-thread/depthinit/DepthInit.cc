@@ -41,7 +41,7 @@ DepthInit::Options::jsonInit(const rapidjson::Value& json)
 		deltat = 1.0;
 	// depthInitFunctions
 	if (o.HasMember("depthInitFunctions"))
-		depthInitFunctions.jsonInit(o["depthInitFunctions"]);
+		depthInitFunctions.jsonInit(o["depthInitFunctions"].GetString());
 }
 
 /******************** Module definition ********************/

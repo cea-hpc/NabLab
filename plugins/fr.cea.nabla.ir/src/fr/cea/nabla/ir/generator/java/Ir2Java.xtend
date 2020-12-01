@@ -87,8 +87,10 @@ class Ir2Java extends CodeGenerator
 				«ENDFOR»
 				public String «Utils.NonRegressionNameAndValue.key»;
 
-				public void jsonInit(JsonElement json)
+				public void jsonInit(final String jsonContent)
 				{
+					final JsonParser parser = new JsonParser();
+					final JsonElement json = parser.parse(jsonContent);
 					assert(json.isJsonObject());
 					final JsonObject o = json.getAsJsonObject();
 					«IF postProcessing !== null»
@@ -105,7 +107,7 @@ class Ir2Java extends CodeGenerator
 					// «v.toFirstLower»
 					«v.toFirstLower» = new «v»();
 					if (o.has("«v.toFirstLower»"))
-						«v.toFirstLower».jsonInit(o.get("«v.toFirstLower»"));
+						«v.toFirstLower».jsonInit(o.get("«v.toFirstLower»").toString());
 					«ENDFOR»
 					// Non regression
 					«val nrName = Utils.NonRegressionNameAndValue.key»
@@ -209,7 +211,7 @@ class Ir2Java extends CodeGenerator
 					// Mesh instanciation
 					assert(o.has("mesh"));
 					«javaMeshClassName»Factory meshFactory = new «javaMeshClassName»Factory();
-					meshFactory.jsonInit(o.get("mesh"));
+					meshFactory.jsonInit(o.get("mesh").toString());
 					«javaMeshClassName» mesh = meshFactory.create();
 
 					// Module instanciation(s)
@@ -297,7 +299,7 @@ class Ir2Java extends CodeGenerator
 	private def getInstanciation(IrModule it)
 	'''
 		«className».Options «name»Options = new «className».Options();
-		if (o.has("«name»")) «name»Options.jsonInit(o.get("«name»"));
+		if (o.has("«name»")) «name»Options.jsonInit(o.get("«name»").toString());
 		«className» «name» = new «className»(mesh, «name»Options);
 		«IF !main»«name».setMainModule(«irRoot.mainModule.name»);«ENDIF»
 	'''

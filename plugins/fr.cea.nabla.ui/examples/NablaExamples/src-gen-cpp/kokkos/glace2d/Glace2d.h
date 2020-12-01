@@ -7,8 +7,6 @@
 #include <limits>
 #include <utility>
 #include <cmath>
-#include <rapidjson/document.h>
-#include <rapidjson/istreamwrapper.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
 #include "mesh/CartesianMesh2DFactory.h"
@@ -75,7 +73,7 @@ public:
 		double pIniZg;
 		double pIniZd;
 
-		void jsonInit(const rapidjson::Value& json);
+		void jsonInit(const char* jsonContent);
 	};
 
 	Glace2d(CartesianMesh2D* aMesh, Options& aOptions);

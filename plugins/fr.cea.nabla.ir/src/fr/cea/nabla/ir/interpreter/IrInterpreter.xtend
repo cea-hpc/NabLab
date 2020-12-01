@@ -10,30 +10,38 @@
 package fr.cea.nabla.ir.interpreter
 
 import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import fr.cea.nabla.javalib.utils.LevelDBUtils
 import java.io.File
+import java.net.URL
+import java.net.URLClassLoader
 import java.util.logging.Logger
 import java.util.logging.StreamHandler
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.iq80.leveldb.Options
 
+import static fr.cea.nabla.ir.Utils.FunctionReductionPrefix
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 import static org.iq80.leveldb.impl.Iq80DBFactory.bytes
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
+import static extension fr.cea.nabla.ir.IrTypeExtensions.getDimension
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class IrInterpreter
 {
 	public static String ITERATION_VARIABLE_NAME = "InterpreterIteration"
 
+	@Accessors URL[] classloaderUrls
 	@Accessors val Context context
 	val IrRoot ir
 	val PvdFileWriter2D writer
@@ -86,35 +94,16 @@ class IrInterpreter
 
 		// Create mesh and mesh variables
 		if (!jsonObject.has("mesh")) throw new RuntimeException("Mesh block missing in Json")
-		context.initMesh(gson, jsonObject.get("mesh"), ir.connectivities)
+		context.initMesh(gson, jsonObject.get("mesh").toString, ir.connectivities)
+
+		// initialize class loader to finc external functions
+		val tccl = Thread.currentThread().getContextClassLoader()
+		val classLoader = if (classloaderUrls.nullOrEmpty) tccl else new URLClassLoader(classloaderUrls, tccl)
 
 		// Read options in Json
-		val optionsTagName = context.ir.mainModule.name.toFirstLower
-		if (!jsonObject.has(optionsTagName)) throw new RuntimeException("Options block missing in Json")
-		val jsonOptions = jsonObject.get(optionsTagName).asJsonObject
-		for (v : ir.options)
-		{
-			if (jsonOptions.has(v.name))
-			{
-				val vValue = context.getVariableValue(v)
-				val jsonElt = jsonOptions.get(v.name)
-				NablaValueJsonSetter::setValue(vValue, jsonElt)
-			}
-			else
-			{
-				if (v.defaultValue === null)
-				{
-					// v is not present in json file and is mandatory
-					throw new IllegalStateException("Mandatory option missing in Json file: " + v.name)
-				}
-				else
-				{
-					context.setVariableValue(v, interprete(v.defaultValue, context))
-				}
-			}
-		}
-
-		ir.functions.filter[body === null].forEach[f | context.resolveFunction(f)]
+		for (m : context.ir.modules)
+			if (jsonObject.has(m.name))
+				jsonInit(m, jsonObject.get(m.name), classLoader)
 
 		// Interprete variables that are not options
 		for (v : ir.variables.filter[!option])
@@ -128,14 +117,23 @@ class IrInterpreter
 			jobInterpreter.interprete(j, context)
 
 		// Non regression testing
-		val nrName = Utils.NonRegressionNameAndValue.key
-		if (jsonOptions.has(nrName) && (jsonOptions.get(nrName).asString).equals(Utils.NonRegressionValues.CreateReference.toString))
-			createDB(refDBName)
-		if (jsonOptions.has(nrName) && (jsonOptions.get(nrName).asString).equals(Utils.NonRegressionValues.CompareToReference.toString))
+		val mainModuleName = ir.mainModule.name
+		if (jsonObject.has(mainModuleName))
 		{
-			createDB(curDBName)
-			levelDBcompareResult = LevelDBUtils.compareDB(curDBName, refDBName)
-			LevelDBUtils.destroyDB(curDBName)
+			val jsonMainModuleOptions = jsonObject.get(mainModuleName).asJsonObject
+			val nrName = Utils.NonRegressionNameAndValue.key
+			if (jsonMainModuleOptions.has(nrName))
+			{
+				val jsonNrName = jsonMainModuleOptions.get(nrName).asString
+				if (jsonNrName.equals(Utils.NonRegressionValues.CreateReference.toString))
+					createDB(refDBName)
+				if (jsonNrName.equals(Utils.NonRegressionValues.CompareToReference.toString))
+				{
+					createDB(curDBName)
+					levelDBcompareResult = LevelDBUtils.compareDB(curDBName, refDBName)
+					LevelDBUtils.destroyDB(curDBName)
+				}
+			}
 		}
 
 		context.logVariables("At the end")
@@ -154,6 +152,64 @@ class IrInterpreter
 		levelDBcompareResult
 	}
 
+	private def jsonInit(IrModule m, JsonElement jsonElt, ClassLoader classLoader)
+	{
+		val jsonOptions = jsonElt.asJsonObject
+		for (v : m.options)
+		{
+			if (jsonOptions.has(v.name))
+			{
+				val vValue = context.getVariableValue(v)
+				val jsonOpt = jsonOptions.get(v.name)
+				NablaValueJsonSetter::setValue(vValue, jsonOpt)
+			}
+			else
+			{
+				if (v.defaultValue === null)
+				{
+					// v is not present in json file and is mandatory
+					throw new IllegalStateException("Mandatory option missing in Json file: " + v.name)
+				}
+				else
+				{
+					context.setVariableValue(v, interprete(v.defaultValue, context))
+				}
+			}
+		}
+
+		val functionsByProvider = m.functions.filter[body === null].groupBy[provider]
+		for (provider : functionsByProvider.keySet)
+		{
+			var Class<?> providerClass
+			var Object providerInstance
+
+			if (provider == "Math")
+			{
+				providerClass = Class.forName('java.lang.Math', true, classLoader)
+				providerInstance = null // static functions
+			}
+			else
+			{
+				val providerClassName = provider.toLowerCase + '.' + provider + FunctionReductionPrefix
+				providerClass = Class.forName(providerClassName, true, classLoader)
+				providerInstance = providerClass.constructor.newInstance
+				if (jsonOptions.has(providerClass.simpleName.toFirstLower))
+				{
+					val jsonInit = providerClass.getDeclaredMethod("jsonInit", String)
+					jsonInit.invoke(providerInstance, jsonOptions.get(providerClass.simpleName.toFirstLower).toString)
+				}
+			}
+
+			for (function : functionsByProvider.get(provider))
+			{
+				val javaTypes = function.inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension, function.linearAlgebra)]
+				val method = providerClass.getDeclaredMethod(function.name, javaTypes)
+				method.setAccessible(true)
+				context.functionToMethod.put(function, new Pair(providerInstance, method))
+			}
+		}
+	}
+
 	private def createDB(String db_name)
 	{
 		val levelDBOptions = new Options()
@@ -170,7 +226,6 @@ class IrInterpreter
 		{
 			for (v : ir.variables.filter[!option])
 				batch.put(bytes(v.name), context.getVariableValue(v).serialize);
-
 			db.write(batch);
 		}
 		finally

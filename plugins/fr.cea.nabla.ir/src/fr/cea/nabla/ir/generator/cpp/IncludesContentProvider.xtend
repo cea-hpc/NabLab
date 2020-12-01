@@ -50,8 +50,6 @@ abstract class IncludesContentProvider
 		systemIncludes += "limits"
 		systemIncludes += "utility"
 		systemIncludes += "cmath"
-		systemIncludes += "rapidjson/document.h"
-		systemIncludes += "rapidjson/istreamwrapper.h"
 		if (!levelDBPath.nullOrEmpty)
 		{
 			systemIncludes += "leveldb/db.h"

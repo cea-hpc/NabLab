@@ -7,8 +7,6 @@
 #include <limits>
 #include <utility>
 #include <cmath>
-#include <rapidjson/document.h>
-#include <rapidjson/istreamwrapper.h>
 #include <omp.h>
 #include "mesh/CartesianMesh2DFactory.h"
 #include "mesh/CartesianMesh2D.h"
@@ -47,7 +45,7 @@ public:
 		int maxIterations;
 		LinearAlgebraFunctions linearAlgebraFunctions;
 
-		void jsonInit(const rapidjson::Value& json);
+		void jsonInit(const char* jsonContent);
 	};
 
 	ImplicitHeatEquation(CartesianMesh2D* aMesh, Options& aOptions);

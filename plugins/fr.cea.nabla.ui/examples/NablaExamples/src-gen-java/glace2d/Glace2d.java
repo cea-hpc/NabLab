@@ -38,8 +38,10 @@ public final class Glace2d
 		public double pIniZd;
 		public String nonRegression;
 
-		public void jsonInit(JsonElement json)
+		public void jsonInit(final String jsonContent)
 		{
+			final JsonParser parser = new JsonParser();
+			final JsonElement json = parser.parse(jsonContent);
 			assert(json.isJsonObject());
 			final JsonObject o = json.getAsJsonObject();
 			// outputPath
@@ -992,12 +994,12 @@ public final class Glace2d
 			// Mesh instanciation
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
-			meshFactory.jsonInit(o.get("mesh"));
+			meshFactory.jsonInit(o.get("mesh").toString());
 			CartesianMesh2D mesh = meshFactory.create();
 
 			// Module instanciation(s)
 			Glace2d.Options glace2dOptions = new Glace2d.Options();
-			if (o.has("glace2d")) glace2dOptions.jsonInit(o.get("glace2d"));
+			if (o.has("glace2d")) glace2dOptions.jsonInit(o.get("glace2d").toString());
 			Glace2d glace2d = new Glace2d(mesh, glace2dOptions);
 
 			// Start simulation

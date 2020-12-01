@@ -16,11 +16,9 @@ import org.apache.commons.math3.linear.ConjugateGradient;
 import org.apache.commons.math3.linear.IterativeLinearSolver;
 import org.apache.commons.math3.linear.RealVector;
 
-import com.google.gson.JsonElement;
-
 public class LinearAlgebraFunctions 
 {
-	public void jsonInit(JsonElement json) {}
+	public void jsonInit(final String jsonContent) {}
 
 	public Vector solveLinearSystem(Matrix a, Vector b)
 	{

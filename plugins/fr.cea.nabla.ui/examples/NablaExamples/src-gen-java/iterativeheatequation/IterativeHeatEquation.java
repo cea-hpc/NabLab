@@ -33,8 +33,10 @@ public final class IterativeHeatEquation
 		public double epsilon;
 		public String nonRegression;
 
-		public void jsonInit(JsonElement json)
+		public void jsonInit(final String jsonContent)
 		{
+			final JsonParser parser = new JsonParser();
+			final JsonElement json = parser.parse(jsonContent);
 			assert(json.isJsonObject());
 			final JsonObject o = json.getAsJsonObject();
 			// outputPath
@@ -619,12 +621,12 @@ public final class IterativeHeatEquation
 			// Mesh instanciation
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
-			meshFactory.jsonInit(o.get("mesh"));
+			meshFactory.jsonInit(o.get("mesh").toString());
 			CartesianMesh2D mesh = meshFactory.create();
 
 			// Module instanciation(s)
 			IterativeHeatEquation.Options iterativeHeatEquationOptions = new IterativeHeatEquation.Options();
-			if (o.has("iterativeHeatEquation")) iterativeHeatEquationOptions.jsonInit(o.get("iterativeHeatEquation"));
+			if (o.has("iterativeHeatEquation")) iterativeHeatEquationOptions.jsonInit(o.get("iterativeHeatEquation").toString());
 			IterativeHeatEquation iterativeHeatEquation = new IterativeHeatEquation(mesh, iterativeHeatEquationOptions);
 
 			// Start simulation

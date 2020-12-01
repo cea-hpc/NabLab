@@ -34,8 +34,10 @@ public final class ImplicitHeatEquation
 		public LinearAlgebraFunctions linearAlgebraFunctions;
 		public String nonRegression;
 
-		public void jsonInit(JsonElement json)
+		public void jsonInit(final String jsonContent)
 		{
+			final JsonParser parser = new JsonParser();
+			final JsonElement json = parser.parse(jsonContent);
 			assert(json.isJsonObject());
 			final JsonObject o = json.getAsJsonObject();
 			// outputPath
@@ -77,7 +79,7 @@ public final class ImplicitHeatEquation
 			// linearAlgebraFunctions
 			linearAlgebraFunctions = new LinearAlgebraFunctions();
 			if (o.has("linearAlgebraFunctions"))
-				linearAlgebraFunctions.jsonInit(o.get("linearAlgebraFunctions"));
+				linearAlgebraFunctions.jsonInit(o.get("linearAlgebraFunctions").toString());
 			// Non regression
 			if (o.has("nonRegression"))
 			{
@@ -495,12 +497,12 @@ public final class ImplicitHeatEquation
 			// Mesh instanciation
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
-			meshFactory.jsonInit(o.get("mesh"));
+			meshFactory.jsonInit(o.get("mesh").toString());
 			CartesianMesh2D mesh = meshFactory.create();
 
 			// Module instanciation(s)
 			ImplicitHeatEquation.Options implicitHeatEquationOptions = new ImplicitHeatEquation.Options();
-			if (o.has("implicitHeatEquation")) implicitHeatEquationOptions.jsonInit(o.get("implicitHeatEquation"));
+			if (o.has("implicitHeatEquation")) implicitHeatEquationOptions.jsonInit(o.get("implicitHeatEquation").toString());
 			ImplicitHeatEquation implicitHeatEquation = new ImplicitHeatEquation(mesh, implicitHeatEquationOptions);
 
 			// Start simulation

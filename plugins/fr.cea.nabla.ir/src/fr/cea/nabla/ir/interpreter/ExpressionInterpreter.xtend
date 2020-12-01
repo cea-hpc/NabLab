@@ -17,6 +17,7 @@ import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.Cardinality
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.Expression
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.Iterator
@@ -211,9 +212,8 @@ class ExpressionInterpreter
 		if (function.body === null)
 		{
 			// Use method cache instead of resolving on each iteration
-			val method = context.getMethod(function)
 			val javaValues = argValues.map[x|FunctionCallHelper.getJavaValue(x)].toArray
-			val result = method.invoke(null, javaValues)
+			val result = invokeMethod(context, function, javaValues)
 			return FunctionCallHelper.createNablaValue(result)
 		}
 		else
@@ -331,5 +331,13 @@ class ExpressionInterpreter
 			for (j : 0..<a.nbCols)
 				res.get(i).set(j, -a.data.get(i).get(j))
 		return new NV2Real(res)
+	}
+
+	private static def Object invokeMethod(Context context, Function it, Object[] args)
+	{
+		val pair = context.functionToMethod.get(it)
+		val providerInstance = pair.key
+		val method = pair.value
+		return method.invoke(providerInstance, args)
 	}
 }

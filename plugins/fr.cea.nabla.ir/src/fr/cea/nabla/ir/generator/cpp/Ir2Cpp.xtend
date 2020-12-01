@@ -436,7 +436,7 @@ class Ir2Cpp extends CodeGenerator
 		leveldb::Iterator* it = db->NewIterator(leveldb::ReadOptions());
 
 		// Results comparison
-		std::cerr << "# Compairing results ..." << std::endl;
+		std::cerr << "# Comparing results ..." << std::endl;
 		for (it_ref->SeekToFirst(); it_ref->Valid(); it_ref->Next()) {
 			auto key = it_ref->key();
 			std::string value;

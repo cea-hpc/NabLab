@@ -209,13 +209,15 @@ class NablaExamplesTest
 //		println("$3= " + packageName)
 //		println("$4= " + levelDBRef)
 //		println("$5= " + jsonFile)
+//		println("$6= " + moduleName)
 		var pb = new ProcessBuilder("/bin/bash",
 			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeCppNablaExample.sh",
 			outputDir, // output src-gen path
 			cppLibPath, // cpp lib zip	 path
 			packageName,
 			levelDBRef,
-			jsonFile)
+			jsonFile,
+			moduleName)
 		var process = pb.start
 		val exitVal = process.waitFor
 		if (exitVal.equals(0))

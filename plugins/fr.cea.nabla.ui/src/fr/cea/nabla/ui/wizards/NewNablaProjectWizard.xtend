@@ -301,9 +301,9 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 	private def getNablagenModelContent(String nablaModuleName, HashMap<String, IFolder> srcGenFoldersByLanguage)
 	'''
-		nablagen for «nablaModuleName»;
+		Application «nablaModuleName»;
 
-		SimulationVariables
+		MainModule «nablaModuleName» «nablaModuleName.toFirstLower»
 		{
 			meshClassName = "CartesianMesh2D";
 			nodeCoord = X;
@@ -315,8 +315,8 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 		VtkOutput
 		{
-			periodReferenceVariable = n;
-			outputVariables = e as "Energy";
+			periodReferenceVariable = «nablaModuleName.toFirstLower».n;
+			outputVariables = «nablaModuleName.toFirstLower».e as "Energy";
 		}
 
 		Java

@@ -1,4 +1,8 @@
 #include "hydroremap/H.h"
+#include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 #include "hydroremap/R1.h"
 #include "hydroremap/R2.h"
 
@@ -7,10 +11,13 @@ using namespace nablalib;
 /******************** Options definition ********************/
 
 void
-H::Options::jsonInit(const rapidjson::Value& json)
+H::Options::jsonInit(const char* jsonContent)
 {
-	assert(json.IsObject());
-	const rapidjson::Value::ConstObject& o = json.GetObject();
+	rapidjson::Document document;
+	assert(!document.Parse(jsonContent).HasParseError());
+	assert(document.IsObject());
+	const rapidjson::Value::Object& o = document.GetObject();
+
 	// maxTime
 	if (o.HasMember("maxTime"))
 	{
@@ -151,21 +158,44 @@ int main(int argc, char* argv[])
 	assert(d.IsObject());
 	
 	// Mesh instanciation
-	assert(d.HasMember("mesh"));
 	CartesianMesh2DFactory meshFactory;
-	meshFactory.jsonInit(d["mesh"]);
+	if (d.HasMember("mesh"))
+	{
+		rapidjson::StringBuffer strbuf;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		d["mesh"].Accept(writer);
+		meshFactory.jsonInit(strbuf.GetString());
+	}
 	CartesianMesh2D* mesh = meshFactory.create();
 	
 	// Module instanciation(s)
 	H::Options hOptions;
-	if (d.HasMember("h")) hOptions.jsonInit(d["h"]);
+	if (d.HasMember("h"))
+	{
+		rapidjson::StringBuffer strbuf;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		d["h"].Accept(writer);
+		hOptions.jsonInit(strbuf.GetString());
+	}
 	H* h = new H(mesh, hOptions);
 	R1::Options r1Options;
-	if (d.HasMember("r1")) r1Options.jsonInit(d["r1"]);
+	if (d.HasMember("r1"))
+	{
+		rapidjson::StringBuffer strbuf;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		d["r1"].Accept(writer);
+		r1Options.jsonInit(strbuf.GetString());
+	}
 	R1* r1 = new R1(mesh, r1Options);
 	r1->setMainModule(h);
 	R2::Options r2Options;
-	if (d.HasMember("r2")) r2Options.jsonInit(d["r2"]);
+	if (d.HasMember("r2"))
+	{
+		rapidjson::StringBuffer strbuf;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		d["r2"].Accept(writer);
+		r2Options.jsonInit(strbuf.GetString());
+	}
 	R2* r2 = new R2(mesh, r2Options);
 	r2->setMainModule(h);
 	

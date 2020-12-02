@@ -7,8 +7,6 @@
 #include <limits>
 #include <utility>
 #include <cmath>
-#include <rapidjson/document.h>
-#include <rapidjson/istreamwrapper.h>
 #include "mesh/CartesianMesh2DFactory.h"
 #include "mesh/CartesianMesh2D.h"
 #include "utils/Utils.h"
@@ -34,7 +32,7 @@ public:
 		double deltat;
 		DepthInitFunctions depthInitFunctions;
 
-		void jsonInit(const rapidjson::Value& json);
+		void jsonInit(const char* jsonContent);
 	};
 
 	DepthInit(CartesianMesh2D* aMesh, Options& aOptions);

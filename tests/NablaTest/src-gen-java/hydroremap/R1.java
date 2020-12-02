@@ -26,8 +26,10 @@ public final class R1
 	{
 		public String nonRegression;
 
-		public void jsonInit(JsonElement json)
+		public void jsonInit(final String jsonContent)
 		{
+			final JsonParser parser = new JsonParser();
+			final JsonElement json = parser.parse(jsonContent);
 			assert(json.isJsonObject());
 			final JsonObject o = json.getAsJsonObject();
 			// Non regression

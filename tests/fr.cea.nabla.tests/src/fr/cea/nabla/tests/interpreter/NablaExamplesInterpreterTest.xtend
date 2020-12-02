@@ -12,10 +12,12 @@ package fr.cea.nabla.tests.interpreter
 import com.google.inject.Inject
 import fr.cea.nabla.ir.Utils.NonRegressionValues
 import fr.cea.nabla.ir.interpreter.IrInterpreter
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.tests.CompilationChainHelper
 import fr.cea.nabla.tests.GitUtils
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
+import java.net.URL
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.logging.FileHandler
@@ -36,6 +38,7 @@ import static fr.cea.nabla.ir.Utils.*
 @InjectWith(NablaInjectorProvider)
 class NablaExamplesInterpreterTest
 {
+	static String wsPath
 	static String testsProjectSubPath
 	static String examplesProjectPath
 	static GitUtils git
@@ -50,7 +53,7 @@ class NablaExamplesInterpreterTest
 		val testProjectPath = System.getProperty("user.dir")
 		testsProjectSubPath = testProjectPath.split('/').reverse.get(1) + '/' + testProjectPath.split('/').reverse.get(0)
 
-		val wsPath = testProjectPath + "/../../"
+		wsPath = testProjectPath + "/../../"
 		val examplesProjectSubPath = "plugins/fr.cea.nabla.ui/examples/NablaExamples/"
 		examplesProjectPath = wsPath + examplesProjectSubPath
 		git = new GitUtils(wsPath)
@@ -127,6 +130,7 @@ class NablaExamplesInterpreterTest
 		handler.setFormatter(formatter)
 		handler.level = Level::FINE
 		val irInterpreter = new IrInterpreter(ir, handler)
+		irInterpreter.classloaderUrls = getClassLoaderUrls(ir, moduleName)
 		irInterpreter.interprete(jsonContent)
 		handler.close
 
@@ -137,5 +141,18 @@ class NablaExamplesInterpreterTest
 	private def testNoGitDiff(String moduleName)
 	{
 		Assert.assertTrue(git.noGitDiff(testsProjectSubPath, moduleName))
+	}
+
+	private def URL[] getClassLoaderUrls(IrRoot it, String moduleName)
+	{
+		if (moduleName == "ImplicitHeatEquation")
+		{
+			// apache and javaLib for linear algebra
+			val linearAlgebraFunctionsPath = wsPath + "tests/fr.cea.nabla.tests/bin/"
+			val classPath = #[linearAlgebraFunctionsPath]
+			return classPath.map[x | new URL("file://" + x)]
+		}
+		else
+			return null
 	}
 }

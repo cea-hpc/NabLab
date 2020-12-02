@@ -190,7 +190,8 @@ class IrInterpreter
 			}
 			else
 			{
-				val providerClassName = provider.toLowerCase + '.' + provider + FunctionReductionPrefix
+				val providerClassName = if (provider == "LinearAlgebra") "fr.cea.nabla.javalib.types.LinearAlgebraFunctions"
+					else m.name.toLowerCase + '.' + provider + FunctionReductionPrefix
 				providerClass = Class.forName(providerClassName, true, classLoader)
 				providerInstance = providerClass.constructor.newInstance
 				if (jsonOptions.has(providerClass.simpleName.toFirstLower))

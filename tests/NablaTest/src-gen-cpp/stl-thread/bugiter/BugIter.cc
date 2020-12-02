@@ -1,14 +1,21 @@
 #include "bugiter/BugIter.h"
+#include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 
 using namespace nablalib;
 
 /******************** Options definition ********************/
 
 void
-BugIter::Options::jsonInit(const rapidjson::Value& json)
+BugIter::Options::jsonInit(const char* jsonContent)
 {
-	assert(json.IsObject());
-	const rapidjson::Value::ConstObject& o = json.GetObject();
+	rapidjson::Document document;
+	assert(!document.Parse(jsonContent).HasParseError());
+	assert(document.IsObject());
+	const rapidjson::Value::Object& o = document.GetObject();
+
 	// maxTime
 	if (o.HasMember("maxTime"))
 	{
@@ -404,14 +411,25 @@ int main(int argc, char* argv[])
 	assert(d.IsObject());
 	
 	// Mesh instanciation
-	assert(d.HasMember("mesh"));
 	CartesianMesh2DFactory meshFactory;
-	meshFactory.jsonInit(d["mesh"]);
+	if (d.HasMember("mesh"))
+	{
+		rapidjson::StringBuffer strbuf;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		d["mesh"].Accept(writer);
+		meshFactory.jsonInit(strbuf.GetString());
+	}
 	CartesianMesh2D* mesh = meshFactory.create();
 	
 	// Module instanciation(s)
 	BugIter::Options bugIterOptions;
-	if (d.HasMember("bugIter")) bugIterOptions.jsonInit(d["bugIter"]);
+	if (d.HasMember("bugIter"))
+	{
+		rapidjson::StringBuffer strbuf;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		d["bugIter"].Accept(writer);
+		bugIterOptions.jsonInit(strbuf.GetString());
+	}
 	BugIter* bugIter = new BugIter(mesh, bugIterOptions);
 	
 	// Start simulation

@@ -1,14 +1,21 @@
 #include "hydroremap/R2.h"
+#include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 
 using namespace nablalib;
 
 /******************** Options definition ********************/
 
 void
-R2::Options::jsonInit(const rapidjson::Value& json)
+R2::Options::jsonInit(const char* jsonContent)
 {
-	assert(json.IsObject());
-	const rapidjson::Value::ConstObject& o = json.GetObject();
+	rapidjson::Document document;
+	assert(!document.Parse(jsonContent).HasParseError());
+	assert(document.IsObject());
+	const rapidjson::Value::Object& o = document.GetObject();
+
 }
 
 /******************** Module definition ********************/

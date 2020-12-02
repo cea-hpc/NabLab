@@ -30,8 +30,10 @@ public final class DepthInit
 		public DepthInitFunctions depthInitFunctions;
 		public String nonRegression;
 
-		public void jsonInit(JsonElement json)
+		public void jsonInit(final String jsonContent)
 		{
+			final JsonParser parser = new JsonParser();
+			final JsonElement json = parser.parse(jsonContent);
 			assert(json.isJsonObject());
 			final JsonObject o = json.getAsJsonObject();
 			// maxTime
@@ -64,7 +66,7 @@ public final class DepthInit
 			// depthInitFunctions
 			depthInitFunctions = new DepthInitFunctions();
 			if (o.has("depthInitFunctions"))
-				depthInitFunctions.jsonInit(o.get("depthInitFunctions"));
+				depthInitFunctions.jsonInit(o.get("depthInitFunctions").toString());
 			// Non regression
 			if (o.has("nonRegression"))
 			{
@@ -144,12 +146,12 @@ public final class DepthInit
 			// Mesh instanciation
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
-			meshFactory.jsonInit(o.get("mesh"));
+			meshFactory.jsonInit(o.get("mesh").toString());
 			CartesianMesh2D mesh = meshFactory.create();
 
 			// Module instanciation(s)
 			DepthInit.Options depthInitOptions = new DepthInit.Options();
-			if (o.has("depthInit")) depthInitOptions.jsonInit(o.get("depthInit"));
+			if (o.has("depthInit")) depthInitOptions.jsonInit(o.get("depthInit").toString());
 			DepthInit depthInit = new DepthInit(mesh, depthInitOptions);
 
 			// Start simulation

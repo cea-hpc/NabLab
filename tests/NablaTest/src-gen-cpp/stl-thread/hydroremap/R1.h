@@ -7,8 +7,6 @@
 #include <limits>
 #include <utility>
 #include <cmath>
-#include <rapidjson/document.h>
-#include <rapidjson/istreamwrapper.h>
 #include "mesh/CartesianMesh2DFactory.h"
 #include "mesh/CartesianMesh2D.h"
 #include "utils/Utils.h"
@@ -27,7 +25,7 @@ public:
 	struct Options
 	{
 
-		void jsonInit(const rapidjson::Value& json);
+		void jsonInit(const char* jsonContent);
 	};
 
 	R1(CartesianMesh2D* aMesh, Options& aOptions);

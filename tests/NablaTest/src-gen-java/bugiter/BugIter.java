@@ -31,8 +31,10 @@ public final class BugIter
 		public double deltat;
 		public String nonRegression;
 
-		public void jsonInit(JsonElement json)
+		public void jsonInit(final String jsonContent)
 		{
+			final JsonParser parser = new JsonParser();
+			final JsonElement json = parser.parse(jsonContent);
 			assert(json.isJsonObject());
 			final JsonObject o = json.getAsJsonObject();
 			// maxTime
@@ -445,12 +447,12 @@ public final class BugIter
 			// Mesh instanciation
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
-			meshFactory.jsonInit(o.get("mesh"));
+			meshFactory.jsonInit(o.get("mesh").toString());
 			CartesianMesh2D mesh = meshFactory.create();
 
 			// Module instanciation(s)
 			BugIter.Options bugIterOptions = new BugIter.Options();
-			if (o.has("bugIter")) bugIterOptions.jsonInit(o.get("bugIter"));
+			if (o.has("bugIter")) bugIterOptions.jsonInit(o.get("bugIter").toString());
 			BugIter bugIter = new BugIter(mesh, bugIterOptions);
 
 			// Start simulation

@@ -1,13 +1,19 @@
+#include <iostream>
 #include <string>
 #include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 
 class DepthInitFunctions
 {
 public:
-	void jsonInit(const rapidjson::Value& json)
+	void jsonInit(const char* jsonContent)
 	{
-		assert(json.IsObject());
-		const rapidjson::Value::ConstObject& o = json.GetObject();
+		rapidjson::Document document;
+		assert(!document.Parse(jsonContent).HasParseError());
+		assert(document.IsObject());
+		const rapidjson::Value::Object& o = document.GetObject();
 
 		if (o.HasMember("depth"))
 		{

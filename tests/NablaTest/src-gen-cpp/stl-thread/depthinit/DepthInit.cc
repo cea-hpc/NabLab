@@ -1,4 +1,8 @@
 #include "depthinit/DepthInit.h"
+#include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 
 using namespace nablalib;
 
@@ -8,10 +12,13 @@ using namespace nablalib;
 /******************** Options definition ********************/
 
 void
-DepthInit::Options::jsonInit(const rapidjson::Value& json)
+DepthInit::Options::jsonInit(const char* jsonContent)
 {
-	assert(json.IsObject());
-	const rapidjson::Value::ConstObject& o = json.GetObject();
+	rapidjson::Document document;
+	assert(!document.Parse(jsonContent).HasParseError());
+	assert(document.IsObject());
+	const rapidjson::Value::Object& o = document.GetObject();
+
 	// maxTime
 	if (o.HasMember("maxTime"))
 	{
@@ -41,7 +48,12 @@ DepthInit::Options::jsonInit(const rapidjson::Value& json)
 		deltat = 1.0;
 	// depthInitFunctions
 	if (o.HasMember("depthInitFunctions"))
-		depthInitFunctions.jsonInit(o["depthInitFunctions"].GetString());
+	{
+		rapidjson::StringBuffer strbuf;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		o["depthInitFunctions"].Accept(writer);
+		depthInitFunctions.jsonInit(strbuf.GetString());
+	}
 }
 
 /******************** Module definition ********************/
@@ -117,14 +129,25 @@ int main(int argc, char* argv[])
 	assert(d.IsObject());
 	
 	// Mesh instanciation
-	assert(d.HasMember("mesh"));
 	CartesianMesh2DFactory meshFactory;
-	meshFactory.jsonInit(d["mesh"]);
+	if (d.HasMember("mesh"))
+	{
+		rapidjson::StringBuffer strbuf;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		d["mesh"].Accept(writer);
+		meshFactory.jsonInit(strbuf.GetString());
+	}
 	CartesianMesh2D* mesh = meshFactory.create();
 	
 	// Module instanciation(s)
 	DepthInit::Options depthInitOptions;
-	if (d.HasMember("depthInit")) depthInitOptions.jsonInit(d["depthInit"]);
+	if (d.HasMember("depthInit"))
+	{
+		rapidjson::StringBuffer strbuf;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		d["depthInit"].Accept(writer);
+		depthInitOptions.jsonInit(strbuf.GetString());
+	}
 	DepthInit* depthInit = new DepthInit(mesh, depthInitOptions);
 	
 	// Start simulation

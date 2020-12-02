@@ -1,14 +1,21 @@
 #include "test/Test.h"
+#include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 
 using namespace nablalib;
 
 /******************** Options definition ********************/
 
 void
-Test::Options::jsonInit(const rapidjson::Value& json)
+Test::Options::jsonInit(const char* jsonContent)
 {
-	assert(json.IsObject());
-	const rapidjson::Value::ConstObject& o = json.GetObject();
+	rapidjson::Document document;
+	assert(!document.Parse(jsonContent).HasParseError());
+	assert(document.IsObject());
+	const rapidjson::Value::Object& o = document.GetObject();
+
 	// maxTime
 	if (o.HasMember("maxTime"))
 	{
@@ -315,14 +322,25 @@ int main(int argc, char* argv[])
 	assert(d.IsObject());
 	
 	// Mesh instanciation
-	assert(d.HasMember("mesh"));
 	CartesianMesh2DFactory meshFactory;
-	meshFactory.jsonInit(d["mesh"]);
+	if (d.HasMember("mesh"))
+	{
+		rapidjson::StringBuffer strbuf;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		d["mesh"].Accept(writer);
+		meshFactory.jsonInit(strbuf.GetString());
+	}
 	CartesianMesh2D* mesh = meshFactory.create();
 	
 	// Module instanciation(s)
 	Test::Options testOptions;
-	if (d.HasMember("test")) testOptions.jsonInit(d["test"]);
+	if (d.HasMember("test"))
+	{
+		rapidjson::StringBuffer strbuf;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		d["test"].Accept(writer);
+		testOptions.jsonInit(strbuf.GetString());
+	}
 	Test* test = new Test(mesh, testOptions);
 	
 	// Start simulation

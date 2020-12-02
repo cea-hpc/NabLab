@@ -29,8 +29,10 @@ public final class H
 		public double deltat;
 		public String nonRegression;
 
-		public void jsonInit(JsonElement json)
+		public void jsonInit(final String jsonContent)
 		{
+			final JsonParser parser = new JsonParser();
+			final JsonElement json = parser.parse(jsonContent);
 			assert(json.isJsonObject());
 			final JsonObject o = json.getAsJsonObject();
 			// maxTime
@@ -187,19 +189,19 @@ public final class H
 			// Mesh instanciation
 			assert(o.has("mesh"));
 			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
-			meshFactory.jsonInit(o.get("mesh"));
+			meshFactory.jsonInit(o.get("mesh").toString());
 			CartesianMesh2D mesh = meshFactory.create();
 
 			// Module instanciation(s)
 			H.Options hOptions = new H.Options();
-			if (o.has("h")) hOptions.jsonInit(o.get("h"));
+			if (o.has("h")) hOptions.jsonInit(o.get("h").toString());
 			H h = new H(mesh, hOptions);
 			R1.Options r1Options = new R1.Options();
-			if (o.has("r1")) r1Options.jsonInit(o.get("r1"));
+			if (o.has("r1")) r1Options.jsonInit(o.get("r1").toString());
 			R1 r1 = new R1(mesh, r1Options);
 			r1.setMainModule(h);
 			R2.Options r2Options = new R2.Options();
-			if (o.has("r2")) r2Options.jsonInit(o.get("r2"));
+			if (o.has("r2")) r2Options.jsonInit(o.get("r2").toString());
 			R2 r2 = new R2(mesh, r2Options);
 			r2.setMainModule(h);
 

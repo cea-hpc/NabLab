@@ -254,7 +254,7 @@ class Ir2Cpp extends CodeGenerator
 			rapidjson::StringBuffer strbuf;
 			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
 			o["«v.toFirstLower»"].Accept(writer);
-			«v.toFirstLower».jsonInit(strbug.GetString());
+			«v.toFirstLower».jsonInit(strbuf.GetString());
 		}
 		«ENDFOR»
 		«IF levelDB»

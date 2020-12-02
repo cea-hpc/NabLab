@@ -111,7 +111,7 @@ ImplicitHeatEquation::Options::jsonInit(const char* jsonContent)
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
 		o["linearAlgebraFunctions"].Accept(writer);
-		linearAlgebraFunctions.jsonInit(strbug.GetString());
+		linearAlgebraFunctions.jsonInit(strbuf.GetString());
 	}
 }
 

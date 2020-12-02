@@ -1,7 +1,5 @@
 module BugIter;
 
-with Math.*;
-
 itemtypes { cell, node }
 
 connectivity cells: → {cell};

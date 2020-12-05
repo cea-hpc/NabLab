@@ -16,7 +16,11 @@ import "http://www.cea.fr/nabla/Nabla" as nabla
 
 generate nablagen "http://www.cea.fr/nabla/Nablagen"
 
-NablagenRoot:
+NablagenRoot: Application | LibraryProvider;
+
+/***** Application ***********************************************************/
+
+Application:
 	(writeIR?='[WriteIr]')?
 	'Application' name=ID ';'
 	mainModule = MainModule
@@ -64,49 +68,25 @@ LevelDB:
 		'levelDBPath' '=' levelDBPath = STRING ';'
 	'}';
 
-Target: Java | Cpp;
-Cpp: CppSequential | CppStlThread | CppOpenMP | CppKokkos | CppKokkosTeamThread;
-
-Java: 'Java'
+Target: type=TargetType
 '{'
 	'outputPath' '=' outputDir=STRING ';'
+	variables+=TargetVar*
 '}';
 
-CppSequential: 'CppSequential'
+TargetVar:
+	key=ID '=' value=STRING ';';
+
+enum TargetType: Java | CppSequential | StlThread | OpenMP | Kokkos | KokkosTeamThread;
+
+
+/****** Library Provider *****************************************************/
+
+LibraryProvider: 'Provider' name=ID ':' library=[nabla::NablaModule]
 '{'
-	'outputPath' '=' outputDir=STRING ';'
-	'compiler' '=' compiler=CppCompiler ';'
-	('compilerPath' '=' compilerPath = STRING ';')?
+	'targets' '=' targets+=TargetType (',' targets+=TargetType)* ';'
+	'facadeClass' '=' facadeClass = STRING ';'
+	'libHome' '=' libHome=STRING ';' // includes in libHome/includes, libs in libHome/libs
+	'libName' '=' libName=ID ';'
 '}';
 
-CppStlThread: 'StlThread'
-'{'
-	'outputPath' '=' outputDir=STRING ';'
-	'compiler' '=' compiler=CppCompiler ';'
-	('compilerPath' '=' compilerPath = STRING ';')?
-'}';
-
-CppOpenMP: 'OpenMP'
-'{'
-	'outputPath' '=' outputDir=STRING ';'
-	'compiler' '=' compiler=CppCompiler ';'
-	('compilerPath' '=' compilerPath = STRING ';')?
-'}';
-
-CppKokkos: 'Kokkos'
-'{'
-	'outputPath' '=' outputDir=STRING ';'
-	'kokkosPath' '=' kokkosPath = STRING ';'
-	'compiler' '=' compiler=CppCompiler ';'
-	('compilerPath' '=' compilerPath = STRING ';')?
-'}';
-
-CppKokkosTeamThread: 'KokkosTeamThread'
-'{'
-	'outputPath' '=' outputDir=STRING ';'
-	'kokkosPath' '=' kokkosPath = STRING ';'
-	'compiler' '=' compiler=CppCompiler ';'
-	('compilerPath' '=' compilerPath = STRING ';')?
-'}';
-
-enum CppCompiler: GNU | LLVM;

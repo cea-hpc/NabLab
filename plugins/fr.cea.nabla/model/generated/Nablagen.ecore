@@ -2,8 +2,10 @@
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="nablagen" nsURI="http://www.cea.fr/nabla/Nablagen" nsPrefix="nablagen">
   <eClassifiers xsi:type="ecore:EClass" name="NablagenRoot">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="writeIR" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Application" eSuperTypes="#//NablagenRoot">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="writeIR" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="mainModule" eType="#//MainModule"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="additionalModules" upperBound="-1"
@@ -53,24 +55,29 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="levelDBPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Target">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//TargetType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputDir" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
+        eType="#//TargetVar" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Cpp" eSuperTypes="#//Target">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="compiler" eType="#//CppCompiler"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="compilerPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eClassifiers xsi:type="ecore:EClass" name="TargetVar">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Java" eSuperTypes="#//Target"/>
-  <eClassifiers xsi:type="ecore:EClass" name="CppSequential" eSuperTypes="#//Cpp"/>
-  <eClassifiers xsi:type="ecore:EClass" name="CppStlThread" eSuperTypes="#//Cpp"/>
-  <eClassifiers xsi:type="ecore:EClass" name="CppOpenMP" eSuperTypes="#//Cpp"/>
-  <eClassifiers xsi:type="ecore:EClass" name="CppKokkos" eSuperTypes="#//Cpp">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kokkosPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eClassifiers xsi:type="ecore:EEnum" name="TargetType">
+    <eLiterals name="Java" literal="Java"/>
+    <eLiterals name="CppSequential" value="1" literal="CppSequential"/>
+    <eLiterals name="StlThread" value="2" literal="StlThread"/>
+    <eLiterals name="OpenMP" value="3" literal="OpenMP"/>
+    <eLiterals name="Kokkos" value="4" literal="Kokkos"/>
+    <eLiterals name="KokkosTeamThread" value="5" literal="KokkosTeamThread"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="CppKokkosTeamThread" eSuperTypes="#//Cpp">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kokkosPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="CppCompiler">
-    <eLiterals name="GNU" literal="GNU"/>
-    <eLiterals name="LLVM" value="1" literal="LLVM"/>
+  <eClassifiers xsi:type="ecore:EClass" name="LibraryProvider" eSuperTypes="#//NablagenRoot">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="library" eType="ecore:EClass Nabla.ecore#//NablaModule"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targets" unique="false"
+        upperBound="-1" eType="#//TargetType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="facadeClass" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="libHome" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="libName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
 </ecore:EPackage>

@@ -29,15 +29,8 @@ import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nablagen.Cpp
-import fr.cea.nabla.nablagen.CppKokkos
-import fr.cea.nabla.nablagen.CppKokkosTeamThread
-import fr.cea.nabla.nablagen.CppOpenMP
-import fr.cea.nabla.nablagen.CppSequential
-import fr.cea.nabla.nablagen.CppStlThread
-import fr.cea.nabla.nablagen.Java
+import fr.cea.nabla.nablagen.Application
 import fr.cea.nabla.nablagen.LevelDB
-import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.nablagen.Target
 import java.io.File
 import java.util.ArrayList
@@ -63,7 +56,7 @@ class NablagenInterpreter
 
 	@Accessors val traceListeners = new ArrayList<(String)=>void>
 
-	def IrRoot buildIr(NablagenRoot ngen, String projectDir)
+	def IrRoot buildIr(Application ngen, String projectDir)
 	{
 		try
 		{
@@ -198,24 +191,23 @@ class NablagenInterpreter
 	{
 		val levelDBPath = if (levelDB === null) null else levelDB.levelDBPath
 
-		switch it
+		switch type
 		{
-			Java: return new Ir2Java
-			Cpp:
-			{
-				val backend = switch it
-				{
-					CppSequential: new SequentialBackend(iterationMax, timeMax, compiler.literal, compilerPath, levelDBPath)
-					CppStlThread: new StlThreadBackend(iterationMax , timeMax, compiler.literal, compilerPath, levelDBPath)
-					CppOpenMP:new OpenMpBackend(iterationMax , timeMax, compiler.literal, compilerPath, levelDBPath)
-					CppKokkos: new KokkosBackend(iterationMax , timeMax, compiler.literal, compilerPath, kokkosPath, levelDBPath)
-					CppKokkosTeamThread: new KokkosTeamThreadBackend(iterationMax , timeMax, compiler.literal, compilerPath, kokkosPath, levelDBPath)
-					default: throw new RuntimeException("Unsupported language " + class.name)
-				}
-				return new Ir2Cpp(new File(baseDir + outputDir), backend)
-			}
-			default : throw new RuntimeException("Unsupported language " + class.name)
+			case JAVA: return new Ir2Java
+			case CPP_SEQUENTIAL: new Ir2Cpp(new File(baseDir + outputDir), new SequentialBackend(iterationMax, timeMax, levelDBPath, vars))
+			case STL_THREAD: new Ir2Cpp(new File(baseDir + outputDir), new StlThreadBackend(iterationMax , timeMax, levelDBPath, vars))
+			case OPEN_MP: new Ir2Cpp(new File(baseDir + outputDir), new OpenMpBackend(iterationMax , timeMax, levelDBPath, vars))
+			case KOKKOS: new Ir2Cpp(new File(baseDir + outputDir), new KokkosBackend(iterationMax , timeMax, levelDBPath, vars))
+			case KOKKOS_TEAM_THREAD: new Ir2Cpp(new File(baseDir + outputDir), new KokkosTeamThreadBackend(iterationMax , timeMax, levelDBPath, vars))
+			default: throw new RuntimeException("Unsupported language " + class.name)
 		}
+	}
+
+	private def getVars(Target it)
+	{
+		val result = new HashMap<String, String>
+		variables.forEach[x | result.put(x.key, x.value)]
+		return result
 	}
 
 	private def getCommonIrTransformation()

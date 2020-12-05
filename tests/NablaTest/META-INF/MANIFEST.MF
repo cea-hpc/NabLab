@@ -10,6 +10,7 @@ Export-Package: test
 Require-Bundle: fr.cea.nabla,
  fr.cea.nabla.ir,
  fr.cea.nabla.javalib,
+ WaveHeight,
  org.eclipse.xtext.xbase.lib,
  com.google.gson,
  leveldb;bundle-version="0.13.0"

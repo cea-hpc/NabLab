@@ -12,7 +12,6 @@
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
-#include "depthinit/DepthInitFunctions.h"
 #include "utils/stl/Parallel.h"
 
 using namespace nablalib;
@@ -30,7 +29,7 @@ public:
 		double maxTime;
 		int maxIter;
 		double deltat;
-		DepthInitFunctions depthInitFunctions;
+		WaveHeightFunctions waveHeightFunctions;
 
 		void jsonInit(const char* jsonContent);
 	};

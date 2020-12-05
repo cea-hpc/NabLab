@@ -15,7 +15,7 @@ import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.NablagenInterpreter
 import fr.cea.nabla.ir.Utils
-import fr.cea.nabla.nablagen.NablagenRoot
+import fr.cea.nabla.nablagen.Application
 import fr.cea.nabla.ui.NabLabConsoleFactory
 import org.eclipse.core.resources.IResource
 import org.eclipse.emf.common.util.URI
@@ -50,7 +50,7 @@ class NablagenRunner
 				val emfResource = resourceSet.createResource(plaftormUri)
 				EcoreUtil::resolveAll(resourceSet)
 				emfResource.load(null)
-				for (ngen : emfResource.contents.filter(NablagenRoot))
+				for (ngen : emfResource.contents.filter(Application))
 				{
 					val baseDir = eclipseResource.project.location.toString
 					consoleFactory.printConsole(MessageType.Exec, "Starting NabLab to IR model transformation")

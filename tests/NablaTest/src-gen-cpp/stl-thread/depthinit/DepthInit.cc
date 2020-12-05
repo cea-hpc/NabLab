@@ -46,13 +46,13 @@ DepthInit::Options::jsonInit(const char* jsonContent)
 	}
 	else
 		deltat = 1.0;
-	// depthInitFunctions
-	if (o.HasMember("depthInitFunctions"))
+	// waveHeightFunctions
+	if (o.HasMember("waveHeightFunctions"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		o["depthInitFunctions"].Accept(writer);
-		depthInitFunctions.jsonInit(strbuf.GetString());
+		o["waveHeightFunctions"].Accept(writer);
+		waveHeightFunctions.jsonInit(strbuf.GetString());
 	}
 }
 
@@ -88,7 +88,7 @@ void DepthInit::initFromFile() noexcept
 {
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
-		eta[jCells] = options.depthInitFunctions.nextWaveHeight();
+		eta[jCells] = options.waveHeightFunctions.nextWaveHeight();
 	}
 }
 

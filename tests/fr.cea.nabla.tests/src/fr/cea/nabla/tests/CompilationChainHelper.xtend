@@ -18,6 +18,7 @@ import fr.cea.nabla.ir.interpreter.IrInterpreter
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nablagen.Application
 import fr.cea.nabla.nablagen.NablagenRoot
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -80,7 +81,7 @@ class CompilationChainHelper
 		val ngen = nablagenParseHelper.parse(genModel, rs)
 		ngen.assertNoErrors
 
-		return ngen
+		return ngen as Application
 	}
 
 	def getInterpreterContext(IrRoot ir, String jsonContent)

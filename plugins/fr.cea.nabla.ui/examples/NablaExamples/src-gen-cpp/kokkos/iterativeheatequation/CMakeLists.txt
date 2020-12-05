@@ -4,6 +4,7 @@
 
 cmake_minimum_required(VERSION 3.10)
 
+set(NABLA_KOKKOS_PATH $ENV{HOME}/kokkos/kokkos-install)
 set(NABLA_CXX_COMPILER /usr/bin/g++)
 
 set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
@@ -21,7 +22,6 @@ endif()
 project(IterativeHeatEquationProject CXX)
 
 set(LIBCPPNABLA_BACKEND "KOKKOS")
-set(NABLA_KOKKOS_PATH $ENV{HOME}/kokkos/kokkos-install)
 add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
 
 

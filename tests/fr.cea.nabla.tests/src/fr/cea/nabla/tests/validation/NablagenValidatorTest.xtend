@@ -136,7 +136,7 @@ class NablagenValidatorTest
 		val koNgenModel = ngenModel.concat('OpenMP
 			{
 				outputPath = "/tmp";
-				compiler = GNU;
+				NABLA_CXX_COMPILER = "/usr/bin/g++";
 			}')
 
 		val okNgenModel = koNgenModel.replace("timeStep = δt;", "timeStep = δt;

@@ -1,11 +1,11 @@
 module DepthInit;
 
+with WaveHeight.*;
+
 itemtypes { cell, node }
 
 connectivity cells: → {cell};
 connectivity nodes: → {node};
-
-def nextWaveHeight: → ℝ;
 
 let ℝ t = 0.0;
 

@@ -10,15 +10,15 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.IrRoot
+import java.util.HashMap
 
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 abstract class Ir2Cmake
 {
-	protected String compiler
-	protected String compilerPath
 	protected String levelDBPath
+	protected HashMap<String, String> variables
 
 	abstract def CharSequence getLibraryBackend(IrRoot ir)
 	abstract def Iterable<String> getTargetLinkLibraries(IrRoot ir)
@@ -31,7 +31,9 @@ abstract class Ir2Cmake
 
 		cmake_minimum_required(VERSION 3.10)
 
-		set(NABLA_CXX_COMPILER «getCompilerPath(compiler, compilerPath)»)
+		«FOR entry : variables.entrySet»
+		set(«entry.key» «entry.value»)
+		«ENDFOR»
 
 		set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
 
@@ -69,26 +71,14 @@ abstract class Ir2Cmake
 		  include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 		endif()
 	'''
-
-	private def getCompilerPath(String compiler, String compilerPath)
-	{
-		if (compilerPath.nullOrEmpty)
-			if (compiler == "GNU")
-				"/usr/bin/g++"
-			else // (compiler == "LLVM")
-				"/usr/bin/clang++"
-		else
-			compilerPath
-	}
 }
 
 class StlIr2Cmake extends Ir2Cmake
 {
-	new(String compiler, String compilerPath, String levelDBPath)
+	new(String levelDBPath, HashMap<String, String> variables)
 	{
-		this.compiler = compiler
-		this.compilerPath = compilerPath
 		this.levelDBPath = levelDBPath
+		this.variables = variables
 	}
 
 	override getLibraryBackend(IrRoot ir)
@@ -102,20 +92,15 @@ class StlIr2Cmake extends Ir2Cmake
 
 class KokkosIr2Cmake extends Ir2Cmake
 {
-	val String kokkosPath
-
-	new(String compiler, String compilerPath, String kokkosPath, String levelDBPath)
+	new(String levelDBPath, HashMap<String, String> variables)
 	{
-		this.kokkosPath = kokkosPath
-		this.compiler = compiler
-		this.compilerPath = compilerPath
 		this.levelDBPath = levelDBPath
+		this.variables = variables
 	}
 
 	override getLibraryBackend(IrRoot ir)
 	'''
 		set(LIBCPPNABLA_BACKEND "KOKKOS")
-		set(NABLA_KOKKOS_PATH «kokkosPath»)
 	'''
 
 	override getTargetLinkLibraries(IrRoot ir)
@@ -126,11 +111,10 @@ class KokkosIr2Cmake extends Ir2Cmake
 
 class SequentialIr2Cmake extends Ir2Cmake
 {
-	new(String compiler, String compilerPath, String levelDBPath)
+	new(String levelDBPath, HashMap<String, String> variables)
 	{
-		this.compiler = compiler
-		this.compilerPath = compilerPath
 		this.levelDBPath = levelDBPath
+		this.variables = variables
 	}
 
 	override getLibraryBackend(IrRoot ir)
@@ -155,11 +139,10 @@ class SequentialIr2Cmake extends Ir2Cmake
 
 class OpenMpCmake extends Ir2Cmake
 {
-	new(String compiler, String compilerPath, String levelDBPath)
+	new(String levelDBPath, HashMap<String, String> variables)
 	{
-		this.compiler = compiler
-		this.compilerPath = compilerPath
 		this.levelDBPath = levelDBPath
+		this.variables = variables
 	}
 
 	override getLibraryBackend(IrRoot ir)

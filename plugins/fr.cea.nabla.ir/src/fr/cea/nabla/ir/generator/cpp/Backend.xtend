@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.transformers.IrTransformationStep
 import fr.cea.nabla.ir.transformers.ReplaceReductions
+import java.util.HashMap
 import org.eclipse.xtend.lib.annotations.Accessors
 
 abstract class Backend
@@ -33,11 +34,12 @@ abstract class Backend
 
 class SequentialBackend extends Backend
 {
-	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String levelDBPath)
+	/** Expected variables: NABLA_CXX_COMPILER */
+	new(String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
 	{
 		name = 'Sequential'
 		irTransformationStep = new ReplaceReductions(true)
-		ir2Cmake = new SequentialIr2Cmake(compiler, compilerPath, levelDBPath)
+		ir2Cmake = new SequentialIr2Cmake(levelDBPath, variables)
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new SequentialIncludesContentProvider(levelDBPath)
 		typeContentProvider = new StlTypeContentProvider
@@ -54,10 +56,11 @@ class SequentialBackend extends Backend
 
 class StlThreadBackend extends Backend
 {
-	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String levelDBPath)
+	/** Expected variables: NABLA_CXX_COMPILER */
+	new(String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
 	{
 		name = 'StlThread'
-		ir2Cmake = new StlIr2Cmake(compiler, compilerPath, levelDBPath)
+		ir2Cmake = new StlIr2Cmake(levelDBPath, variables)
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new StlThreadIncludesContentProvider(levelDBPath)
 		typeContentProvider = new StlTypeContentProvider
@@ -74,10 +77,11 @@ class StlThreadBackend extends Backend
 
 class KokkosBackend extends Backend
 {
-	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String kokkosPath, String levelDBPath)
+	/** Expected variables: NABLA_CXX_COMPILER, NABLA_KOKKOS_PATH */
+	new(String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
 	{
 		name = 'Kokkos'
-		ir2Cmake = new KokkosIr2Cmake(compiler, compilerPath, kokkosPath, levelDBPath)
+		ir2Cmake = new KokkosIr2Cmake(levelDBPath, variables)
 		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new KokkosIncludesContentProvider(levelDBPath)
 		typeContentProvider = new KokkosTypeContentProvider
@@ -94,10 +98,11 @@ class KokkosBackend extends Backend
 
 class KokkosTeamThreadBackend extends Backend
 {
-	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String kokkosPath, String levelDBPath)
+	/** Expected variables: NABLA_CXX_COMPILER, NABLA_KOKKOS_PATH */
+	new(String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
 	{
 		name = 'Kokkos Team Thread'
-		ir2Cmake = new KokkosIr2Cmake(compiler, compilerPath, kokkosPath, levelDBPath)
+		ir2Cmake = new KokkosIr2Cmake(levelDBPath, variables)
 		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new KokkosIncludesContentProvider(levelDBPath)
 		typeContentProvider = new KokkosTypeContentProvider
@@ -114,10 +119,11 @@ class KokkosTeamThreadBackend extends Backend
 
 class OpenMpBackend extends Backend
 {
-	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String levelDBPath)
+	/** Expected variables: NABLA_CXX_COMPILER */
+	new(String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
 	{
 		name = 'OpenMP'
-		ir2Cmake = new OpenMpCmake(compiler, compilerPath, levelDBPath)
+		ir2Cmake = new OpenMpCmake(levelDBPath, variables)
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new OpenMpIncludesContentProvider(levelDBPath)
 		typeContentProvider = new StlTypeContentProvider

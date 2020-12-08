@@ -9,11 +9,12 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.PrimitiveType
+
+import static extension fr.cea.nabla.ir.generator.Utils.getInstanceName
 
 class Ir2JavaUtils 
 {
@@ -28,7 +29,7 @@ class Ir2JavaUtils
 				else
 					'Math.' + name
 			}
-			else 'options.' + provider.toFirstLower + Utils::FunctionReductionPrefix + '.' + name
+			else 'options.' + provider.instanceName + '.' + name
 		else name
 	}
 

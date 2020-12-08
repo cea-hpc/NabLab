@@ -50,6 +50,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrRoot/timeVariable"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrRoot/timeStepVariable"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrRoot/postProcessing"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrRoot/providers"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//IrModule">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//IrModule/name"/>
@@ -63,6 +64,13 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessing/periodReference"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessing/periodValue"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessing/lastDumpVariable"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//ExtensionProvider">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/extensionName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/providerName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/facadeClass"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/libHome"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/libName"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//ArgOrVar">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ArgOrVar/name"/>
@@ -87,10 +95,10 @@
     <genClasses ecoreClass="Ir.ecore#//Function">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/returnType"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/provider"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/variables"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/inArgs"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/body"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EReference Ir.ecore#//Function/provider"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Connectivity">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Connectivity/name"/>

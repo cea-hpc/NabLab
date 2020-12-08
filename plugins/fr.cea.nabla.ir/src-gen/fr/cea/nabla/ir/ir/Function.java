@@ -15,10 +15,10 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getReturnType <em>Return Type</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Function#getProvider <em>Provider</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getInArgs <em>In Args</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getBody <em>Body</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Function#getProvider <em>Provider</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getFunction()
@@ -26,6 +26,28 @@ import org.eclipse.emf.common.util.EList;
  * @generated
  */
 public interface Function extends IrAnnotable {
+	/**
+	 * Returns the value of the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Name</em>' attribute.
+	 * @see #setName(String)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_Name()
+	 * @model unique="false" required="true"
+	 * @generated
+	 */
+	String getName();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Function#getName <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Name</em>' attribute.
+	 * @see #getName()
+	 * @generated
+	 */
+	void setName(String value);
+
 	/**
 	 * Returns the value of the '<em><b>Return Type</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
@@ -49,28 +71,6 @@ public interface Function extends IrAnnotable {
 	void setReturnType(BaseType value);
 
 	/**
-	 * Returns the value of the '<em><b>Provider</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Provider</em>' attribute.
-	 * @see #setProvider(String)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_Provider()
-	 * @model required="true"
-	 * @generated
-	 */
-	String getProvider();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Function#getProvider <em>Provider</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Provider</em>' attribute.
-	 * @see #getProvider()
-	 * @generated
-	 */
-	void setProvider(String value);
-
-	/**
 	 * Returns the value of the '<em><b>Variables</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.SimpleVariable}.
 	 * <!-- begin-user-doc -->
@@ -81,28 +81,6 @@ public interface Function extends IrAnnotable {
 	 * @generated
 	 */
 	EList<SimpleVariable> getVariables();
-
-	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Name</em>' attribute.
-	 * @see #setName(String)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_Name()
-	 * @model unique="false" required="true"
-	 * @generated
-	 */
-	String getName();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Function#getName <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Name</em>' attribute.
-	 * @see #getName()
-	 * @generated
-	 */
-	void setName(String value);
 
 	/**
 	 * Returns the value of the '<em><b>In Args</b></em>' containment reference list.
@@ -137,5 +115,27 @@ public interface Function extends IrAnnotable {
 	 * @generated
 	 */
 	void setBody(Instruction value);
+
+	/**
+	 * Returns the value of the '<em><b>Provider</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Provider</em>' reference.
+	 * @see #setProvider(ExtensionProvider)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_Provider()
+	 * @model
+	 * @generated
+	 */
+	ExtensionProvider getProvider();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Function#getProvider <em>Provider</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Provider</em>' reference.
+	 * @see #getProvider()
+	 * @generated
+	 */
+	void setProvider(ExtensionProvider value);
 
 } // Function

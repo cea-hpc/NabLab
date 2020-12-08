@@ -25,7 +25,6 @@ import java.util.logging.StreamHandler
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.iq80.leveldb.Options
 
-import static fr.cea.nabla.ir.Utils.FunctionReductionPrefix
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 import static org.iq80.leveldb.impl.Iq80DBFactory.bytes
@@ -191,7 +190,7 @@ class IrInterpreter
 			else
 			{
 				val providerClassName = if (provider == "LinearAlgebra") "fr.cea.nabla.javalib.types.LinearAlgebraFunctions"
-					else m.name.toLowerCase + '.' + provider + FunctionReductionPrefix
+					else provider.facadeClass
 				providerClass = Class.forName(providerClassName, true, classLoader)
 				providerInstance = providerClass.constructor.newInstance
 				if (jsonOptions.has(providerClass.simpleName.toFirstLower))

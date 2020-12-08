@@ -27,6 +27,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getTimeVariable <em>Time Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getTimeStepVariable <em>Time Step Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getPostProcessing <em>Post Processing</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getProviders <em>Providers</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot()
@@ -69,18 +70,6 @@ public interface IrRoot extends IrAnnotable {
 	EList<ItemType> getItemTypes();
 
 	/**
-	 * Returns the value of the '<em><b>Functions</b></em>' reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Function}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Functions</em>' reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_Functions()
-	 * @model resolveProxies="false"
-	 * @generated
-	 */
-	EList<Function> getFunctions();
-
-	/**
 	 * Returns the value of the '<em><b>Connectivities</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Connectivity}.
 	 * <!-- begin-user-doc -->
@@ -93,6 +82,18 @@ public interface IrRoot extends IrAnnotable {
 	EList<Connectivity> getConnectivities();
 
 	/**
+	 * Returns the value of the '<em><b>Functions</b></em>' reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Function}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Functions</em>' reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_Functions()
+	 * @model resolveProxies="false"
+	 * @generated
+	 */
+	EList<Function> getFunctions();
+
+	/**
 	 * Returns the value of the '<em><b>Variables</b></em>' reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Variable}.
 	 * <!-- begin-user-doc -->
@@ -103,6 +104,52 @@ public interface IrRoot extends IrAnnotable {
 	 * @generated
 	 */
 	EList<Variable> getVariables();
+
+	/**
+	 * Returns the value of the '<em><b>Jobs</b></em>' reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Job}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Jobs</em>' reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_Jobs()
+	 * @model resolveProxies="false"
+	 * @generated
+	 */
+	EList<Job> getJobs();
+
+	/**
+	 * Returns the value of the '<em><b>Main</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Main</em>' containment reference.
+	 * @see #setMain(JobCaller)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_Main()
+	 * @model containment="true" resolveProxies="true"
+	 * @generated
+	 */
+	JobCaller getMain();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrRoot#getMain <em>Main</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Main</em>' containment reference.
+	 * @see #getMain()
+	 * @generated
+	 */
+	void setMain(JobCaller value);
+
+	/**
+	 * Returns the value of the '<em><b>Modules</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.IrModule}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Modules</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_Modules()
+	 * @model containment="true" resolveProxies="true"
+	 * @generated
+	 */
+	EList<IrModule> getModules();
 
 	/**
 	 * Returns the value of the '<em><b>Mesh Class Name</b></em>' attribute.
@@ -215,18 +262,6 @@ public interface IrRoot extends IrAnnotable {
 	void setTimeStepVariable(SimpleVariable value);
 
 	/**
-	 * Returns the value of the '<em><b>Jobs</b></em>' reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Job}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Jobs</em>' reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_Jobs()
-	 * @model resolveProxies="false"
-	 * @generated
-	 */
-	EList<Job> getJobs();
-
-	/**
 	 * Returns the value of the '<em><b>Post Processing</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -249,37 +284,15 @@ public interface IrRoot extends IrAnnotable {
 	void setPostProcessing(PostProcessing value);
 
 	/**
-	 * Returns the value of the '<em><b>Main</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Providers</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ExtensionProvider}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Main</em>' containment reference.
-	 * @see #setMain(JobCaller)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_Main()
+	 * @return the value of the '<em>Providers</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_Providers()
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	JobCaller getMain();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrRoot#getMain <em>Main</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Main</em>' containment reference.
-	 * @see #getMain()
-	 * @generated
-	 */
-	void setMain(JobCaller value);
-
-	/**
-	 * Returns the value of the '<em><b>Modules</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.IrModule}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Modules</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_Modules()
-	 * @model containment="true" resolveProxies="true"
-	 * @generated
-	 */
-	EList<IrModule> getModules();
+	EList<ExtensionProvider> getProviders();
 
 } // IrRoot

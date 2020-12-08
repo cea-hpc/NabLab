@@ -4,6 +4,7 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Connectivity;
 import fr.cea.nabla.ir.ir.ConnectivityVariable;
+import fr.cea.nabla.ir.ir.ExtensionProvider;
 import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.IrModule;
 import fr.cea.nabla.ir.ir.IrPackage;
@@ -53,6 +54,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getTimeVariable <em>Time Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getTimeStepVariable <em>Time Step Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getPostProcessing <em>Post Processing</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getProviders <em>Providers</em>}</li>
  * </ul>
  *
  * @generated
@@ -217,6 +219,16 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @ordered
 	 */
 	protected PostProcessing postProcessing;
+
+	/**
+	 * The cached value of the '{@link #getProviders() <em>Providers</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getProviders()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<ExtensionProvider> providers;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -582,6 +594,19 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
+	public EList<ExtensionProvider> getProviders() {
+		if (providers == null) {
+			providers = new EObjectContainmentEList.Resolving<ExtensionProvider>(ExtensionProvider.class, this, IrPackage.IR_ROOT__PROVIDERS);
+		}
+		return providers;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public JobCaller getMain() {
 		if (main != null && main.eIsProxy()) {
 			InternalEObject oldMain = (InternalEObject)main;
@@ -675,6 +700,8 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return ((InternalEList<?>)getModules()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_ROOT__POST_PROCESSING:
 				return basicSetPostProcessing(null, msgs);
+			case IrPackage.IR_ROOT__PROVIDERS:
+				return ((InternalEList<?>)getProviders()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -721,6 +748,8 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__POST_PROCESSING:
 				if (resolve) return getPostProcessing();
 				return basicGetPostProcessing();
+			case IrPackage.IR_ROOT__PROVIDERS:
+				return getProviders();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -782,6 +811,10 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__POST_PROCESSING:
 				setPostProcessing((PostProcessing)newValue);
 				return;
+			case IrPackage.IR_ROOT__PROVIDERS:
+				getProviders().clear();
+				getProviders().addAll((Collection<? extends ExtensionProvider>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -836,6 +869,9 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__POST_PROCESSING:
 				setPostProcessing((PostProcessing)null);
 				return;
+			case IrPackage.IR_ROOT__PROVIDERS:
+				getProviders().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -876,6 +912,8 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return timeStepVariable != null;
 			case IrPackage.IR_ROOT__POST_PROCESSING:
 				return postProcessing != null;
+			case IrPackage.IR_ROOT__PROVIDERS:
+				return providers != null && !providers.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

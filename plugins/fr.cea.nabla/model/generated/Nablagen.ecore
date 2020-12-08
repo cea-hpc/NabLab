@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="nablagen" nsURI="http://www.cea.fr/nabla/Nablagen" nsPrefix="nablagen">
-  <eClassifiers xsi:type="ecore:EClass" name="NablagenRoot">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NablagenRoot"/>
   <eClassifiers xsi:type="ecore:EClass" name="Application" eSuperTypes="#//NablagenRoot">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="writeIR" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="mainModule" eType="#//MainModule"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="additionalModules" upperBound="-1"
         eType="#//AdditionalModule" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="extensionConfigs" upperBound="-1"
+        eType="#//ExtensionConfig" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="vtkOutput" eType="#//VtkOutput"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="levelDB" eType="#//LevelDB"
@@ -38,6 +39,11 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="additionalVariable" eType="ecore:EClass Nabla.ecore#//Var"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="mainModule" eType="#//MainModule"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="mainVariable" eType="ecore:EClass Nabla.ecore#//Var"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ExtensionConfig">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="extension" eType="ecore:EClass Nabla.ecore#//NablaModule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="providers" unique="false"
+        upperBound="-1" eType="#//ExtensionProvider"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VtkOutput">
     <eStructuralFeatures xsi:type="ecore:EReference" name="periodReferenceModule"
@@ -72,8 +78,13 @@
     <eLiterals name="Kokkos" value="4" literal="Kokkos"/>
     <eLiterals name="KokkosTeamThread" value="5" literal="KokkosTeamThread"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="LibraryProvider" eSuperTypes="#//NablagenRoot">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="library" eType="ecore:EClass Nabla.ecore#//NablaModule"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ExtensionProviderContainer" eSuperTypes="#//NablagenRoot">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
+        eType="#//ExtensionProvider" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ExtensionProvider">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="extension" eType="ecore:EClass Nabla.ecore#//NablaModule"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="targets" unique="false"
         upperBound="-1" eType="#//TargetType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="facadeClass" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

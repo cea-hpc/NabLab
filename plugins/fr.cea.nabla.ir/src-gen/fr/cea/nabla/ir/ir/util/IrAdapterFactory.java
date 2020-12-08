@@ -88,6 +88,10 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createPostProcessingAdapter();
 			}
 			@Override
+			public Adapter caseExtensionProvider(ExtensionProvider object) {
+				return createExtensionProviderAdapter();
+			}
+			@Override
 			public Adapter caseArgOrVar(ArgOrVar object) {
 				return createArgOrVarAdapter();
 			}
@@ -414,6 +418,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createPostProcessingAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ExtensionProvider <em>Extension Provider</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.ExtensionProvider
+	 * @generated
+	 */
+	public Adapter createExtensionProviderAdapter() {
 		return null;
 	}
 

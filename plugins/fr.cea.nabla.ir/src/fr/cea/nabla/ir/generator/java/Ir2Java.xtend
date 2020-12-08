@@ -82,8 +82,8 @@ class Ir2Java extends CodeGenerator
 				«FOR v : options»
 				public «v.javaType» «v.name»;
 				«ENDFOR»
-				«FOR v : functionProviderClasses»
-				public «v» «v.toFirstLower»;
+				«FOR v : extensionProviders»
+				public «v.facadeClass» «v.instanceName»;
 				«ENDFOR»
 				public String «Utils.NonRegressionNameAndValue.key»;
 
@@ -103,11 +103,12 @@ class Ir2Java extends CodeGenerator
 					«FOR v : options»
 					«v.jsonContent»
 					«ENDFOR»
-					«FOR v : functionProviderClasses»
-					// «v.toFirstLower»
-					«v.toFirstLower» = new «v»();
-					if (o.has("«v.toFirstLower»"))
-						«v.toFirstLower».jsonInit(o.get("«v.toFirstLower»").toString());
+					«FOR v : extensionProviders»
+					«val vName = v.instanceName»
+					// «vName»
+					«vName» = new «v.facadeClass»();
+					if (o.has("«vName»"))
+						«vName».jsonInit(o.get("«vName»").toString());
 					«ENDFOR»
 					// Non regression
 					«val nrName = Utils.NonRegressionNameAndValue.key»

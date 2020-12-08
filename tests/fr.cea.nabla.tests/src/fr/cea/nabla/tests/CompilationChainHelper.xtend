@@ -97,7 +97,7 @@ class CompilationChainHelper
 		val interpreter = interpreterProvider.get
 		val ir = getIr(model, genModel)
 		val ngen = getNgen(model, genModel)
-		interpreter.generateCode(ir, ngen.targets, ngen.mainModule.iterationMax.name, ngen.mainModule.timeMax.name, projectDir, ngen.levelDB)
+		interpreter.generateCode(ir, ngen.extensionConfigs, ngen.targets, ngen.mainModule.iterationMax.name, ngen.mainModule.timeMax.name, projectDir, ngen.levelDB)
 	}
 
 	private def getIr(CharSequence model, CharSequence genModel)

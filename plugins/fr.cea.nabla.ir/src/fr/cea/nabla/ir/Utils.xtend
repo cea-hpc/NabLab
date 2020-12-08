@@ -19,7 +19,6 @@ import org.eclipse.emf.ecore.EObject
 
 class Utils
 {
-	public static val FunctionReductionPrefix = 'Functions'
 	public static val OutputPathNameAndValue = new Pair<String, String>("outputPath", "output")
 	public static val NonRegressionNameAndValue = new Pair<String, String>("nonRegression", "")
 	static enum NonRegressionValues { CreateReference, CompareToReference }

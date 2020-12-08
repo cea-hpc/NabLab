@@ -16,6 +16,8 @@ import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.transformers.IrTransformationStep
 import java.io.File
 import java.net.URI
@@ -28,8 +30,6 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
-import fr.cea.nabla.ir.ir.SimpleVariable
-import fr.cea.nabla.ir.ir.Variable
 
 class Ir2Cpp extends CodeGenerator
 {
@@ -122,8 +122,8 @@ class Ir2Cpp extends CodeGenerator
 			«FOR v : options»
 			«v.cppType» «v.name»;
 			«ENDFOR»
-			«FOR s : functionProviderClasses»
-			«s» «s.toFirstLower»;
+			«FOR v : extensionProviders»
+			«v.facadeClass» «v.instanceName»;
 			«ENDFOR»
 			«IF levelDB»std::string «Utils.NonRegressionNameAndValue.key»;«ENDIF»
 
@@ -247,14 +247,15 @@ class Ir2Cpp extends CodeGenerator
 		«FOR v : options»
 		«v.jsonContent»
 		«ENDFOR»
-		«FOR v : functionProviderClasses»
-		// «v.toFirstLower»
-		if (o.HasMember("«v.toFirstLower»"))
+		«FOR v : extensionProviders»
+		«val vName = v.instanceName»
+		// «vName»
+		if (o.HasMember("«vName»"))
 		{
 			rapidjson::StringBuffer strbuf;
 			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-			o["«v.toFirstLower»"].Accept(writer);
-			«v.toFirstLower».jsonInit(strbuf.GetString());
+			o["«vName»"].Accept(writer);
+			«vName».jsonInit(strbuf.GetString());
 		}
 		«ENDFOR»
 		«IF levelDB»

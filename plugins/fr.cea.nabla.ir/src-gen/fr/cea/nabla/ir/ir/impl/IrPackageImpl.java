@@ -19,6 +19,7 @@ import fr.cea.nabla.ir.ir.ContractedIf;
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob;
 import fr.cea.nabla.ir.ir.Exit;
 import fr.cea.nabla.ir.ir.Expression;
+import fr.cea.nabla.ir.ir.ExtensionProvider;
 import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.FunctionCall;
 import fr.cea.nabla.ir.ir.If;
@@ -119,6 +120,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass postProcessingEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass extensionProviderEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -794,6 +802,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EReference getIrRoot_Providers() {
+		return (EReference)irRootEClass.getEStructuralFeatures().get(14);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getIrModule() {
 		return irModuleEClass;
 	}
@@ -916,6 +934,66 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EReference getPostProcessing_LastDumpVariable() {
 		return (EReference)postProcessingEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EClass getExtensionProvider() {
+		return extensionProviderEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getExtensionProvider_ExtensionName() {
+		return (EAttribute)extensionProviderEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getExtensionProvider_ProviderName() {
+		return (EAttribute)extensionProviderEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getExtensionProvider_FacadeClass() {
+		return (EAttribute)extensionProviderEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getExtensionProvider_LibHome() {
+		return (EAttribute)extensionProviderEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getExtensionProvider_LibName() {
+		return (EAttribute)extensionProviderEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -1094,8 +1172,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EAttribute getFunction_Provider() {
-		return (EAttribute)functionEClass.getEStructuralFeatures().get(2);
+	public EReference getFunction_Provider() {
+		return (EReference)functionEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -1105,7 +1183,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 */
 	@Override
 	public EReference getFunction_Variables() {
-		return (EReference)functionEClass.getEStructuralFeatures().get(3);
+		return (EReference)functionEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -1125,7 +1203,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 */
 	@Override
 	public EReference getFunction_InArgs() {
-		return (EReference)functionEClass.getEStructuralFeatures().get(4);
+		return (EReference)functionEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -1135,7 +1213,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 */
 	@Override
 	public EReference getFunction_Body() {
-		return (EReference)functionEClass.getEStructuralFeatures().get(5);
+		return (EReference)functionEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -2589,6 +2667,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(irRootEClass, IR_ROOT__TIME_VARIABLE);
 		createEReference(irRootEClass, IR_ROOT__TIME_STEP_VARIABLE);
 		createEReference(irRootEClass, IR_ROOT__POST_PROCESSING);
+		createEReference(irRootEClass, IR_ROOT__PROVIDERS);
 
 		irModuleEClass = createEClass(IR_MODULE);
 		createEAttribute(irModuleEClass, IR_MODULE__NAME);
@@ -2602,6 +2681,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(postProcessingEClass, POST_PROCESSING__PERIOD_REFERENCE);
 		createEReference(postProcessingEClass, POST_PROCESSING__PERIOD_VALUE);
 		createEReference(postProcessingEClass, POST_PROCESSING__LAST_DUMP_VARIABLE);
+
+		extensionProviderEClass = createEClass(EXTENSION_PROVIDER);
+		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__EXTENSION_NAME);
+		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__PROVIDER_NAME);
+		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__FACADE_CLASS);
+		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__LIB_HOME);
+		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__LIB_NAME);
 
 		argOrVarEClass = createEClass(ARG_OR_VAR);
 		createEAttribute(argOrVarEClass, ARG_OR_VAR__NAME);
@@ -2626,10 +2712,10 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		functionEClass = createEClass(FUNCTION);
 		createEAttribute(functionEClass, FUNCTION__NAME);
 		createEReference(functionEClass, FUNCTION__RETURN_TYPE);
-		createEAttribute(functionEClass, FUNCTION__PROVIDER);
 		createEReference(functionEClass, FUNCTION__VARIABLES);
 		createEReference(functionEClass, FUNCTION__IN_ARGS);
 		createEReference(functionEClass, FUNCTION__BODY);
+		createEReference(functionEClass, FUNCTION__PROVIDER);
 
 		connectivityEClass = createEClass(CONNECTIVITY);
 		createEAttribute(connectivityEClass, CONNECTIVITY__NAME);
@@ -2859,6 +2945,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		irRootEClass.getESuperTypes().add(this.getIrAnnotable());
 		irModuleEClass.getESuperTypes().add(this.getIrAnnotable());
 		postProcessingEClass.getESuperTypes().add(this.getIrAnnotable());
+		extensionProviderEClass.getESuperTypes().add(this.getIrAnnotable());
 		argOrVarEClass.getESuperTypes().add(this.getIrAnnotable());
 		argEClass.getESuperTypes().add(this.getArgOrVar());
 		variableEClass.getESuperTypes().add(this.getArgOrVar());
@@ -2944,6 +3031,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getIrRoot_TimeVariable(), this.getSimpleVariable(), null, "timeVariable", null, 1, 1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrRoot_TimeStepVariable(), this.getSimpleVariable(), null, "timeStepVariable", null, 1, 1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrRoot_PostProcessing(), this.getPostProcessing(), null, "postProcessing", null, 0, 1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIrRoot_Providers(), this.getExtensionProvider(), null, "providers", null, 0, -1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(irModuleEClass, IrModule.class, "IrModule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getIrModule_Name(), ecorePackage.getEString(), "name", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2957,6 +3045,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getPostProcessing_PeriodReference(), this.getSimpleVariable(), null, "periodReference", null, 1, 1, PostProcessing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPostProcessing_PeriodValue(), this.getSimpleVariable(), null, "periodValue", null, 1, 1, PostProcessing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPostProcessing_LastDumpVariable(), this.getSimpleVariable(), null, "lastDumpVariable", null, 1, 1, PostProcessing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(extensionProviderEClass, ExtensionProvider.class, "ExtensionProvider", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getExtensionProvider_ExtensionName(), ecorePackage.getEString(), "extensionName", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getExtensionProvider_ProviderName(), ecorePackage.getEString(), "providerName", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getExtensionProvider_FacadeClass(), ecorePackage.getEString(), "facadeClass", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getExtensionProvider_LibHome(), ecorePackage.getEString(), "libHome", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getExtensionProvider_LibName(), ecorePackage.getEString(), "libName", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(argOrVarEClass, ArgOrVar.class, "ArgOrVar", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getArgOrVar_Name(), ecorePackage.getEString(), "name", null, 1, 1, ArgOrVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2981,10 +3076,10 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(functionEClass, Function.class, "Function", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFunction_Name(), ecorePackage.getEString(), "name", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunction_ReturnType(), this.getBaseType(), null, "returnType", null, 0, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getFunction_Provider(), ecorePackage.getEString(), "provider", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunction_Variables(), this.getSimpleVariable(), null, "variables", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunction_InArgs(), this.getArg(), null, "inArgs", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunction_Body(), this.getInstruction(), null, "body", null, 0, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getFunction_Provider(), this.getExtensionProvider(), null, "provider", null, 0, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(connectivityEClass, Connectivity.class, "Connectivity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getConnectivity_Name(), ecorePackage.getEString(), "name", null, 0, 1, Connectivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

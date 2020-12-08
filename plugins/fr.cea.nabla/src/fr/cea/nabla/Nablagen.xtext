@@ -16,7 +16,7 @@ import "http://www.cea.fr/nabla/Nabla" as nabla
 
 generate nablagen "http://www.cea.fr/nabla/Nablagen"
 
-NablagenRoot: Application | LibraryProvider;
+NablagenRoot: Application | ExtensionProviderContainer;
 
 /***** Application ***********************************************************/
 
@@ -25,6 +25,7 @@ Application:
 	'Application' name=ID ';'
 	mainModule = MainModule
 	additionalModules += AdditionalModule*
+	extensionConfigs += ExtensionConfig*
 	(vtkOutput = VtkOutput)?
 	(levelDB = LevelDB)?
 	targets += Target*;
@@ -51,6 +52,9 @@ AdditionalModule:
 
 VarLink:
 	additionalModule=[AdditionalModule] '.' additionalVariable=[nabla::Var] '=' mainModule=[MainModule] '.' mainVariable=[nabla::Var] ';';
+
+ExtensionConfig:
+	'Extension' extension=[nabla::NablaModule] '=' providers+=[ExtensionProvider] (',' providers+=[ExtensionProvider])* ';';
 
 VtkOutput:
 	'VtkOutput'
@@ -82,11 +86,13 @@ enum TargetType: Java | CppSequential | StlThread | OpenMP | Kokkos | KokkosTeam
 
 /****** Library Provider *****************************************************/
 
-LibraryProvider: 'Provider' name=ID ':' library=[nabla::NablaModule]
+ExtensionProviderContainer: {ExtensionProviderContainer} values += ExtensionProvider*;
+
+ExtensionProvider: 'ExtensionProvider' name=ID ':' extension=[nabla::NablaModule]
 '{'
 	'targets' '=' targets+=TargetType (',' targets+=TargetType)* ';'
 	'facadeClass' '=' facadeClass = STRING ';'
 	'libHome' '=' libHome=STRING ';' // includes in libHome/includes, libs in libHome/libs
-	'libName' '=' libName=ID ';'
+	'libName' '=' libName=STRING ';'
 '}';
 

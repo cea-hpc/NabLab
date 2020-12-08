@@ -58,6 +58,15 @@ public interface IrFactory extends EFactory {
 	PostProcessing createPostProcessing();
 
 	/**
+	 * Returns a new object of class '<em>Extension Provider</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Extension Provider</em>'.
+	 * @generated
+	 */
+	ExtensionProvider createExtensionProvider();
+
+	/**
 	 * Returns a new object of class '<em>Arg</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

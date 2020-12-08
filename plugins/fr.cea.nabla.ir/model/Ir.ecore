@@ -47,6 +47,8 @@
         eType="#//SimpleVariable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="postProcessing" eType="#//PostProcessing"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="providers" upperBound="-1"
+        eType="#//ExtensionProvider" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IrModule" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
@@ -68,6 +70,18 @@
         eType="#//SimpleVariable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="lastDumpVariable" lowerBound="1"
         eType="#//SimpleVariable"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ExtensionProvider" eSuperTypes="#//IrAnnotable">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="extensionName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="providerName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="facadeClass" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="libHome" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="libName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ArgOrVar" abstract="true" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -102,14 +116,13 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//BaseType"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="provider" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//SimpleVariable" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="inArgs" upperBound="-1"
         eType="#//Arg" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//Instruction"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="provider" eType="#//ExtensionProvider"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Connectivity" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

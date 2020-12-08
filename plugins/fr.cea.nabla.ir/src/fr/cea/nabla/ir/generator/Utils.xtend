@@ -29,6 +29,7 @@ import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import fr.cea.nabla.ir.ir.Variable
+import fr.cea.nabla.ir.ir.ExtensionProvider
 
 class Utils
 {
@@ -125,6 +126,11 @@ class Utils
 			case '*': 'multiply'
 			case '+': 'plus'
 		}
+	}
+
+	static def String getInstanceName(ExtensionProvider it)
+	{
+		extensionName.toFirstLower
 	}
 
 	private static def boolean isTopLevelLoop(EObject it)

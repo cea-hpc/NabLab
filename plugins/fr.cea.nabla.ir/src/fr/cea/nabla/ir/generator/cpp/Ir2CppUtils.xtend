@@ -9,10 +9,11 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.Function
+
+import static extension fr.cea.nabla.ir.generator.Utils.getInstanceName
 
 class Ir2CppUtils 
 {
@@ -20,7 +21,7 @@ class Ir2CppUtils
 	{
 		if (body === null)
 			if (provider == "Math") 'std::' + name
-			else 'options.' + provider.toFirstLower + Utils::FunctionReductionPrefix + '.' + name
+			else 'options.' + provider.instanceName + '.' + name
 		else name
 	}
 

@@ -31,7 +31,7 @@ class IrFunctionFactory
 	{
 		annotations += f.toIrAnnotation
 		name = f.name
-		provider = f.nablaModuleName
+		provider = f.nablaModuleName.toIrExtensionProvider
 		f.variables.forEach[x | variables += x.toIrVariable as SimpleVariable]
 		if (f.external)
 		{
@@ -54,7 +54,7 @@ class IrFunctionFactory
 		annotations += f.toIrAnnotation
 		// build a unique name with name and type
 		name = f.name.toFirstLower + t.primitive.getName().charAt(0) + t.sizes.size
-		provider = f.nablaModuleName
+		provider = f.nablaModuleName.toIrExtensionProvider
 		f.variables.forEach[x | variables += x.toIrVariable as SimpleVariable]
 		f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
 		returnType = t.toIrBaseType

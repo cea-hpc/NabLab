@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.SimpleVariable
@@ -34,9 +35,9 @@ class IrModuleExtensions
 		irRoot.meshClassName
 	}
 
-	static def String[] getFunctionProviderClasses(IrModule it)
+	static def ExtensionProvider[] getExtensionProviders(IrModule it)
 	{
-		functions.filter[x | x.provider!='Math' && x.body===null].map[provider + Utils::FunctionReductionPrefix].toSet
+		functions.filter[x | x.provider.extensionName!='Math' && x.body===null].map[x | x.provider]
 	}
 
 	static def getJobByName(IrModule it, String jobName)

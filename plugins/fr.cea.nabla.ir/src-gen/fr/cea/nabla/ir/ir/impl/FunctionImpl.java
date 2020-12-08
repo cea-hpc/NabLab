@@ -4,6 +4,7 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Arg;
 import fr.cea.nabla.ir.ir.BaseType;
+import fr.cea.nabla.ir.ir.ExtensionProvider;
 import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.IrPackage;
@@ -34,10 +35,10 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getReturnType <em>Return Type</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getProvider <em>Provider</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getInArgs <em>In Args</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getBody <em>Body</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getProvider <em>Provider</em>}</li>
  * </ul>
  *
  * @generated
@@ -74,26 +75,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	protected BaseType returnType;
 
 	/**
-	 * The default value of the '{@link #getProvider() <em>Provider</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getProvider()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String PROVIDER_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getProvider() <em>Provider</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getProvider()
-	 * @generated
-	 * @ordered
-	 */
-	protected String provider = PROVIDER_EDEFAULT;
-
-	/**
 	 * The cached value of the '{@link #getVariables() <em>Variables</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -122,6 +103,16 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @ordered
 	 */
 	protected Instruction body;
+
+	/**
+	 * The cached value of the '{@link #getProvider() <em>Provider</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getProvider()
+	 * @generated
+	 * @ordered
+	 */
+	protected ExtensionProvider provider;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -216,7 +207,24 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @generated
 	 */
 	@Override
-	public String getProvider() {
+	public ExtensionProvider getProvider() {
+		if (provider != null && provider.eIsProxy()) {
+			InternalEObject oldProvider = (InternalEObject)provider;
+			provider = (ExtensionProvider)eResolveProxy(oldProvider);
+			if (provider != oldProvider) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.FUNCTION__PROVIDER, oldProvider, provider));
+			}
+		}
+		return provider;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ExtensionProvider basicGetProvider() {
 		return provider;
 	}
 
@@ -226,8 +234,8 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @generated
 	 */
 	@Override
-	public void setProvider(String newProvider) {
-		String oldProvider = provider;
+	public void setProvider(ExtensionProvider newProvider) {
+		ExtensionProvider oldProvider = provider;
 		provider = newProvider;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.FUNCTION__PROVIDER, oldProvider, provider));
@@ -383,8 +391,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				if (resolve) return getReturnType();
 				return basicGetReturnType();
-			case IrPackage.FUNCTION__PROVIDER:
-				return getProvider();
 			case IrPackage.FUNCTION__VARIABLES:
 				return getVariables();
 			case IrPackage.FUNCTION__IN_ARGS:
@@ -392,6 +398,9 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 			case IrPackage.FUNCTION__BODY:
 				if (resolve) return getBody();
 				return basicGetBody();
+			case IrPackage.FUNCTION__PROVIDER:
+				if (resolve) return getProvider();
+				return basicGetProvider();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -411,9 +420,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				setReturnType((BaseType)newValue);
 				return;
-			case IrPackage.FUNCTION__PROVIDER:
-				setProvider((String)newValue);
-				return;
 			case IrPackage.FUNCTION__VARIABLES:
 				getVariables().clear();
 				getVariables().addAll((Collection<? extends SimpleVariable>)newValue);
@@ -424,6 +430,9 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 				return;
 			case IrPackage.FUNCTION__BODY:
 				setBody((Instruction)newValue);
+				return;
+			case IrPackage.FUNCTION__PROVIDER:
+				setProvider((ExtensionProvider)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -443,9 +452,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				setReturnType((BaseType)null);
 				return;
-			case IrPackage.FUNCTION__PROVIDER:
-				setProvider(PROVIDER_EDEFAULT);
-				return;
 			case IrPackage.FUNCTION__VARIABLES:
 				getVariables().clear();
 				return;
@@ -454,6 +460,9 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 				return;
 			case IrPackage.FUNCTION__BODY:
 				setBody((Instruction)null);
+				return;
+			case IrPackage.FUNCTION__PROVIDER:
+				setProvider((ExtensionProvider)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -471,14 +480,14 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case IrPackage.FUNCTION__RETURN_TYPE:
 				return returnType != null;
-			case IrPackage.FUNCTION__PROVIDER:
-				return PROVIDER_EDEFAULT == null ? provider != null : !PROVIDER_EDEFAULT.equals(provider);
 			case IrPackage.FUNCTION__VARIABLES:
 				return variables != null && !variables.isEmpty();
 			case IrPackage.FUNCTION__IN_ARGS:
 				return inArgs != null && !inArgs.isEmpty();
 			case IrPackage.FUNCTION__BODY:
 				return body != null;
+			case IrPackage.FUNCTION__PROVIDER:
+				return provider != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -495,8 +504,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (name: ");
 		result.append(name);
-		result.append(", provider: ");
-		result.append(provider);
 		result.append(')');
 		return result.toString();
 	}

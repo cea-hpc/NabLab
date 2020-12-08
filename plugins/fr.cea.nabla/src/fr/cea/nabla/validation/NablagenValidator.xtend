@@ -16,7 +16,6 @@ import fr.cea.nabla.nablagen.AdditionalModule
 import fr.cea.nabla.nablagen.Application
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenPackage
-import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.nablagen.TargetType
 import fr.cea.nabla.nablagen.VarLink
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
@@ -46,10 +45,10 @@ class NablagenValidator extends AbstractNablagenValidator
 	static def getVarLinkMainVarTypeMsg(String v1Type, String v2Type) { "Variables must have the same type: " + v1Type + " \u2260 " + v2Type }
 
 	@Check(CheckType.FAST)
-	def checkName(NablagenRoot it)
+	def checkName(Application it)
 	{
 		if (!name.nullOrEmpty && Character::isLowerCase(name.charAt(0)))
-			error(getNgenApplicationNameMsg(), NablagenPackage.Literals.NABLAGEN_ROOT__NAME, NGEN_APPLICATION_NAME)
+			error(getNgenApplicationNameMsg(), NablagenPackage.Literals.APPLICATION__NAME, NGEN_APPLICATION_NAME)
 	}
 
 	@Check(CheckType.FAST)

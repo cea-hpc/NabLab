@@ -24,6 +24,11 @@ import fr.cea.nabla.ui.NablaUiUtils
  */
 class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 {
+	def _image(NablagenRoot it)
+	{
+		NablaUiUtils.createImage('icons/Nablagen.gif')
+	}
+
 	def _text(NablagenRoot it)
 	{
 		'Generation options "' + eResource.URI.lastSegment + '"'

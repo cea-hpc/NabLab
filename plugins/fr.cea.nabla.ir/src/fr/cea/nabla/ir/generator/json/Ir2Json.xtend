@@ -20,6 +20,7 @@ import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.generator.Utils.getInstanceName
 
 class Ir2Json extends CodeGenerator 
 {
@@ -67,8 +68,8 @@ class Ir2Json extends CodeGenerator
 		}
 		for (option : irModule.options)
 			values += new Pair(option.name, context.getVariableValue(option).content)
-		for (providerClass : irModule.functionProviderClasses)
-			values += new Pair(providerClass.toFirstLower, '{}')
+		for (extensionProvider : irModule.extensionProviders)
+			values += new Pair(extensionProvider.instanceName, '{}')
 		if (irModule.main && levelDB)
 		{
 			val value = '"empty value to disable, " + Utils.NonRegressionValues.CreateReference.toString + " or " + Utils.NonRegressionValues.CompareToReference.toString + " to take action"'

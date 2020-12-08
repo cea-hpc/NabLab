@@ -68,6 +68,11 @@ class IrBasicFactory
 		i.name.toIrItemType => [annotations += i.toIrAnnotation]
 	}
 
+	def create IrFactory::eINSTANCE.createExtensionProvider toIrExtensionProvider(String extName)
+	{
+		extensionName = extName
+	}
+
 	/** 
 	 * Return an ItemType instance.
 	 * PK is name (instead of nabla.ItemType) to avoid 

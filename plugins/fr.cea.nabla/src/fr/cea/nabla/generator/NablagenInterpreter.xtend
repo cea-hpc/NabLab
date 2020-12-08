@@ -30,8 +30,10 @@ import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nablagen.Application
+import fr.cea.nabla.nablagen.ExtensionConfig
 import fr.cea.nabla.nablagen.LevelDB
 import fr.cea.nabla.nablagen.Target
+import fr.cea.nabla.nablagen.TargetType
 import java.io.File
 import java.util.ArrayList
 import java.util.HashMap
@@ -101,7 +103,7 @@ class NablagenInterpreter
 		}
 	}
 
-	def void generateCode(IrRoot ir, List<Target> targets, String iterationMaxVarName, String timeMaxVarName, String projectDir, LevelDB levelDB)
+	def void generateCode(IrRoot ir, List<ExtensionConfig> extensions, List<Target> targets, String iterationMaxVarName, String timeMaxVarName, String projectDir, LevelDB levelDB)
 	{
 		try
 		{
@@ -114,12 +116,18 @@ class NablagenInterpreter
 			val baseDir =  projectDir + "/.."
 			for (target : targets)
 			{
-				// Code generation
+				// Set provider extension for the target
+				setExtensionProviders(target.type, ir, extensions)
+
+				// Create code generator
 				val g = getCodeGenerator(target, baseDir, iterationMaxVarName, timeMaxVarName, levelDB)
 				trace("Starting " + g.name + " code generator")
 
+				// Configure fsa with target output folder
 				val outputFolderName = baseDir + target.outputDir
 				fsa = getConfiguredFileSystemAccess(outputFolderName, false)
+
+				// Apply IR transformations dedicated to this target (if necessary)
 				if (g.needIrTransformation)
 				{
 					val duplicatedIr = EcoreUtil::copy(ir)
@@ -246,5 +254,23 @@ class NablagenInterpreter
 		«ENDFOR»
 		\end{document}
 	'''
+
+	private def void setExtensionProviders(TargetType target, IrRoot ir, List<ExtensionConfig> extensionConfigs)
+	{
+		for (irProvider : ir.providers)
+		{
+			val extensionConfig = extensionConfigs.findFirst[x | x.extension.name == irProvider.extensionName]
+			if (extensionConfig === null)
+				throw new RuntimeException("Missing nablagen configuration for extension: " + irProvider.extensionName)
+
+			val provider = extensionConfig.providers.findFirst[x | x.targets.contains(target)]
+			if (provider === null)
+				throw new RuntimeException("Missing " + target.literal + " provider for extension: " + irProvider.extensionName)
+
+			irProvider.facadeClass = provider.facadeClass
+			irProvider.libHome = provider.libHome
+			irProvider.libName = provider.libName
+		}
+	}
 }
 

@@ -61,6 +61,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.IR_ROOT: return createIrRoot();
 			case IrPackage.IR_MODULE: return createIrModule();
 			case IrPackage.POST_PROCESSING: return createPostProcessing();
+			case IrPackage.EXTENSION_PROVIDER: return createExtensionProvider();
 			case IrPackage.ARG: return createArg();
 			case IrPackage.SIMPLE_VARIABLE: return createSimpleVariable();
 			case IrPackage.CONNECTIVITY_VARIABLE: return createConnectivityVariable();
@@ -188,6 +189,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public PostProcessing createPostProcessing() {
 		PostProcessingImpl postProcessing = new PostProcessingImpl();
 		return postProcessing;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ExtensionProvider createExtensionProvider() {
+		ExtensionProviderImpl extensionProvider = new ExtensionProviderImpl();
+		return extensionProvider;
 	}
 
 	/**

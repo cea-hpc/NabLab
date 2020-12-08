@@ -13,8 +13,6 @@ import fr.cea.nabla.ir.ir.IrModule
 import java.util.LinkedHashSet
 import org.eclipse.xtend.lib.annotations.Accessors
 
-import static fr.cea.nabla.ir.Utils.FunctionReductionPrefix
-
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
@@ -69,8 +67,8 @@ abstract class IncludesContentProvider
 		userIncludes +=  "utils/Timer.h"
 		userIncludes +=  "types/Types.h"
 
-		if (m.functions.exists[f | f.body === null && f.provider == m.className])
-			userIncludes += m.irRoot.name.toLowerCase + "/" + m.className + FunctionReductionPrefix + ".h"
+		for (extensionProvider : m.extensionProviders)
+			userIncludes += extensionProvider.facadeClass.replace("::", "/") + ".h"
 
 		if (!m.main)
 			userIncludes += m.irRoot.name.toLowerCase + "/" + m.irRoot.mainModule.className + ".h"

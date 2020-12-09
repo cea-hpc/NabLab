@@ -23,13 +23,22 @@
 			name="Nabla Editor">
 		</editor>
 		<editor
-        class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
-        contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
-        default="true"
-        extensions="nablagen"
-        icon="icons/Nablagen.gif"
-        id="fr.cea.nabla.Nablagen"
-        name="Nablagen Editor">
+			class="fr.cea.nabla.ui.NablaextExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
+			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+			default="true"
+			extensions="nablaext"
+			icon="icons/Nablaext.gif"
+			id="fr.cea.nabla.Nablaext"
+			name="Nablaext Editor">
+		</editor>
+		<editor
+			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
+			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+			default="true"
+			extensions="nablagen"
+			icon="icons/Nablagen.gif"
+			id="fr.cea.nabla.Nablagen"
+			name="Nablagen Editor">
 		</editor>
 	</extension>
 	<extension
@@ -241,6 +250,10 @@
 			type="nabla">
 		</parser>
 		<parser
+			class="fr.cea.nabla.ui.NablaextExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
+			type="nablaext">
+		</parser>
+		<parser
 			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
 			type="nablagen">
 		</parser>
@@ -249,6 +262,10 @@
 		<resourceServiceProvider
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
 			uriExtension="nabla">
+		</resourceServiceProvider>
+		<resourceServiceProvider
+			class="fr.cea.nabla.ui.NablaextExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
+			uriExtension="nablaext">
 		</resourceServiceProvider>
 		<resourceServiceProvider
 			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
@@ -281,6 +298,12 @@
 		<participant
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
 			fileExtensions="nabla"/>
+	</extension>
+	<extension point="org.eclipse.xtext.builder.participant">
+		<participant
+			class="fr.cea.nabla.ui.NablaextExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
+			fileExtensions="nablaext">
+		</participant>
 	</extension>
 	<extension point="org.eclipse.xtext.builder.participant">
 		<participant
@@ -575,7 +598,7 @@
     </category>
     <wizard
           category="fr.cea.nabla.ui.category"
-          class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:fr.cea.nabla.ui.wizards.NewNablaProjectWizard"
+          class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.wizards.NewNablaProjectWizard"
           icon="icons/NabLab.gif"
           id="fr.cea.nabla.ui.new.project.wizard"
           name="%NablaProjectWizardName"

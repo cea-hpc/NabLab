@@ -25,10 +25,10 @@ import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorBlock
-import fr.cea.nabla.nablagen.Application
 import fr.cea.nabla.nablagen.NablagenModule
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.EcoreUtil2
+import fr.cea.nabla.nablagen.NablagenRoot
 
 class Nablagen2Ir
 {
@@ -37,7 +37,7 @@ class Nablagen2Ir
 	@Inject extension TimeIteratorExtensions
 	@Inject Provider<Nabla2Ir> nabla2IrProvider
 
-	def create IrFactory::eINSTANCE.createIrRoot toIrRoot(Application ngen)
+	def create IrFactory::eINSTANCE.createIrRoot toIrRoot(NablagenRoot ngen)
 	{
 		annotations += ngen.toIrAnnotation
 		name = ngen.name

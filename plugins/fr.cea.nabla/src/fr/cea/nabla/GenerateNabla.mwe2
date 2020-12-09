@@ -11,6 +11,8 @@ module fr.cea.nabla.GenerateNabla
 
 // TODO Validate additional modules have no iterate
 // TODO Check backend cmake variables
+// TODO Create a cmake variable for libHome of providers
+// TODO New Nabla keyword "extension"
 
 import org.eclipse.xtext.xtext.generator.*
 import org.eclipse.xtext.xtext.generator.model.project.*
@@ -72,9 +74,36 @@ Workflow {
 		}
 
 		language = StandardLanguage {
+			name = "fr.cea.nabla.Nablaext"
+			fileExtensions = "nablaext"
+			referencedResource = "platform:/resource/fr.cea.nabla/src/fr/cea/nabla/Nabla.xtext"
+
+			serializer = {
+				generateStub = false
+			}
+
+			emfGenerator = ecore.EMFGeneratorFragment2 {
+				generateEdit = true
+				editPluginID = "fr.cea.nabla.edit"
+				editDirectory = "fr.cea.nabla.edit/src-gen"
+				generateEditor = true
+				editorPluginID = "fr.cea.nabla.editor"
+				editorDirectory = "fr.cea.nabla.editor/src-gen"
+			}
+
+			validator = {
+				composedCheck = "org.eclipse.xtext.validation.NamesAreUniqueValidator"
+			}
+
+			scopeProvider = scoping.ImportNamespacesScopingFragment2 auto-inject { }
+			fragment = exporting.QualifiedNamesFragment2 auto-inject { }
+		}
+
+		language = StandardLanguage {
 			name = "fr.cea.nabla.Nablagen"
 			fileExtensions = "nablagen"
 			referencedResource = "platform:/resource/fr.cea.nabla/src/fr/cea/nabla/Nabla.xtext"
+			referencedResource = "platform:/resource/fr.cea.nabla/src/fr/cea/nabla/Nablaext.xtext"
 
 			serializer = {
 				generateStub = false

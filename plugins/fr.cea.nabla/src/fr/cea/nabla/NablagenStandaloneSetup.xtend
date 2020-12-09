@@ -12,9 +12,10 @@ package fr.cea.nabla
 /**
  * Initialization support for running Xtext languages without Equinox extension registry.
  */
-class NablagenStandaloneSetup extends NablagenStandaloneSetupGenerated {
-
-	def static void doSetup() {
+class NablagenStandaloneSetup extends NablagenStandaloneSetupGenerated
+{
+	def static void doSetup()
+	{
 		new NablagenStandaloneSetup().createInjectorAndDoEMFRegistration()
 	}
 }

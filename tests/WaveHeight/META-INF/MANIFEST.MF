@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WaveHeight
+Bundle-SymbolicName: WaveHeight
+Bundle-Version: 0.1.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: WaveHeight
+Require-Bundle: fr.cea.nabla,
+   fr.cea.nabla.ir,
+   fr.cea.nabla.javalib,
+   org.eclipse.xtext.xbase.lib,
+   com.google.gson,
+   commons-math3,
+   leveldb
+Export-Package: waveheight

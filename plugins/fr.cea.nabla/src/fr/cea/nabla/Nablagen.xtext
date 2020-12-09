@@ -8,19 +8,16 @@
  * Contributors: see AUTHORS file
  *******************************************************************************/
 
-grammar fr.cea.nabla.Nablagen 
-with fr.cea.nabla.Nabla 
+grammar fr.cea.nabla.Nablagen
+with fr.cea.nabla.Nablaext
 
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 import "http://www.cea.fr/nabla/Nabla" as nabla
+import "http://www.cea.fr/nabla/Nablaext" as nablaext
 
 generate nablagen "http://www.cea.fr/nabla/Nablagen"
 
-NablagenRoot: Application | ExtensionProviderContainer;
-
-/***** Application ***********************************************************/
-
-Application:
+NablagenRoot: 
 	(writeIR?='[WriteIr]')?
 	'Application' name=ID ';'
 	mainModule = MainModule
@@ -54,7 +51,7 @@ VarLink:
 	additionalModule=[AdditionalModule] '.' additionalVariable=[nabla::Var] '=' mainModule=[MainModule] '.' mainVariable=[nabla::Var] ';';
 
 ExtensionConfig:
-	'Extension' extension=[nabla::NablaModule] '=' providers+=[ExtensionProvider] (',' providers+=[ExtensionProvider])* ';';
+	'Extension' extension=[nabla::NablaModule] '=' providers+=[nablaext::ExtensionProvider] (',' providers+=[nablaext::ExtensionProvider])* ';';
 
 VtkOutput:
 	'VtkOutput'
@@ -80,19 +77,4 @@ Target: type=TargetType
 
 TargetVar:
 	key=ID '=' value=STRING ';';
-
-enum TargetType: Java | CppSequential | StlThread | OpenMP | Kokkos | KokkosTeamThread;
-
-
-/****** Library Provider *****************************************************/
-
-ExtensionProviderContainer: {ExtensionProviderContainer} values += ExtensionProvider*;
-
-ExtensionProvider: 'ExtensionProvider' name=ID ':' extension=[nabla::NablaModule]
-'{'
-	'targets' '=' targets+=TargetType (',' targets+=TargetType)* ';'
-	'facadeClass' '=' facadeClass = STRING ';'
-	'libHome' '=' libHome=STRING ';' // includes in libHome/includes, libs in libHome/libs
-	'libName' '=' libName=STRING ';'
-'}';
-
+	

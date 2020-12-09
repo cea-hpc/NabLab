@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="nablaext" nsURI="http://www.cea.fr/nabla/Nablaext" nsPrefix="nablaext">
+  <eClassifiers xsi:type="ecore:EClass" name="ExtensionProvider">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="extension" eType="ecore:EClass Nabla.ecore#//NablaModule"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targets" unique="false"
+        upperBound="-1" eType="#//TargetType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="facadeClass" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="libHome" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="libName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="TargetType">
+    <eLiterals name="Java" literal="Java"/>
+    <eLiterals name="CppSequential" value="1" literal="CppSequential"/>
+    <eLiterals name="StlThread" value="2" literal="StlThread"/>
+    <eLiterals name="OpenMP" value="3" literal="OpenMP"/>
+    <eLiterals name="Kokkos" value="4" literal="Kokkos"/>
+    <eLiterals name="KokkosTeamThread" value="5" literal="KokkosTeamThread"/>
+  </eClassifiers>
+</ecore:EPackage>

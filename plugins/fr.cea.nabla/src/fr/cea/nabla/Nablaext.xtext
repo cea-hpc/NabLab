@@ -1,0 +1,28 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+
+grammar fr.cea.nabla.Nablaext
+with fr.cea.nabla.Nabla
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+import "http://www.cea.fr/nabla/Nabla" as nabla
+
+generate nablaext "http://www.cea.fr/nabla/Nablaext"
+
+ExtensionProvider: 'ExtensionProvider' name=ID ':' extension=[nabla::NablaModule]
+'{'
+	'targets' '=' targets+=TargetType (',' targets+=TargetType)* ';'
+	'facadeClass' '=' facadeClass = STRING ';'
+	'libHome' '=' libHome=STRING ';' // includes in libHome/include, libs in libHome/lib
+	'libName' '=' libName=STRING ';'
+'}';
+
+enum TargetType: Java | CppSequential | StlThread | OpenMP | Kokkos | KokkosTeamThread;
+

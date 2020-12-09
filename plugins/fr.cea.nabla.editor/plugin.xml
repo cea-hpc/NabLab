@@ -66,4 +66,31 @@
             contributorClass="fr.cea.nabla.nablagen.presentation.NablagenActionBarContributor">
       </editor>
    </extension>
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated Nablaext -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="fr.cea.nabla.nablaext.presentation.NablaextModelWizardID"
+            name="%_UI_NablaextModelWizard_label"
+            class="fr.cea.nabla.nablaext.presentation.NablaextModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/NablaextModelFile.gif">
+         <description>%_UI_NablaextModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated Nablaext -->
+      <editor
+            id="fr.cea.nabla.nablaext.presentation.NablaextEditorID"
+            name="%_UI_NablaextEditor_label"
+            icon="icons/full/obj16/NablaextModelFile.gif"
+            extensions="nablaext"
+            class="fr.cea.nabla.nablaext.presentation.NablaextEditor"
+            contributorClass="fr.cea.nabla.nablaext.presentation.NablaextActionBarContributor">
+      </editor>
+   </extension>
 </plugin>

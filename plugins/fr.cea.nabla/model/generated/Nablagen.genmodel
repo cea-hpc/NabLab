@@ -5,27 +5,18 @@
     modelPluginID="fr.cea.nabla" forceOverwrite="true" modelName="Nablagen" updateClasspath="false"
     rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" complianceLevel="8.0"
     copyrightFields="false" editPluginID="fr.cea.nabla.edit" editorPluginID="fr.cea.nabla.editor"
-    runtimeVersion="2.20" usedGenPackages="Nabla.genmodel#//nabla">
+    runtimeVersion="2.20" usedGenPackages="Nabla.genmodel#//nabla Nablaext.genmodel#//nablaext">
   <genPackages prefix="Nablagen" basePackage="fr.cea.nabla" disposableProviderFactory="true"
       fileExtensions="nablagen" ecorePackage="Nablagen.ecore#/">
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Nablagen.ecore#//TargetType">
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/Java"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/CppSequential"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/StlThread"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/OpenMP"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/Kokkos"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/KokkosTeamThread"/>
-    </genEnums>
-    <genClasses ecoreClass="Nablagen.ecore#//NablagenRoot"/>
-    <genClasses ecoreClass="Nablagen.ecore#//Application">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Application/writeIR"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Application/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Application/mainModule"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Application/additionalModules"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Application/extensionConfigs"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Application/vtkOutput"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Application/levelDB"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Application/targets"/>
+    <genClasses ecoreClass="Nablagen.ecore#//NablagenRoot">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//NablagenRoot/writeIR"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//NablagenRoot/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenRoot/mainModule"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenRoot/additionalModules"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenRoot/extensionConfigs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenRoot/vtkOutput"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenRoot/levelDB"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenRoot/targets"/>
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//NablagenModule">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenModule/type"/>
@@ -73,17 +64,6 @@
     <genClasses ecoreClass="Nablagen.ecore#//TargetVar">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//TargetVar/key"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//TargetVar/value"/>
-    </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//ExtensionProviderContainer">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//ExtensionProviderContainer/values"/>
-    </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//ExtensionProvider">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//ExtensionProvider/name"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//ExtensionProvider/extension"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//ExtensionProvider/targets"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//ExtensionProvider/facadeClass"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//ExtensionProvider/libHome"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//ExtensionProvider/libName"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

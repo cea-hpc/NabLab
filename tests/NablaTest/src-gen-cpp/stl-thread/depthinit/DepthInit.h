@@ -12,6 +12,7 @@
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
+#include "waveheight/WaveHeight.h"
 #include "utils/stl/Parallel.h"
 
 using namespace nablalib;
@@ -29,7 +30,7 @@ public:
 		double maxTime;
 		int maxIter;
 		double deltat;
-		WaveHeightFunctions waveHeightFunctions;
+		waveheight::WaveHeight waveHeight;
 
 		void jsonInit(const char* jsonContent);
 	};

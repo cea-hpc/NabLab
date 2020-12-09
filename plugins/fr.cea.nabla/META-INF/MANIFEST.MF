@@ -39,7 +39,10 @@ Export-Package: fr.cea.nabla,
  fr.cea.nabla.services,
  fr.cea.nabla.typing,
  fr.cea.nabla.validation,
- nablalib
+ nablalib,
+ fr.cea.nabla.nablaext,
+ fr.cea.nabla.nablaext.impl,
+ fr.cea.nabla.nablaext.util
 Import-Package: com.google.inject,
  org.apache.log4j
 Bundle-ClassPath: .

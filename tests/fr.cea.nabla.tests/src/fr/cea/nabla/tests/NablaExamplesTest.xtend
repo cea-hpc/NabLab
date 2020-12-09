@@ -12,8 +12,8 @@ package fr.cea.nabla.tests
 import com.google.common.collect.PeekingIterator
 import com.google.gson.Gson
 import com.google.inject.Inject
+import fr.cea.nabla.nablaext.TargetType
 import fr.cea.nabla.nablagen.Target
-import fr.cea.nabla.nablagen.TargetType
 import java.io.File
 import java.nio.file.Files
 import org.apache.commons.io.FileUtils

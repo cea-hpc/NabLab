@@ -12,11 +12,11 @@ package fr.cea.nabla.validation
 import com.google.inject.Inject
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nablaext.TargetType
 import fr.cea.nabla.nablagen.AdditionalModule
-import fr.cea.nabla.nablagen.Application
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenPackage
-import fr.cea.nabla.nablagen.TargetType
+import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.nablagen.VarLink
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import java.util.HashSet
@@ -45,10 +45,10 @@ class NablagenValidator extends AbstractNablagenValidator
 	static def getVarLinkMainVarTypeMsg(String v1Type, String v2Type) { "Variables must have the same type: " + v1Type + " \u2260 " + v2Type }
 
 	@Check(CheckType.FAST)
-	def checkName(Application it)
+	def checkName(NablagenRoot it)
 	{
 		if (!name.nullOrEmpty && Character::isLowerCase(name.charAt(0)))
-			error(getNgenApplicationNameMsg(), NablagenPackage.Literals.APPLICATION__NAME, NGEN_APPLICATION_NAME)
+			error(getNgenApplicationNameMsg(), NablagenPackage.Literals.NABLAGEN_ROOT__NAME, NGEN_APPLICATION_NAME)
 	}
 
 	@Check(CheckType.FAST)
@@ -59,17 +59,17 @@ class NablagenValidator extends AbstractNablagenValidator
 	}
 
 	@Check(CheckType.FAST)
-	def void checkCppMandatoryVariables(Application it)
+	def void checkCppMandatoryVariables(NablagenRoot it)
 	{
 		if (targets.exists[x | x.type != TargetType::JAVA] && (mainModule !== null && mainModule.iterationMax === null || mainModule.timeMax === null))
-			error(getCppMandatoryVariablesMsg(), NablagenPackage.Literals::APPLICATION__MAIN_MODULE, CPP_MANDATORY_VARIABLES)
+			error(getCppMandatoryVariablesMsg(), NablagenPackage.Literals::NABLAGEN_ROOT__MAIN_MODULE, CPP_MANDATORY_VARIABLES)
 	}
 
 	@Check(CheckType.FAST)
 	def void checkConnectivityConsistency(AdditionalModule it)
 	{
 		// Look for all referenced NablaModule 
-		val root = eContainer as Application
+		val root = eContainer as NablagenRoot
 		val otherNablaModules = new HashSet<NablaModule>
 		if (root.mainModule.type !== null && root.mainModule.type !== type)
 			otherNablaModules += root.mainModule.type

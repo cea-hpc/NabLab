@@ -14,7 +14,6 @@ import com.google.inject.Provider
 import fr.cea.nabla.NablaStandaloneSetup
 import fr.cea.nabla.NablagenStandaloneSetup
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nablagen.Application
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenPackage
 import fr.cea.nabla.nablagen.NablagenRoot
@@ -123,7 +122,7 @@ class NablagenScopeProviderTest
 
 	NablaModule nablaHydro
 	NablaModule nablaRemap
-	Application ngen
+	NablagenRoot ngen
 
 	@Before
 	def void readModels()
@@ -133,9 +132,8 @@ class NablagenScopeProviderTest
 		Assert.assertNotNull(nablaHydro)
 		nablaRemap = nablaParseHelper.parse(nablaRemapModel, rs)
 		Assert.assertNotNull(nablaRemap)
-		val tmp_ngen = nablagenParseHelper.parse(ngenModel, rs)
-		Assert.assertNotNull(tmp_ngen)
-		ngen = tmp_ngen as Application
+		ngen = nablagenParseHelper.parse(ngenModel, rs)
+		Assert.assertNotNull(ngen)
 	}
 
 	@Test

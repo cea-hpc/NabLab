@@ -29,11 +29,11 @@ import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nablagen.Application
+import fr.cea.nabla.nablaext.TargetType
 import fr.cea.nabla.nablagen.ExtensionConfig
 import fr.cea.nabla.nablagen.LevelDB
+import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.nablagen.Target
-import fr.cea.nabla.nablagen.TargetType
 import java.io.File
 import java.util.ArrayList
 import java.util.HashMap
@@ -58,7 +58,7 @@ class NablagenInterpreter
 
 	@Accessors val traceListeners = new ArrayList<(String)=>void>
 
-	def IrRoot buildIr(Application ngen, String projectDir)
+	def IrRoot buildIr(NablagenRoot ngen, String projectDir)
 	{
 		try
 		{

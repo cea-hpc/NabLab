@@ -24,7 +24,7 @@ import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nablagen.AdditionalModule
-import fr.cea.nabla.nablagen.Application
+import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenPackage
 import fr.cea.nabla.nablagen.OutputVar
@@ -63,7 +63,7 @@ class NablagenScopeProvider extends AbstractNablagenScopeProvider
 			case NablagenPackage.Literals.NABLAGEN_MODULE__TYPE:
 			{
 				val existingScope = super.getScope(context, r)
-				val ngen = EcoreUtil2.getContainerOfType(context, Application)
+				val ngen = EcoreUtil2.getContainerOfType(context, NablagenRoot)
 				if (context instanceof AdditionalModule && ngen !== null && ngen.mainModule !== null && ngen.mainModule.type !== null)
 					new FilteringScope(existingScope, [e | e.name.toString != ngen.mainModule.type.name])
 				else
@@ -87,7 +87,7 @@ class NablagenScopeProvider extends AbstractNablagenScopeProvider
 			}
 			case NablagenPackage.Literals.VAR_LINK__MAIN_MODULE:
 			{
-				val ngen = EcoreUtil2.getContainerOfType(context, Application)
+				val ngen = EcoreUtil2.getContainerOfType(context, NablagenRoot)
 				if (ngen !== null && ngen.mainModule !== null)
 					Scopes::scopeFor(#[ngen.mainModule])
 				else
@@ -95,7 +95,7 @@ class NablagenScopeProvider extends AbstractNablagenScopeProvider
 			}
 			case NablagenPackage.Literals.VAR_LINK__MAIN_VARIABLE:
 			{
-				val ngen = EcoreUtil2.getContainerOfType(context, Application)
+				val ngen = EcoreUtil2.getContainerOfType(context, NablagenRoot)
 				if (ngen !== null && ngen.mainModule !== null && ngen.mainModule.type !== null)
 					Scopes::scopeFor(ngen.mainModule.type.allVars.filter(Var))
 				else

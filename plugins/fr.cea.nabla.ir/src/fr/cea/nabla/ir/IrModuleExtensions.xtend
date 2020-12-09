@@ -37,7 +37,7 @@ class IrModuleExtensions
 
 	static def ExtensionProvider[] getExtensionProviders(IrModule it)
 	{
-		functions.filter[x | x.provider.extensionName!='Math' && x.body===null].map[x | x.provider]
+		functions.filter[x | x.provider.extensionName!='Math' && x.body===null].map[x | x.provider].toSet
 	}
 
 	static def getJobByName(IrModule it, String jobName)

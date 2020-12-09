@@ -27,7 +27,7 @@ public final class DepthInit
 		public double maxTime;
 		public int maxIter;
 		public double deltat;
-		public WaveHeightFunctions waveHeightFunctions;
+		public waveheight.WaveHeightJni waveHeight;
 		public String nonRegression;
 
 		public void jsonInit(final String jsonContent)
@@ -63,10 +63,10 @@ public final class DepthInit
 			}
 			else
 				deltat = 1.0;
-			// waveHeightFunctions
-			waveHeightFunctions = new WaveHeightFunctions();
-			if (o.has("waveHeightFunctions"))
-				waveHeightFunctions.jsonInit(o.get("waveHeightFunctions").toString());
+			// waveHeight
+			waveHeight = new waveheight.WaveHeightJni();
+			if (o.has("waveHeight"))
+				waveHeight.jsonInit(o.get("waveHeight").toString());
 			// Non regression
 			if (o.has("nonRegression"))
 			{
@@ -123,7 +123,7 @@ public final class DepthInit
 	{
 		for (int jCells=0; jCells<nbCells; jCells++)
 		{
-			eta[jCells] = options.waveHeightFunctions.nextWaveHeight();
+			eta[jCells] = options.waveHeight.nextWaveHeight();
 		}
 	}
 

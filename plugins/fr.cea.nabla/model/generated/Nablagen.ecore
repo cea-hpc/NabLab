@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="nablagen" nsURI="http://www.cea.fr/nabla/Nablagen" nsPrefix="nablagen">
-  <eClassifiers xsi:type="ecore:EClass" name="NablagenRoot"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Application" eSuperTypes="#//NablagenRoot">
+  <eClassifiers xsi:type="ecore:EClass" name="NablagenRoot">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="writeIR" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="mainModule" eType="#//MainModule"
@@ -43,7 +42,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="ExtensionConfig">
     <eStructuralFeatures xsi:type="ecore:EReference" name="extension" eType="ecore:EClass Nabla.ecore#//NablaModule"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="providers" unique="false"
-        upperBound="-1" eType="#//ExtensionProvider"/>
+        upperBound="-1" eType="ecore:EClass Nablaext.ecore#//ExtensionProvider"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VtkOutput">
     <eStructuralFeatures xsi:type="ecore:EReference" name="periodReferenceModule"
@@ -61,7 +60,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="levelDBPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Target">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//TargetType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EEnum Nablaext.ecore#//TargetType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputDir" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//TargetVar" containment="true"/>
@@ -69,26 +68,5 @@
   <eClassifiers xsi:type="ecore:EClass" name="TargetVar">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="TargetType">
-    <eLiterals name="Java" literal="Java"/>
-    <eLiterals name="CppSequential" value="1" literal="CppSequential"/>
-    <eLiterals name="StlThread" value="2" literal="StlThread"/>
-    <eLiterals name="OpenMP" value="3" literal="OpenMP"/>
-    <eLiterals name="Kokkos" value="4" literal="Kokkos"/>
-    <eLiterals name="KokkosTeamThread" value="5" literal="KokkosTeamThread"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ExtensionProviderContainer" eSuperTypes="#//NablagenRoot">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
-        eType="#//ExtensionProvider" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ExtensionProvider">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="extension" eType="ecore:EClass Nabla.ecore#//NablaModule"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targets" unique="false"
-        upperBound="-1" eType="#//TargetType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="facadeClass" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="libHome" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="libName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
 </ecore:EPackage>

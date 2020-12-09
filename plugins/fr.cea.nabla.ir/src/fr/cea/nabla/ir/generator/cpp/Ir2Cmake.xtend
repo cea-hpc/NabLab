@@ -38,13 +38,13 @@ abstract class Ir2Cmake
 		set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
 
 		if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-		  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.4.0")
-		    message(FATAL_ERROR "GCC minimum required version is 7.4.0. Please upgrade.")
-		  endif()
+			if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.4.0")
+				message(FATAL_ERROR "GCC minimum required version is 7.4.0. Please upgrade.")
+			endif()
 		elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-		  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0.0")
-		    message(FATAL_ERROR "Clang minimum required version is 9.0.0. Please upgrade.")
-		  endif()
+			if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0.0")
+				message(FATAL_ERROR "Clang minimum required version is 9.0.0. Please upgrade.")
+			endif()
 		endif()
 
 		project(«name»Project CXX)
@@ -57,18 +57,22 @@ abstract class Ir2Cmake
 		find_package(leveldb)
 		find_package(Threads REQUIRED)
 		if(TARGET leveldb::leveldb)
-		  message(STATUS "levelDB found")
+			message(STATUS "levelDB found")
 		else()
-		  message(STATUS "levelDB NOT found !!!")
+			message(STATUS "levelDB NOT found !!!")
 		endif()
 		«ENDIF»
 
 		add_executable(«name.toLowerCase»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
-		target_include_directories(«name.toLowerCase» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
-		target_link_libraries(«name.toLowerCase» PUBLIC cppnabla«FOR tll : targetLinkLibraries» «tll»«ENDFOR»«IF !levelDBPath.nullOrEmpty» leveldb::leveldb Threads::Threads«ENDIF»)
+		«val externalProviders = providers.filter[x | x != "Math"]»
+		target_include_directories(«name.toLowerCase» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..«FOR ep : externalProviders» «ep.libHome»/include«ENDFOR»)
+		«IF !externalProviders.empty»
+		target_link_directories(«name.toLowerCase» PUBLIC«FOR ep : externalProviders» «ep.libHome»/lib«ENDFOR»)
+		«ENDIF»
+		target_link_libraries(«name.toLowerCase» PUBLIC cppnabla«FOR tll : targetLinkLibraries» «tll»«ENDFOR»«IF !levelDBPath.nullOrEmpty» leveldb::leveldb Threads::Threads«ENDIF»«FOR ep : externalProviders» «ep.libName»«ENDFOR»)
 
 		if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
-		  include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
+			include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 		endif()
 	'''
 }

@@ -18,7 +18,7 @@ import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.ReplaceReductions
-import fr.cea.nabla.nablagen.Application
+import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.ui.NabLabConsoleFactory
 import fr.cea.nabla.ui.NablaUiUtils
 import javax.inject.Provider
@@ -48,7 +48,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		[EObject selectedNablagenObject |
 			if (selectedNablagenObject !== null)
 			{
-				val ngen = EcoreUtil2.getContainerOfType(selectedNablagenObject, Application)
+				val ngen = EcoreUtil2.getContainerOfType(selectedNablagenObject, NablagenRoot)
 				if (ngen !== null) busyExec([displayIrFrom(ngen)])
 			}
 		]
@@ -122,7 +122,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		])
 	}
 
-	private def void displayIrFrom(Application ngen)
+	private def void displayIrFrom(NablagenRoot ngen)
 	{
 		var IrRoot ir = null
 		consoleFactory.printConsole(MessageType.Start, "Building IR to initialize job graph view")

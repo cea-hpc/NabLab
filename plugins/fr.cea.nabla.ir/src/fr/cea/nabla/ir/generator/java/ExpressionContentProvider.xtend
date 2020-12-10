@@ -31,6 +31,8 @@ import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 
 class ExpressionContentProvider
 {
@@ -112,7 +114,20 @@ class ExpressionContentProvider
 	'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 
 	static def dispatch CharSequence getContent(ArgOrVarRef it)
-	'''«codeName»«FOR r : iterators BEFORE '[' SEPARATOR '][' AFTER ']'»«r.name»«ENDFOR»«FOR d:indices»[«d.content»]«ENDFOR»'''
+	{
+		var argOrVarContent = codeName
+		if (target.linearAlgebra)
+			//TODO check this with BL
+			if (target instanceof ConnectivityVariable
+				&& (target as ConnectivityVariable).type.connectivities.size  === 2
+				&& iterators.size === 2)
+				argOrVarContent += ".get("+iterators.get(0).name+", "+iterators.get(1).name+")"+ indices.map[".get("+content+")"].join
+			else
+				argOrVarContent += iterators.map[".get("+name+")"].join + indices.map[".get("+content+")"].join
+		else
+			argOrVarContent += iterators.map["["+name+"]"].join + indices.map["["+content+"]"].join
+		return argOrVarContent
+	}
 
 	private static def getCodeName(ArgOrVarRef it)
 	{

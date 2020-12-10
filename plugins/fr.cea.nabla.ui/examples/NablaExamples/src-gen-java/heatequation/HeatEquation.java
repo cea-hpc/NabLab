@@ -367,18 +367,18 @@ public final class HeatEquation
 		dumpVariables(n);
 	}
 
-	private double det(double[] a, double[] b)
+	private static double det(double[] a, double[] b)
 	{
 		return (a[0] * b[1] - a[1] * b[0]);
 	}
 
-	private double norm(double[] a)
+	private static double norm(double[] a)
 	{
 		final int x = a.length;
 		return Math.sqrt(dot(a, a));
 	}
 
-	private double dot(double[] a, double[] b)
+	private static double dot(double[] a, double[] b)
 	{
 		final int x = a.length;
 		double result = 0.0;
@@ -389,13 +389,13 @@ public final class HeatEquation
 		return result;
 	}
 
-	private double[] sumR1(double[] a, double[] b)
+	private static double[] sumR1(double[] a, double[] b)
 	{
 		final int x = a.length;
 		return ArrayOperations.plus(a, b);
 	}
 
-	private double sumR0(double a, double b)
+	private static double sumR0(double a, double b)
 	{
 		return a + b;
 	}

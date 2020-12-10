@@ -22,6 +22,9 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.InstructionContentProvider.*
+import java.util.List
+import fr.cea.nabla.ir.ir.Variable
+import java.util.ArrayList
 
 class JobContentProvider 
 {
@@ -79,29 +82,47 @@ class JobContentProvider
 	private static def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
 		«FOR copy : copies»
-			«copy(copy.destination.name, copy.source.name, copy.destination.type.dimension, true)»
+			«copy(copy.destination, copy.source, copy.destination.type.dimension, true, new ArrayList<String>(), null)»
 		«ENDFOR»
 	'''
 
-	private static def CharSequence copy(String left, String right, int dimension, boolean firstLoop)
+	private static def CharSequence copy(Variable left, Variable right, int dimension, boolean firstLoop, List<String> indexNames, String newIndexName)
 	{
+		if (newIndexName !== null)
+			indexNames += newIndexName
 		if (dimension == 0)
-			'''«left» = «right»;'''
+			if (left.linearAlgebra && indexNames.size === 1)
+				return left.name + ".set(" + indexNames.get(0) + ", " + right.name + "[" + indexNames.get(0) + "]);"
+			else if (left.linearAlgebra && indexNames.size === 2)
+				return left.name + " .set(" + indexNames.get(0) + ", " + indexNames.get(1) + ", " + right.name + "[" + indexNames.get(0) + "][" + indexNames.get(1) + "]);"
+			else
+				return left.name + indexNames.map[s|"["+s+"]"].join + " = " + right.name + indexNames.map[s|"["+s+"]"].join + ";"
 		else
 		{
-			val indexName = 'i' + dimension
-			val suffix = '[' + indexName + ']'
+			var indexName = 'i' + dimension
+			if (firstLoop)
 			'''
-				«IF firstLoop»
-				IntStream.range(0, «left».length).parallel().forEach(«indexName» -> 
+				IntStream.range(0, «length(left, indexNames)»).parallel().forEach(«indexName» -> 
 				{
-					«copy(left + suffix, right + suffix, dimension-1, false)»
+					«copy(left, right, dimension-1, false, indexNames, indexName)»
 				});
-				«ELSE»
-				for (int «indexName»=0 ; «indexName»<«left».length ; «indexName»++)
-					«copy(left + suffix, right + suffix, dimension-1, false)»
-				«ENDIF»
+			'''
+			else
+			'''
+				for (int «indexName»=0 ; «indexName»<«length(left, indexNames)» ; «indexName»++)
+					«copy(left, right, dimension-1, false, indexNames, indexName)»
 			'''
 		}
+	}
+
+	private static def CharSequence length(Variable v, List<String> indexNames)
+	{
+		if (indexNames.size === 0)
+			return v.name + ".length"
+		else
+			if (v.linearAlgebra)
+				return v.name + indexNames.map[s | ".get(" + s + ")"].join + ".length"
+			else
+				return v.name + indexNames.map[s | "[" + s + "]"].join + ".length"
 	}
 }

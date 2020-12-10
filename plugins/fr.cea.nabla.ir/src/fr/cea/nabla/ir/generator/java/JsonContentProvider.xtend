@@ -53,7 +53,7 @@ class JsonContentProvider
 		'''
 			assert(«v.jsonName»«FOR i : indices».getAsJsonArray().get(«i»)«ENDFOR».isJsonArray());
 			assert(«v.jsonName».getAsJsonArray()«FOR i : indices».get(«i»).getAsJsonArray()«ENDFOR».size() == «sizes.head.content»);
-			«IF indices.empty»options.«v.name»«v.javaAllocation»;«ENDIF»
+			«IF indices.empty»«v.name»«v.javaAllocation»;«ENDIF»
 			«val indexName = 'i' + sizes.size»
 			for (int «indexName»=0 ; «indexName»<«sizes.head.content» ; «indexName»++)
 			{

@@ -25,7 +25,7 @@ import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.ItemSet
 import fr.cea.nabla.nabla.Loop
-import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDeclaration
@@ -197,7 +197,7 @@ class IrInstructionFactory
 
 	private def isNablaLibFunction(FunctionOrReduction it) 
 	{
-		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
-		return (module.name == 'LinearAlgebra' || module.name == 'Math')
+		val r = EcoreUtil2.getContainerOfType(it, NablaRoot)
+		return (r.name == 'LinearAlgebra' || r.name == 'Math')
 	}
 }

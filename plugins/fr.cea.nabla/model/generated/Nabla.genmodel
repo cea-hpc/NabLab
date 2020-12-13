@@ -13,13 +13,16 @@
       <genEnumLiterals ecoreEnumLiteral="Nabla.ecore#//PrimitiveType/Real"/>
       <genEnumLiterals ecoreEnumLiteral="Nabla.ecore#//PrimitiveType/Bool"/>
     </genEnums>
+    <genClasses ecoreClass="Nabla.ecore#//NablaRoot">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//NablaRoot/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaRoot/imports"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaRoot/reductions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaRoot/functions"/>
+    </genClasses>
+    <genClasses ecoreClass="Nabla.ecore#//NablaExtension"/>
     <genClasses ecoreClass="Nabla.ecore#//NablaModule">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//NablaModule/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/imports"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/itemTypes"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/connectivities"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/reductions"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/functions"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/declarations"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/iteration"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/jobs"/>

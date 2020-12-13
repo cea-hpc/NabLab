@@ -16,7 +16,7 @@ import "http://www.cea.fr/nabla/Nabla" as nabla
 
 generate nablaext "http://www.cea.fr/nabla/Nablaext"
 
-ExtensionProvider: 'ExtensionProvider' name=ID ':' extension=[nabla::NablaModule]
+ExtensionProvider: 'ExtensionProvider' name=ID ':' extension=[nabla::NablaExtension]
 '{'
 	'targets' '=' targets+=TargetType (',' targets+=TargetType)* ';'
 	'facadeClass' '=' facadeClass = STRING ';'

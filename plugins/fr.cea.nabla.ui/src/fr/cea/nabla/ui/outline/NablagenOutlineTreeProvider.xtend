@@ -9,13 +9,14 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.outline
 
+import fr.cea.nabla.nablagen.ExtensionConfig
 import fr.cea.nabla.nablagen.LevelDB
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.nablagen.OutputVar
 import fr.cea.nabla.nablagen.Target
-import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
 import fr.cea.nabla.ui.NablaUiUtils
+import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
 
 /**
  * Customization of the default outline structure.
@@ -36,6 +37,9 @@ class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 
 	def _isLeaf(NablagenModule it) { true }
 	def _text(NablagenModule it) { name }
+
+	def _image(ExtensionConfig it) { NablaUiUtils.createImage('icons/Nablaext.gif') }
+	def _text(ExtensionConfig it) { providers.map[name].join(', ') }
 
 	def _image(OutputVar it) { null }
 	def _text(OutputVar it) { varName }

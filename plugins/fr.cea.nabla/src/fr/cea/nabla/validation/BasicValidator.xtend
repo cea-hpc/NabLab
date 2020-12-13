@@ -22,6 +22,7 @@ import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.Interval
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import fr.cea.nabla.nabla.TimeIterator
@@ -64,17 +65,17 @@ class BasicValidator extends UnusedValidator
 			checkExpressionValidityAndType(nbElems, NablaPackage.Literals.INTERVAL__NB_ELEMS)
 	}
 
-	// ===== NablaModule =====
+	// ===== NablaRoot =====
 
-	public static val MODULE_NAME = "NablaModule::ModuleName"
+	public static val ROOT_NAME = "NablaRoot::RootName"
 
-	static def getModuleNameMsg() { "Module name must start with an upper case" }
+	static def getRootNameMsg() { "Module/Extension name must start with an upper case" }
 
 	@Check(CheckType.NORMAL)
-	def checkName(NablaModule it)
+	def checkName(NablaRoot it)
 	{
 		if (!name.nullOrEmpty && Character::isLowerCase(name.charAt(0)))
-			error(getModuleNameMsg(), NablaPackage.Literals.NABLA_MODULE__NAME, MODULE_NAME)
+			error(getRootNameMsg(), NablaPackage.Literals.NABLA_ROOT__NAME, ROOT_NAME)
 	}
 
 	// ===== TimeIterator =====

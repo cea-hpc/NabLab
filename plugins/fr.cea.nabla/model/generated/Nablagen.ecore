@@ -40,7 +40,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="mainVariable" eType="ecore:EClass Nabla.ecore#//Var"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ExtensionConfig">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="extension" eType="ecore:EClass Nabla.ecore#//NablaModule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="extension" eType="ecore:EClass Nabla.ecore#//NablaExtension"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="providers" unique="false"
         upperBound="-1" eType="ecore:EClass Nablaext.ecore#//ExtensionProvider"/>
   </eClassifiers>

@@ -21,7 +21,7 @@ MainModule DepthInit depthInit
 	timeMax = maxTime;
 }
 
-Extension WaveHeight = WaveHeightJni, WaveHeightCpp;
+Extension WaveHeight = WaveHeightJava, WaveHeightCpp;
 
 Java
 {

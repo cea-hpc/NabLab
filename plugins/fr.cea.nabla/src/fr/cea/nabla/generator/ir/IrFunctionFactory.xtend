@@ -15,7 +15,7 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionOrReduction
-import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.Reduction
 import org.eclipse.xtext.EcoreUtil2
 
@@ -31,7 +31,7 @@ class IrFunctionFactory
 	{
 		annotations += f.toIrAnnotation
 		name = f.name
-		provider = f.nablaModuleName.toIrExtensionProvider
+		provider = f.nablaRootName.toIrExtensionProvider
 		f.variables.forEach[x | variables += x.toIrVariable as SimpleVariable]
 		if (f.external)
 		{
@@ -54,16 +54,15 @@ class IrFunctionFactory
 		annotations += f.toIrAnnotation
 		// build a unique name with name and type
 		name = f.name.toFirstLower + t.primitive.getName().charAt(0) + t.sizes.size
-		provider = f.nablaModuleName.toIrExtensionProvider
+		provider = f.nablaRootName.toIrExtensionProvider
 		f.variables.forEach[x | variables += x.toIrVariable as SimpleVariable]
 		f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
 		returnType = t.toIrBaseType
 		body = f.body.toIrInstruction
 	}
 
-	private def getNablaModuleName(FunctionOrReduction it)
+	private def getNablaRootName(FunctionOrReduction it)
 	{
-		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
-		return module.name
+		EcoreUtil2.getContainerOfType(it, NablaRoot).name
 	}
 }

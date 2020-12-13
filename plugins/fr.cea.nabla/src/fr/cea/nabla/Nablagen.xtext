@@ -51,7 +51,7 @@ VarLink:
 	additionalModule=[AdditionalModule] '.' additionalVariable=[nabla::Var] '=' mainModule=[MainModule] '.' mainVariable=[nabla::Var] ';';
 
 ExtensionConfig:
-	'Extension' extension=[nabla::NablaModule] '=' providers+=[nablaext::ExtensionProvider] (',' providers+=[nablaext::ExtensionProvider])* ';';
+	'Extension' extension=[nabla::NablaExtension] '=' providers+=[nablaext::ExtensionProvider] (',' providers+=[nablaext::ExtensionProvider])* ';';
 
 VtkOutput:
 	'VtkOutput'

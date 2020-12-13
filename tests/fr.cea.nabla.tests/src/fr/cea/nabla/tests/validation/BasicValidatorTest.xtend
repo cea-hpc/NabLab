@@ -24,12 +24,14 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import fr.cea.nabla.nabla.NablaExtension
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
 class BasicValidatorTest
 {
 	@Inject ParseHelper<NablaModule> parseHelper
+	@Inject ParseHelper<NablaExtension> extensionParseHelper
 	@Inject extension ValidationUtils
 	@Inject extension TestUtils
 	@Inject extension ValidationTestHelper
@@ -127,14 +129,21 @@ class BasicValidatorTest
 	{
 		val moduleKo = parseHelper.parse('''module test;''')
 		Assert.assertNotNull(moduleKo)
-
-		moduleKo.assertError(NablaPackage.eINSTANCE.nablaModule,
-			BasicValidator::MODULE_NAME,
-			BasicValidator::getModuleNameMsg())		
-
+		moduleKo.assertError(NablaPackage.eINSTANCE.nablaRoot,
+			BasicValidator::ROOT_NAME,
+			BasicValidator::getRootNameMsg())
 		val moduleOk = parseHelper.parse('''module Test;''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
+
+		val extensionKo = extensionParseHelper.parse('''extension test;''')
+		Assert.assertNotNull(extensionKo)
+		extensionKo.assertError(NablaPackage.eINSTANCE.nablaRoot,
+			BasicValidator::ROOT_NAME,
+			BasicValidator::getRootNameMsg())
+		val extensionOk = extensionParseHelper.parse('''extension Test;''')
+		Assert.assertNotNull(extensionOk)
+		extensionOk.assertNoErrors
 	}
 
 	// ===== TimeIterator =====
@@ -378,8 +387,8 @@ class BasicValidatorTest
 			«testModuleForSimulation»
 			let orig = [0.0 , 0.0] ;
 			ℝ[2] X{nodes};
-			IniX1: ∀j∈cells(), ∀r∈nodes(j), X{r} = orig; 
-			IniX2: ∀r∈nodes(), ∀j∈nodesOfCell(r), X{r} = orig; 
+			IniX1: ∀j∈cells(), ∀r∈nodes(j), X{r} = orig;
+			IniX2: ∀r∈nodes(), ∀j∈nodesOfCell(r), X{r} = orig;
 			'''
 		)
 		Assert.assertNotNull(moduleKo)

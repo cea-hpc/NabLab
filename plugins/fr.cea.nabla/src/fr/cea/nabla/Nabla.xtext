@@ -15,6 +15,14 @@ import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
 generate nabla "http://www.cea.fr/nabla/Nabla"
 
+NablaRoot: NablaExtension | NablaModule;
+
+NablaExtension:
+	'extension' name=QualifiedName ';'
+	imports+=Import*
+	reductions+=Reduction*
+	functions+=Function*;
+
 NablaModule:
 	'module' name=QualifiedName ';'
 	imports+=Import*
@@ -25,7 +33,7 @@ NablaModule:
 	declarations+=VarDeclaration*
 	// Only one block of iteration (don't know how to manage several blocks on node variable X)
 	(iteration=TimeIteratorDefinition)?
-	jobs+=Job*;
+	jobs+=Job*; // TODO: at least one job in a module
 
 Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';
 

@@ -153,7 +153,6 @@ class OpenSiriusJobsGraph extends AbstractHandler
 
 	def protected Session getOrCreateSession(String projectSessionName)
 	{
-		val start = System.nanoTime()
 		var airdResourceURI = URI.createURI(URIQuery.INMEMORY_URI_SCHEME + ":/" + projectSessionName + "/representations.aird")
 		var session = SessionManager.INSTANCE.getExistingSession(airdResourceURI)
 		if (session === null)
@@ -164,14 +163,11 @@ class OpenSiriusJobsGraph extends AbstractHandler
 		{
 			return SessionManager.INSTANCE.openSession(airdResourceURI, new NullProgressMonitor, SiriusEditPlugin.plugin.uiCallback)
 		}
-		val stop = System.nanoTime()
-		consoleFactory.printConsole(MessageType.Start,"Sirius: get or create session (" + ((stop - start) / 1000000) + " ms)")
 		return session
 	}
 
 	def protected boolean addOrUpdateResource(Session session, IrRoot irRoot, String projectSessionName)
 	{
-		val start = System.nanoTime()
 		val irResourceURI = URI.createURI(URIQuery.INMEMORY_URI_SCHEME + ":/" + projectSessionName + "/" + projectSessionName + ".nablair")
 		
 		var isNewResource = false
@@ -222,8 +218,6 @@ class OpenSiriusJobsGraph extends AbstractHandler
 			)
 			
 		}
-		val stop = System.nanoTime()
-		consoleFactory.printConsole(MessageType.Start,"Sirius: add or update resource (" + ((stop - start) / 1000000) + " ms)")
 		return isNewResource
 	}
 
@@ -255,7 +249,6 @@ class OpenSiriusJobsGraph extends AbstractHandler
 
 	def protected void createAndOpenRepresentation(Session session, String representationName, String diagramName, EObject rootElement)
 	{
-		val start = System.nanoTime()
 		val representationDescriptions = DialectManager.INSTANCE.getAvailableRepresentationDescriptions(session.getSelectedViewpoints(false), rootElement)
 
 		var DRepresentation representation = null
@@ -268,27 +261,16 @@ class OpenSiriusJobsGraph extends AbstractHandler
 				representation = cmd.createdRepresentation
 			}
 		}
-		val stop = System.nanoTime()
-		consoleFactory.printConsole(MessageType.Start,"Sirius: create representation (" + ((stop - start) / 1000000) + " ms)")
 
 		if (representation !== null)
 		{
-			val startSave = System.nanoTime()
 			saveSession(session)
-			val stopSave = System.nanoTime()
-			consoleFactory.printConsole(MessageType.Start,"Sirius: save (" + ((stopSave - startSave) / 1000000) + " ms)")
-			
-			val startOpen = System.nanoTime()
 			DialectUIManager.INSTANCE.openEditor(session, representation, new NullProgressMonitor)
-			val stopOpen = System.nanoTime()
-			consoleFactory.printConsole(MessageType.Start,"Sirius: open representation (" + ((stopOpen - startOpen) / 1000000) + " ms)")
-			
 		}
 	}
 
 	def protected void updateOpenedRepresentation(Session session, EObject diagramSemanticRoot, String diagramName)
 	{
-		val start = System.nanoTime()
 		var editingSession = SessionUIManager.INSTANCE.getUISession(session)
 		if (editingSession !== null)
 		{
@@ -314,8 +296,6 @@ class OpenSiriusJobsGraph extends AbstractHandler
 				DialectUIManager.INSTANCE.refreshEditor(editor, new NullProgressMonitor)
 			}
 		}
-		val stop = System.nanoTime()
-		consoleFactory.printConsole(MessageType.Start,"Sirius: update opened representation (" + ((stop - start) / 1000000) + " ms)")
 	}
 
 	def protected IrRoot getSemanticRoot(Session session)

@@ -87,6 +87,14 @@ This view is automatically updated and synchronized with the selection in the cu
 
 <img src="./README_images/NabLab_latex_view.png" alt="NabLab Latex View" title="NabLab Latex View" width="100%" height="100%" />
 
+### Job Graph Editor
+
+The *Job Graph Editor* can be opened from a *nablagen* model, by clicking on F2.
+
+It allows to visualize the graph of jobs computed from the *nablagen* model.
+
+<img src="./README_images/NabLab_job_graph_editor.png" alt="NabLab Job Graph Editor" title="NabLab Job Graph Editor" width="100%" height="100%" />
+
 ## Build via Maven 3.x
 
 To build the NabLab products for Windows/Linux/MacOS and the Eclipse update-site, you can run the following command from the root of the repository:
@@ -98,7 +106,7 @@ The products resulting from the build will be accessible in */releng/fr.cea.nabl
 
 The Eclipse update-site resulting from the build will be accessible in */releng/fr.cea.nabla.updatesite/target/fr.cea.nabla.updatesite-1.0.0.yyyymmddHHMM.zip*.
 
-Just install this update-site in an Eclipse 2020-03 with Sirius 6.3.0 and Xtext 2.21.0 already installed to use NabLab.
+Just install this update-site in an Eclipse 2020-03 with Sirius 6.4.0 and Xtext 2.21.0 already installed to use NabLab.
 
 If you want to skip tests execution, you can run the following command:
 `mvn clean; mvn verify -Dmaven.test.skip=true`
@@ -118,7 +126,7 @@ Xtext (2.21)
  * Project: http://projects.eclipse.org/projects/modeling.tmf.xtext
  * Source: https://github.com/eclipse/xtext
 
-Sirius (6.3.0)
+Sirius (6.4.0)
  * License: EPL-2.0
  * Project: http://projects.eclipse.org/projects/modeling.sirius
  * Source: https://git.eclipse.org/c/sirius/org.eclipse.sirius.git

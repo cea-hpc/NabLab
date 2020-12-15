@@ -10,6 +10,7 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
+import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
@@ -29,6 +30,7 @@ import java.util.LinkedHashSet
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
 
+@Singleton
 class Nabla2Ir
 {
 	@Inject extension IrAnnotationHelper

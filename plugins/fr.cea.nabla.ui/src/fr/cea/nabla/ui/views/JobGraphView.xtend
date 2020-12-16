@@ -131,16 +131,10 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		{
 			val nablagen2Ir = nablagen2IrProvider.get // force a new instance to ensure a new IR
 			ir = nablagen2Ir.toIrRoot(ngen)
-
-			// buildIrModule can be call several times for the same nablaModule,
-			// for example by a view. Transformations must not be done in this case
-			if (ir.jobs.forall[at == 0.0])
-			{
-				// IR -> IR
-				val description = 'Minimal IR->IR transformations to check job cycles'
-				val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
-				t.transformIr(ir, [msg | consoleFactory.printConsole(MessageType.Exec, msg)])
-			}
+			// IR -> IR
+			val description = 'Minimal IR->IR transformations to check job cycles'
+			val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
+			t.transformIr(ir, [msg | consoleFactory.printConsole(MessageType.Exec, msg)])
 		}
 		catch (Exception e)
 		{

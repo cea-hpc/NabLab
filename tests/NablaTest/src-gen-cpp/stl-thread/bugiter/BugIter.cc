@@ -171,15 +171,13 @@ void BugIter::updateW() noexcept
 
 /**
  * Job SetUpTimeLoopK called @2.0 in executeTimeLoopN method.
- * In variables: v_n, v_nplus1_k0
- * Out variables: v_nplus1_k, v_nplus1_k
+ * In variables: v_nplus1_k0
+ * Out variables: v_nplus1_k
  */
 void BugIter::setUpTimeLoopK() noexcept
 {
 	for (size_t i1(0) ; i1<v_nplus1_k.size() ; i1++)
 		v_nplus1_k[i1] = v_nplus1_k0[i1];
-	for (size_t i1(0) ; i1<v_nplus1_k.size() ; i1++)
-		v_nplus1_k[i1] = v_n[i1];
 }
 
 /**
@@ -223,7 +221,7 @@ void BugIter::executeTimeLoopK() noexcept
 
 /**
  * Job ExecuteTimeLoopN called @3.0 in simulate method.
- * In variables: deltat, t_n, u_n, v_n, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_n, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
+ * In variables: deltat, t_n, u_n, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
  * Out variables: t_nplus1, u_nplus1, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
  */
 void BugIter::executeTimeLoopN() noexcept
@@ -307,15 +305,13 @@ void BugIter::iniW() noexcept
 
 /**
  * Job SetUpTimeLoopL called @6.0 in executeTimeLoopN method.
- * In variables: w_n, w_nplus1_l0
- * Out variables: w_nplus1_l, w_nplus1_l
+ * In variables: w_nplus1_l0
+ * Out variables: w_nplus1_l
  */
 void BugIter::setUpTimeLoopL() noexcept
 {
 	for (size_t i1(0) ; i1<w_nplus1_l.size() ; i1++)
 		w_nplus1_l[i1] = w_nplus1_l0[i1];
-	for (size_t i1(0) ; i1<w_nplus1_l.size() ; i1++)
-		w_nplus1_l[i1] = w_n[i1];
 }
 
 /**

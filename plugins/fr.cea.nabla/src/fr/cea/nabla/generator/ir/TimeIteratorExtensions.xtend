@@ -47,14 +47,19 @@ class TimeIteratorExtensions
 		val ic = ti.toIrIterationCounter
 
 		// Time loop job creation
+		// (it.caller = null to reinit caller in case of reuse of job instance)
 		val createdJobs = new ArrayList<TimeLoopJob>
-		createdJobs += ti.toIrExecuteTimeLoopJob => [iterationCounter = ic]
+		createdJobs += ti.toIrExecuteTimeLoopJob => 
+		[
+			iterationCounter = ic
+			it.caller = null
+		]
 		// TearDown job not created if ti represents the top level loop
 		if (parentTi !== null)
-			createdJobs += ti.toIrTearDownTimeLoopJob
+			createdJobs += ti.toIrTearDownTimeLoopJob => [ it.caller = null ]
 		// SetUp job not created if no init variable like "X_n0" and ti represents the top level loop
 		if (parentTi !== null || !tiInitArgOrVarRefs.empty)
-			createdJobs += ti.toIrSetUpTimeLoopJob
+			createdJobs += ti.toIrSetUpTimeLoopJob => [ it.caller = null ]
 
 		// Add created jobs to the module and in their caller
 		irModule.jobs += createdJobs

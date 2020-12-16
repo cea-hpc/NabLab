@@ -11,7 +11,6 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Provider
-import com.google.inject.Singleton
 import fr.cea.nabla.ir.IrModuleExtensions
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.ConnectivityVariable
@@ -31,7 +30,6 @@ import fr.cea.nabla.nablagen.NablagenRoot
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.EcoreUtil2
 
-@Singleton
 class Nablagen2Ir
 {
 	@Inject extension IrAnnotationHelper

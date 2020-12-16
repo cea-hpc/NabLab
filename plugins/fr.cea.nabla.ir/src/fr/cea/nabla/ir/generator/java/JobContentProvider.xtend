@@ -92,11 +92,11 @@ class JobContentProvider
 			indexNames += newIndexName
 		if (dimension == 0)
 			if (left.linearAlgebra && indexNames.size === 1)
-				return left.name + ".set(" + indexNames.get(0) + ", " + right.name + "[" + indexNames.get(0) + "]);"
+				left.name + ".set(" + indexNames.get(0) + ", " + right.name + "[" + indexNames.get(0) + "]);"
 			else if (left.linearAlgebra && indexNames.size === 2)
-				return left.name + " .set(" + indexNames.get(0) + ", " + indexNames.get(1) + ", " + right.name + "[" + indexNames.get(0) + "][" + indexNames.get(1) + "]);"
+				left.name + " .set(" + indexNames.get(0) + ", " + indexNames.get(1) + ", " + right.name + "[" + indexNames.get(0) + "][" + indexNames.get(1) + "]);"
 			else
-				return left.name + indexNames.map[s|"["+s+"]"].join + " = " + right.name + indexNames.map[s|"["+s+"]"].join + ";"
+				left.name + indexNames.map[s|"["+s+"]"].join + " = " + right.name + indexNames.map[s|"["+s+"]"].join + ";"
 		else
 		{
 			var indexName = 'i' + dimension

@@ -198,6 +198,11 @@ class LatexLabelServices
 			'\\left(' + latex + '\\right)'
 	}
 
+
 	// PRESERVE UNDERSCORES
-	private static def String pu(String it) { if (!nullOrEmpty) replaceAll('_', '\\\\_') else '' }
+	private static def String pu(String it)
+	{
+		val ret = if (!nullOrEmpty) replaceAll('_', '\\\\_') else ''
+		return ret.replace('\u03B4', '\\delta ')
+	}
 }

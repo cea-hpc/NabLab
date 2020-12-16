@@ -13,6 +13,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
@@ -240,4 +241,9 @@ class IrInterpreter
 
 	private def getRefDBName() { levelDatabasePath + ir.name + "DB.ref" }
 	private def getCurDBName() { levelDatabasePath + ir.name + "DB.current" }
+
+	private def isLinearAlgebra(Function it)
+	{
+		provider == 'LinearAlgebra'
+	}
 }

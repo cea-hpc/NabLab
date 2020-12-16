@@ -41,6 +41,7 @@ class IrArgOrVarFactory
 	@Inject extension IrBasicFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension ArgOrVarTypeProvider
+	@Inject extension LinearAlgebraUtils
 	@Inject NablaType2IrType nablaType2IrType
 
 	/**
@@ -164,6 +165,7 @@ class IrArgOrVarFactory
 		annotations += v.toIrAnnotation
 		name = varName
 		type = toIrConnectivityType(v.type, v.supports)
+		linearAlgebra = false
 	}
 
 	def create IrFactory::eINSTANCE.createSimpleVariable toIrIterationCounter(TimeIterator t)
@@ -188,7 +190,7 @@ class IrArgOrVarFactory
 		return switch v
 		{
 			SimpleVar : toIrSimpleVariable(v, name) => [const = false]
-			ConnectivityVar : toIrConnectivityVariable(v, name)
+			ConnectivityVar : toIrConnectivityVariable(v, name) => [linearAlgebra = v.linearAlgebra]
 		}
 	}
 

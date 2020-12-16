@@ -162,7 +162,7 @@ void Test::setUpTimeLoopN() noexcept
 
 /**
  * Job ExecuteTimeLoopN called @3.0 in simulate method.
- * In variables: deltat, e1, e2_n, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_n, t_n
+ * In variables: deltat, e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_n, t_n
  * Out variables: e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_nplus1, t_nplus1
  */
 void Test::executeTimeLoopN() noexcept
@@ -218,15 +218,13 @@ void Test::executeTimeLoopN() noexcept
 
 /**
  * Job SetUpTimeLoopK called @3.0 in executeTimeLoopN method.
- * In variables: e2_n, e2_nplus1_k0
- * Out variables: e2_nplus1_k, e2_nplus1_k
+ * In variables: e2_nplus1_k0
+ * Out variables: e2_nplus1_k
  */
 void Test::setUpTimeLoopK() noexcept
 {
 	for (size_t i1(0) ; i1<e2_nplus1_k.size() ; i1++)
 		e2_nplus1_k[i1] = e2_nplus1_k0[i1];
-	for (size_t i1(0) ; i1<e2_nplus1_k.size() ; i1++)
-		e2_nplus1_k[i1] = e2_n[i1];
 }
 
 /**

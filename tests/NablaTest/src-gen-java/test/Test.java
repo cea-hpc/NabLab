@@ -216,7 +216,7 @@ public final class Test
 
 	/**
 	 * Job ExecuteTimeLoopN called @3.0 in simulate method.
-	 * In variables: deltat, e1, e2_n, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_n, t_n
+	 * In variables: deltat, e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_n, t_n
 	 * Out variables: e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_nplus1, t_nplus1
 	 */
 	protected void executeTimeLoopN()
@@ -256,18 +256,14 @@ public final class Test
 
 	/**
 	 * Job SetUpTimeLoopK called @3.0 in executeTimeLoopN method.
-	 * In variables: e2_n, e2_nplus1_k0
-	 * Out variables: e2_nplus1_k, e2_nplus1_k
+	 * In variables: e2_nplus1_k0
+	 * Out variables: e2_nplus1_k
 	 */
 	protected void setUpTimeLoopK()
 	{
 		IntStream.range(0, e2_nplus1_k.length).parallel().forEach(i1 -> 
 		{
 			e2_nplus1_k[i1] = e2_nplus1_k0[i1];
-		});
-		IntStream.range(0, e2_nplus1_k.length).parallel().forEach(i1 -> 
-		{
-			e2_nplus1_k[i1] = e2_n[i1];
 		});
 	}
 

@@ -14,6 +14,7 @@ package fr.cea.nabla.ir.ir;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.ConnectivityVariable#getType <em>Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ConnectivityVariable#getDefaultValue <em>Default Value</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.ConnectivityVariable#isLinearAlgebra <em>Linear Algebra</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivityVariable()
@@ -64,5 +65,28 @@ public interface ConnectivityVariable extends Variable {
 	 * @generated
 	 */
 	void setDefaultValue(ArgOrVarRef value);
+
+	/**
+	 * Returns the value of the '<em><b>Linear Algebra</b></em>' attribute.
+	 * The default value is <code>"false"</code>.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Linear Algebra</em>' attribute.
+	 * @see #setLinearAlgebra(boolean)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivityVariable_LinearAlgebra()
+	 * @model default="false" required="true"
+	 * @generated
+	 */
+	boolean isLinearAlgebra();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ConnectivityVariable#isLinearAlgebra <em>Linear Algebra</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Linear Algebra</em>' attribute.
+	 * @see #isLinearAlgebra()
+	 * @generated
+	 */
+	void setLinearAlgebra(boolean value);
 
 } // ConnectivityVariable

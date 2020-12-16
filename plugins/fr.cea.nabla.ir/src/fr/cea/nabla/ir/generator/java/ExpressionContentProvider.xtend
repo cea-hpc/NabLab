@@ -117,11 +117,10 @@ class ExpressionContentProvider
 	{
 		var argOrVarContent = codeName
 		if (target.linearAlgebra)
-			//TODO check this with BL
 			if (target instanceof ConnectivityVariable
 				&& (target as ConnectivityVariable).type.connectivities.size  === 2
 				&& iterators.size === 2)
-				argOrVarContent += ".get("+iterators.get(0).name+", "+iterators.get(1).name+")"+ indices.map[".get("+content+")"].join
+				argOrVarContent += ".get("+iterators.map[name].join(', ')+")"+ indices.map[".get("+content+")"].join
 			else
 				argOrVarContent += iterators.map[".get("+name+")"].join + indices.map[".get("+content+")"].join
 		else

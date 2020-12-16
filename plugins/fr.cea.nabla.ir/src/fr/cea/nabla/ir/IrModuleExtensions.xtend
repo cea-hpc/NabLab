@@ -14,8 +14,6 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.SimpleVariable
 
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-
 class IrModuleExtensions
 {
 	static def getIrRoot(IrModule it)

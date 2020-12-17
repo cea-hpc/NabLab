@@ -35,6 +35,10 @@ abstract class Ir2Cmake
 		set(«entry.key» «entry.value»)
 		«ENDFOR»
 
+		«val externalProviders = providers.filter[x | x != "Math"]»
+		«FOR ep : externalProviders»
+		set(«ep.extensionName.toUpperCase»_HOME «ep.libHome»)
+		«ENDFOR»
 		set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
 
 		if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -50,7 +54,10 @@ abstract class Ir2Cmake
 		project(«name»Project CXX)
 
 		«libraryBackend»
-		add_subdirectory(${CMAKE_SOURCE_DIR}/../libcppnabla ${CMAKE_SOURCE_DIR}/../libcppnabla)
+		add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libcppnabla ${CMAKE_CURRENT_SOURCE_DIR}/../libcppnabla)
+		«FOR ep : externalProviders»
+		add_subdirectory(${«ep.extensionName.toUpperCase»_HOME}/src ${«ep.extensionName.toUpperCase»_HOME}/lib)
+		«ENDFOR»
 
 		«IF !levelDBPath.nullOrEmpty»
 		set(CMAKE_FIND_ROOT_PATH «levelDBPath»)
@@ -64,17 +71,23 @@ abstract class Ir2Cmake
 		«ENDIF»
 
 		add_executable(«name.toLowerCase»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
-		«val externalProviders = providers.filter[x | x != "Math"]»
-		target_include_directories(«name.toLowerCase» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..«FOR ep : externalProviders» «ep.libHome»/include«ENDFOR»)
-		«IF !externalProviders.empty»
-		target_link_directories(«name.toLowerCase» PUBLIC«FOR ep : externalProviders» «ep.libHome»/lib«ENDFOR»)
-		«ENDIF»
-		target_link_libraries(«name.toLowerCase» PUBLIC cppnabla«FOR tll : targetLinkLibraries» «tll»«ENDFOR»«IF !levelDBPath.nullOrEmpty» leveldb::leveldb Threads::Threads«ENDIF»«FOR ep : externalProviders» «ep.libName»«ENDFOR»)
+		target_include_directories(«name.toLowerCase» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
+		target_link_libraries(«name.toLowerCase» PUBLIC cppnabla«FOR tll : targetLinkLibraries» «tll»«ENDFOR»«IF !levelDBPath.nullOrEmpty» leveldb::leveldb Threads::Threads«ENDIF»«FOR ep : externalProviders» «ep.libName.trimLibName»«ENDFOR»)
 
 		if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 			include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 		endif()
 	'''
+
+	private def trimLibName(String libName)
+	{
+		var trimedLibName = libName
+		if (libName.startsWith("lib"))
+			trimedLibName = trimedLibName.substring(3)
+		if (libName.endsWith(".a"))
+			trimedLibName = trimedLibName.substring(0, trimedLibName.length - 2)
+		return trimedLibName
+	}
 }
 
 class StlIr2Cmake extends Ir2Cmake

@@ -18,4 +18,5 @@ package fr.cea.nabla.validation
 class NablaValidator extends ExpressionValidator 
 {
 	// Attention l'ordre d'héritage a son importance.
+	// TODO Validate that each extension as a provider
 }

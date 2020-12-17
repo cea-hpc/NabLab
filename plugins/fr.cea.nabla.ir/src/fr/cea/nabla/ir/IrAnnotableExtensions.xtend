@@ -20,9 +20,7 @@ class IrAnnotableExtensions
 
 	static def getUriDetail(IrAnnotable it)
 	{
-		val irRoot = Utils::getIrModule(it)
-		if (irRoot === null) null
-		else irRoot.annotations.head.details.get(ANNOTATION_URI_DETAIL)
+		annotations.head.details.get(ANNOTATION_URI_DETAIL)
 	}
 
 	static def int getOffset(IrAnnotable it)

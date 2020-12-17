@@ -7,14 +7,14 @@ Lors de la génération, on fait simplement quelque chose du type :
 
 	left.generate = right.generate.
 
-Les validateurs garantissent que les parties droites droite et gauche sont du même type.
+Les validateurs garantissent que les parties droite et gauche sont du même type.
 Néanmoins, dans le cas de tableaux, la génération entraine de l'aliasing puisqu'il n'y a pas de recopie du contenu des tableaux 
 mais une affectation directe (et pas de surcharge de l'opérateur =).
 
 Même si l'aliasing peut dans certains cas offrir un gain de performance, il est préférable qu'il soit fait sur une passe supplémentaire
 avec une heuristique d'optimisation maitrisée. De base, il serait souhaitable qu'une recopie soit effectuée.
 
-**ALgèbre linéaire et ConnectivityVariable**
+**Algèbre linéaire et ConnectivityVariable**
 
 L'affectation sur des ConnectivityVariable n'a pas été interdite afin de pouvoir faire des instructions du type :
 

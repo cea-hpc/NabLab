@@ -15,6 +15,7 @@ import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.ir.Nablagen2Ir
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
+import fr.cea.nabla.ir.transformers.ComputePreviousAndNextJobs
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nablagen.NablagenRoot
@@ -50,7 +51,6 @@ import org.eclipse.ui.PlatformUI
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 import org.eclipse.xtext.ui.editor.XtextEditor
-import fr.cea.nabla.ir.transformers.ComputePreviousAndNextJobs
 
 @Singleton
 class OpenSiriusJobsGraph extends AbstractHandler

@@ -114,6 +114,7 @@
     </ownedRepresentations>
     <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.ir.JobExtensions"/>
     <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.NablaSiriusServices"/>
+    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.ui.NablaUiUtils"/>
   </ownedViewpoints>
   <userColorsPalettes name="IrPalette">
     <entries xsi:type="description:ComputedColor" name="NID.JN.At.BackgroundColor" red="aql:self.at.getAtBackgroundColor()" green="aql:self.at.getAtBackgroundColor()" blue="aql:self.at.getAtBackgroundColor()"/>

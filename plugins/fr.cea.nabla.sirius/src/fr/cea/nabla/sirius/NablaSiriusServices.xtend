@@ -37,6 +37,24 @@ class NablaSiriusServices
 {
 	static final String NABLA_IR_DIAGRAM_ID = "NablaIrDiagram"
 
+	def int getAtBackgroundColor(Double at)
+	{
+		if (at !== null && at > 0)
+		{
+			return 255 - (at.intValue - 1) * 10
+		}
+		return 255
+	}
+
+	def int getAtLabelColor(Double at)
+	{
+		if (at !== null && at >= 10)
+		{
+			return 255
+		}
+		return 50
+	}
+
 	def Collection<Job> getJobs(IrAnnotable annotable)
 	{
 		if (annotable instanceof JobCaller)

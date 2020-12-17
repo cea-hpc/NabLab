@@ -108,6 +108,8 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Job/at"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Job/onCycle"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/caller"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/previousJobsWithSameCaller"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/nextJobsWithSameCaller"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//InstructionJob">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InstructionJob/instruction"/>

@@ -33,7 +33,7 @@
         </layoutOptions>
       </layout>
       <defaultLayer name="Default">
-        <edgeMappings name="NID.Job2Job" deletionDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='NID.Delete.Element']" sourceMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetFinderExpression="aql:self.getPreviousJobs()->select(x | x.caller == self.caller)">
+        <edgeMappings name="NID.Job2Job" deletionDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='NID.Delete.Element']" sourceMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetFinderExpression="feature:previousJobsWithSameCaller">
           <style sourceArrow="InputArrow" targetArrow="NoDecoration">
             <strokeColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='gray']"/>
             <centerLabelStyleDescription labelSize="10" showIcon="false">
@@ -66,7 +66,7 @@
             <backgroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
             <foregroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
           </style>
-          <conditionnalStyles predicateExpression="aql:self.getPreviousJobs()->select(x | x.caller == self.caller)->isEmpty()">
+          <conditionnalStyles predicateExpression="aql:self.previousJobsWithSameCaller->isEmpty()">
             <style xsi:type="style:FlatContainerStyleDescription" arcWidth="15" arcHeight="15" borderSizeComputationExpression="1" labelSize="10" showIcon="false" labelExpression="aql:self.getDiagramDisplayName()" tooltipExpression="aql:self.getTooltip()" roundedCorner="true">
               <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
@@ -74,7 +74,7 @@
               <foregroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_green']"/>
             </style>
           </conditionnalStyles>
-          <conditionnalStyles predicateExpression="aql:self.getNextJobs()->select(x | x.caller == self.caller)->isEmpty()">
+          <conditionnalStyles predicateExpression="aql:self.nextJobsWithSameCaller->isEmpty()">
             <style xsi:type="style:FlatContainerStyleDescription" arcWidth="15" arcHeight="15" borderSizeComputationExpression="1" labelSize="10" showIcon="false" labelExpression="aql:self.getDiagramDisplayName()" tooltipExpression="aql:self.getTooltip()" roundedCorner="true">
               <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
@@ -115,7 +115,6 @@
       </defaultLayer>
     </ownedRepresentations>
     <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.ir.JobExtensions"/>
-    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.ir.JobDependencies"/>
     <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.NablaSiriusServices"/>
   </ownedViewpoints>
 </description:Group>

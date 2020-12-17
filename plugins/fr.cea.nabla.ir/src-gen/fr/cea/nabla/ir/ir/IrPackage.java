@@ -1062,13 +1062,31 @@ public interface IrPackage extends EPackage {
 	int JOB__CALLER = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
+	 * The feature id for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = IR_ANNOTABLE_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JOB__NEXT_JOBS_WITH_SAME_CALLER = IR_ANNOTABLE_FEATURE_COUNT + 5;
+
+	/**
 	 * The number of structural features of the '<em>Job</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int JOB_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int JOB_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 6;
 
 	/**
 	 * The number of operations of the '<em>Job</em>' class.
@@ -1133,6 +1151,24 @@ public interface IrPackage extends EPackage {
 	 * @ordered
 	 */
 	int INSTRUCTION_JOB__CALLER = JOB__CALLER;
+
+	/**
+	 * The feature id for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUCTION_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = JOB__PREVIOUS_JOBS_WITH_SAME_CALLER;
+
+	/**
+	 * The feature id for the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUCTION_JOB__NEXT_JOBS_WITH_SAME_CALLER = JOB__NEXT_JOBS_WITH_SAME_CALLER;
 
 	/**
 	 * The feature id for the '<em><b>Instruction</b></em>' containment reference.
@@ -1217,6 +1253,24 @@ public interface IrPackage extends EPackage {
 	int TIME_LOOP_JOB__CALLER = JOB__CALLER;
 
 	/**
+	 * The feature id for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = JOB__PREVIOUS_JOBS_WITH_SAME_CALLER;
+
+	/**
+	 * The feature id for the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER = JOB__NEXT_JOBS_WITH_SAME_CALLER;
+
+	/**
 	 * The feature id for the '<em><b>Copies</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1297,6 +1351,24 @@ public interface IrPackage extends EPackage {
 	 * @ordered
 	 */
 	int EXECUTE_TIME_LOOP_JOB__CALLER = TIME_LOOP_JOB__CALLER;
+
+	/**
+	 * The feature id for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER;
+
+	/**
+	 * The feature id for the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER = TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER;
 
 	/**
 	 * The feature id for the '<em><b>Copies</b></em>' containment reference list.
@@ -1408,6 +1480,24 @@ public interface IrPackage extends EPackage {
 	int SET_UP_TIME_LOOP_JOB__CALLER = TIME_LOOP_JOB__CALLER;
 
 	/**
+	 * The feature id for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SET_UP_TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER;
+
+	/**
+	 * The feature id for the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SET_UP_TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER = TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER;
+
+	/**
 	 * The feature id for the '<em><b>Copies</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1488,6 +1578,24 @@ public interface IrPackage extends EPackage {
 	 * @ordered
 	 */
 	int TEAR_DOWN_TIME_LOOP_JOB__CALLER = TIME_LOOP_JOB__CALLER;
+
+	/**
+	 * The feature id for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TEAR_DOWN_TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER;
+
+	/**
+	 * The feature id for the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TEAR_DOWN_TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER = TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER;
 
 	/**
 	 * The feature id for the '<em><b>Copies</b></em>' containment reference list.
@@ -4851,6 +4959,28 @@ public interface IrPackage extends EPackage {
 	EReference getJob_Caller();
 
 	/**
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.Job#getPreviousJobsWithSameCaller <em>Previous Jobs With Same Caller</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Previous Jobs With Same Caller</em>'.
+	 * @see fr.cea.nabla.ir.ir.Job#getPreviousJobsWithSameCaller()
+	 * @see #getJob()
+	 * @generated
+	 */
+	EReference getJob_PreviousJobsWithSameCaller();
+
+	/**
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.Job#getNextJobsWithSameCaller <em>Next Jobs With Same Caller</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Next Jobs With Same Caller</em>'.
+	 * @see fr.cea.nabla.ir.ir.Job#getNextJobsWithSameCaller()
+	 * @see #getJob()
+	 * @generated
+	 */
+	EReference getJob_NextJobsWithSameCaller();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.InstructionJob <em>Instruction Job</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -6773,6 +6903,22 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference JOB__CALLER = eINSTANCE.getJob_Caller();
+
+		/**
+		 * The meta object literal for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = eINSTANCE.getJob_PreviousJobsWithSameCaller();
+
+		/**
+		 * The meta object literal for the '<em><b>Next Jobs With Same Caller</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference JOB__NEXT_JOBS_WITH_SAME_CALLER = eINSTANCE.getJob_NextJobsWithSameCaller();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.InstructionJobImpl <em>Instruction Job</em>}' class.

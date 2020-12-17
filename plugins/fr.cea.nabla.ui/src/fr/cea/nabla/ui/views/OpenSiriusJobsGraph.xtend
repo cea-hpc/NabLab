@@ -50,6 +50,7 @@ import org.eclipse.ui.PlatformUI
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 import org.eclipse.xtext.ui.editor.XtextEditor
+import fr.cea.nabla.ir.transformers.ComputePreviousAndNextJobs
 
 @Singleton
 class OpenSiriusJobsGraph extends AbstractHandler
@@ -126,7 +127,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 
 			// IR -> IR
 			val description = 'Minimal IR->IR transformations to check job cycles'
-			val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
+			val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs, new ComputePreviousAndNextJobs])
 			t.transformIr(ir, [msg | consoleFactory.printConsole(MessageType.Exec, msg)])
 		}
 		catch (Exception e)

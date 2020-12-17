@@ -12,6 +12,6 @@ ExtensionProvider WaveHeightJava : WaveHeight
 {
 	targets = Java;
 	facadeClass = "waveheight.WaveHeight";
-	libHome = "$ENV{HOME}/workspaces/runtime-EclipseApplication/WaveHeightJava";
+	libHome = "$ENV{HOME}/workspaces/NabLab/tests/WaveHeightJava";
 	libName = "waveheight.jar";
 }

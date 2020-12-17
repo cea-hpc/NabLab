@@ -5,6 +5,7 @@ set(NABLA_CXX_COMPILER /usr/bin/g++)
 set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
 
 project(WaveHeight CXX)
+MESSAGE(STATUS "Building library waveheight")
 
 add_library(waveheight WaveHeight.cc)
 set_property(TARGET waveheight PROPERTY POSITION_INDEPENDENT_CODE ON) # -fPIC

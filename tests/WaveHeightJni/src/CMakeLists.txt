@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_CXX_COMPILER /usr/bin/g++)
-set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/../include)
-set(BIN_DIR ${CMAKE_SOURCE_DIR}/../bin)
-set(WAVE_HEIGHT_DIR ${CMAKE_SOURCE_DIR}/../../WaveHeightCpp)
+set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../include)
+set(BIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../bin)
+set(WAVE_HEIGHT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../WaveHeightCpp)
 
 project(WaveHeightJni CXX)
+MESSAGE(STATUS "Building library waveheightjni")
 
 # The libwaveheightjni.so library
 set(JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64)

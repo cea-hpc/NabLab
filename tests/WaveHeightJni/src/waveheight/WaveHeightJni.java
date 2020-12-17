@@ -20,7 +20,7 @@ public class WaveHeightJni
 	{
 		// Loads the libwaveheightjni.so This is the place where our native methods reside.
 		//System.loadLibrary("waveheightjni"); // Need classpath to be set to the lib path before execution
-		System.load(System.getProperty("user.home") + "/workspaces/runtime-EclipseApplication/WaveHeightJni/lib/libwaveheightjni.so");
+		System.load(System.getProperty("user.home") + "/workspaces/NabLab/tests/WaveHeightJni/lib/libwaveheightjni.so");
 	}
 
 	// This is a long here (in Java) but is used as a pointer to hold the

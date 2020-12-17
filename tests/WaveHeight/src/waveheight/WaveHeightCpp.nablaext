@@ -12,7 +12,7 @@ ExtensionProvider WaveHeightCpp : WaveHeight
 {
 	targets = CppSequential, Kokkos, KokkosTeamThread, OpenMP, StlThread;
 	facadeClass = "waveheight::WaveHeight";
-	libHome = "$ENV{HOME}/workspaces/runtime-EclipseApplication/WaveHeightCpp";
+	libHome = "$ENV{HOME}/workspaces/NabLab/tests/WaveHeightCpp";
 	libName = "libwaveheight.a";
 }
 

@@ -27,7 +27,7 @@ public final class DepthInit
 		public double maxTime;
 		public int maxIter;
 		public double deltat;
-		public waveheight.WaveHeight waveHeight;
+		public waveheight.WaveHeightJni waveHeight;
 		public String nonRegression;
 
 		public void jsonInit(final String jsonContent)
@@ -64,7 +64,7 @@ public final class DepthInit
 			else
 				deltat = 1.0;
 			// waveHeight
-			waveHeight = new waveheight.WaveHeight();
+			waveHeight = new waveheight.WaveHeightJni();
 			if (o.has("waveHeight"))
 				waveHeight.jsonInit(o.get("waveHeight").toString());
 			// Non regression

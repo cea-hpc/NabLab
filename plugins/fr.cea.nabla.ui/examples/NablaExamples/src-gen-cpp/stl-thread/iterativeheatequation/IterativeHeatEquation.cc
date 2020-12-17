@@ -116,6 +116,7 @@ IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D* aMesh, const Optio
 , nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , options(aOptions)
 , writer("IterativeHeatEquation", options.outputPath)
+, vectOne({1.0, 1.0})
 , t_n(0.0)
 , t_nplus1(0.0)
 , deltat(0.001)

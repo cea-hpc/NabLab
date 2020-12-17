@@ -100,6 +100,7 @@ ExplicitHeatEquation::ExplicitHeatEquation(CartesianMesh2D* aMesh, const Options
 , nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , options(aOptions)
 , writer("ExplicitHeatEquation", options.outputPath)
+, vectOne({1.0, 1.0})
 , t_n(0.0)
 , t_nplus1(0.0)
 , deltat(0.001)

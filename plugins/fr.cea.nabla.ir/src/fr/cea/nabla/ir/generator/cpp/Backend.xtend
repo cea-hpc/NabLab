@@ -9,7 +9,9 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.IrTransformationStep
+import fr.cea.nabla.ir.transformers.NoConstExprForArrays
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import org.eclipse.xtend.lib.annotations.Accessors
 
@@ -38,7 +40,7 @@ class SequentialBackend extends Backend
 	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String levelDBPath)
 	{
 		name = 'Sequential'
-		irTransformationStep = new ReplaceReductions(true)
+		irTransformationStep = new CompositeTransformationStep('', #[new ReplaceReductions(true), new NoConstExprForArrays])
 		ir2Cmake = new SequentialIr2Cmake(compiler, compilerPath, levelDBPath)
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new SequentialIncludesContentProvider(levelDBPath)
@@ -61,6 +63,7 @@ class StlThreadBackend extends Backend
 	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String levelDBPath)
 	{
 		name = 'StlThread'
+		irTransformationStep = new NoConstExprForArrays
 		ir2Cmake = new StlIr2Cmake(compiler, compilerPath, levelDBPath)
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new StlThreadIncludesContentProvider(levelDBPath)
@@ -83,6 +86,7 @@ class KokkosBackend extends Backend
 	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String kokkosPath, String levelDBPath)
 	{
 		name = 'Kokkos'
+		irTransformationStep = new NoConstExprForArrays
 		ir2Cmake = new KokkosIr2Cmake(compiler, compilerPath, kokkosPath, levelDBPath)
 		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new KokkosIncludesContentProvider(levelDBPath)
@@ -105,6 +109,7 @@ class KokkosTeamThreadBackend extends Backend
 	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String kokkosPath, String levelDBPath)
 	{
 		name = 'Kokkos Team Thread'
+		irTransformationStep = new NoConstExprForArrays
 		ir2Cmake = new KokkosIr2Cmake(compiler, compilerPath, kokkosPath, levelDBPath)
 		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new KokkosIncludesContentProvider(levelDBPath)
@@ -127,6 +132,7 @@ class OpenMpBackend extends Backend
 	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String levelDBPath)
 	{
 		name = 'OpenMP'
+		irTransformationStep = new NoConstExprForArrays
 		ir2Cmake = new OpenMpCmake(compiler, compilerPath, levelDBPath)
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new OpenMpIncludesContentProvider(levelDBPath)
@@ -149,6 +155,7 @@ class SyclBackend extends Backend
 	new(String maxIterationVarName, String stopTimeVarName, String compiler, String compilerPath, String syclPath, String levelDBPath)
 	{
 		name = 'SYCL'
+		irTransformationStep = new NoConstExprForArrays
 		ir2Cmake = new SyclIr2Cmake(compiler, compilerPath, syclPath, levelDBPath)
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new SyclIncludesContentProvider(levelDBPath)

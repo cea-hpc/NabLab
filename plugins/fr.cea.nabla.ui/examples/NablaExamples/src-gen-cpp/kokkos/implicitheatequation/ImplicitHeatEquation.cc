@@ -101,6 +101,7 @@ ImplicitHeatEquation::ImplicitHeatEquation(CartesianMesh2D* aMesh, const Options
 , options(aOptions)
 , linearAlgebraFunctions(aLinearAlgebraFunctions)
 , writer("ImplicitHeatEquation", options.outputPath)
+, vectOne({1.0, 1.0})
 , t_n(0.0)
 , t_nplus1(0.0)
 , deltat(0.001)

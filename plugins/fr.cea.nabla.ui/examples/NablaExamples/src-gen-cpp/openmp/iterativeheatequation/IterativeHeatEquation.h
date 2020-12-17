@@ -63,7 +63,7 @@ private:
 	PvdFileWriter2D writer;
 	
 	// Global definitions
-	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
+	const RealArray1D<2> vectOne;
 	double t_n;
 	double t_nplus1;
 	double deltat;

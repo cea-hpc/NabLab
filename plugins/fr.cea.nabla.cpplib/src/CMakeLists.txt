@@ -42,7 +42,7 @@ target_compile_options(cppnabla PUBLIC -fPIC -g -Wall -O3 --std=c++17 -mtune=nat
 
 ### LIBCPPNABLASTL
 if(NOT DEFINED LIBCPPNABLA_BACKEND OR LIBCPPNABLA_BACKEND STREQUAL "STL")
-message(STATUS "Building library with STL.")
+message(STATUS "Building library with STL")
 add_library(cppnablastl 
     linearalgebra/stl/LinearAlgebraFunctions.cc linearalgebra/stl/Matrix.cc utils/stl/Serializer.cc)
 target_include_directories(cppnablastl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
@@ -53,7 +53,7 @@ endif()
 
 ### LIBCPPNABLAKOKKOS
 if(NOT DEFINED LIBCPPNABLA_BACKEND OR LIBCPPNABLA_BACKEND STREQUAL "KOKKOS")
-  message(STATUS "Building library with KOKKOS.")
+  message(STATUS "Building library with KOKKOS")
 if (DEFINED NABLA_KOKKOS_PATH)
 	set(CMAKE_FIND_ROOT_PATH ${NABLA_KOKKOS_PATH})
 else()

@@ -84,8 +84,8 @@ abstract class Ir2Cmake
 		var trimedLibName = libName
 		if (libName.startsWith("lib"))
 			trimedLibName = trimedLibName.substring(3)
-		if (libName.endsWith(".a"))
-			trimedLibName = trimedLibName.substring(0, trimedLibName.length - 2)
+		if (libName.endsWith(".so"))
+			trimedLibName = trimedLibName.substring(0, trimedLibName.length - 3)
 		return trimedLibName
 	}
 }

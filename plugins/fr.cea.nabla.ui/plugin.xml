@@ -694,7 +694,7 @@
       icon="icons/NabLab.gif">
    </consoleFactory>
  </extension>
- <!-- Create a key binding to notiy Graph views -->
+ <!-- Create a key binding to notify Graph views -->
  <extension
        point="org.eclipse.ui.commands">
     <command
@@ -718,4 +718,104 @@
           commandId="fr.cea.nabla.ui.NotifyViewsId">
     </handler>
  </extension>
+
+	<!-- Property tester to check that content of Nabla file is Extension -->
+	<extension point="org.eclipse.core.expressions.propertyTesters">
+		<propertyTester
+			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.propertytesters.NablaFileContentPropertyTester"
+			id="fr.cea.nabla.ui.propertytesters.NablaFileContentPropertyTester"
+			namespace="fr.cea.nabla.ui.propertytesters"
+			properties="NablaFileContentPropertyTester"
+			type="org.eclipse.core.resources.IResource">
+		</propertyTester>
+	</extension>
+
+	<!-- Generate menus for nablagen (simulator generation) and nabla file (provider generation) -->
+	<extension
+		id="fr.cea.nabla.ui.menus"
+		name="fr.cea.nabla.ui.menus"
+		point="org.eclipse.ui.menus">
+		<menuContribution
+			allPopups="false"
+			locationURI="popup:org.eclipse.ui.popup.any?endof=additions">
+			<separator
+				name="fr.cea.nabla.startseparator"
+				visible="true">
+			</separator>
+			<command
+				commandId="fr.cea.nabla.GenerateSimulatorCommand"
+				icon="icons/Nablagen.gif"
+				label="Generate Code"
+				style="push">
+				<visibleWhen checkEnabled="false">
+					<with variable="activeMenuSelection">
+						<count value="1"/>
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.extension" value="nablagen" />
+							</adapt>
+						</iterate>
+					</with>
+				</visibleWhen>
+			</command>
+			<command
+				commandId="fr.cea.nabla.GenerateProviderCommand"
+				icon="icons/NabLab.gif"
+				label="Generate C++ Provider"
+				style="push">
+				<visibleWhen checkEnabled="false">
+					<with variable="activeMenuSelection">
+						<count value="1"/>
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.extension" value="nabla"/>
+							</adapt>
+						</iterate>
+					</with>
+				</visibleWhen>
+			</command>
+			<separator
+				name="fr.cea.nabla.endseparator"
+				visible="true">
+			</separator>
+		</menuContribution>
+	</extension>
+
+	<!-- Generate commands for nablagen (simulator generation) and nabla file (provider generation) -->
+	<extension
+		id="fr.cea.nabla.ui.commands"
+		name="fr.cea.nabla.ui.commands"
+		point="org.eclipse.ui.commands">
+		<command 
+			defaultHandler="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.GenerateSimulatorHandler"
+			id="fr.cea.nabla.GenerateSimulatorCommand"
+			name="Generate Code">
+		</command>
+		<command 
+			id="fr.cea.nabla.GenerateProviderCommand"
+			name="Generate C++ Provider">
+		</command>
+	</extension>
+
+	<!-- Generate handler for nabla file. Not a default command handler to disable the menu when file content is not NablaExtension -->
+	<extension point="org.eclipse.ui.handlers">
+		<handler
+			class="fr.cea.nabla.ui.handlers.GenerateProviderHandler"
+			commandId="fr.cea.nabla.GenerateProviderCommand">
+			<enabledWhen>
+				<with variable="selection">
+					<iterate>
+						<adapt type="org.eclipse.core.resources.IResource">
+							<test property="org.eclipse.core.resources.extension" value="nablagen" />
+						</adapt>
+						<and/>
+						<test
+							property="fr.cea.nabla.ui.propertytesters.NablaFileContentPropertyTester"
+							value="false">
+						</test>
+					</iterate>
+				</with>
+			</enabledWhen>
+		</handler>
+	</extension>
 </plugin>

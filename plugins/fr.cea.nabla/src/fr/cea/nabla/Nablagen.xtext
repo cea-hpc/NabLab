@@ -20,12 +20,13 @@ generate nablagen "http://www.cea.fr/nabla/Nablagen"
 NablagenRoot: 
 	(writeIR?='[WriteIr]')?
 	'Application' name=ID ';'
-	mainModule = MainModule
-	additionalModules += AdditionalModule*
-	extensionConfigs += ExtensionConfig*
-	(vtkOutput = VtkOutput)?
-	(levelDB = LevelDB)?
-	targets += Target*;
+	mainModule=MainModule
+	additionalModules+=AdditionalModule*
+	extensionConfigs+=ExtensionConfig*
+	(vtkOutput=VtkOutput)?
+	(interpreterConfig=InterpreterConfig)?
+	(levelDB=LevelDB)?
+	targets+=Target*;
 
 NablagenModule: MainModule | AdditionalModule;
 
@@ -44,20 +45,17 @@ MainModule:
 AdditionalModule:
 	'AdditionalModule' type=[nabla::NablaModule] name=ID
 	'{'
-		varLinks += VarLink*
+		varLinks+=VarLink*
 	'}';
 
 VarLink:
 	additionalModule=[AdditionalModule] '.' additionalVariable=[nabla::Var] '=' mainModule=[MainModule] '.' mainVariable=[nabla::Var] ';';
 
-ExtensionConfig:
-	'Extension' extension=[nabla::NablaExtension] '=' providers+=[nablaext::ExtensionProvider] (',' providers+=[nablaext::ExtensionProvider])* ';';
-
 VtkOutput:
 	'VtkOutput'
 	'{'
 		'periodReferenceVariable' '=' periodReferenceModule=[MainModule] '.'periodReferenceVar=[nabla::ArgOrVar] ';'
-		'outputVariables' '=' vars += OutputVar (',' vars += OutputVar)* ';'
+		'outputVariables' '=' vars+=OutputVar (',' vars+=OutputVar)* ';'
 	'}';
 
 OutputVar:
@@ -66,14 +64,24 @@ OutputVar:
 LevelDB:
 	'LevelDB'
 	'{'
-		'levelDBPath' '=' levelDBPath = STRING ';'
+		'levelDBPath' '=' levelDBPath=STRING ';'
+	'}';
+
+InterpreterConfig:
+	{InterpreterConfig} 'Interpreter'
+	'{'
+		extensionConfigs+=ExtensionConfig*
 	'}';
 
 Target: type=TargetType
-'{'
-	'outputPath' '=' outputDir=STRING ';'
-	variables+=TargetVar*
-'}';
+	'{'
+		'outputPath' '=' outputDir=STRING ';'
+		extensionConfigs+=ExtensionConfig*
+		variables+=TargetVar*
+	'}';
+
+ExtensionConfig:
+	'extension' extension=[nabla::NablaExtension] 'providedBy' provider=[nablaext::ExtensionProvider] ';';
 
 TargetVar:
 	key=ID '=' value=STRING ';';

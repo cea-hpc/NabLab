@@ -60,7 +60,7 @@ class NablagenRunner
 					consoleFactory.printConsole(MessageType.Exec, "NabLab to IR model transformation ended in " + (afterConvertionTime-startTime)/1000.0 + "s")
 
 					consoleFactory.printConsole(MessageType.Exec, "Starting code generation")
-					interpreter.generateCode(ir, ngen.extensionConfigs, ngen.targets, ngen.mainModule.iterationMax.name, ngen.mainModule.timeMax.name, baseDir, ngen.levelDB)
+					interpreter.generateCode(ir, ngen.targets, ngen.mainModule.iterationMax.name, ngen.mainModule.timeMax.name, baseDir, ngen.levelDB)
 					val afterGenerationTime = System.currentTimeMillis
 					consoleFactory.printConsole(MessageType.Exec, "Code generation ended in " + (afterGenerationTime-afterConvertionTime)/1000.0 + "s")
 

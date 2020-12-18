@@ -15,6 +15,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenRoot/additionalModules"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenRoot/extensionConfigs"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenRoot/vtkOutput"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenRoot/interpreterConfig"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenRoot/levelDB"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//NablagenRoot/targets"/>
     </genClasses>
@@ -39,10 +40,6 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//VarLink/mainModule"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//VarLink/mainVariable"/>
     </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//ExtensionConfig">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//ExtensionConfig/extension"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//ExtensionConfig/providers"/>
-    </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//VtkOutput">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//VtkOutput/periodReferenceModule"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//VtkOutput/periodReferenceVar"/>
@@ -56,10 +53,18 @@
     <genClasses ecoreClass="Nablagen.ecore#//LevelDB">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//LevelDB/levelDBPath"/>
     </genClasses>
+    <genClasses ecoreClass="Nablagen.ecore#//InterpreterConfig">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//InterpreterConfig/extensionConfigs"/>
+    </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//Target">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Target/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Target/outputDir"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Target/extensionConfigs"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Target/variables"/>
+    </genClasses>
+    <genClasses ecoreClass="Nablagen.ecore#//ExtensionConfig">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//ExtensionConfig/extension"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//ExtensionConfig/provider"/>
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//TargetVar">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//TargetVar/key"/>

@@ -12,6 +12,8 @@
         eType="#//ExtensionConfig" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="vtkOutput" eType="#//VtkOutput"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="interpreterConfig" eType="#//InterpreterConfig"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="levelDB" eType="#//LevelDB"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="targets" upperBound="-1"
@@ -39,11 +41,6 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="mainModule" eType="#//MainModule"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="mainVariable" eType="ecore:EClass Nabla.ecore#//Var"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ExtensionConfig">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="extension" eType="ecore:EClass Nabla.ecore#//NablaExtension"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="providers" unique="false"
-        upperBound="-1" eType="ecore:EClass Nablaext.ecore#//ExtensionProvider"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VtkOutput">
     <eStructuralFeatures xsi:type="ecore:EReference" name="periodReferenceModule"
         eType="#//MainModule"/>
@@ -59,11 +56,21 @@
   <eClassifiers xsi:type="ecore:EClass" name="LevelDB">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="levelDBPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InterpreterConfig">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="extensionConfigs" upperBound="-1"
+        eType="#//ExtensionConfig" containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Target">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EEnum Nablaext.ecore#//TargetType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputDir" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="extensionConfigs" upperBound="-1"
+        eType="#//ExtensionConfig" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//TargetVar" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ExtensionConfig">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="extension" eType="ecore:EClass Nabla.ecore#//NablaExtension"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="provider" eType="ecore:EClass Nablaext.ecore#//ExtensionProvider"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TargetVar">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

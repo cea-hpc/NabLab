@@ -29,8 +29,6 @@ import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nablaext.TargetType
-import fr.cea.nabla.nablagen.ExtensionConfig
 import fr.cea.nabla.nablagen.LevelDB
 import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.nablagen.Target
@@ -103,7 +101,7 @@ class NablagenInterpreter
 		}
 	}
 
-	def void generateCode(IrRoot ir, List<ExtensionConfig> extensions, List<Target> targets, String iterationMaxVarName, String timeMaxVarName, String projectDir, LevelDB levelDB)
+	def void generateCode(IrRoot ir, List<Target> targets, String iterationMaxVarName, String timeMaxVarName, String projectDir, LevelDB levelDB)
 	{
 		try
 		{
@@ -117,7 +115,7 @@ class NablagenInterpreter
 			for (target : targets)
 			{
 				// Set provider extension for the target
-				setExtensionProviders(target.type, ir, extensions)
+				setExtensionProviders(target, ir)
 
 				// Create code generator
 				val g = getCodeGenerator(target, baseDir, iterationMaxVarName, timeMaxVarName, levelDB)
@@ -255,21 +253,20 @@ class NablagenInterpreter
 		\end{document}
 	'''
 
-	private def void setExtensionProviders(TargetType target, IrRoot ir, List<ExtensionConfig> extensionConfigs)
+	private def void setExtensionProviders(Target target, IrRoot ir)
 	{
 		for (irProvider : ir.providers)
 		{
-			val extensionConfig = extensionConfigs.findFirst[x | x.extension.name == irProvider.extensionName]
+			val extensionConfig = target.extensionConfigs.findFirst[x | x.extension.name == irProvider.extensionName]
 			if (extensionConfig === null)
 				throw new RuntimeException("Missing nablagen configuration for extension: " + irProvider.extensionName)
 
-			val provider = extensionConfig.providers.findFirst[x | x.targets.contains(target)]
-			if (provider === null)
-				throw new RuntimeException("Missing " + target.literal + " provider for extension: " + irProvider.extensionName)
+			if (extensionConfig.provider === null)
+				throw new RuntimeException("Missing " + target.type.literal + " provider for extension: " + irProvider.extensionName)
 
-			irProvider.facadeClass = provider.facadeClass
-			irProvider.libHome = provider.libHome
-			irProvider.libName = provider.libName
+			irProvider.facadeClass = extensionConfig.provider.facadeClass
+			irProvider.libHome = extensionConfig.provider.libHome
+			irProvider.libName = extensionConfig.provider.libName
 		}
 	}
 }

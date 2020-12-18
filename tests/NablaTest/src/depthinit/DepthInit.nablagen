@@ -21,16 +21,21 @@ MainModule DepthInit depthInit
 	timeMax = maxTime;
 }
 
-Extension WaveHeight = WaveHeightJni, WaveHeightCpp;
+Interpreter
+{
+	extension WaveHeight providedBy WaveHeightJava;
+}
 
 Java
 {
 	outputPath = "/NablaTest/src-gen-java";
+	extension WaveHeight providedBy WaveHeightJni;
 }
 
 StlThread
 {
 	outputPath = "/NablaTest/src-gen-cpp/stl-thread";
+	extension WaveHeight providedBy WaveHeightCpp;
 	NABLA_CXX_COMPILER = "/usr/bin/g++";
 }
 

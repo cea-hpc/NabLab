@@ -68,4 +68,13 @@
            class="fr.cea.nabla.sirius.NablaIrElkLayoutExtension">
      </layoutExtension>
   </extension>
+  <extension
+        point="org.eclipse.eef.properties.ui.eefTabDescriptorFilter">
+     <descriptor
+           class="fr.cea.nabla.sirius.NablaSiriusTabDescriptorFilter"
+           description="Filters the Sirius Main tab from Properties View"
+           id="fr.cea.nabla.sirius.tab.filter"
+           label="Nabla Properties Tabs Filter">
+     </descriptor>
+  </extension>
 </plugin>

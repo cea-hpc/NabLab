@@ -30,7 +30,8 @@ Require-Bundle: fr.cea.nabla,
  org.eclipse.sirius.common,
  org.eclipse.sirius.diagram.elk,
  org.eclipse.elk.core.service,
- org.eclipse.elk.graph
+ org.eclipse.elk.graph,
+ org.eclipse.eef.properties.ui
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: fr.cea.nabla.sirius

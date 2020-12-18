@@ -7,22 +7,11 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-module DepthInit;
 
-with BatiLib.*;
-
-itemtypes { cell, node }
-
-connectivity cells: → {cell};
-connectivity nodes: → {node};
-
-let ℝ t = 0.0;
-
-option ℝ maxTime = 0.1;
-option ℕ maxIter = 500;
-option ℝ δt = 1.0;
-
-ℝ[2] X{nodes};
-ℝ η{cells};
-
-initFromFile: ∀j∈cells(), η{j} = nextWaveHeight();
+ExtensionProvider BatiLibJni : BatiLib
+{
+	targets = Java;
+	facadeClass = "batilib.BatiLibJni";
+	libHome = "$ENV{HOME}/workspaces/NabLab/tests/BatiLibJni";
+	libName = "batilibjni.jar";
+}

@@ -23,19 +23,19 @@ MainModule DepthInit depthInit
 
 Interpreter
 {
-	extension WaveHeight providedBy WaveHeightJava;
+	extension BatiLib providedBy BatiLibJava;
 }
 
 Java
 {
 	outputPath = "/NablaTest/src-gen-java";
-	extension WaveHeight providedBy WaveHeightJni;
+	extension BatiLib providedBy BatiLibJni;
 }
 
 StlThread
 {
 	outputPath = "/NablaTest/src-gen-cpp/stl-thread";
-	extension WaveHeight providedBy WaveHeightCpp;
+	extension BatiLib providedBy BatiLibCpp;
 	NABLA_CXX_COMPILER = "/usr/bin/g++";
 }
 

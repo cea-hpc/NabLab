@@ -27,7 +27,7 @@ public final class DepthInit
 		public double maxTime;
 		public int maxIter;
 		public double deltat;
-		public waveheight.WaveHeightJni waveHeight;
+		public batilib.BatiLibJni batiLib;
 		public String nonRegression;
 
 		public void jsonInit(final String jsonContent)
@@ -63,10 +63,10 @@ public final class DepthInit
 			}
 			else
 				deltat = 1.0;
-			// waveHeight
-			waveHeight = new waveheight.WaveHeightJni();
-			if (o.has("waveHeight"))
-				waveHeight.jsonInit(o.get("waveHeight").toString());
+			// batiLib
+			batiLib = new batilib.BatiLibJni();
+			if (o.has("batiLib"))
+				batiLib.jsonInit(o.get("batiLib").toString());
 			// Non regression
 			if (o.has("nonRegression"))
 			{
@@ -123,7 +123,7 @@ public final class DepthInit
 	{
 		for (int jCells=0; jCells<nbCells; jCells++)
 		{
-			eta[jCells] = options.waveHeight.nextWaveHeight();
+			eta[jCells] = options.batiLib.nextWaveHeight();
 		}
 	}
 

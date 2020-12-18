@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Automatic-Module-Name: WaveHeightJava
-Bundle-ManifestVersion: 2
-Bundle-Name: WaveHeightJava
-Bundle-SymbolicName: WaveHeightJava
-Bundle-Version: 1.0.0.qualifier
-Export-Package: waveheight
-Require-Bundle: com.google.gson
-Bundle-RequiredExecutionEnvironment: JavaSE-11

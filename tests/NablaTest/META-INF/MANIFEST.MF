@@ -13,4 +13,4 @@ Require-Bundle: fr.cea.nabla,
  org.eclipse.xtext.xbase.lib,
  com.google.gson,
  leveldb;bundle-version="0.13.0",
- WaveHeight
+ BatiLib

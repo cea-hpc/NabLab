@@ -4,7 +4,7 @@
 		"maxTime":0.1,
 		"maxIter":500,
 		"deltat":1.0,
-		"waveHeight":
+		"batiLib":
 		{
 			"depth":3.3,
 			"fileName":"foobar"

@@ -7,22 +7,26 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-module DepthInit;
+#ifndef __BATILIB_BATILIB
+#define __BATILIB_BATILIB
 
-with BatiLib.*;
+#include <iostream>
+#include <string>
 
-itemtypes { cell, node }
+namespace batilib
+{
+	class BatiLib
+	{
+	public:
+		void jsonInit(const char* jsonContent);
+		double nextWaveHeight();
+		double nextDepth();
 
-connectivity cells: → {cell};
-connectivity nodes: → {node};
+	private:
+		int counter = 0;
+		double depth = 4.3;
+		std::string fileName = "";
+	};
+}
 
-let ℝ t = 0.0;
-
-option ℝ maxTime = 0.1;
-option ℕ maxIter = 500;
-option ℝ δt = 1.0;
-
-ℝ[2] X{nodes};
-ℝ η{cells};
-
-initFromFile: ∀j∈cells(), η{j} = nextWaveHeight();
+#endif // __BATILIB_BATILIB

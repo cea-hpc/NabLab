@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.10)
 
 set(NABLA_CXX_COMPILER /usr/bin/g++)
 
-set(WAVEHEIGHT_HOME $ENV{HOME}/workspaces/NabLab/tests/WaveHeightCpp)
+set(BATILIB_HOME $ENV{HOME}/workspaces/NabLab/tests/batiLibCpp)
 set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -23,12 +23,12 @@ project(DepthInitProject CXX)
 
 set(LIBCPPNABLA_BACKEND "STL")
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libcppnabla ${CMAKE_CURRENT_SOURCE_DIR}/../libcppnabla)
-add_subdirectory(${WAVEHEIGHT_HOME}/src ${WAVEHEIGHT_HOME}/lib)
+add_subdirectory(${BATILIB_HOME}/src ${BATILIB_HOME}/lib)
 
 
 add_executable(depthinit DepthInit.cc)
 target_include_directories(depthinit PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
-target_link_libraries(depthinit PUBLIC cppnabla cppnablastl pthread waveheight)
+target_link_libraries(depthinit PUBLIC cppnabla cppnablastl pthread batilib)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

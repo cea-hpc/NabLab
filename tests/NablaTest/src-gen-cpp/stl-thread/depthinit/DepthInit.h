@@ -12,7 +12,7 @@
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
-#include "waveheight/WaveHeight.h"
+#include "batilib/BatiLib.h"
 #include "utils/stl/Parallel.h"
 
 using namespace nablalib;
@@ -30,7 +30,7 @@ public:
 		double maxTime;
 		int maxIter;
 		double deltat;
-		waveheight::WaveHeight waveHeight;
+		batilib::BatiLib batiLib;
 
 		void jsonInit(const char* jsonContent);
 	};

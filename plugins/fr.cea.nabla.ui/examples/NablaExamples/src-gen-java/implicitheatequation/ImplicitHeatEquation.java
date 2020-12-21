@@ -31,7 +31,7 @@ public final class ImplicitHeatEquation
 		public double u0;
 		public double stopTime;
 		public int maxIterations;
-		public LinearAlgebraFunctions linearAlgebraFunctions;
+		public LinearAlgebraFunctions linearAlgebra;
 		public String nonRegression;
 
 		public void jsonInit(final String jsonContent)
@@ -76,10 +76,10 @@ public final class ImplicitHeatEquation
 			}
 			else
 				maxIterations = 500000000;
-			// linearAlgebraFunctions
-			linearAlgebraFunctions = new LinearAlgebraFunctions();
-			if (o.has("linearAlgebraFunctions"))
-				linearAlgebraFunctions.jsonInit(o.get("linearAlgebraFunctions").toString());
+			// linearAlgebra
+			linearAlgebra = new LinearAlgebraFunctions();
+			if (o.has("linearAlgebra"))
+				linearAlgebra.jsonInit(o.get("linearAlgebra").toString());
 			// Non regression
 			if (o.has("nonRegression"))
 			{
@@ -275,7 +275,7 @@ public final class ImplicitHeatEquation
 	 */
 	protected void updateU()
 	{
-		u_nplus1 = options.linearAlgebraFunctions.solveLinearSystem(alpha, u_n);
+		u_nplus1 = options.linearAlgebra.solveLinearSystem(alpha, u_n);
 	}
 
 	/**

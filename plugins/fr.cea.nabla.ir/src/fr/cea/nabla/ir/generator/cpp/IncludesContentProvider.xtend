@@ -67,7 +67,7 @@ abstract class IncludesContentProvider
 		userIncludes +=  "utils/Timer.h"
 		userIncludes +=  "types/Types.h"
 
-		for (extensionProvider : m.extensionProviders)
+		for (extensionProvider : m.extensionProviders.filter[x | x.extensionName != "LinearAlgebra"])
 			userIncludes += extensionProvider.facadeClass.replace("::", "/") + ".h"
 
 		if (!m.main)

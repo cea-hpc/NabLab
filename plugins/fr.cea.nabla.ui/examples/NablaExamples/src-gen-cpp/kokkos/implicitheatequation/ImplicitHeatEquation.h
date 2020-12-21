@@ -52,7 +52,7 @@ public:
 		double u0;
 		double stopTime;
 		int maxIterations;
-		LinearAlgebraFunctions linearAlgebraFunctions;
+		LinearAlgebraFunctions linearAlgebra;
 
 		void jsonInit(const char* jsonContent);
 	};

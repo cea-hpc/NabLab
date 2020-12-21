@@ -21,6 +21,7 @@ import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.Variable
 import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
@@ -28,8 +29,6 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
-import fr.cea.nabla.ir.ir.Variable
-import fr.cea.nabla.ir.ir.ExtensionProvider
 
 class Utils
 {
@@ -126,11 +125,6 @@ class Utils
 			case '*': 'multiply'
 			case '+': 'plus'
 		}
-	}
-
-	static def String getInstanceName(ExtensionProvider it)
-	{
-		extensionName.toFirstLower
 	}
 
 	private static def boolean isTopLevelLoop(EObject it)

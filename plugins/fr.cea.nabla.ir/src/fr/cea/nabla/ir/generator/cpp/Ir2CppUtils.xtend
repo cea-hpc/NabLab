@@ -13,14 +13,14 @@ import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.Function
 
-import static extension fr.cea.nabla.ir.generator.Utils.getInstanceName
+import static extension fr.cea.nabla.ir.Utils.getInstanceName
 
 class Ir2CppUtils 
 {
 	static def getCodeName(Function it)
 	{
 		if (body === null)
-			if (provider == "Math") 'std::' + name
+			if (provider.extensionName == "Math") 'std::' + name
 			else 'options.' + provider.instanceName + '.' + name
 		else name
 	}

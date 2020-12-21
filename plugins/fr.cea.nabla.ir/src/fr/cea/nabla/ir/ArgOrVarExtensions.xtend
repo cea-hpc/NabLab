@@ -85,6 +85,6 @@ class ArgOrVarExtensions
 
 	private static def dispatch boolean containsLinearAlgebra(Function it)
 	{
-		provider == 'LinearAlgebra'
+		provider.extensionName == 'LinearAlgebra'
 	}
 }

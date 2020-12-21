@@ -16,7 +16,6 @@ import fr.cea.nabla.NablagenStandaloneSetup
 import fr.cea.nabla.generator.NablagenInterpreter
 import fr.cea.nabla.ir.interpreter.IrInterpreter
 import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nablagen.NablagenRoot
 import java.nio.file.Files
@@ -54,11 +53,10 @@ class CompilationChainHelper
 	 */
 	def getIrForInterpretation(CharSequence model, CharSequence genModel)
 	{
-		val ir = getIr(model, genModel)
-		// Suppress all reductions (replaced by loops)
-		val t = new ReplaceReductions(true)
-		t.transformIr(ir)
-		return ir
+		val interpreter = interpreterProvider.get
+		val projectDir = pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples"
+		val ngen = getNgen(model, genModel)
+		return interpreter.buildIr(ngen, projectDir, true)
 	}
 
 	def getNgen(CharSequence model, CharSequence genModel)
@@ -94,16 +92,8 @@ class CompilationChainHelper
 	def void generateCode(CharSequence model, CharSequence genModel, String projectDir)
 	{
 		val interpreter = interpreterProvider.get
-		val ir = getIr(model, genModel)
 		val ngen = getNgen(model, genModel)
+		val ir = interpreter.buildIr(ngen, projectDir, false)
 		interpreter.generateCode(ir, ngen.targets, ngen.mainModule.iterationMax.name, ngen.mainModule.timeMax.name, projectDir, ngen.levelDB)
-	}
-
-	private def getIr(CharSequence model, CharSequence genModel)
-	{
-		val interpreter = interpreterProvider.get
-		val projectDir = pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples"
-		val ngen = getNgen(model, genModel)
-		return interpreter.buildIr(ngen, projectDir)
 	}
 }

@@ -14,6 +14,7 @@ import java.util.HashMap
 
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import fr.cea.nabla.ir.ir.ExtensionProvider
 
 abstract class Ir2Cmake
 {
@@ -35,7 +36,7 @@ abstract class Ir2Cmake
 		set(«entry.key» «entry.value»)
 		«ENDFOR»
 
-		«val externalProviders = providers.filter[x | x != "Math"]»
+		«val externalProviders = providers.filter[x | x.extensionName != "Math" && x.extensionName != "LinearAlgebra"]»
 		«FOR ep : externalProviders»
 		set(«ep.extensionName.toUpperCase»_HOME «ep.libHome»)
 		«ENDFOR»
@@ -72,14 +73,14 @@ abstract class Ir2Cmake
 
 		add_executable(«name.toLowerCase»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
 		target_include_directories(«name.toLowerCase» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
-		target_link_libraries(«name.toLowerCase» PUBLIC cppnabla«FOR tll : targetLinkLibraries» «tll»«ENDFOR»«IF !levelDBPath.nullOrEmpty» leveldb::leveldb Threads::Threads«ENDIF»«FOR ep : externalProviders» «ep.libName.trimLibName»«ENDFOR»)
+		target_link_libraries(«name.toLowerCase» PUBLIC cppnabla«FOR tll : targetLinkLibraries» «tll»«ENDFOR»«IF !levelDBPath.nullOrEmpty» leveldb::leveldb Threads::Threads«ENDIF»«FOR ep : externalProviders» «ep.trimLibName»«ENDFOR»)
 
 		if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 			include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 		endif()
 	'''
 
-	private def trimLibName(String libName)
+	private def trimLibName(ExtensionProvider it)
 	{
 		var trimedLibName = libName
 		if (libName.startsWith("lib"))

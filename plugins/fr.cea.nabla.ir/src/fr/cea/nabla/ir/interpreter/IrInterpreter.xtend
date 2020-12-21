@@ -30,6 +30,7 @@ import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 import static org.iq80.leveldb.impl.Iq80DBFactory.bytes
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory
 
+import static extension fr.cea.nabla.ir.Utils.getInstanceName
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
@@ -47,7 +48,7 @@ class IrInterpreter
 	val JobInterpreter jobInterpreter
 	val Logger logger
 	val String levelDatabasePath
-	var Boolean levelDBcompareResult
+	var boolean levelDBcompareResult
 
 	new(IrRoot ir, StreamHandler handler)
 	{
@@ -182,21 +183,19 @@ class IrInterpreter
 			var Class<?> providerClass
 			var Object providerInstance
 
-			if (provider == "Math")
+			if (provider.extensionName == "Math")
 			{
 				providerClass = Class.forName('java.lang.Math', true, classLoader)
 				providerInstance = null // static functions
 			}
 			else
 			{
-				val providerClassName = if (provider == "LinearAlgebra") "fr.cea.nabla.javalib.types.LinearAlgebraFunctions"
-					else provider.facadeClass
-				providerClass = Class.forName(providerClassName, true, classLoader)
+				providerClass = ProviderClassCache.Instance.getClass(provider, classLoader)
 				providerInstance = providerClass.constructor.newInstance
-				if (jsonOptions.has(providerClass.simpleName.toFirstLower))
+				if (jsonOptions.has(provider.instanceName))
 				{
 					val jsonInit = providerClass.getDeclaredMethod("jsonInit", String)
-					jsonInit.invoke(providerInstance, jsonOptions.get(providerClass.simpleName.toFirstLower).toString)
+					jsonInit.invoke(providerInstance, jsonOptions.get(provider.instanceName).toString)
 				}
 			}
 

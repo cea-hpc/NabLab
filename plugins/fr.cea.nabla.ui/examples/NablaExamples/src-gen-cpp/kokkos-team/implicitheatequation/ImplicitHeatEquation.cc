@@ -105,13 +105,13 @@ ImplicitHeatEquation::Options::jsonInit(const char* jsonContent)
 	}
 	else
 		maxIterations = 500000000;
-	// linearAlgebraFunctions
-	if (o.HasMember("linearAlgebraFunctions"))
+	// linearAlgebra
+	if (o.HasMember("linearAlgebra"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		o["linearAlgebraFunctions"].Accept(writer);
-		linearAlgebraFunctions.jsonInit(strbuf.GetString());
+		o["linearAlgebra"].Accept(writer);
+		linearAlgebra.jsonInit(strbuf.GetString());
 	}
 }
 
@@ -323,7 +323,7 @@ void ImplicitHeatEquation::initXc(const member_type& teamMember) noexcept
  */
 void ImplicitHeatEquation::updateU() noexcept
 {
-	u_nplus1 = options.linearAlgebraFunctions.solveLinearSystem(alpha, u_n);
+	u_nplus1 = options.linearAlgebra.solveLinearSystem(alpha, u_n);
 }
 
 /**
@@ -599,7 +599,7 @@ void ImplicitHeatEquation::simulate()
 	executeTimeLoopN();
 	
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
-	std::cout << "[CG] average iteration: " << options.linearAlgebraFunctions.m_info.m_nb_it / options.linearAlgebraFunctions.m_info.m_nb_call << std::endl;
+	std::cout << "[CG] average iteration: " << options.linearAlgebra.m_info.m_nb_it / options.linearAlgebra.m_info.m_nb_call << std::endl;
 }
 
 int main(int argc, char* argv[]) 

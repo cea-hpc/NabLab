@@ -13,6 +13,8 @@ import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
+import java.util.logging.ConsoleHandler
+import java.util.logging.LogRecord
 import org.eclipse.swt.graphics.Color
 import org.eclipse.swt.widgets.Display
 import org.eclipse.ui.console.ConsolePlugin
@@ -72,5 +74,20 @@ class NabLabConsoleFactory implements IConsoleFactory
 				stream.println(msg)
 			])
 		}
+	}
+}
+
+class NabLabConsoleHandler extends ConsoleHandler
+{
+	val NabLabConsoleFactory consoleFactory
+
+	new(NabLabConsoleFactory consoleFactory)
+	{
+		this.consoleFactory = consoleFactory
+	}
+
+	override publish(LogRecord record)
+	{
+		consoleFactory.printConsole(MessageType.Exec, record.message)
 	}
 }

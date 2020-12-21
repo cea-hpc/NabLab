@@ -20,7 +20,7 @@ import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.getInstanceName
+import static extension fr.cea.nabla.ir.Utils.getInstanceName
 
 class Ir2Json extends CodeGenerator 
 {

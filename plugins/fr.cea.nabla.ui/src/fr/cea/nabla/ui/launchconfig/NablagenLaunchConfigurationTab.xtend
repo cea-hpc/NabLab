@@ -31,18 +31,20 @@ import org.eclipse.ui.model.WorkbenchLabelProvider
 
 class NablagenLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 {
-	public static val FileExtension = 'nablagen'
+	public static val NablagenFileExtension = 'nablagen'
+	public static val JsonFileExtension = 'json'
 	boolean fDisableUpdate = false
 
 	Text fTxtProject
 	Text fTxtFile
+	Text fJsonFile
 
 	override createControl(Composite parent) 
 	{
 		val topControl = new Composite(parent, SWT.NONE)
 		topControl.setLayout(new GridLayout(1, false))
 
-		val fGroup = new Group(topControl, SWT.NONE)
+		var fGroup = new Group(topControl, SWT.NONE)
 		fGroup.setLayout(new GridLayout(2, false))
 		fGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1))
 		fGroup.setText("Project")
@@ -54,22 +56,35 @@ class NablagenLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 		fBtnBrowseProject.addSelectionListener(new NablagenProjectSelectionAdapter(parent, fTxtProject))
 		fBtnBrowseProject.setText("Browse...");
 
-		val grpLaunch = new Group(topControl, SWT.NONE)
-		grpLaunch.setLayout(new GridLayout(2, false))
-		grpLaunch.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1))
-		grpLaunch.setText("Nablagen File")
+		fGroup = new Group(topControl, SWT.NONE)
+		fGroup.setLayout(new GridLayout(2, false))
+		fGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1))
+		fGroup.setText("Nablagen File")
 
-		fTxtFile = new Text(grpLaunch, SWT.BORDER)
+		fTxtFile = new Text(fGroup, SWT.BORDER)
 		fTxtFile.addModifyListener([e | if (!fDisableUpdate) updateLaunchConfigurationDialog])
 		fTxtFile.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1))
 
-		val btnBrowseScript = new Button(grpLaunch, SWT::NONE)
+		val btnBrowseScript = new Button(fGroup, SWT::NONE)
 		btnBrowseScript.addSelectionListener(new NablagenFileSelectionAdapter(parent, fTxtFile))
 		btnBrowseScript.setText("Browse...");
 
+		fGroup = new Group(topControl, SWT.NONE)
+		fGroup.setLayout(new GridLayout(2, false))
+		fGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1))
+		fGroup.setText("Json File")
+
+		fJsonFile = new Text(fGroup, SWT.BORDER)
+		fJsonFile.addModifyListener([e | if (!fDisableUpdate) updateLaunchConfigurationDialog])
+		fJsonFile.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1))
+
+		val btnBrowseScript2 = new Button(fGroup, SWT::NONE)
+		btnBrowseScript2.addSelectionListener(new JsonFileSelectionAdapter(parent, fJsonFile))
+		btnBrowseScript2.setText("Browse...");
+
 		setControl(topControl)
 	}
-	
+
 	override getName()
 	{
 		'Global'
@@ -85,7 +100,8 @@ class NablagenLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 		try
 		{
 			fTxtProject.text = configuration.getAttribute(NablagenLaunchConstants::PROJECT, '')
-			fTxtFile.text = configuration.getAttribute(NablagenLaunchConstants::FILE_LOCATION, '')
+			fTxtFile.text = configuration.getAttribute(NablagenLaunchConstants::NGEN_FILE_LOCATION, '')
+			fJsonFile.text = configuration.getAttribute(NablagenLaunchConstants::JSON_FILE_LOCATION, '')
 		}
 		catch (CoreException e)
 		{
@@ -96,13 +112,15 @@ class NablagenLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 	override performApply(ILaunchConfigurationWorkingCopy configuration)
 	{
 		configuration.setAttribute(NablagenLaunchConstants::PROJECT, fTxtProject.text)
-		configuration.setAttribute(NablagenLaunchConstants::FILE_LOCATION, fTxtFile.text)
+		configuration.setAttribute(NablagenLaunchConstants::NGEN_FILE_LOCATION, fTxtFile.text)
+		configuration.setAttribute(NablagenLaunchConstants::JSON_FILE_LOCATION, fJsonFile.text)
 	}
 
 	override setDefaults(ILaunchConfigurationWorkingCopy configuration)
 	{
 		configuration.setAttribute(NablagenLaunchConstants::PROJECT, '')
-		configuration.setAttribute(NablagenLaunchConstants::FILE_LOCATION, '')
+		configuration.setAttribute(NablagenLaunchConstants::NGEN_FILE_LOCATION, '')
+		configuration.setAttribute(NablagenLaunchConstants::JSON_FILE_LOCATION, '')
 	}
 }
 
@@ -131,21 +149,43 @@ class NablagenProjectSelectionAdapter extends SelectionAdapter
 class NablagenFileSelectionAdapter extends SelectionAdapter
 {
 	val Composite parent
-	val Text fTxtFile
+	val Text fNablagenFile
 
-	new(Composite parent, Text fTxtFile)
+	new(Composite parent, Text fNablagenFile)
 	{
 		this.parent = parent
-		this.fTxtFile = fTxtFile
+		this.fNablagenFile = fNablagenFile
 	}
 
 	override void widgetSelected(SelectionEvent e)
 	{
-		val dialog = new ElementTreeSelectionDialog(parent.shell, new WorkbenchLabelProvider, new SourceFileContentProvider(NablagenLaunchConfigurationTab::FileExtension))
+		val dialog = new ElementTreeSelectionDialog(parent.shell, new WorkbenchLabelProvider, new SourceFileContentProvider(NablagenLaunchConfigurationTab::NablagenFileExtension))
 		dialog.setTitle("Select Nablagen File")
 		dialog.setMessage("Select the nablagen file to execute:")
 		dialog.setInput(ResourcesPlugin.workspace.root)
 		if (dialog.open == Window.OK)
-			fTxtFile.setText((dialog.firstResult as IFile).projectRelativePath.toPortableString)
+			fNablagenFile.setText((dialog.firstResult as IFile).projectRelativePath.toPortableString)
+	}
+}
+
+class JsonFileSelectionAdapter extends SelectionAdapter
+{
+	val Composite parent
+	val Text fJsonFile
+
+	new(Composite parent, Text fJsonFile)
+	{
+		this.parent = parent
+		this.fJsonFile = fJsonFile
+	}
+
+	override void widgetSelected(SelectionEvent e)
+	{
+		val dialog = new ElementTreeSelectionDialog(parent.shell, new WorkbenchLabelProvider, new SourceFileContentProvider(NablagenLaunchConfigurationTab::JsonFileExtension))
+		dialog.setTitle("Select Json Data File")
+		dialog.setMessage("Select the json data file containing the user options:")
+		dialog.setInput(ResourcesPlugin.workspace.root)
+		if (dialog.open == Window.OK)
+			fJsonFile.setText((dialog.firstResult as IFile).projectRelativePath.toPortableString)
 	}
 }

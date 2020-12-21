@@ -14,14 +14,14 @@ import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.PrimitiveType
 
-import static extension fr.cea.nabla.ir.generator.Utils.getInstanceName
+import static extension fr.cea.nabla.ir.Utils.getInstanceName
 
 class Ir2JavaUtils 
 {
 	static def getCodeName(Function it)
 	{
 		if (body === null)
-			if (provider == "Math")
+			if (provider.extensionName == "Math")
 			{
 				if (name == 'erf')
 					// no erf function in java Math

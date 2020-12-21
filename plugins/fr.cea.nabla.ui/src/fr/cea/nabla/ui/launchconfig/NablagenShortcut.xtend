@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.launchconfig
 
-import com.google.inject.Inject
 import java.util.ArrayList
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
@@ -26,8 +25,6 @@ import org.eclipse.xtext.ui.editor.XtextEditor
 
 class NablagenShortcut implements ILaunchShortcut
 {
-	@Inject NablagenRunner runner
-
 	override launch(ISelection selection, String mode)
 	{
 		if (selection !== null && selection instanceof TreeSelection)
@@ -57,7 +54,7 @@ class NablagenShortcut implements ILaunchShortcut
 			try
 			{
 				var configurations = getLaunchConfigurations(file)
-				if (configurations.length == 0)
+				if (configurations.size == 0)
 				{
 					// no configuration found, create new one
 					val manager = DebugPlugin::^default.launchManager
@@ -65,7 +62,8 @@ class NablagenShortcut implements ILaunchShortcut
 
 					val configuration = type.newInstance(null, file.name)
 					configuration.setAttribute(NablagenLaunchConstants.PROJECT, file.project.name)
-					configuration.setAttribute(NablagenLaunchConstants.FILE_LOCATION, file.projectRelativePath.toPortableString)
+					configuration.setAttribute(NablagenLaunchConstants.NGEN_FILE_LOCATION, file.projectRelativePath.toPortableString)
+					configuration.setAttribute(NablagenLaunchConstants.JSON_FILE_LOCATION, file.projectRelativePath.toPortableString.replace(".nablagen", ".json"))
 
 					// save and return new configuration
 					configuration.doSave
@@ -80,7 +78,7 @@ class NablagenShortcut implements ILaunchShortcut
 			catch (CoreException e)
 			{
 				// could not create launch configuration, run file directly
-				runner.launch(file)
+				throw new RuntimeException("Could not create launch configuration")
 			}
 		}
 	}
@@ -104,8 +102,9 @@ class NablagenShortcut implements ILaunchShortcut
 			{
 				try
 				{
-					val file = NablagenLaunchConstants::getSourceFile(configuration)
-					if (resource.equals(file))
+					val project = NablagenLaunchConstants::getProject(configuration)
+					val ngenFile = NablagenLaunchConstants::getFile(project, configuration, NablagenLaunchConstants.NGEN_FILE_LOCATION)
+					if (resource.equals(ngenFile))
 						configurations.add(configuration)
 				}
 				catch (CoreException e)

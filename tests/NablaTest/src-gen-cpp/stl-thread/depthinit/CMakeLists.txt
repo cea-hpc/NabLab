@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.10)
 
 set(NABLA_CXX_COMPILER /usr/bin/g++)
 
-set(BATILIB_HOME $ENV{HOME}/workspaces/NabLab/tests/batiLibCpp)
+set(BATILIB_HOME $ENV{HOME}/workspaces/NabLab/tests/BatiLibCpp)
 set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

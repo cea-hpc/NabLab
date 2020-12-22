@@ -12,7 +12,7 @@ ExtensionProvider BatiLibCpp : BatiLib
 {
 	targets = CppSequential, Kokkos, KokkosTeamThread, OpenMP, StlThread;
 	facadeClass = "batilib::BatiLib";
-	libHome = "$ENV{HOME}/workspaces/NabLab/tests/batiLibCpp";
+	libHome = "$ENV{HOME}/workspaces/NabLab/tests/BatiLibCpp";
 	libName = "libbatilib.so";
 }
 

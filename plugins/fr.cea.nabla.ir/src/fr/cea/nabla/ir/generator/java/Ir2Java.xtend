@@ -68,10 +68,6 @@ class Ir2Java extends CodeGenerator
 		import fr.cea.nabla.javalib.mesh.*;
 		import fr.cea.nabla.javalib.utils.*;
 
-		«IF linearAlgebra»
-		import org.apache.commons.math3.linear.*;
-
-		«ENDIF»
 		@SuppressWarnings("all")
 		public final class «className»
 		{

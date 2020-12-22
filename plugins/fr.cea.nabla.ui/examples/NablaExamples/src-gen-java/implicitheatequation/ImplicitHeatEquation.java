@@ -19,8 +19,6 @@ import fr.cea.nabla.javalib.types.*;
 import fr.cea.nabla.javalib.mesh.*;
 import fr.cea.nabla.javalib.utils.*;
 
-import org.apache.commons.math3.linear.*;
-
 @SuppressWarnings("all")
 public final class ImplicitHeatEquation
 {

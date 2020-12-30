@@ -46,6 +46,8 @@ class Ir2Java extends CodeGenerator
 
 	private def getFileContent(IrModule it)
 	'''
+		«fileHeader»
+
 		«val mainModule = irRoot.mainModule»
 		package «irRoot.name.toLowerCase»;
 

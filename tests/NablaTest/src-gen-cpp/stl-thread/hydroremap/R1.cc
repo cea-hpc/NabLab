@@ -1,3 +1,5 @@
+/*** GENERATED FILE - DO NOT OVERWRITE ***/
+
 #include "hydroremap/R1.h"
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>

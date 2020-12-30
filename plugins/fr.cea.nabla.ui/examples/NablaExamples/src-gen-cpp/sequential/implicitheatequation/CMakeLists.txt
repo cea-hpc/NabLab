@@ -1,9 +1,8 @@
-#
-# Generated file - Do not overwrite
-#
+### GENERATED FILE - DO NOT OVERWRITE ###
 
 cmake_minimum_required(VERSION 3.10)
 
+set(LIBCPPNABLA ${CMAKE_CURRENT_SOURCE_DIR}/../libcppnabla)
 set(NABLA_CXX_COMPILER /usr/bin/g++)
 
 set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
@@ -22,7 +21,7 @@ project(ImplicitHeatEquationProject CXX)
 
 # libcppnabla for linear algebra
 set(LIBCPPNABLA_BACKEND "STL")
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libcppnabla ${CMAKE_CURRENT_SOURCE_DIR}/../libcppnabla)
+add_subdirectory(${LIBCPPNABLA} ${LIBCPPNABLA})
 
 
 add_executable(implicitheatequation ImplicitHeatEquation.cc)

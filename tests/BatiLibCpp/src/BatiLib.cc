@@ -19,6 +19,8 @@ namespace  batilib
 
 void BatiLib::jsonInit(const char* jsonContent)
 {
+	std::cout << "C++ BatiLib::jsonInit" << std:: endl;
+
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
 	assert(document.IsObject());
@@ -30,6 +32,7 @@ void BatiLib::jsonInit(const char* jsonContent)
 		assert(valueof_depth.IsDouble());
 		depth = valueof_depth.GetDouble();
 	}
+	std::cout << "   depth : " << depth << std:: endl;
 
 	// if the option is mandatory, the line should be:
 	// assert(o.HasMember("fileName"));
@@ -39,20 +42,7 @@ void BatiLib::jsonInit(const char* jsonContent)
 		assert(valueof_fileName.IsString());
 		fileName = valueof_fileName.GetString();
 	}
-}
-
-double BatiLib::nextWaveHeight()
-{
-	counter++;
-	std::cout << counter << " C++ nextWaveHeight: " << fileName << ", " << depth << std::endl;
-	return depth;
-}
-
-double BatiLib::nextDepth()
-{
-	counter++;
-	std::cout << counter << " C++ nextDepth: " << fileName << ", " << depth << std::endl;
-	return depth;
+	std::cout << "   fileName : " << fileName << std:: endl;
 }
 
 }

@@ -752,16 +752,16 @@
 						<count value="1"/>
 						<iterate>
 							<adapt type="org.eclipse.core.resources.IResource">
-								<test property="org.eclipse.core.resources.extension" value="nablagen" />
+								<test property="org.eclipse.core.resources.extension" value="nablagen"/>
 							</adapt>
 						</iterate>
 					</with>
 				</visibleWhen>
 			</command>
 			<command
-				commandId="fr.cea.nabla.GenerateProviderCommand"
+				commandId="fr.cea.nabla.GenerateProvidersCommand"
 				icon="icons/NabLab.gif"
-				label="Generate C++ Provider"
+				label="Generate Extension Providers"
 				style="push">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeMenuSelection">
@@ -792,21 +792,21 @@
 			name="Generate Code">
 		</command>
 		<command 
-			id="fr.cea.nabla.GenerateProviderCommand"
-			name="Generate C++ Provider">
+			id="fr.cea.nabla.GenerateProvidersCommand"
+			name="Generate Extension Providers">
 		</command>
 	</extension>
 
 	<!-- Generate handler for nabla file. Not a default command handler to disable the menu when file content is not NablaExtension -->
 	<extension point="org.eclipse.ui.handlers">
 		<handler
-			class="fr.cea.nabla.ui.handlers.GenerateProviderHandler"
-			commandId="fr.cea.nabla.GenerateProviderCommand">
+			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.GenerateProvidersHandler"
+			commandId="fr.cea.nabla.GenerateProvidersCommand">
 			<enabledWhen>
 				<with variable="selection">
 					<iterate>
 						<adapt type="org.eclipse.core.resources.IResource">
-							<test property="org.eclipse.core.resources.extension" value="nablagen" />
+							<test property="org.eclipse.core.resources.extension" value="nabla"/>
 						</adapt>
 						<and/>
 						<test

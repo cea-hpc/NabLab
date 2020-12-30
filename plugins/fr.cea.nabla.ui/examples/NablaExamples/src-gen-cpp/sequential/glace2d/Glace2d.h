@@ -1,3 +1,5 @@
+/*** GENERATED FILE - DO NOT OVERWRITE ***/
+
 #ifndef GLACE2D_H_
 #define GLACE2D_H_
 

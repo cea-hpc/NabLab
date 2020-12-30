@@ -14,10 +14,32 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.net.URI
 import java.util.zip.ZipInputStream
+import org.eclipse.core.runtime.FileLocator
+import org.eclipse.core.runtime.Platform
 
 class UnzipHelper
 {
-	def static void unzip(URI zipFilePath, URI destDir)
+	public static val DirectoryName = "libcppnabla"
+
+	def static void unzipLibCppNabla(File outputDirectory)
+	{
+		// check if c++ resources are available in the output folder
+		if (outputDirectory.exists && outputDirectory.isDirectory &&
+			!outputDirectory.list.contains(DirectoryName) && Platform.isRunning)
+		{
+			// c++ resources not available => unzip them
+			// For JunitTests, launched from dev environment, copy is not possible
+			val bundle = Platform.getBundle("fr.cea.nabla.ir")
+			val cppResourcesUrl = bundle.getEntry("cppresources/libcppnabla.zip")
+			val tmpURI = FileLocator.toFileURL(cppResourcesUrl)
+			// need to use a 3-arg constructor in order to properly escape file system chars
+			val zipFileUri = new URI(tmpURI.protocol, tmpURI.path, null)
+			val outputFolderUri = outputDirectory.toURI
+			UnzipHelper::unzip(zipFileUri, outputFolderUri)
+		}
+	}
+
+	private def static void unzip(URI zipFilePath, URI destDir)
 	{
 		val dir = new File(destDir)
 		// create output directory if it doesn't exist

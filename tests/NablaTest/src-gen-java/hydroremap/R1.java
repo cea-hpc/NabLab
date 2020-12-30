@@ -1,3 +1,5 @@
+/*** GENERATED FILE - DO NOT OVERWRITE ***/
+
 package hydroremap;
 
 import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;

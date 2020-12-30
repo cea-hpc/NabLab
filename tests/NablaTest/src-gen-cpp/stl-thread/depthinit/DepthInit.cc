@@ -1,3 +1,5 @@
+/*** GENERATED FILE - DO NOT OVERWRITE ***/
+
 #include "depthinit/DepthInit.h"
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>

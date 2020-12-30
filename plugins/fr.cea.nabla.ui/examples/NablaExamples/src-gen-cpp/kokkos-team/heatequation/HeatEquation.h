@@ -1,3 +1,5 @@
+/*** GENERATED FILE - DO NOT OVERWRITE ***/
+
 #ifndef HEATEQUATION_H_
 #define HEATEQUATION_H_
 

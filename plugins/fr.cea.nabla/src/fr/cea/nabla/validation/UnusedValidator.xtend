@@ -34,6 +34,7 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
 
+// TODO unused function variables, ie def nextDepth1: x, y | ℝ × ℝ[x] → ℝ;
 class UnusedValidator extends UniqueNameValidator
 {
 	@Inject extension DeclarationProvider

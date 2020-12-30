@@ -3,49 +3,25 @@ package fr.cea.nabla.ui.handlers
 import com.google.inject.Inject
 import com.google.inject.Provider
 import com.google.inject.Singleton
-import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.NablagenInterpreter
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.nablagen.NablagenRoot
-import fr.cea.nabla.ui.NabLabConsoleFactory
-import org.eclipse.core.commands.AbstractHandler
-import org.eclipse.core.commands.ExecutionEvent
-import org.eclipse.core.commands.ExecutionException
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.jface.viewers.TreeSelection
 import org.eclipse.swt.SWT
 import org.eclipse.swt.widgets.Shell
-import org.eclipse.ui.handlers.HandlerUtil
 
 @Singleton
-class GenerateSimulatorHandler extends AbstractHandler
+class GenerateSimulatorHandler extends AbstractGenerateHandler
 {
 	@Inject Provider<ResourceSet> resourceSetProvider
 	@Inject Provider<NablagenInterpreter> interpreterProvider
-	@Inject NabLabConsoleFactory consoleFactory
-	@Inject NablaGeneratorMessageDispatcher dispatcher
 
-	override execute(ExecutionEvent event) throws ExecutionException
-	{
-		val selection = HandlerUtil::getActiveMenuSelection(event)
-		if (selection !== null && selection instanceof TreeSelection)
-		{
-			val elt = (selection as TreeSelection).firstElement
-			if (elt instanceof IFile)
-			{
-				val shell = HandlerUtil::getActiveShell(event)
-				generate(elt, shell)
-			}
-		}
-		return selection
-	}
-
-	private def generate(IFile nablagenFile, Shell shell)
+	override generate(IFile nablagenFile, Shell shell)
 	{
 		val interpreter = interpreterProvider.get
 		val project = nablagenFile.project
@@ -90,6 +66,7 @@ class GenerateSimulatorHandler extends AbstractHandler
 			}
 			catch (Exception e)
 			{
+				shell.display.syncExec([shell.cursor = null])
 				consoleFactory.printConsole(MessageType.Error, "Generation failed for: " + nablagenFile.name)
 				consoleFactory.printConsole(MessageType.Error, e.message)
 				consoleFactory.printConsole(MessageType.Error, Utils.getStackTrace(e))

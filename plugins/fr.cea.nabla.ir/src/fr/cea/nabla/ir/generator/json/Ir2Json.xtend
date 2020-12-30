@@ -43,7 +43,7 @@ class Ir2Json extends CodeGenerator
 	private def getJsonFileContent(Context context, IrRoot rootModel)
 	'''
 		{
-			"_comment": "Generated file - Do not overwrite",
+			"_comment": "GENERATED FILE - DO NOT OVERWRITE",
 			«FOR irModule : rootModel.modules»
 			"«irModule.name.toFirstLower»":
 			{

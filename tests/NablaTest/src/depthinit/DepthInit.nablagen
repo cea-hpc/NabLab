@@ -23,7 +23,7 @@ MainModule DepthInit depthInit
 
 Interpreter
 {
-	extension BatiLib providedBy BatiLibJava;
+	extension BatiLib providedBy BatiLibJni;
 }
 
 Java

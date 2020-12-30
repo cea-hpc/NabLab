@@ -1,12 +1,4 @@
-/*******************************************************************************
- * Copyright (c) 2020 CEA
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
- * Contributors: see AUTHORS file
- *******************************************************************************/
+/*** GENERATED FILE - DO NOT OVERWRITE ***/
 
 /**
  * Design Pattern inspired from https://dhilst.github.io/2016/10/15/JNI-CPP.html
@@ -14,13 +6,13 @@
  */
 package batilib;
 
-public class BatiLibJni
+public class BatiLib
 {
 	static
 	{
-		// Loads the libwaveheightjni.so This is the place where our native methods reside.
-		//System.loadLibrary("waveheightjni"); // Need classpath to be set to the lib path before execution
-		System.load(System.getProperty("user.home") + "/workspaces/NabLab/tests/BatiLibJni/lib/libbatilibjni.so");
+		// Loads the libbatilibjni.so. This is the place where our native methods reside.
+		// System.loadLibrary can be used but classpath needs to be set to the lib path before execution
+		System.load("/home/lelandaisb/workspaces/NabLab/tests/BatiLibJni/lib/libbatilibjni.so");
 	}
 
 	// This is a long here (in Java) but is used as a pointer to hold the
@@ -36,12 +28,15 @@ public class BatiLibJni
 	// assigned to nativeObjectPointer. Just as a note, Java forbiddes
 	// native constructors, so we need a native method to allocate our
 	// native object.
-	public BatiLibJni()
+	public BatiLib()
 	{
 		nativeObjectPointer = nativeNew();	
 	}
 
 	public native void jsonInit(String jsonContent);
 	public native double nextWaveHeight();
-	public native double nextDepth();
+	public native double nextDepth1(double x0, double[] x1);
+	public native double nextDepth2(double x0, double[][] x1);
+	public native double[] nextDepth3(double[] x0);
+	public native double[][] nextDepth4(double[][] x0);
 }

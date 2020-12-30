@@ -34,6 +34,11 @@ class Utils
 {
 	static val extension DefaultVarDependencies = new DefaultVarDependencies
 
+	static def getFileHeader()
+	'''
+	/*** GENERATED FILE - DO NOT OVERWRITE ***/
+	'''
+
 	static def getClassName(IrModule it)
 	{
 		name.toFirstUpper

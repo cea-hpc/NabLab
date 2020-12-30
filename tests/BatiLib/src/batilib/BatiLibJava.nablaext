@@ -11,7 +11,7 @@
 ExtensionProvider BatiLibJava : BatiLib
 {
 	targets = Java;
-	facadeClass = "batilib.BatiLib";
+	facadeClass = "batilib.JBatiLib";
 	libHome = "$ENV{HOME}/workspaces/NabLab/tests/BatiLibJava";
 	libName = "batilib.jar";
 }

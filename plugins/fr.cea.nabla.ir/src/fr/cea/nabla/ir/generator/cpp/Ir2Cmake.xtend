@@ -26,36 +26,23 @@ abstract class Ir2Cmake
 
 	def getContentFor(IrRoot it)
 	'''
-		#
-		# Generated file - Do not overwrite
-		#
+		«CMakeUtils.fileHeader»
 
-		cmake_minimum_required(VERSION 3.10)
-
+		set(LIBCPPNABLA ${CMAKE_CURRENT_SOURCE_DIR}/../libcppnabla)
 		«FOR entry : variables.entrySet»
 		set(«entry.key» «entry.value»)
 		«ENDFOR»
-
 		«val externalProviders = providers.filter[x | x.extensionName != "Math" && x.extensionName != "LinearAlgebra"]»
 		«FOR ep : externalProviders»
 		set(«ep.extensionName.toUpperCase»_HOME «ep.libHome»)
 		«ENDFOR»
-		set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
 
-		if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-			if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.4.0")
-				message(FATAL_ERROR "GCC minimum required version is 7.4.0. Please upgrade.")
-			endif()
-		elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-			if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0.0")
-				message(FATAL_ERROR "Clang minimum required version is 9.0.0. Please upgrade.")
-			endif()
-		endif()
+		«CMakeUtils.setCompiler»
 
 		project(«name»Project CXX)
 
 		«libraryBackend»
-		add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libcppnabla ${CMAKE_CURRENT_SOURCE_DIR}/../libcppnabla)
+		add_subdirectory(${LIBCPPNABLA} ${LIBCPPNABLA})
 		«FOR ep : externalProviders»
 		add_subdirectory(${«ep.extensionName.toUpperCase»_HOME}/src ${«ep.extensionName.toUpperCase»_HOME}/lib)
 		«ENDFOR»
@@ -75,9 +62,7 @@ abstract class Ir2Cmake
 		target_include_directories(«name.toLowerCase» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 		target_link_libraries(«name.toLowerCase» PUBLIC cppnabla«FOR tll : targetLinkLibraries» «tll»«ENDFOR»«IF !levelDBPath.nullOrEmpty» leveldb::leveldb Threads::Threads«ENDIF»«FOR ep : externalProviders» «ep.trimLibName»«ENDFOR»)
 
-		if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
-			include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
-		endif()
+		«CMakeUtils.fileFooter»
 	'''
 
 	private def trimLibName(ExtensionProvider it)

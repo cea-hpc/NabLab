@@ -30,7 +30,7 @@ abstract class TypeContentProvider
 		else if (sizes.empty)
 			primitive.cppType
 		else
-			getCppArrayType(primitive, sizes.size) + '<' + sizes.map[arraySizeContent].join(',') + '>'
+			getCppArrayType(primitive, sizes)
 	}
 
 	def dispatch String getCppType(PrimitiveType it)
@@ -49,13 +49,33 @@ abstract class TypeContentProvider
 		getCppType(base, connectivities)
 	}
 
-	private def getCppArrayType(PrimitiveType t, int dim)
+
+	def String getJniType(BaseType it)
+	{
+		if (it === null) 'null'
+		else if (sizes.empty) primitive.jniType
+		else if (sizes.size == 1) primitive.jniType + "Array"
+		else "jobjectArray"
+	}
+
+	def String getJniType(PrimitiveType t)
+	{
+		if (t === null) return 'null'
+		switch t
+		{
+			case null: 'void'
+			case BOOL: 'jboolean'
+			case INT: 'jint'
+			case REAL: 'jdouble'
+		}
+	}
+
+	private def getCppArrayType(PrimitiveType t, Iterable<Expression> sizes)
 	{
 		switch t
 		{
 			case null, case BOOL : throw new RuntimeException('Not implemented')
-			case INT: 'IntArray' + dim + 'D'
-			case REAL: 'RealArray' + dim + 'D'
+			default: t.getName() + 'Array' + sizes.size + 'D' + '<' + sizes.map[arraySizeContent].join(',') + '>'
 		}
 	}
 

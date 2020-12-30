@@ -20,10 +20,7 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.transformers.IrTransformationStep
 import java.io.File
-import java.net.URI
 import java.util.HashMap
-import org.eclipse.core.runtime.FileLocator
-import org.eclipse.core.runtime.Platform
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -54,19 +51,7 @@ class Ir2Cpp extends CodeGenerator
 		functionContentProvider = backend.functionContentProvider
 
 		// check if c++ resources are available in the output folder
-		if (outputDirectory.exists && outputDirectory.isDirectory &&
-			!outputDirectory.list.contains("libcppnabla") && Platform.isRunning)
-		{
-			// c++ resources not available => unzip them
-			// For JunitTests, launched from dev environment, copy is not possible
-			val bundle = Platform.getBundle("fr.cea.nabla.ir")
-			val cppResourcesUrl = bundle.getEntry("cppresources/libcppnabla.zip")
-			val tmpURI = FileLocator.toFileURL(cppResourcesUrl)
-			// need to use a 3-arg constructor in order to properly escape file system chars
-			val zipFileUri = new URI(tmpURI.protocol, tmpURI.path, null)
-			val outputFolderUri = outputDirectory.toURI
-			UnzipHelper::unzip(zipFileUri, outputFolderUri)
-		}
+		UnzipHelper::unzipLibCppNabla(outputDirectory)
 	}
 
 	override getFileContentsByName(IrRoot ir)
@@ -88,6 +73,8 @@ class Ir2Cpp extends CodeGenerator
 
 	private def getHeaderFileContent(IrModule it)
 	'''
+	«fileHeader»
+
 	#ifndef «name.toUpperCase»_H_
 	#define «name.toUpperCase»_H_
 
@@ -206,6 +193,8 @@ class Ir2Cpp extends CodeGenerator
 
 	private def getSourceFileContent(IrModule it)
 	'''
+	«fileHeader»
+
 	#include "«irRoot.name.toLowerCase»/«className».h"
 	#include <rapidjson/document.h>
 	#include <rapidjson/istreamwrapper.h>

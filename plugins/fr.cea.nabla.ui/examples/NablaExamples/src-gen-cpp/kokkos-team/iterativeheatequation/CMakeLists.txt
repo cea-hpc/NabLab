@@ -1,9 +1,8 @@
-#
-# Generated file - Do not overwrite
-#
+### GENERATED FILE - DO NOT OVERWRITE ###
 
 cmake_minimum_required(VERSION 3.10)
 
+set(LIBCPPNABLA ${CMAKE_CURRENT_SOURCE_DIR}/../libcppnabla)
 set(NABLA_KOKKOS_PATH $ENV{HOME}/kokkos/kokkos-install)
 set(NABLA_CXX_COMPILER /usr/bin/g++)
 
@@ -22,7 +21,7 @@ endif()
 project(IterativeHeatEquationProject CXX)
 
 set(LIBCPPNABLA_BACKEND "KOKKOS")
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libcppnabla ${CMAKE_CURRENT_SOURCE_DIR}/../libcppnabla)
+add_subdirectory(${LIBCPPNABLA} ${LIBCPPNABLA})
 
 
 add_executable(iterativeheatequation IterativeHeatEquation.cc)

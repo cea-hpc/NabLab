@@ -1,18 +1,17 @@
-/*******************************************************************************
- * Copyright (c) 2020 CEA
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
- * Contributors: see AUTHORS file
- *******************************************************************************/
+/*** GENERATED FILE - DO NOT OVERWRITE ***/
 
+/*
+ * C++ Extension Provider
+ * Build instructions:
+ *   - go into the project directory: cd $ENV{HOME}/workspaces/NabLab/tests/BatiLibCpp
+ *   - create a directory to build the project: mkdir lib; cd lib
+ *   - start cmake with your compiler: cmake -D CMAKE_CXX_COMPILER=/usr/bin/g++ ../src
+ *   - compile: make
+ */
 ExtensionProvider BatiLibCpp : BatiLib
 {
-	targets = CppSequential, Kokkos, KokkosTeamThread, OpenMP, StlThread;
+	targets = CppSequential, StlThread, OpenMP, Kokkos, KokkosTeamThread;
 	facadeClass = "batilib::BatiLib";
 	libHome = "$ENV{HOME}/workspaces/NabLab/tests/BatiLibCpp";
 	libName = "libbatilib.so";
 }
-

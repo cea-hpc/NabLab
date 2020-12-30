@@ -1,17 +1,17 @@
-/*******************************************************************************
- * Copyright (c) 2020 CEA
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
- * Contributors: see AUTHORS file
- *******************************************************************************/
+/*** GENERATED FILE - DO NOT OVERWRITE ***/
 
+/*
+ * JNI Extension Provider
+ * Build instructions:
+ *   - go into the project directory: cd $ENV{HOME}/workspaces/NabLab/tests/BatiLibJni
+ *   - create a directory to build the project: mkdir lib; cd lib
+ *   - start cmake with your java home: cmake -D JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 ../src/
+ *   - compile: make
+ */
 ExtensionProvider BatiLibJni : BatiLib
 {
 	targets = Java;
-	facadeClass = "batilib.BatiLibJni";
+	facadeClass = "batilib.BatiLib";
 	libHome = "$ENV{HOME}/workspaces/NabLab/tests/BatiLibJni";
 	libName = "batilibjni.jar";
 }

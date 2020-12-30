@@ -1,3 +1,5 @@
+/*** GENERATED FILE - DO NOT OVERWRITE ***/
+
 #ifndef DEPTHINIT_H_
 #define DEPTHINIT_H_
 

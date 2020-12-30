@@ -20,7 +20,7 @@ class FunctionContentProvider
 {
 	static def getContent(Function it)
 	'''
-		private «returnType.javaType» «name.toFirstLower»(«FOR a : inArgs SEPARATOR ', '»«a.type.javaType» «a.name»«ENDFOR»)
+		private «headerContent»
 		{
 			«FOR dimVar : variables»
 			final int «dimVar.name» = «getSizeOf(dimVar)»;
@@ -28,6 +28,9 @@ class FunctionContentProvider
 			«body.innerContent»
 		}
 	'''
+
+	static def getHeaderContent(Function it)
+	'''«returnType.javaType» «name.toFirstLower»(«FOR a : inArgs SEPARATOR ', '»«a.type.javaType» «a.name»«ENDFOR»)'''
 
 	private static def getSizeOf(Function it, SimpleVariable v)
 	{

@@ -9,9 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.generator
 
-import com.google.common.base.Function
 import com.google.inject.Inject
-import com.google.inject.Provider
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.ir.Nablagen2Ir
 import fr.cea.nabla.ir.generator.cpp.Ir2Cpp
@@ -41,21 +39,14 @@ import java.util.HashMap
 import java.util.List
 import java.util.Map
 import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.xtext.generator.IOutputConfigurationProvider
 import org.eclipse.xtext.generator.JavaIoFileSystemAccess
-import org.eclipse.xtext.generator.OutputConfiguration
-
-import static com.google.common.collect.Maps.uniqueIndex
 
 import static extension fr.cea.nabla.LatexLabelServices.*
 
-class NablagenInterpreter
+class NablagenInterpreter extends StandaloneGeneratorBase
 {
-	@Inject Provider<JavaIoFileSystemAccess> fsaProvider
 	@Inject Nablagen2Ir nablagen2Ir
-	@Inject IOutputConfigurationProvider outputConfigurationProvider
 	@Inject NablaIrWriter irWriter
-	@Inject NablaGeneratorMessageDispatcher dispatcher
 
 	def IrRoot buildIr(NablagenRoot ngen, String projectDir, boolean forInterpreter)
 	{
@@ -169,33 +160,6 @@ class NablagenInterpreter
 			dispatcher.post(MessageType::Exec, "    Generating: " + fullFileName)
 			fsa.generateFile(fullFileName, fileContent)
 		}
-	}
-
-	private def getConfiguredFileSystemAccess(String absoluteBasePath, boolean keepSrcGen)
-	{
-		val baseFolder = new File(absoluteBasePath)
-		if (!baseFolder.exists || !(baseFolder.isDirectory))
-			throw new RuntimeException('** Invalid outputDir: ' + absoluteBasePath)
-
-		val fsa = fsaProvider.get
-		fsa.outputConfigurations = outputConfigurations
-		fsa.outputConfigurations.values.forEach
-		[
-			if (keepSrcGen)
-				outputDirectory = absoluteBasePath + '/' + outputDirectory
-			else
-				outputDirectory = absoluteBasePath
-		]
-		return fsa
-	}
-
-	private def getOutputConfigurations() 
-	{
-		val configurations = outputConfigurationProvider.outputConfigurations
-		return uniqueIndex(configurations, new Function<OutputConfiguration, String>() 
-		{	
-			override apply(OutputConfiguration from) { return from.name }
-		})
 	}
 
 	private def getCodeGenerator(Target it, String baseDir, String iterationMax, String timeMax, LevelDB levelDB)

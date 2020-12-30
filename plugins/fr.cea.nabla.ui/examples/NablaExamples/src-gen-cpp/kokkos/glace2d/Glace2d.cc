@@ -1,3 +1,5 @@
+/*** GENERATED FILE - DO NOT OVERWRITE ***/
+
 #include "glace2d/Glace2d.h"
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>

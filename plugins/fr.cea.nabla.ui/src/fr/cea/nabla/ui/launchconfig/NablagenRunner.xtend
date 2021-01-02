@@ -78,7 +78,7 @@ class NablagenRunner
 				val handler = new NabLabConsoleHandler(consoleFactory)
 				handler.level = Level.FINE
 				val irInterpreter = new IrInterpreter(ir, handler)
-				// TODO When java and cpp lib where redistributed in dynamic mode, set urls in interpreter
+				// TODO When java and cpp lib will be redistributed in dynamic mode, set urls in interpreter
 				irInterpreter.classloaderUrls = buildUrls(ir.providers)
 				if (jsonFile === null || !jsonFile.exists) throw new RuntimeException("Invalid file: " + jsonFile.fullPath)
 				val jsonContent = new BufferedReader(new InputStreamReader(jsonFile.contents)).lines().collect(Collectors.joining("\n"))

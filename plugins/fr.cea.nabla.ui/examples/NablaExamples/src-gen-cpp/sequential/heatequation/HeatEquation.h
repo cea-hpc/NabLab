@@ -20,6 +20,8 @@ using namespace nablalib;
 
 /******************** Free functions declarations ********************/
 
+namespace HeatEquationFuncs
+{
 double det(RealArray1D<2> a, RealArray1D<2> b);
 template<size_t x>
 double norm(RealArray1D<x> a);
@@ -28,6 +30,7 @@ double dot(RealArray1D<x> a, RealArray1D<x> b);
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
 double sumR0(double a, double b);
+}
 
 /******************** Module declaration ********************/
 

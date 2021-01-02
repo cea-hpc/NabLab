@@ -14,6 +14,8 @@ import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.Function
 
 import static extension fr.cea.nabla.ir.Utils.getInstanceName
+import static extension fr.cea.nabla.ir.Utils.getIrModule
+import static extension fr.cea.nabla.ir.generator.Utils.getClassName
 
 class Ir2CppUtils 
 {
@@ -22,7 +24,8 @@ class Ir2CppUtils
 		if (body === null)
 			if (provider.extensionName == "Math") 'std::' + name
 			else 'options.' + provider.instanceName + '.' + name
-		else name
+		else
+			irModule.className + 'Funcs::' + name
 	}
 
 	static def dispatch boolean isBaseTypeStatic(ConnectivityType it)

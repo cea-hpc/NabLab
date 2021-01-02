@@ -8,9 +8,6 @@
 
 using namespace nablalib;
 
-/******************** Free functions definitions ********************/
-
-
 /******************** Options definition ********************/
 
 void

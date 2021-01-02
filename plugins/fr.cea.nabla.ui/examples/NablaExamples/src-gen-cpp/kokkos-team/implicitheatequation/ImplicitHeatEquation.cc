@@ -10,11 +10,13 @@ using namespace nablalib;
 
 /******************** Free functions definitions ********************/
 
+namespace ImplicitHeatEquationFuncs
+{
 template<size_t x>
 KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a)
 {
-	return std::sqrt(dot(a, a));
+	return std::sqrt(ImplicitHeatEquationFuncs::dot(a, a));
 }
 
 template<size_t x>
@@ -58,6 +60,7 @@ KOKKOS_INLINE_FUNCTION
 double prodR0(double a, double b)
 {
 	return a * b;
+}
 }
 
 /******************** Options definition ********************/
@@ -204,7 +207,7 @@ void ImplicitHeatEquation::computeFaceLength(const member_type& teamMember) noex
 					const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 					const size_t pNodes(pId);
 					const size_t pPlus1Nodes(pPlus1Id);
-					reduction0 = sumR0(reduction0, norm(X(pNodes) - X(pPlus1Nodes)));
+					reduction0 = ImplicitHeatEquationFuncs::sumR0(reduction0, ImplicitHeatEquationFuncs::norm(X(pNodes) - X(pPlus1Nodes)));
 				}
 			}
 			faceLength(fFaces) = 0.5 * reduction0;
@@ -248,7 +251,7 @@ void ImplicitHeatEquation::computeV(const member_type& teamMember) noexcept
 					const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 					const size_t pNodes(pId);
 					const size_t pPlus1Nodes(pPlus1Id);
-					reduction0 = sumR0(reduction0, det(X(pNodes), X(pPlus1Nodes)));
+					reduction0 = ImplicitHeatEquationFuncs::sumR0(reduction0, ImplicitHeatEquationFuncs::det(X(pNodes), X(pPlus1Nodes)));
 				}
 			}
 			V(jCells) = 0.5 * reduction0;
@@ -310,7 +313,7 @@ void ImplicitHeatEquation::initXc(const member_type& teamMember) noexcept
 				{
 					const Id pId(nodesOfCellC[pNodesOfCellC]);
 					const size_t pNodes(pId);
-					reduction0 = sumR1(reduction0, X(pNodes));
+					reduction0 = ImplicitHeatEquationFuncs::sumR1(reduction0, X(pNodes));
 				}
 			}
 			Xc(cCells) = 0.25 * reduction0;
@@ -338,8 +341,8 @@ void ImplicitHeatEquation::computeDeltaTn(const member_type& teamMember) noexcep
 	double reduction0;
 	Kokkos::parallel_reduce(Kokkos::TeamThreadRange(teamMember, nbCells), KOKKOS_LAMBDA(const size_t& cCells, double& accu)
 	{
-		accu = minR0(accu, V(cCells) / D(cCells));
-	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &minR0));
+		accu = ImplicitHeatEquationFuncs::minR0(accu, V(cCells) / D(cCells));
+	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &ImplicitHeatEquationFuncs::minR0));
 	deltat = reduction0 * 0.24;
 }
 
@@ -367,7 +370,7 @@ void ImplicitHeatEquation::computeFaceConductivity(const member_type& teamMember
 				{
 					const Id c1Id(cellsOfFaceF[c1CellsOfFaceF]);
 					const size_t c1Cells(c1Id);
-					reduction0 = prodR0(reduction0, D(c1Cells));
+					reduction0 = ImplicitHeatEquationFuncs::prodR0(reduction0, D(c1Cells));
 				}
 			}
 			double reduction1(0.0);
@@ -378,7 +381,7 @@ void ImplicitHeatEquation::computeFaceConductivity(const member_type& teamMember
 				{
 					const Id c2Id(cellsOfFaceF[c2CellsOfFaceF]);
 					const size_t c2Cells(c2Id);
-					reduction1 = sumR0(reduction1, D(c2Cells));
+					reduction1 = ImplicitHeatEquationFuncs::sumR0(reduction1, D(c2Cells));
 				}
 			}
 			faceConductivity(fFaces) = 2.0 * reduction0 / reduction1;
@@ -401,7 +404,7 @@ void ImplicitHeatEquation::initU(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
 		{
 			int cCells(cCellsTeam + teamWork.first);
-			if (norm(Xc(cCells) - vectOne) < 0.5) 
+			if (ImplicitHeatEquationFuncs::norm(Xc(cCells) - vectOne) < 0.5) 
 				u_n(cCells) = options.u0;
 			else
 				u_n(cCells) = 0.0;
@@ -445,7 +448,7 @@ void ImplicitHeatEquation::computeAlphaCoeff(const member_type& teamMember) noex
 					const size_t dCells(dId);
 					const Id fId(mesh->getCommonFace(cId, dId));
 					const size_t fFaces(fId);
-					const double alphaExtraDiag(-deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / norm(Xc(cCells) - Xc(dCells)));
+					const double alphaExtraDiag(-deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / ImplicitHeatEquationFuncs::norm(Xc(cCells) - Xc(dCells)));
 					alpha(cCells,dCells) = alphaExtraDiag;
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}

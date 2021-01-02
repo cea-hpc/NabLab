@@ -10,10 +10,12 @@ using namespace nablalib;
 
 /******************** Free functions definitions ********************/
 
+namespace ExplicitHeatEquationFuncs
+{
 template<size_t x>
 double norm(RealArray1D<x> a)
 {
-	return std::sqrt(dot(a, a));
+	return std::sqrt(ExplicitHeatEquationFuncs::dot(a, a));
 }
 
 template<size_t x>
@@ -51,6 +53,7 @@ double sumR0(double a, double b)
 double prodR0(double a, double b)
 {
 	return a * b;
+}
 }
 
 /******************** Options definition ********************/
@@ -161,7 +164,7 @@ void ExplicitHeatEquation::computeFaceLength() noexcept
 				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction0 = sumR0(reduction0, norm(X[pNodes] - X[pPlus1Nodes]));
+				reduction0 = ExplicitHeatEquationFuncs::sumR0(reduction0, ExplicitHeatEquationFuncs::norm(X[pNodes] - X[pPlus1Nodes]));
 			}
 		}
 		faceLength[fFaces] = 0.5 * reduction0;
@@ -199,7 +202,7 @@ void ExplicitHeatEquation::computeV() noexcept
 				const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction0 = sumR0(reduction0, det(X[pNodes], X[pPlus1Nodes]));
+				reduction0 = ExplicitHeatEquationFuncs::sumR0(reduction0, ExplicitHeatEquationFuncs::det(X[pNodes], X[pPlus1Nodes]));
 			}
 		}
 		V[jCells] = 0.5 * reduction0;
@@ -249,7 +252,7 @@ void ExplicitHeatEquation::initXc() noexcept
 			{
 				const Id pId(nodesOfCellC[pNodesOfCellC]);
 				const size_t pNodes(pId);
-				reduction0 = sumR1(reduction0, X[pNodes]);
+				reduction0 = ExplicitHeatEquationFuncs::sumR1(reduction0, X[pNodes]);
 			}
 		}
 		Xc[cCells] = 0.25 * reduction0;
@@ -275,7 +278,7 @@ void ExplicitHeatEquation::updateU() noexcept
 			{
 				const Id dId(neighbourCellsC[dNeighbourCellsC]);
 				const size_t dCells(dId);
-				reduction0 = sumR0(reduction0, alpha[cCells][dCells] * u_n[dCells]);
+				reduction0 = ExplicitHeatEquationFuncs::sumR0(reduction0, alpha[cCells][dCells] * u_n[dCells]);
 			}
 		}
 		u_nplus1[cCells] = alpha[cCells][cCells] * u_n[cCells] + reduction0;
@@ -293,7 +296,7 @@ void ExplicitHeatEquation::computeDeltaTn() noexcept
 	#pragma omp parallel for reduction(min:reduction0)
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
-		reduction0 = minR0(reduction0, V[cCells] / D[cCells]);
+		reduction0 = ExplicitHeatEquationFuncs::minR0(reduction0, V[cCells] / D[cCells]);
 	}
 	deltat = reduction0 * 0.24;
 }
@@ -317,7 +320,7 @@ void ExplicitHeatEquation::computeFaceConductivity() noexcept
 			{
 				const Id c1Id(cellsOfFaceF[c1CellsOfFaceF]);
 				const size_t c1Cells(c1Id);
-				reduction0 = prodR0(reduction0, D[c1Cells]);
+				reduction0 = ExplicitHeatEquationFuncs::prodR0(reduction0, D[c1Cells]);
 			}
 		}
 		double reduction1(0.0);
@@ -328,7 +331,7 @@ void ExplicitHeatEquation::computeFaceConductivity() noexcept
 			{
 				const Id c2Id(cellsOfFaceF[c2CellsOfFaceF]);
 				const size_t c2Cells(c2Id);
-				reduction1 = sumR0(reduction1, D[c2Cells]);
+				reduction1 = ExplicitHeatEquationFuncs::sumR0(reduction1, D[c2Cells]);
 			}
 		}
 		faceConductivity[fFaces] = 2.0 * reduction0 / reduction1;
@@ -345,7 +348,7 @@ void ExplicitHeatEquation::initU() noexcept
 	#pragma omp parallel for shared(u_n)
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
-		if (norm(Xc[cCells] - vectOne) < 0.5) 
+		if (ExplicitHeatEquationFuncs::norm(Xc[cCells] - vectOne) < 0.5) 
 			u_n[cCells] = options.u0;
 		else
 			u_n[cCells] = 0.0;
@@ -383,7 +386,7 @@ void ExplicitHeatEquation::computeAlphaCoeff() noexcept
 				const size_t dCells(dId);
 				const Id fId(mesh->getCommonFace(cId, dId));
 				const size_t fFaces(fId);
-				const double alphaExtraDiag(deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(Xc[cCells] - Xc[dCells]));
+				const double alphaExtraDiag(deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / ExplicitHeatEquationFuncs::norm(Xc[cCells] - Xc[dCells]));
 				alpha[cCells][dCells] = alphaExtraDiag;
 				alphaDiag = alphaDiag + alphaExtraDiag;
 			}

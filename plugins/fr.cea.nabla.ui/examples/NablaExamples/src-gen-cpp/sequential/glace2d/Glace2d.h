@@ -20,6 +20,8 @@ using namespace nablalib;
 
 /******************** Free functions declarations ********************/
 
+namespace Glace2dFuncs
+{
 double det(RealArray2D<2,2> a);
 RealArray1D<2> perp(RealArray1D<2> a);
 template<size_t x>
@@ -39,6 +41,7 @@ double sumR0(double a, double b);
 template<size_t x>
 RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b);
 double minR0(double a, double b);
+}
 
 /******************** Module declaration ********************/
 

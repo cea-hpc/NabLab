@@ -17,9 +17,6 @@
 
 using namespace nablalib;
 
-/******************** Free functions declarations ********************/
-
-
 /******************** Module declaration ********************/
 
 class DepthInit

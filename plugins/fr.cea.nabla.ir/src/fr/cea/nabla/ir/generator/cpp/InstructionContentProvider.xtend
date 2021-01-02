@@ -211,7 +211,7 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 				«ENDFOR»
 				return (accu = «binaryFunction.codeName»(accu, «lambda.content»));
 			},
-			&«binaryFunction.name»);''')»
+			&«binaryFunction.codeName»);''')»
 	'''
 
 	override getParallelLoopContent(Loop it)
@@ -236,7 +236,7 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 			«innerInstruction.content»
 			«ENDFOR»
 			accu = «binaryFunction.codeName»(accu, «lambda.content»);
-		}, KokkosJoiner<«result.cppType»>(«result.name», «result.defaultValue.content», &«binaryFunction.name»));''')»
+		}, KokkosJoiner<«result.cppType»>(«result.name», «result.defaultValue.content», &«binaryFunction.codeName»));''')»
 	'''
 
 	override getParallelLoopContent(Loop it)

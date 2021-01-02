@@ -98,13 +98,17 @@ class Ir2Cpp extends CodeGenerator
 			class «m.className»;
 		«ENDFOR»
 	«ENDIF»
-	«IF !functions.empty»
+	«val bodyFunctions = functions.filter(Function).filter[body !== null]»
+	«IF !bodyFunctions.empty»
 
 	/******************** Free functions declarations ********************/
 
-	«FOR f : functions.filter(Function).filter[body !== null]»
+	namespace «className»Funcs
+	{
+	«FOR f : bodyFunctions»
 		«f.declarationContent»;
 	«ENDFOR»
+	}
 	«ENDIF»
 
 	/******************** Module declaration ********************/
@@ -217,13 +221,17 @@ class Ir2Cpp extends CodeGenerator
 	«ENDIF»
 
 	using namespace nablalib;
-	«IF !functions.empty»
+	«val bodyFunctions = functions.filter(Function).filter[body !== null]»
+	«IF !bodyFunctions.empty»
 
 	/******************** Free functions definitions ********************/
 
-	«FOR f : functions.filter(Function).filter[body !== null] SEPARATOR '\n'»
+	namespace «className»Funcs
+	{
+	«FOR f : bodyFunctions SEPARATOR '\n'»
 		«f.definitionContent»
 	«ENDFOR»
+	}
 	«ENDIF»
 
 	/******************** Options definition ********************/

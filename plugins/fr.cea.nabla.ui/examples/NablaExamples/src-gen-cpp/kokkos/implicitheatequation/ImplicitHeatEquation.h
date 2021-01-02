@@ -22,6 +22,8 @@ using namespace nablalib;
 
 /******************** Free functions declarations ********************/
 
+namespace ImplicitHeatEquationFuncs
+{
 template<size_t x>
 KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a);
@@ -39,6 +41,7 @@ KOKKOS_INLINE_FUNCTION
 double sumR0(double a, double b);
 KOKKOS_INLINE_FUNCTION
 double prodR0(double a, double b);
+}
 
 /******************** Module declaration ********************/
 

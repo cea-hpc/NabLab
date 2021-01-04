@@ -36,6 +36,7 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 		fsa.generateFile(cmakeFileName, getCmakeFileContent(nablaExt, cppProviderHome))
 	}
 
+	// TODO Replace user home directory in .so path
 	private def getJavaFileContent(NablaExtension it, String projectHome, Iterable<Function> irFunctions)
 	'''
 	«Utils.fileHeader»

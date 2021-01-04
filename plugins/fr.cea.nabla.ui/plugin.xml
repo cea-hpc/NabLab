@@ -678,6 +678,10 @@
           id="fr.cea.nabla.ui.NotifyViewsId"
           name="Notify view">
     </command>
+    <command
+          id="fr.cea.nabla.ui.OpenSiriusJobsGraph"
+          name="Sirius Jobs Graph">
+    </command>
  </extension>
  <extension
        point="org.eclipse.ui.bindings">
@@ -687,6 +691,12 @@
           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
           sequence="F1">
     </key>
+    <key
+          commandId="fr.cea.nabla.ui.OpenSiriusJobsGraph"
+          contextId="org.eclipse.xtext.ui.XtextEditorScope"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+          sequence="F2">
+    </key>
  </extension>
  <extension
        point="org.eclipse.ui.handlers">
@@ -694,5 +704,10 @@
           class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.views.NotifyViewsHandler"
           commandId="fr.cea.nabla.ui.NotifyViewsId">
     </handler>
+    <handler
+          class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.views.OpenSiriusJobsGraph"
+          commandId="fr.cea.nabla.ui.OpenSiriusJobsGraph">
+    </handler>
  </extension>
+
 </plugin>

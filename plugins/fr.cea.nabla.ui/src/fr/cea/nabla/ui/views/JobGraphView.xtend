@@ -94,7 +94,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 
 	override createPartControl(Composite parent)
 	{
-		viewer = new JobGraphViewer(parent)
+		viewer = new JobGraphViewer(parent, consoleFactory)
 		viewer.graphControl.addMouseWheelListener(mouseWheelListener)
 		viewer.addDoubleClickListener(doubleClickListener)
 		notifyViewsHandler.keyNotificationListeners += keyNotificationListener
@@ -124,6 +124,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 
 	private def void displayIrFrom(NablagenRoot ngen)
 	{
+		val start = System.nanoTime()
 		var IrRoot ir = null
 		consoleFactory.printConsole(MessageType.Start, "Building IR to initialize job graph view")
 
@@ -142,6 +143,9 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 			// for example compilation not done, or during transformation step. Whatever... 
 			// irModule stays null. Error message printed below.
 		}
+
+		val stop = System.nanoTime()
+		consoleFactory.printConsole(MessageType.End, "IR converted (" + ((stop - start) / 1000000) + " ms)")
 
 		if (ir === null)
 		{
